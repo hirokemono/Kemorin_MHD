@@ -8,12 +8,13 @@
 !!      subroutine s_cal_velocity_pre(nod_comm, node, ele, surf, fluid, &
 !!     &          sf_grp, sf_grp_nod, iphys, iphys_ele, ele_fld,        &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens, &
-!!     &          layer_tbl, num_MG_level, Vmat_MG_DJDS,                &
+!!     &          layer_tbl, num_MG_level, MG_DJDS_fluid, Vmat_MG_DJDS, &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_velocity_co(nod_comm, node, ele, surf, fluid,    &
 !!     &          sf_grp, sf_grp_nod, iphys, iphys_ele, ele_fld,        &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
-!!     &          rhs_tbl, FEM_elens, num_MG_level, Vmat_MG_DJDS,       &
+!!     &          rhs_tbl, FEM_elens, num_MG_level,   &
+!!     &          MG_DJDS_fluid, Vmat_MG_DJDS,         &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -30,6 +31,8 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(layering_tbl), intent(in) :: layer_tbl
+!!        type(DJDS_ordering_table), intent(in)                         &
+!!       &           :: MG_DJDS_fluid(0:num_MG_level)
 !!        type(DJDS_MATRIX), intent(in) :: Vmat_MG_DJDS(0:num_MG_level)
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -72,7 +75,7 @@
       subroutine s_cal_velocity_pre(nod_comm, node, ele, surf, fluid,   &
      &          sf_grp, sf_grp_nod, iphys, iphys_ele, ele_fld,          &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,   &
-     &          layer_tbl, num_MG_level, Vmat_MG_DJDS,                  &
+     &          layer_tbl, num_MG_level, MG_DJDS_fluid, Vmat_MG_DJDS,   &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_surf_data_torque
@@ -111,6 +114,8 @@
       type(layering_tbl), intent(in) :: layer_tbl
 !
       integer(kind = kint), intent(in) :: num_MG_level
+      type(DJDS_ordering_table), intent(in)                             &
+     &           :: MG_DJDS_fluid(0:num_MG_level)
       type(DJDS_MATRIX), intent(in) :: Vmat_MG_DJDS(0:num_MG_level)
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -203,13 +208,15 @@
         call cal_velo_pre_lumped_crank                                  &
      &     (iak_diff_v, nod_comm, node, ele, fluid,                     &
      &      iphys, iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,    &
-     &      Vmat_MG_DJDS, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      MG_DJDS_fluid, Vmat_MG_DJDS,           &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       else if (iflag_t_evo_4_velo .eq. id_Crank_nicolson_cmass) then 
         call cal_velo_pre_consist_crank                                 &
      &    (iphys%i_velo, iphys%i_pre_mom, iak_diff_v,                   &
      &     node, ele, fluid, jac_3d_q, rhs_tbl, FEM_elens,              &
-     &     Vmat_MG_DJDS, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &     MG_DJDS_fluid, Vmat_MG_DJDS,     &
+     &     mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       call set_boundary_velo(node, iphys%i_velo, nod_fld)
@@ -225,7 +232,8 @@
       subroutine cal_velocity_co(nod_comm, node, ele, surf, fluid,      &
      &          sf_grp, sf_grp_nod, iphys, iphys_ele, ele_fld,          &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
-     &          rhs_tbl, FEM_elens, num_MG_level, Vmat_MG_DJDS,         &
+     &          rhs_tbl, FEM_elens, num_MG_level,   &
+     &          MG_DJDS_fluid, Vmat_MG_DJDS,         &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_SGS_address
@@ -260,6 +268,8 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
       integer(kind = kint), intent(in) :: num_MG_level
+      type(DJDS_ordering_table), intent(in)                             &
+     &           :: MG_DJDS_fluid(0:num_MG_level)
       type(DJDS_MATRIX), intent(in) :: Vmat_MG_DJDS(0:num_MG_level)
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -293,8 +303,8 @@
      &  .or. iflag_implicit_correct.eq.4) then
         call cal_velocity_co_imp(iphys%i_velo,                          &
      &      nod_comm, node, ele, fluid, iphys_ele, ele_fld,             &
-     &      jac_3d_q, rhs_tbl, FEM_elens, Vmat_MG_DJDS, mhd_fem_wk,     &
-     &      fem_wk, f_l, f_nl, nod_fld)
+     &      jac_3d_q, rhs_tbl, FEM_elens, MG_DJDS_fluid, Vmat_MG_DJDS,  &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else
         call cal_velocity_co_exp(iphys%i_velo, iphys%i_p_phi,           &
      &      nod_comm, node, ele, fluid, jac_3d_q, rhs_tbl,              &

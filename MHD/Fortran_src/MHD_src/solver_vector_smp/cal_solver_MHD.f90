@@ -3,18 +3,15 @@
 !
 !        programmed by H.Matsui on June 2010
 !
-!!      subroutine solver_crank_vector                                  &
-!!     &         (node, DJDS_comm, DJDS_tbl, num_MG_level,              &
+!!      subroutine solver_crank_vector(node, DJDS_comm, num_MG_level,   &
 !!     &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat,            &
 !!     &          METHOD, PRECOND, eps, itr, i_field,                   &
 !!     &          MG_vector, f_l, b_vec, x_vec, nod_fld)
-!!      subroutine solver_crank_scalar                                  &
-!!     &         (node, DJDS_comm, DJDS_tbl, num_MG_level,              &
+!!      subroutine solver_crank_scalar(node, DJDS_comm, num_MG_level,   &
 !!     &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat,            &
 !!     &          METHOD, PRECOND, eps, itr, i_field,                   &
 !!     &          MG_vector, f_l, b_vec, x_vec, nod_fld)
-!!      subroutine solver_poisson_scalar                                &
-!!     &         (node, DJDS_comm, DJDS_tbl, num_MG_level,              &
+!!      subroutine solver_poisson_scalar(node, DJDS_comm, num_MG_level, &
 !!     &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat,            &
 !!     &          METHOD, PRECOND, eps, itr, i_field,                   &
 !!     &          MG_vector, f_l, b_vec, x_vec, nod_fld)
@@ -40,8 +37,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine solver_crank_vector                                    &
-     &         (node, DJDS_comm, DJDS_tbl, num_MG_level,                &
+      subroutine solver_crank_vector(node, DJDS_comm, num_MG_level,     &
      &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat,              &
      &          METHOD, PRECOND, eps, itr, i_field,                     &
      &          MG_vector, f_l, b_vec, x_vec, nod_fld)
@@ -57,7 +53,6 @@
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: DJDS_comm
-      type(DJDS_ordering_table), intent(in) :: DJDS_tbl
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_itp(num_MG_level)
@@ -78,8 +73,7 @@
       call copy_ff_to_rhs33                                             &
      &    (node%numnod, node%istack_nod_smp, f_l%ff, b_vec, x_vec)
 !
-      call solver_MGCG_vector                                           &
-     &   (node, DJDS_comm, DJDS_tbl, num_MG_level,                      &
+      call solver_MGCG_vector(node, DJDS_comm, num_MG_level,            &
      &    MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat,                    &
      &    METHOD, PRECOND, eps, itr,  MG_vector, b_vec, x_vec)
 !
@@ -91,8 +85,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine solver_crank_scalar                                    &
-     &         (node, DJDS_comm, DJDS_tbl, num_MG_level,                &
+      subroutine solver_crank_scalar(node, DJDS_comm, num_MG_level,     &
      &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat,              &
      &          METHOD, PRECOND, eps, itr, i_field,                     &
      &          MG_vector, f_l, b_vec, x_vec, nod_fld)
@@ -108,7 +101,6 @@
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: DJDS_comm
-      type(DJDS_ordering_table), intent(in) :: DJDS_tbl
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_itp(num_MG_level)
@@ -128,8 +120,7 @@
 !
       call copy_ff_to_rhs11                                             &
      &   (node%numnod, node%istack_nod_smp, f_l%ff, b_vec, x_vec)
-      call solver_MGCG_scalar                                           &
-     &   (node, DJDS_comm, DJDS_tbl, num_MG_level,                      &
+      call solver_MGCG_scalar(node, DJDS_comm, num_MG_level,            &
      &    MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat,                    &
      &    METHOD, PRECOND, eps, itr, MG_vector, b_vec, x_vec)
 !
@@ -141,8 +132,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine solver_poisson_scalar                                  &
-     &         (node, DJDS_comm, DJDS_tbl, num_MG_level,                &
+      subroutine solver_poisson_scalar(node, DJDS_comm, num_MG_level,   &
      &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat,              &
      &          METHOD, PRECOND, eps, itr, i_field,                     &
      &          MG_vector, f_l, b_vec, x_vec, nod_fld)
@@ -158,7 +148,6 @@
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: DJDS_comm
-      type(DJDS_ordering_table), intent(in) :: DJDS_tbl
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_itp(num_MG_level)
@@ -179,8 +168,7 @@
       call copy_ff_potential_to_rhs                                     &
      &   (node%numnod, node%istack_nod_smp, nod_fld%ntot_phys,          &
      &    i_field, nod_fld%d_fld, f_l%ff, b_vec, x_vec)
-      call solver_MGCG_scalar                                           &
-     &   (node, DJDS_comm, DJDS_tbl, num_MG_level,                      &
+      call solver_MGCG_scalar(node, DJDS_comm, num_MG_level,            &
      &    MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat,                    &
      &    METHOD, PRECOND, eps, itr, MG_vector, b_vec, x_vec)
 !

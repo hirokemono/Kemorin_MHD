@@ -60,7 +60,8 @@
      &     .and. coef_velo .gt. zero) then
         call init_33_matrix_lump                                        &
      &     (node%numnod, fluid%numnod_fld, fluid%inod_fld,              &
-     &      DJDS_fluid%OLDtoNEW, mhd_fem_wk%mlump_fl%ml_o,              &
+     &      MHD1_matrices%MG_DJDS_fluid(0)%OLDtoNEW,                    &
+     &      mhd_fem_wk%mlump_fl%ml_o,                                   &
      &      MHD1_matrices%Vmat_MG_DJDS(0)%num_non0,                     &
      &      MHD1_matrices%Vmat_MG_DJDS(0)%aiccg)
       end if
@@ -69,7 +70,8 @@
      &     .and. coef_temp .gt. zero) then
         call init_11_matrix_lump                                        &
      &     (node%numnod, fluid%numnod_fld, fluid%inod_fld,              &
-     &      DJDS_fluid%OLDtoNEW, mhd_fem_wk%mlump_fl%ml_o,              &
+     &      MHD1_matrices%MG_DJDS_fluid(0)%OLDtoNEW,                    &
+     &      mhd_fem_wk%mlump_fl%ml_o,                                   &
      &      MHD1_matrices%Tmat_MG_DJDS(0)%num_non0,                     &
      &      MHD1_matrices%Tmat_MG_DJDS(0)%aiccg)
       end if
@@ -78,7 +80,8 @@
      &     .and. coef_magne .gt. zero) then
         call init_33_matrix_lump                                        &
      &     (node%numnod, conduct%numnod_fld, conduct%inod_fld,          &
-     &      DJDS_entire%OLDtoNEW, mhd_fem_wk%mlump_cd%ml_o,             &
+     &      MHD1_matrices%MG_DJDS_table(0)%OLDtoNEW,                    &
+     &      mhd_fem_wk%mlump_cd%ml_o,                                   &
      &      MHD1_matrices%Bmat_MG_DJDS(0)%num_non0,                     &
      &      MHD1_matrices%Bmat_MG_DJDS(0)%aiccg)
       end if
@@ -87,7 +90,8 @@
      &     .and. coef_magne .gt. zero) then
         call init_33_matrix_lump                                        &
      &     (node%numnod, conduct%numnod_fld, conduct%inod_fld,          &
-     &      DJDS_entire%OLDtoNEW, mhd_fem_wk%mlump_cd%ml_o,             &
+     &      MHD1_matrices%MG_DJDS_table(0)%OLDtoNEW,                    &
+     &      mhd_fem_wk%mlump_cd%ml_o,                                   &
      &      MHD1_matrices%Bmat_MG_DJDS(0)%num_non0,                     &
      &      MHD1_matrices%Bmat_MG_DJDS(0)%aiccg)
       end if
@@ -96,7 +100,8 @@
      &     .and. coef_light .gt. zero) then
         call init_11_matrix_lump                                        &
      &     (node%numnod, fluid%numnod_fld, fluid%inod_fld,              &
-     &      DJDS_fluid%OLDtoNEW, mhd_fem_wk%mlump_fl%ml_o,              &
+     &      MHD1_matrices%MG_DJDS_fluid(0)%OLDtoNEW,                    &
+     &      mhd_fem_wk%mlump_fl%ml_o,                                   &
      &      MHD1_matrices%Cmat_MG_DJDS(0)%num_non0,                     &
      &      MHD1_matrices%Cmat_MG_DJDS(0)%aiccg)
       end if

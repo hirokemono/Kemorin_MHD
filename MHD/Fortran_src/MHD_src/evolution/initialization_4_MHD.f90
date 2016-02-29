@@ -245,6 +245,12 @@
 !
 !     --------------------- 
 !
+      if(solver_iflag(method_4_solver) .eq. iflag_mgcg) then
+        call alloc_MHD_MG_DJDS_mat(num_MG_level, MHD1_matrices)
+      else
+        call alloc_MHD_MG_DJDS_mat(izero, MHD1_matrices)
+      end if
+!
       if (iflag_debug.eq.1) write(*,*) 'set_MHD_whole_connectivity'
       call set_MHD_whole_connectivity                                   &
      &    (mesh%nod_comm, mesh%node, mesh%ele, next_tbl1, rhs_tbl1)
@@ -280,12 +286,6 @@
      &   jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk, f1_l, m1_lump)
 !
 !     ---------------------
-!
-      if(solver_iflag(method_4_solver) .eq. iflag_mgcg) then
-        call alloc_MHD_MG_DJDS_mat(num_MG_level, MHD1_matrices)
-      else
-        call alloc_MHD_MG_DJDS_mat(izero, MHD1_matrices)
-      end if
 !
       if (iflag_debug.eq.1 ) write(*,*) 'allocate_aiccg_matrices'
       call allocate_aiccg_matrices(mesh%node)

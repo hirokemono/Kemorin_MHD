@@ -36,9 +36,20 @@
 !>        Structure of matrix for time evolution of composition
         type(DJDS_MATRIX), pointer :: Cmat_MG_DJDS(:)
 !
-!>      DJDS ordering structures for entire domain
-        type(DJDS_ordering_table), save :: MG_DJDS_table
-      end type MHD_MG_matrices
+!>        DJDS ordering structures for entire domain
+        type(DJDS_ordering_table), pointer :: MG_DJDS_table(:)
+!>        DJDS ordering structures for linear entire domain
+        type(DJDS_ordering_table), pointer :: MG_DJDS_linear(:)
+!>        Communication table structure for entire domain
+        type(communication_table), pointer :: MG_comm_table(:)
+!
+!>        DJDS ordering structures for fluid
+        type(DJDS_ordering_table), pointer :: MG_DJDS_fluid(:)
+!>        DJDS ordering structures for linear fluid
+        type(DJDS_ordering_table), pointer :: MG_DJDS_lin_fl(:)
+!>        Communication table structure for entire domain
+        type(communication_table), pointer :: MG_comm_fluid(:)
+!      end type MHD_MG_matrices
 !
 !-----------------------------------------------------------------------
 !
@@ -62,6 +73,14 @@
       allocate(matrices%Cmat_MG_DJDS(0:num_MG_level))
 !
 !
+      allocate(matrices%MG_DJDS_table(0:num_MG_level))
+      allocate(matrices%MG_DJDS_linear(0:num_MG_level))
+      allocate(matrices%MG_comm_table(0:num_MG_level))
+!
+      allocate(matrices%MG_DJDS_fluid(0:num_MG_level))
+      allocate(matrices%MG_DJDS_lin_fl(0:num_MG_level))
+      allocate(matrices%MG_comm_fluid(0:num_MG_level))
+!
       end subroutine alloc_MHD_MG_DJDS_mat
 !
 !-----------------------------------------------------------------------
@@ -74,6 +93,11 @@
       deallocate(matrices%Vmat_MG_DJDS, matrices%Bmat_MG_DJDS)
       deallocate(matrices%Pmat_MG_DJDS, matrices%Fmat_MG_DJDS)
       deallocate(matrices%Tmat_MG_DJDS, matrices%Cmat_MG_DJDS)
+!
+      deallocate(matrices%MG_DJDS_table, matrices%MG_DJDS_linear)
+      deallocate(matrices%MG_comm_table)
+      deallocate(matrices%MG_DJDS_fluid, matrices%MG_DJDS_lin_fl)
+      deallocate(matrices%MG_comm_fluid)
 !
       end subroutine dealloc_MHD_MG_DJDS_mat
 !

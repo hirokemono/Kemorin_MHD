@@ -9,17 +9,14 @@
 !!
 !!@verbatim
 !!      subroutine init_MGCG_MHD(node)
-!!      subroutine solver_MGCG_vector                                   &
-!!     &         (node, DJDS_comm, DJDS_tbl, num_MG_level,              &
+!!      subroutine solver_MGCG_vector(node, DJDS_comm, num_MG_level,    &
 !!     &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat,            &
 !!     &          METHOD, PRECOND, eps, itr, MG_vector, b_vec, x_vec)
-!!      subroutine solver_MGCG_scalar                                   &
-!!     &         (node, DJDS_comm, DJDS_tbl, num_MG_level,              &
+!!      subroutine solver_MGCG_scalar(node, DJDS_comm, num_MG_level,    &
 !!     &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat11,          &
 !!     &          METHOD, PRECOND, eps, itr, MG_vector, b_vec, x_vec)
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: DJDS_comm
-!!        type(DJDS_ordering_table), intent(in) :: DJDS_tbl
 !!        integer(kind = kint), intent(in) :: num_MG_level
 !!        type(MG_itp_table), intent(in) :: MG_itp(num_MG_level)
 !!        type(communication_table), intent(in)                         &
@@ -97,8 +94,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine solver_MGCG_vector                                     &
-     &         (node, DJDS_comm, DJDS_tbl, num_MG_level,                &
+      subroutine solver_MGCG_vector(node, DJDS_comm, num_MG_level,      &
      &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat,              &
      &          METHOD, PRECOND, eps, itr, MG_vector, b_vec, x_vec)
 !
@@ -112,7 +108,6 @@
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: DJDS_comm
-      type(DJDS_ordering_table), intent(in) :: DJDS_tbl
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_itp(num_MG_level)
@@ -143,7 +138,7 @@
      &      itr_MG_mid, itr_MG_lowest, eps, EPS_MG,                     &
      &      PRECOND, METHOD_MG, PRECOND_MG, ierr, iterPREmax)
       else
-        call solve33_DJDS_struct(np_smp, DJDS_comm, DJDS_tbl,           &
+        call solve33_DJDS_struct(np_smp, DJDS_comm, MG_DJDS_tbl(0),     &
      &      MG_DJDS_mat(0), node%numnod, b_vec(1), x_vec(1),            &
      &      METHOD, PRECOND, ierr, eps, itr, itr_res)
       end if
@@ -155,8 +150,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine solver_MGCG_scalar                                     &
-     &         (node, DJDS_comm, DJDS_tbl, num_MG_level,                &
+      subroutine solver_MGCG_scalar(node, DJDS_comm, num_MG_level,      &
      &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat11,            &
      &          METHOD, PRECOND, eps, itr, MG_vector, b_vec, x_vec)
 !
@@ -171,7 +165,6 @@
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: DJDS_comm
-      type(DJDS_ordering_table), intent(in) :: DJDS_tbl
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_itp(num_MG_level)
@@ -212,7 +205,7 @@
      &      itr_MG_mid, itr_MG_lowest, eps, EPS_MG,                     &
      &      PRECOND, METHOD_MG, PRECOND_MG, ierr, iterPREmax)
       else
-        call solve_DJDS11_struct(np_smp, DJDS_comm, DJDS_tbl,           &
+        call solve_DJDS11_struct(np_smp, DJDS_comm, MG_DJDS_tbl(0),     &
      &      MG_DJDS_mat11(0), node%numnod, b_vec(1), x_vec(1),          &
      &      METHOD, PRECOND, ierr, eps, itr, itr_res)
       end if

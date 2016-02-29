@@ -26,8 +26,8 @@
       type(vectors_4_solver), target, save :: MG_vector(0:max_MG_level)
       type(communication_table), target, save                           &
      &                      :: MG_comm(0:max_MG_level)
-      type(DJDS_ordering_table), target, save                           &
-     &                      :: MG_djds_tbl(0:max_MG_level)
+!      type(DJDS_ordering_table), target, save                          &
+!     &                      :: MG_djds_tbl(0:max_MG_level)
 !
       type(DJDS_MATRIX) :: MG_mat(0:max_MG_level)
 !

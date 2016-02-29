@@ -22,21 +22,14 @@
 !
 !>        Structure of matrices for MHD dynamo simulation
       type(MHD_MG_matrices), save :: MHD1_matrices
+!MHD1_matrices%MG_DJDS_table
 !
 !>      Structure for MPI communicator
       type(mpi_4_solver), save :: solver_C
 !
-!>      DJDS ordering structures for entire domain
-      type(DJDS_ordering_table), save :: DJDS_entire
-!>      DJDS ordering structures for linear entire domain
-      type(DJDS_ordering_table), save :: DJDS_linear
 !>      Communication table structure for entire domain
       type(communication_table), save :: DJDS_comm_etr
 !
-!>      DJDS ordering structures for fluid region
-      type(DJDS_ordering_table), save :: DJDS_fluid
-!>      DJDS ordering structures for linear fluid region
-      type(DJDS_ordering_table), save :: DJDS_fl_l
 !>      Communication table structure for fluid
       type(communication_table), save :: DJDS_comm_fl
 !
@@ -88,7 +81,8 @@
 !  +   set Matrix assemble table   +
 !C +-------------------------------+
       call set_djds_whole_connectivity(nod_comm, node, solver_C,        &
-     &    next_tbl%neib_nod, DJDS_comm_etr, DJDS_entire)
+     &    next_tbl%neib_nod, DJDS_comm_etr,                             &
+     &    MHD1_matrices%MG_DJDS_table(0))
 !
       end subroutine set_MHD_whole_connectivity
 !
@@ -109,17 +103,21 @@
 !
       call set_djds_layer_connectivity(node, ele, ele%nnod_4_ele,       &
      &    fluid%iele_start_fld, fluid%iele_end_fld,                     &
-     &    DJDS_comm_fl, solver_C, DJDS_fluid)
+     &    DJDS_comm_fl, solver_C, MHD1_matrices%MG_DJDS_fluid(0))
 !
       if (ele%nnod_4_ele .ne. num_t_linear) then
         call set_djds_layer_connectivity(node, ele, num_t_linear,       &
-     &      ione, ele%numele, DJDS_comm_etr, solver_C, DJDS_linear)
+     &      ione, ele%numele, DJDS_comm_etr, solver_C,                  &
+     &      MHD1_matrices%MG_DJDS_linear(0))
         call set_djds_layer_connectivity(node, ele, num_t_linear,       &
      &      fluid%iele_start_fld, fluid%iele_end_fld,                   &
-     &      DJDS_comm_fl, solver_C, DJDS_fl_l)
+     &      DJDS_comm_fl, solver_C, MHD1_matrices%MG_DJDS_lin_fl(0))
       else
-        call link_djds_connect_structs(DJDS_entire, DJDS_linear)
-        call link_djds_connect_structs(DJDS_fluid, DJDS_fl_l)
+        call link_djds_connect_structs                                  &
+     &     (MHD1_matrices%MG_DJDS_table(0),                             &
+     &      MHD1_matrices%MG_DJDS_linear(0))
+        call link_djds_connect_structs(MHD1_matrices%MG_DJDS_fluid(0),  &
+     &      MHD1_matrices%MG_DJDS_lin_fl(0))
       end if
 !
 !

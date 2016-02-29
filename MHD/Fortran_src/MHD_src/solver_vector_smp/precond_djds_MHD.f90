@@ -55,23 +55,26 @@
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         if (iflag_debug.eq.1)   write(*,*) 'precond: ',                 &
      &                trim(precond_4_solver),' ', sigma_diag
-        call precond_DJDS11_struct(np_smp, DJDS_fl_l,                   &
+        call precond_DJDS11_struct(np_smp,                              &
+     &      MHD1_matrices%MG_DJDS_lin_fl(0),                            &
      &      MHD1_matrices%Pmat_MG_DJDS(0),                              &
      &      precond_4_solver, sigma_diag)
       end if
 !
       if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
-        call precond_DJDS33_struct(np_smp, DJDS_fluid,                  &
+        call precond_DJDS33_struct(np_smp,                              &
+     &      MHD1_matrices%MG_DJDS_fluid(0),                             &
      &      MHD1_matrices%Vmat_MG_DJDS(0), precond_4_crank, sigma_diag)
 !        call precond_DJDSnn_struct(n_vector, np_smp,                   &
-!     &      DJDS_fluid, MHD1_matrices%Vmat_MG_DJDS(0),                 &
-!     &      precond_4_crank, sigma_diag)
+!     &      MHD1_matrices%MG_DJDS_fluid(0),                            &
+!     &      MHD1_matrices%Vmat_MG_DJDS(0), precond_4_crank, sigma_diag)
       end if
 !
       if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
         if (iflag_debug.eq.1)  write(*,*) 'precond: ',                  &
      &          trim(precond_4_solver),' ', sigma_diag
-        call precond_DJDS11_struct(np_smp, DJDS_fluid,                  &
+        call precond_DJDS11_struct(np_smp,                              &
+     &      MHD1_matrices%MG_DJDS_fluid(0),                             &
      &      MHD1_matrices%Tmat_MG_DJDS(0),                              &
      &      precond_4_solver, sigma_diag)
       end if
@@ -79,24 +82,28 @@
       if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
         if (iflag_debug.eq.1)  write(*,*) 'precond: ',                  &
      &         trim(precond_4_solver),' ', sigma_diag
-        call precond_DJDS11_struct(np_smp, DJDS_fluid,                  &
+        call precond_DJDS11_struct(np_smp,                              &
+     &      MHD1_matrices%MG_DJDS_fluid(0),                             &
      &      MHD1_matrices%Cmat_MG_DJDS(0),                              &
      &      precond_4_solver, sigma_diag)
       end if
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution                     &
      &     .or. iflag_t_evo_4_magne .gt. id_no_evolution) then
-        call precond_DJDS11_struct(np_smp, DJDS_linear,                 &
+        call precond_DJDS11_struct                                      &
+     &     (np_smp, MHD1_matrices%MG_DJDS_linear(0),                    &
      &      MHD1_matrices%Fmat_MG_DJDS(0),                              &
      &      precond_4_solver, sigma_diag)
       end if
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution                     &
      &     .or. iflag_t_evo_4_magne .gt. id_no_evolution) then
-        call precond_DJDS33_struct(np_smp, DJDS_entire,                 &
+        call precond_DJDS33_struct                                      &
+     &     (np_smp, MHD1_matrices%MG_DJDS_table(0),                     &
      &      MHD1_matrices%Bmat_MG_DJDS(0), precond_4_crank, sigma_diag)
 !        call precond_DJDSnn_struct(n_vector, np_smp,                   &
-!       &    DJDS_entire, MHD1_matrices%Bmat_MG_DJDS(0),                &
+!       &    MHD1_matrices%MG_DJDS_table(0),                            &
+!       &    MHD1_matrices%Bmat_MG_DJDS(0),                             &
 !       &    precond_4_crank, sigma_diag)
       end if
 !

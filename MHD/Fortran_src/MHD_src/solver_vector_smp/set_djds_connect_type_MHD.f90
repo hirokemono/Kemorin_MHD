@@ -19,6 +19,7 @@
       use calypso_mpi
       use m_machine_parameter
       use m_constants
+      use m_solver_djds_MHD
       use m_type_AMG_mesh
       use m_type_AMG_data
       use m_type_AMG_data_4_MHD
@@ -53,7 +54,7 @@
      &       MG_MHD_mesh(i_level)%fluid%iele_start_fld,                 &
      &       MG_MHD_mesh(i_level)%fluid%iele_end_fld,                   &
      &       MG_mesh(i_level)%mesh, MG_MHD_mesh(i_level)%nod_fl_comm,   &
-     &       MG_mpi(i_level), MG_djds_tbl_fl(i_level) )
+     &       MG_mpi(i_level), MHD1_matrices%MG_DJDS_fluid(i_level) )
 !
 !
 !          call set_djds_layer_connect_type                             &
@@ -73,7 +74,7 @@
           if(iflag_debug .gt. 0) write(*,*)                             &
      &       'empty_djds_connectivity_type fluid', i_level
           call empty_djds_connectivity_type(MG_mesh(i_level)%mesh,      &
-     &      MG_djds_tbl_fl(i_level) )
+     &        MHD1_matrices%MG_DJDS_fluid(i_level) )
 !
 !          call empty_djds_connectivity_type(MG_mesh(i_level)%mesh,     &
 !     &      MG_djds_tbl_cd(i_level) )
@@ -105,11 +106,13 @@
         if(my_rank .lt. MG_mpi(i_level)%nprocs) then
           if( MG_mesh(i_level)%mesh%ele%nnod_4_ele                      &
      &      .eq. num_t_linear) then
-            call link_djds_connect_structs(MG_djds_tbl(i_level),        &
-     &          MG_djds_tbl_l(i_level))
+            call link_djds_connect_structs                              &
+     &         (MHD1_matrices%MG_DJDS_table(i_level),                   &
+     &          MHD1_matrices%MG_DJDS_linear(i_level))
 !
-            call link_djds_connect_structs(MG_djds_tbl_fl(i_level),     &
-     &          MG_djds_tbl_fll(i_level))
+            call link_djds_connect_structs                              &
+     &         (MHD1_matrices%MG_DJDS_fluid(i_level),                   &
+     &          MHD1_matrices%MG_DJDS_lin_fl(i_level))
 !
 !            call link_djds_connect_structs( MG_djds_tbl_cd(i_level),   &
 !     &          MG_djds_tbl_cdl(i_level))
@@ -121,13 +124,13 @@
             call set_djds_layer_connect_type(num_t_linear,              &
      &         ione, MG_mesh(i_level)%mesh%ele%numele,                  &
      &         MG_mesh(i_level)%mesh, MG_mesh(i_level)%mesh%nod_comm,   &
-     &         MG_mpi(i_level), MG_djds_tbl_l(i_level))
+     &         MG_mpi(i_level), MHD1_matrices%MG_DJDS_linear(i_level))
 !
             call set_djds_layer_connect_type(num_t_linear,              &
      &         MG_MHD_mesh(i_level)%fluid%iele_start_fld,               &
      &         MG_MHD_mesh(i_level)%fluid%iele_end_fld,                 &
      &         MG_mesh(i_level)%mesh, MG_MHD_mesh(i_level)%nod_fl_comm, &
-     &         MG_mpi(i_level), MG_djds_tbl_fll(i_level))
+     &         MG_mpi(i_level), MHD1_matrices%MG_DJDS_lin_fl(i_level))
 !
 !            call set_djds_layer_connect_type(num_t_linear,             &
 !     &         MG_MHD_mesh(i_level)%conduct%iele_start_fld,            &
@@ -143,9 +146,9 @@
           end if
         else
           call empty_djds_connectivity_type(MG_mesh(i_level)%mesh,      &
-     &        MG_djds_tbl_l(i_level) )
+     &        MHD1_matrices%MG_DJDS_linear(i_level) )
           call empty_djds_connectivity_type(MG_mesh(i_level)%mesh,      &
-     &        MG_djds_tbl_fll(i_level) )
+     &        MHD1_matrices%MG_DJDS_lin_fl(i_level) )
 !          call empty_djds_connectivity_type(MG_mesh(i_level)%mesh,     &
 !     &        MG_djds_tbl_cdl(i_level) )
 !          call empty_djds_connectivity_type(MG_mesh(i_level)%mesh,     &

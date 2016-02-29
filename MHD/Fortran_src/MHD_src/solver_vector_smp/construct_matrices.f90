@@ -76,14 +76,14 @@
 !   deallocate work arrays
 !
       if (iflag_debug.eq.1) write(*,*) 'deallocation work arrays'
-      call dealloc_type_4_djds_table(DJDS_entire)
-      call dealloc_type_4_djds_table(DJDS_fluid)
+      call dealloc_type_4_djds_table(MHD1_matrices%MG_DJDS_table(0))
+      call dealloc_type_4_djds_table(MHD1_matrices%MG_DJDS_fluid(0))
 !      call dealloc_type_4_djds_table(DJDS_conduct)
 !      call dealloc_type_4_djds_table(DJDS_insulator)
 !
       if (mesh%ele%nnod_4_ele .ne. num_t_linear) then
-        call dealloc_type_4_djds_table(DJDS_linear)
-        call dealloc_type_4_djds_table(DJDS_fl_l)
+        call dealloc_type_4_djds_table(MHD1_matrices%MG_DJDS_linear(0))
+        call dealloc_type_4_djds_table(MHD1_matrices%MG_DJDS_lin_fl(0))
 !        call dealloc_type_4_djds_table(DJDS_cd_l)
 !        call dealloc_type_4_djds_table(DJDS_ins_l)
       end if
@@ -235,8 +235,8 @@
 !      write(*,*) 'set_index_list_4_DJDS_mat_etr'
       call alloc_type_marix_list                                        &
      &   (mesh%ele%nnod_4_ele, rhs_tbl, mat_tbl_q)
-      call set_index_list_4_DJDS_mat_etr                                &
-     &   (mesh%node, mesh%ele, rhs_tbl, DJDS_entire, mat_tbl_q)
+      call set_index_list_4_DJDS_mat_etr(mesh%node, mesh%ele, rhs_tbl,  &
+     &    MHD1_matrices%MG_DJDS_table(0), mat_tbl_q)
 !
 !      write(*,*) 'set_index_list_4_mat_etr_l'
       call set_index_list_4_mat_etr_l(mesh%node, mesh%ele,              &

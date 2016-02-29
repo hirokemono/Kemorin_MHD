@@ -86,8 +86,8 @@
       call alloc_type_marix_list(num_t_linear, rhs_tbl, linear)
 !
       if (ele%nnod_4_ele .ne. num_t_linear) then
-        call set_index_list_4_DJDS_mat_etr                              &
-     &     (node, ele, rhs_tbl, DJDS_linear, linear)
+        call set_index_list_4_DJDS_mat_etr(node, ele, rhs_tbl,          &
+     &      MHD1_matrices%MG_DJDS_linear(0), linear)
       else
         linear%idx_4_mat = mat_tbl_q%idx_4_mat
       end if
@@ -113,7 +113,7 @@
       call alloc_type_marix_list(ele%nnod_4_ele, rhs_tbl, fluid_q)
       call set_index_list_4_DJDS_mat                                    &
      &   (fluid%iele_start_fld, fluid%iele_end_fld,                     &
-     &    node, ele, rhs_tbl, DJDS_fluid, fluid_q)
+     &    node, ele, rhs_tbl,  MHD1_matrices%MG_DJDS_fluid(0), fluid_q)
 !
       end subroutine set_index_list_4_mat_fl
 !
@@ -138,7 +138,8 @@
       if (ele%nnod_4_ele .ne. num_t_linear) then
         call set_index_list_4_DJDS_mat                                  &
      &     (fluid%iele_start_fld, fluid%iele_end_fld,                   &
-     &      node, ele, rhs_tbl, DJDS_fl_l, fluid_l)
+     &      node, ele, rhs_tbl, MHD1_matrices%MG_DJDS_lin_fl(0),        &
+     &      fluid_l)
       else
         fluid_l%idx_4_mat = fluid_q%idx_4_mat
       end if
@@ -170,7 +171,8 @@
      &   (ele%nnod_4_ele, rhs_tbl, full_conduct_q)
       call set_index_list_4_DJDS_mat                                    &
      &   (conduct%iele_start_fld, conduct%iele_end_fld,                 &
-     &    node, ele, rhs_tbl, DJDS_entire, full_conduct_q)
+     &    node, ele, rhs_tbl, MHD1_matrices%MG_DJDS_table(0),           &
+     &    full_conduct_q)
 !
       end subroutine set_index_list_4_mat_cd
 !
@@ -200,8 +202,8 @@
      &      node, ele, rhs_tbl, DJDS_cd_l, MHD_mat_tbls%conduct_l)
         call set_index_list_4_DJDS_mat                                  &
      &     (conduct%iele_start_fld, conduct%iele_end_fld,               &
-     &      node, ele, rhs_tbl, DJDS_linear,                            &
-     &     MHD_mat_tbls%full_conduct_l)
+     &      node, ele, rhs_tbl, MHD1_matrices%MG_DJDS_linear(0),        &
+     &      MHD_mat_tbls%full_conduct_l)
       else
         MHD_mat_tbls%conduct_l%idx_4_mat                                &
      &         = MHD_mat_tbls%conduct_q%idx_4_mat
