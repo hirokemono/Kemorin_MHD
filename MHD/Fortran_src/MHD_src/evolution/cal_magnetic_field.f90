@@ -134,7 +134,8 @@
         if (iflag_debug.gt.0) write(*,*) 'cal_electric_potential'
         call cal_electric_potential(iak_diff_b, node, ele, surf,        &
      &      sf_grp, iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,   &
-     &      FEM_elens, fem_wk, f_l, f_nl, nod_fld)
+     &      FEM_elens, MHD1_matrices%Fmat_MG_DJDS, fem_wk,              &
+     &      f_l, f_nl, nod_fld)
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_sol_m_potential', iloop
         call cal_sol_m_potential                                        &
@@ -244,7 +245,8 @@
       do iloop = 0, maxiter
         call cal_mag_potential(iak_diff_b, node, ele, surf, sf_grp,     &
      &      iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,           &
-     &      FEM_elens, fem_wk, f_l, f_nl, nod_fld)
+     &      FEM_elens, MHD1_matrices%Fmat_MG_DJDS, fem_wk,              &
+     &      f_l, f_nl, nod_fld)
 !
         call cal_sol_m_potential                                        &
      &     (node%numnod, node%istack_internal_smp, nod_fld%ntot_phys,   &

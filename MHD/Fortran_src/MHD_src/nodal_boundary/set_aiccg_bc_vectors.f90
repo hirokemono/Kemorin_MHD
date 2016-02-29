@@ -66,8 +66,8 @@
 !   set boundary conditions for matrix
 !
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
-        call set_aiccg_bc_scalar_nod                                    &
-     &   (num_t_linear, ele, nod_bc1_p, DJDS_fl_l, Pmat_DJDS)
+        call set_aiccg_bc_scalar_nod(num_t_linear, ele, nod_bc1_p,      &
+     &      DJDS_fl_l, MHD1_matrices%Pmat_MG_DJDS(0))
 !
         if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
           call set_aiccg_bc_velo(intg_point_t_evo, ele, surf,           &
@@ -90,7 +90,8 @@
 !
       if (iflag_t_evo_4_magne .gt. id_no_evolution) then
         call set_aiccg_bc_scalar_nod                                    &
-     &     (num_t_linear, ele, nod_bc1_f, DJDS_linear, Fmat_DJDS)
+     &     (num_t_linear, ele, nod_bc1_f, DJDS_linear,                  &
+     &      MHD1_matrices%Fmat_MG_DJDS(0))
 !
         if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
           call set_aiccg_bc_vector_nod(ele, nod_bc1_b, DJDS_entire,     &
@@ -100,7 +101,8 @@
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         call set_aiccg_bc_scalar_nod                                    &
-     &     (num_t_linear, ele, nod_bc1_f, DJDS_linear, Fmat_DJDS)
+     &     (num_t_linear, ele, nod_bc1_f, DJDS_linear,                  &
+     &      MHD1_matrices%Fmat_MG_DJDS(0))
 !
         if (iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
           call set_aiccg_bc_vector_nod(ele, nod_bc1_a, DJDS_entire,     &

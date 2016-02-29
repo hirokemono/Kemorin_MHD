@@ -55,7 +55,8 @@
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         if (iflag_debug.eq.1)   write(*,*) 'precond: ',                 &
      &                trim(precond_4_solver),' ', sigma_diag
-        call precond_DJDS11_struct(np_smp, DJDS_fl_l, Pmat_DJDS,        &
+        call precond_DJDS11_struct(np_smp, DJDS_fl_l,                   &
+     &      MHD1_matrices%Pmat_MG_DJDS(0),                              &
      &      precond_4_solver, sigma_diag)
       end if
 !
@@ -83,7 +84,8 @@
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution                     &
      &     .or. iflag_t_evo_4_magne .gt. id_no_evolution) then
-        call precond_DJDS11_struct(np_smp, DJDS_linear, Fmat_DJDS,      &
+        call precond_DJDS11_struct(np_smp, DJDS_linear,                 &
+     &      MHD1_matrices%Fmat_MG_DJDS(0),                              &
      &      precond_4_solver, sigma_diag)
       end if
 !

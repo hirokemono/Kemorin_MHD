@@ -8,15 +8,15 @@
 !!      subroutine cal_mod_potential(iak_diff_v,                        &
 !!     &          node, ele, surf, fluid, sf_grp, iphys,                &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,            &
-!!     &          FEM_elens, fem_wk, f_l, f_nl, nod_fld)
+!!     &          FEM_elens, Pmat_MG_DJDS, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_electric_potential(iak_diff_b)
 !!     &          node, ele, surf, sf_grp, iphys,                       &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,            &
-!!     &          FEM_elens, fem_wk, f_l, f_nl, nod_fld)
+!!     &          FEM_elens, Fmat_MG_DJDS, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_mag_potential(iak_diff_b,                        &
 !!     &          node, ele, surf, sf_grp, iphys,                       &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,            &
-!!     &          FEM_elens, fem_wk, f_l, f_nl, nod_fld)
+!!     &          FEM_elens, Fmat_MG_DJDS, fem_wk, f_l, f_nl, nod_fld)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -27,6 +27,8 @@
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp_l
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(DJDS_MATRIX), intent(in) :: Pmat_MG_DJDS(0:num_MG_level)
+!!        type(DJDS_MATRIX), intent(in) :: Fmat_MG_DJDS(0:num_MG_level)
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -53,6 +55,7 @@
       use t_table_FEM_const
       use t_filter_elength
       use t_finite_element_mat
+      use t_solver_djds
 !
       implicit none
 !
@@ -65,7 +68,7 @@
       subroutine cal_mod_potential(iak_diff_v,                          &
      &          node, ele, surf, fluid, sf_grp, iphys,                  &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,              &
-     &          FEM_elens, fem_wk, f_l, f_nl, nod_fld)
+     &          FEM_elens, Pmat_MG_DJDS, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_iccg_parameter
       use m_surf_data_torque
@@ -94,6 +97,8 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+!
+      type(DJDS_MATRIX), intent(in) :: Pmat_MG_DJDS(0:num_MG_level)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -143,8 +148,8 @@
 !   solve Poission equation
 !
       call solver_poisson_scalar                                        &
-     &   (node, DJDS_comm_fl, DJDS_fl_l, Pmat_DJDS, num_MG_level,       &
-     &    MG_itp, MG_comm_fl, MG_djds_tbl_fll, MG_mat_press,            &
+     &   (node, DJDS_comm_fl, DJDS_fl_l, Pmat_MG_DJDS(0), num_MG_level, &
+     &    MG_itp, MG_comm_fl, MG_djds_tbl_fll, Pmat_MG_DJDS,            &
      &    method_4_solver, precond_4_solver, eps, itr,                  &
      &    iphys%i_p_phi, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !
@@ -157,7 +162,7 @@
       subroutine cal_electric_potential(iak_diff_b,                     &
      &          node, ele, surf, sf_grp, iphys,                         &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,              &
-     &          FEM_elens, fem_wk, f_l, f_nl, nod_fld)
+     &          FEM_elens, Fmat_MG_DJDS, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_iccg_parameter
       use m_surf_data_vector_p
@@ -182,6 +187,8 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+!
+      type(DJDS_MATRIX), intent(in) :: Fmat_MG_DJDS(0:num_MG_level)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -219,8 +226,8 @@
 !
       if (iflag_debug .gt. 0)  write(*,*) 'cal_sol_mag_po'
       call solver_poisson_scalar                                        &
-     &   (node, DJDS_comm_etr, DJDS_linear, Fmat_DJDS, num_MG_level,    &
-     &    MG_itp, MG_comm, MG_djds_tbl_l, MG_mat_magp,                  &
+     &   (node, DJDS_comm_etr, DJDS_linear, Fmat_MG_DJDS(0),            &
+     &    num_MG_level, MG_itp, MG_comm, MG_djds_tbl_l, Fmat_MG_DJDS,   &
      &    method_4_solver, precond_4_solver, eps, itr,                  &
      &    iphys%i_m_phi, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !
@@ -235,7 +242,7 @@
       subroutine cal_mag_potential(iak_diff_b,                          &
      &          node, ele, surf, sf_grp, iphys,                         &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,              &
-     &          FEM_elens, fem_wk, f_l, f_nl, nod_fld)
+     &          FEM_elens, Fmat_MG_DJDS, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_iccg_parameter
       use m_surf_data_magne
@@ -261,6 +268,8 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+!
+      type(DJDS_MATRIX), intent(in) :: Fmat_MG_DJDS(0:num_MG_level)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -298,8 +307,8 @@
       call set_boundary_ff(node, nod_bc1_f, f_l)
 !
       call solver_poisson_scalar                                        &
-     &   (node, DJDS_comm_etr, DJDS_linear, Fmat_DJDS, num_MG_level,    &
-     &    MG_itp, MG_comm, MG_djds_tbl_l, MG_mat_magp,                  &
+     &   (node, DJDS_comm_etr, DJDS_linear, Fmat_MG_DJDS(0),            &
+     &    num_MG_level, MG_itp, MG_comm, MG_djds_tbl_l, Fmat_MG_DJDS,   &
      &    method_4_solver, precond_4_solver, eps, itr,                  &
      &    iphys%i_m_phi, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !

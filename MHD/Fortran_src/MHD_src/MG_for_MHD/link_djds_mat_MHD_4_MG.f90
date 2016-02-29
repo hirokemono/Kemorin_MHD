@@ -30,24 +30,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_link_djds_mat_MHD_4_MG                               &
-     &      (MG0_mat_temp, MG0_mat_light, MG0_mat_press, MG0_mat_magp)
+      subroutine s_link_djds_mat_MHD_4_MG(MG0_mat_temp, MG0_mat_light)
 !
       use m_control_parameter
       use m_solver_djds_MHD
 !
       type(DJDS_MATRIX),  intent(inout) :: MG0_mat_temp
       type(DJDS_MATRIX),  intent(inout) :: MG0_mat_light
-      type(DJDS_MATRIX),  intent(inout) :: MG0_mat_press
-      type(DJDS_MATRIX),  intent(inout) :: MG0_mat_magp
 !
 !
 !   set boundary conditions for matrix
-!
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
-        if(iflag_debug .gt. 0) write(*,*) 'link_djds_matrix_structs P'
-        call link_djds_matrix_structs(Pmat_DJDS, MG0_mat_press)
-      end if
 !
       if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
         if(iflag_debug .gt. 0) write(*,*) 'link_djds_matrix_structs T'
@@ -57,12 +49,6 @@
       if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
         if(iflag_debug .gt. 0) write(*,*) 'link_djds_matrix_structs C'
         call link_djds_matrix_structs(Cmat_DJDS, MG0_mat_light)
-      end if
-!
-      if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
-     &     .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-        if(iflag_debug .gt. 0) write(*,*) 'link_djds_matrix_structs F'
-        call link_djds_matrix_structs(Fmat_DJDS, MG0_mat_magp)
       end if
 !
       end subroutine s_link_djds_mat_MHD_4_MG

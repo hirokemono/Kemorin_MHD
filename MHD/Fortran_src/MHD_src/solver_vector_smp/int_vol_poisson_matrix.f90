@@ -61,14 +61,16 @@
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         call choose_int_poisson_mat(ele, jac_3d_l,                      &
      &      rhs_tbl, mat_tbl_fl_l, FEM_elens, intg_point_poisson,       &
-     &      num_diff_kinds, iak_diff_v, ak_diff, fem_wk, Pmat_DJDS)
+     &      num_diff_kinds, iak_diff_v, ak_diff, fem_wk,                &
+     &      MHD1_matrices%Pmat_MG_DJDS(0))
       end if
 !
       if (     iflag_t_evo_4_magne .gt.  id_no_evolution                &
      &    .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         call choose_int_poisson_mat(ele, jac_3d_l,                      &
      &      rhs_tbl, mat_tbl_l, FEM_elens, intg_point_poisson,          &
-     &      num_diff_kinds, iak_diff_b, ak_diff, fem_wk, Fmat_DJDS)
+     &      num_diff_kinds, iak_diff_b, ak_diff, fem_wk,                &
+     &      MHD1_matrices%Fmat_MG_DJDS(0))
       end if
 !
       end subroutine int_vol_poisson_matrices

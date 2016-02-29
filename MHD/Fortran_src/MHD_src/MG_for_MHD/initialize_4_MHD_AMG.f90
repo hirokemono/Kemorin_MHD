@@ -303,14 +303,16 @@
      &      MHD1_matrices%Vmat_MG_DJDS(i_level),                        &
      &      MHD1_matrices%Bmat_MG_DJDS(i_level),                        &
      &      MG_mat_temp(i_level),  MG_mat_d_scalar(i_level),            &
-     &      MG_mat_press(i_level), MG_mat_magp(i_level) )
+     &      MHD1_matrices%Pmat_MG_DJDS(i_level),                        &
+     &      MHD1_matrices%Fmat_MG_DJDS(i_level) )
         else
           if(iflag_debug .gt. 0) write(*,*) 'alloc_MG_zero_matrices'
           call alloc_MG_zero_matrices                                   &
      &     (MHD1_matrices%Vmat_MG_DJDS(i_level),                        &
      &      MHD1_matrices%Bmat_MG_DJDS(i_level),                        &
      &      MG_mat_temp(i_level),  MG_mat_d_scalar(i_level),            &
-     &      MG_mat_press(i_level), MG_mat_magp(i_level) )
+     &      MHD1_matrices%Pmat_MG_DJDS(i_level),                        &
+     &      MHD1_matrices%Fmat_MG_DJDS(i_level) )
         end if
       end do
 !
@@ -329,9 +331,7 @@
       integer(kind = kint) :: i_level
 !
 !
-      call s_link_djds_mat_MHD_4_MG                                     &
-     &   (MG_mat_temp(0), MG_mat_d_scalar(0),                           &
-     &    MG_mat_press(0), MG_mat_magp(0))
+      call s_link_djds_mat_MHD_4_MG(MG_mat_temp(0), MG_mat_d_scalar(0))
 !
       do i_level = 1, num_MG_level
         if(my_rank .lt. MG_mpi(i_level)%nprocs) then
@@ -351,7 +351,8 @@
      &      MHD1_matrices%Vmat_MG_DJDS(i_level),                        &
      &      MHD1_matrices%Bmat_MG_DJDS(i_level),                        &
      &      MG_mat_temp(i_level), MG_mat_d_scalar(i_level),             &
-     &      MG_mat_press(i_level), MG_mat_magp(i_level) )
+     &      MHD1_matrices%Pmat_MG_DJDS(i_level),                        &
+     &      MHD1_matrices%Fmat_MG_DJDS(i_level))
         end if
       end do
 !
@@ -364,7 +365,8 @@
      &      MHD1_matrices%Vmat_MG_DJDS(i_level),                        &
      &      MHD1_matrices%Bmat_MG_DJDS(i_level),                        &
      &      MG_mat_temp(i_level), MG_mat_d_scalar(i_level),             &
-     &      MG_mat_press(i_level), MG_mat_magp(i_level) )
+     &      MHD1_matrices%Pmat_MG_DJDS(i_level),                        &
+     &      MHD1_matrices%Fmat_MG_DJDS(i_level))
         end if
       end do
 !

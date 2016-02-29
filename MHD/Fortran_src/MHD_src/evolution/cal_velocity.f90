@@ -151,7 +151,8 @@
       do iloop = 0, maxiter
         call cal_mod_potential(iak_diff_v, node, ele, surf, fluid,      &
      &      sf_grp, iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,   &
-     &      FEM_elens, fem_wk, f_l, f_nl, nod_fld)
+     &      FEM_elens, MHD1_matrices%Pmat_MG_DJDS, fem_wk,              &
+     &      f_l, f_nl, nod_fld)
 !
         call cal_sol_pressure                                           &
      &     (node%numnod, node%istack_internal_smp, nod_fld%ntot_phys,   &

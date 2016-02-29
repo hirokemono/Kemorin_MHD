@@ -23,14 +23,6 @@
 !>        Structure of matrices for MHD dynamo simulation
       type(MHD_MG_matrices), save :: MHD1_matrices
 !
-!>      Structure of matrix for poission equation of pressure
-      type(DJDS_MATRIX), save :: Pmat_DJDS
-!
-!
-!>      Structure of matrix for poission equation of electric potential
-      type(DJDS_MATRIX), save :: Fmat_DJDS
-!
-!
 !>      Structure of matrix for time evolution of temperature
       type(DJDS_MATRIX), save :: Tmat_DJDS
 !

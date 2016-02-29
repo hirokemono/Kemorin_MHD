@@ -25,6 +25,11 @@
         type(DJDS_MATRIX), pointer :: Vmat_MG_DJDS(:)
 !>        Structure of matrix for time evolution of magnetic field
         type(DJDS_MATRIX), pointer :: Bmat_MG_DJDS(:)
+!
+!>        Structure of matrix for time evolution of pressure
+        type(DJDS_MATRIX), pointer :: Pmat_MG_DJDS(:)
+!>        Structure of matrix for time evolution of scalar potential
+        type(DJDS_MATRIX), pointer :: Fmat_MG_DJDS(:)
       end type MHD_MG_matrices
 !
 !-----------------------------------------------------------------------
@@ -42,6 +47,9 @@
       allocate(matrices%Vmat_MG_DJDS(0:num_MG_level))
       allocate(matrices%Bmat_MG_DJDS(0:num_MG_level))
 !
+      allocate(matrices%Pmat_MG_DJDS(0:num_MG_level))
+      allocate(matrices%Fmat_MG_DJDS(0:num_MG_level))
+!
       end subroutine alloc_MHD_MG_DJDS_mat
 !
 !-----------------------------------------------------------------------
@@ -52,6 +60,7 @@
 !
 !
       deallocate(matrices%Vmat_MG_DJDS, matrices%Bmat_MG_DJDS)
+      deallocate(matrices%Vmat_MG_DJDS, matrices%Fmat_MG_DJDS)
 !
       end subroutine dealloc_MHD_MG_DJDS_mat
 !
