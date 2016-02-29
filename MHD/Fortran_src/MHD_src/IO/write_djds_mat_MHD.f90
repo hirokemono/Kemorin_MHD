@@ -78,16 +78,16 @@
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution                     &
      &     .or. iflag_t_evo_4_magne .gt. id_no_evolution) then
         call write_MHD_djds_mat11                                       &
-     &      (fhead_magp_mat, DJDS_comm_etr,                             &
-     &       num_MG_level, MG_comm, MHD1_matrices%MG_DJDS_linear,       &
+     &      (fhead_magp_mat, MHD1_matrices%MG_comm_table(0), num_MG_level,               &
+     &       MHD1_matrices%MG_comm_table, MHD1_matrices%MG_DJDS_linear, &
      &       MHD1_matrices%Fmat_MG_DJDS)
       end if
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution                     &
      &     .or. iflag_t_evo_4_magne .gt. id_no_evolution) then
         call write_MHD_djds_mat33                                       &
-     &      (fhead_magne_mat, DJDS_comm_etr,                            &
-     &       num_MG_level, MG_comm, MHD1_matrices%MG_DJDS_table,        &
+     &      (fhead_magne_mat, MHD1_matrices%MG_comm_table(0), num_MG_level,              &
+     &      MHD1_matrices%MG_comm_table, MHD1_matrices%MG_DJDS_table,   &
      &       MHD1_matrices%Bmat_MG_DJDS)
       end if
 !

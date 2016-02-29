@@ -24,8 +24,8 @@
       type(mpi_4_solver), target, save :: MG_mpi(0:max_MG_level)
 !>     structure of vectors in MGCG
       type(vectors_4_solver), target, save :: MG_vector(0:max_MG_level)
-      type(communication_table), target, save                           &
-     &                      :: MG_comm(0:max_MG_level)
+!      type(communication_table), target, save                           &
+!     &                      :: MG_comm(0:max_MG_level)
 !      type(DJDS_ordering_table), target, save                          &
 !     &                      :: MG_djds_tbl(0:max_MG_level)
 !

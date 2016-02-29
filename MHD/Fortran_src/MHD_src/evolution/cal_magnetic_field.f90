@@ -114,8 +114,8 @@
       if (iflag_debug .gt. 0)  write(*,*) 'vector_p_pre'
       call cal_vector_p_pre(nod_comm, node, ele, surf, conduct, sf_grp, &
      &    iphys, iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl,   &
-     &    FEM_elens, num_MG_level, MHD1_matrices%MG_DJDS_table,         &
-     &    MHD1_matrices%Bmat_MG_DJDS, &
+     &    FEM_elens, num_MG_level, MHD1_matrices%MG_comm_table,         &
+     &    MHD1_matrices%MG_DJDS_table, MHD1_matrices%Bmat_MG_DJDS,      &
      &    mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
 !     --------------------- 
@@ -135,8 +135,8 @@
         if (iflag_debug.gt.0) write(*,*) 'cal_electric_potential'
         call cal_electric_potential(iak_diff_b, node, ele, surf,        &
      &      sf_grp, iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,   &
-     &      FEM_elens, MHD1_matrices%MG_DJDS_linear,                    &
-     &      MHD1_matrices%Fmat_MG_DJDS,              &
+     &      FEM_elens, MHD1_matrices%MG_comm_table,                     &
+     &      MHD1_matrices%MG_DJDS_linear, MHD1_matrices%Fmat_MG_DJDS,   &
      &      fem_wk, f_l, f_nl, nod_fld)
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_sol_m_potential', iloop
@@ -148,8 +148,8 @@
         call cal_vector_p_co(nod_comm, node, ele, surf,                 &
      &      conduct, sf_grp, iphys, iphys_ele, ele_fld,                 &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &
-     &      FEM_elens, num_MG_level, MHD1_matrices%MG_DJDS_table,       &
-     &      MHD1_matrices%Bmat_MG_DJDS,        &
+     &      FEM_elens, num_MG_level, MHD1_matrices%MG_comm_table,       &
+     &      MHD1_matrices%MG_DJDS_table, MHD1_matrices%Bmat_MG_DJDS,    &
      &      m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
 !
@@ -235,8 +235,9 @@
       call cal_magnetic_field_pre(nod_comm, node, ele, surf,            &
      &    conduct, sf_grp, iphys, iphys_ele, ele_fld,                   &
      &    jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens, num_MG_level,     &
-     &    MHD1_matrices%MG_DJDS_table, MHD1_matrices%Bmat_MG_DJDS,      &
-     &    mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &    MHD1_matrices%MG_comm_table, MHD1_matrices%MG_DJDS_table,     &
+     &    MHD1_matrices%Bmat_MG_DJDS, mhd_fem_wk, fem_wk,               &
+     &    f_l, f_nl, nod_fld)
 !
 !----  set magnetic field in insulate layer
 !
@@ -248,8 +249,8 @@
       do iloop = 0, maxiter
         call cal_mag_potential(iak_diff_b, node, ele, surf, sf_grp,     &
      &      iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,           &
-     &      FEM_elens, MHD1_matrices%MG_DJDS_linear,                    &
-     &      MHD1_matrices%Fmat_MG_DJDS,              &
+     &      FEM_elens, MHD1_matrices%MG_comm_table,                     &
+     &      MHD1_matrices%MG_DJDS_linear, MHD1_matrices%Fmat_MG_DJDS,   &
      &      fem_wk, f_l, f_nl, nod_fld)
 !
         call cal_sol_m_potential                                        &
@@ -261,8 +262,8 @@
         call cal_magnetic_co(nod_comm, node, ele, surf,                 &
      &      conduct, sf_grp, iphys, iphys_ele, ele_fld,                 &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &
-     &      FEM_elens, num_MG_level, MHD1_matrices%MG_DJDS_table,       &
-     &      MHD1_matrices%Bmat_MG_DJDS,        &
+     &      FEM_elens, num_MG_level, MHD1_matrices%MG_comm_table,       &
+     &      MHD1_matrices%MG_DJDS_table, MHD1_matrices%Bmat_MG_DJDS,    &
      &      m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
         call cal_rms_scalar_potential(iloop, ele%istack_ele_smp,        &

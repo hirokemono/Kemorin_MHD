@@ -14,13 +14,13 @@
 !!     &         (i_vecp, i_pre_uxb, iak_diff_b, nod_bc_a,              &
 !!     &          nod_comm, node, ele, conduct, iphys_ele, ele_fld,     &
 !!     &          jac_3d, rhs_tbl, FEM_elens,                           &
-!!     &          MG_DJDS_table, Bmat_MG_DJDS,                          &
+!!     &          MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS,           &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_magne_pre_lumped_crank                           &
 !!     &         (i_magne, i_pre_uxb, iak_diff_b, nod_bc_b,             &
 !!     &          nod_comm, node, ele, conduct, iphys_ele, ele_fld,     &
 !!     &          jac_3d, rhs_tbl, FEM_elens,                           &
-!!     &          MG_DJDS_table, Bmat_MG_DJDS,                          &
+!!     &          MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS,           &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!
 !!      subroutine cal_temp_pre_lumped_crank                            &
@@ -56,6 +56,8 @@
 !!        type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_t
 !!        type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_c
 !!        type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
+!!        type(communication_table), intent(in)                         &
+!!       &           :: MG_comm_table(0:num_MG_level)
 !!        type(DJDS_ordering_table), intent(in)                         &
 !!       &           :: MG_DJDS_table(0:num_MG_level)
 !!        type(DJDS_ordering_table), intent(in)                         &
@@ -179,7 +181,7 @@
      &         (i_vecp, i_pre_uxb, iak_diff_b, nod_bc_a,                &
      &          nod_comm, node, ele, conduct, iphys_ele, ele_fld,       &
      &          jac_3d, rhs_tbl, FEM_elens,                             &
-     &          MG_DJDS_table, Bmat_MG_DJDS,                            &
+     &          MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS,             &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_iccg_parameter
@@ -211,6 +213,8 @@
       type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_a
       type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
 !
+      type(communication_table), intent(in)                             &
+     &           :: MG_comm_table(0:num_MG_level)
       type(DJDS_ordering_table), intent(in)                             &
      &           :: MG_DJDS_table(0:num_MG_level)
       type(DJDS_MATRIX), intent(in) :: Bmat_MG_DJDS(0:num_MG_level)
@@ -242,8 +246,8 @@
      &    nod_fld%ntot_phys, n_vector, i_vecp, i_pre_uxb,               &
      &    nod_fld%d_fld, f_l%ff)
 !
-      call solver_crank_vector(node, DJDS_comm_etr, num_MG_level,       &
-     &    MG_itp, MG_comm, MG_DJDS_table, Bmat_MG_DJDS,                 &
+      call solver_crank_vector(node, MG_comm_table(0), num_MG_level,    &
+     &    MG_itp, MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS,           &
      &    method_4_velo, precond_4_crank, eps_4_magne_crank, itr,       &
      &    i_vecp, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !
@@ -255,7 +259,7 @@
      &         (i_magne, i_pre_uxb, iak_diff_b, nod_bc_b,               &
      &          nod_comm, node, ele, conduct, iphys_ele, ele_fld,       &
      &          jac_3d, rhs_tbl, FEM_elens,                             &
-     &          MG_DJDS_table, Bmat_MG_DJDS,                            &
+     &          MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS,             &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_iccg_parameter
@@ -286,6 +290,8 @@
       type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_b
       type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
 !
+      type(communication_table), intent(in)                             &
+     &           :: MG_comm_table(0:num_MG_level)
       type(DJDS_ordering_table), intent(in)                             &
      &           :: MG_DJDS_table(0:num_MG_level)
       type(DJDS_MATRIX), intent(in) :: Bmat_MG_DJDS(0:num_MG_level)
@@ -319,8 +325,8 @@
      &    nod_fld%d_fld, f_l%ff)
 !
       if (iflag_debug .eq. 0 ) write(*,*) 'time_evolution'
-      call solver_crank_vector(node, DJDS_comm_etr, num_MG_level,       &
-     &    MG_itp, MG_comm, MG_DJDS_table, Bmat_MG_DJDS,                 &
+      call solver_crank_vector(node, MG_comm_table(0), num_MG_level,    &
+     &    MG_itp, MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS,           &
      &    method_4_velo, precond_4_crank, eps_4_magne_crank, itr,       &
      &    i_magne, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !

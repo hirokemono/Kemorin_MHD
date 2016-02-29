@@ -27,9 +27,6 @@
 !>      Structure for MPI communicator
       type(mpi_4_solver), save :: solver_C
 !
-!>      Communication table structure for entire domain
-      type(communication_table), save :: DJDS_comm_etr
-!
 !>      Communication table structure for fluid
       type(communication_table), save :: DJDS_comm_fl
 !
@@ -81,7 +78,7 @@
 !  +   set Matrix assemble table   +
 !C +-------------------------------+
       call set_djds_whole_connectivity(nod_comm, node, solver_C,        &
-     &    next_tbl%neib_nod, DJDS_comm_etr,                             &
+     &    next_tbl%neib_nod, MHD1_matrices%MG_comm_table(0),            &
      &    MHD1_matrices%MG_DJDS_table(0))
 !
       end subroutine set_MHD_whole_connectivity
@@ -107,7 +104,7 @@
 !
       if (ele%nnod_4_ele .ne. num_t_linear) then
         call set_djds_layer_connectivity(node, ele, num_t_linear,       &
-     &      ione, ele%numele, DJDS_comm_etr, solver_C,                  &
+     &      ione, ele%numele, MHD1_matrices%MG_comm_table(0), solver_C, &
      &      MHD1_matrices%MG_DJDS_linear(0))
         call set_djds_layer_connectivity(node, ele, num_t_linear,       &
      &      fluid%iele_start_fld, fluid%iele_end_fld,                   &
@@ -123,18 +120,18 @@
 !
 !      call set_djds_layer_connectivity(node, ele, ele%nnod_4_ele,      &
 !     &    conduct%iele_start_fld, conduct%iele_end_fld,                &
-!     &    DJDS_comm_etr, solver_C, DJDS_conduct)
+!     &    MHD1_matrices%MG_comm_table(0), solver_C, DJDS_conduct)
 !      call set_djds_layer_connectivity(node, ele, ele%nnod_4_ele,      &
 !     &    insulate%iele_start_fld, insulate%iele_end_fld,              &
-!     &    DJDS_comm_etr, solver_C, DJDS_insulator)
+!     &    MHD1_matrices%MG_comm_table(0), solver_C, DJDS_insulator)
 !
 !      if ( ele%nnod_4_ele .ne. num_t_linear) then
 !        call set_djds_layer_connectivity(node, ele, num_t_linear,      &
 !     &      conduct%iele_start_fld, conduct%iele_end_fld,              &
-!     &      DJDS_comm_etr, solver_C, DJDS_cd_l)
+!     &      MHD1_matrices%MG_comm_table(0), solver_C, DJDS_cd_l)
 !        call set_djds_layer_connectivity(node, ele, num_t_linear,      &
 !     &      insulate%iele_start_fld, insulate%iele_end_fld,            &
-!     &      DJDS_comm_etr, solver_C, DJDS_ins_l)
+!     &      MHD1_matrices%MG_comm_table(0), solver_C, DJDS_ins_l)
 !      else
 !        call link_djds_connect_structs(DJDS_conduct, DJDS_cd_l)
 !        call link_djds_connect_structs(DJDS_insulator, DJDS_ins_l)

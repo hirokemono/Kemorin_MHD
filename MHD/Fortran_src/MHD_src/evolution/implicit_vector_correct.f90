@@ -23,12 +23,12 @@
 !!      subroutine cal_vector_p_co_imp(i_vecp,                          &
 !!     &          nod_comm, node, ele, conduct, iphys_ele, ele_fld,     &
 !!     &          jac_3d, rhs_tbl, FEM_elens,                           &
-!!     &          MG_DJDS_table, Bmat_MG_DJDS,                          &
+!!     &          MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS,           &
 !!     &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_magnetic_co_imp(i_magne,                         &
 !!     &          nod_comm, node, ele, conduct, iphys_ele, ele_fld,     &
 !!     &          jac_3d, rhs_tbl, FEM_elens,                           &
-!!     &          MG_DJDS_table, Bmat_MG_DJDS,                          &
+!!     &          MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS,           &
 !!     &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -40,6 +40,8 @@
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(communication_table), intent(in)                         &
+!!       &           :: MG_comm_table(0:num_MG_level)
 !!        type(DJDS_ordering_table), intent(in)                         &
 !!       &           :: MG_DJDS_table(0:num_MG_level)
 !!        type(DJDS_ordering_table), intent(in)                         &
@@ -282,7 +284,7 @@
       subroutine cal_vector_p_co_imp(i_vecp,                            &
      &          nod_comm, node, ele, conduct, iphys_ele, ele_fld,       &
      &          jac_3d, rhs_tbl, FEM_elens,                             &
-     &          MG_DJDS_table, Bmat_MG_DJDS,                            &
+     &          MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS,             &
      &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_iccg_parameter
@@ -317,6 +319,8 @@
       type(lumped_mass_matrices), intent(in) :: m_lump
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
+      type(communication_table), intent(in)                             &
+     &           :: MG_comm_table(0:num_MG_level)
       type(DJDS_ordering_table), intent(in)                             &
      &           :: MG_DJDS_table(0:num_MG_level)
       type(DJDS_MATRIX), intent(in) :: Bmat_MG_DJDS(0:num_MG_level)
@@ -354,8 +358,8 @@
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_vect_p_pre_crank'
-      call solver_crank_vector(node, DJDS_comm_etr, num_MG_level,       &
-     &    MG_itp, MG_comm, MG_DJDS_table, Bmat_MG_DJDS,                 &
+      call solver_crank_vector(node, MG_comm_table(0), num_MG_level,    &
+     &    MG_itp, MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS,           &
      &    method_4_velo, precond_4_crank, eps_4_magne_crank, itr,       &
      &    i_vecp, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !
@@ -366,7 +370,7 @@
       subroutine cal_magnetic_co_imp(i_magne,                           &
      &          nod_comm, node, ele, conduct, iphys_ele, ele_fld,       &
      &          jac_3d, rhs_tbl, FEM_elens,                             &
-     &          MG_DJDS_table, Bmat_MG_DJDS,                            &
+     &          MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS,             &
      &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_iccg_parameter
@@ -400,6 +404,8 @@
       type(lumped_mass_matrices), intent(in) :: m_lump
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
+      type(communication_table), intent(in)                             &
+     &           :: MG_comm_table(0:num_MG_level)
       type(DJDS_ordering_table), intent(in)                             &
      &           :: MG_DJDS_table(0:num_MG_level)
       type(DJDS_MATRIX), intent(in) :: Bmat_MG_DJDS(0:num_MG_level)
@@ -437,8 +443,8 @@
       end if
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_sol_magne_pre_crank'
-      call solver_crank_vector(node, DJDS_comm_etr, num_MG_level,       &
-     &    MG_itp, MG_comm, MG_DJDS_table, Bmat_MG_DJDS,                 &
+      call solver_crank_vector(node, MG_comm_table(0), num_MG_level,    &
+     &    MG_itp, MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS,           &
      &    method_4_velo, precond_4_crank, eps_4_magne_crank, itr,       &
      &    i_magne, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !

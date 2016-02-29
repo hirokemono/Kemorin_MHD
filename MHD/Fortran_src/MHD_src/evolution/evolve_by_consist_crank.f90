@@ -13,12 +13,12 @@
 !!      subroutine cal_vect_p_pre_consist_crank                         &
 !!     &         (i_vecp, i_pre_uxb, iak_diff_b, nod_bc_a,              &
 !!     &          node, ele, conduct, jac_3d, rhs_tbl, FEM_elens,       &
-!!     &          MG_DJDS_table, Bmat_MG_DJDS,                          &
+!!     &          MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS,           &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!       subroutine cal_magne_pre_consist_crank                         &
 !!     &         (i_magne, i_pre_uxb, iak_diff_b, nod_bc_b,             &
 !!     &          node, ele, conduct, jac_3d, rhs_tbl, FEM_elens,       &
-!!     &          MG_DJDS_table, Bmat_MG_DJDS,      &
+!!     &          MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS,           &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!
 !!      subroutine cal_temp_pre_consist_crank                           &
@@ -47,6 +47,8 @@
 !!        type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_b
 !!        type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_t
 !!        type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_c
+!!        type(communication_table), intent(in)                         &
+!!       &           :: MG_comm_table(0:num_MG_level)
 !!        type(DJDS_ordering_table), intent(in)                         &
 !!       &           :: MG_DJDS_table(0:num_MG_level)
 !!        type(DJDS_ordering_table), intent(in)                         &
@@ -161,7 +163,7 @@
       subroutine cal_vect_p_pre_consist_crank                           &
      &         (i_vecp, i_pre_uxb, iak_diff_b, nod_bc_a,                &
      &          node, ele, conduct, jac_3d, rhs_tbl, FEM_elens,         &
-     &          MG_DJDS_table, Bmat_MG_DJDS,                            &
+     &          MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS,             &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_phys_constants
@@ -191,6 +193,8 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_a
 !
+      type(communication_table), intent(in)                             &
+     &           :: MG_comm_table(0:num_MG_level)
       type(DJDS_ordering_table), intent(in)                             &
      &           :: MG_DJDS_table(0:num_MG_level)
       type(DJDS_MATRIX), intent(in) :: Bmat_MG_DJDS(0:num_MG_level)
@@ -223,8 +227,8 @@
      &    mhd_fem_wk, f_nl, f_l)
 !
       if (iflag_debug.eq.1) write(*,*) 'time_evolution'
-      call solver_crank_vector(node, DJDS_comm_etr, num_MG_level,       &
-     &    MG_itp, MG_comm, MG_DJDS_table, Bmat_MG_DJDS,                 &
+      call solver_crank_vector(node, MG_comm_table(0), num_MG_level,    &
+     &    MG_itp, MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS,           &
      &    method_4_velo, precond_4_crank, eps_4_magne_crank, itr,       &
      &    i_vecp, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !
@@ -235,7 +239,7 @@
        subroutine cal_magne_pre_consist_crank                           &
      &         (i_magne, i_pre_uxb, iak_diff_b, nod_bc_b,               &
      &          node, ele, conduct, jac_3d, rhs_tbl, FEM_elens,         &
-     &          MG_DJDS_table, Bmat_MG_DJDS,      &
+     &          MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS,             &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_phys_constants
@@ -264,6 +268,8 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_b
 !
+      type(communication_table), intent(in)                             &
+     &           :: MG_comm_table(0:num_MG_level)
       type(DJDS_ordering_table), intent(in)                             &
      &           :: MG_DJDS_table(0:num_MG_level)
       type(DJDS_MATRIX), intent(in) :: Bmat_MG_DJDS(0:num_MG_level)
@@ -297,8 +303,8 @@
 !
       if (iflag_debug.eq.1)                                             &
      &        write(*,*) 'time_evolution for magnetic field'
-      call solver_crank_vector(node, DJDS_comm_etr, num_MG_level,       &
-     &    MG_itp, MG_comm, MG_DJDS_table, Bmat_MG_DJDS,                 &
+      call solver_crank_vector(node, MG_comm_table(0), num_MG_level,    &
+     &    MG_itp, MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS,           &
      &    method_4_velo, precond_4_crank, eps_4_magne_crank, itr,       &
      &    i_magne, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !

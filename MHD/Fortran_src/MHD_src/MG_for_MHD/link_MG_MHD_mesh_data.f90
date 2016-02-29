@@ -36,10 +36,12 @@
       integer(kind = kint) :: i_level
 !
 !
-      call link_comm_tbl_types(nod_comm_1st, MG_comm(0))
+      call link_comm_tbl_types                                          &
+     &   (nod_comm_1st, MHD1_matrices%MG_comm_table(0))
       call link_comm_tbl_types(DJDS_comm_fl, MG_comm_fl(0))
 !
-      call link_comm_tbl_types(MG_mesh(1)%mesh%nod_comm, MG_comm(1) )
+      call link_comm_tbl_types                                          &
+     &   (MG_mesh(1)%mesh%nod_comm, MHD1_matrices%MG_comm_table(1))
       call link_comm_tbl_types(MG_MHD_mesh(1)%nod_fl_comm,              &
      &    MG_comm_fl(1))
 !
@@ -49,7 +51,7 @@
 !
       do i_level = 2, num_MG_level
         call link_comm_tbl_types(MG_mesh(i_level)%mesh%nod_comm,        &
-     &      MG_comm(i_level) )
+     &      MHD1_matrices%MG_comm_table(i_level))
         call link_comm_tbl_types(MG_MHD_mesh(i_level)%nod_fl_comm,      &
      &      MG_comm_fl(i_level))
 !

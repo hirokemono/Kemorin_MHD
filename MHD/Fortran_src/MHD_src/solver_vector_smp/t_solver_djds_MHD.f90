@@ -49,7 +49,7 @@
         type(DJDS_ordering_table), pointer :: MG_DJDS_lin_fl(:)
 !>        Communication table structure for entire domain
         type(communication_table), pointer :: MG_comm_fluid(:)
-!      end type MHD_MG_matrices
+      end type MHD_MG_matrices
 !
 !-----------------------------------------------------------------------
 !
