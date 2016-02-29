@@ -6,10 +6,13 @@
 !      Modified by H. Matsui on Feb., 2008
 !
 !!      subroutine reordering_by_layers_snap(ele, group, MHD_mesh)
-!!      subroutine reordering_by_layers_MHD(ele, group, MHD_mesh)
+!!      subroutine reordering_by_layers_MHD                             &
+!!     &         (ele, group, MHD_mesh, MG_interpolate)
 !!        type(element_data), intent(in) :: ele
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(mesh_data_MHD), intent(inout) :: MHD_mesh
+!!        type(MG_itp_table), intent(inout)                             &
+!!       &               :: MG_interpolate(num_MG_level)
 !!
 !!.......................................................................
 !!
@@ -56,7 +59,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine reordering_by_layers_MHD(ele, group, MHD_mesh)
+      subroutine reordering_by_layers_MHD                               &
+     &         (ele, group, MHD_mesh, MG_interpolate)
 !
       use m_iccg_parameter
       use m_work_4_MHD_layering
@@ -70,6 +74,7 @@
       type(element_data), intent(in) :: ele
       type(mesh_groups), intent(inout) ::   group
       type(mesh_data_MHD), intent(inout) :: MHD_mesh
+      type(MG_itp_table), intent(inout) :: MG_interpolate(num_MG_level)
 !
 !
       call allocate_lists_4_layer(ele%numele)
@@ -80,8 +85,8 @@
 !
       if(cmp_no_case(method_4_solver, 'MGCG')) then
         call reordering_ele_interpolate_type(ele%numele,                &
-     &      old2newele_layer, MG_itp(1)%f2c%tbl_org )
-        call s_reordering_MG_ele_by_layers
+     &     old2newele_layer, MG_interpolate(1)%f2c%tbl_org)
+        call s_reordering_MG_ele_by_layers(MG_interpolate)
       end if
 !
       call deallocate_lists_4_layer

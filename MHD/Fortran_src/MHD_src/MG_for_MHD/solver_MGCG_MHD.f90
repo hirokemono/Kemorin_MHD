@@ -9,14 +9,13 @@
 !!
 !!@verbatim
 !!      subroutine init_MGCG_MHD(node)
-!!      subroutine solver_MGCG_vector(node, DJDS_comm, num_MG_level,    &
+!!      subroutine solver_MGCG_vector(node, num_MG_level,               &
 !!     &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat,            &
 !!     &          METHOD, PRECOND, eps, itr, MG_vector, b_vec, x_vec)
-!!      subroutine solver_MGCG_scalar(node, DJDS_comm, num_MG_level,    &
+!!      subroutine solver_MGCG_scalar(node, num_MG_level,               &
 !!     &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat11,          &
 !!     &          METHOD, PRECOND, eps, itr, MG_vector, b_vec, x_vec)
 !!        type(node_data), intent(in) :: node
-!!        type(communication_table), intent(in) :: DJDS_comm
 !!        integer(kind = kint), intent(in) :: num_MG_level
 !!        type(MG_itp_table), intent(in) :: MG_itp(num_MG_level)
 !!        type(communication_table), intent(in)                         &
@@ -94,7 +93,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine solver_MGCG_vector(node, DJDS_comm, num_MG_level,      &
+      subroutine solver_MGCG_vector(node, num_MG_level,                 &
      &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat,              &
      &          METHOD, PRECOND, eps, itr, MG_vector, b_vec, x_vec)
 !
@@ -107,7 +106,6 @@
       integer(kind = kint), intent(inout) :: itr
 !
       type(node_data), intent(in) :: node
-      type(communication_table), intent(in) :: DJDS_comm
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_itp(num_MG_level)
@@ -138,7 +136,7 @@
      &      itr_MG_mid, itr_MG_lowest, eps, EPS_MG,                     &
      &      PRECOND, METHOD_MG, PRECOND_MG, ierr, iterPREmax)
       else
-        call solve33_DJDS_struct(np_smp, DJDS_comm, MG_DJDS_tbl(0),     &
+        call solve33_DJDS_struct(np_smp, MG_comm(0), MG_DJDS_tbl(0),    &
      &      MG_DJDS_mat(0), node%numnod, b_vec(1), x_vec(1),            &
      &      METHOD, PRECOND, ierr, eps, itr, itr_res)
       end if
@@ -150,7 +148,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine solver_MGCG_scalar(node, DJDS_comm, num_MG_level,      &
+      subroutine solver_MGCG_scalar(node, num_MG_level,                 &
      &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat11,            &
      &          METHOD, PRECOND, eps, itr, MG_vector, b_vec, x_vec)
 !
@@ -164,7 +162,6 @@
       integer(kind = kint), intent(inout) :: itr
 !
       type(node_data), intent(in) :: node
-      type(communication_table), intent(in) :: DJDS_comm
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_itp(num_MG_level)
@@ -194,9 +191,9 @@
 !     &     istack_u_crs, item_u_crs, b_vec(1), x_vec(1),               &
 !     &     precond_4_solver,1.0d0, 1.0d0, eps_4_temp_crank,            &
 !     &     itr, ierr, my_rank,                                         &
-!     &     DJDS_comm%num_neib, DJDS_comm%id_neib,                      &
-!     &     DJDS_comm%istack_import, DJDS_comm%item_import,             &
-!     &     DJDS_comm%istack_export, DJDS_comm%item_export, 1)
+!     &     MG_comm(0)%num_neib, MG_comm(0)%id_neib,                    &
+!     &     MG_comm(0)%istack_import, MG_comm(0)%item_import,           &
+!     &     MG_comm(0)%istack_export, MG_comm(0)%item_export, 1)
 !
       if (cmp_no_case(METHOD, 'MGCG')) then
         call VMGCG11_DJDS_SMP(num_MG_level, MG_comm,                    &
@@ -205,7 +202,7 @@
      &      itr_MG_mid, itr_MG_lowest, eps, EPS_MG,                     &
      &      PRECOND, METHOD_MG, PRECOND_MG, ierr, iterPREmax)
       else
-        call solve_DJDS11_struct(np_smp, DJDS_comm, MG_DJDS_tbl(0),     &
+        call solve_DJDS11_struct(np_smp, MG_comm(0), MG_DJDS_tbl(0),    &
      &      MG_DJDS_mat11(0), node%numnod, b_vec(1), x_vec(1),          &
      &      METHOD, PRECOND, ierr, eps, itr, itr_res)
       end if

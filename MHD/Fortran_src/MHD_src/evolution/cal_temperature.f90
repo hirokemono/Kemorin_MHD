@@ -68,6 +68,7 @@
       use m_phys_constants
       use m_control_parameter
       use m_t_int_parameter
+      use m_type_AMG_data
       use m_solver_djds_MHD
       use m_bc_data_ene
       use m_SGS_address
@@ -183,15 +184,17 @@
         call cal_temp_pre_lumped_crank                                  &
      &     (iphys%i_temp, iphys%i_pre_heat, iak_diff_t, nod_bc1_t,      &
      &      nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d,     &
-     &      rhs_tbl, FEM_elens, MHD1_matrices%MG_DJDS_fluid,            &
-     &      MHD1_matrices%Tmat_MG_DJDS,             &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      rhs_tbl, FEM_elens, num_MG_level,                           &
+     &      MHD1_matrices%MG_interpolate, MHD1_matrices%MG_comm_fluid,  &
+     &      MHD1_matrices%MG_DJDS_fluid, MHD1_matrices%Tmat_MG_DJDS,    &
+     &      MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (iflag_t_evo_4_temp .eq. id_Crank_nicolson_cmass) then 
         call cal_temp_pre_consist_crank                                 &
      &     (iphys%i_temp, iphys%i_pre_heat, iak_diff_t, nod_bc1_t,      &
-     &      node, ele, fluid, jac_3d, rhs_tbl, FEM_elens,               &
-     &      MHD1_matrices%MG_DJDS_fluid, MHD1_matrices%Tmat_MG_DJDS,    &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      node, ele, fluid, jac_3d, rhs_tbl, FEM_elens, num_MG_level, &
+     &      MHD1_matrices%MG_interpolate, MHD1_matrices%MG_comm_fluid,  &
+     &      MHD1_matrices%MG_DJDS_fluid,  MHD1_matrices%Tmat_MG_DJDS,   &
+     &      MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       call set_boundary_scalar(nod_bc1_t, iphys%i_temp, nod_fld)
@@ -215,6 +218,7 @@
       use m_phys_constants
       use m_control_parameter
       use m_t_int_parameter
+      use m_type_AMG_data
       use m_solver_djds_MHD
       use m_bc_data_ene
       use m_SGS_address
@@ -330,15 +334,17 @@
         call cal_per_temp_lumped_crank                                  &
      &     (iphys%i_par_temp, iphys%i_pre_heat, iak_diff_t, nod_bc1_t,  &
      &      nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d,     &
-     &      rhs_tbl, FEM_elens, MHD1_matrices%MG_DJDS_fluid,            &
-     &      MHD1_matrices%Tmat_MG_DJDS,             &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      rhs_tbl, FEM_elens, num_MG_level,                           &
+     &      MHD1_matrices%MG_interpolate, MHD1_matrices%MG_comm_fluid,  &
+     &      MHD1_matrices%MG_DJDS_fluid, MHD1_matrices%Tmat_MG_DJDS,    &
+     &      MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (iflag_t_evo_4_temp .eq. id_Crank_nicolson_cmass) then 
         call cal_per_temp_consist_crank                                 &
      &     (iphys%i_par_temp, iphys%i_pre_heat, iak_diff_t, nod_bc1_t,  &
-     &      node, ele, fluid, jac_3d, rhs_tbl, FEM_elens,               &
+     &      node, ele, fluid, jac_3d, rhs_tbl, FEM_elens, num_MG_level, &
+     &      MHD1_matrices%MG_interpolate, MHD1_matrices%MG_comm_fluid,  &
      &      MHD1_matrices%MG_DJDS_fluid, MHD1_matrices%Tmat_MG_DJDS,    &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       call set_boundary_scalar(nod_bc1_t, iphys%i_par_temp, nod_fld)

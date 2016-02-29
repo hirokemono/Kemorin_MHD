@@ -39,7 +39,9 @@
       subroutine input_control_4_MHD(mesh, group, ele_mesh)
 !
       use m_ctl_data_fem_MHD
+      use m_solver_djds_MHD
       use m_iccg_parameter
+      use m_flags_4_solvers
       use set_control_FEM_MHD
       use load_mesh_data
       use input_MG_data
@@ -61,9 +63,12 @@
 !
       call input_meshes_4_MHD(mesh, group)
 !
-      if(cmp_no_case(method_4_solver, 'MGCG')) then
+      if(cmp_no_case(method_4_solver, cflag_mgcg)) then
+        call alloc_MHD_MG_DJDS_mat(num_MG_level, MHD1_matrices)
         call input_MG_mesh
-        call input_MG_itp_tables
+        call input_MG_itp_tables(MHD1_matrices%MG_interpolate)
+      else
+        call alloc_MHD_MG_DJDS_mat(izero, MHD1_matrices)
       end if
 !
       end subroutine input_control_4_MHD

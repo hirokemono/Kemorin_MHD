@@ -137,8 +137,9 @@
       call s_cal_velocity_pre(nod_comm, node, ele, surf, fluid,         &
      &    sf_grp, sf_grp_nod, iphys, iphys_ele, ele_fld,                &
      &    jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,         &
-     &    layer_tbl, num_MG_level, MHD1_matrices%MG_DJDS_fluid,         &
-     &    MHD1_matrices%Vmat_MG_DJDS,          &
+     &    layer_tbl, num_MG_level, MHD1_matrices%MG_interpolate,        &
+     &    MHD1_matrices%MG_comm_fluid, MHD1_matrices%MG_DJDS_fluid,     &
+     &    MHD1_matrices%Vmat_MG_DJDS, MG_vector,                        &
      &    mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
 !     --------------------- 
@@ -152,9 +153,10 @@
       do iloop = 0, maxiter
         call cal_mod_potential(iak_diff_v, node, ele, surf, fluid,      &
      &      sf_grp, iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,   &
-     &      FEM_elens, MHD1_matrices%MG_DJDS_lin_fl,                    &
-     &      MHD1_matrices%Pmat_MG_DJDS, fem_wk,              &
-     &      f_l, f_nl, nod_fld)
+     &      FEM_elens, num_MG_level, MHD1_matrices%MG_interpolate,      &
+     &      MHD1_matrices%MG_comm_fluid, MHD1_matrices%MG_DJDS_lin_fl,  &
+     &      MHD1_matrices%Pmat_MG_DJDS, MG_vector,                      &
+     &      fem_wk, f_l, f_nl, nod_fld)
 !
         call cal_sol_pressure                                           &
      &     (node%numnod, node%istack_internal_smp, nod_fld%ntot_phys,   &
@@ -163,8 +165,9 @@
         call cal_velocity_co(nod_comm, node, ele, surf, fluid,          &
      &      sf_grp, sf_grp_nod, iphys, iphys_ele, ele_fld,              &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &
-     &      FEM_elens, num_MG_level, MHD1_matrices%MG_DJDS_fluid,       &
-     &      MHD1_matrices%Vmat_MG_DJDS,        &
+     &      FEM_elens, num_MG_level, MHD1_matrices%MG_interpolate,      &
+     &      MHD1_matrices%MG_comm_fluid, MHD1_matrices%MG_DJDS_fluid,   &
+     &      MHD1_matrices%Vmat_MG_DJDS, MG_vector,                      &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
 !

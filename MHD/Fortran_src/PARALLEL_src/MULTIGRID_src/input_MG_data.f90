@@ -3,8 +3,9 @@
 !
 !        programmed by H. Matsui on Dec., 2008
 !
-!      subroutine input_MG_mesh
-!      subroutine input_MG_itp_tables
+!!      subroutine input_MG_mesh
+!!      subroutine input_MG_itp_tables(MG_itp)
+!!        type(MG_itp_table), intent(inout) :: MG_itp(num_MG_level)
 !
       module input_MG_data
 !
@@ -63,10 +64,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine input_MG_itp_tables
+      subroutine input_MG_itp_tables(MG_itp)
 !
       use itp_table_IO_select_4_zlib
       use copy_interpolate_type_IO
+!
+      type(MG_itp_table), intent(inout) :: MG_itp(num_MG_level)
 !
       integer(kind = kint) :: i_level, ierr
 !

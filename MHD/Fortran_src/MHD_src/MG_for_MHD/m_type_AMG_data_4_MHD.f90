@@ -66,9 +66,6 @@
 !     &                        :: MG_djds_const_idx_fullcdl(:)
 !   table for matrix assemble
 !
-      type(communication_table), target :: MG_comm_fl(0:max_MG_level)
-!   communication table for solvers
-!
       type(DJDS_ordering_table), target, save                           &
      &                      :: MG_djds_tbl_cd(0:max_MG_level)
 !      type(DJDS_ordering_table), target, save                          &

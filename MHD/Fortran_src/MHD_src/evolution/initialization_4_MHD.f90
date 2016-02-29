@@ -101,7 +101,8 @@
 !
 !  -----   ordering by regions ---------------------------------------
 !
-      call reordering_by_layers_MHD(mesh%ele, group, MHD_mesh)
+      call reordering_by_layers_MHD(mesh%ele, group, MHD_mesh,          &
+     &    MHD1_matrices%MG_interpolate)
 !
       call set_layers(mesh%node, mesh%ele, group%ele_grp, MHD_mesh)
 !
@@ -245,12 +246,6 @@
 !
 !     --------------------- 
 !
-      if(solver_iflag(method_4_solver) .eq. iflag_mgcg) then
-        call alloc_MHD_MG_DJDS_mat(num_MG_level, MHD1_matrices)
-      else
-        call alloc_MHD_MG_DJDS_mat(izero, MHD1_matrices)
-      end if
-!
       if (iflag_debug.eq.1) write(*,*) 'set_MHD_whole_connectivity'
       call set_MHD_whole_connectivity                                   &
      &    (mesh%nod_comm, mesh%node, mesh%ele, next_tbl1, rhs_tbl1)
@@ -294,8 +289,7 @@
 !     ---------------------
 !
       if(solver_iflag(method_4_solver) .eq. iflag_mgcg) then
-        call s_initialize_4_MHD_AMG                                     &
-     &     (mesh%nod_comm, mesh%node, mesh%ele)
+        call s_initialize_4_MHD_AMG(mesh%node, mesh%ele)
       end if
 !
 !     --------------------- 

@@ -7,7 +7,6 @@
 !
 !>     DJDS ordering table for MHD dynamo model
 !!
-!!      subroutine deallocate_comm_table_fluid
 !
       module m_solver_djds_MHD
 !
@@ -81,6 +80,9 @@
      &    next_tbl%neib_nod, MHD1_matrices%MG_comm_table(0),            &
      &    MHD1_matrices%MG_DJDS_table(0))
 !
+      call link_comm_tbl_types                                          &
+     &   (nod_comm, MHD1_matrices%MG_comm_table(0))
+!
       end subroutine set_MHD_whole_connectivity
 !
 !-----------------------------------------------------------------------
@@ -91,6 +93,7 @@
       use t_geometry_data_MHD
 !
       use set_MHD_connectivity
+      use copy_mesh_structures
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -137,18 +140,12 @@
 !        call link_djds_connect_structs(DJDS_insulator, DJDS_ins_l)
 !      end if
 !
+      call copy_comm_tbl_types                                          &
+     &   (DJDS_comm_fl, MHD1_matrices%MG_comm_fluid(0))
+      call deallocate_type_comm_tbl(DJDS_comm_fl)
+!
       end subroutine set_MHD_layerd_connectivity
 !
 !-----------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine deallocate_comm_table_fluid
-!
-!
-      call deallocate_type_comm_tbl(DJDS_comm_fl)
-!
-      end subroutine deallocate_comm_table_fluid
-!
-!  ---------------------------------------------------------------------
 !
       end module m_solver_djds_MHD

@@ -3,7 +3,9 @@
 !
 !      Written by H. Matsui on Dec., 2008
 !
-!      subroutine s_reordering_MG_ele_by_layers
+!!      subroutine s_reordering_MG_ele_by_layers(MG_interpolate)
+!!        type(MG_itp_table), intent(inout)                             &
+!!       &               :: MG_interpolate(num_MG_level)
 !
       module reordering_MG_ele_by_layers
 !
@@ -19,11 +21,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-     subroutine s_reordering_MG_ele_by_layers
+     subroutine s_reordering_MG_ele_by_layers(MG_interpolate)
 !
       use m_type_AMG_mesh
       use m_type_AMG_data
       use m_type_AMG_data_4_MHD
+!
+      type(MG_itp_table), intent(inout) :: MG_interpolate(num_MG_level)
 !
       integer(kind = kint) :: i_level, i_level_1, iflag_last_level
 !
@@ -34,8 +38,8 @@
           i_level_1 = i_level + 1
 !
           call reordering_ele_types_by_layer(iflag_last_level,          &
-     &        MG_mesh(i_level), MG_MHD_mesh(i_level),                   &
-     &        MG_itp(i_level_1)%f2c, MG_itp(i_level)%c2f )
+     &      MG_mesh(i_level), MG_MHD_mesh(i_level),                     &
+     &      MG_interpolate(i_level_1)%f2c, MG_interpolate(i_level)%c2f)
 !
         end if
       end do
@@ -45,7 +49,7 @@
         iflag_last_level = num_MG_level
         call reordering_ele_types_by_layer(iflag_last_level,            &
      &      MG_mesh(i_level), MG_MHD_mesh(i_level),                     &
-     &      MG_itp(i_level)%f2c, MG_itp(i_level)%c2f )
+     &      MG_interpolate(i_level)%f2c, MG_interpolate(i_level)%c2f)
       end if
 !
       end subroutine s_reordering_MG_ele_by_layers

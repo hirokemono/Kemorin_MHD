@@ -6,8 +6,6 @@
 !!@date Modified in Nov., 2013
 !
 !>     DJDS ordering table for MHD dynamo model
-!!
-!!      subroutine deallocate_comm_table_fluid
 !
       module t_solver_djds_MHD
 !
@@ -15,6 +13,7 @@
       use t_comm_table
       use t_solver_djds
       use t_vector_for_solver
+      use t_interpolate_table
 !
       implicit none
 !
@@ -49,6 +48,12 @@
         type(DJDS_ordering_table), pointer :: MG_DJDS_lin_fl(:)
 !>        Communication table structure for entire domain
         type(communication_table), pointer :: MG_comm_fluid(:)
+!
+!>        DJDS ordering structures for fluid
+        type(DJDS_ordering_table), pointer :: MG_DJDS_conduct(:)
+!
+!>        interpolation table structure for multigrid
+        type(MG_itp_table), pointer :: MG_interpolate(:)
       end type MHD_MG_matrices
 !
 !-----------------------------------------------------------------------
@@ -81,6 +86,10 @@
       allocate(matrices%MG_DJDS_lin_fl(0:num_MG_level))
       allocate(matrices%MG_comm_fluid(0:num_MG_level))
 !
+      allocate(matrices%MG_DJDS_conduct(0:num_MG_level))
+!
+      allocate(matrices%MG_interpolate(num_MG_level))
+!
       end subroutine alloc_MHD_MG_DJDS_mat
 !
 !-----------------------------------------------------------------------
@@ -98,6 +107,10 @@
       deallocate(matrices%MG_comm_table)
       deallocate(matrices%MG_DJDS_fluid, matrices%MG_DJDS_lin_fl)
       deallocate(matrices%MG_comm_fluid)
+!
+      deallocate(matrices%MG_DJDS_conduct)
+!
+      deallocate(matrices%MG_interpolate)
 !
       end subroutine dealloc_MHD_MG_DJDS_mat
 !

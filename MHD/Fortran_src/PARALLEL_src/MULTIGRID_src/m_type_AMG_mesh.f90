@@ -25,7 +25,7 @@
       type(element_geometry), save ::  MG_ele_mesh(max_MG_level)
 !   mesh data structure
 !
-      type(MG_itp_table), save :: MG_itp(max_MG_level)
+!      type(MG_itp_table), save :: MG_itp(max_MG_level)
 !   interpolation table structure for interpolation
 !
 !

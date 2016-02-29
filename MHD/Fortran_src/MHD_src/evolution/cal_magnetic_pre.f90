@@ -8,13 +8,14 @@
 !!      subroutine cal_magnetic_field_pre(nod_comm, node, ele, surf,    &
 !!     &          conduct, sf_grp, iphys, iphys_ele, ele_fld,           &
 !!     &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,           &
-!!     &          num_MG_level, MG_comm_table, MG_DJDS_table,           &
-!!     &          Bmat_MG_DJDS, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          num_MG_level, MG_interpolate, MG_comm_table,          &
+!!     &          MG_DJDS_table, Bmat_MG_DJDS, MG_vector,               &
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_magnetic_co(nod_comm, node, ele, surf,           &
 !!     &          conduct, sf_grp, iphys, iphys_ele, ele_fld,           &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
-!!     &          rhs_tbl, FEM_elens, num_MG_level,                     &
-!!     &          MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS,           &
+!!     &          rhs_tbl, FEM_elens, num_MG_level, MG_interpolate,     &
+!!     &          MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS, MG_vector,&
 !!     &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_magnetic_co_outside                              &
 !!     &         (nod_comm, node, ele, surf, insulate, sf_grp, iphys,   &
@@ -36,11 +37,14 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
 !!        type(communication_table), intent(in)                         &
 !!       &           :: MG_comm_table(0:num_MG_level)
 !!        type(DJDS_ordering_table), intent(in)                         &
 !!       &           :: MG_DJDS_table(0:num_MG_level)
 !!        type(DJDS_MATRIX), intent(in) :: Bmat_MG_DJDS(0:num_MG_level)
+!!        type(vectors_4_solver), intent(inout)                         &
+!!       &           :: MG_vector(0:num_MG_level)
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -67,6 +71,8 @@
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_solver_djds
+      use t_interpolate_table
+      use t_vector_for_solver
 !
       implicit none
 !
@@ -79,8 +85,9 @@
       subroutine cal_magnetic_field_pre(nod_comm, node, ele, surf,      &
      &          conduct, sf_grp, iphys, iphys_ele, ele_fld,             &
      &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,             &
-     &          num_MG_level, MG_comm_table, MG_DJDS_table,             &
-     &          Bmat_MG_DJDS, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          num_MG_level, MG_interpolate, MG_comm_table,            &
+     &          MG_DJDS_table, Bmat_MG_DJDS, MG_vector,                 &
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use calypso_mpi
       use m_t_int_parameter
@@ -113,12 +120,15 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
       integer(kind = kint), intent(in) :: num_MG_level
+      type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
       type(communication_table), intent(in)                             &
      &           :: MG_comm_table(0:num_MG_level)
       type(DJDS_ordering_table), intent(in)                             &
      &           :: MG_DJDS_table(0:num_MG_level)
       type(DJDS_MATRIX), intent(in) :: Bmat_MG_DJDS(0:num_MG_level)
 !
+      type(vectors_4_solver), intent(inout)                             &
+     &           :: MG_vector(0:num_MG_level)
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -175,14 +185,15 @@
         call cal_magne_pre_lumped_crank                                 &
      &     (iphys%i_magne, iphys%i_pre_uxb, iak_diff_b, nod_bc1_b,      &
      &      nod_comm, node, ele, conduct, iphys_ele, ele_fld,           &
-     &      jac_3d_q, rhs_tbl, FEM_elens,                               &
-     &      MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS,                 &
+     &      jac_3d_q, rhs_tbl, FEM_elens, num_MG_level, MG_interpolate, &
+     &      MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS, MG_vector,      &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (iflag_t_evo_4_magne .eq. id_Crank_nicolson_cmass) then 
         call cal_magne_pre_consist_crank                                &
      &     (iphys%i_magne, iphys%i_pre_uxb, iak_diff_b, nod_bc1_b,      &
      &      node, ele, conduct, jac_3d_q, rhs_tbl, FEM_elens,           &
-     &      MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS,                 &
+     &      num_MG_level, MG_interpolate, MG_comm_table,                &
+     &      MG_DJDS_table, Bmat_MG_DJDS, MG_vector,                     &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
@@ -197,8 +208,8 @@
       subroutine cal_magnetic_co(nod_comm, node, ele, surf,             &
      &          conduct, sf_grp, iphys, iphys_ele, ele_fld,             &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
-     &          rhs_tbl, FEM_elens, num_MG_level,                       &
-     &          MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS,             &
+     &          rhs_tbl, FEM_elens, num_MG_level, MG_interpolate,       &
+     &          MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS, MG_vector,  &
      &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_SGS_address
@@ -230,12 +241,15 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
       integer(kind = kint), intent(in) :: num_MG_level
+      type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
       type(communication_table), intent(in)                             &
      &           :: MG_comm_table(0:num_MG_level)
       type(DJDS_ordering_table), intent(in)                             &
      &           :: MG_DJDS_table(0:num_MG_level)
       type(DJDS_MATRIX), intent(in) :: Bmat_MG_DJDS(0:num_MG_level)
 !
+      type(vectors_4_solver), intent(inout)                             &
+     &           :: MG_vector(0:num_MG_level)
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -268,8 +282,8 @@
      &  .or. iflag_implicit_correct.eq.4) then
         call cal_magnetic_co_imp(iphys%i_magne,                         &
      &      nod_comm, node, ele, conduct, iphys_ele, ele_fld,           &
-     &      jac_3d_q, rhs_tbl, FEM_elens,                               &
-     &      MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS,                 &
+     &      jac_3d_q, rhs_tbl, FEM_elens, num_MG_level, MG_interpolate, &
+     &      MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS, MG_vector,      &
      &      m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else
         call cal_magnetic_co_exp(iphys%i_magne, nod_comm, node, ele,    &

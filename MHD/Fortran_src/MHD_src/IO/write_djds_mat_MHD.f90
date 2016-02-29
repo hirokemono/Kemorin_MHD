@@ -52,41 +52,39 @@
 !
 !
       if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
-        call write_MHD_djds_mat11(fhead_press_mat, DJDS_comm_fl,        &
-     &       num_MG_level, MG_comm_fl, MHD1_matrices%MG_DJDS_lin_fl,    &
-     &       MHD1_matrices%Pmat_MG_DJDS)
+        call write_MHD_djds_mat11(fhead_press_mat,                      &
+     &       num_MG_level, MHD1_matrices%MG_comm_fluid,                 &
+     &       MHD1_matrices%MG_DJDS_lin_fl, MHD1_matrices%Pmat_MG_DJDS)
       end if
 !
       if ( iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
-        call write_MHD_djds_mat33(fhead_velo_mat, DJDS_comm_fl,         &
-     &       num_MG_level, MG_comm_fl, MHD1_matrices%MG_DJDS_fluid,     &
-     &       MHD1_matrices%Vmat_MG_DJDS)
+        call write_MHD_djds_mat33(fhead_velo_mat,                       &
+     &       num_MG_level, MHD1_matrices%MG_comm_fluid,                 &
+     &       MHD1_matrices%MG_DJDS_fluid, MHD1_matrices%Vmat_MG_DJDS)
       end if
 !
       if ( iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
-        call write_MHD_djds_mat11(fhead_temp_mat, DJDS_comm_fl,         &
-     &       num_MG_level, MG_comm_fl, MHD1_matrices%MG_DJDS_fluid,     &
-     &       MHD1_matrices%Tmat_MG_DJDS)
+        call write_MHD_djds_mat11(fhead_temp_mat,                       &
+     &       num_MG_level, MHD1_matrices%MG_comm_fluid,                 &
+     &       MHD1_matrices%MG_DJDS_fluid, MHD1_matrices%Tmat_MG_DJDS)
       end if
 !
       if ( iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
-        call write_MHD_djds_mat11(fhead_dscalar_mat, DJDS_comm_fl,      &
-     &       num_MG_level, MG_comm_fl, MHD1_matrices%MG_DJDS_fluid,     &
-     &       MHD1_matrices%Cmat_MG_DJDS)
+        call write_MHD_djds_mat11(fhead_dscalar_mat,                    &
+     &       num_MG_level, MHD1_matrices%MG_comm_fluid,                 &
+     &       MHD1_matrices%MG_DJDS_fluid, MHD1_matrices%Cmat_MG_DJDS)
       end if
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution                     &
      &     .or. iflag_t_evo_4_magne .gt. id_no_evolution) then
-        call write_MHD_djds_mat11                                       &
-     &      (fhead_magp_mat, MHD1_matrices%MG_comm_table(0), num_MG_level,               &
+        call write_MHD_djds_mat11(fhead_magp_mat, num_MG_level,         &
      &       MHD1_matrices%MG_comm_table, MHD1_matrices%MG_DJDS_linear, &
      &       MHD1_matrices%Fmat_MG_DJDS)
       end if
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution                     &
      &     .or. iflag_t_evo_4_magne .gt. id_no_evolution) then
-        call write_MHD_djds_mat33                                       &
-     &      (fhead_magne_mat, MHD1_matrices%MG_comm_table(0), num_MG_level,              &
+        call write_MHD_djds_mat33(fhead_magne_mat, num_MG_level,        &
      &      MHD1_matrices%MG_comm_table, MHD1_matrices%MG_DJDS_table,   &
      &       MHD1_matrices%Bmat_MG_DJDS)
       end if
@@ -96,14 +94,13 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine write_MHD_djds_mat33(fhead_matrix, DJDS_comm,          &
+      subroutine write_MHD_djds_mat33(fhead_matrix,                     &
      &          num_MG_level, MG_comm, MG_djds_tbl, MG_mat33)
 !
       use write_djds_matrix_struct
       use skip_comment_f
 !
       character(len=kchara) :: fhead_matrix
-      type(communication_table), intent(in) :: DJDS_comm
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(communication_table), intent(in)                             &
@@ -132,7 +129,7 @@
         call write_djds_mat33_comp_type(id_mat_file, np_smp,            &
      &      MG_djds_tbl(0), MG_mat33(0))
         call write_djds_mat_connect_type(id_mat_file, np_smp,           &
-     &      DJDS_comm, MG_djds_tbl(0), MG_mat33(0))
+     &      MG_comm(0), MG_djds_tbl(0), MG_mat33(0))
         close(id_mat_file)
       end if
 !
@@ -140,14 +137,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine write_MHD_djds_mat11(fhead_matrix, DJDS_comm,          &
+      subroutine write_MHD_djds_mat11(fhead_matrix,                     &
      &          num_MG_level, MG_comm, MG_djds_tbl, MG_mat11)
 !
       use write_djds_matrix_struct
       use skip_comment_f
 !
       character(len=kchara) :: fhead_matrix
-      type(communication_table), intent(in) :: DJDS_comm
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(communication_table), intent(in)                             &
@@ -176,7 +172,7 @@
         call write_djds_mat11_comp_type(id_mat_file, np_smp,            &
      &      MG_djds_tbl(0), MG_mat11(0))
         call write_djds_mat_connect_type(id_mat_file, np_smp,           &
-     &      DJDS_comm, MG_djds_tbl(0), MG_mat11(0))
+     &      MG_comm(0), MG_djds_tbl(0), MG_mat11(0))
         close(id_mat_file)
       end if
 !

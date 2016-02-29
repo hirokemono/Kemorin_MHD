@@ -3,8 +3,7 @@
 !
 !        programmed H.Matsui on Dec., 2008
 !
-!!      subroutine s_initialize_4_MHD_AMG                               &
-!!     &         (nod_comm_1st, node_1st, ele_1st)
+!!      subroutine s_initialize_4_MHD_AMG(node_1st, ele_1st)
 !      subroutine const_MGCG_MHD_matrices
 !
       module initialize_4_MHD_AMG
@@ -25,10 +24,8 @@
 !
 ! ---------------------------------------------------------------------
 !
-      subroutine s_initialize_4_MHD_AMG                                 &
-     &         (nod_comm_1st, node_1st, ele_1st)
+      subroutine s_initialize_4_MHD_AMG(node_1st, ele_1st)
 !
-      use t_comm_table
       use t_geometry_data
       use t_edge_data
       use t_surface_data
@@ -55,7 +52,6 @@
       use link_MG_MHD_mesh_data
       use const_element_comm_tables
 !
-      type(communication_table), intent(inout) :: nod_comm_1st
       type(node_data), intent(inout) :: node_1st
       type(element_data), intent(inout) :: ele_1st
 !
@@ -237,7 +233,7 @@
 !     -----  set DJDS matrix connectivity
 !
       if(iflag_debug .gt. 0) write(*,*) 's_link_MG_MHD_mesh_data'
-      call s_link_MG_MHD_mesh_data(nod_comm_1st, ele_1st)
+      call s_link_MG_MHD_mesh_data(ele_1st)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_MG_djds_connect_type'
       call set_MG_djds_connect_type
