@@ -8,12 +8,13 @@
 !!      subroutine cal_vector_p_pre(nod_comm, node, ele, surf,          &
 !!     &          conduct, sf_grp, iphys, iphys_ele, ele_fld,           &
 !!     &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,           &
-!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          num_MG_level, Bmat_MG_DJDS, mhd_fem_wk, fem_wk,       &
+!!     &          f_l, f_nl, nod_fld)
 !!      subroutine cal_vector_p_co(nod_comm, node, ele, surf,           &
 !!     &          conduct, sf_grp, iphys, iphys_ele, ele_fld,           &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
-!!     &          rhs_tbl, FEM_elens, m_lump, mhd_fem_wk, fem_wk,       &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          rhs_tbl, FEM_elens, num_MG_level, Bmat_MG_DJDS,       &
+!!     &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -28,6 +29,7 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(DJDS_MATRIX), intent(in) :: Bmat_MG_DJDS(0:num_MG_level)
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -56,6 +58,7 @@
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_layering_ele_list
+      use t_solver_djds
 !
       implicit none
 !
@@ -68,7 +71,8 @@
       subroutine cal_vector_p_pre(nod_comm, node, ele, surf,            &
      &          conduct, sf_grp, iphys, iphys_ele, ele_fld,             &
      &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,             &
-     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          num_MG_level, Bmat_MG_DJDS, mhd_fem_wk, fem_wk,         &
+     &          f_l, f_nl, nod_fld)
 !
       use calypso_mpi
       use m_bc_data_magne
@@ -100,6 +104,9 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp_q
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+!
+      integer(kind = kint), intent(in) :: num_MG_level
+      type(DJDS_MATRIX), intent(in) :: Bmat_MG_DJDS(0:num_MG_level)
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -167,13 +174,13 @@
         call cal_vect_p_pre_lumped_crank                                &
      &     (iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b, nod_bc1_a,       &
      &      nod_comm, node, ele, conduct, iphys_ele, ele_fld,           &
-     &      jac_3d_q, rhs_tbl,  FEM_elens, mhd_fem_wk, fem_wk,          &
-     &      f_l, f_nl, nod_fld)
+     &      jac_3d_q, rhs_tbl, FEM_elens, Bmat_MG_DJDS,                 &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (iflag_t_evo_4_vect_p.eq.id_Crank_nicolson_cmass) then
         call cal_vect_p_pre_consist_crank                               &
      &     (iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b, nod_bc1_a,       &
      &      node, ele, conduct, jac_3d_q, rhs_tbl, FEM_elens,           &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      Bmat_MG_DJDS, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       call set_boundary_vect(nod_bc1_a, iphys%i_vecp, nod_fld)
@@ -190,8 +197,8 @@
       subroutine cal_vector_p_co(nod_comm, node, ele, surf,             &
      &          conduct, sf_grp, iphys, iphys_ele, ele_fld,             &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
-     &          rhs_tbl, FEM_elens, m_lump, mhd_fem_wk, fem_wk,         &
-     &          f_l, f_nl, nod_fld)
+     &          rhs_tbl, FEM_elens, num_MG_level, Bmat_MG_DJDS,         &
+     &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_SGS_address
       use m_SGS_model_coefs
@@ -221,6 +228,9 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(lumped_mass_matrices), intent(in) :: m_lump
       type(gradient_model_data_type), intent(in) :: FEM_elens
+!
+      integer(kind = kint), intent(in) :: num_MG_level
+      type(DJDS_MATRIX), intent(in) :: Bmat_MG_DJDS(0:num_MG_level)
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -253,7 +263,7 @@
      &  .or. iflag_implicit_correct.eq.4) then
         call cal_vector_p_co_imp(iphys%i_vecp,                          &
      &      nod_comm, node, ele, conduct, iphys_ele, ele_fld,           &
-     &      jac_3d_q, rhs_tbl, FEM_elens, m_lump,                       &
+     &      jac_3d_q, rhs_tbl, FEM_elens, Bmat_MG_DJDS, m_lump,         &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         call clear_nodal_data(node, nod_fld, n_scalar, iphys%i_m_phi)
       else

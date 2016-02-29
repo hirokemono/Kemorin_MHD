@@ -87,8 +87,10 @@
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution                     &
      &     .or. iflag_t_evo_4_magne .gt. id_no_evolution) then
         call write_MHD_djds_mat33                                       &
-     &      (fhead_magne_mat, DJDS_comm_etr, DJDS_entire, Bmat_DJDS,    &
-     &       num_MG_level, MG_comm, MG_djds_tbl_fl, MG_mat_magne)
+     &      (fhead_magne_mat, DJDS_comm_etr, DJDS_entire,               &
+     &       MHD1_matrices%Bmat_MG_DJDS(0),                             &
+     &       num_MG_level, MG_comm, MG_djds_tbl_fl,                     &
+     &       MHD1_matrices%Bmat_MG_DJDS)
       end if
 !
       end subroutine s_write_djds_mat_MHD

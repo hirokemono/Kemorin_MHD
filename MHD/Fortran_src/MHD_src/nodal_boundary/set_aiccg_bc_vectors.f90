@@ -93,8 +93,8 @@
      &     (num_t_linear, ele, nod_bc1_f, DJDS_linear, Fmat_DJDS)
 !
         if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
-          call set_aiccg_bc_vector_nod                                  &
-     &       (ele, nod_bc1_b, DJDS_entire, Bmat_DJDS)
+          call set_aiccg_bc_vector_nod(ele, nod_bc1_b, DJDS_entire,     &
+     &        MHD1_matrices%Bmat_MG_DJDS(0))
         end if
       end if
 !
@@ -103,8 +103,8 @@
      &     (num_t_linear, ele, nod_bc1_f, DJDS_linear, Fmat_DJDS)
 !
         if (iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
-          call set_aiccg_bc_vector_nod                                  &
-     &       (ele, nod_bc1_a, DJDS_entire, Bmat_DJDS)
+          call set_aiccg_bc_vector_nod(ele, nod_bc1_a, DJDS_entire,     &
+     &        MHD1_matrices%Bmat_MG_DJDS(0))
         end if
       end if
 !

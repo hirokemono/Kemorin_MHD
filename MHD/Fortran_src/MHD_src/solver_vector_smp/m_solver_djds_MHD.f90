@@ -27,8 +27,6 @@
       type(DJDS_MATRIX), save :: Pmat_DJDS
 !
 !
-!>      Structure of matrix for time evolution of magnetic field
-      type(DJDS_MATRIX), save :: Bmat_DJDS
 !>      Structure of matrix for poission equation of electric potential
       type(DJDS_MATRIX), save :: Fmat_DJDS
 !

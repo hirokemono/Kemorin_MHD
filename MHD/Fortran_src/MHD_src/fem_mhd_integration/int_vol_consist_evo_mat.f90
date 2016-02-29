@@ -86,14 +86,16 @@
      &      .and. coef_magne.gt.0.0d0) then
           call add_skv1_to_crs_matrix33                                 &
      &       (ele, rhs_tbl, MHD_mat_tbls%full_conduct_q,                &
-     &        k2, fem_wk%sk6, Bmat_DJDS%num_non0, Bmat_DJDS%aiccg)
+     &        k2, fem_wk%sk6, MHD1_matrices%Bmat_MG_DJDS(0)%num_non0,   &
+     &        MHD1_matrices%Bmat_MG_DJDS(0)%aiccg)
         end if
 !
         if ( iflag_t_evo_4_vect_p .eq. id_Crank_nicolson_cmass          &
      &      .and. coef_magne.gt.0.0d0) then
           call add_skv1_to_crs_matrix33                                 &
      &       (ele, rhs_tbl, MHD_mat_tbls%full_conduct_q,                &
-     &        k2, fem_wk%sk6, Bmat_DJDS%num_non0, Bmat_DJDS%aiccg)
+     &        k2, fem_wk%sk6, MHD1_matrices%Bmat_MG_DJDS(0)%num_non0,   &
+     &        MHD1_matrices%Bmat_MG_DJDS(0)%aiccg)
         end if
       end do
 !

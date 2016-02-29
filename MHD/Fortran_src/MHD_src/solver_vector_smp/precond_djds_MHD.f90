@@ -89,10 +89,11 @@
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution                     &
      &     .or. iflag_t_evo_4_magne .gt. id_no_evolution) then
-        call precond_DJDS33_struct(np_smp, DJDS_entire, Bmat_DJDS,      &
-     &      precond_4_crank, sigma_diag)
+        call precond_DJDS33_struct(np_smp, DJDS_entire,                 &
+     &      MHD1_matrices%Bmat_MG_DJDS(0), precond_4_crank, sigma_diag)
 !        call precond_DJDSnn_struct(n_vector, np_smp,                   &
-!       &    DJDS_entire, Bmat_DJDS, precond_4_crank, sigma_diag)
+!       &    DJDS_entire, MHD1_matrices%Bmat_MG_DJDS(0),                &
+!       &    precond_4_crank, sigma_diag)
       end if
 !
       end subroutine matrix_precondition

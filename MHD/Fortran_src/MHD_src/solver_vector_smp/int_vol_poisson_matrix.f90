@@ -108,14 +108,14 @@
         call choose_int_diffuse3_crank_mat(ele, jac_3d,                 &
      &      rhs_tbl, mat_tbl_full_cd_q, FEM_elens, intg_point_t_evo,    &
      &      num_diff_kinds, iak_diff_b, ak_diff, coef_imp_b,            &
-     &      ak_d_magne, fem_wk, Bmat_DJDS)
+     &      ak_d_magne, fem_wk, MHD1_matrices%Bmat_MG_DJDS(0))
       end if
 !
       if (iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
         call choose_int_diffuse3_crank_mat(ele, jac_3d,                 &
      &      rhs_tbl, mat_tbl_q, FEM_elens, intg_point_t_evo,            &
      &      num_diff_kinds, iak_diff_b, ak_diff, coef_imp_b,            &
-     &      ak_d_magne, fem_wk, Bmat_DJDS)
+     &      ak_d_magne, fem_wk, MHD1_matrices%Bmat_MG_DJDS(0))
       end if
 !
       if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then

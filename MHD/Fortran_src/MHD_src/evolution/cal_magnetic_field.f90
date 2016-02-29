@@ -69,6 +69,7 @@
       use m_machine_parameter
       use m_control_parameter
       use m_physical_property
+      use m_solver_djds_MHD
       use m_SGS_model_coefs
       use m_SGS_address
 !
@@ -113,7 +114,8 @@
       if (iflag_debug .gt. 0)  write(*,*) 'vector_p_pre'
       call cal_vector_p_pre(nod_comm, node, ele, surf, conduct, sf_grp, &
      &    iphys, iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl,   &
-     &    FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &    FEM_elens, num_MG_level, MHD1_matrices%Bmat_MG_DJDS,          &
+     &    mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
 !     --------------------- 
 !
@@ -143,7 +145,8 @@
         call cal_vector_p_co(nod_comm, node, ele, surf,                 &
      &      conduct, sf_grp, iphys, iphys_ele, ele_fld,                 &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &
-     &      FEM_elens, m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      FEM_elens, num_MG_level, MHD1_matrices%Bmat_MG_DJDS,        &
+     &      m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_rms_scalar_potential'
@@ -177,6 +180,7 @@
       use m_machine_parameter
       use m_control_parameter
       use m_physical_property
+      use m_solver_djds_MHD
       use m_SGS_model_coefs
       use m_SGS_address
 !
@@ -227,7 +231,8 @@
       call cal_magnetic_field_pre(nod_comm, node, ele, surf,            &
      &    conduct, sf_grp, iphys, iphys_ele, ele_fld,                   &
      &    jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,                   &
-     &    mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &    num_MG_level, MHD1_matrices%Bmat_MG_DJDS, mhd_fem_wk, fem_wk, &
+     &    f_l, f_nl, nod_fld)
 !
 !----  set magnetic field in insulate layer
 !
@@ -250,7 +255,8 @@
         call cal_magnetic_co(nod_comm, node, ele, surf,                 &
      &      conduct, sf_grp, iphys, iphys_ele, ele_fld,                 &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &
-     &      FEM_elens, m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      FEM_elens, num_MG_level, MHD1_matrices%Bmat_MG_DJDS,        &
+     &      m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
         call cal_rms_scalar_potential(iloop, ele%istack_ele_smp,        &
      &      iphys%i_mag_p, i_rms%i_mag_p, j_ave%i_mag_p,                &

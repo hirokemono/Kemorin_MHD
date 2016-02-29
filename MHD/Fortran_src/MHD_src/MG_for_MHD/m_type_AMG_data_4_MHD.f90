@@ -83,7 +83,6 @@
 !      type(DJDS_ordering_table), pointer, save :: MG_djds_tbl_insl(:)
 !      type(DJDS_ordering_table), pointer, save :: MG_djds_tbl_full_cdl(:)
 !   ordering table for solvers
-      type(DJDS_MATRIX), save :: MG_mat_magne(0:max_MG_level)
       type(DJDS_MATRIX), save :: MG_mat_temp(0:max_MG_level)
       type(DJDS_MATRIX), save :: MG_mat_d_scalar(0:max_MG_level)
       type(DJDS_MATRIX), save :: MG_mat_press(0:max_MG_level)

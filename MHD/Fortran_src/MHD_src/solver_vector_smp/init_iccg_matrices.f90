@@ -63,7 +63,7 @@
      &      DJDS_linear, Fmat_DJDS)
         if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
           call alloc_type_djds33_mat(node%numnod, node%internal_node,   &
-     &        DJDS_entire, Bmat_DJDS)
+     &        DJDS_entire, MHD1_matrices%Bmat_MG_DJDS(0))
         end if
       end if
 !
@@ -72,7 +72,7 @@
      &      DJDS_linear, Fmat_DJDS)
         if (iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
           call alloc_type_djds33_mat(node%numnod, node%internal_node,   &
-     &        DJDS_entire, Bmat_DJDS)
+     &        DJDS_entire, MHD1_matrices%Bmat_MG_DJDS(0))
         end if
       end if
 !
@@ -116,7 +116,7 @@
      &      num_t_linear, DJDS_linear, Fmat_DJDS)
         if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
           call reset_aiccg_33_MHD(node, ele,  ione, ele%nnod_4_ele,     &
-     &     ele%nnod_4_ele, DJDS_entire, Bmat_DJDS)
+     &     ele%nnod_4_ele, DJDS_entire, MHD1_matrices%Bmat_MG_DJDS(0))
         end if
       end if
 !
@@ -124,7 +124,7 @@
         call reset_aiccg_11_MHD(node, ele, ione, ele%numele,            &
      &      num_t_linear, DJDS_linear, Fmat_DJDS)
         if (iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
-          call reset_aiccg_vector_p(Bmat_DJDS)
+          call reset_aiccg_vector_p(MHD1_matrices%Bmat_MG_DJDS(0))
         end if
       end if
 !
@@ -159,7 +159,7 @@
         call dealloc_type_djds_mat(Fmat_DJDS)
         if(    iflag_t_evo_4_magne .ge. id_Crank_nicolson               &
      &    .or. iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
-          call dealloc_type_djds_mat(Bmat_DJDS)
+          call dealloc_type_djds_mat(MHD1_matrices%Bmat_MG_DJDS(0))
         end if
       end if
 !

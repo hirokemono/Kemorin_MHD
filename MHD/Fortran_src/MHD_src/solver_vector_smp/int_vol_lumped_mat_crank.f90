@@ -78,7 +78,8 @@
         call init_33_matrix_lump                                        &
      &     (node%numnod, conduct%numnod_fld, conduct%inod_fld,          &
      &      DJDS_entire%OLDtoNEW, mhd_fem_wk%mlump_cd%ml_o,             &
-     &      Bmat_DJDS%num_non0, Bmat_DJDS%aiccg)
+     &      MHD1_matrices%Bmat_MG_DJDS(0)%num_non0,                     &
+     &      MHD1_matrices%Bmat_MG_DJDS(0)%aiccg)
       end if
 !
       if (iflag_t_evo_4_vect_p .eq. id_Crank_nicolson                   &
@@ -86,7 +87,8 @@
         call init_33_matrix_lump                                        &
      &     (node%numnod, conduct%numnod_fld, conduct%inod_fld,          &
      &      DJDS_entire%OLDtoNEW, mhd_fem_wk%mlump_cd%ml_o,             &
-     &      Bmat_DJDS%num_non0, Bmat_DJDS%aiccg)
+     &      MHD1_matrices%Bmat_MG_DJDS(0)%num_non0,                     &
+     &      MHD1_matrices%Bmat_MG_DJDS(0)%aiccg)
       end if
 !
       if (iflag_t_evo_4_composit .eq. id_Crank_nicolson                 &

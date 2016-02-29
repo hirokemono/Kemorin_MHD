@@ -7,10 +7,8 @@
 !> @brief Connect primary matrix data for MGCG
 !!
 !!@verbatim
-!!      subroutine s_link_djds_mat_MHD_4_MG(MG0_mat_velo, MG0_mat_magne,&
-!!     &       MG0_mat_temp, MG0_mat_light, MG0_mat_press, MG0_mat_magp)
-!!        type(DJDS_MATRIX),  intent(inout) :: MG0_mat_velo
-!!        type(DJDS_MATRIX),  intent(inout) :: MG0_mat_magne
+!!      subroutine s_link_djds_mat_MHD_4_MG                             &
+!!     &      (MG0_mat_temp, MG0_mat_light, MG0_mat_press, MG0_mat_magp)
 !!        type(DJDS_MATRIX),  intent(inout) :: MG0_mat_temp
 !!        type(DJDS_MATRIX),  intent(inout) :: MG0_mat_light
 !!        type(DJDS_MATRIX),  intent(inout) :: MG0_mat_press
@@ -32,13 +30,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_link_djds_mat_MHD_4_MG(MG0_mat_magne,                &
-     &       MG0_mat_temp, MG0_mat_light, MG0_mat_press, MG0_mat_magp)
+      subroutine s_link_djds_mat_MHD_4_MG                               &
+     &      (MG0_mat_temp, MG0_mat_light, MG0_mat_press, MG0_mat_magp)
 !
       use m_control_parameter
       use m_solver_djds_MHD
 !
-      type(DJDS_MATRIX),  intent(inout) :: MG0_mat_magne
       type(DJDS_MATRIX),  intent(inout) :: MG0_mat_temp
       type(DJDS_MATRIX),  intent(inout) :: MG0_mat_light
       type(DJDS_MATRIX),  intent(inout) :: MG0_mat_press
@@ -66,12 +63,6 @@
      &     .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'link_djds_matrix_structs F'
         call link_djds_matrix_structs(Fmat_DJDS, MG0_mat_magp)
-      end if
-!
-      if (iflag_t_evo_4_magne .ge. id_Crank_nicolson                    &
-     &  .or. iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
-        if(iflag_debug .gt. 0) write(*,*) 'link_djds_matrix_structs B'
-        call link_djds_matrix_structs(Bmat_DJDS, MG0_mat_magne)
       end if
 !
       end subroutine s_link_djds_mat_MHD_4_MG
