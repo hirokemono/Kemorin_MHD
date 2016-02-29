@@ -267,8 +267,6 @@
      &          n_int, i_magne, ncomp_ele, iele_magne, ie_upw, d_ele,   &
      &          fem_wk, f_nl)
 !
-      use m_jacobians
-!
       use cal_add_smp
       use nodal_fld_2_each_element
       use cal_skv_to_ff_smp

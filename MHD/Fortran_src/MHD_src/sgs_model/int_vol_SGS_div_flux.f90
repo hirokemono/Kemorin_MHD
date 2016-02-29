@@ -52,8 +52,6 @@
      &           i_SGS_flux, i_filter, ak_diff, coef, fem_wk,           &
      &           mhd_fem_wk, f_nl)
 !
-      use m_int_vol_data
-!
       use nodal_fld_cst_to_element
       use sgs_terms_to_each_ele
       use cal_skv_to_ff_smp
@@ -104,8 +102,6 @@
      &          (node, ele, jac_3d, rhs_tbl, FEM_elens, nod_fld,        &
      &           iele_fsmp_stack, n_int, i_vect, i_SGS_flux, i_filter,  &
      &           ak_diff, coef, fem_wk, mhd_fem_wk, f_nl)
-!
-      use m_int_vol_data
 !
       use nodal_fld_cst_to_element
       use sgs_terms_to_each_ele
@@ -158,8 +154,6 @@
      &           iele_fsmp_stack, n_int, i_vector, i_scalar,            &
      &           i_SGS_flux, i_filter, ak_diff, ncomp_ele, ie_upw,      &
      &           d_ele, coef, fem_wk, mhd_fem_wk, f_nl)
-!
-      use m_int_vol_data
 !
       use nodal_fld_cst_to_element
       use sgs_terms_to_each_ele
@@ -216,8 +210,6 @@
      &           iele_fsmp_stack, n_int, i_vect, i_SGS_flux, i_filter,  &
      &           ak_diff, ncomp_ele, ie_upw, d_ele, coef,               &
      &           fem_wk, mhd_fem_wk, f_nl)
-!
-      use m_int_vol_data
 !
       use nodal_fld_cst_to_element
       use sgs_terms_to_each_ele

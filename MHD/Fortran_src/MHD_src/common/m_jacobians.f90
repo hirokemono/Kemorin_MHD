@@ -88,13 +88,6 @@
 !     iele: element ID
 !     ix:   integration point ID
 !
-!      subroutine allocate_jacobians_linear_quad(numele)
-!
-!       subroutine deallocate_jacobians
-!       subroutine deallocate_jacobians_quad
-!       subroutine deallocate_jacobians_lq
-!       subroutine deallocate_inv_jacobians_lq
-!
       module m_jacobians
 !
       use m_constants
@@ -121,43 +114,5 @@
       type(jacobians_2d), save :: jac1_sf_grp_2d_q
 !>     Stracture of quadrature Jacobians for linear surafce group
       type(jacobians_2d), save :: jac1_sf_grp_2d_ql
-!
-!  ---------------------------------------------------------------------
-!
-      contains
-!
-!  ---------------------------------------------------------------------
-!
-       subroutine allocate_jacobians_linear_quad(numele, ntot_int_3d)
-!
-       use m_geometry_constants
-       use m_fem_gauss_int_coefs
-!
-       integer(kind = kint), intent(in) :: numele, ntot_int_3d
-!
-!
-      call alloc_jacobians_type                                         &
-     &   (numele, num_t_quad, ntot_int_3d, jac1_3d_lq)
-!
-       end subroutine allocate_jacobians_linear_quad
-!
-!  ------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-       subroutine deallocate_jacobians_lq
-!
-      call dealloc_jacobians_type(jac1_3d_lq)
-!
-       end subroutine deallocate_jacobians_lq
-!
-!  ---------------------------------------------------------------------
-!
-       subroutine deallocate_inv_jacobians_lq
-!
-      call dealloc_inv_jac_type(jac1_3d_lq)
-!
-       end subroutine deallocate_inv_jacobians_lq
-!
-!  ------------------------------------------------------------------
 !
       end module m_jacobians

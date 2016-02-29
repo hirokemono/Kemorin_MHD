@@ -23,6 +23,8 @@
       use m_t_step_parameter
       use m_mesh_data
       use m_node_phys_data
+      use m_element_id_4_node
+      use m_jacobians
 !
       use SPH_analyzer_MHD
       use visualizer_all
@@ -66,7 +68,8 @@
 !        Initialize FEM mesh data for field data IO
 !
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_w_viz'
-      call FEM_initialize_w_viz(mesh1, group1, ele_mesh1)
+      call FEM_initialize_w_viz                                         &
+     &   (mesh1, group1, ele_mesh1, next_tbl1, jac1_3d_q, jac1_3d_l)
 !
 !        Initialize spherical transform dynamo
 !
@@ -89,8 +92,6 @@
 !
       subroutine evolution_sph_mhd
 !
-      use m_element_id_4_node
-      use m_jacobians
       use FEM_analyzer_sph_MHD
 !
       integer(kind = kint) :: visval, iflag_finish

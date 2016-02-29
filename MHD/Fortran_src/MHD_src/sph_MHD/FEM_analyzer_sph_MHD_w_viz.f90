@@ -8,10 +8,13 @@
 !!       to FEM data for data visualization
 !!
 !!@verbatim
-!!      subroutine FEM_initialize_w_viz(mesh, group, ele_mesh)
+!!      subroutine FEM_initialize_w_viz                                 &
+!!     &         (mesh, group, ele_mesh, next_tbl, jac_3d_q, jac_3d_l)
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(element_geometry), intent(inout) :: ele_mesh
+!!        type(next_nod_ele_table), intent(inout) :: next_tbl
+!!        type(jacobians_3d), intent(inout) :: jac_3d_q, jac_3d_l
 !!@endverbatim
 !!
 !!@n @param  i_step       Current time step
@@ -30,6 +33,10 @@
       use m_machine_parameter
       use m_work_time
 !
+      use t_mesh_data
+      use t_next_node_ele_4_node
+      use t_jacobian_3d
+!
       implicit none
 !
 !-----------------------------------------------------------------------
@@ -38,14 +45,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_w_viz(mesh, group, ele_mesh)
+      subroutine FEM_initialize_w_viz                                   &
+     &         (mesh, group, ele_mesh, next_tbl, jac_3d_q, jac_3d_l)
 !
       use m_t_step_parameter
       use m_fem_gauss_int_coefs
-      use m_jacobians
-      use m_element_id_4_node
-!
-      use t_mesh_data
 !
       use set_ele_id_4_node_type
       use FEM_analyzer_sph_MHD
@@ -54,6 +58,8 @@
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
+      type(next_nod_ele_table), intent(inout) :: next_tbl
+      type(jacobians_3d), intent(inout) :: jac_3d_q, jac_3d_l
 !
 !   --------------------------------
 !       setup mesh information
@@ -69,7 +75,7 @@
       if( (i_step_output_fline) .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
         call set_ele_id_4_node                                          &
-     &    (mesh%node, mesh%ele, next_tbl1%neib_ele)
+     &    (mesh%node, mesh%ele, next_tbl%neib_ele)
       end if
 !
       if(i_step_output_pvr .le. 0) Return
@@ -80,7 +86,7 @@
       call maximum_integration_points(ione)
       call const_jacobian_and_volume                                    &
      &   (mesh%node, group%surf_grp, group%infty_grp, mesh%ele,         &
-     &    jac1_3d_l, jac1_3d_q)
+     &    jac_3d_l, jac_3d_q)
 !
       end subroutine FEM_initialize_w_viz
 !

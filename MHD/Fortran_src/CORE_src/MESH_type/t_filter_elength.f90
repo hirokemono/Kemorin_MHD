@@ -27,6 +27,12 @@
 !!      subroutine dealloc_ref_1d_mom_type(filter_conf)
 !!        type(filter_config_type), intent(inout) ::  filter_conf
 !!
+!!      subroutine copy_filter_elen_ele_from_type(elen_e, FEM_elens)
+!!         type(elen_ele_diffs_type), intent(in)  :: elen_e
+!!         type(gradient_model_data_type), intent(inout) :: FEM_elens
+!!      subroutine copy_filter_elen_ele_to_type(FEM_elens, elen_e)
+!!         type(gradient_model_data_type), intent(in) :: FEM_elens
+!!         type(elen_ele_diffs_type), intent(inout) :: elen_e
 !!      subroutine copy_elength_type(num, elen_org, elen_tgt)
 !!        integer (kind = kint), intent(in) :: num
 !!        type(elen_on_ele_type), intent(in) :: elen_org
@@ -374,6 +380,41 @@
       deallocate( filter_conf%xmom_1d_org )
 !
       end subroutine dealloc_ref_1d_mom_type
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_filter_elen_ele_from_type(elen_e, FEM_elens)
+!
+      type(elen_ele_diffs_type), intent(in)  :: elen_e
+      type(gradient_model_data_type), intent(inout) :: FEM_elens
+!
+!
+      call copy_elength_type(FEM_elens%nele_filter_mom,                 &
+     &    elen_e%moms,  FEM_elens%elen_ele%moms)
+      call copy_elen_diffs_type(FEM_elens%nele_filter_mom,              &
+     &    elen_e%diff, FEM_elens%elen_ele%diff)
+      call copy_elen_diffs_type(FEM_elens%nele_filter_mom,              &
+     &    elen_e%diff2, FEM_elens%elen_ele%diff2)
+!
+      end subroutine copy_filter_elen_ele_from_type
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_filter_elen_ele_to_type(FEM_elens, elen_e)
+!
+      type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(elen_ele_diffs_type), intent(inout) :: elen_e
+!
+!
+      call copy_elength_type(FEM_elens%nele_filter_mom,                 &
+     &    FEM_elens%elen_ele%moms, elen_e%moms)
+      call copy_elen_diffs_type(FEM_elens%nele_filter_mom,              &
+     &    FEM_elens%elen_ele%diff, elen_e%diff)
+      call copy_elen_diffs_type(FEM_elens%nele_filter_mom,              &
+     &    FEM_elens%elen_ele%diff2, elen_e%diff2)
+!
+      end subroutine copy_filter_elen_ele_to_type
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

@@ -6,8 +6,13 @@
 !
 !>    Structure for lumped mass matrix and RHS vector assembler for MHD
 !
+!!      subroutine alloc_int_vol_data(numele, max_nod_smp, mhd_fem_wk)
+!!      subroutine alloc_int_vol_dvx(numele, mhd_fem_wk)
 !!      subroutine alloc_mass_mat_fluid(numnod, mhd_fem_wk)
 !!      subroutine alloc_mass_mat_conduct(mhd_fem_wk)
+!!
+!!      subroutine dealloc_int_vol_data(nod_fld, mhd_fem_wk)
+!!      subroutine dealloc_int_vol_dvx(mhd_fem_wk)
 !!      subroutine dealloc_mass_mat_fluid(mhd_fem_wk)
 !!      subroutine dealloc_mass_mat_conduct(mhd_fem_wk)
 !!
@@ -20,6 +25,8 @@
 !!     &         (my_rank, numnod, mhd_fem_wk)
 !!      subroutine check_ff_m_smp                                       &
 !!     &         (my_rank, numdir, max_nod_smp, mhd_fem_wk)
+!!      subroutine check_diff_elemental_data                            &
+!!     &         (my_rank, numele, numdir, i_field, mhd_fem_wk)
 !
       module t_MHD_finite_element_mat
 !
@@ -69,7 +76,70 @@
 !
       contains
 !
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_int_vol_data                                     &
+     &         (numele, max_nod_smp, nod_fld, mhd_fem_wk)
+!
+      use m_machine_parameter
+      use m_control_parameter
+      use m_phys_labels
+      use t_phys_data
+!
+      integer(kind = kint), intent(in) :: numele, max_nod_smp
+      type(phys_data), intent(in) :: nod_fld
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
+!
+      integer(kind = kint) :: i
+!
+!
+      allocate(mhd_fem_wk%ff_m_smp(max_nod_smp,3,np_smp))
+      allocate(mhd_fem_wk%ff_t_smp(max_nod_smp,6,np_smp))
+      if(max_nod_smp .gt. 0) mhd_fem_wk%ff_m_smp = 0.0d0
+      if(max_nod_smp .gt. 0) mhd_fem_wk%ff_t_smp = 0.0d0
+!
+      allocate(mhd_fem_wk%xx_e(numele,3))
+      allocate(mhd_fem_wk%rr_e(numele))
+!
+      if(numele .gt. 0) mhd_fem_wk%xx_e = 0.0d0
+      if(numele .gt. 0) mhd_fem_wk%rr_e = 0.0d0
+!
+      do i = 1, nod_fld%num_phys
+        if      ( nod_fld%phys_name(i) .eq. fhd_velo ) then
+          allocate(mhd_fem_wk%velo_1(numele,3))
+          if(numele .gt. 0) mhd_fem_wk%velo_1 = 0.0d0
+        else if ( nod_fld%phys_name(i) .eq. fhd_magne ) then
+          allocate(mhd_fem_wk%magne_1(numele,3))
+          if(numele .gt. 0) mhd_fem_wk%magne_1 = 0.0d0
+        else if ( nod_fld%phys_name(i) .eq. fhd_vecp ) then
+          allocate(mhd_fem_wk%vecp_1(numele,3))
+          if(numele .gt. 0) mhd_fem_wk%vecp_1 = 0.0d0
+        end if
+      end do
+!
+      if (iflag_SGS_model .ne. id_SGS_none) then
+        allocate(mhd_fem_wk%sgs_v1(numele,3))
+        allocate(mhd_fem_wk%sgs_t1(numele,6))
+        if(numele .gt. 0) mhd_fem_wk%sgs_v1 = 0.0d0
+        if(numele .gt. 0) mhd_fem_wk%sgs_t1 = 0.0d0
+      end if
+!
+      end subroutine alloc_int_vol_data
+!
 !   ---------------------------------------------------------------------
+!
+      subroutine alloc_int_vol_dvx(numele, mhd_fem_wk)
+!
+      integer(kind = kint), intent(in) :: numele
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
+!
+!
+      allocate(mhd_fem_wk%dvx(numele,mhd_fem_wk%n_dvx))
+      if(numele .gt. 0) mhd_fem_wk%dvx = 0.0d0
+!
+      end subroutine alloc_int_vol_dvx
+!
+!  ------------------------------------------------------------------
 !
       subroutine alloc_mass_mat_fluid(numnod, mhd_fem_wk)
 !
@@ -95,6 +165,46 @@
       end subroutine alloc_mass_mat_conduct
 !
 !   ---------------------------------------------------------------------
+!   ---------------------------------------------------------------------
+!
+      subroutine dealloc_int_vol_data(nod_fld, mhd_fem_wk)
+!
+      use m_phys_labels
+      use t_phys_data
+!
+      type(phys_data), intent(in) :: nod_fld
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
+!
+      integer(kind = kint) :: i
+!
+!
+      deallocate(mhd_fem_wk%ff_m_smp, mhd_fem_wk%ff_t_smp)
+      deallocate(mhd_fem_wk%xx_e, mhd_fem_wk%rr_e)
+!
+      do i = 1, nod_fld%num_phys
+        if      ( nod_fld%phys_name(i) .eq. fhd_velo ) then
+          deallocate(mhd_fem_wk%velo_1)
+        else if ( nod_fld%phys_name(i) .eq. fhd_magne ) then
+          deallocate(mhd_fem_wk%magne_1)
+        else if ( nod_fld%phys_name(i) .eq. fhd_vecp ) then
+          deallocate(mhd_fem_wk%vecp_1)
+        end if
+      end do
+!
+      end subroutine dealloc_int_vol_data
+!
+!   ---------------------------------------------------------------------
+!
+      subroutine dealloc_int_vol_dvx(mhd_fem_wk)
+!
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
+!
+!
+      deallocate(mhd_fem_wk%dvx)
+!
+      end subroutine dealloc_int_vol_dvx
+!
+!  ------------------------------------------------------------------
 !
       subroutine dealloc_mass_mat_fluid(mhd_fem_wk)
 !
@@ -229,5 +339,28 @@
       end subroutine check_ff_m_smp
 !
 !   ---------------------------------------------------------------------
+!   ---------------------------------------------------------------------
+!
+      subroutine check_diff_elemental_data                              &
+     &         (my_rank, numele, numdir, i_field, mhd_fem_wk)
+!
+      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: numele, numdir, i_field
+      type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
+!
+      integer(kind = kint) :: iele, nd, ndiff
+!
+      do nd = 1, numdir
+        write(50+my_rank,*)                                             &
+     &      'iele, diff. of elemental field: ', i_field, nd
+       do iele = 1, numele
+        write(50+my_rank,'(i16,1p10e25.14)') iele,                      &
+     &    (mhd_fem_wk%dvx(iele,i_field+3*(nd-1)+ndiff-1),ndiff=1, 3)
+       end do
+      end do
+!
+      end subroutine check_diff_elemental_data
+!
+!-----------------------------------------------------------------------
 !
       end module t_MHD_finite_element_mat

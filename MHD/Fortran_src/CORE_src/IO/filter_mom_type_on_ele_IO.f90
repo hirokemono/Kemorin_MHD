@@ -32,8 +32,6 @@
 !
       implicit none
 !
-      character(len=255), private :: character_4_read
-!
 !  ---------------------------------------------------------------------
 !
       contains

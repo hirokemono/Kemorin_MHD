@@ -27,9 +27,11 @@
       use calypso_mpi
 !
       use t_phys_address
+      use t_phys_data
 !
       implicit none
 !
+      private :: count_int_vol_data
       private :: count_check_delta_t_data, set_check_delta_t_data
 !
 ! ----------------------------------------------------------------------
@@ -42,7 +44,6 @@
      &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, label_sim)
 !
       use m_element_phys_data
-      use m_int_vol_data
       use m_phys_constants
       use m_mean_square_values
       use m_SGS_address
@@ -75,7 +76,10 @@
       call alloc_mass_mat_conduct(node%numnod, mhd_fem_wk)
 !
       if (iflag_debug.ge.1) write(*,*) 'allocate_int_vol_data'
-      call allocate_int_vol_data(ele%numele, node%max_nod_smp)
+      call alloc_int_vol_data                                           &
+     &   (ele%numele, node%max_nod_smp, nod_fld, mhd_fem_wk)
+      call count_int_vol_data(mhd_fem_wk)
+      call alloc_int_vol_dvx(ele%numele, mhd_fem_wk)
       call set_SGS_addresses
 !
 !  allocation for field values
@@ -109,6 +113,49 @@
       end subroutine s_init_check_delta_t_data
 !
 ! ----------------------------------------------------------------------
+!
+      subroutine count_int_vol_data(mhd_fem_wk)
+!
+      use m_control_parameter
+      use m_phys_labels
+      use t_MHD_finite_element_mat
+!
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
+!
+!
+      mhd_fem_wk%n_dvx = 0
+      if ( iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+        if (  iflag_SGS_heat .ne.      id_SGS_none                      &
+     &   .or. iflag_SGS_inertia .ne.   id_SGS_none                      &
+     &   .or. iflag_SGS_induction .ne. id_SGS_none) then
+         mhd_fem_wk%n_dvx = mhd_fem_wk%n_dvx + 18
+        end if
+!
+        if ( iflag_SGS_lorentz .ne. id_SGS_none) then
+         mhd_fem_wk%n_dvx = mhd_fem_wk%n_dvx + 18
+        else if (iflag_SGS_induction .ne. id_SGS_none                   &
+     &     .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
+         mhd_fem_wk%n_dvx = mhd_fem_wk%n_dvx + 18
+        end if
+!
+      else if (iflag_SGS_model .ne. id_SGS_none) then
+        if (  iflag_SGS_heat .ne.      id_SGS_none                      &
+     &   .or. iflag_SGS_inertia .ne.   id_SGS_none                      &
+     &   .or. iflag_SGS_induction .ne. id_SGS_none ) then
+         mhd_fem_wk%n_dvx = mhd_fem_wk%n_dvx + 9
+        end if
+!
+        if ( iflag_SGS_lorentz .ne. id_SGS_none) then
+         mhd_fem_wk%n_dvx = mhd_fem_wk%n_dvx + 9
+        else if (iflag_SGS_induction .ne. id_SGS_none                   &
+     &     .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
+         mhd_fem_wk%n_dvx = mhd_fem_wk%n_dvx + 9
+        end if
+      end if
+!
+       end subroutine count_int_vol_data
+!
+!  ------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine count_check_delta_t_data(iphys)

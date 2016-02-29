@@ -33,9 +33,12 @@
       use m_t_step_parameter
 !
       use m_node_phys_data
+      use m_jacobians
+      use m_element_id_4_node
+      use m_finite_element_matrix
+      use m_int_vol_data
       use m_ele_material_property
       use m_mean_square_values
-      use m_jacobians
       use m_work_4_dynamic_model
       use m_work_layer_correlate
       use m_boundary_condition_IDs
@@ -43,9 +46,6 @@
       use m_solver_djds_MHD
       use m_array_for_send_recv
       use m_solver_djds_MHD
-      use m_element_id_4_node
-      use m_finite_element_matrix
-      use m_int_vol_data
 !
       use m_cal_max_indices
 !

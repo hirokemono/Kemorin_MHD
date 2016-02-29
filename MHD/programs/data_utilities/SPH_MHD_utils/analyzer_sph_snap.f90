@@ -23,6 +23,8 @@
       use m_t_step_parameter
       use m_mesh_data
       use m_node_phys_data
+      use m_element_id_4_node
+      use m_jacobians
 !
       use SPH_analyzer_snap
       use visualizer_all
@@ -62,7 +64,8 @@
 !
       call start_eleps_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_w_viz'
-      call FEM_initialize_w_viz(mesh1, group1, ele_mesh1)
+      call FEM_initialize_w_viz                                         &
+     &   (mesh1, group1, ele_mesh1, next_tbl1, jac1_3d_q, jac1_3d_l)
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'
@@ -81,8 +84,6 @@
 !
       subroutine evolution_sph_snap
 !
-      use m_element_id_4_node
-      use m_jacobians
       use FEM_analyzer_sph_MHD
 !
       integer(kind = kint) :: visval
