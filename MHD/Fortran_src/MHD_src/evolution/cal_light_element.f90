@@ -60,6 +60,7 @@
      &      fem_wk, f_l, f_nl, nod_fld)
 !
       use m_t_int_parameter
+      use m_solver_djds_MHD
       use m_bc_data_ene
       use m_surf_data_composition
       use m_SGS_address
@@ -135,13 +136,15 @@
         call cal_composit_pre_lumped_crank                              &
      &     (iphys%i_light, iphys%i_pre_composit, iak_diff_c, nod_bc1_c, &
      &      nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d,     &
-     &      rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      rhs_tbl, FEM_elens, MHD1_matrices%Cmat_MG_DJDS,             &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       else if(iflag_t_evo_4_composit .eq. id_Crank_nicolson_cmass) then
         call cal_composit_pre_consist_crank                             &
      &     (iphys%i_light, iphys%i_pre_composit, iak_diff_c, nod_bc1_c, &
      &      node, ele, fluid, jac_3d, rhs_tbl, FEM_elens,               &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      MHD1_matrices%Cmat_MG_DJDS, mhd_fem_wk, fem_wk,             &
+     &      f_l, f_nl, nod_fld)
       end if
 !
       call set_boundary_scalar(nod_bc1_c, iphys%i_light, nod_fld)

@@ -24,18 +24,18 @@
 !!      subroutine cal_temp_pre_lumped_crank                            &
 !!     &         (i_temp, i_pre_heat, iak_diff_t, nod_bc_t,             &
 !!     &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,       &
-!!     &          jac_3d, rhs_tbl,  FEM_elens, mhd_fem_wk, fem_wk,      &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          jac_3d, rhs_tbl, FEM_elens, Tmat_MG_DJDS,             &
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_per_temp_lumped_crank                            &
 !!     &         (i_par_temp, i_pre_heat, iak_diff_t, nod_bc_t,         &
 !!     &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,       &
-!!     &          jac_3d, rhs_tbl,  FEM_elens, mhd_fem_wk, fem_wk,      &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          jac_3d, rhs_tbl, FEM_elens, Tmat_MG_DJDS,             &
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_composit_pre_lumped_crank                        &
 !!     &         (i_light, i_pre_composit, iak_diff_c, nod_bc_c,        &
 !!     &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,       &
-!!     &          jac_3d, rhs_tbl,  FEM_elens, mhd_fem_wk, fem_wk,      &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          jac_3d, rhs_tbl, FEM_elens, Cmat_MG_DJDS,             &
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -53,6 +53,7 @@
 !!        type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
 !!        type(DJDS_MATRIX), intent(in) :: Vmat_MG_DJDS(0:num_MG_level)
 !!        type(DJDS_MATRIX), intent(in) :: Bmat_MG_DJDS(0:num_MG_level)
+!!        type(DJDS_MATRIX), intent(in) :: Tmat_MG_DJDS(0:num_MG_level)
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -317,8 +318,8 @@
       subroutine cal_temp_pre_lumped_crank                              &
      &         (i_temp, i_pre_heat, iak_diff_t, nod_bc_t,               &
      &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,         &
-     &          jac_3d, rhs_tbl,  FEM_elens, mhd_fem_wk, fem_wk,        &
-     &          f_l, f_nl, nod_fld)
+     &          jac_3d, rhs_tbl, FEM_elens, Tmat_MG_DJDS,               &
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_iccg_parameter
       use m_solver_djds_MHD
@@ -347,6 +348,8 @@
       type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_t
       type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
 !
+      type(DJDS_MATRIX), intent(in) :: Tmat_MG_DJDS(0:num_MG_level)
+!
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
@@ -370,9 +373,9 @@
      &    mhd_fem_wk%mlump_fl%ml_o, f_nl%ff, nod_fld%ntot_phys,         &
      &    n_scalar, i_temp, i_pre_heat, nod_fld%d_fld, f_l%ff)
 !
-      call solver_crank_scalar                                          &
-     &   (node, DJDS_comm_fl, DJDS_fluid, Tmat_DJDS, num_MG_level,      &
-     &    MG_itp, MG_comm_fl, MG_djds_tbl_fl, MG_mat_temp,              &
+      call solver_crank_scalar(node,                                    &
+     &   DJDS_comm_fl, DJDS_fluid, num_MG_level,                        &
+     &    MG_itp, MG_comm_fl, MG_djds_tbl_fl, Tmat_MG_DJDS,             &
      &    method_4_solver, precond_4_solver, eps_4_temp_crank, itr,     &
      &    i_temp, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !
@@ -383,8 +386,8 @@
       subroutine cal_per_temp_lumped_crank                              &
      &         (i_par_temp, i_pre_heat, iak_diff_t, nod_bc_t,           &
      &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,         &
-     &          jac_3d, rhs_tbl,  FEM_elens, mhd_fem_wk, fem_wk,        &
-     &          f_l, f_nl, nod_fld)
+     &          jac_3d, rhs_tbl, FEM_elens, Tmat_MG_DJDS,               &
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_iccg_parameter
       use m_solver_djds_MHD
@@ -413,6 +416,8 @@
       type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_t
       type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
 !
+      type(DJDS_MATRIX), intent(in) :: Tmat_MG_DJDS(0:num_MG_level)
+!
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
@@ -437,9 +442,9 @@
      &    mhd_fem_wk%mlump_fl%ml_o, f_nl%ff, nod_fld%ntot_phys,         &
      &    n_scalar, i_par_temp, i_pre_heat, nod_fld%d_fld, f_l%ff)
 !
-      call solver_crank_scalar                                          &
-     &   (node, DJDS_comm_fl, DJDS_fluid, Tmat_DJDS, num_MG_level,      &
-     &    MG_itp, MG_comm_fl, MG_djds_tbl_fl, MG_mat_temp,              &
+      call solver_crank_scalar(node,                                    &
+     &    DJDS_comm_fl, DJDS_fluid, num_MG_level,                       &
+     &    MG_itp, MG_comm_fl, MG_djds_tbl_fl, Tmat_MG_DJDS,             &
      &    method_4_solver, precond_4_solver, eps_4_temp_crank, itr,     &
      &    i_par_temp, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !
@@ -449,9 +454,9 @@
 !
       subroutine cal_composit_pre_lumped_crank                          &
      &         (i_light, i_pre_composit, iak_diff_c, nod_bc_c,          &
-     &          nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d, &
-     &          rhs_tbl,  FEM_elens, mhd_fem_wk, fem_wk,                &
-     &          f_l, f_nl, nod_fld)
+     &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,         &
+     &          jac_3d, rhs_tbl, FEM_elens, Cmat_MG_DJDS,               &
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_iccg_parameter
       use m_solver_djds_MHD
@@ -480,6 +485,8 @@
       type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_c
       type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
 !
+      type(DJDS_MATRIX), intent(in) :: Cmat_MG_DJDS(0:num_MG_level)
+!
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
@@ -502,9 +509,9 @@
      &    mhd_fem_wk%mlump_fl%ml_o, f_nl%ff, nod_fld%ntot_phys,         &
      &    n_scalar, i_light, i_pre_composit,  nod_fld%d_fld, f_l%ff)
 !
-      call solver_crank_scalar                                          &
-     &   (node, DJDS_comm_fl, DJDS_fluid, Cmat_DJDS, num_MG_level,      &
-     &    MG_itp, MG_comm_fl, MG_djds_tbl_fl, MG_mat_d_scalar,          &
+      call solver_crank_scalar(node,                                    &
+     &    DJDS_comm_fl, DJDS_fluid, num_MG_level,                       &
+     &    MG_itp, MG_comm_fl, MG_djds_tbl_fl, Cmat_MG_DJDS,             &
      &    method_4_solver, precond_4_solver, eps_4_comp_crank, itr,     &
      &    i_light, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !

@@ -302,7 +302,8 @@
      &      MG_djds_tbl(i_level), MG_djds_tbl_fl(i_level),              &
      &      MHD1_matrices%Vmat_MG_DJDS(i_level),                        &
      &      MHD1_matrices%Bmat_MG_DJDS(i_level),                        &
-     &      MG_mat_temp(i_level),  MG_mat_d_scalar(i_level),            &
+     &      MHD1_matrices%Tmat_MG_DJDS(i_level),                        &
+     &      MG_mat_d_scalar(i_level),            &
      &      MHD1_matrices%Pmat_MG_DJDS(i_level),                        &
      &      MHD1_matrices%Fmat_MG_DJDS(i_level) )
         else
@@ -310,7 +311,8 @@
           call alloc_MG_zero_matrices                                   &
      &     (MHD1_matrices%Vmat_MG_DJDS(i_level),                        &
      &      MHD1_matrices%Bmat_MG_DJDS(i_level),                        &
-     &      MG_mat_temp(i_level),  MG_mat_d_scalar(i_level),            &
+     &      MHD1_matrices%Tmat_MG_DJDS(i_level),                        &
+     &      MG_mat_d_scalar(i_level),            &
      &      MHD1_matrices%Pmat_MG_DJDS(i_level),                        &
      &      MHD1_matrices%Fmat_MG_DJDS(i_level) )
         end if
@@ -324,14 +326,11 @@
 !
       use m_ctl_parameter_Multigrid
       use m_solver_djds_MHD
-      use link_djds_mat_MHD_4_MG
       use set_aiccg_matrices_type
       use matrices_precond_type
 !
       integer(kind = kint) :: i_level
 !
-!
-      call s_link_djds_mat_MHD_4_MG(MG_mat_temp(0), MG_mat_d_scalar(0))
 !
       do i_level = 1, num_MG_level
         if(my_rank .lt. MG_mpi(i_level)%nprocs) then
@@ -350,7 +349,8 @@
      &      MG_mk_MHD(i_level), MG_FEM_mat(i_level),                    &
      &      MHD1_matrices%Vmat_MG_DJDS(i_level),                        &
      &      MHD1_matrices%Bmat_MG_DJDS(i_level),                        &
-     &      MG_mat_temp(i_level), MG_mat_d_scalar(i_level),             &
+     &      MHD1_matrices%Tmat_MG_DJDS(i_level),                        &
+     &      MG_mat_d_scalar(i_level),             &
      &      MHD1_matrices%Pmat_MG_DJDS(i_level),                        &
      &      MHD1_matrices%Fmat_MG_DJDS(i_level))
         end if
@@ -364,7 +364,8 @@
      &      MG_djds_tbl_l(i_level),  MG_djds_tbl_fll(i_level),          &
      &      MHD1_matrices%Vmat_MG_DJDS(i_level),                        &
      &      MHD1_matrices%Bmat_MG_DJDS(i_level),                        &
-     &      MG_mat_temp(i_level), MG_mat_d_scalar(i_level),             &
+     &      MHD1_matrices%Tmat_MG_DJDS(i_level),                        &
+     &      MG_mat_d_scalar(i_level),             &
      &      MHD1_matrices%Pmat_MG_DJDS(i_level),                        &
      &      MHD1_matrices%Fmat_MG_DJDS(i_level))
         end if

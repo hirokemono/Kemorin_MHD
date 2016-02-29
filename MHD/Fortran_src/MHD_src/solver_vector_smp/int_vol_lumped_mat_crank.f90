@@ -70,7 +70,8 @@
         call init_11_matrix_lump                                        &
      &     (node%numnod, fluid%numnod_fld, fluid%inod_fld,              &
      &      DJDS_fluid%OLDtoNEW, mhd_fem_wk%mlump_fl%ml_o,              &
-     &      Tmat_DJDS%num_non0, Tmat_DJDS%aiccg)
+     &      MHD1_matrices%Tmat_MG_DJDS(0)%num_non0,                     &
+     &      MHD1_matrices%Tmat_MG_DJDS(0)%aiccg)
       end if
 !
       if (iflag_t_evo_4_magne .eq. id_Crank_nicolson                    &
@@ -96,7 +97,8 @@
         call init_11_matrix_lump                                        &
      &     (node%numnod, fluid%numnod_fld, fluid%inod_fld,              &
      &      DJDS_fluid%OLDtoNEW, mhd_fem_wk%mlump_fl%ml_o,              &
-     &      Cmat_DJDS%num_non0, Cmat_DJDS%aiccg)
+     &      MHD1_matrices%Cmat_MG_DJDS(0)%num_non0,                     &
+     &      MHD1_matrices%Cmat_MG_DJDS(0)%aiccg)
       end if
 !$omp end parallel
 !

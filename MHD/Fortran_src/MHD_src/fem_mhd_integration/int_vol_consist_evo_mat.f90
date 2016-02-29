@@ -72,14 +72,16 @@
      &      .and. coef_temp.gt.0.0d0 ) then
           call add_skv1_to_crs_matrix11(ele, rhs_tbl,                   &
      &        MHD_mat_tbls%fluid_q, k2, fem_wk%sk6,                     &
-     &        Tmat_DJDS%num_non0, Tmat_DJDS%aiccg)
+     &        MHD1_matrices%Tmat_MG_DJDS(0)%num_non0,                   &
+     &        MHD1_matrices%Tmat_MG_DJDS(0)%aiccg)
         end if
 !
         if ( iflag_t_evo_4_composit .eq. id_Crank_nicolson_cmass        &
      &      .and. coef_light .gt. 0.0d0) then
           call add_skv1_to_crs_matrix11(ele, rhs_tbl,                   &
      &        MHD_mat_tbls%fluid_q, k2, fem_wk%sk6,                     &
-     &        Cmat_DJDS%num_non0, Cmat_DJDS%aiccg)
+     &        MHD1_matrices%Cmat_MG_DJDS(0)%num_non0,                   &
+     &        MHD1_matrices%Cmat_MG_DJDS(0)%aiccg)
         end if
 !
         if ( iflag_t_evo_4_magne .eq. id_Crank_nicolson_cmass           &

@@ -71,14 +71,16 @@
       if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
         if (iflag_debug.eq.1)  write(*,*) 'precond: ',                  &
      &          trim(precond_4_solver),' ', sigma_diag
-        call precond_DJDS11_struct(np_smp, DJDS_fluid, Tmat_DJDS,       &
+        call precond_DJDS11_struct(np_smp, DJDS_fluid,                  &
+     &      MHD1_matrices%Tmat_MG_DJDS(0),                              &
      &      precond_4_solver, sigma_diag)
       end if
 !
       if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
         if (iflag_debug.eq.1)  write(*,*) 'precond: ',                  &
      &         trim(precond_4_solver),' ', sigma_diag
-        call precond_DJDS11_struct(np_smp, DJDS_fluid, Cmat_DJDS,       &
+        call precond_DJDS11_struct(np_smp, DJDS_fluid,                  &
+     &      MHD1_matrices%Cmat_MG_DJDS(0),                              &
      &      precond_4_solver, sigma_diag)
       end if
 !

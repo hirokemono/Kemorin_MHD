@@ -124,14 +124,14 @@
         call choose_int_diffuse1_crank_mat(ele, jac_3d,                 &
      &      rhs_tbl, mat_tbl_fl_q, FEM_elens, intg_point_t_evo,         &
      &      num_diff_kinds, iak_diff_t, ak_diff, coef_imp_t,            &
-     &      ak_d_temp, fem_wk, Tmat_DJDS)
+     &      ak_d_temp, fem_wk, MHD1_matrices%Tmat_MG_DJDS(0))
       end if
 !
       if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
         call choose_int_diffuse1_crank_mat(ele, jac_3d,                 &
      &      rhs_tbl, mat_tbl_fl_q, FEM_elens, intg_point_t_evo,         &
      &      num_diff_kinds, iak_diff_c, ak_diff, coef_imp_c,            &
-     &      ak_d_composit, fem_wk, Cmat_DJDS)
+     &      ak_d_composit, fem_wk, MHD1_matrices%Cmat_MG_DJDS(0))
       end if
 !
       end subroutine int_vol_crank_matrices

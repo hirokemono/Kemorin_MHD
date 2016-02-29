@@ -26,10 +26,18 @@
 !>        Structure of matrix for time evolution of magnetic field
         type(DJDS_MATRIX), pointer :: Bmat_MG_DJDS(:)
 !
-!>        Structure of matrix for time evolution of pressure
+!>        Structure of matrix for  pressure
         type(DJDS_MATRIX), pointer :: Pmat_MG_DJDS(:)
-!>        Structure of matrix for time evolution of scalar potential
+!>        Structure of matrix for  scalar potential
         type(DJDS_MATRIX), pointer :: Fmat_MG_DJDS(:)
+!
+!>        Structure of matrix for time evolution of temperature
+        type(DJDS_MATRIX), pointer :: Tmat_MG_DJDS(:)
+!>        Structure of matrix for time evolution of composition
+        type(DJDS_MATRIX), pointer :: Cmat_MG_DJDS(:)
+!
+!>      DJDS ordering structures for entire domain
+        type(DJDS_ordering_table), save :: MG_DJDS_table
       end type MHD_MG_matrices
 !
 !-----------------------------------------------------------------------
@@ -50,6 +58,10 @@
       allocate(matrices%Pmat_MG_DJDS(0:num_MG_level))
       allocate(matrices%Fmat_MG_DJDS(0:num_MG_level))
 !
+      allocate(matrices%Tmat_MG_DJDS(0:num_MG_level))
+      allocate(matrices%Cmat_MG_DJDS(0:num_MG_level))
+!
+!
       end subroutine alloc_MHD_MG_DJDS_mat
 !
 !-----------------------------------------------------------------------
@@ -60,7 +72,8 @@
 !
 !
       deallocate(matrices%Vmat_MG_DJDS, matrices%Bmat_MG_DJDS)
-      deallocate(matrices%Vmat_MG_DJDS, matrices%Fmat_MG_DJDS)
+      deallocate(matrices%Pmat_MG_DJDS, matrices%Fmat_MG_DJDS)
+      deallocate(matrices%Tmat_MG_DJDS, matrices%Cmat_MG_DJDS)
 !
       end subroutine dealloc_MHD_MG_DJDS_mat
 !

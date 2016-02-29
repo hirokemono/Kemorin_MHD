@@ -148,7 +148,7 @@
 !   solve Poission equation
 !
       call solver_poisson_scalar                                        &
-     &   (node, DJDS_comm_fl, DJDS_fl_l, Pmat_MG_DJDS(0), num_MG_level, &
+     &   (node, DJDS_comm_fl, DJDS_fl_l, num_MG_level,                  &
      &    MG_itp, MG_comm_fl, MG_djds_tbl_fll, Pmat_MG_DJDS,            &
      &    method_4_solver, precond_4_solver, eps, itr,                  &
      &    iphys%i_p_phi, MG_vector, f_l, b_vec, x_vec, nod_fld)
@@ -226,7 +226,7 @@
 !
       if (iflag_debug .gt. 0)  write(*,*) 'cal_sol_mag_po'
       call solver_poisson_scalar                                        &
-     &   (node, DJDS_comm_etr, DJDS_linear, Fmat_MG_DJDS(0),            &
+     &   (node, DJDS_comm_etr, DJDS_linear,                             &
      &    num_MG_level, MG_itp, MG_comm, MG_djds_tbl_l, Fmat_MG_DJDS,   &
      &    method_4_solver, precond_4_solver, eps, itr,                  &
      &    iphys%i_m_phi, MG_vector, f_l, b_vec, x_vec, nod_fld)
@@ -307,7 +307,7 @@
       call set_boundary_ff(node, nod_bc1_f, f_l)
 !
       call solver_poisson_scalar                                        &
-     &   (node, DJDS_comm_etr, DJDS_linear, Fmat_MG_DJDS(0),            &
+     &   (node, DJDS_comm_etr, DJDS_linear,                             &
      &    num_MG_level, MG_itp, MG_comm, MG_djds_tbl_l, Fmat_MG_DJDS,   &
      &    method_4_solver, precond_4_solver, eps, itr,                  &
      &    iphys%i_m_phi, MG_vector, f_l, b_vec, x_vec, nod_fld)

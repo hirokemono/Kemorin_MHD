@@ -79,19 +79,18 @@
 !
 
       if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
-        call set_aiccg_bc_scalar_nod                                    &
-     &     (ele%nnod_4_ele, ele, nod_bc1_t, DJDS_fluid, Tmat_DJDS)
+        call set_aiccg_bc_scalar_nod(ele%nnod_4_ele, ele, nod_bc1_t,    &
+     &      DJDS_fluid, MHD1_matrices%Tmat_MG_DJDS(0))
       end if
 !
       if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
-        call set_aiccg_bc_scalar_nod                                    &
-     &     (ele%nnod_4_ele, ele, nod_bc1_c, DJDS_fluid, Cmat_DJDS)
+        call set_aiccg_bc_scalar_nod(ele%nnod_4_ele, ele, nod_bc1_c,    &
+     &      DJDS_fluid, MHD1_matrices%Cmat_MG_DJDS(0))
       end if
 !
       if (iflag_t_evo_4_magne .gt. id_no_evolution) then
-        call set_aiccg_bc_scalar_nod                                    &
-     &     (num_t_linear, ele, nod_bc1_f, DJDS_linear,                  &
-     &      MHD1_matrices%Fmat_MG_DJDS(0))
+        call set_aiccg_bc_scalar_nod(num_t_linear, ele, nod_bc1_f,      &
+     &      DJDS_linear, MHD1_matrices%Fmat_MG_DJDS(0))
 !
         if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
           call set_aiccg_bc_vector_nod(ele, nod_bc1_b, DJDS_entire,     &

@@ -23,13 +23,6 @@
 !>        Structure of matrices for MHD dynamo simulation
       type(MHD_MG_matrices), save :: MHD1_matrices
 !
-!>      Structure of matrix for time evolution of temperature
-      type(DJDS_MATRIX), save :: Tmat_DJDS
-!
-!>      Structure of matrix for time evolution of conposition variation
-      type(DJDS_MATRIX), save :: Cmat_DJDS
-!
-!
 !>      Structure for MPI communicator
       type(mpi_4_solver), save :: solver_C
 !
