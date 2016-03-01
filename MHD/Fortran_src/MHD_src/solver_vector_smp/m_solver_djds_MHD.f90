@@ -29,20 +29,6 @@
 !>      Communication table structure for fluid
       type(communication_table), save :: DJDS_comm_fl
 !
-!>      DJDS ordering structures for conductor region
-      type(DJDS_ordering_table), save :: DJDS_conduct
-!>      DJDS ordering structures for linear conductor region
-      type(DJDS_ordering_table), save :: DJDS_cd_l
-!>      Communication table structure for conductor
-      type(communication_table), save :: DJDS_comm_cd
-!
-!>      DJDS ordering structures for conductor region
-      type(DJDS_ordering_table), save :: DJDS_insulator
-!>      DJDS ordering structures for linear conductor region
-      type(DJDS_ordering_table), save :: DJDS_ins_l
-!>      Communication table structure for insulator
-      type(communication_table), save :: DJDS_comm_ins
-!
 !-----------------------------------------------------------------------
 !
       contains
@@ -119,26 +105,6 @@
         call link_djds_connect_structs(MHD1_matrices%MG_DJDS_fluid(0),  &
      &      MHD1_matrices%MG_DJDS_lin_fl(0))
       end if
-!
-!
-!      call set_djds_layer_connectivity(node, ele, ele%nnod_4_ele,      &
-!     &    conduct%iele_start_fld, conduct%iele_end_fld,                &
-!     &    MHD1_matrices%MG_comm_table(0), solver_C, DJDS_conduct)
-!      call set_djds_layer_connectivity(node, ele, ele%nnod_4_ele,      &
-!     &    insulate%iele_start_fld, insulate%iele_end_fld,              &
-!     &    MHD1_matrices%MG_comm_table(0), solver_C, DJDS_insulator)
-!
-!      if ( ele%nnod_4_ele .ne. num_t_linear) then
-!        call set_djds_layer_connectivity(node, ele, num_t_linear,      &
-!     &      conduct%iele_start_fld, conduct%iele_end_fld,              &
-!     &      MHD1_matrices%MG_comm_table(0), solver_C, DJDS_cd_l)
-!        call set_djds_layer_connectivity(node, ele, num_t_linear,      &
-!     &      insulate%iele_start_fld, insulate%iele_end_fld,            &
-!     &      MHD1_matrices%MG_comm_table(0), solver_C, DJDS_ins_l)
-!      else
-!        call link_djds_connect_structs(DJDS_conduct, DJDS_cd_l)
-!        call link_djds_connect_structs(DJDS_insulator, DJDS_ins_l)
-!      end if
 !
       call copy_comm_tbl_types                                          &
      &   (DJDS_comm_fl, MHD1_matrices%MG_comm_fluid(0))

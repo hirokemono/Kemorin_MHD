@@ -9,7 +9,6 @@
 !      subroutine unlink_MG_djds_const_lin_idx
 !
 !      subroutine alloc_MG_djds_tbl_lin_idx(num_level)
-!      subroutine dealloc_MG_djds_tbl_lin_idx
 !      subroutine link_MG_djds_tbl_lin_idx(num_level)
 !      subroutine unlink_MG_djds_tbl_lin_idx
 !
@@ -52,30 +51,15 @@
      &                       :: MG_djds_const_idx_fl(max_MG_level)
       type(table_mat_const), target, save                               &
      &                       :: MG_djds_const_idx_cd(max_MG_level)
-!      type(table_mat_const), target, save                              &
-!     &                       :: MG_djds_const_idx_ins(max_MG_level)
-!      type(table_mat_const), target, save                              &
-!     &                       :: MG_djds_const_full_cd(max_MG_level)
 !
       type(table_mat_const), pointer, save :: MG_djds_const_idx_l(:)
       type(table_mat_const), pointer, save :: MG_djds_const_idx_fll(:)
-!      type(table_mat_const), pointer, save :: MG_djds_const_idx_cdl(:)
-!      type(table_mat_const), pointer, save                             &
-!     &                        :: MG_djds_const_idx_insl(:)
-!      type(table_mat_const), pointer, save                             &
-!     &                        :: MG_djds_const_idx_fullcdl(:)
 !   table for matrix assemble
 !
       type(DJDS_ordering_table), target, save                           &
      &                      :: MG_djds_tbl_cd(0:max_MG_level)
 !      type(DJDS_ordering_table), target, save                          &
-!     &                      :: MG_djds_tbl_ins(0:max_MG_level)
-!      type(DJDS_ordering_table), target, save                          &
 !     &                      :: MG_djds_tbl_full_cd(0:max_MG_level)
-!
-!      type(DJDS_ordering_table), pointer, save :: MG_djds_tbl_cdl(:)
-!      type(DJDS_ordering_table), pointer, save :: MG_djds_tbl_insl(:)
-!      type(DJDS_ordering_table), pointer, save :: MG_djds_tbl_full_cdl(:)
 !
       type CRS_tables_MHD
         type(CRS_matrix_connect) :: whole
@@ -104,9 +88,6 @@
 !
       allocate( MG_djds_const_idx_l(0:num_level) )
       allocate( MG_djds_const_idx_fll(0:num_level) )
-!      allocate( MG_djds_const_idx_cdl(0:num_level) )
-!      allocate( MG_djds_const_idx_insl(0:num_level) )
-!      allocate( MG_djds_const_idx_fullcdl(0:num_level) )
 !
       end subroutine alloc_MG_djds_const_lin_idx
 !
@@ -117,9 +98,6 @@
 !
       deallocate( MG_djds_const_idx_l       )
       deallocate( MG_djds_const_idx_fll     )
-!      deallocate( MG_djds_const_idx_cdl     )
-!      deallocate( MG_djds_const_idx_insl    )
-!      deallocate( MG_djds_const_idx_fullcdl )
 !
       end subroutine dealloc_MG_djds_const_lin_idx
 !
@@ -132,9 +110,6 @@
 !
       MG_djds_const_idx_l =>       MG_djds_const_idx
       MG_djds_const_idx_fll =>     MG_djds_const_idx_fl
-!      MG_djds_const_idx_cdl =>     MG_djds_const_idx_cd
-!      MG_djds_const_idx_insl =>    MG_djds_const_idx_ins
-!      MG_djds_const_idx_fullcdl => MG_djds_const_full_cd
 !
       end subroutine link_MG_djds_const_lin_idx
 !
@@ -145,37 +120,10 @@
 !
       nullify( MG_djds_const_idx_l       )
       nullify( MG_djds_const_idx_fll     )
-!      nullify( MG_djds_const_idx_cdl     )
-!      nullify( MG_djds_const_idx_insl    )
-!      nullify( MG_djds_const_idx_fullcdl )
 !
       end subroutine unlink_MG_djds_const_lin_idx
 !
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine alloc_MG_djds_tbl_lin_idx(num_level)
-!
-      integer(kind = kint), intent(in) :: num_level
-!
-!
-!      allocate( MG_djds_tbl_cdl(0:num_level) )
-!      allocate( MG_djds_tbl_insl(0:num_level) )
-!      allocate( MG_djds_tbl_full_cdl(0:num_level) )
-!
-      end subroutine alloc_MG_djds_tbl_lin_idx
-!
-!-----------------------------------------------------------------------
-!
-      subroutine dealloc_MG_djds_tbl_lin_idx
-!
-!
-!      deallocate( MG_djds_tbl_cdl      )
-!      deallocate( MG_djds_tbl_insl     )
-!      deallocate( MG_djds_tbl_full_cdl )
-!
-      end subroutine dealloc_MG_djds_tbl_lin_idx
-!
 !-----------------------------------------------------------------------
 !
       subroutine link_MG_djds_tbl_lin_idx(num_level)
@@ -187,9 +135,6 @@
 !
       MHD1_matrices%MG_DJDS_linear => MHD1_matrices%MG_DJDS_table
       MHD1_matrices%MG_DJDS_lin_fl => MHD1_matrices%MG_DJDS_fluid
-!      MG_djds_tbl_cdl =>      MG_djds_tbl_cd
-!      MG_djds_tbl_insl =>     MG_djds_tbl_ins
-!      MG_djds_tbl_full_cdl => MG_djds_tbl_full_cd
 !
       end subroutine link_MG_djds_tbl_lin_idx
 !
@@ -202,9 +147,6 @@
 !
       nullify( MHD1_matrices%MG_DJDS_linear        )
       nullify( MHD1_matrices%MG_DJDS_lin_fl      )
-!      nullify( MG_djds_tbl_cdl      )
-!      nullify( MG_djds_tbl_insl     )
-!      nullify( MG_djds_tbl_full_cdl )
 !
       end subroutine unlink_MG_djds_tbl_lin_idx
 !

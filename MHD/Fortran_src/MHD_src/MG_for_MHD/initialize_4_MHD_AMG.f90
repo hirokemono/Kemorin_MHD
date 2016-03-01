@@ -66,11 +66,6 @@
 !
 !     --------------------- 
 !
-      if(iflag_debug .gt. 0) write(*,*) 'alloc_MG_djds_tbl_lin_idx'
-      call alloc_MG_djds_tbl_lin_idx(num_MG_level)
-!
-!     --------------------- 
-!
 !
       do i_level = 1, num_MG_level
         if(my_rank .lt. MG_mpi(i_level)%nprocs ) then
