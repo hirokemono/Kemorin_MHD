@@ -218,7 +218,8 @@
       use m_control_parameter
       use m_solver_djds_MHD
 !
-      use set_index_list_4_djds
+      use set_idx_4_mat_type
+      use set_MHD_idx_4_mat_type
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_data_MHD), intent(in) :: MHD_mesh
@@ -231,7 +232,7 @@
 !      write(*,*) 'set_index_list_4_DJDS_mat_etr'
       call alloc_type_marix_list                                        &
      &   (mesh%ele%nnod_4_ele, rhs_tbl, mat_tbl_q)
-      call set_index_list_4_DJDS_mat_etr(mesh%node, mesh%ele, rhs_tbl,  &
+      call set_whole_index_list_4_djds(mesh%node, mesh%ele, rhs_tbl,    &
      &    MHD1_matrices%MG_DJDS_table(0), mat_tbl_q)
 !
 !      write(*,*) 'set_index_list_4_mat_etr_l'

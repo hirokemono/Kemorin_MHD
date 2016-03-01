@@ -8,10 +8,10 @@
 !>     Find index of matrix in FEM assemble loop using structure
 !!
 !!@verbatim
-!!      subroutine set_idx_4_mat_type_whole(nnod, mesh, rhs_tbl,        &
-!!     &          djds_tbl, whole_mat)
-!!        integer(kind = kint), intent:(in) :: nnod
-!!        type(mesh_geometry), intent(in) :: mesh
+!!      subroutine set_whole_index_list_4_djds(node, ele,               &
+!!     &          rhs_tbl, djds_tbl, whole_mat)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(DJDS_ordering_table), intent(in) :: djds_tbl
 !!        type(table_mat_const), intent(inout) :: whole_mat
@@ -28,7 +28,7 @@
       use m_precision
 !
       use m_machine_parameter
-      use t_mesh_data
+      use t_geometry_data
       use t_solver_djds
 !
       implicit none
@@ -39,24 +39,27 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_idx_4_mat_type_whole(nnod, mesh, rhs_tbl,          &
-     &          djds_tbl, whole_mat)
+      subroutine set_whole_index_list_4_djds(node, ele,                 &
+     &          rhs_tbl, djds_tbl, whole_mat)
 !
       use t_table_FEM_const
 !
-      integer(kind = kint), intent(in) :: nnod
-      type(mesh_geometry), intent(in) :: mesh
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(DJDS_ordering_table), intent(in) :: djds_tbl
 !
       type(table_mat_const), intent(inout) :: whole_mat
 !
-      integer(kind = kint) :: nod1, nod2, mat_num, k2
+      integer(kind = kint) :: mat_num, k2
       integer(kind = kint) :: iproc, iele, inum, iconn
       integer(kind = kint) :: inn, ist, ied, in
 !
 !
-      do k2 = 1, nnod
+!$omp parallel private(k2)
+      do k2 = 1, whole_mat%nnod_1ele
+!
+!$omp do private(iproc,inum,inn,ist,ied,in,iele,iconn,mat_num)
         do iproc = 1, np_smp
           do inum = 1, rhs_tbl%inod_ele_max
 !
@@ -65,24 +68,22 @@
             ied = rhs_tbl%nod_stack_smp(inn)
 !
             do in = ist, ied
-!
               iele =  rhs_tbl%iele_sort_smp(in)
               iconn = rhs_tbl%iconn_sort_smp(in)
-              nod1 = mesh%ele%ie(iele,iconn)
-              nod2 = mesh%ele%ie(iele,k2)
 !
               call set_DJDS_off_diag_type                               &
-     &           (mesh%node%numnod, mesh%node%internal_node,            &
-     &            djds_tbl, nod1, nod2, mat_num)
+     &           (node%numnod, node%internal_node, djds_tbl,            &
+     &            ele%ie(iele,iconn), ele%ie(iele,k2), mat_num)
               whole_mat%idx_4_mat(in,k2) = mat_num
-!
             end do
           end do
         end do
+!$omp end do nowait
 !
       end do
+!$omp end parallel
 !
-      end subroutine set_idx_4_mat_type_whole
+      end subroutine set_whole_index_list_4_djds
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

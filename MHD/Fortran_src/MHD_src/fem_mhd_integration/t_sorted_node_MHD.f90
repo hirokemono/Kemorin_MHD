@@ -37,15 +37,17 @@
 !>  Structures for FEM marix table
       type tables_MHD_mat_const
 !>  Structure for linear FEM marix table
+        type(table_mat_const) :: base
+!>  Structure for linear FEM marix table
         type(table_mat_const) :: linear
 !
 !>  Structure for quad FEM marix table for fluid
         type(table_mat_const) :: fluid_q
-!>  Structure for quad FEM marix table for conductor but whole domain
-        type(table_mat_const) :: full_conduct_q
-!
 !>  Structure for linear FEM marix table for fluid
         type(table_mat_const) :: fluid_l
+!
+!>  Structure for quad FEM marix table for conductor but whole domain
+        type(table_mat_const) :: full_conduct_q
       end type tables_MHD_mat_const
 !
 !-----------------------------------------------------------------------
@@ -57,7 +59,7 @@
       subroutine set_index_list_4_mat_etr_l                             &
      &         (node, ele, rhs_tbl, mat_tbl_q, linear)
 !
-      use set_index_list_4_djds
+      use set_idx_4_mat_type
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -70,8 +72,8 @@
       call alloc_type_marix_list(num_t_linear, rhs_tbl, linear)
 !
       if (ele%nnod_4_ele .ne. num_t_linear) then
-        call set_index_list_4_DJDS_mat_etr(node, ele, rhs_tbl,          &
-     &      MHD1_matrices%MG_DJDS_linear(0), linear)
+        call set_whole_index_list_4_djds(node, ele,                     &
+     &      rhs_tbl, MHD1_matrices%MG_DJDS_linear(0), linear)
       else
         linear%idx_4_mat = mat_tbl_q%idx_4_mat
       end if
@@ -84,7 +86,7 @@
       subroutine set_index_list_4_mat_fl                                &
      &         (node, ele, fluid, rhs_tbl, fluid_q)
 !
-      use set_index_list_4_djds
+      use set_MHD_idx_4_mat_type
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -95,9 +97,8 @@
 !
 !
       call alloc_type_marix_list(ele%nnod_4_ele, rhs_tbl, fluid_q)
-      call set_index_list_4_DJDS_mat                                    &
-     &   (fluid%iele_start_fld, fluid%iele_end_fld,                     &
-     &    node, ele, rhs_tbl,  MHD1_matrices%MG_DJDS_fluid(0), fluid_q)
+      call set_part_index_list_4_djds(node, ele, fluid, rhs_tbl,        &
+     &    MHD1_matrices%MG_DJDS_fluid(0), fluid_q)
 !
       end subroutine set_index_list_4_mat_fl
 !
@@ -106,7 +107,7 @@
       subroutine set_index_list_4_mat_fl_l                              &
      &         (node, ele, fluid, rhs_tbl, fluid_q, fluid_l)
 !
-      use set_index_list_4_djds
+      use set_MHD_idx_4_mat_type
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -120,10 +121,8 @@
       call alloc_type_marix_list(num_t_linear, rhs_tbl, fluid_l)
 !
       if (ele%nnod_4_ele .ne. num_t_linear) then
-        call set_index_list_4_DJDS_mat                                  &
-     &     (fluid%iele_start_fld, fluid%iele_end_fld,                   &
-     &      node, ele, rhs_tbl, MHD1_matrices%MG_DJDS_lin_fl(0),        &
-     &      fluid_l)
+        call set_part_index_list_4_djds(node, ele, fluid, rhs_tbl,      &
+     &      MHD1_matrices%MG_DJDS_lin_fl(0), fluid_l)
       else
         fluid_l%idx_4_mat = fluid_q%idx_4_mat
       end if
@@ -135,7 +134,7 @@
       subroutine set_index_list_4_mat_cd(node, ele, conduct, rhs_tbl,   &
      &          full_conduct_q)
 !
-      use set_index_list_4_djds
+      use set_MHD_idx_4_mat_type
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -147,10 +146,8 @@
 !
       call alloc_type_marix_list                                        &
      &   (ele%nnod_4_ele, rhs_tbl, full_conduct_q)
-      call set_index_list_4_DJDS_mat                                    &
-     &   (conduct%iele_start_fld, conduct%iele_end_fld,                 &
-     &    node, ele, rhs_tbl, MHD1_matrices%MG_DJDS_table(0),           &
-     &    full_conduct_q)
+      call set_part_index_list_4_djds(node, ele, conduct, rhs_tbl,      &
+     &    MHD1_matrices%MG_DJDS_table(0), full_conduct_q)
 !
       end subroutine set_index_list_4_mat_cd
 !
