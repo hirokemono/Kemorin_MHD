@@ -5,7 +5,7 @@
 !     Written by H. Matsui
 !
 !!      subroutine set_index_list_4_mat_etr_l                           &
-!!     &         (node, ele, rhs_tbl, mat_tbl_q, linear)
+!!     &         (node, ele, rhs_tbl, djds_tbl_lin, mat_tbl_q, linear)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid
@@ -14,20 +14,19 @@
 !!        type(table_mat_const), intent(in) :: mat_tbl_q
 !!
 !!      subroutine set_index_list_4_mat_fl                              &
-!!     &         (node, ele, fluid, rhs_tbl, fluid_q)
-!!      subroutine set_index_list_4_mat_fl_l                            &
-!!     &         (node, ele, fluid, rhs_tbl, fluid_q, fluid_l)
+!!     &         (node, ele, fluid, rhs_tbl, djds_tbl_fl, fluid_q)
+!!      subroutine set_index_list_4_mat_fl_l(node, ele, fluid,          &
+!!     &          rhs_tbl, djds_tbl_fll, fluid_q, fluid_l)
 !!
-!!      subroutine set_index_list_4_mat_cd(node, ele, conduct, rhs_tbl, &
-!!     &          full_conduct_q)
+!!      subroutine set_index_list_4_mat_fullcd(node, ele, conduct,      &
+!!     &          rhs_tbl, djds_tbl, full_conduct_q)
 !!
 !!      subroutine deallocate_MHD_matrix_lists(MHD_mat_tbls)
 !
-      module   t_sorted_node_MHD
+      module t_sorted_node_MHD
 !
       use m_precision
       use m_geometry_constants
-      use m_solver_djds_MHD
       use t_geometry_data_MHD
       use t_geometry_data
       use t_table_FEM_const
@@ -54,104 +53,6 @@
 !
       contains
 !
-!-----------------------------------------------------------------------
-!
-      subroutine set_index_list_4_mat_etr_l                             &
-     &         (node, ele, rhs_tbl, mat_tbl_q, linear)
-!
-      use set_idx_4_mat_type
-!
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(table_mat_const), intent(in) :: mat_tbl_q
-!
-      type(table_mat_const), intent(inout) :: linear
-!
-!
-      call alloc_type_marix_list(num_t_linear, rhs_tbl, linear)
-!
-      if (ele%nnod_4_ele .ne. num_t_linear) then
-        call set_whole_index_list_4_djds(node, ele,                     &
-     &      rhs_tbl, MHD1_matrices%MG_DJDS_linear(0), linear)
-      else
-        linear%idx_4_mat = mat_tbl_q%idx_4_mat
-      end if
-!
-      end subroutine set_index_list_4_mat_etr_l
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine set_index_list_4_mat_fl                                &
-     &         (node, ele, fluid, rhs_tbl, fluid_q)
-!
-      use set_MHD_idx_4_mat_type
-!
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(field_geometry_data), intent(in) :: fluid
-      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-!
-      type(table_mat_const), intent(inout) :: fluid_q
-!
-!
-      call alloc_type_marix_list(ele%nnod_4_ele, rhs_tbl, fluid_q)
-      call set_part_index_list_4_djds(node, ele, fluid, rhs_tbl,        &
-     &    MHD1_matrices%MG_DJDS_fluid(0), fluid_q)
-!
-      end subroutine set_index_list_4_mat_fl
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_index_list_4_mat_fl_l                              &
-     &         (node, ele, fluid, rhs_tbl, fluid_q, fluid_l)
-!
-      use set_MHD_idx_4_mat_type
-!
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(field_geometry_data), intent(in) :: fluid
-      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(table_mat_const), intent(in) :: fluid_q
-!
-      type(table_mat_const), intent(inout) :: fluid_l
-!
-!
-      call alloc_type_marix_list(num_t_linear, rhs_tbl, fluid_l)
-!
-      if (ele%nnod_4_ele .ne. num_t_linear) then
-        call set_part_index_list_4_djds(node, ele, fluid, rhs_tbl,      &
-     &      MHD1_matrices%MG_DJDS_lin_fl(0), fluid_l)
-      else
-        fluid_l%idx_4_mat = fluid_q%idx_4_mat
-      end if
-!
-      end subroutine set_index_list_4_mat_fl_l
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_index_list_4_mat_cd(node, ele, conduct, rhs_tbl,   &
-     &          full_conduct_q)
-!
-      use set_MHD_idx_4_mat_type
-!
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(field_geometry_data), intent(in) :: conduct
-      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-!
-      type(table_mat_const), intent(inout) :: full_conduct_q
-!
-!
-      call alloc_type_marix_list                                        &
-     &   (ele%nnod_4_ele, rhs_tbl, full_conduct_q)
-      call set_part_index_list_4_djds(node, ele, conduct, rhs_tbl,      &
-     &    MHD1_matrices%MG_DJDS_table(0), full_conduct_q)
-!
-      end subroutine set_index_list_4_mat_cd
-!
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine deallocate_MHD_matrix_lists(MHD_mat_tbls)

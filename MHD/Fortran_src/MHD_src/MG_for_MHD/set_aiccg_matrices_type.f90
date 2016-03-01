@@ -6,9 +6,9 @@
 !
 !      subroutine s_set_aiccg_matrices_type(femmesh, ele_mesh,          &
 !     &          MHD_mesh, nodal_bc, surface_bc, djds_tbl, djds_tbl_fl, &
-!     &          djds_tbl_cd, djds_tbl_l, djds_tbl_fl_l,                &
+!     &          djds_tbl_l, djds_tbl_fl_l,                             &
 !     &          jacobians, ak_AMG, rhs_tbl, djds_const,                &
-!     &          djds_const_fl, djds_const_cd, filter_MHD,              &
+!     &          djds_const_fl, djds_const_full_cd, filter_MHD,         &
 !     &          mk_MHD, MG_FEM_mat, mat_velo, mat_magne,               &
 !     &          mat_temp, mat_d_scalar ,mat_press, mat_magp)
 !        type(mesh_data), intent(in) ::             femmesh
@@ -21,12 +21,11 @@
 !        type(tables_4_FEM_assembles), intent(in) ::   rhs_tbl
 !        type(table_mat_const), intent(in) :: djds_const
 !        type(table_mat_const), intent(in) :: djds_const_fl
-!        type(table_mat_const), intent(in) :: djds_const_cd
+!        type(table_mat_const), intent(in) :: djds_const_full_cd
 !        type(gradient_model_data_type), intent(in) :: filter_MHD
 !        type(lumped_mass_mat_layerd), intent(in) ::    mk_MHD
 !        type(DJDS_ordering_table),  intent(in) :: djds_tbl
 !        type(DJDS_ordering_table),  intent(in) :: djds_tbl_fl
-!        type(DJDS_ordering_table),  intent(in) :: djds_tbl_cd
 !
 !        type(arrays_finite_element_mat), intent(inout) :: MG_FEM_mat
 !        type(DJDS_MATRIX),  intent(inout) :: mat_velo
@@ -50,9 +49,9 @@
 !
       subroutine s_set_aiccg_matrices_type(femmesh, ele_mesh,           &
      &          MHD_mesh, nodal_bc, surface_bc, djds_tbl, djds_tbl_fl,  &
-     &          djds_tbl_cd, djds_tbl_l, djds_tbl_fl_l,                 &
+     &          djds_tbl_l, djds_tbl_fl_l,                              &
      &          jacobians, ak_AMG, rhs_tbl, djds_const,                 &
-     &          djds_const_fl, djds_const_cd, djds_const_l,             &
+     &          djds_const_fl, djds_const_full_cd, djds_const_l,        &
      &          djds_const_fl_l, filter_MHD,                            &
      &          mk_MHD, MG_FEM_mat, mat_velo, mat_magne,                &
      &          mat_temp, mat_d_scalar ,mat_press, mat_magp)
@@ -70,7 +69,7 @@
       use t_filter_elength
       use t_solver_djds
 !
-      use reset_MHD_aiccg_mat_type
+      use init_iccg_matrices
       use int_MHD_poisson_mat_type
       use int_vol_lump_crank_type
       use set_aiccg_bc_phys_type
@@ -86,14 +85,13 @@
       type(tables_4_FEM_assembles), intent(in) ::   rhs_tbl
       type(table_mat_const), intent(in) :: djds_const
       type(table_mat_const), intent(in) :: djds_const_fl
-      type(table_mat_const), intent(in) :: djds_const_cd
+      type(table_mat_const), intent(in) :: djds_const_full_cd
       type(table_mat_const), intent(in) :: djds_const_l
       type(table_mat_const), intent(in) :: djds_const_fl_l
       type(lumped_mass_mat_layerd), intent(in) ::    mk_MHD
       type(gradient_model_data_type), intent(in) :: filter_MHD
       type(DJDS_ordering_table),  intent(in) :: djds_tbl
       type(DJDS_ordering_table),  intent(in) :: djds_tbl_fl
-      type(DJDS_ordering_table),  intent(in) :: djds_tbl_cd
       type(DJDS_ordering_table),  intent(in) :: djds_tbl_l
       type(DJDS_ordering_table),  intent(in) :: djds_tbl_fl_l
 !
@@ -106,8 +104,9 @@
       type(DJDS_MATRIX),  intent(inout) :: mat_magp
 !
 !
-      call s_reset_MHD_aiccg_mat_type(femmesh, MHD_mesh,                &
-     &    djds_tbl_fl, djds_tbl_cd, djds_tbl_l, djds_tbl_fl_l,          &
+      call reset_MHD_aiccg_mat_type                                     &
+     &   (femmesh%mesh%node, femmesh%mesh%ele, MHD_mesh%fluid,          &
+     &    djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,             &
      &    mat_velo, mat_magne, mat_temp, mat_d_scalar,                  &
      &    mat_press, mat_magp)
 !
@@ -123,17 +122,17 @@
 !
         call int_MHD_crank_matrices_type(femmesh%mesh,                  &
      &      jacobians%jac_3d, rhs_tbl, djds_const, djds_const_fl,       &
-     &      djds_const_cd, filter_MHD, ak_AMG, MG_FEM_mat%fem_wk,       &
+     &      djds_const_full_cd, filter_MHD, ak_AMG, MG_FEM_mat%fem_wk,  &
      &      mat_velo, mat_magne, mat_temp, mat_d_scalar)
 !
       else if (iflag_scheme .eq. id_Crank_nicolson_cmass) then
         call s_int_crank_mat_consist_type(femmesh%mesh,                 &
-     &      jacobians%jac_3d, rhs_tbl, djds_const_fl, djds_const_cd,    &
-     &      MG_FEM_mat%fem_wk, mat_velo, mat_magne,                     &
-     &      mat_temp, mat_d_scalar)
+     &      jacobians%jac_3d, rhs_tbl, djds_const_fl,                   &
+     &      djds_const_full_cd, MG_FEM_mat%fem_wk,                      &
+     &      mat_velo, mat_magne, mat_temp, mat_d_scalar)
         call int_MHD_crank_matrices_type(femmesh%mesh,                  &
      &      jacobians%jac_3d, rhs_tbl, djds_const, djds_const_fl,       &
-     &      djds_const_cd, filter_MHD, ak_AMG, MG_FEM_mat%fem_wk,       &
+     &      djds_const_full_cd, filter_MHD, ak_AMG, MG_FEM_mat%fem_wk,  &
      &      mat_velo, mat_magne, mat_temp, mat_d_scalar)
       end if
 !

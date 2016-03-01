@@ -4,13 +4,13 @@
 !      Written by H. Matsui on July, 2005
 !
 !      subroutine s_int_crank_mat_consist_type(mesh, jac_3d, rhs_tbl,   &
-!     &          djds_const_fl, djds_const_cd, fem_wk,                  &
+!     &          djds_const_fl, djds_const_full_cd, fem_wk,             &
 !     &          mat_velo, mat_magne, mat_temp, mat_d_scalar)
 !        type(mesh_data), intent(in) ::              mesh
 !        type(jacobians_3d), intent(in) ::           jac_3d
 !        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !        type(table_mat_const), intent(in) :: djds_const_fl
-!        type(table_mat_const), intent(in) :: djds_const_cd
+!        type(table_mat_const), intent(in) :: djds_const_full_cd
 !
 !        type(work_finite_element_mat), intent(inout) :: fem_wk
 !        type(DJDS_MATRIX),  intent(inout) :: mat_velo
@@ -36,7 +36,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_int_crank_mat_consist_type(mesh, jac_3d, rhs_tbl,    &
-     &          djds_const_fl, djds_const_cd, fem_wk,                   &
+     &          djds_const_fl, djds_const_full_cd, fem_wk,              &
      &          mat_velo, mat_magne, mat_temp, mat_d_scalar)
 !
       use m_control_parameter
@@ -54,7 +54,7 @@
       type(jacobians_3d), intent(in) ::           jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const), intent(in) :: djds_const_fl
-      type(table_mat_const), intent(in) :: djds_const_cd
+      type(table_mat_const), intent(in) :: djds_const_full_cd
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(DJDS_MATRIX),  intent(inout) :: mat_velo
@@ -98,7 +98,7 @@
      &      .and. coef_magne.gt.0.0d0) then
           write(*,*) 'init_consist_mat_magne_type', k2
           call add_skv1_to_crs_matrix33(mesh%ele, rhs_tbl,              &
-     &        djds_const_cd, k2, fem_wk%sk6,                            &
+     &        djds_const_full_cd, k2, fem_wk%sk6,                       &
      &        mat_magne%num_non0, mat_magne%aiccg)
         end if
 !
@@ -106,7 +106,7 @@
      &      .and. coef_magne.gt.0.0d0) then
           write(*,*) 'init_consist_mat_vect_p', k2
           call add_skv1_to_crs_matrix33(mesh%ele, rhs_tbl,              &
-     &        djds_const_cd, k2, fem_wk%sk6,                            &
+     &        djds_const_full_cd, k2, fem_wk%sk6,                       &
      &        mat_magne%num_non0, mat_magne%aiccg)
         end if
 !

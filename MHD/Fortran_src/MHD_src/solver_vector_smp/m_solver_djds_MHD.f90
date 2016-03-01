@@ -84,7 +84,6 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
-!      type(field_geometry_data), intent(in) :: conduct, insulate
 !
 !
       call set_djds_layer_connectivity(node, ele, ele%nnod_4_ele,       &

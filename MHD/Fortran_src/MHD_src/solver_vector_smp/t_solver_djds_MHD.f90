@@ -14,6 +14,7 @@
       use t_solver_djds
       use t_vector_for_solver
       use t_interpolate_table
+      use t_sorted_node_MHD
 !
       implicit none
 !
@@ -52,6 +53,9 @@
 !>        DJDS ordering structures for fluid
         type(DJDS_ordering_table), pointer :: MG_DJDS_conduct(:)
 !
+!>        Structures for FEM marix table
+        type(tables_MHD_mat_const), pointer :: MG_mat_tbls(:)
+!
 !>        interpolation table structure for multigrid
         type(MG_itp_table), pointer :: MG_interpolate(:)
       end type MHD_MG_matrices
@@ -88,6 +92,8 @@
 !
       allocate(matrices%MG_DJDS_conduct(0:num_MG_level))
 !
+      allocate(matrices%MG_mat_tbls(0:num_MG_level))
+!
       allocate(matrices%MG_interpolate(num_MG_level))
 !
       end subroutine alloc_MHD_MG_DJDS_mat
@@ -110,7 +116,7 @@
 !
       deallocate(matrices%MG_DJDS_conduct)
 !
-      deallocate(matrices%MG_interpolate)
+      deallocate(matrices%MG_mat_tbls, matrices%MG_interpolate)
 !
       end subroutine dealloc_MHD_MG_DJDS_mat
 !

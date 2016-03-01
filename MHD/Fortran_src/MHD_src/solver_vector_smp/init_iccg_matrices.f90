@@ -5,12 +5,16 @@
 !                                    on June 2005
 !
 !      subroutine allocate_aiccg_matrices(node)
-!      subroutine reset_aiccg_matrices(node, ele, fluid)
 !      subroutine deallocate_aiccg_matrices
+!!      subroutine reset_MHD_aiccg_mat_type(node, ele, fluid,           &
+!!     &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,     &
+!!     &          mat_velo, mat_magne, mat_temp, mat_d_scalar,          &
+!!     &          mat_press, mat_magp)
 !
       module init_iccg_matrices
 !
       use m_precision
+      use m_constants
 !
       use calypso_mpi
       use m_control_parameter
@@ -32,120 +36,25 @@
       subroutine allocate_aiccg_matrices(node)
 !
       use set_residual_limit
+      use allocate_MHD_AMG_array
 !
       type(node_data), intent(in) :: node
 !
 !
       call set_residual_4_crank
 !
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
-        call alloc_type_djds11_mat(node%numnod, node%internal_node,     &
-     &      MHD1_matrices%MG_DJDS_lin_fl(0),                            &
-     &      MHD1_matrices%Pmat_MG_DJDS(0))
-!
-        if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
-          call alloc_type_djds33_mat(node%numnod, node%internal_node,   &
-     &        MHD1_matrices%MG_DJDS_fluid(0),                           &
-     &        MHD1_matrices%Vmat_MG_DJDS(0))
-        end if
-      end if
-!
-      if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
-        call alloc_type_djds11_mat(node%numnod, node%internal_node,     &
-     &      MHD1_matrices%MG_DJDS_fluid(0),                             &
-     &      MHD1_matrices%Tmat_MG_DJDS(0))
-      end if
-!
-      if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
-        call alloc_type_djds11_mat(node%numnod, node%internal_node,     &
-     &      MHD1_matrices%MG_DJDS_fluid(0),                             &
-     &      MHD1_matrices%Cmat_MG_DJDS(0))
-      end if
-!
-      if (iflag_t_evo_4_magne .gt. id_no_evolution) then
-        call alloc_type_djds11_mat(node%numnod, node%internal_node,     &
-     &      MHD1_matrices%MG_DJDS_linear(0),                            &
-     &      MHD1_matrices%Fmat_MG_DJDS(0))
-        if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
-          call alloc_type_djds33_mat(node%numnod, node%internal_node,   &
-     &        MHD1_matrices%MG_DJDS_table(0),                           &
-     &        MHD1_matrices%Bmat_MG_DJDS(0))
-        end if
-      end if
-!
-      if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-        call alloc_type_djds11_mat(node%numnod, node%internal_node,     &
-     &      MHD1_matrices%MG_DJDS_linear(0),                            &
-     &      MHD1_matrices%Fmat_MG_DJDS(0))
-        if (iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
-          call alloc_type_djds33_mat(node%numnod, node%internal_node,   &
-     &        MHD1_matrices%MG_DJDS_table(0),                           &
-     &        MHD1_matrices%Bmat_MG_DJDS(0))
-        end if
-      end if
+      call alloc_MG_AMG_matrices(node,                                  &
+     &    MHD1_matrices%MG_DJDS_table(0),                               &
+     &    MHD1_matrices%MG_DJDS_fluid(0),                               &
+     &    MHD1_matrices%MG_DJDS_linear(0),                              &
+     &    MHD1_matrices%MG_DJDS_lin_fl(0),                              &
+     &    MHD1_matrices%Vmat_MG_DJDS(0), MHD1_matrices%Bmat_MG_DJDS(0), &
+     &    MHD1_matrices%Tmat_MG_DJDS(0), MHD1_matrices%Cmat_MG_DJDS(0), &
+     &    MHD1_matrices%Pmat_MG_DJDS(0), MHD1_matrices%Fmat_MG_DJDS(0))
 !
       end subroutine allocate_aiccg_matrices
 !
 !  ----------------------------------------------------------------------
-!
-      subroutine reset_aiccg_matrices(node, ele, fluid)
-!
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(field_geometry_data), intent(in) :: fluid
-!
-!
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
-        call reset_aiccg_11_MHD(node, ele,                              &
-     &      fluid%iele_start_fld, fluid%iele_end_fld, num_t_linear,     &
-     &      MHD1_matrices%MG_DJDS_lin_fl(0),                            &
-     &      MHD1_matrices%Pmat_MG_DJDS(0))
-!
-        if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
-          call reset_aiccg_33_MHD(node, ele,                            &
-     &        fluid%iele_start_fld, fluid%iele_end_fld, ele%nnod_4_ele, &
-     &        MHD1_matrices%MG_DJDS_fluid(0),                           &
-     &        MHD1_matrices%Vmat_MG_DJDS(0))
-        end if
-      end if
-!
-      if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
-        call reset_aiccg_11_MHD(node, ele,                              &
-     &      fluid%iele_start_fld, fluid%iele_end_fld,                   &
-     &      ele%nnod_4_ele, MHD1_matrices%MG_DJDS_fluid(0),             &
-     &      MHD1_matrices%Tmat_MG_DJDS(0))
-      end if
-!
-      if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
-        call reset_aiccg_11_MHD(node, ele,                              &
-     &      fluid%iele_start_fld, fluid%iele_end_fld,                   &
-     &      ele%nnod_4_ele, MHD1_matrices%MG_DJDS_fluid(0),             &
-     &      MHD1_matrices%Cmat_MG_DJDS(0))
-      end if
-!
-      if (iflag_t_evo_4_magne .gt. id_no_evolution) then
-        call reset_aiccg_11_MHD(node, ele, ione, ele%numele,            &
-     &      num_t_linear, MHD1_matrices%MG_DJDS_linear(0),              &
-     &      MHD1_matrices%Fmat_MG_DJDS(0))
-        if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
-          call reset_aiccg_33_MHD(node, ele,  ione, ele%nnod_4_ele,     &
-     &       ele%nnod_4_ele, MHD1_matrices%MG_DJDS_table(0),            &
-     &       MHD1_matrices%Bmat_MG_DJDS(0))
-        end if
-      end if
-!
-      if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-        call reset_aiccg_11_MHD(node, ele, ione, ele%numele,            &
-     &      num_t_linear, MHD1_matrices%MG_DJDS_linear(0),              &
-     &      MHD1_matrices%Fmat_MG_DJDS(0))
-        if (iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
-          call reset_aiccg_vector_p(MHD1_matrices%Bmat_MG_DJDS(0))
-        end if
-      end if
-!
-      end subroutine reset_aiccg_matrices
-!
-!-----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine deallocate_aiccg_matrices
@@ -180,7 +89,80 @@
 !
       end subroutine deallocate_aiccg_matrices
 !
-!  ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine reset_MHD_aiccg_mat_type(node, ele, fluid,             &
+     &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,       &
+     &          mat_velo, mat_magne, mat_temp, mat_d_scalar,            &
+     &          mat_press, mat_magp)
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(field_geometry_data), intent(in) :: fluid
+      type(DJDS_ordering_table),  intent(in) :: djds_tbl
+      type(DJDS_ordering_table),  intent(in) :: djds_tbl_fl
+      type(DJDS_ordering_table),  intent(in) :: djds_tbl_l
+      type(DJDS_ordering_table),  intent(in) :: djds_tbl_fl_l
+!
+      type(DJDS_MATRIX),  intent(inout) :: mat_velo
+      type(DJDS_MATRIX),  intent(inout) :: mat_magne
+      type(DJDS_MATRIX),  intent(inout) :: mat_temp
+      type(DJDS_MATRIX),  intent(inout) :: mat_d_scalar
+      type(DJDS_MATRIX),  intent(inout) :: mat_press
+      type(DJDS_MATRIX),  intent(inout) :: mat_magp
+!
+!
+      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+        call reset_aiccg_11_MHD(node, ele,                              &
+     &      fluid%iele_start_fld, fluid%iele_end_fld,                   &
+     &      num_t_linear, djds_tbl_fl_l, mat_press)
+!
+        if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
+          call reset_aiccg_33_MHD(node, ele,                            &
+     &        fluid%iele_start_fld, fluid%iele_end_fld,                 &
+     &        ele%nnod_4_ele, djds_tbl_fl, mat_velo)
+        end if
+      end if
+!
+      if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
+        call reset_aiccg_11_MHD(node, ele,                              &
+     &      fluid%iele_start_fld, fluid%iele_end_fld,                   &
+     &      ele%nnod_4_ele, djds_tbl_fl, mat_temp)
+      end if
+!
+      if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
+        call reset_aiccg_11_MHD(node, ele,                              &
+     &      fluid%iele_start_fld, fluid%iele_end_fld,                   &
+     &      ele%nnod_4_ele, djds_tbl_fl, mat_d_scalar)
+      end if
+!
+      if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
+     &     .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+        call reset_aiccg_11_MHD(node, ele, ione, ele%numele,            &
+     &      num_t_linear, djds_tbl_l, mat_magp)
+      end if
+!
+      if (iflag_t_evo_4_magne .gt. id_no_evolution) then
+        call reset_aiccg_11_MHD(node, ele, ione, ele%numele,            &
+     &      num_t_linear, djds_tbl_l, mat_magp)
+        if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
+          call reset_aiccg_33_MHD(node, ele, ione, ele%numele,          &
+     &        ele%nnod_4_ele, djds_tbl, mat_magne)
+        end if
+      end if
+!
+      if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+        call reset_aiccg_11_MHD(node, ele, ione, ele%numele,            &
+     &      num_t_linear, djds_tbl_l, mat_magp)
+        if (iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
+          call reset_aiccg_vector_p(mat_magne)
+        end if
+      end if
+!
+      end subroutine reset_MHD_aiccg_mat_type
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine reset_aiccg_11_MHD(node, ele,                          &

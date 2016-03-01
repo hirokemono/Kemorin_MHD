@@ -25,9 +25,6 @@
 !>  Structure for FEM construction table
       type(tables_4_FEM_assembles), save :: rhs_tbl1
 !
-!>  Structure for quad FEM marix table
-      type(table_mat_const), save :: mat_tbl_q1
-!
 !
 !>  Structures for index table for compressed raw strage matrix
       type(CRS_matrix_connect), save :: tbl1_crs

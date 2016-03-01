@@ -48,7 +48,6 @@
 !
       use m_control_parameter
       use m_solver_djds_MHD
-      use m_type_AMG_data_4_MHD
 !
 !
       if ( iflag_t_evo_4_velo .gt. id_no_evolution) then

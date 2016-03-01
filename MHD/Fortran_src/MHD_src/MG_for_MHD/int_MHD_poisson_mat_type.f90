@@ -19,7 +19,7 @@
 !        type(DJDS_MATRIX),  intent(inout) :: mat_magp
 !
 !      subroutine int_MHD_crank_matrices_type(mesh, jac_3d, rhs_tbl,    &
-!     &          djds_const, djds_const_fl, djds_const_cd,              &
+!     &          djds_const, djds_const_fl, djds_const_full_cd,         &
 !     &          filter_MHD, ak_AMG, fem_wk, mat_velo, mat_magne,       &
 !     &          mat_temp, mat_d_scalar)
 !        type(mesh_geometry), intent(in) :: mesh
@@ -27,7 +27,7 @@
 !        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !        type(table_mat_const), intent(in) :: djds_const
 !        type(table_mat_const), intent(in) :: djds_const_fl
-!        type(table_mat_const), intent(in) :: djds_const_cd
+!        type(table_mat_const), intent(in) :: djds_const_full_cd
 !        type(gradient_model_data_type), intent(in) :: filter_MHD
 !        type(coefs_4_MHD_AMG), intent(in) :: ak_AMG
 !        type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -100,7 +100,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_MHD_crank_matrices_type(mesh, jac_3d, rhs_tbl,     &
-     &          djds_const, djds_const_fl, djds_const_cd,               &
+     &          djds_const, djds_const_fl, djds_const_full_cd,          &
      &          filter_MHD, ak_AMG, fem_wk, mat_velo, mat_magne,        &
      &          mat_temp, mat_d_scalar)
 !
@@ -111,7 +111,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const), intent(in) :: djds_const
       type(table_mat_const), intent(in) :: djds_const_fl
-      type(table_mat_const), intent(in) :: djds_const_cd
+      type(table_mat_const), intent(in) :: djds_const_full_cd
       type(gradient_model_data_type), intent(in) :: filter_MHD
       type(coefs_4_MHD_AMG), intent(in) :: ak_AMG
 !
@@ -131,9 +131,10 @@
 !
       if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
         call sel_int_diffuse_sgs_mat33_type(mesh%ele, jac_3d,           &
-     &      filter_MHD, rhs_tbl, djds_const_cd, fem_wk, coef_imp_b,     &
-     &      intg_point_t_evo, iflag_commute_magne, ifilter_final,       &
-     &      ak_AMG%ak_diff_b, ak_AMG%ak_d_magne, mat_magne)
+     &      filter_MHD, rhs_tbl, djds_const_full_cd, fem_wk,            &
+     &      coef_imp_b, intg_point_t_evo, iflag_commute_magne,          &
+     &      ifilter_final, ak_AMG%ak_diff_b, ak_AMG%ak_d_magne,         &
+     &      mat_magne)
       end if
 !
       if (iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then

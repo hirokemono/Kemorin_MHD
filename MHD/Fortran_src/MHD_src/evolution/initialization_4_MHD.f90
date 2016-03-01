@@ -284,9 +284,7 @@
 !
       if (iflag_debug.eq.1 ) write(*,*) 'allocate_aiccg_matrices'
       call allocate_aiccg_matrices(mesh%node)
-      call reset_aiccg_matrices(mesh%node, mesh%ele, MHD_mesh%fluid)
-!
-!     ---------------------
+!      call reset_aiccg_matrices(mesh%node, mesh%ele, MHD_mesh%fluid)
 !
       if(solver_iflag(method_4_solver) .eq. iflag_mgcg) then
         call s_initialize_4_MHD_AMG(mesh%node, mesh%ele)

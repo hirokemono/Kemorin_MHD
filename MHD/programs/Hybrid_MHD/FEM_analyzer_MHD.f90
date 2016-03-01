@@ -82,11 +82,11 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_data_4_const_matrices'
       call set_data_4_const_matrices                                    &
-     &   (mesh1, MHD_mesh1, rhs_tbl1, mat_tbl_q1, MHD1_mat_tbls)
+     &   (mesh1, MHD_mesh1, rhs_tbl1, MHD1_mat_tbls)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
       call set_aiccg_matrices(mesh1, group1, ele_mesh1, MHD_mesh1,      &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, FEM1_elen, rhs_tbl1,  &
-     &    mat_tbl_q1, MHD1_mat_tbls, mhd_fem1_wk, fem1_wk)
+     &    MHD1_mat_tbls, mhd_fem1_wk, fem1_wk)
 !
 !   time evolution loop start!
 !
@@ -300,7 +300,7 @@
         if (iflag_debug.eq.1) write(*,*) 'update_matrices'
         call update_matrices(mesh1, group1, ele_mesh1, MHD_mesh1,       &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, FEM1_elen,          &
-     &      rhs_tbl1, mat_tbl_q1, MHD1_mat_tbls, mhd_fem1_wk, fem1_wk)
+     &      rhs_tbl1, MHD1_mat_tbls, mhd_fem1_wk, fem1_wk)
       end if
 !
       end subroutine FEM_analyze_MHD

@@ -4,13 +4,13 @@
 !     Written by H. Matsui on June, 2005
 !
 !!      subroutine set_data_4_const_matrices                            &
-!!     &         (mesh, MHD_mesh, rhs_tbl, mat_tbl_q, MHD_mat_tbls)
+!!     &         (mesh, MHD_mesh, rhs_tbl, MHD_mat_tbls)
 !!      subroutine update_matrices(mesh, group, ele_mesh, MHD_mesh,     &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens, rhs_tbl, &
-!!     &          mat_tbl_q, MHD_mat_tbls, mhd_fem_wk, fem_wk)
+!!     &          MHD_mat_tbls, mhd_fem_wk, fem_wk)
 !!      subroutine set_aiccg_matrices(mesh, group, ele_mesh, MHD_mesh,  &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens, rhs_tbl, &
-!!     &          mat_tbl_q, MHD_mat_tbls, mhd_fem_wk, fem_wk)
+!!     &          MHD_mat_tbls, mhd_fem_wk, fem_wk)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(element_geometry), intent(in) :: ele_mesh
@@ -19,7 +19,6 @@
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp_q
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-!!        type(table_mat_const), intent(in) :: mat_tbl_q
 !!        type(tables_MHD_mat_const), intent(in) :: MHD_mat_tbls
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -46,8 +45,6 @@
 !
       implicit none
 !
-      private :: set_index_list_4_matrix
-!
 ! ----------------------------------------------------------------------
 !
        contains
@@ -55,34 +52,32 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_data_4_const_matrices                              &
-     &         (mesh, MHD_mesh, rhs_tbl, mat_tbl_q, MHD_mat_tbls)
+     &         (mesh, MHD_mesh, rhs_tbl, MHD_mat_tbls)
 !
+      use calypso_mpi
+      use m_control_parameter
       use m_solver_djds_MHD
+!
       use t_solver_djds
+!
+      use set_MHD_idx_4_mat_type
+!
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
-      type(table_mat_const), intent(inout) :: mat_tbl_q
       type(tables_MHD_mat_const), intent(inout) :: MHD_mat_tbls
 !
 !
-!   set off_diagonal information
-!
-      call set_index_list_4_matrix                                      &
-     &   (mesh, MHD_mesh, rhs_tbl, mat_tbl_q, MHD_mat_tbls)
-!
-!   deallocate work arrays
-!
-      if (iflag_debug.eq.1) write(*,*) 'deallocation work arrays'
-      call dealloc_type_4_djds_table(MHD1_matrices%MG_DJDS_table(0))
-      call dealloc_type_4_djds_table(MHD1_matrices%MG_DJDS_fluid(0))
-!
-      if (mesh%ele%nnod_4_ele .ne. num_t_linear) then
-        call dealloc_type_4_djds_table(MHD1_matrices%MG_DJDS_linear(0))
-        call dealloc_type_4_djds_table(MHD1_matrices%MG_DJDS_lin_fl(0))
-      end if
+      call s_set_MHD_idx_4_mat_type(mesh, MHD_mesh, rhs_tbl,            &
+     &    MHD1_matrices%MG_DJDS_table(0),                               &
+     &    MHD1_matrices%MG_DJDS_fluid(0),                               &
+     &    MHD1_matrices%MG_DJDS_linear(0),                              &
+     &    MHD1_matrices%MG_DJDS_lin_fl(0),                              &
+     &    MHD_mat_tbls%base, MHD_mat_tbls%fluid_q,                      &
+     &    MHD_mat_tbls%full_conduct_q, MHD_mat_tbls%linear,             &
+     &    MHD_mat_tbls%fluid_l)
 !
       end subroutine set_data_4_const_matrices
 !
@@ -90,7 +85,7 @@
 !
       subroutine update_matrices(mesh, group, ele_mesh, MHD_mesh,       &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens, rhs_tbl,   &
-     &          mat_tbl_q, MHD_mat_tbls, mhd_fem_wk, fem_wk)
+     &          MHD_mat_tbls, mhd_fem_wk, fem_wk)
 !
       use m_control_parameter
       use m_t_step_parameter
@@ -103,7 +98,6 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp_q
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(table_mat_const), intent(in) :: mat_tbl_q
       type(tables_MHD_mat_const), intent(in) :: MHD_mat_tbls
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -121,7 +115,7 @@
         if (iflag_debug.eq.1)  write(*,*) 'matrix assemble again'
         call set_aiccg_matrices(mesh, group, ele_mesh, MHD_mesh,        &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens, rhs_tbl,       &
-     &      mat_tbl_q, MHD_mat_tbls, mhd_fem_wk, fem_wk)
+     &      MHD_mat_tbls, mhd_fem_wk, fem_wk)
         iflag_flex_step_changed = 0
       end if
 !
@@ -131,10 +125,11 @@
 !
       subroutine set_aiccg_matrices(mesh, group, ele_mesh, MHD_mesh,    &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens, rhs_tbl,   &
-     &          mat_tbl_q, MHD_mat_tbls, mhd_fem_wk, fem_wk)
+     &          MHD_mat_tbls, mhd_fem_wk, fem_wk)
 !
       use m_control_parameter
       use m_iccg_parameter
+      use m_solver_djds_MHD
 !
       use int_vol_lumped_mat_crank
       use int_vol_poisson_matrix
@@ -153,14 +148,22 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp_q
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(table_mat_const), intent(in) :: mat_tbl_q
       type(tables_MHD_mat_const), intent(in) :: MHD_mat_tbls
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
 !
 !
-      call reset_aiccg_matrices(mesh%node, mesh%ele, MHD_mesh%fluid)
+      call reset_MHD_aiccg_mat_type                                     &
+     &   (mesh%node, mesh%ele, MHD_mesh%fluid,                          &
+     &    MHD1_matrices%MG_DJDS_table(0),                               &
+     &    MHD1_matrices%MG_DJDS_fluid(0),                               &
+     &    MHD1_matrices%MG_DJDS_linear(0),                              &
+     &    MHD1_matrices%MG_DJDS_lin_fl(0),                              &
+     &    MHD1_matrices%Vmat_MG_DJDS(0), MHD1_matrices%Bmat_MG_DJDS(0), &
+     &    MHD1_matrices%Tmat_MG_DJDS(0), MHD1_matrices%Cmat_MG_DJDS(0), &
+     &    MHD1_matrices%Pmat_MG_DJDS(0), MHD1_matrices%Fmat_MG_DJDS(0))
+!
 !
 !   set coefficients of matrix
 !
@@ -180,13 +183,13 @@
      &     (mesh%node, MHD_mesh%fluid, MHD_mesh%conduct, mhd_fem_wk)
         if (iflag_debug.eq.1) write(*,*) 'int_vol_crank_matrices'
         call int_vol_crank_matrices(mesh%ele, jac_3d_q, rhs_tbl,        &
-     &      mat_tbl_q, MHD_mat_tbls%fluid_q,                            &
+     &      MHD_mat_tbls%base, MHD_mat_tbls%fluid_q,                    &
      &      MHD_mat_tbls%full_conduct_q, FEM_elens, fem_wk)
       else if (iflag_scheme .eq. id_Crank_nicolson_cmass) then
         call int_vol_crank_mat_consist                                  &
      &     (mesh%ele, jac_3d_q, rhs_tbl, MHD_mat_tbls, fem_wk)
         call int_vol_crank_matrices(mesh%ele, jac_3d_q, rhs_tbl,        &
-     &      mat_tbl_q, MHD_mat_tbls%fluid_q,                            &
+     &      MHD_mat_tbls%base, MHD_mat_tbls%fluid_q,                    &
      &      MHD_mat_tbls%full_conduct_q, FEM_elens, fem_wk)
       end if
 !
@@ -197,7 +200,7 @@
      &    jac_sf_grp_q, rhs_tbl, MHD_mat_tbls%fluid_q, fem_wk)
 !
       if (iflag_debug.eq.1) write(*,*) 'preconditioning'
-      call matrix_precondition
+      call matrix_precondition(MHD1_matrices)
 !
 !
 !     set marrix for the Multigrid
@@ -207,60 +210,6 @@
       end if
 !
       end subroutine set_aiccg_matrices
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine set_index_list_4_matrix                                &
-     &         (mesh, MHD_mesh, rhs_tbl, mat_tbl_q, MHD_mat_tbls)
-!
-      use calypso_mpi
-      use m_control_parameter
-      use m_solver_djds_MHD
-!
-      use set_idx_4_mat_type
-      use set_MHD_idx_4_mat_type
-!
-      type(mesh_geometry), intent(in) :: mesh
-      type(mesh_data_MHD), intent(in) :: MHD_mesh
-      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-!
-      type(table_mat_const), intent(inout) :: mat_tbl_q
-      type(tables_MHD_mat_const), intent(inout) :: MHD_mat_tbls
-!
-!
-!      write(*,*) 'set_index_list_4_DJDS_mat_etr'
-      call alloc_type_marix_list                                        &
-     &   (mesh%ele%nnod_4_ele, rhs_tbl, mat_tbl_q)
-      call set_whole_index_list_4_djds(mesh%node, mesh%ele, rhs_tbl,    &
-     &    MHD1_matrices%MG_DJDS_table(0), mat_tbl_q)
-!
-!      write(*,*) 'set_index_list_4_mat_etr_l'
-      call set_index_list_4_mat_etr_l(mesh%node, mesh%ele,              &
-     &    rhs_tbl, mat_tbl_q, MHD_mat_tbls%linear)
-!
-      if (iflag_t_evo_4_velo .ne. id_no_evolution                       &
-     &  .or. iflag_t_evo_4_temp .ne. id_no_evolution                    &
-     &  .or. iflag_t_evo_4_composit .ne. id_no_evolution) then
-!        write(*,*) 'set_index_list_4_mat_fl'
-        call set_index_list_4_mat_fl(mesh%node, mesh%ele,               &
-     &      MHD_mesh%fluid, rhs_tbl, MHD_mat_tbls%fluid_q)
-!        write(*,*) 'set_index_list_4_mat_fl_l'
-        call set_index_list_4_mat_fl_l                                  &
-     &     (mesh%node, mesh%ele, MHD_mesh%fluid, rhs_tbl,               &
-     &    MHD_mat_tbls%fluid_q, MHD_mat_tbls%fluid_l)
-      end if
-!
-      if (iflag_t_evo_4_magne .ne. id_no_evolution                      &
-     &     .or. iflag_t_evo_4_vect_p .eq. id_Crank_nicolson_cmass) then
-        write(*,*) 'set_index_list_4_mat_cd'
-        call set_index_list_4_mat_cd                                    &
-     &     (mesh%node, mesh%ele, MHD_mesh%conduct, rhs_tbl,             &
-     &      MHD_mat_tbls%full_conduct_q)
-      end if
-!
-!
-      end subroutine set_index_list_4_matrix
 !
 ! ----------------------------------------------------------------------
 !

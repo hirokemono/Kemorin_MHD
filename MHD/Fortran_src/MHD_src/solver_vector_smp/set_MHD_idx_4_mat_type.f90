@@ -3,39 +3,27 @@
 !
 !      programmed by H.Matsui on March, 2009
 !
-!      subroutine s_set_MHD_idx_4_mat_type(mesh, MHD_mesh, rhs_tbl,     &
-!     &          djds_tbl, djds_tbl_fl, djds_const, djds_const_fl)
-!        type(mesh_geometry), intent(in) :: mesh
-!        type(mesh_data_MHD), intent(in) :: MHD_mesh
-!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-!        type(DJDS_ordering_table),  intent(inout) :: djds_tbl
-!        type(DJDS_ordering_table),  intent(inout) :: djds_tbl_fl
-!        type(DJDS_ordering_table),  intent(inout) :: djds_tbl_cd
-!        type(DJDS_ordering_table),  intent(inout) :: djds_tbl_ins
-!        type(table_mat_const), intent(inout) :: djds_const
-!        type(table_mat_const), intent(inout) :: djds_const_fl
-!        type(table_mat_const), intent(inout) :: djds_const_cd
-!        type(table_mat_const), intent(inout) :: djds_const_ins
-!        type(table_mat_const), intent(inout) :: djds_const_full_cd
-!
-!      subroutine set_MHD_idx_linear_mat_type(mesh, MHD_mesh, rhs_tbl,  &
-!     &          djds_tbl, djds_tbl_fl, djds_const, djds_const_fl)
-!        type(mesh_geometry), intent(in) :: mesh
-!        type(mesh_data_MHD), intent(in) :: MHD_mesh
-!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-!        type(DJDS_ordering_table),  intent(inout) :: djds_tbl
-!        type(DJDS_ordering_table),  intent(inout) :: djds_tbl_fl
-!        type(DJDS_ordering_table),  intent(inout) :: djds_tbl_cd
-!        type(DJDS_ordering_table),  intent(inout) :: djds_tbl_ins
-!        type(table_mat_const), intent(inout) :: djds_const
-!        type(table_mat_const), intent(inout) :: djds_const_fl
-!        type(table_mat_const), intent(inout) :: djds_const_cd
-!        type(table_mat_const), intent(inout) :: djds_const_ins
-!        type(table_mat_const), intent(inout) :: djds_const_full_cd
+!!      subroutine s_set_MHD_idx_4_mat_type(mesh, MHD_mesh, rhs_tbl,    &
+!!     &          djds_tbl, djds_tbl_fl, djds_tbl_lin, djds_tbl_fll,    &
+!!     &          djds_const, djds_const_fl, djds_const_full_cd,        &
+!!     &          djds_const_l, djds_const_fll)
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(mesh_data_MHD), intent(in) :: MHD_mesh
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(DJDS_ordering_table),  intent(inout) :: djds_tbl
+!!        type(DJDS_ordering_table),  intent(inout) :: djds_tbl_fl
+!!        type(DJDS_ordering_table),  intent(inout) :: djds_tbl_cd
+!!        type(DJDS_ordering_table),  intent(inout) :: djds_tbl_ins
+!!        type(table_mat_const), intent(inout) :: djds_const
+!!        type(table_mat_const), intent(inout) :: djds_const_fl
+!!        type(table_mat_const), intent(inout) :: djds_const_cd
+!!        type(table_mat_const), intent(inout) :: djds_const_ins
+!!        type(table_mat_const), intent(inout) :: djds_const_full_cd
 !
       module set_MHD_idx_4_mat_type
 !
       use m_precision
+      use m_geometry_constants
 !
       use t_mesh_data
       use t_geometry_data
@@ -43,9 +31,9 @@
       use t_table_FEM_const
       use t_solver_djds
 !
-      use set_idx_4_mat_type
-!
       implicit none
+!
+      private :: set_part_index_list_4_djds
 !
 !-----------------------------------------------------------------------
 !
@@ -54,9 +42,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_set_MHD_idx_4_mat_type(mesh, MHD_mesh, rhs_tbl,      &
-     &          djds_tbl, djds_tbl_fl, djds_const, djds_const_fl)
+     &          djds_tbl, djds_tbl_fl, djds_tbl_lin, djds_tbl_fll,      &
+     &          djds_const, djds_const_fl, djds_const_full_cd,          &
+     &          djds_const_l, djds_const_fll)
 !
       use m_control_parameter
+      use set_idx_4_mat_type
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_data_MHD), intent(in) :: MHD_mesh
@@ -64,9 +55,14 @@
 !
       type(DJDS_ordering_table),  intent(inout) :: djds_tbl
       type(DJDS_ordering_table),  intent(inout) :: djds_tbl_fl
+      type(DJDS_ordering_table),  intent(inout) :: djds_tbl_lin
+      type(DJDS_ordering_table),  intent(inout) :: djds_tbl_fll
 !
       type(table_mat_const), intent(inout) :: djds_const
       type(table_mat_const), intent(inout) :: djds_const_fl
+      type(table_mat_const), intent(inout) :: djds_const_full_cd
+      type(table_mat_const), intent(inout) :: djds_const_l
+      type(table_mat_const), intent(inout) :: djds_const_fll
 !
 !
       write(*,*) 'alloc_type_marix_list'
@@ -76,54 +72,109 @@
       call set_whole_index_list_4_djds                                  &
      &   (mesh%node, mesh%ele, rhs_tbl, djds_tbl, djds_const)
 !
+      call set_index_list_4_mat_etr_l(mesh%node, mesh%ele,              &
+     &    rhs_tbl, djds_tbl_lin, djds_const, djds_const_l)
 !
-      write(*,*) 'alloc_type_marix_list'
-      call alloc_type_marix_list(mesh%ele%nnod_4_ele, rhs_tbl,          &
-     &      djds_const_fl)
-      call set_part_index_list_4_djds(mesh%node, mesh%ele,              &
-     &    MHD_mesh%fluid, rhs_tbl, djds_tbl_fl, djds_const_fl)
+      if (iflag_t_evo_4_velo .ne. id_no_evolution                       &
+     &  .or. iflag_t_evo_4_temp .ne. id_no_evolution                    &
+     &  .or. iflag_t_evo_4_composit .ne. id_no_evolution) then
+        write(*,*) 'alloc_type_marix_list'
+        call set_index_list_4_mat_fl(mesh%node, mesh%ele,               &
+     &      MHD_mesh%fluid, rhs_tbl, djds_tbl_fl, djds_const_fl)
+        call set_index_list_4_mat_fl_l(mesh%node, mesh%ele,             &
+     &      MHD_mesh%fluid, rhs_tbl, djds_tbl_fll,                      &
+     &      djds_const_fl, djds_const_fll)
+      end if
 !
-      write(*,*) 'dealloc_type_4_djds_table djds_tbl'
+      if (iflag_t_evo_4_magne .ne. id_no_evolution                      &
+     &     .or. iflag_t_evo_4_vect_p .eq. id_Crank_nicolson_cmass) then
+        call set_index_list_4_mat_fl(mesh%node, mesh%ele, &
+     &      MHD_mesh%conduct, rhs_tbl, djds_tbl, djds_const_full_cd)
+      end if
+!
       call dealloc_type_4_djds_table(djds_tbl)
-      write(*,*) 'dealloc_type_4_djds_table djds_tbl_fl'
       call dealloc_type_4_djds_table(djds_tbl_fl)
+      if (mesh%ele%nnod_4_ele .ne. num_t_linear) then
+        call dealloc_type_4_djds_table(djds_tbl_lin)
+        call dealloc_type_4_djds_table(djds_tbl_fll)
+      end if
 !
       end subroutine s_set_MHD_idx_4_mat_type
 !
 !-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
 !
-      subroutine set_MHD_idx_linear_mat_type(mesh, MHD_mesh, rhs_tbl,   &
-     &          djds_tbl, djds_tbl_fl, djds_const, djds_const_fl)
+      subroutine set_index_list_4_mat_fl                                &
+     &         (node, ele, fluid, rhs_tbl, djds_tbl_fl, djds_const_fl)
 !
-      use m_control_parameter
-      use m_geometry_constants
-!
-      type(mesh_geometry), intent(in) :: mesh
-      type(mesh_data_MHD), intent(in) :: MHD_mesh
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(field_geometry_data), intent(in) :: fluid
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(DJDS_ordering_table),  intent(in) :: djds_tbl_fl
 !
-      type(DJDS_ordering_table),  intent(inout) :: djds_tbl
-      type(DJDS_ordering_table),  intent(inout) :: djds_tbl_fl
-!
-      type(table_mat_const), intent(inout) :: djds_const
       type(table_mat_const), intent(inout) :: djds_const_fl
 !
 !
-      call alloc_type_marix_list(num_t_linear, rhs_tbl,                 &
-     &    djds_const)
-      call set_whole_index_list_4_djds                                  &
-     &   (mesh%node, mesh%ele, rhs_tbl, djds_tbl, djds_const)
+      call alloc_type_marix_list                                        &
+     &   (ele%nnod_4_ele, rhs_tbl, djds_const_fl)
+      call set_part_index_list_4_djds(node, ele, fluid, rhs_tbl,        &
+     &    djds_tbl_fl, djds_const_fl)
+!
+      end subroutine set_index_list_4_mat_fl
+!
+!-----------------------------------------------------------------------
+!
+      subroutine set_index_list_4_mat_etr_l(node, ele, rhs_tbl,         &
+     &         djds_tbl_lin, djds_const, djds_const_l)
+!
+      use set_idx_4_mat_type
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(DJDS_ordering_table), intent(in) :: djds_tbl_lin
+      type(table_mat_const), intent(in) :: djds_const
+!
+      type(table_mat_const), intent(inout) :: djds_const_l
 !
 !
-      call alloc_type_marix_list(num_t_linear, rhs_tbl,                 &
-     &      djds_const_fl)
-      call set_part_index_list_4_djds(mesh%node, mesh%ele,              &
-     &    MHD_mesh%fluid, rhs_tbl, djds_tbl_fl, djds_const_fl)
+      call alloc_type_marix_list(num_t_linear, rhs_tbl, djds_const_l)
 !
-      call dealloc_type_4_djds_table(djds_tbl)
-      call dealloc_type_4_djds_table(djds_tbl_fl)
+      if (ele%nnod_4_ele .ne. num_t_linear) then
+        call set_whole_index_list_4_djds(node, ele,                     &
+     &      rhs_tbl, djds_tbl_lin, djds_const_l)
+      else
+        djds_const_l%idx_4_mat = djds_const%idx_4_mat
+      end if
 !
-      end subroutine set_MHD_idx_linear_mat_type
+      end subroutine set_index_list_4_mat_etr_l
+!
+!-----------------------------------------------------------------------
+!
+      subroutine set_index_list_4_mat_fl_l(node, ele, fluid,            &
+     &          rhs_tbl, djds_tbl_fll, djds_const_fl, djds_const_fll)
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(field_geometry_data), intent(in) :: fluid
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(DJDS_ordering_table),  intent(in) :: djds_tbl_fll
+      type(table_mat_const), intent(in) :: djds_const_fl
+!
+      type(table_mat_const), intent(inout) :: djds_const_fll
+!
+!
+      call alloc_type_marix_list(num_t_linear, rhs_tbl, djds_const_fll)
+!
+      if (ele%nnod_4_ele .ne. num_t_linear) then
+        call set_part_index_list_4_djds(node, ele, fluid, rhs_tbl,      &
+     &      djds_tbl_fll, djds_const_fll)
+      else
+        djds_const_fll%idx_4_mat = djds_const_fl%idx_4_mat
+      end if
+!
+      end subroutine set_index_list_4_mat_fl_l
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -132,6 +183,7 @@
      &          fluid, rhs_tbl, djds_part_tbl, mat_tbl)
 !
       use m_machine_parameter
+      use set_idx_4_mat_type
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele

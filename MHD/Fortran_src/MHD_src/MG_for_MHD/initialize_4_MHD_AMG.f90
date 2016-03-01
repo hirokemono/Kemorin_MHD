@@ -276,10 +276,13 @@
      &      MG_MHD_mesh(i_level), MG_FEM_tbl(i_level),                  &
      &      MHD1_matrices%MG_DJDS_table(i_level),                       &
      &      MHD1_matrices%MG_DJDS_fluid(i_level),                       &
-     &      MG_djds_const_idx(i_level), MG_djds_const_idx_fl(i_level) )
-!
-        if(iflag_debug .gt. 0) write(*,*) 'link_MG_djds_const_lin_idx'
-        call link_MG_djds_const_lin_idx(num_MG_level)
+     &      MHD1_matrices%MG_DJDS_linear(i_level),                      &
+     &      MHD1_matrices%MG_DJDS_lin_fl(i_level),                      &
+     &      MHD1_matrices%MG_mat_tbls(i_level)%base,                    &
+     &      MHD1_matrices%MG_mat_tbls(i_level)%fluid_q,                 &
+     &      MHD1_matrices%MG_mat_tbls(i_level)%full_conduct_q,          &
+     &      MHD1_matrices%MG_mat_tbls(i_level)%linear,                  &
+     &      MHD1_matrices%MG_mat_tbls(i_level)%fluid_l)
       end do
 !
 !     ---------------------
@@ -287,15 +290,17 @@
       do i_level = 1, num_MG_level
         if(my_rank .lt. MG_mpi(i_level)%nprocs) then
           if(iflag_debug .gt. 0) write(*,*) 'alloc_MG_AMG_matrices'
-          call alloc_MG_AMG_matrices( MG_mesh(i_level),                 &
-     &      MHD1_matrices%MG_DJDS_table(i_level),                       &
-     &      MHD1_matrices%MG_DJDS_fluid(i_level),                       &
-     &      MHD1_matrices%Vmat_MG_DJDS(i_level),                        &
-     &      MHD1_matrices%Bmat_MG_DJDS(i_level),                        &
-     &      MHD1_matrices%Tmat_MG_DJDS(i_level),                        &
-     &      MHD1_matrices%Cmat_MG_DJDS(i_level),                        &
-     &      MHD1_matrices%Pmat_MG_DJDS(i_level),                        &
-     &      MHD1_matrices%Fmat_MG_DJDS(i_level) )
+          call alloc_MG_AMG_matrices(MG_mesh(i_level)%mesh%node,        &
+     &        MHD1_matrices%MG_DJDS_table(i_level),                     &
+     &        MHD1_matrices%MG_DJDS_fluid(i_level),                     &
+     &        MHD1_matrices%MG_DJDS_linear(i_level),                    &
+     &        MHD1_matrices%MG_DJDS_lin_fl(i_level),                    &
+     &        MHD1_matrices%Vmat_MG_DJDS(i_level),                      &
+     &        MHD1_matrices%Bmat_MG_DJDS(i_level),                      &
+     &        MHD1_matrices%Tmat_MG_DJDS(i_level),                      &
+     &        MHD1_matrices%Cmat_MG_DJDS(i_level),                      &
+     &        MHD1_matrices%Pmat_MG_DJDS(i_level),                      &
+     &        MHD1_matrices%Fmat_MG_DJDS(i_level) )
         else
           if(iflag_debug .gt. 0) write(*,*) 'alloc_MG_zero_matrices'
           call alloc_MG_zero_matrices                                   &
@@ -330,15 +335,16 @@
      &      MG_node_bc(i_level), MG_surf_bc(i_level),                   &
      &      MHD1_matrices%MG_DJDS_table(i_level),                       &
      &      MHD1_matrices%MG_DJDS_fluid(i_level),                       &
-     &      MG_djds_tbl_cd(i_level),   &
      &      MHD1_matrices%MG_DJDS_linear(i_level),                      &
      &      MHD1_matrices%MG_DJDS_lin_fl(i_level),                      &
      &      MG_jacobians(i_level),                                      &
      &      ak_MHD_AMG(i_level),  MG_FEM_tbl(i_level),                  &
-     &      MG_djds_const_idx(i_level), MG_djds_const_idx_fl(i_level),  &
-     &      MG_djds_const_idx_cd(i_level),                              &
-     &      MG_djds_const_idx_l(i_level),                               &
-     &      MG_djds_const_idx_fll(i_level), MG_filter_MHD(i_level),     &
+     &      MHD1_matrices%MG_mat_tbls(i_level)%base,                    &
+     &      MHD1_matrices%MG_mat_tbls(i_level)%fluid_q,                 &
+     &      MHD1_matrices%MG_mat_tbls(i_level)%full_conduct_q,          &
+     &      MHD1_matrices%MG_mat_tbls(i_level)%linear,                  &
+     &      MHD1_matrices%MG_mat_tbls(i_level)%fluid_l,                 &
+     &      MG_filter_MHD(i_level),                                     &
      &      MG_mk_MHD(i_level), MG_FEM_mat(i_level),                    &
      &      MHD1_matrices%Vmat_MG_DJDS(i_level),                        &
      &      MHD1_matrices%Bmat_MG_DJDS(i_level),                        &
