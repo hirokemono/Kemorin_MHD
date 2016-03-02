@@ -4,8 +4,6 @@
 !        programmed by H.Matsui
 !                                    on June 2005
 !
-!      subroutine allocate_aiccg_matrices(node)
-!      subroutine deallocate_aiccg_matrices
 !!      subroutine reset_MHD_aiccg_mat_type(node, ele, fluid,           &
 !!     &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,     &
 !!     &          mat_velo, mat_magne, mat_temp, mat_d_scalar,          &
@@ -19,7 +17,6 @@
       use calypso_mpi
       use m_control_parameter
       use m_geometry_constants
-      use m_solver_djds_MHD
 !
       use t_geometry_data
       use t_geometry_data_MHD
@@ -27,69 +24,13 @@
 !
       implicit none
 !
+      private :: reset_aiccg_11_MHD, reset_aiccg_33_MHD
+      private :: reset_aiccg_vector_p
+!
 !  ----------------------------------------------------------------------
 !
       contains
 !
-!  ----------------------------------------------------------------------
-!
-      subroutine allocate_aiccg_matrices(node)
-!
-      use set_residual_limit
-      use allocate_MHD_AMG_array
-!
-      type(node_data), intent(in) :: node
-!
-!
-      call set_residual_4_crank
-!
-      call alloc_MG_AMG_matrices(node,                                  &
-     &    MHD1_matrices%MG_DJDS_table(0),                               &
-     &    MHD1_matrices%MG_DJDS_fluid(0),                               &
-     &    MHD1_matrices%MG_DJDS_linear(0),                              &
-     &    MHD1_matrices%MG_DJDS_lin_fl(0),                              &
-     &    MHD1_matrices%Vmat_MG_DJDS(0), MHD1_matrices%Bmat_MG_DJDS(0), &
-     &    MHD1_matrices%Tmat_MG_DJDS(0), MHD1_matrices%Cmat_MG_DJDS(0), &
-     &    MHD1_matrices%Pmat_MG_DJDS(0), MHD1_matrices%Fmat_MG_DJDS(0))
-!
-      end subroutine allocate_aiccg_matrices
-!
-!  ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine deallocate_aiccg_matrices
-!
-      use set_residual_limit
-!
-!
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
-        call dealloc_type_djds_mat(MHD1_matrices%Pmat_MG_DJDS(0))
-!
-        if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
-          call dealloc_type_djds_mat(MHD1_matrices%Vmat_MG_DJDS(0))
-        end if
-      end if
-!
-      if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
-         call dealloc_type_djds_mat(MHD1_matrices%Tmat_MG_DJDS(0))
-      end if
-!
-      if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
-        call dealloc_type_djds_mat(MHD1_matrices%Cmat_MG_DJDS(0))
-      end if
-!
-      if(     iflag_t_evo_4_magne .gt. id_no_evolution                  &
-     &   .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-        call dealloc_type_djds_mat(MHD1_matrices%Fmat_MG_DJDS(0))
-        if(    iflag_t_evo_4_magne .ge. id_Crank_nicolson               &
-     &    .or. iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
-          call dealloc_type_djds_mat(MHD1_matrices%Bmat_MG_DJDS(0))
-        end if
-      end if
-!
-      end subroutine deallocate_aiccg_matrices
-!
-! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine reset_MHD_aiccg_mat_type(node, ele, fluid,             &

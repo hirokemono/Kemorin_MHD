@@ -35,6 +35,42 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine allocate_aiccg_matrices(node)
+!
+      use set_residual_limit
+      use allocate_MHD_AMG_array
+!
+      type(node_data), intent(in) :: node
+!
+!
+      call set_residual_4_crank
+!
+      call alloc_aiccg_matrices(node, MHD1_matrices%MG_DJDS_table(0),   &
+     &    MHD1_matrices%MG_DJDS_fluid(0),                               &
+     &    MHD1_matrices%MG_DJDS_linear(0),                              &
+     &    MHD1_matrices%MG_DJDS_lin_fl(0),                              &
+     &    MHD1_matrices%Vmat_MG_DJDS(0), MHD1_matrices%Bmat_MG_DJDS(0), &
+     &    MHD1_matrices%Tmat_MG_DJDS(0), MHD1_matrices%Cmat_MG_DJDS(0), &
+     &    MHD1_matrices%Pmat_MG_DJDS(0), MHD1_matrices%Fmat_MG_DJDS(0))
+!
+      end subroutine allocate_aiccg_matrices
+!
+! ----------------------------------------------------------------------
+!
+      subroutine deallocate_aiccg_matrices
+!
+      use set_residual_limit
+!
+!
+      call dealloc_aiccg_matrices(MHD1_matrices%Vmat_MG_DJDS(0),        &
+     &    MHD1_matrices%Bmat_MG_DJDS(0), MHD1_matrices%Tmat_MG_DJDS(0), &
+     &    MHD1_matrices%Cmat_MG_DJDS(0), MHD1_matrices%Pmat_MG_DJDS(0), &
+     &    MHD1_matrices%Fmat_MG_DJDS(0))
+!
+      end subroutine deallocate_aiccg_matrices
+!
+! ----------------------------------------------------------------------
+!
       subroutine set_MHD_whole_connectivity                             &
      &         (nod_comm, node, ele, next_tbl, rhs_tbl)
 !

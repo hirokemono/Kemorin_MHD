@@ -33,8 +33,6 @@
 !
       implicit none
 !
-      private :: set_aiccg_bc_velo
-!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -115,7 +113,6 @@
      &        MHD1_matrices%Bmat_MG_DJDS(0))
         end if
       end if
-!
 !
       end subroutine set_aiccg_bc_phys
 !

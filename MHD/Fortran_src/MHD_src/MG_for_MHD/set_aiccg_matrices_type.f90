@@ -138,9 +138,10 @@
 !
 !     set boundary conditions
 !
-      call s_set_aiccg_bc_phys_type(femmesh, ele_mesh%surf,             &
-     &     nodal_bc, surface_bc, jacobians%jac_sf_grp,                  &
-     &     ak_AMG, djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,    &
+      call s_set_aiccg_bc_phys_type(femmesh%mesh%ele, ele_mesh%surf,    &
+     &     femmesh%group%surf_grp, jacobians%jac_sf_grp,                &
+     &     rhs_tbl, djds_const_fl, nodal_bc, surface_bc,                &
+     &     djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,            &
      &     MG_FEM_mat%fem_wk, mat_velo, mat_magne, mat_temp,            &
      &     mat_d_scalar, mat_press,  mat_magp)
 !

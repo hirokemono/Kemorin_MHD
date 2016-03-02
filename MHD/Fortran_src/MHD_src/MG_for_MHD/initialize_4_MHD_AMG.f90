@@ -289,8 +289,8 @@
 !
       do i_level = 1, num_MG_level
         if(my_rank .lt. MG_mpi(i_level)%nprocs) then
-          if(iflag_debug .gt. 0) write(*,*) 'alloc_MG_AMG_matrices'
-          call alloc_MG_AMG_matrices(MG_mesh(i_level)%mesh%node,        &
+          if(iflag_debug .gt. 0) write(*,*) 'alloc_aiccg_matrices'
+          call alloc_aiccg_matrices(MG_mesh(i_level)%mesh%node,         &
      &        MHD1_matrices%MG_DJDS_table(i_level),                     &
      &        MHD1_matrices%MG_DJDS_fluid(i_level),                     &
      &        MHD1_matrices%MG_DJDS_linear(i_level),                    &

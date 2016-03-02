@@ -5,7 +5,7 @@
 !
 !      subroutine s_allocate_MHD_AMG_array(femmesh, MG_vector, rhs_mat, &
 !     &          MG_mk_MHD)
-!      subroutine alloc_MG_AMG_matrices(femmesh, djds_tbl, djds_tbl_fl, &
+!      subroutine alloc_aiccg_matrices(femmesh, djds_tbl, djds_tbl_fl,  &
 !     &           mat_velo, mat_magne, mat_temp, mat_d_scalar,          &
 !     &           mat_press, mat_magp)
 !      subroutine alloc_MG_zero_matrices(mat_velo, mat_magne, mat_temp, &
@@ -55,121 +55,6 @@
      &           (isix, femmesh%mesh%node%numnod, MG_vector)
 !
       end subroutine s_allocate_MHD_AMG_array
-!
-! ----------------------------------------------------------------------
-!
-      subroutine alloc_MG_AMG_matrices                                  &
-     &          (node, djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fll, &
-     &           mat_velo, mat_magne, mat_temp, mat_d_scalar,           &
-     &           mat_press, mat_magp)
-!
-      use m_control_parameter
-      use t_geometry_data
-      use t_geometry_data_MHD
-      use t_solver_djds
-!
-      type(node_data), intent(in) :: node
-      type(DJDS_ordering_table),  intent(in) :: djds_tbl
-      type(DJDS_ordering_table),  intent(in) :: djds_tbl_fl
-      type(DJDS_ordering_table),  intent(in) :: djds_tbl_l
-      type(DJDS_ordering_table),  intent(in) :: djds_tbl_fll
-      type(DJDS_MATRIX),  intent(inout) :: mat_velo
-      type(DJDS_MATRIX),  intent(inout) :: mat_magne
-      type(DJDS_MATRIX),  intent(inout) :: mat_temp
-      type(DJDS_MATRIX),  intent(inout) :: mat_d_scalar
-      type(DJDS_MATRIX),  intent(inout) :: mat_press
-      type(DJDS_MATRIX),  intent(inout) :: mat_magp
-!
-!
-      if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
-        call alloc_type_djds11_mat(node%numnod, node%internal_node,     &
-     &      djds_tbl_fll, mat_press)
-!
-        if ( iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
-          call alloc_type_djds33_mat(node%numnod, node%internal_node,   &
-     &        djds_tbl_fl, mat_velo)
-        end if
-      end if
-!
-      if ( iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
-        call alloc_type_djds11_mat(node%numnod, node%internal_node,     &
-     &      djds_tbl_fl, mat_temp)
-      end if
-!
-      if ( iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
-        call alloc_type_djds11_mat(node%numnod, node%internal_node,     &
-     &       djds_tbl_fl, mat_d_scalar)
-      end if
-!
-      if ( iflag_t_evo_4_magne .ge. id_no_evolution) then
-        call alloc_type_djds11_mat(node%numnod, node%internal_node,     &
-     &       djds_tbl_l, mat_magp)
-!
-        if ( iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
-          call alloc_type_djds33_mat(node%numnod, node%internal_node,   &
-     &       djds_tbl, mat_magne)
-        end if
-      end if
-!
-!
-      if ( iflag_t_evo_4_vect_p .ge. id_no_evolution) then
-        call alloc_type_djds11_mat(node%numnod, node%internal_node,     &
-     &      djds_tbl_l, mat_magp)
-!
-        if ( iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
-          call alloc_type_djds33_mat(node%numnod, node%internal_node,   &
-     &        djds_tbl, mat_magne)
-        end if
-      end if
-!
-      end subroutine alloc_MG_AMG_matrices
-!
-! ----------------------------------------------------------------------
-!
-      subroutine alloc_MG_zero_matrices(mat_velo, mat_magne, mat_temp,  &
-     &          mat_d_scalar, mat_press, mat_magp)
-!
-      use m_control_parameter
-      use t_solver_djds
-!
-      type(DJDS_MATRIX),  intent(inout) :: mat_velo
-      type(DJDS_MATRIX),  intent(inout) :: mat_magne
-      type(DJDS_MATRIX),  intent(inout) :: mat_temp
-      type(DJDS_MATRIX),  intent(inout) :: mat_d_scalar
-      type(DJDS_MATRIX),  intent(inout) :: mat_press
-      type(DJDS_MATRIX),  intent(inout) :: mat_magp
-!
-!
-      if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
-        call alloc_type_zero_mat(mat_press)
-!
-        if ( iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
-          call alloc_type_zero_mat(mat_velo)
-        end if
-      end if
-!
-      if ( iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
-        call alloc_type_zero_mat(mat_temp)
-      end if
-!
-      if(iflag_t_evo_4_magne .gt. id_no_evolution                       &
-     &     .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-        call alloc_type_zero_mat(mat_magp)
-      end if
-!
-      if ( iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
-        call alloc_type_zero_mat(mat_magne)
-      end if
-!
-      if ( iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
-        call alloc_type_zero_mat(mat_magne)
-      end if
-!
-      if ( iflag_t_evo_4_composit .gt. id_no_evolution) then
-        call alloc_type_zero_mat(mat_d_scalar)
-      end if
-!
-      end subroutine alloc_MG_zero_matrices
 !
 ! ----------------------------------------------------------------------
 !
