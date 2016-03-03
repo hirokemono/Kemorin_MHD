@@ -5,14 +5,16 @@
 !                                    on July 2000 (ver 1.1)
 !        modieied by H. Matsui on Sep., 2005
 !
-!!      subroutine s_cal_velocity_pre(nod_comm, node, ele, surf, fluid, &
-!!     &          sf_grp, sf_grp_nod, iphys, iphys_ele, ele_fld,        &
+!!      subroutine s_cal_velocity_pre                                   &
+!!     &         (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod, &
+!!     &          Vnod_bcs, iphys, iphys_ele, ele_fld,                  &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens, &
 !!     &          layer_tbl, num_MG_level, MG_interpolate,              &
 !!     &          MG_comm_fluid, MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,&
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-!!      subroutine cal_velocity_co(nod_comm, node, ele, surf, fluid,    &
-!!     &          sf_grp, sf_grp_nod, iphys, iphys_ele, ele_fld,        &
+!!      subroutine cal_velocity_co                                      &
+!!     &         (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod, &
+!!     &          Vnod_bcs, iphys, iphys_ele, ele_fld,                  &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
 !!     &          rhs_tbl, FEM_elens, num_MG_level, MG_interpolate,     &
 !!     &          MG_comm_fluid, MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,&
@@ -71,6 +73,7 @@
       use t_solver_djds
       use t_interpolate_table
       use t_vector_for_solver
+      use t_bc_data_velo
 !
       implicit none
 !
@@ -80,8 +83,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_cal_velocity_pre(nod_comm, node, ele, surf, fluid,   &
-     &          sf_grp, sf_grp_nod, iphys, iphys_ele, ele_fld,          &
+      subroutine s_cal_velocity_pre                                     &
+     &         (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,   &
+     &          Vnod_bcs, iphys, iphys_ele, ele_fld,                    &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,   &
      &          layer_tbl, num_MG_level, MG_interpolate,                &
      &          MG_comm_fluid, MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,  &
@@ -113,6 +117,7 @@
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
       type(field_geometry_data), intent(in) :: fluid
+      type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -220,7 +225,7 @@
 !
       else if (iflag_t_evo_4_velo .eq. id_Crank_nicolson) then
         call cal_velo_pre_lumped_crank                                  &
-     &     (iak_diff_v, nod_comm, node, ele, fluid,                     &
+     &     (iak_diff_v, nod_comm, node, ele, fluid, Vnod_bcs,           &
      &      iphys, iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,    &
      &      num_MG_level, MG_interpolate, MG_comm_fluid,                &
      &      MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,                     &
@@ -229,13 +234,13 @@
       else if (iflag_t_evo_4_velo .eq. id_Crank_nicolson_cmass) then 
         call cal_velo_pre_consist_crank                                 &
      &     (iphys%i_velo, iphys%i_pre_mom, iak_diff_v,                  &
-     &      node, ele, fluid, jac_3d_q, rhs_tbl, FEM_elens,             &
+     &      node, ele, fluid, Vnod_bcs, jac_3d_q, rhs_tbl, FEM_elens,   &
      &      num_MG_level, MG_interpolate, MG_comm_fluid,                &
      &      MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,                     &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
-      call set_boundary_velo(node, iphys%i_velo, nod_fld)
+      call set_boundary_velo(node, Vnod_bcs, iphys%i_velo, nod_fld)
       call set_normal_velocity                                          &
      &   (sf_grp, sf_grp_nod, sf_bc1_norm_v, iphys%i_velo, nod_fld)
 !
@@ -245,8 +250,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_velocity_co(nod_comm, node, ele, surf, fluid,      &
-     &          sf_grp, sf_grp_nod, iphys, iphys_ele, ele_fld,          &
+      subroutine cal_velocity_co                                        &
+     &         (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,   &
+     &          Vnod_bcs, iphys, iphys_ele, ele_fld,                    &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
      &          rhs_tbl, FEM_elens, num_MG_level, MG_interpolate,       &
      &          MG_comm_fluid, MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,  &
@@ -275,6 +281,7 @@
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
       type(field_geometry_data), intent(in) :: fluid
+      type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -323,8 +330,8 @@
       if (   iflag_implicit_correct.eq.3                                &
      &  .or. iflag_implicit_correct.eq.4) then
         call cal_velocity_co_imp(iphys%i_velo,                          &
-     &      nod_comm, node, ele, fluid, iphys_ele, ele_fld,             &
-     &      jac_3d_q, rhs_tbl, FEM_elens,                               &
+     &      nod_comm, node, ele, fluid, Vnod_bcs,                       &
+     &      iphys_ele, ele_fld,  jac_3d_q, rhs_tbl, FEM_elens,          &
      &      num_MG_level, MG_interpolate, MG_comm_fluid,                &
      &      MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,                     &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -336,7 +343,7 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_velo'
-      call set_boundary_velo(node, iphys%i_velo, nod_fld)
+      call set_boundary_velo(node, Vnod_bcs, iphys%i_velo, nod_fld)
       if (iflag_debug.eq.1) write(*,*) 'set_normal_velocity'
       call set_normal_velocity                                          &
      &   (sf_grp, sf_grp_nod, sf_bc1_norm_v, iphys%i_velo, nod_fld)

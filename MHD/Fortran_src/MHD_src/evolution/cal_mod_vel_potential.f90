@@ -6,7 +6,7 @@
 !        modified by H.Matsui on July, 2006
 !
 !!      subroutine cal_mod_potential(iak_diff_v,                        &
-!!     &          node, ele, surf, fluid, sf_grp, iphys,                &
+!!     &          node, ele, surf, fluid, sf_grp, Vnod_bcs, iphys,      &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl, FEM_elens, &
 !!     &          num_MG_level, MG_interpolate, MG_comm_fluid,          &
 !!     &          MG_DJDS_lin_fl, Pmat_MG_DJDS, MG_vector,              &
@@ -28,6 +28,7 @@
 !!        type(surface_data), intent(in) :: surf
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp_l
@@ -75,6 +76,7 @@
       use t_solver_djds
       use t_interpolate_table
       use t_vector_for_solver
+      use t_bc_data_velo
 !
       implicit none
 !
@@ -85,7 +87,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_mod_potential(iak_diff_v,                          &
-     &          node, ele, surf, fluid, sf_grp, iphys,                  &
+     &          node, ele, surf, fluid, sf_grp, Vnod_bcs, iphys,        &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl, FEM_elens,   &
      &          num_MG_level, MG_interpolate, MG_comm_fluid,            &
      &          MG_DJDS_lin_fl, Pmat_MG_DJDS, MG_vector,                &
@@ -113,6 +115,7 @@
       type(surface_data), intent(in) :: surf
       type(field_geometry_data), intent(in) :: fluid
       type(surface_group_data), intent(in) :: sf_grp
+      type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
       type(phys_address), intent(in) :: iphys
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(jacobians_2d), intent(in) :: jac_sf_grp_l
@@ -168,11 +171,12 @@
 !   add boundary term for fixed velocity
 !
       call int_vol_sk_po_bc(iphys%i_p_phi, iak_diff_v, node, ele,       &
-     &     nod_fld, jac_3d_l, rhs_tbl, FEM_elens, fem_wk, f_l)
+     &     nod_fld, jac_3d_l, rhs_tbl, FEM_elens, Vnod_bcs%nod_bc_p,    &
+     &     fem_wk, f_l)
 !
 !   add boundary term for fixed pressure
 !
-      call set_boundary_ff(node, nod_bc1_p, f_l)
+      call set_boundary_ff(node, Vnod_bcs%nod_bc_p, f_l)
 !
 !   solve Poission equation
 !
@@ -181,7 +185,8 @@
      &    method_4_solver, precond_4_solver, eps, itr,                  &
      &    iphys%i_p_phi, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !
-      call set_boundary_scalar(nod_bc1_p, iphys%i_p_phi, nod_fld)
+      call set_boundary_scalar                                          &
+     &   (Vnod_bcs%nod_bc_p, iphys%i_p_phi, nod_fld)
 !
       end subroutine cal_mod_potential
 !

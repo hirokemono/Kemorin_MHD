@@ -18,6 +18,7 @@
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
@@ -51,6 +52,7 @@
       use t_finite_element_mat
       use t_MHD_finite_element_mat
       use t_filter_elength
+      use t_bc_data_velo
 !
       use cal_multi_pass
       use cal_ff_smp_to_ffs
@@ -124,7 +126,7 @@
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl, nod_comm,      &
      &    node, ele, iphys_ele, ele_fld, jac_3d, rhs_tbl,               &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
-!       call set_boundary_velo_4_rhs(node, f_l, f_nl)
+!       call set_boundary_velo_4_rhs(node, Vnod_bcs, f_l, f_nl)
 !
       call cal_ff_2_vector(node%numnod, node%istack_nod_smp,            &
      &    f_nl%ff, mhd_fem_wk%mlump_fl%ml, nod_fld%ntot_phys,           &
@@ -137,9 +139,9 @@
 !
       subroutine cal_viscous_diffusion                                  &
      &         (iak_diff_v, iak_diff_mf, iak_diff_lor,                  &
-     &          nod_comm, node, ele, surf, fluid, sf_grp, iphys,        &
-     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, mhd_fem_wk,     &
-     &          fem_wk, f_l, f_nl, nod_fld)
+     &          nod_comm, node, ele, surf, fluid, sf_grp, Vnod_bcs,     &
+     &          iphys, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,          &
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use int_vol_diffusion_ele
       use int_surf_velo_pre
@@ -152,6 +154,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
       type(field_geometry_data), intent(in) :: fluid
       type(phys_address), intent(in) :: iphys
       type(jacobians_3d), intent(in) :: jac_3d
@@ -178,7 +181,7 @@
 !
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
 !
-      call set_boundary_velo_4_rhs(node, f_l, f_nl)
+      call set_boundary_velo_4_rhs(node, Vnod_bcs, f_l, f_nl)
 !
       call cal_ff_2_vector(node%numnod, node%istack_nod_smp,            &
      &    f_l%ff, mhd_fem_wk%mlump_fl%ml, nod_fld%ntot_phys,            &

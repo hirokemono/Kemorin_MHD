@@ -113,7 +113,7 @@
       use set_nodal_bc_4_velo
 !
       type(node_data), intent(in) :: node
-      type(scaler_rotaion_nod_bc_type), intent(inout) :: rot_bc
+      type(scaler_rotaion_nod_bc_type), intent(in) :: rot_bc
 !
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !

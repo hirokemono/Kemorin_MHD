@@ -7,9 +7,9 @@
 !
 !!      subroutine cal_velo_pre_consist_crank                           &
 !!     &         (i_velo, i_pre_mom, iak_diff_v,                        &
-!!     &          node, ele, fluid, jac_3d, rhs_tbl, FEM_elens,         &
-!!     &          num_MG_level, MG_interpolate, MG_comm_fluid,          &
-!!     &          MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,               &
+!!     &          node, ele, fluid, Vnod_bcs, jac_3d, rhs_tbl,          &
+!!     &          FEM_elens, num_MG_level, MG_interpolate,              &
+!!     &          MG_comm_fluid, MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,&
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_vect_p_pre_consist_crank                         &
 !!     &         (i_vecp, i_pre_uxb, iak_diff_b, nod_bc_a,              &
@@ -46,6 +46,7 @@
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(field_geometry_data), intent(in) :: conduct
+!!        type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -108,15 +109,17 @@
 !
       subroutine cal_velo_pre_consist_crank                             &
      &         (i_velo, i_pre_mom, iak_diff_v,                          &
-     &          node, ele, fluid, jac_3d, rhs_tbl, FEM_elens,           &
-     &          num_MG_level, MG_interpolate, MG_comm_fluid,            &
-     &          MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,                 &
+     &          node, ele, fluid, Vnod_bcs, jac_3d, rhs_tbl,            &
+     &          FEM_elens, num_MG_level, MG_interpolate,                &
+     &          MG_comm_fluid, MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,  &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_phys_constants
       use m_iccg_parameter
       use m_solver_djds_MHD
       use m_array_for_send_recv
+!
+      use t_bc_data_velo
 !
       use cal_sol_vector_pre_crank
       use set_nodal_bc_id_data
@@ -131,6 +134,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
+      type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -152,8 +156,9 @@
 !
 !
       if (coef_imp_v.gt.0.0d0) then
-        call int_sk_4_fixed_velo(i_velo, iak_diff_v, node, ele, &
-     &      nod_fld, jac_3d, rhs_tbl, FEM_elens, fem_wk, f_l)
+        call int_sk_4_fixed_velo(i_velo, iak_diff_v, node, ele,         &
+     &      nod_fld, jac_3d, rhs_tbl, FEM_elens,                        &
+     &      Vnod_bcs%nod_bc_v, Vnod_bcs%nod_bc_rot, fem_wk, f_l)
 !        if (iflag_initial_step.eq.1) coef_imp_v = 1.0d0 / coef_imp_v
       end if
 !
@@ -164,7 +169,7 @@
      &    node, ele, nod_fld, jac_3d, rhs_tbl, fem_wk, mhd_fem_wk)
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
 !
-      call set_boundary_velo_4_rhs(node, f_l, f_nl)
+      call set_boundary_velo_4_rhs(node, Vnod_bcs, f_l, f_nl)
 !
       call cal_vector_pre_consist(node, coef_velo,                      &
      &    n_vector, i_pre_mom, nod_fld, rhs_tbl, mhd_fem_wk, f_nl, f_l)

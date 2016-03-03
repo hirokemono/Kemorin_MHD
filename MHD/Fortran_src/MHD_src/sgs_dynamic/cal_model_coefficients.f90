@@ -63,6 +63,7 @@
      &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_t_step_parameter
+      use m_bc_data_velo
       use m_SGS_address
 !
       use cal_sgs_heat_flux_dynamic
@@ -159,8 +160,8 @@
           call s_cal_diff_coef_sgs_mf                                   &
      &       (iak_diff_mf, icomp_sgs_mf, icomp_diff_mf, ie_dfvx,        &
      &        mesh%nod_comm, mesh%node, mesh%ele,                       &
-     &        ele_mesh%surf, group%surf_grp, iphys,                     &
-     &        iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,            &
+     &        ele_mesh%surf, group%surf_grp, Vnod1_bcs,                 &
+     &        iphys, iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,     &
      &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,      &
      &        mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         end if
@@ -192,8 +193,8 @@
           call s_cal_diff_coef_sgs_mxwl                                 &
      &       (iak_diff_lor, icomp_sgs_lor, icomp_diff_lor, ie_dfbx,     &
      &        mesh%nod_comm, mesh%node, mesh%ele,                       &
-     &        ele_mesh%surf, group%surf_grp, iphys,                     &
-     &        iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,            &
+     &        ele_mesh%surf, group%surf_grp, Vnod1_bcs,                 &
+     &        iphys, iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,     &
      &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,      &
      &        mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         end if

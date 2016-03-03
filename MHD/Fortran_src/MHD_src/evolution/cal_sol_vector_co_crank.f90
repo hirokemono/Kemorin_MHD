@@ -4,16 +4,16 @@
 !      Written by H. Matsui on March, 2006
 !
 !!      subroutine cal_velo_co_lumped_crank                             &
-!!     &         (i_velo, nod_comm, node, ele, fluid, nod_fld,      &
-!!     &          iphys_ele, fld_ele1, jac_3d, rhs_tbl,             &
+!!     &         (i_velo, nod_comm, node, ele, fluid, Vnod_bcs, nod_fld,&
+!!     &          iphys_ele, fld_ele1, jac_3d, rhs_tbl,                 &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl)
 !!      subroutine cal_magne_co_lumped_crank                            &
-!!     &         (i_magne, nod_comm, node, ele, nod_fld,             &
-!!     &          iphys_ele, fld_ele1, nod_bc_b, jac_3d, rhs_tbl,  &
+!!     &         (i_magne, nod_comm, node, ele, nod_fld,                &
+!!     &          iphys_ele, fld_ele1, nod_bc_b, jac_3d, rhs_tbl,       &
 !!     &          m1_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
 !!
 !!      subroutine cal_velo_co_consist_crank(i_velo, coef_velo,         &
-!!     &          node, ele, fluid, nod_fld, jac_3d,             &
+!!     &          node, ele, fluid, Vnod_bcs, nod_fld, jac_3d,          &
 !!     &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
 !!      subroutine cal_magne_co_consist_crank(i_magne, coef_magne,      &
 !!     &          node, ele, conduct, nod_fld, nod_bc_b, jac_3d,&
@@ -22,6 +22,7 @@
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(field_geometry_data), intent(in) :: conduct
+!!        type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -48,7 +49,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_MHD_finite_element_mat
-      use t_nodal_bc_data
+      use t_bc_data_velo
 !
       implicit none
 !
@@ -59,7 +60,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_velo_co_lumped_crank                               &
-     &         (i_velo, nod_comm, node, ele, fluid, nod_fld,            &
+     &         (i_velo, nod_comm, node, ele, fluid, Vnod_bcs, nod_fld,  &
      &          iphys_ele, fld_ele1, jac_3d, rhs_tbl,                   &
      &          mhd_fem_wk, fem_wk, f_l, f_nl)
 !
@@ -74,6 +75,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
+      type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
       type(phys_data), intent(in) :: nod_fld
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: fld_ele1
@@ -96,7 +98,7 @@
      &    i_velo, nod_fld, f_l, f_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_velo_4_rhs'
-      call set_boundary_velo_4_rhs(node, f_l, f_nl)
+      call set_boundary_velo_4_rhs(node, Vnod_bcs, f_l, f_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_velo_co_crank'
       call cal_sol_velo_co_crank_lump                                   &
@@ -156,7 +158,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_velo_co_consist_crank(i_velo, coef_velo,           &
-     &          node, ele, fluid, nod_fld, jac_3d,                      &
+     &          node, ele, fluid, Vnod_bcs, nod_fld, jac_3d,            &
      &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
 !
       use int_vol_initial_MHD
@@ -170,6 +172,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
+      type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -188,7 +191,7 @@
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_velo_4_rhs'
-      call set_boundary_velo_4_rhs(node, f_l, f_nl)
+      call set_boundary_velo_4_rhs(node, Vnod_bcs, f_l, f_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_velo_co_crank_consist'
       call cal_sol_vect_co_crank_consist                                &

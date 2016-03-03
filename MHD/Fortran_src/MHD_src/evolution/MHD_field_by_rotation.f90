@@ -106,7 +106,7 @@
      &        iak_diff_v, iphys%i_velo, iphys%i_vort,                   &
      &        fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,            &
      &        nod_comm, node, ele, surf, sf_grp, iphys_ele, ele_fld,    &
-     &        jac_3d, jac_sf_grp, FEM_elens, nod_bc1_w,                 &
+     &        jac_3d, jac_sf_grp, FEM_elens, Vnod1_bcs%nod_bc_w,        &
      &        sf_sgs1_grad_v, rhs_tbl, fem_wk, f_nl, nod_fld)
         end if
       end if

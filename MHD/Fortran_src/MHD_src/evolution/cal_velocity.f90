@@ -5,8 +5,9 @@
 !                                    on July 2000 (ver 1.1)
 !        modified by H.Matsui on July, 2006
 !
-!!      subroutine velocity_evolution(nod_comm, node, ele, surf, fluid, &
-!!     &          sf_grp, sf_grp_nod, iphys, iphys_ele, ele_fld,        &
+!!      subroutine velocity_evolution                                   &
+!!     &         (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod, &
+!!     &          Vnod_bcs, iphys, iphys_ele, ele_fld,                  &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
 !!     &          rhs_tbl, FEM_elens, layer_tbl, mhd_fem_wk, fem_wk,    &
 !!     &          f_l, f_nl, nod_fld)
@@ -17,6 +18,7 @@
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !!        type(field_geometry_data), intent(in) :: fluid
+!!        type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
@@ -49,6 +51,7 @@
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_layering_ele_list
+      use t_bc_data_velo
 !
       implicit none
 !
@@ -61,8 +64,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine velocity_evolution(nod_comm, node, ele, surf, fluid,   &
-     &          sf_grp, sf_grp_nod, iphys, iphys_ele, ele_fld,          &
+      subroutine velocity_evolution                                     &
+     &         (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,   &
+     &          Vnod_bcs, iphys, iphys_ele, ele_fld,                    &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
      &          rhs_tbl, FEM_elens, layer_tbl, mhd_fem_wk, fem_wk,      &
      &          f_l, f_nl, nod_fld)
@@ -90,6 +94,7 @@
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
       type(field_geometry_data), intent(in) :: fluid
+      type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -135,7 +140,7 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 's_cal_velocity_pre'
       call s_cal_velocity_pre(nod_comm, node, ele, surf, fluid,         &
-     &    sf_grp, sf_grp_nod, iphys, iphys_ele, ele_fld,                &
+     &    sf_grp, sf_grp_nod, Vnod_bcs, iphys, iphys_ele, ele_fld,      &
      &    jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,         &
      &    layer_tbl, num_MG_level, MHD1_matrices%MG_interpolate,        &
      &    MHD1_matrices%MG_comm_fluid, MHD1_matrices%MG_DJDS_fluid,     &
@@ -151,8 +156,9 @@
 !     &    iphys, nod_fld, jac_3d_q, fem_wk, rel_correct)
 !
       do iloop = 0, maxiter
-        call cal_mod_potential(iak_diff_v, node, ele, surf, fluid,      &
-     &      sf_grp, iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,   &
+        call cal_mod_potential                                          &
+     &     (iak_diff_v, node, ele, surf, fluid, sf_grp, Vnod_bcs,       &
+     &      iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,           &
      &      FEM_elens, num_MG_level, MHD1_matrices%MG_interpolate,      &
      &      MHD1_matrices%MG_comm_fluid, MHD1_matrices%MG_DJDS_lin_fl,  &
      &      MHD1_matrices%Pmat_MG_DJDS, MG_vector,                      &
@@ -163,7 +169,7 @@
      &      iphys%i_p_phi, iphys%i_press,  nod_fld%d_fld)
 !
         call cal_velocity_co(nod_comm, node, ele, surf, fluid,          &
-     &      sf_grp, sf_grp_nod, iphys, iphys_ele, ele_fld,              &
+     &      sf_grp, sf_grp_nod, Vnod_bcs, iphys, iphys_ele, ele_fld,    &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &
      &      FEM_elens, num_MG_level, MHD1_matrices%MG_interpolate,      &
      &      MHD1_matrices%MG_comm_fluid, MHD1_matrices%MG_DJDS_fluid,   &

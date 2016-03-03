@@ -115,6 +115,7 @@
      &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_SGS_address
+      use m_bc_data_velo
 !
       use cal_terms_for_heat
       use cal_momentum_terms
@@ -230,8 +231,8 @@
      &             write(*,*) 'lead  ', trim(fhd_viscous)
         call cal_viscous_diffusion                                      &
      &     (iak_diff_v, iak_diff_mf, iak_diff_lor,                      &
-     &      nod_comm, node, ele, surf, fluid, sf_grp, iphys,            &
-     &      jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                     &
+     &      nod_comm, node, ele, surf, fluid, sf_grp, Vnod1_bcs,        &
+     &      iphys, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,              &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !

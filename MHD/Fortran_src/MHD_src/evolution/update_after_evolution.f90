@@ -81,6 +81,7 @@
      &          rhs_tbl, FEM_elens, layer_tbl, m_lump, mhd_fem_wk,      &
      &          fem_wk, f_l, f_nl, nod_fld)
 !
+      use m_bc_data_velo
       use cal_temperature
       use cal_velocity
       use cal_magnetic_field
@@ -200,7 +201,7 @@
         if (iflag_debug.eq.1) write(*,*) 'velocity_evolution'
         call velocity_evolution(mesh%nod_comm, mesh%node, mesh%ele,     &
      &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
-     &      group%surf_nod_grp, iphys, iphys_ele, ele_fld,              &
+     &      group%surf_nod_grp, Vnod1_bcs, iphys, iphys_ele, ele_fld,   &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,             &
      &      rhs_tbl, FEM_elens, layer_tbl, mhd_fem_wk, fem_wk,          &
      &      f_l, f_nl, nod_fld)
@@ -315,6 +316,7 @@
      &          rhs_tbl, FEM_elens, layer_tbl, mhd_fem_wk, fem_wk,      &
      &          f_l, f_nl, nod_fld)
 !
+      use m_bc_data_velo
       use cal_temperature
       use cal_velocity
       use cal_light_element
@@ -391,7 +393,7 @@
         if (iflag_debug.eq.1) write(*,*) 'velocity_evolution'
         call velocity_evolution(mesh%nod_comm, mesh%node, mesh%ele,     &
      &      ele_mesh%surf, fluid, group%surf_grp, group%surf_nod_grp,   &
-     &      iphys, iphys_ele, ele_fld,                                  &
+     &      Vnod1_bcs, iphys, iphys_ele, ele_fld,                       &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,             &
      &      rhs_tbl, FEM_elens, layer_tbl, mhd_fem_wk, fem_wk,          &
      &      f_l, f_nl, nod_fld)

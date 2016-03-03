@@ -16,8 +16,8 @@
 !!     &          f_l, f_nl, nod_fld)
 !!
 !!      subroutine cal_velocity_co_imp(i_velo,                          &
-!!     &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,       &
-!!     &          jac_3d, rhs_tbl, FEM_elens,                           &
+!!     &          nod_comm, node, ele, fluid, Vnod_bcs,                 &
+!!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
 !!     &          num_MG_level, MG_interpolate, MG_comm_fluid,          &
 !!     &          MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,               &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -38,6 +38,7 @@
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(field_geometry_data), intent(in) :: conduct
+!!        type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(jacobians_3d), intent(in) :: jac_3d
@@ -81,6 +82,7 @@
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_solver_djds
+      use t_bc_data_velo
 !
       implicit none
 !
@@ -202,8 +204,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_velocity_co_imp(i_velo,                            &
-     &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,         &
-     &          jac_3d, rhs_tbl, FEM_elens,                             &
+     &          nod_comm, node, ele, fluid, Vnod_bcs,                   &
+     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
      &          num_MG_level, MG_interpolate, MG_comm_fluid,            &
      &          MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,                 &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -230,6 +232,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
+      type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
       type(jacobians_3d), intent(in) :: jac_3d
@@ -254,15 +257,16 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'int_vol_viscosity_co'
       if (coef_imp_v.gt.zero) then
-        call int_vol_vector_diffuse_ele(fluid%istack_ele_fld_smp,      &
-     &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,            &
+        call int_vol_vector_diffuse_ele(fluid%istack_ele_fld_smp,       &
+     &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,             &
      &      iak_diff_v, coef_imp_v, ak_d_velo, i_velo, fem_wk, f_l)
       end if
 !
       if (coef_imp_v.gt.0.0d0) then
         if (iflag_debug.eq.1) write(*,*) 'int_sk_4_fixed_velo'
         call int_sk_4_fixed_velo(i_velo, iak_diff_v, node, ele,         &
-     &      nod_fld, jac_3d, rhs_tbl, FEM_elens, fem_wk, f_l)
+     &      nod_fld, jac_3d, rhs_tbl, FEM_elens,                        &
+     &      Vnod_bcs%nod_bc_v, Vnod_bcs%nod_bc_rot, fem_wk, f_l)
       end if
 !
       if ( iflag_4_coriolis .eq. id_Coriolis_ele_imp) then
@@ -274,12 +278,12 @@
 !
       if (     iflag_implicit_correct.eq.3) then
         call cal_velo_co_lumped_crank                                   &
-     &     (i_velo, nod_comm, node, ele, fluid, nod_fld,                &
+     &     (i_velo, nod_comm, node, ele, fluid, Vnod_bcs, nod_fld,      &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl,                        &
      &      mhd_fem_wk, fem_wk, f_l, f_nl)
       else if (iflag_implicit_correct.eq.4) then
         call cal_velo_co_consist_crank(i_velo, coef_velo,               &
-     &      node, ele, fluid, nod_fld, jac_3d,                          &
+     &      node, ele, fluid, Vnod_bcs, nod_fld, jac_3d,                &
      &      rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
       end if
 !

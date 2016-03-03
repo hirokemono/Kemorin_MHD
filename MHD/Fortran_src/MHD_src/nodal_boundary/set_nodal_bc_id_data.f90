@@ -8,12 +8,13 @@
 !!      subroutine set_bc_id_data                                       &
 !!     &         (node, ele, nod_grp, MHD_mesh, iphys, nod_fld)
 !!      subroutine set_boundary_velo(node, i_velo, nod_fld)
-!!      subroutine set_boundary_velo_4_rhs(node, f_l, f_nl)
-!!      subroutine delete_field_by_fixed_v_bc(i_field, nod_fld)
+!!      subroutine set_boundary_velo_4_rhs(node, Vnod_bcs, f_l, f_nl)
+!!      subroutine delete_field_by_fixed_v_bc(Vnod_bcs, i_field, nod_fld)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(group_data), intent(in) :: nod_grp
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
+!!        type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(finite_ele_mat_node), intent(inout) :: f_l
@@ -65,12 +66,13 @@
 !
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         if ( iflag_debug .eq.1) write(*,*)  'set boundary id 4 v'
-        call set_bc_velo_id(node, ele, MHD_mesh%fluid, nod_grp)
+        call set_bc_velo_id                                             &
+     &     (node, ele, MHD_mesh%fluid, nod_grp, Vnod1_bcs)
         if ( iflag_debug .eq.1) write(*,*)  'set boundary id 4 P'
-        call set_bc_press_id                                            &
-     &     (node, ele, MHD_mesh%fluid, nod_grp, iphys, nod_fld)
+        call set_bc_press_id(node, ele, MHD_mesh%fluid, nod_grp,        &
+     &      iphys, nod_fld, Vnod1_bcs)
         if ( iflag_debug .eq.1) write(*,*)  'set boundary values 4 v'
-        call set_boundary_velo(node, iphys%i_velo, nod_fld)
+        call set_boundary_velo(node, Vnod1_bcs, iphys%i_velo, nod_fld)
       end if
 !
       if (iflag_t_evo_4_temp .gt. id_no_evolution) then
@@ -119,76 +121,83 @@
 !-----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_boundary_velo(node, i_velo, nod_fld)
+      subroutine set_boundary_velo(node, Vnod_bcs, i_velo, nod_fld)
 !
       use m_control_parameter
 !
-      use m_bc_data_velo
+      use t_bc_data_velo
 !
       use set_nodal_bc_4_velo
       use set_boundary_scalars
       use set_fixed_boundaries
 !
-      type(node_data), intent(in) :: node
       integer(kind = kint), intent(in) :: i_velo
+      type(node_data), intent(in) :: node
+      type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
       type(phys_data), intent(inout) :: nod_fld
 !
 !
 !     set fixed velocity
 !
-      call set_boundary_vect(nod_bc1_v, i_velo, nod_fld)
+      call set_boundary_vect(Vnod_bcs%nod_bc_v, i_velo, nod_fld)
 !
 !   set rotation boundary
-      call set_boundary_rot_vect(node, nod_bc1_rot, i_velo, nod_fld)
+      call set_boundary_rot_vect                                        &
+     &   (node, Vnod_bcs%nod_bc_rot, i_velo, nod_fld)
 !
 !   boundary condition for special case
 !     ( please write every time!!)
       call set_boundary_specific_vect                                   &
-     &   (node, nod_bc1_vsp, i_velo, nod_fld)
+     &   (node, Vnod_bcs%nod_bc_vsp, i_velo, nod_fld)
 !
 !
       call delete_radial_vector_on_bc                                   &
-     &   (node, nod_bc1_vr0, i_velo, nod_fld)
+     &   (node, Vnod_bcs%nod_bc_vr0, i_velo, nod_fld)
 !
       end subroutine set_boundary_velo
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_boundary_velo_4_rhs(node, f_l, f_nl)
+      subroutine set_boundary_velo_4_rhs(node, Vnod_bcs, f_l, f_nl)
 !
       use t_finite_element_mat
-      use m_bc_data_velo
+      use t_bc_data_velo
 !
       use set_boundary_scalars
       use set_fixed_boundaries
 !
       type(node_data), intent(in) :: node
+      type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
 !
       type(finite_ele_mat_node), intent(inout) :: f_l
       type(finite_ele_mat_node), intent(inout) :: f_nl
 !
 !
-      call delete_vector_ffs_on_bc(node, nod_bc1_v, f_l, f_nl)
-      call delete_vector_ffs_rot_bc(node, nod_bc1_rot, f_l, f_nl)
-      call set_vector_ffs_special_bc(node, nod_bc1_vsp, f_l)
+      call delete_vector_ffs_on_bc(node, Vnod_bcs%nod_bc_v, f_l, f_nl)
+      call delete_vector_ffs_rot_bc                                     &
+     &   (node, Vnod_bcs%nod_bc_rot, f_l, f_nl)
+      call set_vector_ffs_special_bc(node, Vnod_bcs%nod_bc_vsp, f_l)
 !
       end subroutine set_boundary_velo_4_rhs
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine delete_field_by_fixed_v_bc(i_field, nod_fld)
+      subroutine delete_field_by_fixed_v_bc(Vnod_bcs, i_field, nod_fld)
 !
-      use m_bc_data_velo
+      use t_bc_data_velo
       use set_boundary_scalars
       use set_fixed_boundaries
 !
       integer(kind = kint), intent(in) :: i_field
+      type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call delete_vector_on_bc(nod_bc1_v, i_field, nod_fld)
-      call delete_vector_by_rot_v_bc(nod_bc1_rot, i_field, nod_fld)
-      call delete_vector_by_fixed_t_bc(nod_bc1_vsp, i_field, nod_fld)
+      call delete_vector_on_bc(Vnod_bcs%nod_bc_v, i_field, nod_fld)
+      call delete_vector_by_rot_v_bc                                    &
+     &   (Vnod_bcs%nod_bc_rot, i_field, nod_fld)
+      call delete_vector_by_fixed_t_bc                                  &
+     &   (Vnod_bcs%nod_bc_vsp, i_field, nod_fld)
 !
       end subroutine delete_field_by_fixed_v_bc
 !

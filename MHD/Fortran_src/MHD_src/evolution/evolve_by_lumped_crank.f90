@@ -6,7 +6,7 @@
 !        modieied by H. Matsui on Sep., 2005
 !
 !!      subroutine cal_velo_pre_lumped_crank                            &
-!!     &         (iak_diff_v, nod_comm, node, ele, fluid,               &
+!!     &         (iak_diff_v, nod_comm, node, ele, fluid, Vnod_bcs,     &
 !!     &          iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,&
 !!     &          num_MG_level, MG_interpolate, MG_comm_fluid,          &
 !!     &          MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,               &
@@ -52,6 +52,7 @@
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(field_geometry_data), intent(in) :: conduct
+!!        type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(jacobians_3d), intent(in) :: jac_3d
@@ -114,7 +115,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_velo_pre_lumped_crank                              &
-     &         (iak_diff_v, nod_comm, node, ele, fluid,                 &
+     &         (iak_diff_v, nod_comm, node, ele, fluid, Vnod_bcs,       &
      &          iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,  &
      &          num_MG_level, MG_interpolate, MG_comm_fluid,            &
      &          MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,                 &
@@ -123,6 +124,8 @@
       use m_iccg_parameter
       use m_solver_djds_MHD
       use m_array_for_send_recv
+!
+      use t_bc_data_velo
 !
       use cal_multi_pass
       use set_nodal_bc_id_data
@@ -137,6 +140,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
+      type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -161,8 +165,9 @@
 !
 !
       if (coef_imp_v.gt.0.0d0) then
-        call int_sk_4_fixed_velo(iphys%i_velo, iak_diff_v, node, ele, &
-     &      nod_fld, jac_3d, rhs_tbl, FEM_elens, fem_wk, f_l)
+        call int_sk_4_fixed_velo(iphys%i_velo, iak_diff_v, node, ele,   &
+     &      nod_fld, jac_3d, rhs_tbl, FEM_elens,                        &
+     &      Vnod_bcs%nod_bc_v, Vnod_bcs%nod_bc_rot, fem_wk, f_l)
 !        if (iflag_initial_step.eq.1) coef_imp_v = 1.0d0 / coef_imp_v
       end if
 !
@@ -179,7 +184,7 @@
       call int_buoyancy_nod_exp                                         &
      &   (node, mhd_fem_wk, iphys, nod_fld, f_nl)
 !
-      call set_boundary_velo_4_rhs(node, f_l, f_nl)
+      call set_boundary_velo_4_rhs(node, Vnod_bcs, f_l, f_nl)
 !
       call cal_sol_vec_fluid_linear(node%numnod, node%istack_nod_smp,   &
      &    mhd_fem_wk%mlump_fl%ml_o, f_nl%ff, nod_fld%ntot_phys,         &

@@ -5,7 +5,7 @@
 !
 !!      subroutine s_cal_diff_coef_sgs_mf                               &
 !!     &         (iak_diff_mf, icomp_sgs_mf, icomp_diff_mf, ie_dfvx,    &
-!!     &          nod_comm, node, ele, surf, sf_grp,                    &
+!!     &          nod_comm, node, ele, surf, sf_grp, Vnod_bcs,          &
 !!     &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,          &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
 !!     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -14,6 +14,7 @@
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
@@ -45,6 +46,7 @@
       use t_layering_ele_list
       use t_MHD_finite_element_mat
       use t_filter_elength
+      use t_bc_data_velo
 !
       implicit none
 !
@@ -56,7 +58,7 @@
 !
       subroutine s_cal_diff_coef_sgs_mf                                 &
      &         (iak_diff_mf, icomp_sgs_mf, icomp_diff_mf, ie_dfvx,      &
-     &          nod_comm, node, ele, surf, sf_grp,                      &
+     &          nod_comm, node, ele, surf, sf_grp, Vnod_bcs,            &
      &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,            &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
      &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -88,6 +90,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -144,7 +147,8 @@
 !
       call subtract_2_nod_vectors(node, nod_fld,                        &
      &    iphys%i_sgs_grad, iphys%i_sgs_simi, iphys%i_sgs_simi)
-      call delete_field_by_fixed_v_bc(iphys%i_sgs_simi, nod_fld)
+      call delete_field_by_fixed_v_bc                                   &
+     &   (Vnod_bcs, iphys%i_sgs_simi, nod_fld)
 !
 !      call check_nodal_data                                            &
 !     &   (my_rank, nod_fld, n_vector, iphys%i_sgs_simi)
@@ -161,7 +165,8 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'delete_field_by_fixed_v_bc',    &
      &                     iphys%i_sgs_grad_f
-      call delete_field_by_fixed_v_bc(iphys%i_sgs_grad_f, nod_fld)
+      call delete_field_by_fixed_v_bc                                   &
+     &   (Vnod_bcs, iphys%i_sgs_grad_f, nod_fld)
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &      'vector_send_recv', iphys%i_sgs_grad_f
@@ -188,7 +193,8 @@
 !
       call cal_filtered_vector(nod_comm, node,                          &
      &    iphys%i_sgs_grad, iphys%i_sgs_grad, nod_fld)
-      call delete_field_by_fixed_v_bc(iphys%i_sgs_grad, nod_fld)
+      call delete_field_by_fixed_v_bc                                   &
+     &   (Vnod_bcs, iphys%i_sgs_grad, nod_fld)
 !
 !      call check_nodal_data                                            &
 !     &   (my_rank, nod_fld, n_vector, iphys%i_sgs_grad)

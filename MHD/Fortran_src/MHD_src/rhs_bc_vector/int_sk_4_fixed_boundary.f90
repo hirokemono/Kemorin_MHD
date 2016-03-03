@@ -4,7 +4,8 @@
 !      Written by H. Matsui on Oct., 2005
 !
 !!      subroutine int_vol_sk_po_bc(i_p_phi, iak_diff_v, node, ele,     &
-!!     &         nod_fld, jac_3d_l, rhs_tbl, FEM_elens, fem_wk, f_l)
+!!     &          nod_fld, jac_3d_l, rhs_tbl, FEM_elens, nod_bc_p,      &
+!!     &          fem_wk, f_l)
 !!      subroutine int_vol_sk_mp_bc(i_m_phi, iak_diff_b, node, ele,     &
 !!     &          nod_fld, jac_3d_l, rhs_tbl, FEM_elens, fem_wk, f_l)
 !!      subroutine int_vol_sk_mag_p_ins_bc(i_m_phi, iak_diff_b,         &
@@ -61,7 +62,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_vol_sk_po_bc(i_p_phi, iak_diff_v, node, ele,       &
-     &          nod_fld, jac_3d_l, rhs_tbl, FEM_elens, fem_wk, f_l)
+     &          nod_fld, jac_3d_l, rhs_tbl, FEM_elens, nod_bc_p,        &
+     &          fem_wk, f_l)
 !
       use m_ele_material_property
       use m_bc_data_velo
@@ -76,6 +78,7 @@
       type(jacobians_3d), intent(in) :: jac_3d_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+        type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_p
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -84,16 +87,16 @@
       if (iflag_commute_velo .eq. id_SGS_commute_ON) then
         call int_vol_fixed_sgs_poisson_surf                             &
      &    (node, ele, nod_fld, jac_3d_l, rhs_tbl, FEM_elens,            &
-     &     intg_point_poisson, nod_bc1_p%ibc_end,                       &
-     &     nod_bc1_p%num_idx_ibc, nod_bc1_p%ele_bc_id,                  &
-     &     nod_bc1_p%ibc_stack_smp, nod_bc1_p%ibc_shape,                &
+     &     intg_point_poisson, nod_bc_p%ibc_end,                        &
+     &     nod_bc_p%num_idx_ibc, nod_bc_p%ele_bc_id,                    &
+     &     nod_bc_p%ibc_stack_smp, nod_bc_p%ibc_shape,                  &
      &     ifilter_final, i_p_phi, ak_diff(1,iak_diff_v), fem_wk, f_l)
       else
         call int_vol_fixed_poisson_surf                                 &
      &    (node, ele, nod_fld, jac_3d_l, rhs_tbl, intg_point_poisson,   &
-     &     nod_bc1_p%ibc_end, nod_bc1_p%num_idx_ibc,                    &
-     &     nod_bc1_p%ele_bc_id, nod_bc1_p%ibc_stack_smp,                &
-     &     nod_bc1_p%ibc_shape, i_p_phi, fem_wk, f_l)
+     &     nod_bc_p%ibc_end, nod_bc_p%num_idx_ibc,                      &
+     &     nod_bc_p%ele_bc_id, nod_bc_p%ibc_stack_smp,                  &
+     &     nod_bc_p%ibc_shape, i_p_phi, fem_wk, f_l)
       end if
 !
       call cal_ff_smp_2_ff                                              &
@@ -317,10 +320,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_sk_4_fixed_velo(i_velo, iak_diff_v, node, ele,     &
-     &          nod_fld, jac1_3d, rhs_tbl, FEM_elens, fem_wk, f_l)
+     &          nod_fld, jac1_3d, rhs_tbl, FEM_elens,                   &
+     &          nod_bc_v, nod_bc_rot, fem_wk, f_l)
 !
       use m_ele_material_property
-      use m_bc_data_velo
+!
+      use t_nodal_bc_data
+!
       use int_vol_fixed_field_ele
       use int_vol_fixed_fld_sgs_ele
 !
@@ -331,6 +337,8 @@
       type(jacobians_3d), intent(in) :: jac1_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+        type(vect_fixed_nod_bc_type), intent(in)  :: nod_bc_v
+      type(scaler_rotaion_nod_bc_type), intent(in)  :: nod_bc_rot
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -338,22 +346,22 @@
 !
       call int_sk_4_fixed_vector(iflag_commute_velo, i_velo,            &
      &    node, ele, nod_fld, jac1_3d, rhs_tbl, FEM_elens,              &
-     &    nod_bc1_v, ak_d_velo, coef_imp_v, iak_diff_v, fem_wk, f_l)
+     &    nod_bc_v, ak_d_velo, coef_imp_v, iak_diff_v, fem_wk, f_l)
 !
       if (iflag_commute_velo .eq. id_SGS_commute_ON) then
         call int_vol_fixed_rotate_sgs_surf                              &
      &     (node, ele, nod_fld, jac1_3d, rhs_tbl, FEM_elens,            &
-     &      intg_point_t_evo, nod_bc1_rot%ibc_end,                      &
-     &      nod_bc1_rot%num_idx_ibc, nod_bc1_rot%ele_bc_id,             &
-     &      nod_bc1_rot%ibc_stack_smp, nod_bc1_rot%ibc_shape,           &
+     &      intg_point_t_evo, nod_bc_rot%ibc_end,                       &
+     &      nod_bc_rot%num_idx_ibc, nod_bc_rot%ele_bc_id,               &
+     &      nod_bc_rot%ibc_stack_smp, nod_bc_rot%ibc_shape,             &
      &      ifilter_final, i_velo, ak_diff(1,iak_diff_v),               &
      &      ak_d_velo, coef_imp_v, fem_wk, f_l)
       else
         call int_vol_fixed_rotate_surf                                  &
      &     (node, ele, nod_fld, jac1_3d, rhs_tbl, intg_point_t_evo,     &
-     &      nod_bc1_rot%ibc_end, nod_bc1_rot%num_idx_ibc,               &
-     &      nod_bc1_rot%ele_bc_id, nod_bc1_rot%ibc_stack_smp,           &
-     &      nod_bc1_rot%ibc_shape, i_velo, ak_d_velo, coef_imp_v,       &
+     &      nod_bc_rot%ibc_end, nod_bc_rot%num_idx_ibc,                 &
+     &      nod_bc_rot%ele_bc_id, nod_bc_rot%ibc_stack_smp,             &
+     &      nod_bc_rot%ibc_shape, i_velo, ak_d_velo, coef_imp_v,        &
      &      fem_wk, f_l)
       end if
 !
