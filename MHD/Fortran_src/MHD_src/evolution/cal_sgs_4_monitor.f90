@@ -143,6 +143,7 @@
      &          rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl,      &
      &          nod_fld)
 !
+      use m_bc_data_magne
       use m_SGS_address
 !
       use cal_terms_for_heat
@@ -198,7 +199,7 @@
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_induction)
         call cal_terms_4_magnetic(iphys%i_SGS_induction, iak_diff_uxb,  &
-     &      nod_comm, node, ele, surf, conduct, sf_grp,                 &
+     &      nod_comm, node, ele, surf, conduct, sf_grp, Bnod1_bcs,      &
      &      iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp,              &
      &      rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if

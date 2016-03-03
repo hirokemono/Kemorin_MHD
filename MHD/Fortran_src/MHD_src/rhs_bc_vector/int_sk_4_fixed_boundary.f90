@@ -7,10 +7,11 @@
 !!     &          nod_fld, jac_3d_l, rhs_tbl, FEM_elens, nod_bc_p,      &
 !!     &          fem_wk, f_l)
 !!      subroutine int_vol_sk_mp_bc(i_m_phi, iak_diff_b, node, ele,     &
-!!     &          nod_fld, jac_3d_l, rhs_tbl, FEM_elens, fem_wk, f_l)
+!!     &          nod_fld, jac_3d_l, rhs_tbl, FEM_elens, nod_bc_f,      &
+!!     &          fem_wk, f_l)
 !!      subroutine int_vol_sk_mag_p_ins_bc(i_m_phi, iak_diff_b,         &
 !!     &          node, ele, nod_fld, jac_3d_l, rhs_tbl, FEM_elens,     &
-!!     &          fem_wk, f_l)
+!!     &          nod_bc_fins, fem_wk, f_l)
 !!
 !!      subroutine int_sk_4_fixed_temp(i_temp, iak_diff_t, node, ele,   &
 !!     &          nod_fld, jac1_3d, rhs_tbl, FEM_elens, fem_wk, f_l)
@@ -32,6 +33,7 @@
 !!        type(jacobians_3d), intent(in) :: jac_3d_l
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_f
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l
 !
@@ -107,10 +109,11 @@
 !  ---------------------------------------------------------------------
 !
       subroutine int_vol_sk_mp_bc(i_m_phi, iak_diff_b, node, ele,       &
-     &          nod_fld, jac_3d_l, rhs_tbl, FEM_elens, fem_wk, f_l)
+     &          nod_fld, jac_3d_l, rhs_tbl, FEM_elens, nod_bc_f,        &
+     &          fem_wk, f_l)
 !
       use m_ele_material_property
-      use m_bc_data_magne
+      use t_nodal_bc_data
       use int_vol_fixed_field_ele
       use int_vol_fixed_fld_sgs_ele
       use cal_ff_smp_to_ffs
@@ -122,6 +125,7 @@
       type(jacobians_3d), intent(in) :: jac_3d_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_f
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -130,16 +134,16 @@
       if (iflag_commute_magne .eq. id_SGS_commute_ON) then
         call int_vol_fixed_sgs_poisson_surf                             &
      &     (node, ele, nod_fld, jac_3d_l, rhs_tbl, FEM_elens,           &
-     &      intg_point_poisson,  nod_bc1_f%ibc_end,                     &
-     &      nod_bc1_f%num_idx_ibc, nod_bc1_f%ele_bc_id,                 &
-     &      nod_bc1_f%ibc_stack_smp, nod_bc1_f%ibc_shape,               &
+     &      intg_point_poisson,  nod_bc_f%ibc_end,                      &
+     &      nod_bc_f%num_idx_ibc, nod_bc_f%ele_bc_id,                   &
+     &      nod_bc_f%ibc_stack_smp, nod_bc_f%ibc_shape,                 &
      &      ifilter_final, i_m_phi, ak_diff(1,iak_diff_b), fem_wk, f_l)
       else
         call int_vol_fixed_poisson_surf                                 &
      &     (node, ele, nod_fld, jac_3d_l, rhs_tbl, intg_point_poisson,  &
-     &      nod_bc1_f%ibc_end, nod_bc1_f%num_idx_ibc,                   &
-     &      nod_bc1_f%ele_bc_id, nod_bc1_f%ibc_stack_smp,               &
-     &      nod_bc1_f%ibc_shape, i_m_phi, fem_wk, f_l)
+     &      nod_bc_f%ibc_end, nod_bc_f%num_idx_ibc,                     &
+     &      nod_bc_f%ele_bc_id, nod_bc_f%ibc_stack_smp,                 &
+     &      nod_bc_f%ibc_shape, i_m_phi, fem_wk, f_l)
       end if
 !
       call cal_ff_smp_2_ff                                              &
@@ -152,7 +156,7 @@
 !
       subroutine int_vol_sk_mag_p_ins_bc(i_m_phi, iak_diff_b,           &
      &          node, ele, nod_fld, jac_3d_l, rhs_tbl, FEM_elens,       &
-     &          fem_wk, f_l)
+     &          nod_bc_fins, fem_wk, f_l)
 !
       use m_ele_material_property
       use m_bc_data_magne
@@ -167,6 +171,7 @@
       type(jacobians_3d), intent(in) :: jac_3d_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_fins
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -175,16 +180,16 @@
       if (iflag_commute_magne .eq. id_SGS_commute_ON) then
         call int_vol_fixed_sgs_poisson_surf(node, ele, nod_fld,         &
      &      jac_3d_l, rhs_tbl, FEM_elens, intg_point_poisson,           &
-     &      nod_bc1_fins%ibc_end, nod_bc1_fins%num_idx_ibc,             &
-     &      nod_bc1_fins%ele_bc_id, nod_bc1_fins%ibc_stack_smp,         &
-     &      nod_bc1_fins%ibc_shape,  ifilter_final, i_m_phi,            &
+     &      nod_bc_fins%ibc_end, nod_bc_fins%num_idx_ibc,               &
+     &      nod_bc_fins%ele_bc_id, nod_bc_fins%ibc_stack_smp,           &
+     &      nod_bc_fins%ibc_shape,  ifilter_final, i_m_phi,             &
      &      ak_diff(1,iak_diff_b), fem_wk, f_l)
       else
         call int_vol_fixed_poisson_surf(node, ele, nod_fld,             &
      &      jac_3d_l, rhs_tbl, intg_point_poisson,                      &
-     &      nod_bc1_fins%ibc_end, nod_bc1_fins%num_idx_ibc,             &
-     &      nod_bc1_fins%ele_bc_id, nod_bc1_fins%ibc_stack_smp,         &
-     &      nod_bc1_fins%ibc_shape, i_m_phi, fem_wk, f_l)
+     &      nod_bc_fins%ibc_end, nod_bc_fins%num_idx_ibc,               &
+     &      nod_bc_fins%ele_bc_id, nod_bc_fins%ibc_stack_smp,           &
+     &      nod_bc_fins%ibc_shape, i_m_phi, fem_wk, f_l)
       end if
 !
       call cal_ff_smp_2_ff                                              &

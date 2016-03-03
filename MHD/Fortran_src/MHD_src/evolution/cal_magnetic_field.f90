@@ -6,11 +6,11 @@
 !        modified by H.Matsui on July, 2006
 !
 !!      subroutine cal_vector_potential(nod_comm, node, ele, surf,      &
-!!     &      conduct, sf_grp, iphys, iphys_ele, ele_fld,               &
+!!     &      conduct, sf_grp, Bnod_bcs, iphys, iphys_ele, ele_fld,     &
 !!     &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,  &
 !!     &      FEM_elens, m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine s_cal_magnetic_field(nod_comm, node, ele, surf,      &
-!!     &      conduct, sf_grp, iphys, iphys_ele, ele_fld,               &
+!!     &      conduct, sf_grp, Bnod_bcs, iphys, iphys_ele, ele_fld,     &
 !!     &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,  &
 !!     &      FEM_elens, m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
@@ -19,6 +19,7 @@
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(field_geometry_data), intent(in) :: conduct
+!!        type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
@@ -49,6 +50,7 @@
       use t_finite_element_mat
       use t_MHD_finite_element_mat
       use t_filter_elength
+      use t_bc_data_magne
 !
       implicit none
 !
@@ -62,7 +64,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_vector_potential(nod_comm, node, ele, surf,        &
-     &      conduct, sf_grp, iphys, iphys_ele, ele_fld,                 &
+     &      conduct, sf_grp, Bnod_bcs, iphys, iphys_ele, ele_fld,       &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &
      &      FEM_elens, m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
@@ -87,6 +89,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(field_geometry_data), intent(in) :: conduct
+      type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -112,7 +115,8 @@
 !     --------------------- 
 !
       if (iflag_debug .gt. 0)  write(*,*) 'vector_p_pre'
-      call cal_vector_p_pre(nod_comm, node, ele, surf, conduct, sf_grp, &
+      call cal_vector_p_pre                                             &
+     &   (nod_comm, node, ele, surf, conduct, sf_grp, Bnod_bcs,         &
      &    iphys, iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl,   &
      &    FEM_elens, num_MG_level, MHD1_matrices%MG_interpolate,        &
      &    MHD1_matrices%MG_comm_table, MHD1_matrices%MG_DJDS_table,     &
@@ -134,8 +138,9 @@
       do iloop = 0, maxiter_vecp
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_electric_potential'
-        call cal_electric_potential(iak_diff_b, node, ele, surf,        &
-     &      sf_grp, iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,   &
+        call cal_electric_potential                                     &
+     &     (iak_diff_b, node, ele, surf, sf_grp, Bnod_bcs,              &
+     &      iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,           &
      &      FEM_elens, num_MG_level, MHD1_matrices%MG_interpolate,      &
      &      MHD1_matrices%MG_comm_table, MHD1_matrices%MG_DJDS_linear,  &
      &      MHD1_matrices%Fmat_MG_DJDS, MG_vector,                      &
@@ -148,7 +153,7 @@
 !
         if (iflag_debug.gt.0) write(*,*) 'vector_potential_correct'
         call cal_vector_p_co(nod_comm, node, ele, surf,                 &
-     &      conduct, sf_grp, iphys, iphys_ele, ele_fld,                 &
+     &      conduct, sf_grp, Bnod_bcs, iphys, iphys_ele, ele_fld,       &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &
      &      FEM_elens, num_MG_level, MHD1_matrices%MG_interpolate,      &
      &      MHD1_matrices%MG_comm_table, MHD1_matrices%MG_DJDS_table,   &
@@ -180,7 +185,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_cal_magnetic_field(nod_comm, node, ele, surf,        &
-     &      conduct, sf_grp, iphys, iphys_ele, ele_fld,                 &
+     &      conduct, sf_grp, Bnod_bcs, iphys, iphys_ele, ele_fld,       &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &
      &      FEM_elens, m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
@@ -205,6 +210,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(field_geometry_data), intent(in) :: conduct
+      type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -236,7 +242,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_magnetic_field_pre'
       call cal_magnetic_field_pre(nod_comm, node, ele, surf,            &
-     &    conduct, sf_grp, iphys, iphys_ele, ele_fld,                   &
+     &    conduct, sf_grp, Bnod_bcs, iphys, iphys_ele, ele_fld,         &
      &    jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens, num_MG_level,     &
      &    MHD1_matrices%MG_interpolate, MHD1_matrices%MG_comm_table,    &
      &    MHD1_matrices%MG_DJDS_table, MHD1_matrices%Bmat_MG_DJDS,      &
@@ -250,7 +256,8 @@
 !
 !
       do iloop = 0, maxiter
-        call cal_mag_potential(iak_diff_b, node, ele, surf, sf_grp,     &
+        call cal_mag_potential                                          &
+     &     (iak_diff_b, node, ele, surf, sf_grp, Bnod_bcs,              &
      &      iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,           &
      &      FEM_elens, num_MG_level, MHD1_matrices%MG_interpolate,      &
      &      MHD1_matrices%MG_comm_table, MHD1_matrices%MG_DJDS_linear,  &
@@ -264,7 +271,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'magnetic_correction'
         call cal_magnetic_co(nod_comm, node, ele, surf,                 &
-     &      conduct, sf_grp, iphys, iphys_ele, ele_fld,                 &
+     &      conduct, sf_grp, Bnod_bcs, iphys, iphys_ele, ele_fld,       &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &
      &      FEM_elens, num_MG_level, MHD1_matrices%MG_interpolate,      &
      &      MHD1_matrices%MG_comm_table, MHD1_matrices%MG_DJDS_table,   &

@@ -7,8 +7,8 @@
 !> @brief Evaluate field data for time integration for FEM dynamo model
 !!
 !!@verbatim
-!!      subroutine update_with_vector_potential                         &
-!!     &         (nod_comm, node, ele, surf, fluid, conduct, sf_grp,    &
+!!      subroutine update_with_vector_potential(nod_comm, node, ele,    &
+!!     &          surf, fluid, conduct, sf_grp, Bnod_bcs,               &
 !!     &          iphys, iphys_ele, ele_fld, jac_3d_q, jac_3d_l,        &
 !!     &          jac_sf_grp_q, rhs_tbl, FEM_elen, layer_tbl, m_lump,   &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -18,6 +18,7 @@
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(field_geometry_data), intent(in) :: fluid, conduct
+!!        type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
@@ -62,8 +63,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine update_with_vector_potential                           &
-     &         (nod_comm, node, ele, surf, fluid, conduct, sf_grp,      &
+      subroutine update_with_vector_potential(nod_comm, node, ele,      &
+     &          surf, fluid, conduct, sf_grp, Bnod_bcs,                 &
      &          iphys, iphys_ele, ele_fld, jac_3d_q, jac_3d_l,          &
      &          jac_sf_grp_q, rhs_tbl, FEM_elen, layer_tbl, m_lump,     &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -88,6 +89,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(field_geometry_data), intent(in) :: fluid, conduct
+      type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -163,7 +165,7 @@
      &      iak_diff_b, iphys%i_vecp, iphys%i_magne,                    &
      &      ele%istack_ele_smp, m_lump,                                 &
      &      nod_comm, node, ele, surf, sf_grp, iphys_ele, ele_fld,      &
-     &      jac_3d_q, jac_sf_grp_q, FEM_elen, nod_bc1_b,                &
+     &      jac_3d_q, jac_sf_grp_q, FEM_elen, Bnod_bcs%nod_bc_b,        &
      &      sf_sgs1_grad_a, rhs_tbl, fem_wk, f_nl, nod_fld)
       end if
       if (iphys_ele%i_magne .ne. 0) then

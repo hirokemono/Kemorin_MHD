@@ -116,6 +116,7 @@
 !
       use m_SGS_address
       use m_bc_data_velo
+      use m_bc_data_magne
 !
       use cal_terms_for_heat
       use cal_momentum_terms
@@ -191,7 +192,7 @@
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call cal_terms_4_magnetic(i_fld, iak_diff_uxb,                &
-     &        nod_comm, node, ele, surf, conduct, sf_grp,               &
+     &        nod_comm, node, ele, surf, conduct, sf_grp, Bnod1_bcs,    &
      &        iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,   &
      &        FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         end if
@@ -202,7 +203,7 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_vp_induct)
         call cal_vecp_induction(nod_comm, node, ele, conduct,           &
-     &       iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,                &
+     &       Bnod1_bcs, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,     &
      &       mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
@@ -240,7 +241,7 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_vecp_diffuse)
         call cal_vecp_diffusion(iak_diff_b,                             &
-     &      nod_comm, node, ele, surf, sf_grp, iphys,                   &
+     &      nod_comm, node, ele, surf, sf_grp, Bnod1_bcs, iphys,        &
      &      jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                     &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
@@ -250,7 +251,7 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_mag_diffuse)
         call cal_magnetic_diffusion(iak_diff_b, iak_diff_uxb,           &
-     &     nod_comm, node, ele, surf, conduct, sf_grp,                  &
+     &     nod_comm, node, ele, surf, conduct, sf_grp, Bnod1_bcs,       &
      &     iphys, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, m_lump,       &
      &     fem_wk, f_l, f_nl, nod_fld)
       end if

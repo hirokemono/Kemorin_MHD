@@ -334,6 +334,7 @@
      &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                  &
      &         mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
+      use m_bc_data_magne
       use cal_magnetic_terms
 !
       integer(kind = kint), intent(in) :: iak_diff_uxb
@@ -362,7 +363,7 @@
      &    iphys%i_filter_magne, iphys%i_filter_velo, iphys%i_induct_t,  &
      &    nod_fld%d_fld)
       call cal_terms_4_magnetic(iphys%i_induct_div, iak_diff_uxb,       &
-     &    nod_comm, node, ele, surf, conduct, sf_grp,                   &
+     &    nod_comm, node, ele, surf, conduct, sf_grp, Bnod1_bcs,        &
      &    iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp,                &
      &    rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       call copy_vector_component(node, nod_fld,                         &

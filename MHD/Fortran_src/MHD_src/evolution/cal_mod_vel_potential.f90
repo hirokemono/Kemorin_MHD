@@ -11,14 +11,14 @@
 !!     &          num_MG_level, MG_interpolate, MG_comm_fluid,          &
 !!     &          MG_DJDS_lin_fl, Pmat_MG_DJDS, MG_vector,              &
 !!     &          fem_wk, f_l, f_nl, nod_fld)
-!!      subroutine cal_electric_potential(iak_diff_b)
-!!     &          node, ele, surf, sf_grp, iphys,                       &
+!!      subroutine cal_electric_potential(iak_diff_b,                   &
+!!     &          node, ele, surf, sf_grp, Bnod_bcs, iphys,             &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl, FEM_elens, &
 !!     &          num_MG_level, MG_interpolate, MG_comm_table,          &
 !!     &          MG_DJDS_linear, Fmat_MG_DJDS, MG_vector,              &
 !!     &          fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_mag_potential(iak_diff_b,                        &
-!!     &          node, ele, surf, sf_grp, iphys,                       &
+!!     &          node, ele, surf, sf_grp, Bnod_bcs, iphys,             &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl, FEM_elens, &
 !!     &          num_MG_level, MG_interpolate, MG_comm_table,          &
 !!     &          MG_DJDS_linear, Fmat_MG_DJDS, MG_vector,              &
@@ -29,6 +29,7 @@
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
+!!        type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp_l
@@ -77,6 +78,7 @@
       use t_interpolate_table
       use t_vector_for_solver
       use t_bc_data_velo
+      use t_bc_data_magne
 !
       implicit none
 !
@@ -193,7 +195,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_electric_potential(iak_diff_b,                     &
-     &          node, ele, surf, sf_grp, iphys,                         &
+     &          node, ele, surf, sf_grp, Bnod_bcs, iphys,               &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl, FEM_elens,   &
      &          num_MG_level, MG_interpolate, MG_comm_table,            &
      &          MG_DJDS_linear, Fmat_MG_DJDS, MG_vector,                &
@@ -202,7 +204,6 @@
       use m_iccg_parameter
       use m_surf_data_vector_p
       use m_surf_data_magne_p
-      use m_bc_data_magne
 !
       use int_vol_fractional_div
       use int_sk_4_fixed_boundary
@@ -217,6 +218,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
       type(phys_address), intent(in) :: iphys
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(jacobians_2d), intent(in) :: jac_sf_grp_l
@@ -263,9 +265,10 @@
      &    fem_wk, f_l)
 !
       call int_vol_sk_mp_bc(iphys%i_m_phi, iak_diff_b, node, ele,       &
-     &     nod_fld, jac_3d_l, rhs_tbl, FEM_elens, fem_wk, f_l)
+     &     nod_fld, jac_3d_l, rhs_tbl, FEM_elens, Bnod_bcs%nod_bc_f,    &
+     &     fem_wk, f_l)
 !
-      call set_boundary_ff(node, nod_bc1_f, f_l)
+      call set_boundary_ff(node, Bnod_bcs%nod_bc_f, f_l)
 !
       if (iflag_debug .gt. 0)  write(*,*) 'cal_sol_mag_po'
       call solver_poisson_scalar(node,  num_MG_level,                   &
@@ -274,7 +277,8 @@
      &    iphys%i_m_phi, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !
       if (iflag_debug .gt. 0)  write(*,*) 'set_boundary_m_phi'
-      call set_boundary_scalar(nod_bc1_f, iphys%i_m_phi, nod_fld)
+      call set_boundary_scalar                                          &
+     &   (Bnod_bcs%nod_bc_f, iphys%i_m_phi, nod_fld)
 !
       end subroutine cal_electric_potential
 !
@@ -282,7 +286,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_mag_potential(iak_diff_b,                          &
-     &          node, ele, surf, sf_grp, iphys,                         &
+     &          node, ele, surf, sf_grp, Bnod_bcs, iphys,               &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl, FEM_elens,   &
      &          num_MG_level, MG_interpolate, MG_comm_table,            &
      &          MG_DJDS_linear, Fmat_MG_DJDS, MG_vector,                &
@@ -291,7 +295,6 @@
       use m_iccg_parameter
       use m_surf_data_magne
       use m_surf_data_magne_p
-      use m_bc_data_magne
 !
       use int_vol_fractional_div
       use int_sk_4_fixed_boundary
@@ -307,6 +310,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
       type(phys_address), intent(in) :: iphys
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(jacobians_2d), intent(in) :: jac_sf_grp_l
@@ -354,16 +358,18 @@
      &    intg_point_poisson, fem_wk, f_l)
 !
       call int_vol_sk_mp_bc(iphys%i_m_phi, iak_diff_b, node, ele,       &
-     &    nod_fld, jac_3d_l, rhs_tbl, FEM_elens, fem_wk, f_l)
+     &    nod_fld, jac_3d_l, rhs_tbl, FEM_elens, Bnod_bcs%nod_bc_f,     &
+     &    fem_wk, f_l)
 !
-      call set_boundary_ff(node, nod_bc1_f, f_l)
+      call set_boundary_ff(node, Bnod_bcs%nod_bc_f, f_l)
 !
       call solver_poisson_scalar(node, num_MG_level,                    &
      &    MG_interpolate, MG_comm_table, MG_DJDS_linear, Fmat_MG_DJDS,  &
      &    method_4_solver, precond_4_solver, eps, itr,                  &
      &    iphys%i_m_phi, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !
-      call set_boundary_scalar(nod_bc1_f, iphys%i_m_phi, nod_fld)
+      call set_boundary_scalar                                          &
+     &   (Bnod_bcs%nod_bc_f, iphys%i_m_phi, nod_fld)
 !
       end subroutine cal_mag_potential
 !

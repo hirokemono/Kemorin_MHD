@@ -82,6 +82,7 @@
      &          fem_wk, f_l, f_nl, nod_fld)
 !
       use m_bc_data_velo
+      use m_bc_data_magne
       use cal_temperature
       use cal_velocity
       use cal_magnetic_field
@@ -121,15 +122,15 @@
 !
       if ( iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'cal_magne_vector_potential'
-        call cal_vector_potential                                       &
-     &    (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,           &
-     &     MHD_mesh%conduct, group%surf_grp, iphys, iphys_ele, ele_fld, &
+        call cal_vector_potential(mesh%nod_comm, mesh%node, mesh%ele,   &
+     &     ele_mesh%surf, MHD_mesh%conduct, group%surf_grp,             &
+     &     Bnod1_bcs, iphys, iphys_ele, ele_fld,                        &
      &     jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,     &
      &     FEM_elens, m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         call update_with_vector_potential                               &
      &    (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,           &
-     &     MHD_mesh%fluid, MHD_mesh%conduct, group%surf_grp, iphys,     &
-     &     iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,        &
+     &     MHD_mesh%fluid, MHD_mesh%conduct, group%surf_grp, Bnod1_bcs, &
+     &     iphys, iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q, &
      &     rhs_tbl, FEM_elens, layer_tbl, m_lump, mhd_fem_wk, fem_wk,   &
      &     f_l, f_nl, nod_fld)
 !
@@ -138,9 +139,9 @@
 !        call check_surface_param_smp('cal_magnetic_field_pre start',   &
 !     &      my_rank, sf_grp, group%surf_nod_grp)
         if (iflag_debug.eq.1) write(*,*) 's_cal_magnetic_field'
-        call s_cal_magnetic_field                                       &
-     &    (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,           &
-     &     MHD_mesh%conduct, group%surf_grp, iphys, iphys_ele, ele_fld, &
+        call s_cal_magnetic_field(mesh%nod_comm, mesh%node, mesh%ele,   &
+     &     ele_mesh%surf, MHD_mesh%conduct, group%surf_grp,             &
+     &     Bnod1_bcs, iphys, iphys_ele, ele_fld,                        &
      &     jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,     &
      &     FEM_elens, m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         call update_with_magnetic_field                                 &
@@ -222,6 +223,8 @@
      &          layer_tbl, m_lump, mhd_fem_wk, fem_wk,                  &
      &          f_l, f_nl, nod_fld)
 !
+      use m_bc_data_magne
+!
       use average_on_elements
       use update_with_scalars
       use update_with_velo
@@ -274,9 +277,9 @@
 !
       if (iphys%i_vecp .ne. 0) then
         call update_with_vector_potential                               &
-     &     (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &
-     &      MHD_mesh%fluid, MHD_mesh%conduct, group%surf_grp, iphys,    &
-     &      iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,       &
+     &    (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,           &
+     &     MHD_mesh%fluid, MHD_mesh%conduct, group%surf_grp, Bnod1_bcs, &
+     &     iphys, iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q, &
      &      rhs_tbl, FEM_elens, layer_tbl, m_lump, mhd_fem_wk, fem_wk,  &
      &      f_l, f_nl, nod_fld)
       else if (iphys%i_magne.ne.0) then

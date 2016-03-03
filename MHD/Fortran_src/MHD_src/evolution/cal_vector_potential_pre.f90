@@ -5,14 +5,14 @@
 !                                    on July 2000 (ver 1.1)
 !        modieied by H. Matsui on Sep., 2005
 !
-!!      subroutine cal_vector_p_pre(nod_comm, node, ele, surf,          &
-!!     &          conduct, sf_grp, iphys, iphys_ele, ele_fld,           &
+!!      subroutine cal_vector_p_pre(nod_comm, node, ele, surf, conduct, &
+!!     &          sf_grp, Bnod_bcs, iphys, iphys_ele, ele_fld,          &
 !!     &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,           &
 !!     &          num_MG_level, MG_interpolate, MG_comm_table,          &
 !!     &          MG_DJDS_table, Bmat_MG_DJDS, MG_vector,               &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_vector_p_co(nod_comm, node, ele, surf,           &
-!!     &          conduct, sf_grp, iphys, iphys_ele, ele_fld,           &
+!!     &          conduct, sf_grp, Bnod_bcs, iphys, iphys_ele, ele_fld, &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
 !!     &          rhs_tbl, FEM_elens, num_MG_level, MG_interpolate,     &
 !!     &          MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS, MG_vector,&
@@ -70,6 +70,7 @@
       use t_solver_djds
       use t_interpolate_table
       use t_vector_for_solver
+      use t_bc_data_magne
 !
       implicit none
 !
@@ -79,15 +80,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_vector_p_pre(nod_comm, node, ele, surf,            &
-     &          conduct, sf_grp, iphys, iphys_ele, ele_fld,             &
+      subroutine cal_vector_p_pre(nod_comm, node, ele, surf, conduct,   &
+     &          sf_grp, Bnod_bcs, iphys, iphys_ele, ele_fld,            &
      &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,             &
      &          num_MG_level, MG_interpolate, MG_comm_table,            &
      &          MG_DJDS_table, Bmat_MG_DJDS, MG_vector,                 &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use calypso_mpi
-      use m_bc_data_magne
       use m_surf_data_vector_p
       use m_SGS_address
 !
@@ -109,6 +109,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(field_geometry_data), intent(in) :: conduct
+      type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -191,21 +192,23 @@
 !  -----for Ceank-nicolson
       else if (iflag_t_evo_4_vect_p .eq. id_Crank_nicolson) then
         call cal_vect_p_pre_lumped_crank                                &
-     &     (iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b, nod_bc1_a,       &
-     &      nod_comm, node, ele, conduct, iphys_ele, ele_fld,           &
-     &      jac_3d_q, rhs_tbl, FEM_elens, num_MG_level, MG_interpolate, &
-     &      MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS, MG_vector,      &
+     &     (iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b,                  &
+     &      Bnod_bcs%nod_bc_a, nod_comm, node, ele,                     &
+     &      conduct, iphys_ele, ele_fld, jac_3d_q, rhs_tbl,             &
+     &      FEM_elens, num_MG_level, MG_interpolate, MG_comm_table,     &
+     &      MG_DJDS_table, Bmat_MG_DJDS, MG_vector,                     &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (iflag_t_evo_4_vect_p.eq.id_Crank_nicolson_cmass) then
         call cal_vect_p_pre_consist_crank                               &
-     &     (iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b, nod_bc1_a,       &
-     &      node, ele, conduct, jac_3d_q, rhs_tbl, FEM_elens,           &
+     &     (iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b,                  &
+     &      Bnod_bcs%nod_bc_a, node, ele, conduct,                      &
+     &      jac_3d_q, rhs_tbl, FEM_elens,                               &
      &      num_MG_level, MG_interpolate, MG_comm_table,                &
      &      MG_DJDS_table, Bmat_MG_DJDS, MG_vector,                     &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
-      call set_boundary_vect(nod_bc1_a, iphys%i_vecp, nod_fld)
+      call set_boundary_vect(Bnod_bcs%nod_bc_a, iphys%i_vecp, nod_fld)
 !
       call vector_send_recv(iphys%i_vecp, node, nod_comm, nod_fld)
       call clear_nodal_data(node, nod_fld, n_scalar, iphys%i_m_phi)
@@ -217,7 +220,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_vector_p_co(nod_comm, node, ele, surf,             &
-     &          conduct, sf_grp, iphys, iphys_ele, ele_fld,             &
+     &          conduct, sf_grp, Bnod_bcs, iphys, iphys_ele, ele_fld,   &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
      &          rhs_tbl, FEM_elens, num_MG_level, MG_interpolate,       &
      &          MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS, MG_vector,  &
@@ -225,7 +228,6 @@
 !
       use m_SGS_address
       use m_SGS_model_coefs
-      use m_bc_data_magne
       use m_surf_data_magne_p
 !
       use set_boundary_scalars
@@ -243,6 +245,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(field_geometry_data), intent(in) :: conduct
+      type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -292,7 +295,7 @@
       if (   iflag_implicit_correct.eq.3                                &
      &  .or. iflag_implicit_correct.eq.4) then
         call cal_vector_p_co_imp(iphys%i_vecp,                          &
-     &      nod_comm, node, ele, conduct, iphys_ele, ele_fld,           &
+     &      nod_comm, node, ele, conduct, Bnod_bcs, iphys_ele, ele_fld, &
      &      jac_3d_q, rhs_tbl, FEM_elens, num_MG_level, MG_interpolate, &
      &      MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS, MG_vector,      &
      &      m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -304,7 +307,7 @@
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_vect vect_p'
-      call set_boundary_vect(nod_bc1_a, iphys%i_vecp, nod_fld)
+      call set_boundary_vect(Bnod_bcs%nod_bc_a, iphys%i_vecp, nod_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'vector_send_recv for vector_p'
       call vector_send_recv(iphys%i_vecp, node, nod_comm, nod_fld)

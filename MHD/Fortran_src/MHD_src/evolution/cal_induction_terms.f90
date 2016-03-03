@@ -4,10 +4,10 @@
 !     Written by H. Matsui on June, 2005
 !
 !!      subroutine cal_vecp_induction(nod_comm, node, ele, conduct,     &
-!!     &          iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,           &
+!!     &          Bnod_bcs, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_vecp_diffusion(iak_diff_b,                       &
-!!     &          nod_comm, node, ele, surf, sf_grp, iphys,             &
+!!     &          nod_comm, node, ele, surf, sf_grp, Bnod_bcs, iphys,   &
 !!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,               &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
@@ -16,6 +16,7 @@
 !!        type(surface_data), intent(in) :: surf
 !!        type(field_geometry_data), intent(in) :: conduct
 !!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
@@ -48,6 +49,7 @@
       use t_finite_element_mat
       use t_MHD_finite_element_mat
       use t_filter_elength
+      use t_bc_data_magne
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
@@ -64,10 +66,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_vecp_induction(nod_comm, node, ele, conduct,       &
-     &          iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,             &
+     &          Bnod_bcs, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,   &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
-      use m_bc_data_magne
 !
       use int_vol_vect_p_pre
       use set_boundary_scalars
@@ -76,6 +77,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: conduct
+      type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -106,7 +108,7 @@
      &    conduct%istack_ele_fld_smp, mhd_fem_wk%mlump_cd,              &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,              &
      &    rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
-      call delete_vector_ffs_on_bc(node, nod_bc1_a, f_l, f_nl)
+      call delete_vector_ffs_on_bc(node, Bnod_bcs%nod_bc_a, f_l, f_nl)
 !
       call cal_ff_2_vector(node%numnod, node%istack_nod_smp,            &
      &    f_nl%ff, mhd_fem_wk%mlump_cd%ml,                              &
@@ -119,7 +121,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_vecp_diffusion(iak_diff_b,                         &
-     &          nod_comm, node, ele, surf, sf_grp, iphys,               &
+     &          nod_comm, node, ele, surf, sf_grp, Bnod_bcs, iphys,     &
      &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                 &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
@@ -137,6 +139,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
       type(phys_address), intent(in) :: iphys
       type(jacobians_3d), intent(in) :: jac_3d
       type(jacobians_2d), intent(in) :: jac_sf_grp
@@ -161,7 +164,7 @@
 !
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
 !
-      call delete_vector_ffs_on_bc(node, nod_bc1_a, f_l, f_nl)
+      call delete_vector_ffs_on_bc(node, Bnod_bcs%nod_bc_a, f_l, f_nl)
 !
       call cal_ff_2_vector(node%numnod, node%istack_nod_smp,            &
      &    f_l%ff, mhd_fem_wk%mlump_cd%ml,                               &

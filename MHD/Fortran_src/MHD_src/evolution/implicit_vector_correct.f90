@@ -22,14 +22,14 @@
 !!     &          MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,               &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_vector_p_co_imp(i_vecp,                          &
-!!     &          nod_comm, node, ele, conduct, iphys_ele, ele_fld,     &
-!!     &          jac_3d, rhs_tbl, FEM_elens,                           &
+!!     &          nod_comm, node, ele, conduct, Bnod_bcs,               &
+!!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
 !!     &          num_MG_level, MG_interpolate, MG_comm_table,          &
 !!     &          MG_DJDS_table, Bmat_MG_DJDS, MG_vector,               &
 !!     &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_magnetic_co_imp(i_magne,                         &
-!!     &          nod_comm, node, ele, conduct, iphys_ele, ele_fld,     &
-!!     &          jac_3d, rhs_tbl, FEM_elens,                           &
+!!     &          nod_comm, node, ele, conduct, Bnod_bcs,               &
+!!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
 !!     &          num_MG_level, MG_interpolate, MG_comm_table,          &
 !!     &          MG_DJDS_table, Bmat_MG_DJDS, MG_vector,               &
 !!     &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -39,6 +39,7 @@
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(field_geometry_data), intent(in) :: conduct
 !!        type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
+!!        type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(jacobians_3d), intent(in) :: jac_3d
@@ -83,6 +84,7 @@
       use t_filter_elength
       use t_solver_djds
       use t_bc_data_velo
+      use t_bc_data_magne
 !
       implicit none
 !
@@ -299,8 +301,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_vector_p_co_imp(i_vecp,                            &
-     &          nod_comm, node, ele, conduct, iphys_ele, ele_fld,       &
-     &          jac_3d, rhs_tbl, FEM_elens,                             &
+     &          nod_comm, node, ele, conduct, Bnod_bcs,                 &
+     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
      &          num_MG_level, MG_interpolate, MG_comm_table,            &
      &          MG_DJDS_table, Bmat_MG_DJDS, MG_vector,                 &
      &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -310,7 +312,6 @@
       use m_array_for_send_recv
       use m_SGS_address
       use m_ele_material_property
-      use m_bc_data_magne
 !
       use int_vol_diffusion_ele
       use int_sk_4_fixed_boundary
@@ -328,6 +329,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: conduct
+      type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
       type(jacobians_3d), intent(in) :: jac_3d
@@ -362,18 +364,19 @@
         if (iflag_debug.eq.1) write(*,*) 'int_sk_4_fixed_vector_p'
         call int_sk_4_fixed_vector(iflag_commute_magne,                 &
      &      i_vecp, node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,     &
-     &      nod_bc1_a, ak_d_magne, coef_imp_b, iak_diff_b, fem_wk, f_l)
+     &      Bnod_bcs%nod_bc_a, ak_d_magne, coef_imp_b, iak_diff_b,      &
+     &      fem_wk, f_l)
       end if
 !
 !
       if (     iflag_implicit_correct.eq.3) then
         call cal_magne_co_lumped_crank                                  &
      &     (i_vecp, nod_comm, node, ele, nod_fld,                       &
-     &      iphys_ele, ele_fld, nod_bc1_a, jac_3d, rhs_tbl,             &
+     &      iphys_ele, ele_fld, Bnod_bcs%nod_bc_a, jac_3d, rhs_tbl,     &
      &      m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
       else if (iflag_implicit_correct.eq.4) then
         call cal_magne_co_consist_crank(i_vecp, coef_magne,             &
-     &      node, ele, conduct, nod_fld, nod_bc1_a, jac_3d,             &
+     &      node, ele, conduct, nod_fld, Bnod_bcs%nod_bc_a, jac_3d,     &
      &      rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
       end if
 !
@@ -388,8 +391,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_magnetic_co_imp(i_magne,                           &
-     &          nod_comm, node, ele, conduct, iphys_ele, ele_fld,       &
-     &          jac_3d, rhs_tbl, FEM_elens,                             &
+     &          nod_comm, node, ele, conduct, Bnod_bcs,                 &
+     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
      &          num_MG_level, MG_interpolate, MG_comm_table,            &
      &          MG_DJDS_table, Bmat_MG_DJDS, MG_vector,                 &
      &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -416,6 +419,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: conduct
+      type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
       type(jacobians_3d), intent(in) :: jac_3d
@@ -450,18 +454,19 @@
         if (iflag_debug.eq.1)  write(*,*) 'int_sk_4_fixed_magne'
         call int_sk_4_fixed_vector(iflag_commute_magne,                 &
      &      i_magne, node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,    &
-     &      nod_bc1_b, ak_d_magne, coef_imp_b, iak_diff_b, fem_wk, f_l)
+     &      Bnod_bcs%nod_bc_b, ak_d_magne, coef_imp_b, iak_diff_b,      &
+     &      fem_wk, f_l)
       end if
 !
 !
       if     (iflag_implicit_correct.eq.3) then
         call cal_magne_co_lumped_crank                                  &
      &     (i_magne, nod_comm, node, ele, nod_fld,                      &
-     &      iphys_ele, ele_fld, nod_bc1_b, jac_3d, rhs_tbl,             &
+     &      iphys_ele, ele_fld, Bnod_bcs%nod_bc_b, jac_3d, rhs_tbl,     &
      &      m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
       else if(iflag_implicit_correct.eq.4) then
         call cal_magne_co_consist_crank(i_magne, coef_magne,            &
-     &      node, ele, conduct, nod_fld, nod_bc1_b, jac_3d,             &
+     &      node, ele, conduct, nod_fld, Bnod_bcs%nod_bc_b, jac_3d,     &
      &      rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
       end if
 !

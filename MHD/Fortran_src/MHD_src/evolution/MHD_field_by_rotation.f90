@@ -121,7 +121,7 @@
      &            iak_diff_b, iphys%i_magne, iphys%i_current,           &
      &            ele%istack_ele_smp, m_lump, nod_comm, node, ele,      &
      &            surf, sf_grp, iphys_ele, ele_fld, jac_3d,             &
-     &            jac_sf_grp, FEM_elens, nod_bc1_j,                     &
+     &            jac_sf_grp, FEM_elens, Bnod1_bcs%nod_bc_j,            &
      &            sf_sgs1_grad_b, rhs_tbl, fem_wk, f_nl, nod_fld)
 !
 !             call choose_cal_rotation_sgs                              &
@@ -129,7 +129,7 @@
 !     &           iak_diff_b, iphys%i_magne, iphys%i_current,           &
 !     &           conduct%istack_ele_fld_smp, mhd_fem_wk%mlump_cd,      &
 !     &           nod_comm, node, ele, surf, sf_grp, iphys_ele, ele_fld,&
-!     &           jac_3d,  jac_sf_grp, FEM_elens, nod_bc1_j,            &
+!     &           jac_3d,  jac_sf_grp, FEM_elens, Bnod1_bcs%nod_bc_j,   &
 !     &           sf_sgs1_grad_b, rhs_tbl, fem_wk, f_nl, nod_fld)
 !             call int_current_diffuse                                  &
 !     &         (nod_comm, node, ele, surf, sf_grp,                     &
@@ -142,15 +142,15 @@
                (iflag_commute_magne, iflag_mag_supg,                    &
      &          iak_diff_b, iphys%i_magne, iphys%i_current,             &
      &          ele%istack_ele_smp, m_lump, nod_comm, node, ele,        &
-     &          surf, sf_grp, iphys_ele, ele_fld, jac_3d,               &
-     &          jac_sf_grp, FEM_elens, nod_bc1_j, sf_sgs1_grad_b,       &
+     &          surf, sf_grp, iphys_ele, ele_fld, jac_3d, jac_sf_grp,   &
+     &          FEM_elens, Bnod1_bcs%nod_bc_j, sf_sgs1_grad_b,          &
      &          rhs_tbl, fem_wk, f_nl, nod_fld)
 !           call choose_cal_rotation_sgs                                &
 !     &        (iflag_commute_magne, iflag_mag_supg,                    &
 !     &         iak_diff_b, iphys%i_magne, iphys%i_current,             &
 !     &         conduct%istack_ele_fld_smp, mhd_fem_wk%mlump_cd,        &
 !     &         nod_comm, node, ele, surf, sf_grp, iphys_ele, ele_fld,       &
-!     &         jac_3d, jac_sf_grp, FEM_elens, nod_bc1_j,               &
+!     &         jac_3d, jac_sf_grp, FEM_elens, Bnod1_bcs%nod_bc_j,      &
 !     &         sf_sgs1_grad_b, rhs_tbl, fem_wk, f_nl, nod_fld)
           end if
         end if

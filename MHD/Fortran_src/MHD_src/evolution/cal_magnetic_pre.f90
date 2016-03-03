@@ -6,20 +6,20 @@
 !        modieied by H. Matsui on Sep., 2005
 !
 !!      subroutine cal_magnetic_field_pre(nod_comm, node, ele, surf,    &
-!!     &          conduct, sf_grp, iphys, iphys_ele, ele_fld,           &
+!!     &          conduct, sf_grp, Bnod_bcs, iphys, iphys_ele, ele_fld, &
 !!     &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,           &
 !!     &          num_MG_level, MG_interpolate, MG_comm_table,          &
 !!     &          MG_DJDS_table, Bmat_MG_DJDS, MG_vector,               &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_magnetic_co(nod_comm, node, ele, surf,           &
-!!     &          conduct, sf_grp, iphys, iphys_ele, ele_fld,           &
+!!     &          conduct, sf_grp, Bnod_bcs, iphys, iphys_ele, ele_fld, &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
 !!     &          rhs_tbl, FEM_elens, num_MG_level, MG_interpolate,     &
 !!     &          MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS, MG_vector,&
 !!     &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_magnetic_co_outside                              &
-!!     &         (nod_comm, node, ele, surf, insulate, sf_grp, iphys,   &
-!!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
+!!     &         (nod_comm, node, ele, surf, insulate, sf_grp, Bnod_bcs,&
+!!     &          iphys, jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,&
 !!     &          rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,               &
 !!     &          f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
@@ -29,6 +29,7 @@
 !!        type(field_geometry_data), intent(in) :: conduct
 !!        type(field_geometry_data), intent(in) :: insulate
 !!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
@@ -73,6 +74,7 @@
       use t_solver_djds
       use t_interpolate_table
       use t_vector_for_solver
+      use t_bc_data_magne
 !
       implicit none
 !
@@ -83,7 +85,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_magnetic_field_pre(nod_comm, node, ele, surf,      &
-     &          conduct, sf_grp, iphys, iphys_ele, ele_fld,             &
+     &          conduct, sf_grp, Bnod_bcs, iphys, iphys_ele, ele_fld,   &
      &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,             &
      &          num_MG_level, MG_interpolate, MG_comm_table,            &
      &          MG_DJDS_table, Bmat_MG_DJDS, MG_vector,                 &
@@ -91,7 +93,6 @@
 !
       use calypso_mpi
       use m_t_int_parameter
-      use m_bc_data_magne
       use m_SGS_address
 !
       use set_boundary_scalars
@@ -111,6 +112,7 @@
       type(surface_data), intent(in) :: surf
       type(field_geometry_data), intent(in) :: conduct
       type(surface_group_data), intent(in) :: sf_grp
+      type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -183,21 +185,23 @@
      &      jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (iflag_t_evo_4_magne .eq. id_Crank_nicolson) then
         call cal_magne_pre_lumped_crank                                 &
-     &     (iphys%i_magne, iphys%i_pre_uxb, iak_diff_b, nod_bc1_b,      &
-     &      nod_comm, node, ele, conduct, iphys_ele, ele_fld,           &
-     &      jac_3d_q, rhs_tbl, FEM_elens, num_MG_level, MG_interpolate, &
-     &      MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS, MG_vector,      &
+     &     (iphys%i_magne, iphys%i_pre_uxb, iak_diff_b,                 &
+     &      Bnod_bcs%nod_bc_b, nod_comm, node, ele, conduct,            &
+     &      iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,           &
+     &      num_MG_level, MG_interpolate, MG_comm_table,                &
+     &      MG_DJDS_table, Bmat_MG_DJDS, MG_vector,                     &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (iflag_t_evo_4_magne .eq. id_Crank_nicolson_cmass) then 
         call cal_magne_pre_consist_crank                                &
-     &     (iphys%i_magne, iphys%i_pre_uxb, iak_diff_b, nod_bc1_b,      &
-     &      node, ele, conduct, jac_3d_q, rhs_tbl, FEM_elens,           &
-     &      num_MG_level, MG_interpolate, MG_comm_table,                &
+     &     (iphys%i_magne, iphys%i_pre_uxb, iak_diff_b,                 &
+     &      Bnod_bcs%nod_bc_b, node, ele, conduct, jac_3d_q, rhs_tbl,   &
+     &      FEM_elens, num_MG_level, MG_interpolate, MG_comm_table,     &
      &      MG_DJDS_table, Bmat_MG_DJDS, MG_vector,                     &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
-      call set_boundary_vect(nod_bc1_b, iphys%i_magne, nod_fld)
+      call set_boundary_vect                                            &
+     &   (Bnod_bcs%nod_bc_b, iphys%i_magne, nod_fld)
 !
       call vector_send_recv(iphys%i_magne, node, nod_comm, nod_fld)
 !
@@ -206,7 +210,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_magnetic_co(nod_comm, node, ele, surf,             &
-     &          conduct, sf_grp, iphys, iphys_ele, ele_fld,             &
+     &          conduct, sf_grp, Bnod_bcs, iphys, iphys_ele, ele_fld,   &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
      &          rhs_tbl, FEM_elens, num_MG_level, MG_interpolate,       &
      &          MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS, MG_vector,  &
@@ -231,6 +235,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(field_geometry_data), intent(in) :: conduct
+      type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -281,7 +286,7 @@
       if (   iflag_implicit_correct.eq.3                                &
      &  .or. iflag_implicit_correct.eq.4) then
         call cal_magnetic_co_imp(iphys%i_magne,                         &
-     &      nod_comm, node, ele, conduct, iphys_ele, ele_fld,           &
+     &      nod_comm, node, ele, conduct, Bnod_bcs, iphys_ele, ele_fld, &
      &      jac_3d_q, rhs_tbl, FEM_elens, num_MG_level, MG_interpolate, &
      &      MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS, MG_vector,      &
      &      m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -293,7 +298,7 @@
 !
 !
       if (iflag_debug.eq.1)   write(*,*) 'set_boundary_vect magne'
-      call set_boundary_vect(nod_bc1_b, iphys%i_magne, nod_fld)
+      call set_boundary_vect(Bnod_bcs%nod_bc_b, iphys%i_magne, nod_fld)
 !
       call vector_send_recv(iphys%i_magne, node, nod_comm, nod_fld)
       call scalar_send_recv(iphys%i_mag_p, node, nod_comm, nod_fld)
@@ -304,8 +309,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_magnetic_co_outside                                &
-     &         (nod_comm, node, ele, surf, insulate, sf_grp, iphys,     &
-     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
+     &         (nod_comm, node, ele, surf, insulate, sf_grp, Bnod_bcs,  &
+     &          iphys, jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,  &
      &          rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,                 &
      &          f_l, f_nl, nod_fld)
 !
@@ -328,6 +333,7 @@
       type(surface_data), intent(in) :: surf
       type(field_geometry_data), intent(in) :: insulate
       type(surface_group_data), intent(in) :: sf_grp
+      type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
       type(phys_address), intent(in) :: iphys
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(jacobians_2d), intent(in) :: jac_sf_grp_q, jac_sf_grp_l
@@ -370,7 +376,7 @@
      &    insulate%numnod_fld, insulate%inod_fld, f_l%ff,               &
      &    nod_fld%ntot_phys, iphys%i_magne, nod_fld%d_fld)
 !
-      call set_boundary_vect(nod_bc1_b, iphys%i_magne, nod_fld)
+      call set_boundary_vect(Bnod_bcs%nod_bc_b, iphys%i_magne, nod_fld)
 !
       call vector_send_recv(iphys%i_magne, node, nod_comm, nod_fld)
 !

@@ -91,24 +91,26 @@
       end if
 !
       if (iflag_t_evo_4_magne .gt. id_no_evolution) then
-        call set_aiccg_bc_scalar_nod(num_t_linear, ele, nod_bc1_f,      &
+        call set_aiccg_bc_scalar_nod                                    &
+     &     (num_t_linear, ele, Bnod1_bcs%nod_bc_f,                      &
      &      MHD1_matrices%MG_DJDS_linear(0),                            &
      &      MHD1_matrices%Fmat_MG_DJDS(0))
 !
         if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
-          call set_aiccg_bc_vector_nod(ele, nod_bc1_b,                  &
+          call set_aiccg_bc_vector_nod(ele, Bnod1_bcs%nod_bc_b,         &
      &        MHD1_matrices%MG_DJDS_table(0),                           &
      &        MHD1_matrices%Bmat_MG_DJDS(0))
         end if
       end if
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-        call set_aiccg_bc_scalar_nod(num_t_linear, ele, nod_bc1_f,      &
+        call set_aiccg_bc_scalar_nod                                    &
+     &     (num_t_linear, ele, Bnod1_bcs%nod_bc_f,                      &
      &      MHD1_matrices%MG_DJDS_linear(0),                            &
      &      MHD1_matrices%Fmat_MG_DJDS(0))
 !
         if (iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
-          call set_aiccg_bc_vector_nod(ele, nod_bc1_a,                  &
+          call set_aiccg_bc_vector_nod(ele, Bnod1_bcs%nod_bc_a,         &
      &        MHD1_matrices%MG_DJDS_table(0),                           &
      &        MHD1_matrices%Bmat_MG_DJDS(0))
         end if
