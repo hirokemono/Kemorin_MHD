@@ -83,6 +83,7 @@
 !
       use m_bc_data_velo
       use m_bc_data_magne
+      use m_bc_data_ene
       use cal_temperature
       use cal_velocity
       use cal_magnetic_field
@@ -159,18 +160,20 @@
           if (iflag_debug.eq.1) write(*,*) 'cal_parturbation_temp'
           call cal_parturbation_temp                                    &
      &      (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,         &
-     &       MHD_mesh%fluid, group%surf_grp, iphys, iphys_ele, ele_fld, &
-     &       jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,                &
-     &       mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &       MHD_mesh%fluid, group%surf_grp, Tnod1_bcs,                 &
+     &       iphys, iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q,         &
+     &       rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,                    &
+     &       f_l, f_nl, nod_fld)
         else
 !          call check_surface_param_smp('cal_temperature_field start',  &
 !     &        my_rank, sf_grp, group%surf_nod_grp)
           if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field'
           call cal_temperature_field                                    &
      &      (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,         &
-     &       MHD_mesh%fluid, group%surf_grp, iphys, iphys_ele, ele_fld, &
-     &       jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,                &
-     &       mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &       MHD_mesh%fluid, group%surf_grp, Tnod1_bcs,                 &
+     &       iphys, iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q,         &
+     &       rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,                    &
+     &       f_l, f_nl, nod_fld)
         end if
 !
         call update_with_temperature                                    &
@@ -184,9 +187,9 @@
 !
       if ( iflag_t_evo_4_composit .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_light_element'
-        call s_cal_light_element                                        &
-     &     (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &
-     &      MHD_mesh%fluid, group%surf_grp, iphys, iphys_ele, ele_fld,  &
+        call s_cal_light_element(mesh%nod_comm, mesh%node, mesh%ele,    &
+     &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
+     &      Cnod1_bcs, iphys, iphys_ele, ele_fld,                       &
      &      jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,                 &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         call update_with_dummy_scalar                                   &
@@ -320,6 +323,8 @@
      &          f_l, f_nl, nod_fld)
 !
       use m_bc_data_velo
+      use m_bc_data_magne
+      use m_bc_data_ene
       use cal_temperature
       use cal_velocity
       use cal_light_element
@@ -356,16 +361,18 @@
           if (iflag_debug.eq.1) write(*,*) 'cal_parturbation_temp'
           call cal_parturbation_temp                                    &
      &       (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
-     &        fluid, group%surf_grp, iphys, iphys_ele, ele_fld,         &
-     &        jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens, mhd_fem_wk,   &
-     &        fem_wk, f_l, f_nl, nod_fld)
+     &        fluid, group%surf_grp, Tnod1_bcs,                         &
+     &        iphys, iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q,        &
+     &        rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,                   &
+     &        f_l, f_nl, nod_fld)
         else
           if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field'
           call cal_temperature_field                                    &
      &       (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
-     &        fluid, group%surf_grp, iphys, iphys_ele, ele_fld,         &
-     &        jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens, mhd_fem_wk,   &
-     &        fem_wk, f_l, f_nl, nod_fld)
+     &        fluid, group%surf_grp, Tnod1_bcs,                         &
+     &        iphys, iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q,        &
+     &        rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,                   &
+     &        f_l, f_nl, nod_fld)
         end if
 !
         call update_with_temperature                                    &
@@ -380,7 +387,7 @@
       if ( iflag_t_evo_4_composit .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_light_element'
         call s_cal_light_element(mesh%nod_comm, mesh%node, mesh%ele,    &
-     &      ele_mesh%surf, fluid, group%surf_grp, iphys,                &
+     &      ele_mesh%surf, fluid, group%surf_grp, Cnod1_bcs, iphys,     &
      &      iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl,        &
      &      FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         call update_with_dummy_scalar                                   &

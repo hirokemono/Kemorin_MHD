@@ -79,14 +79,14 @@
 !
 
       if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
-        call set_aiccg_bc_scalar_nod(ele%nnod_4_ele, ele, nod_bc1_t,    &
-     &      MHD1_matrices%MG_DJDS_fluid(0),                             &
+        call set_aiccg_bc_scalar_nod(ele%nnod_4_ele, ele,               &
+     &      Tnod1_bcs%nod_bc_s, MHD1_matrices%MG_DJDS_fluid(0),         &
      &      MHD1_matrices%Tmat_MG_DJDS(0))
       end if
 !
       if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
-        call set_aiccg_bc_scalar_nod(ele%nnod_4_ele, ele, nod_bc1_c,    &
-     &      MHD1_matrices%MG_DJDS_fluid(0),                             &
+        call set_aiccg_bc_scalar_nod(ele%nnod_4_ele, ele,               &
+     &      Cnod1_bcs%nod_bc_s, MHD1_matrices%MG_DJDS_fluid(0),         &
      &      MHD1_matrices%Cmat_MG_DJDS(0))
       end if
 !

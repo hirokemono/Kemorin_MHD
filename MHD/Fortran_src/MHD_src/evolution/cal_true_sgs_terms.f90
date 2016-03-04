@@ -80,6 +80,7 @@
       use m_phys_labels
       use m_SGS_address
       use m_physical_property
+      use m_bc_data_ene
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -107,8 +108,8 @@
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_h_flux_true_pre(iak_diff_hf,                &
-     &         nod_comm, node, ele, surf, sf_grp,                       &
-     &         fluid, iphys, iphys_ele, ele_fld,                        &
+     &         nod_comm, node, ele, surf, sf_grp, fluid,                &
+     &         Tnod1_bcs, iphys, iphys_ele, ele_fld,                    &
      &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                  &
      &         mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
          else if ( nod_fld%phys_name(i).eq.fhd_SGS_div_m_flux_true)     &
@@ -195,10 +196,11 @@
 !
       subroutine cal_div_sgs_h_flux_true_pre(iak_diff_hf,               &
      &         nod_comm, node, ele, surf, sf_grp,                       &
-     &         fluid, iphys, iphys_ele, ele_fld,                        &
+     &         fluid, Tnod_bcs, iphys, iphys_ele, ele_fld,              &
      &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                  &
      &         mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
+      use t_bc_data_temp
       use cal_terms_for_heat
 !
       integer(kind=kint), intent(in) :: iak_diff_hf
@@ -209,6 +211,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(field_geometry_data), intent(in) :: fluid
+      type(nodal_bcs_4_scalar_type), intent(in) :: Tnod_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -227,7 +230,7 @@
      &    iphys%i_filter_velo, iphys%i_filter_temp, iphys%i_h_flux,     &
      &    nod_fld%d_fld)
       call cal_terms_4_heat(iphys%i_h_flux_div, iak_diff_hf,            &
-     &    nod_comm, node, ele, surf, fluid, sf_grp,                     &
+     &    nod_comm, node, ele, surf, fluid, sf_grp, Tnod_bcs,           &
      &    iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp,                &
      &    rhs_tbl, FEM_elens,  mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       call copy_scalar_component(node, nod_fld,                         &

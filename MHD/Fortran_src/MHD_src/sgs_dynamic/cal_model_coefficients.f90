@@ -64,6 +64,7 @@
 !
       use m_t_step_parameter
       use m_bc_data_velo
+      use m_bc_data_ene
       use m_SGS_address
 !
       use cal_sgs_heat_flux_dynamic
@@ -128,8 +129,8 @@
           call s_cal_diff_coef_sgs_hf                                   &
      &       (iak_diff_hf, icomp_sgs_hf, icomp_diff_hf, ie_dfvx,        &
      &        mesh%nod_comm, mesh%node, mesh%ele,                       &
-     &        ele_mesh%surf, group%surf_grp, iphys,                     &
-     &        iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,            &
+     &        ele_mesh%surf, group%surf_grp, Tnod1_bcs,                 &
+     &        iphys, iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,     &
      &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,      &
      &        mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         end if

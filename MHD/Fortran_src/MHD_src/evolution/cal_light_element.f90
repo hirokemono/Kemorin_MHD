@@ -6,7 +6,7 @@
 !        modieied by H. Matsui on Sep., 2005
 !
 !!      subroutine s_cal_light_element(nod_comm, node, ele, surf,       &
-!!     &      fluid, sf_grp, iphys, iphys_ele, ele_fld,                 &
+!!     &      fluid, sf_grp, Cnod_bcs, iphys, iphys_ele, ele_fld,       &
 !!     &      jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, mhd_fem_wk,       &
 !!     &      fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
@@ -15,6 +15,7 @@
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(field_geometry_data), intent(in) :: fluid
+!!        type(nodal_bcs_4_scalar_type), intent(in) :: Cnod_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
@@ -45,6 +46,7 @@
       use t_finite_element_mat
       use t_MHD_finite_element_mat
       use t_filter_elength
+      use t_bc_data_temp
 !
       implicit none
 !
@@ -55,14 +57,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_cal_light_element(nod_comm, node, ele, surf,         &
-     &      fluid, sf_grp, iphys, iphys_ele, ele_fld,                   &
+     &      fluid, sf_grp, Cnod_bcs, iphys, iphys_ele, ele_fld,         &
      &      jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, mhd_fem_wk,         &
      &      fem_wk, f_l, f_nl, nod_fld)
 !
       use m_t_int_parameter
       use m_type_AMG_data
       use m_solver_djds_MHD
-      use m_bc_data_ene
       use m_surf_data_composition
       use m_SGS_address
 !
@@ -82,6 +83,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(field_geometry_data), intent(in) :: fluid
+      type(nodal_bcs_4_scalar_type), intent(in) :: Cnod_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -135,23 +137,26 @@
 !
       else if(iflag_t_evo_4_composit .eq. id_Crank_nicolson) then
         call cal_composit_pre_lumped_crank                              &
-     &     (iphys%i_light, iphys%i_pre_composit, iak_diff_c, nod_bc1_c, &
-     &      nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d,     &
-     &      rhs_tbl, FEM_elens, num_MG_level,                           &
-     &      MHD1_matrices%MG_interpolate, MHD1_matrices%MG_comm_fluid,  &
-     &      MHD1_matrices%MG_DJDS_fluid, MHD1_matrices%Cmat_MG_DJDS,    &
-     &      MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &     (iphys%i_light, iphys%i_pre_composit, iak_diff_c,            &
+     &      nod_comm, node, ele, fluid, Cnod_bcs,                       &
+     &      iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,             &
+     &      num_MG_level, MHD1_matrices%MG_interpolate,                 &
+     &      MHD1_matrices%MG_comm_fluid, MHD1_matrices%MG_DJDS_fluid,   &
+     &      MHD1_matrices%Cmat_MG_DJDS, MG_vector,                      &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       else if(iflag_t_evo_4_composit .eq. id_Crank_nicolson_cmass) then
         call cal_composit_pre_consist_crank                             &
-     &     (iphys%i_light, iphys%i_pre_composit, iak_diff_c, nod_bc1_c, &
-     &      node, ele, fluid, jac_3d, rhs_tbl, FEM_elens, num_MG_level, &
+     &     (iphys%i_light, iphys%i_pre_composit, iak_diff_c,            &
+     &      node, ele, fluid, Cnod_bcs, jac_3d,                         &
+     &      rhs_tbl, FEM_elens, num_MG_level,                           &
      &      MHD1_matrices%MG_interpolate, MHD1_matrices%MG_comm_fluid,  &
      &      MHD1_matrices%MG_DJDS_fluid, MHD1_matrices%Cmat_MG_DJDS,    &
      &      MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
-      call set_boundary_scalar(nod_bc1_c, iphys%i_light, nod_fld)
+      call set_boundary_scalar                                          &
+     &   (Cnod_bcs%nod_bc_s, iphys%i_light, nod_fld)
 !
       call scalar_send_recv(iphys%i_light, node, nod_comm, nod_fld)
 !

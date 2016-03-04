@@ -25,20 +25,20 @@
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!
 !!      subroutine cal_temp_pre_consist_crank                           &
-!!     &         (i_temp, i_pre_heat, iak_diff_t, nod_bc_t,             &
-!!     &          node, ele, fluid, jac_3d, rhs_tbl, FEM_elens,         &
+!!     &         (i_temp, i_pre_heat, iak_diff_t, node, ele, fluid,     &
+!!     &          Tnod_bcs, jac_3d, rhs_tbl, FEM_elens,                 &
 !!     &          num_MG_level, MG_interpolate, MG_comm_fluid,          &
 !!     &          MG_DJDS_fluid, Tmat_MG_DJDS, MG_vector,               &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_per_temp_consist_crank                           &
-!!     &         (i_par_temp, i_pre_heat, iak_diff_t, nod_bc_t,         &
-!!     &          node, ele, fluid, jac_3d, rhs_tbl, FEM_elens,         &
+!!     &         (i_par_temp, i_pre_heat, iak_diff_t, node, ele,        &
+!!     &          fluid, Tnod_bcs, jac_3d, rhs_tbl, FEM_elens,          &
 !!     &          num_MG_level, MG_interpolate, MG_comm_fluid,          &
 !!     &          MG_DJDS_fluid, Tmat_MG_DJDS, MG_vector,               &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_composit_pre_consist_crank                       &
-!!     &         (i_light, i_pre_composit, iak_diff_c, nod_bc_c,        &
-!!     &          node, ele, fluid, jac_3d, rhs_tbl, FEM_elens,         &
+!!     &         (i_light, i_pre_composit, iak_diff_c, node, ele,       &
+!!     &          fluid, Cnod_bcs, jac_3d, rhs_tbl, FEM_elens,          &
 !!     &          num_MG_level, MG_interpolate, MG_comm_fluid,          &
 !!     &          MG_DJDS_fluid, Cmat_MG_DJDS, MG_vector,               &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -47,13 +47,12 @@
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(field_geometry_data), intent(in) :: conduct
 !!        type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
+!!        type(nodal_bcs_4_scalar_type), intent(in) :: Tnod_bcs
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_a
 !!        type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_b
-!!        type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_t
-!!        type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_c
 !!        type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
 !!        type(communication_table), intent(in)                         &
 !!       &           :: MG_comm_table(0:num_MG_level)
@@ -343,8 +342,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_temp_pre_consist_crank                             &
-     &         (i_temp, i_pre_heat, iak_diff_t, nod_bc_t,               &
-     &          node, ele, fluid, jac_3d, rhs_tbl, FEM_elens,           &
+     &         (i_temp, i_pre_heat, iak_diff_t, node, ele, fluid,       &
+     &          Tnod_bcs, jac_3d, rhs_tbl, FEM_elens,                   &
      &          num_MG_level, MG_interpolate, MG_comm_fluid,            &
      &          MG_DJDS_fluid, Tmat_MG_DJDS, MG_vector,                 &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -354,6 +353,8 @@
       use m_iccg_parameter
       use m_solver_djds_MHD
       use m_array_for_send_recv
+!
+      use t_bc_data_temp
 !
       use cal_sol_vector_pre_crank
       use set_boundary_scalars
@@ -368,10 +369,10 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
+      type(nodal_bcs_4_scalar_type), intent(in) :: Tnod_bcs
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_t
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
@@ -391,7 +392,8 @@
 !
       if (coef_imp_t .gt. 0.0d0) then
         call int_sk_4_fixed_temp(i_temp, iak_diff_t, node, ele,         &
-     &      nod_fld, jac_3d, rhs_tbl, FEM_elens, fem_wk, f_l)
+     &      nod_fld, jac_3d, rhs_tbl, FEM_elens, Tnod_bcs%nod_bc_s,     &
+     &      fem_wk, f_l)
 !        if (iflag_initial_step.eq.1) coef_imp_t = 1.0d0 / coef_imp_t
       end if
 !
@@ -402,7 +404,7 @@
      &    node, ele, nod_fld, jac_3d, rhs_tbl, fem_wk, mhd_fem_wk)
       call set_ff_nl_smp_2_ff(n_scalar, node, rhs_tbl, f_l, f_nl)
 !
-      call set_boundary_rhs_scalar(node, nod_bc_t, f_l, f_nl)
+      call set_boundary_rhs_scalar(node, Tnod_bcs%nod_bc_s, f_l, f_nl)
 !
       call cal_vector_pre_consist(node, coef_temp,                      &
      &    n_scalar, i_pre_heat, nod_fld, rhs_tbl,                       &
@@ -418,8 +420,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_per_temp_consist_crank                             &
-     &         (i_par_temp, i_pre_heat, iak_diff_t, nod_bc_t,           &
-     &          node, ele, fluid, jac_3d, rhs_tbl, FEM_elens,           &
+     &         (i_par_temp, i_pre_heat, iak_diff_t, node, ele,          &
+     &          fluid, Tnod_bcs, jac_3d, rhs_tbl, FEM_elens,            &
      &          num_MG_level, MG_interpolate, MG_comm_fluid,            &
      &          MG_DJDS_fluid, Tmat_MG_DJDS, MG_vector,                 &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -429,6 +431,8 @@
       use m_iccg_parameter
       use m_solver_djds_MHD
       use m_array_for_send_recv
+!
+      use t_bc_data_temp
 !
       use cal_sol_vector_pre_crank
       use set_boundary_scalars
@@ -443,10 +447,10 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
+      type(nodal_bcs_4_scalar_type), intent(in) :: Tnod_bcs
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_t
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
@@ -467,7 +471,7 @@
       if (coef_imp_t .gt. 0.0d0) then
         call int_sk_4_fixed_part_temp(i_par_temp, iak_diff_t,           &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,             &
-     &      fem_wk, f_l)
+     &      Tnod_bcs%nod_bc_s, fem_wk, f_l)
         if (iflag_initial_step.eq.1) coef_imp_t = 1.0d0 / coef_imp_t
       end if
 !
@@ -478,7 +482,7 @@
      &    node, ele, nod_fld, jac_3d, rhs_tbl, fem_wk, mhd_fem_wk)
       call set_ff_nl_smp_2_ff(n_scalar, node, rhs_tbl, f_l, f_nl)
 !
-      call set_boundary_rhs_scalar(node, nod_bc_t, f_l, f_nl)
+      call set_boundary_rhs_scalar(node, Tnod_bcs%nod_bc_s, f_l, f_nl)
 !
       call cal_vector_pre_consist(node, coef_temp,                      &
      &    n_scalar, i_pre_heat, nod_fld, rhs_tbl,                       &
@@ -494,8 +498,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_composit_pre_consist_crank                         &
-     &         (i_light, i_pre_composit, iak_diff_c, nod_bc_c,          &
-     &          node, ele, fluid, jac_3d, rhs_tbl, FEM_elens,           &
+     &         (i_light, i_pre_composit, iak_diff_c, node, ele,         &
+     &          fluid, Cnod_bcs, jac_3d, rhs_tbl, FEM_elens,            &
      &          num_MG_level, MG_interpolate, MG_comm_fluid,            &
      &          MG_DJDS_fluid, Cmat_MG_DJDS, MG_vector,                 &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -503,6 +507,8 @@
       use m_iccg_parameter
       use m_solver_djds_MHD
       use m_array_for_send_recv
+!
+      use t_bc_data_temp
 !
       use cal_sol_vector_pre_crank
       use set_boundary_scalars
@@ -517,10 +523,10 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
+      type(nodal_bcs_4_scalar_type), intent(in) :: Cnod_bcs
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_c
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
@@ -541,7 +547,7 @@
        if (coef_imp_c.gt.0.0d0) then
          call int_sk_4_fixed_composition(i_light, iak_diff_c,           &
      &       node, ele, nod_fld, jac_3d, rhs_tbl,                       &
-     &       FEM_elens, fem_wk, f_l)
+     &       FEM_elens, Cnod_bcs%nod_bc_s, fem_wk, f_l)
 !         if (iflag_initial_step.eq.1) coef_imp_c = 1.0d0 / coef_imp_c
        end if
 !
@@ -552,7 +558,7 @@
      &    node, ele, nod_fld, jac_3d, rhs_tbl, fem_wk, mhd_fem_wk)
       call set_ff_nl_smp_2_ff(n_scalar, node, rhs_tbl, f_l, f_nl)
 !
-      call set_boundary_rhs_scalar(node, nod_bc_c, f_l, f_nl)
+      call set_boundary_rhs_scalar(node, Cnod_bcs%nod_bc_s, f_l, f_nl)
 !
       call cal_vector_pre_consist(node, coef_light,                     &
      &    n_scalar, i_pre_composit, nod_fld, rhs_tbl,                   &

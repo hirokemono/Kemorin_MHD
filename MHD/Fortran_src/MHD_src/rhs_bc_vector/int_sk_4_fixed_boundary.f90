@@ -14,18 +14,20 @@
 !!     &          nod_bc_fins, fem_wk, f_l)
 !!
 !!      subroutine int_sk_4_fixed_temp(i_temp, iak_diff_t, node, ele,   &
-!!     &          nod_fld, jac1_3d, rhs_tbl, FEM_elens, fem_wk, f_l)
+!!     &          node, ele, nod_fld, jac1_3d, rhs_tbl, FEM_elens,      &
+!!     &          nod_bc_t, fem_wk, f_l)
 !!      subroutine int_sk_4_fixed_part_temp(i_par_temp, iak_diff_t,     &
 !!     &          node, ele, nod_fld, jac1_3d, rhs_tbl, FEM_elens,      &
-!!     &          fem_wk, f_l)
+!!     &          nod_bc_t, fem_wk, f_l)
 !!      subroutine int_sk_4_fixed_velo(i_velo, iak_diff_v, node, ele,   &
-!!     &          nod_fld, jac1_3d, rhs_tbl, FEM_elens, fem_wk, f_l)
+!!     &          nod_fld, jac1_3d, rhs_tbl, FEM_elens,                 &
+!!     &          nod_bc_v, nod_bc_rot, fem_wk, f_l)
 !!      subroutine int_sk_4_fixed_vector(iflag_commute, i_field,        &
 !!     &          node, ele, nod_fld, jac1_3d, rhs_tbl, FEM_elens,      &
 !!     &          nod_bc, ak_d, coef_imp, iak_diff, fem_wk, f_l)
 !!      subroutine int_sk_4_fixed_composition(i_light, iak_diff_c,      &
 !!     &          node, ele, nod_fld, jac1_3d, rhs_tbl, FEM_elens,      &
-!!     &          fem_wk, f_l)
+!!     &          nod_bc_c, fem_wk, f_l)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_data), intent(in) :: nod_fld
@@ -34,6 +36,8 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_f
+!!        type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_t
+!!        type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_c
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l
 !
@@ -200,8 +204,9 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine int_sk_4_fixed_temp(i_temp, iak_diff_t, node, ele,     &
-     &          nod_fld, jac1_3d, rhs_tbl, FEM_elens, fem_wk, f_l)
+      subroutine int_sk_4_fixed_temp(i_temp, iak_diff_t,                &
+     &          node, ele, nod_fld, jac1_3d, rhs_tbl, FEM_elens,        &
+     &          nod_bc_t, fem_wk, f_l)
 !
       use m_ele_material_property
       use m_bc_data_ene
@@ -215,6 +220,7 @@
       type(jacobians_3d), intent(in) :: jac1_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_t
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -223,16 +229,16 @@
       if (iflag_commute_temp .eq. id_SGS_commute_ON) then
         call int_vol_fixed_sgs_scalar_surf(node, ele, nod_fld,          &
      &      jac1_3d, rhs_tbl, FEM_elens, intg_point_t_evo,              &
-     &      nod_bc1_t%ibc_end, nod_bc1_t%num_idx_ibc,                   &
-     &      nod_bc1_t%ele_bc_id, nod_bc1_t%ibc_stack_smp,               &
-     &      nod_bc1_t%ibc_shape, ifilter_final, i_temp,                 &
+     &      nod_bc_t%ibc_end, nod_bc_t%num_idx_ibc,                     &
+     &      nod_bc_t%ele_bc_id, nod_bc_t%ibc_stack_smp,                 &
+     &      nod_bc_t%ibc_shape, ifilter_final, i_temp,                  &
      &      ak_diff(1,iak_diff_t), ak_d_temp, coef_imp_t, fem_wk, f_l)
       else
         call int_vol_fixed_scalar_surf(node, ele, nod_fld,              &
      &      jac1_3d, rhs_tbl, intg_point_t_evo,                         &
-     &      nod_bc1_t%ibc_end, nod_bc1_t%num_idx_ibc,                   &
-     &      nod_bc1_t%ele_bc_id, nod_bc1_t%ibc_stack_smp,               &
-     &      nod_bc1_t%ibc_shape, i_temp, ak_d_temp,                     &
+     &      nod_bc_t%ibc_end, nod_bc_t%num_idx_ibc,                     &
+     &      nod_bc_t%ele_bc_id, nod_bc_t%ibc_stack_smp,                 &
+     &      nod_bc_t%ibc_shape, i_temp, ak_d_temp,                      &
      &      coef_imp_t, fem_wk, f_l)
       end if
 !
@@ -242,7 +248,7 @@
 !
       subroutine int_sk_4_fixed_part_temp(i_par_temp, iak_diff_t,       &
      &          node, ele, nod_fld, jac1_3d, rhs_tbl, FEM_elens,        &
-     &          fem_wk, f_l)
+     &          nod_bc_t, fem_wk, f_l)
 !
       use m_ele_material_property
       use m_bc_data_ene
@@ -256,6 +262,7 @@
       type(jacobians_3d), intent(in) :: jac1_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_t
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -264,16 +271,16 @@
       if (iflag_commute_temp .eq. id_SGS_commute_ON) then
         call int_vol_fixed_sgs_scalar_surf(node, ele, nod_fld,          &
      &      jac1_3d, rhs_tbl, FEM_elens, intg_point_t_evo,              &
-     &      nod_bc1_t%ibc_end, nod_bc1_t%num_idx_ibc,                   &
-     &      nod_bc1_t%ele_bc_id, nod_bc1_t%ibc_stack_smp,               &
-     &      nod_bc1_t%ibc_shape, ifilter_final, i_par_temp,             &
+     &      nod_bc_t%ibc_end, nod_bc_t%num_idx_ibc,                     &
+     &      nod_bc_t%ele_bc_id, nod_bc_t%ibc_stack_smp,                 &
+     &      nod_bc_t%ibc_shape, ifilter_final, i_par_temp,              &
      &      ak_diff(1,iak_diff_t), ak_d_temp, coef_imp_t, fem_wk, f_l)
       else
         call int_vol_fixed_scalar_surf(node, ele, nod_fld,              &
      &      jac1_3d, rhs_tbl, intg_point_t_evo,                         &
-     &      nod_bc1_t%ibc_end, nod_bc1_t%num_idx_ibc,                   &
-     &      nod_bc1_t%ele_bc_id, nod_bc1_t%ibc_stack_smp,               &
-     &      nod_bc1_t%ibc_shape, i_par_temp, ak_d_temp,                 &
+     &      nod_bc_t%ibc_end, nod_bc_t%num_idx_ibc,                     &
+     &      nod_bc_t%ele_bc_id, nod_bc_t%ibc_stack_smp,                 &
+     &      nod_bc_t%ibc_shape, i_par_temp, ak_d_temp,                  &
      &      coef_imp_t, fem_wk, f_l)
       end if
 !
@@ -283,7 +290,7 @@
 !
       subroutine int_sk_4_fixed_composition(i_light, iak_diff_c,        &
      &          node, ele, nod_fld, jac1_3d, rhs_tbl, FEM_elens,        &
-     &          fem_wk, f_l)
+     &          nod_bc_c, fem_wk, f_l)
 !
       use m_ele_material_property
       use m_bc_data_ene
@@ -297,6 +304,7 @@
       type(jacobians_3d), intent(in) :: jac1_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_c
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -305,17 +313,17 @@
       if (iflag_commute_composit .eq. id_SGS_commute_ON) then
         call int_vol_fixed_sgs_scalar_surf(node, ele, nod_fld,          &
      &      jac1_3d, rhs_tbl, FEM_elens, intg_point_t_evo,              &
-     &      nod_bc1_c%ibc_end, nod_bc1_c%num_idx_ibc,                   &
-     &      nod_bc1_c%ele_bc_id, nod_bc1_c%ibc_stack_smp,               &
-     &      nod_bc1_c%ibc_shape,  ifilter_final, i_light,               &
+     &      nod_bc_c%ibc_end, nod_bc_c%num_idx_ibc,                     &
+     &      nod_bc_c%ele_bc_id, nod_bc_c%ibc_stack_smp,                 &
+     &      nod_bc_c%ibc_shape,  ifilter_final, i_light,                &
      &      ak_diff(1,iak_diff_c), ak_d_composit, coef_imp_c,           &
      &      fem_wk, f_l)
       else
         call int_vol_fixed_scalar_surf(node, ele, nod_fld,              &
      &      jac1_3d, rhs_tbl, intg_point_t_evo,                         &
-     &      nod_bc1_c%ibc_end, nod_bc1_c%num_idx_ibc,                   &
-     &      nod_bc1_c%ele_bc_id, nod_bc1_c%ibc_stack_smp,               &
-     &      nod_bc1_c%ibc_shape, i_light, ak_d_composit,                &
+     &      nod_bc_c%ibc_end, nod_bc_c%num_idx_ibc,                     &
+     &      nod_bc_c%ele_bc_id, nod_bc_c%ibc_stack_smp,                 &
+     &      nod_bc_c%ibc_shape, i_light, ak_d_composit,                 &
      &      coef_imp_c, fem_wk, f_l)
       end if
 !

@@ -117,6 +117,7 @@
       use m_SGS_address
       use m_bc_data_velo
       use m_bc_data_magne
+      use m_bc_data_ene
 !
       use cal_terms_for_heat
       use cal_momentum_terms
@@ -156,7 +157,7 @@
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call cal_terms_4_heat(i_fld, iak_diff_hf,                     &
-     &        nod_comm, node, ele, surf, fluid, sf_grp,                 &
+     &        nod_comm, node, ele, surf, fluid, sf_grp, Tnod1_bcs,      &
      &        iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,   &
      &        FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         end if
@@ -213,8 +214,8 @@
      &             write(*,*) 'lead  ', trim(fhd_thermal_diffusion)
         call cal_thermal_diffusion                                      &
      &     (iak_diff_hf, iak_diff_t, nod_comm, node, ele, surf,         &
-     &      fluid, sf_grp, iphys, jac_3d, jac_sf_grp, rhs_tbl,          &
-     &      FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      fluid, sf_grp, Tnod1_bcs, iphys, jac_3d, jac_sf_grp,        &
+     &      rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
 !      if (iphys%i_t_diffuse .gt. izero) then
@@ -222,7 +223,7 @@
 !     &             write(*,*) 'lead  ', trim(fhd_thermal_diffusion)
 !        call cal_thermal_diffusion                                     &
 !     &     (iak_diff_hf, iak_diff_t, nod_comm, node, ele, surf,        &
-!     &      fluid, sf_grp, iphys, jac_3d, jac_sf_grp,                  &
+!     &      fluid, sf_grp, Tnod1_bcs, iphys, jac_3d, jac_sf_grp,       &
 !     &      rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl,         &
 !     &      nod_fld)
 !      end if

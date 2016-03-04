@@ -144,6 +144,7 @@
      &          nod_fld)
 !
       use m_bc_data_magne
+      use m_bc_data_ene
       use m_SGS_address
 !
       use cal_terms_for_heat
@@ -176,7 +177,7 @@
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_div_SGS_h_flux)
         call cal_terms_4_heat(iphys%i_SGS_div_h_flux, iak_diff_hf,      &
-     &      nod_comm, node, ele, surf, fluid, sf_grp, iphys,            &
+     &      nod_comm, node, ele, surf, fluid, sf_grp, Tnod1_bcs, iphys, &
      &      iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if

@@ -53,6 +53,7 @@
       use m_bc_data_list
 !
       use count_num_nod_bc_MHD
+      use set_nodal_boundary
       use set_boundary_scalars
 !
       type(node_data), intent(in) :: node
@@ -76,16 +77,24 @@
       end if
 !
       if (iflag_t_evo_4_temp .gt. id_no_evolution) then
-        call set_bc_temp_id                                             &
-     &     (node, ele, MHD_mesh%fluid, nod_grp, iphys, nod_fld)
+        call set_bc_temp_id(node, ele, MHD_mesh%fluid, nod_grp,         &
+     &      nod_fld, Tnod1_bcs)
 !
-        call set_boundary_scalar(nod_bc1_t, iphys%i_temp, nod_fld)
+        if (iflag_4_ref_temp .ne. id_no_ref_temp) then
+          call set_fixed_bc_4_par_temp(node%numnod, nod_fld%ntot_phys,  &
+     &        iphys%i_ref_t, nod_fld%d_fld, Tnod1_bcs%nod_bc_s)
+        end if
+!
+        call set_boundary_scalar                                        &
+     &     (Tnod1_bcs%nod_bc_s, iphys%i_temp, nod_fld)
       end if
 !
       if (iflag_t_evo_4_composit .gt. id_no_evolution) then
-        call set_bc_composition_id(node, ele, MHD_mesh%fluid, nod_grp)
+        call set_bc_temp_id(node, ele, MHD_mesh%fluid,                  &
+     &      nod_grp, nod_fld, Cnod1_bcs)
 !
-        call set_boundary_scalar(nod_bc1_c, iphys%i_light, nod_fld)
+        call set_boundary_scalar                                        &
+     &     (Cnod1_bcs%nod_bc_s, iphys%i_light, nod_fld)
       end if
 !
       if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
