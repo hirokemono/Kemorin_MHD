@@ -5,8 +5,7 @@
 !      Written by H. Matsui
 !
 !!      subroutine set_bc_velo_id(node, ele, fluid, nod_grp, Vnod_bcs)
-!!      subroutine set_bc_press_id                                      &
-!!     &         (node, ele, fluid, nod_grp, iphys, nod_fld, Vnod_bcs)
+!!      subroutine set_bc_press_id(node, ele, fluid, nod_grp, Vnod_bcs)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid
@@ -34,7 +33,7 @@
 !
 !>      Structure for nodal boudnary for non-radial velocity
         type(scaler_fixed_nod_bc_type) :: nod_bc_vr0
-!>      Structure for nodal boudnary for free-slip velocity on plane
+!>      Structure for nodal boudnary for free-slip velocity on sphere
         type(scaler_fixed_nod_bc_type) :: nod_bc_vfree
 !>      Structure for nodal boudnary for special velocity on plane
         type(scaler_fixed_nod_bc_type) :: nod_bc_vsp
@@ -130,13 +129,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_bc_press_id                                        &
-     &         (node, ele, fluid, nod_grp, iphys, nod_fld, Vnod_bcs)
+      subroutine set_bc_press_id(node, ele, fluid, nod_grp, Vnod_bcs)
 !
       use t_geometry_data
       use t_group_data
-      use t_phys_address
-      use t_phys_data
       use t_geometry_data_MHD
       use m_bc_data_list
       use count_num_nod_bc_MHD
@@ -148,9 +144,7 @@
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
       type(group_data), intent(in) :: nod_grp
-      type(phys_address), intent(in) :: iphys
 !
-      type(phys_data), intent(inout) :: nod_fld
       type(nodal_bcs_4_momentum_type), intent(inout) :: Vnod_bcs
 !
 !
@@ -165,13 +159,8 @@
       call set_bc_fixed_temp_id(node, nod_grp, press_nod,               &
      &    Vnod_bcs%nod_bc_p, Vnod_bcs%sgs_bc_p)
 !
-      call set_potential_4_fixed_press                                  &
-     &   (node%numnod, nod_fld%ntot_phys, iphys%i_press, iphys%i_p_phi, &
-     &    nod_fld%d_fld, Vnod_bcs%nod_bc_p)
-
-      call set_potential_4_fixed_press                                  &
-     &   (node%numnod, nod_fld%ntot_phys, iphys%i_press, iphys%i_p_phi, &
-     &    nod_fld%d_fld, Vnod_bcs%sgs_bc_p)
+      call set_potential_4_fixed_press(Vnod_bcs%nod_bc_p)
+      call set_potential_4_fixed_press(Vnod_bcs%sgs_bc_p)
 !
 !   set node id in an element for the pressure boundary
 !

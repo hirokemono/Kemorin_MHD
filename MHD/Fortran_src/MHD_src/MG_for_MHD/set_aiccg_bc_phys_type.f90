@@ -43,6 +43,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_solver_djds
+      use t_bc_data_MHD
 !
       implicit none
 !
@@ -88,12 +89,12 @@
 !
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         call set_aiccg_bc_scalar_nod(num_t_linear, ele,                 &
-     &      nodal_bc%press, djds_tbl_fl_l, mat_press)
+     &      nodal_bc%Vnod_bcs%nod_bc_p, djds_tbl_fl_l, mat_press)
       end if
 !
       if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
         call set_aiccg_bc_velo(intg_point_t_evo, ele, surf, sf_grp,     &
-     &      nodal_bc%velocity, nodal_bc%rotation,                       &
+     &      nodal_bc%Vnod_bcs%nod_bc_v, nodal_bc%Vnod_bcs%nod_bc_rot,   &
      &      surface_bc%velo%free_sph_in, surface_bc%velo%free_sph_out,  &
      &      jac_sf_grp, rhs_tbl, mat_tbl_fl, djds_tbl_fl,               &
      &      fem_wk, mat_velo)
@@ -101,29 +102,29 @@
 !
       if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
         call set_aiccg_bc_scalar_nod(ele%nnod_4_ele,                    &
-     &      ele, nodal_bc%temp,  djds_tbl_fl, mat_temp)
+     &      ele, nodal_bc%Tnod_bcs%nod_bc_s,  djds_tbl_fl, mat_temp)
       end if
 !
       if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
         call set_aiccg_bc_scalar_nod(ele%nnod_4_ele,                    &
-     &      ele, nodal_bc%composition,                                  &
+     &      ele, nodal_bc%Cnod_bcs%nod_bc_s,                            &
      &      djds_tbl_fl, mat_d_scalar)
       end if
 !
       if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
      &     .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         call set_aiccg_bc_scalar_nod(num_t_linear, ele,                 &
-     &      nodal_bc%magne_p, djds_tbl_l, mat_magp)
+     &      nodal_bc%Bnod_bcs%nod_bc_f, djds_tbl_l, mat_magp)
       end if
 !
       if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
         call set_aiccg_bc_vector_nod                                    &
-     &     (ele, nodal_bc%magne, djds_tbl, mat_magne)
+     &     (ele, nodal_bc%Bnod_bcs%nod_bc_b, djds_tbl, mat_magne)
       end if
 !
       if (iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
         call set_aiccg_bc_vector_nod                                    &
-     &     (ele, nodal_bc%vector_p, djds_tbl, mat_magne)
+     &     (ele, nodal_bc%Bnod_bcs%nod_bc_a, djds_tbl, mat_magne)
       end if
 !
 !

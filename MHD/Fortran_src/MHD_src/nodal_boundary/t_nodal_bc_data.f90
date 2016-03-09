@@ -121,35 +121,6 @@
 !        real (kind=kreal),   pointer :: bc_apt(:,:)
       end type scaler_current_nod_bc_type
 !
-!
-      type nodal_boundarty_conditions
-        type(scaler_fixed_nod_bc_type) :: temp
-        type(scaler_fixed_nod_bc_type) :: press
-        type(scaler_fixed_nod_bc_type) :: magne_p
-        type(scaler_fixed_nod_bc_type) :: composition
-        type(scaler_fixed_nod_bc_type) :: sgs_comp
-        type(scaler_fixed_nod_bc_type) :: sgs_temp
-        type(scaler_fixed_nod_bc_type) :: sgs_press
-        type(scaler_fixed_nod_bc_type) :: sgs_mag_p
-!
-        type(vect_fixed_nod_bc_type) :: velocity
-        type(vect_fixed_nod_bc_type) :: vector_p
-        type(vect_fixed_nod_bc_type) :: magne
-        type(vect_fixed_nod_bc_type) :: sgs_velo
-        type(vect_fixed_nod_bc_type) :: sgs_vect_p
-        type(vect_fixed_nod_bc_type) :: sgs_magne
-        type(vect_fixed_nod_bc_type) :: current
-!
-        type(scaler_rotaion_nod_bc_type) :: rotation
-        type(scaler_fixed_nod_bc_type) ::   free_plane
-        type(scaler_fixed_nod_bc_type) ::   free_sphere
-        type(scaler_fixed_nod_bc_type) ::   no_radial_v
-!
-        type(scaler_fixed_nod_bc_type) :: mag_p_cd
-        type(scaler_fixed_nod_bc_type) :: mag_p_ins
-!
-      end type nodal_boundarty_conditions
-!
 !  ---------------------------------------------------------------------
 !
       contains

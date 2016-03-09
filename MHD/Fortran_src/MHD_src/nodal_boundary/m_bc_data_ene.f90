@@ -23,7 +23,4 @@
 !>      Structure for nodal boudnary for composition
       type(nodal_bcs_4_scalar_type), save :: Cnod1_bcs
 !
-!
-      type(scaler_fixed_nod_bc_type), save :: nod_bc1_t
-!
       end module m_bc_data_ene

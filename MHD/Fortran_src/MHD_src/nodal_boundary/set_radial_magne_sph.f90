@@ -4,8 +4,7 @@
 !        programmed by H.Matsui on July 2000 (ver 1.1)
 !        modified by H.Matsui on Aug., 2007
 !
-!!      subroutine set_r_magne_sph(node, nod_grp, l_f, i, j,            &
-!!     &          ncomp_nod, i_magne, d_nod, nod_bc_b)
+!!      subroutine set_r_magne_sph(node, nod_grp, l_f, i, j, nod_bc_b)
 !!        type(node_data), intent(in) :: node
 !!        type(group_data), intent(in) :: nod_grp
 !!        type(vect_fixed_nod_bc_type), intent(inout) :: nod_bc_b
@@ -22,8 +21,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_r_magne_sph(node, nod_grp, l_f, i, j,              &
-     &          ncomp_nod, i_magne, d_nod, nod_bc_b)
+      subroutine set_r_magne_sph(node, nod_grp, l_f, i, j, nod_bc_b)
 !
       use t_geometry_data
       use t_group_data
@@ -35,15 +33,13 @@
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
       integer(kind = kint), intent(in) :: i, j
-      integer (kind = kint), intent(in) :: ncomp_nod, i_magne
 !
-      real(kind = kreal), intent(inout) :: d_nod(node%numnod,ncomp_nod)
       integer(kind = kint), intent(inout) :: l_f(3)
       type(vect_fixed_nod_bc_type), intent(inout) :: nod_bc_b
 !
       integer(kind = kint) :: k
 !
-      integer(kind = kint) :: inod, nd, i_comp
+      integer(kind = kint) :: inod, nd
       integer(kind = kint) :: jj,ll,mm
       real ( kind = kreal) :: bmag
 !
@@ -70,12 +66,10 @@
         end if
 !
         do nd = 1, 3
-          i_comp = i_magne + nd - 1
           nod_bc_b%ibc(inod,nd) = 1
           nod_bc_b%ibc2(inod,nd) = 1
           nod_bc_b%bc_apt(l_f(nd),nd) = bmag * node%xx(inod,1)          &
      &                                   * node%a_r(inod)
-          d_nod(inod,i_comp) = nod_bc_b%bc_apt(l_f(nd),nd)
         end do
       end do
 !

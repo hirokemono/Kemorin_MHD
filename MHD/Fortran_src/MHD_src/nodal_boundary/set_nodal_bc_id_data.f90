@@ -71,15 +71,43 @@
      &     (node, ele, MHD_mesh%fluid, nod_grp, Vnod1_bcs)
         if ( iflag_debug .eq.1) write(*,*)  'set boundary id 4 P'
         call set_bc_press_id(node, ele, MHD_mesh%fluid, nod_grp,        &
-     &      iphys, nod_fld, Vnod1_bcs)
+     &      Vnod1_bcs)
+      end if
+!
+      if (iflag_t_evo_4_temp .gt. id_no_evolution) then
+        call set_bc_temp_id(node, ele, MHD_mesh%fluid, nod_grp,         &
+     &      Tnod1_bcs)
+      end if
+!
+      if (iflag_t_evo_4_composit .gt. id_no_evolution) then
+        call set_bc_temp_id(node, ele, MHD_mesh%fluid,                  &
+     &      nod_grp, Cnod1_bcs)
+      end if
+!
+      if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
+     &  .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+        if (iflag_debug.eq.1) write(*,*)  'set boundary ID 4 magne'
+        call set_bc_magne_id(node, ele, nod_grp, Bnod1_bcs)
+        if (iflag_debug.eq.1)  write(*,*) 'set boundary ID 4 magne_p'
+        call set_bc_m_potential_id(node, ele, MHD_mesh%conduct,         &
+     &      MHD_mesh%insulate, nod_grp, Bnod1_bcs)
+        if (iflag_debug.eq.1)  write(*,*) 'set boundary ID 4 current'
+        call set_bc_current_id(node, ele, nod_grp, Bnod1_bcs)
+      end if
+!
+      if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+        if (iflag_debug .eq.1) write(*,*) 'set boundary ID 4 vect_p'
+        call set_bc_vect_p_id(node, ele, nod_grp, Bnod1_bcs)
+      end if
+!
+!
+!
+      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         if ( iflag_debug .eq.1) write(*,*)  'set boundary values 4 v'
         call set_boundary_velo(node, Vnod1_bcs, iphys%i_velo, nod_fld)
       end if
 !
       if (iflag_t_evo_4_temp .gt. id_no_evolution) then
-        call set_bc_temp_id(node, ele, MHD_mesh%fluid, nod_grp,         &
-     &      nod_fld, Tnod1_bcs)
-!
         if (iflag_4_ref_temp .ne. id_no_ref_temp) then
           call set_fixed_bc_4_par_temp(node%numnod, nod_fld%ntot_phys,  &
      &        iphys%i_ref_t, nod_fld%d_fld, Tnod1_bcs%nod_bc_s)
@@ -90,41 +118,24 @@
       end if
 !
       if (iflag_t_evo_4_composit .gt. id_no_evolution) then
-        call set_bc_temp_id(node, ele, MHD_mesh%fluid,                  &
-     &      nod_grp, nod_fld, Cnod1_bcs)
-!
         call set_boundary_scalar                                        &
      &     (Cnod1_bcs%nod_bc_s, iphys%i_light, nod_fld)
       end if
 !
       if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
      &  .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-        if (iflag_debug.eq.1) write(*,*)  'set boundary ID 4 magne'
-        call set_bc_magne_id                                            &
-     &     (node, ele, nod_grp, iphys, nod_fld, Bnod1_bcs)
-        if (iflag_debug.eq.1)  write(*,*) 'set boundary ID 4 magne_p'
-        call set_bc_m_potential_id(node, ele, MHD_mesh%conduct,         &
-     &      MHD_mesh%insulate, nod_grp, Bnod1_bcs)
-        if (iflag_debug.eq.1)  write(*,*) 'set boundary ID 4 current'
-        call set_bc_current_id(node, ele, nod_grp, Bnod1_bcs)
-!
         if (iflag_debug.eq.1)  write(*,*) 'set_boundary_vect magne'
         call set_boundary_vect                                          &
      &     (Bnod1_bcs%nod_bc_b, iphys%i_magne, nod_fld)
-!
         if (iflag_debug.eq.1) write(*,*) 'set boundary value 4 magne'
         call set_boundary_scalar                                        &
      &     (Bnod1_bcs%nod_bc_f, iphys%i_m_phi, nod_fld)
-!
         if (iflag_debug.eq.1) write(*,*) 'set_boundary_vect current'
         call set_boundary_vect                                          &
      &     (Bnod1_bcs%nod_bc_j, iphys%i_current, nod_fld)
       end if
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-        if (iflag_debug .eq.1) write(*,*) 'set boundary ID 4 vect_p'
-        call set_bc_vect_p_id(node, ele, nod_grp, Bnod1_bcs)
-!
         if (iflag_debug .eq.1) write(*,*) 'set_boundary_vect vect_p'
         call set_boundary_vect                                          &
      &     (Bnod1_bcs%nod_bc_a, iphys%i_vecp, nod_fld)

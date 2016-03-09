@@ -21,13 +21,12 @@
 !!        type(vect_fixed_nod_bc_type), intent(inout) :: nod_bc_a
 !!        type(vect_fixed_nod_bc_type), intent(inout) :: sgs_bc_a
 !!      subroutine set_bc_fixed_magne_id(node, nod_grp, bc_list,        &
-!!     &          i_magne, nod_bc_b, sgs_bc_b, nod_fld)
+!!     &          i_magne, nod_bc_b, sgs_bc_b)
 !!        type(node_data), intent(in) :: node
 !!        type(group_data), intent(in) :: nod_grp
 !!        type(nod_bc_list_type), intent(in) :: bc_list
 !!        type(vect_fixed_nod_bc_type), intent(inout) :: nod_bc_b
 !!        type(vect_fixed_nod_bc_type), intent(inout) :: sgs_bc_b
-!!        type(phys_data), intent(inout) :: nod_fld
 !!      subroutine set_bc_fixed_current_id(node, nod_grp, bc_list,      &
 !!     &          nod_bc_j)
 !!        type(node_data), intent(in) :: node
@@ -121,19 +120,16 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_bc_fixed_magne_id(node, nod_grp, bc_list,          &
-     &          i_magne, nod_bc_b, sgs_bc_b, nod_fld)
+     &          nod_bc_b, sgs_bc_b)
 !
       use m_bc_data_list
-      use t_phys_data
 !
-      integer (kind=kint), intent(in) :: i_magne
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
       type(nod_bc_list_type), intent(in) :: bc_list
 !
       type(vect_fixed_nod_bc_type), intent(inout) :: nod_bc_b
       type(vect_fixed_nod_bc_type), intent(inout) :: sgs_bc_b
-      type(phys_data), intent(inout) :: nod_fld
 !
 !
       integer (kind = kint) :: l_f(3), l_s(3)
@@ -143,8 +139,7 @@
       call set_bc_fixed_vect_id(node, nod_grp, bc_list, nod_bc_b, l_f)
 !
       call set_sph_magne_id(node, nod_grp, bc_list%num_bc,              &
-     &    bc_list%bc_name, bc_list%ibc_type, nod_bc_b, i_magne,         &
-     &    l_f, nod_fld)
+     &    bc_list%bc_name, bc_list%ibc_type, nod_bc_b, l_f)
 !
       l_s(1:3) = 0
       call set_bc_sgs_vect_id(node, nod_grp, bc_list, sgs_bc_b, l_s)

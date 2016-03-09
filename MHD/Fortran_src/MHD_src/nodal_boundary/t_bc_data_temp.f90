@@ -3,8 +3,7 @@
 !!
 !!      Written by Kemorin on Feb., 2004
 !!
-!!      subroutine set_bc_temp_id                                       &
-!!     &         (node, ele, fluid, nod_grp, iphys, nod_fld)
+!!      subroutine set_bc_temp_id(node, ele, fluid, nod_grp, Snod_bcs)
 !!      subroutine set_bc_composition_id(node, ele, fluid, nod_grp)
 !
 !
@@ -22,20 +21,17 @@
 !
         type(scaler_fixed_nod_bc_type) :: sgs_bc_s
       end type nodal_bcs_4_scalar_type
-!Snod_bcs%nod_bc_s
+!
 !  ---------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_bc_temp_id                                         &
-     &         (node, ele, fluid, nod_grp, nod_fld, Snod_bcs)
+      subroutine set_bc_temp_id(node, ele, fluid, nod_grp, Snod_bcs)
 !
       use t_geometry_data
       use t_group_data
-      use t_phys_address
-      use t_phys_data
       use t_geometry_data_MHD
       use m_control_parameter
       use m_bc_data_list
@@ -49,7 +45,6 @@
       type(field_geometry_data), intent(in) :: fluid
       type(group_data), intent(in) :: nod_grp
 !
-      type(phys_data), intent(inout) :: nod_fld
       type(nodal_bcs_4_scalar_type), intent(inout) :: Snod_bcs
 !
 !

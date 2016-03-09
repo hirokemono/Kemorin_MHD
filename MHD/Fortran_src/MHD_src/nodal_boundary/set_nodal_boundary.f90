@@ -10,8 +10,7 @@
 !!     &          ii, i, ibc_id, ibc, ibc2, bc_id_apt, field_name)
 !!      subroutine set_fixed_bc_4_par_temp                              &
 !!     &         (numnod, ncomp_nod, i_ref_t, d_nod, nod_bc_t)
-!!      subroutine set_potential_4_fixed_press                          &
-!!     &         (numnod, ncomp_nod, i_press, i_p_phi, d_nod, nod_bc_p)
+!!      subroutine set_potential_4_fixed_press(nod_bc_p)
 !
       module set_nodal_boundary
 !
@@ -41,7 +40,7 @@
       integer(kind = kint), intent(inout) :: ibc_id(num_phys_bc)
       integer(kind = kint), intent(inout) :: ibc(numnod)
       integer(kind = kint), intent(inout) :: ibc2(numnod)
-      real ( kind = kreal), intent(inout) :: bc_id_apt(num_phys_bc)
+      real(kind = kreal), intent(inout) :: bc_id_apt(num_phys_bc)
 !
       integer(kind = kint) :: k
 !
@@ -134,17 +133,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_potential_4_fixed_press                            &
-     &         (numnod, ncomp_nod, i_press, i_p_phi, d_nod, nod_bc_p)
+      subroutine set_potential_4_fixed_press(nod_bc_p)
 !
       use t_nodal_bc_data
       use m_t_int_parameter
       use m_physical_property
 !
-      integer (kind = kint), intent(in) :: numnod, ncomp_nod
-      integer (kind = kint), intent(in) :: i_press, i_p_phi
-!
-      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
       type(scaler_fixed_nod_bc_type), intent(inout) :: nod_bc_p
 !
        integer (kind = kint) :: inum, inod
@@ -152,8 +146,7 @@
       do inum = 1, nod_bc_p%num_bc_nod
         inod = nod_bc_p%ibc_id(inum)
         nod_bc_p%bc_apt(inum)                                           &
-     &       = -dt * nod_bc_p%bc_apt(inum) * coef_press
-        d_nod(inod,i_p_phi) =  -dt * coef_press * d_nod(inod,i_press)
+     &       = -dt * coef_press * nod_bc_p%bc_apt(inum)
       end do
 !
       end subroutine set_potential_4_fixed_press

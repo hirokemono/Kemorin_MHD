@@ -52,6 +52,7 @@
       use t_finite_element_mat
       use t_MHD_finite_element_mat
       use t_filter_elength
+      use t_bc_data_temp
 !
       implicit none
 !
@@ -71,7 +72,6 @@
       use m_t_int_parameter
       use m_type_AMG_data
       use m_solver_djds_MHD
-      use m_bc_data_ene
       use m_SGS_address
 !
       use nod_phys_send_recv
@@ -201,7 +201,8 @@
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
-      call set_boundary_scalar(nod_bc1_t, iphys%i_temp, nod_fld)
+      call set_boundary_scalar                                          &
+     &   (Tnod_bcs%nod_bc_s, iphys%i_temp, nod_fld)
 !
       call scalar_send_recv(iphys%i_temp, node, nod_comm, nod_fld)
 !
@@ -224,7 +225,6 @@
       use m_t_int_parameter
       use m_type_AMG_data
       use m_solver_djds_MHD
-      use m_bc_data_ene
       use m_SGS_address
 !
       use nod_phys_send_recv
@@ -353,7 +353,8 @@
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
-      call set_boundary_scalar(nod_bc1_t, iphys%i_par_temp, nod_fld)
+      call set_boundary_scalar                                          &
+     &   (Tnod_bcs%nod_bc_s, iphys%i_par_temp, nod_fld)
 !
       call scalar_send_recv                                             &
      &   (iphys%i_par_temp, node, nod_comm, nod_fld)

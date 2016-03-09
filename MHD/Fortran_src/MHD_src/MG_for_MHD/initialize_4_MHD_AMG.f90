@@ -29,6 +29,7 @@
       use t_geometry_data
       use t_edge_data
       use t_surface_data
+      use t_bc_data_MHD
 !
       use m_solver_djds_MHD
       use m_type_AMG_data
@@ -45,7 +46,6 @@
       use set_djds_connect_type_MHD
       use set_normal_vectors
       use int_surface_param_type
-      use set_bc_id_type_data
       use set_bc_surface_data_type
       use int_type_mass_matrices
       use set_MHD_idx_4_mat_type

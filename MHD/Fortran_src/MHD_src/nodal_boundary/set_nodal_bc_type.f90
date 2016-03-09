@@ -66,7 +66,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_nod_bc_type_from_ctl(ii, i, nod_grp,               &
-     &          scalar_bc, bc_magnitude )
+     &          scalar_bc, bc_magnitude)
 !
       use t_group_data
       use t_nodal_bc_data
@@ -84,7 +84,7 @@
       do k = nod_grp%istack_grp(i-1)+1, nod_grp%istack_grp(i)
         ii=ii+1
         scalar_bc%ibc_id(ii) = nod_grp%item_grp(k)
-!        scalar_bc%bc_apt(ii) = bc_magnitude
+        scalar_bc%bc_apt(ii) = bc_magnitude
       end do
 !
       if ( bc_magnitude .ne. 0.0d0 ) then
