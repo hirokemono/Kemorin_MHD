@@ -16,179 +16,113 @@
 !
       implicit none
 !
-      private :: set_bc_torque_type_id, set_bc_wall_type_id
-      private :: set_bc_vect_p_surf_type_id, set_bc_magne_surf_type_id
-      private :: set_bc_current_surf_type_id, set_surf_mag_p_type_id
-      private :: set_bc_h_flux_type_id, set_bc_composition_type_id
-!
 !-----------------------------------------------------------------------
 !
       contains 
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_set_surface_type_id(grp, sf_dat)
+      subroutine s_count_num_bc_surface_type(grp, sf_dat)
 !
-      use m_control_parameter
+      use m_machine_parameter
+      use m_surf_data_list
+      use m_scalar_surf_id
+      use m_vector_surf_id
 !
       type(mesh_groups), intent(in) :: grp
       type(surface_boundarty_conditions), intent(inout) :: sf_dat
 !
 !
+      if (iflag_debug.eq.1)  write(*,*) 'count_num_bc_h_flux'
+      call count_num_surf_gradient                                      &
+     &   (name_hf, grp%surf_grp, h_flux_surf, sf_dat%temp)
+!
+      if (iflag_debug.eq.1)  write(*,*) 'count_num_bc_torque'
+      call count_num_surf_grad_velo(name_svn, name_vg,                  &
+     &    grp%surf_grp, grp%surf_nod_grp, torque_surf, sf_dat%velo)
+!
+      if (iflag_debug.eq.1)  write(*,*) 'count_num_bc_press_sf'
+      call count_num_wall_potential                                     &
+     &   (name_pg, grp%surf_grp, wall_surf, sf_dat%press)
+!
+      if (iflag_debug.eq.1)  write(*,*) 'count_num_bc_vecp_sf'
+      call count_num_surf_grad_velo(name_san, name_ag,                  &
+     &    grp%surf_grp, grp%surf_nod_grp, a_potential_surf,             &
+     &    sf_dat%vector_p)
+!
+      if (iflag_debug.eq.1)  write(*,*) 'count_num_bc_magne_sf'
+      call count_num_surf_grad_vector(name_sbn, name_bg,                &
+     &   grp%surf_grp, grp%surf_nod_grp, magne_surf, sf_dat%magne)
+!
+      if (iflag_debug.eq.1)  write(*,*) 'count_num_bc_current_sf'
+      call count_num_surf_grad_vector(name_sjn, name_jg,                &
+     &    grp%surf_grp, grp%surf_nod_grp, current_surf, sf_dat%current)
+!
+      if (iflag_debug.eq.1) write(*,*) 'count_num_surf_mag_p'
+      call count_num_wall_potential                                     &
+     &   (name_mpg, grp%surf_grp, e_potential_surf, sf_dat%magne_p)
+!
+      if (iflag_debug.eq.1) write(*,*) 'count_num_bc_composition_sf'
+      call count_num_surf_gradient                                      &
+     &   (name_dsg, grp%surf_grp, light_surf, sf_dat%comp_sf)
+!
+      end subroutine s_count_num_bc_surface_type
+!
+!-----------------------------------------------------------------------
+!
+      subroutine s_set_surface_type_id(node, ele, surf, grp, sf_dat)
+!
+      use m_control_parameter
+      use m_surf_data_list
+      use m_scalar_surf_id
+      use m_vector_surf_id
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(mesh_groups), intent(in) :: grp
+      type(surface_boundarty_conditions), intent(inout) :: sf_dat
+!
+!
       if (iflag_t_evo_4_temp .gt. id_no_evolution) then
-        call set_bc_h_flux_type_id(grp%surf_grp, sf_dat%temp)
+        call set_surf_grad_scalar_id                                    &
+     &     (grp%surf_grp, h_flux_surf, sf_dat%temp)
       end if
 !
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
-        call set_bc_torque_type_id(grp%surf_grp, grp%surf_nod_grp,      &
-     &      sf_dat%velo)
-        call set_bc_wall_type_id(grp%surf_grp, sf_dat%press)
+        call set_surf_grad_velo(name_svn, name_vg,                      &
+     &      node, ele, surf, grp%surf_grp,  grp%surf_nod_grp, grp%surf_grp_geom,              &
+     &      torque_surf, sf_dat%velo)
+!
+        call set_wall_potential_id                                      &
+     &     (grp%surf_grp, wall_surf, sf_dat%press)
       end if
 !
       if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
      &      .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-        call set_bc_magne_surf_type_id(grp%surf_grp, grp%surf_nod_grp,  &
-     &      sf_dat%magne)
-        call set_bc_current_surf_type_id(grp%surf_grp,                  &
-     &      grp%surf_nod_grp, sf_dat%current)
-        call set_surf_mag_p_type_id(grp%surf_grp, sf_dat%magne_p)
+        call set_surf_grad_vector(name_sbn, name_bg,                    &
+     &      node, ele, surf, grp%surf_grp, grp%surf_nod_grp, grp%surf_grp_geom,  &
+     &      magne_surf, sf_dat%magne)
+        call set_surf_grad_vector(name_sjn, name_jg,                    &
+     &      node, ele, surf, grp%surf_grp, grp%surf_nod_grp, grp%surf_grp_geom,  &
+     &      current_surf, sf_dat%current)
+!
+        call set_wall_potential_id                                      &
+     &     (grp%surf_grp, e_potential_surf, sf_dat%magne_p)
       end if
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-        call set_bc_vect_p_surf_type_id(grp%surf_grp, grp%surf_nod_grp, &
-     &      sf_dat%vector_p)
+        call set_surf_grad_velo(name_san, name_ag,                      &
+     &      node, ele, surf, grp%surf_grp, grp%surf_nod_grp, grp%surf_grp_geom,  &
+     &      a_potential_surf, sf_dat%vector_p)
       end if
 ! 
       if (iflag_t_evo_4_composit .gt. id_no_evolution) then
-        call set_bc_composition_type_id(grp%surf_grp, sf_dat%comp_sf)
+        call set_surf_grad_scalar_id                                    &
+     &     (grp%surf_grp, light_surf, sf_dat%comp_sf)
       end if
 ! 
       end subroutine s_set_surface_type_id
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine set_bc_h_flux_type_id(sf_grp, temp)
-!
-      use set_sf_scalar_type_id
-!
-      type(surface_group_data), intent(in) :: sf_grp
-      type(scaler_surf_bc_type),  intent(inout) :: temp
-!
-      call set_surf_temp_type_id(sf_grp, temp)
-      call set_surf_heat_flux_type_id(sf_grp, temp)
-!
-      end subroutine set_bc_h_flux_type_id
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_bc_torque_type_id(sf_grp, sf_nod, velo)
-!
-      use set_sf_vector_type_id
-!
-      type(surface_group_data), intent(in) :: sf_grp
-      type(surface_node_grp_data), intent(in) :: sf_nod
-      type(velocity_surf_bc_type), intent(inout) :: velo
-!
-!
-      call set_surf_velo_type_id(sf_grp, sf_nod, velo)
-      call set_surf_torque_type_id(sf_grp, velo)
-!
-      end subroutine set_bc_torque_type_id
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_bc_wall_type_id(sf_grp, press)
-!
-      use set_sf_scalar_type_id
-!
-      type(surface_group_data), intent(in) :: sf_grp
-      type(potential_surf_bc_type),  intent(inout) :: press
-!
-      call set_surf_press_type_id(sf_grp, press)
-      call set_surf_grad_press_type_id(sf_grp, press)
-      call set_wall_press_type_id(sf_grp, press)
-!
-      end subroutine set_bc_wall_type_id
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_bc_vect_p_surf_type_id(sf_grp, sf_nod, vector_p)
-!
-      use set_sf_vector_type_id
-!
-      type(surface_group_data), intent(in) :: sf_grp
-      type(surface_node_grp_data), intent(in) :: sf_nod
-      type(velocity_surf_bc_type), intent(inout) :: vector_p
-!
-!
-      call set_surf_vect_p_type_id(sf_grp, sf_nod, vector_p)
-      call set_surf_grad_vecp_type_id(sf_grp, vector_p)
-!
-      end subroutine set_bc_vect_p_surf_type_id
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_bc_magne_surf_type_id(sf_grp, sf_nod, magne)
-!
-      use set_sf_vector_type_id
-!
-      type(surface_group_data), intent(in) :: sf_grp
-      type(surface_node_grp_data), intent(in) :: sf_nod
-      type(vector_surf_bc_type), intent(inout) :: magne
-!
-!
-      call set_surf_magne_type_id(sf_grp, sf_nod, magne)
-      call set_surf_grad_b_type_id(sf_grp, magne)
-!
-      end subroutine set_bc_magne_surf_type_id
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_bc_current_surf_type_id(sf_grp, sf_nod, current)
-!
-      use set_sf_vector_type_id
-!
-      type(surface_group_data), intent(in) :: sf_grp
-      type(surface_node_grp_data), intent(in) :: sf_nod
-      type(vector_surf_bc_type), intent(inout) :: current
-!
-!
-      call set_surf_current_type_id(sf_grp, sf_nod, current)
-      call set_surf_grad_j_type_id(sf_grp, current)
-!
-      end subroutine set_bc_current_surf_type_id
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_surf_mag_p_type_id(sf_grp, magne_p)
-!
-      use set_sf_scalar_type_id
-!
-      type(surface_group_data), intent(in) :: sf_grp
-      type(potential_surf_bc_type),  intent(inout) :: magne_p
-!
-!
-      call set_surf_magne_p_type_id(sf_grp, magne_p)
-      call set_surf_grad_magne_p_type_id(sf_grp, magne_p)
-      call set_wall_magne_p_type_id(sf_grp, magne_p)
-!
-      end subroutine set_surf_mag_p_type_id
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_bc_composition_type_id(sf_grp, comp_sf)
-!
-      use set_sf_scalar_type_id
-!
-      type(surface_group_data), intent(in) :: sf_grp
-      type(scaler_surf_bc_type),  intent(inout) :: comp_sf
-!
-!
-      call set_surf_composit_type_id(sf_grp, comp_sf)
-      call set_surf_grad_composit_type_id(sf_grp, comp_sf)
-!
-      end subroutine set_bc_composition_type_id
 !
 !-----------------------------------------------------------------------
 !

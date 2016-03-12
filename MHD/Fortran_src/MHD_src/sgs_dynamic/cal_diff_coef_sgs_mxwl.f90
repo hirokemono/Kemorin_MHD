@@ -157,7 +157,7 @@
       call cal_commute_error_4_mf                                       &
      &   (fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
-     &    rhs_tbl, FEM_elens, sf_sgs1_grad_b, ifilter_4delta,           &
+     &    rhs_tbl, FEM_elens, Bsf1_bcs%sgs, ifilter_4delta,             &
      &    iphys%i_sgs_grad_f, iphys%i_sgs_grad_f, iphys%i_filter_magne, &
      &    fem_wk, f_l, f_nl, nod_fld)
 !
@@ -174,7 +174,7 @@
       call cal_commute_error_4_mf                                       &
      &   (fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
-     &    rhs_tbl, FEM_elens, sf_sgs1_grad_b, ifilter_2delta,           &
+     &    rhs_tbl, FEM_elens, Bsf1_bcs%sgs, ifilter_2delta,             &
      &    iphys%i_sgs_grad, iphys%i_SGS_maxwell, iphys%i_magne,         &
      &    fem_wk, f_l, f_nl, nod_fld)
 !

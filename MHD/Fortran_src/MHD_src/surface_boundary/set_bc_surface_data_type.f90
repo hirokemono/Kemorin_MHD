@@ -25,14 +25,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_set_bc_surface_data_type(group, sf_dat)
+      subroutine s_set_bc_surface_data_type(mesh, group, surf, sf_dat)
 !
       use m_machine_parameter
       use t_mesh_data
 !
-      use count_num_surface_type
       use set_surface_type_id
 !
+      type(mesh_geometry), intent(in) :: mesh
+      type(surface_data), intent(in) :: surf
       type(mesh_groups), intent(in) :: group
       type(surface_boundarty_conditions), intent(inout) :: sf_dat
 !
@@ -43,7 +44,8 @@
 !
       call s_alloc_surf_bc_data_type(sf_dat)
 !
-      call s_set_surface_type_id(group, sf_dat)
+      call s_set_surface_type_id                                        &
+     &   (mesh%node, mesh%ele, surf, group, sf_dat)
 ! 
       end subroutine s_set_bc_surface_data_type
 !

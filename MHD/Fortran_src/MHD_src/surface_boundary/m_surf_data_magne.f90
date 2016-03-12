@@ -15,13 +15,7 @@
       implicit  none
 !
 !
-      type(scaler_surf_flux_bc_type), save :: sf_bc1_grad_b(3)
-!
-      type(scaler_surf_flux_bc_type), save :: sf_bc1_norm_b
-!
-      type(scaler_surf_bc_data_type), save :: sf_sgs1_grad_b(3)
-!
-      type(scaler_surf_bc_data_type), save :: sf_bc1_lead_b(3)
+      type(vector_surf_bc_type) :: Bsf1_bcs
 !
 !-----------------------------------------------------------------------
 !
@@ -32,13 +26,13 @@
       subroutine allocate_surf_data_magne
 !
 !
-      call alloc_surf_vector_num(sf_bc1_grad_b)
-      call alloc_surf_vector_dat_type(sf_sgs1_grad_b)
-      call alloc_surf_scaler_num(sf_bc1_norm_b)
-      call alloc_surf_vector_dat_type(sf_bc1_lead_b)
+      call alloc_surf_vector_num(Bsf1_bcs%grad)
+      call alloc_surf_vector_dat_type(Bsf1_bcs%sgs)
+      call alloc_surf_scaler_num(Bsf1_bcs%normal)
+      call alloc_surf_vector_dat_type(Bsf1_bcs%torque_lead)
 !
-      call alloc_surf_vector_apt(sf_bc1_grad_b)
-      call alloc_surf_scaler_apt(sf_bc1_norm_b)
+      call alloc_surf_vector_apt(Bsf1_bcs%grad)
+      call alloc_surf_scaler_apt(Bsf1_bcs%normal)
 !
       end subroutine allocate_surf_data_magne
 !
@@ -47,10 +41,10 @@
       subroutine deallocate_surf_data_magne
 !
 !
-      call dealloc_surf_vector_type(sf_bc1_grad_b)
-      call dealloc_surf_vector_dat_type(sf_sgs1_grad_b)
-      call dealloc_surf_scaler_type(sf_bc1_norm_b)
-      call dealloc_surf_vector_dat_type(sf_bc1_lead_b)
+      call dealloc_surf_vector_type(Bsf1_bcs%grad)
+      call dealloc_surf_vector_dat_type(Bsf1_bcs%sgs)
+      call dealloc_surf_scaler_type(Bsf1_bcs%normal)
+      call dealloc_surf_vector_dat_type(Bsf1_bcs%torque_lead)
 !
       end subroutine deallocate_surf_data_magne
 !

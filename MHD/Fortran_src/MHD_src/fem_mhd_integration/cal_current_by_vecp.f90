@@ -103,7 +103,7 @@
 !  for boundary conditions
 !
       call int_surf_current_diffuse(node, ele, surf, sf_grp,            &
-     &    nod_fld, jac_sf_grp, rhs_tbl, sf_bc1_lead_a,                  &
+     &    nod_fld, jac_sf_grp, rhs_tbl, Asf1_bcs%torque_lead,           &
      &    intg_point_t_evo, iphys%i_vecp, fem_wk, f_l)
 !
       call cal_multi_pass_4_vector_ff(ele%istack_ele_smp, m_lump,       &
@@ -183,7 +183,7 @@
 !
       call int_surf_diffuse_term                                        &
      &   (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, rhs_tbl,        &
-     &    sf_bc1_lead_gd_t, intg_point_t_evo,                           &
+     &    Tsf1_bcs%flux_lead, intg_point_t_evo,                         &
      &    ak_d_temp, iphys%i_temp, fem_wk, f_l)
 !
       end subroutine int_surf_temp_diffuse
@@ -211,7 +211,7 @@
 !
       call int_surf_vect_diffuse_term                                   &
      &   (node, ele, surf, sf_grp, jac_sf_grp, nod_fld, rhs_tbl,        &
-     &    sf_bc1_lead_tq, intg_point_t_evo,                             &
+     &    Vsf1_bcs%torque_lead, intg_point_t_evo,                       &
      &    ak_d_velo, iphys%i_velo, fem_wk, f_l)
 !
       end subroutine int_surf_velo_diffuse
@@ -239,7 +239,7 @@
 !
       call int_surf_vect_diffuse_term                                   &
      &   (node, ele, surf, sf_grp, jac_sf_grp, nod_fld, rhs_tbl,        &
-     &    sf_bc1_lead_a, intg_point_t_evo,                              &
+     &    Asf1_bcs%torque_lead, intg_point_t_evo,                       &
      &    ak_d_magne, iphys%i_vecp, fem_wk, f_l)
 !
       end subroutine int_surf_vector_p_diffuse
@@ -267,7 +267,7 @@
 !
       call int_surf_vect_diffuse_term                                   &
      &   (node, ele, surf, sf_grp, jac_sf_grp, nod_fld, rhs_tbl,        &
-     &    sf_bc1_lead_b, intg_point_t_evo,                              &
+     &    Bsf1_bcs%torque_lead, intg_point_t_evo,                       &
      &    ak_d_magne, iphys%i_magne, fem_wk, f_l)
 !
       end subroutine int_surf_magne_diffuse
@@ -295,7 +295,7 @@
 !
       call int_surf_diffuse_term                                        &
      &   (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, rhs_tbl,        &
-     &    sf_bc1_lead_gd_c, intg_point_t_evo,                           &
+     &    Csf1_bcs%flux_lead, intg_point_t_evo,                         &
      &    ak_d_composit, iphys%i_light, fem_wk, f_l)
 !
       end subroutine int_surf_composit_diffuse

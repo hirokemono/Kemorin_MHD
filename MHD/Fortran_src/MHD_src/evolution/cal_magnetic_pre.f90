@@ -270,13 +270,13 @@
      &    rhs_tbl, FEM_elens, fem_wk, f_nl)
 !
       if (iflag_commute_magne .eq. id_SGS_commute_ON                    &
-     &     .and. sf_sgs1_grad_f%ngrp_sf_dat .gt. 0) then
+     &     .and. Fsf1_bcs%sgs%ngrp_sf_dat .gt. 0) then
         if (iflag_debug.eq.1) write(*,*)                                &
                              'int_surf_sgs_velo_co_ele', iphys%i_m_phi
          call int_surf_sgs_velo_co_ele(node, ele, surf, sf_grp,         &
      &       nod_fld, jac_sf_grp_q, jac_sf_grp_l,                       &
      &       rhs_tbl, FEM_elens, intg_point_poisson,                    &
-     &       sf_sgs1_grad_f%ngrp_sf_dat, sf_sgs1_grad_f%id_grp_sf_dat,  &
+     &       Fsf1_bcs%sgs%ngrp_sf_dat, Fsf1_bcs%sgs%id_grp_sf_dat,      &
      &       ifilter_final, ak_diff(1,iak_diff_b), iphys%i_m_phi,       &
      &       fem_wk, f_nl)
       end if
@@ -354,13 +354,13 @@
      &    rhs_tbl, FEM_elens, fem_wk, f_nl)
 !
       if (iflag_commute_magne .eq. id_SGS_commute_ON                    &
-     &     .and. sf_sgs1_grad_f%ngrp_sf_dat .gt. 0) then
+     &     .and. Fsf1_bcs%sgs%ngrp_sf_dat .gt. 0) then
         if (iflag_debug.eq.1) write(*,*)                                &
                              'int_surf_sgs_velo_co_ele', iphys%i_m_phi
          call int_surf_sgs_velo_co_ele(node, ele, surf, sf_grp,         &
      &       nod_fld, jac_sf_grp_q, jac_sf_grp_l,                       &
      &       rhs_tbl, FEM_elens, intg_point_poisson,                    &
-     &       sf_sgs1_grad_f%ngrp_sf_dat, sf_sgs1_grad_f%id_grp_sf_dat,  &
+     &       Fsf1_bcs%sgs%ngrp_sf_dat, Fsf1_bcs%sgs%id_grp_sf_dat,      &
      &       ifilter_final, ak_diff(1,iak_diff_b), iphys%i_m_phi,       &
      &       fem_wk, f_nl)
       end if

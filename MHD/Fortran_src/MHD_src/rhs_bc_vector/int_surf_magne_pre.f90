@@ -73,25 +73,27 @@
 !
 !
       call int_sf_grad_velocity(node, ele, surf, sf_grp,                &
-     &    jac1_sf_grp_2d_q, rhs_tbl1, sf_bc1_grad_b,                    &
+     &    jac1_sf_grp_2d_q, rhs_tbl1, Bsf1_bcs%grad,                    &
      &    intg_point_t_evo, ak_d_magne, fem1_wk, f1_l)
 !
        if (iflag_SGS_induction .ne. id_SGS_none                         &
      &     .and. iflag_commute_induction .eq. id_SGS_commute_ON) then
          call int_surf_div_induct_t_sgs                                 &
      &      (node, ele, surf, sf_grp, nod_fld1, jac1_sf_grp_2d_q,       &
-     &       rhs_tbl1, FEM1_elen, sf_sgs1_grad_b, intg_point_t_evo,     &
+     &       rhs_tbl1, FEM1_elen, Bsf1_bcs%sgs, intg_point_t_evo,       &
      &       ifilter_final, iak_diff_uxb, iphys%i_SGS_induct_t,         &
      &       iphys%i_velo, iphys%i_magne, fem1_wk, f1_nl)
       end if
 !
 !      call int_free_slip_surf_sph_out(node, ele, surf, sf_grp,         &
 !     &   nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, n_int,                  &
-!     &   sf_bc1_pvc_out_a%ngrp_sf_dat, sf_bc1_pvc_out_a%id_grp_sf_dat, &
+!     &   Asf1_bcs%free_sph_out%ngrp_sf_dat,                            &
+!     &   Asf1_bcs%free_sph_out%id_grp_sf_dat, &
 !     &   iphys%i_vecp, fem_wk, f_l)
 !      call int_free_slip_surf_sph_in(node, ele, surf, sf_grp,          &
 !     &   nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, n_int,                  &
-!     &   sf_bc1_pvc_in_a%ngrp_sf_dat, sf_bc1_pvc_in_a%id_grp_sf_dat,   &
+!     &   Asf1_bcs%free_sph_in%ngrp_sf_dat,                             &
+!     &   Asf1_bcs%free_sph_in%id_grp_sf_dat,                           &
 !     &   iphys%i_vecp, fem_wk, f_l)
 !
       end subroutine int_surf_magne_pre_ele
@@ -121,7 +123,7 @@
 !
       if (i_field .eq. iphys%i_b_diffuse) then
         call int_sf_grad_velocity(node, ele, surf, sf_grp,              &
-     &      jac1_sf_grp_2d_q, rhs_tbl1, sf_bc1_grad_b,                  &
+     &      jac1_sf_grp_2d_q, rhs_tbl1, Bsf1_bcs%grad,                  &
      &      intg_point_t_evo, ak_d_magne, fem1_wk, f1_l)
       end if
 !
@@ -130,7 +132,7 @@
      &     .and. iflag_commute_induction .eq. id_SGS_commute_ON) then
           call int_surf_div_induct_t_sgs                                &
      &       (node, ele, surf, sf_grp, nod_fld1, jac1_sf_grp_2d_q,      &
-     &        rhs_tbl1, FEM1_elen, sf_sgs1_grad_b, intg_point_t_evo,    &
+     &        rhs_tbl1, FEM1_elen, Bsf1_bcs%sgs, intg_point_t_evo,      &
      &        ifilter_final, iak_diff_uxb, iphys%i_SGS_induct_t,        &
      &        iphys%i_velo, iphys%i_magne, fem1_wk, f1_nl)
         end if
@@ -138,11 +140,13 @@
 !
 !      call int_free_slip_surf_sph_out(node, ele, surf, sf_grp,         &
 !     &   nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, n_int,                  &
-!     &   sf_bc1_pvc_out_a%ngrp_sf_dat, sf_bc1_pvc_out_a%id_grp_sf_dat, &
+!     &   Asf1_bcs%free_sph_out%ngrp_sf_dat,                            &
+!     &   Asf1_bcs%free_sph_out%id_grp_sf_dat,                          &
 !     &   iphys%i_vecp, fem_wk, f_l)
 !      call int_free_slip_surf_sph_in(node, ele, surf, sf_grp,          &
 !     &   nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, n_int,                  &
-!     &   sf_bc1_pvc_in_a%ngrp_sf_dat, sf_bc1_pvc_in_a%id_grp_sf_dat,   &
+!     &   Asf1_bcs%free_sph_in%ngrp_sf_dat,                             &
+!     &   Asf1_bcs%free_sph_in%id_grp_sf_dat,                           &
 !     &   iphys%i_vecp, fem_wk, f_l)
 !
       end subroutine int_surf_magne_monitor

@@ -155,7 +155,7 @@
       call cal_commute_error_4_hf                                       &
      &   (fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
-     &    rhs_tbl, FEM_elens, sf_sgs1_grad_t, ifilter_4delta,           &
+     &    rhs_tbl, FEM_elens, Tsf1_bcs%sgs, ifilter_4delta,             &
      &    iphys%i_sgs_grad_f, iphys%i_sgs_grad_f, iphys%i_filter_velo,  &
      &    iphys%i_filter_temp, fem_wk, f_l, f_nl, nod_fld)
       call delete_field_by_fixed_t_bc                                   &
@@ -172,7 +172,7 @@
       call cal_commute_error_4_hf                                       &
      &   (fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
-     &    rhs_tbl, FEM_elens, sf_sgs1_grad_t, ifilter_2delta,           &
+     &    rhs_tbl, FEM_elens, Tsf1_bcs%sgs, ifilter_2delta,             &
      &    iphys%i_sgs_grad, iphys%i_SGS_h_flux, iphys%i_velo,           &
      &    iphys%i_sgs_temp, fem_wk, f_l, f_nl, nod_fld)
 !

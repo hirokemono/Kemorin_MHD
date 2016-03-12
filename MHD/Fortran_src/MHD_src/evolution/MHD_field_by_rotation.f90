@@ -107,7 +107,7 @@
      &        fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,            &
      &        nod_comm, node, ele, surf, sf_grp, iphys_ele, ele_fld,    &
      &        jac_3d, jac_sf_grp, FEM_elens, Vnod1_bcs%nod_bc_w,        &
-     &        sf_sgs1_grad_v, rhs_tbl, fem_wk, f_nl, nod_fld)
+     &        Vsf1_bcs%sgs, rhs_tbl, fem_wk, f_nl, nod_fld)
         end if
       end if
 !
@@ -122,7 +122,7 @@
      &            ele%istack_ele_smp, m_lump, nod_comm, node, ele,      &
      &            surf, sf_grp, iphys_ele, ele_fld, jac_3d,             &
      &            jac_sf_grp, FEM_elens, Bnod1_bcs%nod_bc_j,            &
-     &            sf_sgs1_grad_b, rhs_tbl, fem_wk, f_nl, nod_fld)
+     &            Bsf1_bcs%sgs, rhs_tbl, fem_wk, f_nl, nod_fld)
 !
 !             call choose_cal_rotation_sgs                              &
 !     &          (iflag_commute_magne, iflag_mag_supg,                  &
@@ -130,7 +130,7 @@
 !     &           conduct%istack_ele_fld_smp, mhd_fem_wk%mlump_cd,      &
 !     &           nod_comm, node, ele, surf, sf_grp, iphys_ele, ele_fld,&
 !     &           jac_3d,  jac_sf_grp, FEM_elens, Bnod1_bcs%nod_bc_j,   &
-!     &           sf_sgs1_grad_b, rhs_tbl, fem_wk, f_nl, nod_fld)
+!     &           Bsf1_bcs%sgs, rhs_tbl, fem_wk, f_nl, nod_fld)
 !             call int_current_diffuse                                  &
 !     &         (nod_comm, node, ele, surf, sf_grp,                     &
 !     &          iphys, jac_3d, jac_sf_grp, rhs_tbl, m_lump,            &
@@ -143,15 +143,15 @@
      &          iak_diff_b, iphys%i_magne, iphys%i_current,             &
      &          ele%istack_ele_smp, m_lump, nod_comm, node, ele,        &
      &          surf, sf_grp, iphys_ele, ele_fld, jac_3d, jac_sf_grp,   &
-     &          FEM_elens, Bnod1_bcs%nod_bc_j, sf_sgs1_grad_b,          &
+     &          FEM_elens, Bnod1_bcs%nod_bc_j, Bsf1_bcs%sgs,            &
      &          rhs_tbl, fem_wk, f_nl, nod_fld)
 !           call choose_cal_rotation_sgs                                &
 !     &        (iflag_commute_magne, iflag_mag_supg,                    &
 !     &         iak_diff_b, iphys%i_magne, iphys%i_current,             &
 !     &         conduct%istack_ele_fld_smp, mhd_fem_wk%mlump_cd,        &
-!     &         nod_comm, node, ele, surf, sf_grp, iphys_ele, ele_fld,       &
+!     &         nod_comm, node, ele, surf, sf_grp, iphys_ele, ele_fld,  &
 !     &         jac_3d, jac_sf_grp, FEM_elens, Bnod1_bcs%nod_bc_j,      &
-!     &         sf_sgs1_grad_b, rhs_tbl, fem_wk, f_nl, nod_fld)
+!     &         Bsf1_bcs%sgs, rhs_tbl, fem_wk, f_nl, nod_fld)
           end if
         end if
       end if

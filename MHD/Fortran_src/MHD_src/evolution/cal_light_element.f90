@@ -121,7 +121,7 @@
 !
 !
       call int_sf_h_flux(node, ele, surf, sf_grp, jac_sf_grp, rhs_tbl,  &
-     &    sf_bc1_grad_c, intg_point_t_evo, ak_d_composit, fem_wk, f_l)
+     &    Csf1_bcs%flux, intg_point_t_evo, ak_d_composit, fem_wk, f_l)
 !
 !
       if     (iflag_t_evo_4_composit .eq. id_explicit_euler) then

@@ -77,7 +77,7 @@
         if (iflag_commute_inertia .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,       &
      &        nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,                  &
-     &        sf_sgs1_grad_v, intg_point_t_evo, ifilter_final,          &
+     &        Vsf1_bcs%sgs, intg_point_t_evo, ifilter_final,            &
      &        iphys%i_SGS_m_flux, iphys%i_velo, iphys%i_velo,           &
      &        ak_diff(1,iak_diff_mf), coef_velo, fem_wk, f_nl)
         end if
@@ -87,7 +87,7 @@
         if (iflag_commute_lorentz .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,       &
      &        nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,                  &
-     &        sf_sgs1_grad_b, intg_point_t_evo, ifilter_final,          &
+     &        Bsf1_bcs%sgs, intg_point_t_evo, ifilter_final,            &
      &        iphys%i_SGS_maxwell, iphys%i_magne, iphys%i_magne,        &
      &        ak_diff(1,iak_diff_lor), (-coef_lor), fem_wk, f_nl)
         end if
@@ -95,17 +95,17 @@
 !
 !
         call int_sf_grad_velocity(node, ele, surf, sf_grp,              &
-     &      jac_sf_grp, rhs_tbl, sf_bc1_grad_v,                         &
+     &      jac_sf_grp, rhs_tbl, Vsf1_bcs%grad,                         &
      &      intg_point_t_evo, ak_d_velo, fem_wk, f_l)
         call int_free_slip_surf_sph_in(node, ele, surf, sf_grp,         &
      &      nod_fld, jac_sf_grp, rhs_tbl, intg_point_t_evo,             &
-     &      sf_bc1_free_sph_in%ngrp_sf_dat,                             &
-     &      sf_bc1_free_sph_in%id_grp_sf_dat,                           &
+     &      Vsf1_bcs%free_sph_in%ngrp_sf_dat,                           &
+     &      Vsf1_bcs%free_sph_in%id_grp_sf_dat,                         &
      &      iphys%i_velo, fem_wk, f_l)
         call int_free_slip_surf_sph_out(node, ele, surf, sf_grp,        &
      &      nod_fld, jac_sf_grp, rhs_tbl, intg_point_t_evo,             &
-     &      sf_bc1_free_sph_out%ngrp_sf_dat,                            &
-     &      sf_bc1_free_sph_out%id_grp_sf_dat,                          &
+     &      Vsf1_bcs%free_sph_out%ngrp_sf_dat,                          &
+     &      Vsf1_bcs%free_sph_out%id_grp_sf_dat,                        &
      &      iphys%i_velo, fem_wk, f_l)
 !
       end subroutine int_surf_velo_pre_ele
@@ -142,7 +142,7 @@
         if (iflag_commute_inertia .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,       &
      &        nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,                  &
-     &        sf_sgs1_grad_v, intg_point_t_evo, ifilter_final,          &
+     &        Vsf1_bcs%sgs, intg_point_t_evo, ifilter_final,            &
      &        iphys%i_SGS_m_flux, iphys%i_velo, iphys%i_velo,           &
      &        ak_diff(1,iak_diff_mf), coef_velo, fem_wk, f_nl)
         end if
@@ -152,7 +152,7 @@
         if (iflag_commute_lorentz .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,       &
      &        nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,                  &
-     &        sf_sgs1_grad_b, intg_point_t_evo, ifilter_final,          &
+     &        Bsf1_bcs%sgs, intg_point_t_evo, ifilter_final,            &
      &        iphys%i_SGS_maxwell, iphys%i_magne, iphys%i_magne,        &
      &        ak_diff(1,iak_diff_lor), (-coef_lor), fem_wk, f_nl)
         end if
@@ -161,17 +161,17 @@
 !
       if (i_field .eq. iphys%i_v_diffuse) then
         call int_sf_grad_velocity(node, ele, surf, sf_grp,              &
-     &      jac_sf_grp, rhs_tbl, sf_bc1_grad_v,                         &
+     &      jac_sf_grp, rhs_tbl, Vsf1_bcs%grad,                         &
      &      intg_point_t_evo, ak_d_velo, fem_wk, f_l)
         call int_free_slip_surf_sph_in(node, ele, surf, sf_grp,         &
      &      nod_fld, jac_sf_grp, rhs_tbl, intg_point_t_evo,             &
-     &      sf_bc1_free_sph_in%ngrp_sf_dat,                             &
-     &      sf_bc1_free_sph_in%id_grp_sf_dat,                           &
+     &      Vsf1_bcs%free_sph_in%ngrp_sf_dat,                           &
+     &      Vsf1_bcs%free_sph_in%id_grp_sf_dat,                         &
      &      iphys%i_velo, fem_wk, f_l)
         call int_free_slip_surf_sph_out(node, ele, surf, sf_grp,        &
      &      nod_fld, jac_sf_grp, rhs_tbl, intg_point_t_evo,             &
-     &      sf_bc1_free_sph_out%ngrp_sf_dat,                            &
-     &      sf_bc1_free_sph_out%id_grp_sf_dat,                          &
+     &      Vsf1_bcs%free_sph_out%ngrp_sf_dat,                          &
+     &      Vsf1_bcs%free_sph_out%id_grp_sf_dat,                        &
      &      iphys%i_velo, fem_wk, f_l)
       end if
 !

@@ -254,7 +254,8 @@
      &      MG_mesh(i_level)%group, MG_MHD_mesh(i_level),               &
      &      MG_node_bc(i_level))
 !
-        call s_set_bc_surface_data_type(MG_mesh(i_level)%group,         &
+        call s_set_bc_surface_data_type(MG_mesh(i_level)%mesh,          &
+     &      MG_mesh(i_level)%group, MG_ele_mesh(i_level)%surf,          &
      &      MG_surf_bc(i_level) )
       end do
 !

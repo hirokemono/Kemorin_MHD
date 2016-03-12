@@ -21,7 +21,7 @@
 !!        type(vect_fixed_nod_bc_type), intent(inout) :: nod_bc_a
 !!        type(vect_fixed_nod_bc_type), intent(inout) :: sgs_bc_a
 !!      subroutine set_bc_fixed_magne_id(node, nod_grp, bc_list,        &
-!!     &          i_magne, nod_bc_b, sgs_bc_b)
+!!     &          nod_bc_b, sgs_bc_b)
 !!        type(node_data), intent(in) :: node
 !!        type(group_data), intent(in) :: nod_grp
 !!        type(nod_bc_list_type), intent(in) :: bc_list

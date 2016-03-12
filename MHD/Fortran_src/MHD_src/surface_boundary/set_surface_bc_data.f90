@@ -37,7 +37,6 @@
       use t_phys_data
       use t_phys_address
 !
-      use count_num_surface_bc
       use set_surface_id_MHD
       use set_surface_values
 !
@@ -89,9 +88,26 @@
       end if
 !
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
-        call allocate_surf_data_velo
-        call allocate_surf_data_torque
-        call allocate_surf_press
+        call alloc_surf_vector_dat_type(Vsf1_bcs%sgs)
+        call alloc_surf_scaler_num(Vsf1_bcs%normal)
+        call alloc_surf_scaler_apt(Vsf1_bcs%normal)
+!
+        call alloc_surf_vector_num(Vsf1_bcs%grad)
+        call alloc_surf_vector_dat_type(Vsf1_bcs%torque_lead)
+        call alloc_surf_scaler_dat_type(Vsf1_bcs%free_sph_in)
+        call alloc_surf_scaler_dat_type(Vsf1_bcs%free_sph_out)
+!
+        call alloc_surf_vector_apt(Vsf1_bcs%grad)
+!
+        call alloc_surf_scaler_dat_type(Psf1_bcs%sgs)
+        call alloc_surf_scaler_dat_type(Psf1_bcs%grad_lead)
+!
+        call alloc_surf_scaler_num(Psf1_bcs%grad)
+        call alloc_surf_scaler_dat_type(Psf1_bcs%wall)
+        call alloc_surf_scaler_dat_type(Psf1_bcs%sph_in)
+        call alloc_surf_scaler_dat_type(Psf1_bcs%sph_out)
+!
+        call alloc_surf_scaler_apt(Psf1_bcs%grad)
       end if
 !
       if (iflag_t_evo_4_magne .gt. id_no_evolution                      &

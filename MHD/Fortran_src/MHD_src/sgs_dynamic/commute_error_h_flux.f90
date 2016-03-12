@@ -200,7 +200,7 @@
      &    i_filter, i_flux, i_v, i_b, fem_wk, f_nl)
 !
       call int_surf_commute_induct_t(node, ele, surf, sf_grp,           &
-     &     nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, sf_sgs1_grad_b,     &
+     &     nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, Bsf1_bcs%sgs,       &
      &     intg_point_t_evo, i_flux, i_filter, i_v, i_b,  fem_wk, f_nl)
 !
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)

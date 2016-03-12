@@ -242,7 +242,7 @@
 !
       call set_boundary_velo(node, Vnod_bcs, iphys%i_velo, nod_fld)
       call set_normal_velocity                                          &
-     &   (sf_grp, sf_grp_nod, sf_bc1_norm_v, iphys%i_velo, nod_fld)
+     &   (sf_grp, sf_grp_nod, Vsf1_bcs%normal, iphys%i_velo, nod_fld)
 !
       call vector_send_recv(iphys%i_velo, node, nod_comm, nod_fld)
 !
@@ -315,13 +315,13 @@
      &    rhs_tbl, FEM_elens, fem_wk, f_nl)
 !
       if (iflag_commute_velo .eq. id_SGS_commute_ON                     &
-     &     .and. sf_sgs1_grad_p%ngrp_sf_dat.gt.0) then
+     &     .and. Psf1_bcs%sgs%ngrp_sf_dat.gt.0) then
         if (iflag_debug.eq.1) write(*,*)                                &
                              'int_surf_sgs_velo_co_ele', iphys%i_p_phi
         call int_surf_sgs_velo_co_ele(node, ele, surf, sf_grp,          &
      &      nod_fld, jac_sf_grp_q, jac_sf_grp_l,                        &
      &      rhs_tbl, FEM_elens, intg_point_poisson,                     &
-     &      sf_sgs1_grad_p%ngrp_sf_dat, sf_sgs1_grad_p%id_grp_sf_dat,   &
+     &      Psf1_bcs%sgs%ngrp_sf_dat, Psf1_bcs%sgs%id_grp_sf_dat,       &
      &      ifilter_final, ak_diff(1,iak_diff_v), iphys%i_p_phi,        &
      &      fem_wk, f_nl)
       end if
@@ -346,7 +346,7 @@
       call set_boundary_velo(node, Vnod_bcs, iphys%i_velo, nod_fld)
       if (iflag_debug.eq.1) write(*,*) 'set_normal_velocity'
       call set_normal_velocity                                          &
-     &   (sf_grp, sf_grp_nod, sf_bc1_norm_v, iphys%i_velo, nod_fld)
+     &   (sf_grp, sf_grp_nod, Vsf1_bcs%normal, iphys%i_velo, nod_fld)
 !
       if(iflag_debug.eq.1) write(*,*) 'vector_send_recv(iphys%i_velo)'
       call vector_send_recv(iphys%i_velo, node, nod_comm, nod_fld)

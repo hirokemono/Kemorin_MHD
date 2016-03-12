@@ -159,7 +159,7 @@
      &    iak_diff_b, one, ak_d_magne, iphys%i_vecp, fem_wk, f_l)
 !
       call int_sf_grad_velocity(node, ele, surf, sf_grp,                &
-     &    jac_sf_grp, rhs_tbl, sf_bc1_grad_a, intg_point_t_evo,         &
+     &    jac_sf_grp, rhs_tbl, Asf1_bcs%grad, intg_point_t_evo,         &
      &    ak_d_magne, fem_wk, f_l)
 !
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)

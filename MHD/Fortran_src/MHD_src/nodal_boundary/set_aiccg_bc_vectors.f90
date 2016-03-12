@@ -71,7 +71,7 @@
         if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
           call set_aiccg_bc_velo(intg_point_t_evo, ele, surf, sf_grp,   &
      &        Vnod1_bcs%nod_bc_v, Vnod1_bcs%nod_bc_rot,                 &
-     &        sf_bc1_free_sph_in, sf_bc1_free_sph_out, jac_sf_grp,      &
+     &        Vsf1_bcs%free_sph_in, Vsf1_bcs%free_sph_out, jac_sf_grp,  &
      &        rhs_tbl, mat_tbl_fl, MHD1_matrices%MG_DJDS_fluid(0),      &
      &        fem_wk, MHD1_matrices%Vmat_MG_DJDS(0))
         end if

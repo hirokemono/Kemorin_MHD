@@ -166,7 +166,7 @@
      &      ele%istack_ele_smp, m_lump,                                 &
      &      nod_comm, node, ele, surf, sf_grp, iphys_ele, ele_fld,      &
      &      jac_3d_q, jac_sf_grp_q, FEM_elen, Bnod_bcs%nod_bc_b,        &
-     &      sf_sgs1_grad_a, rhs_tbl, fem_wk, f_nl, nod_fld)
+     &      Asf1_bcs%sgs, rhs_tbl, fem_wk, f_nl, nod_fld)
       end if
       if (iphys_ele%i_magne .ne. 0) then
         if (iflag_debug.gt.0) write(*,*) 'rot_magne_on_element'

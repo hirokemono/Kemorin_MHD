@@ -16,17 +16,7 @@
       implicit  none
 !
 !
-      type(scaler_surf_flux_bc_type), save :: sf_bc1_grad_a(3)
-!
-      type(scaler_surf_flux_bc_type), save :: sf_bc1_norm_a
-!
-      type(scaler_surf_bc_data_type), save :: sf_sgs1_grad_a(3)
-!
-      type(scaler_surf_bc_data_type), save :: sf_bc1_lead_a(3)
-!
-      type(scaler_surf_bc_data_type), save :: sf_bc1_pvc_in_a
-!
-      type(scaler_surf_bc_data_type), save :: sf_bc1_pvc_out_a
+      type(velocity_surf_bc_type) :: Asf1_bcs
 !
 !-----------------------------------------------------------------------
 !
@@ -37,15 +27,15 @@
       subroutine allocate_surf_data_vect_p
 !
 !
-      call alloc_surf_vector_num(sf_bc1_grad_a)
-      call alloc_surf_scaler_num(sf_bc1_norm_a)
-      call alloc_surf_vector_dat_type(sf_sgs1_grad_a)
-      call alloc_surf_vector_dat_type(sf_bc1_lead_a)
-      call alloc_surf_scaler_dat_type(sf_bc1_pvc_in_a)
-      call alloc_surf_scaler_dat_type(sf_bc1_pvc_out_a)
+      call alloc_surf_vector_num(Asf1_bcs%grad)
+      call alloc_surf_scaler_num(Asf1_bcs%normal)
+      call alloc_surf_vector_dat_type(Asf1_bcs%sgs)
+      call alloc_surf_vector_dat_type(Asf1_bcs%torque_lead)
+      call alloc_surf_scaler_dat_type(Asf1_bcs%free_sph_in)
+      call alloc_surf_scaler_dat_type(Asf1_bcs%free_sph_out)
 !
-      call alloc_surf_vector_apt(sf_bc1_grad_a)
-      call alloc_surf_scaler_apt(sf_bc1_norm_a)
+      call alloc_surf_vector_apt(Asf1_bcs%grad)
+      call alloc_surf_scaler_apt(Asf1_bcs%normal)
 !
       end subroutine allocate_surf_data_vect_p
 !
@@ -54,12 +44,12 @@
       subroutine deallocate_surf_data_vect_p
 !
 !
-      call dealloc_surf_vector_type(sf_bc1_grad_a)
-      call dealloc_surf_scaler_type(sf_bc1_norm_a)
-      call dealloc_surf_vector_dat_type(sf_sgs1_grad_a)
-      call dealloc_surf_vector_dat_type(sf_bc1_lead_a)
-      call dealloc_surf_scaler_dat_type(sf_bc1_pvc_in_a)
-      call dealloc_surf_scaler_dat_type(sf_bc1_pvc_out_a)
+      call dealloc_surf_vector_type(Asf1_bcs%grad)
+      call dealloc_surf_scaler_type(Asf1_bcs%normal)
+      call dealloc_surf_vector_dat_type(Asf1_bcs%sgs)
+      call dealloc_surf_vector_dat_type(Asf1_bcs%torque_lead)
+      call dealloc_surf_scaler_dat_type(Asf1_bcs%free_sph_in)
+      call dealloc_surf_scaler_dat_type(Asf1_bcs%free_sph_out)
 !
       end subroutine deallocate_surf_data_vect_p
 !

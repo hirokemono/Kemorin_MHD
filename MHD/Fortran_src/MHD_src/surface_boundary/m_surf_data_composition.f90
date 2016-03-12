@@ -14,11 +14,7 @@
 !
       implicit  none
 !
-      type(scaler_surf_flux_bc_type), save :: sf_bc1_grad_c
-!
-      type(scaler_surf_bc_data_type), save :: sf_sgs1_grad_c
-!
-      type(scaler_surf_bc_data_type), save :: sf_bc1_lead_gd_c
+      type(scaler_surf_bc_type) :: Csf1_bcs
 !
 !-----------------------------------------------------------------------
 !
@@ -29,11 +25,11 @@
       subroutine allocate_surf_data_composit
 !
 !
-      call alloc_surf_scaler_num(sf_bc1_grad_c)
-      call alloc_surf_scaler_dat_type(sf_sgs1_grad_c)
-      call alloc_surf_scaler_dat_type(sf_bc1_lead_gd_c)
+      call alloc_surf_scaler_num(Csf1_bcs%flux)
+      call alloc_surf_scaler_dat_type(Csf1_bcs%sgs)
+      call alloc_surf_scaler_dat_type(Csf1_bcs%flux_lead)
 !
-      call alloc_surf_scaler_apt(sf_bc1_grad_c)
+      call alloc_surf_scaler_apt(Csf1_bcs%flux)
 !
       end subroutine allocate_surf_data_composit
 !
@@ -42,9 +38,9 @@
       subroutine deallocate_surf_data_composit
 !
 !
-      call dealloc_surf_scaler_type(sf_bc1_grad_c)
-      call dealloc_surf_scaler_dat_type(sf_sgs1_grad_c)
-      call dealloc_surf_scaler_dat_type(sf_bc1_lead_gd_c)
+      call dealloc_surf_scaler_type(Csf1_bcs%flux)
+      call dealloc_surf_scaler_dat_type(Csf1_bcs%sgs)
+      call dealloc_surf_scaler_dat_type(Csf1_bcs%flux_lead)
 !
       end subroutine deallocate_surf_data_composit
 !

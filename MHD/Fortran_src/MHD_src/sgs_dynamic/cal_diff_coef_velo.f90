@@ -193,13 +193,13 @@
       call cal_rotation_commute                                         &
      &   (fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
-     &    rhs_tbl, FEM_elen, sf_sgs1_grad_v, ifilter_4delta,            &
+     &    rhs_tbl, FEM_elen, Vsf1_bcs%sgs, ifilter_4delta,              &
      &    iphys%i_sgs_grad_f, iphys%i_sgs_grad_f,                       &
      &    fem_wk, f_l, f_nl, nod_fld)
       call cal_grad_commute                                             &
      &   (fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
-     &    rhs_tbl, FEM_elen, sf_sgs1_grad_p, ifilter_4delta,            &
+     &    rhs_tbl, FEM_elen, Psf1_bcs%sgs, ifilter_4delta,              &
      &    i_sgs_grad_fp, i_sgs_grad_fp, fem_wk, f_l, f_nl, nod_fld)
 !
       call sym_tensor_send_recv                                         &
@@ -213,12 +213,12 @@
       call cal_rotation_commute                                         &
      &   (fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
-     &    rhs_tbl, FEM_elen, sf_sgs1_grad_v, ifilter_2delta,            &
+     &    rhs_tbl, FEM_elen, Vsf1_bcs%sgs, ifilter_2delta,              &
      &    iphys%i_sgs_grad, iphys%i_velo, fem_wk, f_l, f_nl, nod_fld)
       call cal_grad_commute                                             &
      &   (fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
-     &    rhs_tbl, FEM_elen, sf_sgs1_grad_p, ifilter_2delta,            &
+     &    rhs_tbl, FEM_elen, Psf1_bcs%sgs, ifilter_2delta,              &
      &    i_sgs_grad_p, iphys%i_press, fem_wk, f_l, f_nl, nod_fld)
 !
 !      call sym_tensor_send_recv                                        &

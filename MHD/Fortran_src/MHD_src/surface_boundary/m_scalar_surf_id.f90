@@ -3,18 +3,13 @@
 !
 !      Written by H. Matsui on Sep. 2005
 !
-!      subroutine set_surf_temp_id(sf_grp)
-!      subroutine set_surf_press_id(sf_grp)
-!      subroutine set_surf_magne_p_id(sf_grp)
-!      subroutine set_surf_fix_composition_id(sf_grp)
-!
-!      subroutine set_surf_heat_flux_id(sf_grp)
-!      subroutine set_surf_grad_press_id(sf_grp)
-!      subroutine set_surf_grad_magne_p_id(sf_grp)
-!      subroutine set_surf_grad_composition_id(sf_grp)
-!
-!      subroutine set_wall_press_id(sf_grp)
-!      subroutine set_wall_magne_p_id(sf_grp)
+!!      subroutine count_num_surf_gradient                              &
+!!     &         (name_grad, sf_grp, scalar_surf, Ssf_bcs)
+!!      subroutine count_num_wall_potential                             &
+!!     &         (name_grad, sf_grp, potential_surf, Psf_bcs)
+!!
+!!      subroutine set_surf_grad_scalar_id(sf_grp, scalar_surf, Ssf_bcs)
+!!      subroutine set_wall_potential_id(sf_grp, potential_surf, Psf_bcs)
 !
       module m_scalar_surf_id
 !
@@ -23,6 +18,7 @@
       use m_surf_data_list
       use m_header_4_surface_bc
       use t_group_data
+      use t_surface_bc_data
 !
       implicit  none
 !
@@ -32,187 +28,126 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_surf_temp_id(sf_grp)
+      subroutine count_num_surf_gradient                                &
+     &         (name_grad, sf_grp, scalar_surf, Ssf_bcs)
 !
-      use m_surf_data_temp
       use set_surf_scalar_id
+      use set_sf_grad_scalar_id
 !
+      character(len=kchara), intent(in) :: name_grad
       type(surface_group_data), intent(in) :: sf_grp
+      type(surface_bc_list_type), intent(in) :: scalar_surf
+      type(scaler_surf_bc_type),  intent(inout) :: Ssf_bcs
 !
 !
-      call s_set_surf_scalar_id(sf_grp%num_grp, sf_grp%grp_name,        &
-     &   h_flux_surf%num_bc, h_flux_surf%bc_name, h_flux_surf%ibc_type, &
-     &   sf_sgs1_grad_t%ngrp_sf_dat, sf_sgs1_grad_t%id_grp_sf_dat)
+      call s_count_num_surf_scalar(sf_grp%num_grp, sf_grp%grp_name,     &
+     &    scalar_surf%num_bc, scalar_surf%bc_name,                      &
+     &    scalar_surf%ibc_type, Ssf_bcs%sgs%ngrp_sf_dat)
+      call count_num_surf_grad_scalar                                   &
+     &    (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,          &
+     &     scalar_surf%num_bc, scalar_surf%bc_name,                     &
+     &     scalar_surf%ibc_type, name_grad,                             &
+     &     Ssf_bcs%flux%ngrp_sf_fix_fx, Ssf_bcs%flux%nitem_sf_fix_fx,   &
+     &     Ssf_bcs%flux_lead%ngrp_sf_dat)
 !
-      end subroutine set_surf_temp_id
+      end subroutine count_num_surf_gradient
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_surf_press_id(sf_grp)
+      subroutine count_num_wall_potential                               &
+     &         (name_grad, sf_grp, potential_surf, Psf_bcs)
 !
-      use m_surf_data_press
       use set_surf_scalar_id
+      use set_sf_grad_scalar_id
+      use set_wall_scalar_id
 !
+      character(len=kchara), intent(in) :: name_grad
       type(surface_group_data), intent(in) :: sf_grp
+      type(surface_bc_list_type), intent(in) :: potential_surf
+      type(potential_surf_bc_type),  intent(inout) :: Psf_bcs
 !
 !
-      call s_set_surf_scalar_id(sf_grp%num_grp, sf_grp%grp_name,        &
-     &    wall_surf%num_bc, wall_surf%bc_name, wall_surf%ibc_type,      &
-     &    sf_sgs1_grad_p%ngrp_sf_dat, sf_sgs1_grad_p%id_grp_sf_dat)
+      call s_count_num_surf_scalar(sf_grp%num_grp, sf_grp%grp_name,     &
+     &    potential_surf%num_bc, potential_surf%bc_name,                &
+     &    potential_surf%ibc_type, Psf_bcs%sgs%ngrp_sf_dat)
+      call count_num_surf_grad_scalar                                   &
+     &    (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,          &
+     &     potential_surf%num_bc, potential_surf%bc_name,               &
+     &     potential_surf%ibc_type, name_grad,                          &
+     &     Psf_bcs%grad%ngrp_sf_fix_fx, Psf_bcs%grad%nitem_sf_fix_fx,   &
+     &     Psf_bcs%grad_lead%ngrp_sf_dat)
 !
-      end subroutine set_surf_press_id
+      call count_num_wall_surf(sf_grp%num_grp, sf_grp%grp_name,         &
+     &   potential_surf%num_bc, potential_surf%bc_name,                 &
+     &   potential_surf%ibc_type, Psf_bcs%wall%ngrp_sf_dat,             &
+     &   Psf_bcs%sph_in%ngrp_sf_dat, Psf_bcs%sph_out%ngrp_sf_dat)
+!
+      end subroutine count_num_wall_potential
 !
 !-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
 !
-      subroutine set_surf_magne_p_id(sf_grp)
+      subroutine set_surf_grad_scalar_id(sf_grp, scalar_surf, Ssf_bcs)
 !
-      use m_surf_data_magne_p
       use set_surf_scalar_id
-!
-      type(surface_group_data), intent(in) :: sf_grp
-!
-!
-      call s_set_surf_scalar_id(sf_grp%num_grp, sf_grp%grp_name,        &
-     &   e_potential_surf%num_bc, e_potential_surf%bc_name,             &
-     &   e_potential_surf%ibc_type, sf_sgs1_grad_f%ngrp_sf_dat,         &
-     &   sf_sgs1_grad_f%id_grp_sf_dat)
-!
-      end subroutine set_surf_magne_p_id
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_surf_fix_composition_id(sf_grp)
-!
-      use m_surf_data_composition
-      use set_surf_scalar_id
-!
-      type(surface_group_data), intent(in) :: sf_grp
-!
-!
-      call s_set_surf_scalar_id(sf_grp%num_grp, sf_grp%grp_name,        &
-     &   light_surf%num_bc, light_surf%bc_name, light_surf%ibc_type,    &
-     &   sf_sgs1_grad_c%ngrp_sf_dat, sf_sgs1_grad_c%id_grp_sf_dat)
-!
-      end subroutine set_surf_fix_composition_id
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine set_surf_heat_flux_id(sf_grp)
-!
-      use m_surf_data_temp
       use set_sf_grad_scalar_id
 !
       type(surface_group_data), intent(in) :: sf_grp
+      type(surface_bc_list_type), intent(in) :: scalar_surf
+      type(scaler_surf_bc_type),  intent(inout) :: Ssf_bcs
 !
+!
+      call s_set_surf_scalar_id(sf_grp%num_grp, sf_grp%grp_name,        &
+     &   scalar_surf%num_bc, scalar_surf%bc_name, scalar_surf%ibc_type, &
+     &   Ssf_bcs%sgs%ngrp_sf_dat, Ssf_bcs%sgs%id_grp_sf_dat)
 !
       call s_set_surf_grad_scalar_id(sf_grp,                            &
-     &   h_flux_surf%num_bc, h_flux_surf%bc_name,                       &
-     &   h_flux_surf%ibc_type, h_flux_surf%bc_magnitude, name_hf,       &
-     &   sf_bc1_grad_t%ngrp_sf_fix_fx, sf_bc1_grad_t%id_grp_sf_fix_fx,  &
-     &   sf_bc1_grad_t%nitem_sf_fix_fx,                                 &
-     &   sf_bc1_grad_t%ist_ele_sf_fix_fx, sf_bc1_grad_t%sf_apt_fix_fx,  &
-     &   sf_bc1_lead_gd_t%ngrp_sf_dat, sf_bc1_lead_gd_t%id_grp_sf_dat)
+     &   scalar_surf%num_bc, scalar_surf%bc_name,                       &
+     &   scalar_surf%ibc_type, scalar_surf%bc_magnitude, name_dsg,      &
+     &   Ssf_bcs%flux%ngrp_sf_fix_fx, Ssf_bcs%flux%id_grp_sf_fix_fx,    &
+     &   Ssf_bcs%flux%nitem_sf_fix_fx,                                  &
+     &   Ssf_bcs%flux%ist_ele_sf_fix_fx, Ssf_bcs%flux%sf_apt_fix_fx,    &
+     &   Ssf_bcs%flux_lead%ngrp_sf_dat,                                 &
+     &   Ssf_bcs%flux_lead%id_grp_sf_dat)
 !
-      end subroutine set_surf_heat_flux_id
+      end subroutine set_surf_grad_scalar_id
 !
 !-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
 !
-      subroutine set_surf_grad_press_id(sf_grp)
+      subroutine set_wall_potential_id(sf_grp, potential_surf, Psf_bcs)
 !
-      use m_surf_data_press
+      use set_surf_scalar_id
       use set_sf_grad_scalar_id
-!
-      type(surface_group_data), intent(in) :: sf_grp
-!
-!
-      call s_set_surf_grad_scalar_id(sf_grp,                            &
-     &   wall_surf%num_bc, wall_surf%bc_name,                           &
-     &   wall_surf%ibc_type, wall_surf%bc_magnitude, name_pg,           &
-     &   sf_bc1_grad_p%ngrp_sf_fix_fx, sf_bc1_grad_p%id_grp_sf_fix_fx,  &
-     &   sf_bc1_grad_p%nitem_sf_fix_fx,                                 &
-     &   sf_bc1_grad_p%ist_ele_sf_fix_fx, sf_bc1_grad_p%sf_apt_fix_fx,  &
-     &   sf_bc1_lead_gd_p%ngrp_sf_dat, sf_bc1_lead_gd_p%id_grp_sf_dat)
-!
-      end subroutine set_surf_grad_press_id
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_surf_grad_magne_p_id(sf_grp)
-!
-      use m_surf_data_magne_p
-      use set_sf_grad_scalar_id
-!
-      type(surface_group_data), intent(in) :: sf_grp
-!
-!
-      call s_set_surf_grad_scalar_id(sf_grp,                            &
-     &   e_potential_surf%num_bc, e_potential_surf%bc_name,             &
-     &   e_potential_surf%ibc_type, e_potential_surf%bc_magnitude,      &
-     &   name_mpg, sf_bc1_grad_f%ngrp_sf_fix_fx,                        &
-     &   sf_bc1_grad_f%id_grp_sf_fix_fx, sf_bc1_grad_f%nitem_sf_fix_fx, &
-     &   sf_bc1_grad_f%ist_ele_sf_fix_fx, sf_bc1_grad_f%sf_apt_fix_fx,  &
-     &   sf_bc1_lead_gd_f%ngrp_sf_dat, sf_bc1_lead_gd_f%id_grp_sf_dat)
-!
-      end subroutine set_surf_grad_magne_p_id
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_surf_grad_composition_id(sf_grp)
-!
-      use m_surf_data_composition
-      use set_sf_grad_scalar_id
-!
-      type(surface_group_data), intent(in) :: sf_grp
-!
-!
-      call s_set_surf_grad_scalar_id(sf_grp,                            &
-     &   light_surf%num_bc, light_surf%bc_name,                         &
-     &   light_surf%ibc_type, light_surf%bc_magnitude, name_dsg,        &
-     &   sf_bc1_grad_c%ngrp_sf_fix_fx, sf_bc1_grad_c%id_grp_sf_fix_fx,  &
-     &   sf_bc1_grad_c%nitem_sf_fix_fx,                                 &
-     &   sf_bc1_grad_c%ist_ele_sf_fix_fx, sf_bc1_grad_c%sf_apt_fix_fx,  &
-     &   sf_bc1_lead_gd_c%ngrp_sf_dat, sf_bc1_lead_gd_c%id_grp_sf_dat)
-!
-      end subroutine set_surf_grad_composition_id
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine set_wall_press_id(sf_grp)
-!
-      use m_surf_data_press
       use set_wall_scalar_id
 !
       type(surface_group_data), intent(in) :: sf_grp
+      type(surface_bc_list_type), intent(in) :: potential_surf
+      type(potential_surf_bc_type),  intent(inout) :: Psf_bcs
 !
 !
-      call s_set_wall_scalar_id(sf_grp%num_grp, sf_grp%grp_name,        &
-     &    wall_surf%num_bc, wall_surf%bc_name, wall_surf%ibc_type,      &
-     &    sf_bc1_wall_p%ngrp_sf_dat, sf_bc1_wall_p%id_grp_sf_dat,       &
-     &    sf_bc1_spin_p%ngrp_sf_dat, sf_bc1_spin_p%id_grp_sf_dat,       &
-     &    sf_bc1_spout_p%ngrp_sf_dat, sf_bc1_spout_p%id_grp_sf_dat)
+      call s_set_surf_scalar_id(sf_grp%num_grp, sf_grp%grp_name,        &
+     &   potential_surf%num_bc, potential_surf%bc_name,                 &
+     &   potential_surf%ibc_type, Psf_bcs%sgs%ngrp_sf_dat,              &
+     &   Psf_bcs%sgs%id_grp_sf_dat)
 !
-      end subroutine set_wall_press_id
+      call s_set_surf_grad_scalar_id(sf_grp,                            &
+     &    potential_surf%num_bc, potential_surf%bc_name,                &
+     &    potential_surf%ibc_type, potential_surf%bc_magnitude,         &
+     &    name_pg, Psf_bcs%grad%ngrp_sf_fix_fx,                         &
+     &    Psf_bcs%grad%id_grp_sf_fix_fx, Psf_bcs%grad%nitem_sf_fix_fx,  &
+     &    Psf_bcs%grad%ist_ele_sf_fix_fx, Psf_bcs%grad%sf_apt_fix_fx,   &
+     &    Psf_bcs%grad_lead%ngrp_sf_dat,                                &
+     &    Psf_bcs%grad_lead%id_grp_sf_dat)
 !
-!-----------------------------------------------------------------------
+      call s_set_wall_scalar_id                                        &
+     &   (sf_grp%num_grp, sf_grp%grp_name, potential_surf%num_bc,      &
+     &    potential_surf%bc_name, potential_surf%ibc_type,             &
+     &    Psf_bcs%wall%ngrp_sf_dat, Psf_bcs%wall%id_grp_sf_dat,        &
+     &    Psf_bcs%sph_in%ngrp_sf_dat, Psf_bcs%sph_in%id_grp_sf_dat,    &
+     &    Psf_bcs%sph_out%ngrp_sf_dat, Psf_bcs%sph_out%id_grp_sf_dat)
 !
-      subroutine set_wall_magne_p_id(sf_grp)
-!
-      use m_surf_data_magne_p
-      use set_wall_scalar_id
-!
-      type(surface_group_data), intent(in) :: sf_grp
-!
-!
-      call s_set_wall_scalar_id(sf_grp%num_grp, sf_grp%grp_name,        &
-     &    e_potential_surf%num_bc, e_potential_surf%bc_name,            &
-     &    e_potential_surf%ibc_type,                                    &
-     &    sf_bc1_wall_f%ngrp_sf_dat, sf_bc1_wall_f%id_grp_sf_dat,       &
-     &    sf_bc1_spin_f%ngrp_sf_dat, sf_bc1_spin_f%id_grp_sf_dat,       &
-     &    sf_bc1_spout_f%ngrp_sf_dat, sf_bc1_spout_f%id_grp_sf_dat)
-!
-      end subroutine set_wall_magne_p_id
+      end subroutine set_wall_potential_id
 !
 !-----------------------------------------------------------------------
 !

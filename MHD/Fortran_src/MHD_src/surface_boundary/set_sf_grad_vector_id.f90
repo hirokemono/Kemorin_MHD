@@ -5,12 +5,10 @@
 !
 !      subroutine count_num_sf_grad_vector                              &
 !     &          (sf_grp, num_bc_sf, bc_sf_name, ibc_sf_type,           &
-!     &           field_name_x, field_name_y, field_name_z,             &
-!     &           sf_bc_grad, sf_bc_lead)
+!     &           field_name, sf_bc_grad, sf_bc_lead)
 !      subroutine s_set_sf_grad_vector_id(sf_grp,                       &
 !     &           num_bc_sf, bc_sf_name, ibc_sf_type, bc_sf_mag,        &
-!     &           field_name_x, field_name_y, field_name_z,             &
-!     &           sf_bc_grad, sf_bc_lead)
+!     &           field_name, sf_bc_grad, sf_bc_lead)
 !        type(surface_group_data), intent(in) :: sf_grp
 !        type(scaler_surf_flux_bc_type), intent(inout) :: sf_bc_grad(3)
 !
@@ -33,17 +31,14 @@
 !
       subroutine count_num_sf_grad_vector                               &
      &          (sf_grp, num_bc_sf, bc_sf_name, ibc_sf_type,            &
-     &           field_name_x, field_name_y, field_name_z,              &
-     &           sf_bc_grad, sf_bc_lead)
+     &           field_name, sf_bc_grad, sf_bc_lead)
 !
       type(surface_group_data), intent(in) :: sf_grp
 !
       integer (kind=kint) :: num_bc_sf
       integer (kind=kint), intent(in) :: ibc_sf_type(num_bc_sf)
       character (len=kchara), intent(in) :: bc_sf_name(num_bc_sf)
-      character(len=kchara), intent(in) :: field_name_x
-      character(len=kchara), intent(in) :: field_name_y
-      character(len=kchara), intent(in) :: field_name_z
+      character(len=kchara), intent(in) :: field_name(3)
 !
       type(scaler_surf_flux_bc_type), intent(inout) :: sf_bc_grad(3)
       type(scaler_surf_bc_data_type),  intent(inout) :: sf_bc_lead(3)
@@ -51,7 +46,6 @@
       integer(kind = kint) :: i, j, nd
       integer(kind=kint) :: ngrp_sf_fix(3), nele_sf_fix(3)
       integer(kind=kint) :: ngrp_sf_lead(3)
-      character(len=kchara) :: field_name
 !
 !
       ngrp_sf_fix(1:3) =  0
@@ -78,16 +72,8 @@
 ! -----------set boundary from data file
                 else if (ibc_sf_type(j) .eq. -(iflag_fixed_grad + nd))  &
      &              then
-                  if      (nd .eq. 1) then
-                    field_name = field_name_x
-                  else if (nd .eq. 2) then
-                    field_name = field_name_y
-                  else if (nd .eq. 3) then
-                    field_name = field_name_z
-                  end if
-!
                   call count_surf_group_from_data(i, ngrp_sf_fix(nd),   &
-     &                nele_sf_fix(nd), field_name, sf_grp%num_grp,      &
+     &                nele_sf_fix(nd), field_name(nd), sf_grp%num_grp,  &
      &                sf_grp%istack_grp, sf_grp%grp_name )
 !
 ! -----------set boundary from data file
@@ -115,8 +101,7 @@
 !
       subroutine s_set_sf_grad_vector_id(sf_grp,                        &
      &           num_bc_sf, bc_sf_name, ibc_sf_type, bc_sf_mag,         &
-     &           field_name_x, field_name_y, field_name_z,              &
-     &           sf_bc_grad, sf_bc_lead)
+     &           field_name, sf_bc_grad, sf_bc_lead)
 !
       type(surface_group_data), intent(in) :: sf_grp
 !
@@ -124,9 +109,7 @@
       real (kind=kreal), intent(in) :: bc_sf_mag(num_bc_sf)
       integer (kind=kint), intent(in) :: ibc_sf_type(num_bc_sf)
       character (len=kchara), intent(in) :: bc_sf_name(num_bc_sf)
-      character(len=kchara), intent(in) :: field_name_x
-      character(len=kchara), intent(in) :: field_name_y
-      character(len=kchara), intent(in) :: field_name_z
+      character(len=kchara), intent(in) :: field_name(3)
 ! 
       type(scaler_surf_flux_bc_type), intent(inout) :: sf_bc_grad(3)
       type(scaler_surf_bc_data_type),  intent(inout) :: sf_bc_lead(3)
@@ -134,7 +117,6 @@
 !
       integer(kind = kint) :: i, j, nd
       integer(kind = kint) :: l_f1(3), l_l1(3)
-      character (len=kchara) :: field_name
 !
 !
       l_f1(1:3) = 0
@@ -162,20 +144,12 @@
 !
 ! -----------set boundary from data file
               else if ( ibc_sf_type(j) .eq. -(iflag_fixed_grad+nd) ) then
-                if      (nd .eq. 1) then
-                  field_name = field_name_x
-                else if (nd .eq. 2) then
-                  field_name = field_name_y
-                else if (nd .eq. 3) then
-                  field_name = field_name_z
-                end if
-!
                 call set_surf_group_from_data(sf_grp,                   &
      &              sf_bc_grad(nd)%ngrp_sf_fix_fx,                      &
      &              sf_bc_grad(nd)%nitem_sf_fix_fx, l_f1(nd), i,        &
      &              sf_bc_grad(nd)%id_grp_sf_fix_fx,                    &
      &              sf_bc_grad(nd)%ist_ele_sf_fix_fx,                   &
-     &              sf_bc_grad(nd)%sf_apt_fix_fx, field_name)
+     &              sf_bc_grad(nd)%sf_apt_fix_fx, field_name(nd))
 !
 ! -----------lead boundary values
               else if ( ibc_sf_type(j) .eq. (nd+iflag_lead_grad) ) then

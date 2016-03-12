@@ -149,8 +149,8 @@
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l,                       &
      &    rhs_tbl, FEM_elens, fem_wk, f_l)
 !
-      call int_surf_normal_vector                                       &
-     &   (iphys%i_velo, sf_bc1_wall_p, sf_bc1_spin_p, sf_bc1_spout_p,   &
+      call int_surf_normal_vector(iphys%i_velo, Psf1_bcs%wall,          &
+     &    Psf1_bcs%sph_in, Psf1_bcs%sph_out,                            &
      &    node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l, rhs_tbl,      &
      &    fem_wk, f_l)
 !
@@ -158,8 +158,8 @@
 !        call int_surf_sgs_div_velo_ele                                 &
 !     &     (node, ele, surf, sf_grp, nod_fld,                          &
 !     &      jac_sf_grp_q, jac_sf_grp_l, rhs_tbl, FEM_elens,            &
-!     &      intg_point_poisson, sf_sgs1_grad_v%nmax_sf_dat,            &
-!     &      sf_sgs1_grad_v%ngrp_sf_dat, sf_sgs1_grad_v%id_grp_sf_dat,  &
+!     &      intg_point_poisson, Vsf1_bcs%sgs%nmax_sf_dat,              &
+!     &      Vsf1_bcs%sgs%ngrp_sf_dat, Vsf1_bcs%sgs%id_grp_sf_dat,      &
 !     &      ifilter_final, ak_diff(1,iak_diff_v), iphys%i_velo,        &
 !     &      fem_wk, f_l)
 !      end if
@@ -167,7 +167,7 @@
 !   set boundary condition for wall
 !
       call int_sf_grad_press(node, ele, surf, sf_grp,                   &
-     &    jac_sf_grp_l, rhs_tbl, sf_bc1_grad_p,                         &
+     &    jac_sf_grp_l, rhs_tbl, Psf1_bcs%grad,                         &
      &    intg_point_poisson, fem_wk, f_l)
 !
 !   add boundary term for fixed velocity
@@ -253,14 +253,14 @@
 !        call int_surf_sgs_div_velo_ele                                 &
 !     &     (node, ele, surf, sf_grp, nod_fld,                          &
 !     &      jac_sf_grp_q, jac_sf_grp_l, rhs_tbl, FEM_elens,            &
-!     &      intg_point_poisson, sf_sgs1_grad_a%nmax_sf_dat,            &
-!     &      sf_sgs1_grad_a%ngrp_sf_dat, sf_sgs1_grad_a%id_grp_sf_dat,  &
+!     &      intg_point_poisson, Asf1_bcs%sgs%nmax_sf_dat,              &
+!     &      Asf1_bcs%sgs%ngrp_sf_dat, Asf1_bcs%sgs%id_grp_sf_dat,      &
 !     &      ifilter_final, ak_diff(1,iak_diff_b),                      &
 !     &      iphys%i_vecp, fem_wk, f_l)
 !      end if
 !
-      call int_surf_normal_vector                                       &
-     &   (iphys%i_vecp, sf_bc1_wall_f, sf_bc1_spin_f, sf_bc1_spout_f,   &
+      call int_surf_normal_vector(iphys%i_vecp,                         &
+     &    Fsf1_bcs%wall, Fsf1_bcs%sph_in, Fsf1_bcs%sph_out,             &
      &    node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l, rhs_tbl,      &
      &    fem_wk, f_l)
 !
@@ -344,17 +344,17 @@
 !        call int_surf_sgs_div_velo_ele(node, ele, surf, sf_grp,        &
 !     &      nod_fld, jac_sf_grp_q, jac_sf_grp_l,                       &
 !     &      rhs_tbl, FEM_elens, intg_point_poisson,                    &
-!     &      sf_sgs1_grad_b%nmax_sf_dat, sf_sgs1_grad_b%ngrp_sf_dat,    &
-!     &      sf_sgs1_grad_b%id_grp_sf_dat, ifilter_final,               &
+!     &      Bsf1_bcs%sgs%nmax_sf_dat, Bsf1_bcs%sgs%ngrp_sf_dat,        &
+!     &      Bsf1_bcs%sgs%id_grp_sf_dat, ifilter_final,                 &
 !     &      ak_diff(1,iak_diff_b), iphys%i_magne, fem_wk, f_l)
 !      end if
 !
-      call int_surf_normal_vector                                       &
-     &   (iphys%i_magne, sf_bc1_wall_f, sf_bc1_spin_f, sf_bc1_spout_f,  &
+      call int_surf_normal_vector(iphys%i_magne,                        &
+     &    Fsf1_bcs%wall, Fsf1_bcs%sph_in, Fsf1_bcs%sph_out,             &
      &    node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l, rhs_tbl,      &
      &    fem_wk, f_l)
       call int_sf_grad_press(node, ele, surf, sf_grp,                   &
-     &    jac_sf_grp_l, rhs_tbl, sf_bc1_grad_f,                         &
+     &    jac_sf_grp_l, rhs_tbl, Fsf1_bcs%grad,                         &
      &    intg_point_poisson, fem_wk, f_l)
 !
       call int_vol_sk_mp_bc(iphys%i_m_phi, iak_diff_b, node, ele,       &

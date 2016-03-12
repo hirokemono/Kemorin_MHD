@@ -123,7 +123,6 @@
 !
       do i=1, sf_grp%num_grp
         do j=1, num_bc_sf
-!
           if (sf_grp%grp_name(i) .eq. bc_sf_name(j)) then
 !
 ! -----------set boundary using SGS case
