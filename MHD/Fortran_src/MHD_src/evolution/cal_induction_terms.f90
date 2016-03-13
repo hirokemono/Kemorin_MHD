@@ -7,8 +7,8 @@
 !!     &          Bnod_bcs, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_vecp_diffusion(iak_diff_b,                       &
-!!     &          nod_comm, node, ele, surf, sf_grp, Bnod_bcs, iphys,   &
-!!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,               &
+!!     &          nod_comm, node, ele, surf, sf_grp, Bnod_bcs, Asf_bcs, &
+!!     &          iphys, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,        &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -17,6 +17,7 @@
 !!        type(field_geometry_data), intent(in) :: conduct
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
+!!        type(velocity_surf_bc_type), intent(in) :: Asf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
@@ -121,12 +122,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_vecp_diffusion(iak_diff_b,                         &
-     &          nod_comm, node, ele, surf, sf_grp, Bnod_bcs, iphys,     &
-     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                 &
+     &          nod_comm, node, ele, surf, sf_grp, Bnod_bcs, Asf_bcs,   &
+     &          iphys, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,          &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
-      use m_bc_data_magne
-      use m_surf_data_vector_p
+      use t_surface_bc_data
 !
       use int_vol_diffusion_ele
       use int_surf_fixed_gradients
@@ -140,6 +140,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
+      type(velocity_surf_bc_type), intent(in) :: Asf_bcs
       type(phys_address), intent(in) :: iphys
       type(jacobians_3d), intent(in) :: jac_3d
       type(jacobians_2d), intent(in) :: jac_sf_grp
@@ -159,7 +160,7 @@
      &    iak_diff_b, one, ak_d_magne, iphys%i_vecp, fem_wk, f_l)
 !
       call int_sf_grad_velocity(node, ele, surf, sf_grp,                &
-     &    jac_sf_grp, rhs_tbl, Asf1_bcs%grad, intg_point_t_evo,         &
+     &    jac_sf_grp, rhs_tbl, Asf_bcs%grad, intg_point_t_evo,          &
      &    ak_d_magne, fem_wk, f_l)
 !
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)

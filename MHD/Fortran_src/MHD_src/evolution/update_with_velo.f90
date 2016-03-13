@@ -7,8 +7,9 @@
 !> @brief Evaluate field data for time integration for FEM dynamo model
 !!
 !!@verbatim
-!!      subroutine update_with_velocity(nod_comm, node, ele, surf,      &
-!!     &          fluid, sf_grp, iphys, iphys_ele, ele_fld,             &
+!!      subroutine update_with_velocity                                 &
+!!     &         (nod_comm, node, ele, surf, fluid, sf_grp,             &
+!!     &          Vsf_bcs, Psf_bcs, iphys, iphys_ele, ele_fld,          &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens, &
 !!     &          layer_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
@@ -17,6 +18,8 @@
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(field_geometry_data), intent(in) :: fluid
+!!        type(velocity_surf_bc_type), intent(in) :: Vsf_bcs
+!!        type(potential_surf_bc_type), intent(in) :: Psf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
@@ -51,6 +54,7 @@
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_layering_ele_list
+      use t_surface_bc_data
 !
       implicit none
 !
@@ -60,8 +64,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine update_with_velocity(nod_comm, node, ele, surf,        &
-     &          fluid, sf_grp, iphys, iphys_ele, ele_fld,               &
+      subroutine update_with_velocity                                   &
+     &         (nod_comm, node, ele, surf, fluid, sf_grp,               &
+     &          Vsf_bcs, Psf_bcs, iphys, iphys_ele, ele_fld,            &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,   &
      &          layer_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
@@ -79,8 +84,10 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
-      type(surface_group_data), intent(in) :: sf_grp
       type(field_geometry_data), intent(in) :: fluid
+      type(surface_group_data), intent(in) :: sf_grp
+      type(velocity_surf_bc_type), intent(in) :: Vsf_bcs
+      type(potential_surf_bc_type), intent(in) :: Psf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -180,7 +187,7 @@
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &                 write(*,*) 's_cal_diff_coef_velo'
           call s_cal_diff_coef_velo(iak_diff_v, icomp_diff_v,           &
-     &        nod_comm, node, ele, surf, sf_grp,                        &
+     &        nod_comm, node, ele, surf, sf_grp, Vsf_bcs, Psf_bcs,      &
      &        iphys, iphys_ele, ele_fld, fluid, layer_tbl,              &
      &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,                &
      &        FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)

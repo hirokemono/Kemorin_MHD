@@ -30,13 +30,8 @@
 !
       use m_machine_parameter
       use m_surf_data_torque
-      use m_surf_data_press
-      use m_surf_data_vector_p
       use m_surf_data_magne
-      use m_surf_data_current
-      use m_surf_data_magne_p
       use m_surf_data_temp
-      use m_surf_data_composition
       use m_scalar_surf_id
       use m_vector_surf_id
 !
@@ -89,13 +84,8 @@
       use m_control_parameter
 !
       use m_surf_data_torque
-      use m_surf_data_press
-      use m_surf_data_vector_p
       use m_surf_data_magne
-      use m_surf_data_current
-      use m_surf_data_magne_p
       use m_surf_data_temp
-      use m_surf_data_composition
       use m_scalar_surf_id
       use m_vector_surf_id
 !

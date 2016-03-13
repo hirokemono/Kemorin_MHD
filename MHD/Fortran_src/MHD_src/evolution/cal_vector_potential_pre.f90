@@ -6,13 +6,13 @@
 !        modieied by H. Matsui on Sep., 2005
 !
 !!      subroutine cal_vector_p_pre(nod_comm, node, ele, surf, conduct, &
-!!     &          sf_grp, Bnod_bcs, iphys, iphys_ele, ele_fld,          &
+!!     &          sf_grp, Bnod_bcs, Asf_bcs, iphys, iphys_ele, ele_fld, &
 !!     &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,           &
 !!     &          num_MG_level, MG_interpolate, MG_comm_table,          &
 !!     &          MG_DJDS_table, Bmat_MG_DJDS, MG_vector,               &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-!!      subroutine cal_vector_p_co(nod_comm, node, ele, surf,           &
-!!     &          conduct, sf_grp, Bnod_bcs, iphys, iphys_ele, ele_fld, &
+!!      subroutine cal_vector_p_co(nod_comm, node, ele, surf, conduct,  &
+!!     &          sf_grp, Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld, &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
 !!     &          rhs_tbl, FEM_elens, num_MG_level, MG_interpolate,     &
 !!     &          MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS, MG_vector,&
@@ -23,6 +23,9 @@
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(field_geometry_data), intent(in) :: conduct
+!!        type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
+!!        type(velocity_surf_bc_type), intent(in) :: Asf_bcs
+!!        type(potential_surf_bc_type), intent(in) :: Fsf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
@@ -71,6 +74,7 @@
       use t_interpolate_table
       use t_vector_for_solver
       use t_bc_data_magne
+      use t_surface_bc_data
 !
       implicit none
 !
@@ -81,14 +85,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_vector_p_pre(nod_comm, node, ele, surf, conduct,   &
-     &          sf_grp, Bnod_bcs, iphys, iphys_ele, ele_fld,            &
+     &          sf_grp, Bnod_bcs, Asf_bcs, iphys, iphys_ele, ele_fld,   &
      &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,             &
      &          num_MG_level, MG_interpolate, MG_comm_table,            &
      &          MG_DJDS_table, Bmat_MG_DJDS, MG_vector,                 &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use calypso_mpi
-      use m_surf_data_vector_p
       use m_SGS_address
 !
       use set_boundary_scalars
@@ -110,6 +113,7 @@
       type(surface_group_data), intent(in) :: sf_grp
       type(field_geometry_data), intent(in) :: conduct
       type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
+      type(velocity_surf_bc_type), intent(in) :: Asf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -165,7 +169,7 @@
       end if
 !
       call int_sf_grad_velocity(node, ele, surf, sf_grp, jac_sf_grp_q,  &
-     &    rhs_tbl, Asf1_bcs%grad, intg_point_t_evo, ak_d_magne,         &
+     &    rhs_tbl, Asf_bcs%grad, intg_point_t_evo, ak_d_magne,          &
      &    fem_wk, f_l)
 !
 !      call check_nodal_data(my_rank, nod_fld, n_vector, iphys%i_velo)
@@ -219,8 +223,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_vector_p_co(nod_comm, node, ele, surf,             &
-     &          conduct, sf_grp, Bnod_bcs, iphys, iphys_ele, ele_fld,   &
+      subroutine cal_vector_p_co(nod_comm, node, ele, surf, conduct,    &
+     &          sf_grp, Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,   &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
      &          rhs_tbl, FEM_elens, num_MG_level, MG_interpolate,       &
      &          MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS, MG_vector,  &
@@ -228,7 +232,6 @@
 !
       use m_SGS_address
       use m_SGS_model_coefs
-      use m_surf_data_magne_p
 !
       use set_boundary_scalars
       use nod_phys_send_recv
@@ -246,6 +249,7 @@
       type(surface_group_data), intent(in) :: sf_grp
       type(field_geometry_data), intent(in) :: conduct
       type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
+      type(potential_surf_bc_type), intent(in) :: Fsf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -280,13 +284,13 @@
      &    rhs_tbl, FEM_elens, fem_wk, f_nl)
 !
       if (iflag_commute_magne .eq. id_SGS_commute_ON                    &
-     &     .and. Fsf1_bcs%sgs%ngrp_sf_dat .gt. 0) then
+     &     .and. Fsf_bcs%sgs%ngrp_sf_dat .gt. 0) then
         if (iflag_debug.eq.1) write(*,*)                                &
                              'int_surf_sgs_velo_co_ele', iphys%i_m_phi
          call int_surf_sgs_velo_co_ele(node, ele, surf, sf_grp,         &
      &       nod_fld, jac_sf_grp_q, jac_sf_grp_l,                       &
      &       rhs_tbl, FEM_elens, intg_point_poisson,                    &
-     &       Fsf1_bcs%sgs%ngrp_sf_dat, Fsf1_bcs%sgs%id_grp_sf_dat,      &
+     &       Fsf_bcs%sgs%ngrp_sf_dat, Fsf_bcs%sgs%id_grp_sf_dat,        &
      &       ifilter_final, ak_diff(1,iak_diff_b), iphys%i_m_phi,       &
      &       fem_wk, f_nl)
       end if

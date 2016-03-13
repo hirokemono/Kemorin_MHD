@@ -15,39 +15,12 @@
       implicit  none
 !
 !
-      type(vector_surf_bc_type) :: Bsf1_bcs
+      type(velocity_surf_bc_type), save :: Asf1_bcs
 !
-!-----------------------------------------------------------------------
+      type(vector_surf_bc_type), save :: Bsf1_bcs
 !
-      contains 
+      type(vector_surf_bc_type), save :: Jsf1_bcs
 !
-!-----------------------------------------------------------------------
-!
-      subroutine allocate_surf_data_magne
-!
-!
-      call alloc_surf_vector_num(Bsf1_bcs%grad)
-      call alloc_surf_vector_dat_type(Bsf1_bcs%sgs)
-      call alloc_surf_scaler_num(Bsf1_bcs%normal)
-      call alloc_surf_vector_dat_type(Bsf1_bcs%torque_lead)
-!
-      call alloc_surf_vector_apt(Bsf1_bcs%grad)
-      call alloc_surf_scaler_apt(Bsf1_bcs%normal)
-!
-      end subroutine allocate_surf_data_magne
-!
-!-----------------------------------------------------------------------
-!
-      subroutine deallocate_surf_data_magne
-!
-!
-      call dealloc_surf_vector_type(Bsf1_bcs%grad)
-      call dealloc_surf_vector_dat_type(Bsf1_bcs%sgs)
-      call dealloc_surf_scaler_type(Bsf1_bcs%normal)
-      call dealloc_surf_vector_dat_type(Bsf1_bcs%torque_lead)
-!
-      end subroutine deallocate_surf_data_magne
-!
-!-----------------------------------------------------------------------
+      type(potential_surf_bc_type), save :: Fsf1_bcs
 !
       end module m_surf_data_magne

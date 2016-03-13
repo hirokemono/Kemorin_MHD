@@ -6,9 +6,9 @@
 !        modieied by H. Matsui on Sep., 2005
 !
 !!      subroutine s_cal_light_element(nod_comm, node, ele, surf,       &
-!!     &      fluid, sf_grp, Cnod_bcs, iphys, iphys_ele, ele_fld,       &
-!!     &      jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, mhd_fem_wk,       &
-!!     &      fem_wk, f_l, f_nl, nod_fld)
+!!     &          fluid, sf_grp, Cnod_bcs, Csf_bcs, iphys,              &
+!!     &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,      &
+!!     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -16,6 +16,7 @@
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(nodal_bcs_4_scalar_type), intent(in) :: Cnod_bcs
+!!        type(scaler_surf_bc_type), intent(in) :: Csf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
@@ -47,6 +48,7 @@
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_bc_data_temp
+      use t_surface_bc_data
 !
       implicit none
 !
@@ -57,14 +59,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_cal_light_element(nod_comm, node, ele, surf,         &
-     &      fluid, sf_grp, Cnod_bcs, iphys, iphys_ele, ele_fld,         &
-     &      jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, mhd_fem_wk,         &
-     &      fem_wk, f_l, f_nl, nod_fld)
+     &          fluid, sf_grp, Cnod_bcs, Csf_bcs, iphys,                &
+     &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,        &
+     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_t_int_parameter
       use m_type_AMG_data
       use m_solver_djds_MHD
-      use m_surf_data_composition
       use m_SGS_address
 !
       use nod_phys_send_recv
@@ -84,6 +85,7 @@
       type(surface_group_data), intent(in) :: sf_grp
       type(field_geometry_data), intent(in) :: fluid
       type(nodal_bcs_4_scalar_type), intent(in) :: Cnod_bcs
+      type(scaler_surf_bc_type), intent(in) :: Csf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -121,7 +123,7 @@
 !
 !
       call int_sf_h_flux(node, ele, surf, sf_grp, jac_sf_grp, rhs_tbl,  &
-     &    Csf1_bcs%flux, intg_point_t_evo, ak_d_composit, fem_wk, f_l)
+     &    Csf_bcs%flux, intg_point_t_evo, ak_d_composit, fem_wk, f_l)
 !
 !
       if     (iflag_t_evo_4_composit .eq. id_explicit_euler) then

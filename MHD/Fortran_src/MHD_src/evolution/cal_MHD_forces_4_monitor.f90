@@ -118,6 +118,9 @@
       use m_bc_data_velo
       use m_bc_data_magne
       use m_bc_data_ene
+      use m_surf_data_torque
+      use m_surf_data_temp
+      use m_surf_data_magne
 !
       use cal_terms_for_heat
       use cal_momentum_terms
@@ -157,9 +160,10 @@
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call cal_terms_4_heat(i_fld, iak_diff_hf,                     &
-     &        nod_comm, node, ele, surf, fluid, sf_grp, Tnod1_bcs,      &
-     &        iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,   &
-     &        FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &        nod_comm, node, ele, surf, fluid, sf_grp,                 &
+     &        Tnod1_bcs, Tsf1_bcs, iphys, iphys_ele, ele_fld,           &
+     &        jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                   &
+     &        mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         end if
       end do
 !
@@ -179,8 +183,9 @@
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call cal_terms_4_momentum(i_fld, iak_diff_mf, iak_diff_lor,   &
      &        nod_comm, node, ele, surf, fluid, sf_grp,                 &
-     &        iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,   &
-     &        FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &        Vsf1_bcs, Bsf1_bcs, iphys, iphys_ele, ele_fld,            &
+     &        jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, mhd_fem_wk,       &
+     &        fem_wk, f_l, f_nl, nod_fld)
         end if
       end do
 !
@@ -193,9 +198,10 @@
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call cal_terms_4_magnetic(i_fld, iak_diff_uxb,                &
-     &        nod_comm, node, ele, surf, conduct, sf_grp, Bnod1_bcs,    &
-     &        iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,   &
-     &        FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &        nod_comm, node, ele, surf, conduct, sf_grp,               &
+     &        Bnod1_bcs, Asf1_bcs, Bsf1_bcs, iphys, iphys_ele, ele_fld, &
+     &        jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                   &
+     &        mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         end if
       end do
 !
@@ -213,8 +219,8 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_thermal_diffusion)
         call cal_thermal_diffusion                                      &
-     &     (iak_diff_hf, iak_diff_t, nod_comm, node, ele, surf,         &
-     &      fluid, sf_grp, Tnod1_bcs, iphys, jac_3d, jac_sf_grp,        &
+     &     (iak_diff_hf, iak_diff_t, nod_comm, node, ele, surf, fluid,  &
+     &      sf_grp, Tnod1_bcs, Tsf1_bcs, iphys, jac_3d, jac_sf_grp,     &
      &      rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
@@ -222,8 +228,8 @@
 !        if(iflag_debug .ge. iflag_routine_msg)                         &
 !     &             write(*,*) 'lead  ', trim(fhd_thermal_diffusion)
 !        call cal_thermal_diffusion                                     &
-!     &     (iak_diff_hf, iak_diff_t, nod_comm, node, ele, surf,        &
-!     &      fluid, sf_grp, Tnod1_bcs, iphys, jac_3d, jac_sf_grp,       &
+!     &     (iak_diff_hf, iak_diff_t, nod_comm, node, ele, surf, fluid, &
+!     &      sf_grp, Tnod1_bcs, Tsf1_bcs, iphys, jac_3d, jac_sf_grp,    &
 !     &      rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl,         &
 !     &      nod_fld)
 !      end if
@@ -233,17 +239,17 @@
      &             write(*,*) 'lead  ', trim(fhd_viscous)
         call cal_viscous_diffusion                                      &
      &     (iak_diff_v, iak_diff_mf, iak_diff_lor,                      &
-     &      nod_comm, node, ele, surf, fluid, sf_grp, Vnod1_bcs,        &
-     &      iphys, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,              &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      nod_comm, node, ele, surf, fluid, sf_grp,                   &
+     &      Vnod1_bcs, Vsf1_bcs, Bsf1_bcs, iphys, jac_3d, jac_sf_grp,   &
+     &      rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       if (iphys%i_vp_diffuse .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_vecp_diffuse)
         call cal_vecp_diffusion(iak_diff_b,                             &
-     &      nod_comm, node, ele, surf, sf_grp, Bnod1_bcs, iphys,        &
-     &      jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                     &
+     &      nod_comm, node, ele, surf, sf_grp, Bnod1_bcs, Asf1_bcs,     &
+     &      iphys, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,              &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
@@ -252,9 +258,9 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_mag_diffuse)
         call cal_magnetic_diffusion(iak_diff_b, iak_diff_uxb,           &
-     &     nod_comm, node, ele, surf, conduct, sf_grp, Bnod1_bcs,       &
-     &     iphys, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, m_lump,       &
-     &     fem_wk, f_l, f_nl, nod_fld)
+     &     nod_comm, node, ele, surf, conduct, sf_grp,                  &
+     &     Bnod1_bcs, Asf1_bcs, Bsf1_bcs, iphys, jac_3d, jac_sf_grp,    &
+     &     rhs_tbl, FEM_elens, m_lump, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
 !

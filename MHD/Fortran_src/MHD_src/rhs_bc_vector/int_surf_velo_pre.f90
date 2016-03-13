@@ -4,16 +4,20 @@
 !     Written by H. Matsui on June, 2005
 !
 !!      subroutine int_surf_velo_pre_ele(iak_diff_mf, iak_diff_lor,     &
-!!     &          node, ele, surf, sf_grp, iphys, nod_fld, jac_sf_grp,  &
-!!     &          rhs_tbl, FEM_elens, fem_wk, f_l, f_nl)
+!!     &          node, ele, surf, sf_grp, Vsf_bcs, Bsf_bcs,            &
+!!     &          iphys, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,       &
+!!     &          fem_wk, f_l, f_nl)
 !!      subroutine int_surf_velo_monitor                                &
 !!     &         (i_field, iak_diff_mf, iak_diff_lor,                   &
-!!     &          node, ele, surf, sf_grp, iphys, nod_fld,              &
-!!     &          jac_sf_grp, rhs_tbl, FEM_elens, fem_wk, f_l, f_nl)
+!!     &          node, ele, surf, sf_grp, Vsf_bcs, Bsf_bcs,            &
+!!     &          iphys, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,       &
+!!     &          fem_wk, f_l, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(velocity_surf_bc_type), intent(in)  :: Vsf_bcs
+!!        type(vector_surf_bc_type), intent(in) :: Bsf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
@@ -34,6 +38,7 @@
       use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
+      use t_surface_bc_data
 !
       use m_control_parameter
 !
@@ -50,12 +55,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_surf_velo_pre_ele(iak_diff_mf, iak_diff_lor,       &
-     &          node, ele, surf, sf_grp, iphys, nod_fld, jac_sf_grp,    &
-     &          rhs_tbl, FEM_elens, fem_wk, f_l, f_nl)
+     &          node, ele, surf, sf_grp, Vsf_bcs, Bsf_bcs,              &
+     &          iphys, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,         &
+     &          fem_wk, f_l, f_nl)
 !
       use m_SGS_model_coefs
-      use m_surf_data_torque
-      use m_surf_data_magne
 !
       integer(kind= kint), intent(in) :: iak_diff_mf, iak_diff_lor
 !
@@ -63,6 +67,8 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(velocity_surf_bc_type), intent(in)  :: Vsf_bcs
+      type(vector_surf_bc_type), intent(in) :: Bsf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_2d), intent(in) :: jac_sf_grp
@@ -77,7 +83,7 @@
         if (iflag_commute_inertia .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,       &
      &        nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,                  &
-     &        Vsf1_bcs%sgs, intg_point_t_evo, ifilter_final,            &
+     &        Vsf_bcs%sgs, intg_point_t_evo, ifilter_final,             &
      &        iphys%i_SGS_m_flux, iphys%i_velo, iphys%i_velo,           &
      &        ak_diff(1,iak_diff_mf), coef_velo, fem_wk, f_nl)
         end if
@@ -87,7 +93,7 @@
         if (iflag_commute_lorentz .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,       &
      &        nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,                  &
-     &        Bsf1_bcs%sgs, intg_point_t_evo, ifilter_final,            &
+     &        Bsf_bcs%sgs, intg_point_t_evo, ifilter_final,             &
      &        iphys%i_SGS_maxwell, iphys%i_magne, iphys%i_magne,        &
      &        ak_diff(1,iak_diff_lor), (-coef_lor), fem_wk, f_nl)
         end if
@@ -95,17 +101,17 @@
 !
 !
         call int_sf_grad_velocity(node, ele, surf, sf_grp,              &
-     &      jac_sf_grp, rhs_tbl, Vsf1_bcs%grad,                         &
+     &      jac_sf_grp, rhs_tbl, Vsf_bcs%grad,                          &
      &      intg_point_t_evo, ak_d_velo, fem_wk, f_l)
         call int_free_slip_surf_sph_in(node, ele, surf, sf_grp,         &
      &      nod_fld, jac_sf_grp, rhs_tbl, intg_point_t_evo,             &
-     &      Vsf1_bcs%free_sph_in%ngrp_sf_dat,                           &
-     &      Vsf1_bcs%free_sph_in%id_grp_sf_dat,                         &
+     &      Vsf_bcs%free_sph_in%ngrp_sf_dat,                            &
+     &      Vsf_bcs%free_sph_in%id_grp_sf_dat,                          &
      &      iphys%i_velo, fem_wk, f_l)
         call int_free_slip_surf_sph_out(node, ele, surf, sf_grp,        &
      &      nod_fld, jac_sf_grp, rhs_tbl, intg_point_t_evo,             &
-     &      Vsf1_bcs%free_sph_out%ngrp_sf_dat,                          &
-     &      Vsf1_bcs%free_sph_out%id_grp_sf_dat,                        &
+     &      Vsf_bcs%free_sph_out%ngrp_sf_dat,                           &
+     &      Vsf_bcs%free_sph_out%id_grp_sf_dat,                         &
      &      iphys%i_velo, fem_wk, f_l)
 !
       end subroutine int_surf_velo_pre_ele
@@ -114,12 +120,11 @@
 !
       subroutine int_surf_velo_monitor                                  &
      &         (i_field, iak_diff_mf, iak_diff_lor,                     &
-     &          node, ele, surf, sf_grp, iphys, nod_fld,                &
-     &          jac_sf_grp, rhs_tbl, FEM_elens, fem_wk, f_l, f_nl)
+     &          node, ele, surf, sf_grp, Vsf_bcs, Bsf_bcs,              &
+     &          iphys, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,         &
+     &          fem_wk, f_l, f_nl)
 !
       use m_SGS_model_coefs
-      use m_surf_data_torque
-      use m_surf_data_magne
 !
       integer(kind= kint), intent(in) :: i_field
       integer(kind= kint), intent(in) :: iak_diff_mf, iak_diff_lor
@@ -128,6 +133,8 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(velocity_surf_bc_type), intent(in)  :: Vsf_bcs
+      type(vector_surf_bc_type), intent(in) :: Bsf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_2d), intent(in) :: jac_sf_grp
@@ -142,7 +149,7 @@
         if (iflag_commute_inertia .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,       &
      &        nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,                  &
-     &        Vsf1_bcs%sgs, intg_point_t_evo, ifilter_final,            &
+     &        Vsf_bcs%sgs, intg_point_t_evo, ifilter_final,             &
      &        iphys%i_SGS_m_flux, iphys%i_velo, iphys%i_velo,           &
      &        ak_diff(1,iak_diff_mf), coef_velo, fem_wk, f_nl)
         end if
@@ -152,7 +159,7 @@
         if (iflag_commute_lorentz .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,       &
      &        nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,                  &
-     &        Bsf1_bcs%sgs, intg_point_t_evo, ifilter_final,            &
+     &        Bsf_bcs%sgs, intg_point_t_evo, ifilter_final,             &
      &        iphys%i_SGS_maxwell, iphys%i_magne, iphys%i_magne,        &
      &        ak_diff(1,iak_diff_lor), (-coef_lor), fem_wk, f_nl)
         end if
@@ -161,17 +168,17 @@
 !
       if (i_field .eq. iphys%i_v_diffuse) then
         call int_sf_grad_velocity(node, ele, surf, sf_grp,              &
-     &      jac_sf_grp, rhs_tbl, Vsf1_bcs%grad,                         &
+     &      jac_sf_grp, rhs_tbl, Vsf_bcs%grad,                          &
      &      intg_point_t_evo, ak_d_velo, fem_wk, f_l)
         call int_free_slip_surf_sph_in(node, ele, surf, sf_grp,         &
      &      nod_fld, jac_sf_grp, rhs_tbl, intg_point_t_evo,             &
-     &      Vsf1_bcs%free_sph_in%ngrp_sf_dat,                           &
-     &      Vsf1_bcs%free_sph_in%id_grp_sf_dat,                         &
+     &      Vsf_bcs%free_sph_in%ngrp_sf_dat,                            &
+     &      Vsf_bcs%free_sph_in%id_grp_sf_dat,                          &
      &      iphys%i_velo, fem_wk, f_l)
         call int_free_slip_surf_sph_out(node, ele, surf, sf_grp,        &
      &      nod_fld, jac_sf_grp, rhs_tbl, intg_point_t_evo,             &
-     &      Vsf1_bcs%free_sph_out%ngrp_sf_dat,                          &
-     &      Vsf1_bcs%free_sph_out%id_grp_sf_dat,                        &
+     &      Vsf_bcs%free_sph_out%ngrp_sf_dat,                           &
+     &      Vsf_bcs%free_sph_out%id_grp_sf_dat,                         &
      &      iphys%i_velo, fem_wk, f_l)
       end if
 !

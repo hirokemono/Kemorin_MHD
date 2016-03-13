@@ -4,8 +4,8 @@
 !      written by H. Matsui on Aug., 2007
 !
 !!      subroutine cal_sgs_mom_flux_with_sgs_buo                        &
-!!     &         (nod_comm, node, ele, surf, sf_grp,                    &
-!!     &          fluid, layer_tbl, iphys, iphys_ele, ele_fld,          &
+!!     &         (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,  &
+!!     &          Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,          &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
 !!     &          FEM_elen, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
@@ -13,6 +13,7 @@
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(vector_surf_bc_type), intent(in) :: Bsf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
@@ -48,6 +49,7 @@
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_layering_ele_list
+      use t_surface_bc_data
 !
       implicit none
 !
@@ -58,8 +60,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_sgs_mom_flux_with_sgs_buo                          &
-     &         (nod_comm, node, ele, surf, sf_grp,                      &
-     &          fluid, layer_tbl, iphys, iphys_ele, ele_fld,            &
+     &         (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,    &
+     &          Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,            &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
      &          FEM_elen, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
@@ -83,6 +85,8 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(velocity_surf_bc_type), intent(in)  :: Vsf_bcs
+      type(vector_surf_bc_type), intent(in) :: Bsf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -119,7 +123,7 @@
 !
       call cal_terms_4_momentum                                         &
      &   (iphys%i_SGS_div_m_flux, iak_diff_mf, iak_diff_lor,            &
-     &    nod_comm, node, ele, surf, fluid, sf_grp,                     &
+     &    nod_comm, node, ele, surf, fluid, sf_grp, Vsf_bcs, Bsf_bcs,   &
      &    iphys, iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q,            &
      &    rhs_tbl, FEM_elen, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !

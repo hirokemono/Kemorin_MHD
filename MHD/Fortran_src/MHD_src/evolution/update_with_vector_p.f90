@@ -8,10 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine update_with_vector_potential(nod_comm, node, ele,    &
-!!     &          surf, fluid, conduct, sf_grp, Bnod_bcs,               &
-!!     &          iphys, iphys_ele, ele_fld, jac_3d_q, jac_3d_l,        &
-!!     &          jac_sf_grp_q, rhs_tbl, FEM_elen, layer_tbl, m_lump,   &
-!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          surf, fluid, conduct, layer_tbl, sf_grp,              &
+!!     &          Bnod_bcs, Asf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,&
+!!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,  &
+!!     &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -19,6 +19,8 @@
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(field_geometry_data), intent(in) :: fluid, conduct
 !!        type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
+!!        type(velocity_surf_bc_type), intent(in) :: Asf_bcs
+!!        type(potential_surf_bc_type), intent(in) :: Fsf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
@@ -54,6 +56,7 @@
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_layering_ele_list
+      use t_surface_bc_data
 !
       implicit none
 !
@@ -64,14 +67,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine update_with_vector_potential(nod_comm, node, ele,      &
-     &          surf, fluid, conduct, sf_grp, Bnod_bcs,                 &
-     &          iphys, iphys_ele, ele_fld, jac_3d_q, jac_3d_l,          &
-     &          jac_sf_grp_q, rhs_tbl, FEM_elen, layer_tbl, m_lump,     &
-     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          surf, fluid, conduct, layer_tbl, sf_grp,                &
+     &          Bnod_bcs, Asf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,  &
+     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,    &
+     &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_control_parameter
       use m_t_step_parameter
-      use m_surf_data_vector_p
       use m_bc_data_magne
       use m_SGS_address
       use m_SGS_model_coefs
@@ -90,6 +92,8 @@
       type(surface_group_data), intent(in) :: sf_grp
       type(field_geometry_data), intent(in) :: fluid, conduct
       type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
+      type(velocity_surf_bc_type), intent(in) :: Asf_bcs
+      type(potential_surf_bc_type), intent(in) :: Fsf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -146,8 +150,8 @@
             if (iflag_SGS_model .eq. id_SGS_NL_grad                     &
      &        .or. iflag_SGS_model .eq. id_SGS_similarity) then
               call s_cal_diff_coef_vector_p(iak_diff_b, icomp_diff_b,   &
-     &            nod_comm, node, ele, surf, sf_grp,                    &
-     &            iphys, iphys_ele, ele_fld, fluid, layer_tbl,          &
+     &            nod_comm, node, ele, surf, fluid, layer_tbl,          &
+     &            sf_grp, Asf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,  &
      &            jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
      &            FEM_elen, m_lump, fem_wk, f_l, f_nl, nod_fld)
             end if
@@ -166,7 +170,7 @@
      &      ele%istack_ele_smp, m_lump,                                 &
      &      nod_comm, node, ele, surf, sf_grp, iphys_ele, ele_fld,      &
      &      jac_3d_q, jac_sf_grp_q, FEM_elen, Bnod_bcs%nod_bc_b,        &
-     &      Asf1_bcs%sgs, rhs_tbl, fem_wk, f_nl, nod_fld)
+     &      Asf_bcs%sgs, rhs_tbl, fem_wk, f_nl, nod_fld)
       end if
       if (iphys_ele%i_magne .ne. 0) then
         if (iflag_debug.gt.0) write(*,*) 'rot_magne_on_element'

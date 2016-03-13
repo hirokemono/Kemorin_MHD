@@ -8,13 +8,13 @@
 !        modieied by H. Matsui on Sep., 2005
 !
 !!      subroutine cal_temperature_field(nod_comm, node, ele, surf,     &
-!!     &          fluid, sf_grp, Tnod_bcs, iphys, iphys_ele, ele_fld,   &
-!!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,               &
-!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          fluid, sf_grp, Tnod_bcs, Tsf_bcs, iphys,              &
+!!     &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,      &
+!!     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_parturbation_temp(nod_comm, node, ele, surf,     &
-!!     &          fluid, sf_grp, Tnod_bcs, iphys, iphys_ele, ele_fld,   &
-!!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,               &
-!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          fluid, sf_grp, Tnod_bcs, Tsf_bcs, iphys,              &
+!!     &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,      &
+!!     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -22,6 +22,7 @@
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(nodal_bcs_4_scalar_type), intent(in) :: Tnod_bcs
+!!        type(scaler_surf_bc_type), intent(in) :: Tsf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
@@ -53,6 +54,7 @@
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_bc_data_temp
+      use t_surface_bc_data
 !
       implicit none
 !
@@ -63,12 +65,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_temperature_field(nod_comm, node, ele, surf,       &
-     &          fluid, sf_grp, Tnod_bcs, iphys, iphys_ele, ele_fld,     &
-     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                 &
-     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          fluid, sf_grp, Tnod_bcs, Tsf_bcs, iphys,                &
+     &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,        &
+     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_phys_constants
       use m_control_parameter
+      use m_ele_material_property
       use m_t_int_parameter
       use m_type_AMG_data
       use m_solver_djds_MHD
@@ -94,6 +97,7 @@
       type(surface_group_data), intent(in) :: sf_grp
       type(field_geometry_data), intent(in) :: fluid
       type(nodal_bcs_4_scalar_type), intent(in) :: Tnod_bcs
+      type(scaler_surf_bc_type), intent(in) :: Tsf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -150,7 +154,7 @@
 !      call check_ff_smp(my_rank, n_scalar, node%max_nod_smp, f_nl)
 !
       call int_surf_temp_ele(iak_diff_hf, node, ele, surf, sf_grp,      &
-     &    iphys, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,               &
+     &    iphys, nod_fld, Tsf_bcs, jac_sf_grp, rhs_tbl, FEM_elens,      &
      &    fem_wk, f_l, f_nl)
 !
 !      call check_nodal_data(my_rank, nod_fld, n_scalar, iphys%i_temp)
@@ -216,12 +220,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_parturbation_temp(nod_comm, node, ele, surf,       &
-     &          fluid, sf_grp, Tnod_bcs, iphys, iphys_ele, ele_fld,     &
-     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                 &
-     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          fluid, sf_grp, Tnod_bcs, Tsf_bcs, iphys,                &
+     &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,        &
+     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_phys_constants
       use m_control_parameter
+      use m_ele_material_property
       use m_t_int_parameter
       use m_type_AMG_data
       use m_solver_djds_MHD
@@ -250,6 +255,7 @@
       type(surface_group_data), intent(in) :: sf_grp
       type(field_geometry_data), intent(in) :: fluid
       type(nodal_bcs_4_scalar_type), intent(in) :: Tnod_bcs
+      type(scaler_surf_bc_type), intent(in) :: Tsf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -303,7 +309,7 @@
 !      call check_ff_smp(my_rank, n_scalar, node%max_nod_smp, f_nl)
 !
       call int_surf_temp_ele(iak_diff_hf, node, ele, surf, sf_grp,      &
-     &    iphys, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,               &
+     &    iphys, nod_fld, Tsf_bcs, jac_sf_grp, rhs_tbl, FEM_elens,      &
      &    fem_wk, f_l, f_nl)
 !
 !      call check_nodal_data(my_rank, nod_fld, n_scalar, iphys%i_temp)

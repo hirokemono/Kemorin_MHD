@@ -4,7 +4,7 @@
 !     Written by H. Matsui
 !
 !!      subroutine s_cal_diff_coef_velo(iak_diff_v, icomp_diff_v,       &
-!!     &          nod_comm, node, ele, surf, sf_grp,                    &
+!!     &          nod_comm, node, ele, surf, sf_grp, Vsf_bcs, Psf_bcs,  &
 !!     &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,          &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
 !!     &          FEM_elen, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -13,6 +13,8 @@
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(velocity_surf_bc_type), intent(in) :: Vsf_bcs
+!!        type(potential_surf_bc_type), intent(in) :: Psf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
@@ -44,6 +46,7 @@
       use t_layering_ele_list
       use t_MHD_finite_element_mat
       use t_filter_elength
+      use t_surface_bc_data
 !
       implicit none
 !
@@ -54,7 +57,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_cal_diff_coef_velo(iak_diff_v, icomp_diff_v,         &
-     &          nod_comm, node, ele, surf, sf_grp,                      &
+     &          nod_comm, node, ele, surf, sf_grp, Vsf_bcs, Psf_bcs,    &
      &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,            &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
      &          FEM_elen, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -62,8 +65,6 @@
       use m_machine_parameter
       use m_control_parameter
       use m_phys_constants
-      use m_surf_data_torque
-      use m_surf_data_press
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
@@ -86,6 +87,8 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(velocity_surf_bc_type), intent(in) :: Vsf_bcs
+      type(potential_surf_bc_type), intent(in) :: Psf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -193,13 +196,13 @@
       call cal_rotation_commute                                         &
      &   (fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
-     &    rhs_tbl, FEM_elen, Vsf1_bcs%sgs, ifilter_4delta,              &
+     &    rhs_tbl, FEM_elen, Vsf_bcs%sgs, ifilter_4delta,               &
      &    iphys%i_sgs_grad_f, iphys%i_sgs_grad_f,                       &
      &    fem_wk, f_l, f_nl, nod_fld)
       call cal_grad_commute                                             &
      &   (fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
-     &    rhs_tbl, FEM_elen, Psf1_bcs%sgs, ifilter_4delta,              &
+     &    rhs_tbl, FEM_elen, Psf_bcs%sgs, ifilter_4delta,               &
      &    i_sgs_grad_fp, i_sgs_grad_fp, fem_wk, f_l, f_nl, nod_fld)
 !
       call sym_tensor_send_recv                                         &
@@ -213,12 +216,12 @@
       call cal_rotation_commute                                         &
      &   (fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
-     &    rhs_tbl, FEM_elen, Vsf1_bcs%sgs, ifilter_2delta,              &
+     &    rhs_tbl, FEM_elen, Vsf_bcs%sgs, ifilter_2delta,               &
      &    iphys%i_sgs_grad, iphys%i_velo, fem_wk, f_l, f_nl, nod_fld)
       call cal_grad_commute                                             &
      &   (fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
-     &    rhs_tbl, FEM_elen, Psf1_bcs%sgs, ifilter_2delta,              &
+     &    rhs_tbl, FEM_elen, Psf_bcs%sgs, ifilter_2delta,               &
      &    i_sgs_grad_p, iphys%i_press, fem_wk, f_l, f_nl, nod_fld)
 !
 !      call sym_tensor_send_recv                                        &

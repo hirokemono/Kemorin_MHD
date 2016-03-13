@@ -7,14 +7,14 @@
 !
 !!      subroutine s_cal_velocity_pre                                   &
 !!     &         (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod, &
-!!     &          Vnod_bcs, iphys, iphys_ele, ele_fld,                  &
+!!     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,&
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens, &
 !!     &          layer_tbl, num_MG_level, MG_interpolate,              &
 !!     &          MG_comm_fluid, MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,&
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_velocity_co                                      &
 !!     &         (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod, &
-!!     &          Vnod_bcs, iphys, iphys_ele, ele_fld,                  &
+!!     &          Vnod_bcs, Vsf_bcs, Psf_bcs, iphys, iphys_ele, ele_fld,&
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
 !!     &          rhs_tbl, FEM_elens, num_MG_level, MG_interpolate,     &
 !!     &          MG_comm_fluid, MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,&
@@ -25,6 +25,10 @@
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(surface_node_grp_data), intent(in) :: sf_grp_nod
+!!        type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
+!!        type(velocity_surf_bc_type), intent(in)  :: Vsf_bcs
+!!        type(vector_surf_bc_type), intent(in) :: Bsf_bcs
+!!        type(potential_surf_bc_type), intent(in) :: Psf_bcs
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
@@ -74,6 +78,7 @@
       use t_interpolate_table
       use t_vector_for_solver
       use t_bc_data_velo
+      use t_surface_bc_data
 !
       implicit none
 !
@@ -85,7 +90,7 @@
 !
       subroutine s_cal_velocity_pre                                     &
      &         (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,   &
-     &          Vnod_bcs, iphys, iphys_ele, ele_fld,                    &
+     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,  &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,   &
      &          layer_tbl, num_MG_level, MG_interpolate,                &
      &          MG_comm_fluid, MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,  &
@@ -118,6 +123,8 @@
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
       type(field_geometry_data), intent(in) :: fluid
       type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
+      type(velocity_surf_bc_type), intent(in)  :: Vsf_bcs
+      type(vector_surf_bc_type), intent(in) :: Bsf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -147,8 +154,9 @@
 !
 !
       if (iflag_SGS_gravity .ne. id_SGS_none) then
-        call cal_sgs_mom_flux_with_sgs_buo(nod_comm, node, ele, surf,   &
-     &      sf_grp, fluid, layer_tbl, iphys, iphys_ele, ele_fld,        &
+        call cal_sgs_mom_flux_with_sgs_buo                              &
+     &     (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,        &
+     &      Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,                &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,       &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         call mod_Csim_by_SGS_buoyancy_ele(layer_tbl%e_grp, ele)
@@ -209,7 +217,7 @@
 !    ---  lead surface boundaries
 !
       call int_surf_velo_pre_ele(iak_diff_mf, iak_diff_lor,             &
-     &    node, ele, surf, sf_grp, iphys, nod_fld,                      &
+     &    node, ele, surf, sf_grp, Vsf_bcs, Bsf_bcs, iphys, nod_fld,    &
      &    jac_sf_grp_q, rhs_tbl, FEM_elens, fem_wk, f_l, f_nl)
 !
 !
@@ -242,7 +250,7 @@
 !
       call set_boundary_velo(node, Vnod_bcs, iphys%i_velo, nod_fld)
       call set_normal_velocity                                          &
-     &   (sf_grp, sf_grp_nod, Vsf1_bcs%normal, iphys%i_velo, nod_fld)
+     &   (sf_grp, sf_grp_nod, Vsf_bcs%normal, iphys%i_velo, nod_fld)
 !
       call vector_send_recv(iphys%i_velo, node, nod_comm, nod_fld)
 !
@@ -252,7 +260,7 @@
 !
       subroutine cal_velocity_co                                        &
      &         (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,   &
-     &          Vnod_bcs, iphys, iphys_ele, ele_fld,                    &
+     &          Vnod_bcs, Vsf_bcs, Psf_bcs, iphys, iphys_ele, ele_fld,  &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
      &          rhs_tbl, FEM_elens, num_MG_level, MG_interpolate,       &
      &          MG_comm_fluid, MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,  &
@@ -260,8 +268,6 @@
 !
       use m_SGS_address
       use m_SGS_model_coefs
-      use m_surf_data_torque
-      use m_surf_data_press
 !
       use nod_phys_send_recv
       use int_vol_solenoid_correct
@@ -282,6 +288,8 @@
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
       type(field_geometry_data), intent(in) :: fluid
       type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
+      type(velocity_surf_bc_type), intent(in)  :: Vsf_bcs
+      type(potential_surf_bc_type), intent(in) :: Psf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -315,13 +323,13 @@
      &    rhs_tbl, FEM_elens, fem_wk, f_nl)
 !
       if (iflag_commute_velo .eq. id_SGS_commute_ON                     &
-     &     .and. Psf1_bcs%sgs%ngrp_sf_dat.gt.0) then
+     &     .and. Psf_bcs%sgs%ngrp_sf_dat.gt.0) then
         if (iflag_debug.eq.1) write(*,*)                                &
                              'int_surf_sgs_velo_co_ele', iphys%i_p_phi
         call int_surf_sgs_velo_co_ele(node, ele, surf, sf_grp,          &
      &      nod_fld, jac_sf_grp_q, jac_sf_grp_l,                        &
      &      rhs_tbl, FEM_elens, intg_point_poisson,                     &
-     &      Psf1_bcs%sgs%ngrp_sf_dat, Psf1_bcs%sgs%id_grp_sf_dat,       &
+     &      Psf_bcs%sgs%ngrp_sf_dat, Psf_bcs%sgs%id_grp_sf_dat,         &
      &      ifilter_final, ak_diff(1,iak_diff_v), iphys%i_p_phi,        &
      &      fem_wk, f_nl)
       end if
@@ -346,7 +354,7 @@
       call set_boundary_velo(node, Vnod_bcs, iphys%i_velo, nod_fld)
       if (iflag_debug.eq.1) write(*,*) 'set_normal_velocity'
       call set_normal_velocity                                          &
-     &   (sf_grp, sf_grp_nod, Vsf1_bcs%normal, iphys%i_velo, nod_fld)
+     &   (sf_grp, sf_grp_nod, Vsf_bcs%normal, iphys%i_velo, nod_fld)
 !
       if(iflag_debug.eq.1) write(*,*) 'vector_send_recv(iphys%i_velo)'
       call vector_send_recv(iphys%i_velo, node, nod_comm, nod_fld)

@@ -4,12 +4,14 @@
 !     Written by H. Matsui on June, 2005
 !
 !!      subroutine cal_terms_4_magnetic(i_field, iak_diff_uxb,          &
-!!     &         nod_comm, node, ele, surf, conduct, sf_grp, Bnod_bcs,  &
-!!     &         iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,&
-!!     &         FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &         nod_comm, node, ele, surf, conduct, sf_grp,            &
+!!     &         Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld, &
+!!     &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, mhd_fem_wk,    &
+!!     &         fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_magnetic_diffusion(iak_diff_b, iak_diff_uxb,     &
-!!     &          nod_comm, node, ele, surf, conduct, sf_grp, Bnod_bcs, &
-!!     &          iphys, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, m_lump,&
+!!     &          nod_comm, node, ele, surf, conduct, sf_grp,           &
+!!     &          Bnod_bcs, Asf_bcs, Bsf_bcs, iphys,                    &
+!!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, m_lump,       &
 !!     &          fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -18,6 +20,8 @@
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(field_geometry_data), intent(in) :: conduct
 !!        type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
+!!        type(velocity_surf_bc_type), intent(in) :: Asf_bcs
+!!        type(vector_surf_bc_type), intent(in) :: Bsf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
@@ -52,6 +56,7 @@
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_bc_data_magne
+      use t_surface_bc_data
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
@@ -68,9 +73,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_terms_4_magnetic(i_field, iak_diff_uxb,            &
-     &         nod_comm, node, ele, surf, conduct, sf_grp, Bnod_bcs,    &
-     &         iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,  &
-     &         FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &         nod_comm, node, ele, surf, conduct, sf_grp,              &
+     &         Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,   &
+     &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, mhd_fem_wk,      &
+     &         fem_wk, f_l, f_nl, nod_fld)
 !
       use int_vol_magne_monitor
       use set_boundary_scalars
@@ -84,6 +90,8 @@
       type(surface_group_data), intent(in) :: sf_grp
       type(field_geometry_data), intent(in) :: conduct
       type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
+      type(velocity_surf_bc_type), intent(in) :: Asf_bcs
+      type(vector_surf_bc_type), intent(in) :: Bsf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -111,7 +119,7 @@
       end if
 !
       call int_surf_magne_monitor(i_field, iak_diff_uxb,                &
-     &    node, ele, surf, sf_grp, iphys, nod_fld,                      &
+     &    node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs, iphys, nod_fld,    &
      &    jac_sf_grp, rhs_tbl, FEM_elens, fem_wk, f_l, f_nl)
 !
       call cal_t_evo_4_vector_cd(iflag_mag_supg,                        &
@@ -130,8 +138,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_magnetic_diffusion(iak_diff_b, iak_diff_uxb,       &
-     &          nod_comm, node, ele, surf, conduct, sf_grp, Bnod_bcs,   &
-     &          iphys, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, m_lump,  &
+     &          nod_comm, node, ele, surf, conduct, sf_grp,             &
+     &          Bnod_bcs, Asf_bcs, Bsf_bcs, iphys,                      &
+     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, m_lump,         &
      &          fem_wk, f_l, f_nl, nod_fld)
 !
       use int_vol_diffusion_ele
@@ -146,6 +155,8 @@
       type(surface_group_data), intent(in) :: sf_grp
       type(field_geometry_data), intent(in) :: conduct
       type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
+      type(velocity_surf_bc_type), intent(in) :: Asf_bcs
+      type(vector_surf_bc_type), intent(in) :: Bsf_bcs
       type(phys_address), intent(in) :: iphys
       type(jacobians_3d), intent(in) :: jac_3d
       type(jacobians_2d), intent(in) :: jac_sf_grp
@@ -165,7 +176,7 @@
      &    iak_diff_b, one, ak_d_magne, iphys%i_magne, fem_wk, f_l)
 !
       call int_surf_magne_monitor(iphys%i_b_diffuse, iak_diff_uxb,      &
-     &    node, ele, surf, sf_grp, iphys, nod_fld,                      &
+     &    node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs, iphys, nod_fld,    &
      &    jac_sf_grp, rhs_tbl, FEM_elens, fem_wk, f_l, f_nl)
 !
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)

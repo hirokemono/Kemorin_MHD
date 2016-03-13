@@ -7,13 +7,8 @@
 !>    @brief flux boundary condition lists for MHD dynamo model
 !!
 !@n        (module m_surf_data_temp)
-!@n        (module m_surf_data_composition)
-!@n        (module m_surf_data_press)
-!@n        (module m_surf_data_magne_p)
 !@n        (module m_surf_data_torque)
-!@n        (module m_surf_data_vector_p)
 !@n        (module m_surf_data_magne)
-!@n        (module m_surf_data_current)
 !@n
 !!
 !!
@@ -108,6 +103,138 @@
 !
       contains 
 !
+!-----------------------------------------------------------------------
+!
+      subroutine alloc_surf_data_velo(Vsf_bcs)
+!
+      type(velocity_surf_bc_type), intent(inout) :: Vsf_bcs
+!
+!
+      call alloc_surf_vector_num(Vsf_bcs%grad)
+      call alloc_surf_scaler_num(Vsf_bcs%normal)
+      call alloc_surf_vector_dat_type(Vsf_bcs%sgs)
+      call alloc_surf_vector_dat_type(Vsf_bcs%torque_lead)
+      call alloc_surf_scaler_dat_type(Vsf_bcs%free_sph_in)
+      call alloc_surf_scaler_dat_type(Vsf_bcs%free_sph_out)
+!
+      call alloc_surf_vector_apt(Vsf_bcs%grad)
+      call alloc_surf_scaler_apt(Vsf_bcs%normal)
+!
+      end subroutine alloc_surf_data_velo
+!
+!-----------------------------------------------------------------------
+!
+      subroutine alloc_surf_potential(Fsf_bcs)
+!
+      type(potential_surf_bc_type), intent(inout) :: Fsf_bcs
+!
+!
+      call alloc_surf_scaler_dat_type(Fsf_bcs%sgs)
+      call alloc_surf_scaler_dat_type(Fsf_bcs%grad_lead)
+!
+      call alloc_surf_scaler_num(Fsf_bcs%grad)
+      call alloc_surf_scaler_dat_type(Fsf_bcs%wall)
+      call alloc_surf_scaler_dat_type(Fsf_bcs%sph_in)
+      call alloc_surf_scaler_dat_type(Fsf_bcs%sph_out)
+!
+      call alloc_surf_scaler_apt(Fsf_bcs%grad)
+!
+       end subroutine alloc_surf_potential
+!
+!-----------------------------------------------------------------------
+!
+      subroutine alloc_surf_data_scalar(Ssf_bcs)
+!
+      type(scaler_surf_bc_type), intent(inout) :: Ssf_bcs
+!
+!
+      call alloc_surf_scaler_num(Ssf_bcs%flux)
+      call alloc_surf_scaler_dat_type(Ssf_bcs%sgs)
+      call alloc_surf_scaler_dat_type(Ssf_bcs%flux_lead)
+!
+      call alloc_surf_scaler_apt(Ssf_bcs%flux)
+!
+      end subroutine alloc_surf_data_scalar
+!
+!-----------------------------------------------------------------------
+!
+      subroutine alloc_surf_vector(Bsf_bcs)
+!
+      type(vector_surf_bc_type), intent(inout) :: Bsf_bcs
+!
+!
+      call alloc_surf_vector_num(Bsf_bcs%grad)
+      call alloc_surf_vector_dat_type(Bsf_bcs%sgs)
+      call alloc_surf_scaler_num(Bsf_bcs%normal)
+      call alloc_surf_vector_dat_type(Bsf_bcs%torque_lead)
+!
+      call alloc_surf_vector_apt(Bsf_bcs%grad)
+      call alloc_surf_scaler_apt(Bsf_bcs%normal)
+!
+      end subroutine alloc_surf_vector
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine dealloc_surf_data_velo(Vsf_bcs)
+!
+      type(velocity_surf_bc_type), intent(inout) :: Vsf_bcs
+!
+!
+      call dealloc_surf_vector_type(Vsf_bcs%grad)
+      call dealloc_surf_scaler_type(Vsf_bcs%normal)
+      call dealloc_surf_vector_dat_type(Vsf_bcs%sgs)
+      call dealloc_surf_vector_dat_type(Vsf_bcs%torque_lead)
+      call dealloc_surf_scaler_dat_type(Vsf_bcs%free_sph_in)
+      call dealloc_surf_scaler_dat_type(Vsf_bcs%free_sph_out)
+!
+      end subroutine dealloc_surf_data_velo
+!
+!-----------------------------------------------------------------------
+!
+      subroutine dealloc_surf_potential(Fsf_bcs)
+!
+      type(potential_surf_bc_type), intent(inout) :: Fsf_bcs
+!
+!
+      call dealloc_surf_scaler_dat_type(Fsf_bcs%sgs)
+      call dealloc_surf_scaler_dat_type(Fsf_bcs%grad_lead)
+!
+      call dealloc_surf_scaler_type(Fsf_bcs%grad)
+      call dealloc_surf_scaler_dat_type(Fsf_bcs%wall)
+      call dealloc_surf_scaler_dat_type(Fsf_bcs%sph_in)
+      call dealloc_surf_scaler_dat_type(Fsf_bcs%sph_out)
+!
+      end subroutine dealloc_surf_potential
+!
+!-----------------------------------------------------------------------
+!
+      subroutine dealloc_surf_data_scalar(Ssf_bcs)
+!
+      type(scaler_surf_bc_type), intent(inout) :: Ssf_bcs
+!
+!
+      call dealloc_surf_scaler_type(Ssf_bcs%flux)
+      call dealloc_surf_scaler_dat_type(Ssf_bcs%sgs)
+      call dealloc_surf_scaler_dat_type(Ssf_bcs%flux_lead)
+!
+      end subroutine dealloc_surf_data_scalar
+!
+!-----------------------------------------------------------------------
+!
+      subroutine dealloc_surf_vector(Bsf_bcs)
+!
+      type(vector_surf_bc_type), intent(inout) :: Bsf_bcs
+!
+!
+      call dealloc_surf_vector_type(Bsf_bcs%grad)
+      call dealloc_surf_vector_dat_type(Bsf_bcs%sgs)
+      call dealloc_surf_scaler_type(Bsf_bcs%normal)
+      call dealloc_surf_vector_dat_type(Bsf_bcs%torque_lead)
+!
+      end subroutine dealloc_surf_vector
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine alloc_surf_scaler_num(flux_sf)

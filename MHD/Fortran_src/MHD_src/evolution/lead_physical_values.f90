@@ -140,6 +140,7 @@
 !
       use m_machine_parameter
       use m_physical_property
+      use m_surf_data_torque
 !
       use cal_MHD_forces_4_monitor
       use cal_sgs_4_monitor
@@ -166,9 +167,10 @@
 !
       call cal_true_sgs_terms_pre                                       &
      &   (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,            &
-     &    group%surf_grp, MHD_mesh%fluid, MHD_mesh%conduct, iphys,      &
-     &    iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1,   &
-     &    FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+     &    group%surf_grp, MHD_mesh%fluid, MHD_mesh%conduct, Vsf1_bcs,   &
+     &    iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,      &
+     &    rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,       &
+     &    nod_fld1)
 !
       call cal_sgs_terms_4_monitor(mesh%nod_comm, mesh%node, mesh%ele,  &
      &    MHD_mesh%fluid, MHD_mesh%conduct, iphys, iphys_ele, fld_ele1, &

@@ -5,8 +5,8 @@
 !
 !!      subroutine s_cal_diff_coef_sgs_mxwl                             &
 !!     &         (iak_diff_lor, icomp_sgs_lor, icomp_diff_lor,          &
-!!     &          ie_dfbx, nod_comm, node, ele, surf, sf_grp, Vnod_bcs, &
-!!     &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,          &
+!!     &          ie_dfbx, nod_comm, node, ele, surf, fluid, layer_tbl, &
+!!     &          sf_grp, Vnod_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld, &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
 !!     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
@@ -15,6 +15,7 @@
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
+!!        type(vector_surf_bc_type), intent(in) :: Bsf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
@@ -47,6 +48,7 @@
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_bc_data_velo
+      use t_surface_bc_data
 !
       implicit none
 !
@@ -58,8 +60,8 @@
 !
       subroutine s_cal_diff_coef_sgs_mxwl                               &
      &         (iak_diff_lor, icomp_sgs_lor, icomp_diff_lor,            &
-     &          ie_dfbx, nod_comm, node, ele, surf, sf_grp, Vnod_bcs,   &
-     &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,            &
+     &          ie_dfbx, nod_comm, node, ele, surf, fluid, layer_tbl,   &
+     &          sf_grp, Vnod_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,   &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
      &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
@@ -91,6 +93,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
+      type(vector_surf_bc_type), intent(in) :: Bsf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -157,7 +160,7 @@
       call cal_commute_error_4_mf                                       &
      &   (fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
-     &    rhs_tbl, FEM_elens, Bsf1_bcs%sgs, ifilter_4delta,             &
+     &    rhs_tbl, FEM_elens, Bsf_bcs%sgs, ifilter_4delta,              &
      &    iphys%i_sgs_grad_f, iphys%i_sgs_grad_f, iphys%i_filter_magne, &
      &    fem_wk, f_l, f_nl, nod_fld)
 !
@@ -174,7 +177,7 @@
       call cal_commute_error_4_mf                                       &
      &   (fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
-     &    rhs_tbl, FEM_elens, Bsf1_bcs%sgs, ifilter_2delta,             &
+     &    rhs_tbl, FEM_elens, Bsf_bcs%sgs, ifilter_2delta,              &
      &    iphys%i_sgs_grad, iphys%i_SGS_maxwell, iphys%i_magne,         &
      &    fem_wk, f_l, f_nl, nod_fld)
 !

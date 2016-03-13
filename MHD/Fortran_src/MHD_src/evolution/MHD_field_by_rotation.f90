@@ -72,7 +72,6 @@
       use m_bc_data_magne
       use m_surf_data_torque
       use m_surf_data_magne
-      use m_surf_data_current
 !
       use cal_rotation_sgs
 !
@@ -132,7 +131,7 @@
 !     &           jac_3d,  jac_sf_grp, FEM_elens, Bnod1_bcs%nod_bc_j,   &
 !     &           Bsf1_bcs%sgs, rhs_tbl, fem_wk, f_nl, nod_fld)
 !             call int_current_diffuse                                  &
-!     &         (nod_comm, node, ele, surf, sf_grp,                     &
+!     &         (nod_comm, node, ele, surf, sf_grp, Asf1_bcs,           &
 !     &          iphys, jac_3d, jac_sf_grp, rhs_tbl, m_lump,            &
 !     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
           else

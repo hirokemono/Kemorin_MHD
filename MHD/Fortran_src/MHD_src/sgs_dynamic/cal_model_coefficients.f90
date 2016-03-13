@@ -65,6 +65,9 @@
       use m_t_step_parameter
       use m_bc_data_velo
       use m_bc_data_ene
+      use m_surf_data_torque
+      use m_surf_data_temp
+      use m_surf_data_magne
       use m_SGS_address
 !
       use cal_sgs_heat_flux_dynamic
@@ -129,7 +132,7 @@
           call s_cal_diff_coef_sgs_hf                                   &
      &       (iak_diff_hf, icomp_sgs_hf, icomp_diff_hf, ie_dfvx,        &
      &        mesh%nod_comm, mesh%node, mesh%ele,                       &
-     &        ele_mesh%surf, group%surf_grp, Tnod1_bcs,                 &
+     &        ele_mesh%surf, group%surf_grp, Tnod1_bcs, Tsf1_bcs,       &
      &        iphys, iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,     &
      &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,      &
      &        mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -161,7 +164,7 @@
           call s_cal_diff_coef_sgs_mf                                   &
      &       (iak_diff_mf, icomp_sgs_mf, icomp_diff_mf, ie_dfvx,        &
      &        mesh%nod_comm, mesh%node, mesh%ele,                       &
-     &        ele_mesh%surf, group%surf_grp, Vnod1_bcs,                 &
+     &        ele_mesh%surf, group%surf_grp, Vnod1_bcs, Vsf1_bcs,       &
      &        iphys, iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,     &
      &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,      &
      &        mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -193,9 +196,9 @@
           if (iflag_debug.eq.1) write(*,*) 's_cal_diff_coef_sgs_mxwl'
           call s_cal_diff_coef_sgs_mxwl                                 &
      &       (iak_diff_lor, icomp_sgs_lor, icomp_diff_lor, ie_dfbx,     &
-     &        mesh%nod_comm, mesh%node, mesh%ele,                       &
-     &        ele_mesh%surf, group%surf_grp, Vnod1_bcs,                 &
-     &        iphys, iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,     &
+     &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
+     &        MHD_mesh%fluid, layer_tbl, group%surf_grp,                &
+     &        Vnod1_bcs, Bsf1_bcs, iphys, iphys_ele, ele_fld,           &
      &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,      &
      &        mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         end if
@@ -227,10 +230,11 @@
           call s_cal_diff_coef_sgs_induct                               &
      &       (iak_diff_uxb, icomp_sgs_uxb, icomp_diff_uxb, ie_dfvx,     &
      &        ie_dfbx, mesh%nod_comm, mesh%node, mesh%ele,              &
-     &        ele_mesh%surf, group%surf_grp, iphys, iphys_ele, ele_fld, &
-     &        MHD_mesh%fluid, MHD_mesh%conduct,                         &
-     &        layer_tbl, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,     &
-     &        FEM_elen, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &        ele_mesh%surf, MHD_mesh%fluid, MHD_mesh%conduct,          &
+     &        layer_tbl, group%surf_grp, Bsf1_bcs, iphys,               &
+     &        iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,     &
+     &        rhs_tbl, FEM_elen, mhd_fem_wk, fem_wk,                    &
+     &        f_l, f_nl, nod_fld)
         end if
 !
       else if(iflag_t_evo_4_vect_p .gt. id_no_evolution) then

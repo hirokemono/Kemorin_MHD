@@ -73,57 +73,33 @@
       subroutine allocate_surf_bc_data
 !
       use m_control_parameter
-      use m_surf_data_temp
-      use m_surf_data_press
-      use m_surf_data_vector_p
-      use m_surf_data_magne
-      use m_surf_data_magne_p
       use m_surf_data_torque
-      use m_surf_data_current
-      use m_surf_data_composition
+      use m_surf_data_temp
+      use m_surf_data_magne
 !
 !
       if (iflag_t_evo_4_temp .gt. id_no_evolution) then
-        call allocate_surf_data_temp
+        call alloc_surf_data_scalar(Tsf1_bcs)
       end if
 !
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
-        call alloc_surf_vector_dat_type(Vsf1_bcs%sgs)
-        call alloc_surf_scaler_num(Vsf1_bcs%normal)
-        call alloc_surf_scaler_apt(Vsf1_bcs%normal)
-!
-        call alloc_surf_vector_num(Vsf1_bcs%grad)
-        call alloc_surf_vector_dat_type(Vsf1_bcs%torque_lead)
-        call alloc_surf_scaler_dat_type(Vsf1_bcs%free_sph_in)
-        call alloc_surf_scaler_dat_type(Vsf1_bcs%free_sph_out)
-!
-        call alloc_surf_vector_apt(Vsf1_bcs%grad)
-!
-        call alloc_surf_scaler_dat_type(Psf1_bcs%sgs)
-        call alloc_surf_scaler_dat_type(Psf1_bcs%grad_lead)
-!
-        call alloc_surf_scaler_num(Psf1_bcs%grad)
-        call alloc_surf_scaler_dat_type(Psf1_bcs%wall)
-        call alloc_surf_scaler_dat_type(Psf1_bcs%sph_in)
-        call alloc_surf_scaler_dat_type(Psf1_bcs%sph_out)
-!
-        call alloc_surf_scaler_apt(Psf1_bcs%grad)
+        call alloc_surf_data_velo(Vsf1_bcs)
+        call alloc_surf_potential(Psf1_bcs)
       end if
 !
       if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
      &      .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-        call allocate_surf_data_magne
-        call allocate_surf_data_current
-        call allocate_surf_data_magne_p
-        call allocate_surf_magp_grad
+        call alloc_surf_vector(Bsf1_bcs)
+        call alloc_surf_vector(Jsf1_bcs)
+        call alloc_surf_potential(Fsf1_bcs)
       end if
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-        call allocate_surf_data_vect_p
+        call alloc_surf_data_velo(Asf1_bcs)
       end if
 ! 
       if (iflag_t_evo_4_composit .gt. id_no_evolution) then
-        call allocate_surf_data_composit
+        call alloc_surf_data_scalar(Csf1_bcs)
       end if
 !
       end subroutine allocate_surf_bc_data

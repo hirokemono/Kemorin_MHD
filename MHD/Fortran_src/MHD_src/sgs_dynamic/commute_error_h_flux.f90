@@ -12,13 +12,14 @@
 !!     &          FEM_elens, sgs_sf, i_filter, i_sgs, i_flux, i_vect,   &
 !!     &          fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_commute_error_4_idct(iele_fsmp_stack, m_lump,    &
-!!     &          node, ele, surf, sf_grp, jac_3d, jac_sf_grp, rhs_tbl, &
-!!     &          FEM_elens, i_filter, i_sgs, i_flux, i_v, i_b,         &
+!!     &          node, ele, surf, sf_grp, Bsf_bcs, jac_3d, jac_sf_grp, &
+!!     &          rhs_tbl, FEM_elens, i_filter, i_sgs, i_flux, i_v, i_b,&
 !!     &          fem_wk, f_l, f_nl, nod_fld)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(vector_surf_bc_type), intent(in) :: Bsf_bcs
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -163,11 +164,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_commute_error_4_idct(iele_fsmp_stack, m_lump,      &
-     &          node, ele, surf, sf_grp, jac_3d, jac_sf_grp, rhs_tbl,   &
-     &          FEM_elens, i_filter, i_sgs, i_flux, i_v, i_b,           &
+     &          node, ele, surf, sf_grp, Bsf_bcs, jac_3d, jac_sf_grp,   &
+     &          rhs_tbl, FEM_elens, i_filter, i_sgs, i_flux, i_v, i_b,  &
      &          fem_wk, f_l, f_nl, nod_fld)
 !
-      use m_surf_data_magne
+      use t_surface_bc_data
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
@@ -178,6 +179,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(vector_surf_bc_type), intent(in) :: Bsf_bcs
       type(jacobians_3d), intent(in) :: jac_3d
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -200,7 +202,7 @@
      &    i_filter, i_flux, i_v, i_b, fem_wk, f_nl)
 !
       call int_surf_commute_induct_t(node, ele, surf, sf_grp,           &
-     &     nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, Bsf1_bcs%sgs,       &
+     &     nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, Bsf_bcs%sgs,        &
      &     intg_point_t_evo, i_flux, i_filter, i_v, i_b,  fem_wk, f_nl)
 !
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
