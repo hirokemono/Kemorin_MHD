@@ -56,6 +56,7 @@
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_layering_ele_list
+      use t_bc_data_magne
       use t_surface_bc_data
 !
       implicit none
@@ -74,7 +75,6 @@
 !
       use m_control_parameter
       use m_t_step_parameter
-      use m_bc_data_magne
       use m_SGS_address
       use m_SGS_model_coefs
 !

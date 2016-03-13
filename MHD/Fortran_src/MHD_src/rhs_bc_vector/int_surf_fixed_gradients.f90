@@ -53,8 +53,6 @@
      &         (node, ele, surf, sf_grp, jac_sf_grp, rhs_tbl, grad_sf,  &
      &          n_int, ak_d, fem_wk, f_l)
 !
-      use m_surf_data_temp
-!
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf

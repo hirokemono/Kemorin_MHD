@@ -4,11 +4,8 @@
 !        programmed by H.Matsui on Jan., 2009
 !
 !>  @brief Structure for nodal boundary data for MHD dynamo model
-!
-!>
-!>        (module m_bc_data_ene)
+!!
 !>        (module m_bc_data_velo)
-!>        (module m_bc_data_magne)
 !>
 !
 !      subroutine alloc_scalar_nod_bc_type(numnod, scalar_bc)

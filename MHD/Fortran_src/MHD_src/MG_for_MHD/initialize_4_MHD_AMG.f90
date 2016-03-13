@@ -46,7 +46,7 @@
       use set_djds_connect_type_MHD
       use set_normal_vectors
       use int_surface_param_type
-      use set_bc_surface_data_type
+      use set_surface_id_MHD
       use int_type_mass_matrices
       use set_MHD_idx_4_mat_type
       use link_MG_MHD_mesh_data
@@ -254,8 +254,11 @@
      &      MG_mesh(i_level)%group, MG_MHD_mesh(i_level),               &
      &      MG_node_bc(i_level))
 !
-        call s_set_bc_surface_data_type(MG_mesh(i_level)%mesh,          &
-     &      MG_mesh(i_level)%group, MG_ele_mesh(i_level)%surf,          &
+        call set_bc_surface_data                                        &
+     &     (MG_mesh(i_level)%mesh%node, MG_mesh(i_level)%mesh%ele,      &
+     &      MG_ele_mesh(i_level)%surf, MG_mesh(i_level)%group%surf_grp, &
+     &      MG_mesh(i_level)%group%surf_nod_grp,                        &
+     &      MG_mesh(i_level)%group%surf_grp_geom,                       &
      &      MG_surf_bc(i_level) )
       end do
 !

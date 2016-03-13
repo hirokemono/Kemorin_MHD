@@ -41,7 +41,6 @@
 !
       use m_control_parameter
       use m_phys_constants
-      use m_surf_data_magne
 !
       use int_surf_div_induct_tsr_sgs
       use int_surf_fixed_gradients

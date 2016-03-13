@@ -48,6 +48,8 @@
       use m_solver_djds_MHD
 !
       use m_cal_max_indices
+      use m_surf_data_list
+      use m_bc_data_velo
 !
       use t_mesh_data
       use t_geometry_data_MHD
@@ -63,7 +65,6 @@
       use int_surface_params_MHD
       use set_dynamo_initial_field
       use set_nodal_bc_id_data
-      use set_surface_bc_data
       use allocate_array_MHD
       use ordering_line_filter_smp
       use const_ele_layering_table
@@ -268,7 +269,7 @@
 !
       if (iflag_debug.eq.1)write(*,*) 'set_bc_id_data'
       call set_bc_id_data(mesh%node, mesh%ele, group%nod_grp,           &
-     &    MHD_mesh, iphys, nod_fld1)
+     &    MHD_mesh, iphys, nod_fld1, nod1_bcs)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_surf_bc_data'
       call set_surf_bc_data                                             &
@@ -294,9 +295,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_stability_4_diffuse'
       call cal_stability_4_diffuse(mesh%ele)
-!
-!     ---------------------
-!
+! 
       call deallocate_surf_bc_lists
 !
       end subroutine init_analyzer_fl

@@ -23,7 +23,7 @@
       use t_finite_element_mat
       use t_finite_element_mat_MHD
       use t_nodal_bc_data
-      use t_surface_bc_data
+      use t_MHD_boundary_data
       use t_filter_elength
       use t_solver_djds
       use t_crs_connect

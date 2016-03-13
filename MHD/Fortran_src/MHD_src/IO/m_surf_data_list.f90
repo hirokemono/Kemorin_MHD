@@ -15,15 +15,6 @@
 !!      subroutine allocate_magp_surf_ctl
 !!      subroutine allocate_current_surf_ctl
 !!      subroutine allocate_d_scalar_surf_ctl
-!!
-!!      subroutine deallocate_velo_surf_ctl
-!!      subroutine deallocate_press_surf_ctl
-!!      subroutine deallocate_temp_surf_ctl
-!!      subroutine deallocate_magne_surf_ctl
-!!      subroutine deallocate_vecp_surf_ctl
-!!      subroutine deallocate_magp_surf_ctl
-!!      subroutine deallocate_current_surf_ctl
-!!      subroutine deallocate_composit_surf_ctl
 !!@endverbatim
 ! 
       module m_surf_data_list
@@ -64,11 +55,51 @@
 !>       Surface group data list for current density
       type(surface_bc_list_type), save :: current_surf
 !
+      private :: deallocate_velo_surf_ctl, deallocate_press_surf_ctl
+      private :: deallocate_magp_surf_ctl, deallocate_temp_surf_ctl
+      private :: deallocate_magne_surf_ctl, deallocate_vecp_surf_ctl
+      private :: deallocate_current_surf_ctl
+      private :: deallocate_composit_surf_ctl
+!
 !-----------------------------------------------------------------------
 !
       contains 
 !
 !-----------------------------------------------------------------------
+!
+      subroutine deallocate_surf_bc_lists
+!
+      use m_control_parameter
+!
+!
+      if (iflag_t_evo_4_temp .gt. id_no_evolution) then
+        if(h_flux_surf%num_bc .gt. 0) call deallocate_temp_surf_ctl
+      end if
+!
+      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+        if(torque_surf%num_bc.gt.0) call deallocate_velo_surf_ctl
+        if(wall_surf%num_bc.gt.0)   call deallocate_press_surf_ctl
+      end if
+!
+      if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
+     &      .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+        if(magne_surf%num_bc .gt. 0)   call deallocate_magne_surf_ctl
+        if(current_surf%num_bc .gt. 0) call deallocate_current_surf_ctl
+        if(e_potential_surf%num_bc.gt.0) call deallocate_magp_surf_ctl
+      end if
+!
+      if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+        if(a_potential_surf%num_bc.gt.0) call deallocate_vecp_surf_ctl
+      end if
+! 
+      if (iflag_t_evo_4_composit .gt. id_no_evolution) then
+        if(light_surf%num_bc.gt.0) call deallocate_composit_surf_ctl
+      end if
+!
+      end subroutine deallocate_surf_bc_lists
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
       subroutine alloc_surface_bc_type_ctl(surf_bc_list)
 !

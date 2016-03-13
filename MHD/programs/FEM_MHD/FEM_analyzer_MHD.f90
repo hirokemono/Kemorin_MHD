@@ -42,6 +42,7 @@
       use m_int_vol_data
       use m_cal_max_indices
       use m_layering_ele_list
+      use m_bc_data_velo
 !
       use initialization_4_MHD
       use lead_physical_values
@@ -67,10 +68,10 @@
 !
       call reset_update_flag(nod_fld1)
       if (iflag_debug.eq.1) write(*,*) 'update_fields'
-      call update_fields                                                &
-     &   (mesh1, group1, ele_mesh1, MHD_mesh1, iphys,                   &
-     &    iphys_ele, fld_ele1, jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q,  &
-     &    rhs_tbl1, FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk,        &
+      call update_fields(mesh1, group1, ele_mesh1, MHD_mesh1,           &
+     &    nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,                &
+     &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
+     &    FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk,                  &
      &    fem1_wk, f1_l, f1_nl, nod_fld1)
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
@@ -85,15 +86,16 @@
      &   (mesh1, MHD_mesh1, rhs_tbl1, MHD1_mat_tbls)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
       call set_aiccg_matrices(mesh1, group1, ele_mesh1, MHD_mesh1,      &
-     &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, FEM1_elen, rhs_tbl1,  &
-     &    MHD1_mat_tbls, mhd_fem1_wk, fem1_wk)
+     &    nod1_bcs, sf1_bcs, jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q,    &
+     &    FEM1_elen, rhs_tbl1, MHD1_mat_tbls, mhd_fem1_wk, fem1_wk)
 !
 !   time evolution loop start!
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
-        call s_cal_model_coefficients(mesh1, group1, ele_mesh1, iphys,  &
-     &      iphys_ele, fld_ele1, MHD_mesh1, layer_tbl1,                 &
+        call s_cal_model_coefficients                                   &
+     &     (mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,            &
+     &      nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,              &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, m1_lump, mhd_fem1_wk, fem1_wk,                   &
      &      f1_l, f1_nl, nod_fld1)
@@ -101,7 +103,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'lead_fields_by_FEM'
       call lead_fields_by_FEM(mesh1, group1, ele_mesh1,                 &
-     &    MHD_mesh1, iphys, iphys_ele, fld_ele1,                        &
+     &    MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,     &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
      &    FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk, fem1_wk,         &
      &    f1_l, f1_nl, nod_fld1)
@@ -147,6 +149,7 @@
       use m_filter_elength
       use m_int_vol_data
       use m_layering_ele_list
+      use m_bc_data_velo
 !
       use construct_matrices
       use lead_physical_values
@@ -182,8 +185,8 @@
 !     ----- Time integration
 !
       if (iflag_debug.eq.1) write(*,*) 'fields_evolution'
-      call fields_evolution(mesh1, group1, ele_mesh1,                   &
-     &    MHD_mesh1, iphys, iphys_ele, fld_ele1,                        &
+      call fields_evolution(mesh1, group1, ele_mesh1, MHD_mesh1,        &
+     &    nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,                &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, jac1_sf_grp_2d_l,     &
      &    rhs_tbl1, FEM1_elen, layer_tbl1, m1_lump,                     &
      &    mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
@@ -192,8 +195,9 @@
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
-        call s_cal_model_coefficients(mesh1, group1, ele_mesh1, iphys,  &
-     &      iphys_ele, fld_ele1, MHD_mesh1, layer_tbl1,                 &
+        call s_cal_model_coefficients                                   &
+     &     (mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,            &
+     &      nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,              &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, m1_lump, mhd_fem1_wk, fem1_wk,                   &
      &      f1_l, f1_nl, nod_fld1)
@@ -212,7 +216,7 @@
 !
       if(istep_flex_to_max .eq. 0) then
         call lead_fields_by_FEM(mesh1, group1, ele_mesh1,               &
-     &      MHD_mesh1, iphys, iphys_ele, fld_ele1,                      &
+     &      MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,   &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk, fem1_wk,       &
      &      f1_l, f1_nl, nod_fld1)
@@ -299,8 +303,8 @@
       if ( retval .ne. 0 ) then
         if (iflag_debug.eq.1) write(*,*) 'update_matrices'
         call update_matrices(mesh1, group1, ele_mesh1, MHD_mesh1,       &
-     &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, FEM1_elen,          &
-     &      rhs_tbl1, MHD1_mat_tbls, mhd_fem1_wk, fem1_wk)
+     &      nod1_bcs, sf1_bcs, jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q,  &
+     &      FEM1_elen, rhs_tbl1, MHD1_mat_tbls, mhd_fem1_wk, fem1_wk)
       end if
 !
       end subroutine FEM_analyze_MHD

@@ -43,6 +43,8 @@
       use m_element_id_4_node
       use m_finite_element_matrix
       use m_int_vol_data
+      use m_surf_data_list
+      use m_bc_data_velo
 !
       use t_mesh_data
       use t_geometry_data_MHD
@@ -54,7 +56,6 @@
       use int_MHD_mass_matrices
       use int_surface_params_MHD
       use set_nodal_bc_id_data
-      use set_surface_bc_data
       use allocate_array_MHD
       use ordering_line_filter_smp
       use const_ele_layering_table
@@ -229,18 +230,21 @@
 !
       if (iflag_debug.eq.1) write(*,*)' set_bc_id_data'
       call set_bc_id_data(mesh%node, mesh%ele, group%nod_grp,           &
-     &    MHD_mesh, iphys, nod_fld1)
+     &    MHD_mesh, iphys, nod_fld1, nod1_bcs)
 !
       if (iflag_debug.eq.1) write(*,*)' set_surf_bc_data'
       call set_surf_bc_data                                             &
      &   (mesh%node, mesh%ele, ele_mesh%surf, group%surf_grp,           &
      &    group%surf_nod_grp, group%surf_grp_geom, iphys, nod_fld1)
-      call deallocate_surf_bc_lists
 !
-!     --------------------- 
+!     ---------------------
 !
       call int_RHS_mass_matrices(mesh%node, mesh%ele, MHD_mesh,         &
      &   jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk, f1_l, m1_lump)
+!
+!     ---------------------
+!
+      call deallocate_surf_bc_lists
 !
       end subroutine init_analyzer_snap
 !

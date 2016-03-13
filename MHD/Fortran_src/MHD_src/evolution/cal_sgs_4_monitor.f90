@@ -7,8 +7,8 @@
 !!     &         (nod_comm, node, ele, fluid, conduct, iphys,           &
 !!     &          iphys_ele, ele_fld,  jac_3d, rhs_tbl, FEM_elens,      &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-!!      subroutine cal_diff_of_sgs_terms                                &
-!!     &         (nod_comm, node, ele, surf, sf_grp, fluid, conduct,    &
+!!      subroutine cal_diff_of_sgs_terms(nod_comm, node, ele,           &
+!!     &          surf, fluid, conduct, sf_grp, nod_bcs, surf_bcs,      &
 !!     &          iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp,        &
 !!     &          rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl,    &
 !!     &          nod_fld)
@@ -21,6 +21,8 @@
 !!        type(surface_data), intent(in) :: surf
 !!        type(field_geometry_data), intent(in) :: fluid, conduct
 !!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(nodal_boundarty_conditions), save :: nod_bcs
+!!        type(surface_boundarty_conditions), intent(in) :: surf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
@@ -54,6 +56,8 @@
       use t_finite_element_mat
       use t_MHD_finite_element_mat
       use t_filter_elength
+      use t_bc_data_MHD
+      use t_MHD_boundary_data
 !
       implicit none
 !
@@ -137,17 +141,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_diff_of_sgs_terms                                  &
-     &         (nod_comm, node, ele, surf, sf_grp, fluid, conduct,      &
+      subroutine cal_diff_of_sgs_terms(nod_comm, node, ele,             &
+     &          surf, fluid, conduct, sf_grp, nod_bcs, surf_bcs,        &
      &          iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp,          &
      &          rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl,      &
      &          nod_fld)
 !
-      use m_bc_data_ene
-      use m_bc_data_magne
-      use m_surf_data_torque
-      use m_surf_data_temp
-      use m_surf_data_magne
       use m_SGS_address
 !
       use cal_terms_for_heat
@@ -160,6 +159,8 @@
       type(surface_data), intent(in) :: surf
       type(field_geometry_data), intent(in) :: fluid, conduct
       type(surface_group_data), intent(in) :: sf_grp
+      type(nodal_boundarty_conditions), intent(in) :: nod_bcs
+      type(surface_boundarty_conditions), intent(in) :: surf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -181,9 +182,9 @@
      &        'lead ', trim(fhd_div_SGS_h_flux)
         call cal_terms_4_heat(iphys%i_SGS_div_h_flux, iak_diff_hf,      &
      &      nod_comm, node, ele, surf, fluid, sf_grp,                   &
-     &      Tnod1_bcs, Tsf1_bcs, iphys, iphys_ele, ele_fld,             &
-     &      jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                     &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,                  &
+     &      iphys_ele, ele_fld,  jac_3d, jac_sf_grp, rhs_tbl,           &
+     &      FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       do i = 1, nod_fld%num_phys
@@ -194,9 +195,9 @@
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call cal_terms_4_momentum(i_fld, iak_diff_mf, iak_diff_lor,   &
      &        nod_comm, node, ele, surf, fluid, sf_grp,                 &
-     &        Vsf1_bcs, Bsf1_bcs, iphys, iphys_ele, ele_fld,            &
-     &        jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, mhd_fem_wk,       &
-     &        fem_wk, f_l, f_nl, nod_fld)
+     &        surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys,                &
+     &        iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,          &
+     &        FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         end if
       end do
 !
@@ -206,9 +207,9 @@
      &        'lead ', trim(fhd_SGS_induction)
         call cal_terms_4_magnetic(iphys%i_SGS_induction, iak_diff_uxb,  &
      &      nod_comm, node, ele, surf, conduct, sf_grp,                 &
-     &      Bnod1_bcs, Asf1_bcs, Bsf1_bcs, iphys, iphys_ele, ele_fld,   &
-     &      jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, &
-     &      f_l, f_nl, nod_fld)
+     &      nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,       &
+     &      iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,     &
+     &      FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
 !

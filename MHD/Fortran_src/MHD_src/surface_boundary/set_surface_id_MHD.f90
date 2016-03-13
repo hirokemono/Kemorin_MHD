@@ -3,12 +3,16 @@
 !
 !      Written by H. Matsui on Sep. 2005
 !
+!!      subroutine s_set_bc_surface_data_type(mesh, group, surf, sf_dat)
+!!      subroutine count_num_surf_bc(sf_grp, sf_grp_nod, surf_bcs)
 !!      subroutine set_surface_id(node, ele, surf, sf_grp, sf_grp_nod,  &
 !!     &          sf_grp_v, iphys, nod_fld)
 !
       module set_surface_id_MHD
 !
       use m_precision
+!
+      use m_control_parameter
 !
       use t_geometry_data
       use t_surface_data
@@ -17,6 +21,7 @@
       use t_surface_group_geometry
       use t_phys_data
       use t_phys_address
+      use t_MHD_boundary_data
 !
       implicit none
 !
@@ -26,66 +31,105 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine count_num_surf_bc(sf_grp, sf_grp_nod)
+      subroutine set_bc_surface_data(node, ele, surf,                   &
+     &          sf_grp, sf_grp_nod, sf_grp_v, surf_bcs)
 !
       use m_machine_parameter
-      use m_surf_data_torque
-      use m_surf_data_magne
-      use m_surf_data_temp
+!
+      use t_geometry_data
+      use t_surface_data
+      use t_group_data
+      use t_surface_group_connect
+      use t_surface_group_geometry
+      use t_phys_data
+      use t_phys_address
+!
+      use set_surface_values
+      use set_normal_field
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(surface_group_data), intent(in) :: sf_grp
+      type(surface_node_grp_data), intent(in) :: sf_grp_nod
+      type(surface_group_geometry), intent(in) :: sf_grp_v
+!
+      type(surface_boundarty_conditions), intent(inout) :: surf_bcs
+!
+!
+      call allocate_work_4_surf_bc_dat(node%numnod)
+!
+! ---  set boundary conditions
+!
+      if (iflag_debug.eq.1) write(*,*) 'count_num_surf_bc'
+      call count_num_surf_bc(sf_grp, sf_grp_nod, surf_bcs)
+!
+      call alloc_surf_bc_data_type(surf_bcs)
+!
+      call set_surface_id(node, ele, surf, sf_grp, sf_grp_nod,          &
+     &    sf_grp_v, surf_bcs)
+!
+      call deallocate_work_4_surf_bc_dat
+! 
+      end subroutine set_bc_surface_data
+!
+!  ---------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine count_num_surf_bc(sf_grp, sf_grp_nod, surf_bcs)
+!
+      use m_machine_parameter
       use m_scalar_surf_id
       use m_vector_surf_id
 !
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !
+      type(surface_boundarty_conditions), intent(inout) :: surf_bcs
+!
 !
       if (iflag_debug.eq.1) write(*,*) 'count_num_bc_h_flux'
       call count_num_surf_gradient                                      &
-     &   (name_hf, sf_grp, h_flux_surf, Tsf1_bcs)
+     &   (name_hf, sf_grp, h_flux_surf, surf_bcs%Tsf_bcs)
 !
       if (iflag_debug.eq.1) write(*,*) 'count_num_bc_torque'
       call count_num_surf_grad_velo(name_svn, name_vg,                  &
-     &    sf_grp, sf_grp_nod, torque_surf, Vsf1_bcs)
+     &    sf_grp, sf_grp_nod, torque_surf, surf_bcs%Vsf_bcs)
 !
       if (iflag_debug.eq.1) write(*,*) 'count_num_bc_press_sf'
       call count_num_wall_potential                                     &
-     &   (name_pg, sf_grp, wall_surf, Psf1_bcs)
+     &   (name_pg, sf_grp, wall_surf, surf_bcs%Psf_bcs)
 !
       if (iflag_debug.eq.1) write(*,*) 'count_num_bc_vecp_sf'
       call count_num_surf_grad_velo(name_san, name_ag,                  &
-     &    sf_grp, sf_grp_nod, a_potential_surf, Asf1_bcs)
+     &    sf_grp, sf_grp_nod, a_potential_surf, surf_bcs%Asf_bcs)
 !
       if (iflag_debug.eq.1) write(*,*) 'count_num_bc_magne_sf'
       call count_num_surf_grad_vector(name_sbn, name_bg,                &
-     &    sf_grp, sf_grp_nod, magne_surf, Bsf1_bcs)
+     &    sf_grp, sf_grp_nod, magne_surf, surf_bcs%Bsf_bcs)
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'count_num_bc_current_sf'
       call count_num_surf_grad_vector(name_sjn, name_jg,                &
-     &    sf_grp, sf_grp_nod, current_surf, Jsf1_bcs)
+     &    sf_grp, sf_grp_nod, current_surf, surf_bcs%Jsf_bcs)
 !
       if (iflag_debug.eq.1) write(*,*) 'count_num_surf_mag_p'
       call count_num_wall_potential                                     &
-     &   (name_mpg, sf_grp, e_potential_surf, Fsf1_bcs)
+     &   (name_mpg, sf_grp, e_potential_surf, surf_bcs%Fsf_bcs)
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'count_num_bc_d_scalar_sf'
       call count_num_surf_gradient                                      &
-     &   (name_dsg, sf_grp, light_surf, Csf1_bcs)
+     &   (name_dsg, sf_grp, light_surf, surf_bcs%Csf_bcs)
 !
       end subroutine count_num_surf_bc
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_surface_id(node, ele, surf, sf_grp, sf_grp_nod,    &
-     &          sf_grp_v, iphys, nod_fld)
+      subroutine set_surface_id(node, ele, surf,                        &
+     &          sf_grp, sf_grp_nod, sf_grp_v, surf_bcs)
 !
-      use m_control_parameter
-!
-      use m_surf_data_torque
-      use m_surf_data_magne
-      use m_surf_data_temp
       use m_scalar_surf_id
       use m_vector_surf_id
 !
@@ -97,50 +141,46 @@
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
       type(surface_group_geometry), intent(in) :: sf_grp_v
-      type(phys_address), intent(in) :: iphys
 !
-      type(phys_data), intent(inout) :: nod_fld
+      type(surface_boundarty_conditions), intent(inout) :: surf_bcs
 !
 !
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         call set_surf_grad_velo(name_svn, name_vg,                      &
      &      node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v,              &
-     &      torque_surf, Vsf1_bcs)
+     &      torque_surf, surf_bcs%Vsf_bcs)
 !
-        call set_wall_potential_id(sf_grp, wall_surf, Psf1_bcs)
+        call set_wall_potential_id(sf_grp, wall_surf, surf_bcs%Psf_bcs)
       end if
 !
       if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
      &      .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         call set_surf_grad_vector(name_sbn, name_bg,                    &
      &      node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v,              &
-     &      magne_surf, Bsf1_bcs)
+     &      magne_surf, surf_bcs%Bsf_bcs)
 !
         call set_surf_grad_vector(name_sjn, name_jg,                    &
      &      node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v,              &
-     &      current_surf, Jsf1_bcs)
+     &      current_surf, surf_bcs%Jsf_bcs)
 !
-        call set_wall_potential_id(sf_grp, e_potential_surf, Fsf1_bcs)
+        call set_wall_potential_id                                      &
+     &     (sf_grp, e_potential_surf, surf_bcs%Fsf_bcs)
       end if
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         call set_surf_grad_velo(name_san, name_ag,                      &
      &      node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v,              &
-     &      a_potential_surf, Asf1_bcs)
+     &      a_potential_surf, surf_bcs%Asf_bcs)
       end if
 ! 
       if (iflag_t_evo_4_temp .gt. id_no_evolution) then
-        call set_surf_grad_scalar_id(sf_grp, h_flux_surf, Tsf1_bcs)
+        call set_surf_grad_scalar_id                                    &
+     &     (sf_grp, h_flux_surf, surf_bcs%Tsf_bcs)
       end if
 !
       if (iflag_t_evo_4_composit .gt. id_no_evolution) then
-        call set_surf_grad_scalar_id(sf_grp, light_surf, Csf1_bcs)
-      end if
-!
-!     set normal velocity
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
-        call set_normal_velocity                                        &
-     &     (sf_grp, sf_grp_nod, Vsf1_bcs%normal, iphys%i_velo, nod_fld)
+        call set_surf_grad_scalar_id                                    &
+     &     (sf_grp, light_surf, surf_bcs%Csf_bcs)
       end if
 !
       end subroutine set_surface_id

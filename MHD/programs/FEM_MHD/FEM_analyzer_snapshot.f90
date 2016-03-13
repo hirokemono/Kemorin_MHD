@@ -65,6 +65,7 @@
       use m_filter_elength
       use m_int_vol_data
       use m_layering_ele_list
+      use m_bc_data_velo
 !
       use read_udt_4_snapshot
 !
@@ -121,18 +122,19 @@
       call nod_fields_send_recv(mesh1%node, mesh1%nod_comm, nod_fld1)
 !
       if (iflag_debug.eq.1)  write(*,*) 'update_fields'
-      call update_fields                                                &
-     &   (mesh1, group1, ele_mesh1, MHD_mesh1, iphys,                   &
-     &    iphys_ele, fld_ele1, jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q,  &
-     &    rhs_tbl1, FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk,        &
+      call update_fields(mesh1, group1, ele_mesh1, MHD_mesh1,           &
+     &    nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,                &
+     &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
+     &    FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk,                  &
      &    fem1_wk, f1_l, f1_nl, nod_fld1)
 !
 !     ----- Evaluate model coefficients
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
-        call s_cal_model_coefficients(mesh1, group1, ele_mesh1, iphys,  &
-     &      iphys_ele, fld_ele1, MHD_mesh1, layer_tbl1,                 &
+        call s_cal_model_coefficients                                   &
+     &     (mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,            &
+     &      nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,              &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, m1_lump, mhd_fem1_wk, fem1_wk,                   &
      &      f1_l, f1_nl, nod_fld1)
@@ -141,7 +143,7 @@
 !     ========  Data output
 !
       call lead_fields_by_FEM(mesh1, group1, ele_mesh1,                 &
-     &    MHD_mesh1, iphys, iphys_ele, fld_ele1,                        &
+     &    MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,     &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
      &    FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk, fem1_wk,         &
      &    f1_l, f1_nl, nod_fld1)

@@ -72,7 +72,6 @@
      &          fem_wk, f_l)
 !
       use m_ele_material_property
-      use m_bc_data_velo
       use int_vol_fixed_field_ele
       use int_vol_fixed_fld_sgs_ele
       use cal_ff_smp_to_ffs
@@ -163,7 +162,6 @@
      &          nod_bc_fins, fem_wk, f_l)
 !
       use m_ele_material_property
-      use m_bc_data_magne
       use int_vol_fixed_field_ele
       use int_vol_fixed_fld_sgs_ele
       use cal_ff_smp_to_ffs
@@ -209,7 +207,6 @@
      &          nod_bc_t, fem_wk, f_l)
 !
       use m_ele_material_property
-      use m_bc_data_ene
       use int_vol_fixed_field_ele
       use int_vol_fixed_fld_sgs_ele
 !
@@ -251,7 +248,6 @@
      &          nod_bc_t, fem_wk, f_l)
 !
       use m_ele_material_property
-      use m_bc_data_ene
       use int_vol_fixed_field_ele
       use int_vol_fixed_fld_sgs_ele
 !
@@ -293,7 +289,6 @@
      &          nod_bc_c, fem_wk, f_l)
 !
       use m_ele_material_property
-      use m_bc_data_ene
       use int_vol_fixed_field_ele
       use int_vol_fixed_fld_sgs_ele
 !

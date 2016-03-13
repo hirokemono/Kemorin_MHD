@@ -5,7 +5,7 @@
 !
 !!      subroutine cal_true_sgs_terms_pre                               &
 !!     &        (nod_comm, node, ele, surf, sf_grp, fluid, conduct,     &
-!!     &         Vsf_bcs, iphys, iphys_ele, ele_fld,                    &
+!!     &         nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,          &
 !!     &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                &
 !!     &         mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_true_sgs_terms_post
@@ -16,7 +16,8 @@
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(field_geometry_data), intent(in) :: fluid, conduct
-!!        type(velocity_surf_bc_type), intent(in)  :: Vsf_bcs
+!!        type(nodal_boundarty_conditions), intent(in) :: nod_bcs
+!!        type(surface_boundarty_conditions), intent(in) :: surf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
@@ -49,6 +50,8 @@
       use t_finite_element_mat
       use t_MHD_finite_element_mat
       use t_filter_elength
+      use t_bc_data_MHD
+      use t_MHD_boundary_data
 !
       use cal_fluxes
       use copy_nodal_fields
@@ -73,7 +76,7 @@
 !
       subroutine cal_true_sgs_terms_pre                                 &
      &        (nod_comm, node, ele, surf, sf_grp, fluid, conduct,       &
-     &         Vsf_bcs, iphys, iphys_ele, ele_fld,                      &
+     &         nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,            &
      &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                  &
      &         mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
@@ -81,10 +84,6 @@
       use m_phys_labels
       use m_SGS_address
       use m_physical_property
-      use m_bc_data_ene
-      use m_bc_data_magne
-      use m_surf_data_temp
-      use m_surf_data_magne
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -92,7 +91,8 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(field_geometry_data), intent(in) :: fluid, conduct
-      type(velocity_surf_bc_type), intent(in)  :: Vsf_bcs
+      type(nodal_boundarty_conditions), intent(in) :: nod_bcs
+      type(surface_boundarty_conditions), intent(in) :: surf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -114,36 +114,36 @@
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_h_flux_true_pre(iak_diff_hf,                &
      &         nod_comm, node, ele, surf, sf_grp, fluid,                &
-     &         Tnod1_bcs, Tsf1_bcs, iphys, iphys_ele, ele_fld,          &
-     &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                  &
-     &         mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &         nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,               &
+     &         iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,         &
+     &         FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
          else if ( nod_fld%phys_name(i).eq.fhd_SGS_div_m_flux_true)     &
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_m_flux_true_pre(iak_diff_mf, iak_diff_lor,  &
      &         nod_comm, node, ele, surf, fluid, sf_grp,                &
-     &         Vsf_bcs, Bsf1_bcs, iphys, iphys_ele, ele_fld,            &
-     &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, mhd_fem_wk,      &
-     &         fem_wk, f_l, f_nl, nod_fld)
+     &         surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys,               &
+     &         iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,         &
+     &         FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
          else if ( nod_fld%phys_name(i).eq.fhd_SGS_Lorentz_true) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_maxwell_true_pre                            &
      &        (iak_diff_mf, iak_diff_lor, ex_magne,                     &
      &         nod_comm, node, ele, surf, fluid, sf_grp,                &
-     &         Vsf_bcs, Bsf1_bcs, iphys, iphys_ele, ele_fld,            &
-     &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, mhd_fem_wk,      &
-     &         fem_wk, f_l, f_nl, nod_fld)
+     &         surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys,               &
+     &         iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,         &
+     &         FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
          else if ( nod_fld%phys_name(i).eq.fhd_SGS_mag_induct_true)     &
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_induct_true_pre(iak_diff_uxb,               &
      &        nod_comm, node, ele, surf, conduct, sf_grp,               &
-     &        Bnod1_bcs, Asf1_bcs, Bsf1_bcs, iphys, iphys_ele, ele_fld, &
-     &        jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                   &
-     &        mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &        nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,     &
+     &        iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,   &
+     &        FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
          end if
        end do
 !

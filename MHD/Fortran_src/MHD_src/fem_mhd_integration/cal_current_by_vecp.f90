@@ -264,7 +264,6 @@
      &          fem_wk, f_l)
 !
       use m_ele_material_property
-      use m_surf_data_magne
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele

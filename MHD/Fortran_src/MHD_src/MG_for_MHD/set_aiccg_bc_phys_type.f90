@@ -44,6 +44,7 @@
       use t_finite_element_mat
       use t_solver_djds
       use t_bc_data_MHD
+      use t_MHD_boundary_data
 !
       implicit none
 !
@@ -95,7 +96,8 @@
       if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
         call set_aiccg_bc_velo(intg_point_t_evo, ele, surf, sf_grp,     &
      &      nodal_bc%Vnod_bcs%nod_bc_v, nodal_bc%Vnod_bcs%nod_bc_rot,   &
-     &      surface_bc%velo%free_sph_in, surface_bc%velo%free_sph_out,  &
+     &      surface_bc%Vsf_bcs%free_sph_in,                             &
+     &      surface_bc%Vsf_bcs%free_sph_out,                            &
      &      jac_sf_grp, rhs_tbl, mat_tbl_fl, djds_tbl_fl,               &
      &      fem_wk, mat_velo)
       end if

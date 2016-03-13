@@ -96,7 +96,6 @@
      &          MG_comm_fluid, MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,  &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
-      use m_surf_data_torque
       use m_SGS_address
 !
       use nod_phys_send_recv

@@ -35,6 +35,7 @@
       use m_filter_elength
       use m_layering_ele_list
       use m_sorted_node_MHD
+      use m_bc_data_velo
 !
       use initialization_4_MHD
 !
@@ -55,8 +56,8 @@
      &   (mesh1, MHD_mesh1, rhs_tbl1, MHD1_mat_tbls)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
       call set_aiccg_matrices(mesh1, group1, ele_mesh1, MHD_mesh1,      &
-     &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, FEM1_elen, rhs_tbl1,  &
-     &    MHD1_mat_tbls, mhd_fem1_wk, fem1_wk)
+     &    nod1_bcs, sf1_bcs, jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q,    &
+     &    FEM1_elen, rhs_tbl1, MHD1_mat_tbls, mhd_fem1_wk, fem1_wk)
 !
       if (iflag_debug.eq.1) write(*,*) 's_write_djds_mat_MHD'
       call s_write_djds_mat_MHD

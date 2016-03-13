@@ -4,12 +4,15 @@
 !      Written by H. Matsui
 !
 !!      subroutine s_cal_model_coefficients(mesh, group, ele_mesh,      &
-!!     &          iphys, iphys_ele, ele_fld, MHD_mesh, layer_tbl,       &
-!!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,  &
-!!     &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          MHD_mesh, layer_tbl, nod_bcs, surf_bcs, iphys,        &
+!!     &          iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q, &
+!!     &          rhs_tbl, FEM_elen, m_lump, mhd_fem_wk, fem_wk,        &
+!!     &          f_l, f_nl, nod_fld)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(element_geometry), intent(in) :: ele_mesh
+!!        type(nodal_boundarty_conditions), intent(in) :: nod_bcs
+!!        type(surface_boundarty_conditions), intent(in) :: surf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
@@ -48,6 +51,8 @@
       use t_layering_ele_list
       use t_MHD_finite_element_mat
       use t_filter_elength
+      use t_bc_data_MHD
+      use t_MHD_boundary_data
 !
       implicit none
 !
@@ -58,16 +63,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_cal_model_coefficients(mesh, group, ele_mesh,        &
-     &          iphys, iphys_ele, ele_fld, MHD_mesh, layer_tbl,         &
-     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,    &
-     &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          MHD_mesh, layer_tbl, nod_bcs, surf_bcs, iphys,          &
+     &          iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,   &
+     &          rhs_tbl, FEM_elen, m_lump, mhd_fem_wk, fem_wk,          &
+     &          f_l, f_nl, nod_fld)
 !
       use m_t_step_parameter
-      use m_bc_data_velo
-      use m_bc_data_ene
-      use m_surf_data_torque
-      use m_surf_data_temp
-      use m_surf_data_magne
       use m_SGS_address
 !
       use cal_sgs_heat_flux_dynamic
@@ -85,6 +86,8 @@
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
       type(element_geometry), intent(in) :: ele_mesh
+      type(nodal_boundarty_conditions), intent(in) :: nod_bcs
+      type(surface_boundarty_conditions), intent(in) :: surf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -131,8 +134,8 @@
           if (iflag_debug.eq.1)  write(*,*) 's_cal_diff_coef_sgs_hf'
           call s_cal_diff_coef_sgs_hf                                   &
      &       (iak_diff_hf, icomp_sgs_hf, icomp_diff_hf, ie_dfvx,        &
-     &        mesh%nod_comm, mesh%node, mesh%ele,                       &
-     &        ele_mesh%surf, group%surf_grp, Tnod1_bcs, Tsf1_bcs,       &
+     &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
+     &        group%surf_grp, nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,       &
      &        iphys, iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,     &
      &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,      &
      &        mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -163,8 +166,8 @@
           if (iflag_debug.eq.1)  write(*,*) 's_cal_diff_coef_sgs_mf'
           call s_cal_diff_coef_sgs_mf                                   &
      &       (iak_diff_mf, icomp_sgs_mf, icomp_diff_mf, ie_dfvx,        &
-     &        mesh%nod_comm, mesh%node, mesh%ele,                       &
-     &        ele_mesh%surf, group%surf_grp, Vnod1_bcs, Vsf1_bcs,       &
+     &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
+     &        group%surf_grp, nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs,       &
      &        iphys, iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,     &
      &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,      &
      &        mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -198,9 +201,10 @@
      &       (iak_diff_lor, icomp_sgs_lor, icomp_diff_lor, ie_dfbx,     &
      &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
      &        MHD_mesh%fluid, layer_tbl, group%surf_grp,                &
-     &        Vnod1_bcs, Bsf1_bcs, iphys, iphys_ele, ele_fld,           &
-     &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,      &
-     &        mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &        nod_bcs%Vnod_bcs, surf_bcs%Bsf_bcs, iphys,                &
+     &        iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,     &
+     &        rhs_tbl, FEM_elen, mhd_fem_wk, fem_wk,                    &
+     &        f_l, f_nl, nod_fld)
         end if
       end if
 !
@@ -231,7 +235,7 @@
      &       (iak_diff_uxb, icomp_sgs_uxb, icomp_diff_uxb, ie_dfvx,     &
      &        ie_dfbx, mesh%nod_comm, mesh%node, mesh%ele,              &
      &        ele_mesh%surf, MHD_mesh%fluid, MHD_mesh%conduct,          &
-     &        layer_tbl, group%surf_grp, Bsf1_bcs, iphys,               &
+     &        layer_tbl, group%surf_grp, surf_bcs%Bsf_bcs, iphys,       &
      &        iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,     &
      &        rhs_tbl, FEM_elen, mhd_fem_wk, fem_wk,                    &
      &        f_l, f_nl, nod_fld)

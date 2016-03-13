@@ -6,7 +6,7 @@
 !        modified by H.Matsui on Aug., 2007
 !
 !!      subroutine set_bc_id_data                                       &
-!!     &         (node, ele, nod_grp, MHD_mesh, iphys, nod_fld)
+!!     &         (node, ele, nod_grp, MHD_mesh, iphys, nod_fld, nod_bcs)
 !!      subroutine set_boundary_velo(node, i_velo, nod_fld)
 !!      subroutine set_boundary_velo_4_rhs(node, Vnod_bcs, f_l, f_nl)
 !!      subroutine delete_field_by_fixed_v_bc(Vnod_bcs, i_field, nod_fld)
@@ -17,6 +17,7 @@
 !!        type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(nodal_boundarty_conditions), intent(inout) :: nod_bcs
 !!        type(finite_ele_mat_node), intent(inout) :: f_l
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !
@@ -30,6 +31,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
+      use t_bc_data_MHD
 !
       implicit none
 !
@@ -40,14 +42,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_bc_id_data                                         &
-     &         (node, ele, nod_grp, MHD_mesh, iphys, nod_fld)
+     &         (node, ele, nod_grp, MHD_mesh, iphys, nod_fld, nod_bcs)
 !
       use m_machine_parameter
       use m_control_parameter
-!
-      use m_bc_data_ene
-      use m_bc_data_velo
-      use m_bc_data_magne
 !
       use m_boundary_condition_IDs
       use m_bc_data_list
@@ -63,82 +61,84 @@
 !
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(inout) :: nod_fld
+      type(nodal_boundarty_conditions), intent(inout) :: nod_bcs
 !
 !
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         if ( iflag_debug .eq.1) write(*,*)  'set boundary id 4 v'
         call set_bc_velo_id                                             &
-     &     (node, ele, MHD_mesh%fluid, nod_grp, Vnod1_bcs)
+     &     (node, ele, MHD_mesh%fluid, nod_grp, nod_bcs%Vnod_bcs)
         if ( iflag_debug .eq.1) write(*,*)  'set boundary id 4 P'
         call set_bc_press_id(node, ele, MHD_mesh%fluid, nod_grp,        &
-     &      Vnod1_bcs)
+     &      nod_bcs%Vnod_bcs)
       end if
 !
       if (iflag_t_evo_4_temp .gt. id_no_evolution) then
         call set_bc_temp_id(node, ele, MHD_mesh%fluid, nod_grp,         &
-     &      Tnod1_bcs)
+     &      nod_bcs%Tnod_bcs)
       end if
 !
       if (iflag_t_evo_4_composit .gt. id_no_evolution) then
         call set_bc_temp_id(node, ele, MHD_mesh%fluid,                  &
-     &      nod_grp, Cnod1_bcs)
+     &      nod_grp, nod_bcs%Cnod_bcs)
       end if
 !
       if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
      &  .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*)  'set boundary ID 4 magne'
-        call set_bc_magne_id(node, ele, nod_grp, Bnod1_bcs)
+        call set_bc_magne_id(node, ele, nod_grp, nod_bcs%Bnod_bcs)
         if (iflag_debug.eq.1)  write(*,*) 'set boundary ID 4 magne_p'
         call set_bc_m_potential_id(node, ele, MHD_mesh%conduct,         &
-     &      MHD_mesh%insulate, nod_grp, Bnod1_bcs)
+     &      MHD_mesh%insulate, nod_grp, nod_bcs%Bnod_bcs)
         if (iflag_debug.eq.1)  write(*,*) 'set boundary ID 4 current'
-        call set_bc_current_id(node, ele, nod_grp, Bnod1_bcs)
+        call set_bc_current_id(node, ele, nod_grp, nod_bcs%Bnod_bcs)
       end if
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         if (iflag_debug .eq.1) write(*,*) 'set boundary ID 4 vect_p'
-        call set_bc_vect_p_id(node, ele, nod_grp, Bnod1_bcs)
+        call set_bc_vect_p_id(node, ele, nod_grp, nod_bcs%Bnod_bcs)
       end if
 !
 !
 !
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         if ( iflag_debug .eq.1) write(*,*)  'set boundary values 4 v'
-        call set_boundary_velo(node, Vnod1_bcs, iphys%i_velo, nod_fld)
+        call set_boundary_velo                                          &
+     &     (node, nod_bcs%Vnod_bcs, iphys%i_velo, nod_fld)
       end if
 !
       if (iflag_t_evo_4_temp .gt. id_no_evolution) then
         if (iflag_4_ref_temp .ne. id_no_ref_temp) then
           call set_fixed_bc_4_par_temp(node%numnod, nod_fld%ntot_phys,  &
-     &        iphys%i_ref_t, nod_fld%d_fld, Tnod1_bcs%nod_bc_s)
+     &        iphys%i_ref_t, nod_fld%d_fld, nod_bcs%Tnod_bcs%nod_bc_s)
         end if
 !
         call set_boundary_scalar                                        &
-     &     (Tnod1_bcs%nod_bc_s, iphys%i_temp, nod_fld)
+     &     (nod_bcs%Tnod_bcs%nod_bc_s, iphys%i_temp, nod_fld)
       end if
 !
       if (iflag_t_evo_4_composit .gt. id_no_evolution) then
         call set_boundary_scalar                                        &
-     &     (Cnod1_bcs%nod_bc_s, iphys%i_light, nod_fld)
+     &     (nod_bcs%Cnod_bcs%nod_bc_s, iphys%i_light, nod_fld)
       end if
 !
       if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
      &  .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         if (iflag_debug.eq.1)  write(*,*) 'set_boundary_vect magne'
         call set_boundary_vect                                          &
-     &     (Bnod1_bcs%nod_bc_b, iphys%i_magne, nod_fld)
+     &     (nod_bcs%Bnod_bcs%nod_bc_b, iphys%i_magne, nod_fld)
         if (iflag_debug.eq.1) write(*,*) 'set boundary value 4 magne'
         call set_boundary_scalar                                        &
-     &     (Bnod1_bcs%nod_bc_f, iphys%i_m_phi, nod_fld)
+     &     (nod_bcs%Bnod_bcs%nod_bc_f, iphys%i_m_phi, nod_fld)
         if (iflag_debug.eq.1) write(*,*) 'set_boundary_vect current'
         call set_boundary_vect                                          &
-     &     (Bnod1_bcs%nod_bc_j, iphys%i_current, nod_fld)
+     &     (nod_bcs%Bnod_bcs%nod_bc_j, iphys%i_current, nod_fld)
       end if
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         if (iflag_debug .eq.1) write(*,*) 'set_boundary_vect vect_p'
         call set_boundary_vect                                          &
-     &     (Bnod1_bcs%nod_bc_a, iphys%i_vecp, nod_fld)
+     &     (nod_bcs%Bnod_bcs%nod_bc_a, iphys%i_vecp, nod_fld)
       end if
 !
       end subroutine set_bc_id_data

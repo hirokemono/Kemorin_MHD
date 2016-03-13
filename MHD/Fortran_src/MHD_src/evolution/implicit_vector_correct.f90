@@ -402,7 +402,6 @@
       use m_array_for_send_recv
       use m_SGS_address
       use m_ele_material_property
-      use m_bc_data_magne
 !
       use int_vol_diffusion_ele
       use int_sk_4_fixed_boundary
