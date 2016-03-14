@@ -72,10 +72,7 @@
       call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
       call fem_surf_skv_norm_grad_galerkin                              &
-     &   (ele, surf, sf_grp, jac_sf_grp,                                &
-     &    grad_sf%ngrp_sf_fix_fx, grad_sf%nitem_sf_fix_fx,  &
-     &    grad_sf%ngrp_sf_fix_fx, grad_sf%id_grp_sf_fix_fx, &
-     &    grad_sf%ist_ele_sf_fix_fx, grad_sf%sf_apt_fix_fx, &
+     &   (ele, surf, sf_grp, jac_sf_grp, grad_sf,                       &
      &    n_int, ione, ak_d, fem_wk%sk6)
 !
       call add1_skv_to_ff_v_smp                                         &
@@ -114,10 +111,7 @@
       do nd = 1, n_vector
         if (grad_sf(nd)%ngrp_sf_fix_fx .gt. 0) then
           call fem_surf_skv_norm_grad_galerkin                          &
-     &       (ele, surf, sf_grp, jac_sf_grp,                            &
-     &        grad_sf(nd)%ngrp_sf_fix_fx, grad_sf(nd)%nitem_sf_fix_fx,  &
-     &        grad_sf(nd)%ngrp_sf_fix_fx, grad_sf(nd)%id_grp_sf_fix_fx, &
-     &        grad_sf(nd)%ist_ele_sf_fix_fx, grad_sf(nd)%sf_apt_fix_fx, &
+     &       (ele, surf, sf_grp, jac_sf_grp, grad_sf(nd),               &
      &        n_int, nd, ak_d, fem_wk%sk6)
         end if
       end do
@@ -151,11 +145,7 @@
       call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
       call fem_surf_skv_norm_poisson_pg                                 &
-     &   (ele, surf, sf_grp, jac_sf_grp_l,                              &
-     &    grad_sf%ngrp_sf_fix_fx, grad_sf%nitem_sf_fix_fx,  &
-     &    grad_sf%ngrp_sf_fix_fx, grad_sf%id_grp_sf_fix_fx, &
-     &    grad_sf%ist_ele_sf_fix_fx, grad_sf%sf_apt_fix_fx, &
-     &    n_int, fem_wk%sk6)
+     &   (ele, surf, sf_grp, jac_sf_grp_l, grad_sf, n_int, fem_wk%sk6)
 !
       call add1_skv_to_ff_v_smp                                         &
      &   (node, ele, rhs_tbl, fem_wk%sk6, f_l%ff_smp)

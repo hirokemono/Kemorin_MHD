@@ -228,14 +228,9 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*)' set_bc_id_data'
-      call set_bc_id_data(mesh%node, mesh%ele, group%nod_grp,           &
-     &    MHD_mesh, iphys, nod_fld1, nod1_bcs)
-!
-      if (iflag_debug.eq.1) write(*,*)' set_surf_bc_data'
-      call set_surf_bc_data                                             &
-     &   (mesh%node, mesh%ele, ele_mesh%surf, group%surf_grp,           &
-     &    group%surf_nod_grp, group%surf_grp_geom, iphys, nod_fld1)
+      if (iflag_debug.eq.1) write(*,*)' set_boundary_data'
+      call set_boundary_data(mesh, ele_mesh, MHD_mesh, group,           &
+     &    iphys, nod_fld1)
 !
 !     ---------------------
 !

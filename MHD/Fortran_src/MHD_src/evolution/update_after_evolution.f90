@@ -339,8 +339,6 @@
      &          rhs_tbl, FEM_elens, layer_tbl, mhd_fem_wk, fem_wk,      &
      &          f_l, f_nl, nod_fld)
 !
-      use m_bc_data_velo
-!
       use cal_temperature
       use cal_velocity
       use cal_light_element

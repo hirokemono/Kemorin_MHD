@@ -5,30 +5,27 @@
 !
 !>  @brief Structure for nodal boundary data for MHD dynamo model
 !!
-!>        (module m_bc_data_velo)
-!>
-!
-!      subroutine alloc_scalar_nod_bc_type(numnod, scalar_bc)
-!      subroutine alloc_nod_bc_scalar_ele_type(np_smp, nnod_4_ele,      &
-!      &         scalar_bc)
-!      subroutine alloc_vector_nod_bc_type(numnod, vector_bc)
-!      subroutine alloc_nod_bc_vector_ele_type(np_smp, nnod_4_ele,      &
-!      &         vector_bc)
-!      subroutine alloc_rotate_nod_bc_type(numnod, rot_bc)
-!      subroutine alloc_nod_bc_rotate_ele_type(np_smp, nnod_4_ele,      &
-!      &         rot_bc)
-!
-!      subroutine dealloc_scalar_ibc_type(scalar_bc)
-!      subroutine dealloc_scalar_nod_bc_type(scalar_bc)
-!      subroutine dealloc_nod_bc_scalar_ele_type(scalar_bc)
-!      subroutine dealloc_vector_ibc_type(vector_bc)
-!      subroutine dealloc_vector_nod_bc_type(vector_bc)
-!      subroutine dealloc_nod_bc_vector_ele_type(vector_bc)
-!      subroutine dealloc_rotate_ibc_type(rot_bc)
-!      subroutine dealloc_rotate_nod_bc_type(rot_bc)
-!      subroutine dealloc_nod_bc_rotate_ele_type(rot_bc)
-!
-!      subroutine alloc_ref_temp_nod_bc( numnod, nod_bc_list )
+!!      subroutine alloc_scalar_nod_bc_type(numnod, scalar_bc)
+!!      subroutine alloc_nod_bc_scalar_ele_type(np_smp, nnod_4_ele,     &
+!!      &         scalar_bc)
+!!      subroutine alloc_vector_nod_bc_type(numnod, vector_bc)
+!!      subroutine alloc_nod_bc_vector_ele_type(np_smp, nnod_4_ele,     &
+!!      &         vector_bc)
+!!      subroutine alloc_rotate_nod_bc_type(numnod, rot_bc)
+!!      subroutine alloc_nod_bc_rotate_ele_type(np_smp, nnod_4_ele,     &
+!!      &         rot_bc)
+!!
+!!      subroutine dealloc_scalar_ibc_type(scalar_bc)
+!!      subroutine dealloc_scalar_nod_bc_type(scalar_bc)
+!!      subroutine dealloc_nod_bc_scalar_ele_type(scalar_bc)
+!!      subroutine dealloc_vector_ibc_type(vector_bc)
+!!      subroutine dealloc_vector_nod_bc_type(vector_bc)
+!!      subroutine dealloc_nod_bc_vector_ele_type(vector_bc)
+!!      subroutine dealloc_rotate_ibc_type(rot_bc)
+!!      subroutine dealloc_rotate_nod_bc_type(rot_bc)
+!!      subroutine dealloc_nod_bc_rotate_ele_type(rot_bc)
+!!
+!!      subroutine alloc_ref_temp_nod_bc( numnod, nod_bc_list )
 !
       module t_nodal_bc_data
 !

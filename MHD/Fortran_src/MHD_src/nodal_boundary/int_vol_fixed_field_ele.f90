@@ -38,6 +38,7 @@
       use m_machine_parameter
 !
       use m_phys_constants
+      use m_geometry_constants
       use t_geometry_data
       use t_phys_data
       use t_jacobians
@@ -45,7 +46,6 @@
       use t_finite_element_mat
 !
       use cal_skv_to_ff_smp
-      use fem_skv_poisson_bc_type
       use field_2_each_element_bc
 !
       implicit none
@@ -60,6 +60,8 @@
      &         (node, ele, nod_fld, jac_3d_l, rhs_tbl, n_int,           &
      &          ibc_end, num_index_ibc, ele_bc_id, ibc_stack_smp,       &
      &          ibc_shape, i_field, fem_wk, f_l)
+!
+      use fem_skv_poisson_bc
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -99,10 +101,11 @@
 !   'sf' = - \tilde{v}_{i,i} N(x)
 !    skv = frac{ \partial \tilde{Phi}_{i}^{n-1} }{ \partial x_{i} }
 !
-!
-        call fem_skv_poisson_linear_bc(num_index_ibc, ele_bc_id,        &
-     &      ibc_stack_smp(istart_smp), k2, n_int, ele, jac_3d_l,        &
-     &      fem_wk%scalar_1, fem_wk%sk6)
+        call fem_skv_poisson_fixed                                      &
+     &     (ele%numele, num_t_linear, num_t_linear, np_smp,             &
+     &    num_index_ibc, ele_bc_id, ibc_stack_smp(istart_smp),          &
+     &    k2, n_int, jac_3d_l%ntot_int, jac_3d_l%xjac,                  &
+     &    jac_3d_l%dnx, jac_3d_l%dnx, fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp                                         &
@@ -116,6 +119,8 @@
      &         (node, ele, nod_fld, jac_3d, rhs_tbl, n_int,             &
      &          ibc_end, num_index_ibc, ele_bc_id, ibc_stack_smp,       &
      &          ibc_shape, i_field, ak_d, coef_implicit, fem_wk, f_l)
+!
+      use fem_skv_poisson_bc
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -159,9 +164,11 @@
 !    skv = frac{ \partial \tilde{Phi}_{i}^{n-1} }{ \partial x_{i} }
 !
 !
-        call fem_skv_vector_diffuse_bc(num_index_ibc, ele_bc_id,        &
-     &      ibc_stack_smp(istart_smp), k2, ione, n_int, ak_d,           &
-     &      ele, jac_3d, fem_wk%scalar_1, fem_wk%sk6)
+        call fem_skv_scalar_diffuse_fixed                               &
+     &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, np_smp,         &
+     &      num_index_ibc, ele_bc_id, ibc_stack_smp(istart_smp), k2,    &
+     &      ione, n_int, jac_3d%ntot_int, jac_3d%xjac,                  &
+     &      jac_3d%dnx, jac_3d%dnx, ak_d, fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
       call add1_skv_coef_to_ff_v_smp                                    &
@@ -176,6 +183,8 @@
      &          nmax_index_ibc, ibc_end, num_index_ibc, ele_bc_id,      &
      &          ibc_stack_smp, ibc_shape, i_field, ak_d,                &
      &          coef_implicit, fem_wk, f_l)
+!
+      use fem_skv_poisson_bc
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -223,9 +232,12 @@
 !   'sf' = - \tilde{v}_{i,i} N(x)
 !    skv = frac{ \partial \tilde{Phi}_{i}^{n-1} }{ \partial x_{i} }
 !
-            call fem_skv_vector_diffuse_bc(nmax_index_ibc,              &
-     &          ele_bc_id(1,nd), ibc_stack_smp(istart_smp,nd), k2, nd,  &
-     &          n_int, ak_d, ele, jac_3d, fem_wk%scalar_1, fem_wk%sk6)
+            call fem_skv_scalar_diffuse_fixed                           &
+     &         (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,             &
+     &          np_smp, num_index_ibc(nd), ele_bc_id(1,nd),             &
+     &          ibc_stack_smp(istart_smp,nd), k2, nd, n_int,            &
+     &          jac_3d%ntot_int, jac_3d%xjac, jac_3d%dnx, jac_3d%dnx,   &
+     &          ak_d, fem_wk%scalar_1, fem_wk%sk6)
           end do
         end if
       end do
@@ -241,6 +253,8 @@
      &         (node, ele, nod_fld, jac_3d, rhs_tbl, n_int,             &
      &          ibc_end, num_index_ibc, ele_bc_id, ibc_stack_smp,       &
      &          ibc_shape, i_field, ak_d, coef_implicit, fem_wk, f_l)
+!
+      use fem_skv_poisson_bc
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -286,9 +300,12 @@
 !   'sf' = - \tilde{v}_{i,i} N(x)
 !    skv = frac{ \partial \tilde{Phi}_{i}^{n-1} }{ \partial x_{i} }
 !
-            call fem_skv_vector_diffuse_bc(num_index_ibc,               &
-     &          ele_bc_id, ibc_stack_smp(istart_smp), k2, nd,           &
-     &          n_int, ak_d, ele, jac_3d, fem_wk%scalar_1, fem_wk%sk6)
+            call fem_skv_scalar_diffuse_fixed                           &
+     &         (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, np_smp,     &
+     &          num_index_ibc, ele_bc_id, ibc_stack_smp(istart_smp),    &
+     &          k2, nd, n_int, jac_3d%ntot_int, jac_3d%xjac,            &
+     &          jac_3d%dnx, jac_3d%dnx, ak_d,                           &
+     &          fem_wk%scalar_1, fem_wk%sk6)
           end do
       end do
 !

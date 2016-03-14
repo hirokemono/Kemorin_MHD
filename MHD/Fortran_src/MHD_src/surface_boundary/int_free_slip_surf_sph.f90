@@ -76,7 +76,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
       integer (kind = kint), intent(in) :: n_int, i_field
-      integer (kind = kint), intent(in) ::ngrp_surf_outside
+      integer (kind = kint), intent(in) :: ngrp_surf_outside
       integer (kind = kint), intent(in)                                 &
      &       :: id_grp_outside(ngrp_surf_outside)
 !

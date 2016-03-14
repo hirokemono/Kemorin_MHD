@@ -67,8 +67,8 @@
 !
       if ( group%surf_grp%num_grp .ne. 0 ) then
        if (iflag_debug.eq.1) write(*,*) 'cal_surf_normal_at_nod'
-       call cal_surf_normal_at_nod(mesh, surf, group%surf_grp,          &
-     &     group%surf_grp_geom, group%surf_nod_grp)
+       call cal_surf_normal_at_nod(mesh%node, mesh%ele, surf,           &
+     &     group%surf_grp, group%surf_grp_geom, group%surf_nod_grp)
 !
 !
        if (iflag_debug.eq.1) write(*,*) 'position_2_each_surface'

@@ -28,8 +28,6 @@
 !
       implicit none
 !
-      private :: cal_surf_norm_node
-!
 !-----------------------------------------------------------------------
 !
       contains
@@ -45,6 +43,7 @@
 !
       use position_of_each_surface
       use set_surf_grp_vectors
+      use set_connects_4_surf_group
       use sum_normal_4_surf_group
 !
       integer(kind = kint), intent(in) :: num_surf
@@ -71,7 +70,7 @@
       call s_sum_normal_4_surf_group(ele, sf_grp, sf_grp_v)
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_surf_norm_node'
-      call cal_surf_norm_node                                           &
+      call cal_surf_normal_at_nod                                       &
      &   (node, ele, surf, sf_grp, sf_grp_v, sf_grp_nod)
 !
 !
@@ -85,38 +84,6 @@
 !     &    my_rank, sf_grp, sf_grp_nod)
 !
       end subroutine int_surface_parameters
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine cal_surf_norm_node                                     &
-     &         (node, ele, surf, sf_grp, sf_grp_v, sf_grp_nod)
-!
-      use set_norm_nod_4_surf_grp
-!
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(surface_data), intent(in) :: surf
-      type(surface_group_data), intent(in) :: sf_grp
-      type(surface_group_geometry), intent(in) :: sf_grp_v
-      type(surface_node_grp_data), intent(inout) :: sf_grp_nod
-!
-!
-      call allocate_work_norm_nod(node%numnod)
-      call alloc_vect_surf_grp_nod(sf_grp_nod)
-!
-      call cal_surf_grp_norm_node(ele%numele, ele%nnod_4_ele,           &
-     &    surf%nnod_4_surf, surf%node_on_sf, ele%ie,                    &
-     &    sf_grp%num_grp, sf_grp%num_item,                              &
-     &    sf_grp%istack_grp, sf_grp%item_sf_grp,                        &
-     &    sf_grp_v%vnorm_sf_grp, sf_grp_v%a_area_sf_grp,                &
-     &    sf_grp_nod%ntot_node_sf_grp, sf_grp_nod%inod_stack_sf_grp,    &
-     &    sf_grp_nod%inod_surf_grp, sf_grp_nod%surf_norm_nod,           &
-     &    sf_grp_nod%coef_sf_nod)
-!
-      call deallocate_work_norm_nod
-!
-      end subroutine cal_surf_norm_node
 !
 !-----------------------------------------------------------------------
 !

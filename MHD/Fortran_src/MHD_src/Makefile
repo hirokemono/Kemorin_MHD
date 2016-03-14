@@ -16,10 +16,8 @@ IO \
 nodal_boundary \
 surface_boundary \
 fem_mhd_integration \
-rhs_bc_vector \
 sgs_model \
 sgs_dynamic \
-sgs_model_bc \
 MG_for_MHD   \
 \
 sph_MHD
