@@ -9,14 +9,14 @@
 !!     &         (nod_comm, node, ele, surf, conduct, sf_grp,           &
 !!     &          Bnod_bcs, Asf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,&
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
-!!     &          rhs_tbl, FEM_elens, m_lump, mhd_fem_wk, fem_wk,       &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          rhs_tbl, FEM_elens, filtering, m_lump,                &
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine s_cal_magnetic_field(nod_comm, node, ele, surf,      &
 !!     &          conduct, sf_grp, Bnod_bcs, Asf_bcs, Bsf_bcs, Fsf_bcs, &
 !!     &          iphys, iphys_ele, ele_fld,                            &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
-!!     &          rhs_tbl, FEM_elens, m_lump, mhd_fem_wk, fem_wk,       &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          rhs_tbl, FEM_elens, filtering, m_lump,                &
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -35,6 +35,7 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(filtering_data_type), intent(in) :: filtering
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -57,6 +58,7 @@
       use t_finite_element_mat
       use t_MHD_finite_element_mat
       use t_filter_elength
+      use t_filtering_data
       use t_bc_data_magne
       use t_surface_bc_data
 !
@@ -75,8 +77,8 @@
      &         (nod_comm, node, ele, surf, conduct, sf_grp,             &
      &          Bnod_bcs, Asf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,  &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
-     &          rhs_tbl, FEM_elens, m_lump, mhd_fem_wk, fem_wk,         &
-     &          f_l, f_nl, nod_fld)
+     &          rhs_tbl, FEM_elens, filtering, m_lump,                  &
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_machine_parameter
       use m_control_parameter
@@ -110,6 +112,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(lumped_mass_matrices), intent(in) :: m_lump
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(filtering_data_type), intent(in) :: filtering
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -129,7 +132,7 @@
       if (iflag_debug .gt. 0)  write(*,*) 'vector_p_pre'
       call cal_vector_p_pre(nod_comm, node, ele, surf, conduct,         &
      &    sf_grp, Bnod_bcs, Asf_bcs, iphys, iphys_ele, ele_fld,         &
-     &    jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,                   &
+     &    jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens, filtering,        &
      &    num_MG_level, MHD1_matrices%MG_interpolate,                   &
      &    MHD1_matrices%MG_comm_table, MHD1_matrices%MG_DJDS_table,     &
      &    MHD1_matrices%Bmat_MG_DJDS, MG_vector,                        &
@@ -200,8 +203,8 @@
      &          conduct, sf_grp, Bnod_bcs, Asf_bcs, Bsf_bcs, Fsf_bcs,   &
      &          iphys, iphys_ele, ele_fld,                              &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
-     &          rhs_tbl, FEM_elens, m_lump, mhd_fem_wk, fem_wk,         &
-     &          f_l, f_nl, nod_fld)
+     &          rhs_tbl, FEM_elens, filtering, m_lump,                  &
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_machine_parameter
       use m_control_parameter
@@ -236,6 +239,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(lumped_mass_matrices), intent(in) :: m_lump
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(filtering_data_type), intent(in) :: filtering
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -261,10 +265,10 @@
       call cal_magnetic_field_pre(nod_comm, node, ele, surf, conduct,   &
      &    sf_grp, Bnod_bcs, Asf_bcs, Bsf_bcs, iphys,                    &
      &    iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl,          &
-     &    FEM_elens, num_MG_level, MHD1_matrices%MG_interpolate,        &
-     &    MHD1_matrices%MG_comm_table, MHD1_matrices%MG_DJDS_table,     &
-     &    MHD1_matrices%Bmat_MG_DJDS, MG_vector, mhd_fem_wk, fem_wk,    &
-     &    f_l, f_nl, nod_fld)
+     &    FEM_elens, filtering, num_MG_level,                           &
+     &    MHD1_matrices%MG_interpolate, MHD1_matrices%MG_comm_table,    &
+     &    MHD1_matrices%MG_DJDS_table, MHD1_matrices%Bmat_MG_DJDS,      &
+     &    MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
 !----  set magnetic field in insulate layer
 !

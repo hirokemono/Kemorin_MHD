@@ -3,13 +3,22 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine cal_filtered_scalar                                  &
-!!     &         (nod_comm, node, i_filter, i_vect, nod_fld)
+!!      subroutine cal_filtered_scalar_whole                            &
+!!     &         (nod_comm, node, filtering, i_filter, i_scalar, nod_fld)
+!!      subroutine cal_filtered_vector_whole                            &
+!!     &         (nod_comm, node, filtering, i_filter, i_vect, nod_fld)
+!!      subroutine cal_filtered_sym_tensor_whole                        &
+!!     &         (nod_comm, node, filtering, i_filter, i_vect, nod_fld)
+!!
 !!      subroutine cal_filtered_scalar_in_fluid                         &
-!!     &         (nod_comm, node, i_filter, i_vect, nod_fld)
+!!     &         (nod_comm, node, filtering, i_filter, i_scalar, nod_fld)
+!!      subroutine cal_filtered_vector_in_fluid                         &
+!!     &         (nod_comm, node, filtering, i_filter, i_vect, nod_fld)
+!!      subroutine cal_filtered_tensor_in_fluid                         &
+!!     &         (nod_comm, node, filtering, i_filter, i_vect, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
-!!        integer (kind=kint), intent(in) :: i_filter, i_vect
+!!        type(filtering_data_type), intent(in) :: filtering
 !!        type(phys_data), intent(inout) :: nod_fld
 !!          i_filter: field UD foe filtered field
 !!          i_vect: original field ID
@@ -19,9 +28,11 @@
       use m_precision
 !
       use m_control_parameter
+      use m_nod_filter_comm_table
       use t_comm_table
       use t_geometry_data
       use t_phys_data
+      use t_filtering_data
 !
       implicit none
 !
@@ -31,121 +42,137 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_filtered_scalar                                    &
-     &         (nod_comm, node, i_filter, i_scalar, nod_fld)
+      subroutine cal_filtered_scalar_whole                              &
+     &         (nod_comm, node, filtering, i_filter, i_scalar, nod_fld)
 !
-      use cal_3d_filter_phys
-      use cal_3d_filter_phys_smp
-      use cal_line_filtering_scalar
-      use copy_nodal_fields
-      use nod_phys_send_recv
+      use select_filtering
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
+      type(filtering_data_type), intent(in) :: filtering
       integer (kind=kint), intent(in) :: i_filter, i_scalar
 !
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if (iflag_SGS_filter .eq. id_SGS_3D_EZ_FILTERING) then
+      call cal_filtered_scalar(filtering%comm, nod_comm, node,          &
+     &    filtering%filter, filtering%filter_smp, filtering%nnod_fil,   &
+     &    num_whole_filter_grp, id_whole_filter_grp,                    &
+     &    i_filter, i_scalar, filtering%x_fil, nod_fld)
 !
-        call cal_3d_ez_filter_scalar_phys                               &
-     &     (nod_comm, num_whole_filter_grp, id_whole_filter_grp,        &
-     &      i_scalar, node%numnod, node%internal_node,                  &
-     &      nod_fld%ntot_phys, i_filter, nod_fld%d_fld)
-!
-      else if ( iflag_SGS_filter .eq. id_SGS_3D_SMP_FILTERING ) then
-!
-        call cal_3d_filter_scalar_phys_smp                              &
-     &     (nod_comm, num_whole_filter_grp, id_whole_filter_grp,        &
-     &      i_scalar, node%numnod, node%internal_node,                  &
-     &      nod_fld%ntot_phys, i_filter, nod_fld%d_fld)
-!
-      else if ( iflag_SGS_filter .eq. id_SGS_3D_EZ_SMP_FILTERING) then
-!
-        call cal_3d_ez_filter_scalar_smp                                &
-     &     (nod_comm, num_whole_filter_grp, id_whole_filter_grp,        &
-     &      i_scalar, node%numnod, node%internal_node,                  &
-     &      nod_fld%ntot_phys, i_filter, nod_fld%d_fld)
-!
-      else if ( iflag_SGS_filter .eq. id_SGS_3D_FILTERING) then
-!
-        call cal_3d_filter_scalar_phys                                  &
-     &     (nod_comm, num_whole_filter_grp, id_whole_filter_grp,        &
-     &      i_scalar, node%numnod, node%internal_node,                  &
-     &      nod_fld%ntot_phys, i_filter, nod_fld%d_fld)
-!
-      else if ( iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
-!
-        if (i_filter .ne. i_scalar) then
-           call copy_scalar_component                                   &
-     &        (node, nod_fld, i_scalar, i_filter)
-        end if
-        call cal_l_filtering_scalar(node%numnod, node%istack_nod_smp,   &
-     &      nod_fld%ntot_phys, i_filter, nod_fld%d_fld)
-        call scalar_send_recv(i_filter, node, nod_comm, nod_fld)
-      end if
-!
-      end subroutine cal_filtered_scalar
+      end subroutine cal_filtered_scalar_whole
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_filtered_scalar_in_fluid                           &
-     &         (nod_comm, node, i_filter, i_scalar, nod_fld)
+      subroutine cal_filtered_vector_whole                              &
+     &         (nod_comm, node, filtering, i_filter, i_vect, nod_fld)
 !
-       use cal_3d_filter_phys
-       use cal_3d_filter_phys_smp
-       use cal_line_filtering_scalar
-       use copy_nodal_fields
-       use nod_phys_send_recv
+      use select_filtering
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
-       integer (kind=kint), intent(in) :: i_filter, i_scalar
+      type(filtering_data_type), intent(in) :: filtering
+      integer (kind=kint), intent(in) :: i_filter, i_vect
 !
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if (iflag_SGS_filter .eq. id_SGS_3D_EZ_FILTERING) then
+      call cal_filtered_vector(filtering%comm, nod_comm, node,          &
+     &    filtering%filter, filtering%filter_smp, filtering%nnod_fil,   &
+     &    num_whole_filter_grp, id_whole_filter_grp,                    &
+     &    i_filter, i_vect, filtering%x_fil, nod_fld)
 !
-        call cal_3d_ez_filter_scalar_phys                               &
-     &     (nod_comm, num_fluid_filter_grp, id_fluid_filter_grp,        &
-     &      i_scalar, node%numnod, node%internal_node,                  &
-     &      nod_fld%ntot_phys, i_filter, nod_fld%d_fld)
+      end subroutine cal_filtered_vector_whole
 !
-      else if ( iflag_SGS_filter .eq. id_SGS_3D_SMP_FILTERING ) then
+! ----------------------------------------------------------------------
 !
-        call cal_3d_filter_scalar_phys_smp                              &
-     &     (nod_comm, num_fluid_filter_grp, id_fluid_filter_grp,        &
-     &      i_scalar, node%numnod, node%internal_node,                  &
-     &      nod_fld%ntot_phys, i_filter, nod_fld%d_fld)
+      subroutine cal_filtered_sym_tensor_whole                          &
+     &         (nod_comm, node, filtering, i_filter, i_vect, nod_fld)
 !
-      else if ( iflag_SGS_filter .eq. id_SGS_3D_EZ_SMP_FILTERING) then
+      use select_filtering
 !
-        call cal_3d_ez_filter_scalar_smp                                &
-     &     (nod_comm, num_fluid_filter_grp, id_fluid_filter_grp,        &
-     &      i_scalar, node%numnod, node%internal_node,                  &
-     &      nod_fld%ntot_phys, i_filter, nod_fld%d_fld)
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
+      type(filtering_data_type), intent(in) :: filtering
+      integer (kind = kint), intent(in) :: i_filter, i_vect
 !
-      else if ( iflag_SGS_filter .eq. id_SGS_3D_FILTERING) then
+      type(phys_data), intent(inout) :: nod_fld
 !
-        call cal_3d_filter_scalar_phys                                  &
-     &     (nod_comm, num_fluid_filter_grp, id_fluid_filter_grp,        &
-     &      i_scalar, node%numnod, node%internal_node,                  &
-     &      nod_fld%ntot_phys, i_filter, nod_fld%d_fld)
 !
-      else if ( iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
+      call cal_filtered_sym_tensor(filtering%comm, nod_comm, node,      &
+     &    filtering%filter, filtering%filter_smp, filtering%nnod_fil,   &
+     &    num_whole_filter_grp, id_whole_filter_grp,                    &
+     &    i_filter, i_vect, filtering%x_fil, nod_fld)
 !
-        if (i_filter .ne. i_scalar) then
-           call copy_scalar_component                                   &
-     &        (node, nod_fld, i_scalar, i_filter)
-        end if
-        call cal_l_filtering_scalar(node%numnod, node%istack_nod_smp,   &
-     &      nod_fld%ntot_phys, i_filter, nod_fld%d_fld)
-        call scalar_send_recv(i_filter, node, nod_comm, nod_fld)
-      end if
+      end subroutine cal_filtered_sym_tensor_whole
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine cal_filtered_scalar_in_fluid                           &
+     &         (nod_comm, node, filtering, i_filter, i_scalar, nod_fld)
+!
+      use select_filtering
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
+      type(filtering_data_type), intent(in) :: filtering
+      integer (kind=kint), intent(in) :: i_filter, i_scalar
+!
+      type(phys_data), intent(inout) :: nod_fld
+!
+!
+      call cal_filtered_scalar(filtering%comm, nod_comm, node,          &
+     &    filtering%filter, filtering%filter_smp, filtering%nnod_fil,   &
+     &    num_fluid_filter_grp, id_fluid_filter_grp,                    &
+     &    i_filter, i_scalar, filtering%x_fil, nod_fld)
 !
       end subroutine cal_filtered_scalar_in_fluid
+!
+! ----------------------------------------------------------------------
+!
+      subroutine cal_filtered_vector_in_fluid                           &
+     &         (nod_comm, node, filtering, i_filter, i_vect, nod_fld)
+!
+!
+       use select_filtering
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
+      type(filtering_data_type), intent(in) :: filtering
+      integer (kind=kint), intent(in) :: i_filter, i_vect
+!
+      type(phys_data), intent(inout) :: nod_fld
+!
+!
+      call cal_filtered_vector(filtering%comm, nod_comm, node,          &
+     &    filtering%filter, filtering%filter_smp, filtering%nnod_fil,   &
+     &    num_fluid_filter_grp, id_fluid_filter_grp,                    &
+     &    i_filter, i_vect, filtering%x_fil, nod_fld)
+!
+      end subroutine cal_filtered_vector_in_fluid
+!
+! ----------------------------------------------------------------------
+!
+      subroutine cal_filtered_tensor_in_fluid                           &
+     &         (nod_comm, node, filtering, i_filter, i_vect, nod_fld)
+!
+      use select_filtering
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
+      type(filtering_data_type), intent(in) :: filtering
+      integer (kind=kint), intent(in) :: i_filter, i_vect
+!
+      type(phys_data), intent(inout) :: nod_fld
+!
+!
+      call cal_filtered_sym_tensor(filtering%comm, nod_comm, node,      &
+     &    filtering%filter, filtering%filter_smp, filtering%nnod_fil,   &
+     &    num_fluid_filter_grp, id_fluid_filter_grp,                    &
+     &    i_filter, i_vect, filtering%x_fil, nod_fld)
+!
+      end subroutine cal_filtered_tensor_in_fluid
 !
 ! ----------------------------------------------------------------------
 !

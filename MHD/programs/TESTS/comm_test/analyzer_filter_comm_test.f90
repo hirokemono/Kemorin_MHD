@@ -13,8 +13,14 @@
       use m_precision
 !
       use m_machine_parameter
+      use t_filtering_data
 !
       implicit none
+!
+      type(filtering_data_type), save :: filtering_test
+!
+      private :: filtering_test
+      private :: nod_filter_send_recv_test
 !
 ! ----------------------------------------------------------------------
 !
@@ -33,7 +39,7 @@
 !     ---------------------
 !
       if (iflag_debug.gt.0) write(*,*) 's_input_ctl_filter_comm_test'
-      call s_input_ctl_filter_comm_test
+      call s_input_ctl_filter_comm_test(filtering_test)
 !
        end subroutine init_analyzer
 !
@@ -43,7 +49,6 @@
 !
       use calypso_mpi
       use m_geometry_filter_comm_test
-      use filter_send_recv_test
       use set_diff_filter_comm_test
       use collect_diff_4_comm_test
       use collect_diff_filter_ctest
@@ -51,7 +56,7 @@
 !
 !
       call allocate_filter_nod_comm_test
-      call nod_filter_send_recv_test
+      call nod_filter_send_recv_test(filtering_test)
 !
 !
       call count_filter_node_comm_test
@@ -83,6 +88,31 @@
       if (iflag_debug.eq.1) write(*,*) 'exit analyze'
 !
       end subroutine analyze
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine nod_filter_send_recv_test(filtering)
+!
+      use calypso_mpi
+      use m_nod_filter_comm_table
+      use m_geometry_filter_comm_test
+      use solver_SR_type
+!
+      type(filtering_data_type), intent(in) :: filtering
+      integer(kind = kint) :: inod
+!
+!
+      do inod = 1, inter_nod_3dfilter
+        xx_filter_comm(3*inod-2) = xx_filtering(inod,1)
+        xx_filter_comm(3*inod-1) = xx_filtering(inod,2)
+        xx_filter_comm(3*inod  ) = xx_filtering(inod,3)
+      end do
+!
+      call SOLVER_SEND_RECV_3_type                                      &
+     &   (nnod_filtering, filtering%comm, xx_filter_comm)
+!
+      end subroutine nod_filter_send_recv_test
 !
 ! ----------------------------------------------------------------------
 !

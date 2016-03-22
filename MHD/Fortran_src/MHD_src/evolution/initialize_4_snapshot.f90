@@ -45,6 +45,7 @@
       use m_int_vol_data
       use m_surf_data_list
       use m_bc_data_velo
+      use m_3d_filter_coef_MHD
 !
       use t_mesh_data
       use t_geometry_data_MHD
@@ -65,8 +66,6 @@
       use material_property
       use reordering_by_layers
       use set_layers_4_MHD
-      use const_tbl_3d_filtering_smp
-      use const_tbl_w_filtering_smp
       use set_istart_3d_filtering
       use count_sgs_components
       use set_layer_list_by_table
@@ -128,13 +127,13 @@
      &   .or. iflag_SGS_filter .eq. id_SGS_3D_EZ_FILTERING) then
           if (iflag_debug .gt. 0)                                       &
      &      write(*,*)' s_set_istart_3d_filtering'
-          call s_set_istart_3d_filtering
+          call s_set_istart_3d_filtering(filtering1%filter)
 !
         else if (iflag_SGS_filter.eq.id_SGS_3D_SMP_FILTERING            &
      &     .or. iflag_SGS_filter.eq.id_SGS_3D_EZ_SMP_FILTERING) then
           if (iflag_debug .gt. 0)                                       &
-     &      write(*,*)' s_const_tbl_3d_filtering_smp'
-          call s_const_tbl_3d_filtering_smp
+     &      write(*,*) ' const_tbl_3d_filtering_smp'
+          call const_tbl_3d_filtering_smp(filtering1)
 !
         else if (iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
           if (iflag_debug.gt.0) write(*,*)' ordering_l_filter_smp'
@@ -148,14 +147,14 @@
         if    (iflag_SGS_filter .eq. id_SGS_3D_FILTERING                &
      &    .or. iflag_SGS_filter .eq. id_SGS_3D_EZ_FILTERING) then
           if (iflag_debug .gt. 0) write(*,*)' s_set_istart_w_filtering'
-          call s_set_istart_w_filtering
+          call s_set_istart_3d_filtering(wide_filtering%filter)
 !
         else if (iflag_SGS_filter.eq.id_SGS_3D_SMP_FILTERING            &
      &     .or. iflag_SGS_filter.eq.id_SGS_3D_EZ_SMP_FILTERING) then
 !
           if (iflag_debug .gt. 0)                                       &
-     &      write(*,*)' s_const_tbl_w_filtering_smp'
-          call s_const_tbl_w_filtering_smp
+     &      write(*,*) 'const_tbl_3d_filtering_smp'
+          call const_tbl_3d_filtering_smp(wide_filtering)
         end if
       end if
 !

@@ -9,8 +9,8 @@
 !!     &          sf_grp, sf_grp_nod, Vnod_bcs, Vsf_bcs, Bsf_bcs,       &
 !!     &          Psf_bcs, iphys, iphys_ele, ele_fld,                   &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
-!!     &          rhs_tbl, FEM_elens, layer_tbl, mhd_fem_wk, fem_wk,    &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          rhs_tbl, FEM_elens, filtering, layer_tbl,             &
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -28,6 +28,7 @@
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp_q, jac_sf_grp_l
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(filtering_data_type), intent(in) :: filtering
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -52,6 +53,7 @@
       use t_finite_element_mat
       use t_MHD_finite_element_mat
       use t_filter_elength
+      use t_filtering_data
       use t_layering_ele_list
       use t_bc_data_velo
       use t_surface_bc_data
@@ -71,8 +73,8 @@
      &          sf_grp, sf_grp_nod, Vnod_bcs, Vsf_bcs, Bsf_bcs,         &
      &          Psf_bcs, iphys, iphys_ele, ele_fld,                     &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
-     &          rhs_tbl, FEM_elens, layer_tbl, mhd_fem_wk, fem_wk,      &
-     &          f_l, f_nl, nod_fld)
+     &          rhs_tbl, FEM_elens, filtering, layer_tbl,               &
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_control_parameter
       use m_machine_parameter
@@ -108,6 +110,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp_q, jac_sf_grp_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(filtering_data_type), intent(in) :: filtering
       type(layering_tbl), intent(in) :: layer_tbl
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -149,10 +152,10 @@
      &   (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,         &
      &    Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,        &
      &    jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,         &
-     &    layer_tbl, num_MG_level, MHD1_matrices%MG_interpolate,        &
-     &    MHD1_matrices%MG_comm_fluid, MHD1_matrices%MG_DJDS_fluid,     &
-     &    MHD1_matrices%Vmat_MG_DJDS, MG_vector,                        &
-     &    mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &    filtering, layer_tbl, num_MG_level,                           &
+          MHD1_matrices%MG_interpolate, MHD1_matrices%MG_comm_fluid,    &
+     &    MHD1_matrices%MG_DJDS_fluid, MHD1_matrices%Vmat_MG_DJDS,      &
+     &     MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
 !     --------------------- 
 !

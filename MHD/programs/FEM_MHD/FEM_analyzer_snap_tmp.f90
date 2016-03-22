@@ -67,6 +67,7 @@
       use m_element_id_4_node
       use m_finite_element_matrix
       use m_filter_elength
+      use m_3d_filter_coef_MHD
       use m_int_vol_data
       use m_layering_ele_list
       use m_bc_data_velo
@@ -129,8 +130,8 @@
       call update_fields(mesh1, group1, ele_mesh1, MHD_mesh1,           &
      &    nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,                &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
-     &    FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk,                  &
-     &    fem1_wk, f1_l, f1_nl, nod_fld1)
+     &    FEM1_elen, filtering1, wide_filtering, layer_tbl1, m1_lump,   &
+     &    mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
 !
 !     ----- Evaluate model coefficients
 !
@@ -140,8 +141,8 @@
      &     (mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,            &
      &      nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,              &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
-     &      FEM1_elen, m1_lump, mhd_fem1_wk, fem1_wk,                   &
-     &      f1_l, f1_nl, nod_fld1)
+     &      FEM1_elen, filtering1, wide_filtering, m1_lump,             &
+     &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
       end if
 !
 !     ========  Data output
@@ -149,8 +150,8 @@
       call lead_fields_by_FEM(mesh1, group1, ele_mesh1,                 &
      &    MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,     &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
-     &    FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk, fem1_wk,         &
-     &    f1_l, f1_nl, nod_fld1)
+     &    FEM1_elen, filtering1, wide_filtering, layer_tbl1, m1_lump,   &
+     &    mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
 !
       if (iflag_debug.eq.1)  write(*,*) 'lead_specital_SGS'
       call lead_specital_SGS
@@ -215,6 +216,7 @@
       use m_finite_element_matrix
       use m_int_vol_data
       use m_filter_elength
+      use m_3d_filter_coef_MHD
       use m_SGS_address
       use m_bc_data_velo
 !
@@ -286,7 +288,7 @@
         call cal_sgs_uxb_2_monitor(icomp_sgs_uxb, ie_dvx,               &
      &     mesh1%nod_comm, mesh1%node, mesh1%ele, MHD_mesh1%conduct,    &
      &     iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen,  &
-     &     mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+     &     filtering1, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
 
       end if
 !

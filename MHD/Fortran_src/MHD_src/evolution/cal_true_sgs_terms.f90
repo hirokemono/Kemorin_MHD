@@ -9,7 +9,7 @@
 !!     &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                &
 !!     &         mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_true_sgs_terms_post
-!!     &         (nod_comm, node, iphys, nod_fld)
+!!     &         (nod_comm, node, iphys, filtering, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -25,6 +25,7 @@
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(filtering_data_type), intent(in) :: filtering
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -50,6 +51,7 @@
       use t_finite_element_mat
       use t_MHD_finite_element_mat
       use t_filter_elength
+      use t_filtering_data
       use t_bc_data_MHD
       use t_MHD_boundary_data
 !
@@ -57,7 +59,6 @@
       use copy_nodal_fields
 !
       use cal_filtering_scalars
-      use cal_filtering_vectors
 !
       implicit none
 !
@@ -152,13 +153,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_true_sgs_terms_post                                &
-     &         (nod_comm, node, iphys, nod_fld)
+     &         (nod_comm, node, iphys, filtering, nod_fld)
 !
       use m_phys_labels
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(phys_address), intent(in) :: iphys
+      type(filtering_data_type), intent(in) :: filtering
 !
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -170,27 +172,27 @@
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_h_flux_true_post                            &
-     &        (nod_comm, node, iphys, nod_fld)
+     &        (nod_comm, node, iphys, filtering, nod_fld)
          else if ( nod_fld%phys_name(i).eq.fhd_SGS_div_m_flux_true)     &
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_tensor_true_post(iphys%i_SGS_div_mf_true,   &
      &         iphys%i_m_flux_div, iphys%i_sgs_simi,                    &
-     &         nod_comm, node, nod_fld)
+     &         nod_comm, node, filtering, nod_fld)
          else if ( nod_fld%phys_name(i).eq.fhd_SGS_Lorentz_true) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_tensor_true_post(iphys%i_SGS_Lor_true,      &
      &         iphys%i_maxwell_div, iphys%i_sgs_simi,                   &
-     &         nod_comm, node, nod_fld)
+     &         nod_comm, node, filtering, nod_fld)
          else if ( nod_fld%phys_name(i).eq.fhd_SGS_mag_induct_true)     &
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_tensor_true_post(iphys%i_SGS_idct_true,     &
      &         iphys%i_induct_div, iphys%i_sgs_simi,                    &
-     &         nod_comm, node, nod_fld)
+     &         nod_comm, node, filtering, nod_fld)
          end if
        end do
 !
@@ -394,18 +396,19 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_div_sgs_h_flux_true_post                           &
-     &          (nod_comm, node, iphys, nod_fld)
+     &          (nod_comm, node, iphys, filtering, nod_fld)
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(phys_address), intent(in) :: iphys
+      type(filtering_data_type), intent(in) :: filtering
 !
       type(phys_data), intent(inout) :: nod_fld
 !
 !
       call copy_scalar_component(node, nod_fld,                         &
      &    iphys%i_SGS_div_hf_true, iphys%i_sgs_simi)
-      call cal_filtered_scalar(nod_comm, node,                          &
+      call cal_filtered_scalar_whole(nod_comm, node, filtering,         &
      &    iphys%i_SGS_div_hf_true, iphys%i_h_flux_div, nod_fld)
       call subtract_2_nod_scalars(node, nod_fld,                        &
      &    iphys%i_SGS_div_hf_true, iphys%i_sgs_simi,                    &
@@ -417,18 +420,19 @@
 !
       subroutine cal_div_sgs_tensor_true_post                           &
      &         (i_sgs_true, i_sgs_div, i_sgs_simi,                      &
-     &          nod_comm, node, nod_fld)
+     &          nod_comm, node, filtering, nod_fld)
 !
       integer(kind = kint), intent(in) :: i_sgs_true, i_sgs_div
       integer(kind = kint), intent(in) :: i_sgs_simi
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
+      type(filtering_data_type), intent(in) :: filtering
 !
       type(phys_data), intent(inout) :: nod_fld
 !
 !
       call copy_vector_component(node, nod_fld, i_sgs_true, i_sgs_simi)
-      call cal_filtered_vector(nod_comm, node,                          &
+      call cal_filtered_vector_whole(nod_comm, node, filtering,         &
      &    i_sgs_true, i_sgs_div, nod_fld)
       call subtract_2_nod_vectors(node, nod_fld,                        &
      &    i_sgs_true, i_sgs_simi, i_sgs_true)

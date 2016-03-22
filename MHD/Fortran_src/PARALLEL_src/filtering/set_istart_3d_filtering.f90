@@ -4,8 +4,6 @@
 !     Written by H. Matsui on Nov., 2006
 !     Modified by H. Matsui on Nov., 2008
 !
-
-!      subroutine s_set_istart_3d_filtering
 !
 !      subroutine count_num_3d_filtering_sum(ngrp_fil, istack_fil,      &
 !     &          ntot_fil, num_near_fil, min_sum_fil, max_sum_fil,      &
@@ -25,34 +23,6 @@
 !
       contains
 !
-!  ---------------------------------------------------------------------
-!
-      subroutine s_set_istart_3d_filtering
-!
-      use m_filter_coef_combained
-      use cal_minmax_and_stacks
-!
-!
-      call allocate_stack_vec_filter
-!
-      call count_num_3d_filtering_sum(ngrp_nod_3d_filter,               &
-     &    istack_nod_3d_filter, ntot_nod_3d_filter,                     &
-     &    num_near_nod_3d_filter, min_nsum_3d_filter,                   &
-     &    max_nsum_3d_filter)
-      call s_cal_total_and_stacks(ngrp_nod_3d_filter,                   &
-          max_nsum_3d_filter, izero, istack_nsum_3d_filter,             &
-          ntot_nsum_3d_filter)
-!
-      call allocate_istart_vec_filter
-!
-      call set_start_id_4_3d_filtering(ngrp_nod_3d_filter,              &
-     &    istack_nod_3d_filter, ntot_nod_3d_filter,                     &
-     &    num_near_nod_3d_filter,istack_nsum_3d_filter,                 &
-     &    ntot_nsum_3d_filter, ist_nsum_3d_filter, ied_nsum_3d_filter)
-!
-      end subroutine s_set_istart_3d_filtering
-!
-!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine count_num_3d_filtering_sum(ngrp_fil, istack_fil,       &

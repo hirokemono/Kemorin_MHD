@@ -10,20 +10,21 @@
 !!      subroutine fields_evolution(mesh, group, ele_mesh, MHD_mesh,    &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,         &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
-!!     &          rhs_tbl, FEM_elens, layer_tbl, m_lump, mhd_fem_wk,    &
-!!     &          fem_wk, f_l, f_nl, nod_fld)
+!!     &          rhs_tbl, FEM_elens, filtering, wide_filtering,        &
+!!     &          layer_tbl, m_lump, mhd_fem_wk, fem_wk,                &
+!!     &          f_l, f_nl, nod_fld)
 !!      subroutine update_fields(mesh, group, ele_mesh, MHD_mesh,       &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,         &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens, &
-!!     &          layer_tbl, m_lump, mhd_fem_wk, fem_wk,                &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          filtering, wide_filtering, layer_tbl, m_lump,         &
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine reset_update_flag(nod_fld)
 !!
 !!      subroutine fields_evolution_4_FEM_SPH(mesh, group, ele_mesh,    &
 !!     &          fluid, nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,  &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
-!!     &          rhs_tbl, FEM_elens, layer_tbl, mhd_fem_wk, fem_wk,    &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          rhs_tbl, FEM_elens, filtering, wide_filtering,        &
+!!     &          layer_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(element_geometry), intent(in) :: ele_mesh
@@ -39,6 +40,7 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(filtering_data_type), intent(in) :: filtering
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -67,6 +69,7 @@
       use t_finite_element_mat
       use t_MHD_finite_element_mat
       use t_filter_elength
+      use t_filtering_data
       use t_layering_ele_list
       use t_MHD_boundary_data
       use t_bc_data_MHD
@@ -82,8 +85,9 @@
       subroutine fields_evolution(mesh, group, ele_mesh, MHD_mesh,      &
      &          nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,           &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
-     &          rhs_tbl, FEM_elens, layer_tbl, m_lump, mhd_fem_wk,      &
-     &          fem_wk, f_l, f_nl, nod_fld)
+     &          rhs_tbl, FEM_elens, filtering, wide_filtering,          &
+     &          layer_tbl, m_lump, mhd_fem_wk, fem_wk,                  &
+     &          f_l, f_nl, nod_fld)
 !
       use cal_temperature
       use cal_velocity
@@ -111,6 +115,8 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(lumped_mass_matrices), intent(in) :: m_lump
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(filtering_data_type), intent(in) :: filtering
+      type(filtering_data_type), intent(in) :: wide_filtering
       type(layering_tbl), intent(in) :: layer_tbl
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -131,14 +137,15 @@
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Fsf_bcs,        &
      &     iphys, iphys_ele, ele_fld,                                   &
      &     jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,     &
-     &     FEM_elens, m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &     FEM_elens, filtering, m_lump, mhd_fem_wk, fem_wk,            &
+     &     f_l, f_nl, nod_fld)
         call update_with_vector_potential                               &
      &    (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,           &
      &     MHD_mesh%fluid, MHD_mesh%conduct, layer_tbl, group%surf_grp, &
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Fsf_bcs,        &
      &     iphys, iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q, &
-     &     rhs_tbl, FEM_elens, m_lump, mhd_fem_wk, fem_wk,              &
-     &     f_l, f_nl, nod_fld)
+     &     rhs_tbl, FEM_elens, filtering, wide_filtering, m_lump,       &
+     &     mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       else if ( iflag_t_evo_4_magne .gt. id_no_evolution) then
 !
@@ -150,14 +157,15 @@
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,        &
      &     surf_bcs%Fsf_bcs, iphys, iphys_ele, ele_fld,                 &
      &     jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,     &
-     &     FEM_elens, m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &     FEM_elens, filtering, m_lump, mhd_fem_wk, fem_wk,            &
+     &     f_l, f_nl, nod_fld)
         call update_with_magnetic_field                                 &
      &    (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,           &
      &     MHD_mesh%fluid, MHD_mesh%conduct, layer_tbl, group%surf_grp, &
      &     surf_bcs%Bsf_bcs, surf_bcs%Fsf_bcs, iphys,                   &
      &     iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,        &
-     &     rhs_tbl, FEM_elens, m_lump, mhd_fem_wk, fem_wk,              &
-     &     f_l, f_nl, nod_fld)
+     &     rhs_tbl, FEM_elens, filtering, wide_filtering, m_lump,       &
+     &     mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
 !     ---- temperature update
@@ -169,8 +177,8 @@
      &      (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,         &
      &       MHD_mesh%fluid, group%surf_grp, nod_bcs%Tnod_bcs,          &
      &       surf_bcs%Tsf_bcs, iphys, iphys_ele, ele_fld,               &
-     &       jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens, mhd_fem_wk,    &
-     &       fem_wk, f_l, f_nl, nod_fld)
+     &       jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens, filtering,     &
+     &       mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         else
 !          call check_surface_param_smp('cal_temperature_field start',  &
 !     &        my_rank, sf_grp, group%surf_nod_grp)
@@ -179,16 +187,16 @@
      &      (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,         &
      &       MHD_mesh%fluid, group%surf_grp, nod_bcs%Tnod_bcs,          &
      &       surf_bcs%Tsf_bcs, iphys, iphys_ele, ele_fld,               &
-     &       jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens, mhd_fem_wk,    &
-     &       fem_wk, f_l, f_nl, nod_fld)
+     &       jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens, filtering,     &
+     &       mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         end if
 !
         call update_with_temperature                                    &
      &     (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &
      &      MHD_mesh%fluid, group%surf_grp, surf_bcs%Tsf_bcs, iphys,    &
      &      iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,       &
-     &      rhs_tbl, FEM_elens, layer_tbl, mhd_fem_wk, fem_wk,          &
-     &      f_l, f_nl, nod_fld)
+     &      rhs_tbl, FEM_elens, filtering, wide_filtering, layer_tbl,   &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
 !     ----- composition update
@@ -204,8 +212,8 @@
      &     (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &
      &      MHD_mesh%fluid, group%surf_grp, surf_bcs%Csf_bcs, iphys,    &
      &      iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,       &
-     &      rhs_tbl, FEM_elens, layer_tbl, mhd_fem_wk, fem_wk,          &
-     &      f_l, f_nl, nod_fld)
+     &      rhs_tbl, FEM_elens, filtering, wide_filtering, layer_tbl,   &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
 !     ---- velocity update
@@ -218,14 +226,14 @@
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,       &
      &      surf_bcs%Psf_bcs, iphys, iphys_ele, ele_fld,                &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,             &
-     &      rhs_tbl, FEM_elens, layer_tbl, mhd_fem_wk, fem_wk,          &
-     &      f_l, f_nl, nod_fld)
+     &      rhs_tbl, FEM_elens, filtering, layer_tbl,                   &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         call update_with_velocity(mesh%nod_comm, mesh%node, mesh%ele,   &
      &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
      &      surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs, iphys,                  &
      &      iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,       &
-     &      rhs_tbl, FEM_elens, layer_tbl, mhd_fem_wk, fem_wk,          &
-     &      f_l, f_nl, nod_fld)
+     &      rhs_tbl, FEM_elens, filtering, wide_filtering, layer_tbl,   &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       end subroutine fields_evolution
@@ -235,8 +243,8 @@
       subroutine update_fields(mesh, group, ele_mesh, MHD_mesh,         &
      &          nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,           &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,   &
-     &          layer_tbl, m_lump, mhd_fem_wk, fem_wk,                  &
-     &          f_l, f_nl, nod_fld)
+     &          filtering, wide_filtering, layer_tbl, m_lump,           &
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use average_on_elements
       use update_with_scalars
@@ -258,6 +266,8 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(lumped_mass_matrices), intent(in) :: m_lump
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(filtering_data_type), intent(in) :: filtering
+      type(filtering_data_type), intent(in) :: wide_filtering
       type(layering_tbl), intent(in) :: layer_tbl
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -271,8 +281,8 @@
      &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
      &      surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs, iphys,                  &
      &      iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,       &
-     &      rhs_tbl, FEM_elens, layer_tbl, mhd_fem_wk, fem_wk,          &
-     &      f_l, f_nl, nod_fld)
+     &      rhs_tbl, FEM_elens, filtering, wide_filtering, layer_tbl,   &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       if (iphys%i_temp .ne. 0) then
@@ -280,8 +290,8 @@
      &     (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &
      &      MHD_mesh%fluid, group%surf_grp, surf_bcs%Tsf_bcs, iphys,    &
      &      iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,       &
-     &      rhs_tbl, FEM_elens, layer_tbl, mhd_fem_wk, fem_wk,          &
-     &      f_l, f_nl, nod_fld)
+     &      rhs_tbl, FEM_elens, filtering, wide_filtering, layer_tbl,   &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       if (iphys%i_light .ne. 0) then
@@ -289,8 +299,8 @@
      &     (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &
      &      MHD_mesh%fluid, group%surf_grp, surf_bcs%Csf_bcs, iphys,    &
      &      iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,       &
-     &      rhs_tbl, FEM_elens, layer_tbl, mhd_fem_wk, fem_wk,          &
-     &      f_l, f_nl, nod_fld)
+     &      rhs_tbl, FEM_elens, filtering, wide_filtering, layer_tbl,   &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       if (iphys%i_vecp .ne. 0) then
@@ -299,16 +309,16 @@
      &     MHD_mesh%fluid, MHD_mesh%conduct, layer_tbl, group%surf_grp, &
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Fsf_bcs,        &
      &     iphys, iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q, &
-     &     rhs_tbl, FEM_elens, m_lump, mhd_fem_wk, fem_wk,              &
-     &     f_l, f_nl, nod_fld)
+     &     rhs_tbl, FEM_elens, filtering, wide_filtering, m_lump,       &
+     &     mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (iphys%i_magne.ne.0) then
         call update_with_magnetic_field                                 &
      &    (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,           &
      &     MHD_mesh%fluid, MHD_mesh%conduct, layer_tbl, group%surf_grp, &
      &     surf_bcs%Bsf_bcs, surf_bcs%Fsf_bcs, iphys,                   &
      &     iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,        &
-     &     rhs_tbl, FEM_elens, m_lump, mhd_fem_wk, fem_wk,              &
-     &     f_l, f_nl, nod_fld)
+     &     rhs_tbl, FEM_elens, filtering, wide_filtering, m_lump,       &
+     &     mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       end subroutine update_fields
@@ -336,8 +346,8 @@
       subroutine fields_evolution_4_FEM_SPH(mesh, group, ele_mesh,      &
      &          fluid, nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,    &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
-     &          rhs_tbl, FEM_elens, layer_tbl, mhd_fem_wk, fem_wk,      &
-     &          f_l, f_nl, nod_fld)
+     &          rhs_tbl, FEM_elens, filtering, wide_filtering,          &
+     &          layer_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use cal_temperature
       use cal_velocity
@@ -359,6 +369,8 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp_q, jac_sf_grp_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(filtering_data_type), intent(in) :: filtering
+      type(filtering_data_type), intent(in) :: wide_filtering
       type(layering_tbl), intent(in) :: layer_tbl
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -379,7 +391,7 @@
      &       (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf, fluid, &
      &        group%surf_grp, nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,       &
      &        iphys, iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q,        &
-     &        rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,                   &
+     &        rhs_tbl, FEM_elens, filtering, mhd_fem_wk, fem_wk,        &
      &        f_l, f_nl, nod_fld)
         else
           if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field'
@@ -387,7 +399,7 @@
      &       (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf, fluid, &
      &        group%surf_grp, nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,       &
      &        iphys, iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q,        &
-     &        rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,                   &
+     &        rhs_tbl, FEM_elens, filtering, mhd_fem_wk, fem_wk,        &
      &        f_l, f_nl, nod_fld)
         end if
 !
@@ -395,8 +407,8 @@
      &     (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &
      &      fluid, group%surf_grp, surf_bcs%Tsf_bcs, iphys,             &
      &      iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,       &
-     &      rhs_tbl, FEM_elens, layer_tbl, mhd_fem_wk, fem_wk,          &
-     &      f_l, f_nl, nod_fld)
+     &      rhs_tbl, FEM_elens, filtering, wide_filtering, layer_tbl,   &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
 !     ----- composition update
@@ -412,8 +424,8 @@
      &     (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &
      &      fluid, group%surf_grp, surf_bcs%Csf_bcs, iphys,             &
      &      iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,       &
-     &      rhs_tbl, FEM_elens, layer_tbl, mhd_fem_wk, fem_wk,          &
-     &      f_l, f_nl, nod_fld)
+     &      rhs_tbl, FEM_elens, filtering, wide_filtering, layer_tbl,   &
+     &      mhd_fem_wk, fem_wk,f_l, f_nl, nod_fld)
       end if
 !
 !     ---- velocity update
@@ -425,14 +437,14 @@
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,       &
      &      surf_bcs%Psf_bcs, iphys, iphys_ele, ele_fld,                &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,             &
-     &      rhs_tbl, FEM_elens, layer_tbl, mhd_fem_wk, fem_wk,          &
-     &      f_l, f_nl, nod_fld)
+     &      rhs_tbl, FEM_elens, filtering, layer_tbl,                   &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         call update_with_velocity                                       &
      &    (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf, fluid,    &
      &     group%surf_grp, surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs,          &
      &     iphys, iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q, &
-     &     rhs_tbl, FEM_elens, layer_tbl, mhd_fem_wk, fem_wk,           &
-     &     f_l, f_nl, nod_fld)
+     &     rhs_tbl, FEM_elens, filtering, wide_filtering, layer_tbl,    &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       end subroutine fields_evolution_4_FEM_SPH

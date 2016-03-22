@@ -1,33 +1,33 @@
 !
 !      module filter_IO_for_sorting
 !
-      module filter_IO_for_sorting
-!
 !     Written by H. Matsui on Mar., 2008
-!
-      use m_precision
-!
-      use m_nod_filter_comm_table
-      use m_filter_coefs
-      use m_filter_coef_combained
-      use m_filter_func_4_sorting
-!
-      implicit none
-!
-      character(len=255) :: character_4_read = ''
-      private :: character_4_read
 !
 !      subroutine read_filter_neib_4_sort(id_file)
 !      subroutine read_filter_neib_4_sort_b(id_file)
 !
 !      subroutine read_filter_coef_4_sort(id_file)
-!      subroutine read_filter_coef_4_sort_b(id_file)
+!      subroutine read_filter_coef_4_sort_b(id_file, filter)
 !
 !      subroutine write_filter_coef_4_each(id_file)
 !      subroutine write_filter_coef_4_each_b(id_file)
 !
 !      subroutine read_filter_coef_4_each(id_file)
 !      subroutine read_filter_coef_4_each_b(id_file)
+!
+      module filter_IO_for_sorting
+!
+      use m_precision
+!
+      use m_nod_filter_comm_table
+      use m_filter_coefs
+      use m_filter_func_4_sorting
+!
+      implicit none
+!
+      character(len=255) :: character_4_read = ''
+      private :: character_4_read
+      private :: set_filtering_item_4_sorting
 !
 !  ---------------------------------------------------------------------
 !
@@ -124,7 +124,7 @@
         call read_filter_coef_4_each(id_file)
 !
         icou = itbl_near_nod_whole(inod)
-        call set_filtering_item_4_sorting(inod, icou)
+        call set_filtering_item_4_sorting(icou)
       end do
 !
         do inod = 1, inter_nod_3dfilter
@@ -134,7 +134,7 @@
           call read_filter_coef_4_each(id_file)
 !
           icou = itbl_near_nod_fluid(inod)
-          call set_filtering_item_4_sorting(inod, icou)
+          call set_filtering_item_4_sorting(icou)
 !
         end do
 !
@@ -142,9 +142,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_filter_coef_4_sort_b(id_file)
+      subroutine read_filter_coef_4_sort_b(id_file, filter)
+!
+      use t_filter_coefficients
 !
       integer(kind = kint), intent(in) :: id_file
+      type(filter_coefficients_type), intent(in) :: filter
       integer(kind = kint) :: inod, icou
 !
 !
@@ -153,17 +156,17 @@
         call read_filter_coef_4_each_b(id_file)
 !
         icou = itbl_near_nod_whole(inod)
-        call set_filtering_item_4_sorting(inod, icou)
+        call set_filtering_item_4_sorting(icou)
 !
       end do
 !
       do inod = 1, inter_nod_3dfilter
         read(id_file) nnod_near_1nod_weight, i_exp_level_1nod_weight
-        if (icou .le. ntot_nod_3d_filter) then
+        if (icou .le. filter%ntot_nod) then
           call read_filter_coef_4_each_b(id_file)
 !
           icou = itbl_near_nod_fluid(inod)
-          call set_filtering_item_4_sorting(inod, icou)
+          call set_filtering_item_4_sorting(icou)
         end if
       end do
 !
@@ -172,11 +175,10 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_filtering_item_4_sorting(inod, icou)
+      subroutine set_filtering_item_4_sorting(icou)
 !
-      integer(kind = kint), intent(in) :: inod, icou
-      integer(kind = kint) :: i, j
-      integer(kind = kint) :: ist_nod, ist_ele
+      integer(kind = kint), intent(in) :: icou
+      integer(kind = kint) :: i, j, ist_nod
 !
 !
         ist_nod = inod_stack_nod_all_w(icou-1)

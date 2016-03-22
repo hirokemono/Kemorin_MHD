@@ -11,7 +11,8 @@
 !!     &         (nod_comm, node, ele, surf, fluid, sf_grp,             &
 !!     &          Vsf_bcs, Psf_bcs, iphys, iphys_ele, ele_fld,          &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens, &
-!!     &          layer_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          filtering, wide_filtering, layer_tbl,                 &
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -27,6 +28,8 @@
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp_q
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(filtering_data_type), intent(in) :: filtering
+!!        type(filtering_data_type), intent(in) :: wide_filtering
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -53,6 +56,7 @@
       use t_finite_element_mat
       use t_MHD_finite_element_mat
       use t_filter_elength
+      use t_filtering_data
       use t_layering_ele_list
       use t_surface_bc_data
 !
@@ -68,17 +72,17 @@
      &         (nod_comm, node, ele, surf, fluid, sf_grp,               &
      &          Vsf_bcs, Psf_bcs, iphys, iphys_ele, ele_fld,            &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,   &
-     &          layer_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          filtering, wide_filtering, layer_tbl,                   &
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_t_step_parameter
       use m_SGS_model_coefs
       use m_SGS_address
 !
       use average_on_elements
-      use cal_filtering_vectors
+      use cal_filtering_scalars
       use cal_diff_vector_on_ele
       use cal_diff_coef_velo
-      use cal_w_filtering_scalars
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -95,6 +99,8 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp_q
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(filtering_data_type), intent(in) :: filtering
+      type(filtering_data_type), intent(in) :: wide_filtering
       type(layering_tbl), intent(in) :: layer_tbl
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -149,7 +155,7 @@
         if (iflag2 .eq. 1) then
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &      write(*,*) 'cal_filtered_vector', iphys%i_filter_velo
-          call cal_filtered_vector(nod_comm, node,                      &
+          call cal_filtered_vector_whole(nod_comm, node, filtering,     &
      &        iphys%i_filter_velo, iphys%i_velo, nod_fld)
           nod_fld%iflag_update(iphys%i_filter_velo  ) = 1
           nod_fld%iflag_update(iphys%i_filter_velo+1) = 1
@@ -160,8 +166,9 @@
       if (iphys%i_wide_fil_velo.ne.0 .and. iflag_dynamic.eq.0) then
         if (iflag_SGS_model.eq.id_SGS_similarity                        &
      &    .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
-          call cal_w_filtered_vector(iphys%i_wide_fil_velo,             &
-     &        iphys%i_filter_velo, nod_comm, node, nod_fld)
+          call cal_filtered_vector_whole                                &
+     &       (nod_comm, node, wide_filtering,                           &
+     &        iphys%i_wide_fil_velo, iphys%i_filter_velo, nod_fld)
           nod_fld%iflag_update(iphys%i_wide_fil_velo  ) = 1
           nod_fld%iflag_update(iphys%i_wide_fil_velo+1) = 1
           nod_fld%iflag_update(iphys%i_wide_fil_velo+2) = 1
@@ -189,8 +196,8 @@
           call s_cal_diff_coef_velo(iak_diff_v, icomp_diff_v,           &
      &        nod_comm, node, ele, surf, sf_grp, Vsf_bcs, Psf_bcs,      &
      &        iphys, iphys_ele, ele_fld, fluid, layer_tbl,              &
-     &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,                &
-     &        FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,     &
+     &        filtering, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         end if
 !
       end if

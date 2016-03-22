@@ -71,8 +71,8 @@
       call update_fields(mesh1, group1, ele_mesh1, MHD_mesh1,           &
      &    nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,                &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
-     &    FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk,                  &
-     &    fem1_wk, f1_l, f1_nl, nod_fld1)
+     &    FEM1_elen, filtering1, wide_filtering, layer_tbl1, m1_lump,   &
+     &    mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 'copy_model_coef_2_previous'
@@ -97,16 +97,16 @@
      &     (mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,            &
      &      nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,              &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
-     &      FEM1_elen, m1_lump, mhd_fem1_wk, fem1_wk,                   &
-     &      f1_l, f1_nl, nod_fld1)
+     &      FEM1_elen, filtering1, wide_filtering, m1_lump,             &
+     &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'lead_fields_by_FEM'
       call lead_fields_by_FEM(mesh1, group1, ele_mesh1,                 &
      &    MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,     &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
-     &    FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk, fem1_wk,         &
-     &    f1_l, f1_nl, nod_fld1)
+     &    FEM1_elen, filtering1, wide_filtering, layer_tbl1, m1_lump,   &
+     &    mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
 !
 !     ---------------------
 !
@@ -188,8 +188,8 @@
      &   (mesh1, group1, ele_mesh1, MHD_mesh1%fluid,                    &
      &    nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,                &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, jac1_sf_grp_2d_l,     &
-     &    rhs_tbl1, FEM1_elen, layer_tbl1, mhd_fem1_wk, fem1_wk,        &
-     &    f1_l, f1_nl, nod_fld1)
+     &    rhs_tbl1, FEM1_elen, filtering1, wide_filtering, layer_tbl1,  &
+     &    mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
 !
 !     ----- Evaluate model coefficients
 !
@@ -199,8 +199,8 @@
      &     (mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,            &
      &      nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,              &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
-     &      FEM1_elen, m1_lump, mhd_fem1_wk, fem1_wk,                   &
-     &      f1_l, f1_nl, nod_fld1)
+     &      FEM1_elen, filtering1, wide_filtering, m1_lump,             &
+     &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
       end if
 !
 !     ---------------------
@@ -218,8 +218,8 @@
         call lead_fields_by_FEM(mesh1, group1, ele_mesh1,               &
      &      MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,   &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
-     &      FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk, fem1_wk,       &
-     &      f1_l, f1_nl, nod_fld1)
+     &      FEM1_elen, filtering1, wide_filtering, layer_tbl1, m1_lump, &
+     &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
 !
 !     -----Output monitor date
 !

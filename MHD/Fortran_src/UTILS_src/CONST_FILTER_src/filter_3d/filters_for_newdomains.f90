@@ -3,8 +3,10 @@
 !
 !      Written by H. Matsui on May, 2008
 !
-!      subroutine filters_4_newdomains_para(newmesh)
-!      subroutine filters_4_newdomains_single(newmesh)
+!!      subroutine filters_4_newdomains_para                            &
+!!     &         (filtering, org_node, org_ele, newmesh)
+!!      subroutine filters_4_newdomains_single                          &
+!!     &         (filtering, org_node, org_ele, newmesh)
 !
       module filters_for_newdomains
 !
@@ -14,6 +16,7 @@
       use m_internal_4_partitioner
       use t_mesh_data
       use t_geometry_data
+      use t_filtering_data
 !
       use set_filters_4_new_domains
 !
@@ -28,17 +31,18 @@
 !   --------------------------------------------------------------------
 !
       subroutine filters_4_newdomains_para                              &
-     &         (org_node, org_ele, newmesh)
+     &         (filtering, org_node, org_ele, newmesh)
 !
       use calypso_mpi
       use m_domain_group_4_partition
 !
+      type(filtering_data_type), intent(inout) :: filtering
       type(node_data), intent(inout) :: org_node
       type(element_data), intent(inout) :: org_ele
       type(mesh_geometry), intent(inout) :: newmesh
 !
 !
-      call filters_4_each_newdomain(my_rank,                            &
+      call filters_4_each_newdomain(my_rank, filtering,                 &
      &    org_node, org_ele, newmesh%node, newmesh%ele)
       call deallocate_local_nese_id_tbl
 !
@@ -47,11 +51,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine filters_4_newdomains_single                            &
-     &         (org_node, org_ele, newmesh)
+     &         (filtering, org_node, org_ele, newmesh)
 !
       use m_2nd_pallalel_vector
       use m_domain_group_4_partition
 !
+      type(filtering_data_type), intent(inout) :: filtering
       type(node_data), intent(inout) :: org_node
       type(element_data), intent(inout) :: org_ele
       type(mesh_geometry), intent(inout) :: newmesh
@@ -61,7 +66,7 @@
 !
       do ip2 = 1, nprocs_2nd
         my_rank_2nd = ip2 - 1
-        call filters_4_each_newdomain(my_rank_2nd,                      &
+        call filters_4_each_newdomain(my_rank_2nd, filtering,           &
      &      org_node, org_ele, newmesh%node, newmesh%ele)
       end do
 !
@@ -72,8 +77,8 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine filters_4_each_newdomain                               &
-     &         (my_rank2, org_node, org_ele, new_node, new_ele)
+      subroutine filters_4_each_newdomain(my_rank2, filtering,          &
+     &          org_node, org_ele, new_node, new_ele)
 !
       use m_ctl_param_newdom_filter
       use m_2nd_pallalel_vector
@@ -87,12 +92,12 @@
       use m_comm_data_IO
       use mesh_IO_select
       use copy_filters_4_sorting
-      use set_filter_comm_tbl_4_IO
       use const_newdomain_filter
       use set_parallel_file_name
       use filter_geometry_IO
       use filter_IO_for_newdomain
       use set_filter_geometry_4_IO
+      use set_comm_table_4_IO
 !
       use t_geometry_data
 !
@@ -100,6 +105,7 @@
 !
       type(node_data), intent(inout) :: org_node
       type(element_data), intent(inout) :: org_ele
+      type(filtering_data_type), intent(inout) :: filtering
 !
       type(node_data), intent(inout) :: new_node
       type(element_data), intent(inout) :: new_ele
@@ -135,9 +141,9 @@
         end if
 !
 !        write(*,*) 'copy_filter_comm_tbl_from_IO'
-        call copy_filter_comm_tbl_from_IO
+        call copy_comm_tbl_type_from_IO(filtering%comm)
 !        write(*,*) 'copy_filtering_geometry_from_IO'
-        call copy_filtering_geometry_from_IO
+        call copy_filtering_geometry_from_IO(filtering%nnod_fil)
 !
 !        write(*,*) 'set_global_nodid_4_newfilter'
         call set_global_nodid_4_newfilter
@@ -171,7 +177,7 @@
         call deallocate_fluid_filter_coefs
 !
         call deallocate_globalnod_filter
-        call deallocate_type_comm_tbl(flt_comm)
+        call deallocate_type_comm_tbl(filtering%comm)
 !
       end subroutine filters_4_each_newdomain
 !

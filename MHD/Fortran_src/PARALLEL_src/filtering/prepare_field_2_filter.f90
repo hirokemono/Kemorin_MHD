@@ -5,11 +5,14 @@
 !      Modified by H. Matsui on July, 2008
 !
 !!      subroutine prepare_scalar_2_filter                              &
-!!     &         (numnod, internal_node, ntot_comp, id_phys, d_nod)
+!!     &         (flt_comm, numnod, internal_node, ntot_comp,           &
+!!     &          id_phys, d_nod, nnod_filtering, x_vec_filtering)
 !!      subroutine prepare_vector_2_filter                              &
-!!     &         (numnod, internal_node, ntot_comp, id_phys, d_nod)
+!!     &         (flt_comm, numnod, internal_node, ntot_comp,           &
+!!     &          id_phys, d_nod, nnod_filtering, x_vec_filtering)
 !!      subroutine prepare_sym_tensor_2_filter                          &
-!!     &         (numnod, internal_node, ntot_comp, id_phys, d_nod)
+!!     &         (flt_comm, numnod, internal_node, ntot_comp,           &
+!!     &          id_phys, d_nod, nnod_filtering, x_vec_filtering)
 !         id_phys:  field ID of nodal fields
 !
       module prepare_field_2_filter
@@ -18,7 +21,8 @@
 !
       use calypso_mpi
       use m_work_time
-      use m_nod_filter_comm_table
+      use t_comm_table
+!      use m_nod_filter_comm_table
 !
       implicit none
 !
@@ -29,13 +33,20 @@
 ! ----------------------------------------------------------------------
 !
       subroutine prepare_scalar_2_filter                                &
-     &         (numnod, internal_node, ntot_comp, id_phys, d_nod)
+     &         (flt_comm, numnod, internal_node, ntot_comp,             &
+     &          id_phys, d_nod, nnod_filtering, x_vec_filtering)
 !
       use solver_SR_type
 !
+      type(communication_table), intent(in) :: flt_comm
+!
+      integer(kind = kint), intent(in) :: nnod_filtering
       integer(kind = kint), intent(in) :: numnod, internal_node
       integer(kind = kint), intent(in) :: ntot_comp, id_phys
       real(kind = kreal), intent(in) :: d_nod(numnod,ntot_comp)
+!
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: x_vec_filtering(nnod_filtering)
 !
       integer (kind = kint) :: inod
 !
@@ -62,13 +73,20 @@
 ! ----------------------------------------------------------------------
 !
       subroutine prepare_vector_2_filter                                &
-     &         (numnod, internal_node, ntot_comp, id_phys, d_nod)
+     &         (flt_comm, numnod, internal_node, ntot_comp,             &
+     &          id_phys, d_nod, nnod_filtering, x_vec_filtering)
 !
       use solver_SR_type
 !
+      type(communication_table), intent(in) :: flt_comm
+!
+      integer(kind = kint), intent(in) :: nnod_filtering
       integer(kind = kint), intent(in) :: numnod, internal_node
       integer(kind = kint), intent(in) :: ntot_comp, id_phys
       real(kind = kreal), intent(in) :: d_nod(numnod,ntot_comp)
+!
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: x_vec_filtering(3*nnod_filtering)
 !
       integer (kind = kint) :: inod
 !
@@ -106,13 +124,20 @@
 ! ----------------------------------------------------------------------
 !
       subroutine prepare_sym_tensor_2_filter                            &
-     &         (numnod, internal_node, ntot_comp, id_phys, d_nod)
+     &         (flt_comm, numnod, internal_node, ntot_comp,             &
+     &          id_phys, d_nod, nnod_filtering, x_vec_filtering)
 !
       use solver_SR_type
 !
+      type(communication_table), intent(in) :: flt_comm
+!
+      integer(kind = kint), intent(in) :: nnod_filtering
       integer(kind = kint), intent(in) :: numnod, internal_node
       integer(kind = kint), intent(in) :: ntot_comp, id_phys
       real(kind = kreal), intent(in) :: d_nod(numnod,ntot_comp)
+!
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: x_vec_filtering(6*nnod_filtering)
 !
       integer (kind = kint) :: inod
 !

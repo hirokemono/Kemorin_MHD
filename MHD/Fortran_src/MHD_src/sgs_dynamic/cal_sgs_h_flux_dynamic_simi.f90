@@ -6,7 +6,8 @@
 !!      subroutine s_cal_sgs_h_flux_dynamic_simi                        &
 !!     &         (iak_sgs_hf, icomp_sgs_hf, nod_comm, node, ele,        &
 !!     &          iphys, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,        &
-!!     &          m_lump, fem_wk, f_l, nod_fld)
+!!     &          filtering, wide_filtering, m_lump, fem_wk,            &
+!!     &          f_l, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -14,6 +15,8 @@
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(filtering_data_type), intent(in) :: filtering
+!!        type(filtering_data_type), intent(in) :: wide_filtering
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l
@@ -35,6 +38,7 @@
       use t_jacobian_3d
       use t_table_FEM_const
       use t_layering_ele_list
+      use t_filtering_data
 !
       implicit none
 !
@@ -47,13 +51,14 @@
       subroutine s_cal_sgs_h_flux_dynamic_simi                          &
      &         (iak_sgs_hf, icomp_sgs_hf, nod_comm, node, ele,          &
      &          iphys, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,          &
-     &          m_lump, fem_wk, f_l, nod_fld)
+     &          filtering, wide_filtering, m_lump, fem_wk,              &
+     &          f_l, nod_fld)
 !
       use m_SGS_model_coefs
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
-      use cal_filtering_vectors
+      use cal_filtering_scalars
       use cal_sgs_fluxes_simi
       use cal_model_diff_coefs
       use int_element_field_2_node
@@ -70,6 +75,8 @@
       type(layering_tbl), intent(in) :: layer_tbl
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(filtering_data_type), intent(in) :: filtering
+      type(filtering_data_type), intent(in) :: wide_filtering
       type(lumped_mass_matrices), intent(in) :: m_lump
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -88,9 +95,9 @@
 !
       if (iflag_debug.eq.1)                                             &
      &     write(*,*) 'cal_sgs_hf_simi_wide i_wide_fil_temp'
-      call cal_sgs_hf_simi_wide(iphys%i_sgs_grad_f,                     &
+      call cal_sgs_hf_simi(iphys%i_sgs_grad_f,                          &
      &    iphys%i_filter_temp, iphys%i_wide_fil_temp, icomp_sgs_hf,     &
-     &    nod_comm, node, iphys, nod_fld)
+     &    nod_comm, node, iphys, wide_filtering, nod_fld)
 !      call check_nodal_data                                            &
 !     &   (my_rank, nod_fld, n_vector, iphys%i_sgs_grad_f)
 !
@@ -99,7 +106,7 @@
       if (iflag_debug.eq.1) write(*,*) 'cal_sgs_hf_simi'
       call cal_sgs_hf_simi(iphys%i_SGS_h_flux, iphys%i_sgs_temp,        &
      &    iphys%i_filter_temp, icomp_sgs_hf,                            &
-     &    nod_comm, node, iphys, nod_fld)
+     &    nod_comm, node, iphys, filtering, nod_fld)
 !
 !    copy to work array
 !
@@ -108,7 +115,7 @@
 !
 !      filtering
 !
-      call cal_filtered_vector(nod_comm, node,                          &
+      call cal_filtered_vector_whole(nod_comm, node, filtering,         &
      &    iphys%i_sgs_grad, iphys%i_SGS_h_flux, nod_fld)
 !
 !   Change coordinate

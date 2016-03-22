@@ -44,7 +44,6 @@ MOD_FILTER_COMM_TEST = \
 m_geometry_filter_comm_test.o \
 m_ctl_data_filter_comm_test.o \
 input_ctl_filter_comm_test.o \
-filter_send_recv_test.o \
 set_diff_filter_comm_test.o \
 collect_diff_filter_ctest.o \
 write_diff_filter_comm_test.o \

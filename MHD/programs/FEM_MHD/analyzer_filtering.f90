@@ -29,6 +29,7 @@
 !
       use FEM_analyzer_snapshot
       use input_control
+      use m_3d_filter_coef_MHD
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -46,7 +47,8 @@
 !
 !     --------------------- 
 !
-      call input_control_4_snapshot(mesh1, group1, ele_mesh1)
+      call input_control_4_snapshot                                     &
+     &   (mesh1, group1, ele_mesh1, filtering1, wide_filtering)
 !
 !     --------------------- 
 !

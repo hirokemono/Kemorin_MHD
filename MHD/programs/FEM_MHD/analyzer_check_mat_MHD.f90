@@ -24,12 +24,14 @@
       subroutine init_analyzer
 !
       use m_mesh_data
+      use m_3d_filter_coef_MHD
       use input_control
 !
 !
         write(*,*) 'Simulation start: PE. ', my_rank
 !
-      call input_control_4_MHD(mesh1, group1, ele_mesh1)
+      call input_control_4_MHD                                          &
+     &   (mesh1, group1, ele_mesh1, filtering1, wide_filtering)
 !
       call FEM_check_MHD_mat
 !

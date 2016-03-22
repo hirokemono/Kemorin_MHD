@@ -4,7 +4,7 @@
 !     Written by H. Matsui on Apr., 2008
 !
 !      subroutine copy_filtering_geometry_to_IO
-!      subroutine copy_filtering_geometry_from_IO
+!      subroutine copy_filtering_geometry_from_IO(nnod_fil)
 !
       module set_filter_geometry_4_IO
 !
@@ -39,9 +39,12 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine copy_filtering_geometry_from_IO
+      subroutine copy_filtering_geometry_from_IO(nnod_fil)
+!
+      integer(kind = kint), intent(inout) :: nnod_fil
 !
 !
+      nnod_fil =       numnod_dummy
       nnod_filtering = numnod_dummy
       inter_nod_3dfilter = internal_node_dummy
       call allocate_globalnod_filter

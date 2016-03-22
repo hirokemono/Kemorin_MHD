@@ -6,18 +6,23 @@
 !     modified by H. Matsui on Aug., 2007
 !     modified by H. Matsui on May, 2008
 !
-!      subroutine s_read_filtering_data(node, ele)
+!!      subroutine s_read_filtering_data                                &
+!!     &         (node, ele, filtering, wide_filtering)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(filtering_data_type), intent(inout) :: filtering
+!!        type(filtering_data_type), intent(inout) :: wide_filtering
 !
       module read_filtering_data
 !
       use m_precision
-      use calypso_mpi
       use m_machine_parameter
+      use calypso_mpi
+      use t_filtering_data
 !
       implicit none
 !
       private :: read_3d_filtering_data
-      private :: read_w_filtering_data
       private :: read_3d_filter_moments, read_line_filtering_data
 !
 !-----------------------------------------------------------------------
@@ -26,14 +31,19 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_read_filtering_data(node, ele)
+      subroutine s_read_filtering_data                                  &
+     &         (node, ele, filtering, wide_filtering)
 !
       use m_control_parameter
       use m_filter_elength
+      use m_filter_file_names
       use t_geometry_data
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+!
+      type(filtering_data_type), intent(inout) :: filtering
+      type(filtering_data_type), intent(inout) :: wide_filtering
 !
 !
       if (iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
@@ -42,11 +52,15 @@
       else
         call read_3d_filter_moments                                     &
      &     (node%numnod, ele%numele, FEM1_elen)
-        call read_3d_filtering_data
+        if(iflag_SGS_filter .gt. 0) then
+          call read_3d_filtering_data                                   &
+     &       (filter_3d_head, ifmt_3d_filter, filtering)
+        end if
 !
         if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                   &
      &      .and. iflag_SGS_model.eq.id_SGS_similarity) then
-          call read_w_filtering_data
+          call read_3d_filtering_data                                   &
+     &       (filter_wide_head, ifmt_wide_filter, wide_filtering)
         end if
       end if
 !
@@ -55,66 +69,38 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine read_3d_filtering_data
+      subroutine read_3d_filtering_data                                 &
+     &         (filter_head, ifmt_filter, filtering)
 !
       use m_control_parameter
-      use m_filter_file_names
-      use m_filter_coef_combained
-      use m_nod_filter_comm_table
+!
       use filter_moment_IO_select
-      use set_filter_comm_tbl_4_IO
       use set_filter_geometry_4_IO
       use copy_3d_filters_4_IO
       use set_parallel_file_name
+      use set_comm_table_4_IO
+!
+      character(len=kchara), intent(in) :: filter_head
+      integer(kind = kint) , intent(in) :: ifmt_filter
+      type(filtering_data_type), intent(inout) :: filtering
 !
 !
-      if (iflag_SGS_filter .gt. 0) then
-        ifmt_filter_file = ifmt_3d_filter
-        filter_file_head = filter_3d_head
-        call sel_read_sort_filter_coef_file(my_rank)
-        call copy_filter_comm_tbl_from_IO
-        call copy_filtering_geometry_from_IO
+      ifmt_filter_file = ifmt_filter
+      filter_file_head = filter_head
+      call sel_read_sort_filter_coef_file(my_rank)
 !
-        call allocate_nod_data_4_filter
+      call copy_comm_tbl_type_from_IO(filtering%comm)
+      filtering%nnod_fil = numnod_dummy
+      call copy_filtering_geometry_from_IO(filtering%nnod_fil)
 !
-        call copy_3d_filter_stacks_from_IO
-        call copy_3d_filter_weights_from_IO
+      call alloc_nod_data_4_filter(filtering)
 !
-        call deallocate_globalnod_filter
-        call deallocate_3d_filter_func_comb
-      end if
+      call copy_3d_filter_stacks_from_IO(filtering%filter)
+      call copy_3d_filter_weights_from_IO(filtering%filter)
+!
+      call deallocate_globalnod_filter
 !
       end subroutine read_3d_filtering_data
-!
-!-----------------------------------------------------------------------
-!
-      subroutine read_w_filtering_data
-!
-      use m_control_parameter
-      use m_nod_w_filter_comm_table
-      use m_filter_file_names
-      use filter_moment_IO_select
-      use copy_w_filters_4_IO
-!
-!
-      if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                     &
-     &      .or. iflag_SGS_model.eq.id_SGS_similarity) then
-!
-        ifmt_filter_file = ifmt_wide_filter
-        filter_file_head = filter_wide_head
-        call sel_read_sort_filter_coef_file(my_rank)
-        call copy_w_filter_comm_tbl_from_IO
-        call copy_w_filter_geometry_from_IO
-!
-        call allocate_nod_data_w_fil
-!
-        call copy_w_filter_stacks_from_IO
-        call copy_w_filter_weights_from_IO
-!
-        call deallocate_globalnod_w_fil
-      end if
-!
-      end subroutine read_w_filtering_data
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -164,7 +150,6 @@
       use m_error_IDs
       use m_control_parameter
       use m_filter_file_names
-      use m_filter_coef_combained
       use m_field_file_format
 !
       use t_filter_elength

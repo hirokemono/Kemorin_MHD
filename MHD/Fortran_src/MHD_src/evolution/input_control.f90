@@ -9,11 +9,15 @@
 !>@brief  Load mesh and filtering data for MHD simulation
 !!
 !!@verbatim
-!!      subroutine input_control_4_MHD(mesh, group, ele_mesh)
-!!      subroutine input_control_4_snapshot(mesh, group, ele_mesh)
+!!      subroutine input_control_4_MHD                                  &
+!!     &         (mesh, group, ele_mesh, filtering, wide_filtering)
+!!      subroutine input_control_4_snapshot                             &
+!!     &         (mesh, group, ele_mesh, filtering, wide_filtering)
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(element_geometry), intent(inout) :: ele_mesh
+!!        type(filtering_data_type), intent(inout) :: filtering
+!!        type(filtering_data_type), intent(inout) :: wide_filtering
 !!@endverbatim
 !
 !
@@ -25,6 +29,7 @@
       use calypso_mpi
 !
       use t_mesh_data
+      use t_filtering_data
 !
       implicit none
 !
@@ -36,7 +41,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine input_control_4_MHD(mesh, group, ele_mesh)
+      subroutine input_control_4_MHD                                    &
+     &         (mesh, group, ele_mesh, filtering, wide_filtering)
 !
       use m_ctl_data_fem_MHD
       use m_solver_djds_MHD
@@ -51,6 +57,9 @@
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
 !
+      type(filtering_data_type), intent(inout) :: filtering
+      type(filtering_data_type), intent(inout) :: wide_filtering
+!
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_MHD'
       call read_control_4_fem_MHD
@@ -61,7 +70,7 @@
       call input_mesh(my_rank, mesh, group,                             &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
-      call input_meshes_4_MHD(mesh, group)
+      call input_meshes_4_MHD(mesh, group, filtering, wide_filtering)
 !
       if(cmp_no_case(method_4_solver, cflag_mgcg)) then
         call alloc_MHD_MG_DJDS_mat(num_MG_level, MHD1_matrices)
@@ -75,7 +84,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine input_control_4_snapshot(mesh, group, ele_mesh)
+      subroutine input_control_4_snapshot                               &
+     &         (mesh, group, ele_mesh, filtering, wide_filtering)
 !
       use m_ctl_data_fem_MHD
       use set_control_FEM_MHD
@@ -84,6 +94,9 @@
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
+!
+      type(filtering_data_type), intent(inout) :: filtering
+      type(filtering_data_type), intent(inout) :: wide_filtering
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_snap'
@@ -95,14 +108,15 @@
       call input_mesh(my_rank, mesh, group,                             &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
-      call input_meshes_4_MHD(mesh, group)
+      call input_meshes_4_MHD(mesh, group, filtering, wide_filtering)
 !
       end subroutine input_control_4_snapshot
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine input_meshes_4_MHD(mesh, group)
+      subroutine input_meshes_4_MHD                                     &
+     &         (mesh, group, filtering, wide_filtering)
 !
       use m_machine_parameter
       use m_control_parameter
@@ -121,6 +135,9 @@
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
 !
+      type(filtering_data_type), intent(inout) :: filtering
+      type(filtering_data_type), intent(inout) :: wide_filtering
+!
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &      write(*,*) 'set_local_node_id_4_monitor'
@@ -137,7 +154,8 @@
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &      write(*,*) 's_read_filtering_data'
-      call s_read_filtering_data(mesh%node, mesh%ele)
+      call s_read_filtering_data                                        &
+     &   (mesh%node, mesh%ele, filtering, wide_filtering)
 !
       if     (iflag_SGS_filter .eq. id_SGS_3D_FILTERING                 &
      &   .or. iflag_SGS_filter .eq. id_SGS_3D_EZ_FILTERING              &
@@ -145,17 +163,15 @@
      &   .or. iflag_SGS_filter .eq. id_SGS_3D_EZ_SMP_FILTERING ) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &       write(*,*) 's_set_3d_filtering_group_id'
-        call s_set_3d_filtering_group_id
+        call s_set_3d_filtering_group_id(filtering%filter)
 !
         if (iflag_SGS_model .eq. id_SGS_similarity                      &
      &       .and. iflag_dynamic_SGS .eq. id_SGS_DYNAMIC_ON) then
           if (iflag_debug .ge. iflag_routine_msg)                       &
      &         write(*,*) 's_set_w_filtering_group_id'
-          call s_set_w_filtering_group_id
+          call s_set_w_filtering_group_id(wide_filtering%filter)
         end if
       end if
-!
-! ---------------------------------
 !
       end subroutine input_meshes_4_MHD
 !

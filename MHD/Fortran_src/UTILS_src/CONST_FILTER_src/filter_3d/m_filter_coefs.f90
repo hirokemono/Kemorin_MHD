@@ -6,9 +6,8 @@
 !      subroutine allocate_filter_coefs
 !      subroutine deallocate_filter_coefs
 !
-!      subroutine allocate_inod_all_w
 !      subroutine allocate_num_near_all_f
-!      subroutine allocate_num_near_all_w
+!      subroutine allocate_num_near_all_w(filter)
 !      subroutine allocate_nod_ele_near_all_w
 !      subroutine allocate_nod_ele_near_1nod(numnod, numele)
 !      subroutine allocate_nod_ele_1nod_tmp(numnod, numele)
@@ -35,6 +34,7 @@
       integer(kind = kint) :: ntot_nod_near_all_w
       integer(kind = kint) :: nmax_nod_near_all_w
       integer(kind = kint) :: nmin_nod_near_all_w
+      integer(kind = kint) :: ntot_nod_fcoefs
       integer(kind = kint), allocatable :: inod_all_w(:)
       integer(kind = kint), allocatable :: nnod_near_nod_all_w(:)
       integer(kind = kint), allocatable :: inod_stack_nod_all_w(:)
@@ -117,27 +117,22 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_inod_all_w
+      subroutine allocate_num_near_all_w(filter)
 !
-      use m_filter_coef_combained
+      use t_filter_coefficients
 !
-      allocate(inod_all_w(ntot_nod_3d_filter))
+      type(filter_coefficients_type), intent(inout) :: filter
+!
+!
+      ntot_nod_fcoefs = filter%ntot_nod
+      allocate(inod_all_w(ntot_nod_fcoefs))
+      allocate(nnod_near_nod_all_w(ntot_nod_fcoefs))
+      allocate(inod_stack_nod_all_w(0:ntot_nod_fcoefs))
+!
+      allocate(nele_near_nod_all_w(ntot_nod_fcoefs))
+      allocate(iele_stack_nod_all_w(0:ntot_nod_fcoefs))
+!
       inod_all_w = 0
-!
-      end subroutine allocate_inod_all_w
-!
-! -----------------------------------------------------------------------
-!
-      subroutine allocate_num_near_all_w
-!
-      use m_filter_coef_combained
-!
-      allocate(nnod_near_nod_all_w(ntot_nod_3d_filter))
-      allocate(inod_stack_nod_all_w(0:ntot_nod_3d_filter))
-!
-      allocate(nele_near_nod_all_w(ntot_nod_3d_filter))
-      allocate(iele_stack_nod_all_w(0:ntot_nod_3d_filter))
-!
       nnod_near_nod_all_w = 0
       inod_stack_nod_all_w = 0
       nele_near_nod_all_w = 0
@@ -318,15 +313,13 @@
 !
       subroutine check_num_near_all_f(my_rank)
 !
-      use m_filter_coef_combained
-!
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint) :: inum
 !
       write(50+my_rank,*) 'near node ID for filter and entire'
       write(50+my_rank,*)                                               &
      &      'max., min.: ', nmax_nod_near_all_w, nmin_nod_near_all_w
-      do inum = 1, ntot_nod_3d_filter
+      do inum = 1, ntot_nod_fcoefs
         write(50+my_rank,*)                                             &
      &     inum, nnod_near_nod_all_w(inum)
       end do
@@ -337,14 +330,12 @@
 !
       subroutine check_near_nod_all_filter(my_rank)
 !
-      use m_filter_coef_combained
-!
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint) :: inum, ist, ied
 !
       write(50+my_rank,*) 'max and min. of near node ID for node ',     &
      &                 nmax_nod_near_all_w, nmin_nod_near_all_w
-      do inum = 1, ntot_nod_3d_filter
+      do inum = 1, ntot_nod_fcoefs
         ist = inod_stack_nod_all_w(inum-1) + 1
         ied = inod_stack_nod_all_w(inum)
         write(50+my_rank,*) 'near node ID inod_near_nod_all_w',         &
@@ -358,12 +349,10 @@
 !
       subroutine check_filter_functions(my_rank, id_base)
 !
-      use m_filter_coef_combained
-!
       integer(kind = kint), intent(in) :: my_rank, id_base
       integer(kind = kint) :: inum, ist, ied, i
 !
-      do inum = 1, ntot_nod_3d_filter
+      do inum = 1, ntot_nod_fcoefs
         ist = inod_stack_nod_all_w(inum-1)
         ied = inod_stack_nod_all_w(inum)
         write(id_base+my_rank,*) 'filter',                              &

@@ -10,10 +10,12 @@
       use calypso_mpi
       use m_machine_parameter
       use t_mesh_data
+      use t_filtering_data
 !
       implicit none
 !
       type(mesh_geometry), save :: mesh_filter
+      type(filtering_data_type), save :: filtering_gen
 !
 ! ----------------------------------------------------------------------
 !
@@ -53,7 +55,6 @@
       use m_ctl_params_4_gen_filter
       use m_filter_file_names
       use m_filter_coefs
-      use m_filter_coef_combained
       use m_nod_filter_comm_table
       use m_filter_func_4_sorting
 !
@@ -62,7 +63,7 @@
       use filter_moment_IO_select
       use read_filter_file_4_sorting
       use set_filter_geometry_4_IO
-      use set_filter_comm_tbl_4_IO
+      use set_comm_table_4_IO
       use copy_3d_filters_4_IO
 !
       integer(kind=kint ) :: ip
@@ -85,7 +86,8 @@
 !
 !     read filtering information
 !
-        call s_read_filter_file_4_sorting(ifmt_3d_filter, my_rank)
+        call s_read_filter_file_4_sorting                               &
+     &     (ifmt_3d_filter, my_rank, filtering_gen)
 !
 !
         call deallocate_whole_filter_coefs
@@ -96,7 +98,7 @@
 !  ---------------------------------------------------
 !
          if(iflag_debug.eq.1)  write(*,*) 's_sorting_by_filtering_area'
-        call s_sorting_by_filtering_area
+        call s_sorting_by_filtering_area(filtering_gen%filter)
 !
         call deallocate_num_near_all_w
         call deallocate_ele_connect_type(mesh_filter%ele)
@@ -105,14 +107,14 @@
 !       output filter moment
 !  ---------------------------------------------------
 !
-        call copy_filter_comm_tbl_to_IO(my_rank)
+        call copy_comm_tbl_type_to_IO(my_rank, filtering_gen%comm)
         call copy_filtering_geometry_to_IO
 !
-        call copy_3d_filter_stacks_to_IO
-        call copy_3d_filter_weights_to_IO
+        call copy_3d_filter_stacks_to_IO(filtering_gen%filter)
+        call copy_3d_filter_weights_to_IO(filtering_gen%filter)
 !
         call deallocate_globalnod_filter
-        call deallocate_type_comm_tbl(flt_comm)
+        call deallocate_type_comm_tbl(filtering_gen%comm)
 !
         ifmt_filter_file = ifmt_3d_filter
         filter_file_head = filter_3d_head

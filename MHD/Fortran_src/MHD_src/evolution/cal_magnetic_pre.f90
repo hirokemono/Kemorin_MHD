@@ -8,8 +8,8 @@
 !!      subroutine cal_magnetic_field_pre(nod_comm, node, ele, surf,    &
 !!     &         conduct, sf_grp, Bnod_bcs, Asf_bcs, Bsf_bcs, iphys,    &
 !!     &         iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl,   &
-!!     &         FEM_elens, num_MG_level, MG_interpolate, MG_comm_table,&
-!!     &         MG_DJDS_table, Bmat_MG_DJDS, MG_vector,                &
+!!     &         FEM_elens, filtering, num_MG_level, MG_interpolate,    &
+!!     &         MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS, MG_vector, &
 !!     &         mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_magnetic_co                                      &
 !!     &         (nod_comm, node, ele, surf, conduct, sf_grp,           &
@@ -42,6 +42,7 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(filtering_data_type), intent(in) :: filtering
 !!        type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
 !!        type(communication_table), intent(in)                         &
 !!       &           :: MG_comm_table(0:num_MG_level)
@@ -75,6 +76,7 @@
       use t_finite_element_mat
       use t_MHD_finite_element_mat
       use t_filter_elength
+      use t_filtering_data
       use t_solver_djds
       use t_interpolate_table
       use t_vector_for_solver
@@ -92,8 +94,8 @@
       subroutine cal_magnetic_field_pre(nod_comm, node, ele, surf,      &
      &         conduct, sf_grp, Bnod_bcs, Asf_bcs, Bsf_bcs, iphys,      &
      &         iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl,     &
-     &         FEM_elens, num_MG_level, MG_interpolate, MG_comm_table,  &
-     &         MG_DJDS_table, Bmat_MG_DJDS, MG_vector,                  &
+     &         FEM_elens, filtering, num_MG_level, MG_interpolate,      &
+     &         MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS, MG_vector,   &
      &         mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use calypso_mpi
@@ -127,6 +129,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp_q
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(filtering_data_type), intent(in) :: filtering
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
@@ -147,7 +150,7 @@
       if ( iflag_SGS_induction .ne. id_SGS_none) then
         call cal_sgs_magne_induction(icomp_sgs_uxb, ie_dvx, ie_dbx,     &
      &     nod_comm, node, ele, conduct, iphys, iphys_ele, ele_fld,     &
-     &     jac_3d_q, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,            &
+     &     jac_3d_q, rhs_tbl, FEM_elens, filtering, mhd_fem_wk, fem_wk, &
      &     f_l, nod_fld)
       end if
 !

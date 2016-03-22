@@ -24,6 +24,7 @@
       use t_filter_elength
       use t_filter_dxdxi
       use t_filter_moments
+      use t_filtering_data
 !
       implicit none
 !
@@ -44,6 +45,8 @@
       type(dxdxi_data_type), save :: filter_dxi1
       type(dxidx_data_type), save :: dxidxs1
       type(gradient_filter_mom_type), save :: FEM_momenet1
+!
+      type(filtering_data_type), save :: filtering_gen
 !
 ! ----------------------------------------------------------------------
 !
@@ -164,7 +167,6 @@
       use m_matrix_4_filter
       use m_crs_matrix_4_filter
       use m_filter_coefs
-      use m_filter_coef_combained
       use m_nod_filter_comm_table
       use m_comm_data_IO
       use m_filter_file_names
@@ -176,8 +178,8 @@
       use filter_coef_IO
       use construct_filters
       use copy_mesh_structures
+      use set_comm_table_4_IO
       use set_filter_geometry_4_IO
-      use set_filter_comm_tbl_4_IO
       use filter_geometry_IO
       use check_num_fail_nod_commute
       use nod_phys_send_recv
@@ -216,9 +218,10 @@
 !
       if (iflag_tgt_filter_type .gt. -10)  then
         call copy_node_data_to_filter(mesh_filter%node)
-        call copy_comm_tbl_types(mesh_filter%nod_comm, flt_comm)
+        call copy_comm_tbl_types                                        &
+     &     (mesh_filter%nod_comm, filtering_gen%comm)
         call copy_filtering_geometry_to_IO
-        call copy_filter_comm_tbl_to_IO(my_rank)
+        call copy_comm_tbl_type_to_IO(my_rank, filtering_gen%comm)
 !
         call add_int_suffix(my_rank, filter_coef_head, file_name)
 !

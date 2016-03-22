@@ -6,7 +6,7 @@
 !!      subroutine cal_sgs_terms_4_monitor                              &
 !!     &         (nod_comm, node, ele, fluid, conduct, iphys,           &
 !!     &          iphys_ele, ele_fld,  jac_3d, rhs_tbl, FEM_elens,      &
-!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          filtering, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_diff_of_sgs_terms(nod_comm, node, ele,           &
 !!     &          surf, fluid, conduct, sf_grp, nod_bcs, surf_bcs,      &
 !!     &          iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp,        &
@@ -30,6 +30,7 @@
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(filtering_data_type), intent(in) :: filtering
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -56,6 +57,7 @@
       use t_finite_element_mat
       use t_MHD_finite_element_mat
       use t_filter_elength
+      use t_filtering_data
       use t_bc_data_MHD
       use t_MHD_boundary_data
 !
@@ -70,7 +72,7 @@
       subroutine cal_sgs_terms_4_monitor                                &
      &         (nod_comm, node, ele, fluid, conduct, iphys,             &
      &          iphys_ele, ele_fld,  jac_3d, rhs_tbl, FEM_elens,        &
-     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          filtering, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_SGS_address
 !
@@ -87,6 +89,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(filtering_data_type), intent(in) :: filtering
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -98,7 +101,7 @@
         if(iflag_debug.gt.0) write(*,*) 'lead ', trim(fhd_SGS_h_flux)
         call cal_sgs_heat_flux(icomp_sgs_hf, ie_dvx,                    &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
-     &      jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,             &
+     &      jac_3d, rhs_tbl, FEM_elens, filtering, mhd_fem_wk, fem_wk,  &
      &      f_l, f_nl, nod_fld)
       end if
 !
@@ -106,7 +109,7 @@
         if(iflag_debug.gt.0) write(*,*) 'lead ', trim(fhd_SGS_m_flux)
         call cal_sgs_momentum_flux(icomp_sgs_mf, ie_dvx,                &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
-     &      jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,             &
+     &      jac_3d, rhs_tbl, FEM_elens, filtering, mhd_fem_wk, fem_wk,  &
      &      f_l, f_nl, nod_fld)
       end if
 !
@@ -115,7 +118,7 @@
      &        'lead ', trim(fhd_SGS_maxwell_t)
         call cal_sgs_maxwell(icomp_sgs_lor, ie_dbx,                     &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
-     &      jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,             &
+     &      jac_3d, rhs_tbl, FEM_elens, filtering, mhd_fem_wk, fem_wk,  &
      &      f_l, f_nl, nod_fld)
       end if
 !
@@ -123,8 +126,8 @@
         if(iflag_debug.gt.0) write(*,*) 'lead ', trim(fhd_induct_t)
         call cal_sgs_magne_induction(icomp_sgs_uxb, ie_dvx, ie_dbx,     &
      &      nod_comm, node, ele, conduct, iphys, iphys_ele, ele_fld,    &
-     &      jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l,        &
-     &      nod_fld)
+     &      jac_3d, rhs_tbl, FEM_elens, filtering, mhd_fem_wk, fem_wk,  &
+     &      f_l, nod_fld)
       end if
 !
       if (iphys%i_SGS_vp_induct .gt. 0) then
@@ -132,9 +135,8 @@
      &        'lead ', trim(fhd_SGS_vp_induct)
         call cal_sgs_uxb_2_monitor(icomp_sgs_uxb, ie_dvx,               &
      &      nod_comm, node, ele, conduct, iphys, iphys_ele,             &
-     &      ele_fld, jac_3d, rhs_tbl, FEM_elens,                        &
+     &      ele_fld, jac_3d, rhs_tbl, FEM_elens, filtering,             &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-
       end if
 !
       end subroutine cal_sgs_terms_4_monitor

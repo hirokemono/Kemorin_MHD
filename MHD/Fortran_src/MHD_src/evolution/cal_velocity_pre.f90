@@ -9,7 +9,7 @@
 !!     &         (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod, &
 !!     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,&
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens, &
-!!     &          layer_tbl, num_MG_level, MG_interpolate,              &
+!!     &          filtering, layer_tbl, num_MG_level, MG_interpolate,   &
 !!     &          MG_comm_fluid, MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,&
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_velocity_co                                      &
@@ -37,6 +37,7 @@
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp_q, jac_sf_grp_l
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(filtering_data_type), intent(in) :: filtering
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
 !!        type(communication_table), intent(in)                         &
@@ -73,6 +74,7 @@
       use t_finite_element_mat
       use t_MHD_finite_element_mat
       use t_filter_elength
+      use t_filtering_data
       use t_layering_ele_list
       use t_solver_djds
       use t_interpolate_table
@@ -92,7 +94,7 @@
      &         (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,   &
      &          Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,  &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,   &
-     &          layer_tbl, num_MG_level, MG_interpolate,                &
+     &          filtering, layer_tbl, num_MG_level, MG_interpolate,     &
      &          MG_comm_fluid, MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,  &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
@@ -131,6 +133,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp_q
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(filtering_data_type), intent(in) :: filtering
       type(layering_tbl), intent(in) :: layer_tbl
 !
       integer(kind = kint), intent(in) :: num_MG_level
@@ -157,22 +160,22 @@
      &     (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,        &
      &      Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,                &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,       &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      filtering, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         call mod_Csim_by_SGS_buoyancy_ele(layer_tbl%e_grp, ele)
       end if
 !
       if ( iflag_SGS_inertia .ne. id_SGS_none) then
         call cal_sgs_momentum_flux(icomp_sgs_mf, ie_dvx,                &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
-     &      jac_3d_q, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,           &
-     &      f_l, f_nl, nod_fld)
+     &      jac_3d_q, rhs_tbl, FEM_elens, filtering,                    &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       if ( iflag_SGS_lorentz .ne. id_SGS_none) then
         call cal_sgs_maxwell(icomp_sgs_lor, ie_dbx,                     &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
-     &      jac_3d_q, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,           &
-     &      f_l, f_nl, nod_fld)
+     &      jac_3d_q, rhs_tbl, FEM_elens, filtering,                    &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
 !   --- reset work array for time evolution

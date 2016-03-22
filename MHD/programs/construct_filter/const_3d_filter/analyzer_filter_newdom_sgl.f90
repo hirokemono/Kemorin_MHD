@@ -12,6 +12,7 @@
       use m_precision
       use m_machine_parameter
       use t_mesh_data
+      use t_filtering_data
 !
       implicit none
 !
@@ -20,6 +21,8 @@
 !
       type(mesh_geometry), save ::    newmesh
       type(element_geometry), save :: new_ele_mesh
+!
+      type(filtering_data_type), save :: filtering_nd
 !
 ! ----------------------------------------------------------------------
 !
@@ -86,7 +89,7 @@
       if (iflag_set_filter_coef .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'filters_4_newdomains_single'
         call filters_4_newdomains_single                                &
-     &     (orgmesh%node, orgmesh%ele, newmesh)
+     &     (filtering_nd, orgmesh%node, orgmesh%ele, newmesh)
       end if
 !
 !

@@ -10,11 +10,13 @@
 !!      subroutine cal_temperature_field(nod_comm, node, ele, surf,     &
 !!     &          fluid, sf_grp, Tnod_bcs, Tsf_bcs, iphys,              &
 !!     &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,      &
-!!     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          FEM_elens, filtering, mhd_fem_wk, fem_wk,             &
+!!     &          f_l, f_nl, nod_fld)
 !!      subroutine cal_parturbation_temp(nod_comm, node, ele, surf,     &
 !!     &          fluid, sf_grp, Tnod_bcs, Tsf_bcs, iphys,              &
 !!     &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,      &
-!!     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          FEM_elens, filtering, mhd_fem_wk, fem_wk,             &
+!!     &          f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -30,6 +32,7 @@
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(filtering_data_type), intent(in) :: filtering
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -53,6 +56,7 @@
       use t_finite_element_mat
       use t_MHD_finite_element_mat
       use t_filter_elength
+      use t_filtering_data
       use t_bc_data_temp
       use t_surface_bc_data
 !
@@ -67,7 +71,8 @@
       subroutine cal_temperature_field(nod_comm, node, ele, surf,       &
      &          fluid, sf_grp, Tnod_bcs, Tsf_bcs, iphys,                &
      &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,        &
-     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          FEM_elens, filtering, mhd_fem_wk, fem_wk,               &
+     &          f_l, f_nl, nod_fld)
 !
       use m_phys_constants
       use m_control_parameter
@@ -105,6 +110,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(filtering_data_type), intent(in) :: filtering
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -117,7 +123,7 @@
       if (iflag_SGS_heat .ne. id_SGS_none) then
         call cal_sgs_heat_flux(icomp_sgs_hf, ie_dvx,                    &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
-     &      jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,             &
+     &      jac_3d, rhs_tbl, FEM_elens, filtering, mhd_fem_wk, fem_wk,  &
      &      f_l, f_nl, nod_fld)
       end if
 !
@@ -222,7 +228,8 @@
       subroutine cal_parturbation_temp(nod_comm, node, ele, surf,       &
      &          fluid, sf_grp, Tnod_bcs, Tsf_bcs, iphys,                &
      &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,        &
-     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          FEM_elens, filtering, mhd_fem_wk, fem_wk,               &
+     &          f_l, f_nl, nod_fld)
 !
       use m_phys_constants
       use m_control_parameter
@@ -263,6 +270,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(filtering_data_type), intent(in) :: filtering
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -273,7 +281,7 @@
       if (iflag_SGS_heat .ne. id_SGS_none) then
         call cal_sgs_heat_flux(icomp_sgs_hf, ie_dvx,                    &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
-     &      jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,             &
+     &      jac_3d, rhs_tbl, FEM_elens, filtering, mhd_fem_wk, fem_wk,  &
      &      f_l, f_nl, nod_fld)
       end if
 !
