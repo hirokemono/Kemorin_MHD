@@ -335,7 +335,7 @@
 !     reset monitoring flag
 !
       nod_fld%iflag_update(1:nod_fld%ntot_phys) = 0
-      iflag_sgs_coefs(1:num_sgs_kinds) =          0
+      sgs_coefs%iflag_field(1:sgs_coefs%num_field) = 0
       iflag_diff_coefs(1:num_diff_kinds) =        0
 !
       end subroutine reset_update_flag

@@ -68,6 +68,7 @@
       use m_machine_parameter
       use m_control_parameter
       use m_phys_constants
+      use m_SGS_model_coefs
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields

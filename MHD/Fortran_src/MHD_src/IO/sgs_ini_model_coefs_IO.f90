@@ -67,18 +67,19 @@
         write(rst_sgs_coef_code,'(2i16)') i_step_MHD, i_step_sgs_coefs
 !
         write(rst_sgs_coef_code,'(a)')  '! num. of model coefs'
-        write(rst_sgs_coef_code,'(2i16)')  num_sgs_kinds, nlayer_SGS
+        write(rst_sgs_coef_code,'(2i16)')                               &
+     &       sgs_coefs%num_field, nlayer_SGS
 !
         call write_sgs_coef_head(rst_sgs_coef_code)
 !
 !   write model coefs for whole domain
         write(rst_sgs_coef_code,1000)  i_step_MHD, time, izero,         &
-     &        (sgs_f_whole_clip(nd),nd=1,num_sgs_kinds)
+     &        sgs_f_whole_clip(1:sgs_coefs%num_field)
 !
 !   write model coefs for each layer
         do inum = 1, nlayer_SGS
           write(rst_sgs_coef_code,1000) i_step_MHD, time, inum,         &
-     &     (sgs_f_clip(inum,nd),nd=1,num_sgs_kinds)
+     &       sgs_f_clip(inum,1:sgs_coefs%num_field)
         end do
 !
         if (iflag_commute_correction .gt. id_SGS_commute_OFF) then
@@ -208,7 +209,7 @@
       integer(kind = kint) :: i, j
 !
 !
-      do i = 1, num_sgs_kinds
+      do i = 1, sgs_coefs%num_field
         do j = 1, num_sgs_kinds_IO
           if ( name_ak_sgs(i) .eq. name_ak_sgs_IO(j) ) then
             sgs_f_clip(1:nlayer_SGS,i) = coef_sgs_IO(1:nlayer_SGS,j)
@@ -258,10 +259,10 @@
 !
       integer(kind = kint) :: i, ist
 !
-      do i = 1, num_sgs_kinds
-         ist = istack_sgs_coefs(i-1) + 1
-         call set_model_coefs_2_ele(izero, ncomp_sgs_coefs(i), i, ist,  &
-     &       layer_egrp%num_grp, layer_egrp%num_item,                   &
+      do i = 1, sgs_coefs%num_field
+         ist = sgs_coefs%istack_comps(i-1) + 1
+         call set_model_coefs_2_ele(izero, sgs_coefs%num_comps(i),      &
+     &       i, ist, layer_egrp%num_grp, layer_egrp%num_item,           &
      &       layer_egrp%istack_grp_smp, layer_egrp%item_grp, ele)
       end do
 !

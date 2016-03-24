@@ -280,7 +280,7 @@
         do nd = nst, ned
 !cdir nodep
           do iele = ist, ied
-            ak_sgs(iele,nd) = zero
+            sgs_coefs%ak(iele,nd) = zero
           end do
         end do
       end do
@@ -330,7 +330,7 @@
 !cdir nodep
               do iele0 = ist, ied
                 iele = item_layer(iele0)
-                ak_sgs(iele,nd) = sgs_c_clip(inum,nd)
+                sgs_coefs%ak(iele,nd) = sgs_c_clip(inum,nd)
               end do
             end do
           end do
@@ -349,7 +349,7 @@
 !cdir nodep
               do iele0 = ist, ied
                 iele = item_layer(iele0)
-                ak_sgs(iele,nd) = sgs_f_clip(inum,ifield_d)
+                sgs_coefs%ak(iele,nd) = sgs_f_clip(inum,ifield_d)
               end do
             end do
           end do

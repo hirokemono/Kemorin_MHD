@@ -9,13 +9,13 @@
 !!     &          nod_comm, node, ele, iphys, iphys_ele, ele_fld,       &
 !!     &          conduct, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,      &
 !!     &          FEM_elens, filtering, mhd_fem_wk, fem_wk,             &
-!!     &          f_l, nod_fld)
+!!     &          f_l, nod_fld, sgs_coefs)
 !!      subroutine cal_sgs_induct_t_dynamic(iak_sgs_uxb, icomp_sgs_uxb, &
 !!     &          ie_dvx, ie_dbx, ie_dfvx, ie_dfbx,                     &
 !!     &          nod_comm, node, ele, iphys, iphys_ele, ele_fld,       &
 !!     &          conduct, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,      &
 !!     &          FEM_elens, filtering, mhd_fem_wk, fem_wk,             &
-!!     &          f_l, nod_fld)
+!!     &          f_l, nod_fld, sgs_coefs)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -32,6 +32,7 @@
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(MHD_coefficients_type), intent(inout) :: sgs_coefs
 !
       module cal_sgs_induction_dynamic
 !
@@ -54,6 +55,7 @@
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_filtering_data
+      use t_material_property
 !
       implicit none
 !
@@ -68,7 +70,7 @@
      &          nod_comm, node, ele, iphys, iphys_ele, ele_fld,         &
      &          conduct, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,        &
      &          FEM_elens, filtering, mhd_fem_wk, fem_wk,               &
-     &          f_l, nod_fld)
+     &          f_l, nod_fld, sgs_coefs)
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
@@ -99,12 +101,13 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
       type(phys_data), intent(inout) :: nod_fld
+      type(MHD_coefficients_type), intent(inout) :: sgs_coefs
 !
 !
 !    reset model coefficients
 !
       call reset_vector_sgs_model_coefs                                 &
-     &   (layer_tbl, icomp_sgs_uxb, ele%istack_ele_smp)
+     &   (ele, layer_tbl, icomp_sgs_uxb, sgs_coefs)
       call s_clear_work_4_dynamic_model(node, iphys, nod_fld)
 !
 !    SGS term by similarity model (to iphys%i_sgs_simi)
@@ -159,7 +162,7 @@
      &          nod_comm, node, ele, iphys, iphys_ele, ele_fld,         &
      &          conduct, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,        &
      &          FEM_elens, filtering, mhd_fem_wk, fem_wk,               &
-     &          f_l, nod_fld)
+     &          f_l, nod_fld, sgs_coefs)
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
@@ -192,12 +195,13 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
       type(phys_data), intent(inout) :: nod_fld
+      type(MHD_coefficients_type), intent(inout) :: sgs_coefs
 !
 !
 !    reset model coefficients
 !
       call reset_vector_sgs_model_coefs                                 &
-     &   (layer_tbl, icomp_sgs_uxb, ele%istack_ele_smp)
+     &   (ele, layer_tbl, icomp_sgs_uxb, sgs_coefs)
       call s_clear_work_4_dynamic_model(node, iphys, nod_fld)
 !
 !    SGS term by similarity model
@@ -218,8 +222,8 @@
       call cal_sgs_induct_t_grad_no_coef                                &
      &   (ifilter_4delta, iphys%i_sgs_grad_f,                           &
      &    iphys%i_filter_velo, iphys%i_filter_magne, ie_dfvx, ie_dfbx,  &
-     &    nod_comm, node, ele, conduct, iphys_ele, ele_fld,         &
-     &    jac_3d_q, rhs_tbl, FEM_elens, fem_wk, mhd_fem_wk,         &
+     &    nod_comm, node, ele, conduct, iphys_ele, ele_fld,             &
+     &    jac_3d_q, rhs_tbl, FEM_elens, fem_wk, mhd_fem_wk,             &
      &    f_l, nod_fld)
 !
 !   gradient model by original field
@@ -253,7 +257,7 @@
       call reduce_model_coefs_layer(SGS_uxb_factor, nlayer_SGS,         &
      &    sgs_f_clip(1,iak_sgs_uxb), sgs_f_whole_clip(iak_sgs_uxb) )
       call reduce_ele_vect_model_coefs(ele, SGS_uxb_factor,             &
-     &    ak_sgs(1,icomp_sgs_uxb))
+     &    sgs_coefs%ntot_comp, icomp_sgs_uxb, sgs_coefs%ak)
 !
       end subroutine cal_sgs_induct_t_dynamic
 !

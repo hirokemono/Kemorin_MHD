@@ -61,7 +61,7 @@
 !
         diff_r = 0.0d0
         diff_max = 0.0d0
-        do j = 1, num_sgs_kinds
+        do j = 1, sgs_coefs%num_field
           do i = 1, nlayer_SGS
             diff_r = abs(sgs_f_coef(i,j) - coef_sgs_p(i,j))
             diff_max = max(diff_max, diff_r)
@@ -154,7 +154,7 @@
       integer(kind = kint) :: i, j
 !
 !
-      do j = 1, num_sgs_kinds
+      do j = 1, sgs_coefs%num_field
         do i = 1, nlayer_SGS
           coef_sgs_p(i,j) = sgs_f_coef(i,j)
         end do

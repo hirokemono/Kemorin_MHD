@@ -232,7 +232,7 @@
       integer ( kind=kint) :: i
 !
 !
-      do i = 1, num_sgs_kinds
+      do i = 1, sgs_coefs%num_field
         if ( name_ak_sgs(i) .eq. fhd_SGS_h_flux ) then
           call write_one_label(file_id, fhd_SGS_h_flux)
         else if ( name_ak_sgs(i) .eq. fhd_SGS_m_flux ) then
@@ -311,7 +311,7 @@
       character(len=kchara) :: lab(6), label
 !
 !
-      do i = 1, num_sgs_kinds
+      do i = 1, sgs_coefs%num_field
         if ( name_ak_sgs(i) .eq. fhd_SGS_h_flux ) then
           call sel_coord_vector_comp_labels(icoord_SGS_model_coef,      &
      &        fhd_SGS_h_flux, lab(1) )

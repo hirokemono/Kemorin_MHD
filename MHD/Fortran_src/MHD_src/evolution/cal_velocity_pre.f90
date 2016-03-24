@@ -161,7 +161,8 @@
      &      Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,                &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,       &
      &      filtering, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-        call mod_Csim_by_SGS_buoyancy_ele(layer_tbl%e_grp, ele)
+        call mod_Csim_by_SGS_buoyancy_ele                               &
+     &     (ele, layer_tbl%e_grp, sgs_coefs)
       end if
 !
       if ( iflag_SGS_inertia .ne. id_SGS_none) then

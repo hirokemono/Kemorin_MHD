@@ -224,7 +224,7 @@
      &        mesh%nod_comm, mesh%node, mesh%ele, iphys,                &
      &        iphys_ele, ele_fld, MHD_mesh%conduct, layer_tbl,          &
      &        jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,        &
-     &        mhd_fem_wk, fem_wk, f_l, nod_fld)
+     &        mhd_fem_wk, fem_wk, f_l, nod_fld, sgs_coefs)
         else if(iflag_SGS_induction .eq. id_SGS_similarity) then
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'cal_sgs_induct_t_dynamic_simi'
@@ -255,7 +255,7 @@
      &        mesh%nod_comm, mesh%node, mesh%ele, iphys,                &
      &        iphys_ele, ele_fld, MHD_mesh%conduct, layer_tbl,          &
      &        jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,        &
-     &        mhd_fem_wk, fem_wk, f_l, nod_fld)
+     &        mhd_fem_wk, fem_wk, f_l, nod_fld, sgs_coefs)
         else if(iflag_SGS_induction .eq. id_SGS_similarity) then
           if (iflag_debug.eq.1)  write(*,*)                             &
      &                          's_cal_sgs_uxb_dynamic_simi'

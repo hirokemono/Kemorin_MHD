@@ -171,20 +171,20 @@
 !
       do inum = 1, nlayer_SGS
         write(sgs_fld_coef_file_code,1000) i_step_MHD,                  &
-     &           time, inum, sgs_f_clip(inum,1:num_sgs_kinds)
+     &           time, inum, sgs_f_clip(inum,1:sgs_coefs%num_field)
         write(sgs_comp_coef_file_code,1000) i_step_MHD,                 &
-     &           time, inum, sgs_c_clip(inum,1:num_sgs_coefs)
+     &           time, inum, sgs_c_clip(inum,1:sgs_coefs%ntot_comp)
 !
         write(sgs_cor_file_code,1000) i_step_MHD, time, inum,           &
-     &         cor_sgs(inum,1:num_sgs_coefs)
+     &         cor_sgs(inum,1:sgs_coefs%ntot_comp)
         write(sgs_cov_file_code,1000) i_step_MHD, time, inum,           &
-     &         cov_sgs(inum,1:num_sgs_coefs)
+     &         cov_sgs(inum,1:sgs_coefs%ntot_comp)
         write(sgs_ratio_file_code,1000) i_step_MHD, time, inum,         &
-     &         ratio_sgs(inum,1:num_sgs_coefs)
+     &         ratio_sgs(inum,1:sgs_coefs%ntot_comp)
 !
         write(sgs_rms_file_code,1000) i_step_MHD, time, inum,           &
-     &         rms_sgs_simi(inum,1:num_sgs_coefs),                      &
-     &         rms_sgs_grad(inum,1:num_sgs_coefs)
+     &         rms_sgs_simi(inum,1:sgs_coefs%ntot_comp),                &
+     &         rms_sgs_grad(inum,1:sgs_coefs%ntot_comp)
       end do
 !
       close (sgs_fld_coef_file_code)
@@ -220,19 +220,19 @@
      &    sgs_rms_file_code, sgs_w_rms_file_name)
 !
       write(sgs_fld_coef_file_code,1001)  i_step_MHD, time,             &
-     &        sgs_f_whole_clip(1:num_sgs_kinds)
+     &        sgs_f_whole_clip(1:sgs_coefs%num_field)
       write(sgs_comp_coef_file_code,1001)  i_step_MHD, time,            &
-     &        sgs_c_whole_clip(1:num_sgs_coefs)
+     &        sgs_c_whole_clip(1:sgs_coefs%ntot_comp)
 !
       write(sgs_cor_file_code,1001)  i_step_MHD, time,                  &
-     &        cor_sgs_w(1:num_sgs_coefs)
+     &        cor_sgs_w(1:sgs_coefs%ntot_comp)
       write(sgs_cov_file_code,1001)  i_step_MHD, time,                  &
-     &        cov_sgs_w(1:num_sgs_coefs)
+     &        cov_sgs_w(1:sgs_coefs%ntot_comp)
       write(sgs_ratio_file_code,1001) i_step_MHD, time,                 &
-     &        ratio_sgs_w(1:num_sgs_coefs)
+     &        ratio_sgs_w(1:sgs_coefs%ntot_comp)
       write(sgs_rms_file_code,1001) i_step_MHD, time,                   &
-     &        rms_sgs_simi_w(1:num_sgs_coefs),                          &
-     &        rms_sgs_grad_w(1:num_sgs_coefs)
+     &        rms_sgs_simi_w(1:sgs_coefs%ntot_comp),                    &
+     &        rms_sgs_grad_w(1:sgs_coefs%ntot_comp)
 !
       close (sgs_fld_coef_file_code)
       close (sgs_comp_coef_file_code)

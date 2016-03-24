@@ -86,7 +86,7 @@
 !    reset model coefficients
 !
       call reset_vector_sgs_model_coefs                                 &
-     &   (layer_tbl, icomp_sgs_hf, ele%istack_ele_smp)
+     &   (ele, layer_tbl, icomp_sgs_hf, sgs_coefs)
       call reset_vector_sgs_nod_m_coefs                                 &
      &   (icomp_sgs_hf, node%istack_nod_smp)
       call s_clear_work_4_dynamic_model(node, iphys, nod_fld)
@@ -132,7 +132,8 @@
      &    intg_point_t_evo)
 !
       call cal_ele_vector_2_node(node, ele, jac_3d_q, rhs_tbl, m_lump,  &
-     &    ak_sgs(1,icomp_sgs_hf), ak_sgs_nod(1,icomp_sgs_hf),           &
+     &    sgs_coefs%ntot_comp, icomp_sgs_hf, sgs_coefs%ak,              &
+     &    sgs_coefs%ntot_comp, icomp_sgs_hf, ak_sgs_nod,                &
      &    fem_wk, f_l)
 !
       end subroutine s_cal_sgs_h_flux_dynamic_simi

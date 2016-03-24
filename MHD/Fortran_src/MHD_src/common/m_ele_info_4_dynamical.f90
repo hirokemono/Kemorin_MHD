@@ -76,11 +76,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_sgs_coefs_layer(n_layer_d)
+      subroutine allocate_sgs_coefs_layer                               &
+     &         (n_layer_d, num_sgs_kinds, num_sgs_coefs)
 !
       use m_SGS_model_coefs
 !
       integer(kind = kint), intent(in) :: n_layer_d
+      integer(kind = kint), intent(in) :: num_sgs_kinds, num_sgs_coefs
 !
 !
       nlayer_SGS = n_layer_d

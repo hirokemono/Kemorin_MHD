@@ -116,8 +116,8 @@
      &      intg_point_t_evo, k2, ele, jac_3d,                          &
      &      fem_wk%vector_1, fem_wk%sk6)
         call scalar_prod_to_tensor_skv                                  &
-     &     (ele, conduct%istack_ele_fld_smp,                            &
-     &      ak_sgs(1,icomp_sgs_uxb), fem_wk%sk6)
+     &     (ele, conduct%istack_ele_fld_smp, sgs_coefs%ntot_comp,       &
+     &      icomp_sgs_uxb, sgs_coefs%ak, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
@@ -168,7 +168,8 @@
      &      fem_wk%vector_1, fem_wk%sk6)
 !
         call scalar_prod_to_tensor_skv(ele, conduct%istack_ele_fld_smp, &
-     &      ak_sgs(1,icomp_sgs_uxb), fem_wk%sk6)
+     &      sgs_coefs%ntot_comp, icomp_sgs_uxb, sgs_coefs%ak,           &
+     &      fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
