@@ -148,8 +148,8 @@
       if (coef_magne.gt.zero .and. coef_exp_b.gt.zero) then
         call int_vol_vector_diffuse_ele(ele%istack_ele_smp,             &
      &      node, ele, nod_fld, jac_3d_q, rhs_tbl, FEM_elens,           &
-     &      iak_diff_b, coef_exp_b, ak_d_magne, iphys%i_vecp,           &
-     &      fem_wk, f_l)
+     &      diff_coefs%num_field, iak_diff_b, diff_coefs%ak,            &
+     &      coef_exp_b, ak_d_magne, iphys%i_vecp, fem_wk, f_l)
       end if
 !
 !  lead induction terms
@@ -294,8 +294,8 @@
      &       nod_fld, jac_sf_grp_q, jac_sf_grp_l,                       &
      &       rhs_tbl, FEM_elens, intg_point_poisson,                    &
      &       Fsf_bcs%sgs%ngrp_sf_dat, Fsf_bcs%sgs%id_grp_sf_dat,        &
-     &       ifilter_final, ak_diff(1,iak_diff_b), iphys%i_m_phi,       &
-     &       fem_wk, f_nl)
+     &       ifilter_final, diff_coefs%num_field, iak_diff_b,           &
+     &       diff_coefs%ak, iphys%i_m_phi, fem_wk, f_nl)
       end if
 !
 !

@@ -266,7 +266,7 @@
      &      diff_rms_file_code, diff_w_rms_file_name)
 !
       write(diff_coef_file_code,1001) i_step_MHD, time,                 &
-     &          diff_f_whole_clip(1:num_diff_kinds)
+     &          diff_f_whole_clip(1:diff_coefs%num_field)
       write(diff_comp_file_code,1001) i_step_MHD, time,                 &
      &          diff_c_whole_clip(1:num_diff_coefs)
 !
@@ -314,7 +314,7 @@
       do inum = 1, nlayer_SGS
         write(diff_coef_file_code,1000)                                 &
      &       i_step_MHD, time, inum,                                    &
-     &              diff_f_clip(inum,1:num_diff_kinds)
+     &              diff_f_clip(inum,1:diff_coefs%num_field)
 !
         write(diff_cor_file_code,1000)                                  &
      &       i_step_MHD, time, inum,                                    &

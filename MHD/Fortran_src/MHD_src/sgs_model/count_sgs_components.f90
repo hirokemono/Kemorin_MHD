@@ -41,15 +41,15 @@
 !
       sgs_coefs%num_field = 0
       sgs_coefs%ntot_comp = 0
+      diff_coefs%num_field = 0
       num_diff_coefs = 0
-      num_diff_kinds = 0
       if (iflag_t_evo_4_temp .gt. id_no_evolution) then
         if (iflag_SGS_heat .ne. id_SGS_none) then
           sgs_coefs%num_field = sgs_coefs%num_field + 1
           sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 3
           if (iflag_commute_heat .eq. id_SGS_commute_ON) then
+            diff_coefs%num_field = diff_coefs%num_field + 1
             num_diff_coefs = num_diff_coefs + 3
-            num_diff_kinds = num_diff_kinds + 1
           end if
         end if
       end if
@@ -59,8 +59,8 @@
           sgs_coefs%num_field = sgs_coefs%num_field + 1
           sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 6
           if (iflag_commute_inertia .eq. id_SGS_commute_ON) then
+            diff_coefs%num_field = diff_coefs%num_field + 1
             num_diff_coefs = num_diff_coefs + 9
-            num_diff_kinds = num_diff_kinds + 1
           end if
         end if
 !
@@ -68,8 +68,8 @@
           sgs_coefs%num_field = sgs_coefs%num_field + 1
           sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 6
           if (iflag_commute_lorentz .eq. id_SGS_commute_ON) then
+            diff_coefs%num_field = diff_coefs%num_field + 1
             num_diff_coefs = num_diff_coefs + 9
-            num_diff_kinds = num_diff_kinds + 1
           end if
         end if
 !
@@ -96,8 +96,8 @@
           sgs_coefs%num_field = sgs_coefs%num_field + 1
           sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 3
           if(iflag_commute_induction .eq. id_SGS_commute_ON) then
+            diff_coefs%num_field = diff_coefs%num_field + 1
             num_diff_coefs = num_diff_coefs + 9
-            num_diff_kinds = num_diff_kinds + 1
           end if
         end if
       end if
@@ -107,8 +107,8 @@
           sgs_coefs%num_field = sgs_coefs%num_field + 1
           sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 3
           if (iflag_commute_c_flux .eq. id_SGS_commute_ON) then
+            diff_coefs%num_field = diff_coefs%num_field + 1
             num_diff_coefs = num_diff_coefs + 3
-            num_diff_kinds = num_diff_kinds + 1
           end if
         end if
       end if
@@ -116,40 +116,40 @@
       if (iflag_t_evo_4_temp .gt. id_no_evolution) then
         if(iflag_SGS_model .ne. id_SGS_none                             &
      &      .and. iflag_commute_temp .eq. id_SGS_commute_ON) then
+          diff_coefs%num_field = diff_coefs%num_field + 1
           num_diff_coefs = num_diff_coefs + 3
-          num_diff_kinds = num_diff_kinds + 1
         end if
       end if
 !
       if (iflag_t_evo_4_composit .gt. id_no_evolution) then
         if(iflag_SGS_model .ne. id_SGS_none                             &
      &      .and. iflag_commute_composit .eq. id_SGS_commute_ON) then
+          diff_coefs%num_field = diff_coefs%num_field + 1
           num_diff_coefs = num_diff_coefs + 3
-          num_diff_kinds = num_diff_kinds + 1
         end if
       end if
 !
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         if(iflag_SGS_model .ne. id_SGS_none                             &
      &        .and. iflag_commute_velo .eq. id_SGS_commute_ON) then
+          diff_coefs%num_field = diff_coefs%num_field + 1
           num_diff_coefs = num_diff_coefs + 9
-          num_diff_kinds = num_diff_kinds + 1
         end if
       end if
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         if(iflag_SGS_model .ne. id_SGS_none                             &
      &       .and. iflag_commute_magne .eq. id_SGS_commute_ON) then
+          diff_coefs%num_field = diff_coefs%num_field + 1
           num_diff_coefs = num_diff_coefs + 9
-          num_diff_kinds = num_diff_kinds + 1
         end if
       end if
 !
       if (iflag_t_evo_4_magne .gt. id_no_evolution) then
         if(iflag_SGS_model .gt. id_SGS_none                             &
      &      .and. iflag_commute_magne .eq. id_SGS_commute_ON) then
+          diff_coefs%num_field = diff_coefs%num_field + 1
           num_diff_coefs = num_diff_coefs + 9
-          num_diff_kinds = num_diff_kinds + 1
         end if
       end if
 !
@@ -180,8 +180,8 @@
              icomp_diff_hf = id
              iak_diff_hf = jd
              name_ak_diff(jd) = fhd_SGS_h_flux
-             ncomp_diff_coefs(jd) = 3
-             id = id + ncomp_diff_coefs(jd)
+             diff_coefs%num_comps(jd) = 3
+             id = id + diff_coefs%num_comps(jd)
              jd = jd + 1
            end if
          end if
@@ -199,8 +199,8 @@
              icomp_diff_mf = id
              iak_diff_mf = jd
              name_ak_diff(jd) = fhd_SGS_m_flux
-             ncomp_diff_coefs(jd) = 9
-             id = id + ncomp_diff_coefs(jd)
+             diff_coefs%num_comps(jd) = 9
+             id = id + diff_coefs%num_comps(jd)
              jd = jd + 1
            end if
          end if
@@ -216,8 +216,8 @@
              icomp_diff_lor = id
              iak_diff_lor = jd
              name_ak_diff(jd) = fhd_SGS_Lorentz
-             ncomp_diff_coefs(jd) = 9
-             id = id + ncomp_diff_coefs(jd)
+             diff_coefs%num_comps(jd) = 9
+             id = id + diff_coefs%num_comps(jd)
              jd = jd + 1
            end if
          end if
@@ -264,8 +264,8 @@
              icomp_diff_uxb = id
              iak_diff_uxb = jd
              name_ak_diff(jd) = fhd_SGS_induction
-             ncomp_diff_coefs(jd) = 9
-             id = id + ncomp_diff_coefs(jd)
+             diff_coefs%num_comps(jd) = 9
+             id = id + diff_coefs%num_comps(jd)
              jd = jd + 1
            end if
          end if
@@ -283,8 +283,8 @@
              icomp_diff_cf = id
              iak_diff_cf = jd
              name_ak_diff(jd) = fhd_SGS_c_flux
-             ncomp_diff_coefs(jd) = 3
-             id = id + ncomp_diff_coefs(jd)
+             diff_coefs%num_comps(jd) = 3
+             id = id + diff_coefs%num_comps(jd)
              jd = jd + 1
            end if
          end if
@@ -303,8 +303,8 @@
             icomp_diff_t = id
             iak_diff_t =   jd
             name_ak_diff(jd) = fhd_temp
-            ncomp_diff_coefs(jd) = 3
-            id = id + ncomp_diff_coefs(jd)
+            diff_coefs%num_comps(jd) = 3
+            id = id + diff_coefs%num_comps(jd)
             jd = jd + 1
         end if
       end if
@@ -315,8 +315,8 @@
             icomp_diff_c = id
             iak_diff_c =   jd
             name_ak_diff(jd) = fhd_light
-            ncomp_diff_coefs(jd) = 3
-            id = id + ncomp_diff_coefs(jd)
+            diff_coefs%num_comps(jd) = 3
+            id = id + diff_coefs%num_comps(jd)
             jd = jd + 1
         end if
       end if
@@ -327,8 +327,8 @@
             icomp_diff_v = id
             iak_diff_v =   jd
             name_ak_diff(jd) = fhd_velo
-            ncomp_diff_coefs(jd) = 9
-            id = id + ncomp_diff_coefs(jd)
+            diff_coefs%num_comps(jd) = 9
+            id = id + diff_coefs%num_comps(jd)
             jd = jd + 1
         end if
       end if
@@ -339,8 +339,8 @@
             icomp_diff_b = id
             iak_diff_b =   jd
             name_ak_diff(jd) = fhd_magne
-            ncomp_diff_coefs(jd) = 9
-            id = id + ncomp_diff_coefs(jd)
+            diff_coefs%num_comps(jd) = 9
+            id = id + diff_coefs%num_comps(jd)
             jd = jd + 1
         end if
       end if
@@ -351,16 +351,16 @@
             icomp_diff_b = id
             iak_diff_b =   jd
             name_ak_diff(jd) = fhd_magne
-            ncomp_diff_coefs(jd) = 9
-            id = id + ncomp_diff_coefs(jd)
+            diff_coefs%num_comps(jd) = 9
+            id = id + diff_coefs%num_comps(jd)
             jd = jd + 1
         end if
       end if
 !
-       istack_diff_coefs(0) = 0
-       do i = 1, num_diff_kinds
-         istack_diff_coefs(i) = istack_diff_coefs(i-1)                  &
-     &                        + ncomp_diff_coefs(i)
+       diff_coefs%istack_comps(0) = 0
+       do i = 1, diff_coefs%num_field
+         diff_coefs%istack_comps(i) = diff_coefs%istack_comps(i-1)      &
+     &                               + diff_coefs%num_comps(i)
        end do
 !
 !
@@ -403,49 +403,50 @@
      &               sgs_coefs%num_comps(iak_sgs_cf),                   &
      &               trim(name_ak_sgs(iak_sgs_cf))
         end if
+        diff_coefs%ntot_comp = diff_coefs%num_field
 !
         write(*,*) 'num_diff_coefs', num_diff_coefs
-        write(*,*) 'num_diff_kinds', num_diff_kinds
+        write(*,*) 'diff_coefs%num_field', diff_coefs%num_field
 !
         if(iak_diff_hf .gt. 0) then
           write(*,*) 'iak_diff_hf', iak_diff_hf, icomp_diff_hf,         &
-     &             ncomp_diff_coefs(iak_diff_hf),                       &
+     &             diff_coefs%num_comps(iak_diff_hf),                   &
      &             trim(name_ak_diff(iak_diff_hf))
         end if
         if(iak_diff_mf .gt. 0) then
           write(*,*) 'iak_diff_mf', iak_diff_mf, icomp_diff_mf,         &
-     &             ncomp_diff_coefs(iak_diff_mf),                       &
+     &             diff_coefs%num_comps(iak_diff_mf),                   &
      &             trim(name_ak_diff(iak_diff_mf))
         end if
         if(iak_diff_lor .gt. 0) then
           write(*,*) 'iak_diff_lor', iak_diff_lor, icomp_diff_lor,      &
-     &             ncomp_diff_coefs(iak_diff_lor),                      &
+     &             diff_coefs%num_comps(iak_diff_lor),                  &
      &             trim(name_ak_diff(iak_diff_lor))
         end if
         if(iak_diff_uxb .gt. 0) then
           write(*,*) 'iak_diff_uxb', iak_diff_uxb, icomp_diff_uxb,      &
-     &             ncomp_diff_coefs(iak_diff_uxb),                      &
+     &             diff_coefs%num_comps(iak_diff_uxb),                  &
      &             trim(name_ak_diff(iak_diff_uxb))
         end if
 !
         if(iak_diff_t .gt. 0) then
           write(*,*) 'iak_diff_t', iak_diff_t, icomp_diff_t,            &
-     &             ncomp_diff_coefs(iak_diff_t),                        &
+     &             diff_coefs%num_comps(iak_diff_t),                    &
      &             trim(name_ak_diff(iak_diff_t))
         end if
         if(iak_diff_v .gt. 0) then
           write(*,*) 'iak_diff_v', iak_diff_v, icomp_diff_v,            &
-     &             ncomp_diff_coefs(iak_diff_v),                        &
+     &             diff_coefs%num_comps(iak_diff_v),                    &
      &             trim(name_ak_diff(iak_diff_v))
         end if
         if(iak_diff_b .gt. 0) then
           write(*,*) 'iak_diff_b', iak_diff_b, icomp_diff_b,            &
-     &             ncomp_diff_coefs(iak_diff_b),                        &
+     &             diff_coefs%num_comps(iak_diff_b),                    &
      &             trim(name_ak_diff(iak_diff_b))
         end if
         if(iak_diff_c .gt. 0) then
           write(*,*) 'iak_diff_c', iak_diff_c, icomp_diff_c,            &
-     &             ncomp_diff_coefs(iak_diff_c),                        &
+     &             diff_coefs%num_comps(iak_diff_c),                    &
      &             trim(name_ak_diff(iak_diff_c))
         end if
       end if

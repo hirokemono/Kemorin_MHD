@@ -136,6 +136,7 @@
       use m_control_parameter
       use m_iccg_parameter
       use m_solver_djds_MHD
+      use m_SGS_model_coefs
 !
       use int_vol_lumped_mat_crank
       use int_vol_poisson_matrix
@@ -181,7 +182,7 @@
 !
       call int_vol_poisson_matrices(mesh%ele, jac_3d_l, rhs_tbl,        &
      &    MHD_mat_tbls%linear, MHD_mat_tbls%fluid_l,                    &
-     &    FEM_elens, fem_wk)
+     &    FEM_elens, diff_coefs, fem_wk)
 !
 !   Diffusion matrix
 !
@@ -192,13 +193,13 @@
         if (iflag_debug.eq.1) write(*,*) 'int_vol_crank_matrices'
         call int_vol_crank_matrices(mesh%ele, jac_3d_q, rhs_tbl,        &
      &      MHD_mat_tbls%base, MHD_mat_tbls%fluid_q,                    &
-     &      MHD_mat_tbls%full_conduct_q, FEM_elens, fem_wk)
+     &      MHD_mat_tbls%full_conduct_q, FEM_elens, diff_coefs, fem_wk)
       else if (iflag_scheme .eq. id_Crank_nicolson_cmass) then
         call int_vol_crank_mat_consist                                  &
      &     (mesh%ele, jac_3d_q, rhs_tbl, MHD_mat_tbls, fem_wk)
         call int_vol_crank_matrices(mesh%ele, jac_3d_q, rhs_tbl,        &
      &      MHD_mat_tbls%base, MHD_mat_tbls%fluid_q,                    &
-     &      MHD_mat_tbls%full_conduct_q, FEM_elens, fem_wk)
+     &      MHD_mat_tbls%full_conduct_q, FEM_elens, diff_coefs, fem_wk)
       end if
 !
 !     set boundary conditions

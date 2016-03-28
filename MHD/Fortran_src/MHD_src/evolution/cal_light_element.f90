@@ -67,6 +67,7 @@
       use m_type_AMG_data
       use m_solver_djds_MHD
       use m_SGS_address
+      use m_SGS_model_coefs
 !
       use nod_phys_send_recv
       use set_boundary_scalars
@@ -105,8 +106,8 @@
       if (coef_light.gt.zero .and. coef_exp_c.gt.zero) then
         call int_vol_scalar_diffuse_ele(fluid%istack_ele_fld_smp,       &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,             &
-     &      iak_diff_c, coef_exp_c, ak_d_composit, iphys%i_light,       &
-     &      fem_wk, f_l)
+     &      diff_coefs%num_field, iak_diff_c, diff_coefs%ak,            &
+     &      coef_exp_c, ak_d_composit, iphys%i_light, fem_wk, f_l)
       end if
 !
       if (iflag_comp_supg .gt. id_turn_OFF) then

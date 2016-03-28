@@ -189,7 +189,7 @@
      &    node, ele, fluid, iphys, nod_fld, jac_3d_q, jac_3d_l,         &
      &    n_vector, iak_diff_t, icomp_diff_t, intg_point_t_evo)
 !
-      iflag_diff_coefs(iak_diff_t) = 1
+      diff_coefs%iflag_field(iak_diff_t) = 1
 !
       end subroutine s_cal_diff_coef_temp
 !

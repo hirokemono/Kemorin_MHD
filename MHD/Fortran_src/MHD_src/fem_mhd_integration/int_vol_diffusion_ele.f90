@@ -6,10 +6,12 @@
 !
 !!      subroutine int_vol_scalar_diffuse_ele(iele_fsmp_stack,          &
 !!     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,       &
-!!     &          iak_diff, coef_crank, ak_d, i_scalar, fem_wk, f_l)
+!!     &          ncomp_diff, iak_diff, ak_diff, coef_crank, ak_d,      &
+!!     &          i_scalar, fem_wk, f_l)
 !!      subroutine int_vol_vector_diffuse_ele(iele_fsmp_stack,          &
 !!     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,       &
-!!     &          iak_diff, coef_crank, ak_d, i_vector, fem_wk, f_l)
+!!     &          ncomp_diff, iak_diff, ak_diff, coef_crank, ak_d,      &
+!!     &          i_vector, fem_wk, f_l)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_data), intent(in) :: nod_fld
@@ -27,7 +29,6 @@
       use m_constants
       use m_phys_constants
       use m_control_parameter
-      use m_SGS_model_coefs
 !
       use t_geometry_data
       use t_phys_data
@@ -46,7 +47,8 @@
 !
       subroutine int_vol_scalar_diffuse_ele(iele_fsmp_stack,            &
      &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,         &
-     &          iak_diff, coef_crank, ak_d, i_scalar, fem_wk, f_l)
+     &          ncomp_diff, iak_diff, ak_diff, coef_crank, ak_d,        &
+     &          i_scalar, fem_wk, f_l)
 !
       use int_vol_fractional
       use int_vol_sgs_fractional
@@ -59,9 +61,11 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      integer(kind=kint), intent(in) :: i_scalar, iak_diff
+      integer(kind=kint), intent(in) :: i_scalar
       real (kind=kreal), intent(in) :: coef_crank
       real(kind=kreal), intent(in) :: ak_d(ele%numele)
+      integer(kind=kint), intent(in) :: ncomp_diff, iak_diff
+      real (kind = kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -85,8 +89,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine int_vol_vector_diffuse_ele(iele_fsmp_stack,            &
-     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,  &
-     &          iak_diff, coef_crank, ak_d, i_vector, fem_wk, f_l)
+     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,         &
+     &          ncomp_diff, iak_diff, ak_diff, coef_crank, ak_d,        &
+     &          i_vector, fem_wk, f_l)
 !
       use int_vol_fractional
       use int_vol_sgs_fractional
@@ -99,9 +104,11 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      integer(kind=kint), intent(in) :: i_vector, iak_diff
+      integer(kind=kint), intent(in) :: i_vector
       real (kind=kreal), intent(in) :: coef_crank
       real(kind=kreal), intent(in) :: ak_d(ele%numele)
+      integer(kind=kint), intent(in) :: ncomp_diff, iak_diff
+      real (kind = kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l

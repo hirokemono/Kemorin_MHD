@@ -173,7 +173,8 @@
 !
       call int_vol_vector_diffuse_ele(conduct%istack_ele_fld_smp,       &
      &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,               &
-     &    iak_diff_b, one, ak_d_magne, iphys%i_magne, fem_wk, f_l)
+     &    diff_coefs%num_field, iak_diff_b, diff_coefs%ak,              &
+     &    one, ak_d_magne, iphys%i_magne, fem_wk, f_l)
 !
       call int_surf_magne_monitor(iphys%i_b_diffuse, iak_diff_uxb,      &
      &    node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs, iphys, nod_fld,    &

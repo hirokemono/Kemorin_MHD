@@ -4,12 +4,12 @@
 !     Written by H. Matsui on Aug., 2005
 !
 !!      subroutine int_vol_temp_ele                                     &
-!!     &         (node, ele, fluid, iphys, nod_fld,                     &
-!!     &          ncomp_ele, iele_velo, d_ele, iak_diff_hf,             &
+!!     &         (node, ele, fluid, iphys, nod_fld, ncomp_ele,          &
+!!     &          iele_velo, d_ele, ncomp_diff, iak_diff_hf, ak_diff,   &
 !!     &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
 !!      subroutine int_vol_temp_ele_upw                                 &
-!!     &         (node, ele, fluid, iphys, nod_fld,                     &
-!!     &          ncomp_ele, iele_velo, d_ele, iak_diff_hf,             &
+!!     &         (node, ele, fluid, iphys, nod_fld, ncomp_ele,          &
+!!     &          iele_velo, d_ele, ncomp_diff, iak_diff_hf, ak_diff,   &
 !!     &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -33,7 +33,6 @@
       use m_fem_gauss_int_coefs
 !
       use m_physical_property
-      use m_SGS_model_coefs
 !
       use t_geometry_data_MHD
       use t_geometry_data
@@ -55,8 +54,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_temp_ele                                       &
-     &         (node, ele, fluid, iphys, nod_fld,                       &
-     &          ncomp_ele, iele_velo, d_ele, iak_diff_hf,               &
+     &         (node, ele, fluid, iphys, nod_fld, ncomp_ele,            &
+     &          iele_velo, d_ele, ncomp_diff, iak_diff_hf, ak_diff,     &
      &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
 !
       use nodal_fld_cst_to_element
@@ -74,9 +73,10 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
-      integer(kind = kint), intent(in) :: iak_diff_hf
       integer(kind = kint), intent(in) :: ncomp_ele, iele_velo
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
+      integer(kind=kint), intent(in) :: ncomp_diff, iak_diff_hf
+      real (kind = kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -129,8 +129,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_temp_ele_upw                                   &
-     &         (node, ele, fluid, iphys, nod_fld,                       &
-     &          ncomp_ele, iele_velo, d_ele, iak_diff_hf,               &
+     &         (node, ele, fluid, iphys, nod_fld, ncomp_ele,            &
+     &          iele_velo, d_ele, ncomp_diff, iak_diff_hf, ak_diff,     &
      &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
 !
       use nodal_fld_cst_to_element
@@ -148,9 +148,10 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
-      integer(kind = kint), intent(in) :: iak_diff_hf
       integer(kind = kint), intent(in) :: ncomp_ele, iele_velo
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
+      integer(kind=kint), intent(in) :: ncomp_diff, iak_diff_hf
+      real (kind = kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl

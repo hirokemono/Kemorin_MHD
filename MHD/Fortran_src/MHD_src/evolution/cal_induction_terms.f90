@@ -155,9 +155,10 @@
 !
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
-      call int_vol_vector_diffuse_ele(ele%istack_ele_smp,              &
-     &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,              &
-     &    iak_diff_b, one, ak_d_magne, iphys%i_vecp, fem_wk, f_l)
+      call int_vol_vector_diffuse_ele(ele%istack_ele_smp,               &
+     &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,               &
+     &    diff_coefs%num_field, iak_diff_b, diff_coefs%ak,              &
+     &    one, ak_d_magne, iphys%i_vecp, fem_wk, f_l)
 !
       call int_sf_grad_velocity(node, ele, surf, sf_grp,                &
      &    jac_sf_grp, rhs_tbl, Asf_bcs%grad, intg_point_t_evo,          &

@@ -247,7 +247,7 @@
      &    node, ele, fluid, iphys, nod_fld, jac_3d_q, jac_3d_l,         &
      &    n_sym_tensor, iak_diff_v, icomp_diff_v, intg_point_t_evo)
 !
-      iflag_diff_coefs(iak_diff_v) = 1
+      diff_coefs%iflag_field(iak_diff_v) = 1
 !
       end subroutine s_cal_diff_coef_velo
 !

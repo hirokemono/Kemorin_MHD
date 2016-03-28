@@ -6,13 +6,13 @@
 !!      subroutine int_surf_sgs_velo_co_ele                             &
 !!     &         (node, ele, surf, sf_grp, nod_fld,                     &
 !!     &          jac_sf_grp_q, jac_sf_grp_l, rhs_tbl, FEM_elens,       &
-!!     &          n_int, ngrp_sf, id_grp_sf, i_filter, ak_diff,         &
-!!     &          i_comp, fem_wk, f_nl)
+!!     &          n_int, ngrp_sf, id_grp_sf, i_filter,                  &
+!!     &          ncomp_diff, iak_diff, ak_diff, i_comp, fem_wk, f_nl)
 !!
 !!      subroutine int_surf_gradient_sgs(node, ele, surf,               &
 !!     &          sf_grp, nod_fld, jac_sf_grp_q, rhs_tbl, FEM_elens,    &
-!!     &          n_int, ngrp_sf, id_grp_sf, i_filter, iak_diff,        &
-!!     &          i_scalar, fem_wk, f_nl)
+!!     &          n_int, ngrp_sf, id_grp_sf, i_filter,                  &
+!!     &          ncomp_diff, iak_diff, ak_diff, i_scalar, fem_wk, f_nl)
 !!      subroutine int_surf_grad_commute_sgs(node, ele, surf,           &
 !!     &          sf_grp, nod_fld, jac_sf_grp_q, rhs_tbl, FEM_elens,    &
 !!     &          n_int, ngrp_sf, id_grp_sf, i_filter, i_scalar,        &
@@ -56,8 +56,8 @@
       subroutine int_surf_sgs_velo_co_ele                               &
      &         (node, ele, surf, sf_grp, nod_fld,                       &
      &          jac_sf_grp_q, jac_sf_grp_l, rhs_tbl, FEM_elens,         &
-     &          n_int, ngrp_sf, id_grp_sf, i_filter, ak_diff,           &
-     &          i_comp, fem_wk, f_nl)
+     &          n_int, ngrp_sf, id_grp_sf, i_filter,                    &
+     &          ncomp_diff, iak_diff, ak_diff, i_comp, fem_wk, f_nl)
 !
       use m_int_surface_data
 !
@@ -80,7 +80,8 @@
       integer(kind = kint), intent(in) :: id_grp_sf(ngrp_sf)
       integer(kind = kint), intent(in) :: i_filter
       integer(kind = kint), intent(in) :: i_comp
-      real(kind = kreal), intent(in) :: ak_diff(ele%numele)
+      integer(kind = kint), intent(in) :: ncomp_diff, iak_diff
+      real(kind = kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -105,7 +106,7 @@
             call fem_sf_grp_skv_sgs_velo_co_p(ele, surf, sf_grp,        &
      &          jac_sf_grp_q, jac_sf_grp_l, FEM_elens,                  &
      &          igrp, k2, n_int, i_filter, dxe_sf, scalar_sf,           &
-     &          ak_diff, fem_wk%sk6)
+     &          ak_diff(1,iak_diff), fem_wk%sk6)
           end do
 !
         end if
@@ -121,11 +122,10 @@
 !
       subroutine int_surf_gradient_sgs(node, ele, surf,                 &
      &          sf_grp, nod_fld, jac_sf_grp_q, rhs_tbl, FEM_elens,      &
-     &          n_int, ngrp_sf, id_grp_sf, i_filter, iak_diff,          &
-     &          i_scalar, fem_wk, f_nl)
+     &          n_int, ngrp_sf, id_grp_sf, i_filter,                    &
+     &          ncomp_diff, iak_diff, ak_diff, i_scalar, fem_wk, f_nl)
 !
       use m_int_surface_data
-      use m_SGS_model_coefs
 !
       use delta_phys_2_each_surface
       use fem_surf_skv_sgs_commute_t
@@ -143,7 +143,9 @@
 !
       integer(kind = kint), intent(in) :: n_int, ngrp_sf
       integer(kind = kint), intent(in) :: id_grp_sf(ngrp_sf)
-      integer(kind = kint), intent(in) :: i_scalar, iak_diff, i_filter
+      integer(kind = kint), intent(in) :: i_scalar, i_filter
+      integer(kind = kint), intent(in) :: ncomp_diff, iak_diff
+      real (kind = kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl

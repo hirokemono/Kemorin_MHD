@@ -267,7 +267,7 @@
       integer ( kind=kint) :: i
 !
 !
-      do i = 1, num_diff_kinds
+      do i = 1, diff_coefs%num_field
         if ( name_ak_diff(i) .eq. fhd_velo ) then
           call write_one_label(file_id, fhd_velo)
         else if ( name_ak_diff(i) .eq. fhd_temp ) then
@@ -375,7 +375,7 @@
       integer ( kind=kint) :: i
 !
 !
-      do i = 1, num_diff_kinds
+      do i = 1, diff_coefs%num_field
         if ( name_ak_diff(i) .eq. fhd_velo ) then
           write(file_id,'(a)') 'dVx_dx, dVx_dy, dVx_dz, '
           write(file_id,'(a)') 'dVy_dx, dVy_dy, dVy_dz, '

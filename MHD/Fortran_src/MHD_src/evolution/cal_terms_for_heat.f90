@@ -145,6 +145,7 @@
      &          rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,                 &
      &          f_l, f_nl, nod_fld)
 !
+      use m_SGS_model_coefs
       use m_ele_material_property
       use int_vol_diffusion_ele
 !
@@ -174,7 +175,8 @@
 !
       call int_vol_scalar_diffuse_ele(fluid%istack_ele_fld_smp,         &
      &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,               &
-     &    iak_diff_t, one, ak_d_temp, iphys%i_temp, fem_wk, f_l)
+     &    diff_coefs%num_field, iak_diff_t, diff_coefs%ak,              &
+     &    one, ak_d_temp, iphys%i_temp, fem_wk, f_l)
 !
       call int_surf_temp_monitor(iphys%i_t_diffuse, iak_diff_hf,        &
      &    node, ele, surf, sf_grp, iphys, nod_fld, Tsf_bcs, jac_sf_grp, &

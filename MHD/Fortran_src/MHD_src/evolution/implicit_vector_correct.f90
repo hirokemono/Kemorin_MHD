@@ -261,7 +261,8 @@
       if (coef_imp_v.gt.zero) then
         call int_vol_vector_diffuse_ele(fluid%istack_ele_fld_smp,       &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,             &
-     &      iak_diff_v, coef_imp_v, ak_d_velo, i_velo, fem_wk, f_l)
+     &      diff_coefs%num_field, iak_diff_v, diff_coefs%ak,            &
+     &      coef_imp_v, ak_d_velo, i_velo, fem_wk, f_l)
       end if
 !
       if (coef_imp_v.gt.0.0d0) then
@@ -355,9 +356,10 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'int_vol_vecp_diffuse_co'
       if (coef_imp_b.gt.zero) then
-        call int_vol_vector_diffuse_ele(ele%istack_ele_smp,            &
-     &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,            &
-     &      iak_diff_b, coef_imp_b, ak_d_magne, i_vecp, fem_wk, f_l)
+        call int_vol_vector_diffuse_ele(ele%istack_ele_smp,             &
+     &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,             &
+     &      diff_coefs%num_field, iak_diff_b, diff_coefs%ak,            &
+     &      coef_imp_b, ak_d_magne, i_vecp, fem_wk, f_l)
       end if
 !
       if (coef_imp_b.gt.0.0d0) then
@@ -444,9 +446,10 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_vol_magne_diffuse_co'
       if (coef_imp_b.gt.zero) then
-        call int_vol_vector_diffuse_ele(conduct%istack_ele_fld_smp,    &
-     &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,            &
-     &      iak_diff_b, coef_imp_b, ak_d_magne, i_magne, fem_wk, f_l)
+        call int_vol_vector_diffuse_ele(conduct%istack_ele_fld_smp,     &
+     &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,             &
+     &      diff_coefs%num_field, iak_diff_b, diff_coefs%ak,            &
+     &      coef_imp_b, ak_d_magne, i_magne, fem_wk, f_l)
       end if
 !
       if (coef_imp_b.gt.0.0d0) then

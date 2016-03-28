@@ -7,12 +7,12 @@
 !!     &          (node, ele, surf, sf_grp, nod_fld,                    &
 !!     &           jac_sf_grp_q, jac_sf_grp_l, rhs_tbl, FEM_elens,      &
 !!     &           n_int, nmax_grp_sf, ngrp_sf, id_grp_sf, i_filter,    &
-!!     &           ak_diff, i_vect, fem_wk, f_l)
+!!     &           ncomp_diff, iak_diff, ak_diff, i_vect, fem_wk, f_l)
 !!
 !!      subroutine int_surf_divergence_sgs(node, ele, surf, sf_grp,     &
 !!     &          nod_fld, jac_sf_grp_q, rhs_tbl, FEM_elens,            &
 !!     &          n_int, nmax_grp_sf, ngrp_sf, id_grp_sf, i_filter,     &
-!!     &          iak_diff, i_vect, fem_wk, f_nl)
+!!     &          ncomp_diff, iak_diff, ak_diff, i_vect, fem_wk, f_nl)
 !!      subroutine int_surf_div_commute_sgs(node, ele, surf, sf_grp,    &
 !!     &          nod_fld, jac_sf_grp_q, rhs_tbl, FEM_elens,            &
 !!     &          n_int, nmax_grp_sf, ngrp_sf, id_grp_sf, i_filter,     &
@@ -57,7 +57,7 @@
      &          (node, ele, surf, sf_grp, nod_fld,                      &
      &           jac_sf_grp_q, jac_sf_grp_l, rhs_tbl, FEM_elens,        &
      &           n_int, nmax_grp_sf, ngrp_sf, id_grp_sf, i_filter,      &
-     &           ak_diff, i_vect, fem_wk, f_l)
+     &           ncomp_diff, iak_diff, ak_diff, i_vect, fem_wk, f_l)
 !
       use m_int_surface_data
 !
@@ -79,7 +79,8 @@
       integer(kind = kint), intent(in) :: ngrp_sf(3)
       integer(kind = kint), intent(in) :: id_grp_sf(nmax_grp_sf,3)
       integer(kind = kint), intent(in) :: i_vect, i_filter
-      real(kind = kreal), intent(in) :: ak_diff(ele%numele)
+      integer(kind = kint), intent(in) :: ncomp_diff, iak_diff
+      real(kind = kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -106,7 +107,7 @@
               call fem_sf_grp_skv_sgs_div_lin_p(ele, surf, sf_grp,      &
      &            jac_sf_grp_q, jac_sf_grp_l, FEM_elens,                &
      &            igrp, k2, nd, n_int, i_filter, dxe_sf, scalar_sf,     &
-     &            ak_diff, fem_wk%sk6)
+     &            ak_diff(1,iak_diff), fem_wk%sk6)
             end do
 !
           end if
@@ -124,9 +125,8 @@
       subroutine int_surf_divergence_sgs(node, ele, surf, sf_grp,       &
      &          nod_fld, jac_sf_grp_q, rhs_tbl, FEM_elens,              &
      &          n_int, nmax_grp_sf, ngrp_sf, id_grp_sf, i_filter,       &
-     &          iak_diff, i_vect, fem_wk, f_nl)
+     &          ncomp_diff, iak_diff, ak_diff, i_vect, fem_wk, f_nl)
 !
-      use m_SGS_model_coefs
       use m_int_surface_data
 !
       use delta_phys_2_each_surface
@@ -146,6 +146,8 @@
       integer(kind = kint), intent(in) :: ngrp_sf(3)
       integer(kind = kint), intent(in) :: id_grp_sf(nmax_grp_sf,3)
       integer(kind = kint), intent(in) :: i_vect, iak_diff, i_filter
+      integer(kind = kint), intent(in) :: ncomp_diff, iak_diff
+      real (kind = kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl

@@ -85,7 +85,8 @@
          call int_surf_div_induct_t_sgs                                 &
      &      (node, ele, surf, sf_grp, nod_fld, jac_sf_grp,              &
      &       rhs_tbl1, FEM_elens, Bsf_bcs%sgs, intg_point_t_evo,        &
-     &       ifilter_final, iak_diff_uxb, iphys%i_SGS_induct_t,         &
+     &       ifilter_final, diff_coefs%num_field, iak_diff_uxb,         &
+     &       diff_coefs%ak, iphys%i_SGS_induct_t,                       &
      &       iphys%i_velo, iphys%i_magne, fem_wk, f_nl)
       end if
 !
@@ -137,7 +138,8 @@
           call int_surf_div_induct_t_sgs                                &
      &       (node, ele, surf, sf_grp, nod_fld, jac_sf_grp,             &
      &        rhs_tbl1, FEM_elens, Bsf_bcs%sgs, intg_point_t_evo,       &
-     &        ifilter_final, iak_diff_uxb, iphys%i_SGS_induct_t,        &
+     &        ifilter_final, diff_coefs%num_field, iak_diff_uxb,        &
+     &        diff_coefs%ak, iphys%i_SGS_induct_t,                      &
      &        iphys%i_velo, iphys%i_magne, fem_wk, f_nl)
         end if
       end if

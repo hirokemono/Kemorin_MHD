@@ -85,7 +85,8 @@
      &        nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,                  &
      &        Vsf_bcs%sgs, intg_point_t_evo, ifilter_final,             &
      &        iphys%i_SGS_m_flux, iphys%i_velo, iphys%i_velo,           &
-     &        ak_diff(1,iak_diff_mf), coef_velo, fem_wk, f_nl)
+     &        diff_coefs%num_field, iak_diff_mf, diff_coefs%ak,         &
+     &        coef_velo, fem_wk, f_nl)
         end if
       end if
 !
@@ -95,7 +96,8 @@
      &        nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,                  &
      &        Bsf_bcs%sgs, intg_point_t_evo, ifilter_final,             &
      &        iphys%i_SGS_maxwell, iphys%i_magne, iphys%i_magne,        &
-     &        ak_diff(1,iak_diff_lor), (-coef_lor), fem_wk, f_nl)
+     &        diff_coefs%num_field, iak_diff_lor, diff_coefs%ak,        &
+     &        (-coef_lor), fem_wk, f_nl)
         end if
       end if
 !
@@ -151,7 +153,8 @@
      &        nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,                  &
      &        Vsf_bcs%sgs, intg_point_t_evo, ifilter_final,             &
      &        iphys%i_SGS_m_flux, iphys%i_velo, iphys%i_velo,           &
-     &        ak_diff(1,iak_diff_mf), coef_velo, fem_wk, f_nl)
+     &        diff_coefs%num_field, iak_diff_mf, diff_coefs%ak,         &
+     &        coef_velo, fem_wk, f_nl)
         end if
       end if
 !
@@ -161,7 +164,8 @@
      &        nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,                  &
      &        Bsf_bcs%sgs, intg_point_t_evo, ifilter_final,             &
      &        iphys%i_SGS_maxwell, iphys%i_magne, iphys%i_magne,        &
-     &        ak_diff(1,iak_diff_lor), (-coef_lor), fem_wk, f_nl)
+     &        diff_coefs%num_field, iak_diff_lor, diff_coefs%ak,        &
+     &        (-coef_lor), fem_wk, f_nl)
         end if
       end if
 !

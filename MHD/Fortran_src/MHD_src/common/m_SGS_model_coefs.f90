@@ -20,17 +20,13 @@
 !
 !
       type(MHD_coefficients_type), save :: sgs_coefs
-!sgs_coefs%ak
 !
-!      real  (kind=kreal), allocatable :: ak_sgs(:,:)
+      type(MHD_coefficients_type), save :: diff_coefs
+!diff_coefs%ak
+!
       real  (kind=kreal), allocatable :: ak_sgs_nod(:,:)
 !
-      integer (kind=kint) :: num_diff_coefs
-      integer (kind=kint) :: num_diff_kinds
-      integer (kind=kint), allocatable  :: iflag_diff_coefs(:)
-      integer (kind=kint), allocatable  :: ncomp_diff_coefs(:)
-      integer (kind=kint), allocatable  :: istack_diff_coefs(:)
-      real  (kind=kreal), allocatable :: ak_diff(:,:)
+!      real  (kind=kreal), allocatable :: ak_diff(:,:)
       real  (kind=kreal), allocatable :: ak_diff_nod(:,:)
 !
 !
@@ -46,24 +42,19 @@
 !
 !
       call alloc_MHD_num_coefs(sgs_coefs)
+      call alloc_MHD_coefs(numele, sgs_coefs)
 !
-       allocate( sgs_coefs%ak(numele,sgs_coefs%ntot_comp) )
+       allocate( diff_coefs%num_comps(diff_coefs%num_field) )
+       allocate( diff_coefs%istack_comps(0:diff_coefs%num_field) )
+       allocate( diff_coefs%iflag_field(diff_coefs%num_field) )
+       allocate( diff_coefs%ak(numele,diff_coefs%num_field) )
 !
-       allocate( ncomp_diff_coefs(num_diff_kinds) )
-       allocate( istack_diff_coefs(0:num_diff_kinds) )
-       allocate( iflag_diff_coefs(num_diff_kinds) )
-       allocate( ak_diff(numele,num_diff_kinds) )
-!
-       if (sgs_coefs%num_field .gt. 0) then
-         sgs_coefs%ak =  1.0d0
+       if (diff_coefs%num_field .gt. 0) then
+         diff_coefs%num_comps =  0
+         diff_coefs%iflag_field = 0
+         diff_coefs%ak = 1.0d0
        end if
-!
-       if (num_diff_kinds .gt. 0) then
-         ncomp_diff_coefs =  0
-         iflag_diff_coefs = 0
-         ak_diff = 1.0d0
-       end if
-       istack_diff_coefs = 0
+       diff_coefs%istack_comps = 0
 !
        end subroutine allocate_model_coefs
 !
@@ -74,10 +65,10 @@
       integer(kind = kint), intent(in) :: numnod
 !
       allocate( ak_sgs_nod(numnod,sgs_coefs%ntot_comp) )
-      allocate( ak_diff_nod(numnod,num_diff_kinds) )
+      allocate( ak_diff_nod(numnod,diff_coefs%num_field) )
 !
       if (sgs_coefs%num_field .gt. 0) ak_sgs_nod =  1.0d0 
-      if (num_diff_kinds .gt. 0) ak_diff_nod = 1.0d0
+      if (diff_coefs%num_field .gt. 0) ak_diff_nod = 1.0d0
 !
       end subroutine allocate_nod_model_coefs
 !
@@ -87,14 +78,11 @@
        subroutine deallocate_model_coefs
 !
 !
-       deallocate( sgs_coefs%num_comps )
-       deallocate( sgs_coefs%istack_comps )
-       deallocate( sgs_coefs%iflag_field )
-       deallocate( ncomp_diff_coefs )
-       deallocate( istack_diff_coefs )
-       deallocate( iflag_diff_coefs )
-       deallocate( sgs_coefs%ak )
-       deallocate( ak_diff )
+      call dealloc_MHD_coefs(sgs_coefs)
+       deallocate( diff_coefs%num_comps )
+       deallocate( diff_coefs%istack_comps )
+       deallocate( diff_coefs%iflag_field )
+       deallocate( diff_coefs%ak )
 !
        end subroutine deallocate_model_coefs
 !

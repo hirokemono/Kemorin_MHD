@@ -385,7 +385,7 @@
           ied = ele%istack_ele_smp(ip  )
 !cdir nodep
           do iele = ist, ied
-            ak_diff(iele,ifield_d) = zero
+            diff_coefs%ak(iele,ifield_d) = zero
           end do
       end do
 !$omp end parallel do
@@ -400,7 +400,7 @@
 !cdir nodep
             do iele0 = ist, ied
               iele = item_layer(iele0)
-              ak_diff(iele,ifield_d) = diff_f_clip(inum,ifield_d)
+              diff_coefs%ak(iele,ifield_d) = diff_f_clip(inum,ifield_d)
             end do
           end do
       end do
@@ -429,7 +429,7 @@
         ied = ele%istack_ele_smp(ip  )
 !cdir nodep
         do iele = ist, ied
-          ak_diff(iele,ifield_d) = zero
+          diff_coefs%ak(iele,ifield_d) = zero
         end do
       end do
 !$omp end parallel do
@@ -439,7 +439,7 @@
         ist = iele_fsmp_stack(ip-1) + 1
         ied = iele_fsmp_stack(ip  )
         do iele = ist, ied
-          ak_diff(iele,ifield_d) = diff_f_whole_clip(ifield_d)
+          diff_coefs%ak(iele,ifield_d) = diff_f_whole_clip(ifield_d)
         end do
       end do
 !$omp end parallel do

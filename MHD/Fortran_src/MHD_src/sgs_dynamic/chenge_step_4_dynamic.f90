@@ -70,14 +70,14 @@
 !
         if (iflag_commute_linear .gt. id_SGS_commute_OFF) then
           if (iset_DIFF_model_coefs .eq. 1) then
-            do j = 1, num_diff_kinds
+            do j = 1, diff_coefs%num_field
               do i = 1, nlayer_SGS
                 diff_r = abs(diff_f_coef(i,j) - coef_diff_p(i,j))
                 diff_max = max(diff_max, diff_r)
               end do
             end do
          else
-            do j = 1, num_diff_kinds
+            do j = 1, diff_coefs%num_field
                 diff_r = abs(diff_f_whole(j) - coef_diff_wp(j))
                 diff_max = max(diff_max, diff_r)
             end do
@@ -162,13 +162,13 @@
 !
       if (iflag_commute_linear .gt. id_SGS_commute_OFF) then
         if (iset_DIFF_model_coefs .eq. 1) then
-          do j = 1, num_diff_kinds
+          do j = 1, diff_coefs%num_field
             do i = 1, nlayer_SGS
               coef_diff_p(i,j) = diff_f_coef(i,j)
             end do
           end do
        else
-          do j = 1, num_diff_kinds
+          do j = 1, diff_coefs%num_field
             coef_diff_wp(j) = diff_f_whole(j)
           end do
         end if

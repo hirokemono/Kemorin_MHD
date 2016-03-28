@@ -86,8 +86,8 @@
      &      nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, num_int,           &
      &      Tsf_bcs%sgs%ngrp_sf_dat, Tsf_bcs%sgs%id_grp_sf_dat,         &
      &      ifilter_final, iphys%i_SGS_h_flux, iphys%i_velo,            &
-     &      iphys%i_temp, ak_diff(1,iak_diff_hf), coef_temp,            &
-     &      fem_wk, f_nl)
+     &      iphys%i_temp, diff_coefs%num_field, iak_diff_hf,            &
+     &      diff_coefs%ak, coef_temp, fem_wk, f_nl)
       end if
 !
       end subroutine int_surf_temp_ele
@@ -136,8 +136,8 @@
      &      nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, num_int,           &
      &      Tsf_bcs%sgs%ngrp_sf_dat, Tsf_bcs%sgs%id_grp_sf_dat,         &
      &      ifilter_final, iphys%i_SGS_h_flux, iphys%i_velo,            &
-     &      iphys%i_temp, ak_diff(1,iak_diff_hf), coef_temp,            &
-     &      fem_wk, f_nl)
+     &      iphys%i_temp, diff_coefs%num_field, iak_diff_hf,            &
+     &      diff_coefs%ak, coef_temp, fem_wk, f_nl)
       end if
 !
       end subroutine int_surf_temp_monitor

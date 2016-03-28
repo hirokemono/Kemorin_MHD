@@ -83,7 +83,7 @@
       type(jacobians_3d), intent(in) :: jac_3d_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-        type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_p
+      type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_p
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -91,11 +91,12 @@
 !
       if (iflag_commute_velo .eq. id_SGS_commute_ON) then
         call int_vol_fixed_sgs_poisson_surf                             &
-     &    (node, ele, nod_fld, jac_3d_l, rhs_tbl, FEM_elens,            &
-     &     intg_point_poisson, nod_bc_p%ibc_end,                        &
-     &     nod_bc_p%num_idx_ibc, nod_bc_p%ele_bc_id,                    &
-     &     nod_bc_p%ibc_stack_smp, nod_bc_p%ibc_shape,                  &
-     &     ifilter_final, i_p_phi, ak_diff(1,iak_diff_v), fem_wk, f_l)
+     &     (node, ele, nod_fld, jac_3d_l, rhs_tbl, FEM_elens,           &
+     &      intg_point_poisson, nod_bc_p%ibc_end,                       &
+     &      nod_bc_p%num_idx_ibc, nod_bc_p%ele_bc_id,                   &
+     &      nod_bc_p%ibc_stack_smp, nod_bc_p%ibc_shape, ifilter_final,  &
+     &      i_p_phi, diff_coefs%num_field, iak_diff_v, diff_coefs%ak,   &
+     &      fem_wk, f_l)
       else
         call int_vol_fixed_poisson_surf                                 &
      &    (node, ele, nod_fld, jac_3d_l, rhs_tbl, intg_point_poisson,   &
@@ -139,8 +140,9 @@
      &     (node, ele, nod_fld, jac_3d_l, rhs_tbl, FEM_elens,           &
      &      intg_point_poisson,  nod_bc_f%ibc_end,                      &
      &      nod_bc_f%num_idx_ibc, nod_bc_f%ele_bc_id,                   &
-     &      nod_bc_f%ibc_stack_smp, nod_bc_f%ibc_shape,                 &
-     &      ifilter_final, i_m_phi, ak_diff(1,iak_diff_b), fem_wk, f_l)
+     &      nod_bc_f%ibc_stack_smp, nod_bc_f%ibc_shape, ifilter_final,  &
+     &      i_m_phi, diff_coefs%num_field, iak_diff_b, diff_coefs%ak,   &
+     &      fem_wk, f_l)
       else
         call int_vol_fixed_poisson_surf                                 &
      &     (node, ele, nod_fld, jac_3d_l, rhs_tbl, intg_point_poisson,  &
@@ -185,7 +187,8 @@
      &      nod_bc_fins%ibc_end, nod_bc_fins%num_idx_ibc,               &
      &      nod_bc_fins%ele_bc_id, nod_bc_fins%ibc_stack_smp,           &
      &      nod_bc_fins%ibc_shape,  ifilter_final, i_m_phi,             &
-     &      ak_diff(1,iak_diff_b), fem_wk, f_l)
+     &      diff_coefs%num_field, iak_diff_b, diff_coefs%ak,            &
+     &      fem_wk, f_l)
       else
         call int_vol_fixed_poisson_surf(node, ele, nod_fld,             &
      &      jac_3d_l, rhs_tbl, intg_point_poisson,                      &
@@ -407,7 +410,8 @@
      &      intg_point_t_evo, nod_bc%nmax_idx_ibc2,                     &
      &      nod_bc%ibc_end, nod_bc%num_idx_ibc,  nod_bc%ele_bc_id,      &
      &      nod_bc%ibc_stack_smp, nod_bc%ibc_shape, ifilter_final,      &
-     &      i_field, ak_diff(1,iak_diff), ak_d, coef_imp, fem_wk, f_l)
+     &      i_field, diff_coefs%num_field, iak_diff, diff_coefs%ak,     &
+     &      ak_d, coef_imp, fem_wk, f_l)
       else
         call int_vol_fixed_vector_surf                                  &
      &     (node, ele, nod_fld, jac1_3d, rhs_tbl,                       &

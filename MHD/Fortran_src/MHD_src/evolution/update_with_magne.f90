@@ -189,7 +189,7 @@
 !
 !
       if(iflag_commute_magne .eq. id_SGS_commute_ON                     &
-     &     .and. iflag_diff_coefs(iak_diff_b) .eq. 0) then
+     &     .and. diff_coefs%iflag_field(iak_diff_b) .eq. 0) then
         if (iflag2.eq.2 .or. iflag2.eq.3) then
           if (iflag_debug.gt.0) write(*,*) 's_cal_diff_coef_magne'
           call s_cal_diff_coef_magne(iak_diff_b, icomp_diff_b,          &

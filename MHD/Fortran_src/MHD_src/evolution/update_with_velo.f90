@@ -190,7 +190,7 @@
          end if
 !
         if (iflag_commute_velo .eq. id_SGS_commute_ON                   &
-     &         .and. iflag_diff_coefs(iak_diff_v) .eq. 0) then
+     &         .and. diff_coefs%iflag_field(iak_diff_v) .eq. 0) then
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &                 write(*,*) 's_cal_diff_coef_velo'
           call s_cal_diff_coef_velo(iak_diff_v, icomp_diff_v,           &

@@ -24,6 +24,7 @@
       real(kind = kreal), allocatable    :: sgs_c_whole_clip(:)
       character(len=kchara), allocatable :: name_ak_sgs(:)
 !
+      integer (kind=kint) :: num_diff_coefs
       real(kind = kreal), allocatable    :: diff_f_coef(:,:)
       real(kind = kreal), allocatable    :: diff_f_whole(:)
       real(kind = kreal), allocatable    :: diff_f_clip(:,:)
@@ -100,10 +101,10 @@
        allocate( diff_c_coef(nlayer_SGS, num_diff_coefs) )
        allocate( diff_c_clip(nlayer_SGS, num_diff_coefs) )
        allocate( diff_c_whole(num_diff_coefs) )
-       allocate( diff_f_coef(nlayer_SGS, num_diff_kinds) )
-       allocate( diff_f_whole(num_diff_kinds) )
-       allocate( diff_f_clip(nlayer_SGS, num_diff_kinds) )
-       allocate( diff_f_whole_clip(num_diff_kinds) )
+       allocate( diff_f_coef(nlayer_SGS, diff_coefs%num_field) )
+       allocate( diff_f_whole(diff_coefs%num_field) )
+       allocate( diff_f_clip(nlayer_SGS, diff_coefs%num_field) )
+       allocate( diff_f_whole_clip(diff_coefs%num_field) )
        allocate( diff_c_whole_clip(num_diff_coefs) )
        allocate( name_ak_diff(num_diff_coefs) )
 !
@@ -138,8 +139,8 @@
        allocate( ratio_diff_w(num_diff_coefs) )
 !
        allocate( coef_sgs_p(nlayer_SGS, num_sgs_kinds) )
-       allocate( coef_diff_p(nlayer_SGS, num_diff_kinds) )
-       allocate( coef_diff_wp(num_diff_kinds) )
+       allocate( coef_diff_p(nlayer_SGS, diff_coefs%num_field) )
+       allocate( coef_diff_wp(diff_coefs%num_field) )
 !
       if (num_sgs_kinds .gt. 0) then
         if (nlayer_SGS .gt. 0) then
@@ -176,7 +177,7 @@
         ratio_sgs_w =    0.0d0
       end if
 !
-      if (num_diff_kinds .gt. 0) then
+      if (diff_coefs%num_field .gt. 0) then
         if (nlayer_SGS .gt. 0) then
           diff_f_clip =    0.0d0
           diff_f_coef =  0.0d0

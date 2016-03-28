@@ -183,7 +183,8 @@
 !
       call int_vol_vector_diffuse_ele(fluid%istack_ele_fld_smp,         &
      &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,               &
-     &    iak_diff_v, one, ak_d_velo, iphys%i_velo, fem_wk, f_l)
+     &    diff_coefs%num_field, iak_diff_v, diff_coefs%ak,              &
+     &    one, ak_d_velo, iphys%i_velo, fem_wk, f_l)
 !
       call int_surf_velo_monitor                                        &
      &   (iphys%i_v_diffuse, iak_diff_mf, iak_diff_lor,                 &

@@ -164,8 +164,8 @@
 !     &      jac_sf_grp_q, jac_sf_grp_l, rhs_tbl, FEM_elens,            &
 !     &      intg_point_poisson, Vsf_bcs%sgs%nmax_sf_dat,               &
 !     &      Vsf_bcs%sgs%ngrp_sf_dat, Vsf_bcs%sgs%id_grp_sf_dat,        &
-!     &      ifilter_final, ak_diff(1,iak_diff_v), iphys%i_velo,        &
-!     &      fem_wk, f_l)
+!     &      ifilter_final, diff_coefs%num_field, iak_diff_v,           &
+!     &      diff_coefs%ak,  iphys%i_velo, fem_wk, f_l)
 !      end if
 !
 !   set boundary condition for wall
@@ -259,8 +259,8 @@
 !     &      jac_sf_grp_q, jac_sf_grp_l, rhs_tbl, FEM_elens,            &
 !     &      intg_point_poisson, Asf_bcs%sgs%nmax_sf_dat,               &
 !     &      Asf_bcs%sgs%ngrp_sf_dat, Asf_bcs%sgs%id_grp_sf_dat,        &
-!     &      ifilter_final, ak_diff(1,iak_diff_b),                      &
-!     &      iphys%i_vecp, fem_wk, f_l)
+!     &      ifilter_final, diff_coefs%num_field, iak_diff_b,           &
+!     &      diff_coefs%ak, iphys%i_vecp, fem_wk, f_l)
 !      end if
 !
       call int_surf_normal_vector(iphys%i_vecp,                         &
@@ -350,7 +350,8 @@
 !     &      rhs_tbl, FEM_elens, intg_point_poisson,                    &
 !     &      Bsf_bcs%sgs%nmax_sf_dat, Bsf_bcs%sgs%ngrp_sf_dat,          &
 !     &      Bsf_bcs%sgs%id_grp_sf_dat, ifilter_final,                  &
-!     &      ak_diff(1,iak_diff_b), iphys%i_magne, fem_wk, f_l)
+!     &      diff_coefs%num_field, iak_diff_b, diff_coefs%ak,           &
+!     &       iphys%i_magne, fem_wk, f_l)
 !      end if
 !
       call int_surf_normal_vector(iphys%i_magne,                        &

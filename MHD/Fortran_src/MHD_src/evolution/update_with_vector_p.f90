@@ -153,7 +153,7 @@
         end if
 !
 !
-        if ( iflag_diff_coefs(iak_diff_b) .eq. 0) then
+        if ( diff_coefs%iflag_field(iak_diff_b) .eq. 0) then
           if(iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
             if (iflag_SGS_model .eq. id_SGS_NL_grad                     &
      &        .or. iflag_SGS_model .eq. id_SGS_similarity) then

@@ -336,7 +336,7 @@
 !
       nod_fld%iflag_update(1:nod_fld%ntot_phys) = 0
       sgs_coefs%iflag_field(1:sgs_coefs%num_field) = 0
-      iflag_diff_coefs(1:num_diff_kinds) =        0
+      diff_coefs%iflag_field(1:diff_coefs%num_field) = 0
 !
       end subroutine reset_update_flag
 !

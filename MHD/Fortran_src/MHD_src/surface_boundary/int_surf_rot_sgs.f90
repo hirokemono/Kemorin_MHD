@@ -5,7 +5,8 @@
 !
 !!      subroutine int_surf_rotation_sgs(node, ele, surf, sf_grp,       &
 !!     &          nod_fld, jac_sf_grp_q, rhs_tbl, FEM_elens, sgs_sf,    &
-!!     &          n_int, i_filter, iak_diff, i_vect, fem_wk, f_nl)
+!!     &          n_int, i_filter, ncomp_diff, iak_diff, ak_diff,       &
+!!     &          i_vect, fem_wk, f_nl)
 !!      subroutine int_surf_rot_commute_sgs(node, ele, surf, sf_grp,    &
 !!     &          nod_fld, jac_sf_grp_q, rhs_tbl, FEM_elens, sgs_sf,    &
 !!     &          n_int, nmax_grp_sf, ngrp_sf, id_grp_sf, i_filter,     &
@@ -48,10 +49,10 @@
 !
       subroutine int_surf_rotation_sgs(node, ele, surf, sf_grp,         &
      &          nod_fld, jac_sf_grp_q, rhs_tbl, FEM_elens, sgs_sf,      &
-     &          n_int, i_filter, iak_diff, i_vect, fem_wk, f_nl)
+     &          n_int, i_filter, ncomp_diff, iak_diff, ak_diff,         &
+     &          i_vect, fem_wk, f_nl)
 !
       use m_int_surface_data
-      use m_SGS_model_coefs
 !
       use delta_phys_2_each_surface
       use fem_surf_skv_sgs_commute_t
@@ -68,7 +69,9 @@
       type(scaler_surf_bc_data_type),  intent(in) :: sgs_sf(3)
 !
       integer(kind = kint), intent(in) :: n_int
-      integer(kind = kint), intent(in) :: i_vect, iak_diff, i_filter
+      integer(kind = kint), intent(in) :: i_vect, i_filter
+      integer(kind=kint), intent(in) :: ncomp_diff, iak_diff
+      real (kind = kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl

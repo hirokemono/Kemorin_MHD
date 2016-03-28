@@ -197,7 +197,7 @@
 !       end if
 !
          if (iflag_commute_temp .eq. id_SGS_commute_ON) then
-           if ( iflag_diff_coefs(iak_diff_t) .eq. 0) then
+           if ( diff_coefs%iflag_field(iak_diff_t) .eq. 0) then
 !
              if (iflag_SGS_heat .eq. id_SGS_NL_grad) then
                if (iflag_debug.gt.0)  write(*,*) 's_cal_diff_coef_temp'
@@ -295,7 +295,7 @@
 !       if (iflag_dynamic.eq.0                                          &
 !     &     .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
 !         if (iflag_commute_composit .eq. id_SGS_commute_ON) then
-!           if ( iflag_diff_coefs(iak_diff_t) .eq. 0) then
+!           if ( diff_coefs%iflag_field(iak_diff_c) .eq. 0) then
 !
 !             if (iflag_SGS_heat .eq. id_SGS_NL_grad) then
 !               if (iflag_debug.gt.0)  write(*,*) 's_cal_diff_coef_temp'

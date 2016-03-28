@@ -188,8 +188,8 @@
       if (coef_velo.gt.zero .and. coef_exp_v.gt.zero) then
         call int_vol_vector_diffuse_ele(fluid%istack_ele_fld_smp,       &
      &      node, ele, nod_fld, jac_3d_q, rhs_tbl, FEM_elens,           &
-     &      iak_diff_v, coef_exp_v, ak_d_velo, iphys%i_velo,            &
-     &      fem_wk, f_l)
+     &      diff_coefs%num_field, iak_diff_v, diff_coefs%ak,            &
+     &      coef_exp_v, ak_d_velo, iphys%i_velo, fem_wk, f_l)
       end if
 !
       if ( iflag_4_coriolis .eq. id_Coriolis_ele_imp) then
@@ -333,8 +333,8 @@
      &      nod_fld, jac_sf_grp_q, jac_sf_grp_l,                        &
      &      rhs_tbl, FEM_elens, intg_point_poisson,                     &
      &      Psf_bcs%sgs%ngrp_sf_dat, Psf_bcs%sgs%id_grp_sf_dat,         &
-     &      ifilter_final, ak_diff(1,iak_diff_v), iphys%i_p_phi,        &
-     &      fem_wk, f_nl)
+     &      ifilter_final, diff_coefs%num_field, iak_diff_v,            &
+     &      diff_coefs%ak, iphys%i_p_phi, fem_wk, f_nl)
       end if
 !
 !

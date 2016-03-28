@@ -85,6 +85,7 @@
 !
 !
       new_coefs%num_field = org_coefs%num_field
+      new_coefs%ntot_comp = org_coefs%ntot_comp
 !
       call alloc_MHD_num_coefs(new_coefs)
 !

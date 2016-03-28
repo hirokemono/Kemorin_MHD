@@ -85,17 +85,18 @@
         if (iflag_commute_correction .gt. id_SGS_commute_OFF) then
 !
           write(rst_sgs_coef_code,'(a)')  '! num. of commute coefs'
-          write(rst_sgs_coef_code,'(2i16)')  num_diff_kinds, nlayer_SGS
+          write(rst_sgs_coef_code,'(2i16)')                             &
+     &       diff_coefs%num_field, nlayer_SGS
 !
           call write_diff_coef_head(rst_sgs_coef_code)
 !
           write(rst_sgs_coef_code,1000) i_step_MHD, time, izero,        &
-     &          (diff_f_whole_clip(nd),nd=1, num_diff_kinds)
+     &          diff_f_whole_clip(1:diff_coefs%num_field)
 !
           if (iset_DIFF_model_coefs .eq. 1 ) then
             do inum = 1, nlayer_SGS
               write(rst_sgs_coef_code,1000)  i_step_MHD, time, inum,    &
-     &              (diff_f_clip(inum,nd),nd=1,num_diff_kinds)
+     &              diff_f_clip(inum,1:diff_coefs%num_field)
             end do
           end if
         end if
@@ -223,7 +224,7 @@
       deallocate(coef_sgs_IO)
 !
       if (iflag_commute_correction .gt. id_SGS_commute_OFF) then
-        do i = 1, num_diff_kinds
+        do i = 1, diff_coefs%num_field
           do j = 1, num_diff_kinds_IO
             if ( name_ak_diff(i) .eq. name_ak_diff_IO(j) ) then
               diff_f_whole_clip(i) = coef_diff_IO(0,j)
@@ -268,12 +269,12 @@
 !
       if (iflag_commute_correction .gt. id_SGS_commute_OFF) then
         if (iset_DIFF_model_coefs .eq. 0) then
-          do i = 1, num_diff_kinds
+          do i = 1, diff_coefs%num_field
             call set_diff_coefs_whole_ele                               &
      &         (fluid%istack_ele_fld_smp, i, ele)
           end do
         else
-          do i = 1, num_diff_kinds
+          do i = 1, diff_coefs%num_field
             call set_diff_coefs_layer_ele                               &
      &         (i, layer_egrp%num_grp, layer_egrp%num_item,             &
      &          layer_egrp%istack_grp_smp, layer_egrp%item_grp, ele)
