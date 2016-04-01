@@ -188,8 +188,8 @@
       if (coef_velo.gt.zero .and. coef_exp_v.gt.zero) then
         call int_vol_vector_diffuse_ele(fluid%istack_ele_fld_smp,       &
      &      node, ele, nod_fld, jac_3d_q, rhs_tbl, FEM_elens,           &
-     &      diff_coefs%num_field, iak_diff_v, diff_coefs%ak,            &
-     &      coef_exp_v, ak_d_velo, iphys%i_velo, fem_wk, f_l)
+     &      diff_coefs, iak_diff_v, coef_exp_v, ak_d_velo,              &
+     &      iphys%i_velo, fem_wk, f_l)
       end if
 !
       if ( iflag_4_coriolis .eq. id_Coriolis_ele_imp) then
@@ -323,7 +323,7 @@
       call int_vol_solenoid_co                                          &
      &   (fluid%istack_ele_fld_smp, iphys%i_p_phi, iak_diff_v,          &
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l,                       &
-     &    rhs_tbl, FEM_elens, fem_wk, f_nl)
+     &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_nl)
 !
       if (iflag_commute_velo .eq. id_SGS_commute_ON                     &
      &     .and. Psf_bcs%sgs%ngrp_sf_dat.gt.0) then

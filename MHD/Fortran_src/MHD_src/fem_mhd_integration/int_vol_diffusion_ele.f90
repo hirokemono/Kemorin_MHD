@@ -6,11 +6,11 @@
 !
 !!      subroutine int_vol_scalar_diffuse_ele(iele_fsmp_stack,          &
 !!     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,       &
-!!     &          ncomp_diff, iak_diff, ak_diff, coef_crank, ak_d,      &
+!!     &          diff_coefs, iak_diff, coef_crank, ak_d,               &
 !!     &          i_scalar, fem_wk, f_l)
 !!      subroutine int_vol_vector_diffuse_ele(iele_fsmp_stack,          &
 !!     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,       &
-!!     &          ncomp_diff, iak_diff, ak_diff, coef_crank, ak_d,      &
+!!     &          diff_coefs, iak_diff, coef_crank, ak_d,               &
 !!     &          i_vector, fem_wk, f_l)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -18,6 +18,7 @@
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(MHD_coefficients_type), intent(in) :: diff_coefs
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l
 !
@@ -36,6 +37,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_filter_elength
+      use t_material_property
 !
       implicit none
 !
@@ -47,7 +49,7 @@
 !
       subroutine int_vol_scalar_diffuse_ele(iele_fsmp_stack,            &
      &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,         &
-     &          ncomp_diff, iak_diff, ak_diff, coef_crank, ak_d,        &
+     &          diff_coefs, iak_diff, coef_crank, ak_d,                 &
      &          i_scalar, fem_wk, f_l)
 !
       use int_vol_fractional
@@ -59,13 +61,12 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
 !
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      integer(kind=kint), intent(in) :: i_scalar
+      integer(kind=kint), intent(in) :: i_scalar, iak_diff
       real (kind=kreal), intent(in) :: coef_crank
       real(kind=kreal), intent(in) :: ak_d(ele%numele)
-      integer(kind=kint), intent(in) :: ncomp_diff, iak_diff
-      real (kind = kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -75,8 +76,8 @@
         call int_vol_scalar_sgs_diffuse                                 &
      &     (node, ele, jac_3d, rhs_tbl, FEM_elens, nod_fld,             &
      &      iele_fsmp_stack, intg_point_t_evo, coef_crank, ak_d,        &
-     &      i_scalar, ifilter_final, ak_diff(1,iak_diff),               &
-     &      fem_wk, f_l)
+     &      i_scalar, ifilter_final, diff_coefs%num_field,              &
+     &      iak_diff, diff_coefs%ak, fem_wk, f_l)
       else
         call int_vol_scalar_diffuse                                     &
      &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
@@ -90,7 +91,7 @@
 !
       subroutine int_vol_vector_diffuse_ele(iele_fsmp_stack,            &
      &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,         &
-     &          ncomp_diff, iak_diff, ak_diff, coef_crank, ak_d,        &
+     &          diff_coefs, iak_diff, coef_crank, ak_d,                 &
      &          i_vector, fem_wk, f_l)
 !
       use int_vol_fractional
@@ -102,13 +103,12 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
 !
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      integer(kind=kint), intent(in) :: i_vector
+      integer(kind=kint), intent(in) :: i_vector, iak_diff
       real (kind=kreal), intent(in) :: coef_crank
       real(kind=kreal), intent(in) :: ak_d(ele%numele)
-      integer(kind=kint), intent(in) :: ncomp_diff, iak_diff
-      real (kind = kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -118,8 +118,8 @@
         call int_vol_vector_sgs_diffuse                                 &
      &     (node, ele, jac_3d, rhs_tbl, FEM_elens, nod_fld,             &
      &      iele_fsmp_stack, intg_point_t_evo, coef_crank, ak_d,        &
-     &      i_vector, ifilter_final, ak_diff(1,iak_diff),               &
-     &      fem_wk, f_l)
+     &      i_vector, ifilter_final, diff_coefs%num_field,              &
+     &      iak_diff, diff_coefs%ak, fem_wk, f_l)
       else
         call int_vol_vector_diffuse                                     &
      &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &

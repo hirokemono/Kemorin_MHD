@@ -27,7 +27,6 @@
       real  (kind=kreal), allocatable :: ak_sgs_nod(:,:)
 !
 !      real  (kind=kreal), allocatable :: ak_diff(:,:)
-      real  (kind=kreal), allocatable :: ak_diff_nod(:,:)
 !
 !
 ! -------------------------------------------------------------------
@@ -65,10 +64,8 @@
       integer(kind = kint), intent(in) :: numnod
 !
       allocate( ak_sgs_nod(numnod,sgs_coefs%ntot_comp) )
-      allocate( ak_diff_nod(numnod,diff_coefs%num_field) )
 !
       if (sgs_coefs%num_field .gt. 0) ak_sgs_nod =  1.0d0 
-      if (diff_coefs%num_field .gt. 0) ak_diff_nod = 1.0d0
 !
       end subroutine allocate_nod_model_coefs
 !
@@ -92,7 +89,6 @@
 !
 !
        deallocate( ak_sgs_nod )
-       deallocate( ak_diff_nod )
 !
        end subroutine deallocate_nod_model_coefs
 !

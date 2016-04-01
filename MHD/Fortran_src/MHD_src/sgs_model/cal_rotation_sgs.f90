@@ -156,19 +156,22 @@
         call int_sgs_rotation_upw                                       &
      &     (node, ele, jac_3d, rhs_tbl, nod_fld, FEM_elens,             &
      &      iele_fsmp_stack, intg_point_t_evo, ifilter_final,           &
-     &      ak_diff(1,iak_diff), i_vector, ele_fld%ntot_phys,           &
-     &      iphys_ele%i_magne, ele_fld%d_fld, fem_wk, f_nl)
+     &      diff_coefs%num_field, iak_diff, diff_coefs%ak, i_vector,    &
+     &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
+     &      fem_wk, f_nl)
       else if ( iflag_4_supg .eq. id_turn_ON) then
         call int_sgs_rotation_upw                                       &
      &     (node, ele, jac_3d, rhs_tbl, nod_fld, FEM_elens,             &
      &      iele_fsmp_stack, intg_point_t_evo, ifilter_final,           &
-     &      ak_diff(1,iak_diff), i_vector, ele_fld%ntot_phys,           &
-     &      iphys_ele%i_velo, ele_fld%d_fld, fem_wk, f_nl)
+     &      diff_coefs%num_field, iak_diff, diff_coefs%ak, i_vector,    &
+     &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
+     &      fem_wk, f_nl)
       else
         call int_sgs_rotation                                           &
      &     (node, ele, jac_3d, rhs_tbl, nod_fld, FEM_elens,             &
      &      iele_fsmp_stack, intg_point_t_evo, ifilter_final,           &
-     &      ak_diff(1,iak_diff), i_vector, fem_wk, f_nl)
+     &      diff_coefs%num_field, iak_diff, diff_coefs%ak, i_vector,    &
+     &      fem_wk, f_nl)
       end if
 !
       call int_surf_rotation_sgs(node, ele, surf, sf_grp,               &

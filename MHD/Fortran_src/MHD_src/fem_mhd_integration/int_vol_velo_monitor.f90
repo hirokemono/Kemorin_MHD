@@ -168,12 +168,11 @@
 !
       else if(i_field .eq. iphys%i_SGS_div_m_flux) then
         if (iflag_commute_inertia .eq. id_SGS_commute_ON) then
-          call int_vol_div_SGS_tsr_flux                                 &
-     &       (node, ele, jac_3d, rhs_tbl, FEM_elens, nod_fld,           &
+          call int_vol_div_SGS_tsr_flux(node, ele, nod_fld,             &
+     &        jac_3d, rhs_tbl, FEM_elens, diff_coefs,                   &
      &        fluid%istack_ele_fld_smp, intg_point_t_evo,               &
      &        iphys%i_velo, iphys%i_SGS_m_flux, ifilter_final,          &
-     &        ak_diff(1,iak_diff_mf), coef_nega_v,                      &
-     &        fem_wk, mhd_fem_wk, f_nl)
+     &        iak_diff_mf, coef_nega_v, fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_tsr_w_const                                  &
      &       (node, ele, jac_3d, rhs_tbl, nod_fld,                      &
@@ -183,12 +182,11 @@
 !
       else if(i_field .eq. iphys%i_SGS_Lorentz) then
         if (iflag_commute_lorentz .eq. id_SGS_commute_ON) then
-          call int_vol_div_SGS_tsr_flux                                 &
-     &       (node, ele, jac_3d, rhs_tbl, FEM_elens, nod_fld,           &
+          call int_vol_div_SGS_tsr_flux(node, ele, nod_fld,             &
+     &        jac_3d, rhs_tbl, FEM_elens, diff_coefs,                   &
      &        fluid%istack_ele_fld_smp, intg_point_t_evo,               &
      &        iphys%i_magne, iphys%i_SGS_maxwell, ifilter_final,        &
-     &        ak_diff(1,iak_diff_lor), coef_lor,                        &
-     &        fem_wk, mhd_fem_wk, f_nl)
+     &        iak_diff_lor, coef_lor, fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_tsr_w_const                                  &
      &       (node, ele, jac_3d, rhs_tbl, nod_fld,                      &
@@ -315,11 +313,11 @@
 !
       else if(i_field .eq. iphys%i_SGS_div_m_flux) then 
         if (iflag_commute_inertia .eq. id_SGS_commute_ON) then
-          call int_vol_div_SGS_tsr_flux_upw                             &
-     &       (node, ele, jac_3d, rhs_tbl, FEM_elens, nod_fld,           &
+          call int_vol_div_SGS_tsr_flux_upw(node, ele, nod_fld,         &
+     &        jac_3d, rhs_tbl, FEM_elens, diff_coefs,                   &
      &        fluid%istack_ele_fld_smp, intg_point_t_evo,               &
      &        iphys%i_velo, iphys%i_SGS_m_flux, ifilter_final,          &
-     &        ak_diff(1,iak_diff_mf), ele_fld%ntot_phys, iv_upw,        &
+     &        iak_diff_mf, ele_fld%ntot_phys, iv_upw,                   &
      &        ele_fld%d_fld, coef_nega_v, fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_tsr_w_const_upw                              &
@@ -331,11 +329,11 @@
 !
       else if(i_field .eq. iphys%i_SGS_Lorentz) then
         if (iflag_commute_lorentz .eq. id_SGS_commute_ON) then
-          call int_vol_div_SGS_tsr_flux_upw                             &
-     &       (node, ele, jac_3d, rhs_tbl, FEM_elens, nod_fld,           &
+          call int_vol_div_SGS_tsr_flux_upw(node, ele, nod_fld,         &
+     &        jac_3d, rhs_tbl, FEM_elens, diff_coefs,                   &
      &        fluid%istack_ele_fld_smp, intg_point_t_evo,               &
      &        iphys%i_magne, iphys%i_SGS_maxwell, ifilter_final,        &
-     &        ak_diff(1,iak_diff_lor), ele_fld%ntot_phys, iv_upw,       &
+     &        iak_diff_lor, ele_fld%ntot_phys, iv_upw,                  &
      &        ele_fld%d_fld, coef_lor, fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_tsr_w_const_upw                              &

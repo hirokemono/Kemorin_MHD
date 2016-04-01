@@ -138,23 +138,23 @@
 !
       if (coef_temp.gt.zero .and. coef_exp_t.gt.zero) then
         call int_vol_scalar_diffuse_ele(fluid%istack_ele_fld_smp,       &
-     &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,             &
-     &      diff_coefs%num_field, iak_diff_t, diff_coefs%ak,            &
-     &      coef_exp_t, ak_d_temp, iphys%i_temp, fem_wk, f_l)
+     &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
+     &      iak_diff_t, coef_exp_t, ak_d_temp, iphys%i_temp,            &
+     &      fem_wk, f_l)
       end if
 !
 !  ----------  lead advection term
 !
       if (iflag_temp_supg .gt. id_turn_OFF) then
         call int_vol_temp_ele_upw(node, ele, fluid, iphys, nod_fld,     &
+     &      jac_3d, rhs_tbl, FEM_elens, diff_coefs,                     &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
-     &      diff_coefs%num_field, iak_diff_hf, diff_coefs%ak,           &
-     &      jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
+     &      iak_diff_hf, mhd_fem_wk, fem_wk, f_nl)
       else
         call int_vol_temp_ele(node, ele, fluid, iphys, nod_fld,         &
+     &      jac_3d, rhs_tbl, FEM_elens, diff_coefs,                     &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
-     &      diff_coefs%num_field, iak_diff_hf, diff_coefs%ak,           &
-     &      jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
+     &      iak_diff_hf, mhd_fem_wk, fem_wk, f_nl)
       end if
 !
 !      call check_ff_smp(my_rank, n_scalar, node%max_nod_smp, f_l)
@@ -297,23 +297,23 @@
 !
       if (coef_temp.gt.zero .and. coef_exp_t.gt.zero) then
         call int_vol_scalar_diffuse_ele(fluid%istack_ele_fld_smp,       &
-     &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,             &
-     &      diff_coefs%num_field, iak_diff_t, diff_coefs%ak,            &
-     &      coef_exp_t, ak_d_temp, iphys%i_par_temp, fem_wk, f_l)
+     &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
+     &      iak_diff_t, coef_exp_t, ak_d_temp, iphys%i_par_temp,        &
+     &      fem_wk, f_l)
       end if
 !
 !  ----------  lead advection term
 !
       if (iflag_temp_supg .gt. id_turn_OFF) then
         call int_vol_temp_ele_upw(node, ele, fluid, iphys, nod_fld,     &
+     &      jac_3d, rhs_tbl, FEM_elens, diff_coefs,                     &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
-     &      diff_coefs%num_field, iak_diff_hf, diff_coefs%ak,           &
-     &      jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
+     &      iak_diff_hf, mhd_fem_wk, fem_wk, f_nl)
       else
         call int_vol_temp_ele(node, ele, fluid, iphys, nod_fld,         &
+     &      jac_3d, rhs_tbl, FEM_elens, diff_coefs,                     &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
-     &      diff_coefs%num_field, iak_diff_hf, diff_coefs%ak,           &
-     &      jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
+     &      iak_diff_hf, mhd_fem_wk, fem_wk, f_nl)
       end if
 !
 !      call check_ff_smp(my_rank, n_scalar, node%max_nod_smp, f_l)

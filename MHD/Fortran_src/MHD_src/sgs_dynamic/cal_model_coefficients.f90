@@ -243,7 +243,7 @@
      &        layer_tbl, group%surf_grp, surf_bcs%Bsf_bcs, iphys,       &
      &        iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,     &
      &        rhs_tbl, FEM_elens, filtering, mhd_fem_wk, fem_wk,        &
-     &        f_l, f_nl, nod_fld)
+     &        f_l, f_nl, nod_fld, diff_coefs)
         end if
 !
       else if(iflag_t_evo_4_vect_p .gt. id_no_evolution) then

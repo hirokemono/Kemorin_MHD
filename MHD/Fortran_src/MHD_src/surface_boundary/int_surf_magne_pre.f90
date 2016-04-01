@@ -58,6 +58,8 @@
      &          Asf_bcs, Bsf_bcs, iphys, nod_fld, jac_sf_grp,           &
      &          rhs_tbl1, FEM_elens, fem_wk, f_l, f_nl)
 !
+      use m_SGS_model_coefs
+!
       integer(kind= kint), intent(in) :: iak_diff_uxb
 !
       type(node_data), intent(in) :: node
@@ -107,6 +109,8 @@
      &          node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs,              &
      &          iphys, nod_fld, jac_sf_grp, rhs_tbl1, FEM_elens,        &
      &          fem_wk, f_l, f_nl)
+!
+      use m_SGS_model_coefs
 !
       integer(kind= kint), intent(in) :: i_field, iak_diff_uxb
 !

@@ -91,8 +91,9 @@
 !          call  SGS_const_vector_each_ele(node, ele, nod_fld,          &
 !     &         k2, iphys%i_velo, iphys%i_light, iphys%i_SGS_c_flux,    &
 !     &         coef_nega_c, mhd_fem1_wk%sgs_v1, fem_wk%vector_1)
-!          call fem_skv_scl_inertia_modsgs_pg(fluid%istack_ele_fld_smp,&
-!     &        num_int, k2, ifilter_final, ak_diff(1,iak_diff_cf),      &
+!          call fem_skv_scl_inertia_modsgs_pg                           &
+!     &       (fluid%istack_ele_fld_smp, num_int, k2, ifilter_final,    &
+!     &        diff_coefs%num_field, iak_diff_cf, diff_coefs%ak,        &
 !     &        ele, jac_3d, FEM_elens, fem_wk%scalar_1,                 &
 !     &        mhd_fem1_wk%sgs_v1, fem_wk%vector_1,                     &
 !     &        d_ele(1,iele_velo), fem_wk%sk6)
@@ -161,8 +162,9 @@
 !          call SGS_const_vector_each_ele(node, ele, nod_fld,           &
 !     &        k2, iphys%i_velo, iphys%i_light, iphys%i_SGS_c_flux,     &
 !     &        coef_nega_c, mhd_fem1_wk%sgs_v1, fem_wk%vector_1)
-!          call fem_skv_scl_inertia_msgs_upw(fluid%istack_ele_fld_smp,  &
-!     &        num_int, k2, ifilter_final, ak_diff(1,iak_diff_cf),      &
+!          call fem_skv_scl_inertia_msgs_upw                            &
+!     &       (fluid%istack_ele_fld_smp, num_int, k2, ifilter_final,    &
+!     &        diff_coefs%num_field, iak_diff_cf, diff_coefs%ak,        &
 !     &        ele, jac_3d, FEM_elens, fem_wk%scalar_1,                 &
 !     &        mhd_fem1_wk%sgs_v1, fem_wk%vector_1,                     &
 !     &        d_ele(1,iele_velo), d_ele(1,iele_velo), fem_wk%sk6)

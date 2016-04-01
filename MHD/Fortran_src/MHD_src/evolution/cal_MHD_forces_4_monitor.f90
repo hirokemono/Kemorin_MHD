@@ -119,6 +119,7 @@
      &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_SGS_address
+      use m_SGS_model_coefs
 !
       use cal_terms_for_heat
       use cal_momentum_terms
@@ -252,8 +253,8 @@
         call cal_vecp_diffusion(iak_diff_b,                             &
      &      nod_comm, node, ele, surf, sf_grp,                          &
      &      nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, iphys,                  &
-     &      jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, &
-     &      f_l, f_nl, nod_fld)
+     &      jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,         &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       if (iphys%i_b_diffuse .gt. izero                                  &
@@ -263,8 +264,8 @@
         call cal_magnetic_diffusion(iak_diff_b, iak_diff_uxb,           &
      &     nod_comm, node, ele, surf, conduct, sf_grp,                  &
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,        &
-     &     iphys, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, m_lump,       &
-     &     fem_wk, f_l, f_nl, nod_fld)
+     &     iphys, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,   &
+     &     m_lump, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
 !

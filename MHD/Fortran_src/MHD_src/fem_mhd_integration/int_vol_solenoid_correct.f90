@@ -29,6 +29,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_filter_elength
+      use t_material_property
 !
       implicit none
 !
@@ -41,7 +42,7 @@
       subroutine int_vol_solenoid_co                                    &
      &         (iele_fsmp_stack, i_scalar, iak_diff,                    &
      &          node, ele, nod_fld, jac_3d_q, jac_3d_l,                 &
-     &          rhs_tbl, FEM_elen, fem_wk, f_nl)
+     &          rhs_tbl, FEM_elen, diff_coefs, fem_wk, f_nl)
 !
       use m_control_parameter
 !
@@ -54,6 +55,7 @@
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elen
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
 !
       integer(kind=kint), intent(in) :: i_scalar, iak_diff
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -63,10 +65,10 @@
 !
 !
       if (iak_diff .gt. 0) then
-        call int_vol_sgs_solenoidal_co(node, ele,                       &
-     &      jac_3d_q, jac_3d_l, rhs_tbl, FEM_elen, nod_fld,             &
-     &      iele_fsmp_stack, intg_point_poisson, i_scalar,              &
-     &      ifilter_final, ak_diff(1,iak_diff), fem_wk, f_nl)
+        call int_vol_sgs_solenoidal_co(node, ele, jac_3d_q, jac_3d_l,   &
+     &     rhs_tbl, FEM_elen, nod_fld, iele_fsmp_stack,                 &
+     &     intg_point_poisson, i_scalar, ifilter_final,                 &
+     &     diff_coefs%num_field, iak_diff, diff_coefs%ak, fem_wk, f_nl)
       else
         call int_vol_solenoidal_co                                      &
      &     (node, ele, jac_3d_q, jac_3d_l, rhs_tbl, nod_fld,            &

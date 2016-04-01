@@ -232,7 +232,8 @@
      &      nod_bc_t%ibc_end, nod_bc_t%num_idx_ibc,                     &
      &      nod_bc_t%ele_bc_id, nod_bc_t%ibc_stack_smp,                 &
      &      nod_bc_t%ibc_shape, ifilter_final, i_temp,                  &
-     &      ak_diff(1,iak_diff_t), ak_d_temp, coef_imp_t, fem_wk, f_l)
+     &      diff_coefs%num_field, iak_diff_t, diff_coefs%ak,            &
+     &      ak_d_temp, coef_imp_t, fem_wk, f_l)
       else
         call int_vol_fixed_scalar_surf(node, ele, nod_fld,              &
      &      jac1_3d, rhs_tbl, intg_point_t_evo,                         &
@@ -273,7 +274,8 @@
      &      nod_bc_t%ibc_end, nod_bc_t%num_idx_ibc,                     &
      &      nod_bc_t%ele_bc_id, nod_bc_t%ibc_stack_smp,                 &
      &      nod_bc_t%ibc_shape, ifilter_final, i_par_temp,              &
-     &      ak_diff(1,iak_diff_t), ak_d_temp, coef_imp_t, fem_wk, f_l)
+     &      diff_coefs%num_field, iak_diff_t, diff_coefs%ak,            &
+     &      ak_d_temp, coef_imp_t, fem_wk, f_l)
       else
         call int_vol_fixed_scalar_surf(node, ele, nod_fld,              &
      &      jac1_3d, rhs_tbl, intg_point_t_evo,                         &
@@ -314,8 +316,8 @@
      &      nod_bc_c%ibc_end, nod_bc_c%num_idx_ibc,                     &
      &      nod_bc_c%ele_bc_id, nod_bc_c%ibc_stack_smp,                 &
      &      nod_bc_c%ibc_shape,  ifilter_final, i_light,                &
-     &      ak_diff(1,iak_diff_c), ak_d_composit, coef_imp_c,           &
-     &      fem_wk, f_l)
+     &      diff_coefs%num_field, iak_diff_c, diff_coefs%ak,            &
+     &      ak_d_composit, coef_imp_c, fem_wk, f_l)
       else
         call int_vol_fixed_scalar_surf(node, ele, nod_fld,              &
      &      jac1_3d, rhs_tbl, intg_point_t_evo,                         &
@@ -365,8 +367,8 @@
      &      intg_point_t_evo, nod_bc_rot%ibc_end,                       &
      &      nod_bc_rot%num_idx_ibc, nod_bc_rot%ele_bc_id,               &
      &      nod_bc_rot%ibc_stack_smp, nod_bc_rot%ibc_shape,             &
-     &      ifilter_final, i_velo, ak_diff(1,iak_diff_v),               &
-     &      ak_d_velo, coef_imp_v, fem_wk, f_l)
+     &      ifilter_final, i_velo, diff_coefs%num_field, iak_diff_v,    &
+     &      diff_coefs%ak, ak_d_velo, coef_imp_v, fem_wk, f_l)
       else
         call int_vol_fixed_rotate_surf                                  &
      &     (node, ele, nod_fld, jac1_3d, rhs_tbl, intg_point_t_evo,     &

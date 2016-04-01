@@ -5,8 +5,8 @@
 !
 !!      subroutine int_surf_div_induct_t_sgs(node, ele, surf,           &
 !!     &          sf_grp, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,      &
-!!     &          n_int, i_flux, i_filter, ncomp_diff, iak_diff_uxb,    &
-!!     &          ak_diff, i_v, i_b, fem_wk, f_nl)
+!!     &          n_int, i_filter, ncomp_diff, iak_diff_uxb,            &
+!!     &          ak_diff, i_flux, i_v, i_b, fem_wk, f_nl)
 !!      subroutine int_surf_commute_induct_t(node, ele, surf, sf_grp,   &
 !!     &          nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf,      &
 !!     &          n_int, i_flux, i_filter, i_v, i_b, fem_wk, f_nl)
@@ -47,8 +47,8 @@
 !
       subroutine int_surf_div_induct_t_sgs(node, ele, surf, sf_grp,     &
      &          nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf,        &
-     &          n_int, i_flux, i_filter, ncomp_diff, iak_diff_uxb,      &
-     &          ak_diff, i_v, i_b, fem_wk, f_nl)
+     &          n_int, i_filter, ncomp_diff, iak_diff_uxb,              &
+     &          ak_diff, i_flux, i_v, i_b, fem_wk, f_nl)
 !
       use m_int_surface_data
 !
@@ -57,7 +57,7 @@
       use cal_skv_to_ff_smp
 !
 !
-      integer(kind=kint), intent(in) :: n_int, i_filter, iak_diff_uxb
+      integer(kind=kint), intent(in) :: n_int, i_filter
       integer (kind = kint), intent(in) :: i_b, i_v, i_flux
 !
       type(node_data), intent(in) :: node

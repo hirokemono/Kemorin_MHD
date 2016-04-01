@@ -105,9 +105,9 @@
 !
       if (coef_light.gt.zero .and. coef_exp_c.gt.zero) then
         call int_vol_scalar_diffuse_ele(fluid%istack_ele_fld_smp,       &
-     &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,             &
-     &      diff_coefs%num_field, iak_diff_c, diff_coefs%ak,            &
-     &      coef_exp_c, ak_d_composit, iphys%i_light, fem_wk, f_l)
+     &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
+     &      iak_diff_c, coef_exp_c, ak_d_composit, iphys%i_light,       &
+     &      fem_wk, f_l)
       end if
 !
       if (iflag_comp_supg .gt. id_turn_OFF) then

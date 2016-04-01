@@ -145,7 +145,7 @@
       integer(kind = kint), intent(in) :: n_int, nmax_grp_sf
       integer(kind = kint), intent(in) :: ngrp_sf(3)
       integer(kind = kint), intent(in) :: id_grp_sf(nmax_grp_sf,3)
-      integer(kind = kint), intent(in) :: i_vect, iak_diff, i_filter
+      integer(kind = kint), intent(in) :: i_vect, i_filter
       integer(kind = kint), intent(in) :: ncomp_diff, iak_diff
       real (kind = kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
 !

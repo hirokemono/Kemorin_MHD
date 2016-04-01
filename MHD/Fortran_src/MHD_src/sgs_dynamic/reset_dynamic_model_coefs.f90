@@ -9,7 +9,8 @@
 !!      subroutine reset_tensor_sgs_model_coefs                         &
 !!     &         (ele, layer_tbl, icomp_sgs, sgs_coefs)
 !!
-!!      subroutine reset_diff_model_coefs(iak_diff, iele_smp_stack)
+!!      subroutine reset_diff_model_coefs                               &
+!!     &         (ncomp_diff, iak_diff, numele, iele_smp_stack, ak_diff)
 !!
 !!      subroutine reset_vector_sgs_nod_m_coefs                         &
 !!     &         (icomp_sgs, inod_smp_stack)
@@ -303,12 +304,13 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine reset_diff_model_coefs(iak_diff, iele_smp_stack)
-!
-      use m_SGS_model_coefs
+      subroutine reset_diff_model_coefs                                 &
+     &         (ncomp_diff, iak_diff, numele, iele_smp_stack, ak_diff)
 !
       integer (kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
-      integer (kind = kint), intent(in) :: iak_diff
+      integer (kind = kint), intent(in) :: numele, ncomp_diff, iak_diff
+      real(kind=kreal), intent(inout) :: ak_diff(numele,ncomp_diff)
+!
       integer (kind = kint) :: iele, iproc, ist, ied
 !
 !$omp parallel do private(iele, ist, ied) 

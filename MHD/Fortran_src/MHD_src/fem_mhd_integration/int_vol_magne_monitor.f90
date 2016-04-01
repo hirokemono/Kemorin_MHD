@@ -101,9 +101,9 @@
       else if (i_field .eq. iphys%i_SGS_induction) then
         if(iflag_commute_induction .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_idct_mod_pg(node, ele,                   &
-     &        jac_3d, rhs_tbl, nod_fld, iphys, FEM_elen,                &
+     &        nod_fld, iphys, jac_3d, rhs_tbl, FEM_elen, diff_coefs,    &
      &        conduct%istack_ele_fld_smp, intg_point_t_evo,             &
-     &        ifilter_final, ak_diff(1,iak_diff_uxb), coef_induct,      &
+     &        ifilter_final, iak_diff_uxb, coef_induct,                 &
      &        fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_as_tsr_w_const                               &
@@ -161,9 +161,9 @@
       else if (i_field .eq. iphys%i_SGS_induction) then
         if(iflag_commute_induction .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_idct_mod_upm(node, ele,                  &
-     &        jac_3d, rhs_tbl, nod_fld, iphys, FEM_elen,                &
+     &        nod_fld, iphys, jac_3d, rhs_tbl, FEM_elen, diff_coefs,    &
      &        conduct%istack_ele_fld_smp, intg_point_t_evo,             &
-     &        ifilter_final, ak_diff(1,iak_diff_uxb), coef_induct,      &
+     &        ifilter_final, iak_diff_uxb, coef_induct,                 &
      &        ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,      &
      &        fem_wk, mhd_fem_wk, f_nl)
         else

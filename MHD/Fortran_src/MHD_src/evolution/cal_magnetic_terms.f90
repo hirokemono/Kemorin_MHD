@@ -11,8 +11,8 @@
 !!      subroutine cal_magnetic_diffusion(iak_diff_b, iak_diff_uxb,     &
 !!     &          nod_comm, node, ele, surf, conduct, sf_grp,           &
 !!     &          Bnod_bcs, Asf_bcs, Bsf_bcs, iphys,                    &
-!!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, m_lump,       &
-!!     &          fem_wk, f_l, f_nl, nod_fld)
+!!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,   &
+!!     &          m_lump, fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -29,6 +29,7 @@
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(MHD_coefficients_type), intent(in) :: diff_coefs
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -57,6 +58,7 @@
       use t_filter_elength
       use t_bc_data_magne
       use t_surface_bc_data
+      use t_material_property
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
@@ -140,8 +142,8 @@
       subroutine cal_magnetic_diffusion(iak_diff_b, iak_diff_uxb,       &
      &          nod_comm, node, ele, surf, conduct, sf_grp,             &
      &          Bnod_bcs, Asf_bcs, Bsf_bcs, iphys,                      &
-     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, m_lump,         &
-     &          fem_wk, f_l, f_nl, nod_fld)
+     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,     &
+     &          m_lump, fem_wk, f_l, f_nl, nod_fld)
 !
       use int_vol_diffusion_ele
       use set_boundary_scalars
@@ -162,6 +164,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(lumped_mass_matrices), intent(in) :: m_lump
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -172,9 +175,8 @@
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
       call int_vol_vector_diffuse_ele(conduct%istack_ele_fld_smp,       &
-     &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,               &
-     &    diff_coefs%num_field, iak_diff_b, diff_coefs%ak,              &
-     &    one, ak_d_magne, iphys%i_magne, fem_wk, f_l)
+     &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,   &
+     &    iak_diff_b, one, ak_d_magne, iphys%i_magne, fem_wk, f_l)
 !
       call int_surf_magne_monitor(iphys%i_b_diffuse, iak_diff_uxb,      &
      &    node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs, iphys, nod_fld,    &

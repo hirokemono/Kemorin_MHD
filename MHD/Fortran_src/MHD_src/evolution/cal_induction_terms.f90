@@ -9,7 +9,7 @@
 !!      subroutine cal_vecp_diffusion(iak_diff_b,                       &
 !!     &          nod_comm, node, ele, surf, sf_grp, Bnod_bcs, Asf_bcs, &
 !!     &          iphys, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,        &
-!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          diff_coefs, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -50,6 +50,7 @@
       use t_finite_element_mat
       use t_MHD_finite_element_mat
       use t_filter_elength
+      use t_material_property
       use t_bc_data_magne
 !
       use cal_ff_smp_to_ffs
@@ -124,7 +125,7 @@
       subroutine cal_vecp_diffusion(iak_diff_b,                         &
      &          nod_comm, node, ele, surf, sf_grp, Bnod_bcs, Asf_bcs,   &
      &          iphys, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,          &
-     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          diff_coefs, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use t_surface_bc_data
 !
@@ -146,6 +147,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -156,9 +158,8 @@
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
       call int_vol_vector_diffuse_ele(ele%istack_ele_smp,               &
-     &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,               &
-     &    diff_coefs%num_field, iak_diff_b, diff_coefs%ak,              &
-     &    one, ak_d_magne, iphys%i_vecp, fem_wk, f_l)
+     &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,   &
+     &    iak_diff_b, one, ak_d_magne, iphys%i_vecp, fem_wk, f_l)
 !
       call int_sf_grad_velocity(node, ele, surf, sf_grp,                &
      &    jac_sf_grp, rhs_tbl, Asf_bcs%grad, intg_point_t_evo,          &

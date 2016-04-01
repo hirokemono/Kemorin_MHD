@@ -152,6 +152,7 @@
      &          rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,                 &
      &          f_l, f_nl, nod_fld)
 !
+      use m_SGS_model_coefs
       use int_vol_diffusion_ele
       use int_surf_velo_pre
 !
@@ -182,9 +183,8 @@
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
       call int_vol_vector_diffuse_ele(fluid%istack_ele_fld_smp,         &
-     &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,               &
-     &    diff_coefs%num_field, iak_diff_v, diff_coefs%ak,              &
-     &    one, ak_d_velo, iphys%i_velo, fem_wk, f_l)
+     &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,   &
+     &    iak_diff_v, one, ak_d_velo, iphys%i_velo, fem_wk, f_l)
 !
       call int_surf_velo_monitor                                        &
      &   (iphys%i_v_diffuse, iak_diff_mf, iak_diff_lor,                 &

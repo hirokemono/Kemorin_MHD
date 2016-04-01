@@ -161,8 +161,8 @@
       if (coef_magne.gt.zero .and. coef_exp_b.gt.zero) then
         call int_vol_vector_diffuse_ele(conduct%istack_ele_fld_smp,     &
      &      node, ele, nod_fld, jac_3d_q, rhs_tbl, FEM_elens,           &
-     &      diff_coefs%num_field, iak_diff_b, diff_coefs%ak,            &
-     &      coef_exp_b, ak_d_magne, iphys%i_magne, fem_wk, f_l)
+     &      diff_coefs, iak_diff_b, coef_exp_b, ak_d_magne,             &
+     &      iphys%i_magne, fem_wk, f_l)
       end if
 !
 ! lead induction terms
@@ -278,7 +278,7 @@
       call int_vol_solenoid_co                                          &
      &   (ele%istack_ele_smp, iphys%i_m_phi, iak_diff_b,                &
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l,                       &
-     &    rhs_tbl, FEM_elens, fem_wk, f_nl)
+     &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_nl)
 !
       if (iflag_commute_magne .eq. id_SGS_commute_ON                    &
      &     .and. Fsf_bcs%sgs%ngrp_sf_dat .gt. 0) then
@@ -361,7 +361,7 @@
       call int_vol_solenoid_co                                          &
      &   (insulate%istack_ele_fld_smp, iphys%i_mag_p, iak_diff_b,       &
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l,                       &
-     &    rhs_tbl, FEM_elens, fem_wk, f_nl)
+     &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_nl)
 !
       if (iflag_commute_magne .eq. id_SGS_commute_ON                    &
      &     .and. Fsf_bcs%sgs%ngrp_sf_dat .gt. 0) then
