@@ -7,7 +7,7 @@
 !!     &         (iak_sgs_hf, icomp_sgs_hf, nod_comm, node, ele,        &
 !!     &          iphys, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,        &
 !!     &          filtering, wide_filtering, m_lump, fem_wk,            &
-!!     &          f_l, nod_fld)
+!!     &          f_l, nod_fld, sgs_coefs, sgs_coefs_nod)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -21,6 +21,8 @@
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(MHD_coefficients_type), intent(inout) :: sgs_coefs
+!!        type(MHD_coefficients_type), intent(inout) :: sgs_coefs_nod
 !
       module cal_sgs_h_flux_dynamic_simi
 !
@@ -39,6 +41,7 @@
       use t_table_FEM_const
       use t_layering_ele_list
       use t_filtering_data
+      use t_material_property
 !
       implicit none
 !
@@ -52,9 +55,7 @@
      &         (iak_sgs_hf, icomp_sgs_hf, nod_comm, node, ele,          &
      &          iphys, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,          &
      &          filtering, wide_filtering, m_lump, fem_wk,              &
-     &          f_l, nod_fld)
-!
-      use m_SGS_model_coefs
+     &          f_l, nod_fld, sgs_coefs, sgs_coefs_nod)
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
@@ -82,13 +83,16 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
       type(phys_data), intent(inout) :: nod_fld
+      type(MHD_coefficients_type), intent(inout) :: sgs_coefs
+      type(MHD_coefficients_type), intent(inout) :: sgs_coefs_nod
 !
 !    reset model coefficients
 !
       call reset_vector_sgs_model_coefs                                 &
      &   (ele, layer_tbl, icomp_sgs_hf, sgs_coefs)
       call reset_vector_sgs_nod_m_coefs                                 &
-     &   (icomp_sgs_hf, node%istack_nod_smp)
+     &   (node%numnod, node%istack_nod_smp,                             &
+     &    sgs_coefs_nod%ntot_comp, icomp_sgs_hf, sgs_coefs_nod%ak)
       call s_clear_work_4_dynamic_model(node, iphys, nod_fld)
 !
 !   similarity model with wider filter
@@ -97,7 +101,8 @@
      &     write(*,*) 'cal_sgs_hf_simi_wide i_wide_fil_temp'
       call cal_sgs_hf_simi(iphys%i_sgs_grad_f,                          &
      &    iphys%i_filter_temp, iphys%i_wide_fil_temp, icomp_sgs_hf,     &
-     &    nod_comm, node, iphys, wide_filtering, nod_fld)
+     &    nod_comm, node, iphys, wide_filtering, sgs_coefs_nod,         &
+     &    nod_fld)
 !      call check_nodal_data                                            &
 !     &   (my_rank, nod_fld, n_vector, iphys%i_sgs_grad_f)
 !
@@ -106,7 +111,7 @@
       if (iflag_debug.eq.1) write(*,*) 'cal_sgs_hf_simi'
       call cal_sgs_hf_simi(iphys%i_SGS_h_flux, iphys%i_sgs_temp,        &
      &    iphys%i_filter_temp, icomp_sgs_hf,                            &
-     &    nod_comm, node, iphys, filtering, nod_fld)
+     &    nod_comm, node, iphys, filtering, sgs_coefs_nod, nod_fld)
 !
 !    copy to work array
 !
@@ -133,7 +138,7 @@
 !
       call cal_ele_vector_2_node(node, ele, jac_3d_q, rhs_tbl, m_lump,  &
      &    sgs_coefs%ntot_comp, icomp_sgs_hf, sgs_coefs%ak,              &
-     &    sgs_coefs%ntot_comp, icomp_sgs_hf, ak_sgs_nod,                &
+     &    sgs_coefs_nod%ntot_comp, icomp_sgs_hf, sgs_coefs_nod%ak,      &
      &    fem_wk, f_l)
 !
       end subroutine s_cal_sgs_h_flux_dynamic_simi

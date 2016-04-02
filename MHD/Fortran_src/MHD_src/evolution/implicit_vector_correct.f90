@@ -18,20 +18,20 @@
 !!      subroutine cal_velocity_co_imp(i_velo,                          &
 !!     &          nod_comm, node, ele, fluid, Vnod_bcs,                 &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
-!!     &          num_MG_level, MG_interpolate, MG_comm_fluid,          &
-!!     &          MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,               &
+!!     &          diff_coefs, num_MG_level, MG_interpolate,             &
+!!     &          MG_comm_fluid, MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,&
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_vector_p_co_imp(i_vecp,                          &
 !!     &          nod_comm, node, ele, conduct, Bnod_bcs,               &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
-!!     &          num_MG_level, MG_interpolate, MG_comm_table,          &
-!!     &          MG_DJDS_table, Bmat_MG_DJDS, MG_vector,               &
+!!     &          diff_coefs, num_MG_level, MG_interpolate,             &
+!!     &          MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS, MG_vector,&
 !!     &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_magnetic_co_imp(i_magne,                         &
 !!     &          nod_comm, node, ele, conduct, Bnod_bcs,               &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
-!!     &          num_MG_level, MG_interpolate, MG_comm_table,          &
-!!     &          MG_DJDS_table, Bmat_MG_DJDS, MG_vector,               &
+!!     &          diff_coefs, num_MG_level, MG_interpolate,             &
+!!     &          MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS, MG_vector,&
 !!     &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -45,6 +45,7 @@
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(MHD_coefficients_type), intent(in) :: diff_coefs
 !!        type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
 !!        type(communication_table), intent(in)                         &
 !!       &           :: MG_comm_table(0:num_MG_level)
@@ -82,6 +83,7 @@
       use t_finite_element_mat
       use t_MHD_finite_element_mat
       use t_filter_elength
+      use t_material_property
       use t_solver_djds
       use t_bc_data_velo
       use t_bc_data_magne
@@ -208,8 +210,8 @@
       subroutine cal_velocity_co_imp(i_velo,                            &
      &          nod_comm, node, ele, fluid, Vnod_bcs,                   &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
-     &          num_MG_level, MG_interpolate, MG_comm_fluid,            &
-     &          MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,                 &
+     &          diff_coefs, num_MG_level, MG_interpolate,               &
+     &          MG_comm_fluid, MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,  &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_iccg_parameter
@@ -240,6 +242,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
@@ -268,7 +271,7 @@
       if (coef_imp_v.gt.0.0d0) then
         if (iflag_debug.eq.1) write(*,*) 'int_sk_4_fixed_velo'
         call int_sk_4_fixed_velo(i_velo, iak_diff_v, node, ele,         &
-     &      nod_fld, jac_3d, rhs_tbl, FEM_elens,                        &
+     &      nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,            &
      &      Vnod_bcs%nod_bc_v, Vnod_bcs%nod_bc_rot, fem_wk, f_l)
       end if
 !
@@ -304,8 +307,8 @@
       subroutine cal_vector_p_co_imp(i_vecp,                            &
      &          nod_comm, node, ele, conduct, Bnod_bcs,                 &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
-     &          num_MG_level, MG_interpolate, MG_comm_table,            &
-     &          MG_DJDS_table, Bmat_MG_DJDS, MG_vector,                 &
+     &          diff_coefs, num_MG_level, MG_interpolate,               &
+     &          MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS, MG_vector,  &
      &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_iccg_parameter
@@ -337,6 +340,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(lumped_mass_matrices), intent(in) :: m_lump
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
@@ -366,8 +370,8 @@
         if (iflag_debug.eq.1) write(*,*) 'int_sk_4_fixed_vector_p'
         call int_sk_4_fixed_vector(iflag_commute_magne,                 &
      &      i_vecp, node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,     &
-     &      Bnod_bcs%nod_bc_a, ak_d_magne, coef_imp_b, iak_diff_b,      &
-     &      fem_wk, f_l)
+     &      diff_coefs, Bnod_bcs%nod_bc_a, ak_d_magne,                  &
+     &      coef_imp_b, iak_diff_b, fem_wk, f_l)
       end if
 !
 !
@@ -395,8 +399,8 @@
       subroutine cal_magnetic_co_imp(i_magne,                           &
      &          nod_comm, node, ele, conduct, Bnod_bcs,                 &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
-     &          num_MG_level, MG_interpolate, MG_comm_table,            &
-     &          MG_DJDS_table, Bmat_MG_DJDS, MG_vector,                 &
+     &          diff_coefs, num_MG_level, MG_interpolate,               &
+     &          MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS, MG_vector,  &
      &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_iccg_parameter
@@ -427,6 +431,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(lumped_mass_matrices), intent(in) :: m_lump
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
@@ -456,8 +461,8 @@
         if (iflag_debug.eq.1)  write(*,*) 'int_sk_4_fixed_magne'
         call int_sk_4_fixed_vector(iflag_commute_magne,                 &
      &      i_magne, node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,    &
-     &      Bnod_bcs%nod_bc_b, ak_d_magne, coef_imp_b, iak_diff_b,      &
-     &      fem_wk, f_l)
+     &      diff_coefs, Bnod_bcs%nod_bc_b, ak_d_magne,                  &
+     &      coef_imp_b, iak_diff_b, fem_wk, f_l)
       end if
 !
 !

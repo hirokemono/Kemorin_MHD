@@ -10,12 +10,12 @@
 !!     &         (ele, layer_tbl, icomp_sgs, sgs_coefs)
 !!
 !!      subroutine reset_diff_model_coefs                               &
-!!     &         (ncomp_diff, iak_diff, numele, iele_smp_stack, ak_diff)
+!!     &         (numele, iele_smp_stack, ncomp_diff, iak_diff, ak_diff)
 !!
-!!      subroutine reset_vector_sgs_nod_m_coefs                         &
-!!     &         (icomp_sgs, inod_smp_stack)
-!!      subroutine reset_tensor_sgs_nod_m_coefs                         &
-!!     &         (icomp_sgs, inod_smp_stack)
+!!      subroutine reset_vector_sgs_nod_m_coefs(numnod, inod_smp_stack, &
+!!     &          ntot_comp_nod, icomp_sgs, ak_sgs_nod)
+!!      subroutine reset_tensor_sgs_nod_m_coefs(numnod, inod_smp_stack, &
+!!     &          ntot_comp_nod, icomp_sgs, ak_sgs_nod)
 !
       module reset_dynamic_model_coefs
 !
@@ -305,7 +305,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine reset_diff_model_coefs                                 &
-     &         (ncomp_diff, iak_diff, numele, iele_smp_stack, ak_diff)
+     &         (numele, iele_smp_stack, ncomp_diff, iak_diff, ak_diff)
 !
       integer (kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
       integer (kind = kint), intent(in) :: numele, ncomp_diff, iak_diff
@@ -328,13 +328,16 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine reset_vector_sgs_nod_m_coefs                           &
-     &         (icomp_sgs, inod_smp_stack)
+      subroutine reset_vector_sgs_nod_m_coefs(numnod, inod_smp_stack,   &
+     &          ntot_comp_nod, icomp_sgs, ak_sgs_nod)
 !
-      use m_SGS_model_coefs
-!
+      integer (kind = kint), intent(in) :: numnod
       integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
-      integer (kind = kint), intent(in) :: icomp_sgs
+      integer (kind = kint), intent(in) :: ntot_comp_nod, icomp_sgs
+!
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: ak_sgs_nod(numnod,ntot_comp_nod)
+!
       integer (kind = kint) :: inod, iproc, ist, ied
 !
 !$omp parallel do private(inod, ist, ied) 
@@ -353,13 +356,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine reset_tensor_sgs_nod_m_coefs                           &
-     &         (icomp_sgs, inod_smp_stack)
+      subroutine reset_tensor_sgs_nod_m_coefs(numnod, inod_smp_stack,   &
+     &          ntot_comp_nod, icomp_sgs, ak_sgs_nod)
 !
-      use m_SGS_model_coefs
-!
+      integer (kind = kint), intent(in) :: numnod
       integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
-      integer (kind = kint), intent(in) :: icomp_sgs
+      integer (kind = kint), intent(in) :: ntot_comp_nod, icomp_sgs
+!
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: ak_sgs_nod(numnod,ntot_comp_nod)
+!
       integer (kind = kint) :: inod, iproc, ist, ied
 !
 !$omp parallel do private(inod, ist, ied) 

@@ -124,8 +124,8 @@
       if (iflag_SGS_heat .ne. id_SGS_none) then
         call cal_sgs_heat_flux(icomp_sgs_hf, ie_dvx,                    &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
-     &      jac_3d, rhs_tbl, FEM_elens, filtering, mhd_fem_wk, fem_wk,  &
-     &      f_l, f_nl, nod_fld)
+     &      jac_3d, rhs_tbl, FEM_elens, filtering, sgs_coefs,           &
+     &      sgs_coefs_nod, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
 !      call check_nodal_data(my_rank, nod_fld, 3, iphys%i_SGS_h_flux)
@@ -197,7 +197,7 @@
         call cal_temp_pre_lumped_crank                                  &
      &     (iphys%i_temp, iphys%i_pre_heat, iak_diff_t,                 &
      &      nod_comm, node, ele, fluid, Tnod_bcs,                       &
-     &      iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,             &
+     &      iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
      &      num_MG_level, MHD1_matrices%MG_interpolate,                 &
      &      MHD1_matrices%MG_comm_fluid, MHD1_matrices%MG_DJDS_fluid,   &
      &      MHD1_matrices%Tmat_MG_DJDS, MG_vector,                      &
@@ -206,7 +206,7 @@
         call cal_temp_pre_consist_crank                                 &
      &     (iphys%i_temp, iphys%i_pre_heat, iak_diff_t,                 &
      &      node, ele, fluid, Tnod_bcs, jac_3d, rhs_tbl, FEM_elens,     &
-     &      num_MG_level, MHD1_matrices%MG_interpolate,                 &
+     &      diff_coefs, num_MG_level, MHD1_matrices%MG_interpolate,     &
      &      MHD1_matrices%MG_comm_fluid, MHD1_matrices%MG_DJDS_fluid,   &
      &      MHD1_matrices%Tmat_MG_DJDS, MG_vector,                      &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -283,8 +283,8 @@
       if (iflag_SGS_heat .ne. id_SGS_none) then
         call cal_sgs_heat_flux(icomp_sgs_hf, ie_dvx,                    &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
-     &      jac_3d, rhs_tbl, FEM_elens, filtering, mhd_fem_wk, fem_wk,  &
-     &      f_l, f_nl, nod_fld)
+     &      jac_3d, rhs_tbl, FEM_elens, filtering, sgs_coefs,           &
+     &      sgs_coefs_nod, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
 !      call check_nodal_data(my_rank, nod_fld, 3, iphys%i_SGS_h_flux)
@@ -356,7 +356,7 @@
         call cal_per_temp_lumped_crank                                  &
      &     (iphys%i_par_temp, iphys%i_pre_heat, iak_diff_t,             &
      &      nod_comm, node, ele, fluid, Tnod_bcs, iphys_ele, ele_fld,   &
-     &      jac_3d, rhs_tbl, FEM_elens, num_MG_level,                   &
+     &      jac_3d, rhs_tbl, FEM_elens, diff_coefs, num_MG_level,       &
      &      MHD1_matrices%MG_interpolate, MHD1_matrices%MG_comm_fluid,  &
      &      MHD1_matrices%MG_DJDS_fluid, MHD1_matrices%Tmat_MG_DJDS,    &
      &      MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -364,7 +364,7 @@
         call cal_per_temp_consist_crank                                 &
      &     (iphys%i_par_temp, iphys%i_pre_heat, iak_diff_t,             &
      &      node, ele, fluid, Tnod_bcs, jac_3d, rhs_tbl, FEM_elens,     &
-     &      num_MG_level, MHD1_matrices%MG_interpolate,                 &
+     &      diff_coefs, num_MG_level, MHD1_matrices%MG_interpolate,     &
      &      MHD1_matrices%MG_comm_fluid, MHD1_matrices%MG_DJDS_fluid,   &
      &      MHD1_matrices%Tmat_MG_DJDS, MG_vector,                      &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)

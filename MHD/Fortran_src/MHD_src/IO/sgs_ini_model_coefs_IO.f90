@@ -53,7 +53,7 @@
       use open_sgs_model_coefs
       use sgs_model_coefs_IO
 !
-      integer (kind = kint) :: inum, nd
+      integer (kind = kint) :: inum
 !
 !
 !

@@ -6,14 +6,22 @@
 !!      subroutine int_vol_fractional_div_ele                           &
 !!     &         (iele_fsmp_stack, i_vector, iak_diff,                  &
 !!     &          node, ele, nod_fld, jac_3d_q, jac_3d_l,               &
-!!     &          rhs_tbl, FEM_elen, fem_wk, f_l)
+!!     &          rhs_tbl, FEM_elen, diff_coefs, fem_wk, f_l)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(gradient_model_data_type), intent(in) :: FEM_elen
+!!        type(MHD_coefficients_type), intent(in) :: diff_coefs
+!!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(finite_ele_mat_node), intent(inout) :: f_l
 !
       module int_vol_fractional_div
 !
       use m_precision
 !
       use m_machine_parameter
-      use m_SGS_model_coefs
 !
       use t_geometry_data
       use t_phys_address
@@ -22,6 +30,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_filter_elength
+      use t_material_property
 !
       implicit none
 !
@@ -34,7 +43,7 @@
       subroutine int_vol_fractional_div_ele                             &
      &         (iele_fsmp_stack, i_vector, iak_diff,                    &
      &          node, ele, nod_fld, jac_3d_q, jac_3d_l,                 &
-     &          rhs_tbl, FEM_elen, fem_wk, f_l)
+     &          rhs_tbl, FEM_elen, diff_coefs, fem_wk, f_l)
 !
       use m_control_parameter
 !
@@ -50,6 +59,7 @@
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elen
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l

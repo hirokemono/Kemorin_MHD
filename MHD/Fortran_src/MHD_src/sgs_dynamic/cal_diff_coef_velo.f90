@@ -118,8 +118,8 @@
 !
 !    reset model coefficients
 !
-      call reset_diff_model_coefs(diff_coefs%num_field, iak_diff_v,     &
-     &    ele%numele, ele%istack_ele_smp, diff_coefs%ak)
+      call reset_diff_model_coefs(ele%numele, ele%istack_ele_smp,       &
+     &    diff_coefs%num_field, iak_diff_v, diff_coefs%ak)
       call s_clear_work_4_dynamic_model(node, iphys, nod_fld)
 !
 !    get filtered pressure(to iphys%i_sgs_grad_f)

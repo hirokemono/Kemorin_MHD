@@ -218,6 +218,7 @@
       use m_filter_elength
       use m_3d_filter_coef_MHD
       use m_SGS_address
+      use m_SGS_model_coefs
       use m_bc_data_velo
 !
       use copy_nodal_fields
@@ -288,7 +289,8 @@
         call cal_sgs_uxb_2_monitor(icomp_sgs_uxb, ie_dvx,               &
      &     mesh1%nod_comm, mesh1%node, mesh1%ele, MHD_mesh1%conduct,    &
      &     iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen,  &
-     &     filtering1, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+     &     filtering1, sgs_coefs, mhd_fem1_wk, fem1_wk,                 &
+     &     f1_l, f1_nl, nod_fld1)
 
       end if
 !

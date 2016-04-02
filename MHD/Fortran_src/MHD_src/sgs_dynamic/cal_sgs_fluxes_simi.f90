@@ -4,19 +4,20 @@
 !      Written by H. Matsui
 !
 !!      subroutine cal_sgs_mf_simi(i_sgs, i_vect, i_vect_f, icm_sgs,    &
-!!     &          nod_comm, node, filtering, nod_fld)
+!!     &          nod_comm, node, filtering, sgs_coefs_nod, nod_fld)
 !!      subroutine cal_sgs_hf_simi(i_sgs, ifield, ifield_f, icm_sgs,    &
-!!     &          nod_comm, node, iphys, filtering, nod_fld)
+!!     &          nod_comm, node, iphys, filtering, sgs_coefs_nod,      &
+!!     &          nod_fld)
 !!      subroutine cal_sgs_induct_t_simi                                &
 !!     &         (i_sgs, i_v, i_b, i_fil_v, i_fil_b, icm_sgs,           &
-!!     &          nod_comm, node, filtering, nod_fld)
+!!     &          nod_comm, node, filtering, sgs_coefs_nod, nod_fld)
 !!      subroutine cal_sgs_uxb_simi(i_sgs, i_v, i_b, i_fil_v, i_fil_b,  &
 !!     &          nod_comm, node, filtering, nod_fld)
 !!
 !!      subroutine cal_sgs_uxb_2_ff_simi                                &
 !!     &          (icomp_sgs_uxb, nod_comm, node, ele, conduct, iphys,  &
 !!     &           iphys_ele, ele_fld, jac_3d, rhs_tbl, filtering,      &
-!!     &           fem_wk, f_nl, nod_fld)
+!!     &           sgs_coefs, fem_wk, f_nl, nod_fld)
 !
       module cal_sgs_fluxes_simi
 !
@@ -30,6 +31,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_filtering_data
+      use t_material_property
 !
       implicit none
 !
@@ -40,7 +42,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_sgs_mf_simi(i_sgs, i_vect, i_vect_f, icm_sgs,      &
-     &          nod_comm, node, filtering, nod_fld)
+     &          nod_comm, node, filtering, sgs_coefs_nod, nod_fld)
 !
       use cal_fluxes
       use cal_similarity_terms
@@ -51,6 +53,7 @@
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(filtering_data_type), intent(in) :: filtering
+      type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
 !
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -64,7 +67,8 @@
 !  ----------   substruct flux obtained by filterd values
 !
       call cal_sgs_flux_tensor(node%numnod, node%istack_nod_smp,        &
-     &    nod_fld%ntot_phys, i_sgs, i_vect_f, i_vect_f, icm_sgs,        &
+     &    nod_fld%ntot_phys, i_sgs, i_vect_f, i_vect_f,                 &
+     &    sgs_coefs_nod%ntot_comp, icm_sgs, sgs_coefs_nod%ak,           &
      &    nod_fld%d_fld)
 !
       end subroutine cal_sgs_mf_simi
@@ -72,7 +76,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_sgs_hf_simi(i_sgs, ifield, ifield_f, icm_sgs,      &
-     &          nod_comm, node, iphys, filtering, nod_fld)
+     &          nod_comm, node, iphys, filtering, sgs_coefs_nod,        &
+     &          nod_fld)
 !
       use cal_fluxes
       use cal_similarity_terms
@@ -85,6 +90,7 @@
       type(node_data), intent(in) :: node
       type(phys_address), intent(in) :: iphys
       type(filtering_data_type), intent(in) :: filtering
+      type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
 !
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -96,7 +102,8 @@
 !
       call cal_sgs_flux_vector(node%numnod, node%istack_nod_smp,        &
      &    nod_fld%ntot_phys, i_sgs, iphys%i_filter_velo, ifield_f,      &
-     &    icm_sgs, nod_fld%d_fld)
+     &    sgs_coefs_nod%ntot_comp, icm_sgs, sgs_coefs_nod%ak,           &
+     &    nod_fld%d_fld)
 !
       end subroutine cal_sgs_hf_simi
 !
@@ -104,7 +111,7 @@
 !
       subroutine cal_sgs_induct_t_simi                                  &
      &         (i_sgs, i_v, i_b, i_fil_v, i_fil_b, icm_sgs,             &
-     &          nod_comm, node, filtering, nod_fld)
+     &          nod_comm, node, filtering, sgs_coefs_nod, nod_fld)
 !
       use cal_fluxes
       use cal_similarity_terms
@@ -116,6 +123,7 @@
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(filtering_data_type), intent(in) :: filtering
+      type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
 !
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -130,7 +138,8 @@
 !
       call subctract_induction_tensor                                   &
      &   (node%numnod, node%istack_nod_smp, nod_fld%ntot_phys,          &
-     &    i_sgs, i_fil_b, i_fil_v, icm_sgs, nod_fld%d_fld)
+     &    i_sgs, i_fil_b, i_fil_v, sgs_coefs_nod%ntot_comp, icm_sgs,    &
+     &    sgs_coefs_nod%ak, nod_fld%d_fld)
 !
       end subroutine cal_sgs_induct_t_simi
 !
@@ -171,7 +180,7 @@
       subroutine cal_sgs_uxb_2_ff_simi                                  &
      &          (icomp_sgs_uxb, nod_comm, node, ele, conduct, iphys,    &
      &           iphys_ele, ele_fld, jac_3d, rhs_tbl, filtering,        &
-     &           fem_wk, f_nl, nod_fld)
+     &           sgs_coefs, fem_wk, f_nl, nod_fld)
 !
       use int_vol_similarity_uxb
 !
@@ -187,6 +196,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(filtering_data_type), intent(in) :: filtering
+      type(MHD_coefficients_type), intent(in) :: sgs_coefs
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -199,7 +209,7 @@
 !
       call sel_int_simi_vp_induct(icomp_sgs_uxb, node, ele, conduct,    &
      &    iphys, nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,          &
-     &    fem_wk, f_nl)
+     &    sgs_coefs, fem_wk, f_nl)
 !
       end subroutine cal_sgs_uxb_2_ff_simi
 !

@@ -160,7 +160,8 @@
      &     (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,        &
      &      Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,                &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,       &
-     &      filtering, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      filtering, sgs_coefs, sgs_coefs_nod, mhd_fem_wk, fem_wk,    &
+     &      f_l, f_nl, nod_fld)
         call mod_Csim_by_SGS_buoyancy_ele                               &
      &     (ele, layer_tbl%e_grp, sgs_coefs)
       end if
@@ -169,14 +170,16 @@
         call cal_sgs_momentum_flux(icomp_sgs_mf, ie_dvx,                &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
      &      jac_3d_q, rhs_tbl, FEM_elens, filtering,                    &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      sgs_coefs, sgs_coefs_nod, mhd_fem_wk, fem_wk,               &
+     &      f_l, f_nl, nod_fld)
       end if
 !
       if ( iflag_SGS_lorentz .ne. id_SGS_none) then
         call cal_sgs_maxwell(icomp_sgs_lor, ie_dbx,                     &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
      &      jac_3d_q, rhs_tbl, FEM_elens, filtering,                    &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      sgs_coefs, sgs_coefs_nod, mhd_fem_wk, fem_wk,               &
+     &      f_l, f_nl, nod_fld)
       end if
 !
 !   --- reset work array for time evolution
@@ -238,7 +241,7 @@
         call cal_velo_pre_lumped_crank                                  &
      &     (iak_diff_v, nod_comm, node, ele, fluid, Vnod_bcs,           &
      &      iphys, iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,    &
-     &      num_MG_level, MG_interpolate, MG_comm_fluid,                &
+     &      diff_coefs, num_MG_level, MG_interpolate, MG_comm_fluid,    &
      &      MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,                     &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
@@ -246,7 +249,7 @@
         call cal_velo_pre_consist_crank                                 &
      &     (iphys%i_velo, iphys%i_pre_mom, iak_diff_v,                  &
      &      node, ele, fluid, Vnod_bcs, jac_3d_q, rhs_tbl, FEM_elens,   &
-     &      num_MG_level, MG_interpolate, MG_comm_fluid,                &
+     &      diff_coefs, num_MG_level, MG_interpolate, MG_comm_fluid,    &
      &      MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,                     &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
@@ -343,7 +346,7 @@
         call cal_velocity_co_imp(iphys%i_velo,                          &
      &      nod_comm, node, ele, fluid, Vnod_bcs,                       &
      &      iphys_ele, ele_fld,  jac_3d_q, rhs_tbl, FEM_elens,          &
-     &      num_MG_level, MG_interpolate, MG_comm_fluid,                &
+     &      diff_coefs, num_MG_level, MG_interpolate, MG_comm_fluid,    &
      &      MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,                     &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else

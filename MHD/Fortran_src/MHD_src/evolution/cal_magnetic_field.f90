@@ -156,10 +156,10 @@
         call cal_electric_potential(iak_diff_b,                         &
      &      node, ele, surf, sf_grp, Bnod_bcs, Asf_bcs, Fsf_bcs,        &
      &      iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,           &
-     &      FEM_elens, num_MG_level, MHD1_matrices%MG_interpolate,      &
-     &      MHD1_matrices%MG_comm_table, MHD1_matrices%MG_DJDS_linear,  &
-     &      MHD1_matrices%Fmat_MG_DJDS, MG_vector,                      &
-     &      fem_wk, f_l, f_nl, nod_fld)
+     &      FEM_elens, diff_coefs, num_MG_level,                        &
+     &      MHD1_matrices%MG_interpolate, MHD1_matrices%MG_comm_table,  &
+     &      MHD1_matrices%MG_DJDS_linear, MHD1_matrices%Fmat_MG_DJDS,   &
+     &      MG_vector, fem_wk, f_l, f_nl, nod_fld)
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_sol_m_potential', iloop
         call cal_sol_m_potential                                        &
@@ -281,10 +281,10 @@
         call cal_mag_potential(iak_diff_b,                              &
      &      node, ele, surf, sf_grp, Bnod_bcs, Bsf_bcs, Fsf_bcs,        &
      &      iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,           &
-     &      FEM_elens, num_MG_level, MHD1_matrices%MG_interpolate,      &
-     &      MHD1_matrices%MG_comm_table, MHD1_matrices%MG_DJDS_linear,  &
-     &      MHD1_matrices%Fmat_MG_DJDS, MG_vector,                      &
-     &      fem_wk, f_l, f_nl, nod_fld)
+     &      FEM_elens, diff_coefs, num_MG_level,                        &
+     &      MHD1_matrices%MG_interpolate, MHD1_matrices%MG_comm_table,  &
+     &      MHD1_matrices%MG_DJDS_linear, MHD1_matrices%Fmat_MG_DJDS,   &
+     &      MG_vector, fem_wk, f_l, f_nl, nod_fld)
 !
         call cal_sol_m_potential                                        &
      &     (node%numnod, node%istack_internal_smp, nod_fld%ntot_phys,   &

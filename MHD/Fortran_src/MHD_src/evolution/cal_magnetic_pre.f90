@@ -150,8 +150,8 @@
       if ( iflag_SGS_induction .ne. id_SGS_none) then
         call cal_sgs_magne_induction(icomp_sgs_uxb, ie_dvx, ie_dbx,     &
      &     nod_comm, node, ele, conduct, iphys, iphys_ele, ele_fld,     &
-     &     jac_3d_q, rhs_tbl, FEM_elens, filtering, mhd_fem_wk, fem_wk, &
-     &     f_l, nod_fld)
+     &     jac_3d_q, rhs_tbl, FEM_elens, filtering, sgs_coefs_nod,      &
+     &     mhd_fem_wk, fem_wk, f_l, nod_fld)
       end if
 !
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
@@ -199,15 +199,15 @@
      &     (iphys%i_magne, iphys%i_pre_uxb, iak_diff_b,                 &
      &      Bnod_bcs%nod_bc_b, nod_comm, node, ele, conduct,            &
      &      iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,           &
-     &      num_MG_level, MG_interpolate, MG_comm_table,                &
+     &      diff_coefs, num_MG_level, MG_interpolate, MG_comm_table,    &
      &      MG_DJDS_table, Bmat_MG_DJDS, MG_vector,                     &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (iflag_t_evo_4_magne .eq. id_Crank_nicolson_cmass) then 
         call cal_magne_pre_consist_crank                                &
      &     (iphys%i_magne, iphys%i_pre_uxb, iak_diff_b,                 &
      &      Bnod_bcs%nod_bc_b, node, ele, conduct, jac_3d_q, rhs_tbl,   &
-     &      FEM_elens, num_MG_level, MG_interpolate, MG_comm_table,     &
-     &      MG_DJDS_table, Bmat_MG_DJDS, MG_vector,                     &
+     &      FEM_elens, diff_coefs, num_MG_level, MG_interpolate,        &
+     &      MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS, MG_vector,      &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
@@ -298,8 +298,9 @@
      &  .or. iflag_implicit_correct.eq.4) then
         call cal_magnetic_co_imp(iphys%i_magne,                         &
      &      nod_comm, node, ele, conduct, Bnod_bcs, iphys_ele, ele_fld, &
-     &      jac_3d_q, rhs_tbl, FEM_elens, num_MG_level, MG_interpolate, &
-     &      MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS, MG_vector,      &
+     &      jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                   &
+     &      num_MG_level, MG_interpolate, MG_comm_table,                &
+     &      MG_DJDS_table, Bmat_MG_DJDS, MG_vector,                     &
      &      m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else
         call cal_magnetic_co_exp(iphys%i_magne, nod_comm, node, ele,    &

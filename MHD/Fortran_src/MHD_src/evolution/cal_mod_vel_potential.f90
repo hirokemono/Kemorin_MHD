@@ -6,23 +6,23 @@
 !        modified by H.Matsui on July, 2006
 !
 !!      subroutine cal_mod_potential                                    &
-!!     &         (iak_diff_v, node, ele, surf, fluid, sf_grp,           &
-!!     &          Vnod_bcs, Vsf_bcs, Psf_bcs, iphys,                    &
-!!     &          jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl, FEM_elens, &
-!!     &          num_MG_level, MG_interpolate, MG_comm_fluid,          &
-!!     &          MG_DJDS_lin_fl, Pmat_MG_DJDS, MG_vector,              &
-!!     &          fem_wk, f_l, f_nl, nod_fld)
+!!     &        (iak_diff_v, node, ele, surf, fluid, sf_grp,            &
+!!     &         Vnod_bcs, Vsf_bcs, Psf_bcs, iphys,                     &
+!!     &         jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl, FEM_elens,  &
+!!     &         diff_coefs, num_MG_level, MG_interpolate,              &
+!!     &         MG_comm_fluid, MG_DJDS_lin_fl, Pmat_MG_DJDS, MG_vector,&
+!!     &         fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_electric_potential(iak_diff_b,                   &
 !!     &         node, ele, surf, sf_grp, Bnod_bcs, Asf_bcs, Fsf_bcs,   &
 !!     &         iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,      &
-!!     &         FEM_elens, num_MG_level, MG_interpolate, MG_comm_table,&
-!!     &         MG_DJDS_linear, Fmat_MG_DJDS, MG_vector,               &
+!!     &         FEM_elens, diff_coefs, num_MG_level, MG_interpolate,   &
+!!     &         MG_comm_table, MG_DJDS_linear, Fmat_MG_DJDS, MG_vector,&
 !!     &         fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_mag_potential(iak_diff_b,                        &
 !!     &         node, ele, surf, sf_grp, Bnod_bcs, Bsf_bcs, Fsf_bcs,   &
 !!     &         iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,      &
-!!     &         FEM_elens, num_MG_level, MG_interpolate, MG_comm_table,&
-!!     &         MG_DJDS_linear, Fmat_MG_DJDS, MG_vector,               &
+!!     &         FEM_elens, diff_coefs, num_MG_level, MG_interpolate,   &
+!!     &         MG_comm_table, MG_DJDS_linear, Fmat_MG_DJDS, MG_vector,&
 !!     &         fem_wk, f_l, f_nl, nod_fld)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -39,6 +39,7 @@
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp_l
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(MHD_coefficients_type), intent(in) :: diff_coefs
 !!        type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
 !!        type(communication_table), intent(in)                         &
 !!       &           :: MG_comm_fluid(0:num_MG_level)
@@ -76,8 +77,9 @@
       use t_jacobian_3d
       use t_jacobian_2d
       use t_table_FEM_const
-      use t_filter_elength
       use t_finite_element_mat
+      use t_filter_elength
+      use t_material_property
       use t_solver_djds
       use t_interpolate_table
       use t_vector_for_solver
@@ -94,12 +96,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_mod_potential                                      &
-     &         (iak_diff_v, node, ele, surf, fluid, sf_grp,             &
-     &          Vnod_bcs, Vsf_bcs, Psf_bcs, iphys,                      &
-     &          jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl, FEM_elens,   &
-     &          num_MG_level, MG_interpolate, MG_comm_fluid,            &
-     &          MG_DJDS_lin_fl, Pmat_MG_DJDS, MG_vector,                &
-     &          fem_wk, f_l, f_nl, nod_fld)
+     &        (iak_diff_v, node, ele, surf, fluid, sf_grp,              &
+     &         Vnod_bcs, Vsf_bcs, Psf_bcs, iphys,                       &
+     &         jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl, FEM_elens,    &
+     &         diff_coefs, num_MG_level, MG_interpolate,                &
+     &         MG_comm_fluid, MG_DJDS_lin_fl, Pmat_MG_DJDS, MG_vector,  &
+     &         fem_wk, f_l, f_nl, nod_fld)
 !
       use m_iccg_parameter
 !
@@ -127,6 +129,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
@@ -151,7 +154,7 @@
       call int_vol_fractional_div_ele                                   &
      &   (fluid%istack_ele_fld_smp, iphys%i_velo, iak_diff_v,           &
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l,                       &
-     &    rhs_tbl, FEM_elens, fem_wk, f_l)
+     &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_l)
 !
       call int_surf_normal_vector(iphys%i_velo, Psf_bcs%wall,           &
      &    Psf_bcs%sph_in, Psf_bcs%sph_out,                              &
@@ -177,8 +180,8 @@
 !   add boundary term for fixed velocity
 !
       call int_vol_sk_po_bc(iphys%i_p_phi, iak_diff_v, node, ele,       &
-     &     nod_fld, jac_3d_l, rhs_tbl, FEM_elens, Vnod_bcs%nod_bc_p,    &
-     &     fem_wk, f_l)
+     &     nod_fld, jac_3d_l, rhs_tbl, FEM_elens, diff_coefs,           &
+     &     Vnod_bcs%nod_bc_p, fem_wk, f_l)
 !
 !   add boundary term for fixed pressure
 !
@@ -201,8 +204,8 @@
       subroutine cal_electric_potential(iak_diff_b,                     &
      &         node, ele, surf, sf_grp, Bnod_bcs, Asf_bcs, Fsf_bcs,     &
      &         iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,        &
-     &         FEM_elens, num_MG_level, MG_interpolate, MG_comm_table,  &
-     &         MG_DJDS_linear, Fmat_MG_DJDS, MG_vector,                 &
+     &         FEM_elens, diff_coefs, num_MG_level, MG_interpolate,     &
+     &         MG_comm_table, MG_DJDS_linear, Fmat_MG_DJDS, MG_vector,  &
      &         fem_wk, f_l, f_nl, nod_fld)
 !
       use m_iccg_parameter
@@ -228,6 +231,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
@@ -251,7 +255,7 @@
       call int_vol_fractional_div_ele                                   &
      &   (ele%istack_ele_smp, iphys%i_vecp, iak_diff_b,                 &
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l,                       &
-     &    rhs_tbl, FEM_elens, fem_wk, f_l)
+     &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_l)
 !
 !      if (iflag_commute_magne .eq. id_SGS_commute_ON) then
 !        call int_surf_sgs_div_velo_ele                                 &
@@ -269,8 +273,8 @@
      &    fem_wk, f_l)
 !
       call int_vol_sk_mp_bc(iphys%i_m_phi, iak_diff_b, node, ele,       &
-     &     nod_fld, jac_3d_l, rhs_tbl, FEM_elens, Bnod_bcs%nod_bc_f,    &
-     &     fem_wk, f_l)
+     &     nod_fld, jac_3d_l, rhs_tbl, FEM_elens, diff_coefs,           &
+     &     Bnod_bcs%nod_bc_f, fem_wk, f_l)
 !
       call set_boundary_ff(node, Bnod_bcs%nod_bc_f, f_l)
 !
@@ -292,8 +296,8 @@
       subroutine cal_mag_potential(iak_diff_b,                          &
      &         node, ele, surf, sf_grp, Bnod_bcs, Bsf_bcs, Fsf_bcs,     &
      &         iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,        &
-     &         FEM_elens, num_MG_level, MG_interpolate, MG_comm_table,  &
-     &         MG_DJDS_linear, Fmat_MG_DJDS, MG_vector,                 &
+     &         FEM_elens, diff_coefs, num_MG_level, MG_interpolate,     &
+     &         MG_comm_table, MG_DJDS_linear, Fmat_MG_DJDS, MG_vector,  &
      &         fem_wk, f_l, f_nl, nod_fld)
 !
       use m_iccg_parameter
@@ -320,6 +324,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
@@ -342,7 +347,7 @@
       call int_vol_fractional_div_ele                                   &
      &   (ele%istack_ele_smp, iphys%i_magne, iak_diff_b,                &
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l,                       &
-     &    rhs_tbl, FEM_elens, fem_wk, f_l)
+     &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_l)
 !
 !      if (iflag_commute_magne .eq. id_SGS_commute_ON) then
 !        call int_surf_sgs_div_velo_ele(node, ele, surf, sf_grp,        &
@@ -362,8 +367,8 @@
      &    rhs_tbl, Fsf_bcs%grad, intg_point_poisson, fem_wk, f_l)
 !
       call int_vol_sk_mp_bc(iphys%i_m_phi, iak_diff_b, node, ele,       &
-     &    nod_fld, jac_3d_l, rhs_tbl, FEM_elens, Bnod_bcs%nod_bc_f,     &
-     &    fem_wk, f_l)
+     &    nod_fld, jac_3d_l, rhs_tbl, FEM_elens, diff_coefs,            &
+     &    Bnod_bcs%nod_bc_f, fem_wk, f_l)
 !
       call set_boundary_ff(node, Bnod_bcs%nod_bc_f, f_l)
 !

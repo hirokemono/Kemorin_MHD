@@ -7,8 +7,8 @@
 !!     &         (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,  &
 !!     &          Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,          &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
-!!     &          FEM_elen, filtering, mhd_fem_wk, fem_wk,              &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          FEM_elens, filtering, sgs_coefs, sgs_coefs_nod,       &
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -23,8 +23,10 @@
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp_q
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-!!        type(gradient_model_data_type), intent(in) :: FEM_elen
+!!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(filtering_data_type), intent(in) :: filtering
+!!        type(MHD_coefficients_type), intent(in) :: sgs_coefs
+!!        type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -51,6 +53,7 @@
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_filtering_data
+      use t_material_property
       use t_layering_ele_list
       use t_surface_bc_data
 !
@@ -66,8 +69,8 @@
      &         (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,    &
      &          Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,            &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
-     &          FEM_elen, filtering, mhd_fem_wk, fem_wk,                &
-     &          f_l, f_nl, nod_fld)
+     &          FEM_elens, filtering, sgs_coefs, sgs_coefs_nod,         &
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_control_parameter
       use m_phys_constants
@@ -99,8 +102,10 @@
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(jacobians_2d), intent(in) :: jac_sf_grp_q
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(gradient_model_data_type), intent(in) :: FEM_elen
+      type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
+      type(MHD_coefficients_type), intent(in) :: sgs_coefs
+      type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -121,7 +126,8 @@
 !
       call cal_sgs_momentum_flux(icomp_sgs_mf, ie_dvx,                  &
      &    nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,        &
-     &    jac_3d_q, rhs_tbl, FEM_elen, filtering, mhd_fem_wk, fem_wk,   &
+     &    jac_3d_q, rhs_tbl, FEM_elens, filtering,                      &
+     &    sgs_coefs, sgs_coefs_nod, mhd_fem_wk, fem_wk,                 &
      &    f_l, f_nl, nod_fld)
 !
 !   lead work of Reynolds stress
@@ -130,7 +136,7 @@
      &   (iphys%i_SGS_div_m_flux, iak_diff_mf, iak_diff_lor,            &
      &    nod_comm, node, ele, surf, fluid, sf_grp, Vsf_bcs, Bsf_bcs,   &
      &    iphys, iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q,            &
-     &    rhs_tbl, FEM_elen, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &    rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
 !$omp parallel
       call cal_phys_dot_product(node, nod_fld,                          &

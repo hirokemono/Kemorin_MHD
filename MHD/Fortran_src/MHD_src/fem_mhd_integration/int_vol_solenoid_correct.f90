@@ -21,8 +21,6 @@
       use m_precision
       use m_machine_parameter
 !
-      use m_SGS_model_coefs
-!
       use t_geometry_data
       use t_phys_data
       use t_jacobian_3d

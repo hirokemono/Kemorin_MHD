@@ -75,6 +75,7 @@
      &          filtering, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_SGS_address
+      use m_SGS_model_coefs
 !
       use cal_sgs_fluxes
       use int_sgs_induction
@@ -101,7 +102,8 @@
         if(iflag_debug.gt.0) write(*,*) 'lead ', trim(fhd_SGS_h_flux)
         call cal_sgs_heat_flux(icomp_sgs_hf, ie_dvx,                    &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
-     &      jac_3d, rhs_tbl, FEM_elens, filtering, mhd_fem_wk, fem_wk,  &
+     &      jac_3d, rhs_tbl, FEM_elens, filtering,                      &
+     &      sgs_coefs, sgs_coefs_nod, mhd_fem_wk, fem_wk,               &
      &      f_l, f_nl, nod_fld)
       end if
 !
@@ -109,7 +111,8 @@
         if(iflag_debug.gt.0) write(*,*) 'lead ', trim(fhd_SGS_m_flux)
         call cal_sgs_momentum_flux(icomp_sgs_mf, ie_dvx,                &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
-     &      jac_3d, rhs_tbl, FEM_elens, filtering, mhd_fem_wk, fem_wk,  &
+     &      jac_3d, rhs_tbl, FEM_elens, filtering,                      &
+     &      sgs_coefs, sgs_coefs_nod, mhd_fem_wk, fem_wk,               &
      &      f_l, f_nl, nod_fld)
       end if
 !
@@ -118,7 +121,8 @@
      &        'lead ', trim(fhd_SGS_maxwell_t)
         call cal_sgs_maxwell(icomp_sgs_lor, ie_dbx,                     &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
-     &      jac_3d, rhs_tbl, FEM_elens, filtering, mhd_fem_wk, fem_wk,  &
+     &      jac_3d, rhs_tbl, FEM_elens, filtering,                      &
+     &      sgs_coefs, sgs_coefs_nod, mhd_fem_wk, fem_wk,               &
      &      f_l, f_nl, nod_fld)
       end if
 !
@@ -126,8 +130,8 @@
         if(iflag_debug.gt.0) write(*,*) 'lead ', trim(fhd_induct_t)
         call cal_sgs_magne_induction(icomp_sgs_uxb, ie_dvx, ie_dbx,     &
      &      nod_comm, node, ele, conduct, iphys, iphys_ele, ele_fld,    &
-     &      jac_3d, rhs_tbl, FEM_elens, filtering, mhd_fem_wk, fem_wk,  &
-     &      f_l, nod_fld)
+     &      jac_3d, rhs_tbl, FEM_elens, filtering, sgs_coefs_nod,       &
+     &      mhd_fem_wk, fem_wk, f_l, nod_fld)
       end if
 !
       if (iphys%i_SGS_vp_induct .gt. 0) then
@@ -135,7 +139,7 @@
      &        'lead ', trim(fhd_SGS_vp_induct)
         call cal_sgs_uxb_2_monitor(icomp_sgs_uxb, ie_dvx,               &
      &      nod_comm, node, ele, conduct, iphys, iphys_ele,             &
-     &      ele_fld, jac_3d, rhs_tbl, FEM_elens, filtering,             &
+     &      ele_fld, jac_3d, rhs_tbl, FEM_elens, filtering, sgs_coefs,  &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !

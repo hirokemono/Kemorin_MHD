@@ -158,8 +158,8 @@
       if ( iflag_SGS_induction .ne. id_SGS_none) then
         call cal_sgs_uxb_2_evo(icomp_sgs_uxb, ie_dvx,                   &
      &     nod_comm, node, ele, conduct, iphys, iphys_ele, ele_fld,     &
-     &     jac_3d_q, rhs_tbl, FEM_elens, filtering, mhd_fem_wk, fem_wk, &
-     &     f_nl, nod_fld)
+     &     jac_3d_q, rhs_tbl, FEM_elens, filtering, sgs_coefs,          &
+     &     mhd_fem_wk, fem_wk, f_nl, nod_fld)
       end if
 !
       if (iflag_mag_supg .gt. id_turn_OFF) then
@@ -202,15 +202,15 @@
         call cal_vect_p_pre_lumped_crank                                &
      &     (iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b,                  &
      &      Bnod_bcs%nod_bc_a, nod_comm, node, ele,                     &
-     &      conduct, iphys_ele, ele_fld, jac_3d_q, rhs_tbl,             &
-     &      FEM_elens, num_MG_level, MG_interpolate, MG_comm_table,     &
+     &      conduct, iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,  &
+     &      diff_coefs, num_MG_level, MG_interpolate, MG_comm_table,    &
      &      MG_DJDS_table, Bmat_MG_DJDS, MG_vector,                     &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (iflag_t_evo_4_vect_p.eq.id_Crank_nicolson_cmass) then
         call cal_vect_p_pre_consist_crank                               &
      &     (iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b,                  &
      &      Bnod_bcs%nod_bc_a, node, ele, conduct,                      &
-     &      jac_3d_q, rhs_tbl, FEM_elens,                               &
+     &      jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                   &
      &      num_MG_level, MG_interpolate, MG_comm_table,                &
      &      MG_DJDS_table, Bmat_MG_DJDS, MG_vector,                     &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -304,8 +304,9 @@
      &  .or. iflag_implicit_correct.eq.4) then
         call cal_vector_p_co_imp(iphys%i_vecp,                          &
      &      nod_comm, node, ele, conduct, Bnod_bcs, iphys_ele, ele_fld, &
-     &      jac_3d_q, rhs_tbl, FEM_elens, num_MG_level, MG_interpolate, &
-     &      MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS, MG_vector,      &
+     &      jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                   &
+     &      num_MG_level, MG_interpolate, MG_comm_table,                &
+     &      MG_DJDS_table, Bmat_MG_DJDS, MG_vector,                     &
      &      m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         call clear_nodal_data(node, nod_fld, n_scalar, iphys%i_m_phi)
       else

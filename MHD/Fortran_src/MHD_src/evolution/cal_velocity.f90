@@ -169,10 +169,10 @@
         call cal_mod_potential(iak_diff_v,                              &
      &      node, ele, surf, fluid, sf_grp, Vnod_bcs, Vsf_bcs, Psf_bcs, &
      &      iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,           &
-     &      FEM_elens, num_MG_level, MHD1_matrices%MG_interpolate,      &
-     &      MHD1_matrices%MG_comm_fluid, MHD1_matrices%MG_DJDS_lin_fl,  &
-     &      MHD1_matrices%Pmat_MG_DJDS, MG_vector,                      &
-     &      fem_wk, f_l, f_nl, nod_fld)
+     &      FEM_elens, diff_coefs, num_MG_level,                        &
+     &      MHD1_matrices%MG_interpolate, MHD1_matrices%MG_comm_fluid,  &
+     &      MHD1_matrices%MG_DJDS_lin_fl, MHD1_matrices%Pmat_MG_DJDS,   &
+     &      MG_vector, fem_wk, f_l, f_nl, nod_fld)
 !
         call cal_sol_pressure                                           &
      &     (node%numnod, node%istack_internal_smp, nod_fld%ntot_phys,   &

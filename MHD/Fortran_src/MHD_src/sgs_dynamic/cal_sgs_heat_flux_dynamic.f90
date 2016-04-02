@@ -8,8 +8,8 @@
 !!     &         (iak_sgs_hf, icomp_sgs_hf, ie_dvx, ie_dfvx,            &
 !!     &          nod_comm, node, ele, iphys, iphys_ele, ele_fld,       &
 !!     &          fluid, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,        &
-!!     &          FEM_elens, filtering, mhd_fem_wk, fem_wk,             &
-!!     &          f_l, nod_fld)
+!!     &          FEM_elens, filtering, sgs_coefs_nod, mhd_fem_wk,      &
+!!     &          fem_wk, f_l, nod_fld, sgs_coefs)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -22,11 +22,13 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(filtering_data_type), intent(in) :: filtering
+!!        type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
 !!
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(MHD_coefficients_type), intent(inout) :: sgs_coefs
 !
       module cal_sgs_heat_flux_dynamic
 !
@@ -47,6 +49,7 @@
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_filtering_data
+      use t_material_property
 !
       implicit none
 !
@@ -60,8 +63,8 @@
      &         (iak_sgs_hf, icomp_sgs_hf, ie_dvx, ie_dfvx,              &
      &          nod_comm, node, ele, iphys, iphys_ele, ele_fld,         &
      &          fluid, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,          &
-     &          FEM_elens, filtering, mhd_fem_wk, fem_wk,               &
-     &          f_l, nod_fld)
+     &          FEM_elens, filtering, sgs_coefs_nod, mhd_fem_wk,        &
+     &          fem_wk, f_l, nod_fld, sgs_coefs)
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
@@ -88,11 +91,13 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
+      type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
       type(phys_data), intent(inout) :: nod_fld
+      type(MHD_coefficients_type), intent(inout) :: sgs_coefs
 !
 !    reset model coefficients
 !
@@ -105,7 +110,7 @@
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_hf_simi'
       call cal_sgs_hf_simi(iphys%i_SGS_h_flux, iphys%i_sgs_temp,        &
      &    iphys%i_filter_temp, icomp_sgs_hf,                            &
-     &    nod_comm, node, iphys, filtering, nod_fld)
+     &    nod_comm, node, iphys, filtering, sgs_coefs_nod, nod_fld)
 !
 !    copy to work array
 !

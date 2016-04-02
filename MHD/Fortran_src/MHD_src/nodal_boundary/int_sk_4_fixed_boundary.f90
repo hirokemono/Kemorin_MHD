@@ -4,34 +4,35 @@
 !      Written by H. Matsui on Oct., 2005
 !
 !!      subroutine int_vol_sk_po_bc(i_p_phi, iak_diff_v, node, ele,     &
-!!     &          nod_fld, jac_3d_l, rhs_tbl, FEM_elens, nod_bc_p,      &
-!!     &          fem_wk, f_l)
+!!     &          nod_fld, jac_3d_l, rhs_tbl, FEM_elens, diff_coefs,    &
+!!     &          nod_bc_p,fem_wk, f_l)
 !!      subroutine int_vol_sk_mp_bc(i_m_phi, iak_diff_b, node, ele,     &
-!!     &          nod_fld, jac_3d_l, rhs_tbl, FEM_elens, nod_bc_f,      &
-!!     &          fem_wk, f_l)
+!!     &          nod_fld, jac_3d_l, rhs_tbl, FEM_elens, diff_coefs,    &
+!!     &          nod_bc_f, fem_wk, f_l)
 !!      subroutine int_vol_sk_mag_p_ins_bc(i_m_phi, iak_diff_b,         &
 !!     &          node, ele, nod_fld, jac_3d_l, rhs_tbl, FEM_elens,     &
-!!     &          nod_bc_fins, fem_wk, f_l)
+!!     &          diff_coefs, nod_bc_fins, fem_wk, f_l)
 !!
 !!      subroutine int_sk_4_fixed_temp(i_temp, iak_diff_t, node, ele,   &
-!!     &          node, ele, nod_fld, jac1_3d, rhs_tbl, FEM_elens,      &
-!!     &          nod_bc_t, fem_wk, f_l)
+!!     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,       &
+!!     &          diff_coefs, nod_bc_t, fem_wk, f_l)
 !!      subroutine int_sk_4_fixed_part_temp(i_par_temp, iak_diff_t,     &
-!!     &          node, ele, nod_fld, jac1_3d, rhs_tbl, FEM_elens,      &
-!!     &          nod_bc_t, fem_wk, f_l)
+!!     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,       &
+!!     &          diff_coefs, nod_bc_t, fem_wk, f_l)
 !!      subroutine int_sk_4_fixed_velo(i_velo, iak_diff_v, node, ele,   &
-!!     &          nod_fld, jac1_3d, rhs_tbl, FEM_elens,                 &
+!!     &          nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,      &
 !!     &          nod_bc_v, nod_bc_rot, fem_wk, f_l)
 !!      subroutine int_sk_4_fixed_vector(iflag_commute, i_field,        &
-!!     &          node, ele, nod_fld, jac1_3d, rhs_tbl, FEM_elens,      &
-!!     &          nod_bc, ak_d, coef_imp, iak_diff, fem_wk, f_l)
+!!     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,       &
+!!     &          diff_coefs, nod_bc, ak_d, coef_imp, iak_diff,         &
+!!     &          fem_wk, f_l)
 !!      subroutine int_sk_4_fixed_composition(i_light, iak_diff_c,      &
-!!     &          node, ele, nod_fld, jac1_3d, rhs_tbl, FEM_elens,      &
-!!     &          nod_bc_c, fem_wk, f_l)
+!!     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,       &
+!!     &          diff_coefs, nod_bc_c, fem_wk, f_l)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(jacobians_3d), intent(in) :: jac1_3d
+!!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(jacobians_3d), intent(in) :: jac_3d_l
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -49,7 +50,6 @@
       use m_phys_constants
       use m_control_parameter
       use m_t_int_parameter
-      use m_SGS_model_coefs
 !
       use t_geometry_data
       use t_phys_data
@@ -57,6 +57,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_filter_elength
+      use t_material_property
       use t_nodal_bc_data
 !
       implicit none
@@ -68,8 +69,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_vol_sk_po_bc(i_p_phi, iak_diff_v, node, ele,       &
-     &          nod_fld, jac_3d_l, rhs_tbl, FEM_elens, nod_bc_p,        &
-     &          fem_wk, f_l)
+     &          nod_fld, jac_3d_l, rhs_tbl, FEM_elens, diff_coefs,      &
+     &          nod_bc_p,fem_wk, f_l)
 !
       use m_ele_material_property
       use int_vol_fixed_field_ele
@@ -83,6 +84,7 @@
       type(jacobians_3d), intent(in) :: jac_3d_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_p
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -113,8 +115,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine int_vol_sk_mp_bc(i_m_phi, iak_diff_b, node, ele,       &
-     &          nod_fld, jac_3d_l, rhs_tbl, FEM_elens, nod_bc_f,        &
-     &          fem_wk, f_l)
+     &          nod_fld, jac_3d_l, rhs_tbl, FEM_elens, diff_coefs,      &
+     &          nod_bc_f, fem_wk, f_l)
 !
       use m_ele_material_property
       use t_nodal_bc_data
@@ -129,6 +131,7 @@
       type(jacobians_3d), intent(in) :: jac_3d_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_f
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -161,7 +164,7 @@
 !
       subroutine int_vol_sk_mag_p_ins_bc(i_m_phi, iak_diff_b,           &
      &          node, ele, nod_fld, jac_3d_l, rhs_tbl, FEM_elens,       &
-     &          nod_bc_fins, fem_wk, f_l)
+     &          diff_coefs, nod_bc_fins, fem_wk, f_l)
 !
       use m_ele_material_property
       use int_vol_fixed_field_ele
@@ -175,6 +178,7 @@
       type(jacobians_3d), intent(in) :: jac_3d_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_fins
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -206,8 +210,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine int_sk_4_fixed_temp(i_temp, iak_diff_t,                &
-     &          node, ele, nod_fld, jac1_3d, rhs_tbl, FEM_elens,        &
-     &          nod_bc_t, fem_wk, f_l)
+     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,         &
+     &          diff_coefs, nod_bc_t, fem_wk, f_l)
 !
       use m_ele_material_property
       use int_vol_fixed_field_ele
@@ -217,9 +221,10 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
-      type(jacobians_3d), intent(in) :: jac1_3d
+      type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_t
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -228,7 +233,7 @@
 !
       if (iflag_commute_temp .eq. id_SGS_commute_ON) then
         call int_vol_fixed_sgs_scalar_surf(node, ele, nod_fld,          &
-     &      jac1_3d, rhs_tbl, FEM_elens, intg_point_t_evo,              &
+     &      jac_3d, rhs_tbl, FEM_elens, intg_point_t_evo,               &
      &      nod_bc_t%ibc_end, nod_bc_t%num_idx_ibc,                     &
      &      nod_bc_t%ele_bc_id, nod_bc_t%ibc_stack_smp,                 &
      &      nod_bc_t%ibc_shape, ifilter_final, i_temp,                  &
@@ -236,7 +241,7 @@
      &      ak_d_temp, coef_imp_t, fem_wk, f_l)
       else
         call int_vol_fixed_scalar_surf(node, ele, nod_fld,              &
-     &      jac1_3d, rhs_tbl, intg_point_t_evo,                         &
+     &      jac_3d, rhs_tbl, intg_point_t_evo,                          &
      &      nod_bc_t%ibc_end, nod_bc_t%num_idx_ibc,                     &
      &      nod_bc_t%ele_bc_id, nod_bc_t%ibc_stack_smp,                 &
      &      nod_bc_t%ibc_shape, i_temp, ak_d_temp,                      &
@@ -248,8 +253,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_sk_4_fixed_part_temp(i_par_temp, iak_diff_t,       &
-     &          node, ele, nod_fld, jac1_3d, rhs_tbl, FEM_elens,        &
-     &          nod_bc_t, fem_wk, f_l)
+     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,        &
+     &          diff_coefs, nod_bc_t, fem_wk, f_l)
 !
       use m_ele_material_property
       use int_vol_fixed_field_ele
@@ -259,9 +264,10 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
-      type(jacobians_3d), intent(in) :: jac1_3d
+      type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_t
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -270,7 +276,7 @@
 !
       if (iflag_commute_temp .eq. id_SGS_commute_ON) then
         call int_vol_fixed_sgs_scalar_surf(node, ele, nod_fld,          &
-     &      jac1_3d, rhs_tbl, FEM_elens, intg_point_t_evo,              &
+     &      jac_3d, rhs_tbl, FEM_elens, intg_point_t_evo,               &
      &      nod_bc_t%ibc_end, nod_bc_t%num_idx_ibc,                     &
      &      nod_bc_t%ele_bc_id, nod_bc_t%ibc_stack_smp,                 &
      &      nod_bc_t%ibc_shape, ifilter_final, i_par_temp,              &
@@ -278,7 +284,7 @@
      &      ak_d_temp, coef_imp_t, fem_wk, f_l)
       else
         call int_vol_fixed_scalar_surf(node, ele, nod_fld,              &
-     &      jac1_3d, rhs_tbl, intg_point_t_evo,                         &
+     &      jac_3d, rhs_tbl, intg_point_t_evo,                          &
      &      nod_bc_t%ibc_end, nod_bc_t%num_idx_ibc,                     &
      &      nod_bc_t%ele_bc_id, nod_bc_t%ibc_stack_smp,                 &
      &      nod_bc_t%ibc_shape, i_par_temp, ak_d_temp,                  &
@@ -290,8 +296,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_sk_4_fixed_composition(i_light, iak_diff_c,        &
-     &          node, ele, nod_fld, jac1_3d, rhs_tbl, FEM_elens,        &
-     &          nod_bc_c, fem_wk, f_l)
+     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,         &
+     &          diff_coefs, nod_bc_c, fem_wk, f_l)
 !
       use m_ele_material_property
       use int_vol_fixed_field_ele
@@ -301,9 +307,10 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
-      type(jacobians_3d), intent(in) :: jac1_3d
+      type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_c
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -312,7 +319,7 @@
 !
       if (iflag_commute_composit .eq. id_SGS_commute_ON) then
         call int_vol_fixed_sgs_scalar_surf(node, ele, nod_fld,          &
-     &      jac1_3d, rhs_tbl, FEM_elens, intg_point_t_evo,              &
+     &      jac_3d, rhs_tbl, FEM_elens, intg_point_t_evo,               &
      &      nod_bc_c%ibc_end, nod_bc_c%num_idx_ibc,                     &
      &      nod_bc_c%ele_bc_id, nod_bc_c%ibc_stack_smp,                 &
      &      nod_bc_c%ibc_shape,  ifilter_final, i_light,                &
@@ -320,7 +327,7 @@
      &      ak_d_composit, coef_imp_c, fem_wk, f_l)
       else
         call int_vol_fixed_scalar_surf(node, ele, nod_fld,              &
-     &      jac1_3d, rhs_tbl, intg_point_t_evo,                         &
+     &      jac_3d, rhs_tbl, intg_point_t_evo,                          &
      &      nod_bc_c%ibc_end, nod_bc_c%num_idx_ibc,                     &
      &      nod_bc_c%ele_bc_id, nod_bc_c%ibc_stack_smp,                 &
      &      nod_bc_c%ibc_shape, i_light, ak_d_composit,                 &
@@ -333,7 +340,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_sk_4_fixed_velo(i_velo, iak_diff_v, node, ele,     &
-     &          nod_fld, jac1_3d, rhs_tbl, FEM_elens,                   &
+     &          nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,        &
      &          nod_bc_v, nod_bc_rot, fem_wk, f_l)
 !
       use m_ele_material_property
@@ -347,10 +354,11 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
-      type(jacobians_3d), intent(in) :: jac1_3d
+      type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-        type(vect_fixed_nod_bc_type), intent(in)  :: nod_bc_v
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(vect_fixed_nod_bc_type), intent(in)  :: nod_bc_v
       type(scaler_rotaion_nod_bc_type), intent(in)  :: nod_bc_rot
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -358,12 +366,12 @@
 !
 !
       call int_sk_4_fixed_vector(iflag_commute_velo, i_velo,            &
-     &    node, ele, nod_fld, jac1_3d, rhs_tbl, FEM_elens,              &
+     &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,   &
      &    nod_bc_v, ak_d_velo, coef_imp_v, iak_diff_v, fem_wk, f_l)
 !
       if (iflag_commute_velo .eq. id_SGS_commute_ON) then
         call int_vol_fixed_rotate_sgs_surf                              &
-     &     (node, ele, nod_fld, jac1_3d, rhs_tbl, FEM_elens,            &
+     &     (node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,             &
      &      intg_point_t_evo, nod_bc_rot%ibc_end,                       &
      &      nod_bc_rot%num_idx_ibc, nod_bc_rot%ele_bc_id,               &
      &      nod_bc_rot%ibc_stack_smp, nod_bc_rot%ibc_shape,             &
@@ -371,7 +379,7 @@
      &      diff_coefs%ak, ak_d_velo, coef_imp_v, fem_wk, f_l)
       else
         call int_vol_fixed_rotate_surf                                  &
-     &     (node, ele, nod_fld, jac1_3d, rhs_tbl, intg_point_t_evo,     &
+     &     (node, ele, nod_fld, jac_3d, rhs_tbl, intg_point_t_evo,      &
      &      nod_bc_rot%ibc_end, nod_bc_rot%num_idx_ibc,                 &
      &      nod_bc_rot%ele_bc_id, nod_bc_rot%ibc_stack_smp,             &
      &      nod_bc_rot%ibc_shape, i_velo, ak_d_velo, coef_imp_v,        &
@@ -383,8 +391,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_sk_4_fixed_vector(iflag_commute, i_field,          &
-     &          node, ele, nod_fld, jac1_3d, rhs_tbl, FEM_elens,        &
-     &          nod_bc, ak_d, coef_imp, iak_diff, fem_wk, f_l)
+     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,         &
+     &          diff_coefs, nod_bc, ak_d, coef_imp, iak_diff,           &
+     &          fem_wk, f_l)
 !
       use int_vol_fixed_field_ele
       use int_vol_fixed_fld_sgs_ele
@@ -394,9 +403,10 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
-      type(jacobians_3d), intent(in) :: jac1_3d
+      type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(vect_fixed_nod_bc_type), intent(in) :: nod_bc
 !
       real(kind = kreal), intent(in) :: coef_imp
@@ -408,7 +418,7 @@
 !
       if (iflag_commute .eq. id_SGS_commute_ON) then
         call int_vol_fixed_sgs_vector_surf                              &
-     &     (node, ele, nod_fld, jac1_3d, rhs_tbl, FEM_elens,            &
+     &     (node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,             &
      &      intg_point_t_evo, nod_bc%nmax_idx_ibc2,                     &
      &      nod_bc%ibc_end, nod_bc%num_idx_ibc,  nod_bc%ele_bc_id,      &
      &      nod_bc%ibc_stack_smp, nod_bc%ibc_shape, ifilter_final,      &
@@ -416,7 +426,7 @@
      &      ak_d, coef_imp, fem_wk, f_l)
       else
         call int_vol_fixed_vector_surf                                  &
-     &     (node, ele, nod_fld, jac1_3d, rhs_tbl,                       &
+     &     (node, ele, nod_fld, jac_3d, rhs_tbl,                        &
      &      intg_point_t_evo, nod_bc%nmax_idx_ibc2,                     &
      &      nod_bc%ibc_end, nod_bc%num_idx_ibc, nod_bc%ele_bc_id,       &
      &      nod_bc%ibc_stack_smp,  nod_bc%ibc_shape,                    &

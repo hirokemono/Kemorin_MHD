@@ -8,14 +8,14 @@
 !!     &         (iak_sgs_uxb, icomp_sgs_uxb, ie_dvx, ie_dfvx,          &
 !!     &          nod_comm, node, ele, iphys, iphys_ele, ele_fld,       &
 !!     &          conduct, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,      &
-!!     &          FEM_elens, filtering, mhd_fem_wk, fem_wk,             &
-!!     &          f_l, nod_fld, sgs_coefs)
+!!     &          FEM_elens, filtering, mhd_fem_wk,                     &
+!!     &          fem_wk, f_l, nod_fld, sgs_coefs)
 !!      subroutine cal_sgs_induct_t_dynamic(iak_sgs_uxb, icomp_sgs_uxb, &
 !!     &          ie_dvx, ie_dbx, ie_dfvx, ie_dfbx,                     &
 !!     &          nod_comm, node, ele, iphys, iphys_ele, ele_fld,       &
 !!     &          conduct, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,      &
-!!     &          FEM_elens, filtering, mhd_fem_wk, fem_wk,             &
-!!     &          f_l, nod_fld, sgs_coefs)
+!!     &          FEM_elens, filtering, sgs_coefs_nod, mhd_fem_wk,      &
+!!     &          fem_wk, f_l, nod_fld, sgs_coefs)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -69,8 +69,8 @@
      &         (iak_sgs_uxb, icomp_sgs_uxb, ie_dvx, ie_dfvx,            &
      &          nod_comm, node, ele, iphys, iphys_ele, ele_fld,         &
      &          conduct, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,        &
-     &          FEM_elens, filtering, mhd_fem_wk, fem_wk,               &
-     &          f_l, nod_fld, sgs_coefs)
+     &          FEM_elens, filtering, mhd_fem_wk,                       &
+     &          fem_wk, f_l, nod_fld, sgs_coefs)
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
@@ -121,7 +121,7 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_filter_uxb_grad_4_dyn'
       call cal_sgs_vp_induct_grad_no_coef(ifilter_4delta,               &
-     &    iphys%i_sgs_grad_f, iphys%i_filter_magne, ie_dfvx,             &
+     &    iphys%i_sgs_grad_f, iphys%i_filter_magne, ie_dfvx,            &
      &    nod_comm, node, ele, conduct, iphys_ele, ele_fld,             &
      &    jac_3d_q, rhs_tbl, FEM_elens, mhd_fem_wk,                     &
      &    fem_wk, f_l, nod_fld)
@@ -161,8 +161,8 @@
      &          ie_dvx, ie_dbx, ie_dfvx, ie_dfbx,                       &
      &          nod_comm, node, ele, iphys, iphys_ele, ele_fld,         &
      &          conduct, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,        &
-     &          FEM_elens, filtering, mhd_fem_wk, fem_wk,               &
-     &          f_l, nod_fld, sgs_coefs)
+     &          FEM_elens, filtering, sgs_coefs_nod, mhd_fem_wk,        &
+     &          fem_wk, f_l, nod_fld, sgs_coefs)
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
@@ -190,6 +190,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
+      type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -207,9 +208,10 @@
 !    SGS term by similarity model
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_induct_t_simi'
-      call cal_sgs_induct_t_simi(iphys%i_SGS_induct_t, iphys%i_velo,    &
-     &    iphys%i_magne, iphys%i_filter_velo, iphys%i_filter_magne,     &
-     &    icomp_sgs_uxb, nod_comm, node, filtering, nod_fld)
+      call cal_sgs_induct_t_simi                                        &
+     &   (iphys%i_SGS_induct_t, iphys%i_velo, iphys%i_magne,            &
+     &    iphys%i_filter_velo, iphys%i_filter_magne, icomp_sgs_uxb,     &
+     &    nod_comm, node, filtering, sgs_coefs_nod, nod_fld)
 !
 !    copy to work array
 !

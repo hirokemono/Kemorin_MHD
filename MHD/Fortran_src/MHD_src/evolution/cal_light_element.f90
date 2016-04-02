@@ -142,7 +142,7 @@
         call cal_composit_pre_lumped_crank                              &
      &     (iphys%i_light, iphys%i_pre_composit, iak_diff_c,            &
      &      nod_comm, node, ele, fluid, Cnod_bcs,                       &
-     &      iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,             &
+     &      iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
      &      num_MG_level, MHD1_matrices%MG_interpolate,                 &
      &      MHD1_matrices%MG_comm_fluid, MHD1_matrices%MG_DJDS_fluid,   &
      &      MHD1_matrices%Cmat_MG_DJDS, MG_vector,                      &
@@ -152,7 +152,7 @@
         call cal_composit_pre_consist_crank                             &
      &     (iphys%i_light, iphys%i_pre_composit, iak_diff_c,            &
      &      node, ele, fluid, Cnod_bcs, jac_3d,                         &
-     &      rhs_tbl, FEM_elens, num_MG_level,                           &
+     &      rhs_tbl, FEM_elens, diff_coefs, num_MG_level,               &
      &      MHD1_matrices%MG_interpolate, MHD1_matrices%MG_comm_fluid,  &
      &      MHD1_matrices%MG_DJDS_fluid, MHD1_matrices%Cmat_MG_DJDS,    &
      &      MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)

@@ -8,8 +8,8 @@
 !!     &          ie_dfbx, nod_comm, node, ele, surf, fluid, layer_tbl, &
 !!     &          sf_grp, Vnod_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld, &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
-!!     &          FEM_elens, filtering, mhd_fem_wk, fem_wk,             &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          FEM_elens, filtering, sgs_coefs, mhd_fem_wk, fem_wk,  &
+!!     &          f_l, f_nl, nod_fld, diff_coefs)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -27,10 +27,12 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(filtering_data_type), intent(in) :: filtering
+!!        type(MHD_coefficients_type), intent(in) :: sgs_coefs
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(MHD_coefficients_type), intent(inout) :: diff_coefs
 !
       module cal_diff_coef_sgs_mxwl
 !
@@ -52,6 +54,7 @@
       use t_filtering_data
       use t_bc_data_velo
       use t_surface_bc_data
+      use t_material_property
 !
       implicit none
 !
@@ -66,8 +69,8 @@
      &          ie_dfbx, nod_comm, node, ele, surf, fluid, layer_tbl,   &
      &          sf_grp, Vnod_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,   &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
-     &          FEM_elens, filtering, mhd_fem_wk, fem_wk,               &
-     &          f_l, f_nl, nod_fld)
+     &          FEM_elens, filtering, sgs_coefs, mhd_fem_wk, fem_wk,    &
+     &          f_l, f_nl, nod_fld, diff_coefs)
 !
       use m_machine_parameter
       use m_control_parameter
@@ -106,16 +109,18 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
+      type(MHD_coefficients_type), intent(in) :: sgs_coefs
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
+      type(MHD_coefficients_type), intent(inout) :: diff_coefs
 !
 !    reset model coefficients
 !
-      call reset_diff_model_coefs(diff_coefs%num_field, iak_diff_lor,   &
-     &    ele%numele, ele%istack_ele_smp, diff_coefs%ak)
+      call reset_diff_model_coefs(ele%numele, ele%istack_ele_smp,       &
+     &    diff_coefs%num_field, iak_diff_lor, diff_coefs%ak)
       call s_clear_work_4_dynamic_model(node, iphys, nod_fld)
 !
 !   gradient model by filtered field (to iphys%i_sgs_grad_f)
@@ -125,7 +130,8 @@
      &   (itype_SGS_maxwell_coef, ifilter_4delta, icomp_sgs_lor,        &
      &    iphys%i_sgs_grad_f, iphys%i_filter_magne, ie_dfbx,            &
      &    nod_comm, node, ele, fluid, iphys_ele, ele_fld,               &
-     &    jac_3d_q, FEM_elens, rhs_tbl, fem_wk, mhd_fem_wk, nod_fld)
+     &    jac_3d_q, FEM_elens, sgs_coefs, rhs_tbl, fem_wk,              &
+     &    mhd_fem_wk, nod_fld)
 !
 !   take divergence of filtered heat flux (to iphys%i_sgs_simi)
 !

@@ -157,11 +157,17 @@
 !
       call allocate_sgs_coefs_layer(layer_tbl%e_grp%num_grp,            &
      &    sgs_coefs%num_field, sgs_coefs%ntot_comp)
-      call allocate_model_coefs(numele)
+!
+      call alloc_MHD_num_coefs(sgs_coefs)
+      call alloc_MHD_coefs(numele, sgs_coefs)
+!
+      call alloc_MHD_num_coefs(diff_coefs)
+      call alloc_MHD_coefs(numele, diff_coefs)
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                     &
      &      .or. iflag_SGS_model.eq.id_SGS_similarity)  then
-        call allocate_nod_model_coefs(numnod)
+        call copy_MHD_num_coefs(sgs_coefs, sgs_coefs_nod)
+        call alloc_MHD_coefs(numnod, sgs_coefs_nod)
       end if
 !
        i = 1

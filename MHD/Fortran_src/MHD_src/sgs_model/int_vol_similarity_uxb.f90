@@ -6,7 +6,8 @@
 !
 !!      subroutine sel_int_simi_vp_induct(icomp_sgs_uxb,                &
 !!     &           node, ele, conduct, iphys, nod_fld,                  &
-!!     &           iphys_ele, ele_fld, jac_3d, rhs_tbl, fem_wk, f_nl)
+!!     &           iphys_ele, ele_fld, jac_3d, rhs_tbl, sgs_coefs,      &
+!!     &           fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_address), intent(in) :: iphys
@@ -16,6 +17,7 @@
 !!        type(field_geometry_data), intent(in) :: conduct
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(MHD_coefficients_type), intent(in) :: sgs_coefs
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !
@@ -34,6 +36,7 @@
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
+      use t_material_property
 !
       implicit none
 !
@@ -47,7 +50,8 @@
 !
       subroutine sel_int_simi_vp_induct(icomp_sgs_uxb,                  &
      &           node, ele, conduct, iphys, nod_fld,                    &
-     &           iphys_ele, ele_fld, jac_3d, rhs_tbl, fem_wk, f_nl)
+     &           iphys_ele, ele_fld, jac_3d, rhs_tbl, sgs_coefs,        &
+     &           fem_wk, f_nl)
 !
       integer (kind=kint), intent(in) :: icomp_sgs_uxb
 !
@@ -60,6 +64,7 @@
       type(field_geometry_data), intent(in) :: conduct
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(MHD_coefficients_type), intent(in) :: sgs_coefs
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -67,12 +72,12 @@
 !
       if (iflag_mag_supg .eq. id_turn_ON) then
         call int_simi_vp_induct_upm(icomp_sgs_uxb, node, ele, conduct,  &
-     &      iphys, nod_fld, jac_3d, rhs_tbl,                            &
+     &      iphys, nod_fld, jac_3d, rhs_tbl, sgs_coefs,                 &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
      &      fem_wk, f_nl)
       else
         call int_simi_vp_induct(icomp_sgs_uxb, node, ele, conduct,      &
-     &       iphys, nod_fld, jac_3d, rhs_tbl,  fem_wk, f_nl)
+     &       iphys, nod_fld, jac_3d, rhs_tbl, sgs_coefs, fem_wk, f_nl)
       end if
 !
       end subroutine sel_int_simi_vp_induct
@@ -81,9 +86,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_simi_vp_induct(icomp_sgs_uxb, node, ele, conduct,  &
-     &          iphys, nod_fld, jac_3d, rhs_tbl, fem_wk, f_nl)
-!
-      use m_SGS_model_coefs
+     &          iphys, nod_fld, jac_3d, rhs_tbl, sgs_coefs,             &
+     &          fem_wk, f_nl)
 !
       use nodal_fld_2_each_element
       use fem_skv_nodal_field_type
@@ -99,6 +103,7 @@
       type(field_geometry_data), intent(in) :: conduct
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(MHD_coefficients_type), intent(in) :: sgs_coefs
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -129,9 +134,7 @@
 !
       subroutine int_simi_vp_induct_upm(icomp_sgs_uxb,                  &
      &          node, ele, conduct, iphys, nod_fld, jac_3d, rhs_tbl,    &
-     &          ncomp_ele, iele_magne, d_ele, fem_wk, f_nl)
-!
-      use m_SGS_model_coefs
+     &          sgs_coefs, ncomp_ele, iele_magne, d_ele, fem_wk, f_nl)
 !
       use nodal_fld_2_each_element
       use fem_skv_nodal_fld_upw_type
@@ -147,6 +150,7 @@
       type(field_geometry_data), intent(in) :: conduct
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(MHD_coefficients_type), intent(in) :: sgs_coefs
 !
       integer(kind = kint), intent(in) :: ncomp_ele, iele_magne
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)

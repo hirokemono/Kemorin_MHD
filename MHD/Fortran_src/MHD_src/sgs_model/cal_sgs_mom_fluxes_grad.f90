@@ -6,7 +6,8 @@
 !!      subroutine cal_sgs_m_flux_grad_w_coef(itype_csim, i_filter,     &
 !!     &          icm_sgs, i_sgs, i_field, ie_dvx, nod_comm,            &
 !!     &          node, ele, fluid, iphys_ele, ele_fld, jac_3d,         &
-!!     &          FEM_elens, rhs_tbl, fem_wk, mhd_fem_wk, nod_fld)
+!!     &          FEM_elens, sgs_coefs, rhs_tbl, fem_wk,                &
+!!     &          mhd_fem_wk, nod_fld)
 !!      subroutine cal_sgs_m_flux_grad_no_coef                          &
 !!     &         (i_filter, i_sgs, i_field, ie_dvx, nod_comm,           &
 !!     &          node, ele, fluid, iphys_ele, ele_fld, jac_3d,         &
@@ -19,6 +20,7 @@
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(MHD_coefficients_type), intent(in) :: sgs_coefs
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -31,7 +33,6 @@
 !
       use m_control_parameter
       use m_phys_constants
-      use m_SGS_model_coefs
 !
       use t_comm_table
       use t_geometry_data_MHD
@@ -42,6 +43,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_filter_elength
+      use t_material_property
       use t_MHD_finite_element_mat
 !
       implicit none
@@ -55,7 +57,8 @@
       subroutine cal_sgs_m_flux_grad_w_coef(itype_csim, i_filter,       &
      &          icm_sgs, i_sgs, i_field, ie_dvx, nod_comm,              &
      &          node, ele, fluid, iphys_ele, ele_fld, jac_3d,           &
-     &          FEM_elens, rhs_tbl, fem_wk, mhd_fem_wk, nod_fld)
+     &          FEM_elens, sgs_coefs, rhs_tbl, fem_wk,                  &
+     &          mhd_fem_wk, nod_fld)
 !
       use cal_ff_smp_to_ffs
       use cal_skv_to_ff_smp
@@ -71,6 +74,7 @@
       type(field_geometry_data), intent(in) :: fluid
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: sgs_coefs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
       integer (kind=kint), intent(in) :: itype_csim
