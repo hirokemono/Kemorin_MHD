@@ -144,7 +144,7 @@
       call cal_model_coefs(layer_tbl,                                   &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
      &    itype_SGS_m_flux_coef, n_sym_tensor,                          &
-     &    iak_sgs_mf, icomp_sgs_mf, intg_point_t_evo)
+     &    iak_sgs_mf, icomp_sgs_mf, intg_point_t_evo, sgs_coefs)
 !
       call cal_ele_sym_tensor_2_node                                    &
      &   (node, ele, jac_3d_q, rhs_tbl, m_lump,                         &
@@ -243,7 +243,7 @@
       call cal_model_coefs(layer_tbl,                                   &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
      &    itype_SGS_maxwell_coef, n_sym_tensor,                         &
-     &    iak_sgs_lor, icomp_sgs_lor, intg_point_t_evo)
+     &    iak_sgs_lor, icomp_sgs_lor, intg_point_t_evo, sgs_coefs)
 !
       call cal_ele_sym_tensor_2_node                                    &
      &   (node, ele, jac_3d_q, rhs_tbl, m_lump,                         &

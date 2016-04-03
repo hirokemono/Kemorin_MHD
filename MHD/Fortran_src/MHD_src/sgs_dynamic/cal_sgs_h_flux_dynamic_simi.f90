@@ -134,7 +134,7 @@
       call cal_model_coefs(layer_tbl,                                   &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
      &    itype_SGS_h_flux_coef, n_vector, iak_sgs_hf, icomp_sgs_hf,    &
-     &    intg_point_t_evo)
+     &    intg_point_t_evo, sgs_coefs)
 !
       call cal_ele_vector_2_node(node, ele, jac_3d_q, rhs_tbl, m_lump,  &
      &    sgs_coefs%ntot_comp, icomp_sgs_hf, sgs_coefs%ak,              &

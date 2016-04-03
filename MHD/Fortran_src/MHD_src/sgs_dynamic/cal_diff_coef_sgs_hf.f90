@@ -208,7 +208,8 @@
      &   'cal_diff_coef_fluid', n_scalar, iak_diff_hf, icomp_diff_hf
       call cal_diff_coef_fluid(layer_tbl,                               &
      &    node, ele, fluid, iphys, nod_fld, jac_3d_q, jac_3d_l,         &
-     &    n_scalar, iak_diff_hf, icomp_diff_hf, intg_point_t_evo)
+     &    n_scalar, iak_diff_hf, icomp_diff_hf, intg_point_t_evo,       &
+     &    diff_coefs)
 !
 !
       end subroutine s_cal_diff_coef_sgs_hf

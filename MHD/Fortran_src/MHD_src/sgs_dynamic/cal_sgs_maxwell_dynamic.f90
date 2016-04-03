@@ -148,7 +148,7 @@
       call cal_model_coefs(layer_tbl,                                   &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
      &    itype_SGS_maxwell_coef, n_sym_tensor,                         &
-     &    iak_sgs_lor, icomp_sgs_lor, intg_point_t_evo)
+     &    iak_sgs_lor, icomp_sgs_lor, intg_point_t_evo, sgs_coefs)
 !
       end subroutine cal_sgs_maxwell_t_dynamic
 !

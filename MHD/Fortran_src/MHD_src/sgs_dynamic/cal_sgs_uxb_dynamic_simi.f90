@@ -123,7 +123,7 @@
       call cal_model_coefs(layer_tbl,                                   &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
      &    itype_SGS_uxb_coef, n_vector, iak_sgs_uxb,                    &
-     &    icomp_sgs_uxb, intg_point_t_evo)
+     &    icomp_sgs_uxb, intg_point_t_evo, sgs_coefs)
 !
       end subroutine s_cal_sgs_uxb_dynamic_simi
 !
@@ -214,7 +214,7 @@
       call cal_model_coefs(layer_tbl,                                   &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
      &    itype_SGS_uxb_coef, n_asym_tensor,                            &
-     &    iak_sgs_uxb, icomp_sgs_uxb, intg_point_t_evo)
+     &    iak_sgs_uxb, icomp_sgs_uxb, intg_point_t_evo, sgs_coefs)
 !
       call cal_ele_vector_2_node                                        &
      &   (node, ele, jac_3d_q, rhs_tbl, m_lump,                         &

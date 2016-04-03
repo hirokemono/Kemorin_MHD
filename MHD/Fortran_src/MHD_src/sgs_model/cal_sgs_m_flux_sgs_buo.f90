@@ -119,10 +119,13 @@
 !
 !   lead SGS momentum flux using original model coefficient
 !
-      call set_model_coefs_2_ele(itype_SGS_m_flux_coef, n_sym_tensor,   &
+      call clear_model_coefs_2_ele(ele, n_sym_tensor, icomp_sgs_mf,     &
+     &    sgs_coefs%ntot_comp, sgs_coefs%ak)
+      call set_model_coefs_2_ele                                        &
+     &   (ele, itype_SGS_m_flux_coef, n_sym_tensor,                     &
      &    iak_sgs_mf, icomp_sgs_mf, layer_tbl%e_grp%num_grp,            &
      &    layer_tbl%e_grp%num_item, layer_tbl%e_grp%istack_grp_smp,     &
-     &    layer_tbl%e_grp%item_grp, ele)
+     &    layer_tbl%e_grp%item_grp, sgs_coefs%ntot_comp, sgs_coefs%ak)
 !
       call cal_sgs_momentum_flux(icomp_sgs_mf, ie_dvx,                  &
      &    nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,        &

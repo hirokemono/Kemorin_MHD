@@ -262,22 +262,27 @@
 !
       do i = 1, sgs_coefs%num_field
          ist = sgs_coefs%istack_comps(i-1) + 1
-         call set_model_coefs_2_ele(izero, sgs_coefs%num_comps(i),      &
+         call clear_model_coefs_2_ele(ele, sgs_coefs%num_comps(i), ist, &
+     &      sgs_coefs%ntot_comp, sgs_coefs%ak)
+         call set_model_coefs_2_ele(ele, izero, sgs_coefs%num_comps(i), &
      &       i, ist, layer_egrp%num_grp, layer_egrp%num_item,           &
-     &       layer_egrp%istack_grp_smp, layer_egrp%item_grp, ele)
+     &       layer_egrp%istack_grp_smp, layer_egrp%item_grp,            &
+     &       sgs_coefs%ntot_comp, sgs_coefs%ak)
       end do
 !
       if (iflag_commute_correction .gt. id_SGS_commute_OFF) then
         if (iset_DIFF_model_coefs .eq. 0) then
           do i = 1, diff_coefs%num_field
             call set_diff_coefs_whole_ele                               &
-     &         (fluid%istack_ele_fld_smp, i, ele)
+     &         (ele, fluid%istack_ele_fld_smp, i,                       &
+     &          diff_coefs%ntot_comp, diff_coefs%ak)
           end do
         else
           do i = 1, diff_coefs%num_field
             call set_diff_coefs_layer_ele                               &
-     &         (i, layer_egrp%num_grp, layer_egrp%num_item,             &
-     &          layer_egrp%istack_grp_smp, layer_egrp%item_grp, ele)
+     &         (ele, i, layer_egrp%num_grp, layer_egrp%num_item,        &
+     &          layer_egrp%istack_grp_smp, layer_egrp%item_grp,         &
+     &          diff_coefs%ntot_comp, diff_coefs%ak)
           end do
         end if
       end if

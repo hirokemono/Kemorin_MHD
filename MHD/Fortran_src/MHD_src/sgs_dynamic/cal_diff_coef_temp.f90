@@ -188,7 +188,8 @@
      &   'cal_diff_coef_fluid', n_vector, iak_diff_t, icomp_diff_t
       call cal_diff_coef_fluid(layer_tbl,                               &
      &    node, ele, fluid, iphys, nod_fld, jac_3d_q, jac_3d_l,         &
-     &    n_vector, iak_diff_t, icomp_diff_t, intg_point_t_evo)
+     &    n_vector, iak_diff_t, icomp_diff_t, intg_point_t_evo,         &
+     &    diff_coefs)
 !
       diff_coefs%iflag_field(iak_diff_t) = 1
 !

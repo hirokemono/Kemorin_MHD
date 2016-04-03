@@ -43,7 +43,8 @@
       type(MHD_coefficients_type), intent(inout) :: sgs_coefs
 !
 !
-      call clear_model_coefs_2_ele(n_sym_tensor, icomp_sgs_mf, ele)
+      call clear_model_coefs_2_ele(ele, n_sym_tensor, icomp_sgs_mf,     &
+     &    sgs_coefs%ntot_comp, sgs_coefs%ak)
 !
       if(iflag_4_gravity .gt. id_turn_OFF                               &
      &     .and. iflag_4_composit_buo .gt. id_turn_OFF) then

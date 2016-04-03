@@ -226,7 +226,8 @@
      &   'cal_diff_coef_fluid', n_sym_tensor, iak_diff_b, icomp_diff_b
       call cal_diff_coef_fluid(layer_tbl,                               &
      &    node, ele, fluid, iphys, nod_fld, jac_3d_q, jac_3d_l,         &
-     &    n_sym_tensor, iak_diff_b, icomp_diff_b, intg_point_t_evo)
+     &    n_sym_tensor, iak_diff_b, icomp_diff_b, intg_point_t_evo,     &
+     &    diff_coefs)
 !
       diff_coefs%iflag_field(iak_diff_b) = 1
 !

@@ -210,7 +210,8 @@
      &   'cal_diff_coef_fluid', n_vector, iak_diff_lor, icomp_diff_lor
       call cal_diff_coef_fluid(layer_tbl,                               &
      &    node, ele, fluid, iphys, nod_fld, jac_3d_q, jac_3d_l,         &
-     &    n_vector, iak_diff_lor, icomp_diff_lor, intg_point_t_evo)
+     &    n_vector, iak_diff_lor, icomp_diff_lor, intg_point_t_evo,     &
+     &    diff_coefs)
 !
 !
       end subroutine s_cal_diff_coef_sgs_mxwl

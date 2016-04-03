@@ -149,7 +149,7 @@
       call cal_model_coefs(layer_tbl,                                   &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
      &    itype_SGS_h_flux_coef, n_vector, iak_sgs_hf, icomp_sgs_hf,    &
-     &    intg_point_t_evo)
+     &    intg_point_t_evo, sgs_coefs)
 !
       call reduce_model_coefs_layer(SGS_hf_factor, nlayer_SGS,          &
      &    sgs_f_clip(1,iak_sgs_hf), sgs_f_whole_clip(iak_sgs_hf) )
