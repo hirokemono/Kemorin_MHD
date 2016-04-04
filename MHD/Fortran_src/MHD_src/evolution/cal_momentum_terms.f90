@@ -6,9 +6,9 @@
 !!      subroutine cal_terms_4_momentum                                 &
 !!     &        (i_field, iak_diff_mf, iak_diff_lor,                    &
 !!     &         nod_comm, node, ele, surf, fluid, sf_grp,              &
-!!     &         Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,           &
-!!     &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                &
-!!     &         mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &         Vsf_bcs, Bsf_bcs, iphys, iphys_ele, jac_3d, jac_sf_grp,&
+!!     &         rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl,     &
+!!     &         nod_fld, ele_fld)
 !!      subroutine cal_viscous_diffusion                                &
 !!     &         (iak_diff_v, iak_diff_mf, iak_diff_lor,                &
 !!     &          nod_comm, node, ele, surf, fluid, sf_grp,             &
@@ -26,7 +26,6 @@
 !!        type(vector_surf_bc_type), intent(in) :: Bsf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
-!!        type(phys_data), intent(in) :: ele_fld
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -35,6 +34,7 @@
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(phys_data), intent(inout) :: ele_fld
 !
       module cal_momentum_terms
 !
@@ -76,9 +76,9 @@
       subroutine cal_terms_4_momentum                                   &
      &        (i_field, iak_diff_mf, iak_diff_lor,                      &
      &         nod_comm, node, ele, surf, fluid, sf_grp,                &
-     &         Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,             &
-     &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                  &
-     &         mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &         Vsf_bcs, Bsf_bcs, iphys, iphys_ele, jac_3d, jac_sf_grp,  &
+     &         rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl,       &
+     &         nod_fld, ele_fld)
 !
       use int_vol_velo_monitor
       use int_surf_velo_pre
@@ -96,7 +96,6 @@
       type(vector_surf_bc_type), intent(in) :: Bsf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
-      type(phys_data), intent(in) :: ele_fld
       type(jacobians_3d), intent(in) :: jac_3d
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -106,6 +105,7 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
+      type(phys_data), intent(inout) :: ele_fld
 !
 !
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
@@ -113,13 +113,13 @@
       if (iflag_velo_supg .eq. id_turn_ON) then
         call int_vol_velo_monitor_upwind                                &
      &     (i_field, iak_diff_mf, iak_diff_lor, node, ele, fluid,       &
-     &      iphys, nod_fld, iphys_ele, ele_fld, iphys_ele%i_velo,       &
-     &      jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
+     &      iphys, nod_fld, iphys_ele, iphys_ele%i_velo, jac_3d,        &
+     &      rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl, ele_fld)
       else if (iflag_velo_supg .eq. id_magnetic_SUPG) then
         call int_vol_velo_monitor_upwind                                &
      &     (i_field, iak_diff_mf, iak_diff_lor, node, ele, fluid,       &
-     &      iphys, nod_fld, iphys_ele, ele_fld, iphys_ele%i_magne,      &
-     &      jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
+     &      iphys, nod_fld, iphys_ele, iphys_ele%i_magne, jac_3d,       &
+     &      rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl, ele_fld)
       else
        call int_vol_velo_monitor_pg(i_field, iak_diff_mf, iak_diff_lor, &
      &     node, ele, fluid, iphys, nod_fld, iphys_ele, ele_fld,        &

@@ -5,10 +5,11 @@
 !
 !!      subroutine cal_sgs_mom_flux_with_sgs_buo                        &
 !!     &         (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,  &
-!!     &          Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,          &
+!!     &          Vsf_bcs, Bsf_bcs, iphys, iphys_ele,                   &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
 !!     &          FEM_elens, filtering, sgs_coefs, sgs_coefs_nod,       &
-!!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl,             &
+!!     &          nod_fld, ele_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -17,7 +18,6 @@
 !!        type(vector_surf_bc_type), intent(in) :: Bsf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
-!!        type(phys_data), intent(in) :: ele_fld
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
@@ -32,6 +32,7 @@
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(phys_data), intent(inout) :: ele_fld
 !
       module cal_sgs_m_flux_sgs_buo
 !
@@ -68,10 +69,11 @@
 !
       subroutine cal_sgs_mom_flux_with_sgs_buo                          &
      &         (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,    &
-     &          Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,            &
+     &          Vsf_bcs, Bsf_bcs, iphys, iphys_ele,                     &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
      &          FEM_elens, filtering, sgs_coefs, sgs_coefs_nod,         &
-     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl,               &
+     &          nod_fld, ele_fld)
 !
       use m_control_parameter
       use m_phys_constants
@@ -97,7 +99,6 @@
       type(vector_surf_bc_type), intent(in) :: Bsf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
-      type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: fluid
       type(layering_tbl), intent(in) :: layer_tbl
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
@@ -113,6 +114,7 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
+      type(phys_data), intent(inout) :: ele_fld
 !
 !
       integer(kind = kint), parameter :: ncomp_sgs_buo= 6
@@ -140,8 +142,8 @@
       call cal_terms_4_momentum                                         &
      &   (iphys%i_SGS_div_m_flux, iak_diff_mf, iak_diff_lor,            &
      &    nod_comm, node, ele, surf, fluid, sf_grp, Vsf_bcs, Bsf_bcs,   &
-     &    iphys, iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q,            &
-     &    rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &    iphys, iphys_ele, jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens, &
+     &    mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, ele_fld)
 !
 !$omp parallel
       call cal_phys_dot_product(node, nod_fld,                          &

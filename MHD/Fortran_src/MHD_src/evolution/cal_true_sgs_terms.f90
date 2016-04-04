@@ -5,9 +5,9 @@
 !
 !!      subroutine cal_true_sgs_terms_pre                               &
 !!     &        (nod_comm, node, ele, surf, sf_grp, fluid, conduct,     &
-!!     &         nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,          &
+!!     &         nod_bcs, surf_bcs, iphys, iphys_ele,                   &
 !!     &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                &
-!!     &         mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &         mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, ele_fld)
 !!      subroutine cal_true_sgs_terms_post
 !!     &         (nod_comm, node, iphys, filtering, wk_filter, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
@@ -20,7 +20,6 @@
 !!        type(surface_boundarty_conditions), intent(in) :: surf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
-!!        type(phys_data), intent(in) :: ele_fld
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -31,6 +30,7 @@
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(phys_data), intent(inout) :: ele_fld
 !
       module cal_true_sgs_terms
 !
@@ -78,9 +78,9 @@
 !
       subroutine cal_true_sgs_terms_pre                                 &
      &        (nod_comm, node, ele, surf, sf_grp, fluid, conduct,       &
-     &         nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,            &
+     &         nod_bcs, surf_bcs, iphys, iphys_ele,                     &
      &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                  &
-     &         mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &         mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, ele_fld)
 !
       use calypso_mpi
       use m_phys_labels
@@ -97,7 +97,6 @@
       type(surface_boundarty_conditions), intent(in) :: surf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
-      type(phys_data), intent(in) :: ele_fld
       type(jacobians_3d), intent(in) :: jac_3d
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -107,6 +106,7 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
+      type(phys_data), intent(inout) :: ele_fld
 !
       integer(kind = kint) :: i
 !
@@ -126,8 +126,8 @@
            call cal_div_sgs_m_flux_true_pre(iak_diff_mf, iak_diff_lor,  &
      &         nod_comm, node, ele, surf, fluid, sf_grp,                &
      &         surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys,               &
-     &         iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,         &
-     &         FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &         iphys_ele, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,       &
+     &         mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, ele_fld)
          else if ( nod_fld%phys_name(i).eq.fhd_SGS_Lorentz_true) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
@@ -135,8 +135,8 @@
      &        (iak_diff_mf, iak_diff_lor, ex_magne,                     &
      &         nod_comm, node, ele, surf, fluid, sf_grp,                &
      &         surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys,               &
-     &         iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,         &
-     &         FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &         iphys_ele, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,       &
+     &         mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, ele_fld)
          else if ( nod_fld%phys_name(i).eq.fhd_SGS_mag_induct_true)     &
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
@@ -253,9 +253,9 @@
 !
       subroutine cal_div_sgs_m_flux_true_pre(iak_diff_mf, iak_diff_lor, &
      &         nod_comm, node, ele, surf, fluid, sf_grp,                &
-     &         Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,             &
+     &         Vsf_bcs, Bsf_bcs, iphys, iphys_ele,                      &
      &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, mhd_fem_wk,      &
-     &         fem_wk, f_l, f_nl, nod_fld)
+     &         fem_wk, f_l, f_nl, nod_fld, ele_fld)
 !
       use cal_momentum_terms
 !
@@ -271,7 +271,6 @@
       type(vector_surf_bc_type), intent(in) :: Bsf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
-      type(phys_data), intent(in) :: ele_fld
       type(jacobians_3d), intent(in) :: jac_3d
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -281,6 +280,7 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
+      type(phys_data), intent(inout) :: ele_fld
 !
 !
       call cal_flux_tensor(node, nod_fld%ntot_phys,                     &
@@ -289,8 +289,8 @@
       call cal_terms_4_momentum                                         &
      &   (iphys%i_m_flux_div, iak_diff_mf, iak_diff_lor,                &
      &    nod_comm, node, ele, surf, fluid, sf_grp, Vsf_bcs, Bsf_bcs,   &
-     &    iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp,                &
-     &    rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &    iphys, iphys_ele, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,     &
+     &    mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, ele_fld)
       call copy_vector_component(node, nod_fld,                         &
      &    iphys%i_m_flux_div, iphys%i_SGS_div_mf_true)
 !
@@ -301,9 +301,9 @@
       subroutine cal_div_sgs_maxwell_true_pre                           &
      &        (iak_diff_mf, iak_diff_lor, ex_magne,                     &
      &         nod_comm, node, ele, surf, fluid, sf_grp,                &
-     &         Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,             &
+     &         Vsf_bcs, Bsf_bcs, iphys, iphys_ele,                      &
      &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, mhd_fem_wk,      &
-     &         fem_wk, f_l, f_nl, nod_fld)
+     &         fem_wk, f_l, f_nl, nod_fld, ele_fld)
 !
       use cal_momentum_terms
 !
@@ -320,7 +320,6 @@
       type(vector_surf_bc_type), intent(in) :: Bsf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
-      type(phys_data), intent(in) :: ele_fld
       type(jacobians_3d), intent(in) :: jac_3d
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -330,6 +329,7 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
+      type(phys_data), intent(inout) :: ele_fld
 !
 !
       call cal_maxwell_tensor(node, ex_magne, nod_fld%ntot_phys,        &
@@ -337,8 +337,8 @@
       call cal_terms_4_momentum                                         &
      &   (iphys%i_maxwell_div, iak_diff_mf, iak_diff_lor,               &
      &    nod_comm, node, ele, surf, fluid, sf_grp, Vsf_bcs, Bsf_bcs,   &
-     &    iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp,                &
-     &    rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &    iphys, iphys_ele, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,     &
+     &    mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, ele_fld)
       call copy_vector_component(node, nod_fld,                         &
      &   iphys%i_maxwell_div, iphys%i_SGS_Lor_true)
 !

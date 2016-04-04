@@ -128,10 +128,11 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 'update_fields'
       call update_fields(mesh1, group1, ele_mesh1, MHD_mesh1,           &
-     &    nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,                &
+     &    nod1_bcs, sf1_bcs, iphys, iphys_ele,                          &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
      &    FEM1_elen, filtering1, wide_filtering, layer_tbl1, m1_lump,   &
-     &    wk_filter1, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+     &    wk_filter1, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,                &
+     &    nod_fld1, fld_ele1)
 !
 !     ----- Evaluate model coefficients
 !
@@ -148,10 +149,11 @@
 !     ========  Data output
 !
       call lead_fields_by_FEM(mesh1, group1, ele_mesh1,                 &
-     &    MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,     &
+     &    MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,               &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
      &    FEM1_elen, filtering1, wide_filtering, layer_tbl1, m1_lump,   &
-     &    wk_filter1, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+     &    wk_filter1, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,                &
+     &    nod_fld1, fld_ele1)
 !
       if (iflag_debug.eq.1)  write(*,*) 'lead_specital_SGS'
       call lead_specital_SGS
@@ -258,9 +260,9 @@
      &      mesh1%nod_comm, mesh1%node, mesh1%ele, ele_mesh1%surf,      &
      &      MHD_mesh1%fluid, group1%surf_grp,                           &
      &      sf1_bcs%Vsf_bcs, sf1_bcs%Bsf_bcs, iphys,                    &
-     &      iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,           &
+     &      iphys_ele, jac1_3d_q, jac1_sf_grp_2d_q,                     &
      &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk,                  &
-     &      f1_l, f1_nl, nod_fld1)
+     &      f1_l, f1_nl, nod_fld1, fld_ele1)
       end if
 !
 !$omp parallel

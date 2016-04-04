@@ -63,7 +63,6 @@
 !!        type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_a
 !!        type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_b
 !!        type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_c
-!!        type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
 !!        type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
 !!        type(communication_table), intent(in)                         &
 !!       &           :: MG_comm_table(0:num_MG_level)
@@ -78,6 +77,7 @@
 !!        type(DJDS_MATRIX), intent(in) :: Tmat_MG_DJDS(0:num_MG_level)
 !!        type(vectors_4_solver), intent(inout)                         &
 !!       &           :: MG_vector(0:num_MG_level)
+!!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -150,7 +150,6 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(MHD_coefficients_type), intent(in) :: diff_coefs
-      type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
@@ -162,6 +161,7 @@
 !
       type(vectors_4_solver), intent(inout)                             &
      &           :: MG_vector(0:num_MG_level)
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
@@ -237,7 +237,6 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_a
-      type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
@@ -249,6 +248,7 @@
 !
       type(vectors_4_solver), intent(inout)                             &
      &           :: MG_vector(0:num_MG_level)
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
@@ -318,7 +318,6 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_b
-      type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
@@ -330,6 +329,7 @@
 !
       type(vectors_4_solver), intent(inout)                             &
      &           :: MG_vector(0:num_MG_level)
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
@@ -403,7 +403,6 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(MHD_coefficients_type), intent(in) :: diff_coefs
-      type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
@@ -415,6 +414,7 @@
 !
       type(vectors_4_solver), intent(inout)                             &
      &           :: MG_vector(0:num_MG_level)
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
@@ -482,7 +482,6 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(MHD_coefficients_type), intent(in) :: diff_coefs
-      type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
@@ -494,6 +493,7 @@
 !
       type(vectors_4_solver), intent(inout)                             &
      &           :: MG_vector(0:num_MG_level)
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
@@ -561,7 +561,6 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(MHD_coefficients_type), intent(in) :: diff_coefs
-      type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
@@ -573,6 +572,7 @@
 !
       type(vectors_4_solver), intent(inout)                             &
      &           :: MG_vector(0:num_MG_level)
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld

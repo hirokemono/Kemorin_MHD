@@ -5,7 +5,7 @@
 !        modified by H. Matsui on Aug., 2007
 !
 !!      subroutine cal_stratified_layer                                 &
-!!     &         (node, ele, fluid, iphys, nod_fld, &
+!!     &         (node, ele, fluid, iphys, nod_fld,                     &
 !!     &          ncomp_ele, iele_velo, d_ele, jac_3d, rhs_tbl,         &
 !!     &          mhd_fem_wk, fem_wk, f_nl)
 !!      subroutine cal_stratified_layer_upw                             &
@@ -19,7 +19,7 @@
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-!!        type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
+!!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !
@@ -51,6 +51,7 @@
       use t_geometry_data_MHD
       use t_geometry_data
       use t_phys_data
+      use t_phys_address
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -65,7 +66,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_stratified_layer                                   &
-     &         (node, ele, fluid, iphys, nod_fld, &
+     &         (node, ele, fluid, iphys, nod_fld,                       &
      &          ncomp_ele, iele_velo, d_ele, jac_3d, rhs_tbl,           &
      &          mhd_fem_wk, fem_wk, f_nl)
 !
@@ -85,8 +86,7 @@
       integer(kind = kint), intent(in) :: ncomp_ele, iele_velo
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
 !
-      type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
-!
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
 !
@@ -137,8 +137,7 @@
       integer(kind = kint), intent(in) :: ncomp_ele, iele_velo
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
 !
-      type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
-!
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
 !

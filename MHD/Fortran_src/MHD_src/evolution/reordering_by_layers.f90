@@ -8,7 +8,7 @@
 !!      subroutine reordering_by_layers_snap(ele, group, MHD_mesh)
 !!      subroutine reordering_by_layers_MHD                             &
 !!     &         (ele, group, MHD_mesh, MG_interpolate)
-!!        type(element_data), intent(in) :: ele
+!!        type(element_data), intent(inout) :: ele
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(mesh_data_MHD), intent(inout) :: MHD_mesh
 !!        type(MG_itp_table), intent(inout)                             &
@@ -45,7 +45,7 @@
 !
       subroutine reordering_by_layers_snap(ele, group, MHD_mesh)
 !
-      type(element_data), intent(in) :: ele
+      type(element_data), intent(inout) :: ele
       type(mesh_groups), intent(inout) ::   group
       type(mesh_data_MHD), intent(inout) :: MHD_mesh
 !
@@ -71,7 +71,7 @@
       use reordering_MG_ele_by_layers
       use skip_comment_f
 !
-      type(element_data), intent(in) :: ele
+      type(element_data), intent(inout) :: ele
       type(mesh_groups), intent(inout) ::   group
       type(mesh_data_MHD), intent(inout) :: MHD_mesh
       type(MG_itp_table), intent(inout) :: MG_interpolate(num_MG_level)
@@ -105,7 +105,7 @@
       use reordering_element_MHD
       use reordering_element_size
 !
-      type(element_data), intent(in) :: ele
+      type(element_data), intent(inout) :: ele
       type(group_data), intent(inout) :: ele_grp
       type(surface_group_data), intent(inout) :: sf_grp
       type(mesh_data_MHD), intent(inout) :: MHD_mesh

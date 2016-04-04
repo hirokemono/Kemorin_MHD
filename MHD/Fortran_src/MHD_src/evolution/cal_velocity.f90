@@ -6,11 +6,12 @@
 !        modified by H.Matsui on July, 2006
 !
 !!      subroutine velocity_evolution(nod_comm, node, ele, surf, fluid, &
-!!     &          sf_grp, sf_grp_nod, Vnod_bcs, Vsf_bcs, Bsf_bcs,       &
-!!     &          Psf_bcs, iphys, iphys_ele, ele_fld,                   &
+!!     &         (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod, &
+!!     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys, iphys_ele,&
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
 !!     &          rhs_tbl, FEM_elens, filtering, layer_tbl,             &
-!!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl,             &
+!!     &          nod_fld, ele_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -23,7 +24,6 @@
 !!        type(vector_surf_bc_type), intent(in) :: Bsf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
-!!        type(phys_data), intent(in) :: ele_fld
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp_q, jac_sf_grp_l
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -35,6 +35,7 @@
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(phys_data), intent(inout) :: ele_fld
 !
       module cal_velocity
 !
@@ -70,12 +71,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine velocity_evolution(nod_comm, node, ele, surf, fluid,   &
-     &          sf_grp, sf_grp_nod, Vnod_bcs, Vsf_bcs, Bsf_bcs,         &
-     &          Psf_bcs, iphys, iphys_ele, ele_fld,                     &
+      subroutine velocity_evolution                                     &
+     &         (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,   &
+     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys, iphys_ele,  &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
      &          rhs_tbl, FEM_elens, filtering, layer_tbl,               &
-     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl,               &
+     &          nod_fld, ele_fld)
 !
       use m_control_parameter
       use m_machine_parameter
@@ -106,7 +108,6 @@
       type(potential_surf_bc_type), intent(in) :: Psf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
-      type(phys_data), intent(in) :: ele_fld
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(jacobians_2d), intent(in) :: jac_sf_grp_q, jac_sf_grp_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -119,6 +120,7 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
+      type(phys_data), intent(inout) :: ele_fld
 !
       integer(kind=kint) :: iloop
       real(kind = kreal) :: rel_correct
@@ -152,12 +154,13 @@
       if (iflag_debug.eq.1)  write(*,*) 's_cal_velocity_pre'
       call s_cal_velocity_pre                                           &
      &   (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,         &
-     &    Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,        &
+     &    Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,                 &
      &    jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,         &
      &    filtering, layer_tbl, num_MG_level,                           &
-          MHD1_matrices%MG_interpolate, MHD1_matrices%MG_comm_fluid,    &
+     &    MHD1_matrices%MG_interpolate, MHD1_matrices%MG_comm_fluid,    &
      &    MHD1_matrices%MG_DJDS_fluid, MHD1_matrices%Vmat_MG_DJDS,      &
-     &    MG_vector, wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &    MG_vector, wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl,          &
+     &    nod_fld, ele_fld)
 !
 !     --------------------- 
 !

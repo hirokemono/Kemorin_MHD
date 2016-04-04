@@ -36,7 +36,7 @@
       use t_geometry_data
       use t_group_data
 !
-      type(element_data), intent(in) :: ele
+      type(element_data), intent(inout) :: ele
       type(group_data), intent(inout) :: ele_grp
       type(surface_group_data), intent(inout) :: sf_grp
       type(mesh_data_MHD), intent(inout) :: MHD_mesh

@@ -7,11 +7,12 @@
 !
 !!      subroutine s_cal_velocity_pre                                   &
 !!     &         (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod, &
-!!     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,&
+!!     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,         &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens, &
 !!     &          filtering, layer_tbl, num_MG_level, MG_interpolate,   &
 !!     &          MG_comm_fluid, MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,&
-!!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl,             &
+!!     &          nod_fld, ele_fld)
 !!      subroutine cal_velocity_co                                      &
 !!     &         (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod, &
 !!     &          Vnod_bcs, Vsf_bcs, Psf_bcs, iphys, iphys_ele, ele_fld,&
@@ -32,7 +33,6 @@
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
-!!        type(phys_data), intent(in) :: ele_fld
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp_q, jac_sf_grp_l
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -52,6 +52,7 @@
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(phys_data), intent(inout) :: ele_fld
 !
       module cal_velocity_pre
 !
@@ -93,11 +94,12 @@
 !
       subroutine s_cal_velocity_pre                                     &
      &         (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,   &
-     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,  &
+     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,           &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,   &
      &          filtering, layer_tbl, num_MG_level, MG_interpolate,     &
      &          MG_comm_fluid, MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,  &
-     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl,               &
+     &          nod_fld, ele_fld)
 !
       use m_SGS_address
 !
@@ -129,7 +131,6 @@
       type(vector_surf_bc_type), intent(in) :: Bsf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
-      type(phys_data), intent(in) :: ele_fld
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(jacobians_2d), intent(in) :: jac_sf_grp_q
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -152,6 +153,7 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
+      type(phys_data), intent(inout) :: ele_fld
 !
 !
 !   ----  set SGS fluxes
@@ -160,10 +162,10 @@
       if (iflag_SGS_gravity .ne. id_SGS_none) then
         call cal_sgs_mom_flux_with_sgs_buo                              &
      &     (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,        &
-     &      Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,                &
+     &      Vsf_bcs, Bsf_bcs, iphys, iphys_ele,                         &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,       &
      &      filtering, sgs_coefs, sgs_coefs_nod,                        &
-     &      wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, ele_fld)
         call mod_Csim_by_SGS_buoyancy_ele                               &
      &     (ele, layer_tbl%e_grp, sgs_coefs)
       end if

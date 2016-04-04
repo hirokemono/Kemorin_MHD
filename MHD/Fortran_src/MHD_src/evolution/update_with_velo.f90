@@ -9,10 +9,11 @@
 !!@verbatim
 !!      subroutine update_with_velocity                                 &
 !!     &         (nod_comm, node, ele, surf, fluid, sf_grp,             &
-!!     &          Vsf_bcs, Psf_bcs, iphys, iphys_ele, ele_fld,          &
-!!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens, &
-!!     &          filtering, wide_filtering, layer_tbl,                 &
-!!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          Vsf_bcs, Psf_bcs, iphys, iphys_ele,                   &
+!!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
+!!     &          FEM_elens, filtering, wide_filtering, layer_tbl,      &
+!!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl,             &
+!!     &          nod_fld, ele_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -71,10 +72,11 @@
 !
       subroutine update_with_velocity                                   &
      &         (nod_comm, node, ele, surf, fluid, sf_grp,               &
-     &          Vsf_bcs, Psf_bcs, iphys, iphys_ele, ele_fld,            &
-     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,   &
-     &          filtering, wide_filtering, layer_tbl,                   &
-     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          Vsf_bcs, Psf_bcs, iphys, iphys_ele,                     &
+     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
+     &          FEM_elens, filtering, wide_filtering, layer_tbl,        &
+     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl,               &
+     &          nod_fld, ele_fld)
 !
       use m_t_step_parameter
       use m_SGS_model_coefs
@@ -95,7 +97,6 @@
       type(potential_surf_bc_type), intent(in) :: Psf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
-      type(phys_data), intent(in) :: ele_fld
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(jacobians_2d), intent(in) :: jac_sf_grp_q
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -109,6 +110,7 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
+      type(phys_data), intent(inout) :: ele_fld
 !
       integer (kind = kint) :: iflag_dynamic, iflag2
 !
