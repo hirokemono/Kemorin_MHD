@@ -3,7 +3,7 @@
 !
 !     Written by H. Matsui in May, 2008
 !
-!      subroutine s_input_ctl_filter_comm_test(filtering)
+!      subroutine s_input_ctl_filter_comm_test(filtering, wk_filter)
 !
       module input_ctl_filter_comm_test
 !
@@ -19,7 +19,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_input_ctl_filter_comm_test(filtering)
+      subroutine s_input_ctl_filter_comm_test(filtering, wk_filter)
 !
       use calypso_mpi
       use t_filtering_data
@@ -33,6 +33,7 @@
       use set_comm_table_4_IO
 !
       type(filtering_data_type), intent(inout) :: filtering
+      type(filtering_work_type), intent(inout) :: wk_filter
       character(len=kchara) :: file_name
 !
 !
@@ -50,9 +51,9 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_filter_comm_tbl_from_IO'
       call copy_comm_tbl_type_from_IO(filtering%comm)
-      call copy_filtering_geometry_from_IO(filtering%nnod_fil)
+      call copy_filtering_geometry_from_IO
 !
-      call alloc_nod_data_4_filter(filtering)
+      call alloc_nod_data_4_filter(nnod_filtering, wk_filter)
 !
 !
       end subroutine s_input_ctl_filter_comm_test

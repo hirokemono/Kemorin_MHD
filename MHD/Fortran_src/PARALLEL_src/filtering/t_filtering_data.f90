@@ -3,6 +3,10 @@
 !
 !     Written by H. Matsui on Nov., 2006
 !
+!!      subroutine alloc_nod_data_4_filter(numnod, filtering_data)
+!!      subroutine dealloc_nod_data_4_filter(wk_filter)
+!
+!
       module t_filtering_data
 !
       use m_precision
@@ -13,18 +17,23 @@
       implicit none
 !
       type filtering_data_type
+!> data structure for filter coefficients table for Original
         type(filter_coefficients_type) :: filter
 !
+!> data structure for filter coefficients table for SMP
         type(filter_coefficients_type) :: filter_smp
 !
 !> data structure for filter communication table
         type(communication_table) :: comm
-!
-!
-        integer(kind = kint) :: nnod_fil
-!
-        real(kind = kreal), pointer :: x_fil(:)
       end type filtering_data_type
+!
+!
+      type filtering_work_type
+!> data structure for filter communication table
+        integer(kind = kint) :: nnod_fil
+!> Work array for filtering
+        real(kind = kreal), pointer :: x_fil(:)
+      end type filtering_work_type
 !
       private :: s_const_tbl_3d_filtering_smp
 !
@@ -34,24 +43,26 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine alloc_nod_data_4_filter(filtering_data)
+      subroutine alloc_nod_data_4_filter(numnod, wk_filter)
 !
-      type(filtering_data_type), intent(inout) :: filtering_data
+      integer(kind = kint), intent(in) :: numnod
+      type(filtering_work_type), intent(inout) :: wk_filter
 !
 !
-      allocate( filtering_data%x_fil(6*filtering_data%nnod_fil) )
-      filtering_data%x_fil = 0.0d0
+      wk_filter%nnod_fil = numnod
+      allocate( wk_filter%x_fil(6*wk_filter%nnod_fil) )
+      wk_filter%x_fil = 0.0d0
 !
       end subroutine alloc_nod_data_4_filter
 !
 !------------------------------------------------------------------
 !
-      subroutine dealloc_nod_data_4_filter(filtering_data)
+      subroutine dealloc_nod_data_4_filter(wk_filter)
 !
-      type(filtering_data_type), intent(inout) :: filtering_data
+      type(filtering_work_type), intent(inout) :: wk_filter
 !
 !
-      deallocate( filtering_data%x_fil )
+      deallocate( wk_filter%x_fil )
 !
       end subroutine dealloc_nod_data_4_filter
 !

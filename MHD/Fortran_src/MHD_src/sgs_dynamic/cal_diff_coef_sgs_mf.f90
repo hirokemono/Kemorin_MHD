@@ -8,7 +8,7 @@
 !!     &          nod_comm, node, ele, surf, sf_grp, Vnod_bcs, Vsf_bcs, &
 !!     &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,          &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens, &
-!!     &          filtering, sgs_coefs, mhd_fem_wk, fem_wk,             &
+!!     &          filtering, sgs_coefs, wk_filter, mhd_fem_wk, fem_wk,  &
 !!     &          f_l, f_nl, nod_fld, diff_coefs)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -28,6 +28,7 @@
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(MHD_coefficients_type), intent(in) :: sgs_coefs
+!!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -69,7 +70,7 @@
      &          nod_comm, node, ele, surf, sf_grp, Vnod_bcs, Vsf_bcs,   &
      &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,            &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,   &
-     &          filtering, sgs_coefs, mhd_fem_wk, fem_wk,               &
+     &          filtering, sgs_coefs, wk_filter, mhd_fem_wk, fem_wk,    &
      &          f_l, f_nl, nod_fld, diff_coefs)
 !
       use m_machine_parameter
@@ -111,6 +112,7 @@
       type(filtering_data_type), intent(in) :: filtering
       type(MHD_coefficients_type), intent(in) :: sgs_coefs
 !
+      type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -154,7 +156,7 @@
 !    filtering (to iphys%i_sgs_grad)
 !
       call cal_filtered_vector_whole(nod_comm, node, filtering,         &
-     &    iphys%i_sgs_grad, iphys%i_sgs_grad, nod_fld)
+     &    iphys%i_sgs_grad, iphys%i_sgs_grad, wk_filter, nod_fld)
 !
 !    take difference (to iphys%i_sgs_simi)
 !
@@ -205,7 +207,7 @@
 !    filtering (to iphys%i_sgs_grad)
 !
       call cal_filtered_vector_whole(nod_comm, node, filtering,         &
-     &    iphys%i_sgs_grad, iphys%i_sgs_grad, nod_fld)
+     &    iphys%i_sgs_grad, iphys%i_sgs_grad, wk_filter, nod_fld)
       call delete_field_by_fixed_v_bc                                   &
      &   (Vnod_bcs, iphys%i_sgs_grad, nod_fld)
 !

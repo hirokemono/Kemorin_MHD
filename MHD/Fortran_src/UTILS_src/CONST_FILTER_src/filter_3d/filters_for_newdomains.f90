@@ -143,7 +143,7 @@
 !        write(*,*) 'copy_filter_comm_tbl_from_IO'
         call copy_comm_tbl_type_from_IO(filtering%comm)
 !        write(*,*) 'copy_filtering_geometry_from_IO'
-        call copy_filtering_geometry_from_IO(filtering%nnod_fil)
+        call copy_filtering_geometry_from_IO
 !
 !        write(*,*) 'set_global_nodid_4_newfilter'
         call set_global_nodid_4_newfilter

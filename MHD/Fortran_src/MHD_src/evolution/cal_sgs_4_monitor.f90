@@ -6,7 +6,8 @@
 !!      subroutine cal_sgs_terms_4_monitor                              &
 !!     &         (nod_comm, node, ele, fluid, conduct, iphys,           &
 !!     &          iphys_ele, ele_fld,  jac_3d, rhs_tbl, FEM_elens,      &
-!!     &          filtering, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          filtering, wk_filter, mhd_fem_wk, fem_wk,             &
+!!     &          f_l, f_nl, nod_fld)
 !!      subroutine cal_diff_of_sgs_terms(nod_comm, node, ele,           &
 !!     &          surf, fluid, conduct, sf_grp, nod_bcs, surf_bcs,      &
 !!     &          iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp,        &
@@ -72,7 +73,8 @@
       subroutine cal_sgs_terms_4_monitor                                &
      &         (nod_comm, node, ele, fluid, conduct, iphys,             &
      &          iphys_ele, ele_fld,  jac_3d, rhs_tbl, FEM_elens,        &
-     &          filtering, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          filtering, wk_filter, mhd_fem_wk, fem_wk,               &
+     &          f_l, f_nl, nod_fld)
 !
       use m_SGS_address
       use m_SGS_model_coefs
@@ -92,6 +94,7 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
 !
+      type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -103,7 +106,7 @@
         call cal_sgs_heat_flux(icomp_sgs_hf, ie_dvx,                    &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
      &      jac_3d, rhs_tbl, FEM_elens, filtering,                      &
-     &      sgs_coefs, sgs_coefs_nod, mhd_fem_wk, fem_wk,               &
+     &      sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,    &
      &      f_l, f_nl, nod_fld)
       end if
 !
@@ -112,7 +115,7 @@
         call cal_sgs_momentum_flux(icomp_sgs_mf, ie_dvx,                &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
      &      jac_3d, rhs_tbl, FEM_elens, filtering,                      &
-     &      sgs_coefs, sgs_coefs_nod, mhd_fem_wk, fem_wk,               &
+     &      sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,    &
      &      f_l, f_nl, nod_fld)
       end if
 !
@@ -122,7 +125,7 @@
         call cal_sgs_maxwell(icomp_sgs_lor, ie_dbx,                     &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
      &      jac_3d, rhs_tbl, FEM_elens, filtering,                      &
-     &      sgs_coefs, sgs_coefs_nod, mhd_fem_wk, fem_wk,               &
+     &      sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,    &
      &      f_l, f_nl, nod_fld)
       end if
 !
@@ -131,7 +134,7 @@
         call cal_sgs_magne_induction(icomp_sgs_uxb, ie_dvx, ie_dbx,     &
      &      nod_comm, node, ele, conduct, iphys, iphys_ele, ele_fld,    &
      &      jac_3d, rhs_tbl, FEM_elens, filtering, sgs_coefs_nod,       &
-     &      mhd_fem_wk, fem_wk, f_l, nod_fld)
+     &      wk_filter, mhd_fem_wk, fem_wk, f_l, nod_fld)
       end if
 !
       if (iphys%i_SGS_vp_induct .gt. 0) then
@@ -140,7 +143,7 @@
         call cal_sgs_uxb_2_monitor(icomp_sgs_uxb, ie_dvx,               &
      &      nod_comm, node, ele, conduct, iphys, iphys_ele,             &
      &      ele_fld, jac_3d, rhs_tbl, FEM_elens, filtering, sgs_coefs,  &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       end subroutine cal_sgs_terms_4_monitor

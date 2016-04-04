@@ -10,7 +10,7 @@
 !!     &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens, filtering,&
 !!     &          num_MG_level, MG_interpolate, MG_comm_table,          &
 !!     &          MG_DJDS_table, Bmat_MG_DJDS, MG_vector,               &
-!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_vector_p_co(nod_comm, node, ele, surf, conduct,  &
 !!     &          sf_grp, Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld, &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
@@ -43,6 +43,7 @@
 !!        type(DJDS_MATRIX), intent(in) :: Bmat_MG_DJDS(0:num_MG_level)
 !!        type(vectors_4_solver), intent(inout)                         &
 !!       &           :: MG_vector(0:num_MG_level)
+!!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -91,7 +92,7 @@
      &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens, filtering,  &
      &          num_MG_level, MG_interpolate, MG_comm_table,            &
      &          MG_DJDS_table, Bmat_MG_DJDS, MG_vector,                 &
-     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use calypso_mpi
       use m_SGS_address
@@ -136,6 +137,7 @@
 !
       type(vectors_4_solver), intent(inout)                             &
      &           :: MG_vector(0:num_MG_level)
+      type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -159,7 +161,7 @@
         call cal_sgs_uxb_2_evo(icomp_sgs_uxb, ie_dvx,                   &
      &     nod_comm, node, ele, conduct, iphys, iphys_ele, ele_fld,     &
      &     jac_3d_q, rhs_tbl, FEM_elens, filtering, sgs_coefs,          &
-     &     mhd_fem_wk, fem_wk, f_nl, nod_fld)
+     &     wk_filter, mhd_fem_wk, fem_wk, f_nl, nod_fld)
       end if
 !
       if (iflag_mag_supg .gt. id_turn_OFF) then

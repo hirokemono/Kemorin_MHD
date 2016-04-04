@@ -11,8 +11,8 @@
 !!     &         (nod_comm, node, ele, surf, fluid, conduct, layer_tbl, &
 !!     &          sf_grp, Bsf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,  &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens, &
-!!     &          filtering, wide_filtering, m_lump, mhd_fem_wk, fem_wk,&
-!!     &          f_l, f_nl, nod_fld)
+!!     &          filtering, wide_filtering, m_lump, wk_filter,         &
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -32,6 +32,7 @@
 !!        type(filtering_data_type), intent(in) :: wide_filtering
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
 !!        type(layering_tbl), intent(in) :: layer_tbl
+!!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -73,8 +74,8 @@
      &         (nod_comm, node, ele, surf, fluid, conduct, layer_tbl,   &
      &          sf_grp, Bsf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,    &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,   &
-     &          filtering, wide_filtering, m_lump, mhd_fem_wk, fem_wk,  &
-     &          f_l, f_nl, nod_fld)
+     &          filtering, wide_filtering, m_lump, wk_filter,           &
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_t_step_parameter
       use m_SGS_model_coefs
@@ -106,6 +107,7 @@
       type(lumped_mass_matrices), intent(in) :: m_lump
       type(layering_tbl), intent(in) :: layer_tbl
 !
+      type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -154,7 +156,7 @@
            if (iflag_debug.gt.0) write(*,*)                             &
      &         'cal_filtered_vector_whole',  iphys%i_filter_magne
            call cal_filtered_vector_whole(nod_comm, node, filtering,    &
-     &         iphys%i_filter_magne, iphys%i_magne, nod_fld)
+     &         iphys%i_filter_magne, iphys%i_magne, wk_filter, nod_fld)
            nod_fld%iflag_update(iphys%i_filter_magne  ) = 1
            nod_fld%iflag_update(iphys%i_filter_magne+1) = 1
            nod_fld%iflag_update(iphys%i_filter_magne+2) = 1
@@ -180,7 +182,8 @@
          if (iflag2.eq.3 .and. iphys%i_wide_fil_magne.ne.0) then
            call cal_filtered_vector_whole                               &
      &        (nod_comm, node, wide_filtering,                          &
-     &         iphys%i_wide_fil_magne, iphys%i_filter_magne, nod_fld)
+     &         iphys%i_wide_fil_magne, iphys%i_filter_magne,            &
+     &         wk_filter, nod_fld)
             nod_fld%iflag_update(iphys%i_wide_fil_magne  ) = 1
             nod_fld%iflag_update(iphys%i_wide_fil_magne+1) = 1
             nod_fld%iflag_update(iphys%i_wide_fil_magne+2) = 1
@@ -196,7 +199,8 @@
      &        nod_comm, node, ele, surf, sf_grp, Bsf_bcs, Fsf_bcs,      &
      &        iphys, iphys_ele, ele_fld, fluid, layer_tbl,              &
      &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,                &
-     &        FEM_elens, filtering, m_lump, fem_wk, f_l, f_nl, nod_fld)
+     &        FEM_elens, filtering, m_lump, wk_filter, fem_wk,          &
+     &        f_l, f_nl, nod_fld)
          end if
        end if
  !

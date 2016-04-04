@@ -12,7 +12,7 @@
 !!     &          Vsf_bcs, Psf_bcs, iphys, iphys_ele, ele_fld,          &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens, &
 !!     &          filtering, wide_filtering, layer_tbl,                 &
-!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -31,6 +31,7 @@
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(filtering_data_type), intent(in) :: wide_filtering
 !!        type(layering_tbl), intent(in) :: layer_tbl
+!!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -73,7 +74,7 @@
      &          Vsf_bcs, Psf_bcs, iphys, iphys_ele, ele_fld,            &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,   &
      &          filtering, wide_filtering, layer_tbl,                   &
-     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_t_step_parameter
       use m_SGS_model_coefs
@@ -103,6 +104,7 @@
       type(filtering_data_type), intent(in) :: wide_filtering
       type(layering_tbl), intent(in) :: layer_tbl
 !
+      type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -156,7 +158,7 @@
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &      write(*,*) 'cal_filtered_vector', iphys%i_filter_velo
           call cal_filtered_vector_whole(nod_comm, node, filtering,     &
-     &        iphys%i_filter_velo, iphys%i_velo, nod_fld)
+     &        iphys%i_filter_velo, iphys%i_velo, wk_filter, nod_fld)
           nod_fld%iflag_update(iphys%i_filter_velo  ) = 1
           nod_fld%iflag_update(iphys%i_filter_velo+1) = 1
           nod_fld%iflag_update(iphys%i_filter_velo+2) = 1
@@ -168,7 +170,8 @@
      &    .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
           call cal_filtered_vector_whole                                &
      &       (nod_comm, node, wide_filtering,                           &
-     &        iphys%i_wide_fil_velo, iphys%i_filter_velo, nod_fld)
+     &        iphys%i_wide_fil_velo, iphys%i_filter_velo,               &
+     &        wk_filter, nod_fld)
           nod_fld%iflag_update(iphys%i_wide_fil_velo  ) = 1
           nod_fld%iflag_update(iphys%i_wide_fil_velo+1) = 1
           nod_fld%iflag_update(iphys%i_wide_fil_velo+2) = 1
@@ -197,7 +200,8 @@
      &        nod_comm, node, ele, surf, sf_grp, Vsf_bcs, Psf_bcs,      &
      &        iphys, iphys_ele, ele_fld, fluid, layer_tbl,              &
      &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,     &
-     &        filtering, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &        filtering, wk_filter, mhd_fem_wk, fem_wk,                 &
+     &        f_l, f_nl, nod_fld)
         end if
 !
       end if

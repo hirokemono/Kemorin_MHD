@@ -10,7 +10,7 @@
 !!      subroutine cal_sgs_uxb_2_monitor(icomp_sgs_uxb, ie_dvx,         &
 !!     &          nod_comm, node, ele, conduct, iphys,                  &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elen,        &
-!!     &          filtering, sgs_coefs, mhd_fem_wk, fem_wk,             &
+!!     &          filtering, sgs_coefs, wk_filter, mhd_fem_wk, fem_wk,  &
 !!     &          f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -24,6 +24,7 @@
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(MHD_coefficients_type), intent(in) :: sgs_coefs
+!!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -105,7 +106,7 @@
       subroutine cal_sgs_uxb_2_monitor(icomp_sgs_uxb, ie_dvx,           &
      &          nod_comm, node, ele, conduct, iphys,                    &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elen,          &
-     &          filtering, sgs_coefs, mhd_fem_wk, fem_wk,               &
+     &          filtering, sgs_coefs, wk_filter, mhd_fem_wk, fem_wk,    &
      &          f_l, f_nl, nod_fld)
 !
       use cal_sgs_fluxes
@@ -128,6 +129,7 @@
       type(filtering_data_type), intent(in) :: filtering
       type(MHD_coefficients_type), intent(in) :: sgs_coefs
 !
+      type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -138,7 +140,7 @@
       call cal_sgs_uxb_2_evo(icomp_sgs_uxb, ie_dvx,                     &
      &    nod_comm, node, ele, conduct, iphys, iphys_ele, ele_fld,      &
      &    jac_3d, rhs_tbl, FEM_elen, filtering, sgs_coefs,              &
-     &    mhd_fem_wk, fem_wk, f_nl, nod_fld)
+     &    wk_filter, mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
       call cal_ff_2_vector(node%numnod, node%istack_nod_smp,            &

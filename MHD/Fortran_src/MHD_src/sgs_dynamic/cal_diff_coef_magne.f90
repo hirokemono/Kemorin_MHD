@@ -7,7 +7,7 @@
 !!     &          nod_comm, node, ele, surf, sf_grp, Bsf_bcs, Fsf_bcs,  &
 !!     &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,          &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
-!!     &          FEM_elens, filtering, m_lump, fem_wk,                 &
+!!     &          FEM_elens, filtering, m_lump, wk_filter, fem_wk,      &
 !!     &          f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -27,6 +27,7 @@
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
+!!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -62,7 +63,7 @@
      &          nod_comm, node, ele, surf, sf_grp, Bsf_bcs, Fsf_bcs,    &
      &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,            &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
-     &          FEM_elens, filtering, m_lump, fem_wk,                   &
+     &          FEM_elens, filtering, m_lump, wk_filter, fem_wk,        &
      &          f_l, f_nl, nod_fld)
 !
       use m_machine_parameter
@@ -102,6 +103,7 @@
       type(filtering_data_type), intent(in) :: filtering
       type(lumped_mass_matrices), intent(in) :: m_lump
 !
+      type(filtering_work_type), intent(inout) :: wk_filter
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
@@ -124,7 +126,7 @@
       call copy_vector_component(node, nod_fld,                         &
      &    iphys%i_filter_magne, iphys%i_sgs_grad_f)
       call cal_filtered_scalar_whole(nod_comm, node, filtering,         &
-     &    i_sgs_grad_fp, iphys%i_mag_p, nod_fld)
+     &    i_sgs_grad_fp, iphys%i_mag_p, wk_filter, nod_fld)
 !
 !   take rotation and gradient of filtered B (to iphys%i_sgs_simi)
 !
@@ -169,7 +171,7 @@
 !    filtering (to iphys%i_sgs_grad)
 !
       call cal_filtered_sym_tensor_whole(nod_comm, node, filtering,     &
-     &    iphys%i_sgs_grad, iphys%i_sgs_grad, nod_fld)
+     &    iphys%i_sgs_grad, iphys%i_sgs_grad, wk_filter, nod_fld)
 !
 !    take difference (to iphys%i_sgs_simi)
 !
@@ -215,7 +217,7 @@
 !    filtering (to iphys%i_sgs_grad)
 !
       call cal_filtered_sym_tensor_whole(nod_comm, node, filtering,     &
-     &    iphys%i_sgs_grad, iphys%i_sgs_grad, nod_fld)
+     &    iphys%i_sgs_grad, iphys%i_sgs_grad, wk_filter, nod_fld)
 !
 !      call check_nodal_data                                            &
 !     &   (my_rank, nod_fld, n_sym_tensor, iphys%i_sgs_grad)

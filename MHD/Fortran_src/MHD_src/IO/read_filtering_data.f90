@@ -7,11 +7,12 @@
 !     modified by H. Matsui on May, 2008
 !
 !!      subroutine s_read_filtering_data                                &
-!!     &         (node, ele, filtering, wide_filtering)
+!!     &         (node, ele, filtering, wide_filtering, wk_filter)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(filtering_data_type), intent(inout) :: filtering
 !!        type(filtering_data_type), intent(inout) :: wide_filtering
+!!        type(filtering_work_type), intent(inout) :: wk_filter
 !
       module read_filtering_data
 !
@@ -32,9 +33,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_read_filtering_data                                  &
-     &         (node, ele, filtering, wide_filtering)
+     &         (node, ele, filtering, wide_filtering, wk_filter)
 !
       use m_control_parameter
+      use m_nod_filter_comm_table
       use m_filter_elength
       use m_filter_file_names
       use t_geometry_data
@@ -44,6 +46,7 @@
 !
       type(filtering_data_type), intent(inout) :: filtering
       type(filtering_data_type), intent(inout) :: wide_filtering
+      type(filtering_work_type), intent(inout) :: wk_filter
 !
 !
       if (iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
@@ -55,6 +58,7 @@
         if(iflag_SGS_filter .gt. 0) then
           call read_3d_filtering_data                                   &
      &       (filter_3d_head, ifmt_3d_filter, filtering)
+          call alloc_nod_data_4_filter(nnod_filtering, wk_filter)
         end if
 !
         if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                   &
@@ -90,10 +94,7 @@
       call sel_read_sort_filter_coef_file(my_rank)
 !
       call copy_comm_tbl_type_from_IO(filtering%comm)
-      filtering%nnod_fil = numnod_dummy
-      call copy_filtering_geometry_from_IO(filtering%nnod_fil)
-!
-      call alloc_nod_data_4_filter(filtering)
+      call copy_filtering_geometry_from_IO
 !
       call copy_3d_filter_stacks_from_IO(filtering%filter)
       call copy_3d_filter_weights_from_IO(filtering%filter)

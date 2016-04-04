@@ -18,6 +18,7 @@
       implicit none
 !
       type(filtering_data_type), save :: filtering_test
+      type(filtering_work_type), save :: wk_filter_test
 !
       private :: filtering_test
       private :: nod_filter_send_recv_test
@@ -39,7 +40,7 @@
 !     ---------------------
 !
       if (iflag_debug.gt.0) write(*,*) 's_input_ctl_filter_comm_test'
-      call s_input_ctl_filter_comm_test(filtering_test)
+      call s_input_ctl_filter_comm_test(filtering_test, wk_filter_test)
 !
        end subroutine init_analyzer
 !

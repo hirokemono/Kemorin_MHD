@@ -51,7 +51,7 @@
       end if
 !
       call copy_comm_tbl_type_from_IO(filtering%comm)
-      call copy_filtering_geometry_from_IO(filtering%nnod_fil)
+      call copy_filtering_geometry_from_IO
 !
       if ( ifile_type .eq. 0) then
         write(*,*) 'read_filter_neib_4_sort', inter_nod_3dfilter

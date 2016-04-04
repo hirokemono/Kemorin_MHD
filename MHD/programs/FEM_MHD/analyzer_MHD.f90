@@ -53,8 +53,8 @@
       call start_eleps_time(1)
 !
       call start_eleps_time(4)
-      call input_control_4_MHD                                          &
-     &   (mesh1, group1, ele_mesh1, filtering1, wide_filtering)
+      call input_control_4_MHD(mesh1, group1, ele_mesh1,                &
+     &    filtering1, wide_filtering, wk_filter1)
       call end_eleps_time(4)
 !
       call start_eleps_time(2)

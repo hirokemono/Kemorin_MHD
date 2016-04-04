@@ -11,7 +11,7 @@
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens, &
 !!     &          filtering, layer_tbl, num_MG_level, MG_interpolate,   &
 !!     &          MG_comm_fluid, MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,&
-!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_velocity_co                                      &
 !!     &         (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod, &
 !!     &          Vnod_bcs, Vsf_bcs, Psf_bcs, iphys, iphys_ele, ele_fld,&
@@ -47,6 +47,7 @@
 !!        type(DJDS_MATRIX), intent(in) :: Vmat_MG_DJDS(0:num_MG_level)
 !!        type(vectors_4_solver), intent(inout)                         &
 !!       &           :: MG_vector(0:num_MG_level)
+!!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -96,7 +97,7 @@
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,   &
      &          filtering, layer_tbl, num_MG_level, MG_interpolate,     &
      &          MG_comm_fluid, MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,  &
-     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_SGS_address
 !
@@ -146,6 +147,7 @@
 !
       type(vectors_4_solver), intent(inout)                             &
      &           :: MG_vector(0:num_MG_level)
+      type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -160,8 +162,8 @@
      &     (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,        &
      &      Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,                &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,       &
-     &      filtering, sgs_coefs, sgs_coefs_nod, mhd_fem_wk, fem_wk,    &
-     &      f_l, f_nl, nod_fld)
+     &      filtering, sgs_coefs, sgs_coefs_nod,                        &
+     &      wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         call mod_Csim_by_SGS_buoyancy_ele                               &
      &     (ele, layer_tbl%e_grp, sgs_coefs)
       end if
@@ -170,7 +172,7 @@
         call cal_sgs_momentum_flux(icomp_sgs_mf, ie_dvx,                &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
      &      jac_3d_q, rhs_tbl, FEM_elens, filtering,                    &
-     &      sgs_coefs, sgs_coefs_nod, mhd_fem_wk, fem_wk,               &
+     &      sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,    &
      &      f_l, f_nl, nod_fld)
       end if
 !
@@ -178,7 +180,7 @@
         call cal_sgs_maxwell(icomp_sgs_lor, ie_dbx,                     &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
      &      jac_3d_q, rhs_tbl, FEM_elens, filtering,                    &
-     &      sgs_coefs, sgs_coefs_nod, mhd_fem_wk, fem_wk,               &
+     &      sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,    &
      &      f_l, f_nl, nod_fld)
       end if
 !

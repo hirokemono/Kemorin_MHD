@@ -11,7 +11,7 @@
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,         &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp, rhs_tbl, FEM_elens,   &
 !!     &          filtering, wide_filtering, layer_tbl, m_lump,         &
-!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(element_geometry), intent(in) :: ele_mesh
@@ -29,6 +29,7 @@
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(filtering_data_type), intent(in) :: wide_filtering
 !!        type(layering_tbl), intent(in) :: layer_tbl
+!!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -72,7 +73,7 @@
      &          nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,           &
      &          jac_3d_q, jac_3d_l, jac_sf_grp, rhs_tbl, FEM_elens,     &
      &          filtering, wide_filtering, layer_tbl, m_lump,&
-     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_machine_parameter
       use m_t_step_parameter
@@ -101,6 +102,7 @@
       type(filtering_data_type), intent(in) :: wide_filtering
       type(layering_tbl), intent(in) :: layer_tbl
 !
+      type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -121,7 +123,7 @@
      &      nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,               &
      &      jac_3d_q, jac_3d_l, jac_sf_grp, rhs_tbl, FEM_elens,         &
      &      filtering, wide_filtering, layer_tbl, m_lump,               &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
         call cal_field_by_rotation                                      &
      &     (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &
@@ -137,8 +139,8 @@
         call cal_energy_fluxes                                          &
      &     (mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs, iphys,  &
      &      iphys_ele, ele_fld, jac_3d_q, jac_sf_grp, rhs_tbl,          &
-     &      FEM_elens, filtering, m_lump, mhd_fem_wk, fem_wk,           &
-     &      f_l, f_nl, nod_fld)
+     &      FEM_elens, filtering, m_lump, wk_filter,                    &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       end subroutine lead_fields_by_FEM
@@ -148,7 +150,8 @@
       subroutine cal_energy_fluxes(mesh, group, ele_mesh, MHD_mesh,     &
      &          nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,           &
      &          jac_3d_q, jac_sf_grp, rhs_tbl, FEM_elens, filtering,    &
-     &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          m_lump, wk_filter, mhd_fem_wk, fem_wk,                  &
+     &          f_l, f_nl, nod_fld)
 !
       use m_machine_parameter
       use m_physical_property
@@ -173,6 +176,7 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
 !
+      type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -188,8 +192,8 @@
 !
       call cal_sgs_terms_4_monitor(mesh%nod_comm, mesh%node, mesh%ele,  &
      &    MHD_mesh%fluid, MHD_mesh%conduct, iphys, iphys_ele, ele_fld,  &
-     &    jac_3d_q, rhs_tbl, FEM_elens, filtering, mhd_fem_wk, fem_wk,  &
-     &    f_l, f_nl, nod_fld)
+     &    jac_3d_q, rhs_tbl, FEM_elens, filtering,                      &
+     &    wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       call cal_fluxes_4_monitor(mesh%node, iphys, nod_fld)
 !
@@ -206,8 +210,8 @@
      &    jac_3d_q, jac_sf_grp, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, &
      &    f_l, f_nl, nod_fld)
 !
-      call cal_true_sgs_terms_post                                      &
-     &   (mesh%nod_comm, mesh%node, iphys, filtering, nod_fld)
+      call cal_true_sgs_terms_post(mesh%nod_comm, mesh%node, iphys,     &
+     &    filtering, wk_filter, nod_fld)
 !
       call cal_work_4_forces(mesh%nod_comm, mesh%node, mesh%ele,        &
      &    iphys, jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_nl, nod_fld)

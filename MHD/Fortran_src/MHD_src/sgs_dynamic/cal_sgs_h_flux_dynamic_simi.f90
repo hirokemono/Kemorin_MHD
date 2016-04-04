@@ -6,7 +6,7 @@
 !!      subroutine s_cal_sgs_h_flux_dynamic_simi                        &
 !!     &         (iak_sgs_hf, icomp_sgs_hf, nod_comm, node, ele,        &
 !!     &          iphys, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,        &
-!!     &          filtering, wide_filtering, m_lump, fem_wk,            &
+!!     &          filtering, wide_filtering, m_lump, wk_filter, fem_wk, &
 !!     &          f_l, nod_fld, sgs_coefs, sgs_coefs_nod)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -18,6 +18,7 @@
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(filtering_data_type), intent(in) :: wide_filtering
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
+!!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -54,7 +55,7 @@
       subroutine s_cal_sgs_h_flux_dynamic_simi                          &
      &         (iak_sgs_hf, icomp_sgs_hf, nod_comm, node, ele,          &
      &          iphys, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,          &
-     &          filtering, wide_filtering, m_lump, fem_wk,              &
+     &          filtering, wide_filtering, m_lump, wk_filter, fem_wk,   &
      &          f_l, nod_fld, sgs_coefs, sgs_coefs_nod)
 !
       use reset_dynamic_model_coefs
@@ -80,6 +81,7 @@
       type(filtering_data_type), intent(in) :: wide_filtering
       type(lumped_mass_matrices), intent(in) :: m_lump
 !
+      type(filtering_work_type), intent(inout) :: wk_filter
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
       type(phys_data), intent(inout) :: nod_fld
@@ -102,7 +104,7 @@
       call cal_sgs_hf_simi(iphys%i_sgs_grad_f,                          &
      &    iphys%i_filter_temp, iphys%i_wide_fil_temp, icomp_sgs_hf,     &
      &    nod_comm, node, iphys, wide_filtering, sgs_coefs_nod,         &
-     &    nod_fld)
+     &    wk_filter, nod_fld)
 !      call check_nodal_data                                            &
 !     &   (my_rank, nod_fld, n_vector, iphys%i_sgs_grad_f)
 !
@@ -111,7 +113,8 @@
       if (iflag_debug.eq.1) write(*,*) 'cal_sgs_hf_simi'
       call cal_sgs_hf_simi(iphys%i_SGS_h_flux, iphys%i_sgs_temp,        &
      &    iphys%i_filter_temp, icomp_sgs_hf,                            &
-     &    nod_comm, node, iphys, filtering, sgs_coefs_nod, nod_fld)
+     &    nod_comm, node, iphys, filtering, sgs_coefs_nod,              &
+     &    wk_filter, nod_fld)
 !
 !    copy to work array
 !
@@ -121,7 +124,7 @@
 !      filtering
 !
       call cal_filtered_vector_whole(nod_comm, node, filtering,         &
-     &    iphys%i_sgs_grad, iphys%i_SGS_h_flux, nod_fld)
+     &    iphys%i_sgs_grad, iphys%i_SGS_h_flux, wk_filter, nod_fld)
 !
 !   Change coordinate
 !

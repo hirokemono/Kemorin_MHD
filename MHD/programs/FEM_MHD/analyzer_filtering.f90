@@ -47,8 +47,8 @@
 !
 !     --------------------- 
 !
-      call input_control_4_snapshot                                     &
-     &   (mesh1, group1, ele_mesh1, filtering1, wide_filtering)
+      call input_control_4_snapshot(mesh1, group1, ele_mesh1,           &
+     &    filtering1, wide_filtering, wk_filter1)
 !
 !     --------------------- 
 !
