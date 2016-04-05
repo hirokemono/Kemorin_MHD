@@ -243,8 +243,8 @@
      &     (iak_diff_v, iak_diff_mf, iak_diff_lor,                      &
      &      nod_comm, node, ele, surf, fluid, sf_grp,                   &
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,       &
-     &      iphys, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, mhd_fem_wk,  &
-     &      fem_wk, f_l, f_nl, nod_fld)
+     &      iphys, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,  &
+     &      mhd_fem_wk,fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       if (iphys%i_vp_diffuse .gt. izero) then

@@ -102,6 +102,7 @@
      &          nod_fld, ele_fld)
 !
       use m_SGS_address
+      use m_SGS_model_coefs
 !
       use nod_phys_send_recv
       use cal_sgs_fluxes
@@ -162,10 +163,10 @@
       if (iflag_SGS_gravity .ne. id_SGS_none) then
         call cal_sgs_mom_flux_with_sgs_buo                              &
      &     (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,        &
-     &      Vsf_bcs, Bsf_bcs, iphys, iphys_ele,                         &
-     &      jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,       &
-     &      filtering, sgs_coefs, sgs_coefs_nod,                        &
-     &      wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, ele_fld)
+     &      Vsf_bcs, Bsf_bcs, iphys, iphys_ele, jac_3d_q, jac_3d_l,     &
+     &      jac_sf_grp_q, rhs_tbl, FEM_elens, filtering,                &
+     &      sgs_coefs_nod, sgs_coefs, wk_filter, mhd_fem_wk, fem_wk,    &
+     &      f_l, f_nl, nod_fld, ele_fld)
         call mod_Csim_by_SGS_buoyancy_ele                               &
      &     (ele, layer_tbl%e_grp, sgs_coefs)
       end if

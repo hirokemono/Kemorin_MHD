@@ -3,15 +3,13 @@
 !
 !      written by H. Matsui on Nov., 2009
 !
-!      subroutine s_merge_coefs_w_dynamic(numdir, c_comps, c_fields,    &
-!     &          cor)
+!!      subroutine s_merge_coefs_w_dynamic(numdir, cor, sgs_wg,         &
+!!     &          c_comps, c_fields)
 !
       module merge_coefs_whole_dynamic
 !
       use m_precision
-!
       use m_constants
-      use m_work_4_dynamic_model
 !
       implicit none
 !
@@ -25,26 +23,29 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_merge_coefs_w_dynamic(numdir, c_comps, c_fields,     &
-     &          cor)
+      subroutine s_merge_coefs_w_dynamic(numdir, cor, sgs_wg,           &
+     &          c_comps, c_fields)
 !
       use m_control_parameter
 !
       integer (kind = kint), intent(in) :: numdir
       real(kind = kreal), intent(in) :: cor(numdir)
 !
+      real(kind=kreal), intent(inout) ::  sgs_wg(18)
       real(kind = kreal), intent(inout) :: c_comps(numdir)
       real(kind = kreal), intent(inout) :: c_fields
 !
 !
-      call cal_each_components_w_coefs(numdir, c_comps)
+      call cal_each_components_w_coefs(numdir, sgs_wg, c_comps)
 !
       if      (iset_SGS_coef_marging .eq. 1) then
-        call ave_by_direction_w_dynamic(numdir, c_comps, c_fields)
+        call ave_by_direction_w_dynamic                                 &
+     &     (numdir, sgs_wg, c_comps, c_fields)
       else if (iset_SGS_coef_marging .eq. 2) then
-        call ave_by_correlate_w_dynamic(numdir, c_comps, c_fields, cor)
+        call ave_by_correlate_w_dynamic                                 &
+     &     (numdir, cor, sgs_wg, c_comps, c_fields)
       else
-        call sum_by_direction_w_dynamic(numdir, c_fields )
+        call sum_by_direction_w_dynamic(numdir, sgs_wg, c_fields)
       end if
 !
       end subroutine s_merge_coefs_w_dynamic
@@ -52,10 +53,11 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_each_components_w_coefs(numdir, c_comps)
+      subroutine cal_each_components_w_coefs(numdir, sgs_wg, c_comps)
 !
 !
       integer (kind = kint), intent(in) :: numdir
+      real(kind=kreal), intent(in) ::  sgs_wg(18)
       real(kind = kreal), intent(inout) :: c_comps(numdir)
 !
       integer (kind = kint) :: nd
@@ -74,10 +76,11 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine sum_by_direction_w_dynamic(numdir, c_fields)
+      subroutine sum_by_direction_w_dynamic(numdir, sgs_wg, c_fields)
 !
 !
       integer (kind = kint), intent(in) :: numdir
+      real(kind=kreal), intent(inout) ::  sgs_wg(18)
       real(kind = kreal), intent(inout) :: c_fields
 !
       integer (kind = kint) :: nd
@@ -98,13 +101,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine ave_by_direction_w_dynamic(numdir, c_comps, c_fields)
+      subroutine ave_by_direction_w_dynamic                             &
+     &         (numdir, sgs_wg, c_comps, c_fields)
 !
       integer (kind = kint), intent(in) :: numdir
+      real(kind=kreal), intent(in) ::  sgs_wg(18)
       real(kind = kreal), intent(in) :: c_comps(numdir)
       real(kind = kreal), intent(inout) :: c_fields
 !
       integer (kind = kint) :: nd
+      real(kind=kreal) :: dnum_w
 !
 !
       dnum_w = 0.0d0
@@ -131,16 +137,18 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine ave_by_correlate_w_dynamic(numdir, c_comps, c_fields,  &
-     &          cor)
+      subroutine ave_by_correlate_w_dynamic(numdir, cor, sgs_wg,        &
+     &          c_comps, c_fields)
 !
       integer (kind = kint), intent(in) :: numdir
       real(kind = kreal), intent(in) :: cor(numdir)
+      real(kind=kreal), intent(in) ::  sgs_wg(18)
 !
       real(kind = kreal), intent(in) :: c_comps(numdir)
       real(kind = kreal), intent(inout) :: c_fields
 !
       integer (kind = kint) :: nd
+      real(kind=kreal) :: dnum_w
 !
 !
       dnum_w = 0.0d0

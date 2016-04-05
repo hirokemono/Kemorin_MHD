@@ -13,7 +13,7 @@
 !!     &         (iak_diff_v, iak_diff_mf, iak_diff_lor,                &
 !!     &          nod_comm, node, ele, surf, fluid, sf_grp,             &
 !!     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, jac_3d, jac_sf_grp,&
-!!     &          rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,               &
+!!     &          rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk, fem_wk,   &
 !!     &          f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -30,6 +30,7 @@
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(MHD_coefficients_type), intent(in) :: diff_coefs
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -56,6 +57,7 @@
       use t_finite_element_mat
       use t_MHD_finite_element_mat
       use t_filter_elength
+      use t_material_property
       use t_bc_data_velo
       use t_surface_bc_data
 !
@@ -122,8 +124,8 @@
      &      rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl, ele_fld)
       else
        call int_vol_velo_monitor_pg(i_field, iak_diff_mf, iak_diff_lor, &
-     &     node, ele, fluid, iphys, nod_fld, iphys_ele, ele_fld,        &
-     &     jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
+     &     node, ele, fluid, iphys, nod_fld, iphys_ele, jac_3d,         &
+     &     rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl, ele_fld)
       end if
 !
       call int_surf_velo_monitor(i_field, iak_diff_mf, iak_diff_lor,    &
@@ -149,10 +151,9 @@
      &         (iak_diff_v, iak_diff_mf, iak_diff_lor,                  &
      &          nod_comm, node, ele, surf, fluid, sf_grp,               &
      &          Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, jac_3d, jac_sf_grp,  &
-     &          rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,                 &
+     &          rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk, fem_wk,     &
      &          f_l, f_nl, nod_fld)
 !
-      use m_SGS_model_coefs
       use int_vol_diffusion_ele
       use int_surf_velo_pre
 !
@@ -173,6 +174,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk

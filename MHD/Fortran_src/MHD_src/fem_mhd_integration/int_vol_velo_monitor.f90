@@ -10,8 +10,8 @@
 !
 !!      subroutine int_vol_velo_monitor_pg                              &
 !!     &         (i_field, iak_diff_mf, iak_diff_lor,                   &
-!!     &          node, ele, fluid, iphys, nod_fld, iphys_ele, ele_fld, &
-!!     &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
+!!     &          node, ele, fluid, iphys, nod_fld, iphys_ele, jac_3d,  &
+!!     &          rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl, ele_fld)
 !!      subroutine int_vol_velo_monitor_upwind                          &
 !!     &         (i_field, iak_diff_mf, iak_diff_lor, node, ele,        &
 !!     &          fluid, iphys, nod_fld, iphys_ele, iv_upw, jac_3d,     &
@@ -21,7 +21,6 @@
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(phys_address), intent(in) :: iphys_ele
-!!        type(phys_data), intent(in) :: ele_fld
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -29,6 +28,7 @@
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
+!!        type(phys_data), intent(inout) :: ele_fld
 !
       module int_vol_velo_monitor
 !
@@ -62,8 +62,8 @@
 !
       subroutine int_vol_velo_monitor_pg                                &
      &         (i_field, iak_diff_mf, iak_diff_lor,                     &
-     &          node, ele, fluid, iphys, nod_fld, iphys_ele, ele_fld,   &
-     &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
+     &          node, ele, fluid, iphys, nod_fld, iphys_ele, jac_3d,    &
+     &          rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl, ele_fld)
 !
       use int_vol_inertia
       use int_vol_vect_cst_difference
@@ -80,7 +80,6 @@
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
       type(phys_address), intent(in) :: iphys_ele
-      type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: fluid
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -89,6 +88,7 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
+      type(phys_data), intent(inout) :: ele_fld
 !
 !
       if(i_field .eq. iphys%i_m_advect) then

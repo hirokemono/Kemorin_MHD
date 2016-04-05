@@ -97,7 +97,6 @@
       use m_machine_parameter
       use m_ele_info_4_dynamical
       use m_SGS_address
-      use m_work_4_dynamic_model
 !
       integer (kind = kint), intent(in) :: iak_sgs_buo
       integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
@@ -145,7 +144,6 @@
       use m_machine_parameter
       use m_ele_info_4_dynamical
       use m_SGS_address
-      use m_work_4_dynamic_model
 !
       integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
       integer (kind = kint), intent(in)                                 &
@@ -193,7 +191,6 @@
       use m_machine_parameter
       use m_ele_info_4_dynamical
       use m_SGS_address
-      use m_work_4_dynamic_model
 !
       integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
       integer (kind = kint), intent(in)                                 &
@@ -241,7 +238,6 @@
       use m_machine_parameter
       use m_ele_info_4_dynamical
       use m_SGS_address
-      use m_work_4_dynamic_model
 !
       integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
       integer (kind = kint), intent(in)                                 &

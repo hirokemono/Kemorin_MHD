@@ -109,7 +109,7 @@
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         ncomp_correlate = 9
         call const_layers_4_dynamic(group%ele_grp, layer_tbl)
-        call allocate_work_4_dynamic(layer_tbl%e_grp%num_grp)
+        call alloc_work_4_dynamic(layer_tbl%e_grp%num_grp, wk_lsq1)
         call allocate_work_layer_correlate(layer_tbl%e_grp%num_grp)
       end if
 !

@@ -3,19 +3,17 @@
 !
 !      written by H. Matsui on Aug., 2007
 !
-!      subroutine merge_coefs_4_dynamic(numdir, n_layer,                &
-!     &          c_comps,  c_fields, cor)
+!      subroutine merge_coefs_4_dynamic(numdir, n_layer, cor, sgs_les,  &
+!     &          dnum, c_comps,  c_fields)
 !      subroutine cal_Csim_buo_by_Reynolds_ratio(n_layer, irms_buo,     &
-!     &          c_comps, c_fields)
+!     &          sgs_les, c_comps, c_fields)
 !      subroutine single_Csim_buo_by_mf_ratio(n_layer, irms_buo,        &
-!     &          c_comps, c_fields)
+!     &          sgs_les, c_comps, c_fields)
 !
       module merge_dynamic_coefs
 !
       use m_precision
-!
       use m_constants
-      use m_work_4_dynamic_model
 !
       implicit none
 !
@@ -29,8 +27,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine merge_coefs_4_dynamic(numdir, n_layer,                 &
-     &          c_comps,  c_fields, cor)
+      subroutine merge_coefs_4_dynamic(numdir, n_layer, cor, sgs_les,   &
+     &          dnum, c_comps, c_fields)
 !
       use calypso_mpi
       use m_control_parameter
@@ -38,20 +36,24 @@
       integer (kind = kint), intent(in) :: numdir, n_layer
       real(kind = kreal), intent(in) :: cor(n_layer,numdir)
 !
+      real(kind = kreal), intent(inout) :: sgs_les(n_layer,18)
       real(kind = kreal), intent(inout) :: c_fields(n_layer)
       real(kind = kreal), intent(inout) :: c_comps(n_layer, numdir)
+      real(kind = kreal), intent(inout) :: dnum(n_layer)
 !
 !
-      call cal_each_components_m_coefs(numdir, n_layer, c_comps)
+      call cal_each_components_m_coefs                                  &
+     &   (numdir, n_layer, sgs_les, c_comps)
 !
       if      (iset_SGS_coef_marging .eq. 1) then
         call ave_by_direction_4_dynamic(numdir, n_layer,                &
-     &      c_comps, c_fields)
+     &      sgs_les, c_comps, c_fields, dnum)
       else if (iset_SGS_coef_marging .eq. 2) then
         call ave_by_correlate_4_dynamic(numdir, n_layer,                &
-     &      c_comps, c_fields, cor)
+     &      sgs_les, cor, c_comps, c_fields, dnum)
       else
-        call sum_by_direction_4_dynamic(numdir, n_layer, c_fields)
+        call sum_by_direction_4_dynamic                                 &
+     &     (numdir, n_layer, sgs_les, c_fields)
       end if
 !
       end subroutine merge_coefs_4_dynamic
@@ -59,9 +61,11 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_each_components_m_coefs(numdir, n_layer, c_comps)
+      subroutine cal_each_components_m_coefs                            &
+     &         (numdir, n_layer, sgs_les, c_comps)
 !
       integer (kind = kint), intent(in) :: numdir, n_layer
+      real(kind = kreal), intent(in) :: sgs_les(n_layer,18)
 !
       real(kind = kreal), intent(inout) :: c_comps(n_layer, numdir)
       integer (kind = kint) :: nd, igrp
@@ -84,11 +88,14 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine sum_by_direction_4_dynamic(numdir, n_layer, c_fields)
+      subroutine sum_by_direction_4_dynamic                             &
+     &         (numdir, n_layer, sgs_les, c_fields)
 !
       integer (kind = kint), intent(in) :: numdir, n_layer
 !
+      real(kind = kreal), intent(inout) :: sgs_les(n_layer,18)
       real(kind = kreal), intent(inout) :: c_fields(n_layer)
+!
       integer (kind = kint) :: nd, igrp
 !
 !
@@ -118,11 +125,14 @@
 !  ---------------------------------------------------------------------
 !
       subroutine ave_by_direction_4_dynamic(numdir, n_layer,            &
-     &          c_comps, c_fields)
+     &          sgs_les, c_comps, c_fields, dnum)
 !
       integer (kind = kint), intent(in) :: numdir, n_layer
+      real(kind = kreal), intent(in) :: sgs_les(n_layer,18)
       real(kind = kreal), intent(in) :: c_comps(n_layer, numdir)
+!
       real(kind = kreal), intent(inout) :: c_fields(n_layer)
+      real(kind = kreal), intent(inout) :: dnum(n_layer)
 !
       integer (kind = kint) :: nd, igrp
 !
@@ -130,8 +140,8 @@
       dnum(1:n_layer) = 0.0d0
       do nd = 1, numdir
         do igrp = 1, n_layer
-          if ( sgs_les(igrp,nd+9) .ne. 0.0d0) then
-            dnum(igrp) = dnum(igrp) + 1.0d0
+          if(sgs_les(igrp,nd+9) .ne. zero) then
+            dnum(igrp) = dnum(igrp) + one
           end if
         end do
       end do
@@ -187,13 +197,15 @@
 !  ---------------------------------------------------------------------
 !
       subroutine ave_by_correlate_4_dynamic(numdir, n_layer,            &
-     &          c_comps, c_fields, cor)
+     &          sgs_les, cor, c_comps, c_fields, dnum)
 !
       integer (kind = kint), intent(in) :: numdir, n_layer
       real(kind = kreal), intent(in) :: cor(n_layer,numdir)
+      real(kind = kreal), intent(in) :: sgs_les(n_layer,18)
 !
       real(kind = kreal), intent(in) :: c_comps(n_layer, numdir)
       real(kind = kreal), intent(inout) :: c_fields(n_layer)
+      real(kind = kreal), intent(inout) :: dnum(n_layer)
 !
       integer (kind = kint) :: nd, igrp
 !
@@ -201,13 +213,13 @@
       dnum(1:n_layer) = 0.0d0
       do nd = 1, numdir
         do igrp = 1, n_layer
-          if ( sgs_les(igrp,nd+9) .ne. 0.0d0) then
-            dnum = dnum + cor(igrp,nd)
+          if(sgs_les(igrp,nd+9) .ne. 0.0d0) then
+            dnum(igrp) = dnum(igrp) + cor(igrp,nd)
           end if
         end do
       end do
       do igrp = 1, n_layer
-        if ( dnum(igrp) .eq. 0.0d0) dnum(igrp) = 1.0d0
+        if (dnum(igrp) .eq. 0.0d0) dnum(igrp) = 1.0d0
       end do
 !
 !
@@ -260,10 +272,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_Csim_buo_by_Reynolds_ratio(n_layer, irms_buo,      &
-     &          c_comps, c_fields)
+     &          sgs_les, c_comps, c_fields)
 !
       integer(kind = kint), intent(in) :: irms_buo
       integer (kind = kint), intent(in) :: n_layer
+      real(kind = kreal), intent(in) :: sgs_les(n_layer,18)
 !
       real(kind = kreal), intent(inout) :: c_comps(n_layer,6)
       real(kind = kreal), intent(inout) :: c_fields(n_layer)
@@ -290,10 +303,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine single_Csim_buo_by_mf_ratio(n_layer, irms_buo,         &
-     &          c_comps, c_fields)
+     &          sgs_les, c_comps, c_fields)
 !
       integer(kind = kint), intent(in) :: irms_buo
       integer (kind = kint), intent(in) :: n_layer
+      real(kind = kreal), intent(in) :: sgs_les(n_layer,18)
 !
       real(kind = kreal), intent(inout) :: c_comps(n_layer,6)
       real(kind = kreal), intent(inout) :: c_fields(n_layer)

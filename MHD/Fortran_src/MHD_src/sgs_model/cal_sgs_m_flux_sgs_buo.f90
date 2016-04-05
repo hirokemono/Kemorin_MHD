@@ -7,7 +7,7 @@
 !!     &         (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,  &
 !!     &          Vsf_bcs, Bsf_bcs, iphys, iphys_ele,                   &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
-!!     &          FEM_elens, filtering, sgs_coefs, sgs_coefs_nod,       &
+!!     &          FEM_elens, filtering, sgs_coefs_nod, sgs_coefs,       &
 !!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl,             &
 !!     &          nod_fld, ele_fld)
 !!        type(communication_table), intent(in) :: nod_comm
@@ -25,8 +25,8 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(filtering_data_type), intent(in) :: filtering
-!!        type(MHD_coefficients_type), intent(in) :: sgs_coefs
 !!        type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
+!!        type(MHD_coefficients_type), intent(inout) :: sgs_coefs
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -61,6 +61,8 @@
 !
       implicit none
 !
+      private :: select_int_vol_sgs_buoyancy
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -71,7 +73,7 @@
      &         (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,    &
      &          Vsf_bcs, Bsf_bcs, iphys, iphys_ele,                     &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
-     &          FEM_elens, filtering, sgs_coefs, sgs_coefs_nod,         &
+     &          FEM_elens, filtering, sgs_coefs_nod, sgs_coefs,         &
      &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl,               &
      &          nod_fld, ele_fld)
 !
@@ -106,16 +108,15 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
-      type(MHD_coefficients_type), intent(in) :: sgs_coefs
       type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
 !
+      type(MHD_coefficients_type), intent(inout) :: sgs_coefs
       type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
       type(phys_data), intent(inout) :: ele_fld
-!
 !
       integer(kind = kint), parameter :: ncomp_sgs_buo= 6
 !      integer(kind = kint) :: i
@@ -162,7 +163,71 @@
        end if
 !
 !   take RMS of SGS buoyancy flux and work of Reynolds stress
+      call select_int_vol_sgs_buoyancy(node, ele, layer_tbl,            &
+     &    iphys, nod_fld, jac_3d_q, jac_3d_l,                           &
+     &    wk_lsq1%nlayer, wk_lsq1%slocal)
 !
+      call sum_lsq_coefs_4_comps(ncomp_sgs_buo, wk_lsq1)
+!
+!   Parameterize model coeffisient including SGS Buoyancy
+!
+      if(iflag_4_gravity .gt. id_turn_OFF) then
+!        call cal_Csim_buo_by_Reynolds_ratio                            &
+!     &     (nlayer_SGS, ifive, wk_lsq1%slsq, &
+!     &      sgs_c_coef(1,icomp_sgs_tbuo), sgs_f_coef(1,iak_sgs_tbuo) )
+        call single_Csim_buo_by_mf_ratio                                &
+     &     (nlayer_SGS, ifive, wk_lsq1%slsq,                            &
+     &      sgs_c_coef(1,icomp_sgs_tbuo), sgs_f_coef(1,iak_sgs_tbuo) )
+        call clippging_sgs_coefs(ncomp_sgs_buo,                         &
+     &      iak_sgs_tbuo, icomp_sgs_tbuo)
+      end if
+      if(iflag_4_composit_buo .gt. id_turn_OFF) then
+!        call cal_Csim_buo_by_Reynolds_ratio                            &
+!     &     (nlayer_SGS, isix, wk_lsq1%slsq,                            &
+!     &      sgs_c_coef(1,icomp_sgs_cbuo), sgs_f_coef(1,iak_sgs_cbuo) )
+        call single_Csim_buo_by_mf_ratio                                &
+     &     (nlayer_SGS, isix, wk_lsq1%slsq,                             &
+     &      sgs_c_coef(1,icomp_sgs_cbuo), sgs_f_coef(1,iak_sgs_cbuo) )
+        call clippging_sgs_coefs(ncomp_sgs_buo,                         &
+     &      iak_sgs_tbuo, icomp_sgs_tbuo)
+      end if
+!
+!      if(iflag_debug .gt. 0) then
+!        write(*,*) 'sgs_f_coef, icomp_sgs_tbuo', iak_sgs_tbuo
+!        do i = 1, nlayer_SGS
+!          write(*,'(i16,1pe20.12)') i, sgs_f_coef(i,iak_sgs_tbuo)
+!        end do
+!        write(*,*) 'sgs_f_coef, icomp_sgs_tbuo', icomp_sgs_cbuo
+!        do i = 1, nlayer_SGS
+!          write(*,'(i16,1p6e20.12)') i,                                &
+!     &              sgs_c_coef(i,icomp_sgs_tbuo:icomp_sgs_tbuo+5)
+!        end do
+!      end if
+!
+      end subroutine cal_sgs_mom_flux_with_sgs_buo
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine select_int_vol_sgs_buoyancy(node, ele, layer_tbl,      &
+     &          iphys, nod_fld, jac_3d_q, jac_3d_l, n_layer_d, sgs_l)
+!
+      use m_control_parameter
+!
+      use int_rms_ave_ele_grps
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(phys_address), intent(in) :: iphys
+      type(layering_tbl), intent(in) :: layer_tbl
+      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+      type(phys_data), intent(in) :: nod_fld
+      integer(kind = kint), intent(in) :: n_layer_d
+!
+      real(kind= kreal), intent(inout) :: sgs_l(n_layer_d,18)
+!
+!
+!
+!   take RMS of SGS buoyancy flux and work of Reynolds stress
       if(iflag_4_gravity .gt. id_turn_OFF) then
         call int_vol_2rms_ave_ele_grps                                  &
      &     (node, ele, layer_tbl%e_grp, jac_3d_q, jac_3d_l,             &
@@ -187,42 +252,7 @@
      &      sgs_l(1,1), sgs_l(1,4), sgs_l(1,3), sgs_l(1,6))
       end if
 !
-!
-      call lsq_model_coefs_4_comps                                      &
-     &   (layer_tbl%e_grp%num_grp, ncomp_sgs_buo)
-!
-!   Parameterize model coeffisient including SGS Buoyancy
-!
-      if(iflag_4_gravity .gt. id_turn_OFF) then
-!        call cal_Csim_buo_by_Reynolds_ratio(nlayer_SGS, ifive,         &
-!     &      sgs_c_coef(1,icomp_sgs_tbuo), sgs_f_coef(1,iak_sgs_tbuo) )
-        call single_Csim_buo_by_mf_ratio(nlayer_SGS, ifive,             &
-     &      sgs_c_coef(1,icomp_sgs_tbuo), sgs_f_coef(1,iak_sgs_tbuo) )
-        call clippging_sgs_coefs(ncomp_sgs_buo,                         &
-     &      iak_sgs_tbuo, icomp_sgs_tbuo)
-      end if
-      if(iflag_4_composit_buo .gt. id_turn_OFF) then
-!        call cal_Csim_buo_by_Reynolds_ratio(nlayer_SGS, isix,          &
-!     &      sgs_c_coef(1,icomp_sgs_cbuo), sgs_f_coef(1,iak_sgs_cbuo) )
-        call single_Csim_buo_by_mf_ratio(nlayer_SGS, isix,              &
-     &      sgs_c_coef(1,icomp_sgs_cbuo), sgs_f_coef(1,iak_sgs_cbuo) )
-        call clippging_sgs_coefs(ncomp_sgs_buo,                         &
-     &      iak_sgs_tbuo, icomp_sgs_tbuo)
-      end if
-!
-!      if(iflag_debug .gt. 0) then
-!        write(*,*) 'sgs_f_coef, icomp_sgs_tbuo', iak_sgs_tbuo
-!        do i = 1, nlayer_SGS
-!          write(*,'(i16,1pe20.12)') i, sgs_f_coef(i,iak_sgs_tbuo)
-!        end do
-!        write(*,*) 'sgs_f_coef, icomp_sgs_tbuo', icomp_sgs_cbuo
-!        do i = 1, nlayer_SGS
-!          write(*,'(i16,1p6e20.12)') i,                                &
-!     &              sgs_c_coef(i,icomp_sgs_tbuo:icomp_sgs_tbuo+5)
-!        end do
-!      end if
-!
-      end subroutine cal_sgs_mom_flux_with_sgs_buo
+      end subroutine select_int_vol_sgs_buoyancy
 !
 !  ---------------------------------------------------------------------
 !

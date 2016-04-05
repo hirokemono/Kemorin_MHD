@@ -45,8 +45,6 @@
 !
       implicit none
 !
-      integer(kind = kint), parameter :: ncomp_sgs = 18
-!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -79,17 +77,18 @@
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
      &    numdir, n_int)
 !
-!    model coefficients for each components: lsq_model_coefs_4_comps
-      call lsq_model_coefs_4_comps(layer_tbl%e_grp%num_grp, ncomp_sgs)
+!    model coefficients for each components: sum_lsq_coefs_4_comps
+      call sum_lsq_coefs_4_comps(ncomp_lsq, wk_lsq1)
 !
       call merge_coefs_4_dynamic(numdir, layer_tbl%e_grp%num_grp,       &
-     &    sgs_c_coef(1,icomp_f), sgs_f_coef(1,ifield_d),                &
-     &    cor_sgs(1,icomp_f))
+     &    cor_sgs(1,icomp_f), wk_lsq1%slsq, wk_lsq1%dnorm,              &
+     &    sgs_c_coef(1,icomp_f), sgs_f_coef(1,ifield_d))
 !
-      call lsq_whole_model_coefs(ncomp_sgs)
+      call sum_lsq_whole_coefs(ncomp_lsq, wk_lsq1)
 !
-      call s_merge_coefs_w_dynamic(numdir, sgs_c_whole(icomp_f),        &
-     &    sgs_f_whole(ifield_d), cor_sgs_w(icomp_f))
+      call s_merge_coefs_w_dynamic                                      &
+     &   (numdir, cor_sgs_w(icomp_f), wk_lsq1%wlsq,                     &
+     &    sgs_c_whole(icomp_f), sgs_f_whole(ifield_d))
 !
       call clippging_sgs_coefs(numdir, ifield_d, icomp_f)
 !
@@ -130,10 +129,11 @@
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
      &    numdir, n_int)
 !
-      call lsq_whole_model_coefs(ncomp_sgs)
+      call sum_lsq_whole_coefs(ncomp_lsq, wk_lsq1)
 !
-      call s_merge_coefs_w_dynamic(numdir, diff_c_whole(icomp_f),       &
-     &    diff_f_whole(ifield_d), cor_diff_w(icomp_f) )
+      call s_merge_coefs_w_dynamic                                      &
+     &   (numdir, cor_diff_w(icomp_f), wk_lsq1%wlsq,                    &
+     &    diff_c_whole(icomp_f), diff_f_whole(ifield_d))
 !
       call clippging_sgs_diff_coefs(numdir, ifield_d, icomp_f)
 !
@@ -168,17 +168,18 @@
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
      &    numdir, n_int)
 !
-!    model coefficients for each components: lsq_model_coefs_4_comps
-      call lsq_model_coefs_4_comps(layer_tbl%e_grp%num_grp, ncomp_sgs)
+!    model coefficients for each components: sum_lsq_coefs_4_comps
+      call sum_lsq_coefs_4_comps(ncomp_lsq, wk_lsq1)
 !
       call merge_coefs_4_dynamic(numdir, layer_tbl%e_grp%num_grp,       &
-     &    diff_c_coef(1,icomp_f), diff_f_coef(1,ifield_d),              &
-     &    cor_diff(1,icomp_f) )
+     &    cor_diff(1,icomp_f), wk_lsq1%slsq, wk_lsq1%dnorm,             &
+     &    diff_c_coef(1,icomp_f), diff_f_coef(1,ifield_d))
 !
-      call lsq_whole_model_coefs(ncomp_sgs)
+      call sum_lsq_whole_coefs(ncomp_lsq, wk_lsq1)
 !
-      call s_merge_coefs_w_dynamic(numdir, diff_c_whole(icomp_f),       &
-     &    diff_f_whole(ifield_d), cor_diff_w(icomp_f))
+      call s_merge_coefs_w_dynamic                                      &
+     &   (numdir, cor_diff_w(icomp_f), wk_lsq1%wlsq,                    &
+     &    diff_c_whole(icomp_f), diff_f_whole(ifield_d))
 !
       call clippging_sgs_diff_coefs(numdir, ifield_d, icomp_f)
 !

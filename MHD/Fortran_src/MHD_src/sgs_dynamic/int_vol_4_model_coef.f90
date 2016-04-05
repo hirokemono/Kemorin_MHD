@@ -70,8 +70,8 @@
       integer (kind = kint), intent(in) :: n_tensor, n_int
 !
 !
-      sgs_w(1:18) =   0.0d0
-      sgs_l(1:layer_tbl%e_grp%num_grp,1:18) =   0.0d0
+      wk_lsq1%wlocal(1:18) =   0.0d0
+      wk_lsq1%slocal(1:layer_tbl%e_grp%num_grp,1:18) =   0.0d0
 !
       if(layer_tbl%minlayer_4_smp                                      &
      &     .gt. layer_tbl%min_item_layer_d_smp) then
@@ -85,7 +85,7 @@
      &        layer_tbl%e_grp%item_grp,                                 &
      &        nod_fld%ntot_phys, nod_fld%d_fld,                         &
      &        iphys%i_sgs_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,   &
-     &        sgs_l_smp, sgs_l, sgs_w)
+     &        wk_lsq1%slocal_smp, wk_lsq1%slocal, wk_lsq1%wlocal)
         else
           call int_vol_model_coef_l(node%numnod,                        &
      &        ele%numele, ele%ie, ele%interior_ele, n_tensor,           &
@@ -95,12 +95,12 @@
      &        layer_tbl%e_grp%item_grp,                                 &
      &        nod_fld%ntot_phys, nod_fld%d_fld,                         &
      &        iphys%i_sgs_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,   &
-     &        sgs_l_smp, sgs_l, sgs_w)
+     &        wk_lsq1%slocal_smp, wk_lsq1%slocal, wk_lsq1%wlocal)
         end if
 !
       else
 !
-        sgs_l_smp(1:np_smp,1:18) = 0.0d0
+        wk_lsq1%slocal_smp(1:np_smp,1:18) = 0.0d0
         if (ele%nnod_4_ele .eq. num_t_quad) then
           call int_vol_model_coef_grpsmp_q(node%numnod,                 &
      &      ele%numele, ele%ie, ele%interior_ele, n_tensor,             &
@@ -111,7 +111,7 @@
      &      layer_tbl%e_grp%item_grp,                                   &
      &      nod_fld%ntot_phys, nod_fld%d_fld,                           &
      &      iphys%i_sgs_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,     &
-     &      sgs_l_smp, sgs_l, sgs_w)
+     &      wk_lsq1%slocal_smp, wk_lsq1%slocal, wk_lsq1%wlocal)
         else
           call int_vol_model_coef_grpsmp_l(node%numnod,                 &
      &      ele%numele, ele%ie, ele%interior_ele, n_tensor,             &
@@ -122,7 +122,7 @@
      &      layer_tbl%e_grp%item_grp,                                   &
      &      nod_fld%ntot_phys, nod_fld%d_fld,                           &
      &      iphys%i_sgs_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,     &
-     &      sgs_l_smp, sgs_l, sgs_w)
+     &      wk_lsq1%slocal_smp, wk_lsq1%slocal, wk_lsq1%wlocal)
         end if
       end if
 !
@@ -147,8 +147,8 @@
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
 !
-      sgs_w(1:18) =              0.0d0
-      sgs_l_smp(1:np_smp,1:18) = 0.0d0
+      wk_lsq1%wlocal(1:18) =              0.0d0
+      wk_lsq1%slocal_smp(1:np_smp,1:18) = 0.0d0
 !
       if (ele%nnod_4_ele .eq. num_t_quad) then
         call int_vol_diff_coef_q(node%numnod, ele%numele,               &
@@ -156,14 +156,14 @@
      &      jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,       &
      &      nod_fld%ntot_phys, nod_fld%d_fld,                           &
      &      iphys%i_sgs_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,     &
-     &      sgs_l_smp, sgs_w)
+     &      wk_lsq1%slocal_smp, wk_lsq1%wlocal)
         else
         call int_vol_diff_coef_l(node%numnod, ele%numele,               &
      &      ele%ie, ele%interior_ele, iele_fsmp_stack, numdir,          &
      &      jac_3d_l%ntot_int, n_int, jac_3d_l%xjac, jac_3d_l%an,       &
      &      nod_fld%ntot_phys, nod_fld%d_fld,                           &
      &      iphys%i_sgs_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,     &
-     &      sgs_l_smp, sgs_w)
+     &      wk_lsq1%slocal_smp, wk_lsq1%wlocal)
       end if
 !
       end subroutine int_vol_diff_coef
