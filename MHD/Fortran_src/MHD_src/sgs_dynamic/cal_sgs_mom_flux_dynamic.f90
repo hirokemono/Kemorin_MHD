@@ -65,6 +65,7 @@
      &          FEM_elens, filtering, sgs_coefs_nod,                    &
      &          wk_filter, mhd_fem_wk, fem_wk, nod_fld, sgs_coefs)
 !
+      use m_work_4_dynamic_model
       use reset_dynamic_model_coefs
       use copy_nodal_fields
       use cal_filtering_scalars
@@ -158,8 +159,9 @@
      &    itype_SGS_m_flux_coef, n_sym_tensor,                          &
      &    iak_sgs_mf, icomp_sgs_mf, intg_point_t_evo, sgs_coefs)
 !
-      call reduce_model_coefs_layer(SGS_mf_factor, nlayer_SGS,          &
-     &    sgs_f_clip(1,iak_sgs_mf), sgs_f_whole_clip(iak_sgs_mf) )
+      call reduce_model_coefs_layer(SGS_mf_factor,                      &
+     &    wk_sgs1%nlayer, wk_sgs1%num_kinds, iak_sgs_mf,                &
+     &    wk_sgs1%fld_clip, wk_sgs1%fld_whole_clip)
       call reduce_ele_tensor_model_coefs(ele, SGS_mf_factor,            &
      &    sgs_coefs%ntot_comp, icomp_sgs_mf, sgs_coefs%ak)
 !

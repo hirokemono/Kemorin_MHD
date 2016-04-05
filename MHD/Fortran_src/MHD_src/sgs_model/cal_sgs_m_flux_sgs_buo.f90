@@ -7,9 +7,9 @@
 !!     &         (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,  &
 !!     &          Vsf_bcs, Bsf_bcs, iphys, iphys_ele,                   &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
-!!     &          FEM_elens, filtering, sgs_coefs_nod, sgs_coefs,       &
+!!     &          FEM_elens, filtering, sgs_coefs_nod,                  &
 !!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl,             &
-!!     &          nod_fld, ele_fld)
+!!     &          nod_fld, ele_fld, sgs_coefs)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -73,15 +73,14 @@
      &         (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,    &
      &          Vsf_bcs, Bsf_bcs, iphys, iphys_ele,                     &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
-     &          FEM_elens, filtering, sgs_coefs_nod, sgs_coefs,         &
+     &          FEM_elens, filtering, sgs_coefs_nod,                    &
      &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl,               &
-     &          nod_fld, ele_fld)
+     &          nod_fld, ele_fld, sgs_coefs)
 !
       use m_control_parameter
       use m_phys_constants
       use m_SGS_address
       use m_physical_property
-      use m_ele_info_4_dynamical
       use m_work_4_dynamic_model
 !
       use cal_sgs_fluxes
@@ -91,6 +90,7 @@
       use merge_dynamic_coefs
       use set_sgs_diff_model_coefs
       use int_rms_ave_ele_grps
+      use modify_Csim_by_SGS_buo_ele
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -126,11 +126,12 @@
 !
       call clear_model_coefs_2_ele(ele, n_sym_tensor, icomp_sgs_mf,     &
      &    sgs_coefs%ntot_comp, sgs_coefs%ak)
-      call set_model_coefs_2_ele                                        &
-     &   (ele, itype_SGS_m_flux_coef, n_sym_tensor,                     &
-     &    iak_sgs_mf, icomp_sgs_mf, layer_tbl%e_grp%num_grp,            &
-     &    layer_tbl%e_grp%num_item, layer_tbl%e_grp%istack_grp_smp,     &
-     &    layer_tbl%e_grp%item_grp, sgs_coefs%ntot_comp, sgs_coefs%ak)
+      call set_model_coefs_2_ele(ele, itype_SGS_m_flux_coef,            &
+     &    n_sym_tensor, iak_sgs_mf, icomp_sgs_mf,                       &
+     &    layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,            &
+     &    layer_tbl%e_grp%istack_grp_smp, layer_tbl%e_grp%item_grp,     &
+     &    sgs_coefs%num_field, sgs_coefs%ntot_comp,                     &
+     &    wk_sgs1%fld_clip, wk_sgs1%comp_clip, sgs_coefs%ak)
 !
       call cal_sgs_momentum_flux(icomp_sgs_mf, ie_dvx,                  &
      &    nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,        &
@@ -172,35 +173,42 @@
 !   Parameterize model coeffisient including SGS Buoyancy
 !
       if(iflag_4_gravity .gt. id_turn_OFF) then
-!        call cal_Csim_buo_by_Reynolds_ratio                            &
-!     &     (nlayer_SGS, ifive, wk_lsq1%slsq, &
-!     &      sgs_c_coef(1,icomp_sgs_tbuo), sgs_f_coef(1,iak_sgs_tbuo) )
-        call single_Csim_buo_by_mf_ratio                                &
-     &     (nlayer_SGS, ifive, wk_lsq1%slsq,                            &
-     &      sgs_c_coef(1,icomp_sgs_tbuo), sgs_f_coef(1,iak_sgs_tbuo) )
-        call clippging_sgs_coefs(ncomp_sgs_buo,                         &
-     &      iak_sgs_tbuo, icomp_sgs_tbuo)
+!        call cal_Csim_buo_by_Reynolds_ratio(wk_sgs1%nlayer, ifive,     &
+!     &      wk_sgs1%num_kinds, wk_sgs1%ntot_comp,                      &
+!     &      iak_sgs_tbuo, icomp_sgs_tbuo, wk_lsq1%slsq,                &
+!     &      wk_sgs1%comp_coef, wk_sgs1%fld_coef)
+        call single_Csim_buo_by_mf_ratio(wk_sgs1%nlayer, ifive,         &
+     &      wk_sgs1%num_kinds, wk_sgs1%ntot_comp,                       &
+     &      iak_sgs_tbuo, icomp_sgs_tbuo, wk_lsq1%slsq,                 &
+     &      wk_sgs1%comp_coef, wk_sgs1%fld_coef)
+        call clippging_sgs_diff_coefs                                   &
+     &     (ncomp_sgs_buo, iak_sgs_tbuo, icomp_sgs_tbuo, wk_sgs1)
       end if
       if(iflag_4_composit_buo .gt. id_turn_OFF) then
-!        call cal_Csim_buo_by_Reynolds_ratio                            &
-!     &     (nlayer_SGS, isix, wk_lsq1%slsq,                            &
-!     &      sgs_c_coef(1,icomp_sgs_cbuo), sgs_f_coef(1,iak_sgs_cbuo) )
-        call single_Csim_buo_by_mf_ratio                                &
-     &     (nlayer_SGS, isix, wk_lsq1%slsq,                             &
-     &      sgs_c_coef(1,icomp_sgs_cbuo), sgs_f_coef(1,iak_sgs_cbuo) )
-        call clippging_sgs_coefs(ncomp_sgs_buo,                         &
-     &      iak_sgs_tbuo, icomp_sgs_tbuo)
+!        call cal_Csim_buo_by_Reynolds_ratio(wk_sgs1%nlayer, isix,      &
+!     &      wk_sgs1%num_kinds, wk_sgs1%ntot_comp,                      &
+!     &      iak_sgs_cbuo, icomp_sgs_cbuo, wk_lsq1%slsq,                &
+!     &      wk_sgs1%comp_coef, wk_sgs1%fld_coef)
+        call single_Csim_buo_by_mf_ratio(wk_sgs1%nlayer, isix,          &
+     &      wk_sgs1%num_kinds, wk_sgs1%ntot_comp,                       &
+     &      iak_sgs_cbuo, icomp_sgs_cbuo, wk_lsq1%slsq,                 &
+     &      wk_sgs1%comp_coef, wk_sgs1%fld_coef)
+        call clippging_sgs_diff_coefs                                   &
+     &     (ncomp_sgs_buo, iak_sgs_tbuo, icomp_sgs_tbuo, wk_sgs1)
       end if
+!
+      call mod_Csim_by_SGS_buoyancy_ele                                 &
+     &   (ele, layer_tbl%e_grp, wk_sgs1, sgs_coefs)
 !
 !      if(iflag_debug .gt. 0) then
 !        write(*,*) 'sgs_f_coef, icomp_sgs_tbuo', iak_sgs_tbuo
-!        do i = 1, nlayer_SGS
-!          write(*,'(i16,1pe20.12)') i, sgs_f_coef(i,iak_sgs_tbuo)
+!        do i = 1, wk_sgs1%nlayer
+!          write(*,'(i16,1pe20.12)') i, wk_sgs1%fld_coef(i,iak_sgs_tbuo)
 !        end do
-!        write(*,*) 'sgs_f_coef, icomp_sgs_tbuo', icomp_sgs_cbuo
-!        do i = 1, nlayer_SGS
+!        write(*,*) 'sgs_c_coef, icomp_sgs_tbuo', icomp_sgs_cbuo
+!        do i = 1, wk_sgs1%nlayer
 !          write(*,'(i16,1p6e20.12)') i,                                &
-!     &              sgs_c_coef(i,icomp_sgs_tbuo:icomp_sgs_tbuo+5)
+!     &          wk_sgs1%comp_coef(i,icomp_sgs_tbuo:icomp_sgs_tbuo+5)
 !        end do
 !      end if
 !

@@ -223,7 +223,7 @@
 !
       subroutine write_sgs_coef_head(file_id)
 !
-      use m_ele_info_4_dynamical
+      use m_work_4_dynamic_model
       use m_phys_labels
       use m_SGS_model_coefs
       use write_field_labels
@@ -233,19 +233,19 @@
 !
 !
       do i = 1, sgs_coefs%num_field
-        if ( name_ak_sgs(i) .eq. fhd_SGS_h_flux ) then
+        if ( wk_sgs1%name(i) .eq. fhd_SGS_h_flux ) then
           call write_one_label(file_id, fhd_SGS_h_flux)
-        else if ( name_ak_sgs(i) .eq. fhd_SGS_m_flux ) then
+        else if ( wk_sgs1%name(i) .eq. fhd_SGS_m_flux ) then
           call write_one_label(file_id, fhd_SGS_m_flux)
-        else if ( name_ak_sgs(i) .eq. fhd_SGS_maxwell_t ) then
+        else if ( wk_sgs1%name(i) .eq. fhd_SGS_maxwell_t ) then
           call write_one_label(file_id, fhd_SGS_maxwell_t)
-        else if ( name_ak_sgs(i) .eq. fhd_SGS_induction ) then
+        else if ( wk_sgs1%name(i) .eq. fhd_SGS_induction ) then
           call write_one_label(file_id, fhd_SGS_induction)
-        else if ( name_ak_sgs(i) .eq. fhd_SGS_c_flux ) then
+        else if ( wk_sgs1%name(i) .eq. fhd_SGS_c_flux ) then
           call write_one_label(file_id, fhd_SGS_c_flux)
-        else if ( name_ak_sgs(i) .eq. fhd_SGS_buoyancy ) then
+        else if ( wk_sgs1%name(i) .eq. fhd_SGS_buoyancy ) then
           call write_one_label(file_id, fhd_SGS_buoyancy)
-        else if ( name_ak_sgs(i) .eq. fhd_SGS_comp_buo ) then
+        else if ( wk_sgs1%name(i) .eq. fhd_SGS_comp_buo ) then
           call write_one_label(file_id, fhd_SGS_comp_buo)
         end if
       end do
@@ -257,7 +257,7 @@
 !
       subroutine write_diff_coef_head(file_id)
 !
-      use m_ele_info_4_dynamical
+      use m_work_4_dynamic_model
       use m_phys_labels
       use m_SGS_model_coefs
 !
@@ -268,23 +268,23 @@
 !
 !
       do i = 1, diff_coefs%num_field
-        if ( name_ak_diff(i) .eq. fhd_velo ) then
+        if ( wk_diff1%name(i) .eq. fhd_velo ) then
           call write_one_label(file_id, fhd_velo)
-        else if ( name_ak_diff(i) .eq. fhd_temp ) then
+        else if ( wk_diff1%name(i) .eq. fhd_temp ) then
           call write_one_label(file_id, fhd_temp)
-        else if ( name_ak_diff(i) .eq. fhd_magne ) then
+        else if ( wk_diff1%name(i) .eq. fhd_magne ) then
           call write_one_label(file_id, fhd_magne)
-        else if ( name_ak_diff(i) .eq. fhd_light ) then
+        else if ( wk_diff1%name(i) .eq. fhd_light ) then
           call write_one_label(file_id, fhd_light)
-        else if ( name_ak_diff(i) .eq. fhd_SGS_h_flux ) then
+        else if ( wk_diff1%name(i) .eq. fhd_SGS_h_flux ) then
           call write_one_label(file_id, fhd_SGS_h_flux)
-        else if ( name_ak_diff(i) .eq. fhd_SGS_m_flux ) then
+        else if ( wk_diff1%name(i) .eq. fhd_SGS_m_flux ) then
           call write_one_label(file_id, fhd_SGS_m_flux)
-        else if ( name_ak_sgs(i) .eq. fhd_SGS_maxwell_t ) then
+        else if ( wk_diff1%name(i) .eq. fhd_SGS_maxwell_t ) then
           call write_one_label(file_id, fhd_SGS_maxwell_t)
-        else if ( name_ak_sgs(i) .eq. fhd_SGS_induction ) then
+        else if ( wk_diff1%name(i) .eq. fhd_SGS_induction ) then
           call write_one_label(file_id, fhd_SGS_induction)
-        else if ( name_ak_diff(i) .eq. fhd_SGS_c_flux ) then
+        else if ( wk_diff1%name(i) .eq. fhd_SGS_c_flux ) then
           call write_one_label(file_id, fhd_SGS_c_flux)
         end if
       end do
@@ -298,7 +298,7 @@
 !
       use m_control_parameter
       use m_geometry_constants
-      use m_ele_info_4_dynamical
+      use m_work_4_dynamic_model
       use m_phys_labels
       use m_SGS_model_coefs
 !
@@ -312,22 +312,22 @@
 !
 !
       do i = 1, sgs_coefs%num_field
-        if ( name_ak_sgs(i) .eq. fhd_SGS_h_flux ) then
+        if ( wk_sgs1%name(i) .eq. fhd_SGS_h_flux ) then
           call sel_coord_vector_comp_labels(icoord_SGS_model_coef,      &
      &        fhd_SGS_h_flux, lab(1) )
           call write_vector_label(file_id, lab(1))
 !
-        else if ( name_ak_sgs(i) .eq. fhd_SGS_m_flux ) then
+        else if ( wk_sgs1%name(i) .eq. fhd_SGS_m_flux ) then
           call sel_coord_tensor_comp_labels(icoord_SGS_model_coef,      &
      &        fhd_SGS_m_flux, lab(1) )
           call write_sym_tensor_label(file_id, lab(1))
 !
-        else if ( name_ak_sgs(i) .eq. fhd_SGS_maxwell_t ) then
+        else if ( wk_sgs1%name(i) .eq. fhd_SGS_maxwell_t ) then
           call sel_coord_tensor_comp_labels(icoord_SGS_model_coef,      &
      &        fhd_SGS_maxwell_t, lab(1) )
           call write_sym_tensor_label(file_id, lab(1))
 !
-        else if ( name_ak_sgs(i) .eq. fhd_SGS_induction ) then
+        else if ( wk_sgs1%name(i) .eq. fhd_SGS_induction ) then
           if(iflag_t_evo_4_vect_p .gt. id_no_evolution) then
             write(label,'(a)') 'SGS_uxB'
             call sel_coord_vector_comp_labels(icoord_SGS_model_coef,    &
@@ -341,17 +341,17 @@
             call write_sym_tensor_label(file_id, lab(1))
           end if
 !
-        else if ( name_ak_sgs(i) .eq. fhd_SGS_buoyancy ) then
+        else if ( wk_sgs1%name(i) .eq. fhd_SGS_buoyancy ) then
           call sel_coord_tensor_comp_labels(icoord_SGS_model_coef,      &
      &          fhd_SGS_buoyancy, lab(1) )
           call write_sym_tensor_label(file_id, lab(1))
 !
-        else if ( name_ak_sgs(i) .eq. fhd_SGS_comp_buo ) then
+        else if ( wk_sgs1%name(i) .eq. fhd_SGS_comp_buo ) then
           call sel_coord_tensor_comp_labels(icoord_SGS_model_coef,      &
      &          fhd_SGS_comp_buo, lab(1) )
           call write_sym_tensor_label(file_id, lab(1))
 !
-        else if ( name_ak_sgs(i) .eq. fhd_SGS_c_flux ) then
+        else if ( wk_sgs1%name(i) .eq. fhd_SGS_c_flux ) then
           call sel_coord_vector_comp_labels(icoord_SGS_model_coef,      &
      &        fhd_SGS_c_flux, lab(1) )
           call write_vector_label(file_id, lab(1))
@@ -367,7 +367,7 @@
       subroutine write_diff_comps_head(file_id)
 !
       use m_control_parameter
-      use m_ele_info_4_dynamical
+      use m_work_4_dynamic_model
       use m_phys_labels
       use m_SGS_model_coefs
 !
@@ -376,39 +376,39 @@
 !
 !
       do i = 1, diff_coefs%num_field
-        if ( name_ak_diff(i) .eq. fhd_velo ) then
+        if ( wk_diff1%name(i) .eq. fhd_velo ) then
           write(file_id,'(a)') 'dVx_dx, dVx_dy, dVx_dz, '
           write(file_id,'(a)') 'dVy_dx, dVy_dy, dVy_dz, '
           write(file_id,'(a)') 'dVz_dx, dVz_dy, dVz_dz, '
-        else if ( name_ak_diff(i) .eq. fhd_temp ) then
+        else if ( wk_diff1%name(i) .eq. fhd_temp ) then
           write(file_id,'(a)') 'dT_dx, dT_dy, dT_dz, '
-        else if ( name_ak_diff(i) .eq. fhd_magne ) then
+        else if ( wk_diff1%name(i) .eq. fhd_magne ) then
           write(file_id,'(a)') 'dBx_dx, dBx_dy, dBx_dz, '
           write(file_id,'(a)') 'dBy_dx, dBy_dy, dBy_dz, '
           write(file_id,'(a)') 'dBz_dx, dBz_dy, dBz_dz, '
-        else if ( name_ak_diff(i) .eq. fhd_light ) then
+        else if ( wk_diff1%name(i) .eq. fhd_light ) then
           write(file_id,'(a)')                                          &
      &         'composition_x, composition_y, composition_z, '
-        else if ( name_ak_diff(i) .eq. fhd_SGS_h_flux ) then
+        else if ( wk_diff1%name(i) .eq. fhd_SGS_h_flux ) then
           write(file_id,'(a)') 'SGS_hf_x, SGS_hf_y, SGS_hf_z, '
-        else if ( name_ak_diff(i) .eq. fhd_SGS_m_flux ) then
+        else if ( wk_diff1%name(i) .eq. fhd_SGS_m_flux ) then
           write(file_id,'(a)') 'SGS_mf_xx, SGS_mf_xy, SGS_mf_xz, '
           write(file_id,'(a)') 'SGS_mf_yx, SGS_mf_yy, SGS_mf_yz, '
           write(file_id,'(a)') 'SGS_mf_zx, SGS_mf_yz, SGS_mf_zz, '
-        else if ( name_ak_diff(i) .eq. fhd_SGS_c_flux ) then
+        else if ( wk_diff1%name(i) .eq. fhd_SGS_c_flux ) then
           write(file_id,'(a)') 'SGS_cf_x, SGS_cf_y, SGS_cf_z, '
-        else if ( name_ak_sgs(i) .eq. fhd_SGS_maxwell_t ) then
+        else if ( wk_sgs1%name(i) .eq. fhd_SGS_maxwell_t ) then
           write(file_id,'(a)')                                          &
      &        'SGS_maxwell_xx, SGS_maxwell_xy, SGS_maxwell_xz, '
           write(file_id,'(a)')                                          &
      &        'SGS_maxwell_yx, SGS_maxwell_yy, SGS_maxwell_yz, '
           write(file_id,'(a)')                                          &
      &        'SGS_maxwell_zx, SGS_maxwell_yz, SGS_maxwell_zz, '
-        else if ( name_ak_sgs(i) .eq. fhd_SGS_Lorentz) then
+        else if ( wk_sgs1%name(i) .eq. fhd_SGS_Lorentz) then
           write(file_id,'(a)') 'SGS_lor_xx, SGS_lor_xy, SGS_lor_xz, '
           write(file_id,'(a)') 'SGS_lor_yx, SGS_lor_yy, SGS_lor_yz, '
           write(file_id,'(a)') 'SGS_lor_zx, SGS_lor_yz, SGS_lor_zz, '
-        else if ( name_ak_sgs(i) .eq. fhd_SGS_induction ) then
+        else if ( wk_sgs1%name(i) .eq. fhd_SGS_induction ) then
           if(iflag_t_evo_4_vect_p .gt. id_no_evolution) then
             write(file_id,'(a)')                                        &
      &        'SGS_uxB_x, SGS_uxB_y, SGS_uxB_z, '

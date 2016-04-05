@@ -23,7 +23,6 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_ele_info_4_dynamical
 !
       implicit none
 !

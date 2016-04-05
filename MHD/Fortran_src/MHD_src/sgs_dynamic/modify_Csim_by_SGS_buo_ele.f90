@@ -4,9 +4,10 @@
 !      written by H. Matsui on Aug., 2007
 !
 !!      subroutine mod_Csim_by_SGS_buoyancy_ele                         &
-!!     &         (ele, layer_egrp, sgs_coefs)
+!!     &         (ele, layer_egrp, wk_sgs, sgs_coefs)
 !!        type(element_data), intent(in) :: ele
 !!        type(group_data), intent(in) :: layer_egrp
+!!        type(dynamic_model_data), intent(in) :: wk_sgs
 !!        type(MHD_coefficients_type), intent(inout) :: sgs_coefs
 !
       module modify_Csim_by_SGS_buo_ele
@@ -29,17 +30,19 @@
 !  ---------------------------------------------------------------------
 !
       subroutine mod_Csim_by_SGS_buoyancy_ele                           &
-     &         (ele, layer_egrp, sgs_coefs)
+     &         (ele, layer_egrp, wk_sgs, sgs_coefs)
 !
+      use m_control_parameter
+      use m_SGS_address
       use t_geometry_data
       use t_group_data
       use t_material_property
-      use m_SGS_address
-      use m_control_parameter
+      use t_ele_info_4_dynamic
       use set_sgs_diff_model_coefs
 !
       type(element_data), intent(in) :: ele
       type(group_data), intent(in) :: layer_egrp
+      type(dynamic_model_data), intent(in) :: wk_sgs
       type(MHD_coefficients_type), intent(inout) :: sgs_coefs
 !
 !
@@ -52,36 +55,42 @@
           call modify_cmpCsim_by_SGS_dbuo_ele                           &
      &     (layer_egrp%num_grp, layer_egrp%num_item,                    &
      &      layer_egrp%istack_grp_smp, layer_egrp%item_grp,             &
-     &      ele%numele, sgs_coefs%ntot_comp, sgs_coefs%ak)
+     &      ele%numele, sgs_coefs%num_field, sgs_coefs%ntot_comp,       &
+     &      wk_sgs%fld_coef, wk_sgs%comp_clip, sgs_coefs%ak)
         else
           call modify_fldCsim_by_SGS_dbuo_ele                           &
      &     (layer_egrp%num_grp, layer_egrp%num_item,                    &
      &      layer_egrp%istack_grp_smp, layer_egrp%item_grp,             &
-     &      ele%numele, sgs_coefs%ntot_comp, sgs_coefs%ak)
+     &      ele%numele, sgs_coefs%num_field, sgs_coefs%ntot_comp,       &
+     &      wk_sgs%fld_coef, wk_sgs%fld_clip, sgs_coefs%ak)
         end if
       else if(iflag_4_gravity .gt. id_turn_OFF) then
         if(itype_SGS_m_flux_coef .eq. 1) then
           call modify_cmpCsim_by_SGS_buo_ele(iak_sgs_tbuo,              &
      &      layer_egrp%num_grp, layer_egrp%num_item,                    &
      &      layer_egrp%istack_grp_smp, layer_egrp%item_grp,             &
-     &      ele%numele, sgs_coefs%ntot_comp, sgs_coefs%ak)
+     &      ele%numele, sgs_coefs%num_field, sgs_coefs%ntot_comp,       &
+     &      wk_sgs%fld_coef, wk_sgs%comp_clip, sgs_coefs%ak)
         else
           call modify_fldCsim_by_SGS_buo_ele(iak_sgs_tbuo,              &
      &      layer_egrp%num_grp, layer_egrp%num_item,                    &
      &      layer_egrp%istack_grp_smp, layer_egrp%item_grp,             &
-     &      ele%numele, sgs_coefs%ntot_comp, sgs_coefs%ak)
+     &      ele%numele, sgs_coefs%num_field, sgs_coefs%ntot_comp,       &
+     &      wk_sgs%fld_coef, wk_sgs%fld_clip, sgs_coefs%ak)
         end if
       else if(iflag_4_composit_buo .gt. id_turn_OFF) then
         if(itype_SGS_m_flux_coef .eq. 1) then
           call modify_cmpCsim_by_SGS_buo_ele(iak_sgs_cbuo,              &
      &      layer_egrp%num_grp, layer_egrp%num_item,                    &
      &      layer_egrp%istack_grp_smp, layer_egrp%item_grp,             &
-     &      ele%numele, sgs_coefs%ntot_comp, sgs_coefs%ak)
+     &      ele%numele, sgs_coefs%num_field, sgs_coefs%ntot_comp,       &
+     &      wk_sgs%fld_coef, wk_sgs%comp_clip, sgs_coefs%ak)
         else
           call modify_fldCsim_by_SGS_buo_ele(iak_sgs_cbuo,              &
      &      layer_egrp%num_grp, layer_egrp%num_item,                    &
      &      layer_egrp%istack_grp_smp, layer_egrp%item_grp,             &
-     &      ele%numele, sgs_coefs%ntot_comp, sgs_coefs%ak)
+     &      ele%numele, sgs_coefs%num_field, sgs_coefs%ntot_comp,       &
+     &      wk_sgs%fld_coef, wk_sgs%fld_clip, sgs_coefs%ak)
         end if
       end if
 !
@@ -92,10 +101,10 @@
 !
       subroutine modify_fldCsim_by_SGS_buo_ele(iak_sgs_buo,             &
      &          n_layer_d, n_item_layer_d, layer_stack_smp, item_layer, &
-     &          numele, ntot_comp_ele, ak_sgs)
+     &          numele, num_kinds_ele, ntot_comp_ele,                   &
+     &          sgs_f_coef, sgs_f_clip, ak_sgs)
 !
       use m_machine_parameter
-      use m_ele_info_4_dynamical
       use m_SGS_address
 !
       integer (kind = kint), intent(in) :: iak_sgs_buo
@@ -103,7 +112,12 @@
       integer (kind = kint), intent(in)                                 &
      &                      :: layer_stack_smp(0:n_layer_d*np_smp)
       integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
-      integer (kind = kint), intent(in) :: numele, ntot_comp_ele
+      integer (kind = kint), intent(in) :: numele
+      integer (kind = kint), intent(in) :: num_kinds_ele, ntot_comp_ele
+      real(kind = kreal), intent(in)                                    &
+     &          :: sgs_f_coef(n_layer_d,num_kinds_ele)
+      real(kind = kreal), intent(in)                                    &
+     &          :: sgs_f_clip(n_layer_d,num_kinds_ele)
 !
       real(kind = kreal), intent(inout) :: ak_sgs(numele,ntot_comp_ele)
 !
@@ -139,17 +153,22 @@
 !
       subroutine modify_fldCsim_by_SGS_dbuo_ele                         &
      &         (n_layer_d, n_item_layer_d, layer_stack_smp, item_layer, &
-     &          numele, ntot_comp_ele, ak_sgs)
+     &          numele, num_kinds_ele, ntot_comp_ele,                   &
+     &          sgs_f_coef, sgs_f_clip, ak_sgs)
 !
       use m_machine_parameter
-      use m_ele_info_4_dynamical
       use m_SGS_address
 !
       integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
       integer (kind = kint), intent(in)                                 &
      &                      :: layer_stack_smp(0:n_layer_d*np_smp)
       integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
-      integer (kind = kint), intent(in) :: numele, ntot_comp_ele
+      integer (kind = kint), intent(in) :: numele
+      integer (kind = kint), intent(in) :: num_kinds_ele, ntot_comp_ele
+      real(kind = kreal), intent(in)                                    &
+     &          :: sgs_f_coef(n_layer_d,num_kinds_ele)
+      real(kind = kreal), intent(in)                                    &
+     &          :: sgs_f_clip(n_layer_d,num_kinds_ele)
 !
       real(kind = kreal), intent(inout) :: ak_sgs(numele,ntot_comp_ele)
 !
@@ -186,10 +205,10 @@
 !
       subroutine modify_cmpCsim_by_SGS_buo_ele(iak_sgs_buo,             &
      &          n_layer_d, n_item_layer_d, layer_stack_smp, item_layer, &
-     &          numele, ntot_comp_ele, ak_sgs)
+     &          numele, num_kinds_ele, ntot_comp_ele,                   &
+     &          sgs_f_coef, sgs_c_clip, ak_sgs)
 !
       use m_machine_parameter
-      use m_ele_info_4_dynamical
       use m_SGS_address
 !
       integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
@@ -197,7 +216,12 @@
      &                      :: layer_stack_smp(0:n_layer_d*np_smp)
       integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
       integer (kind = kint), intent(in) :: iak_sgs_buo
-      integer (kind = kint), intent(in) :: numele, ntot_comp_ele
+      integer (kind = kint), intent(in) :: numele
+      integer (kind = kint), intent(in) :: num_kinds_ele, ntot_comp_ele
+      real(kind = kreal), intent(in)                                    &
+     &          :: sgs_f_coef(n_layer_d,num_kinds_ele)
+      real(kind = kreal), intent(in)                                    &
+     &          :: sgs_c_clip(n_layer_d,ntot_comp_ele)
 !
       real(kind = kreal), intent(inout) :: ak_sgs(numele,ntot_comp_ele)
 !
@@ -233,17 +257,22 @@
 !
       subroutine modify_cmpCsim_by_SGS_dbuo_ele                         &
      &         (n_layer_d, n_item_layer_d, layer_stack_smp, item_layer, &
-     &          numele, ntot_comp_ele, ak_sgs)
+     &          numele, num_kinds_ele, ntot_comp_ele,                   &
+     &          sgs_f_coef, sgs_c_clip, ak_sgs)
 !
       use m_machine_parameter
-      use m_ele_info_4_dynamical
       use m_SGS_address
 !
       integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
       integer (kind = kint), intent(in)                                 &
      &                      :: layer_stack_smp(0:n_layer_d*np_smp)
       integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
-      integer (kind = kint), intent(in) :: numele, ntot_comp_ele
+      integer (kind = kint), intent(in) :: numele
+      integer (kind = kint), intent(in) :: num_kinds_ele, ntot_comp_ele
+      real(kind = kreal), intent(in)                                    &
+     &          :: sgs_f_coef(n_layer_d,num_kinds_ele)
+      real(kind = kreal), intent(in)                                    &
+     &          :: sgs_c_clip(n_layer_d,ntot_comp_ele)
 !
       real(kind = kreal), intent(inout) :: ak_sgs(numele,ntot_comp_ele)
 !

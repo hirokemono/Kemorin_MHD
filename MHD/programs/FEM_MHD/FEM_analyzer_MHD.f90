@@ -44,6 +44,7 @@
       use m_cal_max_indices
       use m_layering_ele_list
       use m_bc_data_velo
+      use m_work_4_dynamic_model
 !
       use initialization_4_MHD
       use lead_physical_values
@@ -78,7 +79,12 @@
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 'copy_model_coef_2_previous'
-        call copy_model_coef_2_previous
+        call copy_model_coef_2_previous                                 &
+     &     (wk_sgs1%nlayer, wk_sgs1%num_kinds, wk_sgs1%fld_coef,        &
+     &      wk_diff1%nlayer, wk_diff1%num_kinds,                        &
+     &      wk_diff1%fld_coef, wk_diff1%fld_whole,                      &
+     &      wk_sgs1%coef_p, wk_diff1%coef_p, wk_diff1%coef_wp)
+!
       end if
 !
 !   construct matrix for Poisson and diffusion terms

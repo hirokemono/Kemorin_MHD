@@ -18,7 +18,6 @@
       use m_control_parameter
       use m_SGS_model_coefs
       use m_t_step_parameter
-      use m_ele_info_4_dynamical
       use open_sgs_model_coefs
 !
       implicit none
@@ -150,6 +149,8 @@
 !
       subroutine output_layered_model_coefs_file
 !
+      use m_work_4_dynamic_model
+!
       integer (kind = kint) :: inum
 !
 !
@@ -169,22 +170,22 @@
      &    sgs_rms_file_code, sgs_rms_file_name)
 !
 !
-      do inum = 1, nlayer_SGS
+      do inum = 1, wk_sgs1%nlayer
         write(sgs_fld_coef_file_code,1000) i_step_MHD,                  &
-     &           time, inum, sgs_f_clip(inum,1:sgs_coefs%num_field)
+     &      time, inum, wk_sgs1%fld_clip(inum,1:sgs_coefs%num_field)
         write(sgs_comp_coef_file_code,1000) i_step_MHD,                 &
-     &           time, inum, sgs_c_clip(inum,1:sgs_coefs%ntot_comp)
+     &      time, inum, wk_sgs1%comp_clip(inum,1:sgs_coefs%ntot_comp)
 !
         write(sgs_cor_file_code,1000) i_step_MHD, time, inum,           &
-     &         cor_sgs(inum,1:sgs_coefs%ntot_comp)
+     &         wk_sgs1%corrilate(inum,1:wk_sgs1%ntot_comp)
         write(sgs_cov_file_code,1000) i_step_MHD, time, inum,           &
-     &         cov_sgs(inum,1:sgs_coefs%ntot_comp)
+     &         wk_sgs1%covariant(inum,1:wk_sgs1%ntot_comp)
         write(sgs_ratio_file_code,1000) i_step_MHD, time, inum,         &
-     &         ratio_sgs(inum,1:sgs_coefs%ntot_comp)
+     &         wk_sgs1%ratio(inum,1:wk_sgs1%ntot_comp)
 !
         write(sgs_rms_file_code,1000) i_step_MHD, time, inum,           &
-     &         rms_sgs_simi(inum,1:sgs_coefs%ntot_comp),                &
-     &         rms_sgs_grad(inum,1:sgs_coefs%ntot_comp)
+     &         wk_sgs1%rms_simi(inum,1:wk_sgs1%ntot_comp),              &
+     &         wk_sgs1%rms_grad(inum,1:wk_sgs1%ntot_comp)
       end do
 !
       close (sgs_fld_coef_file_code)
@@ -203,6 +204,8 @@
 !
       subroutine output_whole_model_coefs_file
 !
+      use m_work_4_dynamic_model
+!
 !
       call open_SGS_model_coef_file(iflag_whole,                        &
      &    sgs_fld_coef_file_code, sgs_fld_whole_file_name)
@@ -220,19 +223,19 @@
      &    sgs_rms_file_code, sgs_w_rms_file_name)
 !
       write(sgs_fld_coef_file_code,1001)  i_step_MHD, time,             &
-     &        sgs_f_whole_clip(1:sgs_coefs%num_field)
+     &        wk_sgs1%fld_whole_clip(1:sgs_coefs%num_field)
       write(sgs_comp_coef_file_code,1001)  i_step_MHD, time,            &
-     &        sgs_c_whole_clip(1:sgs_coefs%ntot_comp)
+     &        wk_sgs1%comp_whole_clip(1:wk_sgs1%ntot_comp)
 !
       write(sgs_cor_file_code,1001)  i_step_MHD, time,                  &
-     &        cor_sgs_w(1:sgs_coefs%ntot_comp)
+     &        wk_sgs1%corrilate_w(1:wk_sgs1%ntot_comp)
       write(sgs_cov_file_code,1001)  i_step_MHD, time,                  &
-     &        cov_sgs_w(1:sgs_coefs%ntot_comp)
+     &        wk_sgs1%covariant_w(1:wk_sgs1%ntot_comp)
       write(sgs_ratio_file_code,1001) i_step_MHD, time,                 &
-     &        ratio_sgs_w(1:sgs_coefs%ntot_comp)
+     &        wk_sgs1%ratio_w(1:wk_sgs1%ntot_comp)
       write(sgs_rms_file_code,1001) i_step_MHD, time,                   &
-     &        rms_sgs_simi_w(1:sgs_coefs%ntot_comp),                    &
-     &        rms_sgs_grad_w(1:sgs_coefs%ntot_comp)
+     &        wk_sgs1%rms_simi_w(1:wk_sgs1%ntot_comp),                  &
+     &        wk_sgs1%rms_grad_w(1:wk_sgs1%ntot_comp)
 !
       close (sgs_fld_coef_file_code)
       close (sgs_comp_coef_file_code)
@@ -249,6 +252,7 @@
 !
       subroutine output_whole_diff_coefs_file
 !
+      use m_work_4_dynamic_model
 !
       call open_SGS_diff_coef_file(iflag_whole,                         &
      &      diff_coef_file_code, diff_fld_whole_file_name)
@@ -266,19 +270,19 @@
      &      diff_rms_file_code, diff_w_rms_file_name)
 !
       write(diff_coef_file_code,1001) i_step_MHD, time,                 &
-     &          diff_f_whole_clip(1:diff_coefs%num_field)
+     &          wk_diff1%fld_whole_clip(1:diff_coefs%num_field)
       write(diff_comp_file_code,1001) i_step_MHD, time,                 &
-     &          diff_c_whole_clip(1:num_diff_coefs)
+     &          wk_diff1%comp_whole_clip(1:wk_diff1%ntot_comp)
 !
       write(diff_cor_file_code,1001) i_step_MHD, time,                  &
-     &          cor_diff_w(1:num_diff_coefs)
+     &          wk_diff1%corrilate_w(1:wk_diff1%ntot_comp)
       write(diff_cov_file_code,1001) i_step_MHD, time,                  &
-     &          cov_diff_w(1:num_diff_coefs)
+     &          wk_diff1%covariant_w(1:wk_diff1%ntot_comp)
       write(diff_ratio_file_code,1001) i_step_MHD, time,                &
-     &          ratio_diff_w(1:num_diff_coefs)
+     &          wk_diff1%ratio_w(1:wk_diff1%ntot_comp)
       write(diff_rms_file_code,1001) i_step_MHD, time,                  &
-     &          rms_diff_simi_w(1:num_diff_coefs),                      &
-     &          rms_diff_grad_w(1:num_diff_coefs)
+     &          wk_diff1%rms_simi_w(1:wk_diff1%ntot_comp),              &
+     &          wk_diff1%rms_grad_w(1:wk_diff1%ntot_comp)
 !
       close (diff_coef_file_code)
       close (diff_comp_file_code)
@@ -294,6 +298,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine output_layered_diff_coefs_file
+!
+      use m_work_4_dynamic_model
 !
       integer (kind = kint) :: inum
 !
@@ -311,25 +317,25 @@
       call open_diff_rms_ratio_file(iflag_layered,                      &
      &              diff_rms_file_code, diff_rms_file_name)
 !
-      do inum = 1, nlayer_SGS
+      do inum = 1, wk_diff1%nlayer
         write(diff_coef_file_code,1000)                                 &
      &       i_step_MHD, time, inum,                                    &
-     &              diff_f_clip(inum,1:diff_coefs%num_field)
+     &              wk_diff1%fld_clip(inum,1:diff_coefs%num_field)
 !
         write(diff_cor_file_code,1000)                                  &
      &       i_step_MHD, time, inum,                                    &
-     &              cor_diff(inum,1:num_diff_coefs)
+     &              wk_diff1%corrilate(inum,1:wk_diff1%ntot_comp)
         write(diff_cov_file_code,1000)                                  &
      &       i_step_MHD, time, inum,                                    &
-     &              cov_diff(inum,1:num_diff_coefs)
+     &              wk_diff1%covariant(inum,1:wk_diff1%ntot_comp)
 !
         write(diff_ratio_file_code,1000)                                &
      &       i_step_MHD, time, inum,                                    &
-     &              ratio_diff(inum,1:num_diff_coefs)
+     &              wk_diff1%ratio(inum,1:wk_diff1%ntot_comp)
         write(diff_rms_file_code,1000)                                  &
      &      i_step_MHD, time, inum,                                     &
-     &              rms_diff_simi(inum,1:num_diff_coefs),               &
-     &              rms_diff_grad(inum,1:num_diff_coefs)
+     &              wk_diff1%rms_simi(inum,1:wk_diff1%ntot_comp),       &
+     &              wk_diff1%rms_grad(inum,1:wk_diff1%ntot_comp)
       end do
 !
       close(diff_coef_file_code)

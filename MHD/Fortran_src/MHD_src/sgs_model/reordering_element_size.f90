@@ -51,7 +51,6 @@
 !
       use m_control_parameter
       use m_work_4_MHD_layering
-      use m_ele_info_4_dynamical
       use m_filter_elength
 !
       integer(kind = kint), intent(in) :: numele

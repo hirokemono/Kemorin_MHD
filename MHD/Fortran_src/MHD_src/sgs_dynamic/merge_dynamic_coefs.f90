@@ -6,9 +6,11 @@
 !      subroutine merge_coefs_4_dynamic(numdir, n_layer, cor, sgs_les,  &
 !     &          dnum, c_comps,  c_fields)
 !      subroutine cal_Csim_buo_by_Reynolds_ratio(n_layer, irms_buo,     &
-!     &          sgs_les, c_comps, c_fields)
+!     &          num_fld, num_comp, i_fld, i_comp,                      &
+!     &          sgs_les, sgs_c_coef, sgs_f_coef)
 !      subroutine single_Csim_buo_by_mf_ratio(n_layer, irms_buo,        &
-!     &          sgs_les, c_comps, c_fields)
+!     &          num_fld, num_comp, i_fld, i_comp,                      &
+!     &          sgs_les, sgs_c_coef, sgs_f_coef)
 !
       module merge_dynamic_coefs
 !
@@ -272,29 +274,32 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_Csim_buo_by_Reynolds_ratio(n_layer, irms_buo,      &
-     &          sgs_les, c_comps, c_fields)
+     &          num_fld, num_comp, i_fld, i_comp,                       &
+     &          sgs_les, sgs_c_coef, sgs_f_coef)
 !
       integer(kind = kint), intent(in) :: irms_buo
       integer (kind = kint), intent(in) :: n_layer
+      integer (kind = kint), intent(in) :: num_fld,  i_fld
+      integer (kind = kint), intent(in) :: num_comp, i_comp
       real(kind = kreal), intent(in) :: sgs_les(n_layer,18)
 !
-      real(kind = kreal), intent(inout) :: c_comps(n_layer,6)
-      real(kind = kreal), intent(inout) :: c_fields(n_layer)
+      real(kind = kreal), intent(inout) :: sgs_c_coef(n_layer,num_comp)
+      real(kind = kreal), intent(inout) :: sgs_f_coef(n_layer,num_fld)
 !
       integer(kind = kint) :: igrp
 !
 !
 !$omp parallel do
       do igrp = 1, n_layer
-        c_fields(igrp) = sgs_les(igrp,irms_buo) / sgs_les(igrp,4)
-        c_fields(igrp) = c_fields(igrp) ** (two/three)
+        sgs_f_coef(igrp,i_fld) = sgs_les(igrp,irms_buo) / sgs_les(igrp,4)
+        sgs_f_coef(igrp,i_fld) = sgs_f_coef(igrp,i_fld) ** (two/three)
 !
-        c_comps(igrp,1) = c_fields(igrp)
-        c_comps(igrp,2) = c_fields(igrp)
-        c_comps(igrp,3) = c_fields(igrp)
-        c_comps(igrp,4) = c_fields(igrp)
-        c_comps(igrp,5) = c_fields(igrp)
-        c_comps(igrp,6) = c_fields(igrp)
+        sgs_c_coef(igrp,i_comp  ) = sgs_f_coef(igrp,i_fld)
+        sgs_c_coef(igrp,i_comp+1) = sgs_f_coef(igrp,i_fld)
+        sgs_c_coef(igrp,i_comp+2) = sgs_f_coef(igrp,i_fld)
+        sgs_c_coef(igrp,i_comp+3) = sgs_f_coef(igrp,i_fld)
+        sgs_c_coef(igrp,i_comp+4) = sgs_f_coef(igrp,i_fld)
+        sgs_c_coef(igrp,i_comp+5) = sgs_f_coef(igrp,i_fld)
       end do
 !$omp end parallel do
 !
@@ -303,14 +308,17 @@
 ! ----------------------------------------------------------------------
 !
       subroutine single_Csim_buo_by_mf_ratio(n_layer, irms_buo,         &
-     &          sgs_les, c_comps, c_fields)
+     &          num_fld, num_comp, i_fld, i_comp,                       &
+     &          sgs_les, sgs_c_coef, sgs_f_coef)
 !
       integer(kind = kint), intent(in) :: irms_buo
       integer (kind = kint), intent(in) :: n_layer
+      integer (kind = kint), intent(in) :: num_fld,  i_fld
+      integer (kind = kint), intent(in) :: num_comp, i_comp
       real(kind = kreal), intent(in) :: sgs_les(n_layer,18)
 !
-      real(kind = kreal), intent(inout) :: c_comps(n_layer,6)
-      real(kind = kreal), intent(inout) :: c_fields(n_layer)
+      real(kind = kreal), intent(inout) :: sgs_c_coef(n_layer,num_comp)
+      real(kind = kreal), intent(inout) :: sgs_f_coef(n_layer,num_fld)
 !
       integer(kind = kint) :: igrp
       real(kind = kreal) :: sgs_sum, rey_sum
@@ -326,14 +334,14 @@
 !
 !$omp parallel do
       do igrp = 1, n_layer
-        c_fields(igrp) = sgs_sum
+        sgs_f_coef(igrp,i_fld) = sgs_sum
 !
-        c_comps(igrp,1) = sgs_sum
-        c_comps(igrp,2) = sgs_sum
-        c_comps(igrp,3) = sgs_sum
-        c_comps(igrp,4) = sgs_sum
-        c_comps(igrp,5) = sgs_sum
-        c_comps(igrp,6) = sgs_sum
+        sgs_c_coef(igrp,i_comp  ) = sgs_sum
+        sgs_c_coef(igrp,i_comp+1) = sgs_sum
+        sgs_c_coef(igrp,i_comp+2) = sgs_sum
+        sgs_c_coef(igrp,i_comp+3) = sgs_sum
+        sgs_c_coef(igrp,i_comp+4) = sgs_sum
+        sgs_c_coef(igrp,i_comp+5) = sgs_sum
       end do
 !$omp end parallel do
 !

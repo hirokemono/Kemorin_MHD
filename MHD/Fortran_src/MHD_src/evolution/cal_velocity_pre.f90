@@ -103,6 +103,7 @@
 !
       use m_SGS_address
       use m_SGS_model_coefs
+      use m_work_4_dynamic_model
 !
       use nod_phys_send_recv
       use cal_sgs_fluxes
@@ -113,7 +114,6 @@
       use int_surf_velo_pre
       use int_vol_coriolis_term
       use cal_sgs_m_flux_sgs_buo
-      use modify_Csim_by_SGS_buo_ele
       use set_normal_field
       use evolve_by_1st_euler
       use evolve_by_adams_bashforth
@@ -165,10 +165,8 @@
      &     (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,        &
      &      Vsf_bcs, Bsf_bcs, iphys, iphys_ele, jac_3d_q, jac_3d_l,     &
      &      jac_sf_grp_q, rhs_tbl, FEM_elens, filtering,                &
-     &      sgs_coefs_nod, sgs_coefs, wk_filter, mhd_fem_wk, fem_wk,    &
-     &      f_l, f_nl, nod_fld, ele_fld)
-        call mod_Csim_by_SGS_buoyancy_ele                               &
-     &     (ele, layer_tbl%e_grp, sgs_coefs)
+     &      sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,               &
+     &      f_l, f_nl, nod_fld, ele_fld, sgs_coefs)
       end if
 !
       if ( iflag_SGS_inertia .ne. id_SGS_none) then

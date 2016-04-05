@@ -50,6 +50,7 @@
       subroutine output_ini_model_coefs
 !
       use m_SGS_model_coefs
+      use m_work_4_dynamic_model
       use open_sgs_model_coefs
       use sgs_model_coefs_IO
 !
@@ -68,35 +69,35 @@
 !
         write(rst_sgs_coef_code,'(a)')  '! num. of model coefs'
         write(rst_sgs_coef_code,'(2i16)')                               &
-     &       sgs_coefs%num_field, nlayer_SGS
+     &       sgs_coefs%num_field, wk_sgs1%nlayer
 !
         call write_sgs_coef_head(rst_sgs_coef_code)
 !
 !   write model coefs for whole domain
         write(rst_sgs_coef_code,1000)  i_step_MHD, time, izero,         &
-     &        sgs_f_whole_clip(1:sgs_coefs%num_field)
+     &        wk_sgs1%fld_whole_clip(1:sgs_coefs%num_field)
 !
 !   write model coefs for each layer
-        do inum = 1, nlayer_SGS
+        do inum = 1, wk_sgs1%nlayer
           write(rst_sgs_coef_code,1000) i_step_MHD, time, inum,         &
-     &       sgs_f_clip(inum,1:sgs_coefs%num_field)
+     &       wk_sgs1%fld_clip(inum,1:sgs_coefs%num_field)
         end do
 !
         if (iflag_commute_correction .gt. id_SGS_commute_OFF) then
 !
           write(rst_sgs_coef_code,'(a)')  '! num. of commute coefs'
           write(rst_sgs_coef_code,'(2i16)')                             &
-     &       diff_coefs%num_field, nlayer_SGS
+     &       diff_coefs%num_field, wk_diff1%nlayer
 !
           call write_diff_coef_head(rst_sgs_coef_code)
 !
           write(rst_sgs_coef_code,1000) i_step_MHD, time, izero,        &
-     &          diff_f_whole_clip(1:diff_coefs%num_field)
+     &          wk_diff1%fld_whole_clip(1:diff_coefs%num_field)
 !
           if (iset_DIFF_model_coefs .eq. 1 ) then
-            do inum = 1, nlayer_SGS
+            do inum = 1, wk_diff1%nlayer
               write(rst_sgs_coef_code,1000)  i_step_MHD, time, inum,    &
-     &              diff_f_clip(inum,1:diff_coefs%num_field)
+     &              wk_diff1%fld_clip(inum,1:diff_coefs%num_field)
             end do
           end if
         end if
@@ -205,16 +206,17 @@
       subroutine set_ini_model_coefs_from_IO
 !
       use m_SGS_model_coefs
-      use m_ele_info_4_dynamical
+      use m_work_4_dynamic_model
 !
       integer(kind = kint) :: i, j
 !
 !
       do i = 1, sgs_coefs%num_field
         do j = 1, num_sgs_kinds_IO
-          if ( name_ak_sgs(i) .eq. name_ak_sgs_IO(j) ) then
-            sgs_f_clip(1:nlayer_SGS,i) = coef_sgs_IO(1:nlayer_SGS,j)
-            sgs_f_whole_clip(i) =           coef_sgs_IO(0,j)
+          if ( wk_sgs1%name(i) .eq. name_ak_sgs_IO(j) ) then
+            wk_sgs1%fld_clip(1:wk_sgs1%nlayer,i)                        &
+     &                 = coef_sgs_IO(1:wk_sgs1%nlayer,j)
+            wk_sgs1%fld_whole_clip(i) =  coef_sgs_IO(0,j)
             exit
           end if
         end do
@@ -226,11 +228,11 @@
       if (iflag_commute_correction .gt. id_SGS_commute_OFF) then
         do i = 1, diff_coefs%num_field
           do j = 1, num_diff_kinds_IO
-            if ( name_ak_diff(i) .eq. name_ak_diff_IO(j) ) then
-              diff_f_whole_clip(i) = coef_diff_IO(0,j)
+            if ( wk_diff1%name(i) .eq. name_ak_diff_IO(j) ) then
+              wk_diff1%fld_whole_clip(i) = coef_diff_IO(0,j)
               if (iset_DIFF_model_coefs .eq. 1) then
-                diff_f_clip(1:nlayer_SGS,i)                             &
-     &                   = coef_diff_IO(1:nlayer_SGS,j)
+                wk_diff1%fld_clip(1:wk_diff1%nlayer,i)                  &
+     &                   = coef_diff_IO(1:wk_diff1%nlayer,j)
               end if
               exit
             end if
@@ -251,6 +253,7 @@
       use t_geometry_data
       use t_group_data
       use t_geometry_data_MHD
+      use m_work_4_dynamic_model
       use m_SGS_model_coefs
       use set_sgs_diff_model_coefs
 !
@@ -267,22 +270,23 @@
          call set_model_coefs_2_ele(ele, izero, sgs_coefs%num_comps(i), &
      &       i, ist, layer_egrp%num_grp, layer_egrp%num_item,           &
      &       layer_egrp%istack_grp_smp, layer_egrp%item_grp,            &
-     &       sgs_coefs%ntot_comp, sgs_coefs%ak)
+     &       sgs_coefs%num_field, sgs_coefs%ntot_comp,                  &
+     &       wk_sgs1%fld_clip, wk_sgs1%comp_clip, sgs_coefs%ak)
       end do
 !
       if (iflag_commute_correction .gt. id_SGS_commute_OFF) then
         if (iset_DIFF_model_coefs .eq. 0) then
           do i = 1, diff_coefs%num_field
             call set_diff_coefs_whole_ele                               &
-     &         (ele, fluid%istack_ele_fld_smp, i,                       &
-     &          diff_coefs%ntot_comp, diff_coefs%ak)
+     &         (ele, fluid%istack_ele_fld_smp, i, diff_coefs%ntot_comp, &
+     &          wk_diff1%fld_whole_clip, diff_coefs%ak)
           end do
         else
           do i = 1, diff_coefs%num_field
             call set_diff_coefs_layer_ele                               &
      &         (ele, i, layer_egrp%num_grp, layer_egrp%num_item,        &
      &          layer_egrp%istack_grp_smp, layer_egrp%item_grp,         &
-     &          diff_coefs%ntot_comp, diff_coefs%ak)
+     &          diff_coefs%ntot_comp, wk_diff1%fld_clip, diff_coefs%ak)
           end do
         end if
       end if

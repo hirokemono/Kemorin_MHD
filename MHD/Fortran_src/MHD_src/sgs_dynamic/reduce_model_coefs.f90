@@ -3,8 +3,8 @@
 !
 !     Modified by H. Matsui on June., 2012
 !
-!!      subroutine reduce_model_coefs_layer(SGS_factor, n_layer_d, coef,&
-!!     &          coef_w)
+!!      subroutine reduce_model_coefs_layer(SGS_factor, n_layer_d,      &
+!!     &          num_kinds, iak_sgs, coef, coef_w)
 !!      subroutine reduce_ele_vect_model_coefs                          &
 !!     &         (ele, SGS_factor, ntot_comp_ele, ifield_ele, ak_sgs)
 !!      subroutine reduce_ele_tensor_model_coefs                        &
@@ -26,18 +26,22 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine reduce_model_coefs_layer(SGS_factor, n_layer_d, coef,  &
-     &          coef_w)
+      subroutine reduce_model_coefs_layer(SGS_factor, n_layer_d,        &
+     &          num_kinds, iak_sgs, coef, coef_w)
 !
       integer (kind = kint), intent(in) :: n_layer_d
+      integer (kind = kint), intent(in) :: num_kinds, iak_sgs
       real (kind = kreal), intent(in) :: SGS_factor
 !
-      real (kind = kreal), intent(inout) :: coef(n_layer_d)
-      real (kind = kreal), intent(inout) :: coef_w
+      real (kind = kreal), intent(inout) :: coef(n_layer_d, num_kinds)
+      real (kind = kreal), intent(inout) :: coef_w(num_kinds)
 !
 !
-      coef(1:n_layer_d) = coef(1:n_layer_d) * SGS_factor
-      coef_w = coef_w * SGS_factor
+!$omp parallel workshare
+      coef(1:n_layer_d,iak_sgs)                                         &
+     &      = coef(1:n_layer_d,iak_sgs) * SGS_factor
+!$omp end parallel workshare
+      coef_w(iak_sgs) = coef_w(iak_sgs) * SGS_factor
 !
       end subroutine reduce_model_coefs_layer
 !
