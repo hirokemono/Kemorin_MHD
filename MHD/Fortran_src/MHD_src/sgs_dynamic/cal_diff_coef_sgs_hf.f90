@@ -9,7 +9,7 @@
 !!     &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,          &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
 !!     &          FEM_elens, filtering, sgs_coefs, wk_filter,           &
-!!     &          wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk,          &
+!!     &          wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk, surf_wk, &
 !!     &          f_l, f_nl, nod_fld, diff_coefs)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -35,6 +35,7 @@
 !!        type(dynamic_model_data), intent(inout) :: wk_diff
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(MHD_coefficients_type), intent(inout) :: diff_coefs
@@ -55,6 +56,8 @@
       use t_table_FEM_const
       use t_layering_ele_list
       use t_MHD_finite_element_mat
+      use t_finite_element_mat
+      use t_int_surface_data
       use t_filter_elength
       use t_filtering_data
       use t_ele_info_4_dynamic
@@ -77,7 +80,7 @@
      &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,            &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
      &          FEM_elens, filtering, sgs_coefs, wk_filter,             &
-     &          wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk,            &
+     &          wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk, surf_wk,   &
      &          f_l, f_nl, nod_fld, diff_coefs)
 !
       use m_machine_parameter
@@ -125,6 +128,7 @@
       type(dynamic_model_data), intent(inout) :: wk_diff
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
       type(MHD_coefficients_type), intent(inout) :: diff_coefs
@@ -183,7 +187,7 @@
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
      &    rhs_tbl, FEM_elens, Tsf_bcs%sgs, ifilter_4delta,              &
      &    iphys%i_sgs_grad_f, iphys%i_sgs_grad_f, iphys%i_filter_velo,  &
-     &    iphys%i_filter_temp, fem_wk, f_l, f_nl, nod_fld)
+     &    iphys%i_filter_temp, fem_wk, surf_wk, f_l, f_nl, nod_fld)
       call delete_field_by_fixed_t_bc                                   &
      &   (Tnod_bcs%nod_bc_s, iphys%i_sgs_grad_f, nod_fld)
 !
@@ -200,7 +204,7 @@
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
      &    rhs_tbl, FEM_elens, Tsf_bcs%sgs, ifilter_2delta,              &
      &    iphys%i_sgs_grad, iphys%i_SGS_h_flux, iphys%i_velo,           &
-     &    iphys%i_sgs_temp, fem_wk, f_l, f_nl, nod_fld)
+     &    iphys%i_sgs_temp, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
       call scalar_send_recv                                             &
      &   (iphys%i_sgs_grad, node, nod_comm, nod_fld)

@@ -10,7 +10,7 @@
 !!     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys, iphys_ele,&
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
 !!     &          rhs_tbl, FEM_elens, filtering, layer_tbl,             &
-!!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl,             &
+!!     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,    &
 !!     &          nod_fld, ele_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -33,6 +33,7 @@
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(phys_data), intent(inout) :: ele_fld
@@ -53,6 +54,7 @@
       use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
+      use t_int_surface_data
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_filtering_data
@@ -76,7 +78,7 @@
      &          Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys, iphys_ele,  &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
      &          rhs_tbl, FEM_elens, filtering, layer_tbl,               &
-     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl,               &
+     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,      &
      &          nod_fld, ele_fld)
 !
       use m_control_parameter
@@ -118,6 +120,7 @@
       type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
       type(phys_data), intent(inout) :: ele_fld
@@ -159,8 +162,8 @@
      &    filtering, layer_tbl, num_MG_level,                           &
      &    MHD1_matrices%MG_interpolate, MHD1_matrices%MG_comm_fluid,    &
      &    MHD1_matrices%MG_DJDS_fluid, MHD1_matrices%Vmat_MG_DJDS,      &
-     &    MG_vector, wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl,          &
-     &    nod_fld, ele_fld)
+     &    MG_vector, wk_filter, mhd_fem_wk, fem_wk, surf_wk,            &
+     &    f_l, f_nl, nod_fld, ele_fld)
 !
 !     --------------------- 
 !
@@ -177,7 +180,7 @@
      &      FEM_elens, diff_coefs, num_MG_level,                        &
      &      MHD1_matrices%MG_interpolate, MHD1_matrices%MG_comm_fluid,  &
      &      MHD1_matrices%MG_DJDS_lin_fl, MHD1_matrices%Pmat_MG_DJDS,   &
-     &      MG_vector, fem_wk, f_l, f_nl, nod_fld)
+     &      MG_vector, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
         call cal_sol_pressure                                           &
      &     (node%numnod, node%istack_internal_smp, nod_fld%ntot_phys,   &
@@ -190,7 +193,7 @@
      &      FEM_elens, num_MG_level, MHD1_matrices%MG_interpolate,      &
      &      MHD1_matrices%MG_comm_fluid, MHD1_matrices%MG_DJDS_fluid,   &
      &      MHD1_matrices%Vmat_MG_DJDS, MG_vector,                      &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
 !
         call cal_rms_scalar_potential(iloop, fluid%istack_ele_fld_smp,  &

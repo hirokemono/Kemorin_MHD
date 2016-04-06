@@ -9,7 +9,7 @@
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
 !!     &          FEM_elens, filtering, sgs_coefs_nod,                  &
 !!     &          wk_filter, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,        &
-!!     &          f_l, f_nl, nod_fld, ele_fld, sgs_coefs)
+!!     &          surf_wk, f_l, f_nl, nod_fld, ele_fld, sgs_coefs)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -32,6 +32,7 @@
 !!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(phys_data), intent(inout) :: ele_fld
@@ -54,6 +55,7 @@
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
+      use t_int_surface_data
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_filtering_data
@@ -79,7 +81,7 @@
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
      &          FEM_elens, filtering, sgs_coefs_nod,                    &
      &          wk_filter, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,          &
-     &          f_l, f_nl, nod_fld, ele_fld, sgs_coefs)
+     &          surf_wk, f_l, f_nl, nod_fld, ele_fld, sgs_coefs)
 !
       use m_control_parameter
       use m_phys_constants
@@ -119,6 +121,7 @@
       type(dynamis_least_suare_data), intent(inout) :: wk_lsq
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
       type(phys_data), intent(inout) :: ele_fld
@@ -150,7 +153,7 @@
      &   (iphys%i_SGS_div_m_flux, iak_diff_mf, iak_diff_lor,            &
      &    nod_comm, node, ele, surf, fluid, sf_grp, Vsf_bcs, Bsf_bcs,   &
      &    iphys, iphys_ele, jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens, &
-     &    mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, ele_fld)
+     &    mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld, ele_fld)
 !
 !$omp parallel
       call cal_phys_dot_product(node, nod_fld,                          &

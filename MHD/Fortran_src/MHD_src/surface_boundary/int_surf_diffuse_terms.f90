@@ -5,13 +5,13 @@
 !
 !!      subroutine int_surf_current_diffuse(node, ele, surf, sf_grp,    &
 !!     &          nod_fld, jac_sf_grp, rhs_tbl, lead_sf,                &
-!!     &          n_int, i_vecp, fem_wk, f_l)
+!!     &          n_int, i_vecp, fem_wk, surf_wk, f_l)
 !!      subroutine int_surf_diffuse_term(node, ele, surf, sf_grp,       &
 !!     &          nod_fld, jac_sf_grp, rhs_tbl, lead_sf,                &
-!!     &          n_int, ak_d, i_field, fem_wk, f_l)
+!!     &          n_int, ak_d, i_field, fem_wk, surf_wk, f_l)
 !!      subroutine int_surf_vect_diffuse_term(node, ele, surf, sf_grp,  &
 !!     &          jac_sf_grp, nod_fld, rhs_tbl, lead_sf                 &
-!!     &          n_int, ak_d, i_field, fem_wk, f_l)
+!!     &          n_int, ak_d, i_field, fem_wk, surf_wk, f_l)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -21,6 +21,9 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(scaler_surf_bc_data_type),  intent(in) :: lead_sf
 !!        type(scaler_surf_bc_data_type),  intent(in) :: lead_sf(3)
+!!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(work_surface_element_mat), intent(inout) :: surf_wk
+!!        type(finite_ele_mat_node), intent(inout) :: f_l
 !
 !
       module int_surf_diffuse_terms
@@ -35,6 +38,7 @@
       use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
+      use t_int_surface_data
       use t_surface_bc_data
 !
       implicit none
@@ -47,10 +51,9 @@
 !
       subroutine int_surf_current_diffuse(node, ele, surf, sf_grp,      &
      &          nod_fld, jac_sf_grp, rhs_tbl, lead_sf,                  &
-     &          n_int, i_vecp, fem_wk, f_l)
+     &          n_int, i_vecp, fem_wk, surf_wk, f_l)
 !
       use m_ele_material_property
-      use m_int_surface_data
 !
       use delta_phys_2_each_surface
       use fem_surf_skv_poisson_type
@@ -68,6 +71,7 @@
       integer(kind=kint), intent(in) :: n_int, i_vecp
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
 !
       integer(kind=kint) :: k2, nd, i_comp, i, igrp, num
@@ -90,10 +94,10 @@
             do k2 = 1, surf%nnod_4_surf
               call dlt_scl_phys_2_each_surface                          &
      &           (node, ele, surf, sf_grp, nod_fld, igrp, k2,           &
-     &            i_comp, scalar_sf)
+     &            i_comp, surf_wk%scalar_sf)
               call fem_surf_skv_current_by_vecp                         &
-     &           (ele, surf, sf_grp, jac_sf_grp, igrp, k2, nd,          &
-     &            n_int, dxe_sf, scalar_sf, fem_wk%sk6)
+     &           (ele, surf, sf_grp, jac_sf_grp, igrp, k2, nd, n_int,   &
+     &            surf_wk%dxe_sf, surf_wk%scalar_sf, fem_wk%sk6)
             end do
 !
           end if
@@ -110,9 +114,7 @@
 !
       subroutine int_surf_diffuse_term(node, ele, surf, sf_grp,         &
      &          nod_fld, jac_sf_grp, rhs_tbl, lead_sf,                  &
-     &          n_int, ak_d, i_field, fem_wk, f_l)
-!
-      use m_int_surface_data
+     &          n_int, ak_d, i_field, fem_wk, surf_wk, f_l)
 !
       use delta_phys_2_each_surface
       use fem_surf_skv_poisson_type
@@ -131,6 +133,7 @@
       real (kind = kreal), intent(in) :: ak_d(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
 !
       integer(kind=kint) :: k2, i, igrp, num
@@ -147,10 +150,11 @@
           do k2 = 1, surf%nnod_4_surf
             call dlt_scl_phys_2_each_surface                            &
      &         (node, ele, surf, sf_grp, nod_fld, igrp, k2,             &
-     &          i_field, scalar_sf)
+     &          i_field, surf_wk%scalar_sf)
             call fem_surf_skv_diffuse_galerkin                          &
      &         (ele, surf, sf_grp, jac_sf_grp, igrp, k2,                &
-     &          ione, n_int, dxe_sf, scalar_sf, ak_d, fem_wk%sk6)
+     &          ione, n_int, surf_wk%dxe_sf, surf_wk%scalar_sf,         &
+     &          ak_d, fem_wk%sk6)
           end do
         end if
       end do
@@ -164,9 +168,7 @@
 !
       subroutine int_surf_vect_diffuse_term(node, ele, surf, sf_grp,    &
      &          jac_sf_grp, nod_fld, rhs_tbl, lead_sf,                  &
-     &          n_int, ak_d, i_field, fem_wk, f_l)
-!
-      use m_int_surface_data
+     &          n_int, ak_d, i_field, fem_wk, surf_wk, f_l)
 !
       use delta_phys_2_each_surface
       use fem_surf_skv_poisson_type
@@ -185,6 +187,7 @@
       real (kind = kreal), intent(in) :: ak_d(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
 !
       integer(kind=kint) :: k2, i, igrp, nd, i_comp, num
@@ -207,10 +210,11 @@
             do k2 = 1, surf%nnod_4_surf
               call dlt_scl_phys_2_each_surface                          &
      &           (node, ele, surf, sf_grp, nod_fld, igrp, k2,           &
-     &            i_comp, scalar_sf)
+     &            i_comp, surf_wk%scalar_sf)
               call fem_surf_skv_diffuse_galerkin                        &
      &           (ele, surf, sf_grp, jac_sf_grp, igrp, k2,              &
-     &            nd, n_int, dxe_sf, scalar_sf, ak_d, fem_wk%sk6)
+     &            nd, n_int, surf_wk%dxe_sf, surf_wk%scalar_sf,         &
+     &            ak_d, fem_wk%sk6)
             end do
 !
           end if

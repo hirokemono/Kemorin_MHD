@@ -31,6 +31,7 @@
      &           mk_MHD)
 !
       use m_machine_parameter
+      use t_work_FEM_integration
       use t_finite_element_mat
       use t_finite_element_mat_MHD
       use t_vector_for_solver

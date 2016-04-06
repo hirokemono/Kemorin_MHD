@@ -6,10 +6,11 @@
 !!      subroutine int_surf_div_induct_t_sgs(node, ele, surf,           &
 !!     &          sf_grp, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,      &
 !!     &          n_int, i_filter, ncomp_diff, iak_diff_uxb,            &
-!!     &          ak_diff, i_flux, i_v, i_b, fem_wk, f_nl)
+!!     &          ak_diff, i_flux, i_v, i_b, fem_wk, surf_wk, f_nl)
 !!      subroutine int_surf_commute_induct_t(node, ele, surf, sf_grp,   &
 !!     &          nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf,      &
-!!     &          n_int, i_flux, i_filter, i_v, i_b, fem_wk, f_nl)
+!!     &          n_int, i_flux, i_filter, i_v, i_b,                    &
+!!     &          fem_wk, surf_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -20,6 +21,7 @@
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(scaler_surf_bc_data_type),  intent(in) :: sgs_sf(3)
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !
       module int_surf_div_induct_tsr_sgs
@@ -34,6 +36,7 @@
       use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
+      use t_int_surface_data
       use t_filter_elength
       use t_surface_bc_data
 !
@@ -48,9 +51,7 @@
       subroutine int_surf_div_induct_t_sgs(node, ele, surf, sf_grp,     &
      &          nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf,        &
      &          n_int, i_filter, ncomp_diff, iak_diff_uxb,              &
-     &          ak_diff, i_flux, i_v, i_b, fem_wk, f_nl)
-!
-      use m_int_surface_data
+     &          ak_diff, i_flux, i_v, i_b, fem_wk, surf_wk, f_nl)
 !
       use delta_SGS_2_each_surface
       use fem_surf_skv_sgs_commute_t
@@ -73,6 +74,7 @@
       real(kind = kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
 !
       integer(kind=kint) :: k2, nd, i, igrp, num
@@ -93,10 +95,11 @@
             do k2 = 1, surf%nnod_4_surf
               call d_SGS_induct_t_2_each_surface                        &
      &           (node, ele, surf, sf_grp, nod_fld, igrp, k2, nd,       &
-     &            i_flux, i_b, i_v, vect_sf)
+     &            i_flux, i_b, i_v, surf_wk%vect_sf)
               call fem_sf_grp_skv_sgs_div_flux_p                        &
      &           (ele, surf, sf_grp, jac_sf_grp, FEM_elens,             &
-     &            igrp, k2, nd, n_int, i_filter, dxe_sf, vect_sf,       &
+     &            igrp, k2, nd, n_int, i_filter,                        &
+     &            surf_wk%dxe_sf, surf_wk%vect_sf,                      &
      &            ak_diff(1,iak_diff_uxb), dminus, fem_wk%sk6)
             end do
 !
@@ -113,9 +116,8 @@
 !
       subroutine int_surf_commute_induct_t(node, ele, surf, sf_grp,     &
      &          nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf,        &
-     &          n_int, i_flux, i_filter, i_v, i_b, fem_wk, f_nl)
-!
-      use m_int_surface_data
+     &          n_int, i_flux, i_filter, i_v, i_b,                      &
+     &          fem_wk, surf_wk, f_nl)
 !
       use delta_SGS_2_each_surface
       use fem_surf_skv_sgs_commute_t
@@ -135,6 +137,7 @@
       integer (kind = kint), intent(in) :: i_b, i_v, i_flux
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
 !
       integer(kind=kint) :: k2, nd, i, igrp, num
@@ -155,11 +158,11 @@
             do k2 = 1, surf%nnod_4_surf
               call d_SGS_induct_t_2_each_surface                        &
      &           (node, ele, surf, sf_grp, nod_fld, igrp, k2, nd,       &
-     &            i_flux, i_b, i_v, vect_sf)
+     &            i_flux, i_b, i_v, surf_wk%vect_sf)
               call fem_sf_grp_skv_div_f_commute_p                       &
      &           (ele, surf, sf_grp, jac_sf_grp, FEM_elens,             &
-     &            igrp, k2, nd, n_int, i_filter, dxe_sf, vect_sf,       &
-     &            fem_wk%sk6)
+     &            igrp, k2, nd, n_int, i_filter,                        &
+     &            surf_wk%dxe_sf, surf_wk%vect_sf, fem_wk%sk6)
             end do
 !
           end if

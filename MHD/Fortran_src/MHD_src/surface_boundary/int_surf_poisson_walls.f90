@@ -5,13 +5,16 @@
 !
 !!      subroutine int_surf_poisson_wall(node, ele, surf, sf_grp,       &
 !!     &          nod_fld, jac_sf_grp_l, rhs_tbl,                       &
-!!     &          n_int, ngrp_sf, id_grp_sf, i_vect, fem_wk, f_l)
+!!     &          n_int, ngrp_sf, id_grp_sf, i_vect,                    &
+!!     &          fem_wk, surf_wk, f_l)
 !!      subroutine int_surf_poisson_sph_in(node, ele, surf, sf_grp,     &
 !!     &          nod_fld, jac_sf_grp_l, rhs_tbl,                       &
-!!     &          n_int, ngrp_sf, id_grp_sf, i_vect, fem_wk, f_l)
+!!     &          n_int, ngrp_sf, id_grp_sf, i_vect,                    &
+!!     &          fem_wk, surf_wk, f_l)
 !!      subroutine int_surf_poisson_sph_out(node, ele, surf, sf_grp,    &
 !!     &           nod_fld, jac_sf_grp_l, rhs_tbl,                      &
-!!     &           n_int, ngrp_sf, id_grp_sf, i_vect, fem_wk, f_l)
+!!     &           n_int, ngrp_sf, id_grp_sf, i_vect,                   &
+!!     &           fem_wk, surf_wk, f_l)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -21,6 +24,7 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l
 !
       module int_surf_poisson_walls
@@ -34,6 +38,7 @@
       use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
+      use t_int_surface_data
 !
       use node_phys_2_each_surface
       use fem_surf_skv_poisson_type
@@ -49,9 +54,8 @@
 !
       subroutine int_surf_poisson_wall(node, ele, surf, sf_grp,         &
      &          nod_fld, jac_sf_grp_l, rhs_tbl,                         &
-     &          n_int, ngrp_sf, id_grp_sf, i_vect, fem_wk, f_l)
-!
-      use m_int_surface_data
+     &          n_int, ngrp_sf, id_grp_sf, i_vect,                      &
+     &          fem_wk, surf_wk, f_l)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -66,6 +70,7 @@
       integer(kind = kint), intent(in) :: i_vect
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
 !
       integer(kind=kint) :: k2, i, igrp, num
@@ -83,10 +88,10 @@
           do k2 = 1, num_linear_sf
             call vector_phys_2_each_surface                             &
      &         (node, ele, surf, sf_grp, nod_fld, igrp, k2,             &
-     &          i_vect, vect_sf)
+     &          i_vect, surf_wk%vect_sf)
             call fem_surf_skv_poisson_wall                              &
      &         (ele, surf, sf_grp, jac_sf_grp_l, igrp, k2, n_int,       &
-     &          vect_sf, fem_wk%sk6)
+     &          surf_wk%vect_sf, fem_wk%sk6)
           end do
 !
         end if
@@ -101,9 +106,8 @@
 !
       subroutine int_surf_poisson_sph_in(node, ele, surf, sf_grp,       &
      &          nod_fld, jac_sf_grp_l, rhs_tbl,                         &
-     &          n_int, ngrp_sf, id_grp_sf, i_vect, fem_wk, f_l)
-!
-      use m_int_surface_data
+     &          n_int, ngrp_sf, id_grp_sf, i_vect,                      &
+     &          fem_wk, surf_wk, f_l)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -118,6 +122,7 @@
       integer(kind = kint), intent(in) :: i_vect
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
 !
       integer(kind=kint) :: k2, i, igrp, num
@@ -134,10 +139,10 @@
           do k2 = 1, num_linear_sf
             call vector_phys_2_each_surf_cst                            &
      &         (node, ele, surf, sf_grp, nod_fld, igrp, k2,             &
-     &          i_vect, dminus, vect_sf)
+     &          i_vect, dminus, surf_wk%vect_sf)
             call fem_surf_skv_poisson_sph_out                           &
      &         (ele, surf, sf_grp, jac_sf_grp_l, igrp, k2,              &
-     &          n_int, xe_sf, vect_sf, fem_wk%sk6)
+     &          n_int, surf_wk%xe_sf, surf_wk%vect_sf, fem_wk%sk6)
           end do
 !
         end if
@@ -152,9 +157,8 @@
 !
       subroutine int_surf_poisson_sph_out(node, ele, surf, sf_grp,      &
      &           nod_fld, jac_sf_grp_l, rhs_tbl,                        &
-     &           n_int, ngrp_sf, id_grp_sf, i_vect, fem_wk, f_l)
-!
-      use m_int_surface_data
+     &           n_int, ngrp_sf, id_grp_sf, i_vect,                     &
+     &           fem_wk, surf_wk, f_l)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -169,6 +173,7 @@
       integer(kind = kint), intent(in) :: i_vect
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
 !
       integer(kind=kint) :: k2, i, igrp, num
@@ -187,10 +192,10 @@
           do k2 = 1, num_linear_sf
             call vector_phys_2_each_surface                             &
      &         (node, ele, surf, sf_grp, nod_fld, igrp, k2,             &
-     &          i_vect, vect_sf)
+     &          i_vect, surf_wk%vect_sf)
             call fem_surf_skv_poisson_sph_out                           &
      &         (ele, surf, sf_grp, jac_sf_grp_l, igrp, k2, n_int,       &
-     &          xe_sf, vect_sf, fem_wk%sk6)
+     &          surf_wk%xe_sf, surf_wk%vect_sf, fem_wk%sk6)
           end do
 !
         end if

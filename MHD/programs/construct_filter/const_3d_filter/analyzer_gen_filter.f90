@@ -20,7 +20,7 @@
       use t_jacobian_3d
       use t_table_FEM_const
       use t_crs_connect
-      use t_finite_element_mat
+      use t_work_FEM_integration
       use t_filter_elength
       use t_filter_dxdxi
       use t_filter_moments
@@ -120,8 +120,8 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1 .and. my_rank.eq.0 )                         &
-     &   write(*,*) 'alloc_vectors_surf_grp_type'
-      call alloc_vectors_surf_grp_type                                  &
+     &   write(*,*) 'alloc_vectors_surf_group'
+      call alloc_vectors_surf_group                                     &
      &  (group_filter%surf_grp%num_grp, group_filter%surf_grp%num_item, &
      &   group_filter%surf_grp_geom)
 !

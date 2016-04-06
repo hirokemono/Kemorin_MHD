@@ -9,12 +9,12 @@
 !!     &          fluid, sf_grp, Tnod_bcs, Tsf_bcs, iphys,              &
 !!     &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,      &
 !!     &          FEM_elens, filtering, wk_filter, mhd_fem_wk, fem_wk,  &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          surf_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_parturbation_temp(nod_comm, node, ele, surf,     &
 !!     &          fluid, sf_grp, Tnod_bcs, Tsf_bcs, iphys,              &
 !!     &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,      &
 !!     &          FEM_elens, filtering, wk_filter, mhd_fem_wk, fem_wk,  &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          surf_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -34,6 +34,7 @@
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
 !
@@ -53,6 +54,7 @@
       use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
+      use t_int_surface_data
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_filtering_data
@@ -71,7 +73,7 @@
      &          fluid, sf_grp, Tnod_bcs, Tsf_bcs, iphys,                &
      &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,        &
      &          FEM_elens, filtering, wk_filter, mhd_fem_wk, fem_wk,    &
-     &          f_l, f_nl, nod_fld)
+     &          surf_wk, f_l, f_nl, nod_fld)
 !
       use m_phys_constants
       use m_control_parameter
@@ -115,6 +117,7 @@
       type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -163,7 +166,7 @@
 !
       call int_surf_temp_ele(iak_diff_hf, node, ele, surf, sf_grp,      &
      &    iphys, nod_fld, Tsf_bcs, jac_sf_grp, rhs_tbl, FEM_elens,      &
-     &    fem_wk, f_l, f_nl)
+     &    fem_wk, surf_wk, f_l, f_nl)
 !
 !      call check_nodal_data(my_rank, nod_fld, n_scalar, iphys%i_temp)
 !      call check_nodal_data(my_rank, ele_fld,                          &
@@ -231,7 +234,7 @@
      &          fluid, sf_grp, Tnod_bcs, Tsf_bcs, iphys,                &
      &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,        &
      &          FEM_elens, filtering, wk_filter, mhd_fem_wk, fem_wk,    &
-     &          f_l, f_nl, nod_fld)
+     &          surf_wk, f_l, f_nl, nod_fld)
 !
       use m_phys_constants
       use m_control_parameter
@@ -278,6 +281,7 @@
       type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -324,7 +328,7 @@
 !
       call int_surf_temp_ele(iak_diff_hf, node, ele, surf, sf_grp,      &
      &    iphys, nod_fld, Tsf_bcs, jac_sf_grp, rhs_tbl, FEM_elens,      &
-     &    fem_wk, f_l, f_nl)
+     &    fem_wk, surf_wk, f_l, f_nl)
 !
 !      call check_nodal_data(my_rank, nod_fld, n_scalar, iphys%i_temp)
 !      call check_nodal_data(my_rank, ele_fld,                          &

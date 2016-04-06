@@ -11,19 +11,19 @@
 !!     &         jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl, FEM_elens,  &
 !!     &         diff_coefs, num_MG_level, MG_interpolate,              &
 !!     &         MG_comm_fluid, MG_DJDS_lin_fl, Pmat_MG_DJDS, MG_vector,&
-!!     &         fem_wk, f_l, f_nl, nod_fld)
+!!     &         fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_electric_potential(iak_diff_b,                   &
 !!     &         node, ele, surf, sf_grp, Bnod_bcs, Asf_bcs, Fsf_bcs,   &
 !!     &         iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,      &
 !!     &         FEM_elens, diff_coefs, num_MG_level, MG_interpolate,   &
 !!     &         MG_comm_table, MG_DJDS_linear, Fmat_MG_DJDS, MG_vector,&
-!!     &         fem_wk, f_l, f_nl, nod_fld)
+!!     &         fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_mag_potential(iak_diff_b,                        &
 !!     &         node, ele, surf, sf_grp, Bnod_bcs, Bsf_bcs, Fsf_bcs,   &
 !!     &         iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,      &
 !!     &         FEM_elens, diff_coefs, num_MG_level, MG_interpolate,   &
 !!     &         MG_comm_table, MG_DJDS_linear, Fmat_MG_DJDS, MG_vector,&
-!!     &         fem_wk, f_l, f_nl, nod_fld)
+!!     &         fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -54,6 +54,7 @@
 !!        type(vectors_4_solver), intent(inout)                         &
 !!       &           :: MG_vector(0:num_MG_level)
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
 !
@@ -78,6 +79,7 @@
       use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
+      use t_int_surface_data
       use t_filter_elength
       use t_material_property
       use t_solver_djds
@@ -101,7 +103,7 @@
      &         jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl, FEM_elens,    &
      &         diff_coefs, num_MG_level, MG_interpolate,                &
      &         MG_comm_fluid, MG_DJDS_lin_fl, Pmat_MG_DJDS, MG_vector,  &
-     &         fem_wk, f_l, f_nl, nod_fld)
+     &         fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
       use m_iccg_parameter
 !
@@ -142,6 +144,7 @@
       type(vectors_4_solver), intent(inout)                             &
      &           :: MG_vector(0:num_MG_level)
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -159,7 +162,7 @@
       call int_surf_normal_vector(iphys%i_velo, Psf_bcs%wall,           &
      &    Psf_bcs%sph_in, Psf_bcs%sph_out,                              &
      &    node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l, rhs_tbl,      &
-     &    fem_wk, f_l)
+     &    fem_wk, surf_wk, f_l)
 !
 !      if (iflag_commute_velo .eq. id_SGS_commute_ON) then
 !        call int_surf_sgs_div_velo_ele                                 &
@@ -168,7 +171,7 @@
 !     &      intg_point_poisson, Vsf_bcs%sgs%nmax_sf_dat,               &
 !     &      Vsf_bcs%sgs%ngrp_sf_dat, Vsf_bcs%sgs%id_grp_sf_dat,        &
 !     &      ifilter_final, diff_coefs%num_field, iak_diff_v,           &
-!     &      diff_coefs%ak,  iphys%i_velo, fem_wk, f_l)
+!     &      diff_coefs%ak,  iphys%i_velo, fem_wk, surf_wk, f_l)
 !      end if
 !
 !   set boundary condition for wall
@@ -206,7 +209,7 @@
      &         iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,        &
      &         FEM_elens, diff_coefs, num_MG_level, MG_interpolate,     &
      &         MG_comm_table, MG_DJDS_linear, Fmat_MG_DJDS, MG_vector,  &
-     &         fem_wk, f_l, f_nl, nod_fld)
+     &         fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
       use m_iccg_parameter
 !
@@ -244,6 +247,7 @@
       type(vectors_4_solver), intent(inout)                             &
      &           :: MG_vector(0:num_MG_level)
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -264,13 +268,13 @@
 !     &      intg_point_poisson, Asf_bcs%sgs%nmax_sf_dat,               &
 !     &      Asf_bcs%sgs%ngrp_sf_dat, Asf_bcs%sgs%id_grp_sf_dat,        &
 !     &      ifilter_final, diff_coefs%num_field, iak_diff_b,           &
-!     &      diff_coefs%ak, iphys%i_vecp, fem_wk, f_l)
+!     &      diff_coefs%ak, iphys%i_vecp, fem_wk, surf_wk, f_l)
 !      end if
 !
       call int_surf_normal_vector(iphys%i_vecp,                         &
      &    Fsf_bcs%wall, Fsf_bcs%sph_in, Fsf_bcs%sph_out,                &
      &    node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l, rhs_tbl,      &
-     &    fem_wk, f_l)
+     &    fem_wk, surf_wk, f_l)
 !
       call int_vol_sk_mp_bc(iphys%i_m_phi, iak_diff_b, node, ele,       &
      &     nod_fld, jac_3d_l, rhs_tbl, FEM_elens, diff_coefs,           &
@@ -298,7 +302,7 @@
      &         iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,        &
      &         FEM_elens, diff_coefs, num_MG_level, MG_interpolate,     &
      &         MG_comm_table, MG_DJDS_linear, Fmat_MG_DJDS, MG_vector,  &
-     &         fem_wk, f_l, f_nl, nod_fld)
+     &         fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
       use m_iccg_parameter
 !
@@ -337,6 +341,7 @@
       type(vectors_4_solver), intent(inout)                             &
      &           :: MG_vector(0:num_MG_level)
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -356,13 +361,13 @@
 !     &      Bsf_bcs%sgs%nmax_sf_dat, Bsf_bcs%sgs%ngrp_sf_dat,          &
 !     &      Bsf_bcs%sgs%id_grp_sf_dat, ifilter_final,                  &
 !     &      diff_coefs%num_field, iak_diff_b, diff_coefs%ak,           &
-!     &       iphys%i_magne, fem_wk, f_l)
+!     &      iphys%i_magne, fem_wk, surf_wk, f_l)
 !      end if
 !
       call int_surf_normal_vector(iphys%i_magne,                        &
      &    Fsf_bcs%wall, Fsf_bcs%sph_in, Fsf_bcs%sph_out,                &
      &    node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l, rhs_tbl,      &
-     &    fem_wk, f_l)
+     &    fem_wk, surf_wk, f_l)
       call int_sf_grad_press(node, ele, surf, sf_grp, jac_sf_grp_l,     &
      &    rhs_tbl, Fsf_bcs%grad, intg_point_poisson, fem_wk, f_l)
 !

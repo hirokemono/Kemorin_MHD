@@ -7,7 +7,7 @@
 !!     &          MHD_mesh, layer_tbl, nod_bcs, surf_bcs, iphys,        &
 !!     &          iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q, &
 !!     &          rhs_tbl, FEM_elens, filtering, wide_filtering,        &
-!!     &          m_lump, wk_filter, mhd_fem_wk, fem_wk,                &
+!!     &          m_lump, wk_filter, mhd_fem_wk, fem_wk, surf_wk,       &
 !!     &          f_l, f_nl, nod_fld)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
@@ -30,6 +30,7 @@
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
 !
@@ -54,6 +55,8 @@
       use t_table_FEM_const
       use t_layering_ele_list
       use t_MHD_finite_element_mat
+      use t_finite_element_mat
+      use t_int_surface_data
       use t_filter_elength
       use t_filtering_data
       use t_bc_data_MHD
@@ -71,7 +74,7 @@
      &          MHD_mesh, layer_tbl, nod_bcs, surf_bcs, iphys,          &
      &          iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,   &
      &          rhs_tbl, FEM_elens, filtering, wide_filtering,          &
-     &          m_lump, wk_filter, mhd_fem_wk, fem_wk,                  &
+     &          m_lump, wk_filter, mhd_fem_wk, fem_wk, surf_wk,         &
      &          f_l, f_nl, nod_fld)
 !
       use m_t_step_parameter
@@ -112,6 +115,7 @@
       type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -152,7 +156,7 @@
      &        iphys, iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,     &
      &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,                &
      &        FEM_elens, filtering, sgs_coefs, wk_filter,               &
-     &        wk_cor1, wk_lsq1, wk_diff1, mhd_fem_wk, fem_wk,           &
+     &        wk_cor1, wk_lsq1, wk_diff1, mhd_fem_wk, fem_wk, surf_wk,  &
      &        f_l, f_nl, nod_fld, diff_coefs)
         end if
       end if
@@ -188,7 +192,7 @@
      &        iphys, iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,     &
      &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,                &
      &        FEM_elens, filtering, sgs_coefs, wk_filter,               &
-     &        wk_cor1, wk_lsq1, wk_diff1, mhd_fem_wk, fem_wk,           &
+     &        wk_cor1, wk_lsq1, wk_diff1, mhd_fem_wk, fem_wk, surf_wk,  &
      &        f_l, f_nl, nod_fld, diff_coefs)
         end if
       end if
@@ -225,7 +229,7 @@
      &        nod_bcs%Vnod_bcs, surf_bcs%Bsf_bcs, iphys,                &
      &        iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,     &
      &        rhs_tbl, FEM_elens, filtering, sgs_coefs, wk_filter,      &
-     &        wk_cor1, wk_lsq1, wk_diff1, mhd_fem_wk, fem_wk,           &
+     &        wk_cor1, wk_lsq1, wk_diff1, mhd_fem_wk, fem_wk, surf_wk,  &
      &        f_l, f_nl, nod_fld, diff_coefs)
         end if
       end if
@@ -263,7 +267,7 @@
      &        layer_tbl, group%surf_grp, surf_bcs%Bsf_bcs, iphys,       &
      &        iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,     &
      &        rhs_tbl, FEM_elens, filtering, wk_filter,                 &
-     &        wk_cor1, wk_lsq1, wk_diff1, mhd_fem_wk, fem_wk,           &
+     &        wk_cor1, wk_lsq1, wk_diff1, mhd_fem_wk, fem_wk, surf_wk,  &
      &        f_l, f_nl, nod_fld, diff_coefs)
         end if
 !

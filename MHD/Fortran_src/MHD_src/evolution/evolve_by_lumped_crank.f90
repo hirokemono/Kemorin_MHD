@@ -91,6 +91,7 @@
       use m_t_int_parameter
       use m_t_step_parameter
       use m_phys_constants
+      use m_ele_material_property
 !
       use t_comm_table
       use t_geometry_data_MHD
@@ -170,7 +171,8 @@
       if (coef_imp_v.gt.0.0d0) then
         call int_sk_4_fixed_velo(iphys%i_velo, iak_diff_v, node, ele,   &
      &      nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,            &
-     &      Vnod_bcs%nod_bc_v, Vnod_bcs%nod_bc_rot, fem_wk, f_l)
+     &      Vnod_bcs%nod_bc_v, Vnod_bcs%nod_bc_rot, ak_d_velo,          &
+     &      fem_wk, f_l)
 !        if (iflag_initial_step.eq.1) coef_imp_v = 1.0d0 / coef_imp_v
       end if
 !
@@ -423,7 +425,7 @@
       if (coef_imp_t .gt. 0.0d0) then
         call int_sk_4_fixed_temp(i_temp, iak_diff_t, node, ele,         &
      &      nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,            &
-     &      Tnod_bcs%nod_bc_s, fem_wk, f_l)
+     &      Tnod_bcs%nod_bc_s, ak_d_temp, fem_wk, f_l)
 !        if (iflag_initial_step.eq.1) coef_imp_t = 1.0d0 / coef_imp_t
       end if
 !
@@ -502,7 +504,7 @@
       if (coef_imp_t .gt. 0.0d0) then
         call int_sk_4_fixed_part_temp(i_par_temp, iak_diff_t,           &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
-     &      Tnod_bcs%nod_bc_s, fem_wk, f_l)
+     &      Tnod_bcs%nod_bc_s, ak_d_temp, fem_wk, f_l)
         if (iflag_initial_step.eq.1) coef_imp_t = 1.0d0 / coef_imp_t
       end if
 !
@@ -581,7 +583,7 @@
       if (coef_imp_c.gt.0.0d0) then
         call int_sk_4_fixed_composition(i_light, iak_diff_c,            &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
-     &      Cnod_bcs%nod_bc_s, fem_wk, f_l)
+     &      Cnod_bcs%nod_bc_s, ak_d_composit, fem_wk, f_l)
 !         if (iflag_initial_step.eq.1) coef_imp_c = 1.0d0 / coef_imp_c
       end if
 !

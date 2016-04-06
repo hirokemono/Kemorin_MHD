@@ -69,8 +69,6 @@
         type (surface_node_grp_data) ::   surf_nod_grp
 !>     Structure for grometry data for surface group
         type (surface_group_geometry) ::  surf_grp_geom
-!>     Structure for work area  for surface integration
-        type (surf_grp_geom_4_fem_int) :: surf_grp_int
 !
 !>     Structure for element group connectivity
         type (element_group_table) ::    tbls_ele_grp

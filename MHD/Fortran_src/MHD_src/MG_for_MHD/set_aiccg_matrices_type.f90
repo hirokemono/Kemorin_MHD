@@ -65,6 +65,7 @@
       use t_coefs_element_4_MHD
       use t_jacobians
       use t_finite_element_mat_MHD
+      use t_work_FEM_integration
       use t_finite_element_mat
       use t_filter_elength
       use t_solver_djds
@@ -142,8 +143,9 @@
      &     femmesh%group%surf_grp, jacobians%jac_sf_grp,                &
      &     rhs_tbl, djds_const_fl, nodal_bc, surface_bc,                &
      &     djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,            &
-     &     MG_FEM_mat%fem_wk, mat_velo, mat_magne, mat_temp,            &
-     &     mat_d_scalar, mat_press,  mat_magp)
+     &     MG_FEM_mat%surf_wk, MG_FEM_mat%fem_wk,                       &
+     &     mat_velo, mat_magne, mat_temp, mat_d_scalar,                 &
+     &     mat_press, mat_magp)
 !
       end subroutine s_set_aiccg_matrices_type
 !

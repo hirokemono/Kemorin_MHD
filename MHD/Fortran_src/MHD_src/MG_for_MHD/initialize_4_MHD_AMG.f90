@@ -244,7 +244,8 @@
         call int_normal_4_all_surface(MG_ele_mesh(i_level)%surf,        &
      &      MG_jacobians(i_level)%jac_2d)
         call s_int_surface_param_type(MG_mesh(i_level)%mesh,            &
-     &      MG_ele_mesh(i_level)%surf, MG_mesh(i_level)%group)
+     &      MG_ele_mesh(i_level)%surf, MG_mesh(i_level)%group,          &
+     &      MG_FEM_mat(i_level)%surf_wk)
       end do
 !
 !     --------------------- 

@@ -9,8 +9,8 @@
 !!      subroutine s_set_aiccg_bc_phys_type(ele, surf, sf_grp,          &
 !!     &          jac_sf_grp, rhs_tbl, mat_tbl_fl, nodal_bc, surface_bc,&
 !!     &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,     &
-!!     &          fem_wk, mat_velo, mat_magne, mat_temp, mat_d_scalar,  &
-!!     &          mat_press, mat_magp)
+!!     &          surf_wk, fem_wk, mat_velo, mat_magne,                 &
+!!     &          mat_temp, mat_d_scalar, mat_press, mat_magp)
 !!        type(mesh_data), intent(in) ::      femmesh
 !!        type(surface_data), intent(in) ::   surf_mesh
 !!        type(nodal_boundarty_conditions), intent(in) ::   nodal_bc
@@ -42,6 +42,7 @@
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
+      use t_int_surface_data
       use t_solver_djds
       use t_bc_data_MHD
       use t_MHD_boundary_data
@@ -57,8 +58,8 @@
       subroutine s_set_aiccg_bc_phys_type(ele, surf, sf_grp,            &
      &          jac_sf_grp, rhs_tbl, mat_tbl_fl, nodal_bc, surface_bc,  &
      &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,       &
-     &          fem_wk, mat_velo, mat_magne, mat_temp, mat_d_scalar,    &
-     &          mat_press, mat_magp)
+     &          surf_wk, fem_wk, mat_velo, mat_magne,                   &
+     &          mat_temp, mat_d_scalar, mat_press, mat_magp)
 !
       use set_aiccg_bc_fixed
       use set_aiccg_bc_vectors
@@ -71,6 +72,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const), intent(in) :: mat_tbl_fl
       type(surface_boundarty_conditions), intent(in) :: surface_bc
+      type(work_surface_element_mat), intent(in) :: surf_wk
       type(DJDS_ordering_table),  intent(in) :: djds_tbl
       type(DJDS_ordering_table),  intent(in) :: djds_tbl_fl
       type(DJDS_ordering_table),  intent(in) :: djds_tbl_l
@@ -99,7 +101,7 @@
      &      surface_bc%Vsf_bcs%free_sph_in,                             &
      &      surface_bc%Vsf_bcs%free_sph_out,                            &
      &      jac_sf_grp, rhs_tbl, mat_tbl_fl, djds_tbl_fl,               &
-     &      fem_wk, mat_velo)
+     &      surf_wk, fem_wk, mat_velo)
       end if
 !
       if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then

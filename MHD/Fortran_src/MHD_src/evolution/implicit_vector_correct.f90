@@ -272,7 +272,8 @@
         if (iflag_debug.eq.1) write(*,*) 'int_sk_4_fixed_velo'
         call int_sk_4_fixed_velo(i_velo, iak_diff_v, node, ele,         &
      &      nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,            &
-     &      Vnod_bcs%nod_bc_v, Vnod_bcs%nod_bc_rot, fem_wk, f_l)
+     &      Vnod_bcs%nod_bc_v, Vnod_bcs%nod_bc_rot, ak_d_velo,          &
+     &      fem_wk, f_l)
       end if
 !
       if ( iflag_4_coriolis .eq. id_Coriolis_ele_imp) then

@@ -11,11 +11,20 @@
 !
       use m_precision
       use t_finite_element_mat
+      use t_MHD_finite_element_mat
+      use t_int_surface_data
 !
       implicit  none
 !
+!
+!>      Work array for FEM assemble in MHD model
+      type(work_MHD_fe_mat), save :: mhd_fem1_wk
+! 
 !>      Work area for FEM assemble
       type(work_finite_element_mat), save :: fem1_wk
+!
+!>      Work area for surface FEM assemble
+      type(work_surface_element_mat), save :: surf1_wk
 !
       type(finite_ele_mat_node), save :: f1_l
 !

@@ -31,7 +31,7 @@
       use t_jacobian_3d
       use t_table_FEM_const
       use t_crs_connect
-      use t_finite_element_mat
+      use t_work_FEM_integration
       use t_filter_elength
       use t_filter_moments
       use t_filter_dxdxi

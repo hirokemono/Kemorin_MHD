@@ -7,7 +7,8 @@
 !!     &        (nod_comm, node, ele, surf, sf_grp, fluid, conduct,     &
 !!     &         nod_bcs, surf_bcs, iphys, iphys_ele,                   &
 !!     &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                &
-!!     &         mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, ele_fld)
+!!     &         mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                &
+!!     &         nod_fld, ele_fld)
 !!      subroutine cal_true_sgs_terms_post
 !!     &         (nod_comm, node, iphys, filtering, wk_filter, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
@@ -28,6 +29,7 @@
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(phys_data), intent(inout) :: ele_fld
@@ -50,6 +52,7 @@
       use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
+      use t_int_surface_data
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_filtering_data
@@ -80,7 +83,8 @@
      &        (nod_comm, node, ele, surf, sf_grp, fluid, conduct,       &
      &         nod_bcs, surf_bcs, iphys, iphys_ele,                     &
      &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                  &
-     &         mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, ele_fld)
+     &         mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                  &
+     &         nod_fld, ele_fld)
 !
       use calypso_mpi
       use m_phys_labels
@@ -104,6 +108,7 @@
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
       type(phys_data), intent(inout) :: ele_fld
@@ -118,7 +123,8 @@
      &         nod_comm, node, ele, surf, sf_grp, fluid,                &
      &         nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,               &
      &         iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,         &
-     &         FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &         FEM_elens, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,       &
+     &         nod_fld)
          else if ( nod_fld%phys_name(i).eq.fhd_SGS_div_m_flux_true)     &
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
@@ -127,7 +133,8 @@
      &         nod_comm, node, ele, surf, fluid, sf_grp,                &
      &         surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys,               &
      &         iphys_ele, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,       &
-     &         mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, ele_fld)
+     &         mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                  &
+     &         nod_fld, ele_fld)
          else if ( nod_fld%phys_name(i).eq.fhd_SGS_Lorentz_true) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
@@ -136,7 +143,8 @@
      &         nod_comm, node, ele, surf, fluid, sf_grp,                &
      &         surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys,               &
      &         iphys_ele, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,       &
-     &         mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, ele_fld)
+     &         mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                  &
+     &         nod_fld, ele_fld)
          else if ( nod_fld%phys_name(i).eq.fhd_SGS_mag_induct_true)     &
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
@@ -145,7 +153,8 @@
      &        nod_comm, node, ele, surf, conduct, sf_grp,               &
      &        nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,     &
      &        iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,   &
-     &        FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &        FEM_elens, mhd_fem_wk, fem_wk, surf_wk,                   &
+     &        f_l, f_nl, nod_fld)
          end if
        end do
 !
@@ -207,7 +216,7 @@
      &         nod_comm, node, ele, surf, sf_grp, fluid,                &
      &         Tnod_bcs, Tsf_bcs, iphys, iphys_ele, ele_fld,            &
      &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                  &
-     &         mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &         mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
       use t_bc_data_temp
       use t_surface_bc_data
@@ -233,6 +242,7 @@
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -243,7 +253,8 @@
       call cal_terms_4_heat(iphys%i_h_flux_div, iak_diff_hf,            &
      &    nod_comm, node, ele, surf, fluid, sf_grp, Tnod_bcs, Tsf_bcs,  &
      &    iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp,                &
-     &    rhs_tbl, FEM_elens,  mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &    rhs_tbl, FEM_elens,  mhd_fem_wk, fem_wk, surf_wk,             &
+     &    f_l, f_nl, nod_fld)
       call copy_scalar_component(node, nod_fld,                         &
      &    iphys%i_h_flux_div, iphys%i_SGS_div_hf_true)
 !
@@ -255,7 +266,7 @@
      &         nod_comm, node, ele, surf, fluid, sf_grp,                &
      &         Vsf_bcs, Bsf_bcs, iphys, iphys_ele,                      &
      &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, mhd_fem_wk,      &
-     &         fem_wk, f_l, f_nl, nod_fld, ele_fld)
+     &         fem_wk, surf_wk, f_l, f_nl, nod_fld, ele_fld)
 !
       use cal_momentum_terms
 !
@@ -278,6 +289,7 @@
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
       type(phys_data), intent(inout) :: ele_fld
@@ -290,7 +302,7 @@
      &   (iphys%i_m_flux_div, iak_diff_mf, iak_diff_lor,                &
      &    nod_comm, node, ele, surf, fluid, sf_grp, Vsf_bcs, Bsf_bcs,   &
      &    iphys, iphys_ele, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,     &
-     &    mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, ele_fld)
+     &    mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld, ele_fld)
       call copy_vector_component(node, nod_fld,                         &
      &    iphys%i_m_flux_div, iphys%i_SGS_div_mf_true)
 !
@@ -303,7 +315,7 @@
      &         nod_comm, node, ele, surf, fluid, sf_grp,                &
      &         Vsf_bcs, Bsf_bcs, iphys, iphys_ele,                      &
      &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, mhd_fem_wk,      &
-     &         fem_wk, f_l, f_nl, nod_fld, ele_fld)
+     &         fem_wk, surf_wk, f_l, f_nl, nod_fld, ele_fld)
 !
       use cal_momentum_terms
 !
@@ -327,6 +339,7 @@
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
       type(phys_data), intent(inout) :: ele_fld
@@ -338,7 +351,7 @@
      &   (iphys%i_maxwell_div, iak_diff_mf, iak_diff_lor,               &
      &    nod_comm, node, ele, surf, fluid, sf_grp, Vsf_bcs, Bsf_bcs,   &
      &    iphys, iphys_ele, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,     &
-     &    mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, ele_fld)
+     &    mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld, ele_fld)
       call copy_vector_component(node, nod_fld,                         &
      &   iphys%i_maxwell_div, iphys%i_SGS_Lor_true)
 !
@@ -350,7 +363,7 @@
      &         nod_comm, node, ele, surf, conduct, sf_grp,              &
      &         Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,   &
      &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                  &
-     &         mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &         mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
       use t_bc_data_magne
       use t_surface_bc_data
@@ -377,6 +390,7 @@
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -388,7 +402,7 @@
      &    nod_comm, node, ele, surf, conduct, sf_grp,                   &
      &    Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,        &
      &    jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,   &
-     &    f_l, f_nl, nod_fld)
+     &    surf_wk, f_l, f_nl, nod_fld)
       call copy_vector_component(node, nod_fld,                         &
      &    iphys%i_induct_div, iphys%i_SGS_idct_true)
 !

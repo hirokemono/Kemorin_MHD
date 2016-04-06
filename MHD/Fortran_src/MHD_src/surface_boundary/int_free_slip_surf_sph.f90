@@ -11,15 +11,20 @@
 !!
 !!@verbatim
 !!      subroutine int_free_slip_surf_sph_out                           &
-!!     &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, n_int,  &
-!!     &          ngrp_surf_outside, id_grp_outside, i_field)
+!!     &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, rhs_tbl,&
+!!     &          n_int, ngrp_surf_outside, id_grp_outside, i_field,    &
+!!     &          fem_wk, surf_wk, f_l)
 !!      subroutine int_free_slip_surf_sph_in                            &
-!!     &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, n_int,  &
-!!     &          ngrp_surf_inside, id_grp_inside, i_field)
+!!     &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, rhs_tbl,&
+!!     &          n_int, ngrp_surf_inside, id_grp_inside, i_field,      &
+!!     &          fem_wk, surf_wk, f_l)
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
+!!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(work_surface_element_mat), intent(inout) :: surf_wk
+!!        type(finite_ele_mat_node), intent(inout) :: f_l
 !!@endverbatim
 !!
 !@param    n_int       numbper of integration points
@@ -47,6 +52,7 @@
       use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
+      use t_int_surface_data
 !
       use fem_surf_skv_poisson_type
       use cal_skv_to_ff_smp
@@ -63,9 +69,7 @@
       subroutine int_free_slip_surf_sph_out                             &
      &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, rhs_tbl,  &
      &          n_int, ngrp_surf_outside, id_grp_outside, i_field,      &
-     &          fem_wk, f_l)
-!
-      use m_int_surface_data
+     &          fem_wk, surf_wk, f_l)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -81,6 +85,7 @@
      &       :: id_grp_outside(ngrp_surf_outside)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
 !
       integer (kind = kint) :: k2, i, igrp, num
@@ -97,10 +102,11 @@
         do k2 = 1, surf%nnod_4_surf
           call vector_phys_2_each_surface                               &
      &         (node, ele, surf, sf_grp, nod_fld, igrp, k2, i_field,    &
-     &          vect_sf)
+     &          surf_wk%vect_sf)
           call fem_surf_skv_trq_sph_out                                 &
      &         (ele, surf, sf_grp, jac_sf_grp, igrp, k2, n_int,         &
-     &          ak_d_velo, xe_sf, vect_sf, fem_wk%sk6)
+     &          ak_d_velo, surf_wk%xe_sf, surf_wk%vect_sf,              &
+     &          fem_wk%sk6)
         end do
       end do
 !
@@ -114,9 +120,7 @@
       subroutine int_free_slip_surf_sph_in                              &
      &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, rhs_tbl,  &
      &          n_int, ngrp_surf_inside, id_grp_inside, i_field,        &
-     &          fem_wk, f_l)
-!
-      use m_int_surface_data
+     &          fem_wk, surf_wk, f_l)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -132,6 +136,7 @@
      &       :: id_grp_inside(ngrp_surf_inside)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
 !
       integer (kind = kint) :: k2, i, igrp, num
@@ -148,10 +153,11 @@
         do k2 = 1, surf%nnod_4_surf
           call vector_phys_2_each_surf_cst                              &
      &         (node, ele, surf, sf_grp, nod_fld, igrp, k2,             &
-     &          i_field, dminus, vect_sf)
+     &          i_field, dminus, surf_wk%vect_sf)
           call fem_surf_skv_trq_sph_out                                 &
      &         (ele, surf, sf_grp, jac_sf_grp, igrp, k2, n_int,         &
-     &          ak_d_velo, xe_sf, vect_sf, fem_wk%sk6)
+     &          ak_d_velo, surf_wk%xe_sf, surf_wk%vect_sf,              &
+     &          fem_wk%sk6)
         end do
       end do
 !

@@ -7,12 +7,12 @@
 !!     &         nod_comm, node, ele, surf, conduct, sf_grp,            &
 !!     &         Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld, &
 !!     &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, mhd_fem_wk,    &
-!!     &         fem_wk, f_l, f_nl, nod_fld)
+!!     &         fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_magnetic_diffusion(iak_diff_b, iak_diff_uxb,     &
 !!     &          nod_comm, node, ele, surf, conduct, sf_grp,           &
 !!     &          Bnod_bcs, Asf_bcs, Bsf_bcs, iphys,                    &
 !!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,   &
-!!     &          m_lump, fem_wk, f_l, f_nl, nod_fld)
+!!     &          m_lump, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -33,6 +33,7 @@
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
 !
@@ -54,6 +55,7 @@
       use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
+      use t_int_surface_data
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_bc_data_magne
@@ -78,7 +80,7 @@
      &         nod_comm, node, ele, surf, conduct, sf_grp,              &
      &         Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,   &
      &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, mhd_fem_wk,      &
-     &         fem_wk, f_l, f_nl, nod_fld)
+     &         fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
       use int_vol_magne_monitor
       use set_boundary_scalars
@@ -104,6 +106,7 @@
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -122,7 +125,7 @@
 !
       call int_surf_magne_monitor(i_field, iak_diff_uxb,                &
      &    node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs, iphys, nod_fld,    &
-     &    jac_sf_grp, rhs_tbl, FEM_elens, fem_wk, f_l, f_nl)
+     &    jac_sf_grp, rhs_tbl, FEM_elens, fem_wk, surf_wk, f_l, f_nl)
 !
       call cal_t_evo_4_vector_cd(iflag_mag_supg,                        &
      &    conduct%istack_ele_fld_smp, mhd_fem_wk%mlump_cd,              &
@@ -143,7 +146,7 @@
      &          nod_comm, node, ele, surf, conduct, sf_grp,             &
      &          Bnod_bcs, Asf_bcs, Bsf_bcs, iphys,                      &
      &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,     &
-     &          m_lump, fem_wk, f_l, f_nl, nod_fld)
+     &          m_lump, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
       use int_vol_diffusion_ele
       use set_boundary_scalars
@@ -168,6 +171,7 @@
       type(lumped_mass_matrices), intent(in) :: m_lump
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -180,7 +184,7 @@
 !
       call int_surf_magne_monitor(iphys%i_b_diffuse, iak_diff_uxb,      &
      &    node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs, iphys, nod_fld,    &
-     &    jac_sf_grp, rhs_tbl, FEM_elens, fem_wk, f_l, f_nl)
+     &    jac_sf_grp, rhs_tbl, FEM_elens, fem_wk, surf_wk, f_l, f_nl)
 !
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
 !

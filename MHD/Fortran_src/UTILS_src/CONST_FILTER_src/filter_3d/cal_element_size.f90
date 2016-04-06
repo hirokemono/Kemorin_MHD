@@ -38,6 +38,7 @@
       use t_geometry_data
       use t_next_node_ele_4_node
       use t_table_FEM_const
+      use t_work_FEM_integration
       use t_finite_element_mat
       use t_crs_connect
       use t_crs_matrix
@@ -121,7 +122,7 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_mass_matrix_4_filter'
       call int_mass_matrix_4_filter(node, ele, jac_3d_q,                &
-     &   rhs_tbl, rhs_mat%fem_wk, rhs_mat%fem_rhs%f_l, rhs_mat%m_lump)
+     &   rhs_tbl, rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%m_lump)
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_dxidx_ele_type'
       call cal_dxidx_ele_type(ele, jac_3d_q, dxidxs%dx_ele)
@@ -132,10 +133,10 @@
 !
       call cal_dx2_on_node(nod_comm, node, ele, jac_3d_q,               &
      &    rhs_tbl, tbl_crs, rhs_mat%m_lump, itype_mass_matrix,          &
-     &    mass1, FEM_elen, rhs_mat%fem_wk, rhs_mat%fem_rhs%f_l)
+     &    mass1, FEM_elen, rhs_mat%fem_wk, rhs_mat%f_l)
       call cal_dxi_dxes_node(nod_comm, node, ele, jac_3d_q,             &
      &    rhs_tbl, tbl_crs, rhs_mat%m_lump, itype_mass_matrix,          &
-     &    mass1, dxidxs, rhs_mat%fem_wk, rhs_mat%fem_rhs%f_l)
+     &    mass1, dxidxs, rhs_mat%fem_wk, rhs_mat%f_l)
 !
       call elength_nod_send_recv(node, nod_comm, FEM_elen%elen_nod)
       call dxidx_nod_send_recv(node, nod_comm, dxidxs%dx_nod)
@@ -148,12 +149,12 @@
         if (iflag_debug.eq.1) write(*,*) 'cal_1st_diffs_dx_by_consist'
         call cal_1st_diffs_dx_by_consist(nod_comm, node, ele,           &
      &     jac_3d_q, rhs_tbl, tbl_crs, mass1,                           &
-     &     FEM_elen, rhs_mat%fem_wk, rhs_mat%fem_rhs%f_nl)
+     &     FEM_elen, rhs_mat%fem_wk, rhs_mat%f_nl)
       else
         if (iflag_debug.eq.1) write(*,*) 'cal_1st_diffs_dx_by_lump'
         call cal_1st_diffs_dx_by_lump(node, ele, jac_3d_q,              &
      &      rhs_tbl, rhs_mat%m_lump, FEM_elen,                          &
-     &      rhs_mat%fem_wk, rhs_mat%fem_rhs%f_nl)
+     &      rhs_mat%fem_wk, rhs_mat%f_nl)
       end if
 !
       if (iflag_debug.eq.1)  write(*,*) 'diff_elen_nod_send_recv'
@@ -174,7 +175,7 @@
       call cal_filter_moments_on_node_1st                               &
      &   (nod_comm, node, ele, jac_3d_q,                                &
      &    rhs_tbl, tbl_crs, rhs_mat%m_lump, FEM_elen, mass1,            &
-     &    rhs_mat%fem_wk, rhs_mat%fem_rhs%f_l)
+     &    rhs_mat%fem_wk, rhs_mat%f_l)
 !
 !  ---------------------------------------------------
 !        differences of element size for each element
@@ -226,11 +227,11 @@
       if (itype_mass_matrix .eq. 1) then
         call cal_diffs_filter_nod_consist(nod_comm, node, ele,          &
      &      jac_3d_q, rhs_tbl, tbl_crs, mass1,                          &
-     &      rhs_mat%fem_wk, rhs_mat%fem_rhs%f_nl, mom_nod)
+     &      rhs_mat%fem_wk, rhs_mat%f_nl, mom_nod)
       else
         call cal_diffs_filter_nod_lump(node, ele, jac_3d_q,             &
      &     rhs_tbl, rhs_mat%m_lump, rhs_mat%fem_wk,                     &
-     &     rhs_mat%fem_rhs%f_nl, mom_nod)
+     &     rhs_mat%f_nl, mom_nod)
       end if
 !
       call diff_filter_mom_nod_send_recv(node, nod_comm, mom_nod)
@@ -255,7 +256,7 @@
 !
 !
       call deallocate_scalar_ele_4_int
-      call dealloc_fem_mat_base_type(rhs_mat)
+      call dealloc_finite_elem_mat(rhs_mat)
       call dealloc_crs_mat_data(mass1)
       call dealloc_crs_connect(tbl_crs)
 !

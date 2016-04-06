@@ -26,9 +26,6 @@
 !
       implicit  none
 !
-      private :: pick_scalar_4_surf_grp, pick_vector_4_surf_grp
-      private :: pick_vector_4_surf_grp_side
-!
 !-----------------------------------------------------------------------
 !
       contains
@@ -51,15 +48,24 @@
       type(surface_group_geometry), intent(inout) :: sf_grp_v
 !
 !
-      call alloc_vectors_surf_grp_type                                  &
+      call alloc_vectors_surf_group                                     &
      &   (sf_grp%num_grp, sf_grp%num_item, sf_grp_v)
 !
-      call pick_vector_4_surf_grp_side(sf_grp, sf_grp_tbl,              &
+      if (sf_grp%num_grp .le. 0) return
+!
+      call pick_vect_by_surf_grp_w_side                                 &
+     &   (sf_grp%num_grp, sf_grp%num_item, sf_grp%num_grp_smp,          &
+     &    sf_grp%istack_grp_smp, sf_grp_tbl%isurf_grp,                  &
      &    surf%numsurf, surf%vnorm_surf, sf_grp_v%vnorm_sf_grp)
-      call pick_scalar_4_surf_grp(sf_grp, sf_grp_tbl, surf%numsurf,     &
-     &    surf%area_surf, sf_grp_v%area_sf_grp)
-      call pick_scalar_4_surf_grp(sf_grp, sf_grp_tbl, surf%numsurf,     &
-     &    surf%a_area_surf, sf_grp_v%a_area_sf_grp)
+!
+      call pick_scalar_by_surf_grp(sf_grp%num_grp, sf_grp%num_item,     &
+     &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
+     &    sf_grp_tbl%isurf_grp, surf%numsurf, surf%area_surf,           &
+     &    sf_grp_v%area_sf_grp)
+      call pick_scalar_by_surf_grp(sf_grp%num_grp, sf_grp%num_item,     &
+     &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
+     &    sf_grp_tbl%isurf_grp, surf%numsurf, surf%a_area_surf,         &
+     &    sf_grp_v%a_area_sf_grp)
 !
       end subroutine pick_normal_of_surf_group
 !
@@ -85,8 +91,10 @@
 !    set center of surface
       call alloc_surf_grp_type_geom(sf_grp%num_item, sf_grp_v)
 !
-      call pick_vector_4_surf_grp(sf_grp, sf_grp_tbl,                   &
-     &    surf%numsurf, surf%x_surf, sf_grp_v%x_sf_grp)
+      call pick_vector_by_surf_grp(sf_grp%num_grp, sf_grp%num_item,     &
+     &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
+     &    sf_grp_tbl%isurf_grp, surf%numsurf, surf%x_surf,              &
+     &    sf_grp_v%x_sf_grp)
 !
       call position_2_sph                                               &
      &   (sf_grp%num_item, sf_grp_v%x_sf_grp, sf_grp_v%r_sf_grp,        &
@@ -94,74 +102,6 @@
      &    sf_grp_v%ar_sf_grp, sf_grp_v%s_sf_grp, sf_grp_v%as_sf_grp)
 !
        end subroutine pick_surface_group_geometry
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine pick_vector_4_surf_grp                                 &
-     &         (sf_grp, sf_grp_tbl, numsurf, x_surf, x_sf_grp)
-!
-      use t_group_data
-      use t_group_connects
-!
-      type(surface_group_data), intent(in) :: sf_grp
-      type(surface_group_table), intent(in) :: sf_grp_tbl
-      integer(kind = kint), intent(in) :: numsurf
-      real(kind=kreal), intent(in) :: x_surf(numsurf,3)
-!
-      real(kind=kreal), intent(inout) :: x_sf_grp(sf_grp%num_item,3)
-!
-!
-      call pick_vector_by_surf_grp(sf_grp%num_grp, sf_grp%num_item,     &
-     &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
-     &    sf_grp_tbl%isurf_grp, numsurf, x_surf, x_sf_grp)
-!
-      end subroutine pick_vector_4_surf_grp
-!
-!-----------------------------------------------------------------------
-!
-      subroutine pick_vector_4_surf_grp_side                            &
-     &         (sf_grp, sf_grp_tbl, numsurf, x_surf, x_sf_grp)
-!
-      use t_group_data
-      use t_group_connects
-!
-      type(surface_group_data), intent(in) :: sf_grp
-      type(surface_group_table), intent(in) :: sf_grp_tbl
-      integer(kind = kint), intent(in) :: numsurf
-      real(kind=kreal), intent(in) :: x_surf(numsurf,3)
-!
-      real(kind=kreal), intent(inout) :: x_sf_grp(sf_grp%num_item,3)
-!
-!
-      call pick_vect_by_surf_grp_w_side                                 &
-     &   (sf_grp%num_grp, sf_grp%num_item, sf_grp%num_grp_smp,          &
-     &    sf_grp%istack_grp_smp, sf_grp_tbl%isurf_grp,                  &
-     &    numsurf, x_surf, x_sf_grp)
-!
-      end subroutine pick_vector_4_surf_grp_side
-!
-!-----------------------------------------------------------------------
-!
-      subroutine pick_scalar_4_surf_grp                                 &
-     &         (sf_grp, sf_grp_tbl, numsurf, x_surf, x_sf_grp)
-!
-      use t_group_data
-      use t_group_connects
-!
-      type(surface_group_data), intent(in) :: sf_grp
-      type(surface_group_table), intent(in) :: sf_grp_tbl
-      integer(kind = kint), intent(in) :: numsurf
-      real(kind=kreal), intent(in) :: x_surf(numsurf)
-!
-      real(kind=kreal), intent(inout) :: x_sf_grp(sf_grp%num_item)
-!
-!
-      call pick_scalar_by_surf_grp(sf_grp%num_grp, sf_grp%num_item,     &
-     &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
-     &    sf_grp_tbl%isurf_grp, numsurf, x_surf, x_sf_grp)
-!
-      end subroutine pick_scalar_4_surf_grp
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

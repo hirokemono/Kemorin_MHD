@@ -11,12 +11,14 @@
 !!     &          fluid, sf_grp, Tsf_bcs, iphys, iphys_ele, ele_fld,    &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,  &
 !!     &          filtering, wide_filtering, layer_tbl,                 &
-!!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk,               &
+!!     &          f_l, f_nl, nod_fld)
 !!      subroutine update_with_dummy_scalar(nod_comm, node, ele, surf,  &
 !!     &          fluid, sf_grp, Csf_bcs, iphys, iphys_ele, ele_fld,    &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,  &
 !!     &          filtering, wide_filtering, layer_tbl,                 &
-!!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk,               &
+!!     &          f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -38,6 +40,7 @@
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
 !!@endverbatim
@@ -59,6 +62,7 @@
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
+      use t_int_surface_data
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_filtering_data
@@ -77,7 +81,8 @@
      &          fluid, sf_grp, Tsf_bcs, iphys, iphys_ele, ele_fld,      &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,    &
      &          filtering, wide_filtering, layer_tbl,                   &
-     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk,                 &
+     &          f_l, f_nl, nod_fld)
 !
       use m_t_step_parameter
       use m_SGS_model_coefs
@@ -112,6 +117,7 @@
       type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -212,7 +218,7 @@
      &             jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,           &
      &             FEM_elen, filtering, wk_filter,                      &
      &             wk_cor1, wk_lsq1, wk_diff1, mhd_fem_wk, fem_wk,      &
-     &             f_l, f_nl, nod_fld)
+     &             surf_wk, f_l, f_nl, nod_fld)
              end if
            end if
 !
@@ -227,7 +233,8 @@
      &          fluid, sf_grp, Csf_bcs, iphys, iphys_ele, ele_fld,      &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,    &
      &          filtering, wide_filtering, layer_tbl,                   &
-     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk,                 &
+     &          f_l, f_nl, nod_fld)
 !
       use m_t_step_parameter
       use m_SGS_model_coefs
@@ -262,6 +269,7 @@
       type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -314,7 +322,7 @@
 !     &             jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,          &
 !     &             FEM_elen, filtering, wk_filter,                     &
 !     &             wk_cor, wk_lsq1, wk_diff1, mhd_fem_wk, fem_wk,      &
-!     &             f_l, f_nl, nod_fld)
+!     &             surf_wk, f_l, f_nl, nod_fld)
 !             end if
 !
 !           end if

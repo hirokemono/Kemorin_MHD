@@ -10,13 +10,15 @@
 !!     &          Bnod_bcs, Asf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,&
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
 !!     &          rhs_tbl, FEM_elens, filtering, m_lump,                &
-!!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk,               &
+!!     &          f_l, f_nl, nod_fld)
 !!      subroutine s_cal_magnetic_field(nod_comm, node, ele, surf,      &
 !!     &          conduct, sf_grp, Bnod_bcs, Asf_bcs, Bsf_bcs, Fsf_bcs, &
 !!     &          iphys, iphys_ele, ele_fld,                            &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
 !!     &          rhs_tbl, FEM_elens, filtering, m_lump,                &
-!!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk,               &
+!!     &          f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -39,6 +41,7 @@
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
 !
@@ -57,6 +60,7 @@
       use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
+      use t_int_surface_data
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_filtering_data
@@ -79,7 +83,8 @@
      &          Bnod_bcs, Asf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,  &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
      &          rhs_tbl, FEM_elens, filtering, m_lump,                  &
-     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk,                 &
+     &          f_l, f_nl, nod_fld)
 !
       use m_machine_parameter
       use m_control_parameter
@@ -118,6 +123,7 @@
       type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -161,7 +167,7 @@
      &      FEM_elens, diff_coefs, num_MG_level,                        &
      &      MHD1_matrices%MG_interpolate, MHD1_matrices%MG_comm_table,  &
      &      MHD1_matrices%MG_DJDS_linear, MHD1_matrices%Fmat_MG_DJDS,   &
-     &      MG_vector, fem_wk, f_l, f_nl, nod_fld)
+     &      MG_vector, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_sol_m_potential', iloop
         call cal_sol_m_potential                                        &
@@ -175,7 +181,7 @@
      &      FEM_elens, num_MG_level, MHD1_matrices%MG_interpolate,      &
      &      MHD1_matrices%MG_comm_table, MHD1_matrices%MG_DJDS_table,   &
      &      MHD1_matrices%Bmat_MG_DJDS, MG_vector,                      &
-     &      m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      m_lump, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_rms_scalar_potential'
@@ -206,7 +212,8 @@
      &          iphys, iphys_ele, ele_fld,                              &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
      &          rhs_tbl, FEM_elens, filtering, m_lump,                  &
-     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk,                 &
+     &          f_l, f_nl, nod_fld)
 !
       use m_machine_parameter
       use m_control_parameter
@@ -246,6 +253,7 @@
       type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -271,7 +279,8 @@
      &    FEM_elens, filtering, num_MG_level,                           &
      &    MHD1_matrices%MG_interpolate, MHD1_matrices%MG_comm_table,    &
      &    MHD1_matrices%MG_DJDS_table, MHD1_matrices%Bmat_MG_DJDS,      &
-     &    MG_vector, wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &    MG_vector, wk_filter, mhd_fem_wk, fem_wk, surf_wk,            &
+     &    f_l, f_nl, nod_fld)
 !
 !----  set magnetic field in insulate layer
 !
@@ -287,7 +296,7 @@
      &      FEM_elens, diff_coefs, num_MG_level,                        &
      &      MHD1_matrices%MG_interpolate, MHD1_matrices%MG_comm_table,  &
      &      MHD1_matrices%MG_DJDS_linear, MHD1_matrices%Fmat_MG_DJDS,   &
-     &      MG_vector, fem_wk, f_l, f_nl, nod_fld)
+     &      MG_vector, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
         call cal_sol_m_potential                                        &
      &     (node%numnod, node%istack_internal_smp, nod_fld%ntot_phys,   &
@@ -301,7 +310,7 @@
      &      FEM_elens, num_MG_level, MHD1_matrices%MG_interpolate,      &
      &      MHD1_matrices%MG_comm_table, MHD1_matrices%MG_DJDS_table,   &
      &      MHD1_matrices%Bmat_MG_DJDS, MG_vector,                      &
-     &      m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      m_lump, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
         call cal_rms_scalar_potential(iloop, ele%istack_ele_smp,        &
      &      iphys%i_mag_p, i_rms%i_mag_p, j_ave%i_mag_p,                &

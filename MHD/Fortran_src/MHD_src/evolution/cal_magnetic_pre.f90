@@ -10,18 +10,20 @@
 !!     &         iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl,   &
 !!     &         FEM_elens, filtering, num_MG_level, MG_interpolate,    &
 !!     &         MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS, MG_vector, &
-!!     &         wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &         wk_filter, mhd_fem_wk, fem_wk, surf_wk,                &
+!!     &         f_l, f_nl, nod_fld)
 !!      subroutine cal_magnetic_co                                      &
 !!     &         (nod_comm, node, ele, surf, conduct, sf_grp,           &
 !!     &          Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,         &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
 !!     &          rhs_tbl, FEM_elens, num_MG_level, MG_interpolate,     &
 !!     &          MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS, MG_vector,&
-!!     &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          m_lump, mhd_fem_wk, fem_wk, surf_wk,                  &
+!!     &          f_l, f_nl, nod_fld)
 !!      subroutine cal_magnetic_co_outside(nod_comm, node, ele, surf,   &
 !!     &          insulate, sf_grp, Bnod_bcs, Fsf_bcs, iphys,           &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
-!!     &          rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,               &
+!!     &          rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, surf_wk,      &
 !!     &          f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -54,6 +56,7 @@
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
 !
@@ -75,6 +78,7 @@
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
+      use t_int_surface_data
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_filtering_data
@@ -97,7 +101,8 @@
      &         iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl,     &
      &         FEM_elens, filtering, num_MG_level, MG_interpolate,      &
      &         MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS, MG_vector,   &
-     &         wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &         wk_filter, mhd_fem_wk, fem_wk, surf_wk,                  &
+     &         f_l, f_nl, nod_fld)
 !
       use calypso_mpi
       use m_t_int_parameter
@@ -145,6 +150,7 @@
       type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -185,7 +191,7 @@
       call int_surf_magne_pre_ele                                       &
      &   (iak_diff_uxb, node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs,      &
      &    iphys, nod_fld, jac_sf_grp_q, rhs_tbl, FEM_elens,             &
-     &    fem_wk, f_l, f_nl)
+     &    fem_wk, surf_wk, f_l, f_nl)
 !
       if (iflag_t_evo_4_magne .eq. id_explicit_euler) then
         call cal_magne_pre_euler(iflag_mag_supg, iphys%i_magne,         &
@@ -228,7 +234,8 @@
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
      &          rhs_tbl, FEM_elens, num_MG_level, MG_interpolate,       &
      &          MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS, MG_vector,  &
-     &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          m_lump, mhd_fem_wk, fem_wk, surf_wk,                    &
+     &          f_l, f_nl, nod_fld)
 !
       use m_SGS_address
       use m_SGS_model_coefs
@@ -270,6 +277,7 @@
      &           :: MG_vector(0:num_MG_level)
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -291,7 +299,7 @@
      &       rhs_tbl, FEM_elens, intg_point_poisson,                    &
      &       Fsf_bcs%sgs%ngrp_sf_dat, Fsf_bcs%sgs%id_grp_sf_dat,        &
      &       ifilter_final, diff_coefs%num_field, iak_diff_b,           &
-     &       diff_coefs%ak, iphys%i_m_phi, fem_wk, f_nl)
+     &       diff_coefs%ak, iphys%i_m_phi, fem_wk, surf_wk, f_nl)
       end if
 !
 !
@@ -325,7 +333,7 @@
       subroutine cal_magnetic_co_outside(nod_comm, node, ele, surf,     &
      &          insulate, sf_grp, Bnod_bcs, Fsf_bcs, iphys,             &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
-     &          rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,                 &
+     &          rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, surf_wk,        &
      &          f_l, f_nl, nod_fld)
 !
       use m_SGS_address
@@ -355,6 +363,7 @@
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -375,7 +384,7 @@
      &       rhs_tbl, FEM_elens, intg_point_poisson,                    &
      &       Fsf_bcs%sgs%ngrp_sf_dat, Fsf_bcs%sgs%id_grp_sf_dat,        &
      &       ifilter_final, diff_coefs%num_field, iak_diff_b,           &
-     &       diff_coefs%ak, iphys%i_m_phi, fem_wk, f_nl)
+     &       diff_coefs%ak, iphys%i_m_phi, fem_wk, surf_wk, f_nl)
       end if
 !
 !

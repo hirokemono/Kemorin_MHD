@@ -6,10 +6,11 @@
 !!      subroutine int_surf_temp_ele                                    &
 !!     &         (iak_diff_hf, node, ele, surf, sf_grp, iphys, nod_fld, &
 !!     &          Tsf_bcs, jac_sf_grp, rhs_tbl, FEM_elens,              &
-!!     &          fem_wk, f_l, f_nl)
+!!     &          fem_wk, surf_wk, f_l, f_nl)
 !!      subroutine int_surf_temp_monitor(i_field, iak_diff_hf,          &
 !!     &          node, ele, surf, sf_grp, iphys, nod_fld, Tsf_bcs,     &
-!!     &          jac_sf_grp, rhs_tbl, FEM_elens, fem_wk, f_l, f_nl)
+!!     &          jac_sf_grp, rhs_tbl, FEM_elens,                       &
+!!     &          fem_wk, surf_wk, f_l, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -21,6 +22,7 @@
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(scaler_surf_bc_type), intent(in) :: Tsf_bcs
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !
       module int_surf_temp
@@ -36,6 +38,7 @@
       use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
+      use t_int_surface_data
       use t_surface_bc_data
 !
       implicit none
@@ -49,7 +52,7 @@
       subroutine int_surf_temp_ele                                      &
      &         (iak_diff_hf, node, ele, surf, sf_grp, iphys, nod_fld,   &
      &          Tsf_bcs, jac_sf_grp, rhs_tbl, FEM_elens,                &
-     &          fem_wk, f_l, f_nl)
+     &          fem_wk, surf_wk, f_l, f_nl)
 !
       use m_SGS_model_coefs
 !
@@ -70,6 +73,7 @@
       type(scaler_surf_bc_type), intent(in) :: Tsf_bcs
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !
       integer(kind = kint)  :: num_int
@@ -87,7 +91,7 @@
      &      Tsf_bcs%sgs%ngrp_sf_dat, Tsf_bcs%sgs%id_grp_sf_dat,         &
      &      ifilter_final, iphys%i_SGS_h_flux, iphys%i_velo,            &
      &      iphys%i_temp, diff_coefs%num_field, iak_diff_hf,            &
-     &      diff_coefs%ak, coef_temp, fem_wk, f_nl)
+     &      diff_coefs%ak, coef_temp, fem_wk, surf_wk, f_nl)
       end if
 !
       end subroutine int_surf_temp_ele
@@ -96,7 +100,8 @@
 !
       subroutine int_surf_temp_monitor(i_field, iak_diff_hf,            &
      &          node, ele, surf, sf_grp, iphys, nod_fld, Tsf_bcs,       &
-     &          jac_sf_grp, rhs_tbl, FEM_elens, fem_wk, f_l, f_nl)
+     &          jac_sf_grp, rhs_tbl, FEM_elens,                         &
+     &          fem_wk, surf_wk, f_l, f_nl)
 !
       use m_SGS_model_coefs
 !
@@ -118,6 +123,7 @@
       type(scaler_surf_bc_type), intent(in) :: Tsf_bcs
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !
       integer(kind = kint)  :: num_int
@@ -137,7 +143,7 @@
      &      Tsf_bcs%sgs%ngrp_sf_dat, Tsf_bcs%sgs%id_grp_sf_dat,         &
      &      ifilter_final, iphys%i_SGS_h_flux, iphys%i_velo,            &
      &      iphys%i_temp, diff_coefs%num_field, iak_diff_hf,            &
-     &      diff_coefs%ak, coef_temp, fem_wk, f_nl)
+     &      diff_coefs%ak, coef_temp, fem_wk, surf_wk, f_nl)
       end if
 !
       end subroutine int_surf_temp_monitor

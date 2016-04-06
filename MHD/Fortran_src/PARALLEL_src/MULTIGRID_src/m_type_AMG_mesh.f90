@@ -16,7 +16,7 @@
       use t_jacobians
       use t_table_FEM_const
       use t_next_node_ele_4_node
-      use t_finite_element_mat
+      use t_work_FEM_integration
 !
       implicit  none
 !

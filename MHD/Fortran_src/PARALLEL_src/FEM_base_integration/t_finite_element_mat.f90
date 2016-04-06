@@ -6,10 +6,6 @@
 !
 !>    Structure for lumped mass matrix and RHS vector assembler
 !
-!      subroutine alloc_fem_mat_base_type(node, ele, rhs_mat)
-!        type(node_data), intent(in) :: node
-!        type(element_data), intent(in) :: ele
-!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !      subroutine alloc_finite_elem_mat                                 &
 !     &         (node, ele, m_lump, fem_wk, f_l, f_nl)
 !
@@ -28,9 +24,6 @@
 !        integer(kind = kint), intent(in) :: numele, nnod_4_ele
 !        integer(kind = kint), intent(in) :: numdir, numnod
 !        type(work_finite_element_mat), intent(inout) :: fem_wk
-!
-!      subroutine dealloc_fem_mat_base_type(rhs_mat)
-!      subroutine dealloc_finite_elem_mat(m_lump, fem_wk, f_l, f_nl)
 !
 !      subroutine dealloc_type_fem_mat_work(fem_wk)
 !      subroutine dealloc_type_fem_lumped_mass(lump)
@@ -82,39 +75,9 @@
         real(kind=kreal), pointer  ::  me_diag(:)
       end type work_finite_element_mat
 !
-!
-      type finite_ele_matrices
-        type(finite_ele_mat_node) :: f_l
-        type(finite_ele_mat_node) :: f_nl
-      end type finite_ele_matrices
-!
-      type arrays_finite_element_mat
-        type(lumped_mass_matrices) ::    m_lump
-        type(finite_ele_matrices) ::     fem_rhs
-        type(work_finite_element_mat) :: fem_wk
-      end type arrays_finite_element_mat
-!
 !   ---------------------------------------------------------------------
 !
       contains
-!
-!   ---------------------------------------------------------------------
-!
-      subroutine alloc_fem_mat_base_type(node, ele, rhs_mat)
-!
-      use t_geometry_data
-      use m_phys_constants
-!
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-!
-      type(arrays_finite_element_mat), intent(inout) :: rhs_mat
-!
-!
-      call alloc_finite_elem_mat(node, ele, rhs_mat%m_lump,             &
-     &    rhs_mat%fem_wk, rhs_mat%fem_rhs%f_l, rhs_mat%fem_rhs%f_nl)
-!
-      end subroutine alloc_fem_mat_base_type
 !
 !   ---------------------------------------------------------------------
 !
@@ -252,37 +215,6 @@
 !$omp end parallel
 !
       end subroutine reset_ff_type
-!
-!   ---------------------------------------------------------------------
-!   ---------------------------------------------------------------------
-!
-      subroutine dealloc_fem_mat_base_type(rhs_mat)
-!
-      type(arrays_finite_element_mat), intent(inout) :: rhs_mat
-!
-!
-      call dealloc_finite_elem_mat(rhs_mat%m_lump, rhs_mat%fem_wk,      &
-     &    rhs_mat%fem_rhs%f_l, rhs_mat%fem_rhs%f_nl)
-!
-      end subroutine dealloc_fem_mat_base_type
-!
-!   ---------------------------------------------------------------------
-!
-      subroutine dealloc_finite_elem_mat(m_lump, fem_wk, f_l, f_nl)
-!
-      type(lumped_mass_matrices), intent(inout) :: m_lump
-      type(work_finite_element_mat), intent(inout) :: fem_wk
-      type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
-!
-!
-      call dealloc_type_fem_mat_work(fem_wk)
-!
-      call dealloc_type_fem_lumped_mass(m_lump)
-!
-      call dealloc_type_fem_matrices(f_l)
-      call dealloc_type_fem_matrices(f_nl)
-!
-      end subroutine dealloc_finite_elem_mat
 !
 !   ---------------------------------------------------------------------
 !   ---------------------------------------------------------------------

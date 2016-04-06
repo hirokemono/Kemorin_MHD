@@ -14,8 +14,8 @@
 !> @brief  Surface integeation for boundary conditions
 !!
 !!@verbatim
-!!      subroutine s_int_surface_param_type(mesh, surf, group)
-!!      subroutine empty_surface_param_type(mesh, surf, group)
+!!      subroutine s_int_surface_param_type(mesh, surf, group, surf_wk)
+!!      subroutine empty_surface_param_type(mesh, surf, group, surf_wk)
 !!        type(mesh_geometry),      intent(in) :: mesh
 !!        type(surface_data),       intent(in) :: surf
 !!        type(mesh_groups), intent(inout) :: group
@@ -25,6 +25,9 @@
 !
       use m_precision
 !
+      use t_mesh_data
+      use t_surface_group_geometry
+!
       implicit none
 !
 !-----------------------------------------------------------------------
@@ -33,84 +36,39 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_int_surface_param_type(mesh, surf, group)
+      subroutine s_int_surface_param_type(mesh, surf, group, surf_wk)
 !
-      use t_mesh_data
-      use t_surface_group_geometry
-!
-      use m_machine_parameter
-!
-      use sum_normal_4_surf_group
-      use position_of_each_surface
-      use set_connects_4_surf_group
-      use set_surf_grp_vectors_type
+      use int_surface_params_MHD
 !
       type(mesh_geometry),      intent(in) :: mesh
       type(surface_data),       intent(in) :: surf
 !
       type(mesh_groups), intent(inout) :: group
+      type(work_surface_element_mat), intent(inout) :: surf_wk
 !
 !
-      call alloc_type_int_surf_data(surf%nnod_4_surf,                   &
-     &     group%surf_grp, group%surf_grp_int)
-      call alloc_vectors_surf_grp_type(group%surf_grp%num_grp,          &
-     &    group%surf_grp%num_item, group%surf_grp_geom)
-!
-      if (iflag_debug.eq.1) write(*,*) 'pick_normal_of_surf_grp_type'
-      call pick_normal_of_surf_grp_type(surf, group%surf_grp,           &
-     &    group%tbls_surf_grp, group%surf_grp_geom)
-!
-      if (iflag_debug.eq.1) write(*,*) 's_sum_normal_4_surf_group'
-      call s_sum_normal_4_surf_group(mesh%ele, group%surf_grp,          &
-     &    group%surf_grp_geom)
-!
-!
-      if ( group%surf_grp%num_grp .ne. 0 ) then
-       if (iflag_debug.eq.1) write(*,*) 'cal_surf_normal_at_nod'
-       call cal_surf_normal_at_nod(mesh%node, mesh%ele, surf,           &
-     &     group%surf_grp, group%surf_grp_geom, group%surf_nod_grp)
-!
-!
-       if (iflag_debug.eq.1) write(*,*) 'position_2_each_surface'
-       call position_2_each_surface(mesh%node, mesh%ele, surf,          &
-     &     group%surf_grp, group%surf_grp_int%xe_sf)
-!
-       if (iflag_debug.eq.1) write(*,*) 'delta_x_2_each_surface'
-       call delta_x_2_each_surface(mesh%node, mesh%ele, surf,           &
-     &     group%surf_grp, group%surf_grp_int%dxe_sf)
-      end if
+      call int_surface_parameters(mesh%node, mesh%ele, surf,            &
+     &    group%surf_grp, group%tbls_surf_grp, group%surf_grp_geom,     &
+     &    group%surf_nod_grp, surf_wk)
 !
       end subroutine s_int_surface_param_type
 !
 !-----------------------------------------------------------------------
 !
-      subroutine empty_surface_param_type(mesh, surf, group)
+      subroutine empty_surface_param_type(mesh, surf, group, surf_wk)
 !
-      use t_mesh_data
-!
-      use m_machine_parameter
-!
-      use sum_normal_4_surf_group
-      use position_of_each_surface
-      use set_surf_grp_vectors_type
+      use int_surface_params_MHD
 !
       type(mesh_geometry),      intent(in) :: mesh
       type(surface_data),       intent(in) :: surf
+      type(work_surface_element_mat), intent(inout) :: surf_wk
 !
       type(mesh_groups), intent(inout) :: group
 !
 !
-      call alloc_type_int_surf_data(surf%nnod_4_surf,                   &
-     &     group%surf_grp, group%surf_grp_int)
-      call alloc_vectors_surf_grp_type(group%surf_grp%num_grp,          &
-     &    group%surf_grp%num_item, group%surf_grp_geom)
-!
-      if (iflag_debug.eq.1) write(*,*) 's_sum_normal_4_surf_group'
-      call s_sum_normal_4_surf_group(mesh%ele, group%surf_grp,          &
-     &     group%surf_grp_geom)
-!
-      if (iflag_debug.eq.1) write(*,*) 'alloc_vect_surf_grp_nod'
-      call alloc_vect_surf_grp_nod(group%surf_nod_grp)
+      call empty_surface_parameters(mesh%ele, surf,                     &
+     &    group%surf_grp, group%surf_grp_geom, group%surf_nod_grp,      &
+     &    surf_wk)
 !
       end subroutine empty_surface_param_type
 !

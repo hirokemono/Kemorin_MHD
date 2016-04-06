@@ -9,15 +9,20 @@
 !
 !!      subroutine set_aiccg_bc_phys                                    &
 !!     &         (ele, surf, sf_grp, nod_bcs, Vsf_bcs, jac_sf_grp,      &
-!!     &          rhs_tbl, mat_tbl_fl, fem_wk)
+!!     &          rhs_tbl, mat_tbl_fl, surf_wk, fem_wk)
+!!      subroutine set_aiccg_bc_velo(num_int, ele, surf, sf_grp,        &
+!!     &          nod_bc_v, nod_bc_rot, free_in_sf, free_out_sf,        &
+!!     &          jac_sf_grp, rhs_tbl, mat_tbl, DJDS_tbl, surf_wk,      &
+!!     &          fem_wk, Vmat_DJDS)
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
-!!      type(nodal_boundarty_conditions), intent(inout) :: nod_bcs
+!!        type(nodal_boundarty_conditions), intent(inout) :: nod_bcs
 !!        type(velocity_surf_bc_type), intent(in)  :: Vsf_bcs
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(table_mat_const), intent(in) :: mat_tbl_fl
+!!        type(work_surface_element_mat), intent(in) :: surf_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !
       module set_aiccg_bc_vectors
@@ -30,6 +35,7 @@
       use t_jacobian_2d
       use t_nodal_bc_data
       use t_finite_element_mat
+      use t_int_surface_data
       use t_table_FEM_const
       use t_solver_djds
       use t_bc_data_MHD
@@ -45,7 +51,7 @@
 !
       subroutine set_aiccg_bc_phys                                      &
      &         (ele, surf, sf_grp, nod_bcs, Vsf_bcs, jac_sf_grp,        &
-     &          rhs_tbl, mat_tbl_fl, fem_wk)
+     &          rhs_tbl, mat_tbl_fl, surf_wk, fem_wk)
 !
       use calypso_mpi
       use m_control_parameter
@@ -61,6 +67,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const), intent(in) :: mat_tbl_fl
+      type(work_surface_element_mat), intent(in) :: surf_wk
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
 !
@@ -76,12 +83,11 @@
      &       nod_bcs%Vnod_bcs%nod_bc_v, nod_bcs%Vnod_bcs%nod_bc_rot,    &
      &       Vsf_bcs%free_sph_in, Vsf_bcs%free_sph_out,                 &
      &       jac_sf_grp, rhs_tbl, mat_tbl_fl,                           &
-     &       MHD1_matrices%MG_DJDS_fluid(0), fem_wk,                    &
+     &       MHD1_matrices%MG_DJDS_fluid(0), surf_wk, fem_wk,           &
      &       MHD1_matrices%Vmat_MG_DJDS(0))
         end if
       end if
 !
-
       if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
         call set_aiccg_bc_scalar_nod(ele%nnod_4_ele, ele,               &
      &      nod_bcs%Tnod_bcs%nod_bc_s, MHD1_matrices%MG_DJDS_fluid(0),  &
@@ -126,8 +132,8 @@
 !
       subroutine set_aiccg_bc_velo(num_int, ele, surf, sf_grp,          &
      &          nod_bc_v, nod_bc_rot, free_in_sf, free_out_sf,          &
-     &          jac_sf_grp, rhs_tbl, mat_tbl, DJDS_tbl, fem_wk,         &
-     &          Vmat_DJDS)
+     &          jac_sf_grp, rhs_tbl, mat_tbl, DJDS_tbl, surf_wk,        &
+     &          fem_wk, Vmat_DJDS)
 !
       use set_aiccg_free_sph
       use set_aiccg_bc_fixed
@@ -147,6 +153,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const), intent(in) :: mat_tbl
       type(DJDS_ordering_table), intent(in) :: DJDS_tbl
+      type(work_surface_element_mat), intent(in) :: surf_wk
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(DJDS_MATRIX), intent(inout) :: Vmat_DJDS
@@ -154,10 +161,10 @@
 !
 !      matrix setting for free slip on sphere
       call set_aiccg_bc_free_sph_in(ele, surf, sf_grp,                  &
-     &    free_in_sf, jac_sf_grp, rhs_tbl, mat_tbl,                     &
+     &    free_in_sf, jac_sf_grp, rhs_tbl, mat_tbl, surf_wk,            &
      &    num_int, fem_wk, Vmat_DJDS)
       call set_aiccg_bc_free_sph_out(ele, surf, sf_grp,                 &
-     &    free_out_sf, jac_sf_grp, rhs_tbl, mat_tbl,                    &
+     &    free_out_sf, jac_sf_grp, rhs_tbl, mat_tbl, surf_wk,           &
      &    num_int, fem_wk, Vmat_DJDS)
 !
 !      matrix setting for fixed boundaries

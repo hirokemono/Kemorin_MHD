@@ -8,7 +8,8 @@
 !!     &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,          &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
 !!     &          FEM_elens, filtering, m_lump, wk_filter,              &
-!!     &          wk_cor, wk_lsq, wk_diff, fem_wk, f_l, f_nl, nod_fld)
+!!     &          wk_cor, wk_lsq, wk_diff, fem_wk, surf_wk, f_l, f_nl,  &
+!!     &          nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -32,6 +33,7 @@
 !!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
 !!        type(dynamic_model_data), intent(inout) :: wk_diff
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
 !
@@ -50,6 +52,8 @@
       use t_jacobian_3d
       use t_table_FEM_const
       use t_layering_ele_list
+      use t_finite_element_mat
+      use t_int_surface_data
       use t_filter_elength
       use t_filtering_data
       use t_ele_info_4_dynamic
@@ -70,7 +74,8 @@
      &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,            &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
      &          FEM_elens, filtering, m_lump, wk_filter,                &
-     &          wk_cor, wk_lsq, wk_diff, fem_wk, f_l, f_nl, nod_fld)
+     &          wk_cor, wk_lsq, wk_diff, fem_wk, surf_wk,               &
+     &          f_l, f_nl, nod_fld)
 !
       use m_machine_parameter
       use m_control_parameter
@@ -114,6 +119,7 @@
       type(dynamis_least_suare_data), intent(inout) :: wk_lsq
       type(dynamic_model_data), intent(inout) :: wk_diff
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -196,11 +202,12 @@
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
      &    rhs_tbl, FEM_elens, Bsf_bcs%sgs, ifilter_4delta,              &
      &    iphys%i_sgs_grad_f, iphys%i_sgs_grad_f,                       &
-     &    fem_wk, f_l, f_nl, nod_fld)
+     &    fem_wk, surf_wk, f_l, f_nl, nod_fld)
       call cal_grad_commute(ele%istack_ele_smp, m_lump,                 &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
      &    rhs_tbl, FEM_elens, Fsf_bcs%sgs, ifilter_4delta,              &
-     &    i_sgs_grad_fp, i_sgs_grad_fp, fem_wk, f_l, f_nl, nod_fld)
+     &    i_sgs_grad_fp, i_sgs_grad_fp, fem_wk, surf_wk,                &
+     &    f_l, f_nl, nod_fld)
 !
       call sym_tensor_send_recv                                         &
      &   (iphys%i_sgs_grad_f, node, nod_comm, nod_fld)
@@ -214,11 +221,12 @@
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
      &    rhs_tbl, FEM_elens, Bsf_bcs%sgs, ifilter_2delta,              &
      &    iphys%i_sgs_grad, iphys%i_magne,                              &
-     &    fem_wk, f_l, f_nl, nod_fld)
+     &    fem_wk, surf_wk, f_l, f_nl, nod_fld)
       call cal_grad_commute(ele%istack_ele_smp, m_lump,                 &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
      &    rhs_tbl, FEM_elens, Fsf_bcs%sgs, ifilter_2delta,              &
-     &    i_sgs_grad_p, iphys%i_mag_p, fem_wk, f_l, f_nl, nod_fld)
+     &    i_sgs_grad_p, iphys%i_mag_p, fem_wk, surf_wk,                 &
+     &    f_l, f_nl, nod_fld)
 !
       call sym_tensor_send_recv                                         &
      &   (iphys%i_sgs_grad, node, nod_comm, nod_fld)

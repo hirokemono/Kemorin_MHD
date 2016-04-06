@@ -7,14 +7,14 @@
 !!     &        (i_field, iak_diff_mf, iak_diff_lor,                    &
 !!     &         nod_comm, node, ele, surf, fluid, sf_grp,              &
 !!     &         Vsf_bcs, Bsf_bcs, iphys, iphys_ele, jac_3d, jac_sf_grp,&
-!!     &         rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl,     &
-!!     &         nod_fld, ele_fld)
+!!     &         rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, surf_wk,       &
+!!     &         f_l, f_nl, nod_fld, ele_fld)
 !!      subroutine cal_viscous_diffusion                                &
 !!     &         (iak_diff_v, iak_diff_mf, iak_diff_lor,                &
 !!     &          nod_comm, node, ele, surf, fluid, sf_grp,             &
 !!     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, jac_3d, jac_sf_grp,&
 !!     &          rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk, fem_wk,   &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          surf_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -33,6 +33,7 @@
 !!        type(MHD_coefficients_type), intent(in) :: diff_coefs
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(phys_data), intent(inout) :: ele_fld
@@ -55,6 +56,7 @@
       use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
+      use t_int_surface_data
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_material_property
@@ -79,8 +81,8 @@
      &        (i_field, iak_diff_mf, iak_diff_lor,                      &
      &         nod_comm, node, ele, surf, fluid, sf_grp,                &
      &         Vsf_bcs, Bsf_bcs, iphys, iphys_ele, jac_3d, jac_sf_grp,  &
-     &         rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl,       &
-     &         nod_fld, ele_fld)
+     &         rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, surf_wk,         &
+     &         f_l, f_nl, nod_fld, ele_fld)
 !
       use int_vol_velo_monitor
       use int_surf_velo_pre
@@ -105,6 +107,7 @@
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
       type(phys_data), intent(inout) :: ele_fld
@@ -130,7 +133,7 @@
 !
       call int_surf_velo_monitor(i_field, iak_diff_mf, iak_diff_lor,    &
      &    node, ele, surf, sf_grp, Vsf_bcs, Bsf_bcs, iphys, nod_fld,    &
-     &    jac_sf_grp, rhs_tbl, FEM_elens, fem_wk, f_l, f_nl)
+     &    jac_sf_grp, rhs_tbl, FEM_elens, fem_wk, surf_wk, f_l, f_nl)
 !
       call cal_t_evo_4_vector(iflag_velo_supg,                          &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl, nod_comm,      &
@@ -152,7 +155,7 @@
      &          nod_comm, node, ele, surf, fluid, sf_grp,               &
      &          Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, jac_3d, jac_sf_grp,  &
      &          rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk, fem_wk,     &
-     &          f_l, f_nl, nod_fld)
+     &          surf_wk, f_l, f_nl, nod_fld)
 !
       use int_vol_diffusion_ele
       use int_surf_velo_pre
@@ -178,6 +181,7 @@
       type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -191,7 +195,7 @@
       call int_surf_velo_monitor                                        &
      &   (iphys%i_v_diffuse, iak_diff_mf, iak_diff_lor,                 &
      &    node, ele, surf, sf_grp, Vsf_bcs, Bsf_bcs, iphys, nod_fld,    &
-     &    jac_sf_grp, rhs_tbl, FEM_elens, fem_wk, f_l, f_nl)
+     &    jac_sf_grp, rhs_tbl, FEM_elens, fem_wk, surf_wk, f_l, f_nl)
 !
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
 !

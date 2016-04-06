@@ -41,7 +41,6 @@
       use m_solver_djds_MHD
       use m_element_id_4_node
       use m_finite_element_matrix
-      use m_int_vol_data
       use m_surf_data_list
       use m_bc_data_velo
       use m_3d_filter_coef_MHD
@@ -220,10 +219,9 @@
       call const_normal_vector(mesh%node, ele_mesh%surf)
 !
       if (iflag_debug.eq.1) write(*,*)' int_surface_parameters'
-      call int_surface_parameters                                       &
-     &   (group%surf_grp%num_grp, mesh%node, mesh%ele, ele_mesh%surf,   &
+      call int_surface_parameters(mesh%node, mesh%ele, ele_mesh%surf,   &
      &    group%surf_grp, group%tbls_surf_grp, group%surf_grp_geom,     &
-     &    group%surf_nod_grp)
+     &    group%surf_nod_grp, surf1_wk)
 !
 !     --------------------- 
 !

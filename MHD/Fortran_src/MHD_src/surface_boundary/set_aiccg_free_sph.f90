@@ -5,10 +5,10 @@
 !     Written by H. Matsui on Sep. 2005
 !
 !!      subroutine set_aiccg_bc_free_sph_in(ele, surf, sf_grp,          &
-!!     &          free_in_sf, jac_sf_grp, rhs_tbl, mat_tbl,             &
+!!     &          free_in_sf, jac_sf_grp, rhs_tbl, mat_tbl, surf_wk,    &
 !!     &          num_int, fem_wk, mat33)
 !!      subroutine set_aiccg_bc_free_sph_out(ele, surf, sf_grp,         &
-!!     &          free_out_sf, jac_sf_grp, rhs_tbl, mat_tbl,            &
+!!     &          free_out_sf, jac_sf_grp, rhs_tbl, mat_tbl, surf_wk,   &
 !!     &          num_int, fem_wk, mat33)
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -18,6 +18,7 @@
 !!        type(table_mat_const), intent(in) :: mat_tbl
 !!        type(scaler_surf_bc_data_type), intent(in) :: free_in_sf
 !!        type(scaler_surf_bc_data_type), intent(in) :: free_out_sf
+!!        type(work_surface_element_mat), intent(in) :: surf_wk
 !!  
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(DJDS_MATRIX), intent(inout) :: mat33
@@ -34,6 +35,7 @@
       use t_finite_element_mat
       use t_solver_djds
       use t_surface_bc_data
+      use t_int_surface_data
       use m_ele_material_property
 !
       implicit none
@@ -45,10 +47,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_aiccg_bc_free_sph_in(ele, surf, sf_grp,            &
-     &          free_in_sf, jac_sf_grp, rhs_tbl, mat_tbl,               &
+     &          free_in_sf, jac_sf_grp, rhs_tbl, mat_tbl, surf_wk,      &
      &          num_int, fem_wk, mat33)
-!
-      use m_int_surface_data
 !
       use fem_surf_crank_free_sph
       use cal_skv_to_ff_smp
@@ -61,6 +61,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const), intent(in) :: mat_tbl
       type(scaler_surf_bc_data_type), intent(in) :: free_in_sf
+      type(work_surface_element_mat), intent(in) :: surf_wk
 !
       integer (kind = kint), intent(in) :: num_int
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -84,7 +85,8 @@
      &          sf_grp%num_item, sf_grp%num_grp_smp,                    &
      &          sf_grp%istack_grp_smp, sf_grp%item_sf_grp,              &
      &          jac_sf_grp%ntot_int, jac_sf_grp%an_sf,                  &
-     &          jac_sf_grp%xj_sf, xe_sf, ak_d_velo, fem_wk%sk6)
+     &          jac_sf_grp%xj_sf, surf_wk%xe_sf,                        &
+     &          ak_d_velo, fem_wk%sk6)
 !
             call add_skv1_to_crs_matrix33(ele, rhs_tbl, mat_tbl,        &
      &          k2, fem_wk%sk6, mat33%num_non0, mat33%aiccg)
@@ -97,10 +99,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_aiccg_bc_free_sph_out(ele, surf, sf_grp,           &
-     &          free_out_sf, jac_sf_grp, rhs_tbl, mat_tbl,              &
+     &          free_out_sf, jac_sf_grp, rhs_tbl, mat_tbl, surf_wk,     &
      &          num_int, fem_wk, mat33)
-!
-      use m_int_surface_data
 !
       use fem_surf_crank_free_sph
       use cal_skv_to_ff_smp
@@ -113,6 +113,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const), intent(in) :: mat_tbl
       type(scaler_surf_bc_data_type), intent(in) :: free_out_sf
+      type(work_surface_element_mat), intent(in) :: surf_wk
 !
       integer (kind = kint), intent(in) :: num_int
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -136,7 +137,8 @@
      &          sf_grp%num_item, sf_grp%num_grp_smp,                    &
      &          sf_grp%istack_grp_smp, sf_grp%item_sf_grp,              &
      &          jac_sf_grp%ntot_int, jac_sf_grp%an_sf,                  &
-     &          jac_sf_grp%xj_sf, xe_sf, ak_d_velo, fem_wk%sk6)
+     &          jac_sf_grp%xj_sf, surf_wk%xe_sf,                        &
+     &          ak_d_velo, fem_wk%sk6)
 !
             call add_skv1_to_crs_matrix33(ele, rhs_tbl, mat_tbl,        &
      &          k2, fem_wk%sk6, mat33%num_non0, mat33%aiccg)

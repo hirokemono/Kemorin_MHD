@@ -4,8 +4,10 @@
 !     Written by H. Matsui
 !
 !!      subroutine choose_cal_rotation_sgs(iflag_commute, iflag_4_supg, &
-!!     &          iele_fsmp_stack, m_lump, node, ele, surf, sf_grp,     &
-!!     &          nod_bc, sgs_sf, iak_diff, i_vector, i_rot, nod_fld)
+!!     &          iak_diff, i_vector, i_rot, iele_fsmp_stack, m_lump,   &
+!!     &          nod_comm, node, ele, surf, sf_grp, iphys_ele, ele_fld,&
+!!     &          jac_3d, jac_sf_grp, FEM_elens, nod_bc, sgs_sf,        &
+!!     &          rhs_tbl, fem_wk, surf_wk, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -21,6 +23,7 @@
 !!        type(scaler_surf_bc_data_type), intent(in) :: sgs_sf(3)
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
 !
@@ -45,6 +48,7 @@
       use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
+      use t_int_surface_data
       use t_MHD_finite_element_mat
       use t_filter_elength
 !
@@ -64,7 +68,7 @@
      &          iak_diff, i_vector, i_rot, iele_fsmp_stack, m_lump,     &
      &          nod_comm, node, ele, surf, sf_grp, iphys_ele, ele_fld,  &
      &          jac_3d, jac_sf_grp, FEM_elens, nod_bc, sgs_sf,          &
-     &          rhs_tbl, fem_wk, f_nl, nod_fld)
+     &          rhs_tbl, fem_wk, surf_wk, f_nl, nod_fld)
 !
       use cal_rotation
       use set_boundary_scalars
@@ -89,6 +93,7 @@
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -99,7 +104,7 @@
      &     (iflag_4_supg, iele_fsmp_stack, iak_diff, i_vector,          &
      &      node, ele, surf, sf_grp, nod_fld, iphys_ele, ele_fld,       &
      &      jac_3d, jac_sf_grp, FEM_elens, sgs_sf, rhs_tbl,             &
-     &      fem_wk, f_nl)
+     &      fem_wk, surf_wk, f_nl)
       else
         call choose_int_vol_rotations(iflag_4_supg, iele_fsmp_stack,    &
      &      i_vector, node, ele, nod_fld, iphys_ele, ele_fld,           &
@@ -123,7 +128,7 @@
      &         (iflag_4_supg, iele_fsmp_stack, iak_diff, i_vector,      &
      &          node, ele, surf, sf_grp, nod_fld, iphys_ele, ele_fld,   &
      &          jac_3d, jac_sf_grp, FEM_elens, sgs_sf, rhs_tbl,         &
-     &          fem_wk, f_nl)
+     &          fem_wk, surf_wk, f_nl)
 !
       use int_sgs_vect_differences
       use int_sgs_vect_diff_upw
@@ -147,6 +152,7 @@
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
 !
 !
@@ -178,7 +184,7 @@
      &    nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf,              &
      &    intg_point_t_evo, ifilter_final,                              &
      &    diff_coefs%num_field, iak_diff, diff_coefs%ak,                &
-     &    i_vector, fem_wk, f_nl)
+     &    i_vector, fem_wk, surf_wk, f_nl)
 !
       end subroutine choose_int_vol_rot_sgs
 !

@@ -9,10 +9,11 @@
 !!@verbatim
 !!      subroutine update_with_vector_potential(nod_comm, node, ele,    &
 !!     &          surf, fluid, conduct, layer_tbl, sf_grp,              &
-!!     &          Bnod_bcs, Asf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,&
+!!     &          Bnod_bcs, Asf_bcs, Fsf_bcs, iphys, iphys_ele,         &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,  &
 !!     &          filtering, wide_filtering, m_lump, wk_filter,         &
-!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
+!!     &          nod_fld, ele_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -35,6 +36,7 @@
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(phys_data), intent(inout) :: ele_fld
@@ -57,6 +59,7 @@
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
+      use t_int_surface_data
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_filtering_data
@@ -77,7 +80,8 @@
      &          Bnod_bcs, Asf_bcs, Fsf_bcs, iphys, iphys_ele,           &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,    &
      &          filtering, wide_filtering, m_lump, wk_filter,           &
-     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, ele_fld)
+     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                 &
+     &          nod_fld, ele_fld)
 !
       use m_control_parameter
       use m_t_step_parameter
@@ -115,6 +119,7 @@
       type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
       type(phys_data), intent(inout) :: ele_fld
@@ -166,7 +171,7 @@
      &            sf_grp, Asf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,  &
      &            jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,  &
      &            filtering, m_lump, wk_filter,                         &
-     &            wk_cor1, wk_lsq1, wk_diff1, fem_wk,                   &
+     &            wk_cor1, wk_lsq1, wk_diff1, fem_wk, surf_wk,          &
      &            f_l, f_nl, nod_fld)
             end if
 !
@@ -184,7 +189,7 @@
      &      ele%istack_ele_smp, m_lump,                                 &
      &      nod_comm, node, ele, surf, sf_grp, iphys_ele, ele_fld,      &
      &      jac_3d_q, jac_sf_grp_q, FEM_elen, Bnod_bcs%nod_bc_b,        &
-     &      Asf_bcs%sgs, rhs_tbl, fem_wk, f_nl, nod_fld)
+     &      Asf_bcs%sgs, rhs_tbl, fem_wk, surf_wk, f_nl, nod_fld)
       end if
       if (iphys_ele%i_magne .ne. 0) then
         if (iflag_debug.gt.0) write(*,*) 'rot_magne_on_element'

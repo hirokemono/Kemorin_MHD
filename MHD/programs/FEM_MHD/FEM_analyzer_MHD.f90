@@ -40,7 +40,6 @@
       use m_finite_element_matrix
       use m_filter_elength
       use m_3d_filter_coef_MHD
-      use m_int_vol_data
       use m_cal_max_indices
       use m_layering_ele_list
       use m_bc_data_velo
@@ -74,7 +73,7 @@
      &    nod1_bcs, sf1_bcs, iphys, iphys_ele,                          &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
      &    FEM1_elen, filtering1, wide_filtering, layer_tbl1, m1_lump,   &
-     &    wk_filter1, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,                &
+     &    wk_filter1, mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,      &
      &    nod_fld1, fld_ele1)
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
@@ -95,7 +94,8 @@
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
       call set_aiccg_matrices(mesh1, group1, ele_mesh1, MHD_mesh1,      &
      &    nod1_bcs, sf1_bcs, jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q,    &
-     &    FEM1_elen, rhs_tbl1, MHD1_mat_tbls, mhd_fem1_wk, fem1_wk)
+     &    FEM1_elen, rhs_tbl1, MHD1_mat_tbls, surf1_wk,                 &
+     &    mhd_fem1_wk, fem1_wk)
 !
 !   time evolution loop start!
 !
@@ -106,7 +106,8 @@
      &      nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,              &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, filtering1, wide_filtering, m1_lump,             &
-     &      wk_filter1, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+     &      wk_filter1, mhd_fem1_wk, fem1_wk, surf1_wk,                 &
+     &      f1_l, f1_nl, nod_fld1)
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'lead_fields_by_FEM'
@@ -114,7 +115,7 @@
      &    MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,               &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
      &    FEM1_elen, filtering1, wide_filtering, layer_tbl1, m1_lump,   &
-     &    wk_filter1, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,                &
+     &    wk_filter1, mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,      &
      &    nod_fld1, fld_ele1)
 !
 !     ---------------------
@@ -156,7 +157,6 @@
       use m_element_id_4_node
       use m_finite_element_matrix
       use m_filter_elength
-      use m_int_vol_data
       use m_layering_ele_list
       use m_3d_filter_coef_MHD
       use m_bc_data_velo
@@ -199,7 +199,7 @@
      &    nod1_bcs, sf1_bcs, iphys, iphys_ele,                          &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, jac1_sf_grp_2d_l,     &
      &    rhs_tbl1, FEM1_elen, filtering1, wide_filtering, layer_tbl1,  &
-     &    m1_lump, wk_filter1, mhd_fem1_wk, fem1_wk,                    &
+     &    m1_lump, wk_filter1, mhd_fem1_wk, fem1_wk, surf1_wk,          &
      &    f1_l, f1_nl, nod_fld1, fld_ele1)
 !
 !     ----- Evaluate model coefficients
@@ -211,7 +211,8 @@
      &      nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,              &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, filtering1, wide_filtering, m1_lump,             &
-     &      wk_filter1, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+     &      wk_filter1, mhd_fem1_wk, fem1_wk, surf1_wk,                 &
+     &      f1_l, f1_nl, nod_fld1)
       end if
 !
 !     ---------------------
@@ -230,7 +231,7 @@
      &      MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,             &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, filtering1, wide_filtering, layer_tbl1, m1_lump, &
-     &      wk_filter1, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,              &
+     &      wk_filter1, mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,    &
      &      nod_fld1, fld_ele1)
 !
 !     -----Output monitor date
@@ -316,7 +317,8 @@
         if (iflag_debug.eq.1) write(*,*) 'update_matrices'
         call update_matrices(mesh1, group1, ele_mesh1, MHD_mesh1,       &
      &      nod1_bcs, sf1_bcs, jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q,  &
-     &      FEM1_elen, rhs_tbl1, MHD1_mat_tbls, mhd_fem1_wk, fem1_wk)
+     &      FEM1_elen, rhs_tbl1, MHD1_mat_tbls, surf1_wk,               &
+     &      mhd_fem1_wk, fem1_wk)
       end if
 !
       end subroutine FEM_analyze_MHD

@@ -11,7 +11,7 @@
 !!     &         (nod_comm, node, ele, surf, fluid, conduct, sf_grp,    &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,         &
 !!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, m_lump,       &
-!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -30,6 +30,7 @@
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
 !!@endverbatim
@@ -50,6 +51,7 @@
       use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
+      use t_int_surface_data
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_bc_data_MHD
@@ -67,7 +69,7 @@
      &         (nod_comm, node, ele, surf, fluid, conduct, sf_grp,      &
      &          nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,           &
      &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, m_lump,         &
-     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
       use m_machine_parameter
       use m_control_parameter
@@ -94,6 +96,7 @@
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -108,7 +111,8 @@
      &       fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,             &
      &       nod_comm, node, ele, surf, sf_grp, iphys_ele, ele_fld,     &
      &       jac_3d, jac_sf_grp, FEM_elens, nod_bcs%Vnod_bcs%nod_bc_w,  &
-     &       surf_bcs%Vsf_bcs%sgs, rhs_tbl, fem_wk, f_nl, nod_fld)
+     &       surf_bcs%Vsf_bcs%sgs, rhs_tbl, fem_wk, surf_wk,            &
+     &       f_nl, nod_fld)
         end if
       end if
 !
@@ -123,7 +127,8 @@
      &            ele%istack_ele_smp, m_lump, nod_comm, node, ele,      &
      &            surf, sf_grp, iphys_ele, ele_fld, jac_3d,             &
      &            jac_sf_grp, FEM_elens, nod_bcs%Bnod_bcs%nod_bc_j,     &
-     &            surf_bcs%Bsf_bcs%sgs, rhs_tbl, fem_wk, f_nl, nod_fld)
+     &            surf_bcs%Bsf_bcs%sgs, rhs_tbl, fem_wk, surf_wk,       &
+     &            f_nl, nod_fld)
 !
 !             call choose_cal_rotation_sgs                              &
 !     &          (iflag_commute_magne, iflag_mag_supg,                  &
@@ -132,11 +137,11 @@
 !     &           nod_comm, node, ele, surf, sf_grp,                    &
 !     &           iphys_ele, ele_fld, jac_3d, jac_sf_grp, FEM_elens,    &
 !     &           nod_bcs%Bnod_bcs%nod_bc_j, surf_bcs%Bsf_bcs%sgs,      &
-!     &           rhs_tbl, fem_wk, f_nl, nod_fld)
+!     &           rhs_tbl, fem_wk, surf_wk, f_nl, nod_fld)
 !             call int_current_diffuse                                  &
 !     &         (nod_comm, node, ele, surf, sf_grp, surf_bcs%Asf_bcs,   &
 !     &          iphys, jac_3d, jac_sf_grp, rhs_tbl, m_lump,            &
-!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
           else
             if (iflag_debug .ge. iflag_routine_msg)                     &
      &        write(*,*) 'cal_current_density'
@@ -146,7 +151,7 @@
      &          m_lump, nod_comm, node, ele, surf, sf_grp,              &
      &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, FEM_elens,      &
      &          nod_bcs%Bnod_bcs%nod_bc_j, surf_bcs%Bsf_bcs%sgs,        &
-     &          rhs_tbl, fem_wk, f_nl, nod_fld)
+     &          rhs_tbl, fem_wk, surf_wk, f_nl, nod_fld)
 !           call choose_cal_rotation_sgs                                &
 !     &        (iflag_commute_magne, iflag_mag_supg,                    &
 !     &         iak_diff_b, iphys%i_magne, iphys%i_current,             &
@@ -154,7 +159,7 @@
 !     &         nod_comm, node, ele, surf, sf_grp, iphys_ele, ele_fld,  &
 !     &         jac_3d, jac_sf_grp, FEM_elens,                          &
 !     &         nod_bcs%Bnod_bcs%nod_bc_j, surf_bcs%Bsf_bcs%sgs,        &
-!     &         rhs_tbl, fem_wk, f_nl, nod_fld)
+!     &         rhs_tbl, fem_wk, surf_wk, f_nl, nod_fld)
           end if
         end if
       end if
