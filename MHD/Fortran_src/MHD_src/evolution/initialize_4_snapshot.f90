@@ -36,7 +36,6 @@
       use m_mean_square_values
       use m_jacobians
       use m_work_4_dynamic_model
-      use m_work_layer_correlate
       use m_boundary_condition_IDs
       use m_array_for_send_recv
       use m_solver_djds_MHD
@@ -50,6 +49,7 @@
       use t_mesh_data
       use t_geometry_data_MHD
       use t_layering_ele_list
+      use t_work_layer_correlate
 !
       use count_whole_num_element
 !
@@ -93,11 +93,11 @@
       call set_layers(mesh%node, mesh%ele, group%ele_grp, MHD_mesh)
 !
       if (iflag_dynamic_SGS  .ne. id_SGS_DYNAMIC_OFF) then
-        ncomp_correlate = 9
         if (iflag_debug.eq.1) write(*,*)' const_layers_4_dynamic'
         call const_layers_4_dynamic(group%ele_grp, layer_tbl)
         call alloc_work_4_dynamic(layer_tbl%e_grp%num_grp, wk_lsq1)
-        call allocate_work_layer_correlate(layer_tbl%e_grp%num_grp)
+        call alloc_work_layer_correlate                                 &
+     &     (layer_tbl%e_grp%num_grp, inine, wk_cor1)
       end if
 !
 !

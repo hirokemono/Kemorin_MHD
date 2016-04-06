@@ -80,6 +80,7 @@
       use m_t_step_parameter
       use m_SGS_model_coefs
       use m_SGS_address
+      use m_work_4_dynamic_model
 !
       use average_on_elements
       use cal_filtering_scalars
@@ -199,8 +200,8 @@
      &        nod_comm, node, ele, surf, sf_grp, Bsf_bcs, Fsf_bcs,      &
      &        iphys, iphys_ele, ele_fld, fluid, layer_tbl,              &
      &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,                &
-     &        FEM_elens, filtering, m_lump, wk_filter, fem_wk,          &
-     &        f_l, f_nl, nod_fld)
+     &        FEM_elens, filtering, m_lump, wk_filter,                  &
+     &        wk_cor1, wk_lsq1, wk_diff1, fem_wk, f_l, f_nl, nod_fld)
          end if
        end if
  !

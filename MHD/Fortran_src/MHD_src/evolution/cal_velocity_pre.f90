@@ -165,8 +165,8 @@
      &     (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,        &
      &      Vsf_bcs, Bsf_bcs, iphys, iphys_ele, jac_3d_q, jac_3d_l,     &
      &      jac_sf_grp_q, rhs_tbl, FEM_elens, filtering,                &
-     &      sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,               &
-     &      f_l, f_nl, nod_fld, ele_fld, sgs_coefs)
+     &      sgs_coefs_nod, wk_filter, wk_lsq1, wk_sgs1,                 &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, ele_fld, sgs_coefs)
       end if
 !
       if ( iflag_SGS_inertia .ne. id_SGS_none) then

@@ -6,8 +6,9 @@
 !!      subroutine s_cal_sgs_h_flux_dynamic_simi                        &
 !!     &         (iak_sgs_hf, icomp_sgs_hf, nod_comm, node, ele,        &
 !!     &          iphys, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,        &
-!!     &          filtering, wide_filtering, m_lump, wk_filter, fem_wk, &
-!!     &          f_l, nod_fld, sgs_coefs, sgs_coefs_nod)
+!!     &          filtering, wide_filtering, m_lump, wk_filter,         &
+!!     &          wk_cor, wk_lsq, wk_sgs, fem_wk, f_l, nod_fld,         &
+!!     &          sgs_coefs, sgs_coefs_nod)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -19,6 +20,9 @@
 !!        type(filtering_data_type), intent(in) :: wide_filtering
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
 !!        type(filtering_work_type), intent(inout) :: wk_filter
+!!        type(dynamis_correlation_data), intent(inout) :: wk_cor
+!!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+!!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -42,6 +46,9 @@
       use t_table_FEM_const
       use t_layering_ele_list
       use t_filtering_data
+      use t_ele_info_4_dynamic
+      use t_work_4_dynamic_model
+      use t_work_layer_correlate
       use t_material_property
 !
       implicit none
@@ -55,8 +62,9 @@
       subroutine s_cal_sgs_h_flux_dynamic_simi                          &
      &         (iak_sgs_hf, icomp_sgs_hf, nod_comm, node, ele,          &
      &          iphys, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,          &
-     &          filtering, wide_filtering, m_lump, wk_filter, fem_wk,   &
-     &          f_l, nod_fld, sgs_coefs, sgs_coefs_nod)
+     &          filtering, wide_filtering, m_lump, wk_filter,           &
+     &          wk_cor, wk_lsq, wk_sgs, fem_wk, f_l, nod_fld,           &
+     &          sgs_coefs, sgs_coefs_nod)
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
@@ -82,6 +90,9 @@
       type(lumped_mass_matrices), intent(in) :: m_lump
 !
       type(filtering_work_type), intent(inout) :: wk_filter
+      type(dynamis_correlation_data), intent(inout) :: wk_cor
+      type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+      type(dynamic_model_data), intent(inout) :: wk_sgs
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
       type(phys_data), intent(inout) :: nod_fld
@@ -137,7 +148,7 @@
       call cal_model_coefs(layer_tbl,                                   &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
      &    itype_SGS_h_flux_coef, n_vector, iak_sgs_hf, icomp_sgs_hf,    &
-     &    intg_point_t_evo, sgs_coefs)
+     &    intg_point_t_evo, wk_cor, wk_lsq, wk_sgs, sgs_coefs)
 !
       call cal_ele_vector_2_node(node, ele, jac_3d_q, rhs_tbl, m_lump,  &
      &    sgs_coefs%ntot_comp, icomp_sgs_hf, sgs_coefs%ak,              &

@@ -18,6 +18,7 @@
       use t_mesh_data
       use t_phys_data
       use t_layering_ele_list
+      use t_work_layer_correlate
       use m_FEM_utils
 !
       use transfer_correlate_field
@@ -29,6 +30,7 @@
       type(phys_data), save :: phys_ref
 !
       type(layering_tbl), save :: layer_tbl_corr
+      type(dynamis_correlation_data), save :: wk_correlate
 !
 ! ----------------------------------------------------------------------
 !
@@ -127,7 +129,6 @@
       use m_t_step_parameter
       use m_control_params_2nd_files
       use m_ctl_params_4_diff_udt
-      use m_work_layer_correlate
       use set_ucd_data_to_type
       use set_ucd_data
       use ucd_IO_select
@@ -143,11 +144,11 @@
 !     ---------------------
 !
       ntot_correlate =  field_FUTIL%ntot_phys
-      ncomp_correlate = field_FUTIL%ntot_phys
       nlayer_correlate = layer_tbl_corr%e_grp%num_grp
       call allocate_name_layer_correlate
       call allocate_all_layer_correlate
-      call allocate_work_layer_correlate(layer_tbl_corr%e_grp%num_grp)
+      call alloc_work_layer_correlate(layer_tbl_corr%e_grp%num_grp,     &
+     &    field_FUTIL%ntot_phys, wk_correlate)
 !
       call set_correlate_data_names(field_FUTIL)
 !
@@ -177,7 +178,7 @@
           call s_correlation_all_layerd_data                            &
      &       (femmesh_FUTIL%mesh%node, femmesh_FUTIL%mesh%ele,          &
      &        field_FUTIL, jac_FUTIL_l, jac_FUTIL_q,                    &
-     &        layer_tbl_corr, phys_ref)
+     &        layer_tbl_corr, phys_ref, wk_correlate)
 !
           if (iflag_debug .gt. 0) write(*,*)                            &
      &          ' write_layerd_correlate_data', istep_ucd

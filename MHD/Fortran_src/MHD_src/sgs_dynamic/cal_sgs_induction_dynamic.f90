@@ -8,14 +8,16 @@
 !!     &         (iak_sgs_uxb, icomp_sgs_uxb, ie_dvx, ie_dfvx,          &
 !!     &          nod_comm, node, ele, iphys, iphys_ele, ele_fld,       &
 !!     &          conduct, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,      &
-!!     &          FEM_elens, filtering, wk_filter, mhd_fem_wk,          &
-!!     &          fem_wk, f_l, nod_fld, sgs_coefs)
+!!     &          FEM_elens, filtering, wk_filter,                      &
+!!     &          wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk, f_l,      &
+!!     &          nod_fld, sgs_coefs)
 !!      subroutine cal_sgs_induct_t_dynamic(iak_sgs_uxb, icomp_sgs_uxb, &
 !!     &          ie_dvx, ie_dbx, ie_dfvx, ie_dfbx,                     &
 !!     &          nod_comm, node, ele, iphys, iphys_ele, ele_fld,       &
 !!     &          conduct, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,      &
 !!     &          FEM_elens, filtering, sgs_coefs_nod, wk_filter,       &
-!!     &          mhd_fem_wk, fem_wk, f_l, nod_fld, sgs_coefs)
+!!     &          wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk, f_l,      &
+!!     &          nod_fld, sgs_coefs)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -29,6 +31,9 @@
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(filtering_work_type), intent(inout) :: wk_filter
+!!        type(dynamis_correlation_data), intent(inout) :: wk_cor
+!!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+!!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l
@@ -56,6 +61,9 @@
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_filtering_data
+      use t_ele_info_4_dynamic
+      use t_work_4_dynamic_model
+      use t_work_layer_correlate
       use t_material_property
 !
       implicit none
@@ -70,8 +78,9 @@
      &         (iak_sgs_uxb, icomp_sgs_uxb, ie_dvx, ie_dfvx,            &
      &          nod_comm, node, ele, iphys, iphys_ele, ele_fld,         &
      &          conduct, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,        &
-     &          FEM_elens, filtering, wk_filter, mhd_fem_wk,            &
-     &          fem_wk, f_l, nod_fld, sgs_coefs)
+     &          FEM_elens, filtering, wk_filter,                        &
+     &          wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk, f_l,        &
+     &          nod_fld, sgs_coefs)
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
@@ -99,6 +108,9 @@
       type(filtering_data_type), intent(in) :: filtering
 !
       type(filtering_work_type), intent(inout) :: wk_filter
+      type(dynamis_correlation_data), intent(inout) :: wk_cor
+      type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+      type(dynamic_model_data), intent(inout) :: wk_sgs
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -153,7 +165,7 @@
       call cal_model_coefs(layer_tbl,                                   &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
      &    itype_SGS_uxb_coef, n_vector, iak_sgs_uxb, icomp_sgs_uxb,     &
-     &    intg_point_t_evo, sgs_coefs)
+     &    intg_point_t_evo, wk_cor, wk_lsq, wk_sgs, sgs_coefs)
 !
       end subroutine cal_sgs_uxb_dynamic
 !
@@ -164,7 +176,8 @@
      &          nod_comm, node, ele, iphys, iphys_ele, ele_fld,         &
      &          conduct, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,        &
      &          FEM_elens, filtering, sgs_coefs_nod, wk_filter,         &
-     &          mhd_fem_wk, fem_wk, f_l, nod_fld, sgs_coefs)
+     &          wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk, f_l,        &
+     &          nod_fld, sgs_coefs)
 !
       use m_work_4_dynamic_model
       use reset_dynamic_model_coefs
@@ -196,6 +209,9 @@
       type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
 !
       type(filtering_work_type), intent(inout) :: wk_filter
+      type(dynamis_correlation_data), intent(inout) :: wk_cor
+      type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+      type(dynamic_model_data), intent(inout) :: wk_sgs
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -258,11 +274,12 @@
       call cal_model_coefs(layer_tbl,                                   &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
      &    itype_SGS_uxb_coef, n_asym_tensor, iak_sgs_uxb,               &
-     &    icomp_sgs_uxb, intg_point_t_evo, sgs_coefs)
+     &    icomp_sgs_uxb, intg_point_t_evo,                              &
+     &    wk_cor, wk_lsq, wk_sgs, sgs_coefs)
 !
       call reduce_model_coefs_layer(SGS_uxb_factor,                     &
-     &    wk_sgs1%nlayer, wk_sgs1%num_kinds, iak_sgs_uxb,               &
-     &    wk_sgs1%fld_clip, wk_sgs1%fld_whole_clip)
+     &    wk_sgs%nlayer, wk_sgs%num_kinds, iak_sgs_uxb,                 &
+     &    wk_sgs%fld_clip, wk_sgs%fld_whole_clip)
       call reduce_ele_vect_model_coefs(ele, SGS_uxb_factor,             &
      &    sgs_coefs%ntot_comp, icomp_sgs_uxb, sgs_coefs%ak)
 !

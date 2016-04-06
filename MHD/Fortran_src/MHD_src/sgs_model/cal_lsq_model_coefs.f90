@@ -88,9 +88,8 @@
 !
 !
 !  Volume integration:                      int_vol_model_coef
-      call int_vol_model_coef(layer_tbl,                                &
-     &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
-     &    numdir, n_int)
+      call int_vol_model_coef(layer_tbl, node, ele,                     &
+     &    iphys, nod_fld, jac_3d_q, jac_3d_l, numdir, n_int, wk_lsq)
 !
 !    model coefficients for each components: sum_lsq_coefs_4_comps
       call sum_lsq_coefs_4_comps(ncomp_lsq, wk_lsq)
@@ -137,8 +136,8 @@
 !
 !
 !  Volume integration: int_vol_diff_coef
-      call int_vol_diff_coef(iele_fsmp_stack,                           &
-     &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l, numdir, n_int)
+      call int_vol_diff_coef(iele_fsmp_stack, node, ele,                &
+     &    iphys, nod_fld, jac_3d_q, jac_3d_l, numdir, n_int, wk_lsq)
 !
       call sum_lsq_whole_coefs(ncomp_lsq, wk_lsq)
 !

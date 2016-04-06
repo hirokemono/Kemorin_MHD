@@ -9,7 +9,8 @@
 !!     &          sf_grp, Vnod_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld, &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
 !!     &          FEM_elens, filtering, sgs_coefs, wk_filter,           &
-!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, diff_coefs)
+!!     &          wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk,          &
+!!     &          f_l, f_nl, nod_fld, diff_coefs)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -29,6 +30,9 @@
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(MHD_coefficients_type), intent(in) :: sgs_coefs
 !!        type(filtering_work_type), intent(inout) :: wk_filter
+!!        type(dynamis_correlation_data), intent(inout) :: wk_cor
+!!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+!!        type(dynamic_model_data), intent(inout) :: wk_diff
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -53,6 +57,9 @@
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_filtering_data
+      use t_ele_info_4_dynamic
+      use t_work_4_dynamic_model
+      use t_work_layer_correlate
       use t_bc_data_velo
       use t_surface_bc_data
       use t_material_property
@@ -71,7 +78,8 @@
      &          sf_grp, Vnod_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,   &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
      &          FEM_elens, filtering, sgs_coefs, wk_filter,             &
-     &           mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, diff_coefs)
+     &          wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk,            &
+     &          f_l, f_nl, nod_fld, diff_coefs)
 !
       use m_machine_parameter
       use m_control_parameter
@@ -113,6 +121,9 @@
       type(MHD_coefficients_type), intent(in) :: sgs_coefs
 !
       type(filtering_work_type), intent(inout) :: wk_filter
+      type(dynamis_correlation_data), intent(inout) :: wk_cor
+      type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+      type(dynamic_model_data), intent(inout) :: wk_diff
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -213,8 +224,7 @@
       call cal_diff_coef_fluid(layer_tbl,                               &
      &    node, ele, fluid, iphys, nod_fld, jac_3d_q, jac_3d_l,         &
      &    n_vector, iak_diff_lor, icomp_diff_lor, intg_point_t_evo,     &
-     &    diff_coefs)
-!
+     &    wk_cor, wk_lsq, wk_diff, diff_coefs)
 !
       end subroutine s_cal_diff_coef_sgs_mxwl
 !

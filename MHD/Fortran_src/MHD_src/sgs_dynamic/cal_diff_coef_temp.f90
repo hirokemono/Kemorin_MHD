@@ -7,8 +7,9 @@
 !!     &         nod_comm, node, ele, surf, sf_grp, Tsf_bcs,            &
 !!     &         iphys, iphys_ele, ele_fld, fluid, layer_tbl,           &
 !!     &         jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,             &
-!!     &          FEM_elens, filtering, wk_filter, mhd_fem_wk, fem_wk,  &
-!!     &          f_l, f_nl, nod_fld)
+!!     &         FEM_elens, filtering, wk_filter,                       &
+!!     &         wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk,           &
+!!     &         f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -26,6 +27,9 @@
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(filtering_work_type), intent(inout) :: wk_filter
+!!        type(dynamis_correlation_data), intent(inout) :: wk_cor
+!!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+!!        type(dynamic_model_data), intent(inout) :: wk_diff
 !!        type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -49,6 +53,9 @@
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_filtering_data
+      use t_ele_info_4_dynamic
+      use t_work_4_dynamic_model
+      use t_work_layer_correlate
       use t_surface_bc_data
 !
       implicit none
@@ -63,7 +70,8 @@
      &          nod_comm, node, ele, surf, sf_grp, Tsf_bcs,             &
      &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,            &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
-     &          FEM_elens, filtering, wk_filter, mhd_fem_wk, fem_wk,    &
+     &          FEM_elens, filtering, wk_filter,                        &
+     &          wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk,            &
      &          f_l, f_nl, nod_fld)
 !
       use m_machine_parameter
@@ -102,6 +110,9 @@
       type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
 !
       type(filtering_work_type), intent(inout) :: wk_filter
+      type(dynamis_correlation_data), intent(inout) :: wk_cor
+      type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+      type(dynamic_model_data), intent(inout) :: wk_diff
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
@@ -191,7 +202,7 @@
       call cal_diff_coef_fluid(layer_tbl,                               &
      &    node, ele, fluid, iphys, nod_fld, jac_3d_q, jac_3d_l,         &
      &    n_vector, iak_diff_t, icomp_diff_t, intg_point_t_evo,         &
-     &    diff_coefs)
+     &    wk_cor, wk_lsq, wk_diff, diff_coefs)
 !
       diff_coefs%iflag_field(iak_diff_t) = 1
 !

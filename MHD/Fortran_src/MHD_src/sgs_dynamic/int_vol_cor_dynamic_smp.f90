@@ -71,8 +71,8 @@
       integer (kind = kint), intent(in) :: ncomp_cor, ncomp_cor2
       real(kind=kreal), intent(inout) :: sig_l_smp(np_smp,ncomp_cor2)
       real(kind=kreal), intent(inout) :: cor_l_smp(np_smp,ncomp_cor)
-      real(kind=kreal), intent(inout) :: sig_l(n_layer_d,ncomp_cor)
-      real(kind=kreal), intent(inout) :: cov_l(n_layer_d,ncomp_cor2)
+      real(kind=kreal), intent(inout) :: sig_l(n_layer_d,ncomp_cor2)
+      real(kind=kreal), intent(inout) :: cov_l(n_layer_d,ncomp_cor)
       real(kind=kreal), intent(inout) :: sig_w(ncomp_cor2)
       real(kind=kreal), intent(inout) :: cov_w(ncomp_cor)
 !
@@ -242,8 +242,8 @@
       integer (kind = kint), intent(in) :: ncomp_cor, ncomp_cor2
       real(kind=kreal), intent(inout) :: sig_l_smp(np_smp,ncomp_cor2)
       real(kind=kreal), intent(inout) :: cor_l_smp(np_smp,ncomp_cor)
-      real(kind=kreal), intent(inout) :: sig_l(n_layer_d,ncomp_cor)
-      real(kind=kreal), intent(inout) :: cov_l(n_layer_d,ncomp_cor2)
+      real(kind=kreal), intent(inout) :: sig_l(n_layer_d,ncomp_cor2)
+      real(kind=kreal), intent(inout) :: cov_l(n_layer_d,ncomp_cor)
       real(kind=kreal), intent(inout) :: sig_w(ncomp_cor2)
       real(kind=kreal), intent(inout) :: cov_w(ncomp_cor)
 !

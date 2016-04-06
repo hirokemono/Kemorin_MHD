@@ -7,22 +7,24 @@
 !> @brief Take correlation in one group
 !!
 !!@verbatim
-!!      subroutine divide_layers_ave_by_vol(n_layer_d, numdir,          &
-!!     &          a_vol_layer, ave_1, ave_2, rms_1, rms_2, rms_ratio)
-!!      subroutine divide_all_layer_ave_by_vol(numdir, vol_d,           &
+!!      subroutine divide_layers_ave_by_vol                             &
+!!     &         (n_layer_d, ncomp_sgl, ncomp_dble, numdir,             &
+!!     &          a_vol_layer, ave_les, rms_les, ave_1, ave_2,          &
+!!     &          rms_1, rms_2, rms_ratio)
+!!      subroutine divide_all_layer_ave_by_vol                          &
+!!     &         (ncomp_sgl, ncomp_dble, numdir, vol_d, ave_wg, rms_wg, &
 !!     &          ave_1, ave_2, rms_1, rms_2, rms_ratio)
 !!
 !!      subroutine cal_layered_correlation                              &
-!!     &         (n_layer_d, numdir, a_vol_layer, cor_d, cov_d)
-!!      subroutine cal_all_layer_correlation(numdir, vol_d,             &
-!!     &          cor_d, cov_d)
+!!     &         (n_layer_d, ncomp_sgl, ncomp_dble, numdir,             &
+!!     &          a_vol_layer, cov_les, sig_les, cor_d, cov_d)
+!!      subroutine cal_all_layer_correlation(ncomp_sgl, ncomp_dble,     &
+!!     &          numdir, vol_d, cov_wg, sig_wg, cor_d, cov_d)
 !!@endverbatim
 !
       module cal_layerd_ave_correlate
 !
       use m_precision
-!
-      use m_work_layer_correlate
 !
       implicit none
 !
@@ -32,11 +34,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine divide_layers_ave_by_vol(n_layer_d, numdir,            &
-     &          a_vol_layer, ave_1, ave_2, rms_1, rms_2, rms_ratio)
+      subroutine divide_layers_ave_by_vol                               &
+     &         (n_layer_d, ncomp_sgl, ncomp_dble, numdir,               &
+     &          a_vol_layer, ave_les, rms_les, ave_1, ave_2,            &
+     &          rms_1, rms_2, rms_ratio)
 !
       integer (kind = kint), intent(in) :: n_layer_d, numdir
+      integer (kind = kint), intent(in) :: ncomp_sgl, ncomp_dble
       real(kind = kreal), intent(in) :: a_vol_layer(n_layer_d)
+      real(kind = kreal), intent(in) :: ave_les(n_layer_d,ncomp_dble)
+      real(kind = kreal), intent(in) :: rms_les(n_layer_d,ncomp_dble)
 !
       real(kind = kreal), intent(inout) :: ave_1(n_layer_d,numdir)
       real(kind = kreal), intent(inout) :: ave_2(n_layer_d,numdir)
@@ -48,7 +55,7 @@
 !
 !$omp parallel
       do nd = 1, numdir
-        nd2 = nd + ncomp_correlate
+        nd2 = nd + ncomp_sgl
 !$omp do
         do igrp = 1, n_layer_d
           ave_1(igrp,nd) = ave_les(igrp,nd ) * a_vol_layer(igrp)
@@ -73,11 +80,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine divide_all_layer_ave_by_vol(numdir, vol_d,             &
+      subroutine divide_all_layer_ave_by_vol                            &
+     &         (ncomp_sgl, ncomp_dble, numdir, vol_d, ave_wg, rms_wg,   &
      &          ave_1, ave_2, rms_1, rms_2, rms_ratio)
 !
       integer (kind = kint), intent(in) :: numdir
+      integer (kind = kint), intent(in) :: ncomp_sgl, ncomp_dble
       real(kind = kreal), intent(in) :: vol_d
+      real(kind = kreal), intent(in) :: ave_wg(ncomp_dble)
+      real(kind = kreal), intent(in) :: rms_wg(ncomp_dble)
+!
       real(kind = kreal), intent(inout) :: ave_1(numdir)
       real(kind = kreal), intent(inout) :: ave_2(numdir)
       real(kind = kreal), intent(inout) :: rms_1(numdir)
@@ -87,7 +99,7 @@
       integer (kind = kint) :: nd, nd2
 !
       do nd = 1, numdir
-        nd2 = nd + ncomp_correlate
+        nd2 = nd + ncomp_sgl
         ave_1(nd) = ave_wg(nd ) / vol_d
         ave_2(nd) = ave_wg(nd2) / vol_d
         rms_1(nd) = rms_wg(nd ) / vol_d
@@ -106,11 +118,15 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_layered_correlation                                &
-     &         (n_layer_d, numdir, a_vol_layer, cor_d, cov_d)
+     &         (n_layer_d, ncomp_sgl, ncomp_dble, numdir,               &
+     &          a_vol_layer, cov_les, sig_les, cor_d, cov_d)
 !
       integer (kind = kint), intent(in) :: n_layer_d, numdir
+      integer (kind = kint), intent(in) :: ncomp_sgl, ncomp_dble
       real(kind = kreal), intent(in) :: a_vol_layer(n_layer_d)
+      real(kind = kreal), intent(in) :: cov_les(n_layer_d,ncomp_sgl)
 !
+      real(kind = kreal), intent(inout) :: sig_les(n_layer_d,ncomp_dble)
       real(kind = kreal), intent(inout) :: cor_d(n_layer_d,numdir)
       real(kind = kreal), intent(inout) :: cov_d(n_layer_d,numdir)
 !
@@ -118,7 +134,7 @@
 !
 !$omp parallel
       do nd = 1, numdir
-        nd2 = nd + ncomp_correlate
+        nd2 = nd + ncomp_sgl
 !$omp do
         do igrp = 1, n_layer_d
           sig_les(igrp,nd ) = sqrt( sig_les(igrp,nd ) )
@@ -143,18 +159,22 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_all_layer_correlation(numdir, vol_d,               &
-     &          cor_d, cov_d)
+      subroutine cal_all_layer_correlation(ncomp_sgl, ncomp_dble,       &
+     &          numdir, vol_d, cov_wg, sig_wg, cor_d, cov_d)
 !
       integer (kind = kint), intent(in) :: numdir
+      integer (kind = kint), intent(in) :: ncomp_sgl, ncomp_dble
       real(kind = kreal), intent(in) :: vol_d
+      real(kind = kreal), intent(in) :: cov_wg(ncomp_sgl)
+!
+      real(kind = kreal), intent(inout) :: sig_wg(ncomp_dble)
       real(kind = kreal), intent(inout) :: cor_d(numdir)
       real(kind = kreal), intent(inout) :: cov_d(numdir)
 !
       integer (kind = kint) ::nd, nd2
 !
       do nd = 1, numdir
-        nd2 = nd + ncomp_correlate
+        nd2 = nd + ncomp_sgl
         sig_wg(nd ) = sqrt( sig_wg(nd ) )
         sig_wg(nd2) = sqrt( sig_wg(nd2) )
         cor_d(nd) = sig_wg(nd)*sig_wg(nd2)
