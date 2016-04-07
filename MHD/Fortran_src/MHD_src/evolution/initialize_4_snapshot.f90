@@ -176,7 +176,7 @@
       call init_ele_material_property(mesh%ele%numele)
       call s_count_sgs_components                                       &
      &   (mesh%node%numnod, mesh%ele%numele, layer_tbl,                 &
-     &    sgs_coefs, sgs_coefs_nod, diff_coefs)
+     &    wk_sgs1, wk_diff1, sgs_coefs, sgs_coefs_nod, diff_coefs)
 !
       if (iflag_debug.gt.0)  write(*,*)' make comm. table for fluid'
       call s_const_comm_table_fluid                                     &

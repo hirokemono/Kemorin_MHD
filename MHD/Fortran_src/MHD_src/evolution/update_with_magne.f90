@@ -8,12 +8,12 @@
 !!
 !!@verbatim
 !!       subroutine update_with_magnetic_field                          &
-!!     &         (nod_comm, node, ele, surf, fluid, conduct, layer_tbl, &
-!!     &          sf_grp, Bsf_bcs, Fsf_bcs, iphys, iphys_ele,           &
-!!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens, &
-!!     &          filtering, wide_filtering, m_lump,                    &
-!!     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,    &
-!!     &          nod_fld, ele_fld, diff_coefs)
+!!     &        (nod_comm, node, ele, surf, fluid, conduct, layer_tbl,  &
+!!     &         sf_grp, Bsf_bcs, Fsf_bcs, iphys, iphys_ele,            &
+!!     &         jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,  &
+!!     &         filtering, wide_filtering, m_lump,                     &
+!!     &         wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,&
+!!     &         surf_wk, f_l, f_nl, nod_fld, ele_fld, diff_coefs)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -32,6 +32,9 @@
 !!        type(filtering_data_type), intent(in) :: wide_filtering
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
 !!        type(layering_tbl), intent(in) :: layer_tbl
+!!        type(dynamis_correlation_data), intent(inout) :: wk_cor
+!!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+!!        type(dynamic_model_data), intent(inout) :: wk_diff
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -66,6 +69,9 @@
       use t_layering_ele_list
       use t_surface_bc_data
       use t_material_property
+      use t_ele_info_4_dynamic
+      use t_work_4_dynamic_model
+      use t_work_layer_correlate
 !
       implicit none
 !
@@ -76,16 +82,15 @@
 !-----------------------------------------------------------------------
 !
       subroutine update_with_magnetic_field                             &
-     &         (nod_comm, node, ele, surf, fluid, conduct, layer_tbl,   &
-     &          sf_grp, Bsf_bcs, Fsf_bcs, iphys, iphys_ele,             &
-     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,   &
-     &          filtering, wide_filtering, m_lump,                      &
-     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,      &
-     &          nod_fld, ele_fld, diff_coefs)
+     &        (nod_comm, node, ele, surf, fluid, conduct, layer_tbl,    &
+     &         sf_grp, Bsf_bcs, Fsf_bcs, iphys, iphys_ele,              &
+     &         jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,    &
+     &         filtering, wide_filtering, m_lump,                       &
+     &         wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,  &
+     &         surf_wk, f_l, f_nl, nod_fld, ele_fld, diff_coefs)
 !
       use m_t_step_parameter
       use m_SGS_address
-      use m_work_4_dynamic_model
 !
       use average_on_elements
       use cal_filtering_scalars
@@ -112,6 +117,9 @@
       type(lumped_mass_matrices), intent(in) :: m_lump
       type(layering_tbl), intent(in) :: layer_tbl
 !
+      type(dynamis_correlation_data), intent(inout) :: wk_cor
+      type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+      type(dynamic_model_data), intent(inout) :: wk_diff
       type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -208,7 +216,7 @@
      &        iphys, iphys_ele, ele_fld, fluid, layer_tbl,              &
      &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,                &
      &        FEM_elens, filtering, m_lump, wk_filter,                  &
-     &        wk_cor1, wk_lsq1, wk_diff1, fem_wk, surf_wk, f_l, f_nl,   &
+     &        wk_cor, wk_lsq, wk_diff, fem_wk, surf_wk, f_l, f_nl,      &
      &        nod_fld, diff_coefs)
          end if
        end if

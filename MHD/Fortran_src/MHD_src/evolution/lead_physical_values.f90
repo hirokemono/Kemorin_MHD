@@ -11,8 +11,9 @@
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele,                  &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp, rhs_tbl, FEM_elens,   &
 !!     &          sgs_coefs, sgs_coefs_nod, filtering, wide_filtering,  &
-!!     &          layer_tbl, m_lump, wk_filter, mhd_fem_wk, fem_wk,     &
-!!     &          surf_wk, f_l, f_nl, nod_fld, ele_fld, diff_coefs)
+!!     &          layer_tbl, m_lump, wk_cor, wk_lsq, wk_diff, wk_filter,&
+!!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
+!!     &          nod_fld, ele_fld, diff_coefs)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(element_geometry), intent(in) :: ele_mesh
@@ -32,6 +33,9 @@
 !!        type(filtering_data_type), intent(in) :: wide_filtering
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(filtering_work_type), intent(inout) :: wk_filter
+!!        type(dynamis_correlation_data), intent(inout) :: wk_cor
+!!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+!!        type(dynamic_model_data), intent(inout) :: wk_diff
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(work_surface_element_mat), intent(inout) :: surf_wk
@@ -65,6 +69,9 @@
       use t_bc_data_MHD
       use t_MHD_boundary_data
       use t_material_property
+      use t_ele_info_4_dynamic
+      use t_work_4_dynamic_model
+      use t_work_layer_correlate
 !
       implicit none
 !
@@ -80,8 +87,9 @@
      &          nod_bcs, surf_bcs, iphys, iphys_ele,                    &
      &          jac_3d_q, jac_3d_l, jac_sf_grp, rhs_tbl, FEM_elens,     &
      &          sgs_coefs, sgs_coefs_nod, filtering, wide_filtering,    &
-     &          layer_tbl, m_lump, wk_filter, mhd_fem_wk, fem_wk,       &
-     &          surf_wk, f_l, f_nl, nod_fld, ele_fld, diff_coefs)
+     &          layer_tbl, m_lump, wk_cor, wk_lsq, wk_diff, wk_filter,  &
+     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                 &
+     &          nod_fld, ele_fld, diff_coefs)
 !
       use m_machine_parameter
       use m_t_step_parameter
@@ -111,6 +119,9 @@
       type(filtering_data_type), intent(in) :: wide_filtering
       type(layering_tbl), intent(in) :: layer_tbl
 !
+      type(dynamis_correlation_data), intent(inout) :: wk_cor
+      type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+      type(dynamic_model_data), intent(inout) :: wk_diff
       type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -135,8 +146,8 @@
      &      nod_bcs, surf_bcs, iphys, iphys_ele,                        &
      &      jac_3d_q, jac_3d_l, jac_sf_grp, rhs_tbl, FEM_elens,         &
      &      filtering, wide_filtering, layer_tbl, m_lump,               &
-     &      wk_filter, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,          &
-     &      nod_fld, ele_fld, diff_coefs)
+     &      wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,     &
+     &      surf_wk, f_l, f_nl, nod_fld, ele_fld, diff_coefs)
 !
         call cal_field_by_rotation                                      &
      &     (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &

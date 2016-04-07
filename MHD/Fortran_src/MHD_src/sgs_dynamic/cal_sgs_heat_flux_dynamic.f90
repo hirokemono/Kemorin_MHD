@@ -75,7 +75,6 @@
      &          wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk, f_l,        &
      &          nod_fld, sgs_coefs)
 !
-      use m_work_4_dynamic_model
       use reset_dynamic_model_coefs
       use copy_nodal_fields
       use cal_filtering_scalars

@@ -12,8 +12,8 @@
 !!     &          sgs_coefs_nod, diff_coefs, filtering, layer_tbl,      &
 !!     &          num_MG_level, MG_interpolate, MG_comm_fluid,          &
 !!     &          MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,               &
-!!     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,    &
-!!     &          nod_fld, ele_fld, sgs_coefs)
+!!     &          wk_lsq, wk_sgs, wk_filter, mhd_fem_wk, fem_wk,        &
+!!     &          surf_wk, f_l, f_nl, nod_fld, ele_fld, sgs_coefs)
 !!      subroutine cal_velocity_co                                      &
 !!     &         (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod, &
 !!     &          Vnod_bcs, Vsf_bcs, Psf_bcs, iphys, iphys_ele, ele_fld,&
@@ -49,6 +49,9 @@
 !!        type(DJDS_MATRIX), intent(in) :: Vmat_MG_DJDS(0:num_MG_level)
 !!        type(vectors_4_solver), intent(inout)                         &
 !!       &           :: MG_vector(0:num_MG_level)
+!!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+!!        type(dynamic_model_data), intent(inout) :: wk_sgs
+!!       type(MHD_coefficients_type), intent(inout) :: sgs_coefs
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -85,6 +88,8 @@
       use t_solver_djds
       use t_interpolate_table
       use t_material_property
+      use t_ele_info_4_dynamic
+      use t_work_4_dynamic_model
       use t_vector_for_solver
       use t_bc_data_velo
       use t_surface_bc_data
@@ -104,11 +109,10 @@
      &          sgs_coefs_nod, diff_coefs, filtering, layer_tbl,        &
      &          num_MG_level, MG_interpolate, MG_comm_fluid,            &
      &          MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,                 &
-     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,      &
-     &          nod_fld, ele_fld, sgs_coefs)
+     &          wk_lsq, wk_sgs, wk_filter, mhd_fem_wk, fem_wk,          &
+     &          surf_wk, f_l, f_nl, nod_fld, ele_fld, sgs_coefs)
 !
       use m_SGS_address
-      use m_work_4_dynamic_model
 !
       use nod_phys_send_recv
       use cal_sgs_fluxes
@@ -156,6 +160,8 @@
 !
       type(vectors_4_solver), intent(inout)                             &
      &           :: MG_vector(0:num_MG_level)
+      type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+      type(dynamic_model_data), intent(inout) :: wk_sgs
       type(MHD_coefficients_type), intent(inout) :: sgs_coefs
       type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -174,7 +180,7 @@
      &     (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,        &
      &      Vsf_bcs, Bsf_bcs, iphys, iphys_ele, jac_3d_q, jac_3d_l,     &
      &      jac_sf_grp_q, rhs_tbl, FEM_elens, filtering,                &
-     &      sgs_coefs_nod, diff_coefs, wk_filter, wk_lsq1, wk_sgs1,     &
+     &      sgs_coefs_nod, diff_coefs, wk_filter, wk_lsq, wk_sgs,       &
      &      mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                     &
      &      nod_fld, ele_fld, sgs_coefs)
       end if

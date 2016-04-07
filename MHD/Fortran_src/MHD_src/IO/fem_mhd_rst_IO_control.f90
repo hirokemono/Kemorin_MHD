@@ -16,13 +16,15 @@
 !!      subroutine init_restart_4_snapshot(node)
 !!
 !!      subroutine output_MHD_restart_file_ctl                          &
-!!     &         (node, nod_comm, iphys, nod_fld)
+!!     &         (node, nod_comm, iphys, wk_sgs, wk_diff, nod_fld)
 !!      subroutine elspased_MHD_restart_ctl                             &
-!!     &         (node, nod_comm, iphys, nod_fld)
+!!     &         (node, nod_comm, iphys, wk_sgs, wk_diff, nod_fld)
 !!
 !!      subroutine input_MHD_restart_file_ctl(layer_tbl, node, ele,     &
-!!     &          fluid, nod_fld, sgs_coefs, diff_coefs)
+!!     &         fluid, wk_sgs, wk_diff, sgs_coefs, diff_coefs, nod_fld)
 !!      subroutine input_restart_4_snapshot(node, nod_fld)
+!!        type(dynamic_model_data), intent(inout) :: wk_sgs
+!!        type(dynamic_model_data), intent(inout) :: wk_diff
 !!        type(MHD_coefficients_type), intent(inout) :: sgs_coefs
 !!        type(MHD_coefficients_type), intent(inout) :: diff_coefs
 !!@endverbatim
@@ -37,6 +39,8 @@
       use t_geometry_data
       use t_phys_data
       use t_field_data_IO
+      use t_layering_ele_list
+      use t_ele_info_4_dynamic
 !
       use m_t_step_parameter
 !
@@ -115,11 +119,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine output_MHD_restart_file_ctl                            &
-     &          (node, nod_comm, iphys, nod_fld)
+     &          (node, nod_comm, iphys, wk_sgs, wk_diff, nod_fld)
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
       type(phys_address), intent(in) :: iphys
+      type(dynamic_model_data), intent(in) :: wk_sgs, wk_diff
 !
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -131,19 +136,20 @@
       index_rst = istep_max_dt / i_step_output_rst
       call output_restart_files                                         &
      &   (index_rst, node, nod_comm, iphys, nod_fld)
-      call output_model_coef_file(index_rst)
+      call output_model_coef_file(index_rst, wk_sgs, wk_diff)
 !
       end subroutine output_MHD_restart_file_ctl
 !
 ! -----------------------------------------------------------------------
 !
       subroutine elspased_MHD_restart_ctl                               &
-     &         (node, nod_comm, iphys, nod_fld)
+     &         (node, nod_comm, iphys, wk_sgs, wk_diff, nod_fld)
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
       type(phys_address), intent(in) :: iphys
 !
+      type(dynamic_model_data), intent(inout) :: wk_sgs, wk_diff
       type(phys_data), intent(inout) :: nod_fld
 !
       integer(kind = kint), parameter :: index_rst = -1
@@ -151,7 +157,7 @@
 !
       call output_restart_files                                         &
      &   (index_rst, node, nod_comm, iphys, nod_fld)
-      call output_model_coef_file(index_rst)
+      call output_model_coef_file(index_rst, wk_sgs, wk_diff)
 !
       end subroutine elspased_MHD_restart_ctl
 !
@@ -159,25 +165,25 @@
 ! -----------------------------------------------------------------------
 !
       subroutine input_MHD_restart_file_ctl(layer_tbl, node, ele,       &
-     &          fluid, nod_fld, sgs_coefs, diff_coefs)
+     &         fluid, wk_sgs, wk_diff, sgs_coefs, diff_coefs, nod_fld)
 !
       use t_geometry_data_MHD
-      use t_layering_ele_list
       use t_material_property
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
       type(layering_tbl), intent(in) :: layer_tbl
-      type(phys_data), intent(inout) :: nod_fld
 !
+      type(dynamic_model_data), intent(inout) :: wk_sgs, wk_diff
       type(MHD_coefficients_type), intent(inout) :: sgs_coefs
       type(MHD_coefficients_type), intent(inout) :: diff_coefs
+      type(phys_data), intent(inout) :: nod_fld
 !
 !
       call input_restart_files(node, nod_fld)
-      call input_model_coef_file                                        &
-     &   (ele, fluid, layer_tbl, sgs_coefs, diff_coefs)
+      call input_model_coef_file(ele, fluid, layer_tbl,                 &
+     &    wk_sgs, wk_diff, sgs_coefs, diff_coefs)
 !
       end subroutine input_MHD_restart_file_ctl
 !
@@ -292,12 +298,15 @@
 ! ----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine output_model_coef_file(index_rst)
+      subroutine output_model_coef_file(index_rst, wk_sgs, wk_diff)
+!
+      use t_ele_info_4_dynamic
 !
       use sgs_ini_model_coefs_IO
       use set_parallel_file_name
 !
       integer(kind = kint), intent(in) :: index_rst
+      type(dynamic_model_data), intent(in) :: wk_sgs, wk_diff
 !
       character(len=kchara) :: fn_tmp
 !
@@ -311,19 +320,19 @@
       end if
       call add_dat_extension(fn_tmp, rst_sgs_coef_name)
 !
-      call output_ini_model_coefs
+      call output_ini_model_coefs(wk_sgs, wk_diff)
 !
       end subroutine output_model_coef_file
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine input_model_coef_file                                  &
-     &         (ele, fluid, layer_tbl, sgs_coefs, diff_coefs)
+      subroutine input_model_coef_file(ele, fluid, layer_tbl,           &
+     &         wk_sgs, wk_diff, sgs_coefs, diff_coefs)
 !
       use m_control_parameter
       use t_geometry_data_MHD
-      use t_layering_ele_list
       use t_material_property
+      use t_ele_info_4_dynamic
 !
       use set_parallel_file_name
       use sgs_ini_model_coefs_IO
@@ -332,6 +341,7 @@
       type(field_geometry_data), intent(in) :: fluid
       type(layering_tbl), intent(in) :: layer_tbl
 !
+      type(dynamic_model_data), intent(inout) :: wk_sgs, wk_diff
       type(MHD_coefficients_type), intent(inout) :: sgs_coefs
       type(MHD_coefficients_type), intent(inout) :: diff_coefs
 !
@@ -348,8 +358,8 @@
       end if
 !
       call add_dat_extension(fn_tmp, rst_sgs_coef_name)
-      call input_ini_model_coefs                                        &
-     &   (ele, fluid, layer_tbl, sgs_coefs, diff_coefs)
+      call input_ini_model_coefs(ele, fluid, layer_tbl,                 &
+     &   wk_sgs, wk_diff, sgs_coefs, diff_coefs)
 !
       end subroutine input_model_coef_file
 !

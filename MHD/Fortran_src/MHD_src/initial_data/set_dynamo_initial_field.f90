@@ -6,13 +6,16 @@
 !      modified by H. Matsui on Dec., 2007
 !
 !!      subroutine initial_data_control(node, ele, fluid, iphys,        &
-!!     &          layer_tbl, nod_fld, sgs_coefs, diff_coefs)
+!!     &          layer_tbl, wk_sgs, wk_diff, sgs_coefs, diff_coefs,    &
+!!     &          nod_fld)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(phys_address), intent(in) :: iphys
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(dynamic_model_data), intent(inout) :: wk_sgs
+!!        type(dynamic_model_data), intent(inout) :: wk_diff
 !!        type(MHD_coefficients_type), intent(inout) :: sgs_coefs
 !!        type(MHD_coefficients_type), intent(inout) :: diff_coefs
 !!
@@ -29,6 +32,7 @@
       use t_phys_data
       use t_phys_address
       use t_material_property
+      use t_ele_info_4_dynamic
 !
       implicit none
 !
@@ -41,7 +45,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine initial_data_control(node, ele, fluid, iphys,          &
-     &          layer_tbl, nod_fld, sgs_coefs, diff_coefs)
+     &          layer_tbl, wk_sgs, wk_diff, sgs_coefs, diff_coefs,      &
+     &          nod_fld)
 !
       use m_initial_field_control
       use m_t_int_parameter
@@ -58,14 +63,15 @@
       type(phys_address), intent(in) :: iphys
       type(layering_tbl), intent(in) :: layer_tbl
 !
-      type(phys_data), intent(inout) :: nod_fld
+      type(dynamic_model_data), intent(inout) :: wk_sgs, wk_diff
       type(MHD_coefficients_type), intent(inout) :: sgs_coefs
       type(MHD_coefficients_type), intent(inout) :: diff_coefs
+      type(phys_data), intent(inout) :: nod_fld
 !
 !
       if(iflag_restart .eq. i_rst_by_file) then
         call input_MHD_restart_file_ctl(layer_tbl, node, ele,           &
-     &      fluid, nod_fld, sgs_coefs, diff_coefs)
+     &      fluid, wk_sgs, wk_diff, sgs_coefs, diff_coefs, nod_fld)
       else
         call set_initial_data(node, fluid, iphys, nod_fld)
       end if

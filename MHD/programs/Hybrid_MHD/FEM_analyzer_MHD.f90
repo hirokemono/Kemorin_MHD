@@ -72,8 +72,8 @@
      &    nod1_bcs, sf1_bcs, iphys, iphys_ele,                          &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,  &
      &    filtering1, wide_filtering, layer_tbl1, m1_lump,              &
-     &    wk_filter1, mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,      &
-     &    nod_fld1, fld_ele1, diff_coefs)
+     &    wk_cor1, wk_lsq1, wk_diff1, wk_filter1, mhd_fem1_wk, fem1_wk, &
+     &    surf1_wk, f1_l, f1_nl, nod_fld1, fld_ele1, diff_coefs)
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 'copy_model_coef_2_previous'
@@ -104,7 +104,8 @@
      &      nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,              &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, filtering1, wide_filtering, m1_lump,             &
-     &      wk_filter1, mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,    &
+     &      wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,            &
+     &      mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,                &
      &      nod_fld1, sgs_coefs, sgs_coefs_nod, diff_coefs)
       end if
 !
@@ -114,8 +115,8 @@
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
      &    FEM1_elen, sgs_coefs, sgs_coefs_nod,                          &
      &    filtering1, wide_filtering, layer_tbl1, m1_lump,              &
-     &    wk_filter1, mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,      &
-     &    nod_fld1, fld_ele1, diff_coefs)
+     &    wk_cor1, wk_lsq1, wk_diff1, wk_filter1, mhd_fem1_wk, fem1_wk, &
+     &    surf1_wk, f1_l, f1_nl, nod_fld1, fld_ele1, diff_coefs)
 !
 !     ---------------------
 !
@@ -158,6 +159,7 @@
       use m_finite_element_matrix
       use m_filter_elength
       use m_layering_ele_list
+      use m_work_4_dynamic_model
 !
       use construct_matrices
       use lead_physical_values
@@ -198,8 +200,9 @@
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, jac1_sf_grp_2d_l,     &
      &    rhs_tbl1, FEM1_elen, sgs_coefs_nod,                           &
      &    filtering1, wide_filtering, layer_tbl1,                       &
-     &    sgs_coefs, diff_coefs, wk_filter1, mhd_fem1_wk, fem1_wk,      &
-     &    surf1_wk, f1_l, f1_nl, nod_fld1, fld_ele1)
+     &    wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,              &
+     &    mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,                  &
+     &    nod_fld1, fld_ele1, sgs_coefs, diff_coefs)
 !
 !     ----- Evaluate model coefficients
 !
@@ -210,7 +213,8 @@
      &      nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,              &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, filtering1, wide_filtering, m1_lump,             &
-     &      wk_filter1, mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,    &
+     &      wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,            &
+     &      mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,                &
      &      nod_fld1, sgs_coefs, sgs_coefs_nod, diff_coefs)
       end if
 !
@@ -231,8 +235,9 @@
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, sgs_coefs, sgs_coefs_nod,                        &
      &      filtering1, wide_filtering, layer_tbl1, m1_lump,            &
-     &      wk_filter1, mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,    &
-     &      nod_fld1, fld_ele1, diff_coefs)
+     &      wk_cor1, wk_lsq1, wk_diff1, wk_filter1, mhd_fem1_wk,        &
+     &      fem1_wk, surf1_wk, f1_l, f1_nl, nod_fld1, fld_ele1,         &
+     &      diff_coefs)
 !
 !     -----Output monitor date
 !
@@ -248,13 +253,13 @@
         call output_monitor_control(mesh1%node, nod_fld1)
 !
         if (iflag_debug.eq.1) write(*,*) 's_output_sgs_model_coefs'
-        call s_output_sgs_model_coefs
+        call s_output_sgs_model_coefs(wk_sgs1, wk_diff1)
 !
 !     ---- Output restart field data
 !
         if (iflag_debug.eq.1) write(*,*) 'output_MHD_restart_file_ctl'
-        call output_MHD_restart_file_ctl                                &
-     &     (mesh1%node, mesh1%nod_comm, iphys, nod_fld1)
+        call output_MHD_restart_file_ctl(mesh1%node, mesh1%nod_comm,    &
+     &      iphys, wk_sgs1, wk_diff1, nod_fld1)
 !
 !     ---- Output voulme field data
 !
@@ -278,8 +283,8 @@
         if      (istep_rst_end.eq.-1                                    &
      &       .and. total_max.gt.elapsed_time) then
           call start_eleps_time(4)
-          call elspased_MHD_restart_ctl                                 &
-     &       (mesh1%node, mesh1%nod_comm, iphys, nod_fld1)
+          call elspased_MHD_restart_ctl(mesh1%node, mesh1%nod_comm,     &
+     &        iphys, wk_sgs1, wk_diff1, nod_fld1)
           call end_eleps_time(4)
           retval = 0
         else if (istep_rst_end.ne.-1                                    &
@@ -293,8 +298,8 @@
         if      (i_step_number.eq.-1                                    &
      &       .and. total_max.gt.elapsed_time) then
           call start_eleps_time(4)
-          call elspased_MHD_restart_ctl                                 &
-     &       (mesh1%node, mesh1%nod_comm, iphys, nod_fld1)
+          call elspased_MHD_restart_ctl(mesh1%node, mesh1%nod_comm,     &
+     &        iphys, wk_sgs1, wk_diff1, nod_fld1)
           call end_eleps_time(4)
           retval = 0
         else if (i_step_number.ne.-1 .and.                              &
@@ -310,7 +315,7 @@
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_chenge_step_4_dynamic'
-        call s_chenge_step_4_dynamic(my_rank)
+        call s_chenge_step_4_dynamic(my_rank, wk_sgs1, wk_diff1)
       end if
 !
       if ( retval .ne. 0 ) then

@@ -196,7 +196,7 @@
       call init_ele_material_property(mesh%ele%numele)
       call s_count_sgs_components                                       &
      &   (mesh%node%numnod, mesh%ele%numele, layer_tbl,                 &
-     &    sgs_coefs, sgs_coefs_nod, diff_coefs)
+     &    wk_sgs1, wk_diff1, sgs_coefs, sgs_coefs_nod, diff_coefs)
 !
 !  -------------------------------
 !
@@ -217,7 +217,8 @@
 !
       if (iflag_debug.eq.1) write(*,*)' initial_data_control'
       call initial_data_control(mesh%node, mesh%ele, MHD_mesh%fluid,    &
-     &    iphys, layer_tbl, nod_fld1, sgs_coefs, diff_coefs)
+     &    iphys, layer_tbl, wk_sgs1, wk_diff1, sgs_coefs, diff_coefs,   &
+     &    nod_fld1)
 !
 !  -------------------------------
 !

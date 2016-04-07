@@ -68,6 +68,7 @@
       use m_finite_element_matrix
       use m_filter_elength
       use m_SGS_model_coefs
+      use m_work_4_dynamic_model
       use m_3d_filter_coef_MHD
       use m_layering_ele_list
       use m_bc_data_velo
@@ -131,8 +132,8 @@
      &    nod1_bcs, sf1_bcs, iphys, iphys_ele,                          &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,  &
      &    filtering1, wide_filtering, layer_tbl1, m1_lump,              &
-     &    wk_filter1, mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,      &
-     &    nod_fld1, fld_ele1, diff_coefs)
+     &    wk_cor1, wk_lsq1, wk_diff1, wk_filter1, mhd_fem1_wk, fem1_wk, &
+     &    surf1_wk, f1_l, f1_nl, nod_fld1, fld_ele1, diff_coefs)
 !
 !     ----- Evaluate model coefficients
 !
@@ -143,7 +144,8 @@
      &      nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,              &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, filtering1, wide_filtering, m1_lump,             &
-     &      wk_filter1, mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,    &
+     &      wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,            &
+     &      mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,                &
      &      nod_fld1, sgs_coefs, sgs_coefs_nod, diff_coefs)
       end if
 !
@@ -154,8 +156,8 @@
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
      &    FEM1_elen, sgs_coefs, sgs_coefs_nod,                          &
      &    filtering1, wide_filtering, layer_tbl1, m1_lump,              &
-     &    wk_filter1, mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,      &
-     &    nod_fld1, fld_ele1, diff_coefs)
+     &    wk_cor1, wk_lsq1, wk_diff1, wk_filter1, mhd_fem1_wk, fem1_wk, &
+     &    surf1_wk, f1_l, f1_nl, nod_fld1, fld_ele1, diff_coefs)
 !
       if (iflag_debug.eq.1)  write(*,*) 'lead_specital_SGS'
       call lead_specital_SGS
@@ -171,7 +173,7 @@
       call output_monitor_control(mesh1%node, nod_fld1)
 !
       if (iflag_debug.eq.1) write(*,*) 's_output_sgs_model_coefs'
-      call s_output_sgs_model_coefs
+      call s_output_sgs_model_coefs(wk_sgs1, wk_diff1)
 !
 !     ---- Output voulme field data
 !

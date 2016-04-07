@@ -3,8 +3,10 @@
 !
 !        Written by H. Matsui on Aug., 2007
 !
-!      subroutine s_chenge_step_4_dynamic(my_rank)
-!      subroutine copy_model_coef_2_previous
+!!      subroutine s_chenge_step_4_dynamic(my_rank, wk_sgs, wk_diff)
+!!      subroutine copy_model_coef_2_previous
+!!        type(dynamic_model_data), intent(inout) :: wk_sgs
+!!        type(dynamic_model_data), intent(inout) :: wk_diff
 !
       module chenge_step_4_dynamic
 !
@@ -46,11 +48,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_chenge_step_4_dynamic(my_rank)
+      subroutine s_chenge_step_4_dynamic(my_rank, wk_sgs, wk_diff)
 !
-      use m_work_4_dynamic_model
+      use t_ele_info_4_dynamic
 !
       integer(kind = kint), intent(in) :: my_rank
+      type(dynamic_model_data), intent(inout) :: wk_sgs, wk_diff
+!
       real(kind = kreal) ::  diff_max
 !
 !
@@ -58,17 +62,17 @@
         call open_sgs_diff_monitor(my_rank)
 !
         call find_maximum_model_ceoefs                                  &
-     &     (wk_sgs1%nlayer, wk_sgs1%num_kinds,                          &
-     &      wk_sgs1%fld_coef, wk_sgs1%coef_p,                           &
-     &      wk_diff1%nlayer, wk_diff1%num_kinds,                        &
-     &      wk_diff1%fld_coef, wk_diff1%fld_whole,                      &
-     &      wk_diff1%coef_p, wk_diff1%coef_wp, diff_max)
+     &     (wk_sgs%nlayer, wk_sgs%num_kinds,                            &
+     &      wk_sgs%fld_coef, wk_sgs%coef_p,                             &
+     &      wk_diff%nlayer, wk_diff%num_kinds,                          &
+     &      wk_diff%fld_coef, wk_diff%fld_whole,                        &
+     &      wk_diff%coef_p, wk_diff%coef_wp, diff_max)
 !
         call copy_model_coef_2_previous                                 &
-     &     (wk_sgs1%nlayer, wk_sgs1%num_kinds, wk_sgs1%fld_coef,        &
-     &      wk_diff1%nlayer, wk_diff1%num_kinds,                        &
-     &      wk_diff1%fld_coef, wk_diff1%fld_whole,                      &
-     &      wk_sgs1%coef_p, wk_diff1%coef_p, wk_diff1%coef_wp)
+     &     (wk_sgs%nlayer, wk_sgs%num_kinds, wk_sgs%fld_coef,           &
+     &      wk_diff%nlayer, wk_diff%num_kinds,                          &
+     &      wk_diff%fld_coef, wk_diff%fld_whole,                        &
+     &      wk_sgs%coef_p, wk_diff%coef_p, wk_diff%coef_wp)
 !
         if (my_rank .eq. 0) write(sgs_diff_max_code,*)                  &
      &    'difference from previous step: ', i_step_MHD, diff_max
