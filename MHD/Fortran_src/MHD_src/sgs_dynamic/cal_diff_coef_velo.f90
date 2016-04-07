@@ -9,7 +9,7 @@
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
 !!     &          FEM_elen, filtering, wk_filter,                       &
 !!     &          wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk, surf_wk, &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          f_l, f_nl, nod_fld, diff_coefs)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -36,6 +36,7 @@
 !!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(MHD_coefficients_type), intent(inout) :: diff_coefs
 !
       module cal_diff_coef_velo
 !
@@ -61,6 +62,7 @@
       use t_work_4_dynamic_model
       use t_work_layer_correlate
       use t_surface_bc_data
+      use t_material_property
 !
       implicit none
 !
@@ -76,12 +78,11 @@
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
      &          FEM_elen, filtering, wk_filter,                         &
      &          wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk, surf_wk,   &
-     &          f_l, f_nl, nod_fld)
+     &          f_l, f_nl, nod_fld, diff_coefs)
 !
       use m_machine_parameter
       use m_control_parameter
       use m_phys_constants
-      use m_SGS_model_coefs
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
@@ -124,6 +125,7 @@
       type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
+      type(MHD_coefficients_type), intent(inout) :: diff_coefs
 !
 !
       integer (kind=kint) :: i_sgs_grad_p, i_sgs_grad_fp, i_sgs_simi_p

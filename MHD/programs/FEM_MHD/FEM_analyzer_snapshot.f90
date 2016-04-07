@@ -65,6 +65,7 @@
       use m_filter_elength
       use m_3d_filter_coef_MHD
       use m_layering_ele_list
+      use m_SGS_model_coefs
       use m_bc_data_velo
 !
       use read_udt_4_snapshot
@@ -93,7 +94,7 @@
 !
 !     ---- Load field data --- 
 !
-      call reset_update_flag(nod_fld1)
+      call reset_update_flag(nod_fld1, sgs_coefs, diff_coefs)
       istep_max_dt = i_step
       if (my_rank.eq.0) write(*,*) 'step: ', istep_max_dt
 !
@@ -124,10 +125,10 @@
       if (iflag_debug.eq.1)  write(*,*) 'update_fields'
       call update_fields(mesh1, group1, ele_mesh1, MHD_mesh1,           &
      &    nod1_bcs, sf1_bcs, iphys, iphys_ele,                          &
-     &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
-     &    FEM1_elen, filtering1, wide_filtering, layer_tbl1, m1_lump,   &
+     &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,  &
+     &    filtering1, wide_filtering, layer_tbl1, m1_lump,              &
      &    wk_filter1, mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,      &
-     &    nod_fld1, fld_ele1)
+     &    nod_fld1, fld_ele1, diff_coefs)
 !
 !     ----- Evaluate model coefficients
 !
@@ -138,8 +139,8 @@
      &      nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,              &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, filtering1, wide_filtering, m1_lump,             &
-     &      wk_filter1, mhd_fem1_wk, fem1_wk, surf1_wk,                 &
-     &      f1_l, f1_nl, nod_fld1)
+     &      wk_filter1, mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,    &
+     &      nod_fld1, sgs_coefs, sgs_coefs_nod, diff_coefs)
       end if
 !
 !     ========  Data output
@@ -147,9 +148,10 @@
       call lead_fields_by_FEM(mesh1, group1, ele_mesh1,                 &
      &    MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,               &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
-     &    FEM1_elen, filtering1, wide_filtering, layer_tbl1, m1_lump,   &
+     &    FEM1_elen, sgs_coefs, sgs_coefs_nod,                          &
+     &    filtering1, wide_filtering, layer_tbl1, m1_lump,              &
      &    wk_filter1, mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,      &
-     &    nod_fld1, fld_ele1)
+     &    nod_fld1, fld_ele1, diff_coefs)
 !
 !     -----Output monitor date
 !

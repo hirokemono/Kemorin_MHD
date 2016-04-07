@@ -6,11 +6,12 @@
 !!      subroutine int_surf_magne_pre_ele                               &
 !!     &         (iak_diff_uxb, node, ele, surf, sf_grp,                &
 !!     &          Asf_bcs, Bsf_bcs, iphys, nod_fld, jac_sf_grp,         &
-!!     &          rhs_tbl1, FEM_elens, fem_wk, surf_wk, f_l, f_nl)
+!!     &          rhs_tbl1, FEM_elens, diff_coefs, fem_wk, surf_wk,     &
+!!     &          f_l, f_nl)
 !!      subroutine int_surf_magne_monitor(i_field, iak_diff_uxb,        &
 !!     &          node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs,            &
 !!     &          iphys, nod_fld, jac_sf_grp, rhs_tbl1, FEM_elens,      &
-!!     &          fem_wk, surf_wk, f_l, f_nl)
+!!     &          diff_coefs, fem_wk, surf_wk, f_l, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -22,6 +23,7 @@
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl1
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(MHD_coefficients_type), intent(in) :: diff_coefs
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -40,6 +42,7 @@
       use t_finite_element_mat
       use t_int_surface_data
       use t_surface_bc_data
+      use t_material_property
 !
       use m_control_parameter
       use m_phys_constants
@@ -58,9 +61,8 @@
       subroutine int_surf_magne_pre_ele                                 &
      &         (iak_diff_uxb, node, ele, surf, sf_grp,                  &
      &          Asf_bcs, Bsf_bcs, iphys, nod_fld, jac_sf_grp,           &
-     &          rhs_tbl1, FEM_elens, fem_wk, surf_wk, f_l, f_nl)
-!
-      use m_SGS_model_coefs
+     &          rhs_tbl1, FEM_elens, diff_coefs, fem_wk, surf_wk,       &
+     &          f_l, f_nl)
 !
       integer(kind= kint), intent(in) :: iak_diff_uxb
 !
@@ -75,6 +77,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl1
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_surface_element_mat), intent(inout) :: surf_wk
@@ -113,9 +116,7 @@
       subroutine int_surf_magne_monitor(i_field, iak_diff_uxb,          &
      &          node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs,              &
      &          iphys, nod_fld, jac_sf_grp, rhs_tbl1, FEM_elens,        &
-     &          fem_wk, surf_wk, f_l, f_nl)
-!
-      use m_SGS_model_coefs
+     &          diff_coefs, fem_wk, surf_wk, f_l, f_nl)
 !
       integer(kind= kint), intent(in) :: i_field, iak_diff_uxb
 !
@@ -130,6 +131,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl1
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_surface_element_mat), intent(inout) :: surf_wk

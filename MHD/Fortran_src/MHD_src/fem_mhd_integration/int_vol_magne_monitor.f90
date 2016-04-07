@@ -10,10 +10,12 @@
 !
 !!      subroutine int_vol_magne_monitor_pg(i_field, iak_diff_uxb,      &
 !!     &         node, ele, conduct, iphys, nod_fld, iphys_ele, ele_fld,&
-!!     &         jac_3d, rhs_tbl, FEM_elen, mhd_fem_wk, fem_wk, f_nl)
+!!     &         jac_3d, rhs_tbl, FEM_elen, diff_coefs,                 &
+!!     &         mhd_fem_wk, fem_wk, f_nl)
 !!      subroutine int_vol_magne_monitor_upm(i_field, iak_diff_uxb,     &
 !!     &         node, ele, conduct, iphys, nod_fld, iphys_ele, ele_fld,&
-!!     &         jac_3d, rhs_tbl, FEM_elen, mhd_fem_wk, fem_wk, f_nl)
+!!     &         jac_3d, rhs_tbl, FEM_elen, diff_coefs,                 &
+!!     &         mhd_fem_wk, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_address), intent(in) :: iphys
@@ -24,6 +26,7 @@
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
+!!        type(MHD_coefficients_type), intent(in) :: diff_coefs
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -36,7 +39,6 @@
       use m_machine_parameter
       use m_phys_constants
       use m_physical_property
-      use m_SGS_model_coefs
       use m_fem_gauss_int_coefs
 !
       use t_geometry_data_MHD
@@ -49,6 +51,7 @@
       use t_phys_address
       use t_MHD_finite_element_mat
       use t_filter_elength
+      use t_material_property
 !
       implicit none
 !
@@ -60,7 +63,8 @@
 !
       subroutine int_vol_magne_monitor_pg(i_field, iak_diff_uxb,        &
      &         node, ele, conduct, iphys, nod_fld, iphys_ele, ele_fld,  &
-     &         jac_3d, rhs_tbl, FEM_elen, mhd_fem_wk, fem_wk, f_nl)
+     &         jac_3d, rhs_tbl, FEM_elen, diff_coefs,                   &
+     &         mhd_fem_wk, fem_wk, f_nl)
 !
       use int_vol_vect_differences
       use int_vol_vect_cst_difference
@@ -79,6 +83,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elen
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -119,7 +124,8 @@
 !
       subroutine int_vol_magne_monitor_upm(i_field, iak_diff_uxb,       &
      &         node, ele, conduct, iphys, nod_fld, iphys_ele, ele_fld,  &
-     &         jac_3d, rhs_tbl, FEM_elen, mhd_fem_wk, fem_wk, f_nl)
+     &         jac_3d, rhs_tbl, FEM_elen, diff_coefs,                   &
+     &         mhd_fem_wk, fem_wk, f_nl)
 !
       use int_vol_vect_diff_upw
       use int_vol_vect_cst_diff_upw
@@ -138,6 +144,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elen
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl

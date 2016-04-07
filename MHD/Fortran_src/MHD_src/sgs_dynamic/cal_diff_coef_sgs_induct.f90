@@ -8,7 +8,7 @@
 !!     &          ie_dfvx, ie_dfbx, nod_comm, node, ele, surf,          &
 !!     &          fluid, conduct, layer_tbl, sf_grp, Bsf_bcs, iphys,    &
 !!     &          iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q, &
-!!     &          rhs_tbl, FEM_elens, filtering, wk_filter,             &
+!!     &          rhs_tbl, FEM_elens, sgs_coefs, filtering, wk_filter,  &
 !!     &          wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk, surf_wk, &
 !!     &          f_l, f_nl, nod_fld, diff_coefs)
 !!        type(communication_table), intent(in) :: nod_comm
@@ -26,6 +26,7 @@
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp_q
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(MHD_coefficients_type), intent(in) :: sgs_coefs
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(dynamis_correlation_data), intent(inout) :: wk_cor
@@ -76,7 +77,7 @@
      &          ie_dfvx, ie_dfbx, nod_comm, node, ele, surf,            &
      &          fluid, conduct, layer_tbl, sf_grp, Bsf_bcs, iphys,      &
      &          iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,   &
-     &          rhs_tbl, FEM_elens, filtering, wk_filter,               &
+     &          rhs_tbl, FEM_elens, sgs_coefs, filtering, wk_filter,    &
      &          wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk, surf_wk,   &
      &          f_l, f_nl, nod_fld, diff_coefs)
 !
@@ -115,6 +116,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp_q
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: sgs_coefs
       type(filtering_data_type), intent(in) :: filtering
 !
       type(filtering_work_type), intent(inout) :: wk_filter
@@ -141,7 +143,8 @@
      &   (ifilter_4delta, icomp_sgs_uxb, iphys%i_sgs_grad_f,            &
      &    iphys%i_filter_velo, iphys%i_filter_magne, ie_dfvx, ie_dfbx,  &
      &    nod_comm, node, ele, conduct, iphys_ele, ele_fld, jac_3d_q,   &
-     &    rhs_tbl, FEM_elens, fem_wk, mhd_fem_wk, f_l, nod_fld)
+     &    rhs_tbl, FEM_elens, sgs_coefs, fem_wk, mhd_fem_wk,            &
+     &    f_l, nod_fld)
 !
 !   take divergence of filtered heat flux (to iphys%i_sgs_simi)
 !

@@ -6,8 +6,8 @@
 !!      subroutine cal_sgs_induct_t_grad_w_coef(i_filter, icomp_sgs_uxb,&
 !!     &          i_sgs, ifield_v, ifield_b, ie_dvx, ie_dbx,            &
 !!     &          nod_comm, node, ele, conduct, iphys_ele, ele_fld,     &
-!!     &          jac_3d, rhs_tbl, FEM_elen, fem_wk, mhd_fem_wk,        &
-!!     &          f_l, nod_fld)
+!!     &          jac_3d, rhs_tbl, FEM_elen, sgs_coefs,                 &
+!!     &          fem_wk, mhd_fem_wk, f_l, nod_fld)
 !!      subroutine cal_sgs_induct_t_grad_no_coef                        &
 !!     &         (i_filter, i_sgs, ifield_v, ifield_b, ie_dvx, ie_dbx,  &
 !!     &          nod_comm, node, ele, conduct, iphys_ele, ele_fld,     &
@@ -22,6 +22,7 @@
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
+!!        type(MHD_coefficients_type), intent(in) :: sgs_coefs
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -42,6 +43,7 @@
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
+      use t_material_property
 !
       implicit none
 !
@@ -54,10 +56,8 @@
       subroutine cal_sgs_induct_t_grad_w_coef(i_filter, icomp_sgs_uxb,  &
      &          i_sgs, ifield_v, ifield_b, ie_dvx, ie_dbx,              &
      &          nod_comm, node, ele, conduct, iphys_ele, ele_fld,       &
-     &          jac_3d, rhs_tbl, FEM_elen, fem_wk, mhd_fem_wk,          &
-     &          f_l, nod_fld)
-!
-      use m_SGS_model_coefs
+     &          jac_3d, rhs_tbl, FEM_elen, sgs_coefs,                   &
+     &          fem_wk, mhd_fem_wk, f_l, nod_fld)
 !
       use int_vol_sgs_induct_t
       use cal_ff_smp_to_ffs
@@ -74,6 +74,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elen
+      type(MHD_coefficients_type), intent(in) :: sgs_coefs
 !
       integer (kind=kint), intent(in) :: i_filter, icomp_sgs_uxb
       integer (kind=kint), intent(in) :: i_sgs, ifield_v, ifield_b

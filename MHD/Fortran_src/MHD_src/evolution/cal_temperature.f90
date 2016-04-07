@@ -8,13 +8,15 @@
 !!      subroutine cal_temperature_field(nod_comm, node, ele, surf,     &
 !!     &          fluid, sf_grp, Tnod_bcs, Tsf_bcs, iphys,              &
 !!     &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,      &
-!!     &          FEM_elens, filtering, wk_filter, mhd_fem_wk, fem_wk,  &
-!!     &          surf_wk, f_l, f_nl, nod_fld)
+!!     &          FEM_elens, sgs_coefs, sgs_coefs_nod, diff_coefs,      &
+!!     &          filtering, wk_filter, mhd_fem_wk, fem_wk, surf_wk,    &
+!!     &          f_l, f_nl, nod_fld)
 !!      subroutine cal_parturbation_temp(nod_comm, node, ele, surf,     &
 !!     &          fluid, sf_grp, Tnod_bcs, Tsf_bcs, iphys,              &
 !!     &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,      &
-!!     &          FEM_elens, filtering, wk_filter, mhd_fem_wk, fem_wk,  &
-!!     &          surf_wk, f_l, f_nl, nod_fld)
+!!     &          FEM_elens, sgs_coefs, sgs_coefs_nod, diff_coefs,      &
+!!     &          filtering, wk_filter, mhd_fem_wk, fem_wk, surf_wk,    &
+!!     &          f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -30,6 +32,9 @@
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(MHD_coefficients_type), intent(in) :: sgs_coefs
+!!        type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
+!!        type(MHD_coefficients_type), intent(in) :: diff_coefs
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -60,6 +65,7 @@
       use t_filtering_data
       use t_bc_data_temp
       use t_surface_bc_data
+      use t_material_property
 !
       implicit none
 !
@@ -72,8 +78,9 @@
       subroutine cal_temperature_field(nod_comm, node, ele, surf,       &
      &          fluid, sf_grp, Tnod_bcs, Tsf_bcs, iphys,                &
      &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,        &
-     &          FEM_elens, filtering, wk_filter, mhd_fem_wk, fem_wk,    &
-     &          surf_wk, f_l, f_nl, nod_fld)
+     &          FEM_elens, sgs_coefs, sgs_coefs_nod, diff_coefs,        &
+     &          filtering, wk_filter, mhd_fem_wk, fem_wk, surf_wk,      &
+     &          f_l, f_nl, nod_fld)
 !
       use m_phys_constants
       use m_control_parameter
@@ -82,7 +89,6 @@
       use m_type_AMG_data
       use m_solver_djds_MHD
       use m_SGS_address
-      use m_SGS_model_coefs
 !
       use nod_phys_send_recv
       use cal_sgs_fluxes
@@ -112,6 +118,9 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: sgs_coefs
+      type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(filtering_data_type), intent(in) :: filtering
 !
       type(filtering_work_type), intent(inout) :: wk_filter
@@ -166,7 +175,7 @@
 !
       call int_surf_temp_ele(iak_diff_hf, node, ele, surf, sf_grp,      &
      &    iphys, nod_fld, Tsf_bcs, jac_sf_grp, rhs_tbl, FEM_elens,      &
-     &    fem_wk, surf_wk, f_l, f_nl)
+     &    diff_coefs, fem_wk, surf_wk, f_l, f_nl)
 !
 !      call check_nodal_data(my_rank, nod_fld, n_scalar, iphys%i_temp)
 !      call check_nodal_data(my_rank, ele_fld,                          &
@@ -233,8 +242,9 @@
       subroutine cal_parturbation_temp(nod_comm, node, ele, surf,       &
      &          fluid, sf_grp, Tnod_bcs, Tsf_bcs, iphys,                &
      &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,        &
-     &          FEM_elens, filtering, wk_filter, mhd_fem_wk, fem_wk,    &
-     &          surf_wk, f_l, f_nl, nod_fld)
+     &          FEM_elens, sgs_coefs, sgs_coefs_nod, diff_coefs,        &
+     &          filtering, wk_filter, mhd_fem_wk, fem_wk, surf_wk,      &
+     &          f_l, f_nl, nod_fld)
 !
       use m_phys_constants
       use m_control_parameter
@@ -243,7 +253,6 @@
       use m_type_AMG_data
       use m_solver_djds_MHD
       use m_SGS_address
-      use m_SGS_model_coefs
 !
       use nod_phys_send_recv
       use cal_sgs_fluxes
@@ -276,6 +285,9 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: sgs_coefs
+      type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(filtering_data_type), intent(in) :: filtering
 !
       type(filtering_work_type), intent(inout) :: wk_filter
@@ -328,7 +340,7 @@
 !
       call int_surf_temp_ele(iak_diff_hf, node, ele, surf, sf_grp,      &
      &    iphys, nod_fld, Tsf_bcs, jac_sf_grp, rhs_tbl, FEM_elens,      &
-     &    fem_wk, surf_wk, f_l, f_nl)
+     &    diff_coefs, fem_wk, surf_wk, f_l, f_nl)
 !
 !      call check_nodal_data(my_rank, nod_fld, n_scalar, iphys%i_temp)
 !      call check_nodal_data(my_rank, ele_fld,                          &

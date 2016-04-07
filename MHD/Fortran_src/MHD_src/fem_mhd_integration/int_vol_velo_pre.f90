@@ -11,11 +11,12 @@
 !!      subroutine int_vol_velo_pre_ele                                 &
 !!     &        (node, ele, fluid, iphys, nod_fld,                      &
 !!     &         ncomp_ele, d_ele, iphys_ele, iak_diff_mf, iak_diff_lor,&
-!!     &         jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
+!!     &         jac_3d, rhs_tbl, FEM_elens, diff_coefs,                &
+!!     &         mhd_fem_wk, fem_wk, f_nl)
 !!      subroutine int_vol_velo_pre_ele_upwind(node, ele, fluid,        &
 !!     &          iphys, nod_fld, ncomp_ele, ie_upw, d_ele, iphys_ele,  &
 !!     &          iak_diff_mf, iak_diff_lor, jac_3d, rhs_tbl, FEM_elens,&
-!!     &          mhd_fem_wk, fem_wk, f_nl)
+!!     &          diff_coefs, mhd_fem_wk, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_address), intent(in) :: iphys
@@ -24,6 +25,7 @@
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(MHD_coefficients_type), intent(in) :: diff_coefs
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -38,7 +40,6 @@
       use m_physical_property
       use m_ele_material_property
       use m_fem_gauss_int_coefs
-      use m_SGS_model_coefs
 !
       use t_geometry_data_MHD
       use t_geometry_data
@@ -50,6 +51,7 @@
       use t_phys_address
       use t_MHD_finite_element_mat
       use t_filter_elength
+      use t_material_property
 !
       implicit none
 !
@@ -62,7 +64,8 @@
       subroutine int_vol_velo_pre_ele                                   &
      &        (node, ele, fluid, iphys, nod_fld,                        &
      &         ncomp_ele, d_ele, iphys_ele, iak_diff_mf, iak_diff_lor,  &
-     &         jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
+     &         jac_3d, rhs_tbl, FEM_elens, diff_coefs,                  &
+     &         mhd_fem_wk, fem_wk, f_nl)
 !
       use cal_add_smp
       use nodal_fld_cst_to_element
@@ -83,6 +86,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
 !
       integer(kind = kint), intent(in) :: iak_diff_mf, iak_diff_lor
       integer(kind = kint), intent(in) :: ncomp_ele
@@ -285,7 +289,7 @@
       subroutine int_vol_velo_pre_ele_upwind(node, ele, fluid,          &
      &          iphys, nod_fld, ncomp_ele, ie_upw, d_ele, iphys_ele,    &
      &          iak_diff_mf, iak_diff_lor, jac_3d, rhs_tbl, FEM_elens,  &
-     &          mhd_fem_wk, fem_wk, f_nl)
+     &          diff_coefs, mhd_fem_wk, fem_wk, f_nl)
 !
       use cal_add_smp
       use nodal_fld_cst_to_element
@@ -306,6 +310,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
 !
       integer(kind = kint), intent(in) :: iak_diff_mf, iak_diff_lor
       integer(kind = kint), intent(in) :: ncomp_ele, ie_upw

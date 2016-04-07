@@ -5,10 +5,13 @@
 !     modified by H. Matsui on Aug., 2007
 !
 !!      subroutine output_ini_model_coefs
-!!      subroutine input_ini_model_coefs(ele, fluid, layer_tbl)
+!!      subroutine input_ini_model_coefs                                &
+!!     &         (ele, fluid, layer_tbl, sgs_coefs, diff_coefs)
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(layering_tbl), intent(in) :: layer_tbl
+!!        type(MHD_coefficients_type), intent(inout) :: sgs_coefs
+!!        type(MHD_coefficients_type), intent(inout) :: diff_coefs
 !
       module sgs_ini_model_coefs_IO
 !
@@ -18,6 +21,7 @@
       use m_constants
       use m_control_parameter
       use m_t_step_parameter
+      use t_material_property
 !
       implicit none
 !
@@ -49,7 +53,6 @@
 !
       subroutine output_ini_model_coefs
 !
-      use m_SGS_model_coefs
       use m_work_4_dynamic_model
       use open_sgs_model_coefs
       use sgs_model_coefs_IO
@@ -69,35 +72,35 @@
 !
         write(rst_sgs_coef_code,'(a)')  '! num. of model coefs'
         write(rst_sgs_coef_code,'(2i16)')                               &
-     &       sgs_coefs%num_field, wk_sgs1%nlayer
+     &       wk_sgs1%num_kinds, wk_sgs1%nlayer
 !
         call write_sgs_coef_head(rst_sgs_coef_code)
 !
 !   write model coefs for whole domain
         write(rst_sgs_coef_code,1000)  i_step_MHD, time, izero,         &
-     &        wk_sgs1%fld_whole_clip(1:sgs_coefs%num_field)
+     &        wk_sgs1%fld_whole_clip(1:wk_sgs1%num_kinds)
 !
 !   write model coefs for each layer
         do inum = 1, wk_sgs1%nlayer
           write(rst_sgs_coef_code,1000) i_step_MHD, time, inum,         &
-     &       wk_sgs1%fld_clip(inum,1:sgs_coefs%num_field)
+     &       wk_sgs1%fld_clip(inum,1:wk_sgs1%num_kinds)
         end do
 !
         if (iflag_commute_correction .gt. id_SGS_commute_OFF) then
 !
           write(rst_sgs_coef_code,'(a)')  '! num. of commute coefs'
           write(rst_sgs_coef_code,'(2i16)')                             &
-     &       diff_coefs%num_field, wk_diff1%nlayer
+     &       wk_diff1%num_kinds, wk_diff1%nlayer
 !
           call write_diff_coef_head(rst_sgs_coef_code)
 !
           write(rst_sgs_coef_code,1000) i_step_MHD, time, izero,        &
-     &          wk_diff1%fld_whole_clip(1:diff_coefs%num_field)
+     &          wk_diff1%fld_whole_clip(1:wk_diff1%num_kinds)
 !
           if (iset_DIFF_model_coefs .eq. 1 ) then
             do inum = 1, wk_diff1%nlayer
               write(rst_sgs_coef_code,1000)  i_step_MHD, time, inum,    &
-     &              wk_diff1%fld_clip(inum,1:diff_coefs%num_field)
+     &              wk_diff1%fld_clip(inum,1:wk_diff1%num_kinds)
             end do
           end if
         end if
@@ -112,7 +115,8 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine input_ini_model_coefs(ele, fluid, layer_tbl)
+      subroutine input_ini_model_coefs                                  &
+     &         (ele, fluid, layer_tbl, sgs_coefs, diff_coefs)
 !
       use t_geometry_data
       use t_geometry_data_MHD
@@ -122,10 +126,14 @@
       type(field_geometry_data), intent(in) :: fluid
       type(layering_tbl), intent(in) :: layer_tbl
 !
+      type(MHD_coefficients_type), intent(inout) :: sgs_coefs
+      type(MHD_coefficients_type), intent(inout) :: diff_coefs
+!
 !
       call read_ini_model_coefs
       call set_ini_model_coefs_from_IO
-      call set_initial_model_coefs_ele(ele, fluid, layer_tbl%e_grp)
+      call set_initial_model_coefs_ele                                  &
+     &   (ele, fluid, layer_tbl%e_grp, sgs_coefs, diff_coefs)
 !
       end subroutine input_ini_model_coefs
 !
@@ -205,13 +213,12 @@
 !
       subroutine set_ini_model_coefs_from_IO
 !
-      use m_SGS_model_coefs
       use m_work_4_dynamic_model
 !
       integer(kind = kint) :: i, j
 !
 !
-      do i = 1, sgs_coefs%num_field
+      do i = 1, wk_sgs1%num_kinds
         do j = 1, num_sgs_kinds_IO
           if ( wk_sgs1%name(i) .eq. name_ak_sgs_IO(j) ) then
             wk_sgs1%fld_clip(1:wk_sgs1%nlayer,i)                        &
@@ -226,7 +233,7 @@
       deallocate(coef_sgs_IO)
 !
       if (iflag_commute_correction .gt. id_SGS_commute_OFF) then
-        do i = 1, diff_coefs%num_field
+        do i = 1, wk_diff1%num_kinds
           do j = 1, num_diff_kinds_IO
             if ( wk_diff1%name(i) .eq. name_ak_diff_IO(j) ) then
               wk_diff1%fld_whole_clip(i) = coef_diff_IO(0,j)
@@ -248,18 +255,21 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_initial_model_coefs_ele(ele, fluid, layer_egrp)
+      subroutine set_initial_model_coefs_ele                            &
+     &         (ele, fluid, layer_egrp, sgs_coefs, diff_coefs)
 !
       use t_geometry_data
       use t_group_data
       use t_geometry_data_MHD
       use m_work_4_dynamic_model
-      use m_SGS_model_coefs
       use set_sgs_diff_model_coefs
 !
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
       type(group_data), intent(in) :: layer_egrp
+!
+      type(MHD_coefficients_type), intent(inout) :: sgs_coefs
+      type(MHD_coefficients_type), intent(inout) :: diff_coefs
 !
       integer(kind = kint) :: i, ist
 !

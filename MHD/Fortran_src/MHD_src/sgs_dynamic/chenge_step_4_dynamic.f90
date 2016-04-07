@@ -12,7 +12,6 @@
 !
       use m_control_parameter
       use m_t_step_parameter
-      use m_SGS_model_coefs
 !
       implicit none
 !

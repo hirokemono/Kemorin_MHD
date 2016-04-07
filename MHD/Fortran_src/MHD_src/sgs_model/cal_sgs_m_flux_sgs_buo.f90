@@ -7,7 +7,7 @@
 !!     &         (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,  &
 !!     &          Vsf_bcs, Bsf_bcs, iphys, iphys_ele,                   &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
-!!     &          FEM_elens, filtering, sgs_coefs_nod,                  &
+!!     &          FEM_elens, filtering, sgs_coefs_nod, diff_coefs,      &
 !!     &          wk_filter, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,        &
 !!     &          surf_wk, f_l, f_nl, nod_fld, ele_fld, sgs_coefs)
 !!        type(communication_table), intent(in) :: nod_comm
@@ -27,6 +27,7 @@
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
 !!        type(MHD_coefficients_type), intent(inout) :: sgs_coefs
+!!        type(MHD_coefficients_type), intent(in) :: diff_coefs
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
@@ -79,7 +80,7 @@
      &         (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,    &
      &          Vsf_bcs, Bsf_bcs, iphys, iphys_ele,                     &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
-     &          FEM_elens, filtering, sgs_coefs_nod,                    &
+     &          FEM_elens, filtering, sgs_coefs_nod, diff_coefs,        &
      &          wk_filter, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,          &
      &          surf_wk, f_l, f_nl, nod_fld, ele_fld, sgs_coefs)
 !
@@ -114,6 +115,7 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
       type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
 !
       type(MHD_coefficients_type), intent(inout) :: sgs_coefs
       type(filtering_work_type), intent(inout) :: wk_filter
@@ -153,7 +155,8 @@
      &   (iphys%i_SGS_div_m_flux, iak_diff_mf, iak_diff_lor,            &
      &    nod_comm, node, ele, surf, fluid, sf_grp, Vsf_bcs, Bsf_bcs,   &
      &    iphys, iphys_ele, jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens, &
-     &    mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld, ele_fld)
+     &    diff_coefs, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,           &
+     &    nod_fld, ele_fld)
 !
 !$omp parallel
       call cal_phys_dot_product(node, nod_fld,                          &

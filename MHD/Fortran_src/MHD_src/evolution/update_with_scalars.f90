@@ -12,13 +12,13 @@
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,  &
 !!     &          filtering, wide_filtering, layer_tbl,                 &
 !!     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk,               &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          f_l, f_nl, nod_fld, diff_coefs)
 !!      subroutine update_with_dummy_scalar(nod_comm, node, ele, surf,  &
 !!     &          fluid, sf_grp, Csf_bcs, iphys, iphys_ele, ele_fld,    &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,  &
 !!     &          filtering, wide_filtering, layer_tbl,                 &
 !!     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk,               &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          f_l, f_nl, nod_fld, diff_coefs)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -43,6 +43,7 @@
 !!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(MHD_coefficients_type), intent(inout) :: diff_coefs
 !!@endverbatim
 !
       module update_with_scalars
@@ -67,6 +68,7 @@
       use t_filter_elength
       use t_filtering_data
       use t_layering_ele_list
+      use t_material_property
       use t_surface_bc_data
 !
       implicit none
@@ -82,10 +84,9 @@
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,    &
      &          filtering, wide_filtering, layer_tbl,                   &
      &          wk_filter, mhd_fem_wk, fem_wk, surf_wk,                 &
-     &          f_l, f_nl, nod_fld)
+     &          f_l, f_nl, nod_fld, diff_coefs)
 !
       use m_t_step_parameter
-      use m_SGS_model_coefs
       use m_SGS_address
       use m_work_4_dynamic_model
 !
@@ -120,6 +121,7 @@
       type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
+      type(MHD_coefficients_type), intent(inout) :: diff_coefs
 !
       integer (kind = kint) :: iflag_dynamic, iflag2
 !
@@ -218,7 +220,7 @@
      &             jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,           &
      &             FEM_elen, filtering, wk_filter,                      &
      &             wk_cor1, wk_lsq1, wk_diff1, mhd_fem_wk, fem_wk,      &
-     &             surf_wk, f_l, f_nl, nod_fld)
+     &             surf_wk, f_l, f_nl, nod_fld, diff_coefs)
              end if
            end if
 !
@@ -234,10 +236,9 @@
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,    &
      &          filtering, wide_filtering, layer_tbl,                   &
      &          wk_filter, mhd_fem_wk, fem_wk, surf_wk,                 &
-     &          f_l, f_nl, nod_fld)
+     &          f_l, f_nl, nod_fld, diff_coefs)
 !
       use m_t_step_parameter
-      use m_SGS_model_coefs
       use m_SGS_address
       use m_work_4_dynamic_model
 !
@@ -272,6 +273,7 @@
       type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
+      type(MHD_coefficients_type), intent(inout) :: diff_coefs
 !
       integer (kind = kint) :: iflag_dynamic, iflag2
 !
@@ -322,7 +324,7 @@
 !     &             jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,          &
 !     &             FEM_elen, filtering, wk_filter,                     &
 !     &             wk_cor, wk_lsq1, wk_diff1, mhd_fem_wk, fem_wk,      &
-!     &             surf_wk, f_l, f_nl, nod_fld)
+!     &             surf_wk, f_l, f_nl, nod_fld, diff_coefs)
 !             end if
 !
 !           end if

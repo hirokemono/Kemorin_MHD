@@ -4,8 +4,12 @@
 !      Written by H. Matsui on 2004
 !      Modified by H. Matsui on July, 2007
 !
-!     subroutine s_count_sgs_components(numnod, numele, layer_tbl)
-!        type(layering_tbl), intent(in) :: layer_tbl
+!     subroutine s_count_sgs_components(numnod, numele, layer_tbl,      &
+!!     &          sgs_coefs, sgs_coefs_nod, diff_coefs)
+!!        type(layering_tbl), intent(in) :: layer_tbl
+!!        type(MHD_coefficients_type), intent(inout) :: sgs_coefs
+!!        type(MHD_coefficients_type), intent(inout) :: sgs_coefs_nod
+!!        type(MHD_coefficients_type), intent(inout) :: diff_coefs
 !
       module count_sgs_components
 !
@@ -20,19 +24,24 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_count_sgs_components(numnod, numele, layer_tbl)
+      subroutine s_count_sgs_components(numnod, numele, layer_tbl,      &
+     &          sgs_coefs, sgs_coefs_nod, diff_coefs)
 !
       use calypso_mpi
       use m_phys_labels
       use m_control_parameter
       use m_work_4_dynamic_model
-      use m_SGS_model_coefs
       use m_SGS_address
 !
       use t_layering_ele_list
+      use t_material_property
 !
       integer(kind = kint), intent(in) :: numnod, numele
       type(layering_tbl), intent(in) :: layer_tbl
+!
+      type(MHD_coefficients_type), intent(inout) :: sgs_coefs
+      type(MHD_coefficients_type), intent(inout) :: sgs_coefs_nod
+      type(MHD_coefficients_type), intent(inout) :: diff_coefs
 !
       integer(kind = kint) :: ntot_diff_comp
       integer(kind = kint) :: i, j, id, jd

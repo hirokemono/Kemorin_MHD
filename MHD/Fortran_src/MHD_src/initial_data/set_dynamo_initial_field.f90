@@ -5,14 +5,16 @@
 !      modified by H. Matsui on July, 2006
 !      modified by H. Matsui on Dec., 2007
 !
-!!      subroutine initial_data_control                                 &
-!!     &         (node, ele, fluid, iphys, layer_tbl, nod_fld)
+!!      subroutine initial_data_control(node, ele, fluid, iphys,        &
+!!     &          layer_tbl, nod_fld, sgs_coefs, diff_coefs)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(phys_address), intent(in) :: iphys
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(MHD_coefficients_type), intent(inout) :: sgs_coefs
+!!        type(MHD_coefficients_type), intent(inout) :: diff_coefs
 !!
 !!      subroutine set_time_init
 !
@@ -26,6 +28,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
+      use t_material_property
 !
       implicit none
 !
@@ -37,8 +40,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine initial_data_control                                   &
-     &         (node, ele, fluid, iphys, layer_tbl, nod_fld)
+      subroutine initial_data_control(node, ele, fluid, iphys,          &
+     &          layer_tbl, nod_fld, sgs_coefs, diff_coefs)
 !
       use m_initial_field_control
       use m_t_int_parameter
@@ -56,11 +59,13 @@
       type(layering_tbl), intent(in) :: layer_tbl
 !
       type(phys_data), intent(inout) :: nod_fld
+      type(MHD_coefficients_type), intent(inout) :: sgs_coefs
+      type(MHD_coefficients_type), intent(inout) :: diff_coefs
 !
 !
       if(iflag_restart .eq. i_rst_by_file) then
-        call input_MHD_restart_file_ctl                                 &
-     &     (layer_tbl, node, ele, fluid, nod_fld)
+        call input_MHD_restart_file_ctl(layer_tbl, node, ele,           &
+     &      fluid, nod_fld, sgs_coefs, diff_coefs)
       else
         call set_initial_data(node, fluid, iphys, nod_fld)
       end if

@@ -7,8 +7,8 @@
 !!     &        (i_field, iak_diff_mf, iak_diff_lor,                    &
 !!     &         nod_comm, node, ele, surf, fluid, sf_grp,              &
 !!     &         Vsf_bcs, Bsf_bcs, iphys, iphys_ele, jac_3d, jac_sf_grp,&
-!!     &         rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, surf_wk,       &
-!!     &         f_l, f_nl, nod_fld, ele_fld)
+!!     &         rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk, fem_wk,    &
+!!     &         surf_wk, f_l, f_nl, nod_fld, ele_fld)
 !!      subroutine cal_viscous_diffusion                                &
 !!     &         (iak_diff_v, iak_diff_mf, iak_diff_lor,                &
 !!     &          nod_comm, node, ele, surf, fluid, sf_grp,             &
@@ -81,8 +81,8 @@
      &        (i_field, iak_diff_mf, iak_diff_lor,                      &
      &         nod_comm, node, ele, surf, fluid, sf_grp,                &
      &         Vsf_bcs, Bsf_bcs, iphys, iphys_ele, jac_3d, jac_sf_grp,  &
-     &         rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, surf_wk,         &
-     &         f_l, f_nl, nod_fld, ele_fld)
+     &         rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk, fem_wk,      &
+     &         surf_wk, f_l, f_nl, nod_fld, ele_fld)
 !
       use int_vol_velo_monitor
       use int_surf_velo_pre
@@ -104,6 +104,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -119,21 +120,25 @@
         call int_vol_velo_monitor_upwind                                &
      &     (i_field, iak_diff_mf, iak_diff_lor, node, ele, fluid,       &
      &      iphys, nod_fld, iphys_ele, iphys_ele%i_velo, jac_3d,        &
-     &      rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl, ele_fld)
+     &      rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk, fem_wk,         &
+     &      f_nl, ele_fld)
       else if (iflag_velo_supg .eq. id_magnetic_SUPG) then
         call int_vol_velo_monitor_upwind                                &
      &     (i_field, iak_diff_mf, iak_diff_lor, node, ele, fluid,       &
      &      iphys, nod_fld, iphys_ele, iphys_ele%i_magne, jac_3d,       &
-     &      rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl, ele_fld)
+     &      rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk, fem_wk,         &
+     &      f_nl, ele_fld)
       else
        call int_vol_velo_monitor_pg(i_field, iak_diff_mf, iak_diff_lor, &
      &     node, ele, fluid, iphys, nod_fld, iphys_ele, jac_3d,         &
-     &     rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl, ele_fld)
+     &     rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk, fem_wk,          &
+     &     f_nl, ele_fld)
       end if
 !
       call int_surf_velo_monitor(i_field, iak_diff_mf, iak_diff_lor,    &
      &    node, ele, surf, sf_grp, Vsf_bcs, Bsf_bcs, iphys, nod_fld,    &
-     &    jac_sf_grp, rhs_tbl, FEM_elens, fem_wk, surf_wk, f_l, f_nl)
+     &    jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,                   &
+     &    fem_wk, surf_wk, f_l, f_nl)
 !
       call cal_t_evo_4_vector(iflag_velo_supg,                          &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl, nod_comm,      &
@@ -195,7 +200,8 @@
       call int_surf_velo_monitor                                        &
      &   (iphys%i_v_diffuse, iak_diff_mf, iak_diff_lor,                 &
      &    node, ele, surf, sf_grp, Vsf_bcs, Bsf_bcs, iphys, nod_fld,    &
-     &    jac_sf_grp, rhs_tbl, FEM_elens, fem_wk, surf_wk, f_l, f_nl)
+     &    jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,                   &
+     &    fem_wk, surf_wk, f_l, f_nl)
 !
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
 !

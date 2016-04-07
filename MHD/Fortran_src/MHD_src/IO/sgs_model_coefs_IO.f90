@@ -16,7 +16,6 @@
 !
       use calypso_mpi
       use m_control_parameter
-      use m_SGS_model_coefs
       use m_t_step_parameter
       use open_sgs_model_coefs
 !
@@ -172,9 +171,9 @@
 !
       do inum = 1, wk_sgs1%nlayer
         write(sgs_fld_coef_file_code,1000) i_step_MHD,                  &
-     &      time, inum, wk_sgs1%fld_clip(inum,1:sgs_coefs%num_field)
+     &      time, inum, wk_sgs1%fld_clip(inum,1:wk_sgs1%num_kinds)
         write(sgs_comp_coef_file_code,1000) i_step_MHD,                 &
-     &      time, inum, wk_sgs1%comp_clip(inum,1:sgs_coefs%ntot_comp)
+     &      time, inum, wk_sgs1%comp_clip(inum,1:wk_sgs1%ntot_comp)
 !
         write(sgs_cor_file_code,1000) i_step_MHD, time, inum,           &
      &         wk_sgs1%corrilate(inum,1:wk_sgs1%ntot_comp)
@@ -223,7 +222,7 @@
      &    sgs_rms_file_code, sgs_w_rms_file_name)
 !
       write(sgs_fld_coef_file_code,1001)  i_step_MHD, time,             &
-     &        wk_sgs1%fld_whole_clip(1:sgs_coefs%num_field)
+     &        wk_sgs1%fld_whole_clip(1:wk_sgs1%num_kinds)
       write(sgs_comp_coef_file_code,1001)  i_step_MHD, time,            &
      &        wk_sgs1%comp_whole_clip(1:wk_sgs1%ntot_comp)
 !
@@ -270,7 +269,7 @@
      &      diff_rms_file_code, diff_w_rms_file_name)
 !
       write(diff_coef_file_code,1001) i_step_MHD, time,                 &
-     &          wk_diff1%fld_whole_clip(1:diff_coefs%num_field)
+     &          wk_diff1%fld_whole_clip(1:wk_diff1%num_kinds)
       write(diff_comp_file_code,1001) i_step_MHD, time,                 &
      &          wk_diff1%comp_whole_clip(1:wk_diff1%ntot_comp)
 !
@@ -320,7 +319,7 @@
       do inum = 1, wk_diff1%nlayer
         write(diff_coef_file_code,1000)                                 &
      &       i_step_MHD, time, inum,                                    &
-     &              wk_diff1%fld_clip(inum,1:diff_coefs%num_field)
+     &              wk_diff1%fld_clip(inum,1:wk_diff1%num_kinds)
 !
         write(diff_cor_file_code,1000)                                  &
      &       i_step_MHD, time, inum,                                    &

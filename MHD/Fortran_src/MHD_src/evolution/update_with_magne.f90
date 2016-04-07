@@ -11,9 +11,9 @@
 !!     &         (nod_comm, node, ele, surf, fluid, conduct, layer_tbl, &
 !!     &          sf_grp, Bsf_bcs, Fsf_bcs, iphys, iphys_ele,           &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens, &
-!!     &          filtering, wide_filtering, m_lump, wk_filter,         &
-!!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
-!!     &          nod_fld, ele_fld)
+!!     &          filtering, wide_filtering, m_lump,                    &
+!!     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,    &
+!!     &          nod_fld, ele_fld, diff_coefs)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -39,6 +39,7 @@
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(phys_data), intent(inout) :: ele_fld
+!!        type(MHD_coefficients_type), intent(inout) :: diff_coefs
 !!@endverbatim
 !
       module update_with_magne
@@ -64,6 +65,7 @@
       use t_filtering_data
       use t_layering_ele_list
       use t_surface_bc_data
+      use t_material_property
 !
       implicit none
 !
@@ -77,12 +79,11 @@
      &         (nod_comm, node, ele, surf, fluid, conduct, layer_tbl,   &
      &          sf_grp, Bsf_bcs, Fsf_bcs, iphys, iphys_ele,             &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,   &
-     &          filtering, wide_filtering, m_lump, wk_filter,           &
-     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                 &
-     &          nod_fld, ele_fld)
+     &          filtering, wide_filtering, m_lump,                      &
+     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,      &
+     &          nod_fld, ele_fld, diff_coefs)
 !
       use m_t_step_parameter
-      use m_SGS_model_coefs
       use m_SGS_address
       use m_work_4_dynamic_model
 !
@@ -118,6 +119,7 @@
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
       type(phys_data), intent(inout) :: ele_fld
+      type(MHD_coefficients_type), intent(inout) :: diff_coefs
 !
       integer (kind = kint) :: iflag_dynamic, iflag2
 !
@@ -207,7 +209,7 @@
      &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,                &
      &        FEM_elens, filtering, m_lump, wk_filter,                  &
      &        wk_cor1, wk_lsq1, wk_diff1, fem_wk, surf_wk, f_l, f_nl,   &
-     &        nod_fld)
+     &        nod_fld, diff_coefs)
          end if
        end if
  !

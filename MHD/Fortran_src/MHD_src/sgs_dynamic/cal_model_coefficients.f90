@@ -6,9 +6,9 @@
 !!      subroutine s_cal_model_coefficients(mesh, group, ele_mesh,      &
 !!     &          MHD_mesh, layer_tbl, nod_bcs, surf_bcs, iphys,        &
 !!     &          iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q, &
-!!     &          rhs_tbl, FEM_elens, filtering, wide_filtering,        &
-!!     &          m_lump, wk_filter, mhd_fem_wk, fem_wk, surf_wk,       &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          rhs_tbl, FEM_elens, filtering, wide_filtering, m_lump,&
+!!     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,    &
+!!     &          nod_fld, sgs_coefs, sgs_coefs_nod, diff_coefs)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(element_geometry), intent(in) :: ele_mesh
@@ -33,6 +33,9 @@
 !!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(MHD_coefficients_type), intent(inout) :: sgs_coefs
+!!        type(MHD_coefficients_type), intent(inout) :: sgs_coefs_nod
+!!        type(MHD_coefficients_type), intent(inout) :: diff_coefs
 !
       module cal_model_coefficients
 !
@@ -59,6 +62,7 @@
       use t_int_surface_data
       use t_filter_elength
       use t_filtering_data
+      use t_material_property
       use t_bc_data_MHD
       use t_MHD_boundary_data
 !
@@ -73,13 +77,12 @@
       subroutine s_cal_model_coefficients(mesh, group, ele_mesh,        &
      &          MHD_mesh, layer_tbl, nod_bcs, surf_bcs, iphys,          &
      &          iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,   &
-     &          rhs_tbl, FEM_elens, filtering, wide_filtering,          &
-     &          m_lump, wk_filter, mhd_fem_wk, fem_wk, surf_wk,         &
-     &          f_l, f_nl, nod_fld)
+     &          rhs_tbl, FEM_elens, filtering, wide_filtering, m_lump,  &
+     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,      &
+     &          nod_fld, sgs_coefs, sgs_coefs_nod, diff_coefs)
 !
       use m_t_step_parameter
       use m_SGS_address
-      use m_SGS_model_coefs
       use m_work_4_dynamic_model
 !
       use cal_sgs_heat_flux_dynamic
@@ -118,6 +121,9 @@
       type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
+      type(MHD_coefficients_type), intent(inout) :: sgs_coefs
+      type(MHD_coefficients_type), intent(inout) :: sgs_coefs_nod
+      type(MHD_coefficients_type), intent(inout) :: diff_coefs
 !
 !
       if(iflag_dynamic_SGS .eq. id_SGS_DYNAMIC_OFF) return
@@ -266,7 +272,7 @@
      &        ele_mesh%surf, MHD_mesh%fluid, MHD_mesh%conduct,          &
      &        layer_tbl, group%surf_grp, surf_bcs%Bsf_bcs, iphys,       &
      &        iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,     &
-     &        rhs_tbl, FEM_elens, filtering, wk_filter,                 &
+     &        rhs_tbl, FEM_elens, sgs_coefs, filtering, wk_filter,      &
      &        wk_cor1, wk_lsq1, wk_diff1, mhd_fem_wk, fem_wk, surf_wk,  &
      &        f_l, f_nl, nod_fld, diff_coefs)
         end if

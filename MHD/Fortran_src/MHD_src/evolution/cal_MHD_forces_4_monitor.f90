@@ -7,8 +7,8 @@
 !!      subroutine cal_forces_4_monitor                                 &
 !!     &         (nod_comm, node, ele, surf, fluid, conduct, sf_grp,    &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele,                  &
-!!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, m_lump,       &
-!!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
+!!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,   &
+!!     &          m_lump, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,       &
 !!     &          nod_fld, ele_fld)
 !!      subroutine cal_work_4_forces                                    &
 !!     &         (nod_comm, node, ele, iphys, jac_3d, rhs_tbl,          &
@@ -28,6 +28,7 @@
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(MHD_coefficients_type), intent(in) :: diff_coefs
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -57,6 +58,7 @@
       use t_int_surface_data
       use t_MHD_finite_element_mat
       use t_filter_elength
+      use t_material_property
       use t_bc_data_MHD
       use t_MHD_boundary_data
 !
@@ -117,12 +119,11 @@
       subroutine cal_forces_4_monitor                                   &
      &         (nod_comm, node, ele, surf, fluid, conduct, sf_grp,      &
      &          nod_bcs, surf_bcs, iphys, iphys_ele,                    &
-     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, m_lump,         &
-     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                 &
+     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,     &
+     &          m_lump, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,         &
      &          nod_fld, ele_fld)
 !
       use m_SGS_address
-      use m_SGS_model_coefs
 !
       use cal_terms_for_heat
       use cal_momentum_terms
@@ -144,6 +145,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(lumped_mass_matrices), intent(in) :: m_lump
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -168,7 +170,7 @@
      &        nod_comm, node, ele, surf, fluid, sf_grp,                 &
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,                &
      &        iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,          &
-     &        FEM_elens,  mhd_fem_wk, fem_wk, surf_wk,                  &
+     &        FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,       &
      &        f_l, f_nl, nod_fld)
         end if
       end do
@@ -191,7 +193,8 @@
      &        nod_comm, node, ele, surf, fluid, sf_grp,                 &
      &        surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys,                &
      &        iphys_ele, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,        &
-     &        mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld, ele_fld)
+     &        diff_coefs, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,       &
+     &        nod_fld, ele_fld)
         end if
       end do
 !
@@ -207,7 +210,7 @@
      &        nod_comm, node, ele, surf, conduct, sf_grp,               &
      &        nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,     &
      &        iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,   &
-     &        FEM_elens, mhd_fem_wk, fem_wk, surf_wk,                   &
+     &        FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,       &
      &        f_l, f_nl, nod_fld)
         end if
       end do
@@ -228,8 +231,8 @@
         call cal_thermal_diffusion                                      &
      &     (iak_diff_hf, iak_diff_t, nod_comm, node, ele, surf, fluid,  &
      &      sf_grp, nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,          &
-     &      jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, mhd_fem_wk,         &
-     &      fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &      jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,         &
+     &      mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
       end if
 !
 !      if (iphys%i_t_diffuse .gt. izero) then
@@ -238,8 +241,8 @@
 !        call cal_thermal_diffusion                                     &
 !     &     (iak_diff_hf, iak_diff_t, nod_comm, node, ele, surf, fluid, &
 !     &      sf_grp, nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,         &
-!     &      jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, mhd_fem_wk,        &
-!     &      fem_wk, surf_wk, f_l, f_nl, nod_fld)
+!     &      jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,        &
+!     &      mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !      end if
 !
       if (iphys%i_v_diffuse .gt. izero) then

@@ -8,7 +8,8 @@
 !!      subroutine s_cal_light_element(nod_comm, node, ele, surf,       &
 !!     &          fluid, sf_grp, Cnod_bcs, Csf_bcs, iphys,              &
 !!     &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,      &
-!!     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          FEM_elens, diff_coefs, mhd_fem_wk, fem_wk,            &
+!!     &          f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -24,6 +25,7 @@
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(MHD_coefficients_type), intent(in) :: diff_coefs
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -49,6 +51,7 @@
       use t_filter_elength
       use t_bc_data_temp
       use t_surface_bc_data
+      use t_material_property
 !
       implicit none
 !
@@ -61,13 +64,13 @@
       subroutine s_cal_light_element(nod_comm, node, ele, surf,         &
      &          fluid, sf_grp, Cnod_bcs, Csf_bcs, iphys,                &
      &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,        &
-     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          FEM_elens, diff_coefs, mhd_fem_wk, fem_wk,              &
+     &          f_l, f_nl, nod_fld)
 !
       use m_t_int_parameter
       use m_type_AMG_data
       use m_solver_djds_MHD
       use m_SGS_address
-      use m_SGS_model_coefs
 !
       use nod_phys_send_recv
       use set_boundary_scalars
@@ -94,6 +97,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk

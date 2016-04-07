@@ -6,12 +6,12 @@
 !!      subroutine cal_sgs_terms_4_monitor                              &
 !!     &         (nod_comm, node, ele, fluid, conduct, iphys,           &
 !!     &          iphys_ele, ele_fld,  jac_3d, rhs_tbl, FEM_elens,      &
-!!     &          filtering, wk_filter, mhd_fem_wk, fem_wk,             &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          sgs_coefs, sgs_coefs_nod, filtering,                  &
+!!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_diff_of_sgs_terms(nod_comm, node, ele,           &
 !!     &          surf, fluid, conduct, sf_grp, nod_bcs, surf_bcs,      &
-!!     &          iphys, iphys_ele, jac_3d, jac_sf_grp,                 &
-!!     &          rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, surf_wk,      &
+!!     &          iphys, iphys_ele, jac_3d, jac_sf_grp, rhs_tbl,        &
+!!     &          FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,   &
 !!     &          f_l, f_nl, nod_fld, ele_fld)
 !!      subroutine cal_work_4_sgs_terms(nod_comm, node, ele, conduct,   &
 !!     &          iphys, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,           &
@@ -30,6 +30,9 @@
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(MHD_coefficients_type), intent(in) :: sgs_coefs
+!!        type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
+!!        type(MHD_coefficients_type), intent(in) :: diff_coefs
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -63,6 +66,7 @@
       use t_filtering_data
       use t_bc_data_MHD
       use t_MHD_boundary_data
+      use t_material_property
 !
       implicit none
 !
@@ -75,11 +79,10 @@
       subroutine cal_sgs_terms_4_monitor                                &
      &         (nod_comm, node, ele, fluid, conduct, iphys,             &
      &          iphys_ele, ele_fld,  jac_3d, rhs_tbl, FEM_elens,        &
-     &          filtering, wk_filter, mhd_fem_wk, fem_wk,               &
-     &          f_l, f_nl, nod_fld)
+     &          sgs_coefs, sgs_coefs_nod, filtering,                    &
+     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_SGS_address
-      use m_SGS_model_coefs
 !
       use cal_sgs_fluxes
       use int_sgs_induction
@@ -95,6 +98,8 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
+      type(MHD_coefficients_type), intent(in) :: sgs_coefs
+      type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
 !
       type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -135,8 +140,9 @@
         if(iflag_debug.gt.0) write(*,*) 'lead ', trim(fhd_induct_t)
         call cal_sgs_magne_induction(icomp_sgs_uxb, ie_dvx, ie_dbx,     &
      &      nod_comm, node, ele, conduct, iphys, iphys_ele, ele_fld,    &
-     &      jac_3d, rhs_tbl, FEM_elens, filtering, sgs_coefs_nod,       &
-     &      wk_filter, mhd_fem_wk, fem_wk, f_l, nod_fld)
+     &      jac_3d, rhs_tbl, FEM_elens, filtering,                      &
+     &      sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,    &
+     &      f_l, nod_fld)
       end if
 !
       if (iphys%i_SGS_vp_induct .gt. 0) then
@@ -154,8 +160,8 @@
 !
       subroutine cal_diff_of_sgs_terms(nod_comm, node, ele,             &
      &          surf, fluid, conduct, sf_grp, nod_bcs, surf_bcs,        &
-     &          iphys, iphys_ele, jac_3d, jac_sf_grp,                   &
-     &          rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, surf_wk,        &
+     &          iphys, iphys_ele, jac_3d, jac_sf_grp, rhs_tbl,          &
+     &          FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,     &
      &          f_l, f_nl, nod_fld, ele_fld)
 !
       use m_SGS_address
@@ -178,6 +184,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -196,7 +203,8 @@
      &      nod_comm, node, ele, surf, fluid, sf_grp,                   &
      &      nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,                  &
      &      iphys_ele, ele_fld,  jac_3d, jac_sf_grp, rhs_tbl,           &
-     &      FEM_elens, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &      FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,         &
+     &      f_l, f_nl, nod_fld)
       end if
 !
       do i = 1, nod_fld%num_phys
@@ -209,7 +217,8 @@
      &        nod_comm, node, ele, surf, fluid, sf_grp,                 &
      &        surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys,                &
      &        iphys_ele, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,        &
-     &        mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld, ele_fld)
+     &        diff_coefs, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,       &
+     &        nod_fld, ele_fld)
         end if
       end do
 !
@@ -221,7 +230,8 @@
      &      nod_comm, node, ele, surf, conduct, sf_grp,                 &
      &      nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,       &
      &      iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,     &
-     &      FEM_elens, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &      FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,         &
+     &      f_l, f_nl, nod_fld)
       end if
 !
 !

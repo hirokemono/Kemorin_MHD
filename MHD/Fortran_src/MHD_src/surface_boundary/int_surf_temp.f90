@@ -5,11 +5,11 @@
 !
 !!      subroutine int_surf_temp_ele                                    &
 !!     &         (iak_diff_hf, node, ele, surf, sf_grp, iphys, nod_fld, &
-!!     &          Tsf_bcs, jac_sf_grp, rhs_tbl, FEM_elens,              &
+!!     &          Tsf_bcs, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,  &
 !!     &          fem_wk, surf_wk, f_l, f_nl)
 !!      subroutine int_surf_temp_monitor(i_field, iak_diff_hf,          &
 !!     &          node, ele, surf, sf_grp, iphys, nod_fld, Tsf_bcs,     &
-!!     &          jac_sf_grp, rhs_tbl, FEM_elens,                       &
+!!     &          jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,           &
 !!     &          fem_wk, surf_wk, f_l, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -20,6 +20,7 @@
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(MHD_coefficients_type), intent(in) :: diff_coefs
 !!        type(scaler_surf_bc_type), intent(in) :: Tsf_bcs
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(work_surface_element_mat), intent(inout) :: surf_wk
@@ -40,6 +41,7 @@
       use t_finite_element_mat
       use t_int_surface_data
       use t_surface_bc_data
+      use t_material_property
 !
       implicit none
 !
@@ -51,10 +53,8 @@
 !
       subroutine int_surf_temp_ele                                      &
      &         (iak_diff_hf, node, ele, surf, sf_grp, iphys, nod_fld,   &
-     &          Tsf_bcs, jac_sf_grp, rhs_tbl, FEM_elens,                &
+     &          Tsf_bcs, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,    &
      &          fem_wk, surf_wk, f_l, f_nl)
-!
-      use m_SGS_model_coefs
 !
       use int_surf_div_fluxes_sgs
       use int_surf_fixed_gradients
@@ -70,6 +70,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(scaler_surf_bc_type), intent(in) :: Tsf_bcs
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -100,10 +101,8 @@
 !
       subroutine int_surf_temp_monitor(i_field, iak_diff_hf,            &
      &          node, ele, surf, sf_grp, iphys, nod_fld, Tsf_bcs,       &
-     &          jac_sf_grp, rhs_tbl, FEM_elens,                         &
+     &          jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,             &
      &          fem_wk, surf_wk, f_l, f_nl)
-!
-      use m_SGS_model_coefs
 !
       use int_surf_div_fluxes_sgs
       use int_surf_fixed_gradients
@@ -120,6 +119,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(scaler_surf_bc_type), intent(in) :: Tsf_bcs
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk

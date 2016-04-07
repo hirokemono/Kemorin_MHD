@@ -44,6 +44,7 @@
       use m_surf_data_list
       use m_bc_data_velo
       use m_3d_filter_coef_MHD
+      use m_SGS_model_coefs
 !
       use t_mesh_data
       use t_geometry_data_MHD
@@ -174,7 +175,8 @@
       call set_material_property
       call init_ele_material_property(mesh%ele%numele)
       call s_count_sgs_components                                       &
-     &   (mesh%node%numnod, mesh%ele%numele, layer_tbl)
+     &   (mesh%node%numnod, mesh%ele%numele, layer_tbl,                 &
+     &    sgs_coefs, sgs_coefs_nod, diff_coefs)
 !
       if (iflag_debug.gt.0)  write(*,*)' make comm. table for fluid'
       call s_const_comm_table_fluid                                     &

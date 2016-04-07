@@ -45,6 +45,7 @@
       use m_array_for_send_recv
       use m_solver_djds_MHD
       use m_3d_filter_coef_MHD
+      use m_SGS_model_coefs
 !
       use m_cal_max_indices
       use m_surf_data_list
@@ -194,7 +195,8 @@
       call set_material_property
       call init_ele_material_property(mesh%ele%numele)
       call s_count_sgs_components                                       &
-     &   (mesh%node%numnod, mesh%ele%numele, layer_tbl)
+     &   (mesh%node%numnod, mesh%ele%numele, layer_tbl,                 &
+     &    sgs_coefs, sgs_coefs_nod, diff_coefs)
 !
 !  -------------------------------
 !
@@ -215,7 +217,7 @@
 !
       if (iflag_debug.eq.1) write(*,*)' initial_data_control'
       call initial_data_control(mesh%node, mesh%ele, MHD_mesh%fluid,    &
-     &    iphys, layer_tbl, nod_fld1)
+     &    iphys, layer_tbl, nod_fld1, sgs_coefs, diff_coefs)
 !
 !  -------------------------------
 !

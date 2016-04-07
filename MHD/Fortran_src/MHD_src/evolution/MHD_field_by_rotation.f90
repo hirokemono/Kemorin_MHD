@@ -10,8 +10,9 @@
 !!      subroutine cal_field_by_rotation                                &
 !!     &         (nod_comm, node, ele, surf, fluid, conduct, sf_grp,    &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,         &
-!!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, m_lump,       &
-!!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+!!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,   &
+!!     &          m_lump, mhd_fem_wk, fem_wk, surf_wk,                  &
+!!     &          f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -27,6 +28,7 @@
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(MHD_coefficients_type), intent(in) :: diff_coefs
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -56,6 +58,7 @@
       use t_filter_elength
       use t_bc_data_MHD
       use t_MHD_boundary_data
+      use t_material_property
 !
       implicit none
 !
@@ -68,8 +71,9 @@
       subroutine cal_field_by_rotation                                  &
      &         (nod_comm, node, ele, surf, fluid, conduct, sf_grp,      &
      &          nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,           &
-     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, m_lump,         &
-     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,     &
+     &          m_lump, mhd_fem_wk, fem_wk, surf_wk,                    &
+     &          f_l, f_nl, nod_fld)
 !
       use m_machine_parameter
       use m_control_parameter
@@ -92,6 +96,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(lumped_mass_matrices), intent(in) :: m_lump
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -110,9 +115,9 @@
      &       iak_diff_v, iphys%i_velo, iphys%i_vort,                    &
      &       fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,             &
      &       nod_comm, node, ele, surf, sf_grp, iphys_ele, ele_fld,     &
-     &       jac_3d, jac_sf_grp, FEM_elens, nod_bcs%Vnod_bcs%nod_bc_w,  &
-     &       surf_bcs%Vsf_bcs%sgs, rhs_tbl, fem_wk, surf_wk,            &
-     &       f_nl, nod_fld)
+     &       jac_3d, jac_sf_grp, FEM_elens, diff_coefs,                 &
+     &       nod_bcs%Vnod_bcs%nod_bc_w, surf_bcs%Vsf_bcs%sgs,           &
+     &      rhs_tbl, fem_wk, surf_wk, f_nl, nod_fld)
         end if
       end if
 !
@@ -126,16 +131,16 @@
      &            iak_diff_b, iphys%i_magne, iphys%i_current,           &
      &            ele%istack_ele_smp, m_lump, nod_comm, node, ele,      &
      &            surf, sf_grp, iphys_ele, ele_fld, jac_3d,             &
-     &            jac_sf_grp, FEM_elens, nod_bcs%Bnod_bcs%nod_bc_j,     &
-     &            surf_bcs%Bsf_bcs%sgs, rhs_tbl, fem_wk, surf_wk,       &
-     &            f_nl, nod_fld)
+     &            jac_sf_grp, FEM_elens, diff_coefs,                    &
+     &            nod_bcs%Bnod_bcs%nod_bc_j, surf_bcs%Bsf_bcs%sgs,      &
+     &            rhs_tbl, fem_wk, surf_wk, f_nl, nod_fld)
 !
 !             call choose_cal_rotation_sgs                              &
 !     &          (iflag_commute_magne, iflag_mag_supg,                  &
 !     &           iak_diff_b, iphys%i_magne, iphys%i_current,           &
 !     &           conduct%istack_ele_fld_smp, mhd_fem_wk%mlump_cd,      &
-!     &           nod_comm, node, ele, surf, sf_grp,                    &
-!     &           iphys_ele, ele_fld, jac_3d, jac_sf_grp, FEM_elens,    &
+!     &           nod_comm, node, ele, surf, sf_grp, iphys_ele, ele_fld,&
+!     &           jac_3d, jac_sf_grp, FEM_elens, diff_coefs,            &
 !     &           nod_bcs%Bnod_bcs%nod_bc_j, surf_bcs%Bsf_bcs%sgs,      &
 !     &           rhs_tbl, fem_wk, surf_wk, f_nl, nod_fld)
 !             call int_current_diffuse                                  &
@@ -148,8 +153,8 @@
             call choose_cal_rotation_sgs                                &
                (iflag_commute_magne, iflag_mag_supg, iak_diff_b,        &
      &          iphys%i_magne, iphys%i_current, ele%istack_ele_smp,     &
-     &          m_lump, nod_comm, node, ele, surf, sf_grp,              &
-     &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, FEM_elens,      &
+     &          m_lump, nod_comm, node, ele, surf, sf_grp, iphys_ele,   &
+     &          ele_fld, jac_3d, jac_sf_grp, FEM_elens, diff_coefs,     &
      &          nod_bcs%Bnod_bcs%nod_bc_j, surf_bcs%Bsf_bcs%sgs,        &
      &          rhs_tbl, fem_wk, surf_wk, f_nl, nod_fld)
 !           call choose_cal_rotation_sgs                                &
@@ -157,7 +162,7 @@
 !     &         iak_diff_b, iphys%i_magne, iphys%i_current,             &
 !     &         conduct%istack_ele_fld_smp, mhd_fem_wk%mlump_cd,        &
 !     &         nod_comm, node, ele, surf, sf_grp, iphys_ele, ele_fld,  &
-!     &         jac_3d, jac_sf_grp, FEM_elens,                          &
+!     &         jac_3d, jac_sf_grp, FEM_elens, diff_coefs,              &
 !     &         nod_bcs%Bnod_bcs%nod_bc_j, surf_bcs%Bsf_bcs%sgs,        &
 !     &         rhs_tbl, fem_wk, surf_wk, f_nl, nod_fld)
           end if

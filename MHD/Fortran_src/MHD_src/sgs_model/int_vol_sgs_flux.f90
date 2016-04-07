@@ -96,8 +96,6 @@
      &          node, ele, fluid, nod_fld, jac_3d, FEM_elens,           &
      &          ncomp_dvx, id_dx, diff_ele, fem_wk)
 !
-      use m_SGS_model_coefs
-!
       use fem_skv_sgs_flux_type
       use nodal_fld_2_each_element
 !
@@ -147,8 +145,6 @@
      &          node, ele, fluid, nod_fld, jac_3d, FEM_elens,           &
      &          ncomp_dvx, id_dx, diff_ele, ncomp_ele, ie_upw, d_ele,   &
      &          fem_wk)
-!
-      use m_SGS_model_coefs
 !
       use fem_skv_sgs_flux_type
       use nodal_fld_2_each_element

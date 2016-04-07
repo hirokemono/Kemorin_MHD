@@ -21,8 +21,8 @@
 !!      subroutine cal_sgs_magne_induction                              &
 !!     &         (icomp_sgs_uxb, ie_dvx, ie_dbx, nod_comm, node, ele,   &
 !!     &          conduct, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,  &
-!!     &          FEM_elens, filtering, sgs_coefs_nod, wk_filter,       &
-!!     &          mhd_fem_wk, fem_wk, f_l, nod_fld)
+!!     &          FEM_elens, filtering, sgs_coefs, sgs_coefs_nod,       &
+!!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, nod_fld)
 !!      subroutine cal_sgs_uxb_2_evo(icomp_sgs_uxb, ie_dvx,             &
 !!     &        nod_comm, node, ele, conduct, iphys, iphys_ele, ele_fld,&
 !!     &        jac_3d, rhs_tbl, FEM_elens, filtering, sgs_coefs,       &
@@ -268,8 +268,8 @@
       subroutine cal_sgs_magne_induction                                &
      &         (icomp_sgs_uxb, ie_dvx, ie_dbx, nod_comm, node, ele,     &
      &          conduct, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,    &
-     &          FEM_elens, filtering, sgs_coefs_nod, wk_filter,         &
-     &          mhd_fem_wk, fem_wk, f_l, nod_fld)
+     &          FEM_elens, filtering, sgs_coefs, sgs_coefs_nod,         &
+     &          wk_filter, mhd_fem_wk, fem_wk, f_l, nod_fld)
 !
       use cal_sgs_inductions_grad
 !
@@ -287,6 +287,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
+      type(MHD_coefficients_type), intent(in) :: sgs_coefs
       type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
 !
       type(filtering_work_type), intent(inout) :: wk_filter
@@ -303,7 +304,7 @@
      &     (ifilter_final, icomp_sgs_uxb, iphys%i_SGS_induct_t,         &
      &      iphys%i_velo, iphys%i_magne, ie_dvx, ie_dbx,                &
      &      nod_comm, node, ele, conduct, iphys_ele, ele_fld,           &
-     &      jac_3d, rhs_tbl, FEM_elens, fem_wk, mhd_fem_wk,             &
+     &      jac_3d, rhs_tbl, FEM_elens, sgs_coefs, fem_wk, mhd_fem_wk,  &
      &      f_l, nod_fld)
 !
       else if(iflag_SGS_induction .eq. id_SGS_similarity) then

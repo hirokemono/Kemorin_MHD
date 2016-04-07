@@ -6,8 +6,8 @@
 !!      subroutine choose_cal_rotation_sgs(iflag_commute, iflag_4_supg, &
 !!     &          iak_diff, i_vector, i_rot, iele_fsmp_stack, m_lump,   &
 !!     &          nod_comm, node, ele, surf, sf_grp, iphys_ele, ele_fld,&
-!!     &          jac_3d, jac_sf_grp, FEM_elens, nod_bc, sgs_sf,        &
-!!     &          rhs_tbl, fem_wk, surf_wk, f_nl, nod_fld)
+!!     &          jac_3d, jac_sf_grp, FEM_elens, diff_coefs, nod_bc,    &
+!!     &          sgs_sf, rhs_tbl, fem_wk, surf_wk, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -20,6 +20,7 @@
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(MHD_coefficients_type), intent(in) :: diff_coefs
 !!        type(scaler_surf_bc_data_type), intent(in) :: sgs_sf(3)
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -34,7 +35,6 @@
       use m_machine_parameter
       use m_control_parameter
       use m_phys_constants
-      use m_SGS_model_coefs
 !
       use t_comm_table
       use t_geometry_data
@@ -51,6 +51,7 @@
       use t_int_surface_data
       use t_MHD_finite_element_mat
       use t_filter_elength
+      use t_material_property
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
@@ -67,8 +68,8 @@
       subroutine choose_cal_rotation_sgs(iflag_commute, iflag_4_supg,   &
      &          iak_diff, i_vector, i_rot, iele_fsmp_stack, m_lump,     &
      &          nod_comm, node, ele, surf, sf_grp, iphys_ele, ele_fld,  &
-     &          jac_3d, jac_sf_grp, FEM_elens, nod_bc, sgs_sf,          &
-     &          rhs_tbl, fem_wk, surf_wk, f_nl, nod_fld)
+     &          jac_3d, jac_sf_grp, FEM_elens, diff_coefs, nod_bc,      &
+     &          sgs_sf, rhs_tbl, fem_wk, surf_wk, f_nl, nod_fld)
 !
       use cal_rotation
       use set_boundary_scalars
@@ -85,6 +86,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(scaler_surf_bc_data_type), intent(in) :: sgs_sf(3)
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -103,7 +105,7 @@
         call choose_int_vol_rot_sgs                                     &
      &     (iflag_4_supg, iele_fsmp_stack, iak_diff, i_vector,          &
      &      node, ele, surf, sf_grp, nod_fld, iphys_ele, ele_fld,       &
-     &      jac_3d, jac_sf_grp, FEM_elens, sgs_sf, rhs_tbl,             &
+     &      jac_3d, jac_sf_grp, FEM_elens, diff_coefs, sgs_sf, rhs_tbl, &
      &      fem_wk, surf_wk, f_nl)
       else
         call choose_int_vol_rotations(iflag_4_supg, iele_fsmp_stack,    &
@@ -127,8 +129,8 @@
       subroutine choose_int_vol_rot_sgs                                 &
      &         (iflag_4_supg, iele_fsmp_stack, iak_diff, i_vector,      &
      &          node, ele, surf, sf_grp, nod_fld, iphys_ele, ele_fld,   &
-     &          jac_3d, jac_sf_grp, FEM_elens, sgs_sf, rhs_tbl,         &
-     &          fem_wk, surf_wk, f_nl)
+     &          jac_3d, jac_sf_grp, FEM_elens, diff_coefs,              &
+     &          sgs_sf, rhs_tbl, fem_wk, surf_wk, f_nl)
 !
       use int_sgs_vect_differences
       use int_sgs_vect_diff_upw
@@ -144,6 +146,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(scaler_surf_bc_data_type), intent(in) :: sgs_sf(3)
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !

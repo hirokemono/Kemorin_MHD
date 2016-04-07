@@ -225,14 +225,13 @@
 !
       use m_work_4_dynamic_model
       use m_phys_labels
-      use m_SGS_model_coefs
       use write_field_labels
 !
       integer(kind = kint), intent(in) :: file_id
       integer ( kind=kint) :: i
 !
 !
-      do i = 1, sgs_coefs%num_field
+      do i = 1, wk_sgs1%num_kinds
         if ( wk_sgs1%name(i) .eq. fhd_SGS_h_flux ) then
           call write_one_label(file_id, fhd_SGS_h_flux)
         else if ( wk_sgs1%name(i) .eq. fhd_SGS_m_flux ) then
@@ -259,7 +258,6 @@
 !
       use m_work_4_dynamic_model
       use m_phys_labels
-      use m_SGS_model_coefs
 !
       use write_field_labels
 !
@@ -267,7 +265,7 @@
       integer ( kind=kint) :: i
 !
 !
-      do i = 1, diff_coefs%num_field
+      do i = 1, wk_diff1%num_kinds
         if ( wk_diff1%name(i) .eq. fhd_velo ) then
           call write_one_label(file_id, fhd_velo)
         else if ( wk_diff1%name(i) .eq. fhd_temp ) then
@@ -300,7 +298,6 @@
       use m_geometry_constants
       use m_work_4_dynamic_model
       use m_phys_labels
-      use m_SGS_model_coefs
 !
       use add_direction_labels
       use write_field_labels
@@ -311,7 +308,7 @@
       character(len=kchara) :: lab(6), label
 !
 !
-      do i = 1, sgs_coefs%num_field
+      do i = 1, wk_sgs1%num_kinds
         if ( wk_sgs1%name(i) .eq. fhd_SGS_h_flux ) then
           call sel_coord_vector_comp_labels(icoord_SGS_model_coef,      &
      &        fhd_SGS_h_flux, lab(1) )
@@ -369,13 +366,12 @@
       use m_control_parameter
       use m_work_4_dynamic_model
       use m_phys_labels
-      use m_SGS_model_coefs
 !
       integer(kind = kint), intent(in) :: file_id
       integer ( kind=kint) :: i
 !
 !
-      do i = 1, diff_coefs%num_field
+      do i = 1, wk_diff1%num_kinds
         if ( wk_diff1%name(i) .eq. fhd_velo ) then
           write(file_id,'(a)') 'dVx_dx, dVx_dy, dVx_dz, '
           write(file_id,'(a)') 'dVy_dx, dVy_dy, dVy_dz, '
