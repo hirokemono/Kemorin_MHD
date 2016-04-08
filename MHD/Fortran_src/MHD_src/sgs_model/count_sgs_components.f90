@@ -39,7 +39,6 @@
       use calypso_mpi
       use m_phys_labels
       use m_control_parameter
-      use m_SGS_address
 !
       use t_layering_ele_list
       use t_ele_info_4_dynamic
@@ -304,15 +303,15 @@
 !
        if (iflag_t_evo_4_composit .gt. id_no_evolution) then
          if (iflag_SGS_comp_flux .ne. id_SGS_none) then
-           icomp_sgs_cf = i
-           iak_sgs_cf =   j
+           icomp_sgs%i_comp_flux = i
+           ifld_sgs%i_comp_flux =  j
            wk_sgs%name(j) = fhd_SGS_c_flux
            sgs_coefs%num_comps(j) = 3
            i = i + sgs_coefs%num_comps(j)
            j = j + 1
            if (iflag_commute_c_flux .eq. id_SGS_commute_ON) then
-             icomp_diff_cf = id
-             iak_diff_cf = jd
+             icomp_diff%i_comp_flux = id
+             ifld_diff%i_comp_flux =  jd
              wk_diff%name(jd) = fhd_SGS_c_flux
              diff_coefs%num_comps(jd) = 3
              id = id + diff_coefs%num_comps(jd)
@@ -388,38 +387,6 @@
         end if
       end if
 !
-      iak_sgs_hf =   ifld_sgs%i_heat_flux
-      iak_sgs_mf =   ifld_sgs%i_mom_flux
-      iak_sgs_lor =  ifld_sgs%i_lorentz
-      iak_sgs_uxb =  ifld_sgs%i_induction
-      iak_sgs_tbuo = ifld_sgs%i_buoyancy
-      iak_sgs_cbuo = ifld_sgs%i_comp_buoyancy
-!
-      icomp_sgs_hf = icomp_sgs%i_heat_flux
-      icomp_sgs_mf = icomp_sgs%i_mom_flux
-      icomp_sgs_lor = icomp_sgs%i_lorentz
-      icomp_sgs_uxb = icomp_sgs%i_induction
-      icomp_sgs_tbuo = icomp_sgs%i_buoyancy
-      icomp_sgs_cbuo = icomp_sgs%i_comp_buoyancy
-!
-      iak_diff_v = ifld_diff%i_velo
-      iak_diff_b = ifld_diff%i_magne
-      iak_diff_t = ifld_diff%i_temp
-      iak_diff_c = ifld_diff%i_light
-      iak_diff_hf = ifld_diff%i_heat_flux
-      iak_diff_mf = ifld_diff%i_mom_flux
-      iak_diff_lor = ifld_diff%i_lorentz
-      iak_diff_uxb = ifld_diff%i_induction
-!
-      icomp_diff_v = icomp_diff%i_velo
-      icomp_diff_b = icomp_diff%i_magne
-      icomp_diff_t = icomp_diff%i_temp
-      icomp_diff_c = icomp_diff%i_light
-      icomp_diff_hf = icomp_diff%i_heat_flux
-      icomp_diff_mf = icomp_diff%i_mom_flux
-      icomp_diff_lor = icomp_diff%i_lorentz
-      icomp_diff_uxb = icomp_diff%i_induction
-!
        diff_coefs%istack_comps(0) = 0
        do i = 1, diff_coefs%num_field
          diff_coefs%istack_comps(i) = diff_coefs%istack_comps(i-1)      &
@@ -467,10 +434,11 @@
      &               sgs_coefs%num_comps(ifld_sgs%i_induction),         &
      &               trim(wk_sgs%name(ifld_sgs%i_induction))
         end if
-        if(iak_sgs_cf .gt. 0) then
-          write(*,*) 'iak_sgs_cf', iak_sgs_cf, icomp_sgs_cf,            &
-     &               sgs_coefs%num_comps(iak_sgs_cf),                   &
-     &               trim(wk_sgs%name(iak_sgs_cf))
+        if(ifld_sgs%i_comp_flux .gt. 0) then
+          write(*,*) 'iak_sgs_cf',                                      &
+     &               ifld_sgs%i_comp_flux, icomp_sgs%i_comp_flux,       &
+     &               sgs_coefs%num_comps(ifld_sgs%i_comp_flux),         &
+     &               trim(wk_sgs%name(ifld_sgs%i_comp_flux))
         end if
         diff_coefs%ntot_comp = diff_coefs%num_field
 !
@@ -533,7 +501,6 @@
 !
       subroutine set_SGS_addresses(iphys_elediff)
 !
-      use m_SGS_address
       use m_control_parameter
       use t_material_property
 !
@@ -580,12 +547,6 @@
          i = i + 9
         end if
       end if
-!
-      ie_dvx = iphys_elediff%i_velo
-      ie_dbx = iphys_elediff%i_magne
-!
-      ie_dfvx = iphys_elediff%i_filter_velo
-      ie_dfbx = iphys_elediff%i_filter_magne
 !
       end subroutine set_SGS_addresses
 !

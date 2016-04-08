@@ -261,8 +261,8 @@
       if (iphys%i_SGS_div_m_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead radial', trim(fhd_div_SGS_m_flux)
-        call cal_terms_4_momentum                                       &
-     &     (iphys%i_SGS_div_m_flux, iak_diff_mf, iak_diff_lor,          &
+        call cal_terms_4_momentum(iphys%i_SGS_div_m_flux,               &
+     &      ifld_diff%i_mom_flux, ifld_diff%i_lorentz,                  &
      &      mesh1%nod_comm, mesh1%node, mesh1%ele, ele_mesh1%surf,      &
      &      MHD_mesh1%fluid, group1%surf_grp,                           &
      &      sf1_bcs%Vsf_bcs, sf1_bcs%Bsf_bcs, iphys,                    &
@@ -294,7 +294,8 @@
       if (iphys%i_SGS_vp_induct .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_vp_induct)
-        call cal_sgs_uxb_2_monitor(icomp_sgs_uxb, ie_dvx,               &
+        call cal_sgs_uxb_2_monitor                                      &
+     &     (icomp_sgs%i_induction, iphys_elediff%i_velo,                &
      &     mesh1%nod_comm, mesh1%node, mesh1%ele, MHD_mesh1%conduct,    &
      &     iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen,  &
      &     filtering1, sgs_coefs, wk_filter1, mhd_fem1_wk, fem1_wk,     &

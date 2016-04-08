@@ -35,6 +35,7 @@
 !ifld_diff%i_mom_flux
 !
       type(SGS_terms_address), save :: icomp_diff
+!icomp_diff%i_comp_flux
 !
       type(SGS_terms_address), save :: iphys_elediff
 !
