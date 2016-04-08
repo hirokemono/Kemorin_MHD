@@ -71,6 +71,7 @@
       call update_fields(mesh1, group1, ele_mesh1, MHD_mesh1,           &
      &    nod1_bcs, sf1_bcs, iphys, iphys_ele,                          &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,  &
+     &      ifld_diff, icomp_diff, iphys_elediff,                       &
      &    filtering1, wide_filtering, layer_tbl1, m1_lump,              &
      &    wk_cor1, wk_lsq1, wk_diff1, wk_filter1, mhd_fem1_wk, fem1_wk, &
      &    surf1_wk, f1_l, f1_nl, nod_fld1, fld_ele1, diff_coefs)
@@ -92,8 +93,8 @@
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
       call set_aiccg_matrices(mesh1, group1, ele_mesh1, MHD_mesh1,      &
      &    nod1_bcs, sf1_bcs, jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q,    &
-     &    FEM1_elen, diff_coefs, rhs_tbl1, MHD1_mat_tbls, surf1_wk,     &
-     &    mhd_fem1_wk, fem1_wk)
+     &    FEM1_elen, ifld_diff, diff_coefs, rhs_tbl1, MHD1_mat_tbls,    &
+     &    surf1_wk, mhd_fem1_wk, fem1_wk)
 !
 !   time evolution loop start!
 !
@@ -103,7 +104,8 @@
      &     (mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,            &
      &      nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,              &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
-     &      FEM1_elen, filtering1, wide_filtering, m1_lump,             &
+     &      FEM1_elen, ifld_sgs, icomp_sgs, ifld_diff, icomp_diff,      &
+     &      iphys_elediff, filtering1, wide_filtering, m1_lump,         &
      &      wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,            &
      &      mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,                &
      &      nod_fld1, sgs_coefs, sgs_coefs_nod, diff_coefs)
@@ -113,10 +115,11 @@
       call lead_fields_by_FEM(mesh1, group1, ele_mesh1,                 &
      &    MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,               &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
-     &    FEM1_elen, sgs_coefs, sgs_coefs_nod,                          &
-     &    filtering1, wide_filtering, layer_tbl1, m1_lump,              &
-     &    wk_cor1, wk_lsq1, wk_diff1, wk_filter1, mhd_fem1_wk, fem1_wk, &
-     &    surf1_wk, f1_l, f1_nl, nod_fld1, fld_ele1, diff_coefs)
+     &    FEM1_elen, icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,   &
+     &    sgs_coefs, sgs_coefs_nod, filtering1, wide_filtering,         &
+     &    layer_tbl1, m1_lump, wk_cor1, wk_lsq1, wk_diff1, wk_filter1,  &
+     &    mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,                  &
+     &    nod_fld1, fld_ele1, diff_coefs)
 !
 !     ---------------------
 !
@@ -198,11 +201,12 @@
      &   (mesh1, group1, ele_mesh1, MHD_mesh1%fluid,                    &
      &    nod1_bcs, sf1_bcs, iphys, iphys_ele,                          &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, jac1_sf_grp_2d_l,     &
-     &    rhs_tbl1, FEM1_elen, sgs_coefs_nod,                           &
-     &    filtering1, wide_filtering, layer_tbl1,                       &
-     &    wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,              &
-     &    mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,                  &
-     &    nod_fld1, fld_ele1, sgs_coefs, diff_coefs)
+     &    rhs_tbl1, FEM1_elen, ifld_sgs, icomp_sgs, ifld_diff,          &
+     &    icomp_diff, iphys_elediff, sgs_coefs_nod,                     &
+     &    filtering1, wide_filtering, layer_tbl1, wk_cor1, wk_lsq1,     &
+     &    wk_sgs1, wk_diff1, wk_filter1, mhd_fem1_wk, fem1_wk,          &
+     &    surf1_wk, f1_l, f1_nl, nod_fld1, fld_ele1,                    &
+     &    sgs_coefs, diff_coefs)
 !
 !     ----- Evaluate model coefficients
 !
@@ -212,7 +216,8 @@
      &     (mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,            &
      &      nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,              &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
-     &      FEM1_elen, filtering1, wide_filtering, m1_lump,             &
+     &      FEM1_elen, ifld_sgs, icomp_sgs, ifld_diff, icomp_diff,      &
+     &      iphys_elediff, filtering1, wide_filtering, m1_lump,         &
      &      wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,            &
      &      mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,                &
      &      nod_fld1, sgs_coefs, sgs_coefs_nod, diff_coefs)
@@ -231,13 +236,13 @@
 !
       if(istep_flex_to_max .eq. 0) then
         call lead_fields_by_FEM(mesh1, group1, ele_mesh1,               &
-     &      MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,             &
-     &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
-     &      FEM1_elen, sgs_coefs, sgs_coefs_nod,                        &
-     &      filtering1, wide_filtering, layer_tbl1, m1_lump,            &
-     &      wk_cor1, wk_lsq1, wk_diff1, wk_filter1, mhd_fem1_wk,        &
-     &      fem1_wk, surf1_wk, f1_l, f1_nl, nod_fld1, fld_ele1,         &
-     &      diff_coefs)
+     &     MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,              &
+     &     jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,            &
+     &     FEM1_elen, icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,  &
+     &     sgs_coefs, sgs_coefs_nod, filtering1, wide_filtering,        &
+     &     layer_tbl1, m1_lump, wk_cor1, wk_lsq1, wk_diff1, wk_filter1, &
+     &     mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,                 &
+     &     nod_fld1, fld_ele1, diff_coefs)
 !
 !     -----Output monitor date
 !
@@ -322,8 +327,8 @@
         if (iflag_debug.eq.1) write(*,*) 'update_matrices'
         call update_matrices(mesh1, group1, ele_mesh1, MHD_mesh1,       &
      &      nod1_bcs, sf1_bcs, jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q,  &
-     &      FEM1_elen, diff_coefs, rhs_tbl1, MHD1_mat_tbls, surf1_wk,   &
-     &      mhd_fem1_wk, fem1_wk)
+     &      FEM1_elen, ifld_diff, diff_coefs, rhs_tbl1, MHD1_mat_tbls,  &
+     &      surf1_wk, mhd_fem1_wk, fem1_wk)
       end if
 !
       end subroutine FEM_analyze_MHD

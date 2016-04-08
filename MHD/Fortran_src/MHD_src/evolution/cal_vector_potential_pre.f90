@@ -5,14 +5,16 @@
 !                                    on July 2000 (ver 1.1)
 !        modieied by H. Matsui on Sep., 2005
 !
-!!      subroutine cal_vector_p_pre(nod_comm, node, ele, surf, conduct, &
-!!     &          sf_grp, Bnod_bcs, Asf_bcs, iphys, iphys_ele, ele_fld, &
+!!      subroutine cal_vector_p_pre(iak_diff_b, icomp_sgs_uxb, ie_dvx,  &
+!!     &          nod_comm, node, ele, surf, conduct, sf_grp,           &
+!!     &          Bnod_bcs, Asf_bcs, iphys, iphys_ele, ele_fld,         &
 !!     &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,           &
 !!     &          sgs_coefs, diff_coefs, filtering,                     &
 !!     &          num_MG_level, MG_interpolate, MG_comm_table,          &
 !!     &          MG_DJDS_table, Bmat_MG_DJDS, MG_vector,               &
 !!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-!!      subroutine cal_vector_p_co(nod_comm, node, ele, surf, conduct,  &
+!!      subroutine cal_vector_p_co                                      &
+!!     &         (iak_diff_b, nod_comm, node, ele, surf, conduct,       &
 !!     &          sf_grp, Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld, &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
 !!     &          rhs_tbl, FEM_elens, diff_coefs, num_MG_level,         &
@@ -94,8 +96,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_vector_p_pre(nod_comm, node, ele, surf, conduct,   &
-     &          sf_grp, Bnod_bcs, Asf_bcs, iphys, iphys_ele, ele_fld,   &
+      subroutine cal_vector_p_pre(iak_diff_b, icomp_sgs_uxb, ie_dvx,    &
+     &          nod_comm, node, ele, surf, conduct, sf_grp,             &
+     &          Bnod_bcs, Asf_bcs, iphys, iphys_ele, ele_fld,           &
      &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,             &
      &          sgs_coefs, diff_coefs, filtering,                       &
      &          num_MG_level, MG_interpolate, MG_comm_table,            &
@@ -103,7 +106,6 @@
      &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use calypso_mpi
-      use m_SGS_address
 !
       use set_boundary_scalars
       use nod_phys_send_recv
@@ -116,6 +118,9 @@
       use evolve_by_lumped_crank
       use evolve_by_consist_crank
       use copy_nodal_fields
+!
+      integer(kind = kint), intent(in) :: iak_diff_b, icomp_sgs_uxb
+      integer(kind = kint), intent(in) :: ie_dvx
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -238,15 +243,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_vector_p_co(nod_comm, node, ele, surf, conduct,    &
+      subroutine cal_vector_p_co                                        &
+     &         (iak_diff_b, nod_comm, node, ele, surf, conduct,         &
      &          sf_grp, Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,   &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
      &          rhs_tbl, FEM_elens, diff_coefs, num_MG_level,           &
      &          MG_interpolate, MG_comm_table, MG_DJDS_table,           &
      &          Bmat_MG_DJDS, MG_vector, m_lump,                        &
      &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
-!
-      use m_SGS_address
 !
       use set_boundary_scalars
       use nod_phys_send_recv
@@ -257,6 +261,7 @@
       use cal_multi_pass
       use cal_sol_vector_co_crank
 !
+      integer(kind = kint), intent(in) :: iak_diff_b
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -315,7 +320,7 @@
 !
       if (   iflag_implicit_correct.eq.3                                &
      &  .or. iflag_implicit_correct.eq.4) then
-        call cal_vector_p_co_imp(iphys%i_vecp,                          &
+        call cal_vector_p_co_imp(iphys%i_vecp, iak_diff_b,              &
      &      nod_comm, node, ele, conduct, Bnod_bcs, iphys_ele, ele_fld, &
      &      jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                   &
      &      num_MG_level, MG_interpolate, MG_comm_table,                &

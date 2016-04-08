@@ -8,7 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine update_with_velocity                                 &
-!!     &         (nod_comm, node, ele, surf, fluid, sf_grp,             &
+!!     &         (iak_diff_v, icomp_diff_v, ie_dvx, ie_dfvx,            &
+!!     &          nod_comm, node, ele, surf, fluid, sf_grp,             &
 !!     &          Vsf_bcs, Psf_bcs, iphys, iphys_ele,                   &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
 !!     &          FEM_elens, filtering, wide_filtering, layer_tbl,      &
@@ -82,7 +83,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine update_with_velocity                                   &
-     &         (nod_comm, node, ele, surf, fluid, sf_grp,               &
+     &         (iak_diff_v, icomp_diff_v, ie_dvx, ie_dfvx,              &
+     &          nod_comm, node, ele, surf, fluid, sf_grp,               &
      &          Vsf_bcs, Psf_bcs, iphys, iphys_ele,                     &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
      &          FEM_elens, filtering, wide_filtering, layer_tbl,        &
@@ -91,12 +93,14 @@
      &          nod_fld, ele_fld, diff_coefs)
 !
       use m_t_step_parameter
-      use m_SGS_address
 !
       use average_on_elements
       use cal_filtering_scalars
       use cal_diff_vector_on_ele
       use cal_diff_coef_velo
+!
+      integer(kind = kint), intent(in) :: iak_diff_v, icomp_diff_v
+      integer(kind = kint), intent(in) :: ie_dvx, ie_dfvx
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node

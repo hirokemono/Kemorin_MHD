@@ -7,13 +7,15 @@
 !> @brief Evaluate field data for time integration for FEM dynamo model
 !!
 !!@verbatim
-!!      subroutine update_with_temperature(nod_comm, node, ele, surf,   &
+!!      subroutine update_with_temperature                              &
+!!     &        (iak_diff_t, icomp_diff_t, nod_comm, node, ele, surf,   &
 !!     &         fluid, sf_grp, Tsf_bcs, iphys, iphys_ele, ele_fld,     &
 !!     &         jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,   &
 !!     &         filtering, wide_filtering, layer_tbl,                  &
 !!     &         wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,&
 !!     &         surf_wk, f_l, f_nl, nod_fld, diff_coefs)
-!!      subroutine update_with_dummy_scalar(nod_comm, node, ele, surf,  &
+!!      subroutine update_with_dummy_scalar                             &
+!!     &        (iak_diff_c, icomp_diff_c, nod_comm, node, ele, surf,   &
 !!     &         fluid, sf_grp, Csf_bcs, iphys, iphys_ele, ele_fld,     &
 !!     &         jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,   &
 !!     &         filtering, wide_filtering, layer_tbl,                  &
@@ -85,7 +87,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine update_with_temperature(nod_comm, node, ele, surf,     &
+      subroutine update_with_temperature                                &
+     &        (iak_diff_t, icomp_diff_t, nod_comm, node, ele, surf,     &
      &         fluid, sf_grp, Tsf_bcs, iphys, iphys_ele, ele_fld,       &
      &         jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,     &
      &         filtering, wide_filtering, layer_tbl,                    &
@@ -93,7 +96,6 @@
      &         surf_wk, f_l, f_nl, nod_fld, diff_coefs)
 !
       use m_t_step_parameter
-      use m_SGS_address
 !
       use average_on_elements
       use cal_filtering_scalars
@@ -101,6 +103,8 @@
       use cal_diff_coef_temp
       use cal_filtering_scalars
       use copy_nodal_fields
+!
+      integer(kind = kint), intent(in) :: iak_diff_t, icomp_diff_t
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -239,7 +243,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine update_with_dummy_scalar(nod_comm, node, ele, surf,    &
+      subroutine update_with_dummy_scalar                               &
+     &        (iak_diff_c, icomp_diff_c, nod_comm, node, ele, surf,     &
      &         fluid, sf_grp, Csf_bcs, iphys, iphys_ele, ele_fld,       &
      &         jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,     &
      &         filtering, wide_filtering, layer_tbl,                    &
@@ -247,7 +252,6 @@
      &         surf_wk, f_l, f_nl, nod_fld, diff_coefs)
 !
       use m_t_step_parameter
-      use m_SGS_address
 !
       use average_on_elements
       use cal_filtering_scalars
@@ -255,6 +259,8 @@
       use cal_diff_coef_temp
       use cal_filtering_scalars
       use copy_nodal_fields
+!
+      integer(kind = kint), intent(in) :: iak_diff_c, icomp_diff_c
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -328,7 +334,7 @@
 !
 !             if (iflag_SGS_heat .eq. id_SGS_NL_grad) then
 !               if (iflag_debug.gt.0)  write(*,*) 's_cal_diff_coef_temp'
-!               call s_cal_diff_coef_temp(iak_diff_t, icomp_diff_t,     &
+!               call s_cal_diff_coef_temp(iak_diff_c, icomp_diff_c,     &
 !     &             nod_comm, node, ele, surf, sf_grp, Csf_bcs,         &
 !     &             iphys, iphys_ele, ele_fld, fluid, layer_tbl,        &
 !     &             jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,          &

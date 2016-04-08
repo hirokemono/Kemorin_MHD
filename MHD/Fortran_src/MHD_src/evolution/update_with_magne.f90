@@ -8,7 +8,8 @@
 !!
 !!@verbatim
 !!       subroutine update_with_magnetic_field                          &
-!!     &        (nod_comm, node, ele, surf, fluid, conduct, layer_tbl,  &
+!!     &        (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx,             &
+!!     &         nod_comm, node, ele, surf, fluid, conduct, layer_tbl,  &
 !!     &         sf_grp, Bsf_bcs, Fsf_bcs, iphys, iphys_ele,            &
 !!     &         jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,  &
 !!     &         filtering, wide_filtering, m_lump,                     &
@@ -82,7 +83,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine update_with_magnetic_field                             &
-     &        (nod_comm, node, ele, surf, fluid, conduct, layer_tbl,    &
+     &        (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx,               &
+     &         nod_comm, node, ele, surf, fluid, conduct, layer_tbl,    &
      &         sf_grp, Bsf_bcs, Fsf_bcs, iphys, iphys_ele,              &
      &         jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,    &
      &         filtering, wide_filtering, m_lump,                       &
@@ -90,13 +92,15 @@
      &         surf_wk, f_l, f_nl, nod_fld, ele_fld, diff_coefs)
 !
       use m_t_step_parameter
-      use m_SGS_address
 !
       use average_on_elements
       use cal_filtering_scalars
       use cal_diff_vector_on_ele
       use cal_diff_coef_magne
       use cal_filtering_scalars
+!
+      integer(kind = kint), intent(in) :: iak_diff_b, icomp_diff_b
+      integer(kind = kint), intent(in) :: ie_dbx, ie_dfbx
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node

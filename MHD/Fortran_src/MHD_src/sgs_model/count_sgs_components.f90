@@ -4,9 +4,15 @@
 !      Written by H. Matsui on 2004
 !      Modified by H. Matsui on July, 2007
 !
-!!     subroutine s_count_sgs_components(numnod, numele, layer_tbl,     &
+!!      subroutine s_count_sgs_components(numnod, numele, layer_tbl,    &
+!!     &          ifld_sgs, icomp_sgs, ifld_diff, icomp_diff,           &
 !!     &         wk_sgs, wk_diff, sgs_coefs, sgs_coefs_nod, diff_coefs)
+!!      subroutine set_SGS_addresses(iphys_elediff)
 !!        type(layering_tbl), intent(in) :: layer_tbl
+!!        type(SGS_terms_address), intent(inout) :: ifld_sgs
+!!        type(SGS_terms_address), intent(inout) :: icomp_sgs
+!!        type(SGS_terms_address), intent(inout) :: ifld_diff
+!!        type(SGS_terms_address), intent(inout) :: icomp_diff
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!        type(dynamic_model_data), intent(inout) :: wk_diff
 !!        type(MHD_coefficients_type), intent(inout) :: sgs_coefs
@@ -27,6 +33,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_count_sgs_components(numnod, numele, layer_tbl,      &
+     &          ifld_sgs, icomp_sgs, ifld_diff, icomp_diff,             &
      &          wk_sgs, wk_diff, sgs_coefs, sgs_coefs_nod, diff_coefs)
 !
       use calypso_mpi
@@ -40,6 +47,9 @@
 !
       integer(kind = kint), intent(in) :: numnod, numele
       type(layering_tbl), intent(in) :: layer_tbl
+!
+      type(SGS_terms_address), intent(inout) :: ifld_sgs, icomp_sgs
+      type(SGS_terms_address), intent(inout) :: ifld_diff, icomp_diff
 !
       type(dynamic_model_data), intent(inout) :: wk_sgs, wk_diff
       type(MHD_coefficients_type), intent(inout) :: sgs_coefs
@@ -191,15 +201,15 @@
        jd = 1
        if (iflag_t_evo_4_temp .gt. id_no_evolution) then
          if (iflag_SGS_heat .ne. id_SGS_none) then
-           icomp_sgs_hf = i
-           iak_sgs_hf =   j
+           icomp_sgs%i_heat_flux = i
+           ifld_sgs%i_heat_flux =  j
            wk_sgs%name(j) = fhd_SGS_h_flux
            sgs_coefs%num_comps(j) = 3
            i = i + sgs_coefs%num_comps(j)
            j = j + 1
            if (iflag_commute_heat .eq. id_SGS_commute_ON) then
-             icomp_diff_hf = id
-             iak_diff_hf = jd
+             icomp_diff%i_heat_flux = id
+             ifld_diff%i_heat_flux =  jd
              wk_diff%name(jd) = fhd_SGS_h_flux
              diff_coefs%num_comps(jd) = 3
              id = id + diff_coefs%num_comps(jd)
@@ -210,15 +220,15 @@
 !
        if (iflag_t_evo_4_velo .gt. id_no_evolution) then
          if (iflag_SGS_inertia .ne. id_SGS_none) then
-           icomp_sgs_mf = i
-           iak_sgs_mf =   j
+           icomp_sgs%i_mom_flux = i
+           ifld_sgs%i_mom_flux =  j
            wk_sgs%name(j) = fhd_SGS_m_flux
            sgs_coefs%num_comps(j) = 6
            i = i + sgs_coefs%num_comps(j)
            j = j + 1
            if (iflag_commute_inertia .eq. id_SGS_commute_ON) then
-             icomp_diff_mf = id
-             iak_diff_mf = jd
+             icomp_diff%i_mom_flux = id
+             ifld_diff%i_mom_flux = jd
              wk_diff%name(jd) = fhd_SGS_m_flux
              diff_coefs%num_comps(jd) = 9
              id = id + diff_coefs%num_comps(jd)
@@ -227,15 +237,15 @@
          end if
 !
          if (iflag_SGS_lorentz .ne. id_SGS_none) then
-           icomp_sgs_lor = i
-           iak_sgs_lor =   j
+           icomp_sgs%i_lorentz = i
+           ifld_sgs%i_lorentz =  j
            wk_sgs%name(j) = fhd_SGS_maxwell_t
            sgs_coefs%num_comps(j) = 6
            i = i + sgs_coefs%num_comps(j)
            j = j + 1
            if (iflag_commute_lorentz .eq. id_SGS_commute_ON) then
-             icomp_diff_lor = id
-             iak_diff_lor = jd
+             icomp_diff%i_lorentz = id
+             ifld_diff%i_lorentz = jd
              wk_diff%name(jd) = fhd_SGS_Lorentz
              diff_coefs%num_comps(jd) = 9
              id = id + diff_coefs%num_comps(jd)
@@ -245,16 +255,16 @@
 !
         if (iflag_SGS_gravity .ne. id_SGS_none) then
           if(iflag_4_gravity .gt. 0) then
-            icomp_sgs_tbuo = i
-            iak_sgs_tbuo =   j
+            icomp_sgs%i_buoyancy = i
+            ifld_sgs%i_buoyancy =  j
             wk_sgs%name(j) = fhd_SGS_buoyancy
             sgs_coefs%num_comps(j) = 6
             i = i + sgs_coefs%num_comps(j)
             j = j + 1
           end if
           if(iflag_4_composit_buo .gt. id_turn_OFF) then
-            icomp_sgs_cbuo = i
-            iak_sgs_cbuo =   j
+            icomp_sgs%i_comp_buoyancy = i
+            ifld_sgs%i_comp_buoyancy =  j
             wk_sgs%name(j) = fhd_SGS_comp_buo
             sgs_coefs%num_comps(j) = 6
             i = i + sgs_coefs%num_comps(j)
@@ -265,8 +275,8 @@
 !
        if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
          if (iflag_SGS_induction .ne. id_SGS_none) then
-           icomp_sgs_uxb = i
-           iak_sgs_uxb =   j
+           icomp_sgs%i_induction = i
+           ifld_sgs%i_induction =  j
            wk_sgs%name(j) = fhd_SGS_induction
            sgs_coefs%num_comps(j) = 3
            i = i + sgs_coefs%num_comps(j)
@@ -275,15 +285,15 @@
        end if
        if (iflag_t_evo_4_magne .gt. id_no_evolution) then
          if (iflag_SGS_induction .ne. id_SGS_none) then
-           icomp_sgs_uxb = i
-           iak_sgs_uxb =   j
+           icomp_sgs%i_induction = i
+           ifld_sgs%i_induction =  j
            wk_sgs%name(j) = fhd_SGS_induction
            sgs_coefs%num_comps(j) = 3
            i = i + sgs_coefs%num_comps(j)
            j = j + 1
            if (iflag_commute_induction .eq. id_SGS_commute_ON) then
-             icomp_diff_uxb = id
-             iak_diff_uxb = jd
+             icomp_diff%i_induction = id
+             ifld_diff%i_induction =  jd
              wk_diff%name(jd) = fhd_SGS_induction
              diff_coefs%num_comps(jd) = 9
              id = id + diff_coefs%num_comps(jd)
@@ -321,8 +331,8 @@
       if (iflag_t_evo_4_temp .gt. id_no_evolution) then
         if(iflag_SGS_model .ne. id_SGS_none                             &
      &      .and. iflag_commute_temp .eq. id_SGS_commute_ON) then
-            icomp_diff_t = id
-            iak_diff_t =   jd
+            icomp_diff%i_temp = id
+            ifld_diff%i_temp = jd
             wk_diff%name(jd) = fhd_temp
             diff_coefs%num_comps(jd) = 3
             id = id + diff_coefs%num_comps(jd)
@@ -333,8 +343,8 @@
       if (iflag_t_evo_4_composit .gt. id_no_evolution) then
         if(iflag_SGS_model .ne. id_SGS_none                             &
      &        .and. iflag_commute_composit .eq. id_SGS_commute_ON) then
-            icomp_diff_c = id
-            iak_diff_c =   jd
+            icomp_diff%i_light = id
+            ifld_diff%i_light = jd
             wk_diff%name(jd) = fhd_light
             diff_coefs%num_comps(jd) = 3
             id = id + diff_coefs%num_comps(jd)
@@ -345,8 +355,8 @@
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         if(iflag_SGS_model .ne. id_SGS_none                             &
      &      .and. iflag_commute_velo .eq. id_SGS_commute_ON) then
-            icomp_diff_v = id
-            iak_diff_v =   jd
+            icomp_diff%i_velo = id
+            ifld_diff%i_velo = jd
             wk_diff%name(jd) = fhd_velo
             diff_coefs%num_comps(jd) = 9
             id = id + diff_coefs%num_comps(jd)
@@ -357,8 +367,8 @@
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         if(iflag_SGS_model .ne. id_SGS_none                             &
      &      .and. iflag_commute_magne .eq. id_SGS_commute_ON) then
-            icomp_diff_b = id
-            iak_diff_b =   jd
+            icomp_diff%i_magne = id
+            ifld_diff%i_magne = jd
             wk_diff%name(jd) = fhd_magne
             diff_coefs%num_comps(jd) = 9
             id = id + diff_coefs%num_comps(jd)
@@ -369,14 +379,46 @@
       if (iflag_t_evo_4_magne .gt. id_no_evolution) then
         if(iflag_SGS_model .ne. id_SGS_none                             &
      &      .and. iflag_commute_magne .eq. id_SGS_commute_ON) then
-            icomp_diff_b = id
-            iak_diff_b =   jd
+            icomp_diff%i_magne = id
+            ifld_diff%i_magne = jd
             wk_diff%name(jd) = fhd_magne
             diff_coefs%num_comps(jd) = 9
             id = id + diff_coefs%num_comps(jd)
             jd = jd + 1
         end if
       end if
+!
+      iak_sgs_hf =   ifld_sgs%i_heat_flux
+      iak_sgs_mf =   ifld_sgs%i_mom_flux
+      iak_sgs_lor =  ifld_sgs%i_lorentz
+      iak_sgs_uxb =  ifld_sgs%i_induction
+      iak_sgs_tbuo = ifld_sgs%i_buoyancy
+      iak_sgs_cbuo = ifld_sgs%i_comp_buoyancy
+!
+      icomp_sgs_hf = icomp_sgs%i_heat_flux
+      icomp_sgs_mf = icomp_sgs%i_mom_flux
+      icomp_sgs_lor = icomp_sgs%i_lorentz
+      icomp_sgs_uxb = icomp_sgs%i_induction
+      icomp_sgs_tbuo = icomp_sgs%i_buoyancy
+      icomp_sgs_cbuo = icomp_sgs%i_comp_buoyancy
+!
+      iak_diff_v = ifld_diff%i_velo
+      iak_diff_b = ifld_diff%i_magne
+      iak_diff_t = ifld_diff%i_temp
+      iak_diff_c = ifld_diff%i_light
+      iak_diff_hf = ifld_diff%i_heat_flux
+      iak_diff_mf = ifld_diff%i_mom_flux
+      iak_diff_lor = ifld_diff%i_lorentz
+      iak_diff_uxb = ifld_diff%i_induction
+!
+      icomp_diff_v = icomp_diff%i_velo
+      icomp_diff_b = icomp_diff%i_magne
+      icomp_diff_t = icomp_diff%i_temp
+      icomp_diff_c = icomp_diff%i_light
+      icomp_diff_hf = icomp_diff%i_heat_flux
+      icomp_diff_mf = icomp_diff%i_mom_flux
+      icomp_diff_lor = icomp_diff%i_lorentz
+      icomp_diff_uxb = icomp_diff%i_induction
 !
        diff_coefs%istack_comps(0) = 0
        do i = 1, diff_coefs%num_field
@@ -389,35 +431,41 @@
         write(*,*) 'num_sgs_kinds', sgs_coefs%num_field
         write(*,*) 'num_sgs_coefs', sgs_coefs%ntot_comp
 !
-        if(iak_sgs_hf .gt. 0) then
-          write(*,*) 'iak_sgs_hf', iak_sgs_hf, icomp_sgs_hf,            &
-     &              sgs_coefs%num_comps(iak_sgs_hf),                    &
-     &              trim(wk_sgs%name(iak_sgs_hf))
+        if(ifld_sgs%i_heat_flux .gt. 0) then
+          write(*,*) 'iak_sgs_hf',                                      &
+     &              ifld_sgs%i_heat_flux, icomp_sgs%i_heat_flux,        &
+     &              sgs_coefs%num_comps(ifld_sgs%i_heat_flux),          &
+     &              trim(wk_sgs%name(ifld_sgs%i_heat_flux))
         end if
-        if(iak_sgs_mf .gt. 0) then
-          write(*,*) 'iak_sgs_mf', iak_sgs_mf, icomp_sgs_mf,            &
-     &              sgs_coefs%num_comps(iak_sgs_mf),                    &
-     &              trim(wk_sgs%name(iak_sgs_mf))
+        if(ifld_sgs%i_mom_flux .gt. 0) then
+          write(*,*) 'iak_sgs_mf',                                      &
+     &              ifld_sgs%i_mom_flux, icomp_sgs%i_mom_flux,          &
+     &              sgs_coefs%num_comps(ifld_sgs%i_mom_flux),           &
+     &              trim(wk_sgs%name(ifld_sgs%i_mom_flux))
         end if
-        if(iak_sgs_lor .gt. 0) then
-          write(*,*) 'iak_sgs_lor', iak_sgs_lor, icomp_sgs_lor,         &
-     &              sgs_coefs%num_comps(iak_sgs_lor),                   &
-     &              trim(wk_sgs%name(iak_sgs_lor))
+        if(ifld_sgs%i_lorentz .gt. 0) then
+          write(*,*) 'iak_sgs_lor',                                     &
+     &              ifld_sgs%i_lorentz, icomp_sgs%i_lorentz,            &
+     &              sgs_coefs%num_comps(ifld_sgs%i_lorentz),            &
+     &              trim(wk_sgs%name(ifld_sgs%i_lorentz))
         end if
-        if(iak_sgs_tbuo .gt. 0) then
-          write(*,*) 'iak_sgs_tbuo', iak_sgs_tbuo, icomp_sgs_tbuo,      &
-     &              sgs_coefs%num_comps(iak_sgs_tbuo),                  &
-     &              trim(wk_sgs%name(iak_sgs_tbuo))
+        if(ifld_sgs%i_buoyancy .gt. 0) then
+          write(*,*) 'iak_sgs_tbuo',                                    &
+     &              ifld_sgs%i_buoyancy, icomp_sgs%i_buoyancy,          &
+     &              sgs_coefs%num_comps(ifld_sgs%i_buoyancy),           &
+     &              trim(wk_sgs%name(ifld_sgs%i_buoyancy))
         end if
-        if(iak_sgs_cbuo .gt. 0) then
-          write(*,*) 'iak_sgs_cbuo', iak_sgs_cbuo, icomp_sgs_cbuo,      &
-     &               sgs_coefs%num_comps(iak_sgs_cbuo),                 &
-     &               trim(wk_sgs%name(iak_sgs_cbuo))
+        if(ifld_sgs%i_comp_buoyancy .gt. 0) then
+          write(*,*) 'iak_sgs_cbuo',                                    &
+     &             ifld_sgs%i_comp_buoyancy, icomp_sgs%i_comp_buoyancy, &
+     &             sgs_coefs%num_comps(ifld_sgs%i_comp_buoyancy),       &
+     &             trim(wk_sgs%name(ifld_sgs%i_comp_buoyancy))
         end if
-        if(iak_sgs_uxb .gt. 0) then
-          write(*,*) 'iak_sgs_uxb', iak_sgs_uxb, icomp_sgs_uxb,         &
-     &               sgs_coefs%num_comps(iak_sgs_uxb),                  &
-     &               trim(wk_sgs%name(iak_sgs_uxb))
+        if(ifld_sgs%i_induction .gt. 0) then
+          write(*,*) 'iak_sgs_uxb',                                     &
+     &               ifld_sgs%i_induction, icomp_sgs%i_induction,       &
+     &               sgs_coefs%num_comps(ifld_sgs%i_induction),         &
+     &               trim(wk_sgs%name(ifld_sgs%i_induction))
         end if
         if(iak_sgs_cf .gt. 0) then
           write(*,*) 'iak_sgs_cf', iak_sgs_cf, icomp_sgs_cf,            &
@@ -429,52 +477,119 @@
         write(*,*) 'wk_diff%ntot_comp', wk_diff%ntot_comp
         write(*,*) 'diff_coefs%num_field', diff_coefs%num_field
 !
-        if(iak_diff_hf .gt. 0) then
-          write(*,*) 'iak_diff_hf', iak_diff_hf, icomp_diff_hf,         &
-     &             diff_coefs%num_comps(iak_diff_hf),                   &
-     &             trim(wk_diff%name(iak_diff_hf))
+        if(ifld_diff%i_heat_flux .gt. 0) then
+          write(*,*) 'iak_diff_hf',                                     &
+     &             ifld_diff%i_heat_flux, icomp_diff%i_heat_flux,       &
+     &             diff_coefs%num_comps(ifld_diff%i_heat_flux),         &
+     &             trim(wk_diff%name(ifld_diff%i_heat_flux))
         end if
-        if(iak_diff_mf .gt. 0) then
-          write(*,*) 'iak_diff_mf', iak_diff_mf, icomp_diff_mf,         &
-     &             diff_coefs%num_comps(iak_diff_mf),                   &
-     &             trim(wk_diff%name(iak_diff_mf))
+        if(ifld_diff%i_mom_flux .gt. 0) then
+          write(*,*) 'iak_diff_mf',                                     &
+     &             ifld_diff%i_mom_flux, icomp_diff%i_mom_flux,         &
+     &             diff_coefs%num_comps(ifld_diff%i_mom_flux),          &
+     &             trim(wk_diff%name(ifld_diff%i_mom_flux))
         end if
-        if(iak_diff_lor .gt. 0) then
-          write(*,*) 'iak_diff_lor', iak_diff_lor, icomp_diff_lor,      &
-     &             diff_coefs%num_comps(iak_diff_lor),                  &
-     &             trim(wk_diff%name(iak_diff_lor))
+        if(ifld_diff%i_lorentz .gt. 0) then
+          write(*,*) 'iak_diff_lor',                                    &
+     &             ifld_diff%i_lorentz, icomp_diff%i_lorentz,           &
+     &             diff_coefs%num_comps(ifld_diff%i_lorentz),           &
+     &             trim(wk_diff%name(ifld_diff%i_lorentz))
         end if
-        if(iak_diff_uxb .gt. 0) then
-          write(*,*) 'iak_diff_uxb', iak_diff_uxb, icomp_diff_uxb,      &
-     &             diff_coefs%num_comps(iak_diff_uxb),                  &
-     &             trim(wk_diff%name(iak_diff_uxb))
+        if(ifld_diff%i_induction .gt. 0) then
+          write(*,*) 'iak_diff_uxb',                                    &
+     &             ifld_diff%i_induction, icomp_diff%i_induction,       &
+     &             diff_coefs%num_comps(ifld_diff%i_induction),         &
+     &             trim(wk_diff%name(ifld_diff%i_induction))
         end if
 !
-        if(iak_diff_t .gt. 0) then
-          write(*,*) 'iak_diff_t', iak_diff_t, icomp_diff_t,            &
-     &             diff_coefs%num_comps(iak_diff_t),                    &
-     &             trim(wk_diff%name(iak_diff_t))
+        if(ifld_diff%i_temp .gt. 0) then
+          write(*,*) 'iak_diff_t',                                      &
+     &             ifld_diff%i_temp, icomp_diff%i_temp,                 &
+     &             diff_coefs%num_comps(ifld_diff%i_temp),              &
+     &             trim(wk_diff%name(ifld_diff%i_temp))
         end if
-        if(iak_diff_v .gt. 0) then
-          write(*,*) 'iak_diff_v', iak_diff_v, icomp_diff_v,            &
-     &             diff_coefs%num_comps(iak_diff_v),                    &
-     &             trim(wk_diff%name(iak_diff_v))
+        if(ifld_diff%i_velo .gt. 0) then
+          write(*,*) 'iak_diff_v', ifld_diff%i_velo, icomp_diff%i_velo, &
+     &             diff_coefs%num_comps(ifld_diff%i_velo),              &
+     &             trim(wk_diff%name(ifld_diff%i_velo))
         end if
-        if(iak_diff_b .gt. 0) then
-          write(*,*) 'iak_diff_b', iak_diff_b, icomp_diff_b,            &
-     &             diff_coefs%num_comps(iak_diff_b),                    &
-     &             trim(wk_diff%name(iak_diff_b))
+        if(ifld_diff%i_magne .gt. 0) then
+          write(*,*) 'iak_diff_b',                                      &
+     &             ifld_diff%i_magne, icomp_diff%i_magne,               &
+     &             diff_coefs%num_comps(ifld_diff%i_magne),             &
+     &             trim(wk_diff%name(ifld_diff%i_magne))
         end if
-        if(iak_diff_c .gt. 0) then
-          write(*,*) 'iak_diff_c', iak_diff_c, icomp_diff_c,            &
-     &             diff_coefs%num_comps(iak_diff_c),                    &
-     &             trim(wk_diff%name(iak_diff_c))
+        if(ifld_diff%i_light .gt. 0) then
+          write(*,*) 'iak_diff_c',                                      &
+     &             ifld_diff%i_light, icomp_diff%i_light,               &
+     &             diff_coefs%num_comps(ifld_diff%i_light),             &
+     &             trim(wk_diff%name(ifld_diff%i_light))
         end if
       end if
 !
       end subroutine s_count_sgs_components
 !
-! ----------------------------------------------------------------------
+!  ------------------------------------------------------------------
+!
+      subroutine set_SGS_addresses(iphys_elediff)
+!
+      use m_SGS_address
+      use m_control_parameter
+      use t_material_property
+!
+      type(SGS_terms_address), intent(inout) :: iphys_elediff
+!
+      integer(kind = kint) :: i
+!
+      i = 1
+      if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+        if (  iflag_SGS_heat .ne.      id_SGS_none                      &
+     &   .or. iflag_SGS_inertia .ne.   id_SGS_none                      &
+     &   .or. iflag_SGS_induction .ne. id_SGS_none ) then
+         iphys_elediff%i_velo = i
+         iphys_elediff%i_filter_velo = i + 9
+         i = i + 18
+        end if
+!
+        if ( iflag_SGS_lorentz .ne. id_SGS_none) then
+         iphys_elediff%i_magne = i
+         iphys_elediff%i_filter_magne = i + 9
+         i = i + 18
+        else if (iflag_SGS_induction .ne. id_SGS_none                   &
+     &     .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
+         iphys_elediff%i_magne = i
+         iphys_elediff%i_filter_magne = i + 9
+         i = i + 18
+        end if
+!
+      else if (iflag_SGS_model .ne. id_SGS_none                         &
+     &   .and. iflag_dynamic_SGS .eq. id_SGS_DYNAMIC_OFF) then
+        if (   iflag_SGS_heat .ne.     id_SGS_none                      &
+     &   .or. iflag_SGS_inertia .ne.   id_SGS_none                      &
+     &   .or. iflag_SGS_induction .ne. id_SGS_none) then
+         iphys_elediff%i_velo = i
+         i = i + 9
+        end if
+!
+        if ( iflag_SGS_lorentz .ne. id_SGS_none) then
+         iphys_elediff%i_magne = i
+         i = i + 9
+        else if (iflag_SGS_induction .ne. id_SGS_none                   &
+     &     .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
+         iphys_elediff%i_magne = i
+         i = i + 9
+        end if
+      end if
+!
+      ie_dvx = iphys_elediff%i_velo
+      ie_dbx = iphys_elediff%i_magne
+!
+      ie_dfvx = iphys_elediff%i_filter_velo
+      ie_dfbx = iphys_elediff%i_filter_magne
+!
+      end subroutine set_SGS_addresses
+!
+!  ------------------------------------------------------------------
 !
       end module count_sgs_components
       

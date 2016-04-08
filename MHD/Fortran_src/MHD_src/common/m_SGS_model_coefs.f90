@@ -25,4 +25,18 @@
 !
       type(MHD_coefficients_type), save :: diff_coefs
 !
+      type(SGS_terms_address), save :: ifld_sgs
+!ifld_sgs%i_buoyancy
+!
+      type(SGS_terms_address), save :: icomp_sgs
+!icomp_sgs%i_mom_flux
+!
+      type(SGS_terms_address), save :: ifld_diff
+!ifld_diff%i_mom_flux
+!
+      type(SGS_terms_address), save :: icomp_diff
+!
+      type(SGS_terms_address), save :: iphys_elediff
+!
+!
       end module m_SGS_model_coefs

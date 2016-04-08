@@ -3,12 +3,13 @@
 !
 !      Written by H.Matsui on Dec., 2008
 !
-!      subroutine s_set_diffusivities_MHD_AMG(ele, ak_AMG)
-!        type(element_data), intent(in) :: ele
-!        type(coefs_4_MHD_AMG), intent(inout) :: ak_AMG
-!      subroutine s_set_sgs_diff_array_MHD_AMG(ele, ak_AMG)
-!        type(element_data), intent(in) :: ele
-!        type(coefs_4_MHD_AMG), intent(inout) :: ak_AMG
+!!      subroutine s_set_diffusivities_MHD_AMG(ele, ak_AMG)
+!!        type(element_data), intent(in) :: ele
+!!        type(coefs_4_MHD_AMG), intent(inout) :: ak_AMG
+!!      subroutine s_set_sgs_diff_array_MHD_AMG(ele, ifld_diff, ak_AMG)
+!!        type(element_data), intent(in) :: ele
+!!        type(SGS_terms_address), intent(in) :: ifld_diff
+!!        type(coefs_4_MHD_AMG), intent(inout) :: ak_AMG
 !
       module set_diffusivities_MHD_AMG
 !
@@ -91,27 +92,28 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_sgs_diff_array_MHD_AMG(ele, ak_AMG)
+      subroutine s_set_sgs_diff_array_MHD_AMG(ele, ifld_diff, ak_AMG)
 !
-      use m_SGS_address
+      use t_material_property
 !
       type(element_data), intent(in) :: ele
+      type(SGS_terms_address), intent(in) :: ifld_diff
       type(coefs_4_MHD_AMG), intent(inout) :: ak_AMG
 !
 !
-      if (iak_diff_v .gt. 0) then
+      if (ifld_diff%i_velo .gt. 0) then
         call alloc_diff_coefs_velo_type(ele%numele, ak_AMG)
       end if
 !
-      if (iak_diff_t .gt. 0) then
+      if (ifld_diff%i_temp .gt. 0) then
         call alloc_diff_coefs_temp_type(ele%numele, ak_AMG)
       end if
 !
-      if (iak_diff_b .gt. 0) then
+      if (ifld_diff%i_magne .gt. 0) then
         call alloc_diff_coefs_magne_type(ele%numele, ak_AMG)
       end if
 !
-      if (iak_diff_c .gt. 0) then
+      if (ifld_diff%i_light .gt. 0) then
         call alloc_diff_coefs_ds_type(ele%numele, ak_AMG)
       end if
 !

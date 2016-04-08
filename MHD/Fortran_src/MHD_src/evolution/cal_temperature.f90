@@ -8,14 +8,16 @@
 !!      subroutine cal_temperature_field(nod_comm, node, ele, surf,     &
 !!     &          fluid, sf_grp, Tnod_bcs, Tsf_bcs, iphys,              &
 !!     &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,      &
-!!     &          FEM_elens, sgs_coefs, sgs_coefs_nod, diff_coefs,      &
-!!     &          filtering, wk_filter, mhd_fem_wk, fem_wk, surf_wk,    &
+!!     &          FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,       &
+!!     &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,      &
+!!     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk,               &
 !!     &          f_l, f_nl, nod_fld)
 !!      subroutine cal_parturbation_temp(nod_comm, node, ele, surf,     &
 !!     &          fluid, sf_grp, Tnod_bcs, Tsf_bcs, iphys,              &
 !!     &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,      &
-!!     &          FEM_elens, sgs_coefs, sgs_coefs_nod, diff_coefs,      &
-!!     &          filtering, wk_filter, mhd_fem_wk, fem_wk, surf_wk,    &
+!!     &          FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,       &
+!!     &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,      &
+!!     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk,               &
 !!     &          f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -32,6 +34,9 @@
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(SGS_terms_address), intent(in) :: icomp_sgs
+!!        type(SGS_terms_address), intent(in) :: ifld_diff
+!!        type(SGS_terms_address), intent(in) :: iphys_elediff
 !!        type(MHD_coefficients_type), intent(in) :: sgs_coefs
 !!        type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
 !!        type(MHD_coefficients_type), intent(in) :: diff_coefs
@@ -78,8 +83,9 @@
       subroutine cal_temperature_field(nod_comm, node, ele, surf,       &
      &          fluid, sf_grp, Tnod_bcs, Tsf_bcs, iphys,                &
      &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,        &
-     &          FEM_elens, sgs_coefs, sgs_coefs_nod, diff_coefs,        &
-     &          filtering, wk_filter, mhd_fem_wk, fem_wk, surf_wk,      &
+     &          FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,         &
+     &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,        &
+     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk,                 &
      &          f_l, f_nl, nod_fld)
 !
       use m_phys_constants
@@ -88,7 +94,6 @@
       use m_t_int_parameter
       use m_type_AMG_data
       use m_solver_djds_MHD
-      use m_SGS_address
 !
       use nod_phys_send_recv
       use cal_sgs_fluxes
@@ -118,6 +123,9 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_terms_address), intent(in) :: icomp_sgs
+      type(SGS_terms_address), intent(in) :: ifld_diff
+      type(SGS_terms_address), intent(in) :: iphys_elediff
       type(MHD_coefficients_type), intent(in) :: sgs_coefs
       type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
       type(MHD_coefficients_type), intent(in) :: diff_coefs
@@ -134,7 +142,8 @@
 !      call check_jacobians_triquad(ele, jac_3d)
 !
       if (iflag_SGS_heat .ne. id_SGS_none) then
-        call cal_sgs_heat_flux(icomp_sgs_hf, ie_dvx,                    &
+        call cal_sgs_heat_flux                                          &
+     &     (icomp_sgs%i_heat_flux, iphys_elediff%i_velo,                &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
      &      jac_3d, rhs_tbl, FEM_elens, filtering, sgs_coefs,           &
      &      sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,               &
@@ -152,7 +161,7 @@
       if (coef_temp.gt.zero .and. coef_exp_t.gt.zero) then
         call int_vol_scalar_diffuse_ele(fluid%istack_ele_fld_smp,       &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
-     &      iak_diff_t, coef_exp_t, ak_d_temp, iphys%i_temp,            &
+     &      ifld_diff%i_temp, coef_exp_t, ak_d_temp, iphys%i_temp,      &
      &      fem_wk, f_l)
       end if
 !
@@ -162,20 +171,20 @@
         call int_vol_temp_ele_upw(node, ele, fluid, iphys, nod_fld,     &
      &      jac_3d, rhs_tbl, FEM_elens, diff_coefs,                     &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
-     &      iak_diff_hf, mhd_fem_wk, fem_wk, f_nl)
+     &      ifld_diff%i_heat_flux, mhd_fem_wk, fem_wk, f_nl)
       else
         call int_vol_temp_ele(node, ele, fluid, iphys, nod_fld,         &
      &      jac_3d, rhs_tbl, FEM_elens, diff_coefs,                     &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
-     &      iak_diff_hf, mhd_fem_wk, fem_wk, f_nl)
+     &      ifld_diff%i_heat_flux, mhd_fem_wk, fem_wk, f_nl)
       end if
 !
 !      call check_ff_smp(my_rank, n_scalar, node%max_nod_smp, f_l)
 !      call check_ff_smp(my_rank, n_scalar, node%max_nod_smp, f_nl)
 !
-      call int_surf_temp_ele(iak_diff_hf, node, ele, surf, sf_grp,      &
-     &    iphys, nod_fld, Tsf_bcs, jac_sf_grp, rhs_tbl, FEM_elens,      &
-     &    diff_coefs, fem_wk, surf_wk, f_l, f_nl)
+      call int_surf_temp_ele(ifld_diff%i_heat_flux,                     &
+     &    node, ele, surf, sf_grp, iphys, nod_fld, Tsf_bcs, jac_sf_grp, &
+     &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, surf_wk, f_l, f_nl)
 !
 !      call check_nodal_data(my_rank, nod_fld, n_scalar, iphys%i_temp)
 !      call check_nodal_data(my_rank, ele_fld,                          &
@@ -208,7 +217,7 @@
      &      rhs_tbl, mhd_fem_wk, fem_wk,  f_l, f_nl,  nod_fld)
       else if (iflag_t_evo_4_temp .eq. id_Crank_nicolson) then
         call cal_temp_pre_lumped_crank                                  &
-     &     (iphys%i_temp, iphys%i_pre_heat, iak_diff_t,                 &
+     &     (iphys%i_temp, iphys%i_pre_heat, ifld_diff%i_temp,           &
      &      nod_comm, node, ele, fluid, Tnod_bcs,                       &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
      &      num_MG_level, MHD1_matrices%MG_interpolate,                 &
@@ -217,7 +226,7 @@
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (iflag_t_evo_4_temp .eq. id_Crank_nicolson_cmass) then 
         call cal_temp_pre_consist_crank                                 &
-     &     (iphys%i_temp, iphys%i_pre_heat, iak_diff_t,                 &
+     &     (iphys%i_temp, iphys%i_pre_heat, ifld_diff%i_temp,           &
      &      node, ele, fluid, Tnod_bcs, jac_3d, rhs_tbl, FEM_elens,     &
      &      diff_coefs, num_MG_level, MHD1_matrices%MG_interpolate,     &
      &      MHD1_matrices%MG_comm_fluid, MHD1_matrices%MG_DJDS_fluid,   &
@@ -242,8 +251,9 @@
       subroutine cal_parturbation_temp(nod_comm, node, ele, surf,       &
      &          fluid, sf_grp, Tnod_bcs, Tsf_bcs, iphys,                &
      &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,        &
-     &          FEM_elens, sgs_coefs, sgs_coefs_nod, diff_coefs,        &
-     &          filtering, wk_filter, mhd_fem_wk, fem_wk, surf_wk,      &
+     &          FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,         &
+     &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,        &
+     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk,                 &
      &          f_l, f_nl, nod_fld)
 !
       use m_phys_constants
@@ -252,7 +262,6 @@
       use m_t_int_parameter
       use m_type_AMG_data
       use m_solver_djds_MHD
-      use m_SGS_address
 !
       use nod_phys_send_recv
       use cal_sgs_fluxes
@@ -285,6 +294,9 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_terms_address), intent(in) :: icomp_sgs
+      type(SGS_terms_address), intent(in) :: ifld_diff
+      type(SGS_terms_address), intent(in) :: iphys_elediff
       type(MHD_coefficients_type), intent(in) :: sgs_coefs
       type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
       type(MHD_coefficients_type), intent(in) :: diff_coefs
@@ -299,7 +311,8 @@
 !
 !
       if (iflag_SGS_heat .ne. id_SGS_none) then
-        call cal_sgs_heat_flux(icomp_sgs_hf, ie_dvx,                    &
+        call cal_sgs_heat_flux                                          &
+     &     (icomp_sgs%i_heat_flux, iphys_elediff%i_velo,                &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
      &      jac_3d, rhs_tbl, FEM_elens, filtering, sgs_coefs,           &
      &      sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,               &
@@ -317,7 +330,7 @@
       if (coef_temp.gt.zero .and. coef_exp_t.gt.zero) then
         call int_vol_scalar_diffuse_ele(fluid%istack_ele_fld_smp,       &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
-     &      iak_diff_t, coef_exp_t, ak_d_temp, iphys%i_par_temp,        &
+     &      ifld_diff%i_temp, coef_exp_t, ak_d_temp, iphys%i_par_temp,  &
      &      fem_wk, f_l)
       end if
 !
@@ -327,20 +340,20 @@
         call int_vol_temp_ele_upw(node, ele, fluid, iphys, nod_fld,     &
      &      jac_3d, rhs_tbl, FEM_elens, diff_coefs,                     &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
-     &      iak_diff_hf, mhd_fem_wk, fem_wk, f_nl)
+     &      ifld_diff%i_heat_flux, mhd_fem_wk, fem_wk, f_nl)
       else
         call int_vol_temp_ele(node, ele, fluid, iphys, nod_fld,         &
      &      jac_3d, rhs_tbl, FEM_elens, diff_coefs,                     &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
-     &      iak_diff_hf, mhd_fem_wk, fem_wk, f_nl)
+     &      ifld_diff%i_heat_flux, mhd_fem_wk, fem_wk, f_nl)
       end if
 !
 !      call check_ff_smp(my_rank, n_scalar, node%max_nod_smp, f_l)
 !      call check_ff_smp(my_rank, n_scalar, node%max_nod_smp, f_nl)
 !
-      call int_surf_temp_ele(iak_diff_hf, node, ele, surf, sf_grp,      &
-     &    iphys, nod_fld, Tsf_bcs, jac_sf_grp, rhs_tbl, FEM_elens,      &
-     &    diff_coefs, fem_wk, surf_wk, f_l, f_nl)
+      call int_surf_temp_ele(ifld_diff%i_heat_flux,                     &
+     &    node, ele, surf, sf_grp, iphys, nod_fld, Tsf_bcs, jac_sf_grp, &
+     &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, surf_wk, f_l, f_nl)
 !
 !      call check_nodal_data(my_rank, nod_fld, n_scalar, iphys%i_temp)
 !      call check_nodal_data(my_rank, ele_fld,                          &
@@ -373,7 +386,7 @@
      &      rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (iflag_t_evo_4_temp .eq. id_Crank_nicolson) then
         call cal_per_temp_lumped_crank                                  &
-     &     (iphys%i_par_temp, iphys%i_pre_heat, iak_diff_t,             &
+     &     (iphys%i_par_temp, iphys%i_pre_heat, ifld_diff%i_temp,       &
      &      nod_comm, node, ele, fluid, Tnod_bcs, iphys_ele, ele_fld,   &
      &      jac_3d, rhs_tbl, FEM_elens, diff_coefs, num_MG_level,       &
      &      MHD1_matrices%MG_interpolate, MHD1_matrices%MG_comm_fluid,  &
@@ -381,7 +394,7 @@
      &      MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (iflag_t_evo_4_temp .eq. id_Crank_nicolson_cmass) then 
         call cal_per_temp_consist_crank                                 &
-     &     (iphys%i_par_temp, iphys%i_pre_heat, iak_diff_t,             &
+     &     (iphys%i_par_temp, iphys%i_pre_heat, ifld_diff%i_temp,       &
      &      node, ele, fluid, Tnod_bcs, jac_3d, rhs_tbl, FEM_elens,     &
      &      diff_coefs, num_MG_level, MHD1_matrices%MG_interpolate,     &
      &      MHD1_matrices%MG_comm_fluid, MHD1_matrices%MG_DJDS_fluid,   &

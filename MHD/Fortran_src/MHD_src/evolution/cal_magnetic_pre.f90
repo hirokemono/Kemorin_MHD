@@ -5,23 +5,25 @@
 !                                    on July 2000 (ver 1.1)
 !        modieied by H. Matsui on Sep., 2005
 !
-!!      subroutine cal_magnetic_field_pre(nod_comm, node, ele, surf,    &
-!!     &         conduct, sf_grp, Bnod_bcs, Asf_bcs, Bsf_bcs, iphys,    &
-!!     &         iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl,   &
-!!     &         FEM_elens, sgs_coefs, sgs_coefs_nod, diff_coefs,       &
-!!     &         filtering, num_MG_level, MG_interpolate, MG_comm_table,&
-!!     &         MG_DJDS_table, Bmat_MG_DJDS, MG_vector,                &
-!!     &         wk_filter, mhd_fem_wk, fem_wk, surf_wk,                &
-!!     &         f_l, f_nl, nod_fld)
+!!      subroutine cal_magnetic_field_pre                               &
+!!     &       (icomp_sgs_uxb, iak_diff_b, iak_diff_uxb, ie_dvx, ie_dbx,&
+!!     &        nod_comm, node, ele, surf, conduct, sf_grp,             &
+!!     &        Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,  &
+!!     &        jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,             &
+!!     &        sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,        &
+!!     &        num_MG_level, MG_interpolate, MG_comm_table,            &
+!!     &        MG_DJDS_table, Bmat_MG_DJDS, MG_vector, wk_filter,      &
+!!     &        mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_magnetic_co                                      &
-!!     &         (nod_comm, node, ele, surf, conduct, sf_grp,           &
-!!     &          Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,         &
+!!     &         (iak_diff_b, nod_comm, node, ele, surf, conduct,       &
+!!     &          sf_grp, Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld, &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
 !!     &          rhs_tbl, FEM_elens, diff_coefs, num_MG_level,         &
 !!     &          MG_interpolate, MG_comm_table, MG_DJDS_table,         &
 !!     &          Bmat_MG_DJDS, MG_vector, m_lump, mhd_fem_wk,          &
 !!     &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
-!!      subroutine cal_magnetic_co_outside(nod_comm, node, ele, surf,   &
+!!      subroutine cal_magnetic_co_outside                              &
+!!     &         (iak_diff_b, nod_comm, node, ele, surf,                &
 !!     &          insulate, sf_grp, Bnod_bcs, Fsf_bcs, iphys,           &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
 !!     &          rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk,           &
@@ -101,18 +103,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_magnetic_field_pre(nod_comm, node, ele, surf,      &
-     &         conduct, sf_grp, Bnod_bcs, Asf_bcs, Bsf_bcs, iphys,      &
-     &         iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl,     &
-     &         FEM_elens, sgs_coefs, sgs_coefs_nod, diff_coefs,         &
-     &         filtering, num_MG_level, MG_interpolate, MG_comm_table,  &
-     &         MG_DJDS_table, Bmat_MG_DJDS, MG_vector,                  &
-     &         wk_filter, mhd_fem_wk, fem_wk, surf_wk,                  &
-     &         f_l, f_nl, nod_fld)
+      subroutine cal_magnetic_field_pre                                 &
+     &       (icomp_sgs_uxb, iak_diff_b, iak_diff_uxb, ie_dvx, ie_dbx,  &
+     &        nod_comm, node, ele, surf, conduct, sf_grp,               &
+     &        Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,    &
+     &        jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,               &
+     &        sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,          &
+     &        num_MG_level, MG_interpolate, MG_comm_table,              &
+     &        MG_DJDS_table, Bmat_MG_DJDS, MG_vector, wk_filter,        &
+     &        mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
       use calypso_mpi
       use m_t_int_parameter
-      use m_SGS_address
 !
       use set_boundary_scalars
       use nod_phys_send_recv
@@ -124,6 +126,10 @@
       use evolve_by_adams_bashforth
       use evolve_by_lumped_crank
       use evolve_by_consist_crank
+!
+      integer(kind = kint), intent(in) :: iak_diff_b, iak_diff_uxb
+      integer(kind = kint), intent(in) :: icomp_sgs_uxb
+      integer(kind = kint), intent(in) :: ie_dvx, ie_dbx
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -241,15 +247,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_magnetic_co                                        &
-     &         (nod_comm, node, ele, surf, conduct, sf_grp,             &
-     &          Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,           &
+     &         (iak_diff_b, nod_comm, node, ele, surf, conduct,         &
+     &          sf_grp, Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,   &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
      &          rhs_tbl, FEM_elens, diff_coefs, num_MG_level,           &
      &          MG_interpolate, MG_comm_table, MG_DJDS_table,           &
      &          Bmat_MG_DJDS, MG_vector, m_lump, mhd_fem_wk,            &
      &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
-!
-      use m_SGS_address
 !
       use set_boundary_scalars
       use nod_phys_send_recv
@@ -258,6 +262,8 @@
       use implicit_vector_correct
       use cal_multi_pass
       use cal_sol_vector_co_crank
+!
+      integer(kind = kint), intent(in) :: iak_diff_b
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -318,7 +324,7 @@
 !
       if (   iflag_implicit_correct.eq.3                                &
      &  .or. iflag_implicit_correct.eq.4) then
-        call cal_magnetic_co_imp(iphys%i_magne,                         &
+        call cal_magnetic_co_imp(iphys%i_magne, iak_diff_b,             &
      &      nod_comm, node, ele, conduct, Bnod_bcs, iphys_ele, ele_fld, &
      &      jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                   &
      &      num_MG_level, MG_interpolate, MG_comm_table,                &
@@ -342,13 +348,12 @@
 ! ----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_magnetic_co_outside(nod_comm, node, ele, surf,     &
+      subroutine cal_magnetic_co_outside                                &
+     &         (iak_diff_b, nod_comm, node, ele, surf,                  &
      &          insulate, sf_grp, Bnod_bcs, Fsf_bcs, iphys,             &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
      &          rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk, fem_wk,     &
      &          surf_wk, f_l, f_nl, nod_fld)
-!
-      use m_SGS_address
 !
       use set_boundary_scalars
       use nod_phys_send_recv
@@ -357,6 +362,8 @@
       use cal_sol_vector_correct
       use cal_multi_pass
       use cal_sol_vector_co_crank
+!
+      integer(kind = kint), intent(in) :: iak_diff_b
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node

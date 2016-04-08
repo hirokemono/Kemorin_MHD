@@ -7,9 +7,9 @@
 !!      subroutine cal_forces_4_monitor                                 &
 !!     &         (nod_comm, node, ele, surf, fluid, conduct, sf_grp,    &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele,                  &
-!!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,   &
-!!     &          m_lump, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,       &
-!!     &          nod_fld, ele_fld)
+!!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,               &
+!!     &          ifld_diff, diff_coefs, m_lump, mhd_fem_wk, fem_wk,    &
+!!     &          surf_wk, f_l, f_nl, nod_fld, ele_fld)
 !!      subroutine cal_work_4_forces                                    &
 !!     &         (nod_comm, node, ele, iphys, jac_3d, rhs_tbl,          &
 !!     &          mhd_fem_wk, fem_wk, f_nl, nod_fld)
@@ -28,6 +28,7 @@
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(SGS_terms_address), intent(in) :: ifld_diff
 !!        type(MHD_coefficients_type), intent(in) :: diff_coefs
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -119,11 +120,9 @@
       subroutine cal_forces_4_monitor                                   &
      &         (nod_comm, node, ele, surf, fluid, conduct, sf_grp,      &
      &          nod_bcs, surf_bcs, iphys, iphys_ele,                    &
-     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,     &
-     &          m_lump, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,         &
-     &          nod_fld, ele_fld)
-!
-      use m_SGS_address
+     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                 &
+     &          ifld_diff, diff_coefs, m_lump, mhd_fem_wk, fem_wk,      &
+     &          surf_wk, f_l, f_nl, nod_fld, ele_fld)
 !
       use cal_terms_for_heat
       use cal_momentum_terms
@@ -145,6 +144,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_terms_address), intent(in) :: ifld_diff
       type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(lumped_mass_matrices), intent(in) :: m_lump
 !
@@ -166,7 +166,7 @@
      &     .or. i_fld .eq. iphys%i_ph_flux_div) then
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
-          call cal_terms_4_heat(i_fld, iak_diff_hf,                     &
+          call cal_terms_4_heat(i_fld, ifld_diff%i_heat_flux,           &
      &        nod_comm, node, ele, surf, fluid, sf_grp,                 &
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,                &
      &        iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,          &
@@ -189,7 +189,8 @@
      &     .or. i_fld .eq. iphys%i_coriolis) then
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
-          call cal_terms_4_momentum(i_fld, iak_diff_mf, iak_diff_lor,   &
+          call cal_terms_4_momentum                                     &
+     &       (i_fld, ifld_diff%i_velo, ifld_diff%i_lorentz,             &
      &        nod_comm, node, ele, surf, fluid, sf_grp,                 &
      &        surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys,                &
      &        iphys_ele, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,        &
@@ -206,7 +207,7 @@
      &           .and. iflag_t_evo_4_magne.gt.id_no_evolution)) then
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
-          call cal_terms_4_magnetic(i_fld, iak_diff_uxb,                &
+          call cal_terms_4_magnetic(i_fld, ifld_diff%i_induction,       &
      &        nod_comm, node, ele, surf, conduct, sf_grp,               &
      &        nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,     &
      &        iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,   &
@@ -229,8 +230,9 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_thermal_diffusion)
         call cal_thermal_diffusion                                      &
-     &     (iak_diff_hf, iak_diff_t, nod_comm, node, ele, surf, fluid,  &
-     &      sf_grp, nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,          &
+     &     (ifld_diff%i_heat_flux, ifld_diff%i_temp,                    &
+     &      nod_comm, node, ele, surf, fluid, sf_grp,                   &
+     &      nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,                  &
      &      jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,         &
      &      mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
       end if
@@ -239,8 +241,9 @@
 !        if(iflag_debug .ge. iflag_routine_msg)                         &
 !     &             write(*,*) 'lead  ', trim(fhd_thermal_diffusion)
 !        call cal_thermal_diffusion                                     &
-!     &     (iak_diff_hf, iak_diff_t, nod_comm, node, ele, surf, fluid, &
-!     &      sf_grp, nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,         &
+!     &     (ifld_diff%i_heat_flux, ifld_diff%i_temp,                   &
+!     &      nod_comm, node, ele, surf, fluid, sf_grp,                  &
+!     &      nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,                 &
 !     &      jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,        &
 !     &      mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !      end if
@@ -249,7 +252,7 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_viscous)
         call cal_viscous_diffusion                                      &
-     &     (iak_diff_v, iak_diff_mf, iak_diff_lor,                      &
+     &     (ifld_diff%i_velo, ifld_diff%i_velo, ifld_diff%i_lorentz,    &
      &      nod_comm, node, ele, surf, fluid, sf_grp,                   &
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,       &
      &      iphys, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,  &
@@ -259,7 +262,7 @@
       if (iphys%i_vp_diffuse .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_vecp_diffuse)
-        call cal_vecp_diffusion(iak_diff_b,                             &
+        call cal_vecp_diffusion(ifld_diff%i_magne,                      &
      &      nod_comm, node, ele, surf, sf_grp,                          &
      &      nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, iphys,                  &
      &      jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,         &
@@ -270,11 +273,12 @@
      &      .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_mag_diffuse)
-        call cal_magnetic_diffusion(iak_diff_b, iak_diff_uxb,           &
-     &     nod_comm, node, ele, surf, conduct, sf_grp,                  &
-     &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,        &
-     &     iphys, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,   &
-     &     m_lump, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+        call cal_magnetic_diffusion                                     &
+     &     (ifld_diff%i_magne, ifld_diff%i_induction,                   &
+     &      nod_comm, node, ele, surf, conduct, sf_grp,                 &
+     &      nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,       &
+     &      iphys, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,  &
+     &      m_lump, fem_wk, surf_wk, f_l, f_nl, nod_fld)
       end if
 !
 !

@@ -9,8 +9,9 @@
 !!     &         (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod, &
 !!     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys, iphys_ele,&
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
-!!     &          rhs_tbl, FEM_elens, sgs_coefs_nod, diff_coefs,        &
-!!     &          filtering, layer_tbl, wk_lsq, wk_sgs, wk_filter,      &
+!!     &          rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs, ifld_diff,   &
+!!     &          iphys_elediff, sgs_coefs_nod, diff_coefs, filtering,  &
+!!     &          layer_tbl, wk_lsq, wk_sgs, wk_filter,                 &
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
 !!     &          nod_fld, ele_fld, sgs_coefs)
 !!        type(communication_table), intent(in) :: nod_comm
@@ -29,6 +30,10 @@
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp_q, jac_sf_grp_l
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(SGS_terms_address), intent(in) :: ifld_sgs
+!!        type(SGS_terms_address), intent(in) :: icomp_sgs
+!!        type(SGS_terms_address), intent(in) :: ifld_diff
+!!        type(SGS_terms_address), intent(in) :: iphys_elediff
 !!        type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
 !!        type(MHD_coefficients_type), intent(in) :: diff_coefs
 !!        type(filtering_data_type), intent(in) :: filtering
@@ -86,8 +91,9 @@
      &         (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,   &
      &          Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys, iphys_ele,  &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
-     &          rhs_tbl, FEM_elens, sgs_coefs_nod, diff_coefs,          &
-     &          filtering, layer_tbl, wk_lsq, wk_sgs, wk_filter,        &
+     &          rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs, ifld_diff,     &
+     &          iphys_elediff, sgs_coefs_nod, diff_coefs, filtering,    &
+     &          layer_tbl, wk_lsq, wk_sgs, wk_filter,                   &
      &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                 &
      &          nod_fld, ele_fld, sgs_coefs)
 !
@@ -95,7 +101,6 @@
       use m_machine_parameter
       use m_physical_property
       use m_type_AMG_data
-      use m_SGS_address
       use m_solver_djds_MHD
 !
       use cal_velocity_pre
@@ -123,6 +128,10 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp_q, jac_sf_grp_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_terms_address), intent(in) :: ifld_sgs
+      type(SGS_terms_address), intent(in) :: icomp_sgs
+      type(SGS_terms_address), intent(in) :: ifld_diff
+      type(SGS_terms_address), intent(in) :: iphys_elediff
       type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
       type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(filtering_data_type), intent(in) :: filtering
@@ -173,6 +182,7 @@
      &   (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,         &
      &    Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,                 &
      &    jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,         &
+     &    ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,                &
      &    sgs_coefs_nod, diff_coefs, filtering, layer_tbl,              &
      &    num_MG_level, MHD1_matrices%MG_interpolate,                   &
      &    MHD1_matrices%MG_comm_fluid, MHD1_matrices%MG_DJDS_fluid,     &
@@ -189,7 +199,7 @@
 !     &    iphys, nod_fld, jac_3d_q, fem_wk, rel_correct)
 !
       do iloop = 0, maxiter
-        call cal_mod_potential(iak_diff_v,                              &
+        call cal_mod_potential(ifld_diff%i_velo,                        &
      &      node, ele, surf, fluid, sf_grp, Vnod_bcs, Vsf_bcs, Psf_bcs, &
      &      iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,           &
      &      FEM_elens, diff_coefs, num_MG_level,                        &
@@ -205,7 +215,7 @@
      &     (nod_comm, node, ele, surf, fluid,  sf_grp, sf_grp_nod,      &
      &      Vnod_bcs, Vsf_bcs, Psf_bcs, iphys, iphys_ele, ele_fld,      &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &
-     &      FEM_elens, diff_coefs, num_MG_level,                        &
+     &      FEM_elens, ifld_diff, diff_coefs, num_MG_level,             &
      &      MHD1_matrices%MG_interpolate, MHD1_matrices%MG_comm_fluid,  &
      &      MHD1_matrices%MG_DJDS_fluid, MHD1_matrices%Vmat_MG_DJDS,    &
      &      MG_vector, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)

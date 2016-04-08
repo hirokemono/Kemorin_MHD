@@ -13,6 +13,7 @@
       module t_material_property
 !
       use m_precision
+      use m_constants
 !
       implicit  none
 !
@@ -25,6 +26,26 @@
         integer(kind = kint), pointer  :: istack_comps(:)
         real(kind = kreal), pointer :: ak(:,:)
       end type MHD_coefficients_type
+!
+      type SGS_terms_address
+        integer (kind=kint) :: i_velo =  izero
+        integer (kind=kint) :: i_temp =  izero
+        integer (kind=kint) :: i_magne = izero
+        integer (kind=kint) :: i_light = izero
+!
+        integer (kind=kint) :: i_filter_velo =  izero
+        integer (kind=kint) :: i_filter_temp =  izero
+        integer (kind=kint) :: i_filter_magne = izero
+        integer (kind=kint) :: i_filter_light = izero
+!
+        integer (kind=kint) :: i_heat_flux =     izero
+        integer (kind=kint) :: i_mom_flux =      izero
+        integer (kind=kint) :: i_comp_flux =     izero
+        integer (kind=kint) :: i_lorentz =       izero
+        integer (kind=kint) :: i_induction =     izero
+        integer (kind=kint) :: i_buoyancy =      izero
+        integer (kind=kint) :: i_comp_buoyancy = izero
+      end type SGS_terms_address
 !
 ! -------------------------------------------------------------------
 !

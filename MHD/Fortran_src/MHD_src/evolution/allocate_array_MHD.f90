@@ -7,12 +7,14 @@
 !        Modified by H. Matsui on May, 2007
 !
 !!      subroutine allocate_array(node, ele, iphys, nod_fld,            &
-!!     &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, label_sim)
+!!     &          iphys_elediff, m_lump, mhd_fem_wk, fem_wk,            &
+!!     &          f_l, f_nl, label_sim)
 !!      subroutine s_init_check_delta_t_data(iphys)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_address), intent(inout) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(SGS_terms_address), intent(inout) :: iphys_elediff
 !!        type(lumped_mass_matrices), intent(inout) :: m_lump
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -41,12 +43,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine allocate_array(node, ele, iphys, nod_fld,              &
-     &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, label_sim)
+     &          iphys_elediff, m_lump, mhd_fem_wk, fem_wk,              &
+     &          f_l, f_nl, label_sim)
 !
       use m_element_phys_data
       use m_phys_constants
       use m_mean_square_values
-      use m_SGS_address
 !
       use t_geometry_data
       use t_phys_data
@@ -54,11 +56,15 @@
       use t_finite_element_mat
       use t_MHD_finite_element_mat
       use t_FEM_phys_data
+      use t_material_property
+!
+      use count_sgs_components
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_address), intent(inout) :: iphys
       type(phys_data), intent(inout) :: nod_fld
+      type(SGS_terms_address), intent(inout) :: iphys_elediff
       type(lumped_mass_matrices), intent(inout) :: m_lump
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -80,7 +86,7 @@
      &   (ele%numele, node%max_nod_smp, nod_fld, mhd_fem_wk)
       call count_int_vol_data(mhd_fem_wk)
       call alloc_int_vol_dvx(ele%numele, mhd_fem_wk)
-      call set_SGS_addresses
+      call set_SGS_addresses(iphys_elediff)
 !
 !  allocation for field values
       if (iflag_debug.ge.1)  write(*,*) 'set_field_address_type'

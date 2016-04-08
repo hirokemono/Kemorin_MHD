@@ -7,12 +7,12 @@
 !!     &         (mesh, MHD_mesh, rhs_tbl, MHD_mat_tbls)
 !!      subroutine update_matrices(mesh, group, ele_mesh, MHD_mesh,     &
 !!     &          nod_bcs, surf_bcs, jac_3d_q, jac_3d_l, jac_sf_grp_q,  &
-!!     &          FEM_elens, diff_coefs, rhs_tbl, MHD_mat_tbls, surf_wk,&
-!!     &          mhd_fem_wk, fem_wk)
+!!     &          FEM_elens, ifld_diff, diff_coefs, rhs_tbl,            &
+!!     &          MHD_mat_tbls, surf_wk, mhd_fem_wk, fem_wk)
 !!      subroutine set_aiccg_matrices(mesh, group, ele_mesh, MHD_mesh,  &
 !!     &          nod_bcs, surf_bcs, jac_3d_q, jac_3d_l, jac_sf_grp_q,  &
-!!     &          FEM_elens, diff_coefs, rhs_tbl, MHD_mat_tbls, surf_wk,&
-!!     &          mhd_fem_wk, fem_wk)
+!!     &          FEM_elens, ifld_diff, diff_coefs, rhs_tbl,            &
+!!     &          MHD_mat_tbls, surf_wk, mhd_fem_wk, fem_wk)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(element_geometry), intent(in) :: ele_mesh
@@ -22,6 +22,7 @@
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp_q
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(SGS_terms_address), intent(in) :: ifld_diff
 !!        type(MHD_coefficients_type), intent(in) :: diff_coefs
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(tables_MHD_mat_const), intent(in) :: MHD_mat_tbls
@@ -95,8 +96,8 @@
 !
       subroutine update_matrices(mesh, group, ele_mesh, MHD_mesh,       &
      &          nod_bcs, surf_bcs, jac_3d_q, jac_3d_l, jac_sf_grp_q,    &
-     &          FEM_elens, diff_coefs, rhs_tbl, MHD_mat_tbls, surf_wk,  &
-     &          mhd_fem_wk, fem_wk)
+     &          FEM_elens, ifld_diff, diff_coefs, rhs_tbl,              &
+     &          MHD_mat_tbls, surf_wk, mhd_fem_wk, fem_wk)
 !
       use m_control_parameter
       use m_t_step_parameter
@@ -110,6 +111,7 @@
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(jacobians_2d), intent(in) :: jac_sf_grp_q
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_terms_address), intent(in) :: ifld_diff
       type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(tables_MHD_mat_const), intent(in) :: MHD_mat_tbls
@@ -130,8 +132,8 @@
         if (iflag_debug.eq.1)  write(*,*) 'matrix assemble again'
         call set_aiccg_matrices(mesh, group, ele_mesh, MHD_mesh,        &
      &      nod_bcs, surf_bcs, jac_3d_q, jac_3d_l, jac_sf_grp_q,        &
-     &      FEM_elens, diff_coefs, rhs_tbl, MHD_mat_tbls, surf_wk,      &
-     &      mhd_fem_wk, fem_wk)
+     &      FEM_elens, ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,    &
+     &      surf_wk, mhd_fem_wk, fem_wk)
         iflag_flex_step_changed = 0
       end if
 !
@@ -141,8 +143,8 @@
 !
       subroutine set_aiccg_matrices(mesh, group, ele_mesh, MHD_mesh,    &
      &          nod_bcs, surf_bcs, jac_3d_q, jac_3d_l, jac_sf_grp_q,    &
-     &          FEM_elens, diff_coefs, rhs_tbl, MHD_mat_tbls, surf_wk,  &
-     &          mhd_fem_wk, fem_wk)
+     &          FEM_elens, ifld_diff, diff_coefs, rhs_tbl,              &
+     &          MHD_mat_tbls, surf_wk, mhd_fem_wk, fem_wk)
 !
       use m_control_parameter
       use m_iccg_parameter
@@ -167,6 +169,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp_q
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_terms_address), intent(in) :: ifld_diff
       type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(tables_MHD_mat_const), intent(in) :: MHD_mat_tbls
       type(work_surface_element_mat), intent(in) :: surf_wk
@@ -194,7 +197,7 @@
 !
       call int_vol_poisson_matrices(mesh%ele, jac_3d_l, rhs_tbl,        &
      &    MHD_mat_tbls%linear, MHD_mat_tbls%fluid_l,                    &
-     &    FEM_elens, diff_coefs, fem_wk)
+     &    FEM_elens, ifld_diff, diff_coefs, fem_wk)
 !
 !   Diffusion matrix
 !
@@ -205,13 +208,15 @@
         if (iflag_debug.eq.1) write(*,*) 'int_vol_crank_matrices'
         call int_vol_crank_matrices(mesh%ele, jac_3d_q, rhs_tbl,        &
      &      MHD_mat_tbls%base, MHD_mat_tbls%fluid_q,                    &
-     &      MHD_mat_tbls%full_conduct_q, FEM_elens, diff_coefs, fem_wk)
+     &      MHD_mat_tbls%full_conduct_q, FEM_elens,                     &
+     &      ifld_diff, diff_coefs, fem_wk)
       else if (iflag_scheme .eq. id_Crank_nicolson_cmass) then
         call int_vol_crank_mat_consist                                  &
      &     (mesh%ele, jac_3d_q, rhs_tbl, MHD_mat_tbls, fem_wk)
         call int_vol_crank_matrices(mesh%ele, jac_3d_q, rhs_tbl,        &
      &      MHD_mat_tbls%base, MHD_mat_tbls%fluid_q,                    &
-     &      MHD_mat_tbls%full_conduct_q, FEM_elens, diff_coefs, fem_wk)
+     &      MHD_mat_tbls%full_conduct_q, FEM_elens,                     &
+     &      ifld_diff, diff_coefs, fem_wk)
       end if
 !
 !     set boundary conditions

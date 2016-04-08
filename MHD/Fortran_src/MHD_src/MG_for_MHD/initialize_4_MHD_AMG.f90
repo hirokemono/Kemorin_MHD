@@ -3,8 +3,11 @@
 !
 !        programmed H.Matsui on Dec., 2008
 !
-!!      subroutine s_initialize_4_MHD_AMG(node_1st, ele_1st)
-!      subroutine const_MGCG_MHD_matrices
+!!      subroutine s_initialize_4_MHD_AMG(ifld_diff, node_1st, ele_1st)
+!!        type(SGS_terms_address), intent(in) :: ifld_diff
+!!        type(node_data), intent(inout) :: node_1st
+!!        type(element_data), intent(inout) :: ele_1st
+!!      subroutine const_MGCG_MHD_matrices
 !
       module initialize_4_MHD_AMG
 !
@@ -24,12 +27,13 @@
 !
 ! ---------------------------------------------------------------------
 !
-      subroutine s_initialize_4_MHD_AMG(node_1st, ele_1st)
+      subroutine s_initialize_4_MHD_AMG(ifld_diff, node_1st, ele_1st)
 !
       use t_geometry_data
       use t_edge_data
       use t_surface_data
       use t_bc_data_MHD
+      use t_material_property
 !
       use m_solver_djds_MHD
       use m_type_AMG_data
@@ -51,6 +55,8 @@
       use set_MHD_idx_4_mat_type
       use link_MG_MHD_mesh_data
       use const_element_comm_tables
+!
+      type(SGS_terms_address), intent(in) :: ifld_diff
 !
       type(node_data), intent(inout) :: node_1st
       type(element_data), intent(inout) :: ele_1st
@@ -108,7 +114,7 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            's_set_sgs_diff_array_MHD_AMG', i_level
         call s_set_sgs_diff_array_MHD_AMG(MG_mesh(i_level)%mesh%ele,    &
-     &      ak_MHD_AMG(i_level) )
+     &      ifld_diff, ak_MHD_AMG(i_level) )
       end do
 !
 !     --------------------- 

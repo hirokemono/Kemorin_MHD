@@ -15,19 +15,19 @@
 !!     &          jac_3d, rhs_tbl, m_lump, mhd_fem_wk, fem_wk,          &
 !!     &          f_l, f_nl, nod_fld)
 !!
-!!      subroutine cal_velocity_co_imp(i_velo,                          &
+!!      subroutine cal_velocity_co_imp(i_velo, iak_diff_v,              &
 !!     &          nod_comm, node, ele, fluid, Vnod_bcs,                 &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
 !!     &          diff_coefs, num_MG_level, MG_interpolate,             &
 !!     &          MG_comm_fluid, MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,&
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-!!      subroutine cal_vector_p_co_imp(i_vecp,                          &
+!!      subroutine cal_vector_p_co_imp(i_vecp, iak_diff_b,              &
 !!     &          nod_comm, node, ele, conduct, Bnod_bcs,               &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
 !!     &          diff_coefs, num_MG_level, MG_interpolate,             &
 !!     &          MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS, MG_vector,&
 !!     &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-!!      subroutine cal_magnetic_co_imp(i_magne,                         &
+!!      subroutine cal_magnetic_co_imp(i_magne, iak_diff_b,             &
 !!     &          nod_comm, node, ele, conduct, Bnod_bcs,               &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
 !!     &          diff_coefs, num_MG_level, MG_interpolate,             &
@@ -207,7 +207,7 @@
 ! -----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_velocity_co_imp(i_velo,                            &
+      subroutine cal_velocity_co_imp(i_velo, iak_diff_v,                &
      &          nod_comm, node, ele, fluid, Vnod_bcs,                   &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
      &          diff_coefs, num_MG_level, MG_interpolate,               &
@@ -219,7 +219,6 @@
       use m_ele_material_property
       use m_solver_djds_MHD
       use m_array_for_send_recv
-      use m_SGS_address
 !
       use int_vol_diffusion_ele
       use int_sk_4_fixed_boundary
@@ -230,7 +229,7 @@
       use set_nodal_bc_id_data
       use cal_sol_vector_co_crank
 !
-      integer(kind=kint), intent(in) :: i_velo
+      integer(kind=kint), intent(in) :: i_velo, iak_diff_v
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -305,7 +304,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_vector_p_co_imp(i_vecp,                            &
+      subroutine cal_vector_p_co_imp(i_vecp, iak_diff_b,                &
      &          nod_comm, node, ele, conduct, Bnod_bcs,                 &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
      &          diff_coefs, num_MG_level, MG_interpolate,               &
@@ -315,7 +314,6 @@
       use m_iccg_parameter
       use m_solver_djds_MHD
       use m_array_for_send_recv
-      use m_SGS_address
       use m_ele_material_property
 !
       use int_vol_diffusion_ele
@@ -328,7 +326,7 @@
       use cal_sol_vector_co_crank
 !
 !
-      integer(kind=kint), intent(in) :: i_vecp
+      integer(kind=kint), intent(in) :: i_vecp, iak_diff_b
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -397,7 +395,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_magnetic_co_imp(i_magne,                           &
+      subroutine cal_magnetic_co_imp(i_magne, iak_diff_b,               &
      &          nod_comm, node, ele, conduct, Bnod_bcs,                 &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
      &          diff_coefs, num_MG_level, MG_interpolate,               &
@@ -407,7 +405,6 @@
       use m_iccg_parameter
       use m_solver_djds_MHD
       use m_array_for_send_recv
-      use m_SGS_address
       use m_ele_material_property
 !
       use int_vol_diffusion_ele
@@ -419,7 +416,7 @@
       use cal_sol_vector_co_crank
 !
 !
-      integer(kind=kint), intent(in) :: i_magne
+      integer(kind=kint), intent(in) :: i_magne, iak_diff_b
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node

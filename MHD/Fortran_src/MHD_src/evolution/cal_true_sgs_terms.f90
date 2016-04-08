@@ -6,9 +6,9 @@
 !!      subroutine cal_true_sgs_terms_pre                               &
 !!     &        (nod_comm, node, ele, surf, sf_grp, fluid, conduct,     &
 !!     &         nod_bcs, surf_bcs, iphys, iphys_ele,                   &
-!!     &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,    &
-!!     &         mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                &
-!!     &         nod_fld, ele_fld)
+!!     &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                &
+!!     &         ifld_diff, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,    &
+!!     &         f_l, f_nl, nod_fld, ele_fld)
 !!      subroutine cal_true_sgs_terms_post
 !!     &         (nod_comm, node, iphys, filtering, wk_filter, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
@@ -25,6 +25,8 @@
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(SGS_terms_address), intent(in) :: ifld_diff
+!!        type(MHD_coefficients_type), intent(in) :: diff_coefs
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -83,13 +85,12 @@
       subroutine cal_true_sgs_terms_pre                                 &
      &        (nod_comm, node, ele, surf, sf_grp, fluid, conduct,       &
      &         nod_bcs, surf_bcs, iphys, iphys_ele,                     &
-     &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,      &
-     &         mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                  &
-     &         nod_fld, ele_fld)
+     &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                  &
+     &         ifld_diff, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,      &
+     &         f_l, f_nl, nod_fld, ele_fld)
 !
       use calypso_mpi
       use m_phys_labels
-      use m_SGS_address
       use m_physical_property
 !
       type(communication_table), intent(in) :: nod_comm
@@ -106,6 +107,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_terms_address), intent(in) :: ifld_diff
       type(MHD_coefficients_type), intent(in) :: diff_coefs
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -121,7 +123,7 @@
          if ( nod_fld%phys_name(i).eq.fhd_SGS_div_h_flux_true) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
-           call cal_div_sgs_h_flux_true_pre(iak_diff_hf,                &
+           call cal_div_sgs_h_flux_true_pre(ifld_diff%i_heat_flux,      &
      &         nod_comm, node, ele, surf, sf_grp, fluid,                &
      &         nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,               &
      &         iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,         &
@@ -131,7 +133,8 @@
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
-           call cal_div_sgs_m_flux_true_pre(iak_diff_mf, iak_diff_lor,  &
+           call cal_div_sgs_m_flux_true_pre                             &
+     &        (ifld_diff%i_mom_flux, ifld_diff%i_lorentz,               &
      &         nod_comm, node, ele, surf, fluid, sf_grp,                &
      &         surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys, iphys_ele,    &
      &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,      &
@@ -141,7 +144,7 @@
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_maxwell_true_pre                            &
-     &        (iak_diff_mf, iak_diff_lor, ex_magne,                     &
+     &        (ifld_diff%i_mom_flux, ifld_diff%i_lorentz, ex_magne,     &
      &         nod_comm, node, ele, surf, fluid, sf_grp,                &
      &         surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys, iphys_ele,    &
      &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,      &
@@ -151,7 +154,7 @@
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
-           call cal_div_sgs_induct_true_pre(iak_diff_uxb,               &
+           call cal_div_sgs_induct_true_pre(ifld_diff%i_induction,      &
      &        nod_comm, node, ele, surf, conduct, sf_grp,               &
      &        nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,     &
      &        iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,   &

@@ -162,7 +162,8 @@
 !
       if (iflag_debug.eq.1) write(*,*)' allocate_array'
       call allocate_array(mesh%node, mesh%ele, iphys, nod_fld1,         &
-     &    m1_lump, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, label_sim)
+     &    iphys_elediff, m1_lump, mhd_fem1_wk, fem1_wk,                 &
+     &    f1_l, f1_nl, label_sim)
 !
       if (iflag_debug.eq.1) write(*,*)' set_reference_temp'
       call set_reference_temp(mesh%node%numnod,                         &
@@ -176,6 +177,7 @@
       call init_ele_material_property(mesh%ele%numele)
       call s_count_sgs_components                                       &
      &   (mesh%node%numnod, mesh%ele%numele, layer_tbl,                 &
+     &    ifld_sgs, icomp_sgs, ifld_diff, icomp_diff,                   &
      &    wk_sgs1, wk_diff1, sgs_coefs, sgs_coefs_nod, diff_coefs)
 !
       if (iflag_debug.gt.0)  write(*,*)' make comm. table for fluid'
