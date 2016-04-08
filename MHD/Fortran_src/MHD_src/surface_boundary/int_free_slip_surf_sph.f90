@@ -13,11 +13,11 @@
 !!      subroutine int_free_slip_surf_sph_out                           &
 !!     &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, rhs_tbl,&
 !!     &          n_int, ngrp_surf_outside, id_grp_outside, i_field,    &
-!!     &          fem_wk, surf_wk, f_l)
+!!     &          ak_d, fem_wk, surf_wk, f_l)
 !!      subroutine int_free_slip_surf_sph_in                            &
 !!     &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, rhs_tbl,&
 !!     &          n_int, ngrp_surf_inside, id_grp_inside, i_field,      &
-!!     &          fem_wk, surf_wk, f_l)
+!!     &          ak_d, fem_wk, surf_wk, f_l)
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
@@ -44,8 +44,6 @@
       use m_precision
       use m_constants
 !
-      use m_ele_material_property
-!
       use t_geometry_data
       use t_surface_data
       use t_group_data
@@ -69,7 +67,7 @@
       subroutine int_free_slip_surf_sph_out                             &
      &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, rhs_tbl,  &
      &          n_int, ngrp_surf_outside, id_grp_outside, i_field,      &
-     &          fem_wk, surf_wk, f_l)
+     &          ak_d, fem_wk, surf_wk, f_l)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -83,6 +81,7 @@
       integer (kind = kint), intent(in) :: ngrp_surf_outside
       integer (kind = kint), intent(in)                                 &
      &       :: id_grp_outside(ngrp_surf_outside)
+      real(kind = kreal), intent(in) :: ak_d(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_surface_element_mat), intent(inout) :: surf_wk
@@ -105,8 +104,7 @@
      &          surf_wk%vect_sf)
           call fem_surf_skv_trq_sph_out                                 &
      &         (ele, surf, sf_grp, jac_sf_grp, igrp, k2, n_int,         &
-     &          ak_d_velo, surf_wk%xe_sf, surf_wk%vect_sf,              &
-     &          fem_wk%sk6)
+     &          ak_d, surf_wk%xe_sf, surf_wk%vect_sf, fem_wk%sk6)
         end do
       end do
 !
@@ -120,7 +118,7 @@
       subroutine int_free_slip_surf_sph_in                              &
      &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, rhs_tbl,  &
      &          n_int, ngrp_surf_inside, id_grp_inside, i_field,        &
-     &          fem_wk, surf_wk, f_l)
+     &          ak_d, fem_wk, surf_wk, f_l)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -134,6 +132,7 @@
       integer (kind = kint), intent(in) ::ngrp_surf_inside
       integer (kind = kint), intent(in)                                 &
      &       :: id_grp_inside(ngrp_surf_inside)
+      real(kind = kreal), intent(in) :: ak_d(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_surface_element_mat), intent(inout) :: surf_wk
@@ -156,8 +155,7 @@
      &          i_field, dminus, surf_wk%vect_sf)
           call fem_surf_skv_trq_sph_out                                 &
      &         (ele, surf, sf_grp, jac_sf_grp, igrp, k2, n_int,         &
-     &          ak_d_velo, surf_wk%xe_sf, surf_wk%vect_sf,              &
-     &          fem_wk%sk6)
+     &          ak_d, surf_wk%xe_sf, surf_wk%vect_sf, fem_wk%sk6)
         end do
       end do
 !

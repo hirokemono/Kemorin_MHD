@@ -67,6 +67,7 @@
       use m_element_id_4_node
       use m_finite_element_matrix
       use m_filter_elength
+      use m_ele_material_property
       use m_SGS_model_coefs
       use m_work_4_dynamic_model
       use m_3d_filter_coef_MHD
@@ -154,7 +155,7 @@
 !     ========  Data output
 !
       call lead_fields_by_FEM(mesh1, group1, ele_mesh1,                 &
-     &    MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,               &
+     &    MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,       &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
      &    FEM1_elen, icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,   &
      &    sgs_coefs, sgs_coefs_nod, filtering1, wide_filtering,         &
@@ -225,7 +226,7 @@
       use m_finite_element_matrix
       use m_filter_elength
       use m_3d_filter_coef_MHD
-      use m_SGS_address
+      use m_ele_material_property
       use m_SGS_model_coefs
       use m_bc_data_velo
 !
@@ -266,7 +267,7 @@
      &      mesh1%nod_comm, mesh1%node, mesh1%ele, ele_mesh1%surf,      &
      &      MHD_mesh1%fluid, group1%surf_grp,                           &
      &      sf1_bcs%Vsf_bcs, sf1_bcs%Bsf_bcs, iphys,                    &
-     &      iphys_ele, jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1,           &
+     &      iphys_ele, ak_MHD, jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1,   &
      &      FEM1_elen, diff_coefs, mhd_fem1_wk, fem1_wk, surf1_wk,      &
      &      f1_l, f1_nl, nod_fld1, fld_ele1)
       end if

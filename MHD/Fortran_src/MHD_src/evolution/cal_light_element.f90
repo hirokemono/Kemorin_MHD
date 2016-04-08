@@ -8,8 +8,8 @@
 !!      subroutine s_cal_light_element(nod_comm, node, ele, surf,       &
 !!     &          fluid, sf_grp, Cnod_bcs, Csf_bcs, iphys,              &
 !!     &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,      &
-!!     &          FEM_elens, ifld_diff, diff_coefs, mhd_fem_wk, fem_wk, &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          FEM_elens, ifld_diff, diff_coefs, ak_d_composit,      &
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -65,8 +65,8 @@
       subroutine s_cal_light_element(nod_comm, node, ele, surf,         &
      &          fluid, sf_grp, Cnod_bcs, Csf_bcs, iphys,                &
      &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,        &
-     &          FEM_elens, ifld_diff, diff_coefs, mhd_fem_wk, fem_wk,   &
-     &          f_l, f_nl, nod_fld)
+     &          FEM_elens, ifld_diff, diff_coefs, ak_d_composit,        &
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_t_int_parameter
       use m_type_AMG_data
@@ -99,6 +99,8 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_terms_address), intent(in) :: ifld_diff
       type(MHD_coefficients_type), intent(in) :: diff_coefs
+!
+      real(kind = kreal), intent(in) :: ak_d_composit(ele%numele)
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -144,8 +146,8 @@
      &      rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       else if(iflag_t_evo_4_composit .eq. id_Crank_nicolson) then
-        call cal_composit_pre_lumped_crank                              &
-     &     (iphys%i_light, iphys%i_pre_composit, ifld_diff%i_light,     &
+        call cal_composit_pre_lumped_crank(iphys%i_light,               &
+     &      iphys%i_pre_composit, ifld_diff%i_light, ak_d_composit,     &
      &      nod_comm, node, ele, fluid, Cnod_bcs,                       &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
      &      num_MG_level, MHD1_matrices%MG_interpolate,                 &
@@ -154,8 +156,8 @@
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       else if(iflag_t_evo_4_composit .eq. id_Crank_nicolson_cmass) then
-        call cal_composit_pre_consist_crank                             &
-     &     (iphys%i_light, iphys%i_pre_composit, ifld_diff%i_light,     &
+        call cal_composit_pre_consist_crank(iphys%i_light,              &
+     &      iphys%i_pre_composit, ifld_diff%i_light, ak_d_composit,     &
      &      node, ele, fluid, Cnod_bcs, jac_3d,                         &
      &      rhs_tbl, FEM_elens, diff_coefs, num_MG_level,               &
      &      MHD1_matrices%MG_interpolate, MHD1_matrices%MG_comm_fluid,  &

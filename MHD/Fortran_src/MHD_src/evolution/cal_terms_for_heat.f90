@@ -3,12 +3,13 @@
 !
 !     Written by H. Matsui on June, 2005
 !
-!!      subroutine cal_terms_4_heat(i_field, iak_diff_hf,               &
+!!      subroutine cal_terms_4_heat(i_field, iak_diff_hf, ak_d_temp,    &
 !!     &          nod_comm, node, ele, surf, fluid, sf_grp,             &
 !!     &          Tnod_bcs, Tsf_bcs, iphys, iphys_ele, ele_fld,         &
 !!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,   &
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
-!!      subroutine cal_thermal_diffusion(iak_diff_hf, iak_diff_t,       &
+!!      subroutine cal_thermal_diffusion                                &
+!!     &         (iak_diff_hf, iak_diff_t, ak_d_temp,                   &
 !!     &          nod_comm, node, ele, surf, fluid, sf_grp,             &
 !!     &          Tnod_bcs, Tsf_bcs, iphys, jac_3d, jac_sf_grp,         &
 !!     &          rhs_tbl, FEM_elens, diff_coefs,                       &
@@ -74,15 +75,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_terms_4_heat(i_field, iak_diff_hf,                 &
+      subroutine cal_terms_4_heat(i_field, iak_diff_hf, ak_d_temp,      &
      &          nod_comm, node, ele, surf, fluid, sf_grp,               &
      &          Tnod_bcs, Tsf_bcs, iphys, iphys_ele, ele_fld,           &
      &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,     &
      &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
       use int_vol_temp_monitor
-!
-      integer (kind=kint), intent(in) :: i_field, iak_diff_hf
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -100,6 +99,9 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(MHD_coefficients_type), intent(in) :: diff_coefs
+!
+      integer (kind=kint), intent(in) :: i_field, iak_diff_hf
+      real(kind = kreal), intent(in) :: ak_d_temp(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_surface_element_mat), intent(inout) :: surf_wk
@@ -122,7 +124,7 @@
      &     mhd_fem_wk, fem_wk, f_nl)
       end if
 !
-      call int_surf_temp_monitor(i_field, iak_diff_hf,                  &
+      call int_surf_temp_monitor(i_field, iak_diff_hf, ak_d_temp,       &
      &    node, ele, surf, sf_grp, iphys, nod_fld, Tsf_bcs, jac_sf_grp, &
      &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, surf_wk, f_l, f_nl)
 !
@@ -147,16 +149,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_thermal_diffusion(iak_diff_hf, iak_diff_t,         &
+      subroutine cal_thermal_diffusion                                  &
+     &         (iak_diff_hf, iak_diff_t, ak_d_temp,                     &
      &          nod_comm, node, ele, surf, fluid, sf_grp,               &
      &          Tnod_bcs, Tsf_bcs, iphys, jac_3d, jac_sf_grp,           &
      &          rhs_tbl, FEM_elens, diff_coefs,                         &
      &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
-      use m_ele_material_property
       use int_vol_diffusion_ele
-!
-      integer (kind=kint), intent(in) :: iak_diff_hf, iak_diff_t
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -174,6 +174,9 @@
       type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
 !
+      integer (kind=kint), intent(in) :: iak_diff_hf, iak_diff_t
+      real(kind = kreal), intent(in) :: ak_d_temp(ele%numele)
+!
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -186,7 +189,8 @@
      &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,   &
      &    iak_diff_t, one, ak_d_temp, iphys%i_temp, fem_wk, f_l)
 !
-      call int_surf_temp_monitor(iphys%i_t_diffuse, iak_diff_hf,        &
+      call int_surf_temp_monitor                                        &
+     &   (iphys%i_t_diffuse, iak_diff_hf, ak_d_temp,                    &
      &    node, ele, surf, sf_grp, iphys, nod_fld, Tsf_bcs, jac_sf_grp, &
      &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, surf_wk, f_l, f_nl)
 !

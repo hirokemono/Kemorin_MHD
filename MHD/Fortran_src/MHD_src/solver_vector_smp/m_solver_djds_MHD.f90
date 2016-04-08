@@ -21,7 +21,24 @@
 !
 !>        Structure of matrices for MHD dynamo simulation
       type(MHD_MG_matrices), save :: MHD1_matrices
-!MHD1_matrices%MG_DJDS_table
+!
+!>        Structure of matrices for velocity integration
+      type(MHD_MG_matrix), save :: Vmatrix
+!
+!>        Structure of matrices for pressure integration
+      type(MHD_MG_matrix), save :: Pmatrix
+!
+!>        Structure of matrices for magnetic  integration
+      type(MHD_MG_matrix), save :: Bmatrix
+!
+!>        Structure of matrices for electric potantial integration
+      type(MHD_MG_matrix), save :: Fmatrix
+!
+!>        Structure of matrices for temperature integration
+      type(MHD_MG_matrix), save :: Tmatrix
+!
+!>        Structure of matrices for composition integration
+      type(MHD_MG_matrix), save :: Cmatrix
 !
 !>      Structure for MPI communicator
       type(mpi_4_solver), save :: solver_C

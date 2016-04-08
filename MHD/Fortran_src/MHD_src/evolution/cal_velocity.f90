@@ -6,14 +6,14 @@
 !        modified by H.Matsui on July, 2006
 !
 !!      subroutine velocity_evolution(nod_comm, node, ele, surf, fluid, &
-!!     &         (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod, &
-!!     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys, iphys_ele,&
-!!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
-!!     &          rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs, ifld_diff,   &
-!!     &          iphys_elediff, sgs_coefs_nod, diff_coefs, filtering,  &
-!!     &          layer_tbl, wk_lsq, wk_sgs, wk_filter,                 &
-!!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
-!!     &          nod_fld, ele_fld, sgs_coefs)
+!!     &        (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,  &
+!!     &         Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys, iphys_ele, &
+!!     &         ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,&
+!!     &         rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs, ifld_diff,    &
+!!     &         iphys_elediff, sgs_coefs_nod, diff_coefs, filtering,   &
+!!     &         layer_tbl, wk_lsq, wk_sgs, wk_filter,                  &
+!!     &         mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                &
+!!     &         nod_fld, ele_fld, sgs_coefs)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -26,6 +26,7 @@
 !!        type(vector_surf_bc_type), intent(in) :: Bsf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
+!!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp_q, jac_sf_grp_l
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -88,14 +89,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine velocity_evolution                                     &
-     &         (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,   &
-     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys, iphys_ele,  &
-     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
-     &          rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs, ifld_diff,     &
-     &          iphys_elediff, sgs_coefs_nod, diff_coefs, filtering,    &
-     &          layer_tbl, wk_lsq, wk_sgs, wk_filter,                   &
-     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                 &
-     &          nod_fld, ele_fld, sgs_coefs)
+     &        (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,    &
+     &         Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys, iphys_ele,   &
+     &         ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,  &
+     &         rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs, ifld_diff,      &
+     &         iphys_elediff, sgs_coefs_nod, diff_coefs, filtering,     &
+     &         layer_tbl, wk_lsq, wk_sgs, wk_filter,                    &
+     &         mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                  &
+     &         nod_fld, ele_fld, sgs_coefs)
 !
       use m_control_parameter
       use m_machine_parameter
@@ -124,6 +125,7 @@
       type(potential_surf_bc_type), intent(in) :: Psf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
+      type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(jacobians_2d), intent(in) :: jac_sf_grp_q, jac_sf_grp_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -180,7 +182,7 @@
       if (iflag_debug.eq.1)  write(*,*) 's_cal_velocity_pre'
       call s_cal_velocity_pre                                           &
      &   (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,         &
-     &    Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,                 &
+     &    Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD,         &
      &    jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,         &
      &    ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,                &
      &    sgs_coefs_nod, diff_coefs, filtering, layer_tbl,              &
@@ -211,9 +213,9 @@
      &     (node%numnod, node%istack_internal_smp, nod_fld%ntot_phys,   &
      &      iphys%i_p_phi, iphys%i_press,  nod_fld%d_fld)
 !
-        call cal_velocity_co                                            &
-     &     (nod_comm, node, ele, surf, fluid,  sf_grp, sf_grp_nod,      &
-     &      Vnod_bcs, Vsf_bcs, Psf_bcs, iphys, iphys_ele, ele_fld,      &
+        call cal_velocity_co(nod_comm, node, ele, surf, fluid,          &
+     &      sf_grp, sf_grp_nod, Vnod_bcs, Vsf_bcs, Psf_bcs,             &
+     &      iphys, iphys_ele, ele_fld, ak_MHD,                          &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &
      &      FEM_elens, ifld_diff, diff_coefs, num_MG_level,             &
      &      MHD1_matrices%MG_interpolate, MHD1_matrices%MG_comm_fluid,  &

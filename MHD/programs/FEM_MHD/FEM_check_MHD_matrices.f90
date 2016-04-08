@@ -34,6 +34,7 @@
       use m_filter_elength
       use m_layering_ele_list
       use m_sorted_node_MHD
+      use m_ele_material_property
       use m_SGS_model_coefs
       use m_bc_data_velo
 !
@@ -55,9 +56,10 @@
       call set_data_4_const_matrices                                    &
      &   (mesh1, MHD_mesh1, rhs_tbl1, MHD1_mat_tbls)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
-      call set_aiccg_matrices(mesh1, group1, ele_mesh1, MHD_mesh1,      &
-     &    nod1_bcs, sf1_bcs, jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q,    &
-     &    FEM1_elen, ifld_diff, diff_coefs, rhs_tbl1, MHD1_mat_tbls,    &
+      call set_aiccg_matrices                                           &
+     &   (mesh1, group1, ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,       &
+     &    ak_MHD, jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, FEM1_elen,    &
+     &    ifld_diff, diff_coefs, rhs_tbl1, MHD1_mat_tbls,               &
      &    surf1_wk, mhd_fem1_wk, fem1_wk)
 !
       if (iflag_debug.eq.1) write(*,*) 's_write_djds_mat_MHD'

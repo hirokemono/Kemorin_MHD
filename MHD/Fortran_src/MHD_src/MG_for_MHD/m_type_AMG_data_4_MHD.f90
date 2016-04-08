@@ -34,10 +34,10 @@
       type(mesh_data_MHD), save :: MG_MHD_mesh(0:max_MG_level)
 !   mesh data structure
 !
-      type(coefs_4_MHD_AMG), save :: ak_MHD_AMG(max_MG_level)
+      type(coefs_4_MHD_type), save :: ak_MHD_AMG(max_MG_level)
 !   structure for coefs for poisson equations
 !
-      type(lumped_mass_mat_layerd), save ::    MG_mk_MHD(max_MG_level)
+      type(lumped_mass_mat_layerd), save :: MG_mk_MHD(max_MG_level)
 !   mass matrix for layers
 !
       type(nodal_boundarty_conditions), save                            &
@@ -59,5 +59,8 @@
       type(gradient_model_data_type), save                              &
      &                      :: MG_filter_MHD(max_MG_level)
 !   filter moments data (need read routines!!)
+!
+      type(SGS_terms_address), save :: MG_ifld_diff(max_MG_level)
+      type(MHD_coefficients_type), save :: MG_diff_coefs(max_MG_level)
 !
       end module m_type_AMG_data_4_MHD

@@ -9,12 +9,13 @@
 !        modified by H. Matsui on Aug., 2007
 !
 !!      subroutine int_vol_velo_pre_ele                                 &
-!!     &        (node, ele, fluid, iphys, nod_fld,                      &
+!!     &        (node, ele, fluid, iphys, nod_fld, ak_MHD,              &
 !!     &         ncomp_ele, d_ele, iphys_ele, iak_diff_mf, iak_diff_lor,&
 !!     &         jac_3d, rhs_tbl, FEM_elens, diff_coefs,                &
 !!     &         mhd_fem_wk, fem_wk, f_nl)
-!!      subroutine int_vol_velo_pre_ele_upwind(node, ele, fluid,        &
-!!     &          iphys, nod_fld, ncomp_ele, ie_upw, d_ele, iphys_ele,  &
+!!      subroutine int_vol_velo_pre_ele_upwind                          &
+!!     &         (node, ele, fluid, iphys, nod_fld, ak_MHD,             &
+!!     &          ncomp_ele, ie_upw, d_ele, iphys_ele,                  &
 !!     &          iak_diff_mf, iak_diff_lor, jac_3d, rhs_tbl, FEM_elens,&
 !!     &          diff_coefs, mhd_fem_wk, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
@@ -22,6 +23,7 @@
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(field_geometry_data), intent(in) :: fluid
+!!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -38,7 +40,6 @@
       use m_control_parameter
       use m_phys_constants
       use m_physical_property
-      use m_ele_material_property
       use m_fem_gauss_int_coefs
 !
       use t_geometry_data_MHD
@@ -62,7 +63,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_velo_pre_ele                                   &
-     &        (node, ele, fluid, iphys, nod_fld,                        &
+     &        (node, ele, fluid, iphys, nod_fld, ak_MHD,                &
      &         ncomp_ele, d_ele, iphys_ele, iak_diff_mf, iak_diff_lor,  &
      &         jac_3d, rhs_tbl, FEM_elens, diff_coefs,                  &
      &         mhd_fem_wk, fem_wk, f_nl)
@@ -83,6 +84,7 @@
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
       type(field_geometry_data), intent(in) :: fluid
+      type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -251,26 +253,26 @@
         if(iflag_4_gravity .eq. id_FORCE_ele_int                        &
      &     .and. iflag_4_composit_buo .eq. id_FORCE_ele_int) then
           call set_double_gvec_each_ele(node, ele, nod_fld,             &
-     &        k2, iphys%i_temp, iphys%i_light, ak_buo, ak_comp_buo,     &
-     &        fem_wk%vector_1)
+     &        k2, iphys%i_temp, iphys%i_light,                          &
+     &        ak_MHD%ak_buo, ak_MHD%ak_comp_buo, fem_wk%vector_1)
           call fem_skv_vector_type                                      &
      &       (fluid%istack_ele_fld_smp, num_int, k2,                    &
      &        ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
         else if (iflag_4_gravity .eq. id_FORCE_ele_int) then
           call set_gravity_vec_each_ele(node, ele, nod_fld,             &
-     &        k2, iphys%i_temp, ak_buo, fem_wk%vector_1)
+     &        k2, iphys%i_temp, ak_MHD%ak_buo, fem_wk%vector_1)
           call fem_skv_vector_type                                      &
      &       (fluid%istack_ele_fld_smp, num_int, k2,                    &
      &        ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
         else if (iflag_4_composit_buo .eq. id_FORCE_ele_int) then
           call set_gravity_vec_each_ele(node, ele, nod_fld,             &
-     &        k2, iphys%i_light, ak_comp_buo, fem_wk%vector_1)
+     &        k2, iphys%i_light, ak_MHD%ak_comp_buo, fem_wk%vector_1)
           call fem_skv_vector_type                                      &
      &       (fluid%istack_ele_fld_smp, num_int, k2,                    &
      &        ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
         else if (iflag_4_filter_gravity .eq. id_FORCE_ele_int) then
           call set_gravity_vec_each_ele(node, ele, nod_fld,             &
-     &        k2, iphys%i_filter_temp, ak_buo, fem_wk%vector_1)
+     &        k2, iphys%i_filter_temp, ak_MHD%ak_buo, fem_wk%vector_1)
           call fem_skv_vector_type                                      &
      &       (fluid%istack_ele_fld_smp, num_int, k2,                    &
      &        ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
@@ -286,8 +288,9 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_velo_pre_ele_upwind(node, ele, fluid,          &
-     &          iphys, nod_fld, ncomp_ele, ie_upw, d_ele, iphys_ele,    &
+      subroutine int_vol_velo_pre_ele_upwind                            &
+     &         (node, ele, fluid, iphys, nod_fld, ak_MHD,               &
+     &          ncomp_ele, ie_upw, d_ele, iphys_ele,                    &
      &          iak_diff_mf, iak_diff_lor, jac_3d, rhs_tbl, FEM_elens,  &
      &          diff_coefs, mhd_fem_wk, fem_wk, f_nl)
 !
@@ -307,6 +310,7 @@
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
       type(field_geometry_data), intent(in) :: fluid
+      type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -497,26 +501,26 @@
         if(iflag_4_gravity .eq. id_FORCE_ele_int                        &
      &     .and. iflag_4_composit_buo .eq. id_FORCE_ele_int) then
           call set_double_gvec_each_ele(node, ele, nod_fld,             &
-     &        k2, iphys%i_temp, iphys%i_light, ak_buo, ak_comp_buo,     &
-     &        fem_wk%vector_1)
+     &        k2, iphys%i_temp, iphys%i_light,                          &
+     &        ak_MHD%ak_buo, ak_MHD%ak_comp_buo, fem_wk%vector_1)
           call fem_skv_vector_field_upwind(fluid%istack_ele_fld_smp,    &
      &        num_int, k2, d_ele(1,ie_upw), ele, jac_3d,                &
      &        fem_wk%vector_1, fem_wk%sk6)
         else if (iflag_4_gravity .eq. id_FORCE_ele_int) then
           call set_gravity_vec_each_ele(node, ele, nod_fld,             &
-     &        k2, iphys%i_temp, ak_buo, fem_wk%vector_1)
+     &        k2, iphys%i_temp, ak_MHD%ak_buo, fem_wk%vector_1)
           call fem_skv_vector_field_upwind(fluid%istack_ele_fld_smp,    &
      &        num_int, k2, d_ele(1,ie_upw), ele, jac_3d,                &
      &        fem_wk%vector_1, fem_wk%sk6)
         else if (iflag_4_composit_buo .eq. id_FORCE_ele_int) then
           call set_gravity_vec_each_ele(node, ele, nod_fld,             &
-     &        k2, iphys%i_light, ak_comp_buo, fem_wk%vector_1)
+     &        k2, iphys%i_light, ak_MHD%ak_comp_buo, fem_wk%vector_1)
           call fem_skv_vector_field_upwind(fluid%istack_ele_fld_smp,    &
      &        num_int, k2, d_ele(1,ie_upw), ele, jac_3d,                &
      &        fem_wk%vector_1, fem_wk%sk6)
         else if (iflag_4_filter_gravity .eq. id_FORCE_ele_int) then
           call set_gravity_vec_each_ele(node, ele, nod_fld,             &
-     &        k2, iphys%i_filter_temp, ak_buo, fem_wk%vector_1)
+     &        k2, iphys%i_filter_temp, ak_MHD%ak_buo, fem_wk%vector_1)
           call fem_skv_vector_field_upwind(fluid%istack_ele_fld_smp,    &
      &        num_int, k2, d_ele(1,ie_upw), ele,jac_3d,                 &
      &        fem_wk%vector_1, fem_wk%sk6)

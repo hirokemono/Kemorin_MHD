@@ -28,7 +28,6 @@
       use m_precision
 !
       use m_constants
-      use m_ele_material_property
 !
       use t_geometry_data
       use t_surface_data

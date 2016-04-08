@@ -40,13 +40,14 @@
         type(DJDS_ordering_table), pointer :: MG_DJDS_table(:)
 !>        DJDS ordering structures for linear entire domain
         type(DJDS_ordering_table), pointer :: MG_DJDS_linear(:)
-!>        Communication table structure for entire domain
-        type(communication_table), pointer :: MG_comm_table(:)
 !
 !>        DJDS ordering structures for fluid
         type(DJDS_ordering_table), pointer :: MG_DJDS_fluid(:)
 !>        DJDS ordering structures for linear fluid
         type(DJDS_ordering_table), pointer :: MG_DJDS_lin_fl(:)
+!>        Communication table structure for entire domain
+!
+        type(communication_table), pointer :: MG_comm_table(:)
 !>        Communication table structure for entire domain
         type(communication_table), pointer :: MG_comm_fluid(:)
 !
@@ -59,6 +60,22 @@
 !>        interpolation table structure for multigrid
         type(MG_itp_table), pointer :: MG_interpolate(:)
       end type MHD_MG_matrices
+!
+      type MHD_MG_matrix
+!>        Structure of matrix for time evolution of velocity
+        type(DJDS_MATRIX), pointer :: mat_MG_DJDS(:)
+!>        DJDS ordering structures for entire domain
+        type(DJDS_ordering_table), pointer :: MG_DJDS_table(:)
+!
+!>        Communication table structure for entire domain
+        type(communication_table), pointer :: MG_comm_table(:)
+!
+!>        Structures for FEM marix table
+        type(tables_MHD_mat_const), pointer :: MG_mat_tbls(:)
+!
+!>        interpolation table structure for multigrid
+        type(MG_itp_table), pointer :: MG_interpolate(:)
+      end type MHD_MG_matrix
 !
 !-----------------------------------------------------------------------
 !

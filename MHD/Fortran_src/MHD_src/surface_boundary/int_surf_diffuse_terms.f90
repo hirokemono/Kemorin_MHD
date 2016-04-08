@@ -53,8 +53,6 @@
      &          nod_fld, jac_sf_grp, rhs_tbl, lead_sf,                  &
      &          n_int, i_vecp, fem_wk, surf_wk, f_l)
 !
-      use m_ele_material_property
-!
       use delta_phys_2_each_surface
       use fem_surf_skv_poisson_type
       use cal_skv_to_ff_smp

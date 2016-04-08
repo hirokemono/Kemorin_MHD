@@ -5,21 +5,21 @@
 !                                    on July 2000 (ver 1.1)
 !        modieied by H. Matsui on Sep., 2005
 !
-!!      subroutine cal_velo_pre_lumped_crank                            &
-!!     &         (iak_diff_v, nod_comm, node, ele, fluid, Vnod_bcs,     &
+!!      subroutine cal_velo_pre_lumped_crank(iak_diff_v, ak_d_velo,     &
+!!     &          nod_comm, node, ele, fluid, Vnod_bcs,                 &
 !!     &          iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,&
 !!     &          diff_coefs, num_MG_level, MG_interpolate,             &
 !!     &          MG_comm_fluid, MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,&
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_vect_p_pre_lumped_crank                          &
-!!     &         (i_vecp, i_pre_uxb, iak_diff_b, nod_bc_a,              &
+!!     &         (i_vecp, i_pre_uxb, iak_diff_b, ak_d_magne, nod_bc_a,  &
 !!     &          nod_comm, node, ele, conduct, iphys_ele, ele_fld,     &
 !!     &          jac_3d, rhs_tbl, FEM_elens, diff_coefs,               &
 !!     &          num_MG_level, MG_interpolate, MG_comm_table,          &
 !!     &          MG_DJDS_table, Bmat_MG_DJDS, MG_vector,               &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_magne_pre_lumped_crank                           &
-!!     &         (i_magne, i_pre_uxb, iak_diff_b, nod_bc_b,             &
+!!     &         (i_magne, i_pre_uxb, iak_diff_b, ak_d_magne, nod_bc_b, &
 !!     &          nod_comm, node, ele, conduct, iphys_ele, ele_fld,     &
 !!     &          jac_3d, rhs_tbl, FEM_elens, diff_coefs,               &
 !!     &          num_MG_level, MG_interpolate, MG_comm_table,          &
@@ -27,21 +27,21 @@
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!
 !!      subroutine cal_temp_pre_lumped_crank                            &
-!!     &         (i_temp, i_pre_heat, iak_diff_t,                       &
+!!     &         (i_temp, i_pre_heat, iak_diff_t, ak_d_temp,            &
 !!     &          nod_comm, node, ele, fluid, Tnod_bcs, iphys_ele,      &
 !!     &          ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,      &
 !!     &          num_MG_level, MG_interpolate, MG_comm_fluid,          &
 !!     &          MG_DJDS_fluid, Tmat_MG_DJDS, MG_vector,               &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_per_temp_lumped_crank                            &
-!!     &         (i_par_temp, i_pre_heat, iak_diff_t,                   &
+!!     &         (i_par_temp, i_pre_heat, iak_diff_t, ak_d_temp,        &
 !!     &          nod_comm, node, ele, fluid, Tnod_bcs, iphys_ele,      &
 !!     &          ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,      &
 !!     &          num_MG_level, MG_interpolate, MG_comm_fluid,          &
 !!     &          MG_DJDS_fluid, Tmat_MG_DJDS, MG_vector,               &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_composit_pre_lumped_crank                        &
-!!     &         (i_light, i_pre_composit, iak_diff_c,                  &
+!!     &         (i_light, i_pre_composit, iak_diff_c, ak_d_composit,   &
 !!     &          nod_comm, node, ele, fluid, Cnod_bcs, iphys_ele,      &
 !!     &          ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,      &
 !!     &          num_MG_level, MG_interpolate, MG_comm_fluid,          &
@@ -91,7 +91,6 @@
       use m_t_int_parameter
       use m_t_step_parameter
       use m_phys_constants
-      use m_ele_material_property
 !
       use t_comm_table
       use t_geometry_data_MHD
@@ -117,8 +116,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_velo_pre_lumped_crank                              &
-     &         (iak_diff_v, nod_comm, node, ele, fluid, Vnod_bcs,       &
+      subroutine cal_velo_pre_lumped_crank(iak_diff_v, ak_d_velo,       &
+     &          nod_comm, node, ele, fluid, Vnod_bcs,                   &
      &          iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,  &
      &          diff_coefs, num_MG_level, MG_interpolate,               &
      &          MG_comm_fluid, MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,  &
@@ -151,6 +150,8 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(MHD_coefficients_type), intent(in) :: diff_coefs
+!
+      real(kind = kreal), intent(in) :: ak_d_velo(ele%numele)
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
@@ -206,7 +207,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_vect_p_pre_lumped_crank                            &
-     &         (i_vecp, i_pre_uxb, iak_diff_b, nod_bc_a,                &
+     &         (i_vecp, i_pre_uxb, iak_diff_b, ak_d_magne, nod_bc_a,    &
      &          nod_comm, node, ele, conduct, iphys_ele, ele_fld,       &
      &          jac_3d, rhs_tbl, FEM_elens, diff_coefs,                 &
      &          num_MG_level, MG_interpolate, MG_comm_table,            &
@@ -216,7 +217,6 @@
       use m_iccg_parameter
       use m_solver_djds_MHD
       use m_array_for_send_recv
-      use m_ele_material_property
 !
       use cal_multi_pass
       use int_sk_4_fixed_boundary
@@ -239,6 +239,8 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_a
+!
+      real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
@@ -288,7 +290,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_magne_pre_lumped_crank                             &
-     &         (i_magne, i_pre_uxb, iak_diff_b, nod_bc_b,               &
+     &         (i_magne, i_pre_uxb, iak_diff_b, ak_d_magne, nod_bc_b,   &
      &          nod_comm, node, ele, conduct, iphys_ele, ele_fld,       &
      &          jac_3d, rhs_tbl, FEM_elens, diff_coefs,                 &
      &          num_MG_level, MG_interpolate, MG_comm_table,            &
@@ -298,7 +300,6 @@
       use m_iccg_parameter
       use m_solver_djds_MHD
       use m_array_for_send_recv
-      use m_ele_material_property
 !
       use cal_multi_pass
       use int_sk_4_fixed_boundary
@@ -320,6 +321,8 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_b
+!
+      real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
@@ -372,7 +375,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_temp_pre_lumped_crank                              &
-     &         (i_temp, i_pre_heat, iak_diff_t,                         &
+     &         (i_temp, i_pre_heat, iak_diff_t, ak_d_temp,              &
      &          nod_comm, node, ele, fluid, Tnod_bcs, iphys_ele,        &
      &          ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,        &
      &          num_MG_level, MG_interpolate, MG_comm_fluid,            &
@@ -405,6 +408,8 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(MHD_coefficients_type), intent(in) :: diff_coefs
+!
+      real(kind = kreal), intent(in) :: ak_d_temp(ele%numele)
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
@@ -451,7 +456,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_per_temp_lumped_crank                              &
-     &         (i_par_temp, i_pre_heat, iak_diff_t,                     &
+     &         (i_par_temp, i_pre_heat, iak_diff_t, ak_d_temp,          &
      &          nod_comm, node, ele, fluid, Tnod_bcs, iphys_ele,        &
      &          ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,        &
      &          num_MG_level, MG_interpolate, MG_comm_fluid,            &
@@ -484,6 +489,8 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(MHD_coefficients_type), intent(in) :: diff_coefs
+!
+      real(kind = kreal), intent(in) :: ak_d_temp(ele%numele)
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
@@ -530,7 +537,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_composit_pre_lumped_crank                          &
-     &         (i_light, i_pre_composit, iak_diff_c,                    &
+     &         (i_light, i_pre_composit, iak_diff_c, ak_d_composit,     &
      &          nod_comm, node, ele, fluid, Cnod_bcs, iphys_ele,        &
      &          ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,        &
      &          num_MG_level, MG_interpolate, MG_comm_fluid,            &
@@ -563,6 +570,8 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(MHD_coefficients_type), intent(in) :: diff_coefs
+!
+      real(kind = kreal), intent(in) :: ak_d_composit(ele%numele)
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)

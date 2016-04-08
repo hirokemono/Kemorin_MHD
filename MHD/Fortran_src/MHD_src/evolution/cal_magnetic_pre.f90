@@ -5,8 +5,8 @@
 !                                    on July 2000 (ver 1.1)
 !        modieied by H. Matsui on Sep., 2005
 !
-!!      subroutine cal_magnetic_field_pre                               &
-!!     &       (icomp_sgs_uxb, iak_diff_b, iak_diff_uxb, ie_dvx, ie_dbx,&
+!!      subroutine cal_magnetic_field_pre(icomp_sgs_uxb,                &
+!!     &        iak_diff_b, iak_diff_uxb, ie_dvx, ie_dbx, ak_d_magne,   &
 !!     &        nod_comm, node, ele, surf, conduct, sf_grp,             &
 !!     &        Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,  &
 !!     &        jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,             &
@@ -14,8 +14,8 @@
 !!     &        num_MG_level, MG_interpolate, MG_comm_table,            &
 !!     &        MG_DJDS_table, Bmat_MG_DJDS, MG_vector, wk_filter,      &
 !!     &        mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
-!!      subroutine cal_magnetic_co                                      &
-!!     &         (iak_diff_b, nod_comm, node, ele, surf, conduct,       &
+!!      subroutine cal_magnetic_co(iak_diff_b, ak_d_magne,              &
+!!     &          nod_comm, node, ele, surf, conduct,                   &
 !!     &          sf_grp, Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld, &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
 !!     &          rhs_tbl, FEM_elens, diff_coefs, num_MG_level,         &
@@ -103,8 +103,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_magnetic_field_pre                                 &
-     &       (icomp_sgs_uxb, iak_diff_b, iak_diff_uxb, ie_dvx, ie_dbx,  &
+      subroutine cal_magnetic_field_pre(icomp_sgs_uxb,                  &
+     &        iak_diff_b, iak_diff_uxb, ie_dvx, ie_dbx, ak_d_magne,     &
      &        nod_comm, node, ele, surf, conduct, sf_grp,               &
      &        Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,    &
      &        jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,               &
@@ -127,10 +127,6 @@
       use evolve_by_lumped_crank
       use evolve_by_consist_crank
 !
-      integer(kind = kint), intent(in) :: iak_diff_b, iak_diff_uxb
-      integer(kind = kint), intent(in) :: icomp_sgs_uxb
-      integer(kind = kint), intent(in) :: ie_dvx, ie_dbx
-!
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -151,6 +147,11 @@
       type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
       type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(filtering_data_type), intent(in) :: filtering
+!
+      integer(kind = kint), intent(in) :: iak_diff_b, iak_diff_uxb
+      integer(kind = kint), intent(in) :: icomp_sgs_uxb
+      integer(kind = kint), intent(in) :: ie_dvx, ie_dbx
+      real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
@@ -206,9 +207,9 @@
       end if
 !
 !
-      call int_surf_magne_pre_ele                                       &
-     &   (iak_diff_uxb, node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs,      &
-     &    iphys, nod_fld, jac_sf_grp_q, rhs_tbl, FEM_elens, diff_coefs, &
+      call int_surf_magne_pre_ele(iak_diff_uxb, ak_d_magne,             &
+     &    node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs, iphys, nod_fld,    &
+     &    jac_sf_grp_q, rhs_tbl, FEM_elens, diff_coefs,                 &
      &    fem_wk, surf_wk, f_l, f_nl)
 !
       if (iflag_t_evo_4_magne .eq. id_explicit_euler) then
@@ -222,7 +223,7 @@
      &      jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (iflag_t_evo_4_magne .eq. id_Crank_nicolson) then
         call cal_magne_pre_lumped_crank                                 &
-     &     (iphys%i_magne, iphys%i_pre_uxb, iak_diff_b,                 &
+     &     (iphys%i_magne, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,     &
      &      Bnod_bcs%nod_bc_b, nod_comm, node, ele, conduct,            &
      &      iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,           &
      &      diff_coefs, num_MG_level, MG_interpolate, MG_comm_table,    &
@@ -230,7 +231,7 @@
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (iflag_t_evo_4_magne .eq. id_Crank_nicolson_cmass) then 
         call cal_magne_pre_consist_crank                                &
-     &     (iphys%i_magne, iphys%i_pre_uxb, iak_diff_b,                 &
+     &     (iphys%i_magne, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,     &
      &      Bnod_bcs%nod_bc_b, node, ele, conduct, jac_3d_q, rhs_tbl,   &
      &      FEM_elens, diff_coefs, num_MG_level, MG_interpolate,        &
      &      MG_comm_table, MG_DJDS_table, Bmat_MG_DJDS, MG_vector,      &
@@ -246,8 +247,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_magnetic_co                                        &
-     &         (iak_diff_b, nod_comm, node, ele, surf, conduct,         &
+      subroutine cal_magnetic_co(iak_diff_b, ak_d_magne,                &
+     &          nod_comm, node, ele, surf, conduct,                     &
      &          sf_grp, Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,   &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
      &          rhs_tbl, FEM_elens, diff_coefs, num_MG_level,           &
@@ -262,8 +263,6 @@
       use implicit_vector_correct
       use cal_multi_pass
       use cal_sol_vector_co_crank
-!
-      integer(kind = kint), intent(in) :: iak_diff_b
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -282,6 +281,9 @@
       type(lumped_mass_matrices), intent(in) :: m_lump
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(MHD_coefficients_type), intent(in) :: diff_coefs
+!
+      integer(kind = kint), intent(in) :: iak_diff_b
+      real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
@@ -324,7 +326,7 @@
 !
       if (   iflag_implicit_correct.eq.3                                &
      &  .or. iflag_implicit_correct.eq.4) then
-        call cal_magnetic_co_imp(iphys%i_magne, iak_diff_b,             &
+        call cal_magnetic_co_imp(iphys%i_magne, iak_diff_b, ak_d_magne, &
      &      nod_comm, node, ele, conduct, Bnod_bcs, iphys_ele, ele_fld, &
      &      jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                   &
      &      num_MG_level, MG_interpolate, MG_comm_table,                &

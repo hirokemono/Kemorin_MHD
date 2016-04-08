@@ -5,20 +5,23 @@
 !
 !!      subroutine set_data_4_const_matrices                            &
 !!     &         (mesh, MHD_mesh, rhs_tbl, MHD_mat_tbls)
-!!      subroutine update_matrices(mesh, group, ele_mesh, MHD_mesh,     &
-!!     &          nod_bcs, surf_bcs, jac_3d_q, jac_3d_l, jac_sf_grp_q,  &
-!!     &          FEM_elens, ifld_diff, diff_coefs, rhs_tbl,            &
-!!     &          MHD_mat_tbls, surf_wk, mhd_fem_wk, fem_wk)
-!!      subroutine set_aiccg_matrices(mesh, group, ele_mesh, MHD_mesh,  &
-!!     &          nod_bcs, surf_bcs, jac_3d_q, jac_3d_l, jac_sf_grp_q,  &
-!!     &          FEM_elens, ifld_diff, diff_coefs, rhs_tbl,            &
-!!     &          MHD_mat_tbls, surf_wk, mhd_fem_wk, fem_wk)
+!!      subroutine update_matrices                                      &
+!!     &         (mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,   &
+!!     &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,  &
+!!     &          ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,         &
+!!     &          surf_wk, mhd_fem_wk, fem_wk)
+!!      subroutine set_aiccg_matrices                                   &
+!!     &         (mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,   &
+!!     &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,  &
+!!     &          ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,         &
+!!     &          surf_wk, mhd_fem_wk, fem_wk)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
 !!        type(nodal_boundarty_conditions), intent(in) :: nod_bcs
 !!        type(surface_boundarty_conditions), intent(in)  :: surf_bcs
+!!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp_q
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -94,10 +97,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine update_matrices(mesh, group, ele_mesh, MHD_mesh,       &
-     &          nod_bcs, surf_bcs, jac_3d_q, jac_3d_l, jac_sf_grp_q,    &
-     &          FEM_elens, ifld_diff, diff_coefs, rhs_tbl,              &
-     &          MHD_mat_tbls, surf_wk, mhd_fem_wk, fem_wk)
+      subroutine update_matrices                                        &
+     &         (mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,     &
+     &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,    &
+     &          ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,           &
+     &          surf_wk, mhd_fem_wk, fem_wk)
 !
       use m_control_parameter
       use m_t_step_parameter
@@ -108,6 +112,7 @@
       type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(nodal_boundarty_conditions), intent(in) :: nod_bcs
       type(surface_boundarty_conditions), intent(in)  :: surf_bcs
+      type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(jacobians_2d), intent(in) :: jac_sf_grp_q
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -130,9 +135,10 @@
 !
       if (iflag .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'matrix assemble again'
-        call set_aiccg_matrices(mesh, group, ele_mesh, MHD_mesh,        &
-     &      nod_bcs, surf_bcs, jac_3d_q, jac_3d_l, jac_sf_grp_q,        &
-     &      FEM_elens, ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,    &
+        call set_aiccg_matrices                                         &
+     &     (mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,         &
+     &      ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,        &
+     &      ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,               &
      &      surf_wk, mhd_fem_wk, fem_wk)
         iflag_flex_step_changed = 0
       end if
@@ -141,10 +147,11 @@
 !
 !  ----------------------------------------------------------------------
 !
-      subroutine set_aiccg_matrices(mesh, group, ele_mesh, MHD_mesh,    &
-     &          nod_bcs, surf_bcs, jac_3d_q, jac_3d_l, jac_sf_grp_q,    &
-     &          FEM_elens, ifld_diff, diff_coefs, rhs_tbl,              &
-     &          MHD_mat_tbls, surf_wk, mhd_fem_wk, fem_wk)
+      subroutine set_aiccg_matrices                                     &
+     &         (mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,     &
+     &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,    &
+     &          ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,           &
+     &          surf_wk, mhd_fem_wk, fem_wk)
 !
       use m_control_parameter
       use m_iccg_parameter
@@ -165,6 +172,7 @@
       type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(nodal_boundarty_conditions), intent(in) :: nod_bcs
       type(surface_boundarty_conditions), intent(in)  :: surf_bcs
+      type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(jacobians_2d), intent(in) :: jac_sf_grp_q
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -195,9 +203,10 @@
 !
 !   Poisson matrix
 !
-      call int_vol_poisson_matrices(mesh%ele, jac_3d_l, rhs_tbl,        &
+      call int_MHD_poisson_matrices(mesh, jac_3d_l, rhs_tbl,            &
      &    MHD_mat_tbls%linear, MHD_mat_tbls%fluid_l,                    &
-     &    FEM_elens, ifld_diff, diff_coefs, fem_wk)
+     &    FEM_elens, ifld_diff, diff_coefs, fem_wk,                     &
+     &    MHD1_matrices%Pmat_MG_DJDS(0), MHD1_matrices%Fmat_MG_DJDS(0))
 !
 !   Diffusion matrix
 !
@@ -205,35 +214,50 @@
         if (iflag_debug.eq.1) write(*,*) 'int_vol_crank_mat_lump'
         call int_vol_crank_mat_lump                                     &
      &     (mesh%node, MHD_mesh%fluid, MHD_mesh%conduct, mhd_fem_wk)
-        if (iflag_debug.eq.1) write(*,*) 'int_vol_crank_matrices'
-        call int_vol_crank_matrices(mesh%ele, jac_3d_q, rhs_tbl,        &
+        if (iflag_debug.eq.1) write(*,*) 'int_MHD_crank_matrices'
+        call int_MHD_crank_matrices(mesh, ak_MHD, jac_3d_q, rhs_tbl,    &
      &      MHD_mat_tbls%base, MHD_mat_tbls%fluid_q,                    &
      &      MHD_mat_tbls%full_conduct_q, FEM_elens,                     &
-     &      ifld_diff, diff_coefs, fem_wk)
+     &      ifld_diff, diff_coefs, fem_wk,                              &
+     &      MHD1_matrices%Vmat_MG_DJDS(0),                              &
+     &      MHD1_matrices%Bmat_MG_DJDS(0),                              &
+     &      MHD1_matrices%Tmat_MG_DJDS(0),                              &
+     &      MHD1_matrices%Cmat_MG_DJDS(0))
       else if (iflag_scheme .eq. id_Crank_nicolson_cmass) then
         call int_vol_crank_mat_consist                                  &
      &     (mesh%ele, jac_3d_q, rhs_tbl, MHD_mat_tbls, fem_wk)
-        call int_vol_crank_matrices(mesh%ele, jac_3d_q, rhs_tbl,        &
+        call int_MHD_crank_matrices(mesh, ak_MHD, jac_3d_q, rhs_tbl,    &
      &      MHD_mat_tbls%base, MHD_mat_tbls%fluid_q,                    &
      &      MHD_mat_tbls%full_conduct_q, FEM_elens,                     &
-     &      ifld_diff, diff_coefs, fem_wk)
+     &      ifld_diff, diff_coefs, fem_wk,                              &
+     &      MHD1_matrices%Vmat_MG_DJDS(0),                              &
+     &      MHD1_matrices%Bmat_MG_DJDS(0),                              &
+     &      MHD1_matrices%Tmat_MG_DJDS(0),                              &
+     &      MHD1_matrices%Cmat_MG_DJDS(0))
       end if
 !
 !     set boundary conditions
 !
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_bc_phys'
-      call set_aiccg_bc_phys(mesh%ele, ele_mesh%surf, group%surf_grp,   &
-     &    nod_bcs, surf_bcs%Vsf_bcs, jac_sf_grp_q, rhs_tbl,             &
-     &    MHD_mat_tbls%fluid_q, surf_wk, fem_wk)
+      call set_aiccg_bc_phys(intg_point_t_evo,                          &
+     &    mesh%ele, ele_mesh%surf, group%surf_grp, jac_sf_grp_q,        &
+     &    rhs_tbl, MHD_mat_tbls%fluid_q, nod_bcs, surf_bcs,             &
+     &    MHD1_matrices%MG_DJDS_table(0),                               &
+     &    MHD1_matrices%MG_DJDS_fluid(0),                               &
+     &    MHD1_matrices%MG_DJDS_linear(0),                              &
+     &    MHD1_matrices%MG_DJDS_lin_fl(0),                              &
+     &    ak_MHD%ak_d_velo, surf_wk, fem_wk,                            &
+     &    MHD1_matrices%Vmat_MG_DJDS(0), MHD1_matrices%Bmat_MG_DJDS(0), &
+     &    MHD1_matrices%Tmat_MG_DJDS(0), MHD1_matrices%Cmat_MG_DJDS(0), &
+     &    MHD1_matrices%Pmat_MG_DJDS(0), MHD1_matrices%Fmat_MG_DJDS(0))
 !
       if (iflag_debug.eq.1) write(*,*) 'preconditioning'
       call matrix_precondition(MHD1_matrices)
 !
-!
 !     set marrix for the Multigrid
 !
       if(cmp_no_case(method_4_solver, 'MGCG')) then
-        call const_MGCG_MHD_matrices
+        call const_MGCG_MHD_matrices(ifld_diff)
       end if
 !
       end subroutine set_aiccg_matrices

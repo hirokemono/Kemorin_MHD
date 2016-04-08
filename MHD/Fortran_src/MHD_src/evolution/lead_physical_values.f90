@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine lead_fields_by_FEM(mesh, group, ele_mesh, MHD_mesh,  &
-!!     &          nod_bcs, surf_bcs, iphys, iphys_ele,                  &
+!!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,          &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp, rhs_tbl, FEM_elens,   &
 !!     &          icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,      &
 !!     &          sgs_coefs, sgs_coefs_nod, filtering, wide_filtering,  &
@@ -23,6 +23,7 @@
 !!        type(surface_boundarty_conditions), intent(in) :: surf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
+!!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -89,7 +90,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine lead_fields_by_FEM(mesh, group, ele_mesh, MHD_mesh,    &
-     &          nod_bcs, surf_bcs, iphys, iphys_ele,                    &
+     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,            &
      &          jac_3d_q, jac_3d_l, jac_sf_grp, rhs_tbl, FEM_elens,     &
      &          icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,        &
      &          sgs_coefs, sgs_coefs_nod, filtering, wide_filtering,    &
@@ -114,6 +115,7 @@
       type(surface_boundarty_conditions), intent(in) :: surf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
+      type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -174,8 +176,8 @@
         if (iflag_debug.gt.0) write(*,*) 'cal_energy_fluxes'
         call cal_energy_fluxes                                          &
      &     (mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs, iphys,  &
-     &      iphys_ele, jac_3d_q, jac_sf_grp, rhs_tbl, FEM_elens,        &
-     &      icomp_sgs, ifld_diff, iphys_elediff,                        &
+     &      iphys_ele, ak_MHD, jac_3d_q, jac_sf_grp, rhs_tbl,           &
+     &      FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,             &
      &      sgs_coefs, sgs_coefs_nod, diff_coefs, filtering, m_lump,    &
      &      wk_filter, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,          &
      &      nod_fld, ele_fld)
@@ -186,7 +188,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_energy_fluxes(mesh, group, ele_mesh, MHD_mesh,     &
-     &          nod_bcs, surf_bcs, iphys, iphys_ele,                    &
+     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,            &
      &          jac_3d_q, jac_sf_grp, rhs_tbl, FEM_elens,               &
      &          icomp_sgs, ifld_diff, iphys_elediff,                    &
      &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,        &
@@ -208,6 +210,7 @@
       type(surface_boundarty_conditions), intent(in) :: surf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
+      type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(jacobians_3d), intent(in) :: jac_3d_q
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -233,9 +236,10 @@
       call cal_true_sgs_terms_pre                                       &
      &   (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,            &
      &    group%surf_grp, MHD_mesh%fluid, MHD_mesh%conduct,             &
-     &    nod_bcs, surf_bcs, iphys, iphys_ele, jac_3d_q, jac_sf_grp,    &
-     &    rhs_tbl, FEM_elens, ifld_diff, diff_coefs,                    &
-     &    mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld, ele_fld)
+     &    nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,                  &
+     &    jac_3d_q, jac_sf_grp, rhs_tbl, FEM_elens,                     &
+     &    ifld_diff, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,           &
+     &    f_l, f_nl, nod_fld, ele_fld)
 !
       call cal_sgs_terms_4_monitor(mesh%nod_comm, mesh%node, mesh%ele,  &
      &    MHD_mesh%fluid, MHD_mesh%conduct, iphys, iphys_ele, ele_fld,  &
@@ -248,15 +252,17 @@
       call cal_forces_4_monitor                                         &
      &   (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,            &
      &    MHD_mesh%fluid, MHD_mesh%conduct, group%surf_grp,             &
-     &    nod_bcs, surf_bcs, iphys, iphys_ele, jac_3d_q, jac_sf_grp,    &
-     &    rhs_tbl, FEM_elens, ifld_diff, diff_coefs, m_lump,            &
-     &    mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld, ele_fld)
+     &    nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,                  &
+     &    jac_3d_q, jac_sf_grp, rhs_tbl, FEM_elens,                     &
+     &    ifld_diff, diff_coefs, m_lump, mhd_fem_wk, fem_wk, surf_wk,   &
+     &    f_l, f_nl, nod_fld, ele_fld)
       call cal_diff_of_sgs_terms                                        &
      &   (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,            &
      &    MHD_mesh%fluid, MHD_mesh%conduct, group%surf_grp,             &
-     &    nod_bcs, surf_bcs, iphys, iphys_ele, jac_3d_q, jac_sf_grp,    &
-     &    rhs_tbl, FEM_elens, ifld_diff, diff_coefs,                    &
-     &    mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld, ele_fld)
+     &    nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,                  &
+     &    jac_3d_q, jac_sf_grp, rhs_tbl, FEM_elens,                     &
+     &    ifld_diff, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,           &
+     &    f_l, f_nl, nod_fld, ele_fld)
 !
       call cal_true_sgs_terms_post(mesh%nod_comm, mesh%node, iphys,     &
      &    filtering, wk_filter, nod_fld)

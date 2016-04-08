@@ -3,12 +3,14 @@
 !
 !     Written by H. Matsui on June, 2005
 !
-!!      subroutine cal_terms_4_magnetic(i_field, iak_diff_uxb,          &
+!!      subroutine cal_terms_4_magnetic                                 &
+!!     &        (i_field, iak_diff_uxb, ak_d_magne,                     &
 !!     &         nod_comm, node, ele, surf, conduct, sf_grp,            &
 !!     &         Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld, &
 !!     &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,    &
 !!     &         mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
-!!      subroutine cal_magnetic_diffusion(iak_diff_b, iak_diff_uxb,     &
+!!      subroutine cal_magnetic_diffusion                               &
+!!     &         (iak_diff_b, iak_diff_uxb, ak_d_magne,                 &
 !!     &          nod_comm, node, ele, surf, conduct, sf_grp,           &
 !!     &          Bnod_bcs, Asf_bcs, Bsf_bcs, iphys,                    &
 !!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,   &
@@ -76,7 +78,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_terms_4_magnetic(i_field, iak_diff_uxb,            &
+      subroutine cal_terms_4_magnetic                                   &
+     &        (i_field, iak_diff_uxb, ak_d_magne,                       &
      &         nod_comm, node, ele, surf, conduct, sf_grp,              &
      &         Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,   &
      &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,      &
@@ -84,8 +87,6 @@
 !
       use int_vol_magne_monitor
       use set_boundary_scalars
-!
-      integer (kind=kint), intent(in) :: i_field, iak_diff_uxb
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -104,6 +105,9 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(MHD_coefficients_type), intent(in) :: diff_coefs
+!
+      integer (kind=kint), intent(in) :: i_field, iak_diff_uxb
+      real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -126,7 +130,7 @@
      &     mhd_fem_wk, fem_wk, f_nl)
       end if
 !
-      call int_surf_magne_monitor(i_field, iak_diff_uxb,                &
+      call int_surf_magne_monitor(i_field, iak_diff_uxb, ak_d_magne,    &
      &    node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs, iphys, nod_fld,    &
      &    jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,                   &
      &    fem_wk, surf_wk, f_l, f_nl)
@@ -146,7 +150,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_magnetic_diffusion(iak_diff_b, iak_diff_uxb,       &
+      subroutine cal_magnetic_diffusion                                 &
+     &         (iak_diff_b, iak_diff_uxb, ak_d_magne,                   &
      &          nod_comm, node, ele, surf, conduct, sf_grp,             &
      &          Bnod_bcs, Asf_bcs, Bsf_bcs, iphys,                      &
      &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,     &
@@ -154,8 +159,6 @@
 !
       use int_vol_diffusion_ele
       use set_boundary_scalars
-!
-      integer (kind=kint), intent(in) :: iak_diff_b, iak_diff_uxb
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -174,6 +177,9 @@
       type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(lumped_mass_matrices), intent(in) :: m_lump
 !
+      integer (kind=kint), intent(in) :: iak_diff_b, iak_diff_uxb
+      real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
+!
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -186,7 +192,8 @@
      &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,   &
      &    iak_diff_b, one, ak_d_magne, iphys%i_magne, fem_wk, f_l)
 !
-      call int_surf_magne_monitor(iphys%i_b_diffuse, iak_diff_uxb,      &
+      call int_surf_magne_monitor                                       &
+     &   (iphys%i_b_diffuse, iak_diff_uxb, ak_d_magne,                  &
      &    node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs, iphys, nod_fld,    &
      &    jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,                   &
      &    fem_wk, surf_wk, f_l, f_nl)

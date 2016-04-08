@@ -4,11 +4,12 @@
 !     Written by H. Matsui on June, 2005
 !
 !!      subroutine int_surf_magne_pre_ele                               &
-!!     &         (iak_diff_uxb, node, ele, surf, sf_grp,                &
+!!     &         (iak_diff_uxb, ak_d_magne, node, ele, surf, sf_grp,    &
 !!     &          Asf_bcs, Bsf_bcs, iphys, nod_fld, jac_sf_grp,         &
 !!     &          rhs_tbl1, FEM_elens, diff_coefs, fem_wk, surf_wk,     &
 !!     &          f_l, f_nl)
-!!      subroutine int_surf_magne_monitor(i_field, iak_diff_uxb,        &
+!!      subroutine int_surf_magne_monitor                               &
+!!     &         (i_field, iak_diff_uxb, ak_d_magne,                    &
 !!     &          node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs,            &
 !!     &          iphys, nod_fld, jac_sf_grp, rhs_tbl1, FEM_elens,      &
 !!     &          diff_coefs, fem_wk, surf_wk, f_l, f_nl)
@@ -59,12 +60,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_surf_magne_pre_ele                                 &
-     &         (iak_diff_uxb, node, ele, surf, sf_grp,                  &
+     &         (iak_diff_uxb, ak_d_magne, node, ele, surf, sf_grp,      &
      &          Asf_bcs, Bsf_bcs, iphys, nod_fld, jac_sf_grp,           &
      &          rhs_tbl1, FEM_elens, diff_coefs, fem_wk, surf_wk,       &
      &          f_l, f_nl)
-!
-      integer(kind= kint), intent(in) :: iak_diff_uxb
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -78,6 +77,9 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl1
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(MHD_coefficients_type), intent(in) :: diff_coefs
+!
+      integer(kind= kint), intent(in) :: iak_diff_uxb
+      real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_surface_element_mat), intent(inout) :: surf_wk
@@ -101,24 +103,23 @@
 !      call int_free_slip_surf_sph_out(node, ele, surf, sf_grp,         &
 !     &    nod_fld, jac_sf_grp, rhs_tbl1, n_int,                        &
 !     &    Asf_bcs%free_sph_out%ngrp_sf_dat,                            &
-!     &    Asf_bcs%free_sph_out%id_grp_sf_dat, iphys%i_vecp,            &
-!     &    fem_wk, surf_wk, f_l)
+!     &    Asf_bcs%free_sph_out%id_grp_sf_dat,                          &
+!     &    iphys%i_vecp, ak_d_magne, fem_wk, surf_wk, f_l)
 !      call int_free_slip_surf_sph_in(node, ele, surf, sf_grp,          &
 !     &    nod_fld, jac_sf_grp, rhs_tbl1, n_int,                        &
 !     &    Asf_bcs%free_sph_in%ngrp_sf_dat,                             &
-!     &    Asf_bcs%free_sph_in%id_grp_sf_dat, iphys%i_vecp,             &
-!     &    fem_wk, surf_wk, f_l)
+!     &    Asf_bcs%free_sph_in%id_grp_sf_dat,                           &
+!     &    iphys%i_vecp, ak_d_magne, fem_wk, surf_wk, f_l)
 !
       end subroutine int_surf_magne_pre_ele
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_surf_magne_monitor(i_field, iak_diff_uxb,          &
+      subroutine int_surf_magne_monitor                                 &
+     &         (i_field, iak_diff_uxb, ak_d_magne,                      &
      &          node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs,              &
      &          iphys, nod_fld, jac_sf_grp, rhs_tbl1, FEM_elens,        &
      &          diff_coefs, fem_wk, surf_wk, f_l, f_nl)
-!
-      integer(kind= kint), intent(in) :: i_field, iak_diff_uxb
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -132,6 +133,9 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl1
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(MHD_coefficients_type), intent(in) :: diff_coefs
+!
+      integer(kind= kint), intent(in) :: i_field, iak_diff_uxb
+      real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_surface_element_mat), intent(inout) :: surf_wk
@@ -159,13 +163,13 @@
 !      call int_free_slip_surf_sph_out(node, ele, surf, sf_grp,         &
 !     &    nod_fld, jac_sf_grp, rhs_tbl1, n_int,                        &
 !     &    Asf_bcs%free_sph_out%ngrp_sf_dat,                            &
-!     &    Asf_bcs%free_sph_out%id_grp_sf_dat,iphys%i_vecp,             &
-!     &    fem_wk, surf_wk, f_l)
+!     &    Asf_bcs%free_sph_out%id_grp_sf_dat,                          &
+!     &    iphys%i_vecp, ak_d_magne, fem_wk, surf_wk, f_l)
 !      call int_free_slip_surf_sph_in(node, ele, surf, sf_grp,          &
 !     &    nod_fld, jac_sf_grp, rhs_tbl1, n_int,                        &
 !     &    Asf_bcs%free_sph_in%ngrp_sf_dat,                             &
-!     &    Asf_bcs%free_sph_in%id_grp_sf_dat, iphys%i_vecp,             &
-!     &    fem_wk, surf_wk, f_l)
+!     &    Asf_bcs%free_sph_in%id_grp_sf_dat,                           &
+!     &    iphys%i_vecp, ak_d_magne, fem_wk, surf_wk, f_l)
 !
       end subroutine int_surf_magne_monitor
 !

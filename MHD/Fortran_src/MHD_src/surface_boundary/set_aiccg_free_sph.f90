@@ -6,10 +6,10 @@
 !
 !!      subroutine set_aiccg_bc_free_sph_in(ele, surf, sf_grp,          &
 !!     &          free_in_sf, jac_sf_grp, rhs_tbl, mat_tbl, surf_wk,    &
-!!     &          num_int, fem_wk, mat33)
+!!     &          num_int, ak_d_velo, fem_wk, mat33)
 !!      subroutine set_aiccg_bc_free_sph_out(ele, surf, sf_grp,         &
 !!     &          free_out_sf, jac_sf_grp, rhs_tbl, mat_tbl, surf_wk,   &
-!!     &          num_int, fem_wk, mat33)
+!!     &          num_int, ak_d_velo, fem_wk, mat33)
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
@@ -36,7 +36,6 @@
       use t_solver_djds
       use t_surface_bc_data
       use t_int_surface_data
-      use m_ele_material_property
 !
       implicit none
 !
@@ -48,7 +47,7 @@
 !
       subroutine set_aiccg_bc_free_sph_in(ele, surf, sf_grp,            &
      &          free_in_sf, jac_sf_grp, rhs_tbl, mat_tbl, surf_wk,      &
-     &          num_int, fem_wk, mat33)
+     &          num_int, ak_d_velo, fem_wk, mat33)
 !
       use fem_surf_crank_free_sph
       use cal_skv_to_ff_smp
@@ -63,7 +62,9 @@
       type(scaler_surf_bc_data_type), intent(in) :: free_in_sf
       type(work_surface_element_mat), intent(in) :: surf_wk
 !
-      integer (kind = kint), intent(in) :: num_int
+      integer(kind = kint), intent(in) :: num_int
+      real(kind = kreal), intent(in) :: ak_d_velo(ele%numele)
+!
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(DJDS_MATRIX), intent(inout) :: mat33
 !
@@ -100,7 +101,7 @@
 !
       subroutine set_aiccg_bc_free_sph_out(ele, surf, sf_grp,           &
      &          free_out_sf, jac_sf_grp, rhs_tbl, mat_tbl, surf_wk,     &
-     &          num_int, fem_wk, mat33)
+     &          num_int, ak_d_velo, fem_wk, mat33)
 !
       use fem_surf_crank_free_sph
       use cal_skv_to_ff_smp
@@ -116,6 +117,8 @@
       type(work_surface_element_mat), intent(in) :: surf_wk
 !
       integer (kind = kint), intent(in) :: num_int
+      real(kind = kreal), intent(in) :: ak_d_velo(ele%numele)
+!
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(DJDS_MATRIX), intent(inout) :: mat33
 !

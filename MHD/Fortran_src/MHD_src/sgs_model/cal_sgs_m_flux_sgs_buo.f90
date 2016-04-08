@@ -5,7 +5,7 @@
 !
 !!      subroutine cal_sgs_mom_flux_with_sgs_buo                        &
 !!     &         (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,  &
-!!     &          Vsf_bcs, Bsf_bcs, iphys, iphys_ele,                   &
+!!     &          Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD,           &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
 !!     &          FEM_elens, filtering, ifld_sgs, icomp_sgs,            &
 !!     &          ifld_diff, iphys_elediff, sgs_coefs_nod, diff_coefs,  &
@@ -20,6 +20,7 @@
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(field_geometry_data), intent(in) :: fluid
+!!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp_q
@@ -83,7 +84,7 @@
 !
       subroutine cal_sgs_mom_flux_with_sgs_buo                          &
      &         (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,    &
-     &          Vsf_bcs, Bsf_bcs, iphys, iphys_ele,                     &
+     &          Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD,             &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
      &          FEM_elens, filtering, ifld_sgs, icomp_sgs,              &
      &          ifld_diff, iphys_elediff, sgs_coefs_nod, diff_coefs,    &
@@ -113,6 +114,7 @@
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(field_geometry_data), intent(in) :: fluid
+      type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(layering_tbl), intent(in) :: layer_tbl
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(jacobians_2d), intent(in) :: jac_sf_grp_q
@@ -164,9 +166,9 @@
       call cal_terms_4_momentum(iphys%i_SGS_div_m_flux,                 &
      &    ifld_diff%i_mom_flux, ifld_diff%i_lorentz,                    &
      &    nod_comm, node, ele, surf, fluid, sf_grp, Vsf_bcs, Bsf_bcs,   &
-     &    iphys, iphys_ele, jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens, &
-     &    diff_coefs, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,           &
-     &    nod_fld, ele_fld)
+     &    iphys, iphys_ele, ak_MHD, jac_3d_q, jac_sf_grp_q, rhs_tbl,    &
+     &    FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,           &
+     &    f_l, f_nl, nod_fld, ele_fld)
 !
 !$omp parallel
       call cal_phys_dot_product(node, nod_fld,                          &

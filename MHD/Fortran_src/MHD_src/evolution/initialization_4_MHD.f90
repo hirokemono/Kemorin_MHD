@@ -285,7 +285,8 @@
 !      call reset_aiccg_matrices(mesh%node, mesh%ele, MHD_mesh%fluid)
 !
       if(solver_iflag(method_4_solver) .eq. iflag_mgcg) then
-        call s_initialize_4_MHD_AMG(ifld_diff, mesh%node, mesh%ele)
+        call s_initialize_4_MHD_AMG                                     &
+     &     (ifld_diff, diff_coefs, mesh%node, mesh%ele)
       end if
 !
 !     --------------------- 

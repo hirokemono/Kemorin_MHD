@@ -11,7 +11,7 @@
 !!     &          f_l, f_nl, nod_fld)
 !!      subroutine cal_diff_of_sgs_terms(nod_comm, node, ele,           &
 !!     &          surf, fluid, conduct, sf_grp, nod_bcs, surf_bcs,      &
-!!     &          iphys, iphys_ele, jac_3d, jac_sf_grp, rhs_tbl,        &
+!!     &          iphys, iphys_ele, ak_MHD, jac_3d, jac_sf_grp, rhs_tbl,&
 !!     &          FEM_elens, ifld_diff, diff_coefs,                     &
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
 !!     &          nod_fld, ele_fld)
@@ -28,6 +28,7 @@
 !!        type(surface_boundarty_conditions), intent(in) :: surf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
+!!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -172,7 +173,7 @@
 !
       subroutine cal_diff_of_sgs_terms(nod_comm, node, ele,             &
      &          surf, fluid, conduct, sf_grp, nod_bcs, surf_bcs,        &
-     &          iphys, iphys_ele, jac_3d, jac_sf_grp, rhs_tbl,          &
+     &          iphys, iphys_ele, ak_MHD, jac_3d, jac_sf_grp, rhs_tbl,  &
      &          FEM_elens, ifld_diff, diff_coefs,                       &
      &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                 &
      &          nod_fld, ele_fld)
@@ -191,6 +192,7 @@
       type(surface_boundarty_conditions), intent(in) :: surf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
+      type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(jacobians_3d), intent(in) :: jac_3d
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -211,8 +213,8 @@
       if (iphys%i_SGS_div_h_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_div_SGS_h_flux)
-        call cal_terms_4_heat                                           &
-     &     (iphys%i_SGS_div_h_flux, ifld_diff%i_heat_flux,              &
+        call cal_terms_4_heat(iphys%i_SGS_div_h_flux,                   &
+     &      ifld_diff%i_heat_flux, ak_MHD%ak_d_temp,                    &
      &      nod_comm, node, ele, surf, fluid, sf_grp,                   &
      &      nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,                  &
      &      iphys_ele, ele_fld,  jac_3d, jac_sf_grp, rhs_tbl,           &
@@ -229,8 +231,8 @@
           call cal_terms_4_momentum                                     &
      &       (i_fld, ifld_diff%i_mom_flux, ifld_diff%i_lorentz,         &
      &        nod_comm, node, ele, surf, fluid, sf_grp,                 &
-     &        surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys,                &
-     &        iphys_ele, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,        &
+     &        surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys, iphys_ele,     &
+     &        ak_MHD, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,           &
      &        diff_coefs, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,       &
      &        nod_fld, ele_fld)
         end if
@@ -240,8 +242,8 @@
      &   .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_induction)
-        call cal_terms_4_magnetic                                       &
-     &     (iphys%i_SGS_induction, ifld_diff%i_induction,               &
+        call cal_terms_4_magnetic(iphys%i_SGS_induction,                &
+     &      ifld_diff%i_induction, ak_MHD%ak_d_magne,                   &
      &      nod_comm, node, ele, surf, conduct, sf_grp,                 &
      &      nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,       &
      &      iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,     &

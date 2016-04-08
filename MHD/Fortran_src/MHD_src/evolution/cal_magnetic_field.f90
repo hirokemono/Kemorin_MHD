@@ -11,15 +11,15 @@
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
 !!     &          rhs_tbl, FEM_elens, icomp_sgs, ifld_diff,             &
 !!     &          iphys_elediff, sgs_coefs, diff_coefs, filtering,      &
-!!     &          m_lump, wk_filter, mhd_fem_wk, fem_wk, surf_wk,       &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          m_lump, ak_d_magne, wk_filter, mhd_fem_wk, fem_wk,    &
+!!     &          surf_wk, f_l, f_nl, nod_fld)
 !!      subroutine s_cal_magnetic_field(nod_comm, node, ele, surf,      &
 !!     &          conduct, sf_grp, Bnod_bcs, Asf_bcs, Bsf_bcs, Fsf_bcs, &
 !!     &          iphys, iphys_ele, ele_fld,                            &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
 !!     &          rhs_tbl, FEM_elens, icomp_sgs, ifld_diff,             &
 !!     &          iphys_elediff, sgs_coefs, sgs_coefs_nod,              &
-!!     &          diff_coefs, filtering, m_lump, wk_filter,             &
+!!     &          diff_coefs, filtering, m_lump, ak_d_magne, wk_filter, &
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -93,8 +93,8 @@
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
      &          rhs_tbl, FEM_elens, icomp_sgs, ifld_diff,               &
      &          iphys_elediff, sgs_coefs, diff_coefs, filtering,        &
-     &          m_lump, wk_filter, mhd_fem_wk, fem_wk, surf_wk,         &
-     &          f_l, f_nl, nod_fld)
+     &          m_lump, ak_d_magne, wk_filter, mhd_fem_wk, fem_wk,      &
+     &          surf_wk, f_l, f_nl, nod_fld)
 !
       use m_machine_parameter
       use m_control_parameter
@@ -133,6 +133,8 @@
       type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(filtering_data_type), intent(in) :: filtering
 !
+      real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
+!
       type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -152,7 +154,7 @@
 !
       if (iflag_debug .gt. 0)  write(*,*) 'vector_p_pre'
       call cal_vector_p_pre(ifld_diff%i_magne,                          &
-     &    icomp_sgs%i_induction, iphys_elediff%i_velo,                  &
+     &    icomp_sgs%i_induction, iphys_elediff%i_velo, ak_d_magne,      &
      &    nod_comm, node, ele, surf, conduct,                           &
      &    sf_grp, Bnod_bcs, Asf_bcs, iphys, iphys_ele, ele_fld,         &
      &    jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,                   &
@@ -191,8 +193,8 @@
      &      iphys%i_m_phi, iphys%i_mag_p, nod_fld%d_fld)
 !
         if (iflag_debug.gt.0) write(*,*) 'vector_potential_correct'
-        call cal_vector_p_co                                            &
-     &     (ifld_diff%i_magne, nod_comm, node, ele, surf, conduct,      &
+        call cal_vector_p_co(ifld_diff%i_magne, ak_d_magne,             &
+     &      nod_comm, node, ele, surf, conduct,                         &
      &      sf_grp, Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,       &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &
      &      FEM_elens, diff_coefs, num_MG_level,                        &
@@ -231,7 +233,7 @@
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
      &          rhs_tbl, FEM_elens, icomp_sgs, ifld_diff,               &
      &          iphys_elediff, sgs_coefs, sgs_coefs_nod,                &
-     &          diff_coefs, filtering, m_lump, wk_filter,               &
+     &          diff_coefs, filtering, m_lump, ak_d_magne, wk_filter,   &
      &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
       use m_machine_parameter
@@ -273,6 +275,8 @@
       type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(filtering_data_type), intent(in) :: filtering
 !
+      real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
+!
       type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -298,7 +302,7 @@
       if (iflag_debug.eq.1) write(*,*) 'cal_magnetic_field_pre'
       call cal_magnetic_field_pre(icomp_sgs%i_induction,                &
      &    ifld_diff%i_magne, ifld_diff%i_induction,                     &
-     &    iphys_elediff%i_velo, iphys_elediff%i_magne,                  &
+     &    iphys_elediff%i_velo, iphys_elediff%i_magne, ak_d_magne,      &
      &    nod_comm, node, ele, surf, conduct, sf_grp,                   &
      &    Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,        &
      &    jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,                   &
@@ -331,7 +335,7 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'magnetic_correction'
-        call cal_magnetic_co(ifld_diff%i_magne,                         &
+        call cal_magnetic_co(ifld_diff%i_magne, ak_d_magne,             &
      &      nod_comm, node, ele, surf, conduct, sf_grp,                 &
      &      Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,               &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &

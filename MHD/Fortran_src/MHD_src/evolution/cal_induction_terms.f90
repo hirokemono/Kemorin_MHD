@@ -6,7 +6,7 @@
 !!      subroutine cal_vecp_induction(nod_comm, node, ele, conduct,     &
 !!     &          Bnod_bcs, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-!!      subroutine cal_vecp_diffusion(iak_diff_b,                       &
+!!      subroutine cal_vecp_diffusion(iak_diff_b, ak_d_magne,           &
 !!     &          nod_comm, node, ele, surf, sf_grp, Bnod_bcs, Asf_bcs, &
 !!     &          iphys, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,        &
 !!     &          diff_coefs, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -122,7 +122,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_vecp_diffusion(iak_diff_b,                         &
+      subroutine cal_vecp_diffusion(iak_diff_b, ak_d_magne,             &
      &          nod_comm, node, ele, surf, sf_grp, Bnod_bcs, Asf_bcs,   &
      &          iphys, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,          &
      &          diff_coefs, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -132,8 +132,6 @@
       use int_vol_diffusion_ele
       use int_surf_fixed_gradients
       use set_boundary_scalars
-!
-      integer(kind=kint), intent(in) :: iak_diff_b
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -148,6 +146,9 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(MHD_coefficients_type), intent(in) :: diff_coefs
+!
+      integer(kind=kint), intent(in) :: iak_diff_b
+      real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk

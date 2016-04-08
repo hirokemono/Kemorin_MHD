@@ -5,7 +5,8 @@
 !                                    on July 2000 (ver 1.1)
 !        modieied by H. Matsui on Sep., 2005
 !
-!!      subroutine cal_vector_p_pre(iak_diff_b, icomp_sgs_uxb, ie_dvx,  &
+!!      subroutine cal_vector_p_pre                                     &
+!!     &         (iak_diff_b, icomp_sgs_uxb, ie_dvx, ak_d_magne,        &
 !!     &          nod_comm, node, ele, surf, conduct, sf_grp,           &
 !!     &          Bnod_bcs, Asf_bcs, iphys, iphys_ele, ele_fld,         &
 !!     &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,           &
@@ -13,8 +14,8 @@
 !!     &          num_MG_level, MG_interpolate, MG_comm_table,          &
 !!     &          MG_DJDS_table, Bmat_MG_DJDS, MG_vector,               &
 !!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-!!      subroutine cal_vector_p_co                                      &
-!!     &         (iak_diff_b, nod_comm, node, ele, surf, conduct,       &
+!!      subroutine cal_vector_p_co(iak_diff_b, ak_d_magne,              &
+!!     &          nod_comm, node, ele, surf, conduct,                   &
 !!     &          sf_grp, Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld, &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
 !!     &          rhs_tbl, FEM_elens, diff_coefs, num_MG_level,         &
@@ -96,7 +97,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_vector_p_pre(iak_diff_b, icomp_sgs_uxb, ie_dvx,    &
+      subroutine cal_vector_p_pre                                       &
+     &         (iak_diff_b, icomp_sgs_uxb, ie_dvx, ak_d_magne,          &
      &          nod_comm, node, ele, surf, conduct, sf_grp,             &
      &          Bnod_bcs, Asf_bcs, iphys, iphys_ele, ele_fld,           &
      &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,             &
@@ -119,9 +121,6 @@
       use evolve_by_consist_crank
       use copy_nodal_fields
 !
-      integer(kind = kint), intent(in) :: iak_diff_b, icomp_sgs_uxb
-      integer(kind = kint), intent(in) :: ie_dvx
-!
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -140,6 +139,10 @@
       type(MHD_coefficients_type), intent(in) :: sgs_coefs
       type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(filtering_data_type), intent(in) :: filtering
+!
+      integer(kind = kint), intent(in) :: iak_diff_b, icomp_sgs_uxb
+      integer(kind = kint), intent(in) :: ie_dvx
+      real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
@@ -216,7 +219,7 @@
 !  -----for Ceank-nicolson
       else if (iflag_t_evo_4_vect_p .eq. id_Crank_nicolson) then
         call cal_vect_p_pre_lumped_crank                                &
-     &     (iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b,                  &
+     &     (iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,      &
      &      Bnod_bcs%nod_bc_a, nod_comm, node, ele,                     &
      &      conduct, iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,  &
      &      diff_coefs, num_MG_level, MG_interpolate, MG_comm_table,    &
@@ -224,7 +227,7 @@
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (iflag_t_evo_4_vect_p.eq.id_Crank_nicolson_cmass) then
         call cal_vect_p_pre_consist_crank                               &
-     &     (iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b,                  &
+     &     (iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,      &
      &      Bnod_bcs%nod_bc_a, node, ele, conduct,                      &
      &      jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                   &
      &      num_MG_level, MG_interpolate, MG_comm_table,                &
@@ -243,8 +246,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_vector_p_co                                        &
-     &         (iak_diff_b, nod_comm, node, ele, surf, conduct,         &
+      subroutine cal_vector_p_co(iak_diff_b, ak_d_magne,                &
+     &          nod_comm, node, ele, surf, conduct,                     &
      &          sf_grp, Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,   &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
      &          rhs_tbl, FEM_elens, diff_coefs, num_MG_level,           &
@@ -261,7 +264,6 @@
       use cal_multi_pass
       use cal_sol_vector_co_crank
 !
-      integer(kind = kint), intent(in) :: iak_diff_b
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -279,6 +281,9 @@
       type(lumped_mass_matrices), intent(in) :: m_lump
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(MHD_coefficients_type), intent(in) :: diff_coefs
+!
+      integer(kind = kint), intent(in) :: iak_diff_b
+      real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
@@ -320,7 +325,7 @@
 !
       if (   iflag_implicit_correct.eq.3                                &
      &  .or. iflag_implicit_correct.eq.4) then
-        call cal_vector_p_co_imp(iphys%i_vecp, iak_diff_b,              &
+        call cal_vector_p_co_imp(iphys%i_vecp, iak_diff_b, ak_d_magne,  &
      &      nod_comm, node, ele, conduct, Bnod_bcs, iphys_ele, ele_fld, &
      &      jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                   &
      &      num_MG_level, MG_interpolate, MG_comm_table,                &

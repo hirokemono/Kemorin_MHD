@@ -10,13 +10,13 @@
 !
 !!      subroutine int_vol_velo_monitor_pg                              &
 !!     &         (i_field, iak_diff_mf, iak_diff_lor,                   &
-!!     &          node, ele, fluid, iphys, nod_fld, iphys_ele, jac_3d,  &
-!!     &          rhs_tbl, FEM_elens, mhd_fem_wk, diff_coefs,           &
+!!     &          node, ele, fluid, iphys, nod_fld, iphys_ele, ak_MHD,  &
+!!     &          jac_3d, rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk,   &
 !!     &          fem_wk, f_nl, ele_fld)
 !!      subroutine int_vol_velo_monitor_upwind                          &
-!!     &         (i_field, iak_diff_mf, iak_diff_lor, node, ele,        &
-!!     &          fluid, iphys, nod_fld, iphys_ele, iv_upw, jac_3d,     &
-!!     &          rhs_tbl, FEM_elens, mhd_fem_wk, diff_coefs,           &
+!!     &         (i_field, iak_diff_mf, iak_diff_lor, iv_upw, node, ele,&
+!!     &          fluid, iphys, nod_fld, iphys_ele, ak_MHD, jac_3d,     &
+!!     &          rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk,           &
 !!     &          fem_wk, f_nl, ele_fld)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -24,6 +24,7 @@
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(field_geometry_data), intent(in) :: fluid
+!!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -41,7 +42,6 @@
       use m_machine_parameter
       use m_phys_constants
       use m_physical_property
-      use m_ele_material_property
 !
       use t_geometry_data_MHD
       use t_geometry_data
@@ -65,8 +65,8 @@
 !
       subroutine int_vol_velo_monitor_pg                                &
      &         (i_field, iak_diff_mf, iak_diff_lor,                     &
-     &          node, ele, fluid, iphys, nod_fld, iphys_ele, jac_3d,    &
-     &          rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk,             &
+     &          node, ele, fluid, iphys, nod_fld, iphys_ele, ak_MHD,    &
+     &          jac_3d, rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk,     &
      &          fem_wk, f_nl, ele_fld)
 !
       use int_vol_inertia
@@ -85,6 +85,7 @@
       type(phys_data), intent(in) :: nod_fld
       type(phys_address), intent(in) :: iphys_ele
       type(field_geometry_data), intent(in) :: fluid
+      type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -130,17 +131,17 @@
         call int_vol_buoyancy_pg                                        &
      &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
      &      fluid%istack_ele_fld_smp, intg_point_t_evo, iphys%i_temp,   &
-     &      ak_buo, fem_wk, f_nl)
+     &      ak_MHD%ak_buo, fem_wk, f_nl)
       else if(i_field .eq. iphys%i_comp_buo) then
         call int_vol_buoyancy_pg                                        &
      &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
      &      fluid%istack_ele_fld_smp, intg_point_t_evo, iphys%i_light,  &
-     &      ak_comp_buo, fem_wk, f_nl)
+     &      ak_MHD%ak_comp_buo, fem_wk, f_nl)
       else if(i_field .eq. iphys%i_filter_buo) then
         call int_vol_buoyancy_pg                                        &
      &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
      &      fluid%istack_ele_fld_smp, intg_point_t_evo,                 &
-     &      iphys%i_filter_temp, ak_buo, fem_wk, f_nl)
+     &      iphys%i_filter_temp, ak_MHD%ak_buo, fem_wk, f_nl)
       end if
 !
       if(i_field .eq. iphys%i_m_tension) then
@@ -205,8 +206,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_velo_monitor_upwind                            &
-     &         (i_field, iak_diff_mf, iak_diff_lor, node, ele,          &
-     &          fluid, iphys, nod_fld, iphys_ele, iv_upw, jac_3d,       &
+     &         (i_field, iak_diff_mf, iak_diff_lor, iv_upw, node, ele,  &
+     &          fluid, iphys, nod_fld, iphys_ele, ak_MHD, jac_3d,       &
      &          rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk,             &
      &          fem_wk, f_nl, ele_fld)
 !
@@ -226,6 +227,7 @@
       type(phys_data), intent(in) :: nod_fld
       type(phys_address), intent(in) :: iphys_ele
       type(field_geometry_data), intent(in) :: fluid
+      type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -271,20 +273,20 @@
         call int_vol_buoyancy_upw                                       &
      &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
      &      fluid%istack_ele_fld_smp, intg_point_t_evo, iphys%i_temp,   &
-     &      ak_buo, ele_fld%ntot_phys, iv_upw, ele_fld%d_fld,           &
+     &      ak_MHD%ak_buo, ele_fld%ntot_phys, iv_upw, ele_fld%d_fld,    &
      &      fem_wk, f_nl)
       else if(i_field .eq. iphys%i_comp_buo) then
         call int_vol_buoyancy_upw                                       &
      &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
      &      fluid%istack_ele_fld_smp, intg_point_t_evo, iphys%i_light,  &
-     &      ak_comp_buo, ele_fld%ntot_phys, iv_upw, ele_fld%d_fld,      &
-     &      fem_wk, f_nl)
+     &      ak_MHD%ak_comp_buo, ele_fld%ntot_phys, iv_upw,              &
+     &      ele_fld%d_fld, fem_wk, f_nl)
       else if(i_field .eq. iphys%i_filter_buo) then
         call int_vol_buoyancy_upw                                       &
      &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
      &      fluid%istack_ele_fld_smp, intg_point_t_evo,                 &
-     &      iphys%i_filter_temp, ak_buo, ele_fld%ntot_phys, iv_upw,     &
-     &      ele_fld%d_fld, fem_wk, f_nl)
+     &      iphys%i_filter_temp, ak_MHD%ak_buo, ele_fld%ntot_phys,      &
+     &      iv_upw, ele_fld%d_fld, fem_wk, f_nl)
       end if
 !
 !

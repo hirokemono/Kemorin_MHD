@@ -3,11 +3,13 @@
 !
 !        programmed H.Matsui on Dec., 2008
 !
-!!      subroutine s_initialize_4_MHD_AMG(ifld_diff, node_1st, ele_1st)
-!!        type(SGS_terms_address), intent(in) :: ifld_diff
+!!      subroutine s_initialize_4_MHD_AMG                               &
+!!     &         (ifld_diff, diff_coefs, node_1st, ele_1st)
 !!        type(node_data), intent(inout) :: node_1st
 !!        type(element_data), intent(inout) :: ele_1st
-!!      subroutine const_MGCG_MHD_matrices
+!!      subroutine const_MGCG_MHD_matrices(ifld_diff)
+!!        type(SGS_terms_address), intent(in) :: ifld_diff
+!!        type(MHD_coefficients_type), intent(in) :: diff_coefs
 !
       module initialize_4_MHD_AMG
 !
@@ -17,6 +19,9 @@
       use m_type_AMG_mesh
       use m_type_AMG_data_4_MHD
       use m_type_AMG_data
+!
+      use t_material_property
+!
       use calypso_mpi
 !
       implicit none
@@ -27,7 +32,8 @@
 !
 ! ---------------------------------------------------------------------
 !
-      subroutine s_initialize_4_MHD_AMG(ifld_diff, node_1st, ele_1st)
+      subroutine s_initialize_4_MHD_AMG                                 &
+     &         (ifld_diff, diff_coefs, node_1st, ele_1st)
 !
       use t_geometry_data
       use t_edge_data
@@ -57,6 +63,7 @@
       use const_element_comm_tables
 !
       type(SGS_terms_address), intent(in) :: ifld_diff
+      type(MHD_coefficients_type), intent(in) :: diff_coefs
 !
       type(node_data), intent(inout) :: node_1st
       type(element_data), intent(inout) :: ele_1st
@@ -113,8 +120,10 @@
      &      ak_MHD_AMG(i_level) )
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            's_set_sgs_diff_array_MHD_AMG', i_level
-        call s_set_sgs_diff_array_MHD_AMG(MG_mesh(i_level)%mesh%ele,    &
-     &      ifld_diff, ak_MHD_AMG(i_level) )
+!
+        call copy_MHD_num_coefs(diff_coefs, MG_diff_coefs(i_level))
+        call alloc_MHD_coefs                                            &
+     &     (MG_mesh(i_level)%mesh%ele%numele, MG_diff_coefs(i_level))
       end do
 !
 !     --------------------- 
@@ -328,12 +337,14 @@
 !
 ! ---------------------------------------------------------------------
 !
-      subroutine const_MGCG_MHD_matrices
+      subroutine const_MGCG_MHD_matrices(ifld_diff)
 !
       use m_ctl_parameter_Multigrid
       use m_solver_djds_MHD
       use set_aiccg_matrices_type
       use matrices_precond_type
+!
+      type(SGS_terms_address), intent(in) :: ifld_diff
 !
       integer(kind = kint) :: i_level
 !
@@ -355,7 +366,7 @@
      &      MHD1_matrices%MG_mat_tbls(i_level)%full_conduct_q,          &
      &      MHD1_matrices%MG_mat_tbls(i_level)%linear,                  &
      &      MHD1_matrices%MG_mat_tbls(i_level)%fluid_l,                 &
-     &      MG_filter_MHD(i_level),                                     &
+     &      MG_filter_MHD(i_level), ifld_diff, MG_diff_coefs(i_level),  &
      &      MG_mk_MHD(i_level), MG_FEM_mat(i_level),                    &
      &      MHD1_matrices%Vmat_MG_DJDS(i_level),                        &
      &      MHD1_matrices%Bmat_MG_DJDS(i_level),                        &
