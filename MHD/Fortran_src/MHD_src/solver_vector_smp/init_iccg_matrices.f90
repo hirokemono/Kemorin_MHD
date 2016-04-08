@@ -6,7 +6,7 @@
 !
 !!      subroutine reset_MHD_aiccg_mat_type(node, ele, fluid,           &
 !!     &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,     &
-!!     &          mat_velo, mat_magne, mat_temp, mat_d_scalar,          &
+!!     &          mat_velo, mat_magne, mat_temp, mat_light,             &
 !!     &          mat_press, mat_magp)
 !
       module init_iccg_matrices
@@ -35,7 +35,7 @@
 !
       subroutine reset_MHD_aiccg_mat_type(node, ele, fluid,             &
      &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,       &
-     &          mat_velo, mat_magne, mat_temp, mat_d_scalar,            &
+     &          mat_velo, mat_magne, mat_temp, mat_light,               &
      &          mat_press, mat_magp)
 !
       type(node_data), intent(in) :: node
@@ -49,7 +49,7 @@
       type(DJDS_MATRIX),  intent(inout) :: mat_velo
       type(DJDS_MATRIX),  intent(inout) :: mat_magne
       type(DJDS_MATRIX),  intent(inout) :: mat_temp
-      type(DJDS_MATRIX),  intent(inout) :: mat_d_scalar
+      type(DJDS_MATRIX),  intent(inout) :: mat_light
       type(DJDS_MATRIX),  intent(inout) :: mat_press
       type(DJDS_MATRIX),  intent(inout) :: mat_magp
 !
@@ -75,7 +75,7 @@
       if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
         call reset_aiccg_11_MHD(node, ele,                              &
      &      fluid%iele_start_fld, fluid%iele_end_fld,                   &
-     &      ele%nnod_4_ele, djds_tbl_fl, mat_d_scalar)
+     &      ele%nnod_4_ele, djds_tbl_fl, mat_light)
       end if
 !
       if (iflag_t_evo_4_magne .gt. id_no_evolution                      &

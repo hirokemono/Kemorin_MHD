@@ -9,15 +9,21 @@
 !>      DJDS matrix data
 !!
 !!@verbatim
-!!      subroutine int_vol_crank_mat_lump                               &
-!!     &         (node, fluid, conduct, mhd_fem_wk)
-!!      subroutine add_lumped_coriolis_matrix(node, fluid,              &
-!!     &          DJDS_fluid, mhd_fem_wk, Vmat_DJDS)
-!!        type(node_data), intent(in) :: node
-!!        type(field_geometry_data), intent(in) :: fluid
-!!        type(DJDS_ordering_table), intent(in) :: DJDS_fluid
+!!      subroutine int_vol_crank_mat_lump(mesh, fluid, conduct,         &
+!!     &          DJDS_table, DJDS_table_fluid, mlump_fl, mlump_cd,     &
+!!     &          mat_velo, mat_magne, mat_temp, mat_light)
+!!      subroutine add_lumped_coriolis_matrix(mesh, fluid,              &
+!!     &          DJDS_table_fluid, mhd_fem_wk, Vmat_DJDS)
+!!        type(mesh_data), intent(in) ::              mesh
+!!        type(field_geometry_data), intent(in) :: fluid, conduct
+!!        type(DJDS_ordering_table),  intent(in) :: DJDS_table
+!!        type(DJDS_ordering_table),  intent(in) :: DJDS_table_fluid
+!!        type(lumped_mass_matrices), intent(in) :: mlump_fl, mlump_cd
 !!        type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
-!!        type(DJDS_MATRIX), intent(inout) :: Vmat_DJDS
+!!        type(DJDS_MATRIX),  intent(inout) :: mat_velo
+!!        type(DJDS_MATRIX),  intent(inout) :: mat_magne
+!!        type(DJDS_MATRIX),  intent(inout) :: mat_temp
+!!        type(DJDS_MATRIX),  intent(inout) :: mat_light
 !!@endverbatim
 !
       module int_vol_lumped_mat_crank
@@ -27,6 +33,7 @@
 !
       use m_physical_property
 !
+      use t_mesh_data
       use t_geometry_data
       use t_geometry_data_MHD
       use t_MHD_finite_element_mat
@@ -42,68 +49,63 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_vol_crank_mat_lump                                 &
-     &         (node, fluid, conduct, mhd_fem_wk)
+      subroutine int_vol_crank_mat_lump(mesh, fluid, conduct,           &
+     &          DJDS_table, DJDS_table_fluid, mlump_fl, mlump_cd,       &
+     &          mat_velo, mat_magne, mat_temp, mat_light)
 !
       use m_control_parameter
 !
-      use m_solver_djds_MHD
-!
-      type(node_data), intent(in) :: node
+      type(mesh_geometry), intent(in) :: mesh
       type(field_geometry_data), intent(in) :: fluid, conduct
-      type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
+      type(DJDS_ordering_table), intent(in) :: DJDS_table
+      type(DJDS_ordering_table), intent(in) :: DJDS_table_fluid
+      type(lumped_mass_matrices), intent(in) :: mlump_fl, mlump_cd
 !
+      type(DJDS_MATRIX),  intent(inout) :: mat_velo
+      type(DJDS_MATRIX),  intent(inout) :: mat_magne
+      type(DJDS_MATRIX),  intent(inout) :: mat_temp
+      type(DJDS_MATRIX),  intent(inout) :: mat_light
 !
 !
 !$omp parallel
       if (iflag_t_evo_4_velo .eq. id_Crank_nicolson                     &
      &     .and. coef_velo .gt. zero) then
         call init_33_matrix_lump                                        &
-     &     (node%numnod, fluid%numnod_fld, fluid%inod_fld,              &
-     &      MHD1_matrices%MG_DJDS_fluid(0)%OLDtoNEW,                    &
-     &      mhd_fem_wk%mlump_fl%ml_o,                                   &
-     &      MHD1_matrices%Vmat_MG_DJDS(0)%num_non0,                     &
-     &      MHD1_matrices%Vmat_MG_DJDS(0)%aiccg)
+     &     (mesh%node%numnod, fluid%numnod_fld, fluid%inod_fld,         &
+     &      DJDS_table_fluid%OLDtoNEW, mlump_fl%ml_o,                   &
+     &      mat_velo%num_non0, mat_velo%aiccg)
       end if
 !
       if (iflag_t_evo_4_temp .eq. id_Crank_nicolson                     &
      &     .and. coef_temp .gt. zero) then
         call init_11_matrix_lump                                        &
-     &     (node%numnod, fluid%numnod_fld, fluid%inod_fld,              &
-     &      MHD1_matrices%MG_DJDS_fluid(0)%OLDtoNEW,                    &
-     &      mhd_fem_wk%mlump_fl%ml_o,                                   &
-     &      MHD1_matrices%Tmat_MG_DJDS(0)%num_non0,                     &
-     &      MHD1_matrices%Tmat_MG_DJDS(0)%aiccg)
+     &     (mesh%node%numnod, fluid%numnod_fld, fluid%inod_fld,         &
+     &      DJDS_table_fluid%OLDtoNEW, mlump_fl%ml_o,                   &
+     &      mat_temp%num_non0, mat_temp%aiccg)
       end if
 !
       if (iflag_t_evo_4_magne .eq. id_Crank_nicolson                    &
      &     .and. coef_magne .gt. zero) then
         call init_33_matrix_lump                                        &
-     &     (node%numnod, conduct%numnod_fld, conduct%inod_fld,          &
-     &      MHD1_matrices%MG_DJDS_table(0)%OLDtoNEW,                    &
-     &      mhd_fem_wk%mlump_cd%ml_o,                                   &
-     &      MHD1_matrices%Bmat_MG_DJDS(0)%num_non0,                     &
-     &      MHD1_matrices%Bmat_MG_DJDS(0)%aiccg)
+     &     (mesh%node%numnod, conduct%numnod_fld, conduct%inod_fld,     &
+     &      DJDS_table%OLDtoNEW, mlump_cd%ml_o,                         &
+     &      mat_magne%num_non0, mat_magne%aiccg)
       end if
 !
       if (iflag_t_evo_4_vect_p .eq. id_Crank_nicolson                   &
      &     .and. coef_magne .gt. zero) then
         call init_33_matrix_lump                                        &
-     &     (node%numnod, conduct%numnod_fld, conduct%inod_fld,          &
-     &      MHD1_matrices%MG_DJDS_table(0)%OLDtoNEW,                    &
-     &      mhd_fem_wk%mlump_cd%ml_o,                                   &
-     &      MHD1_matrices%Bmat_MG_DJDS(0)%num_non0,                     &
-     &      MHD1_matrices%Bmat_MG_DJDS(0)%aiccg)
+     &     (mesh%node%numnod, conduct%numnod_fld, conduct%inod_fld,     &
+     &      DJDS_table%OLDtoNEW, mlump_cd%ml_o,                         &
+     &      mat_magne%num_non0, mat_magne%aiccg)
       end if
 !
       if (iflag_t_evo_4_composit .eq. id_Crank_nicolson                 &
      &     .and. coef_light .gt. zero) then
         call init_11_matrix_lump                                        &
-     &     (node%numnod, fluid%numnod_fld, fluid%inod_fld,              &
-     &      MHD1_matrices%MG_DJDS_fluid(0)%OLDtoNEW,                    &
-     &      mhd_fem_wk%mlump_fl%ml_o,                                   &
-     &      MHD1_matrices%Cmat_MG_DJDS(0)%num_non0,                     &
-     &      MHD1_matrices%Cmat_MG_DJDS(0)%aiccg)
+     &     (mesh%node%numnod, fluid%numnod_fld, fluid%inod_fld,         &
+     &      DJDS_table_fluid%OLDtoNEW, mlump_fl%ml_o,                   &
+     &      mat_light%num_non0, mat_light%aiccg)
       end if
 !$omp end parallel
 !
@@ -111,23 +113,23 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine add_lumped_coriolis_matrix(node, fluid,                &
-     &          DJDS_fluid, mhd_fem_wk, Vmat_DJDS)
+      subroutine add_lumped_coriolis_matrix(mesh, fluid,                &
+     &          DJDS_table_fluid, mlump_fl, mat_velo)
 !
       use cal_coriolis_mat33
 !
-      type(node_data), intent(in) :: node
+      type(mesh_geometry), intent(in) :: mesh
       type(field_geometry_data), intent(in) :: fluid
+      type(DJDS_ordering_table), intent(in) :: DJDS_table_fluid
+      type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
-      type(DJDS_ordering_table), intent(in) :: DJDS_fluid
-      type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
-      type(DJDS_MATRIX), intent(inout) :: Vmat_DJDS
+      type(DJDS_MATRIX), intent(inout) :: mat_velo
 !
 !
-      call cal_lumped_coriolis_matrix(node%numnod, fluid%numnod_fld,    &
-     &    fluid%inod_fld, DJDS_fluid%OLDtoNEW, coef_cor, angular,       &
-     &    mhd_fem_wk%mlump_fl%ml_o,                                     &
-     &    Vmat_DJDS%num_non0, Vmat_DJDS%aiccg)
+      call cal_lumped_coriolis_matrix                                   &
+     &   (mesh%node%numnod, fluid%numnod_fld,                           &
+     &    fluid%inod_fld, DJDS_table_fluid%OLDtoNEW, coef_cor, angular, &
+     &    mlump_fl%ml_o, mat_velo%num_non0, mat_velo%aiccg)
 !
       end subroutine add_lumped_coriolis_matrix
 !

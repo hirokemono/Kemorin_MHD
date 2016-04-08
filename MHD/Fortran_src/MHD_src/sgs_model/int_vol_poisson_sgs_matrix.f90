@@ -3,16 +3,16 @@
 !
 !     Written by H. Matsui on Oct. 2005
 !
-!      subroutine int_vol_poisson_sgs_mat11(n_int, idx_for_mat,         &
-!     &          i_filter, ak_diff, nmat_size, aiccg)
-!
+!!      subroutine int_vol_poisson_sgs_mat11                            &
+!!     &         (ele, jac_3d_l, rhs_tbl, MG_mat_tbl, FEM_elens, n_int, &
+!!     &          i_filter, ak_diff, fem_wk, mat11)
+!!
+!!      subroutine int_vol_diffuse_sgs_mat11                            &
+!!     &         (ele, jac_3d, rhs_tbl, MG_mat_tbl, FEM_elens, n_int,   &
+!!     &          coef_imp, i_filter, ak_diff, ak_d, fem_wk, mat11)
 !!      subroutine int_vol_diffuse_sgs_mat33                            &
-!!     &         (ele, jac_3d, rhs_tbl, djds_const, FEM_elens, n_int,   &
+!!     &         (ele, jac_3d, rhs_tbl, MG_mat_tbl, FEM_elens, n_int,   &
 !!     &          coef_imp, i_filter, ak_diff, ak_d, fem_wk, mat33)
-!!      subroutine int_vol_diffuse_sgs_mat33                            &
-!!     &         (ele, jac_3d, rhs_tbl, djds_const, FEM_elens,          &
-!!     &          n_int, djds_const, coef_imp, i_filter, ak_diff, ak_d, &
-!!     &          fem_wk, mat33)
 !
       module int_vol_poisson_sgs_matrix
 !
@@ -37,7 +37,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_poisson_sgs_mat11                              &
-     &         (ele, jac_3d_l, rhs_tbl, djds_const, FEM_elens, n_int,   &
+     &         (ele, jac_3d_l, rhs_tbl, MG_mat_tbl, FEM_elens, n_int,   &
      &          i_filter, ak_diff, fem_wk, mat11)
 !
       use add_skv1_to_crs_matrix
@@ -46,7 +46,7 @@
       type(jacobians_3d), intent(in) :: jac_3d_l
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(table_mat_const), intent(in) :: djds_const
+      type(table_mat_const), intent(in) :: MG_mat_tbl
 !
       integer(kind = kint), intent(in) :: n_int, i_filter
       real(kind=kreal), intent(in) :: ak_diff(ele%numele)
@@ -62,7 +62,7 @@
         call fem_skv_poisson_linear_sgs_type(ele%istack_ele_smp,        &
      &      n_int, k2, i_filter, ak_diff, ele, jac_3d_l, FEM_elens,     &
      &      fem_wk%sk6)
-        call add_skv1_to_crs_matrix11(ele, rhs_tbl, djds_const,         &
+        call add_skv1_to_crs_matrix11(ele, rhs_tbl, MG_mat_tbl,         &
      &      k2, fem_wk%sk6, mat11%num_non0, mat11%aiccg)
       end do
 !
@@ -72,7 +72,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_diffuse_sgs_mat11                              &
-     &         (ele, jac_3d, rhs_tbl, djds_const, FEM_elens, n_int,     &
+     &         (ele, jac_3d, rhs_tbl, MG_mat_tbl, FEM_elens, n_int,     &
      &          coef_imp, i_filter, ak_diff, ak_d, fem_wk, mat11)
 !
       use cal_poisson_matrices
@@ -81,7 +81,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(table_mat_const), intent(in) :: djds_const
+      type(table_mat_const), intent(in) :: MG_mat_tbl
 !
       real(kind=kreal), intent(in) :: coef_imp
       real(kind=kreal), intent(in) :: ak_d(ele%numele)
@@ -99,7 +99,7 @@
         call reset_sk6(n_scalar, ele, fem_wk%sk6)
         call fem_skv_poisson_sgs_type(ele%istack_ele_smp, n_int, k2,    &
      &      i_filter, ak_diff, ele, jac_3d, FEM_elens, fem_wk%sk6)
-        call cal_scalar_diffuse_mat(ele, rhs_tbl, djds_const, fem_wk,   &
+        call cal_scalar_diffuse_mat(ele, rhs_tbl, MG_mat_tbl, fem_wk,   &
      &      k2, coef_imp, ak_d, mat11)
       end do
 !
@@ -108,7 +108,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_diffuse_sgs_mat33                              &
-     &         (ele, jac_3d, rhs_tbl, djds_const, FEM_elens, n_int,     &
+     &         (ele, jac_3d, rhs_tbl, MG_mat_tbl, FEM_elens, n_int,     &
      &          coef_imp, i_filter, ak_diff, ak_d, fem_wk, mat33)
 !
       use cal_poisson_matrices
@@ -117,7 +117,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(table_mat_const), intent(in) :: djds_const
+      type(table_mat_const), intent(in) :: MG_mat_tbl
 !
       real(kind=kreal), intent(in) :: coef_imp
       real(kind=kreal), intent(in) :: ak_d(ele%numele)
@@ -135,7 +135,7 @@
         call reset_sk6(n_scalar, ele, fem_wk%sk6)
         call fem_skv_poisson_sgs_type(ele%istack_ele_smp, n_int, k2,    &
      &      i_filter, ak_diff, ele, jac_3d, FEM_elens, fem_wk%sk6)
-        call cal_vect_diffuse_mat(ele, rhs_tbl, djds_const, fem_wk,     &
+        call cal_vect_diffuse_mat(ele, rhs_tbl, MG_mat_tbl, fem_wk,     &
      &      k2, coef_imp, ak_d, mat33)
       end do
 !

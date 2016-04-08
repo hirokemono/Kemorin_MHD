@@ -62,6 +62,7 @@
       end type MHD_MG_matrices
 !
       type MHD_MG_matrix
+        integer(kind = kint) :: nlevel_MG
 !>        Structure of matrix for time evolution of velocity
         type(DJDS_MATRIX), pointer :: mat_MG_DJDS(:)
 !>        DJDS ordering structures for entire domain
@@ -142,7 +143,7 @@
 !
       subroutine alloc_aiccg_matrices                                   &
      &          (node, djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fll, &
-     &           mat_velo, mat_magne, mat_temp, mat_d_scalar,           &
+     &           mat_velo, mat_magne, mat_temp, mat_light,              &
      &           mat_press, mat_magp)
 !
       use m_control_parameter
@@ -157,7 +158,7 @@
       type(DJDS_MATRIX),  intent(inout) :: mat_velo
       type(DJDS_MATRIX),  intent(inout) :: mat_magne
       type(DJDS_MATRIX),  intent(inout) :: mat_temp
-      type(DJDS_MATRIX),  intent(inout) :: mat_d_scalar
+      type(DJDS_MATRIX),  intent(inout) :: mat_light
       type(DJDS_MATRIX),  intent(inout) :: mat_press
       type(DJDS_MATRIX),  intent(inout) :: mat_magp
 !
@@ -179,7 +180,7 @@
 !
       if ( iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
         call alloc_type_djds11_mat(node%numnod, node%internal_node,     &
-     &       djds_tbl_fl, mat_d_scalar)
+     &       djds_tbl_fl, mat_light)
       end if
 !
       if ( iflag_t_evo_4_magne .ge. id_no_evolution) then
@@ -208,14 +209,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine alloc_MG_zero_matrices(mat_velo, mat_magne, mat_temp,  &
-     &          mat_d_scalar, mat_press, mat_magp)
+     &          mat_light, mat_press, mat_magp)
 !
       use m_control_parameter
 !
       type(DJDS_MATRIX),  intent(inout) :: mat_velo
       type(DJDS_MATRIX),  intent(inout) :: mat_magne
       type(DJDS_MATRIX),  intent(inout) :: mat_temp
-      type(DJDS_MATRIX),  intent(inout) :: mat_d_scalar
+      type(DJDS_MATRIX),  intent(inout) :: mat_light
       type(DJDS_MATRIX),  intent(inout) :: mat_press
       type(DJDS_MATRIX),  intent(inout) :: mat_magp
 !
@@ -246,7 +247,7 @@
       end if
 !
       if ( iflag_t_evo_4_composit .gt. id_no_evolution) then
-        call alloc_type_zero_mat(mat_d_scalar)
+        call alloc_type_zero_mat(mat_light)
       end if
 !
       end subroutine alloc_MG_zero_matrices
@@ -254,14 +255,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine dealloc_aiccg_matrices(mat_velo, mat_magne, mat_temp,  &
-     &          mat_d_scalar, mat_press, mat_magp)
+     &          mat_light, mat_press, mat_magp)
 !
       use m_control_parameter
 !
       type(DJDS_MATRIX),  intent(inout) :: mat_velo
       type(DJDS_MATRIX),  intent(inout) :: mat_magne
       type(DJDS_MATRIX),  intent(inout) :: mat_temp
-      type(DJDS_MATRIX),  intent(inout) :: mat_d_scalar
+      type(DJDS_MATRIX),  intent(inout) :: mat_light
       type(DJDS_MATRIX),  intent(inout) :: mat_press
       type(DJDS_MATRIX),  intent(inout) :: mat_magp
 !
@@ -279,7 +280,7 @@
       end if
 !
       if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
-        call dealloc_type_djds_mat(mat_d_scalar)
+        call dealloc_type_djds_mat(mat_light)
       end if
 !
       if(     iflag_t_evo_4_magne .gt. id_no_evolution                  &

@@ -4,23 +4,6 @@
 !
 !     Written by H. Matsui
 !
-!!      subroutine set_index_list_4_mat_etr_l                           &
-!!     &         (node, ele, rhs_tbl, djds_tbl_lin, mat_tbl_q, linear)
-!!        type(node_data), intent(in) :: node
-!!        type(element_data), intent(in) :: ele
-!!        type(field_geometry_data), intent(in) :: fluid
-!!        type(field_geometry_data), intent(in) :: conduct
-!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-!!        type(table_mat_const), intent(in) :: mat_tbl_q
-!!
-!!      subroutine set_index_list_4_mat_fl                              &
-!!     &         (node, ele, fluid, rhs_tbl, djds_tbl_fl, fluid_q)
-!!      subroutine set_index_list_4_mat_fl_l(node, ele, fluid,          &
-!!     &          rhs_tbl, djds_tbl_fll, fluid_q, fluid_l)
-!!
-!!      subroutine set_index_list_4_mat_fullcd(node, ele, conduct,      &
-!!     &          rhs_tbl, djds_tbl, full_conduct_q)
-!!
 !!      subroutine deallocate_MHD_matrix_lists(MHD_mat_tbls)
 !
       module t_sorted_node_MHD

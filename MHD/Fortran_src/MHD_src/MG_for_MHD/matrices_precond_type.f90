@@ -6,7 +6,7 @@
 !
 !      subroutine s_matrices_precond_type(PRECOND_MG,                   &
 !     &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,      &
-!     &         mat_velo, mat_magne, mat_temp, mat_d_scalar,            &
+!     &          mat_velo, mat_magne, mat_temp, mat_light,              &
 !     &          mat_press, mat_magp)
 !        character(len=kchara),  intent(in) :: PRECOND_MG
 !        type(DJDS_ordering_table),  intent(in) :: djds_tbl
@@ -16,7 +16,7 @@
 !        type(DJDS_MATRIX),  intent(inout) :: mat_velo
 !        type(DJDS_MATRIX),  intent(inout) :: mat_magne
 !        type(DJDS_MATRIX),  intent(inout) :: mat_temp
-!        type(DJDS_MATRIX),  intent(inout) :: mat_d_scalar
+!        type(DJDS_MATRIX),  intent(inout) :: mat_light
 !        type(DJDS_MATRIX),  intent(inout) :: mat_press
 !        type(DJDS_MATRIX),  intent(inout) :: mat_magp
 !
@@ -34,7 +34,7 @@
 !
       subroutine s_matrices_precond_type(PRECOND_MG,                    &
      &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,       &
-     &          mat_velo, mat_magne, mat_temp, mat_d_scalar,            &
+     &          mat_velo, mat_magne, mat_temp, mat_light,               &
      &          mat_press, mat_magp)
 !
       use m_control_parameter
@@ -54,7 +54,7 @@
       type(DJDS_MATRIX),  intent(inout) :: mat_velo
       type(DJDS_MATRIX),  intent(inout) :: mat_magne
       type(DJDS_MATRIX),  intent(inout) :: mat_temp
-      type(DJDS_MATRIX),  intent(inout) :: mat_d_scalar
+      type(DJDS_MATRIX),  intent(inout) :: mat_light
       type(DJDS_MATRIX),  intent(inout) :: mat_press
       type(DJDS_MATRIX),  intent(inout) :: mat_magp
 !
@@ -80,7 +80,7 @@
       end if
 !
       if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
-        call precond_DJDS11_struct(np_smp, djds_tbl_fl, mat_d_scalar,   &
+        call precond_DJDS11_struct(np_smp, djds_tbl_fl, mat_light,      &
      &     PRECOND_MG, sigma_diag)
       end if
 !

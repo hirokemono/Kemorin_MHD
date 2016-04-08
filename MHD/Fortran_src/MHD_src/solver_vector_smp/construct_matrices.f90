@@ -143,6 +143,7 @@
         iflag_flex_step_changed = 0
       end if
 !
+!
       end subroutine update_matrices
 !
 !  ----------------------------------------------------------------------
@@ -157,11 +158,7 @@
       use m_iccg_parameter
       use m_solver_djds_MHD
 !
-      use int_vol_lumped_mat_crank
-      use int_vol_poisson_matrix
-      use int_vol_consist_evo_mat
-      use set_aiccg_bc_vectors
-      use init_iccg_matrices
+      use set_aiccg_matrices_type
       use precond_djds_MHD
       use initialize_4_MHD_AMG
       use skip_comment_f
@@ -186,67 +183,17 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
 !
 !
-      call reset_MHD_aiccg_mat_type                                     &
-     &   (mesh%node, mesh%ele, MHD_mesh%fluid,                          &
+      call s_set_aiccg_matrices_type                                    &
+     &   (mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,           &
+     &    ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q,                     &
+     &    FEM_elens, ifld_diff, diff_coefs, rhs_tbl,                    &
      &    MHD1_matrices%MG_DJDS_table(0),                               &
      &    MHD1_matrices%MG_DJDS_fluid(0),                               &
      &    MHD1_matrices%MG_DJDS_linear(0),                              &
-     &    MHD1_matrices%MG_DJDS_lin_fl(0),                              &
-     &    MHD1_matrices%Vmat_MG_DJDS(0), MHD1_matrices%Bmat_MG_DJDS(0), &
-     &    MHD1_matrices%Tmat_MG_DJDS(0), MHD1_matrices%Cmat_MG_DJDS(0), &
-     &    MHD1_matrices%Pmat_MG_DJDS(0), MHD1_matrices%Fmat_MG_DJDS(0))
-!
-!
-!   set coefficients of matrix
-!
-      if (iflag_debug.eq.1) write(*,*) 'matrix assemble'
-!
-!   Poisson matrix
-!
-      call int_MHD_poisson_matrices(mesh, jac_3d_l, rhs_tbl,            &
+     &    MHD1_matrices%MG_DJDS_lin_fl(0), MHD_mat_tbls%base,           &
+     &    MHD_mat_tbls%fluid_q, MHD_mat_tbls%full_conduct_q,            &
      &    MHD_mat_tbls%linear, MHD_mat_tbls%fluid_l,                    &
-     &    FEM_elens, ifld_diff, diff_coefs, fem_wk,                     &
-     &    MHD1_matrices%Pmat_MG_DJDS(0), MHD1_matrices%Fmat_MG_DJDS(0))
-!
-!   Diffusion matrix
-!
-      if (iflag_scheme .eq. id_Crank_nicolson) then
-        if (iflag_debug.eq.1) write(*,*) 'int_vol_crank_mat_lump'
-        call int_vol_crank_mat_lump                                     &
-     &     (mesh%node, MHD_mesh%fluid, MHD_mesh%conduct, mhd_fem_wk)
-        if (iflag_debug.eq.1) write(*,*) 'int_MHD_crank_matrices'
-        call int_MHD_crank_matrices(mesh, ak_MHD, jac_3d_q, rhs_tbl,    &
-     &      MHD_mat_tbls%base, MHD_mat_tbls%fluid_q,                    &
-     &      MHD_mat_tbls%full_conduct_q, FEM_elens,                     &
-     &      ifld_diff, diff_coefs, fem_wk,                              &
-     &      MHD1_matrices%Vmat_MG_DJDS(0),                              &
-     &      MHD1_matrices%Bmat_MG_DJDS(0),                              &
-     &      MHD1_matrices%Tmat_MG_DJDS(0),                              &
-     &      MHD1_matrices%Cmat_MG_DJDS(0))
-      else if (iflag_scheme .eq. id_Crank_nicolson_cmass) then
-        call int_vol_crank_mat_consist                                  &
-     &     (mesh%ele, jac_3d_q, rhs_tbl, MHD_mat_tbls, fem_wk)
-        call int_MHD_crank_matrices(mesh, ak_MHD, jac_3d_q, rhs_tbl,    &
-     &      MHD_mat_tbls%base, MHD_mat_tbls%fluid_q,                    &
-     &      MHD_mat_tbls%full_conduct_q, FEM_elens,                     &
-     &      ifld_diff, diff_coefs, fem_wk,                              &
-     &      MHD1_matrices%Vmat_MG_DJDS(0),                              &
-     &      MHD1_matrices%Bmat_MG_DJDS(0),                              &
-     &      MHD1_matrices%Tmat_MG_DJDS(0),                              &
-     &      MHD1_matrices%Cmat_MG_DJDS(0))
-      end if
-!
-!     set boundary conditions
-!
-      if (iflag_debug.eq.1) write(*,*) 'set_aiccg_bc_phys'
-      call set_aiccg_bc_phys(intg_point_t_evo,                          &
-     &    mesh%ele, ele_mesh%surf, group%surf_grp, jac_sf_grp_q,        &
-     &    rhs_tbl, MHD_mat_tbls%fluid_q, nod_bcs, surf_bcs,             &
-     &    MHD1_matrices%MG_DJDS_table(0),                               &
-     &    MHD1_matrices%MG_DJDS_fluid(0),                               &
-     &    MHD1_matrices%MG_DJDS_linear(0),                              &
-     &    MHD1_matrices%MG_DJDS_lin_fl(0),                              &
-     &    ak_MHD%ak_d_velo, surf_wk, fem_wk,                            &
+     &    mhd_fem_wk%mlump_fl, mhd_fem_wk%mlump_cd, surf_wk, fem_wk,    &
      &    MHD1_matrices%Vmat_MG_DJDS(0), MHD1_matrices%Bmat_MG_DJDS(0), &
      &    MHD1_matrices%Tmat_MG_DJDS(0), MHD1_matrices%Cmat_MG_DJDS(0), &
      &    MHD1_matrices%Pmat_MG_DJDS(0), MHD1_matrices%Fmat_MG_DJDS(0))
