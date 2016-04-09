@@ -3,18 +3,18 @@
 !
 !     Written by H. Matsui on June, 2005
 !
-!!      subroutine set_data_4_const_matrices                            &
-!!     &         (mesh, MHD_mesh, rhs_tbl, MHD_mat_tbls)
+!!      subroutine set_data_4_const_matrices(mesh, MHD_mesh, rhs_tbl,   &
+!!     &          MHD_mat_tbls, MHD_matrices, s_package)
 !!      subroutine update_matrices                                      &
 !!     &         (mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,   &
 !!     &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,  &
 !!     &          ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,         &
-!!     &          surf_wk, mhd_fem_wk, fem_wk)
+!!     &          surf_wk, mhd_fem_wk, fem_wk, MHD_matrices, s_package)
 !!      subroutine set_aiccg_matrices                                   &
 !!     &         (mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,   &
 !!     &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,  &
 !!     &          ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,         &
-!!     &          surf_wk, mhd_fem_wk, fem_wk)
+!!     &          surf_wk, mhd_fem_wk, fem_wk, MHD_matrices, s_package)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(element_geometry), intent(in) :: ele_mesh
@@ -32,6 +32,8 @@
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_surface_element_mat), intent(in) :: surf_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(MHD_MG_matrices), intent(inout) :: MHD_matrices
+!!        type(MHD_matrices_pack), intent(inout) :: s_package
 !
       module construct_matrices
 !
@@ -56,6 +58,8 @@
       use t_sorted_node_MHD
       use t_bc_data_MHD
       use t_MHD_boundary_data
+      use t_solver_djds_MHD
+      use t_MHD_matrices_pack
 !
       implicit none
 !
@@ -65,12 +69,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_data_4_const_matrices                              &
-     &         (mesh, MHD_mesh, rhs_tbl, MHD_mat_tbls)
+      subroutine set_data_4_const_matrices(mesh, MHD_mesh, rhs_tbl,     &
+     &          MHD_mat_tbls, MHD_matrices, s_package)
 !
       use calypso_mpi
       use m_control_parameter
-      use m_solver_djds_MHD
+      use m_type_AMG_data
 !
       use t_solver_djds
 !
@@ -82,16 +86,20 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
       type(tables_MHD_mat_const), intent(inout) :: MHD_mat_tbls
+      type(MHD_MG_matrices), intent(inout) :: MHD_matrices
+      type(MHD_matrices_pack), intent(inout) :: s_package
 !
 !
       call s_set_MHD_idx_4_mat_type(mesh, MHD_mesh, rhs_tbl,            &
-     &    MHD1_matrices%MG_DJDS_table(0),                               &
-     &    MHD1_matrices%MG_DJDS_fluid(0),                               &
-     &    MHD1_matrices%MG_DJDS_linear(0),                              &
-     &    MHD1_matrices%MG_DJDS_lin_fl(0),                              &
+     &    MHD_matrices%MG_DJDS_table(0), MHD_matrices%MG_DJDS_fluid(0), &
+     &    MHD_matrices%MG_DJDS_linear(0),                               &
+     &    MHD_matrices%MG_DJDS_lin_fl(0),                               &
      &    MHD_mat_tbls%base, MHD_mat_tbls%fluid_q,                      &
      &    MHD_mat_tbls%full_conduct_q, MHD_mat_tbls%linear,             &
      &    MHD_mat_tbls%fluid_l)
+!
+      call link_MG_DJDS_MHD_structures                                  &
+     &   (num_MG_level, MHD_matrices, s_package)
 !
       end subroutine set_data_4_const_matrices
 !
@@ -101,7 +109,7 @@
      &         (mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,     &
      &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,    &
      &          ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,           &
-     &          surf_wk, mhd_fem_wk, fem_wk)
+     &          surf_wk, mhd_fem_wk, fem_wk, MHD_matrices, s_package)
 !
       use m_control_parameter
       use m_t_step_parameter
@@ -124,6 +132,8 @@
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(MHD_MG_matrices), intent(inout) :: MHD_matrices
+      type(MHD_matrices_pack), intent(inout) :: s_package
 !
       integer (kind = kint) :: iflag
 !
@@ -139,10 +149,9 @@
      &     (mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,         &
      &      ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,        &
      &      ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,               &
-     &      surf_wk, mhd_fem_wk, fem_wk)
+     &      surf_wk, mhd_fem_wk, fem_wk, MHD_matrices, s_package)
         iflag_flex_step_changed = 0
       end if
-!
 !
       end subroutine update_matrices
 !
@@ -152,11 +161,10 @@
      &         (mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,     &
      &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,    &
      &          ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,           &
-     &          surf_wk, mhd_fem_wk, fem_wk)
+     &          surf_wk, mhd_fem_wk, fem_wk, MHD_matrices, s_package)
 !
       use m_control_parameter
       use m_iccg_parameter
-      use m_solver_djds_MHD
 !
       use set_aiccg_matrices_type
       use precond_djds_MHD
@@ -181,31 +189,34 @@
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(MHD_MG_matrices), intent(inout) :: MHD_matrices
+      type(MHD_matrices_pack), intent(inout) :: s_package
 !
 !
       call s_set_aiccg_matrices_type                                    &
      &   (mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,           &
      &    ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q,                     &
      &    FEM_elens, ifld_diff, diff_coefs, rhs_tbl,                    &
-     &    MHD1_matrices%MG_DJDS_table(0),                               &
-     &    MHD1_matrices%MG_DJDS_fluid(0),                               &
-     &    MHD1_matrices%MG_DJDS_linear(0),                              &
-     &    MHD1_matrices%MG_DJDS_lin_fl(0), MHD_mat_tbls%base,           &
+     &    MHD_matrices%MG_DJDS_table(0), MHD_matrices%MG_DJDS_fluid(0), &
+     &    MHD_matrices%MG_DJDS_linear(0),                               &
+     &    MHD_matrices%MG_DJDS_lin_fl(0), MHD_mat_tbls%base,            &
      &    MHD_mat_tbls%fluid_q, MHD_mat_tbls%full_conduct_q,            &
      &    MHD_mat_tbls%linear, MHD_mat_tbls%fluid_l,                    &
      &    mhd_fem_wk%mlump_fl, mhd_fem_wk%mlump_cd, surf_wk, fem_wk,    &
-     &    MHD1_matrices%Vmat_MG_DJDS(0), MHD1_matrices%Bmat_MG_DJDS(0), &
-     &    MHD1_matrices%Tmat_MG_DJDS(0), MHD1_matrices%Cmat_MG_DJDS(0), &
-     &    MHD1_matrices%Pmat_MG_DJDS(0), MHD1_matrices%Fmat_MG_DJDS(0))
-!
-      if (iflag_debug.eq.1) write(*,*) 'preconditioning'
-      call matrix_precondition(MHD1_matrices)
+     &    MHD_matrices%Vmat_MG_DJDS(0), MHD_matrices%Bmat_MG_DJDS(0),   &
+     &    MHD_matrices%Tmat_MG_DJDS(0), MHD_matrices%Cmat_MG_DJDS(0),   &
+     &    MHD_matrices%Pmat_MG_DJDS(0), MHD_matrices%Fmat_MG_DJDS(0))
 !
 !     set marrix for the Multigrid
 !
       if(cmp_no_case(method_4_solver, 'MGCG')) then
-        call const_MGCG_MHD_matrices(ifld_diff)
+        call const_MGCG_MHD_matrices(ifld_diff, MHD_matrices)
       end if
+!
+      if (iflag_debug.eq.1) write(*,*) 'preconditioning'
+      call matrix_precondition                                          &
+     &   (s_package%Vmatrix, s_package%Pmatrix, s_package%Bmatrix,      &
+     &    s_package%Fmatrix, s_package%Tmatrix, s_package%Cmatrix)
 !
       end subroutine set_aiccg_matrices
 !

@@ -11,16 +11,17 @@
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
 !!     &          rhs_tbl, FEM_elens, icomp_sgs, ifld_diff,             &
 !!     &          iphys_elediff, sgs_coefs, diff_coefs, filtering,      &
-!!     &          m_lump, ak_d_magne, wk_filter, mhd_fem_wk, fem_wk,    &
-!!     &          surf_wk, f_l, f_nl, nod_fld)
+!!     &          m_lump, Bmatrix, Fmatrix, ak_d_magne, wk_filter,      &
+!!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !!      subroutine s_cal_magnetic_field(nod_comm, node, ele, surf,      &
 !!     &          conduct, sf_grp, Bnod_bcs, Asf_bcs, Bsf_bcs, Fsf_bcs, &
 !!     &          iphys, iphys_ele, ele_fld,                            &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
 !!     &          rhs_tbl, FEM_elens, icomp_sgs, ifld_diff,             &
 !!     &          iphys_elediff, sgs_coefs, sgs_coefs_nod,              &
-!!     &          diff_coefs, filtering, m_lump, ak_d_magne, wk_filter, &
-!!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+!!     &          diff_coefs, filtering, m_lump, Bmatrix, Fmatrix,      &
+!!     &          ak_d_magne, wk_filter, mhd_fem_wk, fem_wk, surf_wk,   &
+!!     &          f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -46,6 +47,8 @@
 !!        type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
 !!        type(MHD_coefficients_type), intent(in) :: diff_coefs
 !!        type(filtering_data_type), intent(in) :: filtering
+!!        type(MHD_MG_matrix), intent(in) :: Bmatrix
+!!        type(MHD_MG_matrix), intent(in) :: Fmatrix
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -75,6 +78,7 @@
       use t_bc_data_magne
       use t_surface_bc_data
       use t_material_property
+      use t_solver_djds_MHD
 !
       implicit none
 !
@@ -93,13 +97,12 @@
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
      &          rhs_tbl, FEM_elens, icomp_sgs, ifld_diff,               &
      &          iphys_elediff, sgs_coefs, diff_coefs, filtering,        &
-     &          m_lump, ak_d_magne, wk_filter, mhd_fem_wk, fem_wk,      &
-     &          surf_wk, f_l, f_nl, nod_fld)
+     &          m_lump, Bmatrix, Fmatrix, ak_d_magne, wk_filter,        &
+     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
       use m_machine_parameter
       use m_control_parameter
       use m_physical_property
-      use m_solver_djds_MHD
 !
       use cal_vector_potential_pre
       use cal_mod_vel_potential
@@ -132,6 +135,8 @@
       type(MHD_coefficients_type), intent(in) :: sgs_coefs
       type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(filtering_data_type), intent(in) :: filtering
+      type(MHD_MG_matrix), intent(in) :: Bmatrix
+      type(MHD_MG_matrix), intent(in) :: Fmatrix
 !
       real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
 !
@@ -158,10 +163,7 @@
      &    nod_comm, node, ele, surf, conduct,                           &
      &    sf_grp, Bnod_bcs, Asf_bcs, iphys, iphys_ele, ele_fld,         &
      &    jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,                   &
-     &    sgs_coefs, diff_coefs, filtering,                             &
-     &    num_MG_level, MHD1_matrices%MG_interpolate,                   &
-     &    MHD1_matrices%MG_comm_table, MHD1_matrices%MG_DJDS_table,     &
-     &    MHD1_matrices%Bmat_MG_DJDS, MG_vector,                        &
+     &    sgs_coefs, diff_coefs, filtering, Bmatrix, MG_vector,         &
      &    wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
 !     --------------------- 
@@ -182,10 +184,8 @@
         call cal_electric_potential(ifld_diff%i_magne,                  &
      &      node, ele, surf, sf_grp, Bnod_bcs, Asf_bcs, Fsf_bcs,        &
      &      iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,           &
-     &      FEM_elens, diff_coefs, num_MG_level,                        &
-     &      MHD1_matrices%MG_interpolate, MHD1_matrices%MG_comm_table,  &
-     &      MHD1_matrices%MG_DJDS_linear, MHD1_matrices%Fmat_MG_DJDS,   &
-     &      MG_vector, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &      FEM_elens, diff_coefs, Fmatrix, MG_vector,                  &
+     &      fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_sol_m_potential', iloop
         call cal_sol_m_potential                                        &
@@ -197,11 +197,8 @@
      &      nod_comm, node, ele, surf, conduct,                         &
      &      sf_grp, Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,       &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &
-     &      FEM_elens, diff_coefs, num_MG_level,                        &
-     &      MHD1_matrices%MG_interpolate, MHD1_matrices%MG_comm_table,  &
-     &      MHD1_matrices%MG_DJDS_table, MHD1_matrices%Bmat_MG_DJDS,    &
-     &      MG_vector, m_lump, mhd_fem_wk, fem_wk, surf_wk,             &
-     &      f_l, f_nl, nod_fld)
+     &      FEM_elens, diff_coefs, m_lump, Bmatrix, MG_vector,          &
+     &      mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_rms_scalar_potential'
@@ -233,13 +230,13 @@
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
      &          rhs_tbl, FEM_elens, icomp_sgs, ifld_diff,               &
      &          iphys_elediff, sgs_coefs, sgs_coefs_nod,                &
-     &          diff_coefs, filtering, m_lump, ak_d_magne, wk_filter,   &
-     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &          diff_coefs, filtering, m_lump, Bmatrix, Fmatrix,        &
+     &          ak_d_magne, wk_filter, mhd_fem_wk, fem_wk, surf_wk,     &
+     &          f_l, f_nl, nod_fld)
 !
       use m_machine_parameter
       use m_control_parameter
       use m_physical_property
-      use m_solver_djds_MHD
 !
       use cal_magnetic_pre
       use cal_sol_pressure_MHD
@@ -274,6 +271,8 @@
       type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
       type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(filtering_data_type), intent(in) :: filtering
+      type(MHD_MG_matrix), intent(in) :: Bmatrix
+      type(MHD_MG_matrix), intent(in) :: Fmatrix
 !
       real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
 !
@@ -307,10 +306,7 @@
      &    Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,        &
      &    jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,                   &
      &    sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,              &
-     &    num_MG_level, MHD1_matrices%MG_interpolate,                   &
-     &    MHD1_matrices%MG_comm_table, MHD1_matrices%MG_DJDS_table,     &
-     &    MHD1_matrices%Bmat_MG_DJDS, MG_vector,                        &
-     &    wk_filter, mhd_fem_wk, fem_wk, surf_wk,                       &
+     &    Bmatrix, MG_vector, wk_filter, mhd_fem_wk, fem_wk, surf_wk,   &
      &    f_l, f_nl, nod_fld)
 !
 !----  set magnetic field in insulate layer
@@ -324,10 +320,8 @@
         call cal_mag_potential(ifld_diff%i_magne,                       &
      &      node, ele, surf, sf_grp, Bnod_bcs, Bsf_bcs, Fsf_bcs,        &
      &      iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,           &
-     &      FEM_elens, diff_coefs, num_MG_level,                        &
-     &      MHD1_matrices%MG_interpolate, MHD1_matrices%MG_comm_table,  &
-     &      MHD1_matrices%MG_DJDS_linear, MHD1_matrices%Fmat_MG_DJDS,   &
-     &      MG_vector, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &      FEM_elens, diff_coefs, Fmatrix, MG_vector,                  &
+     &      fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
         call cal_sol_m_potential                                        &
      &     (node%numnod, node%istack_internal_smp, nod_fld%ntot_phys,   &
@@ -339,11 +333,8 @@
      &      nod_comm, node, ele, surf, conduct, sf_grp,                 &
      &      Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,               &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &
-     &      FEM_elens, diff_coefs, num_MG_level,                        &
-     &      MHD1_matrices%MG_interpolate, MHD1_matrices%MG_comm_table,  &
-     &      MHD1_matrices%MG_DJDS_table, MHD1_matrices%Bmat_MG_DJDS,    &
-     &      MG_vector, m_lump, mhd_fem_wk, fem_wk, surf_wk,             &
-     &      f_l, f_nl, nod_fld)
+     &      FEM_elens, diff_coefs, m_lump, Bmatrix, MG_vector,          &
+     &      mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
         call cal_rms_scalar_potential(iloop, ele%istack_ele_smp,        &
      &      iphys%i_mag_p, i_rms%i_mag_p, j_ave%i_mag_p,                &

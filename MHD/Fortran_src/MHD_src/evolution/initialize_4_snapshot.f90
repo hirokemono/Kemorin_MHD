@@ -38,7 +38,6 @@
       use m_work_4_dynamic_model
       use m_boundary_condition_IDs
       use m_array_for_send_recv
-      use m_solver_djds_MHD
       use m_element_id_4_node
       use m_finite_element_matrix
       use m_surf_data_list
@@ -179,11 +178,6 @@
      &   (mesh%node%numnod, mesh%ele%numele, layer_tbl,                 &
      &    ifld_sgs, icomp_sgs, ifld_diff, icomp_diff,                   &
      &    wk_sgs1, wk_diff1, sgs_coefs, sgs_coefs_nod, diff_coefs)
-!
-      if (iflag_debug.gt.0)  write(*,*)' make comm. table for fluid'
-      call s_const_comm_table_fluid                                     &
-     &   (nprocs, MHD_mesh%fluid%istack_ele_fld_smp,                    &
-     &    mesh%node, mesh%ele, mesh%nod_comm, DJDS_comm_fl)
 !
       call deallocate_surface_geom_type(ele_mesh%surf)
       call deallocate_edge_geom_type(ele_mesh%edge)

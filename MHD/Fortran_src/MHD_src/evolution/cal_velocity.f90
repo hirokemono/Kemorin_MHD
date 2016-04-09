@@ -11,7 +11,7 @@
 !!     &         ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,&
 !!     &         rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs, ifld_diff,    &
 !!     &         iphys_elediff, sgs_coefs_nod, diff_coefs, filtering,   &
-!!     &         layer_tbl, wk_lsq, wk_sgs, wk_filter,                  &
+!!     &         layer_tbl, Vmatrix, Pmatrix, wk_lsq, wk_sgs, wk_filter,&
 !!     &         mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                &
 !!     &         nod_fld, ele_fld, sgs_coefs)
 !!        type(communication_table), intent(in) :: nod_comm
@@ -39,6 +39,8 @@
 !!        type(MHD_coefficients_type), intent(in) :: diff_coefs
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(layering_tbl), intent(in) :: layer_tbl
+!!        type(MHD_MG_matrix), intent(in) :: Vmatrix
+!!        type(MHD_MG_matrix), intent(in) :: Pmatrix
 !!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!        type(filtering_work_type), intent(inout) :: wk_filter
@@ -76,6 +78,7 @@
       use t_material_property
       use t_ele_info_4_dynamic
       use t_work_4_dynamic_model
+      use t_solver_djds_MHD
 !
       implicit none
 !
@@ -94,7 +97,7 @@
      &         ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,  &
      &         rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs, ifld_diff,      &
      &         iphys_elediff, sgs_coefs_nod, diff_coefs, filtering,     &
-     &         layer_tbl, wk_lsq, wk_sgs, wk_filter,                    &
+     &         layer_tbl, Vmatrix, Pmatrix, wk_lsq, wk_sgs, wk_filter,  &
      &         mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                  &
      &         nod_fld, ele_fld, sgs_coefs)
 !
@@ -102,7 +105,6 @@
       use m_machine_parameter
       use m_physical_property
       use m_type_AMG_data
-      use m_solver_djds_MHD
 !
       use cal_velocity_pre
       use cal_mod_vel_potential
@@ -138,6 +140,8 @@
       type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(filtering_data_type), intent(in) :: filtering
       type(layering_tbl), intent(in) :: layer_tbl
+      type(MHD_MG_matrix), intent(in) :: Vmatrix
+      type(MHD_MG_matrix), intent(in) :: Pmatrix
 !
       type(dynamis_least_suare_data), intent(inout) :: wk_lsq
       type(dynamic_model_data), intent(inout) :: wk_sgs
@@ -186,9 +190,7 @@
      &    jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,         &
      &    ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,                &
      &    sgs_coefs_nod, diff_coefs, filtering, layer_tbl,              &
-     &    num_MG_level, MHD1_matrices%MG_interpolate,                   &
-     &    MHD1_matrices%MG_comm_fluid, MHD1_matrices%MG_DJDS_fluid,     &
-     &    MHD1_matrices%Vmat_MG_DJDS, MG_vector, wk_lsq, wk_sgs,        &
+     &    Vmatrix, MG_vector, wk_lsq, wk_sgs,                           &
      &    wk_filter, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,            &
      &    nod_fld, ele_fld, sgs_coefs)
 !
@@ -204,10 +206,8 @@
         call cal_mod_potential(ifld_diff%i_velo,                        &
      &      node, ele, surf, fluid, sf_grp, Vnod_bcs, Vsf_bcs, Psf_bcs, &
      &      iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,           &
-     &      FEM_elens, diff_coefs, num_MG_level,                        &
-     &      MHD1_matrices%MG_interpolate, MHD1_matrices%MG_comm_fluid,  &
-     &      MHD1_matrices%MG_DJDS_lin_fl, MHD1_matrices%Pmat_MG_DJDS,   &
-     &      MG_vector, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &      FEM_elens, diff_coefs, Pmatrix, MG_vector, fem_wk, surf_wk, &
+     &      f_l, f_nl, nod_fld)
 !
         call cal_sol_pressure                                           &
      &     (node%numnod, node%istack_internal_smp, nod_fld%ntot_phys,   &
@@ -217,10 +217,8 @@
      &      sf_grp, sf_grp_nod, Vnod_bcs, Vsf_bcs, Psf_bcs,             &
      &      iphys, iphys_ele, ele_fld, ak_MHD,                          &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &
-     &      FEM_elens, ifld_diff, diff_coefs, num_MG_level,             &
-     &      MHD1_matrices%MG_interpolate, MHD1_matrices%MG_comm_fluid,  &
-     &      MHD1_matrices%MG_DJDS_fluid, MHD1_matrices%Vmat_MG_DJDS,    &
-     &      MG_vector, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &      FEM_elens, ifld_diff, diff_coefs, Vmatrix, MG_vector,       &
+     &      mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
 !
         call cal_rms_scalar_potential(iloop, fluid%istack_ele_fld_smp,  &

@@ -3,7 +3,11 @@
 !
 !     Written by H. Matsui on Apr., 2008
 !
-!      subroutine s_write_djds_mat_MHD
+!!      subroutine s_write_djds_mat_MHD                                 &
+!!     &         (Vmatrix, Pmatrix, Bmatrix, Fmatrix, Tmatrix, Cmatrix)
+!!        type(MHD_MG_matrix), intent(in) :: Vmatrix, Bmatrix
+!!        type(MHD_MG_matrix), intent(in) :: Pmatrix, Fmatrix
+!!        type(MHD_MG_matrix), intent(in) :: Tmatrix, Cmatrix
 !
 !      subroutine write_djds_mat_velo
 !      subroutine write_djds_mat_press
@@ -44,48 +48,53 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_write_djds_mat_MHD
+      subroutine s_write_djds_mat_MHD                                   &
+     &         (Vmatrix, Pmatrix, Bmatrix, Fmatrix, Tmatrix, Cmatrix)
 !
       use m_control_parameter
-      use m_solver_djds_MHD
+      use t_solver_djds_MHD
+!
+      type(MHD_MG_matrix), intent(in) :: Vmatrix, Bmatrix
+      type(MHD_MG_matrix), intent(in) :: Pmatrix, Fmatrix
+      type(MHD_MG_matrix), intent(in) :: Tmatrix, Cmatrix
 !
 !
       if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
         call write_MHD_djds_mat11(fhead_press_mat,                      &
-     &       num_MG_level, MHD1_matrices%MG_comm_fluid,                 &
-     &       MHD1_matrices%MG_DJDS_lin_fl, MHD1_matrices%Pmat_MG_DJDS)
+     &       Pmatrix%nlevel_MG, Pmatrix%MG_comm_table,                  &
+     &       Pmatrix%MG_DJDS_table, Pmatrix%mat_MG_DJDS)
       end if
 !
       if ( iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
         call write_MHD_djds_mat33(fhead_velo_mat,                       &
-     &       num_MG_level, MHD1_matrices%MG_comm_fluid,                 &
-     &       MHD1_matrices%MG_DJDS_fluid, MHD1_matrices%Vmat_MG_DJDS)
+     &       Vmatrix%nlevel_MG, Vmatrix%MG_comm_table,                  &
+     &       Vmatrix%MG_DJDS_table, Vmatrix%mat_MG_DJDS)
       end if
 !
       if ( iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
         call write_MHD_djds_mat11(fhead_temp_mat,                       &
-     &       num_MG_level, MHD1_matrices%MG_comm_fluid,                 &
-     &       MHD1_matrices%MG_DJDS_fluid, MHD1_matrices%Tmat_MG_DJDS)
+     &       Tmatrix%nlevel_MG, Tmatrix%MG_comm_table,                  &
+     &       Tmatrix%MG_DJDS_table, Tmatrix%mat_MG_DJDS)
       end if
 !
       if ( iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
         call write_MHD_djds_mat11(fhead_dscalar_mat,                    &
-     &       num_MG_level, MHD1_matrices%MG_comm_fluid,                 &
-     &       MHD1_matrices%MG_DJDS_fluid, MHD1_matrices%Cmat_MG_DJDS)
+     &       Cmatrix%nlevel_MG, Cmatrix%MG_comm_table,                  &
+     &       Cmatrix%MG_DJDS_table, Cmatrix%mat_MG_DJDS)
       end if
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution                     &
      &     .or. iflag_t_evo_4_magne .gt. id_no_evolution) then
-        call write_MHD_djds_mat11(fhead_magp_mat, num_MG_level,         &
-     &       MHD1_matrices%MG_comm_table, MHD1_matrices%MG_DJDS_linear, &
-     &       MHD1_matrices%Fmat_MG_DJDS)
+        call write_MHD_djds_mat11(fhead_magp_mat, Fmatrix%nlevel_MG,    &
+     &       Fmatrix%MG_comm_table, Fmatrix%MG_DJDS_table,              &
+     &       Fmatrix%mat_MG_DJDS)
       end if
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution                     &
      &     .or. iflag_t_evo_4_magne .gt. id_no_evolution) then
-        call write_MHD_djds_mat33(fhead_magne_mat, num_MG_level,        &
-     &      MHD1_matrices%MG_comm_table, MHD1_matrices%MG_DJDS_table,   &
-     &       MHD1_matrices%Bmat_MG_DJDS)
+        call write_MHD_djds_mat33(fhead_magne_mat, Bmatrix%nlevel_MG,   &
+     &      Bmatrix%MG_comm_table, Bmatrix%MG_DJDS_table,               &
+     &      Bmatrix%mat_MG_DJDS)
       end if
 !
       end subroutine s_write_djds_mat_MHD

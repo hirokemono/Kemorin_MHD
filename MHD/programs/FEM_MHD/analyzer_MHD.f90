@@ -31,6 +31,7 @@
 !
       use input_control
       use m_3d_filter_coef_MHD
+      use m_solver_djds_MHD
 !
 !
       total_start = MPI_WTIME()
@@ -54,7 +55,7 @@
 !
       call start_eleps_time(4)
       call input_control_4_MHD(mesh1, group1, ele_mesh1,                &
-     &    filtering1, wide_filtering, wk_filter1)
+     &    filtering1, wide_filtering, wk_filter1, MHD1_matrices)
       call end_eleps_time(4)
 !
       call start_eleps_time(2)

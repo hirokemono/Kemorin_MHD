@@ -11,18 +11,16 @@
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens, &
 !!     &          ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,        &
 !!     &          sgs_coefs_nod, diff_coefs, filtering, layer_tbl,      &
-!!     &          num_MG_level, MG_interpolate, MG_comm_fluid,          &
-!!     &          MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,               &
-!!     &          wk_lsq, wk_sgs, wk_filter, mhd_fem_wk, fem_wk,        &
-!!     &          surf_wk, f_l, f_nl, nod_fld, ele_fld, sgs_coefs)
+!!     &          Vmatrix, MG_vector, wk_lsq, wk_sgs, wk_filter,        &
+!!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
+!!     &          nod_fld, ele_fld, sgs_coefs)
 !!      subroutine cal_velocity_co                                      &
 !!     &        (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,  &
 !!     &         Vnod_bcs, Vsf_bcs, Psf_bcs, iphys, iphys_ele, ele_fld, &
 !!     &         ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,&
 !!     &         rhs_tbl, FEM_elens, ifld_diff, diff_coefs,             &
-!!     &         num_MG_level, MG_interpolate, MG_comm_fluid,           &
-!!     &         MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,                &
-!!     &         mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+!!     &         Vmatrix, MG_vector, mhd_fem_wk, fem_wk, surf_wk,       &
+!!     &         f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -49,12 +47,7 @@
 !!        type(MHD_coefficients_type), intent(in) :: diff_coefs
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(layering_tbl), intent(in) :: layer_tbl
-!!        type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
-!!        type(communication_table), intent(in)                         &
-!!       &           :: MG_comm_fluid(0:num_MG_level)
-!!        type(DJDS_ordering_table), intent(in)                         &
-!!       &           :: MG_DJDS_fluid(0:num_MG_level)
-!!        type(DJDS_MATRIX), intent(in) :: Vmat_MG_DJDS(0:num_MG_level)
+!!        type(MHD_MG_matrix), intent(in) :: Vmatrix
 !!        type(vectors_4_solver), intent(inout)                         &
 !!       &           :: MG_vector(0:num_MG_level)
 !!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
@@ -94,6 +87,7 @@
       use t_filtering_data
       use t_layering_ele_list
       use t_solver_djds
+      use t_solver_djds_MHD
       use t_interpolate_table
       use t_material_property
       use t_ele_info_4_dynamic
@@ -116,10 +110,9 @@
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,   &
      &          ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,          &
      &          sgs_coefs_nod, diff_coefs, filtering, layer_tbl,        &
-     &          num_MG_level, MG_interpolate, MG_comm_fluid,            &
-     &          MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,                 &
-     &          wk_lsq, wk_sgs, wk_filter, mhd_fem_wk, fem_wk,          &
-     &          surf_wk, f_l, f_nl, nod_fld, ele_fld, sgs_coefs)
+     &          Vmatrix, MG_vector, wk_lsq, wk_sgs, wk_filter,          &
+     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                 &
+     &          nod_fld, ele_fld, sgs_coefs)
 !
       use nod_phys_send_recv
       use cal_sgs_fluxes
@@ -161,17 +154,10 @@
       type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(filtering_data_type), intent(in) :: filtering
       type(layering_tbl), intent(in) :: layer_tbl
-!
-      integer(kind = kint), intent(in) :: num_MG_level
-      type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
-      type(communication_table), intent(in)                             &
-     &           :: MG_comm_fluid(0:num_MG_level)
-      type(DJDS_ordering_table), intent(in)                             &
-     &           :: MG_DJDS_fluid(0:num_MG_level)
-      type(DJDS_MATRIX), intent(in) :: Vmat_MG_DJDS(0:num_MG_level)
+      type(MHD_MG_matrix), intent(in) :: Vmatrix
 !
       type(vectors_4_solver), intent(inout)                             &
-     &           :: MG_vector(0:num_MG_level)
+     &           :: MG_vector(0:Vmatrix%nlevel_MG)
       type(dynamis_least_suare_data), intent(inout) :: wk_lsq
       type(dynamic_model_data), intent(inout) :: wk_sgs
       type(MHD_coefficients_type), intent(inout) :: sgs_coefs
@@ -284,17 +270,15 @@
      &     (ifld_diff%i_velo, ak_MHD%ak_d_velo,                         &
      &      nod_comm, node, ele, fluid, Vnod_bcs,                       &
      &      iphys, iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,    &
-     &      diff_coefs, num_MG_level, MG_interpolate, MG_comm_fluid,    &
-     &      MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,                     &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,         &
+     &      f_l, f_nl, nod_fld)
 !
       else if (iflag_t_evo_4_velo .eq. id_Crank_nicolson_cmass) then 
         call cal_velo_pre_consist_crank(iphys%i_velo,                   &
      &      iphys%i_pre_mom, ifld_diff%i_velo, ak_MHD%ak_d_velo,        &
      &      node, ele, fluid, Vnod_bcs, jac_3d_q, rhs_tbl, FEM_elens,   &
-     &      diff_coefs, num_MG_level, MG_interpolate, MG_comm_fluid,    &
-     &      MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,                     &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,         &
+     &      f_l, f_nl, nod_fld)
       end if
 !
       call set_boundary_velo(node, Vnod_bcs, iphys%i_velo, nod_fld)
@@ -312,9 +296,8 @@
      &         Vnod_bcs, Vsf_bcs, Psf_bcs, iphys, iphys_ele, ele_fld,   &
      &         ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,  &
      &         rhs_tbl, FEM_elens, ifld_diff, diff_coefs,               &
-     &         num_MG_level, MG_interpolate, MG_comm_fluid,             &
-     &         MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,                  &
-     &         mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &         Vmatrix, MG_vector, mhd_fem_wk, fem_wk, surf_wk,         &
+     &         f_l, f_nl, nod_fld)
 !
       use nod_phys_send_recv
       use int_vol_solenoid_correct
@@ -347,17 +330,10 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_terms_address), intent(in) :: ifld_diff
       type(MHD_coefficients_type), intent(in) :: diff_coefs
-!
-      integer(kind = kint), intent(in) :: num_MG_level
-      type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
-      type(communication_table), intent(in)                             &
-     &           :: MG_comm_fluid(0:num_MG_level)
-      type(DJDS_ordering_table), intent(in)                             &
-     &           :: MG_DJDS_fluid(0:num_MG_level)
-      type(DJDS_MATRIX), intent(in) :: Vmat_MG_DJDS(0:num_MG_level)
+      type(MHD_MG_matrix), intent(in) :: Vmatrix
 !
       type(vectors_4_solver), intent(inout)                             &
-     &           :: MG_vector(0:num_MG_level)
+     &           :: MG_vector(0:Vmatrix%nlevel_MG)
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_surface_element_mat), intent(inout) :: surf_wk
@@ -392,9 +368,8 @@
      &     (iphys%i_velo, ifld_diff%i_velo, ak_MHD%ak_d_velo,           &
      &      nod_comm, node, ele, fluid, Vnod_bcs,                       &
      &      iphys_ele, ele_fld,  jac_3d_q, rhs_tbl, FEM_elens,          &
-     &      diff_coefs, num_MG_level, MG_interpolate, MG_comm_fluid,    &
-     &      MG_DJDS_fluid, Vmat_MG_DJDS, MG_vector,                     &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,         &
+     &      f_l, f_nl, nod_fld)
       else
         call cal_velocity_co_exp(iphys%i_velo, iphys%i_p_phi,           &
      &      nod_comm, node, ele, fluid, jac_3d_q, rhs_tbl,              &

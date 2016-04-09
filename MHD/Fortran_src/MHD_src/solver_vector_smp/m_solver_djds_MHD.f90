@@ -7,7 +7,8 @@
 !
 !>     DJDS ordering table for MHD dynamo model
 !!
-!
+!!      subroutine link_MG_DJDS_MHD_structures
+!!
       module m_solver_djds_MHD
 !
       use m_precision
@@ -15,30 +16,16 @@
       use t_solver_djds
       use t_vector_for_solver
       use t_solver_djds_MHD
+      use t_MHD_matrices_pack
 !
       implicit none
-!
 !
 !>        Structure of matrices for MHD dynamo simulation
       type(MHD_MG_matrices), save :: MHD1_matrices
 !
-!>        Structure of matrices for velocity integration
-      type(MHD_MG_matrix), save :: Vmatrix
+!>        Structure of matrices for all fields
+      type(MHD_matrices_pack), save :: solver_pack1
 !
-!>        Structure of matrices for pressure integration
-      type(MHD_MG_matrix), save :: Pmatrix
-!
-!>        Structure of matrices for magnetic  integration
-      type(MHD_MG_matrix), save :: Bmatrix
-!
-!>        Structure of matrices for electric potantial integration
-      type(MHD_MG_matrix), save :: Fmatrix
-!
-!>        Structure of matrices for temperature integration
-      type(MHD_MG_matrix), save :: Tmatrix
-!
-!>        Structure of matrices for composition integration
-      type(MHD_MG_matrix), save :: Cmatrix
 !
 !>      Structure for MPI communicator
       type(mpi_4_solver), save :: solver_C

@@ -46,6 +46,7 @@
       use m_ele_material_property
       use m_SGS_model_coefs
       use m_work_4_dynamic_model
+      use m_solver_djds_MHD
 !
       use initialization_4_MHD
       use lead_physical_values
@@ -92,14 +93,14 @@
 !   construct matrix for Poisson and diffusion terms
 !
       if (iflag_debug.eq.1) write(*,*) 'set_data_4_const_matrices'
-      call set_data_4_const_matrices                                    &
-     &   (mesh1, MHD_mesh1, rhs_tbl1, MHD1_mat_tbls)
+      call set_data_4_const_matrices(mesh1, MHD_mesh1, rhs_tbl1,        &
+     &    MHD1_mat_tbls, MHD1_matrices, solver_pack1)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
       call set_aiccg_matrices                                           &
      &   (mesh1, group1, ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,       &
      &    ak_MHD, jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, FEM1_elen,    &
      &    ifld_diff, diff_coefs, rhs_tbl1, MHD1_mat_tbls,               &
-     &    surf1_wk, mhd_fem1_wk, fem1_wk)
+     &    surf1_wk, mhd_fem1_wk, fem1_wk, MHD1_matrices, solver_pack1)
 !
 !   time evolution loop start!
 !
@@ -171,6 +172,7 @@
       use m_bc_data_velo
       use m_ele_material_property
       use m_SGS_model_coefs
+      use m_solver_djds_MHD
 !
       use construct_matrices
       use lead_physical_values
@@ -207,14 +209,14 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'fields_evolution'
       call fields_evolution(mesh1, group1, ele_mesh1, MHD_mesh1,        &
-     &    nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,                  &
-     &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, jac1_sf_grp_2d_l,     &
-     &    rhs_tbl1, FEM1_elen, ifld_sgs, icomp_sgs, ifld_diff,          &
-     &    icomp_diff, iphys_elediff, sgs_coefs_nod,                     &
-     &    filtering1, wide_filtering, layer_tbl1, m1_lump,              &
-     &    wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,              &
-     &    mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,                  &
-     &    nod_fld1, fld_ele1, sgs_coefs, diff_coefs)
+     &   nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,                   &
+     &   jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, jac1_sf_grp_2d_l,      &
+     &   rhs_tbl1, FEM1_elen, ifld_sgs, icomp_sgs, ifld_diff,           &
+     &   icomp_diff, iphys_elediff, sgs_coefs_nod,                      &
+     &   filtering1, wide_filtering, layer_tbl1, m1_lump, solver_pack1, &
+     &   wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,               &
+     &   mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,                   &
+     &   nod_fld1, fld_ele1, sgs_coefs, diff_coefs)
 !
 !     ----- Evaluate model coefficients
 !
@@ -334,10 +336,10 @@
       if ( retval .ne. 0 ) then
         if (iflag_debug.eq.1) write(*,*) 'update_matrices'
         call update_matrices                                            &
-     &     (mesh1, group1, ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,     &
-     &      ak_MHD, jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, FEM1_elen,  &
-     &      ifld_diff, diff_coefs, rhs_tbl1, MHD1_mat_tbls,             &
-     &      surf1_wk, mhd_fem1_wk, fem1_wk)
+     &    (mesh1, group1, ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,      &
+     &     ak_MHD, jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, FEM1_elen,   &
+     &     ifld_diff, diff_coefs, rhs_tbl1, MHD1_mat_tbls,              &
+     &     surf1_wk, mhd_fem1_wk, fem1_wk, MHD1_matrices, solver_pack1)
       end if
 !
       end subroutine FEM_analyze_MHD

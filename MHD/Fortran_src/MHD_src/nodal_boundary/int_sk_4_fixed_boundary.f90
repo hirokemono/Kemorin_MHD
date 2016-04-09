@@ -13,12 +13,9 @@
 !!     &          node, ele, nod_fld, jac_3d_l, rhs_tbl, FEM_elens,     &
 !!     &          diff_coefs, nod_bc_fins, fem_wk, f_l)
 !!
-!!      subroutine int_sk_4_fixed_temp(i_temp, iak_diff_t, node, ele,   &
+!!      subroutine int_sk_fixed_temp(iflag_commute, i_temp, iak_diff_t, &
 !!     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,       &
-!!     &          diff_coefs, nod_bc_t, ak_d, fem_wk, f_l)
-!!      subroutine int_sk_4_fixed_part_temp(i_par_temp, iak_diff_t,     &
-!!     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,       &
-!!     &          diff_coefs, nod_bc_t, ak_d, fem_wk, f_l)
+!!     &          diff_coefs, nod_bc_t, ak_d, coef_imp, fem_wk, f_l)
 !!      subroutine int_sk_4_fixed_velo(i_velo, iak_diff_v, node, ele,   &
 !!     &          nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,      &
 !!     &          nod_bc_v, nod_bc_rot, ak_d, fem_wk, f_l)
@@ -26,9 +23,6 @@
 !!     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,       &
 !!     &          diff_coefs, nod_bc, ak_d, coef_imp, iak_diff,         &
 !!     &          fem_wk, f_l)
-!!      subroutine int_sk_4_fixed_composition(i_light, iak_diff_c,      &
-!!     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,       &
-!!     &          diff_coefs, nod_bc_c, ak_d, fem_wk, f_l)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_data), intent(in) :: nod_fld
@@ -205,13 +199,14 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine int_sk_4_fixed_temp(i_temp, iak_diff_t,                &
+      subroutine int_sk_fixed_temp(iflag_commute, i_temp, iak_diff_t,   &
      &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,         &
-     &          diff_coefs, nod_bc_t, ak_d, fem_wk, f_l)
+     &          diff_coefs, nod_bc_t, ak_d, coef_imp, fem_wk, f_l)
 !
       use int_vol_fixed_field_ele
       use int_vol_fixed_fld_sgs_ele
 !
+      integer(kind = kint), intent(in) :: iflag_commute
       integer(kind = kint), intent(in) :: i_temp, iak_diff_t
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -222,118 +217,30 @@
       type(MHD_coefficients_type), intent(in) :: diff_coefs
       type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_t
 !
+      real(kind = kreal), intent(in) :: coef_imp
       real(kind = kreal), intent(in) :: ak_d(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
 !
 !
-      if (iflag_commute_temp .eq. id_SGS_commute_ON) then
+      if (iflag_commute .eq. id_SGS_commute_ON) then
         call int_vol_fixed_sgs_scalar_surf(node, ele, nod_fld,          &
      &      jac_3d, rhs_tbl, FEM_elens, intg_point_t_evo,               &
      &      nod_bc_t%ibc_end, nod_bc_t%num_idx_ibc,                     &
      &      nod_bc_t%ele_bc_id, nod_bc_t%ibc_stack_smp,                 &
      &      nod_bc_t%ibc_shape, ifilter_final, i_temp,                  &
      &      diff_coefs%num_field, iak_diff_t, diff_coefs%ak,            &
-     &      ak_d, coef_imp_t, fem_wk, f_l)
+     &      ak_d, coef_imp, fem_wk, f_l)
       else
         call int_vol_fixed_scalar_surf(node, ele, nod_fld,              &
      &      jac_3d, rhs_tbl, intg_point_t_evo,                          &
      &      nod_bc_t%ibc_end, nod_bc_t%num_idx_ibc,                     &
      &      nod_bc_t%ele_bc_id, nod_bc_t%ibc_stack_smp,                 &
-     &      nod_bc_t%ibc_shape, i_temp, ak_d,                           &
-     &      coef_imp_t, fem_wk, f_l)
+     &      nod_bc_t%ibc_shape, i_temp, ak_d, coef_imp, fem_wk, f_l)
       end if
 !
-      end subroutine int_sk_4_fixed_temp
-!
-! ----------------------------------------------------------------------
-!
-      subroutine int_sk_4_fixed_part_temp(i_par_temp, iak_diff_t,       &
-     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,         &
-     &          diff_coefs, nod_bc_t, ak_d, fem_wk, f_l)
-!
-      use int_vol_fixed_field_ele
-      use int_vol_fixed_fld_sgs_ele
-!
-      integer(kind = kint), intent(in) :: i_par_temp, iak_diff_t
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(phys_data), intent(in) :: nod_fld
-      type(jacobians_3d), intent(in) :: jac_3d
-      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
-      type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_t
-!
-      real(kind = kreal), intent(in) :: ak_d(ele%numele)
-!
-      type(work_finite_element_mat), intent(inout) :: fem_wk
-      type(finite_ele_mat_node), intent(inout) :: f_l
-!
-!
-      if (iflag_commute_temp .eq. id_SGS_commute_ON) then
-        call int_vol_fixed_sgs_scalar_surf(node, ele, nod_fld,          &
-     &      jac_3d, rhs_tbl, FEM_elens, intg_point_t_evo,               &
-     &      nod_bc_t%ibc_end, nod_bc_t%num_idx_ibc,                     &
-     &      nod_bc_t%ele_bc_id, nod_bc_t%ibc_stack_smp,                 &
-     &      nod_bc_t%ibc_shape, ifilter_final, i_par_temp,              &
-     &      diff_coefs%num_field, iak_diff_t, diff_coefs%ak,            &
-     &      ak_d, coef_imp_t, fem_wk, f_l)
-      else
-        call int_vol_fixed_scalar_surf(node, ele, nod_fld,              &
-     &      jac_3d, rhs_tbl, intg_point_t_evo,                          &
-     &      nod_bc_t%ibc_end, nod_bc_t%num_idx_ibc,                     &
-     &      nod_bc_t%ele_bc_id, nod_bc_t%ibc_stack_smp,                 &
-     &      nod_bc_t%ibc_shape, i_par_temp, ak_d,                       &
-     &      coef_imp_t, fem_wk, f_l)
-      end if
-!
-      end subroutine int_sk_4_fixed_part_temp
-!
-! ----------------------------------------------------------------------
-!
-      subroutine int_sk_4_fixed_composition(i_light, iak_diff_c,        &
-     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,         &
-     &          diff_coefs, nod_bc_c, ak_d, fem_wk, f_l)
-!
-      use int_vol_fixed_field_ele
-      use int_vol_fixed_fld_sgs_ele
-!
-      integer(kind = kint), intent(in) :: i_light, iak_diff_c
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(phys_data), intent(in) :: nod_fld
-      type(jacobians_3d), intent(in) :: jac_3d
-      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
-      type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_c
-!
-      real(kind = kreal), intent(in) :: ak_d(ele%numele)
-!
-      type(work_finite_element_mat), intent(inout) :: fem_wk
-      type(finite_ele_mat_node), intent(inout) :: f_l
-!
-!
-      if (iflag_commute_composit .eq. id_SGS_commute_ON) then
-        call int_vol_fixed_sgs_scalar_surf(node, ele, nod_fld,          &
-     &      jac_3d, rhs_tbl, FEM_elens, intg_point_t_evo,               &
-     &      nod_bc_c%ibc_end, nod_bc_c%num_idx_ibc,                     &
-     &      nod_bc_c%ele_bc_id, nod_bc_c%ibc_stack_smp,                 &
-     &      nod_bc_c%ibc_shape,  ifilter_final, i_light,                &
-     &      diff_coefs%num_field, iak_diff_c, diff_coefs%ak,            &
-     &      ak_d, coef_imp_c, fem_wk, f_l)
-      else
-        call int_vol_fixed_scalar_surf(node, ele, nod_fld,              &
-     &      jac_3d, rhs_tbl, intg_point_t_evo,                          &
-     &      nod_bc_c%ibc_end, nod_bc_c%num_idx_ibc,                     &
-     &      nod_bc_c%ele_bc_id, nod_bc_c%ibc_stack_smp,                 &
-     &      nod_bc_c%ibc_shape, i_light, ak_d,                          &
-     &      coef_imp_c, fem_wk, f_l)
-      end if
-!
-       end subroutine int_sk_4_fixed_composition
+      end subroutine int_sk_fixed_temp
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

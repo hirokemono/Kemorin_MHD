@@ -10,7 +10,7 @@
 !!
 !!@verbatim
 !!      subroutine input_control_4_MHD(mesh, group, ele_mesh,           &
-!!     &          filtering, wide_filtering, wk_filter)
+!!     &          filtering, wide_filtering, wk_filter, MHD_matrices)
 !!      subroutine input_control_4_snapshot(mesh, group, ele_mesh,      &
 !!     &         (mesh, group, filtering, wide_filtering, wk_filter)
 !!        type(mesh_geometry), intent(inout) :: mesh
@@ -19,6 +19,7 @@
 !!        type(filtering_data_type), intent(inout) :: filtering
 !!        type(filtering_data_type), intent(inout) :: wide_filtering
 !!        type(filtering_work_type), intent(inout) :: wk_filter
+!!        type(MHD_MG_matrices), intent(inout) :: MHD_matrices
 !!@endverbatim
 !
 !
@@ -31,6 +32,7 @@
 !
       use t_mesh_data
       use t_filtering_data
+      use t_solver_djds_MHD
 !
       implicit none
 !
@@ -43,10 +45,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine input_control_4_MHD(mesh, group, ele_mesh,             &
-     &          filtering, wide_filtering, wk_filter)
+     &          filtering, wide_filtering, wk_filter, MHD_matrices)
 !
       use m_ctl_data_fem_MHD
-      use m_solver_djds_MHD
       use m_iccg_parameter
       use m_flags_4_solvers
       use set_control_FEM_MHD
@@ -61,6 +62,7 @@
       type(filtering_data_type), intent(inout) :: filtering
       type(filtering_data_type), intent(inout) :: wide_filtering
       type(filtering_work_type), intent(inout) :: wk_filter
+      type(MHD_MG_matrices), intent(inout) :: MHD_matrices
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_MHD'
@@ -76,11 +78,12 @@
      &   (mesh, group, filtering, wide_filtering, wk_filter)
 !
       if(cmp_no_case(method_4_solver, cflag_mgcg)) then
-        call alloc_MHD_MG_DJDS_mat(num_MG_level, MHD1_matrices)
+        call alloc_MHD_MG_DJDS_mat(num_MG_level, MHD_matrices)
         call input_MG_mesh
-        call input_MG_itp_tables(MHD1_matrices%MG_interpolate)
+        call input_MG_itp_tables(MHD_matrices%MG_interpolate)
       else
-        call alloc_MHD_MG_DJDS_mat(izero, MHD1_matrices)
+        num_MG_level = 0
+        call alloc_MHD_MG_DJDS_mat(num_MG_level, MHD_matrices)
       end if
 !
       end subroutine input_control_4_MHD

@@ -41,7 +41,6 @@
       use m_work_4_dynamic_model
       use m_boundary_condition_IDs
       use m_flags_4_solvers
-      use m_solver_djds_MHD
       use m_array_for_send_recv
       use m_solver_djds_MHD
       use m_3d_filter_coef_MHD
@@ -286,7 +285,7 @@
 !
       if(solver_iflag(method_4_solver) .eq. iflag_mgcg) then
         call s_initialize_4_MHD_AMG                                     &
-     &     (ifld_diff, diff_coefs, mesh%node, mesh%ele)
+     &     (ifld_diff, diff_coefs, mesh%node, mesh%ele, MHD1_matrices)
       end if
 !
 !     --------------------- 

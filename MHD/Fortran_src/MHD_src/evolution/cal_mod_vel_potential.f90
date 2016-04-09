@@ -9,20 +9,17 @@
 !!     &        (iak_diff_v, node, ele, surf, fluid, sf_grp,            &
 !!     &         Vnod_bcs, Vsf_bcs, Psf_bcs, iphys,                     &
 !!     &         jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl, FEM_elens,  &
-!!     &         diff_coefs, num_MG_level, MG_interpolate,              &
-!!     &         MG_comm_fluid, MG_DJDS_lin_fl, Pmat_MG_DJDS, MG_vector,&
-!!     &         fem_wk, surf_wk, f_l, f_nl, nod_fld)
+!!     &         diff_coefs, Pmatrix, MG_vector, fem_wk, surf_wk,       &
+!!     &         f_l, f_nl, nod_fld)
 !!      subroutine cal_electric_potential(iak_diff_b,                   &
 !!     &         node, ele, surf, sf_grp, Bnod_bcs, Asf_bcs, Fsf_bcs,   &
 !!     &         iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,      &
-!!     &         FEM_elens, diff_coefs, num_MG_level, MG_interpolate,   &
-!!     &         MG_comm_table, MG_DJDS_linear, Fmat_MG_DJDS, MG_vector,&
+!!     &         FEM_elens, diff_coefs, Fmatrix, MG_vector,             &
 !!     &         fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_mag_potential(iak_diff_b,                        &
 !!     &         node, ele, surf, sf_grp, Bnod_bcs, Bsf_bcs, Fsf_bcs,   &
 !!     &         iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,      &
-!!     &         FEM_elens, diff_coefs, num_MG_level, MG_interpolate,   &
-!!     &         MG_comm_table, MG_DJDS_linear, Fmat_MG_DJDS, MG_vector,&
+!!     &         FEM_elens, diff_coefs, Fmatrix, MG_vector,             &
 !!     &         fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -40,17 +37,8 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(MHD_coefficients_type), intent(in) :: diff_coefs
-!!        type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
-!!        type(communication_table), intent(in)                         &
-!!       &           :: MG_comm_fluid(0:num_MG_level)
-!!        type(communication_table), intent(in)                         &
-!!       &           :: MG_comm_table(0:num_MG_level)
-!!        type(DJDS_ordering_table), intent(in)                         &
-!!       &           :: MG_DJDS_linear(0:num_MG_level)
-!!        type(DJDS_ordering_table), intent(in)                         &
-!!       &           :: MG_DJDS_lin_fl(0:num_MG_level)
-!!        type(DJDS_MATRIX), intent(in) :: Pmat_MG_DJDS(0:num_MG_level)
-!!        type(DJDS_MATRIX), intent(in) :: Fmat_MG_DJDS(0:num_MG_level)
+!!        type(MHD_MG_matrix), intent(in) :: Pmatrix
+!!        type(MHD_MG_matrix), intent(in) :: Fmatrix
 !!        type(vectors_4_solver), intent(inout)                         &
 !!       &           :: MG_vector(0:num_MG_level)
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -65,7 +53,6 @@
       use m_phys_constants
 !
       use m_array_for_send_recv
-      use m_solver_djds_MHD
       use m_type_AMG_data
       use m_type_AMG_data_4_MHD
 !
@@ -83,6 +70,7 @@
       use t_filter_elength
       use t_material_property
       use t_solver_djds
+      use t_solver_djds_MHD
       use t_interpolate_table
       use t_vector_for_solver
       use t_bc_data_velo
@@ -101,9 +89,8 @@
      &        (iak_diff_v, node, ele, surf, fluid, sf_grp,              &
      &         Vnod_bcs, Vsf_bcs, Psf_bcs, iphys,                       &
      &         jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl, FEM_elens,    &
-     &         diff_coefs, num_MG_level, MG_interpolate,                &
-     &         MG_comm_fluid, MG_DJDS_lin_fl, Pmat_MG_DJDS, MG_vector,  &
-     &         fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &         diff_coefs, Pmatrix, MG_vector, fem_wk, surf_wk,         &
+     &         f_l, f_nl, nod_fld)
 !
       use m_iccg_parameter
 !
@@ -133,16 +120,10 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(MHD_coefficients_type), intent(in) :: diff_coefs
 !
-      integer(kind = kint), intent(in) :: num_MG_level
-      type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
-      type(communication_table), intent(in)                             &
-     &           :: MG_comm_fluid(0:num_MG_level)
-      type(DJDS_ordering_table), intent(in)                             &
-     &           :: MG_DJDS_lin_fl(0:num_MG_level)
-      type(DJDS_MATRIX), intent(in) :: Pmat_MG_DJDS(0:num_MG_level)
+      type(MHD_MG_matrix), intent(in) :: Pmatrix
 !
       type(vectors_4_solver), intent(inout)                             &
-     &           :: MG_vector(0:num_MG_level)
+     &           :: MG_vector(0:Pmatrix%nlevel_MG)
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -192,8 +173,9 @@
 !
 !   solve Poission equation
 !
-      call solver_poisson_scalar(node, num_MG_level,                    &
-     &    MG_interpolate, MG_comm_fluid, MG_DJDS_lin_fl, Pmat_MG_DJDS,  &
+      call solver_poisson_scalar(node, Pmatrix%nlevel_MG,               &
+     &    Pmatrix%MG_interpolate,  Pmatrix%MG_comm_table,               &
+     &    Pmatrix%MG_DJDS_table, Pmatrix%mat_MG_DJDS,                   &
      &    method_4_solver, precond_4_solver, eps, itr,                  &
      &    iphys%i_p_phi, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !
@@ -207,8 +189,7 @@
       subroutine cal_electric_potential(iak_diff_b,                     &
      &         node, ele, surf, sf_grp, Bnod_bcs, Asf_bcs, Fsf_bcs,     &
      &         iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,        &
-     &         FEM_elens, diff_coefs, num_MG_level, MG_interpolate,     &
-     &         MG_comm_table, MG_DJDS_linear, Fmat_MG_DJDS, MG_vector,  &
+     &         FEM_elens, diff_coefs, Fmatrix, MG_vector,               &
      &         fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
       use m_iccg_parameter
@@ -235,17 +216,10 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(MHD_coefficients_type), intent(in) :: diff_coefs
-!
-      integer(kind = kint), intent(in) :: num_MG_level
-      type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
-      type(communication_table), intent(in)                             &
-     &           :: MG_comm_table(0:num_MG_level)
-      type(DJDS_ordering_table), intent(in)                             &
-     &           :: MG_DJDS_linear(0:num_MG_level)
-      type(DJDS_MATRIX), intent(in) :: Fmat_MG_DJDS(0:num_MG_level)
+      type(MHD_MG_matrix), intent(in) :: Fmatrix
 !
       type(vectors_4_solver), intent(inout)                             &
-     &           :: MG_vector(0:num_MG_level)
+     &           :: MG_vector(0:Fmatrix%nlevel_MG)
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -283,8 +257,9 @@
       call set_boundary_ff(node, Bnod_bcs%nod_bc_f, f_l)
 !
       if (iflag_debug .gt. 0)  write(*,*) 'cal_sol_mag_po'
-      call solver_poisson_scalar(node,  num_MG_level,                   &
-     &    MG_interpolate, MG_comm_table, MG_DJDS_linear, Fmat_MG_DJDS,  &
+      call solver_poisson_scalar(node, Fmatrix%nlevel_MG,               &
+     &    Fmatrix%MG_interpolate, Fmatrix%MG_comm_table,                &
+     &    Fmatrix%MG_DJDS_table, Fmatrix%mat_MG_DJDS,                   &
      &    method_4_solver, precond_4_solver, eps, itr,                  &
      &    iphys%i_m_phi, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !
@@ -300,8 +275,7 @@
       subroutine cal_mag_potential(iak_diff_b,                          &
      &         node, ele, surf, sf_grp, Bnod_bcs, Bsf_bcs, Fsf_bcs,     &
      &         iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,        &
-     &         FEM_elens, diff_coefs, num_MG_level, MG_interpolate,     &
-     &         MG_comm_table, MG_DJDS_linear, Fmat_MG_DJDS, MG_vector,  &
+     &         FEM_elens, diff_coefs, Fmatrix, MG_vector,               &
      &         fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
       use m_iccg_parameter
@@ -329,17 +303,10 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(MHD_coefficients_type), intent(in) :: diff_coefs
-!
-      integer(kind = kint), intent(in) :: num_MG_level
-      type(MG_itp_table), intent(in) :: MG_interpolate(num_MG_level)
-      type(communication_table), intent(in)                             &
-     &           :: MG_comm_table(0:num_MG_level)
-      type(DJDS_ordering_table), intent(in)                             &
-     &           :: MG_DJDS_linear(0:num_MG_level)
-      type(DJDS_MATRIX), intent(in) :: Fmat_MG_DJDS(0:num_MG_level)
+      type(MHD_MG_matrix), intent(in) :: Fmatrix
 !
       type(vectors_4_solver), intent(inout)                             &
-     &           :: MG_vector(0:num_MG_level)
+     &           :: MG_vector(0:Fmatrix%nlevel_MG)
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -377,8 +344,9 @@
 !
       call set_boundary_ff(node, Bnod_bcs%nod_bc_f, f_l)
 !
-      call solver_poisson_scalar(node, num_MG_level,                    &
-     &    MG_interpolate, MG_comm_table, MG_DJDS_linear, Fmat_MG_DJDS,  &
+      call solver_poisson_scalar(node, Fmatrix%nlevel_MG,               &
+     &    Fmatrix%MG_interpolate, Fmatrix%MG_comm_table,                &
+     &    Fmatrix%MG_DJDS_table, Fmatrix%mat_MG_DJDS,                   &
      &    method_4_solver, precond_4_solver, eps, itr,                  &
      &    iphys%i_m_phi, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !
