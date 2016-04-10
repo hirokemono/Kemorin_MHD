@@ -31,6 +31,7 @@
       use m_control_parameter
       use m_iccg_parameter
       use m_t_step_parameter
+      use m_flexible_time_step
 !
       use m_node_phys_data
       use m_jacobians
@@ -84,6 +85,7 @@
       use const_jacobians_sf_grp
       use const_mesh_information
       use const_element_comm_tables
+      use init_check_delta_t_data
 !
       use nod_phys_send_recv
       use solver_MGCG_MHD
@@ -181,8 +183,8 @@
      &    iphys_elediff, m1_lump, mhd_fem1_wk, fem1_wk,                 &
      &    f1_l, f1_nl, label_sim)
 !
-      if ( iflag_debug.ge.1 ) write(*,*) 's_init_check_delta_t_data'
-      call s_init_check_delta_t_data(iphys)
+      if ( iflag_debug.ge.1 ) write(*,*) 'init_check_delta_t_data'
+      call s_init_check_delta_t_data(iphys, flex_data)
 !
       if (iflag_debug.eq.1) write(*,*)' set_reference_temp'
       call set_reference_temp(mesh%node%numnod,                         &

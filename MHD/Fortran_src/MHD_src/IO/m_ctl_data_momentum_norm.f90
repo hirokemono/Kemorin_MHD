@@ -3,16 +3,8 @@
 !
 !        programmed by H.Matsui on March. 2006
 !
-!      subroutine deallocate_coef_4_velocity_ctl
-!      subroutine deallocate_coef_4_press_ctl
-!      subroutine deallocate_coef_4_v_diffuse_ctl
-!      subroutine deallocate_coef_4_buoyancy_ctl
-!      subroutine deallocate_coef_4_comp_buo_ctl
-!      subroutine deallocate_coef_4_coriolis_ctl
-!      subroutine deallocate_coef_4_lorentz_ctl
-!
-!      subroutine read_momentum_ctl
-!
+!!      subroutine read_momentum_ctl
+!!
 !!   --------------------------------------------------------------------
 !! example of control block
 !!
@@ -113,63 +105,6 @@
 !
       contains
 !
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_coef_4_velocity_ctl
-!
-      call dealloc_control_array_c_r(coef_4_intertia_ctl)
-!
-      end subroutine deallocate_coef_4_velocity_ctl
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_coef_4_press_ctl
-!
-      call dealloc_control_array_c_r(coef_4_grad_p_ctl)
-!
-      end subroutine deallocate_coef_4_press_ctl
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_coef_4_v_diffuse_ctl
-!
-      call dealloc_control_array_c_r(coef_4_viscous_ctl)
-!
-      end subroutine deallocate_coef_4_v_diffuse_ctl
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_coef_4_buoyancy_ctl
-!
-      call dealloc_control_array_c_r(coef_4_termal_buo_ctl)
-!
-      end subroutine deallocate_coef_4_buoyancy_ctl
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_coef_4_comp_buo_ctl
-!
-      call dealloc_control_array_c_r(coef_4_comp_buo_ctl)
-!
-      end subroutine deallocate_coef_4_comp_buo_ctl
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_coef_4_coriolis_ctl
-!
-      call dealloc_control_array_c_r(coef_4_Coriolis_ctl)
-!
-      end subroutine deallocate_coef_4_coriolis_ctl
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_coef_4_lorentz_ctl
-!
-      call dealloc_control_array_c_r(coef_4_Loreantz_ctl)
-!
-      end subroutine deallocate_coef_4_lorentz_ctl
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine read_momentum_ctl

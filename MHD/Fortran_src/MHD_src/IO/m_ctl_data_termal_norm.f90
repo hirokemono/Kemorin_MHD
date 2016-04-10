@@ -8,10 +8,6 @@
 !>@brief  Thermal equation parameters to read
 !!
 !!@verbatim
-!!      subroutine deallocate_coef_4_termal_ctl
-!!      subroutine deallocate_coef_4_t_diffuse_ctl
-!!      subroutine deallocate_coef_4_h_source_ctl
-!!
 !!      subroutine read_thermal_ctl
 !!
 !!   --------------------------------------------------------------------
@@ -76,31 +72,6 @@
       contains
 !
 !   --------------------------------------------------------------------
-!
-      subroutine deallocate_coef_4_termal_ctl
-!
-      call dealloc_control_array_c_r(coef_4_heat_flux_ctl)
-!
-      end subroutine deallocate_coef_4_termal_ctl
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_coef_4_t_diffuse_ctl
-!
-      call dealloc_control_array_c_r(coef_4_t_diffuse_ctl)
-!
-      end subroutine deallocate_coef_4_t_diffuse_ctl
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_coef_4_h_source_ctl
-!
-      call dealloc_control_array_c_r(coef_4_heat_src_ctl)
-!
-      end subroutine deallocate_coef_4_h_source_ctl
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
 !
       subroutine read_thermal_ctl
 !

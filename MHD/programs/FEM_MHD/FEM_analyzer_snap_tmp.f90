@@ -50,7 +50,7 @@
 !
       call output_grd_file_w_org_connect(mesh1, MHD_mesh1, nod_fld1)
 !
-      call allocate_phys_range(nod_fld1%ntot_phys_viz)
+      call alloc_phys_range(nod_fld1%ntot_phys_viz, range)
 !
       end subroutine FEM_initialize_snap_tmp
 !
@@ -73,6 +73,7 @@
       use m_3d_filter_coef_MHD
       use m_layering_ele_list
       use m_bc_data_velo
+      use m_flexible_time_step
 !
       use read_udt_4_snapshot
 !
@@ -80,7 +81,6 @@
       use lead_physical_values
       use update_after_evolution
       use cal_model_coefficients
-      use check_flexible_time_step
       use chenge_step_4_dynamic
       use copy_nodal_fields
 !
@@ -205,7 +205,7 @@
 !
 !
       call finalize_output_ucd
-      call deallocate_phys_range
+      call dealloc_phys_range(range)
 !        call close_boundary_monitor(my_rank)
 !
       end subroutine FEM_finalize_snap_tmp

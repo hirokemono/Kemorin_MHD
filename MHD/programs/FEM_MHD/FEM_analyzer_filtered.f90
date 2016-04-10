@@ -42,6 +42,7 @@
       use m_work_4_dynamic_model
       use m_ucd_data
       use m_bc_data_velo
+      use m_flexible_time_step
 !
       use read_udt_4_snapshot
 !
@@ -49,7 +50,6 @@
       use lead_physical_values
       use update_after_evolution
       use cal_model_coefficients
-      use check_flexible_time_step
       use chenge_step_4_dynamic
       use copy_nodal_fields
 !

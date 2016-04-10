@@ -3,8 +3,6 @@
 !
 !        programmed by H.Matsui on March. 2006
 !
-!      subroutine deallocate_dimless_ctl
-!
 !      subroutine read_dimless_ctl
 !      subroutine read_coef_term_ctl
 !
@@ -119,15 +117,6 @@
       contains
 !
 !   --------------------------------------------------------------------
-!
-      subroutine deallocate_dimless_ctl
-!
-      call dealloc_control_array_c_r(coef_4_dimless_ctl)
-!
-      end subroutine deallocate_dimless_ctl
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
 !
       subroutine read_dimless_ctl
 !

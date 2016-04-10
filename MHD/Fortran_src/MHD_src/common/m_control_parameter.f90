@@ -9,7 +9,6 @@
 !!
 !!@verbatim
 !!      subroutine allocate_force_list
-!!      subroutine allocate_dimensionless_nums
 !!      subroutine allocate_fluid_ele_grp_name
 !!      subroutine allocate_conduct_ele_grp_name
 !!      subroutine allocate_icore_ele_grp_name
@@ -17,7 +16,6 @@
 !!      subroutine allocate_fluid_filter_groups
 !!
 !!      subroutine deallocate_force_list
-!!      subroutine deallocate_dimensionless_nums
 !!      subroutine deallocate_fluid_ele_grp_name
 !!      subroutine deallocate_conduct_ele_grp_name
 !!      subroutine deallocate_icore_ele_grp_name
@@ -36,14 +34,6 @@
       integer (kind=kint), parameter :: id_turn_OFF = 0
 !>      Turn ON flag
       integer (kind=kint), parameter :: id_turn_ON =  1
-!
-!>      Number of dimensionless numbers
-      integer (kind=kint) :: num_dimless
-!>      Name of dimensionless numbers
-      character(len=kchara), allocatable :: name_dimless(:)
-!>      Value of dimensionless numbers
-      real(kind=kreal), allocatable :: dimless(:)
-!
 !
 !>      Number of fields for time evolution
       integer (kind=kint)  :: num_field_to_evolve
@@ -125,7 +115,8 @@
 !>      Flag to check external boundary condition file
       integer (kind=kint) :: iflag_boundary_file = id_no_boundary_file
 !>      Flag to check external file for radial field
-      integer (kind=kint) :: iflag_radial_param_file = id_no_boundary_file
+      integer (kind=kint) :: iflag_radial_param_file                    &
+     &       = id_no_boundary_file
 !
 !
 !>      Thermal stratification flag
@@ -337,16 +328,6 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_dimensionless_nums
-!
-      allocate(name_dimless(num_dimless))
-      allocate(dimless(num_dimless))
-      if(num_dimless .gt. 0) dimless = 0.0d0
-!
-      end subroutine allocate_dimensionless_nums
-!
-!  ---------------------------------------------------------------------
-!
       subroutine allocate_fluid_ele_grp_name
 !
       allocate(fl_ele_grp_name(num_fl_ele_grp))
@@ -405,14 +386,6 @@
       deallocate(name_force)
 !
       end subroutine deallocate_force_list
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine deallocate_dimensionless_nums
-!
-      deallocate(name_dimless, dimless)
-!
-      end subroutine deallocate_dimensionless_nums
 !
 !  ---------------------------------------------------------------------
 !

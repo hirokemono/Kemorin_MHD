@@ -47,6 +47,7 @@
       use m_SGS_model_coefs
       use m_work_4_dynamic_model
       use m_solver_djds_MHD
+      use m_flexible_time_step
 !
       use initialization_4_MHD
       use lead_physical_values
@@ -134,10 +135,10 @@
       if (iflag_flexible_step .eq. iflag_flex_step) then
         call set_ele_rms_4_previous_step                                &
      &     (mesh1%node, mesh1%ele, MHD_mesh1%fluid,                     &
-     &      iphys, nod_fld1, jac1_3d_q, jac1_3d_l, fem1_wk)
+     &      iphys, nod_fld1, jac1_3d_q, jac1_3d_l, fem1_wk, flex_data)
         call s_check_deltat_by_prev_rms                                 &
      &     (mesh1%node, mesh1%ele, MHD_mesh1%fluid,                     &
-     &      iphys, nod_fld1, jac1_3d_q, jac1_3d_l, fem1_wk)
+     &      iphys, nod_fld1, jac1_3d_q, jac1_3d_l, fem1_wk, flex_data)
       end if
 !
 !
@@ -147,7 +148,7 @@
 !
       call output_grd_file_w_org_connect(mesh1, MHD_mesh1, nod_fld1)
 !
-      call allocate_phys_range(nod_fld1%ntot_phys_viz)
+      call alloc_phys_range(nod_fld1%ntot_phys_viz, range)
 !       call s_open_boundary_monitor(my_rank, group1%sf_grp)
       call end_eleps_time(4)
 !
@@ -173,12 +174,12 @@
       use m_ele_material_property
       use m_SGS_model_coefs
       use m_solver_djds_MHD
+      use m_flexible_time_step
 !
       use construct_matrices
       use lead_physical_values
       use update_after_evolution
       use cal_model_coefficients
-      use check_flexible_time_step
       use chenge_step_4_dynamic
       use copy_nodal_fields
 !
@@ -239,7 +240,7 @@
         if (iflag_debug.eq.1) write(*,*) 's_check_flexible_time_step'
         call s_check_flexible_time_step                                 &
      &     (mesh1%node, mesh1%ele, MHD_mesh1%fluid,                     &
-     &      iphys, nod_fld1, jac1_3d_q, jac1_3d_l, fem1_wk)
+     &      iphys, nod_fld1, jac1_3d_q, jac1_3d_l, fem1_wk, flex_data)
       end if
 !
 !     ========  Data output
@@ -352,7 +353,7 @@
 !
 !
       call finalize_output_ucd
-      call deallocate_phys_range
+      call dealloc_phys_range(range)
 !        call close_boundary_monitor(my_rank)
 !
       end subroutine FEM_finalize_MHD

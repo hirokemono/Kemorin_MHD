@@ -1,5 +1,5 @@
-!check_flexible_time_step.f90
-!     module check_flexible_time_step
+!m_flexible_time_step.f90
+!     module m_flexible_time_step
 !
 !      Written by H. Matsui on Nov., 2009
 !
@@ -14,16 +14,17 @@
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !
-      module check_flexible_time_step
+      module m_flexible_time_step
 !
       use m_precision
+      use calypso_mpi
 !
       use m_constants
       use m_machine_parameter
-      use calypso_mpi
       use m_t_step_parameter
       use m_t_int_parameter
-      use m_flex_delta_t_data
+!
+      use t_flex_delta_t_data
 !
       implicit  none
 !
@@ -34,6 +35,8 @@
      &      :: dt_check_max_name = 'maximum_dt_chack.dat'
       character(len=kchara), parameter                                  &
      &      :: dt_check_min_name = 'minimum_dt_chack.dat'
+!
+      type(flexible_steppind_data), save :: flex_data
 !
 !
       private :: dt_check_max_code, dt_check_min_code
@@ -79,7 +82,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_check_flexible_time_step(node, ele, fluid,           &
-     &          iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
+     &          iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk, flex_data)
 !
       use t_geometry_data_MHD
       use t_geometry_data
@@ -87,6 +90,7 @@
       use t_phys_address
       use t_jacobian_3d
       use t_finite_element_mat
+      use t_flex_delta_t_data
 !
       use check_deltat_by_prev_rms
 !
@@ -97,14 +101,15 @@
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(flexible_steppind_data), intent(inout) :: flex_data
 !
 !
       if( mod(istep_flex_to_max,itwo) .eq. izero) then
 !        call s_check_deltat_by_previous(node, iphys, nod_fld)
         call s_check_deltat_by_prev_rms(node, ele, fluid,               &
-     &      iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
+     &      iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk, flex_data)
 !
-        if(d_ratio_allmax .gt. min_eps_to_expand_dt) then
+        if(flex_data%d_ratio_allmax .gt. min_eps_to_expand_dt) then
           call shrink_delta_t
           iflag_flex_step_changed = 1
           return
@@ -113,7 +118,7 @@
         end if
 !
         if(istep_flex_to_max .eq. 0) then
-          if(d_ratio_allmax .lt. max_eps_to_shrink_dt) then
+          if(flex_data%d_ratio_allmax .lt. max_eps_to_shrink_dt) then
             call extend_delta_t
             iflag_flex_step_changed = 1
           end if
@@ -121,7 +126,7 @@
           if(my_rank .eq. izero) then
             call open_flex_step_monitor
             call write_rms_delta_t_check(dt_check_max_code,             &
-     &        i_step_MHD, time)
+     &        i_step_MHD, time, flex_data)
             close(dt_check_max_code)
           end if
         end if
@@ -137,7 +142,7 @@
 !
       if(my_rank .eq. izero) then
         write(*,*) 'Shrink Delta t from ', dt, ' at ', i_step_MHD,      &
-     &            'd_ratio_max', d_ratio_allmax
+     &            'd_ratio_max', flex_data%d_ratio_allmax
       end if
       if(iflag_debug .gt. izero) then
         write(*,*) 'Old temporal step is ', istep_flex_to_max,          &
@@ -179,7 +184,7 @@
 !
       if(my_rank .eq. izero) then
         write(*,*) 'Extend Delta t from ', dt, ' at ', i_step_MHD,      &
-     &            'd_ratio_max', d_ratio_allmax
+     &            'd_ratio_max', flex_data%d_ratio_allmax
       end if
       if(iflag_debug .gt. izero) then
         write(*,*) 'Old temporal step is ', istep_flex_to_max,          &
@@ -226,10 +231,10 @@
 !
   99  continue
       open(dt_check_max_code, file = dt_check_max_name)
-      call write_delta_t_check_head(dt_check_max_code)
+      call write_delta_t_check_head(dt_check_max_code, flex_data)
 !
       end subroutine open_flex_step_monitor
 !
 ! -----------------------------------------------------------------------
 !
-      end module check_flexible_time_step
+      end module m_flexible_time_step

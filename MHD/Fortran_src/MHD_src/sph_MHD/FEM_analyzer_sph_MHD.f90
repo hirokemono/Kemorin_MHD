@@ -97,7 +97,7 @@
 !  connect grid data to volume output
 !
       if(i_step_output_ucd.gt.0) then
-        call allocate_phys_range(nod_fld1%ntot_phys_viz)
+        call alloc_phys_range(nod_fld1%ntot_phys_viz, range)
       end if
 !
       if(iflag_debug .gt. 0) write(*,*) 'output_grd_file_4_snapshot'
@@ -202,7 +202,7 @@
 !
 !
      if(i_step_output_ucd.gt.0) then
-       call deallocate_phys_range
+       call dealloc_phys_range(range)
        call finalize_output_ucd
      end if
 !

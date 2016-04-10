@@ -8,10 +8,6 @@
 !>@brief  composition equation parameters to read
 !!
 !!@verbatim
-!!      subroutine deallocate_coef_4_dscalar_ctl
-!!      subroutine deallocate_coef_4_dsc_diff_ctl
-!!      subroutine deallocate_coef_4_dsc_src_ctl
-!!
 !!      subroutine read_composition_eq_ctl
 !!
 !!   --------------------------------------------------------------------
@@ -76,35 +72,10 @@
       private :: hd_dsc_diff_adv, i_dsc_diff_adv
       private :: hd_n_dscalar, hd_n_dsc_diff, hd_n_dsc_src
 !
-!   --------------------------------------------------------------------
+! -----------------------------------------------------------------------
 !
       contains
 !
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_coef_4_dscalar_ctl
-!
-      call dealloc_control_array_c_r(coef_4_comp_flux_ctl)
-!
-      end subroutine deallocate_coef_4_dscalar_ctl
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_coef_4_dsc_diff_ctl
-!
-      call dealloc_control_array_c_r(coef_4_c_diffuse_ctl)
-!
-      end subroutine deallocate_coef_4_dsc_diff_ctl
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_coef_4_dsc_src_ctl
-!
-      call dealloc_control_array_c_r(coef_4_comp_src_ctl)
-!
-      end subroutine deallocate_coef_4_dsc_src_ctl
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine read_composition_eq_ctl

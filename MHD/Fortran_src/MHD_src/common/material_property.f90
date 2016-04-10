@@ -44,17 +44,17 @@
         coef_d_temp = one
         coef_h_src =  one
 !
-        call construct_coefficient(coef_temp, num_dimless, dimless,     &
-     &      name_dimless, num_coef_4_termal, coef_4_termal_name,        &
-     &      coef_4_termal_power, depth_low_t, depth_high_t)
+        call construct_coefficient(coef_temp,                           &
+     &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_termal,     &
+     &      depth_low_t, depth_high_t)
 !
-        call construct_coefficient(coef_d_temp, num_dimless, dimless,   &
-     &      name_dimless, num_coef_4_t_diffuse, coef_4_t_diffuse_name,  &
-     &      coef_4_t_diffuse_power, depth_low_t, depth_high_t)
+        call construct_coefficient(coef_d_temp,                         &
+     &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_t_diffuse,  &
+     &      depth_low_t, depth_high_t)
 !
-        call construct_coefficient(coef_h_src, num_dimless, dimless,    &
-     &      name_dimless, num_coef_4_h_source, coef_4_h_source_name,    &
-     &      coef_4_h_source_power, depth_low_t, depth_high_t)
+        call construct_coefficient(coef_h_src,                          &
+     &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_h_source,   &
+     &      depth_low_t, depth_high_t)
 !
         call set_implicit_4_inf_viscous(coef_temp,                      &
      &      coef_imp_t, coef_exp_t)
@@ -75,17 +75,17 @@
         coef_press =    one
         acoef_press =   one
 !
-        call construct_coefficient(coef_velo, num_dimless, dimless,     &
-     &      name_dimless, num_coef_4_velocity, coef_4_velocity_name,    &
-     &      coef_4_velocity_power, depth_low_t, depth_high_t)
+        call construct_coefficient(coef_velo,                           &
+     &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_momentum,   &
+     &      depth_low_t, depth_high_t)
 !
-        call construct_coefficient(coef_press, num_dimless, dimless,    &
-     &      name_dimless, num_coef_4_press, coef_4_press_name,          &
-     &      coef_4_press_power, depth_low_t, depth_high_t)
+        call construct_coefficient(coef_press,                          &
+     &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_pressure,   &
+     &      depth_low_t, depth_high_t)
 !
-        call construct_coefficient(coef_d_velo, num_dimless, dimless,   &
-     &      name_dimless, num_coef_4_v_diffuse, coef_4_v_diffuse_name,  &
-     &      coef_4_v_diffuse_power, depth_low_t, depth_high_t)
+        call construct_coefficient(coef_d_velo,                         &
+     &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_v_diffuse,  &
+     &      depth_low_t, depth_high_t)
 !
         call set_implicit_4_inf_viscous(coef_velo,                      &
      &      coef_imp_v, coef_exp_v)
@@ -95,28 +95,27 @@
 !
         if (iflag_4_gravity .gt. id_turn_OFF                            &
      &     .or. iflag_4_filter_gravity .gt. id_turn_OFF) then
-          call construct_coefficient(coef_buo, num_dimless, dimless,    &
-     &       name_dimless, num_coef_4_buoyancy, coef_4_buoyancy_name,   &
-     &       coef_4_buoyancy_power, depth_low_t, depth_high_t)
+          call construct_coefficient(coef_buo,                          &
+     &       MHD_coef_list%dimless_list, MHD_coef_list%coefs_buoyancy,  &
+     &      depth_low_t, depth_high_t)
         end if
 !
         if (iflag_4_composit_buo .gt. id_turn_OFF) then
-          call construct_coefficient(coef_comp_buo, num_dimless,        &
-     &       dimless, name_dimless, num_coef_4_comp_buo,                &
-     &       coef_4_comp_buo_name, coef_4_comp_buo_power,               &
+          call construct_coefficient(coef_comp_buo,                     &
+     &       MHD_coef_list%dimless_list, MHD_coef_list%coefs_comp_buo,  &
      &       depth_low_t, depth_high_t)
         end if
 !
         if (iflag_4_coriolis .gt. id_turn_OFF) then
-          call construct_coefficient(coef_cor, num_dimless, dimless,    &
-     &       name_dimless, num_coef_4_Coriolis, coef_4_Coriolis_name,   &
-     &       coef_4_Coriolis_power, depth_low_t, depth_high_t)
+          call construct_coefficient(coef_cor,                          &
+     &       MHD_coef_list%dimless_list, MHD_coef_list%coefs_Coriolis,  &
+     &       depth_low_t, depth_high_t)
         end if
 !
         if ( iflag_4_lorentz .gt. id_turn_OFF) then
-          call construct_coefficient(coef_lor, num_dimless, dimless,    &
-     &       name_dimless, num_coef_4_Lorentz, coef_4_Lorentz_name,     &
-     &       coef_4_Lorentz_power, depth_low_t, depth_high_t)
+          call construct_coefficient(coef_lor,                          &
+     &       MHD_coef_list%dimless_list, MHD_coef_list%coefs_Lorentz,   &
+     &       depth_low_t, depth_high_t)
         end if
 !
       end if
@@ -131,21 +130,21 @@
         coef_d_magne = one
         coef_induct =  one
 !
-        call construct_coefficient(coef_magne, num_dimless, dimless,    &
-     &     name_dimless, num_coef_4_magnetic, coef_4_magnetic_name,     &
-     &     coef_4_magnetic_power, depth_low_t, depth_high_t)
+        call construct_coefficient(coef_magne,                          &
+     &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_magnetic,   &
+     &      depth_low_t, depth_high_t)
 !
-        call construct_coefficient(coef_mag_p, num_dimless, dimless,    &
-     &     name_dimless, num_coef_4_mag_p, coef_4_mag_p_name,           &
-     &     coef_4_mag_p_power, depth_low_t, depth_high_t)
+        call construct_coefficient(coef_mag_p,                          &
+     &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_magne_p,    &
+     &      depth_low_t, depth_high_t)
 !
-        call construct_coefficient(coef_d_magne, num_dimless, dimless,  &
-     &     name_dimless, num_coef_4_m_diffuse, coef_4_m_diffuse_name,   &
-     &     coef_4_m_diffuse_power, depth_low_t, depth_high_t)
+        call construct_coefficient(coef_d_magne,                        &
+     &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_m_diffuse,  &
+     &      depth_low_t, depth_high_t)
 !
-        call construct_coefficient(coef_induct, num_dimless, dimless,   &
-     &     name_dimless, num_coef_4_induction, coef_4_induction_name,   &
-     &     coef_4_induction_power, depth_low_t, depth_high_t)
+        call construct_coefficient(coef_induct,                         &
+     &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_induction,  &
+     &      depth_low_t, depth_high_t)
 !
         call set_implicit_4_inf_viscous(coef_magne,                     &
      &      coef_imp_b, coef_exp_b)
@@ -159,17 +158,17 @@
         coef_d_light =  one
         coef_c_src =    one
 !
-        call construct_coefficient(coef_light, num_dimless, dimless,    &
-     &      name_dimless, num_coef_4_composition, coef_4_composit_name, &
-     &      coef_4_composit_power, depth_low_t, depth_high_t)
+        call construct_coefficient(coef_light,                          &
+     &     MHD_coef_list%dimless_list, MHD_coef_list%coefs_composition, &
+     &     depth_low_t, depth_high_t)
 !
-        call construct_coefficient(coef_d_light, num_dimless, dimless,  &
-     &      name_dimless, num_coef_4_c_diffuse, coef_4_c_diffuse_name,  &
-     &      coef_4_c_diffuse_power, depth_low_t, depth_high_t)
+        call construct_coefficient(coef_d_light,                        &
+     &     MHD_coef_list%dimless_list, MHD_coef_list%coefs_c_diffuse,   &
+     &     depth_low_t, depth_high_t)
 !
-        call construct_coefficient(coef_c_src, num_dimless, dimless,    &
-     &      name_dimless, num_coef_4_c_source, coef_4_c_source_name,    &
-     &      coef_4_c_source_power, depth_low_t, depth_high_t)
+        call construct_coefficient(coef_c_src,                          &
+     &     MHD_coef_list%dimless_list, MHD_coef_list%coefs_c_source,    &
+     &     depth_low_t, depth_high_t)
 !
         call set_implicit_4_inf_viscous(coef_light,                     &
      &      coef_imp_c, coef_exp_c)

@@ -2,10 +2,6 @@
 !      module m_ctl_data_induct_norm
 !
 !        programmed by H.Matsui on March. 2006
-!      subroutine deallocate_coef_4_magne_ctl
-!      subroutine deallocate_coef_4_mag_p_ctl
-!      subroutine deallocate_coef_4_m_diffuse_ctl
-!      subroutine deallocate_coef_4_induction_ctl
 !
 !      subroutine read_induction_ctl
 !
@@ -78,39 +74,6 @@
 !
       contains
 !
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_coef_4_magne_ctl
-!
-      call dealloc_control_array_c_r(coef_4_magne_evo_ctl)
-!
-      end subroutine deallocate_coef_4_magne_ctl
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_coef_4_mag_p_ctl
-!
-      call dealloc_control_array_c_r(coef_4_mag_potential_ctl)
-!
-      end subroutine deallocate_coef_4_mag_p_ctl
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_coef_4_m_diffuse_ctl
-!
-      call dealloc_control_array_c_r(coef_4_mag_diffuse_ctl)
-!
-      end subroutine deallocate_coef_4_m_diffuse_ctl
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_coef_4_induction_ctl
-!
-      call dealloc_control_array_c_r(coef_4_induction_ctl)
-!
-      end subroutine deallocate_coef_4_induction_ctl
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine read_induction_ctl
