@@ -28,6 +28,7 @@
       subroutine set_control_4_SPH_MHD
 !
       use m_control_params_2nd_files
+      use m_sph_spectr_data
       use m_ucd_data
 !
       use set_control_platform_data
@@ -116,7 +117,7 @@
 !
 !  check dependencies
 !
-      call check_SPH_MHD_dependencies
+      call check_dependencies(num_phys_rj, rj_fld1%phys_name)
 !
 !   set_pickup modes
 !

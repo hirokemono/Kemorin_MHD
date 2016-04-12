@@ -44,7 +44,7 @@
 !
 !
       call collect_spectr_for_circle(num_phys_rj, rj_fld1%ntot_phys,    &
-     &    istack_phys_comp_rj, phys_name_rj, rj_fld1%d_fld)
+     &    istack_phys_comp_rj, rj_fld1%phys_name, rj_fld1%d_fld)
 !
 !    spherical transfer
 !

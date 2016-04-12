@@ -104,7 +104,7 @@
 !
       fld_IO%num_comp_IO(1:num_fld) =    num_phys_comp_rj(1:num_fld)
       fld_IO%istack_comp_IO(0:num_fld) = istack_phys_comp_rj(0:num_fld)
-      fld_IO%fld_name(1:num_fld) =   phys_name_rj(1:num_fld)
+      fld_IO%fld_name(1:num_fld) =   rj_fld1%phys_name(1:num_fld)
 !
       end subroutine copy_rj_phys_name_to_IO
 !
@@ -141,7 +141,7 @@
       num_phys_rj =  fld_IO%num_field_IO
       call allocate_phys_rj_name
 !
-      phys_name_rj(1:num_phys_rj) = fld_IO%fld_name(1:num_phys_rj)
+      rj_fld1%phys_name(1:num_phys_rj) = fld_IO%fld_name(1:num_phys_rj)
       num_phys_comp_rj(1:num_phys_rj)                                   &
      &      = fld_IO%num_comp_IO(1:num_phys_rj)
       iflag_monitor_rj(1:num_phys_rj) = 1
@@ -188,7 +188,7 @@
 !
       do i_fld = 1, num_phys_rj
         do j_IO = 1, fld_IO%num_field_IO
-          if (phys_name_rj(i_fld) .eq. fld_IO%fld_name(j_IO)) then
+          if (rj_fld1%phys_name(i_fld) .eq. fld_IO%fld_name(j_IO)) then
             if (fld_IO%num_comp_IO(j_IO) .eq. 3) then
               call copy_each_sph_vector_from_IO(i_fld, j_IO, fld_IO)
             else if (fld_IO%num_comp_IO(j_IO) .eq. 2) then

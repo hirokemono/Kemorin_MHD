@@ -48,7 +48,7 @@
         j0 = j + istart_scalar_rtp - 1
         itrans = j+3*num_vector_rtp
         do i = 1, num_phys_rj
-          if ( phys_name_rtp(j0) .eq. phys_name_rj(i) ) then
+          if ( phys_name_rtp(j0) .eq. rj_fld1%phys_name(i) ) then
             i_field = istack_phys_comp_rj(i-1) + 1
             call sel_sph_rj_scalar_2_send_wpole                         &
      &         (ncomp_send, i_field, itrans, n_WS, WS, v_pl_local)
@@ -75,7 +75,7 @@
         j0 = j + istart_scalar_rtp - 1
         itrans = j+3*num_vector_rtp
         do i = 1, num_phys_rj
-          if ( phys_name_rtp(j0) .eq. phys_name_rj(i) ) then
+          if ( phys_name_rtp(j0) .eq. rj_fld1%phys_name(i) ) then
             i_field = istack_phys_comp_rj(i-1) + 1
             call sel_sph_rj_scalar_from_recv                            &
      &         (ncomp_recv, i_field, itrans, n_WR, WR)
@@ -103,7 +103,7 @@
         j0 = j + istart_vector_rtp - 1
         itrans = 3*j - 2
         do i = 1, num_phys_rj
-          if ( phys_name_rtp(j0) .eq. phys_name_rj(i) ) then
+          if ( phys_name_rtp(j0) .eq. rj_fld1%phys_name(i) ) then
             i_field = istack_phys_comp_rj(i-1) + 1
             call sel_sph_rj_vector_to_send                              &
      &         (ncomp_send, i_field, itrans, n_WS, WS)
@@ -130,7 +130,7 @@
         j0 = j + istart_vector_rtp - 1
         itrans = 3*j - 2
         do i = 1, num_phys_rj
-          if ( phys_name_rtp(j0) .eq. phys_name_rj(i) ) then
+          if ( phys_name_rtp(j0) .eq. rj_fld1%phys_name(i) ) then
             i_field = istack_phys_comp_rj(i-1) + 1
 !$omp parallel
             call sel_sph_rj_vector_from_recv                            &
@@ -160,7 +160,7 @@
         j0 = j + istart_tensor_rtp - 1
         itrans = 1 + 6*(j-1) + num_scalar_rtp + 3*num_vector_rtp
         do i = 1, num_phys_rj
-          if ( phys_name_rtp(j0) .eq. phys_name_rj(i) ) then
+          if ( phys_name_rtp(j0) .eq. rj_fld1%phys_name(i) ) then
             i_field = istack_phys_comp_rj(i-1) + 1
 !$omp parallel
             call sel_sph_rj_tensor_to_send                              &
@@ -189,7 +189,7 @@
         j0 = j + istart_tensor_rtp - 1
         itrans = 1 + 6*(j-1) + num_scalar_rtp + 3*num_vector_rtp
         do i = 1, num_phys_rj
-          if ( phys_name_rtp(j0) .eq. phys_name_rj(i) ) then
+          if ( phys_name_rtp(j0) .eq. rj_fld1%phys_name(i) ) then
             i_field = istack_phys_comp_rj(i-1) + 1
 !$omp parallel
             call sel_sph_rj_tensor_from_recv                            &

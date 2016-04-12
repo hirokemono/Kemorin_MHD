@@ -216,7 +216,7 @@
 !    Turn On Nusselt number if temperature gradient is there
       iflag_no_source_Nu = 0
       do i = 1, num_phys_rj
-        if(phys_name_rj(i) .eq. fhd_grad_temp) then
+        if(rj_fld1%phys_name(i) .eq. fhd_grad_temp) then
           iflag_no_source_Nu = 1
           exit
         end if
@@ -231,7 +231,7 @@
 !
 !    Turn Off Nusselt number if heat source is there
       do i = 1, num_phys_rj
-        if(phys_name_rj(i) .eq. fhd_heat_source) then
+        if(rj_fld1%phys_name(i) .eq. fhd_heat_source) then
           iflag_no_source_Nu = 0
           exit
         end if

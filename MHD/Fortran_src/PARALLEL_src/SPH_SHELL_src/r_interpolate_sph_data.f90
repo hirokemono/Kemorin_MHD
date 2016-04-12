@@ -128,7 +128,7 @@
       integer(kind = kint) :: i
 !
       do i = 1, num_phys_rj
-        if(phys_name_rj(i) .eq. fhd_magne) then
+        if(rj_fld1%phys_name(i) .eq. fhd_magne) then
           ipol%i_magne = istack_phys_comp_rj(i-1) + 1
           exit
         end if
@@ -173,22 +173,22 @@
 !
       do i_fld = 1, rj_fld1%ntot_phys
         do j_fld = 1, fld_IO%num_field_IO
-          if (phys_name_rj(i_fld) .eq. fld_IO%fld_name(j_fld)) then
-            if     (phys_name_rj(i_fld) .eq. fhd_velo                   &
-     &         .or. phys_name_rj(i_fld) .eq. fhd_vort                   &
-     &         .or. phys_name_rj(i_fld) .eq. fhd_press                  &
-     &         .or. phys_name_rj(i_fld) .eq. fhd_temp                   &
-     &         .or. phys_name_rj(i_fld) .eq. fhd_light                  &
-     &         .or. phys_name_rj(i_fld) .eq. fhd_magne                  &
-     &         .or. phys_name_rj(i_fld) .eq. fhd_mag_potential          &
-     &         .or. phys_name_rj(i_fld) .eq. fhd_entropy                &
-     &         .or. phys_name_rj(i_fld) .eq. fhd_pre_mom                &
-     &         .or. phys_name_rj(i_fld) .eq. fhd_pre_uxb                &
-     &         .or. phys_name_rj(i_fld) .eq. fhd_pre_heat               &
-     &         .or. phys_name_rj(i_fld) .eq. fhd_pre_composit           &
-     &         .or. phys_name_rj(i_fld) .eq. fhd_heat_source            &
-     &         .or. phys_name_rj(i_fld) .eq. fhd_light_source           &
-     &         .or. phys_name_rj(i_fld) .eq. fhd_entropy_source         &
+          if(rj_fld1%phys_name(i_fld) .eq. fld_IO%fld_name(j_fld)) then
+            if     (rj_fld1%phys_name(i_fld) .eq. fhd_velo              &
+     &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_vort              &
+     &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_press             &
+     &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_temp              &
+     &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_light             &
+     &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_magne             &
+     &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_mag_potential     &
+     &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_entropy           &
+     &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_pre_mom           &
+     &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_pre_uxb           &
+     &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_pre_heat          &
+     &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_pre_composit      &
+     &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_heat_source       &
+     &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_light_source      &
+     &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_entropy_source    &
      &         ) then
               call set_org_rj_phys_data_from_IO(j_fld, fld_IO)
               call r_interpolate_sph_vector(i_fld,                      &
@@ -225,7 +225,7 @@
 !
       do i_fld = 1, rj_fld1%ntot_phys
         do j_fld = 1, fld_IO%num_field_IO
-          if (phys_name_rj(i_fld) .eq. fld_IO%fld_name(j_fld)) then
+          if(rj_fld1%phys_name(i_fld) .eq. fld_IO%fld_name(j_fld)) then
             call set_org_rj_phys_data_from_IO(j_fld, fld_IO)
             call r_interpolate_sph_vector(i_fld,                        &
      &          num_phys_rj, rj_fld1%ntot_phys,                         &

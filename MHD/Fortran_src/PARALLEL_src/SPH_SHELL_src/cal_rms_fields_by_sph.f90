@@ -60,7 +60,7 @@
           num_rms_comp_rj(j_fld) = num_phys_comp_rj(i_fld)
           istack_rms_comp_rj(j_fld) = istack_rms_comp_rj(j_fld-1)       &
      &                              + num_phys_comp_rj(i_fld)
-          rms_name_rj(j_fld) =     phys_name_rj(i_fld)
+          rms_name_rj(j_fld) =     rj_fld1%phys_name(i_fld)
         end if
       end do
       ntot_rms_rj = istack_rms_comp_rj(num_rms_rj)

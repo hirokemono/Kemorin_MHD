@@ -79,7 +79,7 @@
 !
       if(my_rank .ne. 0) return
       call set_sph_labels_4_monitor                                     &
-     &   (num_phys_rj, num_phys_comp_rj, phys_name_rj)
+     &   (num_phys_rj, num_phys_comp_rj, rj_fld1%phys_name)
 !
       end subroutine init_sph_spec_4_monitor
 !

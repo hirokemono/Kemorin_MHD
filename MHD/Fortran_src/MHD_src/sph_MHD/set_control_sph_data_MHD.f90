@@ -10,7 +10,6 @@
 !!     subroutine s_set_control_sph_data_MHD
 !!     subroutine set_ctl_params_pick_circle
 !!     subroutine set_ctl_params_dynamobench
-!!     subroutine check_SPH_MHD_dependencies
 !!@endverbatim
 !
       module set_control_sph_data_MHD
@@ -223,18 +222,6 @@
       end subroutine set_ctl_params_pick_circle
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine check_SPH_MHD_dependencies
-!
-      use m_sph_spectr_data
-      use check_dependency_for_MHD
-!
-!
-      call check_dependencies(num_phys_rj, phys_name_rj)
-!
-      end subroutine check_SPH_MHD_dependencies
-!
 ! -----------------------------------------------------------------------
 !
       end module set_control_sph_data_MHD

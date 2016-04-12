@@ -30,7 +30,7 @@
 !
 !>        Structure for field data
         type(phys_data) :: rj_fld1
-!rj_fld1%ntot_phys
+!rj_fld1%phys_name
 !
 !>      Number of fields for spectrum data  @f$ f(r,j) @f$
       integer (kind=kint) :: num_phys_rj
@@ -55,7 +55,7 @@
       integer (kind=kint), allocatable :: istack_phys_comp_rj(:)
 ! 
 !>      Field name for @f$ f(r,j) @f$
-      character (len=kchara), allocatable :: phys_name_rj(:)
+!      character (len=kchara), allocatable :: phys_name_rj(:)
 ! 
 !>      Field data @f$ f(r,\theta,\phi) @f$
 !      real (kind=kreal), allocatable :: d_rj(:,:)
@@ -86,13 +86,13 @@
 !
       rj_fld1%num_phys = num_phys_rj
 !
-      allocate( phys_name_rj(num_phys_rj) )
+      allocate( rj_fld1%phys_name(num_phys_rj) )
       allocate( iflag_monitor_rj(num_phys_rj) )
       allocate( num_phys_comp_rj(num_phys_rj) )
       allocate( istack_phys_comp_rj(0:num_phys_rj) )
 !
       if(num_phys_rj .gt. 0) then
-        phys_name_rj = ''
+        rj_fld1%phys_name = ''
         iflag_monitor_rj =    0
         num_phys_comp_rj =    0
       end if
@@ -120,7 +120,7 @@
 !
       subroutine deallocate_phys_rj_data
 !
-      deallocate( phys_name_rj )
+      deallocate( rj_fld1%phys_name )
       deallocate( iflag_monitor_rj )
       deallocate( num_phys_comp_rj )
       deallocate( istack_phys_comp_rj )
@@ -149,7 +149,7 @@
       do i = 1, num_phys_rj
         write(*,'(4i6,a2,a)') i, num_phys_comp_rj(i),                   &
      &                     istack_phys_comp_rj(i), iflag_monitor_rj(i), &
-     &                     '  ', trim(phys_name_rj(i))
+     &                     '  ', trim(rj_fld1%phys_name(i))
       end do
 !
       end subroutine check_rj_spectr_name
@@ -168,7 +168,7 @@
       write(50+my_rank,*) 'ntot_phys_rj', rj_fld1%ntot_phys
       write(50+my_rank,*) 'num_phys_comp_rj', num_phys_comp_rj
       do inod = 1, num_phys_rj
-        write(50+my_rank,*) phys_name_rj(inod)
+        write(50+my_rank,*) rj_fld1%phys_name(inod)
       end do
       write(fmt_txt,'(a6,i3,a16)')                                      &
      &           '(3i16,', rj_fld1%ntot_phys, '(1pE25.15e3),a1)'
