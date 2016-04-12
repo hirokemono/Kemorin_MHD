@@ -52,7 +52,8 @@
      &      ipol%i_lorentz, ipol%i_rot_Lorentz)
 !
         if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
-          call int_icore_toroidal_lorentz(sph_bc_U%kr_in)
+          call int_icore_toroidal_lorentz                               &
+      &      (sph_bc_U%kr_in, ntot_phys_rj, d_rj)
         end if
       end if
 !

@@ -240,7 +240,7 @@
       real(kind = kreal), intent(in) :: coef
       integer (kind = kint), intent(in) :: i_r
 !
-      integer (kind = kint), intent(in) :: ntot_phys_rj, irj_fld
+      integer (kind = kint), intent(in) :: ntot_phys_rj
       real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
 !

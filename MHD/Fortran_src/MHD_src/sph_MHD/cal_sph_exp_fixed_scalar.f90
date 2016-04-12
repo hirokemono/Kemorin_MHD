@@ -73,7 +73,6 @@
 !
       use m_constants
       use m_schmidt_poly_on_rtm
-      use m_sph_spectr_data
 !
       implicit none
 !

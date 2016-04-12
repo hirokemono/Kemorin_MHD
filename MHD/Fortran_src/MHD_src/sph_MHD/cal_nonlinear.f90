@@ -34,6 +34,7 @@
       subroutine nonlinear
 !
       use m_sph_phys_address
+      use m_sph_spectr_data
       use m_boundary_params_sph_MHD
       use cal_inner_core_rotation
 !
@@ -49,14 +50,16 @@
 !
       if (iflag_4_ref_temp .eq. id_sphere_ref_temp) then
         call add_reftemp_advect_sph_MHD                                 &
-     &     (sph_bc_T%kr_in, sph_bc_T%kr_out)
+     &     (sph_bc_T%kr_in, sph_bc_T%kr_out,                            &
+     &      ntot_phys_rj, reftemp_rj, d_rj)
       end if
 !
 !*  ----  copy coriolis term for inner core rotation
 !*
       call start_eleps_time(13)
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
-        call copy_icore_rot_to_tor_coriolis(sph_bc_U%kr_in)
+        call copy_icore_rot_to_tor_coriolis(sph_bc_U%kr_in,             &
+     &      idx_rj_degree_one, nnod_rj, nidx_rj(2), ntot_phys_rj, d_rj)
       end if
       call end_eleps_time(13)
 !
@@ -186,7 +189,8 @@
 !
       if (iflag_4_ref_temp .eq. id_sphere_ref_temp) then
         call add_reftemp_advect_sph_MHD                                 &
-     &     (sph_bc_T%kr_in, sph_bc_T%kr_out)
+     &     (sph_bc_T%kr_in, sph_bc_T%kr_out,                            &
+     &      ntot_phys_rj, reftemp_rj, d_rj)
       end if
 !
 !$omp parallel

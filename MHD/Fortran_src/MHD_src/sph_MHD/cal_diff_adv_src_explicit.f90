@@ -9,13 +9,14 @@
 !!@verbatim
 !!      subroutine sel_scalar_diff_adv_src_adams(kr_st, kr_ed,          &
 !!     &          ipol_diffuse, ipol_advect, ipol_source, ipol_scalar,  &
-!!     &          ipol_pre, coef_exp, coef_src)
+!!     &          ipol_pre, coef_exp, coef_src, ntot_phys_rj, d_rj)
 !!      subroutine sel_scalar_diff_adv_src_euler(kr_st, kr_ed,          &
 !!     &          ipol_diffuse, ipol_advect, ipol_source, ipol_scalar,  &
-!!     &          coef_exp, coef_adv, coef_src)
+!!     &          coef_exp, coef_adv, coef_src, ntot_phys_rj, d_rj)
 !!
 !!      subroutine sel_ini_adams_scalar_w_src(kr_st, kr_ed,             &
-!!     &          ipol_advect, ipol_source, ipol_pre, coef_src)
+!!     &          ipol_advect, ipol_source, ipol_pre, coef_src,         &
+!!     &          ntot_phys_rj, d_rj)
 !!@endverbatim
 !!
 !!@param kr_st         Radial address for inner boundary
@@ -34,13 +35,12 @@
       use m_constants
 !
       use m_spheric_parameter
-      use m_sph_spectr_data
       use m_t_int_parameter
 !
       implicit  none
 !
       private :: scalar_diff_adv_src_adams, scalar_diff_adv_src_euler
-      private :: set_ini_adams_scalar_w_src
+      private :: set_ini_adams_scalar_w_src, set_ini_adams_scalar
       private :: scalar_stable_diff_src, scalar_stable_diffusion
 !
 ! ----------------------------------------------------------------------
@@ -51,23 +51,26 @@
 !
       subroutine sel_scalar_diff_adv_src_adams(kr_st, kr_ed,            &
      &          ipol_diffuse, ipol_advect, ipol_source, ipol_scalar,    &
-     &          ipol_pre, coef_exp, coef_src)
+     &          ipol_pre, coef_exp, coef_src, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_st, kr_ed
       integer(kind = kint), intent(in) :: ipol_diffuse, ipol_advect
       integer(kind = kint), intent(in) :: ipol_source
       integer(kind = kint), intent(in) :: ipol_scalar, ipol_pre
+      integer(kind = kint), intent(in) :: ntot_phys_rj
       real(kind = kreal), intent(in) :: coef_exp, coef_src
+!
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
 !
       if(ipol_source .eq. izero) then
         call scalar_diff_advect_adams(kr_st, kr_ed,                     &
      &          ipol_diffuse, ipol_advect, ipol_scalar, ipol_pre,       &
-     &          coef_exp)
+     &          coef_exp, ntot_phys_rj, d_rj)
       else
         call scalar_diff_adv_src_adams(kr_st, kr_ed,                    &
      &          ipol_diffuse, ipol_advect, ipol_source, ipol_scalar,    &
-     &          ipol_pre, coef_exp, coef_src)
+     &          ipol_pre, coef_exp, coef_src, ntot_phys_rj, d_rj)
       end if
 !
       end subroutine sel_scalar_diff_adv_src_adams
@@ -76,29 +79,34 @@
 !
       subroutine sel_scalar_diff_adv_src_euler(kr_st, kr_ed,            &
      &          ipol_diffuse, ipol_advect, ipol_source, ipol_scalar,    &
-     &          coef_exp, coef_adv, coef_src)
+     &          coef_exp, coef_adv, coef_src, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_st, kr_ed
       integer(kind = kint), intent(in) :: ipol_diffuse, ipol_advect
       integer(kind = kint), intent(in) :: ipol_source
       integer(kind = kint), intent(in) :: ipol_scalar
+      integer(kind = kint), intent(in) :: ntot_phys_rj
       real(kind = kreal), intent(in) :: coef_exp, coef_adv, coef_src
+!
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
 !
       if(coef_adv .eq. zero) then
         if(ipol_source .eq. izero) then
-          call scalar_stable_diffusion(kr_st, kr_ed, ipol_scalar)
+          call scalar_stable_diffusion(kr_st, kr_ed, ipol_scalar,       &
+     &        ntot_phys_rj, d_rj)
         else
           call scalar_stable_diff_src(kr_st, kr_ed,                     &
-     &        ipol_source, ipol_scalar, coef_src)
+     &        ipol_source, ipol_scalar, coef_src, ntot_phys_rj, d_rj)
         end if
       else if(ipol_source .eq. izero) then
         call scalar_diff_advect_euler(kr_st, kr_ed,                     &
-     &          ipol_diffuse, ipol_advect, ipol_scalar, coef_exp)
+     &      ipol_diffuse, ipol_advect, ipol_scalar, coef_exp,           &
+     &      ntot_phys_rj, d_rj)
       else
         call scalar_diff_adv_src_euler(kr_st, kr_ed,                    &
      &          ipol_diffuse, ipol_advect, ipol_source, ipol_scalar,    &
-     &          coef_exp, coef_src)
+     &          coef_exp, coef_src, ntot_phys_rj, d_rj)
       end if
 !
       end subroutine sel_scalar_diff_adv_src_euler
@@ -106,19 +114,25 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sel_ini_adams_scalar_w_src(kr_st, kr_ed,               &
-     &          ipol_advect, ipol_source, ipol_pre, coef_src)
+     &          ipol_advect, ipol_source, ipol_pre, coef_src,           &
+     &          ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_st, kr_ed
       integer(kind = kint), intent(in) :: ipol_advect, ipol_source
       integer(kind = kint), intent(in) :: ipol_pre
+      integer(kind = kint), intent(in) :: ntot_phys_rj
       real(kind = kreal), intent(in) :: coef_src
+!
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
 !
       if(ipol_source .eq. izero) then
-        call set_ini_adams_scalar(kr_st, kr_ed, ipol_advect, ipol_pre)
+        call set_ini_adams_scalar(kr_st, kr_ed, ipol_advect, ipol_pre,  &
+     &      ntot_phys_rj, d_rj)
       else
         call set_ini_adams_scalar_w_src(kr_st, kr_ed,                   &
-     &          ipol_advect, ipol_source, ipol_pre, coef_src)
+     &      ipol_advect, ipol_source, ipol_pre, coef_src,               &
+     &      ntot_phys_rj, d_rj)
       end if
 !
       end subroutine sel_ini_adams_scalar_w_src
@@ -128,12 +142,15 @@
 !
       subroutine scalar_diff_advect_adams(kr_st, kr_ed,                 &
      &          ipol_diffuse, ipol_advect, ipol_scalar, ipol_pre,       &
-     &          coef_exp)
+     &          coef_exp, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_st, kr_ed
       integer(kind = kint), intent(in) :: ipol_diffuse, ipol_advect
       integer(kind = kint), intent(in) :: ipol_scalar, ipol_pre
+      integer(kind = kint), intent(in) :: ntot_phys_rj
       real(kind = kreal), intent(in) :: coef_exp
+!
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, ist, ied
 !
@@ -156,12 +173,16 @@
 ! ----------------------------------------------------------------------
 !
       subroutine scalar_diff_advect_euler(kr_st, kr_ed,                 &
-     &          ipol_diffuse, ipol_advect, ipol_scalar, coef_exp)
+     &          ipol_diffuse, ipol_advect, ipol_scalar, coef_exp,       &
+     &          ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_st, kr_ed
       integer(kind = kint), intent(in) :: ipol_diffuse, ipol_advect
       integer(kind = kint), intent(in) :: ipol_scalar
+      integer(kind = kint), intent(in) :: ntot_phys_rj
       real(kind = kreal), intent(in) :: coef_exp
+!
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, ist, ied
 !
@@ -181,10 +202,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_ini_adams_scalar(kr_st, kr_ed,                     &
-     &          ipol_advect, ipol_pre)
+     &          ipol_advect, ipol_pre, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_st, kr_ed
       integer(kind = kint), intent(in) :: ipol_advect, ipol_pre
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+!
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, ist, ied
 !
@@ -204,13 +228,16 @@
 !
       subroutine scalar_diff_adv_src_adams(kr_st, kr_ed,                &
      &          ipol_diffuse, ipol_advect, ipol_source, ipol_scalar,    &
-     &          ipol_pre, coef_exp, coef_src)
+     &          ipol_pre, coef_exp, coef_src, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_st, kr_ed
       integer(kind = kint), intent(in) :: ipol_diffuse, ipol_advect
       integer(kind = kint), intent(in) :: ipol_source
       integer(kind = kint), intent(in) :: ipol_scalar, ipol_pre
+      integer(kind = kint), intent(in) :: ntot_phys_rj
       real(kind = kreal), intent(in) :: coef_exp, coef_src
+!
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, ist, ied
 !
@@ -247,13 +274,16 @@
 !
       subroutine scalar_diff_adv_src_euler(kr_st, kr_ed,                &
      &          ipol_diffuse, ipol_advect, ipol_source, ipol_scalar,    &
-     &          coef_exp, coef_src)
+     &          coef_exp, coef_src, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_st, kr_ed
       integer(kind = kint), intent(in) :: ipol_diffuse, ipol_advect
       integer(kind = kint), intent(in) :: ipol_source
       integer(kind = kint), intent(in) :: ipol_scalar
+      integer(kind = kint), intent(in) :: ntot_phys_rj
       real(kind = kreal), intent(in) :: coef_exp, coef_src
+!
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, ist, ied
 !
@@ -281,12 +311,16 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_ini_adams_scalar_w_src(kr_st, kr_ed,               &
-     &          ipol_advect, ipol_source, ipol_pre, coef_src)
+     &          ipol_advect, ipol_source, ipol_pre, coef_src,           &
+     &          ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_st, kr_ed
       integer(kind = kint), intent(in) :: ipol_advect, ipol_source
       integer(kind = kint), intent(in) :: ipol_pre
+      integer(kind = kint), intent(in) :: ntot_phys_rj
       real(kind = kreal), intent(in) :: coef_src
+!
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, ist, ied
 !
@@ -309,11 +343,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine scalar_stable_diff_src(kr_st, kr_ed,                   &
-     &          ipol_source, ipol_scalar, coef_src)
+     &          ipol_source, ipol_scalar, coef_src, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_st, kr_ed
       integer(kind = kint), intent(in) :: ipol_source, ipol_scalar
+      integer(kind = kint), intent(in) :: ntot_phys_rj
       real(kind = kreal), intent(in) :: coef_src
+!
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, ist, ied
 !
@@ -334,10 +371,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine scalar_stable_diffusion(kr_st, kr_ed, ipol_scalar)
+      subroutine scalar_stable_diffusion(kr_st, kr_ed, ipol_scalar,     &
+     &          ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_st, kr_ed
       integer(kind = kint), intent(in) :: ipol_scalar
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+!
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, ist, ied
 !

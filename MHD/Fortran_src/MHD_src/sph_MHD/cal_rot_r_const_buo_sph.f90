@@ -21,7 +21,6 @@
       use m_control_parameter
       use m_spheric_parameter
       use m_physical_property
-      use m_sph_spectr_data
       use m_sph_phys_address
 !
       implicit  none
@@ -38,6 +37,7 @@
       subroutine cal_rot_radial_const_gravity(sph_bc_U)
 !
       use m_machine_parameter
+      use m_sph_spectr_data
       use t_boundary_params_sph_MHD
 !
       type(sph_boundary_type), intent(in) :: sph_bc_U
@@ -49,23 +49,27 @@
      &      write(*,*)'cal_rot_double_cst_buo_sph', ipol%i_temp
           call cal_rot_double_cst_buo_sph                               &
      &       (sph_bc_U%kr_in, sph_bc_U%kr_out, coef_buo, ipol%i_temp,   &
-     &        coef_comp_buo, ipol%i_light, itor%i_rot_buoyancy)
+     &        coef_comp_buo, ipol%i_light, itor%i_rot_buoyancy,         &
+     &        ntot_phys_rj, d_rj)
 !
       else if ( iflag_4_gravity .gt. id_turn_OFF) then
 !
         if (iflag_debug.eq.1) write(*,*) 'cal_rot_cst_buo_sph'
         call cal_rot_cst_buo_sph(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
-     &      coef_buo, ipol%i_temp, itor%i_rot_buoyancy)
+     &      coef_buo, ipol%i_temp, itor%i_rot_buoyancy,                 &
+     &      ntot_phys_rj, d_rj)
 !
       else if ( iflag_4_composit_buo .gt. id_turn_OFF) then
         if (iflag_debug.eq.1) write(*,*) 'cal_rot_cst_buo_sph'
         call cal_rot_cst_buo_sph(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
-     &      coef_comp_buo, ipol%i_light, itor%i_rot_comp_buo)
+     &      coef_comp_buo, ipol%i_light, itor%i_rot_comp_buo,           &
+     &      ntot_phys_rj, d_rj)
 !
       else if (iflag_4_filter_gravity .gt. id_turn_OFF) then
         if (iflag_debug.eq.1) write(*,*) 'cal_rot_cst_buo_sph'
         call cal_rot_cst_buo_sph(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
-     &      coef_buo, ipol%i_filter_temp, itor%i_rot_filter_buo)
+     &      coef_buo, ipol%i_filter_temp, itor%i_rot_filter_buo,        &
+     &      ntot_phys_rj, d_rj)
       end if
 !
       end subroutine cal_rot_radial_const_gravity
@@ -74,12 +78,17 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_rot_double_cst_buo_sph(kr_in, kr_out,              &
-     &          coef_t_buo, is_t, coef_c_buo, is_c, it_res)
+     &          coef_t_buo, is_t, coef_c_buo, is_c, it_res,             &
+     &          ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
       integer(kind= kint), intent(in) :: is_t, is_c
       integer(kind= kint), intent(in) :: it_res
+      integer (kind = kint), intent(in) :: ntot_phys_rj
       real(kind = kreal), intent(in) :: coef_t_buo, coef_c_buo
+!
+      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+!
       integer(kind= kint) :: ist, ied, inod, j, k
 !
 !
@@ -99,11 +108,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_rot_cst_buo_sph(kr_in, kr_out, coef, is_fld, it_res)
+      subroutine cal_rot_cst_buo_sph(kr_in, kr_out, coef,               &
+     &          is_fld, it_res, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
       integer(kind= kint), intent(in) :: is_fld, it_res
+      integer (kind = kint), intent(in) :: ntot_phys_rj
       real(kind = kreal), intent(in) :: coef
+      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+!
       integer(kind= kint) :: ist, ied, inod, j, k
 !
 !

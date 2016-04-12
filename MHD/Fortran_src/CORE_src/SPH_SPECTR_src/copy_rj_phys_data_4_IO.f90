@@ -210,17 +210,15 @@
 !
       integer(kind = kint), intent(in) :: i_fld, j_IO
       type(field_IO), intent(inout) :: fld_IO
-      integer(kind = kint) :: ist, jst, inod
+      integer(kind = kint) :: ist, jst
 !
 !
       ist = istack_phys_comp_rj(i_fld-1)
       jst = fld_IO%istack_comp_IO(j_IO-1)
-!$omp parallel do
-      do inod = 1, nnod_rj
-        fld_IO%d_IO(inod,jst+1) = d_rj(inod,ist+1)
-        fld_IO%d_IO(inod,jst+2) = d_rj(inod,ist+3)
-      end do
-!$omp end parallel do
+!$omp parallel workshare
+      fld_IO%d_IO(1:nnod_rj,jst+1) = d_rj(1:nnod_rj,ist+1)
+      fld_IO%d_IO(1:nnod_rj,jst+2) = d_rj(1:nnod_rj,ist+3)
+!$omp end parallel workshare
 !
       end subroutine copy_each_sph_solenoid_to_IO
 !
@@ -230,18 +228,16 @@
 !
       integer(kind = kint), intent(in) :: i_fld, j_IO
       type(field_IO), intent(inout) :: fld_IO
-      integer(kind = kint) :: ist, jst, inod
+      integer(kind = kint) :: ist, jst
 !
 !
       ist = istack_phys_comp_rj(i_fld-1)
       jst = fld_IO%istack_comp_IO(j_IO-1)
-!$omp parallel do
-      do inod = 1, nnod_rj
-        fld_IO%d_IO(inod,jst+1) = d_rj(inod,ist+1)
-        fld_IO%d_IO(inod,jst+2) = d_rj(inod,ist+3)
-        fld_IO%d_IO(inod,jst+3) = d_rj(inod,ist+2)
-      end do
-!$omp end parallel do
+!$omp parallel workshare
+      fld_IO%d_IO(1:nnod_rj,jst+1) = d_rj(1:nnod_rj,ist+1)
+      fld_IO%d_IO(1:nnod_rj,jst+2) = d_rj(1:nnod_rj,ist+3)
+      fld_IO%d_IO(1:nnod_rj,jst+3) = d_rj(1:nnod_rj,ist+2)
+!$omp end parallel workshare
 !
       end subroutine copy_each_sph_vector_to_IO
 !
@@ -251,18 +247,16 @@
 !
       integer(kind = kint), intent(in) :: i_fld, j_IO
       type(field_IO), intent(inout) :: fld_IO
-      integer(kind = kint) :: ist, jst, nd, inod
+      integer(kind = kint) :: ist, jst, nd
 !
 !
       ist = istack_phys_comp_rj(i_fld-1)
       jst = fld_IO%istack_comp_IO(j_IO-1 )
 !$omp parallel
       do nd = 1, num_phys_comp_rj(i_fld)
-!$omp do
-        do inod = 1, nnod_rj
-          fld_IO%d_IO(inod,jst+nd) = d_rj(inod,ist+nd)
-        end do
-!$omp end do nowait
+!$omp workshare
+        fld_IO%d_IO(1:nnod_rj,jst+nd) = d_rj(1:nnod_rj,ist+nd)
+!$omp end workshare nowait
       end do
 !$omp end parallel
 !
@@ -275,17 +269,15 @@
 !
       type(field_IO), intent(in) :: fld_IO
       integer(kind = kint), intent(in) :: i_fld, j_IO
-      integer(kind = kint) :: ist, jst, inod
+      integer(kind = kint) :: ist, jst
 !
 !
       ist = istack_phys_comp_rj(i_fld-1)
       jst = fld_IO%istack_comp_IO(j_IO-1)
-!$omp parallel do
-      do inod = 1, nnod_rj
-        d_rj(inod,ist+1) = fld_IO%d_IO(inod,jst+1)
-        d_rj(inod,ist+3) = fld_IO%d_IO(inod,jst+2)
-      end do
-!$omp end parallel do
+!$omp parallel workshare
+      d_rj(1:nnod_rj,ist+1) = fld_IO%d_IO(1:nnod_rj,jst+1)
+      d_rj(1:nnod_rj,ist+3) = fld_IO%d_IO(1:nnod_rj,jst+2)
+!$omp end parallel workshare
 !
       end subroutine copy_each_sph_solenoid_from_IO
 !
@@ -295,18 +287,16 @@
 !
       type(field_IO), intent(in) :: fld_IO
       integer(kind = kint), intent(in) :: i_fld, j_IO
-      integer(kind = kint) :: ist, jst, inod
+      integer(kind = kint) :: ist, jst
 !
 !
       ist = istack_phys_comp_rj(i_fld-1)
       jst = fld_IO%istack_comp_IO(j_IO-1)
-!$omp parallel do
-      do inod = 1, nnod_rj
-        d_rj(inod,ist+1) = fld_IO%d_IO(inod,jst+1)
-        d_rj(inod,ist+3) = fld_IO%d_IO(inod,jst+2)
-        d_rj(inod,ist+2) = fld_IO%d_IO(inod,jst+3)
-      end do
-!$omp end parallel do
+!$omp parallel workshare
+      d_rj(1:nnod_rj,ist+1) = fld_IO%d_IO(1:nnod_rj,jst+1)
+      d_rj(1:nnod_rj,ist+3) = fld_IO%d_IO(1:nnod_rj,jst+2)
+      d_rj(1:nnod_rj,ist+2) = fld_IO%d_IO(1:nnod_rj,jst+3)
+!$omp end parallel workshare
 !
       end subroutine copy_each_sph_vector_from_IO
 !
@@ -316,18 +306,16 @@
 !
       type(field_IO), intent(in) :: fld_IO
       integer(kind = kint), intent(in) :: i_fld, j_IO
-      integer(kind = kint) :: ist, jst, nd, inod
+      integer(kind = kint) :: ist, jst, nd
 !
 !
       ist = istack_phys_comp_rj(i_fld-1)
       jst = fld_IO%istack_comp_IO(j_IO-1 )
 !$omp parallel
       do nd = 1, num_phys_comp_rj(i_fld)
-!$omp do
-        do inod = 1, nnod_rj
-          d_rj(inod,ist+nd) = fld_IO%d_IO(inod,jst+nd)
-        end do
-!$omp end do nowait
+!$omp workshare
+          d_rj(1:nnod_rj,ist+nd) = fld_IO%d_IO(1:nnod_rj,jst+nd)
+!$omp end workshare nowait
       end do
 !$omp end parallel
 !

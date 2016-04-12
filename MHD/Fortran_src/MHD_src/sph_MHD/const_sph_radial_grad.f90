@@ -86,7 +86,8 @@
 !
       call cal_sph_nod_gradient_2(sph_bc%kr_in, sph_bc%kr_out,          &
      &    is_fld, is_grad, ntot_phys_rj, d_rj)
-      call sel_bc_radial_grad_scalar(sph_bc, is_fld, is_grad)
+      call sel_bc_radial_grad_scalar(sph_bc, is_fld, is_grad,           &
+     &    ntot_phys_rj, d_rj)
       call normalize_sph_average_grad(is_grad, ntot_phys_rj, d_rj)
 !
       end subroutine const_radial_grad_scalar
@@ -104,9 +105,10 @@
       integer(kind = kint), intent(in) :: is_velo, is_vort
 !
 !
-      call sel_bc_grad_vp_and_vorticity(is_velo, is_vort)
+      call sel_bc_grad_vp_and_vorticity                                 &
+     &   (is_velo, is_vort, ntot_phys_rj, d_rj)
       call cal_sph_diff_pol_and_rot2(sph_bc_U%kr_in, sph_bc_U%kr_out,   &
-     &    is_velo, is_vort)
+     &    is_velo, is_vort, ntot_phys_rj, d_rj)
 !
       end subroutine const_grad_vp_and_vorticity
 !
@@ -125,9 +127,10 @@
       integer(kind = kint), intent(in) :: is_magne, is_current
 !
 !
-      call sel_bc_grad_bp_and_current(sph_bc_B, is_magne, is_current)
+      call sel_bc_grad_bp_and_current(sph_bc_B, is_magne, is_current,   &
+     &    ntot_phys_rj, d_rj)
       call cal_sph_diff_pol_and_rot2(sph_bc_B%kr_in, sph_bc_B%kr_out,   &
-     &    is_magne, is_current)
+     &    is_magne, is_current, ntot_phys_rj, d_rj)
 !
 !      Extend potential field
       call ext_outside_potential_with_j                                 &
@@ -152,9 +155,9 @@
       integer(kind = kint), intent(in) :: is_fld
 !
 !
-      call sel_bc_grad_poloidal_moment(is_fld)
+      call sel_bc_grad_poloidal_moment(is_fld, ntot_phys_rj, d_rj)
       call cal_sph_diff_poloidal2(sph_bc_U%kr_in, sph_bc_U%kr_out,      &
-     &    is_fld)
+     &    is_fld, ntot_phys_rj, d_rj)
 !
       end subroutine const_grad_poloidal_moment
 !
@@ -172,10 +175,11 @@
       integer(kind = kint), intent(in) :: is_magne
 !
 !
-      call sel_bc_grad_poloidal_magne(sph_bc_B, is_magne)
+      call sel_bc_grad_poloidal_magne                                   &
+     &   (sph_bc_B, is_magne, ntot_phys_rj, d_rj)
 !
       call cal_sph_diff_poloidal2(sph_bc_B%kr_in, sph_bc_B%kr_out,      &
-     &    is_magne)
+     &    is_magne, ntot_phys_rj, d_rj)
 !
 !      Extend potential field
       call ext_outside_potential                                        &

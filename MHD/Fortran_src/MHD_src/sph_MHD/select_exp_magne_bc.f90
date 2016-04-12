@@ -8,22 +8,26 @@
 !!
 !!@verbatim
 !!      subroutine sel_bc_grad_bp_and_current(sph_bc_B,                 &
+!!     &           is_magne, is_current, ntot_phys_rj, d_rj)
 !!     &           is_magne, is_current)
 !!        Input:    ipol%i_magne, itor%i_magne
 !!        Solution: idpdr%i_magne,
 !!                  ipol%i_current, itor%i_current, idpdr%i_current
-!!      subroutine sel_bc_grad_poloidal_magne(sph_bc_B, is_magne)
+!!      subroutine sel_bc_grad_poloidal_magne                           &
+!!     &         (sph_bc_B, is_magne, ntot_phys_rj, d_rj)
 !!        Input:    ipol%i_magne, itor%i_magne
 !!        Solution: idpdr%i_magne
 !!
-!!      subroutine sel_bc_sph_current(sph_bc_B, is_magne, is_current)
+!!      subroutine sel_bc_sph_current                                   &
+!!     &         (sph_bc_B, is_magne, is_current, ntot_phys_rj, d_rj)
 !!        Input:    ipol%i_magne, itor%i_magne
 !!        Solution: ipol%i_current, itor%i_current, idpdr%i_current
-!!      subroutine sel_bc_sph_rotation_uxb(isph_bc_B, is_fld, is_rot)
+!!      subroutine sel_bc_sph_rotation_uxb                              &
+!!     &         (sph_bc_B, is_fld, is_rot, ntot_phys_rj, d_rj)
 !!        Input:    is_fld, it_fld
 !!        Solution: is_rot, it_rot, ids_rot
 !!      subroutine sel_bc_sph_magnetic_diffusion(sph_bc_B, coef_diffuse,&
-!!     &          is_magne, is_ohmic, ids_ohmic)
+!!     &          is_magne, is_ohmic, ids_ohmic, ntot_phys_rj, d_rj)
 !!        Input:    ipol%i_magne, itor%i_magne
 !!        Solution: ipol%i_b_diffuse, itor%i_b_diffuse, idpdr%i_b_diffuse
 !!@endverbatim
@@ -43,6 +47,9 @@
 !!                   for radial derivative of poloidal ohmic dissipation
 !!@param is_fld      Spherical hermonics data address for input vector
 !!@param is_rot      Spherical hermonics data address for curl of field
+!!
+!!@n @param ntot_phys_rj   Total number of components
+!!@n @param d_rj           Spectrum data
 !
       module select_exp_magne_bc
 !
@@ -50,7 +57,6 @@
 !
       use m_constants
       use m_spheric_parameter
-      use m_sph_spectr_data
 !
       use t_boundary_params_sph_MHD
 !
@@ -69,10 +75,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sel_bc_grad_bp_and_current(sph_bc_B,                   &
-     &           is_magne, is_current)
+     &           is_magne, is_current, ntot_phys_rj, d_rj)
 !
       type(sph_boundary_type), intent(in) :: sph_bc_B
       integer(kind = kint), intent(in) :: is_magne, is_current
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+!
+      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
@@ -107,10 +116,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sel_bc_grad_poloidal_magne(sph_bc_B, is_magne)
+      subroutine sel_bc_grad_poloidal_magne                             &
+     &         (sph_bc_B, is_magne, ntot_phys_rj, d_rj)
 !
       type(sph_boundary_type), intent(in) :: sph_bc_B
       integer(kind = kint), intent(in) :: is_magne
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+!
+      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
@@ -140,10 +153,14 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine sel_bc_sph_current(sph_bc_B, is_magne, is_current)
+      subroutine sel_bc_sph_current                                     &
+     &         (sph_bc_B, is_magne, is_current, ntot_phys_rj, d_rj)
 !
       type(sph_boundary_type), intent(in) :: sph_bc_B
       integer(kind = kint), intent(in) :: is_magne, is_current
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+!
+      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
@@ -178,10 +195,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sel_bc_sph_rotation_uxb(sph_bc_B, is_fld, is_rot)
+      subroutine sel_bc_sph_rotation_uxb                                &
+     &         (sph_bc_B, is_fld, is_rot, ntot_phys_rj, d_rj)
 !
       type(sph_boundary_type), intent(in) :: sph_bc_B
       integer(kind = kint), intent(in) :: is_fld, is_rot
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+!
+      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
@@ -214,7 +235,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sel_bc_sph_magnetic_diffusion(sph_bc_B, coef_diffuse,  &
-     &          is_magne, is_ohmic, ids_ohmic)
+     &          is_magne, is_ohmic, ids_ohmic, ntot_phys_rj, d_rj)
 !
       use cal_sph_exp_fixed_scalar
 !
@@ -222,6 +243,9 @@
       integer(kind = kint), intent(in) :: is_magne
       integer(kind = kint), intent(in) :: is_ohmic, ids_ohmic
       real(kind = kreal), intent(in) :: coef_diffuse
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+!
+      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then

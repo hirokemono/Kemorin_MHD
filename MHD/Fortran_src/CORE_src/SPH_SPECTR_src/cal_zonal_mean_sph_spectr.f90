@@ -117,13 +117,15 @@
       subroutine pick_order_sph_spectr(num_order, ipick_order,          &
      &          numdir, is_fld)
 !
+      use m_sph_spectr_data
+!
       integer(kind = kint), intent(in) :: numdir, is_fld
       integer(kind = kint), intent(in) :: num_order
       integer(kind = kint), intent(in) :: ipick_order(num_order)
 !
 !
       call pick_del_order_sph_spectr(iflag_pick,                        &
-     &    num_order, ipick_order, numdir, is_fld)
+     &    num_order, ipick_order, numdir, is_fld, ntot_phys_rj, d_rj)
 !
       end subroutine pick_order_sph_spectr
 !
@@ -132,13 +134,15 @@
       subroutine delete_order_sph_spectr(num_order, ipick_order,        &
      &          numdir, is_fld)
 !
+      use m_sph_spectr_data
+!
       integer(kind = kint), intent(in) :: numdir, is_fld
       integer(kind = kint), intent(in) :: num_order
       integer(kind = kint), intent(in) :: ipick_order(num_order)
 !
 !
       call pick_del_order_sph_spectr(iflag_delete,                      &
-     &    num_order, ipick_order, numdir, is_fld)
+     &    num_order, ipick_order, numdir, is_fld, ntot_phys_rj, d_rj)
 !
       end subroutine delete_order_sph_spectr
 !
@@ -148,13 +152,15 @@
       subroutine pick_degree_sph_spectr(num_degree, ipick_degree,       &
      &          numdir, is_fld)
 !
+      use m_sph_spectr_data
+!
       integer(kind = kint), intent(in) :: numdir, is_fld
       integer(kind = kint), intent(in) :: num_degree
       integer(kind = kint), intent(in) :: ipick_degree(num_degree)
 !
 !
       call pick_del_degree_sph_spectr(iflag_pick,                       &
-     &    num_degree, ipick_degree, numdir, is_fld)
+     &    num_degree, ipick_degree, numdir, is_fld, ntot_phys_rj, d_rj)
 !
       end subroutine pick_degree_sph_spectr
 !
@@ -163,13 +169,15 @@
       subroutine delete_degree_sph_spectr(num_degree, ipick_degree,     &
      &          numdir, is_fld)
 !
+      use m_sph_spectr_data
+!
       integer(kind = kint), intent(in) :: numdir, is_fld
       integer(kind = kint), intent(in) :: num_degree
       integer(kind = kint), intent(in) :: ipick_degree(num_degree)
 !
 !
       call pick_del_degree_sph_spectr(iflag_delete,                     &
-     &    num_degree, ipick_degree, numdir, is_fld)
+     &    num_degree, ipick_degree, numdir, is_fld, ntot_phys_rj, d_rj)
 !
       end subroutine delete_degree_sph_spectr
 !
@@ -177,15 +185,17 @@
 !-----------------------------------------------------------------------
 !
       subroutine pick_del_order_sph_spectr(iswitch,                     &
-     &          num_order, ipick_order, numdir, is_fld)
+     &          num_order, ipick_order, numdir, is_fld,                 &
+     &          ntot_phys_rj, d_rj)
 !
-      use m_sph_spectr_data
       use m_spheric_parameter
 !
       integer(kind = kint), intent(in) :: iswitch
       integer(kind = kint), intent(in) :: numdir, is_fld
       integer(kind = kint), intent(in) :: num_order
       integer(kind = kint), intent(in) :: ipick_order(num_order)
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: nd, j, kr, inod, inum, iflag
 !
@@ -217,15 +227,17 @@
 !-----------------------------------------------------------------------
 !
       subroutine pick_del_degree_sph_spectr(iswitch,                    &
-     &          num_degree, ipick_degree, numdir, is_fld)
+     &          num_degree, ipick_degree, numdir, is_fld,               &
+     &          ntot_phys_rj, d_rj)
 !
-      use m_sph_spectr_data
       use m_spheric_parameter
 !
       integer(kind = kint), intent(in) :: iswitch
       integer(kind = kint), intent(in) :: numdir, is_fld
       integer(kind = kint), intent(in) :: num_degree
       integer(kind = kint), intent(in) :: ipick_degree(num_degree)
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: nd, j, kr, inod, inum, iflag
 !

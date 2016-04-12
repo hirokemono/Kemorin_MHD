@@ -8,7 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine s_cal_nonlinear_sph_MHD
-!!      subroutine add_reftemp_advect_sph_MHD(kr_in, kr_out)
+!!      subroutine add_reftemp_advect_sph_MHD(kr_in, kr_out,            &
+!!     &          ntot_phys_rj, reftemp_rj, d_rj)
 !!@endverbatim
 !!
 !!@n @param kr_in       Radial ID for inner boundary
@@ -86,12 +87,15 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine add_reftemp_advect_sph_MHD(kr_in, kr_out)
+      subroutine add_reftemp_advect_sph_MHD(kr_in, kr_out,              &
+     &          ntot_phys_rj, reftemp_rj, d_rj)
 !
       use m_schmidt_poly_on_rtm
-      use m_sph_spectr_data
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
+      integer (kind = kint), intent(in) :: ntot_phys_rj
+      real(kind = kreal), intent(in) :: reftemp_rj(nidx_rj(1),0:1)
+      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind= kint) :: ist, ied, inod, j, k
 !

@@ -7,23 +7,28 @@
 !> @brief Select boundary condition routines for velocity
 !!
 !!@verbatim
-!!      subroutine sel_bc_grad_vp_and_vorticity(is_velo, is_vort)
+!!      subroutine sel_bc_grad_vp_and_vorticity(is_velo, is_vort,       &
+!!     &          ntot_phys_rj, d_rj)
 !!        Input:    ipol%i_velo, itor%i_velo
 !!        Solution: idpdr%i_velo, ipol%i_vort, itor%i_vort, idpdr%i_vort
-!!      subroutine sel_bc_grad_poloidal_moment(is_fld)
+!!      subroutine sel_bc_grad_poloidal_moment                          &
+!!     &         (is_fld, ntot_phys_rj, d_rj)
 !!        Input:    is_fld, is_fld+2
 !!        Solution: is_fld+1
 !!
-!!      subroutine sel_bc_sph_vorticity(sph_bc_U, is_fld, is_rot)
+!!      subroutine sel_bc_sph_vorticity(sph_bc_U, is_fld, is_rot        &
+!!     &          ntot_phys_rj, d_rj)
 !!        Input:    ipol%i_velo, itor%i_velo
 !!        Solution: ipol%i_vort, itor%i_vort, idpdr%i_vort
 !!
 !!      subroutine sel_bc_sph_viscous_diffusion(sph_bc_U, coef_diffuse, &
-!!     &          is_velo, it_velo, is_viscous, ids_viscous)
+!!     &          is_velo, it_velo, is_viscous, ids_viscous,            &
+!!     &          ntot_phys_rj, d_rj)
 !!        Input:    ipol%i_velo, itor%i_velo
 !!        Solution: ipol%i_v_diffuse, itor%i_v_diffuse, idpdr%i_v_diffuse
 !!      subroutine sel_bc_sph_vort_diffusion(sph_bc_U,                  &
-!!     &          coef_diffuse, is_vort, is_w_diffuse, ids_w_diffuse)
+!!     &          coef_diffuse, is_vort, is_w_diffuse, ids_w_diffuse,   &
+!!     &          ntot_phys_rj, d_rj)
 !!        Input:    ipol%i_vort, itor%i_vort
 !!        Solution: ipol%i_w_diffuse, itor%i_w_diffuse, idpdr%i_w_diffuse
 !!@endverbatim
@@ -53,6 +58,9 @@
 !!                       for poloidal vorticity diffusion
 !!@param ids_w_diffuse Spherical hermonics data address
 !!                   for radial derivative of vorticity diffusion
+!!
+!!@n @param ntot_phys_rj   Total number of components
+!!@n @param d_rj           Spectrum data
 !
       module select_exp_velocity_bc
 !
@@ -60,7 +68,6 @@
 !
       use m_constants
       use m_spheric_parameter
-      use m_sph_spectr_data
 !
       use set_sph_exp_rigid_ICB
       use set_sph_exp_rigid_CMB
@@ -78,11 +85,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sel_bc_grad_vp_and_vorticity(is_velo, is_vort)
+      subroutine sel_bc_grad_vp_and_vorticity(is_velo, is_vort,         &
+     &          ntot_phys_rj, d_rj)
 !
       use m_boundary_params_sph_MHD
 !
       integer(kind = kint), intent(in) :: is_velo, is_vort
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+!
+      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
 !
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
@@ -129,11 +140,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sel_bc_grad_poloidal_moment(is_fld)
+      subroutine sel_bc_grad_poloidal_moment                            &
+     &         (is_fld, ntot_phys_rj, d_rj)
 !
       use m_boundary_params_sph_MHD
 !
       integer(kind = kint), intent(in) :: is_fld
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+!
+      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
 !
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
@@ -168,12 +183,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sel_bc_sph_vorticity(sph_bc_U, is_fld, is_rot)
+      subroutine sel_bc_sph_vorticity(sph_bc_U, is_fld, is_rot,         &
+     &          ntot_phys_rj, d_rj)
 !
       use t_boundary_params_sph_MHD
 !
       type(sph_boundary_type), intent(in) :: sph_bc_U
       integer(kind = kint), intent(in) :: is_fld, is_rot
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+!
+      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
 !
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
@@ -210,7 +229,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sel_bc_sph_viscous_diffusion(sph_bc_U, coef_diffuse,   &
-     &          is_velo, it_velo, is_viscous, ids_viscous)
+     &          is_velo, it_velo, is_viscous, ids_viscous,              &
+     &          ntot_phys_rj, d_rj)
 !
       use t_boundary_params_sph_MHD
       use cal_sph_exp_fixed_scalar
@@ -220,6 +240,9 @@
       integer(kind = kint), intent(in) :: is_velo, it_velo
       integer(kind = kint), intent(in) :: is_viscous, ids_viscous
       real(kind = kreal), intent(in) :: coef_diffuse
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+!
+      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: it_diffuse
 !
@@ -251,7 +274,7 @@
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call cal_icore_viscous_drag_explicit(sph_bc_U%kr_in,            &
      &      sph_bc_U%fdm1_fix_fld_ICB, coef_diffuse,                    &
-     &      it_velo, it_diffuse)
+     &      it_velo, it_diffuse, ntot_phys_rj, d_rj)
       end if
 !
       if(sph_bc_U%iflag_cmb .eq. iflag_free_slip) then
@@ -274,7 +297,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sel_bc_sph_vort_diffusion(sph_bc_U,                    &
-     &          coef_diffuse, is_vort, is_w_diffuse, ids_w_diffuse)
+     &          coef_diffuse, is_vort, is_w_diffuse, ids_w_diffuse,     &
+     &          ntot_phys_rj, d_rj)
 !
       use t_boundary_params_sph_MHD
       use cal_sph_exp_fixed_scalar
@@ -284,6 +308,9 @@
       integer(kind = kint), intent(in) :: is_vort
       integer(kind = kint), intent(in) :: is_w_diffuse, ids_w_diffuse
       real(kind = kreal), intent(in) :: coef_diffuse
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+!
+      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
 !
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
@@ -306,7 +333,7 @@
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call cal_icore_viscous_drag_explicit(sph_bc_U%kr_in,            &
      &      sph_bc_U%fdm1_fix_fld_ICB, coef_diffuse,                    &
-     &      is_vort, is_w_diffuse)
+     &      is_vort, is_w_diffuse, ntot_phys_rj, d_rj)
       end if
 !
       call cal_dsdr_sph_no_bc_in_2(nnod_rj, nidx_rj(2),                 &

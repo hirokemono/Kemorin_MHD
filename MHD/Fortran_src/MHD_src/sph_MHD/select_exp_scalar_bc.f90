@@ -7,16 +7,18 @@
 !> @brief Evaluate radial delivatives
 !!
 !!@verbatim
-!!      subroutine sel_bc_radial_grad_scalar(sph_bc, is_fld, is_grad)
+!!      subroutine sel_bc_radial_grad_scalar(sph_bc, is_fld, is_grad,   &
+!!     &          ntot_phys_rj, d_rj)
 !!        Input:    is_fld
 !!        Solution: is_grad
 !!
 !!      subroutine sel_bc_sph_scalar_diffusion(sph_bc, coef_diffuse,    &
-!!     &          is_fld, is_diffuse)
+!!     &          is_fld, is_diffuse, ntot_phys_rj, d_rj)
 !!        Input:    is_fld
 !!        Solution: is_diffusee
 !!
-!!      subroutine sel_bc_sph_scalar_advect(sph_bc, is_flux, is_advect)
+!!      subroutine sel_bc_sph_scalar_advect(sph_bc, is_flux, is_advect, &
+!!     &          ntot_phys_rj, d_rj)
 !!        Input:    is_flux
 !!        Solution: is_advect
 !!@endverbatim
@@ -37,7 +39,6 @@
 !
       use m_constants
       use m_spheric_parameter
-      use m_sph_spectr_data
       use m_sph_phys_address
 !
       implicit none
@@ -48,7 +49,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sel_bc_radial_grad_scalar(sph_bc, is_fld, is_grad)
+      subroutine sel_bc_radial_grad_scalar(sph_bc, is_fld, is_grad,     &
+     &          ntot_phys_rj, d_rj)
 !
       use m_coef_fdm_to_center
       use t_boundary_params_sph_MHD
@@ -59,6 +61,9 @@
 !
       type(sph_boundary_type), intent(in) :: sph_bc
       integer(kind = kint), intent(in) :: is_fld, is_grad
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+!
+      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
 !
       if     (sph_bc%iflag_icb .eq. iflag_sph_fill_center) then
@@ -115,7 +120,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sel_bc_sph_scalar_diffusion(sph_bc, coef_diffuse,      &
-     &          is_fld, is_diffuse)
+     &          is_fld, is_diffuse, ntot_phys_rj, d_rj)
 !
       use t_boundary_params_sph_MHD
       use m_coef_fdm_to_center
@@ -125,7 +130,10 @@
 !
       type(sph_boundary_type), intent(in) :: sph_bc
       integer(kind = kint), intent(in) :: is_fld, is_diffuse
+      integer(kind = kint), intent(in) :: ntot_phys_rj
       real(kind = kreal), intent(in) :: coef_diffuse
+!
+      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
 !
       if     (sph_bc%iflag_icb .eq. iflag_sph_fill_center) then
@@ -168,7 +176,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sel_bc_sph_scalar_advect(sph_bc, is_flux, is_advect)
+      subroutine sel_bc_sph_scalar_advect(sph_bc, is_flux, is_advect,   &
+     &          ntot_phys_rj, d_rj)
 !
       use t_boundary_params_sph_MHD
       use m_coef_fdm_to_center
@@ -178,6 +187,9 @@
 !
       type(sph_boundary_type), intent(in) :: sph_bc
       integer(kind = kint), intent(in) :: is_flux, is_advect
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+!
+      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
 !
       if     (sph_bc%iflag_icb .eq. iflag_sph_fill_center) then

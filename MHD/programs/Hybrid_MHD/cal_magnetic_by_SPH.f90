@@ -179,9 +179,9 @@
       use copy_spectr_4_sph_trans
 !
       if ( iflag_SGS_induction .ne. id_SGS_none) then
-        call cal_diff_induction_MHD_adams
+        call cal_diff_induction_MHD_adams(ntot_phys_rj, d_rj)
       else
-        call cal_diff_induction_wSGS_adams
+        call cal_diff_induction_wSGS_adams(ntot_phys_rj, d_rj)
       end if
 !
       call cal_sol_magne_sph_crank(ntot_phys_rj, d_rj)

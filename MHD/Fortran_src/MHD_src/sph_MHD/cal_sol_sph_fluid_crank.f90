@@ -152,7 +152,7 @@
       use m_boundary_params_sph_MHD
       use set_reference_sph_mhd
 !
-      integer(kind = kint), intent(in) ::  ntot_phys_rj
+      integer(kind = kint), intent(in) :: ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
 !

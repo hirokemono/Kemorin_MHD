@@ -108,18 +108,19 @@
         if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
         call set_rj_phys_data_from_IO(sph_fld_IN)
 !
-        call sum_sph_spectr_data
+        call sum_sph_spectr_data(ntot_phys_rj, d_rj)
       end do
 
       call calypso_mpi_barrier
-      call t_ave_sph_spectr_data(i_step_init, i_step_number)
+      call t_ave_sph_spectr_data                                        &
+     &   (i_step_init, i_step_number, ntot_phys_rj, d_rj)
 !
       call copy_rj_all_phys_name_to_IO(sph_fld_OUT)
       call alloc_phys_data_IO(sph_fld_OUT)
       call copy_rj_all_phys_data_to_IO(sph_fld_OUT)
 !
       call alloc_merged_field_stack(nprocs, sph_fld_OUT)
-      call count_number_of_node_stack                                 &
+      call count_number_of_node_stack                                   &
      &   (sph_fld_OUT%nnod_IO, sph_fld_OUT%istack_numnod_IO)
 !
 !
@@ -148,21 +149,22 @@
         if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
         call set_rj_phys_data_from_IO(sph_fld_IN)
 !
-        call sum_deviation_sph_spectr
+        call sum_deviation_sph_spectr(ntot_phys_rj, d_rj)
       end do
 !
       call calypso_mpi_barrier
       call dealloc_phys_data_IO(sph_fld_IN)
       call dealloc_phys_name_IO(sph_fld_IN)
 !
-      call sdev_sph_spectr_data(i_step_init, i_step_number)
+      call sdev_sph_spectr_data                                         &
+     &   (i_step_init, i_step_number, ntot_phys_rj, d_rj)
 !
       call copy_rj_all_phys_name_to_IO(sph_fld_OUT)
       call alloc_phys_data_IO(sph_fld_OUT)
       call copy_rj_all_phys_data_to_IO(sph_fld_OUT)
 !
       call alloc_merged_field_stack(nprocs, sph_fld_OUT)
-      call count_number_of_node_stack                                 &
+      call count_number_of_node_stack                                   &
      &   (sph_fld_OUT%nnod_IO, sph_fld_OUT%istack_numnod_IO)
 !
 !

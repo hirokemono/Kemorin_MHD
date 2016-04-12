@@ -45,8 +45,9 @@
 !
 !
       call cal_sph_nod_vect_div2(sph_bc%kr_in, sph_bc%kr_out,           &
-     &    is_flux, is_advect)
-      call sel_bc_sph_scalar_advect(sph_bc, is_flux, is_advect)
+     &    is_flux, is_advect, ntot_phys_rj, d_rj)
+      call sel_bc_sph_scalar_advect(sph_bc, is_flux, is_advect,         &
+     &    ntot_phys_rj, d_rj)
 !
       end subroutine const_sph_scalar_advect
 !
@@ -66,7 +67,7 @@
 !
 !
       call cal_sph_nod_vect_div2(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
-     &    is_fld, is_div)
+     &    is_fld, is_div, ntot_phys_rj, d_rj)
 !
       call cal_sph_nod_nobc_in_div2(nnod_rj, nidx_rj(2),                &
      &    sph_bc_U%kr_in, sph_bc_U%r_ICB, sph_bc_U%fdm2_fix_fld_ICB,    &

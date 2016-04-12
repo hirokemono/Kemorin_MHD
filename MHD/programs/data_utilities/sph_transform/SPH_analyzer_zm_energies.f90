@@ -70,7 +70,9 @@
           call r_interpolate_sph_fld_from_IO(fld_IO)
         end if
 !
-!        call set_rj_phys_for_pol_kene
+!        call set_rj_phys_for_pol_kene(num_phys_rj, ntot_phys_rj,       &
+!     &      phys_name_rj, istack_phys_comp_rj, d_rj)
+!
         call set_rj_phys_for_convective_kene
 !
 !  spherical transform for vector
@@ -120,13 +122,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_rj_phys_for_pol_kene
+      subroutine set_rj_phys_for_pol_kene(num_phys_rj, ntot_phys_rj,    &
+     &          phys_name_rj, istack_phys_comp_rj, d_rj)
 !
       use m_phys_labels
       use m_spheric_parameter
-      use m_sph_spectr_data
       use m_sph_phys_address
 !
+      integer(kind = kint), intent(in) ::  num_phys_rj, ntot_phys_rj
+      character (len=kchara), intent(in) :: phys_name_rj(num_phys_rj)
+      integer (kind=kint), intent(in)                                   &
+     &       :: istack_phys_comp_rj(0:num_phys_rj)
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, ist_fld, i, k, j
 !

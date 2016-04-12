@@ -66,6 +66,7 @@
       subroutine pressure_4_sph_mhd
 !
       use m_sph_phys_address
+      use m_sph_spectr_data
       use m_boundary_params_sph_MHD
       use cal_sol_sph_fluid_crank
 !

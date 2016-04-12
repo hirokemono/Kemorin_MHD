@@ -90,7 +90,8 @@
      &    is_viscous, idp_diffuse, ntot_phys_rj, d_rj)
 !
       call sel_bc_sph_viscous_diffusion(sph_bc_U, coef_diffuse,         &
-     &    is_velo, it_velo, is_viscous, idp_diffuse)
+     &    is_velo, it_velo, is_viscous, idp_diffuse,                    &
+     &    ntot_phys_rj, d_rj)
 !
       end subroutine const_sph_viscous_diffusion
 !
@@ -119,7 +120,7 @@
      &    is_w_diffuse, idp_diffuse, ntot_phys_rj, d_rj)
 !
       call sel_bc_sph_vort_diffusion(sph_bc_U, coef_diffuse,            &
-     &          is_vort, is_w_diffuse, idp_diffuse)
+     &    is_vort, is_w_diffuse, idp_diffuse, ntot_phys_rj, d_rj)
 !
       end subroutine const_sph_vorticirty_diffusion
 !
@@ -149,7 +150,7 @@
      &    is_ohmic, idp_diffuse, ntot_phys_rj, d_rj)
 !
       call sel_bc_sph_magnetic_diffusion(sph_bc_B, coef_diffuse,        &
-     &    is_magne, is_ohmic, idp_diffuse)
+     &    is_magne, is_ohmic, idp_diffuse, ntot_phys_rj, d_rj)
 !
       end subroutine const_sph_magnetic_diffusion
 !
@@ -171,7 +172,7 @@
      &    ar_1d_rj, ntot_phys_rj, d_rj)
 !
       call sel_bc_sph_scalar_diffusion(sph_bc, coef_diffuse,            &
-     &    is_fld, is_diffuse)
+     &    is_fld, is_diffuse, ntot_phys_rj, d_rj)
 !
       end subroutine const_sph_scalar_diffusion
 !

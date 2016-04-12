@@ -72,29 +72,39 @@
       use m_initial_field_control
       use m_t_int_parameter
       use m_t_step_parameter
+      use m_sph_spectr_data
+!
       use sph_mhd_rst_IO_control
       use set_sph_restart_IO
 !
 !
 !  Set initial velocity if velocity is exist
-      if(ipol%i_velo .gt. izero) call  set_initial_velocity
+      if(ipol%i_velo .gt. izero) then
+        call  set_initial_velocity(ntot_phys_rj, d_rj)
+      end if
 !
 !  Set initial temperature if temperature is exist
-      if(ipol%i_temp .gt. izero) call  set_initial_temperature
+      if(ipol%i_temp .gt. izero) then
+        call  set_initial_temperature(ntot_phys_rj, d_rj)
+      end if
 !
 !  Set initial composition if composition is exist
-      if(ipol%i_light .gt. izero) call set_initial_composition
+      if(ipol%i_light .gt. izero) then
+        call set_initial_composition(ntot_phys_rj, d_rj)
+      end if
 !
 !  Set initial magnetic field if magnetic field is exist
-      if(ipol%i_magne .gt. izero) call set_initial_magne_sph
+      if(ipol%i_magne .gt. izero) then
+        call set_initial_magne_sph(ntot_phys_rj, d_rj)
+      end if
 !
 !  Set heat source if  heat source is exist
       if(ipol%i_heat_source .gt. izero) then
-        call set_initial_heat_source_sph
+        call set_initial_heat_source_sph(ntot_phys_rj, d_rj)
       end if
 !  Set light element source if light element is exist
       if(ipol%i_light_source .gt. izero) then
-        call set_initial_light_source_sph
+        call set_initial_light_source_sph(ntot_phys_rj, d_rj)
       end if
 !
 !  Copy initial field to restart IO data
@@ -111,9 +121,10 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_velocity
+      subroutine set_initial_velocity(ntot_phys_rj, d_rj)
 !
-      use m_sph_spectr_data
+      integer(kind = kint), intent(in) ::  ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer ( kind = kint) :: inod, jj, k
 !      real (kind = kreal) :: rr
@@ -155,9 +166,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_temperature
+      subroutine set_initial_temperature(ntot_phys_rj, d_rj)
 !
-      use m_sph_spectr_data
+      integer(kind = kint), intent(in) ::  ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer ( kind = kint) :: inod, k, jj
       real (kind = kreal) :: pi, rr, xr, shell
@@ -222,9 +234,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_composition
+      subroutine set_initial_composition(ntot_phys_rj, d_rj)
 !
-      use m_sph_spectr_data
+      integer(kind = kint), intent(in) ::  ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer (kind = kint) :: inod, k, jj
       real (kind = kreal) :: pi, xr, shell
@@ -281,9 +294,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_magne_sph
+      subroutine set_initial_magne_sph(ntot_phys_rj, d_rj)
 !
-      use m_sph_spectr_data
+      integer(kind = kint), intent(in) ::  ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real (kind = kreal) :: pi, rr
       integer(kind = kint) :: is, it, k, js, jt, is_ICB, is_CMB
@@ -351,9 +365,10 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_heat_source_sph
+      subroutine set_initial_heat_source_sph(ntot_phys_rj, d_rj)
 !
-      use m_sph_spectr_data
+      integer(kind = kint), intent(in) ::  ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real (kind = kreal) :: rr
       integer(kind = kint) :: inod, k, jj
@@ -390,12 +405,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_light_source_sph
+      subroutine set_initial_light_source_sph(ntot_phys_rj, d_rj)
 !
       use calypso_mpi
-      use m_sph_spectr_data
 !
-!      real (kind = kreal) :: rr
+      integer(kind = kint), intent(in) ::  ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+!
       integer(kind = kint) :: k, jj, inod
 !
 !
@@ -431,9 +447,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine adjust_by_CMB_temp
+      subroutine adjust_by_CMB_temp(ntot_phys_rj, d_rj)
 !
-      use m_sph_spectr_data
+      integer(kind = kint), intent(in) ::  ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer ( kind = kint) :: inod, k, jj
       real (kind = kreal) :: temp_CMB = 0.0d0

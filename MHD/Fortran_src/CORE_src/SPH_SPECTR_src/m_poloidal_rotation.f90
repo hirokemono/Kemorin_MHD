@@ -45,7 +45,6 @@
       use m_constants
       use m_machine_parameter
       use m_spheric_constants
-      use m_spheric_parameter
 !
       implicit none
 !
@@ -125,6 +124,7 @@
 !
       subroutine set_rot_earth_4_sph(rotate)
 !
+      use m_spheric_parameter
       use m_sph_spectr_data
 !
       real(kind = kreal), intent(in) :: rotate(3)

@@ -72,7 +72,8 @@
       if (ipol%i_ref_t .gt. 0) then
         if (iflag_debug .ge. iflag_routine_msg)                         &
      &               write(*,*) 'set_reftemp_4_sph'
-        call set_reftemp_4_sph(r_hot, r_cold, temp_hot, temp_cold)
+        call set_reftemp_4_sph(r_hot, r_cold, temp_hot, temp_cold,      &
+     &      ntot_phys_rj, d_rj)
       end if
 !*
 !*  ----------  rotation of earth  ---------------

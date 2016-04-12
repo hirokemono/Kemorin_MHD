@@ -9,7 +9,8 @@
 !!@n      with fixed temperature boundary
 !!
 !!@verbatim
-!!      subroutine set_reftemp_4_sph
+!!      subroutine set_reftemp_4_sph(r_ICB, r_CMB, temp_ICB, temp_CMB,  &
+!!     &          ntot_phys_rj, d_rj)
 !!***********************************************************************
 !!*
 !!*     ref_temp(k,0) : reference of temperature  (output)
@@ -46,13 +47,15 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine set_reftemp_4_sph(r_ICB, r_CMB, temp_ICB, temp_CMB)
+      subroutine set_reftemp_4_sph(r_ICB, r_CMB, temp_ICB, temp_CMB,    &
+     &          ntot_phys_rj, d_rj)
 !
-      use m_sph_spectr_data
       use m_sph_phys_address
 !
+      integer(kind = kint), intent(in) ::  ntot_phys_rj
       real(kind = kreal), intent(in) :: r_ICB, r_CMB
       real(kind = kreal), intent(in) :: temp_ICB, temp_CMB
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: j, k, kk, inod
       real(kind = kreal) :: c1, c2

@@ -54,9 +54,12 @@
       subroutine cal_expricit_sph_adams
 !
       use m_boundary_params_sph_MHD
+      use m_sph_spectr_data
+      use m_physical_property
       use cal_explicit_terms
       use cal_vorticity_terms_adams
       use cal_nonlinear_sph_MHD
+      use cal_diff_adv_src_explicit
 !
 !
 !$omp parallel
@@ -66,15 +69,21 @@
       end if
 !
       if(iflag_t_evo_4_magne .gt.    id_no_evolution) then
-        call cal_diff_induction_MHD_adams
+        call cal_diff_induction_MHD_adams(ntot_phys_rj, d_rj)
       end if
       if(iflag_t_evo_4_temp .gt.     id_no_evolution) then
-        call sel_heat_diff_adv_src_adams                                &
-     &     (sph_bc_T%kr_in, sph_bc_T%kr_out)
+        call sel_scalar_diff_adv_src_adams                              &
+     &     (sph_bc_T%kr_in, sph_bc_T%kr_out,                            &
+     &      ipol%i_t_diffuse, ipol%i_h_advect, ipol%i_heat_source,      &
+     &      ipol%i_temp, ipol%i_pre_heat, coef_exp_t, coef_h_src,       &
+     &      ntot_phys_rj, d_rj)
       end if
       if(iflag_t_evo_4_composit .gt. id_no_evolution) then
-        call sel_light_diff_adv_src_adams                               &
-     &     (sph_bc_C%kr_in, sph_bc_C%kr_out)
+        call sel_scalar_diff_adv_src_adams                              &
+     &     (sph_bc_C%kr_in, sph_bc_C%kr_out,                            &
+     &      ipol%i_c_diffuse, ipol%i_c_advect, ipol%i_light_source,     &
+     &      ipol%i_light, ipol%i_pre_composit, coef_exp_c, coef_c_src,  &
+     &      ntot_phys_rj, d_rj)
       end if
 !$omp end parallel
 !
@@ -85,8 +94,11 @@
       subroutine cal_expricit_sph_euler(i_step)
 !
       use m_boundary_params_sph_MHD
+      use m_sph_spectr_data
+      use m_physical_property
       use cal_explicit_terms
       use cal_vorticity_terms_adams
+      use cal_diff_adv_src_explicit
 !
       integer(kind = kint), intent(in) :: i_step
 !
@@ -98,15 +110,21 @@
       end if
 !
       if(iflag_t_evo_4_temp .gt.     id_no_evolution) then
-        call sel_heat_diff_adv_src_euler                                &
-     &     (sph_bc_T%kr_in, sph_bc_T%kr_out)
+        call sel_scalar_diff_adv_src_euler                              &
+     &     (sph_bc_T%kr_in, sph_bc_T%kr_out,                            &
+     &      ipol%i_t_diffuse, ipol%i_h_advect, ipol%i_heat_source,      &
+     &      ipol%i_temp, coef_exp_t, coef_temp, coef_h_src,             &
+     &      ntot_phys_rj, d_rj)
       end if
       if(iflag_t_evo_4_magne .gt.    id_no_evolution) then
-        call cal_diff_induction_MHD_euler
+        call cal_diff_induction_MHD_euler(ntot_phys_rj, d_rj)
       end if
       if(iflag_t_evo_4_composit .gt. id_no_evolution) then
-        call sel_light_diff_adv_src_euler                               &
-     &     (sph_bc_C%kr_in, sph_bc_C%kr_out)
+        call sel_scalar_diff_adv_src_euler                              &
+     &     (sph_bc_C%kr_in, sph_bc_C%kr_out,                            &
+     &      ipol%i_c_diffuse, ipol%i_c_advect, ipol%i_light_source,     &
+     &      ipol%i_light, coef_exp_c, coef_light, coef_c_src,           &
+     &      ntot_phys_rj, d_rj)
       end if
 !
       if (i_step .eq. 1) then
@@ -114,15 +132,19 @@
           call set_ini_adams_inertia(nnod_rj, ntot_phys_rj, d_rj)
         end if
         if(iflag_t_evo_4_temp .gt.     id_no_evolution) then
-          call sel_ini_adams_heat_w_src                                 &
-     &       (sph_bc_T%kr_in, sph_bc_T%kr_out)
+          call sel_ini_adams_scalar_w_src                               &
+     &       (sph_bc_T%kr_in, sph_bc_T%kr_out, ipol%i_h_advect,         &
+     &        ipol%i_heat_source, ipol%i_pre_heat,                      &
+     &        coef_h_src, ntot_phys_rj, d_rj)
         end if
         if(iflag_t_evo_4_magne .gt.    id_no_evolution) then
-          call set_ini_adams_mag_induct
+          call set_ini_adams_mag_induct(ntot_phys_rj, d_rj)
         end if
         if(iflag_t_evo_4_composit .gt. id_no_evolution) then
-          call sel_ini_adams_light_w_src                                &
-     &     (sph_bc_C%kr_in, sph_bc_C%kr_out)
+          call sel_ini_adams_scalar_w_src                               &
+     &       (sph_bc_C%kr_in, sph_bc_C%kr_out, ipol%i_c_advect,         &
+     &        ipol%i_light_source, ipol%i_pre_composit,                 &
+     &        coef_c_src, ntot_phys_rj, d_rj)
         end if
       end if
 !$omp end parallel
