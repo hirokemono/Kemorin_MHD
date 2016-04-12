@@ -57,7 +57,6 @@
       use m_spheric_parameter
       use m_sph_spectr_data
       use cal_sph_exp_diffusion
-      use cal_sph_exp_1st_diff
 !
       implicit none
 !
@@ -71,6 +70,7 @@
      &          is_velo, it_velo, is_viscous)
 !
       use t_boundary_params_sph_MHD
+      use cal_sph_exp_1st_diff
       use cal_sph_exp_fixed_scalar
       use select_exp_velocity_bc
 !
@@ -84,9 +84,10 @@
       idp_diffuse = is_viscous + 1
 !
       call cal_sph_nod_vect_diffuse2(sph_bc_U%kr_in, sph_bc_U%kr_out,   &
-     &    coef_diffuse, is_velo, is_viscous)
+     &    coef_diffuse, is_velo, is_viscous, nnod_rj, nidx_rj,          &
+     &    ar_1d_rj, ntot_phys_rj, d_rj)
       call cal_sph_nod_vect_dr_2(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
-     &    d_rj(1,is_viscous), d_rj(1,idp_diffuse) )
+     &    is_viscous, idp_diffuse, ntot_phys_rj, d_rj)
 !
       call sel_bc_sph_viscous_diffusion(sph_bc_U, coef_diffuse,         &
      &    is_velo, it_velo, is_viscous, idp_diffuse)
@@ -99,6 +100,7 @@
      &          coef_diffuse, is_vort, is_w_diffuse)
 !
       use t_boundary_params_sph_MHD
+      use cal_sph_exp_1st_diff
       use select_exp_velocity_bc
 !
       type(sph_boundary_type), intent(in) :: sph_bc_U
@@ -111,9 +113,10 @@
       idp_diffuse = is_w_diffuse + 1
 !
       call cal_sph_nod_vect_diffuse2(sph_bc_U%kr_in, sph_bc_U%kr_out,   &
-     &    coef_diffuse, is_vort, is_w_diffuse)
+     &    coef_diffuse, is_vort, is_w_diffuse, nnod_rj, nidx_rj,        &
+     &    ar_1d_rj, ntot_phys_rj, d_rj)
       call cal_sph_nod_vect_dr_2(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
-     &    d_rj(1,is_w_diffuse), d_rj(1,idp_diffuse) )
+     &    is_w_diffuse, idp_diffuse, ntot_phys_rj, d_rj)
 !
       call sel_bc_sph_vort_diffusion(sph_bc_U, coef_diffuse,            &
      &          is_vort, is_w_diffuse, idp_diffuse)
@@ -127,6 +130,7 @@
      &          is_magne, is_ohmic)
 !
       use t_boundary_params_sph_MHD
+      use cal_sph_exp_1st_diff
       use select_exp_magne_bc
 !
       type(sph_boundary_type), intent(in) :: sph_bc_B
@@ -139,9 +143,10 @@
       idp_diffuse = is_ohmic + 1
 !
       call cal_sph_nod_vect_diffuse2(sph_bc_B%kr_in, sph_bc_B%kr_out,   &
-     &     coef_diffuse, is_magne, is_ohmic)
+     &     coef_diffuse, is_magne, is_ohmic, nnod_rj, nidx_rj,          &
+     &     ar_1d_rj, ntot_phys_rj, d_rj)
       call cal_sph_nod_vect_dr_2(sph_bc_B%kr_in, sph_bc_B%kr_out,       &
-     &    d_rj(1,is_ohmic), d_rj(1,idp_diffuse) )
+     &    is_ohmic, idp_diffuse, ntot_phys_rj, d_rj)
 !
       call sel_bc_sph_magnetic_diffusion(sph_bc_B, coef_diffuse,        &
      &    is_magne, is_ohmic, idp_diffuse)
@@ -162,7 +167,8 @@
 !
 !
       call cal_sph_nod_scalar_diffuse2(sph_bc%kr_in, sph_bc%kr_out,     &
-     &    coef_diffuse, is_fld, is_diffuse)
+     &    coef_diffuse, is_fld, is_diffuse, nnod_rj, nidx_rj,           &
+     &    ar_1d_rj, ntot_phys_rj, d_rj)
 !
       call sel_bc_sph_scalar_diffusion(sph_bc, coef_diffuse,            &
      &    is_fld, is_diffuse)

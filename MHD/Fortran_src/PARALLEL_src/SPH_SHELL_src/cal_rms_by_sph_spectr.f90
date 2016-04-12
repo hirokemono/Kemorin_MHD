@@ -39,14 +39,17 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_rms_sph_spec_one_field(ncomp_rj, icomp_rj,         &
-     &          nri, jmax, rms_sph_rj)
+     &          nri, jmax, ntot_phys_rj, d_rj, rms_sph_rj)
 !
       use m_phys_constants
-      use m_sph_spectr_data
       use m_sph_phys_address
 !
       integer(kind = kint), intent(in) :: ncomp_rj, icomp_rj
       integer(kind = kint), intent(in) :: nri, jmax
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+      real (kind=kreal), intent(in) :: d_rj(nnod_rj,ntot_phys_rj)
+!
+!
       real(kind = kreal), intent(inout)                                 &
      &           :: rms_sph_rj(0:nri, jmax, ncomp_rj)
 !

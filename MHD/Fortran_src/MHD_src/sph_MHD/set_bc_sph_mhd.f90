@@ -33,6 +33,7 @@
       subroutine s_set_bc_sph_mhd
 !
       use m_phys_labels
+      use m_sph_spectr_data
       use m_boundary_params_sph_MHD
       use set_bc_flag_sph_velo
       use set_bc_sph_scalars
@@ -85,8 +86,10 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_ref_temp_sph_mhd'
       call allocate_reft_rj_data
-      call set_ref_temp_sph_mhd(sph_bc_T)
-      call adjust_sph_temp_bc_by_reftemp(sph_bc_T)
+      call set_ref_temp_sph_mhd(nidx_rj, r_ICB, r_CMB, ar_1d_rj,        &
+     &    sph_bc_T, reftemp_rj)
+      call adjust_sph_temp_bc_by_reftemp                                &
+     &   (idx_rj_degree_zero, nidx_rj(2), reftemp_rj, sph_bc_T)
 !
 !      Check data
 !

@@ -83,12 +83,12 @@
       call sum_div_of_forces
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_pressure_by_div_v'
-      call cal_sol_pressure_by_div_v
+      call cal_sol_pressure_by_div_v(ntot_phys_rj, d_rj)
 !
       if(ipol%i_press_grad .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'const_pressure_gradient'
-        call const_pressure_gradient                                    &
-     &     (sph_bc_U, ipol%i_press, ipol%i_press_grad)
+        call const_pressure_gradient(sph_bc_U,                          &
+     &     ipol%i_press, ipol%i_press_grad)
       end if
 !
       end subroutine pressure_4_sph_mhd

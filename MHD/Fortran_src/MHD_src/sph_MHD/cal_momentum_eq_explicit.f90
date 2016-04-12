@@ -61,7 +61,8 @@
 !
 !$omp parallel
       if(iflag_t_evo_4_velo .gt.     id_no_evolution) then
-        call cal_vorticity_eq_adams(sph_bc_U%kr_in, sph_bc_U%kr_out)
+        call cal_vorticity_eq_adams(sph_bc_U%kr_in, sph_bc_U%kr_out,    &
+     &      nnod_rj, nidx_rj(2), ntot_phys_rj, d_rj)
       end if
 !
       if(iflag_t_evo_4_magne .gt.    id_no_evolution) then
@@ -92,7 +93,8 @@
 !
 !$omp parallel
       if(iflag_t_evo_4_velo .gt.     id_no_evolution) then
-        call cal_vorticity_eq_euler(sph_bc_U%kr_in, sph_bc_U%kr_out)
+        call cal_vorticity_eq_euler(sph_bc_U%kr_in, sph_bc_U%kr_out,    &
+     &      nnod_rj, nidx_rj(2), ntot_phys_rj, d_rj)
       end if
 !
       if(iflag_t_evo_4_temp .gt.     id_no_evolution) then
@@ -109,7 +111,7 @@
 !
       if (i_step .eq. 1) then
         if(iflag_t_evo_4_velo .gt.     id_no_evolution) then
-          call set_ini_adams_inertia
+          call set_ini_adams_inertia(nnod_rj, ntot_phys_rj, d_rj)
         end if
         if(iflag_t_evo_4_temp .gt.     id_no_evolution) then
           call sel_ini_adams_heat_w_src                                 &

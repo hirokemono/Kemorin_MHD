@@ -7,19 +7,23 @@
 !>@brief  Set pseudo vacuum magnetic boundary condition for CMB
 !!
 !!@verbatim
-!!      subroutine cal_sph_nod_cmb_qvc_b_and_j(jmax, kr_out, r_CMB,     &
-!!     &          fdm2_fix_fld_CMB, fdm2_fix_dr_CMB, is_fld, is_rot)
-!!      subroutine cal_sph_nod_cmb_qvc_mag2(jmax, kr_out, is_fld)
+!!      subroutine cal_sph_nod_cmb_qvc_b_and_j(nnod_rj, jmax,           &
+!!     &          kr_out, r_CMB, fdm2_fix_fld_CMB, fdm2_fix_dr_CMB,     &
+!!     &          is_fld, is_rot, ntot_phys_rj, d_rj)
+!!      subroutine cal_sph_nod_cmb_qvc_mag2(nnod_rj, jmax, kr_out,      &
+!1     &          is_fld, ntot_phys_rj, d_rj)
 !!
-!!      subroutine cal_sph_nod_cmb_qvc_vp_rot2(jmax, kr_out,            &
-!!     &          is_fld, is_rot)
-!!      subroutine cal_sph_nod_cmb_qvc_rot2(jmax, kr_out, r_CMB,        &
-!!     &          fdm2_fix_fld_CMB, fdm2_fix_dr_CMB, is_fld, is_rot)
-!!      subroutine cal_sph_nod_cmb_qvc_diffuse2(jmax, kr_out, r_CMB,    &
-!!     &          fdm2_fix_fld_CMB, fdm2_fix_dr_CMB, coef_d,            &
-!!     &          is_fld, is_diffuse)
+!!      subroutine cal_sph_nod_cmb_qvc_vp_rot2(nnod_rj, jmax, kr_out,   &
+!!     &          is_fld, is_rot, ntot_phys_rj, d_rj)
+!!      subroutine cal_sph_nod_cmb_qvc_rot2(nnod_rj, jmax,              &
+!!     &          kr_out, r_CMB, fdm2_fix_fld_CMB, fdm2_fix_dr_CMB,     &
+!!     &          is_fld, is_rot, ntot_phys_rj, d_rj)
+!!      subroutine cal_sph_nod_cmb_qvc_diffuse2(nnod_rj, jmax,          &
+!!     &          kr_out, r_CMB, fdm2_fix_fld_CMB, fdm2_fix_dr_CMB,     &
+!!     &          coef_d, is_fld, is_diffuse, ntot_phys_rj, d_rj)
 !!@endverbatim
 !!
+!!@n @param nnod_rj  Number of points for spectrum data
 !!@n @param jmax  Number of modes for spherical harmonics @f$L*(L+2)@f$
 !!@n @param kr_out       Radial ID for outer boundary
 !!@n @param r_CMB(0:2)   Radius at CMB
@@ -32,6 +36,9 @@
 !!@n @param is_fld       Field address of input field
 !!@n @param is_rot       Field address for curl of field
 !!@n @param is_diffuse   Field address for diffusion of field
+!!
+!!@n @param ntot_phys_rj   Total number of components
+!!@n @param d_rj           Spectrum data
 !
       module cal_sph_exp_nod_cmb_qvac
 !
@@ -39,7 +46,6 @@
 !
       use m_constants
       use m_schmidt_poly_on_rtm
-      use m_sph_spectr_data
 !
       implicit none
 !
@@ -50,14 +56,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_cmb_qvc_b_and_j(jmax, kr_out, r_CMB,       &
-     &          fdm2_fix_fld_CMB, fdm2_fix_dr_CMB, is_fld, is_rot)
+      subroutine cal_sph_nod_cmb_qvc_b_and_j(nnod_rj, jmax,             &
+     &          kr_out, r_CMB, fdm2_fix_fld_CMB, fdm2_fix_dr_CMB,       &
+     &          is_fld, is_rot, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax, kr_out
       integer(kind = kint), intent(in) :: is_fld,  is_rot
       real(kind = kreal), intent(in) :: r_CMB(0:2)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(0:2,3)
       real(kind = kreal), intent(in) :: fdm2_fix_dr_CMB(-1:1,3)
+!
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real(kind = kreal) :: d2s_dr2, d1t_dr1
       integer(kind = kint) :: j, inod, i_n1, i_n2
@@ -87,10 +97,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_cmb_qvc_mag2(jmax, kr_out, is_fld)
+      subroutine cal_sph_nod_cmb_qvc_mag2(nnod_rj, jmax, kr_out,        &
+     &          is_fld, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax, kr_out
       integer(kind = kint), intent(in) :: is_fld
+!
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: j, inod
 !
@@ -108,11 +122,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_cmb_qvc_vp_rot2(jmax, kr_out,              &
-     &          is_fld, is_rot)
+      subroutine cal_sph_nod_cmb_qvc_vp_rot2(nnod_rj, jmax, kr_out,     &
+     &          is_fld, is_rot, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax, kr_out
       integer(kind = kint), intent(in) :: is_fld, is_rot
+!
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: j, inod
 !
@@ -132,14 +149,18 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_cmb_qvc_rot2(jmax, kr_out, r_CMB,          &
-     &          fdm2_fix_fld_CMB, fdm2_fix_dr_CMB, is_fld, is_rot)
+      subroutine cal_sph_nod_cmb_qvc_rot2(nnod_rj, jmax,                &
+     &          kr_out, r_CMB, fdm2_fix_fld_CMB, fdm2_fix_dr_CMB,       &
+     &          is_fld, is_rot, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax, kr_out
       integer(kind = kint), intent(in) :: is_fld, is_rot
       real(kind = kreal), intent(in) :: r_CMB(0:2)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(0:2,3)
       real(kind = kreal), intent(in) :: fdm2_fix_dr_CMB(-1:1,3)
+!
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real(kind = kreal) :: d2s_dr2, d1t_dr1
       integer(kind = kint) :: j, inod, i_n1, i_n2
@@ -169,9 +190,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_cmb_qvc_diffuse2(jmax, kr_out, r_CMB,      &
-     &          fdm2_fix_fld_CMB, fdm2_fix_dr_CMB, coef_d,              &
-     &          is_fld, is_diffuse)
+      subroutine cal_sph_nod_cmb_qvc_diffuse2(nnod_rj, jmax,            &
+     &          kr_out, r_CMB, fdm2_fix_fld_CMB, fdm2_fix_dr_CMB,       &
+     &          coef_d, is_fld, is_diffuse, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax, kr_out
       integer(kind = kint), intent(in) :: is_fld, is_diffuse
@@ -179,6 +200,9 @@
       real(kind = kreal), intent(in) :: r_CMB(0:2)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(0:2,3)
       real(kind = kreal), intent(in) :: fdm2_fix_dr_CMB(-1:1,3)
+!
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real(kind = kreal) :: d2s_dr2, d2t_dr2
       integer(kind = kint) :: j, inod, i_n1, i_n2

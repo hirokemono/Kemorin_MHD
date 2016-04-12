@@ -10,8 +10,8 @@
 !!      subroutine copy_energy_4_dynamobench
 !!      subroutine copy_icore_energy_4_dbench
 !!
-!!      subroutine pick_inner_core_rotation
-!!      subroutine pick_mag_torque_inner_core
+!!      subroutine pick_inner_core_rotation(ntot_phys_rj, d_rj)
+!!      subroutine pick_mag_torque_inner_core(ntot_phys_rj, d_rj)
 !!@endverbatim
 !
       module global_field_4_dynamobench
@@ -85,12 +85,14 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine pick_inner_core_rotation
+      subroutine pick_inner_core_rotation(ntot_phys_rj, d_rj)
 !
       use calypso_mpi
       use m_spheric_parameter
-      use m_sph_spectr_data
       use m_sph_phys_address
+!
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+      real (kind=kreal), intent(in) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: i, i10c_o
       real(kind = kreal) :: rotate_ic_local(-1:1)
@@ -113,12 +115,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine pick_mag_torque_inner_core
+      subroutine pick_mag_torque_inner_core(ntot_phys_rj, d_rj)
 !
       use calypso_mpi
       use m_spheric_parameter
-      use m_sph_spectr_data
       use m_sph_phys_address
+!
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+      real (kind=kreal), intent(in) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: i, i10c_o
       real(kind = kreal) :: m_torque_local(-1:1)

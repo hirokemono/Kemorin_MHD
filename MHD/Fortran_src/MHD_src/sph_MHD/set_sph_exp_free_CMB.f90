@@ -7,20 +7,23 @@
 !>@brief  Evaluate velocity with free slip boundary at CMB
 !!
 !!@verbatim
-!!      subroutine cal_sph_nod_cmb_free_v_and_w(jmax, kr_out,           &
-!!     &          fdm2_free_vp_CMB, fdm2_free_vt_CMB, is_fld, is_rot)
-!!      subroutine cal_sph_nod_cmb_free_vpol2(jmax, kr_out,             &
-!!     &          fdm2_free_vp_CMB, is_fld)
-!!      subroutine cal_sph_nod_cmb_free_rot2(jmax, kr_out, r_CMB,       &
-!!     &          fdm2_free_vp_CMB, fdm2_free_vt_CMB, is_fld, is_rot)
-!!      subroutine cal_sph_nod_cmb_free_diffuse2(jmax, kr_out, r_CMB,   &
-!!     &          fdm2_free_vp_CMB, fdm2_free_vt_CMB,                   &
-!!     &          coef_d, is_fld, is_diffuse)
-!!      subroutine cal_sph_nod_cmb_free_w_diffuse2(jmax, kr_out, r_CMB, &
-!!     &          fdm2_fix_fld_CMB, fdm2_free_vt_CMB,                   &
-!!     &          coef_d, is_fld, is_diffuse)
+!!      subroutine cal_sph_nod_cmb_free_v_and_w(nnod_rj, jmax, kr_out,  &
+!!     &          fdm2_free_vp_CMB, fdm2_free_vt_CMB, is_fld, is_rot,   &
+!!     &          ntot_phys_rj, d_rj)
+!!      subroutine cal_sph_nod_cmb_free_vpol2(nnod_rj, jmax, kr_out,    &
+!!     &          fdm2_free_vp_CMB, is_fld, ntot_phys_rj, d_rj)
+!!      subroutine cal_sph_nod_cmb_free_rot2(nnod_rj, jmax, kr_out,     &
+!!     &          r_CMB, fdm2_free_vp_CMB, fdm2_free_vt_CMB,            &
+!!     &         is_fld, is_rot, ntot_phys_rj, d_rj)
+!!      subroutine cal_sph_nod_cmb_free_diffuse2(nnod_rj, jmax, kr_out, &
+!!     &          r_CMB, fdm2_free_vp_CMB, fdm2_free_vt_CMB,            &
+!!     &          coef_d, is_fld, is_diffuse, ntot_phys_rj, d_rj)
+!!      subroutine cal_sph_nod_cmb_free_w_diffuse2(nnod_rj, jmax,       &
+!!     &          kr_out, r_CMB, fdm2_fix_fld_CMB, fdm2_free_vt_CMB,    &
+!!     &          coef_d, is_fld, is_diffuse, ntot_phys_rj, d_rj)
 !!@endverbatim
 !!
+!!@n @param nnod_rj  Number of points for spectrum data
 !!@n @param jmax  Number of modes for spherical harmonics @f$L*(L+2)@f$
 !!@n @param kr_out       Radial ID for outer boundary
 !!@n @param r_CMB(0:2)   Radius at CMB
@@ -38,6 +41,9 @@
 !!@n @param is_fld     Address of poloidal velocity in d_rj
 !!@n @param is_rot     Address of poloidal vorticity in d_rj
 !!@n @param is_diffuse Address of poloidal viscousity in d_rj
+!!
+!!@n @param ntot_phys_rj   Total number of components
+!!@n @param d_rj           Spectrum data
 !
       module set_sph_exp_free_CMB
 !
@@ -45,7 +51,6 @@
 !
       use m_constants
       use m_schmidt_poly_on_rtm
-      use m_sph_spectr_data
 !
       implicit none
 !
@@ -55,14 +60,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_cmb_free_v_and_w(jmax, kr_out,             &
-     &          fdm2_free_vp_CMB, fdm2_free_vt_CMB, is_fld, is_rot)
+      subroutine cal_sph_nod_cmb_free_v_and_w(nnod_rj, jmax, kr_out,    &
+     &          fdm2_free_vp_CMB, fdm2_free_vt_CMB, is_fld, is_rot,     &
+     &          ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax, kr_out
       integer(kind = kint), intent(in) :: is_fld, is_rot
 !
       real(kind = kreal), intent(in)  :: fdm2_free_vp_CMB(-1:1,3)
       real(kind = kreal), intent(in)  :: fdm2_free_vt_CMB(-1:1,3)
+!
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real(kind = kreal) :: d1s_dr1, d2s_dr2, d1t_dr1
       integer(kind = kint) :: inod, j, i_n1, i_n2
@@ -91,12 +100,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_cmb_free_vpol2(jmax, kr_out,               &
-     &          fdm2_free_vp_CMB, is_fld)
+      subroutine cal_sph_nod_cmb_free_vpol2(nnod_rj, jmax, kr_out,      &
+     &          fdm2_free_vp_CMB, is_fld, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax, kr_out
       integer(kind = kint), intent(in) :: is_fld
       real(kind = kreal), intent(in)  :: fdm2_free_vp_CMB(-1:1,3)
+!
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real(kind = kreal) :: d1s_dr1
       integer(kind = kint) :: inod, j, i_n1
@@ -119,8 +131,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_cmb_free_rot2(jmax, kr_out, r_CMB,         &
-     &          fdm2_free_vp_CMB, fdm2_free_vt_CMB, is_fld, is_rot)
+      subroutine cal_sph_nod_cmb_free_rot2(nnod_rj, jmax, kr_out,       &
+     &          r_CMB, fdm2_free_vp_CMB, fdm2_free_vt_CMB,              &
+     &          is_fld, is_rot,  ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax, kr_out
       integer(kind = kint), intent(in) :: is_fld, is_rot
@@ -128,6 +141,9 @@
 !
       real(kind = kreal), intent(in)  :: fdm2_free_vp_CMB(-1:1,3)
       real(kind = kreal), intent(in)  :: fdm2_free_vt_CMB(-1:1,3)
+!
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real(kind = kreal) :: d2s_dr2, d1t_dr1
       integer(kind = kint) :: inod, j, i_n1, i_n2
@@ -155,14 +171,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_cmb_free_diffuse2(jmax, kr_out, r_CMB,     &
-     &          fdm2_free_vp_CMB, fdm2_free_vt_CMB,                     &
-     &          coef_d, is_fld, is_diffuse)
+      subroutine cal_sph_nod_cmb_free_diffuse2(nnod_rj, jmax, kr_out,   &
+     &          r_CMB, fdm2_free_vp_CMB, fdm2_free_vt_CMB,              &
+     &          coef_d, is_fld, is_diffuse, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax, kr_out
       integer(kind = kint), intent(in) :: is_fld, is_diffuse
       real(kind = kreal), intent(in) :: r_CMB(0:2)
       real(kind = kreal), intent(in) :: coef_d
+!
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real(kind = kreal), intent(in)  :: fdm2_free_vp_CMB(-1:1,3)
       real(kind = kreal), intent(in)  :: fdm2_free_vt_CMB(-1:1,3)
@@ -193,9 +212,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_cmb_free_w_diffuse2(jmax, kr_out, r_CMB,   &
-     &          fdm2_fix_fld_CMB, fdm2_free_vt_CMB,                &
-     &          coef_d, is_fld, is_diffuse)
+      subroutine cal_sph_nod_cmb_free_w_diffuse2(nnod_rj, jmax,         &
+     &          kr_out, r_CMB, fdm2_fix_fld_CMB, fdm2_free_vt_CMB,      &
+     &          coef_d, is_fld, is_diffuse, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax, kr_out
       integer(kind = kint), intent(in) :: is_fld, is_diffuse
@@ -203,6 +222,9 @@
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in)  :: fdm2_free_vt_CMB(-1:1,3)
       real(kind = kreal), intent(in)  :: fdm2_fix_fld_CMB(0:2,3)
+!
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, j, i_n1, i_n2
       real(kind = kreal) :: d2s_dr2, d2t_dr2

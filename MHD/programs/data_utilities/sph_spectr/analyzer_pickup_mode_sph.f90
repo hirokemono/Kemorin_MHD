@@ -114,7 +114,8 @@
 !
 !  pickup components
 !
-        call pickup_sph_spec_4_monitor
+        call pickup_sph_spec_4_monitor                                  &
+     &     (num_phys_rj, ntot_phys_rj, istack_phys_comp_rj, d_rj)
         call write_sph_spec_4_monitor(my_rank, i_step, time)
       end do
 !

@@ -7,30 +7,42 @@
 !> @brief Convert temperature data using reference temperature
 !!
 !!@verbatim
-!!      subroutine adjust_by_ave_pressure_on_CMB(kr_in, kr_out)
+!!      subroutine adjust_by_ave_pressure_on_CMB(kr_in, kr_out,         &
+!!     &          idx_rj_degree_zero, nnod_rj, nidx_rj,                 &
+!!     &          ntot_phys_rj, d_rj)
 !!
-!!      subroutine set_ref_temp_sph_mhd(sph_bc_T)
-!!      subroutine adjust_sph_temp_bc_by_reftemp(sph_bc_T)
+!!      subroutine set_ref_temp_sph_mhd(nidx_rj, r_ICB, r_CMB, ar_1d_rj,&
+!!     &          sph_bc_T, reftemp_rj)
+!!      subroutine adjust_sph_temp_bc_by_reftemp                        &
+!!     &         (idx_rj_degree_zero, nri, reftemp_rj, sph_bc_T)
 !!
-!!      subroutine sync_temp_by_per_temp_sph
+!!      subroutine sync_temp_by_per_temp_sph(idx_rj_degree_zero,        &
+!!     &         nnod_rj, nidx_rj, radius_1d_rj_r, reftemp_rj,          &
+!!     &         ntot_phys_rj, d_rj)
 !!        d_rj(inod,ipol%i_temp):        T => \Theta = T - T0
 !!        d_rj(inod,ipol%i_par_temp):    \Theta = T - T0
 !!        d_rj(inod,ipol%i_grad_t):      T => d \Theta / dr
 !!        d_rj(inod,ipol%i_grad_part_t): d \Theta / dr
 !!
 !!
-!!      subroutine trans_per_temp_to_temp_sph
+!!      subroutine trans_per_temp_to_temp_sph(idx_rj_degree_zero,       &
+!!     &          nnod_rj, nidx_rj, radius_1d_rj_r, reftemp_rj,         &
+!!     &          ntot_phys_rj, d_rj)
 !!        d_rj(inod,ipol%i_temp):        \Theta = T - T0 => T
 !!        d_rj(inod,ipol%i_par_temp):    \Theta = T - T0
 !!        d_rj(inod,ipol%i_grad_t):      d \Theta / dr   => dT / dr
 !!        d_rj(inod,ipol%i_grad_part_t): d \Theta / dr
 !!
-!!      subroutine delete_zero_degree_comp(is_fld)
+!!      subroutine delete_zero_degree_comp(is_fld, idx_rj_degree_zero,  &
+!!     &          nnod_rj, nidx_rj, ntot_phys_rj, d_rj)
 !!@endverbatim
 !!
 !!@param sph_bc_T  Structure for basic boundary condition parameters
 !!                 for temperature
 !!@n @param is_fld Address of poloidal component
+!!
+!!@n @param ntot_phys_rj   Total number of components
+!!@n @param d_rj           Spectrum data
 !
       module set_reference_sph_mhd
 !
@@ -39,8 +51,6 @@
       use m_constants
       use calypso_mpi
       use m_control_parameter
-      use m_spheric_parameter
-      use m_sph_spectr_data
 !
       implicit none
 !
@@ -50,11 +60,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine adjust_by_ave_pressure_on_CMB(kr_in, kr_out)
+      subroutine adjust_by_ave_pressure_on_CMB(kr_in, kr_out,           &
+     &          idx_rj_degree_zero, nnod_rj, nidx_rj,                   &
+     &          ntot_phys_rj, d_rj)
 !
       use m_sph_phys_address
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
+      integer(kind = kint), intent(in) :: idx_rj_degree_zero
+      integer(kind = kint), intent(in) :: nnod_rj, nidx_rj(2)
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+!
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: k, inod
       real(kind = kreal) :: ref_p
@@ -75,11 +92,17 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_ref_temp_sph_mhd(sph_bc_T)
+      subroutine set_ref_temp_sph_mhd(nidx_rj, r_ICB, r_CMB, ar_1d_rj,  &
+     &          sph_bc_T, reftemp_rj)
 !
       use t_boundary_params_sph_MHD
 !
+      integer(kind = kint), intent(in) :: nidx_rj(2)
+      real(kind = kreal), intent(in) :: r_ICB, r_CMB
+      real(kind=kreal), intent(in) :: ar_1d_rj(nidx_rj(1),3)
       type(sph_boundary_type), intent(in) :: sph_bc_T
+!
+      real(kind=kreal), intent(inout) :: reftemp_rj(nidx_rj(1),0:1)
 !
       integer (kind = kint) :: k
 !
@@ -115,11 +138,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine adjust_sph_temp_bc_by_reftemp(sph_bc_T)
+      subroutine adjust_sph_temp_bc_by_reftemp                          &
+     &         (idx_rj_degree_zero, nri, reftemp_rj, sph_bc_T)
 !
-      use m_spheric_parameter
-      use m_sph_spectr_data
       use t_boundary_params_sph_MHD
+!
+      integer(kind = kint), intent(in) :: idx_rj_degree_zero
+      integer(kind = kint), intent(in) :: nri
+      real(kind=kreal), intent(in) :: reftemp_rj(nri,0:1)
 !
       type(sph_boundary_type), intent(inout) :: sph_bc_T
 !
@@ -145,9 +171,19 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine sync_temp_by_per_temp_sph
+      subroutine sync_temp_by_per_temp_sph(idx_rj_degree_zero,          &
+     &         nnod_rj, nidx_rj, radius_1d_rj_r, reftemp_rj,            &
+     &         ntot_phys_rj, d_rj)
 !
       use m_sph_phys_address
+!
+      integer(kind = kint), intent(in) :: idx_rj_degree_zero
+      integer(kind = kint), intent(in) :: nnod_rj, nidx_rj(2)
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+      real(kind=kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
+      real(kind=kreal), intent(in) :: reftemp_rj(nidx_rj(1),0:1)
+!
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: k, inod
 !
@@ -177,9 +213,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine trans_per_temp_to_temp_sph
+      subroutine trans_per_temp_to_temp_sph(idx_rj_degree_zero,         &
+     &          nnod_rj, nidx_rj, radius_1d_rj_r, reftemp_rj,           &
+     &          ntot_phys_rj, d_rj)
 !
       use m_sph_phys_address
+!
+      integer(kind = kint), intent(in) :: idx_rj_degree_zero
+      integer(kind = kint), intent(in) :: nnod_rj, nidx_rj(2)
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+      real(kind=kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
+      real(kind=kreal), intent(in) :: reftemp_rj(nidx_rj(1),0:1)
+!
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: k, inod
 !
@@ -209,9 +255,16 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine delete_zero_degree_comp(is_fld)
+      subroutine delete_zero_degree_comp(is_fld, idx_rj_degree_zero,    &
+     &          nnod_rj, nidx_rj, ntot_phys_rj, d_rj)
 !
+      integer(kind = kint), intent(in) :: idx_rj_degree_zero
       integer(kind = kint), intent(in) :: is_fld
+      integer(kind = kint), intent(in) :: nnod_rj, nidx_rj(2)
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+!
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+!
       integer(kind = kint) :: k, inod
 !
 !

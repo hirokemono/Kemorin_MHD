@@ -8,7 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine init_sph_spec_4_monitor
-!!      subroutine pickup_sph_spec_4_monitor
+!!      subroutine pickup_sph_spec_4_monitor                            &
+!!     &         (num_phys_rj, ntot_phys_rj, istack_phys_comp_rj, d_rj)
 !!@endverbatim
 !
       module pickup_sph_coefs
@@ -18,7 +19,6 @@
 !
       use m_spheric_parameter
       use m_pickup_sph_spectr_data
-      use m_sph_spectr_data
       use pickup_sph_spectr
 !
       implicit  none
@@ -37,6 +37,8 @@
       use calypso_mpi
       use quicksort
 !
+      use m_sph_spectr_data
+!
       integer(kind = kint) :: l
 !
 !
@@ -52,7 +54,8 @@
         end do
       end if
 !
-      call count_sph_labels_4_monitor
+      call count_sph_labels_4_monitor                                   &
+     &   (num_phys_rj, num_phys_comp_rj, iflag_monitor_rj)
       call count_picked_sph_adrress                                     &
      &   (num_pick_sph, num_pick_sph_l, num_pick_sph_m,                 &
      &    idx_pick_sph_mode, idx_pick_sph_l, idx_pick_sph_m,            &
@@ -71,10 +74,12 @@
       call deallocate_iflag_pick_sph
       call deallocate_pick_sph_mode
 !
-      call set_sph_fld_id_4_monitor
+      call set_sph_fld_id_4_monitor                                     &
+     &    (num_phys_rj, num_phys_comp_rj, iflag_monitor_rj)
 !
       if(my_rank .ne. 0) return
-      call set_sph_labels_4_monitor
+      call set_sph_labels_4_monitor                                     &
+     &   (num_phys_rj, num_phys_comp_rj, phys_name_rj)
 !
       end subroutine init_sph_spec_4_monitor
 !
@@ -116,12 +121,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine pickup_sph_spec_4_monitor
+      subroutine pickup_sph_spec_4_monitor                              &
+     &         (num_phys_rj, ntot_phys_rj, istack_phys_comp_rj, d_rj)
 !
       use calypso_mpi
 !
+      integer(kind = kint), intent(in) :: num_phys_rj, ntot_phys_rj
+      integer(kind = kint), intent(in)                                  &
+     &                  :: istack_phys_comp_rj(0:num_phys_rj)
+!
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+!
       integer(kind = kint) :: inum, knum, j, k, nd, i_fld, j_fld
-      integer(kind = kint) :: inod, ipick, num, icou, jcou, kst
+      integer(kind = kint) :: inod, ipick, num, icou, jcou, kst, ncomp
 !
 !
       if(num_pick_sph_mode*num_pick_layer .eq. 0) return
@@ -141,14 +153,16 @@
 !
         do j_fld = 1, num_fld_pick_sph
           i_fld = ifield_monitor_rj(j_fld)
+          ncomp = istack_phys_comp_rj(i_fld)                            &
+     &           - istack_phys_comp_rj(i_fld-1)
           icou = istack_phys_comp_rj(i_fld-1)
           jcou = istack_comp_pick_sph(j_fld-1)
-          if(num_phys_comp_rj(i_fld) .eq. 3) then
+          if(ncomp .eq. 3) then
              d_rj_pick_sph_lc(jcou+1,1) = 0.0d0
              d_rj_pick_sph_lc(jcou+2,1) = 0.0d0
              d_rj_pick_sph_lc(jcou+3,1) = 0.0d0
            else
-             do nd = 1, num_phys_comp_rj(i_fld)
+             do nd = 1, ncomp
                d_rj_pick_sph_lc(jcou+nd,1)= d_rj(inod,icou+nd)
              end do
            end if
@@ -168,9 +182,11 @@
 !
             do j_fld = 1, num_fld_pick_sph
               i_fld = ifield_monitor_rj(j_fld)
+              ncomp = istack_phys_comp_rj(i_fld)                        &
+     &               - istack_phys_comp_rj(i_fld-1)
               icou = istack_phys_comp_rj(i_fld-1)
               jcou = istack_comp_pick_sph(j_fld-1)
-              if(num_phys_comp_rj(i_fld) .eq. 3) then
+              if(ncomp .eq. 3) then
                   d_rj_pick_sph_lc(jcou+1,ipick)                        &
      &                    = scale_for_zelo(inum) * d_rj(inod,icou+1)
                   d_rj_pick_sph_lc(jcou+2,ipick)                        &
@@ -178,7 +194,7 @@
                   d_rj_pick_sph_lc(jcou+3,ipick)                        &
      &                    = scale_for_zelo(inum) * d_rj(inod,icou+2)
               else
-                do nd = 1, num_phys_comp_rj(i_fld)
+                do nd = 1, ncomp
                   d_rj_pick_sph_lc(jcou+nd,ipick)= d_rj(inod,icou+nd)
                 end do
               end if
@@ -199,9 +215,14 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine count_sph_labels_4_monitor
+      subroutine count_sph_labels_4_monitor                             &
+     &         (num_phys_rj, num_phys_comp_rj, iflag_monitor_rj)
 !
       use m_phys_labels
+!
+      integer(kind = kint), intent(in) :: num_phys_rj
+      integer(kind = kint), intent(in) :: num_phys_comp_rj(num_phys_rj)
+      integer(kind = kint), intent(in) :: iflag_monitor_rj(num_phys_rj)
 !
       integer(kind = kint) :: i_fld
 !
@@ -220,7 +241,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sph_fld_id_4_monitor
+      subroutine set_sph_fld_id_4_monitor                               &
+     &         (num_phys_rj, num_phys_comp_rj, iflag_monitor_rj)
+!
+      integer(kind = kint), intent(in) :: num_phys_rj
+      integer(kind = kint), intent(in) :: num_phys_comp_rj(num_phys_rj)
+      integer(kind = kint), intent(in) :: iflag_monitor_rj(num_phys_rj)
 !
       integer(kind = kint) :: i_fld, j_fld
 !
@@ -240,9 +266,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sph_labels_4_monitor
+      subroutine set_sph_labels_4_monitor                               &
+     &         (num_phys_rj, num_phys_comp_rj, phys_name_rj)
 !
       use add_direction_labels
+!
+      integer(kind = kint), intent(in) :: num_phys_rj
+      integer(kind = kint), intent(in) :: num_phys_comp_rj(num_phys_rj)
+      character(len=kchara), intent(in) :: phys_name_rj(num_phys_rj)
 !
       integer(kind = kint) :: i_fld, j_fld, jcou
 !

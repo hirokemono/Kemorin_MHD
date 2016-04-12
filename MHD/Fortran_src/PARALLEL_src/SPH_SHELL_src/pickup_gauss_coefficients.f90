@@ -9,9 +9,10 @@
 !!
 !!@verbatim
 !!      subroutine init_gauss_coefs_4_monitor
-!!      subroutine cal_gauss_coefficients
+!!      subroutine cal_gauss_coefficients(ntot_phys_rj, d_rj)
 !!
-!!      subroutine cal_no_heat_source_Nu(kr_ICB, kr_CMB, r_in, r_out)
+!!      subroutine cal_no_heat_source_Nu(kr_ICB, kr_CMB, r_in, r_out,   &
+!!     &          ntot_phys_rj, d_rj)
 !!@endverbatim
 !
       module pickup_gauss_coefficients
@@ -80,12 +81,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_gauss_coefficients
+      subroutine cal_gauss_coefficients(ntot_phys_rj, d_rj)
 !
       use calypso_mpi
-      use m_sph_spectr_data
       use m_sph_phys_address
       use m_gauss_coefs_monitor_data
+!
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+      real (kind=kreal), intent(in) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: inum, j, l, inod
       real(kind = kreal) :: rcmb_to_Re, ricb_to_Rref
@@ -171,17 +174,20 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_no_heat_source_Nu(kr_ICB, kr_CMB, r_in, r_out)
+      subroutine cal_no_heat_source_Nu(kr_ICB, kr_CMB, r_in, r_out,     &
+     &          ntot_phys_rj, d_rj)
 !
-      use m_sph_spectr_data
       use m_sph_phys_address
       use m_no_heat_Nusselt_num
 !
       integer(kind = kint), intent(in) :: kr_ICB, kr_CMB
       real(kind = kreal), intent(in) :: r_in, r_out
+!
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+      real (kind=kreal), intent(in) :: d_rj(nnod_rj,ntot_phys_rj)
+!
       real(kind = kreal) :: temp_ICB, temp_CMB
 !      real(kind = kreal) :: dTdr_ICB, dTdr_CMB
-!
       real(kind = kreal) :: c1, c2
 !      real(kind = kreal) :: dTdr_diff_ICB, dTdr_diff_CMB
       integer(kind = kint) :: inod_ICB, inod_CMB

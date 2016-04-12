@@ -8,9 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine cal_sph_nod_scalar_diffuse2(kr_in, kr_out, coef_d,   &
-!!     &          is_fld, is_diffuse)
+!!     &          is_fld, is_diffuse, nnod_rj, nidx_rj, ar_1d_rj,       &
+!!     &          ntot_phys_rj, d_rj)
 !!      subroutine cal_sph_nod_vect_diffuse2(kr_in, kr_out, coef_d,     &
-!!     &          is_fld, is_diffuse)
+!!     &          is_fld, is_diffuse, nnod_rj, nidx_rj, ar_1d_rj,       &
+!!     &          ntot_phys_rj, d_rj)
 !!@endverbatim
 !!
 !!@n @param kr_in    radial ID for inner boundary
@@ -19,15 +21,16 @@
 !!
 !!@n @param is_fld     Input field address for d_rj
 !!@n @param is_diffuse Diffusion term address for d_rj
+!!
+!!@n @param ntot_phys_rj   Total number of components
+!!@n @param d_rj           Spectrum data
 !
       module cal_sph_exp_diffusion
 !
       use m_precision
 !
       use m_constants
-      use m_spheric_parameter
       use m_schmidt_poly_on_rtm
-      use m_sph_spectr_data
       use m_fdm_coefs
 !
       implicit none
@@ -39,12 +42,19 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sph_nod_scalar_diffuse2(kr_in, kr_out, coef_d,     &
-     &          is_fld, is_diffuse)
+     &          is_fld, is_diffuse, nnod_rj, nidx_rj, ar_1d_rj,         &
+     &          ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
       integer(kind = kint), intent(in) :: is_fld
       integer(kind = kint), intent(in) :: is_diffuse
       real(kind = kreal), intent(in) :: coef_d
+!
+      integer(kind = kint), intent(in) :: nnod_rj,  ntot_phys_rj
+      integer(kind = kint), intent(in) :: nidx_rj(2)
+      real (kind=kreal), intent(in) :: ar_1d_rj(nidx_rj(1),3)
+!
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real(kind = kreal) :: d1s_dr1
       real(kind = kreal) :: d2s_dr2
@@ -80,12 +90,19 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sph_nod_vect_diffuse2(kr_in, kr_out, coef_d,       &
-     &          is_fld, is_diffuse)
+     &          is_fld, is_diffuse, nnod_rj, nidx_rj, ar_1d_rj,         &
+     &          ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
       integer(kind = kint), intent(in) :: is_fld
       integer(kind = kint), intent(in) :: is_diffuse
       real(kind = kreal), intent(in) :: coef_d
+!
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      integer(kind = kint), intent(in) :: nidx_rj(2)
+      real (kind=kreal), intent(in) :: ar_1d_rj(nidx_rj(1),3)
+!
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real(kind = kreal) :: d2s_dr2, d2t_dr2
       integer(kind = kint) :: inod, i_p1, i_n1, j, k

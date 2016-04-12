@@ -7,33 +7,40 @@
 !>@brief  Set fixed scalar boundarry for explicit method
 !!
 !!@verbatim
-!!      subroutine dsdr_sph_fix_scalar_in_2(jmax, kr_in, r_ICB,         &
-!!     &          fdm2_fix_fld_ICB, fix_ICB, is_fld, is_grd)
+!!      subroutine dsdr_sph_fix_scalar_in_2(nnod_rj, jmax,              &
+!!     &          kr_in, r_ICB, fdm2_fix_fld_ICB, fix_ICB,              &
+!!     &          is_fld, is_grd, ntot_phys_rj, d_rj)
 !!      subroutine dsdr_sph_lm0_fix_scalar_in_2(idx_rj_degree_zero,     &
-!!     &          jmax, kr_in, r_ICB, fdm2_fix_fld_ICB, fix_ICB,        &
-!!     &          is_fld, is_grd)
-!!      subroutine cal_dsdr_sph_fix_scalar_in_2(jmax, kr_in, r_ICB,     &
-!!     &          fdm2_fix_fld_ICB, fix_ICB, is_fld, is_grd)
-!!      subroutine cal_dsdr_sph_no_bc_in_2(jmax, kr_in,                 &
-!!     &          fdm2_fix_fld_ICB, is_fld, is_grd)
+!!     &          nnod_rj, jmax, kr_in, r_ICB, fdm2_fix_fld_ICB,        &
+!!     &          fix_ICB, is_fld, is_grd, ntot_phys_rj, d_rj)
+!!      subroutine cal_sph_fix_scalar_in_diffuse2(nnod_rj, jmax,        &
+!!     &          kr_in, r_ICB, fdm2_fix_fld_ICB, fix_ICB, coef_d,      &
+!!     &          is_fld, is_diffuse, ntot_phys_rj, d_rj)
+!!      subroutine cal_dsdr_sph_no_bc_in_2(nnod_rj, jmax, kr_in,        &
+!!     &          fdm2_fix_fld_ICB, is_fld, is_grd, ntot_phys_rj, d_rj)
 !!
-!!      subroutine dsdr_sph_fix_scalar_out_2(jmax, kr_out, r_CMB,       &
-!!     &          fdm2_fix_fld_CMB, fix_CMB, is_fld, is_grd)
+!!      subroutine dsdr_sph_fix_scalar_out_2(nnod_rj, jmax,             &
+!!     &          kr_out, r_CMB, fdm2_fix_fld_CMB, fix_CMB,             &
+!!     &          is_fld, is_grd, ntot_phys_rj, d_rj)
 !!      subroutine dsdr_sph_lm0_fix_scalar_out_2(idx_rj_degree_zero,    &
-!!     &          jmax, kr_out, r_CMB, fdm2_fix_fld_CMB, fix_CMB,       &
-!!     &          is_fld, is_grd)
-!!      subroutine cal_sph_out_fix_scalar_diffuse2(jmax, kr_out, r_CMB, &
-!!     &          fdm2_fix_fld_CMB, fix_CMB, coef_d, is_fld, is_diffuse)
-!!      subroutine cal_dsdr_sph_no_bc_out_2(jmax, kr_out,               &
-!!     &          fdm2_fix_fld_CMB, is_fld, is_grd)
+!!     &          nnod_rj, jmax, kr_out, r_CMB, fdm2_fix_fld_CMB,       &
+!!     &          fix_CMB, is_fld, is_grd, ntot_phys_rj, d_rj)
+!!      subroutine cal_sph_out_fix_scalar_diffuse2(nnod_rj, jmax,       &
+!!     &          kr_out, r_CMB, fdm2_fix_fld_CMB, fix_CMB, coef_d,     &
+!!     &          is_fld, is_diffuse, ntot_phys_rj, d_rj)
+!!      subroutine cal_dsdr_sph_no_bc_out_2(nnod_rj, jmax, kr_out,      &
+!!     &          fdm2_fix_fld_CMB, is_fld, is_grd, ntot_phys_rj, d_rj)
 !!
-!!      subroutine cal_sph_div_flux_4_fix_in(jmax, kr_in, r_ICB,        &
-!!     &          fdm2_fix_fld_ICB, fix_ICB, is_fld, is_div)
-!!      subroutine cal_sph_div_flux_4_fix_out(jmax, kr_out, r_CMB,      &
-!!     &          fdm2_fix_fld_CMB, fix_CMB, is_fld, is_div)
+!!      subroutine cal_sph_div_flux_4_fix_in(nnod_rj, jmax,             &
+!!     &          kr_in, r_ICB, fdm2_fix_fld_ICB, fix_ICB,              &
+!!     &          is_fld, is_div, ntot_phys_rj, d_rj)
+!1      subroutine cal_sph_div_flux_4_fix_out(nnod_rj, jmax,            &
+!!     &          kr_out, r_CMB, fdm2_fix_fld_CMB, fix_CMB,             &
+!!     &          is_fld, is_div, ntot_phys_rj, d_rj)
 !!@endverbatim
 !!
 !!@n @param idx_rj_degree_zero    Local address for degree 0
+!!@n @param nnod_rj  Number of points for spectrum data
 !!@n @param jmax         Number of local spherical harmonics mode
 !!@n @param kr_in       Radial ID for inner boundary
 !!@n @param kr_out        Radial ID for outer boundary
@@ -56,6 +63,9 @@
 !!@n @param is_fld       Field address of input field
 !!@n @param is_grd       Field address of radial gradient of field
 !!@n @param is_diffuse   Field address for diffusion of field
+!!
+!!@n @param ntot_phys_rj   Total number of components
+!!@n @param d_rj           Spectrum data
 !
       module cal_sph_exp_fixed_scalar
 !
@@ -73,14 +83,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine dsdr_sph_fix_scalar_in_2(jmax, kr_in, r_ICB,           &
-     &          fdm2_fix_fld_ICB, fix_ICB, is_fld, is_grd)
+      subroutine dsdr_sph_fix_scalar_in_2(nnod_rj, jmax,                &
+     &          kr_in, r_ICB, fdm2_fix_fld_ICB, fix_ICB,                &
+     &          is_fld, is_grd, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: is_fld, is_grd
       integer(kind = kint), intent(in) :: jmax, kr_in
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real(kind = kreal), intent(in) :: r_ICB(0:2)
       real(kind = kreal), intent(in) :: fix_ICB(jmax)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_ICB(0:2,3)
+!
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real(kind = kreal) :: d1t_dr1
       integer(kind = kint) :: inod, i_p1, i_p2, j
@@ -108,15 +122,18 @@
 ! -----------------------------------------------------------------------
 !
       subroutine dsdr_sph_lm0_fix_scalar_in_2(idx_rj_degree_zero,       &
-     &          jmax, kr_in, r_ICB, fdm2_fix_fld_ICB, fix_ICB,          &
-     &          is_fld, is_grd)
+     &          nnod_rj, jmax, kr_in, r_ICB, fdm2_fix_fld_ICB,          &
+     &          fix_ICB, is_fld, is_grd, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: idx_rj_degree_zero
       integer(kind = kint), intent(in) :: is_fld, is_grd
       integer(kind = kint), intent(in) :: jmax, kr_in
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real(kind = kreal), intent(in) :: r_ICB(0:2)
       real(kind = kreal), intent(in) :: fix_ICB(jmax)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_ICB(0:2,3)
+!
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real(kind = kreal) :: d1t_dr1
       integer(kind = kint) :: inod, i_p1, i_p2
@@ -139,15 +156,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_fix_scalar_in_diffuse2(jmax, kr_in, r_ICB,     &
-     &          fdm2_fix_fld_ICB, fix_ICB, coef_d, is_fld, is_diffuse)
+      subroutine cal_sph_fix_scalar_in_diffuse2(nnod_rj, jmax,          &
+     &          kr_in, r_ICB, fdm2_fix_fld_ICB, fix_ICB, coef_d,        &
+     &          is_fld, is_diffuse, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: is_fld, is_diffuse
       integer(kind = kint), intent(in) :: jmax, kr_in
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real(kind = kreal), intent(in) :: fix_ICB(jmax)
       real(kind = kreal), intent(in) :: r_ICB(0:2)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_ICB(0:2,3)
       real(kind = kreal), intent(in) :: coef_d
+!
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real(kind = kreal) :: d1t_dr1, d2t_dr2
       integer(kind = kint) :: inod, i_p1, i_p2, j
@@ -178,12 +199,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_dsdr_sph_no_bc_in_2(jmax, kr_in,                   &
-     &          fdm2_fix_fld_ICB, is_fld, is_grd)
+      subroutine cal_dsdr_sph_no_bc_in_2(nnod_rj, jmax, kr_in,          &
+     &          fdm2_fix_fld_ICB, is_fld, is_grd, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax, kr_in
       integer(kind = kint), intent(in) :: is_fld, is_grd
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real(kind = kreal), intent(in) :: fdm2_fix_fld_ICB(0:2,3)
+!
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, i_p1, i_p2, j
 !
@@ -205,14 +229,18 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine dsdr_sph_fix_scalar_out_2(jmax, kr_out, r_CMB,         &
-     &          fdm2_fix_fld_CMB, fix_CMB, is_fld, is_grd)
+      subroutine dsdr_sph_fix_scalar_out_2(nnod_rj, jmax,               &
+     &          kr_out, r_CMB, fdm2_fix_fld_CMB, fix_CMB,               &
+     &          is_fld, is_grd, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: is_fld, is_grd
       integer(kind = kint), intent(in) :: jmax, kr_out
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real(kind = kreal), intent(in) :: r_CMB(0:2)
       real(kind = kreal), intent(in) :: fix_CMB(jmax)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(0:2,3)
+!
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real(kind = kreal) :: d1t_dr1
       integer(kind = kint) :: inod, i_n1, i_n2, j
@@ -240,15 +268,18 @@
 ! -----------------------------------------------------------------------
 !
       subroutine dsdr_sph_lm0_fix_scalar_out_2(idx_rj_degree_zero,      &
-     &          jmax, kr_out, r_CMB, fdm2_fix_fld_CMB, fix_CMB,         &
-     &          is_fld, is_grd)
+     &          nnod_rj, jmax, kr_out, r_CMB, fdm2_fix_fld_CMB,         &
+     &          fix_CMB, is_fld, is_grd, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: idx_rj_degree_zero
       integer(kind = kint), intent(in) :: is_fld, is_grd
       integer(kind = kint), intent(in) :: jmax, kr_out
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real(kind = kreal), intent(in) :: r_CMB(0:2)
       real(kind = kreal), intent(in) :: fix_CMB(jmax)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(0:2,3)
+!
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real(kind = kreal) :: d1t_dr1
       integer(kind = kint) :: inod, i_n1, i_n2
@@ -272,15 +303,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_out_fix_scalar_diffuse2(jmax, kr_out, r_CMB,   &
-     &          fdm2_fix_fld_CMB, fix_CMB, coef_d, is_fld, is_diffuse)
+      subroutine cal_sph_out_fix_scalar_diffuse2(nnod_rj, jmax,         &
+     &          kr_out, r_CMB, fdm2_fix_fld_CMB, fix_CMB, coef_d,       &
+     &          is_fld, is_diffuse, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax, kr_out
       integer(kind = kint), intent(in) :: is_fld, is_diffuse
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: fix_CMB(jmax)
       real(kind = kreal), intent(in) :: r_CMB(0:2)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(0:2,3)
+!
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real(kind = kreal) :: d1t_dr1, d2t_dr2
       integer(kind = kint) :: inod, i_n1, i_n2, j
@@ -311,12 +346,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_dsdr_sph_no_bc_out_2(jmax, kr_out,                 &
-     &          fdm2_fix_fld_CMB, is_fld, is_grd)
+      subroutine cal_dsdr_sph_no_bc_out_2(nnod_rj, jmax, kr_out,        &
+     &          fdm2_fix_fld_CMB, is_fld, is_grd, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax, kr_out
       integer(kind = kint), intent(in) :: is_fld, is_grd
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(0:2,3)
+!
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, i_n1, i_n2, j
 !
@@ -338,14 +376,18 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_div_flux_4_fix_in(jmax, kr_in, r_ICB,          &
-     &          fdm2_fix_fld_ICB, fix_ICB, is_fld, is_div)
+      subroutine cal_sph_div_flux_4_fix_in(nnod_rj, jmax,               &
+     &          kr_in, r_ICB, fdm2_fix_fld_ICB, fix_ICB,                &
+     &          is_fld, is_div, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: is_fld, is_div
       integer(kind = kint), intent(in) :: jmax, kr_in
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real(kind = kreal), intent(in) :: fix_ICB(jmax)
       real(kind = kreal), intent(in) :: r_ICB(0:2)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_ICB(0:2,3)
+!
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real(kind = kreal) :: d1s_dr1
       integer(kind = kint) :: inod, i_p1, i_p2, j
@@ -371,14 +413,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_div_flux_4_fix_out(jmax, kr_out, r_CMB,        &
-     &          fdm2_fix_fld_CMB, fix_CMB, is_fld, is_div)
+      subroutine cal_sph_div_flux_4_fix_out(nnod_rj, jmax,              &
+     &          kr_out, r_CMB, fdm2_fix_fld_CMB, fix_CMB,               &
+     &          is_fld, is_div, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: is_fld, is_div
       integer(kind = kint), intent(in) :: jmax, kr_out
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real(kind = kreal), intent(in) :: fix_CMB(jmax)
       real(kind = kreal), intent(in) :: r_CMB(0:2)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(0:2,3)
+!
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real(kind = kreal) :: d1s_dr1
       integer(kind = kint) :: inod, i_n1, i_n2, j

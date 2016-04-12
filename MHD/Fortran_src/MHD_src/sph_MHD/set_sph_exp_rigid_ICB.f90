@@ -7,20 +7,23 @@
 !>@brief  Evaluate velocity with non-slip boundary at ICB
 !!
 !!@verbatim
-!!      subroutine cal_sph_nod_icb_rigid_velo2(jmax, kr_in, r_ICB,      &
-!!     &          Vt_ICB, is_fld)
+!!      subroutine cal_sph_nod_icb_rigid_velo2(nnod_rj, jmax, kr_in,    &
+!!     &          r_ICB, Vt_ICB, is_fld, ntot_phys_rj, d_rj)
 !!      subroutine cal_sph_nod_icb_rotate_velo2(idx_rj_degree_zero,     &
-!!     &          idx_rj_degree_one, jmax, kr_in, r_ICB, radius_rj,     &
-!!     &          Vt_ICB, is_fld)
-!!      subroutine cal_sph_nod_icb_rigid_rot2(jmax, kr_in, r_ICB,       &
-!!     &          fdm2_fix_fld_ICB, fdm2_fix_dr_ICB, is_fld, is_rot)
-!!      subroutine cal_sph_nod_icb_rigid_diffuse2(jmax, kr_in, r_ICB,   &
-!!     &          fdm2_fix_fld_ICB, fdm2_fix_dr_ICB, coef_d,            &
-!!     &          is_fld, is_diffuse)
-!!      subroutine cal_sph_nod_icb_rgd_w_diffuse2(jmax, kr_in, r_ICB,   &
-!!     &          fdm2_fix_fld_ICB, coef_d, is_fld, is_diffuse)
+!!     &          idx_rj_degree_one, nnod_rj, jmax, kr_in, r_ICB,       &
+!!     &          radius_rj, Vt_ICB, is_fld, ntot_phys_rj, d_rj)
+!!      subroutine cal_sph_nod_icb_rigid_rot2(nnod_rj, jmax, kr_in,     &
+!!     &          r_ICB, fdm2_fix_fld_ICB, fdm2_fix_dr_ICB,             &
+!!     &          is_fld, is_rot, ntot_phys_rj, d_rj)
+!!      subroutine cal_sph_nod_icb_rigid_diffuse2(nnod_rj, jmax, kr_in, &
+!!     &          r_ICB, fdm2_fix_fld_ICB, fdm2_fix_dr_ICB, coef_d,     &
+!!     &          is_fld, is_diffuse, ntot_phys_rj, d_rj)
+!!      subroutine cal_sph_nod_icb_rgd_w_diffuse2                       &
+!!     &         (nnod_rj, jmax, kr_in, r_ICB, fdm2_fix_fld_ICB,        &
+!!     &          coef_d, is_fld, is_diffuse, ntot_phys_rj, d_rj)
 !!@endverbatim
 !!
+!!@n @param nnod_rj  Number of points for spectrum data
 !!@n @param idx_rj_degree_zero    Local address for degree 0
 !!@n @param idx_rj_degree_one(-1:1)    Local address for degree 1
 !!@n @param jmax  Number of modes for spherical harmonics @f$L*(L+2)@f$
@@ -37,6 +40,9 @@
 !!@n @param is_fld     Address of poloidal velocity in d_rj
 !!@n @param is_rot     Address of poloidal vorticity in d_rj
 !!@n @param is_diffuse Address of poloidal viscousity in d_rj
+!!
+!!@n @param ntot_phys_rj   Total number of components
+!!@n @param d_rj           Spectrum data
 !
       module set_sph_exp_rigid_ICB
 !
@@ -44,7 +50,6 @@
 !
       use m_constants
       use m_schmidt_poly_on_rtm
-      use m_sph_spectr_data
 !
       implicit none
 !
@@ -55,14 +60,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_icb_rigid_velo2(jmax, kr_in, r_ICB,        &
-     &          Vt_ICB, is_fld)
+      subroutine cal_sph_nod_icb_rigid_velo2(nnod_rj, jmax, kr_in,      &
+     &          r_ICB, Vt_ICB, is_fld, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax, kr_in
       integer(kind = kint), intent(in) :: is_fld
       real(kind = kreal), intent(in) :: Vt_ICB(jmax)
       real(kind = kreal), intent(in) :: r_ICB(0:2)
       integer(kind = kint) :: inod, j, k
+!
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
 !
 !$omp parallel do private(k,inod)
@@ -82,8 +90,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sph_nod_icb_rotate_velo2(idx_rj_degree_zero,       &
-     &          idx_rj_degree_one, jmax, kr_in, r_ICB, radius_rj,       &
-     &          Vt_ICB, is_fld)
+     &          idx_rj_degree_one, nnod_rj, jmax, kr_in, r_ICB,         &
+     &          radius_rj, Vt_ICB, is_fld, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: idx_rj_degree_zero
       integer(kind = kint), intent(in) :: idx_rj_degree_one(-1:1)
@@ -92,6 +100,9 @@
       real(kind = kreal), intent(in) :: Vt_ICB(jmax)
       real(kind = kreal), intent(in) :: r_ICB(0:2)
       real(kind = kreal), intent(in) :: radius_rj(kr_in)
+!
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, iICB, j, k, m
       real(kind = kreal) :: bc_l1_tmp(-1:1)
@@ -147,8 +158,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_icb_rigid_rot2(jmax, kr_in, r_ICB,         &
-     &          fdm2_fix_fld_ICB, fdm2_fix_dr_ICB, is_fld, is_rot)
+      subroutine cal_sph_nod_icb_rigid_rot2(nnod_rj, jmax, kr_in,       &
+     &          r_ICB, fdm2_fix_fld_ICB, fdm2_fix_dr_ICB,               &
+     &          is_fld, is_rot, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax, kr_in
       integer(kind = kint), intent(in) :: is_fld
@@ -156,6 +168,9 @@
       real(kind = kreal), intent(in) :: r_ICB(0:2)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_ICB(0:2,3)
       real(kind = kreal), intent(in) :: fdm2_fix_dr_ICB(-1:1,3)
+!
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, j, i_p1, i_p2
       real(kind = kreal) :: d2s_dr2, d1t_dr1
@@ -184,9 +199,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_icb_rigid_diffuse2(jmax, kr_in, r_ICB,     &
-     &          fdm2_fix_fld_ICB, fdm2_fix_dr_ICB, coef_d,              &
-     &          is_fld, is_diffuse)
+      subroutine cal_sph_nod_icb_rigid_diffuse2(nnod_rj, jmax, kr_in,   &
+     &          r_ICB, fdm2_fix_fld_ICB, fdm2_fix_dr_ICB, coef_d,       &
+     &          is_fld, is_diffuse, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax, kr_in
       integer(kind = kint), intent(in) :: is_fld, is_diffuse
@@ -194,6 +209,9 @@
       real(kind = kreal), intent(in) :: r_ICB(0:2)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_ICB(0:2,3)
       real(kind = kreal), intent(in) :: fdm2_fix_dr_ICB(-1:1,3)
+!
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, j, i_p1, i_p2
       real(kind = kreal) :: d2s_dr2,d2t_dr2
@@ -222,14 +240,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_icb_rgd_w_diffuse2(jmax, kr_in, r_ICB,     &
-     &          fdm2_fix_fld_ICB, coef_d, is_fld, is_diffuse)
+      subroutine cal_sph_nod_icb_rgd_w_diffuse2                         &
+     &         (nnod_rj, jmax, kr_in, r_ICB, fdm2_fix_fld_ICB,          &
+     &          coef_d, is_fld, is_diffuse, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax, kr_in
       integer(kind = kint), intent(in) :: is_fld, is_diffuse
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: r_ICB(0:2)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_ICB(0:2,3)
+!
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, j, i_p1, i_p2
       real(kind = kreal) :: d2s_dr2,d2t_dr2

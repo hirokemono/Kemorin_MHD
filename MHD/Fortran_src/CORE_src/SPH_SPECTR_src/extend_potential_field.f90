@@ -7,25 +7,27 @@
 !>@brief  Extend magnetic field by potential field
 !!
 !!@verbatim
-!!      subroutine ext_outside_scalar(kr_out, d_rj)
-!!      subroutine ext_inside_scalar(kr_in, d_rj)
+!!      subroutine ext_outside_scalar(kr_out, is_fld, ntot_phys_rj, d_rj)
+!!      subroutine ext_inside_scalar(kr_in, is_fld, ntot_phys_rj, d_rj)
 !!
-!!      subroutine ext_outside_potential(kr_out, d_rj)
-!!        Output: d_rj(kr_out+1:,1:3)
+!!      subroutine ext_outside_potential                                &
+!!     &         (kr_out, is_fld, ntot_phys_rj, d_rj)
+!!        Output: d_rj(kr_out+1:,is_fld)
 !!      subroutine ext_inside_potential(kr_in, d_rj)
-!!        Output: d_rj(1:kr_in,1:3)
+!!        Output: d_rj(1:kr_in,is_fld)
 !!
 !!      subroutine ext_outside_potential_with_j(kr_out, d_rj_b, d_rj_j)
-!!        Output: d_rj_b(kr_out+1:,1:3)
-!!        Output: d_rj_j(kr_out+1:,1:3)
-!!      subroutine ext_inside_potential_with_j(kr_in, d_rj_b, d_rj_j)
-!!        Output: d_rj_b(1:kr_in,1:3)
-!!        Output: d_rj_j(1:kr_in,1:3)
+!!        Output: d_rj(1:kr_in,is_magne)
+!!        Output: d_rj(1:kr_in,is_current)
+!!      subroutine ext_inside_potential_with_j(kr_in,                   &
+!!     &          is_magne, is_current, ntot_phys_rj, d_rj)
+!!        Output: d_rj(1:kr_in,is_magne)
+!!        Output: d_rj(1:kr_in,is_current)
 !!
 !!      subroutine gauss_to_poloidal_out(kr_out, ltr_w, r_gauss,        &
-!!     &          w_gauss, index_w, d_rj)
+!!     &          w_gauss, index_w, is_fld, ntot_phys_rj, d_rj)
 !!      subroutine gauss_to_poloidal_in(kr_in, ltr_w, r_gauss,          &
-!!     &          w_gauss, index_w, d_rj)
+!!     &          w_gauss, index_w, is_fld, ntot_phys_rj, d_rj)
 !!@endverbatim
 !
       module extend_potential_field
@@ -43,10 +45,11 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine ext_outside_scalar(kr_out, d_rj)
+      subroutine ext_outside_scalar(kr_out, is_fld, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_out
-      real(kind = kreal), intent(inout) :: d_rj(nnod_rj)
+      integer(kind = kint), intent(in) :: is_fld, ntot_phys_rj
+      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real(kind = kreal) :: ratio
       integer(kind = kint) :: inod, inod_cmb
@@ -62,7 +65,7 @@
           inod_cmb = j + (kr_out-1) * nidx_rj(2)
           l_gl = idx_gl_1d_rj_j(j,2)
 !
-          d_rj(inod) =  d_rj(inod_cmb) * ratio**l_gl
+          d_rj(inod,is_fld) =  d_rj(inod_cmb,is_fld) * ratio**l_gl
         end do
 !$omp end do nowait
       end do
@@ -72,10 +75,11 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine ext_inside_scalar(kr_in, d_rj)
+      subroutine ext_inside_scalar(kr_in, is_fld, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_in
-      real(kind = kreal), intent(inout) :: d_rj(nnod_rj)
+      integer(kind = kint), intent(in) :: is_fld, ntot_phys_rj
+      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real(kind = kreal) :: ratio
       integer(kind = kint) :: inod, inod_icb
@@ -91,7 +95,7 @@
           inod_icb = j + (kr_in-1) * nidx_rj(2)
           l_gl = idx_gl_1d_rj_j(j,2)
 !
-          d_rj(inod) = d_rj(inod_icb) * ratio**l_gl
+          d_rj(inod,is_fld) = d_rj(inod_icb,is_fld) * ratio**l_gl
         end do
 !$omp end do nowait
       end do
@@ -101,10 +105,12 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine ext_outside_potential(kr_out, d_rj)
+      subroutine ext_outside_potential                                  &
+     &         (kr_out, is_fld, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_out
-      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,3)
+      integer(kind = kint), intent(in) :: is_fld, ntot_phys_rj
+      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real(kind = kreal) :: ratio
       integer(kind = kint) :: inod, inod_cmb
@@ -120,10 +126,10 @@
           inod_cmb = j + (kr_out-1) * nidx_rj(2)
           l_gl = idx_gl_1d_rj_j(j,2)
 !
-          d_rj(inod,1) =  d_rj(inod_cmb,1) * ratio**l_gl
-          d_rj(inod,2) = -d_rj(inod_cmb,1) * ratio**l_gl                &
-     &                          * dble(l_gl)*a_r_1d_rj_r(k)
-          d_rj(inod,3) = zero
+          d_rj(inod,is_fld  ) =  d_rj(inod_cmb,is_fld  ) * ratio**l_gl
+          d_rj(inod,is_fld+1) = -d_rj(inod_cmb,is_fld  ) * ratio**l_gl  &
+     &                         * dble(l_gl)*a_r_1d_rj_r(k)
+          d_rj(inod,is_fld+2) = zero
         end do
 !$omp end do nowait
       end do
@@ -133,10 +139,12 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine ext_inside_potential(kr_in, d_rj)
+      subroutine ext_inside_potential                                   &
+     &         (kr_in, is_fld, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_in
-      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,3)
+      integer(kind = kint), intent(in) :: is_fld, ntot_phys_rj
+      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real(kind = kreal) :: ratio
       integer(kind = kint) :: inod, inod_icb
@@ -152,10 +160,10 @@
           inod_icb = j + (kr_in-1) * nidx_rj(2)
           l_gl = idx_gl_1d_rj_j(j,2)
 !
-          d_rj(inod,1) = d_rj(inod_icb,1) * ratio**(l_gl+1)
-          d_rj(inod,2) = d_rj(inod_icb,1) * ratio**l_gl                 &
-     &                          * dble(l_gl+1)*a_r_1d_rj_r(kr_in)
-          d_rj(inod,3) = zero
+          d_rj(inod,is_fld  ) = d_rj(inod_icb,is_fld  ) * ratio**(l_gl+1)
+          d_rj(inod,is_fld+1) = d_rj(inod_icb,is_fld+1) * ratio**l_gl   &
+     &                         * dble(l_gl+1)*a_r_1d_rj_r(kr_in)
+          d_rj(inod,is_fld+2) = zero
         end do
 !$omp end do nowait
       end do
@@ -166,11 +174,15 @@
 !  -------------------------------------------------------------------
 !  -------------------------------------------------------------------
 !
-      subroutine ext_outside_potential_with_j(kr_out, d_rj_b, d_rj_j)
+      subroutine ext_outside_potential_with_j(kr_out,                   &
+     &          is_magne, is_current, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_out
-      real(kind = kreal), intent(inout) :: d_rj_b(nnod_rj,3)
-      real(kind = kreal), intent(inout) :: d_rj_j(nnod_rj,3)
+      integer(kind = kint), intent(in) :: is_magne, is_current
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+!
+      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+!
 !
       real(kind = kreal) :: ratio
       integer(kind = kint) :: inod, inod_cmb
@@ -186,13 +198,15 @@
           inod_cmb = j + (kr_out-1) * nidx_rj(2)
           l_gl = idx_gl_1d_rj_j(j,2)
 !
-          d_rj_b(inod,1) =  d_rj_b(inod_cmb,1) * ratio**l_gl
-          d_rj_b(inod,2) = -d_rj_b(inod_cmb,1) * ratio**l_gl            &
-     &                          * dble(l_gl)*a_r_1d_rj_r(k)
-          d_rj_b(inod,3) = zero
-          d_rj_j(inod,1) = zero
-          d_rj_j(inod,2) = zero
-          d_rj_j(inod,3) = zero
+          d_rj(inod,is_magne  ) =  d_rj(inod_cmb,is_magne  )            &
+     &                            * ratio**l_gl
+          d_rj(inod,is_magne+1) = -d_rj(inod_cmb,is_magne  )            &
+     &                            * ratio**l_gl * dble(l_gl)            &
+     &                             *a_r_1d_rj_r(k)
+          d_rj(inod,is_magne+2) = zero
+          d_rj(inod,is_current  ) = zero
+          d_rj(inod,is_current+1) = zero
+          d_rj(inod,is_current+2) = zero
         end do
 !$omp end do nowait
       end do
@@ -202,11 +216,14 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine ext_inside_potential_with_j(kr_in, d_rj_b, d_rj_j)
+      subroutine ext_inside_potential_with_j(kr_in,                     &
+     &          is_magne, is_current, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_in
-      real(kind = kreal), intent(inout) :: d_rj_b(nnod_rj,3)
-      real(kind = kreal), intent(inout) :: d_rj_j(nnod_rj,3)
+      integer(kind = kint), intent(in) :: is_magne, is_current
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+!
+      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real(kind = kreal) :: ratio
       integer(kind = kint) :: inod, inod_icb
@@ -222,13 +239,15 @@
           inod_icb = j + (kr_in-1) * nidx_rj(2)
           l_gl = idx_gl_1d_rj_j(j,2)
 !
-          d_rj_b(inod,1) = d_rj_b(inod_icb,1) * ratio**(l_gl+1)
-          d_rj_b(inod,2) = d_rj_b(inod_icb,1) * ratio**l_gl             &
-     &                          * dble(l_gl+1)*a_r_1d_rj_r(kr_in)
-          d_rj_b(inod,3) = zero
-          d_rj_j(inod,1  ) = zero
-          d_rj_j(inod,2) = zero
-          d_rj_j(inod,3) = zero
+          d_rj(inod,is_magne  ) = d_rj(inod_icb,is_magne  )            &
+     &                           * ratio**(l_gl+1)
+          d_rj(inod,is_magne+1) = d_rj(inod_icb,is_magne  )             &
+     &                           * ratio**l_gl * dble(l_gl+1)           &
+     &                           * a_r_1d_rj_r(kr_in)
+          d_rj(inod,is_magne+2) = zero
+          d_rj(inod,is_current  ) = zero
+          d_rj(inod,is_current+1) = zero
+          d_rj(inod,is_current+2) = zero
         end do
 !$omp end do nowait
       end do
@@ -240,14 +259,15 @@
 !  -------------------------------------------------------------------
 !
       subroutine gauss_to_poloidal_out(kr_out, ltr_w, r_gauss,          &
-     &          w_gauss, index_w, d_rj)
+     &          w_gauss, index_w, is_fld, ntot_phys_rj, d_rj)
 !
+      integer(kind = kint), intent(in) :: is_fld, ntot_phys_rj
       integer(kind = kint), intent(in) :: kr_out, ltr_w
       real(kind = kreal), intent(in) :: r_gauss
       real(kind = kreal), intent(in) :: w_gauss( ltr_w*(ltr_w+2) )
       integer(kind = kint), intent(in) :: index_w( ltr_w*(ltr_w+2),2 )
 !
-      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,3)
+      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real(kind = kreal) :: ratio, al
       integer(kind = kint) :: inod, j, j_gl, k
@@ -266,9 +286,10 @@
           inod = j + (k-1) * nidx_rj(2)
           ratio = r_gauss * a_r_1d_rj_r(k)
 !
-          d_rj(inod,1) =  al*w_gauss(j_gl) * ratio**l_gl * r_gauss
-          d_rj(inod,2) = - w_gauss(j_gl) * ratio**(l_gl+1)
-          d_rj(inod,3) = zero
+          d_rj(inod,is_fld  ) =  al*w_gauss(j_gl) * ratio**l_gl         &
+     &                                            * r_gauss
+          d_rj(inod,is_fld+1) = - w_gauss(j_gl) * ratio**(l_gl+1)
+          d_rj(inod,is_fld+2) = zero
         end do
       end do
 !$omp end parallel do
@@ -278,14 +299,15 @@
 !  -------------------------------------------------------------------
 !
       subroutine gauss_to_poloidal_in(kr_in, ltr_w, r_gauss,            &
-     &          w_gauss, index_w, d_rj)
+     &          w_gauss, index_w, is_fld, ntot_phys_rj, d_rj)
 !
+      integer(kind = kint), intent(in) :: is_fld, ntot_phys_rj
       integer(kind = kint), intent(in) :: kr_in, ltr_w
       real(kind = kreal), intent(in) :: r_gauss
       real(kind = kreal), intent(in) :: w_gauss( ltr_w*(ltr_w+2) )
       integer(kind = kint), intent(in) :: index_w( ltr_w*(ltr_w+2),2 )
 !
-      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,3)
+      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real(kind = kreal) :: ratio, ar_gauss, al1
       integer(kind = kint) :: inod, j, j_gl, k
@@ -306,10 +328,10 @@
           inod = j + (k-1) * nidx_rj(2)
           ratio = radius_1d_rj_r(k) * ar_gauss
 !
-          d_rj(inod,1) = - al1 * w_gauss(j_gl) * ratio**(l_gl+1)        &
-     &                         * r_gauss
-          d_rj(inod,2) = - w_gauss(j_gl) * ratio**l_gl
-          d_rj(inod,3) = zero
+          d_rj(inod,is_fld  ) = - al1 * w_gauss(j_gl)                   &
+     &                          * ratio**(l_gl+1) * r_gauss
+          d_rj(inod,is_fld+1) = - w_gauss(j_gl) * ratio**l_gl
+          d_rj(inod,is_fld+2) = zero
         end do
       end do
 !$omp end parallel do

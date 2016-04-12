@@ -191,7 +191,8 @@
      &         .or. phys_name_rj(i_fld) .eq. fhd_entropy_source         &
      &         ) then
               call set_org_rj_phys_data_from_IO(j_fld, fld_IO)
-              call r_interpolate_sph_vector(i_fld)
+              call r_interpolate_sph_vector(i_fld,                      &
+     &            num_phys_rj, ntot_phys_rj, istack_phys_comp_rj, d_rj)
               exit
             end if
           end if
@@ -199,8 +200,10 @@
       end do
 !
       if (ipol%i_magne .gt. 0) then
-        call ext_outside_potential(kr_outside, d_rj(1,ipol%i_magne))
-        call ext_inside_potential(kr_inside, d_rj(1,ipol%i_magne))
+        call ext_outside_potential                                      &
+     &     (kr_outside, ipol%i_magne, ntot_phys_rj, d_rj)
+        call ext_inside_potential                                       &
+     &     (kr_inside, ipol%i_magne, ntot_phys_rj, d_rj)
       end if
 !
       end subroutine r_interpolate_sph_rst_from_IO
@@ -223,15 +226,18 @@
         do j_fld = 1, fld_IO%num_field_IO
           if (phys_name_rj(i_fld) .eq. fld_IO%fld_name(j_fld)) then
             call set_org_rj_phys_data_from_IO(j_fld, fld_IO)
-            call r_interpolate_sph_vector(i_fld)
+            call r_interpolate_sph_vector(i_fld,                        &
+     &          num_phys_rj, ntot_phys_rj, istack_phys_comp_rj, d_rj)
             exit
           end if
         end do
       end do
 !
       if (ipol%i_magne .gt. 0) then
-        call ext_outside_potential(kr_outside, d_rj(1,ipol%i_magne))
-        call ext_inside_potential(kr_inside, d_rj(1,ipol%i_magne))
+        call ext_outside_potential                                      &
+     &     (kr_outside, ipol%i_magne, ntot_phys_rj, d_rj)
+        call ext_inside_potential                                       &
+     &     (kr_inside, ipol%i_magne, ntot_phys_rj, d_rj)
       end if
 !
       end subroutine r_interpolate_sph_fld_from_IO
@@ -250,9 +256,9 @@
       write(*,*) ' ipol%i_magne', ipol%i_magne, kr_outside, kr_inside
       if (ipol%i_magne .gt. 0) then
         call gauss_to_poloidal_out(kr_outside, ltr_w, r_gauss,          &
-     &      w_gauss, index_w, d_rj(1,ipol%i_magne))
+     &      w_gauss, index_w, ipol%i_magne, ntot_phys_rj, d_rj)
         call gauss_to_poloidal_in(kr_inside, ltr_w, r_gauss,            &
-     &      w_gauss, index_w, d_rj(1,ipol%i_magne))
+     &      w_gauss, index_w, ipol%i_magne, ntot_phys_rj, d_rj)
       end if
 !
       end subroutine set_poloidal_b_by_gauss_coefs
@@ -382,16 +388,23 @@
 ! -------------------------------------------------------------------
 ! -------------------------------------------------------------------
 !
-      subroutine r_interpolate_sph_vector(i_fld)
-!
-      use m_sph_spectr_data
+      subroutine r_interpolate_sph_vector(i_fld,                        &
+     &          num_phys_rj, ntot_phys_rj, istack_phys_comp_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: i_fld
-      integer(kind = kint) :: i_comp, ist, ied, inod, k, j, nd, i1, i2
+      integer(kind = kint), intent(in) :: num_phys_rj, ntot_phys_rj
+      integer(kind = kint), intent(in)                                  &
+     &                  :: istack_phys_comp_rj(0:num_phys_rj)
+!
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+!
+      integer(kind = kint) :: ncomp, i_comp, ist, ied, inod
+      integer(kind = kint) :: k, j, nd, i1, i2
 !
 !
+      ncomp = istack_phys_comp_rj(i_fld) - istack_phys_comp_rj(i_fld-1)
 !$omp parallel private(nd,i_comp,ist,ied,inod)
-      do nd = 1, num_phys_comp_rj(i_fld)
+      do nd = 1, ncomp
         i_comp = nd + istack_phys_comp_rj(i_fld-1)
         ist = 1
         ied = (kr_inside-1) * nidx_rj(2)

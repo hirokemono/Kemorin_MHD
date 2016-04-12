@@ -8,8 +8,6 @@
 !!
 !!@verbatim
 !!      subroutine sph_initial_data_control
-!!      subroutine set_noize_scalar_sph(is_fld)
-!!      subroutine reduce_initial_magne_sph
 !!@endverbatim
 !
 !
@@ -25,7 +23,8 @@
 !
       private :: set_initial_temp_sph, set_initial_magne_sph
       private :: set_initial_light_sph, set_initial_velo_sph
-      private :: set_ini_reference_temp_sph
+      private :: set_ini_reference_temp_sph, set_all_part_temp_sph
+      private :: set_noize_scalar_sph, reduce_initial_magne_sph
 !
 !-----------------------------------------------------------------------
 !
@@ -39,6 +38,9 @@
       use m_initial_field_control
       use m_t_int_parameter
       use m_t_step_parameter
+      use m_spheric_parameter
+      use m_sph_spectr_data
+!
       use set_sph_restart_IO
       use sph_mhd_rst_IO_control
       use initial_magne_dynamobench
@@ -59,36 +61,50 @@
      &   .or. iflag_restart .eq. i_rst_dbench2                          &
      &   .or. iflag_restart .eq. i_rst_dbench_qcv) then
         isig = 400
-        call set_initial_velo_sph
+        call set_initial_velo_sph(nnod_rj, ntot_phys_rj, d_rj)
         if(ipol%i_temp .gt. 0) then
-          call set_ini_reference_temp_sph
-          call set_initial_temp_sph(isig)
+          call set_ini_reference_temp_sph                               &
+     &       (reftemp_rj, ntot_phys_rj, d_rj)
+          call set_initial_temp_sph(isig, ntot_phys_rj, d_rj)
         end if
         if(ipol%i_light .gt. 0) then
-          call set_initial_light_sph(isig, ipol%i_light)
+          call set_initial_light_sph                                    &
+     &      (isig, ipol%i_light, reftemp_rj, ntot_phys_rj, d_rj)
         end if
 !
         if(iflag_restart .eq. i_rst_dbench1) then
-          if(ipol%i_magne .gt. 0) call initial_b_dynamobench_1
+          if(ipol%i_magne .gt. 0) then
+            call initial_b_dynamobench_1(ntot_phys_rj, d_rj)
+          end if
         else if(iflag_restart .eq. i_rst_dbench2) then
-          if(ipol%i_magne .gt. 0) call initial_b_dynamobench_2
+          if(ipol%i_magne .gt. 0) then
+            call initial_b_dynamobench_2(ntot_phys_rj, d_rj)
+          end if
         else if(iflag_restart .eq. i_rst_dbench_qcv) then
-          if(ipol%i_magne .gt. 0) call initial_b_dynamobench_qcv
+          if(ipol%i_magne .gt. 0) then
+           call initial_b_dynamobench_qcv(ntot_phys_rj, d_rj)
+          end if
         end if
 !
 !   set small seed magnetic field
 !
       else if (iflag_restart .eq. i_rst_no_file) then
-        if(ipol%i_temp .gt. 0)  call set_noize_scalar_sph(ipol%i_temp)
-        if(ipol%i_light .gt. 0) call set_noize_scalar_sph(ipol%i_light)
+        if(ipol%i_temp .gt. 0)  then
+          call set_noize_scalar_sph                                     &
+     &       (ipol%i_temp, reftemp_rj, ntot_phys_rj, d_rj)
+        end if
+        if(ipol%i_light .gt. 0) then
+          call set_noize_scalar_sph                                     &
+     &       (ipol%i_light, reftemp_rj, ntot_phys_rj, d_rj)
+        end if
         if(ipol%i_magne .gt. 0) then
-          call set_initial_magne_sph
-          call reduce_initial_magne_sph
+          call set_initial_magne_sph(ntot_phys_rj, d_rj)
+          call reduce_initial_magne_sph(nnod_rj, ntot_phys_rj, d_rj)
         end if
 !
       else if (iflag_restart .eq. i_rst_licv) then
-        call set_ini_reference_temp_sph
-        call set_all_part_temp_sph
+        call set_ini_reference_temp_sph(reftemp_rj, ntot_phys_rj, d_rj)
+        call set_all_part_temp_sph(ntot_phys_rj, d_rj)
       end if
 !
       if(iflag_debug .gt. 0) write(*,*) 'init_output_sph_restart_file'
@@ -104,10 +120,11 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_velo_sph
+      subroutine set_initial_velo_sph                                   &
+     &         (nnod_rj, ntot_phys_rj, d_rj)
 !
-      use m_spheric_parameter
-      use m_sph_spectr_data
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer ( kind = kint) :: inod
 !
@@ -124,11 +141,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_ini_reference_temp_sph
+      subroutine set_ini_reference_temp_sph                             &
+     &         (reftemp_rj, ntot_phys_rj, d_rj)
 !
       use m_control_parameter
       use m_spheric_parameter
-      use m_sph_spectr_data
+!
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+      real(kind=kreal), intent(in) :: reftemp_rj(nidx_rj(1),0:1)
+!
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer ( kind = kint) :: inod, k, jj
 !
@@ -170,12 +192,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_all_part_temp_sph
+      subroutine set_all_part_temp_sph(ntot_phys_rj, d_rj)
 !
       use m_control_parameter
       use m_spheric_parameter
-      use m_sph_spectr_data
 !
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer ( kind = kint) :: inod, j, k, jj
       real (kind = kreal) :: pi, xr, shell
@@ -205,13 +228,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_temp_sph(isig)
+      subroutine set_initial_temp_sph(isig, ntot_phys_rj, d_rj)
 !
       use m_control_parameter
       use m_spheric_parameter
-      use m_sph_spectr_data
 !
       integer ( kind = kint), intent(in) :: isig
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = 4) ::  m
       integer(kind = kint) :: inod, k, jj
@@ -245,12 +269,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_light_sph(isig, is_fld)
+      subroutine set_initial_light_sph                                  &
+     &          (isig, is_fld, reftemp_rj, ntot_phys_rj, d_rj)
 !
       use m_spheric_parameter
-      use m_sph_spectr_data
 !
       integer ( kind = kint), intent(in) :: isig, is_fld
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+      real(kind=kreal), intent(in) :: reftemp_rj(nidx_rj(1),0:1)
+!
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = 4) :: m
       integer ( kind = kint) :: inod, k, jj
@@ -299,11 +327,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_magne_sph
+      subroutine set_initial_magne_sph(ntot_phys_rj, d_rj)
 !
-      use m_boundary_params_sph_MHD
       use m_spheric_parameter
-      use m_sph_spectr_data
+      use m_boundary_params_sph_MHD
+!
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real (kind = kreal) :: pi, rr
       integer(kind = kint) :: is, it, k, js, jt
@@ -387,14 +417,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_noize_scalar_sph(is_fld)
+      subroutine set_noize_scalar_sph                                   &
+     &         (is_fld, reftemp_rj, ntot_phys_rj, d_rj)
 !
-      use m_control_parameter
       use m_spheric_parameter
-      use m_sph_spectr_data
-!
+      use m_control_parameter
 !
       integer(kind = kint), intent(in) :: is_fld
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+      real(kind=kreal), intent(in) :: reftemp_rj(nidx_rj(1),0:1)
+!
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+!
       integer ( kind = kint) :: inod, j, k, jj
       real (kind = kreal) :: pi, xr, shell
 !
@@ -442,10 +476,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine reduce_initial_magne_sph
+      subroutine reduce_initial_magne_sph(nnod_rj, ntot_phys_rj, d_rj)
 !
-      use m_spheric_parameter
-      use m_sph_spectr_data
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: is
 !

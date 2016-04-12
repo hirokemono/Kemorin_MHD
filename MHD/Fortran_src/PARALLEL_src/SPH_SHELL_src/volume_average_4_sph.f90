@@ -18,7 +18,6 @@
       use m_precision
 !
       use m_constants
-      use m_spheric_parameter
 !
       implicit none
 !
@@ -79,9 +78,13 @@
         icomp_st = istack_phys_comp_rj(i_fld-1) + 1
         jcomp_st = istack_rms_comp_rj(j_fld-1) +  1
         if (num_phys_comp_rj(i_fld) .eq. n_scalar) then
-          call cal_ave_scalar_sph_spectr(icomp_st, jcomp_st)
+          call cal_ave_scalar_sph_spectr(icomp_st, jcomp_st,            &
+     &        nnod_rj, nidx_rj, idx_rj_degree_zero, inod_rj_center,     &
+     &        ntot_phys_rj, d_rj, radius_1d_rj_r)
         else if (num_phys_comp_rj(i_fld) .eq. n_vector) then
-          call cal_ave_vector_sph_spectr(icomp_st, jcomp_st)
+          call cal_ave_vector_sph_spectr(icomp_st, jcomp_st,            &
+     &        nnod_rj, nidx_rj, idx_rj_degree_zero, inod_rj_center,     &
+     &        ntot_phys_rj, d_rj, radius_1d_rj_r)
         end if
       end do
 !
@@ -108,13 +111,21 @@
 ! -----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine cal_ave_scalar_sph_spectr(icomp, jcomp)
+      subroutine cal_ave_scalar_sph_spectr(icomp, jcomp,                &
+     &          nnod_rj, nidx_rj, idx_rj_degree_zero, inod_rj_center,   &
+     &          ntot_phys_rj, d_rj, radius_1d_rj_r)
 !
-      use m_constants
-      use m_sph_spectr_data
       use m_rms_4_sph_spectr
 !
+      integer(kind = kint), intent(in) :: nidx_rj(2)
+      integer(kind = kint), intent(in) :: idx_rj_degree_zero
+      integer(kind = kint), intent(in) :: inod_rj_center
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
+!
       integer(kind = kint), intent(in) :: icomp, jcomp
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real(kind = kreal), intent(in) :: d_rj(nnod_rj,ntot_phys_rj)
+!
       integer(kind = kint) :: k, inod
 !
 !
@@ -130,12 +141,21 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_ave_vector_sph_spectr(icomp, jcomp)
+      subroutine cal_ave_vector_sph_spectr(icomp, jcomp,                &
+     &          nnod_rj, nidx_rj, idx_rj_degree_zero, inod_rj_center,   &
+     &          ntot_phys_rj, d_rj, radius_1d_rj_r)
 !
-      use m_sph_spectr_data
       use m_rms_4_sph_spectr
 !
+      integer(kind = kint), intent(in) :: nidx_rj(2)
+      integer(kind = kint), intent(in) :: idx_rj_degree_zero
+      integer(kind = kint), intent(in) :: inod_rj_center
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
+!
       integer(kind = kint), intent(in) :: icomp, jcomp
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real(kind = kreal), intent(in) :: d_rj(nnod_rj,ntot_phys_rj)
+!
       integer(kind = kint) :: k, inod
 !
 !

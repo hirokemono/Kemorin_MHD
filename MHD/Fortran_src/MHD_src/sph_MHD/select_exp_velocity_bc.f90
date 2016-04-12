@@ -60,6 +60,7 @@
 !
       use m_constants
       use m_spheric_parameter
+      use m_sph_spectr_data
 !
       use set_sph_exp_rigid_ICB
       use set_sph_exp_rigid_CMB
@@ -85,36 +86,43 @@
 !
 !
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
-        call sph_center_fld_and_curl(is_velo, is_vort)
+        call sph_center_fld_and_curl                                    &
+     &     (nnod_rj, nidx_rj(2), ar_1d_rj(ione,2), is_velo, is_vort,    &
+     &      ntot_phys_rj, d_rj)
       else if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then
-        call cal_sph_nod_icb_free_v_and_w(nidx_rj(2), sph_bc_U%kr_in,   &
-     &      fdm2_free_vp_ICB, fdm2_free_vt_ICB, is_velo, is_vort)
+        call cal_sph_nod_icb_free_v_and_w                               &
+     &     (nnod_rj, nidx_rj(2), sph_bc_U%kr_in,                        &
+     &      fdm2_free_vp_ICB, fdm2_free_vt_ICB, is_velo, is_vort,       &
+     &      ntot_phys_rj, d_rj)
       else if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call cal_sph_nod_icb_rotate_velo2                               &
-     &     (idx_rj_degree_zero, idx_rj_degree_one, nidx_rj(2),          &
+     &     (idx_rj_degree_zero, idx_rj_degree_one, nnod_rj, nidx_rj(2), &
      &      sph_bc_U%kr_in, sph_bc_U%r_ICB, radius_1d_rj_r(1),          &
-     &      vt_ICB_bc, is_velo)
+     &      vt_ICB_bc, is_velo, ntot_phys_rj, d_rj)
         call cal_sph_nod_icb_rigid_rot2                                 &
-     &     (nidx_rj(2), sph_bc_U%kr_in, sph_bc_U%r_ICB,                 &
+     &     (nnod_rj, nidx_rj(2), sph_bc_U%kr_in, sph_bc_U%r_ICB,        &
      &      sph_bc_U%fdm2_fix_fld_ICB, sph_bc_U%fdm2_fix_dr_ICB,        &
-     &      is_velo, is_vort)
+     &      is_velo, is_vort, ntot_phys_rj, d_rj)
       else
-        call cal_sph_nod_icb_rigid_velo2(nidx_rj(2),                    &
-     &      sph_bc_U%kr_in, sph_bc_U%r_ICB, vt_ICB_bc, is_velo)
+        call cal_sph_nod_icb_rigid_velo2(nnod_rj, nidx_rj(2),           &
+     &      sph_bc_U%kr_in, sph_bc_U%r_ICB, vt_ICB_bc, is_velo,         &
+     &      ntot_phys_rj, d_rj)
         call cal_sph_nod_icb_rigid_rot2                                 &
-     &     (nidx_rj(2), sph_bc_U%kr_in, sph_bc_U%r_ICB,                 &
+     &     (nnod_rj, nidx_rj(2), sph_bc_U%kr_in, sph_bc_U%r_ICB,        &
      &      sph_bc_U%fdm2_fix_fld_ICB, sph_bc_U%fdm2_fix_dr_ICB,        &
-     &      is_velo, is_vort)
+     &      is_velo, is_vort, ntot_phys_rj, d_rj)
       end if
 !
       if(sph_bc_U%iflag_cmb .eq. iflag_free_slip) then
-        call cal_sph_nod_cmb_free_v_and_w(nidx_rj(2), sph_bc_U%kr_out,  &
-     &      fdm2_free_vp_CMB, fdm2_free_vt_CMB, is_velo, is_vort)
+        call cal_sph_nod_cmb_free_v_and_w                               &
+     &     (nnod_rj, nidx_rj(2), sph_bc_U%kr_out,                       &
+     &      fdm2_free_vp_CMB, fdm2_free_vt_CMB, is_velo, is_vort,       &
+     &      ntot_phys_rj, d_rj)
       else
         call cal_sph_nod_cmb_rigid_v_and_w                              &
-     &     (nidx_rj(2), sph_bc_U%kr_out, sph_bc_U%r_CMB,                &
+     &     (nnod_rj, nidx_rj(2), sph_bc_U%kr_out, sph_bc_U%r_CMB,       &
      &      sph_bc_U%fdm2_fix_fld_CMB, sph_bc_U%fdm2_fix_dr_CMB,        &
-     &      vt_CMB_bc, is_velo, is_vort)
+     &      vt_CMB_bc, is_velo, is_vort, ntot_phys_rj, d_rj)
       end if
 !
       end subroutine sel_bc_grad_vp_and_vorticity
@@ -129,26 +137,31 @@
 !
 !
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
-        call cal_dsdr_sph_center_2(is_fld)
+        call cal_dsdr_sph_center_2(nnod_rj, nidx_rj(2), is_fld,         &
+     &      ntot_phys_rj, d_rj)
       else if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then
-        call cal_sph_nod_icb_free_vpol2(nidx_rj(2), sph_bc_U%kr_in,     &
-     &      fdm2_free_vp_ICB, is_fld)
+        call cal_sph_nod_icb_free_vpol2                                 &
+     &     (nnod_rj, nidx_rj(2), sph_bc_U%kr_in,                        &
+     &      fdm2_free_vp_ICB, is_fld, ntot_phys_rj, d_rj)
       else if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call cal_sph_nod_icb_rotate_velo2                               &
-     &     (idx_rj_degree_zero, idx_rj_degree_one, nidx_rj(2),          &
+     &     (idx_rj_degree_zero, idx_rj_degree_one, nnod_rj, nidx_rj(2), &
      &      sph_bc_U%kr_in, sph_bc_U%r_ICB, radius_1d_rj_r(1),          &
-     &      vt_ICB_bc, is_fld)
+     &      vt_ICB_bc, is_fld, ntot_phys_rj, d_rj)
       else
-        call cal_sph_nod_icb_rigid_velo2(nidx_rj(2),                    &
-     &      sph_bc_U%kr_in, sph_bc_U%r_ICB, vt_ICB_bc, is_fld)
+        call cal_sph_nod_icb_rigid_velo2(nnod_rj, nidx_rj(2),           &
+     &      sph_bc_U%kr_in, sph_bc_U%r_ICB, vt_ICB_bc, is_fld,          &
+     &      ntot_phys_rj, d_rj)
       end if
 !
       if(sph_bc_U%iflag_cmb .eq. iflag_free_slip) then
-        call cal_sph_nod_cmb_free_vpol2(nidx_rj(2), sph_bc_U%kr_out,    &
-     &      fdm2_free_vp_CMB, is_fld)
+        call cal_sph_nod_cmb_free_vpol2                                 &
+     &      (nnod_rj, nidx_rj(2), sph_bc_U%kr_out,                      &
+     &      fdm2_free_vp_CMB, is_fld, ntot_phys_rj, d_rj)
       else
-        call cal_sph_nod_cmb_rigid_velo2(nidx_rj(2),                    &
-     &      sph_bc_U%kr_out, sph_bc_U%r_CMB, vt_CMB_bc, is_fld)
+        call cal_sph_nod_cmb_rigid_velo2(nnod_rj, nidx_rj(2),           &
+     &      sph_bc_U%kr_out, sph_bc_U%r_CMB, vt_CMB_bc, is_fld,         &
+     &      ntot_phys_rj, d_rj)
       end if
 !
       end subroutine sel_bc_grad_poloidal_moment
@@ -164,27 +177,31 @@
 !
 !
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
-        call cal_sph_nod_center_rot2(is_fld, is_rot)
+        call cal_sph_nod_center_rot2                                    &
+     &     (nnod_rj, nidx_rj(2), ar_1d_rj(ione,2), is_fld, is_rot,      &
+     &      ntot_phys_rj, d_rj)
       else if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then
         call cal_sph_nod_icb_free_rot2                                  &
-     &     (nidx_rj(2), sph_bc_U%kr_in, sph_bc_U%r_ICB,                 &
-     &      fdm2_free_vp_ICB, fdm2_free_vt_ICB, is_fld, is_rot)
+     &     (nnod_rj, nidx_rj(2), sph_bc_U%kr_in, sph_bc_U%r_ICB,        &
+     &      fdm2_free_vp_ICB, fdm2_free_vt_ICB, is_fld, is_rot,         &
+     &      ntot_phys_rj, d_rj)
       else
         call cal_sph_nod_icb_rigid_rot2                                 &
-     &     (nidx_rj(2), sph_bc_U%kr_in, sph_bc_U%r_ICB,                 &
+     &     (nnod_rj, nidx_rj(2), sph_bc_U%kr_in, sph_bc_U%r_ICB,        &
      &      sph_bc_U%fdm2_fix_fld_ICB, sph_bc_U%fdm2_fix_dr_ICB,        &
-     &      is_fld, is_rot)
+     &      is_fld, is_rot, ntot_phys_rj, d_rj)
       end if
 !
       if(sph_bc_U%iflag_cmb .eq. iflag_free_slip) then
         call cal_sph_nod_cmb_free_rot2                                  &
-     &     (nidx_rj(2), sph_bc_U%kr_out, sph_bc_U%r_CMB,                &
-     &      fdm2_free_vp_CMB, fdm2_free_vt_CMB, is_fld, is_rot)
+     &     (nnod_rj, nidx_rj(2), sph_bc_U%kr_out, sph_bc_U%r_CMB,       &
+     &      fdm2_free_vp_CMB, fdm2_free_vt_CMB, is_fld, is_rot,         &
+     &      ntot_phys_rj, d_rj)
       else
         call cal_sph_nod_cmb_rigid_rot2                                 &
-     &     (nidx_rj(2), sph_bc_U%kr_out, sph_bc_U%r_CMB,                &
+     &     (nnod_rj, nidx_rj(2), sph_bc_U%kr_out, sph_bc_U%r_CMB,       &
      &      sph_bc_U%fdm2_fix_fld_CMB, sph_bc_U%fdm2_fix_dr_CMB,        &
-     &      is_fld, is_rot)
+     &      is_fld, is_rot, ntot_phys_rj, d_rj)
       end if
 !
       end subroutine sel_bc_sph_vorticity
@@ -210,23 +227,25 @@
       it_diffuse =  is_viscous + 2
 !
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
-        call cal_sph_nod_center_diffuse2(coef_diffuse,                  &
-     &      is_velo, is_viscous)
-        call cal_dsdr_sph_center_2(is_viscous)
+        call cal_sph_nod_center_diffuse2                                &
+     &     (nnod_rj, nidx_rj(2), ar_1d_rj(ione,2), coef_diffuse,        &
+     &      is_velo, is_viscous, ntot_phys_rj, d_rj)
+        call cal_dsdr_sph_center_2(nnod_rj, nidx_rj(2), is_viscous,     &
+     &      ntot_phys_rj, d_rj)
       else if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then
         call cal_sph_nod_icb_free_diffuse2                              &
-     &     (nidx_rj(2), sph_bc_U%kr_in, sph_bc_U%r_ICB,                 &
+     &     (nnod_rj, nidx_rj(2), sph_bc_U%kr_in, sph_bc_U%r_ICB,        &
      &      fdm2_free_vp_ICB, fdm2_free_vt_ICB,                         &
-     &      coef_diffuse, is_velo, is_viscous)
+     &      coef_diffuse, is_velo, is_viscous, ntot_phys_rj, d_rj)
       else
         call cal_sph_nod_icb_rigid_diffuse2                             &
-     &     (nidx_rj(2), sph_bc_U%kr_in, sph_bc_U%r_ICB,                 &
+     &     (nnod_rj, nidx_rj(2), sph_bc_U%kr_in, sph_bc_U%r_ICB,        &
      &      sph_bc_U%fdm2_fix_fld_ICB, sph_bc_U%fdm2_fix_dr_ICB,        &
-     &      coef_diffuse, is_velo, is_viscous)
+     &      coef_diffuse, is_velo, is_viscous, ntot_phys_rj, d_rj)
       end if
-      call cal_dsdr_sph_no_bc_in_2(nidx_rj(2),                          &
+      call cal_dsdr_sph_no_bc_in_2(nnod_rj, nidx_rj(2),                 &
      &    sph_bc_U%kr_in, sph_bc_U%fdm2_fix_fld_ICB,                    &
-     &    is_viscous, ids_viscous)
+     &    is_viscous, ids_viscous, ntot_phys_rj, d_rj)
 !
 !   Ovewrite rotatable inner core 
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
@@ -237,18 +256,18 @@
 !
       if(sph_bc_U%iflag_cmb .eq. iflag_free_slip) then
         call cal_sph_nod_cmb_free_diffuse2                              &
-     &     (nidx_rj(2), sph_bc_U%kr_out, sph_bc_U%r_CMB,                &
+     &     (nnod_rj, nidx_rj(2), sph_bc_U%kr_out, sph_bc_U%r_CMB,       &
      &      fdm2_free_vp_CMB, fdm2_free_vt_CMB,                         &
-     &      coef_diffuse, is_velo, is_viscous)
+     &      coef_diffuse, is_velo, is_viscous, ntot_phys_rj, d_rj)
       else
         call cal_sph_nod_cmb_rigid_diffuse2                             &
-     &     (nidx_rj(2), sph_bc_U%kr_out, sph_bc_U%r_CMB,                &
+     &     (nnod_rj, nidx_rj(2), sph_bc_U%kr_out, sph_bc_U%r_CMB,       &
      &      sph_bc_U%fdm2_fix_fld_CMB, sph_bc_U%fdm2_fix_dr_CMB,        &
-     &      coef_diffuse, is_velo, is_viscous)
+     &      coef_diffuse, is_velo, is_viscous, ntot_phys_rj, d_rj)
       end if
-      call cal_dsdr_sph_no_bc_out_2(nidx_rj(2),                         &
+      call cal_dsdr_sph_no_bc_out_2(nnod_rj, nidx_rj(2),                &
      &    sph_bc_U%kr_out, sph_bc_U%fdm2_fix_fld_CMB,                   &
-     &    is_viscous, ids_viscous)
+     &    is_viscous, ids_viscous, ntot_phys_rj, d_rj)
 !
       end subroutine sel_bc_sph_viscous_diffusion
 !
@@ -268,18 +287,20 @@
 !
 !
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
-        call cal_sph_nod_center_diffuse2(coef_diffuse,                  &
-     &      is_vort, is_w_diffuse)
-        call cal_dsdr_sph_center_2(is_w_diffuse)
+        call cal_sph_nod_center_diffuse2                                &
+     &     (nnod_rj, nidx_rj(2), ar_1d_rj(ione,2), coef_diffuse,        &
+     &      is_vort, is_w_diffuse, ntot_phys_rj, d_rj)
+        call cal_dsdr_sph_center_2(nnod_rj, nidx_rj(2), is_w_diffuse,   &
+     &      ntot_phys_rj, d_rj)
       else if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then
         call cal_sph_nod_icb_free_w_diffuse2                            &
-     &     (nidx_rj(2), sph_bc_U%kr_in, sph_bc_U%r_ICB,                 &
+     &     (nnod_rj, nidx_rj(2), sph_bc_U%kr_in, sph_bc_U%r_ICB,        &
      &      sph_bc_U%fdm2_fix_fld_ICB, fdm2_free_vt_ICB,                &
-     &      coef_diffuse, is_vort, is_w_diffuse)
+     &      coef_diffuse, is_vort, is_w_diffuse, ntot_phys_rj, d_rj)
       else
-        call cal_sph_nod_icb_rgd_w_diffuse2(nidx_rj(2),                 &
+        call cal_sph_nod_icb_rgd_w_diffuse2(nnod_rj, nidx_rj(2),        &
      &      sph_bc_U%kr_in, sph_bc_U%r_ICB, sph_bc_U%fdm2_fix_fld_ICB,  &
-     &      coef_diffuse, is_vort, is_w_diffuse)
+     &      coef_diffuse, is_vort, is_w_diffuse, ntot_phys_rj, d_rj)
       end if
 !
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
@@ -288,24 +309,24 @@
      &      is_vort, is_w_diffuse)
       end if
 !
-      call cal_dsdr_sph_no_bc_in_2(nidx_rj(2),                          &
+      call cal_dsdr_sph_no_bc_in_2(nnod_rj, nidx_rj(2),                 &
      &    sph_bc_U%kr_in, sph_bc_U%fdm2_fix_fld_ICB,                    &
-     &    is_w_diffuse, ids_w_diffuse)
+     &    is_w_diffuse, ids_w_diffuse, ntot_phys_rj, d_rj)
 !
       if(sph_bc_U%iflag_cmb .eq. iflag_free_slip) then
         call cal_sph_nod_cmb_free_w_diffuse2                            &
-     &     (nidx_rj(2), sph_bc_U%kr_out, sph_bc_U%r_CMB,                &
+     &     (nnod_rj, nidx_rj(2), sph_bc_U%kr_out, sph_bc_U%r_CMB,       &
      &      sph_bc_U%fdm2_fix_fld_CMB, fdm2_free_vt_CMB,                &
-     &      coef_diffuse, is_vort, is_w_diffuse)
+     &      coef_diffuse, is_vort, is_w_diffuse, ntot_phys_rj, d_rj)
       else
-        call cal_sph_nod_cmb_rgd_w_diffuse2(nidx_rj(2),                 &
+        call cal_sph_nod_cmb_rgd_w_diffuse2(nnod_rj, nidx_rj(2),        &
      &      sph_bc_U%kr_out, sph_bc_U%r_CMB, sph_bc_U%fdm2_fix_fld_CMB, &
-     &      coef_diffuse, is_vort, is_w_diffuse)
+     &      coef_diffuse, is_vort, is_w_diffuse, ntot_phys_rj, d_rj)
       end if
 !
-      call cal_dsdr_sph_no_bc_out_2(nidx_rj(2),                         &
+      call cal_dsdr_sph_no_bc_out_2(nnod_rj, nidx_rj(2),                &
      &    sph_bc_U%kr_out, sph_bc_U%fdm2_fix_fld_CMB,                   &
-     &    is_w_diffuse, ids_w_diffuse)
+     &    is_w_diffuse, ids_w_diffuse, ntot_phys_rj, d_rj)
 !
       end subroutine sel_bc_sph_vort_diffusion
 !

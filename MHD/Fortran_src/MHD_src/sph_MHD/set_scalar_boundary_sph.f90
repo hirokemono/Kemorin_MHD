@@ -10,22 +10,26 @@
 !!
 !!
 !!@verbatim
-!!      subroutine set_fixed_scalar_sph(jmax, kr_bc_st, kr_bc_ed,       &
-!!     &          is_fld, fixed_bc)
+!!      subroutine set_fixed_scalar_sph(nnod_rj, jmax,                  &
+!!     &          kr_bc_st, kr_bc_ed, is_fld, fixed_bc,                 &
+!!     &          ntot_phys_rj, d_rj)
 !!
-!!      subroutine adjust_in_fixed_flux_sph(jmax, kr_in, r_ICB,         &
+!!      subroutine adjust_in_fixed_flux_sph(nnod_rj, jmax, kr_in, r_ICB,&
 !!     &          fdm2_fix_dr_ICB, flux_ICB, coef_d,                    &
-!!     &          coef_imp, dt, is_fld)
-!!      subroutine adjust_out_fixed_flux_sph(jmax, kr_out, r_CMB,       &
-!!     &          fdm2_fix_dr_CMB, flux_CMB, coef_d,                    &
-!!     &          coef_imp,  dt, is_fld)
+!!     &          coef_imp, dt, is_fld, ntot_phys_rj, d_rj)
+!!      subroutine adjust_out_fixed_flux_sph(nnod_rj, jmax,             &
+!!     &          kr_out, r_CMB, fdm2_fix_dr_CMB, flux_CMB, coef_d,     &
+!!     &          coef_imp,  dt, is_fld, ntot_phys_rj, d_rj)
 !!
-!!      subroutine poisson_in_fixed_flux_sph(jmax, kr_in, r_ICB,        &
-!!     &          fdm2_fix_dr_ICB, flux_ICB, is_fld)
-!!      subroutine poisson_out_fixed_flux_sph(jmax, kr_out, r_CMB,      &
-!!     &          fdm2_fix_dr_CMB, flux_CMB, is_fld)
+!!      subroutine poisson_in_fixed_flux_sph(nnod_rj, jmax,             &
+!!     &          kr_in, r_ICB, fdm2_fix_dr_ICB, flux_ICB, is_fld,      &
+!!     &          ntot_phys_rj, d_rj)
+!!      subroutine poisson_out_fixed_flux_sph(nnod_rj, jmax,            &
+!!     &          kr_out, r_CMB, fdm2_fix_dr_CMB, flux_CMB, is_fld,     &
+!!     &          ntot_phys_rj, d_rj)
 !!@endverbatim
 !!
+!!@param  nnod_rj  Number of points for spectrum data
 !!@param  jmax        Number of modes for local spectrum
 !!@param  kr_bc_st    Start radial address to set fixed field
 !!@param  kr_bc_ed    End radial address to set fixed field
@@ -46,13 +50,14 @@
 !!@param coef_d     Coefficient for magnetic diffusion
 !!@param is_fld     Input field address for d_rj
 !!
+!!@param ntot_phys_rj   Total number of components
+!!@param d_rj           Spectrum data
+!!
       module set_scalar_boundary_sph
 !
       use m_precision
 !
       use m_constants
-      use m_spheric_parameter
-      use m_sph_spectr_data
       use m_sph_phys_address
 !
       implicit none
@@ -63,12 +68,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_fixed_scalar_sph(jmax, kr_bc_st, kr_bc_ed, is_fld, &
-     &          fixed_bc)
+      subroutine set_fixed_scalar_sph(nnod_rj, jmax,                    &
+     &          kr_bc_st, kr_bc_ed, is_fld, fixed_bc,                   &
+     &           ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: is_fld
       integer(kind = kint), intent(in) :: jmax, kr_bc_st, kr_bc_ed
       real(kind = kreal), intent(in) :: fixed_bc(jmax)
+!
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+!
       integer(kind = kint) :: j, inod, k
 !
 !
@@ -86,11 +96,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine adjust_in_fixed_flux_sph(jmax, kr_in, r_ICB,           &
+      subroutine adjust_in_fixed_flux_sph(nnod_rj, jmax, kr_in, r_ICB,  &
      &          fdm2_fix_dr_ICB, flux_ICB, coef_d,                      &
-     &          coef_imp, dt, is_fld)
-!
-      use m_sph_spectr_data
+     &          coef_imp, dt, is_fld, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax, kr_in
       integer(kind = kint), intent(in) :: is_fld
@@ -98,6 +106,9 @@
       real(kind = kreal), intent(in) :: flux_ICB(jmax)
       real(kind = kreal), intent(in) :: r_ICB(0:2)
       real(kind = kreal), intent(in) :: fdm2_fix_dr_ICB(-1:1,3)
+!
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, j
 !
@@ -117,11 +128,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine adjust_out_fixed_flux_sph(jmax, kr_out, r_CMB,         &
-     &          fdm2_fix_dr_CMB, flux_CMB, coef_d,                      &
-     &          coef_imp,  dt, is_fld)
-!
-      use m_sph_spectr_data
+      subroutine adjust_out_fixed_flux_sph(nnod_rj, jmax,               &
+     &          kr_out, r_CMB, fdm2_fix_dr_CMB, flux_CMB, coef_d,       &
+     &          coef_imp,  dt, is_fld, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax, kr_out
       integer(kind = kint), intent(in) :: is_fld
@@ -129,6 +138,9 @@
       real(kind = kreal), intent(in) :: flux_CMB(jmax)
       real(kind = kreal), intent(in) :: r_CMB(0:2)
       real(kind = kreal), intent(in) :: fdm2_fix_dr_CMB(-1:1,3)
+!
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, j
 !
@@ -149,16 +161,18 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine poisson_in_fixed_flux_sph(jmax, kr_in, r_ICB,          &
-     &          fdm2_fix_dr_ICB, flux_ICB, is_fld)
-!
-      use m_sph_spectr_data
+      subroutine poisson_in_fixed_flux_sph(nnod_rj, jmax,               &
+     &          kr_in, r_ICB, fdm2_fix_dr_ICB, flux_ICB, is_fld,        &
+     &          ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax, kr_in
       integer(kind = kint), intent(in) :: is_fld
       real(kind = kreal), intent(in) :: flux_ICB(jmax)
       real(kind = kreal), intent(in) :: r_ICB(0:1)
       real(kind = kreal), intent(in) :: fdm2_fix_dr_ICB(-1:1,3)
+!
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, j
 !
@@ -176,16 +190,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine poisson_out_fixed_flux_sph(jmax, kr_out, r_CMB,        &
-     &          fdm2_fix_dr_CMB, flux_CMB, is_fld)
-!
-      use m_sph_spectr_data
+      subroutine poisson_out_fixed_flux_sph(nnod_rj, jmax,              &
+     &          kr_out, r_CMB, fdm2_fix_dr_CMB, flux_CMB, is_fld,       &
+     &          ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax, kr_out
       integer(kind = kint), intent(in) :: is_fld
       real(kind = kreal), intent(in) :: flux_CMB(jmax)
       real(kind = kreal), intent(in) :: r_CMB(0:1)
       real(kind = kreal), intent(in) :: fdm2_fix_dr_CMB(-1:1,3)
+!
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, j
 !

@@ -58,7 +58,7 @@
 !         Solution: ipol%i_velo, itor%i_velo, idpdr%i_velo
         if (iflag_debug .gt. 0)                                         &
      &       write(*,*) 'cal_sol_velo_by_vort_sph_crank'
-        call cal_sol_velo_by_vort_sph_crank
+        call cal_sol_velo_by_vort_sph_crank(ntot_phys_rj, d_rj)
       end if
 !
 !  Input: ipol%i_temp,  Solution: ipol%i_temp
@@ -77,7 +77,7 @@
 !  Solution: ipol%i_magne, itor%i_magne, idpdr%i_magne
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_magne_sph_crank'
       if(iflag_t_evo_4_magne .gt. id_no_evolution) then
-        call cal_sol_magne_sph_crank
+        call cal_sol_magne_sph_crank(ntot_phys_rj, d_rj)
       end if
 !
 !*  ---- update after evolution ------------------
@@ -221,8 +221,8 @@
 !
 !         Input: ipol%i_light,  Solution: ipol%i_grad_composit
       if(ipol%i_grad_composit .gt. 0) then
-        call const_radial_grad_scalar                                   &
-     &     (sph_bc_C, ipol%i_light, ipol%i_grad_composit)
+        call const_radial_grad_scalar(sph_bc_C,                         &
+     &     ipol%i_light, ipol%i_grad_composit)
       end if
 !
 !         Input: ipol%i_light,  Solution: ipol%i_c_diffuse

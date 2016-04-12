@@ -7,18 +7,26 @@
 !>@brief Evoluve the vorticity equation by explicit scheme 
 !!
 !!@verbatim
-!!      subroutine cal_vorticity_eq_adams(kr_in, kr_out)
-!!      subroutine cal_vorticity_eq_euler(kr_in, kr_out)
+!!      subroutine cal_vorticity_eq_adams                               &
+!!     &         (kr_in, kr_out, nnod_rj, jmax, ntot_phys_rj, d_rj)
+!!      subroutine cal_vorticity_eq_euler                               &
+!!     &          (kr_in, kr_out, nnod_rj, jmax, ntot_phys_rj, d_rj)
 !!
-!!      subroutine set_MHD_terms_to_force(it_rot_buo)
-!!      subroutine set_rot_cv_terms_to_force(it_rot_buo)
+!!      subroutine set_MHD_terms_to_force                               &
+!!     &         (it_rot_buo, nnod_rj, ntot_phys_rj, d_rj)
+!!      subroutine set_rot_cv_terms_to_force                            &
+!!     &         (it_rot_buo, nnod_rj, ntot_phys_rj, d_rj)
 !!
-!!      subroutine set_rot_advection_to_force
-!!      subroutine add_coriolis_to_vort_force
-!!      subroutine add_buoyancy_to_vort_force(it_rot_buo)
-!!      subroutine add_lorentz_to_vort_force
+!!      subroutine set_rot_advection_to_force                           &
+!!     &         (nnod_rj, ntot_phys_rj, d_rj)
+!!      subroutine add_coriolis_to_vort_force                           &
+!!     &         (nnod_rj, ntot_phys_rj, d_rj)
+!!      subroutine add_buoyancy_to_vort_force                           &
+!!     &         (it_rot_buo, nnod_rj, ntot_phys_rj, d_rj)
+!!      subroutine add_lorentz_to_vort_force                            &
+!!     &         (nnod_rj, ntot_phys_rj, d_rj)
 !!
-!!      subroutine set_ini_adams_inertia
+!!      subroutine set_ini_adams_inertia(nnod_rj, ntot_phys_rj, d_rj)
 !!@endverbatim
 !!
 !!@n @param kr_in       Radial ID for inner boundary
@@ -26,14 +34,15 @@
 !!
 !!@n @param it_rot_buo  Spectr field address
 !!                       for toroidal curl of buodyancy
+!!
+!!@n @param ntot_phys_rj   Total number of components
+!!@n @param d_rj           Spectrum data
 !
       module cal_vorticity_terms_adams
 !
       use m_precision
 !
       use m_t_int_parameter
-      use m_spheric_parameter
-      use m_sph_spectr_data
       use m_sph_phys_address
 !
       implicit  none
@@ -44,17 +53,20 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_vorticity_eq_adams(kr_in, kr_out)
+      subroutine cal_vorticity_eq_adams                                 &
+     &         (kr_in, kr_out, nnod_rj, jmax, ntot_phys_rj, d_rj)
 !
       use m_physical_property
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
+      integer(kind = kint), intent(in) :: nnod_rj, jmax, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, ist, ied
 !
 !
-      ist = (kr_in-1)*nidx_rj(2) + 1
-      ied = kr_out * nidx_rj(2)
+      ist = (kr_in-1)*jmax + 1
+      ied = kr_out * jmax
 !$omp do private (inod)
       do inod = ist, ied
         d_rj(inod,ipol%i_vort) = d_rj(inod,ipol%i_vort)                 &
@@ -75,17 +87,20 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_vorticity_eq_euler(kr_in, kr_out)
+      subroutine cal_vorticity_eq_euler                                 &
+     &          (kr_in, kr_out, nnod_rj, jmax, ntot_phys_rj, d_rj)
 !
       use m_physical_property
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
+      integer(kind = kint), intent(in) :: nnod_rj, jmax, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, ist, ied
 !
 !
-      ist = (kr_in-1)*nidx_rj(2) + 1
-      ied = kr_out * nidx_rj(2)
+      ist = (kr_in-1)*jmax + 1
+      ied = kr_out * jmax
 !$omp do private (inod)
       do inod = ist, ied
         d_rj(inod,ipol%i_vort) = d_rj(inod,ipol%i_vort)                 &
@@ -103,9 +118,13 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_MHD_terms_to_force(it_rot_buo)
+      subroutine set_MHD_terms_to_force                                 &
+     &         (it_rot_buo, nnod_rj, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: it_rot_buo
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+!
       integer(kind = kint) :: inod
 !
 !
@@ -125,9 +144,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_rot_cv_terms_to_force(it_rot_buo)
+      subroutine set_rot_cv_terms_to_force                              &
+     &         (it_rot_buo, nnod_rj, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: it_rot_buo
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+!
       integer(kind = kint) :: inod
 !
 !
@@ -146,7 +169,11 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_rot_advection_to_force
+      subroutine set_rot_advection_to_force                             &
+     &         (nnod_rj, ntot_phys_rj, d_rj)
+!
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: inod
 !
@@ -162,7 +189,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine add_coriolis_to_vort_force
+      subroutine add_coriolis_to_vort_force                             &
+     &         (nnod_rj, ntot_phys_rj, d_rj)
+!
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: inod
 !
@@ -180,9 +211,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine add_buoyancy_to_vort_force(it_rot_buo)
+      subroutine add_buoyancy_to_vort_force                             &
+     &         (it_rot_buo, nnod_rj, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: it_rot_buo
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+!
       integer(kind = kint) :: inod
 !
 !
@@ -197,7 +232,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine add_lorentz_to_vort_force
+      subroutine add_lorentz_to_vort_force                              &
+     &         (nnod_rj, ntot_phys_rj, d_rj)
+!
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: inod
 !
@@ -216,7 +255,10 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_ini_adams_inertia
+      subroutine set_ini_adams_inertia(nnod_rj, ntot_phys_rj, d_rj)
+!
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: inod
 !

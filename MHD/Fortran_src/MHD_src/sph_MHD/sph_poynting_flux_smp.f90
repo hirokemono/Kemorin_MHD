@@ -57,6 +57,7 @@
 !
       subroutine cal_grad_of_velocities_sph
 !
+      use m_sph_spectr_data
       use m_boundary_params_sph_MHD
       use const_sph_radial_grad
 !

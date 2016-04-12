@@ -153,12 +153,12 @@
       integer(kind = kint), intent(in) :: is_fld, is_rot
 !
 !
-      call cal_sph_nod_nobc_in_rot2(nidx_rj(2),                         &
+      call cal_sph_nod_nobc_in_rot2(nnod_rj, nidx_rj(2),                &
      &    sph_bc%kr_in, sph_bc%r_ICB, sph_bc%fdm2_fix_fld_ICB,          &
-     &    is_fld, is_rot)
-      call cal_sph_nod_nobc_out_rot2(nidx_rj(2),                        &
+     &    is_fld, is_rot, ntot_phys_rj, d_rj)
+      call cal_sph_nod_nobc_out_rot2(nnod_rj, nidx_rj(2),               &
      &    sph_bc%kr_out, sph_bc%r_CMB, sph_bc%fdm2_fix_fld_CMB,         &
-     &    is_fld, is_rot)
+     &    is_fld, is_rot, ntot_phys_rj, d_rj)
 !
       call cal_sph_nod_vect_rot2(sph_bc%kr_in, sph_bc%kr_out,           &
      &     is_fld, is_rot)

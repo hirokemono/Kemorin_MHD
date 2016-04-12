@@ -14,11 +14,13 @@
 !!      subroutine cal_wz_coriolis_rtp(nnod, velo_rtp, coriolis_rtp)
 !!      subroutine cal_wz_div_coriolis_rtp(nnod, velo_rtp,              &
 !!     &          div_coriolis_rtp)
-!!      subroutine subtract_sphere_ave_coriolis(nnod, drtp_coriolis)
+!!      subroutine subtract_sphere_ave_coriolis(ntot_phys_rj, nnod,     &
+!!     &          d_rj, coriolis_rtp)
 !!
-!!      subroutine ovwrt_rj_coef_prod_vect_smp(coef, i_r)
-!!      subroutine clear_rj_degree0_scalar_smp(irj_fld)
-!!      subroutine clear_rj_degree0_vector_smp(irj_fld)
+!!      subroutine ovwrt_rj_coef_prod_vect_smp                          &
+!!     &         (coef, i_r, ntot_phys_rj, d_rj)
+!!      subroutine clear_rj_degree0_vector_smp                          &
+!!     &         (irj_fld, ntot_phys_rj, d_rj)
 !!@endverbatim
 !!
 !!@n @param irj_fld   Address for spectr data
@@ -42,6 +44,7 @@
       real(kind = kreal), allocatable :: sphere_ave_coriolis_g(:)
 !
       private :: sphere_ave_coriolis_l, sphere_ave_coriolis_g
+      private :: clear_rj_degree0_scalar_smp
 !
 ! -----------------------------------------------------------------------
 !
@@ -178,14 +181,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine subtract_sphere_ave_coriolis(nnod, coriolis_rtp)
+      subroutine subtract_sphere_ave_coriolis(ntot_phys_rj, nnod,       &
+     &          d_rj, coriolis_rtp)
 !
       use calypso_mpi
       use m_sph_phys_address
-      use m_sph_spectr_data
       use m_work_4_sph_trans
 !
       integer(kind = kint), intent(in) :: nnod
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
       real(kind = kreal), intent(inout) :: coriolis_rtp(nnod,3)
 !
       integer(kind = kint) :: mphi, l_rtp, kr, k_gl, inod
@@ -199,7 +204,8 @@
       else
           sphere_ave_coriolis_l(1:nidx_rj(1)) = zero
       end if
-      call clear_rj_degree0_scalar_smp(ipol%i_coriolis)
+      call clear_rj_degree0_scalar_smp                                  &
+     &   (ipol%i_coriolis, ntot_phys_rj, d_rj)
 !
       call MPI_Allreduce(sphere_ave_coriolis_l, sphere_ave_coriolis_g,  &
      &    nidx_rj(1), CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
@@ -225,14 +231,17 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine ovwrt_rj_coef_prod_vect_smp(coef, i_r)
+      subroutine ovwrt_rj_coef_prod_vect_smp                            &
+     &         (coef, i_r, ntot_phys_rj, d_rj)
 !
       use m_spheric_param_smp
-      use m_sph_spectr_data
       use overwrite_prod_const_smp
 !
       real(kind = kreal), intent(in) :: coef
       integer (kind = kint), intent(in) :: i_r
+!
+      integer (kind = kint), intent(in) :: ntot_phys_rj, irj_fld
+      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
 !
       call ovwrt_coef_prod_vect_smp(np_smp, nnod_rj,                    &
@@ -242,11 +251,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine clear_rj_degree0_scalar_smp(irj_fld)
+      subroutine clear_rj_degree0_scalar_smp                            &
+     &         (irj_fld, ntot_phys_rj, d_rj)
 !
-      use m_sph_spectr_data
-!
-      integer (kind = kint), intent(in) :: irj_fld
+      integer (kind = kint), intent(in) :: ntot_phys_rj, irj_fld
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: k, inod
 !
@@ -264,11 +273,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine clear_rj_degree0_vector_smp(irj_fld)
+      subroutine clear_rj_degree0_vector_smp                            &
+     &         (irj_fld, ntot_phys_rj, d_rj)
 !
-      use m_sph_spectr_data
-!
-      integer (kind = kint), intent(in) :: irj_fld
+      integer (kind = kint), intent(in) :: ntot_phys_rj, irj_fld
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: k, inod
 !

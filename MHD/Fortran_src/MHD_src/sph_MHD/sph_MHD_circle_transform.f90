@@ -22,7 +22,7 @@
 !
       implicit none
 !
-!      private :: collect_spectr_for_circle
+      private :: collect_spectr_for_circle
 !
 ! ----------------------------------------------------------------------
 !
@@ -35,6 +35,7 @@
       use m_phys_constants
       use calypso_mpi
       use m_sph_phys_address
+      use m_sph_spectr_data
       use m_circle_transform
 !
       use circle_transform_single
@@ -42,7 +43,8 @@
       integer(kind = kint) :: ifld, icomp, m, nd
 !
 !
-      call collect_spectr_for_circle
+      call collect_spectr_for_circle(num_phys_rj, ntot_phys_rj,         &
+     &    istack_phys_comp_rj, phys_name_rj, d_rj)
 !
 !    spherical transfer
 !
@@ -113,13 +115,19 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine collect_spectr_for_circle
+      subroutine collect_spectr_for_circle(num_phys_rj, ntot_phys_rj,   &
+     &          istack_phys_comp_rj, phys_name_rj, d_rj)
 !
       use calypso_mpi
-      use m_sph_spectr_data
       use m_sph_phys_address
 !
-      integer(kind = kint) :: j, j_gl, i_in, i_ot, num
+      integer(kind = kint), intent(in) :: num_phys_rj, ntot_phys_rj
+      integer(kind = kint), intent(in)                                  &
+     &                  :: istack_phys_comp_rj(0:num_phys_rj)
+      character (len=kchara), intent(in) :: phys_name_rj(num_phys_rj)
+      real (kind=kreal), intent(in) :: d_rj(nnod_rj,ntot_phys_rj)
+!
+      integer(kind = kint) :: j, j_gl, i_in, i_ot, num, ncomp
       integer(kind = kint) :: ist_comp, jst_comp, nd, ifld, jfld
 !
 !
@@ -130,10 +138,11 @@
         do jfld = 1, num_phys_rj
           if(d_circle%phys_name(ifld) .eq. phys_name_rj(jfld)) then
             jst_comp = istack_phys_comp_rj(jfld-1)
+            ncomp = istack_phys_comp_rj(jfld)                           &
+     &             - istack_phys_comp_rj(jfld-1)
             if(iflag_debug .gt. 0) write(*,*)                           &
-     &              trim(d_circle%phys_name(ifld)),                     &
-     &              ifld, jfld, num_phys_comp_rj(jfld)
-            do nd = 1, num_phys_comp_rj(jfld)
+     &              trim(d_circle%phys_name(ifld)), ifld, jfld, ncomp
+            do nd = 1, ncomp
               do j = 1, nidx_rj(2)
                 j_gl = idx_gl_1d_rj_j(j,1)
                 i_in = j + (kr_gl_rcirc_in-1) *  nidx_rj(2)
