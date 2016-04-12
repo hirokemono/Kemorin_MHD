@@ -61,28 +61,28 @@
      &   .or. iflag_restart .eq. i_rst_dbench2                          &
      &   .or. iflag_restart .eq. i_rst_dbench_qcv) then
         isig = 400
-        call set_initial_velo_sph(nnod_rj, ntot_phys_rj, d_rj)
+        call set_initial_velo_sph(nnod_rj, ntot_phys_rj, rj_fld1%d_fld)
         if(ipol%i_temp .gt. 0) then
           call set_ini_reference_temp_sph                               &
-     &       (reftemp_rj, ntot_phys_rj, d_rj)
-          call set_initial_temp_sph(isig, ntot_phys_rj, d_rj)
+     &       (reftemp_rj, ntot_phys_rj, rj_fld1%d_fld)
+          call set_initial_temp_sph(isig, ntot_phys_rj, rj_fld1%d_fld)
         end if
         if(ipol%i_light .gt. 0) then
-          call set_initial_light_sph                                    &
-     &      (isig, ipol%i_light, reftemp_rj, ntot_phys_rj, d_rj)
+          call set_initial_light_sph(isig, ipol%i_light, reftemp_rj,    &
+     &        ntot_phys_rj, rj_fld1%d_fld)
         end if
 !
         if(iflag_restart .eq. i_rst_dbench1) then
           if(ipol%i_magne .gt. 0) then
-            call initial_b_dynamobench_1(ntot_phys_rj, d_rj)
+            call initial_b_dynamobench_1(ntot_phys_rj, rj_fld1%d_fld)
           end if
         else if(iflag_restart .eq. i_rst_dbench2) then
           if(ipol%i_magne .gt. 0) then
-            call initial_b_dynamobench_2(ntot_phys_rj, d_rj)
+            call initial_b_dynamobench_2(ntot_phys_rj, rj_fld1%d_fld)
           end if
         else if(iflag_restart .eq. i_rst_dbench_qcv) then
           if(ipol%i_magne .gt. 0) then
-           call initial_b_dynamobench_qcv(ntot_phys_rj, d_rj)
+           call initial_b_dynamobench_qcv(ntot_phys_rj, rj_fld1%d_fld)
           end if
         end if
 !
@@ -91,20 +91,22 @@
       else if (iflag_restart .eq. i_rst_no_file) then
         if(ipol%i_temp .gt. 0)  then
           call set_noize_scalar_sph                                     &
-     &       (ipol%i_temp, reftemp_rj, ntot_phys_rj, d_rj)
+     &       (ipol%i_temp, reftemp_rj, ntot_phys_rj, rj_fld1%d_fld)
         end if
         if(ipol%i_light .gt. 0) then
           call set_noize_scalar_sph                                     &
-     &       (ipol%i_light, reftemp_rj, ntot_phys_rj, d_rj)
+     &       (ipol%i_light, reftemp_rj, ntot_phys_rj, rj_fld1%d_fld)
         end if
         if(ipol%i_magne .gt. 0) then
-          call set_initial_magne_sph(ntot_phys_rj, d_rj)
-          call reduce_initial_magne_sph(nnod_rj, ntot_phys_rj, d_rj)
+          call set_initial_magne_sph(ntot_phys_rj, rj_fld1%d_fld)
+          call reduce_initial_magne_sph                                 &
+     &       (nnod_rj, ntot_phys_rj, rj_fld1%d_fld)
         end if
 !
       else if (iflag_restart .eq. i_rst_licv) then
-        call set_ini_reference_temp_sph(reftemp_rj, ntot_phys_rj, d_rj)
-        call set_all_part_temp_sph(ntot_phys_rj, d_rj)
+        call set_ini_reference_temp_sph                                 &
+     &     (reftemp_rj, ntot_phys_rj, rj_fld1%d_fld)
+        call set_all_part_temp_sph(ntot_phys_rj, rj_fld1%d_fld)
       end if
 !
       if(iflag_debug .gt. 0) write(*,*) 'init_output_sph_restart_file'

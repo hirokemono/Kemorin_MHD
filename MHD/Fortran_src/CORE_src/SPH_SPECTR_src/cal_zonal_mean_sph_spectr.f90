@@ -66,7 +66,7 @@
 !
 !$omp parallel
       call delete_phys_data_smp(np_smp, nnod_rtp, inod_rj_smp_stack,   &
-     &    ntot_phys_rj, numdir, is_fld, d_rj)
+     &    ntot_phys_rj, numdir, is_fld, rj_fld1%d_fld)
 !$omp end parallel
 !
       end subroutine delete_rj_phys_data
@@ -125,7 +125,8 @@
 !
 !
       call pick_del_order_sph_spectr(iflag_pick,                        &
-     &    num_order, ipick_order, numdir, is_fld, ntot_phys_rj, d_rj)
+     &    num_order, ipick_order, numdir, is_fld,                       &
+     &    ntot_phys_rj, rj_fld1%d_fld)
 !
       end subroutine pick_order_sph_spectr
 !
@@ -142,7 +143,8 @@
 !
 !
       call pick_del_order_sph_spectr(iflag_delete,                      &
-     &    num_order, ipick_order, numdir, is_fld, ntot_phys_rj, d_rj)
+     &    num_order, ipick_order, numdir, is_fld,                       &
+     &    ntot_phys_rj, rj_fld1%d_fld)
 !
       end subroutine delete_order_sph_spectr
 !
@@ -160,7 +162,8 @@
 !
 !
       call pick_del_degree_sph_spectr(iflag_pick,                       &
-     &    num_degree, ipick_degree, numdir, is_fld, ntot_phys_rj, d_rj)
+     &    num_degree, ipick_degree, numdir, is_fld,                     &
+     &    ntot_phys_rj, rj_fld1%d_fld)
 !
       end subroutine pick_degree_sph_spectr
 !
@@ -177,7 +180,8 @@
 !
 !
       call pick_del_degree_sph_spectr(iflag_delete,                     &
-     &    num_degree, ipick_degree, numdir, is_fld, ntot_phys_rj, d_rj)
+     &    num_degree, ipick_degree, numdir, is_fld, ntot_phys_rj,       &
+     &    rj_fld1%d_fld)
 !
       end subroutine delete_degree_sph_spectr
 !

@@ -61,12 +61,13 @@
       if(i_field*i_send .eq. 0) return
       call sel_calypso_to_send_scalar(ncomp_send, nnod_rj, n_WS,        &
      &    nmax_sr_rj,  nneib_domain_rj,  istack_sr_rj,  item_sr_rj,     &
-     &    ntot_phys_rj, i_field, i_send, d_rj, WS)
+     &    ntot_phys_rj, i_field, i_send, rj_fld1%d_fld, WS)
 !
       if(iflag_rj_center .le. 0) return
 !
       if(inod_rj_center .gt. 0) then
-        v_pl_local(nnod_pole,i_send) = d_rj(inod_rj_center,i_field)
+        v_pl_local(nnod_pole,i_send)                                    &
+     &      = rj_fld1%d_fld(inod_rj_center,i_field)
       else
         v_pl_local(nnod_pole,i_send) = 0.0d0
       end if
@@ -90,7 +91,7 @@
       if(i_field*i_send .eq. 0) return
       call sel_calypso_to_send_scalar(ncomp_send, nnod_rj, n_WS,        &
      &    nmax_sr_rj,  nneib_domain_rj,  istack_sr_rj,  item_sr_rj,     &
-     &    ntot_phys_rj, i_field, i_send, d_rj, WS)
+     &    ntot_phys_rj, i_field, i_send, rj_fld1%d_fld, WS)
 !
       end subroutine sel_sph_rj_scalar_to_send
 !
@@ -111,7 +112,7 @@
       if(i_field*i_send .eq. 0) return
       call sel_calypso_to_send_vector(ncomp_send, nnod_rj, n_WS,        &
      &    nmax_sr_rj,  nneib_domain_rj,  istack_sr_rj,  item_sr_rj,     &
-     &    ntot_phys_rj, i_field, i_send, d_rj, WS)
+     &    ntot_phys_rj, i_field, i_send, rj_fld1%d_fld, WS)
 !
       end subroutine sel_sph_rj_vector_to_send
 !
@@ -132,7 +133,7 @@
       if(i_field*i_send .eq. 0) return
       call sel_calypso_to_send_tensor(ncomp_send, nnod_rj, n_WS,        &
      &    nmax_sr_rj,  nneib_domain_rj,  istack_sr_rj,  item_sr_rj,     &
-     &    ntot_phys_rj, i_field, i_send, d_rj, WS)
+     &    ntot_phys_rj, i_field, i_send, rj_fld1%d_fld, WS)
 !
       end subroutine sel_sph_rj_tensor_to_send
 !
@@ -154,7 +155,8 @@
       if(i_field*i_recv .eq. 0) return
       call sel_sph_scalar_from_recv(ncomp_recv, nnod_rj, n_WR,          &
      &    nmax_sr_rj,  nneib_domain_rj,  istack_sr_rj,  item_sr_rj,     &
-     &    irev_sr_rj,  ntot_phys_rj, i_field, i_recv, WR, d_rj)
+     &    irev_sr_rj,  ntot_phys_rj, i_field, i_recv,                   &
+     &    WR, rj_fld1%d_fld)
 !
       end subroutine sel_sph_rj_scalar_from_recv
 !
@@ -175,7 +177,8 @@
       if(i_field*i_recv .eq. 0) return
       call sel_sph_vector_from_recv(ncomp_recv, nnod_rj, n_WR,          &
      &    nmax_sr_rj,  nneib_domain_rj,  istack_sr_rj,  item_sr_rj,     &
-     &    irev_sr_rj,  ntot_phys_rj, i_field, i_recv, WR, d_rj)
+     &    irev_sr_rj,  ntot_phys_rj, i_field, i_recv,                   &
+     &    WR, rj_fld1%d_fld)
 !
       end subroutine sel_sph_rj_vector_from_recv
 !
@@ -196,7 +199,8 @@
       if(i_field*i_recv .eq. 0) return
       call sel_sph_tensor_from_recv(ncomp_recv, nnod_rj, n_WR,          &
      &    nmax_sr_rj,  nneib_domain_rj,  istack_sr_rj,  item_sr_rj,     &
-     &    irev_sr_rj,  ntot_phys_rj, i_field, i_recv, WR, d_rj)
+     &    irev_sr_rj,  ntot_phys_rj, i_field, i_recv,                   &
+     &    WR, rj_fld1%d_fld)
 !
       end subroutine sel_sph_rj_tensor_from_recv
 !

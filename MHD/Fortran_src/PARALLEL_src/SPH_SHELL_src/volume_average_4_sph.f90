@@ -80,11 +80,11 @@
         if (num_phys_comp_rj(i_fld) .eq. n_scalar) then
           call cal_ave_scalar_sph_spectr(icomp_st, jcomp_st,            &
      &        nnod_rj, nidx_rj, idx_rj_degree_zero, inod_rj_center,     &
-     &        ntot_phys_rj, d_rj, radius_1d_rj_r)
+     &        ntot_phys_rj, rj_fld1%d_fld, radius_1d_rj_r)
         else if (num_phys_comp_rj(i_fld) .eq. n_vector) then
           call cal_ave_vector_sph_spectr(icomp_st, jcomp_st,            &
      &        nnod_rj, nidx_rj, idx_rj_degree_zero, inod_rj_center,     &
-     &        ntot_phys_rj, d_rj, radius_1d_rj_r)
+     &        ntot_phys_rj, rj_fld1%d_fld, radius_1d_rj_r)
         end if
       end do
 !

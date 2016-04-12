@@ -24,8 +24,13 @@
       module m_sph_spectr_data
 !
       use m_precision
+      use t_phys_data
 !
       implicit  none
+!
+!>        Structure for field data
+        type(phys_data) :: rj_fld1
+!rj_fld1%d_fld
 !
 !>      Number of fields for spectrum data  @f$ f(r,j) @f$
       integer (kind=kint) :: num_phys_rj
@@ -53,7 +58,7 @@
       character (len=kchara), allocatable :: phys_name_rj(:)
 ! 
 !>      Field data @f$ f(r,\theta,\phi) @f$
-      real (kind=kreal), allocatable :: d_rj(:,:)
+!      real (kind=kreal), allocatable :: d_rj(:,:)
 !>      Spectr data @f$ f(r,j) @f$
 !      real (kind=kreal), allocatable :: d_rtp(:,:)
 !
@@ -100,8 +105,7 @@
 !
       use m_spheric_parameter
 !
-      allocate( d_rj(nnod_rj,ntot_phys_rj) )
-      if((nnod_rj*ntot_phys_rj) .gt. 0) d_rj = 0.0d0
+      call alloc_phys_data_type(nnod_rj, rj_fld1)
 !
       end subroutine allocate_phys_rj_data
 !
@@ -128,7 +132,7 @@
       deallocate( iflag_monitor_rj )
       deallocate( num_phys_comp_rj )
       deallocate( istack_phys_comp_rj )
-      deallocate( d_rj )
+      call dealloc_phys_data_type(rj_fld1)
 !
       end subroutine deallocate_phys_rj_data
 !
@@ -178,7 +182,7 @@
      &           '(3i16,', ntot_phys_rj, '(1pE25.15e3),a1)'
       do inod = 1, nnod_rj
         write(50+my_rank,fmt_txt) inod,                                 &
-     &        idx_global_rj(inod,1:2), d_rj(inod,1:ntot_phys_rj)
+     &    idx_global_rj(inod,1:2), rj_fld1%d_fld(inod,1:ntot_phys_rj)
       end do
 !
 !

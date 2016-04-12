@@ -69,7 +69,7 @@
           call r_interpolate_sph_fld_from_IO(fld_IO)
         end if
 !
-        call set_rj_phys_for_zm_streamfunc(ntot_phys_rj, d_rj)
+        call set_rj_phys_for_zm_streamfunc(ntot_phys_rj, rj_fld1%d_fld)
         call zonal_mean_all_sph_spectr
 !
 !  spherical transform for vector

@@ -108,12 +108,12 @@
         if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
         call set_rj_phys_data_from_IO(sph_fld_IN)
 !
-        call sum_sph_spectr_data(ntot_phys_rj, d_rj)
+        call sum_sph_spectr_data(ntot_phys_rj, rj_fld1%d_fld)
       end do
 
       call calypso_mpi_barrier
       call t_ave_sph_spectr_data                                        &
-     &   (i_step_init, i_step_number, ntot_phys_rj, d_rj)
+     &   (i_step_init, i_step_number, ntot_phys_rj, rj_fld1%d_fld)
 !
       call copy_rj_all_phys_name_to_IO(sph_fld_OUT)
       call alloc_phys_data_IO(sph_fld_OUT)
@@ -149,7 +149,7 @@
         if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
         call set_rj_phys_data_from_IO(sph_fld_IN)
 !
-        call sum_deviation_sph_spectr(ntot_phys_rj, d_rj)
+        call sum_deviation_sph_spectr(ntot_phys_rj, rj_fld1%d_fld)
       end do
 !
       call calypso_mpi_barrier
@@ -157,7 +157,7 @@
       call dealloc_phys_name_IO(sph_fld_IN)
 !
       call sdev_sph_spectr_data                                         &
-     &   (i_step_init, i_step_number, ntot_phys_rj, d_rj)
+     &   (i_step_init, i_step_number, ntot_phys_rj, rj_fld1%d_fld)
 !
       call copy_rj_all_phys_name_to_IO(sph_fld_OUT)
       call alloc_phys_data_IO(sph_fld_OUT)

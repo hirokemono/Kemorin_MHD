@@ -61,6 +61,28 @@
       use m_boundary_params_sph_MHD
       use const_sph_radial_grad
 !
+!
+      if(ipol%i_mag_stretch .eq. 0) return
+!
+      call copy_grad_vect_to_m_stretch(ntot_phys_rj, rj_fld1%d_fld)
+!
+      call const_sph_gradient_no_bc                                     &
+     &     (sph_bc_U, (ipol%i_mag_stretch  ), ipol%i_grad_vx)
+      call const_sph_gradient_no_bc                                     &
+     &     (sph_bc_U, (ipol%i_mag_stretch+1), ipol%i_grad_vy)
+      call const_sph_gradient_no_bc                                     &
+     &     (sph_bc_U, (ipol%i_mag_stretch+2), ipol%i_grad_vz)
+!
+      end subroutine cal_grad_of_velocities_sph
+!
+! -----------------------------------------------------------------------
+!
+      subroutine copy_grad_vect_to_m_stretch(ntot_phys_rj, d_rj)
+!
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+!
+!
       integer(kind = kint) :: ip, ist, ied, inod
 !
       if(ipol%i_mag_stretch .eq. 0) return
@@ -78,14 +100,7 @@
       end do
 !$omp end parallel do
 !
-      call const_sph_gradient_no_bc                                     &
-     &     (sph_bc_U, (ipol%i_mag_stretch  ), ipol%i_grad_vx)
-      call const_sph_gradient_no_bc                                     &
-     &     (sph_bc_U, (ipol%i_mag_stretch+1), ipol%i_grad_vy)
-      call const_sph_gradient_no_bc                                     &
-     &     (sph_bc_U, (ipol%i_mag_stretch+2), ipol%i_grad_vz)
-!
-      end subroutine cal_grad_of_velocities_sph
+      end subroutine copy_grad_vect_to_m_stretch
 !
 ! -----------------------------------------------------------------------
 !

@@ -85,10 +85,11 @@
 !
 !
       call cal_sph_nod_gradient_2(sph_bc%kr_in, sph_bc%kr_out,          &
-     &    is_fld, is_grad, ntot_phys_rj, d_rj)
+     &    is_fld, is_grad, ntot_phys_rj, rj_fld1%d_fld)
       call sel_bc_radial_grad_scalar(sph_bc, is_fld, is_grad,           &
-     &    ntot_phys_rj, d_rj)
-      call normalize_sph_average_grad(is_grad, ntot_phys_rj, d_rj)
+     &    ntot_phys_rj, rj_fld1%d_fld)
+      call normalize_sph_average_grad(is_grad,                          &
+     &    ntot_phys_rj, rj_fld1%d_fld)
 !
       end subroutine const_radial_grad_scalar
 !
@@ -106,9 +107,9 @@
 !
 !
       call sel_bc_grad_vp_and_vorticity                                 &
-     &   (is_velo, is_vort, ntot_phys_rj, d_rj)
+     &   (is_velo, is_vort, ntot_phys_rj, rj_fld1%d_fld)
       call cal_sph_diff_pol_and_rot2(sph_bc_U%kr_in, sph_bc_U%kr_out,   &
-     &    is_velo, is_vort, ntot_phys_rj, d_rj)
+     &    is_velo, is_vort, ntot_phys_rj, rj_fld1%d_fld)
 !
       end subroutine const_grad_vp_and_vorticity
 !
@@ -128,16 +129,18 @@
 !
 !
       call sel_bc_grad_bp_and_current(sph_bc_B, is_magne, is_current,   &
-     &    ntot_phys_rj, d_rj)
+     &    ntot_phys_rj, rj_fld1%d_fld)
       call cal_sph_diff_pol_and_rot2(sph_bc_B%kr_in, sph_bc_B%kr_out,   &
-     &    is_magne, is_current, ntot_phys_rj, d_rj)
+     &    is_magne, is_current, ntot_phys_rj, rj_fld1%d_fld)
 !
 !      Extend potential field
       call ext_outside_potential_with_j                                 &
-     &   (sph_bc_B%kr_out, is_magne, is_current, ntot_phys_rj, d_rj)
+     &   (sph_bc_B%kr_out, is_magne, is_current,                        &
+     &    ntot_phys_rj, rj_fld1%d_fld)
       if(sph_bc_B%iflag_icb .eq. iflag_sph_insulator) then
         call ext_inside_potential_with_j                                &
-     &     (sph_bc_B%kr_in, is_magne, is_current, ntot_phys_rj, d_rj)
+     &     (sph_bc_B%kr_in, is_magne, is_current,                       &
+     &      ntot_phys_rj, rj_fld1%d_fld)
       end if
 !
       end subroutine const_grad_bp_and_current
@@ -155,9 +158,10 @@
       integer(kind = kint), intent(in) :: is_fld
 !
 !
-      call sel_bc_grad_poloidal_moment(is_fld, ntot_phys_rj, d_rj)
+      call sel_bc_grad_poloidal_moment                                  &
+     &   (is_fld, ntot_phys_rj, rj_fld1%d_fld)
       call cal_sph_diff_poloidal2(sph_bc_U%kr_in, sph_bc_U%kr_out,      &
-     &    is_fld, ntot_phys_rj, d_rj)
+     &    is_fld, ntot_phys_rj, rj_fld1%d_fld)
 !
       end subroutine const_grad_poloidal_moment
 !
@@ -176,17 +180,17 @@
 !
 !
       call sel_bc_grad_poloidal_magne                                   &
-     &   (sph_bc_B, is_magne, ntot_phys_rj, d_rj)
+     &   (sph_bc_B, is_magne, ntot_phys_rj, rj_fld1%d_fld)
 !
       call cal_sph_diff_poloidal2(sph_bc_B%kr_in, sph_bc_B%kr_out,      &
-     &    is_magne, ntot_phys_rj, d_rj)
+     &    is_magne, ntot_phys_rj, rj_fld1%d_fld)
 !
 !      Extend potential field
       call ext_outside_potential                                        &
-     &   (sph_bc_B%kr_out, is_magne, ntot_phys_rj, d_rj)
+     &   (sph_bc_B%kr_out, is_magne, ntot_phys_rj, rj_fld1%d_fld)
       if(sph_bc_B%iflag_icb .eq. iflag_sph_insulator) then
         call ext_inside_potential                                       &
-     &     (sph_bc_B%kr_in, is_magne, ntot_phys_rj, d_rj)
+     &     (sph_bc_B%kr_in, is_magne, ntot_phys_rj, rj_fld1%d_fld)
       end if
 !
       end subroutine const_grad_poloidal_magne
@@ -207,17 +211,18 @@
 !
 !
       call cal_sph_nod_gradient_2(sph_bc_U%kr_in, sph_bc_U%kr_out,      &
-     &    is_press, is_grad, ntot_phys_rj, d_rj)
-      call normalize_sph_average_grad(is_grad, ntot_phys_rj, d_rj)
+     &    is_press, is_grad, ntot_phys_rj, rj_fld1%d_fld)
+      call normalize_sph_average_grad                                   &
+     &   (is_grad, ntot_phys_rj, rj_fld1%d_fld)
 !
       call delete_bc_rj_vector(nnod_rj, nidx_rj(2), sph_bc_U%kr_in,     &
-     &    is_grad, ntot_phys_rj, d_rj)
+     &    is_grad, ntot_phys_rj, rj_fld1%d_fld)
       call delete_bc_rj_vector(nnod_rj, nidx_rj(2), sph_bc_U%kr_out,    &
-     &    is_grad, ntot_phys_rj, d_rj)
+     &    is_grad, ntot_phys_rj, rj_fld1%d_fld)
 !
 !$omp parallel
       call ovwrt_rj_coef_prod_vect_smp                                  &
-     &   ( (-coef_press), is_grad, ntot_phys_rj, d_rj)
+     &   ( (-coef_press), is_grad, ntot_phys_rj, rj_fld1%d_fld)
 !$omp end parallel
 !
       end subroutine const_pressure_gradient
@@ -237,14 +242,15 @@
 !
       call cal_sph_nod_nobc_in_grad2(nnod_rj, nidx_rj(2),               &
      &    sph_bc%kr_in, sph_bc%r_ICB, sph_bc%fdm2_fix_fld_ICB,          &
-     &    is_fld, is_grad, ntot_phys_rj, d_rj)
+     &    is_fld, is_grad, ntot_phys_rj, rj_fld1%d_fld)
       call cal_sph_nod_nobc_out_grad2(nnod_rj, nidx_rj(2),              &
      &    sph_bc%kr_out, sph_bc%r_CMB, sph_bc%fdm2_fix_fld_CMB,         &
-     &    is_fld, is_grad, ntot_phys_rj, d_rj)
+     &    is_fld, is_grad, ntot_phys_rj, rj_fld1%d_fld)
 !
       call cal_sph_nod_gradient_2(sph_bc%kr_in, sph_bc%kr_out,          &
-     &    is_fld, is_grad, ntot_phys_rj, d_rj)
-      call normalize_sph_average_grad(is_grad, ntot_phys_rj, d_rj)
+     &    is_fld, is_grad, ntot_phys_rj, rj_fld1%d_fld)
+      call normalize_sph_average_grad                                   &
+     &   (is_grad, ntot_phys_rj, rj_fld1%d_fld)
 !
       end subroutine const_sph_gradient_no_bc
 !

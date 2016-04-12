@@ -19,10 +19,10 @@
 !!        Input address:    ipol%i_magne, itor%i_magne
 !!        Solution address: ipol%i_magne, itor%i_magne, idpdr%i_magne
 !!
-!!      subroutine cal_sol_temperature_sph_crank
+!!      subroutine cal_sol_temperature_sph_crank(ntot_phys_rj, d_rj)
 !!        Input address:    ipol%i_temp
 !!        Solution address: ipol%i_temp
-!!      subroutine cal_sol_composition_sph_crank
+!!      subroutine cal_sol_composition_sph_crank(ntot_phys_rj, d_rj)
 !!        Input address:    ipol%i_light
 !!        Solution address: ipol%i_light
 !!@endverbatim
@@ -36,7 +36,6 @@
 !
       use calypso_mpi
       use m_machine_parameter
-!      use m_sph_spectr_data
       use m_sph_phys_address
       use m_radial_matrices_sph
       use set_reference_sph_mhd
@@ -221,15 +220,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sol_temperature_sph_crank
+      subroutine cal_sol_temperature_sph_crank(ntot_phys_rj, d_rj)
 !
       use m_spheric_parameter
       use m_spheric_param_smp
-      use m_sph_spectr_data
       use m_t_int_parameter
       use m_physical_property
       use m_boundary_params_sph_MHD
       use m_radial_mat_sph_w_center
+!
+      integer(kind = kint), intent(in) ::  ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
 !
       call cal_sol_scalar_sph_crank(nidx_rj(1), nidx_rj(2),             &
@@ -242,15 +243,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sol_composition_sph_crank
+      subroutine cal_sol_composition_sph_crank(ntot_phys_rj, d_rj)
 !
       use m_spheric_parameter
       use m_spheric_param_smp
-      use m_sph_spectr_data
       use m_t_int_parameter
       use m_physical_property
       use m_boundary_params_sph_MHD
       use m_radial_mat_sph_w_center
+!
+      integer(kind = kint), intent(in) ::  ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
 !
       call cal_sol_scalar_sph_crank(nidx_rj(1), nidx_rj(2),             &
@@ -263,12 +266,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_temperature(l, m, is_field)
+      subroutine check_temperature(l, m, is_field, ntot_phys_rj, d_rj)
 !
       use m_spheric_parameter
-      use m_sph_spectr_data
 !
       integer(kind = kint), intent(in) :: l, m, is_field
+      integer(kind = kint), intent(in) ::  ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: j,k,inod
       integer(kind = 4) :: l4, m4
@@ -289,13 +293,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_NaN_temperature(is_field)
+      subroutine check_NaN_temperature(is_field, ntot_phys_rj, d_rj)
 !
       use m_spheric_parameter
-      use m_sph_spectr_data
       use spherical_harmonics
 !
       integer(kind = kint), intent(in) :: is_field
+      integer(kind = kint), intent(in) ::  ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+!
 !
       integer(kind = kint) :: inod, j, k, l, m
 !
@@ -393,9 +399,9 @@ end subroutine check_NaN_temperature
      &    jmax, nri, evo_lu, i_pivot, d_rj(1,is_field) )
 !
 !       write(*,*) 'solution'
-!       call check_temperature(30,-23, is_field)
+!       call check_temperature(30,-23, is_field, ntot_phys_rj, d_rj)
 !       write(*,*) 'check_NaN_temperature'
-!       call check_NaN_temperature(is_field)
+!       call check_NaN_temperature(is_field, ntot_phys_rj, d_rj)
 !
 !   Solve l=m=0 including center
       if(inod_rj_center .eq. 0) return

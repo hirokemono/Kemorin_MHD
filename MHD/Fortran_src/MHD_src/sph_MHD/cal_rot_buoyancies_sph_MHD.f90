@@ -54,7 +54,7 @@
           call cal_rot_double_buoyancy_sph_MHD                          &
      &       (sph_bc_U%kr_in, sph_bc_U%kr_out, coef_buo, ipol%i_temp,   &
      &        coef_comp_buo, ipol%i_light, itor%i_rot_buoyancy,         &
-     &        ntot_phys_rj, d_rj)
+     &        ntot_phys_rj, rj_fld1%d_fld)
 !
       else if ( iflag_4_gravity .gt. id_turn_OFF) then
 !
@@ -62,21 +62,21 @@
      &      'cal_rot_buoyancy_sph_MHD', ipol%i_temp
         call cal_rot_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out,  &
      &      coef_buo, ipol%i_temp, itor%i_rot_buoyancy,                 &
-     &      ntot_phys_rj, d_rj)
+     &      ntot_phys_rj, rj_fld1%d_fld)
 !
       else if ( iflag_4_composit_buo .gt. id_turn_OFF) then
         if (iflag_debug.eq.1) write(*,*)                                &
      &      'cal_rot_buoyancy_sph_MHD', ipol%i_light
         call cal_rot_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out,  &
      &      coef_comp_buo, ipol%i_light, itor%i_rot_comp_buo,           &
-     &      ntot_phys_rj, d_rj)
+     &      ntot_phys_rj, rj_fld1%d_fld)
 !
       else if (iflag_4_filter_gravity .gt. id_turn_OFF) then
         if (iflag_debug.eq.1) write(*,*)                                &
      &      'cal_rot_buoyancy_sph_MHD', ipol%i_filter_temp
         call cal_rot_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out,  &
      &      coef_buo, ipol%i_filter_temp, itor%i_rot_filter_buo,        &
-     &      ntot_phys_rj, d_rj)
+     &      ntot_phys_rj, rj_fld1%d_fld)
       end if
 !
       end subroutine cal_rot_radial_self_gravity

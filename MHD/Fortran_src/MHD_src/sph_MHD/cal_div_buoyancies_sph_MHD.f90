@@ -52,7 +52,7 @@
      &       (sph_bc_U%kr_in, sph_bc_U%kr_out,                          &
      &        coef_buo, ipol%i_temp, ipol%i_grad_t,                     &
      &        coef_comp_buo, ipol%i_light, ipol%i_grad_composit,        &
-     &        ipol%i_div_buoyancy, ntot_phys_rj, d_rj)
+     &        ipol%i_div_buoyancy, ntot_phys_rj, rj_fld1%d_fld)
         else
           if (iflag_debug.ge.1) write(*,*)                              &
      &      'cal_div_double_buoyancy_sph_MHD by part.temp',             &
@@ -61,7 +61,7 @@
      &       (sph_bc_U%kr_in, sph_bc_U%kr_out,                          &
      &        coef_buo, ipol%i_par_temp, ipol%i_grad_part_t,            &
      &        coef_comp_buo, ipol%i_light, ipol%i_grad_composit,        &
-     &        ipol%i_div_buoyancy, ntot_phys_rj, d_rj)
+     &        ipol%i_div_buoyancy, ntot_phys_rj, rj_fld1%d_fld)
         end if
 !
       else if (iflag_4_gravity .gt. id_turn_OFF) then
@@ -71,14 +71,14 @@
           call cal_div_buoyancy_sph_MHD                                 &
      &       (sph_bc_U%kr_in, sph_bc_U%kr_out, coef_buo,                &
      &        ipol%i_temp, ipol%i_grad_t, ipol%i_div_buoyancy,          &
-     &        ntot_phys_rj, d_rj)
+     &        ntot_phys_rj, rj_fld1%d_fld)
         else
           if (iflag_debug.ge.1)  write(*,*)                             &
      &      'cal_div_buoyancy_sph_MHD by pert. temperature'
           call cal_div_buoyancy_sph_MHD                                 &
      &       (sph_bc_U%kr_in, sph_bc_U%kr_out, coef_buo,                &
      &        ipol%i_par_temp, ipol%i_grad_part_t, ipol%i_div_buoyancy, &
-     &        ntot_phys_rj, d_rj)
+     &        ntot_phys_rj, rj_fld1%d_fld)
         end if
 !
       else if (iflag_4_composit_buo .gt. id_turn_OFF) then
@@ -86,14 +86,14 @@
      &      'cal_div_buoyancy_sph_MHD by composition'
         call cal_div_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out,  &
      &      coef_comp_buo, ipol%i_light, ipol%i_grad_composit,          &
-     &      ipol%i_div_comp_buo, ntot_phys_rj, d_rj)
+     &      ipol%i_div_comp_buo, ntot_phys_rj, rj_fld1%d_fld)
 !
       else if(iflag_4_filter_gravity .gt. id_turn_OFF) then
           if (iflag_debug.ge.1)  write(*,*)                             &
      &      'cal_div_buoyancy_sph_MHD by filtrered temperature'
         call cal_div_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out,  &
      &      coef_buo, ipol%i_filter_temp, ipol%i_grad_filter_temp,      &
-     &      ipol%i_div_filter_buo, ntot_phys_rj, d_rj)
+     &      ipol%i_div_filter_buo, ntot_phys_rj, rj_fld1%d_fld)
       end if
 !
       end subroutine sel_div_buoyancies_sph_MHD

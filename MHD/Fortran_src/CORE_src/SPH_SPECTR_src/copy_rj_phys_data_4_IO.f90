@@ -216,8 +216,8 @@
       ist = istack_phys_comp_rj(i_fld-1)
       jst = fld_IO%istack_comp_IO(j_IO-1)
 !$omp parallel workshare
-      fld_IO%d_IO(1:nnod_rj,jst+1) = d_rj(1:nnod_rj,ist+1)
-      fld_IO%d_IO(1:nnod_rj,jst+2) = d_rj(1:nnod_rj,ist+3)
+      fld_IO%d_IO(1:nnod_rj,jst+1) = rj_fld1%d_fld(1:nnod_rj,ist+1)
+      fld_IO%d_IO(1:nnod_rj,jst+2) = rj_fld1%d_fld(1:nnod_rj,ist+3)
 !$omp end parallel workshare
 !
       end subroutine copy_each_sph_solenoid_to_IO
@@ -234,9 +234,9 @@
       ist = istack_phys_comp_rj(i_fld-1)
       jst = fld_IO%istack_comp_IO(j_IO-1)
 !$omp parallel workshare
-      fld_IO%d_IO(1:nnod_rj,jst+1) = d_rj(1:nnod_rj,ist+1)
-      fld_IO%d_IO(1:nnod_rj,jst+2) = d_rj(1:nnod_rj,ist+3)
-      fld_IO%d_IO(1:nnod_rj,jst+3) = d_rj(1:nnod_rj,ist+2)
+      fld_IO%d_IO(1:nnod_rj,jst+1) = rj_fld1%d_fld(1:nnod_rj,ist+1)
+      fld_IO%d_IO(1:nnod_rj,jst+2) = rj_fld1%d_fld(1:nnod_rj,ist+3)
+      fld_IO%d_IO(1:nnod_rj,jst+3) = rj_fld1%d_fld(1:nnod_rj,ist+2)
 !$omp end parallel workshare
 !
       end subroutine copy_each_sph_vector_to_IO
@@ -255,7 +255,7 @@
 !$omp parallel
       do nd = 1, num_phys_comp_rj(i_fld)
 !$omp workshare
-        fld_IO%d_IO(1:nnod_rj,jst+nd) = d_rj(1:nnod_rj,ist+nd)
+        fld_IO%d_IO(1:nnod_rj,jst+nd) = rj_fld1%d_fld(1:nnod_rj,ist+nd)
 !$omp end workshare nowait
       end do
 !$omp end parallel
@@ -275,8 +275,8 @@
       ist = istack_phys_comp_rj(i_fld-1)
       jst = fld_IO%istack_comp_IO(j_IO-1)
 !$omp parallel workshare
-      d_rj(1:nnod_rj,ist+1) = fld_IO%d_IO(1:nnod_rj,jst+1)
-      d_rj(1:nnod_rj,ist+3) = fld_IO%d_IO(1:nnod_rj,jst+2)
+      rj_fld1%d_fld(1:nnod_rj,ist+1) = fld_IO%d_IO(1:nnod_rj,jst+1)
+      rj_fld1%d_fld(1:nnod_rj,ist+3) = fld_IO%d_IO(1:nnod_rj,jst+2)
 !$omp end parallel workshare
 !
       end subroutine copy_each_sph_solenoid_from_IO
@@ -293,9 +293,9 @@
       ist = istack_phys_comp_rj(i_fld-1)
       jst = fld_IO%istack_comp_IO(j_IO-1)
 !$omp parallel workshare
-      d_rj(1:nnod_rj,ist+1) = fld_IO%d_IO(1:nnod_rj,jst+1)
-      d_rj(1:nnod_rj,ist+3) = fld_IO%d_IO(1:nnod_rj,jst+2)
-      d_rj(1:nnod_rj,ist+2) = fld_IO%d_IO(1:nnod_rj,jst+3)
+      rj_fld1%d_fld(1:nnod_rj,ist+1) = fld_IO%d_IO(1:nnod_rj,jst+1)
+      rj_fld1%d_fld(1:nnod_rj,ist+3) = fld_IO%d_IO(1:nnod_rj,jst+2)
+      rj_fld1%d_fld(1:nnod_rj,ist+2) = fld_IO%d_IO(1:nnod_rj,jst+3)
 !$omp end parallel workshare
 !
       end subroutine copy_each_sph_vector_from_IO
@@ -314,7 +314,8 @@
 !$omp parallel
       do nd = 1, num_phys_comp_rj(i_fld)
 !$omp workshare
-          d_rj(1:nnod_rj,ist+nd) = fld_IO%d_IO(1:nnod_rj,jst+nd)
+          rj_fld1%d_fld(1:nnod_rj,ist+nd)                               &
+     &      = fld_IO%d_IO(1:nnod_rj,jst+nd)
 !$omp end workshare nowait
       end do
 !$omp end parallel

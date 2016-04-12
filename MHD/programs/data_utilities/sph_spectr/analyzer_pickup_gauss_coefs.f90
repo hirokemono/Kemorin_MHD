@@ -114,7 +114,7 @@
 !
 !  pickup components
 !
-        call cal_gauss_coefficients(ntot_phys_rj, d_rj)
+        call cal_gauss_coefficients(ntot_phys_rj, rj_fld1%d_fld)
         call write_gauss_coefs_4_monitor(my_rank, i_step, time)
       end do
 !

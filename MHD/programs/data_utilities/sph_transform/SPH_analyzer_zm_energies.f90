@@ -71,7 +71,7 @@
         end if
 !
 !        call set_rj_phys_for_pol_kene(num_phys_rj, ntot_phys_rj,       &
-!     &      phys_name_rj, istack_phys_comp_rj, d_rj)
+!     &      phys_name_rj, istack_phys_comp_rj, rj_fld1%d_fld)
 !
         call set_rj_phys_for_convective_kene
 !

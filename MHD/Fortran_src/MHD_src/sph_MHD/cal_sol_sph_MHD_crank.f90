@@ -58,26 +58,27 @@
 !         Solution: ipol%i_velo, itor%i_velo, idpdr%i_velo
         if (iflag_debug .gt. 0)                                         &
      &       write(*,*) 'cal_sol_velo_by_vort_sph_crank'
-        call cal_sol_velo_by_vort_sph_crank(ntot_phys_rj, d_rj)
+        call cal_sol_velo_by_vort_sph_crank                             &
+     &     (ntot_phys_rj, rj_fld1%d_fld)
       end if
 !
 !  Input: ipol%i_temp,  Solution: ipol%i_temp
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_temperature_sph_crank'
       if(iflag_t_evo_4_temp .gt. id_no_evolution) then
-        call cal_sol_temperature_sph_crank
+        call cal_sol_temperature_sph_crank(ntot_phys_rj, rj_fld1%d_fld)
       end if
 !
 !  Input: ipol%i_light,  Solution: ipol%i_light
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_composition_sph_crank'
       if(iflag_t_evo_4_composit .gt. id_no_evolution) then
-        call cal_sol_composition_sph_crank
+        call cal_sol_composition_sph_crank(ntot_phys_rj, rj_fld1%d_fld)
       end if
 !
 !  Input: ipol%i_magne, itor%i_magne
 !  Solution: ipol%i_magne, itor%i_magne, idpdr%i_magne
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_magne_sph_crank'
       if(iflag_t_evo_4_magne .gt. id_no_evolution) then
-        call cal_sol_magne_sph_crank(ntot_phys_rj, d_rj)
+        call cal_sol_magne_sph_crank(ntot_phys_rj, rj_fld1%d_fld)
       end if
 !
 !*  ---- update after evolution ------------------
@@ -147,7 +148,7 @@
 !
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call set_inner_core_rotation(sph_bc_U%kr_in,                    &
-     &      ntot_phys_rj, d_rj)
+     &      ntot_phys_rj, rj_fld1%d_fld)
       end if
 !
 !       Input: ipol%i_vort, itor%i_vort
@@ -248,8 +249,9 @@
          do k = 1, nidx_rj(1)
           inod = j + (k-1) * nidx_rj(2)
           write(150+my_rank,'(2i16,1p20E25.15e3)') j, k,                &
-     &        d_rj(inod,ipol%i_velo),d_rj(inod,idpdr%i_velo),           &
-     &        d_rj(inod,itor%i_velo)
+     &        rj_fld1%d_fld(inod,ipol%i_velo),                          &
+     &        rj_fld1%d_fld(inod,idpdr%i_velo),                         &
+     &        rj_fld1%d_fld(inod,itor%i_velo)
         end do
       end do
 !
@@ -266,8 +268,9 @@
          do k = 1, nidx_rj(1)
           inod = j + (k-1) * nidx_rj(2)
           write(150+my_rank,'(2i16,1p20E25.15e3)') j, k,                &
-     &        d_rj(inod,ipol%i_vort), d_rj(inod,idpdr%i_vort),          &
-     &        d_rj(inod,itor%i_vort)
+     &        rj_fld1%d_fld(inod,ipol%i_vort),                          &
+     &        rj_fld1%d_fld(inod,idpdr%i_vort),                         &
+     &        rj_fld1%d_fld(inod,itor%i_vort)
         end do
       end do
 !

@@ -192,7 +192,8 @@
      &         ) then
               call set_org_rj_phys_data_from_IO(j_fld, fld_IO)
               call r_interpolate_sph_vector(i_fld,                      &
-     &            num_phys_rj, ntot_phys_rj, istack_phys_comp_rj, d_rj)
+     &            num_phys_rj, ntot_phys_rj,                            &
+     &            istack_phys_comp_rj, rj_fld1%d_fld)
               exit
             end if
           end if
@@ -201,9 +202,9 @@
 !
       if (ipol%i_magne .gt. 0) then
         call ext_outside_potential                                      &
-     &     (kr_outside, ipol%i_magne, ntot_phys_rj, d_rj)
+     &     (kr_outside, ipol%i_magne, ntot_phys_rj, rj_fld1%d_fld)
         call ext_inside_potential                                       &
-     &     (kr_inside, ipol%i_magne, ntot_phys_rj, d_rj)
+     &     (kr_inside, ipol%i_magne, ntot_phys_rj, rj_fld1%d_fld)
       end if
 !
       end subroutine r_interpolate_sph_rst_from_IO
@@ -227,7 +228,8 @@
           if (phys_name_rj(i_fld) .eq. fld_IO%fld_name(j_fld)) then
             call set_org_rj_phys_data_from_IO(j_fld, fld_IO)
             call r_interpolate_sph_vector(i_fld,                        &
-     &          num_phys_rj, ntot_phys_rj, istack_phys_comp_rj, d_rj)
+     &          num_phys_rj, ntot_phys_rj,                              &
+     &          istack_phys_comp_rj, rj_fld1%d_fld)
             exit
           end if
         end do
@@ -235,9 +237,9 @@
 !
       if (ipol%i_magne .gt. 0) then
         call ext_outside_potential                                      &
-     &     (kr_outside, ipol%i_magne, ntot_phys_rj, d_rj)
+     &     (kr_outside, ipol%i_magne, ntot_phys_rj, rj_fld1%d_fld)
         call ext_inside_potential                                       &
-     &     (kr_inside, ipol%i_magne, ntot_phys_rj, d_rj)
+     &     (kr_inside, ipol%i_magne, ntot_phys_rj, rj_fld1%d_fld)
       end if
 !
       end subroutine r_interpolate_sph_fld_from_IO
@@ -256,9 +258,11 @@
       write(*,*) ' ipol%i_magne', ipol%i_magne, kr_outside, kr_inside
       if (ipol%i_magne .gt. 0) then
         call gauss_to_poloidal_out(kr_outside, ltr_w, r_gauss,          &
-     &      w_gauss, index_w, ipol%i_magne, ntot_phys_rj, d_rj)
+     &      w_gauss, index_w, ipol%i_magne,                             &
+     &      ntot_phys_rj, rj_fld1%d_fld)
         call gauss_to_poloidal_in(kr_inside, ltr_w, r_gauss,            &
-     &      w_gauss, index_w, ipol%i_magne, ntot_phys_rj, d_rj)
+     &      w_gauss, index_w, ipol%i_magne,                             &
+     &      ntot_phys_rj, rj_fld1%d_fld)
       end if
 !
       end subroutine set_poloidal_b_by_gauss_coefs
