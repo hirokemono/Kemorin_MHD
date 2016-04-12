@@ -105,6 +105,7 @@
 !
       use m_spheric_parameter
 !
+      rj_fld1%ntot_phys = ntot_phys_rj
       call alloc_phys_data_type(nnod_rj, rj_fld1)
 !
       end subroutine allocate_phys_rj_data

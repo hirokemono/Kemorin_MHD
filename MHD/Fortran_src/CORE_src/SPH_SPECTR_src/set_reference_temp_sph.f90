@@ -60,6 +60,7 @@
       integer(kind = kint) :: j, k, kk, inod
       real(kind = kreal) :: c1, c2
 !
+      return
 !
       c1 = ( r_CMB*temp_CMB - r_ICB*temp_ICB ) /   ( r_CMB - r_ICB )
       c2 = r_CMB * r_ICB * (temp_ICB - temp_CMB) / ( r_CMB - r_ICB )
