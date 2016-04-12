@@ -70,8 +70,9 @@
           call r_interpolate_sph_fld_from_IO(fld_IO)
         end if
 !
-!        call set_rj_phys_for_pol_kene(num_phys_rj, rj_fld1%ntot_phys,  &
-!     &      rj_fld1%phys_name, istack_phys_comp_rj, rj_fld1%d_fld)
+!        call set_rj_phys_for_pol_kene                                  &
+!     &     (num_phys_rj, rj_fld1%ntot_phys, rj_fld1%phys_name, &
+!     &      rj_fld1%istack_component, rj_fld1%d_fld)
 !
         call set_rj_phys_for_convective_kene
 !
@@ -170,7 +171,7 @@
 !
       do i = 1, num_phys_rj
         if     (rj_fld1%phys_name(i) .eq. fhd_velo) then
-          ist_fld = istack_phys_comp_rj(i-1)+1
+          ist_fld = rj_fld1%istack_component(i-1)+1
           call delete_zonal_mean_rj_field(n_vector, ist_fld)
         end if
       end do

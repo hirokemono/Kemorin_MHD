@@ -75,7 +75,7 @@
 !
       do j_fld = 1, num_rms_rj
         i_fld = ifield_rms_rj(j_fld)
-        icomp_st = istack_phys_comp_rj(i_fld-1) + 1
+        icomp_st = rj_fld1%istack_component(i_fld-1) + 1
         jcomp_st = istack_rms_comp_rj(j_fld-1) +  1
         if (num_phys_comp_rj(i_fld) .eq. n_scalar) then
           call cal_ave_scalar_sph_spectr(icomp_st, jcomp_st,            &

@@ -99,8 +99,8 @@
 !        write(*,*) 'num_phys_rj', num_phys_rj
 !        write(*,*) 'id, components, stack, phys_name_rj'
 !        do i = 1, num_phys_rj
-!          write(*,*) i, num_phys_comp_rj(i), istack_phys_comp_rj(i),   &
-!     &              trim(rj_fld1%phys_name(i))
+!          write(*,*) i, num_phys_comp_rj(i),                           &
+!     &        rj_fld1%istack_component(i), trim(rj_fld1%phys_name(i))
 !        end do
         write(*,*)
         write(*,*) 'num_phys_rtp', num_phys_rtp

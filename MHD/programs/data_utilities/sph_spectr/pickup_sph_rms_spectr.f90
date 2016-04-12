@@ -120,7 +120,7 @@
       do j_fld = 1, num_rms_rj
         i_fld = ifield_rms_rj(j_fld)
         ncomp = num_rms_comp_rj(j_fld)
-        ist_fld =  istack_phys_comp_rj(i_fld-1)
+        ist_fld =  rj_fld1%istack_component(i_fld-1)
         jst_rms = istack_rms_comp_rj(j_fld-1)
         call cal_rms_sph_spec_one_field(ncomp, (ist_fld+1),             &
      &      nidx_rj(1), nidx_rj(2), rj_fld1%ntot_phys, rj_fld1%d_fld,   &
@@ -178,7 +178,7 @@
       do j_fld = 1, num_rms_rj
         i_fld = ifield_rms_rj(j_fld)
         ncomp = num_rms_comp_rj(j_fld)
-        ist_fld =  istack_phys_comp_rj(i_fld-1)
+        ist_fld =  rj_fld1%istack_component(i_fld-1)
         jst_rms = istack_rms_comp_rj(j_fld-1)
         call cal_rms_sph_spec_one_field(ncomp, (ist_fld+1),             &
      &      nidx_rj(1), nidx_rj(2), rj_fld1%ntot_phys, rj_fld1%d_fld,   &

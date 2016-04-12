@@ -116,7 +116,7 @@
 !
         call pickup_sph_spec_4_monitor                                  &
      &     (num_phys_rj, rj_fld1%ntot_phys,                             &
-     &      istack_phys_comp_rj, rj_fld1%d_fld)
+     &      rj_fld1%istack_component, rj_fld1%d_fld)
         call write_sph_spec_4_monitor(my_rank, i_step, time)
       end do
 !

@@ -222,7 +222,7 @@
 !
       do j_fld = 1, num_rms_rj
         i_fld = ifield_rms_rj(j_fld)
-        icomp_rj = istack_phys_comp_rj(i_fld-1) + 1
+        icomp_rj = rj_fld1%istack_component(i_fld-1) + 1
         jcomp_st = istack_rms_comp_rj(j_fld-1) + 1
         ncomp_rj = num_rms_comp_rj(j_fld)
         num = nidx_rj(2) * ncomp_rj

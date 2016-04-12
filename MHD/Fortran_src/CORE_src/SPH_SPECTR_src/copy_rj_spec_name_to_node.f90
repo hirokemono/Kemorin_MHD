@@ -39,13 +39,13 @@
       call alloc_phys_name_type(nod_fld)
 !
       nod_fld%num_component(1:nod_fld%num_phys)                         &
-     &                     = num_phys_comp_rj(1:nod_fld%num_phys)
+     &             = num_phys_comp_rj(1:nod_fld%num_phys)
       nod_fld%phys_name(1:nod_fld%num_phys)                             &
-     &                     = rj_fld1%phys_name(1:nod_fld%num_phys)
+     &             = rj_fld1%phys_name(1:nod_fld%num_phys)
       nod_fld%iflag_monitor(1:nod_fld%num_phys)                         &
-     &                     = iflag_monitor_rj(1:nod_fld%num_phys)
+     &             = iflag_monitor_rj(1:nod_fld%num_phys)
       nod_fld%istack_component(0:nod_fld%num_phys)                      &
-     &                     = istack_phys_comp_rj(0:nod_fld%num_phys)
+     &             = rj_fld1%istack_component(0:nod_fld%num_phys)
 !
       end subroutine copy_rj_spec_name_to_nod_fld
 !

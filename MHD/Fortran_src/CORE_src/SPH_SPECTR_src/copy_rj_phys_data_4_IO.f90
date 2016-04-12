@@ -103,7 +103,8 @@
       call alloc_phys_name_IO(fld_IO)
 !
       fld_IO%num_comp_IO(1:num_fld) =    num_phys_comp_rj(1:num_fld)
-      fld_IO%istack_comp_IO(0:num_fld) = istack_phys_comp_rj(0:num_fld)
+      fld_IO%istack_comp_IO(0:num_fld)                                  &
+     &        = rj_fld1%istack_component(0:num_fld)
       fld_IO%fld_name(1:num_fld) =   rj_fld1%phys_name(1:num_fld)
 !
       end subroutine copy_rj_phys_name_to_IO
@@ -150,13 +151,14 @@
         if(num_phys_comp_rj(i_fld) .eq. 2) num_phys_comp_rj(i_fld) = 3
       end do
 !
-      istack_phys_comp_rj(0)  = 0
+      rj_fld1%istack_component(0)  = 0
       do i_fld = 1, num_phys_rj
-        istack_phys_comp_rj(i_fld) = istack_phys_comp_rj(i_fld-1)       &
-     &                              + num_phys_comp_rj(i_fld)
+        rj_fld1%istack_component(i_fld)                                 &
+     &         = rj_fld1%istack_component(i_fld-1)                      &
+     &          + num_phys_comp_rj(i_fld)
       end do
 !
-      rj_fld1%ntot_phys = istack_phys_comp_rj(num_phys_rj)
+      rj_fld1%ntot_phys = rj_fld1%istack_component(num_phys_rj)
       call alloc_phys_data_type(nnod_rj, rj_fld1)
 !
       end subroutine copy_rj_phys_name_from_IO
@@ -213,7 +215,7 @@
       integer(kind = kint) :: ist, jst
 !
 !
-      ist = istack_phys_comp_rj(i_fld-1)
+      ist = rj_fld1%istack_component(i_fld-1)
       jst = fld_IO%istack_comp_IO(j_IO-1)
 !$omp parallel workshare
       fld_IO%d_IO(1:nnod_rj,jst+1) = rj_fld1%d_fld(1:nnod_rj,ist+1)
@@ -231,7 +233,7 @@
       integer(kind = kint) :: ist, jst
 !
 !
-      ist = istack_phys_comp_rj(i_fld-1)
+      ist = rj_fld1%istack_component(i_fld-1)
       jst = fld_IO%istack_comp_IO(j_IO-1)
 !$omp parallel workshare
       fld_IO%d_IO(1:nnod_rj,jst+1) = rj_fld1%d_fld(1:nnod_rj,ist+1)
@@ -250,7 +252,7 @@
       integer(kind = kint) :: ist, jst, nd
 !
 !
-      ist = istack_phys_comp_rj(i_fld-1)
+      ist = rj_fld1%istack_component(i_fld-1)
       jst = fld_IO%istack_comp_IO(j_IO-1 )
 !$omp parallel
       do nd = 1, num_phys_comp_rj(i_fld)
@@ -272,7 +274,7 @@
       integer(kind = kint) :: ist, jst
 !
 !
-      ist = istack_phys_comp_rj(i_fld-1)
+      ist = rj_fld1%istack_component(i_fld-1)
       jst = fld_IO%istack_comp_IO(j_IO-1)
 !$omp parallel workshare
       rj_fld1%d_fld(1:nnod_rj,ist+1) = fld_IO%d_IO(1:nnod_rj,jst+1)
@@ -290,7 +292,7 @@
       integer(kind = kint) :: ist, jst
 !
 !
-      ist = istack_phys_comp_rj(i_fld-1)
+      ist = rj_fld1%istack_component(i_fld-1)
       jst = fld_IO%istack_comp_IO(j_IO-1)
 !$omp parallel workshare
       rj_fld1%d_fld(1:nnod_rj,ist+1) = fld_IO%d_IO(1:nnod_rj,jst+1)
@@ -309,7 +311,7 @@
       integer(kind = kint) :: ist, jst, nd
 !
 !
-      ist = istack_phys_comp_rj(i_fld-1)
+      ist = rj_fld1%istack_component(i_fld-1)
       jst = fld_IO%istack_comp_IO(j_IO-1 )
 !$omp parallel
       do nd = 1, num_phys_comp_rj(i_fld)

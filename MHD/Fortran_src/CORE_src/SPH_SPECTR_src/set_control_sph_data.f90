@@ -72,7 +72,7 @@
 !
       call set_istack_4_nodal_field(num_phys_rj, num_phys_rj_vis,       &
      &    num_phys_comp_rj, rj_fld1%ntot_phys, ntot_comp_rj_vis,        &
-     &    istack_phys_comp_rj)
+     &    rj_fld1%istack_component)
 !
       end subroutine ordering_sph_field_by_viz
 !
@@ -89,7 +89,7 @@
 !
       call set_istack_4_nodal_field(num_phys_rj, num_phys_rj_vis,       &
      &    num_phys_comp_rj, rj_fld1%ntot_phys, ntot_comp_rj_vis,        &
-     &    istack_phys_comp_rj)
+     &    rj_fld1%istack_component)
 !
       end subroutine ordering_sph_field_by_viz_comp
 !

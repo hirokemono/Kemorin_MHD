@@ -129,7 +129,7 @@
 !
       do i = 1, num_phys_rj
         if(rj_fld1%phys_name(i) .eq. fhd_magne) then
-          ipol%i_magne = istack_phys_comp_rj(i-1) + 1
+          ipol%i_magne = rj_fld1%istack_component(i-1) + 1
           exit
         end if
       end do
@@ -193,7 +193,7 @@
               call set_org_rj_phys_data_from_IO(j_fld, fld_IO)
               call r_interpolate_sph_vector(i_fld,                      &
      &            num_phys_rj, rj_fld1%ntot_phys,                       &
-     &            istack_phys_comp_rj, rj_fld1%d_fld)
+     &            rj_fld1%istack_component, rj_fld1%d_fld)
               exit
             end if
           end if
@@ -229,7 +229,7 @@
             call set_org_rj_phys_data_from_IO(j_fld, fld_IO)
             call r_interpolate_sph_vector(i_fld,                        &
      &          num_phys_rj, rj_fld1%ntot_phys,                         &
-     &          istack_phys_comp_rj, rj_fld1%d_fld)
+     &          rj_fld1%istack_component, rj_fld1%d_fld)
             exit
           end if
         end do
