@@ -68,10 +68,11 @@
 !
 !
       call s_ordering_field_by_viz(num_phys_rj, num_phys_rj_vis,        &
-     &    num_phys_comp_rj, rj_fld1%phys_name, iflag_monitor_rj)
+     &    rj_fld1%num_component, rj_fld1%phys_name,                     &
+     &    rj_fld1%iflag_monitor)
 !
       call set_istack_4_nodal_field(num_phys_rj, num_phys_rj_vis,       &
-     &    num_phys_comp_rj, rj_fld1%ntot_phys, ntot_comp_rj_vis,        &
+     &    rj_fld1%num_component, rj_fld1%ntot_phys, ntot_comp_rj_vis,   &
      &    rj_fld1%istack_component)
 !
       end subroutine ordering_sph_field_by_viz
@@ -85,10 +86,11 @@
 !
 !
       call ordering_field_by_comp_viz(num_phys_rj, num_phys_rj_vis,     &
-     &    num_phys_comp_rj, rj_fld1%phys_name, iflag_monitor_rj)
+     &    rj_fld1%num_component, rj_fld1%phys_name,                     &
+     &    rj_fld1%iflag_monitor)
 !
       call set_istack_4_nodal_field(num_phys_rj, num_phys_rj_vis,       &
-     &    num_phys_comp_rj, rj_fld1%ntot_phys, ntot_comp_rj_vis,        &
+     &    rj_fld1%num_component, rj_fld1%ntot_phys, ntot_comp_rj_vis,   &
      &    rj_fld1%istack_component)
 !
       end subroutine ordering_sph_field_by_viz_comp

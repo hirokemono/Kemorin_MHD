@@ -44,7 +44,7 @@
 !   set address of spectr fields
 !
       call set_field_addresses(ione, num_phys_rj,                       &
-     &    rj_fld1%phys_name, num_phys_comp_rj, ipol)
+     &    rj_fld1%phys_name, rj_fld1%num_component, ipol)
 !
       call set_sph_vect_spec_address
 !

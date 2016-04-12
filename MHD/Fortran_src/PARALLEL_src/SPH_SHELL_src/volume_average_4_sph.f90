@@ -77,11 +77,11 @@
         i_fld = ifield_rms_rj(j_fld)
         icomp_st = rj_fld1%istack_component(i_fld-1) + 1
         jcomp_st = istack_rms_comp_rj(j_fld-1) +  1
-        if (num_phys_comp_rj(i_fld) .eq. n_scalar) then
+        if (rj_fld1%num_component(i_fld) .eq. n_scalar) then
           call cal_ave_scalar_sph_spectr(icomp_st, jcomp_st,            &
      &        nnod_rj, nidx_rj, idx_rj_degree_zero, inod_rj_center,     &
      &        rj_fld1%ntot_phys, rj_fld1%d_fld, radius_1d_rj_r)
-        else if (num_phys_comp_rj(i_fld) .eq. n_vector) then
+        else if (rj_fld1%num_component(i_fld) .eq. n_vector) then
           call cal_ave_vector_sph_spectr(icomp_st, jcomp_st,            &
      &        nnod_rj, nidx_rj, idx_rj_degree_zero, inod_rj_center,     &
      &        rj_fld1%ntot_phys, rj_fld1%d_fld, radius_1d_rj_r)

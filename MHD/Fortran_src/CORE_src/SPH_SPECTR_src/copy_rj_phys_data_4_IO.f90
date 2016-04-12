@@ -102,7 +102,7 @@
 !
       call alloc_phys_name_IO(fld_IO)
 !
-      fld_IO%num_comp_IO(1:num_fld) =    num_phys_comp_rj(1:num_fld)
+      fld_IO%num_comp_IO(1:num_fld) = rj_fld1%num_component(1:num_fld)
       fld_IO%istack_comp_IO(0:num_fld)                                  &
      &        = rj_fld1%istack_component(0:num_fld)
       fld_IO%fld_name(1:num_fld) =   rj_fld1%phys_name(1:num_fld)
@@ -120,7 +120,7 @@
 !
 !
       do i_fld = 1, num_fld
-        if (num_phys_comp_rj(i_fld) .eq. n_vector) then
+        if (rj_fld1%num_component(i_fld) .eq. n_vector) then
           call copy_each_sph_vector_to_IO(i_fld, i_fld, fld_IO)
         else
           call copy_each_sph_field_to_IO(i_fld, i_fld, fld_IO)
@@ -143,19 +143,21 @@
       call allocate_phys_rj_name
 !
       rj_fld1%phys_name(1:num_phys_rj) = fld_IO%fld_name(1:num_phys_rj)
-      num_phys_comp_rj(1:num_phys_rj)                                   &
+      rj_fld1%num_component(1:num_phys_rj)                              &
      &      = fld_IO%num_comp_IO(1:num_phys_rj)
-      iflag_monitor_rj(1:num_phys_rj) = 1
+      rj_fld1%iflag_monitor(1:num_phys_rj) = 1
 !
       do i_fld = 1, num_phys_rj
-        if(num_phys_comp_rj(i_fld) .eq. 2) num_phys_comp_rj(i_fld) = 3
+        if(rj_fld1%num_component(i_fld) .eq. 2) then
+          rj_fld1%num_component(i_fld) = 3
+        end if
       end do
 !
       rj_fld1%istack_component(0)  = 0
       do i_fld = 1, num_phys_rj
         rj_fld1%istack_component(i_fld)                                 &
      &         = rj_fld1%istack_component(i_fld-1)                      &
-     &          + num_phys_comp_rj(i_fld)
+     &          + rj_fld1%num_component(i_fld)
       end do
 !
       rj_fld1%ntot_phys = rj_fld1%istack_component(num_phys_rj)
@@ -172,7 +174,7 @@
 !
 !
       do i_fld = 1, num_phys_rj
-        if (num_phys_comp_rj(i_fld) .eq. 3) then
+        if (rj_fld1%num_component(i_fld) .eq. 3) then
           call copy_each_sph_vector_from_IO(i_fld, i_fld, fld_IO)
         else
           call copy_each_sph_field_from_IO(i_fld, i_fld, fld_IO)
@@ -255,7 +257,7 @@
       ist = rj_fld1%istack_component(i_fld-1)
       jst = fld_IO%istack_comp_IO(j_IO-1 )
 !$omp parallel
-      do nd = 1, num_phys_comp_rj(i_fld)
+      do nd = 1, rj_fld1%num_component(i_fld)
 !$omp workshare
         fld_IO%d_IO(1:nnod_rj,jst+nd) = rj_fld1%d_fld(1:nnod_rj,ist+nd)
 !$omp end workshare nowait
@@ -314,7 +316,7 @@
       ist = rj_fld1%istack_component(i_fld-1)
       jst = fld_IO%istack_comp_IO(j_IO-1 )
 !$omp parallel
-      do nd = 1, num_phys_comp_rj(i_fld)
+      do nd = 1, rj_fld1%num_component(i_fld)
 !$omp workshare
           rj_fld1%d_fld(1:nnod_rj,ist+nd)                               &
      &      = fld_IO%d_IO(1:nnod_rj,jst+nd)

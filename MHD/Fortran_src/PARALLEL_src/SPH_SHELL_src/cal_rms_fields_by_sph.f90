@@ -47,19 +47,19 @@
 !
       num_rms_rj = 0
       do i_fld = 1, num_phys_rj
-        num_rms_rj = num_rms_rj + iflag_monitor_rj(i_fld)
+        num_rms_rj = num_rms_rj + rj_fld1%iflag_monitor(i_fld)
       end do
 !
       call allocate_rms_name_sph_spec
 !
       j_fld = 0
       do i_fld = 1, num_phys_rj
-        if(iflag_monitor_rj(i_fld) .gt. 0) then
+        if(rj_fld1%iflag_monitor(i_fld) .gt. 0) then
           j_fld = j_fld + 1
           ifield_rms_rj(j_fld) =   i_fld
-          num_rms_comp_rj(j_fld) = num_phys_comp_rj(i_fld)
+          num_rms_comp_rj(j_fld) = rj_fld1%num_component(i_fld)
           istack_rms_comp_rj(j_fld) = istack_rms_comp_rj(j_fld-1)       &
-     &                              + num_phys_comp_rj(i_fld)
+     &                              + rj_fld1%num_component(i_fld)
           rms_name_rj(j_fld) =     rj_fld1%phys_name(i_fld)
         end if
       end do

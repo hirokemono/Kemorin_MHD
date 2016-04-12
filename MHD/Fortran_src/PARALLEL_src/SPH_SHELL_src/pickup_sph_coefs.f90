@@ -55,7 +55,7 @@
       end if
 !
       call count_sph_labels_4_monitor                                   &
-     &   (num_phys_rj, num_phys_comp_rj, iflag_monitor_rj)
+     &   (num_phys_rj, rj_fld1%num_component, rj_fld1%iflag_monitor)
       call count_picked_sph_adrress                                     &
      &   (num_pick_sph, num_pick_sph_l, num_pick_sph_m,                 &
      &    idx_pick_sph_mode, idx_pick_sph_l, idx_pick_sph_m,            &
@@ -75,11 +75,11 @@
       call deallocate_pick_sph_mode
 !
       call set_sph_fld_id_4_monitor                                     &
-     &    (num_phys_rj, num_phys_comp_rj, iflag_monitor_rj)
+     &    (num_phys_rj, rj_fld1%num_component, rj_fld1%iflag_monitor)
 !
       if(my_rank .ne. 0) return
       call set_sph_labels_4_monitor                                     &
-     &   (num_phys_rj, num_phys_comp_rj, rj_fld1%phys_name)
+     &   (num_phys_rj, rj_fld1%num_component, rj_fld1%phys_name)
 !
       end subroutine init_sph_spec_4_monitor
 !

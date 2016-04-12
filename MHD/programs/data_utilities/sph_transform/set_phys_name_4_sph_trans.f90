@@ -67,7 +67,7 @@
       i0 = 0
       num_scalar_rtp = 0
       do i = 1, num_phys_rj
-        if (num_phys_comp_rj(i) .eq. n_scalar) then
+        if (rj_fld1%num_component(i) .eq. n_scalar) then
           i0 = i0 + 1
           num_scalar_rtp = num_scalar_rtp + 1
           phys_name_rtp(i0) =        rj_fld1%phys_name(i)
@@ -77,7 +77,7 @@
 !
       num_vector_rtp = 0
       do i = 1, num_phys_rj
-        if (num_phys_comp_rj(i) .eq. n_vector) then
+        if (rj_fld1%num_component(i) .eq. n_vector) then
           i0 = i0 + 1
           num_vector_rtp = num_vector_rtp + 1
           phys_name_rtp(i0) =        rj_fld1%phys_name(i)
@@ -87,7 +87,7 @@
 !
       num_tensor_rtp = 0
       do i = 1, num_phys_rj
-        if (num_phys_comp_rj(i) .eq. n_sym_tensor) then
+        if (rj_fld1%num_component(i) .eq. n_sym_tensor) then
           i0 = i0 + 1
           num_tensor_rtp = num_tensor_rtp + 1
           phys_name_rtp(i0) =        rj_fld1%phys_name(i)
@@ -99,7 +99,7 @@
 !        write(*,*) 'num_phys_rj', num_phys_rj
 !        write(*,*) 'id, components, stack, phys_name_rj'
 !        do i = 1, num_phys_rj
-!          write(*,*) i, num_phys_comp_rj(i),                           &
+!          write(*,*) i, rj_fld1%num_component(i),                      &
 !     &        rj_fld1%istack_component(i), trim(rj_fld1%phys_name(i))
 !        end do
         write(*,*)

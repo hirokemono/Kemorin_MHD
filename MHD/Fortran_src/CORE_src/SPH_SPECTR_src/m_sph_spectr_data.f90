@@ -30,7 +30,7 @@
 !
 !>        Structure for field data
         type(phys_data) :: rj_fld1
-!rj_fld1%istack_component
+!rj_fld1%iflag_monitor
 !
 !>      Number of fields for spectrum data  @f$ f(r,j) @f$
       integer (kind=kint) :: num_phys_rj
@@ -47,10 +47,10 @@
 !
 !>      Integer flag for monitoring output
 !!       for spectr data @f$ f(r,j) @f$
-      integer (kind=kint), allocatable:: iflag_monitor_rj(:)
+!      integer (kind=kint), allocatable:: iflag_monitor_rj(:)
 !
 !>      Number of components for each field @f$ f(r,j) @f$
-      integer (kind=kint), allocatable :: num_phys_comp_rj(:)
+!      integer (kind=kint), allocatable :: num_phys_comp_rj(:)
 !>      End address of d_rj for each field @f$ f(r,j) @f$
 !      integer (kind=kint), allocatable :: istack_phys_comp_rj(:)
 ! 
@@ -87,14 +87,6 @@
       rj_fld1%num_phys = num_phys_rj
       call alloc_phys_name_type(rj_fld1)
 !
-      allocate( iflag_monitor_rj(num_phys_rj) )
-      allocate( num_phys_comp_rj(num_phys_rj) )
-!
-      if(num_phys_rj .gt. 0) then
-        iflag_monitor_rj =    0
-        num_phys_comp_rj =    0
-      end if
-!
       end subroutine allocate_phys_rj_name
 !
 !  --------------------------------------------------------------------
@@ -117,8 +109,6 @@
 !
       subroutine deallocate_phys_rj_data
 !
-      deallocate( iflag_monitor_rj )
-      deallocate( num_phys_comp_rj )
       call dealloc_phys_name_type(rj_fld1)
       call dealloc_phys_data_type(rj_fld1)
 !
@@ -143,9 +133,9 @@
       write(*,'(a,i16)') 'num_phys_rj ', num_phys_rj
       write(*,'(a)') 'number, component, stack, monitor_flag, name'
       do i = 1, num_phys_rj
-        write(*,'(4i6,a2,a)') i, num_phys_comp_rj(i),                   &
-     &                rj_fld1%istack_component(i), iflag_monitor_rj(i), &
-     &               '  ', trim(rj_fld1%phys_name(i))
+        write(*,'(4i6,a2,a)') i, rj_fld1%num_component(i),              &
+     &           rj_fld1%istack_component(i), rj_fld1%iflag_monitor(i), &
+     &           '  ', trim(rj_fld1%phys_name(i))
       end do
 !
       end subroutine check_rj_spectr_name
@@ -162,7 +152,7 @@
 !
       write(50+my_rank,*) 'num_phys_rj',  num_phys_rj
       write(50+my_rank,*) 'ntot_phys_rj', rj_fld1%ntot_phys
-      write(50+my_rank,*) 'num_phys_comp_rj', num_phys_comp_rj
+      write(50+my_rank,*) 'num_phys_comp_rj', rj_fld1%num_component
       do inod = 1, num_phys_rj
         write(50+my_rank,*) rj_fld1%phys_name(inod)
       end do

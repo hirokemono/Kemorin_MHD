@@ -153,8 +153,8 @@
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &     call check_nodal_field_name_type(nod_fld1)
 !
-      call count_field_4_monitor(num_phys_rj, num_phys_comp_rj,         &
-     &    iflag_monitor_rj, num_field_monitor, ntot_comp_monitor)
+      call count_field_4_monitor(num_phys_rj, rj_fld1%num_component,    &
+     &    rj_fld1%iflag_monitor, num_field_monitor, ntot_comp_monitor)
 !
       end subroutine set_control_4_SPH_to_FEM
 !
