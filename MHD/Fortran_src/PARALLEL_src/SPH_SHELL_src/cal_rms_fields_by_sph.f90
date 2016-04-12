@@ -46,14 +46,14 @@
 !
 !
       num_rms_rj = 0
-      do i_fld = 1, num_phys_rj
+      do i_fld = 1, rj_fld1%num_phys
         num_rms_rj = num_rms_rj + rj_fld1%iflag_monitor(i_fld)
       end do
 !
       call allocate_rms_name_sph_spec
 !
       j_fld = 0
-      do i_fld = 1, num_phys_rj
+      do i_fld = 1, rj_fld1%num_phys
         if(rj_fld1%iflag_monitor(i_fld) .gt. 0) then
           j_fld = j_fld + 1
           ifield_rms_rj(j_fld) =   i_fld

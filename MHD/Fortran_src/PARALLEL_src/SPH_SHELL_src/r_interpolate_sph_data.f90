@@ -127,7 +127,7 @@
 !
       integer(kind = kint) :: i
 !
-      do i = 1, num_phys_rj
+      do i = 1, rj_fld1%num_phys
         if(rj_fld1%phys_name(i) .eq. fhd_magne) then
           ipol%i_magne = rj_fld1%istack_component(i-1) + 1
           exit
@@ -192,7 +192,7 @@
      &         ) then
               call set_org_rj_phys_data_from_IO(j_fld, fld_IO)
               call r_interpolate_sph_vector(i_fld,                      &
-     &            num_phys_rj, rj_fld1%ntot_phys,                       &
+     &            rj_fld1%num_phys, rj_fld1%ntot_phys,                  &
      &            rj_fld1%istack_component, rj_fld1%d_fld)
               exit
             end if
@@ -228,7 +228,7 @@
           if(rj_fld1%phys_name(i_fld) .eq. fld_IO%fld_name(j_fld)) then
             call set_org_rj_phys_data_from_IO(j_fld, fld_IO)
             call r_interpolate_sph_vector(i_fld,                        &
-     &          num_phys_rj, rj_fld1%ntot_phys,                         &
+     &          rj_fld1%num_phys, rj_fld1%ntot_phys,                    &
      &          rj_fld1%istack_component, rj_fld1%d_fld)
             exit
           end if

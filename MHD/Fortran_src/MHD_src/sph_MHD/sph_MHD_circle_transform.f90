@@ -43,7 +43,8 @@
       integer(kind = kint) :: ifld, icomp, m, nd
 !
 !
-      call collect_spectr_for_circle(num_phys_rj, rj_fld1%ntot_phys,    &
+      call collect_spectr_for_circle                                    &
+     &   (rj_fld1%num_phys, rj_fld1%ntot_phys,                          &
      &    rj_fld1%istack_component, rj_fld1%phys_name, rj_fld1%d_fld)
 !
 !    spherical transfer

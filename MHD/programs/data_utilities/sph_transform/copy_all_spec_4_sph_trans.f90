@@ -47,7 +47,7 @@
       do j = 1, num_scalar_rtp
         j0 = j + istart_scalar_rtp - 1
         itrans = j+3*num_vector_rtp
-        do i = 1, num_phys_rj
+        do i = 1, rj_fld1%num_phys
           if ( phys_name_rtp(j0) .eq. rj_fld1%phys_name(i) ) then
             i_field = rj_fld1%istack_component(i-1) + 1
             call sel_sph_rj_scalar_2_send_wpole                         &
@@ -74,7 +74,7 @@
       do j = 1, num_scalar_rtp
         j0 = j + istart_scalar_rtp - 1
         itrans = j+3*num_vector_rtp
-        do i = 1, num_phys_rj
+        do i = 1, rj_fld1%num_phys
           if ( phys_name_rtp(j0) .eq. rj_fld1%phys_name(i) ) then
             i_field = rj_fld1%istack_component(i-1) + 1
             call sel_sph_rj_scalar_from_recv                            &
@@ -102,7 +102,7 @@
       do j = 1, num_vector_rtp
         j0 = j + istart_vector_rtp - 1
         itrans = 3*j - 2
-        do i = 1, num_phys_rj
+        do i = 1, rj_fld1%num_phys
           if ( phys_name_rtp(j0) .eq. rj_fld1%phys_name(i) ) then
             i_field = rj_fld1%istack_component(i-1) + 1
             call sel_sph_rj_vector_to_send                              &
@@ -129,7 +129,7 @@
       do j = 1, num_vector_rtp
         j0 = j + istart_vector_rtp - 1
         itrans = 3*j - 2
-        do i = 1, num_phys_rj
+        do i = 1, rj_fld1%num_phys
           if ( phys_name_rtp(j0) .eq. rj_fld1%phys_name(i) ) then
             i_field = rj_fld1%istack_component(i-1) + 1
 !$omp parallel
@@ -159,7 +159,7 @@
       do j = 1, num_tensor_rtp
         j0 = j + istart_tensor_rtp - 1
         itrans = 1 + 6*(j-1) + num_scalar_rtp + 3*num_vector_rtp
-        do i = 1, num_phys_rj
+        do i = 1, rj_fld1%num_phys
           if ( phys_name_rtp(j0) .eq. rj_fld1%phys_name(i) ) then
             i_field = rj_fld1%istack_component(i-1) + 1
 !$omp parallel
@@ -188,7 +188,7 @@
       do j = 1, num_tensor_rtp
         j0 = j + istart_tensor_rtp - 1
         itrans = 1 + 6*(j-1) + num_scalar_rtp + 3*num_vector_rtp
-        do i = 1, num_phys_rj
+        do i = 1, rj_fld1%num_phys
           if ( phys_name_rtp(j0) .eq. rj_fld1%phys_name(i) ) then
             i_field = rj_fld1%istack_component(i-1) + 1
 !$omp parallel

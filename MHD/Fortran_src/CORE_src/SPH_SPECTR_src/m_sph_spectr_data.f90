@@ -8,11 +8,8 @@
 !!
 !!
 !!@verbatim
-!!      subroutine allocate_phys_rj_data
 !!      subroutine allocate_reft_rj_data
 !!
-!!      subroutine deallocate_phys_rtp_data
-!!      subroutine deallocate_phys_rj_data
 !!      subroutine deallocate_reft_rj_data
 !!
 !!      subroutine check_rj_spectr_name
@@ -30,37 +27,6 @@
 !
 !>        Structure for field data
         type(phys_data) :: rj_fld1
-!rj_fld1%iflag_monitor
-!
-!>      Number of fields for spectrum data  @f$ f(r,j) @f$
-      integer (kind=kint) :: num_phys_rj
-!>      Total number of components for spectrum data
-!!      @f$ f(r,j) @f$
-!      integer (kind=kint) :: ntot_phys_rj
-!
-!>      Number of fields for visualization output
-!!       @f$ f(r,\theta,\phi) @f$
-      integer (kind=kint) :: num_phys_rj_vis
-!>      Total number of components  for visualization output
-!!       @f$ f(r,\theta,\phi) @f$
-      integer (kind=kint) :: ntot_comp_rj_vis
-!
-!>      Integer flag for monitoring output
-!!       for spectr data @f$ f(r,j) @f$
-!      integer (kind=kint), allocatable:: iflag_monitor_rj(:)
-!
-!>      Number of components for each field @f$ f(r,j) @f$
-!      integer (kind=kint), allocatable :: num_phys_comp_rj(:)
-!>      End address of d_rj for each field @f$ f(r,j) @f$
-!      integer (kind=kint), allocatable :: istack_phys_comp_rj(:)
-! 
-!>      Field name for @f$ f(r,j) @f$
-!      character (len=kchara), allocatable :: phys_name_rj(:)
-! 
-!>      Field data @f$ f(r,\theta,\phi) @f$
-!      real (kind=kreal), allocatable :: d_rj(:,:)
-!>      Spectr data @f$ f(r,j) @f$
-!      real (kind=kreal), allocatable :: d_rtp(:,:)
 !
 !>      Number of fields of scalar fields @f$ f(r,\theta,\phi) @f$
       integer (kind=kint) :: num_scalar_rtp
@@ -82,16 +48,6 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine allocate_phys_rj_name
-!
-      rj_fld1%num_phys = num_phys_rj
-      call alloc_phys_name_type(rj_fld1)
-!
-      end subroutine allocate_phys_rj_name
-!
-!  --------------------------------------------------------------------
-!  --------------------------------------------------------------------
-!
       subroutine allocate_reft_rj_data
 !
       use m_spheric_parameter
@@ -105,15 +61,6 @@
       end subroutine allocate_reft_rj_data
 !
 !  --------------------------------------------------------------------
-!  --------------------------------------------------------------------
-!
-      subroutine deallocate_phys_rj_data
-!
-      call dealloc_phys_name_type(rj_fld1)
-      call dealloc_phys_data_type(rj_fld1)
-!
-      end subroutine deallocate_phys_rj_data
-!
 !  --------------------------------------------------------------------
 !
       subroutine deallocate_reft_rj_data
@@ -130,9 +77,9 @@
       integer(kind = kint) :: i
 !
 !
-      write(*,'(a,i16)') 'num_phys_rj ', num_phys_rj
+      write(*,'(a,i16)') 'num_phys_rj ', rj_fld1%num_phys
       write(*,'(a)') 'number, component, stack, monitor_flag, name'
-      do i = 1, num_phys_rj
+      do i = 1, rj_fld1%num_phys
         write(*,'(4i6,a2,a)') i, rj_fld1%num_component(i),              &
      &           rj_fld1%istack_component(i), rj_fld1%iflag_monitor(i), &
      &           '  ', trim(rj_fld1%phys_name(i))
@@ -150,10 +97,10 @@
       integer(kind = kint) :: inod
       character(len=kchara) :: fmt_txt
 !
-      write(50+my_rank,*) 'num_phys_rj',  num_phys_rj
+      write(50+my_rank,*) 'num_phys_rj',  rj_fld1%num_phys
       write(50+my_rank,*) 'ntot_phys_rj', rj_fld1%ntot_phys
       write(50+my_rank,*) 'num_phys_comp_rj', rj_fld1%num_component
-      do inod = 1, num_phys_rj
+      do inod = 1, rj_fld1%num_phys
         write(50+my_rank,*) rj_fld1%phys_name(inod)
       end do
       write(fmt_txt,'(a6,i3,a16)')                                      &

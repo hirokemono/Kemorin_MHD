@@ -44,13 +44,13 @@
         ierr = 90
         return
       else
-        num_phys_rj = field_ctl%num
+        rj_fld1%num_phys = field_ctl%num
       end if
 !
 !    set spectr data
 !
-      if ( num_phys_rj .ne. 0 ) then
-        call allocate_phys_rj_name
+      if ( rj_fld1%num_phys .ne. 0 ) then
+        call alloc_phys_name_type(rj_fld1)
         call ordering_sph_field_by_viz
 !
         if (iflag_debug .gt. 0) call check_rj_spectr_name
@@ -67,13 +67,15 @@
       use ordering_field_by_viz
 !
 !
-      call s_ordering_field_by_viz(num_phys_rj, num_phys_rj_vis,        &
+      call s_ordering_field_by_viz                                      &
+     &   (rj_fld1%num_phys, rj_fld1%num_phys_viz,                       &
      &    rj_fld1%num_component, rj_fld1%phys_name,                     &
      &    rj_fld1%iflag_monitor)
 !
-      call set_istack_4_nodal_field(num_phys_rj, num_phys_rj_vis,       &
-     &    rj_fld1%num_component, rj_fld1%ntot_phys, ntot_comp_rj_vis,   &
-     &    rj_fld1%istack_component)
+      call set_istack_4_nodal_field                                     &
+     &   (rj_fld1%num_phys, rj_fld1%num_phys_viz,                       &
+     &    rj_fld1%num_component, rj_fld1%ntot_phys,                     &
+     &    rj_fld1%ntot_phys_viz, rj_fld1%istack_component)
 !
       end subroutine ordering_sph_field_by_viz
 !
@@ -85,13 +87,15 @@
       use ordering_field_by_viz
 !
 !
-      call ordering_field_by_comp_viz(num_phys_rj, num_phys_rj_vis,     &
+      call ordering_field_by_comp_viz                                   &
+     &   (rj_fld1%num_phys, rj_fld1%num_phys_viz,                       &
      &    rj_fld1%num_component, rj_fld1%phys_name,                     &
      &    rj_fld1%iflag_monitor)
 !
-      call set_istack_4_nodal_field(num_phys_rj, num_phys_rj_vis,       &
-     &    rj_fld1%num_component, rj_fld1%ntot_phys, ntot_comp_rj_vis,   &
-     &    rj_fld1%istack_component)
+      call set_istack_4_nodal_field                                     &
+     &   (rj_fld1%num_phys, rj_fld1%num_phys_viz,                       &
+     &    rj_fld1%num_component, rj_fld1%ntot_phys,                     &
+     &    rj_fld1%ntot_phys_viz, rj_fld1%istack_component)
 !
       end subroutine ordering_sph_field_by_viz_comp
 !

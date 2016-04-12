@@ -117,7 +117,7 @@
 !
 !  check dependencies
 !
-      call check_dependencies(num_phys_rj, rj_fld1%phys_name)
+      call check_dependencies(rj_fld1%num_phys, rj_fld1%phys_name)
 !
 !   set_pickup modes
 !

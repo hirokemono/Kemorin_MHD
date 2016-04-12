@@ -70,7 +70,7 @@
 !
 !
       fld_IO%num_field_IO = 0
-       do i_fld = 1, num_phys_rj
+       do i_fld = 1, rj_fld1%num_phys
          if   ( rj_fld1%phys_name(i_fld) .eq. fhd_velo                  &
 !     &     .or. rj_fld1%phys_name(i_fld) .eq. fhd_vort                 &
 !     &     .or. rj_fld1%phys_name(i_fld) .eq. fhd_press                &
@@ -107,7 +107,7 @@
 !
       icou = 0
       fld_IO%istack_comp_IO(0) = 0
-      do i_fld = 1, num_phys_rj
+      do i_fld = 1, rj_fld1%num_phys
         if         (rj_fld1%phys_name(i_fld) .eq. fhd_velo              &
 !     &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_vort             &
      &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_magne             &
@@ -162,7 +162,7 @@
 !
       call copy_time_steps_to_restart
 !
-      do i_fld = 1, num_phys_rj
+      do i_fld = 1, rj_fld1%num_phys
         do j_IO = 1, fld_IO%num_field_IO
           if (rj_fld1%phys_name(i_fld) .eq. fld_IO%fld_name(j_IO)) then
             if     (rj_fld1%phys_name(i_fld) .eq. fhd_velo              &
@@ -217,7 +217,7 @@
 !
       if(dt .le.zero) dt = delta_t_IO
 !
-      do i_fld = 1, num_phys_rj
+      do i_fld = 1, rj_fld1%num_phys
         do j_IO = 1, fld_IO%num_field_IO
           if (rj_fld1%phys_name(i_fld) .eq. fld_IO%fld_name(j_IO)) then
             if     (rj_fld1%phys_name(i_fld) .eq. fhd_velo              &

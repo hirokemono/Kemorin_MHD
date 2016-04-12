@@ -61,12 +61,12 @@
 !
       integer(kind = kint) :: i, i0
 !
-      num_phys_rtp =  num_phys_rj
+      num_phys_rtp =  rj_fld1%num_phys
       call allocate_phys_rtp_name
 !
       i0 = 0
       num_scalar_rtp = 0
-      do i = 1, num_phys_rj
+      do i = 1, rj_fld1%num_phys
         if (rj_fld1%num_component(i) .eq. n_scalar) then
           i0 = i0 + 1
           num_scalar_rtp = num_scalar_rtp + 1
@@ -76,7 +76,7 @@
       istart_scalar_rtp = 1
 !
       num_vector_rtp = 0
-      do i = 1, num_phys_rj
+      do i = 1, rj_fld1%num_phys
         if (rj_fld1%num_component(i) .eq. n_vector) then
           i0 = i0 + 1
           num_vector_rtp = num_vector_rtp + 1
@@ -86,7 +86,7 @@
       istart_vector_rtp = istart_scalar_rtp + num_scalar_rtp
 !
       num_tensor_rtp = 0
-      do i = 1, num_phys_rj
+      do i = 1, rj_fld1%num_phys
         if (rj_fld1%num_component(i) .eq. n_sym_tensor) then
           i0 = i0 + 1
           num_tensor_rtp = num_tensor_rtp + 1
@@ -96,9 +96,9 @@
       istart_tensor_rtp = istart_vector_rtp + num_vector_rtp
 !
       if (iflag_debug .gt. 0) then
-!        write(*,*) 'num_phys_rj', num_phys_rj
+!        write(*,*) 'num_phys_rj', rj_fld1%num_phys
 !        write(*,*) 'id, components, stack, phys_name_rj'
-!        do i = 1, num_phys_rj
+!        do i = 1, rj_fld1%num_phys
 !          write(*,*) i, rj_fld1%num_component(i),                      &
 !     &        rj_fld1%istack_component(i), trim(rj_fld1%phys_name(i))
 !        end do

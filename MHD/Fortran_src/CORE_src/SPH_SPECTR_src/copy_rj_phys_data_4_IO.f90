@@ -49,7 +49,7 @@
       type(field_IO), intent(inout) :: fld_IO
 !
 !
-      call copy_rj_phys_name_to_IO(num_phys_rj, fld_IO)
+      call copy_rj_phys_name_to_IO(rj_fld1%num_phys, fld_IO)
 !
       end subroutine copy_rj_all_phys_name_to_IO
 !
@@ -60,7 +60,7 @@
       type(field_IO), intent(inout) :: fld_IO
 !
 !
-      call copy_rj_phys_name_to_IO(num_phys_rj_vis, fld_IO)
+      call copy_rj_phys_name_to_IO(rj_fld1%num_phys_viz, fld_IO)
 !
       end subroutine copy_rj_viz_phys_name_to_IO
 !
@@ -72,7 +72,7 @@
       type(field_IO), intent(inout) :: fld_IO
 !
 !
-      call copy_rj_phys_data_to_IO(num_phys_rj, fld_IO)
+      call copy_rj_phys_data_to_IO(rj_fld1%num_phys, fld_IO)
 !
       end subroutine copy_rj_all_phys_data_to_IO
 !
@@ -83,7 +83,7 @@
       type(field_IO), intent(inout) :: fld_IO
 !
 !
-      call copy_rj_phys_data_to_IO(num_phys_rj_vis, fld_IO)
+      call copy_rj_phys_data_to_IO(rj_fld1%num_phys_viz, fld_IO)
 !
       end subroutine copy_rj_viz_phys_data_to_IO
 !
@@ -139,28 +139,29 @@
       integer(kind = kint) :: i_fld
 !
 !
-      num_phys_rj =  fld_IO%num_field_IO
-      call allocate_phys_rj_name
+      rj_fld1%num_phys =  fld_IO%num_field_IO
+      call alloc_phys_name_type(rj_fld1)
 !
-      rj_fld1%phys_name(1:num_phys_rj) = fld_IO%fld_name(1:num_phys_rj)
-      rj_fld1%num_component(1:num_phys_rj)                              &
-     &      = fld_IO%num_comp_IO(1:num_phys_rj)
-      rj_fld1%iflag_monitor(1:num_phys_rj) = 1
+      rj_fld1%phys_name(1:rj_fld1%num_phys)                             &
+     &      = fld_IO%fld_name(1:rj_fld1%num_phys)
+      rj_fld1%num_component(1:rj_fld1%num_phys)                         &
+     &      = fld_IO%num_comp_IO(1:rj_fld1%num_phys)
+      rj_fld1%iflag_monitor(1:rj_fld1%num_phys) = 1
 !
-      do i_fld = 1, num_phys_rj
+      do i_fld = 1, rj_fld1%num_phys
         if(rj_fld1%num_component(i_fld) .eq. 2) then
           rj_fld1%num_component(i_fld) = 3
         end if
       end do
 !
       rj_fld1%istack_component(0)  = 0
-      do i_fld = 1, num_phys_rj
+      do i_fld = 1, rj_fld1%num_phys
         rj_fld1%istack_component(i_fld)                                 &
      &         = rj_fld1%istack_component(i_fld-1)                      &
      &          + rj_fld1%num_component(i_fld)
       end do
 !
-      rj_fld1%ntot_phys = rj_fld1%istack_component(num_phys_rj)
+      rj_fld1%ntot_phys = rj_fld1%istack_component(rj_fld1%num_phys)
       call alloc_phys_data_type(nnod_rj, rj_fld1)
 !
       end subroutine copy_rj_phys_name_from_IO
@@ -173,7 +174,7 @@
       integer(kind = kint) :: i_fld
 !
 !
-      do i_fld = 1, num_phys_rj
+      do i_fld = 1, rj_fld1%num_phys
         if (rj_fld1%num_component(i_fld) .eq. 3) then
           call copy_each_sph_vector_from_IO(i_fld, i_fld, fld_IO)
         else
@@ -190,7 +191,7 @@
       type(field_IO), intent(in) :: fld_IO
       integer(kind = kint) :: i_fld, j_IO
 !
-      do i_fld = 1, num_phys_rj
+      do i_fld = 1, rj_fld1%num_phys
         do j_IO = 1, fld_IO%num_field_IO
           if (rj_fld1%phys_name(i_fld) .eq. fld_IO%fld_name(j_IO)) then
             if (fld_IO%num_comp_IO(j_IO) .eq. 3) then

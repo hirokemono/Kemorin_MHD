@@ -71,7 +71,7 @@
         end if
 !
 !        call set_rj_phys_for_pol_kene                                  &
-!     &     (num_phys_rj, rj_fld1%ntot_phys, rj_fld1%phys_name, &
+!     &     (rj_fld1%num_phys, rj_fld1%ntot_phys, rj_fld1%phys_name,    &
 !     &      rj_fld1%istack_component, rj_fld1%d_fld)
 !
         call set_rj_phys_for_convective_kene
@@ -169,7 +169,7 @@
       integer(kind = kint) :: ist_fld, i
 !
 !
-      do i = 1, num_phys_rj
+      do i = 1, rj_fld1%num_phys
         if     (rj_fld1%phys_name(i) .eq. fhd_velo) then
           ist_fld = rj_fld1%istack_component(i-1)+1
           call delete_zonal_mean_rj_field(n_vector, ist_fld)
@@ -198,7 +198,7 @@
       real(kind = kreal) :: ave_ratio
 !
 !
-      do i = 1, num_phys_rj
+      do i = 1, rj_fld1%num_phys
         if     (rj_fld1%phys_name(i) .eq. fhd_velo) then
           i_velo =  istack_comp(i- 1) + 1
         else if(rj_fld1%phys_name(i) .eq. fhd_press) then
