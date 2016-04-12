@@ -43,7 +43,7 @@
       if(my_rank .eq. 0) call copy_energy_4_dynamobench
 !
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
-        call pick_inner_core_rotation(ntot_phys_rj, rj_fld1%d_fld)
+        call pick_inner_core_rotation(rj_fld1%ntot_phys, rj_fld1%d_fld)
       end if
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
@@ -53,7 +53,8 @@
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center                  &
      &   .and. sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
-        call pick_mag_torque_inner_core(ntot_phys_rj, rj_fld1%d_fld)
+        call pick_mag_torque_inner_core                                 &
+     &     (rj_fld1%ntot_phys, rj_fld1%d_fld)
       end if
 !
       end subroutine s_const_data_4_dynamobench

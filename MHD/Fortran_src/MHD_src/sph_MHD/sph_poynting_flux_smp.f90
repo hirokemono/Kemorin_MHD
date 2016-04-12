@@ -64,7 +64,8 @@
 !
       if(ipol%i_mag_stretch .eq. 0) return
 !
-      call copy_grad_vect_to_m_stretch(ntot_phys_rj, rj_fld1%d_fld)
+      call copy_grad_vect_to_m_stretch                                  &
+     &   (rj_fld1%ntot_phys, rj_fld1%d_fld)
 !
       call const_sph_gradient_no_bc                                     &
      &     (sph_bc_U, (ipol%i_mag_stretch  ), ipol%i_grad_vx)

@@ -70,7 +70,7 @@
           call r_interpolate_sph_fld_from_IO(fld_IO)
         end if
 !
-!        call set_rj_phys_for_pol_kene(num_phys_rj, ntot_phys_rj,       &
+!        call set_rj_phys_for_pol_kene(num_phys_rj, rj_fld1%ntot_phys,  &
 !     &      phys_name_rj, istack_phys_comp_rj, rj_fld1%d_fld)
 !
         call set_rj_phys_for_convective_kene

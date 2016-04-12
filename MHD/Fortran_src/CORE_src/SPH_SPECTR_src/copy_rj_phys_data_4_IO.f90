@@ -98,7 +98,7 @@
 !
       fld_IO%nnod_IO =   nnod_rj
       fld_IO%num_field_IO =  num_fld
-      fld_IO%ntot_comp_IO = ntot_phys_rj
+      fld_IO%ntot_comp_IO = rj_fld1%ntot_phys
 !
       call alloc_phys_name_IO(fld_IO)
 !
@@ -156,8 +156,8 @@
      &                              + num_phys_comp_rj(i_fld)
       end do
 !
-      ntot_phys_rj = istack_phys_comp_rj(num_phys_rj)
-      call allocate_phys_rj_data
+      rj_fld1%ntot_phys = istack_phys_comp_rj(num_phys_rj)
+      call alloc_phys_data_type(nnod_rj, rj_fld1)
 !
       end subroutine copy_rj_phys_name_from_IO
 !

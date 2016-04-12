@@ -66,7 +66,7 @@
 !
 !  -------------------------------
 !
-      call allocate_phys_rj_data
+      call alloc_phys_data_type(nnod_rj, rj_fld1)
 !
       call init_rms_4_sph_spectr
 !
@@ -115,7 +115,7 @@
 !  pickup components
 !
         call pickup_sph_spec_4_monitor                                  &
-     &     (num_phys_rj, ntot_phys_rj,                                  &
+     &     (num_phys_rj, rj_fld1%ntot_phys,                             &
      &      istack_phys_comp_rj, rj_fld1%d_fld)
         call write_sph_spec_4_monitor(my_rank, i_step, time)
       end do

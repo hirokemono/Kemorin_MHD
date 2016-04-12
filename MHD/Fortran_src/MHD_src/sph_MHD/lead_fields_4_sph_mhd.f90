@@ -84,7 +84,7 @@
       call sum_div_of_forces
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_pressure_by_div_v'
-      call cal_sol_pressure_by_div_v(ntot_phys_rj, rj_fld1%d_fld)
+      call cal_sol_pressure_by_div_v(rj_fld1%ntot_phys, rj_fld1%d_fld)
 !
       if(ipol%i_press_grad .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'const_pressure_gradient'

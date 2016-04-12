@@ -72,14 +72,14 @@
       if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
       call cal_rms_sph_outer_core
       if(iflag_debug.gt.0)  write(*,*) 'cal_gauss_coefficients'
-      call cal_gauss_coefficients(ntot_phys_rj, rj_fld1%d_fld)
+      call cal_gauss_coefficients(rj_fld1%ntot_phys, rj_fld1%d_fld)
       if(iflag_debug.gt.0)  write(*,*) 'pickup_sph_spec_4_monitor'
-      call pickup_sph_spec_4_monitor(num_phys_rj, ntot_phys_rj,         &
+      call pickup_sph_spec_4_monitor(num_phys_rj, rj_fld1%ntot_phys,    &
      &   istack_phys_comp_rj, rj_fld1%d_fld)
       if(iflag_debug.gt.0)  write(*,*) 'cal_no_heat_source_Nu'
       call cal_no_heat_source_Nu(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
      &    sph_bc_U%r_ICB(0), sph_bc_U%r_CMB(0),                         &
-     &    ntot_phys_rj, rj_fld1%d_fld)
+     &    rj_fld1%ntot_phys, rj_fld1%d_fld)
 !
       if(iflag_debug.gt.0)  write(*,*) 'write_total_energy_to_screen'
       call write_total_energy_to_screen(my_rank, i_step_MHD, time)

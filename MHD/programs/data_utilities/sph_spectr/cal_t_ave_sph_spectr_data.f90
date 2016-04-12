@@ -5,9 +5,9 @@
 !
 !      Written by H. Matsui on Dec., 2008
 !
-!      subroutine allocate_d_rj_tmp
-!      subroutine deallocate_d_rj_tmp
-!
+!!      subroutine allocate_d_rj_tmp(ntot_phys_rj)
+!!      subroutine deallocate_d_rj_tmp
+!!
 !!      subroutine sum_sph_spectr_data(ntot_phys_rj, d_rj)
 !!      subroutine sum_deviation_sph_spectr(ntot_phys_rj, d_rj)
 !!
@@ -32,10 +32,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_d_rj_tmp
+      subroutine allocate_d_rj_tmp(ntot_phys_rj)
 !
-      use m_sph_spectr_data
       use m_spheric_parameter
+!
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+!
 !
       allocate( d_rj_dev(nnod_rj,ntot_phys_rj) )
       allocate( d_rj_ave(nnod_rj,ntot_phys_rj) )

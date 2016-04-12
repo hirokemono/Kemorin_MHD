@@ -64,7 +64,7 @@
 !
 !  -------------------------------
 !
-      call allocate_phys_rj_data
+      call alloc_phys_data_type(nnod_rj, rj_fld1)
       call set_sph_sprctr_data_address
 !
       call calypso_MPI_barrier

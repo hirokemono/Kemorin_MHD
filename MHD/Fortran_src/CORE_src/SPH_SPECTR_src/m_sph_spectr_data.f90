@@ -30,13 +30,13 @@
 !
 !>        Structure for field data
         type(phys_data) :: rj_fld1
-!rj_fld1%d_fld
+!rj_fld1%ntot_phys
 !
 !>      Number of fields for spectrum data  @f$ f(r,j) @f$
       integer (kind=kint) :: num_phys_rj
 !>      Total number of components for spectrum data
 !!      @f$ f(r,j) @f$
-      integer (kind=kint) :: ntot_phys_rj
+!      integer (kind=kint) :: ntot_phys_rj
 !
 !>      Number of fields for visualization output
 !!       @f$ f(r,\theta,\phi) @f$
@@ -84,6 +84,8 @@
 !
       subroutine allocate_phys_rj_name
 !
+      rj_fld1%num_phys = num_phys_rj
+!
       allocate( phys_name_rj(num_phys_rj) )
       allocate( iflag_monitor_rj(num_phys_rj) )
       allocate( num_phys_comp_rj(num_phys_rj) )
@@ -99,17 +101,6 @@
       end subroutine allocate_phys_rj_name
 !
 !  --------------------------------------------------------------------
-!  --------------------------------------------------------------------
-!
-      subroutine allocate_phys_rj_data
-!
-      use m_spheric_parameter
-!
-      rj_fld1%ntot_phys = ntot_phys_rj
-      call alloc_phys_data_type(nnod_rj, rj_fld1)
-!
-      end subroutine allocate_phys_rj_data
-!
 !  --------------------------------------------------------------------
 !
       subroutine allocate_reft_rj_data
@@ -174,16 +165,16 @@
       character(len=kchara) :: fmt_txt
 !
       write(50+my_rank,*) 'num_phys_rj',  num_phys_rj
-      write(50+my_rank,*) 'ntot_phys_rj', ntot_phys_rj
+      write(50+my_rank,*) 'ntot_phys_rj', rj_fld1%ntot_phys
       write(50+my_rank,*) 'num_phys_comp_rj', num_phys_comp_rj
       do inod = 1, num_phys_rj
         write(50+my_rank,*) phys_name_rj(inod)
       end do
       write(fmt_txt,'(a6,i3,a16)')                                      &
-     &           '(3i16,', ntot_phys_rj, '(1pE25.15e3),a1)'
+     &           '(3i16,', rj_fld1%ntot_phys, '(1pE25.15e3),a1)'
       do inod = 1, nnod_rj
-        write(50+my_rank,fmt_txt) inod,                                 &
-     &    idx_global_rj(inod,1:2), rj_fld1%d_fld(inod,1:ntot_phys_rj)
+        write(50+my_rank,fmt_txt) inod, idx_global_rj(inod,1:2),        &
+     &    rj_fld1%d_fld(inod,1:rj_fld1%ntot_phys)
       end do
 !
 !

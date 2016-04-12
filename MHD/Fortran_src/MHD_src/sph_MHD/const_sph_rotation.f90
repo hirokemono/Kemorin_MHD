@@ -99,10 +99,10 @@
 !
 !
       call sel_bc_sph_vorticity(sph_bc_U, is_velo, is_vort,             &
-     &    ntot_phys_rj, rj_fld1%d_fld)
+     &    rj_fld1%ntot_phys, rj_fld1%d_fld)
 !
       call cal_sph_nod_vect_rot2(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
-     &    is_velo, is_vort, ntot_phys_rj, rj_fld1%d_fld)
+     &    is_velo, is_vort, rj_fld1%ntot_phys, rj_fld1%d_fld)
 !
       end subroutine const_sph_vorticity
 !
@@ -118,10 +118,10 @@
 !
 !
       call sel_bc_sph_current(sph_bc_B, is_magne, is_current,           &
-     &    ntot_phys_rj, rj_fld1%d_fld)
+     &    rj_fld1%ntot_phys, rj_fld1%d_fld)
 !
       call cal_sph_nod_vect_rot2(sph_bc_B%kr_in, sph_bc_B%kr_out,       &
-     &    is_magne, is_current, ntot_phys_rj, rj_fld1%d_fld)
+     &    is_magne, is_current, rj_fld1%ntot_phys, rj_fld1%d_fld)
 !
       end subroutine const_sph_current
 !
@@ -137,10 +137,10 @@
 !
 !
       call sel_bc_sph_rotation_uxb(sph_bc_B, is_fld, is_rot,            &
-     &    ntot_phys_rj, rj_fld1%d_fld)
+     &    rj_fld1%ntot_phys, rj_fld1%d_fld)
 !
       call cal_sph_nod_vect_w_div_rot2(sph_bc_B%kr_in, sph_bc_B%kr_out, &
-     &    is_fld, is_rot, ntot_phys_rj, rj_fld1%d_fld)
+     &    is_fld, is_rot, rj_fld1%ntot_phys, rj_fld1%d_fld)
 !
       end subroutine const_sph_rotation_uxb
 !
@@ -158,13 +158,13 @@
 !
       call cal_sph_nod_nobc_in_rot2(nnod_rj, nidx_rj(2),                &
      &    sph_bc%kr_in, sph_bc%r_ICB, sph_bc%fdm2_fix_fld_ICB,          &
-     &    is_fld, is_rot, ntot_phys_rj, rj_fld1%d_fld)
+     &    is_fld, is_rot, rj_fld1%ntot_phys, rj_fld1%d_fld)
       call cal_sph_nod_nobc_out_rot2(nnod_rj, nidx_rj(2),               &
      &    sph_bc%kr_out, sph_bc%r_CMB, sph_bc%fdm2_fix_fld_CMB,         &
-     &    is_fld, is_rot, ntot_phys_rj, rj_fld1%d_fld)
+     &    is_fld, is_rot, rj_fld1%ntot_phys, rj_fld1%d_fld)
 !
       call cal_sph_nod_vect_rot2(sph_bc%kr_in, sph_bc%kr_out,           &
-     &     is_fld, is_rot, ntot_phys_rj, rj_fld1%d_fld)
+     &     is_fld, is_rot, rj_fld1%ntot_phys, rj_fld1%d_fld)
 !
       end subroutine const_sph_rotation_no_bc
 !
@@ -180,10 +180,10 @@
 !
 !
       call sel_bc_sph_vorticity(sph_bc_U, is_fld, is_rot,               &
-     &    ntot_phys_rj, rj_fld1%d_fld)
+     &    rj_fld1%ntot_phys, rj_fld1%d_fld)
 !
       call cal_sph_nod_vect_w_div_rot2(sph_bc_U%kr_in, sph_bc_U%kr_out, &
-     &    is_fld, is_rot, ntot_phys_rj, rj_fld1%d_fld)
+     &    is_fld, is_rot, rj_fld1%ntot_phys, rj_fld1%d_fld)
 !
       end subroutine const_sph_force_rot2
 !
@@ -208,11 +208,11 @@
 !
       call cal_sph_nod_diffuse_by_rot2(sph_bc_U%kr_in, sph_bc_U%kr_out, &
      &    coef_diffuse, is_vort, is_viscous,                            &
-     &    ntot_phys_rj, rj_fld1%d_fld)
+     &    rj_fld1%ntot_phys, rj_fld1%d_fld)
 !
       call sel_bc_sph_viscous_diffusion(sph_bc_U, coef_diffuse,         &
      &    is_velo, is_vort, is_viscous, idp_diffuse,                    &
-     &    ntot_phys_rj, rj_fld1%d_fld)
+     &    rj_fld1%ntot_phys, rj_fld1%d_fld)
 !
       end subroutine const_sph_viscous_by_vort2
 !
@@ -237,11 +237,11 @@
 !
       call cal_sph_nod_diffuse_by_rot2(sph_bc_B%kr_in, sph_bc_B%kr_out, &
      &    coef_diffuse, is_current, is_ohmic,                           &
-     &    ntot_phys_rj, rj_fld1%d_fld)
+     &    rj_fld1%ntot_phys, rj_fld1%d_fld)
 !
       call sel_bc_sph_magnetic_diffusion(sph_bc_B, coef_diffuse,        &
      &    is_magne, is_ohmic, idp_diffuse,                              &
-     &    ntot_phys_rj, rj_fld1%d_fld)
+     &    rj_fld1%ntot_phys, rj_fld1%d_fld)
 !
       end subroutine const_sph_mag_diffuse_by_j
 !

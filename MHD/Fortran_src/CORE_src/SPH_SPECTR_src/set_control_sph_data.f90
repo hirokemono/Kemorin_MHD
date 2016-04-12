@@ -71,7 +71,7 @@
      &    num_phys_comp_rj, phys_name_rj, iflag_monitor_rj)
 !
       call set_istack_4_nodal_field(num_phys_rj, num_phys_rj_vis,       &
-     &    num_phys_comp_rj, ntot_phys_rj, ntot_comp_rj_vis,             &
+     &    num_phys_comp_rj, rj_fld1%ntot_phys, ntot_comp_rj_vis,        &
      &    istack_phys_comp_rj)
 !
       end subroutine ordering_sph_field_by_viz
@@ -88,7 +88,7 @@
      &    num_phys_comp_rj, phys_name_rj, iflag_monitor_rj)
 !
       call set_istack_4_nodal_field(num_phys_rj, num_phys_rj_vis,       &
-     &    num_phys_comp_rj, ntot_phys_rj, ntot_comp_rj_vis,             &
+     &    num_phys_comp_rj, rj_fld1%ntot_phys, ntot_comp_rj_vis,        &
      &    istack_phys_comp_rj)
 !
       end subroutine ordering_sph_field_by_viz_comp

@@ -73,7 +73,7 @@
         if (iflag_debug .ge. iflag_routine_msg)                         &
      &               write(*,*) 'set_reftemp_4_sph'
         call set_reftemp_4_sph(r_hot, r_cold, temp_hot, temp_cold,      &
-     &      ntot_phys_rj, rj_fld1%d_fld)
+     &      rj_fld1%ntot_phys, rj_fld1%d_fld)
       end if
 !*
 !*  ----------  rotation of earth  ---------------

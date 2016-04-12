@@ -80,31 +80,33 @@
 !
 !  Set initial velocity if velocity is exist
       if(ipol%i_velo .gt. izero) then
-        call  set_initial_velocity(ntot_phys_rj, rj_fld1%d_fld)
+        call  set_initial_velocity(rj_fld1%ntot_phys, rj_fld1%d_fld)
       end if
 !
 !  Set initial temperature if temperature is exist
       if(ipol%i_temp .gt. izero) then
-        call  set_initial_temperature(ntot_phys_rj, rj_fld1%d_fld)
+        call  set_initial_temperature(rj_fld1%ntot_phys, rj_fld1%d_fld)
       end if
 !
 !  Set initial composition if composition is exist
       if(ipol%i_light .gt. izero) then
-        call set_initial_composition(ntot_phys_rj, rj_fld1%d_fld)
+        call set_initial_composition(rj_fld1%ntot_phys, rj_fld1%d_fld)
       end if
 !
 !  Set initial magnetic field if magnetic field is exist
       if(ipol%i_magne .gt. izero) then
-        call set_initial_magne_sph(ntot_phys_rj, rj_fld1%d_fld)
+        call set_initial_magne_sph(rj_fld1%ntot_phys, rj_fld1%d_fld)
       end if
 !
 !  Set heat source if  heat source is exist
       if(ipol%i_heat_source .gt. izero) then
-        call set_initial_heat_source_sph(ntot_phys_rj, rj_fld1%d_fld)
+        call set_initial_heat_source_sph                                &
+     &     (rj_fld1%ntot_phys, rj_fld1%d_fld)
       end if
 !  Set light element source if light element is exist
       if(ipol%i_light_source .gt. izero) then
-        call set_initial_light_source_sph(ntot_phys_rj, rj_fld1%d_fld)
+        call set_initial_light_source_sph                               &
+     &     (rj_fld1%ntot_phys, rj_fld1%d_fld)
       end if
 !
 !  Copy initial field to restart IO data

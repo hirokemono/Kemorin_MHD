@@ -31,7 +31,7 @@
 !
 !
       nod_fld%num_phys =  num_phys_rj
-      nod_fld%ntot_phys = ntot_phys_rj
+      nod_fld%ntot_phys = rj_fld1%ntot_phys
 !
       nod_fld%num_phys_viz =  num_phys_rj_vis
       nod_fld%ntot_phys_viz = ntot_comp_rj_vis

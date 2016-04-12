@@ -66,7 +66,7 @@
 !
 !  -------------------------------
 !
-      call allocate_phys_rj_data
+      call alloc_phys_data_type(nnod_rj, rj_fld1)
 !
       call init_rms_4_sph_spectr
 !
@@ -114,7 +114,7 @@
 !
 !  pickup components
 !
-        call cal_gauss_coefficients(ntot_phys_rj, rj_fld1%d_fld)
+        call cal_gauss_coefficients(rj_fld1%ntot_phys, rj_fld1%d_fld)
         call write_gauss_coefs_4_monitor(my_rank, i_step, time)
       end do
 !
