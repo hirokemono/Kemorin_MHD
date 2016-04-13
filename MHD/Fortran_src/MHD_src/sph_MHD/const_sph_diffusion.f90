@@ -8,21 +8,22 @@
 !!
 !!@verbatim
 !!      subroutine const_sph_viscous_diffusion(sph_bc_U, coef_diffuse,  &
-!!     &          is_velo, is_viscous)
+!!     &          is_velo, is_viscous, rj_fld)
 !!        Input:    ipol%i_velo, itor%i_velo
 !!        Solution: ipol%i_v_diffuse, itor%i_v_diffuse, idpdr%i_v_diffuse
 !!      subroutine const_sph_vorticirty_diffusion(sph_bc_U,             &
-!!     &          coef_diffuse, is_vort, is_w_diffuse)
+!!     &          coef_diffuse, is_vort, is_w_diffuse, rj_fld)
 !!        Input:    ipol%i_vort, itor%i_vort
 !!        Solution: ipol%i_w_diffuse, itor%i_w_diffuse, idpdr%i_w_diffuse
 !!
 !!      subroutine const_sph_magnetic_diffusion(sph_bc_B, coef_diffuse, &
-!!     &          is_magne, is_ohmic)
+!!     &          is_magne, is_ohmic, rj_fld)
 !!        Input:    ipol%i_magne, itor%i_magne
 !!        Solution: ipol%i_b_diffuse, itor%i_b_diffuse, idpdr%i_b_diffuse
 !!
 !!      subroutine const_sph_scalar_diffusion(sph_bc, coef_diffuse,     &
-!!     &          is_fld, is_diffuse)
+!!     &          is_fld, is_diffuse, rj_fld)
+!!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !!
 !!@param sph_bc  Structure for basic boundary condition parameters
@@ -48,6 +49,8 @@
 !!
 !!@param is_fld       Input spectr field address
 !!@param is_diffuse   Input spectr diffusiton term address
+!!
+!!@param rj_fld     Structure of spectr data
 !
       module const_sph_diffusion
 !
@@ -55,8 +58,10 @@
 !
       use m_constants
       use m_spheric_parameter
-      use m_sph_spectr_data
       use cal_sph_exp_diffusion
+!
+      use t_phys_data
+      use t_boundary_params_sph_MHD
 !
       implicit none
 !
@@ -67,9 +72,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_sph_viscous_diffusion(sph_bc_U, coef_diffuse,    &
-     &          is_velo, it_velo, is_viscous)
+     &          is_velo, it_velo, is_viscous, rj_fld)
 !
-      use t_boundary_params_sph_MHD
       use cal_sph_exp_1st_diff
       use cal_sph_exp_fixed_scalar
       use select_exp_velocity_bc
@@ -78,6 +82,8 @@
       integer(kind = kint), intent(in) :: is_velo, it_velo, is_viscous
       real(kind = kreal), intent(in) :: coef_diffuse
 !
+      type(phys_data), intent(inout) :: rj_fld
+!
       integer(kind = kint) :: idp_diffuse
 !
 !
@@ -85,28 +91,29 @@
 !
       call cal_sph_nod_vect_diffuse2(sph_bc_U%kr_in, sph_bc_U%kr_out,   &
      &    coef_diffuse, is_velo, is_viscous, nnod_rj, nidx_rj,          &
-     &    ar_1d_rj, rj_fld1%ntot_phys, rj_fld1%d_fld)
+     &    ar_1d_rj, rj_fld%ntot_phys, rj_fld%d_fld)
       call cal_sph_nod_vect_dr_2(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
-     &    is_viscous, idp_diffuse, rj_fld1%ntot_phys, rj_fld1%d_fld)
+     &    is_viscous, idp_diffuse, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call sel_bc_sph_viscous_diffusion(sph_bc_U, coef_diffuse,         &
      &    is_velo, it_velo, is_viscous, idp_diffuse,                    &
-     &    rj_fld1%ntot_phys, rj_fld1%d_fld)
+     &    rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine const_sph_viscous_diffusion
 !
 ! -----------------------------------------------------------------------
 !
       subroutine const_sph_vorticirty_diffusion(sph_bc_U,               &
-     &          coef_diffuse, is_vort, is_w_diffuse)
+     &          coef_diffuse, is_vort, is_w_diffuse, rj_fld)
 !
-      use t_boundary_params_sph_MHD
       use cal_sph_exp_1st_diff
       use select_exp_velocity_bc
 !
       type(sph_boundary_type), intent(in) :: sph_bc_U
       integer(kind = kint), intent(in) :: is_vort, is_w_diffuse
       real(kind = kreal), intent(in) :: coef_diffuse
+!
+      type(phys_data), intent(inout) :: rj_fld
 !
       integer(kind = kint) :: idp_diffuse
 !
@@ -115,13 +122,13 @@
 !
       call cal_sph_nod_vect_diffuse2(sph_bc_U%kr_in, sph_bc_U%kr_out,   &
      &    coef_diffuse, is_vort, is_w_diffuse, nnod_rj, nidx_rj,        &
-     &    ar_1d_rj, rj_fld1%ntot_phys, rj_fld1%d_fld)
+     &    ar_1d_rj, rj_fld%ntot_phys, rj_fld%d_fld)
       call cal_sph_nod_vect_dr_2(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
-     &    is_w_diffuse, idp_diffuse, rj_fld1%ntot_phys, rj_fld1%d_fld)
+     &    is_w_diffuse, idp_diffuse, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call sel_bc_sph_vort_diffusion(sph_bc_U, coef_diffuse,            &
      &    is_vort, is_w_diffuse, idp_diffuse,                           &
-     &    rj_fld1%ntot_phys, rj_fld1%d_fld)
+     &    rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine const_sph_vorticirty_diffusion
 !
@@ -129,15 +136,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_sph_magnetic_diffusion(sph_bc_B, coef_diffuse,   &
-     &          is_magne, is_ohmic)
+     &          is_magne, is_ohmic, rj_fld)
 !
-      use t_boundary_params_sph_MHD
       use cal_sph_exp_1st_diff
       use select_exp_magne_bc
 !
       type(sph_boundary_type), intent(in) :: sph_bc_B
       integer(kind = kint), intent(in) :: is_magne, is_ohmic
       real(kind = kreal), intent(in) :: coef_diffuse
+!
+      type(phys_data), intent(inout) :: rj_fld
 !
       integer(kind = kint) :: idp_diffuse
 !
@@ -146,35 +154,36 @@
 !
       call cal_sph_nod_vect_diffuse2(sph_bc_B%kr_in, sph_bc_B%kr_out,   &
      &     coef_diffuse, is_magne, is_ohmic, nnod_rj, nidx_rj,          &
-     &     ar_1d_rj, rj_fld1%ntot_phys, rj_fld1%d_fld)
+     &     ar_1d_rj, rj_fld%ntot_phys, rj_fld%d_fld)
       call cal_sph_nod_vect_dr_2(sph_bc_B%kr_in, sph_bc_B%kr_out,       &
-     &    is_ohmic, idp_diffuse, rj_fld1%ntot_phys, rj_fld1%d_fld)
+     &    is_ohmic, idp_diffuse, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call sel_bc_sph_magnetic_diffusion(sph_bc_B, coef_diffuse,        &
      &    is_magne, is_ohmic, idp_diffuse,                              &
-     &    rj_fld1%ntot_phys, rj_fld1%d_fld)
+     &    rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine const_sph_magnetic_diffusion
 !
 ! -----------------------------------------------------------------------
 !
       subroutine const_sph_scalar_diffusion(sph_bc, coef_diffuse,       &
-     &          is_fld, is_diffuse)
+     &          is_fld, is_diffuse, rj_fld)
 !
-      use t_boundary_params_sph_MHD
       use select_exp_scalar_bc
 !
       type(sph_boundary_type), intent(in) :: sph_bc
       integer(kind = kint), intent(in) :: is_fld, is_diffuse
       real(kind = kreal), intent(in) :: coef_diffuse
 !
+      type(phys_data), intent(inout) :: rj_fld
+!
 !
       call cal_sph_nod_scalar_diffuse2(sph_bc%kr_in, sph_bc%kr_out,     &
      &    coef_diffuse, is_fld, is_diffuse, nnod_rj, nidx_rj,           &
-     &    ar_1d_rj, rj_fld1%ntot_phys, rj_fld1%d_fld)
+     &    ar_1d_rj, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call sel_bc_sph_scalar_diffusion(sph_bc, coef_diffuse,            &
-     &    is_fld, is_diffuse, rj_fld1%ntot_phys, rj_fld1%d_fld)
+     &    is_fld, is_diffuse, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine const_sph_scalar_diffusion
 !

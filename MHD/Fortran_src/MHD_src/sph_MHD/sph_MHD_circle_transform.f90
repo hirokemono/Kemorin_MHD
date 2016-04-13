@@ -7,7 +7,8 @@
 !>@brief  field data on specific circle at (s,z)
 !!
 !!@verbatim
-!!      subroutine sph_transfer_on_circle
+!!      subroutine sph_transfer_on_circle(rj_fld)
+!!        type(phys_data), intent(in) :: rj_fld
 !!      subroutine set_circle_point_global
 !!@endverbatim
 !
@@ -30,22 +31,25 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sph_transfer_on_circle
+      subroutine sph_transfer_on_circle(rj_fld)
 !
       use m_phys_constants
       use calypso_mpi
       use m_sph_phys_address
-      use m_sph_spectr_data
       use m_circle_transform
 !
+      use t_phys_data
+!
       use circle_transform_single
+!
+      type(phys_data), intent(in) :: rj_fld
 !
       integer(kind = kint) :: ifld, icomp, m, nd
 !
 !
       call collect_spectr_for_circle                                    &
-     &   (rj_fld1%num_phys, rj_fld1%ntot_phys,                          &
-     &    rj_fld1%istack_component, rj_fld1%phys_name, rj_fld1%d_fld)
+     &   (rj_fld%num_phys, rj_fld%ntot_phys, rj_fld%istack_component,   &
+     &    rj_fld%phys_name, rj_fld%d_fld)
 !
 !    spherical transfer
 !

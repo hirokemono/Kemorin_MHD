@@ -7,7 +7,8 @@
 !>@brief Set control data for spherical transform MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine set_control_4_SPH_MHD
+!!      subroutine set_control_4_SPH_MHD(rj_fld)
+!!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
       module set_control_sph_mhd
@@ -25,11 +26,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_4_SPH_MHD
+      subroutine set_control_4_SPH_MHD(rj_fld)
 !
       use m_control_params_2nd_files
-      use m_sph_spectr_data
       use m_ucd_data
+!
+      use t_phys_data
 !
       use set_control_platform_data
       use set_ctl_parallel_platform
@@ -49,6 +51,9 @@
       use check_read_bc_file
 !
       use check_dependency_for_MHD
+!
+      type(phys_data), intent(inout) :: rj_fld
+!
 !
 !   set parameters for data files
 !
@@ -72,7 +77,7 @@
 !   set parameters for general information
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_sph_data_MHD'
-      call s_set_control_sph_data_MHD
+      call s_set_control_sph_data_MHD(rj_fld)
 !
 !   set control parameters
 !
@@ -117,13 +122,13 @@
 !
 !  check dependencies
 !
-      call check_dependencies(rj_fld1%num_phys, rj_fld1%phys_name)
+      call check_dependencies(rj_fld%num_phys, rj_fld%phys_name)
 !
 !   set_pickup modes
 !
       call set_ctl_params_pick_sph
       call set_ctl_params_pick_gauss
-      call set_ctl_params_no_heat_Nu(rj_fld1)
+      call set_ctl_params_no_heat_Nu(rj_fld)
 !
       end subroutine set_control_4_SPH_MHD
 !

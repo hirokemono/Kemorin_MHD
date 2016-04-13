@@ -68,9 +68,8 @@
 !
       call copy_time_from_restart
       call copy_rj_phys_name_from_IO(sph_fld_IN, rj_fld1)
-      call alloc_phys_data_type(nnod_rj, rj_fld1)
 !
-      call set_sph_sprctr_data_address
+      call set_sph_sprctr_data_address(rj_fld1)
 !
 !  -------------------------------
 !

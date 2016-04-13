@@ -66,22 +66,11 @@
 !
 !  -------------------------------
 !
-      call alloc_phys_data_type(nnod_rj, rj_fld1)
-      call set_sph_sprctr_data_address
+      call set_sph_sprctr_data_address(rj_fld1)
 !
       call init_rms_4_sph_spectr(rj_fld1)
 !
-!  -------------------------------
-!
-      if (iflag_debug.gt.0) write(*,*) 'initialize_sph_trans'
-      if(id_legendre_transfer.eq.iflag_leg_undefined)                   &
-     &            id_legendre_transfer = iflag_leg_orginal_loop
-      call copy_sph_trans_nums_from_rtp
-      call initialize_sph_trans
-!
       call allocate_work_pick_rms_sph
-!
-!      call check_schmidt_poly_rtm(my_rank+40)
 !
       end subroutine initialize_pick_rms_sph
 !

@@ -37,6 +37,7 @@
 !
       subroutine initialize_sph_MHD_noviz
 !
+      use m_sph_spectr_data
       use m_ctl_data_sph_MHD_noviz
       use init_sph_MHD_elapsed_label
       use input_control_sph_MHD
@@ -54,7 +55,7 @@
       call read_control_4_sph_MHD_noviz
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_mesh'
-      call input_control_SPH_mesh(mesh1, group1, ele_mesh1)
+      call input_control_SPH_mesh(mesh1, group1, ele_mesh1, rj_fld1)
       call end_eleps_time(4)
 !
 !        Initialize FEM mesh data for field data IO

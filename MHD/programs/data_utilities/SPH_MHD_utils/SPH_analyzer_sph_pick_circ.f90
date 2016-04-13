@@ -50,6 +50,7 @@
       use set_control_sph_mhd
       use set_reference_sph_mhd
       use set_bc_sph_mhd
+      use adjust_reference_fields
       use material_property
       use sph_transforms_4_MHD
       use set_radius_func
@@ -63,8 +64,7 @@
 !
 !   Allocate spectr field data
 !
-      call alloc_phys_data_type(nnod_rj, rj_fld1)
-      call set_sph_sprctr_data_address
+      call set_sph_sprctr_data_address(rj_fld1)
 !
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
       call allocate_vector_for_solver(isix, nnod_rtp)
@@ -96,11 +96,12 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_bc_sph_mhd'
       call s_set_bc_sph_mhd
+      call init_reference_fields
 !
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
-      call init_sph_transform_MHD
+      call init_sph_transform_MHD(rj_fld1)
 !
 ! ---------------------------------
 !
@@ -125,6 +126,7 @@
       use m_work_time
       use m_t_step_parameter
       use m_node_id_spherical_IO
+      use m_sph_spectr_data
       use m_field_on_circle
 !
       use cal_nonlinear
@@ -137,7 +139,7 @@
       integer(kind = kint), intent(in) :: i_step
 !
 !
-      call read_alloc_sph_rst_4_snap(i_step)
+      call read_alloc_sph_rst_4_snap(i_step, rj_fld1)
 !
       call sync_temp_by_per_temp_sph(idx_rj_degree_zero,                &
      &    nnod_rj, nidx_rj, radius_1d_rj_r, reftemp_rj,                 &
@@ -146,12 +148,12 @@
 !* obtain linear terms for starting
 !*
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
-      call set_sph_field_to_start
+      call set_sph_field_to_start(rj_fld1)
 !
 !*  ----------------lead nonlinear term ... ----------
 !*
       call start_eleps_time(8)
-      call nonlinear
+      call nonlinear(reftemp_rj, rj_fld1)
       call end_eleps_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=
@@ -163,14 +165,14 @@
      &    rj_fld1%ntot_phys, rj_fld1%d_fld)
 !*
       if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
-      call s_lead_fields_4_sph_mhd
+      call s_lead_fields_4_sph_mhd(rj_fld1)
       call end_eleps_time(9)
 !
 !*  -----------  lead mid-equator field --------------
 !*
       call start_eleps_time(4)
       if(iflag_debug.gt.0)  write(*,*) 'sph_transfer_on_circle'
-      call sph_transfer_on_circle
+      call sph_transfer_on_circle(rj_fld1)
       call write_field_data_on_circle(i_step, time)
       call end_eleps_time(4)
 !

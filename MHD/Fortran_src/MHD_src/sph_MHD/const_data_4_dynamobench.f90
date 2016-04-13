@@ -7,7 +7,7 @@
 !>@brief Evaluate dynamo benchmark results
 !!
 !!@verbatim
-!!      subroutine s_const_data_4_dynamobench
+!!      subroutine s_const_data_4_dynamobench(rj_fld)
 !!      subroutine s_const_data_on_circle
 !!@endverbatim
 !
@@ -25,36 +25,39 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_const_data_4_dynamobench
+      subroutine s_const_data_4_dynamobench(rj_fld)
 !
       use m_boundary_params_sph_MHD
-      use m_sph_spectr_data
+      use m_field_at_mid_equator
+!
+      use t_phys_data
+!
       use calypso_mpi
       use cal_rms_fields_by_sph
       use global_field_4_dynamobench
-      use m_field_at_mid_equator
 !
+      type(phys_data), intent(in) :: rj_fld
 !
 !
       if(iflag_debug.gt.0)  write(*,*) 'mid_eq_transfer_dynamobench'
-      call mid_eq_transfer_dynamobench
+      call mid_eq_transfer_dynamobench(rj_fld)
 !
-      call cal_rms_sph_outer_core
+      call cal_rms_sph_outer_core(rj_fld)
       if(my_rank .eq. 0) call copy_energy_4_dynamobench
 !
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
-        call pick_inner_core_rotation(rj_fld1%ntot_phys, rj_fld1%d_fld)
+        call pick_inner_core_rotation(rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
-        call cal_rms_sph_inner_core
+        call cal_rms_sph_inner_core(rj_fld)
         if(my_rank .eq. 0) call copy_icore_energy_4_dbench
       end if
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center                  &
      &   .and. sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call pick_mag_torque_inner_core                                 &
-     &     (rj_fld1%ntot_phys, rj_fld1%d_fld)
+     &     (rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       end subroutine s_const_data_4_dynamobench

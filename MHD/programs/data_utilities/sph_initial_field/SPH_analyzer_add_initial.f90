@@ -36,6 +36,7 @@
 !
       use set_control_sph_mhd
       use m_ctl_data_sph_MHD_noviz
+      use m_sph_spectr_data
       use init_sph_MHD_elapsed_label
       use input_control_sph_MHD
 !
@@ -52,7 +53,7 @@
       call read_control_4_sph_MHD_noviz
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_4_SPH_make_init'
-      call input_control_4_SPH_make_init
+      call input_control_4_SPH_make_init(rj_fld1)
       call end_eleps_time(4)
 !
 !    precondition elaps start
@@ -83,6 +84,7 @@
       use const_sph_initial_spectr
       use set_reference_sph_mhd
       use set_bc_sph_mhd
+      use adjust_reference_fields
       use material_property
       use sph_transforms_4_MHD
       use set_radius_func
@@ -93,8 +95,7 @@
 !
 !   Allocate spectr field data
 !
-      call alloc_phys_data_type(nnod_rj, rj_fld1)
-      call set_sph_sprctr_data_address
+      call set_sph_sprctr_data_address(rj_fld1)
 !
 ! ---------------------------------
 !
@@ -104,15 +105,16 @@
 !
       if(iflag_debug.gt.0) write(*,*) 's_set_bc_sph_mhd'
       call s_set_bc_sph_mhd
+      call init_reference_fields
 !
 ! ---------------------------------
 !
      if(iflag_debug.gt.0) write(*,*)' read_alloc_sph_restart_data'
-     call read_alloc_sph_restart_data
+     call read_alloc_sph_restart_data(rj_fld1)
      istep_max_dt = i_step_init
 !
      if(iflag_debug.gt.0) write(*,*)' sph_initial_spectrum'
-     call sph_initial_spectrum
+     call sph_initial_spectrum(rj_fld1)
 !
       end subroutine SPH_add_initial_field
 !

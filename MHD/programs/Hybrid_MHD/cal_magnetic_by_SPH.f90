@@ -1,5 +1,6 @@
 !
       use t_phys_address
+      use t_phys_data
 !
       type(mesh_data) :: mesh_fem
       type(phys_data) ::        fem_fld
@@ -85,7 +86,7 @@
 !
 !*   ------------------------------------------------------------------
 !
-      subroutine nonlinear_incuction_wSGS_SPH(conduct)
+      subroutine nonlinear_incuction_wSGS_SPH(conduct, rj_fld)
 !
       use m_solver_SR
 !
@@ -95,6 +96,7 @@
       use copy_nodal_type_4_sph_trans
 !
       type(field_geometry_data), intent(in) :: conduct
+      type(phys_data), intent(inout) :: rj_fld
 !
 !
       call cal_vecp_induction
@@ -128,25 +130,28 @@
 !
       call sel_sph_rj_vector_from_recv(ncomp_xyz_2_rj,                  &
      &    ipol%i_vp_induct, f_hbd_trns%i_vp_induct,                     &
-     &    n_WR, WR(1), rj_fld1)
+     &    n_WR, WR(1), rj_fld)
       call sel_sph_rj_vector_from_recv(ncomp_xyz_2_rj,                  &
      &    ipol%i_SGS_vp_induct, f_hbd_trns%i_SGS_vp_induct,             &
-     &    n_WR, WR(1), rj_fld1)
+     &    n_WR, WR(1), rj_fld)
 !
 !
-      call const_sph_rotation_uxb(ipol%i_vp_induct, ipol%i_induction)
+      call const_sph_rotation_uxb                                       &
+     &   (ipol%i_vp_induct, ipol%i_induction, rj_fld)
       call const_sph_rotation_uxb(ipol%i_SGS_vp_induct,                 &
-     &    ipol%i_SGS_induction)
+     &    ipol%i_SGS_induction, rj_fld)
 !*
       end subroutine nonlinear_incuction_wSGS_SPH
 !
 !*   ------------------------------------------------------------------
 !
-      subroutine nonlinear_incuction_SPH
+      subroutine nonlinear_incuction_SPH(rj_fld)
 !
       use m_solver_SR
       use spherical_SRs_N
       use copy_nodal_type_4_sph_trans
+!
+      type(phys_data), intent(inout) :: rj_fld
 !
 !
       call cal_vecp_induction
@@ -166,19 +171,22 @@
      &    izero, izero, frc_hbd_rtp(1,1), n_WS, n_WR, WS(1), WR(1))
 !
       call sel_sph_rj_vector_from_recv(ncomp_xyz_2_rj,                  &
-     &   (ipol%i_vp_induct, f_hbd_trns%i_vp_induct, n_WR, WR, rj_fld1)
+     &   (ipol%i_vp_induct, f_hbd_trns%i_vp_induct, n_WR, WR, rj_fld)
 !
-      call const_sph_rotation_uxb(ipol%i_vp_induct, ipol%i_induction)
+      call const_sph_rotation_uxb                                       &
+     &   (ipol%i_vp_induct, ipol%i_induction, rj_fld)
 !
       end subroutine nonlinear_incuction_SPH
 !
 !*   ------------------------------------------------------------------
 !
-      subroutine cal_magneitc_field_by_SPH
+      subroutine cal_magneitc_field_by_SPH(rj_fld)
 !
       use m_solver_SR
       use spherical_SRs_N
       use copy_spectr_4_sph_trans
+!
+      type(phys_data), intent(in) :: rj_fld
 !
       if ( iflag_SGS_induction .ne. id_SGS_none) then
         call cal_diff_induction_MHD_adams(ntot_phys_rj, d_rj)
@@ -194,16 +202,16 @@
       call check_calypso_rtm_2_rtp_buf_N(ncomp_rj_2_xyz)
 !
       call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                    &
-     &    ipol%i_magne, b_hbd_trns%i_magne, rj_fld1, n_WS, WS)
+     &    ipol%i_magne, b_hbd_trns%i_magne, rj_fld, n_WS, WS)
       call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                    &
-     &    ipol%i_current, b_hbd_trns%i_current, rj_fld1, n_WS, WS)
+     &    ipol%i_current, b_hbd_trns%i_current, rj_fld, n_WS, WS)
       call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                    &
-     &    ipol%i_b_diffuse, b_hbd_trns%i_b_diffuse, rj_fld1, n_WS, WS)
+     &    ipol%i_b_diffuse, b_hbd_trns%i_b_diffuse, rj_fld, n_WS, WS)
       call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                    &
-     &    ipol%i_induction, b_hbd_trns%i_induction, rj_fld1, n_WS, WS)
+     &    ipol%i_induction, b_hbd_trns%i_induction, rj_fld, n_WS, WS)
       if (iflag_SGS_induction .ne. id_SGS_none) then
         call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                  &
-     &      ipol%i_SGS_induction, b_hbd_trns%i_SGS_induction, rj_fld1,  &
+     &      ipol%i_SGS_induction, b_hbd_trns%i_SGS_induction, rj_fld,   &
      &      n_WS, WS)
       end if
 !

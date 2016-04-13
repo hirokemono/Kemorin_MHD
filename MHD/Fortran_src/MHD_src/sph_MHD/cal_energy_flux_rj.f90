@@ -8,13 +8,15 @@
 !> @brief Evaluate energy fluxes for MHD dynamo in physical space
 !!
 !!@verbatim
-!!      subroutine s_cal_energy_flux_rj
+!!      subroutine s_cal_energy_flux_rj(rj_fld)
 !!@endverbatim
 !
       module cal_energy_flux_rj
 !
       use m_precision
       use m_constants
+!
+      use t_phys_data
 !
       implicit  none
 !
@@ -24,14 +26,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_cal_energy_flux_rj
+      subroutine s_cal_energy_flux_rj(rj_fld)
 !
       use m_sph_phys_address
       use const_sph_radial_grad
 !
+      type(phys_data), intent(inout) :: rj_fld
+!
 !
       if(ipol%i_rot_Coriolis .gt. 0) then
-        call const_grad_poloidal_moment(ipol%i_rot_Coriolis)
+        call const_grad_poloidal_moment(ipol%i_rot_Coriolis, rj_fld)
       end if
 !
       end subroutine s_cal_energy_flux_rj

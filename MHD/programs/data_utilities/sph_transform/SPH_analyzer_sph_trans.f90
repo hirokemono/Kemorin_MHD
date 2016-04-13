@@ -41,7 +41,7 @@
 !  ---- allocate spectr data
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_sph_name_rj_to_rtp'
-      call copy_sph_name_rj_to_rtp
+      call copy_sph_name_rj_to_rtp(rj_fld1)
 !
       call alloc_phys_data_type(nnod_rj, rj_fld1)
 !
@@ -81,7 +81,7 @@
 !
 !
 !  spherical transform for vector
-       call sph_f_trans_all_field(femmesh_STR%mesh, field_STR)
+      call sph_f_trans_all_field(femmesh_STR%mesh, field_STR, rj_fld1)
 !
 !      call check_all_field_data(my_rank, rj_fld1)
 !
@@ -124,7 +124,7 @@
 !
 !
 !  spherical transform for vector
-      call sph_f_trans_all_field(femmesh_STR%mesh, field_STR)
+      call sph_f_trans_all_field(femmesh_STR%mesh, field_STR, rj_fld1)
 !
 !      call check_all_field_data(my_rank, rj_fld1)
 !

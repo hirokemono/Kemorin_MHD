@@ -53,7 +53,7 @@
      &   (nprocs, my_rank, i_step_init, fld_IO)
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_sph_name_rj_to_rtp'
-      call copy_sph_name_rj_to_rtp
+      call copy_sph_name_rj_to_rtp(rj_fld1)
 !
 !  ------    set original spectr modes
 !
@@ -67,9 +67,7 @@
 !
 !  ---- allocate spectr data
 !
-      call alloc_phys_data_type(nnod_rj, rj_fld1)
-!
-      call set_sph_sprctr_data_address
+      call set_sph_sprctr_data_address(rj_fld1)
 !
 !  ---- initialize spherical harmonics transform
 !
@@ -139,7 +137,8 @@
 !
 !          call check_all_field_data(my_rank, rj_fld1)
 !  spherical transform for vector
-        call sph_b_trans_all_field(femmesh_STR%mesh, field_STR)
+        call sph_b_trans_all_field                                      &
+     &     (femmesh_STR%mesh, rj_fld1, field_STR)
       end if
 !
       end subroutine SPH_analyze_back_trans

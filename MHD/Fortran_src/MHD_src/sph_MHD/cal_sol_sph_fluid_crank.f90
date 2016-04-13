@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine cal_sol_velo_by_vort_sph_crank(ntot_phys_rj, d_rj)
 !!        Input address:    ipol%i_vort, itor%i_vort
-!!        Solution address: ipol%i_velo, itor%i_velo, idpdr%i_velo
+!!        Solution address: ipol%i_velo, itor%i_velo
 !!
 !!      subroutine cal_sol_pressure_by_div_v(ntot_phys_rj, d_rj)
 !!        Solution address: ipol%i_press
@@ -17,7 +17,7 @@
 !!
 !!      subroutine cal_sol_magne_sph_crank(ntot_phys_rj, d_rj)
 !!        Input address:    ipol%i_magne, itor%i_magne
-!!        Solution address: ipol%i_magne, itor%i_magne, idpdr%i_magne
+!!        Solution address: ipol%i_magne, itor%i_magne
 !!
 !!      subroutine cal_sol_temperature_sph_crank(ntot_phys_rj, d_rj)
 !!        Input address:    ipol%i_temp
@@ -60,7 +60,6 @@
       use m_boundary_params_sph_MHD
       use m_coef_fdm_free_ICB
       use m_coef_fdm_free_CMB
-      use const_sph_radial_grad
       use set_sph_exp_rigid_ICB
       use set_sph_exp_rigid_CMB
       use set_sph_exp_free_ICB
@@ -126,19 +125,6 @@
      &    nidx_rj(2), nidx_rj(1), vt_evo_lu,                            &
      &    i_vt_pivot, d_rj(1,itor%i_velo) )
 !
-      call const_grad_vp_and_vorticity(ipol%i_velo, ipol%i_vort)
-!
-!      write(my_rank+170,*) 'k, j, vt2, wp2, dwp2'
-!      do j = 1, nidx_rj(2)
-!         j = 6
-!        do k = 1, sph_bc_U%kr_out
-!            inod = (k-1)*nidx_rj(2) + j
-!            write(my_rank+170,'(2i16,1p8E25.15e3)') k, j,              &
-!     &              d_rj(inod,ipol%i_velo),d_rj(inod,itor%i_velo)
-!     &          d_rj(inod,ipol%i_velo), d_rj(inod,idpdr%i_velo),       &
-!     &          d_rj(inod,itor%i_velo), d_rj(inod,itor%i_vort)
-!        end do
-!      end do
 !
       end subroutine cal_sol_velo_by_vort_sph_crank
 !
@@ -212,9 +198,6 @@
       call lubksb_3band_mul(np_smp, idx_rj_smp_stack(0,2),              &
      &    nidx_rj(2), nidx_rj(1), bt_evo_lu, i_bt_pivot,                &
      &    d_rj(1,itor%i_magne) )
-!
-      call const_grad_bp_and_current                                    &
-     &   (sph_bc_B, ipol%i_magne, ipol%i_current)
 !
       end subroutine cal_sol_magne_sph_crank
 !

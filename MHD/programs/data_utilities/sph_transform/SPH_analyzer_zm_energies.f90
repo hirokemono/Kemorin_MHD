@@ -77,7 +77,8 @@
         call set_rj_phys_for_convective_kene
 !
 !  spherical transform for vector
-        call sph_b_trans_all_field(femmesh_STR%mesh, field_STR)
+        call sph_b_trans_all_field                                      &
+     &     (femmesh_STR%mesh, rj_fld1, field_STR)
         call cal_zm_energy_to_pressure(field_STR%n_point,               &
      &      field_STR%num_phys, field_STR%ntot_phys,                    &
      &      field_STR%istack_component, field_STR%d_fld)

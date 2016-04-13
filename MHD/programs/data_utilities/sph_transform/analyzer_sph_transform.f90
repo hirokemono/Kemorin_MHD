@@ -39,6 +39,7 @@
 !
       use m_ctl_data_4_sph_trans
       use m_ctl_params_sph_trans
+      use m_sph_spectr_data
       use parallel_load_data_4_sph
 !
 !
@@ -52,7 +53,7 @@
       call read_control_data_sph_trans
 !
       if (iflag_debug.gt.0) write(*,*) 'set_control_4_sph_transform'
-      call set_control_4_sph_transform(ucd_SPH_TRNS)
+      call set_control_4_sph_transform(ucd_SPH_TRNS, rj_fld1)
 !
 !  ------    set spectr grids
       if (iflag_debug.gt.0) write(*,*) 'load_para_SPH_and_FEM_mesh'

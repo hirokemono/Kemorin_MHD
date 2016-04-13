@@ -7,7 +7,8 @@
 !>@brief Perform spherical harmonics transform for MHD dynamo model
 !!
 !!@verbatim
-!!      subroutine init_sph_transform_MHD(numnod)
+!!      subroutine init_sph_transform_MHD(rj_fld)
+!!        type(phys_data), intent(inout) :: rj_fld
 !!
 !!      subroutine sph_back_trans_4_MHD(rj_fld)
 !!        type(phys_data), intent(in) :: rj_fld
@@ -57,19 +58,22 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_sph_transform_MHD
+      subroutine init_sph_transform_MHD(rj_fld)
 !
       use calypso_mpi
       use m_addresses_trans_sph_MHD
       use m_addresses_trans_sph_snap
       use m_addresses_trans_sph_tmp
       use m_work_4_sph_trans
+!
       use init_sph_trans
       use init_FFT_4_MHD
       use const_wz_coriolis_rtp
       use const_coriolis_sph_rlm
       use pole_sph_transform
       use skip_comment_f
+!
+      type(phys_data), intent(inout) :: rj_fld
 !
       character(len=kchara) :: tmpchara
 !
@@ -104,7 +108,7 @@
 !
       if(id_legendre_transfer .eq. iflag_leg_undefined) then
         if (iflag_debug.eq.1) write(*,*) 'select_legendre_transform'
-        call select_legendre_transform
+        call select_legendre_transform(rj_fld)
       end if
 !
       call sel_init_legendre_trans                                      &
@@ -329,12 +333,13 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine select_legendre_transform
+      subroutine select_legendre_transform(rj_fld)
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_sph_spectr_data
       use m_work_4_sph_trans
+!
+      type(phys_data), intent(inout) :: rj_fld
 !
       real(kind = kreal) :: starttime, etime_shortest
       real(kind = kreal) :: endtime(ntype_Leg_trans_loop)
@@ -355,8 +360,8 @@
      &      (ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
         starttime = MPI_WTIME()
-        call sph_back_trans_4_MHD(rj_fld1)
-        call sph_forward_trans_4_MHD(rj_fld1)
+        call sph_back_trans_4_MHD(rj_fld)
+        call sph_forward_trans_4_MHD(rj_fld)
         endtime(id_legendre_transfer) = MPI_WTIME() - starttime
 !
         call sel_finalize_legendre_trans

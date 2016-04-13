@@ -7,7 +7,8 @@
 !>@brief  Set control parameters for spherical harmonics dynamo from IO
 !!
 !!@verbatim
-!!     subroutine s_set_control_sph_data_MHD
+!!     subroutine s_set_control_sph_data_MHD(rj_fld)
+!!       type(phys_data), intent(inout) :: rj_fld
 !!     subroutine set_ctl_params_pick_circle
 !!     subroutine set_ctl_params_dynamobench
 !!@endverbatim
@@ -24,7 +25,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_sph_data_MHD
+      subroutine s_set_control_sph_data_MHD(rj_fld)
 !
       use calypso_mpi
       use m_error_IDs
@@ -37,7 +38,6 @@
       use m_control_params_2nd_files
       use m_node_id_spherical_IO
       use m_physical_property
-      use m_sph_spectr_data
       use m_work_4_sph_trans
       use m_file_format_switch
 !
@@ -45,12 +45,16 @@
       use m_sel_spherical_SRs
       use m_FFT_selector
 !
+      use t_phys_data
+!
       use skip_comment_f
       use set_control_sph_data
       use legendre_transform_select
       use add_nodal_fields_4_MHD
       use add_sph_MHD_fields_2_ctl
       use sph_mhd_rst_IO_control
+!
+      type(phys_data), intent(inout) :: rj_fld
 !
       integer(kind = kint) :: ierr
 !
@@ -78,7 +82,7 @@
 !    set nodal data
 !
         if (iflag_debug.gt.0) write(*,*) 's_set_control_sph_data'
-        call s_set_control_sph_data(rj_fld1, ierr)
+        call s_set_control_sph_data(rj_fld, ierr)
       end if
 !
 !

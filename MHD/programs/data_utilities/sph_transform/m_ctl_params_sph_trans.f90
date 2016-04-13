@@ -3,10 +3,11 @@
 !
 !        programmed by H.Matsui on Oct., 2007
 !
-!      subroutine set_control_4_sph_transform(ucd)
-!      subroutine set_control_4_sph_back_trans(ucd)
-!      subroutine s_set_ctl_data_4_sph_trans(ucd)
+!      subroutine set_control_4_sph_transform(ucd, rj_fld)
+!      subroutine set_control_4_sph_back_trans(ucd, rj_fld)
+!      subroutine s_set_ctl_data_4_sph_trans(ucd, rj_fld)
 !        type(ucd_data), intent(inout) :: ucd
+!        type(phys_data), intent(inout) :: rj_fld
 !      subroutine set_ctl_data_4_zm_trans
 !      subroutine set_ctl_data_4_pick_zm
 !      subroutine set_ctl_data_4_zm_streamline
@@ -16,6 +17,8 @@
       use m_precision
 !
       use m_SPH_transforms
+!
+      use t_phys_data
 !
       implicit  none
 !
@@ -35,12 +38,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_sph_transform(ucd)
+      subroutine set_control_4_sph_transform(ucd, rj_fld)
 !
       use t_ucd_data
       use calypso_mpi
       use m_global_gauss_coefs
-      use m_sph_spectr_data
       use m_FFT_selector
 !
       use set_control_nodal_data
@@ -54,6 +56,8 @@
       use set_control_4_pickup_sph
 !
       type(ucd_data), intent(inout) :: ucd
+      type(phys_data), intent(inout) :: rj_fld
+!
       integer(kind = kint) :: ierr
 !
 !
@@ -94,7 +98,7 @@
 !
 !   set physical values
 !
-      call s_set_control_sph_data(rj_fld1, ierr)
+      call s_set_control_sph_data(rj_fld, ierr)
       call s_set_control_nodal_data(field_STR, ierr)
 !
 !
@@ -112,7 +116,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_sph_back_trans(ucd)
+      subroutine set_control_4_sph_back_trans(ucd, rj_fld)
 !
       use calypso_mpi
       use t_ucd_data
@@ -120,7 +124,6 @@
 !
       use m_control_params_2nd_files
       use m_FFT_selector
-      use m_sph_spectr_data
       use set_control_nodal_data
       use set_control_sph_data
       use set_control_platform_data
@@ -132,6 +135,8 @@
       use set_control_4_pickup_sph
 !
       type(ucd_data), intent(inout) :: ucd
+      type(phys_data), intent(inout) :: rj_fld
+!
       integer(kind = kint) :: ierr
 !
 !
@@ -173,7 +178,7 @@
 !
 !   set physical values
 !
-      call s_set_control_sph_data(rj_fld1, ierr)
+      call s_set_control_sph_data(rj_fld, ierr)
       call s_set_control_nodal_data(field_STR, ierr)
 !
 !
@@ -191,14 +196,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_ctl_data_4_sph_trans(ucd)
+      subroutine s_set_ctl_data_4_sph_trans(ucd, rj_fld)
 !
       use calypso_mpi
       use t_ucd_data
       use m_machine_parameter
       use m_t_step_parameter
       use m_read_mesh_data
-      use m_sph_spectr_data
       use m_rms_4_sph_spectr
       use m_work_4_sph_trans
       use m_global_gauss_coefs
@@ -223,6 +227,8 @@
       use parallel_ucd_IO_select
 !
       type(ucd_data), intent(inout) :: ucd
+      type(phys_data), intent(inout) :: rj_fld
+!
       integer(kind = kint) :: ierr
 !
 !
@@ -284,7 +290,7 @@
 !
 !   set physical values
 !
-      call s_set_control_sph_data(rj_fld1, ierr)
+      call s_set_control_sph_data(rj_fld, ierr)
       call s_set_control_nodal_data(field_STR, ierr)
 !
 !

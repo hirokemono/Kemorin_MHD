@@ -8,7 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine set_mid_equator_point_global
-!!      subroutine mid_eq_transfer_dynamobench
+!!      subroutine mid_eq_transfer_dynamobench(rj_fld)
+!!        type(phys_data), intent(in) :: rj_fld
 !!@endverbatim
 !
       module m_field_at_mid_equator
@@ -53,18 +54,21 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine mid_eq_transfer_dynamobench
+      subroutine mid_eq_transfer_dynamobench(rj_fld)
 !
       use calypso_mpi
       use m_sph_phys_address
-!
       use m_field_on_circle
       use m_circle_transform
+      use t_phys_data
+!
       use sph_MHD_circle_transform
+!
+      type(phys_data), intent(in) :: rj_fld
 !
 !    spherical transfer
 !
-      call sph_transfer_on_circle
+      call sph_transfer_on_circle(rj_fld)
 !
       if(my_rank .gt. 0) return
 !
@@ -121,7 +125,6 @@
 !
       use calypso_mpi
       use m_spheric_parameter
-      use m_sph_spectr_data
       use m_sph_phys_address
       use m_field_on_circle
       use m_circle_transform

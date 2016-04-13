@@ -7,8 +7,8 @@
 !!      subroutine allocate_d_pole_4_all_trans
 !!      subroutine deallocate_d_rtp_4_all_trans
 !!      subroutine deallocate_d_pole_4_all_trans
-!!      subroutine sph_f_trans_all_field(mesh, nod_fld)
-!!      subroutine sph_b_trans_all_field(mesh, nod_fld)
+!!      subroutine sph_f_trans_all_field(mesh, nod_fld, rj_fld)
+!!      subroutine sph_b_trans_all_field(mesh, rj_fld, nod_fld)
 !
       module sph_transfer_all_field
 !
@@ -73,7 +73,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sph_f_trans_all_field(mesh, nod_fld)
+      subroutine sph_f_trans_all_field(mesh, nod_fld, rj_fld)
 !
       use t_mesh_data
       use t_phys_data
@@ -87,6 +87,7 @@
 !
       type(mesh_geometry), intent(in) :: mesh
       type(phys_data), intent(in) :: nod_fld
+      type(phys_data), intent(inout) :: rj_fld
 !
       integer(kind = kint) :: nscalar_trans
 !
@@ -118,21 +119,24 @@
 !
       if (iflag_debug.gt.0)                                             &
      &      write(*,*) 'set_all_scalar_spec_from_sph_t'
-      call set_all_scalar_spec_from_sph_t(ncomp_sph_trans, n_WR, WR)
+      call set_all_scalar_spec_from_sph_t                               &
+     &   (ncomp_sph_trans, n_WR, WR, rj_fld)
 !
       if (iflag_debug.gt.0)                                             &
      &      write(*,*) 'set_all_vec_spec_from_sph_t'
-      call set_all_vec_spec_from_sph_t(ncomp_sph_trans, n_WR, WR)
+      call set_all_vec_spec_from_sph_t                                  &
+     &   (ncomp_sph_trans, n_WR, WR, rj_fld)
 !
       if (iflag_debug.gt.0)                                             &
      &      write(*,*) 'set_all_tensor_spec_from_sph_t'
-      call set_all_tensor_spec_from_sph_t(ncomp_sph_trans, n_WR, WR)
+      call set_all_tensor_spec_from_sph_t                               &
+     &   (ncomp_sph_trans, n_WR, WR, rj_fld)
 !
       end subroutine sph_f_trans_all_field
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sph_b_trans_all_field(mesh, nod_fld)
+      subroutine sph_b_trans_all_field(mesh, rj_fld, nod_fld)
 !
       use t_mesh_data
       use t_phys_data
@@ -146,6 +150,7 @@
       use spherical_SRs_N
 !
       type(mesh_geometry), intent(in) :: mesh
+      type(phys_data), intent(in) :: rj_fld
       type(phys_data), intent(inout) :: nod_fld
 !
       integer(kind = kint) :: nscalar_trans
@@ -159,14 +164,16 @@
 !
       if (iflag_debug.gt.0)                                             &
      &        write(*,*) 'set_all_vec_spec_to_sph_t'
-      call set_all_vec_spec_to_sph_t(ncomp_sph_trans, n_WS, WS)
+      call set_all_vec_spec_to_sph_t                                    &
+     &    (ncomp_sph_trans, rj_fld, n_WS, WS)
       if (iflag_debug.gt.0)                                             &
      &      write(*,*) 'set_all_scalar_spec_to_sph_t'
       call set_all_scalar_spec_to_sph_t                                 &
-     &   (ncomp_sph_trans, n_WS, WS, dlcl_pole(1,1))
+     &   (ncomp_sph_trans, rj_fld, n_WS, WS, dlcl_pole(1,1))
       if (iflag_debug.gt.0)                                             &
      &      write(*,*) 'set_all_tensor_spec_to_sph_t'
-      call set_all_tensor_spec_to_sph_t(ncomp_sph_trans, n_WS, WS)
+      call set_all_tensor_spec_to_sph_t                                 &
+     &   (ncomp_sph_trans, rj_fld, n_WS, WS)
 !
       if (iflag_debug.gt.0) write(*,*) 'sph_backward_transforms',       &
      &  ncomp_sph_trans, num_vector_rtp, num_scalar_rtp, num_tensor_rtp

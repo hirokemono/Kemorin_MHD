@@ -90,6 +90,7 @@
       use m_work_time
       use m_t_step_parameter
       use m_node_id_spherical_IO
+      use m_sph_spectr_data
 !
       use m_ctl_data_4_platforms
       use m_ctl_data_4_org_data
@@ -104,24 +105,24 @@
       integer(kind = kint), intent(in) :: i_step
 !
 !
-      call read_alloc_sph_rst_2_modify(i_step)
+      call read_alloc_sph_rst_2_modify(i_step, rj_fld1)
 !
 !*  ----------------Modify spectr data ... ----------
 !*
       call set_modify_rj_fields
 !
       if(iflag_debug.gt.0) write(*,*) 'output_sph_restart_control'
-      call init_output_sph_restart_file
-      call output_sph_restart_control
+      call init_output_sph_restart_file(rj_fld1)
+      call output_sph_restart_control(rj_fld1)
 !*
       if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
-      call output_rms_sph_mhd_control
+      call output_rms_sph_mhd_control(rj_fld1)
 !
 !*  -----------  lead energy data --------------
 !*
       call start_eleps_time(11)
       if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
-      call output_rms_sph_mhd_control
+      call output_rms_sph_mhd_control(rj_fld1)
       call end_eleps_time(11)
       call end_eleps_time(4)
 !

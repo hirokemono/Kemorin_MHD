@@ -7,7 +7,8 @@
 !> @brief Set initial data for spectrum dynamos
 !!
 !!@verbatim
-!!      subroutine sph_initial_spectrum
+!!      subroutine sph_initial_spectrum(rj_fld)
+!!        type(phys_data), intent(inout) :: rj_fld
 !!
 !!       Sample program to generate initial field
 !!       This program generates initial condition
@@ -67,55 +68,57 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sph_initial_spectrum
+      subroutine sph_initial_spectrum(rj_fld)
 !
       use m_initial_field_control
       use m_t_int_parameter
       use m_t_step_parameter
-      use m_sph_spectr_data
+      use t_phys_data
 !
       use sph_mhd_rst_IO_control
       use set_sph_restart_IO
 !
+      type(phys_data), intent(inout) :: rj_fld
+!
 !
 !  Set initial velocity if velocity is exist
       if(ipol%i_velo .gt. izero) then
-        call  set_initial_velocity(rj_fld1%ntot_phys, rj_fld1%d_fld)
+        call  set_initial_velocity(rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
 !  Set initial temperature if temperature is exist
       if(ipol%i_temp .gt. izero) then
-        call  set_initial_temperature(rj_fld1%ntot_phys, rj_fld1%d_fld)
+        call  set_initial_temperature(rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
 !  Set initial composition if composition is exist
       if(ipol%i_light .gt. izero) then
-        call set_initial_composition(rj_fld1%ntot_phys, rj_fld1%d_fld)
+        call set_initial_composition(rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
 !  Set initial magnetic field if magnetic field is exist
       if(ipol%i_magne .gt. izero) then
-        call set_initial_magne_sph(rj_fld1%ntot_phys, rj_fld1%d_fld)
+        call set_initial_magne_sph(rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
 !  Set heat source if  heat source is exist
       if(ipol%i_heat_source .gt. izero) then
         call set_initial_heat_source_sph                                &
-     &     (rj_fld1%ntot_phys, rj_fld1%d_fld)
+     &     (rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !  Set light element source if light element is exist
       if(ipol%i_light_source .gt. izero) then
         call set_initial_light_source_sph                               &
-     &     (rj_fld1%ntot_phys, rj_fld1%d_fld)
+     &     (rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
 !  Copy initial field to restart IO data
-      call init_output_sph_restart_file
+      call init_output_sph_restart_file(rj_fld)
 !
-      call output_sph_restart_control
+      call output_sph_restart_control(rj_fld)
 !
       if(istep_rst_start .eq. -1) then
-        call output_sph_rst_by_elaps
+        call output_sph_rst_by_elaps(rj_fld)
       end if
 !
       end subroutine sph_initial_spectrum

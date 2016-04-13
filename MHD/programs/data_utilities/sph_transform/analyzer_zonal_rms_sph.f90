@@ -37,6 +37,7 @@
 !
       use m_ctl_data_4_sph_trans
       use m_ctl_params_sph_trans
+      use m_sph_spectr_data
       use parallel_load_data_4_sph
 !
 !     --------------------- 
@@ -50,7 +51,7 @@
       call read_control_data_sph_trans
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_sph_trans'
-      call s_set_ctl_data_4_sph_trans(ucd_SPH_TRNS)
+      call s_set_ctl_data_4_sph_trans(ucd_SPH_TRNS, rj_fld1)
       call set_ctl_data_4_pick_zm
 !
 !  ------    set spectr grids

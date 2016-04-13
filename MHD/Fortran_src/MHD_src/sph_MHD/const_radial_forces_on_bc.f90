@@ -7,7 +7,8 @@
 !>@brief Evaluate radial component of forces at boundaries
 !!
 !!@verbatim
-!!      subroutine s_const_radial_forces_on_bc
+!!      subroutine s_const_radial_forces_on_bc(rj_fld)
+!!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
       module const_radial_forces_on_bc
@@ -30,47 +31,51 @@
 !
 !   ------------------------------------------------------------------
 !
-      subroutine s_const_radial_forces_on_bc
+      subroutine s_const_radial_forces_on_bc(rj_fld)
 !
       use m_sph_phys_address
       use m_physical_property
       use m_spheric_parameter
-      use m_sph_spectr_data
       use m_boundary_params_sph_MHD
+!
+      use t_phys_data
+!
       use cal_r_buoyancies_on_sph
 !
+      type(phys_data), intent(inout) :: rj_fld
 !
-      call s_cal_r_buoyancies_on_sph(sph_bc_U%kr_in)
-      call s_cal_r_buoyancies_on_sph(sph_bc_U%kr_out)
+!
+      call s_cal_r_buoyancies_on_sph(sph_bc_U%kr_in, rj_fld)
+      call s_cal_r_buoyancies_on_sph(sph_bc_U%kr_out, rj_fld)
 !
 !$omp parallel
       call cal_radial_force_on_sph(sph_bc_U%kr_in,                      &
      &      ipol%i_v_diffuse, ipol%i_div_viscous,                       &
      &      nnod_rj, nidx_rj, ar_1d_rj,                                 &
-     &       rj_fld1%ntot_phys, rj_fld1%d_fld)
+     &       rj_fld%ntot_phys, rj_fld%d_fld)
       call cal_radial_force_on_sph(sph_bc_U%kr_out,                     &
      &      ipol%i_v_diffuse, ipol%i_div_viscous,                       &
      &      nnod_rj, nidx_rj, ar_1d_rj,                                 &
-     &      rj_fld1%ntot_phys, rj_fld1%d_fld)
+     &      rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call cal_radial_force_on_sph(sph_bc_U%kr_in,                      &
      &      ipol%i_m_advect, ipol%i_div_inertia,                        &
      &      nnod_rj, nidx_rj, ar_1d_rj,                                 &
-     &      rj_fld1%ntot_phys, rj_fld1%d_fld)
+     &      rj_fld%ntot_phys, rj_fld%d_fld)
       call cal_radial_force_on_sph(sph_bc_U%kr_out,                     &
      &      ipol%i_m_advect, ipol%i_div_inertia,                        &
      &      nnod_rj, nidx_rj, ar_1d_rj,                                 &
-     &       rj_fld1%ntot_phys, rj_fld1%d_fld)
+     &       rj_fld%ntot_phys, rj_fld%d_fld)
 !
       if( iflag_4_lorentz .gt. id_turn_OFF) then
         call cal_radial_force_on_sph(sph_bc_U%kr_in,                    &
      &      ipol%i_lorentz, ipol%i_div_inertia,                         &
      &      nnod_rj, nidx_rj, ar_1d_rj,                                 &
-     &      rj_fld1%ntot_phys, rj_fld1%d_fld)
+     &      rj_fld%ntot_phys, rj_fld%d_fld)
         call cal_radial_force_on_sph(sph_bc_U%kr_out,                   &
      &      ipol%i_lorentz, ipol%i_div_inertia,                         &
      &      nnod_rj, nidx_rj, ar_1d_rj,                                 &
-     &      rj_fld1%ntot_phys, rj_fld1%d_fld)
+     &      rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !$omp end parallel
 !

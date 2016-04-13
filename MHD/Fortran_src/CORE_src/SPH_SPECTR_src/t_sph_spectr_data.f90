@@ -30,37 +30,30 @@
 !
 !>!!       Structure for spectr data
 !!      Number of fields for spectrum data  @f$ f(r,j) @f$
-!!          num_phys_rj = phys_rj%num_phys
+!!          num_phys_rj = rj_fld%num_phys
 !!      Total number of components for spectrum data
 !!      @f$ f(r,j) @f$
-!!          ntot_phys_rj = phys_rj%ntot_phys
+!!          ntot_phys_rj = rj_fld%ntot_phys
 !!      Number of components for each field @f$ f(r,j) @f$
-!!          num_phys_comp_rj = phys_rj%num_component
+!!          num_phys_comp_rj = rj_fld%num_component
 !!      End address of d_rj for each field @f$ f(r,j) @f$
-!!          istack_phys_comp_rj = phys_rj%istack_component
+!!          istack_phys_comp_rj = rj_fld%istack_component
 !!      Field name for @f$ f(r,j) @f$
-!!          phys_name_rj = phys_rj%phys_name
+!!          phys_name_rj = rj_fld%phys_name
 !!      Spectr data @f$ f(r,j) @f$
-!!          d_rj = phys_rj%d_fld
+!!          d_rj = rj_fld%d_fld
 !!      Integer flag for monitoring output
 !!       for spectr data @f$ f(r,j) @f$
-!!          iflag_monitor_rj = phys_rj%iflag_monitor
+!!          iflag_monitor_rj = rj_fld%iflag_monitor
 !!      Number of fields for visualization output
 !!       @f$ f(r,\theta,\phi) @f$
-!!          num_phys_rj_vis = phys_rj%num_phys_viz
+!!          num_phys_rj_vis = rj_fld%num_phys_viz
 !!      Total number of components  for visualization output
 !!       @f$ f(r,\theta,\phi) @f$
-!!          ntot_comp_rj_vis = phys_rj%ntot_phys_viz
+!!          ntot_comp_rj_vis = rj_fld%ntot_phys_viz
       type sph_phys_data
 !>        Structure for spectr data @f$ f(r,j) @f$
-        type(phys_data) :: phys_rj
-!
-!>        Number of fields of scalar fields @f$ f(r,\theta,\phi) @f$
-        integer (kind=kint) :: num_scalar_rtp
-!>        Number of fields of vector fields @f$ f(r,\theta,\phi) @f$
-        integer (kind=kint) :: num_vector_rtp
-!>        Number of fields of tensor fields @f$ f(r,\theta,\phi) @f$
-        integer (kind=kint) :: num_tensor_rtp
+        type(phys_data) :: rj_fld
 !
 !>    reference temerature spectr @f$ f(r,j) @f$
 !!@verbatim
@@ -81,7 +74,7 @@
       type(sph_phys_data), intent(inout) :: sph_phys
 !
 !
-      call alloc_phys_name_type(sph_phys%phys_rj)
+      call alloc_phys_name_type(sph_phys%rj_fld)
 !
       end subroutine alloc_phys_rj_name_t
 !
@@ -94,7 +87,7 @@
       type(sph_phys_data), intent(inout) :: sph_phys
 !
 !
-      call alloc_phys_data_type(nnod_rj, sph_phys%phys_rj)
+      call alloc_phys_data_type(nnod_rj, sph_phys%rj_fld)
 !
       end subroutine alloc_phys_rj_data_t
 !
@@ -118,8 +111,8 @@
       type(sph_phys_data), intent(inout) :: sph_phys
 !
 !
-      call dealloc_phys_data_type(sph_phys%phys_rj)
-      call dealloc_phys_name_type(sph_phys%phys_rj)
+      call dealloc_phys_data_type(sph_phys%rj_fld)
+      call dealloc_phys_name_type(sph_phys%rj_fld)
 !
       end subroutine dealloc_phys_rj_name_t
 !
@@ -141,8 +134,8 @@
       type(sph_phys_data), intent(in) :: sph_phys
 !
 !
-      write(*,*) 'sph_phys%phys_rj'
-      call check_nodal_field_name_type(6,sph_phys%phys_rj)
+      write(*,*) 'sph_phys%rj_fld'
+      call check_nodal_field_name_type(6,sph_phys%rj_fld)
 !
       end subroutine check_rj_spectr_name_t
 !
@@ -156,14 +149,14 @@
       integer(kind = kint) :: i_fld
 !
 !
-      write(*,*) 'sph_phys%phys_rj'
-      call check_nodal_field_name_type((50+my_rank),sph_phys%phys_rj)
+      write(*,*) 'sph_phys%rj_fld'
+      call check_nodal_field_name_type((50+my_rank),sph_phys%rj_fld)
 !
-      write(50+my_rank,*) 'sph_phys%phys_rj'
-      do i_fld = 1, sph_phys%phys_rj%num_phys
-        call check_nodal_data((50+my_rank), sph_phys%phys_rj,           &
-     &      sph_phys%phys_rj%ntot_phys,                                 &
-     &      sph_phys%phys_rj%istack_component(i_fld-1)+1)
+      write(50+my_rank,*) 'sph_phys%rj_fld'
+      do i_fld = 1, sph_phys%rj_fld%num_phys
+        call check_nodal_data((50+my_rank), sph_phys%rj_fld,            &
+     &      sph_phys%rj_fld%ntot_phys,                                  &
+     &      sph_phys%rj_fld%istack_component(i_fld-1)+1)
       end do
 !
       end subroutine check_rj_spectr_data_t

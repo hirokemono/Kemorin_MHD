@@ -69,20 +69,9 @@
 !
 !  -------------------------------
 !
-      call alloc_phys_data_type(nnod_rj, rj_fld1)
-      call set_sph_sprctr_data_address
+      call set_sph_sprctr_data_address(rj_fld1)
 !
       call init_rms_4_sph_spectr(rj_fld1)
-!
-!  -------------------------------
-!
-      if (iflag_debug.gt.0) write(*,*) 'initialize_sph_trans'
-      if(id_legendre_transfer.eq.iflag_leg_undefined)                   &
-     &            id_legendre_transfer = iflag_leg_orginal_loop
-      call copy_sph_trans_nums_from_rtp
-      call initialize_sph_trans
-!
-!      call check_schmidt_poly_rtm(my_rank+40)
 !
       end subroutine initialize_ene_sph_shell
 !
@@ -120,7 +109,7 @@
 !  evaluate energies
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_rms_sph_spec_rms_whole'
-        call cal_rms_sph_spec_rms_whole
+        call cal_rms_sph_spec_rms_whole(rj_fld1)
 !
         call write_sph_vol_ave_file(i_step, time)
         call write_sph_vol_ms_file(my_rank, i_step, time)

@@ -40,6 +40,7 @@
       subroutine initialize_sph_snap
 !
       use m_ctl_data_sph_MHD
+      use m_sph_spectr_data
       use init_sph_MHD_elapsed_label
       use FEM_analyzer_sph_MHD_w_viz
       use input_control_sph_MHD
@@ -57,7 +58,7 @@
       call read_control_4_sph_snap
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_mesh'
-      call input_control_SPH_mesh(mesh1, group1, ele_mesh1)
+      call input_control_SPH_mesh(mesh1, group1, ele_mesh1, rj_fld1)
       call end_eleps_time(4)
 !
 !     --------------------- 

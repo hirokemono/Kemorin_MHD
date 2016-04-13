@@ -32,6 +32,7 @@
 !
       subroutine initialize_sph_licv
 !
+      use m_sph_spectr_data
       use m_ctl_data_sph_MHD_noviz
       use init_sph_MHD_elapsed_label
       use input_control_sph_MHD
@@ -47,7 +48,7 @@
       call start_eleps_time(4)
       call read_control_4_sph_MHD_noviz
 !
-      call input_control_4_SPH_MHD_nosnap
+      call input_control_4_SPH_MHD_nosnap(rj_fld1)
       call end_eleps_time(4)
 !
 !    precondition elaps start

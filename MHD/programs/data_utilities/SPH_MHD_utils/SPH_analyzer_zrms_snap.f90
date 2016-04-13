@@ -35,6 +35,7 @@
       subroutine SPH_analyze_zRMS_snap(i_step)
 !
       use m_work_time
+      use m_sph_spectr_data
       use m_t_step_parameter
       use m_node_id_spherical_IO
 !
@@ -47,7 +48,7 @@
       integer(kind = kint), intent(in) :: i_step
 !
 !
-      call read_alloc_sph_rst_4_snap(i_step)
+      call read_alloc_sph_rst_4_snap(i_step, rj_fld1)
 !
       if (iflag_debug.eq.1) write(*,*)' sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph(idx_rj_degree_zero,                &
@@ -57,12 +58,12 @@
 !* obtain linear terms for starting
 !*
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
-      call set_sph_field_to_start
+      call set_sph_field_to_start(rj_fld1)
 !
 !*  ----------------lead nonlinear term ... ----------
 !*
       call start_eleps_time(8)
-      call nonlinear
+      call nonlinear(reftemp_rj, rj_fld1)
       call end_eleps_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=
@@ -74,7 +75,7 @@
      &    rj_fld1%ntot_phys, rj_fld1%d_fld)
 !*
       if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
-      call s_lead_fields_4_sph_mhd
+      call s_lead_fields_4_sph_mhd(rj_fld1)
       call end_eleps_time(9)
 !
       end subroutine SPH_analyze_zRMS_snap
@@ -85,6 +86,7 @@
 !
       use m_mesh_data
       use m_node_phys_data
+      use m_sph_spectr_data
       use output_viz_file_control
       use lead_pole_data_4_sph_mhd
       use nod_phys_send_recv

@@ -42,7 +42,6 @@
       use m_boundary_params_sph_MHD
       use m_bc_data_list
       use m_surf_data_list
-      use m_sph_spectr_data
       use m_sph_boundary_input_data
 !
       integer(kind = kint) :: i
@@ -101,7 +100,6 @@
       use m_boundary_params_sph_MHD
       use m_bc_data_list
       use m_surf_data_list
-      use m_sph_spectr_data
       use m_sph_boundary_input_data
 !
       integer(kind = kint) :: i
@@ -158,7 +156,6 @@
       use m_group_data_sph_specr
       use m_bc_data_list
       use m_surf_data_list
-      use m_sph_spectr_data
       use m_sph_boundary_input_data
       use t_boundary_params_sph_MHD
 !
@@ -195,7 +192,6 @@
       use m_group_data_sph_specr
       use m_bc_data_list
       use m_surf_data_list
-      use m_sph_spectr_data
       use m_sph_boundary_input_data
       use t_boundary_params_sph_MHD
 !
@@ -273,7 +269,6 @@
       use m_group_data_sph_specr
       use m_bc_data_list
       use m_surf_data_list
-      use m_sph_spectr_data
       use m_sph_boundary_input_data
       use t_boundary_params_sph_MHD
 !

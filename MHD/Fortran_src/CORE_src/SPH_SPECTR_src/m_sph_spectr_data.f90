@@ -25,13 +25,6 @@
 !>        Structure for field data
         type(phys_data), save :: rj_fld1
 !
-!>      Number of fields of scalar fields @f$ f(r,\theta,\phi) @f$
-      integer (kind=kint) :: num_scalar_rtp
-!>      Number of fields of vector fields @f$ f(r,\theta,\phi) @f$
-      integer (kind=kint) :: num_vector_rtp
-!>      Number of fields of tensor fields @f$ f(r,\theta,\phi) @f$
-      integer (kind=kint) :: num_tensor_rtp
-!
 !>    reference temerature spectr @f$ f(r,j) @f$
 !!@verbatim
 !!        reftemp_rj(kr,0) ... T_0

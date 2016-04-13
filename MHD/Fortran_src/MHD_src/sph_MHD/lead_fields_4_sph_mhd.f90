@@ -7,9 +7,10 @@
 !>@brief  Evaluate pressure and energy fluxes for snapshots
 !!
 !!@verbatim
-!!      subroutine s_lead_fields_4_sph_mhd
-!!      subroutine pressure_4_sph_mhd
-!!      subroutine enegy_fluxes_4_sph_mhd
+!!      subroutine s_lead_fields_4_sph_mhd(rj_fld)
+!!      subroutine pressure_4_sph_mhd(rj_fld)
+!!      subroutine enegy_fluxes_4_sph_mhd(rj_fld)
+!!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
       module lead_fields_4_sph_mhd
@@ -17,6 +18,7 @@
       use m_precision
       use m_machine_parameter
 !
+      use t_phys_data
 !
       implicit none
 !
@@ -29,7 +31,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_lead_fields_4_sph_mhd
+      subroutine s_lead_fields_4_sph_mhd(rj_fld)
 !
       use m_control_parameter
       use m_t_step_parameter
@@ -39,12 +41,14 @@
 !
       integer (kind =kint) :: iflag
 !
+      type(phys_data), intent(inout) :: rj_fld
+!
 !
       call set_lead_physical_values_flag(iflag)
 !
       if ( (iflag*mod(istep_max_dt,i_step_output_rst)) .eq.0 ) then
         if(iflag_t_evo_4_velo .gt. id_no_evolution) then
-          call pressure_4_sph_mhd
+          call pressure_4_sph_mhd(rj_fld)
         end if
       end if
 !
@@ -56,17 +60,16 @@
         call cal_nonlinear_pole_MHD
       end if
 !
-      call gradients_of_vectors_sph
-      call enegy_fluxes_4_sph_mhd
+      call gradients_of_vectors_sph(rj_fld)
+      call enegy_fluxes_4_sph_mhd(rj_fld)
 !
       end subroutine s_lead_fields_4_sph_mhd
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine pressure_4_sph_mhd
+      subroutine pressure_4_sph_mhd(rj_fld)
 !
       use m_sph_phys_address
-      use m_sph_spectr_data
       use m_boundary_params_sph_MHD
       use cal_sol_sph_fluid_crank
 !
@@ -75,42 +78,45 @@
       use cal_div_of_forces
       use const_sph_radial_grad
 !
+      type(phys_data), intent(inout) :: rj_fld
+!
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_div_of_forces_sph_2'
-      call cal_div_of_forces_sph_2
+      call cal_div_of_forces_sph_2(rj_fld)
 !
-      call s_const_radial_forces_on_bc
+      call s_const_radial_forces_on_bc(rj_fld)
 !
-      call sum_div_of_forces
+      call sum_div_of_forces(rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_pressure_by_div_v'
-      call cal_sol_pressure_by_div_v(rj_fld1%ntot_phys, rj_fld1%d_fld)
+      call cal_sol_pressure_by_div_v(rj_fld%ntot_phys, rj_fld%d_fld)
 !
       if(ipol%i_press_grad .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'const_pressure_gradient'
         call const_pressure_gradient(sph_bc_U,                          &
-     &     ipol%i_press, ipol%i_press_grad)
+     &     ipol%i_press, ipol%i_press_grad, rj_fld)
       end if
 !
       end subroutine pressure_4_sph_mhd
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine enegy_fluxes_4_sph_mhd
+      subroutine enegy_fluxes_4_sph_mhd(rj_fld)
 !
       use m_sph_phys_address
-      use m_sph_spectr_data
       use sph_transforms_4_MHD
       use cal_energy_flux_rtp
       use cal_energy_flux_rj
 !
+      type(phys_data), intent(inout) :: rj_fld
+!
 !
 !      Evaluate fields for output in spectrum space
       if (iflag_debug.eq.1) write(*,*) 's_cal_energy_flux_rj'
-      call s_cal_energy_flux_rj
+      call s_cal_energy_flux_rj(rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_snapshot_MHD'
-      call sph_back_trans_snapshot_MHD(rj_fld1)
+      call sph_back_trans_snapshot_MHD(rj_fld)
 !
 !      Evaluate fields for output in grid space
       if (iflag_debug.eq.1) write(*,*) 's_cal_energy_flux_rtp'
@@ -118,28 +124,29 @@
 !
       if (iflag_debug.eq.1) write(*,*)                                  &
      &                          'sph_forward_trans_snapshot_MHD'
-      call sph_forward_trans_snapshot_MHD(rj_fld1)
+      call sph_forward_trans_snapshot_MHD(rj_fld)
 !
       end subroutine enegy_fluxes_4_sph_mhd
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine gradients_of_vectors_sph
+      subroutine gradients_of_vectors_sph(rj_fld)
 !
       use m_sph_phys_address
-      use m_sph_spectr_data
       use sph_transforms_4_MHD
       use sph_poynting_flux_smp
+!
+      type(phys_data), intent(inout) :: rj_fld
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_velo_to_grad_v_rtp'
       call copy_velo_to_grad_v_rtp
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_tmp_snap_MHD'
-      call sph_forward_trans_tmp_snap_MHD(rj_fld1)
+      call sph_forward_trans_tmp_snap_MHD(rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_grad_of_velocities_sph'
-      call cal_grad_of_velocities_sph
+      call cal_grad_of_velocities_sph(rj_fld)
 !
       end subroutine gradients_of_vectors_sph
 !

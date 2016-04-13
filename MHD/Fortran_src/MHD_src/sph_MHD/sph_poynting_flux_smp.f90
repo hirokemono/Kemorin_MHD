@@ -9,6 +9,8 @@
 !!
 !!@verbatim
 !!      subroutine copy_velo_to_grad_v_rtp
+!!      subroutine cal_grad_of_velocities_sph(rj_fld)
+!!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
       module sph_poynting_flux_smp
@@ -20,6 +22,8 @@
       use m_spheric_param_smp
       use m_sph_phys_address
       use m_physical_property
+!
+      private :: copy_grad_vect_to_m_stretch
 !
 ! -----------------------------------------------------------------------
 !
@@ -55,24 +59,26 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_grad_of_velocities_sph
+      subroutine cal_grad_of_velocities_sph(rj_fld)
 !
-      use m_sph_spectr_data
+      use t_phys_data
       use m_boundary_params_sph_MHD
       use const_sph_radial_grad
+!
+      type(phys_data), intent(inout) :: rj_fld
 !
 !
       if(ipol%i_mag_stretch .eq. 0) return
 !
       call copy_grad_vect_to_m_stretch                                  &
-     &   (rj_fld1%ntot_phys, rj_fld1%d_fld)
+     &   (rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call const_sph_gradient_no_bc                                     &
-     &     (sph_bc_U, (ipol%i_mag_stretch  ), ipol%i_grad_vx)
+     &     (sph_bc_U, (ipol%i_mag_stretch  ), ipol%i_grad_vx, rj_fld)
       call const_sph_gradient_no_bc                                     &
-     &     (sph_bc_U, (ipol%i_mag_stretch+1), ipol%i_grad_vy)
+     &     (sph_bc_U, (ipol%i_mag_stretch+1), ipol%i_grad_vy, rj_fld)
       call const_sph_gradient_no_bc                                     &
-     &     (sph_bc_U, (ipol%i_mag_stretch+2), ipol%i_grad_vz)
+     &     (sph_bc_U, (ipol%i_mag_stretch+2), ipol%i_grad_vz, rj_fld)
 !
       end subroutine cal_grad_of_velocities_sph
 !

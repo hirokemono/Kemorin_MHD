@@ -124,6 +124,7 @@
 !
       use m_work_time
       use m_t_step_parameter
+      use m_sph_spectr_data
       use m_node_id_spherical_IO
 !
       use cal_nonlinear
@@ -136,7 +137,7 @@
       integer(kind = kint), intent(in) :: i_step
 !
 !
-      call read_alloc_sph_rst_4_snap(i_step)
+      call read_alloc_sph_rst_4_snap(i_step, rj_fld1)
 !
       if (iflag_debug.eq.1) write(*,*)' sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph(idx_rj_degree_zero,                &
@@ -146,7 +147,7 @@
 !* obtain linear terms for starting
 !*
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
-      call set_sph_field_to_start
+      call set_sph_field_to_start(rj_fld1)
 !
 !*  ----------------Modify spectr data ... ----------
 !*
@@ -155,7 +156,7 @@
 !*  ----------------lead nonlinear term ... ----------
 !*
       call start_eleps_time(8)
-      call nonlinear
+      call nonlinear(reftemp_rj, rj_fld1)
       call end_eleps_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=
@@ -176,13 +177,13 @@
       call start_eleps_time(4)
       call start_eleps_time(11)
       if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
-      call output_rms_sph_mhd_control
+      call output_rms_sph_mhd_control(rj_fld1)
       call end_eleps_time(11)
       call end_eleps_time(4)
 !
 !*  -----------  Output spectr data --------------
 !*
-      call output_spectr_4_snap(i_step)
+      call output_spectr_4_snap(i_step, rj_fld1)
 !
       end subroutine SPH_analyze_special_snap
 !
@@ -238,7 +239,7 @@
       use sph_transforms_4_MHD
 !
 !
-      call s_lead_fields_4_sph_mhd
+      call s_lead_fields_4_sph_mhd(rj_fld1)
 !
       call sph_back_trans_4_MHD(rj_fld1)
 !

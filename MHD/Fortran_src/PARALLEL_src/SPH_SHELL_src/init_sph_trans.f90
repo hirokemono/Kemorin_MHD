@@ -27,26 +27,6 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_sph_trans_nums_from_rtp
-!
-      use m_machine_parameter
-      use m_phys_constants
-      use m_sph_spectr_data
-      use m_work_4_sph_trans
-!
-!
-      ncomp_sph_trans =  num_tensor_rtp * n_sym_tensor                  &
-     &                 + num_vector_rtp * n_vector                      &
-     &                 + num_scalar_rtp * n_scalar
-!
-      if(iflag_debug .gt. 0) then
-        write(*,*) 'ncomp_sph_trans', ncomp_sph_trans
-      end if
-!
-      end subroutine copy_sph_trans_nums_from_rtp
-!
-! -----------------------------------------------------------------------
-!
       subroutine initialize_sph_trans
 !
       use init_FFT_4_sph

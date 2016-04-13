@@ -150,7 +150,8 @@
 !
         if (iflag_debug.gt.0)                                           &
      &        write(*,*) 'set_all_vec_spec_to_sph_t'
-        call set_all_vec_spec_to_sph_t(ncomp_sph_trans, n_WS, WS)
+        call set_all_vec_spec_to_sph_t                                  &
+     &     (ncomp_sph_trans, rj_fld1, n_WS, WS)
 !
       if (iflag_debug.gt.0) write(*,*) 'sph_backward_transforms',       &
      &  ncomp_sph_trans, num_vector_rtp, num_scalar_rtp, num_tensor_rtp
@@ -225,8 +226,8 @@
 !
       use m_phys_labels
       use m_spheric_parameter
-      use m_sph_spectr_data
       use m_work_4_sph_trans
+      use set_phys_name_4_sph_trans
 !
       integer(kind = kint), intent(in) ::  ncomp_trans
       real(kind = kreal), intent(inout) :: v_rtp(nnod_rtp,ncomp_trans)

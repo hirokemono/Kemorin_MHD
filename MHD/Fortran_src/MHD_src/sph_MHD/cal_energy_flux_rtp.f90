@@ -97,7 +97,6 @@
       use m_spheric_parameter
       use m_spheric_param_smp
       use m_physical_property
-      use m_sph_spectr_data
       use m_sph_phys_address
       use m_addresses_trans_sph_MHD
       use m_addresses_trans_sph_snap
