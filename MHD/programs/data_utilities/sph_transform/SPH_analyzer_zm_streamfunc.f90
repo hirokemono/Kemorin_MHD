@@ -75,7 +75,8 @@
         call zonal_mean_all_sph_spectr(rj_fld1)
 !
 !  spherical transform for vector
-        call sph_b_trans_streamline(femmesh_STR%mesh, field_STR)
+        call sph_b_trans_streamline                                     &
+     &     (femmesh_STR%mesh, rj_fld1, field_STR)
 !
       end if
 !
@@ -124,7 +125,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sph_b_trans_streamline(mesh, nod_fld)
+      subroutine sph_b_trans_streamline(mesh, rj_fld, nod_fld)
 !
       use t_mesh_data
       use t_phys_data
@@ -137,6 +138,7 @@
       use sph_transfer_all_field
 !
       type(mesh_geometry), intent(in) :: mesh
+      type(phys_data), intent(in) :: rj_fld
       type(phys_data), intent(inout) :: nod_fld
 !
       integer(kind = kint) :: nscalar_trans
@@ -151,7 +153,7 @@
         if (iflag_debug.gt.0)                                           &
      &        write(*,*) 'set_all_vec_spec_to_sph_t'
         call set_all_vec_spec_to_sph_t                                  &
-     &     (ncomp_sph_trans, rj_fld1, n_WS, WS)
+     &     (ncomp_sph_trans, rj_fld, n_WS, WS)
 !
       if (iflag_debug.gt.0) write(*,*) 'sph_backward_transforms',       &
      &  ncomp_sph_trans, num_vector_rtp, num_scalar_rtp, num_tensor_rtp

@@ -3,7 +3,7 @@
 !
 !        programmed by H.Matsui on Oct., 2007
 !
-!      subroutine set_ctl_data_4_sph_utils
+!      subroutine set_ctl_data_4_sph_utils(rj_fld)
 !
       module m_ctl_params_sph_utils
 !
@@ -35,7 +35,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_ctl_data_4_sph_utils
+      subroutine set_ctl_data_4_sph_utils(rj_fld)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -61,6 +61,8 @@
       use m_ctl_data_4_fields
       use m_ctl_data_4_pickup_sph
       use m_ctl_data_4_org_data
+!
+      type(phys_data), intent(inout) :: rj_fld
 !
       integer(kind = kint) :: ierr
 !
@@ -125,7 +127,7 @@
 !
 !   set physical values
 !
-      call s_set_control_sph_data(rj_fld1, ierr)
+      call s_set_control_sph_data(rj_fld, ierr)
       call s_set_control_nodal_data(nod_fld, ierr)
 !
       if(i_buo_ratio .gt. 0) then

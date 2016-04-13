@@ -16,7 +16,7 @@
 !!      subroutine adjust_sph_temp_bc_by_reftemp                        &
 !!     &         (idx_rj_degree_zero, nri, reftemp_rj, sph_bc_T)
 !!
-!!      subroutine sync_temp_by_per_temp_sph(idx_rj_degree_zero,        &
+!!      subroutine chenge_temp_to_per_temp_sph(idx_rj_degree_zero,      &
 !!     &         nnod_rj, nidx_rj, radius_1d_rj_r, reftemp_rj,          &
 !!     &         ntot_phys_rj, d_rj)
 !!        d_rj(inod,ipol%i_temp):        T => \Theta = T - T0
@@ -25,7 +25,7 @@
 !!        d_rj(inod,ipol%i_grad_part_t): d \Theta / dr
 !!
 !!
-!!      subroutine trans_per_temp_to_temp_sph(idx_rj_degree_zero,       &
+!!      subroutine transfer_per_temp_to_temp_sph(idx_rj_degree_zero,    &
 !!     &          nnod_rj, nidx_rj, radius_1d_rj_r, reftemp_rj,         &
 !!     &          ntot_phys_rj, d_rj)
 !!        d_rj(inod,ipol%i_temp):        \Theta = T - T0 => T
@@ -171,7 +171,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine sync_temp_by_per_temp_sph(idx_rj_degree_zero,          &
+      subroutine chenge_temp_to_per_temp_sph(idx_rj_degree_zero,        &
      &         nnod_rj, nidx_rj, radius_1d_rj_r, reftemp_rj,            &
      &         ntot_phys_rj, d_rj)
 !
@@ -209,11 +209,11 @@
       end do
 !$omp end parallel do
 !
-      end subroutine sync_temp_by_per_temp_sph
+      end subroutine chenge_temp_to_per_temp_sph
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine trans_per_temp_to_temp_sph(idx_rj_degree_zero,         &
+      subroutine transfer_per_temp_to_temp_sph(idx_rj_degree_zero,      &
      &          nnod_rj, nidx_rj, radius_1d_rj_r, reftemp_rj,           &
      &          ntot_phys_rj, d_rj)
 !
@@ -250,7 +250,7 @@
         end do
       end if
 !
-      end subroutine trans_per_temp_to_temp_sph
+      end subroutine transfer_per_temp_to_temp_sph
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

@@ -69,7 +69,6 @@
 !
       subroutine ordering_sph_field_by_viz(rj_fld)
 !
-      use m_sph_spectr_data
       use ordering_field_by_viz
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -90,7 +89,6 @@
 !
       subroutine ordering_sph_field_by_viz_comp(rj_fld)
 !
-      use m_sph_spectr_data
       use ordering_field_by_viz
 !
       type(phys_data), intent(inout) :: rj_fld

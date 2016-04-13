@@ -49,7 +49,7 @@
       call read_control_data_sph_utils
 !
       if (iflag_debug.gt.0) write(*,*) 'set_ctl_data_4_sph_utils'
-      call set_ctl_data_4_sph_utils
+      call set_ctl_data_4_sph_utils(rj_fld1)
 !
 !       set spectr grids
 !
