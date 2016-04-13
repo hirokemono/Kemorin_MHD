@@ -125,7 +125,7 @@
 !
 !   set physical values
 !
-      call s_set_control_sph_data(ierr)
+      call s_set_control_sph_data(rj_fld1, ierr)
       call s_set_control_nodal_data(nod_fld, ierr)
 !
       if(i_buo_ratio .gt. 0) then

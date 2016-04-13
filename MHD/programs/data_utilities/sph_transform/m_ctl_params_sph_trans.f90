@@ -40,6 +40,7 @@
       use t_ucd_data
       use calypso_mpi
       use m_global_gauss_coefs
+      use m_sph_spectr_data
       use m_FFT_selector
 !
       use set_control_nodal_data
@@ -93,7 +94,7 @@
 !
 !   set physical values
 !
-      call s_set_control_sph_data(ierr)
+      call s_set_control_sph_data(rj_fld1, ierr)
       call s_set_control_nodal_data(field_STR, ierr)
 !
 !
@@ -119,6 +120,7 @@
 !
       use m_control_params_2nd_files
       use m_FFT_selector
+      use m_sph_spectr_data
       use set_control_nodal_data
       use set_control_sph_data
       use set_control_platform_data
@@ -171,7 +173,7 @@
 !
 !   set physical values
 !
-      call s_set_control_sph_data(ierr)
+      call s_set_control_sph_data(rj_fld1, ierr)
       call s_set_control_nodal_data(field_STR, ierr)
 !
 !
@@ -282,7 +284,7 @@
 !
 !   set physical values
 !
-      call s_set_control_sph_data(ierr)
+      call s_set_control_sph_data(rj_fld1, ierr)
       call s_set_control_nodal_data(field_STR, ierr)
 !
 !

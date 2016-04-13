@@ -68,7 +68,7 @@
 !
       call alloc_phys_data_type(nnod_rj, rj_fld1)
 !
-      call init_rms_4_sph_spectr
+      call init_rms_4_sph_spectr(rj_fld1)
 !
 !  -------------------------------
 !
@@ -100,7 +100,7 @@
       integer(kind = kint) :: i_step
 !
 !
-      call init_sph_spec_4_monitor
+      call init_sph_spec_4_monitor(rj_fld1)
 !
       do i_step = i_step_init, i_step_number, i_step_output_ucd
 !
@@ -110,7 +110,7 @@
      &     (iflag_org_sph_file_fmt, org_sph_file_head, sph_fld_IO)
         call sel_read_step_SPH_field_file                               &
      &     (nprocs, my_rank, i_step, sph_fld_IO)
-        call set_rj_phys_data_from_IO(sph_fld_IO)
+        call set_rj_phys_data_from_IO(nnod_rj, sph_fld_IO, rj_fld1)
 !
 !  pickup components
 !

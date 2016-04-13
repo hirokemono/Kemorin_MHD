@@ -193,6 +193,7 @@
 !
       use m_sph_phys_address
       use m_spheric_parameter
+      use m_sph_spectr_data
 !
       use cal_zonal_mean_sph_spectr
 !
@@ -208,18 +209,18 @@
       end do
 !
 !      call pick_degree_sph_spectr(ltr_half, ipick_degree,               &
-!     &    ithree, ipol%i_velo)
+!     &    ithree, ipol%i_velo, rj_fld1)
 !      call pick_degree_sph_spectr(ltr_half, ipick_degree,               &
 !     &    ithree, ipol%i_magne)
-!      deallocate(ipick_degree)
+!      deallocate(ipick_degree, rj_fld1)
 
       if (my_rank.eq.0) write(*,*) 'delete zonam mean velocity'
-      call take_zonal_mean_rj_field(ithree, ipol%i_velo)
-      call take_zonal_mean_rj_field(ithree, ipol%i_vort)
+      call take_zonal_mean_rj_field(ithree, ipol%i_velo, rj_fld1)
+      call take_zonal_mean_rj_field(ithree, ipol%i_vort, rj_fld1)
       if (my_rank.eq.0) write(*,*) 'delete zonam mean toroidal'
-      call delete_zonal_mean_rj_field(ione, ipol%i_velo)
-      call delete_zonal_mean_rj_field(ione, idpdr%i_velo)
-      call delete_zonal_mean_rj_field(ione, itor%i_vort)
+      call delete_zonal_mean_rj_field(ione, ipol%i_velo, rj_fld1)
+      call delete_zonal_mean_rj_field(ione, idpdr%i_velo, rj_fld1)
+      call delete_zonal_mean_rj_field(ione, itor%i_vort, rj_fld1)
 !
       end subroutine set_special_rj_fields
 !
@@ -229,6 +230,7 @@
 !
       use t_phys_address
       use m_sph_phys_address
+      use m_sph_spectr_data
       use output_viz_file_control
       use lead_fields_4_sph_mhd
 !
@@ -238,14 +240,14 @@
 !
       call s_lead_fields_4_sph_mhd
 !
-      call sph_back_trans_4_MHD
+      call sph_back_trans_4_MHD(rj_fld1)
 !
-      call sph_forward_trans_snapshot_MHD
+      call sph_forward_trans_snapshot_MHD(rj_fld1)
 !
 ! ----  Take zonal mean
 !
       if (my_rank.eq.0) write(*,*) 'zonal_mean_all_sph_spectr'
-      call zonal_mean_all_sph_spectr
+      call zonal_mean_all_sph_spectr(rj_fld1)
 !
       end subroutine lead_special_fields_4_sph_mhd
 !

@@ -111,7 +111,7 @@
      &    iphys%i_wide_fil_velo, iphys%i_wide_fil_magne,                &
      &    nod_comm, node, wide_filtering, wk_filter, nod_fld)
 !      call check_nodal_data                                            &
-!     &   (my_rank, nod_fld, n_vector, iphys%i_sgs_simi)
+!     &   ((50+my_rank), nod_fld, n_vector, iphys%i_sgs_simi)
 !
 !    SGS term by similarity model (to iphys%i_sgs_simi)
 !
@@ -203,7 +203,7 @@
      &    nod_comm, node, wide_filtering, sgs_coefs_nod,                &
      &    wk_filter, nod_fld)
 !      call check_nodal_data                                            &
-!     &   (my_rank, nod_fld, n_vector, iphys%i_sgs_grad_f)
+!     &   ((50+my_rank), nod_fld, n_vector, iphys%i_sgs_grad_f)
 !
 !    SGS term by similarity model
 !

@@ -65,6 +65,8 @@
       use m_t_step_parameter
       use m_control_params_sph_data
       use m_time_data_IO
+      use m_spheric_parameter
+      use m_sph_spectr_data
       use m_node_id_spherical_IO
       use t_field_data_IO
 !
@@ -81,13 +83,13 @@
 !  spherical transform for vector
        call sph_f_trans_all_field(femmesh_STR%mesh, field_STR)
 !
-!      call check_rj_spectr_data(my_rank)
+!      call check_all_field_data(my_rank, rj_fld1)
 !
 !     data output
 !
       if (iflag_debug.gt.0)                                             &
      &    write(*,*) 'copy_rj_all_phys_data_to_IO'
-      call copy_rj_all_phys_data_to_IO(fld_IO)
+      call copy_rj_all_phys_data_to_IO(nnod_rj, rj_fld1, fld_IO)
 !
       i_time_step_IO = 0
       time_IO = zero
@@ -105,6 +107,8 @@
       use m_sph_spectr_data
       use m_t_step_parameter
       use m_time_data_IO
+      use m_spheric_parameter
+      use m_sph_spectr_data
       use m_node_id_spherical_IO
       use t_field_data_IO
 !
@@ -122,18 +126,18 @@
 !  spherical transform for vector
       call sph_f_trans_all_field(femmesh_STR%mesh, field_STR)
 !
-!      call check_rj_spectr_data(my_rank)
+!      call check_all_field_data(my_rank, rj_fld1)
 !
 !  pick zonal mean
 !
       if (iflag_debug.gt.0)  write(*,*) 'zonal_mean_all_sph_spectr'
-      call zonal_mean_all_sph_spectr
+      call zonal_mean_all_sph_spectr(rj_fld1)
 !
 !     data output
 !
       if (iflag_debug.gt.0)                                             &
      &    write(*,*) 'copy_rj_all_phys_data_to_IO'
-      call copy_rj_all_phys_data_to_IO(fld_IO)
+      call copy_rj_all_phys_data_to_IO(nnod_rj, rj_fld1, fld_IO)
       call count_number_of_node_stack                                   &
      &   (fld_IO%nnod_IO, fld_IO%istack_numnod_IO)
 !

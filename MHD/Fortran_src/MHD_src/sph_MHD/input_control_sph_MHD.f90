@@ -138,7 +138,9 @@
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_ctl_data_4_sphere_model
-      use copy_rj_spec_name_to_node
+!
+      use t_phys_data
+!
       use ordering_field_by_viz
       use node_monitor_IO
       use set_controls_4_sph_shell
@@ -148,10 +150,10 @@
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &     write(*,*) 'copy_rj_spec_name_to_nod_fld'
-      call copy_rj_spec_name_to_nod_fld(nod_fld1)
+      call copy_field_name_type(rj_fld1, nod_fld1)
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
-     &     call check_nodal_field_name_type(nod_fld1)
+     &     call check_nodal_field_name_type(6, nod_fld1)
 !
       call count_field_4_monitor                                        &
      &   (rj_fld1%num_phys, rj_fld1%num_component,                      &

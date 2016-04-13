@@ -9,7 +9,8 @@
 !!@verbatim
 !!      subroutine deallocate_rms_sph_local_data
 !!      subroutine set_sum_table_4_sph_spectr
-!!      subroutine sum_sph_layerd_rms
+!!      subroutine sum_sph_layerd_rms(rj_fld)
+!!        type(phys_data), intent(in) :: rj_fld
 !!@endverbatim
 !
       module sum_sph_rms_data
@@ -196,17 +197,20 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine sum_sph_layerd_rms(kg_st, kg_ed)
+      subroutine sum_sph_layerd_rms(kg_st, kg_ed, rj_fld)
 !
       use calypso_mpi
       use m_spheric_parameter
-      use m_sph_spectr_data
       use m_rms_4_sph_spectr
+!
+      use t_phys_data
+!
       use cal_rms_by_sph_spectr
       use cal_ave_4_rms_vector_sph
       use radial_int_for_sph_spec
 !
       integer(kind = kint), intent(in) :: kg_st, kg_ed
+      type(phys_data), intent(in) :: rj_fld
 !
       integer(kind = kint) :: j_fld, i_fld
       integer(kind = kint) :: icomp_rj, jcomp_st, ncomp_rj
@@ -222,12 +226,12 @@
 !
       do j_fld = 1, num_rms_rj
         i_fld = ifield_rms_rj(j_fld)
-        icomp_rj = rj_fld1%istack_component(i_fld-1) + 1
+        icomp_rj = rj_fld%istack_component(i_fld-1) + 1
         jcomp_st = istack_rms_comp_rj(j_fld-1) + 1
         ncomp_rj = num_rms_comp_rj(j_fld)
         num = nidx_rj(2) * ncomp_rj
         call cal_rms_sph_spec_one_field(ncomp_rj, icomp_rj,             &
-     &      nidx_rj(1), nidx_rj(2), rj_fld1%ntot_phys, rj_fld1%d_fld,   &
+     &      nidx_rj(1), nidx_rj(2), rj_fld%ntot_phys, rj_fld%d_fld,     &
      &      rms_sph_rj(0,1,1))
         call radial_integration(kg_st, kg_ed, nidx_rj(1),               &
      &      radius_1d_rj_r, num, rms_sph_rj(0,1,1), rms_sph_vol_j(1,1))

@@ -134,6 +134,7 @@
 !
       use m_sph_phys_address
       use m_spheric_parameter
+      use m_sph_spectr_data
 !
       use cal_zonal_mean_sph_spectr
 !
@@ -146,10 +147,10 @@
       ipick_degree(1) = 0
 !
       if (my_rank.eq.0) write(*,*) 'Take zonam mean of light element'
-      call take_zonal_mean_rj_field(ione, ipol%i_light)
+      call take_zonal_mean_rj_field(ione, ipol%i_light, rj_fld1)
 !      if (my_rank.eq.0) write(*,*) 'Take sphere average of light element'
 !      call pick_degree_sph_spectr(ltr_half, ipick_degree,               &
-!     &    ione, ipol%i_light)
+!     &    ione, ipol%i_light, rj_fld1)
 !
       end subroutine set_modify_rj_fields
 !

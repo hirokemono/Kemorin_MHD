@@ -60,7 +60,7 @@
       if(iflag_org_sph_rj_head .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'input_old_rj_sph_trans'
         call input_old_rj_sph_trans(my_rank)
-        call set_sph_magne_address
+        call set_sph_magne_address(rj_fld1)
       end if
 !
       call set_cmb_icb_radial_point(cmb_radial_grp, icb_radial_grp)
@@ -130,14 +130,14 @@
 !
         if(iflag_org_sph_rj_head .eq. 0) then
           if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
-          call set_rj_phys_data_from_IO(fld_IO)
+          call set_rj_phys_data_from_IO(nnod_rj, fld_IO, rj_fld1)
         else
           if (iflag_debug.gt.0) write(*,*)                              &
      &                        'r_interpolate_sph_fld_from_IO'
-          call r_interpolate_sph_fld_from_IO(fld_IO)
+          call r_interpolate_sph_fld_from_IO(fld_IO, rj_fld1)
         end if
 !
-!          call check_rj_spectr_data(my_rank)
+!          call check_all_field_data(my_rank, rj_fld1)
 !  spherical transform for vector
         call sph_b_trans_all_field(femmesh_STR%mesh, field_STR)
       end if

@@ -179,9 +179,10 @@
      &    rhs_tbl, Asf_bcs%grad, intg_point_t_evo, ak_d_magne,          &
      &    fem_wk, f_l)
 !
-!      call check_nodal_data(my_rank, nod_fld, n_vector, iphys%i_velo)
-!      call check_nodal_data(my_rank, ele_fld,                          &
-!     &    n_vector, iphys_ele%i_magne)
+!      call check_nodal_data                                            &
+!     &   ((50+my_rank), nod_fld, n_vector, iphys%i_velo)
+!      call check_nodal_data                                            &
+!     &   ((50+my_rank), ele_fld, n_vector, iphys_ele%i_magne)
 !      call check_ff_smp(my_rank, n_vector, node%max_nod_smp, f_l)
 !      call check_ff_smp(my_rank, n_vector, node%max_nod_smp, f_nl)
 !
@@ -221,7 +222,8 @@
       call vector_send_recv(iphys%i_vecp, node, nod_comm, nod_fld)
       call clear_nodal_data(node, nod_fld, n_scalar, iphys%i_m_phi)
 !
-!      call check_nodal_data(my_rank, nod_fld, n_vector, iphys%i_vecp)
+!      call check_nodal_data                                            &
+!     &   ((50+my_rank), nod_fld, n_vector, iphys%i_vecp)
 !
       end subroutine cal_vector_p_pre
 !

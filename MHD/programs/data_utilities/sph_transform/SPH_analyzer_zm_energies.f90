@@ -63,11 +63,11 @@
 !
         if(iflag_org_sph_rj_head .eq. 0) then
           if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
-          call set_rj_phys_data_from_IO(fld_IO)
+          call set_rj_phys_data_from_IO(nnod_rj, fld_IO, rj_fld1)
         else
           if (iflag_debug.gt.0) write(*,*)                              &
      &                        'r_interpolate_sph_fld_from_IO'
-          call r_interpolate_sph_fld_from_IO(fld_IO)
+          call r_interpolate_sph_fld_from_IO(fld_IO, rj_fld1)
         end if
 !
 !        call set_rj_phys_for_pol_kene                                  &
@@ -172,7 +172,7 @@
       do i = 1, rj_fld1%num_phys
         if     (rj_fld1%phys_name(i) .eq. fhd_velo) then
           ist_fld = rj_fld1%istack_component(i-1)+1
-          call delete_zonal_mean_rj_field(n_vector, ist_fld)
+          call delete_zonal_mean_rj_field(n_vector, ist_fld, rj_fld1)
         end if
       end do
 !

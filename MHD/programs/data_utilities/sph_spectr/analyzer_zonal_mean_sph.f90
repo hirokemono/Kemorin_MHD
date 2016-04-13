@@ -33,6 +33,7 @@
       use m_t_step_parameter
       use m_ctl_data_4_sph_utils
       use m_ctl_params_sph_utils
+      use m_spheric_parameter
       use m_sph_spectr_data
       use m_sph_phys_address
       use parallel_load_data_4_sph
@@ -97,12 +98,12 @@
      &     (nprocs, my_rank, i_step, sph_fld_IO)
 !
         if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
-        call set_rj_phys_data_from_IO(sph_fld_IO)
+        call set_rj_phys_data_from_IO(nnod_rj, sph_fld_IO, rj_fld1)
 !
 !  evaluate energies
 !
-        call zonal_mean_all_sph_spectr
-        call copy_rj_all_phys_data_to_IO(sph_fld_IO)
+        call zonal_mean_all_sph_spectr(rj_fld1)
+        call copy_rj_all_phys_data_to_IO(nnod_rj, rj_fld1, sph_fld_IO)
 !
         call alloc_merged_field_stack(nprocs, sph_fld_IO)
         call count_number_of_node_stack                                 &

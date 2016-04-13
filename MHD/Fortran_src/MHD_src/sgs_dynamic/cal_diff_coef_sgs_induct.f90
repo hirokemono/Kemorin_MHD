@@ -173,7 +173,7 @@
      &    iphys%i_sgs_grad, iphys%i_sgs_simi, iphys%i_sgs_simi)
 !
 !      call check_nodal_data                                            &
-!     &   (my_rank, nod_fld, n_vector, iphys%i_sgs_simi)
+!     &   ((50+my_rank), nod_fld, n_vector, iphys%i_sgs_simi)
 !
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad_f)
 !
@@ -188,7 +188,7 @@
      &   (iphys%i_sgs_grad_f, node, nod_comm, nod_fld)
 !
 !      call check_nodal_data                                            &
-!     &   (my_rank, nod_fld, n_vector, iphys%i_sgs_grad_f)
+!     &   ((50+my_rank), nod_fld, n_vector, iphys%i_sgs_grad_f)
 !
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad)
 !
@@ -208,7 +208,7 @@
      &    iphys%i_sgs_grad, iphys%i_sgs_grad, wk_filter, nod_fld)
 !
 !      call check_nodal_data                                            &
-!     &   (my_rank, nod_fld, n_vector, iphys%i_sgs_grad)
+!     &   ((50+my_rank), nod_fld, n_vector, iphys%i_sgs_grad)
 !
 !     obtain model coefficient
 !

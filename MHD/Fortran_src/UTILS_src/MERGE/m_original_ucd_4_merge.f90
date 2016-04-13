@@ -176,7 +176,7 @@
       merged_fld%ntot_phys_viz = merged_fld%ntot_phys
 !
 !      write(*,*) 'subdomain field name list'
-      call check_nodal_field_name_type(merged_fld)
+      call check_nodal_field_name_type(6, merged_fld)
 !
       end subroutine set_field_list_4_merge
 !

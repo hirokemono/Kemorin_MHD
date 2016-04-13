@@ -29,6 +29,7 @@
       subroutine SPH_analyze_zm_snap(i_step)
 !
       use m_work_time
+      use m_sph_spectr_data
       use m_t_step_parameter
       use m_node_id_spherical_IO
 !
@@ -77,7 +78,7 @@
 ! ----  Take zonal mean
 !
       if (iflag_debug.eq.1) write(*,*) 'zonal_mean_all_sph_spectr'
-      call zonal_mean_all_sph_spectr
+      call zonal_mean_all_sph_spectr(rj_fld1)
 !
 !*  -----------  lead energy data --------------
 !*

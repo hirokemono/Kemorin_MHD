@@ -169,6 +169,7 @@
 !
       use m_control_params_2nd_files
       use m_node_id_spherical_IO
+      use m_sph_spectr_data
       use set_sph_restart_IO
       use r_interpolate_sph_data
 !
@@ -187,7 +188,7 @@
       else
         if (iflag_debug.gt.0)                                           &
      &            write(*,*) 'r_interpolate_sph_rst_from_IO'
-        call r_interpolate_sph_rst_from_IO(sph_fst_IO)
+        call r_interpolate_sph_rst_from_IO(sph_fst_IO, rj_fld1)
       end if
 !
       call dealloc_phys_data_IO(sph_fst_IO)
@@ -201,6 +202,8 @@
 !
       use m_t_int_parameter
       use m_control_params_sph_data
+      use m_spheric_parameter
+      use m_sph_spectr_data
       use copy_rj_phys_data_4_IO
       use copy_time_steps_4_restart
 !
@@ -213,9 +216,9 @@
 !
       istep_fld = i_step / i_step_output_ucd
       call copy_time_steps_to_restart
-      call copy_rj_viz_phys_name_to_IO(sph_fst_IO)
+      call copy_rj_viz_phys_name_to_IO(nnod_rj, rj_fld1, sph_fst_IO)
       call alloc_phys_data_IO(sph_fst_IO)
-      call copy_rj_viz_phys_data_to_IO(sph_fst_IO)
+      call copy_rj_viz_phys_data_to_IO(nnod_rj, rj_fld1, sph_fst_IO)
 !
       call set_spectr_prefix_fmt_2_fld_IO(sph_fst_IO)
       call sel_write_step_SPH_field_file                                &

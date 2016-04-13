@@ -7,7 +7,8 @@
 !> @brief Output mean square of spectr data
 !!
 !!@verbatim
-!!      subroutine cal_volume_average_sph(kg_st, kg_ed, avol)
+!!      subroutine cal_volume_average_sph(kg_st, kg_ed, avol, rj_fld)
+!!        type(phys_data), intent(in) :: rj_fld
 !!@endverbatim
 !!
 !!@n @param istep         time step number
@@ -34,21 +35,24 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_volume_average_sph(kg_st, kg_ed, avol)
+      subroutine cal_volume_average_sph(kg_st, kg_ed, avol, rj_fld)
 !
       use m_phys_constants
-      use m_sph_spectr_data
       use m_rms_4_sph_spectr
       use m_sph_phys_address
+!
+      use t_phys_data
+!
       use cal_ave_4_rms_vector_sph
       use radial_int_for_sph_spec
 !
+      type(phys_data), intent(in) :: rj_fld
       integer(kind = kint), intent(in) :: kg_st, kg_ed
       real(kind = kreal), intent(in) :: avol
 !
 !
       if(idx_rj_degree_zero .gt. izero) then
-        call cal_sphere_average_sph
+        call cal_sphere_average_sph(rj_fld)
 !
         call radial_integration(kg_st, kg_ed, nidx_rj(1),               &
      &      radius_1d_rj_r, ntot_rms_rj, ave_sph(0,1),  ave_sph_vol(1))
@@ -59,13 +63,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sphere_average_sph
+      subroutine cal_sphere_average_sph(rj_fld)
 !
       use m_phys_constants
-      use m_sph_spectr_data
       use m_sph_phys_address
+!
+      use t_phys_data
+!
       use cal_rms_by_sph_spectr
       use m_rms_4_sph_spectr
+!
+      type(phys_data), intent(in) :: rj_fld
 !
       integer(kind = kint) :: i_fld, j_fld, icomp_st, jcomp_st
 !
@@ -75,16 +83,16 @@
 !
       do j_fld = 1, num_rms_rj
         i_fld = ifield_rms_rj(j_fld)
-        icomp_st = rj_fld1%istack_component(i_fld-1) + 1
+        icomp_st = rj_fld%istack_component(i_fld-1) + 1
         jcomp_st = istack_rms_comp_rj(j_fld-1) +  1
-        if (rj_fld1%num_component(i_fld) .eq. n_scalar) then
+        if (rj_fld%num_component(i_fld) .eq. n_scalar) then
           call cal_ave_scalar_sph_spectr(icomp_st, jcomp_st,            &
      &        nnod_rj, nidx_rj, idx_rj_degree_zero, inod_rj_center,     &
-     &        rj_fld1%ntot_phys, rj_fld1%d_fld, radius_1d_rj_r)
-        else if (rj_fld1%num_component(i_fld) .eq. n_vector) then
+     &        rj_fld%ntot_phys, rj_fld%d_fld, radius_1d_rj_r)
+        else if (rj_fld%num_component(i_fld) .eq. n_vector) then
           call cal_ave_vector_sph_spectr(icomp_st, jcomp_st,            &
      &        nnod_rj, nidx_rj, idx_rj_degree_zero, inod_rj_center,     &
-     &        rj_fld1%ntot_phys, rj_fld1%d_fld, radius_1d_rj_r)
+     &        rj_fld%ntot_phys, rj_fld%d_fld, radius_1d_rj_r)
         end if
       end do
 !

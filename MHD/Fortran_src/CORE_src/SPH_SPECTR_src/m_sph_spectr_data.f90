@@ -9,11 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine allocate_reft_rj_data
-!!
 !!      subroutine deallocate_reft_rj_data
-!!
-!!      subroutine check_rj_spectr_name
-!!      subroutine check_rj_spectr_data(my_rank)
 !!@endverbatim
 !!
 !!@n @param my_rank process ID
@@ -22,11 +18,12 @@
 !
       use m_precision
       use t_phys_data
+      use t_sph_spectr_data
 !
       implicit  none
 !
 !>        Structure for field data
-        type(phys_data) :: rj_fld1
+        type(phys_data), save :: rj_fld1
 !
 !>      Number of fields of scalar fields @f$ f(r,\theta,\phi) @f$
       integer (kind=kint) :: num_scalar_rtp
@@ -68,50 +65,6 @@
       deallocate( reftemp_rj )
 !
       end subroutine deallocate_reft_rj_data
-!
-!  --------------------------------------------------------------------
-!  --------------------------------------------------------------------
-!
-      subroutine check_rj_spectr_name
-!
-      integer(kind = kint) :: i
-!
-!
-      write(*,'(a,i16)') 'num_phys_rj ', rj_fld1%num_phys
-      write(*,'(a)') 'number, component, stack, monitor_flag, name'
-      do i = 1, rj_fld1%num_phys
-        write(*,'(4i6,a2,a)') i, rj_fld1%num_component(i),              &
-     &           rj_fld1%istack_component(i), rj_fld1%iflag_monitor(i), &
-     &           '  ', trim(rj_fld1%phys_name(i))
-      end do
-!
-      end subroutine check_rj_spectr_name
-!
-!  --------------------------------------------------------------------
-!
-      subroutine check_rj_spectr_data(my_rank)
-!
-      use m_spheric_parameter
-!
-      integer(kind = kint), intent(in) :: my_rank
-      integer(kind = kint) :: inod
-      character(len=kchara) :: fmt_txt
-!
-      write(50+my_rank,*) 'num_phys_rj',  rj_fld1%num_phys
-      write(50+my_rank,*) 'ntot_phys_rj', rj_fld1%ntot_phys
-      write(50+my_rank,*) 'num_phys_comp_rj', rj_fld1%num_component
-      do inod = 1, rj_fld1%num_phys
-        write(50+my_rank,*) rj_fld1%phys_name(inod)
-      end do
-      write(fmt_txt,'(a6,i3,a16)')                                      &
-     &           '(3i16,', rj_fld1%ntot_phys, '(1pE25.15e3),a1)'
-      do inod = 1, nnod_rj
-        write(50+my_rank,fmt_txt) inod, idx_global_rj(inod,1:2),        &
-     &    rj_fld1%d_fld(inod,1:rj_fld1%ntot_phys)
-      end do
-!
-!
-      end subroutine check_rj_spectr_data
 !
 !  --------------------------------------------------------------------
 !

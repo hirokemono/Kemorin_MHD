@@ -127,9 +127,11 @@
      &    izero, frc_hbd_rtp(1,1), n_WS, n_WR, WS(1), WR(1))
 !
       call sel_sph_rj_vector_from_recv(ncomp_xyz_2_rj,                  &
-     &   ipol%i_vp_induct, f_hbd_trns%i_vp_induct, n_WR, WR(1))
+     &    ipol%i_vp_induct, f_hbd_trns%i_vp_induct,                     &
+     &    n_WR, WR(1), rj_fld1)
       call sel_sph_rj_vector_from_recv(ncomp_xyz_2_rj,                  &
-     &   ipol%i_SGS_vp_induct, f_hbd_trns%i_SGS_vp_induct, n_WR, WR(1))
+     &    ipol%i_SGS_vp_induct, f_hbd_trns%i_SGS_vp_induct,             &
+     &    n_WR, WR(1), rj_fld1)
 !
 !
       call const_sph_rotation_uxb(ipol%i_vp_induct, ipol%i_induction)
@@ -164,7 +166,7 @@
      &    izero, izero, frc_hbd_rtp(1,1), n_WS, n_WR, WS(1), WR(1))
 !
       call sel_sph_rj_vector_from_recv(ncomp_xyz_2_rj,                  &
-     &   (ipol%i_vp_induct, f_hbd_trns%i_vp_induct, n_WR, WR)
+     &   (ipol%i_vp_induct, f_hbd_trns%i_vp_induct, n_WR, WR, rj_fld1)
 !
       call const_sph_rotation_uxb(ipol%i_vp_induct, ipol%i_induction)
 !
@@ -192,16 +194,17 @@
       call check_calypso_rtm_2_rtp_buf_N(ncomp_rj_2_xyz)
 !
       call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                    &
-     &    ipol%i_magne, b_hbd_trns%i_magne, n_WS, WS)
+     &    ipol%i_magne, b_hbd_trns%i_magne, rj_fld1, n_WS, WS)
       call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                    &
-     &    ipol%i_current, b_hbd_trns%i_current, n_WS, WS)
+     &    ipol%i_current, b_hbd_trns%i_current, rj_fld1, n_WS, WS)
       call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                    &
-     &    ipol%i_b_diffuse, b_hbd_trns%i_b_diffuse, n_WS, WS)
+     &    ipol%i_b_diffuse, b_hbd_trns%i_b_diffuse, rj_fld1, n_WS, WS)
       call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                    &
-     &    ipol%i_induction, b_hbd_trns%i_induction, n_WS, WS)
+     &    ipol%i_induction, b_hbd_trns%i_induction, rj_fld1, n_WS, WS)
       if (iflag_SGS_induction .ne. id_SGS_none) then
         call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                  &
-     &      ipol%i_SGS_induction, b_hbd_trns%i_SGS_induction, n_WS, WS)
+     &      ipol%i_SGS_induction, b_hbd_trns%i_SGS_induction, rj_fld1,  &
+     &      n_WS, WS)
       end if
 !
       call sph_backward_transforms(ncomp_rj_2_xyz, nvector_rj_2_xyz,    &

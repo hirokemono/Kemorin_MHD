@@ -5,16 +5,15 @@
 !
 !      subroutine deallocate_original_sph_data
 !
-!      subroutine copy_cmb_icb_radial_point
-!      subroutine set_cmb_icb_radial_point(cmb_r_grp, icb_r_grp)
-!      subroutine set_sph_magne_address
-!      subroutine input_old_rj_sph_trans(my_rank)
-!
-!      subroutine r_interpolate_sph_rst_from_IO(fld_IO)
-!         (substitution for set_sph_restart_from_IO)
-!      subroutine r_interpolate_sph_fld_from_IO(fld_IO)
-!         (substitution for set_rj_phys_data_from_IO)
-!      subroutine set_poloidal_b_by_gauss_coefs
+!!      subroutine copy_cmb_icb_radial_point
+!!      subroutine set_cmb_icb_radial_point(cmb_r_grp, icb_r_grp)
+!!      subroutine set_sph_magne_address(rj_fld)
+!!      subroutine input_old_rj_sph_trans(my_rank)
+!!
+!!      subroutine r_interpolate_sph_rst_from_IO(fld_IO, rj_fld)
+!!      subroutine r_interpolate_sph_fld_from_IO(fld_IO, rj_fld)
+!!      subroutine set_poloidal_b_by_gauss_coefs(rj_fld)
+!!        type(phys_data), intent(inout) :: rj_fld
 !
       module r_interpolate_sph_data
 !
@@ -119,17 +118,18 @@
 !  -------------------------------------------------------------------
 !  -------------------------------------------------------------------
 !
-      subroutine set_sph_magne_address
+      subroutine set_sph_magne_address(rj_fld)
 !
       use m_phys_labels
       use m_sph_phys_address
-      use m_sph_spectr_data
+      use t_phys_data
 !
+      type(phys_data), intent(in) :: rj_fld
       integer(kind = kint) :: i
 !
-      do i = 1, rj_fld1%num_phys
-        if(rj_fld1%phys_name(i) .eq. fhd_magne) then
-          ipol%i_magne = rj_fld1%istack_component(i-1) + 1
+      do i = 1, rj_fld%num_phys
+        if(rj_fld%phys_name(i) .eq. fhd_magne) then
+          ipol%i_magne = rj_fld%istack_component(i-1) + 1
           exit
         end if
       end do
@@ -158,42 +158,43 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine r_interpolate_sph_rst_from_IO(fld_IO)
+      subroutine r_interpolate_sph_rst_from_IO(fld_IO, rj_fld)
 !
       use m_phys_labels
       use m_sph_phys_address
-      use m_sph_spectr_data
+      use t_phys_data
       use t_field_data_IO
       use extend_potential_field
 !
       type(field_IO), intent(in) :: fld_IO
+      type(phys_data), intent(inout) :: rj_fld
 !
       integer(kind = kint) :: i_fld, j_fld
 !
 !
-      do i_fld = 1, rj_fld1%ntot_phys
+      do i_fld = 1, rj_fld%ntot_phys
         do j_fld = 1, fld_IO%num_field_IO
-          if(rj_fld1%phys_name(i_fld) .eq. fld_IO%fld_name(j_fld)) then
-            if     (rj_fld1%phys_name(i_fld) .eq. fhd_velo              &
-     &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_vort              &
-     &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_press             &
-     &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_temp              &
-     &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_light             &
-     &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_magne             &
-     &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_mag_potential     &
-     &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_entropy           &
-     &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_pre_mom           &
-     &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_pre_uxb           &
-     &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_pre_heat          &
-     &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_pre_composit      &
-     &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_heat_source       &
-     &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_light_source      &
-     &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_entropy_source    &
+          if(rj_fld%phys_name(i_fld) .eq. fld_IO%fld_name(j_fld)) then
+            if     (rj_fld%phys_name(i_fld) .eq. fhd_velo               &
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_vort               &
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_press              &
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_temp               &
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_light              &
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_magne              &
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_mag_potential      &
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy            &
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_mom            &
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_uxb            &
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_heat           &
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_composit       &
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_heat_source        &
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_light_source       &
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy_source     &
      &         ) then
               call set_org_rj_phys_data_from_IO(j_fld, fld_IO)
               call r_interpolate_sph_vector(i_fld,                      &
-     &            rj_fld1%num_phys, rj_fld1%ntot_phys,                  &
-     &            rj_fld1%istack_component, rj_fld1%d_fld)
+     &            rj_fld%num_phys, rj_fld%ntot_phys,                    &
+     &            rj_fld%istack_component, rj_fld%d_fld)
               exit
             end if
           end if
@@ -202,34 +203,35 @@
 !
       if (ipol%i_magne .gt. 0) then
         call ext_outside_potential                                      &
-     &     (kr_outside, ipol%i_magne, rj_fld1%ntot_phys, rj_fld1%d_fld)
+     &     (kr_outside, ipol%i_magne, rj_fld%ntot_phys, rj_fld%d_fld)
         call ext_inside_potential                                       &
-     &     (kr_inside, ipol%i_magne, rj_fld1%ntot_phys, rj_fld1%d_fld)
+     &     (kr_inside, ipol%i_magne, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       end subroutine r_interpolate_sph_rst_from_IO
 !
 ! -------------------------------------------------------------------
 !
-      subroutine r_interpolate_sph_fld_from_IO(fld_IO)
+      subroutine r_interpolate_sph_fld_from_IO(fld_IO, rj_fld)
 !
       use m_sph_phys_address
-      use m_sph_spectr_data
+      use t_phys_data
       use t_field_data_IO
       use extend_potential_field
 !
       type(field_IO), intent(in) :: fld_IO
+      type(phys_data), intent(inout) :: rj_fld
 !
       integer(kind = kint) ::  i_fld, j_fld
 !
 !
-      do i_fld = 1, rj_fld1%ntot_phys
+      do i_fld = 1, rj_fld%ntot_phys
         do j_fld = 1, fld_IO%num_field_IO
-          if(rj_fld1%phys_name(i_fld) .eq. fld_IO%fld_name(j_fld)) then
+          if(rj_fld%phys_name(i_fld) .eq. fld_IO%fld_name(j_fld)) then
             call set_org_rj_phys_data_from_IO(j_fld, fld_IO)
             call r_interpolate_sph_vector(i_fld,                        &
-     &          rj_fld1%num_phys, rj_fld1%ntot_phys,                    &
-     &          rj_fld1%istack_component, rj_fld1%d_fld)
+     &          rj_fld%num_phys, rj_fld%ntot_phys,                      &
+     &          rj_fld%istack_component, rj_fld%d_fld)
             exit
           end if
         end do
@@ -237,9 +239,9 @@
 !
       if (ipol%i_magne .gt. 0) then
         call ext_outside_potential                                      &
-     &     (kr_outside, ipol%i_magne, rj_fld1%ntot_phys, rj_fld1%d_fld)
+     &     (kr_outside, ipol%i_magne, rj_fld%ntot_phys, rj_fld%d_fld)
         call ext_inside_potential                                       &
-     &     (kr_inside, ipol%i_magne, rj_fld1%ntot_phys, rj_fld1%d_fld)
+     &     (kr_inside, ipol%i_magne, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       end subroutine r_interpolate_sph_fld_from_IO
@@ -247,22 +249,24 @@
 ! -----------------------------------------------------------------------
 !  -------------------------------------------------------------------
 !
-      subroutine set_poloidal_b_by_gauss_coefs
+      subroutine set_poloidal_b_by_gauss_coefs(rj_fld)
 !
       use m_sph_phys_address
-      use m_sph_spectr_data
       use m_global_gauss_coefs
+      use t_phys_data
       use extend_potential_field
+!
+      type(phys_data), intent(in) :: rj_fld
 !
 !
       write(*,*) ' ipol%i_magne', ipol%i_magne, kr_outside, kr_inside
       if (ipol%i_magne .gt. 0) then
         call gauss_to_poloidal_out(kr_outside, ltr_w, r_gauss,          &
      &      w_gauss, index_w, ipol%i_magne,                             &
-     &      rj_fld1%ntot_phys, rj_fld1%d_fld)
+     &      rj_fld%ntot_phys, rj_fld%d_fld)
         call gauss_to_poloidal_in(kr_inside, ltr_w, r_gauss,            &
      &      w_gauss, index_w, ipol%i_magne,                             &
-     &      rj_fld1%ntot_phys, rj_fld1%d_fld)
+     &      rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       end subroutine set_poloidal_b_by_gauss_coefs

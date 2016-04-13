@@ -7,7 +7,7 @@
 !> @brief Pick spectr data to output
 !!
 !!@verbatim
-!!      subroutine init_sph_spec_4_monitor
+!!      subroutine init_sph_spec_4_monitor(rj_fld)
 !!      subroutine pickup_sph_spec_4_monitor                            &
 !!     &         (num_phys_rj, ntot_phys_rj, istack_phys_comp_rj, d_rj)
 !!@endverbatim
@@ -32,12 +32,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_sph_spec_4_monitor
+      subroutine init_sph_spec_4_monitor(rj_fld)
 !
       use calypso_mpi
       use quicksort
 !
-      use m_sph_spectr_data
+      use t_phys_data
+!
+      type(phys_data), intent(inout) :: rj_fld
 !
       integer(kind = kint) :: l
 !
@@ -54,8 +56,8 @@
         end do
       end if
 !
-      call count_sph_labels_4_monitor(rj_fld1%num_phys,                 &
-     &    rj_fld1%num_component, rj_fld1%iflag_monitor)
+      call count_sph_labels_4_monitor(rj_fld%num_phys,                  &
+     &    rj_fld%num_component, rj_fld%iflag_monitor)
       call count_picked_sph_adrress                                     &
      &   (num_pick_sph, num_pick_sph_l, num_pick_sph_m,                 &
      &    idx_pick_sph_mode, idx_pick_sph_l, idx_pick_sph_m,            &
@@ -74,12 +76,12 @@
       call deallocate_iflag_pick_sph
       call deallocate_pick_sph_mode
 !
-      call set_sph_fld_id_4_monitor(rj_fld1%num_phys,                   &
-     &    rj_fld1%num_component, rj_fld1%iflag_monitor)
+      call set_sph_fld_id_4_monitor(rj_fld%num_phys,                    &
+     &    rj_fld%num_component, rj_fld%iflag_monitor)
 !
       if(my_rank .ne. 0) return
       call set_sph_labels_4_monitor                                     &
-     &   (rj_fld1%num_phys, rj_fld1%num_component, rj_fld1%phys_name)
+     &   (rj_fld%num_phys, rj_fld%num_component, rj_fld%phys_name)
 !
       end subroutine init_sph_spec_4_monitor
 !

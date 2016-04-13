@@ -101,7 +101,7 @@
 !
       use calypso_mpi
       use t_spheric_parameter
-      use copy_rj_phys_type_4_IO
+      use copy_rj_phys_data_4_IO
       use field_IO_select
 !
 !
@@ -125,8 +125,7 @@
      &   (np_sph_org, izero, istep_start, org_fst_IO)
 !
       if(my_rank .eq. 0) then
-        call copy_rj_phys_name_t_from_IO                                &
-     &     (new_sph%sph_rj%nnod_rj, org_fst_IO, new_phys)
+        call copy_rj_phys_name_from_IO(org_fst_IO, new_phys)
 !
         do ip = 1, np_sph_org
           org_phys(ip)%num_phys =  new_phys%num_phys
@@ -153,7 +152,7 @@
      &          ip, istep, np_sph_org, org_sph, org_phys)
 !
       use field_IO_select
-      use copy_rj_phys_type_4_IO
+      use copy_rj_phys_data_4_IO
       use copy_time_steps_4_restart
 !
       character(len=kchara), intent(in) :: org_sph_fst_head
@@ -177,7 +176,7 @@
       if(irank_org .lt. np_sph_org) then
         call copy_time_steps_from_restart
         call alloc_phys_data_type(org_sph%sph_rj%nnod_rj, org_phys)
-        call copy_rj_phys_type_from_IO                                  &
+        call copy_rj_phys_data_from_IO                                  &
      &       (org_sph%sph_rj%nnod_rj, org_fst_IO, org_phys)
 !
         call dealloc_phys_data_IO(org_fst_IO)
@@ -231,7 +230,7 @@
 !
       use parallel_assemble_sph
       use copy_time_steps_4_restart
-      use copy_rj_phys_type_4_IO
+      use copy_rj_phys_data_4_IO
       use field_IO_select
 !
       real(kind=kreal ), intent(in) :: b_ratio
@@ -262,13 +261,13 @@
 !
 !
         call copy_time_steps_to_restart
-        call copy_rj_all_phys_name_t_to_IO                              &
+        call copy_rj_all_phys_name_to_IO                                &
      &     (new_sph%sph_rj%nnod_rj, new_phys, new_fst_IO)
 !
         new_fst_IO%nnod_IO = new_sph%sph_rj%nnod_rj
         call alloc_phys_data_IO(new_fst_IO)
 !
-        call copy_rj_all_phys_type_to_IO                                &
+        call copy_rj_all_phys_data_to_IO                                &
      &     (new_sph%sph_rj%nnod_rj, new_phys, new_fst_IO)
 !
       end subroutine const_assembled_sph_data

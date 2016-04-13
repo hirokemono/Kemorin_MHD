@@ -40,12 +40,12 @@
 !
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_rms_4_sph_spectr'
-      call init_rms_4_sph_spectr
+      call init_rms_4_sph_spectr(rj_fld1)
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_gauss_coefs_4_monitor'
       call init_gauss_coefs_4_monitor
       if ( iflag_debug.gt.0 ) write(*,*) 'init_sph_spec_4_monitor'
-      call init_sph_spec_4_monitor
+      call init_sph_spec_4_monitor(rj_fld1)
 !
       end subroutine open_sph_vol_rms_file_mhd
 !

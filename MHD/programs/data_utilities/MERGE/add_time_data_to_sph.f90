@@ -23,7 +23,7 @@
       use m_control_param_newsph
       use new_SPH_restart
       use parallel_assemble_sph
-      use copy_rj_phys_type_4_IO
+      use copy_rj_phys_data_4_IO
 !
       use m_control_data_4_merge
 !
@@ -235,7 +235,7 @@
      &          ip, istep, org_sph, org_phys)
 !
       use input_old_file_sel_4_zlib
-      use copy_rj_phys_type_4_IO
+      use copy_rj_phys_data_4_IO
 !
       character(len=kchara), intent(in) :: org_sph_fst_head
       integer(kind=kint ), intent(in) :: ifmt_org_sph_fst
@@ -254,7 +254,7 @@
       call sel_read_alloc_field_file(irank_org, istep, org_fst_IO)
 !
       call alloc_phys_data_type(org_sph%sph_rj%nnod_rj, org_phys)
-      call copy_rj_phys_type_from_IO                                    &
+      call copy_rj_phys_data_from_IO                                    &
      &       (org_sph%sph_rj%nnod_rj, org_fst_IO, org_phys)
 !
       call dealloc_phys_data_IO(org_fst_IO)

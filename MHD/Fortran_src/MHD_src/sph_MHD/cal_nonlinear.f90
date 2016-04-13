@@ -130,6 +130,7 @@
 !
       subroutine nonlinear_by_pseudo_sph
 !
+      use m_sph_spectr_data
       use sph_transforms_4_MHD
       use cal_nonlinear_sph_MHD
       use cal_momentum_eq_explicit
@@ -140,7 +141,7 @@
 !
       call start_eleps_time(14)
       if (iflag_debug.ge.1) write(*,*) 'sph_back_trans_4_MHD'
-      call sph_back_trans_4_MHD
+      call sph_back_trans_4_MHD(rj_fld1)
       call end_eleps_time(14)
 !
       call start_eleps_time(15)
@@ -150,7 +151,7 @@
 !
       call start_eleps_time(16)
       if (iflag_debug.ge.1) write(*,*) 'sph_forward_trans_4_MHD'
-      call sph_forward_trans_4_MHD
+      call sph_forward_trans_4_MHD(rj_fld1)
       call end_eleps_time(16)
 !
       call start_eleps_time(17)
@@ -175,7 +176,9 @@
 !*  ----  copy velocity for coriolis term ------------------
 !*
       if (iflag_debug.eq.1) write(*,*) 'sph_transform_4_licv'
-      if(iflag_4_coriolis .ne. id_turn_OFF) call sph_transform_4_licv
+      if(iflag_4_coriolis .ne. id_turn_OFF) then
+        call sph_transform_4_licv(rj_fld1)
+      end if
 !
 !   ----  lead nonlinear terms by phesdo spectrum
 !

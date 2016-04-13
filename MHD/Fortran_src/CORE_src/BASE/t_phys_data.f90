@@ -19,12 +19,17 @@
 !!        type(phys_data), intent(in) :: org_fld
 !!        type(phys_data), intent(inout) :: new_fld
 !!
+!!      subroutine copy_field_name_type(org_fld, new_fld)
+!!        type(phys_data), intent(in) :: org_fld
+!!        type(phys_data), intent(inout) :: new_fld
+!
 !!      subroutine disconnect_phys_name_type(fld)
 !!      subroutine disconnect_phys_data_type(fld)
 !!        type(phys_data), intent(inout) :: fld
 !!
-!!      subroutine check_nodal_field_name_type(fld)
-!!      subroutine check_nodal_data(my_rank, fld, numdir, i_field)
+!!      subroutine check_all_field_data(my_rank, fld)
+!!      subroutine check_nodal_field_name_type(id_output, fld)
+!!      subroutine check_nodal_data(id_output, fld, numdir, i_field)
 !!        integer(kind = kint), intent(in) :: my_rank, numdir, i_field
 !!        type(phys_data), intent(in) :: fld
 !!@endverbatim
@@ -179,6 +184,34 @@
       end subroutine link_field_data_type
 !
 ! -------------------------------------------------------------------
+! -------------------------------------------------------------------
+!
+      subroutine copy_field_name_type(org_fld, new_fld)
+!
+      type(phys_data), intent(in) :: org_fld
+      type(phys_data),intent(inout) :: new_fld
+!
+!
+      new_fld%num_phys =  org_fld%num_phys
+      new_fld%ntot_phys = org_fld%ntot_phys
+!
+      new_fld%num_phys_viz =  org_fld%num_phys_viz
+      new_fld%ntot_phys_viz = org_fld%ntot_phys_viz
+!
+      call alloc_phys_name_type(new_fld)
+!
+      new_fld%num_component(1:new_fld%num_phys)                         &
+     &             = org_fld%num_component(1:new_fld%num_phys)
+      new_fld%phys_name(1:new_fld%num_phys)                             &
+     &             = org_fld%phys_name(1:new_fld%num_phys)
+      new_fld%iflag_monitor(1:new_fld%num_phys)                         &
+     &             = org_fld%iflag_monitor(1:new_fld%num_phys)
+      new_fld%istack_component(0:new_fld%num_phys)                      &
+     &             = org_fld%istack_component(0:new_fld%num_phys)
+!
+      end subroutine copy_field_name_type
+!
+! -----------------------------------------------------------------------
 !  --------------------------------------------------------------------
 !
       subroutine disconnect_phys_name_type(fld)
@@ -205,18 +238,34 @@
 !  --------------------------------------------------------------------
 !  --------------------------------------------------------------------
 !
-      subroutine check_nodal_field_name_type(fld)
+      subroutine check_all_field_data(my_rank, fld)
 !
+      integer(kind = kint), intent(in) :: my_rank
+      type(phys_data), intent(in) :: fld
+!
+!
+      call check_nodal_field_name_type((50+my_rank), fld)
+      call check_nodal_data                                             &
+     &   ((50+my_rank), fld, fld%ntot_phys, ione)
+!
+      end subroutine check_all_field_data
+!
+!  --------------------------------------------------------------------
+!
+      subroutine check_nodal_field_name_type(id_output, fld)
+!
+      integer(kind = kint), intent(in) :: id_output
       type(phys_data), intent(in) :: fld
 !
 !
       integer(kind = kint) :: i
 !
-      write(*,*) 'fld%num_phys ',fld%num_phys
-      write(*,*) 'fld%num_phys_viz ',fld%num_phys_viz
-      write(*,*) 'id#, num_component, stack_component, field_name '
+      write(id_output,*) 'fld%num_phys ',fld%num_phys
+      write(id_output,*) 'fld%num_phys_viz ',fld%num_phys_viz
+      write(id_output,*)                                                &
+     &      'id#, num_component, stack_component, field_name '
       do i = 1, fld%num_phys
-        write(*,'(3i6,2x,a2,a)') i, fld%num_component(i),               &
+        write(id_output,'(3i6,2x,a2,a)') i, fld%num_component(i),       &
      &         fld%istack_component(i), '  ', trim(fld%phys_name(i))
       end do
 !
@@ -224,15 +273,15 @@
 !
 !   ---------------------------------------------------------------------
 !
-      subroutine check_nodal_data(my_rank, fld, numdir, i_field)
+      subroutine check_nodal_data(id_output, fld, numdir, i_field)
 !
-      integer(kind = kint), intent(in) :: my_rank, numdir, i_field
+      integer(kind = kint), intent(in) :: id_output, numdir, i_field
       type(phys_data), intent(in) :: fld
       integer(kind = kint) :: inod, nd
 !
-      write(50+my_rank,*) 'inod, nodal field: ', i_field, numdir
+      write(id_output,*) 'inod, nodal field: ', i_field, numdir
       do inod = 1, fld%n_point
-        write(50+my_rank,'(i16,1p10e25.14)')                            &
+        write(id_output,'(i16,1p10e25.14)')                             &
      &         inod, (fld%d_fld(inod,i_field+nd-1),nd=1, numdir)
       end do
 !

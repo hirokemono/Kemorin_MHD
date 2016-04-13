@@ -43,7 +43,7 @@
 !
 !  ------    set original spectr modes
 !
-      call set_sph_magne_address
+      call set_sph_magne_address(rj_fld1)
       call set_cmb_icb_radial_point(cmb_radial_grp, icb_radial_grp)
 !
 !  ---- allocate spectr data
@@ -102,10 +102,10 @@
 !
         if (iflag_debug.gt.0) write(*,*)                                &
      &                        'set_poloidal_b_by_gauss_coefs'
-        call set_poloidal_b_by_gauss_coefs
+        call set_poloidal_b_by_gauss_coefs(rj_fld1)
         call deallocate_gauss_global_coefs
 !
-!        call check_rj_spectr_data(my_rank)
+!        call check_all_field_data(my_rank, rj_fld1)
 !  spherical transform for vector
         call sph_b_trans_all_field(femmesh_STR%mesh, field_STR)
       end if

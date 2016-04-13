@@ -51,7 +51,8 @@
           if ( phys_name_rtp(j0) .eq. rj_fld1%phys_name(i) ) then
             i_field = rj_fld1%istack_component(i-1) + 1
             call sel_sph_rj_scalar_2_send_wpole                         &
-     &         (ncomp_send, i_field, itrans, n_WS, WS, v_pl_local)
+     &         (ncomp_send, i_field, itrans, rj_fld1,                   &
+     &          n_WS, WS, v_pl_local)
             exit
           end if
         end do
@@ -78,7 +79,7 @@
           if ( phys_name_rtp(j0) .eq. rj_fld1%phys_name(i) ) then
             i_field = rj_fld1%istack_component(i-1) + 1
             call sel_sph_rj_scalar_from_recv                            &
-     &         (ncomp_recv, i_field, itrans, n_WR, WR)
+     &         (ncomp_recv, i_field, itrans, n_WR, WR, rj_fld1)
             exit
           end if
         end do
@@ -106,7 +107,7 @@
           if ( phys_name_rtp(j0) .eq. rj_fld1%phys_name(i) ) then
             i_field = rj_fld1%istack_component(i-1) + 1
             call sel_sph_rj_vector_to_send                              &
-     &         (ncomp_send, i_field, itrans, n_WS, WS)
+     &         (ncomp_send, i_field, itrans, rj_fld1, n_WS, WS)
             exit
           end if
         end do
@@ -134,7 +135,7 @@
             i_field = rj_fld1%istack_component(i-1) + 1
 !$omp parallel
             call sel_sph_rj_vector_from_recv                            &
-     &         (ncomp_recv, i_field, itrans, n_WR, WR)
+     &         (ncomp_recv, i_field, itrans, n_WR, WR, rj_fld1)
 !$omp end parallel
             exit
           end if
@@ -164,7 +165,7 @@
             i_field = rj_fld1%istack_component(i-1) + 1
 !$omp parallel
             call sel_sph_rj_tensor_to_send                              &
-     &         (ncomp_send, i_field, itrans, n_WS, WS)
+     &         (ncomp_send, i_field, itrans, rj_fld1, n_WS, WS)
 !$omp end parallel
             exit
           end if
@@ -177,6 +178,7 @@
 !
       subroutine set_all_tensor_spec_from_sph_t(ncomp_recv, n_WR, WR)
 !
+      use m_sph_spectr_data
       use copy_spectr_4_sph_trans
 !
       integer(kind = kint), intent(in) :: ncomp_recv, n_WR
@@ -193,7 +195,7 @@
             i_field = rj_fld1%istack_component(i-1) + 1
 !$omp parallel
             call sel_sph_rj_tensor_from_recv                            &
-     &         (ncomp_recv, i_field, itrans, n_WR, WR)
+     &         (ncomp_recv, i_field, itrans, n_WR, WR, rj_fld1)
 !$omp end parallel
             exit
           end if

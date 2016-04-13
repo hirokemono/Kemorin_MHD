@@ -10,7 +10,8 @@
 !!
 !!@verbatim
 !!      subroutine set_radius_rot_reft_dat_4_sph(r_hot, r_cold,         &
-!!     &          temp_hot, temp_cold, rotate)
+!!     &          temp_hot, temp_cold, rotate, rj_fld)
+!!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine const_2nd_fdm_matrices
 !!      subroutine const_2nd_fdm_coefs
 !!@endverbatim
@@ -39,13 +40,14 @@
 !  -------------------------------------------------------------------
 !
       subroutine set_radius_rot_reft_dat_4_sph(r_hot, r_cold,           &
-     &          temp_hot, temp_cold, rotate)
+     &          temp_hot, temp_cold, rotate, rj_fld)
 !
       use m_poloidal_rotation
-      use m_sph_spectr_data
       use m_sph_phys_address
-      use set_radius_func_noequi
 !
+      use t_phys_data
+!
+      use set_radius_func_noequi
       use set_radius_4_sph_dynamo
       use set_reference_temp_sph
 !
@@ -53,7 +55,7 @@
       real(kind = kreal), intent(in) :: temp_hot, temp_cold
       real(kind = kreal), intent(in) :: rotate(3)
 !
-      
+      type(phys_data), intent(inout) :: rj_fld
 !
 !* --------  radius  --------------
 !
@@ -73,7 +75,7 @@
         if (iflag_debug .ge. iflag_routine_msg)                         &
      &               write(*,*) 'set_reftemp_4_sph'
         call set_reftemp_4_sph(r_hot, r_cold, temp_hot, temp_cold,      &
-     &      rj_fld1%ntot_phys, rj_fld1%d_fld)
+     &      rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !*
 !*  ----------  rotation of earth  ---------------

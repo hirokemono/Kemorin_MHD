@@ -11,7 +11,8 @@
 !!      subroutine set_ctl_params_pick_sph
 !!      subroutine set_ctl_params_pick_gauss
 !!
-!!      subroutine set_ctl_params_no_heat_Nu
+!!      subroutine set_ctl_params_no_heat_Nu(rj_fld)
+!!        type(phys_data), intent(in) :: rj_fld
 !!@endverbatim
 !!
       module set_control_4_pickup_sph
@@ -204,19 +205,22 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_ctl_params_no_heat_Nu
+      subroutine set_ctl_params_no_heat_Nu(rj_fld)
+!
+      use t_phys_data
 !
       use m_ctl_data_4_pickup_sph
-      use m_sph_spectr_data
       use m_phys_labels
       use m_no_heat_Nusselt_num
+!
+      type(phys_data), intent(in) :: rj_fld
 !
       integer(kind = kint) :: i
 !
 !    Turn On Nusselt number if temperature gradient is there
       iflag_no_source_Nu = 0
-      do i = 1, rj_fld1%num_phys
-        if(rj_fld1%phys_name(i) .eq. fhd_grad_temp) then
+      do i = 1, rj_fld%num_phys
+        if(rj_fld%phys_name(i) .eq. fhd_grad_temp) then
           iflag_no_source_Nu = 1
           exit
         end if
@@ -230,8 +234,8 @@
       end if
 !
 !    Turn Off Nusselt number if heat source is there
-      do i = 1, rj_fld1%num_phys
-        if(rj_fld1%phys_name(i) .eq. fhd_heat_source) then
+      do i = 1, rj_fld%num_phys
+        if(rj_fld%phys_name(i) .eq. fhd_heat_source) then
           iflag_no_source_Nu = 0
           exit
         end if

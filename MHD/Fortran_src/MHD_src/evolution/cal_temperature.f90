@@ -153,7 +153,8 @@
      &      f_l, f_nl, nod_fld)
       end if
 !
-!      call check_nodal_data(my_rank, nod_fld, 3, iphys%i_SGS_h_flux)
+!      call check_nodal_data                                            &
+!     &     ((50+my_rank), nod_fld, 3, iphys%i_SGS_h_flux)
 !
 !  ----------  clear the vector and lumped mass matrix
 !
@@ -189,9 +190,10 @@
      &    node, ele, surf, sf_grp, iphys, nod_fld, Tsf_bcs, jac_sf_grp, &
      &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, surf_wk, f_l, f_nl)
 !
-!      call check_nodal_data(my_rank, nod_fld, n_scalar, iphys%i_temp)
-!      call check_nodal_data(my_rank, ele_fld,                          &
-!     &    n_vector, iphys_ele%i_velo)
+!      call check_nodal_data                                            &
+!     &   ((50+my_rank), nod_fld, n_scalar, iphys%i_temp)
+!      call check_nodal_data                                            &
+!     &   ((50+my_rank), ele_fld,  n_vector, iphys_ele%i_velo)
 !      call check_ff_smp(my_rank, n_scalar, node%max_nod_smp, f_l)
 !      call check_ff_smp(my_rank, n_scalar, node%max_nod_smp, f_nl)
 !
@@ -318,7 +320,8 @@
      &      f_l, f_nl, nod_fld)
       end if
 !
-!      call check_nodal_data(my_rank, nod_fld, 3, iphys%i_SGS_h_flux)
+!      call check_nodal_data                                            &
+!     &   ((50+my_rank), nod_fld, 3, iphys%i_SGS_h_flux)
 !
 !  ----------  clear the vector and lumped mass matrix
 !
@@ -354,9 +357,10 @@
      &    node, ele, surf, sf_grp, iphys, nod_fld, Tsf_bcs, jac_sf_grp, &
      &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, surf_wk, f_l, f_nl)
 !
-!      call check_nodal_data(my_rank, nod_fld, n_scalar, iphys%i_temp)
-!      call check_nodal_data(my_rank, ele_fld,                          &
-!     &    n_vector, iphys_ele%i_velo)
+!      call check_nodal_data                                            &
+!     &   ((50+my_rank), nod_fld, n_scalar, iphys%i_temp)
+!      call check_nodal_data                                            &
+!     &   ((50+my_rank), ele_fld, n_vector, iphys_ele%i_velo)
 !      call check_ff_smp(my_rank, n_scalar, node%max_nod_smp, f_l)
 !      call check_ff_smp(my_rank, n_scalar, node%max_nod_smp, f_nl)
 !

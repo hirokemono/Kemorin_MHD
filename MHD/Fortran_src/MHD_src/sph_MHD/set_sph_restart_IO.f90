@@ -171,7 +171,8 @@
      &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_pre_mom           &
      &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_pre_uxb           &
      &         ) then
-              call copy_each_sph_vector_to_IO(i_fld, j_IO, fld_IO)
+              call copy_each_sph_vector_to_IO                           &
+     &           (nnod_rj, rj_fld1, fld_IO, i_fld, j_IO)
 !
             else if(rj_fld1%phys_name(i_fld) .eq. fhd_temp              &
      &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_light             &
@@ -184,7 +185,8 @@
      &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_light_source      &
      &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_entropy_source    &
      &         ) then
-              call copy_each_sph_field_to_IO(i_fld, j_IO, fld_IO)
+              call copy_each_sph_field_to_IO                            &
+     &           (nnod_rj, rj_fld1, fld_IO, i_fld, j_IO)
             end if
             exit
           end if
@@ -226,7 +228,8 @@
      &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_pre_mom           &
      &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_pre_uxb           &
      &         ) then
-              call copy_each_sph_vector_from_IO(i_fld, j_IO, fld_IO)
+              call copy_each_sph_vector_from_IO                         &
+     &           (nnod_rj, fld_IO, rj_fld1, i_fld, j_IO)
 !
             else if(rj_fld1%phys_name(i_fld) .eq. fhd_temp              &
      &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_light             &
@@ -239,7 +242,8 @@
      &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_light_source      &
      &         .or. rj_fld1%phys_name(i_fld) .eq. fhd_entropy_source    &
      &         ) then
-              call copy_each_sph_field_from_IO(i_fld, j_IO, fld_IO)
+              call copy_each_sph_field_from_IO                          &
+     &           (nnod_rj, fld_IO, rj_fld1, i_fld, j_IO)
             end if
             exit
           end if

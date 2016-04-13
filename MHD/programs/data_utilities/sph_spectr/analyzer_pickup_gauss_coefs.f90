@@ -68,7 +68,7 @@
 !
       call alloc_phys_data_type(nnod_rj, rj_fld1)
 !
-      call init_rms_4_sph_spectr
+      call init_rms_4_sph_spectr(rj_fld1)
 !
 !  -------------------------------
 !
@@ -110,7 +110,7 @@
         call sel_read_step_SPH_field_file                               &
      &     (nprocs, my_rank, i_step, sph_fld_IO)
 !
-        call set_rj_phys_data_from_IO(sph_fld_IO)
+        call set_rj_phys_data_from_IO(nnod_rj, sph_fld_IO, rj_fld1)
 !
 !  pickup components
 !

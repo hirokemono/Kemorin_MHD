@@ -129,7 +129,7 @@
        call copy_tensor_component(node, nod_fld,                        &
      &     iphys%i_SGS_m_flux, iphys%i_sgs_simi)
 !      call check_nodal_data                                            &
-!     &   (my_rank, nod_fld, n_sym_tensor, iphys%i_sgs_simi)
+!     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys%i_sgs_simi)
 !
 !   gradient model by filtered field
 !
@@ -139,7 +139,7 @@
      &    node, ele, fluid, iphys_ele, ele_fld, jac_3d_q,               &
      &    FEM_elens, rhs_tbl, fem_wk, mhd_fem_wk, nod_fld)
 !      call check_nodal_data                                            &
-!     &   (my_rank, nod_fld, n_sym_tensor, iphys%i_sgs_grad_f)
+!     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys%i_sgs_grad_f)
 !
 !   gradient model by original field
 !
@@ -154,7 +154,7 @@
       call cal_filtered_sym_tensor_whole(nod_comm, node, filtering,     &
      &    iphys%i_sgs_grad, iphys%i_SGS_m_flux, wk_filter, nod_fld)
 !      call check_nodal_data                                            &
-!     &   (my_rank, nod_fld, n_sym_tensor, iphys%i_sgs_grad)
+!     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys%i_sgs_grad)
 !
 !   Change coordinate
 !

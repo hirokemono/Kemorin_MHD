@@ -37,6 +37,7 @@
       use m_control_params_2nd_files
       use m_node_id_spherical_IO
       use m_physical_property
+      use m_sph_spectr_data
       use m_work_4_sph_trans
       use m_file_format_switch
 !
@@ -77,7 +78,7 @@
 !    set nodal data
 !
         if (iflag_debug.gt.0) write(*,*) 's_set_control_sph_data'
-        call s_set_control_sph_data(ierr)
+        call s_set_control_sph_data(rj_fld1, ierr)
       end if
 !
 !

@@ -7,7 +7,7 @@
 !> @brief evaluate mean square data from spectr data
 !!
 !!@verbatim
-!!      subroutine init_rms_4_sph_spectr
+!!      subroutine init_rms_4_sph_spectr(rj_fld1)
 !!
 !!      subroutine cal_rms_sph_spec_rms_whole
 !!      subroutine cal_rms_sph_outer_core
@@ -32,14 +32,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_rms_4_sph_spectr
+      subroutine init_rms_4_sph_spectr(rj_fld1)
 !
       use calypso_mpi
-      use m_sph_spectr_data
       use m_rms_4_sph_spectr
+!
+      use t_phys_data
+!
       use sum_sph_rms_data
       use volume_average_4_sph
       use quicksort
+!
+      type(phys_data), intent(in) :: rj_fld1
 !
       integer(kind = kint) :: i_fld, j_fld
       integer(kind = kint) :: k, knum
@@ -115,6 +119,7 @@
       subroutine cal_mean_squre_in_shell(kr_st, kr_ed)
 !
       use calypso_mpi
+      use m_sph_spectr_data
       use m_rms_4_sph_spectr
       use volume_average_4_sph
       use cal_ave_4_rms_vector_sph
@@ -130,7 +135,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'cal_one_over_volume'
       call cal_one_over_volume(kr_st, kr_ed, avol)
       if(iflag_debug .gt. 0) write(*,*) 'sum_sph_layerd_rms'
-      call sum_sph_layerd_rms(kr_st, kr_ed)
+      call sum_sph_layerd_rms(kr_st, kr_ed, rj_fld1)
 !
       if(my_rank .eq. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'surf_ave_4_sph_rms_int'
@@ -139,7 +144,7 @@
       end if
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_volume_average_sph'
-      call cal_volume_average_sph(kr_st, kr_ed, avol)
+      call cal_volume_average_sph(kr_st, kr_ed, avol, rj_fld1)
 !
       end subroutine cal_mean_squre_in_shell
 !

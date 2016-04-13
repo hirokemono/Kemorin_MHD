@@ -29,6 +29,7 @@
       use m_t_step_parameter
       use m_control_params_2nd_files
       use m_node_id_spherical_IO
+      use m_sph_spectr_data
       use t_field_data_IO
 !
       use field_IO_select
@@ -62,16 +63,16 @@
 !
         if(iflag_org_sph_rj_head .eq. 0) then
           if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
-          call set_rj_phys_data_from_IO(fld_IO)
+          call set_rj_phys_data_from_IO(nnod_rj, fld_IO, rj_fld1)
         else
           if (iflag_debug.gt.0) write(*,*)                              &
      &                        'r_interpolate_sph_fld_from_IO'
-          call r_interpolate_sph_fld_from_IO(fld_IO)
+          call r_interpolate_sph_fld_from_IO(fld_IO, rj_fld1)
         end if
 !
         call set_rj_phys_for_zm_streamfunc                              &
      &     (rj_fld1%ntot_phys, rj_fld1%d_fld)
-        call zonal_mean_all_sph_spectr
+        call zonal_mean_all_sph_spectr(rj_fld1)
 !
 !  spherical transform for vector
         call sph_b_trans_streamline(femmesh_STR%mesh, field_STR)

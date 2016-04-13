@@ -49,7 +49,7 @@
         call ordering_field_type_by_viz(fld)
 !
         if (iflag_debug .ge. iflag_routine_msg)                         &
-     &                 call check_nodal_field_name_type(fld)
+     &                 call check_nodal_field_name_type(6, fld)
         call deallocate_phys_control
       end if
 !
