@@ -52,8 +52,13 @@
 !
       use m_precision
       use m_spheric_constants
-!
+      use t_spheric_parameter
+!.
       implicit none
+!
+!
+      type(sph_rj_grid), save :: sph_rj1
+!sph_rj1%ar_ele_rj
 !
 !>      integer flag for FEM mesh type
 !!@n    iflag_MESH_same:     same grid point as Gauss-Legendre points
@@ -115,34 +120,6 @@
       real(kind = kreal) :: r_CMB
 !>      Earth's radius @f$ Re @f$
       real(kind = kreal) :: R_earth(0:2)
-!
-!    Group names for spherical shell dynamos
-!
-!>      Group name for ICB
-      character(len=kchara), parameter :: ICB_nod_grp_name = 'ICB'
-!>      Group name for CMB
-      character(len=kchara), parameter :: CMB_nod_grp_name = 'CMB'
-!>      Group name for innermost radius
-      character(len=kchara), parameter                                  &
-     &                      :: CTR_nod_grp_name = 'to_Center'
-!
-!>      Element Group name for inner core
-      character(len=kchara), parameter                                  &
-     &                      :: IC_ele_grp_name = 'inner_core'
-!>      Element Group name for outer core
-      character(len=kchara), parameter                                  &
-     &                      :: OC_ele_grp_name = 'outer_core'
-!>      Element Group name for outer core
-      character(len=kchara), parameter                                  &
-     &                      :: MT_ele_grp_name = 'external'
-!
-!>      Surface Group name for ICB
-      character(len=kchara), parameter :: ICB_sf_grp_name = 'ICB_surf'
-!>      Surface Group name for CMB
-      character(len=kchara), parameter :: CMB_sf_grp_name = 'CMB_surf'
-!>      Group name for innermost radius
-      character(len=kchara), parameter                                  &
-     &                      :: CTR_sf_grp_name = 'to_Center_surf'
 !
 !   global parameters
 !
@@ -279,9 +256,9 @@
       real(kind = kreal), allocatable :: ar_1d_rj(:,:)
 !
 !>      1d radius between grids for @f$ f(r,j) @f$
-      real(kind = kreal), allocatable :: r_ele_rj(:)
+!      real(kind = kreal), allocatable :: r_ele_rj(:)
 !>      1d @f$1 / r @f$ between grids for @f$ f(r,j) @f$
-      real(kind = kreal), allocatable :: ar_ele_rj(:,:)
+!      real(kind = kreal), allocatable :: ar_ele_rj(:,:)
 !
 ! -----------------------------------------------------------------------
 !
@@ -431,8 +408,6 @@
       allocate(a_r_1d_rj_r(num))
 !
       allocate(ar_1d_rj(num,3))
-      allocate(r_ele_rj(num))
-      allocate(ar_ele_rj(num,3))
 !
       num = nidx_rj(2)
       allocate(idx_gl_1d_rj_j(num,3))
@@ -444,9 +419,10 @@
         a_r_1d_rj_r = 0.0d0
 !
         ar_1d_rj = 0.0d0
-        r_ele_rj = 0.0d0
-        ar_ele_rj = 0.0d0
       end if
+!
+      sph_rj1%nidx_rj(1:2) = nidx_rj(1:2)
+      call alloc_type_sph_1d_index_rj(sph_rj1)
 !
       end subroutine allocate_sph_1d_index_rj
 !
@@ -526,10 +502,12 @@
       deallocate(radius_1d_rj_r)
       deallocate(a_r_1d_rj_r)
 !
-      deallocate(ar_1d_rj, r_ele_rj, ar_ele_rj)
+      deallocate(ar_1d_rj)
 !
       deallocate(idx_gl_1d_rj_r)
       deallocate(idx_gl_1d_rj_j)
+!
+      call dealloc_type_sph_1d_index_rj(sph_rj1)
 !
       end subroutine deallocate_sph_1d_index_rj
 !

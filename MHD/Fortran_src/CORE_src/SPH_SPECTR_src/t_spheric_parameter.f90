@@ -89,6 +89,35 @@
 !
       implicit none
 !
+!    Group names for spherical shell dynamos
+!
+!>      Group name for ICB
+      character(len=kchara), parameter :: ICB_nod_grp_name = 'ICB'
+!>      Group name for CMB
+      character(len=kchara), parameter :: CMB_nod_grp_name = 'CMB'
+!>      Group name for innermost radius
+      character(len=kchara), parameter                                  &
+     &                      :: CTR_nod_grp_name = 'to_Center'
+!
+!>      Element Group name for inner core
+      character(len=kchara), parameter                                  &
+     &                      :: IC_ele_grp_name = 'inner_core'
+!>      Element Group name for outer core
+      character(len=kchara), parameter                                  &
+     &                      :: OC_ele_grp_name = 'outer_core'
+!>      Element Group name for outer core
+      character(len=kchara), parameter                                  &
+     &                      :: MT_ele_grp_name = 'external'
+!
+!>      Surface Group name for ICB
+      character(len=kchara), parameter :: ICB_sf_grp_name = 'ICB_surf'
+!>      Surface Group name for CMB
+      character(len=kchara), parameter :: CMB_sf_grp_name = 'CMB_surf'
+!>      Group name for innermost radius
+      character(len=kchara), parameter                                  &
+     &                      :: CTR_sf_grp_name = 'to_Center_surf'
+!
+!
 !>        structure of index table for @f$ f(r,\theta,\phi) @f$
       type sph_rtp_grid
 !>        number of global 1d data points for @f$ f(r,\theta,\phi) @f$

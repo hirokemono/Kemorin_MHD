@@ -94,7 +94,7 @@
       coef_p = - coef_press
       call set_unit_mat_4_poisson(nidx_rj(1), nidx_rj(2),               &
      &    sph_bc_U%kr_in, sph_bc_U%kr_out, p_poisson_mat)
-      call add_scalar_poisson_mat_sph(nidx_rj(1), nidx_rj(2),           &
+      call add_scalar_poisson_mat_sph(nidx_rj(1), nidx_rj(2), ar_1d_rj, &
      &    sph_bc_U%kr_in, sph_bc_U%kr_out, coef_p, p_poisson_mat)
 !
 !   Boundary condition for ICB
@@ -166,8 +166,8 @@
         call set_unit_mat_4_time_evo(nri, jmax, evo_mat3)
       end if
 !
-      call add_scalar_poisson_mat_sph                                   &
-     &   (nri, jmax, sph_bc%kr_in, sph_bc%kr_out, coef, evo_mat3)
+      call add_scalar_poisson_mat_sph(nri, jmax, ar_1d_rj,              &
+     &    sph_bc%kr_in, sph_bc%kr_out, coef, evo_mat3)
 !
       if     (sph_bc%iflag_icb .eq. iflag_sph_fill_center               &
      &   .or. sph_bc%iflag_icb .eq. iflag_sph_fix_center) then

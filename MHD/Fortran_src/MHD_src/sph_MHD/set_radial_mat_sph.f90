@@ -12,16 +12,14 @@
 !!      subroutine set_unit_mat_4_poisson(nri, jmax, kr_in, kr_out,     &
 !!     &          mat3)
 !!
-!!      subroutine add_scalar_poisson_mat_sph(nri, jmax, kr_in, kr_out, &
-!!     &          coef_p, mat3)
-!!         
-!!      subroutine add_vector_poisson_mat_sph(nri, jmax, kr_in, kr_out, &
+!!      subroutine add_scalar_poisson_mat_sph(nri, jmax, ar_1d_rj,      &
 !!     &          kr_in, kr_out, coef_p, mat3)
-!!
-!!      subroutine add_scalar_r_diffuse_mat_sph(nri, jmax,              &
+!!      subroutine add_vector_poisson_mat_sph(nri, jmax, ar_1d_rj,      &
+!!     &          kr_in, kr_out, coef_p, mat3)
+!!      subroutine add_scalar_r_diffuse_mat_sph(nri, jmax, ar_1d_rj,    &
 !!     &          kr_in, kr_out, coef_p, val_r, dval_r, mat3)
-!!      subroutine add_vector_r_diffuse_mat_sph(nri, jmax,              &
-!!     &          kr_in, kr_out, coef_p, val_r, dval_r, mat3)
+!!      subroutine add_vector_r_diffuse_mat_sph(nri, jmax, ar_1d_rj,    &
+!!     &          kr_in, kr_out, coef_p, mat3)
 !!
 !!    Format of band matrix
 !!               | a(2,1)  a(1,2)  ........     0         0     |
@@ -66,7 +64,6 @@
 !
       use calypso_mpi
       use m_constants
-      use m_spheric_parameter
       use m_schmidt_poly_on_rtm
       use m_fdm_coefs
 !
@@ -172,11 +169,12 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine add_scalar_poisson_mat_sph(nri, jmax, kr_in, kr_out,   &
-     &          coef_p, mat3)
+      subroutine add_scalar_poisson_mat_sph(nri, jmax, ar_1d_rj,        &
+     &          kr_in, kr_out, coef_p, mat3)
 !
       integer(kind = kint), intent(in) :: jmax, nri
       integer(kind = kint), intent(in) :: kr_in, kr_out
+      real(kind = kreal), intent(in) :: ar_1d_rj(nri,3)
       real(kind = kreal), intent(in) :: coef_p
 !
       real(kind = kreal), intent(inout) :: mat3(3,nri,jmax)
@@ -205,11 +203,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_vector_poisson_mat_sph(nri, jmax, kr_in, kr_out,   &
-     &          coef_p, mat3)
+      subroutine add_vector_poisson_mat_sph(nri, jmax, ar_1d_rj,        &
+     &          kr_in, kr_out, coef_p, mat3)
 !
       integer(kind = kint), intent(in) :: jmax, nri
       integer(kind = kint), intent(in) :: kr_in, kr_out
+      real(kind = kreal), intent(in) :: ar_1d_rj(nri,3)
       real(kind = kreal), intent(in) :: coef_p
 !
       real(kind = kreal), intent(inout) :: mat3(3,nri,jmax)
@@ -236,11 +235,12 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine add_scalar_r_diffuse_mat_sph(nri, jmax,                &
+      subroutine add_scalar_r_diffuse_mat_sph(nri, jmax, ar_1d_rj,      &
      &          kr_in, kr_out, coef_p, val_r, dval_r, mat3)
 !
       integer(kind = kint), intent(in) :: jmax, nri
       integer(kind = kint), intent(in) :: kr_in, kr_out
+      real(kind = kreal), intent(in) :: ar_1d_rj(nri,3)
       real(kind = kreal), intent(in) :: coef_p
       real(kind = kreal), intent(in) :: val_r(nri), dval_r(nri)
 !
@@ -273,13 +273,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_vector_r_diffuse_mat_sph(nri, jmax,                &
-     &          kr_in, kr_out, coef_p, val_r, dval_r, mat3)
+      subroutine add_vector_r_diffuse_mat_sph(nri, jmax, ar_1d_rj,      &
+     &          kr_in, kr_out, coef_p, mat3)
 !
       integer(kind = kint), intent(in) :: jmax, nri
       integer(kind = kint), intent(in) :: kr_in, kr_out
+      real(kind = kreal), intent(in) :: ar_1d_rj(nri,3)
       real(kind = kreal), intent(in) :: coef_p
-      real(kind = kreal), intent(in) :: val_r(nri), dval_r(nri)
 !
       real(kind = kreal), intent(inout) :: mat3(3,nri,jmax)
 !
