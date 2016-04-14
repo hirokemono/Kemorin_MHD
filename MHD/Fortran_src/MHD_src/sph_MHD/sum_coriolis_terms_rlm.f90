@@ -10,12 +10,16 @@
 !!@verbatim
 !!************************************************
 !!
-!!      subroutine sum_rot_coriolis_rlm_10(NB, n_WR, irev_sr_rlm, WR)
-!!      subroutine sum_div_coriolis_rlm_10(NB, n_WR, irev_sr_rlm, WR)
-!!      subroutine sum_r_coriolis_bc_rlm_10(NB, kr, n_WR, irev_sr_rlm,  &
-!!     &          WR, d_cor_bc)
-!!      subroutine inner_core_rot_z_coriolis_rlm(NB, n_WR, irev_sr_rlm, &
-!!     &          WR)
+!!      subroutine sum_rot_coriolis_rlm_10(nnod_rlm, nidx_rlm,          &
+!!     &          a_r_1d_rlm_r, NB, n_WR, irev_sr_rlm, WR)
+!!      subroutine sum_div_coriolis_rlm_10                              &
+!!     &         (nnod_rlm, nidx_rlm, idx_gl_1d_rlm_j, a_r_1d_rlm_r,    &
+!!     &          NB, n_WR, irev_sr_rlm, WR)
+!!      subroutine sum_r_coriolis_bc_rlm_10                             &
+!!     &         (nnod_rlm, nidx_rlm, idx_gl_1d_rlm_j, a_r_1d_rlm_r,    &
+!!     &          NB, kr, n_WR, irev_sr_rlm,  WR, d_cor_bc)
+!!      subroutine inner_core_rot_z_coriolis_rlm(nnod_rlm, nidx_rlm,    &
+!!     &          radius_1d_rlm_r,  NB, n_WR, irev_sr_rlm, WR)
 !!
 !!************************************************
 !!
@@ -70,7 +74,6 @@
       use m_machine_parameter
       use m_constants
 !
-      use m_spheric_parameter
       use m_physical_property
 !
       use m_poloidal_rotation
@@ -85,10 +88,16 @@
 !
 !   ------------------------------------------------------------------
 !
-      subroutine sum_rot_coriolis_rlm_10(NB, n_WR, irev_sr_rlm, WR)
+      subroutine sum_rot_coriolis_rlm_10(nnod_rlm, nidx_rlm,            &
+     &          a_r_1d_rlm_r, NB, n_WR, irev_sr_rlm, WR)
 !
       use m_coriolis_terms_rlm
       use m_addresses_trans_sph_MHD
+!
+!
+      integer(kind = kint), intent(in) :: nnod_rlm
+      integer(kind = kint), intent(in) :: nidx_rlm(2)
+      real(kind = kreal), intent(in) :: a_r_1d_rlm_r(nidx_rlm(1))
 !
       integer(kind = kint), intent(in) :: NB, n_WR
       integer(kind = kint), intent(in) :: irev_sr_rlm(nnod_rlm)
@@ -166,10 +175,18 @@
 !*
 !*   ------------------------------------------------------------------
 !*
-      subroutine sum_div_coriolis_rlm_10(NB, n_WR, irev_sr_rlm, WR)
+      subroutine sum_div_coriolis_rlm_10                                &
+     &         (nnod_rlm, nidx_rlm, idx_gl_1d_rlm_j, a_r_1d_rlm_r,      &
+     &          NB, n_WR, irev_sr_rlm, WR)
 !
       use m_coriolis_terms_rlm
       use m_addresses_trans_sph_MHD
+!
+!
+      integer(kind = kint), intent(in) :: nnod_rlm
+      integer(kind = kint), intent(in) :: nidx_rlm(2)
+      integer(kind = kint), intent(in) :: idx_gl_1d_rlm_j(nidx_rlm(2),3)
+      real(kind = kreal), intent(in) :: a_r_1d_rlm_r(nidx_rlm(1))
 !
       integer(kind = kint), intent(in) :: NB, n_WR
       integer(kind = kint), intent(in) :: irev_sr_rlm(nnod_rlm)
@@ -247,15 +264,22 @@
 !*
 !*   ------------------------------------------------------------------
 !*
-      subroutine sum_r_coriolis_bc_rlm_10(NB, kr, n_WR, irev_sr_rlm,    &
-     &          WR, d_cor_bc)
+      subroutine sum_r_coriolis_bc_rlm_10                               &
+     &         (nnod_rlm, nidx_rlm, idx_gl_1d_rlm_j, a_r_1d_rlm_r,      &
+     &          NB, kr, n_WR, irev_sr_rlm,  WR, d_cor_bc)
 !
       use m_addresses_trans_sph_MHD
       use m_coriolis_terms_rlm
 !
+      integer(kind = kint), intent(in) :: nnod_rlm
+      integer(kind = kint), intent(in) :: nidx_rlm(2)
+      integer(kind = kint), intent(in) :: idx_gl_1d_rlm_j(nidx_rlm(2),3)
+      real(kind = kreal), intent(in) :: a_r_1d_rlm_r(nidx_rlm(1))
+!
       integer(kind = kint), intent(in) :: NB, kr, n_WR
       integer(kind = kint), intent(in) :: irev_sr_rlm(nnod_rlm)
       real(kind = kreal), intent(in) :: WR(n_WR)
+!
       real(kind = kreal), intent(inout) :: d_cor_bc(nidx_rlm(2))
 !
       integer(kind = kint) :: j_rlm
@@ -313,11 +337,15 @@
 !*
 !*   ------------------------------------------------------------------
 !
-      subroutine inner_core_rot_z_coriolis_rlm(NB, n_WR, irev_sr_rlm,   &
-     &          WR)
+      subroutine inner_core_rot_z_coriolis_rlm(nnod_rlm, nidx_rlm,      &
+     &          radius_1d_rlm_r, NB, n_WR, irev_sr_rlm, WR)
 !
       use m_coriolis_terms_rlm
       use m_addresses_trans_sph_MHD
+!
+      integer(kind = kint), intent(in) :: nnod_rlm
+      integer(kind = kint), intent(in) :: nidx_rlm(2)
+      real(kind = kreal), intent(in) :: radius_1d_rlm_r(nidx_rlm(2))
 !
       integer(kind = kint), intent(in) :: NB, n_WR
       integer(kind = kint), intent(in) :: irev_sr_rlm(nnod_rlm)
@@ -342,10 +370,10 @@
 !
       d_cor_rlm(i10c,ip_rlm_rot_cor) = zero
       d_cor_rlm(i11s,ip_rlm_rot_cor)                                    &
-     &       = -two*coef_cor*radius_1d_rj_r(idx_rlm_ICB)                &
+     &       = -two*coef_cor*radius_1d_rlm_r(idx_rlm_ICB)               &
      &        * omega_rlm(idx_rlm_ICB,0)*sp_wp_11c
       d_cor_rlm(i11c,ip_rlm_rot_cor)                                    &
-     &       =  two*coef_cor*radius_1d_rj_r(idx_rlm_ICB)                &
+     &       =  two*coef_cor*radius_1d_rlm_r(idx_rlm_ICB)               &
      &        * omega_rlm(idx_rlm_ICB,0)*sp_wp_11s
 !
       end subroutine inner_core_rot_z_coriolis_rlm

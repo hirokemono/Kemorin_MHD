@@ -20,7 +20,6 @@
       use m_constants
       use m_machine_parameter
 !
-      use m_spheric_parameter
 !
       use t_phys_data
 !
@@ -39,6 +38,7 @@
       use calypso_mpi
       use m_rms_4_sph_spectr
 !
+      use m_spheric_parameter
       use sum_sph_rms_data
       use volume_average_4_sph
       use quicksort
@@ -93,6 +93,8 @@
 !
       subroutine cal_rms_sph_spec_rms_whole(rj_fld)
 !
+      use m_spheric_parameter
+!
       type(phys_data), intent(in) :: rj_fld
 !
       call cal_mean_squre_in_shell(ione, nidx_rj(1), rj_fld)
@@ -103,6 +105,8 @@
 !
       subroutine cal_rms_sph_inner_core(rj_fld)
 !
+      use m_spheric_parameter
+!
       type(phys_data), intent(in) :: rj_fld
 !
       call cal_mean_squre_in_shell(izero, nlayer_ICB, rj_fld)
@@ -112,6 +116,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_rms_sph_outer_core(rj_fld)
+!
+      use m_spheric_parameter
 !
       type(phys_data), intent(in) :: rj_fld
 !
@@ -125,6 +131,7 @@
       subroutine cal_mean_squre_in_shell(kr_st, kr_ed, rj_fld)
 !
       use calypso_mpi
+      use m_spheric_parameter
       use m_rms_4_sph_spectr
 !
       use volume_average_4_sph
@@ -140,7 +147,8 @@
       if(ntot_rms_rj .eq. 0) return
 
       if(iflag_debug .gt. 0) write(*,*) 'cal_one_over_volume'
-      call cal_one_over_volume(kr_st, kr_ed, avol)
+      call cal_one_over_volume                                          &
+     &   (kr_st, kr_ed, nidx_rj(1), radius_1d_rj_r, avol)
       if(iflag_debug .gt. 0) write(*,*) 'sum_sph_layerd_rms'
       call sum_sph_layerd_rms(kr_st, kr_ed, rj_fld)
 !

@@ -8,7 +8,8 @@
 !!@n      modified by H. Matsui in Apr., 2013
 !!
 !!@verbatim
-!!      subroutine nod_r_4th_fdm_coefs_cheby
+!!      subroutine nod_r_4th_fdm_coefs_cheby                            &
+!!     &         (nlayer_ICB, nlayer_CMB, nri, radius_1d_rj_r)
 !!
 !!**********************************************************************
 !!
@@ -33,7 +34,8 @@
       use m_precision
 !
       use m_constants
-      use m_spheric_parameter
+!
+      implicit none
 !
       private :: nod_r_4th_fdm_coef_cheby
 !
@@ -43,10 +45,15 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine nod_r_4th_fdm_coefs_cheby
+      subroutine nod_r_4th_fdm_coefs_cheby                              &
+     &         (nlayer_ICB, nlayer_CMB, nri, radius_1d_rj_r)
 !
       use m_fdm_4th_coefs
       use const_radial_4th_fdm_noequi
+!
+      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+      integer(kind = kint), intent(in) :: nri
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
 !
       integer(kind = kint) :: kr, kst, ked
       real(kind = kreal) :: dr_p1, dr_n1, dr_p2, dr_n2
@@ -102,7 +109,7 @@
 !* ----------  core mantle boundary --------
 !*
       do kr = nlayer_CMB-1, nlayer_ICB+1
-        if(kr+2 .le. nidx_rj(1)) then
+        if(kr+2 .le. nri) then
           dr_p1 = radius_1d_rj_r(kr+1) - radius_1d_rj_r(kr  )
           dr_n1 = radius_1d_rj_r(kr  ) - radius_1d_rj_r(kr-1)
           dr_p2 = radius_1d_rj_r(kr+2) - radius_1d_rj_r(kr  )
@@ -116,12 +123,12 @@
 !*
       kst = nlayer_CMB + 2
       ked = nlayer_CMB + (nlayer_CMB - nlayer_ICB)/2 - 2
-      do kr = kst, min(ked,nidx_rj(1)-1)
+      do kr = kst, min(ked,nri-1)
         call nod_r_4th_fdm_coef_cheby(kr, mat_fdm_4(1,1,kr) )
       end do
 !
       kst = nlayer_CMB + (nlayer_CMB - nlayer_ICB)/2 - 1
-      ked = nidx_rj(1) - 2
+      ked = nri - 2
       do kr = kst, ked
         dr_p1 = radius_1d_rj_r(kr+1) - radius_1d_rj_r(kr  )
         dr_n1 = radius_1d_rj_r(kr  ) - radius_1d_rj_r(kr-1)
@@ -133,14 +140,14 @@
 !
 !* ---------- outer boundary of domains --------
 !
-      kr = nidx_rj(1) - 1
+      kr = nri - 1
       dr_p1 = radius_1d_rj_r(kr+1) - radius_1d_rj_r(kr  )
       dr_n1 = radius_1d_rj_r(kr  ) - radius_1d_rj_r(kr-1)
       dr_n2 = radius_1d_rj_r(kr  ) - radius_1d_rj_r(kr-2)
       call nod_r_4th_fdm_coef_noequi(kr,                                &
      &       dr_p1, dr_n1, dr_n2, dr_n2, mat_fdm_4(1,1,kr) )
 !
-      kr = nidx_rj(1)
+      kr = nri
       dr_n1 = radius_1d_rj_r(kr  ) - radius_1d_rj_r(kr-1)
       dr_n2 = radius_1d_rj_r(kr  ) - radius_1d_rj_r(kr-2)
       call nod_r_4th_fdm_coef_noequi(kr,                                &

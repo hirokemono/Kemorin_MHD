@@ -48,7 +48,7 @@
       call init_rms_4_sph_spectr(rj_fld)
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_gauss_coefs_4_monitor'
-      call init_gauss_coefs_4_monitor
+      call init_gauss_coefs_4_monitor(l_truncation)
       if ( iflag_debug.gt.0 ) write(*,*) 'init_sph_spec_4_monitor'
       call init_sph_spec_4_monitor(rj_fld)
 !
@@ -78,7 +78,9 @@
       if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
       call cal_rms_sph_outer_core(rj_fld)
       if(iflag_debug.gt.0)  write(*,*) 'cal_gauss_coefficients'
-      call cal_gauss_coefficients(rj_fld%ntot_phys, rj_fld%d_fld)
+      call cal_gauss_coefficients                                       &
+     &    (nlayer_ICB, nlayer_CMB, nidx_rj, radius_1d_rj_r,             &
+     &     rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       if(iflag_debug.gt.0)  write(*,*) 'pickup_sph_spec_4_monitor'
       call pickup_sph_spec_4_monitor                                    &
      &   (rj_fld%num_phys, rj_fld%ntot_phys,                            &
@@ -86,7 +88,8 @@
       if(iflag_debug.gt.0)  write(*,*) 'cal_no_heat_source_Nu'
       call cal_no_heat_source_Nu(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
      &    sph_bc_U%r_ICB(0), sph_bc_U%r_CMB(0),                         &
-     &    rj_fld%ntot_phys, rj_fld%d_fld)
+     &    idx_rj_degree_zero, nidx_rj,                      &
+     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       if(iflag_debug.gt.0)  write(*,*) 'write_total_energy_to_screen'
       call write_total_energy_to_screen(my_rank, i_step_MHD, time)

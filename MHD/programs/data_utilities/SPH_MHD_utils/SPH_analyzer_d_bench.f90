@@ -105,7 +105,8 @@
 !
 !* -----  find mid-equator point -----------------
 !*
-      call set_mid_equator_point_global
+      call set_mid_equator_point_global(l_truncation,                   &
+     &    nlayer_ICB, nlayer_CMB, nidx_rj(1), radius_1d_rj_r)
 !
       end subroutine SPH_init_sph_dbench
 !

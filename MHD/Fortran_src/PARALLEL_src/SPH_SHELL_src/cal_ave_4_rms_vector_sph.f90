@@ -7,7 +7,8 @@
 !>@brief  Take surface or volume average for mean square data
 !!
 !!@verbatim
-!!      subroutine cal_one_over_volume(kg_st, kg_ed, avol)
+!!      subroutine cal_one_over_volume                                  &
+!!     &         (kg_st, kg_ed, nri, radius_1d_rj_r, avol)
 !!
 !!      subroutine surf_ave_4_sph_rms_int                               &
 !!     &         (l_truncation, nri, a_r_1d_rj_r)
@@ -44,10 +45,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_one_over_volume(kg_st, kg_ed, avol)
+      subroutine cal_one_over_volume                                    &
+     &         (kg_st, kg_ed, nri, radius_1d_rj_r, avol)
 !
-      use m_spheric_parameter
-!
+      integer(kind = kint), intent(in) :: nri
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
       integer(kind = kint), intent(in) :: kg_st, kg_ed
       real(kind = kreal), intent(inout) :: avol
 !

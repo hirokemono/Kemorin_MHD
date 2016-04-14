@@ -8,11 +8,14 @@
 !>@n      Evaluate Nusselt number without heat source
 !!
 !!@verbatim
-!!      subroutine init_gauss_coefs_4_monitor
-!!      subroutine cal_gauss_coefficients(ntot_phys_rj, d_rj)
+!!      subroutine init_gauss_coefs_4_monitor(l_truncation)
+!!      subroutine cal_gauss_coefficients                               &
+!!     &         (nlayer_ICB, nlayer_CMB, nidx_rj, radius_1d_rj_r,      &
+!!     &          nnod_rj, ntot_phys_rj, d_rj)
 !!
-!!      subroutine cal_no_heat_source_Nu(kr_ICB, kr_CMB, r_in, r_out,   &
-!!     &          ntot_phys_rj, d_rj)
+!!      subroutine cal_no_heat_source_Nu(kr_in, kr_out, r_in, r_out,    &
+!!     &          idx_rj_degree_zero, nidx_rj,                          &
+!!     &          nnod_rj, ntot_phys_rj, d_rj)
 !!@endverbatim
 !
       module pickup_gauss_coefficients
@@ -20,7 +23,6 @@
       use m_precision
       use m_constants
 !
-      use m_spheric_parameter
       use pickup_sph_spectr
 !
       implicit  none
@@ -33,10 +35,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_gauss_coefs_4_monitor
+      subroutine init_gauss_coefs_4_monitor(l_truncation)
 !
       use m_sph_phys_address
       use m_gauss_coefs_monitor_data
+!
+      integer(kind = kint), intent(in) :: l_truncation
 !
       integer(kind = kint) :: l
 !
@@ -81,13 +85,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_gauss_coefficients(ntot_phys_rj, d_rj)
+      subroutine cal_gauss_coefficients                                 &
+     &         (nlayer_ICB, nlayer_CMB, nidx_rj, radius_1d_rj_r,        &
+     &          nnod_rj, ntot_phys_rj, d_rj)
 !
       use calypso_mpi
       use m_sph_phys_address
       use m_gauss_coefs_monitor_data
 !
-      integer(kind = kint), intent(in) :: ntot_phys_rj
+      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+      integer(kind = kint), intent(in) :: nidx_rj(2)
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
       real (kind=kreal), intent(in) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: inum, j, l, inod
@@ -174,16 +183,20 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_no_heat_source_Nu(kr_ICB, kr_CMB, r_in, r_out,     &
-     &          ntot_phys_rj, d_rj)
+      subroutine cal_no_heat_source_Nu(kr_in, kr_out, r_in, r_out,      &
+     &          idx_rj_degree_zero, nidx_rj,                            &
+     &          nnod_rj, ntot_phys_rj, d_rj)
 !
       use m_sph_phys_address
       use m_no_heat_Nusselt_num
 !
-      integer(kind = kint), intent(in) :: kr_ICB, kr_CMB
+      integer(kind = kint), intent(in) :: kr_in, kr_out
       real(kind = kreal), intent(in) :: r_in, r_out
 !
-      integer(kind = kint), intent(in) :: ntot_phys_rj
+      integer(kind = kint), intent(in) :: idx_rj_degree_zero
+      integer(kind = kint), intent(in) :: nidx_rj(2)
+!
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real (kind=kreal), intent(in) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real(kind = kreal) :: temp_ICB, temp_CMB
@@ -199,23 +212,23 @@
       r_ICB_Nu = r_in
       r_CMB_Nu = r_out
 !
-      inod_ICB = idx_rj_degree_zero + (kr_ICB-1) * nidx_rj(2)
+      inod_ICB = idx_rj_degree_zero + (kr_in-1) * nidx_rj(2)
       temp_ICB = d_rj(inod_ICB,ipol%i_temp)
 !      dTdr_ICB = half*d_rj(inod_ICB,ipol%i_grad_t)                     &
-!     &           * sph_rj1%a_r_1d_rj_r(kr_ICB)**2
+!     &           * sph_rj1%a_r_1d_rj_r(kr_in)**2
 !
-      inod_CMB = idx_rj_degree_zero + (kr_CMB-1) * nidx_rj(2)
+      inod_CMB = idx_rj_degree_zero + (kr_out-1) * nidx_rj(2)
       temp_CMB = d_rj(inod_CMB,ipol%i_temp)
 !      dTdr_CMB = half*d_rj(inod_CMB,ipol%i_grad_t)                     &
-!     &          * sph_rj1%a_r_1d_rj_r(kr_CMB)**2
+!     &          * sph_rj1%a_r_1d_rj_r(kr_out)**2
 !
       c1 = (r_CMB_Nu*temp_CMB - r_ICB_Nu*temp_ICB)                      &
      &    / ( r_CMB_Nu - r_ICB_Nu )
       c2 = r_CMB_Nu * r_ICB_Nu * (temp_ICB - temp_CMB)                  &
      &    / ( r_CMB_Nu - r_ICB_Nu )
 !
-!      dTdr_diff_ICB = - c2 * sph_rj1%a_r_1d_rj_r(kr_ICB)**2
-!      dTdr_diff_CMB = - c2 * sph_rj1%a_r_1d_rj_r(kr_CMB)**2
+!      dTdr_diff_ICB = - c2 * sph_rj1%a_r_1d_rj_r(kr_in)**2
+!      dTdr_diff_CMB = - c2 * sph_rj1%a_r_1d_rj_r(kr_out)**2
 !      Nu_ICB = dTdr_ICB / dTdr_diff_ICB
 !      Nu_CMB = dTdr_CMB / dTdr_diff_CMB
 !

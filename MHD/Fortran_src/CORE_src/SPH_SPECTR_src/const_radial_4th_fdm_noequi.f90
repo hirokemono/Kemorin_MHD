@@ -12,7 +12,8 @@
 !!      subroutine const_4th_fdm_matrices
 !!      subroutine const_4th_fdm_coefs
 !!
-!!      subroutine nod_r_4th_fdm_coefs_nonequi
+!!      subroutine nod_r_4th_fdm_coefs_nonequi                          &
+!!     &         (nlayer_ICB, nri, radius_1d_rj_r)
 !!
 !!      subroutine nod_r_4th_fdm_coef_noequi(kr,                        &
 !!     &          dr_p1, dr_n1, dr_p2, dr_n2, mat_fdm)
@@ -21,9 +22,12 @@
       module const_radial_4th_fdm_noequi
 !
       use m_precision
-!
       use m_constants
-      use m_spheric_parameter
+      use m_machine_parameter
+!
+      implicit none
+!
+      private :: nod_r_4th_fdm_coefs_nonequi
 !
 !  -------------------------------------------------------------------
 !
@@ -33,12 +37,14 @@
 !
       subroutine const_4th_fdm_matrices
 !
+      use m_spheric_parameter
       use m_fdm_4th_coefs
 !
 !
       call allocate_fdm4_matrices(nidx_rj(1))
 !   Choose radial differences
-      call nod_r_4th_fdm_coefs_nonequi
+      call nod_r_4th_fdm_coefs_nonequi                                  &
+     &   (nlayer_ICB, nidx_rj(1), radius_1d_rj_r)
 !
       end subroutine const_4th_fdm_matrices
 !
@@ -46,6 +52,7 @@
 !
       subroutine const_4th_fdm_coefs
 !
+      use m_spheric_parameter
       use m_fdm_4th_coefs
 !
       call allocate_fdm4_coefs(nidx_rj(1))
@@ -61,9 +68,14 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine nod_r_4th_fdm_coefs_nonequi
+      subroutine nod_r_4th_fdm_coefs_nonequi                            &
+     &         (nlayer_ICB, nri, radius_1d_rj_r)
 !
       use m_fdm_4th_coefs
+!
+      integer(kind = kint), intent(in) :: nlayer_ICB
+      integer(kind = kint), intent(in) :: nri
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
 !
       integer(kind = kint) :: kr
       real(kind = kreal) :: dr_p1, dr_n1
@@ -91,7 +103,7 @@
      &       mat_fdm_4(1,1,2))
 !
 !
-      do kr = 3, nidx_rj(1)-2
+      do kr = 3, nri-2
         dr_p1 = radius_1d_rj_r(kr+1) - radius_1d_rj_r(kr  )
         dr_n1 = radius_1d_rj_r(kr  ) - radius_1d_rj_r(kr-1)
         dr_p2 = radius_1d_rj_r(kr+2) - radius_1d_rj_r(kr  )
@@ -100,14 +112,14 @@
      &       mat_fdm_4(1,1,kr))
       end do
 !
-      kr = nidx_rj(1)-1
+      kr = nri-1
       dr_p1 = radius_1d_rj_r(kr+1) - radius_1d_rj_r(kr  )
       dr_n1 = radius_1d_rj_r(kr  ) - radius_1d_rj_r(kr-1)
       dr_n2 = radius_1d_rj_r(kr  ) - radius_1d_rj_r(kr-2)
       call nod_r_4th_fdm_coef_noequi                                    &
      &      (kr, dr_p1, dr_n1, dr_n2, dr_n2, mat_fdm_4(1,1,kr))
 !
-      kr = nidx_rj(1)
+      kr = nri
       dr_n1 = radius_1d_rj_r(kr  ) - radius_1d_rj_r(kr-1)
       dr_n2 = radius_1d_rj_r(kr  ) - radius_1d_rj_r(kr-2)
       call nod_r_4th_fdm_coef_noequi(kr, dr_n1, dr_n1, dr_n2, dr_n2,    &

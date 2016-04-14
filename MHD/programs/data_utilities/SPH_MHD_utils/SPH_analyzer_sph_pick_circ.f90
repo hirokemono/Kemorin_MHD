@@ -115,7 +115,8 @@
 !
 !* -----  find mid-equator point -----------------
 !
-      call set_circle_point_global
+      call set_circle_point_global                                      &
+     &   (l_truncation, nidx_rj(1), radius_1d_rj_r)
 !
       end subroutine SPH_init_sph_pick_circle
 !

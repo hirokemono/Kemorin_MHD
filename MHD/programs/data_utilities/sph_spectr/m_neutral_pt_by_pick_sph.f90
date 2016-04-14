@@ -124,8 +124,8 @@
         if(idx_pick_sph_gl(i,1) .eq. 0) ipick_l0m0 = i
       end do
 !
-      call allocate_dr_rj_noequi
-      call set_dr_for_nonequi
+      call allocate_dr_rj_noequi(nidx_rj(1))
+      call set_dr_for_nonequi(nlayer_CMB, nidx_rj(1), radius_1d_rj_r)
       call const_2nd_fdm_matrices
       call const_2nd_fdm_coefs
 !
@@ -136,14 +136,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_radial_grad_scalars(istep, time, buo_ratio)
+      subroutine set_radial_grad_scalars(istep, time,                   &
+     &          nri, radius_1d_rj_r, buo_ratio)
 !
-      use m_spheric_parameter
-      use m_sph_spectr_data
       use m_sph_phys_address
 !
       integer(kind = kint), intent(in) :: istep
       real(kind = kreal), intent(in) :: time, buo_ratio
+!
+      integer(kind = kint), intent(in) :: nri
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
 !
       integer(kind = kint) :: k, ipick
 !

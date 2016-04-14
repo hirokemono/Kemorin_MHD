@@ -18,7 +18,7 @@
       integer(kind = kint), parameter :: id_pick = 15
 !
       integer(kind = kint) :: istep_start, istep_end, istep_inc
-      integer(kind = kint) :: i_step, ierr, icou, i
+      integer(kind = kint) :: i_step, ierr, icou
       real(kind = kreal) :: time
 !
 !
@@ -46,7 +46,8 @@
         if(mod((i_step-istep_start),istep_inc) .eq. 0                   &
      &     .and. i_step.ge.istep_start) then
 !
-          call set_radial_grad_scalars(i_step, time, buoyancy_ratio)
+          call set_radial_grad_scalars(i_step, time,                    &
+     &        nidx_rj(1), radius_1d_rj_r, buoyancy_ratio)
           icou = icou + 1
           write(*,*) 'step ', i_step,                                   &
      &        ' is added for time average: count is  ', icou

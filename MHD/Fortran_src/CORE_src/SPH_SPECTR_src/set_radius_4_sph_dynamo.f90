@@ -10,7 +10,10 @@
 !!      Programmed by H. Matsui on June., 1994
 !!      modified by H. Matsui on Apr., 2009
 !!
-!!      subroutine set_radius_dat_4_sph_dynamo(r_ele_rj, ar_ele_rj)
+!!      subroutine set_radius_dat_4_sph_dynamo                          &
+!!     &         (nri, radius_1d_rj_r, iflag_radial_grid,               &
+!!     &          nlayer_ICB, nlayer_CMB, nlayer_2_center,              &
+!!     &          ar_1d_rj, r_ele_rj, ar_ele_rj, r_ICB, r_CMB, R_earth)
 !!***********************************************************************
 !!*
 !!*       ar_1d_rj(k,1)   : 1 / r

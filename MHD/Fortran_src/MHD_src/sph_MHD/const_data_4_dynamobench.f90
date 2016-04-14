@@ -27,6 +27,7 @@
 !
       subroutine s_const_data_4_dynamobench(rj_fld)
 !
+      use m_spheric_parameter
       use m_boundary_params_sph_MHD
       use m_field_at_mid_equator
 !

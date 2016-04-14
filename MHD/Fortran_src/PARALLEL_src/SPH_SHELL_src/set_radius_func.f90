@@ -70,8 +70,8 @@
 !   Choose radial grid mode
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &      write(*,*) 'set_dr_for_nonequi'
-      call allocate_dr_rj_noequi
-      call set_dr_for_nonequi
+      call allocate_dr_rj_noequi(nidx_rj(1))
+      call set_dr_for_nonequi(nlayer_CMB, nidx_rj(1), radius_1d_rj_r)
 !
 !*  ----------   reference of temperature --------
 !*
@@ -103,7 +103,8 @@
 !
       call allocate_fdm_matrices(nidx_rj(1))
 !   Choose radial differences
-      call nod_r_2nd_fdm_coefs_nonequi
+      call nod_r_2nd_fdm_coefs_nonequi                                  &
+     &   (nlayer_ICB, nidx_rj(1), radius_1d_rj_r)
       call deallocate_dr_rj_noequi
 !
       end subroutine const_2nd_fdm_matrices

@@ -32,6 +32,7 @@
       use m_t_step_parameter
       use m_ctl_data_4_sph_utils
       use m_ctl_params_sph_utils
+      use m_spheric_parameter
       use m_sph_spectr_data
       use parallel_load_data_4_sph
       use copy_rj_phys_data_4_IO
@@ -90,7 +91,7 @@
       integer(kind = kint) :: i_step
 !
 !
-      call init_gauss_coefs_4_monitor
+      call init_gauss_coefs_4_monitor(l_truncation)
       do i_step = i_step_init, i_step_number, i_step_output_ucd
 !
 !   Input spectr data
@@ -104,7 +105,9 @@
 !
 !  pickup components
 !
-        call cal_gauss_coefficients(rj_fld1%ntot_phys, rj_fld1%d_fld)
+        call cal_gauss_coefficients                                     &
+     &     (nlayer_ICB, nlayer_CMB, nidx_rj, radius_1d_rj_r,            &
+     &      rj_fld1%n_point, rj_fld1%ntot_phys, rj_fld1%d_fld)
         call write_gauss_coefs_4_monitor(my_rank, i_step, time)
       end do
 !

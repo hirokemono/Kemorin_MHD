@@ -7,7 +7,8 @@
 !>@brief  data at mid-depth of the shell at equator for dynamo benchmark
 !!
 !!@verbatim
-!!      subroutine set_mid_equator_point_global
+!!      subroutine set_mid_equator_point_global(l_truncation,           &
+!!     &          nlayer_ICB, nlayer_CMB, nri, radius_1d_rj_r)
 !!      subroutine mid_eq_transfer_dynamobench(rj_fld)
 !!        type(phys_data), intent(in) :: rj_fld
 !!@endverbatim
@@ -18,7 +19,6 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_spheric_parameter
       use m_field_4_dynamobench
 !
       implicit none
@@ -32,13 +32,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_mid_equator_point_global
+      subroutine set_mid_equator_point_global(l_truncation,             &
+     &          nlayer_ICB, nlayer_CMB, nri, radius_1d_rj_r)
 !
       use m_phys_labels
 !
       use m_field_on_circle
       use m_circle_transform
       use sph_MHD_circle_transform
+!
+      integer(kind = kint), intent(in) :: l_truncation, nri
+      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
 !
       real(kind = kreal) :: r_MID
 !
@@ -48,7 +53,7 @@
 !
       s_circle = r_MID
       z_circle = zero
-      call set_circle_point_global
+      call set_circle_point_global(l_truncation, nri, radius_1d_rj_r)
 !
       end subroutine set_mid_equator_point_global
 !

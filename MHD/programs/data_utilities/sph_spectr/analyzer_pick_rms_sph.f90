@@ -34,6 +34,7 @@
       use m_t_step_parameter
       use m_ctl_data_4_sph_utils
       use m_ctl_params_sph_utils
+      use m_spheric_parameter
       use m_sph_spectr_data
       use m_sph_phys_address
       use parallel_load_data_4_sph

@@ -23,7 +23,6 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_spheric_parameter
 !
       use t_phys_data
 !
