@@ -98,8 +98,8 @@
 !
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
         call sph_center_fld_and_curl                                    &
-     &     (nnod_rj, nidx_rj(2), ar_1d_rj(ione,2), is_velo, is_vort,    &
-     &      ntot_phys_rj, d_rj)
+     &     (nnod_rj, nidx_rj(2), sph_rj1%ar_1d_rj(ione,2),              &
+     &      is_velo, is_vort, ntot_phys_rj, d_rj)
       else if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then
         call cal_sph_nod_icb_free_v_and_w                               &
      &     (nnod_rj, nidx_rj(2), sph_bc_U%kr_in,                        &
@@ -197,8 +197,8 @@
 !
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
         call cal_sph_nod_center_rot2                                    &
-     &     (nnod_rj, nidx_rj(2), ar_1d_rj(ione,2), is_fld, is_rot,      &
-     &      ntot_phys_rj, d_rj)
+     &     (nnod_rj, nidx_rj(2), sph_rj1%ar_1d_rj(ione,2),              &
+     &      is_fld, is_rot, ntot_phys_rj, d_rj)
       else if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then
         call cal_sph_nod_icb_free_rot2                                  &
      &     (nnod_rj, nidx_rj(2), sph_bc_U%kr_in, sph_bc_U%r_ICB,        &
@@ -251,8 +251,8 @@
 !
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
         call cal_sph_nod_center_diffuse2                                &
-     &     (nnod_rj, nidx_rj(2), ar_1d_rj(ione,2), coef_diffuse,        &
-     &      is_velo, is_viscous, ntot_phys_rj, d_rj)
+     &     (nnod_rj, nidx_rj(2), sph_rj1%ar_1d_rj(ione,2),              &
+     &      coef_diffuse, is_velo, is_viscous, ntot_phys_rj, d_rj)
         call cal_dsdr_sph_center_2(nnod_rj, nidx_rj(2), is_viscous,     &
      &      ntot_phys_rj, d_rj)
       else if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then
@@ -315,8 +315,8 @@
 !
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
         call cal_sph_nod_center_diffuse2                                &
-     &     (nnod_rj, nidx_rj(2), ar_1d_rj(ione,2), coef_diffuse,        &
-     &      is_vort, is_w_diffuse, ntot_phys_rj, d_rj)
+     &     (nnod_rj, nidx_rj(2), sph_rj1%ar_1d_rj(ione,2),              &
+     &      coef_diffuse, is_vort, is_w_diffuse, ntot_phys_rj, d_rj)
         call cal_dsdr_sph_center_2(nnod_rj, nidx_rj(2), is_w_diffuse,   &
      &      ntot_phys_rj, d_rj)
       else if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then

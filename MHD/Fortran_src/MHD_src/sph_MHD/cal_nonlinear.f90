@@ -36,6 +36,7 @@
 !*
       subroutine nonlinear(reftemp_rj, rj_fld)
 !
+      use m_spheric_parameter
       use m_sph_phys_address
       use m_boundary_params_sph_MHD
       use cal_inner_core_rotation
@@ -55,8 +56,8 @@
 !
       if (iflag_4_ref_temp .eq. id_sphere_ref_temp) then
         call add_reftemp_advect_sph_MHD                                 &
-     &     (sph_bc_T%kr_in, sph_bc_T%kr_out,                            &
-     &      rj_fld%ntot_phys, reftemp_rj, rj_fld%d_fld)
+     &     (sph_bc_T%kr_in, sph_bc_T%kr_out, nidx_rj, sph_rj1%ar_1d_rj, &
+     &      rj_fld%n_point, rj_fld%ntot_phys, reftemp_rj, rj_fld%d_fld)
       end if
 !
 !*  ----  copy coriolis term for inner core rotation
@@ -173,6 +174,7 @@
 !*
       subroutine licv_exp(reftemp_rj, rj_fld)
 !
+      use m_spheric_parameter
       use m_sph_phys_address
       use m_boundary_params_sph_MHD
       use sph_transforms_4_MHD
@@ -205,8 +207,8 @@
 !
       if (iflag_4_ref_temp .eq. id_sphere_ref_temp) then
         call add_reftemp_advect_sph_MHD                                 &
-     &     (sph_bc_T%kr_in, sph_bc_T%kr_out,                            &
-     &      rj_fld%ntot_phys, reftemp_rj, rj_fld%d_fld)
+     &     (sph_bc_T%kr_in, sph_bc_T%kr_out, nidx_rj, sph_rj1%ar_1d_rj, &
+     &      rj_fld%n_point, rj_fld%ntot_phys, reftemp_rj, rj_fld%d_fld)
       end if
 !
 !$omp parallel

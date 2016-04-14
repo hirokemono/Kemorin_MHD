@@ -120,7 +120,7 @@
       call sel_bc_grad_vp_and_vorticity                                 &
      &   (is_velo, is_vort, rj_fld%ntot_phys, rj_fld%d_fld)
       call cal_sph_diff_pol_and_rot2(sph_bc_U%kr_in, sph_bc_U%kr_out,   &
-     &    nidx_rj, ar_1d_rj, is_velo, is_vort,                          &
+     &    nidx_rj, sph_rj1%ar_1d_rj, is_velo, is_vort,                  &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine const_grad_vp_and_vorticity
@@ -144,7 +144,7 @@
       call sel_bc_grad_bp_and_current(sph_bc_B, is_magne, is_current,   &
      &    rj_fld%ntot_phys, rj_fld%d_fld)
       call cal_sph_diff_pol_and_rot2(sph_bc_B%kr_in, sph_bc_B%kr_out,   &
-     &    nidx_rj, ar_1d_rj, is_magne, is_current,                      &
+     &    nidx_rj, sph_rj1%ar_1d_rj, is_magne, is_current,              &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
 !      Extend potential field

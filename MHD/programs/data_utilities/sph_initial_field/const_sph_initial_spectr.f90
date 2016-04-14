@@ -201,8 +201,9 @@
         end do
         do k = nlayer_ICB, nlayer_CMB
           inod = local_sph_data_address(k,jj)
-          d_rj(inod,ipol%i_temp) = (ar_1d_rj(k,1) * 20.d0/13.0d0        &
-     &                              - 1.0d0 ) * 7.0d0 / 13.0d0
+          d_rj(inod,ipol%i_temp)                                        &
+     &          = (sph_rj1%ar_1d_rj(k,1) * 20.d0/13.0d0   - 1.0d0 )     &
+     &           * 7.0d0 / 13.0d0
         end do
       end if
 !
@@ -270,8 +271,9 @@
         end do
         do k = nlayer_ICB, nidx_rj(1)
           inod = local_sph_data_address(k,jj)
-          d_rj(inod,ipol%i_light) = (ar_1d_rj(k,1) * 20.d0/13.0d0       &
-     &                              - 1.0d0 ) * 7.0d0 / 13.0d0
+          d_rj(inod,ipol%i_light)                                       &
+     &          = (sph_rj1%ar_1d_rj(k,1) * 20.d0/13.0d0  - 1.0d0 )      &
+     &           * 7.0d0 / 13.0d0
         end do
       end if
 !

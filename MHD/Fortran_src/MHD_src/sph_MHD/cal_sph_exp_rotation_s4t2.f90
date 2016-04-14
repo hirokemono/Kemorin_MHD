@@ -8,27 +8,30 @@
 !!
 !!@verbatim
 !!      subroutine cal_sph_diff_pol_and_rot_s4t2(kr_in, kr_out,         &
-!!     &          is_fld, is_rot, ntot_phys_rj, d_rj)
+!!     &          is_fld, is_rot, nidx_rj, ar_1d_rj,                    &
+!!     &          nnod_rj, ntot_phys_rj, d_rj)
 !!        input:  d_rj(:,is_fld),   d_rj(:,is_fld+2)
 !!        output: d_rj(:,is_fld+1), d_rj(:,is_rot:is_rot+2)
 !!
 !!      subroutine cal_sph_diff_poloidal4(kr_in, kr_out, is_fld,        &
-!!     &          ntot_phys_rj, d_rj)
+!!     &          nidx_rj, nnod_rj, ntot_phys_rj, d_rj)
 !!        input:  d_rj(:,is_fld)
 !!        output: d_rj(:,is_fld+1)
 !!
 !!      subroutine cal_sph_nod_vect_rot_s4t2(kr_in, kr_out,             &
-!!     &          is_fld, is_rot, ntot_phys_rj, d_rj)
+!!     &          is_fld, is_rot, nidx_rj, ar_1d_rj,                    &
+!!     &          nnod_rj, ntot_phys_rj, d_rj)
 !!        input:  d_rj(:,is_fld),   d_rj(:,is_fld+2)
 !!        output: d_rj(:,is_rot:is_rot+2)
 !!
 !!      subroutine cal_sph_nod_vect_w_div_s4t2(kr_in, kr_out,           &
-!!     &          is_fld, is_rot, ntot_phys_rj, d_rj)
+!!     &          is_fld, is_rot, nidx_rj, ar_1d_rj,                    &
+!!     &          nnod_rj, ntot_phys_rj, d_rj)
 !!      subroutine cal_sph_nod_vect_div4(kr_in, kr_out, is_fld, is_div, &
-!!     &          ntot_phys_rj, d_rj)
-!!
+!!     &          nidx_rj, ar_1d_rj, nnod_rj, ntot_phys_rj, d_rj)
 !!      subroutine cal_sph_visous_s4t2(kr_in, kr_out, coef_d,           &
-!!     &          is_fld, is_diffuse, ntot_phys_rj, d_rj)
+!!     &          is_fld, is_diffuse, nidx_rj, ar_1d_rj,                &
+!!     &          nnod_rj, ntot_phys_rj, d_rj)
 !!@endverbatim
 !!
 !!@n @param kr_in    Radial ID for inner boundary
@@ -45,7 +48,6 @@
       use m_precision
 !
       use m_constants
-      use m_spheric_parameter
       use m_schmidt_poly_on_rtm
       use m_fdm_coefs
       use m_fdm_4th_coefs
@@ -59,13 +61,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sph_diff_pol_and_rot_s4t2(kr_in, kr_out,           &
-     &          is_fld, is_rot, ntot_phys_rj, d_rj)
+     &          is_fld, is_rot, nidx_rj, ar_1d_rj,                      &
+     &          nnod_rj, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
       integer(kind = kint), intent(in) :: is_fld
       integer(kind = kint), intent(in) :: is_rot
+      integer(kind = kint), intent(in) :: nidx_rj(2)
+      real(kind = kreal), intent(in) :: ar_1d_rj(nidx_rj(1),3)
 !
-      integer (kind = kint), intent(in) :: ntot_phys_rj
+      integer (kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real(kind = kreal) :: d1s_dr1, d2s_dr2, d1t_dr1
@@ -114,12 +119,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sph_diff_poloidal4(kr_in, kr_out, is_fld,          &
-     &          ntot_phys_rj, d_rj)
+     &          nidx_rj, nnod_rj, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
       integer(kind = kint), intent(in) :: is_fld
+      integer(kind = kint), intent(in) :: nidx_rj(2)
 !
-      integer (kind = kint), intent(in) :: ntot_phys_rj
+      integer (kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real(kind = kreal) :: d1s_dr1
@@ -155,13 +161,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sph_nod_vect_rot_s4t2(kr_in, kr_out,               &
-     &          is_fld, is_rot, ntot_phys_rj, d_rj)
+     &          is_fld, is_rot, nidx_rj, ar_1d_rj,                      &
+     &          nnod_rj, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
       integer(kind = kint), intent(in) :: is_fld
       integer(kind = kint), intent(in) :: is_rot
+      integer(kind = kint), intent(in) :: nidx_rj(2)
+      real(kind = kreal), intent(in) :: ar_1d_rj(nidx_rj(1),3)
 !
-      integer (kind = kint), intent(in) :: ntot_phys_rj
+      integer (kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real(kind = kreal) :: d2s_dr2, d1t_dr1
@@ -203,13 +212,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sph_nod_vect_w_div_s4t2(kr_in, kr_out,             &
-     &          is_fld, is_rot, ntot_phys_rj, d_rj)
+     &          is_fld, is_rot, nidx_rj, ar_1d_rj,                      &
+     &          nnod_rj, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
       integer(kind = kint), intent(in) :: is_fld
       integer(kind = kint), intent(in) :: is_rot
+      integer(kind = kint), intent(in) :: nidx_rj(2)
+      real(kind = kreal), intent(in) :: ar_1d_rj(nidx_rj(1),3)
 !
-      integer (kind = kint), intent(in) :: ntot_phys_rj
+      integer (kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real(kind = kreal) :: d1d_dr1, d1t_dr1
@@ -251,13 +263,15 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sph_nod_vect_div4(kr_in, kr_out, is_fld, is_div,   &
-     &          ntot_phys_rj, d_rj)
+     &          nidx_rj, ar_1d_rj, nnod_rj, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
       integer(kind = kint), intent(in) :: is_fld
       integer(kind = kint), intent(in) :: is_div
+      integer(kind = kint), intent(in) :: nidx_rj(2)
+      real(kind = kreal), intent(in) :: ar_1d_rj(nidx_rj(1),3)
 !
-      integer (kind = kint), intent(in) :: ntot_phys_rj
+      integer (kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real(kind = kreal) :: d1s_dr1
@@ -295,14 +309,17 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sph_visous_s4t2(kr_in, kr_out, coef_d,             &
-     &          is_fld, is_diffuse, ntot_phys_rj, d_rj)
+     &          is_fld, is_diffuse, nidx_rj, ar_1d_rj,                  &
+     &          nnod_rj, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
       integer(kind = kint), intent(in) :: is_fld
       integer(kind = kint), intent(in) :: is_diffuse
+      integer(kind = kint), intent(in) :: nidx_rj(2)
+      real(kind = kreal), intent(in) :: ar_1d_rj(nidx_rj(1),3)
       real(kind = kreal), intent(in) :: coef_d
 !
-      integer (kind = kint), intent(in) :: ntot_phys_rj
+      integer (kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real(kind = kreal) :: d2s_dr2, d2t_dr2

@@ -64,7 +64,7 @@
       call set_radius_dat_4_sph_dynamo                                  &
      &   (nidx_rj(1), radius_1d_rj_r, iflag_radial_grid,                &
      &    nlayer_ICB, nlayer_CMB, nlayer_2_center,                      &
-     &    ar_1d_rj, sph_rj1%r_ele_rj, sph_rj1%ar_ele_rj,                &
+     &    sph_rj1%ar_1d_rj, sph_rj1%r_ele_rj, sph_rj1%ar_ele_rj,        &
      &    r_ICB, r_CMB, R_earth)
 !
 !   Choose radial grid mode
@@ -78,8 +78,10 @@
       if (ipol%i_ref_t .gt. 0) then
         if (iflag_debug .ge. iflag_routine_msg)                         &
      &               write(*,*) 'set_reftemp_4_sph'
-        call set_reftemp_4_sph(r_hot, r_cold, temp_hot, temp_cold,      &
-     &      rj_fld%ntot_phys, rj_fld%d_fld)
+        call set_reftemp_4_sph(idx_rj_degree_zero,                      &
+     &      nidx_rj, sph_rj1%ar_1d_rj, nlayer_ICB, nlayer_CMB,          &
+     &      r_hot, r_cold, temp_hot, temp_cold,                         &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !*
 !*  ----------  rotation of earth  ---------------

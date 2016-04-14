@@ -67,11 +67,14 @@
       call set_unit_mat_4_poisson(nidx_rj(1), nidx_rj(2),               &
      &    sph_bc_U%kr_in, sph_bc_U%kr_out, vs_poisson_mat)
 !
-      call add_vector_poisson_mat_sph(nidx_rj(1), nidx_rj(2), ar_1d_rj, &
+      call add_vector_poisson_mat_sph                                   &
+     &   (nidx_rj(1), nidx_rj(2), sph_rj1%ar_1d_rj,                     &
      &    sph_bc_U%kr_in, sph_bc_U%kr_out, coef_dvt, vt_evo_mat)
-      call add_vector_poisson_mat_sph(nidx_rj(1), nidx_rj(2), ar_1d_rj, &
+      call add_vector_poisson_mat_sph                                   &
+     &   (nidx_rj(1), nidx_rj(2), sph_rj1%ar_1d_rj,                     &
      &    sph_bc_U%kr_in, sph_bc_U%kr_out, coef_dvt, wt_evo_mat)
-      call add_vector_poisson_mat_sph(nidx_rj(1), nidx_rj(2), ar_1d_rj, &
+      call add_vector_poisson_mat_sph                                   &
+     &   (nidx_rj(1), nidx_rj(2), sph_rj1%ar_1d_rj,                     &
      &    sph_bc_U%kr_in, sph_bc_U%kr_out, one, vs_poisson_mat)
 !
 !   Boundary condition for ICB
@@ -198,9 +201,11 @@
      &      bt_evo_mat)
       end if
 !
-      call add_vector_poisson_mat_sph(nidx_rj(1), nidx_rj(2), ar_1d_rj, &
+      call add_vector_poisson_mat_sph                                   &
+     &   (nidx_rj(1), nidx_rj(2), sph_rj1%ar_1d_rj,                     &
      &    sph_bc_B%kr_in, sph_bc_B%kr_out, coef_dbt, bs_evo_mat)
-      call add_vector_poisson_mat_sph(nidx_rj(1), nidx_rj(2), ar_1d_rj, &
+      call add_vector_poisson_mat_sph                                   &
+     &   (nidx_rj(1), nidx_rj(2), sph_rj1%ar_1d_rj,                     &
      &    sph_bc_B%kr_in, sph_bc_B%kr_out, coef_dbt, bt_evo_mat)
 !
 !

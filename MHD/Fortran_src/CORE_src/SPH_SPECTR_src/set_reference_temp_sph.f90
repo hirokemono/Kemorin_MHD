@@ -9,8 +9,10 @@
 !!@n      with fixed temperature boundary
 !!
 !!@verbatim
-!!      subroutine set_reftemp_4_sph(r_ICB, r_CMB, temp_ICB, temp_CMB,  &
-!!     &          ntot_phys_rj, d_rj)
+!!      subroutine set_reftemp_4_sph(idx_rj_degree_zero, nidx_rj,       &
+!!     &          ar_1d_rj, nlayer_ICB, nlayer_CMB,                     &
+!!     &          r_hot, r_cold, temp_hot, temp_cold,                   &
+!!     &          nnod_rj, ntot_phys_rj, d_rj)
 !!***********************************************************************
 !!*
 !!*     ref_temp(k,0) : reference of temperature  (output)
@@ -37,7 +39,6 @@
       use m_constants
       use m_machine_parameter
       use m_spheric_constants
-      use m_spheric_parameter
 !
       implicit none
 !
@@ -47,45 +48,46 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine set_reftemp_4_sph(r_ICB, r_CMB, temp_ICB, temp_CMB,    &
-     &          ntot_phys_rj, d_rj)
+      subroutine set_reftemp_4_sph(idx_rj_degree_zero, nidx_rj,         &
+     &          ar_1d_rj, nlayer_ICB, nlayer_CMB,                       &
+     &          r_hot, r_cold, temp_hot, temp_cold,                     &
+     &          nnod_rj, ntot_phys_rj, d_rj)
 !
       use m_sph_phys_address
 !
-      integer(kind = kint), intent(in) ::  ntot_phys_rj
-      real(kind = kreal), intent(in) :: r_ICB, r_CMB
-      real(kind = kreal), intent(in) :: temp_ICB, temp_CMB
+      integer(kind = kint), intent(in) ::  nidx_rj(2)
+      integer(kind = kint), intent(in) ::  nlayer_ICB, nlayer_CMB
+      integer(kind = kint), intent(in) ::  idx_rj_degree_zero
+      integer(kind = kint), intent(in) ::  nnod_rj, ntot_phys_rj
+      real(kind = kreal), intent(in) :: ar_1d_rj(nidx_rj(1),3)
+      real(kind = kreal), intent(in) :: r_hot, r_cold
+      real(kind = kreal), intent(in) :: temp_hot, temp_cold
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
-      integer(kind = kint) :: j, k, kk, inod
+      integer(kind = kint) :: k, kk, inod
       real(kind = kreal) :: c1, c2
 !
       return
 !
-      c1 = ( r_CMB*temp_CMB - r_ICB*temp_ICB ) /   ( r_CMB - r_ICB )
-      c2 = r_CMB * r_ICB * (temp_ICB - temp_CMB) / ( r_CMB - r_ICB )
+      c1 = ( r_cold*temp_cold - r_hot*temp_hot ) /   (r_cold - r_hot)
+      c2 = r_cold * r_hot * (temp_hot - temp_cold) / (r_cold - r_hot)
 !
       d_rj(1:nnod_rj,ipol%i_ref_t) =  zero
       d_rj(1:nnod_rj,ipol%i_gref_t) = zero
 !
-      do j = 1, nidx_rj(2)
+      if (idx_rj_degree_zero .le. izero) return
 !
-        if ( idx_gl_1d_rj_j(j,1) .eq. izero) then
-          do kk = nlayer_ICB, nlayer_CMB
-            k = kk - nlayer_ICB
-            inod = j + (kk-1) * nidx_rj(2)
-            d_rj(inod,ipol%i_ref_t) =    c1 + c2 * ar_1d_rj(kk,1)
-            d_rj(inod,ipol%i_gref_t) = - c2 * ar_1d_rj(kk,2)
-          end do
+      do kk = nlayer_ICB, nlayer_CMB
+        k = kk - nlayer_ICB
+        inod = idx_rj_degree_zero + (kk-1) * nidx_rj(2)
+        d_rj(inod,ipol%i_ref_t) =    c1 + c2 * ar_1d_rj(kk,1)
+        d_rj(inod,ipol%i_gref_t) = - c2 * ar_1d_rj(kk,2)
+      end do
 !
-          do kk = 1 ,nlayer_ICB-1
-            k = nlayer_ICB - kk
-            inod = j + (kk-1) * nidx_rj(2)
-            d_rj(inod,ipol%i_ref_t) =  temp_ICB
-          end do
-!
-          exit
-        end if
+      do kk = 1 ,nlayer_ICB-1
+        k = nlayer_ICB - kk
+        inod = idx_rj_degree_zero + (kk-1) * nidx_rj(2)
+        d_rj(inod,ipol%i_ref_t) =  temp_hot
       end do
 !
       end subroutine set_reftemp_4_sph

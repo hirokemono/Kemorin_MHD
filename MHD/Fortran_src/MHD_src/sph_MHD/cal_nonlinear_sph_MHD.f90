@@ -8,8 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine s_cal_nonlinear_sph_MHD
-!!      subroutine add_reftemp_advect_sph_MHD(kr_in, kr_out,            &
-!!     &          ntot_phys_rj, reftemp_rj, d_rj)
+!!      subroutine add_reftemp_advect_sph_MHD                           &
+!!     &         (kr_in, kr_out, nidx_rj, ar_1d_rj,                     &
+!!     &          nnod_rj, ntot_phys_rj, reftemp_rj, d_rj)
 !!@endverbatim
 !!
 !!@n @param kr_in       Radial ID for inner boundary
@@ -21,7 +22,6 @@
 !
       use m_constants
       use m_control_parameter
-      use m_spheric_parameter
       use m_physical_property
       use m_sph_phys_address
 !
@@ -36,6 +36,7 @@
       subroutine s_cal_nonlinear_sph_MHD
 !
       use m_machine_parameter
+      use m_spheric_parameter
       use m_spheric_param_smp
       use m_addresses_trans_sph_MHD
       use const_wz_coriolis_rtp
@@ -87,13 +88,16 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine add_reftemp_advect_sph_MHD(kr_in, kr_out,              &
-     &          ntot_phys_rj, reftemp_rj, d_rj)
+      subroutine add_reftemp_advect_sph_MHD                             &
+     &         (kr_in, kr_out, nidx_rj, ar_1d_rj,                       &
+     &          nnod_rj, ntot_phys_rj, reftemp_rj, d_rj)
 !
       use m_schmidt_poly_on_rtm
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
-      integer (kind = kint), intent(in) :: ntot_phys_rj
+      integer(kind = kint), intent(in) :: nidx_rj(2)
+      integer (kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real(kind= kreal), intent(in) :: ar_1d_rj(nidx_rj(1),3)
       real(kind = kreal), intent(in) :: reftemp_rj(nidx_rj(1),0:1)
       real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !

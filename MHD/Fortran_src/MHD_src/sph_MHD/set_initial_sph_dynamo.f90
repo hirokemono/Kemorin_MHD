@@ -187,8 +187,9 @@
           end do
           do k = nlayer_ICB, nlayer_CMB
             inod = idx_rj_degree_zero + (k-1)*nidx_rj(2)
-            d_rj(inod,ipol%i_temp) = (ar_1d_rj(k,1) * 20.d0/13.0d0      &
-     &                              - 1.0d0 ) * 7.0d0 / 13.0d0
+            d_rj(inod,ipol%i_temp)                                      &
+     &           = (sph_rj1%ar_1d_rj(k,1) * 20.d0/13.0d0 - 1.0d0 )      &
+     &            * 7.0d0 / 13.0d0
           end do
         end if
       end if

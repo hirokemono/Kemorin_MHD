@@ -47,7 +47,7 @@
 !
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call pick_inner_core_rotation                                   &
-     &     (idx_rj_degree_one, nidx_rj, nlayer_ICB, ar_1d_rj,           &
+     &     (idx_rj_degree_one, nidx_rj, nlayer_ICB, sph_rj1%ar_1d_rj,   &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !

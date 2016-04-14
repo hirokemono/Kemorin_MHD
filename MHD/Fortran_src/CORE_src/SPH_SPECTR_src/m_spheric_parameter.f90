@@ -58,7 +58,7 @@
 !
 !
       type(sph_rj_grid), save :: sph_rj1
-!sph_rj1%ar_ele_rj
+!sph_rj1%ar_1d_rj
 !
 !>      integer flag for FEM mesh type
 !!@n    iflag_MESH_same:     same grid point as Gauss-Legendre points
@@ -253,7 +253,7 @@
 !
 !>      1d @f$1 / r @f$ for @f$ f(r,j) @f$
 !!@n@see  set_radius_func_cheby or set_radius_func_cheby
-      real(kind = kreal), allocatable :: ar_1d_rj(:,:)
+!      real(kind = kreal), allocatable :: ar_1d_rj(:,:)
 !
 !>      1d radius between grids for @f$ f(r,j) @f$
 !      real(kind = kreal), allocatable :: r_ele_rj(:)
@@ -407,8 +407,6 @@
       allocate(radius_1d_rj_r(num))
       allocate(a_r_1d_rj_r(num))
 !
-      allocate(ar_1d_rj(num,3))
-!
       num = nidx_rj(2)
       allocate(idx_gl_1d_rj_j(num,3))
 !
@@ -417,8 +415,6 @@
         idx_gl_1d_rj_r = 0
         radius_1d_rj_r = 0.0d0
         a_r_1d_rj_r = 0.0d0
-!
-        ar_1d_rj = 0.0d0
       end if
 !
       sph_rj1%nidx_rj(1:2) = nidx_rj(1:2)
@@ -501,8 +497,6 @@
 !
       deallocate(radius_1d_rj_r)
       deallocate(a_r_1d_rj_r)
-!
-      deallocate(ar_1d_rj)
 !
       deallocate(idx_gl_1d_rj_r)
       deallocate(idx_gl_1d_rj_j)

@@ -86,7 +86,7 @@
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
         call sph_center_fld_and_curl                                    &
-     &     (nnod_rj, nidx_rj(2), ar_1d_rj(ione,2),                      &
+     &     (nnod_rj, nidx_rj(2), sph_rj1%ar_1d_rj(ione,2),              &
      &      is_magne, is_current, ntot_phys_rj, d_rj)
       else if(sph_bc_B%iflag_icb .eq. iflag_radial_magne) then
         call cal_sph_nod_icb_qvc_b_and_j                                &
@@ -165,7 +165,7 @@
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
         call cal_sph_nod_center_rot2                                    &
-     &     (nnod_rj, nidx_rj(2), ar_1d_rj(ione,2),                      &
+     &     (nnod_rj, nidx_rj(2), sph_rj1%ar_1d_rj(ione,2),              &
      &      is_magne, is_current, ntot_phys_rj, d_rj)
       else if(sph_bc_B%iflag_icb .eq. iflag_radial_magne) then
         call cal_sph_nod_icb_qvc_rot2                                   &
@@ -207,8 +207,8 @@
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
         call cal_sph_nod_center_rot2                                    &
-     &     (nnod_rj, nidx_rj(2), ar_1d_rj(ione,2), is_fld, is_rot,      &
-     &      ntot_phys_rj, d_rj)
+     &     (nnod_rj, nidx_rj(2), sph_rj1%ar_1d_rj(ione,2),              &
+     &      is_fld, is_rot, ntot_phys_rj, d_rj)
       else if(sph_bc_B%iflag_icb .eq. iflag_radial_magne) then
         call cal_sph_nod_icb_qvc_vp_rot2                                &
      &     (nnod_rj, nidx_rj(2), sph_bc_B%kr_in,                        &
@@ -250,8 +250,8 @@
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
         call cal_sph_nod_center_diffuse2                                &
-     &     (nnod_rj, nidx_rj(2), ar_1d_rj(ione,2), coef_diffuse,        &
-     &      is_magne, is_ohmic, ntot_phys_rj, d_rj)
+     &     (nnod_rj, nidx_rj(2), sph_rj1%ar_1d_rj(ione,2),              &
+     &      coef_diffuse, is_magne, is_ohmic, ntot_phys_rj, d_rj)
         call cal_dsdr_sph_center_2(nnod_rj, nidx_rj(2), is_ohmic,       &
      &      ntot_phys_rj, d_rj)
       else if(sph_bc_B%iflag_icb .eq. iflag_radial_magne) then
