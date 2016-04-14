@@ -126,8 +126,7 @@
         ist_fld =  rj_fld%istack_component(i_fld-1)
         jst_rms = istack_rms_comp_rj(j_fld-1)
         call cal_rms_sph_spec_one_field(ncomp, (ist_fld+1),             &
-     &      nidx_rj(1), nidx_rj(2), rj_fld%ntot_phys, rj_fld%d_fld,     &
-     &      rms_sph_rj)
+     &      rj_fld%ntot_phys, rj_fld%d_fld, rms_sph_rj)
 !
 !$omp parallel do private(icomp,j,kr,inum,knum)
         do inum = 1, num_pick_sph_rms_mode
@@ -187,8 +186,7 @@
         ist_fld =  rj_fld%istack_component(i_fld-1)
         jst_rms = istack_rms_comp_rj(j_fld-1)
         call cal_rms_sph_spec_one_field(ncomp, (ist_fld+1),             &
-     &      nidx_rj(1), nidx_rj(2), rj_fld%ntot_phys, rj_fld%d_fld,     &
-     &      rms_sph_rj)
+     &      rj_fld%ntot_phys, rj_fld%d_fld, rms_sph_rj)
         call radial_integration(kg_st, kg_ed, nidx_rj(1),               &
      &      radius_1d_rj_r, nidx_rj(2), rms_sph_rj, rms_sph_v)
 !

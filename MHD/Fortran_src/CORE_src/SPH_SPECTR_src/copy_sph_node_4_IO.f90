@@ -164,7 +164,8 @@
       end do
 !
       radius_1d_rj_r(1:nidx_rj(1)) =   r_gl_1_IO(1:nidx_rj(1))
-      a_r_1d_rj_r(1:nidx_rj(1)) = one / radius_1d_rj_r(1:nidx_rj(1))
+      sph_rj1%a_r_1d_rj_r(1:nidx_rj(1))                                 &
+     &      = one / radius_1d_rj_r(1:nidx_rj(1))
 !
       idx_gl_1d_rj_r(1:nidx_rj(1)) =   idx_gl_1_IO(1:nidx_rj(1))
       idx_gl_1d_rj_j(1:nidx_rj(2),1) = idx_gl_2_IO(1:nidx_rj(2),1)

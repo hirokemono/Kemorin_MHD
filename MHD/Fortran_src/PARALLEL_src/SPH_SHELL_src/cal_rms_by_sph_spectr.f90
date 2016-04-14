@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine cal_rms_sph_spec_one_field(ncomp_rj, icomp_rj,       &
-!!     &          nri, jmax, rms_sph_rj)
+!!     &          ntot_phys_rj, d_rj, rms_sph_rj)
 !!        (1/4\pi) \int (\bf{u}_{l}^{m})^2 sin \theta d\theta d\phi
 !!          = r^{-2} [ l(l+1) / (2l+1) 
 !!           ( l(l+1)/r^2 (S_{l}^{m})^2 + (dS_{l}^{m}/dr)^2)
@@ -38,36 +38,36 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_rms_sph_spec_one_field(ncomp_rj, icomp_rj,         &
-     &          nri, jmax, ntot_phys_rj, d_rj, rms_sph_rj)
+     &          ntot_phys_rj, d_rj, rms_sph_rj)
 !
       use m_spheric_parameter
       use m_phys_constants
       use m_sph_phys_address
 !
       integer(kind = kint), intent(in) :: ncomp_rj, icomp_rj
-      integer(kind = kint), intent(in) :: nri, jmax
       integer(kind = kint), intent(in) :: ntot_phys_rj
       real (kind=kreal), intent(in) :: d_rj(nnod_rj,ntot_phys_rj)
 !
 !
       real(kind = kreal), intent(inout)                                 &
-     &           :: rms_sph_rj(0:nri, jmax, ncomp_rj)
+     &           :: rms_sph_rj(0:nidx_rj(1), nidx_rj(2), ncomp_rj)
 !
 !
       if     (ncomp_rj .eq. n_scalar) then
-          call cal_rms_each_scalar_sph_spec(nri, jmax,                  &
+          call cal_rms_each_scalar_sph_spec(nidx_rj(1), nidx_rj(2),     &
      &       idx_rj_degree_zero, inod_rj_center, radius_1d_rj_r,        &
      &       nnod_rj, d_rj(1,icomp_rj), rms_sph_rj(0,1,1))
       else if(ncomp_rj .eq. n_vector) then
-        call cal_rms_each_vector_sph_spec(nri, jmax,                    &
-     &      idx_rj_degree_zero, inod_rj_center,  a_r_1d_rj_r,           &
+        call cal_rms_each_vector_sph_spec(nidx_rj(1), nidx_rj(2),       &
+     &      idx_rj_degree_zero, inod_rj_center, sph_rj1%a_r_1d_rj_r,    &
      &      nnod_rj, d_rj(1,icomp_rj), rms_sph_rj(0,1,1))
 !
         if (   icomp_rj .eq. ipol%i_velo                                &
      &      .or. icomp_rj .eq. ipol%i_magne                             &
      &      .or. icomp_rj .eq. ipol%i_filter_velo                       &
      &      .or. icomp_rj .eq. ipol%i_filter_magne) then
-          call set_sph_energies_by_rms(nri, jmax, rms_sph_rj(0,1,1))
+          call set_sph_energies_by_rms(nidx_rj(1), nidx_rj(2),          &
+     &        rms_sph_rj(0,1,1))
         end if
       end if
 !

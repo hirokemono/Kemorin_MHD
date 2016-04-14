@@ -203,10 +203,12 @@
 !
       if (ipol%i_magne .gt. 0) then
         call ext_outside_potential(kr_outside, ipol%i_magne,            &
-     &      nidx_rj, idx_gl_1d_rj_j, radius_1d_rj_r, a_r_1d_rj_r,       &
+     &      nidx_rj, idx_gl_1d_rj_j,    &
+     &      radius_1d_rj_r, sph_rj1%a_r_1d_rj_r,       &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         call ext_inside_potential(kr_inside, ipol%i_magne,              &
-     &      nidx_rj, idx_gl_1d_rj_j, radius_1d_rj_r, a_r_1d_rj_r,       &
+     &      nidx_rj, idx_gl_1d_rj_j,    &
+     &      radius_1d_rj_r, sph_rj1%a_r_1d_rj_r,       &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
@@ -241,10 +243,12 @@
 !
       if (ipol%i_magne .gt. 0) then
         call ext_outside_potential(kr_outside, ipol%i_magne,            &
-     &      nidx_rj, idx_gl_1d_rj_j, radius_1d_rj_r, a_r_1d_rj_r,       &
+     &      nidx_rj, idx_gl_1d_rj_j,    &
+     &      radius_1d_rj_r, sph_rj1%a_r_1d_rj_r,       &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         call ext_inside_potential(kr_inside, ipol%i_magne,              &
-     &      nidx_rj, idx_gl_1d_rj_j, radius_1d_rj_r, a_r_1d_rj_r,       &
+     &      nidx_rj, idx_gl_1d_rj_j,     &
+     &      radius_1d_rj_r, sph_rj1%a_r_1d_rj_r,       &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
@@ -266,7 +270,7 @@
       write(*,*) ' ipol%i_magne', ipol%i_magne, kr_outside, kr_inside
       if (ipol%i_magne .gt. 0) then
         call gauss_to_poloidal_out(kr_outside, ltr_w, r_gauss,          &
-     &      w_gauss, index_w, ipol%i_magne,                             &
+     &      w_gauss, index_w, ipol%i_magne, sph_rj1%a_r_1d_rj_r,        &
      &      rj_fld%ntot_phys, rj_fld%d_fld)
         call gauss_to_poloidal_in(kr_inside, ltr_w, r_gauss,            &
      &      w_gauss, index_w, ipol%i_magne,                             &

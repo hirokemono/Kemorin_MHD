@@ -150,12 +150,14 @@
 !      Extend potential field
       call ext_outside_potential_with_j                                 &
      &   (sph_bc_B%kr_out, is_magne, is_current,                        &
-     &      nidx_rj, idx_gl_1d_rj_j, radius_1d_rj_r, a_r_1d_rj_r,       &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &    nidx_rj, idx_gl_1d_rj_j,                                      &
+     &    radius_1d_rj_r, sph_rj1%a_r_1d_rj_r,                          &
+     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       if(sph_bc_B%iflag_icb .eq. iflag_sph_insulator) then
         call ext_inside_potential_with_j                                &
      &     (sph_bc_B%kr_in, is_magne, is_current,                       &
-     &      nidx_rj, idx_gl_1d_rj_j, radius_1d_rj_r, a_r_1d_rj_r,       &
+     &      nidx_rj, idx_gl_1d_rj_j,                                    &
+     &      radius_1d_rj_r, sph_rj1%a_r_1d_rj_r,                        &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
@@ -207,11 +209,13 @@
 !
 !      Extend potential field
       call ext_outside_potential(sph_bc_B%kr_out, is_magne,             &
-     &      nidx_rj, idx_gl_1d_rj_j, radius_1d_rj_r, a_r_1d_rj_r,       &
+     &      nidx_rj, idx_gl_1d_rj_j,            &
+     &      radius_1d_rj_r, sph_rj1%a_r_1d_rj_r,       &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       if(sph_bc_B%iflag_icb .eq. iflag_sph_insulator) then
         call ext_inside_potential(sph_bc_B%kr_in, is_magne,             &
-     &      nidx_rj, idx_gl_1d_rj_j, radius_1d_rj_r, a_r_1d_rj_r,       &
+     &      nidx_rj, idx_gl_1d_rj_j,     &
+     &      radius_1d_rj_r, sph_rj1%a_r_1d_rj_r,       &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !

@@ -147,7 +147,7 @@
       if(my_rank .eq. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'surf_ave_4_sph_rms_int'
         call surf_ave_4_sph_rms_int                                     &
-     &     (l_truncation, nidx_rj(1), a_r_1d_rj_r)
+     &     (l_truncation, nidx_rj(1), sph_rj1%a_r_1d_rj_r)
         call vol_ave_4_rms_sph(l_truncation, avol)
       end if
 !

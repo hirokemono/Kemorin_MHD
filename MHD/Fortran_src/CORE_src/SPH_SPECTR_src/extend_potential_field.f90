@@ -312,8 +312,8 @@
 !  -------------------------------------------------------------------
 !
       subroutine gauss_to_poloidal_out(kr_out, ltr_w, r_gauss,          &
-     &          w_gauss, index_w, is_fld, &
-!     &          nidx_rj, a_r_1d_rj_r, nnod_rj,         &
+     &          w_gauss, index_w, is_fld, a_r_1d_rj_r, &
+!     &          nidx_rj, nnod_rj,         &
      &          ntot_phys_rj, d_rj)
 !
       use m_spheric_parameter
@@ -322,7 +322,7 @@
       integer(kind = kint), intent(in) :: kr_out, ltr_w
 !      integer(kind = kint), intent(in) :: nidx_rj(2)
 !      integer(kind = kint), intent(in) :: nnod_rj
-!      real(kind = kreal), intent(in) :: a_r_1d_rj_r(nidx_rj(1))
+      real(kind = kreal), intent(in) :: a_r_1d_rj_r(nidx_rj(1))
       real(kind = kreal), intent(in) :: r_gauss
       real(kind = kreal), intent(in) :: w_gauss( ltr_w*(ltr_w+2) )
       integer(kind = kint), intent(in) :: index_w( ltr_w*(ltr_w+2),2 )

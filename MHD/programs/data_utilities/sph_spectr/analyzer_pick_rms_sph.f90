@@ -108,7 +108,8 @@
 !  evaluate energies
 !
         if (iflag_debug.gt.0) write(*,*) 'pickup_sph_rms_4_monitor'
-        call pickup_sph_rms_4_monitor(nidx_rj, a_r_1d_rj_r, rj_fld1)
+        call pickup_sph_rms_4_monitor                                   &
+     &     (nidx_rj, sph_rj1%a_r_1d_rj_r, rj_fld1)
 !
         if (iflag_debug.gt.0) write(*,*) 'write_sph_rms_4_monitor'
         call write_sph_rms_4_monitor(my_rank, i_step, time)

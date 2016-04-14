@@ -202,20 +202,20 @@
       inod_ICB = idx_rj_degree_zero + (kr_ICB-1) * nidx_rj(2)
       temp_ICB = d_rj(inod_ICB,ipol%i_temp)
 !      dTdr_ICB = half*d_rj(inod_ICB,ipol%i_grad_t)                     &
-!     &           * a_r_1d_rj_r(kr_ICB)**2
+!     &           * sph_rj1%a_r_1d_rj_r(kr_ICB)**2
 !
       inod_CMB = idx_rj_degree_zero + (kr_CMB-1) * nidx_rj(2)
       temp_CMB = d_rj(inod_CMB,ipol%i_temp)
 !      dTdr_CMB = half*d_rj(inod_CMB,ipol%i_grad_t)                     &
-!     &          * a_r_1d_rj_r(kr_CMB)**2
+!     &          * sph_rj1%a_r_1d_rj_r(kr_CMB)**2
 !
       c1 = (r_CMB_Nu*temp_CMB - r_ICB_Nu*temp_ICB)                      &
      &    / ( r_CMB_Nu - r_ICB_Nu )
       c2 = r_CMB_Nu * r_ICB_Nu * (temp_ICB - temp_CMB)                  &
      &    / ( r_CMB_Nu - r_ICB_Nu )
 !
-!      dTdr_diff_ICB = - c2 * a_r_1d_rj_r(kr_ICB)**2
-!      dTdr_diff_CMB = - c2 * a_r_1d_rj_r(kr_CMB)**2
+!      dTdr_diff_ICB = - c2 * sph_rj1%a_r_1d_rj_r(kr_ICB)**2
+!      dTdr_diff_CMB = - c2 * sph_rj1%a_r_1d_rj_r(kr_CMB)**2
 !      Nu_ICB = dTdr_ICB / dTdr_diff_ICB
 !      Nu_CMB = dTdr_CMB / dTdr_diff_CMB
 !
