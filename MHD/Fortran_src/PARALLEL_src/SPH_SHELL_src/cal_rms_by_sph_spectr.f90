@@ -23,7 +23,6 @@
       use m_precision
 !
       use m_constants
-      use m_spheric_parameter
       use m_schmidt_poly_on_rtm
 !
       implicit none
@@ -41,6 +40,7 @@
       subroutine cal_rms_sph_spec_one_field(ncomp_rj, icomp_rj,         &
      &          nri, jmax, ntot_phys_rj, d_rj, rms_sph_rj)
 !
+      use m_spheric_parameter
       use m_phys_constants
       use m_sph_phys_address
 !
@@ -56,10 +56,12 @@
 !
       if     (ncomp_rj .eq. n_scalar) then
           call cal_rms_each_scalar_sph_spec(nri, jmax,                  &
-     &       d_rj(1,icomp_rj), rms_sph_rj(0,1,1))
+     &       idx_rj_degree_zero, inod_rj_center, radius_1d_rj_r,        &
+     &       nnod_rj, d_rj(1,icomp_rj), rms_sph_rj(0,1,1))
       else if(ncomp_rj .eq. n_vector) then
         call cal_rms_each_vector_sph_spec(nri, jmax,                    &
-     &       d_rj(1,icomp_rj), rms_sph_rj(0,1,1))
+     &      idx_rj_degree_zero, inod_rj_center,  a_r_1d_rj_r,           &
+     &      nnod_rj, d_rj(1,icomp_rj), rms_sph_rj(0,1,1))
 !
         if (   icomp_rj .eq. ipol%i_velo                                &
      &      .or. icomp_rj .eq. ipol%i_magne                             &
@@ -74,10 +76,14 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_rms_each_scalar_sph_spec                           &
-     &         (nri, jmax, d_rj, rms_sph_rj)
+      subroutine cal_rms_each_scalar_sph_spec(nri, jmax,                &
+     &          idx_rj_degree_zero, inod_rj_center, radius_1d_rj_r,     &
+     &          nnod_rj, d_rj, rms_sph_rj)
 !
-      integer(kind = kint), intent(in) :: nri, jmax
+      integer(kind = kint), intent(in) :: nnod_rj, nri, jmax
+      integer(kind = kint), intent(in) :: idx_rj_degree_zero
+      integer(kind = kint), intent(in) :: inod_rj_center
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
       real(kind = kreal), intent(in) :: d_rj(nnod_rj)
       real(kind = kreal), intent(inout) :: rms_sph_rj(0:nri,jmax)
 !
@@ -103,10 +109,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_rms_each_vector_sph_spec                           &
-     &         (nri, jmax, d_rj, rms_sph_rj)
+      subroutine cal_rms_each_vector_sph_spec(nri, jmax,                &
+     &          idx_rj_degree_zero, inod_rj_center, a_r_1d_rj_r,        &
+     &          nnod_rj, d_rj, rms_sph_rj)
 !
-      integer(kind = kint), intent(in) :: nri, jmax
+      integer(kind = kint), intent(in) :: nnod_rj, nri, jmax
+      integer(kind = kint), intent(in) :: idx_rj_degree_zero
+      integer(kind = kint), intent(in) :: inod_rj_center
+      real(kind = kreal), intent(in) :: a_r_1d_rj_r(nri)
       real(kind = kreal), intent(in) :: d_rj(nnod_rj,3)
       real(kind = kreal), intent(inout) :: rms_sph_rj(0:nri,jmax,3)
 !
@@ -136,8 +146,8 @@
       if(idx_rj_degree_zero .eq. izero) return
 !
       j = idx_rj_degree_zero
-      do k = 1, nidx_rj(1)
-        inod = idx_rj_degree_zero + (k-1) * nidx_rj(2)
+      do k = 1, nri
+        inod = idx_rj_degree_zero + (k-1) * jmax
         rms_sph_rj(k,j,1) = (half * d_rj(inod,1))**2                   &
      &                            * a_r_1d_rj_r(k)*a_r_1d_rj_r(k)
         rms_sph_rj(k,j,2) = zero

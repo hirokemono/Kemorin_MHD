@@ -38,6 +38,7 @@
       subroutine cal_volume_average_sph(kg_st, kg_ed, avol, rj_fld)
 !
       use m_phys_constants
+      use m_spheric_parameter
       use m_rms_4_sph_spectr
       use m_sph_phys_address
 !
@@ -67,11 +68,12 @@
 !
       use m_phys_constants
       use m_sph_phys_address
+      use m_spheric_parameter
+      use m_rms_4_sph_spectr
 !
       use t_phys_data
 !
       use cal_rms_by_sph_spectr
-      use m_rms_4_sph_spectr
 !
       type(phys_data), intent(in) :: rj_fld
 !

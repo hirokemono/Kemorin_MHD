@@ -21,7 +21,6 @@
 !
       use m_constants
       use m_control_parameter
-      use m_spheric_parameter
       use m_physical_property
       use m_sph_phys_address
       use m_schmidt_poly_on_rtm
@@ -40,6 +39,7 @@
       subroutine cal_div_radial_const_gravity(sph_bc_U, rj_fld)
 !
       use m_machine_parameter
+      use m_spheric_parameter
       use t_phys_data
       use t_boundary_params_sph_MHD
 !
@@ -56,7 +56,8 @@
      &       (sph_bc_U%kr_in, sph_bc_U%kr_out,                          &
      &        coef_buo, ipol%i_temp, ipol%i_grad_t,                     &
      &        coef_comp_buo, ipol%i_light, ipol%i_grad_composit,        &
-     &        ipol%i_div_buoyancy, rj_fld%ntot_phys, rj_fld%d_fld)
+     &        ipol%i_div_buoyancy, nidx_rj, a_r_1d_rj_r,                &
+     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         else
           if (iflag_debug.eq.1)                                         &
      &      write(*,*)'cal_div_double_cst_buo_sph', ipol%i_par_temp
@@ -64,7 +65,8 @@
      &       (sph_bc_U%kr_in, sph_bc_U%kr_out,                          &
      &        coef_buo, ipol%i_par_temp, ipol%i_grad_part_t,            &
      &        coef_comp_buo, ipol%i_light, ipol%i_grad_composit,        &
-     &        ipol%i_div_buoyancy, rj_fld%ntot_phys, rj_fld%d_fld)
+     &        ipol%i_div_buoyancy, nidx_rj, a_r_1d_rj_r,                &
+     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
 !
       else if (iflag_4_gravity .gt. id_turn_OFF) then
@@ -73,25 +75,29 @@
           if (iflag_debug.eq.1) write(*,*) 'cal_div_cst_buo_sph'
           call cal_div_cst_buo_sph(sph_bc_U%kr_in, sph_bc_U%kr_out,     &
      &        coef_buo, ipol%i_temp, ipol%i_grad_t,                     &
-     &        ipol%i_div_buoyancy, rj_fld%ntot_phys, rj_fld%d_fld)
+     &        ipol%i_div_buoyancy, nidx_rj, a_r_1d_rj_r,                &
+     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         else
           if (iflag_debug.eq.1) write(*,*) 'cal_div_cst_buo_sph'
           call cal_div_cst_buo_sph(sph_bc_U%kr_in, sph_bc_U%kr_out,     &
      &        coef_buo, ipol%i_par_temp, ipol%i_grad_part_t,            &
-     &        ipol%i_div_buoyancy, rj_fld%ntot_phys, rj_fld%d_fld)
+     &        ipol%i_div_buoyancy, nidx_rj, a_r_1d_rj_r,                &
+     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
 !
       else if (iflag_4_composit_buo .gt. id_turn_OFF) then
         if (iflag_debug.eq.1) write(*,*) 'cal_div_cst_buo_sph'
         call cal_div_cst_buo_sph(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
      &      coef_comp_buo, ipol%i_light, ipol%i_grad_composit,          &
-     &      ipol%i_div_comp_buo, rj_fld%ntot_phys, rj_fld%d_fld)
+     &      ipol%i_div_comp_buo, nidx_rj, a_r_1d_rj_r,                  &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       else if(iflag_4_filter_gravity .gt. id_turn_OFF) then
         if (iflag_debug.eq.1) write(*,*) 'cal_div_cst_buo_sph'
         call cal_div_cst_buo_sph(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
      &      coef_buo, ipol%i_filter_temp, ipol%i_grad_filter_temp,      &
-     &      ipol%i_div_filter_buo, rj_fld%ntot_phys, rj_fld%d_fld)
+     &      ipol%i_div_filter_buo, nidx_rj, a_r_1d_rj_r,                &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       end subroutine cal_div_radial_const_gravity
@@ -100,14 +106,17 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_div_double_cst_buo_sph(kr_in, kr_out,              &
-     &          coef_t_buo, is_t, ids_t, coef_c_buo, is_c, ids_c,       &
-     &          is_div, ntot_phys_rj, d_rj)
+     &          coef_t_buo, is_t, ids_t, coef_c_buo,                    &
+     &          is_c, ids_c, is_div, nidx_rj, a_r_1d_rj_r,              &
+     &          nnod_rj, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
       integer(kind= kint), intent(in) :: is_t, ids_t
       integer(kind= kint), intent(in) :: is_c, ids_c
       integer(kind= kint), intent(in) :: is_div
-      integer(kind = kint), intent(in) :: ntot_phys_rj
+      integer(kind = kint), intent(in) :: nidx_rj(2)
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real(kind = kreal), intent(in) :: a_r_1d_rj_r(nidx_rj(1))
       real(kind = kreal), intent(in) :: coef_t_buo, coef_c_buo
 !
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
@@ -126,8 +135,7 @@
      &                       * (coef_t_buo * d_rj(inod,is_t)            &
      &                        + coef_c_buo * d_rj(inod,is_c))           &
      &                     +  ( coef_t_buo * d_rj(inod,ids_t)           &
-     &                        + coef_c_buo * d_rj(inod,ids_c))          &
-     &                       * g_sph_rj(j,3) * a_r_1d_rj_r(k)
+     &                        + coef_c_buo * d_rj(inod,ids_c))
         end do
 !$omp end parallel do
 !
@@ -136,11 +144,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_div_cst_buo_sph(kr_in, kr_out, coef,               &
-     &          is_fld, ids_fld, is_div, ntot_phys_rj, d_rj)
+     &          is_fld, ids_fld, is_div, nidx_rj, a_r_1d_rj_r,          &
+     &          nnod_rj, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
       integer(kind= kint), intent(in) :: is_fld, ids_fld, is_div
-      integer(kind = kint), intent(in) :: ntot_phys_rj
+      integer(kind = kint), intent(in) :: nidx_rj(2)
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real(kind = kreal), intent(in) :: a_r_1d_rj_r(nidx_rj(1))
       real(kind = kreal), intent(in) :: coef
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
@@ -154,8 +165,7 @@
           j = mod((inod-1),nidx_rj(2)) + 1
           k = 1 + (inod- j) / nidx_rj(2)
           d_rj(inod,is_div) = coef * ( two * d_rj(inod,is_fld)        &
-     &                       * a_r_1d_rj_r(k) + d_rj(inod,ids_fld)    &
-     &                        * g_sph_rj(j,3) * a_r_1d_rj_r(k))
+     &                       * a_r_1d_rj_r(k) + d_rj(inod,ids_fld))
         end do
 !$omp end parallel do
 !

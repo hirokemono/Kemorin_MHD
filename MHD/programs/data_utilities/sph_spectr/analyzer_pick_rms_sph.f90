@@ -70,7 +70,7 @@
 !
       call init_rms_4_sph_spectr(rj_fld1)
 !
-      call allocate_work_pick_rms_sph
+      call allocate_work_pick_rms_sph(nidx_rj(1), nidx_rj(2))
 !
       end subroutine initialize_pick_rms_sph
 !
@@ -92,7 +92,7 @@
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_rms_4_monitor'
-      call init_sph_rms_4_monitor
+      call init_sph_rms_4_monitor(l_truncation)
 !
       do i_step = i_step_init, i_step_number, i_step_output_ucd
 !
@@ -108,7 +108,7 @@
 !  evaluate energies
 !
         if (iflag_debug.gt.0) write(*,*) 'pickup_sph_rms_4_monitor'
-        call pickup_sph_rms_4_monitor(rj_fld1)
+        call pickup_sph_rms_4_monitor(nidx_rj, a_r_1d_rj_r, rj_fld1)
 !
         if (iflag_debug.gt.0) write(*,*) 'write_sph_rms_4_monitor'
         call write_sph_rms_4_monitor(my_rank, i_step, time)

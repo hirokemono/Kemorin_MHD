@@ -9,8 +9,9 @@
 !!@verbatim
 !!      subroutine cal_one_over_volume(kg_st, kg_ed, avol)
 !!
-!!      subroutine surf_ave_4_sph_rms_int
-!!      subroutine vol_ave_4_rms_sph(avol)
+!!      subroutine surf_ave_4_sph_rms_int                               &
+!!     &         (l_truncation, nri, a_r_1d_rj_r)
+!!      subroutine vol_ave_4_rms_sph(l_truncation, avol)
 !!
 !!      subroutine sum_sph_vol_rms_all_modes(ltr, ntot_rms,             &
 !!     &          rms_sph_vl, rms_v_sph)
@@ -27,10 +28,6 @@
 !!          = [3/(ro^3-ri^3)] \int 1/(2l+1) (\phi_l^m)^2 r^{2} dr
 !!@f$ 
 !!
-!!@verbatim
-!!      subroutine surf_ave_4_sph_rms_int
-!!@endverbatim
-!!
 !!@n @param  avol    1 / Volume
 !
       module cal_ave_4_rms_vector_sph
@@ -38,7 +35,6 @@
       use m_precision
 !
       use m_constants
-      use m_spheric_parameter
 !
       implicit none
 !
@@ -68,9 +64,13 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine surf_ave_4_sph_rms_int
+      subroutine surf_ave_4_sph_rms_int                                 &
+     &         (l_truncation, nri, a_r_1d_rj_r)
 !
       use m_rms_4_sph_spectr
+!
+      integer(kind = kint), intent(in) :: nri, l_truncation
+      real(kind = kreal), intent(in) :: a_r_1d_rj_r(nri)
 !
       integer(kind = kint) :: lm, k, kg, icou
 !
@@ -100,10 +100,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine vol_ave_4_rms_sph(avol)
+      subroutine vol_ave_4_rms_sph(l_truncation, avol)
 !
       use m_rms_4_sph_spectr
 !
+      integer(kind = kint), intent(in) :: l_truncation
       real(kind = kreal), intent(in) :: avol
       integer(kind = kint) :: lm, icou
 !

@@ -15,7 +15,6 @@
 !
       use m_precision
 !
-      use m_spheric_parameter
       use m_sph_phys_address
 !
       implicit  none
@@ -42,45 +41,45 @@
      &   .and. iflag_4_coriolis .ne. id_turn_OFF                        &
      &   .and. iflag_4_lorentz  .ne. id_turn_OFF) then
         call set_MHD_terms_to_div_force(ipol%i_div_buoyancy,            &
-     &      rj_fld%ntot_phys, rj_fld%d_fld)
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else if( iflag_4_gravity  .eq.     id_turn_OFF                    &
      &   .and. iflag_4_composit_buo .ne. id_turn_OFF                    &
      &   .and. iflag_4_coriolis .ne.     id_turn_OFF                    &
      &   .and. iflag_4_lorentz  .ne.     id_turn_OFF) then
         call set_MHD_terms_to_div_force(ipol%i_div_comp_buo,            &
-     &      rj_fld%ntot_phys, rj_fld%d_fld)
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else if( iflag_4_gravity  .ne. id_turn_OFF                        &
      &   .and. iflag_4_coriolis .ne. id_turn_OFF                        &
      &   .and. iflag_4_lorentz  .eq. id_turn_OFF) then
         call set_div_cv_terms_to_force(ipol%i_div_buoyancy,             &
-     &      rj_fld%ntot_phys, rj_fld%d_fld)
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else if( iflag_4_gravity  .eq.     id_turn_OFF                    &
      &   .and. iflag_4_composit_buo .ne. id_turn_OFF                    &
      &   .and. iflag_4_coriolis .ne.     id_turn_OFF                    &
      &   .and. iflag_4_lorentz  .eq.     id_turn_OFF) then
         call set_div_cv_terms_to_force(ipol%i_div_comp_buo,             &
-     &      rj_fld%ntot_phys, rj_fld%d_fld)
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else
 !
         call set_div_advection_to_force                                 &
-     &     (rj_fld%ntot_phys, rj_fld%d_fld)
+     &     (rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         if(iflag_4_coriolis .ne. id_turn_OFF) then
           call add_term_to_div_force(ipol%i_div_Coriolis,               &
-     &        rj_fld%ntot_phys, rj_fld%d_fld)
+     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
         if(iflag_4_lorentz .ne. id_turn_OFF) then
           call add_term_to_div_force(ipol%i_div_Lorentz,                &
-     &        rj_fld%ntot_phys, rj_fld%d_fld)
+     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
         if(iflag_4_gravity .ne. id_turn_OFF) then
           call add_term_to_div_force(ipol%i_div_buoyancy,               &
-     &        rj_fld%ntot_phys, rj_fld%d_fld)
+     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         else if(iflag_4_composit_buo .ne. id_turn_OFF) then
           call add_term_to_div_force(ipol%i_div_comp_buo,               &
-     &        rj_fld%ntot_phys, rj_fld%d_fld)
+     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         else if(iflag_4_filter_gravity .ne. id_turn_OFF) then
           call add_term_to_div_force(ipol%i_div_filter_buo,             &
-     &        rj_fld%ntot_phys, rj_fld%d_fld)
+     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
 !
       end if
@@ -92,10 +91,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_MHD_terms_to_div_force                             &
-     &         (is_div_buo, ntot_phys_rj, d_rj)
+     &         (is_div_buo, nnod_rj, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: is_div_buo
-      integer(kind = kint), intent(in) :: ntot_phys_rj
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: inod
@@ -115,10 +114,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_div_cv_terms_to_force                              &
-     &         (is_div_buo, ntot_phys_rj, d_rj)
+     &         (is_div_buo, nnod_rj, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: is_div_buo
-      integer(kind = kint), intent(in) :: ntot_phys_rj
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: inod
@@ -137,9 +136,10 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_div_advection_to_force(ntot_phys_rj, d_rj)
+      subroutine set_div_advection_to_force                             &
+     &         (nnod_rj, ntot_phys_rj, d_rj)
 !
-      integer(kind = kint), intent(in) :: ntot_phys_rj
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind = kint) :: inod
@@ -156,11 +156,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine add_term_to_div_force(is_div, ntot_phys_rj, d_rj)
+      subroutine add_term_to_div_force                                  &
+     &          (is_div, nnod_rj, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: is_div
 !
-      integer(kind = kint), intent(in) :: ntot_phys_rj
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
       integer(kind = kint) :: inod
 !

@@ -7,10 +7,12 @@
 !> @brief Select mean square data to output
 !!
 !!@verbatim
-!!      subroutine init_sph_rms_4_monitor
+!!      subroutine allocate_work_pick_rms_sph(nri, jmax)
+!!      subroutine init_sph_rms_4_monitor(l_truncation)
 !!
-!!      subroutine pickup_sph_rms_4_monitor(rj_fld)
-!!      subroutine pickup_sph_rms_vol_monitor(rj_fld)
+!!      subroutine pickup_sph_rms_4_monitor(nidx_rj, a_r_1d_rj_r, rj_fld)
+!!      subroutine pickup_sph_rms_vol_monitor(kg_st, kg_ed,             &
+!!     &          nidx_rj, radius_1d_rj_r, rj_fld)
 !!@endverbatim
 !
       module pickup_sph_rms_spectr
@@ -19,7 +21,6 @@
       use m_constants
 !
       use m_machine_parameter
-      use m_spheric_parameter
       use m_pickup_sph_rms_data
       use m_rms_4_sph_spectr
       use t_phys_data
@@ -40,15 +41,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_work_pick_rms_sph
+      subroutine allocate_work_pick_rms_sph(nri, jmax)
 !
-      use m_spheric_parameter
-!
-      integer(kind = kint) :: nri, jmax
+      integer(kind = kint), intent(in) :: nri, jmax
 !
 !
-      nri = nidx_rj(1)
-      jmax = nidx_rj(2)
       allocate( rms_sph_rj(0:nri,jmax,3) )
       allocate( rms_sph_v(jmax,3) )
 !
@@ -68,9 +65,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_sph_rms_4_monitor
+      subroutine init_sph_rms_4_monitor(l_truncation)
 !
       use m_pickup_sph_spectr_data
+!
+      integer(kind = kint), intent(in) ::l_truncation
 !
 !
       pickup_sph_rms_head = pickup_sph_head
@@ -99,12 +98,14 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine pickup_sph_rms_4_monitor(rj_fld)
+      subroutine pickup_sph_rms_4_monitor(nidx_rj, a_r_1d_rj_r, rj_fld)
 !
       use calypso_mpi
       use m_pickup_sph_spectr_data
       use cal_rms_by_sph_spectr
 !
+      integer(kind = kint), intent(in) :: nidx_rj(2)
+      real(kind = kreal), intent(in) :: a_r_1d_rj_r(nidx_rj(1))
       type(phys_data), intent(in) :: rj_fld
 !
       integer(kind = kint) :: i_fld, j_fld, j, icomp, ncomp
@@ -154,13 +155,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine pickup_sph_rms_vol_monitor(kg_st, kg_ed, rj_fld)
+      subroutine pickup_sph_rms_vol_monitor(kg_st, kg_ed,               &
+     &          nidx_rj, radius_1d_rj_r, rj_fld)
 !
       use calypso_mpi
       use cal_rms_by_sph_spectr
       use radial_int_for_sph_spec
 !
       integer(kind = kint), intent(in) :: kg_st, kg_ed
+      integer(kind = kint), intent(in) :: nidx_rj(2)
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
       type(phys_data), intent(in) :: rj_fld
 !
       integer(kind = kint) :: i_fld, j_fld, j, icomp, ncomp

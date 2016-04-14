@@ -21,7 +21,6 @@
 !
       use m_constants
       use m_control_parameter
-      use m_spheric_parameter
       use m_physical_property
       use m_sph_phys_address
       use m_schmidt_poly_on_rtm
@@ -40,6 +39,7 @@
       subroutine sel_div_buoyancies_sph_MHD(sph_bc_U, rj_fld)
 !
       use m_machine_parameter
+      use m_spheric_parameter
       use t_phys_data
       use t_boundary_params_sph_MHD
 !
@@ -55,7 +55,8 @@
      &       (sph_bc_U%kr_in, sph_bc_U%kr_out,                          &
      &        coef_buo, ipol%i_temp, ipol%i_grad_t,                     &
      &        coef_comp_buo, ipol%i_light, ipol%i_grad_composit,        &
-     &        ipol%i_div_buoyancy, rj_fld%ntot_phys, rj_fld%d_fld)
+     &        ipol%i_div_buoyancy,  nidx_rj, radius_1d_rj_r,            &
+     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         else
           if (iflag_debug.ge.1) write(*,*)                              &
      &      'cal_div_double_buoyancy_sph_MHD by part.temp',             &
@@ -64,7 +65,8 @@
      &       (sph_bc_U%kr_in, sph_bc_U%kr_out,                          &
      &        coef_buo, ipol%i_par_temp, ipol%i_grad_part_t,            &
      &        coef_comp_buo, ipol%i_light, ipol%i_grad_composit,        &
-     &        ipol%i_div_buoyancy, rj_fld%ntot_phys, rj_fld%d_fld)
+     &        ipol%i_div_buoyancy,  nidx_rj, radius_1d_rj_r,            &
+     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
 !
       else if (iflag_4_gravity .gt. id_turn_OFF) then
@@ -74,14 +76,16 @@
           call cal_div_buoyancy_sph_MHD                                 &
      &       (sph_bc_U%kr_in, sph_bc_U%kr_out, coef_buo,                &
      &        ipol%i_temp, ipol%i_grad_t, ipol%i_div_buoyancy,          &
-     &        rj_fld%ntot_phys, rj_fld%d_fld)
+     &        nidx_rj, radius_1d_rj_r,                                  &
+     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         else
           if (iflag_debug.ge.1)  write(*,*)                             &
      &      'cal_div_buoyancy_sph_MHD by pert. temperature'
           call cal_div_buoyancy_sph_MHD                                 &
      &       (sph_bc_U%kr_in, sph_bc_U%kr_out, coef_buo,                &
      &        ipol%i_par_temp, ipol%i_grad_part_t, ipol%i_div_buoyancy, &
-     &        rj_fld%ntot_phys, rj_fld%d_fld)
+     &        nidx_rj, radius_1d_rj_r,                                  &
+     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
 !
       else if (iflag_4_composit_buo .gt. id_turn_OFF) then
@@ -89,14 +93,16 @@
      &      'cal_div_buoyancy_sph_MHD by composition'
         call cal_div_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out,  &
      &      coef_comp_buo, ipol%i_light, ipol%i_grad_composit,          &
-     &      ipol%i_div_comp_buo, rj_fld%ntot_phys, rj_fld%d_fld)
+     &      ipol%i_div_comp_buo, nidx_rj, radius_1d_rj_r,               &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       else if(iflag_4_filter_gravity .gt. id_turn_OFF) then
           if (iflag_debug.ge.1)  write(*,*)                             &
      &      'cal_div_buoyancy_sph_MHD by filtrered temperature'
         call cal_div_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out,  &
      &      coef_buo, ipol%i_filter_temp, ipol%i_grad_filter_temp,      &
-     &      ipol%i_div_filter_buo, rj_fld%ntot_phys, rj_fld%d_fld)
+     &      ipol%i_div_filter_buo, nidx_rj, radius_1d_rj_r,             &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       end subroutine sel_div_buoyancies_sph_MHD
@@ -105,14 +111,17 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_div_double_buoyancy_sph_MHD(kr_in, kr_out,         &
-     &          coef_t_buo, is_t, ids_t, coef_c_buo, is_c, ids_c,       &
-     &          is_div, ntot_phys_rj, d_rj)
+     &          coef_t_buo, is_t, ids_t,  coef_c_buo, is_c, ids_c,      &
+     &          is_div, nidx_rj, radius_1d_rj_r,                        &
+     &          nnod_rj, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
       integer(kind= kint), intent(in) :: is_t, ids_t
       integer(kind= kint), intent(in) :: is_c, ids_c
       integer(kind= kint), intent(in) :: is_div
-      integer(kind = kint), intent(in) ::  ntot_phys_rj
+      integer(kind = kint), intent(in) :: nidx_rj(2)
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
       real(kind = kreal), intent(in) :: coef_t_buo, coef_c_buo
 !
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
@@ -132,7 +141,7 @@
      &                   + coef_t_buo * d_rj(inod,is_c))                &
      &                   +  ( coef_buo * d_rj(inod,ids_t)               &
      &                   + coef_c_buo * d_rj(inod,ids_c) )              &
-     &                  * g_sph_rj(j,3) * a_r_1d_rj_r(k)
+     &                 * radius_1d_rj_r(k)
         end do
 !$omp end parallel do
 !
@@ -141,11 +150,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_div_buoyancy_sph_MHD(kr_in, kr_out, coef,          &
-     &          is_fld, ids_fld, is_div, ntot_phys_rj, d_rj)
+     &          is_fld, ids_fld, is_div, nidx_rj, radius_1d_rj_r,       &
+     &          nnod_rj, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
       integer(kind= kint), intent(in) :: is_fld, ids_fld, is_div
-      integer(kind = kint), intent(in) ::  ntot_phys_rj
+      integer(kind = kint), intent(in) :: nidx_rj(2)
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
       real(kind = kreal), intent(in) :: coef
 !
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
@@ -160,8 +172,7 @@
         j = mod((inod-1),nidx_rj(2)) + 1
         k = 1 + (inod- j) / nidx_rj(2)
         d_rj(inod,is_div) = coef * ( three * d_rj(inod,is_fld)          &
-     &                       + d_rj(inod,ids_fld) * radius_1d_rj_r(k)   &
-     &                        * g_sph_rj(j,3) * a_r_1d_rj_r(k))
+     &                       + d_rj(inod,ids_fld) * radius_1d_rj_r(k))
       end do
 !$omp end parallel do
 !
