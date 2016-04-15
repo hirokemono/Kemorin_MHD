@@ -177,10 +177,10 @@
 !$omp end parallel do
 !
 !   set reference temperature (l = m = 0)
-      if (idx_rj_degree_zero .gt. 0) then
+      if (sph_rj1%idx_rj_degree_zero .gt. 0) then
         if ( iflag_4_ref_temp .eq. id_sphere_ref_temp ) then
           do k = 1, nidx_rj(1)
-            inod = idx_rj_degree_zero + (k-1)*nidx_rj(2)
+            inod = sph_rj1%idx_rj_degree_zero + (k-1)*nidx_rj(2)
             d_rj(inod,ipol%i_temp) = reftemp_rj(k,0)
           end do
         else
@@ -189,7 +189,7 @@
             d_rj(inod,ipol%i_temp) = 1.0d0
           end do
           do k = nlayer_ICB, nlayer_CMB
-            inod = idx_rj_degree_zero + (k-1)*nidx_rj(2)
+            inod = sph_rj1%idx_rj_degree_zero + (k-1)*nidx_rj(2)
             d_rj(inod,ipol%i_temp)                                      &
      &           = (sph_rj1%ar_1d_rj(k,1) * 20.d0/13.0d0 - 1.0d0 )      &
      &            * 7.0d0 / 13.0d0
@@ -316,9 +316,9 @@
 !$omp end parallel do
 !
 !
-      if (idx_rj_degree_zero .gt. 0) then
+      if (sph_rj1%idx_rj_degree_zero .gt. 0) then
         do k = 1, nidx_rj(1)
-          inod = idx_rj_degree_zero + (k-1)*nidx_rj(2)
+          inod = sph_rj1%idx_rj_degree_zero + (k-1)*nidx_rj(2)
           d_rj(inod,is_fld) = reftemp_rj(k,0)
         end do
       end if
@@ -467,17 +467,17 @@
 !$omp end parallel do
 !
 !
-      if (idx_rj_degree_zero .gt. 0) then
+      if (sph_rj1%idx_rj_degree_zero .gt. 0) then
         if ( iflag_4_ref_temp .eq. id_sphere_ref_temp ) then
           do k = 1, nidx_rj(1)
-            inod = idx_rj_degree_zero + (k-1)*nidx_rj(2)
+            inod = sph_rj1%idx_rj_degree_zero + (k-1)*nidx_rj(2)
             d_rj(inod,is_fld) = reftemp_rj(k,0)
           end do
         end if
       end if
 !
 !
-      do j = 1+idx_rj_degree_zero, nidx_rj(2)
+      do j = 1+sph_rj1%idx_rj_degree_zero, nidx_rj(2)
         do k = nlayer_ICB+2, nlayer_CMB-2
           inod = j + (k-1)*nidx_rj(2)
 !

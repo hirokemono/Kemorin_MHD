@@ -117,7 +117,7 @@
       character(len=kchara) :: fname_rms, mode_label
 !
 !
-      if(idx_rj_degree_zero .eq. 0)  return
+      if(sph_rj1%idx_rj_degree_zero .eq. 0)  return
       if(ntot_rms_rj .eq. 0)  return
 !
       write(fname_rms, '(a,a4)') trim(fhead_ave_vol), '.dat'

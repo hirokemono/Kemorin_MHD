@@ -99,7 +99,8 @@
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       call sel_bc_radial_grad_scalar(sph_bc, is_fld, is_grad,           &
      &    rj_fld%ntot_phys, rj_fld%d_fld)
-      call normalize_sph_average_grad(is_grad, idx_rj_degree_zero,      &
+      call normalize_sph_average_grad(is_grad,                          &
+     &    sph_rj1%idx_rj_degree_zero,      &
      &    nidx_rj, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine const_radial_grad_scalar
@@ -242,7 +243,8 @@
       call cal_sph_nod_gradient_2(sph_bc_U%kr_in, sph_bc_U%kr_out,      &
      &    is_press, is_grad, nidx_rj, sph_rj1%radius_1d_rj_r,           &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      call normalize_sph_average_grad(is_grad, idx_rj_degree_zero,      &
+      call normalize_sph_average_grad(is_grad,                          &
+     &    sph_rj1%idx_rj_degree_zero,      &
      &    nidx_rj, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call delete_bc_rj_vector(nnod_rj, nidx_rj(2), sph_bc_U%kr_in,     &
@@ -281,7 +283,8 @@
       call cal_sph_nod_gradient_2(sph_bc%kr_in, sph_bc%kr_out,          &
      &    is_fld, is_grad, nidx_rj, sph_rj1%radius_1d_rj_r,             &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      call normalize_sph_average_grad(is_grad, idx_rj_degree_zero,      &
+      call normalize_sph_average_grad(is_grad,                          &
+     &    sph_rj1%idx_rj_degree_zero,                                   &
      &    nidx_rj, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine const_sph_gradient_no_bc

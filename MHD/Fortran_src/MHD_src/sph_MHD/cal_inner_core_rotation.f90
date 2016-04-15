@@ -53,16 +53,16 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call set_inner_core_rot_l1(idx_rj_degree_one(-1), kr_in,          &
-     &    nidx_rj(1), nidx_rj(2),                                       &
+      call set_inner_core_rot_l1(sph_rj1%idx_rj_degree_one(-1),         &
+     &    kr_in, nidx_rj(1), nidx_rj(2),                                &
      &    sph_rj1%radius_1d_rj_r, sph_rj1%ar_1d_rj,                     &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      call set_inner_core_rot_l1(idx_rj_degree_one( 0), kr_in,          &
-     &    nidx_rj(1), nidx_rj(2),                                       &
+      call set_inner_core_rot_l1(sph_rj1%idx_rj_degree_one( 0),         &
+     &    kr_in, nidx_rj(1), nidx_rj(2),                                &
      &    sph_rj1%radius_1d_rj_r, sph_rj1%ar_1d_rj,                     &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      call set_inner_core_rot_l1(idx_rj_degree_one( 1), kr_in,          &
-     &    nidx_rj(1), nidx_rj(2),                                       &
+      call set_inner_core_rot_l1(sph_rj1%idx_rj_degree_one( 1),         &
+     &    kr_in, nidx_rj(1), nidx_rj(2),                                &
      &    sph_rj1%radius_1d_rj_r, sph_rj1%ar_1d_rj,                     &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
@@ -81,14 +81,14 @@
       real(kind = kreal), intent(in) :: fdm1_fix_fld_ICB(0:1,2)
 !
 !
-      call set_rotate_icb_vt_sph_mat(idx_rj_degree_one(-1), kr_in,      &
-     &    nidx_rj(1), sph_rj1%ar_1d_rj, fdm1_fix_fld_ICB,               &
+      call set_rotate_icb_vt_sph_mat(sph_rj1%idx_rj_degree_one(-1),     &
+     &    kr_in, nidx_rj(1), sph_rj1%ar_1d_rj, fdm1_fix_fld_ICB,        &
      &    coef_imp_v, coef_d_velo)
-      call set_rotate_icb_vt_sph_mat(idx_rj_degree_one( 0), kr_in,      &
-     &    nidx_rj(1), sph_rj1%ar_1d_rj, fdm1_fix_fld_ICB,               &
+      call set_rotate_icb_vt_sph_mat(sph_rj1%idx_rj_degree_one( 0),     &
+     &    kr_in, nidx_rj(1), sph_rj1%ar_1d_rj, fdm1_fix_fld_ICB,        &
      &    coef_imp_v, coef_d_velo)
-      call set_rotate_icb_vt_sph_mat(idx_rj_degree_one( 1), kr_in,      &
-     &    nidx_rj(1), sph_rj1%ar_1d_rj, fdm1_fix_fld_ICB,               &
+      call set_rotate_icb_vt_sph_mat(sph_rj1%idx_rj_degree_one( 1),     &
+     &    kr_in, nidx_rj(1), sph_rj1%ar_1d_rj, fdm1_fix_fld_ICB,        &
      &    coef_imp_v, coef_d_velo)
 !!
       end subroutine set_icore_viscous_matrix
@@ -110,16 +110,16 @@
       real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
 !
-      call cal_icore_viscous_drag_l1(idx_rj_degree_one(-1), kr_in,      &
-     &    fdm1_fix_fld_ICB, coef_d, it_velo, it_viscous,                &
+      call cal_icore_viscous_drag_l1(sph_rj1%idx_rj_degree_one(-1),     &
+     &    kr_in, fdm1_fix_fld_ICB, coef_d, it_velo, it_viscous,         &
      &    nidx_rj(1), nidx_rj(2), sph_rj1%ar_1d_rj,                     &
      &    nnod_rj, ntot_phys_rj, d_rj)
-      call cal_icore_viscous_drag_l1(idx_rj_degree_one( 0), kr_in,      &
-     &    fdm1_fix_fld_ICB, coef_d, it_velo, it_viscous,                &
+      call cal_icore_viscous_drag_l1(sph_rj1%idx_rj_degree_one( 0),     &
+     &    kr_in, fdm1_fix_fld_ICB, coef_d, it_velo, it_viscous,         &
      &    nidx_rj(1), nidx_rj(2), sph_rj1%ar_1d_rj,                     &
      &    nnod_rj, ntot_phys_rj, d_rj)
-      call cal_icore_viscous_drag_l1(idx_rj_degree_one( 1), kr_in,      &
-     &    fdm1_fix_fld_ICB, coef_d, it_velo, it_viscous,                &
+      call cal_icore_viscous_drag_l1(sph_rj1%idx_rj_degree_one( 1),     &
+     &    kr_in, fdm1_fix_fld_ICB, coef_d, it_velo, it_viscous,         &
      &    nidx_rj(1), nidx_rj(2), sph_rj1%ar_1d_rj,                     &
      &    nnod_rj, ntot_phys_rj, d_rj)
 !
@@ -211,16 +211,16 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call int_icore_tor_lorentz_l1(idx_rj_degree_one(-1), kr_in,       &
-     &    nidx_rj(1), nidx_rj(2),                                       &
+      call int_icore_tor_lorentz_l1(sph_rj1%idx_rj_degree_one(-1),      &
+     &    kr_in, nidx_rj(1), nidx_rj(2),                                &
      &    sph_rj1%radius_1d_rj_r, sph_rj1%ar_1d_rj,                     &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      call int_icore_tor_lorentz_l1(idx_rj_degree_one( 0), kr_in,       &
-     &    nidx_rj(1), nidx_rj(2),                                       &
+      call int_icore_tor_lorentz_l1(sph_rj1%idx_rj_degree_one( 0),      &
+     &    kr_in, nidx_rj(1), nidx_rj(2),                                &
      &    sph_rj1%radius_1d_rj_r, sph_rj1%ar_1d_rj,                     &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      call int_icore_tor_lorentz_l1(idx_rj_degree_one( 1), kr_in,       &
-     &    nidx_rj(1), nidx_rj(2),                                       &
+      call int_icore_tor_lorentz_l1(sph_rj1%idx_rj_degree_one( 1),      &
+     &    kr_in, nidx_rj(1), nidx_rj(2),                                &
      &    sph_rj1%radius_1d_rj_r, sph_rj1%ar_1d_rj,                     &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !

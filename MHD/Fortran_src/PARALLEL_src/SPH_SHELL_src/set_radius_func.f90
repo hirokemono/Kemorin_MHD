@@ -79,7 +79,7 @@
       if (ipol%i_ref_t .gt. 0) then
         if (iflag_debug .ge. iflag_routine_msg)                         &
      &               write(*,*) 'set_reftemp_4_sph'
-        call set_reftemp_4_sph(idx_rj_degree_zero,                      &
+        call set_reftemp_4_sph(sph_rj1%idx_rj_degree_zero,              &
      &      nidx_rj, sph_rj1%ar_1d_rj, nlayer_ICB, nlayer_CMB,          &
      &      r_hot, r_cold, temp_hot, temp_cold,                         &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)

@@ -189,7 +189,7 @@
 !
       use m_spheric_parameter
 !
-      if(idx_rj_degree_zero .eq. 0) return
+      if(sph_rj1%idx_rj_degree_zero .eq. 0) return
 !
 !
       nri_ave = nidx_rj(1)
@@ -229,7 +229,7 @@
 !
       use m_spheric_parameter
 !
-      if(idx_rj_degree_zero .eq. 0) return
+      if(sph_rj1%idx_rj_degree_zero .eq. 0) return
       deallocate(ave_sph, ave_sph_vol)
 !
       end subroutine deallocate_ave_4_sph_spectr

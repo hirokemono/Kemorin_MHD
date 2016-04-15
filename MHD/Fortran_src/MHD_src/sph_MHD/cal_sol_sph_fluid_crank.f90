@@ -79,7 +79,8 @@
       end do
 !$omp end parallel do
 !
-      call delete_zero_degree_comp(ipol%i_velo, idx_rj_degree_zero,     &
+      call delete_zero_degree_comp(ipol%i_velo,                         &
+     &    sph_rj1%idx_rj_degree_zero,     &
      &    nnod_rj, nidx_rj, ntot_phys_rj, d_rj)
 !
       if     (sph_bc_U%iflag_icb .eq. iflag_free_slip) then
@@ -88,7 +89,8 @@
      &      fdm2_free_vp_ICB, ipol%i_velo, ntot_phys_rj, d_rj)
       else if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call cal_sph_nod_icb_rotate_velo2                               &
-     &     (idx_rj_degree_zero, idx_rj_degree_one, nnod_rj, nidx_rj,    &
+     &     (sph_rj1%idx_rj_degree_zero, sph_rj1%idx_rj_degree_one,      &
+     &      nnod_rj, nidx_rj,    &
      &      sph_bc_U%kr_in, sph_bc_U%r_ICB, sph_rj1%radius_1d_rj_r,     &
      &      vt_ICB_bc, ipol%i_velo, ntot_phys_rj, d_rj)
       else
@@ -146,7 +148,7 @@
      &    d_rj(1,ipol%i_press) )
 !
       call adjust_by_ave_pressure_on_CMB                                &
-     &   (sph_bc_U%kr_in, sph_bc_U%kr_out, idx_rj_degree_zero,          &
+     &   (sph_bc_U%kr_in, sph_bc_U%kr_out, sph_rj1%idx_rj_degree_zero,  &
      &    nnod_rj, nidx_rj, ntot_phys_rj, d_rj)
 !
       end subroutine cal_sol_pressure_by_div_v
@@ -168,7 +170,8 @@
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
 !
-      call delete_zero_degree_comp(ipol%i_magne, idx_rj_degree_zero,    &
+      call delete_zero_degree_comp(ipol%i_magne,                        &
+     &    sph_rj1%idx_rj_degree_zero,    &
      &    nnod_rj, nidx_rj, ntot_phys_rj, d_rj)
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_insulator) then
@@ -367,7 +370,7 @@ end subroutine check_NaN_temperature
 !
       if(inod_rj_center .gt. 0) then
         call copy_degree0_comps_to_sol(nnod_rj, nri, jmax,              &
-     &      inod_rj_center, idx_rj_degree_zero, is_field,               &
+     &      inod_rj_center, sph_rj1%idx_rj_degree_zero, is_field,       &
      &      ntot_phys_rj, d_rj, sol_00)
       end if
 !
@@ -390,7 +393,7 @@ end subroutine check_NaN_temperature
       if(inod_rj_center .eq. 0) return
       call lubksb_3band(nri+1, s00_evo_lu, i_s00_pivot, sol_00)
       call copy_degree0_comps_from_sol(nnod_rj, nri, jmax,              &
-     &    inod_rj_center, idx_rj_degree_zero, sol_00, is_field,         &
+     &    inod_rj_center, sph_rj1%idx_rj_degree_zero, sol_00, is_field, &
      &    ntot_phys_rj, d_rj)
 !
       end subroutine cal_sol_scalar_sph_crank

@@ -65,7 +65,7 @@
       call start_eleps_time(13)
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call copy_icore_rot_to_tor_coriolis(sph_bc_U%kr_in,             &
-     &      idx_rj_degree_one, nnod_rj, nidx_rj(2),                     &
+     &      sph_rj1%idx_rj_degree_one, nnod_rj, nidx_rj(2),             &
      &      rj_fld%ntot_phys, rj_fld%d_fld)
       end if
       call end_eleps_time(13)

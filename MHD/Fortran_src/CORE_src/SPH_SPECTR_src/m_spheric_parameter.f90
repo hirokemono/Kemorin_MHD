@@ -51,7 +51,7 @@
 !
 !
       type(sph_rj_grid), save :: sph_rj1
-!sph_rj1%irank_sph_rj
+!sph_rj1%idx_rj_degree_one
 !
 !>      integer flag for FEM mesh type
 !!@n    iflag_MESH_same:     same grid point as Gauss-Legendre points
@@ -76,13 +76,13 @@
 !>      local spectr index for @f$ l = m = 0 @f$
 !!@n    If @f$ l = m = 0 @f$ mode does not exist in subdomain, 
 !!@n    idx_rj_degree_zero = 0.
-      integer (kind=kint) :: idx_rj_degree_zero =   0
+!      integer (kind=kint) :: idx_rj_degree_zero =   0
 !
 !>        local spectr index for @f$ l = 1@f$ and  @f$ m = -1, 0, 1@f$.
 !!        for @f$ f(r,j) @f$
 !!@n        If spectr data do not exist in subdomain,
 !!@n        idx_rj_degree_one(m) = 0.
-      integer (kind=kint) :: idx_rj_degree_one(-1:1) = (/0,0,0/)
+!      integer (kind=kint) :: idx_rj_degree_one(-1:1) = (/0,0,0/)
 !
 !>      Start address for @f$ m = 0 @f$ for @f$ f(r,\theta,m) @f$
       integer (kind=kint) :: ist_rtm_order_zero = 0

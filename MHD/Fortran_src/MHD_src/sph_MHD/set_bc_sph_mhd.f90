@@ -8,7 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine s_set_bc_sph_mhd                                     &
-!!     &        (CTR_nod_grp_name, CTR_sf_grp_name, nri, radius_1d_rj_r)
+!!     &        (CTR_nod_grp_name, CTR_sf_grp_name, idx_rj_degree_one,  &
+!!     &         nidx_rj, idx_gl_1d_rj_j, r_ICB, r_CMB, radius_1d_rj_r)
 !!@endverbatim
 !
       module set_bc_sph_mhd

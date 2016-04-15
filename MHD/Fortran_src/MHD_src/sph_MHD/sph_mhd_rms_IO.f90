@@ -88,7 +88,7 @@
       if(iflag_debug.gt.0)  write(*,*) 'cal_no_heat_source_Nu'
       call cal_no_heat_source_Nu(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
      &    sph_bc_U%r_ICB(0), sph_bc_U%r_CMB(0),                         &
-     &    idx_rj_degree_zero, nidx_rj,                      &
+     &    sph_rj1%idx_rj_degree_zero, nidx_rj,                      &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       if(iflag_debug.gt.0)  write(*,*) 'write_total_energy_to_screen'
@@ -102,7 +102,7 @@
       call write_gauss_coefs_4_monitor(my_rank, istep_max_dt, time)
       call write_sph_spec_4_monitor(my_rank, istep_max_dt, time)
 !
-      call write_no_heat_source_Nu(idx_rj_degree_zero,                  &
+      call write_no_heat_source_Nu(sph_rj1%idx_rj_degree_zero ,         &
      &    istep_max_dt, time)
 !
       end subroutine output_rms_sph_mhd_control

@@ -338,8 +338,8 @@
 !
       if     (bc_name .eq. ref_grp) then
         iflag_bc_scalar =  iflag_fixed_field
-        if(idx_rj_degree_zero .gt. 0) then
-          bc_data(idx_rj_degree_zero) = bc_magnitude
+        if(sph_rj1%idx_rj_degree_zero .gt. 0) then
+          bc_data(sph_rj1%idx_rj_degree_zero) = bc_magnitude
         end if
       end if
 !
@@ -363,8 +363,8 @@
 !
       if     (bc_name .eq. ref_grp) then
         iflag_bc_scalar =  iflag_fixed_flux
-        if(idx_rj_degree_zero .gt. 0) then
-          bc_data(idx_rj_degree_zero) = bc_magnitude
+        if(sph_rj1%idx_rj_degree_zero .gt. 0) then
+          bc_data(sph_rj1%idx_rj_degree_zero) = bc_magnitude
         end if
       end if
 !

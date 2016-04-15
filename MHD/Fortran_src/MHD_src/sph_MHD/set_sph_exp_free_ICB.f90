@@ -24,8 +24,6 @@
 !!@endverbatim
 !!
 !!@n @param nnod_rj  Number of points for spectrum data
-!!@n @param idx_rj_degree_zero    Local address for degree 0
-!!@n @param idx_rj_degree_one(-1:1)    Local address for degree 1
 !!@n @param jmax  Number of modes for spherical harmonics @f$L*(L+2)@f$
 !!@n @param kr_in       Radial ID for inner boundary
 !!@n @param r_ICB(0:2)   Radius at ICB

@@ -49,7 +49,7 @@
       call set_ref_temp_sph_mhd(nidx_rj, r_ICB, r_CMB,                  &
      &    sph_rj1%ar_1d_rj, sph_bc_T, reftemp_rj)
       call adjust_sph_temp_bc_by_reftemp                                &
-     &   (idx_rj_degree_zero, nidx_rj(2), reftemp_rj, sph_bc_T)
+     &   (sph_rj1%idx_rj_degree_zero, nidx_rj(2), reftemp_rj, sph_bc_T)
 !
       end subroutine init_reference_fields
 !
@@ -68,7 +68,7 @@
 !
 !
       call adjust_by_ave_pressure_on_CMB(kr_in, kr_out,                 &
-     &    idx_rj_degree_zero, nnod_rj, nidx_rj,                         &
+     &    sph_rj1%idx_rj_degree_zero, nnod_rj, nidx_rj,                 &
      &    rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine adjust_press_by_average_on_CMB
@@ -86,7 +86,7 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call chenge_temp_to_per_temp_sph(idx_rj_degree_zero,              &
+      call chenge_temp_to_per_temp_sph(sph_rj1%idx_rj_degree_zero,      &
      &    nnod_rj, nidx_rj, sph_rj1%radius_1d_rj_r, reftemp_rj,         &
      &    rj_fld%ntot_phys, rj_fld%d_fld)
 !
@@ -105,7 +105,7 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call transfer_per_temp_to_temp_sph(idx_rj_degree_zero,            &
+      call transfer_per_temp_to_temp_sph(sph_rj1%idx_rj_degree_zero,    &
      &    nnod_rj, nidx_rj, sph_rj1%radius_1d_rj_r, reftemp_rj,         &
      &    rj_fld%ntot_phys, rj_fld%d_fld)
 !

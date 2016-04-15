@@ -196,9 +196,9 @@
       integer(kind = kint) :: mphi, l_rtp, kr, k_gl, inod
 !
 !
-      if(idx_rj_degree_zero .gt. 0) then
+      if(sph_rj1%idx_rj_degree_zero .gt. 0) then
         do kr = 1, nidx_rj(1)
-          inod = idx_rj_degree_zero + (kr-1)*nidx_rj(2)
+          inod = sph_rj1%idx_rj_degree_zero + (kr-1)*nidx_rj(2)
           sphere_ave_coriolis_l(kr) = d_rj(inod,ipol%i_coriolis)
         end do
       else
@@ -260,11 +260,11 @@
       integer(kind = kint) :: k, inod
 !
 !
-      if(idx_rj_degree_zero .eq. 0) return
+      if(sph_rj1%idx_rj_degree_zero .eq. 0) return
 !
 !$omp parallel do private(inod)
       do k = 1, nidx_rj(1)
-        inod = idx_rj_degree_zero + (k-1)*nidx_rj(2)
+        inod = sph_rj1%idx_rj_degree_zero + (k-1)*nidx_rj(2)
         d_rj(inod,irj_fld) = zero
       end do
 !$omp end parallel do
@@ -282,11 +282,11 @@
       integer(kind = kint) :: k, inod
 !
 !
-      if(idx_rj_degree_zero .eq. 0) return
+      if(sph_rj1%idx_rj_degree_zero .eq. 0) return
 !
 !$omp parallel do private(inod)
       do k = 1, nidx_rj(1)
-        inod = idx_rj_degree_zero + (k-1)*nidx_rj(2)
+        inod = sph_rj1%idx_rj_degree_zero + (k-1)*nidx_rj(2)
         d_rj(inod,irj_fld  ) = zero
         d_rj(inod,irj_fld+1) = zero
         d_rj(inod,irj_fld+2) = zero

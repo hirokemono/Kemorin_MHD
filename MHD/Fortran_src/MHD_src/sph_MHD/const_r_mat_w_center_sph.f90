@@ -49,7 +49,8 @@
       coef_p = - coef_press
 !
       call copy_to_band3_mat_w_center(nidx_rj(1), zero,                 &
-      &   p_poisson_mat(1,1,idx_rj_degree_zero), p00_poisson_mat(1,0))
+      &   p_poisson_mat(1,1,sph_rj1%idx_rj_degree_zero),                &
+      &   p00_poisson_mat(1,0))
 !
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
         call add_scalar_poisson_mat_fill_ctr(nidx_rj(1),                &
@@ -80,7 +81,7 @@
 !
       call const_radial_mat_scalar00_sph(nidx_rj(1), sph_bc_T,          &
      &    coef_imp_t, coef_temp, coef_d_temp,                           &
-     &    temp_evo_mat(1,1,idx_rj_degree_zero), t00_evo_mat,            &
+     &    temp_evo_mat(1,1,sph_rj1%idx_rj_degree_zero), t00_evo_mat,    &
      &    t00_evo_lu, t00_evo_det, i_t00_pivot)
 !
       if(i_debug .eq. iflag_full_msg)                                   &
@@ -101,8 +102,8 @@
 !
       call const_radial_mat_scalar00_sph(nidx_rj(1), sph_bc_C,          &
      &    coef_imp_c, coef_light, coef_d_light,                         &
-     &    composit_evo_mat(1,1,idx_rj_degree_zero), c00_evo_mat,        &
-     &    c00_evo_lu, c00_evo_det, i_c00_pivot)
+     &    composit_evo_mat(1,1,sph_rj1%idx_rj_degree_zero),             &
+     &    c00_evo_mat, c00_evo_lu, c00_evo_det, i_c00_pivot)
 !
       if(i_debug .eq. iflag_full_msg)                                   &
      &       call check_comp00_mat_sph(my_rank)

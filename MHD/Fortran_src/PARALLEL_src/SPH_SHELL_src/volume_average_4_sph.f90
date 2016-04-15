@@ -52,7 +52,7 @@
       real(kind = kreal), intent(in) :: avol
 !
 !
-      if(idx_rj_degree_zero .gt. izero) then
+      if(sph_rj1%idx_rj_degree_zero .gt. izero) then
         call cal_sphere_average_sph(rj_fld)
 !
         call radial_integration                                         &
@@ -90,11 +90,13 @@
         jcomp_st = istack_rms_comp_rj(j_fld-1) +  1
         if (rj_fld%num_component(i_fld) .eq. n_scalar) then
           call cal_ave_scalar_sph_spectr(icomp_st, jcomp_st,            &
-     &        nnod_rj, nidx_rj, idx_rj_degree_zero, inod_rj_center,     &
+     &        nnod_rj, nidx_rj,          &
+     &        sph_rj1%idx_rj_degree_zero, inod_rj_center,     &
      &        rj_fld%ntot_phys, rj_fld%d_fld, sph_rj1%radius_1d_rj_r)
         else if (rj_fld%num_component(i_fld) .eq. n_vector) then
           call cal_ave_vector_sph_spectr(icomp_st, jcomp_st,            &
-     &        nnod_rj, nidx_rj, idx_rj_degree_zero, inod_rj_center,     &
+     &        nnod_rj, nidx_rj,          &
+     &        sph_rj1%idx_rj_degree_zero, inod_rj_center,     &
      &        rj_fld%ntot_phys, rj_fld%d_fld, sph_rj1%radius_1d_rj_r)
         end if
       end do
