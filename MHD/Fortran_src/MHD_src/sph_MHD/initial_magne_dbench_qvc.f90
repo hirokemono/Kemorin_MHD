@@ -41,8 +41,8 @@
       integer(kind = kint) :: is, it, k, js, jt
 !
 !
-      js = find_local_sph_mode_address(1,0)
-      jt = find_local_sph_mode_address(2,0)
+      js = find_local_sph_address(sph_rj1, 1,0)
+      jt = find_local_sph_address(sph_rj1, 2,0)
 !
       pi = four * atan(one)
 !

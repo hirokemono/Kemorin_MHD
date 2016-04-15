@@ -73,7 +73,8 @@
 !
       call allocate_rms_4_sph_spectr(my_rank)
       call allocate_ave_4_sph_spectr
-      call set_sum_table_4_sph_spectr
+      call set_sum_table_4_sph_spectr                                   &
+     &   (l_truncation, nidx_rj, sph_rj1%idx_gl_1d_rj_j)
 !
 !
 

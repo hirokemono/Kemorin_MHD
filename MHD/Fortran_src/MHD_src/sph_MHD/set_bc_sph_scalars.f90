@@ -56,18 +56,18 @@
       if(iflag_debug .gt. 0) then
         do i = 1, nidx_rj(2)
           if( sph_bc_T%ICB_fld(i) .ne. 0.0d0) write(*,*)                &
-     &      ' sph_bc_T%ICB_fld', i,  idx_gl_1d_rj_j(i,2:3),             &
+     &      ' sph_bc_T%ICB_fld', i,  sph_rj1%idx_gl_1d_rj_j(i,2:3),     &
      &       sph_bc_T%ICB_fld(i)
           if( sph_bc_T%ICB_flux(i) .ne. 0.0d0) write(*,*)               &
-     &      ' sph_bc_T%ICB_flux', i,  idx_gl_1d_rj_j(i,2:3),            &
+     &      ' sph_bc_T%ICB_flux', i,  sph_rj1%idx_gl_1d_rj_j(i,2:3),    &
      &       sph_bc_T%ICB_flux(i)
         end do
         do i = 1, nidx_rj(2)
           if( sph_bc_T%CMB_fld(i) .ne. 0.0d0) write(*,*)                &
-     &       ' sph_bc_T%CMB_fld', i, idx_gl_1d_rj_j(i,2:3),             &
+     &       ' sph_bc_T%CMB_fld', i, sph_rj1%idx_gl_1d_rj_j(i,2:3),     &
      &        sph_bc_T%CMB_fld(i)
           if( sph_bc_T%CMB_flux(i) .ne. 0.0d0) write(*,*)               &
-     &       ' sph_bc_T%CMB_flux', i,  idx_gl_1d_rj_j(i,2:3),           &
+     &       ' sph_bc_T%CMB_flux', i,  sph_rj1%idx_gl_1d_rj_j(i,2:3),   &
      &        sph_bc_T%CMB_flux(i)
         end do
       end if
@@ -111,18 +111,18 @@
       if(iflag_debug .gt. 0) then
         do i = 1, nidx_rj(2)
           if( sph_bc_C%ICB_fld(i) .ne. 0.0d0) write(*,*)                &
-     &      ' sph_bc_C%ICB_fld', i,  idx_gl_1d_rj_j(i,2:3),             &
+     &      ' sph_bc_C%ICB_fld', i,  sph_rj1%idx_gl_1d_rj_j(i,2:3),     &
      &       sph_bc_C%ICB_fld(i)
           if( sph_bc_C%ICB_flux(i) .ne. 0.0d0) write(*,*)               &
-     &      ' sph_bc_C%ICB_flux', i,  idx_gl_1d_rj_j(i,2:3),            &
+     &      ' sph_bc_C%ICB_flux', i,  sph_rj1%idx_gl_1d_rj_j(i,2:3),    &
      &       sph_bc_C%ICB_flux(i)
         end do
         do i = 1, nidx_rj(2)
           if( sph_bc_C%CMB_fld(i) .ne. 0.0d0) write(*,*)                &
-     &       ' sph_bc_C%CMB_fld', i, idx_gl_1d_rj_j(i,2:3),             &
+     &       ' sph_bc_C%CMB_fld', i, sph_rj1%idx_gl_1d_rj_j(i,2:3),     &
      &        sph_bc_C%CMB_fld(i)
           if( sph_bc_C%CMB_flux(i) .ne. 0.0d0) write(*,*)               &
-     &       ' sph_bc_C%CMB_flux', i,  idx_gl_1d_rj_j(i,2:3),           &
+     &       ' sph_bc_C%CMB_flux', i,  sph_rj1%idx_gl_1d_rj_j(i,2:3),   &
      &        sph_bc_C%CMB_flux(i)
         end do
       end if

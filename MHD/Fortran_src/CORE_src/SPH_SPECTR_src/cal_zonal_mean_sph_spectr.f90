@@ -212,7 +212,7 @@
       do j = 1, nidx_rj(2)
         iflag = izero
         do inum = 1, num_order
-          if(ipick_order(inum) .eq. idx_gl_1d_rj_j(j,3)) then
+          if(ipick_order(inum) .eq. sph_rj1%idx_gl_1d_rj_j(j,3)) then
             iflag = ione
             exit
           end if
@@ -254,7 +254,7 @@
       do j = 1, nidx_rj(2)
         iflag = izero
         do inum = 1, num_degree
-          if(ipick_degree(inum) .eq. idx_gl_1d_rj_j(j,2)) then
+          if(ipick_degree(inum) .eq. sph_rj1%idx_gl_1d_rj_j(j,2)) then
             iflag = ione
             exit
           end if

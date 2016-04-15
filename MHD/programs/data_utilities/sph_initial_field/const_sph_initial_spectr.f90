@@ -57,6 +57,7 @@
       implicit none
 !
       private :: find_local_sph_mode_address
+      private :: local_sph_data_address
       private :: set_initial_velocity
       private :: set_initial_temperature
       private :: set_initial_composition
@@ -122,6 +123,35 @@
       end if
 !
       end subroutine sph_initial_spectrum
+!
+!-----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      integer(kind = kint) function find_local_sph_mode_address(l, m)
+!
+      use m_spheric_parameter
+!
+      integer(kind = 4), intent(in) :: l, m
+!
+!
+      find_local_sph_mode_address                                       &
+     &      = find_local_sph_address(sph_rj1, l, m)
+!
+      end function find_local_sph_mode_address
+!
+!-----------------------------------------------------------------------
+!
+      integer(kind = kint) function local_sph_data_address(kr, j_lc)
+!
+      use m_spheric_parameter
+!
+      integer(kind = kint), intent(in) :: kr, j_lc
+!
+!
+      local_sph_data_address                                            &
+     &      = local_sph_node_address(sph_rj1, kr, j_lc)
+!
+      end function local_sph_data_address
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

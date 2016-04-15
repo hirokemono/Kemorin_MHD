@@ -270,7 +270,7 @@
       do j_gl = 1, ltr_w*(ltr_w+2)
         l_gl = int(index_w(j_gl,1))
         m_gl = int(index_w(j_gl,2))
-        j = find_local_sph_mode_address_t(rj, l_gl, m_gl)
+        j = find_local_sph_address(rj, l_gl, m_gl)
         if(j .eq. 0) cycle
         al = one / dble(l_gl)
 !
@@ -311,7 +311,7 @@
       do j_gl = 1, ltr_w*(ltr_w+2)
         l_gl = int(index_w(j_gl,1))
         m_gl = int(index_w(j_gl,2))
-        j = find_local_sph_mode_address_t(rj, l_gl, m_gl)
+        j = find_local_sph_address(rj, l_gl, m_gl)
         if(j .eq. 0) cycle
         al1 = one / dble(l_gl+1)
 !

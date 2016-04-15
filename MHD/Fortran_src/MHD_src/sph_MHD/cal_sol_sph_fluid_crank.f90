@@ -263,7 +263,7 @@
 !
       l4 = int(l)
       m4 = int(m)
-      j = find_local_sph_mode_address(l4, m4)
+      j = find_local_sph_address(sph_rj1, l4, m4)
       if(j .eq. 0) return
 !
       write(*,*) 'field ID, l, m: ', is_field, l, m
@@ -371,7 +371,7 @@ end subroutine check_NaN_temperature
      &      ntot_phys_rj, d_rj, sol_00)
       end if
 !
-!      j = find_local_sph_mode_address(30,-23)
+!      j = find_local_sph_address(sph_rj1, 30,-23)
 !      if(j.gt.0) then
 !        write(*,*) 'matrix'
 !        call check_single_radial_3band_mat(my_rank, nri,               &

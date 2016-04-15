@@ -185,7 +185,7 @@
           end do
         else
           do k = 1, nlayer_ICB-1
-            inod = local_sph_data_address(k,jj)
+            inod = local_sph_node_address(sph_rj1, k, jj)
             d_rj(inod,ipol%i_temp) = 1.0d0
           end do
           do k = nlayer_ICB, nlayer_CMB
@@ -199,8 +199,8 @@
 !
 !    Center
       if(inod_rj_center .gt. 0) then
-        jj = find_local_sph_mode_address(0, 0)
-        inod = local_sph_data_address(1,jj)
+        jj = find_local_sph_address(sph_rj1, 0, 0)
+        inod = local_sph_node_address(sph_rj1, 1, jj)
         d_rj(inod_rj_center,ipol%i_temp) = d_rj(inod,ipol%i_temp)
       end if
 !
@@ -237,8 +237,8 @@
 !
 !    Center
       if(inod_rj_center .gt. 0) then
-        jj = find_local_sph_mode_address(0, 0)
-        inod = local_sph_data_address(1,jj)
+        jj = find_local_sph_address(sph_rj1, 0, 0)
+        inod = local_sph_node_address(sph_rj1, 1, jj)
         d_rj(inod_rj_center,ipol%i_temp) = d_rj(inod,ipol%i_temp)
       end if
 !
@@ -266,7 +266,7 @@
       shell = r_CMB - r_ICB
 !
       m = int( mod(isig,ikilo) / icent )
-      jj = find_local_sph_mode_address(m, m)
+      jj = find_local_sph_address(sph_rj1, m, m)
 !
       if (jj .gt. 0) then
         do k = nlayer_ICB, nlayer_CMB
@@ -280,8 +280,8 @@
 !
 !    Center
       if(inod_rj_center .gt. 0) then
-        jj = find_local_sph_mode_address(0, 0)
-        inod = local_sph_data_address(1,jj)
+        jj = find_local_sph_address(sph_rj1, 0, 0)
+        inod = local_sph_node_address(sph_rj1, 1, jj)
         d_rj(inod_rj_center,ipol%i_temp) = d_rj(inod,ipol%i_temp)
       end if
 !
@@ -325,7 +325,7 @@
 !
 !
       m = int( mod(isig,ikilo) / icent )
-      jj = find_local_sph_mode_address(m, m)
+      jj = find_local_sph_address(sph_rj1, m, m)
 !
 !
       if (jj .gt. 0) then
@@ -339,8 +339,8 @@
 !
 !    Center
       if(inod_rj_center .gt. 0) then
-        jj = find_local_sph_mode_address(0, 0)
-        inod = local_sph_data_address(1,jj)
+        jj = find_local_sph_address(sph_rj1, 0, 0)
+        inod = local_sph_node_address(sph_rj1, 1, jj)
         d_rj(inod_rj_center,is_fld) = d_rj(inod,is_fld)
       end if
 !
@@ -362,8 +362,8 @@
       integer(kind = kint) :: is, it, k, js, jt
 !
 !
-      js = find_local_sph_mode_address(1,0)
-      jt = find_local_sph_mode_address(2,0)
+      js = find_local_sph_address(sph_rj1, 1,0)
+      jt = find_local_sph_address(sph_rj1, 2,0)
 !
       pi = four * atan(one)
 !
@@ -491,8 +491,8 @@
 !
 !    Center
       if(inod_rj_center .gt. 0) then
-        jj = find_local_sph_mode_address(0, 0)
-        inod = local_sph_data_address(1,jj)
+        jj = find_local_sph_address(sph_rj1, 0, 0)
+        inod = local_sph_node_address(sph_rj1, 1, jj)
         d_rj(inod_rj_center,is_fld) = d_rj(inod,is_fld)
       end if
 !

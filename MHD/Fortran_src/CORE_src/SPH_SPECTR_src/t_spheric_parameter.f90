@@ -71,11 +71,10 @@
 !!        integer(kind = kint), intent(in) :: my_rank
 !!        type(sph_rj_grid), intent(in) :: rj
 !!
-!!      integer(kind = kint) function find_local_sph_mode_address_t     &
-!!     &                             (rj, l, m)
+!!      integer(kind = kint) function find_local_sph_address(rj, l, m)
 !!        type(sph_rj_grid), intent(in) :: rj
 !!        integer(kind = 4), intent(in) :: l, m
-!!      integer(kind = kint) function local_sph_data_address_t          &
+!!      integer(kind = kint) function local_sph_node_address            &
 !!     &                            (rj, kr, j_lc)
 !!        type(sph_rj_grid), intent(in) :: rj
 !!@endverbatim
@@ -724,8 +723,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      integer(kind = kint) function find_local_sph_mode_address_t       &
-     &                            (rj, l, m)
+      integer(kind = kint) function find_local_sph_address(rj, l, m)
 !
       type(sph_rj_grid), intent(in) :: rj
       integer(kind = 4), intent(in) :: l, m
@@ -733,29 +731,29 @@
       integer(kind = kint) :: j
 !
 !
-      find_local_sph_mode_address_t = 0
+      find_local_sph_address = 0
       do j = 1, rj%nidx_rj(2)
         if (   rj%idx_gl_1d_rj_j(j,2) .eq. l                            &
      &   .and. rj%idx_gl_1d_rj_j(j,3) .eq. m) then
-          find_local_sph_mode_address_t = j
+          find_local_sph_address = j
           return
         end if
       end do
 !
-      end function find_local_sph_mode_address_t
+      end function find_local_sph_address
 !
 !-----------------------------------------------------------------------
 !
-      integer(kind = kint) function local_sph_data_address_t            &
+      integer(kind = kint) function local_sph_node_address              &
      &                            (rj, kr, j_lc)
 !
       type(sph_rj_grid), intent(in) :: rj
       integer(kind = kint), intent(in) :: kr, j_lc
 !
 !
-      local_sph_data_address_t = j_lc + (kr-1)*rj%nidx_rj(2)
+      local_sph_node_address = j_lc + (kr-1)*rj%nidx_rj(2)
 !
-      end function local_sph_data_address_t
+      end function local_sph_node_address
 !
 !-----------------------------------------------------------------------
 !

@@ -135,7 +135,7 @@
         if(l .le. l_truncation) then
           icou = icou + 1
           idx_pick_gl(icou,1) = j
-          idx_pick_lc(icou) = find_local_sph_mode_address(l4, m4)
+          idx_pick_lc(icou) = find_local_sph_address(sph_rj1, l4, m4)
           iflag_picked_sph(j)  = icou
         end if
       end do
@@ -150,7 +150,8 @@
             if(iflag_picked_sph(j) .le. izero) then
               icou = icou + 1
               idx_pick_gl(icou,1) = j
-              idx_pick_lc(icou) = find_local_sph_mode_address(l4, m4)
+              idx_pick_lc(icou)                                         &
+     &           = find_local_sph_address(sph_rj1, l4, m4)
               iflag_picked_sph(j)  = icou
             end if
           end do
@@ -168,7 +169,8 @@
             if(iflag_picked_sph(j) .le. izero) then
               icou = icou + 1
               idx_pick_gl(icou,1) = j
-              idx_pick_lc(icou) = find_local_sph_mode_address(l4, m4)
+              idx_pick_lc(icou)                                         &
+     &              = find_local_sph_address(sph_rj1, l4, m4)
               iflag_picked_sph(j)  = icou
             end if
           end do

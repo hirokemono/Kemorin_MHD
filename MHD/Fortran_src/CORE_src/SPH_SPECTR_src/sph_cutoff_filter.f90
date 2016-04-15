@@ -81,7 +81,9 @@
 !
 !$omp parallel do
       do j = 1, nidx_rj(2)
-        if(idx_gl_1d_rj_j(j,2) .le. ltr_lowpass) c_filter(j) = one
+        if(sph_rj1%idx_gl_1d_rj_j(j,2) .le. ltr_lowpass) then
+          c_filter(j) = one
+        end if
       end do
 !$omp end parallel do
 !

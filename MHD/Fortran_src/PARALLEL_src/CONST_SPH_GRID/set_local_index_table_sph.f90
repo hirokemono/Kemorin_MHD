@@ -196,12 +196,12 @@
       idx_local_rj_j = 0
 !
       do k = 1, nidx_rj(1)
-        kk = idx_gl_1d_rj_r(k)
+        kk = sph_rj1%idx_gl_1d_rj_r(k)
         idx_local_rj_r(kk) = k
       end do
 !
       do j = 1, nidx_rj(2)
-        jj = idx_gl_1d_rj_j(j,1)
+        jj = sph_rj1%idx_gl_1d_rj_j(j,1)
         idx_local_rj_j(jj) = j
       end do
 !

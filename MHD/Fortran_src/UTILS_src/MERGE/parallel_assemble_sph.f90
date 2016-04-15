@@ -90,8 +90,7 @@
         j_gl =     org_sph%sph_rj%idx_gl_1d_rj_j(j_org,1)
         l_gl = int(org_sph%sph_rj%idx_gl_1d_rj_j(j_org,2))
         m_gl = int(org_sph%sph_rj%idx_gl_1d_rj_j(j_org,3))
-        j_new = find_local_sph_mode_address_t                           &
-     &          (new_sph%sph_rj, l_gl, m_gl)
+        j_new = find_local_sph_address(new_sph%sph_rj, l_gl, m_gl)
         if(j_new .gt. 0) then
           j_table%j_org_to_new(j_org) = j_new
         else

@@ -205,13 +205,13 @@
 !
       sph_rj1%radius_1d_rj_r(1:nidx_rj(1))                              &
      &                 =   rj%radius_1d_rj_r(1:nidx_rj(1))
-      idx_gl_1d_rj_r(1:nidx_rj(1))                                      &
+      sph_rj1%idx_gl_1d_rj_r(1:nidx_rj(1))                              &
      &                 =   rj%idx_gl_1d_rj_r(1:nidx_rj(1))
-      idx_gl_1d_rj_j(1:nidx_rj(2),1)                                    &
+      sph_rj1%idx_gl_1d_rj_j(1:nidx_rj(2),1)                            &
      &                 = rj%idx_gl_1d_rj_j(1:nidx_rj(2),1)
-      idx_gl_1d_rj_j(1:nidx_rj(2),2)                                    &
+      sph_rj1%idx_gl_1d_rj_j(1:nidx_rj(2),2)                            &
      &                 = rj%idx_gl_1d_rj_j(1:nidx_rj(2),2)
-      idx_gl_1d_rj_j(1:nidx_rj(2),3)                                    &
+      sph_rj1%idx_gl_1d_rj_j(1:nidx_rj(2),3)                            &
      &                 = rj%idx_gl_1d_rj_j(1:nidx_rj(2),3)
 !
 !      call dealloc_type_sph_1d_index_rj(rj)
@@ -387,15 +387,15 @@
       rj%radius_1d_rj_r(1:rj%nidx_rj(1))                                &
      &       = sph_rj1%radius_1d_rj_r(1:rj%nidx_rj(1))
       rj%idx_gl_1d_rj_r(1:rj%nidx_rj(1))                                &
-     &       = idx_gl_1d_rj_r(1:rj%nidx_rj(1))
+     &       = sph_rj1%idx_gl_1d_rj_r(1:rj%nidx_rj(1))
       rj%idx_gl_1d_rj_j(1:rj%nidx_rj(2),1)                              &
-     &       = idx_gl_1d_rj_j(1:rj%nidx_rj(2),1)
+     &       = sph_rj1%idx_gl_1d_rj_j(1:rj%nidx_rj(2),1)
       rj%idx_gl_1d_rj_j(1:rj%nidx_rj(2),2)                              &
-     &       = idx_gl_1d_rj_j(1:rj%nidx_rj(2),2)
+     &       = sph_rj1%idx_gl_1d_rj_j(1:rj%nidx_rj(2),2)
       rj%idx_gl_1d_rj_j(1:rj%nidx_rj(2),3)                              &
-     &      = idx_gl_1d_rj_j(1:rj%nidx_rj(2),3)
+     &      = sph_rj1%idx_gl_1d_rj_j(1:rj%nidx_rj(2),3)
 !
-!      call deallocate_sph_1d_index_rj
+!      call dealloc_type_sph_1d_index_rj(sph_rj1)
 !      call deallocate_spheric_param_rj
 !
       end subroutine copy_sph_node_rj_to_type

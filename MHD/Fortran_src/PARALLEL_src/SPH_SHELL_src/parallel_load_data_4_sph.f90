@@ -177,7 +177,7 @@
       m_folding = 2 * idx_gl_1d_rtp_p(2,2) / nidx_rtp(3)
 !
       call set_special_degree_order_flags(nidx_rj(2), nidx_rlm(2),      &
-     &    idx_gl_1d_rj_j, idx_gl_1d_rlm_j, idx_rj_degree_zero,          &
+     &    sph_rj1%idx_gl_1d_rj_j, idx_gl_1d_rlm_j, idx_rj_degree_zero,  &
      &    idx_rj_degree_one,  ist_rtm_order_zero,                       &
      &    ist_rtm_order_1s, ist_rtm_order_1c)
 !

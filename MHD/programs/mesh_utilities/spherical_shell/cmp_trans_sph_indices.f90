@@ -240,8 +240,8 @@
           if(      idx_rj_recieve(inod,1) .lt. 0                        &
      &        .or. idx_rj_recieve(inod,2) .lt. 0) then
               write(id_check,'(4i16,6i5)') inod,                        &
-     &          idx_global_rj(inod,1:2),  idx_gl_1d_rj_r(kr),           &
-     &          idx_gl_1d_rj_j(j,2:3)
+     &          idx_global_rj(inod,1:2),  sph_rj1%idx_gl_1d_rj_r(kr),   &
+     &          sph_rj1%idx_gl_1d_rj_j(j,2:3)
           end if
         end do
       end do

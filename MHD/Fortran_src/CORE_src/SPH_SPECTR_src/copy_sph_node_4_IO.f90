@@ -167,10 +167,14 @@
       sph_rj1%a_r_1d_rj_r(1:nidx_rj(1))                                 &
      &      = one / sph_rj1%radius_1d_rj_r(1:nidx_rj(1))
 !
-      idx_gl_1d_rj_r(1:nidx_rj(1)) =   idx_gl_1_IO(1:nidx_rj(1))
-      idx_gl_1d_rj_j(1:nidx_rj(2),1) = idx_gl_2_IO(1:nidx_rj(2),1)
-      idx_gl_1d_rj_j(1:nidx_rj(2),2) = idx_gl_2_IO(1:nidx_rj(2),2)
-      idx_gl_1d_rj_j(1:nidx_rj(2),3) = idx_gl_2_IO(1:nidx_rj(2),3)
+      sph_rj1%idx_gl_1d_rj_r(1:nidx_rj(1))                              &
+     &       =   idx_gl_1_IO(1:nidx_rj(1))
+      sph_rj1%idx_gl_1d_rj_j(1:nidx_rj(2),1)                            &
+     &       = idx_gl_2_IO(1:nidx_rj(2),1)
+      sph_rj1%idx_gl_1d_rj_j(1:nidx_rj(2),2)                            &
+     &       = idx_gl_2_IO(1:nidx_rj(2),2)
+      sph_rj1%idx_gl_1d_rj_j(1:nidx_rj(2),3)                            &
+     &       = idx_gl_2_IO(1:nidx_rj(2),3)
 !
       call deallocate_nod_id_sph_IO
       call deallocate_idx_sph_1d1_IO
@@ -378,12 +382,16 @@
 !
       r_gl_1_IO(1:nidx_rj(1))                                           &
      &      = sph_rj1%radius_1d_rj_r(1:nidx_rj(1))
-      idx_gl_1_IO(1:nidx_rj(1)) =   idx_gl_1d_rj_r(1:nidx_rj(1))
-      idx_gl_2_IO(1:nidx_rj(2),1) = idx_gl_1d_rj_j(1:nidx_rj(2),1)
-      idx_gl_2_IO(1:nidx_rj(2),2) = idx_gl_1d_rj_j(1:nidx_rj(2),2)
-      idx_gl_2_IO(1:nidx_rj(2),3) = idx_gl_1d_rj_j(1:nidx_rj(2),3)
+      idx_gl_1_IO(1:nidx_rj(1))                                         &
+     &      = sph_rj1%idx_gl_1d_rj_r(1:nidx_rj(1))
+      idx_gl_2_IO(1:nidx_rj(2),1)                                       &
+     &      = sph_rj1%idx_gl_1d_rj_j(1:nidx_rj(2),1)
+      idx_gl_2_IO(1:nidx_rj(2),2)                                       &
+     &      = sph_rj1%idx_gl_1d_rj_j(1:nidx_rj(2),2)
+      idx_gl_2_IO(1:nidx_rj(2),3)                                       &
+     &      = sph_rj1%idx_gl_1d_rj_j(1:nidx_rj(2),3)
 !
-      call deallocate_sph_1d_index_rj
+      call dealloc_type_sph_1d_index_rj(sph_rj1)
       call deallocate_spheric_param_rj
 !
       end subroutine copy_sph_node_rj_to_IO

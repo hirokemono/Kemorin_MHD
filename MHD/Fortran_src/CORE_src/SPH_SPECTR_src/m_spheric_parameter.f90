@@ -28,7 +28,6 @@
 !!      subroutine deallocate_sph_1d_index_rtp
 !!      subroutine deallocate_sph_1d_index_rtm
 !!      subroutine deallocate_sph_1d_index_rlm
-!!      subroutine deallocate_sph_1d_index_rj
 !!
 !!      subroutine check_global_spheric_parameter
 !!      subroutine check_spheric_parameter(my_rank)
@@ -36,11 +35,6 @@
 !!      subroutine check_spheric_param_rtm(my_rank)
 !!      subroutine check_spheric_param_rlm(my_rank)
 !!      subroutine check_spheric_param_rj(my_rank)
-!!
-!!      integer(kind = kint) function find_local_sph_mode_address(l, m)
-!!        integer(kind = 4), intent(in) :: l, m
-!!      integer(kind = kint) function local_sph_data_address(kr, j_lc)
-!!
 !!@endverbatim
 !!
 !!@n @param  my_rank     Running rank ID
@@ -58,7 +52,7 @@
 !
 !
       type(sph_rj_grid), save :: sph_rj1
-!sph_rj1%radius_1d_rj_r
+!sph_rj1%idx_gl_1d_rj_r
 !
 !>      integer flag for FEM mesh type
 !!@n    iflag_MESH_same:     same grid point as Gauss-Legendre points
@@ -226,12 +220,12 @@
       integer(kind = kint), allocatable :: idx_gl_1d_rlm_j(:,:)
 !
 !>      radial global address @f$ f(r,j) @f$
-      integer(kind = kint), allocatable :: idx_gl_1d_rj_r(:)
+!      integer(kind = kint), allocatable :: idx_gl_1d_rj_r(:)
 !>      spherical harmonics mode for  @f$ f(r,j) @f$
 !!@n        idx_gl_1d_rj_j(j,1): global ID for spherical harmonics
 !!@n        idx_gl_1d_rj_j(j,2): spherical hermonincs degree
 !!@n        idx_gl_1d_rj_j(j,3): spherical hermonincs order
-      integer(kind = kint), allocatable :: idx_gl_1d_rj_j(:,:)
+!      integer(kind = kint), allocatable :: idx_gl_1d_rj_j(:,:)
 !
 !>      1d radius data for @f$ f(r,\theta,\phi) @f$
       real(kind = kreal), allocatable :: radius_1d_rtp_r(:)
@@ -400,18 +394,6 @@
 !
       subroutine allocate_sph_1d_index_rj
 !
-      integer(kind = kint) :: num
-!
-      num = nidx_rj(1)
-      allocate(idx_gl_1d_rj_r(num))
-!
-      num = nidx_rj(2)
-      allocate(idx_gl_1d_rj_j(num,3))
-!
-      if(nidx_rj(2) .gt. 0) idx_gl_1d_rj_j = 0
-      if(nidx_rj(1) .gt. 0) then
-        idx_gl_1d_rj_r = 0
-      end if
 !
       sph_rj1%nidx_rj(1:2) = nidx_rj(1:2)
       call alloc_type_sph_1d_index_rj(sph_rj1)
@@ -486,17 +468,6 @@
       deallocate(idx_gl_1d_rlm_j)
 !
       end subroutine deallocate_sph_1d_index_rlm
-!
-! ----------------------------------------------------------------------
-!
-      subroutine deallocate_sph_1d_index_rj
-!
-      deallocate(idx_gl_1d_rj_r)
-      deallocate(idx_gl_1d_rj_j)
-!
-      call dealloc_type_sph_1d_index_rj(sph_rj1)
-!
-      end subroutine deallocate_sph_1d_index_rj
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -600,37 +571,5 @@
       end subroutine check_spheric_param_rj
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      integer(kind = kint) function find_local_sph_mode_address(l, m)
-!
-      integer(kind = 4), intent(in) :: l, m
-!
-      integer(kind = kint) :: j
-!
-!
-      find_local_sph_mode_address = 0
-      do j = 1, nidx_rj(2)
-        if (   int(idx_gl_1d_rj_j(j,2)) .eq. l                          &
-     &   .and. int(idx_gl_1d_rj_j(j,3)) .eq. m) then
-          find_local_sph_mode_address = j
-          return
-        end if
-      end do
-!
-      end function find_local_sph_mode_address
-!
-!-----------------------------------------------------------------------
-!
-      integer(kind = kint) function local_sph_data_address(kr, j_lc)
-!
-      integer(kind = kint), intent(in) :: kr, j_lc
-!
-!
-      local_sph_data_address = j_lc + (kr-1)*nidx_rj(2)
-!
-      end function local_sph_data_address
-!
-!-----------------------------------------------------------------------
 !
       end module m_spheric_parameter

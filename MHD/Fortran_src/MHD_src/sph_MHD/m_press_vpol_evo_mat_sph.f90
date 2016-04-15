@@ -86,11 +86,11 @@
 !
       write(50+my_rank,'(a)') 'evolution matrix for poloidal velocity'
       call check_radial_7band_mat(my_rank, nidx_rj(1), nidx_rj(2),      &
-     &    idx_gl_1d_rj_j, sph_rj1%radius_1d_rj_r, vsp_evo_mat)
+     &    sph_rj1%idx_gl_1d_rj_j, sph_rj1%radius_1d_rj_r, vsp_evo_mat)
 !
       write(50+my_rank,'(a)') 'evolution matrix for toroidal velocity'
       call check_radial_3band_mat(my_rank, nidx_rj(1), nidx_rj(2),      &
-     &    idx_gl_1d_rj_j, sph_rj1%radius_1d_rj_r, vt_evo_mat)
+     &    sph_rj1%idx_gl_1d_rj_j, sph_rj1%radius_1d_rj_r, vt_evo_mat)
 !
       end subroutine check_velocity_matrices_sph
 !

@@ -8,7 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine deallocate_rms_sph_local_data
-!!      subroutine set_sum_table_4_sph_spectr
+!!      subroutine set_sum_table_4_sph_spectr                           &
+!!     &         (l_truncation, nidx_rj, idx_gl_1d_rj_j)
 !!      subroutine sum_sph_layerd_rms(rj_fld)
 !!        type(phys_data), intent(in) :: rj_fld
 !!@endverbatim
@@ -133,10 +134,14 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sum_table_4_sph_spectr
+      subroutine set_sum_table_4_sph_spectr                             &
+     &         (l_truncation, nidx_rj, idx_gl_1d_rj_j)
 !
-      use m_spheric_parameter
       use m_rms_4_sph_spectr
+!
+      integer(kind = kint), intent(in) :: l_truncation
+      integer(kind = kint), intent(in) :: nidx_rj(2)
+      integer(kind = kint), intent(in) :: idx_gl_1d_rj_j(nidx_rj(2),3)
 !
       integer(kind = kint) :: j, lg, mg, lm
       integer(kind = kint) :: icou, lcou, mcou

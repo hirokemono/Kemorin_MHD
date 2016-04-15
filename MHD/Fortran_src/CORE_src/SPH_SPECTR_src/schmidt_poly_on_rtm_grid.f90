@@ -129,8 +129,8 @@
 !
 !$omp parallel do private(j,ll,mm,idx_lm,g_lm)
       do j = 1, nidx_rj(2)
-        ll = idx_gl_1d_rj_j(j,2)
-        mm = idx_gl_1d_rj_j(j,3)
+        ll = sph_rj1%idx_gl_1d_rj_j(j,2)
+        mm = sph_rj1%idx_gl_1d_rj_j(j,3)
 !
         call sph_normalizations(ll, mm, idx_lm, g_lm)
         g_sph_rj(j,1:13) =  g_lm(1:13)

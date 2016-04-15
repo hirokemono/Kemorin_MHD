@@ -294,7 +294,7 @@
       do inum = 1, bc%num_bc_mode
         l = int(bc%imode_gl(1,inum))
         m = int(bc%imode_gl(2,inum))
-        j = find_local_sph_mode_address(l, m)
+        j = find_local_sph_address(sph_rj1, l, m)
         if(j .gt. 0) bc_data(j) = bc%bc_input(inum,1)
       end do
 !
