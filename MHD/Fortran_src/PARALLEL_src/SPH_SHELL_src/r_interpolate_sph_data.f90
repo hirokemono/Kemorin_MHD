@@ -312,11 +312,11 @@
         call calypso_MPI_abort(ierr_sph,'truncation is wrong')
       end if
 !
-      if(ist_rj(2).ne.ist_sph_IO(2)) then
+      if(sph_rj1%ist_rj(2).ne.ist_sph_IO(2)) then
         call calypso_MPI_abort                                          &
      &      (ierr_sph,'start point of harminics is wrong')
       end if
-      if(ied_rj(2).ne.ied_sph_IO(2)) then
+      if(sph_rj1%ied_rj(2) .ne. ied_sph_IO(2)) then
         call calypso_MPI_abort                                          &
      &     (ierr_sph,'end point of harminics is wrong')
       end if

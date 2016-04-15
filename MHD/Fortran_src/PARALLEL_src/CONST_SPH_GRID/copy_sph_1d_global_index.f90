@@ -130,7 +130,7 @@
 !
 !
       do i = 1, nidx_rj(1)
-        j = i - 1 + ist_rj(1)
+        j = i - 1 + sph_rj1%ist_rj(1)
         sph_rj1%idx_gl_1d_rj_r(i) = idx_global_rj_r(j)
       end do
       do i = 1, nidx_rj(1)
@@ -139,7 +139,7 @@
       end do
 !
       do i = 1, nidx_rj(2)
-        j = i - 1 + ist_rj(2)
+        j = i - 1 + sph_rj1%ist_rj(2)
         sph_rj1%idx_gl_1d_rj_j(i,1) = idx_global_rj_j(j,1)
         sph_rj1%idx_gl_1d_rj_j(i,2) = idx_global_rj_j(j,2)
         sph_rj1%idx_gl_1d_rj_j(i,3) = idx_global_rj_j(j,3)
@@ -159,7 +159,7 @@
       if(iflag_rj_center .eq. izero) return
 !
       do i = 1, nidx_rj(2)
-        j = i - 1 + ist_rj(2)
+        j = i - 1 + sph_rj1%ist_rj(2)
         if(idx_global_rj_j(j,1) .eq. 0) then
           write(*,*) 'Add center mode!!'
           nnod_rj = nnod_rj + 1

@@ -171,6 +171,9 @@
 !>        1d end address of global data for @f$ f(r,\theta,m) @f$
         integer(kind = kint) :: ied_rtm(3)
 !
+!>        Start address for @f$ m = 0 @f$ for @f$ f(r,\theta,m) @f$
+        integer (kind=kint) :: ist_rtm_order_zero =   0
+!
 !>        global address for each direction @f$ f(r,\theta,m) @f$
         integer(kind = kint), pointer :: idx_global_rtm(:,:)
 !
@@ -240,9 +243,6 @@
 !!@n        If spectr data do not exist in subdomain,
 !!@n        idx_rj_degree_one(m) = 0.
         integer (kind=kint) :: idx_rj_degree_one(-1:1)
-!
-!>        Start address for @f$ m = 0 @f$ for @f$ f(r,\theta,m) @f$
-        integer (kind=kint) :: ist_rtm_order_zero =   0
 !
 !>        number of data points for @f$ f(r,j) @f$
         integer(kind = kint) :: nnod_rj

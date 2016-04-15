@@ -68,10 +68,10 @@
 !
       i1 = sph_rank_rj(1) + 1
       i2 = sph_rank_rj(2) + 1
-      ist_rj(1) =  istack_idx_local_rj_r(i1-1) + 1
-      ist_rj(2) =  istack_idx_local_rj_j(i2-1) + 1
-      ied_rj(1) =  istack_idx_local_rj_r(i1)
-      ied_rj(2) =  istack_idx_local_rj_j(i2)
+      sph_rj1%ist_rj(1) =  istack_idx_local_rj_r(i1-1) + 1
+      sph_rj1%ist_rj(2) =  istack_idx_local_rj_j(i2-1) + 1
+      sph_rj1%ied_rj(1) =  istack_idx_local_rj_r(i1)
+      sph_rj1%ied_rj(2) =  istack_idx_local_rj_j(i2)
 !
       end subroutine copy_gl_2_local_rj_param
 !

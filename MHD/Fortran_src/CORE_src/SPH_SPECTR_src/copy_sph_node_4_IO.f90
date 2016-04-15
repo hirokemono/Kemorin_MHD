@@ -153,8 +153,8 @@
 !
       nnod_rj = nnod_sph_IO
       nidx_rj(1:itwo) = nidx_sph_IO(1:itwo)
-      ist_rj(1:itwo) =  ist_sph_IO(1:itwo)
-      ied_rj(1:itwo) =  ied_sph_IO(1:itwo)
+      sph_rj1%ist_rj(1:itwo) =  ist_sph_IO(1:itwo)
+      sph_rj1%ied_rj(1:itwo) =  ied_sph_IO(1:itwo)
 !
       call allocate_spheric_param_rj
       call allocate_sph_1d_index_rj
@@ -358,8 +358,8 @@
 !
       nnod_sph_IO = nnod_rj
       nidx_sph_IO(1:itwo) = nidx_rj(1:itwo)
-      ist_sph_IO(1:itwo) =  ist_rj(1:itwo)
-      ied_sph_IO(1:itwo) =  ied_rj(1:itwo)
+      ist_sph_IO(1:itwo) =  sph_rj1%ist_rj(1:itwo)
+      ied_sph_IO(1:itwo) =  sph_rj1%ied_rj(1:itwo)
 !
       call allocate_nod_id_sph_IO
       call allocate_idx_sph_1d1_IO

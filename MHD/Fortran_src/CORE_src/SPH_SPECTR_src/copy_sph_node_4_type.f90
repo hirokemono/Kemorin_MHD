@@ -193,8 +193,8 @@
 !
       nnod_rj = rj%nnod_rj
       nidx_rj(1:itwo) = rj%nidx_rj(1:itwo)
-      ist_rj(1:itwo) =  rj%ist_rj(1:itwo)
-      ied_rj(1:itwo) =  rj%ied_rj(1:itwo)
+      sph_rj1%ist_rj(1:itwo) =  rj%ist_rj(1:itwo)
+      sph_rj1%ied_rj(1:itwo) =  rj%ied_rj(1:itwo)
 !
       call allocate_spheric_param_rj
       call allocate_sph_1d_index_rj
@@ -374,8 +374,8 @@
 !
       rj%nnod_rj = nnod_rj
       rj%nidx_rj(1:itwo) = nidx_rj(1:itwo)
-      rj%ist_rj(1:itwo) =  ist_rj(1:itwo)
-      rj%ied_rj(1:itwo) =  ied_rj(1:itwo)
+      rj%ist_rj(1:itwo) =  sph_rj1%ist_rj(1:itwo)
+      rj%ied_rj(1:itwo) =  sph_rj1%ied_rj(1:itwo)
 !
       call alloc_type_spheric_param_rj(rj)
       call alloc_type_sph_1d_index_rj(rj)
