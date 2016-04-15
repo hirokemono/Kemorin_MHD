@@ -95,7 +95,7 @@
 !
 !
       call cal_sph_nod_gradient_2(sph_bc%kr_in, sph_bc%kr_out,          &
-     &    is_fld, is_grad, nidx_rj, radius_1d_rj_r,                     &
+     &    is_fld, is_grad, nidx_rj, sph_rj1%radius_1d_rj_r,             &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       call sel_bc_radial_grad_scalar(sph_bc, is_fld, is_grad,           &
      &    rj_fld%ntot_phys, rj_fld%d_fld)
@@ -152,13 +152,13 @@
       call ext_outside_potential_with_j                                 &
      &   (sph_bc_B%kr_out, is_magne, is_current,                        &
      &    nidx_rj, idx_gl_1d_rj_j,                                      &
-     &    radius_1d_rj_r, sph_rj1%a_r_1d_rj_r,                          &
+     &    sph_rj1%radius_1d_rj_r, sph_rj1%a_r_1d_rj_r,                  &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       if(sph_bc_B%iflag_icb .eq. iflag_sph_insulator) then
         call ext_inside_potential_with_j                                &
      &     (sph_bc_B%kr_in, is_magne, is_current,                       &
      &      nidx_rj, idx_gl_1d_rj_j,                                    &
-     &      radius_1d_rj_r, sph_rj1%a_r_1d_rj_r,                        &
+     &      sph_rj1%radius_1d_rj_r, sph_rj1%a_r_1d_rj_r,                &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
@@ -211,12 +211,12 @@
 !      Extend potential field
       call ext_outside_potential(sph_bc_B%kr_out, is_magne,             &
      &      nidx_rj, idx_gl_1d_rj_j,            &
-     &      radius_1d_rj_r, sph_rj1%a_r_1d_rj_r,       &
+     &      sph_rj1%radius_1d_rj_r, sph_rj1%a_r_1d_rj_r,                &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       if(sph_bc_B%iflag_icb .eq. iflag_sph_insulator) then
         call ext_inside_potential(sph_bc_B%kr_in, is_magne,             &
      &      nidx_rj, idx_gl_1d_rj_j,     &
-     &      radius_1d_rj_r, sph_rj1%a_r_1d_rj_r,       &
+     &      sph_rj1%radius_1d_rj_r, sph_rj1%a_r_1d_rj_r,                &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
@@ -240,7 +240,7 @@
 !
 !
       call cal_sph_nod_gradient_2(sph_bc_U%kr_in, sph_bc_U%kr_out,      &
-     &    is_press, is_grad, nidx_rj, radius_1d_rj_r,                   &
+     &    is_press, is_grad, nidx_rj, sph_rj1%radius_1d_rj_r,           &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       call normalize_sph_average_grad(is_grad, idx_rj_degree_zero,      &
      &    nidx_rj, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
@@ -279,7 +279,7 @@
      &    is_fld, is_grad, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call cal_sph_nod_gradient_2(sph_bc%kr_in, sph_bc%kr_out,          &
-     &    is_fld, is_grad, nidx_rj, radius_1d_rj_r,                     &
+     &    is_fld, is_grad, nidx_rj, sph_rj1%radius_1d_rj_r,             &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       call normalize_sph_average_grad(is_grad, idx_rj_degree_zero,      &
      &    nidx_rj, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)

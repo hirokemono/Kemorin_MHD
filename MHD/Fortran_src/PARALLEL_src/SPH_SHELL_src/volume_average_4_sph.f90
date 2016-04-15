@@ -55,8 +55,9 @@
       if(idx_rj_degree_zero .gt. izero) then
         call cal_sphere_average_sph(rj_fld)
 !
-        call radial_integration(kg_st, kg_ed, nidx_rj(1),               &
-     &      radius_1d_rj_r, ntot_rms_rj, ave_sph(0,1),  ave_sph_vol(1))
+        call radial_integration                                         &
+     &     (kg_st, kg_ed, nidx_rj(1), sph_rj1%radius_1d_rj_r,           &
+     &      ntot_rms_rj, ave_sph(0,1),  ave_sph_vol(1))
         call averaging_4_sph_ave_int(avol)
       end if
 !
@@ -90,11 +91,11 @@
         if (rj_fld%num_component(i_fld) .eq. n_scalar) then
           call cal_ave_scalar_sph_spectr(icomp_st, jcomp_st,            &
      &        nnod_rj, nidx_rj, idx_rj_degree_zero, inod_rj_center,     &
-     &        rj_fld%ntot_phys, rj_fld%d_fld, radius_1d_rj_r)
+     &        rj_fld%ntot_phys, rj_fld%d_fld, sph_rj1%radius_1d_rj_r)
         else if (rj_fld%num_component(i_fld) .eq. n_vector) then
           call cal_ave_vector_sph_spectr(icomp_st, jcomp_st,            &
      &        nnod_rj, nidx_rj, idx_rj_degree_zero, inod_rj_center,     &
-     &        rj_fld%ntot_phys, rj_fld%d_fld, radius_1d_rj_r)
+     &        rj_fld%ntot_phys, rj_fld%d_fld, sph_rj1%radius_1d_rj_r)
         end if
       end do
 !

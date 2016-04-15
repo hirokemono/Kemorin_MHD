@@ -233,7 +233,8 @@
         call cal_rms_sph_spec_one_field(ncomp_rj, icomp_rj,             &
      &      rj_fld%ntot_phys, rj_fld%d_fld, rms_sph_rj(0,1,1))
         call radial_integration(kg_st, kg_ed, nidx_rj(1),               &
-     &      radius_1d_rj_r, num, rms_sph_rj(0,1,1), rms_sph_vol_j(1,1))
+     &      sph_rj1%radius_1d_rj_r, num,                                &
+     &      rms_sph_rj(0,1,1), rms_sph_vol_j(1,1))
 !
         call sum_sph_v_rms_by_degree(l_truncation, nidx_rj(2),          &
      &      istack_mode_sum_l,  item_mode_sum_l,  ncomp_rj,             &

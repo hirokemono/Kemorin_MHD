@@ -7,7 +7,8 @@
 !>@brief Set boundary conditions flags for velocity
 !!
 !!@verbatim
-!!      subroutine set_sph_bc_velo_sph
+!!      subroutine set_sph_bc_velo_sph                                  &
+!!     &         (idx_rj_degree_one, r_ICB, r_CMB, jmax)
 !!@endverbatim
 !
       module set_bc_flag_sph_velo
@@ -18,8 +19,6 @@
       use m_machine_parameter
       use m_boundary_condition_IDs
       use m_control_parameter
-!
-      use m_spheric_parameter
 !
       use m_bc_data_list
       use m_surf_data_list
@@ -34,10 +33,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sph_bc_velo_sph
+      subroutine set_sph_bc_velo_sph                                    &
+     &         (idx_rj_degree_one, r_ICB, r_CMB, jmax)
 !
       use m_boundary_params_sph_MHD
       use set_bc_sph_scalars
+!
+      integer(kind = kint), intent(in) :: idx_rj_degree_one(-1:1)
+      integer(kind = kint), intent(in) :: jmax
+      real(kind = kreal), intent(in) :: r_ICB, r_CMB
 !
       integer(kind = kint) :: i
       integer(kind = kint) :: igrp_icb, igrp_cmb
@@ -46,25 +50,25 @@
       call find_both_sides_of_boundaries(velo_nod, torque_surf,         &
      &    sph_bc_U, igrp_icb, igrp_cmb)
 !
-      call allocate_vsp_bc_array( nidx_rj(2) )
+      call allocate_vsp_bc_array(jmax)
 !
 !
       i = abs(igrp_icb)
       if(igrp_icb .lt. 0) then
-        call set_sph_velo_ICB_flag(torque_surf%ibc_type(i),             &
-     &      torque_surf%bc_magnitude(i))
+        call set_sph_velo_ICB_flag(idx_rj_degree_one, r_ICB,            &
+     &     torque_surf%ibc_type(i), torque_surf%bc_magnitude(i))
       else
-        call set_sph_velo_ICB_flag(velo_nod%ibc_type(i),                &
-     &      velo_nod%bc_magnitude(i))
+        call set_sph_velo_ICB_flag(idx_rj_degree_one, r_ICB,            &
+     &     velo_nod%ibc_type(i), velo_nod%bc_magnitude(i))
       end if
 !
       i = abs(igrp_cmb)
       if(igrp_icb .lt. 0) then
-        call set_sph_velo_CMB_flag(torque_surf%ibc_type(i),             &
-     &      torque_surf%bc_magnitude(i))
+        call set_sph_velo_CMB_flag(idx_rj_degree_one, r_CMB,            &
+     &      torque_surf%ibc_type(i), torque_surf%bc_magnitude(i))
       else
-        call set_sph_velo_CMB_flag(velo_nod%ibc_type(i),                &
-     &      velo_nod%bc_magnitude(i))
+        call set_sph_velo_CMB_flag(idx_rj_degree_one, r_CMB,            &
+     &      velo_nod%ibc_type(i), velo_nod%bc_magnitude(i))
       end if
 !
       end subroutine set_sph_bc_velo_sph
@@ -72,10 +76,13 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sph_velo_ICB_flag(ibc_type, bc_mag)
+      subroutine set_sph_velo_ICB_flag                                  &
+     &         (idx_rj_degree_one, r_ICB, ibc_type, bc_mag)
 !
       use m_boundary_params_sph_MHD
 !
+      integer(kind = kint), intent(in) :: idx_rj_degree_one(-1:1)
+      real(kind = kreal), intent(in) :: r_ICB
       integer(kind = kint), intent(in) :: ibc_type
       real(kind = kreal), intent(in) :: bc_mag
 !
@@ -112,10 +119,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sph_velo_CMB_flag(ibc_type, bc_mag)
+      subroutine set_sph_velo_CMB_flag                                  &
+     &         (idx_rj_degree_one, r_CMB, ibc_type, bc_mag)
 !
       use m_boundary_params_sph_MHD
 !
+      integer(kind = kint), intent(in) :: idx_rj_degree_one(-1:1)
+      real(kind = kreal), intent(in) :: r_CMB
       integer(kind = kint), intent(in) :: ibc_type
       real(kind = kreal), intent(in) :: bc_mag
 !

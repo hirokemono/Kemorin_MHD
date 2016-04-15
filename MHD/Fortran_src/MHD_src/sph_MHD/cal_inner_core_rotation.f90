@@ -54,13 +54,16 @@
 !
 !
       call set_inner_core_rot_l1(idx_rj_degree_one(-1), kr_in,          &
-     &    nidx_rj(1), nidx_rj(2), radius_1d_rj_r, sph_rj1%ar_1d_rj,     &
+     &    nidx_rj(1), nidx_rj(2),                                       &
+     &    sph_rj1%radius_1d_rj_r, sph_rj1%ar_1d_rj,                     &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       call set_inner_core_rot_l1(idx_rj_degree_one( 0), kr_in,          &
-     &    nidx_rj(1), nidx_rj(2), radius_1d_rj_r, sph_rj1%ar_1d_rj,     &
+     &    nidx_rj(1), nidx_rj(2),                                       &
+     &    sph_rj1%radius_1d_rj_r, sph_rj1%ar_1d_rj,                     &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       call set_inner_core_rot_l1(idx_rj_degree_one( 1), kr_in,          &
-     &    nidx_rj(1), nidx_rj(2), radius_1d_rj_r, sph_rj1%ar_1d_rj,     &
+     &    nidx_rj(1), nidx_rj(2),                                       &
+     &    sph_rj1%radius_1d_rj_r, sph_rj1%ar_1d_rj,                     &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine set_inner_core_rotation
@@ -209,13 +212,16 @@
 !
 !
       call int_icore_tor_lorentz_l1(idx_rj_degree_one(-1), kr_in,       &
-     &    nidx_rj(1), nidx_rj(2), radius_1d_rj_r, sph_rj1%ar_1d_rj,     &
+     &    nidx_rj(1), nidx_rj(2),                                       &
+     &    sph_rj1%radius_1d_rj_r, sph_rj1%ar_1d_rj,                     &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       call int_icore_tor_lorentz_l1(idx_rj_degree_one( 0), kr_in,       &
-     &    nidx_rj(1), nidx_rj(2), radius_1d_rj_r, sph_rj1%ar_1d_rj,     &
+     &    nidx_rj(1), nidx_rj(2),                                       &
+     &    sph_rj1%radius_1d_rj_r, sph_rj1%ar_1d_rj,                     &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       call int_icore_tor_lorentz_l1(idx_rj_degree_one( 1), kr_in,       &
-     &    nidx_rj(1), nidx_rj(2), radius_1d_rj_r, sph_rj1%ar_1d_rj,     &
+     &    nidx_rj(1), nidx_rj(2),                                       &
+     &    sph_rj1%radius_1d_rj_r, sph_rj1%ar_1d_rj,                     &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine int_icore_toroidal_lorentz

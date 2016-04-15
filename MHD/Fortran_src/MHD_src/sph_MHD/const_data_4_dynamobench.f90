@@ -59,8 +59,8 @@
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center                  &
      &   .and. sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
-        call pick_mag_torque_inner_core                                 &
-     &     (idx_rj_degree_one, nidx_rj, nlayer_ICB, radius_1d_rj_r,     &
+        call pick_mag_torque_inner_core(idx_rj_degree_one,              &
+     &      nidx_rj, nlayer_ICB, sph_rj1%radius_1d_rj_r,                &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !

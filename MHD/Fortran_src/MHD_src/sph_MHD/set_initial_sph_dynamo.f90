@@ -71,28 +71,29 @@
         if(ipol%i_temp .gt. 0) then
           call set_ini_reference_temp_sph                               &
      &       (reftemp_rj, rj_fld%ntot_phys, rj_fld%d_fld)
-          call set_initial_temp_sph                                     &
-     &       (isig, rj_fld%ntot_phys, rj_fld%d_fld)
+          call set_initial_temp_sph(isig, sph_rj1%radius_1d_rj_r,       &
+     &        rj_fld%ntot_phys, rj_fld%d_fld)
         end if
         if(ipol%i_light .gt. 0) then
-          call set_initial_light_sph(isig, ipol%i_light, reftemp_rj,    &
+          call set_initial_light_sph(isig, ipol%i_light,                &
+     &        sph_rj1%radius_1d_rj_r, reftemp_rj,                       &
      &        rj_fld%ntot_phys, rj_fld%d_fld)
         end if
 !
         if(iflag_restart .eq. i_rst_dbench1) then
           if(ipol%i_magne .gt. 0) then
             call initial_b_dynamobench_1                                &
-     &         (rj_fld%ntot_phys, rj_fld%d_fld)
+     &         (sph_rj1%radius_1d_rj_r, rj_fld%ntot_phys, rj_fld%d_fld)
           end if
         else if(iflag_restart .eq. i_rst_dbench2) then
           if(ipol%i_magne .gt. 0) then
             call initial_b_dynamobench_2                                &
-     &         (rj_fld%ntot_phys, rj_fld%d_fld)
+     &         (sph_rj1%radius_1d_rj_r, rj_fld%ntot_phys, rj_fld%d_fld)
           end if
         else if(iflag_restart .eq. i_rst_dbench_qcv) then
           if(ipol%i_magne .gt. 0) then
            call initial_b_dynamobench_qcv                               &
-     &        (rj_fld%ntot_phys, rj_fld%d_fld)
+     &        (sph_rj1%radius_1d_rj_r, rj_fld%ntot_phys, rj_fld%d_fld)
           end if
         end if
 !
@@ -101,14 +102,15 @@
       else if (iflag_restart .eq. i_rst_no_file) then
         if(ipol%i_temp .gt. 0)  then
           call set_noize_scalar_sph(ipol%i_temp, reftemp_rj,            &
-     &        rj_fld%ntot_phys, rj_fld%d_fld)
+     &        sph_rj1%radius_1d_rj_r, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
         if(ipol%i_light .gt. 0) then
           call set_noize_scalar_sph(ipol%i_light, reftemp_rj,           &
-     &        rj_fld%ntot_phys, rj_fld%d_fld)
+     &        sph_rj1%radius_1d_rj_r, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
         if(ipol%i_magne .gt. 0) then
-          call set_initial_magne_sph(rj_fld%ntot_phys, rj_fld%d_fld)
+          call set_initial_magne_sph(sph_rj1%radius_1d_rj_r,            &
+     &        rj_fld%ntot_phys, rj_fld%d_fld)
           call reduce_initial_magne_sph                                 &
      &       (nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
@@ -116,7 +118,8 @@
       else if (iflag_restart .eq. i_rst_licv) then
         call set_ini_reference_temp_sph                                 &
      &     (reftemp_rj, rj_fld%ntot_phys, rj_fld%d_fld)
-        call set_all_part_temp_sph(rj_fld%ntot_phys, rj_fld%d_fld)
+        call set_all_part_temp_sph(sph_rj1%radius_1d_rj_r,              &
+     &      rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       if(iflag_debug .gt. 0) write(*,*) 'init_output_sph_restart_file'
@@ -205,11 +208,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_all_part_temp_sph(ntot_phys_rj, d_rj)
+      subroutine set_all_part_temp_sph                                  &
+     &          (radius_1d_rj_r, ntot_phys_rj, d_rj)
 !
       use m_control_parameter
       use m_spheric_parameter
 !
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
       integer(kind = kint), intent(in) :: ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
@@ -241,12 +246,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_temp_sph(isig, ntot_phys_rj, d_rj)
+      subroutine set_initial_temp_sph                                   &
+     &         (isig, radius_1d_rj_r, ntot_phys_rj, d_rj)
 !
       use m_control_parameter
       use m_spheric_parameter
 !
       integer ( kind = kint), intent(in) :: isig
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
       integer(kind = kint), intent(in) :: ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
@@ -282,12 +289,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_light_sph                                  &
-     &          (isig, is_fld, reftemp_rj, ntot_phys_rj, d_rj)
+      subroutine set_initial_light_sph(isig, is_fld, radius_1d_rj_r,    &
+     &          reftemp_rj, ntot_phys_rj, d_rj)
 !
       use m_spheric_parameter
 !
       integer ( kind = kint), intent(in) :: isig, is_fld
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
       integer(kind = kint), intent(in) :: ntot_phys_rj
       real(kind=kreal), intent(in) :: reftemp_rj(nidx_rj(1),0:1)
 !
@@ -340,12 +348,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_magne_sph(ntot_phys_rj, d_rj)
+      subroutine set_initial_magne_sph                                  &
+     &         (radius_1d_rj_r, ntot_phys_rj, d_rj)
 !
       use m_spheric_parameter
       use m_boundary_params_sph_MHD
 !
       integer(kind = kint), intent(in) :: ntot_phys_rj
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       real (kind = kreal) :: pi, rr
@@ -431,12 +441,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_noize_scalar_sph                                   &
-     &         (is_fld, reftemp_rj, ntot_phys_rj, d_rj)
+     &         (is_fld, reftemp_rj, radius_1d_rj_r, ntot_phys_rj, d_rj)
 !
       use m_spheric_parameter
       use m_control_parameter
 !
       integer(kind = kint), intent(in) :: is_fld
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
       integer(kind = kint), intent(in) :: ntot_phys_rj
       real(kind=kreal), intent(in) :: reftemp_rj(nidx_rj(1),0:1)
 !

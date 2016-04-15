@@ -194,7 +194,7 @@
 !
       write(50+my_rank,'(a)') 'poisson matrix for average  pressure'
       call check_radial_3band_mat_w_ctr(my_rank, nidx_rj(1),            &
-     &    radius_1d_rj_r, p00_poisson_mat)
+     &    sph_rj1%radius_1d_rj_r, p00_poisson_mat)
 !
       end subroutine check_press00_mat_sph
 !
@@ -210,7 +210,7 @@
 !
       write(50+my_rank,'(a)') 'evolution matrix for ave. temperature'
       call check_radial_3band_mat_w_ctr(my_rank, nidx_rj(1),            &
-     &    radius_1d_rj_r, t00_evo_mat)
+     &    sph_rj1%radius_1d_rj_r, t00_evo_mat)
 !
       end subroutine check_temp00_mat_sph
 !
@@ -226,7 +226,7 @@
 !
       write(50+my_rank,'(a)')  'evolution matrix for ave. composition'
       call check_radial_3band_mat_w_ctr(my_rank, nidx_rj(1),            &
-     &    radius_1d_rj_r, c00_evo_mat)
+     &    sph_rj1%radius_1d_rj_r, c00_evo_mat)
 !
       end subroutine check_comp00_mat_sph
 !

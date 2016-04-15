@@ -106,7 +106,7 @@
 !  pickup components
 !
         call cal_gauss_coefficients                                     &
-     &     (nlayer_ICB, nlayer_CMB, nidx_rj, radius_1d_rj_r,            &
+     &     (nlayer_ICB, nlayer_CMB, nidx_rj, sph_rj1%radius_1d_rj_r,    &
      &      rj_fld1%n_point, rj_fld1%ntot_phys, rj_fld1%d_fld)
         call write_gauss_coefs_4_monitor(my_rank, i_step, time)
       end do

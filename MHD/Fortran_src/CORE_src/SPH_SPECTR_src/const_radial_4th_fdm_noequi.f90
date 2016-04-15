@@ -44,7 +44,7 @@
       call allocate_fdm4_matrices(nidx_rj(1))
 !   Choose radial differences
       call nod_r_4th_fdm_coefs_nonequi                                  &
-     &   (nlayer_ICB, nidx_rj(1), radius_1d_rj_r)
+     &   (nlayer_ICB, nidx_rj(1), sph_rj1%radius_1d_rj_r)
 !
       end subroutine const_4th_fdm_matrices
 !
@@ -60,7 +60,7 @@
       call deallocate_fdm4_matrices
 !
       if(iflag_debug .eq. iflag_full_msg) then
-        call check_fdm_4_coefs(nidx_rj(1), radius_1d_rj_r(1))
+        call check_fdm_4_coefs(nidx_rj(1), sph_rj1%radius_1d_rj_r)
       end if
 !
       end subroutine const_4th_fdm_coefs

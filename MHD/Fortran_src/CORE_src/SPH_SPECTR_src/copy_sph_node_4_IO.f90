@@ -163,9 +163,9 @@
         idx_global_rj(1:nnod_rj,i) = idx_gl_sph_IO(1:nnod_rj,i)
       end do
 !
-      radius_1d_rj_r(1:nidx_rj(1)) =   r_gl_1_IO(1:nidx_rj(1))
+      sph_rj1%radius_1d_rj_r(1:nidx_rj(1)) =   r_gl_1_IO(1:nidx_rj(1))
       sph_rj1%a_r_1d_rj_r(1:nidx_rj(1))                                 &
-     &      = one / radius_1d_rj_r(1:nidx_rj(1))
+     &      = one / sph_rj1%radius_1d_rj_r(1:nidx_rj(1))
 !
       idx_gl_1d_rj_r(1:nidx_rj(1)) =   idx_gl_1_IO(1:nidx_rj(1))
       idx_gl_1d_rj_j(1:nidx_rj(2),1) = idx_gl_2_IO(1:nidx_rj(2),1)
@@ -376,7 +376,8 @@
         inod_gl_sph_IO(nnod_rj) = nidx_global_rj(1) * nr_8 + 1
       end if
 !
-      r_gl_1_IO(1:nidx_rj(1)) =     radius_1d_rj_r(1:nidx_rj(1))
+      r_gl_1_IO(1:nidx_rj(1))                                           &
+     &      = sph_rj1%radius_1d_rj_r(1:nidx_rj(1))
       idx_gl_1_IO(1:nidx_rj(1)) =   idx_gl_1d_rj_r(1:nidx_rj(1))
       idx_gl_2_IO(1:nidx_rj(2),1) = idx_gl_1d_rj_j(1:nidx_rj(2),1)
       idx_gl_2_IO(1:nidx_rj(2),2) = idx_gl_1d_rj_j(1:nidx_rj(2),2)

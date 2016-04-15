@@ -79,7 +79,7 @@
       call cal_rms_sph_outer_core(rj_fld)
       if(iflag_debug.gt.0)  write(*,*) 'cal_gauss_coefficients'
       call cal_gauss_coefficients                                       &
-     &    (nlayer_ICB, nlayer_CMB, nidx_rj, radius_1d_rj_r,             &
+     &    (nlayer_ICB, nlayer_CMB, nidx_rj, sph_rj1%radius_1d_rj_r,     &
      &     rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       if(iflag_debug.gt.0)  write(*,*) 'pickup_sph_spec_4_monitor'
       call pickup_sph_spec_4_monitor                                    &

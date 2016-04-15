@@ -203,7 +203,7 @@
         idx_global_rj(1:nnod_rj,i) = rj%idx_global_rj(1:nnod_rj,i)
       end do
 !
-      radius_1d_rj_r(1:nidx_rj(1))                                      &
+      sph_rj1%radius_1d_rj_r(1:nidx_rj(1))                              &
      &                 =   rj%radius_1d_rj_r(1:nidx_rj(1))
       idx_gl_1d_rj_r(1:nidx_rj(1))                                      &
      &                 =   rj%idx_gl_1d_rj_r(1:nidx_rj(1))
@@ -385,7 +385,7 @@
       end do
 !
       rj%radius_1d_rj_r(1:rj%nidx_rj(1))                                &
-     &       = radius_1d_rj_r(1:rj%nidx_rj(1))
+     &       = sph_rj1%radius_1d_rj_r(1:rj%nidx_rj(1))
       rj%idx_gl_1d_rj_r(1:rj%nidx_rj(1))                                &
      &       = idx_gl_1d_rj_r(1:rj%nidx_rj(1))
       rj%idx_gl_1d_rj_j(1:rj%nidx_rj(2),1)                              &

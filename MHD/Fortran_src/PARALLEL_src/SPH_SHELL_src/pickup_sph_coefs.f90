@@ -115,7 +115,7 @@
         if(k .le. 0) then
           r_pick_layer(knum) = 0.0d0
         else
-          r_pick_layer(knum) = radius_1d_rj_r(k)
+          r_pick_layer(knum) = sph_rj1%radius_1d_rj_r(k)
         end if
       end do
 !

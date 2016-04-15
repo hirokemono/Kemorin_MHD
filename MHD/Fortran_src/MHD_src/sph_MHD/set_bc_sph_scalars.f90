@@ -449,10 +449,10 @@
       sph_bc%kr_out =       kr_bc(ibc_out)
       sph_bc%cmb_grp_name = r_bc_grp_name(ibc_out)
 !
-      sph_bc%r_ICB(0) = radius_1d_rj_r(sph_bc%kr_in)
+      sph_bc%r_ICB(0) = sph_rj1%radius_1d_rj_r(sph_bc%kr_in)
       sph_bc%r_ICB(1) = sph_rj1%ar_1d_rj(sph_bc%kr_in,1)
       sph_bc%r_ICB(2) = sph_rj1%ar_1d_rj(sph_bc%kr_in,2)
-      sph_bc%r_CMB(0) = radius_1d_rj_r(sph_bc%kr_out)
+      sph_bc%r_CMB(0) = sph_rj1%radius_1d_rj_r(sph_bc%kr_out)
       sph_bc%r_CMB(1) = sph_rj1%ar_1d_rj(sph_bc%kr_out,1)
       sph_bc%r_CMB(2) = sph_rj1%ar_1d_rj(sph_bc%kr_out,2)
 !

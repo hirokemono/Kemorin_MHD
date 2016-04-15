@@ -95,7 +95,9 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_bc_sph_mhd'
-      call s_set_bc_sph_mhd
+      call s_set_bc_sph_mhd(CTR_nod_grp_name, CTR_sf_grp_name,          &
+     &    idx_rj_degree_one, nidx_rj, idx_gl_1d_rj_j,                   &
+     &    r_ICB, r_CMB, sph_rj1%radius_1d_rj_r)
       call init_reference_fields
 !
 !  -------------------------------
@@ -116,7 +118,7 @@
 !* -----  find mid-equator point -----------------
 !
       call set_circle_point_global                                      &
-     &   (l_truncation, nidx_rj(1), radius_1d_rj_r)
+     &   (l_truncation, nidx_rj(1), sph_rj1%radius_1d_rj_r)
 !
       end subroutine SPH_init_sph_pick_circle
 !

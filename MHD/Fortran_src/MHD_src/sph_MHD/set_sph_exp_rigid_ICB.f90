@@ -10,7 +10,7 @@
 !!      subroutine cal_sph_nod_icb_rigid_velo2(nnod_rj, jmax, kr_in,    &
 !!     &          r_ICB, Vt_ICB, is_fld, ntot_phys_rj, d_rj)
 !!      subroutine cal_sph_nod_icb_rotate_velo2(idx_rj_degree_zero,     &
-!!     &          idx_rj_degree_one, nnod_rj, jmax, kr_in, r_ICB,       &
+!!     &          idx_rj_degree_one, nnod_rj, nidx_rj, kr_in, r_ICB,    &
 !!     &          radius_rj, Vt_ICB, is_fld, ntot_phys_rj, d_rj)
 !!      subroutine cal_sph_nod_icb_rigid_rot2(nnod_rj, jmax, kr_in,     &
 !!     &          r_ICB, fdm2_fix_fld_ICB, fdm2_fix_dr_ICB,             &
@@ -90,16 +90,17 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sph_nod_icb_rotate_velo2(idx_rj_degree_zero,       &
-     &          idx_rj_degree_one, nnod_rj, jmax, kr_in, r_ICB,         &
+     &          idx_rj_degree_one, nnod_rj, nidx_rj, kr_in, r_ICB,      &
      &          radius_rj, Vt_ICB, is_fld, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: idx_rj_degree_zero
       integer(kind = kint), intent(in) :: idx_rj_degree_one(-1:1)
-      integer(kind = kint), intent(in) :: jmax, kr_in
+      integer(kind = kint), intent(in) :: kr_in
       integer(kind = kint), intent(in) :: is_fld
-      real(kind = kreal), intent(in) :: Vt_ICB(jmax)
+      integer(kind = kint), intent(in) :: nidx_rj(2)
+      real(kind = kreal), intent(in) :: Vt_ICB(nidx_rj(2))
       real(kind = kreal), intent(in) :: r_ICB(0:2)
-      real(kind = kreal), intent(in) :: radius_rj(kr_in)
+      real(kind = kreal), intent(in) :: radius_rj(nidx_rj(1))
 !
       integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
@@ -109,9 +110,9 @@
 !
 !
 !$omp parallel do private(k,inod)
-      do j = 1, jmax
+      do j = 1, nidx_rj(2)
         do k = 1, kr_in
-          inod = j + (k-1) * jmax
+          inod = j + (k-1) * nidx_rj(2)
 !
           d_rj(inod,is_fld  ) = zero
           d_rj(inod,is_fld+1) = zero
@@ -121,15 +122,15 @@
 !
       do m = -1, 1
         if(idx_rj_degree_one(m) .gt. 0) then
-          iICB = idx_rj_degree_one(m) + (kr_in-1) * jmax
+          iICB = idx_rj_degree_one(m) + (kr_in-1) * nidx_rj(2)
           bc_l1_tmp(m) = d_rj(iICB,is_fld+2)
         end if
       end do
 !
 !$omp parallel do private(k,inod)
-      do j = 1, jmax
+      do j = 1, nidx_rj(2)
         do k = 1, kr_in
-          inod = j + (k-1) * jmax
+          inod = j + (k-1) * nidx_rj(2)
           d_rj(inod,is_fld+2) = Vt_ICB(j)*r_ICB(1)
         end do
       end do
@@ -137,17 +138,17 @@
 !
       if(idx_rj_degree_zero .gt. 0) then
         do k = 1, kr_in
-          inod = idx_rj_degree_zero + (k-1) * jmax
+          inod = idx_rj_degree_zero + (k-1) * nidx_rj(2)
           d_rj(inod,is_fld+2) = Vt_ICB(idx_rj_degree_zero)*r_ICB(1)
         end do
       end if
 !
       do m = -1, 1
         if(idx_rj_degree_one(m) .gt. 0) then
-          iICB = idx_rj_degree_one(m) + (kr_in-1) * jmax
+          iICB = idx_rj_degree_one(m) + (kr_in-1) * nidx_rj(2)
           d_rj(iICB,is_fld+2) = bc_l1_tmp(m)
           do k = 1, kr_in-1
-            inod = idx_rj_degree_one(m) + (k-1) * jmax
+            inod = idx_rj_degree_one(m) + (k-1) * nidx_rj(2)
             d_rj(inod,is_fld+2) = bc_l1_tmp(m)*r_ICB(2)                 &
      &                           * radius_rj(k)*radius_rj(k)
           end do

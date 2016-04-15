@@ -58,7 +58,7 @@
 !
 !
       type(sph_rj_grid), save :: sph_rj1
-!sph_rj1%a_r_1d_rj_r
+!sph_rj1%radius_1d_rj_r
 !
 !>      integer flag for FEM mesh type
 !!@n    iflag_MESH_same:     same grid point as Gauss-Legendre points
@@ -240,7 +240,7 @@
 !>      1d radius data for @f$ f(r,l,m) @f$
       real(kind = kreal), allocatable :: radius_1d_rlm_r(:)
 !>      1d radius data for @f$ f(r,j) @f$
-      real(kind = kreal), allocatable :: radius_1d_rj_r(:)
+!      real(kind = kreal), allocatable :: radius_1d_rj_r(:)
 !
 !>      1d @f$1 / r @f$ for @f$ f(r,\theta,\phi) @f$
       real(kind = kreal), allocatable :: a_r_1d_rtp_r(:)
@@ -404,7 +404,6 @@
 !
       num = nidx_rj(1)
       allocate(idx_gl_1d_rj_r(num))
-      allocate(radius_1d_rj_r(num))
 !
       num = nidx_rj(2)
       allocate(idx_gl_1d_rj_j(num,3))
@@ -412,7 +411,6 @@
       if(nidx_rj(2) .gt. 0) idx_gl_1d_rj_j = 0
       if(nidx_rj(1) .gt. 0) then
         idx_gl_1d_rj_r = 0
-        radius_1d_rj_r = 0.0d0
       end if
 !
       sph_rj1%nidx_rj(1:2) = nidx_rj(1:2)
@@ -492,8 +490,6 @@
 ! ----------------------------------------------------------------------
 !
       subroutine deallocate_sph_1d_index_rj
-!
-      deallocate(radius_1d_rj_r)
 !
       deallocate(idx_gl_1d_rj_r)
       deallocate(idx_gl_1d_rj_j)

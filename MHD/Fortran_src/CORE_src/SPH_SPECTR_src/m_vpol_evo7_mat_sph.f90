@@ -104,11 +104,11 @@
 !
       write(50+my_rank,'(a)') 'poisson matrix for poloidal velocity'
       call check_radial_5band_mat(my_rank, nidx_rj(1), nidx_rj(2),      &
-     &    idx_gl_1d_rj_j, radius_1d_rj_r, vs_poisson5_mat)
+     &    idx_gl_1d_rj_j, sph_rj1%radius_1d_rj_r, vs_poisson5_mat)
 !
       write(50+my_rank,'(a)') 'crank matrix for poloidal velocity'
       call check_radial_7band_mat(my_rank, nidx_rj(1), nidx_rj(2),      &
-     &    idx_gl_1d_rj_j, radius_1d_rj_r, vs_evo7_mat)
+     &    idx_gl_1d_rj_j, sph_rj1%radius_1d_rj_r, vs_evo7_mat)
 !
       end subroutine check_vpol_evo7_mat_sph
 !

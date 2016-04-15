@@ -7,7 +7,7 @@
 !!> @brief calculate 4th order FDM matrices for boundaries
 !!
 !!@verbatim
-!!      subroutine s_cal_sph_bc_fdm_4th_mat
+!!      subroutine s_cal_sph_bc_fdm_4th_mat(nri, radius_1d_rj_r)
 !!@endverbatim
 !
       module cal_sph_bc_fdm_4th_mat
@@ -24,15 +24,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_cal_sph_bc_fdm_4th_mat
+      subroutine s_cal_sph_bc_fdm_4th_mat(nri, radius_1d_rj_r)
 !
-      use m_spheric_parameter
       use m_boundary_params_sph_MHD
       use m_vp_coef_fdm4_nonslip_ICB
       use m_vp_coef_fdm4_nonslip_CMB
       use m_vp_coef_fdm4_free_ICB
       use m_vp_coef_fdm4_free_CMB
 !      use cal_sph_bc_4th_fdm_matrices
+!
+      integer(kind = kint), intent(in) :: nri
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
 !
 !
       call cal_fdm4_ICB0_nonslip_vp(radius_1d_rj_r(sph_bc_U%kr_in))

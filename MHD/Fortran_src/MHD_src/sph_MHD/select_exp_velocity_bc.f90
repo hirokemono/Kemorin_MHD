@@ -107,8 +107,8 @@
      &      ntot_phys_rj, d_rj)
       else if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call cal_sph_nod_icb_rotate_velo2                               &
-     &     (idx_rj_degree_zero, idx_rj_degree_one, nnod_rj, nidx_rj(2), &
-     &      sph_bc_U%kr_in, sph_bc_U%r_ICB, radius_1d_rj_r(1),          &
+     &     (idx_rj_degree_zero, idx_rj_degree_one, nnod_rj, nidx_rj,    &
+     &      sph_bc_U%kr_in, sph_bc_U%r_ICB, sph_rj1%radius_1d_rj_r,     &
      &      vt_ICB_bc, is_velo, ntot_phys_rj, d_rj)
         call cal_sph_nod_icb_rigid_rot2                                 &
      &     (nnod_rj, nidx_rj(2), sph_bc_U%kr_in, sph_bc_U%r_ICB,        &
@@ -160,8 +160,8 @@
      &      fdm2_free_vp_ICB, is_fld, ntot_phys_rj, d_rj)
       else if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call cal_sph_nod_icb_rotate_velo2                               &
-     &     (idx_rj_degree_zero, idx_rj_degree_one, nnod_rj, nidx_rj(2), &
-     &      sph_bc_U%kr_in, sph_bc_U%r_ICB, radius_1d_rj_r(1),          &
+     &     (idx_rj_degree_zero, idx_rj_degree_one, nnod_rj, nidx_rj,    &
+     &      sph_bc_U%kr_in, sph_bc_U%r_ICB, sph_rj1%radius_1d_rj_r,     &
      &      vt_ICB_bc, is_fld, ntot_phys_rj, d_rj)
       else
         call cal_sph_nod_icb_rigid_velo2(nnod_rj, nidx_rj(2),           &

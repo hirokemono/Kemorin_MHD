@@ -39,7 +39,7 @@
 !
       call allocate_fdm_2e_coefs(nidx_rj(1))
       call cal_2nd_ele_r_fdm_coefs(nlayer_ICB,                          &
-     &    nidx_rj(1), radius_1d_rj_r)
+     &    nidx_rj(1), sph_rj1%radius_1d_rj_r)
 !
       end subroutine const_2e_fdm_coefs
 !

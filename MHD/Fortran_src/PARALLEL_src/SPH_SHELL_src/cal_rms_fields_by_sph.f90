@@ -82,7 +82,7 @@
         if(k .le. 0) then
           r_for_rms(knum) = 0.0d0
         else
-          r_for_rms(knum) = radius_1d_rj_r(k)
+          r_for_rms(knum) = sph_rj1%radius_1d_rj_r(k)
         end if
       end do
 !
@@ -148,7 +148,7 @@
 
       if(iflag_debug .gt. 0) write(*,*) 'cal_one_over_volume'
       call cal_one_over_volume                                          &
-     &   (kr_st, kr_ed, nidx_rj(1), radius_1d_rj_r, avol)
+     &   (kr_st, kr_ed, nidx_rj(1), sph_rj1%radius_1d_rj_r, avol)
       if(iflag_debug .gt. 0) write(*,*) 'sum_sph_layerd_rms'
       call sum_sph_layerd_rms(kr_st, kr_ed, rj_fld)
 !

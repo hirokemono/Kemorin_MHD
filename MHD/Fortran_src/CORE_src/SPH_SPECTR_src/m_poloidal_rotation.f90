@@ -132,7 +132,8 @@
       call allocate_rot_rlm_data(nidx_rlm(1))
       call allocate_rot_rj_data(nidx_rj(1))
 !
-      call set_3dir_rot_earth_4_sph(nidx_rj(1), radius_1d_rj_r, rotate, &
+      call set_3dir_rot_earth_4_sph                                     &
+     &   (nidx_rj(1), sph_rj1%radius_1d_rj_r, rotate,                   &
      &    omega_rj)
       call set_rotatio_spectr(nidx_rlm(1), radius_1d_rlm_r, one,        &
      &    omega_rlm(1,0), omega_rlm(1,1), omega_rlm(1,2))

@@ -55,7 +55,7 @@
      &       (sph_bc_U%kr_in, sph_bc_U%kr_out,                          &
      &        coef_buo, ipol%i_temp, ipol%i_grad_t,                     &
      &        coef_comp_buo, ipol%i_light, ipol%i_grad_composit,        &
-     &        ipol%i_div_buoyancy,  nidx_rj, radius_1d_rj_r,            &
+     &        ipol%i_div_buoyancy,  nidx_rj, sph_rj1%radius_1d_rj_r,    &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         else
           if (iflag_debug.ge.1) write(*,*)                              &
@@ -65,7 +65,7 @@
      &       (sph_bc_U%kr_in, sph_bc_U%kr_out,                          &
      &        coef_buo, ipol%i_par_temp, ipol%i_grad_part_t,            &
      &        coef_comp_buo, ipol%i_light, ipol%i_grad_composit,        &
-     &        ipol%i_div_buoyancy,  nidx_rj, radius_1d_rj_r,            &
+     &        ipol%i_div_buoyancy,  nidx_rj, sph_rj1%radius_1d_rj_r,    &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
 !
@@ -76,7 +76,7 @@
           call cal_div_buoyancy_sph_MHD                                 &
      &       (sph_bc_U%kr_in, sph_bc_U%kr_out, coef_buo,                &
      &        ipol%i_temp, ipol%i_grad_t, ipol%i_div_buoyancy,          &
-     &        nidx_rj, radius_1d_rj_r,                                  &
+     &        nidx_rj, sph_rj1%radius_1d_rj_r,                          &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         else
           if (iflag_debug.ge.1)  write(*,*)                             &
@@ -84,7 +84,7 @@
           call cal_div_buoyancy_sph_MHD                                 &
      &       (sph_bc_U%kr_in, sph_bc_U%kr_out, coef_buo,                &
      &        ipol%i_par_temp, ipol%i_grad_part_t, ipol%i_div_buoyancy, &
-     &        nidx_rj, radius_1d_rj_r,                                  &
+     &        nidx_rj, sph_rj1%radius_1d_rj_r,                          &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
 !
@@ -93,7 +93,7 @@
      &      'cal_div_buoyancy_sph_MHD by composition'
         call cal_div_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out,  &
      &      coef_comp_buo, ipol%i_light, ipol%i_grad_composit,          &
-     &      ipol%i_div_comp_buo, nidx_rj, radius_1d_rj_r,               &
+     &      ipol%i_div_comp_buo, nidx_rj, sph_rj1%radius_1d_rj_r,       &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       else if(iflag_4_filter_gravity .gt. id_turn_OFF) then
@@ -101,7 +101,7 @@
      &      'cal_div_buoyancy_sph_MHD by filtrered temperature'
         call cal_div_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out,  &
      &      coef_buo, ipol%i_filter_temp, ipol%i_grad_filter_temp,      &
-     &      ipol%i_div_filter_buo, nidx_rj, radius_1d_rj_r,             &
+     &      ipol%i_div_filter_buo, nidx_rj, sph_rj1%radius_1d_rj_r,     &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !

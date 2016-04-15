@@ -135,7 +135,7 @@
       end do
       do i = 1, nidx_rj(1)
         j = idx_gl_1d_rj_r(i)
-        radius_1d_rj_r(i) = radius_1d_gl(j)
+        sph_rj1%radius_1d_rj_r(i) = radius_1d_gl(j)
       end do
 !
       do i = 1, nidx_rj(2)

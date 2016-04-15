@@ -7,7 +7,8 @@
 !>@brief Set boundary conditions for MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine s_set_bc_sph_mhd
+!!      subroutine s_set_bc_sph_mhd                                     &
+!!     &        (CTR_nod_grp_name, CTR_sf_grp_name, nri, radius_1d_rj_r)
 !!@endverbatim
 !
       module set_bc_sph_mhd
@@ -18,7 +19,6 @@
       use m_control_parameter
       use m_boundary_condition_IDs
       use m_phys_labels
-      use m_spheric_parameter
 !
       implicit none
 !
@@ -30,7 +30,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_bc_sph_mhd
+      subroutine s_set_bc_sph_mhd                                       &
+     &        (CTR_nod_grp_name, CTR_sf_grp_name, idx_rj_degree_one,    &
+     &         nidx_rj, idx_gl_1d_rj_j, r_ICB, r_CMB, radius_1d_rj_r)
 !
       use m_phys_labels
       use m_boundary_params_sph_MHD
@@ -42,10 +44,19 @@
       use m_coef_fdm_to_center
       use cal_fdm_coefs_4_boundaries
 !
+      character(len=kchara), intent(in) :: CTR_nod_grp_name
+      character(len=kchara), intent(in) :: CTR_sf_grp_name
+      integer(kind = kint), intent(in) :: idx_rj_degree_one(-1:1)
+      integer(kind = kint), intent(in) :: nidx_rj(2)
+      integer(kind = kint), intent(in) :: idx_gl_1d_rj_j(nidx_rj(2),3)
+      real(kind = kreal), intent(in) :: r_ICB, r_CMB
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
+!
 !
       if (iflag_t_evo_4_velo .gt.     id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_velo_sph'
-        call set_sph_bc_velo_sph
+        call set_sph_bc_velo_sph                                        &
+     &     (idx_rj_degree_one, r_ICB, r_CMB, nidx_rj(2))
 !
         call cal_fdm_coefs_4_BCs(nidx_rj(1), radius_1d_rj_r, sph_bc_U)
         call cal_fdm2_ICB_free_vp(radius_1d_rj_r(sph_bc_U%kr_in))
@@ -63,7 +74,8 @@
 !
       if (iflag_t_evo_4_magne .gt.    id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_magne_sph'
-        call set_sph_bc_magne_sph
+        call set_sph_bc_magne_sph                                       &
+     &     (CTR_nod_grp_name, CTR_sf_grp_name)
         call cal_fdm_coefs_4_BCs(nidx_rj(1), radius_1d_rj_r, sph_bc_B)
       end if
 !
@@ -134,13 +146,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sph_bc_magne_sph
+      subroutine set_sph_bc_magne_sph                                   &
+     &         (CTR_nod_grp_name, CTR_sf_grp_name)
 !
       use m_boundary_params_sph_MHD
       use m_bc_data_list
       use m_surf_data_list
       use set_bc_sph_scalars
 !
+      character(len=kchara), intent(in) :: CTR_nod_grp_name
+      character(len=kchara), intent(in) :: CTR_sf_grp_name
 !
       integer(kind = kint) :: i
       integer(kind = kint) :: igrp_icb, igrp_cmb

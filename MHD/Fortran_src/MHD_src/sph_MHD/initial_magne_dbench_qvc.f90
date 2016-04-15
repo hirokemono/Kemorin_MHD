@@ -8,7 +8,8 @@
 !!         pseudo vacuume boundary banchmark
 !!
 !!@verbatim
-!!      subroutine initial_b_dynamobench_qcv(ntot_phys_rj, d_rj)
+!!      subroutine initial_b_dynamobench_qcv                            &
+!!     &         (radius_1d_rj_r, ntot_phys_rj, d_rj)
 !!@endverbatim
 !
       module initial_magne_dbench_qvc
@@ -26,9 +27,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine initial_b_dynamobench_qcv(ntot_phys_rj, d_rj)
+      subroutine initial_b_dynamobench_qcv                              &
+     &         (radius_1d_rj_r, ntot_phys_rj, d_rj)
 !
       use m_spheric_parameter
+!
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
 !
       integer(kind = kint), intent(in) :: ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)

@@ -24,7 +24,7 @@
 !!         returns this address.
 !!
 !!       nidx_rj(1) :: Number of radial grids
-!!       rr = radius_1d_rj_r(k)
+!!       rr = sph_rj1%radius_1d_rj_r(k)
 !!         Return radius at global grid address k
 !!
 !!       Temperature :: d_rj(:,ipol%i_temp)
@@ -150,7 +150,7 @@
 !      jj = find_local_sph_mode_address(1, 0)
 !      if (jj .gt. 0) then
 !        do k = nlayer_ICB+1, nlayer_CMB
-!          rr = radius_1d_rj_r(k)
+!          rr = sph_rj1%radius_1d_rj_r(k)
 !          inod = local_sph_data_address(k,jj)
 !          d_rj(inod,itor%i_velo) = half * rr*rr
 !        end do
@@ -161,7 +161,8 @@
       if (jj .gt. 0) then
         do k = nlayer_ICB, nlayer_CMB
           inod = local_sph_data_address(k,jj)
-          xr = two * radius_1d_rj_r(k) - one * (r_CMB+r_ICB) / shell
+          xr = two * sph_rj1%radius_1d_rj_r(k)                          &
+    &         - one * (r_CMB+r_ICB) / shell
           d_rj(inod,itor%i_velo) = (one-three*xr**2+three*xr**4-xr**6)  &
     &                            * A_light * three / (sqrt(two*pi))
         end do
@@ -218,7 +219,7 @@
         do k = nlayer_ICB, nlayer_CMB
 !
 !    Set radius data
-          rr = radius_1d_rj_r(k)
+          rr = sph_rj1%radius_1d_rj_r(k)
 !    Set 1d address to substitute at (Nr, j)
           inod = local_sph_data_address(k,jj)
 !
@@ -284,7 +285,8 @@
       if (jj .gt. 0) then
         do k = nlayer_ICB, nlayer_CMB
           inod = local_sph_data_address(k,jj)
-          xr = two * radius_1d_rj_r(k) - one * (r_CMB+r_ICB) / shell
+          xr = two * sph_rj1%radius_1d_rj_r(k)                          &
+     &        - one * (r_CMB+r_ICB) / shell
           d_rj(inod,ipol%i_light) = (one-three*xr**2+three*xr**4-xr**6) &
      &                            * A_light * three / (sqrt(two*pi))
         end do
@@ -326,7 +328,7 @@
       if (js .gt. 0) then
         do k = nlayer_ICB, nlayer_CMB
           is = local_sph_data_address(k,js)
-          rr = radius_1d_rj_r(k)
+          rr = sph_rj1%radius_1d_rj_r(k)
 !   Substitute poloidal mangetic field
           d_rj(is,ipol%i_magne) =  (5.0d0/8.0d0) * (-3.0d0 * rr**3      &
      &                     + 4.0d0 * r_CMB * rr**2 - r_ICB**4 / rr)
@@ -336,7 +338,7 @@
         is_ICB = local_sph_data_address(nlayer_ICB,js)
         do k = 1, nlayer_ICB-1
           is = local_sph_data_address(k,js)
-          rr = radius_1d_rj_r(k) / r_ICB
+          rr = sph_rj1%radius_1d_rj_r(k) / r_ICB
 !   Substitute poloidal mangetic field
           d_rj(is,ipol%i_magne) =  d_rj(is_ICB,ipol%i_magne)            &
      &                            * rr**(ione+1)
@@ -346,7 +348,7 @@
         is_CMB = local_sph_data_address(nlayer_CMB,js)
         do k = nlayer_CMB+1, nidx_rj(1)
           is = local_sph_data_address(k,js)
-          rr = radius_1d_rj_r(k) / r_CMB
+          rr = sph_rj1%radius_1d_rj_r(k) / r_CMB
 !   Substitute poloidal mangetic field
           d_rj(is,ipol%i_magne) =  d_rj(is_ICB,ipol%i_magne)            &
      &                            * rr**(-ione)
@@ -360,7 +362,7 @@
       if (jt .gt. 0) then
         do k = 1, nlayer_CMB
           it = local_sph_data_address(k,jt)
-          rr = radius_1d_rj_r(k)
+          rr = sph_rj1%radius_1d_rj_r(k)
 !   Substitute totoidal mangetic field
           d_rj(it,itor%i_magne) = (10.0d0/3.0d0) * rr                   &
      &                           * sin(pi*(rr-r_ICB))
@@ -394,7 +396,7 @@
       if (jj .gt. 0) then
         do k = 1, nlayer_ICB
           inod = local_sph_data_address(k,jj)
-          rr = radius_1d_rj_r(k)
+          rr = sph_rj1%radius_1d_rj_r(k)
 !   Substitute initial heat source
           d_rj(inod,ipol%i_heat_source)                                 &
      &         = 0.35 * four*r_CMB**2 / (four * r_ICB**3 / three)
@@ -439,7 +441,7 @@
         end do
         do k = nlayer_ICB, nlayer_CMB
           inod = local_sph_data_address(k,jj)
-!          rr = radius_1d_rj_r(k)
+!          rr = sph_rj1%radius_1d_rj_r(k)
 !    Substitute initial heat source
           d_rj(inod,ipol%i_light_source) = 1.0d0
         end do

@@ -368,15 +368,15 @@
 !
       write(50+my_rank,'(a)') 'evolution matrix for toroidal velocity'
       call check_radial_3band_mat(my_rank, nidx_rj(1), nidx_rj(2),      &
-     &    idx_gl_1d_rj_j, radius_1d_rj_r, vt_evo_mat)
+     &    idx_gl_1d_rj_j, sph_rj1%radius_1d_rj_r, vt_evo_mat)
 !
       write(50+my_rank,'(a)') 'evolution matrix for toroidal vorticity'
       call check_radial_3band_mat(my_rank, nidx_rj(1), nidx_rj(2),      &
-     &    idx_gl_1d_rj_j, radius_1d_rj_r, wt_evo_mat)
+     &    idx_gl_1d_rj_j, sph_rj1%radius_1d_rj_r, wt_evo_mat)
 !
       write(50+my_rank,'(a)') 'evolution matrix for poloidal velocity'
       call check_radial_5band_mat(my_rank, nidx_rj(1), nidx_rj(2),      &
-     &    idx_gl_1d_rj_j, radius_1d_rj_r, vp_evo_mat)
+     &    idx_gl_1d_rj_j, sph_rj1%radius_1d_rj_r, vp_evo_mat)
 !
       end subroutine check_vorticity_matrices_sph
 !
@@ -392,7 +392,7 @@
 !
       write(50+my_rank,'(a)') 'poisson matrix for pressure'
       call check_radial_3band_mat(my_rank, nidx_rj(1), nidx_rj(2),      &
-     &    idx_gl_1d_rj_j, radius_1d_rj_r, p_poisson_mat)
+     &    idx_gl_1d_rj_j, sph_rj1%radius_1d_rj_r, p_poisson_mat)
 !
       end subroutine check_press_matrices_sph
 !
@@ -408,11 +408,11 @@
 !
       write(50+my_rank,'(a)') 'evolution matrix for poloidal magne'
       call check_radial_3band_mat(my_rank, nidx_rj(1), nidx_rj(2),      &
-     &    idx_gl_1d_rj_j, radius_1d_rj_r, bs_evo_mat)
+     &    idx_gl_1d_rj_j, sph_rj1%radius_1d_rj_r, bs_evo_mat)
 !
       write(50+my_rank,'(a)') 'evolution matrix for toroidal magne'
       call check_radial_3band_mat(my_rank, nidx_rj(1), nidx_rj(2),      &
-     &    idx_gl_1d_rj_j, radius_1d_rj_r, bt_evo_mat)
+     &    idx_gl_1d_rj_j, sph_rj1%radius_1d_rj_r, bt_evo_mat)
 !
       end subroutine check_magne_matrices_sph
 !
@@ -428,7 +428,7 @@
 !
       write(50+my_rank,'(a)') 'evolution matrix for temperature'
       call check_radial_3band_mat(my_rank, nidx_rj(1), nidx_rj(2),      &
-     &    idx_gl_1d_rj_j, radius_1d_rj_r, temp_evo_mat)
+     &    idx_gl_1d_rj_j, sph_rj1%radius_1d_rj_r, temp_evo_mat)
 !
       end subroutine check_temp_matrices_sph
 !
@@ -444,7 +444,7 @@
 !
       write(50+my_rank,'(a)') 'evolution matrix for composition'
       call check_radial_3band_mat(my_rank, nidx_rj(1), nidx_rj(2),      &
-     &    idx_gl_1d_rj_j, radius_1d_rj_r, composit_evo_mat)
+     &    idx_gl_1d_rj_j, sph_rj1%radius_1d_rj_r, composit_evo_mat)
 !
       end subroutine check_composit_matrix_sph
 !

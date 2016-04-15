@@ -7,7 +7,6 @@
 !>@brief Set boundary conditions for MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine s_set_bc_sph_mhd(reftemp_rj)
 !!      subroutine adjust_press_by_average_on_CMB(kr_in, kr_out, rj_fld)
 !!      subroutine sync_temp_by_per_temp_sph(reftemp_rj, rj_fld)
 !!        d_rj(inod,ipol%i_temp):        T => \Theta = T - T0
@@ -88,7 +87,7 @@
 !
 !
       call chenge_temp_to_per_temp_sph(idx_rj_degree_zero,              &
-     &    nnod_rj, nidx_rj, radius_1d_rj_r, reftemp_rj,                 &
+     &    nnod_rj, nidx_rj, sph_rj1%radius_1d_rj_r, reftemp_rj,         &
      &    rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine sync_temp_by_per_temp_sph
@@ -107,7 +106,7 @@
 !
 !
       call transfer_per_temp_to_temp_sph(idx_rj_degree_zero,            &
-     &    nnod_rj, nidx_rj, radius_1d_rj_r, reftemp_rj,                 &
+     &    nnod_rj, nidx_rj, sph_rj1%radius_1d_rj_r, reftemp_rj,         &
      &    rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine trans_per_temp_to_temp_sph

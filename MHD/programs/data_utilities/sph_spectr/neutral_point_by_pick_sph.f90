@@ -47,7 +47,7 @@
      &     .and. i_step.ge.istep_start) then
 !
           call set_radial_grad_scalars(i_step, time,                    &
-     &        nidx_rj(1), radius_1d_rj_r, buoyancy_ratio)
+     &        nidx_rj(1), sph_rj1%radius_1d_rj_r, buoyancy_ratio)
           icou = icou + 1
           write(*,*) 'step ', i_step,                                   &
      &        ' is added for time average: count is  ', icou

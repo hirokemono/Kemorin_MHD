@@ -55,8 +55,9 @@
 !
       if     (ncomp_rj .eq. n_scalar) then
           call cal_rms_each_scalar_sph_spec(nidx_rj(1), nidx_rj(2),     &
-     &       idx_rj_degree_zero, inod_rj_center, radius_1d_rj_r,        &
-     &       nnod_rj, d_rj(1,icomp_rj), rms_sph_rj(0,1,1))
+     &       idx_rj_degree_zero, inod_rj_center,                        &
+     &       sph_rj1%radius_1d_rj_r, nnod_rj,                           &
+     &       d_rj(1,icomp_rj), rms_sph_rj(0,1,1))
       else if(ncomp_rj .eq. n_vector) then
         call cal_rms_each_vector_sph_spec(nidx_rj(1), nidx_rj(2),       &
      &      idx_rj_degree_zero, inod_rj_center, sph_rj1%a_r_1d_rj_r,    &

@@ -58,7 +58,7 @@
           call cal_rot_double_buoyancy_sph_MHD                          &
      &       (sph_bc_U%kr_in, sph_bc_U%kr_out, coef_buo, ipol%i_temp,   &
      &        coef_comp_buo, ipol%i_light, itor%i_rot_buoyancy,         &
-     &        nidx_rj, radius_1d_rj_r,                                  &
+     &        nidx_rj, sph_rj1%radius_1d_rj_r,                          &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       else if ( iflag_4_gravity .gt. id_turn_OFF) then
@@ -67,7 +67,7 @@
      &      'cal_rot_buoyancy_sph_MHD', ipol%i_temp
         call cal_rot_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out,  &
      &      coef_buo, ipol%i_temp, itor%i_rot_buoyancy,                 &
-     &      nidx_rj, radius_1d_rj_r,                                    &
+     &      nidx_rj, sph_rj1%radius_1d_rj_r,                            &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       else if ( iflag_4_composit_buo .gt. id_turn_OFF) then
@@ -75,7 +75,7 @@
      &      'cal_rot_buoyancy_sph_MHD', ipol%i_light
         call cal_rot_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out,  &
      &      coef_comp_buo, ipol%i_light, itor%i_rot_comp_buo,           &
-     &      nidx_rj, radius_1d_rj_r,                                    &
+     &      nidx_rj, sph_rj1%radius_1d_rj_r,                            &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       else if (iflag_4_filter_gravity .gt. id_turn_OFF) then
@@ -83,7 +83,7 @@
      &      'cal_rot_buoyancy_sph_MHD', ipol%i_filter_temp
         call cal_rot_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out,  &
      &      coef_buo, ipol%i_filter_temp, itor%i_rot_filter_buo,        &
-     &      nidx_rj, radius_1d_rj_r,                                    &
+     &      nidx_rj, sph_rj1%radius_1d_rj_r,                            &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !

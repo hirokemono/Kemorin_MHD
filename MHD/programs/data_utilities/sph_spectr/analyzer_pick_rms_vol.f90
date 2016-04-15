@@ -113,7 +113,7 @@
 !
         if (iflag_debug.gt.0) write(*,*) 'pickup_sph_rms_vol_monitor'
         call pickup_sph_rms_vol_monitor(ione, nidx_rj(1),               &
-     &      nidx_rj, radius_1d_rj_r, rj_fld1)
+     &      nidx_rj, sph_rj1%radius_1d_rj_r, rj_fld1)
 !
         num_pick_layer = 1
         if (iflag_debug.gt.0) write(*,*) 'write_sph_rms_4_monitor'
