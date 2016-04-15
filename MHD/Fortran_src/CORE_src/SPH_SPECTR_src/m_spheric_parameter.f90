@@ -23,7 +23,6 @@
 !!      subroutine deallocate_spheric_param_rtp
 !!      subroutine deallocate_spheric_param_rtm
 !!      subroutine deallocate_spheric_param_rlm
-!!      subroutine deallocate_spheric_param_rj
 !!
 !!      subroutine deallocate_sph_1d_index_rtp
 !!      subroutine deallocate_sph_1d_index_rtm
@@ -52,7 +51,7 @@
 !
 !
       type(sph_rj_grid), save :: sph_rj1
-!sph_rj1%idx_gl_1d_rj_r
+!sph_rj1%idx_global_rj
 !
 !>      integer flag for FEM mesh type
 !!@n    iflag_MESH_same:     same grid point as Gauss-Legendre points
@@ -190,7 +189,7 @@
 !>      global address for each direction @f$ f(r,l,m) @f$
       integer(kind = kint), allocatable :: idx_global_rlm(:,:)
 !>      global address for each direction @f$ f(r,j) @f$
-      integer(kind = kint), allocatable :: idx_global_rj(:,:)
+!      integer(kind = kint), allocatable :: idx_global_rj(:,:)
 !
 !
 !>      radial global address @f$ f(r,\theta,\phi) @f$
@@ -276,7 +275,7 @@
       call deallocate_spheric_param_rtp
       call deallocate_spheric_param_rtm
       call deallocate_spheric_param_rlm
-      call deallocate_spheric_param_rj
+      call dealloc_spheric_param_rj(sph_rj1)
 !
       end subroutine deallocate_spheric_parameter
 !
@@ -312,8 +311,8 @@
 !
       subroutine allocate_spheric_param_rj
 !
-      allocate(idx_global_rj(nnod_rj,2))
-      if(nnod_rj .gt. 0) idx_global_rj =  0
+      sph_rj1%nnod_rj = nnod_rj
+      call alloc_type_spheric_param_rj(sph_rj1)
 !
       end subroutine allocate_spheric_param_rj
 !
@@ -424,14 +423,6 @@
       deallocate(idx_global_rlm)
 !
       end subroutine deallocate_spheric_param_rlm
-!
-! ----------------------------------------------------------------------
-!
-      subroutine deallocate_spheric_param_rj
-!
-      deallocate(idx_global_rj)
-!
-      end subroutine deallocate_spheric_param_rj
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -565,7 +556,7 @@
 !
       write(my_rank+50,*) 'i, idx_global_rj(r,j)'
       do i = 1, nnod_rj
-        write(my_rank+50,*) i, idx_global_rj(i,1:2)
+        write(my_rank+50,*) i, sph_rj1%idx_global_rj(i,1:2)
       end do
 !
       end subroutine check_spheric_param_rj

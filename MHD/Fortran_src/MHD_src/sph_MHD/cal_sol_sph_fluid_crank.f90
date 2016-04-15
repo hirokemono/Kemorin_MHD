@@ -291,8 +291,8 @@
 !
       do inod = 1, nnod_rj
         if(d_rj(inod,is_field) .ne. d_rj(inod,is_field)) then
-          j = idx_global_rj(inod,2)
-          k = idx_global_rj(inod,1)
+          j = sph_rj1%idx_global_rj(inod,2)
+          k = sph_rj1%idx_global_rj(inod,1)
           call get_dgree_order_by_full_j(j, l, m)
           write(50+my_rank,*) 'Broken', inod, k, j, l, m,  &
      &              d_rj(inod,is_field)

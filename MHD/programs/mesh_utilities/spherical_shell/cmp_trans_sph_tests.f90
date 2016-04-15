@@ -30,7 +30,7 @@
       real(kind = kreal), allocatable :: X_rlm_recieve(:)
       real(kind = kreal), allocatable :: X_rj_recieve(:)
 !
-      private :: set_transfer_sph_reals
+      private :: set_transfer_sph_reals, set_real_4_sph_transfer_test
 !
 ! -----------------------------------------------------------------------
 !
@@ -264,6 +264,29 @@
 !
       integer(kind = kint), intent(in) :: NB
 !
+!
+      call set_real_4_sph_transfer_test                                 &
+     &          (NB, nnod_rtp, nnod_rtm, nnod_rlm, nnod_rj,             &
+     &           idx_global_rtp, idx_global_rtm,                        &
+     &           idx_global_rlm, sph_rj1%idx_global_rj)
+!
+      end subroutine set_transfer_sph_reals
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_real_4_sph_transfer_test                           &
+     &          (NB, nnod_rtp, nnod_rtm, nnod_rlm, nnod_rj,             &
+     &           idx_global_rtp, idx_global_rtm,                        &
+     &           idx_global_rlm, idx_global_rj)
+!
+      integer(kind = kint), intent(in) :: NB
+      integer(kind = kint), intent(in) :: nnod_rtp, nnod_rtm
+      integer(kind = kint), intent(in) :: nnod_rlm, nnod_rj
+      integer(kind = kint), intent(in) :: idx_global_rtp(nnod_rtp,3)
+      integer(kind = kint), intent(in) :: idx_global_rtm(nnod_rtm,3)
+      integer(kind = kint), intent(in) :: idx_global_rlm(nnod_rlm,2)
+      integer(kind = kint), intent(in) :: idx_global_rj(nnod_rj,2)
+!
       integer(kind = kint) :: inod, nd, k
 !
 !
@@ -295,7 +318,7 @@
         end do
       end do
 !
-      end subroutine set_transfer_sph_reals
+      end subroutine set_real_4_sph_transfer_test
 !
 ! -----------------------------------------------------------------------
 !
@@ -370,7 +393,7 @@
           end do
           if (diff .gt. 1.0E-11) then
             write(id_check,'(3i16,1p3E23.15)') inod,                    &
-     &          idx_global_rj(inod,1:2), diff
+     &          sph_rj1%idx_global_rj(inod,1:2), diff
           end if
         end if
       end do

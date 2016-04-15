@@ -41,7 +41,7 @@
 !!        type(sph_rtm_grid), intent(inout) :: rtm
 !!      subroutine dealloc_type_spheric_param_rlm(rlm)
 !!        type(sph_rlm_grid), intent(inout) :: rlm
-!!      subroutine dealloc_type_spheric_param_rj(rj)
+!!      subroutine dealloc_spheric_param_rj(rj)
 !!        type(sph_rj_grid), intent(inout) :: rj
 !!
 !!      subroutine dealloc_type_sph_1d_index_rtp(rtp)
@@ -347,7 +347,7 @@
       call dealloc_type_spheric_param_rtp(sph%sph_rtp)
       call dealloc_type_spheric_param_rtm(sph%sph_rtm)
       call dealloc_type_spheric_param_rlm(sph%sph_rlm)
-      call dealloc_type_spheric_param_rj(sph%sph_rj)
+      call dealloc_spheric_param_rj(sph%sph_rj)
 !
       end subroutine dealloc_type_spheric_parameter
 !
@@ -545,13 +545,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine dealloc_type_spheric_param_rj(rj)
+      subroutine dealloc_spheric_param_rj(rj)
 !
       type(sph_rj_grid), intent(inout) :: rj
 !
       deallocate(rj%idx_global_rj)
 !
-      end subroutine dealloc_type_spheric_param_rj
+      end subroutine dealloc_spheric_param_rj
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

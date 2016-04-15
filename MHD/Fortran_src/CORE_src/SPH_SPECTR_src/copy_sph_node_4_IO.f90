@@ -160,7 +160,7 @@
       call allocate_sph_1d_index_rj
 !
       do i = 1, itwo
-        idx_global_rj(1:nnod_rj,i) = idx_gl_sph_IO(1:nnod_rj,i)
+        sph_rj1%idx_global_rj(1:nnod_rj,i) = idx_gl_sph_IO(1:nnod_rj,i)
       end do
 !
       sph_rj1%radius_1d_rj_r(1:nidx_rj(1)) =   r_gl_1_IO(1:nidx_rj(1))
@@ -368,10 +368,10 @@
 !$omp parallel do private(i,nr_8)
       do i = 1, nnod_rj
         nr_8 = nidx_global_rj(1)
-        idx_gl_sph_IO(i,1) = idx_global_rj(i,1)
-        idx_gl_sph_IO(i,2) = idx_global_rj(i,2)
-        inod_gl_sph_IO(i) =  idx_global_rj(i,1)                         &
-     &                     + idx_global_rj(i,2) * nr_8
+        idx_gl_sph_IO(i,1) = sph_rj1%idx_global_rj(i,1)
+        idx_gl_sph_IO(i,2) = sph_rj1%idx_global_rj(i,2)
+        inod_gl_sph_IO(i) =  sph_rj1%idx_global_rj(i,1)                 &
+     &                     + sph_rj1%idx_global_rj(i,2) * nr_8
       end do
 !$omp end parallel do
 !
@@ -392,7 +392,7 @@
      &      = sph_rj1%idx_gl_1d_rj_j(1:nidx_rj(2),3)
 !
       call dealloc_type_sph_1d_index_rj(sph_rj1)
-      call deallocate_spheric_param_rj
+      call dealloc_spheric_param_rj(sph_rj1)
 !
       end subroutine copy_sph_node_rj_to_IO
 !

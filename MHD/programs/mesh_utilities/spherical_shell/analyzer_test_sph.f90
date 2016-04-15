@@ -57,6 +57,7 @@
       subroutine analyze_test_sph
 !
       use m_solver_SR
+      use m_spheric_parameter
       use cmp_trans_sph_indices
       use cmp_trans_sph_tests
       use set_parallel_file_name
@@ -84,7 +85,10 @@
          write(id_check,*)  'USING IMPORT_REVERSE'
        end if
 !
-        call sph_indices_transfer(itype)
+        call sph_indices_transfer                                       &
+     &     (itype, nnod_rtp, nnod_rtm, nnod_rlm, nnod_rj,               &
+     &      idx_global_rtp, idx_global_rtm,                             &
+     &      idx_global_rlm, sph_rj1%idx_global_rj)
         call check_missing_sph_indices(id_check)
         call compare_transfer_sph_indices(id_check)
 !

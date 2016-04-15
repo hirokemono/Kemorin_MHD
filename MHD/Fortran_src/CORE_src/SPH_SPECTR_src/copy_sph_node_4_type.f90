@@ -200,7 +200,8 @@
       call allocate_sph_1d_index_rj
 !
       do i = 1, itwo
-        idx_global_rj(1:nnod_rj,i) = rj%idx_global_rj(1:nnod_rj,i)
+        sph_rj1%idx_global_rj(1:nnod_rj,i)                              &
+     &        = rj%idx_global_rj(1:nnod_rj,i)
       end do
 !
       sph_rj1%radius_1d_rj_r(1:nidx_rj(1))                              &
@@ -215,7 +216,7 @@
      &                 = rj%idx_gl_1d_rj_j(1:nidx_rj(2),3)
 !
 !      call dealloc_type_sph_1d_index_rj(rj)
-!      call dealloc_type_spheric_param_rj(rj)
+!      call dealloc_spheric_param_rj(rj)
 !
       end subroutine copy_sph_node_rj_from_type
 !
@@ -381,7 +382,7 @@
 !
       do i = 1, itwo
         rj%idx_global_rj(1:rj%nnod_rj,i)                                &
-     &       = idx_global_rj(1:rj%nnod_rj,i)
+     &       = sph_rj1%idx_global_rj(1:rj%nnod_rj,i)
       end do
 !
       rj%radius_1d_rj_r(1:rj%nidx_rj(1))                                &
@@ -396,7 +397,7 @@
      &      = sph_rj1%idx_gl_1d_rj_j(1:rj%nidx_rj(2),3)
 !
 !      call dealloc_type_sph_1d_index_rj(sph_rj1)
-!      call deallocate_spheric_param_rj
+!      call dealloc_spheric_param_rj(sph_rj1)
 !
       end subroutine copy_sph_node_rj_to_type
 !

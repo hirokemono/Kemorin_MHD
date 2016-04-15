@@ -6,7 +6,10 @@
 !      subroutine allocate_idx_sph_recieve
 !      subroutine deallocate_idx_sph_recieve
 !
-!      subroutine sph_indices_transfer(itype)
+!!      subroutine sph_indices_transfer                                 &
+!!     &          (itype, nnod_rtp, nnod_rtm, nnod_rlm, nnod_rj,        &
+!!     &           idx_global_rtp, idx_global_rtm,                      &
+!!     &           idx_global_rlm, idx_global_rj)
 !      subroutine compare_transfer_sph_indices(id_check)
 !      subroutine check_missing_sph_indices(id_check)
 !
@@ -57,13 +60,21 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine sph_indices_transfer(itype)
+      subroutine sph_indices_transfer                                   &
+     &          (itype, nnod_rtp, nnod_rtm, nnod_rlm, nnod_rj,          &
+     &           idx_global_rtp, idx_global_rtm,                        &
+     &           idx_global_rlm, idx_global_rj)
 !
       use calypso_mpi
-      use m_spheric_parameter
       use spherical_SRs_int
 !
-      integer(kind = kint), intent(in) ::itype
+      integer(kind = kint), intent(in) :: itype
+      integer(kind = kint), intent(in) :: nnod_rtp, nnod_rtm
+      integer(kind = kint), intent(in) :: nnod_rlm, nnod_rj
+      integer(kind = kint), intent(in) :: idx_global_rtp(nnod_rtp,3)
+      integer(kind = kint), intent(in) :: idx_global_rtm(nnod_rtm,3)
+      integer(kind = kint), intent(in) :: idx_global_rlm(nnod_rlm,2)
+      integer(kind = kint), intent(in) :: idx_global_rj(nnod_rj,2)
 !
 !
       iflag_sph_SR_int = itype
@@ -155,12 +166,12 @@
 !
       write(id_check,*) 'Wrong commnication in rlm => rj'
       do inod = 1, nnod_rj
-        if (     idx_rj_recieve(inod,1) .ne. idx_global_rj(inod,1)      &
+        if(idx_rj_recieve(inod,1) .ne. sph_rj1%idx_global_rj(inod,1)    &
      &      .and. idx_rj_recieve(inod,1) .ge. 0) then
-          if (   idx_rj_recieve(inod,2) .ne. idx_global_rj(inod,2)      &
+          if(idx_rj_recieve(inod,2) .ne. sph_rj1%idx_global_rj(inod,2)  &
      &      .and. idx_rj_recieve(inod,2) .ge. 0) then
             write(id_check,'(i16,6i5)') inod,                           &
-     &        idx_global_rj(inod,1:2), idx_rj_recieve(inod,1:2)
+     &        sph_rj1%idx_global_rj(inod,1:2), idx_rj_recieve(inod,1:2)
           end if
         end if
       end do
@@ -240,7 +251,8 @@
           if(      idx_rj_recieve(inod,1) .lt. 0                        &
      &        .or. idx_rj_recieve(inod,2) .lt. 0) then
               write(id_check,'(4i16,6i5)') inod,                        &
-     &          idx_global_rj(inod,1:2),  sph_rj1%idx_gl_1d_rj_r(kr),   &
+     &          sph_rj1%idx_global_rj(inod,1:2),                        &
+     &          sph_rj1%idx_gl_1d_rj_r(kr),                             &
      &          sph_rj1%idx_gl_1d_rj_j(j,2:3)
           end if
         end do

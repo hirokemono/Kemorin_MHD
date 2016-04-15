@@ -79,14 +79,14 @@
       do k = 1, nidx_rj(1)
         do j = 1, nidx_rj(2)
           inod = inod + 1
-          idx_global_rj(inod,1) = sph_rj1%idx_gl_1d_rj_r(k)
-          idx_global_rj(inod,2) = sph_rj1%idx_gl_1d_rj_j(j,1)
+          sph_rj1%idx_global_rj(inod,1) = sph_rj1%idx_gl_1d_rj_r(k)
+          sph_rj1%idx_global_rj(inod,2) = sph_rj1%idx_gl_1d_rj_j(j,1)
         end do
       end do
 !
       if(inod_rj_center .eq. 0) return
-      idx_global_rj(nnod_rj,1) = 0
-      idx_global_rj(nnod_rj,2) = 0
+      sph_rj1%idx_global_rj(nnod_rj,1) = 0
+      sph_rj1%idx_global_rj(nnod_rj,2) = 0
 !
       end subroutine set_global_sph_rj_id
 !

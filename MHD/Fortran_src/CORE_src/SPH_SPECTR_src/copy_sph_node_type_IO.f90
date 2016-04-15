@@ -453,7 +453,7 @@
      &      = rj%idx_gl_1d_rj_j(1:rj%nidx_rj(2),3)
 !
       call dealloc_type_sph_1d_index_rj(rj)
-      call dealloc_type_spheric_param_rj(rj)
+      call dealloc_spheric_param_rj(rj)
 !
       end subroutine copy_sph_node_type_rj_to_IO
 !
