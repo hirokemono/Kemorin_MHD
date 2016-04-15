@@ -299,12 +299,12 @@
       use m_group_data_sph_specr_IO
 !
 !
-      if(sph_rank_rj(1).ne.sph_rank_IO(1)                               &
-     &       .or. sph_rank_rj(2).ne.sph_rank_IO(2)) then
+      if(sph_rj1%irank_sph_rj(1).ne.sph_rank_IO(1)                      &
+     &       .or. sph_rj1%irank_sph_rj(2).ne.sph_rank_IO(2)) then
         call calypso_MPI_abort(ierr_sph,'rj rank ID is wrong')
       end if
 !
-      if(nidx_global_rj(2) .ne. nidx_gl_sph_IO(2)) then
+      if(sph_rj1%nidx_global_rj(2) .ne. nidx_gl_sph_IO(2)) then
         call calypso_MPI_abort                                          &
      &     (ierr_sph,'number of local mode is wrong')
       end if

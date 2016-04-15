@@ -187,7 +187,7 @@
       type(sph_rj_grid), intent(inout) :: rj
       integer(kind = kint) :: i
 !
-      rj%sph_rank_rj(1:itwo) =     sph_rank_IO(1:itwo)
+      rj%irank_sph_rj(1:itwo) =     sph_rank_IO(1:itwo)
 !
       rj%nidx_global_rj(1:itwo) = nidx_gl_sph_IO(1:itwo)
       l_truncation =            ltr_gl_IO
@@ -411,7 +411,7 @@
       integer(kind = kint_gl) :: nr_8
 !
       ndir_sph_IO =            itwo
-      sph_rank_IO(1:itwo) =    rj%sph_rank_rj(1:itwo)
+      sph_rank_IO(1:itwo) =    rj%irank_sph_rj(1:itwo)
 !
       ncomp_itbl_1d_IO(1) = ione
       ncomp_itbl_1d_IO(2) = ithree

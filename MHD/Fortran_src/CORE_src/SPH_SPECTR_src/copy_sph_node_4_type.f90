@@ -186,9 +186,9 @@
 !
       integer(kind = kint) :: i
 !
-      sph_rank_rj(1:itwo) =     rj%sph_rank_rj(1:itwo)
+      sph_rj1%irank_sph_rj(1:itwo) = rj%irank_sph_rj(1:itwo)
 !
-      nidx_global_rj(1:itwo) = rj%nidx_global_rj(1:itwo)
+      sph_rj1%nidx_global_rj(1:itwo) = rj%nidx_global_rj(1:itwo)
       ltr =  ltr_type
 !
       nnod_rj = rj%nnod_rj
@@ -367,9 +367,9 @@
 !
       integer(kind = kint) :: i
 !
-      rj%sph_rank_rj(1:itwo) =     sph_rank_rj(1:itwo)
+      rj%irank_sph_rj(1:itwo) =     sph_rj1%irank_sph_rj(1:itwo)
 !
-      rj%nidx_global_rj(1:itwo) = nidx_global_rj(1:itwo)
+      rj%nidx_global_rj(1:itwo) = sph_rj1%nidx_global_rj(1:itwo)
       ltr_type =   ltr
 !
       rj%nnod_rj = nnod_rj

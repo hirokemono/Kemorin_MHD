@@ -146,9 +146,9 @@
 !
       integer(kind = kint) :: i
 !
-      sph_rank_rj(1:itwo) =     sph_rank_IO(1:itwo)
+      sph_rj1%irank_sph_rj(1:itwo) =     sph_rank_IO(1:itwo)
 !
-      nidx_global_rj(1:itwo) = nidx_gl_sph_IO(1:itwo)
+      sph_rj1%nidx_global_rj(1:itwo) = nidx_gl_sph_IO(1:itwo)
       l_truncation =            ltr_gl_IO
 !
       nnod_rj = nnod_sph_IO
@@ -348,12 +348,12 @@
       integer(kind = kint_gl) :: nr_8
 !
       ndir_sph_IO =            itwo
-      sph_rank_IO(1:itwo) =    sph_rank_rj(1:itwo)
+      sph_rank_IO(1:itwo) =    sph_rj1%irank_sph_rj(1:itwo)
 !
       ncomp_itbl_1d_IO(1) = ione
       ncomp_itbl_1d_IO(2) = ithree
 !
-      nidx_gl_sph_IO(1:itwo) = nidx_global_rj(1:itwo)
+      nidx_gl_sph_IO(1:itwo) = sph_rj1%nidx_global_rj(1:itwo)
       ltr_gl_IO =              l_truncation
 !
       nnod_sph_IO = nnod_rj
@@ -367,7 +367,7 @@
 !
 !$omp parallel do private(i,nr_8)
       do i = 1, nnod_rj
-        nr_8 = nidx_global_rj(1)
+        nr_8 = sph_rj1%nidx_global_rj(1)
         idx_gl_sph_IO(i,1) = sph_rj1%idx_global_rj(i,1)
         idx_gl_sph_IO(i,2) = sph_rj1%idx_global_rj(i,2)
         inod_gl_sph_IO(i) =  sph_rj1%idx_global_rj(i,1)                 &
@@ -376,8 +376,8 @@
 !$omp end parallel do
 !
       if(inod_gl_sph_IO(nnod_rj) .eq. izero) then
-        nr_8 = (nidx_global_rj(2) + 1)
-        inod_gl_sph_IO(nnod_rj) = nidx_global_rj(1) * nr_8 + 1
+        nr_8 = (sph_rj1%nidx_global_rj(2) + 1)
+        inod_gl_sph_IO(nnod_rj) = sph_rj1%nidx_global_rj(1) * nr_8 + 1
       end if
 !
       r_gl_1_IO(1:nidx_rj(1))                                           &

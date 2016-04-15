@@ -232,7 +232,7 @@
 !>        number of global 1d data points for @f$ f(r,j) @f$
         integer(kind = kint) :: nidx_global_rj(2)
 !>        1d subdomain ID for @f$ f(r,j) @f$ (start from 0)
-        integer(kind = kint) :: sph_rank_rj(2)
+        integer(kind = kint) :: irank_sph_rj(2)
 !
 !>        local spectr index for @f$ l = m = 0 @f$
 !!@n      If @f$ l = m = 0 @f$ mode does not exist in subdomain, 
@@ -709,7 +709,7 @@
       integer(kind = kint) :: i
 !
 !
-      write(my_rank+50,*) 'sph_rank_rj ',  rj%sph_rank_rj(1:2)
+      write(my_rank+50,*) 'irank_sph_rj ',  rj%irank_sph_rj(1:2)
       write(my_rank+50,*) 'nidx_rj  ',  rj%nidx_rj(1:2)
       write(my_rank+50,*) 'nnod_rj ',  rj%nnod_rj
 !

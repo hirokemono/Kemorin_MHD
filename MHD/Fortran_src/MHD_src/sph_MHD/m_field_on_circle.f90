@@ -102,12 +102,12 @@
       vrtm_mag = 0.0d0
       vrtm_phase = 0.0d0
 !
-      num = nidx_global_rj(2)
+      num = sph_rj1%nidx_global_rj(2)
       allocate( d_rj_circ_lc(0:num,d_circle%ntot_phys) )
       d_rj_circ_lc = 0.0d0
 !
       if(my_rank .eq. 0) then
-        num = nidx_global_rj(2)
+        num = sph_rj1%nidx_global_rj(2)
         allocate( d_rj_circle(0:num,d_circle%ntot_phys) )
 !
         d_rj_circle = 0.0d0

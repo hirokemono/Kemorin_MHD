@@ -82,8 +82,8 @@
 !
 !
 !
-      n1 = nidx_global_rj(1)
-      n2 = nidx_global_rj(2)
+      n1 = sph_rj1%nidx_global_rj(1)
+      n2 = sph_rj1%nidx_global_rj(2)
       allocate( id_domain_rj_r(n1) )
       allocate( id_domain_rj_j(0:n2) )
 !
@@ -159,11 +159,11 @@
 !
 !
       write(50,*) 'id_domain_rj_r'
-      write(50,'(5i16)') id_domain_rj_r(1:nidx_global_rj(1))
+      write(50,'(5i16)') id_domain_rj_r(1:sph_rj1%nidx_global_rj(1))
 !
       write(50,*) 'id_domain_rj_j'
       write(50,'(5i16)') id_domain_rj_j(0)
-      write(50,'(5i16)') id_domain_rj_j(1:nidx_global_rj(2))
+      write(50,'(5i16)') id_domain_rj_j(1:sph_rj1%nidx_global_rj(2))
 !
       end subroutine check_sph_1d_domain_id
 !

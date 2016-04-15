@@ -65,8 +65,8 @@
 !
       integer(kind = kint) :: n1, n2
 !
-      n1 = nidx_global_rj(1)
-      n2 = nidx_global_rj(2)
+      n1 = sph_rj1%nidx_global_rj(1)
+      n2 = sph_rj1%nidx_global_rj(2)
       allocate( idx_local_rj_r(n1) )
       allocate( idx_local_rj_j(0:n2) )
 !

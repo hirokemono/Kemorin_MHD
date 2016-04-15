@@ -60,14 +60,14 @@
       integer(kind = kint) :: i1, i2
 !
 !
-      sph_rank_rj(1:2) =  iglobal_rank_rj(1:2,ip_rank)
+      sph_rj1%irank_sph_rj(1:2) =  iglobal_rank_rj(1:2,ip_rank)
 !
       nnod_rj =  nnod_local_rj(ip_rank+1)
 !
       nidx_rj(1:2) =  nidx_local_rj(ip_rank+1,1:2)
 !
-      i1 = sph_rank_rj(1) + 1
-      i2 = sph_rank_rj(2) + 1
+      i1 = sph_rj1%irank_sph_rj(1) + 1
+      i2 = sph_rj1%irank_sph_rj(2) + 1
       sph_rj1%ist_rj(1) =  istack_idx_local_rj_r(i1-1) + 1
       sph_rj1%ist_rj(2) =  istack_idx_local_rj_j(i2-1) + 1
       sph_rj1%ied_rj(1) =  istack_idx_local_rj_r(i1)

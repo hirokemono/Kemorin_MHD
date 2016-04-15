@@ -94,8 +94,9 @@
      &   (m_folding, nidx_global_rtp(3), mdx_ispack)
       call set_sph_1d_global_idx_rtm                                    &
      &   (m_folding, nidx_global_rtp(3), mtbl_fft_2_lgd, mdx_4_lgd)
-      call set_sph_1d_global_idx_rlm(nidx_global_rj(2), jtbl_fsph)
-      call set_sph_1d_global_idx_rj(nidx_global_rj(2), jtbl_rj)
+      call set_sph_1d_global_idx_rlm                                    &
+     &   (sph_rj1%nidx_global_rj(2), jtbl_fsph)
+      call set_sph_1d_global_idx_rj(sph_rj1%nidx_global_rj(2), jtbl_rj)
 !
       call allocate_sph_1d_domain_id
 !
@@ -354,12 +355,14 @@
 !
       call set_gl_rank_2d(ndomain_sph, ndomain_rj,  iglobal_rank_rj)
 !
-      call cal_local_nums(ndomain_rj(1), ione, nidx_global_rj(1),       &
+      call cal_local_nums                                              &
+     &   (ndomain_rj(1), ione, sph_rj1%nidx_global_rj(1),              &
      &    nidx_local_rj_r, istack_idx_local_rj_r)
 ! 
       call set_merged_index_4_sph_rj(ndomain_rtm(1), ndomain_rtm(3),   &
-     &    ndomain_rj(2), nidx_global_rj(2), istack_idx_local_rlm_j,    &
-     &    jtbl_fsph, nidx_local_rj_j, istack_idx_local_rj_j, jtbl_rj)
+     &    ndomain_rj(2), sph_rj1%nidx_global_rj(2),                    &
+     &    istack_idx_local_rlm_j, jtbl_fsph, nidx_local_rj_j,          &
+     &    istack_idx_local_rj_j, jtbl_rj)
 !
       call set_gl_nnod_spheric_rj(ndomain_sph,                          &
      &    ndomain_rj(1), ndomain_rj(2),                                 &
@@ -380,7 +383,7 @@
 !
 !
       call allocate_2d_sph_trans_table(nidx_global_rtp(2),              &
-     &    nidx_global_rtp(3), nidx_global_rj(2))
+     &    nidx_global_rtp(3), sph_rj1%nidx_global_rj(2))
 !
       call set_gl_rank_2d(ndomain_sph, ndomain_rlm, iglobal_rank_rlm)
 !
@@ -398,7 +401,7 @@
      &    nidx_global_rtp(3), jdx_fsph, mdx_4_lgd)
 !
       call set_merged_index_4_sph_trans(ndomain_rtm(3), l_truncation,   &
-     &    nidx_global_rj(2), nidx_global_rtp(3), m_folding,             &
+     &    sph_rj1%nidx_global_rj(2), nidx_global_rtp(3), m_folding,     &
      &    istack_idx_local_rtm_m, mdx_4_lgd, nidx_local_rlm_j,          &
      &    istack_idx_local_rlm_j, jtbl_fsph)
 !

@@ -124,7 +124,7 @@
       integer(kind = kint) :: nproc_rtm_IO(3), nproc_rtp_IO(3)
 !
 !
-      call MPI_REDUCE(sph_rank_rj, nproc_rj_IO, itwo,                   &
+      call MPI_REDUCE(sph_rj1%irank_sph_rj, nproc_rj_IO, itwo,          &
      &    CALYPSO_INTEGER, MPI_MAX, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_REDUCE(sph_rank_rlm, nproc_rlm_IO, itwo,                 &
      &    CALYPSO_INTEGER, MPI_MAX, izero, CALYPSO_COMM, ierr_MPI)

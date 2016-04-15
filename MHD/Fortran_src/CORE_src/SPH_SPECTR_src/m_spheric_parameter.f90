@@ -51,7 +51,7 @@
 !
 !
       type(sph_rj_grid), save :: sph_rj1
-!sph_rj1%ist_rj
+!sph_rj1%irank_sph_rj
 !
 !>      integer flag for FEM mesh type
 !!@n    iflag_MESH_same:     same grid point as Gauss-Legendre points
@@ -123,7 +123,7 @@
 !>      number of global 1d data points for @f$ f(r,l,m) @f$
       integer(kind = kint) :: nidx_global_rlm(2)
 !>      number of global 1d data points for @f$ f(r,j) @f$
-      integer(kind = kint) :: nidx_global_rj(2)
+!      integer(kind = kint) :: nidx_global_rj(2)
 !
 !>      1d start address of global data for @f$ f(r,\theta,\phi) @f$
       integer(kind = kint) :: ist_rtp(3)
@@ -152,7 +152,7 @@
 !>      1d subdomain ID for @f$ f(r,l,m) @f$ (start from 0)
       integer(kind = kint) :: sph_rank_rlm(2)
 !>      1d subdomain ID for @f$ f(r,j) @f$ (start from 0)
-      integer(kind = kint) :: sph_rank_rj(2)
+!      integer(kind = kint) :: sph_rank_rj(2)
 !
 !>      number of data points for @f$ f(r,\theta,\phi) @f$
       integer(kind = kint) :: nnod_rtp
@@ -550,7 +550,7 @@
       integer(kind = kint) :: i
 !
 !
-      write(my_rank+50,*) 'sph_rank_rj ',  sph_rank_rj(1:2)
+      write(my_rank+50,*) 'sph_rank_rj ',  sph_rj1%irank_sph_rj(1:2)
       write(my_rank+50,*) 'nidx_rj  ',  nidx_rj(1:2)
       write(my_rank+50,*) 'nnod_rj ',  nnod_rj
 !

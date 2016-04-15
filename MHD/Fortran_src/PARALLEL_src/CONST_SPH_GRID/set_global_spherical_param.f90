@@ -56,8 +56,9 @@
       nidx_global_rlm(1) = nidx_global_rtp(1)
       nidx_global_rlm(2) = (l_truncation+2)*l_truncation / m_folding
 !
-      nidx_global_rj(1) = nidx_global_rtp(1)
-      nidx_global_rj(2) = (l_truncation+2)*l_truncation / m_folding
+      sph_rj1%nidx_global_rj(1) = nidx_global_rtp(1)
+      sph_rj1%nidx_global_rj(2)                                         &
+     &                   = (l_truncation+2)*l_truncation / m_folding
 !
       nnod_global_rtp                                                   &
      &  = nidx_global_rtp(1) * nidx_global_rtp(2) * nidx_global_rtp(3)
@@ -66,7 +67,7 @@
       nnod_global_rlm                                                   &
      &  = nidx_global_rlm(1) * (nidx_global_rlm(2) + 1)
       nnod_global_rj                                                    &
-     &  = nidx_global_rj(1) * (nidx_global_rj(2) + 1)
+     &  = sph_rj1%nidx_global_rj(1) * (sph_rj1%nidx_global_rj(2) + 1)
 !
       end subroutine set_global_sph_resolution
 !

@@ -49,7 +49,7 @@
 !
 !
       call collect_spectr_for_circle                                    &
-     &   (nidx_rj(2), nidx_global_rj, sph_rj1%idx_gl_1d_rj_j,           &
+     &   (nidx_rj(2), sph_rj1%nidx_global_rj, sph_rj1%idx_gl_1d_rj_j,   &
      &    rj_fld%n_point, rj_fld%num_phys, rj_fld%ntot_phys,            &
      &    rj_fld%istack_component, rj_fld%phys_name, rj_fld%d_fld)
 !

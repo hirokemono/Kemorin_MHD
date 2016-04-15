@@ -60,8 +60,8 @@
 !
       do ip = 1, np_sph_org
         irank_org = mod(ip - 1,nprocs)
-!        write(*,*) 'MPI_Bcast sph_rank_rj', ip
-        call MPI_Bcast(org_sph_mesh(ip)%sph_mesh%sph_rj%sph_rank_rj,    &
+!        write(*,*) 'MPI_Bcast irank_sph_rj', ip
+        call MPI_Bcast(org_sph_mesh(ip)%sph_mesh%sph_rj%irank_sph_rj,   &
      &      itwo, CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
 !        write(*,*) 'MPI_Bcast nidx_global_rj', ip
         call MPI_Bcast(org_sph_mesh(ip)%sph_mesh%sph_rj%nidx_global_rj, &
