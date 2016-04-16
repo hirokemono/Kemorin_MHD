@@ -69,7 +69,8 @@
 !
 !
 !$omp parallel
-      call delete_phys_data_smp(np_smp, nnod_rtp, inod_rj_smp_stack,   &
+      call delete_phys_data_smp                                         &
+     &   (np_smp, nnod_rtp, sph_rj1%istack_inod_rj_smp,                 &
      &    rj_fld%ntot_phys, numdir, is_fld, rj_fld%d_fld)
 !$omp end parallel
 !

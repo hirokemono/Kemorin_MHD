@@ -32,12 +32,15 @@
       subroutine s_count_num_sph_smp(ierr)
 !
       use m_machine_parameter
-      use m_spheric_parameter
       use m_spheric_param_smp
       use cal_minmax_and_stacks
 !
       integer(kind = kint), intent(inout) :: ierr
+!
       integer(kind = kint) :: num
+!
+      integer(kind = kint)  ::  maxnod_rj_smp =  0
+      integer(kind = kint) :: maxidx_rj_smp(2) =  (/0,0/)
 !
 !
       ierr = 0
@@ -55,7 +58,7 @@
       call count_number_4_smp(np_smp, ione, nnod_rlm,                   &
      &    inod_rlm_smp_stack, maxnod_rlm_smp)
       call count_number_4_smp(np_smp, ione, nnod_rj,                    &
-     &    inod_rj_smp_stack, maxnod_rj_smp)
+     &    sph_rj1%istack_inod_rj_smp, maxnod_rj_smp)
 !
       call count_number_4_smp(np_smp, ione, nidx_rtp(1),                &
      &    idx_rtp_smp_stack(0,1), maxidx_rtp_smp(1) )
@@ -77,9 +80,9 @@
      &    idx_rlm_smp_stack(0,2), maxidx_rlm_smp(2) )
 !
       call count_number_4_smp(np_smp, ione, nidx_rj(1),                 &
-     &    idx_rj_smp_stack(0,1), maxidx_rj_smp(1) )
+     &    sph_rj1%istack_rj_kr_smp, maxidx_rj_smp(1) )
       call count_number_4_smp(np_smp, ione, nidx_rj(2),                 &
-     &    idx_rj_smp_stack(0,2), maxidx_rj_smp(2) )
+     &    sph_rj1%istack_rj_j_smp, maxidx_rj_smp(2) )
 !
       num = nidx_rtp(1)*nidx_rtp(2)
       call count_number_4_smp(np_smp, ione, num,                        &

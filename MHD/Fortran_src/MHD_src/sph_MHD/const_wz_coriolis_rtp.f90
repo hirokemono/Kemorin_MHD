@@ -245,7 +245,7 @@
 !
 !
       call ovwrt_coef_prod_vect_smp(np_smp, nnod_rj,                    &
-     &   inod_rj_smp_stack, coef, d_rj(1,i_r) )
+     &   sph_rj1%istack_inod_rj_smp, coef, d_rj(1,i_r) )
 !
       end subroutine ovwrt_rj_coef_prod_vect_smp
 !

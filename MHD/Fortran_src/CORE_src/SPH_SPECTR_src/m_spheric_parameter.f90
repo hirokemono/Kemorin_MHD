@@ -51,7 +51,7 @@
 !
 !
       type(sph_rj_grid), save :: sph_rj1
-!sph_rj1%idx_rj_degree_one
+!sph_rj1%istack_inod_rj_smp
 !
 !>      integer flag for FEM mesh type
 !!@n    iflag_MESH_same:     same grid point as Gauss-Legendre points

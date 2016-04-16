@@ -119,11 +119,11 @@
 !        end do
 !      end do
 !
-      call lubksb_5band_mul(np_smp, idx_rj_smp_stack(0,2),              &
+      call lubksb_5band_mul(np_smp, sph_rj1%istack_rj_j_smp,            &
      &    nidx_rj(2), nidx_rj(1), vp_evo_lu,                            &
      &    i_vp_pivot, d_rj(1,ipol%i_velo) )
 !
-      call lubksb_3band_mul(np_smp, idx_rj_smp_stack(0,2),              &
+      call lubksb_3band_mul(np_smp, sph_rj1%istack_rj_j_smp,            &
      &    nidx_rj(2), nidx_rj(1), vt_evo_lu,                            &
      &    i_vt_pivot, d_rj(1,itor%i_velo) )
 !
@@ -143,7 +143,7 @@
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
 !
-      call lubksb_3band_mul(np_smp, idx_rj_smp_stack(0,2),              &
+      call lubksb_3band_mul(np_smp, sph_rj1%istack_rj_j_smp,            &
      &    nidx_rj(2), nidx_rj(1), p_poisson_lu, i_p_pivot,              &
      &    d_rj(1,ipol%i_press) )
 !
@@ -194,11 +194,11 @@
      &      sph_bc_B%r_CMB, ipol%i_magne, ntot_phys_rj, d_rj)
       end if
 !
-      call lubksb_3band_mul(np_smp, idx_rj_smp_stack(0,2),              &
+      call lubksb_3band_mul(np_smp, sph_rj1%istack_rj_j_smp,            &
      &    nidx_rj(2), nidx_rj(1), bs_evo_lu, i_bs_pivot,                &
      &    d_rj(1,ipol%i_magne) )
 !
-      call lubksb_3band_mul(np_smp, idx_rj_smp_stack(0,2),              &
+      call lubksb_3band_mul(np_smp, sph_rj1%istack_rj_j_smp,            &
      &    nidx_rj(2), nidx_rj(1), bt_evo_lu, i_bt_pivot,                &
      &    d_rj(1,itor%i_magne) )
 !
@@ -220,7 +220,7 @@
 !
 !
       call cal_sol_scalar_sph_crank(nidx_rj(1), nidx_rj(2),             &
-     &    idx_rj_smp_stack, sph_bc_T, coef_temp, coef_d_temp,           &
+     &    sph_rj1%istack_rj_j_smp, sph_bc_T, coef_temp, coef_d_temp,    &
      &    coef_imp_t, temp_evo_mat, temp_evo_lu, i_temp_pivot,          &
      &    t00_evo_lu, i_t00_pivot, ipol%i_temp,                         &
      &    ntot_phys_rj, d_rj, t00_solution)
@@ -243,7 +243,7 @@
 !
 !
       call cal_sol_scalar_sph_crank(nidx_rj(1), nidx_rj(2),             &
-     &    idx_rj_smp_stack, sph_bc_C, coef_light, coef_d_light,         &
+     &    sph_rj1%istack_rj_j_smp, sph_bc_C, coef_light, coef_d_light,  &
      &    coef_imp_c, composit_evo_mat, composit_evo_lu,                &
      &    i_composit_pivot, c00_evo_lu, i_c00_pivot, ipol%i_light,      &
      &    ntot_phys_rj, d_rj, c00_solution)
@@ -306,7 +306,7 @@ end subroutine check_NaN_temperature
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sol_scalar_sph_crank(nri, jmax, idx_rj_smp_stack,  &
+      subroutine cal_sol_scalar_sph_crank(nri, jmax, istack_rj_j_smp,   &
      &          sph_bc, coef_f, coef_d, coef_imp, evo_mat, evo_lu,      &
      &          i_pivot, s00_evo_lu, i_s00_pivot, is_field,             &
      &          ntot_phys_rj, d_rj, sol_00)
@@ -319,7 +319,7 @@ end subroutine check_NaN_temperature
       use lubksb_357band
 !
       integer(kind = kint), intent(in) :: nri, jmax
-      integer(kind = kint), intent(in) :: idx_rj_smp_stack(0:np_smp,2)
+      integer(kind = kint), intent(in) :: istack_rj_j_smp(0:np_smp)
       type(sph_boundary_type), intent(in) :: sph_bc
       real(kind = kreal), intent(in) :: coef_imp, coef_f, coef_d
       real(kind = kreal), intent(in) :: evo_mat(3,nri,jmax)
@@ -381,7 +381,7 @@ end subroutine check_NaN_temperature
 !     &      sph_rj1%radius_1d_rj_r, evo_mat(1,1,j))
 !      end if
 !
-      call lubksb_3band_mul(np_smp, idx_rj_smp_stack(0,2),              &
+      call lubksb_3band_mul(np_smp, istack_rj_j_smp,                    &
      &    jmax, nri, evo_lu, i_pivot, d_rj(1,is_field) )
 !
 !       write(*,*) 'solution'

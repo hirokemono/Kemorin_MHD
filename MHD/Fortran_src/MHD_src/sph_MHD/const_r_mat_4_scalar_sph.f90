@@ -117,8 +117,8 @@
 !
 !$omp parallel do private(jst,jed,j)
       do ip = 1, np_smp
-        jst = idx_rj_smp_stack(ip-1,2) + 1
-        jed = idx_rj_smp_stack(ip,  2)
+        jst = sph_rj1%istack_rj_j_smp(ip-1) + 1
+        jed = sph_rj1%istack_rj_j_smp(ip  )
         do j = jst, jed
           call ludcmp_3band(nidx_rj(1), p_poisson_mat(1,1,j),           &
      &        i_p_pivot(1,j), ierr, p_poisson_lu(1,1,j),                &
@@ -192,10 +192,10 @@
 !
 !$omp parallel do private(jst,jed,j)
       do ip = 1, np_smp
-        jst = idx_rj_smp_stack(ip-1,2) + 1
-        jed = idx_rj_smp_stack(ip,  2)
+        jst = sph_rj1%istack_rj_j_smp(ip-1) + 1
+        jed = sph_rj1%istack_rj_j_smp(ip  )
         do j = jst, jed
-          call ludcmp_3band(nri, evo_mat3(1,1,j), i_pivot(1,j),  &
+          call ludcmp_3band(nri, evo_mat3(1,1,j), i_pivot(1,j),         &
      &        ierr, evo_lu(1,1,j), evo_det(1,j))
         end do
       end do

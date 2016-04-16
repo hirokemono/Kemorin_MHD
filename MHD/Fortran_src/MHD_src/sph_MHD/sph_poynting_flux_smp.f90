@@ -97,8 +97,8 @@
 !
 !$omp parallel do private(ip,ist,ied,inod)
       do ip = 1, np_smp
-        ist = inod_rj_smp_stack(ip-1) + 1
-        ied = inod_rj_smp_stack(ip)
+        ist = sph_rj1%istack_inod_rj_smp(ip-1) + 1
+        ied = sph_rj1%istack_inod_rj_smp(ip)
         do inod = ist, ied
           d_rj(inod,ipol%i_mag_stretch  ) = d_rj(inod,ipol%i_grad_vx)
           d_rj(inod,ipol%i_mag_stretch+1) = d_rj(inod,ipol%i_grad_vy)
