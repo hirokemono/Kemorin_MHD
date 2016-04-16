@@ -82,8 +82,10 @@
 !
       call add_center_mode_rj
 !
-      call allocate_spheric_param_rj
-      call allocate_sph_1d_index_rj
+      sph_rj1%nnod_rj = nnod_rj
+      sph_rj1%nidx_rj(1:2) = nidx_rj(1:2)
+      call alloc_type_spheric_param_rj(sph_rj1)
+      call alloc_type_sph_1d_index_rj(sph_rj1)
 !
       call copy_sph_1d_gl_idx_rj
 !

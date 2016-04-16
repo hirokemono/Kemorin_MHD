@@ -209,6 +209,14 @@
 !>        1d end address of global data for @f$ f(r,l,m) @f$
         integer(kind = kint) :: ied_rlm(2)
 !
+!>        SMP stack for spectr data @f$ f(r,l,m) @f$
+      integer(kind = kint), pointer :: istack_inod_rj_smp(:)
+!
+!>        SMP stacks for indexing @f$ r@f$
+      integer(kind = kint), pointer :: istack_rlm_kr_smp(:)
+!>        SMP stacks for indexing @f$ j @f$
+      integer(kind = kint), pointer :: istack_rlm_j_smp(:)
+!
 !>        global address for each direction @f$ f(r,l,m) @f$
         integer(kind = kint), pointer :: idx_global_rlm(:,:)
 !

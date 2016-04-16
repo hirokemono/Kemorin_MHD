@@ -191,29 +191,32 @@
       sph_rj1%nidx_global_rj(1:itwo) = rj%nidx_global_rj(1:itwo)
       ltr =  ltr_type
 !
-      nnod_rj = rj%nnod_rj
-      nidx_rj(1:itwo) = rj%nidx_rj(1:itwo)
+      sph_rj1%nnod_rj = rj%nnod_rj
+      sph_rj1%nidx_rj(1:itwo) = rj%nidx_rj(1:itwo)
       sph_rj1%ist_rj(1:itwo) =  rj%ist_rj(1:itwo)
       sph_rj1%ied_rj(1:itwo) =  rj%ied_rj(1:itwo)
 !
-      call allocate_spheric_param_rj
-      call allocate_sph_1d_index_rj
+      call alloc_type_spheric_param_rj(sph_rj1)
+      call alloc_type_sph_1d_index_rj(sph_rj1)
 !
       do i = 1, itwo
-        sph_rj1%idx_global_rj(1:nnod_rj,i)                              &
-     &        = rj%idx_global_rj(1:nnod_rj,i)
+        sph_rj1%idx_global_rj(1:sph_rj1%nnod_rj,i)                      &
+     &        = rj%idx_global_rj(1:sph_rj1%nnod_rj,i)
       end do
 !
-      sph_rj1%radius_1d_rj_r(1:nidx_rj(1))                              &
-     &                 =   rj%radius_1d_rj_r(1:nidx_rj(1))
-      sph_rj1%idx_gl_1d_rj_r(1:nidx_rj(1))                              &
-     &                 =   rj%idx_gl_1d_rj_r(1:nidx_rj(1))
-      sph_rj1%idx_gl_1d_rj_j(1:nidx_rj(2),1)                            &
-     &                 = rj%idx_gl_1d_rj_j(1:nidx_rj(2),1)
-      sph_rj1%idx_gl_1d_rj_j(1:nidx_rj(2),2)                            &
-     &                 = rj%idx_gl_1d_rj_j(1:nidx_rj(2),2)
-      sph_rj1%idx_gl_1d_rj_j(1:nidx_rj(2),3)                            &
-     &                 = rj%idx_gl_1d_rj_j(1:nidx_rj(2),3)
+      sph_rj1%radius_1d_rj_r(1:sph_rj1%nidx_rj(1))                      &
+     &                 =   rj%radius_1d_rj_r(1:sph_rj1%nidx_rj(1))
+      sph_rj1%idx_gl_1d_rj_r(1:sph_rj1%nidx_rj(1))                      &
+     &                 =   rj%idx_gl_1d_rj_r(1:sph_rj1%nidx_rj(1))
+      sph_rj1%idx_gl_1d_rj_j(1:sph_rj1%nidx_rj(2),1)                    &
+     &                 = rj%idx_gl_1d_rj_j(1:sph_rj1%nidx_rj(2),1)
+      sph_rj1%idx_gl_1d_rj_j(1:sph_rj1%nidx_rj(2),2)                    &
+     &                 = rj%idx_gl_1d_rj_j(1:sph_rj1%nidx_rj(2),2)
+      sph_rj1%idx_gl_1d_rj_j(1:sph_rj1%nidx_rj(2),3)                    &
+     &                 = rj%idx_gl_1d_rj_j(1:sph_rj1%nidx_rj(2),3)
+!
+      nnod_rj =      sph_rj1%nnod_rj
+      nidx_rj(1:2) = sph_rj1%nidx_rj(1:2)
 !
 !      call dealloc_type_sph_1d_index_rj(rj)
 !      call dealloc_spheric_param_rj(rj)
@@ -372,8 +375,8 @@
       rj%nidx_global_rj(1:itwo) = sph_rj1%nidx_global_rj(1:itwo)
       ltr_type =   ltr
 !
-      rj%nnod_rj = nnod_rj
-      rj%nidx_rj(1:itwo) = nidx_rj(1:itwo)
+      rj%nnod_rj =         sph_rj1%nnod_rj
+      rj%nidx_rj(1:itwo) = sph_rj1%nidx_rj(1:itwo)
       rj%ist_rj(1:itwo) =  sph_rj1%ist_rj(1:itwo)
       rj%ied_rj(1:itwo) =  sph_rj1%ied_rj(1:itwo)
 !

@@ -151,34 +151,39 @@
       sph_rj1%nidx_global_rj(1:itwo) = nidx_gl_sph_IO(1:itwo)
       l_truncation =            ltr_gl_IO
 !
-      nnod_rj = nnod_sph_IO
-      nidx_rj(1:itwo) = nidx_sph_IO(1:itwo)
+      sph_rj1%nnod_rj = nnod_sph_IO
+      sph_rj1%nidx_rj(1:itwo) = nidx_sph_IO(1:itwo)
       sph_rj1%ist_rj(1:itwo) =  ist_sph_IO(1:itwo)
       sph_rj1%ied_rj(1:itwo) =  ied_sph_IO(1:itwo)
 !
-      call allocate_spheric_param_rj
-      call allocate_sph_1d_index_rj
+      call alloc_type_spheric_param_rj(sph_rj1)
+      call alloc_type_sph_1d_index_rj(sph_rj1)
 !
       do i = 1, itwo
-        sph_rj1%idx_global_rj(1:nnod_rj,i) = idx_gl_sph_IO(1:nnod_rj,i)
+        sph_rj1%idx_global_rj(1:sph_rj1%nnod_rj,i)                      &
+     &        = idx_gl_sph_IO(1:sph_rj1%nnod_rj,i)
       end do
 !
-      sph_rj1%radius_1d_rj_r(1:nidx_rj(1)) =   r_gl_1_IO(1:nidx_rj(1))
-      sph_rj1%a_r_1d_rj_r(1:nidx_rj(1))                                 &
-     &      = one / sph_rj1%radius_1d_rj_r(1:nidx_rj(1))
+      sph_rj1%radius_1d_rj_r(1:sph_rj1%nidx_rj(1))                      &
+     &      =   r_gl_1_IO(1:sph_rj1%nidx_rj(1))
+      sph_rj1%a_r_1d_rj_r(1:sph_rj1%nidx_rj(1))                         &
+     &      = one / sph_rj1%radius_1d_rj_r(1:sph_rj1%nidx_rj(1))
 !
-      sph_rj1%idx_gl_1d_rj_r(1:nidx_rj(1))                              &
-     &       =   idx_gl_1_IO(1:nidx_rj(1))
-      sph_rj1%idx_gl_1d_rj_j(1:nidx_rj(2),1)                            &
-     &       = idx_gl_2_IO(1:nidx_rj(2),1)
-      sph_rj1%idx_gl_1d_rj_j(1:nidx_rj(2),2)                            &
-     &       = idx_gl_2_IO(1:nidx_rj(2),2)
-      sph_rj1%idx_gl_1d_rj_j(1:nidx_rj(2),3)                            &
-     &       = idx_gl_2_IO(1:nidx_rj(2),3)
+      sph_rj1%idx_gl_1d_rj_r(1:sph_rj1%nidx_rj(1))                      &
+     &       =   idx_gl_1_IO(1:sph_rj1%nidx_rj(1))
+      sph_rj1%idx_gl_1d_rj_j(1:sph_rj1%nidx_rj(2),1)                    &
+     &       = idx_gl_2_IO(1:sph_rj1%nidx_rj(2),1)
+      sph_rj1%idx_gl_1d_rj_j(1:sph_rj1%nidx_rj(2),2)                    &
+     &       = idx_gl_2_IO(1:sph_rj1%nidx_rj(2),2)
+      sph_rj1%idx_gl_1d_rj_j(1:sph_rj1%nidx_rj(2),3)                    &
+     &       = idx_gl_2_IO(1:sph_rj1%nidx_rj(2),3)
 !
       call deallocate_nod_id_sph_IO
       call deallocate_idx_sph_1d1_IO
       call deallocate_idx_sph_1d2_IO
+!
+      nnod_rj = sph_rj1%nnod_rj
+      nidx_rj(1:2) = sph_rj1%nidx_rj(1:2)
 !
       end subroutine copy_sph_node_rj_from_IO
 !
@@ -356,8 +361,8 @@
       nidx_gl_sph_IO(1:itwo) = sph_rj1%nidx_global_rj(1:itwo)
       ltr_gl_IO =              l_truncation
 !
-      nnod_sph_IO = nnod_rj
-      nidx_sph_IO(1:itwo) = nidx_rj(1:itwo)
+      nnod_sph_IO = sph_rj1%nnod_rj
+      nidx_sph_IO(1:itwo) = sph_rj1%nidx_rj(1:itwo)
       ist_sph_IO(1:itwo) =  sph_rj1%ist_rj(1:itwo)
       ied_sph_IO(1:itwo) =  sph_rj1%ied_rj(1:itwo)
 !
@@ -366,7 +371,7 @@
       call allocate_idx_sph_1d2_IO
 !
 !$omp parallel do private(i,nr_8)
-      do i = 1, nnod_rj
+      do i = 1, sph_rj1%nnod_rj
         nr_8 = sph_rj1%nidx_global_rj(1)
         idx_gl_sph_IO(i,1) = sph_rj1%idx_global_rj(i,1)
         idx_gl_sph_IO(i,2) = sph_rj1%idx_global_rj(i,2)
@@ -375,21 +380,22 @@
       end do
 !$omp end parallel do
 !
-      if(inod_gl_sph_IO(nnod_rj) .eq. izero) then
+      if(inod_gl_sph_IO(sph_rj1%nnod_rj) .eq. izero) then
         nr_8 = (sph_rj1%nidx_global_rj(2) + 1)
-        inod_gl_sph_IO(nnod_rj) = sph_rj1%nidx_global_rj(1) * nr_8 + 1
+        inod_gl_sph_IO(sph_rj1%nnod_rj)                                 &
+     &          = sph_rj1%nidx_global_rj(1) * nr_8 + 1
       end if
 !
-      r_gl_1_IO(1:nidx_rj(1))                                           &
-     &      = sph_rj1%radius_1d_rj_r(1:nidx_rj(1))
-      idx_gl_1_IO(1:nidx_rj(1))                                         &
-     &      = sph_rj1%idx_gl_1d_rj_r(1:nidx_rj(1))
-      idx_gl_2_IO(1:nidx_rj(2),1)                                       &
-     &      = sph_rj1%idx_gl_1d_rj_j(1:nidx_rj(2),1)
-      idx_gl_2_IO(1:nidx_rj(2),2)                                       &
-     &      = sph_rj1%idx_gl_1d_rj_j(1:nidx_rj(2),2)
-      idx_gl_2_IO(1:nidx_rj(2),3)                                       &
-     &      = sph_rj1%idx_gl_1d_rj_j(1:nidx_rj(2),3)
+      r_gl_1_IO(1:sph_rj1%nidx_rj(1))                                   &
+     &      = sph_rj1%radius_1d_rj_r(1:sph_rj1%nidx_rj(1))
+      idx_gl_1_IO(1:sph_rj1%nidx_rj(1))                                 &
+     &      = sph_rj1%idx_gl_1d_rj_r(1:sph_rj1%nidx_rj(1))
+      idx_gl_2_IO(1:sph_rj1%nidx_rj(2),1)                               &
+     &      = sph_rj1%idx_gl_1d_rj_j(1:sph_rj1%nidx_rj(2),1)
+      idx_gl_2_IO(1:sph_rj1%nidx_rj(2),2)                               &
+     &      = sph_rj1%idx_gl_1d_rj_j(1:sph_rj1%nidx_rj(2),2)
+      idx_gl_2_IO(1:sph_rj1%nidx_rj(2),3)                               &
+     &      = sph_rj1%idx_gl_1d_rj_j(1:sph_rj1%nidx_rj(2),3)
 !
       call dealloc_type_sph_1d_index_rj(sph_rj1)
       call dealloc_spheric_param_rj(sph_rj1)

@@ -108,7 +108,7 @@
 !
       if(i_trns .le. 0) return
       call sel_vector_from_trans                                        &
-     &   (nnod_rtp, nidx_rtp, ione, inod_rtp_smp_stack,                 &
+     &   (nnod_rtp, nidx_rtp, ione, sph_rj1%istack_inod_rj_smp,         &
      &    nnod_rtp, frc_rtp(1,i_trns), frm_rtp(1,i_trns) )
 !
       end subroutine sel_force_from_MHD_trans

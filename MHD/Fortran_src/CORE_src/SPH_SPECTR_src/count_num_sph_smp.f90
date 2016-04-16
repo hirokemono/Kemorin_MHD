@@ -32,6 +32,7 @@
       subroutine s_count_num_sph_smp(ierr)
 !
       use m_machine_parameter
+      use m_spheric_parameter
       use m_spheric_param_smp
       use cal_minmax_and_stacks
 !

@@ -113,9 +113,10 @@
       integer(kind = kint) :: i
 !
 !
-      nidx_rj(1) = num_pick_layer
-      nidx_rj(2) = 1
-      call allocate_sph_1d_index_rj
+      sph_rj1%nidx_rj(1) = num_pick_layer
+      sph_rj1%nidx_rj(2) = 1
+      nidx_rj(1:2) = sph_rj1%nidx_rj(1:2)
+      call alloc_type_sph_1d_index_rj(sph_rj1)
 !
       do i = 1, num_pick_layer
         sph_rj1%radius_1d_rj_r(i) = r_pick_layer(i)
@@ -124,9 +125,9 @@
         if(idx_pick_sph_gl(i,1) .eq. 0) ipick_l0m0 = i
       end do
 !
-      call allocate_dr_rj_noequi(nidx_rj(1))
+      call allocate_dr_rj_noequi(sph_rj1%nidx_rj(1))
       call set_dr_for_nonequi                                           &
-     &   (nlayer_CMB, nidx_rj(1), sph_rj1%radius_1d_rj_r)
+     &   (nlayer_CMB, sph_rj1%nidx_rj(1), sph_rj1%radius_1d_rj_r)
       call const_2nd_fdm_matrices
       call const_2nd_fdm_coefs
 !

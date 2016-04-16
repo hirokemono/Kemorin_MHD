@@ -14,7 +14,6 @@
       module m_spheric_param_smp
 !
       use m_precision
-      use m_spheric_parameter
 !
       implicit none
 !
@@ -50,6 +49,7 @@
       subroutine allocate_sph_param_smp
 !
       use m_machine_parameter
+      use m_spheric_parameter
 !
       allocate(inod_rtp_smp_stack(0:np_smp))
       allocate(inod_rtm_smp_stack(0:np_smp))
@@ -84,6 +84,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine deallocate_sph_param_smp
+!
+      use m_spheric_parameter
 !
       deallocate(inod_rtp_smp_stack)
       deallocate(inod_rtm_smp_stack)

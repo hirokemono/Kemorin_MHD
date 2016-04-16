@@ -13,7 +13,6 @@
 !!      subroutine allocate_spheric_param_rtp
 !!      subroutine allocate_spheric_param_rtm
 !!      subroutine allocate_spheric_param_rlm
-!!      subroutine allocate_spheric_param_rj
 !!
 !!      subroutine allocate_sph_1d_index_rtp
 !!      subroutine allocate_sph_1d_index_rtm
@@ -50,6 +49,9 @@
       implicit none
 !
 !
+      type(sph_rlm_grid), save :: sph_rlm1
+!sph_rlm1%istack_rlm_kr_smp
+!
       type(sph_rj_grid), save :: sph_rj1
 !sph_rj1%istack_inod_rj_smp
 !
@@ -72,17 +74,6 @@
 !>      local spectr index for @f$ l = m = 0 @f$ at center
 !!@n    if center does not exist in subdomain, inod_rj_center = 0.
       integer (kind=kint) :: inod_rj_center =   0
-!
-!>      local spectr index for @f$ l = m = 0 @f$
-!!@n    If @f$ l = m = 0 @f$ mode does not exist in subdomain, 
-!!@n    idx_rj_degree_zero = 0.
-!      integer (kind=kint) :: idx_rj_degree_zero =   0
-!
-!>        local spectr index for @f$ l = 1@f$ and  @f$ m = -1, 0, 1@f$.
-!!        for @f$ f(r,j) @f$
-!!@n        If spectr data do not exist in subdomain,
-!!@n        idx_rj_degree_one(m) = 0.
-!      integer (kind=kint) :: idx_rj_degree_one(-1:1) = (/0,0,0/)
 !
 !>      Start address for @f$ m = 0 @f$ for @f$ f(r,\theta,m) @f$
       integer (kind=kint) :: ist_rtm_order_zero = 0
@@ -122,8 +113,6 @@
       integer(kind = kint) :: nidx_global_rtm(3)
 !>      number of global 1d data points for @f$ f(r,l,m) @f$
       integer(kind = kint) :: nidx_global_rlm(2)
-!>      number of global 1d data points for @f$ f(r,j) @f$
-!      integer(kind = kint) :: nidx_global_rj(2)
 !
 !>      1d start address of global data for @f$ f(r,\theta,\phi) @f$
       integer(kind = kint) :: ist_rtp(3)
@@ -140,8 +129,6 @@
       integer(kind = kint) :: ied_rtm(3)
 !>      1d end address of global data for @f$ f(r,l,m) @f$
       integer(kind = kint) :: ied_rlm(2)
-!>      1d end address of global data for @f$ f(r,j) @f$
-!      integer(kind = kint) :: ied_rj(2)
 !
 !    local parameters
 !
@@ -151,8 +138,6 @@
       integer(kind = kint) :: sph_rank_rtm(3)
 !>      1d subdomain ID for @f$ f(r,l,m) @f$ (start from 0)
       integer(kind = kint) :: sph_rank_rlm(2)
-!>      1d subdomain ID for @f$ f(r,j) @f$ (start from 0)
-!      integer(kind = kint) :: sph_rank_rj(2)
 !
 !>      number of data points for @f$ f(r,\theta,\phi) @f$
       integer(kind = kint) :: nnod_rtp
@@ -188,8 +173,6 @@
       integer(kind = kint), allocatable :: idx_global_rtm(:,:)
 !>      global address for each direction @f$ f(r,l,m) @f$
       integer(kind = kint), allocatable :: idx_global_rlm(:,:)
-!>      global address for each direction @f$ f(r,j) @f$
-!      integer(kind = kint), allocatable :: idx_global_rj(:,:)
 !
 !
 !>      radial global address @f$ f(r,\theta,\phi) @f$
@@ -218,14 +201,6 @@
 !!@n        idx_gl_1d_rlm_j(j,3): spherical hermonincs order
       integer(kind = kint), allocatable :: idx_gl_1d_rlm_j(:,:)
 !
-!>      radial global address @f$ f(r,j) @f$
-!      integer(kind = kint), allocatable :: idx_gl_1d_rj_r(:)
-!>      spherical harmonics mode for  @f$ f(r,j) @f$
-!!@n        idx_gl_1d_rj_j(j,1): global ID for spherical harmonics
-!!@n        idx_gl_1d_rj_j(j,2): spherical hermonincs degree
-!!@n        idx_gl_1d_rj_j(j,3): spherical hermonincs order
-!      integer(kind = kint), allocatable :: idx_gl_1d_rj_j(:,:)
-!
 !>      1d radius data for @f$ f(r,\theta,\phi) @f$
       real(kind = kreal), allocatable :: radius_1d_rtp_r(:)
 !>      1d radius data for @f$ f(r,\theta,m) @f$
@@ -241,17 +216,6 @@
       real(kind = kreal), allocatable :: a_r_1d_rtm_r(:)
 !>      1d @f$1 / r @f$ for @f$ f(r,l,m) @f$
       real(kind = kreal), allocatable :: a_r_1d_rlm_r(:)
-!>      1d @f$1 / r @f$ for @f$ f(r,j) @f$
-!      real(kind = kreal), allocatable :: a_r_1d_rj_r(:)
-!
-!>      1d @f$1 / r @f$ for @f$ f(r,j) @f$
-!!@n@see  set_radius_func_cheby or set_radius_func_cheby
-!      real(kind = kreal), allocatable :: ar_1d_rj(:,:)
-!
-!>      1d radius between grids for @f$ f(r,j) @f$
-!      real(kind = kreal), allocatable :: r_ele_rj(:)
-!>      1d @f$1 / r @f$ between grids for @f$ f(r,j) @f$
-!      real(kind = kreal), allocatable :: ar_ele_rj(:,:)
 !
 ! -----------------------------------------------------------------------
 !
@@ -264,7 +228,9 @@
       call allocate_spheric_param_rtp
       call allocate_spheric_param_rtm
       call allocate_spheric_param_rlm
-      call allocate_spheric_param_rj
+!
+      sph_rj1%nnod_rj = nnod_rj
+      call alloc_type_spheric_param_rj(sph_rj1)
 !
       end subroutine allocate_spheric_parameter
 !
@@ -306,15 +272,6 @@
       if(nnod_rlm .gt. 0) idx_global_rlm = 0
 !
       end subroutine allocate_spheric_param_rlm
-!
-! ----------------------------------------------------------------------
-!
-      subroutine allocate_spheric_param_rj
-!
-      sph_rj1%nnod_rj = nnod_rj
-      call alloc_type_spheric_param_rj(sph_rj1)
-!
-      end subroutine allocate_spheric_param_rj
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -388,16 +345,6 @@
       end if
 !
       end subroutine allocate_sph_1d_index_rlm
-!
-! ----------------------------------------------------------------------
-!
-      subroutine allocate_sph_1d_index_rj
-!
-!
-      sph_rj1%nidx_rj(1:2) = nidx_rj(1:2)
-      call alloc_type_sph_1d_index_rj(sph_rj1)
-!
-      end subroutine allocate_sph_1d_index_rj
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
