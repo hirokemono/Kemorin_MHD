@@ -115,8 +115,9 @@
   !          elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
 !
 !          st_elapsed = MPI_WTIME()
-          call cal_sp_rlm_vector_sym_matmul(nnod_rlm, nidx_rlm,         &
-     &        istep_rlm, idx_gl_1d_rlm_j, sph_rlm1%radius_1d_rlm_r,     &
+          call cal_sp_rlm_vector_sym_matmul                             &
+     &       (nnod_rlm, nidx_rlm, istep_rlm,                            &
+     &        sph_rlm1%idx_gl_1d_rlm_j, sph_rlm1%radius_1d_rlm_r,       &
      &        kst(ip), nkr(ip), jst(ip), n_jk_o(ip), n_jk_e(ip),        &
      &        pol_e(1,ip), pol_o(1,ip), tor_e(1,ip), tor_o(1,ip),       &
      &        ncomp, nvector, irev_sr_rlm, n_WS, WS)

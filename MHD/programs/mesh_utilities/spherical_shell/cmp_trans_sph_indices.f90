@@ -237,7 +237,7 @@
      &        .or. idx_rlm_recieve(inod,2) .lt. 0) then
               write(id_check,'(4i16,6i5)') inod,                        &
      &        idx_global_rlm(inod,1:2), idx_gl_1d_rlm_r(kr),            &
-     &        idx_gl_1d_rlm_j(j,2:3)
+     &        sph_rlm1%idx_gl_1d_rlm_j(j,2:3)
           end if
         end do
       end do

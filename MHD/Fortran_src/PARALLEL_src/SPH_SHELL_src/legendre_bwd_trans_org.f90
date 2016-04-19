@@ -125,8 +125,8 @@
             do l_rtm = 1, nidx_rtm(2)
               do j_rlm = jst, jed
                 Pgv_j(j_rlm) = -P_jl(j_rlm,l_rtm)                       &
-     &                          * dble(idx_gl_1d_rlm_j(j_rlm,3))        &
-     &                           *asin_theta_1d_rtm(l_rtm)
+     &                        * dble(sph_rlm1%idx_gl_1d_rlm_j(j_rlm,3)) &
+     &                        * asin_theta_1d_rtm(l_rtm)
               end do
 !
               do nd = 1, nvector

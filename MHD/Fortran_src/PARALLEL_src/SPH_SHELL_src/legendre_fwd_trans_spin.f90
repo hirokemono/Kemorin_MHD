@@ -79,7 +79,7 @@
 !
             do j_rlm = 1, nidx_rlm(2)
               g7 = g_sph_rlm(j_rlm,7)
-              gm = dble(idx_gl_1d_rlm_j(j_rlm,3))
+              gm = dble(sph_rlm1%idx_gl_1d_rlm_j(j_rlm,3))
 !
               i_rlm = 1 + (j_rlm-1) * istep_rlm(2)                      &
      &                  + (k_rlm-1) * istep_rlm(1)

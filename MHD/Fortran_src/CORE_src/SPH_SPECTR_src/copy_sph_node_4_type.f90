@@ -163,11 +163,11 @@
      &                =   rlm%radius_1d_rlm_r(1:nidx_rlm(1))
       idx_gl_1d_rlm_r(1:nidx_rlm(1))                                    &
      &                =   rlm%idx_gl_1d_rlm_r(1:nidx_rlm(1))
-      idx_gl_1d_rlm_j(1:nidx_rlm(2),1)                                  &
+      sph_rlm1%idx_gl_1d_rlm_j(1:nidx_rlm(2),1)                         &
      &                = rlm%idx_gl_1d_rlm_j(1:nidx_rlm(2),1)
-      idx_gl_1d_rlm_j(1:nidx_rlm(2),2)                                  &
+      sph_rlm1%idx_gl_1d_rlm_j(1:nidx_rlm(2),2)                         &
      &                = rlm%idx_gl_1d_rlm_j(1:nidx_rlm(2),2)
-      idx_gl_1d_rlm_j(1:nidx_rlm(2),3)                                  &
+      sph_rlm1%idx_gl_1d_rlm_j(1:nidx_rlm(2),3)                         &
      &                = rlm%idx_gl_1d_rlm_j(1:nidx_rlm(2),3)
 !
 !      call dealloc_type_sph_1d_index_rlm(rlm)
@@ -348,11 +348,11 @@
       rlm%idx_gl_1d_rlm_r(1:rlm%nidx_rlm(1))                            &
      &       =   idx_gl_1d_rlm_r(1:rlm%nidx_rlm(1))
       rlm%idx_gl_1d_rlm_j(1:rlm%nidx_rlm(2),1)                          &
-     &       = idx_gl_1d_rlm_j(1:rlm%nidx_rlm(2),1)
+     &       = sph_rlm1%idx_gl_1d_rlm_j(1:rlm%nidx_rlm(2),1)
       rlm%idx_gl_1d_rlm_j(1:rlm%nidx_rlm(2),2)                          &
-     &       = idx_gl_1d_rlm_j(1:rlm%nidx_rlm(2),2)
+     &       = sph_rlm1%idx_gl_1d_rlm_j(1:rlm%nidx_rlm(2),2)
       rlm%idx_gl_1d_rlm_j(1:rlm%nidx_rlm(2),3)                          &
-     &       = idx_gl_1d_rlm_j(1:rlm%nidx_rlm(2),3)
+     &       = sph_rlm1%idx_gl_1d_rlm_j(1:rlm%nidx_rlm(2),3)
 !
 !      call deallocate_sph_1d_index_rlm
 !      call deallocate_spheric_param_rlm

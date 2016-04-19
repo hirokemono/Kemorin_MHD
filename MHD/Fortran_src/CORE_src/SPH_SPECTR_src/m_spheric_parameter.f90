@@ -56,7 +56,7 @@
 !sph_rtm1%radius_1d_rtm_r
 !
       type(sph_rlm_grid), save :: sph_rlm1
-!sph_rlm1%radius_1d_rlm_r
+!sph_rlm1%idx_gl_1d_rlm_j
 !
       type(sph_rj_grid), save :: sph_rj1
 !sph_rj1%istack_inod_rj_smp
@@ -205,21 +205,7 @@
 !!@n        idx_gl_1d_rlm_j(j,1): global ID for spherical harmonics
 !!@n        idx_gl_1d_rlm_j(j,2): spherical hermonincs degree
 !!@n        idx_gl_1d_rlm_j(j,3): spherical hermonincs order
-      integer(kind = kint), allocatable :: idx_gl_1d_rlm_j(:,:)
-!
-!>      1d radius data for @f$ f(r,\theta,\phi) @f$
-!      real(kind = kreal), allocatable :: radius_1d_rtp_r(:)
-!>      1d radius data for @f$ f(r,\theta,m) @f$
-!      real(kind = kreal), allocatable :: radius_1d_rtm_r(:)
-!>      1d radius data for @f$ f(r,l,m) @f$
-!      real(kind = kreal), allocatable :: radius_1d_rlm_r(:)
-!
-!>      1d @f$1 / r @f$ for @f$ f(r,\theta,\phi) @f$
-!      real(kind = kreal), allocatable :: a_r_1d_rtp_r(:)
-!>      1d @f$1 / r @f$ for @f$ f(r,\theta,m) @f$
-!      real(kind = kreal), allocatable :: a_r_1d_rtm_r(:)
-!>      1d @f$1 / r @f$ for @f$ f(r,l,m) @f$
-!      real(kind = kreal), allocatable :: a_r_1d_rlm_r(:)
+!      integer(kind = kint), allocatable :: idx_gl_1d_rlm_j(:,:)
 !
 ! -----------------------------------------------------------------------
 !
@@ -334,10 +320,7 @@
 !
       num = nidx_rlm(1)
       allocate(idx_gl_1d_rlm_r(num))
-      num = nidx_rlm(2)
-      allocate(idx_gl_1d_rlm_j(num,3))
 !
-      if(nidx_rlm(2) .gt. 0) idx_gl_1d_rlm_j = 0
       if(nidx_rlm(1) .gt. 0) then
         idx_gl_1d_rlm_r = 0
       end if
@@ -402,7 +385,6 @@
       subroutine deallocate_sph_1d_index_rlm
 !
       deallocate(idx_gl_1d_rlm_r)
-      deallocate(idx_gl_1d_rlm_j)
 !
       call dealloc_type_sph_1d_index_rlm(sph_rlm1)
 !

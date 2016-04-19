@@ -115,7 +115,7 @@
                 k_rlm = 1 + (kr_nd - nd) / nvector
 !
                 Pgv_l = -P_rtm(l_rtm,j_rlm)                             &
-     &                 * dble(idx_gl_1d_rlm_j(j_rlm,3))                 &
+     &                 * dble(sph_rlm1%idx_gl_1d_rlm_j(j_rlm,3))        &
      &                 * asin_theta_1d_rtm(l_rtm)
 !
                 in_rtm = 3*nd + ncomp*((l_rtm-1) * istep_rtm(2)         &

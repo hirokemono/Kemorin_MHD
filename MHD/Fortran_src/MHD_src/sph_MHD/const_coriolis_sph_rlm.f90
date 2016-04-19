@@ -50,16 +50,16 @@
       idx_rlm_ICB = find_local_radius_rlm_address(nidx_rlm(1),          &
      &             idx_gl_1d_rlm_r, sph_bc_U%kr_in)
       idx_rlm_degree_zero = find_local_sph_rlm_address(nidx_rlm(2),     &
-     &                          idx_gl_1d_rlm_j, izero, izero)
+     &                          sph_rlm1%idx_gl_1d_rlm_j, izero, izero)
       do m = -1, 1
         idx_rlm_degree_one(m) = find_local_sph_rlm_address(nidx_rlm(2), &
-     &                          idx_gl_1d_rlm_j, ione, m)
+     &                         sph_rlm1%idx_gl_1d_rlm_j, ione, m)
       end do
 !
 !
       if(iflag_debug.eq.1) write(*,*) 'cal_gaunt_coriolis_rlm'
       call cal_gaunt_coriolis_rlm(l_truncation,                         &
-     &    nidx_rlm(2), idx_gl_1d_rlm_j)
+     &    nidx_rlm(2), sph_rlm1%idx_gl_1d_rlm_j)
 !
       if(iflag_debug.eq.1) write(*,*) 'interact_rot_coriolis_rlm'
       call interact_rot_coriolis_rlm(nidx_rlm(2))
@@ -92,15 +92,15 @@
      &      ncomp_trans, n_WR, irev_sr_rlm, WR)
       end if
 !
-!      call sum_div_coriolis_rlm_10                                     &
-!     &   (nnod_rlm, nidx_rlm, idx_gl_1d_rlm_j, sph_rlm1%a_r_1d_rlm_r,  &
+!      call sum_div_coriolis_rlm_10(nnod_rlm, nidx_rlm,                 &
+!     &    sph_rlm1%idx_gl_1d_rlm_j, sph_rlm1%a_r_1d_rlm_r,             &
 !     &    ncomp_trans, n_WR, irev_sr_rlm, WR)
-!      call sum_r_coriolis_bc_rlm_10                                    &
-!     &   (nnod_rlm, nidx_rlm, idx_gl_1d_rlm_j, sph_rlm1%a_r_1d_rlm_r,  &
+!      call sum_r_coriolis_bc_rlm_10(nnod_rlm, nidx_rlm,                &
+!     &    sph_rlm1%idx_gl_1d_rlm_j, sph_rlm1%a_r_1d_rlm_r,             &
 !     &    ncomp_trans, kr_in_U_rlm, n_WR, irev_sr_rlm, WR,             &
 !     &    d_cor_in_rlm)
-!      call sum_r_coriolis_bc_rlm_10                                    &
-!     &   (nnod_rlm, nidx_rlm, idx_gl_1d_rlm_j, sph_rlm1%a_r_1d_rlm_r,  &
+!      call sum_r_coriolis_bc_rlm_10(nnod_rlm, nidx_rlm,                &
+!     &    sph_rlm1%idx_gl_1d_rlm_j, sph_rlm1%a_r_1d_rlm_r,             &
 !     &    ncomp_trans, kr_out_U_rlm, n_WR, irev_sr_rlm, WR,            &
 !     &    d_cor_out_rlm)
 !

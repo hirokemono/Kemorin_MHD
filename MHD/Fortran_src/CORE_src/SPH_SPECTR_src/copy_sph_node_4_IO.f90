@@ -131,11 +131,14 @@
       end do
 !
       sph_rlm1%radius_1d_rlm_r(1:nidx_rlm(1))                           &
-     &                =   r_gl_1_IO(1:nidx_rlm(1))
+     &                = r_gl_1_IO(1:nidx_rlm(1))
       idx_gl_1d_rlm_r(1:nidx_rlm(1)) =   idx_gl_1_IO(1:nidx_rlm(1))
-      idx_gl_1d_rlm_j(1:nidx_rlm(2),1) = idx_gl_2_IO(1:nidx_rlm(2),1)
-      idx_gl_1d_rlm_j(1:nidx_rlm(2),2) = idx_gl_2_IO(1:nidx_rlm(2),2)
-      idx_gl_1d_rlm_j(1:nidx_rlm(2),3) = idx_gl_2_IO(1:nidx_rlm(2),3)
+      sph_rlm1%idx_gl_1d_rlm_j(1:nidx_rlm(2),1)                         &
+     &                = idx_gl_2_IO(1:nidx_rlm(2),1)
+      sph_rlm1%idx_gl_1d_rlm_j(1:nidx_rlm(2),2)                         &
+     &                = idx_gl_2_IO(1:nidx_rlm(2),2)
+      sph_rlm1%idx_gl_1d_rlm_j(1:nidx_rlm(2),3)                         &
+     &                = idx_gl_2_IO(1:nidx_rlm(2),3)
 !
       call deallocate_nod_id_sph_IO
       call deallocate_idx_sph_1d1_IO
@@ -340,11 +343,14 @@
      &            + idx_global_rlm(1:nnod_rlm,2) * nidx_global_rlm(1)
 !
       r_gl_1_IO(1:nidx_rlm(1))                                          &
-     &           =     sph_rlm1%radius_1d_rlm_r(1:nidx_rlm(1))
+     &           = sph_rlm1%radius_1d_rlm_r(1:nidx_rlm(1))
       idx_gl_1_IO(1:nidx_rlm(1)) =   idx_gl_1d_rlm_r(1:nidx_rlm(1))
-      idx_gl_2_IO(1:nidx_rlm(2),1) = idx_gl_1d_rlm_j(1:nidx_rlm(2),1)
-      idx_gl_2_IO(1:nidx_rlm(2),2) = idx_gl_1d_rlm_j(1:nidx_rlm(2),2)
-      idx_gl_2_IO(1:nidx_rlm(2),3) = idx_gl_1d_rlm_j(1:nidx_rlm(2),3)
+      idx_gl_2_IO(1:nidx_rlm(2),1)                                      &
+     &           = sph_rlm1%idx_gl_1d_rlm_j(1:nidx_rlm(2),1)
+      idx_gl_2_IO(1:nidx_rlm(2),2)                                      &
+     &           = sph_rlm1%idx_gl_1d_rlm_j(1:nidx_rlm(2),2)
+      idx_gl_2_IO(1:nidx_rlm(2),3)                                      &
+     &           = sph_rlm1%idx_gl_1d_rlm_j(1:nidx_rlm(2),3)
 !
       call deallocate_sph_1d_index_rlm
       call deallocate_spheric_param_rlm

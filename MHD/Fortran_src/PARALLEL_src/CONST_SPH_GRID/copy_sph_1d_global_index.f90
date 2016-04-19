@@ -113,9 +113,9 @@
 !
       do i = 1, nidx_rlm(2)
         j = i - 1 + ist_rlm(2)
-        idx_gl_1d_rlm_j(i,1) = idx_global_rlm_j(j,1)
-        idx_gl_1d_rlm_j(i,2) = idx_global_rlm_j(j,2)
-        idx_gl_1d_rlm_j(i,3) = idx_global_rlm_j(j,3)
+        sph_rlm1%idx_gl_1d_rlm_j(i,1) = idx_global_rlm_j(j,1)
+        sph_rlm1%idx_gl_1d_rlm_j(i,2) = idx_global_rlm_j(j,2)
+        sph_rlm1%idx_gl_1d_rlm_j(i,3) = idx_global_rlm_j(j,3)
       end do
 !
       end subroutine copy_sph_1d_gl_idx_rlm

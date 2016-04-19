@@ -89,8 +89,8 @@
               do jj = 1, nj_rlm/2
                 je_rlm = 2*jj + jst - 1
                 jo_rlm = 2*jj + jst
-                gme = dble(idx_gl_1d_rlm_j(je_rlm,3))
-                gmo = dble(idx_gl_1d_rlm_j(jo_rlm,3))
+                gme = dble(sph_rlm1%idx_gl_1d_rlm_j(je_rlm,3))
+                gmo = dble(sph_rlm1%idx_gl_1d_rlm_j(jo_rlm,3))
 !
                 ie_rlm = 1 + (je_rlm-1) * istep_rlm(2)                  &
      &                     + (k_rlm-1) *  istep_rlm(1)
@@ -122,7 +122,7 @@
 !   the last even l-m
               do jj = nj_rlm/2+1, (nj_rlm+1)/2
                 je_rlm = 2*jj + jst - 1
-                gme = dble(idx_gl_1d_rlm_j(je_rlm,3))
+                gme = dble(sph_rlm1%idx_gl_1d_rlm_j(je_rlm,3))
 !
                 ie_rlm = 1 + (je_rlm-1) * istep_rlm(2)                  &
      &                     + (k_rlm-1) *  istep_rlm(1)

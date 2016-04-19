@@ -179,7 +179,7 @@
       end do
 !
       do j = 1, nidx_rtm(2)
-        jj = idx_gl_1d_rlm_j(j,1)
+        jj = sph_rlm1%idx_gl_1d_rlm_j(j,1)
         idx_local_rlm_j(jj) = j
       end do
 !

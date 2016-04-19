@@ -102,8 +102,8 @@
 !
 !$omp parallel do private(j,ll,mm,idx_lm,g_lm)
       do j = 1, nidx_rlm(2)
-        ll = idx_gl_1d_rlm_j(j,2)
-        mm = idx_gl_1d_rlm_j(j,3)
+        ll = sph_rlm1%idx_gl_1d_rlm_j(j,2)
+        mm = sph_rlm1%idx_gl_1d_rlm_j(j,3)
 !
         call sph_normalizations(ll, mm, idx_lm, g_lm)
         g_sph_rlm(j,1:17) =  g_lm(1:17)
@@ -174,8 +174,8 @@
      &          p_m, dp_m, pmn1, pmp1, df_m)
 !
             do j = jst, jed
-              jj = idx_gl_1d_rlm_j(j,1)
-              l =  idx_gl_1d_rlm_j(j,2)
+              jj = sph_rlm1%idx_gl_1d_rlm_j(j,1)
+              l =  sph_rlm1%idx_gl_1d_rlm_j(j,2)
               P_rtm(i,j) =    p_m(l)
               dPdt_rtm(i,j) = dp_m(l)
             end do
@@ -218,8 +218,8 @@
         end if
 !
         do j = jst, jed
-          jj = idx_gl_1d_rlm_j(j,1)
-          l =  idx_gl_1d_rlm_j(j,2)
+          jj = sph_rlm1%idx_gl_1d_rlm_j(j,1)
+          l =  sph_rlm1%idx_gl_1d_rlm_j(j,2)
           P_pole_rtm(1,j) =    p_m(l)
           dPdt_pole_rtm(1,j) = dp_m(l)
         end do
@@ -240,8 +240,8 @@
         end if
 !
         do j = jst, jed
-          jj = idx_gl_1d_rlm_j(j,1)
-          l =  idx_gl_1d_rlm_j(j,2)
+          jj = sph_rlm1%idx_gl_1d_rlm_j(j,1)
+          l =  sph_rlm1%idx_gl_1d_rlm_j(j,2)
           P_pole_rtm(2,j) =    p_m(l)
           dPdt_pole_rtm(2,j) = dp_m(l)
         end do

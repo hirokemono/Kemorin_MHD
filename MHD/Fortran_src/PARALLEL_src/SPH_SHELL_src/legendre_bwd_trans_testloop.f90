@@ -90,8 +90,9 @@
           n_jk_o(ip) = lstack_rlm(mp_rlm) - lstack_even_rlm(mp_rlm)
 !
 !          st_elapsed = MPI_WTIME()
-          call set_sp_rlm_vector_sym_matmul(nnod_rlm, nidx_rlm,         &
-     &        istep_rlm, idx_gl_1d_rlm_j, sph_rlm1%a_r_1d_rlm_r,        &
+          call set_sp_rlm_vector_sym_matmul                             &
+     &       (nnod_rlm, nidx_rlm, istep_rlm,                            &
+     &        sph_rlm1%idx_gl_1d_rlm_j, sph_rlm1%a_r_1d_rlm_r,          &
      &        kst(ip), nkr(ip), jst(ip), n_jk_e(ip), n_jk_o(ip),        &
      &        ncomp, nvector, irev_sr_rlm, n_WR, WR,                    &
      &        pol_e(1,ip), tor_e(1,ip), pol_o(1,ip), tor_o(1,ip) )

@@ -94,11 +94,12 @@
                 ip_send = 3*nd-2 + (irev_sr_rtm(ip_rtm)-1) * ncomp
                 in_send = 3*nd-2 + (irev_sr_rtm(in_rtm)-1) * ncomp
 !
-                call set_sp_rlm_vector_blocked                          &
-     &               (jst, nd, k_rlm, a1r_1d_rlm_r, a2r_1d_rlm_r,       &
-     &                ncomp, n_WR, irev_sr_rlm, WR, nj_rlm,             &
-     &                pol_e(1,ip), dpoldt_e(1,ip), dpoldp_e(1,ip),      &
-     &                dtordt_e(1,ip), dtordp_e(1,ip))
+                call set_sp_rlm_vector_blocked(nnod_rlm,                &
+     &              nidx_rlm, istep_rlm, sph_rlm1%idx_gl_1d_rlm_j,      &
+     &              jst, nd, k_rlm, a1r_1d_rlm_r, a2r_1d_rlm_r,         &
+     &              ncomp, n_WR, irev_sr_rlm, WR, nj_rlm,               &
+     &              pol_e(1,ip), dpoldt_e(1,ip), dpoldp_e(1,ip),        &
+     &              dtordt_e(1,ip), dtordp_e(1,ip))
 !
                 call cal_vr_rtm_dydtheta_vector                         &
      &               (nj_rlm, P_jl(jst+1,l_rtm), dPdt_jl(jst+1,l_rtm),  &
@@ -162,9 +163,9 @@
                 ip_send = nd + 3*nvector                                &
      &                       + (irev_sr_rtm(ip_rtm)-1) * ncomp
 !
-                call set_sp_rlm_scalar_blocked                          &
-     &               (jst, nd, k_rlm, ncomp, nvector,                   &
-     &                n_WR, irev_sr_rlm, WR, nj_rlm, scl_e(1,ip))
+                call set_sp_rlm_scalar_blocked(nnod_rlm, istep_rlm,     &
+     &              jst, nd, k_rlm, ncomp, nvector,                     &
+     &              n_WR, irev_sr_rlm, WR, nj_rlm, scl_e(1,ip))
                 call cal_vr_rtm_scalar_blocked(nj_rlm,                  &
      &               P_jl(jst+1,l_rtm), scl_e(1,ip), WS(ip_send))
               end do

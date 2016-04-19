@@ -119,7 +119,8 @@
         do l_rtm = lst, led
           do j_rlm = 1, nidx_rlm(2)
             Pgv_j(j_rlm) = -P_jl(j_rlm,l_rtm)                           &
-     &        * dble(idx_gl_1d_rlm_j(j_rlm,3))*asin_theta_1d_rtm(l_rtm)
+     &                    * dble(sph_rlm1%idx_gl_1d_rlm_j(j_rlm,3))     &
+     &                    * asin_theta_1d_rtm(l_rtm)
           end do
 !
           do mp_rlm = 1, nidx_rtm(3)

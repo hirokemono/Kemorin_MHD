@@ -77,7 +77,7 @@
               dPvw_l(l_rtm) = dPdt_rtm(l_rtm,j_rlm)                     &
      &                       * g_sph_rlm(j_rlm,7)* weight_rtm(l_rtm)
               Pgvw_l(l_rtm) = P_rtm(l_rtm,j_rlm)                        &
-     &                       * dble(idx_gl_1d_rlm_j(j_rlm,3))           &
+     &                       * dble(sph_rlm1%idx_gl_1d_rlm_j(j_rlm,3))  &
      &                        * asin_theta_1d_rtm(l_rtm)                &
      &                        * g_sph_rlm(j_rlm,7)* weight_rtm(l_rtm)
             end do

@@ -43,6 +43,7 @@
 !
       subroutine initialize_legendre_trans
 !
+      use m_spheric_parameter
       use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans
       use m_FFT_selector
@@ -53,13 +54,14 @@
 !
       call allocate_work_4_sph_trans
 !
-      call radial_4_sph_trans
-      call set_mdx_rlm_rtm
+      call radial_4_sph_trans(sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1)
+      call set_mdx_rlm_rtm(l_truncation, nidx_rtm, nidx_rlm,            &
+     &    idx_gl_1d_rtm_m, sph_rlm1%idx_gl_1d_rlm_j)
 !
       call s_cal_schmidt_poly_rtm
 !
-      call set_sin_theta_rtm
-      call set_sin_theta_rtp
+      call set_sin_theta_rtm(nidx_rtm(2))
+      call set_sin_theta_rtp(nidx_rtp(2), idx_gl_1d_rtp_t)
 !
       call allocate_trans_schmidt_rtm
       call set_trans_legendre_rtm

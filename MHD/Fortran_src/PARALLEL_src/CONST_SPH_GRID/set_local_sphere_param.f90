@@ -138,7 +138,7 @@
         do j = 1, nidx_rlm(2)
           inod = inod + 1
           idx_global_rlm(inod,1) = idx_gl_1d_rlm_r(k)
-          idx_global_rlm(inod,2) = idx_gl_1d_rlm_j(j,1)
+          idx_global_rlm(inod,2) = sph_rlm1%idx_gl_1d_rlm_j(j,1)
           end do
         end do
 !

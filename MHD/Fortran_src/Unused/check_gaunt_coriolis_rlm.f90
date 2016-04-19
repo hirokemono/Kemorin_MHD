@@ -34,8 +34,9 @@
 !
 !
       call check_gaunt_integrals_rlm(iflag_sph_coriolis_file,           &
-     &     l_truncation, nidx_rlm(2), idx_gl_1d_rlm_j)
-      call check_interact_coriolis_rlm(nidx_rlm(2), idx_gl_1d_rlm_j)
+     &    l_truncation, nidx_rlm(2), sph_rlm1%idx_gl_1d_rlm_j)
+      call check_interact_coriolis_rlm                                  &
+     &   (nidx_rlm(2), sph_rlm1%idx_gl_1d_rlm_j)
 !
       end subroutine s_check_gaunt_coriolis_rlm
 !

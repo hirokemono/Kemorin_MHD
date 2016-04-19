@@ -252,7 +252,7 @@
       do j = 1, nidx_rlm(2)
         do i = 1, nidx_rtm(2)
           write(50+my_rank,'(5i5,1p3E25.15e3)') i, j,                   &
-     &      idx_gl_1d_rlm_j(j,1:3), P_rtm(i,j), dPdt_rtm(i,j)
+     &      sph_rlm1%idx_gl_1d_rlm_j(j,1:3), P_rtm(i,j), dPdt_rtm(i,j)
         end do
       end do
 !
@@ -274,7 +274,8 @@
       do j = 1, nidx_rlm(2)
         do i = 1, 2
           write(50+my_rank,'(5i5,1p3E25.15e3)') i, j,                   &
-     &      idx_gl_1d_rlm_j(j,1:3), P_pole_rtm(i,j), dPdt_pole_rtm(i,j)
+     &      sph_rlm1%idx_gl_1d_rlm_j(j,1:3),                            &
+     &      P_pole_rtm(i,j), dPdt_pole_rtm(i,j)
         end do
       end do
 !

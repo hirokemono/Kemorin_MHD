@@ -7,10 +7,15 @@
 !>@brief  Initialize spherical harmonics transform
 !!
 !!@verbatim
-!!      subroutine set_mdx_rlm_rtm
-!!      subroutine set_sin_theta_rtm
-!!      subroutine set_sin_theta_rtp
-!!      subroutine radial_4_sph_trans
+!!      subroutine set_mdx_rlm_rtm(l_truncation, nidx_rtm, nidx_rlm,    &
+!!     &          idx_gl_1d_rtm_m, idx_gl_1d_rlm_j)
+!!      subroutine set_sin_theta_rtm(nth_rtm)
+!!      subroutine set_sin_theta_rtp(nth_rtp, idx_gl_1d_rtp_t)
+!!      subroutine radial_4_sph_trans(sph_rtp, sph_rtm, sph_rlm, sph_rj)
+!!        type(sph_rtp_grid), intent(inout) :: sph_rtp
+!!        type(sph_rtm_grid), intent(inout) :: sph_rtm
+!!        type(sph_rlm_grid), intent(inout) :: sph_rlm
+!!        type(sph_rj_grid), intent(inout) :: sph_rj
 !!@endverbatim
 !
       module set_params_sph_trans
@@ -26,11 +31,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_mdx_rlm_rtm
+      subroutine set_mdx_rlm_rtm(l_truncation, nidx_rtm, nidx_rlm,      &
+     &          idx_gl_1d_rtm_m, idx_gl_1d_rlm_j)
 !
       use calypso_mpi
-      use m_spheric_parameter
       use m_work_4_sph_trans
+!
+      integer(kind = kint), intent(in) :: l_truncation
+      integer(kind = kint), intent(in) :: nidx_rtm(3)
+      integer(kind = kint), intent(in)                                  &
+     &             :: idx_gl_1d_rtm_m(nidx_rtm(3),2)
+      integer(kind = kint), intent(in) :: nidx_rlm(2)
+      integer(kind = kint), intent(in)                                  &
+     &             :: idx_gl_1d_rlm_j(nidx_rlm(2),3)
 !
       integer(kind = kint) :: m, mm, j, mst, med
       integer(kind = kint), allocatable :: mdx_rlm_rtm(:)
@@ -89,16 +102,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sin_theta_rtm
+      subroutine set_sin_theta_rtm(nth_rtm)
 !
-      use m_spheric_parameter
       use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans
+!
+      integer(kind = kint), intent(in) :: nth_rtm
 !
       integer(kind = kint) :: l_rtm
 !
 !
-      do l_rtm = 1, nidx_rtm(2)
+      do l_rtm = 1, nth_rtm
         asin_theta_1d_rtm(l_rtm) = one / sin(g_colat_rtm(l_rtm))
       end do
 !
@@ -106,16 +120,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sin_theta_rtp
+      subroutine set_sin_theta_rtp(nth_rtp, idx_gl_1d_rtp_t)
 !
-      use m_spheric_parameter
       use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans
+!
+      integer(kind = kint), intent(in) :: nth_rtp
+      integer(kind = kint), intent(in) :: idx_gl_1d_rtp_t(nth_rtp)
 !
       integer(kind = kint) :: l_rtp, l_gl
 !
 !
-      do l_rtp = 1, nidx_rtp(2)
+      do l_rtp = 1, nth_rtp
         l_gl = idx_gl_1d_rtp_t(l_rtp)
         cos_theta_1d_rtp(l_rtp) = cos(g_colat_rtm(l_gl))
         sin_theta_1d_rtp(l_rtp) = sin(g_colat_rtm(l_gl))
@@ -128,19 +144,24 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine radial_4_sph_trans
+      subroutine radial_4_sph_trans(sph_rtp, sph_rtm, sph_rlm, sph_rj)
 !
-      use m_spheric_parameter
+      use t_spheric_parameter
+!
+      type(sph_rtp_grid), intent(inout) :: sph_rtp
+      type(sph_rtm_grid), intent(inout) :: sph_rtm
+      type(sph_rlm_grid), intent(inout) :: sph_rlm
+      type(sph_rj_grid), intent(inout) :: sph_rj
 !
 !
-      sph_rtp1%a_r_1d_rtp_r(1:nidx_rtp(1))                              &
-     &      = one / sph_rtp1%radius_1d_rtp_r(1:nidx_rtp(1))
-      sph_rtm1%a_r_1d_rtm_r(1:nidx_rtm(1))                              &
-     &      = one / sph_rtm1%radius_1d_rtm_r(1:nidx_rtm(1))
-      sph_rlm1%a_r_1d_rlm_r(1:nidx_rlm(1))                              &
-     &      = one / sph_rlm1%radius_1d_rlm_r(1:nidx_rlm(1))
-      sph_rj1%a_r_1d_rj_r(1:nidx_rj(1))                                 &
-     &      = one / sph_rj1%radius_1d_rj_r(1:nidx_rj(1))
+      sph_rtp%a_r_1d_rtp_r(1:sph_rtp%nidx_rtp(1))                       &
+     &      = one / sph_rtp%radius_1d_rtp_r(1:sph_rtp%nidx_rtp(1))
+      sph_rtm%a_r_1d_rtm_r(1:sph_rtm%nidx_rtm(1))                       &
+     &      = one / sph_rtm%radius_1d_rtm_r(1:sph_rtm%nidx_rtm(1))
+      sph_rlm%a_r_1d_rlm_r(1:sph_rlm%nidx_rlm(1))                       &
+     &      = one / sph_rlm%radius_1d_rlm_r(1:sph_rlm%nidx_rlm(1))
+      sph_rj%a_r_1d_rj_r(1:sph_rj%nidx_rj(1))                           &
+     &      = one / sph_rj%radius_1d_rj_r(1:sph_rj%nidx_rj(1))
 !
       end subroutine radial_4_sph_trans
 !

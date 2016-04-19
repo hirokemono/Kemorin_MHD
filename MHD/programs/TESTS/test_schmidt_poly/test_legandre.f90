@@ -50,9 +50,9 @@
       do l = 0, ltr
         do m = -l, l
           j = l*(l+1) + m
-          idx_gl_1d_rlm_j(j+1,1) = j
-          idx_gl_1d_rlm_j(j+1,2) = l
-          idx_gl_1d_rlm_j(j+1,3) = m
+          sph_rlm1%idx_gl_1d_rlm_j(j+1,1) = j
+          sph_rlm1%idx_gl_1d_rlm_j(j+1,2) = l
+          sph_rlm1%idx_gl_1d_rlm_j(j+1,3) = m
         end do
       end do
 !
@@ -72,7 +72,7 @@
       call set_lagender_4_rlm
 !
 !      do j = 1, nidx_rlm(2)
-!        write(*,*) j, idx_gl_1d_rlm_j(j,1:3)
+!        write(*,*) j, sph_rlm1%idx_gl_1d_rlm_j(j,1:3)
 !      end do
 !
       write(*,*) 'Gauss-Legendre colatitude'
@@ -110,9 +110,10 @@
         open(60,file='lagendre_Kemo.dat')
         write(60,'(a)') 'j, l, m, i, r, P_rtm, dPdt_rtm'
         do j = l_check*(l_check+1)+1, l_check*(l_check+2)+1
-          if(idx_gl_1d_rlm_j(j,3) .ge. 0) then
+          if(sph_rlm1%idx_gl_1d_rlm_j(j,3) .ge. 0) then
             do i = 1, n_point
-              write(60,'(4i5,1p3e23.14e3)') idx_gl_1d_rlm_j(j,1:3), i,  &
+              write(60,'(4i5,1p3e23.14e3)')                             &
+     &            sph_rlm1%idx_gl_1d_rlm_j(j,1:3), i,                   &
      &            g_colat_rtm(i), P_rtm(i,j), dPdt_rtm(i,j)
             end do
           end if

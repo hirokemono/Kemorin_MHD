@@ -109,8 +109,9 @@
                   ipn_send = 3*nd-2 + (irev_sr_rtm(ip_rtnm)-1) * ncomp
                   inn_send = 3*nd-2 + (irev_sr_rtm(in_rtnm)-1) * ncomp
 !
-                  call set_sp_rlm_vector_symmetry                       &
-     &               (jst, nd, k_rlm, a1r_1d_rlm_r, a2r_1d_rlm_r,       &
+                  call set_sp_rlm_vector_symmetry(nnod_rlm,             &
+     &                nidx_rlm, istep_rlm, sph_rlm1%idx_gl_1d_rlm_j,    &
+     &                jst, nd, k_rlm, a1r_1d_rlm_r, a2r_1d_rlm_r,       &
      &                ncomp, n_WR, irev_sr_rlm, WR, nj_rlm,             &
      &                pol_e(1,ip), dpoldt_e(1,ip), dpoldp_e(1,ip),      &
      &                dtordt_e(1,ip), dtordp_e(1,ip),                   &
@@ -151,11 +152,12 @@
                 ipp_send = 3*nd-2 + (irev_sr_rtm(ip_rtpm)-1) * ncomp
                 inp_send = 3*nd-2 + (irev_sr_rtm(in_rtpm)-1) * ncomp
 !
-                call set_sp_rlm_vector_equator                          &
-     &               (jst, nd, k_rlm, a1r_1d_rlm_r, a2r_1d_rlm_r,       &
-     &                ncomp, n_WR, irev_sr_rlm, WR, nj_rlm,             &
-     &                pol_e(1,ip), dpoldp_e(1,ip), dtordp_e(1,ip),      &
-     &                dpoldt_o(1,ip), dtordt_o(1,ip))
+                call set_sp_rlm_vector_equator(nnod_rlm,                &
+     &              nidx_rlm, istep_rlm, sph_rlm1%idx_gl_1d_rlm_j,      &
+     &              jst, nd, k_rlm, a1r_1d_rlm_r, a2r_1d_rlm_r,         &
+     &              ncomp, n_WR, irev_sr_rlm, WR, nj_rlm,               &
+     &              pol_e(1,ip), dpoldp_e(1,ip), dtordp_e(1,ip),        &
+     &              dpoldt_o(1,ip), dtordt_o(1,ip))
 !
                 call cal_vr_rtm_dydtheta_equator(nj_rlm,                &
      &              Ps_jl(je,lp_rtm), dPsdt_jl(jo,lp_rtm),              &
@@ -230,9 +232,10 @@
                   in_send = nd + 3*nvector                              &
      &                         + (irev_sr_rtm(in_rtm)-1) * ncomp
 !
-                  call set_sp_rlm_scalar_symmetry(jst, nd, k_rlm,       &
-     &               ncomp, nvector, n_WR, irev_sr_rlm, WR,             &
-     &               nj_rlm, scl_e(1,ip), scl_o(1,ip))
+                  call set_sp_rlm_scalar_symmetry(nnod_rlm, istep_rlm,  &
+     &                jst, nd, k_rlm, ncomp, nvector,                   &
+     &                n_WR, irev_sr_rlm, WR, nj_rlm,                    &
+     &                scl_e(1,ip), scl_o(1,ip))
 !
                   call cal_vr_rtm_scalar_symmetry(nj_rlm,               &
      &                Ps_jl(je,lp_rtm), Ps_jl(jo,lp_rtm),               &
@@ -256,9 +259,9 @@
                 ip_send = nd + 3*nvector                                &
      &                       + (irev_sr_rtm(ip_rtm)-1) * ncomp
 !
-                call set_sp_rlm_scalar_equator(jst, nd, k_rlm,          &
-     &               ncomp, nvector, n_WR, irev_sr_rlm, WR,             &
-     &               nj_rlm, scl_e(1,ip))
+                call set_sp_rlm_scalar_equator(nnod_rlm, istep_rlm,     &
+     &              jst, nd, k_rlm,  ncomp, nvector,                    &
+     &              n_WR, irev_sr_rlm, WR,  nj_rlm, scl_e(1,ip))
 !
                 call cal_vr_rtm_scalar_equator(nj_rlm,                  &
      &              Ps_jl(je,lp_rtm), scl_e(1,ip), WS(ip_send))
