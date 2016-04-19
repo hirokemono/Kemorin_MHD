@@ -86,8 +86,9 @@
       ist_rtm(1:ithree) =  ist_sph_IO(1:ithree)
       ied_rtm(1:ithree) =  ied_sph_IO(1:ithree)
 !
+      sph_rtm1%nidx_rtm(1:3) = nidx_rtm(1:3)
       call allocate_spheric_param_rtm
-      call allocate_sph_1d_index_rtm
+      call alloc_type_sph_1d_index_rtm(sph_rtm1)
 !
       do i = 1, ithree
         idx_global_rtm(1:nnod_rtm,i) = idx_gl_sph_IO(1:nnod_rtm,i)
@@ -95,10 +96,14 @@
 !
       sph_rtm1%radius_1d_rtm_r(1:nidx_rtm(1))                           &
      &      =   r_gl_1_IO(1:nidx_rtm(1))
-      idx_gl_1d_rtm_r(1:nidx_rtm(1)) =   idx_gl_1_IO(1:nidx_rtm(1))
-      idx_gl_1d_rtm_t(1:nidx_rtm(2)) =   idx_gl_2_IO(1:nidx_rtm(2),1)
-      idx_gl_1d_rtm_m(1:nidx_rtm(3),1) = idx_gl_3_IO(1:nidx_rtm(3),1)
-      idx_gl_1d_rtm_m(1:nidx_rtm(3),2) = idx_gl_3_IO(1:nidx_rtm(3),2)
+      sph_rtm1%idx_gl_1d_rtm_r(1:nidx_rtm(1))                           &
+     &      =   idx_gl_1_IO(1:nidx_rtm(1))
+      sph_rtm1%idx_gl_1d_rtm_t(1:nidx_rtm(2))                           &
+     &      =   idx_gl_2_IO(1:nidx_rtm(2),1)
+      sph_rtm1%idx_gl_1d_rtm_m(1:nidx_rtm(3),1)                         &
+     &      = idx_gl_3_IO(1:nidx_rtm(3),1)
+      sph_rtm1%idx_gl_1d_rtm_m(1:nidx_rtm(3),2)                         &
+     &      = idx_gl_3_IO(1:nidx_rtm(3),2)
 !
       call deallocate_nod_id_sph_IO
       call deallocate_idx_sph_1d1_IO
@@ -294,12 +299,16 @@
 !
       r_gl_1_IO(1:nidx_rtm(1))                                          &
      &      = sph_rtm1%radius_1d_rtm_r(1:nidx_rtm(1))
-      idx_gl_1_IO(1:nidx_rtm(1)) =   idx_gl_1d_rtm_r(1:nidx_rtm(1))
-      idx_gl_2_IO(1:nidx_rtm(2),1) = idx_gl_1d_rtm_t(1:nidx_rtm(2))
-      idx_gl_3_IO(1:nidx_rtm(3),1) = idx_gl_1d_rtm_m(1:nidx_rtm(3),1)
-      idx_gl_3_IO(1:nidx_rtm(3),2) = idx_gl_1d_rtm_m(1:nidx_rtm(3),2)
+      idx_gl_1_IO(1:nidx_rtm(1))                                        &
+     &      =   sph_rtm1%idx_gl_1d_rtm_r(1:nidx_rtm(1))
+      idx_gl_2_IO(1:nidx_rtm(2),1)                                      &
+     &      = sph_rtm1%idx_gl_1d_rtm_t(1:nidx_rtm(2))
+      idx_gl_3_IO(1:nidx_rtm(3),1)                                      &
+     &      = sph_rtm1%idx_gl_1d_rtm_m(1:nidx_rtm(3),1)
+      idx_gl_3_IO(1:nidx_rtm(3),2)                                      &
+     &      = sph_rtm1%idx_gl_1d_rtm_m(1:nidx_rtm(3),2)
 !
-      call deallocate_sph_1d_index_rtm
+      call dealloc_type_sph_1d_index_rtm(sph_rtm1)
       call deallocate_spheric_param_rtm
 !
       end subroutine copy_sph_node_rtm_to_IO

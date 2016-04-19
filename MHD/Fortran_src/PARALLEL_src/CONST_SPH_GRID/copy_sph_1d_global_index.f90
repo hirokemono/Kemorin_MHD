@@ -73,22 +73,22 @@
 !
       do i = 1, nidx_rtm(1)
         j = i - 1 + ist_rtm(1)
-        idx_gl_1d_rtm_r(i) = idx_global_rtm_r(j)
+        sph_rtm1%idx_gl_1d_rtm_r(i) = idx_global_rtm_r(j)
       end do
       do i = 1, nidx_rtm(1)
-        j = idx_gl_1d_rtm_r(i)
+        j = sph_rtm1%idx_gl_1d_rtm_r(i)
         sph_rtm1%radius_1d_rtm_r(i) = radius_1d_gl(j)
       end do
 !
       do i = 1, nidx_rtm(2)
         j = i - 1 + ist_rtm(2)
-        idx_gl_1d_rtm_t(i) = idx_global_rtm_t(j)
+        sph_rtm1%idx_gl_1d_rtm_t(i) = idx_global_rtm_t(j)
       end do
 !
       do i = 1, nidx_rtm(3)
         j = i - 1 + ist_rtm(3)
-        idx_gl_1d_rtm_m(i,1) = idx_global_rtm_m(j,1)
-        idx_gl_1d_rtm_m(i,2) = idx_global_rtm_m(j,2)
+        sph_rtm1%idx_gl_1d_rtm_m(i,1) = idx_global_rtm_m(j,1)
+        sph_rtm1%idx_gl_1d_rtm_m(i,2) = idx_global_rtm_m(j,2)
       end do
 !
       end subroutine copy_sph_1d_gl_idx_rtm

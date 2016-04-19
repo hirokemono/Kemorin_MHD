@@ -148,17 +148,17 @@
       call allocate_rtm_1d_local_idx
 !
       do k = 1, nidx_rtm(1)
-        kk = idx_gl_1d_rtm_r(k)
+        kk = sph_rtm1%idx_gl_1d_rtm_r(k)
         idx_local_rtm_r(kk) = k
       end do
 !
       do l = 1, nidx_rtm(2)
-        ll = idx_gl_1d_rtm_t(l)
+        ll = sph_rtm1%idx_gl_1d_rtm_t(l)
         idx_local_rtm_t(ll) = l
       end do
 !
       do m = 1, nidx_rtm(3)
-        mm = idx_gl_1d_rtm_m(m,1)
+        mm = sph_rtm1%idx_gl_1d_rtm_m(m,1)
         idx_local_rtm_m(mm) = m
       end do
 !

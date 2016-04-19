@@ -222,8 +222,10 @@
      &       .or. idx_rtm_recieve(inod,2) .eq. 0                        &
      &       .or. idx_rtm_recieve(inod,3) .eq. 0) then
               write(id_check,'(5i16,6i5)') inod,                        &
-     &             idx_global_rtm(inod,1:3), idx_gl_1d_rtm_r(kr),       &
-     &             idx_gl_1d_rtm_t(lth), idx_gl_1d_rtm_m(mphi,1:2)
+     &             idx_global_rtm(inod,1:3),                            &
+     &             sph_rtm1%idx_gl_1d_rtm_r(kr),                        &
+     &             sph_rtm1%idx_gl_1d_rtm_t(lth),                       &
+     &             sph_rtm1%idx_gl_1d_rtm_m(mphi,1:2)
             end if
           end do
         end do

@@ -56,7 +56,7 @@
 !
       call radial_4_sph_trans(sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1)
       call set_mdx_rlm_rtm(l_truncation, nidx_rtm, nidx_rlm,            &
-     &    idx_gl_1d_rtm_m, sph_rlm1%idx_gl_1d_rlm_j)
+     &    sph_rtm1%idx_gl_1d_rtm_m, sph_rlm1%idx_gl_1d_rlm_j)
 !
       call s_cal_schmidt_poly_rtm
 !

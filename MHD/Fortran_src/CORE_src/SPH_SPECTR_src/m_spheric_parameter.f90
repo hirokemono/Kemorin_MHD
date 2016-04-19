@@ -14,15 +14,11 @@
 !!      subroutine allocate_spheric_param_rtm
 !!
 !!      subroutine allocate_sph_1d_index_rtp
-!!      subroutine allocate_sph_1d_index_rtm
-!!      subroutine allocate_sph_1d_index_rj
 !!
 !!      subroutine deallocate_spheric_param_rtp
 !!      subroutine deallocate_spheric_param_rtm
 !!
 !!      subroutine deallocate_sph_1d_index_rtp
-!!      subroutine deallocate_sph_1d_index_rtm
-!!      subroutine deallocate_sph_1d_index_rlm
 !!
 !!      subroutine check_global_spheric_parameter
 !!      subroutine check_spheric_parameter(my_rank)
@@ -50,7 +46,7 @@
 !sph_rtp1%radius_1d_rtp_r
 !
       type(sph_rtm_grid), save :: sph_rtm1
-!sph_rtm1%radius_1d_rtm_r
+!sph_rtm1%idx_gl_1d_rtm_r
 !
       type(sph_rlm_grid), save :: sph_rlm1
 !sph_rlm1%idx_global_rlm
@@ -174,8 +170,6 @@
       integer(kind = kint), allocatable :: idx_global_rtp(:,:)
 !>      global address for each direction @f$ f(r,\theta,m) @f$
       integer(kind = kint), allocatable :: idx_global_rtm(:,:)
-!>      global address for each direction @f$ f(r,l,m) @f$
-!      integer(kind = kint), allocatable :: idx_global_rlm(:,:)
 !
 !
 !>      radial global address @f$ f(r,\theta,\phi) @f$
@@ -188,21 +182,13 @@
       integer(kind = kint), allocatable :: idx_gl_1d_rtp_p(:,:)
 !
 !>      radial global address @f$ f(r,\theta,m) @f$
-      integer(kind = kint), allocatable :: idx_gl_1d_rtm_r(:)
+!      integer(kind = kint), allocatable :: idx_gl_1d_rtm_r(:)
 !>      meridional global address @f$ f(r,\theta,m) @f$
-      integer(kind = kint), allocatable :: idx_gl_1d_rtm_t(:)
+!      integer(kind = kint), allocatable :: idx_gl_1d_rtm_t(:)
 !>      zonal global address @f$ f(r,\theta,m) @f$
 !!@n        idx_gl_1d_rtm_m(m,1): global ID for Fourier transform
 !!@n        idx_gl_1d_rtm_m(m,2): Fourier spectr mode
-      integer(kind = kint), allocatable :: idx_gl_1d_rtm_m(:,:)
-!
-!>      radial global address @f$ f(r,l,m) @f$
-!      integer(kind = kint), allocatable :: idx_gl_1d_rlm_r(:)
-!>      spherical harmonics mode for  @f$ f(r,l,m) @f$
-!!@n        idx_gl_1d_rlm_j(j,1): global ID for spherical harmonics
-!!@n        idx_gl_1d_rlm_j(j,2): spherical hermonincs degree
-!!@n        idx_gl_1d_rlm_j(j,3): spherical hermonincs order
-!      integer(kind = kint), allocatable :: idx_gl_1d_rlm_j(:,:)
+!      integer(kind = kint), allocatable :: idx_gl_1d_rtm_m(:,:)
 !
 ! -----------------------------------------------------------------------
 !
@@ -279,30 +265,6 @@
       end subroutine allocate_sph_1d_index_rtp
 !
 ! ----------------------------------------------------------------------
-!
-      subroutine allocate_sph_1d_index_rtm
-!
-      integer(kind = kint) :: num
-!
-      num = nidx_rtm(1)
-      allocate(idx_gl_1d_rtm_r(num))
-      num = nidx_rtm(2)
-      allocate(idx_gl_1d_rtm_t(num))
-      num = nidx_rtm(3)
-      allocate(idx_gl_1d_rtm_m(num,2))
-!
-      if(nidx_rtm(3) .gt. 0) idx_gl_1d_rtm_m = 0
-      if(nidx_rtm(2) .gt. 0) idx_gl_1d_rtm_t = 0
-      if(nidx_rtm(1) .gt. 0) then
-        idx_gl_1d_rtm_r = 0
-      end if
-!
-      sph_rtm1%nidx_rtm(1:3) = nidx_rtm(1:3)
-      call alloc_type_sph_1d_index_rtm(sph_rtm1)
-!
-      end subroutine allocate_sph_1d_index_rtm
-!
-! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine deallocate_spheric_param_rtp
@@ -331,18 +293,6 @@
       call dealloc_type_sph_1d_index_rtp(sph_rtp1)
 !
       end subroutine deallocate_sph_1d_index_rtp
-!
-! ----------------------------------------------------------------------
-!
-      subroutine deallocate_sph_1d_index_rtm
-!
-      deallocate(idx_gl_1d_rtm_r)
-      deallocate(idx_gl_1d_rtm_t)
-      deallocate(idx_gl_1d_rtm_m)
-!
-      call dealloc_type_sph_1d_index_rtm(sph_rtm1)
-!
-      end subroutine deallocate_sph_1d_index_rtm
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

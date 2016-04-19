@@ -108,8 +108,9 @@
       ist_rtm(1:ithree) =  rtm%ist_rtm(1:ithree)
       ied_rtm(1:ithree) =  rtm%ied_rtm(1:ithree)
 !
+      sph_rtm1%nidx_rtm(1:3) = nidx_rtm(1:3)
       call allocate_spheric_param_rtm
-      call allocate_sph_1d_index_rtm
+      call alloc_type_sph_1d_index_rtm(sph_rtm1)
 !
       do i = 1, ithree
         idx_global_rtm(1:nnod_rtm,i) = rtm%idx_global_rtm(1:nnod_rtm,i)
@@ -117,13 +118,13 @@
 !
       sph_rtm1%radius_1d_rtm_r(1:nidx_rtm(1))                           &
      &        =   rtm%radius_1d_rtm_r(1:nidx_rtm(1))
-      idx_gl_1d_rtm_r(1:nidx_rtm(1))                                    &
+      sph_rtm1%idx_gl_1d_rtm_r(1:nidx_rtm(1))                           &
      &       =   rtm%idx_gl_1d_rtm_r(1:nidx_rtm(1))
-      idx_gl_1d_rtm_t(1:nidx_rtm(2))                                    &
+      sph_rtm1%idx_gl_1d_rtm_t(1:nidx_rtm(2))                           &
      &       =   rtm%idx_gl_1d_rtm_t(1:nidx_rtm(2))
-      idx_gl_1d_rtm_m(1:nidx_rtm(3),1)                                  &
+      sph_rtm1%idx_gl_1d_rtm_m(1:nidx_rtm(3),1)                         &
      &       = rtm%idx_gl_1d_rtm_m(1:nidx_rtm(3),1)
-      idx_gl_1d_rtm_m(1:nidx_rtm(3),2)                                  &
+      sph_rtm1%idx_gl_1d_rtm_m(1:nidx_rtm(3),2)                         &
      &       = rtm%idx_gl_1d_rtm_m(1:nidx_rtm(3),2)
 !
 !      call dealloc_type_sph_1d_index_rtm(rtm)
@@ -304,15 +305,15 @@
       rtm%radius_1d_rtm_r(1:rtm%nidx_rtm(1))                            &
      &      =   sph_rtm1%radius_1d_rtm_r(1:rtm%nidx_rtm(1))
       rtm%idx_gl_1d_rtm_r(1:rtm%nidx_rtm(1))                            &
-     &      =   idx_gl_1d_rtm_r(1:rtm%nidx_rtm(1))
+     &      =   sph_rtm1%idx_gl_1d_rtm_r(1:rtm%nidx_rtm(1))
       rtm%idx_gl_1d_rtm_t(1:rtm%nidx_rtm(2))                            &
-     &      =   idx_gl_1d_rtm_t(1:rtm%nidx_rtm(2))
+     &      = sph_rtm1%idx_gl_1d_rtm_t(1:rtm%nidx_rtm(2))
       rtm%idx_gl_1d_rtm_m(1:rtm%nidx_rtm(3),1)                          &
-     &      = idx_gl_1d_rtm_m(1:rtm%nidx_rtm(3),1)
+     &      = sph_rtm1%idx_gl_1d_rtm_m(1:rtm%nidx_rtm(3),1)
       rtm%idx_gl_1d_rtm_m(1:rtm%nidx_rtm(3),2)                          &
-     &      = idx_gl_1d_rtm_m(1:rtm%nidx_rtm(3),2)
+     &      = sph_rtm1%idx_gl_1d_rtm_m(1:rtm%nidx_rtm(3),2)
 !
-!      call deallocate_sph_1d_index_rtm
+!      call dealloc_type_sph_1d_index_rtm(sph_rtm1)
 !      call deallocate_spheric_param_rtm
 !
       end subroutine copy_sph_node_rtm_to_type

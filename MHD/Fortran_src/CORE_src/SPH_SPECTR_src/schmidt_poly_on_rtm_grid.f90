@@ -166,7 +166,7 @@
         do i = lst, led
 !
           do m = 1, nidx_rtm(3)
-            mm = abs(idx_gl_1d_rtm_m(m,2))
+            mm = abs(sph_rtm1%idx_gl_1d_rtm_m(m,2))
             jst = lstack_rlm(m-1) + 1
             jed = lstack_rlm(m)
 !
@@ -205,7 +205,7 @@
 !
 !
       do m = 1, nidx_rtm(3)
-        mm = abs(idx_gl_1d_rtm_m(m,2))
+        mm = abs(sph_rtm1%idx_gl_1d_rtm_m(m,2))
         jst = lstack_rlm(m-1) + 1
         jed = lstack_rlm(m)
 !
@@ -227,7 +227,7 @@
 !
       pi = four * atan(one)
       do m = 1, nidx_rtm(3)
-        mm = abs(idx_gl_1d_rtm_m(m,2))
+        mm = abs(sph_rtm1%idx_gl_1d_rtm_m(m,2))
         jst = lstack_rlm(m-1) + 1
         jed = lstack_rlm(m)
 !

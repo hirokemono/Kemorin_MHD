@@ -416,7 +416,7 @@
         end do
 !
         call deallocate_sph_comm_item_rtm
-        call deallocate_sph_1d_index_rtm
+        call dealloc_type_sph_1d_index_rtm(sph_rtm1)
         call deallocate_spheric_param_rtm
       end do
 !

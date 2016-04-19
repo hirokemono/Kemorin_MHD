@@ -77,8 +77,9 @@
 !
       call copy_gl_2_local_rtm_param(ip_rank)
 !
+      sph_rtm1%nidx_rtm(1:3) = nidx_rtm(1:3)
       call allocate_spheric_param_rtm
-      call allocate_sph_1d_index_rtm
+      call alloc_type_sph_1d_index_rtm(sph_rtm1)
 !
       call copy_sph_1d_gl_idx_rtm
 !
