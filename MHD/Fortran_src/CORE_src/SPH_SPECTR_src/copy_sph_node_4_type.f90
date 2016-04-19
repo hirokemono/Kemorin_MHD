@@ -70,7 +70,7 @@
      &         = rtp%idx_global_rtp(1:rtp%nnod_rtp,i) 
       end do
 !
-      radius_1d_rtp_r(1:nidx_rtp(1))                                    &
+      sph_rtp1%radius_1d_rtp_r(1:nidx_rtp(1))                           &
      &         =   rtp%radius_1d_rtp_r(1:nidx_rtp(1))
       idx_gl_1d_rtp_r(1:nidx_rtp(1))                                    &
      &         =   rtp%idx_gl_1d_rtp_r(1:nidx_rtp(1))
@@ -254,7 +254,7 @@
       end do
 !
       rtp%radius_1d_rtp_r(1:rtp%nidx_rtp(1))                            &
-     &       = radius_1d_rtp_r(1:rtp%nidx_rtp(1))
+     &       = sph_rtp1%radius_1d_rtp_r(1:rtp%nidx_rtp(1))
       rtp%idx_gl_1d_rtp_r(1:rtp%nidx_rtp(1))                            &
      &       = idx_gl_1d_rtp_r(1:rtp%nidx_rtp(1))
       rtp%idx_gl_1d_rtp_t(1:rtp%nidx_rtp(2))                            &

@@ -56,7 +56,8 @@
         idx_global_rtp(1:nnod_rtp,i) = idx_gl_sph_IO(1:nnod_rtp,i)
       end do
 !
-      radius_1d_rtp_r(1:nidx_rtp(1)) =   r_gl_1_IO(1:nidx_rtp(1))
+      sph_rtp1%radius_1d_rtp_r(1:nidx_rtp(1))                           &
+     &      =   r_gl_1_IO(1:nidx_rtp(1))
       idx_gl_1d_rtp_r(1:nidx_rtp(1)) =   idx_gl_1_IO(1:nidx_rtp(1))
       idx_gl_1d_rtp_t(1:nidx_rtp(2)) =   idx_gl_2_IO(1:nidx_rtp(2),1)
       idx_gl_1d_rtp_p(1:nidx_rtp(3),1) = idx_gl_3_IO(1:nidx_rtp(3),1)
@@ -231,7 +232,8 @@
       end do
 !$omp end parallel do
 !
-      r_gl_1_IO(1:nidx_rtp(1)) =     radius_1d_rtp_r(1:nidx_rtp(1))
+      r_gl_1_IO(1:nidx_rtp(1))                                          &
+     &      = sph_rtp1%radius_1d_rtp_r(1:nidx_rtp(1))
       idx_gl_1_IO(1:nidx_rtp(1)) =   idx_gl_1d_rtp_r(1:nidx_rtp(1))
       idx_gl_2_IO(1:nidx_rtp(2),1) = idx_gl_1d_rtp_t(1:nidx_rtp(2))
       idx_gl_3_IO(1:nidx_rtp(3),1) = idx_gl_1d_rtp_p(1:nidx_rtp(3),1)

@@ -46,7 +46,7 @@
       end do
       do i = 1, nidx_rtp(1)
         j = idx_gl_1d_rtp_r(i)
-        radius_1d_rtp_r(i) = radius_1d_gl(j)
+        sph_rtp1%radius_1d_rtp_r(i) = radius_1d_gl(j)
       end do
 !
       do i = 1, nidx_rtp(2)

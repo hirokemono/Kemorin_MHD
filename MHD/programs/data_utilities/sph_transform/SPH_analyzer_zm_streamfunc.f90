@@ -163,8 +163,9 @@
 !
         if (iflag_debug.gt.0)                                           &
      &        write(*,*) 'set_xyz_vect_from_sph_trans'
-        call adjust_phi_comp_for_streamfunc(ncomp_sph_trans,            &
-     &      dall_rtp(1,1))
+        call adjust_phi_comp_for_streamfunc                             &
+     &     (nnod_rtp, nidx_rtp, sph_rtp1%radius_1d_rtp_r,               &
+     &      ncomp_sph_trans, dall_rtp(1,1))
         call set_xyz_vect_from_sph_trans                                &
      &     (mesh%node, nnod_rtp, ncomp_sph_trans,                       &
      &      dall_rtp(1,1), dall_pole(1,1), nod_fld)
@@ -224,12 +225,17 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine adjust_phi_comp_for_streamfunc(ncomp_trans, v_rtp)
+      subroutine adjust_phi_comp_for_streamfunc                         &
+     &         (nnod_rtp, nidx_rtp, radius_1d_rtp_r,                    &
+     &          ncomp_trans, v_rtp)
 !
       use m_phys_labels
-      use m_spheric_parameter
       use m_work_4_sph_trans
       use set_phys_name_4_sph_trans
+!
+      integer(kind = kint), intent(in) :: nnod_rtp
+      integer(kind = kint), intent(in) :: nidx_rtp(3)
+      real(kind = kreal), intent(in) :: radius_1d_rtp_r(:)
 !
       integer(kind = kint), intent(in) ::  ncomp_trans
       real(kind = kreal), intent(inout) :: v_rtp(nnod_rtp,ncomp_trans)

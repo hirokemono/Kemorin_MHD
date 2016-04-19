@@ -153,27 +153,28 @@
       if(fs_trns%i_buo_gen .gt. 0) then
         if(iflag_4_ref_temp .eq. id_sphere_ref_temp) then
           call cal_buoyancy_flux_rtp_smp(np_smp, nnod_rtp, nidx_rtp(1), &
-     &        inod_rtp_smp_stack, radius_1d_rtp_r, coef_buo,            &
+     &        inod_rtp_smp_stack, sph_rtp1%radius_1d_rtp_r, coef_buo,   &
      &        fls_rtp(1,bs_trns%i_par_temp), fls_rtp(1,bs_trns%i_velo), &
      &        frs_rtp(1,fs_trns%i_buo_gen) )
         else
           call cal_buoyancy_flux_rtp_smp(np_smp, nnod_rtp, nidx_rtp(1), &
-     &        inod_rtp_smp_stack, radius_1d_rtp_r, coef_buo,            &
+     &        inod_rtp_smp_stack, sph_rtp1%radius_1d_rtp_r, coef_buo,   &
      &        fls_rtp(1,bs_trns%i_temp), fls_rtp(1,bs_trns%i_velo),     &
      &        frs_rtp(1,fs_trns%i_buo_gen) )
         end if
       end if
 !
       if(fs_trns%i_c_buo_gen .gt. 0) then
-        call cal_buoyancy_flux_rtp_smp(np_smp, nnod_rtp, nidx_rtp(1),   &
-     &      inod_rtp_smp_stack, radius_1d_rtp_r, coef_comp_buo,         &
+        call cal_buoyancy_flux_rtp_smp(np_smp, nnod_rtp,                &
+     &      nidx_rtp(1), inod_rtp_smp_stack,                            &
+     &      sph_rtp1%radius_1d_rtp_r, coef_comp_buo,                    &
      &      fls_rtp(1,bs_trns%i_light), fls_rtp(1,bs_trns%i_velo),      &
      &      frs_rtp(1,fs_trns%i_c_buo_gen) )
       end if
 !
       if(fs_trns%i_f_buo_gen .gt. 0) then
         call cal_buoyancy_flux_rtp_smp(np_smp, nnod_rtp, nidx_rtp(1),   &
-     &      inod_rtp_smp_stack, radius_1d_rtp_r, coef_buo,              &
+     &      inod_rtp_smp_stack, sph_rtp1%radius_1d_rtp_r, coef_buo,     &
      &      fls_rtp(1,bs_trns%i_filter_temp),                           &
      &      fls_rtp(1,bs_trns%i_velo), frs_rtp(1,fs_trns%i_f_buo_gen) )
       end if
@@ -210,7 +211,8 @@
 !$omp parallel
         call cal_rtp_magnetic_streach                                   &
      &     (np_smp, nnod_rtp, inod_rtp_smp_stack,                       &
-     &      nidx_rtp(1), nidx_rtp(2), a_r_1d_rtp_r, cot_theta_1d_rtp,   &
+     &      nidx_rtp(1), nidx_rtp(2),                                   &
+     &      sph_rtp1%a_r_1d_rtp_r, cot_theta_1d_rtp,                    &
      &      fls_rtp(1,bs_trns%i_magne), fls_rtp(1,bs_trns%i_velo),      &
      &      fls_rtp(1,bs_trns%i_grad_vx), fls_rtp(1,bs_trns%i_grad_vy), &
      &      fls_rtp(1,bs_trns%i_grad_vz),                               &
