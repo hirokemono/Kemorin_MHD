@@ -115,7 +115,7 @@
         idx_global_rtm(1:nnod_rtm,i) = rtm%idx_global_rtm(1:nnod_rtm,i)
       end do
 !
-      radius_1d_rtm_r(1:nidx_rtm(1))                                    &
+      sph_rtm1%radius_1d_rtm_r(1:nidx_rtm(1))                           &
      &        =   rtm%radius_1d_rtm_r(1:nidx_rtm(1))
       idx_gl_1d_rtm_r(1:nidx_rtm(1))                                    &
      &       =   rtm%idx_gl_1d_rtm_r(1:nidx_rtm(1))
@@ -299,7 +299,7 @@
       end do
 !
       rtm%radius_1d_rtm_r(1:rtm%nidx_rtm(1))                            &
-     &      =   radius_1d_rtm_r(1:rtm%nidx_rtm(1))
+     &      =   sph_rtm1%radius_1d_rtm_r(1:rtm%nidx_rtm(1))
       rtm%idx_gl_1d_rtm_r(1:rtm%nidx_rtm(1))                            &
      &      =   idx_gl_1d_rtm_r(1:rtm%nidx_rtm(1))
       rtm%idx_gl_1d_rtm_t(1:rtm%nidx_rtm(2))                            &

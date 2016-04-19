@@ -53,7 +53,7 @@
 !sph_rtp1%radius_1d_rlm_r
 !
       type(sph_rtm_grid), save :: sph_rtm1
-!sph_rtm1%radius_1d_rlm_r
+!sph_rtm1%radius_1d_rtm_r
 !
       type(sph_rlm_grid), save :: sph_rlm1
 !sph_rlm1%radius_1d_rlm_r
@@ -210,14 +210,14 @@
 !>      1d radius data for @f$ f(r,\theta,\phi) @f$
       real(kind = kreal), allocatable :: radius_1d_rtp_r(:)
 !>      1d radius data for @f$ f(r,\theta,m) @f$
-      real(kind = kreal), allocatable :: radius_1d_rtm_r(:)
+!      real(kind = kreal), allocatable :: radius_1d_rtm_r(:)
 !>      1d radius data for @f$ f(r,l,m) @f$
 !      real(kind = kreal), allocatable :: radius_1d_rlm_r(:)
 !
 !>      1d @f$1 / r @f$ for @f$ f(r,\theta,\phi) @f$
       real(kind = kreal), allocatable :: a_r_1d_rtp_r(:)
 !>      1d @f$1 / r @f$ for @f$ f(r,\theta,m) @f$
-      real(kind = kreal), allocatable :: a_r_1d_rtm_r(:)
+!      real(kind = kreal), allocatable :: a_r_1d_rtm_r(:)
 !>      1d @f$1 / r @f$ for @f$ f(r,l,m) @f$
 !      real(kind = kreal), allocatable :: a_r_1d_rlm_r(:)
 !
@@ -311,8 +311,6 @@
 !
       num = nidx_rtm(1)
       allocate(idx_gl_1d_rtm_r(num))
-      allocate(radius_1d_rtm_r(num))
-      allocate(a_r_1d_rtm_r(num))
       num = nidx_rtm(2)
       allocate(idx_gl_1d_rtm_t(num))
       num = nidx_rtm(3)
@@ -322,9 +320,10 @@
       if(nidx_rtm(2) .gt. 0) idx_gl_1d_rtm_t = 0
       if(nidx_rtm(1) .gt. 0) then
         idx_gl_1d_rtm_r = 0
-        radius_1d_rtm_r = 0.0d0
-        a_r_1d_rtm_r = 0.0d0
       end if
+!
+      sph_rtm1%nidx_rtm(1:3) = nidx_rtm(1:3)
+      call alloc_type_sph_1d_index_rtm(sph_rtm1)
 !
       end subroutine allocate_sph_1d_index_rtm
 !
@@ -391,11 +390,11 @@
 !
       subroutine deallocate_sph_1d_index_rtm
 !
-      deallocate(radius_1d_rtm_r)
-      deallocate(a_r_1d_rtm_r)
       deallocate(idx_gl_1d_rtm_r)
       deallocate(idx_gl_1d_rtm_t)
       deallocate(idx_gl_1d_rtm_m)
+!
+      call dealloc_type_sph_1d_index_rtm(sph_rtm1)
 !
       end subroutine deallocate_sph_1d_index_rtm
 !
