@@ -111,9 +111,12 @@
         do k = 1, nidx_rtm(1)
           do l = 1, nidx_rtm(2)
             inod = inod + 1
-            idx_global_rtm(inod,1) = sph_rtm1%idx_gl_1d_rtm_r(k)
-            idx_global_rtm(inod,2) = sph_rtm1%idx_gl_1d_rtm_t(l)
-            idx_global_rtm(inod,3) = sph_rtm1%idx_gl_1d_rtm_m(m,1)
+            sph_rtm1%idx_global_rtm(inod,1)                             &
+     &              = sph_rtm1%idx_gl_1d_rtm_r(k)
+            sph_rtm1%idx_global_rtm(inod,2)                             &
+     &              = sph_rtm1%idx_gl_1d_rtm_t(l)
+            sph_rtm1%idx_global_rtm(inod,3)                             &
+     &              = sph_rtm1%idx_gl_1d_rtm_m(m,1)
           end do
         end do
       end do

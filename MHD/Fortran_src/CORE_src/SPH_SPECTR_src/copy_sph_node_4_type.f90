@@ -103,17 +103,19 @@
       nidx_global_rtm(1:ithree) = rtm%nidx_global_rtm(1:ithree)
       ltr =  ltr_type
 !
-      nnod_rtm = rtm%nnod_rtm 
-      nidx_rtm(1:ithree) = rtm%nidx_rtm(1:ithree)
+      sph_rtm1%nnod_rtm = rtm%nnod_rtm 
+      sph_rtm1%nidx_rtm(1:ithree) = rtm%nidx_rtm(1:ithree)
       ist_rtm(1:ithree) =  rtm%ist_rtm(1:ithree)
       ied_rtm(1:ithree) =  rtm%ied_rtm(1:ithree)
 !
-      sph_rtm1%nidx_rtm(1:3) = nidx_rtm(1:3)
-      call allocate_spheric_param_rtm
+      nnod_rtm = sph_rtm1%nnod_rtm
+      nidx_rtm(1:3) = sph_rtm1%nidx_rtm(1:3)
+      call alloc_type_spheric_param_rtm(sph_rtm1)
       call alloc_type_sph_1d_index_rtm(sph_rtm1)
 !
       do i = 1, ithree
-        idx_global_rtm(1:nnod_rtm,i) = rtm%idx_global_rtm(1:nnod_rtm,i)
+        sph_rtm1%idx_global_rtm(1:nnod_rtm,i)                           &
+     &      = rtm%idx_global_rtm(1:nnod_rtm,i)
       end do
 !
       sph_rtm1%radius_1d_rtm_r(1:nidx_rtm(1))                           &
@@ -299,7 +301,7 @@
 !
       do i = 1, ithree
         rtm%idx_global_rtm(1:rtm%nnod_rtm,i)                            &
-     &      = idx_global_rtm(1:rtm%nnod_rtm,i)
+     &      = sph_rtm1%idx_global_rtm(1:rtm%nnod_rtm,i)
       end do
 !
       rtm%radius_1d_rtm_r(1:rtm%nidx_rtm(1))                            &
@@ -314,7 +316,7 @@
      &      = sph_rtm1%idx_gl_1d_rtm_m(1:rtm%nidx_rtm(3),2)
 !
 !      call dealloc_type_sph_1d_index_rtm(sph_rtm1)
-!      call deallocate_spheric_param_rtm
+!      call dealloc_type_spheric_param_rtm(sph_rtm1)
 !
       end subroutine copy_sph_node_rtm_to_type
 !

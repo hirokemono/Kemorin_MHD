@@ -405,9 +405,9 @@
         do j =  jst, jed
           icou = icou + 1
           jnod = item_sr_rtm(j)
-          k_glb = idx_global_rtm(jnod,1)
-          l_glb = idx_global_rtm(jnod,2)
-          m_glb = idx_global_rtm(jnod,3)
+          k_glb = sph_rtm1%idx_global_rtm(jnod,1)
+          l_glb = sph_rtm1%idx_global_rtm(jnod,2)
+          m_glb = sph_rtm1%idx_global_rtm(jnod,3)
           k_tmp = idx_local_rtp_r(k_glb)
           l_tmp = idx_local_rtp_t(l_glb)
           m_tmp = idx_local_rtp_p(m_glb)
@@ -417,7 +417,7 @@
 !
         call deallocate_sph_comm_item_rtm
         call dealloc_type_sph_1d_index_rtm(sph_rtm1)
-        call deallocate_spheric_param_rtm
+        call dealloc_type_spheric_param_rtm(sph_rtm1)
       end do
 !
       end subroutine set_comm_table_4_rtp

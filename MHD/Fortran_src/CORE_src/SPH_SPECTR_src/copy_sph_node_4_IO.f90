@@ -81,17 +81,19 @@
       nidx_global_rtm(1:ithree) = nidx_gl_sph_IO(1:ithree)
       l_truncation =              ltr_gl_IO
 !
-      nnod_rtm = nnod_sph_IO
-      nidx_rtm(1:ithree) = nidx_sph_IO(1:ithree)
+      sph_rtm1%nnod_rtm = nnod_sph_IO
+      sph_rtm1%nidx_rtm(1:ithree) = nidx_sph_IO(1:ithree)
       ist_rtm(1:ithree) =  ist_sph_IO(1:ithree)
       ied_rtm(1:ithree) =  ied_sph_IO(1:ithree)
 !
-      sph_rtm1%nidx_rtm(1:3) = nidx_rtm(1:3)
-      call allocate_spheric_param_rtm
+      nnod_rtm = sph_rtm1%nnod_rtm
+      nidx_rtm(1:3) = sph_rtm1%nidx_rtm(1:3)
+      call alloc_type_spheric_param_rtm(sph_rtm1)
       call alloc_type_sph_1d_index_rtm(sph_rtm1)
 !
       do i = 1, ithree
-        idx_global_rtm(1:nnod_rtm,i) = idx_gl_sph_IO(1:nnod_rtm,i)
+        sph_rtm1%idx_global_rtm(1:nnod_rtm,i)                           &
+     &     = idx_gl_sph_IO(1:nnod_rtm,i)
       end do
 !
       sph_rtm1%radius_1d_rtm_r(1:nidx_rtm(1))                           &
@@ -288,12 +290,12 @@
       do i = 1, nnod_rtm
         nr_8 = nidx_global_rtm(1)
         nrt8 = nidx_global_rtm(1)*nidx_global_rtm(2)
-        idx_gl_sph_IO(i,1) = idx_global_rtm(i,1)
-        idx_gl_sph_IO(i,2) = idx_global_rtm(i,2)
-        idx_gl_sph_IO(i,3) = idx_global_rtm(i,3)
-        inod_gl_sph_IO(i) = idx_global_rtm(i,1)                         &
-     &                   + (idx_global_rtm(i,2) - 1) * nr_8             &
-     &                   +  idx_global_rtm(i,3) * nrt8
+        idx_gl_sph_IO(i,1) = sph_rtm1%idx_global_rtm(i,1)
+        idx_gl_sph_IO(i,2) = sph_rtm1%idx_global_rtm(i,2)
+        idx_gl_sph_IO(i,3) = sph_rtm1%idx_global_rtm(i,3)
+        inod_gl_sph_IO(i) = sph_rtm1%idx_global_rtm(i,1)                &
+     &                   + (sph_rtm1%idx_global_rtm(i,2) - 1) * nr_8    &
+     &                   +  sph_rtm1%idx_global_rtm(i,3) * nrt8
       end do
 !$omp end parallel do
 !
@@ -309,7 +311,7 @@
      &      = sph_rtm1%idx_gl_1d_rtm_m(1:nidx_rtm(3),2)
 !
       call dealloc_type_sph_1d_index_rtm(sph_rtm1)
-      call deallocate_spheric_param_rtm
+      call dealloc_type_spheric_param_rtm(sph_rtm1)
 !
       end subroutine copy_sph_node_rtm_to_IO
 !

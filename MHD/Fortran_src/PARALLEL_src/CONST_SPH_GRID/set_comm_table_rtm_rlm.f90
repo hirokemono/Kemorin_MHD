@@ -132,9 +132,9 @@
 !
       ncomm = 0
       do inod = 1, nnod_rtm
-        idx1 = idx_global_rtm(inod,1)
-        idx2 = idx_global_rtm(inod,2)
-        idx3 = idx_global_rtm(inod,3)
+        idx1 = sph_rtm1%idx_global_rtm(inod,1)
+        idx2 = sph_rtm1%idx_global_rtm(inod,2)
+        idx3 = sph_rtm1%idx_global_rtm(inod,3)
 !
         if(idx1.ge.1 .and. idx1.le.nidx_global_rtm(1)) then
           kp_rtp = id_domain_rtp_r(idx1)
@@ -180,9 +180,9 @@
       end do
 !
       do inod = 1, nnod_rtm
-        idx1 = idx_global_rtm(inod,1)
-        idx2 = idx_global_rtm(inod,2)
-        idx3 = idx_global_rtm(inod,3)
+        idx1 = sph_rtm1%idx_global_rtm(inod,1)
+        idx2 = sph_rtm1%idx_global_rtm(inod,2)
+        idx3 = sph_rtm1%idx_global_rtm(inod,3)
 !
         if(idx1.ge.1 .and. idx1.le.nidx_global_rtm(1)) then
           kp_rtp = id_domain_rtp_r(idx1)

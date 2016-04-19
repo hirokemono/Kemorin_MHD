@@ -168,8 +168,8 @@
 !
       call count_interval_4_each_dir(ithree, nnod_rtp, idx_global_rtp,  &
      &    istep_rtp)
-      call count_interval_4_each_dir(ithree, nnod_rtm, idx_global_rtm,  &
-     &    istep_rtm)
+      call count_interval_4_each_dir(ithree, nnod_rtm,                  &
+     &    sph_rtm1%idx_global_rtm, istep_rtm)
       call count_interval_4_each_dir(itwo,   nnod_rlm,                  &
      &    sph_rlm1%idx_global_rlm, istep_rlm)
       call count_interval_4_each_dir(itwo,   nnod_rj,                   &
