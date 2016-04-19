@@ -8,9 +8,15 @@
 !!
 !!@verbatim
 !!      subroutine schmidt_b_trans_pole_scalar(ncomp, nvector, nscalar, &
+!!     &          l_truncation, ist_rtm_order_zero, nnod_rlm, nri_rtm,  &
+!!     &          istep_rlm, nidx_global_rtp, idx_gl_1d_rtm_r,          &
 !!     &          irev_sr_rlm, n_WR, WR, v_pl_local)
-!!      subroutine schmidt_b_trans_pole_vect(ncomp, nvector,            &
-!!     &          irev_sr_rlm, n_WR, WR, v_pl_local)
+!!      subroutine schmidt_b_trans_pole_vect                            &
+!!     &        (ncomp, nvector, l_truncation,                          &
+!!     &         ist_rtm_order_zero, ist_rtm_order_1s, ist_rtm_order_1c,&
+!!     &         nnod_rlm, nri_rtm, istep_rlm, nidx_global_rtp,         &
+!!     &         idx_gl_1d_rtm_r, a_r_1d_rtm_r,                         &
+!!     &         irev_sr_rlm, n_WR, WR, v_pl_local)
 !!
 !!------------------------------------------------------------------
 !!
@@ -68,7 +74,6 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_spheric_parameter
 !
       use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans
@@ -83,9 +88,18 @@
 !------------------------------------------------------------------
 !
       subroutine schmidt_b_trans_pole_scalar(ncomp, nvector, nscalar,   &
+     &          l_truncation, ist_rtm_order_zero, nnod_rlm, nri_rtm,    &
+     &          istep_rlm, nidx_global_rtp, idx_gl_1d_rtm_r,            &
      &          irev_sr_rlm, n_WR, WR, v_pl_local)
 !
       use calypso_mpi
+!
+      integer(kind = kint), intent(in) :: l_truncation
+      integer(kind = kint), intent(in) :: ist_rtm_order_zero
+      integer(kind = kint), intent(in) :: nnod_rlm, nri_rtm
+      integer(kind = kint), intent(in) :: istep_rlm(2)
+      integer(kind = kint), intent(in) :: nidx_global_rtp(3)
+      integer(kind = kint), intent(in) :: idx_gl_1d_rtm_r(nri_rtm)
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR
@@ -103,7 +117,7 @@
 !
       if(ist_rtm_order_zero .le. 0) return
 !$omp parallel do private(k_rlm,nd,k_np,k_sp,jst,jed,j_rlm,i_rlm,i_recv)
-      do k_rlm = 1, nidx_rlm(1)
+      do k_rlm = 1, nri_rtm
         k_np = idx_gl_1d_rtm_r(k_rlm)
         k_sp = idx_gl_1d_rtm_r(k_rlm) + nidx_global_rtp(1)
         do nd = 1+3*nvector, nscalar+3*nvector
@@ -127,10 +141,24 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine schmidt_b_trans_pole_vect(ncomp, nvector,              &
-     &          irev_sr_rlm, n_WR, WR, v_pl_local)
+      subroutine schmidt_b_trans_pole_vect                              &
+     &        (ncomp, nvector, l_truncation,                            &
+     &         ist_rtm_order_zero, ist_rtm_order_1s, ist_rtm_order_1c,  &
+     &         nnod_rlm, nri_rtm, istep_rlm, nidx_global_rtp,           &
+     &         idx_gl_1d_rtm_r, a_r_1d_rtm_r,                           &
+     &         irev_sr_rlm, n_WR, WR, v_pl_local)
 !
       use calypso_mpi
+!
+      integer(kind = kint), intent(in) :: l_truncation
+      integer(kind = kint), intent(in) :: ist_rtm_order_zero
+      integer(kind = kint), intent(in) :: ist_rtm_order_1s
+      integer(kind = kint), intent(in) :: ist_rtm_order_1c
+      integer(kind = kint), intent(in) :: nnod_rlm, nri_rtm
+      integer(kind = kint), intent(in) :: istep_rlm(2)
+      integer(kind = kint), intent(in)  :: nidx_global_rtp(3)
+      integer(kind = kint), intent(in) :: idx_gl_1d_rtm_r(nri_rtm)
+      real(kind = kreal), intent(in) :: a_r_1d_rtm_r(nri_rtm)
 !
       integer(kind = kint), intent(in) :: ncomp, nvector
       integer(kind = kint), intent(in) :: n_WR
@@ -148,7 +176,7 @@
 !
       if(ist_rtm_order_zero .gt. 0) then
 !$omp parallel do private(k_rlm,nd,k_np,k_sp,jst,jed,j_rlm,i_rlm,i_recv)
-        do k_rlm = 1, nidx_rlm(1)
+        do k_rlm = 1, nri_rtm
           k_np = idx_gl_1d_rtm_r(k_rlm)
           k_sp = idx_gl_1d_rtm_r(k_rlm) + nidx_global_rtp(1)
           do nd = 1, nvector
@@ -174,7 +202,7 @@
 !
       if(ist_rtm_order_1s .gt. 0) then
 !$omp parallel do private(k_rlm,nd,k_np,k_sp,jst,jed,j_rlm,i_rlm,i_recv)
-        do k_rlm = 1, nidx_rlm(1)
+        do k_rlm = 1, nri_rtm
           k_np = idx_gl_1d_rtm_r(k_rlm)
           k_sp = idx_gl_1d_rtm_r(k_rlm) + nidx_global_rtp(1)
           do nd = 1, nvector
@@ -203,7 +231,7 @@
 !
       if(ist_rtm_order_1c .gt. 0) then
 !$omp parallel do private(k_rlm,nd,k_np,k_sp,jst,jed,j_rlm,i_rlm,i_recv)
-        do k_rlm = 1, nidx_rlm(1)
+        do k_rlm = 1, nri_rtm
           k_np = idx_gl_1d_rtm_r(k_rlm)
           k_sp = idx_gl_1d_rtm_r(k_rlm) + nidx_global_rtp(1)
           do nd = 1, nvector
@@ -232,22 +260,22 @@
 !
       iflag = ist_rtm_order_zero+ist_rtm_order_1s+ist_rtm_order_1c
       if(iflag .gt. 0) then
-        do k_rlm = 1, nidx_rlm(1)
+        do k_rlm = 1, nri_rtm
           k_np = idx_gl_1d_rtm_r(k_rlm)
           k_sp = idx_gl_1d_rtm_r(k_rlm) + nidx_global_rtp(1)
           do nd = 1, nvector
             v_pl_local(k_np,3*nd-2) = v_pl_local(k_np,3*nd-2)           &
-     &                      * a_r_1d_rlm_r(k_rlm)
+     &                      * a_r_1d_rtm_r(k_rlm)
             v_pl_local(k_np,3*nd-1) = v_pl_local(k_np,3*nd-1)           &
-     &                      * a_r_1d_rlm_r(k_rlm)
+     &                      * a_r_1d_rtm_r(k_rlm)
             v_pl_local(k_np,3*nd  ) = v_pl_local(k_np,3*nd  )           &
-     &                      * a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
+     &                      * a_r_1d_rtm_r(k_rlm)*a_r_1d_rtm_r(k_rlm)
             v_pl_local(k_sp,3*nd-2) = v_pl_local(k_sp,3*nd-2)           &
-     &                      * a_r_1d_rlm_r(k_rlm)
+     &                      * a_r_1d_rtm_r(k_rlm)
             v_pl_local(k_sp,3*nd-1) = v_pl_local(k_sp,3*nd-1)           &
-     &                      * a_r_1d_rlm_r(k_rlm)
+     &                      * a_r_1d_rtm_r(k_rlm)
             v_pl_local(k_sp,3*nd  ) = v_pl_local(k_sp,3*nd  )           &
-     &                      * a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
+     &                      * a_r_1d_rtm_r(k_rlm)*a_r_1d_rtm_r(k_rlm)
           end do
         end do
       end if

@@ -74,8 +74,8 @@
         do kr_nd = kst, ked
           nd = 1 + mod((kr_nd-1),nvector)
           k_rlm = 1 + (kr_nd - nd) / nvector
-          a1r_1d_rlm_r = a_r_1d_rlm_r(k_rlm)
-          a2r_1d_rlm_r = a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
+          a1r_1d_rlm_r = sph_rlm1%a_r_1d_rlm_r(k_rlm)
+          a2r_1d_rlm_r = a1r_1d_rlm_r**2
           do lp = 1, nblock_l_rtm
             lst = lstack_block_rtm(lp-1) + 1
             led = lstack_block_rtm(lp  )

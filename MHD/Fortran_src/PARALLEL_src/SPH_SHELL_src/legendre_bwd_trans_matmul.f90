@@ -103,8 +103,9 @@
             nj_rlm(ip) = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
 !
 !          st_elapsed = MPI_WTIME()
-          call set_sp_rlm_vector_matmul                                 &
-     &         (kst(ip), nkr(ip), jst(ip), nj_rlm(ip),                  &
+          call set_sp_rlm_vector_matmul(nnod_rlm, nidx_rlm,             &
+     &          istep_rlm, idx_gl_1d_rlm_j, sph_rlm1%a_r_1d_rlm_r,      &
+     &          kst(ip), nkr(ip), jst(ip), nj_rlm(ip),                  &
      &          ncomp, irev_sr_rlm, n_WR, WR,                           &
      &          nvec_jk, pol_e(1,ip), dpoldt_e(1,ip), dpoldp_e(1,ip),   &
      &          dtordt_e(1,ip), dtordp_e(1,ip))
@@ -177,9 +178,10 @@
 !
 !          st_elapsed = MPI_WTIME()
           call set_sp_rlm_scalar_matmul                                 &
-     &         (kst(ip), nkr(ip), jst(ip), nj_rlm(ip),                  &
-     &          ncomp, nvector, irev_sr_rlm, n_WR, WR,                  &
-     &          nscl_jk, scl_e(1,ip))
+     &       (nnod_rlm, nidx_rlm, istep_rlm,                            &
+     &        kst(ip), nkr(ip), jst(ip), nj_rlm(ip),                    &
+     &        ncomp, nvector, irev_sr_rlm, n_WR, WR,                    &
+     &        nscl_jk, scl_e(1,ip))
 !          elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
 !
 !          st_elapsed = MPI_WTIME()
@@ -239,8 +241,9 @@
             nj_rlm(ip) = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
 !
 !          st_elapsed = MPI_WTIME()
-          call set_sp_rlm_vector_matmul                                 &
-     &         (kst(ip), nkr(ip), jst(ip), nj_rlm(ip),                  &
+          call set_sp_rlm_vector_matmul(nnod_rlm, nidx_rlm,             &
+     &          istep_rlm, idx_gl_1d_rlm_j, sph_rlm1%a_r_1d_rlm_r,      &
+     &          kst(ip), nkr(ip), jst(ip), nj_rlm(ip),                  &
      &          ncomp, irev_sr_rlm, n_WR, WR,                           &
      &          nvec_jk, pol_e(1,ip), dpoldt_e(1,ip), dpoldp_e(1,ip),   &
      &          dtordt_e(1,ip), dtordp_e(1,ip))
@@ -313,9 +316,10 @@
 !
 !          st_elapsed = MPI_WTIME()
           call set_sp_rlm_scalar_matmul                                 &
-     &         (kst(ip), nkr(ip), jst(ip), nj_rlm(ip),                  &
-     &          ncomp, nvector, irev_sr_rlm, n_WR, WR,                  &
-     &          nscl_jk, scl_e(1,ip))
+     &       (nnod_rlm, nidx_rlm, istep_rlm,                            &
+     &        kst(ip), nkr(ip), jst(ip), nj_rlm(ip),                    &
+     &        ncomp, nvector, irev_sr_rlm, n_WR, WR,                    &
+     &        nscl_jk, scl_e(1,ip))
 !          elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
 !
 !          st_elapsed = MPI_WTIME()
@@ -375,8 +379,9 @@
             nj_rlm(ip) = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
 !
 !          st_elapsed = MPI_WTIME()
-          call set_sp_rlm_vector_matmul                                 &
-     &         (kst(ip), nkr(ip), jst(ip), nj_rlm(ip),                  &
+          call set_sp_rlm_vector_matmul(nnod_rlm, nidx_rlm,             &
+     &          istep_rlm, idx_gl_1d_rlm_j, sph_rlm1%a_r_1d_rlm_r,      &
+     &          kst(ip), nkr(ip), jst(ip), nj_rlm(ip),                  &
      &          ncomp, irev_sr_rlm, n_WR, WR,                           &
      &          nvec_jk, pol_e(1,ip), dpoldt_e(1,ip), dpoldp_e(1,ip),   &
      &          dtordt_e(1,ip), dtordp_e(1,ip))
@@ -449,9 +454,10 @@
 !
 !          st_elapsed = MPI_WTIME()
           call set_sp_rlm_scalar_matmul                                 &
-     &         (kst(ip), nkr(ip), jst(ip), nj_rlm(ip),                  &
-     &          ncomp, nvector, irev_sr_rlm, n_WR, WR,                  &
-     &          nscl_jk, scl_e(1,ip))
+     &       (nnod_rlm, nidx_rlm, istep_rlm,                            &
+     &        kst(ip), nkr(ip), jst(ip), nj_rlm(ip),                    &
+     &        ncomp, nvector, irev_sr_rlm, n_WR, WR,                    &
+     &        nscl_jk, scl_e(1,ip))
 !          elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
 !
 !          st_elapsed = MPI_WTIME()

@@ -74,8 +74,8 @@
         kst = idx_rtm_smp_stack(ip-1,1) + 1
         ked = idx_rtm_smp_stack(ip,  1)
         do k_rlm = kst, ked
-          a1r_1d_rlm_r = a_r_1d_rlm_r(k_rlm)
-          a2r_1d_rlm_r = a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
+          a1r_1d_rlm_r = sph_rlm1%a_r_1d_rlm_r(k_rlm)
+          a2r_1d_rlm_r = a1r_1d_rlm_r**2
           do nd = 1, nvector
             do lp = 1, nblock_l_rtm
               lst = lstack_block_rtm(lp-1)/2

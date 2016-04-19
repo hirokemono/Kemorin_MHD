@@ -72,9 +72,11 @@
      &                            + (k_rlm-1) * istep_rlm(1))
 !
             sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2)                           &
-     &                       * a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
-            sp_rlm(i_rlm-1) = sp_rlm(i_rlm-1) * a_r_1d_rlm_r(k_rlm)
-            sp_rlm(i_rlm  ) = sp_rlm(i_rlm  ) * a_r_1d_rlm_r(k_rlm)
+     &                       * sph_rlm1%a_r_1d_rlm_r(k_rlm)**2
+            sp_rlm(i_rlm-1) = sp_rlm(i_rlm-1)                           &
+     &                       * sph_rlm1%a_r_1d_rlm_r(k_rlm)
+            sp_rlm(i_rlm  ) = sp_rlm(i_rlm  )                           &
+     &                       * sph_rlm1%a_r_1d_rlm_r(k_rlm)
           end do
         end do
 !

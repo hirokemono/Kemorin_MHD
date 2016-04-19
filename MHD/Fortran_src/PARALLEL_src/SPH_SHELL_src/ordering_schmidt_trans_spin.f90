@@ -9,15 +9,21 @@
 !!       (innermost loop is spherical harmonics)
 !!
 !!@verbatim
-!!      subroutine order_b_trans_fields_spin(ncomp, nvector, nscalar,   &
+!!      subroutine order_b_trans_fields_spin                            &
+!!     &         (nnod_rlm, nidx_rlm, istep_rlm, a_r_1d_rlm_r,          &
+!!     &          idx_rlm_smp_stack, ncomp, nvector, nscalar,           &
 !!     &          irev_sr_rlm, n_WR, WR, sp_rlm_spin)
-!!      subroutine order_f_trans_fields_spin(ncomp, nvector, nscalar,   &
-!!     &          irev_sr_rtm, n_WR, WR, vr_rtm_spin)
+!!      subroutine order_f_trans_fields_spin                            &
+!!     &         (nnod_rlm, nidx_rtm, istep_rtm, idx_rtm_smp_stack,     &
+!!     &          ncomp, nvector, nscalar, irev_sr_rtm,                 &
+!!     &          n_WR, WR, vr_rtm_spin)
 !!
-!!      subroutine back_f_trans_fields_spin(ncomp, nvector, nscalar,    &
+!!      subroutine back_f_trans_fields_spin                             &
+!!     &         (nidx_rlm, ncomp, nvector, nscalar,                    &
 !!     &          sp_rlm_spin, nmax_sr_rj, nneib_domain_rlm,            &
 !!     &          istack_sr_rlm, item_sr_rlm, WS)
-!!      subroutine back_b_trans_fields_spin(ncomp, nvector, nscalar,    &
+!!      subroutine back_b_trans_fields_spin                             &
+!!     &         (nidx_rtm, ncomp, nvector, nscalar,                    &
 !!     &          vr_rtm_spin, nmax_sr_rtp, nneib_domain_rtm,           &
 !!     &          istack_sr_rtm, item_sr_rtm, WS)
 !!@endverbatim
@@ -33,8 +39,6 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_spheric_parameter
-      use m_spheric_param_smp
 !
       implicit none
 !
@@ -44,8 +48,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine order_b_trans_fields_spin(ncomp, nvector, nscalar,     &
+      subroutine order_b_trans_fields_spin                              &
+     &         (nnod_rlm, nidx_rlm, istep_rlm, a_r_1d_rlm_r,            &
+     &          idx_rlm_smp_stack, ncomp, nvector, nscalar,             &
      &          irev_sr_rlm, n_WR, WR, sp_rlm_spin)
+!
+      integer(kind = kint), intent(in) :: nnod_rlm
+      integer(kind = kint), intent(in) :: nidx_rlm(2)
+      integer(kind = kint), intent(in) :: istep_rlm(2)
+      integer(kind = kint), intent(in) :: idx_rlm_smp_stack(0:np_smp,2)
+      real(kind = kreal), intent(in) :: a_r_1d_rlm_r(nidx_rlm(1))
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR
@@ -100,8 +112,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine order_f_trans_fields_spin(ncomp, nvector, nscalar,     &
-     &          irev_sr_rtm, n_WR, WR, vr_rtm_spin)
+      subroutine order_f_trans_fields_spin                              &
+     &         (nnod_rlm, nidx_rtm, istep_rtm, idx_rtm_smp_stack,       &
+     &          ncomp, nvector, nscalar, irev_sr_rtm,                   &
+     &          n_WR, WR, vr_rtm_spin)
+!
+      integer(kind = kint), intent(in) :: nnod_rlm
+      integer(kind = kint), intent(in) :: nidx_rtm(3)
+      integer(kind = kint), intent(in) :: istep_rtm(3)
+      integer(kind = kint), intent(in) :: idx_rtm_smp_stack(0:np_smp,3)
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR
@@ -161,11 +180,14 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine back_f_trans_fields_spin(ncomp, nvector, nscalar,      &
+      subroutine back_f_trans_fields_spin                               &
+     &         (nidx_rlm, ncomp, nvector, nscalar,                      &
      &          sp_rlm_spin, nmax_sr_rj, nneib_domain_rlm,              &
      &          istack_sr_rlm, item_sr_rlm, WS)
 !
       use m_sel_spherical_SRs
+!
+      integer(kind = kint), intent(in) :: nidx_rlm(2)
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: nneib_domain_rlm, nmax_sr_rj
@@ -260,11 +282,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine back_b_trans_fields_spin(ncomp, nvector, nscalar,      &
+      subroutine back_b_trans_fields_spin                               &
+     &         (nidx_rtm, ncomp, nvector, nscalar,                      &
      &          vr_rtm_spin, nmax_sr_rtp, nneib_domain_rtm,             &
      &          istack_sr_rtm, item_sr_rtm, WS)
 !
       use m_sel_spherical_SRs
+!
+      integer(kind = kint), intent(in) :: nidx_rtm(3)
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: nneib_domain_rtm, nmax_sr_rtp

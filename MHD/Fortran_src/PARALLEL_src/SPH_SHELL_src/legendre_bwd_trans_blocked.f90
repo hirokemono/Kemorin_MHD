@@ -79,8 +79,8 @@
             jst = lstack_rlm(mp_rlm-1)
             nj_rlm = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
             do k_rlm = kst, ked
-              a1r_1d_rlm_r = a_r_1d_rlm_r(k_rlm)
-              a2r_1d_rlm_r = a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
+              a1r_1d_rlm_r = sph_rlm1%a_r_1d_rlm_r(k_rlm)
+              a2r_1d_rlm_r = sph_rlm1%a_r_1d_rlm_r(k_rlm)**2
               do l_rtm = lst, led
 !
                 do nd = 1, nvector

@@ -33,8 +33,6 @@
       use calypso_mpi
 !
       use m_machine_parameter
-      use m_spheric_parameter
-      use m_spheric_param_smp
       use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans
       use m_legendre_work_testlooop
@@ -54,6 +52,9 @@
 !
       subroutine legendre_b_trans_vector_test(ncomp, nvector, nscalar,  &
      &          irev_sr_rlm, irev_sr_rtm, n_WR, n_WS, WR, WS)
+!
+      use m_spheric_parameter
+      use m_spheric_param_smp
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR, n_WS
@@ -89,12 +90,14 @@
           n_jk_o(ip) = lstack_rlm(mp_rlm) - lstack_even_rlm(mp_rlm)
 !
 !          st_elapsed = MPI_WTIME()
-          call set_sp_rlm_vector_sym_matmul                             &
-     &       (kst(ip), nkr(ip), jst(ip), n_jk_e(ip), n_jk_o(ip),        &
+          call set_sp_rlm_vector_sym_matmul(nnod_rlm, nidx_rlm,         &
+     &        istep_rlm, idx_gl_1d_rlm_j, sph_rlm1%a_r_1d_rlm_r,        &
+     &        kst(ip), nkr(ip), jst(ip), n_jk_e(ip), n_jk_o(ip),        &
      &        ncomp, nvector, irev_sr_rlm, n_WR, WR,                    &
      &        pol_e(1,ip), tor_e(1,ip), pol_o(1,ip), tor_o(1,ip) )
           call set_sp_rlm_scalar_sym_matmul                             &
-     &       (kst(ip), nkr(ip), jst(ip), n_jk_e(ip), n_jk_o(ip),        &
+     &       (nnod_rlm, nidx_rlm, istep_rlm,                            &
+     &        kst(ip), nkr(ip), jst(ip), n_jk_e(ip), n_jk_o(ip),        &
      &        ncomp, nvector, nscalar, irev_sr_rlm, n_WR, WR,           &
      &        pol_e(1,ip), pol_o(1,ip) )
 !          elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
@@ -134,11 +137,18 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sp_rlm_vector_sym_matmul(kst, nkr, jst,            &
-     &          n_jk_e, n_jk_o, ncomp, nvector, irev_sr_rlm, n_WR, WR,  &
-     &          pol_e, tor_e, pol_o, tor_o)
+      subroutine set_sp_rlm_vector_sym_matmul(nnod_rlm, nidx_rlm,       &
+     &          istep_rlm, idx_gl_1d_rlm_j, a_r_1d_rlm_r,               &
+     &          kst, nkr, jst, n_jk_e, n_jk_o, ncomp, nvector,          &
+     &          irev_sr_rlm, n_WR, WR,  pol_e, tor_e, pol_o, tor_o)
 !
       use m_schmidt_poly_on_rtm
+!
+      integer(kind = kint), intent(in) :: nnod_rlm
+      integer(kind = kint), intent(in) :: nidx_rlm(2)
+      integer(kind = kint), intent(in) :: istep_rlm(2)
+      integer(kind = kint), intent(in) :: idx_gl_1d_rlm_j(nidx_rlm(2),3)
+      real(kind = kreal), intent(in) :: a_r_1d_rlm_r(nidx_rlm(1))
 !
       integer(kind = kint), intent(in) :: kst, nkr
       integer(kind = kint), intent(in) :: jst, n_jk_e, n_jk_o
@@ -201,9 +211,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sp_rlm_scalar_sym_matmul(kst, nkr, jst,            &
-     &          n_jk_e, n_jk_o, ncomp, nvector, nscalar, irev_sr_rlm,   &
-     &          n_WR, WR, scl_e, scl_o)
+      subroutine set_sp_rlm_scalar_sym_matmul                           &
+     &         (nnod_rlm, nidx_rlm, istep_rlm,                          &
+     &          kst, nkr, jst, n_jk_e, n_jk_o, ncomp, nvector, nscalar, &
+     &          irev_sr_rlm, n_WR, WR, scl_e, scl_o)
+!
+      integer(kind = kint), intent(in) :: nnod_rlm
+      integer(kind = kint), intent(in) :: nidx_rlm(2)
+      integer(kind = kint), intent(in) :: istep_rlm(2)
 !
       integer(kind = kint), intent(in) :: kst, nkr
       integer(kind = kint), intent(in) :: jst, n_jk_e, n_jk_o

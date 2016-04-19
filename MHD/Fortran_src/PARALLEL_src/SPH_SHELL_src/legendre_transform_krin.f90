@@ -56,8 +56,9 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      call order_b_trans_fields_krin(ncomp, nvector, nscalar,           &
-     &    irev_sr_rlm, n_WR, WR, sp_rlm_wk(1))
+      call order_b_trans_fields_krin(nnod_rlm, nidx_rlm,                &
+     &    istep_rlm, sph_rlm1%a_r_1d_rlm_r, idx_rlm_smp_stack,          &
+     &    ncomp, nvector, nscalar, irev_sr_rlm, n_WR, WR, sp_rlm_wk(1))
 !
       call legendre_b_trans_vector_krin(ncomp, nvector,                 &
      &    sp_rlm_wk(1), vr_rtm_wk(1))
@@ -65,7 +66,7 @@
      &    sp_rlm_wk(1), vr_rtm_wk(1))
 !
       call finish_send_recv_rj_2_rlm
-      call back_b_trans_fields_krin(ncomp, nvector, nscalar,            &
+      call back_b_trans_fields_krin(nidx_rtm, ncomp, nvector, nscalar,  &
      &    vr_rtm_wk(1), nmax_sr_rtp, nneib_domain_rtm,                  &
      &    istack_sr_rtm, item_sr_rtm, WS(1))
 !
@@ -89,8 +90,9 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      call order_f_trans_fields_krin(ncomp, nvector, nscalar,           &
-     &    irev_sr_rtm, n_WR, WR, vr_rtm_wk(1))
+      call order_f_trans_fields_krin                                    &
+     &   (nnod_rlm, nidx_rtm, istep_rtm, idx_rtm_smp_stack,             &
+     &    ncomp, nvector, nscalar, irev_sr_rtm, n_WR, WR, vr_rtm_wk(1))
 !
       call legendre_f_trans_vector_krin(ncomp, nvector,                 &
      &    vr_rtm_wk(1), sp_rlm_wk(1))
@@ -98,7 +100,7 @@
      &    vr_rtm_wk(1), sp_rlm_wk(1))
 !
       call finish_send_recv_rtp_2_rtm
-      call back_f_trans_fields_krin(ncomp, nvector, nscalar,            &
+      call back_f_trans_fields_krin(nidx_rlm, ncomp, nvector, nscalar,  &
      &    sp_rlm_wk(1), nmax_sr_rj, nneib_domain_rlm,                   &
      &    istack_sr_rlm, item_sr_rlm, WS(1))
 !

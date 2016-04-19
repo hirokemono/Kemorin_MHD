@@ -50,7 +50,7 @@
 !
 !
       type(sph_rlm_grid), save :: sph_rlm1
-!sph_rlm1%istack_rlm_kr_smp
+!sph_rlm1%a_r_1d_rlm_r
 !
       type(sph_rj_grid), save :: sph_rj1
 !sph_rj1%istack_inod_rj_smp
@@ -215,7 +215,7 @@
 !>      1d @f$1 / r @f$ for @f$ f(r,\theta,m) @f$
       real(kind = kreal), allocatable :: a_r_1d_rtm_r(:)
 !>      1d @f$1 / r @f$ for @f$ f(r,l,m) @f$
-      real(kind = kreal), allocatable :: a_r_1d_rlm_r(:)
+!      real(kind = kreal), allocatable :: a_r_1d_rlm_r(:)
 !
 ! -----------------------------------------------------------------------
 !
@@ -333,7 +333,6 @@
       num = nidx_rlm(1)
       allocate(idx_gl_1d_rlm_r(num))
       allocate(radius_1d_rlm_r(num))
-      allocate(a_r_1d_rlm_r(num))
       num = nidx_rlm(2)
       allocate(idx_gl_1d_rlm_j(num,3))
 !
@@ -341,8 +340,10 @@
       if(nidx_rlm(1) .gt. 0) then
         idx_gl_1d_rlm_r = 0
         radius_1d_rlm_r = 0.0d0
-        a_r_1d_rlm_r =    0.0d0
       end if
+!
+      sph_rlm1%nidx_rlm(1:2) = nidx_rlm(1:2)
+      call alloc_type_sph_1d_index_rlm(sph_rlm1)
 !
       end subroutine allocate_sph_1d_index_rlm
 !
@@ -401,9 +402,10 @@
       subroutine deallocate_sph_1d_index_rlm
 !
       deallocate(radius_1d_rlm_r)
-      deallocate(a_r_1d_rlm_r)
       deallocate(idx_gl_1d_rlm_r)
       deallocate(idx_gl_1d_rlm_j)
+!
+      call dealloc_type_sph_1d_index_rlm(sph_rlm1)
 !
       end subroutine deallocate_sph_1d_index_rlm
 !

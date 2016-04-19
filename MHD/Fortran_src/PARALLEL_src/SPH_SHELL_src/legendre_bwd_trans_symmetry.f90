@@ -83,8 +83,8 @@
             je = 1 + jst
             jo = 1 + jst + (nj_rlm+1) / 2
             do k_rlm = kst, ked
-              a1r_1d_rlm_r = a_r_1d_rlm_r(k_rlm)
-              a2r_1d_rlm_r = a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
+              a1r_1d_rlm_r = sph_rlm1%a_r_1d_rlm_r(k_rlm)
+              a2r_1d_rlm_r = a1r_1d_rlm_r**2
               do ll = 1, nl_rtm
                 lp_rtm =  ll + lst
                 ln_rtm =  nidx_rtm(2) - lp_rtm + 1
@@ -142,8 +142,8 @@
             je = 1 + jst
             jo = 1 + jst + (nj_rlm+1) / 2
             do k_rlm = kst, ked
-              a1r_1d_rlm_r = a_r_1d_rlm_r(k_rlm)
-              a2r_1d_rlm_r = a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
+              a1r_1d_rlm_r = sph_rlm1%a_r_1d_rlm_r(k_rlm)
+              a2r_1d_rlm_r = a1r_1d_rlm_r**2
 !
               do nd = 1, nvector
                 ip_rtpm = 1 + (lp_rtm-1) * istep_rtm(2)                 &

@@ -69,7 +69,7 @@
         kst = idx_rtm_smp_stack(ip-1,1) + 1
         ked = idx_rtm_smp_stack(ip,  1)
         do k_rlm = kst, ked
-          a1r_1d_rlm_r = a_r_1d_rlm_r(k_rlm)
+          a1r_1d_rlm_r = sph_rlm1%a_r_1d_rlm_r(k_rlm)
           a2r_1d_rlm_r = a1r_1d_rlm_r * a1r_1d_rlm_r
           do j_rlm = 1, nidx_rlm(2)
             do nd = 1, nvector
@@ -78,7 +78,7 @@
 !
               sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2) * a2r_1d_rlm_r
               sp_rlm(i_rlm-1) = sp_rlm(i_rlm-1) * a1r_1d_rlm_r
-              sp_rlm(i_rlm  ) = sp_rlm(i_rlm  ) * a_r_1d_rlm_r(k_rlm)
+              sp_rlm(i_rlm  ) = sp_rlm(i_rlm  ) * a1r_1d_rlm_r
             end do
           end do
         end do
