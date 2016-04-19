@@ -42,10 +42,11 @@
       read(*,*)  ltr
 !
       nidx_rtm(2) = num_gauss
-      nidx_rlm(2) = ltr*(ltr+2) + 1
+      sph_rlm1%nidx_rlm(2) = ltr*(ltr+2) + 1
       l_truncation = ltr
       nth = ltr
-      call allocate_sph_1d_index_rlm
+      call alloc_type_sph_1d_index_rlm(sph_rlm1)
+      nidx_rlm(1:2) = sph_rlm1%nidx_rlm(1:2)
 !
       do l = 0, ltr
         do m = -l, l

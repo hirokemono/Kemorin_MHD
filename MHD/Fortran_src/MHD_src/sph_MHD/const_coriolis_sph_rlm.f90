@@ -48,9 +48,9 @@
 !
 !
       idx_rlm_ICB = find_local_radius_rlm_address(nidx_rlm(1),          &
-     &             idx_gl_1d_rlm_r, sph_bc_U%kr_in)
+     &             sph_rlm1%idx_gl_1d_rlm_r, sph_bc_U%kr_in)
       idx_rlm_degree_zero = find_local_sph_rlm_address(nidx_rlm(2),     &
-     &                          sph_rlm1%idx_gl_1d_rlm_j, izero, izero)
+     &                     sph_rlm1%idx_gl_1d_rlm_j, izero, izero)
       do m = -1, 1
         idx_rlm_degree_one(m) = find_local_sph_rlm_address(nidx_rlm(2), &
      &                         sph_rlm1%idx_gl_1d_rlm_j, ione, m)

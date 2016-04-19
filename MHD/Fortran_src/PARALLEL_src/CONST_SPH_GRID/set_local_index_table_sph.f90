@@ -174,7 +174,7 @@
       call allocate_rlm_1d_local_idx
 !
       do k = 1, nidx_rlm(1)
-        kk = idx_gl_1d_rlm_r(k)
+        kk = sph_rlm1%idx_gl_1d_rlm_r(k)
         idx_local_rlm_r(kk) = k
       end do
 !

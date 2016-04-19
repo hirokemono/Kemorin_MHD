@@ -147,21 +147,24 @@
       nidx_global_rlm(1:itwo) = rlm%nidx_global_rlm(1:itwo)
       ltr =  ltr_type
 !
-      nnod_rlm = rlm%nnod_rlm
-      nidx_rlm(1:itwo) = rlm%nidx_rlm(1:itwo)
+      sph_rlm1%nnod_rlm = rlm%nnod_rlm
+      sph_rlm1%nidx_rlm(1:itwo) = rlm%nidx_rlm(1:itwo)
       ist_rlm(1:itwo) =  rlm%ist_rlm(1:itwo)
       ied_rlm(1:itwo) =  rlm%ied_rlm(1:itwo)
 !
-      call allocate_spheric_param_rlm
-      call allocate_sph_1d_index_rlm
+      nnod_rlm = sph_rlm1%nnod_rlm
+      nidx_rlm(1:2) = sph_rlm1%nidx_rlm(1:2)
+      call alloc_type_spheric_param_rlm(sph_rlm1)
+      call alloc_type_sph_1d_index_rlm(sph_rlm1)
 !
       do i = 1, itwo
-        idx_global_rlm(1:nnod_rlm,i) = rlm%idx_global_rlm(1:nnod_rlm,i)
+        sph_rlm1%idx_global_rlm(1:nnod_rlm,i)                           &
+     &                = rlm%idx_global_rlm(1:nnod_rlm,i)
       end do
 !
       sph_rlm1%radius_1d_rlm_r(1:nidx_rlm(1))                           &
      &                =   rlm%radius_1d_rlm_r(1:nidx_rlm(1))
-      idx_gl_1d_rlm_r(1:nidx_rlm(1))                                    &
+      sph_rlm1%idx_gl_1d_rlm_r(1:nidx_rlm(1))                           &
      &                =   rlm%idx_gl_1d_rlm_r(1:nidx_rlm(1))
       sph_rlm1%idx_gl_1d_rlm_j(1:nidx_rlm(2),1)                         &
      &                = rlm%idx_gl_1d_rlm_j(1:nidx_rlm(2),1)
@@ -340,13 +343,13 @@
 !
       do i = 1, itwo
         rlm%idx_global_rlm(1:rlm%nnod_rlm,i)                            &
-     &      = idx_global_rlm(1:rlm%nnod_rlm,i)
+     &      = sph_rlm1%idx_global_rlm(1:rlm%nnod_rlm,i)
       end do
 !
       rlm%radius_1d_rlm_r(1:rlm%nidx_rlm(1))                            &
      &       =   sph_rlm1%radius_1d_rlm_r(1:rlm%nidx_rlm(1))
       rlm%idx_gl_1d_rlm_r(1:rlm%nidx_rlm(1))                            &
-     &       =   idx_gl_1d_rlm_r(1:rlm%nidx_rlm(1))
+     &       =   sph_rlm1%idx_gl_1d_rlm_r(1:rlm%nidx_rlm(1))
       rlm%idx_gl_1d_rlm_j(1:rlm%nidx_rlm(2),1)                          &
      &       = sph_rlm1%idx_gl_1d_rlm_j(1:rlm%nidx_rlm(2),1)
       rlm%idx_gl_1d_rlm_j(1:rlm%nidx_rlm(2),2)                          &
@@ -354,8 +357,8 @@
       rlm%idx_gl_1d_rlm_j(1:rlm%nidx_rlm(2),3)                          &
      &       = sph_rlm1%idx_gl_1d_rlm_j(1:rlm%nidx_rlm(2),3)
 !
-!      call deallocate_sph_1d_index_rlm
-!      call deallocate_spheric_param_rlm
+!      call dealloc_type_sph_1d_index_rlm(sph_rlm1)
+!      call dealloc_type_spheric_param_rlm(sph_rlm1)
 !
       end subroutine copy_sph_node_rlm_to_type
 !

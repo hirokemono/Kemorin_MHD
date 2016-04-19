@@ -313,16 +313,16 @@
         do j =  jst, jed
           icou = icou + 1
           jnod = item_sr_rlm(j)
-          k_glb = idx_global_rlm(jnod,1)
-          j_glb = idx_global_rlm(jnod,2)
+          k_glb = sph_rlm1%idx_global_rlm(jnod,1)
+          j_glb = sph_rlm1%idx_global_rlm(jnod,2)
           k_tmp = idx_local_rj_r(k_glb)
           j_tmp = idx_local_rj_j(j_glb)
           item_sr_rj(icou) =  j_tmp + (k_tmp-1) * nidx_rj(2)
         end do
 !
         call deallocate_sph_comm_item_rlm
-        call deallocate_sph_1d_index_rlm
-        call deallocate_spheric_param_rlm
+        call dealloc_type_sph_1d_index_rlm(sph_rlm1)
+        call dealloc_type_spheric_param_rlm(sph_rlm1)
       end do
 !
       end subroutine set_comm_table_4_rj

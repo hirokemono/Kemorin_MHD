@@ -74,8 +74,8 @@
 !
       ncomm = 0
       do inod = 1, nnod_rlm
-        idx1 = idx_global_rlm(inod,1)
-        idx2 = idx_global_rlm(inod,2)
+        idx1 = sph_rlm1%idx_global_rlm(inod,1)
+        idx2 = sph_rlm1%idx_global_rlm(inod,2)
         kp_rj = id_domain_rj_r(idx1)
         jp_rj = id_domain_rj_j(idx2)
 !
@@ -102,8 +102,8 @@
       end do
 !
       do inod = 1, nnod_rlm
-        idx1 = idx_global_rlm(inod,1)
-        idx2 = idx_global_rlm(inod,2)
+        idx1 = sph_rlm1%idx_global_rlm(inod,1)
+        idx2 = sph_rlm1%idx_global_rlm(inod,2)
         kp_rj = id_domain_rj_r(idx1)
         jp_rj = id_domain_rj_j(idx2)
 !

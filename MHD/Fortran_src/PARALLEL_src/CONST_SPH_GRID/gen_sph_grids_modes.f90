@@ -44,8 +44,10 @@
 !
       call copy_gl_2_local_rlm_param(ip_rank)
 !
-      call allocate_spheric_param_rlm
-      call allocate_sph_1d_index_rlm
+      sph_rlm1%nnod_rlm = nnod_rlm
+      sph_rlm1%nidx_rlm(1:2) = nidx_rlm(1:2)
+      call alloc_type_spheric_param_rlm(sph_rlm1)
+      call alloc_type_sph_1d_index_rlm(sph_rlm1)
 !
       call copy_sph_1d_gl_idx_rlm
 !

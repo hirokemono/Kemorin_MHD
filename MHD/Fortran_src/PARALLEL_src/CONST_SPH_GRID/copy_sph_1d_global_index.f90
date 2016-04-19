@@ -104,10 +104,10 @@
 !
       do i = 1, nidx_rlm(1)
         j = i - 1 + ist_rlm(1)
-        idx_gl_1d_rlm_r(i) = idx_global_rlm_r(j)
+        sph_rlm1%idx_gl_1d_rlm_r(i) = idx_global_rlm_r(j)
       end do
       do i = 1, nidx_rlm(1)
-        j = idx_gl_1d_rlm_r(i)
+        j = sph_rlm1%idx_gl_1d_rlm_r(i)
         sph_rlm1%radius_1d_rlm_r(i) = radius_1d_gl(j)
       end do
 !

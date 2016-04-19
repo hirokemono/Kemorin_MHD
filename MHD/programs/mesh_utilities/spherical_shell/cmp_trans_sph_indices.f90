@@ -154,12 +154,14 @@
 !
       write(id_check,*) 'Wrong commnication in rj => rlm'
       do inod = 1, nnod_rlm
-        if (     idx_rlm_recieve(inod,1) .ne. idx_global_rlm(inod,1)    &
+        if(idx_rlm_recieve(inod,1) .ne. sph_rlm1%idx_global_rlm(inod,1) &
      &      .and. idx_rlm_recieve(inod,1) .ge. 0) then
-          if (   idx_rlm_recieve(inod,2) .ne. idx_global_rlm(inod,2)    &
+          if(idx_rlm_recieve(inod,2)                                    &
+     &       .ne. sph_rlm1%idx_global_rlm(inod,2)                       &
      &      .and. idx_rlm_recieve(inod,2) .ge. 0) then
             write(id_check,'(i16,6i5)') inod,                           &
-     &        idx_global_rlm(inod,1:2), idx_rlm_recieve(inod,1:2)
+     &        sph_rlm1%idx_global_rlm(inod,1:2),                        &
+     &        idx_rlm_recieve(inod,1:2)
           end if
         end if
       end do
@@ -236,7 +238,8 @@
           if(      idx_rlm_recieve(inod,1) .lt. 0                       &
      &        .or. idx_rlm_recieve(inod,2) .lt. 0) then
               write(id_check,'(4i16,6i5)') inod,                        &
-     &        idx_global_rlm(inod,1:2), idx_gl_1d_rlm_r(kr),            &
+     &        sph_rlm1%idx_global_rlm(inod,1:2),                        &
+     &        sph_rlm1%idx_gl_1d_rlm_r(kr),                             &
      &        sph_rlm1%idx_gl_1d_rlm_j(j,2:3)
           end if
         end do

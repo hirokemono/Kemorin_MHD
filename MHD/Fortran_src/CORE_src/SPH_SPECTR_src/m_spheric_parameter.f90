@@ -12,16 +12,13 @@
 !!
 !!      subroutine allocate_spheric_param_rtp
 !!      subroutine allocate_spheric_param_rtm
-!!      subroutine allocate_spheric_param_rlm
 !!
 !!      subroutine allocate_sph_1d_index_rtp
 !!      subroutine allocate_sph_1d_index_rtm
-!!      subroutine allocate_sph_1d_index_rlm
 !!      subroutine allocate_sph_1d_index_rj
 !!
 !!      subroutine deallocate_spheric_param_rtp
 !!      subroutine deallocate_spheric_param_rtm
-!!      subroutine deallocate_spheric_param_rlm
 !!
 !!      subroutine deallocate_sph_1d_index_rtp
 !!      subroutine deallocate_sph_1d_index_rtm
@@ -56,7 +53,7 @@
 !sph_rtm1%radius_1d_rtm_r
 !
       type(sph_rlm_grid), save :: sph_rlm1
-!sph_rlm1%idx_gl_1d_rlm_j
+!sph_rlm1%idx_global_rlm
 !
       type(sph_rj_grid), save :: sph_rj1
 !sph_rj1%istack_inod_rj_smp
@@ -178,7 +175,7 @@
 !>      global address for each direction @f$ f(r,\theta,m) @f$
       integer(kind = kint), allocatable :: idx_global_rtm(:,:)
 !>      global address for each direction @f$ f(r,l,m) @f$
-      integer(kind = kint), allocatable :: idx_global_rlm(:,:)
+!      integer(kind = kint), allocatable :: idx_global_rlm(:,:)
 !
 !
 !>      radial global address @f$ f(r,\theta,\phi) @f$
@@ -200,7 +197,7 @@
       integer(kind = kint), allocatable :: idx_gl_1d_rtm_m(:,:)
 !
 !>      radial global address @f$ f(r,l,m) @f$
-      integer(kind = kint), allocatable :: idx_gl_1d_rlm_r(:)
+!      integer(kind = kint), allocatable :: idx_gl_1d_rlm_r(:)
 !>      spherical harmonics mode for  @f$ f(r,l,m) @f$
 !!@n        idx_gl_1d_rlm_j(j,1): global ID for spherical harmonics
 !!@n        idx_gl_1d_rlm_j(j,2): spherical hermonincs degree
@@ -217,9 +214,11 @@
 !
       call allocate_spheric_param_rtp
       call allocate_spheric_param_rtm
-      call allocate_spheric_param_rlm
 !
-      sph_rj1%nnod_rj = nnod_rj
+      sph_rlm1%nnod_rlm = nnod_rlm
+      sph_rj1%nnod_rj =   nnod_rj
+!
+      call alloc_type_spheric_param_rlm(sph_rlm1)
       call alloc_type_spheric_param_rj(sph_rj1)
 !
       end subroutine allocate_spheric_parameter
@@ -230,7 +229,7 @@
 !
       call deallocate_spheric_param_rtp
       call deallocate_spheric_param_rtm
-      call deallocate_spheric_param_rlm
+      call dealloc_type_spheric_param_rlm(sph_rlm1)
       call dealloc_spheric_param_rj(sph_rj1)
 !
       end subroutine deallocate_spheric_parameter
@@ -253,15 +252,6 @@
       if(nnod_rtm .gt. 0) idx_global_rtm = 0
 !
       end subroutine allocate_spheric_param_rtm
-!
-! ----------------------------------------------------------------------
-!
-      subroutine allocate_spheric_param_rlm
-!
-      allocate(idx_global_rlm(nnod_rlm,2))
-      if(nnod_rlm .gt. 0) idx_global_rlm = 0
-!
-      end subroutine allocate_spheric_param_rlm
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -313,24 +303,6 @@
       end subroutine allocate_sph_1d_index_rtm
 !
 ! ----------------------------------------------------------------------
-!
-      subroutine allocate_sph_1d_index_rlm
-!
-      integer(kind = kint) :: num
-!
-      num = nidx_rlm(1)
-      allocate(idx_gl_1d_rlm_r(num))
-!
-      if(nidx_rlm(1) .gt. 0) then
-        idx_gl_1d_rlm_r = 0
-      end if
-!
-      sph_rlm1%nidx_rlm(1:2) = nidx_rlm(1:2)
-      call alloc_type_sph_1d_index_rlm(sph_rlm1)
-!
-      end subroutine allocate_sph_1d_index_rlm
-!
-! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine deallocate_spheric_param_rtp
@@ -346,14 +318,6 @@
       deallocate(idx_global_rtm)
 !
       end subroutine deallocate_spheric_param_rtm
-!
-! ----------------------------------------------------------------------
-!
-      subroutine deallocate_spheric_param_rlm
-!
-      deallocate(idx_global_rlm)
-!
-      end subroutine deallocate_spheric_param_rlm
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -379,16 +343,6 @@
       call dealloc_type_sph_1d_index_rtm(sph_rtm1)
 !
       end subroutine deallocate_sph_1d_index_rtm
-!
-! ----------------------------------------------------------------------
-!
-      subroutine deallocate_sph_1d_index_rlm
-!
-      deallocate(idx_gl_1d_rlm_r)
-!
-      call dealloc_type_sph_1d_index_rlm(sph_rlm1)
-!
-      end subroutine deallocate_sph_1d_index_rlm
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -467,7 +421,7 @@
 !
       write(my_rank+50,*) 'i, idx_global_rlm(r,j)'
       do i = 1, nnod_rlm
-        write(my_rank+50,*) i, idx_global_rlm(i,1:2)
+        write(my_rank+50,*) i, sph_rlm1%idx_global_rlm(i,1:2)
       end do
 !
       end subroutine check_spheric_param_rlm
