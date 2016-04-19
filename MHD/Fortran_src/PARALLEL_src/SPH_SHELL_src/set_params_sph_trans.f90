@@ -136,9 +136,9 @@
       a_r_1d_rtp_r(1:nidx_rtp(1)) = one/radius_1d_rtp_r(1:nidx_rtp(1))
       a_r_1d_rtm_r(1:nidx_rtm(1)) = one/radius_1d_rtm_r(1:nidx_rtm(1))
       sph_rlm1%a_r_1d_rlm_r(1:nidx_rlm(1))                              &
-     &      = one/radius_1d_rlm_r(1:nidx_rlm(1))
+     &      = one/sph_rlm1%radius_1d_rlm_r(1:nidx_rlm(1))
       sph_rj1%a_r_1d_rj_r(1:nidx_rj(1))                                 &
-     &      =   one/sph_rj1%radius_1d_rj_r(1:nidx_rj(1))
+     &      = one/sph_rj1%radius_1d_rj_r(1:nidx_rj(1))
 !
       end subroutine radial_4_sph_trans
 !

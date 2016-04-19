@@ -128,7 +128,8 @@
         idx_global_rlm(1:nnod_rlm,i) = idx_gl_sph_IO(1:nnod_rlm,i)
       end do
 !
-      radius_1d_rlm_r(1:nidx_rlm(1)) =   r_gl_1_IO(1:nidx_rlm(1))
+      sph_rlm1%radius_1d_rlm_r(1:nidx_rlm(1))                           &
+     &                =   r_gl_1_IO(1:nidx_rlm(1))
       idx_gl_1d_rlm_r(1:nidx_rlm(1)) =   idx_gl_1_IO(1:nidx_rlm(1))
       idx_gl_1d_rlm_j(1:nidx_rlm(2),1) = idx_gl_2_IO(1:nidx_rlm(2),1)
       idx_gl_1d_rlm_j(1:nidx_rlm(2),2) = idx_gl_2_IO(1:nidx_rlm(2),2)
@@ -334,7 +335,8 @@
      &           =  idx_global_rlm(1:nnod_rlm,1)                        &
      &            + idx_global_rlm(1:nnod_rlm,2) * nidx_global_rlm(1)
 !
-      r_gl_1_IO(1:nidx_rlm(1)) =     radius_1d_rlm_r(1:nidx_rlm(1))
+      r_gl_1_IO(1:nidx_rlm(1))                                          &
+     &           =     sph_rlm1%radius_1d_rlm_r(1:nidx_rlm(1))
       idx_gl_1_IO(1:nidx_rlm(1)) =   idx_gl_1d_rlm_r(1:nidx_rlm(1))
       idx_gl_2_IO(1:nidx_rlm(2),1) = idx_gl_1d_rlm_j(1:nidx_rlm(2),1)
       idx_gl_2_IO(1:nidx_rlm(2),2) = idx_gl_1d_rlm_j(1:nidx_rlm(2),2)

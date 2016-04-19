@@ -74,7 +74,7 @@
         kst = idx_rlm_smp_stack(ip-1,1) + 1
         ked = idx_rlm_smp_stack(ip,  1)
         do k_rlm = kst, ked
-          r1_1d_rlm_r = radius_1d_rlm_r(k_rlm)
+          r1_1d_rlm_r = sph_rlm1%radius_1d_rlm_r(k_rlm)
           r2_1d_rlm_r = r1_1d_rlm_r*r1_1d_rlm_r
           do nd = 1, nvector
 !

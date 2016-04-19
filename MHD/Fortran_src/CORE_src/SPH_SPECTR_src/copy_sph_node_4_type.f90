@@ -159,7 +159,7 @@
         idx_global_rlm(1:nnod_rlm,i) = rlm%idx_global_rlm(1:nnod_rlm,i)
       end do
 !
-      radius_1d_rlm_r(1:nidx_rlm(1))                                    &
+      sph_rlm1%radius_1d_rlm_r(1:nidx_rlm(1))                           &
      &                =   rlm%radius_1d_rlm_r(1:nidx_rlm(1))
       idx_gl_1d_rlm_r(1:nidx_rlm(1))                                    &
      &                =   rlm%idx_gl_1d_rlm_r(1:nidx_rlm(1))
@@ -344,7 +344,7 @@
       end do
 !
       rlm%radius_1d_rlm_r(1:rlm%nidx_rlm(1))                            &
-     &       =   radius_1d_rlm_r(1:rlm%nidx_rlm(1))
+     &       =   sph_rlm1%radius_1d_rlm_r(1:rlm%nidx_rlm(1))
       rlm%idx_gl_1d_rlm_r(1:rlm%nidx_rlm(1))                            &
      &       =   idx_gl_1d_rlm_r(1:rlm%nidx_rlm(1))
       rlm%idx_gl_1d_rlm_j(1:rlm%nidx_rlm(2),1)                          &

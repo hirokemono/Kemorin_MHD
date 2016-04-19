@@ -131,14 +131,13 @@
               k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
               sp_rlm_spin(kr_nd,         j_rlm)                         &
      &             = sp_rlm_spin(kr_nd,         j_rlm)                  &
-     &              + sp1(kr_nd) * radius_1d_rlm_r(k_rlm)               &
-     &                           * radius_1d_rlm_r(k_rlm)
+     &              + sp1(kr_nd) * sph_rlm1%radius_1d_rlm_r(k_rlm)**2
               sp_rlm_spin(kr_nd+nb_nri,  j_rlm)                         &
      &             =  sp_rlm_spin(kr_nd+nb_nri,  j_rlm)                 &
-     &              + sp2(kr_nd) * radius_1d_rlm_r(k_rlm)
+     &              + sp2(kr_nd) * sph_rlm1%radius_1d_rlm_r(k_rlm)
               sp_rlm_spin(kr_nd+2*nb_nri,j_rlm)                         &
      &             = sp_rlm_spin(kr_nd+2*nb_nri,j_rlm)                  &
-     &              + sp3(kr_nd) * radius_1d_rlm_r(k_rlm)
+     &              + sp3(kr_nd) * sph_rlm1%radius_1d_rlm_r(k_rlm)
             end do
           end do
 !

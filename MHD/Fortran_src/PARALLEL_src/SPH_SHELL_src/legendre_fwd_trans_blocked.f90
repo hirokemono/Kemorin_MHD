@@ -73,8 +73,8 @@
           nth = lstack_block_rtm(lp  ) - lstack_block_rtm(lp-1)
 !
           do k_rlm = kst, ked
-            r1_1d_rlm_r = radius_1d_rlm_r(k_rlm)
-            r2_1d_rlm_r = radius_1d_rlm_r(k_rlm)*radius_1d_rlm_r(k_rlm)
+            r1_1d_rlm_r = sph_rlm1%radius_1d_rlm_r(k_rlm)
+            r2_1d_rlm_r = r1_1d_rlm_r**2
 !
             do j_rlm = 1, nidx_rlm(2)
               g7 = g_sph_rlm(j_rlm,7)

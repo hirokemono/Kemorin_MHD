@@ -119,12 +119,11 @@
             i_rlm = 3*nd + ncomp * ((j_rlm-1) * istep_rlm(2)            &
      &                          + (k_rlm-1) * istep_rlm(1))
             sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2)                           &
-     &                       + sp1 * radius_1d_rlm_r(k_rlm)             &
-     &                             * radius_1d_rlm_r(k_rlm)
+     &                       + sp1 * sph_rlm1%radius_1d_rlm_r(k_rlm)**2
             sp_rlm(i_rlm-1) = sp_rlm(i_rlm-1)                           &
-     &                       + sp2 * radius_1d_rlm_r(k_rlm)
+     &                       + sp2 * sph_rlm1%radius_1d_rlm_r(k_rlm)
             sp_rlm(i_rlm  ) = sp_rlm(i_rlm  )                           &
-     &                       + sp3 * radius_1d_rlm_r(k_rlm)
+     &                       + sp3 * sph_rlm1%radius_1d_rlm_r(k_rlm)
           end do
 !
         end do

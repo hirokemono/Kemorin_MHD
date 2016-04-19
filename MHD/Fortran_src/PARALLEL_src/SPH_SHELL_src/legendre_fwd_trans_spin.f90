@@ -70,8 +70,8 @@
         do kr_nd = kst, ked
           nd = 1 + mod((kr_nd-1),nvector)
           k_rlm = 1 + (kr_nd - nd) / nvector
-          r1_1d_rlm_r = radius_1d_rlm_r(k_rlm)
-          r2_1d_rlm_r = radius_1d_rlm_r(k_rlm)*radius_1d_rlm_r(k_rlm)
+          r1_1d_rlm_r = sph_rlm1%radius_1d_rlm_r(k_rlm)
+          r2_1d_rlm_r = r1_1d_rlm_r*r1_1d_rlm_r
 !
           do lp = 1, nblock_l_rtm
             lst = lstack_block_rtm(lp-1) 

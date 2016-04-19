@@ -88,7 +88,7 @@
 !
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call inner_core_rot_z_coriolis_rlm                              &
-     &     (nnod_rlm, nidx_rlm, radius_1d_rlm_r,                        &
+     &     (nnod_rlm, nidx_rlm, sph_rlm1%radius_1d_rlm_r,               &
      &      ncomp_trans, n_WR, irev_sr_rlm, WR)
       end if
 !

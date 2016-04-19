@@ -68,7 +68,7 @@
         ked = idx_rlm_smp_stack(ip,  1)
 !
         do k_rtm = kst, ked
-          r2_1d_rlm_r = radius_1d_rlm_r(k_rtm)*radius_1d_rlm_r(k_rtm)
+          r2_1d_rlm_r = sph_rlm1%radius_1d_rlm_r(k_rtm)**2
 !
           do j_rlm = 1, nidx_rlm(2)
             do l_rtm = 1, nidx_rtm(2)
@@ -105,9 +105,9 @@
      &                              + (k_rtm-1) * istep_rlm(1))
               sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2) + sp1 * r2_1d_rlm_r
               sp_rlm(i_rlm-1) = sp_rlm(i_rlm-1)                         &
-     &                           + sp2 * radius_1d_rlm_r(k_rtm)
+     &                         + sp2 * sph_rlm1%radius_1d_rlm_r(k_rtm)
               sp_rlm(i_rlm  ) = sp_rlm(i_rlm  )                         &
-     &                           + sp3 * radius_1d_rlm_r(k_rtm)
+     &                         + sp3 * sph_rlm1%radius_1d_rlm_r(k_rtm)
             end do
           end do
         end do
