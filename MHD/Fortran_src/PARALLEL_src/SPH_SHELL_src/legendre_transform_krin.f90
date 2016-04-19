@@ -57,7 +57,7 @@
 !
 !
       call order_b_trans_fields_krin(nnod_rlm, nidx_rlm,                &
-     &    istep_rlm, sph_rlm1%a_r_1d_rlm_r, idx_rlm_smp_stack,          &
+     &    sph_rlm1%istep_rlm, sph_rlm1%a_r_1d_rlm_r, idx_rlm_smp_stack, &
      &    ncomp, nvector, nscalar, irev_sr_rlm, n_WR, WR, sp_rlm_wk(1))
 !
       call legendre_b_trans_vector_krin(ncomp, nvector,                 &

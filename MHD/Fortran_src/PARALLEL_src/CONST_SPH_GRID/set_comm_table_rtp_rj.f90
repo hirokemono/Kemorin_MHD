@@ -134,8 +134,9 @@
      &                'copy_gl_2_local_rtp_param', ip_rank
       call copy_gl_2_local_rtp_param(ip_rank)
 !
+      sph_rtp1%nnod_rtp = nnod_rtp
       sph_rtp1%nidx_rtp(1:3) = nidx_rtp(1:3)
-      call allocate_spheric_param_rtp
+      call alloc_type_spheric_param_rtp(sph_rtp1)
       call alloc_type_sph_1d_index_rtp(sph_rtp1)
 !
       call copy_sph_1d_gl_idx_rtp

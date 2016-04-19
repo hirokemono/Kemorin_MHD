@@ -166,14 +166,14 @@
       iflag_self_rlm = self_comm_flag(nneib_domain_rlm, id_domain_rlm)
       iflag_self_rj =  self_comm_flag(nneib_domain_rj,  id_domain_rj)
 !
-      call count_interval_4_each_dir(ithree, nnod_rtp, idx_global_rtp,  &
-     &    istep_rtp)
+      call count_interval_4_each_dir(ithree, nnod_rtp,                  &
+     &    sph_rtp1%idx_global_rtp, istep_rtp)
       call count_interval_4_each_dir(ithree, nnod_rtm,                  &
      &    sph_rtm1%idx_global_rtm, istep_rtm)
       call count_interval_4_each_dir(itwo,   nnod_rlm,                  &
-     &    sph_rlm1%idx_global_rlm, istep_rlm)
+     &    sph_rlm1%idx_global_rlm, sph_rlm1%istep_rlm)
       call count_interval_4_each_dir(itwo,   nnod_rj,                   &
-     &    sph_rj1%idx_global_rj, istep_rj)
+     &    sph_rj1%idx_global_rj, sph_rj1%istep_rj)
 !
       m_folding = 2 * sph_rtp1%idx_gl_1d_rtp_p(2,2) / nidx_rtp(3)
 !
@@ -261,7 +261,7 @@
       iflag_self_rj =  self_comm_flag(nneib_domain_rj,  id_domain_rj)
 !
       call count_interval_4_each_dir(itwo,   nnod_rj,                   &
-     &    sph_rj1%idx_global_rj, istep_rj)
+     &    sph_rj1%idx_global_rj, sph_rj1%istep_rj)
 !
       call set_sph_rj_center_flag(nnod_rj, nidx_rj, inod_rj_center)
 !

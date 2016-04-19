@@ -101,8 +101,8 @@
      &                        + vr_rtm(ip_rtm  ) * dPvw_l(l_rtm))
               end do
 !
-              i_rlm = 3*nd + ncomp * ((j_rlm-1) * istep_rlm(2)          &
-     &                              + (k_rtm-1) * istep_rlm(1))
+              i_rlm = 3*nd + ncomp * ((j_rlm-1) * sph_rlm1%istep_rlm(2) &
+     &                     + (k_rtm-1) * sph_rlm1%istep_rlm(1))
               sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2) + sp1 * r2_1d_rlm_r
               sp_rlm(i_rlm-1) = sp_rlm(i_rlm-1)                         &
      &                         + sp2 * sph_rlm1%radius_1d_rlm_r(k_rtm)
@@ -157,8 +157,8 @@
               end do
 !
               i_rlm = nd + 3*nvector                                    &
-     &                   + ncomp * ((j_rlm-1) * istep_rlm(2)            &
-     &                            + (k_rtm-1) * istep_rlm(1))
+     &                   + ncomp * ((j_rlm-1) * sph_rlm1%istep_rlm(2)   &
+     &                            + (k_rtm-1) * sph_rlm1%istep_rlm(1))
               sp_rlm(i_rlm) = sp_rlm(i_rlm)  + sp1
             end do
           end do

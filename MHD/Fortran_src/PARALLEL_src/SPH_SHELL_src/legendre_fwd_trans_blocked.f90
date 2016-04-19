@@ -81,8 +81,8 @@
               gm = dble(sph_rlm1%idx_gl_1d_rlm_j(j_rlm,3))
 !
               do nd = 1, nvector
-                i_rlm = 1 + (j_rlm-1) * istep_rlm(2)                    &
-     &                    + (k_rlm-1) * istep_rlm(1)
+                i_rlm = 1 + (j_rlm-1) * sph_rlm1%istep_rlm(2)           &
+     &                    + (k_rlm-1) * sph_rlm1%istep_rlm(1)
                 i_send = 3*nd-2 + (irev_sr_rlm(i_rlm) - 1) * ncomp
 !
                 call set_vr_rtm_vector_blocked(nd, k_rlm,               &
@@ -138,8 +138,8 @@
           do k_rlm = kst, ked
             do j_rlm = 1, nidx_rlm(2)
               do nd = 1, nscalar
-                i_rlm = 1 + (j_rlm-1) * istep_rlm(2)                    &
-     &                    + (k_rlm-1) * istep_rlm(1)
+                i_rlm = 1 + (j_rlm-1) * sph_rlm1%istep_rlm(2)           &
+     &                    + (k_rlm-1) * sph_rlm1%istep_rlm(1)
                 i_send = nd + 3*nvector                                 &
      &                      + (irev_sr_rlm(i_rlm) - 1) * ncomp
 !

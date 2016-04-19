@@ -267,7 +267,7 @@
 !
       call set_real_4_sph_transfer_test                                 &
      &   (NB, nnod_rtp, nnod_rtm, nnod_rlm, nnod_rj,                    &
-     &    idx_global_rtp, sph_rtm1%idx_global_rtm,                      &
+     &    sph_rtp1%idx_global_rtp, sph_rtm1%idx_global_rtm,             &
      &    sph_rlm1%idx_global_rlm, sph_rj1%idx_global_rj)
 !
       end subroutine set_transfer_sph_reals
@@ -344,7 +344,7 @@
           end do
           if (diff .gt. 1.0E-11) then
             write(id_check,'(4i16,1p3E23.15)') inod,                    &
-     &       idx_global_rtp(inod,1:3), diff,                            &
+     &       sph_rtp1%idx_global_rtp(inod,1:3), diff,                   &
      &       X_rtp_recieve(NB*inod-NB+1), X_global_rtp(NB*inod-NB+1)
           end if
         end if

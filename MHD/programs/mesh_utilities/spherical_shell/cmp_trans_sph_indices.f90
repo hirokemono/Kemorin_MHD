@@ -124,14 +124,17 @@
 !
       write(id_check,*) 'Wrong commnication in rtm => rtp'
       do inod = 1, nnod_rtp
-        if (     idx_rtp_recieve(inod,1) .ne. idx_global_rtp(inod,1)    &
+        if(idx_rtp_recieve(inod,1) .ne. sph_rtp1%idx_global_rtp(inod,1) &
      &        .and. idx_rtp_recieve(inod,1) .ne. 0) then
-          if (   idx_rtp_recieve(inod,2) .ne. idx_global_rtp(inod,2)    &
+          if (   idx_rtp_recieve(inod,2)                                &
+     &           .ne. sph_rtp1%idx_global_rtp(inod,2)    &
      &        .and. idx_rtp_recieve(inod,2) .ne. 0) then
-            if ( idx_rtp_recieve(inod,3) .ne. idx_global_rtp(inod,3)    &
+            if ( idx_rtp_recieve(inod,3)                                &
+     &           .ne. sph_rtp1%idx_global_rtp(inod,3)    &
      &        .and. idx_rtp_recieve(inod,3) .ne. 0) then
               write(id_check,'(i16,6i5)') inod,                         &
-     &          idx_global_rtp(inod,1:3), idx_rtp_recieve(inod,1:3)
+     &          sph_rtp1%idx_global_rtp(inod,1:3),                      &
+     &          idx_rtp_recieve(inod,1:3)
             end if
           end if
         end if
@@ -206,7 +209,7 @@
      &       .or. idx_rtp_recieve(inod,2) .eq. 0                        &
      &       .or. idx_rtp_recieve(inod,3) .eq. 0) then
               write(id_check,'(5i16,6i5)') inod,                        &
-     &           idx_global_rtp(inod,1:3),                              &
+     &           sph_rtp1%idx_global_rtp(inod,1:3),                     &
      &           sph_rtp1%idx_gl_1d_rtp_r(kr),                          &
      &           sph_rtp1%idx_gl_1d_rtp_t(lth),                         &
      &           sph_rtp1%idx_gl_1d_rtp_p(mphi,1:2)

@@ -53,9 +53,9 @@
             k_gl = sph_rtp1%idx_gl_1d_rtp_r(k)
 !
             inod = inod + 1
-            idx_global_rtp(inod,1) = k_gl
-            idx_global_rtp(inod,2) = l_gl
-            idx_global_rtp(inod,3) = m_gl
+            sph_rtp1%idx_global_rtp(inod,1) = k_gl
+            sph_rtp1%idx_global_rtp(inod,2) = l_gl
+            sph_rtp1%idx_global_rtp(inod,3) = m_gl
           end do
         end do
       end do

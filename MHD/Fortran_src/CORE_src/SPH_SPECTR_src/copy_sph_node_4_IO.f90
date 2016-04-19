@@ -49,12 +49,14 @@
       ist_rtp(1:ithree) =  ist_sph_IO(1:ithree)
       ied_rtp(1:ithree) =  ied_sph_IO(1:ithree)
 !
+      sph_rtp1%nnod_rtp = nnod_rtp
       sph_rtp1%nidx_rtp(1:3) = nidx_rtp(1:3)
-      call allocate_spheric_param_rtp
+      call alloc_type_spheric_param_rtp(sph_rtp1)
       call alloc_type_sph_1d_index_rtp(sph_rtp1)
 !
       do i = 1, ithree
-        idx_global_rtp(1:nnod_rtp,i) = idx_gl_sph_IO(1:nnod_rtp,i)
+        sph_rtp1%idx_global_rtp(1:nnod_rtp,i)                           &
+     &      = idx_gl_sph_IO(1:nnod_rtp,i)
       end do
 !
       sph_rtp1%radius_1d_rtp_r(1:nidx_rtp(1))                           &
@@ -242,12 +244,12 @@
       do i = 1, nnod_rtp
         nr_8 = nidx_global_rtp(1)
         nrt8 = nidx_global_rtp(1)*nidx_global_rtp(2)
-        idx_gl_sph_IO(i,1) = idx_global_rtp(i,1)
-        idx_gl_sph_IO(i,2) = idx_global_rtp(i,2)
-        idx_gl_sph_IO(i,3) = idx_global_rtp(i,3)
-        inod_gl_sph_IO(i) = idx_global_rtp(i,1)                         &
-     &                   + (idx_global_rtp(i,2) - 1) * nr_8             &
-     &                   + (idx_global_rtp(i,3) - 1) * nrt8
+        idx_gl_sph_IO(i,1) = sph_rtp1%idx_global_rtp(i,1)
+        idx_gl_sph_IO(i,2) = sph_rtp1%idx_global_rtp(i,2)
+        idx_gl_sph_IO(i,3) = sph_rtp1%idx_global_rtp(i,3)
+        inod_gl_sph_IO(i) = sph_rtp1%idx_global_rtp(i,1)                &
+     &                   + (sph_rtp1%idx_global_rtp(i,2) - 1) * nr_8    &
+     &                   + (sph_rtp1%idx_global_rtp(i,3) - 1) * nrt8
       end do
 !$omp end parallel do
 !
@@ -263,7 +265,7 @@
      &      = sph_rtp1%idx_gl_1d_rtp_p(1:nidx_rtp(3),2)
 !
       call dealloc_type_sph_1d_index_rtp(sph_rtp1)
-      call deallocate_spheric_param_rtp
+      call dealloc_type_spheric_param_rtp(sph_rtp1)
 !
       end subroutine copy_sph_node_rtp_to_IO
 !

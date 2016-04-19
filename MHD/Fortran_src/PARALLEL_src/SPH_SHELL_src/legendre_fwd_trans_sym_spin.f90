@@ -92,10 +92,10 @@
                 gme = dble(sph_rlm1%idx_gl_1d_rlm_j(je_rlm,3))
                 gmo = dble(sph_rlm1%idx_gl_1d_rlm_j(jo_rlm,3))
 !
-                ie_rlm = 1 + (je_rlm-1) * istep_rlm(2)                  &
-     &                     + (k_rlm-1) *  istep_rlm(1)
-                io_rlm = 1 + (jo_rlm-1) * istep_rlm(2)                  &
-     &                     + (k_rlm-1)  * istep_rlm(1)
+                ie_rlm = 1 + (je_rlm-1) * sph_rlm1%istep_rlm(2)         &
+     &                     + (k_rlm-1) *  sph_rlm1%istep_rlm(1)
+                io_rlm = 1 + (jo_rlm-1) * sph_rlm1%istep_rlm(2)         &
+     &                     + (k_rlm-1)  * sph_rlm1%istep_rlm(1)
                 ie_send = 3*nd-2 + (irev_sr_rlm(ie_rlm) - 1) * ncomp
                 io_send = 3*nd-2 + (irev_sr_rlm(io_rlm) - 1) * ncomp
 !
@@ -124,8 +124,8 @@
                 je_rlm = 2*jj + jst - 1
                 gme = dble(sph_rlm1%idx_gl_1d_rlm_j(je_rlm,3))
 !
-                ie_rlm = 1 + (je_rlm-1) * istep_rlm(2)                  &
-     &                     + (k_rlm-1) *  istep_rlm(1)
+                ie_rlm = 1 + (je_rlm-1) * sph_rlm1%istep_rlm(2)         &
+     &                     + (k_rlm-1) *  sph_rlm1%istep_rlm(1)
                 ie_send = 3*nd-2 + (irev_sr_rlm(ie_rlm) - 1) * ncomp
 !
                 call set_vr_rtm_vector_symmetry                         &
@@ -194,10 +194,10 @@
               do jj = 1, nj_rlm/2
                 je_rlm = 2*jj + jst - 1
                 jo_rlm = 2*jj + jst
-                ie_rlm = 1 + (je_rlm-1) * istep_rlm(2)                  &
-     &                     + (k_rlm-1) *  istep_rlm(1)
-                io_rlm = 1 + (jo_rlm-1) * istep_rlm(2)                  &
-     &                     + (k_rlm-1) *  istep_rlm(1)
+                ie_rlm = 1 + (je_rlm-1) * sph_rlm1%istep_rlm(2)         &
+     &                     + (k_rlm-1) *  sph_rlm1%istep_rlm(1)
+                io_rlm = 1 + (jo_rlm-1) * sph_rlm1%istep_rlm(2)         &
+     &                     + (k_rlm-1) *  sph_rlm1%istep_rlm(1)
                 ie_send = nd + 3*nvector                                &
      &                       + (irev_sr_rlm(ie_rlm) - 1) * ncomp
                 io_send = nd + 3*nvector                                &
@@ -222,8 +222,8 @@
      &              izero, nle_rtm, nlo_rtm, ncomp, nvector,            &
      &              irev_sr_rtm, n_WR, WR, symp(1,ip), asmp(1,ip))
 !
-                ie_rlm = 1 + (je_rlm-1) * istep_rlm(2)                  &
-     &                     + (k_rlm-1) *  istep_rlm(1)
+                ie_rlm = 1 + (je_rlm-1) * sph_rlm1%istep_rlm(2)         &
+     &                     + (k_rlm-1) *  sph_rlm1%istep_rlm(1)
                 ie_send = nd + 3*nvector                                &
      &                       + (irev_sr_rlm(ie_rlm) - 1) * ncomp
                 call cal_scalar_sp_rlm_dotprod                          &

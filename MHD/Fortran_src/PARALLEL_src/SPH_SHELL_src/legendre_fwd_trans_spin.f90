@@ -81,8 +81,8 @@
               g7 = g_sph_rlm(j_rlm,7)
               gm = dble(sph_rlm1%idx_gl_1d_rlm_j(j_rlm,3))
 !
-              i_rlm = 1 + (j_rlm-1) * istep_rlm(2)                      &
-     &                  + (k_rlm-1) * istep_rlm(1)
+              i_rlm = 1 + (j_rlm-1) * sph_rlm1%istep_rlm(2)             &
+     &                  + (k_rlm-1) * sph_rlm1%istep_rlm(1)
               i_send = 3*nd-2 + (irev_sr_rlm(i_rlm) - 1) * ncomp
 !
               call set_vr_rtm_vector_blocked(nd, k_rlm,                 &
@@ -138,8 +138,8 @@
             nth = lstack_block_rtm(lp  ) - lstack_block_rtm(lp-1)
 !
             do j_rlm = 1, nidx_rlm(2)
-              i_rlm = 1 + (j_rlm-1) * istep_rlm(2)                      &
-     &                    + (k_rlm-1) * istep_rlm(1)
+              i_rlm = 1 + (j_rlm-1) * sph_rlm1%istep_rlm(2)             &
+     &                    + (k_rlm-1) * sph_rlm1%istep_rlm(1)
               i_send = nd + 3*nvector                                   &
      &                      + (irev_sr_rlm(i_rlm) - 1) * ncomp
 !

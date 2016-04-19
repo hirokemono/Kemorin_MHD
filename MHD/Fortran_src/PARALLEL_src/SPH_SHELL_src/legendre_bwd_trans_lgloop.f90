@@ -68,8 +68,8 @@
             nd =    1 + mod( (kr_nd-1),nvector)
             k_rlm = 1 + (kr_nd - nd) / nvector
 !
-            i_rlm = 3*nd + ncomp * ((j_rlm-1) * istep_rlm(2)            &
-     &                            + (k_rlm-1) * istep_rlm(1))
+            i_rlm = 3*nd + ncomp * ((j_rlm-1) * sph_rlm1%istep_rlm(2)   &
+     &                            + (k_rlm-1) * sph_rlm1%istep_rlm(1))
 !
             sp_rlm(i_rlm-2) = sp_rlm(i_rlm-2)                           &
      &                       * sph_rlm1%a_r_1d_rlm_r(k_rlm)**2
@@ -97,8 +97,9 @@
      &                               + (k_rlm-1) * istep_rtm(1)         &
      &                + (mdx_p_rlm_rtm(j_rlm)-1) * istep_rtm(3))
 !
-                i_rlm = 3*nd + ncomp * ((j_rlm-1) * istep_rlm(2)        &
-     &                                + (k_rlm-1) * istep_rlm(1))
+                i_rlm = 3*nd                                            &
+     &                 + ncomp * ((j_rlm-1) * sph_rlm1%istep_rlm(2)     &
+     &                 + (k_rlm-1) * sph_rlm1%istep_rlm(1))
 !
                 vr_rtm(ip_rtm-2) = vr_rtm(ip_rtm-2)                     &
      &                            + sp_rlm(i_rlm-2) * Pg3_l
@@ -122,8 +123,9 @@
      &                               + (k_rlm-1) * istep_rtm(1)         &
      &                + (mdx_n_rlm_rtm(j_rlm)-1) * istep_rtm(3))
 !
-                i_rlm = 3*nd + ncomp * ((j_rlm-1) * istep_rlm(2)        &
-     &                                + (k_rlm-1) * istep_rlm(1))
+                i_rlm = 3*nd                                            &
+     &                 + ncomp * ((j_rlm-1) * sph_rlm1%istep_rlm(2)     &
+     &                 + (k_rlm-1) * sph_rlm1%istep_rlm(1))
 !
                 vr_rtm(in_rtm-1) = vr_rtm(in_rtm-1)                     &
      &                            + sp_rlm(i_rlm  ) * Pgv_l
@@ -175,8 +177,8 @@
      &              + (mdx_p_rlm_rtm(j_rlm)-1) * istep_rtm(3))
 !
                 i_rlm = nd + 3*nvector                                  &
-     &                     + ncomp * ((j_rlm-1) * istep_rlm(2)          &
-     &                              + (k_rlm-1) * istep_rlm(1))
+     &                     + ncomp * ((j_rlm-1) * sph_rlm1%istep_rlm(2) &
+     &                     + (k_rlm-1) * sph_rlm1%istep_rlm(1))
 !
                 vr_rtm(ip_rtm) = vr_rtm(ip_rtm)                         &
      &                        + sp_rlm(i_rlm) * P_rtm(l_rtm,j_rlm)

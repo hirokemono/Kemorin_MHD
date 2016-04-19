@@ -10,10 +10,6 @@
 !!      subroutine allocate_spheric_parameter
 !!      subroutine deallocate_spheric_parameter
 !!
-!!      subroutine allocate_spheric_param_rtp
-!!
-!!      subroutine deallocate_spheric_param_rtp
-!!
 !!      subroutine check_global_spheric_parameter
 !!      subroutine check_spheric_parameter(my_rank)
 !!      subroutine check_spheric_param_rtp(my_rank)
@@ -37,16 +33,16 @@
 !
 !
       type(sph_rtp_grid), save :: sph_rtp1
-!sph_rtp1%idx_gl_1d_rtp_r
+!sph_rtp1%idx_global_rtp
 !
       type(sph_rtm_grid), save :: sph_rtm1
 !sph_rtm1%idx_global_rtm
 !
       type(sph_rlm_grid), save :: sph_rlm1
-!sph_rlm1%idx_global_rlm
+!sph_rlm1%istep_rlm
 !
       type(sph_rj_grid), save :: sph_rj1
-!sph_rj1%istack_inod_rj_smp
+!sph_rj1%istep_rj
 !
 !>      integer flag for FEM mesh type
 !!@n    iflag_MESH_same:     same grid point as Gauss-Legendre points
@@ -155,14 +151,9 @@
 !>      number of increments for @f$ f(r,\theta,m) @f$
       integer(kind = kint) :: istep_rtm(3)
 !>      number of increments for @f$ f(r,l,m) @f$
-      integer(kind = kint) :: istep_rlm(2)
+!      integer(kind = kint) :: istep_rlm(2)
 !>      number of increments for @f$ f(r,j) @f$
-      integer(kind = kint) :: istep_rj(2)
-!
-!
-!>      global address for each direction @f$ f(r,\theta,\phi) @f$
-      integer(kind = kint), allocatable :: idx_global_rtp(:,:)
-!
+!      integer(kind = kint) :: istep_rj(2)
 !
 ! -----------------------------------------------------------------------
 !
@@ -172,12 +163,13 @@
 !
       subroutine allocate_spheric_parameter
 !
-      call allocate_spheric_param_rtp
 !
+      sph_rtp1%nnod_rtp = nnod_rtp
       sph_rtm1%nnod_rtm = nnod_rtm
       sph_rlm1%nnod_rlm = nnod_rlm
       sph_rj1%nnod_rj =   nnod_rj
 !
+      call alloc_type_spheric_param_rtp(sph_rtp1)
       call alloc_type_spheric_param_rtm(sph_rtm1)
       call alloc_type_spheric_param_rlm(sph_rlm1)
       call alloc_type_spheric_param_rj(sph_rj1)
@@ -188,7 +180,7 @@
 !
       subroutine deallocate_spheric_parameter
 !
-      call deallocate_spheric_param_rtp
+      call dealloc_type_spheric_param_rtp(sph_rtp1)
       call dealloc_type_spheric_param_rtm(sph_rtm1)
       call dealloc_type_spheric_param_rlm(sph_rlm1)
       call dealloc_spheric_param_rj(sph_rj1)
@@ -196,25 +188,6 @@
       end subroutine deallocate_spheric_parameter
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine allocate_spheric_param_rtp
-!
-      allocate(idx_global_rtp(nnod_rtp,3))
-      if(nnod_rtp .gt. 0) idx_global_rtp = 0
-!
-      end subroutine allocate_spheric_param_rtp
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine deallocate_spheric_param_rtp
-!
-      deallocate(idx_global_rtp)
-!
-      end subroutine deallocate_spheric_param_rtp
-!
-! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine check_global_spheric_parameter
@@ -253,7 +226,7 @@
 !
       write(my_rank+50,*)  'i, idx_global_rtp(r,t,p)'
       do i = 1, nnod_rtp
-        write(my_rank+50,*) i, idx_global_rtp(i,1:3)
+        write(my_rank+50,*) i, sph_rtp1%idx_global_rtp(i,1:3)
       end do
 !
       end subroutine check_spheric_param_rtp
