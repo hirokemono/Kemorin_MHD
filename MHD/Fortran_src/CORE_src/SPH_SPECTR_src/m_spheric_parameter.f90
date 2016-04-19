@@ -12,11 +12,7 @@
 !!
 !!      subroutine allocate_spheric_param_rtp
 !!
-!!      subroutine allocate_sph_1d_index_rtp
-!!
 !!      subroutine deallocate_spheric_param_rtp
-!!
-!!      subroutine deallocate_sph_1d_index_rtp
 !!
 !!      subroutine check_global_spheric_parameter
 !!      subroutine check_spheric_parameter(my_rank)
@@ -41,7 +37,7 @@
 !
 !
       type(sph_rtp_grid), save :: sph_rtp1
-!sph_rtp1%radius_1d_rtp_r
+!sph_rtp1%idx_gl_1d_rtp_r
 !
       type(sph_rtm_grid), save :: sph_rtm1
 !sph_rtm1%idx_global_rtm
@@ -168,15 +164,6 @@
       integer(kind = kint), allocatable :: idx_global_rtp(:,:)
 !
 !
-!>      radial global address @f$ f(r,\theta,\phi) @f$
-      integer(kind = kint), allocatable :: idx_gl_1d_rtp_r(:)
-!>      meridional global address @f$ f(r,\theta,\phi) @f$
-      integer(kind = kint), allocatable :: idx_gl_1d_rtp_t(:)
-!>      zonal global address @f$ f(r,\theta,\phi) @f$
-!!@n        idx_gl_1d_rtp_p(m,1): zonal grid point ID
-!!@n        idx_gl_1d_rtp_p(m,2): Fourier spectr mode
-      integer(kind = kint), allocatable :: idx_gl_1d_rtp_p(:,:)
-!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -221,49 +208,11 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_sph_1d_index_rtp
-!
-      integer(kind = kint) :: num
-!
-      num = nidx_rtp(1)
-      allocate(idx_gl_1d_rtp_r(num))
-      num = nidx_rtp(2)
-      allocate(idx_gl_1d_rtp_t(num))
-      num = nidx_rtp(3)
-      allocate(idx_gl_1d_rtp_p(num,2))
-!
-      if(nidx_rtp(3) .gt. 0) idx_gl_1d_rtp_p = 0
-      if(nidx_rtp(2) .gt. 0) idx_gl_1d_rtp_t = 0
-      if(nidx_rtp(1) .gt. 0) then
-        idx_gl_1d_rtp_r = 0
-      end if
-!
-      sph_rtp1%nidx_rtp(1:3) = nidx_rtp(1:3)
-      call alloc_type_sph_1d_index_rtp(sph_rtp1)
-!
-      end subroutine allocate_sph_1d_index_rtp
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
       subroutine deallocate_spheric_param_rtp
 !
       deallocate(idx_global_rtp)
 !
       end subroutine deallocate_spheric_param_rtp
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine deallocate_sph_1d_index_rtp
-!
-      deallocate(idx_gl_1d_rtp_r)
-      deallocate(idx_gl_1d_rtp_t)
-      deallocate(idx_gl_1d_rtp_p)
-!
-      call dealloc_type_sph_1d_index_rtp(sph_rtp1)
-!
-      end subroutine deallocate_sph_1d_index_rtp
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

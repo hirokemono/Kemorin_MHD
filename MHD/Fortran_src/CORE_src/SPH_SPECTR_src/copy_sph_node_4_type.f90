@@ -62,8 +62,9 @@
       ist_rtp(1:ithree) =  rtp%ist_rtp(1:ithree)
       ied_rtp(1:ithree) =  rtp%ied_rtp(1:ithree)
 !
+      sph_rtp1%nidx_rtp(1:3) = nidx_rtp(1:3)
       call allocate_spheric_param_rtp
-      call allocate_sph_1d_index_rtp
+      call alloc_type_sph_1d_index_rtp(sph_rtp1)
 !
       do i = 1, ithree
         idx_global_rtp(1:nnod_rtp,i)                                    &
@@ -72,13 +73,13 @@
 !
       sph_rtp1%radius_1d_rtp_r(1:nidx_rtp(1))                           &
      &         =   rtp%radius_1d_rtp_r(1:nidx_rtp(1))
-      idx_gl_1d_rtp_r(1:nidx_rtp(1))                                    &
+      sph_rtp1%idx_gl_1d_rtp_r(1:nidx_rtp(1))                           &
      &         =   rtp%idx_gl_1d_rtp_r(1:nidx_rtp(1))
-      idx_gl_1d_rtp_t(1:nidx_rtp(2))                                    &
+      sph_rtp1%idx_gl_1d_rtp_t(1:nidx_rtp(2))                           &
      &         =   rtp%idx_gl_1d_rtp_t(1:nidx_rtp(2))
-      idx_gl_1d_rtp_p(1:nidx_rtp(3),1)                                  &
+      sph_rtp1%idx_gl_1d_rtp_p(1:nidx_rtp(3),1)                         &
      &          = rtp%idx_gl_1d_rtp_p(1:nidx_rtp(3),1)
-      idx_gl_1d_rtp_p(1:nidx_rtp(3),2)                                  &
+      sph_rtp1%idx_gl_1d_rtp_p(1:nidx_rtp(3),2)                         &
      &          = rtp%idx_gl_1d_rtp_p(1:nidx_rtp(3),2)
 !
 !      call dealloc_type_sph_1d_index_rtp(rtp)
@@ -262,15 +263,15 @@
       rtp%radius_1d_rtp_r(1:rtp%nidx_rtp(1))                            &
      &       = sph_rtp1%radius_1d_rtp_r(1:rtp%nidx_rtp(1))
       rtp%idx_gl_1d_rtp_r(1:rtp%nidx_rtp(1))                            &
-     &       = idx_gl_1d_rtp_r(1:rtp%nidx_rtp(1))
+     &       = sph_rtp1%idx_gl_1d_rtp_r(1:rtp%nidx_rtp(1))
       rtp%idx_gl_1d_rtp_t(1:rtp%nidx_rtp(2))                            &
-     &       = idx_gl_1d_rtp_t(1:rtp%nidx_rtp(2))
+     &       = sph_rtp1%idx_gl_1d_rtp_t(1:rtp%nidx_rtp(2))
       rtp%idx_gl_1d_rtp_p(1:rtp%nidx_rtp(3),1)                          &
-     &       = idx_gl_1d_rtp_p(1:rtp%nidx_rtp(3),1)
+     &       = sph_rtp1%idx_gl_1d_rtp_p(1:rtp%nidx_rtp(3),1)
       rtp%idx_gl_1d_rtp_p(1:rtp%nidx_rtp(3),2)                          &
-     &       = idx_gl_1d_rtp_p(1:rtp%nidx_rtp(3),2)
+     &       = sph_rtp1%idx_gl_1d_rtp_p(1:rtp%nidx_rtp(3),2)
 !
-!      call deallocate_sph_1d_index_rtp
+!      call dealloc_type_sph_1d_index_rtp(sph_rtp1)
 !      call deallocate_spheric_param_rtp
 !
       end subroutine copy_sph_node_rtp_to_type

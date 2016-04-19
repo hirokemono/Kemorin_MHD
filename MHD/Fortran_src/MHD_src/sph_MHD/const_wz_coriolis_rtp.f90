@@ -93,7 +93,7 @@
       call alloc_sphere_ave_coriolis
 !
       do l_rtp = 1, nidx_rtp(2)
-        l_rtm = idx_gl_1d_rtp_t(l_rtp)
+        l_rtm = sph_rtp1%idx_gl_1d_rtp_t(l_rtp)
         theta_1d_rtp(l_rtp) = g_colat_rtm(l_rtm)
       end do
 !
@@ -215,7 +215,7 @@
       do mphi = 1, nidx_rtp(3)
         do l_rtp = 1, nidx_rtp(2)
           do kr = 1, nidx_rtp(1)
-            k_gl = idx_gl_1d_rtp_r(kr)
+            k_gl = sph_rtp1%idx_gl_1d_rtp_r(kr)
             inod = kr + (l_rtp-1) * nidx_rtp(1)                         &
      &                + (mphi-1)  * nidx_rtp(1)*nidx_rtp(2)
 !

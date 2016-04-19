@@ -122,17 +122,17 @@
       idx_local_rtp_p = 0
 !
       do k = 1, nidx_rtp(1)
-        kk = idx_gl_1d_rtp_r(k)
+        kk = sph_rtp1%idx_gl_1d_rtp_r(k)
         idx_local_rtp_r(kk) = k
       end do
 !
       do l = 1, nidx_rtp(2)
-        ll = idx_gl_1d_rtp_t(l)
+        ll = sph_rtp1%idx_gl_1d_rtp_t(l)
         idx_local_rtp_t(ll) = l
       end do
 !
       do m = 1, nidx_rtp(3)
-        mm = idx_gl_1d_rtp_p(m,1)
+        mm = sph_rtp1%idx_gl_1d_rtp_p(m,1)
         idx_local_rtp_p(mm) = m
       end do
 !

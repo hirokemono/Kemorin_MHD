@@ -206,8 +206,10 @@
      &       .or. idx_rtp_recieve(inod,2) .eq. 0                        &
      &       .or. idx_rtp_recieve(inod,3) .eq. 0) then
               write(id_check,'(5i16,6i5)') inod,                        &
-     &           idx_global_rtp(inod,1:3), idx_gl_1d_rtp_r(kr),         &
-     &           idx_gl_1d_rtp_t(lth), idx_gl_1d_rtp_p(mphi,1:2)
+     &           idx_global_rtp(inod,1:3),                              &
+     &           sph_rtp1%idx_gl_1d_rtp_r(kr),                          &
+     &           sph_rtp1%idx_gl_1d_rtp_t(lth),                         &
+     &           sph_rtp1%idx_gl_1d_rtp_p(mphi,1:2)
             end if
           end do
         end do

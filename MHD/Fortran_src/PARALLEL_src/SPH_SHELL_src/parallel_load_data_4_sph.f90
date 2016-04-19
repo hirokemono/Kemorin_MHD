@@ -175,7 +175,7 @@
       call count_interval_4_each_dir(itwo,   nnod_rj,                   &
      &    sph_rj1%idx_global_rj, istep_rj)
 !
-      m_folding = 2 * idx_gl_1d_rtp_p(2,2) / nidx_rtp(3)
+      m_folding = 2 * sph_rtp1%idx_gl_1d_rtp_p(2,2) / nidx_rtp(3)
 !
       call set_special_degree_order_flags(nidx_rj(2), nidx_rlm(2),      &
      &    sph_rj1%idx_gl_1d_rj_j, sph_rlm1%idx_gl_1d_rlm_j,             &

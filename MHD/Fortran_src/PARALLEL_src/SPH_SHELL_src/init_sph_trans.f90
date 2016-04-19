@@ -61,7 +61,7 @@
       call s_cal_schmidt_poly_rtm
 !
       call set_sin_theta_rtm(nidx_rtm(2))
-      call set_sin_theta_rtp(nidx_rtp(2), idx_gl_1d_rtp_t)
+      call set_sin_theta_rtp(nidx_rtp(2), sph_rtp1%idx_gl_1d_rtp_t)
 !
       call allocate_trans_schmidt_rtm
       call set_trans_legendre_rtm

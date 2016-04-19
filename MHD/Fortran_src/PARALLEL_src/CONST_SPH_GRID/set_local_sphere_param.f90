@@ -46,11 +46,11 @@
 !
       inod = 0
       do m = 1, nidx_rtp(3)
-        m_gl = idx_gl_1d_rtp_p(m,1)
+        m_gl = sph_rtp1%idx_gl_1d_rtp_p(m,1)
         do l = 1, nidx_rtp(2)
-          l_gl = idx_gl_1d_rtp_t(l)
+          l_gl = sph_rtp1%idx_gl_1d_rtp_t(l)
           do k = 1, nidx_rtp(1)
-            k_gl = idx_gl_1d_rtp_r(k)
+            k_gl = sph_rtp1%idx_gl_1d_rtp_r(k)
 !
             inod = inod + 1
             idx_global_rtp(inod,1) = k_gl

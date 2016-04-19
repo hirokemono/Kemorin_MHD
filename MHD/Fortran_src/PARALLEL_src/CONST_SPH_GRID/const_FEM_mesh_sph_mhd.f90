@@ -178,7 +178,7 @@
      &                           - istack_radial_grp_rtp(igrp-1)
           ist = istack_radial_grp_rtp(igrp-1) + 1
           inum = item_radial_grp_rtp(ist)
-          ist_idx_local_rtp_OC(ip) = idx_gl_1d_rtp_r(inum) - 1
+          ist_idx_local_rtp_OC(ip) = sph_rtp1%idx_gl_1d_rtp_r(inum) - 1
           exit
         end if
       end do
@@ -189,7 +189,7 @@
      &                           - istack_radial_grp_rtp(igrp-1)
           ist = istack_radial_grp_rtp(igrp-1) + 1
           inum = item_radial_grp_rtp(ist)
-          ist_idx_local_rtp_IC(ip) = idx_gl_1d_rtp_r(inum) - 1
+          ist_idx_local_rtp_IC(ip) = sph_rtp1%idx_gl_1d_rtp_r(inum) - 1
           exit
         end if
       end do
@@ -201,7 +201,8 @@
           if(name_radial_grp_rtp(igrp) .eq. OC_ele_grp_name) then
             ist = istack_radial_grp_rtp(igrp)
             inum = item_radial_grp_rtp(ist) + 1
-            ist_idx_local_rtp_MT(ip) = idx_gl_1d_rtp_r(inum) - 1
+            ist_idx_local_rtp_MT(ip)                                    &
+     &            = sph_rtp1%idx_gl_1d_rtp_r(inum) - 1
             exit
           end if
         end do
@@ -232,7 +233,7 @@
 !
       do inum = 1, nidx_rtp(1)
         inod = ist_rtp(1) + inum - 1
-        idx_global_rtp_r(inod) = idx_gl_1d_rtp_r(inum)
+        idx_global_rtp_r(inod) = sph_rtp1%idx_gl_1d_rtp_r(inum)
       end do
       do ip = 1, ndomain_rtp(1)
         ip_rank = (ip-1) * inc_r
@@ -243,7 +244,7 @@
 !
       do inum = 1, nidx_rtp(2)
         inod = ist_rtp(2) + inum - 1
-        idx_global_rtp_t(inod) = idx_gl_1d_rtp_t(inum)
+        idx_global_rtp_t(inod) = sph_rtp1%idx_gl_1d_rtp_t(inum)
       end do
       do ip = 1, ndomain_rtp(2)
         ip_rank = (ip-1) * inc_t
@@ -253,8 +254,8 @@
       end do
 !
       do inod = 1, nidx_rtp(3)
-        idx_global_rtp_p(inod,1) = idx_gl_1d_rtp_p(inod,1)
-        idx_global_rtp_p(inod,2) = idx_gl_1d_rtp_p(inod,2)
+        idx_global_rtp_p(inod,1) = sph_rtp1%idx_gl_1d_rtp_p(inod,1)
+        idx_global_rtp_p(inod,2) = sph_rtp1%idx_gl_1d_rtp_p(inod,2)
       end do
 !
       call deallocate_nidx_local
