@@ -167,7 +167,7 @@
       iflag_self_rj =  self_comm_flag(nneib_domain_rj,  id_domain_rj)
 !
       call count_interval_4_each_dir(ithree, nnod_rtp,                  &
-     &    sph_rtp1%idx_global_rtp, istep_rtp)
+     &    sph_rtp1%idx_global_rtp, sph_rtp1%istep_rtp)
       call count_interval_4_each_dir(ithree, nnod_rtm,                  &
      &    sph_rtm1%idx_global_rtm, sph_rtm1%istep_rtm)
       call count_interval_4_each_dir(itwo,   nnod_rlm,                  &

@@ -65,8 +65,8 @@
 !$omp             private(ip,kst,ked,lp,lst,nth,j_rlm,k_rlm,nd,         &
 !$omp&                    i_rlm,r1_1d_rlm_r,r2_1d_rlm_r,i_send,g7,gm)
       do ip = 1, np_smp
-        kst = idx_rlm_smp_stack(ip-1,1) + 1
-        ked = idx_rlm_smp_stack(ip,  1)
+        kst = sph_rlm1%istack_rlm_kr_smp(ip-1) + 1
+        ked = sph_rlm1%istack_rlm_kr_smp(ip  )
 !
         do lp = 1, nblock_l_rtm
           lst = lstack_block_rtm(lp-1) 
@@ -129,8 +129,8 @@
 !$omp&            private(ip,kst,ked,lp,lst,nth,j_rlm,k_rlm,nd,         &
 !$omp&                    i_rlm,i_send)
       do ip = 1, np_smp
-        kst = idx_rlm_smp_stack(ip-1,1) + 1
-        ked = idx_rlm_smp_stack(ip,  1)
+        kst = sph_rlm1%istack_rlm_kr_smp(ip-1) + 1
+        ked = sph_rlm1%istack_rlm_kr_smp(ip  )
 !
         do lp = 1, nblock_l_rtm
           lst = lstack_block_rtm(lp-1)

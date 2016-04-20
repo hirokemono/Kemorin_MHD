@@ -33,13 +33,13 @@
 !
 !
       type(sph_rtp_grid), save :: sph_rtp1
-!sph_rtp1%idx_global_rtp
+!sph_rtp1%istep_rtp
 !
       type(sph_rtm_grid), save :: sph_rtm1
 !sph_rtm1%istep_rtm
 !
       type(sph_rlm_grid), save :: sph_rlm1
-!sph_rlm1%istep_rlm
+!sph_rlm1%istack_inod_rlm_smp
 !
       type(sph_rj_grid), save :: sph_rj1
 !sph_rj1%istep_rj
@@ -147,7 +147,7 @@
       integer(kind = kint) :: nidx_rj(2)
 !
 !>      number of increments for @f$ f(r,\theta,\phi) @f$
-      integer(kind = kint) :: istep_rtp(3)
+!      integer(kind = kint) :: istep_rtp(3)
 !>      number of increments for @f$ f(r,\theta,m) @f$
 !      integer(kind = kint) :: istep_rtm(3)
 !>      number of increments for @f$ f(r,l,m) @f$

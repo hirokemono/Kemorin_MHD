@@ -19,12 +19,9 @@
 !
       integer(kind = kint), allocatable :: inod_rtp_smp_stack(:)
       integer(kind = kint), allocatable :: inod_rtm_smp_stack(:)
-      integer(kind = kint), allocatable :: inod_rlm_smp_stack(:)
-!      integer(kind = kint), allocatable :: inod_rj_smp_stack(:)
 !
       integer(kind = kint), allocatable :: idx_rtp_smp_stack(:,:)
       integer(kind = kint), allocatable :: idx_rtm_smp_stack(:,:)
-      integer(kind = kint), allocatable :: idx_rlm_smp_stack(:,:)
 !
       integer(kind = kint), allocatable :: irt_rtp_smp_stack(:)
       integer(kind = kint), allocatable :: irt_rtm_smp_stack(:)
@@ -53,12 +50,13 @@
 !
       allocate(inod_rtp_smp_stack(0:np_smp))
       allocate(inod_rtm_smp_stack(0:np_smp))
-      allocate(inod_rlm_smp_stack(0:np_smp))
+      allocate(sph_rlm1%istack_inod_rlm_smp(0:np_smp))
       allocate(sph_rj1%istack_inod_rj_smp(0:np_smp))
 !
       allocate(idx_rtp_smp_stack(0:np_smp,3))
       allocate(idx_rtm_smp_stack(0:np_smp,3))
-      allocate(idx_rlm_smp_stack(0:np_smp,2))
+      allocate(sph_rlm1%istack_rlm_kr_smp(0:np_smp))
+      allocate(sph_rlm1%istack_rlm_j_smp(0:np_smp))
       allocate(sph_rj1%istack_rj_kr_smp(0:np_smp))
       allocate(sph_rj1%istack_rj_j_smp(0:np_smp))
 !
@@ -67,12 +65,13 @@
 !
       inod_rtp_smp_stack = 0
       inod_rtm_smp_stack = 0
-      inod_rlm_smp_stack = 0
+      sph_rlm1%istack_inod_rlm_smp = 0
       sph_rj1%istack_inod_rj_smp = 0
 !
       idx_rtp_smp_stack = 0
       idx_rtm_smp_stack = 0
-      idx_rlm_smp_stack = 0
+      sph_rlm1%istack_rlm_kr_smp = 0
+      sph_rlm1%istack_rlm_j_smp = 0
       sph_rj1%istack_rj_kr_smp =  0
       sph_rj1%istack_rj_j_smp =  0
 !
@@ -89,12 +88,12 @@
 !
       deallocate(inod_rtp_smp_stack)
       deallocate(inod_rtm_smp_stack)
-      deallocate(inod_rlm_smp_stack)
+      deallocate(sph_rlm1%istack_inod_rlm_smp)
       deallocate(sph_rj1%istack_inod_rj_smp)
 !
       deallocate(idx_rtp_smp_stack)
       deallocate(idx_rtm_smp_stack)
-      deallocate(idx_rlm_smp_stack)
+      deallocate(sph_rlm1%istack_rlm_kr_smp, sph_rlm1%istack_rlm_j_smp)
       deallocate(sph_rj1%istack_rj_kr_smp, sph_rj1%istack_rj_j_smp)
 !
       deallocate(irt_rtm_smp_stack)

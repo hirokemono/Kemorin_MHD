@@ -210,7 +210,7 @@
         integer(kind = kint) :: ied_rlm(2)
 !
 !>        SMP stack for spectr data @f$ f(r,l,m) @f$
-      integer(kind = kint), pointer :: istack_inod_rj_smp(:)
+      integer(kind = kint), pointer :: istack_inod_rlm_smp(:)
 !
 !>        SMP stacks for indexing @f$ r@f$
       integer(kind = kint), pointer :: istack_rlm_kr_smp(:)

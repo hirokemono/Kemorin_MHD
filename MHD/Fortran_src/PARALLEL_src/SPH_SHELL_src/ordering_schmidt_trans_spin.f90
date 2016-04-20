@@ -11,7 +11,7 @@
 !!@verbatim
 !!      subroutine order_b_trans_fields_spin                            &
 !!     &         (nnod_rlm, nidx_rlm, istep_rlm, a_r_1d_rlm_r,          &
-!!     &          idx_rlm_smp_stack, ncomp, nvector, nscalar,           &
+!!     &          istack_rlm_kr_smp, ncomp, nvector, nscalar,           &
 !!     &          irev_sr_rlm, n_WR, WR, sp_rlm_spin)
 !!      subroutine order_f_trans_fields_spin                            &
 !!     &         (nnod_rlm, nidx_rtm, istep_rtm, idx_rtm_smp_stack,     &
@@ -50,13 +50,13 @@
 !
       subroutine order_b_trans_fields_spin                              &
      &         (nnod_rlm, nidx_rlm, istep_rlm, a_r_1d_rlm_r,            &
-     &          idx_rlm_smp_stack, ncomp, nvector, nscalar,             &
+     &          istack_rlm_kr_smp, ncomp, nvector, nscalar,             &
      &          irev_sr_rlm, n_WR, WR, sp_rlm_spin)
 !
       integer(kind = kint), intent(in) :: nnod_rlm
       integer(kind = kint), intent(in) :: nidx_rlm(2)
       integer(kind = kint), intent(in) :: istep_rlm(2)
-      integer(kind = kint), intent(in) :: idx_rlm_smp_stack(0:np_smp,2)
+      integer(kind = kint), intent(in) :: istack_rlm_kr_smp(0:np_smp)
       real(kind = kreal), intent(in) :: a_r_1d_rlm_r(nidx_rlm(1))
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
@@ -74,8 +74,8 @@
 !$omp parallel do schedule(static)                                      &
 !$omp&  private(ip,ist,ied,nd,i_rlm,j_rlm,k_rlm,i_recv,a2r_1d_rlm_r)
       do ip = 1, np_smp
-        ist = idx_rlm_smp_stack(ip-1,1) + 1
-        ied = idx_rlm_smp_stack(ip,  1)
+        ist = istack_rlm_kr_smp(ip-1) + 1
+        ied = istack_rlm_kr_smp(ip  )
         do nd = 1, nvector
           do k_rlm = ist, ied
             a2r_1d_rlm_r = a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)

@@ -64,8 +64,8 @@
 !$omp&                    i_rlm,ip_rtm,in_rtm,r2_1d_rlm_r,sp1,sp2,sp3,  &
 !$omp&                    Pvw_l,dPvw_l,Pgvw_l)
       do ip = 1, np_smp
-        kst = idx_rlm_smp_stack(ip-1,1) + 1
-        ked = idx_rlm_smp_stack(ip,  1)
+        kst = sph_rlm1%istack_rlm_kr_smp(ip-1) + 1
+        ked = sph_rlm1%istack_rlm_kr_smp(ip  )
 !
         do k_rtm = kst, ked
           r2_1d_rlm_r = sph_rlm1%radius_1d_rlm_r(k_rtm)**2
@@ -139,8 +139,8 @@
 !$omp&            private(ip,kst,ked,j_rlm,k_rtm,nd,                    &
 !$omp&                    i_rlm,ip_rtm,l_rtm,sp1,Pws_l)
       do ip = 1, np_smp
-        kst = idx_rlm_smp_stack(ip-1,1) + 1
-        ked = idx_rlm_smp_stack(ip,  1)
+        kst = sph_rlm1%istack_rlm_kr_smp(ip-1) + 1
+        ked = sph_rlm1%istack_rlm_kr_smp(ip  )
 !
         do k_rtm = kst, ked
           do j_rlm = 1, nidx_rlm(2)

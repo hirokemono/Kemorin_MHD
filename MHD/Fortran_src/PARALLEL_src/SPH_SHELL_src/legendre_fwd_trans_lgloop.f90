@@ -63,8 +63,8 @@
 !$omp&                     k_rlm,j_rlm,l_rtm,ip_rtm,in_rtm,             &
 !$omp&                     sp1,sp2,sp3,Pvw_l,dPvw_l,Pgvw_l)
       do ip = 1, np_smp
-        ist = nvector*inod_rlm_smp_stack(ip-1) + 1
-        ied = nvector*inod_rlm_smp_stack(ip)
+        ist = nvector*sph_rlm1%istack_inod_rlm_smp(ip-1) + 1
+        ied = nvector*sph_rlm1%istack_inod_rlm_smp(ip)
         do inum = ist, ied
           nd =    1 + mod( (inum-1),nvector)
           inod  = 1 + (inum - nd) / nvector
@@ -152,8 +152,8 @@
 !$omp&             private(ip,ist,ied,lp,lst,led,inum,nd,inod,          &
 !$omp&                     k_rlm,j_rlm,i_rlm,l_rtm,ip_rtm,sp1,Pws_l)
       do ip = 1, np_smp
-        ist = nscalar*inod_rlm_smp_stack(ip-1) + 1
-        ied = nscalar*inod_rlm_smp_stack(ip)
+        ist = nscalar*sph_rlm1%istack_inod_rlm_smp(ip-1) + 1
+        ied = nscalar*sph_rlm1%istack_inod_rlm_smp(ip)
         do inum = ist, ied
           nd =    1 + mod( (inum-1),nscalar)
           inod  = 1 + (inum - nd) / nscalar

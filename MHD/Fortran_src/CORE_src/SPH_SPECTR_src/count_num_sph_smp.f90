@@ -57,7 +57,7 @@
       call count_number_4_smp(np_smp, ione, nnod_rtm,                   &
      &    inod_rtm_smp_stack, maxnod_rtm_smp)
       call count_number_4_smp(np_smp, ione, nnod_rlm,                   &
-     &    inod_rlm_smp_stack, maxnod_rlm_smp)
+     &    sph_rlm1%istack_inod_rlm_smp, maxnod_rlm_smp)
       call count_number_4_smp(np_smp, ione, nnod_rj,                    &
      &    sph_rj1%istack_inod_rj_smp, maxnod_rj_smp)
 !
@@ -76,9 +76,9 @@
      &    idx_rtm_smp_stack(0,3), maxidx_rtm_smp(3) )
 !
       call count_number_4_smp(np_smp, ione, nidx_rlm(1),                &
-     &    idx_rlm_smp_stack(0,1), maxidx_rlm_smp(1) )
+     &    sph_rlm1%istack_rlm_kr_smp, maxidx_rlm_smp(1) )
       call count_number_4_smp(np_smp, ione, nidx_rlm(2),                &
-     &    idx_rlm_smp_stack(0,2), maxidx_rlm_smp(2) )
+     &    sph_rlm1%istack_rlm_j_smp, maxidx_rlm_smp(2) )
 !
       call count_number_4_smp(np_smp, ione, nidx_rj(1),                 &
      &    sph_rj1%istack_rj_kr_smp, maxidx_rj_smp(1) )

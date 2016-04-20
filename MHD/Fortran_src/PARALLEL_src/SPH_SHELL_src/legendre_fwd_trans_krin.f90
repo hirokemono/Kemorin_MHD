@@ -75,8 +75,8 @@
 !$omp&                    mp_rlm,mn_rlm,k_rlm,Pvw_l,dPvw_l,Pgvw_l,      &
 !$omp&                    sp1,sp2,sp3)
       do ip = 1, np_smp
-        jst = idx_rlm_smp_stack(ip-1,2) + 1
-        jed = idx_rlm_smp_stack(ip,  2)
+        jst = sph_rlm1%istack_rlm_j_smp(ip-1) + 1
+        jed = sph_rlm1%istack_rlm_j_smp(ip  )
         do j_rlm = jst, jed
           do kr_nd = 1, nb_nri
             sp_rlm_spin(kr_nd,         j_rlm) = 0.0d0
@@ -171,8 +171,8 @@
 !$omp&            private(ip,jst,jed,lp,lst,led,j_rlm,l_rtm,mp_rlm,     &
 !$omp&                    kr_nd,Pws_l,sp1)
       do ip = 1, np_smp
-        jst = idx_rlm_smp_stack(ip-1,2) + 1
-        jed = idx_rlm_smp_stack(ip,  2)
+        jst = sph_rlm1%istack_rlm_j_smp(ip-1) + 1
+        jed = sph_rlm1%istack_rlm_j_smp(ip  )
         do j_rlm = jst, jed
           do kr_nd = 1, nb_nri
               sp_rlm_spin(kr_nd+kst,j_rlm) = 0.0d0

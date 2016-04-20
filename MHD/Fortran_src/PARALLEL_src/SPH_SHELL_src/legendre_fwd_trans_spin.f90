@@ -65,8 +65,8 @@
 !$omp             private(ip,kst,ked,lp,lst,nth,j_rlm,k_rlm,nd,kr_nd,   &
 !$omp&                    i_rlm,r1_1d_rlm_r,r2_1d_rlm_r,i_send,g7,gm)
       do ip = 1, np_smp
-        kst = nvector*idx_rlm_smp_stack(ip-1,1) + 1
-        ked = nvector*idx_rlm_smp_stack(ip,  1)
+        kst = nvector*sph_rlm1%istack_rlm_kr_smp(ip-1) + 1
+        ked = nvector*sph_rlm1%istack_rlm_kr_smp(ip  )
         do kr_nd = kst, ked
           nd = 1 + mod((kr_nd-1),nvector)
           k_rlm = 1 + (kr_nd - nd) / nvector
@@ -128,8 +128,8 @@
 !$omp&            private(ip,kst,ked,lp,lst,nth,j_rlm,kr_nd,k_rlm,nd,   &
 !$omp&                    i_rlm,i_send)
       do ip = 1, np_smp
-        kst = nscalar*idx_rlm_smp_stack(ip-1,1) + 1
-        ked = nscalar*idx_rlm_smp_stack(ip,  1)
+        kst = nscalar*sph_rlm1%istack_rlm_kr_smp(ip-1) + 1
+        ked = nscalar*sph_rlm1%istack_rlm_kr_smp(ip  )
 !
         do kr_nd = kst, ked
           nd = 1 + mod((kr_nd-1),nscalar)
