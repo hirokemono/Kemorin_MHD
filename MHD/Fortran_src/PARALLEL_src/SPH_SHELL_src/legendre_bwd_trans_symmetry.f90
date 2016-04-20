@@ -90,18 +90,18 @@
                 ln_rtm =  nidx_rtm(2) - lp_rtm + 1
 !
                 do nd = 1, nvector
-                  ip_rtpm = 1 + (lp_rtm-1) * istep_rtm(2)               &
-     &                        + (k_rlm-1) *  istep_rtm(1)               &
-     &                        + (mp_rlm-1) * istep_rtm(3)
-                  in_rtpm = 1 + (lp_rtm-1) * istep_rtm(2)               &
-     &                        + (k_rlm-1) *  istep_rtm(1)               &
-     &                        + (mn_rlm-1) * istep_rtm(3)
-                  ip_rtnm = 1 + (ln_rtm-1) * istep_rtm(2)               &
-     &                        + (k_rlm-1) *  istep_rtm(1)               &
-     &                        + (mp_rlm-1) * istep_rtm(3)
-                  in_rtnm = 1 + (ln_rtm-1) * istep_rtm(2)               &
-     &                        + (k_rlm-1) *  istep_rtm(1)               &
-     &                        + (mn_rlm-1) * istep_rtm(3)
+                  ip_rtpm = 1 + (lp_rtm-1) * sph_rtm1%istep_rtm(2)      &
+     &                        + (k_rlm-1) *  sph_rtm1%istep_rtm(1)      &
+     &                        + (mp_rlm-1) * sph_rtm1%istep_rtm(3)
+                  in_rtpm = 1 + (lp_rtm-1) * sph_rtm1%istep_rtm(2)      &
+     &                        + (k_rlm-1) *  sph_rtm1%istep_rtm(1)      &
+     &                        + (mn_rlm-1) * sph_rtm1%istep_rtm(3)
+                  ip_rtnm = 1 + (ln_rtm-1) * sph_rtm1%istep_rtm(2)      &
+     &                        + (k_rlm-1) *  sph_rtm1%istep_rtm(1)      &
+     &                        + (mp_rlm-1) * sph_rtm1%istep_rtm(3)
+                  in_rtnm = 1 + (ln_rtm-1) * sph_rtm1%istep_rtm(2)      &
+     &                        + (k_rlm-1) *  sph_rtm1%istep_rtm(1)      &
+     &                        + (mn_rlm-1) * sph_rtm1%istep_rtm(3)
                   ipp_send = 3*nd-2 + (irev_sr_rtm(ip_rtpm)-1) * ncomp
                   inp_send = 3*nd-2 + (irev_sr_rtm(in_rtpm)-1) * ncomp
                   ipn_send = 3*nd-2 + (irev_sr_rtm(ip_rtnm)-1) * ncomp
@@ -147,12 +147,12 @@
               a2r_1d_rlm_r = a1r_1d_rlm_r**2
 !
               do nd = 1, nvector
-                ip_rtpm = 1 + (lp_rtm-1) * istep_rtm(2)                 &
-     &                      + (k_rlm-1) *  istep_rtm(1)                 &
-     &                      + (mp_rlm-1) * istep_rtm(3)
-                in_rtpm = 1 + (lp_rtm-1) * istep_rtm(2)                 &
-     &                      + (k_rlm-1) *  istep_rtm(1)                 &
-     &                      + (mn_rlm-1) * istep_rtm(3)
+                ip_rtpm = 1 + (lp_rtm-1) * sph_rtm1%istep_rtm(2)        &
+     &                      + (k_rlm-1) *  sph_rtm1%istep_rtm(1)        &
+     &                      + (mp_rlm-1) * sph_rtm1%istep_rtm(3)
+                in_rtpm = 1 + (lp_rtm-1) * sph_rtm1%istep_rtm(2)        &
+     &                      + (k_rlm-1) *  sph_rtm1%istep_rtm(1)        &
+     &                      + (mn_rlm-1) * sph_rtm1%istep_rtm(3)
                 ipp_send = 3*nd-2 + (irev_sr_rtm(ip_rtpm)-1) * ncomp
                 inp_send = 3*nd-2 + (irev_sr_rtm(in_rtpm)-1) * ncomp
 !
@@ -223,12 +223,12 @@
                 ln_rtm =  nidx_rtm(2) - lp_rtm + 1
 !
                 do nd = 1, nscalar
-                  ip_rtm = 1 + (lp_rtm-1) * istep_rtm(2)                &
-     &                       + (k_rlm-1) *  istep_rtm(1)                &
-     &                       + (mp_rlm-1) * istep_rtm(3)
-                  in_rtm = 1 + (ln_rtm-1) * istep_rtm(2)                &
-     &                       + (k_rlm-1) *  istep_rtm(1)                &
-     &                       + (mp_rlm-1) * istep_rtm(3)
+                  ip_rtm = 1 + (lp_rtm-1) * sph_rtm1%istep_rtm(2)       &
+     &                       + (k_rlm-1) *  sph_rtm1%istep_rtm(1)       &
+     &                       + (mp_rlm-1) * sph_rtm1%istep_rtm(3)
+                  in_rtm = 1 + (ln_rtm-1) * sph_rtm1%istep_rtm(2)       &
+     &                       + (k_rlm-1) *  sph_rtm1%istep_rtm(1)       &
+     &                       + (mp_rlm-1) * sph_rtm1%istep_rtm(3)
                   ip_send = nd + 3*nvector                              &
      &                         + (irev_sr_rtm(ip_rtm)-1) * ncomp
                   in_send = nd + 3*nvector                              &
@@ -259,9 +259,9 @@
             je = 1 + jst
             do k_rlm = kst, ked
               do nd = 1, nscalar
-                ip_rtm = 1 + (lp_rtm-1) * istep_rtm(2)                  &
-     &                     + (k_rlm-1) *  istep_rtm(1)                  &
-     &                     + (mp_rlm-1) * istep_rtm(3)
+                ip_rtm = 1 + (lp_rtm-1) * sph_rtm1%istep_rtm(2)         &
+     &                     + (k_rlm-1) *  sph_rtm1%istep_rtm(1)         &
+     &                     + (mp_rlm-1) * sph_rtm1%istep_rtm(3)
                 ip_send = nd + 3*nvector                                &
      &                       + (irev_sr_rtm(ip_rtm)-1) * ncomp
 !

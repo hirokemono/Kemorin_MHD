@@ -118,12 +118,15 @@
 !
 !          st_elapsed = MPI_WTIME()
           call cal_vr_rtm_vector_sym_matmul                             &
-     &       (kst(ip), nkr(ip), mp_rlm, mn_rlm, nl_rtm,                 &
+     &       (nnod_rtm, nidx_rtm, sph_rtm1%istep_rtm, nidx_rlm,         &
+     &        kst(ip), nkr(ip), mp_rlm, mn_rlm, nl_rtm,                 &
      &        symp_r(1,ip), asmp_p(1,ip), asmp_r(1,ip), symp_p(1,ip),   &
      &        ncomp, nvector, irev_sr_rtm, n_WS, WS)
-          call cal_vr_rtm_scalar_sym_matmul(kst(ip), nkr(ip),           &
-     &        mp_rlm, nl_rtm, symp_r(1,ip), asmp_r(1,ip),               &
-     &        ncomp, nvector, nscalar, irev_sr_rtm, n_WS, WS)
+          call cal_vr_rtm_scalar_sym_matmul                             &
+     &       (nnod_rtm, nidx_rtm, sph_rtm1%istep_rtm, nidx_rlm,         &
+     &        kst(ip), nkr(ip), mp_rlm, nl_rtm,                         &
+     &        symp_r(1,ip), asmp_r(1,ip), ncomp, nvector, nscalar,      &
+     &        irev_sr_rtm, n_WS, WS)
 !          elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
 !
         end do
@@ -262,10 +265,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_vr_rtm_vector_sym_matmul                           &
-     &       (kst, nkr, mp_rlm, mn_rlm, nl_rtm, symp_r, asmp_p,         &
-     &        asmp_r, symp_p, ncomp, nvector, irev_sr_rtm, n_WS, WS)
+     &         (nnod_rtm, nidx_rtm, istep_rtm, nidx_rlm,                &
+     &          kst, nkr, mp_rlm, mn_rlm, nl_rtm, symp_r, asmp_p,       &
+     &          asmp_r, symp_p, ncomp, nvector, irev_sr_rtm, n_WS, WS)
 !
       use m_work_4_sph_trans
+!
+      integer(kind = kint), intent(in) :: nnod_rtm
+      integer(kind = kint), intent(in) :: nidx_rtm(3)
+      integer(kind = kint), intent(in) :: istep_rtm(3)
+      integer(kind = kint), intent(in) :: nidx_rlm(2)
 !
       integer(kind = kint), intent(in) :: kst, nkr
       integer(kind = kint), intent(in) :: mp_rlm, mn_rlm
@@ -376,9 +385,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_vr_rtm_scalar_sym_matmul(kst, nkr, mp_rlm,         &
-     &          nl_rtm, symp, asmp, ncomp, nvector, nscalar,            &
-     &          irev_sr_rtm, n_WS, WS)
+      subroutine cal_vr_rtm_scalar_sym_matmul                           &
+     &         (nnod_rtm, nidx_rtm, istep_rtm, nidx_rlm,                &
+     &          kst, nkr, mp_rlm, nl_rtm, symp, asmp,                   &
+     &          ncomp, nvector, nscalar, irev_sr_rtm, n_WS, WS)
+!
+      integer(kind = kint), intent(in) :: nnod_rtm
+      integer(kind = kint), intent(in) :: nidx_rtm(3)
+      integer(kind = kint), intent(in) :: istep_rtm(3)
+      integer(kind = kint), intent(in) :: nidx_rlm(2)
 !
       integer(kind = kint), intent(in) :: kst, nkr
       integer(kind = kint), intent(in) :: mp_rlm

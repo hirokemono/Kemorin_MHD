@@ -8,26 +8,32 @@
 !!
 !!@verbatim
 !!      subroutine cal_vr_rtm_vector_matmul                             &
-!!     &       (kst, nkr, mp_rlm, mn_rlm, nvec_lk,                      &
-!!     &        symp_r, asmp_t, asmp_p, symn_t, symn_p, ncomp,          &
-!!     &        irev_sr_rtm, n_WS, WS)
-!!      subroutine cal_vr_rtm_scalar_matmul(kst, nkr, mp_rlm,           &
-!!     &          nscl_lk, symp, ncomp, nvector, irev_sr_rtm, n_WS, WS)
+!!     &       (nnod_rtm, nidx_rtm, istep_rtm, nidx_rlm, kst, nkr,      &
+!!     &        mp_rlm, mn_rlm, nvec_lk, symp_r, asmp_t, asmp_p,        &
+!!     &        symn_t, symn_p, ncomp, irev_sr_rtm, n_WS, WS)
+!!      subroutine cal_vr_rtm_scalar_matmul                             &
+!!     &         (nnod_rtm, nidx_rtm, istep_rtm, nidx_rlm,              &
+!!     &          kst, nkr, mp_rlm, nscl_lk, symp, ncomp, nvector,      &
+!!     &          irev_sr_rtm, n_WS, WS)
 !!
 !!      subroutine cal_vr_rtm_vector_sym_matmul                         &
-!!     &       (kst, nkr, mp_rlm, mn_rlm, nl_rtm,                       &
+!!     &       (nnod_rtm, nidx_rtm, istep_rtm, nidx_rlm,                &
+!!     &        kst, nkr, mp_rlm, mn_rlm, nl_rtm,                       &
 !!     &        symp_r, asmp_t, asmp_p, symn_t, symn_p,                 &
 !!     &        asmp_r, symp_t, symp_p, asmn_t, asmn_p,                 &
 !!     &        ncomp, irev_sr_rtm, n_WS, WS)
-!!      subroutine cal_vr_rtm_scalar_sym_matmul(kst, nkr,               &
-!!     &          nl_rtm, nscl_lk, symp, asmp, ncomp, nvector,          &
+!!      subroutine cal_vr_rtm_scalar_sym_matmul                         &
+!!     &         (nnod_rtm, nidx_rtm, istep_rtm, nidx_rlm, kst, nkr,    &
+!!     &          mp_rlm, nl_rtm, symp, asmp, ncomp, nvector,           &
 !!     &          irev_sr_rtm, n_WS, WS)
 !!
 !!      subroutine cal_vr_rtm_vec_sym_matmul_big                        &
-!!     &       (kst, nkr, mp_rlm, mn_rlm, nl_rtm, symp_r, asmp_p,       &
-!!     &        asmp_r, symp_p, ncomp, nvector, irev_sr_rtm, n_WS, WS)
-!!      subroutine cal_vr_rtm_scl_sym_matmul_big(kst, nkr, mp_rlm,      &
-!!     &          nl_rtm, symp, asmp, ncomp, nvector, nscalar,          &
+!!     &         (nnod_rtm, nidx_rtm, istep_rtm, nidx_rlm,              &
+!!     &          kst, nkr, mp_rlm, mn_rlm, nl_rtm, symp_r, asmp_p,     &
+!!     &          asmp_r, symp_p, ncomp, nvector, irev_sr_rtm, n_WS, WS)
+!!      subroutine cal_vr_rtm_scl_sym_matmul_big                        &
+!!     &         (nnod_rtm, nidx_rtm, istep_rtm, nidx_rlm, kst, nkr,    &
+!!     &          mp_rlm, nl_rtm, symp, asmp, ncomp, nvector, nscalar,  &
 !!     &          irev_sr_rtm, n_WS, WS)
 !!@endverbatim
 !!
@@ -36,7 +42,6 @@
 !
       use m_precision
       use m_constants
-      use m_spheric_parameter
 !
       implicit none
 !
@@ -47,11 +52,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_vr_rtm_vector_matmul                               &
-     &       (kst, nkr, mp_rlm, mn_rlm, nvec_lk,                        &
-     &        symp_r, asmp_t, asmp_p, symn_t, symn_p, ncomp,            &
-     &        irev_sr_rtm, n_WS, WS)
+     &       (nnod_rtm, nidx_rtm, istep_rtm, nidx_rlm, kst, nkr,        &
+     &        mp_rlm, mn_rlm, nvec_lk, symp_r, asmp_t, asmp_p,          &
+     &        symn_t, symn_p, ncomp, irev_sr_rtm, n_WS, WS)
 !
       use m_work_4_sph_trans
+!
+      integer(kind = kint), intent(in) :: nnod_rtm
+      integer(kind = kint), intent(in) :: nidx_rtm(3)
+      integer(kind = kint), intent(in) :: istep_rtm(3)
+      integer(kind = kint), intent(in) :: nidx_rlm(2)
 !
       integer(kind = kint), intent(in) :: kst, nkr
       integer(kind = kint), intent(in) :: mp_rlm, mn_rlm
@@ -108,8 +118,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_vr_rtm_scalar_matmul(kst, nkr, mp_rlm,             &
-     &          nscl_lk, symp, ncomp, nvector, irev_sr_rtm, n_WS, WS)
+      subroutine cal_vr_rtm_scalar_matmul                               &
+     &         (nnod_rtm, nidx_rtm, istep_rtm, nidx_rlm,                &
+     &          kst, nkr, mp_rlm, nscl_lk, symp, ncomp, nvector,        &
+     &          irev_sr_rtm, n_WS, WS)
+!
+      integer(kind = kint), intent(in) :: nnod_rtm
+      integer(kind = kint), intent(in) :: nidx_rtm(3)
+      integer(kind = kint), intent(in) :: istep_rtm(3)
+      integer(kind = kint), intent(in) :: nidx_rlm(2)
 !
       integer(kind = kint), intent(in) :: kst, nkr
       integer(kind = kint), intent(in) :: mp_rlm
@@ -145,12 +162,18 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_vr_rtm_vector_sym_matmul                           &
-     &       (kst, nkr, mp_rlm, mn_rlm, nl_rtm,                         &
+     &       (nnod_rtm, nidx_rtm, istep_rtm, nidx_rlm,                  &
+     &        kst, nkr, mp_rlm, mn_rlm, nl_rtm,                         &
      &        symp_r, asmp_t, asmp_p, symn_t, symn_p,                   &
      &        asmp_r, symp_t, symp_p, asmn_t, asmn_p,                   &
      &        ncomp, irev_sr_rtm, n_WS, WS)
 !
       use m_work_4_sph_trans
+!
+      integer(kind = kint), intent(in) :: nnod_rtm
+      integer(kind = kint), intent(in) :: nidx_rtm(3)
+      integer(kind = kint), intent(in) :: istep_rtm(3)
+      integer(kind = kint), intent(in) :: nidx_rlm(2)
 !
       integer(kind = kint), intent(in) :: kst, nkr
       integer(kind = kint), intent(in) :: mp_rlm, mn_rlm
@@ -266,9 +289,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_vr_rtm_scalar_sym_matmul(kst, nkr, mp_rlm,         &
-     &          nl_rtm, symp, asmp, ncomp, nvector,                     &
+      subroutine cal_vr_rtm_scalar_sym_matmul                           &
+     &         (nnod_rtm, nidx_rtm, istep_rtm, nidx_rlm, kst, nkr,      &
+     &          mp_rlm, nl_rtm, symp, asmp, ncomp, nvector,             &
      &          irev_sr_rtm, n_WS, WS)
+!
+      integer(kind = kint), intent(in) :: nnod_rtm
+      integer(kind = kint), intent(in) :: nidx_rtm(3)
+      integer(kind = kint), intent(in) :: istep_rtm(3)
+      integer(kind = kint), intent(in) :: nidx_rlm(2)
 !
       integer(kind = kint), intent(in) :: kst, nkr
       integer(kind = kint), intent(in) :: mp_rlm
@@ -328,10 +357,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_vr_rtm_vec_sym_matmul_big                          &
-     &       (kst, nkr, mp_rlm, mn_rlm, nl_rtm, symp_r, asmp_p,         &
-     &        asmp_r, symp_p, ncomp, nvector, irev_sr_rtm, n_WS, WS)
+     &         (nnod_rtm, nidx_rtm, istep_rtm, nidx_rlm,                &
+     &          kst, nkr, mp_rlm, mn_rlm, nl_rtm, symp_r, asmp_p,       &
+     &          asmp_r, symp_p, ncomp, nvector, irev_sr_rtm, n_WS, WS)
 !
       use m_work_4_sph_trans
+!
+      integer(kind = kint), intent(in) :: nnod_rtm
+      integer(kind = kint), intent(in) :: nidx_rtm(3)
+      integer(kind = kint), intent(in) :: istep_rtm(3)
+      integer(kind = kint), intent(in) :: nidx_rlm(2)
 !
       integer(kind = kint), intent(in) :: kst, nkr
       integer(kind = kint), intent(in) :: mp_rlm, mn_rlm
@@ -442,9 +477,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_vr_rtm_scl_sym_matmul_big(kst, nkr, mp_rlm,        &
-     &          nl_rtm, symp, asmp, ncomp, nvector, nscalar,            &
+      subroutine cal_vr_rtm_scl_sym_matmul_big                          &
+     &         (nnod_rtm, nidx_rtm, istep_rtm, nidx_rlm, kst, nkr,      &
+     &          mp_rlm, nl_rtm, symp, asmp, ncomp, nvector, nscalar,    &
      &          irev_sr_rtm, n_WS, WS)
+!
+      integer(kind = kint), intent(in) :: nnod_rtm
+      integer(kind = kint), intent(in) :: nidx_rtm(3)
+      integer(kind = kint), intent(in) :: istep_rtm(3)
+      integer(kind = kint), intent(in) :: nidx_rlm(2)
 !
       integer(kind = kint), intent(in) :: kst, nkr
       integer(kind = kint), intent(in) :: mp_rlm

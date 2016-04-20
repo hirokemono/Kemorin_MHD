@@ -93,9 +93,11 @@
                 Pg3_l = P_rtm(l_rtm,j_rlm) * g_sph_rlm(j_rlm,3)
                 dPdt_l = dPdt_rtm(l_rtm,j_rlm)
 !
-                ip_rtm = 3*nd + ncomp*((l_rtm-1) * istep_rtm(2)         &
-     &                               + (k_rlm-1) * istep_rtm(1)         &
-     &                + (mdx_p_rlm_rtm(j_rlm)-1) * istep_rtm(3))
+                ip_rtm = 3*nd                                           &
+     &                  + ncomp*((l_rtm-1) * sph_rtm1%istep_rtm(2)      &
+     &                         + (k_rlm-1) * sph_rtm1%istep_rtm(1)      &
+     &                  + (mdx_p_rlm_rtm(j_rlm)-1)                      &
+     &                                     * sph_rtm1%istep_rtm(3))
 !
                 i_rlm = 3*nd                                            &
      &                 + ncomp * ((j_rlm-1) * sph_rlm1%istep_rlm(2)     &
@@ -119,9 +121,11 @@
      &                 * dble(sph_rlm1%idx_gl_1d_rlm_j(j_rlm,3))        &
      &                 * asin_theta_1d_rtm(l_rtm)
 !
-                in_rtm = 3*nd + ncomp*((l_rtm-1) * istep_rtm(2)         &
-     &                               + (k_rlm-1) * istep_rtm(1)         &
-     &                + (mdx_n_rlm_rtm(j_rlm)-1) * istep_rtm(3))
+                in_rtm = 3*nd                                           &
+     &                  + ncomp*((l_rtm-1) * sph_rtm1%istep_rtm(2)      &
+     &                         + (k_rlm-1) * sph_rtm1%istep_rtm(1)      &
+     &                  + (mdx_n_rlm_rtm(j_rlm)-1)                      &
+     &                   * sph_rtm1%istep_rtm(3))
 !
                 i_rlm = 3*nd                                            &
      &                 + ncomp * ((j_rlm-1) * sph_rlm1%istep_rlm(2)     &
@@ -172,9 +176,9 @@
 !
               do l_rtm = lst, led
                 ip_rtm = nd + 3*nvector                                 &
-     &                      + ncomp*((l_rtm-1) * istep_rtm(2)           &
-     &                             + (k_rlm-1) * istep_rtm(1)           &
-     &              + (mdx_p_rlm_rtm(j_rlm)-1) * istep_rtm(3))
+     &                      + ncomp*((l_rtm-1) * sph_rtm1%istep_rtm(2)  &
+     &                             + (k_rlm-1) * sph_rtm1%istep_rtm(1)  &
+     &              + (mdx_p_rlm_rtm(j_rlm)-1) * sph_rtm1%istep_rtm(3))
 !
                 i_rlm = nd + 3*nvector                                  &
      &                     + ncomp * ((j_rlm-1) * sph_rlm1%istep_rlm(2) &

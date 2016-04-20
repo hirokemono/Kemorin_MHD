@@ -91,11 +91,13 @@
 !
 !          st_elapsed = MPI_WTIME()
           call set_vr_rtm_vector_sym_matmul                             &
-     &       (kst(ip), nkr(ip), mp_rlm, mn_rlm, nle_rtm, nlo_rtm,       &
+     &       (nnod_rtm, nidx_rtm, sph_rtm1%istep_rtm, nidx_rlm,         &
+     &        kst(ip), nkr(ip), mp_rlm, mn_rlm, nle_rtm, nlo_rtm,       &
      &        ncomp, nvector, irev_sr_rtm, n_WR, WR,                    &
      &        symp_r(1,ip), asmp_p(1,ip), asmp_r(1,ip), symp_p(1,ip) )
           call set_vr_rtm_scalar_sym_matmul                             &
-     &       (kst(ip), nkr(ip), mp_rlm, nle_rtm, nlo_rtm,               &
+     &       (nnod_rtm, nidx_rtm, sph_rtm1%istep_rtm, nidx_rlm,         &
+     &        kst(ip), nkr(ip), mp_rlm, nle_rtm, nlo_rtm,               &
      &        ncomp, nvector, nscalar, irev_sr_rtm, n_WR, WR,           &
      &        symp_r(1,ip), asmp_r(1,ip))
 !          elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
@@ -141,11 +143,17 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_vr_rtm_vector_sym_matmul                           &
-     &         (kst, nkr, mp_rlm, mn_rlm, nle_rtm, nlo_rtm,             &
+     &         (nnod_rtm, nidx_rtm, istep_rtm, nidx_rlm,                &
+     &          kst, nkr, mp_rlm, mn_rlm, nle_rtm, nlo_rtm,             &
      &          ncomp, nvector, irev_sr_rtm, n_WR, WR,                  &
      &          symp_r, asmp_p, asmp_r, symp_p)
 !
       use m_work_4_sph_trans
+!
+      integer(kind = kint), intent(in) :: nnod_rtm
+      integer(kind = kint), intent(in) :: nidx_rtm(3)
+      integer(kind = kint), intent(in) :: istep_rtm(3)
+      integer(kind = kint), intent(in) :: nidx_rlm(2)
 !
       integer(kind = kint), intent(in) :: kst, nkr
       integer(kind = kint), intent(in) :: mp_rlm, mn_rlm
@@ -257,9 +265,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_vr_rtm_scalar_sym_matmul(kst, nkr, mp_rlm,         &
-     &          nle_rtm, nlo_rtm, ncomp, nvector, nscalar,              &
-     &          irev_sr_rtm, n_WR, WR, symp, asmp)
+      subroutine set_vr_rtm_scalar_sym_matmul                           &
+     &         (nnod_rtm, nidx_rtm, istep_rtm, nidx_rlm,                &
+     &          kst, nkr, mp_rlm, nle_rtm, nlo_rtm,                     &
+     &          ncomp, nvector, nscalar, irev_sr_rtm, n_WR, WR,         &
+     &          symp, asmp)
+!
+      integer(kind = kint), intent(in) :: nnod_rtm
+      integer(kind = kint), intent(in) :: nidx_rtm(3)
+      integer(kind = kint), intent(in) :: istep_rtm(3)
+      integer(kind = kint), intent(in) :: nidx_rlm(2)
 !
       integer(kind = kint), intent(in) :: kst, nkr
       integer(kind = kint), intent(in) :: mp_rlm
@@ -311,10 +326,10 @@
           kr_nd = kk + kst*nscalar
           k_rlm = 1 + mod((kr_nd-1),nidx_rlm(1))
           nd = 1 + (kr_nd - k_rlm) / nidx_rlm(1)
-          ip_rtpm = 1 + (lp_rtm-1) * istep_rtm(2)                   &
-     &                + (k_rlm-1) *  istep_rtm(1)                   &
+          ip_rtpm = 1 + (lp_rtm-1) * istep_rtm(2)                       &
+     &                + (k_rlm-1) *  istep_rtm(1)                       &
      &                + (mp_rlm-1) * istep_rtm(3)
-          ipp_recv = nd + 3*nvector                                 &
+          ipp_recv = nd + 3*nvector                                     &
      &                  + (irev_sr_rtm(ip_rtpm) - 1) * ncomp
 !
           symp(kk+3*nkrv,lp_rtm) = WR(ipp_recv) * wp_rtm

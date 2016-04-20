@@ -85,7 +85,8 @@
      &                  + (k_rlm-1) * sph_rlm1%istep_rlm(1)
               i_send = 3*nd-2 + (irev_sr_rlm(i_rlm) - 1) * ncomp
 !
-              call set_vr_rtm_vector_blocked(nd, k_rlm,                 &
+              call set_vr_rtm_vector_blocked                            &
+     &             (nnod_rtm, sph_rtm1%istep_rtm, nd, k_rlm,            &
      &              mdx_p_rlm_rtm(j_rlm), mdx_n_rlm_rtm(j_rlm),         &
      &              asin_theta_1d_rtm(1+lst), lst, nth,                 &
      &              ncomp, irev_sr_rtm, n_WR, WR,                       &
@@ -144,7 +145,8 @@
      &                      + (irev_sr_rlm(i_rlm) - 1) * ncomp
 !
               call set_vr_rtm_scalar_blocked                            &
-     &             (nd, k_rlm, mdx_p_rlm_rtm(j_rlm), lst, nth,          &
+     &             (nnod_rtm, sph_rtm1%istep_rtm,                       &
+     &              nd, k_rlm, mdx_p_rlm_rtm(j_rlm), lst, nth,          &
      &              ncomp, nvector, irev_sr_rtm, n_WR, WR, symp(1,ip))
               call cal_scalar_sp_rlm_dotprod(nth, g_sph_rlm(j_rlm,6),   &
      &             P_rtm(lst+1,j_rlm), symp(1,ip), WS(i_send))
