@@ -91,8 +91,8 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      call order_f_trans_fields_krin                                    &
-     &   (nnod_rlm, nidx_rtm, sph_rtm1%istep_rtm, idx_rtm_smp_stack,    &
+      call order_f_trans_fields_krin(nnod_rlm, nidx_rtm,                &
+     &    sph_rtm1%istep_rtm, sph_rtm1%istack_rtm_m_smp,                &
      &    ncomp, nvector, nscalar, irev_sr_rtm, n_WR, WR, vr_rtm_wk(1))
 !
       call legendre_f_trans_vector_krin(ncomp, nvector,                 &

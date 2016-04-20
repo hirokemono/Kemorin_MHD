@@ -36,7 +36,7 @@
 !sph_rtp1%istep_rtp
 !
       type(sph_rtm_grid), save :: sph_rtm1
-!sph_rtm1%istep_rtm
+!sph_rtm1%istack_rtm_rt_smp
 !
       type(sph_rlm_grid), save :: sph_rlm1
 !sph_rlm1%istack_inod_rlm_smp

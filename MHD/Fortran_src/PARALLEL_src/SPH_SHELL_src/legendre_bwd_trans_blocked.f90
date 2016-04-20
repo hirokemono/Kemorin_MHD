@@ -69,8 +69,8 @@
 !$omp&                    l_rtm,nd,ip_rtm,in_rtm,ip_send,in_send,       &
 !$omp&                    mp_rlm,mn_rlm,a1r_1d_rlm_r,a2r_1d_rlm_r)
       do ip = 1, np_smp
-        kst = idx_rtm_smp_stack(ip-1,1) + 1
-        ked = idx_rtm_smp_stack(ip,  1)
+        kst = sph_rtm1%istack_rtm_kr_smp(ip-1) + 1
+        ked = sph_rtm1%istack_rtm_kr_smp(ip)
         do lp = 1, nblock_l_rtm
           lst = lstack_block_rtm(lp-1) + 1
           led = lstack_block_rtm(lp  )
@@ -143,8 +143,8 @@
 !$omp&            private(ip,kst,ked,lp,lst,led,l_rtm,nd,i_recv,        &
 !$omp&                    ip_rtm,ip_send,mp_rlm,jst,nj_rlm)
       do ip = 1, np_smp
-        kst = idx_rtm_smp_stack(ip-1,1) + 1
-        ked = idx_rtm_smp_stack(ip,  1)
+        kst = sph_rtm1%istack_rtm_kr_smp(ip-1) + 1
+        ked = sph_rtm1%istack_rtm_kr_smp(ip)
         do lp = 1, nblock_l_rtm
           lst = lstack_block_rtm(lp-1) + 1
           led = lstack_block_rtm(lp  )

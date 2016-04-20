@@ -81,7 +81,8 @@
 !$omp& reduction(+:elaps)
       do ip = 1, np_smp
         kst(ip) = sph_rlm1%istack_rlm_kr_smp(ip-1)
-        nkr(ip) = idx_rtm_smp_stack(ip,  1) - idx_rtm_smp_stack(ip-1,1)
+        nkr(ip) = sph_rtm1%istack_rtm_kr_smp(ip)                        &
+     &           - sph_rtm1%istack_rtm_kr_smp(ip-1)
         nkrs(ip) = ncomp*nkr(ip)
         nkrt(ip) = 2*nvector*nkr(ip)
 !
@@ -171,7 +172,8 @@
 !$omp& reduction(+:elaps)
       do ip = 1, np_smp
         kst(ip) = sph_rlm1%istack_rlm_kr_smp(ip-1)
-        nkr(ip) = idx_rtm_smp_stack(ip,  1) - idx_rtm_smp_stack(ip-1,1)
+        nkr(ip) = sph_rtm1%istack_rtm_kr_smp(ip)                        &
+     &           - sph_rtm1%istack_rtm_kr_smp(ip-1)
         nkrs(ip) = ncomp*nkr(ip)
         nkrt(ip) = 2*nvector*nkr(ip)
 !
@@ -262,7 +264,8 @@
 !$omp& reduction(+:elaps)
       do ip = 1, np_smp
         kst(ip) = sph_rlm1%istack_rlm_kr_smp(ip-1)
-        nkr(ip) = idx_rtm_smp_stack(ip,  1) - idx_rtm_smp_stack(ip-1,1)
+        nkr(ip) = sph_rtm1%istack_rtm_kr_smp(ip)                        &
+     &           - sph_rtm1%istack_rtm_kr_smp(ip-1)
         nkrs(ip) = ncomp*nkr(ip)
         nkrt(ip) = 2*nvector*nkr(ip)
 !

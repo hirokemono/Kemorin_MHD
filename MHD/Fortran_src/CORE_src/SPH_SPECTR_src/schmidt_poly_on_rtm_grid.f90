@@ -161,8 +161,8 @@
 !$omp parallel do                                                       &
 !$omp& private(i,j,l,m,mm,jj,jst,jed,lst,led,p_m,dp_m,pmn1,pmp1,df_m)
       do ip = 1, np_smp
-        lst = idx_rtm_smp_stack(ip-1,2) + 1
-        led = idx_rtm_smp_stack(ip,  2)
+        lst = sph_rtm1%istack_rtm_lt_smp(ip-1) + 1
+        led = sph_rtm1%istack_rtm_lt_smp(ip  )
         do i = lst, led
 !
           do m = 1, nidx_rtm(3)

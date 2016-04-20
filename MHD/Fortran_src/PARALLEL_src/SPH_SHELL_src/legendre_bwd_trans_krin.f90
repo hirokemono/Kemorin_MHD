@@ -74,8 +74,8 @@
 !$omp&            private(ip,lst,led,j_rlm,kr_nd,l_rtm,mp_rlm,jst,jed,  &
 !$omp&                    vr1,vr2,vr3,Pg3_j,dPdt_j)
       do ip = 1, np_smp
-        lst = idx_rtm_smp_stack(ip-1,2) + 1
-        led = idx_rtm_smp_stack(ip,  2)
+        lst = sph_rtm1%istack_rtm_lt_smp(ip-1) + 1
+        led = sph_rtm1%istack_rtm_lt_smp(ip  )
         do l_rtm = lst, led
           do j_rlm = 1, nidx_rlm(2)
             Pg3_j(j_rlm) = P_jl(j_rlm,l_rtm) * g_sph_rlm(j_rlm,3)
@@ -114,8 +114,8 @@
 !$omp&            private(ip,lst,led,j_rlm,kr_nd,l_rtm,jst,jed,         &
 !$omp&                    mp_rlm,mn_rlm,vr2,vr3,Pgv_j)
       do ip = 1, np_smp
-        lst = idx_rtm_smp_stack(ip-1,2) + 1
-        led = idx_rtm_smp_stack(ip,  2)
+        lst = sph_rtm1%istack_rtm_lt_smp(ip-1) + 1
+        led = sph_rtm1%istack_rtm_lt_smp(ip  )
         do l_rtm = lst, led
           do j_rlm = 1, nidx_rlm(2)
             Pgv_j(j_rlm) = -P_jl(j_rlm,l_rtm)                           &
@@ -175,8 +175,8 @@
 !$omp&            private(ip,lst,led,j_rlm,kr_nd,l_rtm,mp_rlm,          &
 !$omp&                    jst,jed,vr1,P_j)
       do ip = 1, np_smp
-        lst = idx_rtm_smp_stack(ip-1,2) + 1
-        led = idx_rtm_smp_stack(ip,  2)
+        lst = sph_rtm1%istack_rtm_lt_smp(ip-1) + 1
+        led = sph_rtm1%istack_rtm_lt_smp(ip  )
         do l_rtm = lst, led
           P_j(1:nidx_rlm(2)) =  P_jl(1:nidx_rlm(2),l_rtm)
           do mp_rlm = 1, nidx_rtm(3)

@@ -93,9 +93,9 @@
 !$omp             private(ip,mp_rlm,mn_rlm,st_elapsed)                  &
 !$omp& reduction(+:elaps)
       do ip = 1, np_smp
-        kst(ip) = nvector*sph_rlm1%istack_rlm_kr_smp(ip-1)
-        nkr(ip) = nvector                                               &
-     &       * (idx_rtm_smp_stack(ip,  1) - idx_rtm_smp_stack(ip-1,1))
+        kst(ip) = nvector * sph_rlm1%istack_rlm_kr_smp(ip-1)
+        nkr(ip) = nvector * (sph_rtm1%istack_rtm_kr_smp(ip)             &
+     &                     - sph_rtm1%istack_rtm_kr_smp(ip-1))
 !
         do mp_rlm = 1, nidx_rtm(3)
           mn_rlm = nidx_rtm(3) - mp_rlm + 1
@@ -169,9 +169,9 @@
 !$omp&            private(ip,mp_rlm,st_elapsed)                         &
 !$omp& reduction(+:elaps)
       do ip = 1, np_smp
-        kst(ip) = nscalar*sph_rlm1%istack_rlm_kr_smp(ip-1)
-        nkr(ip) = nscalar                                               &
-     &       * (idx_rtm_smp_stack(ip,  1) - idx_rtm_smp_stack(ip-1,1))
+        kst(ip) = nscalar * sph_rlm1%istack_rlm_kr_smp(ip-1)
+        nkr(ip) = nscalar * (sph_rtm1%istack_rtm_kr_smp(ip)             &
+     &                     - sph_rtm1%istack_rtm_kr_smp(ip-1))
         do mp_rlm = 1, nidx_rtm(3)
           jst(ip) = lstack_rlm(mp_rlm-1)
           nj_rlm(ip) = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
@@ -231,9 +231,9 @@
 !$omp             private(ip,mp_rlm,mn_rlm,st_elapsed)                  &
 !$omp& reduction(+:elaps)
       do ip = 1, np_smp
-        kst(ip) = nvector*sph_rlm1%istack_rlm_kr_smp(ip-1)
-        nkr(ip) = nvector                                               &
-     &       * (idx_rtm_smp_stack(ip,  1) - idx_rtm_smp_stack(ip-1,1))
+        kst(ip) = nvector * sph_rlm1%istack_rlm_kr_smp(ip-1)
+        nkr(ip) = nvector * (sph_rtm1%istack_rtm_kr_smp(ip)             &
+     &                     - sph_rtm1%istack_rtm_kr_smp(ip-1))
 !
         do mp_rlm = 1, nidx_rtm(3)
           mn_rlm = nidx_rtm(3) - mp_rlm + 1
@@ -307,9 +307,9 @@
 !$omp&            private(ip,mp_rlm,st_elapsed)                         &
 !$omp& reduction(+:elaps)
       do ip = 1, np_smp
-        kst(ip) = nscalar*sph_rlm1%istack_rlm_kr_smp(ip-1)
-        nkr(ip) = nscalar                                               &
-     &       * (idx_rtm_smp_stack(ip,  1) - idx_rtm_smp_stack(ip-1,1))
+        kst(ip) = nscalar * sph_rlm1%istack_rlm_kr_smp(ip-1)
+        nkr(ip) = nscalar * (sph_rtm1%istack_rtm_kr_smp(ip)             &
+     &                     - sph_rtm1%istack_rtm_kr_smp(ip-1))
         do mp_rlm = 1, nidx_rtm(3)
           jst(ip) = lstack_rlm(mp_rlm-1)
           nj_rlm(ip) = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
@@ -369,9 +369,9 @@
 !$omp             private(ip,mp_rlm,mn_rlm,st_elapsed)                  &
 !$omp& reduction(+:elaps)
       do ip = 1, np_smp
-        kst(ip) = nvector*sph_rlm1%istack_rlm_kr_smp(ip-1)
-        nkr(ip) = nvector                                               &
-     &       * (idx_rtm_smp_stack(ip,  1) - idx_rtm_smp_stack(ip-1,1))
+        kst(ip) = nvector * sph_rlm1%istack_rlm_kr_smp(ip-1)
+        nkr(ip) = nvector * (sph_rtm1%istack_rtm_kr_smp(ip)             &
+     &                     - sph_rtm1%istack_rtm_kr_smp(ip-1))
 !
         do mp_rlm = 1, nidx_rtm(3)
           mn_rlm = nidx_rtm(3) - mp_rlm + 1
@@ -445,9 +445,9 @@
 !$omp&            private(ip,mp_rlm,st_elapsed)                         &
 !$omp& reduction(+:elaps)
       do ip = 1, np_smp
-        kst(ip) = nscalar*sph_rlm1%istack_rlm_kr_smp(ip-1)
-        nkr(ip) = nscalar                                               &
-     &       * (idx_rtm_smp_stack(ip,  1) - idx_rtm_smp_stack(ip-1,1))
+        kst(ip) = nscalar * sph_rlm1%istack_rlm_kr_smp(ip-1)
+        nkr(ip) = nscalar * (sph_rtm1%istack_rtm_kr_smp(ip)             &
+     &                     - sph_rtm1%istack_rtm_kr_smp(ip-1))
         do mp_rlm = 1, nidx_rtm(3)
           jst(ip) = lstack_rlm(mp_rlm-1)
           nj_rlm(ip) = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)

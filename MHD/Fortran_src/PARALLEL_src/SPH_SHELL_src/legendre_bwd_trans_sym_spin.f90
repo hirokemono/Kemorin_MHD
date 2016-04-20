@@ -71,8 +71,8 @@
 !$omp&                    ipp_send,inp_send,ipn_send,inn_send,          &
 !$omp&                    mp_rlm,mn_rlm,a1r_1d_rlm_r,a2r_1d_rlm_r)
       do ip = 1, np_smp
-        kst = idx_rtm_smp_stack(ip-1,1) + 1
-        ked = idx_rtm_smp_stack(ip,  1)
+        kst = sph_rtm1%istack_rtm_kr_smp(ip-1) + 1
+        ked = sph_rtm1%istack_rtm_kr_smp(ip  )
         do k_rlm = kst, ked
           a1r_1d_rlm_r = sph_rlm1%a_r_1d_rlm_r(k_rlm)
           a2r_1d_rlm_r = a1r_1d_rlm_r**2
@@ -202,8 +202,8 @@
 !$omp&                    ll,lp_rtm,ln_rtm,jst,nj_rlm,                  &
 !$omp&                    ip_send,in_send,k_rlm,ip_rtm,in_rtm)
       do ip = 1, np_smp
-        kst = idx_rtm_smp_stack(ip-1,1) + 1
-        ked = idx_rtm_smp_stack(ip,  1)
+        kst = sph_rtm1%istack_rtm_kr_smp(ip-1) + 1
+        ked = sph_rtm1%istack_rtm_kr_smp(ip  )
         do k_rlm = kst, ked
           do nd = 1, nscalar
             do lp = 1, nblock_l_rtm

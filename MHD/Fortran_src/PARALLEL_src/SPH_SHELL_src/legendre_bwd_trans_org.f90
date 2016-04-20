@@ -66,8 +66,8 @@
 !$omp&                    mp_rlm,mn_rlm,vr1,vr2,vr3,Pg3_j,dPdt_j,Pgv_j, &
 !$omp&                    a1r_1d_rlm_r,a2r_1d_rlm_r)
       do ip = 1, np_smp
-        kst = idx_rtm_smp_stack(ip-1,1) + 1
-        ked = idx_rtm_smp_stack(ip,  1)
+        kst = sph_rtm1%istack_rtm_kr_smp(ip-1) + 1
+        ked = sph_rtm1%istack_rtm_kr_smp(ip  )
         do k_rlm = kst, ked
           a1r_1d_rlm_r = sph_rlm1%a_r_1d_rlm_r(k_rlm)
           a2r_1d_rlm_r = a1r_1d_rlm_r * a1r_1d_rlm_r
@@ -179,8 +179,8 @@
 !$omp&            private(ip,kst,ked,j_rlm,l_rtm,nd,k_rlm,              &
 !$omp&                    ip_rtm,i_rlm,mp_rlm,jst,jed,vr1,P_j)
       do ip = 1, np_smp
-        kst = idx_rtm_smp_stack(ip-1,1) + 1
-        ked = idx_rtm_smp_stack(ip,  1)
+        kst = sph_rtm1%istack_rtm_kr_smp(ip-1) + 1
+        ked = sph_rtm1%istack_rtm_kr_smp(ip  )
 !
         do mp_rlm = 1, nidx_rtm(3)
           jst = lstack_rlm(mp_rlm-1) + 1

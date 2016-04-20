@@ -7,7 +7,7 @@
 !>@brief  forward Legendre transform for testing
 !!
 !!@verbatim
-!!      subroutine set_rtm_comm_tbl_matmul(np_smp, idx_rtm_smp_stack,   &
+!!      subroutine set_rtm_comm_tbl_matmul(np_smp, istack_rtm_kr_smp,   &
 !!     &          nnod_rtm, nidx_rtm, istep_rtm, irev_sr_rtm,           &
 !!     &          ntot_sr_rtm, item_sr_rtm_mat_n, item_sr_rtm_mat_s,    &
 !!     &          irecv_sr_rtm_mat_n, irecv_sr_rtm_mat_s,               &
@@ -46,7 +46,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_rtm_comm_tbl_matmul(np_smp, idx_rtm_smp_stack,     &
+      subroutine set_rtm_comm_tbl_matmul(np_smp, istack_rtm_kr_smp,     &
      &          nnod_rtm, nidx_rtm, istep_rtm, item_sr_rtm, irev_sr_rtm,&
      &          ntot_sr_rtm, item_sr_rtm_mat_n, item_sr_rtm_mat_s,      &
      &          irecv_sr_rtm_mat_n, irecv_sr_rtm_mat_s,                 &
@@ -54,7 +54,7 @@
 !
       integer(kind = kint), intent(in) :: np_smp, nnod_rtm
       integer(kind = kint), intent(in) :: ntot_sr_rtm
-      integer(kind = kint), intent(in) :: idx_rtm_smp_stack(0:np_smp,3)
+      integer(kind = kint), intent(in) :: istack_rtm_kr_smp(0:np_smp)
       integer(kind = kint), intent(in) :: nidx_rtm(3), istep_rtm(3)
       integer(kind = kint), intent(in) :: item_sr_rtm(ntot_sr_rtm)
       integer(kind = kint), intent(in) :: irev_sr_rtm(nnod_rtm)
@@ -86,18 +86,18 @@
 !
         imat_tk = l_rtm + (kk-1) * nidx_rtm(2)                          &
      &              + (m_rtm-1) * nkr*nidx_rtm(2)                       &
-     &              + idx_rtm_smp_stack(ip-1,1)*nidx_rtm(2)*nidx_rtm(3)
+     &              + istack_rtm_kr_smp(ip-1)*nidx_rtm(2)*nidx_rtm(3)
       end do
 !
       do ip = 1, np_smp
-        nkr = idx_rtm_smp_stack(ip,  1) - idx_rtm_smp_stack(ip-1,1)
+        nkr = istack_rtm_kr_smp(ip) - istack_rtm_kr_smp(ip-1)
         do m_rtm = 1, nidx_rtm(3)
           do l_rtm = 1, nidx_rtm(2)
             do kk = 1, nkr
-              k_rtm = kk + idx_rtm_smp_stack(ip-1,1)
+              k_rtm = kk + istack_rtm_kr_smp(ip-1)
               imat_kt = kk + (l_rtm-1) * nkr                            &
      &              + (m_rtm-1) * nkr*nidx_rtm(2)                       &
-     &              + idx_rtm_smp_stack(ip-1,1)*nidx_rtm(2)*nidx_rtm(3)
+     &              + istack_rtm_kr_smp(ip-1)*nidx_rtm(2)*nidx_rtm(3)
 !
               in_rtm = 1 + (l_rtm-1) * istep_rtm(2)                     &
      &                   + (k_rtm-1) * istep_rtm(1)                     &
