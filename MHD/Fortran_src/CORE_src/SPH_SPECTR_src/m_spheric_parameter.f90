@@ -33,13 +33,13 @@
 !
 !
       type(sph_rtp_grid), save :: sph_rtp1
-!sph_rtp1%istack_inod_rtp_smp
+!sph_rtp1%ist_rtp
 !
       type(sph_rtm_grid), save :: sph_rtm1
-!sph_rtm1%istack_rtm_rt_smp
+!sph_rtm1%ist_rtm
 !
       type(sph_rlm_grid), save :: sph_rlm1
-!sph_rlm1%istack_inod_rlm_smp
+!sph_rlm1%ist_rlm
 !
       type(sph_rj_grid), save :: sph_rj1
 !sph_rj1%istep_rj
@@ -103,22 +103,6 @@
 !>      number of global 1d data points for @f$ f(r,l,m) @f$
       integer(kind = kint) :: nidx_global_rlm(2)
 !
-!>      1d start address of global data for @f$ f(r,\theta,\phi) @f$
-      integer(kind = kint) :: ist_rtp(3)
-!>      1d start address of global data for @f$ f(r,\theta,m) @f$
-      integer(kind = kint) :: ist_rtm(3)
-!>      1d start address of global data for @f$ f(r,l,m) @f$
-      integer(kind = kint) :: ist_rlm(2)
-!>      1d start address of global data for @f$ f(r,j) @f$
-!      integer(kind = kint) :: ist_rj(2)
-!
-!>      1d end address of global data for @f$ f(r,\theta,\phi) @f$
-      integer(kind = kint) :: ied_rtp(3)
-!>      1d end address of global data for @f$ f(r,\theta,m) @f$
-      integer(kind = kint) :: ied_rtm(3)
-!>      1d end address of global data for @f$ f(r,l,m) @f$
-      integer(kind = kint) :: ied_rlm(2)
-!
 !    local parameters
 !
 !>      1d subdomain ID for @f$ f(r,\theta,\phi) @f$ (start from 0)
@@ -145,15 +129,6 @@
       integer(kind = kint) :: nidx_rlm(2)
 !>      number of 1d data points for @f$ f(r,j) @f$
       integer(kind = kint) :: nidx_rj(2)
-!
-!>      number of increments for @f$ f(r,\theta,\phi) @f$
-!      integer(kind = kint) :: istep_rtp(3)
-!>      number of increments for @f$ f(r,\theta,m) @f$
-!      integer(kind = kint) :: istep_rtm(3)
-!>      number of increments for @f$ f(r,l,m) @f$
-!      integer(kind = kint) :: istep_rlm(2)
-!>      number of increments for @f$ f(r,j) @f$
-!      integer(kind = kint) :: istep_rj(2)
 !
 ! -----------------------------------------------------------------------
 !

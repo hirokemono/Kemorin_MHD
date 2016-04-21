@@ -8,29 +8,33 @@
 !>@n      data are strored communication buffer
 !!
 !!@verbatim
-!!      subroutine alloc_leg_vec_sym_matmul(maxidx_rtm_r_smp, nvector)
-!!      subroutine alloc_leg_scl_sym_matmul(maxidx_rtm_r_smp, nscalar)
+!!      subroutine alloc_leg_vec_sym_matmul                             &
+!!     &         (nth_rtm, maxidx_rtm_r_smp, nvector)
+!!      subroutine alloc_leg_scl_sym_matmul                             &
+!!     &         (nth_rtm, maxidx_rtm_r_smp, nscalar)
 !!      subroutine dealloc_leg_vec_sym_matmul
 !!      subroutine dealloc_leg_scl_sym_matmul
 !!
-!!      subroutine alloc_leg_vec_matmul(maxidx_rtm_r_smp, nvector)
-!!      subroutine alloc_leg_scl_matmul(maxidx_rtm_r_smp, nscalar)
+!!      subroutine alloc_leg_vec_matmul                                 &
+!!     &         (nth_rtm, maxidx_rtm_r_smp, nvector)
+!!      subroutine alloc_leg_scl_matmul                                 &
+!!     &         (nth_rtm, maxidx_rtm_r_smp, nscalar)
 !!      subroutine dealloc_leg_vec_matmul
 !!      subroutine dealloc_leg_scl_matmul
 !!
-!!      subroutine alloc_leg_vec_symmetry
-!!      subroutine alloc_leg_scl_symmetry
+!!      subroutine alloc_leg_vec_symmetry(nth_rtm)
+!!      subroutine alloc_leg_scl_symmetry(nth_rtm)
 !!      subroutine dealloc_leg_vec_symmetry
 !!      subroutine dealloc_leg_scl_symmetry
 !!
-!!      subroutine alloc_leg_vec_blocked
-!!      subroutine alloc_leg_scl_blocked
+!!      subroutine alloc_leg_vec_blocked(nth_rtm)
+!!      subroutine alloc_leg_scl_blocked(nth_rtm)
 !!      subroutine dealloc_leg_vec_blocked
 !!      subroutine dealloc_leg_scl_blocked
 !!
 !!     field data for Legendre transform
 !!       original layout: vr_rtm(l_rtm,m_rtm,k_rtm,icomp)
-!!       size: vr_rtm(nidx_rtm(2),nidx_rtm(1)*ncomp,nidx_rtm(3))
+!!       size: vr_rtm(nth_rtm,nidx_rtm(1)*ncomp,nidx_rtm(3))
 !!      real(kind = kreal), allocatable :: vr_rtm(:,:,:)
 !!
 !!     spectr data for Legendre transform
@@ -51,8 +55,6 @@
       use calypso_mpi
 !
       use m_machine_parameter
-      use m_spheric_parameter
-      use m_spheric_param_smp
       use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans
       use matmul_for_legendre_trans
@@ -125,8 +127,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_leg_vec_sym_matmul(maxidx_rtm_r_smp, nvector)
+      subroutine alloc_leg_vec_sym_matmul                               &
+     &         (nth_rtm, maxidx_rtm_r_smp, nvector)
 !
+      integer(kind = kint), intent(in) :: nth_rtm
       integer(kind = kint), intent(in) :: maxidx_rtm_r_smp
       integer(kind = kint), intent(in) :: nvector
 !
@@ -143,7 +147,7 @@
       allocate(dtordt_o(nvec_jk,np_smp))
       allocate(dtordp_o(nvec_jk,np_smp))
 !
-      nvec_lk = ((nidx_rtm(2)+1)/2) * maxidx_rtm_r_smp * nvector
+      nvec_lk = ((nth_rtm + 1)/2) * maxidx_rtm_r_smp * nvector
       allocate(symp_r(nvec_lk,np_smp))
       allocate(symp_t(nvec_lk,np_smp))
       allocate(symp_p(nvec_lk,np_smp))
@@ -160,8 +164,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_leg_scl_sym_matmul(maxidx_rtm_r_smp, nscalar)
+      subroutine alloc_leg_scl_sym_matmul                               &
+     &         (nth_rtm, maxidx_rtm_r_smp, nscalar)
 !
+      integer(kind = kint), intent(in) :: nth_rtm
       integer(kind = kint), intent(in) :: maxidx_rtm_r_smp
       integer(kind = kint), intent(in) :: nscalar
 !
@@ -170,7 +176,7 @@
       allocate(scl_e(nscl_jk,np_smp))
       allocate(scl_o(nscl_jk,np_smp))
 !
-      nscl_lk = ((nidx_rtm(2)+1)/2) * maxidx_rtm_r_smp * nscalar
+      nscl_lk = ((nth_rtm + 1)/2) * maxidx_rtm_r_smp * nscalar
       allocate(symp(nscl_lk,np_smp))
       allocate(asmp(nscl_lk,np_smp))
 !
@@ -202,8 +208,10 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_leg_vec_matmul(maxidx_rtm_r_smp, nvector)
+      subroutine alloc_leg_vec_matmul                                   &
+     &         (nth_rtm, maxidx_rtm_r_smp, nvector)
 !
+      integer(kind = kint), intent(in) :: nth_rtm
       integer(kind = kint), intent(in) :: maxidx_rtm_r_smp
       integer(kind = kint), intent(in) :: nvector
 !
@@ -215,7 +223,7 @@
       allocate(dtordt_e(nvec_jk,np_smp))
       allocate(dtordp_e(nvec_jk,np_smp))
 !
-      nvec_lk = nidx_rtm(2) * maxidx_rtm_r_smp * nvector
+      nvec_lk = nth_rtm * maxidx_rtm_r_smp * nvector
       allocate(symp_r(nvec_lk,np_smp))
       allocate(symn_t(nvec_lk,np_smp))
       allocate(symn_p(nvec_lk,np_smp))
@@ -226,8 +234,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_leg_scl_matmul(maxidx_rtm_r_smp, nscalar)
+      subroutine alloc_leg_scl_matmul                                   &
+     &         (nth_rtm, maxidx_rtm_r_smp, nscalar)
 !
+      integer(kind = kint), intent(in) :: nth_rtm
       integer(kind = kint), intent(in) :: maxidx_rtm_r_smp
       integer(kind = kint), intent(in) :: nscalar
 !
@@ -235,7 +245,7 @@
       nscl_jk = maxdegree_rlm * maxidx_rtm_r_smp * nscalar
       allocate(scl_e(nscl_jk,np_smp))
 !
-      nscl_lk = nidx_rtm(2) * maxidx_rtm_r_smp * nscalar
+      nscl_lk = nth_rtm * maxidx_rtm_r_smp * nscalar
       allocate(symp(nscl_lk,np_smp))
 !
       end subroutine alloc_leg_scl_matmul
@@ -262,7 +272,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_leg_vec_symmetry
+      subroutine alloc_leg_vec_symmetry(nth_rtm)
+!
+      integer(kind = kint), intent(in) :: nth_rtm
 !
 !
       nvec_jk = (maxdegree_rlm+1)/2
@@ -277,7 +289,7 @@
       allocate(dtordt_o(nvec_jk,np_smp))
       allocate(dtordp_o(nvec_jk,np_smp))
 !
-      nvec_lk = (nidx_rtm(2)+1)/2
+      nvec_lk = (nth_rtm + 1)/2
       allocate(symp_r(nvec_lk,np_smp))
       allocate(symp_t(nvec_lk,np_smp))
       allocate(symp_p(nvec_lk,np_smp))
@@ -294,14 +306,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_leg_scl_symmetry
+      subroutine alloc_leg_scl_symmetry(nth_rtm)
+!
+      integer(kind = kint), intent(in) :: nth_rtm
 !
 !
       nscl_jk = (maxdegree_rlm+1)/2
       allocate(scl_e(nscl_jk,np_smp))
       allocate(scl_o(nscl_jk,np_smp))
 !
-      nscl_lk = (nidx_rtm(2)+1)/2
+      nscl_lk = (nth_rtm + 1)/2
       allocate(symp(nscl_lk,np_smp))
       allocate(asmp(nscl_lk,np_smp))
 !
@@ -326,7 +340,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_leg_vec_blocked
+      subroutine alloc_leg_vec_blocked(nth_rtm)
+!
+      integer(kind = kint), intent(in) :: nth_rtm
 !
 !
       nvec_jk = maxdegree_rlm
@@ -336,7 +352,7 @@
       allocate(dtordt_e(nvec_jk,np_smp))
       allocate(dtordp_e(nvec_jk,np_smp))
 !
-      nvec_lk = nidx_rtm(2)
+      nvec_lk = nth_rtm
       allocate(symp_r(nvec_lk,np_smp))
       allocate(symn_t(nvec_lk,np_smp))
       allocate(symn_p(nvec_lk,np_smp))
@@ -347,13 +363,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_leg_scl_blocked
+      subroutine alloc_leg_scl_blocked(nth_rtm)
+!
+      integer(kind = kint), intent(in) :: nth_rtm
 !
 !
       nscl_jk = maxdegree_rlm
       allocate(scl_e(nscl_jk,np_smp))
 !
-      nscl_lk = nidx_rtm(2)
+      nscl_lk = nth_rtm
       allocate(symp(nscl_lk,np_smp))
 !
       end subroutine alloc_leg_scl_blocked

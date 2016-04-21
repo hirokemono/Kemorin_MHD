@@ -59,7 +59,10 @@
         return
       end if
 !
-      call allocate_sph_param_smp
+      call alloc_rtp_param_smp(sph_rtp1)
+      call alloc_rtm_param_smp(sph_rtm1)
+      call alloc_rlm_param_smp(sph_rlm1)
+      call alloc_rj_param_smp(sph_rj1)
 !
       call count_number_4_smp(np_smp, ione, nnod_rtp,                   &
      &    sph_rtp1%istack_inod_rtp_smp, maxnod_rtp_smp)

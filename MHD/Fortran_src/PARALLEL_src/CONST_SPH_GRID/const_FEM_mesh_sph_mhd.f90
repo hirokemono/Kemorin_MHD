@@ -140,8 +140,8 @@
 !
       ip = sph_rank_rtp(1) + 1
       nidx_local_rtp_r(ip)= nidx_rtp(1)
-      istack_idx_local_rtp_r(ip-1) = ist_rtp(1) - 1
-      istack_idx_local_rtp_r(ip) =   ied_rtp(1)
+      istack_idx_local_rtp_r(ip-1) = sph_rtp1%ist_rtp(1) - 1
+      istack_idx_local_rtp_r(ip) =   sph_rtp1%ied_rtp(1)
       do ip = 1, ndomain_rtp(1)
         ip_rank = (ip-1) * inc_r
         call MPI_Bcast(nidx_local_rtp_r(ip), ione,                      &
@@ -152,8 +152,8 @@
 !
       ip = sph_rank_rtp(2) + 1
       nidx_local_rtp_t(ip)= nidx_rtp(2)
-      istack_idx_local_rtp_t(ip-1) = ist_rtp(2) - 1
-      istack_idx_local_rtp_t(ip) =   ied_rtp(2)
+      istack_idx_local_rtp_t(ip-1) = sph_rtp1%ist_rtp(2) - 1
+      istack_idx_local_rtp_t(ip) =   sph_rtp1%ied_rtp(2)
       do ip = 1, ndomain_rtp(2)
         ip_rank = (ip-1) * inc_t
         call MPI_Bcast(nidx_local_rtp_t(ip), ione,                      &
@@ -164,8 +164,8 @@
 !
       ip = sph_rank_rtp(3) + 1
       nidx_local_rtp_p(ip)= nidx_rtp(3)
-      istack_idx_local_rtp_p(ip-1) = ist_rtp(3) - 1
-      istack_idx_local_rtp_p(ip) =   ied_rtp(3)
+      istack_idx_local_rtp_p(ip-1) = sph_rtp1%ist_rtp(3) - 1
+      istack_idx_local_rtp_p(ip) =   sph_rtp1%ied_rtp(3)
 !
 !
 !
@@ -232,7 +232,7 @@
       call allocate_sph_1d_global_idx
 !
       do inum = 1, nidx_rtp(1)
-        inod = ist_rtp(1) + inum - 1
+        inod = sph_rtp1%ist_rtp(1) + inum - 1
         idx_global_rtp_r(inod) = sph_rtp1%idx_gl_1d_rtp_r(inum)
       end do
       do ip = 1, ndomain_rtp(1)
@@ -243,7 +243,7 @@
       end do
 !
       do inum = 1, nidx_rtp(2)
-        inod = ist_rtp(2) + inum - 1
+        inod = sph_rtp1%ist_rtp(2) + inum - 1
         idx_global_rtp_t(inod) = sph_rtp1%idx_gl_1d_rtp_t(inum)
       end do
       do ip = 1, ndomain_rtp(2)

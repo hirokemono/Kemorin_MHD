@@ -96,10 +96,10 @@
 !
       i1 = sph_rank_rlm(1) + 1
       i2 = sph_rank_rlm(2) + 1
-      ist_rlm(1) = istack_idx_local_rlm_r(i1-1) + 1
-      ist_rlm(2) = istack_idx_local_rlm_j(i2-1) + 1
-      ied_rlm(1) = istack_idx_local_rlm_r(i1)
-      ied_rlm(2) = istack_idx_local_rlm_j(i2)
+      sph_rlm1%ist_rlm(1) = istack_idx_local_rlm_r(i1-1) + 1
+      sph_rlm1%ist_rlm(2) = istack_idx_local_rlm_j(i2-1) + 1
+      sph_rlm1%ied_rlm(1) = istack_idx_local_rlm_r(i1)
+      sph_rlm1%ied_rlm(2) = istack_idx_local_rlm_j(i2)
 !
       end subroutine copy_gl_2_local_rlm_param
 !
@@ -125,12 +125,12 @@
       i1 = sph_rank_rtm(1) + 1
       i2 = sph_rank_rtm(2) + 1
       i3 = sph_rank_rtm(3) + 1
-      ist_rtm(1) = istack_idx_local_rtm_r(i1-1) + 1
-      ist_rtm(2) = istack_idx_local_rtm_t(i2-1) + 1
-      ist_rtm(3) = istack_idx_local_rtm_m(i3-1) + 1
-      ied_rtm(1) = istack_idx_local_rtm_r(i1)
-      ied_rtm(2) = istack_idx_local_rtm_t(i2)
-      ied_rtm(3) = istack_idx_local_rtm_m(i3)
+      sph_rtm1%ist_rtm(1) = istack_idx_local_rtm_r(i1-1) + 1
+      sph_rtm1%ist_rtm(2) = istack_idx_local_rtm_t(i2-1) + 1
+      sph_rtm1%ist_rtm(3) = istack_idx_local_rtm_m(i3-1) + 1
+      sph_rtm1%ied_rtm(1) = istack_idx_local_rtm_r(i1)
+      sph_rtm1%ied_rtm(2) = istack_idx_local_rtm_t(i2)
+      sph_rtm1%ied_rtm(3) = istack_idx_local_rtm_m(i3)
 !
       end subroutine copy_gl_2_local_rtm_param
 !
@@ -156,12 +156,12 @@
       i1 = sph_rank_rtp(1) + 1
       i2 = sph_rank_rtp(2) + 1
       i3 = sph_rank_rtp(3) + 1
-      ist_rtp(1) = istack_idx_local_rtp_r(i1-1) + 1
-      ist_rtp(2) = istack_idx_local_rtp_t(i2-1) + 1
-      ist_rtp(3) = istack_idx_local_rtp_p(i3-1) + 1
-      ied_rtp(1) = istack_idx_local_rtp_r(i1)
-      ied_rtp(2) = istack_idx_local_rtp_t(i2)
-      ied_rtp(3) = istack_idx_local_rtp_p(i3)
+      sph_rtp1%ist_rtp(1) = istack_idx_local_rtp_r(i1-1) + 1
+      sph_rtp1%ist_rtp(2) = istack_idx_local_rtp_t(i2-1) + 1
+      sph_rtp1%ist_rtp(3) = istack_idx_local_rtp_p(i3-1) + 1
+      sph_rtp1%ied_rtp(1) = istack_idx_local_rtp_r(i1)
+      sph_rtp1%ied_rtp(2) = istack_idx_local_rtp_t(i2)
+      sph_rtp1%ied_rtp(3) = istack_idx_local_rtp_p(i3)
 !
       end subroutine copy_gl_2_local_rtp_param
 !

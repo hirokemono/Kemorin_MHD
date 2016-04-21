@@ -41,7 +41,7 @@
 !
 !
       do i = 1, nidx_rtp(1)
-        j = i - 1 + ist_rtp(1)
+        j = i - 1 + sph_rtp1%ist_rtp(1)
         sph_rtp1%idx_gl_1d_rtp_r(i) = idx_global_rtp_r(j)
       end do
       do i = 1, nidx_rtp(1)
@@ -50,12 +50,12 @@
       end do
 !
       do i = 1, nidx_rtp(2)
-        j = i - 1 + ist_rtp(2)
+        j = i - 1 + sph_rtp1%ist_rtp(2)
         sph_rtp1%idx_gl_1d_rtp_t(i) = idx_global_rtp_t(j)
       end do
 !
       do i = 1, nidx_rtp(3)
-        j = i - 1 + ist_rtp(3)
+        j = i - 1 + sph_rtp1%ist_rtp(3)
         sph_rtp1%idx_gl_1d_rtp_p(i,1) = idx_global_rtp_p(j,1)
         sph_rtp1%idx_gl_1d_rtp_p(i,2) = idx_global_rtp_p(j,2)
       end do
@@ -72,7 +72,7 @@
 !
 !
       do i = 1, nidx_rtm(1)
-        j = i - 1 + ist_rtm(1)
+        j = i - 1 + sph_rtm1%ist_rtm(1)
         sph_rtm1%idx_gl_1d_rtm_r(i) = idx_global_rtm_r(j)
       end do
       do i = 1, nidx_rtm(1)
@@ -81,12 +81,12 @@
       end do
 !
       do i = 1, nidx_rtm(2)
-        j = i - 1 + ist_rtm(2)
+        j = i - 1 + sph_rtm1%ist_rtm(2)
         sph_rtm1%idx_gl_1d_rtm_t(i) = idx_global_rtm_t(j)
       end do
 !
       do i = 1, nidx_rtm(3)
-        j = i - 1 + ist_rtm(3)
+        j = i - 1 + sph_rtm1%ist_rtm(3)
         sph_rtm1%idx_gl_1d_rtm_m(i,1) = idx_global_rtm_m(j,1)
         sph_rtm1%idx_gl_1d_rtm_m(i,2) = idx_global_rtm_m(j,2)
       end do
@@ -103,7 +103,7 @@
 !
 !
       do i = 1, nidx_rlm(1)
-        j = i - 1 + ist_rlm(1)
+        j = i - 1 + sph_rlm1%ist_rlm(1)
         sph_rlm1%idx_gl_1d_rlm_r(i) = idx_global_rlm_r(j)
       end do
       do i = 1, nidx_rlm(1)
@@ -112,7 +112,7 @@
       end do
 !
       do i = 1, nidx_rlm(2)
-        j = i - 1 + ist_rlm(2)
+        j = i - 1 + sph_rlm1%ist_rlm(2)
         sph_rlm1%idx_gl_1d_rlm_j(i,1) = idx_global_rlm_j(j,1)
         sph_rlm1%idx_gl_1d_rlm_j(i,2) = idx_global_rlm_j(j,2)
         sph_rlm1%idx_gl_1d_rlm_j(i,3) = idx_global_rlm_j(j,3)

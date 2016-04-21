@@ -59,8 +59,8 @@
       nnod_rtp =      rtp%nnod_rtp
 !
       nidx_rtp(1:ithree) = rtp%nidx_rtp(1:ithree)
-      ist_rtp(1:ithree) =  rtp%ist_rtp(1:ithree)
-      ied_rtp(1:ithree) =  rtp%ied_rtp(1:ithree)
+      sph_rtp1%ist_rtp(1:ithree) =  rtp%ist_rtp(1:ithree)
+      sph_rtp1%ied_rtp(1:ithree) =  rtp%ied_rtp(1:ithree)
 !
       sph_rtp1%nnod_rtp = nnod_rtp
       sph_rtp1%nidx_rtp(1:3) = nidx_rtp(1:3)
@@ -107,8 +107,8 @@
 !
       sph_rtm1%nnod_rtm = rtm%nnod_rtm 
       sph_rtm1%nidx_rtm(1:ithree) = rtm%nidx_rtm(1:ithree)
-      ist_rtm(1:ithree) =  rtm%ist_rtm(1:ithree)
-      ied_rtm(1:ithree) =  rtm%ied_rtm(1:ithree)
+      sph_rtm1%ist_rtm(1:ithree) =  rtm%ist_rtm(1:ithree)
+      sph_rtm1%ied_rtm(1:ithree) =  rtm%ied_rtm(1:ithree)
 !
       nnod_rtm = sph_rtm1%nnod_rtm
       nidx_rtm(1:3) = sph_rtm1%nidx_rtm(1:3)
@@ -154,8 +154,8 @@
 !
       sph_rlm1%nnod_rlm = rlm%nnod_rlm
       sph_rlm1%nidx_rlm(1:itwo) = rlm%nidx_rlm(1:itwo)
-      ist_rlm(1:itwo) =  rlm%ist_rlm(1:itwo)
-      ied_rlm(1:itwo) =  rlm%ied_rlm(1:itwo)
+      sph_rlm1%ist_rlm(1:itwo) =  rlm%ist_rlm(1:itwo)
+      sph_rlm1%ied_rlm(1:itwo) =  rlm%ied_rlm(1:itwo)
 !
       nnod_rlm = sph_rlm1%nnod_rlm
       nidx_rlm(1:2) = sph_rlm1%nidx_rlm(1:2)
@@ -250,8 +250,8 @@
 !
       rtp%nnod_rtp = nnod_rtp
       rtp%nidx_rtp(1:ithree) = nidx_rtp(1:ithree)
-      rtp%ist_rtp(1:ithree) =  ist_rtp(1:ithree)
-      rtp%ied_rtp(1:ithree) =  ied_rtp(1:ithree)
+      rtp%ist_rtp(1:ithree) =  sph_rtp1%ist_rtp(1:ithree)
+      rtp%ied_rtp(1:ithree) =  sph_rtp1%ied_rtp(1:ithree)
 !
       call alloc_type_spheric_param_rtp(rtp)
       call alloc_type_sph_1d_index_rtp(rtp)
@@ -295,8 +295,8 @@
 !
       rtm%nnod_rtm = nnod_rtm
       rtm%nidx_rtm(1:ithree) = nidx_rtm(1:ithree)
-      rtm%ist_rtm(1:ithree) =  ist_rtm(1:ithree)
-      rtm%ied_rtm(1:ithree) =  ied_rtm(1:ithree)
+      rtm%ist_rtm(1:ithree) =  sph_rtm1%ist_rtm(1:ithree)
+      rtm%ied_rtm(1:ithree) =  sph_rtm1%ied_rtm(1:ithree)
 !
       call alloc_type_spheric_param_rtm(rtm)
       call alloc_type_sph_1d_index_rtm(rtm)
@@ -340,8 +340,8 @@
 !
       rlm%nnod_rlm = nnod_rlm
       rlm%nidx_rlm(1:itwo) = nidx_rlm(1:itwo)
-      rlm%ist_rlm(1:itwo) =  ist_rlm(1:itwo)
-      rlm%ied_rlm(1:itwo) =  ied_rlm(1:itwo)
+      rlm%ist_rlm(1:itwo) =  sph_rlm1%ist_rlm(1:itwo)
+      rlm%ied_rlm(1:itwo) =  sph_rlm1%ied_rlm(1:itwo)
 !
       call alloc_type_spheric_param_rlm(rlm)
       call alloc_type_sph_1d_index_rlm(rlm)

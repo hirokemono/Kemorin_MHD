@@ -46,8 +46,8 @@
       nnod_rtp =      nnod_sph_IO
 !
       nidx_rtp(1:ithree) = nidx_sph_IO(1:ithree)
-      ist_rtp(1:ithree) =  ist_sph_IO(1:ithree)
-      ied_rtp(1:ithree) =  ied_sph_IO(1:ithree)
+      sph_rtp1%ist_rtp(1:ithree) =  ist_sph_IO(1:ithree)
+      sph_rtp1%ied_rtp(1:ithree) =  ied_sph_IO(1:ithree)
 !
       sph_rtp1%nnod_rtp = nnod_rtp
       sph_rtp1%nidx_rtp(1:3) = nidx_rtp(1:3)
@@ -90,8 +90,8 @@
 !
       sph_rtm1%nnod_rtm = nnod_sph_IO
       sph_rtm1%nidx_rtm(1:ithree) = nidx_sph_IO(1:ithree)
-      ist_rtm(1:ithree) =  ist_sph_IO(1:ithree)
-      ied_rtm(1:ithree) =  ied_sph_IO(1:ithree)
+      sph_rtm1%ist_rtm(1:ithree) =  ist_sph_IO(1:ithree)
+      sph_rtm1%ied_rtm(1:ithree) =  ied_sph_IO(1:ithree)
 !
       nnod_rtm = sph_rtm1%nnod_rtm
       nidx_rtm(1:3) = sph_rtm1%nidx_rtm(1:3)
@@ -134,8 +134,8 @@
 !
       sph_rlm1%nnod_rlm = nnod_sph_IO
       sph_rlm1%nidx_rlm(1:itwo) = nidx_sph_IO(1:itwo)
-      ist_rlm(1:itwo) =  ist_sph_IO(1:itwo)
-      ied_rlm(1:itwo) =  ied_sph_IO(1:itwo)
+      sph_rlm1%ist_rlm(1:itwo) =  ist_sph_IO(1:itwo)
+      sph_rlm1%ied_rlm(1:itwo) =  ied_sph_IO(1:itwo)
 !
       nnod_rlm = sph_rlm1%nnod_rlm
       nidx_rlm(1:2) = sph_rlm1%nidx_rlm(1:2)
@@ -232,8 +232,8 @@
 !
       nnod_sph_IO = nnod_rtp
       nidx_sph_IO(1:ithree) = nidx_rtp(1:ithree)
-      ist_sph_IO(1:ithree) =  ist_rtp(1:ithree)
-      ied_sph_IO(1:ithree) =  ied_rtp(1:ithree)
+      ist_sph_IO(1:ithree) =  sph_rtp1%ist_rtp(1:ithree)
+      ied_sph_IO(1:ithree) =  sph_rtp1%ied_rtp(1:ithree)
 !
       call allocate_nod_id_sph_IO
       call allocate_idx_sph_1d1_IO
@@ -289,8 +289,8 @@
 !
       nnod_sph_IO = nnod_rtm
       nidx_sph_IO(1:ithree) = nidx_rtm(1:ithree)
-      ist_sph_IO(1:ithree) =  ist_rtm(1:ithree)
-      ied_sph_IO(1:ithree) =  ied_rtm(1:ithree)
+      ist_sph_IO(1:ithree) =  sph_rtm1%ist_rtm(1:ithree)
+      ied_sph_IO(1:ithree) =  sph_rtm1%ied_rtm(1:ithree)
 !
       call allocate_nod_id_sph_IO
       call allocate_idx_sph_1d1_IO
@@ -345,8 +345,8 @@
 !
       nnod_sph_IO = nnod_rlm
       nidx_sph_IO(1:itwo) = nidx_rlm(1:itwo)
-      ist_sph_IO(1:itwo) =  ist_rlm(1:itwo)
-      ied_sph_IO(1:itwo) =  ied_rlm(1:itwo)
+      ist_sph_IO(1:itwo) =  sph_rlm1%ist_rlm(1:itwo)
+      ied_sph_IO(1:itwo) =  sph_rlm1%ied_rlm(1:itwo)
 !
       call allocate_nod_id_sph_IO
       call allocate_idx_sph_1d1_IO
