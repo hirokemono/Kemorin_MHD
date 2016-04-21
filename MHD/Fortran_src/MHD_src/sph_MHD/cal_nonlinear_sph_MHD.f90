@@ -46,35 +46,40 @@
 !$omp parallel
       if( (f_trns%i_m_advect*iflag_t_evo_4_velo) .gt. 0) then
         call cal_cross_prod_w_coef_smp(np_smp, nnod_rtp,                &
-     &      inod_rtp_smp_stack, coef_velo, fld_rtp(1,b_trns%i_vort),    &
-     &      fld_rtp(1,b_trns%i_velo), frc_rtp(1,f_trns%i_m_advect) )
+     &      sph_rtp1%istack_inod_rtp_smp, coef_velo,                    &
+     &      fld_rtp(1,b_trns%i_vort), fld_rtp(1,b_trns%i_velo),         &
+     &      frc_rtp(1,f_trns%i_m_advect) )
       end if
 !
       if( (f_trns%i_lorentz*iflag_4_lorentz) .gt. 0) then
         call cal_cross_prod_w_coef_smp(np_smp, nnod_rtp,                &
-     &    inod_rtp_smp_stack, coef_lor, fld_rtp(1,b_trns%i_current),    &
-     &    fld_rtp(1,b_trns%i_magne), frc_rtp(1,f_trns%i_lorentz) )
+     &      sph_rtp1%istack_inod_rtp_smp, coef_lor,                     &
+     &      fld_rtp(1,b_trns%i_current), fld_rtp(1,b_trns%i_magne),     &
+     &      frc_rtp(1,f_trns%i_lorentz) )
       end if
 !
 !
 !
       if( (f_trns%i_vp_induct*iflag_t_evo_4_magne) .gt. 0) then
         call cal_cross_prod_w_coef_smp(np_smp, nnod_rtp,                &
-     &    inod_rtp_smp_stack, coef_induct, fld_rtp(1,b_trns%i_velo),    &
-     &    fld_rtp(1,b_trns%i_magne), frc_rtp(1,f_trns%i_vp_induct) )
+     &      sph_rtp1%istack_inod_rtp_smp, coef_induct,                  &
+     &      fld_rtp(1,b_trns%i_velo), fld_rtp(1,b_trns%i_magne),        &
+     &      frc_rtp(1,f_trns%i_vp_induct) )
       end if
 !
 !
       if( (f_trns%i_h_flux*iflag_t_evo_4_temp) .gt. 0) then
         call cal_vec_scalar_prod_w_coef_smp(np_smp, nnod_rtp,           &
-     &    inod_rtp_smp_stack, coef_temp, fld_rtp(1,b_trns%i_velo),      &
-     &    fld_rtp(1,b_trns%i_temp), frc_rtp(1,f_trns%i_h_flux) )
+     &      sph_rtp1%istack_inod_rtp_smp, coef_temp,                    &
+     &      fld_rtp(1,b_trns%i_velo), fld_rtp(1,b_trns%i_temp),         &
+     &      frc_rtp(1,f_trns%i_h_flux) )
       end if
 !
       if( (f_trns%i_c_flux*iflag_t_evo_4_composit) .gt. 0) then
         call cal_vec_scalar_prod_w_coef_smp(np_smp, nnod_rtp,           &
-     &    inod_rtp_smp_stack, coef_light, fld_rtp(1,b_trns%i_velo),     &
-     &    fld_rtp(1,b_trns%i_light), frc_rtp(1,f_trns%i_c_flux) )
+     &      sph_rtp1%istack_inod_rtp_smp, coef_light,                   &
+     &      fld_rtp(1,b_trns%i_velo), fld_rtp(1,b_trns%i_light),        &
+     &      frc_rtp(1,f_trns%i_c_flux) )
       end if
 !
 !      if( (f_trns%i_Coriolis*iflag_4_coriolis) .gt. 0) then

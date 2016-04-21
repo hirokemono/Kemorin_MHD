@@ -40,7 +40,16 @@
 !
       integer(kind = kint) :: num
 !
+      integer(kind = kint)  ::  maxnod_rtp_smp = 0
+      integer(kind = kint)  ::  maxnod_rtm_smp = 0
+      integer(kind = kint)  ::  maxnod_rlm_smp = 0
       integer(kind = kint)  ::  maxnod_rj_smp =  0
+!
+      integer(kind = kint) :: maxirt_rtm_smp =  0
+!
+      integer(kind = kint)  ::  maxidx_rtp_smp(3) = (/0,0,0/)
+      integer(kind = kint)  ::  maxidx_rlm_smp(2) = (/0,0/)
+!
       integer(kind = kint) :: maxidx_rj_smp(2) =  (/0,0/)
 !
 !
@@ -53,7 +62,7 @@
       call allocate_sph_param_smp
 !
       call count_number_4_smp(np_smp, ione, nnod_rtp,                   &
-     &    inod_rtp_smp_stack, maxnod_rtp_smp)
+     &    sph_rtp1%istack_inod_rtp_smp, maxnod_rtp_smp)
       call count_number_4_smp(np_smp, ione, nnod_rtm,                   &
      &    sph_rtm1%istack_inod_rtm_smp, maxnod_rtm_smp)
       call count_number_4_smp(np_smp, ione, nnod_rlm,                   &
@@ -69,11 +78,11 @@
      &    sph_rtp1%istack_rtp_mp_smp, maxidx_rtp_smp(3) )
 !
       call count_number_4_smp(np_smp, ione, nidx_rtm(1),                &
-     &    sph_rtm1%istack_rtm_kr_smp, maxidx_rtm_smp(1) )
+     &    sph_rtm1%istack_rtm_kr_smp, sph_rtm1%maxidx_rtm_smp(1))
       call count_number_4_smp(np_smp, ione, nidx_rtm(2),                &
-     &    sph_rtm1%istack_rtm_lt_smp, maxidx_rtm_smp(2) )
+     &    sph_rtm1%istack_rtm_lt_smp, sph_rtm1%maxidx_rtm_smp(2))
       call count_number_4_smp(np_smp, ione, nidx_rtm(3),                &
-     &    sph_rtm1%istack_rtm_m_smp, maxidx_rtm_smp(3) )
+     &    sph_rtm1%istack_rtm_m_smp,  sph_rtm1%maxidx_rtm_smp(3))
 !
       call count_number_4_smp(np_smp, ione, nidx_rlm(1),                &
      &    sph_rlm1%istack_rlm_kr_smp, maxidx_rlm_smp(1) )
@@ -87,7 +96,7 @@
 !
       num = nidx_rtp(1)*nidx_rtp(2)
       call count_number_4_smp(np_smp, ione, num,                        &
-     &    sph_rtp1%istack_rtp_rt_smp, maxirt_rtp_smp )
+     &    sph_rtp1%istack_rtp_rt_smp, sph_rtp1%maxirt_rtp_smp)
 !
       num = nidx_rtm(1)*nidx_rtm(2)
       call count_number_4_smp(np_smp, ione, num,                        &

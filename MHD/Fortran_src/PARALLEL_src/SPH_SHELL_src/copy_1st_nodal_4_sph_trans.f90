@@ -157,8 +157,8 @@
       type(phys_data),intent(inout) :: nod_fld
 !
 !
-      call copy_scalar_from_sph_trans                                   &
-     &   (nnod_rtp, m_folding, inod_rtp_smp_stack, node%numnod,         &
+      call copy_scalar_from_sph_trans(nnod_rtp, m_folding,              &
+     &    sph_rtp1%istack_inod_rtp_smp, node%numnod,                    &
      &    d_rtp, i_field, nod_fld%ntot_phys, nod_fld%d_fld)
 !
       end subroutine copy_nod_scl_from_sph_trans
@@ -180,7 +180,7 @@
 !
 !
       call copy_xyz_vec_from_sph_trans                                  &
-     &   (nnod_rtp, m_folding, inod_rtp_smp_stack,                      &
+     &   (nnod_rtp, m_folding, sph_rtp1%istack_inod_rtp_smp,            &
      &    node%numnod, node%theta, node%phi, d_rtp,                     &
      &    i_field, nod_fld%ntot_phys, nod_fld%d_fld)
 !
@@ -203,7 +203,7 @@
 !
 !
       call copy_xyz_tsr_from_sph_trans                                  &
-     &   (nnod_rtp, m_folding, inod_rtp_smp_stack,                      &
+     &   (nnod_rtp, m_folding, sph_rtp1%istack_inod_rtp_smp,            &
      &    node%numnod, node%xx, node%rr, node%ss, node%a_r, node%a_s,   &
      &    d_rtp, i_field, nod_fld%ntot_phys, nod_fld%d_fld)
 !
@@ -227,7 +227,7 @@
 !
 !
       call copy_scalar_to_sph_trans                                     &
-     &   (nnod_rtp, inod_rtp_smp_stack, node%numnod,                    &
+     &   (nnod_rtp, sph_rtp1%istack_inod_rtp_smp, node%numnod,          &
      &    i_field, nod_fld%ntot_phys, nod_fld%d_fld, d_rtp)
 !
       end subroutine copy_nod_scl_to_sph_trans
@@ -249,7 +249,7 @@
 !
 !
       call copy_xyz_vec_to_sph_trans                                    &
-     &   (nnod_rtp, inod_rtp_smp_stack, node%numnod,                    &
+     &   (nnod_rtp, sph_rtp1%istack_inod_rtp_smp, node%numnod,          &
      &    node%xx, node%rr, node%ss, node%a_r, node%a_s,                &
      &    i_field, nod_fld%ntot_phys, nod_fld%d_fld, d_rtp)
 !
@@ -272,7 +272,7 @@
 !
 !
       call copy_xyz_tsr_to_sph_trans                                    &
-     &   (nnod_rtp, inod_rtp_smp_stack, node%numnod,                    &
+     &   (nnod_rtp, sph_rtp1%istack_inod_rtp_smp, node%numnod,          &
      &    node%xx, node%rr, node%ss, node%a_r, node%a_s,                &
      &    i_field, nod_fld%ntot_phys, nod_fld%d_fld, d_rtp)
 !

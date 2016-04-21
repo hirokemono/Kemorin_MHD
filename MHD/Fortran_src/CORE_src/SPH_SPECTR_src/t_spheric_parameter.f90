@@ -149,6 +149,9 @@
 !>        SMP stacks for indexing @f$ r, t@f$
       integer(kind = kint), pointer :: istack_rtp_rt_smp(:)
 !
+!>        Maximum SMP number for spectr data @f$ f(r,t,p) @f$
+      integer(kind = kint)  ::  maxirt_rtp_smp =  0
+!
 !>        global address for each direction @f$ f(r,\theta,\phi) @f$
         integer(kind = kint), pointer :: idx_global_rtp(:,:)
 !
@@ -196,6 +199,9 @@
 !
 !>        SMP stacks for indexing @f$ r, t@f$
       integer(kind = kint), pointer :: istack_rtm_rt_smp(:)
+!
+!>        Maximum SMP number for indexing @f$ r, t, m@f$
+        integer(kind = kint)  ::  maxidx_rtm_smp(3) = (/0,0,0/)
 !
 !>        Start address for @f$ m = 0 @f$ for @f$ f(r,\theta,m) @f$
         integer (kind=kint) :: ist_rtm_order_zero =   0

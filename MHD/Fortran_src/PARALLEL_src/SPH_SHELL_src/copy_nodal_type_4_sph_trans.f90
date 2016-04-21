@@ -145,7 +145,7 @@
 !
 !
       call copy_scalar_from_sph_trans(nnod_rtp, m_folding,              &
-     &    inod_rtp_smp_stack, node%numnod, d_rtp, i_field,              &
+     &    sph_rtp1%istack_inod_rtp_smp, node%numnod, d_rtp, i_field,    &
      &    nod_fld%ntot_phys, nod_fld%d_fld)
 !
       end subroutine copy_scalar_t_from_sph_trans
@@ -166,8 +166,9 @@
       real(kind = kreal), intent(in) :: d_rtp(nnod_rtp,3)
 !
 !
-      call copy_xyz_vec_from_sph_trans(nnod_rtp, m_folding,             &
-     &    inod_rtp_smp_stack, node%numnod, node%theta, node%phi,        &
+      call copy_xyz_vec_from_sph_trans                                  &
+     &   (nnod_rtp, m_folding, sph_rtp1%istack_inod_rtp_smp,            &
+     &    node%numnod, node%theta, node%phi,                            &
      &    d_rtp, i_field, nod_fld%ntot_phys, nod_fld%d_fld)
 !
       end subroutine copy_xyz_vec_t_from_sph_trans
@@ -189,7 +190,7 @@
 !
 !
       call copy_xyz_tsr_from_sph_trans                                  &
-     &   (nnod_rtp, m_folding, inod_rtp_smp_stack,                      &
+     &   (nnod_rtp, m_folding, sph_rtp1%istack_inod_rtp_smp,            &
      &    node%numnod, node%xx, node%rr, node%ss, node%a_r, node%a_s,   &
      &    d_rtp, i_field, nod_fld%ntot_phys, nod_fld%d_fld)
 !
@@ -212,7 +213,8 @@
       real(kind = kreal), intent(inout) :: d_rtp(nnod_rtp)
 !
 !
-      call copy_scalar_to_sph_trans(nnod_rtp, inod_rtp_smp_stack,       &
+      call copy_scalar_to_sph_trans                                     &
+     &   (nnod_rtp, sph_rtp1%istack_inod_rtp_smp,                       &
      &    node%numnod, i_field, nod_fld%ntot_phys, nod_fld%d_fld,       &
      &    d_rtp)
 !
@@ -234,7 +236,8 @@
       real(kind = kreal), intent(inout) :: d_rtp(nnod_rtp,3)
 !
 !
-      call copy_xyz_vec_to_sph_trans(nnod_rtp, inod_rtp_smp_stack,      &
+      call copy_xyz_vec_to_sph_trans                                    &
+     &   (nnod_rtp, sph_rtp1%istack_inod_rtp_smp,                       &
      &    node%numnod, node%xx, node%rr, node%ss, node%a_r, node%a_s,   &
      &    i_field, nod_fld%ntot_phys, nod_fld%d_fld, d_rtp)
 !
@@ -256,7 +259,8 @@
       real(kind = kreal), intent(inout) :: d_rtp(nnod_rtp,6)
 !
 !
-      call copy_xyz_tsr_to_sph_trans(nnod_rtp, inod_rtp_smp_stack,      &
+      call copy_xyz_tsr_to_sph_trans                                    &
+     &   (nnod_rtp, sph_rtp1%istack_inod_rtp_smp,                       &
      &    node%numnod, node%xx, node%rr, node%ss, node%a_r, node%a_s,   &
      &    i_field, nod_fld%ntot_phys, nod_fld%d_fld, d_rtp)
 !

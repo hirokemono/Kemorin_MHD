@@ -40,18 +40,18 @@
 !
 !
       if(ft_trns%i_grad_vx.gt.0) then
-        call sel_scalar_from_trans                                      &
-     &     (nnod_rtp, nidx_rtp, ione, inod_rtp_smp_stack, nnod_rtp,     &
+        call sel_scalar_from_trans(nnod_rtp, nidx_rtp, ione,            &
+     &      sph_rtp1%istack_inod_rtp_smp, nnod_rtp,                     &
      &      fld_rtp(1,b_trns%i_velo  ), frt_rtp(1,ft_trns%i_grad_vx) )
       end if
       if(ft_trns%i_grad_vy.gt.0) then
-        call sel_scalar_from_trans                                      &
-     &     (nnod_rtp, nidx_rtp, ione, inod_rtp_smp_stack, nnod_rtp,     &
+        call sel_scalar_from_trans(nnod_rtp, nidx_rtp, ione,            &
+     &      sph_rtp1%istack_inod_rtp_smp, nnod_rtp,                     &
      &      fld_rtp(1,b_trns%i_velo+1), frt_rtp(1,ft_trns%i_grad_vy) )
       end if
       if(ft_trns%i_grad_vz.gt.0) then
-        call sel_scalar_from_trans                                      &
-     &     (nnod_rtp, nidx_rtp, ione, inod_rtp_smp_stack, nnod_rtp,     &
+        call sel_scalar_from_trans(nnod_rtp, nidx_rtp, ione,            &
+     &      sph_rtp1%istack_inod_rtp_smp, nnod_rtp,                     &
      &      fld_rtp(1,b_trns%i_velo+2), frt_rtp(1,ft_trns%i_grad_vz) )
       end if
 !

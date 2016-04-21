@@ -237,17 +237,22 @@
       if     (id_legendre_transfer .eq. iflag_leg_sym_matmul            &
      &   .or. id_legendre_transfer .eq. iflag_leg_sym_dgemm             &
      &   .or. id_legendre_transfer .eq. iflag_leg_sym_matprod) then
-        call alloc_leg_vec_sym_matmul(nvector)
-        call alloc_leg_scl_sym_matmul(nscalar)
+        call alloc_leg_vec_sym_matmul(sph_rtm1%maxidx_rtm_smp(1),       &
+     &                                nvector)
+        call alloc_leg_scl_sym_matmul(sph_rtm1%maxidx_rtm_smp(1),       &
+     &                                nscalar)
       else if(id_legendre_transfer .eq. iflag_leg_sym_matmul_big        &
      &   .or. id_legendre_transfer .eq. iflag_leg_sym_dgemm_big         &
      &   .or. id_legendre_transfer .eq. iflag_leg_sym_matprod_big) then
-        call alloc_leg_sym_matmul_big(nvector, nscalar)
+        call alloc_leg_sym_matmul_big(sph_rtm1%maxidx_rtm_smp(1),       &
+     &                                nvector, nscalar)
       else if(id_legendre_transfer .eq. iflag_leg_matmul                &
      &   .or. id_legendre_transfer .eq. iflag_leg_dgemm                 &
      &   .or. id_legendre_transfer .eq. iflag_leg_matprod) then
-        call alloc_leg_vec_matmul(nvector)
-        call alloc_leg_scl_matmul(nscalar)
+        call alloc_leg_vec_matmul(sph_rtm1%maxidx_rtm_smp(1),           &
+     &                            nvector)
+        call alloc_leg_scl_matmul(sph_rtm1%maxidx_rtm_smp(1),           &
+     &                            nscalar)
       else if(id_legendre_transfer .eq. iflag_leg_symmetry              &
      &   .or. id_legendre_transfer .eq. iflag_leg_sym_spin_loop) then
         call alloc_leg_vec_symmetry
@@ -257,7 +262,8 @@
         call alloc_leg_vec_blocked
         call alloc_leg_scl_blocked
       else if(id_legendre_transfer .eq. iflag_leg_test_loop) then
-        call alloc_leg_vec_test(nvector, nscalar)
+        call alloc_leg_vec_test(sph_rtm1%maxidx_rtm_smp(2),             &
+     &                          nvector, nscalar)
       else
         call allocate_work_sph_trans(ncomp)
       end if

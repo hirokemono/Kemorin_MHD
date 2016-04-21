@@ -8,13 +8,13 @@
 !>@n      data are strored communication buffer
 !!
 !!@verbatim
-!!      subroutine alloc_leg_vec_sym_matmul(nvector)
-!!      subroutine alloc_leg_scl_sym_matmul(nscalar)
+!!      subroutine alloc_leg_vec_sym_matmul(maxidx_rtm_r_smp, nvector)
+!!      subroutine alloc_leg_scl_sym_matmul(maxidx_rtm_r_smp, nscalar)
 !!      subroutine dealloc_leg_vec_sym_matmul
 !!      subroutine dealloc_leg_scl_sym_matmul
 !!
-!!      subroutine alloc_leg_vec_matmul(nvector)
-!!      subroutine alloc_leg_scl_matmul(nscalar)
+!!      subroutine alloc_leg_vec_matmul(maxidx_rtm_r_smp, nvector)
+!!      subroutine alloc_leg_scl_matmul(maxidx_rtm_r_smp, nscalar)
 !!      subroutine dealloc_leg_vec_matmul
 !!      subroutine dealloc_leg_scl_matmul
 !!
@@ -125,12 +125,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_leg_vec_sym_matmul(nvector)
+      subroutine alloc_leg_vec_sym_matmul(maxidx_rtm_r_smp, nvector)
 !
-      integer(kind = kint), intent(in) ::nvector
+      integer(kind = kint), intent(in) :: maxidx_rtm_r_smp
+      integer(kind = kint), intent(in) :: nvector
 !
 !
-      nvec_jk = ((maxdegree_rlm+1)/2) * maxidx_rlm_smp(1)*nvector
+      nvec_jk = ((maxdegree_rlm+1)/2) * maxidx_rtm_r_smp * nvector
       allocate(pol_e(nvec_jk,np_smp))
       allocate(dpoldt_e(nvec_jk,np_smp))
       allocate(dpoldp_e(nvec_jk,np_smp))
@@ -142,7 +143,7 @@
       allocate(dtordt_o(nvec_jk,np_smp))
       allocate(dtordp_o(nvec_jk,np_smp))
 !
-      nvec_lk = ((nidx_rtm(2)+1)/2) * maxidx_rlm_smp(1)*nvector
+      nvec_lk = ((nidx_rtm(2)+1)/2) * maxidx_rtm_r_smp * nvector
       allocate(symp_r(nvec_lk,np_smp))
       allocate(symp_t(nvec_lk,np_smp))
       allocate(symp_p(nvec_lk,np_smp))
@@ -159,16 +160,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_leg_scl_sym_matmul(nscalar)
+      subroutine alloc_leg_scl_sym_matmul(maxidx_rtm_r_smp, nscalar)
 !
+      integer(kind = kint), intent(in) :: maxidx_rtm_r_smp
       integer(kind = kint), intent(in) :: nscalar
 !
 !
-      nscl_jk = ((maxdegree_rlm+1)/2) * maxidx_rlm_smp(1)*nscalar
+      nscl_jk = ((maxdegree_rlm+1)/2) * maxidx_rtm_r_smp * nscalar
       allocate(scl_e(nscl_jk,np_smp))
       allocate(scl_o(nscl_jk,np_smp))
 !
-      nscl_lk = ((nidx_rtm(2)+1)/2) * maxidx_rlm_smp(1)*nscalar
+      nscl_lk = ((nidx_rtm(2)+1)/2) * maxidx_rtm_r_smp * nscalar
       allocate(symp(nscl_lk,np_smp))
       allocate(asmp(nscl_lk,np_smp))
 !
@@ -200,19 +202,20 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_leg_vec_matmul(nvector)
+      subroutine alloc_leg_vec_matmul(maxidx_rtm_r_smp, nvector)
 !
-      integer(kind = kint), intent(in) ::nvector
+      integer(kind = kint), intent(in) :: maxidx_rtm_r_smp
+      integer(kind = kint), intent(in) :: nvector
 !
 !
-      nvec_jk = maxdegree_rlm * maxidx_rlm_smp(1)*nvector
+      nvec_jk = maxdegree_rlm * maxidx_rtm_r_smp * nvector
       allocate(pol_e(nvec_jk,np_smp))
       allocate(dpoldt_e(nvec_jk,np_smp))
       allocate(dpoldp_e(nvec_jk,np_smp))
       allocate(dtordt_e(nvec_jk,np_smp))
       allocate(dtordp_e(nvec_jk,np_smp))
 !
-      nvec_lk = nidx_rtm(2) * maxidx_rlm_smp(1)*nvector
+      nvec_lk = nidx_rtm(2) * maxidx_rtm_r_smp * nvector
       allocate(symp_r(nvec_lk,np_smp))
       allocate(symn_t(nvec_lk,np_smp))
       allocate(symn_p(nvec_lk,np_smp))
@@ -223,15 +226,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_leg_scl_matmul(nscalar)
+      subroutine alloc_leg_scl_matmul(maxidx_rtm_r_smp, nscalar)
 !
+      integer(kind = kint), intent(in) :: maxidx_rtm_r_smp
       integer(kind = kint), intent(in) :: nscalar
 !
 !
-      nscl_jk = maxdegree_rlm * maxidx_rlm_smp(1)*nscalar
+      nscl_jk = maxdegree_rlm * maxidx_rtm_r_smp * nscalar
       allocate(scl_e(nscl_jk,np_smp))
 !
-      nscl_lk = nidx_rtm(2) * maxidx_rlm_smp(1)*nscalar
+      nscl_lk = nidx_rtm(2) * maxidx_rtm_r_smp * nscalar
       allocate(symp(nscl_lk,np_smp))
 !
       end subroutine alloc_leg_scl_matmul
