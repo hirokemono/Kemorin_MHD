@@ -81,9 +81,9 @@
 !
       integer(kind = kint) :: n1, n2, n3
 !
-      n1 = nidx_global_rtm(1)
-      n2 = nidx_global_rtm(2)
-      n3 = nidx_global_rtm(3)
+      n1 = sph_rtm1%nidx_global_rtm(1)
+      n2 = sph_rtm1%nidx_global_rtm(2)
+      n3 = sph_rtm1%nidx_global_rtm(3)
       allocate( idx_local_rtm_r(n1) )
       allocate( idx_local_rtm_t(n2) )
       allocate( idx_local_rtm_m(n3) )
@@ -99,8 +99,8 @@
 !
       integer(kind = kint) :: n1, n2
 !
-      n1 = nidx_global_rlm(1)
-      n2 = nidx_global_rlm(2)
+      n1 = sph_rlm1%nidx_global_rlm(1)
+      n2 = sph_rlm1%nidx_global_rlm(2)
       allocate( idx_local_rlm_r(n1) )
       allocate( idx_local_rlm_j(0:n2) )
 !

@@ -306,9 +306,11 @@
 !
       call set_gl_rank_3d(ndomain_sph, ndomain_rtm, iglobal_rank_rtm)
 !
-!      call cal_local_nums(ndomain_rtm(1), ione, nidx_global_rtm(1),    &
+!      call cal_local_nums                                              &
+!     &   (ndomain_rtm(1), ione, sph_rtm1%nidx_global_rtm(1),           &
 !     &    nidx_local_rtm_r, istack_idx_local_rtm_r)
-      call cal_local_nums(ndomain_rtm(2), ione, nidx_global_rtm(2),     &
+      call cal_local_nums                                               &
+     &   (ndomain_rtm(2), ione, sph_rtm1%nidx_global_rtm(2),            &
      &    nidx_local_rtm_t, istack_idx_local_rtm_t)
       call cal_local_num_rtm_m(ndomain_rtm(3), l_truncation,            &
      &    m_folding, nidx_local_rtm_m, istack_idx_local_rtm_m)
@@ -322,10 +324,10 @@
      &      nidx_local_rtm_IC, ist_idx_local_rtm_IC)
       end if
 !
-      if (nlayer_CMB .lt. nidx_global_rtm(1)) then
+      if (nlayer_CMB .lt. sph_rtm1%nidx_global_rtm(1)) then
         ist = nlayer_CMB + 1
         call cal_local_nums_rev(ndomain_rtm(1), ist,                    &
-     &      nidx_global_rtm(1), nidx_local_rtm_MT,                      &
+     &      sph_rtm1%nidx_global_rtm(1), nidx_local_rtm_MT,             &
      &      ist_idx_local_rtm_MT)
       end if
 !

@@ -11,11 +11,6 @@
 !!      subroutine deallocate_spheric_parameter
 !!
 !!      subroutine check_global_spheric_parameter
-!!      subroutine check_spheric_parameter(my_rank)
-!!      subroutine check_spheric_param_rtp(my_rank)
-!!      subroutine check_spheric_param_rtm(my_rank)
-!!      subroutine check_spheric_param_rlm(my_rank)
-!!      subroutine check_spheric_param_rj(my_rank)
 !!@endverbatim
 !!
 !!@n @param  my_rank     Running rank ID
@@ -33,13 +28,13 @@
 !
 !
       type(sph_rtp_grid), save :: sph_rtp1
-!sph_rtp1%ist_rtp
+!sph_rtp1%irank_sph_rtp
 !
       type(sph_rtm_grid), save :: sph_rtm1
-!sph_rtm1%ist_rtm
+!sph_rtm1%nidx_global_rtm
 !
       type(sph_rlm_grid), save :: sph_rlm1
-!sph_rlm1%ist_rlm
+!sph_rlm1%nidx_global_rlm
 !
       type(sph_rj_grid), save :: sph_rj1
 !sph_rj1%istep_rj
@@ -99,18 +94,11 @@
 !>      number of global 1d data points for @f$ f(r,\theta,\phi) @f$
       integer(kind = kint) :: nidx_global_rtp(3)
 !>      number of global 1d data points for @f$ f(r,\theta,m) @f$
-      integer(kind = kint) :: nidx_global_rtm(3)
+!      integer(kind = kint) :: nidx_global_rtm(3)
 !>      number of global 1d data points for @f$ f(r,l,m) @f$
-      integer(kind = kint) :: nidx_global_rlm(2)
+!      integer(kind = kint) :: nidx_global_rlm(2)
 !
 !    local parameters
-!
-!>      1d subdomain ID for @f$ f(r,\theta,\phi) @f$ (start from 0)
-      integer(kind = kint) :: sph_rank_rtp(3)
-!>      1d subdomain ID for @f$ f(r,\theta,m) @f$ (start from 0)
-      integer(kind = kint) :: sph_rank_rtm(3)
-!>      1d subdomain ID for @f$ f(r,l,m) @f$ (start from 0)
-      integer(kind = kint) :: sph_rank_rlm(2)
 !
 !>      number of data points for @f$ f(r,\theta,\phi) @f$
       integer(kind = kint) :: nnod_rtp
@@ -175,94 +163,5 @@
       end subroutine check_global_spheric_parameter
 !
 ! ----------------------------------------------------------------------
-!
-      subroutine check_spheric_parameter(my_rank)
-!
-      integer(kind = kint), intent(in) :: my_rank
-!
-      call check_spheric_param_rtp(my_rank)
-      call check_spheric_param_rtm(my_rank)
-      call check_spheric_param_rlm(my_rank)
-      call check_spheric_param_rj(my_rank)
-!
-      end subroutine check_spheric_parameter
-!
-! -----------------------------------------------------------------------
-!
-      subroutine check_spheric_param_rtp(my_rank)
-!
-      integer(kind = kint), intent(in) :: my_rank
-      integer(kind = kint) :: i
-!
-!
-      write(my_rank+50,*) 'sph_rank_rtp ', sph_rank_rtp(1:3)
-      write(my_rank+50,*) 'nidx_rtp ', nidx_rtp(1:3)
-      write(my_rank+50,*) 'nnod_rtp ', nnod_rtp
-!
-      write(my_rank+50,*)  'i, idx_global_rtp(r,t,p)'
-      do i = 1, nnod_rtp
-        write(my_rank+50,*) i, sph_rtp1%idx_global_rtp(i,1:3)
-      end do
-!
-      end subroutine check_spheric_param_rtp
-!
-! -----------------------------------------------------------------------
-!
-      subroutine check_spheric_param_rtm(my_rank)
-!
-      integer(kind = kint), intent(in) :: my_rank
-      integer(kind = kint) :: i
-!
-!
-      write(my_rank+50,*) 'sph_rank_rtm ', sph_rank_rtm(1:3)
-      write(my_rank+50,*) 'nidx_rtm ', nidx_rtm(1:3)
-      write(my_rank+50,*) 'nnod_rtm ', nnod_rtm
-!
-      write(my_rank+50,*) 'i, idx_global_rtm(r,t,p)'
-      do i = 1, nnod_rtm
-        write(my_rank+50,*) i, sph_rtm1%idx_global_rtm(i,1:3)
-      end do
-!
-      end subroutine check_spheric_param_rtm
-!
-! -----------------------------------------------------------------------
-!
-      subroutine check_spheric_param_rlm(my_rank)
-!
-      integer(kind = kint), intent(in) :: my_rank
-      integer(kind = kint) :: i
-!
-!
-      write(my_rank+50,*) 'sph_rank_rlm ', sph_rank_rlm(1:2)
-      write(my_rank+50,*) 'nidx_rlm ', nidx_rlm(1:2)
-      write(my_rank+50,*) 'nnod_rlm ', nnod_rlm
-!
-      write(my_rank+50,*) 'i, idx_global_rlm(r,j)'
-      do i = 1, nnod_rlm
-        write(my_rank+50,*) i, sph_rlm1%idx_global_rlm(i,1:2)
-      end do
-!
-      end subroutine check_spheric_param_rlm
-!
-! -----------------------------------------------------------------------
-!
-      subroutine check_spheric_param_rj(my_rank)
-!
-      integer(kind = kint), intent(in) :: my_rank
-      integer(kind = kint) :: i
-!
-!
-      write(my_rank+50,*) 'sph_rank_rj ',  sph_rj1%irank_sph_rj(1:2)
-      write(my_rank+50,*) 'nidx_rj  ',  nidx_rj(1:2)
-      write(my_rank+50,*) 'nnod_rj ',  nnod_rj
-!
-      write(my_rank+50,*) 'i, idx_global_rj(r,j)'
-      do i = 1, nnod_rj
-        write(my_rank+50,*) i, sph_rj1%idx_global_rj(i,1:2)
-      end do
-!
-      end subroutine check_spheric_param_rj
-!
-! -----------------------------------------------------------------------
 !
       end module m_spheric_parameter

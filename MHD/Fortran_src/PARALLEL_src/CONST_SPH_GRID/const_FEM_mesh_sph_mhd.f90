@@ -111,7 +111,7 @@
       integer(kind = kint) :: igrp, inum, inod
 !
 !
-      call MPI_allREDUCE(sph_rank_rtp, ndomain_rtp, ithree,             &
+      call MPI_allREDUCE(sph_rtp1%irank_sph_rtp, ndomain_rtp, ithree,   &
      &    CALYPSO_INTEGER, MPI_MAX, CALYPSO_COMM, ierr_MPI)
       ndomain_rtp(1:3) = ndomain_rtp(1:3) + 1
 !
@@ -119,7 +119,7 @@
       call allocate_sph_ranks
       call allocate_sph_gl_parameter
 !
-      iglobal_rank_rtp(1:3,my_rank) = sph_rank_rtp(1:3)
+      iglobal_rank_rtp(1:3,my_rank) = sph_rtp1%irank_sph_rtp(1:3)
       do ip = 0, nprocs-1
         call MPI_Bcast(iglobal_rank_rtp(1,ip), ithree, CALYPSO_INTEGER, &
      &      ip, CALYPSO_COMM, ierr_MPI)
@@ -138,7 +138,7 @@
       call allocate_nidx_local
       call allocate_sph_1d_global_stack
 !
-      ip = sph_rank_rtp(1) + 1
+      ip = sph_rtp1%irank_sph_rtp(1) + 1
       nidx_local_rtp_r(ip)= nidx_rtp(1)
       istack_idx_local_rtp_r(ip-1) = sph_rtp1%ist_rtp(1) - 1
       istack_idx_local_rtp_r(ip) =   sph_rtp1%ied_rtp(1)
@@ -150,7 +150,7 @@
      &      CALYPSO_INTEGER, ip_rank, CALYPSO_COMM, ierr_MPI)
       end do
 !
-      ip = sph_rank_rtp(2) + 1
+      ip = sph_rtp1%irank_sph_rtp(2) + 1
       nidx_local_rtp_t(ip)= nidx_rtp(2)
       istack_idx_local_rtp_t(ip-1) = sph_rtp1%ist_rtp(2) - 1
       istack_idx_local_rtp_t(ip) =   sph_rtp1%ied_rtp(2)
@@ -162,7 +162,7 @@
      &      CALYPSO_INTEGER, ip_rank, CALYPSO_COMM, ierr_MPI)
       end do
 !
-      ip = sph_rank_rtp(3) + 1
+      ip = sph_rtp1%irank_sph_rtp(3) + 1
       nidx_local_rtp_p(ip)= nidx_rtp(3)
       istack_idx_local_rtp_p(ip-1) = sph_rtp1%ist_rtp(3) - 1
       istack_idx_local_rtp_p(ip) =   sph_rtp1%ied_rtp(3)
@@ -171,7 +171,7 @@
 !
       call allocate_sph_gl_bc_param
 !
-      ip = sph_rank_rtp(1) + 1
+      ip = sph_rtp1%irank_sph_rtp(1) + 1
       do igrp = 1, num_radial_grp_rtp
         if(name_radial_grp_rtp(igrp) .eq. OC_ele_grp_name) then
           nidx_local_rtp_OC(ip) =  istack_radial_grp_rtp(igrp)          &

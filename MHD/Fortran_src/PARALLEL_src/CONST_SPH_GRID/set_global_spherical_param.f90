@@ -49,12 +49,13 @@
 !
       nidx_global_rtp(3) = 2*nidx_global_rtp(2) / m_folding
 !
-      nidx_global_rtm(1) = nidx_global_rtp(1)
-      nidx_global_rtm(2) = nidx_global_rtp(2)
-      nidx_global_rtm(3) = 2*(l_truncation/m_folding + 1) 
+      sph_rtm1%nidx_global_rtm(1) = nidx_global_rtp(1)
+      sph_rtm1%nidx_global_rtm(2) = nidx_global_rtp(2)
+      sph_rtm1%nidx_global_rtm(3) = 2*(l_truncation/m_folding + 1) 
 !
-      nidx_global_rlm(1) = nidx_global_rtp(1)
-      nidx_global_rlm(2) = (l_truncation+2)*l_truncation / m_folding
+      sph_rlm1%nidx_global_rlm(1) = nidx_global_rtp(1)
+      sph_rlm1%nidx_global_rlm(2)                                       &
+     &                   = (l_truncation+2)*l_truncation / m_folding
 !
       sph_rj1%nidx_global_rj(1) = nidx_global_rtp(1)
       sph_rj1%nidx_global_rj(2)                                         &
@@ -63,9 +64,10 @@
       nnod_global_rtp                                                   &
      &  = nidx_global_rtp(1) * nidx_global_rtp(2) * nidx_global_rtp(3)
       nnod_global_rtm                                                   &
-     &  = nidx_global_rtm(1) * nidx_global_rtm(2) * nidx_global_rtm(3)
+     &  =  sph_rtm1%nidx_global_rtm(1) * sph_rtm1%nidx_global_rtm(2)    &
+     &   * sph_rtm1%nidx_global_rtm(3)
       nnod_global_rlm                                                   &
-     &  = nidx_global_rlm(1) * (nidx_global_rlm(2) + 1)
+     &  = sph_rlm1%nidx_global_rlm(1) * (sph_rlm1%nidx_global_rlm(2)+1)
       nnod_global_rj                                                    &
      &  = sph_rj1%nidx_global_rj(1) * (sph_rj1%nidx_global_rj(2) + 1)
 !

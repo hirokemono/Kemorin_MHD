@@ -88,14 +88,14 @@
       integer(kind = kint) :: i1, i2
 !
 !
-      sph_rank_rlm(1:2) = iglobal_rank_rlm(1:2,ip_rank)
+      sph_rlm1%irank_sph_rlm(1:2) = iglobal_rank_rlm(1:2,ip_rank)
 !
       nnod_rlm = nnod_local_rlm(ip_rank+1)
 !
       nidx_rlm(1:2) = nidx_local_rlm(ip_rank+1,1:2)
 !
-      i1 = sph_rank_rlm(1) + 1
-      i2 = sph_rank_rlm(2) + 1
+      i1 = sph_rlm1%irank_sph_rlm(1) + 1
+      i2 = sph_rlm1%irank_sph_rlm(2) + 1
       sph_rlm1%ist_rlm(1) = istack_idx_local_rlm_r(i1-1) + 1
       sph_rlm1%ist_rlm(2) = istack_idx_local_rlm_j(i2-1) + 1
       sph_rlm1%ied_rlm(1) = istack_idx_local_rlm_r(i1)
@@ -116,15 +116,15 @@
       integer(kind = kint) :: i1, i2, i3
 !
 !
-      sph_rank_rtm(1:3) = iglobal_rank_rtm(1:3,ip_rank)
+      sph_rtm1%irank_sph_rtm(1:3) = iglobal_rank_rtm(1:3,ip_rank)
 !
       nnod_rtm = nnod_local_rtm(ip_rank+1)
 !
       nidx_rtm(1:3) = nidx_local_rtm(ip_rank+1,1:3)
 !
-      i1 = sph_rank_rtm(1) + 1
-      i2 = sph_rank_rtm(2) + 1
-      i3 = sph_rank_rtm(3) + 1
+      i1 = sph_rtm1%irank_sph_rtm(1) + 1
+      i2 = sph_rtm1%irank_sph_rtm(2) + 1
+      i3 = sph_rtm1%irank_sph_rtm(3) + 1
       sph_rtm1%ist_rtm(1) = istack_idx_local_rtm_r(i1-1) + 1
       sph_rtm1%ist_rtm(2) = istack_idx_local_rtm_t(i2-1) + 1
       sph_rtm1%ist_rtm(3) = istack_idx_local_rtm_m(i3-1) + 1
@@ -147,15 +147,15 @@
       integer(kind = kint) :: i1, i2, i3
 !
 !
-      sph_rank_rtp(1:3) = iglobal_rank_rtp(1:3,ip_rank)
+      sph_rtp1%irank_sph_rtp(1:3) = iglobal_rank_rtp(1:3,ip_rank)
 !
       nnod_rtp = nnod_local_rtp(ip_rank+1)
 !
       nidx_rtp(1:3) = nidx_local_rtp(ip_rank+1,1:3)
 !
-      i1 = sph_rank_rtp(1) + 1
-      i2 = sph_rank_rtp(2) + 1
-      i3 = sph_rank_rtp(3) + 1
+      i1 = sph_rtp1%irank_sph_rtp(1) + 1
+      i2 = sph_rtp1%irank_sph_rtp(2) + 1
+      i3 = sph_rtp1%irank_sph_rtp(3) + 1
       sph_rtp1%ist_rtp(1) = istack_idx_local_rtp_r(i1-1) + 1
       sph_rtp1%ist_rtp(2) = istack_idx_local_rtp_t(i2-1) + 1
       sph_rtp1%ist_rtp(3) = istack_idx_local_rtp_p(i3-1) + 1

@@ -136,19 +136,19 @@
         idx2 = sph_rtm1%idx_global_rtm(inod,2)
         idx3 = sph_rtm1%idx_global_rtm(inod,3)
 !
-        if(idx1.ge.1 .and. idx1.le.nidx_global_rtm(1)) then
+        if(idx1.ge.1 .and. idx1.le.sph_rtm1%nidx_global_rtm(1)) then
           kp_rtp = id_domain_rtp_r(idx1)
         else
           kp_rtp = -1
         end if
 !
-        if(idx2.ge.1 .and. idx2.le.nidx_global_rtm(2)) then
+        if(idx2.ge.1 .and. idx2.le.sph_rtm1%nidx_global_rtm(2)) then
           lp_rtp = id_domain_rtp_t(idx2)
         else
           lp_rtp = -1
         end if
 !
-        if(idx3.ge.1 .and. idx3.le.nidx_global_rtm(3)) then
+        if(idx3.ge.1 .and. idx3.le.sph_rtm1%nidx_global_rtm(3)) then
           mp_rtp = id_domain_rtp_p(idx3)
         else
           mp_rtp = -1
@@ -184,19 +184,19 @@
         idx2 = sph_rtm1%idx_global_rtm(inod,2)
         idx3 = sph_rtm1%idx_global_rtm(inod,3)
 !
-        if(idx1.ge.1 .and. idx1.le.nidx_global_rtm(1)) then
+        if(idx1.ge.1 .and. idx1.le.sph_rtm1%nidx_global_rtm(1)) then
           kp_rtp = id_domain_rtp_r(idx1)
         else
           kp_rtp = -1
         end if
 !
-        if(idx2.ge.1 .and. idx2.le.nidx_global_rtm(2)) then
+        if(idx2.ge.1 .and. idx2.le.sph_rtm1%nidx_global_rtm(2)) then
           lp_rtp = id_domain_rtp_t(idx2)
         else
           lp_rtp = -1
         end if
 !
-        if(idx3.ge.1 .and. idx3.le.nidx_global_rtm(3)) then
+        if(idx3.ge.1 .and. idx3.le.sph_rtm1%nidx_global_rtm(3)) then
           mp_rtp = id_domain_rtp_p(idx3)
         else
           mp_rtp = -1

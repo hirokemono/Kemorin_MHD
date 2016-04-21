@@ -122,7 +122,7 @@
 !>        number of global 1d data points for @f$ f(r,\theta,\phi) @f$
         integer(kind = kint) :: nidx_global_rtp(3)
 !>        1d subdomain ID for @f$ f(r,\theta,\phi) @f$ (start from 0)
-        integer(kind = kint) :: sph_rank_rtp(3)
+        integer(kind = kint) :: irank_sph_rtp(3)
 !
 !>        number of data points for @f$ f(r,\theta,\phi) @f$
         integer(kind = kint) :: nnod_rtp
@@ -174,7 +174,7 @@
 !>        number of global 1d data points for @f$ f(r,\theta,m) @f$
         integer(kind = kint) :: nidx_global_rtm(3)
 !>        1d subdomain ID for @f$ f(r,\theta,m) @f$ (start from 0)
-        integer(kind = kint) :: sph_rank_rtm(3)
+        integer(kind = kint) :: irank_sph_rtm(3)
 !
 !>        number of data points for @f$ f(r,\theta,m) @f$
         integer(kind = kint) :: nnod_rtm
@@ -228,7 +228,7 @@
 !>        number of global 1d data points for @f$ f(r,l,m) @f$
         integer(kind = kint) :: nidx_global_rlm(2)
 !>        1d subdomain ID for @f$ f(r,l,m) @f$ (start from 0)
-        integer(kind = kint) :: sph_rank_rlm(2)
+        integer(kind = kint) :: irank_sph_rlm(2)
 !
 !>        number of data points for @f$ f(r,l,m) @f$
         integer(kind = kint) :: nnod_rlm
@@ -697,7 +697,7 @@
       integer(kind = kint) :: i
 !
 !
-      write(my_rank+50,*) 'sph_rank_rtp ', rtp%sph_rank_rtp(1:3)
+      write(my_rank+50,*) 'irank_sph_rtp ', rtp%irank_sph_rtp(1:3)
       write(my_rank+50,*) 'nidx_rtp ', rtp%nidx_rtp(1:3)
       write(my_rank+50,*) 'nnod_rtp ', rtp%nnod_rtp
 !
@@ -717,7 +717,7 @@
       integer(kind = kint) :: i
 !
 !
-      write(my_rank+50,*) 'sph_rank_rtm ', rtm%sph_rank_rtm(1:3)
+      write(my_rank+50,*) 'irank_sph_rtm ', rtm%irank_sph_rtm(1:3)
       write(my_rank+50,*) 'nidx_rtm ', rtm%nidx_rtm(1:3)
       write(my_rank+50,*) 'nnod_rtm ', rtm%nnod_rtm
 !
@@ -737,7 +737,7 @@
       integer(kind = kint) :: i
 !
 !
-      write(my_rank+50,*) 'sph_rank_rlm ', rlm%sph_rank_rlm(1:2)
+      write(my_rank+50,*) 'irank_sph_rlm ', rlm%irank_sph_rlm(1:2)
       write(my_rank+50,*) 'nidx_rlm ', rlm%nidx_rlm(1:2)
       write(my_rank+50,*) 'nnod_rlm ', rlm%nnod_rlm
 !

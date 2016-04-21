@@ -93,7 +93,9 @@
      &                 'set_global_sph_rj_id', ip_rank
       call set_global_sph_rj_id
 !
-      if(iflag_debug .gt. 0) call check_spheric_param_rj(ip_rank)
+      if(iflag_debug .gt. 0) then
+        call check_type_spheric_param_rj(ip_rank, sph_rj1)
+      end if
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                 'const_comm_table_4_rj', ip_rank
@@ -147,7 +149,7 @@
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'check_spheric_param_rtp', ip_rank
-        call check_spheric_param_rtp(ip_rank)
+        call check_type_spheric_param_rtp(ip_rank, sph_rtp1)
       end if
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &

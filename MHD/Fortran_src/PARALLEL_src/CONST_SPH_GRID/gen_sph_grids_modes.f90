@@ -55,7 +55,9 @@
      &          'set_global_sph_4_rlm', ip_rank
       call set_global_sph_4_rlm
 !
-      if(iflag_debug .gt. 0) call check_spheric_param_rlm(ip_rank)
+      if(iflag_debug .gt. 0) then
+        call check_type_spheric_param_rlm(ip_rank, sph_rlm1)
+      end if
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &          'const_comm_table_4_rlm', ip_rank
@@ -88,7 +90,9 @@
      &          'set_global_sph_4_rtm', ip_rank
       call set_global_sph_4_rtm
 !
-      if(iflag_debug .gt. 0)  call check_spheric_param_rtm(ip_rank)
+      if(iflag_debug .gt. 0) then
+        call check_type_spheric_param_rtm(ip_rank, sph_rtm1)
+      end if
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &          'const_comm_table_4_rtm', ip_rank

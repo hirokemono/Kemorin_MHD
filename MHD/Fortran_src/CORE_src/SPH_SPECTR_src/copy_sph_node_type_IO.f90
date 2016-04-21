@@ -56,7 +56,7 @@
       type(sph_rtp_grid), intent(inout) :: rtp
       integer(kind = kint) :: i
 !
-      rtp%sph_rank_rtp(1:ithree) =    sph_rank_IO(1:ithree)
+      rtp%irank_sph_rtp(1:ithree) = sph_rank_IO(1:ithree)
 !
       rtp%nidx_global_rtp(1:ithree) = nidx_gl_sph_IO(1:ithree)
       l_truncation =              ltr_gl_IO
@@ -100,7 +100,7 @@
       type(sph_rtm_grid), intent(inout) :: rtm
       integer(kind = kint) :: i
 !
-      rtm%sph_rank_rtm(1:ithree) =    sph_rank_IO(1:ithree)
+      rtm%irank_sph_rtm(1:ithree) =    sph_rank_IO(1:ithree)
 !
       rtm%nidx_global_rtm(1:ithree) = nidx_gl_sph_IO(1:ithree)
       l_truncation =              ltr_gl_IO
@@ -144,7 +144,7 @@
       type(sph_rlm_grid), intent(inout) :: rlm
       integer(kind = kint) :: i
 !
-      rlm%sph_rank_rlm(1:itwo) =    sph_rank_IO(1:itwo)
+      rlm%irank_sph_rlm(1:itwo) =    sph_rank_IO(1:itwo)
 !
       rlm%nidx_global_rlm(1:itwo) = nidx_gl_sph_IO(1:itwo)
       l_truncation =              ltr_gl_IO
@@ -235,7 +235,7 @@
 !
 !
       ndir_sph_IO =              ithree
-      sph_rank_IO(1:ithree) =    rtp%sph_rank_rtp(1:ithree)
+      sph_rank_IO(1:ithree) =    rtp%irank_sph_rtp(1:ithree)
 !
       ncomp_itbl_1d_IO(1) = ione
       ncomp_itbl_1d_IO(2) = ione
@@ -299,7 +299,7 @@
 !
 !
       ndir_sph_IO =              ithree
-      sph_rank_IO(1:ithree) =    rtm%sph_rank_rtm(1:ithree)
+      sph_rank_IO(1:ithree) =    rtm%irank_sph_rtm(1:ithree)
 !
       ncomp_itbl_1d_IO(1) = ione
       ncomp_itbl_1d_IO(2) = ione
@@ -358,7 +358,7 @@
 !
 !
       ndir_sph_IO =            itwo
-      sph_rank_IO(1:itwo) =    rlm%sph_rank_rlm(1:itwo)
+      sph_rank_IO(1:itwo) =    rlm%irank_sph_rlm(1:itwo)
 !
       ncomp_itbl_1d_IO(1) = ione
       ncomp_itbl_1d_IO(2) = ithree

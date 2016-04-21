@@ -126,11 +126,11 @@
 !
       call MPI_REDUCE(sph_rj1%irank_sph_rj, nproc_rj_IO, itwo,          &
      &    CALYPSO_INTEGER, MPI_MAX, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_REDUCE(sph_rank_rlm, nproc_rlm_IO, itwo,                 &
+      call MPI_REDUCE(sph_rlm1%irank_sph_rlm, nproc_rlm_IO, itwo,       &
      &    CALYPSO_INTEGER, MPI_MAX, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_REDUCE(sph_rank_rtm, nproc_rtm_IO, ithree,               &
+      call MPI_REDUCE(sph_rtm1%irank_sph_rtm, nproc_rtm_IO, ithree,     &
      &    CALYPSO_INTEGER, MPI_MAX, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_REDUCE(sph_rank_rtp, nproc_rtp_IO, ithree,               &
+      call MPI_REDUCE(sph_rtp1%irank_sph_rtp, nproc_rtp_IO, ithree,     &
      &    CALYPSO_INTEGER, MPI_MAX, izero, CALYPSO_COMM, ierr_MPI)
 !
       if(my_rank .ne. 0) return

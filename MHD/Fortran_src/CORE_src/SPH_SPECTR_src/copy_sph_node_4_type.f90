@@ -51,7 +51,7 @@
 !
       integer(kind = kint) :: i
 !
-      sph_rank_rtp(1:ithree) =    rtp%sph_rank_rtp(1:ithree)
+      sph_rtp1%irank_sph_rtp(1:ithree) = rtp%irank_sph_rtp(1:ithree)
 !
       nidx_global_rtp(1:ithree) = rtp%nidx_global_rtp(1:ithree)
       ltr =  ltr_type
@@ -100,9 +100,10 @@
       integer(kind = kint) :: i
 !
 !
-      sph_rank_rtm(1:ithree) =    rtm%sph_rank_rtm(1:ithree)
+      sph_rtm1%irank_sph_rtm(1:ithree) = rtm%irank_sph_rtm(1:ithree)
 !
-      nidx_global_rtm(1:ithree) = rtm%nidx_global_rtm(1:ithree)
+      sph_rtm1%nidx_global_rtm(1:ithree)                                &
+     &             = rtm%nidx_global_rtm(1:ithree)
       ltr =  ltr_type
 !
       sph_rtm1%nnod_rtm = rtm%nnod_rtm 
@@ -147,9 +148,9 @@
 !
       integer(kind = kint) :: i
 !
-      sph_rank_rlm(1:itwo) =    rlm%sph_rank_rlm(1:itwo)
+      sph_rlm1%irank_sph_rlm(1:itwo) =    rlm%irank_sph_rlm(1:itwo)
 !
-      nidx_global_rlm(1:itwo) = rlm%nidx_global_rlm(1:itwo)
+      sph_rlm1%nidx_global_rlm(1:itwo) = rlm%nidx_global_rlm(1:itwo)
       ltr =  ltr_type
 !
       sph_rlm1%nnod_rlm = rlm%nnod_rlm
@@ -243,7 +244,7 @@
 !
       integer(kind = kint) :: i
 !
-      rtp%sph_rank_rtp(1:ithree) =    sph_rank_rtp(1:ithree)
+      rtp%irank_sph_rtp(1:ithree) = sph_rtp1%irank_sph_rtp(1:ithree)
 !
       rtp%nidx_global_rtp(1:ithree) = nidx_global_rtp(1:ithree)
       ltr_type =   ltr
@@ -288,9 +289,10 @@
 !
       integer(kind = kint) :: i
 !
-      rtm%sph_rank_rtm(1:ithree) =    sph_rank_rtm(1:ithree)
+      rtm%irank_sph_rtm(1:ithree) = sph_rtm1%irank_sph_rtm(1:ithree)
 !
-      rtm%nidx_global_rtm(1:ithree) = nidx_global_rtm(1:ithree)
+      rtm%nidx_global_rtm(1:ithree)                                     &
+     &           = sph_rtm1%nidx_global_rtm(1:ithree)
       ltr_type =   ltr
 !
       rtm%nnod_rtm = nnod_rtm
@@ -333,9 +335,9 @@
 !
       integer(kind = kint) :: i
 !
-      rlm%sph_rank_rlm(1:itwo) =    sph_rank_rlm(1:itwo)
+      rlm%irank_sph_rlm(1:itwo) =    sph_rlm1%irank_sph_rlm(1:itwo)
 !
-      rlm%nidx_global_rlm(1:itwo) = nidx_global_rlm(1:itwo)
+      rlm%nidx_global_rlm(1:itwo) = sph_rlm1%nidx_global_rlm(1:itwo)
       ltr_type =   ltr
 !
       rlm%nnod_rlm = nnod_rlm
