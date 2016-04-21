@@ -9,15 +9,16 @@
 !!
 !!@verbatim
 !! ------------------------------------------------------------------
-!!      subroutine init_sph_single_FFTW
+!!      subroutine init_sph_single_FFTW(nidx_rtp)
 !!      subroutine finalize_sph_single_FFTW
-!!      subroutine verify_sph_single_FFTW
+!!      subroutine verify_sph_single_FFTW(nidx_rtp)
 !!
 !!   wrapper subroutine for initierize FFT by FFTW
 !! ------------------------------------------------------------------
 !!
 !!      subroutine sph_single_fwd_FFTW_to_send                          &
-!!     &         (ncomp, n_WS, irev_sr_rtp, X_rtp, WS)
+!!     &         (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                &
+!!     &          ncomp, n_WS, irev_sr_rtp, X_rtp, WS)
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for forward Fourier transform by FFTW3
@@ -32,7 +33,8 @@
 !! ------------------------------------------------------------------
 !!
 !!      subroutine sph_single_back_FFTW_from_recv                       &
-!!     &         (ncomp, n_WR, irev_sr_rtp, WR, X_rtp)
+!!     &         (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                &
+!!     &          ncomp, n_WR, irev_sr_rtp, WR, X_rtp)
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for backward Fourier transform by FFTW3
@@ -82,9 +84,9 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_sph_single_FFTW
+      subroutine init_sph_single_FFTW(nidx_rtp)
 !
-      use m_spheric_parameter
+      integer(kind = kint), intent(in) :: nidx_rtp(3)
 !
 !
       call init_sph_single_FFTW_t(nidx_rtp, sph_sgl_FFTW)
@@ -102,9 +104,9 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine verify_sph_single_FFTW
+      subroutine verify_sph_single_FFTW(nidx_rtp)
 !
-      use m_spheric_parameter
+      integer(kind = kint), intent(in) :: nidx_rtp(3)
 !
 !
       call verify_sph_single_FFTW_t(nidx_rtp, sph_sgl_FFTW)
@@ -115,10 +117,12 @@
 ! ------------------------------------------------------------------
 !
       subroutine sph_single_fwd_FFTW_to_send                            &
-     &         (ncomp, n_WS, irev_sr_rtp, X_rtp, WS)
+     &         (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                  &
+     &          ncomp, n_WS, irev_sr_rtp, X_rtp, WS)
 !
-      use m_spheric_parameter
-      use m_spheric_param_smp
+      integer(kind = kint), intent(in) :: nnod_rtp
+      integer(kind = kint), intent(in) :: nidx_rtp(3)
+      integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: ncomp
       real(kind = kreal), intent(in)                                    &
@@ -137,10 +141,12 @@
 ! ------------------------------------------------------------------
 !
       subroutine sph_single_back_FFTW_from_recv                         &
-     &         (ncomp, n_WR, irev_sr_rtp, WR, X_rtp)
+     &         (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                  &
+     &          ncomp, n_WR, irev_sr_rtp, WR, X_rtp)
 !
-      use m_spheric_parameter
-      use m_spheric_param_smp
+      integer(kind = kint), intent(in) :: nnod_rtp
+      integer(kind = kint), intent(in) :: nidx_rtp(3)
+      integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: ncomp
       integer(kind = kint), intent(in) :: n_WR

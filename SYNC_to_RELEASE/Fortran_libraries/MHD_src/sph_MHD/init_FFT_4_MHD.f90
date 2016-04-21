@@ -164,7 +164,9 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'back_MHD_FFT_sel_from_recv'
       starttime = MPI_WTIME()
-      call back_MHD_FFT_sel_from_recv(ncomp_bwd, n_WR, WR, fld_rtp)
+      call back_MHD_FFT_sel_from_recv                                   &
+     &    nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                        &
+     &    ncomp_bwd, n_WR, WR, fld_rtp)
       call fwd_MHD_FFT_sel_from_recv(ncomp_fwd, n_WS, frc_rtp, WS)
       endtime = MPI_WTIME() - starttime
       if(iflag_debug .gt. 0) write(*,*) 'fwd_MHD_FFT_sel_from_recv end'

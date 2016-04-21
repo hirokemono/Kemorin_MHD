@@ -9,15 +9,19 @@
 !!
 !!@verbatim
 !! ------------------------------------------------------------------
-!!      subroutine init_MHD_multi_FFTW(ncomp, ncomp_fwd, ncomp_bwd)
+!!      subroutine init_MHD_multi_FFTW(nidx_rtp, irt_rtp_smp_stack,     &
+!!     &           ncomp, ncomp_fwd, ncomp_bwd)
 !!      subroutine finalize_MHD_multi_FFTW
-!!      subroutine verify_MHD_multi_FFTW(ncomp, ncomp_fwd, ncomp_bwd)
+!!      subroutine verify_MHD_multi_FFTW                                &
+!!     &         (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                &
+!!     &          ncomp, ncomp_fwd, ncomp_bwd)
 !!
 !!   wrapper subroutine for initierize FFT by FFTW
 !! ------------------------------------------------------------------
 !!
 !!      subroutine MHD_multi_fwd_FFTW_to_send                           &
-!!     &         (ncomp_fwd, n_WS, irev_sr_rtp, X_rtp, WS)
+!!     &         (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                &
+!!     &          ncomp_fwd, n_WS, irev_sr_rtp, X_rtp, WS)
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for forward Fourier transform by FFTW3
@@ -32,7 +36,8 @@
 !! ------------------------------------------------------------------
 !!
 !!      subroutine MHD_multi_back_FFTW_from_recv                        &
-!!     &         (ncomp_bwd, n_WR, irev_sr_rtp, WR, X_rtp)
+!!     &         (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                &
+!!     &          ncomp_bwd, n_WR, irev_sr_rtp, WR, X_rtp)
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for backward Fourier transform by FFTW3
@@ -81,10 +86,11 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_MHD_multi_FFTW(ncomp, ncomp_fwd, ncomp_bwd)
+      subroutine init_MHD_multi_FFTW(nidx_rtp, irt_rtp_smp_stack,       &
+     &           ncomp, ncomp_fwd, ncomp_bwd)
 !
-      use m_spheric_parameter
-      use m_spheric_param_smp
+      integer(kind = kint), intent(in) :: nidx_rtp(3)
+      integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: ncomp, ncomp_fwd, ncomp_bwd
 !
@@ -105,10 +111,13 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine verify_MHD_multi_FFTW(ncomp, ncomp_fwd, ncomp_bwd)
+      subroutine verify_MHD_multi_FFTW                                  &
+     &         (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                  &
+     &          ncomp, ncomp_fwd, ncomp_bwd)
 !
-      use m_spheric_parameter
-      use m_spheric_param_smp
+      integer(kind = kint), intent(in) :: nnod_rtp
+      integer(kind = kint), intent(in) :: nidx_rtp(3)
+      integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: ncomp, ncomp_fwd, ncomp_bwd
 !
@@ -122,10 +131,12 @@
 ! ------------------------------------------------------------------
 !
       subroutine MHD_multi_fwd_FFTW_to_send                             &
-     &         (ncomp_fwd, n_WS, irev_sr_rtp, X_rtp, WS)
+     &         (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                  &
+     &          ncomp_fwd, n_WS, irev_sr_rtp, X_rtp, WS)
 !
-      use m_spheric_parameter
-      use m_spheric_param_smp
+      integer(kind = kint), intent(in) :: nnod_rtp
+      integer(kind = kint), intent(in) :: nidx_rtp(3)
+      integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: ncomp_fwd
       real(kind = kreal), intent(in)                                    &
@@ -144,10 +155,12 @@
 ! ------------------------------------------------------------------
 !
       subroutine MHD_multi_back_FFTW_from_recv                          &
-     &         (ncomp_bwd, n_WR, irev_sr_rtp, WR, X_rtp)
+     &         (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                  &
+     &          ncomp_bwd, n_WR, irev_sr_rtp, WR, X_rtp)
 !
-      use m_spheric_parameter
-      use m_spheric_param_smp
+      integer(kind = kint), intent(in) :: nnod_rtp
+      integer(kind = kint), intent(in) :: nidx_rtp(3)
+      integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: ncomp_bwd
       integer(kind = kint), intent(in) :: n_WR

@@ -33,7 +33,7 @@
 !
 !
       type(sph_rtp_grid), save :: sph_rtp1
-!sph_rtp1%istep_rtp
+!sph_rtp1%istack_rtp_rt_smp
 !
       type(sph_rtm_grid), save :: sph_rtm1
 !sph_rtm1%istack_rtm_rt_smp

@@ -19,10 +19,6 @@
 !
       integer(kind = kint), allocatable :: inod_rtp_smp_stack(:)
 !
-      integer(kind = kint), allocatable :: idx_rtp_smp_stack(:,:)
-!
-      integer(kind = kint), allocatable :: irt_rtp_smp_stack(:)
-!
       integer( kind=kint )  ::  maxnod_rtp_smp = 0
       integer( kind=kint )  ::  maxnod_rtm_smp = 0
       integer( kind=kint )  ::  maxnod_rlm_smp = 0
@@ -50,7 +46,10 @@
       allocate(sph_rlm1%istack_inod_rlm_smp(0:np_smp))
       allocate(sph_rj1%istack_inod_rj_smp(0:np_smp))
 !
-      allocate(idx_rtp_smp_stack(0:np_smp,3))
+      allocate(sph_rtp1%istack_rtp_kr_smp(0:np_smp))
+      allocate(sph_rtp1%istack_rtp_lt_smp(0:np_smp))
+      allocate(sph_rtp1%istack_rtp_mp_smp(0:np_smp))
+!
       allocate(sph_rtm1%istack_rtm_kr_smp(0:np_smp))
       allocate(sph_rtm1%istack_rtm_lt_smp(0:np_smp))
       allocate(sph_rtm1%istack_rtm_m_smp(0:np_smp))
@@ -61,7 +60,7 @@
       allocate(sph_rj1%istack_rj_kr_smp(0:np_smp))
       allocate(sph_rj1%istack_rj_j_smp(0:np_smp))
 !
-      allocate(irt_rtp_smp_stack(0:np_smp))
+      allocate(sph_rtp1%istack_rtp_rt_smp(0:np_smp))
       allocate(sph_rtm1%istack_rtm_rt_smp(0:np_smp))
 !
       inod_rtp_smp_stack = 0
@@ -69,7 +68,10 @@
       sph_rlm1%istack_inod_rlm_smp = 0
       sph_rj1%istack_inod_rj_smp = 0
 !
-      idx_rtp_smp_stack = 0
+      sph_rtp1%istack_rtp_kr_smp = 0
+      sph_rtp1%istack_rtp_lt_smp = 0
+      sph_rtp1%istack_rtp_mp_smp = 0
+!
       sph_rtm1%istack_rtm_kr_smp = 0
       sph_rtm1%istack_rtm_lt_smp = 0
       sph_rtm1%istack_rtm_m_smp = 0
@@ -80,7 +82,7 @@
       sph_rj1%istack_rj_kr_smp =  0
       sph_rj1%istack_rj_j_smp =  0
 !
-      irt_rtp_smp_stack = 0
+      sph_rtp1%istack_rtp_rt_smp = 0
       sph_rtm1%istack_rtm_rt_smp = 0
 !
       end subroutine allocate_sph_param_smp
@@ -96,14 +98,15 @@
       deallocate(sph_rlm1%istack_inod_rlm_smp)
       deallocate(sph_rj1%istack_inod_rj_smp)
 !
-      deallocate(idx_rtp_smp_stack)
+      deallocate(sph_rtp1%istack_rtp_kr_smp)
+      deallocate(sph_rtp1%istack_rtp_lt_smp, sph_rtp1%istack_rtp_mp_smp)
       deallocate(sph_rtm1%istack_rtm_kr_smp)
       deallocate(sph_rtm1%istack_rtm_lt_smp, sph_rtm1%istack_rtm_m_smp)
       deallocate(sph_rlm1%istack_rlm_kr_smp, sph_rlm1%istack_rlm_j_smp)
       deallocate(sph_rj1%istack_rj_kr_smp, sph_rj1%istack_rj_j_smp)
 !
       deallocate(sph_rtm1%istack_rtm_rt_smp)
-      deallocate(irt_rtp_smp_stack)
+      deallocate(sph_rtp1%istack_rtp_rt_smp)
 !
       maxnod_rtp_smp = 0
       maxnod_rtm_smp = 0

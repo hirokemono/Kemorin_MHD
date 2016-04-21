@@ -87,7 +87,9 @@
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
       call start_eleps_time(24)
-      call back_FFT_select_from_recv(ncomp_trans, n_WR, WR, v_rtp)
+      call back_FFT_select_from_recv                                    &
+     &   (nnod_rtp, nidx_rtp, sph_rtp1%istack_rtp_rt_smp,               &
+     &    ncomp_trans, n_WR, WR, v_rtp)
       call end_eleps_time(24)
 !
       call finish_send_recv_rtm_2_rtp
@@ -110,7 +112,9 @@
       real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
 !
       call start_eleps_time(24)
-      call fwd_FFT_select_to_send(ncomp_trans, n_WS, v_rtp, WS)
+      call fwd_FFT_select_to_send                                       &
+     &   (nnod_rtp, nidx_rtp, sph_rtp1%istack_rtp_rt_smp,               &
+     &    ncomp_trans, n_WS, v_rtp, WS)
       call end_eleps_time(24)
 !
       START_SRtime= MPI_WTIME()

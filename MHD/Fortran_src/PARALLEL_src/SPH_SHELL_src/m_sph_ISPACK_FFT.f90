@@ -10,15 +10,16 @@
 !!@verbatim
 !!  ---------------------------------------------------------------------
 !!
-!!      subroutine init_sph_ISPACK(ncomp)
+!!      subroutine init_sph_ISPACK(nidx_rtp, maxirt_rtp_smp, ncomp)
 !!      subroutine finalize_sph_ISPACK
-!!      subroutine verify_sph_ISPACK(ncomp)
+!!      subroutine verify_sph_ISPACK(nidx_rtp, maxirt_rtp_smp, ncomp)
 !! ------------------------------------------------------------------
 !! wrapper subroutine for initierize FFT for ISPACK
 !! ------------------------------------------------------------------
 !!
 !!      subroutine sph_FTTRUF_to_send                                   &
-!!     &         (ncomp, n_WS, irev_sr_rtp, X_rtp, WS)
+!!     &         (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                &
+!!     &          ncomp, n_WS, irev_sr_rtp, X_rtp, WS)
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for forward Fourier transform by ISPACK
@@ -33,7 +34,8 @@
 !! ------------------------------------------------------------------
 !!
 !!      subroutine sph_FTTRUB_from_recv                                 &
-!!     &         (ncomp, n_WR, irev_sr_rtp, WR, X_rtp)
+!!     &         (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                &
+!!     &         ncomp, n_WR, irev_sr_rtp, WR, X_rtp)
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for backward Fourier transform by ISPACK
@@ -83,11 +85,10 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_sph_ISPACK(ncomp)
+      subroutine init_sph_ISPACK(nidx_rtp, maxirt_rtp_smp, ncomp)
 !
-      use m_spheric_parameter
-      use m_spheric_param_smp
-!
+      integer(kind = kint), intent(in) :: maxirt_rtp_smp
+      integer(kind = kint), intent(in) :: nidx_rtp(3)
       integer(kind = kint), intent(in) :: ncomp
 !
 !
@@ -107,11 +108,10 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine verify_sph_ISPACK(ncomp)
+      subroutine verify_sph_ISPACK(nidx_rtp, maxirt_rtp_smp, ncomp)
 !
-      use m_spheric_parameter
-      use m_spheric_param_smp
-!
+      integer(kind = kint), intent(in) :: maxirt_rtp_smp
+      integer(kind = kint), intent(in) :: nidx_rtp(3)
       integer(kind = kint), intent(in) :: ncomp
 !
 !
@@ -124,10 +124,12 @@
 ! ------------------------------------------------------------------
 !
       subroutine sph_FTTRUF_to_send                                     &
-     &         (ncomp, n_WS, irev_sr_rtp, X_rtp, WS)
+     &         (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                  &
+     &          ncomp, n_WS, irev_sr_rtp, X_rtp, WS)
 !
-      use m_spheric_parameter
-      use m_spheric_param_smp
+      integer(kind = kint), intent(in) :: nnod_rtp
+      integer(kind = kint), intent(in) :: nidx_rtp(3)
+      integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: ncomp
       real(kind = kreal), intent(in)                                    &
@@ -146,10 +148,12 @@
 ! ------------------------------------------------------------------
 !
       subroutine sph_FTTRUB_from_recv                                   &
-     &         (ncomp, n_WR, irev_sr_rtp, WR, X_rtp)
+     &         (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                  &
+     &          ncomp, n_WR, irev_sr_rtp, WR, X_rtp)
 !
-      use m_spheric_parameter
-      use m_spheric_param_smp
+      integer(kind = kint), intent(in) :: nnod_rtp
+      integer(kind = kint), intent(in) :: nidx_rtp(3)
+      integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: ncomp
       integer(kind = kint), intent(in) :: n_WR

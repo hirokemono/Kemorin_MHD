@@ -100,7 +100,9 @@
       call start_eleps_time(24)
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &    'back_MHD_FFT_sel_from_recv', ncomp_trans, nvector, nscalar
-      call back_MHD_FFT_sel_from_recv(ncomp_trans, n_WR, WR, fld_rtp)
+      call back_MHD_FFT_sel_from_recv                                   &
+     &   (nnod_rtp, nidx_rtp, sph_rtp1%istack_rtp_rt_smp,               &
+     &    ncomp_trans, n_WR, WR, fld_rtp)
       call end_eleps_time(24)
 !
       if(iflag_debug .gt. 0) write(*,*) 'finish_send_recv_rtm_2_rtp'
@@ -120,7 +122,9 @@
 !
 !
       call start_eleps_time(24)
-      call fwd_MHD_FFT_sel_from_recv(ncomp_trans, n_WS, frc_rtp, WS)
+      call fwd_MHD_FFT_sel_from_recv                                    &
+     &   (nnod_rtp, nidx_rtp, sph_rtp1%istack_rtp_rt_smp,               &
+     &    ncomp_trans, n_WS, frc_rtp, WS)
       call end_eleps_time(24)
 !
       START_SRtime= MPI_WTIME()

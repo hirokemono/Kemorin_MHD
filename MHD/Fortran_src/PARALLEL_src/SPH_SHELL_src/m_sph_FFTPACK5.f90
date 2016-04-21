@@ -9,15 +9,16 @@
 !!@verbatim
 !!  ---------------------------------------------------------------------
 !!
-!!      subroutine init_sph_FFTPACK5(ncomp)
+!!      subroutine init_sph_FFTPACK5(nidx_rtp, maxirt_rtp_smp, ncomp)
 !!      subroutine finalize_sph_FFTPACK5
-!!      subroutine verify_sph_FFTPACK5(Nstacksmp, Nfft)
+!!      subroutine verify_sph_FFTPACK5(nidx_rtp, maxirt_rtp_smp, ncomp)
 !! ------------------------------------------------------------------
 !!   wrapper subroutine for initierize FFT
 !! ------------------------------------------------------------------
 !!
 !!      subroutine sph_RFFTMF_to_send                                   &
-!!     &         (ncomp, n_WS, irev_sr_rtp, X_rtp, WS)
+!!     &         (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                &
+!!     &          ncomp, n_WS, irev_sr_rtp, X_rtp, WS)
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for forward Fourier transform by FFTPACK5
@@ -35,7 +36,8 @@
 !! ------------------------------------------------------------------
 !!
 !!      subroutine sph_RFFTMB_from_recv                                 &
-!!     &         (ncomp, n_WR, irev_sr_rtp, WR, X_rtp)
+!!     &         (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                &
+!!     &          ncomp, n_WR, irev_sr_rtp, WR, X_rtp)
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for backward Fourier transform by FFTPACK5
@@ -85,11 +87,10 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_sph_FFTPACK5(ncomp)
+      subroutine init_sph_FFTPACK5(nidx_rtp, maxirt_rtp_smp, ncomp)
 !
-      use m_spheric_parameter
-      use m_spheric_param_smp
-!
+      integer(kind = kint), intent(in) :: maxirt_rtp_smp
+      integer(kind = kint), intent(in) :: nidx_rtp(3)
       integer(kind = kint), intent(in) :: ncomp
 !
 !
@@ -109,11 +110,10 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine verify_sph_FFTPACK5(ncomp)
+      subroutine verify_sph_FFTPACK5(nidx_rtp, maxirt_rtp_smp, ncomp)
 !
-      use m_spheric_parameter
-      use m_spheric_param_smp
-!
+      integer(kind = kint), intent(in) :: maxirt_rtp_smp
+      integer(kind = kint), intent(in) :: nidx_rtp(3)
       integer(kind = kint), intent(in) ::  ncomp
 !
       call verify_sph_FFTPACK5_t(ncomp, nidx_rtp, maxirt_rtp_smp,       &
@@ -125,10 +125,12 @@
 ! ------------------------------------------------------------------
 !
       subroutine sph_RFFTMF_to_send                                     &
-     &         (ncomp, n_WS, irev_sr_rtp, X_rtp, WS)
+     &         (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                  &
+     &          ncomp, n_WS, irev_sr_rtp, X_rtp, WS)
 !
-      use m_spheric_parameter
-      use m_spheric_param_smp
+      integer(kind = kint), intent(in) :: nnod_rtp
+      integer(kind = kint), intent(in) :: nidx_rtp(3)
+      integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: ncomp
       integer(kind = kint), intent(in) :: n_WS
@@ -147,10 +149,12 @@
 ! ------------------------------------------------------------------
 !
       subroutine sph_RFFTMB_from_recv                                   &
-     &         (ncomp, n_WR, irev_sr_rtp, WR, X_rtp)
+     &         (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                  &
+     &          ncomp, n_WR, irev_sr_rtp, WR, X_rtp)
 !
-      use m_spheric_parameter
-      use m_spheric_param_smp
+      integer(kind = kint), intent(in) :: nnod_rtp
+      integer(kind = kint), intent(in) :: nidx_rtp(3)
+      integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: ncomp
       integer(kind = kint), intent(in) :: n_WR
