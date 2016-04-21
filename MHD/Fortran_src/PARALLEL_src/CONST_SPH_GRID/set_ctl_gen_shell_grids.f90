@@ -65,9 +65,9 @@
 !
       call set_FEM_mesh_mode_4_SPH(iflag_shell_mode)
 !
-      nidx_global_rtp(1) = 2
-      nidx_global_rtp(2) = 2
-      nidx_global_rtp(3) = 4
+      sph_rtp1%nidx_global_rtp(1) = 2
+      sph_rtp1%nidx_global_rtp(2) = 2
+      sph_rtp1%nidx_global_rtp(3) = 4
       l_truncation = 2
       m_folding =    1
 !
@@ -88,11 +88,11 @@
       end if
 !
       if (ngrid_elevation_ctl%iflag .gt. 0) then
-        nidx_global_rtp(2) = ngrid_elevation_ctl%intvalue
+        sph_rtp1%nidx_global_rtp(2) = ngrid_elevation_ctl%intvalue
       end if
 !
 !      if (ngrid_azimuth_ctl%iflag .gt. 0) then
-!        nidx_global_rtp(3) = ngrid_azimuth_ctl%intvalue
+!        sph_rtp1%nidx_global_rtp(3) = ngrid_azimuth_ctl%intvalue
 !      end if
 !
 !   Set radial group
@@ -129,12 +129,14 @@
         if(cmp_no_case(sph_coef_type_ctl%charavalue, 'with_center')     &
           .and. sph_coef_type_ctl%iflag .gt. 0) iflag_rj_center = 1
 !
-        if (radius_ctl%icou .gt. 0) nidx_global_rtp(1) = radius_ctl%num
+        if (radius_ctl%icou .gt. 0) then
+          sph_rtp1%nidx_global_rtp(1) = radius_ctl%num
+        end if
 !
-        if (nidx_global_rtp(1) .gt. 0) then
-          call allocate_radius_1d_gl(nidx_global_rtp(1))
+        if (sph_rtp1%nidx_global_rtp(1) .gt. 0) then
+          call allocate_radius_1d_gl(sph_rtp1%nidx_global_rtp(1))
 !
-          do i = 1, nidx_global_rtp(1)
+          do i = 1, sph_rtp1%nidx_global_rtp(1)
             kr = radius_ctl%ivec(i)
             radius_1d_gl(kr) = radius_ctl%vect(i)
           end do
@@ -144,7 +146,7 @@
 !
         nlayer_2_center = -1
         nlayer_ICB =       1
-        nlayer_CMB =       nidx_global_rtp(1)
+        nlayer_CMB =       sph_rtp1%nidx_global_rtp(1)
         nlayer_mid_OC =   -1
         if(radial_grp_ctl%icou .gt. 0) then
           do i = 1, radial_grp_ctl%num
@@ -271,14 +273,14 @@
         stop
       end if
 !
-      if(mod(nidx_global_rtp(3),2) .ne. 0) then
+      if(mod(sph_rtp1%nidx_global_rtp(3),2) .ne. 0) then
         write(*,*) 'Set even number for the number of zonal grids'
         stop
       end if
 !
-      if(nidx_global_rtp(2) .lt. (l_truncation+1)*3/2) then
+      if(sph_rtp1%nidx_global_rtp(2) .lt. (l_truncation+1)*3/2) then
         write(*,*) 'Spherical harmonics transform has Ailiasing'
-      else if (nidx_global_rtp(2) .lt. (l_truncation+1)) then
+      else if (sph_rtp1%nidx_global_rtp(2) .lt. (l_truncation+1)) then
         write(*,*) "Grid has less than Nyquist's sampling theorem"
       end if
 !

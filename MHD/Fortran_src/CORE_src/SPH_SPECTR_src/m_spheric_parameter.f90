@@ -28,7 +28,7 @@
 !
 !
       type(sph_rtp_grid), save :: sph_rtp1
-!sph_rtp1%irank_sph_rtp
+!sph_rtp1%nidx_global_rtp
 !
       type(sph_rtm_grid), save :: sph_rtm1
 !sph_rtm1%nidx_global_rtm
@@ -92,7 +92,7 @@
 !   global parameters
 !
 !>      number of global 1d data points for @f$ f(r,\theta,\phi) @f$
-      integer(kind = kint) :: nidx_global_rtp(3)
+!      integer(kind = kint) :: nidx_global_rtp(3)
 !>      number of global 1d data points for @f$ f(r,\theta,m) @f$
 !      integer(kind = kint) :: nidx_global_rtm(3)
 !>      number of global 1d data points for @f$ f(r,l,m) @f$
@@ -158,7 +158,8 @@
 !
       write(*,*) 'truncation degree:           ', l_truncation
       write(*,*) 'm-folding symmetry:          ', m_folding
-      write(*,*) 'number of grid for f(r,t,p): ', nidx_global_rtp(1:3)
+      write(*,*) 'number of grid for f(r,t,p): ',                       &
+     &            sph_rtp1%nidx_global_rtp(1:3)
 !
       end subroutine check_global_spheric_parameter
 !

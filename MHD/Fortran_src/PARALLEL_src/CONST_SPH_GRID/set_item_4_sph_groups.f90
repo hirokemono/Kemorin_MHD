@@ -44,9 +44,9 @@
      &    nidx_rtp(1), sph_rtp1%idx_gl_1d_rtp_r,                        &
      &    ntot_radial_grp_rtp, item_radial_grp_rtp)
 !
-      if (nidx_global_rtp(1) .gt. nlayer_CMB) then
+      if (sph_rtp1%nidx_global_rtp(1) .gt. nlayer_CMB) then
         call set_item_sph_grp_by_list(icou,                             &
-     &      nidx_global_rtp(1), nidx_global_rtp(1),                     &
+     &      sph_rtp1%nidx_global_rtp(1), sph_rtp1%nidx_global_rtp(1),   &
      &      nidx_rtp(1),  sph_rtp1%idx_gl_1d_rtp_r,                     &
      &      ntot_radial_grp_rtp, item_radial_grp_rtp)
       end if
@@ -102,10 +102,10 @@
      &    sph_rj1%ist_rj(1), sph_rj1%ied_rj(1),                         &
      &    ntot_radial_grp_rj, item_radial_grp_rj)
 !
-      if (nidx_global_rtp(1) .gt. nlayer_CMB) then
-        call set_item_sph_grp_by_rng(icou, nidx_global_rtp(1),          &
-     &      nidx_global_rtp(1), sph_rj1%ist_rj(1), sph_rj1%ied_rj(1),   &
-     &      ntot_radial_grp_rj, item_radial_grp_rj)
+      if (sph_rtp1%nidx_global_rtp(1) .gt. nlayer_CMB) then
+        call set_item_sph_grp_by_rng(icou, sph_rtp1%nidx_global_rtp(1), &
+     &      sph_rtp1%nidx_global_rtp(1), sph_rj1%ist_rj(1),             &
+     &      sph_rj1%ied_rj(1), ntot_radial_grp_rj, item_radial_grp_rj)
       end if
 !
       if (nlayer_mid_OC .gt. 0) then

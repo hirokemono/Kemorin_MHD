@@ -34,19 +34,19 @@
 !
       if(iflag_radial_grid .eq. igrid_Chebyshev) then
         call count_chebyshev_ext_layers(nele, r_ICB, r_CMB, rmin, rmax, &
-     &      nidx_global_rtp(1), nlayer_ICB, nlayer_CMB)
+     &      sph_rtp1%nidx_global_rtp(1), nlayer_ICB, nlayer_CMB)
       else if(iflag_radial_grid .eq. igrid_euqidistance) then
         call count_equi_ext_layers(nele, r_ICB, r_CMB, rmin, rmax,      &
-     &      nidx_global_rtp(1), nlayer_ICB, nlayer_CMB)
+     &      sph_rtp1%nidx_global_rtp(1), nlayer_ICB, nlayer_CMB)
       end if
 !
-      call allocate_radius_1d_gl(nidx_global_rtp(1))
+      call allocate_radius_1d_gl(sph_rtp1%nidx_global_rtp(1))
 !
       if(iflag_radial_grid .eq. igrid_Chebyshev) then
-        call set_chebyshev_distance_shell(nidx_global_rtp(1),           &
+        call set_chebyshev_distance_shell(sph_rtp1%nidx_global_rtp(1),  &
      &      nlayer_ICB, nlayer_CMB, r_ICB, r_CMB, radius_1d_gl)
       else if(iflag_radial_grid .eq. igrid_euqidistance) then
-        call set_equi_distance_shell(nidx_global_rtp(1),                &
+        call set_equi_distance_shell(sph_rtp1%nidx_global_rtp(1),       &
      &        nlayer_ICB, nlayer_CMB, r_ICB, r_CMB, radius_1d_gl)
       end if
 !
@@ -68,8 +68,9 @@
       open(id_file, file='radial_point.dat')
 !
       write(id_file,'(a)')    '    radial_grid_type_ctl   explicit'
-      write(id_file,'(a,i6)') '    array r_layer ', nidx_global_rtp(1)
-      do k = 1, nidx_global_rtp(1)
+      write(id_file,'(a,i6)') '    array r_layer ',                     &
+     &                         sph_rtp1%nidx_global_rtp(1)
+      do k = 1, sph_rtp1%nidx_global_rtp(1)
         write(id_file,'(a,i6,1pE25.15e3)')                              &
      &                     '      r_layer   ', k, radius_1d_gl(k)
       end do

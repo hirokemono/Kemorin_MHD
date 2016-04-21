@@ -55,7 +55,7 @@
       if(i_fld .le. 0) return
       call copy_pole_vector_from_trans(numnod, internal_node, xx,       &
      &    ntot_phys, nnod_rtp, m_folding, nidx_rtp(1),                  &
-     &    nidx_global_rtp(1), sph_rtp1%idx_gl_1d_rtp_r,                 &
+     &    sph_rtp1%nidx_global_rtp(1), sph_rtp1%idx_gl_1d_rtp_r,        &
      &    v_pole, i_fld, d_nod)
 !
       end subroutine copy_pole_vec_fld_from_trans
@@ -79,7 +79,7 @@
       if(i_fld .le. 0) return
       call copy_pole_scalar_from_trans(numnod, internal_node, xx,       &
      &    ntot_phys, nnod_rtp, m_folding, nidx_rtp(1),                  &
-     &    nidx_global_rtp(1), sph_rtp1%idx_gl_1d_rtp_r,                 &
+     &    sph_rtp1%nidx_global_rtp(1), sph_rtp1%idx_gl_1d_rtp_r,        &
      &    v_pole, i_fld, d_nod)
 !
       end subroutine copy_pole_scl_fld_from_trans
@@ -103,7 +103,7 @@
       if(i_fld .le. 0) return
       call copy_pole_tensor_from_trans(numnod, internal_node, xx,       &
      &    ntot_phys, nnod_rtp, m_folding, nidx_rtp(1),                  &
-     &    nidx_global_rtp(1), sph_rtp1%idx_gl_1d_rtp_r,                 &
+     &    sph_rtp1%nidx_global_rtp(1), sph_rtp1%idx_gl_1d_rtp_r,        &
      &    v_pole, i_fld, d_nod)
 !
       end subroutine copy_pole_tsr_fld_from_trans

@@ -53,7 +53,8 @@
 !
       sph_rtp1%irank_sph_rtp(1:ithree) = rtp%irank_sph_rtp(1:ithree)
 !
-      nidx_global_rtp(1:ithree) = rtp%nidx_global_rtp(1:ithree)
+      sph_rtp1%nidx_global_rtp(1:ithree)                                &
+     &                = rtp%nidx_global_rtp(1:ithree)
       ltr =  ltr_type
 !
       nnod_rtp =      rtp%nnod_rtp
@@ -246,7 +247,8 @@
 !
       rtp%irank_sph_rtp(1:ithree) = sph_rtp1%irank_sph_rtp(1:ithree)
 !
-      rtp%nidx_global_rtp(1:ithree) = nidx_global_rtp(1:ithree)
+      rtp%nidx_global_rtp(1:ithree)                                     &
+     &            = sph_rtp1%nidx_global_rtp(1:ithree)
       ltr_type =   ltr
 !
       rtp%nnod_rtp = nnod_rtp

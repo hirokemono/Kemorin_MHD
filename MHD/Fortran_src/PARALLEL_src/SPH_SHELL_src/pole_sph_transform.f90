@@ -112,13 +112,13 @@
       call schmidt_b_trans_pole_vect(ncomp, nvector,                    &
      &   l_truncation, ist_rtm_order_zero,                              &
      &   ist_rtm_order_1s, ist_rtm_order_1c,                            &
-     &   nnod_rlm, nidx_rtm(1), sph_rlm1%istep_rlm, nidx_global_rtp,    &
-     &   sph_rtm1%idx_gl_1d_rtm_r, sph_rtm1%a_r_1d_rtm_r,               &
-     &   irev_sr_rlm, n_WR, WR, v_pl_local)
+     &   nnod_rlm, nidx_rtm(1), sph_rlm1%istep_rlm,                     &
+     &   sph_rtp1%nidx_global_rtp, sph_rtm1%idx_gl_1d_rtm_r,            &
+     &   sph_rtm1%a_r_1d_rtm_r, irev_sr_rlm, n_WR, WR, v_pl_local)
       call schmidt_b_trans_pole_scalar(ncomp, nvector, nscalar,         &
      &    l_truncation, ist_rtm_order_zero,                             &
      &    nnod_rlm, nidx_rtm(1), sph_rlm1%istep_rlm,                    &
-     &    nidx_global_rtp, sph_rtm1%idx_gl_1d_rtm_r,                    &
+     &    sph_rtp1%nidx_global_rtp, sph_rtm1%idx_gl_1d_rtm_r,           &
      &    irev_sr_rlm, n_WR, WR, v_pl_local)
 !
       if(iflag_shell_mode .eq. iflag_MESH_w_center) then

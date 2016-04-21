@@ -40,7 +40,7 @@
 !
       sph_rtp1%irank_sph_rtp(1:ithree) = sph_rank_IO(1:ithree)
 !
-      nidx_global_rtp(1:ithree) = nidx_gl_sph_IO(1:ithree)
+      sph_rtp1%nidx_global_rtp(1:ithree) = nidx_gl_sph_IO(1:ithree)
       l_truncation =              ltr_gl_IO
 !
       nnod_rtp =      nnod_sph_IO
@@ -227,7 +227,7 @@
       ncomp_itbl_1d_IO(2) = ione
       ncomp_itbl_1d_IO(3) = itwo
 !
-      nidx_gl_sph_IO(1:ithree) = nidx_global_rtp(1:ithree)
+      nidx_gl_sph_IO(1:ithree) = sph_rtp1%nidx_global_rtp(1:ithree)
       ltr_gl_IO =                l_truncation
 !
       nnod_sph_IO = nnod_rtp
@@ -242,8 +242,8 @@
 !
 !$omp parallel do private(i,nr_8,nrt8)
       do i = 1, nnod_rtp
-        nr_8 = nidx_global_rtp(1)
-        nrt8 = nidx_global_rtp(1)*nidx_global_rtp(2)
+        nr_8 = sph_rtp1%nidx_global_rtp(1)
+        nrt8 = sph_rtp1%nidx_global_rtp(1)*sph_rtp1%nidx_global_rtp(2)
         idx_gl_sph_IO(i,1) = sph_rtp1%idx_global_rtp(i,1)
         idx_gl_sph_IO(i,2) = sph_rtp1%idx_global_rtp(i,2)
         idx_gl_sph_IO(i,3) = sph_rtp1%idx_global_rtp(i,3)

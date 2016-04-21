@@ -30,7 +30,7 @@
 !
 !
       call allocate_nnod_nele_sph_mesh(ndomain_sph, ndomain_rtp,        &
-     &    nidx_global_rtp, m_folding)
+     &    sph_rtp1%nidx_global_rtp, m_folding)
 !
       if(iflag_debug .gt. 0) write(*,*) 'count_nod_ele_4_sph_radial'
       call count_nod_ele_4_sph_radial

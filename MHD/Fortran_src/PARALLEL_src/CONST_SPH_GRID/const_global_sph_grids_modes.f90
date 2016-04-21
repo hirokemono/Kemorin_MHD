@@ -91,9 +91,10 @@
       call allocate_sph_1d_global_idx
 !
       call set_sph_1d_global_idx_rtp                                    &
-     &   (m_folding, nidx_global_rtp(3), mdx_ispack)
+     &   (m_folding, sph_rtp1%nidx_global_rtp(3), mdx_ispack)
       call set_sph_1d_global_idx_rtm                                    &
-     &   (m_folding, nidx_global_rtp(3), mtbl_fft_2_lgd, mdx_4_lgd)
+     &   (m_folding, sph_rtp1%nidx_global_rtp(3),                       &
+     &    mtbl_fft_2_lgd, mdx_4_lgd)
       call set_sph_1d_global_idx_rlm                                    &
      &   (sph_rj1%nidx_global_rj(2), jtbl_fsph)
       call set_sph_1d_global_idx_rj(sph_rj1%nidx_global_rj(2), jtbl_rj)
@@ -141,7 +142,7 @@
       call allocate_sph_1d_global_idx
 !
       call set_sph_1d_global_idx_rtp                                    &
-     &   (m_folding, nidx_global_rtp(3), mdx_ispack)
+     &   (m_folding, sph_rtp1%nidx_global_rtp(3), mdx_ispack)
 !
       call allocate_sph_1d_domain_id
 !
@@ -250,13 +251,17 @@
 !      write(*,*) 'set_gl_rank_3d', ndomain_rtp(1:3)
       call set_gl_rank_3d(ndomain_sph, ndomain_rtp, iglobal_rank_rtp)
 !
-!      call cal_local_nums(ndomain_rtp(1), ione, nidx_global_rtp(1),    &
+!      call cal_local_nums                                              &
+!     &   (ndomain_rtp(1), ione, sph_rtp1%nidx_global_rtp(1),           &
 !     &    nidx_local_rtp_r, istack_idx_local_rtp_r)
-!      write(*,*) 'cal_local_nums 1', ndomain_rtp(1:3), nidx_global_rtp(2)
-      call cal_local_nums(ndomain_rtp(2), ione, nidx_global_rtp(2),     &
+!      write(*,*) 'cal_local_nums 1',                                   &
+!     &     ndomain_rtp(1:3), sph_rtp1%nidx_global_rtp(2)
+      call cal_local_nums                                               &
+     &   (ndomain_rtp(2), ione, sph_rtp1%nidx_global_rtp(2),            &
      &    nidx_local_rtp_t, istack_idx_local_rtp_t)
 !      write(*,*) 'cal_local_nums 2'
-      call cal_local_nums(ndomain_rtp(3), ione, nidx_global_rtp(3),     &
+      call cal_local_nums                                               &
+     &   (ndomain_rtp(3), ione, sph_rtp1%nidx_global_rtp(3),            &
      &    nidx_local_rtp_p, istack_idx_local_rtp_p)
 !
 !
@@ -271,11 +276,11 @@
      &      nidx_local_rtp_IC, ist_idx_local_rtp_IC)
       end if
 !
-      if (nlayer_CMB .lt. nidx_global_rtp(1)) then
+      if (nlayer_CMB .lt. sph_rtp1%nidx_global_rtp(1)) then
         ist = nlayer_CMB + 1
 !      write(*,*) 'cal_local_nums_rev'
         call cal_local_nums_rev(ndomain_rtp(1), ist,                    &
-     &      nidx_global_rtp(1), nidx_local_rtp_MT,                      &
+     &      sph_rtp1%nidx_global_rtp(1), nidx_local_rtp_MT,             &
      &      ist_idx_local_rtp_MT)
       end if
 !
@@ -384,8 +389,8 @@
       use set_sph_tranform_ordering
 !
 !
-      call allocate_2d_sph_trans_table(nidx_global_rtp(2),              &
-     &    nidx_global_rtp(3), sph_rj1%nidx_global_rj(2))
+      call allocate_2d_sph_trans_table(sph_rtp1%nidx_global_rtp(2),     &
+     &    sph_rtp1%nidx_global_rtp(3), sph_rj1%nidx_global_rj(2))
 !
       call set_gl_rank_2d(ndomain_sph, ndomain_rlm, iglobal_rank_rlm)
 !
@@ -395,15 +400,17 @@
      &      = istack_idx_local_rtm_r(0:ndomain_rlm(1))
 !
 !
-      call set_wavenumber_4_ispack_fft(nidx_global_rtp(2),              &
-     &    nidx_global_rtp(3), m_folding, mspec_4_ispack, mdx_ispack)
+      call set_wavenumber_4_ispack_fft(sph_rtp1%nidx_global_rtp(2),     &
+     &    sph_rtp1%nidx_global_rtp(3), m_folding,                       &
+     &    mspec_4_ispack, mdx_ispack)
 !
       call set_zonal_wavenum_4_legendre(ndomain_rtm(3),                 &
-     &    l_truncation, m_folding, nidx_global_rtp(2),                  &
-     &    nidx_global_rtp(3), jdx_fsph, mdx_4_lgd)
+     &    l_truncation, m_folding, sph_rtp1%nidx_global_rtp(2),         &
+     &    sph_rtp1%nidx_global_rtp(3), jdx_fsph, mdx_4_lgd)
 !
-      call set_merged_index_4_sph_trans(ndomain_rtm(3), l_truncation,   &
-     &    sph_rj1%nidx_global_rj(2), nidx_global_rtp(3), m_folding,     &
+      call set_merged_index_4_sph_trans                                 &
+     &   (ndomain_rtm(3), l_truncation, sph_rj1%nidx_global_rj(2),      &
+     &    sph_rtp1%nidx_global_rtp(3), m_folding,                       &
      &    istack_idx_local_rtm_m, mdx_4_lgd, nidx_local_rlm_j,          &
      &    istack_idx_local_rlm_j, jtbl_fsph)
 !
@@ -424,8 +431,8 @@
 !
 !
       call set_trans_table_fft_2_lgd(l_truncation,                      &
-     &    nidx_global_rtp(2), nidx_global_rtp(3), m_folding,            &
-     &    mspec_4_ispack,jdx_fsph, mtbl_fft_2_lgd)
+     &    sph_rtp1%nidx_global_rtp(2), sph_rtp1%nidx_global_rtp(3),     &
+     &    m_folding, mspec_4_ispack,jdx_fsph, mtbl_fft_2_lgd)
 !
       end subroutine const_sph_transfer_tables
 !

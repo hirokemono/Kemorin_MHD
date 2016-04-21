@@ -47,9 +47,9 @@
 !
       integer(kind = kint) :: n1, n2, n3
 !
-      n1 = nidx_global_rtp(1)
-      n2 = nidx_global_rtp(2)
-      n3 = nidx_global_rtp(3)
+      n1 = sph_rtp1%nidx_global_rtp(1)
+      n2 = sph_rtp1%nidx_global_rtp(2)
+      n3 = sph_rtp1%nidx_global_rtp(3)
       allocate( idx_local_rtp_r(n1) )
       allocate( idx_local_rtp_t(n2) )
       allocate( idx_local_rtp_p(n3) )

@@ -56,7 +56,7 @@
       use cal_minmax_and_stacks
 !
 !
-      nnod_pole = 2*nidx_global_rtp(1) + 1
+      nnod_pole = 2*sph_rtp1%nidx_global_rtp(1) + 1
       call allocate_num_pole_sph_trans
 !
       call count_number_4_smp(np_smp, ione, nnod_pole,                  &

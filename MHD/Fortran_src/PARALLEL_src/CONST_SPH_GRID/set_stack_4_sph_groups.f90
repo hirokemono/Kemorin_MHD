@@ -64,11 +64,12 @@
      &    num_radial_grp_rtp, istack_radial_grp_rtp,                    &
      &    name_radial_grp_rtp)
 !
-      if (nidx_global_rtp(1) .gt. nlayer_CMB) then
+      if (sph_rtp1%nidx_global_rtp(1) .gt. nlayer_CMB) then
         call set_stack_sph_grp_by_list(icou,                            &
-     &      nidx_global_rtp(1), nidx_global_rtp(1), nidx_rtp(1),        &
-     &      sph_rtp1%idx_gl_1d_rtp_r, name_ED, num_radial_grp_rtp,      &
-     &      istack_radial_grp_rtp, name_radial_grp_rtp)
+     &      sph_rtp1%nidx_global_rtp(1), sph_rtp1%nidx_global_rtp(1),   &
+     &      nidx_rtp(1), sph_rtp1%idx_gl_1d_rtp_r, name_ED,             &
+     &      num_radial_grp_rtp, istack_radial_grp_rtp,                  &
+     &      name_radial_grp_rtp)
       end if
 !
       if (nlayer_mid_OC .gt. 0) then
@@ -127,11 +128,12 @@
      &    CTR_nod_grp_name, num_radial_grp_rj, istack_radial_grp_rj,    &
      &    name_radial_grp_rj)
 !
-      if (nidx_global_rtp(1) .gt. nlayer_CMB) then
-        call set_stack_sph_grp_by_rng(icou, nidx_global_rtp(1),         &
-     &     nidx_global_rtp(1), sph_rj1%ist_rj(1), sph_rj1%ied_rj(1),    &
-     &     name_ED, num_radial_grp_rj, istack_radial_grp_rj,            &
-     &     name_radial_grp_rj)
+      if (sph_rtp1%nidx_global_rtp(1) .gt. nlayer_CMB) then
+        call set_stack_sph_grp_by_rng                                   &
+     &     (icou, sph_rtp1%nidx_global_rtp(1),                          &
+     &      sph_rtp1%nidx_global_rtp(1), sph_rj1%ist_rj(1),             &
+     &      sph_rj1%ied_rj(1), name_ED, num_radial_grp_rj,              &
+     &     istack_radial_grp_rj, name_radial_grp_rj)
       end if
 !
       if (nlayer_mid_OC .gt. 0) then

@@ -69,9 +69,9 @@
 !
       integer(kind = kint) :: n1, n2, n3
 !
-      n1 = nidx_global_rtp(1)
-      n2 = nidx_global_rtp(2)
-      n3 = nidx_global_rtp(3)
+      n1 = sph_rtp1%nidx_global_rtp(1)
+      n2 = sph_rtp1%nidx_global_rtp(2)
+      n3 = sph_rtp1%nidx_global_rtp(3)
       allocate( id_domain_rtp_r(n1) )
       allocate( id_domain_rtp_t(n2) )
       allocate( id_domain_rtp_p(n3) )
@@ -149,13 +149,13 @@
       use m_spheric_parameter
 !
       write(50,*) 'id_domain_rtp_r'
-      write(50,'(5i16)') id_domain_rtp_r(1:nidx_global_rtp(1))
+      write(50,'(5i16)') id_domain_rtp_r(1:sph_rtp1%nidx_global_rtp(1))
 !
       write(50,*) 'id_domain_rtp_t'
-      write(50,'(5i16)') id_domain_rtp_t(1:nidx_global_rtp(2))
+      write(50,'(5i16)') id_domain_rtp_t(1:sph_rtp1%nidx_global_rtp(2))
 !
       write(50,*) 'id_domain_rtp_p'
-      write(50,'(5i16)') id_domain_rtp_p(1:nidx_global_rtp(3))
+      write(50,'(5i16)') id_domain_rtp_p(1:sph_rtp1%nidx_global_rtp(3))
 !
 !
       write(50,*) 'id_domain_rj_r'
