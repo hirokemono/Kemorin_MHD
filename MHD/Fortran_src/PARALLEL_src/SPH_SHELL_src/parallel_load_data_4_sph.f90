@@ -180,7 +180,8 @@
       call set_special_degree_order_flags(nidx_rj(2), nidx_rlm(2),      &
      &    sph_rj1%idx_gl_1d_rj_j, sph_rlm1%idx_gl_1d_rlm_j,             &
      &    sph_rj1%idx_rj_degree_zero, sph_rj1%idx_rj_degree_one,        &
-     &    ist_rtm_order_zero, ist_rtm_order_1s, ist_rtm_order_1c)
+     &    sph_rtm1%ist_rtm_order_zero, sph_rtm1%ist_rtm_order_1s,       &
+     &    sph_rtm1%ist_rtm_order_1c)
 !
 !
       call set_sph_rj_center_flag(nnod_rj, nidx_rj, inod_rj_center)

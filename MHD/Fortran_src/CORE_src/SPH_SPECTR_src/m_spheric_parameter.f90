@@ -31,7 +31,7 @@
 !sph_rtp1%nidx_global_rtp
 !
       type(sph_rtm_grid), save :: sph_rtm1
-!sph_rtm1%nidx_global_rtm
+!sph_rtm1%ist_rtm_order_zero
 !
       type(sph_rlm_grid), save :: sph_rlm1
 !sph_rlm1%nidx_global_rlm
@@ -59,13 +59,6 @@
 !!@n    if center does not exist in subdomain, inod_rj_center = 0.
       integer (kind=kint) :: inod_rj_center =   0
 !
-!>      Start address for @f$ m = 0 @f$ for @f$ f(r,\theta,m) @f$
-      integer (kind=kint) :: ist_rtm_order_zero = 0
-!>      Start address for @f$ l=1, m=-1 @f$ for @f$ f(r,\theta,m) @f$
-      integer (kind=kint) :: ist_rtm_order_1s =   0
-!>      Start address for @f$ l=1, m= 1 @f$ for @f$ f(r,\theta,m) @f$
-      integer (kind=kint) :: ist_rtm_order_1c =   0
-!
 !>        Truncation for spherical harmonics
       integer(kind = kint) :: l_truncation
 !>        m-folding symmetry for longitudinal direction
@@ -88,15 +81,6 @@
       real(kind = kreal) :: r_CMB
 !>      Earth's radius @f$ Re @f$
       real(kind = kreal) :: R_earth(0:2)
-!
-!   global parameters
-!
-!>      number of global 1d data points for @f$ f(r,\theta,\phi) @f$
-!      integer(kind = kint) :: nidx_global_rtp(3)
-!>      number of global 1d data points for @f$ f(r,\theta,m) @f$
-!      integer(kind = kint) :: nidx_global_rtm(3)
-!>      number of global 1d data points for @f$ f(r,l,m) @f$
-!      integer(kind = kint) :: nidx_global_rlm(2)
 !
 !    local parameters
 !

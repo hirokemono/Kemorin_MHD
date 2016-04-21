@@ -171,6 +171,13 @@
 !
 !>        structure of index table for @f$ f(r,\theta,m) @f$
       type sph_rtm_grid
+!>        Start address for @f$ m = 0 @f$ for @f$ f(r,\theta,m) @f$
+        integer (kind=kint) :: ist_rtm_order_zero = 0
+!>        Start address for @f$ l=1, m=-1 @f$ for @f$ f(r,\theta,m) @f$
+        integer (kind=kint) :: ist_rtm_order_1s =   0
+!>        Start address for @f$ l=1, m= 1 @f$ for @f$ f(r,\theta,m) @f$
+        integer (kind=kint) :: ist_rtm_order_1c =   0
+!
 !>        number of global 1d data points for @f$ f(r,\theta,m) @f$
         integer(kind = kint) :: nidx_global_rtm(3)
 !>        1d subdomain ID for @f$ f(r,\theta,m) @f$ (start from 0)
@@ -202,9 +209,6 @@
 !
 !>        Maximum SMP number for indexing @f$ r, t, m@f$
         integer(kind = kint)  ::  maxidx_rtm_smp(3) = (/0,0,0/)
-!
-!>        Start address for @f$ m = 0 @f$ for @f$ f(r,\theta,m) @f$
-        integer (kind=kint) :: ist_rtm_order_zero =   0
 !
 !>        global address for each direction @f$ f(r,\theta,m) @f$
         integer(kind = kint), pointer :: idx_global_rtm(:,:)
