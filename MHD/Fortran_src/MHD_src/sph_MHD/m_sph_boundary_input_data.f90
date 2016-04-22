@@ -282,6 +282,7 @@
       subroutine set_bc_for_sph_scalar_by_file(bc, jmax, bc_data)
 !
       use m_spheric_parameter
+      use t_spheric_rj_data
 !
       type(each_boundary_spectr), intent(in) :: bc
       integer(kind = kint), intent(in) :: jmax

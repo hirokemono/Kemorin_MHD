@@ -123,7 +123,6 @@
       subroutine finalize_sph_FFT_select
 !
       use m_spheric_parameter
-      use m_spheric_param_smp
 !
 !
       if(iflag_FFT .eq. iflag_ISPACK) then

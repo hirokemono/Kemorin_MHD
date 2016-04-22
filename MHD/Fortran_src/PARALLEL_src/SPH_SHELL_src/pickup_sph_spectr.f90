@@ -105,6 +105,7 @@
      &          ntot_pickup, num_pickup, idx_pick_gl, idx_pick_lc)
 !
       use m_spheric_parameter
+      use t_spheric_rj_data
       use spherical_harmonics
       use quicksort
 !

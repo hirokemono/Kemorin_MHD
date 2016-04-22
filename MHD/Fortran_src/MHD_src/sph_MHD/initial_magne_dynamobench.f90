@@ -21,6 +21,8 @@
       use m_constants
       use m_sph_phys_address
 !
+      use t_spheric_rj_data
+!
       implicit none
 !
 !-----------------------------------------------------------------------

@@ -130,6 +130,7 @@
       integer(kind = kint) function find_local_sph_mode_address(l, m)
 !
       use m_spheric_parameter
+      use t_spheric_rj_data
 !
       integer(kind = 4), intent(in) :: l, m
 !
@@ -144,6 +145,7 @@
       integer(kind = kint) function local_sph_data_address(kr, j_lc)
 !
       use m_spheric_parameter
+      use t_spheric_rj_data
 !
       integer(kind = kint), intent(in) :: kr, j_lc
 !

@@ -317,6 +317,7 @@
      &          ntot_phys_rj, d_rj)
 !
       use m_spheric_parameter
+      use t_spheric_rj_data
 !
       integer(kind = kint), intent(in) :: is_fld, ntot_phys_rj
       integer(kind = kint), intent(in) :: kr_out, ltr_w
@@ -364,6 +365,7 @@
      &         ntot_phys_rj, d_rj)
 !
       use m_spheric_parameter
+      use t_spheric_rj_data
 !
       integer(kind = kint), intent(in) :: ntot_phys_rj, is_fld
       integer(kind = kint), intent(in) :: kr_in, ltr_w

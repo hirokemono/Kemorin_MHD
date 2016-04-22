@@ -54,7 +54,6 @@
      &          irev_sr_rlm, irev_sr_rtm, n_WR, n_WS, WR, WS)
 !
       use m_spheric_parameter
-      use m_spheric_param_smp
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR, n_WS

@@ -64,6 +64,9 @@
       subroutine const_sph_rj_modes(ip_rank, ndomain_sph, comm_rlm)
 !
       use m_spheric_parameter
+!
+      use t_spheric_rj_data
+!
       use load_data_for_sph_IO
       use set_sph_groups
       use copy_sph_1d_global_index
@@ -120,6 +123,9 @@
       subroutine const_sph_rtp_grids(ip_rank, ndomain_sph, comm_rtm)
 !
       use m_spheric_parameter
+!
+      use t_spheric_rtp_data
+!
       use load_data_for_sph_IO
       use set_sph_groups
       use copy_sph_1d_global_index
@@ -281,6 +287,9 @@
      &         (ip_rank, ndomain_sph, comm_rlm, icou)
 !
       use m_sph_trans_comm_table
+!
+      use t_spheric_rlm_data
+!
       use set_local_index_table_sph
       use gen_sph_grids_modes
 !

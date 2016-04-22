@@ -35,6 +35,9 @@
       subroutine const_sph_rlm_modes(ip_rank)
 !
       use m_spheric_parameter
+!
+      use t_spheric_rlm_data
+!
       use copy_sph_1d_global_index
       use set_local_sphere_param
       use set_local_sphere_by_global
@@ -70,6 +73,9 @@
       subroutine const_sph_rtm_grids(ip_rank)
 !
       use m_spheric_parameter
+!
+      use t_spheric_rtm_data
+!
       use copy_sph_1d_global_index
       use set_local_sphere_param
       use set_local_sphere_by_global

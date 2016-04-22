@@ -44,6 +44,8 @@
 !
       subroutine copy_sph_node_rtp_from_type(ltr, ltr_type, rtp)
 !
+      use t_spheric_rtp_data
+!
       integer(kind = kint), intent(in) :: ltr_type
       type(sph_rtp_grid), intent(in) :: rtp
 !
@@ -92,6 +94,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine copy_sph_node_rtm_from_type(ltr, ltr_type, rtm)
+!
+      use t_spheric_rtm_data
 !
       integer(kind = kint), intent(in) :: ltr_type
       type(sph_rtm_grid), intent(in) :: rtm
@@ -142,6 +146,8 @@
 !
       subroutine copy_sph_node_rlm_from_type(ltr, ltr_type, rlm)
 !
+      use t_spheric_rlm_data
+!
       integer(kind = kint), intent(in) :: ltr_type
       type(sph_rlm_grid), intent(in) :: rlm
 !
@@ -188,6 +194,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine copy_sph_node_rj_from_type(ltr, ltr_type, rj)
+!
+      use t_spheric_rj_data
 !
       integer(kind = kint), intent(in) :: ltr_type
       type(sph_rj_grid), intent(in) :: rj
@@ -238,6 +246,8 @@
 !
       subroutine copy_sph_node_rtp_to_type(ltr, ltr_type, rtp)
 !
+      use t_spheric_rtp_data
+!
       integer(kind = kint), intent(in) :: ltr
 !
       type(sph_rtp_grid), intent(inout) :: rtp
@@ -283,6 +293,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine copy_sph_node_rtm_to_type(ltr, ltr_type, rtm)
+!
+      use t_spheric_rtm_data
 !
       integer(kind = kint), intent(in) :: ltr
 !
@@ -330,6 +342,8 @@
 !
       subroutine copy_sph_node_rlm_to_type(ltr, ltr_type, rlm)
 !
+      use t_spheric_rlm_data
+!
       integer(kind = kint), intent(in) :: ltr
 !
       type(sph_rlm_grid), intent(inout) :: rlm
@@ -374,6 +388,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine copy_sph_node_rj_to_type(ltr, ltr_type, rj)
+!
+      use t_spheric_rj_data
 !
       integer(kind = kint), intent(in) :: ltr
 !

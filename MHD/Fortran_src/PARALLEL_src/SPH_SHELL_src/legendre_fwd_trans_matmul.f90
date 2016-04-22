@@ -51,7 +51,6 @@
 !
       use m_machine_parameter
       use m_spheric_parameter
-      use m_spheric_param_smp
       use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans
       use m_legendre_work_sym_matmul

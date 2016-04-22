@@ -82,10 +82,8 @@
       use m_sph_communicators
       use m_sph_trans_comm_table
       use m_spheric_parameter
-      use m_spheric_param_smp
       use m_work_4_sph_trans
       use init_spherical_SRs
-!      use set_all2all_buffer
       use cal_minmax_and_stacks
       use legendre_transform_select
 !

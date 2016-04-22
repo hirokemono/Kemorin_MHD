@@ -234,7 +234,7 @@
       subroutine ovwrt_rj_coef_prod_vect_smp                            &
      &         (coef, i_r, ntot_phys_rj, d_rj)
 !
-      use m_spheric_param_smp
+      use m_spheric_parameter
       use overwrite_prod_const_smp
 !
       real(kind = kreal), intent(in) :: coef

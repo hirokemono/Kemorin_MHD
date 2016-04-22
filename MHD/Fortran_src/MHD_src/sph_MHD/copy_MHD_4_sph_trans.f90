@@ -21,7 +21,6 @@
       use m_precision
       use m_machine_parameter
       use m_spheric_parameter
-      use m_spheric_param_smp
 !
       use t_geometry_data
       use t_phys_address

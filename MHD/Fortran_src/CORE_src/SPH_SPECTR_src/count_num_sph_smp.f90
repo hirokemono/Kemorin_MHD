@@ -33,7 +33,12 @@
 !
       use m_machine_parameter
       use m_spheric_parameter
-      use m_spheric_param_smp
+!
+      use t_spheric_rtp_data
+      use t_spheric_rtm_data
+      use t_spheric_rlm_data
+      use t_spheric_rj_data
+!
       use cal_minmax_and_stacks
 !
       integer(kind = kint), intent(inout) :: ierr

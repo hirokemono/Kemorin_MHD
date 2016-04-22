@@ -77,6 +77,7 @@
       subroutine set_mode_table_4_assemble(org_sph, new_sph, j_table)
 !
       use t_spheric_parameter
+      use t_spheric_rj_data
 !
       type(sph_grids), intent(in) :: org_sph
       type(sph_grids), intent(in) :: new_sph

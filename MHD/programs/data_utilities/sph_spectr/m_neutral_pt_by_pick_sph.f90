@@ -110,6 +110,8 @@
 !
       subroutine set_radius_for_fdm
 !
+      use t_spheric_rj_data
+!
       integer(kind = kint) :: i
 !
 !

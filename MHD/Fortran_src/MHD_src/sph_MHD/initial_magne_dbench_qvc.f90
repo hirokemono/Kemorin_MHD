@@ -31,6 +31,7 @@
      &         (radius_1d_rj_r, ntot_phys_rj, d_rj)
 !
       use m_spheric_parameter
+      use t_spheric_rj_data
 !
       real(kind = kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
 !

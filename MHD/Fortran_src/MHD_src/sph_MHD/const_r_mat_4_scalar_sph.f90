@@ -73,7 +73,6 @@
       subroutine const_radial_mat_4_press_sph
 !
       use m_spheric_parameter
-      use m_spheric_param_smp
       use m_physical_property
       use m_boundary_params_sph_MHD
       use m_coef_fdm_to_center
@@ -136,7 +135,7 @@
      &         (nri, jmax, sph_bc, coef_imp, coef_f, coef_d,            &
      &          evo_mat3, evo_lu, evo_det, i_pivot)
 !
-      use m_spheric_param_smp
+      use m_spheric_parameter
       use m_coef_fdm_to_center
       use m_ludcmp_3band
       use t_boundary_params_sph_MHD

@@ -52,6 +52,8 @@
 !
       subroutine copy_sph_node_type_rtp_from_IO(l_truncation, rtp)
 !
+      use t_spheric_rtp_data
+!
       integer(kind = kint), intent(inout) :: l_truncation
       type(sph_rtp_grid), intent(inout) :: rtp
       integer(kind = kint) :: i
@@ -95,6 +97,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine copy_sph_node_type_rtm_from_IO(l_truncation, rtm)
+!
+      use t_spheric_rtm_data
 !
       integer(kind = kint), intent(inout) :: l_truncation
       type(sph_rtm_grid), intent(inout) :: rtm
@@ -140,6 +144,8 @@
 !
       subroutine copy_sph_node_type_rlm_from_IO(l_truncation, rlm)
 !
+      use t_spheric_rlm_data
+!
       integer(kind = kint), intent(inout) :: l_truncation
       type(sph_rlm_grid), intent(inout) :: rlm
       integer(kind = kint) :: i
@@ -182,6 +188,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine copy_sph_node_type_rj_from_IO(l_truncation, rj)
+!
+      use t_spheric_rj_data
 !
       integer(kind = kint), intent(inout) :: l_truncation
       type(sph_rj_grid), intent(inout) :: rj
@@ -227,6 +235,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine copy_sph_node_type_rtp_to_IO(l_truncation, rtp)
+!
+      use t_spheric_rtp_data
 !
       integer(kind = kint), intent(in) :: l_truncation
       type(sph_rtp_grid), intent(inout) :: rtp
@@ -351,6 +361,8 @@
 !
       subroutine copy_sph_node_type_rlm_to_IO(l_truncation, rlm)
 !
+      use t_spheric_rlm_data
+!
       integer(kind = kint), intent(in) :: l_truncation
       type(sph_rlm_grid), intent(inout) :: rlm
       integer(kind = kint) :: i
@@ -404,6 +416,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine copy_sph_node_type_rj_to_IO(l_truncation, rj)
+!
+      use t_spheric_rj_data
 !
       integer(kind = kint), intent(in) :: l_truncation
       type(sph_rj_grid), intent(inout) :: rj

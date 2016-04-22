@@ -81,7 +81,6 @@
 !
       use m_t_step_parameter
       use m_spheric_parameter
-      use m_spheric_param_smp
       use m_ctl_params_sph_utils
       use m_control_params_sph_data
       use m_sph_spectr_data

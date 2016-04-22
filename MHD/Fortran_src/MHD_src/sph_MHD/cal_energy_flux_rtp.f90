@@ -95,7 +95,6 @@
       use m_machine_parameter
       use m_control_parameter
       use m_spheric_parameter
-      use m_spheric_param_smp
       use m_physical_property
       use m_sph_phys_address
       use m_addresses_trans_sph_MHD

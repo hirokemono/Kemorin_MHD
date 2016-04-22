@@ -36,6 +36,8 @@
 !
       subroutine copy_sph_node_rtp_from_IO
 !
+      use t_spheric_rtp_data
+!
       integer(kind = kint) :: i
 !
       sph_rtp1%irank_sph_rtp(1:ithree) = sph_rank_IO(1:ithree)
@@ -80,6 +82,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine copy_sph_node_rtm_from_IO
+!
+      use t_spheric_rtm_data
 !
       integer(kind = kint) :: i
 !
@@ -168,6 +172,8 @@
 !
       subroutine copy_sph_node_rj_from_IO
 !
+      use t_spheric_rj_data
+!
       integer(kind = kint) :: i
 !
       sph_rj1%irank_sph_rj(1:itwo) =     sph_rank_IO(1:itwo)
@@ -215,6 +221,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine copy_sph_node_rtp_to_IO
+!
+      use t_spheric_rtp_data
 !
       integer(kind = kint) :: i
       integer(kind = kint_gl) :: nr_8, nrt8
@@ -330,6 +338,8 @@
 !
       subroutine copy_sph_node_rlm_to_IO
 !
+      use t_spheric_rlm_data
+!
       integer(kind = kint) :: i
       integer(kind = kint_gl) :: nr_8
 !
@@ -389,6 +399,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine copy_sph_node_rj_to_IO
+!
+      use t_spheric_rj_data
 !
       integer(kind = kint) :: i
       integer(kind = kint_gl) :: nr_8

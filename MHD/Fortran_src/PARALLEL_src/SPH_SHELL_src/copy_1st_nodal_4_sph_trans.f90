@@ -63,7 +63,6 @@
      &          node, nod_fld)
 !
       use m_spheric_parameter
-      use m_spheric_param_smp
       use m_work_pole_sph_trans
       use copy_pole_field_sph_trans
 !
@@ -91,7 +90,6 @@
      &          node, nod_fld)
 !
       use m_spheric_parameter
-      use m_spheric_param_smp
       use m_work_pole_sph_trans
       use copy_pole_field_sph_trans
 !
@@ -119,7 +117,6 @@
      &          node, nod_fld)
 !
       use m_spheric_parameter
-      use m_spheric_param_smp
       use m_work_pole_sph_trans
       use copy_pole_field_sph_trans
 !
@@ -147,7 +144,6 @@
      &         (d_rtp, i_field, node, nod_fld)
 !
       use m_spheric_parameter
-      use m_spheric_param_smp
       use copy_xyz_field_4_sph_trans
 !
       integer(kind = kint), intent(in) :: i_field
@@ -169,7 +165,6 @@
      &         (d_rtp, i_field, node, nod_fld)
 !
       use m_spheric_parameter
-      use m_spheric_param_smp
       use copy_xyz_field_4_sph_trans
 !
       integer(kind = kint), intent(in) :: i_field
@@ -192,7 +187,6 @@
      &         (d_rtp, i_field, node, nod_fld)
 !
       use m_spheric_parameter
-      use m_spheric_param_smp
       use copy_xyz_field_4_sph_trans
 !
       integer(kind = kint), intent(in) :: i_field
@@ -216,7 +210,6 @@
      &         (node, nod_fld, i_field, d_rtp)
 !
       use m_spheric_parameter
-      use m_spheric_param_smp
       use copy_xyz_field_4_sph_trans
 !
       type(node_data), intent(in) :: node
@@ -238,7 +231,6 @@
      &         (node, nod_fld, i_field, d_rtp)
 !
       use m_spheric_parameter
-      use m_spheric_param_smp
       use copy_xyz_field_4_sph_trans
 !
       type(node_data), intent(in) :: node
@@ -261,7 +253,6 @@
      &         (node, nod_fld, i_field, d_rtp)
 !
       use m_spheric_parameter
-      use m_spheric_param_smp
       use copy_xyz_field_4_sph_trans
 !
       type(node_data), intent(in) :: node

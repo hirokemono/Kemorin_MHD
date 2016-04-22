@@ -22,7 +22,6 @@
       use m_work_time
       use m_machine_parameter
       use m_spheric_parameter
-      use m_spheric_param_smp
       use sph_FFT_selector
 !
       implicit none

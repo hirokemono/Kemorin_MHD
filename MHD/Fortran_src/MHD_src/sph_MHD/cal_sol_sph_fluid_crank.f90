@@ -56,7 +56,6 @@
       subroutine cal_sol_velo_by_vort_sph_crank(ntot_phys_rj, d_rj)
 !
       use m_spheric_parameter
-      use m_spheric_param_smp
       use m_boundary_params_sph_MHD
       use m_coef_fdm_free_ICB
       use m_coef_fdm_free_CMB
@@ -135,7 +134,6 @@
       subroutine cal_sol_pressure_by_div_v(ntot_phys_rj, d_rj)
 !
       use m_spheric_parameter
-      use m_spheric_param_smp
       use m_boundary_params_sph_MHD
       use set_reference_sph_mhd
 !
@@ -158,7 +156,6 @@
       subroutine cal_sol_magne_sph_crank(ntot_phys_rj, d_rj)
 !
       use m_spheric_parameter
-      use m_spheric_param_smp
       use m_boundary_params_sph_MHD
       use const_sph_radial_grad
       use cal_sph_exp_nod_icb_ins
@@ -209,7 +206,6 @@
       subroutine cal_sol_temperature_sph_crank(ntot_phys_rj, d_rj)
 !
       use m_spheric_parameter
-      use m_spheric_param_smp
       use m_t_int_parameter
       use m_physical_property
       use m_boundary_params_sph_MHD
@@ -232,7 +228,6 @@
       subroutine cal_sol_composition_sph_crank(ntot_phys_rj, d_rj)
 !
       use m_spheric_parameter
-      use m_spheric_param_smp
       use m_t_int_parameter
       use m_physical_property
       use m_boundary_params_sph_MHD
@@ -255,6 +250,7 @@
       subroutine check_temperature(l, m, is_field, ntot_phys_rj, d_rj)
 !
       use m_spheric_parameter
+      use t_spheric_rj_data
 !
       integer(kind = kint), intent(in) :: l, m, is_field
       integer(kind = kint), intent(in) ::  ntot_phys_rj
@@ -313,6 +309,7 @@ end subroutine check_NaN_temperature
 !
       use m_spheric_parameter
       use m_t_int_parameter
+      use t_spheric_rj_data
       use t_boundary_params_sph_MHD
       use set_scalar_boundary_sph
       use cal_sph_exp_center

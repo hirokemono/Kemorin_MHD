@@ -253,6 +253,8 @@
       subroutine gauss_to_poloidal_out_t(rj, kr_out, ltr_w, r_gauss,    &
      &          w_gauss, index_w, d_rj)
 !
+      use t_spheric_rj_data
+!
       type(sph_rj_grid), intent(in) :: rj
       integer(kind = kint), intent(in) :: kr_out, ltr_w
       real(kind = kreal), intent(in) :: r_gauss
@@ -291,6 +293,8 @@
 !
       subroutine gauss_to_poloidal_in_t(rj, kr_in, ltr_w, r_gauss,      &
      &          w_gauss, index_w, d_rj)
+!
+      use t_spheric_rj_data
 !
       type(sph_rj_grid), intent(in) :: rj
       integer(kind = kint), intent(in) :: kr_in, ltr_w

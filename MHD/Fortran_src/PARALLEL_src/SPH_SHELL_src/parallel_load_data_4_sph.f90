@@ -137,7 +137,6 @@
       use calypso_mpi
       use m_machine_parameter
       use m_spheric_parameter
-      use m_spheric_param_smp
       use m_sph_trans_comm_table
 !
       use count_num_sph_smp
@@ -239,7 +238,6 @@
       use calypso_mpi
       use m_machine_parameter
       use m_spheric_parameter
-      use m_spheric_param_smp
 !
       use load_data_for_sph_IO
       use count_num_sph_smp

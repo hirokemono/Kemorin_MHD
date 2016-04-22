@@ -42,6 +42,9 @@
       subroutine share_sph_rj_data(np_sph_org, org_sph_mesh)
 !
       use m_node_id_spherical_IO
+!
+      use t_spheric_rj_data
+!
       use new_SPH_restart
 !
       integer(kind = kint), intent(in) :: np_sph_org

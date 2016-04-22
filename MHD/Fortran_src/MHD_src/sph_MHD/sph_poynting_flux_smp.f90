@@ -19,7 +19,6 @@
 !
       use m_machine_parameter
       use m_spheric_parameter
-      use m_spheric_param_smp
       use m_sph_phys_address
       use m_physical_property
 !

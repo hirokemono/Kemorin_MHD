@@ -61,7 +61,6 @@
 !
       use m_machine_parameter
       use m_spheric_parameter
-      use m_spheric_param_smp
       use delete_field_smp
 !
       integer(kind = kint), intent(in) :: numdir, is_fld
