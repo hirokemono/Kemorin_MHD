@@ -17,6 +17,11 @@
 !!      subroutine dealloc_rj_param_smp(rj)
 !!        type(sph_rj_grid), intent(inout) :: rj
 !!
+!!      subroutine copy_spheric_rj_data                                 &
+!!     &         (ltr_org, rj_org, ltr_new, rj_new)
+!!        type(sph_rj_grid), intent(in) :: rj_org
+!!        type(sph_rj_grid), intent(inout) :: rj_new
+!!
 !!      subroutine check_type_spheric_param_rj(my_rank, rj)
 !!        integer(kind = kint), intent(in) :: my_rank
 !!        type(sph_rj_grid), intent(in) :: rj
@@ -34,6 +39,7 @@
       module t_spheric_rj_data
 !
       use m_precision
+      use m_constants
       use m_spheric_constants
 !
       implicit none
@@ -209,6 +215,54 @@
       end subroutine dealloc_rj_param_smp
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine copy_spheric_rj_data                                   &
+     &         (ltr_org, rj_org, ltr_new, rj_new)
+!
+      type(sph_rj_grid), intent(in) :: rj_org
+      integer(kind = kint), intent(in) :: ltr_org
+!
+      type(sph_rj_grid), intent(inout) :: rj_new
+      integer(kind = kint), intent(inout) :: ltr_new
+!
+      integer(kind = kint) :: i
+!
+      rj_new%irank_sph_rj(1:itwo) =     rj_org%irank_sph_rj(1:itwo)
+!
+      rj_new%nidx_global_rj(1:itwo) = rj_org%nidx_global_rj(1:itwo)
+      ltr_new =   ltr_org
+!
+      rj_new%nnod_rj =         rj_org%nnod_rj
+      rj_new%nidx_rj(1:itwo) = rj_org%nidx_rj(1:itwo)
+      rj_new%ist_rj(1:itwo) =  rj_org%ist_rj(1:itwo)
+      rj_new%ied_rj(1:itwo) =  rj_org%ied_rj(1:itwo)
+!
+      call alloc_type_spheric_param_rj(rj_new)
+      call alloc_type_sph_1d_index_rj(rj_new)
+!
+      do i = 1, itwo
+        rj_new%idx_global_rj(1:rj_new%nnod_rj,i)                        &
+     &       = rj_org%idx_global_rj(1:rj_new%nnod_rj,i)
+      end do
+!
+      rj_new%radius_1d_rj_r(1:rj_new%nidx_rj(1))                        &
+     &       = rj_org%radius_1d_rj_r(1:rj_new%nidx_rj(1))
+      rj_new%idx_gl_1d_rj_r(1:rj_new%nidx_rj(1))                        &
+     &       = rj_org%idx_gl_1d_rj_r(1:rj_new%nidx_rj(1))
+      rj_new%idx_gl_1d_rj_j(1:rj_new%nidx_rj(2),1)                      &
+     &       = rj_org%idx_gl_1d_rj_j(1:rj_new%nidx_rj(2),1)
+      rj_new%idx_gl_1d_rj_j(1:rj_new%nidx_rj(2),2)                      &
+     &       = rj_org%idx_gl_1d_rj_j(1:rj_new%nidx_rj(2),2)
+      rj_new%idx_gl_1d_rj_j(1:rj_new%nidx_rj(2),3)                      &
+     &      = rj_org%idx_gl_1d_rj_j(1:rj_new%nidx_rj(2),3)
+!
+!      call dealloc_type_sph_1d_index_rj(rj_org)
+!      call dealloc_spheric_param_rj(rj_org)
+!
+      end subroutine copy_spheric_rj_data
+!
+! ----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine check_type_spheric_param_rj(my_rank, rj)

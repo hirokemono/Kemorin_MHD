@@ -72,6 +72,7 @@
 !
       subroutine para_gen_sph_rlm_grids(ndomain_sph, comm_rlm)
 !
+      use m_spheric_parameter
       use m_sph_trans_comm_table
       use set_comm_table_rtp_rj
       use load_data_for_sph_IO
@@ -98,7 +99,8 @@
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &        'output_modes_rlm_sph_trans', ip_rank
-        call output_modes_rlm_sph_trans(ip_rank)
+        call output_modes_rlm_sph_trans                                 &
+     &     (ip_rank, l_truncation, sph_rlm1)
 !
         write(*,'(a,i6,a)') 'Spherical transform table for domain',     &
      &          ip_rank, ' is done.'
@@ -111,6 +113,7 @@
 !
       subroutine para_gen_sph_rtm_grids(ndomain_sph, comm_rtm)
 !
+      use m_spheric_parameter
       use m_sph_trans_comm_table
       use set_comm_table_rtp_rj
       use load_data_for_sph_IO
@@ -134,7 +137,7 @@
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &        'output_geom_rtm_sph_trans', ip_rank
-        call output_geom_rtm_sph_trans(ip_rank)
+        call output_geom_rtm_sph_trans(ip_rank, l_truncation, sph_rtm1)
  
         write(*,'(a,i6,a)') 'Legendre transform table rtm',             &
      &          ip_rank, ' is done.'
@@ -147,6 +150,7 @@
 !
       subroutine para_gen_sph_rj_modes(ndomain_sph, comm_rlm)
 !
+      use m_spheric_parameter
       use set_local_index_table_sph
       use set_comm_table_rtp_rj
 !
@@ -172,6 +176,7 @@
 !
       subroutine para_gen_sph_rtp_grids(ndomain_sph, comm_rtm)
 !
+      use m_spheric_parameter
       use set_local_index_table_sph
       use set_comm_table_rtp_rj
 !
@@ -197,6 +202,7 @@
 !
       subroutine para_gen_fem_mesh_for_sph(ndomain_sph)
 !
+      use m_spheric_parameter
       use m_gauss_points
       use m_group_data_sph_specr
       use m_sph_mesh_1d_connect

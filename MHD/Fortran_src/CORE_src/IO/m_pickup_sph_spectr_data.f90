@@ -139,8 +139,6 @@
 !
       subroutine allocate_pick_sph_monitor
 !
-      use m_spheric_parameter
-!
       integer(kind = kint) :: num
 !
 !

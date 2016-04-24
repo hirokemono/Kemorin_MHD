@@ -16,6 +16,11 @@
 !!      subroutine dealloc_rlm_param_smp(sph_rlm)
 !!        type(sph_rlm_grid), intent(inout) :: sph_rlm
 !!
+!!      subroutine copy_spheric_rlm_data                                &
+!!     &         (ltr_org, rlm_org, ltr_new, rlm_new)
+!!        type(sph_rlm_grid), intent(in) :: rlm_org
+!!        type(sph_rlm_grid), intent(inout) :: rlm_new
+!!
 !!      subroutine check_type_spheric_param_rlm(my_rank, sph_rlm)
 !!        integer(kind = kint), intent(in) :: my_rank
 !!        type(sph_rlm_grid), intent(in) :: sph_rlm
@@ -26,6 +31,7 @@
       module t_spheric_rlm_data
 !
       use m_precision
+      use m_constants
       use m_spheric_constants
 !
       implicit none
@@ -175,6 +181,54 @@
       end subroutine dealloc_rlm_param_smp
 !
 ! -----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine copy_spheric_rlm_data                                  &
+     &         (ltr_org, rlm_org, ltr_new, rlm_new)
+!
+      type(sph_rlm_grid), intent(in) :: rlm_org
+      integer(kind = kint), intent(in) :: ltr_org
+!
+      type(sph_rlm_grid), intent(inout) :: rlm_new
+      integer(kind = kint), intent(inout) :: ltr_new
+!
+      integer(kind = kint) :: i
+!
+      rlm_new%irank_sph_rlm(1:itwo) =   rlm_org%irank_sph_rlm(1:itwo)
+!
+      rlm_new%nidx_global_rlm(1:itwo) = rlm_org%nidx_global_rlm(1:itwo)
+      ltr_new =   ltr_org
+!
+      rlm_new%nnod_rlm =         rlm_org%nnod_rlm
+      rlm_new%nidx_rlm(1:itwo) = rlm_org%nidx_rlm(1:itwo)
+      rlm_new%ist_rlm(1:itwo) =  rlm_org%ist_rlm(1:itwo)
+      rlm_new%ied_rlm(1:itwo) =  rlm_org%ied_rlm(1:itwo)
+!
+      call alloc_type_spheric_param_rlm(rlm_new)
+      call alloc_type_sph_1d_index_rlm(rlm_new)
+!
+      do i = 1, itwo
+        rlm_new%idx_global_rlm(1:rlm_new%nnod_rlm,i)                    &
+     &      = rlm_org%idx_global_rlm(1:rlm_new%nnod_rlm,i)
+      end do
+!
+      rlm_new%radius_1d_rlm_r(1:rlm_new%nidx_rlm(1))                    &
+     &       =   rlm_org%radius_1d_rlm_r(1:rlm_new%nidx_rlm(1))
+      rlm_new%idx_gl_1d_rlm_r(1:rlm_new%nidx_rlm(1))                    &
+     &       =   rlm_org%idx_gl_1d_rlm_r(1:rlm_new%nidx_rlm(1))
+      rlm_new%idx_gl_1d_rlm_j(1:rlm_new%nidx_rlm(2),1)                  &
+     &       = rlm_org%idx_gl_1d_rlm_j(1:rlm_new%nidx_rlm(2),1)
+      rlm_new%idx_gl_1d_rlm_j(1:rlm_new%nidx_rlm(2),2)                  &
+     &       = rlm_org%idx_gl_1d_rlm_j(1:rlm_new%nidx_rlm(2),2)
+      rlm_new%idx_gl_1d_rlm_j(1:rlm_new%nidx_rlm(2),3)                  &
+     &       = rlm_org%idx_gl_1d_rlm_j(1:rlm_new%nidx_rlm(2),3)
+!
+!      call dealloc_type_sph_1d_index_rlm(rlm_org)
+!      call dealloc_type_spheric_param_rlm(rlm_org)
+!
+      end subroutine copy_spheric_rlm_data
+!
+! ----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine check_type_spheric_param_rlm(my_rank, sph_rlm)

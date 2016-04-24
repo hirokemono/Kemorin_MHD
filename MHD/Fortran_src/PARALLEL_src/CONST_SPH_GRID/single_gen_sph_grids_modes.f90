@@ -36,6 +36,7 @@
 !
       subroutine gen_sph_rlm_grids(ndomain_sph, comm_rlm)
 !
+      use m_spheric_parameter
       use set_comm_table_rtp_rj
       use load_data_for_sph_IO
       use copy_sph_comm_table_4_type
@@ -53,7 +54,8 @@
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &          'output_modes_rlm_sph_trans', ip_rank
-        call output_modes_rlm_sph_trans(ip_rank)
+        call output_modes_rlm_sph_trans                                 &
+     &     (ip_rank, l_truncation, sph_rlm1)
 !
         write(*,'(a,i6,a)') 'Legendre transform table rlm',             &
      &          ip_rank, ' is done.'
@@ -66,6 +68,7 @@
 !
       subroutine gen_sph_rtm_grids(ndomain_sph, comm_rtm)
 !
+      use m_spheric_parameter
       use set_comm_table_rtp_rj
       use load_data_for_sph_IO
       use copy_sph_comm_table_4_type
@@ -83,7 +86,7 @@
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &          'output_geom_rtm_sph_trans', ip_rank
-        call output_geom_rtm_sph_trans(ip_rank)
+        call output_geom_rtm_sph_trans(ip_rank, l_truncation, sph_rtm1)
 !
         write(*,'(a,i6,a)') 'Legendre transform table rtm',             &
      &          ip_rank, ' is done.'

@@ -109,54 +109,6 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_spheric_parameter
-!
-      use t_spheric_rtm_data
-      use t_spheric_rlm_data
-      use t_spheric_rj_data
-!
-      sph_rtp1%nnod_rtp = nnod_rtp
-      sph_rtm1%nnod_rtm = nnod_rtm
-      sph_rlm1%nnod_rlm = nnod_rlm
-      sph_rj1%nnod_rj =   nnod_rj
-!
-      call alloc_type_spheric_param_rtp(sph_rtp1)
-      call alloc_type_spheric_param_rtm(sph_rtm1)
-      call alloc_type_spheric_param_rlm(sph_rlm1)
-      call alloc_type_spheric_param_rj(sph_rj1)
-!
-      end subroutine allocate_spheric_parameter
-!
-! ----------------------------------------------------------------------
-!
-      subroutine deallocate_spheric_parameter
-!
-      use t_spheric_rtm_data
-      use t_spheric_rlm_data
-      use t_spheric_rj_data
-!
-      call dealloc_type_spheric_param_rtp(sph_rtp1)
-      call dealloc_type_spheric_param_rtm(sph_rtm1)
-      call dealloc_type_spheric_param_rlm(sph_rlm1)
-      call dealloc_spheric_param_rj(sph_rj1)
-!
-      end subroutine deallocate_spheric_parameter
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_sph_param_smp
-!
-!
-      call dealloc_rtp_param_smp(sph_rtp1)
-      call dealloc_rtm_param_smp(sph_rtm1)
-      call dealloc_rlm_param_smp(sph_rlm1)
-      call dealloc_rj_param_smp(sph_rj1)
-!
-      end subroutine deallocate_sph_param_smp
-!
-! -----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
       subroutine check_global_spheric_parameter
 !
 !

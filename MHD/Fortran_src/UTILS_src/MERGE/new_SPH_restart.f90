@@ -55,7 +55,7 @@
 !
       call sel_read_spectr_modes_rj_file(my_rank)
 !
-      call copy_sph_node_type_rj_from_IO                                &
+      call copy_sph_node_4_rj_from_IO                                   &
      &    (sph_mesh_set%sph_mesh%l_truncation,                          &
      &     sph_mesh_set%sph_mesh%sph_rj)
       call copy_comm_sph_type_from_IO(my_rank,                          &

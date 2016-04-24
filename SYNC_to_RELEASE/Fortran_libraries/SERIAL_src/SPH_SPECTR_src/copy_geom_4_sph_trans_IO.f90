@@ -1,1 +1,0 @@
-/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/Fortran_src/CORE_src/SPH_SPECTR_src/copy_geom_4_sph_trans_IO.f90

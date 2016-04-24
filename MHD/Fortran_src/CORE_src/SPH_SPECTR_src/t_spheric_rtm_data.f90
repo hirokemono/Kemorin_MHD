@@ -17,6 +17,11 @@
 !!      subroutine dealloc_rtm_param_smp(sph_rtm)
 !!        type(sph_rtm_grid), intent(inout) :: sph_rtm
 !!
+!!      subroutine copy_spheric_rtm_data                                &
+!!     &         (ltr_org, rtm_org, ltr_new, rtm_new)
+!!      type(sph_rtm_grid), intent(in) :: rtm_org
+!!      type(sph_rtm_grid), intent(inout) :: rtm_new
+!!
 !!      subroutine check_type_spheric_param_rtm(my_rank, sph_rtm)
 !!        integer(kind = kint), intent(in) :: my_rank
 !!        type(sph_rtm_grid), intent(in) :: sph_rtm
@@ -27,6 +32,7 @@
       module t_spheric_rtm_data
 !
       use m_precision
+      use m_constants
       use m_spheric_constants
 !
       implicit none
@@ -199,6 +205,55 @@
       end subroutine dealloc_rtm_param_smp
 !
 ! -----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine copy_spheric_rtm_data                                  &
+     &         (ltr_org, rtm_org, ltr_new, rtm_new)
+!
+      type(sph_rtm_grid), intent(in) :: rtm_org
+      integer(kind = kint), intent(in) :: ltr_org
+!
+      type(sph_rtm_grid), intent(inout) :: rtm_new
+      integer(kind = kint), intent(inout) :: ltr_new
+!
+      integer(kind = kint) :: i
+!
+      rtm_new%irank_sph_rtm(1:ithree) = rtm_org%irank_sph_rtm(1:ithree)
+!
+      rtm_new%nidx_global_rtm(1:ithree)                                 &
+     &           = rtm_org%nidx_global_rtm(1:ithree)
+      ltr_new =   ltr_org
+!
+      rtm_new%nnod_rtm =           rtm_org%nnod_rtm
+      rtm_new%nidx_rtm(1:ithree) = rtm_org%nidx_rtm(1:ithree)
+      rtm_new%ist_rtm(1:ithree) =  rtm_org%ist_rtm(1:ithree)
+      rtm_new%ied_rtm(1:ithree) =  rtm_org%ied_rtm(1:ithree)
+!
+      call alloc_type_spheric_param_rtm(rtm_new)
+      call alloc_type_sph_1d_index_rtm(rtm_new)
+!
+      do i = 1, ithree
+        rtm_new%idx_global_rtm(1:rtm_new%nnod_rtm,i)                    &
+     &      = rtm_org%idx_global_rtm(1:rtm_new%nnod_rtm,i)
+      end do
+!
+      rtm_new%radius_1d_rtm_r(1:rtm_new%nidx_rtm(1))                    &
+     &      =   rtm_org%radius_1d_rtm_r(1:rtm_new%nidx_rtm(1))
+      rtm_new%idx_gl_1d_rtm_r(1:rtm_new%nidx_rtm(1))                    &
+     &      =   rtm_org%idx_gl_1d_rtm_r(1:rtm_new%nidx_rtm(1))
+      rtm_new%idx_gl_1d_rtm_t(1:rtm_new%nidx_rtm(2))                    &
+     &      = rtm_org%idx_gl_1d_rtm_t(1:rtm_new%nidx_rtm(2))
+      rtm_new%idx_gl_1d_rtm_m(1:rtm_new%nidx_rtm(3),1)                  &
+     &      = rtm_org%idx_gl_1d_rtm_m(1:rtm_new%nidx_rtm(3),1)
+      rtm_new%idx_gl_1d_rtm_m(1:rtm_new%nidx_rtm(3),2)                  &
+     &      = rtm_org%idx_gl_1d_rtm_m(1:rtm_new%nidx_rtm(3),2)
+!
+!      call dealloc_type_sph_1d_index_rtm(rtm_org)
+!      call dealloc_type_spheric_param_rtm(rtm_org)
+!
+      end subroutine copy_spheric_rtm_data
+!
+! ----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine check_type_spheric_param_rtm(my_rank, sph_rtm)

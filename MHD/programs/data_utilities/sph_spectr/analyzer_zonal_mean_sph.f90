@@ -52,7 +52,7 @@
 !
 !       set spectr grids
 !
-      if (iflag_debug.gt.0) write(*,*) 'input_modes_rj_sph_trans'
+      if (iflag_debug.gt.0) write(*,*) 'load_para_rj_mesh'
       call load_para_rj_mesh
 !
 !  ------  initialize spectr data
