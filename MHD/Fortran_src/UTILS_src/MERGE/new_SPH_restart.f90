@@ -45,7 +45,7 @@
 !
       use m_node_id_spherical_IO
       use sph_file_IO_select
-      use copy_sph_node_type_IO
+      use copy_sph_node_4_IO
       use copy_sph_comm_tbl_type_4_IO
       use copy_sph_grps_type_from_IO
 !

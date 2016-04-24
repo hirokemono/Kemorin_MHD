@@ -1,5 +1,5 @@
-!>@file   copy_sph_node_type_IO.f90
-!!@brief  module copy_sph_node_type_IO
+!>@file   copy_sph_node_4_IO.f90
+!!@brief  module copy_sph_node_4_IO
 !!
 !!@author H. Matsui
 !!@date Programmed in July, 2007
@@ -7,34 +7,34 @@
 !>@brief Copy sphectr indices structure between IO buffer
 !!
 !!@verbatim
-!!      subroutine copy_sph_node_type_rtp_from_IO(l_truncation, rtp)
+!!      subroutine copy_sph_node_4_rtp_from_IO(l_truncation, rtp)
 !!        integer(kind = kint), intent(inout) :: l_truncation
 !!        type(sph_rtp_grid), intent(inout) :: rtp
-!!      subroutine copy_sph_node_type_rtm_from_IO(l_truncation, rtm)
+!!      subroutine copy_sph_node_4_rtm_from_IO(l_truncation, rtm)
 !!        integer(kind = kint), intent(inout) :: l_truncation
 !!        type(sph_rtm_grid), intent(inout) :: rtm
-!!      subroutine copy_sph_node_type_rlm_from_IO(l_truncation, rlm)
+!!      subroutine copy_sph_node_4_rlm_from_IO(l_truncation, rlm)
 !!        integer(kind = kint), intent(inout) :: l_truncation
 !!        type(sph_rlm_grid), intent(inout) :: rlm
-!!      subroutine copy_sph_node_type_rj_from_IO(l_truncation, rj)
+!!      subroutine copy_sph_node_4_rj_from_IO(l_truncation, rj)
 !!        integer(kind = kint), intent(inout) :: l_truncation
 !!        type(sph_rj_grid), intent(inout) :: rj
 !!
-!!      subroutine copy_sph_node_type_rtp_to_IO(l_truncation, rtp)
+!!      subroutine copy_sph_node_4_rtp_to_IO(l_truncation, rtp)
 !!        integer(kind = kint), intent(in) :: l_truncation
 !!        type(sph_rtp_grid), intent(inout) :: rtp
-!!      subroutine copy_sph_node_type_rtm_to_IO(l_truncation, rtm)
+!!      subroutine copy_sph_node_4_rtm_to_IO(l_truncation, rtm)
 !!        integer(kind = kint), intent(in) :: l_truncation
 !!        type(sph_rtm_grid), intent(inout) :: rtm
-!!      subroutine copy_sph_node_type_rlm_to_IO(l_truncation, rlm)
+!!      subroutine copy_sph_node_4_rlm_to_IO(l_truncation, rlm)
 !!        integer(kind = kint), intent(in) :: l_truncation
 !!        type(sph_rlm_grid), intent(inout) :: rlm
-!!      subroutine copy_sph_node_type_rj_to_IO(l_truncation, rj)
+!!      subroutine copy_sph_node_4_rj_to_IO(l_truncation, rj)
 !!        integer(kind = kint), intent(in) :: l_truncation
 !!        type(sph_rj_grid), intent(inout) :: rj
 !!@endverbatim
 !
-      module copy_sph_node_type_IO
+      module copy_sph_node_4_IO
 !
       use m_precision
 !
@@ -50,13 +50,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine copy_sph_node_type_rtp_from_IO(l_truncation, rtp)
+      subroutine copy_sph_node_4_rtp_from_IO(l_truncation, rtp)
+!
+      use t_spheric_rtp_data
 !
       integer(kind = kint), intent(inout) :: l_truncation
       type(sph_rtp_grid), intent(inout) :: rtp
       integer(kind = kint) :: i
 !
-      rtp%sph_rank_rtp(1:ithree) =    sph_rank_IO(1:ithree)
+      rtp%irank_sph_rtp(1:ithree) = sph_rank_IO(1:ithree)
 !
       rtp%nidx_global_rtp(1:ithree) = nidx_gl_sph_IO(1:ithree)
       l_truncation =              ltr_gl_IO
@@ -90,17 +92,19 @@
       call deallocate_idx_sph_1d2_IO
       call deallocate_idx_sph_1d3_IO
 !
-      end subroutine copy_sph_node_type_rtp_from_IO
+      end subroutine copy_sph_node_4_rtp_from_IO
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine copy_sph_node_type_rtm_from_IO(l_truncation, rtm)
+      subroutine copy_sph_node_4_rtm_from_IO(l_truncation, rtm)
+!
+      use t_spheric_rtm_data
 !
       integer(kind = kint), intent(inout) :: l_truncation
       type(sph_rtm_grid), intent(inout) :: rtm
       integer(kind = kint) :: i
 !
-      rtm%sph_rank_rtm(1:ithree) =    sph_rank_IO(1:ithree)
+      rtm%irank_sph_rtm(1:ithree) =    sph_rank_IO(1:ithree)
 !
       rtm%nidx_global_rtm(1:ithree) = nidx_gl_sph_IO(1:ithree)
       l_truncation =              ltr_gl_IO
@@ -134,17 +138,19 @@
       call deallocate_idx_sph_1d2_IO
       call deallocate_idx_sph_1d3_IO
 !
-      end subroutine copy_sph_node_type_rtm_from_IO
+      end subroutine copy_sph_node_4_rtm_from_IO
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine copy_sph_node_type_rlm_from_IO(l_truncation, rlm)
+      subroutine copy_sph_node_4_rlm_from_IO(l_truncation, rlm)
+!
+      use t_spheric_rlm_data
 !
       integer(kind = kint), intent(inout) :: l_truncation
       type(sph_rlm_grid), intent(inout) :: rlm
       integer(kind = kint) :: i
 !
-      rlm%sph_rank_rlm(1:itwo) =    sph_rank_IO(1:itwo)
+      rlm%irank_sph_rlm(1:itwo) =    sph_rank_IO(1:itwo)
 !
       rlm%nidx_global_rlm(1:itwo) = nidx_gl_sph_IO(1:itwo)
       l_truncation =              ltr_gl_IO
@@ -177,17 +183,19 @@
       call deallocate_idx_sph_1d1_IO
       call deallocate_idx_sph_1d2_IO
 !
-      end subroutine copy_sph_node_type_rlm_from_IO
+      end subroutine copy_sph_node_4_rlm_from_IO
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine copy_sph_node_type_rj_from_IO(l_truncation, rj)
+      subroutine copy_sph_node_4_rj_from_IO(l_truncation, rj)
+!
+      use t_spheric_rj_data
 !
       integer(kind = kint), intent(inout) :: l_truncation
       type(sph_rj_grid), intent(inout) :: rj
       integer(kind = kint) :: i
 !
-      rj%sph_rank_rj(1:itwo) =     sph_rank_IO(1:itwo)
+      rj%irank_sph_rj(1:itwo) =     sph_rank_IO(1:itwo)
 !
       rj%nidx_global_rj(1:itwo) = nidx_gl_sph_IO(1:itwo)
       l_truncation =            ltr_gl_IO
@@ -221,12 +229,14 @@
       call deallocate_idx_sph_1d1_IO
       call deallocate_idx_sph_1d2_IO
 !
-      end subroutine copy_sph_node_type_rj_from_IO
+      end subroutine copy_sph_node_4_rj_from_IO
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine copy_sph_node_type_rtp_to_IO(l_truncation, rtp)
+      subroutine copy_sph_node_4_rtp_to_IO(l_truncation, rtp)
+!
+      use t_spheric_rtp_data
 !
       integer(kind = kint), intent(in) :: l_truncation
       type(sph_rtp_grid), intent(inout) :: rtp
@@ -235,7 +245,7 @@
 !
 !
       ndir_sph_IO =              ithree
-      sph_rank_IO(1:ithree) =    rtp%sph_rank_rtp(1:ithree)
+      sph_rank_IO(1:ithree) =    rtp%irank_sph_rtp(1:ithree)
 !
       ncomp_itbl_1d_IO(1) = ione
       ncomp_itbl_1d_IO(2) = ione
@@ -286,11 +296,11 @@
       call dealloc_type_sph_1d_index_rtp(rtp)
       call dealloc_type_spheric_param_rtp(rtp)
 !
-      end subroutine copy_sph_node_type_rtp_to_IO
+      end subroutine copy_sph_node_4_rtp_to_IO
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine copy_sph_node_type_rtm_to_IO(l_truncation, rtm)
+      subroutine copy_sph_node_4_rtm_to_IO(l_truncation, rtm)
 !
       integer(kind = kint), intent(in) :: l_truncation
       type(sph_rtm_grid), intent(inout) :: rtm
@@ -299,7 +309,7 @@
 !
 !
       ndir_sph_IO =              ithree
-      sph_rank_IO(1:ithree) =    rtm%sph_rank_rtm(1:ithree)
+      sph_rank_IO(1:ithree) =    rtm%irank_sph_rtm(1:ithree)
 !
       ncomp_itbl_1d_IO(1) = ione
       ncomp_itbl_1d_IO(2) = ione
@@ -345,11 +355,13 @@
       call dealloc_type_sph_1d_index_rtm(rtm)
       call dealloc_type_spheric_param_rtm(rtm)
 !
-      end subroutine copy_sph_node_type_rtm_to_IO
+      end subroutine copy_sph_node_4_rtm_to_IO
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine copy_sph_node_type_rlm_to_IO(l_truncation, rlm)
+      subroutine copy_sph_node_4_rlm_to_IO(l_truncation, rlm)
+!
+      use t_spheric_rlm_data
 !
       integer(kind = kint), intent(in) :: l_truncation
       type(sph_rlm_grid), intent(inout) :: rlm
@@ -358,7 +370,7 @@
 !
 !
       ndir_sph_IO =            itwo
-      sph_rank_IO(1:itwo) =    rlm%sph_rank_rlm(1:itwo)
+      sph_rank_IO(1:itwo) =    rlm%irank_sph_rlm(1:itwo)
 !
       ncomp_itbl_1d_IO(1) = ione
       ncomp_itbl_1d_IO(2) = ithree
@@ -399,11 +411,13 @@
       call dealloc_type_sph_1d_index_rlm(rlm)
       call dealloc_type_spheric_param_rlm(rlm)
 !
-      end subroutine copy_sph_node_type_rlm_to_IO
+      end subroutine copy_sph_node_4_rlm_to_IO
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine copy_sph_node_type_rj_to_IO(l_truncation, rj)
+      subroutine copy_sph_node_4_rj_to_IO(l_truncation, rj)
+!
+      use t_spheric_rj_data
 !
       integer(kind = kint), intent(in) :: l_truncation
       type(sph_rj_grid), intent(inout) :: rj
@@ -411,7 +425,7 @@
       integer(kind = kint_gl) :: nr_8
 !
       ndir_sph_IO =            itwo
-      sph_rank_IO(1:itwo) =    rj%sph_rank_rj(1:itwo)
+      sph_rank_IO(1:itwo) =    rj%irank_sph_rj(1:itwo)
 !
       ncomp_itbl_1d_IO(1) = ione
       ncomp_itbl_1d_IO(2) = ithree
@@ -453,10 +467,10 @@
      &      = rj%idx_gl_1d_rj_j(1:rj%nidx_rj(2),3)
 !
       call dealloc_type_sph_1d_index_rj(rj)
-      call dealloc_type_spheric_param_rj(rj)
+      call dealloc_spheric_param_rj(rj)
 !
-      end subroutine copy_sph_node_type_rj_to_IO
+      end subroutine copy_sph_node_4_rj_to_IO
 !
 ! ----------------------------------------------------------------------
 !
-      end module copy_sph_node_type_IO
+      end module copy_sph_node_4_IO
