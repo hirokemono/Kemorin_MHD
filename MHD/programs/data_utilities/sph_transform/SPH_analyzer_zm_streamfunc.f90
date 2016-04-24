@@ -72,7 +72,7 @@
 !
         call set_rj_phys_for_zm_streamfunc                              &
      &     (rj_fld1%ntot_phys, rj_fld1%d_fld)
-        call zonal_mean_all_sph_spectr(rj_fld1)
+        call zonal_mean_all_sph_spectr(sph_rj1, rj_fld1)
 !
 !  spherical transform for vector
         call sph_b_trans_streamline                                     &

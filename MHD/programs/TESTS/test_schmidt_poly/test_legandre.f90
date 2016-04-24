@@ -60,7 +60,7 @@
         end do
       end do
 !
-      call allocate_gauss_colat_rtm
+      call allocate_gauss_colat_rtm(sph_rtm1%nidx_rtm(2))
       call allocate_gauss_points(num_gauss)
       call construct_gauss_coefs
 !
@@ -72,7 +72,8 @@
       call deallocate_gauss_points
       call deallocate_gauss_colatitude
 !
-      call allocate_schmidt_poly_rtm
+      call allocate_schmidt_poly_rtm                                    &
+     &   (sph_rtm%nidx_rtm(2), sph_rlm%nidx_rlm(2), sph_rj%nidx_rj(2))
       call set_lagender_4_rlm
 !
 !      do j = 1, nidx_rlm(2)

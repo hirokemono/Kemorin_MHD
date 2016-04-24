@@ -71,8 +71,9 @@
 !
       call quicksort_int(nri_rms, kr_for_rms, ione, nri_rms)
 !
-      call allocate_rms_4_sph_spectr(my_rank)
-      call allocate_ave_4_sph_spectr
+      call allocate_rms_4_sph_spectr(my_rank, l_truncation)
+      call allocate_ave_4_sph_spectr                                    &
+     &   (sph_rj1%idx_rj_degree_zero, sph_rj1%nidx_rj(1))
       call set_sum_table_4_sph_spectr                                   &
      &   (l_truncation, nidx_rj, sph_rj1%idx_gl_1d_rj_j)
 !

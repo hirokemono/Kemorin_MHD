@@ -101,7 +101,7 @@
 !
 !  evaluate energies
 !
-        call zonal_mean_all_sph_spectr(rj_fld1)
+        call zonal_mean_all_sph_spectr(sph_rj1, rj_fld1)
         call copy_rj_all_phys_data_to_IO(nnod_rj, rj_fld1, sph_fld_IO)
 !
         call alloc_merged_field_stack(nprocs, sph_fld_IO)

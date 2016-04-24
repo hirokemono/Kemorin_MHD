@@ -81,7 +81,7 @@
       call allocate_d_pole_4_all_trans
 !
 !      call calypso_MPI_barrier
-!      call check_schmidt_poly_rtm(my_rank+40)
+!      call check_schmidt_poly_rtm(my_rank+40, sph_rtm1, sph_rlm1)
 !
       end subroutine SPH_initialize_back_trans
 !

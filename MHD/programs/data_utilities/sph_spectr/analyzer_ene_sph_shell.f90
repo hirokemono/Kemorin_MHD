@@ -110,10 +110,14 @@
         if (iflag_debug.gt.0) write(*,*) 'cal_rms_sph_spec_rms_whole'
         call cal_rms_sph_spec_rms_whole(rj_fld1)
 !
-        call write_sph_vol_ave_file(i_step, time)
-        call write_sph_vol_ms_file(my_rank, i_step, time)
-        call write_sph_vol_ms_spectr_file(my_rank, i_step, time)
-        call write_sph_layer_ms_file(my_rank, i_step, time)
+        call write_sph_vol_ave_file(i_step, time, l_truncation,         &
+     &      nlayer_ICB, nlayer_CMB, sph_rj1%idx_rj_degree_zero)
+        call write_sph_vol_ms_file(my_rank, i_step, time,               &
+     &      l_truncation, nlayer_ICB, nlayer_CMB)
+        call write_sph_vol_ms_spectr_file(my_rank, i_step, time,        &
+     &      l_truncation, nlayer_ICB, nlayer_CMB)
+        call write_sph_layer_ms_file(my_rank, i_step, time,             &
+     &      l_truncation, nlayer_ICB, nlayer_CMB)
       end do
 !
       end subroutine analyze_ene_sph_shell

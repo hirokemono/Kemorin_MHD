@@ -58,15 +58,19 @@
       call set_mdx_rlm_rtm(l_truncation, nidx_rtm, nidx_rlm,            &
      &    sph_rtm1%idx_gl_1d_rtm_m, sph_rlm1%idx_gl_1d_rlm_j)
 !
-      call s_cal_schmidt_poly_rtm
+      call s_cal_schmidt_poly_rtm                                       &
+     &   (l_truncation, sph_rj1, sph_rtm1, sph_rlm1)
 !
-      call set_sin_theta_rtm(nidx_rtm(2))
-      call set_sin_theta_rtp(nidx_rtp(2), sph_rtp1%idx_gl_1d_rtp_t)
+      call set_sin_theta_rtm(sph_rtm1%nidx_rtm(2))
+      call set_sin_theta_rtp                                            &
+     &   (sph_rtp1%nidx_rtp(2), sph_rtp1%idx_gl_1d_rtp_t)
 !
-      call allocate_trans_schmidt_rtm
+      call allocate_trans_schmidt_rtm                                   &
+     &   (sph_rtm1%nidx_rtm(2), sph_rlm1%nidx_rlm(2))
       call set_trans_legendre_rtm
 !
-      call allocate_hemi_schmidt_rtm
+      call allocate_hemi_schmidt_rtm                                    &
+     &   (sph_rtm1%nidx_rtm(2), sph_rlm1%nidx_rlm(2))
       call set_legendre_hemispher_rtm
 !
       call set_blocks_4_leg_trans

@@ -74,7 +74,7 @@
 ! ----  Take zonal mean
 !
       if (iflag_debug.eq.1) write(*,*) 'zonal_mean_all_sph_spectr'
-      call zonal_mean_all_sph_spectr(rj_fld1)
+      call zonal_mean_all_sph_spectr(sph_rj1, rj_fld1)
 !
 !*  -----------  lead energy data --------------
 !*

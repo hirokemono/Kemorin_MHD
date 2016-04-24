@@ -148,10 +148,11 @@
       ipick_degree(1) = 0
 !
       if (my_rank.eq.0) write(*,*) 'Take zonam mean of light element'
-      call take_zonal_mean_rj_field(ione, ipol%i_light, rj_fld1)
+      call take_zonal_mean_rj_field                                     &
+     &   (ione, ipol%i_light, sph_rj1, rj_fld1)
 !      if (my_rank.eq.0) write(*,*) 'Take sphere average of light element'
 !      call pick_degree_sph_spectr(ltr_half, ipick_degree,               &
-!     &    ione, ipol%i_light, rj_fld1)
+!     &    ione, ipol%i_light, sph_rj1, rj_fld1)
 !
       end subroutine set_modify_rj_fields
 !

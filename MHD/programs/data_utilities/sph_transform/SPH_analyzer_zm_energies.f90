@@ -160,6 +160,7 @@
 !
       subroutine set_rj_phys_for_convective_kene
 !
+      use m_spheric_parameter
       use m_phys_labels
       use m_sph_spectr_data
       use m_phys_constants
@@ -173,7 +174,8 @@
       do i = 1, rj_fld1%num_phys
         if     (rj_fld1%phys_name(i) .eq. fhd_velo) then
           ist_fld = rj_fld1%istack_component(i-1)+1
-          call delete_zonal_mean_rj_field(n_vector, ist_fld, rj_fld1)
+          call delete_zonal_mean_rj_field                               &
+     &       (n_vector, ist_fld, sph_rj1, rj_fld1)
         end if
       end do
 !

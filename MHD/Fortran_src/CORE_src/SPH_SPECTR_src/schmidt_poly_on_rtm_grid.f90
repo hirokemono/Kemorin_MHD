@@ -8,15 +8,21 @@
 !!
 !!
 !!@verbatim
-!!      subroutine s_cal_schmidt_poly_rtm
-!!
-!!      subroutine copy_sph_normalization_2_rlm
-!!      subroutine copy_sph_normalization_2_rj
+!!      subroutine s_cal_schmidt_poly_rtm                               &
+!!     &         (l_truncation, sph_rj, sph_rtm, sph_rlm)
+!!        integer(kind = kint), intent(in) :: l_truncation
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(sph_rtm_grid), intent(in) :: sph_rtm
+!!        type(sph_rlm_grid), intent(in) :: sph_rlm
 !!@endverbatim
 !
       module schmidt_poly_on_rtm_grid
 !
       use m_precision
+!
+      use t_spheric_rtm_data
+      use t_spheric_rlm_data
+      use t_spheric_rj_data
 !
       implicit none
 !
@@ -31,16 +37,21 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_cal_schmidt_poly_rtm
+      subroutine s_cal_schmidt_poly_rtm                                 &
+     &         (l_truncation, sph_rj, sph_rtm, sph_rlm)
 !
-      use m_spheric_parameter
       use m_schmidt_poly_on_rtm
       use m_gauss_points
 !
+      integer(kind = kint), intent(in) :: l_truncation
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(sph_rtm_grid), intent(in) :: sph_rtm
+      type(sph_rlm_grid), intent(in) :: sph_rlm
 !
-      call allocate_gauss_points(nidx_rtm(2))
+!
+      call allocate_gauss_points(sph_rtm%nidx_rtm(2))
       call allocate_gauss_colatitude
-      call allocate_gauss_colat_rtm
+      call allocate_gauss_colat_rtm(sph_rtm%nidx_rtm(2))
 !
       call set_gauss_points_rtm
 !
@@ -49,15 +60,16 @@
 !
 !     set Legendre polynomials
 !
-      call allocate_schmidt_poly_rtm
+      call allocate_schmidt_poly_rtm                                    &
+     &   (sph_rtm%nidx_rtm(2), sph_rlm%nidx_rlm(2), sph_rj%nidx_rj(2))
 !
-      call copy_sph_normalization_2_rlm
-      call copy_sph_normalization_2_rj
+      call copy_sph_normalization_2_rlm(sph_rlm)
+      call copy_sph_normalization_2_rj(sph_rj)
 !
-      call set_lagender_4_rlm
+      call set_lagender_4_rlm(l_truncation, sph_rtm, sph_rlm)
 !
-      call allocate_schmidt_p_rtm_pole
-      call set_lagender_pole_rlm
+      call allocate_schmidt_p_rtm_pole(sph_rlm%nidx_rlm(2))
+      call set_lagender_pole_rlm(l_truncation, sph_rtm, sph_rlm)
 !
       end subroutine s_cal_schmidt_poly_rtm
 !
@@ -66,7 +78,6 @@
 !
       subroutine set_gauss_points_rtm
 !
-      use m_spheric_parameter
       use m_schmidt_poly_on_rtm
       use m_gauss_points
 !
@@ -89,21 +100,22 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_sph_normalization_2_rlm
+      subroutine copy_sph_normalization_2_rlm(sph_rlm)
 !
       use m_constants
-      use m_spheric_parameter
       use m_schmidt_poly_on_rtm
       use spherical_harmonics
+!
+      type(sph_rlm_grid), intent(in) :: sph_rlm
 !
       integer(kind = kint) :: j, ll, mm
       integer(kind = kint) :: idx_lm(2)
       real(kind = kreal) :: g_lm(17)
 !
 !$omp parallel do private(j,ll,mm,idx_lm,g_lm)
-      do j = 1, nidx_rlm(2)
-        ll = sph_rlm1%idx_gl_1d_rlm_j(j,2)
-        mm = sph_rlm1%idx_gl_1d_rlm_j(j,3)
+      do j = 1, sph_rlm%nidx_rlm(2)
+        ll = sph_rlm%idx_gl_1d_rlm_j(j,2)
+        mm = sph_rlm%idx_gl_1d_rlm_j(j,3)
 !
         call sph_normalizations(ll, mm, idx_lm, g_lm)
         g_sph_rlm(j,1:17) =  g_lm(1:17)
@@ -116,11 +128,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_sph_normalization_2_rj
+      subroutine copy_sph_normalization_2_rj(sph_rj)
 !
-      use m_spheric_parameter
       use m_schmidt_poly_on_rtm
       use spherical_harmonics
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
 !
       integer(kind = kint) :: j, ll, mm
       integer(kind = kint) :: idx_lm(2)
@@ -128,9 +141,9 @@
 !
 !
 !$omp parallel do private(j,ll,mm,idx_lm,g_lm)
-      do j = 1, nidx_rj(2)
-        ll = sph_rj1%idx_gl_1d_rj_j(j,2)
-        mm = sph_rj1%idx_gl_1d_rj_j(j,3)
+      do j = 1, sph_rj%nidx_rj(2)
+        ll = sph_rj%idx_gl_1d_rj_j(j,2)
+        mm = sph_rj%idx_gl_1d_rj_j(j,3)
 !
         call sph_normalizations(ll, mm, idx_lm, g_lm)
         g_sph_rj(j,1:13) =  g_lm(1:13)
@@ -142,13 +155,16 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_lagender_4_rlm
+      subroutine set_lagender_4_rlm(l_truncation, sph_rtm, sph_rlm)
 !
       use m_machine_parameter
-      use m_spheric_parameter
       use m_schmidt_poly_on_rtm
-      use schmidt_fix_m
       use m_work_4_sph_trans
+      use schmidt_fix_m
+!
+      integer(kind = kint), intent(in) :: l_truncation
+      type(sph_rtm_grid), intent(in) :: sph_rtm
+      type(sph_rlm_grid), intent(in) :: sph_rlm
 !
       integer(kind = kint) :: ip, i, j, l, m, mm, jj
       integer(kind = kint) :: jst, jed, lst, led
@@ -160,12 +176,12 @@
 !$omp parallel do                                                       &
 !$omp& private(i,j,l,m,mm,jj,jst,jed,lst,led,p_m,dp_m,pmn1,pmp1,df_m)
       do ip = 1, np_smp
-        lst = sph_rtm1%istack_rtm_lt_smp(ip-1) + 1
-        led = sph_rtm1%istack_rtm_lt_smp(ip  )
+        lst = sph_rtm%istack_rtm_lt_smp(ip-1) + 1
+        led = sph_rtm%istack_rtm_lt_smp(ip  )
         do i = lst, led
 !
-          do m = 1, nidx_rtm(3)
-            mm = abs(sph_rtm1%idx_gl_1d_rtm_m(m,2))
+          do m = 1, sph_rtm%nidx_rtm(3)
+            mm = abs(sph_rtm%idx_gl_1d_rtm_m(m,2))
             jst = lstack_rlm(m-1) + 1
             jed = lstack_rlm(m)
 !
@@ -173,8 +189,8 @@
      &          p_m, dp_m, pmn1, pmp1, df_m)
 !
             do j = jst, jed
-              jj = sph_rlm1%idx_gl_1d_rlm_j(j,1)
-              l =  sph_rlm1%idx_gl_1d_rlm_j(j,2)
+              jj = sph_rlm%idx_gl_1d_rlm_j(j,1)
+              l =  sph_rlm%idx_gl_1d_rlm_j(j,2)
               P_rtm(i,j) =    p_m(l)
               dPdt_rtm(i,j) = dp_m(l)
             end do
@@ -188,13 +204,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_lagender_pole_rlm
+      subroutine set_lagender_pole_rlm(l_truncation, sph_rtm, sph_rlm)
 !
       use m_constants
-      use m_spheric_parameter
       use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans
+!
       use schmidt_fix_m
+!
+      integer(kind = kint), intent(in) :: l_truncation
+      type(sph_rtm_grid), intent(in) :: sph_rtm
+      type(sph_rlm_grid), intent(in) :: sph_rlm
 !
       integer(kind = kint) :: j, l, m, mm, jj, jst, jed
       real(kind = kreal) :: pi
@@ -203,8 +223,8 @@
       real(kind = kreal) :: df_m(0:l_truncation+2)
 !
 !
-      do m = 1, nidx_rtm(3)
-        mm = abs(sph_rtm1%idx_gl_1d_rtm_m(m,2))
+      do m = 1, sph_rtm%nidx_rtm(3)
+        mm = abs(sph_rtm%idx_gl_1d_rtm_m(m,2))
         jst = lstack_rlm(m-1) + 1
         jed = lstack_rlm(m)
 !
@@ -217,16 +237,16 @@
         end if
 !
         do j = jst, jed
-          jj = sph_rlm1%idx_gl_1d_rlm_j(j,1)
-          l =  sph_rlm1%idx_gl_1d_rlm_j(j,2)
+          jj = sph_rlm%idx_gl_1d_rlm_j(j,1)
+          l =  sph_rlm%idx_gl_1d_rlm_j(j,2)
           P_pole_rtm(1,j) =    p_m(l)
           dPdt_pole_rtm(1,j) = dp_m(l)
         end do
       end do
 !
       pi = four * atan(one)
-      do m = 1, nidx_rtm(3)
-        mm = abs(sph_rtm1%idx_gl_1d_rtm_m(m,2))
+      do m = 1, sph_rtm%nidx_rtm(3)
+        mm = abs(sph_rtm%idx_gl_1d_rtm_m(m,2))
         jst = lstack_rlm(m-1) + 1
         jed = lstack_rlm(m)
 !
@@ -239,8 +259,8 @@
         end if
 !
         do j = jst, jed
-          jj = sph_rlm1%idx_gl_1d_rlm_j(j,1)
-          l =  sph_rlm1%idx_gl_1d_rlm_j(j,2)
+          jj = sph_rlm%idx_gl_1d_rlm_j(j,1)
+          l =  sph_rlm%idx_gl_1d_rlm_j(j,2)
           P_pole_rtm(2,j) =    p_m(l)
           dPdt_pole_rtm(2,j) = dp_m(l)
         end do

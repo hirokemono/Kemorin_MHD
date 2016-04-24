@@ -205,19 +205,24 @@
         ipick_degree(l) = l-1
       end do
 !
-!      call pick_degree_sph_spectr(ltr_half, ipick_degree,               &
-!     &    ithree, ipol%i_velo, rj_fld1)
-!      call pick_degree_sph_spectr(ltr_half, ipick_degree,               &
+!      call pick_degree_sph_spectr(ltr_half, ipick_degree,              &
+!     &    ithree, ipol%i_velo, sph_rj1, rj_fld1)
+!      call pick_degree_sph_spectr(ltr_half, ipick_degree,              &
 !     &    ithree, ipol%i_magne)
-!      deallocate(ipick_degree, rj_fld1)
+!      deallocate(ipick_degree, sph_rj1, rj_fld1)
 
       if (my_rank.eq.0) write(*,*) 'delete zonam mean velocity'
-      call take_zonal_mean_rj_field(ithree, ipol%i_velo, rj_fld1)
-      call take_zonal_mean_rj_field(ithree, ipol%i_vort, rj_fld1)
+      call take_zonal_mean_rj_field                                     &
+     &   (ithree, ipol%i_velo, sph_rj1, rj_fld1)
+      call take_zonal_mean_rj_field                                     &
+     &   (ithree, ipol%i_vort, sph_rj1, rj_fld1)
       if (my_rank.eq.0) write(*,*) 'delete zonam mean toroidal'
-      call delete_zonal_mean_rj_field(ione, ipol%i_velo, rj_fld1)
-      call delete_zonal_mean_rj_field(ione, idpdr%i_velo, rj_fld1)
-      call delete_zonal_mean_rj_field(ione, itor%i_vort, rj_fld1)
+      call delete_zonal_mean_rj_field                                   &
+     &   (ione, ipol%i_velo, sph_rj1, rj_fld1)
+      call delete_zonal_mean_rj_field                                   &
+     &   (ione, idpdr%i_velo, sph_rj1, rj_fld1)
+      call delete_zonal_mean_rj_field                                   &
+     &   (ione, itor%i_vort, sph_rj1, rj_fld1)
 !
       end subroutine set_special_rj_fields
 !
@@ -226,6 +231,7 @@
       subroutine lead_special_fields_4_sph_mhd
 !
       use t_phys_address
+      use m_spheric_parameter
       use m_sph_phys_address
       use m_sph_spectr_data
       use output_viz_file_control
@@ -244,7 +250,7 @@
 ! ----  Take zonal mean
 !
       if (my_rank.eq.0) write(*,*) 'zonal_mean_all_sph_spectr'
-      call zonal_mean_all_sph_spectr(rj_fld1)
+      call zonal_mean_all_sph_spectr(sph_rj1, rj_fld1)
 !
       end subroutine lead_special_fields_4_sph_mhd
 !

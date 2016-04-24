@@ -8,14 +8,17 @@
 !!        of poloidal velocity with 7-band matrix
 !!
 !!@verbatim
-!!      subroutine allocate_vpol_evo7_mat_sph
+!!      subroutine allocate_vpol_evo7_mat_sph                           &
+!!     &         (nlayer_ICB, nlayer_CMB, sph_rj)
 !!      subroutine deallocate_vpol_evo7_mat_sph
-!!      subroutine check_vpol_evo7_mat_sph(my_rank)
+!!      subroutine check_vpol_evo7_mat_sph(my_rank, sph_rj)
+!!        type(sph_rj_grid), intent(in) :: sph_rj
 !!@endverbatim
 !
       module m_vpol_evo7_mat_sph
 !
       use m_precision
+      use t_spheric_rj_data
 !
       implicit none
 !
@@ -35,14 +38,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_vpol_evo7_mat_sph
+      subroutine allocate_vpol_evo7_mat_sph                             &
+     &         (nlayer_ICB, nlayer_CMB, sph_rj)
 !
-      use m_spheric_parameter
+      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+      type(sph_rj_grid), intent(in) :: sph_rj
 !
       integer(kind = kint) :: nri, jmax
 !
-      nri = nidx_rj(1)
-      jmax = nidx_rj(2)
+      nri =  sph_rj%nidx_rj(1)
+      jmax = sph_rj%nidx_rj(2)
 !
 !
       allocate( vs_poisson5_mat(5,nri,jmax) )
@@ -94,22 +99,24 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_vpol_evo7_mat_sph(my_rank)
+      subroutine check_vpol_evo7_mat_sph(my_rank, sph_rj)
 !
-      use m_spheric_parameter
       use check_sph_radial_mat
 !
       integer(kind = kint), intent(in) :: my_rank
+      type(sph_rj_grid), intent(in) :: sph_rj
 !
 !
       write(50+my_rank,'(a)') 'poisson matrix for poloidal velocity'
-      call check_radial_5band_mat(my_rank, nidx_rj(1), nidx_rj(2),      &
-     &    sph_rj1%idx_gl_1d_rj_j, sph_rj1%radius_1d_rj_r,               &
+      call check_radial_5band_mat                                       &
+     &   (my_rank,sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                 &
+     &    sph_rj%idx_gl_1d_rj_j, sph_rj%radius_1d_rj_r,                 &
      &    vs_poisson5_mat)
 !
       write(50+my_rank,'(a)') 'crank matrix for poloidal velocity'
-      call check_radial_7band_mat(my_rank, nidx_rj(1), nidx_rj(2),      &
-     &    sph_rj1%idx_gl_1d_rj_j, sph_rj1%radius_1d_rj_r, vs_evo7_mat)
+      call check_radial_7band_mat                                       &
+     &   (my_rank,sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                 &
+     &    sph_rj%idx_gl_1d_rj_j, sph_rj%radius_1d_rj_r, vs_evo7_mat)
 !
       end subroutine check_vpol_evo7_mat_sph
 !

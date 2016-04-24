@@ -107,7 +107,8 @@
 !
         if (iflag_debug.gt.0)                                           &
      &      write(*,*) 'write_sph_1layer_ms_spec_file'
-        call write_sph_layer_ms_file(my_rank, i_step, time)
+        call write_sph_layer_ms_file(my_rank, i_step, time,             &
+     &      l_truncation, nlayer_ICB, nlayer_CMB)
       end do
 !
       end subroutine analyze_ene_sph_layer

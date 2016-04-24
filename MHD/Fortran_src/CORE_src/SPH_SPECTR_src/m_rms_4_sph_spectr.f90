@@ -9,10 +9,10 @@
 !!@verbatim
 !!      subroutine allocate_num_spec_layer
 !!      subroutine allocate_rms_name_sph_spec
-!!      subroutine allocate_rms_4_sph_spectr(my_rank)
-!!      subroutine allocate_ave_4_sph_spectr(nri_ave)
+!!      subroutine allocate_rms_4_sph_spectr(my_rank, l_truncation)
+!!      subroutine allocate_ave_4_sph_spectr(idx_rj_degree_zero, nri_rj)
 !!      subroutine deallocate_rms_4_sph_spectr(my_rank)
-!!      subroutine deallocate_ave_4_sph_spectr
+!!      subroutine deallocate_ave_4_sph_spectr(idx_rj_degree_zero)
 !!@endverbatim
 !!
 !!@n @param my_rank       Process ID
@@ -139,11 +139,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_rms_4_sph_spectr(my_rank)
-!
-      use m_spheric_parameter
+      subroutine allocate_rms_4_sph_spectr(my_rank, l_truncation)
 !
       integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: l_truncation
 !
 !
       if(my_rank .gt. 0) return
@@ -185,14 +184,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_ave_4_sph_spectr
+      subroutine allocate_ave_4_sph_spectr(idx_rj_degree_zero, nri_rj)
 !
-      use m_spheric_parameter
+      integer(kind = kint), intent(in) :: idx_rj_degree_zero
+      integer(kind = kint), intent(in) :: nri_rj
 !
-      if(sph_rj1%idx_rj_degree_zero .eq. 0) return
+!
+      if(idx_rj_degree_zero .eq. 0) return
 !
 !
-      nri_ave = nidx_rj(1)
+      nri_ave = nri_rj
       allocate(ave_sph_vol(ntot_rms_rj))
       allocate(ave_sph(0:nri_ave,ntot_rms_rj))
 !
@@ -225,11 +226,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine deallocate_ave_4_sph_spectr
+      subroutine deallocate_ave_4_sph_spectr(idx_rj_degree_zero)
 !
-      use m_spheric_parameter
+      integer(kind = kint), intent(in) :: idx_rj_degree_zero
 !
-      if(sph_rj1%idx_rj_degree_zero .eq. 0) return
+!
+      if(idx_rj_degree_zero .eq. 0) return
       deallocate(ave_sph, ave_sph_vol)
 !
       end subroutine deallocate_ave_4_sph_spectr
