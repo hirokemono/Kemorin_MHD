@@ -23,7 +23,7 @@
 !
       use m_precision
 !
-      use copy_sph_node_4_IO
+      use m_spheric_parameter
       use copy_sph_comm_table_4_IO
 !
       implicit none
@@ -36,12 +36,15 @@
 !
       subroutine copy_geom_rtp_sph_trans
 !
-      use m_spheric_parameter
+      use copy_sph_node_type_IO
       use copy_sph_groups_from_IO
 !
 !
-      call copy_sph_node_rtp_from_IO
-      call copy_comm_rtp_from_IO(nnod_rtp)
+      call copy_sph_node_type_rtp_from_IO(l_truncation, sph_rtp1)
+      nnod_rtp = sph_rtp1%nnod_rtp
+      nidx_rtp(1:3) = sph_rtp1%nidx_rtp(1:3)
+!
+      call copy_comm_rtp_from_IO(sph_rtp1%nnod_rtp)
 !
       call copy_rtp_nod_grp_from_IO
       call copy_rtp_radial_grp_from_IO
@@ -54,12 +57,15 @@
 !
       subroutine copy_spectr_modes_rj_sph_trans
 !
-      use m_spheric_parameter
+      use copy_sph_node_type_IO
       use copy_sph_groups_from_IO
 !
 !
-      call copy_sph_node_rj_from_IO
-      call copy_comm_rj_from_IO(nnod_rj)
+      call copy_sph_node_type_rj_from_IO(l_truncation, sph_rj1)
+      nnod_rj = sph_rj1%nnod_rj
+      nidx_rj(1:2) = sph_rj1%nidx_rj(1:2)
+!
+      call copy_comm_rj_from_IO(sph_rj1%nnod_rj)
 !
       call copy_rj_radial_grp_from_IO
       call copy_rj_sphere_grp_from_IO
@@ -70,11 +76,14 @@
 !
       subroutine copy_geom_rtm_sph_trans
 !
-      use m_spheric_parameter
+      use copy_sph_node_type_IO
 !
 !
-      call copy_sph_node_rtm_from_IO
-      call copy_comm_rtm_from_IO(nnod_rtm)
+      call copy_sph_node_type_rtm_from_IO(l_truncation, sph_rtm1)
+      nnod_rtm = sph_rtm1%nnod_rtm
+      nidx_rtm(1:3) = sph_rtm1%nidx_rtm(1:3)
+!
+      call copy_comm_rtm_from_IO(sph_rtm1%nnod_rtm)
 !
       end subroutine copy_geom_rtm_sph_trans
 !
@@ -82,11 +91,14 @@
 !
       subroutine copy_modes_rlm_sph_trans
 !
-      use m_spheric_parameter
+      use copy_sph_node_type_IO
 !
 !
-      call copy_sph_node_rlm_from_IO
-      call copy_comm_rlm_from_IO(nnod_rlm)
+      call copy_sph_node_type_rlm_from_IO(l_truncation, sph_rlm1 )
+      nnod_rlm =      sph_rlm1%nnod_rlm
+      nidx_rlm(1:2) = sph_rlm1%nidx_rlm(1:2)
+!
+      call copy_comm_rlm_from_IO(sph_rlm1%nnod_rlm)
 !
       end subroutine copy_modes_rlm_sph_trans
 !
@@ -95,12 +107,13 @@
 !
       subroutine copy_geom_rtp_IO(my_rank)
 !
+      use copy_sph_node_type_IO
       use copy_sph_groups_to_IO
 !
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      call copy_sph_node_rtp_to_IO
+      call copy_sph_node_type_rtp_to_IO(l_truncation, sph_rtp1)
       call copy_comm_rtp_to_IO(my_rank)
 !
       call copy_rtp_nod_grp_to_IO
@@ -114,12 +127,13 @@
 !
       subroutine copy_spectr_modes_rj_IO(my_rank)
 !
+      use copy_sph_node_type_IO
       use copy_sph_groups_to_IO
 !
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      call copy_sph_node_rj_to_IO
+      call copy_sph_node_type_rj_to_IO(l_truncation, sph_rj1)
       call copy_comm_rj_to_IO(my_rank)
 !
       call copy_rj_radial_grp_to_IO
@@ -131,10 +145,12 @@
 !
       subroutine copy_geom_rtm_IO(my_rank)
 !
+      use copy_sph_node_type_IO
+!
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      call copy_sph_node_rtm_to_IO
+      call copy_sph_node_type_rtm_to_IO(l_truncation, sph_rtm1)
       call copy_comm_rtm_to_IO(my_rank)
 !
       end subroutine copy_geom_rtm_IO
@@ -143,10 +159,12 @@
 !
       subroutine copy_modes_rlm_IO(my_rank)
 !
+      use copy_sph_node_type_IO
+!
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      call copy_sph_node_rlm_to_IO
+      call copy_sph_node_type_rlm_to_IO(l_truncation, sph_rlm1)
       call copy_comm_rlm_to_IO(my_rank)
 !
       end subroutine copy_modes_rlm_IO

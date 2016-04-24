@@ -47,7 +47,7 @@
 !
 !   Allocate spectr field data
 !
-      call set_sph_sprctr_data_address(rj_fld1)
+      call set_sph_sprctr_data_address(sph_rj1, rj_fld1)
 !
 ! ---------------------------------
 !

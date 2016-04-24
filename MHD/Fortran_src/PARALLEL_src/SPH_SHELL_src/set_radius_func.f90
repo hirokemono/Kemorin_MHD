@@ -89,7 +89,7 @@
 !*
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &                write(*,*) 'set_rot_earth_4_sph'
-      call set_rot_earth_4_sph(rotate)
+      call set_rot_earth_4_sph(sph_rlm1, sph_rj1, rotate)
 !
       end subroutine set_radius_rot_reft_dat_4_sph
 !

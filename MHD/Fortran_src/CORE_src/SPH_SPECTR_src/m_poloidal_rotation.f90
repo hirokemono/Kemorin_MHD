@@ -9,7 +9,7 @@
 !>@brief  Set Rotation data for Coriolis term
 !
 !!@verbatim
-!!      subroutine set_rot_earth_4_sph(rotate)
+!!      subroutine set_rot_earth_4_sph(sph_rlm, sph_rj, rotate)
 !!
 !!      subroutine deallocate_rot_rlm_data
 !!      subroutine deallocate_rot_rj_data
@@ -72,7 +72,7 @@
 !
 !
       private :: allocate_rot_rlm_data, allocate_rot_rj_data
-      private :: set_3dir_rot_earth_4_sph, set_rotatio_spectr
+      private :: set_3dir_rot_earth_4_sph, set_rotation_spectr
 !
 !  -------------------------------------------------------------------
 !
@@ -122,20 +122,24 @@
 !  --------------------------------------------------------------------
 !  --------------------------------------------------------------------
 !
-      subroutine set_rot_earth_4_sph(rotate)
+      subroutine set_rot_earth_4_sph(sph_rlm, sph_rj, rotate)
 !
-      use m_spheric_parameter
+      use t_spheric_rlm_data
+      use t_spheric_rj_data
 !
+      type(sph_rlm_grid), intent(in) :: sph_rlm
+      type(sph_rj_grid), intent(in) :: sph_rj
       real(kind = kreal), intent(in) :: rotate(3)
 !
 !
-      call allocate_rot_rlm_data(nidx_rlm(1))
-      call allocate_rot_rj_data(nidx_rj(1))
+      call allocate_rot_rlm_data(sph_rlm%nidx_rlm(1))
+      call allocate_rot_rj_data(sph_rj%nidx_rj(1))
 !
       call set_3dir_rot_earth_4_sph                                     &
-     &   (nidx_rj(1), sph_rj1%radius_1d_rj_r, rotate,                   &
+     &   (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, rotate,             &
      &    omega_rj)
-      call set_rotatio_spectr(nidx_rlm(1), sph_rlm1%radius_1d_rlm_r,    &
+      call set_rotation_spectr                                          &
+     &   (sph_rlm%nidx_rlm(1), sph_rlm%radius_1d_rlm_r,                 &
      &    one, omega_rlm(1,0), omega_rlm(1,1), omega_rlm(1,2))
 !
       end subroutine set_rot_earth_4_sph
@@ -152,18 +156,18 @@
       real(kind = kreal), intent(inout) :: omega(nri,0:2,3)
 !
 !
-      call set_rotatio_spectr(nri, r, rotate(2),                        &
+      call set_rotation_spectr(nri, r, rotate(2),                       &
      &         omega(1,0,1), omega(1,1,1), omega(1,2,1))
-      call set_rotatio_spectr(nri, r, rotate(3),                        &
+      call set_rotation_spectr(nri, r, rotate(3),                       &
      &         omega(1,0,2), omega(1,1,2), omega(1,2,2))
-      call set_rotatio_spectr(nri, r, rotate(1),                        &
+      call set_rotation_spectr(nri, r, rotate(1),                       &
      &         omega(1,0,3), omega(1,1,3), omega(1,2,3))
 !*
       end subroutine set_3dir_rot_earth_4_sph
 !
 !  -------------------------------------------------------------------
 !
-      subroutine set_rotatio_spectr(nri, r, rotate,                     &
+      subroutine set_rotation_spectr(nri, r, rotate,                    &
       &         rot_e, drot_e, d2rot_e)
 !
       integer(kind = kint), intent(in) :: nri
@@ -183,7 +187,7 @@
         d2rot_e(k) =      rotate
       end do
 !*
-      end subroutine set_rotatio_spectr
+      end subroutine set_rotation_spectr
 !
 !  -------------------------------------------------------------------
 !

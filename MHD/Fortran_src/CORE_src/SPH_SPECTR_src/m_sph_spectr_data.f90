@@ -8,7 +8,7 @@
 !!
 !!
 !!@verbatim
-!!      subroutine allocate_reft_rj_data
+!!      subroutine allocate_reft_rj_data(sph_rj)
 !!      subroutine deallocate_reft_rj_data
 !!@endverbatim
 !!
@@ -18,12 +18,16 @@
 !
       use m_precision
       use t_phys_data
-      use t_sph_spectr_data
+      use t_spheric_rj_data
 !
       implicit  none
 !
 !>        Structure for field data
         type(phys_data), save :: rj_fld1
+!
+!
+!>      Number of radial points for reference temperature
+      integer(kind = kint) :: nri_reftemp
 !
 !>    reference temerature spectr @f$ f(r,j) @f$
 !!@verbatim
@@ -38,14 +42,12 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine allocate_reft_rj_data
+      subroutine allocate_reft_rj_data(sph_rj)
 !
-      use m_spheric_parameter
+      type(sph_rj_grid), intent(in) :: sph_rj
 !
-      integer(kind = kint) :: num
-!
-      num = nidx_rj(1)
-      allocate( reftemp_rj(num,0:1)   )
+      nri_reftemp = sph_rj%nidx_rj(1)
+      allocate( reftemp_rj(nri_reftemp,0:1)   )
       reftemp_rj =  0.0d0
 !
       end subroutine allocate_reft_rj_data

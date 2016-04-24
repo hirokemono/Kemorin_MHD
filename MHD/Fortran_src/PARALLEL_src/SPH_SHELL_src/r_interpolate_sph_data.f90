@@ -279,11 +279,11 @@
       write(*,*) ' ipol%i_magne', ipol%i_magne, kr_outside, kr_inside
       if (ipol%i_magne .gt. 0) then
         call gauss_to_poloidal_out(kr_outside, ltr_w, r_gauss,          &
-     &      w_gauss, index_w, ipol%i_magne, sph_rj1%a_r_1d_rj_r,        &
-     &      rj_fld%ntot_phys, rj_fld%d_fld)
+     &      w_gauss, index_w, ipol%i_magne, sph_rj1,                    &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         call gauss_to_poloidal_in(kr_inside, ltr_w, r_gauss,            &
-     &      w_gauss, index_w, ipol%i_magne, sph_rj1%radius_1d_rj_r,     &
-     &      rj_fld%ntot_phys, rj_fld%d_fld)
+     &      w_gauss, index_w, ipol%i_magne, sph_rj1,                    &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       end subroutine set_poloidal_b_by_gauss_coefs

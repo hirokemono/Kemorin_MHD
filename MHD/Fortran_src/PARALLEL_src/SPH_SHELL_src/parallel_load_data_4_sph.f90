@@ -148,7 +148,8 @@
 !
 !
       if (iflag_debug.gt.0) write(*,*) 's_count_num_sph_smp'
-      call s_count_num_sph_smp(ierr)
+      call s_count_num_sph_smp                                          &
+     &   (sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1, ierr)
 !      if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message_Rsmp)
 !
       call set_reverse_import_table(nnod_rtp, ntot_item_sr_rtp,         &
@@ -252,7 +253,8 @@
       call input_modes_rj_sph_trans(my_rank)
 !
       if (iflag_debug.gt.0) write(*,*) 's_count_num_sph_smp'
-      call s_count_num_sph_smp(ierr)
+      call s_count_num_sph_smp                                          &
+     &   (sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1, ierr)
 !      if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message_Rsmp)
 !
       call set_reverse_import_table(nnod_rj, ntot_item_sr_rj,           &

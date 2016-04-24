@@ -7,7 +7,9 @@
 !>@brief  start addresses for spetr fields
 !!
 !!@verbatim
-!!      subroutine set_sph_sprctr_data_address(rj_fld)
+!!      subroutine set_sph_sprctr_data_address(sph_rj, rj_fld)
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
       module m_sph_phys_address
@@ -36,17 +38,19 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine set_sph_sprctr_data_address(rj_fld)
+      subroutine set_sph_sprctr_data_address(sph_rj, rj_fld)
 !
-      use m_spheric_parameter
+      use t_spheric_rj_data
       use t_phys_data
+!
       use set_field_address
 !
+      type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_data), intent(inout) :: rj_fld
 !
 !   set address of spectr fields
 !
-      call alloc_phys_data_type(nnod_rj, rj_fld)
+      call alloc_phys_data_type(sph_rj%nnod_rj, rj_fld)
       call set_field_addresses(ione, rj_fld%num_phys,                   &
      &    rj_fld%phys_name, rj_fld%num_component, ipol)
 !

@@ -9,8 +9,9 @@
 !>@brief Copy spherical harmonics indices
 !!
 !!@verbatim
-!!      subroutine const_4th_fdm_matrices
-!!      subroutine const_4th_fdm_coefs
+!!      subroutine const_4th_fdm_matrices(nlayer_ICB, sph_rj)
+!!      subroutine const_4th_fdm_coefs(sph_rj)
+!!        type(sph_rj_grid), intent(in) :: sph_rj
 !!
 !!      subroutine nod_r_4th_fdm_coefs_nonequi                          &
 !!     &         (nlayer_ICB, nri, radius_1d_rj_r)
@@ -35,32 +36,38 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine const_4th_fdm_matrices
+      subroutine const_4th_fdm_matrices(nlayer_ICB, sph_rj)
 !
-      use m_spheric_parameter
+      use t_spheric_rj_data
       use m_fdm_4th_coefs
 !
+      integer(kind = kint), intent(in) :: nlayer_ICB
+      type(sph_rj_grid), intent(in) :: sph_rj
 !
-      call allocate_fdm4_matrices(nidx_rj(1))
+!
+      call allocate_fdm4_matrices(sph_rj%nidx_rj(1))
 !   Choose radial differences
       call nod_r_4th_fdm_coefs_nonequi                                  &
-     &   (nlayer_ICB, nidx_rj(1), sph_rj1%radius_1d_rj_r)
+     &   (nlayer_ICB, sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r)
 !
       end subroutine const_4th_fdm_matrices
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_4th_fdm_coefs
+      subroutine const_4th_fdm_coefs(sph_rj)
 !
-      use m_spheric_parameter
+      use t_spheric_rj_data
       use m_fdm_4th_coefs
 !
-      call allocate_fdm4_coefs(nidx_rj(1))
-      call copy_fdm4_nod_coefs_from_mat(nidx_rj(1))
+      type(sph_rj_grid), intent(in) :: sph_rj
+!
+!
+      call allocate_fdm4_coefs(sph_rj%nidx_rj(1))
+      call copy_fdm4_nod_coefs_from_mat(sph_rj%nidx_rj(1))
       call deallocate_fdm4_matrices
 !
       if(iflag_debug .eq. iflag_full_msg) then
-        call check_fdm_4_coefs(nidx_rj(1), sph_rj1%radius_1d_rj_r)
+        call check_fdm_4_coefs(sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r)
       end if
 !
       end subroutine const_4th_fdm_coefs

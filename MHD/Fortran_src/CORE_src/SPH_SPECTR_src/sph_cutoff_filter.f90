@@ -8,15 +8,16 @@
 !>@brief  Subroutines to reead control data
 !!
 !!@verbatim
-!!      subroutine init_horizontal_cutoff_filter
+!!      subroutine init_horizontal_cutoff_filter(sph_rj)
 !!      subroutine deallocate_sph_cutoff_filter
 !!
-!!      subroutine sph_horizontal_cutoff_scalar(nnod_rj, ntot_comp_rj,  &
-!!     &          i_fld, i_filtered, d_rj)
-!!      subroutine sph_horizontal_cutoff_vector(nnod_rj, ntot_comp_rj,  &
-!!     &          i_fld, i_filtered, d_rj)
-!!      subroutine sph_horizontal_cutoff_tensor(nnod_rj, ntot_comp_rj,  &
-!!     &          i_fld, i_filtered, d_rj)
+!!      subroutine sph_horizontal_cutoff_scalar(n_point, ntot_comp_rj,  &
+!!     &          i_fld, i_filtered, sph_rj, d_rj)
+!!      subroutine sph_horizontal_cutoff_vector(n_point, ntot_comp_rj,  &
+!!     &          i_fld, i_filtered, sph_rj, d_rj)
+!!      subroutine sph_horizontal_cutoff_tensor(n_point, ntot_comp_rj,  &
+!!     &          i_fld, i_filtered, sph_rj, d_rj)
+!!        type(sph_rj_grid), intent(in) :: sph_rj
 !!@endverbatim
 !!
 !!@n @param  nnod_rj         number of data points for spectr data
@@ -30,7 +31,8 @@
       use m_precision
       use m_constants
       use m_machine_parameter
-      use m_spheric_parameter
+!
+      use t_spheric_rj_data
 !
       implicit none
 !
@@ -49,12 +51,14 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine allocate_sph_cutoff_filter
+      subroutine allocate_sph_cutoff_filter(sph_rj)
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
 !
       integer(kind = kint) :: num
 !
 !
-      num = nidx_rj(2)
+      num = sph_rj%nidx_rj(2)
       allocate(c_filter(num))
       c_filter = zero
 !
@@ -72,16 +76,18 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine init_horizontal_cutoff_filter
+      subroutine init_horizontal_cutoff_filter(sph_rj)
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
 !
       integer(kind = kint) :: j
 !
 !
-      call allocate_sph_cutoff_filter
+      call allocate_sph_cutoff_filter(sph_rj)
 !
 !$omp parallel do
-      do j = 1, nidx_rj(2)
-        if(sph_rj1%idx_gl_1d_rj_j(j,2) .le. ltr_lowpass) then
+      do j = 1, sph_rj%nidx_rj(2)
+        if(sph_rj%idx_gl_1d_rj_j(j,2) .le. ltr_lowpass) then
           c_filter(j) = one
         end if
       end do
@@ -92,19 +98,20 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine sph_horizontal_cutoff_scalar(nnod_rj, ntot_comp_rj,    &
-     &          i_fld, i_filtered, d_rj)
+      subroutine sph_horizontal_cutoff_scalar(n_point, ntot_comp_rj,    &
+     &          i_fld, i_filtered, sph_rj, d_rj)
 !
+      type(sph_rj_grid), intent(in) :: sph_rj
       integer(kind = kint), intent(in) :: i_filtered, i_fld
-      integer(kind = kint), intent(in) :: nnod_rj, ntot_comp_rj
-      real(kind= kreal), intent(inout) :: d_rj(nnod_rj, ntot_comp_rj)
+      integer(kind = kint), intent(in) :: n_point, ntot_comp_rj
+      real(kind= kreal), intent(inout) :: d_rj(n_point, ntot_comp_rj)
 !
       integer(kind = kint) :: inod, kr, j
 !
 !$omp parallel do private(kr,j,inod)
-      do kr = 1, nidx_rj(1)
-        do j = 1, nidx_rj(2)
-          inod = j + (kr-1)*nidx_rj(2)
+      do kr = 1, sph_rj%nidx_rj(1)
+        do j = 1, sph_rj%nidx_rj(2)
+          inod = j + (kr-1) * sph_rj%nidx_rj(2)
           d_rj(inod,i_filtered  ) = c_filter(j) * d_rj(inod,i_fld  )
         end do
       end do
@@ -114,20 +121,21 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine sph_horizontal_cutoff_vector(nnod_rj, ntot_comp_rj,    &
-     &          i_fld, i_filtered, d_rj)
+      subroutine sph_horizontal_cutoff_vector(n_point, ntot_comp_rj,    &
+     &          i_fld, i_filtered, sph_rj, d_rj)
 !
+      type(sph_rj_grid), intent(in) :: sph_rj
       integer(kind = kint), intent(in) :: i_filtered, i_fld
-      integer(kind = kint), intent(in) :: nnod_rj, ntot_comp_rj
-      real(kind= kreal), intent(inout) :: d_rj(nnod_rj, ntot_comp_rj)
+      integer(kind = kint), intent(in) :: n_point, ntot_comp_rj
+      real(kind= kreal), intent(inout) :: d_rj(n_point, ntot_comp_rj)
 !
       integer(kind = kint) :: inod, kr, j
 !
 !
 !$omp parallel do private(kr,j,inod)
-      do kr = 1, nidx_rj(1)
-        do j = 1, nidx_rj(2)
-          inod = j + (kr-1)*nidx_rj(2)
+      do kr = 1, sph_rj%nidx_rj(1)
+        do j = 1, sph_rj%nidx_rj(2)
+          inod = j + (kr-1) * sph_rj%nidx_rj(2)
           d_rj(inod,i_filtered  ) = c_filter(j) * d_rj(inod,i_fld  )
           d_rj(inod,i_filtered+1) = c_filter(j) * d_rj(inod,i_fld+1)
           d_rj(inod,i_filtered+2) = c_filter(j) * d_rj(inod,i_fld+2)
@@ -139,20 +147,21 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine sph_horizontal_cutoff_tensor(nnod_rj, ntot_comp_rj,    &
-     &          i_fld, i_filtered, d_rj)
+      subroutine sph_horizontal_cutoff_tensor(n_point, ntot_comp_rj,    &
+     &          i_fld, i_filtered, sph_rj, d_rj)
 !
+      type(sph_rj_grid), intent(in) :: sph_rj
       integer(kind = kint), intent(in) :: i_filtered, i_fld
-      integer(kind = kint), intent(in) :: nnod_rj, ntot_comp_rj
-      real(kind= kreal), intent(inout) :: d_rj(nnod_rj, ntot_comp_rj)
+      integer(kind = kint), intent(in) :: n_point, ntot_comp_rj
+      real(kind= kreal), intent(inout) :: d_rj(n_point, ntot_comp_rj)
 !
       integer(kind = kint) :: inod, kr, j
 !
 !
 !$omp parallel do private(kr,j,inod)
-      do kr = 1, nidx_rj(1)
-        do j = 1, nidx_rj(2)
-          inod = j + (kr-1)*nidx_rj(2)
+      do kr = 1, sph_rj%nidx_rj(1)
+        do j = 1, sph_rj%nidx_rj(2)
+          inod = j + (kr-1) * sph_rj%nidx_rj(2)
           d_rj(inod,i_filtered  ) = c_filter(j) * d_rj(inod,i_fld  )
           d_rj(inod,i_filtered+1) = c_filter(j) * d_rj(inod,i_fld+1)
           d_rj(inod,i_filtered+2) = c_filter(j) * d_rj(inod,i_fld+2)

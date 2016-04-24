@@ -57,7 +57,7 @@
 !
 !   Allocate spectr field data
 !
-      call set_sph_sprctr_data_address(rj_fld1)
+      call set_sph_sprctr_data_address(sph_rj1, rj_fld1)
 !
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
       call allocate_vector_for_solver(isix, nnod_rtp)
