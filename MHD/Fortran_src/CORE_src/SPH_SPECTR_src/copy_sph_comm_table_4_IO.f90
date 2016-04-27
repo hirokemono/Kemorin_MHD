@@ -46,26 +46,27 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_comm_rtp_from_IO(nnod_rtp)
+      subroutine copy_comm_rtp_from_IO(nnod_rtp, comm_rtp)
 !
       use copy_sph_comm_tbl_type_4_IO
 !
       integer(kind = kint), intent(in) :: nnod_rtp
+      type(sph_comm_tbl), intent(inout) :: comm_rtp
 !
 !
-      comm_rtp1%nneib_domain = num_neib_domain_IO
-      ntot_item_sr_rtp = ntot_import_IO
+      comm_rtp%nneib_domain = num_neib_domain_IO
+      comm_rtp%ntot_item_sr = ntot_import_IO
 !
-      call allocate_sph_comm_stack_rtp
-      call allocate_sph_comm_item_rtp(nnod_rtp)
+      call alloc_type_sph_comm_stack(comm_rtp)
+      call alloc_type_sph_comm_item(nnod_rtp, comm_rtp)
 !
-      id_domain_rtp(1:comm_rtp1%nneib_domain)                                 &
-     &      = id_neib_domain_IO(1:comm_rtp1%nneib_domain)
-      istack_sr_rtp(0:comm_rtp1%nneib_domain)                                 &
-     &      = istack_import_IO(0:comm_rtp1%nneib_domain)
+      comm_rtp%id_domain(1:comm_rtp%nneib_domain)                       &
+     &      = id_neib_domain_IO(1:comm_rtp%nneib_domain)
+      comm_rtp%istack_sr(0:comm_rtp%nneib_domain)                       &
+     &      = istack_import_IO(0:comm_rtp%nneib_domain)
 !
-      item_sr_rtp(1:ntot_item_sr_rtp)                                   &
-     &      = item_import_IO(1:ntot_item_sr_rtp)
+      comm_rtp%item_sr(1:comm_rtp%ntot_item_sr)                         &
+     &      = item_import_IO(1:comm_rtp%ntot_item_sr)
 !
       call deallocate_import_item_IO
       call deallocate_neib_domain_IO
@@ -159,21 +160,21 @@
 !
       my_rank_IO = my_rank
       num_neib_domain_IO = comm_rtp1%nneib_domain
-      ntot_import_IO =     ntot_item_sr_rtp
+      ntot_import_IO =     comm_rtp1%ntot_item_sr
 !
       call allocate_neib_domain_IO
       call allocate_import_stack_IO
       call allocate_import_item_IO
 !
-      id_neib_domain_IO(1:comm_rtp1%nneib_domain)                             &
-     &      = id_domain_rtp(1:comm_rtp1%nneib_domain)
-      istack_import_IO(0:comm_rtp1%nneib_domain)                              &
-     &      = istack_sr_rtp(0:comm_rtp1%nneib_domain)
+      id_neib_domain_IO(1:comm_rtp1%nneib_domain)                       &
+     &      = comm_rtp1%id_domain(1:comm_rtp1%nneib_domain)
+      istack_import_IO(0:comm_rtp1%nneib_domain)                        &
+     &      = comm_rtp1%istack_sr(0:comm_rtp1%nneib_domain)
 !
-      item_import_IO(1:ntot_item_sr_rtp)                                &
-     &      = item_sr_rtp(1:ntot_item_sr_rtp)
+      item_import_IO(1:comm_rtp1%ntot_item_sr)                          &
+     &      = comm_rtp1%item_sr(1:comm_rtp1%ntot_item_sr)
 !
-      call deallocate_sph_comm_item_rtp
+      call dealloc_type_sph_comm_item(comm_rtp1)
 !
       end subroutine copy_comm_rtp_to_IO
 !

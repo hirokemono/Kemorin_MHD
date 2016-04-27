@@ -227,20 +227,22 @@
       call count_comm_table_4_rtp(ip_rank, ndomain_sph, comm_rtm,       &
      &    comm_rtp1%nneib_domain)
 !
-      call allocate_sph_comm_stack_rtp
+      call alloc_type_sph_comm_stack(comm_rtp1)
 !
-      call set_comm_stack_rtp_rj(comm_rtp1%nneib_domain, id_domain_rtp, &
-     &    istack_sr_rtp, ntot_item_sr_rtp)
+      call set_comm_stack_rtp_rj                                        &
+     &   (comm_rtp1%nneib_domain, comm_rtp1%id_domain,                  &
+     &    comm_rtp1%istack_sr, comm_rtp1%ntot_item_sr)
 !      write(*,*) 'nneib_domain_rtp', comm_rtp1%nneib_domain
-!      write(*,*) 'id_domain_rtp', id_domain_rtp
-!      write(*,*) 'ntot_item_sr_rtp', ntot_item_sr_rtp
-!      write(*,*) 'istack_sr_rtp', istack_sr_rtp
+!      write(*,*) 'id_domain_rtp',    comm_rtp1%id_domain
+!      write(*,*) 'ntot_item_sr_rtp', comm_rtp1%ntot_item_sr
+!      write(*,*) 'istack_sr_rtp',    comm_rtp1%istack_sr
 !
       call deallocate_domain_sr_tmp
-      call allocate_sph_comm_item_rtp(nnod_rtp)
+      call alloc_type_sph_comm_item(nnod_rtp, comm_rtp1)
 !
       icou = 0
-      call set_comm_table_4_rtp(ip_rank, ndomain_sph, comm_rtm, icou)
+      call set_comm_table_4_rtp(ip_rank, ndomain_sph, comm_rtm,         &
+     &    comm_rtp1%ntot_item_sr, comm_rtp1%item_sr, icou)
 !
       end subroutine const_comm_table_4_rtp
 !
@@ -383,7 +385,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_comm_table_4_rtp                                   &
-     &         (ip_rank, ndomain_sph, comm_rtm, icou)
+     &         (ip_rank, ndomain_sph, comm_rtm,                         &
+     &          ntot_item_sr_rtp, item_sr_rtp, icou)
 !
       use m_sph_trans_comm_table
       use set_local_index_table_sph
@@ -391,8 +394,12 @@
 !
       integer(kind = kint), intent(in) :: ip_rank
       integer(kind = kint), intent(in) :: ndomain_sph
+      integer(kind = kint), intent(in) :: ntot_item_sr_rtp
       type(sph_comm_tbl), intent(in) :: comm_rtm(ndomain_sph)
+!
       integer(kind = kint), intent(inout) :: icou
+      integer(kind = kint), intent(inout)                               &
+     &              :: item_sr_rtp(ntot_item_sr_rtp)
 !
       integer(kind = kint) :: jst, jed, j, jnod
       integer(kind = kint) :: k_tmp, l_tmp, m_tmp, k_glb, l_glb, m_glb

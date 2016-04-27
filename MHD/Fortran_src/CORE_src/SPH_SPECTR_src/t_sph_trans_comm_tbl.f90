@@ -16,8 +16,12 @@
 !!      subroutine alloc_type_sph_comm_stack(comm)
 !!      subroutine alloc_type_sph_comm_item(numnod, comm)
 !!      subroutine dealloc_type_sph_comm_item(comm)
-!!      subroutine dealloc_type_sph_comm_item(comm)
 !!        type(sph_comm_tbl), intent(inout) :: comm
+!!
+!!      subroutine copy_sph_comm_neib(comm_org, comm_new)
+!!      subroutine copy_sph_comm_item(nnod_sph, comm_org, comm_new)
+!!        type(sph_comm_tbl), intent(in) :: comm_org
+!!        type(sph_comm_tbl), intent(inout) :: comm_new
 !!
 !!      subroutine set_reverse_sph_comm_tbl_t(numnod, comm)
 !!        integer(kind = kint), intent(in) :: numnod
@@ -163,6 +167,46 @@
       call dealloc_type_sph_comm_stack(comm)
 !
       end subroutine dealloc_type_sph_comm_item
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine copy_sph_comm_neib(comm_org, comm_new)
+!
+      type(sph_comm_tbl), intent(in) :: comm_org
+      type(sph_comm_tbl), intent(inout) :: comm_new
+!
+!
+      comm_new%nneib_domain = comm_org%nneib_domain
+      call alloc_type_sph_comm_stack(comm_new)
+!
+      comm_new%id_domain(1:comm_new%nneib_domain)                       &
+     &      = comm_org%id_domain(1:comm_new%nneib_domain)
+      comm_new%istack_sr(0:comm_new%nneib_domain)                       &
+     &      = comm_org%istack_sr(0:comm_new%nneib_domain)
+!
+      end subroutine copy_sph_comm_neib
+!
+! -----------------------------------------------------------------------
+!
+      subroutine copy_sph_comm_item(nnod_sph, comm_org, comm_new)
+!
+      integer(kind = kint), intent(in) :: nnod_sph
+      type(sph_comm_tbl), intent(in) :: comm_org
+      type(sph_comm_tbl), intent(inout) :: comm_new
+!
+!
+      comm_new%ntot_item_sr = comm_org%ntot_item_sr
+      call alloc_type_sph_comm_item(nnod_sph, comm_new)
+!
+      comm_new%item_sr(1:comm_org%ntot_item_sr)                         &
+     &      = comm_org%item_sr(1:comm_org%ntot_item_sr)
+!
+      call set_reverse_sph_comm_tbl_t(nnod_sph, comm_new)
+!
+      comm_new%iflag_self = comm_org%iflag_self
+!
+      end subroutine copy_sph_comm_item
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

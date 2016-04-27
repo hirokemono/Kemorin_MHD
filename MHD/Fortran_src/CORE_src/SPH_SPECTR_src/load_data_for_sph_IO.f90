@@ -56,6 +56,8 @@
       subroutine input_geom_rtp_sph_trans                               &
      &         (my_rank, l_truncation, sph_rtp)
 !
+      use m_sph_trans_comm_table
+!
       use copy_sph_comm_table_4_IO
       use copy_sph_node_4_IO
       use copy_sph_groups_from_IO
@@ -68,7 +70,7 @@
       call sel_read_geom_rtp_file(my_rank)
 !
       call copy_sph_node_4_rtp_from_IO(l_truncation, sph_rtp)
-      call copy_comm_rtp_from_IO(sph_rtp%nnod_rtp)
+      call copy_comm_rtp_from_IO(sph_rtp%nnod_rtp, comm_rtp1)
 !
       call copy_rtp_nod_grp_from_IO
       call copy_rtp_radial_grp_from_IO

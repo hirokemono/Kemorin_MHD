@@ -8,7 +8,6 @@
 !!        from structures
 !!
 !!@verbatim
-!!      subroutine copy_neib_rtp_from_type(rtp_comm)
 !!      subroutine copy_neib_rtm_from_type(rtm_comm)
 !!      subroutine copy_neib_rlm_from_type(rlm_comm)
 !!      subroutine copy_neib_rj_from_type(rj_comm)
@@ -19,8 +18,6 @@
 !!      subroutine copy_comm_rj_from_type(rj_comm, nnod_rj)
 !!
 !!      subroutine copy_comm_rtp_to_type(sph_rtp, rtp_comm)
-!!      subroutine copy_comm_rtp_num_to_type(rtp_comm)
-!!      subroutine copy_comm_rtp_item_to_type(sph_rtp, rtp_comm)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(inout) :: rtp_comm
 !!      subroutine copy_comm_rtm_to_type(sph_rtm, rtm_comm)
@@ -53,23 +50,6 @@
 ! -----------------------------------------------------------------------
 !
       contains
-!
-! -----------------------------------------------------------------------
-!
-      subroutine copy_neib_rtp_from_type(rtp_comm)
-!
-      type(sph_comm_tbl), intent(in) :: rtp_comm
-!
-!
-      comm_rtp1%nneib_domain = rtp_comm%nneib_domain
-      call allocate_sph_comm_stack_rtp
-!
-      id_domain_rtp(1:comm_rtp1%nneib_domain)                                 &
-     &      = rtp_comm%id_domain(1:comm_rtp1%nneib_domain)
-      istack_sr_rtp(0:comm_rtp1%nneib_domain)                                 &
-     &      = rtp_comm%istack_sr(0:comm_rtp1%nneib_domain)
-!
-      end subroutine copy_neib_rtp_from_type
 !
 ! -----------------------------------------------------------------------
 !
@@ -131,17 +111,8 @@
       type(sph_comm_tbl), intent(in) :: rtp_comm
 !
 !
-      call copy_neib_rtp_from_type(rtp_comm)
-!
-      ntot_item_sr_rtp = rtp_comm%ntot_item_sr
-      call allocate_sph_comm_item_rtp(nnod_rtp)
-!
-      item_sr_rtp(1:ntot_item_sr_rtp)                                   &
-     &      = rtp_comm%item_sr(1:ntot_item_sr_rtp)
-      irev_sr_rtp(1:nnod_rtp) = rtp_comm%irev_sr(1:nnod_rtp)
-      iflag_self_rtp = rtp_comm%iflag_self
-!
-!      call dealloc_type_sph_comm_item(rtp_comm)
+      call copy_sph_comm_neib(rtp_comm, comm_rtp1)
+      call copy_sph_comm_item(nnod_rtp, rtp_comm, comm_rtp1)
 !
       end subroutine copy_comm_rtp_from_type
 !
@@ -222,8 +193,8 @@
       type(sph_comm_tbl), intent(inout) :: rtp_comm
 !
 !
-      call copy_comm_rtp_num_to_type(rtp_comm)
-      call copy_comm_rtp_item_to_type(sph_rtp, rtp_comm)
+      call copy_sph_comm_neib(comm_rtp1, rtp_comm)
+      call copy_sph_comm_item(sph_rtp%nnod_rtp, comm_rtp1, rtp_comm)
 !
       end subroutine copy_comm_rtp_to_type
 !
@@ -273,25 +244,6 @@
       end subroutine copy_comm_rj_to_type
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine copy_comm_rtp_num_to_type(rtp_comm)
-!
-      use t_spheric_parameter
-!
-      type(sph_comm_tbl), intent(inout) :: rtp_comm
-!
-!
-      rtp_comm%nneib_domain = comm_rtp1%nneib_domain
-      call alloc_type_sph_comm_stack(rtp_comm)
-!
-      rtp_comm%id_domain(1:comm_rtp1%nneib_domain)                            &
-     &      = id_domain_rtp(1:comm_rtp1%nneib_domain)
-      rtp_comm%istack_sr(0:comm_rtp1%nneib_domain)                            &
-     &      = istack_sr_rtp(0:comm_rtp1%nneib_domain)
-!
-      end subroutine copy_comm_rtp_num_to_type
-!
 ! -----------------------------------------------------------------------
 !
       subroutine copy_comm_rtm_num_to_type(rtm_comm)
@@ -350,28 +302,6 @@
       end subroutine copy_comm_rj_num_to_type
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine copy_comm_rtp_item_to_type(sph_rtp, rtp_comm)
-!
-      use t_spheric_parameter
-!
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_comm_tbl), intent(inout) :: rtp_comm
-!
-!
-      rtp_comm%ntot_item_sr = ntot_item_sr_rtp
-      call alloc_type_sph_comm_item(sph_rtp%nnod_rtp, rtp_comm)
-!
-      rtp_comm%item_sr(1:ntot_item_sr_rtp)                              &
-     &      = item_sr_rtp(1:ntot_item_sr_rtp)
-!
-      call set_reverse_sph_comm_tbl_t(sph_rtp%nnod_rtp, rtp_comm)
-!
-      rtp_comm%iflag_self = iflag_self_rtp
-!
-      end subroutine copy_comm_rtp_item_to_type
-!
 ! -----------------------------------------------------------------------
 !
       subroutine copy_comm_rtm_item_to_type(sph_rtm, rtm_comm)

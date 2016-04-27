@@ -220,24 +220,24 @@
       if(iflag_FFT .eq. iflag_FFTW) then
         call MHD_multi_fwd_FFTW_to_send                                 &
      &     (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                      &
-     &      ncomp_fwd, n_WS, irev_sr_rtp, frc_rtp(1,1), WS(1))
+     &      ncomp_fwd, n_WS, comm_rtp1%irev_sr, frc_rtp(1,1), WS(1))
         return
       else if(iflag_FFT .eq. iflag_FFTW_FIELD) then
         call sph_field_fwd_FFTW_to_send                                 &
      &     (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                      &
-     &      ncomp_fwd, n_WS, irev_sr_rtp, frc_rtp(1,1), WS(1))
+     &      ncomp_fwd, n_WS, comm_rtp1%irev_sr, frc_rtp(1,1), WS(1))
         return
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         call sph_single_fwd_FFTW_to_send                                &
      &     (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                      &
-     &      ncomp_fwd, n_WS, irev_sr_rtp, frc_rtp(1,1), WS(1))
+     &      ncomp_fwd, n_WS, comm_rtp1%irev_sr, frc_rtp(1,1), WS(1))
         return
       end if
 #endif
 !
         call sph_RFFTMF_to_send                                         &
      &     (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                      &
-     &      ncomp_fwd, n_WS, irev_sr_rtp, frc_rtp(1,1), WS(1))
+     &      ncomp_fwd, n_WS, comm_rtp1%irev_sr, frc_rtp(1,1), WS(1))
 !
       end subroutine fwd_MHD_FFT_sel_from_recv
 !
@@ -262,24 +262,24 @@
       if(iflag_FFT .eq. iflag_FFTW) then
         call MHD_multi_back_FFTW_from_recv                              &
      &     (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                      &
-     &      ncomp_bwd, n_WR, irev_sr_rtp, WR(1), fld_rtp(1,1))
+     &      ncomp_bwd, n_WR, comm_rtp1%irev_sr, WR(1), fld_rtp(1,1))
         return
       else if(iflag_FFT .eq. iflag_FFTW_FIELD) then
         call sph_field_back_FFTW_from_recv                              &
      &     (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                      &
-     &      ncomp_bwd, n_WR, irev_sr_rtp, WR(1), fld_rtp(1,1))
+     &      ncomp_bwd, n_WR, comm_rtp1%irev_sr, WR(1), fld_rtp(1,1))
         return
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         call sph_single_back_FFTW_from_recv                             &
      &     (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                      &
-     &      ncomp_bwd, n_WR, irev_sr_rtp, WR(1), fld_rtp(1,1))
+     &      ncomp_bwd, n_WR, comm_rtp1%irev_sr, WR(1), fld_rtp(1,1))
         return
       end if
 #endif
 !
         call sph_RFFTMB_from_recv                                       &
      &     (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                      &
-     &      ncomp_bwd, n_WR, irev_sr_rtp, WR, fld_rtp(1,1))
+     &      ncomp_bwd, n_WR, comm_rtp1%irev_sr, WR, fld_rtp(1,1))
 !
       end subroutine back_MHD_FFT_sel_from_recv
 !
