@@ -62,16 +62,16 @@
 !
       call finish_send_recv_rj_2_rlm
 !$omp parallel workshare
-      WS(1:ncomp*ntot_item_sr_rtm) = 0.0d0
+      WS(1:ncomp*comm_rtm1%ntot_item_sr) = 0.0d0
 !$omp end parallel workshare
 !
       if(nvector .gt. 0) then
         call leg_b_trans_vec_sym_matmul(ncomp, nvector,                 &
-     &      irev_sr_rlm, irev_sr_rtm, n_WR, n_WS, WR, WS)
+     &      irev_sr_rlm, comm_rtm1%irev_sr, n_WR, n_WS, WR, WS)
       end if
       if(nscalar .gt. 0) then
         call leg_b_trans_scl_sym_matmul(ncomp, nvector, nscalar,        &
-     &      irev_sr_rlm, irev_sr_rtm, n_WR, n_WS, WR, WS)
+     &      irev_sr_rlm, comm_rtm1%irev_sr, n_WR, n_WS, WR, WS)
       end if
 !
       end subroutine leg_backward_trans_sym_matmul
@@ -98,11 +98,11 @@
 !
       if(nvector .gt. 0) then
         call leg_f_trans_vec_sym_matmul(ncomp, nvector,                 &
-     &      irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR, WS)
+     &      comm_rtm1%irev_sr, irev_sr_rlm, n_WR, n_WS, WR, WS)
       end if
       if(nscalar .gt. 0) then
         call leg_f_trans_scl_sym_matmul(ncomp, nvector, nscalar,        &
-     &      irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR, WS)
+     &      comm_rtm1%irev_sr, irev_sr_rlm, n_WR, n_WS, WR, WS)
       end if
 !
       end subroutine leg_forward_trans_sym_matmul
@@ -125,16 +125,16 @@
 !
       call finish_send_recv_rj_2_rlm
 !$omp parallel workshare
-      WS(1:ncomp*ntot_item_sr_rtm) = 0.0d0
+      WS(1:ncomp*comm_rtm1%ntot_item_sr) = 0.0d0
 !$omp end parallel workshare
 !
       if(nvector .gt. 0) then
         call leg_b_trans_vec_sym_dgemm(ncomp, nvector,                  &
-     &      irev_sr_rlm, irev_sr_rtm, n_WR, n_WS, WR, WS)
+     &      irev_sr_rlm, comm_rtm1%irev_sr, n_WR, n_WS, WR, WS)
       end if
       if(nscalar .gt. 0) then
         call leg_b_trans_scl_sym_dgemm(ncomp, nvector, nscalar,         &
-     &      irev_sr_rlm, irev_sr_rtm, n_WR, n_WS, WR, WS)
+     &      irev_sr_rlm, comm_rtm1%irev_sr, n_WR, n_WS, WR, WS)
       end if
 !
       end subroutine leg_backward_trans_sym_dgemm
@@ -161,11 +161,11 @@
 !
       if(nvector .gt. 0) then
         call leg_f_trans_vec_sym_dgemm(ncomp, nvector,                  &
-     &      irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR, WS)
+     &      comm_rtm1%irev_sr, irev_sr_rlm, n_WR, n_WS, WR, WS)
       end if
       if(nscalar .gt. 0) then
         call leg_f_trans_scl_sym_dgemm(ncomp, nvector, nscalar,         &
-     &      irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR, WS)
+     &      comm_rtm1%irev_sr, irev_sr_rlm, n_WR, n_WS, WR, WS)
       end if
 !
       end subroutine leg_forward_trans_sym_dgemm
@@ -188,16 +188,16 @@
 !
       call finish_send_recv_rj_2_rlm
 !$omp parallel workshare
-      WS(1:ncomp*ntot_item_sr_rtm) = 0.0d0
+      WS(1:ncomp*comm_rtm1%ntot_item_sr) = 0.0d0
 !$omp end parallel workshare
 !
       if(nvector .gt. 0) then
         call leg_b_trans_vec_sym_matprod(ncomp, nvector,                &
-     &      irev_sr_rlm, irev_sr_rtm, n_WR, n_WS, WR, WS)
+     &      irev_sr_rlm, comm_rtm1%irev_sr, n_WR, n_WS, WR, WS)
       end if
       if(nscalar .gt. 0) then
         call leg_b_trans_scl_sym_matprod(ncomp, nvector, nscalar,       &
-     &      irev_sr_rlm, irev_sr_rtm, n_WR, n_WS, WR, WS)
+     &      irev_sr_rlm, comm_rtm1%irev_sr, n_WR, n_WS, WR, WS)
       end if
 !
       end subroutine leg_backward_trans_sym_matprod
@@ -224,11 +224,11 @@
 !
       if(nvector .gt. 0) then
         call leg_f_trans_vec_sym_matprod(ncomp, nvector,                &
-     &      irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR, WS)
+     &      comm_rtm1%irev_sr, irev_sr_rlm, n_WR, n_WS, WR, WS)
       end if
       if(nscalar .gt. 0) then
         call leg_f_trans_scl_sym_matprod(ncomp, nvector, nscalar,       &
-     &      irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR, WS)
+     &      comm_rtm1%irev_sr, irev_sr_rlm, n_WR, n_WS, WR, WS)
       end if
 !
       end subroutine leg_forward_trans_sym_matprod

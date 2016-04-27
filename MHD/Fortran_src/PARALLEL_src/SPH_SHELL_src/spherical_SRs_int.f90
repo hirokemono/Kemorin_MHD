@@ -65,11 +65,11 @@
       nneib_max_send = comm_rtp1%nneib_domain
       nneib_max_recv = comm_rtm1%nneib_domain
       nnod_max_send =  comm_rtp1%ntot_item_sr
-      nnod_max_recv =  ntot_item_sr_rtm
+      nnod_max_recv =  comm_rtm1%ntot_item_sr
 !
       nneib_max_send = max(nneib_max_send,comm_rtm1%nneib_domain)
       nneib_max_recv = max(nneib_max_recv,comm_rtp1%nneib_domain)
-      nnod_max_send =  max(nnod_max_send,ntot_item_sr_rtm)
+      nnod_max_send =  max(nnod_max_send,comm_rtm1%ntot_item_sr)
       nnod_max_recv =  max(nnod_max_recv,comm_rtp1%ntot_item_sr)
 !
       nneib_max_send = max(nneib_max_send,nneib_domain_rj)
@@ -83,7 +83,7 @@
       nnod_max_recv =  max(nnod_max_recv,ntot_item_sr_rj)
 !
       call resize_iwork_4_SR(nneib_max_send, nneib_max_recv,            &
-     &    comm_rtp1%ntot_item_sr, ntot_item_sr_rtm)
+     &    comm_rtp1%ntot_item_sr, comm_rtm1%ntot_item_sr)
 !
 !
 !
@@ -138,9 +138,9 @@
      &   (iflag_sph_SR_int, nnod_rtp, nnod_rtm,                         &
      &    comm_rtp1%nneib_domain, comm_rtp1%iflag_self,                 &
      &    comm_rtp1%id_domain, comm_rtp1%istack_sr, comm_rtp1%item_sr,  &
-     &    comm_rtm1%nneib_domain, iflag_self_rtm,                       &
-     &    id_domain_rtm, istack_sr_rtm, item_sr_rtm,                    &
-     &    irev_sr_rtm, iX_rtp, iX_rtm)
+     &    comm_rtm1%nneib_domain, comm_rtm1%iflag_self,                 &
+     &    comm_rtm1%id_domain, comm_rtm1%istack_sr, comm_rtm1%item_sr,  &
+     &    comm_rtm1%irev_sr, iX_rtp, iX_rtm)
 !
       end subroutine send_recv_rtp_2_rtm_int
 !
@@ -157,8 +157,8 @@
 !
       call calypso_send_recv_int                                        &
      &   (iflag_sph_SR_int, nnod_rtm, nnod_rtp,                         &
-     &    comm_rtm1%nneib_domain, iflag_self_rtm,                       &
-     &    id_domain_rtm, istack_sr_rtm, item_sr_rtm,                    &
+     &    comm_rtm1%nneib_domain, comm_rtm1%iflag_self,                 &
+     &    comm_rtm1%id_domain, comm_rtm1%istack_sr, comm_rtm1%item_sr,  &
      &    comm_rtp1%nneib_domain, comm_rtp1%iflag_self,                 &
      &    comm_rtp1%id_domain, comm_rtp1%istack_sr, comm_rtp1%item_sr,  &
      &    comm_rtp1%irev_sr, iX_rtm, iX_rtp)

@@ -62,12 +62,12 @@
 !
       call finish_send_recv_rj_2_rlm
 !$omp parallel workshare
-      WS(1:ncomp*ntot_item_sr_rtm) = 0.0d0
+      WS(1:ncomp*comm_rtm1%ntot_item_sr) = 0.0d0
 !$omp end parallel workshare
 !
       if(ncomp .gt. 0) then
         call leg_bwd_trans_sym_matmul_big(ncomp, nvector, nscalar,      &
-     &      irev_sr_rlm, irev_sr_rtm, n_WR, n_WS, WR, WS)
+     &      irev_sr_rlm, comm_rtm1%irev_sr, n_WR, n_WS, WR, WS)
       end if
 !
       end subroutine leg_backward_trans_matmul_big
@@ -93,7 +93,7 @@
 !
       if(ncomp .gt. 0) then
         call leg_fwd_trans_sym_matmul_big(ncomp, nvector, nscalar,      &
-     &      irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR, WS)
+     &      comm_rtm1%irev_sr, irev_sr_rlm, n_WR, n_WS, WR, WS)
       end if
 !
       end subroutine leg_forward_trans_matmul_big
@@ -116,12 +116,12 @@
 !
       call finish_send_recv_rj_2_rlm
 !$omp parallel workshare
-      WS(1:ncomp*ntot_item_sr_rtm) = 0.0d0
+      WS(1:ncomp*comm_rtm1%ntot_item_sr) = 0.0d0
 !$omp end parallel workshare
 !
       if(ncomp .gt. 0) then
         call leg_bwd_trans_sym_dgemm_big(ncomp, nvector, nscalar,       &
-     &      irev_sr_rlm, irev_sr_rtm, n_WR, n_WS, WR, WS)
+     &      irev_sr_rlm, comm_rtm1%irev_sr, n_WR, n_WS, WR, WS)
       end if
 !
       end subroutine leg_backward_trans_dgemm_big
@@ -147,7 +147,7 @@
 !
       if(ncomp .gt. 0) then
         call leg_fwd_trans_sym_dgemm_big(ncomp, nvector, nscalar,       &
-     &      irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR, WS)
+     &      comm_rtm1%irev_sr, irev_sr_rlm, n_WR, n_WS, WR, WS)
       end if
 !
       end subroutine leg_forward_trans_dgemm_big
@@ -170,12 +170,12 @@
 !
       call finish_send_recv_rj_2_rlm
 !$omp parallel workshare
-      WS(1:ncomp*ntot_item_sr_rtm) = 0.0d0
+      WS(1:ncomp*comm_rtm1%ntot_item_sr) = 0.0d0
 !$omp end parallel workshare
 !
       if(ncomp .gt. 0) then
         call leg_bwd_trans_sym_matprod_big(ncomp, nvector, nscalar,     &
-     &      irev_sr_rlm, irev_sr_rtm, n_WR, n_WS, WR, WS)
+     &      irev_sr_rlm, comm_rtm1%irev_sr, n_WR, n_WS, WR, WS)
       end if
 !
       end subroutine leg_backward_trans_matprod_big
@@ -201,7 +201,7 @@
 !
       if(ncomp .gt. 0) then
         call leg_fwd_trans_sym_matprod_big(ncomp, nvector, nscalar,     &
-     &      irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR, WS)
+     &      comm_rtm1%irev_sr, irev_sr_rlm, n_WR, n_WS, WR, WS)
       end if
 !
       end subroutine leg_forward_trans_matprod_big

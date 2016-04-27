@@ -423,11 +423,11 @@
 !
         call const_sph_rtm_grids(id_org_rank)
 !
-        jst = istack_sr_rtm(iflag_jp-1)+1
-        jed = istack_sr_rtm(iflag_jp)
+        jst = comm_rtm1%istack_sr(iflag_jp-1)+1
+        jed = comm_rtm1%istack_sr(iflag_jp)
         do j =  jst, jed
           icou = icou + 1
-          jnod = item_sr_rtm(j)
+          jnod = comm_rtm1%item_sr(j)
           k_glb = sph_rtm1%idx_global_rtm(jnod,1)
           l_glb = sph_rtm1%idx_global_rtm(jnod,2)
           m_glb = sph_rtm1%idx_global_rtm(jnod,3)
@@ -438,7 +438,7 @@
      &                        + (m_tmp-1) * nidx_rtp(1) * nidx_rtp(2)
         end do
 !
-        call deallocate_sph_comm_item_rtm
+        call dealloc_type_sph_comm_item(comm_rtm1)
         call dealloc_type_sph_1d_index_rtm(sph_rtm1)
         call dealloc_type_spheric_param_rtm(sph_rtm1)
       end do

@@ -173,8 +173,8 @@
 !     &    comm_rtp1%nneib_domain, comm_rtp1%istack_sr,                 &
 !     &    comm_rtp1%item_sr, comm_rtp1%irev_sr)
 !      call set_rev_all2all_import_tbl(nnod_rtm, nmax_sr_rtp,           &
-!     &    comm_rtm1%nneib_domain, istack_sr_rtm,                       &
-!     &    item_sr_rtm, irev_sr_rtm)
+!     &    comm_rtm1%nneib_domain, comm_rtm1%istack_sr,                 &
+!     &    comm_rtm1%item_sr, comm_rtm1%irev_sr)
 !      call set_rev_all2all_import_tbl(nnod_rlm, nmax_sr_rj,            &
 !     &    nneib_domain_rlm, istack_sr_rlm, item_sr_rlm, irev_sr_rlm)
 !      call set_rev_all2all_import_tbl(nnod_rj, nmax_sr_rj,             &
@@ -188,8 +188,8 @@
 !
       call set_reverse_import_table(nnod_rtp, comm_rtp1%ntot_item_sr,   &
      &    comm_rtp1%item_sr, comm_rtp1%irev_sr)
-      call set_reverse_import_table(nnod_rtm, ntot_item_sr_rtm,         &
-     &    item_sr_rtm, irev_sr_rtm)
+      call set_reverse_import_table(nnod_rtm, comm_rtm1%ntot_item_sr,   &
+     &    comm_rtm1%item_sr, comm_rtm1%irev_sr)
       call set_reverse_import_table(nnod_rlm, ntot_item_sr_rlm,         &
      &    item_sr_rlm, irev_sr_rlm)
       call set_reverse_import_table(nnod_rj, ntot_item_sr_rj,           &
@@ -287,12 +287,12 @@
       call check_calypso_send_recv_N                                    &
      &   (NB, comm_rtp1%nneib_domain, comm_rtp1%iflag_self,             &
      &    comm_rtp1%istack_sr, comm_rtm1%nneib_domain,                  &
-     &    iflag_self_rtm, istack_sr_rtm)
+     &    comm_rtm1%iflag_self, comm_rtm1%istack_sr)
       call calypso_MPI_Barrier
       if(my_rank .eq. 0) write(*,*) 'check rtm -> rtp'
       call check_calypso_send_recv_N                                    &
-     &   (NB, comm_rtm1%nneib_domain, iflag_self_rtm,                   &
-     &    istack_sr_rtm, comm_rtp1%nneib_domain,                        &
+     &   (NB, comm_rtm1%nneib_domain, comm_rtm1%iflag_self,             &
+     &    comm_rtm1%istack_sr, comm_rtp1%nneib_domain,                  &
      &    comm_rtp1%iflag_self, comm_rtp1%istack_sr)
       call calypso_MPI_Barrier
       if(my_rank .eq. 0) write(*,*) 'check rj -> rlm'

@@ -121,8 +121,8 @@
 !     &      comm_rtp1%nneib_domain, comm_rtp1%istack_sr,               &
 !     &      comm_rtp1%item_sr, comm_rtp1%irev_sr)
 !        call set_rev_all2all_import_tbl(nnod_rtm, nmax_sr_rtp,         &
-!     &      comm_rtm1%nneib_domain, istack_sr_rtm,                     &
-!     &      item_sr_rtm, irev_sr_rtm)
+!     &      comm_rtm1%nneib_domain, comm_rtm1%istack_sr,               &
+!     &      comm_rtm1%item_sr, comm_rtm1%irev_sr)
 !        call set_rev_all2all_import_tbl(nnod_rlm, nmax_sr_rj,          &
 !     &      nneib_domain_rlm, istack_sr_rlm, item_sr_rlm, irev_sr_rlm)
 !        call set_rev_all2all_import_tbl(nnod_rj, nmax_sr_rj,           &

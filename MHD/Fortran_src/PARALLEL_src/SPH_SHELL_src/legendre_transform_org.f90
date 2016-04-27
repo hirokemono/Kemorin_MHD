@@ -128,16 +128,16 @@
 !
       call finish_send_recv_rj_2_rlm
 !$omp parallel workshare
-      WS(1:ncomp*ntot_item_sr_rtm) = 0.0d0
+      WS(1:ncomp*comm_rtm1%ntot_item_sr) = 0.0d0
 !$omp end parallel workshare
 !
       if(nvector .gt. 0) then
         call leg_b_trans_vector_blocked(ncomp, nvector,                 &
-     &          irev_sr_rlm, irev_sr_rtm, n_WR, n_WS, WR(1), WS(1))
+     &      irev_sr_rlm, comm_rtm1%irev_sr, n_WR, n_WS, WR(1), WS(1))
       end if
       if(nscalar .gt. 0) then
         call leg_b_trans_scalar_blocked(ncomp, nvector, nscalar,        &
-     &          irev_sr_rlm, irev_sr_rtm, n_WR, n_WS, WR(1), WS(1))
+     &      irev_sr_rlm, comm_rtm1%irev_sr, n_WR, n_WS, WR(1), WS(1))
       end if
 !
       end subroutine leg_backward_trans_blocked
@@ -164,11 +164,11 @@
 !
       if(nvector .gt. 0) then
         call leg_f_trans_vector_blocked(ncomp, nvector,                &
-     &      irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR(1), WS(1))
+     &      comm_rtm1%irev_sr, irev_sr_rlm, n_WR, n_WS, WR(1), WS(1))
       end if
       if(nscalar .gt. 0) then
         call leg_f_trans_scalar_blocked(ncomp, nvector, nscalar,       &
-     &          irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR(1), WS(1))
+     &      comm_rtm1%irev_sr, irev_sr_rlm, n_WR, n_WS, WR(1), WS(1))
       end if
 !
       end subroutine leg_forwawd_trans_blocked
@@ -191,16 +191,16 @@
 !
       call finish_send_recv_rj_2_rlm
 !$omp parallel workshare
-      WS(1:ncomp*ntot_item_sr_rtm) = 0.0d0
+      WS(1:ncomp*comm_rtm1%ntot_item_sr) = 0.0d0
 !$omp end parallel workshare
 !
       if(nvector .gt. 0) then
         call leg_bwd_trans_vector_sym_org(ncomp, nvector,               &
-     &          irev_sr_rlm, irev_sr_rtm, n_WR, n_WS, WR, WS)
+     &          irev_sr_rlm, comm_rtm1%irev_sr, n_WR, n_WS, WR, WS)
       end if
       if(nscalar .gt. 0) then
         call leg_bwd_trans_scalar_sym_org(ncomp, nvector, nscalar,      &
-     &          irev_sr_rlm, irev_sr_rtm, n_WR, n_WS, WR, WS)
+     &          irev_sr_rlm, comm_rtm1%irev_sr, n_WR, n_WS, WR, WS)
       end if
 !
       end subroutine leg_backward_trans_sym_org
@@ -227,11 +227,11 @@
 !
       if(nvector .gt. 0) then
         call leg_fwd_trans_vector_sym_org(ncomp, nvector,               &
-     &          irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR, WS)
+     &          comm_rtm1%irev_sr, irev_sr_rlm, n_WR, n_WS, WR, WS)
       end if
       if(nscalar .gt. 0) then
         call leg_fwd_trans_scalar_sym_org(ncomp, nvector, nscalar,      &
-     &          irev_sr_rtm, irev_sr_rlm, n_WR, n_WS, WR, WS)
+     &          comm_rtm1%irev_sr, irev_sr_rlm, n_WR, n_WS, WR, WS)
       end if
 !
       end subroutine leg_forward_trans_sym_org

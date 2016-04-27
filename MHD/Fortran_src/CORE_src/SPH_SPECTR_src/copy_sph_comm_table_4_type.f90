@@ -59,11 +59,11 @@
 !
 !
       comm_rtm1%nneib_domain = rtm_comm%nneib_domain
-      call allocate_sph_comm_stack_rtm
+      call alloc_type_sph_comm_stack(comm_rtm1)
 !
-      id_domain_rtm(1:comm_rtm1%nneib_domain)                           &
+      comm_rtm1%id_domain(1:comm_rtm1%nneib_domain)                     &
      &      = rtm_comm%id_domain(1:comm_rtm1%nneib_domain)
-      istack_sr_rtm(0:comm_rtm1%nneib_domain)                           &
+      comm_rtm1%istack_sr(0:comm_rtm1%nneib_domain)                     &
      &      = rtm_comm%istack_sr(0:comm_rtm1%nneib_domain)
 !
       end subroutine copy_neib_rtm_from_type
@@ -126,13 +126,13 @@
 !
       call copy_neib_rtm_from_type(rtm_comm)
 !
-      ntot_item_sr_rtm = rtm_comm%ntot_item_sr
-      call allocate_sph_comm_item_rtm(nnod_rtm)
+      comm_rtm1%ntot_item_sr = rtm_comm%ntot_item_sr
+      call alloc_type_sph_comm_item(nnod_rtm, comm_rtm1)
 !
-      item_sr_rtm(1:ntot_item_sr_rtm)                                   &
-     &      = rtm_comm%item_sr(1:ntot_item_sr_rtm)
-      irev_sr_rtm(1:nnod_rtm) = rtm_comm%irev_sr(1:nnod_rtm)
-      iflag_self_rtm = rtm_comm%iflag_self
+      comm_rtm1%item_sr(1:comm_rtm1%ntot_item_sr)                       &
+     &      = rtm_comm%item_sr(1:comm_rtm1%ntot_item_sr)
+      comm_rtm1%irev_sr(1:nnod_rtm) = rtm_comm%irev_sr(1:nnod_rtm)
+      comm_rtm1%iflag_self = rtm_comm%iflag_self
 !
 !      call dealloc_type_sph_comm_item(rtm_comm)
 !
@@ -257,9 +257,9 @@
       call alloc_type_sph_comm_stack(rtm_comm)
 !
       rtm_comm%id_domain(1:comm_rtm1%nneib_domain)                      &
-     &      = id_domain_rtm(1:comm_rtm1%nneib_domain)
+     &      = comm_rtm1%id_domain(1:comm_rtm1%nneib_domain)
       rtm_comm%istack_sr(0:comm_rtm1%nneib_domain)                      &
-     &      = istack_sr_rtm(0:comm_rtm1%nneib_domain)
+     &      = comm_rtm1%istack_sr(0:comm_rtm1%nneib_domain)
 !
       end subroutine copy_comm_rtm_num_to_type
 !
@@ -312,15 +312,15 @@
       type(sph_comm_tbl), intent(inout) :: rtm_comm
 !
 !
-      rtm_comm%ntot_item_sr = ntot_item_sr_rtm
+      rtm_comm%ntot_item_sr = comm_rtm1%ntot_item_sr
       call alloc_type_sph_comm_item(sph_rtm%nnod_rtm, rtm_comm)
 !
-      rtm_comm%item_sr(1:ntot_item_sr_rtm)                              &
-     &      = item_sr_rtm(1:ntot_item_sr_rtm)
+      rtm_comm%item_sr(1:comm_rtm1%ntot_item_sr)                        &
+     &      = comm_rtm1%item_sr(1:comm_rtm1%ntot_item_sr)
 !
       call set_reverse_sph_comm_tbl_t(sph_rtm%nnod_rtm, rtm_comm)
 !
-      rtm_comm%iflag_self = iflag_self_rtm
+      rtm_comm%iflag_self = comm_rtm1%iflag_self
 !
       end subroutine copy_comm_rtm_item_to_type
 !

@@ -82,18 +82,18 @@
 !
 !
       comm_rtm1%nneib_domain = num_neib_domain_IO
-      ntot_item_sr_rtm = ntot_import_IO
+      comm_rtm1%ntot_item_sr = ntot_import_IO
 !
-      call allocate_sph_comm_stack_rtm
-      call allocate_sph_comm_item_rtm(nnod_rtm)
+      call alloc_type_sph_comm_stack(comm_rtm1)
+      call alloc_type_sph_comm_item(nnod_rtm, comm_rtm1)
 !
-      id_domain_rtm(1:comm_rtm1%nneib_domain)                           &
+      comm_rtm1%id_domain(1:comm_rtm1%nneib_domain)                     &
      &      = id_neib_domain_IO(1:comm_rtm1%nneib_domain)
-      istack_sr_rtm(0:comm_rtm1%nneib_domain)                           &
+      comm_rtm1%istack_sr(0:comm_rtm1%nneib_domain)                     &
      &      = istack_import_IO(0:comm_rtm1%nneib_domain)
 !
-      item_sr_rtm(1:ntot_item_sr_rtm)                                   &
-     &      = item_import_IO(1:ntot_item_sr_rtm)
+      comm_rtm1%item_sr(1:comm_rtm1%ntot_item_sr)                       &
+     &      = item_import_IO(1:comm_rtm1%ntot_item_sr)
 !
       call deallocate_import_item_IO
       call deallocate_neib_domain_IO
@@ -171,21 +171,21 @@
 !
       my_rank_IO = my_rank
       num_neib_domain_IO = comm_rtm1%nneib_domain
-      ntot_import_IO =     ntot_item_sr_rtm
+      ntot_import_IO =     comm_rtm1%ntot_item_sr
 !
       call allocate_neib_domain_IO
       call allocate_import_stack_IO
       call allocate_import_item_IO
 !
       id_neib_domain_IO(1:comm_rtm1%nneib_domain)                       &
-     &      = id_domain_rtm(1:comm_rtm1%nneib_domain)
+     &      = comm_rtm1%id_domain(1:comm_rtm1%nneib_domain)
       istack_import_IO(0:comm_rtm1%nneib_domain)                        &
-     &      = istack_sr_rtm(0:comm_rtm1%nneib_domain)
+     &      = comm_rtm1%istack_sr(0:comm_rtm1%nneib_domain)
 !
-      item_import_IO(1:ntot_item_sr_rtm)                                &
-     &      = item_sr_rtm(1:ntot_item_sr_rtm)
+      item_import_IO(1:comm_rtm1%ntot_item_sr)                          &
+     &      = comm_rtm1%item_sr(1:comm_rtm1%ntot_item_sr)
 !
-      call deallocate_sph_comm_item_rtm
+      call dealloc_type_sph_comm_item(comm_rtm1)
 !
       end subroutine copy_comm_rtm_to_IO
 !
