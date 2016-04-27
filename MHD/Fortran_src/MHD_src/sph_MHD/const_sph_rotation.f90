@@ -108,7 +108,7 @@
 !
 !
       call sel_bc_sph_vorticity(sph_bc_U, is_velo, is_vort,             &
-     &    rj_fld%ntot_phys, rj_fld%d_fld)
+     &    sph_rj1, rj_fld)
 !
       call cal_sph_nod_vect_rot2(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
      &    nidx_rj, sph_rj1%ar_1d_rj, is_velo, is_vort,                  &
@@ -130,8 +130,8 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call sel_bc_sph_current(sph_bc_B, is_magne, is_current,           &
-     &    rj_fld%ntot_phys, rj_fld%d_fld)
+      call sel_bc_sph_current                                           &
+     &   (sph_bc_B, is_magne, is_current, sph_rj1, rj_fld)
 !
       call cal_sph_nod_vect_rot2(sph_bc_B%kr_in, sph_bc_B%kr_out,       &
      &    nidx_rj, sph_rj1%ar_1d_rj, is_magne, is_current,              &
@@ -153,8 +153,8 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call sel_bc_sph_rotation_uxb(sph_bc_B, is_fld, is_rot,            &
-     &    rj_fld%ntot_phys, rj_fld%d_fld)
+      call sel_bc_sph_rotation_uxb                                      &
+     &   (sph_bc_B, is_fld, is_rot, sph_rj1, rj_fld)
 !
       call cal_sph_nod_vect_w_div_rot2(sph_bc_B%kr_in, sph_bc_B%kr_out, &
      &    nidx_rj, sph_rj1%ar_1d_rj, is_fld, is_rot,                    &
@@ -204,7 +204,7 @@
 !
 !
       call sel_bc_sph_vorticity(sph_bc_U, is_fld, is_rot,               &
-     &    rj_fld%ntot_phys, rj_fld%d_fld)
+     &    sph_rj1, rj_fld)
 !
       call cal_sph_nod_vect_w_div_rot2(sph_bc_U%kr_in, sph_bc_U%kr_out, &
      &    nidx_rj, sph_rj1%ar_1d_rj, is_fld, is_rot,                    &
@@ -238,8 +238,7 @@
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call sel_bc_sph_viscous_diffusion(sph_bc_U, coef_diffuse,         &
-     &    is_velo, is_vort, is_viscous, idp_diffuse,                    &
-     &    rj_fld%ntot_phys, rj_fld%d_fld)
+     &    is_velo, is_vort, is_viscous, idp_diffuse, sph_rj1, rj_fld)
 !
       end subroutine const_sph_viscous_by_vort2
 !
@@ -270,8 +269,7 @@
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call sel_bc_sph_magnetic_diffusion(sph_bc_B, coef_diffuse,        &
-     &    is_magne, is_ohmic, idp_diffuse,                              &
-     &    rj_fld%ntot_phys, rj_fld%d_fld)
+     &    is_magne, is_ohmic, idp_diffuse, sph_rj1, rj_fld)
 !
       end subroutine const_sph_mag_diffuse_by_j
 !

@@ -99,9 +99,9 @@
         end if
       end do
 !
-      if(new_sph%inod_rj_center .gt. 0                                  &
-      &   .and. org_sph%inod_rj_center .gt. 0) then
-        j_table%icenter = new_sph%inod_rj_center
+      if(new_sph%sph_rj%inod_rj_center .gt. 0                           &
+      &   .and. org_sph%sph_rj%inod_rj_center .gt. 0) then
+        j_table%icenter = new_sph%sph_rj%inod_rj_center
       else
         j_table%icenter = 0
       end if
@@ -172,7 +172,7 @@
 !
 !$omp parallel
       do nd = 1, ntot_phys_rj
-        inod_org = org_sph%inod_rj_center
+        inod_org = org_sph%sph_rj%inod_rj_center
         inod_new = j_table%icenter
         d_rj(inod_new,nd) = d_rj_org(inod_org,nd)
       end do

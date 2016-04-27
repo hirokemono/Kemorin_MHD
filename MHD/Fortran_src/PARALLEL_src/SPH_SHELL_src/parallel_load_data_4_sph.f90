@@ -198,10 +198,10 @@
 !
 !
       call set_sph_rj_center_flag(sph_rj1%nnod_rj, sph_rj1%nidx_rj,     &
-     &    inod_rj_center)
+     &    sph_rj1%inod_rj_center)
 !
       iflag_rj_center = 0
-      call MPI_allREDUCE(inod_rj_center, iflag_rj_center, ione,         &
+      call MPI_allREDUCE(sph_rj1%inod_rj_center, iflag_rj_center, ione, &
      &    CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM, ierr_MPI)
       if(iflag_rj_center .gt. 0) iflag_rj_center = 1
 !
@@ -282,10 +282,10 @@
      &    sph_rj1%idx_global_rj, sph_rj1%istep_rj)
 !
       call set_sph_rj_center_flag                                       &
-     &   (sph_rj1%nnod_rj, sph_rj1%nidx_rj, inod_rj_center)
+     &   (sph_rj1%nnod_rj, sph_rj1%nidx_rj, sph_rj1%inod_rj_center)
 !
       iflag_rj_center = 0
-      call MPI_allREDUCE(inod_rj_center, iflag_rj_center, ione,         &
+      call MPI_allREDUCE(sph_rj1%inod_rj_center, iflag_rj_center, ione, &
      &    CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM, ierr_MPI)
       if(iflag_rj_center .gt. 0) iflag_rj_center = 1
 !

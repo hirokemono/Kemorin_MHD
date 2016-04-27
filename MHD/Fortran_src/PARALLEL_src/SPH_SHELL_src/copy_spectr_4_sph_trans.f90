@@ -71,9 +71,9 @@
 !
       if(iflag_rj_center .le. 0) return
 !
-      if(inod_rj_center .gt. 0) then
+      if(sph_rj1%inod_rj_center .gt. 0) then
         v_pl_local(nnod_pole,i_send)                                    &
-     &      = rj_fld%d_fld(inod_rj_center,i_field)
+     &      = rj_fld%d_fld(sph_rj1%inod_rj_center,i_field)
       else
         v_pl_local(nnod_pole,i_send) = 0.0d0
       end if

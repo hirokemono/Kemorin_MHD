@@ -85,10 +85,6 @@
 !!@n      igrid_euqidistance = 0 :: equi-distance
         integer (kind=kint) :: iflag_radial_grid =  igrid_non_euqidist
 !
-!>        local spectr index for @f$ l = m = 0 @f$ at center
-!!@n      if center does not exist in subdomain, inod_rj_center = 0.
-        integer (kind=kint) :: inod_rj_center =   0
-!
 !>        Truncation for spherical harmonics
         integer(kind = kint) :: l_truncation
 !>        m-folding symmetry for longitudinal direction

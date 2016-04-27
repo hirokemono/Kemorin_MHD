@@ -68,7 +68,7 @@
 !
 !
       call adjust_by_ave_pressure_on_CMB(kr_in, kr_out,                 &
-     &    sph_rj1%idx_rj_degree_zero, nnod_rj, nidx_rj,                 &
+     &    sph_rj1%idx_rj_degree_zero, rj_fld%n_point, nidx_rj,          &
      &    rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine adjust_press_by_average_on_CMB
@@ -87,7 +87,7 @@
 !
 !
       call chenge_temp_to_per_temp_sph(sph_rj1%idx_rj_degree_zero,      &
-     &    nnod_rj, nidx_rj, sph_rj1%radius_1d_rj_r, reftemp_rj,         &
+     &    rj_fld%n_point, nidx_rj, sph_rj1%radius_1d_rj_r, reftemp_rj,  &
      &    rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine sync_temp_by_per_temp_sph
@@ -106,7 +106,7 @@
 !
 !
       call transfer_per_temp_to_temp_sph(sph_rj1%idx_rj_degree_zero,    &
-     &    nnod_rj, nidx_rj, sph_rj1%radius_1d_rj_r, reftemp_rj,         &
+     &    rj_fld%n_point, nidx_rj, sph_rj1%radius_1d_rj_r, reftemp_rj,  &
      &    rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine trans_per_temp_to_temp_sph

@@ -7,17 +7,17 @@
 !>@brief  Evaluate field approaching to center
 !!
 !!@verbatim
-!!      subroutine sph_center_fld_and_curl(nnod_rj, jmax, a2r_k1,       &
+!!      subroutine sph_center_fld_and_curl(n_point, jmax, a2r_k1,       &
 !!     &          is_fld, is_rot, ntot_phys_rj, d_rj)
 !!      subroutine cal_dsdr_sph_center_2                                &
-!!     &         (nnod_rj, jmax, is_fld, ntot_phys_rj, d_rj)
-!!      subroutine cal_sph_nod_center_rot2(nnod_rj, jmax, a2r_k1,       &
+!!     &         (n_point, jmax, is_fld, ntot_phys_rj, d_rj)
+!!      subroutine cal_sph_nod_center_rot2(n_point, jmax, a2r_k1,       &
 !!     &          is_fld, is_rot, ntot_phys_rj, d_rj)
-!!      subroutine cal_sph_nod_center_diffuse2(nnod_rj, jmax, a2r_k1,   &
+!!      subroutine cal_sph_nod_center_diffuse2(n_point, jmax, a2r_k1,   &
 !!     &          coef_d, is_fld, is_diffuse, ntot_phys_rj, d_rj)
 !!@endverbatim
 !!
-!!@n @param nnod_rj  Number of points for spectrum data
+!!@n @param n_point  Number of points for spectrum data
 !!@n @param coef_d    Coefficient for diffusion term
 !!@n @param is_fld     Address of poloidal magnetic field
 !!                    (or velocity) in d_rj
@@ -45,7 +45,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sph_center_fld_and_curl(nnod_rj, jmax, a2r_k1,         &
+      subroutine sph_center_fld_and_curl(n_point, jmax, a2r_k1,         &
      &          is_fld, is_rot, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax
@@ -53,8 +53,8 @@
       integer(kind = kint), intent(in) :: is_rot
       real (kind=kreal), intent(in) :: a2r_k1
 !
-      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       real(kind = kreal) :: d1s_dr1, d2s_dr2, d1t_dr1
       integer(kind = kint) :: j, inod, i_p1
@@ -85,13 +85,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_dsdr_sph_center_2                                  &
-     &         (nnod_rj, jmax, is_fld, ntot_phys_rj, d_rj)
+     &         (n_point, jmax, is_fld, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax
       integer(kind = kint), intent(in) :: is_fld
 !
-      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       real(kind = kreal) :: d1s_dr1
       integer(kind = kint) :: inod, i_p1
@@ -111,7 +111,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_center_rot2(nnod_rj, jmax, a2r_k1,         &
+      subroutine cal_sph_nod_center_rot2(n_point, jmax, a2r_k1,         &
      &          is_fld, is_rot, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax
@@ -119,8 +119,8 @@
       integer(kind = kint), intent(in) :: is_rot
       real (kind=kreal), intent(in) :: a2r_k1
 !
-      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       real(kind = kreal) :: d2s_dr2, d1t_dr1
       integer(kind = kint) :: j, inod, i_p1
@@ -147,7 +147,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_center_diffuse2(nnod_rj, jmax, a2r_k1,     &
+      subroutine cal_sph_nod_center_diffuse2(n_point, jmax, a2r_k1,     &
      &          coef_d, is_fld, is_diffuse, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax
@@ -156,8 +156,8 @@
       real (kind=kreal), intent(in) :: a2r_k1
       real(kind = kreal), intent(in) :: coef_d
 !
-      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       real(kind = kreal) :: d2s_dr2, d2t_dr2
       integer(kind = kint) :: j, inod, i_p1

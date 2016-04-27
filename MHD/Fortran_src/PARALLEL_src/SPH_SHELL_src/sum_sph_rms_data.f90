@@ -235,8 +235,9 @@
         jcomp_st = istack_rms_comp_rj(j_fld-1) + 1
         ncomp_rj = num_rms_comp_rj(j_fld)
         num = nidx_rj(2) * ncomp_rj
-        call cal_rms_sph_spec_one_field(ncomp_rj, icomp_rj,             &
-     &      rj_fld%ntot_phys, rj_fld%d_fld, rms_sph_rj(0,1,1))
+        call cal_rms_sph_spec_one_field(sph_rj1, ncomp_rj, icomp_rj,    &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,             &
+     &      rms_sph_rj(0,1,1))
         call radial_integration(kg_st, kg_ed, nidx_rj(1),               &
      &      sph_rj1%radius_1d_rj_r, num,                                &
      &      rms_sph_rj(0,1,1), rms_sph_vol_j(1,1))

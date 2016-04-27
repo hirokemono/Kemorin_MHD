@@ -151,7 +151,7 @@
       if(idx_pick_sph_gl(1,1).eq.0 .and. iflag_rj_center.gt.0           &
      &   .and. iflag_rj_center.gt.0) then
         kst = kst + 1
-        inod = inod_rj_center
+        inod = sph_rj1%inod_rj_center
 !
         do j_fld = 1, num_fld_pick_sph
           i_fld = ifield_monitor_rj(j_fld)

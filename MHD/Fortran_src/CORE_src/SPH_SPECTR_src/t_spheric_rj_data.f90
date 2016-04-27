@@ -61,6 +61,11 @@
 !!@n        idx_rj_degree_one(m) = 0.
         integer (kind=kint) :: idx_rj_degree_one(-1:1)
 !
+!>        local spectr index for @f$ l = m = 0 @f$ at center
+!!@n      if center does not exist in subdomain, inod_rj_center = 0.
+        integer (kind=kint) :: inod_rj_center =   0
+!
+!
 !>        number of data points for @f$ f(r,j) @f$
         integer(kind = kint) :: nnod_rj
 !>        number of 1d data points for @f$ f(r,j) @f$

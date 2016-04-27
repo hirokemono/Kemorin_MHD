@@ -8,23 +8,23 @@
 !>@brief  Set insulated magnetic boundary condition for ICB
 !!
 !!@verbatim
-!!      subroutine cal_sph_nod_icb_ins_b_and_j(nnod_rj, jmax,           &
+!!      subroutine cal_sph_nod_icb_ins_b_and_j(n_point, jmax,           &
 !!     &           kr_in, r_ICB, fdm2_fix_fld_ICB, fdm2_fix_dr_ICB,     &
 !!     &           is_fld, is_rot, ntot_phys_rj, d_rj)
-!!      subroutine cal_sph_nod_icb_ins_mag2(nnod_rj, jmax,              &
+!!      subroutine cal_sph_nod_icb_ins_mag2(n_point, jmax,              &
 !!     &           kr_in, r_ICB, is_fld, ntot_phys_rj, d_rj)
 !!
-!!      subroutine cal_sph_nod_icb_ins_vp_rot2(nnod_rj, jmax,           &
+!!      subroutine cal_sph_nod_icb_ins_vp_rot2(n_point, jmax,           &
 !!     &          kr_in, r_ICB, is_fld, is_rot, ntot_phys_rj, d_rj)
-!!      subroutine cal_sph_nod_icb_ins_rot2(nnod_rj, jmax,              &
+!!      subroutine cal_sph_nod_icb_ins_rot2(n_point, jmax,              &
 !!     &          kr_in, r_ICB, fdm2_fix_fld_ICB, fdm2_fix_dr_ICB,      &
 !!     &          is_fld, is_rot, ntot_phys_rj, d_rj)
-!!      subroutine cal_sph_nod_icb_ins_diffuse2(nnod_rj, jmax,          &
+!!      subroutine cal_sph_nod_icb_ins_diffuse2(n_point, jmax,          &
 !!     &          kr_in, r_ICB, fdm2_fix_fld_ICB, fdm2_fix_dr_ICB,      &
 !!     &          coef_d, is_fld, is_diffuse, ntot_phys_rj, d_rj)
 !!@endverbatim
 !!
-!!@n @param nnod_rj  Number of points for spectrum data
+!!@n @param n_point  Number of points for spectrum data
 !!@n @param jmax  Number of modes for spherical harmonics @f$L*(L+2)@f$
 !!@n @param kr_in       Radial ID for inner boundary
 !!@n @param r_ICB(0:2)   Radius at ICB
@@ -56,7 +56,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_icb_ins_b_and_j(nnod_rj, jmax,             &
+      subroutine cal_sph_nod_icb_ins_b_and_j(n_point, jmax,             &
      &           kr_in, r_ICB, fdm2_fix_fld_ICB, fdm2_fix_dr_ICB,       &
      &           is_fld, is_rot, ntot_phys_rj, d_rj)
 !
@@ -66,8 +66,8 @@
       real(kind = kreal), intent(in) :: fdm2_fix_fld_ICB(0:2,3)
       real(kind = kreal), intent(in) :: fdm2_fix_dr_ICB(-1:1,3)
 !
-      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       real(kind = kreal) :: d1s_dr1, d2s_dr2, d1t_dr1
       integer(kind = kint) :: j, inod, i_p1, i_p2
@@ -101,15 +101,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_icb_ins_mag2(nnod_rj, jmax,                &
+      subroutine cal_sph_nod_icb_ins_mag2(n_point, jmax,                &
      &           kr_in, r_ICB, is_fld, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax, kr_in
       integer(kind = kint), intent(in) :: is_fld
       real(kind = kreal), intent(in) :: r_ICB(0:2)
 !
-      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       real(kind = kreal) :: d1s_dr1
       integer(kind = kint) :: j, inod
@@ -130,15 +130,15 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_icb_ins_vp_rot2(nnod_rj, jmax,             &
+      subroutine cal_sph_nod_icb_ins_vp_rot2(n_point, jmax,             &
      &          kr_in, r_ICB, is_fld, is_rot, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax, kr_in
       integer(kind = kint), intent(in) :: is_fld, is_rot
       real(kind = kreal), intent(in) :: r_ICB(0:2)
 !
-      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       real(kind = kreal) :: d1t_dr1
       integer(kind = kint) :: j, inod
@@ -159,7 +159,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_icb_ins_rot2(nnod_rj, jmax,                &
+      subroutine cal_sph_nod_icb_ins_rot2(n_point, jmax,                &
      &          kr_in, r_ICB, fdm2_fix_fld_ICB, fdm2_fix_dr_ICB,        &
      &          is_fld, is_rot, ntot_phys_rj, d_rj)
 !
@@ -169,8 +169,8 @@
       real(kind = kreal), intent(in) :: fdm2_fix_fld_ICB(0:2,3)
       real(kind = kreal), intent(in) :: fdm2_fix_dr_ICB(-1:1,3)
 !
-      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       real(kind = kreal) :: d2s_dr2, d1t_dr1
       integer(kind = kint) :: j, inod, i_p1, i_p2
@@ -201,7 +201,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_icb_ins_diffuse2(nnod_rj, jmax,            &
+      subroutine cal_sph_nod_icb_ins_diffuse2(n_point, jmax,            &
      &          kr_in, r_ICB, fdm2_fix_fld_ICB, fdm2_fix_dr_ICB,        &
      &          coef_d, is_fld, is_diffuse, ntot_phys_rj, d_rj)
 !
@@ -212,8 +212,8 @@
       real(kind = kreal), intent(in) :: fdm2_fix_fld_ICB(0:2,3)
       real(kind = kreal), intent(in) :: fdm2_fix_dr_ICB(-1:1,3)
 !
-      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       real(kind = kreal) :: d2s_dr2,d2t_dr2
       integer(kind = kint) :: j, inod,i_p1,i_p2

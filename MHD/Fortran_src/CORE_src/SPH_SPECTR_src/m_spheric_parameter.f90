@@ -58,7 +58,7 @@
 !
 !>      local spectr index for @f$ l = m = 0 @f$ at center
 !!@n    if center does not exist in subdomain, inod_rj_center = 0.
-      integer (kind=kint) :: inod_rj_center =   0
+!      integer (kind=kint) :: inod_rj_center =   0
 !
 !>        Truncation for spherical harmonics
       integer(kind = kint) :: l_truncation

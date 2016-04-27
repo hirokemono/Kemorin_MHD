@@ -57,7 +57,7 @@
      &    nidx_rj, sph_rj1%ar_1d_rj, is_flux, is_advect,                &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       call sel_bc_sph_scalar_advect(sph_bc, is_flux, is_advect,         &
-     &    rj_fld%ntot_phys, rj_fld%d_fld)
+     &    sph_rj1, rj_fld)
 !
       end subroutine const_sph_scalar_advect
 !

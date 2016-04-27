@@ -19,7 +19,7 @@
 !!         If requested mode does not exist in the process, 0 is set
 !!       inod = local_sph_data_address(k, j_lc)
 !!         Return address of sphectrum data
-!!       inod = inod_rj_center
+!!       inod = sph_rj1%inod_rj_center
 !!         If spectrum data have center, inod_rj_center 
 !!         returns this address.
 !!
@@ -263,10 +263,11 @@
       end if
 !
 !    Center
-      if(inod_rj_center .gt. 0) then
+      if(sph_rj1%inod_rj_center .gt. 0) then
         jj = find_local_sph_mode_address(0, 0)
         inod = local_sph_data_address(1,jj)
-        d_rj(inod_rj_center,ipol%i_temp) = d_rj(inod,ipol%i_temp)
+        d_rj(sph_rj1%inod_rj_center,ipol%i_temp)                        &
+     &       = d_rj(inod,ipol%i_temp)
       end if
 !
       end subroutine set_initial_temperature
@@ -325,10 +326,11 @@
       end if
 !
 !    Center
-      if(inod_rj_center .gt. 0) then
+      if(sph_rj1%inod_rj_center .gt. 0) then
         jj = find_local_sph_mode_address(0, 0)
         inod = local_sph_data_address(1,jj)
-        d_rj(inod_rj_center,ipol%i_light) = d_rj(inod,ipol%i_light)
+        d_rj(sph_rj1%inod_rj_center,ipol%i_light)                       &
+     &       = d_rj(inod,ipol%i_light)
       end if
 !
       end subroutine set_initial_composition
@@ -437,8 +439,8 @@
       end if
 !
 !    Center
-      if(inod_rj_center .gt. 0) then
-        d_rj(inod_rj_center,ipol%i_heat_source)                         &
+      if(sph_rj1%inod_rj_center .gt. 0) then
+        d_rj(sph_rj1%inod_rj_center,ipol%i_heat_source)                 &
      &         = four*r_CMB**2 / (four * r_ICB**3 / three)
       end if
 !
@@ -480,8 +482,8 @@
       end if
 !
 !    Center
-      if(inod_rj_center .gt. 0) then
-        d_rj(inod_rj_center,ipol%i_light_source) = one
+      if(sph_rj1%inod_rj_center .gt. 0) then
+        d_rj(sph_rj1%inod_rj_center,ipol%i_light_source) = one
       end if
 !
       end subroutine set_initial_light_source_sph
@@ -512,10 +514,10 @@
       end if
 !
 !    Center
-      if(inod_rj_center .gt. 0) then
+      if(sph_rj1%inod_rj_center .gt. 0) then
         jj = find_local_sph_mode_address(0, 0)
         inod = local_sph_data_address(1,jj)
-        d_rj(inod_rj_center,ipol%i_temp)                                &
+        d_rj(sph_rj1%inod_rj_center,ipol%i_temp)                        &
      &              = d_rj(inod,ipol%i_temp) - temp_CMB
       end if
 !

@@ -19,6 +19,7 @@
 !
       use m_precision
       use m_control_parameter
+      use m_spheric_parameter
 !
       use t_phys_data
 !
@@ -62,7 +63,7 @@
       use cal_explicit_terms
       use cal_vorticity_terms_adams
       use cal_nonlinear_sph_MHD
-      use cal_diff_adv_src_explicit
+      use select_diff_adv_source
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -82,14 +83,14 @@
      &     (sph_bc_T%kr_in, sph_bc_T%kr_out,                            &
      &      ipol%i_t_diffuse, ipol%i_h_advect, ipol%i_heat_source,      &
      &      ipol%i_temp, ipol%i_pre_heat, coef_exp_t, coef_h_src,       &
-     &      rj_fld%ntot_phys, rj_fld%d_fld)
+     &      sph_rj1, rj_fld)
       end if
       if(iflag_t_evo_4_composit .gt. id_no_evolution) then
         call sel_scalar_diff_adv_src_adams                              &
      &     (sph_bc_C%kr_in, sph_bc_C%kr_out,                            &
      &      ipol%i_c_diffuse, ipol%i_c_advect, ipol%i_light_source,     &
      &      ipol%i_light, ipol%i_pre_composit, coef_exp_c, coef_c_src,  &
-     &      rj_fld%ntot_phys, rj_fld%d_fld)
+     &      sph_rj1, rj_fld)
       end if
 !$omp end parallel
 !
@@ -103,7 +104,7 @@
       use m_physical_property
       use cal_explicit_terms
       use cal_vorticity_terms_adams
-      use cal_diff_adv_src_explicit
+      use select_diff_adv_source
 !
       integer(kind = kint), intent(in) :: i_step
       type(phys_data), intent(inout) :: rj_fld
@@ -119,7 +120,7 @@
      &     (sph_bc_T%kr_in, sph_bc_T%kr_out,                            &
      &      ipol%i_t_diffuse, ipol%i_h_advect, ipol%i_heat_source,      &
      &      ipol%i_temp, coef_exp_t, coef_temp, coef_h_src,             &
-     &      rj_fld%ntot_phys, rj_fld%d_fld)
+     &      sph_rj1, rj_fld)
       end if
       if(iflag_t_evo_4_magne .gt.    id_no_evolution) then
         call cal_diff_induction_MHD_euler                               &
@@ -130,7 +131,7 @@
      &     (sph_bc_C%kr_in, sph_bc_C%kr_out,                            &
      &      ipol%i_c_diffuse, ipol%i_c_advect, ipol%i_light_source,     &
      &      ipol%i_light, coef_exp_c, coef_light, coef_c_src,           &
-     &      rj_fld%ntot_phys, rj_fld%d_fld)
+     &      sph_rj1, rj_fld)
       end if
 !
       if (i_step .eq. 1) then
@@ -142,7 +143,7 @@
           call sel_ini_adams_scalar_w_src                               &
      &       (sph_bc_T%kr_in, sph_bc_T%kr_out, ipol%i_h_advect,         &
      &        ipol%i_heat_source, ipol%i_pre_heat,                      &
-     &        coef_h_src, rj_fld%ntot_phys, rj_fld%d_fld)
+     &        coef_h_src, sph_rj1, rj_fld)
         end if
         if(iflag_t_evo_4_magne .gt.    id_no_evolution) then
           call set_ini_adams_mag_induct                                 &
@@ -152,7 +153,7 @@
           call sel_ini_adams_scalar_w_src                               &
      &       (sph_bc_C%kr_in, sph_bc_C%kr_out, ipol%i_c_advect,         &
      &        ipol%i_light_source, ipol%i_pre_composit,                 &
-     &        coef_c_src, rj_fld%ntot_phys, rj_fld%d_fld)
+     &        coef_c_src, sph_rj1, rj_fld)
         end if
       end if
 !$omp end parallel

@@ -64,8 +64,7 @@
 !         Solution: ipol%i_velo, itor%i_velo, idpdr%i_velo
         if (iflag_debug .gt. 0)                                         &
      &       write(*,*) 'cal_sol_velo_by_vort_sph_crank'
-        call cal_sol_velo_by_vort_sph_crank                             &
-     &     (rj_fld%ntot_phys, rj_fld%d_fld)
+        call cal_sol_velo_by_vort_sph_crank(sph_rj1, rj_fld)
         call const_grad_vp_and_vorticity                                &
      &   (ipol%i_velo, ipol%i_vort, rj_fld)
       end if
@@ -73,22 +72,20 @@
 !  Input: ipol%i_temp,  Solution: ipol%i_temp
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_temperature_sph_crank'
       if(iflag_t_evo_4_temp .gt. id_no_evolution) then
-        call cal_sol_temperature_sph_crank                              &
-     &     (rj_fld%ntot_phys, rj_fld%d_fld)
+        call cal_sol_temperature_sph_crank(sph_rj1, rj_fld)
       end if
 !
 !  Input: ipol%i_light,  Solution: ipol%i_light
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_composition_sph_crank'
       if(iflag_t_evo_4_composit .gt. id_no_evolution) then
-        call cal_sol_composition_sph_crank                              &
-     &     (rj_fld%ntot_phys, rj_fld%d_fld)
+        call cal_sol_composition_sph_crank(sph_rj1, rj_fld)
       end if
 !
 !  Input: ipol%i_magne, itor%i_magne
 !  Solution: ipol%i_magne, itor%i_magne, idpdr%i_magne
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_magne_sph_crank'
       if(iflag_t_evo_4_magne .gt. id_no_evolution) then
-        call cal_sol_magne_sph_crank(rj_fld%ntot_phys, rj_fld%d_fld)
+        call cal_sol_magne_sph_crank(sph_rj1, rj_fld)
         call const_grad_bp_and_current                                  &
      &     (sph_bc_B, ipol%i_magne, ipol%i_current, rj_fld)
       end if

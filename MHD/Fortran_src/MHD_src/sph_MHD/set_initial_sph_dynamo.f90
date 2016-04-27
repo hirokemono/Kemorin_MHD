@@ -199,10 +199,11 @@
       end if
 !
 !    Center
-      if(inod_rj_center .gt. 0) then
+      if(sph_rj1%inod_rj_center .gt. 0) then
         jj = find_local_sph_address(sph_rj1, 0, 0)
         inod = local_sph_node_address(sph_rj1, 1, jj)
-        d_rj(inod_rj_center,ipol%i_temp) = d_rj(inod,ipol%i_temp)
+        d_rj(sph_rj1%inod_rj_center,ipol%i_temp)                        &
+     &       = d_rj(inod,ipol%i_temp)
       end if
 !
       end subroutine set_ini_reference_temp_sph
@@ -237,10 +238,11 @@
       end do
 !
 !    Center
-      if(inod_rj_center .gt. 0) then
+      if(sph_rj1%inod_rj_center .gt. 0) then
         jj = find_local_sph_address(sph_rj1, 0, 0)
         inod = local_sph_node_address(sph_rj1, 1, jj)
-        d_rj(inod_rj_center,ipol%i_temp) = d_rj(inod,ipol%i_temp)
+        d_rj(sph_rj1%inod_rj_center,ipol%i_temp)                        &
+     &       = d_rj(inod,ipol%i_temp)
       end if
 !
       end subroutine set_all_part_temp_sph
@@ -280,10 +282,11 @@
       end if
 !
 !    Center
-      if(inod_rj_center .gt. 0) then
+      if(sph_rj1%inod_rj_center .gt. 0) then
         jj = find_local_sph_address(sph_rj1, 0, 0)
         inod = local_sph_node_address(sph_rj1, 1, jj)
-        d_rj(inod_rj_center,ipol%i_temp) = d_rj(inod,ipol%i_temp)
+        d_rj(sph_rj1%inod_rj_center,ipol%i_temp)                        &
+     &       = d_rj(inod,ipol%i_temp)
       end if
 !
       end subroutine set_initial_temp_sph
@@ -339,10 +342,10 @@
       end if
 !
 !    Center
-      if(inod_rj_center .gt. 0) then
+      if(sph_rj1%inod_rj_center .gt. 0) then
         jj = find_local_sph_address(sph_rj1, 0, 0)
         inod = local_sph_node_address(sph_rj1, 1, jj)
-        d_rj(inod_rj_center,is_fld) = d_rj(inod,is_fld)
+        d_rj(sph_rj1%inod_rj_center,is_fld) = d_rj(inod,is_fld)
       end if
 !
       end subroutine set_initial_light_sph
@@ -491,10 +494,10 @@
       end do
 !
 !    Center
-      if(inod_rj_center .gt. 0) then
+      if(sph_rj1%inod_rj_center .gt. 0) then
         jj = find_local_sph_address(sph_rj1, 0, 0)
         inod = local_sph_node_address(sph_rj1, 1, jj)
-        d_rj(inod_rj_center,is_fld) = d_rj(inod,is_fld)
+        d_rj(sph_rj1%inod_rj_center,is_fld) = d_rj(inod,is_fld)
       end if
 !
       end subroutine set_noize_scalar_sph

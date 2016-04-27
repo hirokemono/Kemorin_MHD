@@ -162,7 +162,7 @@
       end if
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_volume_average_sph'
-      call cal_volume_average_sph(kr_st, kr_ed, avol, rj_fld)
+      call cal_volume_average_sph(kr_st, kr_ed, avol, sph_rj1, rj_fld)
 !
       end subroutine cal_mean_squre_in_shell
 !

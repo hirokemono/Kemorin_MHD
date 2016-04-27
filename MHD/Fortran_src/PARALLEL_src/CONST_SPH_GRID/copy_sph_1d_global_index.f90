@@ -155,7 +155,7 @@
       integer(kind = kint) :: i, j
 !
 !
-      inod_rj_center = 0
+      sph_rj1%inod_rj_center = 0
       if(iflag_rj_center .eq. izero) return
 !
       do i = 1, nidx_rj(2)
@@ -163,7 +163,7 @@
         if(idx_global_rj_j(j,1) .eq. 0) then
           write(*,*) 'Add center mode!!'
           nnod_rj = nnod_rj + 1
-          inod_rj_center = 1
+          sph_rj1%inod_rj_center = 1
           exit
         end if
       end do

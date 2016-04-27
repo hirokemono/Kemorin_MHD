@@ -84,7 +84,7 @@
         end do
       end do
 !
-      if(inod_rj_center .eq. 0) return
+      if(sph_rj1%inod_rj_center .eq. 0) return
       sph_rj1%idx_global_rj(nnod_rj,1) = 0
       sph_rj1%idx_global_rj(nnod_rj,2) = 0
 !

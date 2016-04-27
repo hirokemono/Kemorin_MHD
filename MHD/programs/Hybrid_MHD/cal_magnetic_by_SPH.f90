@@ -194,7 +194,7 @@
         call cal_diff_induction_wSGS_adams(ntot_phys_rj, d_rj)
       end if
 !
-      call cal_sol_magne_sph_crank(ntot_phys_rj, d_rj)
+      call cal_sol_magne_sph_crank(sph_rj1, rj_fld)
       call update_after_magne_sph
 !
 !

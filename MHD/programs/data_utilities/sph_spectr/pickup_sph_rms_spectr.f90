@@ -10,9 +10,11 @@
 !!      subroutine allocate_work_pick_rms_sph(nri, jmax)
 !!      subroutine init_sph_rms_4_monitor(l_truncation)
 !!
-!!      subroutine pickup_sph_rms_4_monitor(nidx_rj, a_r_1d_rj_r, rj_fld)
-!!      subroutine pickup_sph_rms_vol_monitor(kg_st, kg_ed,             &
-!!     &          nidx_rj, radius_1d_rj_r, rj_fld)
+!!      subroutine pickup_sph_rms_4_monitor(sph_rj, rj_fld)
+!!      subroutine pickup_sph_rms_vol_monitor                           &
+!!     &         (kg_st, kg_ed, sph_rj, rj_fld)
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(phys_data), intent(in) :: rj_fld
 !!@endverbatim
 !
       module pickup_sph_rms_spectr
@@ -98,14 +100,14 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine pickup_sph_rms_4_monitor(nidx_rj, a_r_1d_rj_r, rj_fld)
+      subroutine pickup_sph_rms_4_monitor(sph_rj, rj_fld)
 !
       use calypso_mpi
+      use t_spheric_rj_data
       use m_pickup_sph_spectr_data
       use cal_rms_by_sph_spectr
 !
-      integer(kind = kint), intent(in) :: nidx_rj(2)
-      real(kind = kreal), intent(in) :: a_r_1d_rj_r(nidx_rj(1))
+      type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_data), intent(in) :: rj_fld
 !
       integer(kind = kint) :: i_fld, j_fld, j, icomp, ncomp
@@ -125,8 +127,8 @@
         ncomp = num_rms_comp_rj(j_fld)
         ist_fld =  rj_fld%istack_component(i_fld-1)
         jst_rms = istack_rms_comp_rj(j_fld-1)
-        call cal_rms_sph_spec_one_field(ncomp, (ist_fld+1),             &
-     &      rj_fld%ntot_phys, rj_fld%d_fld, rms_sph_rj)
+        call cal_rms_sph_spec_one_field(sph_rj, ncomp, (ist_fld+1),     &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld, rms_sph_rj)
 !
 !$omp parallel do private(icomp,j,kr,inum,knum)
         do inum = 1, num_pick_sph_rms_mode
@@ -137,7 +139,7 @@
               ipick = knum + (inum-1) * num_pick_layer
               do icomp = 1, ncomp
                 d_rms_pick_sph_lc(jst_rms+icomp,ipick)                  &
-     &                 = rms_sph_rj(kr,j,icomp) * a_r_1d_rj_r(kr)**2
+     &            = rms_sph_rj(kr,j,icomp) * sph_rj%a_r_1d_rj_r(kr)**2
               end do
             end do
           end if
@@ -154,16 +156,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine pickup_sph_rms_vol_monitor(kg_st, kg_ed,               &
-     &          nidx_rj, radius_1d_rj_r, rj_fld)
+      subroutine pickup_sph_rms_vol_monitor                             &
+     &         (kg_st, kg_ed, sph_rj, rj_fld)
 !
       use calypso_mpi
+      use t_spheric_rj_data
       use cal_rms_by_sph_spectr
       use radial_int_for_sph_spec
 !
       integer(kind = kint), intent(in) :: kg_st, kg_ed
-      integer(kind = kint), intent(in) :: nidx_rj(2)
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
+      type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_data), intent(in) :: rj_fld
 !
       integer(kind = kint) :: i_fld, j_fld, j, icomp, ncomp
@@ -174,10 +176,10 @@
       d_rms_pick_sph_lc = 0.0d0
 
       if(kg_st .eq. 0) then
-        avol = three / (radius_1d_rj_r(kg_ed)**3)
+        avol = three / (sph_rj%radius_1d_rj_r(kg_ed)**3)
       else
-        avol = three / (radius_1d_rj_r(kg_ed)**3                        &
-     &                - radius_1d_rj_r(kg_st)**3 )
+        avol = three / (sph_rj%radius_1d_rj_r(kg_ed)**3                 &
+     &                - sph_rj%radius_1d_rj_r(kg_st)**3 )
       end if
 !
       do j_fld = 1, num_rms_rj
@@ -185,10 +187,11 @@
         ncomp = num_rms_comp_rj(j_fld)
         ist_fld =  rj_fld%istack_component(i_fld-1)
         jst_rms = istack_rms_comp_rj(j_fld-1)
-        call cal_rms_sph_spec_one_field(ncomp, (ist_fld+1),             &
-     &      rj_fld%ntot_phys, rj_fld%d_fld, rms_sph_rj)
-        call radial_integration(kg_st, kg_ed, nidx_rj(1),               &
-     &      radius_1d_rj_r, nidx_rj(2), rms_sph_rj, rms_sph_v)
+        call cal_rms_sph_spec_one_field(sph_rj, ncomp, (ist_fld+1),     &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld, rms_sph_rj)
+        call radial_integration(kg_st, kg_ed, sph_rj%nidx_rj(1),        &
+     &      sph_rj%radius_1d_rj_r, sph_rj%nidx_rj(2),                   &
+     &      rms_sph_rj, rms_sph_v)
 !
         do icomp = 1, ncomp
           do inum = 1, num_pick_sph_rms_mode
