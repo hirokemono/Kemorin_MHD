@@ -169,10 +169,10 @@
      &    ntot_item_sr_rtm, item_sr_rtm, irev_sr_rtm)
       call set_reverse_import_table(sph_rlm1%nnod_rlm,                  &
      &    ntot_item_sr_rlm, item_sr_rlm, irev_sr_rlm)
-      call set_reverse_import_table(sph_rj1%nnod_rj, ntot_item_sr_rj,           &
+      call set_reverse_import_table(sph_rj1%nnod_rj, ntot_item_sr_rj,   &
      &    item_sr_rj, irev_sr_rj)
 !
-      iflag_self_rtp = self_comm_flag(nneib_domain_rtp, id_domain_rtp)
+      iflag_self_rtp = self_comm_flag(comm_rtp1%nneib_domain, id_domain_rtp)
       iflag_self_rtm = self_comm_flag(nneib_domain_rtm, id_domain_rtm)
       iflag_self_rlm = self_comm_flag(nneib_domain_rlm, id_domain_rlm)
       iflag_self_rj =  self_comm_flag(nneib_domain_rj,  id_domain_rj)

@@ -224,14 +224,14 @@
 !
       call allocate_domain_sr_tmp(ndomain_sph)
 !
-      nneib_domain_rtp = 0
-      call count_comm_table_4_rtp(ip_rank, ndomain_sph, comm_rtm)
+      call count_comm_table_4_rtp(ip_rank, ndomain_sph, comm_rtm,       &
+     &    comm_rtp1%nneib_domain)
 !
       call allocate_sph_comm_stack_rtp
 !
-      call set_comm_stack_rtp_rj(nneib_domain_rtp, id_domain_rtp,       &
+      call set_comm_stack_rtp_rj(comm_rtp1%nneib_domain, id_domain_rtp, &
      &    istack_sr_rtp, ntot_item_sr_rtp)
-!      write(*,*) 'nneib_domain_rtp', nneib_domain_rtp
+!      write(*,*) 'nneib_domain_rtp', comm_rtp1%nneib_domain
 !      write(*,*) 'id_domain_rtp', id_domain_rtp
 !      write(*,*) 'ntot_item_sr_rtp', ntot_item_sr_rtp
 !      write(*,*) 'istack_sr_rtp', istack_sr_rtp
@@ -343,17 +343,20 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine count_comm_table_4_rtp(ip_rank, ndomain_sph, comm_rtm)
-!
-      use m_sph_trans_comm_table
+      subroutine count_comm_table_4_rtp(ip_rank, ndomain_sph, comm_rtm, &
+     &          nneib_domain_rtp)
 !
       integer(kind = kint), intent(in) :: ip_rank
       integer(kind = kint), intent(in) :: ndomain_sph
       type(sph_comm_tbl), intent(in) :: comm_rtm(ndomain_sph)
 !
+      integer(kind = kint), intent(inout) :: nneib_domain_rtp
+!
       integer(kind = kint) :: ip1, jp, id_org_rank, ip_org
       integer(kind = kint) :: iflag_jp
 !
+!
+      nneib_domain_rtp = 0
 !
       do ip1 = 1, ndomain_sph
         id_org_rank = mod((ip_rank+ip1),ndomain_sph)

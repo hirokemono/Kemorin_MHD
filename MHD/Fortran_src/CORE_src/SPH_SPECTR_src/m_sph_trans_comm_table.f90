@@ -48,11 +48,23 @@
       module m_sph_trans_comm_table
 !
       use m_precision
+      use t_sph_trans_comm_tbl
 !
       implicit none
 !
+!>        Communication table for @f$ f(r,t,p) @f$ 
+      type(sph_comm_tbl), save :: comm_rtp1
+!comm_rtp1%nneib_domain
+!
+!>        Communication table for @f$ f(r,t,m) @f$ 
+      type(sph_comm_tbl), save :: comm_rtm1
+!>        Communication table for @f$ f(r,l,m) @f$ 
+      type(sph_comm_tbl), save :: comm_rlm1
+!>        Communication table for @f$ f(r,j) @f$ 
+      type(sph_comm_tbl), save :: comm_rj1
+!
 !>      number of domain to communicate from @f$ f(r,\theta,\phi) @f$ 
-      integer(kind = kint) :: nneib_domain_rtp
+!      integer(kind = kint) :: nneib_domain_rtp
 !>      total number of data points to communicate
 !!      from @f$ f(r,\theta,\phi) @f$ 
       integer(kind = kint) :: ntot_item_sr_rtp
@@ -174,9 +186,9 @@
       subroutine allocate_sph_comm_stack_rtp
 !
 !
-      allocate( id_domain_rtp(nneib_domain_rtp) )
-      allocate( istack_sr_rtp(0:nneib_domain_rtp) )
-      if(nneib_domain_rtp .gt. 0) id_domain_rtp =  0
+      allocate( id_domain_rtp(comm_rtp1%nneib_domain) )
+      allocate( istack_sr_rtp(0:comm_rtp1%nneib_domain) )
+      if(comm_rtp1%nneib_domain .gt. 0) id_domain_rtp =  0
       istack_sr_rtp =  0
       iflag_self_rtp = 0
 !

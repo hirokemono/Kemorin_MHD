@@ -48,19 +48,21 @@
 !
       subroutine copy_comm_rtp_from_IO(nnod_rtp)
 !
+      use copy_sph_comm_tbl_type_4_IO
+!
       integer(kind = kint), intent(in) :: nnod_rtp
 !
 !
-      nneib_domain_rtp = num_neib_domain_IO
+      comm_rtp1%nneib_domain = num_neib_domain_IO
       ntot_item_sr_rtp = ntot_import_IO
 !
       call allocate_sph_comm_stack_rtp
       call allocate_sph_comm_item_rtp(nnod_rtp)
 !
-      id_domain_rtp(1:nneib_domain_rtp)                                 &
-     &      = id_neib_domain_IO(1:nneib_domain_rtp)
-      istack_sr_rtp(0:nneib_domain_rtp)                                 &
-     &      = istack_import_IO(0:nneib_domain_rtp)
+      id_domain_rtp(1:comm_rtp1%nneib_domain)                                 &
+     &      = id_neib_domain_IO(1:comm_rtp1%nneib_domain)
+      istack_sr_rtp(0:comm_rtp1%nneib_domain)                                 &
+     &      = istack_import_IO(0:comm_rtp1%nneib_domain)
 !
       item_sr_rtp(1:ntot_item_sr_rtp)                                   &
      &      = item_import_IO(1:ntot_item_sr_rtp)
@@ -156,17 +158,17 @@
       integer(kind = kint), intent(in) :: my_rank
 !
       my_rank_IO = my_rank
-      num_neib_domain_IO = nneib_domain_rtp
+      num_neib_domain_IO = comm_rtp1%nneib_domain
       ntot_import_IO =     ntot_item_sr_rtp
 !
       call allocate_neib_domain_IO
       call allocate_import_stack_IO
       call allocate_import_item_IO
 !
-      id_neib_domain_IO(1:nneib_domain_rtp)                             &
-     &      = id_domain_rtp(1:nneib_domain_rtp)
-      istack_import_IO(0:nneib_domain_rtp)                              &
-     &      = istack_sr_rtp(0:nneib_domain_rtp)
+      id_neib_domain_IO(1:comm_rtp1%nneib_domain)                             &
+     &      = id_domain_rtp(1:comm_rtp1%nneib_domain)
+      istack_import_IO(0:comm_rtp1%nneib_domain)                              &
+     &      = istack_sr_rtp(0:comm_rtp1%nneib_domain)
 !
       item_import_IO(1:ntot_item_sr_rtp)                                &
      &      = item_sr_rtp(1:ntot_item_sr_rtp)

@@ -170,7 +170,7 @@
       if(iflag_sph_commN .ne. iflag_SR_UNDEFINED) return
 !
 !      call set_rev_all2all_import_tbl(nnod_rtp, nmax_sr_rtp,           &
-!     &    nneib_domain_rtp, istack_sr_rtp, item_sr_rtp, irev_sr_rtp)
+!     &    comm_rtp1%nneib_domain, istack_sr_rtp, item_sr_rtp, irev_sr_rtp)
 !      call set_rev_all2all_import_tbl(nnod_rtm, nmax_sr_rtp,           &
 !     &    nneib_domain_rtm, istack_sr_rtm, item_sr_rtm, irev_sr_rtm)
 !      call set_rev_all2all_import_tbl(nnod_rlm, nmax_sr_rj,            &
@@ -283,13 +283,13 @@
       call calypso_MPI_Barrier
       if(my_rank .eq. 0) write(*,*) 'check rtp -> rtm'
       call check_calypso_send_recv_N                                    &
-     &         (NB, nneib_domain_rtp, iflag_self_rtp, istack_sr_rtp,    &
+     &         (NB, comm_rtp1%nneib_domain, iflag_self_rtp, istack_sr_rtp,    &
      &              nneib_domain_rtm, iflag_self_rtm, istack_sr_rtm)
       call calypso_MPI_Barrier
       if(my_rank .eq. 0) write(*,*) 'check rtm -> rtp'
       call check_calypso_send_recv_N                                    &
      &         (NB, nneib_domain_rtm, iflag_self_rtm, istack_sr_rtm,    &
-     &              nneib_domain_rtp, iflag_self_rtp, istack_sr_rtp)
+     &              comm_rtp1%nneib_domain, iflag_self_rtp, istack_sr_rtp)
       call calypso_MPI_Barrier
       if(my_rank .eq. 0) write(*,*) 'check rj -> rlm'
       call check_calypso_send_recv_N                                    &

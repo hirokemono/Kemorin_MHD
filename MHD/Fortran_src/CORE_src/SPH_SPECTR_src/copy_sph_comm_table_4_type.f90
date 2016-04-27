@@ -61,13 +61,13 @@
       type(sph_comm_tbl), intent(in) :: rtp_comm
 !
 !
-      nneib_domain_rtp = rtp_comm%nneib_domain
+      comm_rtp1%nneib_domain = rtp_comm%nneib_domain
       call allocate_sph_comm_stack_rtp
 !
-      id_domain_rtp(1:nneib_domain_rtp)                                 &
-     &      = rtp_comm%id_domain(1:nneib_domain_rtp)
-      istack_sr_rtp(0:nneib_domain_rtp)                                 &
-     &      = rtp_comm%istack_sr(0:nneib_domain_rtp)
+      id_domain_rtp(1:comm_rtp1%nneib_domain)                                 &
+     &      = rtp_comm%id_domain(1:comm_rtp1%nneib_domain)
+      istack_sr_rtp(0:comm_rtp1%nneib_domain)                                 &
+     &      = rtp_comm%istack_sr(0:comm_rtp1%nneib_domain)
 !
       end subroutine copy_neib_rtp_from_type
 !
@@ -282,13 +282,13 @@
       type(sph_comm_tbl), intent(inout) :: rtp_comm
 !
 !
-      rtp_comm%nneib_domain = nneib_domain_rtp
+      rtp_comm%nneib_domain = comm_rtp1%nneib_domain
       call alloc_type_sph_comm_stack(rtp_comm)
 !
-      rtp_comm%id_domain(1:nneib_domain_rtp)                            &
-     &      = id_domain_rtp(1:nneib_domain_rtp)
-      rtp_comm%istack_sr(0:nneib_domain_rtp)                            &
-     &      = istack_sr_rtp(0:nneib_domain_rtp)
+      rtp_comm%id_domain(1:comm_rtp1%nneib_domain)                            &
+     &      = id_domain_rtp(1:comm_rtp1%nneib_domain)
+      rtp_comm%istack_sr(0:comm_rtp1%nneib_domain)                            &
+     &      = istack_sr_rtp(0:comm_rtp1%nneib_domain)
 !
       end subroutine copy_comm_rtp_num_to_type
 !

@@ -112,13 +112,13 @@
      &    jstack_block_rlm, jmax_block_rlm)
 !
 !
-      call split_rtp_comms(nneib_domain_rtp, id_domain_rtp,             &
+      call split_rtp_comms(comm_rtp1%nneib_domain, id_domain_rtp,       &
      &    nneib_domain_rj) 
       call init_sph_send_recv_N(ncomp_sph_trans)
 !
 !      if(iflag_sph_commN .eq. iflag_alltoall) then
 !        call set_rev_all2all_import_tbl(nnod_rtp, nmax_sr_rtp,         &
-!     &      nneib_domain_rtp, istack_sr_rtp, item_sr_rtp, irev_sr_rtp)
+!     &      comm_rtp1%nneib_domain, istack_sr_rtp, item_sr_rtp, irev_sr_rtp)
 !        call set_rev_all2all_import_tbl(nnod_rtm, nmax_sr_rtp,         &
 !     &      nneib_domain_rtm, istack_sr_rtm, item_sr_rtm, irev_sr_rtm)
 !        call set_rev_all2all_import_tbl(nnod_rlm, nmax_sr_rj,          &
