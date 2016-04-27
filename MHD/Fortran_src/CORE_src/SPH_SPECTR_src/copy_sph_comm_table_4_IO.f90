@@ -37,6 +37,7 @@
       use m_constants
       use m_sph_trans_comm_table
       use m_comm_data_IO
+      use copy_sph_comm_tbl_type_4_IO
 !
       implicit none
 !
@@ -80,16 +81,16 @@
       integer(kind = kint), intent(in) :: nnod_rtm
 !
 !
-      nneib_domain_rtm = num_neib_domain_IO
+      comm_rtm1%nneib_domain = num_neib_domain_IO
       ntot_item_sr_rtm = ntot_import_IO
 !
       call allocate_sph_comm_stack_rtm
       call allocate_sph_comm_item_rtm(nnod_rtm)
 !
-      id_domain_rtm(1:nneib_domain_rtm)                                 &
-     &      = id_neib_domain_IO(1:nneib_domain_rtm)
-      istack_sr_rtm(0:nneib_domain_rtm)                                 &
-     &      = istack_import_IO(0:nneib_domain_rtm)
+      id_domain_rtm(1:comm_rtm1%nneib_domain)                           &
+     &      = id_neib_domain_IO(1:comm_rtm1%nneib_domain)
+      istack_sr_rtm(0:comm_rtm1%nneib_domain)                           &
+     &      = istack_import_IO(0:comm_rtm1%nneib_domain)
 !
       item_sr_rtm(1:ntot_item_sr_rtm)                                   &
      &      = item_import_IO(1:ntot_item_sr_rtm)
@@ -158,23 +159,7 @@
 !
       integer(kind = kint), intent(in) :: my_rank
 !
-      my_rank_IO = my_rank
-      num_neib_domain_IO = comm_rtp1%nneib_domain
-      ntot_import_IO =     comm_rtp1%ntot_item_sr
-!
-      call allocate_neib_domain_IO
-      call allocate_import_stack_IO
-      call allocate_import_item_IO
-!
-      id_neib_domain_IO(1:comm_rtp1%nneib_domain)                       &
-     &      = comm_rtp1%id_domain(1:comm_rtp1%nneib_domain)
-      istack_import_IO(0:comm_rtp1%nneib_domain)                        &
-     &      = comm_rtp1%istack_sr(0:comm_rtp1%nneib_domain)
-!
-      item_import_IO(1:comm_rtp1%ntot_item_sr)                          &
-     &      = comm_rtp1%item_sr(1:comm_rtp1%ntot_item_sr)
-!
-      call dealloc_type_sph_comm_item(comm_rtp1)
+      call copy_comm_sph_type_to_IO(my_rank, comm_rtp1)
 !
       end subroutine copy_comm_rtp_to_IO
 !
@@ -185,17 +170,17 @@
       integer(kind = kint), intent(in) :: my_rank
 !
       my_rank_IO = my_rank
-      num_neib_domain_IO = nneib_domain_rtm
+      num_neib_domain_IO = comm_rtm1%nneib_domain
       ntot_import_IO =     ntot_item_sr_rtm
 !
       call allocate_neib_domain_IO
       call allocate_import_stack_IO
       call allocate_import_item_IO
 !
-      id_neib_domain_IO(1:nneib_domain_rtm)                             &
-     &      = id_domain_rtm(1:nneib_domain_rtm)
-      istack_import_IO(0:nneib_domain_rtm)                              &
-     &      = istack_sr_rtm(0:nneib_domain_rtm)
+      id_neib_domain_IO(1:comm_rtm1%nneib_domain)                       &
+     &      = id_domain_rtm(1:comm_rtm1%nneib_domain)
+      istack_import_IO(0:comm_rtm1%nneib_domain)                        &
+     &      = istack_sr_rtm(0:comm_rtm1%nneib_domain)
 !
       item_import_IO(1:ntot_item_sr_rtm)                                &
      &      = item_sr_rtm(1:ntot_item_sr_rtm)

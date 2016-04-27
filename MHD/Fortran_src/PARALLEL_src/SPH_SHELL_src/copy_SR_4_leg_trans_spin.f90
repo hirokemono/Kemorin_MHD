@@ -15,10 +15,12 @@
 !!      subroutine get_rtm_from_recv_spin(nnod_rtm, inod_rtm_smp_stack, &
 !!     &          ncomp, nvector, nscalar, WRecv, vr_rtm_spin)
 !!
-!!      subroutine set_rlm_to_send_spin(nnod_rlm, nidx_rlm,             &
+!!      subroutine set_rlm_to_send_spin                                 &
+!!     &         (nnod_rlm, nidx_rlm, nneib_domain_rlm, istack_sr_rlm,  &
 !!     &          ncomp, nvector, nscalar, sp_rlm_spin, Wsend)
 !!      subroutine set_rtm_to_send_spin                                 &
-!!     &         (nnod_rtm, ncomp, nvector, nscalar, vr_rtm_spin, Wsend)
+!!     &         (nnod_rtm, nidx_rtm, nneib_domain_rtm, istack_sr_rtm,  &
+!!     &          ncomp, nvector, nscalar, vr_rtm_spin, Wsend)
 !!@endverbatim
 !!
 !!@param   ncomp    Total number of components for spherical transform
@@ -32,7 +34,6 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_sph_trans_comm_table
       use m_sph_trans_comm_tbl_1D
 !
       implicit none
@@ -99,10 +100,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine get_rtm_from_recv_spin(nnod_rtm, inod_rtm_smp_stack,   &
+      subroutine get_rtm_from_recv_spin                                 &
+     &         (nnod_rtm, nidx_rtm, inod_rtm_smp_stack,   &
      &          ncomp, nvector, nscalar, WRecv, vr_rtm_spin)
 !
       integer(kind = kint), intent(in) :: nnod_rtm
+      integer(kind = kint), intent(in) :: nidx_rtm(3)
       integer(kind = kint), intent(in) :: inod_rtm_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
@@ -166,11 +169,16 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_rlm_to_send_spin(nnod_rlm, nidx_rlm,               &
+      subroutine set_rlm_to_send_spin                                   &
+     &         (nnod_rlm, nidx_rlm, nneib_domain_rlm, istack_sr_rlm,    &
      &          ncomp, nvector, nscalar, sp_rlm_spin, Wsend)
 !
       integer(kind = kint), intent(in) :: nnod_rlm
       integer(kind = kint), intent(in) :: nidx_rlm(2)
+      integer(kind = kint), intent(in) :: nneib_domain_rlm
+      integer(kind = kint), intent(in)                                  &
+     &              :: istack_sr_rlm(0:nneib_domain_rlm)
+!
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       real(kind = kreal), intent(in)                                    &
      &      :: sp_rlm_spin(nidx_rlm(1),ncomp,nidx_rlm(2))
@@ -215,9 +223,15 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_rtm_to_send_spin                                   &
-     &         (nnod_rtm, ncomp, nvector, nscalar, vr_rtm_spin, Wsend)
+     &         (nnod_rtm, nidx_rtm, nneib_domain_rtm, istack_sr_rtm,    &
+     &          ncomp, nvector, nscalar, vr_rtm_spin, Wsend)
 !
       integer(kind = kint), intent(in) :: nnod_rtm
+      integer(kind = kint), intent(in) :: nidx_rtm(3)
+      integer(kind = kint), intent(in) :: nneib_domain_rtm
+      integer(kind = kint), intent(in)                                  &
+     &              :: istack_sr_rtm(0:nneib_domain_rtm)
+!
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       real(kind = kreal), intent(in)                                    &
      &      :: vr_rtm_spin(nidx_rtm(1),ncomp,nidx_rtm(3),nidx_rtm(2))

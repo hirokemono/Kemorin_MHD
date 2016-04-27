@@ -68,7 +68,7 @@
 !
       call finish_send_recv_rj_2_rlm
       call back_b_trans_fields_krin(nidx_rtm, ncomp, nvector, nscalar,  &
-     &    vr_rtm_wk(1), nmax_sr_rtp, nneib_domain_rtm,                  &
+     &    vr_rtm_wk(1), nmax_sr_rtp, comm_rtm1%nneib_domain,            &
      &    istack_sr_rtm, item_sr_rtm, WS(1))
 !
       end subroutine leg_bwd_trans_fields_krin

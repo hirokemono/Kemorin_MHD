@@ -69,11 +69,11 @@
 !
 !
       nneib_max_send = comm_rtp1%nneib_domain
-      nneib_max_recv = nneib_domain_rtm
+      nneib_max_recv = comm_rtm1%nneib_domain
       nnod_max_send =  comm_rtp1%ntot_item_sr
       nnod_max_recv =  ntot_item_sr_rtm
 !
-      nneib_max_send = max(nneib_max_send,nneib_domain_rtm)
+      nneib_max_send = max(nneib_max_send,comm_rtm1%nneib_domain)
       nneib_max_recv = max(nneib_max_recv,comm_rtp1%nneib_domain)
       nnod_max_send =  max(nnod_max_send,ntot_item_sr_rtm)
       nnod_max_recv =  max(nnod_max_recv,comm_rtp1%ntot_item_sr)
@@ -142,7 +142,7 @@
       call calypso_send_recv_2(iflag_sph_SR2, nnod_rtp, nnod_rtm,       &
      &    comm_rtp1%nneib_domain, comm_rtp1%iflag_self,                 &
      &    comm_rtp1%id_domain, comm_rtp1%istack_sr, comm_rtp1%item_sr,  &
-     &    nneib_domain_rtm, iflag_self_rtm,                             &
+     &    comm_rtm1%nneib_domain, iflag_self_rtm,                       &
      &    id_domain_rtm, istack_sr_rtm, item_sr_rtm,                    &
      &    irev_sr_rtm, X_rtp, X_rtm)
 !
@@ -160,7 +160,7 @@
 !
 !
       call calypso_send_recv_2(iflag_sph_SR2, nnod_rtm, nnod_rtp,       &
-     &    nneib_domain_rtm, iflag_self_rtm,                             &
+     &    comm_rtm1%nneib_domain, iflag_self_rtm,                       &
      &    id_domain_rtm, istack_sr_rtm, item_sr_rtm,                    &
      &    comm_rtp1%nneib_domain, comm_rtp1%iflag_self,                 &
      &    comm_rtp1%id_domain, comm_rtp1%istack_sr, comm_rtp1%item_sr,  &

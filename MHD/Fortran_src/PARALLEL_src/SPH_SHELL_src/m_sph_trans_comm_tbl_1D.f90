@@ -9,15 +9,26 @@
 !!       (innermost loop is spherical harmonics)
 !!
 !!@verbatim
-!!      subroutine allocate_spherical_1D_SR
+!!      subroutine const_spherical_1D_comm_table                        &
+!!     &         (sph_rtm, sph_rlm, comm_rtm, comm_rlm)
+!!        type(sph_rtm_grid), intent(in) :: sph_rtm
+!!        type(sph_rlm_grid), intent(in) :: sph_rlm
+!!        type(sph_comm_tbl), intent(in) :: comm_rtm, comm_rlm
+!!
+!!      subroutine allocate_spherical_1D_SR                             &
+!!     &         (nnod_rtm, nidx_rtm, nnod_rlm, nidx_rlm)
 !!      subroutine deallocate_spherical_1D_SR
-!!      subroutine set_spherical_1D_comm_table
+!!
+!!      subroutine set_spherical_1D_comm_table                          &
+!!     &         (nidx_rtm, nneib_domain_rtm, ntot_item_sr_rtm,         &
+!!     &          istack_sr_rtm, item_sr_rtm,                           &
+!!     &          nidx_rlm, nneib_domain_rlm, ntot_item_sr_rlm,         &
+!!     &          istack_sr_rlm, item_sr_rlm)
 !!@endverbatim
 !
       module m_sph_trans_comm_tbl_1D
 !
-      use m_spheric_parameter
-      use m_sph_trans_comm_table
+      use m_precision
 !
       implicit none
 !
@@ -27,13 +38,57 @@
       integer(kind = kint), allocatable :: irev_rlm_1D(:,:)
       integer(kind = kint), allocatable :: irev_rtm_1D(:,:,:)
 !
+      private :: allocate_spherical_1D_SR, set_spherical_1D_comm_table
+!
 ! -----------------------------------------------------------------------
 !
       contains
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_spherical_1D_SR
+      subroutine const_spherical_1D_comm_table                          &
+     &         (sph_rtm, sph_rlm, comm_rtm, comm_rlm)
+!
+      use t_sph_trans_comm_tbl
+      use t_spheric_rtm_data
+      use t_spheric_rlm_data
+!
+      type(sph_rtm_grid), intent(in) :: sph_rtm
+      type(sph_rlm_grid), intent(in) :: sph_rlm
+      type(sph_comm_tbl), intent(in) :: comm_rtm, comm_rlm
+!
+!
+      call allocate_spherical_1D_SR(sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, &
+     &                              sph_rlm%nnod_rlm, sph_rlm%nidx_rlm)
+!
+      call set_spherical_1D_comm_table                                  &
+     &   (sph_rtm%nidx_rtm, comm_rtm%nneib_domain,                      &
+     &    comm_rtm%ntot_item_sr, comm_rtm%istack_sr, comm_rtm%item_sr,  &
+     &    sph_rlm%nidx_rlm, comm_rlm%nneib_domain,                      &
+     &    comm_rlm%ntot_item_sr, comm_rlm%istack_sr, comm_rlm%item_sr)
+!
+      end subroutine const_spherical_1D_comm_table
+!
+! -----------------------------------------------------------------------
+!
+      subroutine deallocate_spherical_1D_SR
+!
+!
+      deallocate(irev_rlm_1D, isend_rtm_1D)
+      deallocate(irev_rtm_1D, isend_rlm_1D)
+!
+      end subroutine deallocate_spherical_1D_SR
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine allocate_spherical_1D_SR                               &
+     &         (nnod_rtm, nidx_rtm, nnod_rlm, nidx_rlm)
+!
+      integer(kind = kint), intent(in) :: nnod_rtm
+      integer(kind = kint), intent(in) :: nidx_rtm(3)
+      integer(kind = kint), intent(in) :: nnod_rlm
+      integer(kind = kint), intent(in) :: nidx_rlm(2)
 !
 !
       allocate(irev_rlm_1D(nidx_rlm(2),nidx_rlm(1)))
@@ -50,19 +105,27 @@
       end subroutine allocate_spherical_1D_SR
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine deallocate_spherical_1D_SR
-!
-!
-      deallocate(irev_rlm_1D, isend_rtm_1D)
-      deallocate(irev_rtm_1D, isend_rlm_1D)
-!
-      end subroutine deallocate_spherical_1D_SR
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_spherical_1D_comm_table
+      subroutine set_spherical_1D_comm_table                            &
+     &         (nidx_rtm, nneib_domain_rtm, ntot_item_sr_rtm,           &
+     &          istack_sr_rtm, item_sr_rtm,                             &
+     &          nidx_rlm, nneib_domain_rlm, ntot_item_sr_rlm,           &
+     &          istack_sr_rlm, item_sr_rlm)
+!
+      integer(kind = kint), intent(in) :: nidx_rtm(3)
+      integer(kind = kint), intent(in) :: nneib_domain_rtm
+      integer(kind = kint), intent(in) :: ntot_item_sr_rtm
+      integer(kind = kint), intent(in)                                  &
+     &              :: istack_sr_rtm(0:nneib_domain_rtm)
+      integer(kind = kint), intent(in) :: item_sr_rtm(ntot_item_sr_rtm)
+!
+      integer(kind = kint), intent(in) :: nidx_rlm(2)
+      integer(kind = kint), intent(in) :: nneib_domain_rlm
+      integer(kind = kint), intent(in) :: ntot_item_sr_rlm
+      integer(kind = kint), intent(in)                                  &
+     &              :: istack_sr_rlm(0:nneib_domain_rlm)
+      integer(kind = kint), intent(in) :: item_sr_rlm(ntot_item_sr_rlm)
 !
       integer(kind = kint) :: inum, inod, j_rlm, k_rlm
       integer(kind = kint) :: lnod, k_rtm, l_rtm, m_rtm

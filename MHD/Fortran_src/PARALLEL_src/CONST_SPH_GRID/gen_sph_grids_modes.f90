@@ -64,7 +64,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &          'const_comm_table_4_rlm', ip_rank
-      call const_comm_table_4_rlm(ip_rank, nnod_rlm)
+      call const_comm_table_4_rlm(ip_rank)
 !
       end subroutine const_sph_rlm_modes
 !
@@ -102,7 +102,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &          'const_comm_table_4_rtm', ip_rank
-      call const_comm_table_4_rtm(ip_rank, nnod_rtm)
+      call const_comm_table_4_rtm(ip_rank)
 !
       end subroutine const_sph_rtm_grids
 !
@@ -164,20 +164,21 @@
 ! ----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine const_comm_table_4_rlm(ip_rank, nnod_rlm)
+      subroutine const_comm_table_4_rlm(ip_rank)
 !
+      use m_spheric_parameter
       use m_sph_trans_comm_table
       use set_comm_table_rtm_rlm
 !
       integer(kind = kint), intent(in) :: ip_rank
-      integer(kind = kint), intent(in) :: nnod_rlm
 !
 !
       call allocate_ncomm
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &          'count_comm_table_4_rlm', ip_rank
-      call count_comm_table_4_rlm
+      call count_comm_table_4_rlm                                       &
+     &   (sph_rlm1%nnod_rlm, sph_rlm1%idx_global_rlm)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &          'count_num_domain_rtm_rlm', ip_rank
@@ -190,11 +191,14 @@
       call set_comm_stack_rtm_rlm(ip_rank, nneib_domain_rlm,            &
      &    id_domain_rlm, istack_sr_rlm, ntot_item_sr_rlm)
 !
-      call allocate_sph_comm_item_rlm(nnod_rlm)
+      call allocate_sph_comm_item_rlm(sph_rlm1%nnod_rlm)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &          'set_comm_table_4_rlm', ip_rank
-      call set_comm_table_4_rlm
+      call set_comm_table_4_rlm                                         &
+     &   (sph_rlm1%nnod_rlm, sph_rlm1%idx_global_rlm,                   &
+     &    nneib_domain_rlm, ntot_item_sr_rlm, istack_sr_rlm,            &
+     &    item_sr_rlm)
       call deallocate_ncomm
 !
 !      call allocate_idx_gl_rlm_out
@@ -204,34 +208,39 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_comm_table_4_rtm(ip_rank, nnod_rtm)
+      subroutine const_comm_table_4_rtm(ip_rank)
 !
+      use m_spheric_parameter
       use m_sph_trans_comm_table
       use set_comm_table_rtm_rlm
 !
       integer(kind = kint), intent(in) :: ip_rank
-      integer(kind = kint), intent(in) :: nnod_rtm
+!
 !
 !      write(*,*) 'allocate_ncomm'
       call allocate_ncomm
 !
 !      write(*,*) 'count_comm_table_4_rtm'
-      call count_comm_table_4_rtm
+      call count_comm_table_4_rtm(sph_rtm1%nnod_rtm,                    &
+     &    sph_rtm1%nidx_global_rtm, sph_rtm1%idx_global_rtm)
 !
 !      write(*,*) 'count_num_domain_rtm_rlm'
-      call count_num_domain_rtm_rlm(nneib_domain_rtm)
+      call count_num_domain_rtm_rlm(comm_rtm1%nneib_domain)
 !
 !      write(*,*) 'allocate_sph_comm_stack_rtm'
       call allocate_sph_comm_stack_rtm
 !
 !      write(*,*) 'set_comm_stack_rtm_rlm'
-      call set_comm_stack_rtm_rlm(ip_rank, nneib_domain_rtm,            &
+      call set_comm_stack_rtm_rlm(ip_rank, comm_rtm1%nneib_domain,      &
      &    id_domain_rtm, istack_sr_rtm, ntot_item_sr_rtm)
 !
-      call allocate_sph_comm_item_rtm(nnod_rtm)
+      call allocate_sph_comm_item_rtm(sph_rtm1%nnod_rtm)
 !
 !      write(*,*) 'set_comm_table_4_rtm'
-      call set_comm_table_4_rtm
+      call set_comm_table_4_rtm(sph_rtm1%nnod_rtm,                      &
+     &    sph_rtm1%nidx_global_rtm, sph_rtm1%idx_global_rtm,            &
+     &    comm_rtm1%nneib_domain, ntot_item_sr_rtm, istack_sr_rtm,      &
+     &    item_sr_rtm)
       call deallocate_ncomm
 !
 !      call allocate_idx_gl_rtm_out

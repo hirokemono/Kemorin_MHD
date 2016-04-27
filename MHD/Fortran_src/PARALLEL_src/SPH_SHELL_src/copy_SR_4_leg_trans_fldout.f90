@@ -10,16 +10,18 @@
 !!
 !!@verbatim
 !!      subroutine get_rlm_from_recv_fldout                             &
-!!     &         (nnod_rlm, inod_rlm_smp_stack,                         &
+!!     &         (nnod_rlm, inod_rlm_smp_stack, irev_sr_rlm,            &
 !!     &          ncomp, WRecv, sp_rlm_fdout)
 !!      subroutine get_rtm_from_recv_fldout                             &
-!!     &         (nnod_rtm, inod_rtm_smp_stack,                         &
+!!     &         (nnod_rtm, inod_rtm_smp_stack, irev_sr_rtm,            &
 !!     &          ncomp, WRecv, vr_rtm_fdout)
 !!
-!!      subroutine set_rlm_to_send_fldout                               &
-!!     &          (nnod_rlm, ncomp, sp_rlm_fdout, Wsend)
-!!      subroutine set_rtm_to_send_fldout                               &
-!!     &         (nnod_rtm, ncomp, vr_rtm_fdout, Wsend)
+!!      subroutine set_rlm_to_send_fldout(nnod_rlm, nneib_domain_rlm,   &
+!!     &          ntot_item_sr_rlm, istack_sr_rlm, item_sr_rlm,         &
+!!     &          ncomp, sp_rlm_fdout, Wsend)
+!!      subroutine set_rtm_to_send_fldout(nnod_rtm, nneib_domain_rtm,   &
+!!     &          ntot_item_sr_rtm, istack_sr_rtm, item_sr_rtm,         &
+!!     &          ncomp, vr_rtm_fdout, Wsend)
 !!@endverbatim
 !!
 !!@param   ncomp    Total number of components for spherical transform
@@ -33,7 +35,6 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_sph_trans_comm_table
 !
       implicit none
 !
@@ -44,10 +45,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine get_rlm_from_recv_fldout                               &
-     &         (nnod_rlm, inod_rlm_smp_stack,                           &
+     &         (nnod_rlm, inod_rlm_smp_stack, irev_sr_rlm,              &
      &          ncomp, WRecv, sp_rlm_fdout)
 !
       integer(kind = kint), intent(in) :: nnod_rlm
+      integer(kind = kint), intent(in) :: irev_sr_rlm(nnod_rlm)
       integer(kind = kint), intent(in) :: inod_rlm_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: ncomp
@@ -79,10 +81,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine get_rtm_from_recv_fldout                               &
-     &         (nnod_rtm, inod_rtm_smp_stack,                           &
+     &         (nnod_rtm, inod_rtm_smp_stack, irev_sr_rtm,              &
      &          ncomp, WRecv, vr_rtm_fdout)
 !
       integer(kind = kint), intent(in) :: nnod_rtm
+      integer(kind = kint), intent(in) :: irev_sr_rtm(nnod_rtm)
       integer(kind = kint), intent(in) :: inod_rtm_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: ncomp
@@ -114,8 +117,15 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_rlm_to_send_fldout                                 &
-     &          (nnod_rlm, ncomp, sp_rlm_fdout, Wsend)
+      subroutine set_rlm_to_send_fldout(nnod_rlm, nneib_domain_rlm,     &
+     &          ntot_item_sr_rlm, istack_sr_rlm, item_sr_rlm,           &
+     &          ncomp, sp_rlm_fdout, Wsend)
+!
+      integer(kind = kint), intent(in) :: nneib_domain_rlm
+      integer(kind = kint), intent(in) :: ntot_item_sr_rlm
+      integer(kind = kint), intent(in)                                  &
+     &              :: istack_sr_rlm(0:nneib_domain_rlm)
+      integer(kind = kint), intent(in) :: item_sr_rlm(ntot_item_sr_rlm)
 !
       integer(kind = kint), intent(in) :: nnod_rlm, ncomp
       real(kind = kreal), intent(in) :: sp_rlm_fdout(nnod_rlm,ncomp)
@@ -139,8 +149,15 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_rtm_to_send_fldout                                 &
-     &         (nnod_rtm, ncomp, vr_rtm_fdout, Wsend)
+      subroutine set_rtm_to_send_fldout(nnod_rtm, nneib_domain_rtm,     &
+     &          ntot_item_sr_rtm, istack_sr_rtm, item_sr_rtm,           &
+     &          ncomp, vr_rtm_fdout, Wsend)
+!
+      integer(kind = kint), intent(in) :: nneib_domain_rtm
+      integer(kind = kint), intent(in) :: ntot_item_sr_rtm
+      integer(kind = kint), intent(in)                                  &
+     &              :: istack_sr_rtm(0:nneib_domain_rtm)
+      integer(kind = kint), intent(in) :: item_sr_rtm(ntot_item_sr_rtm)
 !
       integer(kind = kint), intent(in) :: nnod_rtm, ncomp
       real(kind = kreal), intent(in) :: vr_rtm_fdout(nnod_rtm,ncomp)

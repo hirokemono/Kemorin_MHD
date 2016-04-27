@@ -53,35 +53,17 @@
 !
 !>        Communication table for @f$ f(r,t,p) @f$ 
       type(sph_comm_tbl), save :: comm_rtp1
-!comm_rtp1%irev_sr
-!
 !>        Communication table for @f$ f(r,t,m) @f$ 
       type(sph_comm_tbl), save :: comm_rtm1
+!comm_rtm1%nneib_domain
+!
 !>        Communication table for @f$ f(r,l,m) @f$ 
       type(sph_comm_tbl), save :: comm_rlm1
 !>        Communication table for @f$ f(r,j) @f$ 
       type(sph_comm_tbl), save :: comm_rj1
 !
-!>      number of domain to communicate from @f$ f(r,\theta,\phi) @f$ 
-!      integer(kind = kint) :: nneib_domain_rtp
-!>      total number of data points to communicate
-!!      from @f$ f(r,\theta,\phi) @f$ 
-!      integer(kind = kint) :: ntot_item_sr_rtp
-!>      integer flag for transfering data within same process
-!!      from @f$ f(r,\theta,\phi) @f$ 
-!      integer(kind = kint) :: iflag_self_rtp
-!>      process IDs to communicate from @f$ f(r,\theta,\phi) @f$ 
-!      integer(kind = kint), allocatable :: id_domain_rtp(:)
-!>      end point for communication to each process
-!!      from @f$ f(r,\theta,\phi) @f$ 
-!      integer(kind = kint), allocatable :: istack_sr_rtp(:)
-!>      local data id to communicate from @f$ f(r,\theta,\phi) @f$
-!      integer(kind = kint), allocatable :: item_sr_rtp(:)
-!>      communication table id for local point @f$ f(r,\theta,\phi) @f$
-!      integer(kind = kint), allocatable :: irev_sr_rtp(:)
-!
 !>      number of domain to communicate from @f$ f(r,\theta,m) @f$ 
-      integer(kind = kint) :: nneib_domain_rtm
+!      integer(kind = kint) :: nneib_domain_rtm
 !>      total number of data points to communicate
 !!      from @f$ f(r,\theta,m) @f$ 
       integer(kind = kint) :: ntot_item_sr_rtm
@@ -185,9 +167,9 @@
       subroutine allocate_sph_comm_stack_rtm
 !
 !
-      allocate( id_domain_rtm(nneib_domain_rtm) )
-      allocate( istack_sr_rtm(0:nneib_domain_rtm) )
-      if(nneib_domain_rtm .gt. 0) id_domain_rtm =  0
+      allocate( id_domain_rtm(comm_rtm1%nneib_domain) )
+      allocate( istack_sr_rtm(0:comm_rtm1%nneib_domain) )
+      if(comm_rtm1%nneib_domain .gt. 0) id_domain_rtm =  0
       istack_sr_rtm =  0
       iflag_self_rtm = 0
 !

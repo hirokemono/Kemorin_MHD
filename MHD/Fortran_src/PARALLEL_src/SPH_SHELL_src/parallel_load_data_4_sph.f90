@@ -174,7 +174,8 @@
 !
       comm_rtp1%iflag_self                                              &
      &    = self_comm_flag(comm_rtp1%nneib_domain, comm_rtp1%id_domain)
-      iflag_self_rtm = self_comm_flag(nneib_domain_rtm, id_domain_rtm)
+      iflag_self_rtm                                                    &
+     &    = self_comm_flag(comm_rtm1%nneib_domain, id_domain_rtm)
       iflag_self_rlm = self_comm_flag(nneib_domain_rlm, id_domain_rlm)
       iflag_self_rj =  self_comm_flag(nneib_domain_rj,  id_domain_rj)
 !
