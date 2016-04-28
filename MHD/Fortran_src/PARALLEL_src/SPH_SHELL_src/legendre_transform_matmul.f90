@@ -66,11 +66,11 @@
 !
       if(nvector .gt. 0) then
         call leg_b_trans_vector_matmul(ncomp, nvector,                  &
-     &      irev_sr_rlm, comm_rtm1%irev_sr, n_WR, n_WS, WR, WS)
+     &      comm_rlm1%irev_sr, comm_rtm1%irev_sr, n_WR, n_WS, WR, WS)
       end if
       if(nscalar .gt. 0) then
         call leg_b_trans_scalar_matmul(ncomp, nvector, nscalar,         &
-     &      irev_sr_rlm, comm_rtm1%irev_sr, n_WR, n_WS, WR, WS)
+     &      comm_rlm1%irev_sr, comm_rtm1%irev_sr, n_WR, n_WS, WR, WS)
       end if
 !
       end subroutine leg_backward_trans_matmul
@@ -91,16 +91,16 @@
 !
       call finish_send_recv_rtp_2_rtm
 !$omp parallel workshare
-      WS(1:ncomp*ntot_item_sr_rlm) = 0.0d0
+      WS(1:ncomp*comm_rlm1%ntot_item_sr) = 0.0d0
 !$omp end parallel workshare
 !
       if(nvector .gt. 0) then
         call leg_f_trans_vector_matmul(ncomp, nvector,                  &
-     &      comm_rtm1%irev_sr, irev_sr_rlm, n_WR, n_WS, WR, WS)
+     &      comm_rtm1%irev_sr, comm_rlm1%irev_sr, n_WR, n_WS, WR, WS)
       end if
       if(nscalar .gt. 0) then
         call leg_f_trans_scalar_matmul(ncomp, nvector, nscalar,         &
-     &      comm_rtm1%irev_sr, irev_sr_rlm, n_WR, n_WS, WR, WS)
+     &      comm_rtm1%irev_sr, comm_rlm1%irev_sr, n_WR, n_WS, WR, WS)
       end if
 !
       end subroutine leg_forward_trans_matmul
@@ -127,11 +127,11 @@
 !
       if(nvector .gt. 0) then
         call leg_b_trans_vector_dgemm(ncomp, nvector,                   &
-     &      irev_sr_rlm, comm_rtm1%irev_sr, n_WR, n_WS, WR, WS)
+     &      comm_rlm1%irev_sr, comm_rtm1%irev_sr, n_WR, n_WS, WR, WS)
       end if
       if(nscalar .gt. 0) then
         call leg_b_trans_scalar_dgemm(ncomp, nvector, nscalar,          &
-     &      irev_sr_rlm, comm_rtm1%irev_sr, n_WR, n_WS, WR, WS)
+     &      comm_rlm1%irev_sr, comm_rtm1%irev_sr, n_WR, n_WS, WR, WS)
       end if
 !
       end subroutine leg_backward_trans_dgemm
@@ -152,16 +152,16 @@
 !
       call finish_send_recv_rtp_2_rtm
 !$omp parallel workshare
-      WS(1:ncomp*ntot_item_sr_rlm) = 0.0d0
+      WS(1:ncomp*comm_rlm1%ntot_item_sr) = 0.0d0
 !$omp end parallel workshare
 !
       if(nvector .gt. 0) then
         call leg_f_trans_vector_dgemm(ncomp, nvector,                   &
-     &      comm_rtm1%irev_sr, irev_sr_rlm, n_WR, n_WS, WR, WS)
+     &      comm_rtm1%irev_sr, comm_rlm1%irev_sr, n_WR, n_WS, WR, WS)
       end if
       if(nscalar .gt. 0) then
         call leg_f_trans_scalar_dgemm(ncomp, nvector, nscalar,          &
-     &      comm_rtm1%irev_sr, irev_sr_rlm, n_WR, n_WS, WR, WS)
+     &      comm_rtm1%irev_sr, comm_rlm1%irev_sr, n_WR, n_WS, WR, WS)
       end if
 !
       end subroutine leg_forward_trans_dgemm
@@ -188,11 +188,11 @@
 !
       if(nvector .gt. 0) then
         call leg_b_trans_vector_matprod(ncomp, nvector,                 &
-     &      irev_sr_rlm, comm_rtm1%irev_sr, n_WR, n_WS, WR, WS)
+     &      comm_rlm1%irev_sr, comm_rtm1%irev_sr, n_WR, n_WS, WR, WS)
       end if
       if(nscalar .gt. 0) then
         call leg_b_trans_scalar_matprod(ncomp, nvector, nscalar,        &
-     &      irev_sr_rlm, comm_rtm1%irev_sr, n_WR, n_WS, WR, WS)
+     &      comm_rlm1%irev_sr, comm_rtm1%irev_sr, n_WR, n_WS, WR, WS)
       end if
 !
       end subroutine leg_backward_trans_matprod
@@ -213,16 +213,16 @@
 !
       call finish_send_recv_rtp_2_rtm
 !$omp parallel workshare
-      WS(1:ncomp*ntot_item_sr_rlm) = 0.0d0
+      WS(1:ncomp*comm_rlm1%ntot_item_sr) = 0.0d0
 !$omp end parallel workshare
 !
       if(nvector .gt. 0) then
         call leg_f_trans_vector_matprod(ncomp, nvector,                 &
-     &      comm_rtm1%irev_sr, irev_sr_rlm, n_WR, n_WS, WR, WS)
+     &      comm_rtm1%irev_sr, comm_rlm1%irev_sr, n_WR, n_WS, WR, WS)
       end if
       if(nscalar .gt. 0) then
         call leg_f_trans_scalar_matprod(ncomp, nvector, nscalar,        &
-     &      comm_rtm1%irev_sr, irev_sr_rlm, n_WR, n_WS, WR, WS)
+     &      comm_rtm1%irev_sr, comm_rlm1%irev_sr, n_WR, n_WS, WR, WS)
       end if
 !
       end subroutine leg_forward_trans_matprod

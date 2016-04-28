@@ -107,19 +107,19 @@
       integer(kind = kint), intent(in) :: nnod_rlm
 !
 !
-      nneib_domain_rlm = num_neib_domain_IO
-      ntot_item_sr_rlm = ntot_import_IO
+      comm_rlm1%nneib_domain = num_neib_domain_IO
+      comm_rlm1%ntot_item_sr = ntot_import_IO
 !
-      call allocate_sph_comm_stack_rlm
-      call allocate_sph_comm_item_rlm(nnod_rlm)
+      call alloc_type_sph_comm_stack(comm_rlm1)
+      call alloc_type_sph_comm_item(nnod_rlm, comm_rlm1)
 !
-      id_domain_rlm(1:nneib_domain_rlm)                                 &
-     &      = id_neib_domain_IO(1:nneib_domain_rlm)
-      istack_sr_rlm(0:nneib_domain_rlm)                                 &
-     &      = istack_import_IO(0:nneib_domain_rlm)
+      comm_rlm1%id_domain(1:comm_rlm1%nneib_domain)                     &
+     &      = id_neib_domain_IO(1:comm_rlm1%nneib_domain)
+      comm_rlm1%istack_sr(0:comm_rlm1%nneib_domain)                     &
+     &      = istack_import_IO(0:comm_rlm1%nneib_domain)
 !
-      item_sr_rlm(1:ntot_item_sr_rlm)                                   &
-     &      = item_import_IO(1:ntot_item_sr_rlm)
+      comm_rlm1%item_sr(1:comm_rlm1%ntot_item_sr)                       &
+     &      = item_import_IO(1:comm_rlm1%ntot_item_sr)
 !
       call deallocate_import_item_IO
       call deallocate_neib_domain_IO
@@ -196,22 +196,22 @@
       integer(kind = kint), intent(in) :: my_rank
 !
       my_rank_IO = my_rank
-      num_neib_domain_IO = nneib_domain_rlm
-      ntot_import_IO =     ntot_item_sr_rlm
+      num_neib_domain_IO = comm_rlm1%nneib_domain
+      ntot_import_IO =     comm_rlm1%ntot_item_sr
 !
       call allocate_neib_domain_IO
       call allocate_import_stack_IO
       call allocate_import_item_IO
 !
-      id_neib_domain_IO(1:nneib_domain_rlm)                             &
-     &      = id_domain_rlm(1:nneib_domain_rlm)
-      istack_import_IO(0:nneib_domain_rlm)                              &
-     &      = istack_sr_rlm(0:nneib_domain_rlm)
+      id_neib_domain_IO(1:comm_rlm1%nneib_domain)                       &
+     &      = comm_rlm1%id_domain(1:comm_rlm1%nneib_domain)
+      istack_import_IO(0:comm_rlm1%nneib_domain)                        &
+     &      = comm_rlm1%istack_sr(0:comm_rlm1%nneib_domain)
 !
-      item_import_IO(1:ntot_item_sr_rlm)                                &
-     &      = item_sr_rlm(1:ntot_item_sr_rlm)
+      item_import_IO(1:comm_rlm1%ntot_item_sr)                          &
+     &      = comm_rlm1%item_sr(1:comm_rlm1%ntot_item_sr)
 !
-      call deallocate_sph_comm_item_rlm
+      call dealloc_type_sph_comm_item(comm_rlm1)
 !
       end subroutine copy_comm_rlm_to_IO
 !

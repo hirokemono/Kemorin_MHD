@@ -59,7 +59,8 @@
       call order_b_trans_fields_krin                                    &
      &   (nnod_rlm, nidx_rlm, sph_rlm1%istep_rlm,                       &
      &    sph_rlm1%a_r_1d_rlm_r, sph_rlm1%istack_rlm_j_smp,             &
-     &    ncomp, nvector, nscalar, irev_sr_rlm, n_WR, WR, sp_rlm_wk(1))
+     &    ncomp, nvector, nscalar, comm_rlm1%irev_sr,                   &
+     &    n_WR, WR, sp_rlm_wk(1))
 !
       call legendre_b_trans_vector_krin(ncomp, nvector,                 &
      &    sp_rlm_wk(1), vr_rtm_wk(1))
@@ -103,8 +104,8 @@
 !
       call finish_send_recv_rtp_2_rtm
       call back_f_trans_fields_krin(nidx_rlm, ncomp, nvector, nscalar,  &
-     &    sp_rlm_wk(1), nmax_sr_rj, nneib_domain_rlm,                   &
-     &    istack_sr_rlm, item_sr_rlm, WS(1))
+     &    sp_rlm_wk(1), nmax_sr_rj, comm_rlm1%nneib_domain,             &
+     &    comm_rlm1%istack_sr, comm_rlm1%item_sr, WS(1))
 !
       end subroutine leg_fwd_trans_fields_krin
 !

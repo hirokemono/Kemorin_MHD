@@ -176,7 +176,8 @@
 !     &    comm_rtm1%nneib_domain, comm_rtm1%istack_sr,                 &
 !     &    comm_rtm1%item_sr, comm_rtm1%irev_sr)
 !      call set_rev_all2all_import_tbl(nnod_rlm, nmax_sr_rj,            &
-!     &    nneib_domain_rlm, istack_sr_rlm, item_sr_rlm, irev_sr_rlm)
+!     &    comm_rlm1%nneib_domain, comm_rlm1%istack_sr,                 &
+!     &    comm_rlm1%item_sr, comm_rlm1%irev_sr)
 !      call set_rev_all2all_import_tbl(nnod_rj, nmax_sr_rj,             &
 !     &    nneib_domain_rj,  istack_sr_rj,  item_sr_rj,  irev_sr_rj)
 !
@@ -190,8 +191,8 @@
      &    comm_rtp1%item_sr, comm_rtp1%irev_sr)
       call set_reverse_import_table(nnod_rtm, comm_rtm1%ntot_item_sr,   &
      &    comm_rtm1%item_sr, comm_rtm1%irev_sr)
-      call set_reverse_import_table(nnod_rlm, ntot_item_sr_rlm,         &
-     &    item_sr_rlm, irev_sr_rlm)
+      call set_reverse_import_table(nnod_rlm, comm_rlm1%ntot_item_sr,   &
+     &    comm_rlm1%item_sr, comm_rlm1%irev_sr)
       call set_reverse_import_table(nnod_rj, ntot_item_sr_rj,           &
      &    item_sr_rj, irev_sr_rj)
 !
@@ -297,13 +298,15 @@
       call calypso_MPI_Barrier
       if(my_rank .eq. 0) write(*,*) 'check rj -> rlm'
       call check_calypso_send_recv_N                                    &
-     &         (NB, nneib_domain_rj, iflag_self_rj, istack_sr_rj,       &
-     &              nneib_domain_rlm, iflag_self_rlm, istack_sr_rlm)
+     &    (NB, nneib_domain_rj, iflag_self_rj,            &
+     &     istack_sr_rj, comm_rlm1%nneib_domain,          &
+     &     comm_rlm1%iflag_self, comm_rlm1%istack_sr)
       call calypso_MPI_Barrier
       if(my_rank .eq. 0) write(*,*) 'check rlm -> rj'
       call check_calypso_send_recv_N                                    &
-     &         (NB, nneib_domain_rlm, iflag_self_rlm, istack_sr_rlm,    &
-     &              nneib_domain_rj, iflag_self_rj, istack_sr_rj)
+     &   (NB, comm_rlm1%nneib_domain, comm_rlm1%iflag_self,             &
+     &    comm_rlm1%istack_sr, nneib_domain_rj,         &
+     &    iflag_self_rj, istack_sr_rj)
 !
       end subroutine check_spherical_SRs_N
 !

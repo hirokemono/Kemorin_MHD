@@ -182,23 +182,24 @@
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &          'count_num_domain_rtm_rlm', ip_rank
-      call count_num_domain_rtm_rlm(nneib_domain_rlm)
+      call count_num_domain_rtm_rlm(comm_rlm1%nneib_domain)
 !
-      call allocate_sph_comm_stack_rlm
+      call alloc_type_sph_comm_stack(comm_rlm1)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &          'set_comm_stack_rtm_rlm', ip_rank
-      call set_comm_stack_rtm_rlm(ip_rank, nneib_domain_rlm,            &
-     &    id_domain_rlm, istack_sr_rlm, ntot_item_sr_rlm)
+      call set_comm_stack_rtm_rlm                                       &
+     &   (ip_rank, comm_rlm1%nneib_domain, comm_rlm1%id_domain,         &
+     &    comm_rlm1%istack_sr, comm_rlm1%ntot_item_sr)
 !
-      call allocate_sph_comm_item_rlm(sph_rlm1%nnod_rlm)
+      call alloc_type_sph_comm_item(sph_rlm1%nnod_rlm, comm_rlm1)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &          'set_comm_table_4_rlm', ip_rank
       call set_comm_table_4_rlm                                         &
      &   (sph_rlm1%nnod_rlm, sph_rlm1%idx_global_rlm,                   &
-     &    nneib_domain_rlm, ntot_item_sr_rlm, istack_sr_rlm,            &
-     &    item_sr_rlm)
+     &    comm_rlm1%nneib_domain, comm_rlm1%ntot_item_sr,               &
+     &    comm_rlm1%istack_sr, comm_rlm1%item_sr)
       call deallocate_ncomm
 !
 !      call allocate_idx_gl_rlm_out

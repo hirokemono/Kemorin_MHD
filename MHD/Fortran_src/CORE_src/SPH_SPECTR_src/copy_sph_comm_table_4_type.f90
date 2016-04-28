@@ -75,13 +75,13 @@
       type(sph_comm_tbl), intent(in) :: rlm_comm
 !
 !
-      nneib_domain_rlm = rlm_comm%nneib_domain
-      call allocate_sph_comm_stack_rlm
+      comm_rlm1%nneib_domain = rlm_comm%nneib_domain
+      call alloc_type_sph_comm_stack(comm_rlm1)
 !
-      id_domain_rlm(1:nneib_domain_rlm)                                 &
-     &      = rlm_comm%id_domain(1:nneib_domain_rlm)
-      istack_sr_rlm(0:nneib_domain_rlm)                                 &
-     &      = rlm_comm%istack_sr(0:nneib_domain_rlm)
+      comm_rlm1%id_domain(1:comm_rlm1%nneib_domain)                     &
+     &      = rlm_comm%id_domain(1:comm_rlm1%nneib_domain)
+      comm_rlm1%istack_sr(0:comm_rlm1%nneib_domain)                     &
+     &      = rlm_comm%istack_sr(0:comm_rlm1%nneib_domain)
 !
       end subroutine copy_neib_rlm_from_type
 !
@@ -148,13 +148,13 @@
 !
       call copy_neib_rlm_from_type(rlm_comm)
 !
-      ntot_item_sr_rlm = rlm_comm%ntot_item_sr
-      call allocate_sph_comm_item_rlm(nnod_rlm)
+      comm_rlm1%ntot_item_sr = rlm_comm%ntot_item_sr
+      call alloc_type_sph_comm_item(nnod_rlm, comm_rlm1)
 !
-      item_sr_rlm(1:ntot_item_sr_rlm)                                   &
-     &      = rlm_comm%item_sr(1:ntot_item_sr_rlm)
-      irev_sr_rlm(1:nnod_rlm) = rlm_comm%irev_sr(1:nnod_rlm)
-      iflag_self_rlm = rlm_comm%iflag_self
+      comm_rlm1%item_sr(1:comm_rlm1%ntot_item_sr)                       &
+     &      = rlm_comm%item_sr(1:comm_rlm1%ntot_item_sr)
+      comm_rlm1%irev_sr(1:nnod_rlm) = rlm_comm%irev_sr(1:nnod_rlm)
+      comm_rlm1%iflag_self = rlm_comm%iflag_self
 !
 !      call dealloc_type_sph_comm_item(rlm_comm)
 !
@@ -272,13 +272,13 @@
       type(sph_comm_tbl), intent(inout) :: rlm_comm
 !
 !
-      rlm_comm%nneib_domain = nneib_domain_rlm
+      rlm_comm%nneib_domain = comm_rlm1%nneib_domain
       call alloc_type_sph_comm_stack(rlm_comm)
 !
-      rlm_comm%id_domain(1:nneib_domain_rlm)                            &
-     &      = id_domain_rlm(1:nneib_domain_rlm)
-      rlm_comm%istack_sr(0:nneib_domain_rlm)                            &
-     &      = istack_sr_rlm(0:nneib_domain_rlm)
+      rlm_comm%id_domain(1:comm_rlm1%nneib_domain)                      &
+     &      = comm_rlm1%id_domain(1:comm_rlm1%nneib_domain)
+      rlm_comm%istack_sr(0:comm_rlm1%nneib_domain)                      &
+     &      = comm_rlm1%istack_sr(0:comm_rlm1%nneib_domain)
 !
       end subroutine copy_comm_rlm_num_to_type
 !
@@ -334,15 +334,15 @@
       type(sph_comm_tbl), intent(inout) :: rlm_comm
 !
 !
-      rlm_comm%ntot_item_sr = ntot_item_sr_rlm
+      rlm_comm%ntot_item_sr = comm_rlm1%ntot_item_sr
       call alloc_type_sph_comm_item(sph_rlm%nnod_rlm, rlm_comm)
 !
-      rlm_comm%item_sr(1:ntot_item_sr_rlm)                              &
-     &      = item_sr_rlm(1:ntot_item_sr_rlm)
+      rlm_comm%item_sr(1:comm_rlm1%ntot_item_sr)                        &
+     &      = comm_rlm1%item_sr(1:comm_rlm1%ntot_item_sr)
 !
       call set_reverse_sph_comm_tbl_t(sph_rlm%nnod_rlm, rlm_comm)
 !
-      rlm_comm%iflag_self = iflag_self_rlm
+      rlm_comm%iflag_self = comm_rlm1%iflag_self
 !
       end subroutine copy_comm_rlm_item_to_type
 !

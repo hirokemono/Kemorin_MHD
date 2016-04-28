@@ -168,7 +168,7 @@
       call set_reverse_import_table(sph_rtm1%nnod_rtm,                  &
      &    comm_rtm1%ntot_item_sr, comm_rtm1%item_sr, comm_rtm1%irev_sr)
       call set_reverse_import_table(sph_rlm1%nnod_rlm,                  &
-     &    ntot_item_sr_rlm, item_sr_rlm, irev_sr_rlm)
+     &    comm_rlm1%ntot_item_sr, comm_rlm1%item_sr, comm_rlm1%irev_sr)
       call set_reverse_import_table(sph_rj1%nnod_rj, ntot_item_sr_rj,   &
      &    item_sr_rj, irev_sr_rj)
 !
@@ -176,7 +176,8 @@
      &    = self_comm_flag(comm_rtp1%nneib_domain, comm_rtp1%id_domain)
       comm_rtm1%iflag_self                                              &
      &    = self_comm_flag(comm_rtm1%nneib_domain, comm_rtm1%id_domain)
-      iflag_self_rlm = self_comm_flag(nneib_domain_rlm, id_domain_rlm)
+      comm_rlm1%iflag_self                                              &
+     &    = self_comm_flag(comm_rlm1%nneib_domain, comm_rlm1%id_domain)
       iflag_self_rj =  self_comm_flag(nneib_domain_rj,  id_domain_rj)
 !
       call count_interval_4_each_dir(ithree, sph_rtp1%nnod_rtp,         &

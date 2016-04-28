@@ -95,13 +95,13 @@
       nnod_max_recv =  max(nnod_max_recv,comm_rtp1%ntot_item_sr)
 !
       nneib_max_send = max(nneib_max_send,nneib_domain_rj)
-      nneib_max_recv = max(nneib_max_recv,nneib_domain_rlm)
+      nneib_max_recv = max(nneib_max_recv,comm_rlm1%nneib_domain)
       nnod_max_send =  max(nnod_max_send,ntot_item_sr_rj)
-      nnod_max_recv =  max(nnod_max_recv,ntot_item_sr_rlm)
+      nnod_max_recv =  max(nnod_max_recv,comm_rlm1%ntot_item_sr)
 !
-      nneib_max_send = max(nneib_max_send,nneib_domain_rlm)
+      nneib_max_send = max(nneib_max_send,comm_rlm1%nneib_domain)
       nneib_max_recv = max(nneib_max_recv,nneib_domain_rj)
-      nnod_max_send =  max(nnod_max_send,ntot_item_sr_rlm)
+      nnod_max_send =  max(nnod_max_send,comm_rlm1%ntot_item_sr)
       nnod_max_recv =  max(nnod_max_recv,ntot_item_sr_rj)
 !
 !      iflag_sph_commN = iflag_send_recv
@@ -109,7 +109,7 @@
      &  .or. iflag_sph_commN .eq. iflag_alltoall) then
         nmax_item_rtp = comm_rtp1%istack_sr(1) - comm_rtp1%istack_sr(0)
         nmax_item_rtm = comm_rtm1%istack_sr(1) - comm_rtm1%istack_sr(0)
-        nmax_item_rlm = istack_sr_rlm(1) - istack_sr_rlm(0)
+        nmax_item_rlm = comm_rlm1%istack_sr(1) - comm_rlm1%istack_sr(0)
         nmax_item_rj =  istack_sr_rj(1) -  istack_sr_rj(0)
         do ip = 2, comm_rtp1%nneib_domain
           num = comm_rtp1%istack_sr(ip) - comm_rtp1%istack_sr(ip-1)
@@ -119,7 +119,7 @@
           nmax_item_rtm = max(nmax_item_rtm,num)
         end do
         do ip = 2, nneib_domain_rj
-          num = istack_sr_rlm(ip) - istack_sr_rlm(ip-1)
+          num = comm_rlm1%istack_sr(ip) - comm_rlm1%istack_sr(ip-1)
           nmax_item_rlm = max(nmax_item_rlm,num)
 !
           num = istack_sr_rj(ip) - istack_sr_rj(ip-1)
@@ -158,9 +158,10 @@
      &    comm_rtm1%nneib_domain, comm_rtm1%istack_sr,                  &
      &    comm_rtp1%nneib_domain, comm_rtp1%istack_sr)
       call check_calypso_sph_buf_N(NB, nmax_sr_rj,  nneib_domain_rj,    &
-     &    istack_sr_rj,  nneib_domain_rlm, istack_sr_rlm)
-      call check_calypso_sph_buf_N(NB, nmax_sr_rj,  nneib_domain_rlm,   &
-     &    istack_sr_rlm, nneib_domain_rj,  istack_sr_rj)
+     &    istack_sr_rj,  comm_rlm1%nneib_domain, comm_rlm1%istack_sr)
+      call check_calypso_sph_buf_N(NB, nmax_sr_rj,                      &
+     &    comm_rlm1%nneib_domain, comm_rlm1%istack_sr,                  &
+     &    nneib_domain_rj,  istack_sr_rj)
 !
       end subroutine check_calypso_sph_buffer_N
 !
@@ -313,7 +314,7 @@
       integer (kind=kint), intent(in) :: NB
 !
       call check_calypso_sph_buf_N(NB, nmax_sr_rj,  nneib_domain_rj,    &
-     &    istack_sr_rj,  nneib_domain_rlm, istack_sr_rlm)
+     &    istack_sr_rj,  comm_rlm1%nneib_domain, comm_rlm1%istack_sr)
 !
       end subroutine check_calypso_rj_2_rlm_buf_N
 !
@@ -328,8 +329,9 @@
 !
       integer (kind=kint), intent(in) :: NB
 !
-      call check_calypso_sph_buf_N(NB, nmax_sr_rj,  nneib_domain_rlm,   &
-     &    istack_sr_rlm, nneib_domain_rj,  istack_sr_rj)
+      call check_calypso_sph_buf_N(NB, nmax_sr_rj,                      &
+     &    comm_rlm1%nneib_domain, comm_rlm1%istack_sr,                  &
+     &    nneib_domain_rj,  istack_sr_rj)
 !
       end subroutine check_calypso_rlm_2_rj_buf_N
 !
@@ -387,10 +389,10 @@
 !
 !
       call sel_calypso_sph_comm_N(NB, nmax_sr_rj,                       &
-     &              nneib_domain_rj,  iflag_self_rj,                    &
-     &              id_domain_rj,  istack_sr_rj,                        &
-     &              nneib_domain_rlm, iflag_self_rlm,                   &
-     &              id_domain_rlm, istack_sr_rlm, CALYPSO_RJ_COMM)
+     &    nneib_domain_rj,  iflag_self_rj,                              &
+     &    id_domain_rj,  istack_sr_rj,                                  &
+     &    comm_rlm1%nneib_domain, comm_rlm1%iflag_self,                 &
+     &    comm_rlm1%id_domain, comm_rlm1%istack_sr, CALYPSO_RJ_COMM)
 !
       end subroutine calypso_sph_comm_rj_2_rlm_N
 !
@@ -407,10 +409,10 @@
 !
 !
       call sel_calypso_sph_comm_N(NB, nmax_sr_rj,                       &
-     &              nneib_domain_rlm, iflag_self_rlm,                   &
-     &              id_domain_rlm, istack_sr_rlm,                       &
-     &              nneib_domain_rj,  iflag_self_rj,                    &
-     &              id_domain_rj,  istack_sr_rj, CALYPSO_RJ_COMM)
+     &    comm_rlm1%nneib_domain, comm_rlm1%iflag_self,                 &
+     &    comm_rlm1%id_domain, comm_rlm1%istack_sr,                     &
+     &    nneib_domain_rj,  iflag_self_rj,                              &
+     &    id_domain_rj,  istack_sr_rj, CALYPSO_RJ_COMM)
 !
       end subroutine calypso_sph_comm_rlm_2_rj_N
 !
@@ -466,11 +468,12 @@
 !
       integer (kind=kint), intent(in) :: NB, n_WS
       real (kind=kreal), intent(in)::    X_rlm(NB*nnod_rlm)
-      real (kind=kreal), intent(inout):: WS(NB*ntot_item_sr_rlm)
+      real (kind=kreal), intent(inout):: WS(NB*comm_rlm1%ntot_item_sr)
 !
 !
       call sel_calypso_to_send_N(NB, nnod_rlm, n_WS, nmax_sr_rj,        &
-     &    nneib_domain_rlm, istack_sr_rlm, item_sr_rlm, X_rlm, WS)
+     &    comm_rlm1%nneib_domain, comm_rlm1%istack_sr,                  &
+     &    comm_rlm1%item_sr, X_rlm, WS)
 !
       end subroutine calypso_rlm_to_send_N
 !
@@ -530,8 +533,8 @@
 !
 !
       call sel_calypso_from_recv_N(NB, nnod_rlm, n_WR, nmax_sr_rj,      &
-     &              nneib_domain_rlm, istack_sr_rlm,                    &
-     &              item_sr_rlm, irev_sr_rlm, WR, X_rlm)
+     &    comm_rlm1%nneib_domain, comm_rlm1%istack_sr,                  &
+     &    comm_rlm1%item_sr, comm_rlm1%irev_sr, WR, X_rlm)
 !
       end subroutine calypso_rlm_from_recv_N
 !
@@ -578,7 +581,8 @@
       use m_sph_trans_comm_table
       use m_sel_spherical_SRs
 !
-      call finish_sph_send_recv(nneib_domain_rlm, iflag_self_rlm)
+      call finish_sph_send_recv                                         &
+     &   (comm_rlm1%nneib_domain, comm_rlm1%iflag_self)
 !
       end subroutine finish_send_recv_rlm_2_rj
 !

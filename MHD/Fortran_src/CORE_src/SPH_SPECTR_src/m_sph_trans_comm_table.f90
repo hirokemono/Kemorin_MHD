@@ -55,49 +55,31 @@
       type(sph_comm_tbl), save :: comm_rtp1
 !>        Communication table for @f$ f(r,t,m) @f$ 
       type(sph_comm_tbl), save :: comm_rtm1
-!comm_rtm1%irev_sr
-!
 !>        Communication table for @f$ f(r,l,m) @f$ 
       type(sph_comm_tbl), save :: comm_rlm1
+!comm_rlm1%irev_sr
+!
 !>        Communication table for @f$ f(r,j) @f$ 
       type(sph_comm_tbl), save :: comm_rj1
 !
-!>      number of domain to communicate from @f$ f(r,\theta,m) @f$ 
-!      integer(kind = kint) :: nneib_domain_rtm
-!>      total number of data points to communicate
-!!      from @f$ f(r,\theta,m) @f$ 
-!      integer(kind = kint) :: ntot_item_sr_rtm
-!>      integer flag for transfering data within same process
-!!      from @f$ f(r,\theta,m) @f$ 
-!      integer(kind = kint) :: iflag_self_rtm
-!>      process IDs to communicate from @f$ f(r,\theta,m) @f$ 
-!      integer(kind = kint), allocatable :: id_domain_rtm(:)
-!>      end point for communication to each process
-!!      from @f$ f(r,\theta,m) @f$ 
-!      integer(kind = kint), allocatable :: istack_sr_rtm(:)
-!>      local data id to communicate from @f$ f(r,\theta,m) @f$
-!      integer(kind = kint), allocatable :: item_sr_rtm(:)
-!>      communication table id for local point @f$ f(r,\theta,m) @f$
-!      integer(kind = kint), allocatable :: irev_sr_rtm(:)
-!
 !
 !>      number of domain to communicate from @f$ f(r,l,m) @f$ 
-      integer(kind = kint) :: nneib_domain_rlm
+!      integer(kind = kint) :: nneib_domain_rlm
 !>      total number of data points to communicate
 !!      from @f$ f(r,l,m) @f$ 
-      integer(kind = kint) :: ntot_item_sr_rlm
+!      integer(kind = kint) :: ntot_item_sr_rlm
 !>      integer flag for transfering data within same process
 !!      from @f$ f(r,l,m) @f$ 
-      integer(kind = kint) :: iflag_self_rlm
+!      integer(kind = kint) :: iflag_self_rlm
 !>      process IDs to communicate from @f$ f(r,l,m) @f$ 
-      integer(kind = kint), allocatable :: id_domain_rlm(:)
+!      integer(kind = kint), allocatable :: id_domain_rlm(:)
 !>      end point for communication to each process
 !!      from @f$ f(r,l,m) @f$ 
-      integer(kind = kint), allocatable :: istack_sr_rlm(:)
+!      integer(kind = kint), allocatable :: istack_sr_rlm(:)
 !>      local data id to communicate from @f$ f(r,l,m) @f$
-      integer(kind = kint), allocatable :: item_sr_rlm(:)
+!      integer(kind = kint), allocatable :: item_sr_rlm(:)
 !>      communication table id for local point @f$ f(r,l,m) @f$
-      integer(kind = kint), allocatable :: irev_sr_rlm(:)
+!      integer(kind = kint), allocatable :: irev_sr_rlm(:)
 !
 !>      number of domain to communicate from @f$ f(r,j) @f$ 
       integer(kind = kint) :: nneib_domain_rj
@@ -128,7 +110,7 @@
 !
       call alloc_type_sph_comm_stack(comm_rtp1)
       call alloc_type_sph_comm_stack(comm_rtm1)
-      call allocate_sph_comm_stack_rlm
+      call alloc_type_sph_comm_stack(comm_rlm1)
       call allocate_sph_comm_stack_rj
 !
       end subroutine allocate_sph_comm_stack
@@ -144,7 +126,7 @@
 !
       call alloc_type_sph_comm_item(nnod_rtp, comm_rtp1)
       call alloc_type_sph_comm_item(nnod_rtm, comm_rtm1)
-      call allocate_sph_comm_item_rlm(nnod_rlm)
+      call alloc_type_sph_comm_item(nnod_rlm, comm_rlm1)
       call allocate_sph_comm_item_rj(nnod_rj)
 !
       end subroutine allocate_sph_comm_item
@@ -156,25 +138,12 @@
 !
       call dealloc_type_sph_comm_item(comm_rtp1)
       call dealloc_type_sph_comm_item(comm_rtm1)
-      call deallocate_sph_comm_item_rlm
+      call dealloc_type_sph_comm_item(comm_rlm1)
       call deallocate_sph_comm_item_rj
 !
       end subroutine deallocate_sph_comm_item
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine allocate_sph_comm_stack_rlm
-!
-!
-      allocate( id_domain_rlm(nneib_domain_rlm) )
-      allocate( istack_sr_rlm(0:nneib_domain_rlm) )
-      if(nneib_domain_rlm .gt. 0) id_domain_rlm =  0
-      istack_sr_rlm =  0
-      iflag_self_rlm = 0
-!
-      end subroutine allocate_sph_comm_stack_rlm
-!
 ! -----------------------------------------------------------------------
 !
       subroutine allocate_sph_comm_stack_rj
@@ -191,20 +160,6 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_sph_comm_item_rlm(nnod_rlm)
-!
-      integer(kind = kint), intent(in) :: nnod_rlm
-!
-!
-      allocate( item_sr_rlm(ntot_item_sr_rlm) )
-      allocate( irev_sr_rlm(nnod_rlm) )
-      if(ntot_item_sr_rlm .gt. 0) item_sr_rlm = 0
-      if(nnod_rlm .gt. 0) irev_sr_rlm = 0
-!
-      end subroutine allocate_sph_comm_item_rlm
-!
-! -----------------------------------------------------------------------
-!
       subroutine allocate_sph_comm_item_rj(nnod_rj)
 !
       integer(kind = kint), intent(in) :: nnod_rj
@@ -218,16 +173,6 @@
       end subroutine allocate_sph_comm_item_rj
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_sph_comm_item_rlm
-!
-      deallocate( item_sr_rlm, irev_sr_rlm )
-      deallocate( id_domain_rlm )
-      deallocate( istack_sr_rlm )
-!
-      end subroutine deallocate_sph_comm_item_rlm
-!
 ! -----------------------------------------------------------------------
 !
       subroutine deallocate_sph_comm_item_rj
