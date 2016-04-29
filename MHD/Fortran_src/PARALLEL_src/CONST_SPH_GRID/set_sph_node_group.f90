@@ -35,8 +35,9 @@
 !
 !
       nod_grp%num_grp =  0
-      do igrp = 1, num_radial_grp_rj
-        num = istack_radial_grp_rj(igrp) - istack_radial_grp_rj(igrp-1)
+      do igrp = 1, radial_rj_grp1%num_grp
+        num = radial_rj_grp1%istack_grp(igrp)                           &
+     &       - radial_rj_grp1%istack_grp(igrp-1)
         if(num .eq. 1) then
           nod_grp%num_grp =  nod_grp%num_grp + 1
         end if
@@ -68,14 +69,15 @@
 !
       icou = 0
       nod_grp%nitem_grp =  0
-      do igrp = 1, num_radial_grp_rj
-        num = istack_radial_grp_rj(igrp) - istack_radial_grp_rj(igrp-1)
+      do igrp = 1, radial_rj_grp1%num_grp
+        num = radial_rj_grp1%istack_grp(igrp)                           &
+     &       - radial_rj_grp1%istack_grp(igrp-1)
         if(num .eq. 1) then
           icou = icou + 1
-          knum = istack_radial_grp_rj(igrp)
-          kr = item_radial_grp_rj(knum)
+          knum = radial_rj_grp1%istack_grp(igrp)
+          kr = radial_rj_grp1%item_grp(knum)
 !
-          nod_grp%grp_name(icou) = name_radial_grp_rj(igrp)
+          nod_grp%grp_name(icou) = radial_rj_grp1%grp_name(igrp)
           if(irev_sph_r(kr,ip_r) .gt. 0) then
             call count_node_grp_on_sphere(ip_r, ip_t,                   &
      &          irev_sph_r(kr,ip_r), nod_grp%nitem_grp(icou))
@@ -132,12 +134,13 @@
 !
 !
       icou = 0
-      do igrp = 1, num_radial_grp_rj
-        num = istack_radial_grp_rj(igrp) - istack_radial_grp_rj(igrp-1)
+      do igrp = 1, radial_rj_grp1%num_grp
+        num = radial_rj_grp1%istack_grp(igrp)                           &
+     &       - radial_rj_grp1%istack_grp(igrp-1)
         if(num .eq. 1) then
           icou = icou + 1
-          knum = istack_radial_grp_rj(igrp)
-          kr = item_radial_grp_rj(knum)
+          knum = radial_rj_grp1%istack_grp(igrp)
+          kr = radial_rj_grp1%item_grp(knum)
 !
           if(irev_sph_r(kr,ip_r) .gt. 0) then
             call set_node_grp_item_on_sphere(ip_r, ip_t,                &

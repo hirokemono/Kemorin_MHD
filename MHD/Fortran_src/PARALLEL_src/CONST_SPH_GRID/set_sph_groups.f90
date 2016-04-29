@@ -69,7 +69,7 @@
       use set_item_4_sph_groups
 !
 !
-      call count_sph_radial_group(num_radial_grp_rtp)
+      call count_sph_radial_group(radial_rtp_grp1%num_grp)
 !
       call allocate_rtp_r_grp_stack
       call set_stack_rtp_radial_grp
@@ -87,7 +87,7 @@
       use set_item_4_sph_groups
 !
 !
-      call count_sph_radial_group(num_radial_grp_rj)
+      call count_sph_radial_group(radial_rj_grp1%num_grp)
       call allocate_rj_r_grp_stack
       call set_stack_rj_radial_grp
 !
@@ -104,7 +104,7 @@
       use set_item_4_sph_groups
 !
 !
-      num_sphere_grp_rj =  4
+      sphere_rj_grp1%num_grp =  4
 !      write(*,*) 'allocate_rj_sphere_grp_stack'
       call allocate_rj_sphere_grp_stack
 !      write(*,*) 'set_stack_rj_spectr_grp'
@@ -122,10 +122,10 @@
 !
       subroutine set_no_rtp_node_grp
 !
-      num_bc_grp_rtp =  0
-      ntot_bc_grp_rtp = 0
-      call allocate_rtp_nod_grp_stack
-      call allocate_rtp_nod_grp_item
+      bc_rtp_grp1%num_grp =  0
+      bc_rtp_grp1%num_item = 0
+      call allocate_grp_type_num(bc_rtp_grp1)
+      call allocate_grp_type_item(bc_rtp_grp1)
 !
       end subroutine set_no_rtp_node_grp
 !
@@ -133,8 +133,8 @@
 !
       subroutine set_no_rtp_meridian_grp
 !
-      num_theta_grp_rtp =  0
-      ntot_theta_grp_rtp = 0
+      theta_rtp_grp1%num_grp =  0
+      theta_rtp_grp1%num_item = 0
       call allocate_rtp_theta_grp_stack
       call allocate_rtp_theta_grp_item
 !
@@ -144,8 +144,8 @@
 !
       subroutine set_no_rtp_zonal_grp
 !
-      num_zonal_grp_rtp =  0
-      ntot_zonal_grp_rtp = 0
+      zonal_rtp_grp%num_grp =  0
+      zonal_rtp_grp%num_item = 0
       call allocate_rtp_zonal_grp_stack
       call allocate_rtp_zonal_grp_item
 !

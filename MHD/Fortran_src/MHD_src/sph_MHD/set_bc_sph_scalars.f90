@@ -397,14 +397,15 @@
       icou = 0
       do i = 1, bc_nod%num_bc
         if(icou .ge. 2) exit
-        do j = 1, num_radial_grp_rj
-          if(bc_nod%bc_name(i) .eq. name_radial_grp_rj(j)) then
-            num = istack_radial_grp_rj(j) - istack_radial_grp_rj(j-1)
+        do j = 1, radial_rj_grp1%num_grp
+          if(bc_nod%bc_name(i) .eq. radial_rj_grp1%grp_name(j)) then
+            num = radial_rj_grp1%istack_grp(j)                          &
+     &           - radial_rj_grp1%istack_grp(j-1)
             if(num .ne. 1) go to 10
 !
             icou = icou + 1
-            inum = istack_radial_grp_rj(j)
-            kr_bc(icou) = item_radial_grp_rj(inum)
+            inum = radial_rj_grp1%istack_grp(j)
+            kr_bc(icou) = radial_rj_grp1%item_grp(inum)
             r_bc_grp_name(icou) = bc_nod%bc_name(i)
             igrp_bc(icou) = i
             exit
@@ -414,14 +415,15 @@
 !
       do i = 1, bc_surf%num_bc
         if(icou .ge. 2) exit
-        do j = 1, num_radial_grp_rj
-          if(bc_surf%bc_name(i) .eq. name_radial_grp_rj(j)) then
-            num = istack_radial_grp_rj(j) - istack_radial_grp_rj(j-1)
+        do j = 1, radial_rj_grp1%num_grp
+          if(bc_surf%bc_name(i) .eq. radial_rj_grp1%grp_name(j)) then
+            num = radial_rj_grp1%istack_grp(j)                          &
+     &           - radial_rj_grp1%istack_grp(j-1)
             if(num .ne. 1) go to 10
 !
             icou = icou + 1
-            inum = istack_radial_grp_rj(j)
-            kr_bc(icou) = item_radial_grp_rj(inum)
+            inum = radial_rj_grp1%istack_grp(j)
+            kr_bc(icou) = radial_rj_grp1%item_grp(inum)
             r_bc_grp_name(icou) = bc_surf%bc_name(i)
             igrp_bc(icou) = -i
             exit

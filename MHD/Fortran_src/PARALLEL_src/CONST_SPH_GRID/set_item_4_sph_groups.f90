@@ -32,47 +32,47 @@
 !
       icou = 0
       call set_item_sph_grp_by_list(icou, nlayer_ICB, nlayer_ICB,       &
-     &    nidx_rtp(1), sph_rtp1%idx_gl_1d_rtp_r, ntot_radial_grp_rtp,   &
-     &    item_radial_grp_rtp)
+     &    sph_rtp1%nidx_rtp(1), sph_rtp1%idx_gl_1d_rtp_r,               &
+     &    radial_rtp_grp1%num_item, radial_rtp_grp1%item_grp)
 !
       call set_item_sph_grp_by_list(icou, nlayer_CMB, nlayer_CMB,       &
-     &    nidx_rtp(1), sph_rtp1%idx_gl_1d_rtp_r, ntot_radial_grp_rtp,   &
-     &    item_radial_grp_rtp)
+     &    sph_rtp1%nidx_rtp(1), sph_rtp1%idx_gl_1d_rtp_r,               &
+     &    radial_rtp_grp1%num_item, radial_rtp_grp1%item_grp)
 !
       call set_item_sph_grp_by_list(icou,                               &
      &    nlayer_2_center, nlayer_2_center,                             &
      &    nidx_rtp(1), sph_rtp1%idx_gl_1d_rtp_r,                        &
-     &    ntot_radial_grp_rtp, item_radial_grp_rtp)
+     &    radial_rtp_grp1%num_item, radial_rtp_grp1%item_grp)
 !
       if (sph_rtp1%nidx_global_rtp(1) .gt. nlayer_CMB) then
         call set_item_sph_grp_by_list(icou,                             &
      &      sph_rtp1%nidx_global_rtp(1), sph_rtp1%nidx_global_rtp(1),   &
      &      nidx_rtp(1),  sph_rtp1%idx_gl_1d_rtp_r,                     &
-     &      ntot_radial_grp_rtp, item_radial_grp_rtp)
+     &      radial_rtp_grp1%num_item, radial_rtp_grp1%item_grp)
       end if
 !
       if (nlayer_mid_OC .gt. 0) then
         call set_item_sph_grp_by_list(icou,                             &
      &      nlayer_mid_OC, nlayer_mid_OC,                               &
      &      nidx_rtp(1), sph_rtp1%idx_gl_1d_rtp_r,                      &
-     &      ntot_radial_grp_rtp, item_radial_grp_rtp)
+     &      radial_rtp_grp1%num_item, radial_rtp_grp1%item_grp)
       end if
 !
       nlayer_ed = nlayer_ICB-1
       call set_item_sph_grp_by_list(icou, nlayer_2_center, nlayer_ed,   &
      &    nidx_rtp(1), sph_rtp1%idx_gl_1d_rtp_r,                        &
-     &    ntot_radial_grp_rtp, item_radial_grp_rtp)
+     &    radial_rtp_grp1%num_item, radial_rtp_grp1%item_grp)
 !
       call set_item_sph_grp_by_list(icou, nlayer_ICB, nlayer_CMB,       &
      &    nidx_rtp(1), sph_rtp1%idx_gl_1d_rtp_r,                        &
-     &    ntot_radial_grp_rtp, item_radial_grp_rtp)
+     &    radial_rtp_grp1%num_item, radial_rtp_grp1%item_grp)
 !
 !
       do inum = 1, numlayer_sph_bc
         call set_item_sph_grp_by_list(icou,                             &
      &      kr_sph_boundary(inum), kr_sph_boundary(inum),               &
      &      nidx_rtp(1), sph_rtp1%idx_gl_1d_rtp_r,                      &
-     &      ntot_radial_grp_rtp, item_radial_grp_rtp)
+     &      radial_rtp_grp1%num_item, radial_rtp_grp1%item_grp)
       end do
 !
       end subroutine set_item_rtp_radial_grp
@@ -91,44 +91,45 @@
       icou = 0
       call set_item_sph_grp_by_rng(icou, nlayer_ICB, nlayer_ICB,        &
      &    sph_rj1%ist_rj(1), sph_rj1%ied_rj(1),                         &
-     &    ntot_radial_grp_rj, item_radial_grp_rj)
+     &    radial_rj_grp1%num_item, radial_rj_grp1%item_grp)
 !
       call set_item_sph_grp_by_rng(icou, nlayer_CMB, nlayer_CMB,        &
      &    sph_rj1%ist_rj(1), sph_rj1%ied_rj(1),                         &
-     &    ntot_radial_grp_rj, item_radial_grp_rj)
+     &    radial_rj_grp1%num_item, radial_rj_grp1%item_grp)
 !
       call set_item_sph_grp_by_rng(icou,                                &
      &    nlayer_2_center, nlayer_2_center,                             &
      &    sph_rj1%ist_rj(1), sph_rj1%ied_rj(1),                         &
-     &    ntot_radial_grp_rj, item_radial_grp_rj)
+     &    radial_rj_grp1%num_item, radial_rj_grp1%item_grp)
 !
       if (sph_rtp1%nidx_global_rtp(1) .gt. nlayer_CMB) then
         call set_item_sph_grp_by_rng(icou, sph_rtp1%nidx_global_rtp(1), &
      &      sph_rtp1%nidx_global_rtp(1), sph_rj1%ist_rj(1),             &
-     &      sph_rj1%ied_rj(1), ntot_radial_grp_rj, item_radial_grp_rj)
+     &      sph_rj1%ied_rj(1), radial_rj_grp1%num_item,                 &
+     &      radial_rj_grp1%item_grp)
       end if
 !
       if (nlayer_mid_OC .gt. 0) then
         call set_item_sph_grp_by_rng(icou,                              &
      &      nlayer_mid_OC, nlayer_mid_OC,                               &
      &      sph_rj1%ist_rj(1), sph_rj1%ied_rj(1),                       &
-     &      ntot_radial_grp_rj, item_radial_grp_rj)
+     &      radial_rj_grp1%num_item, radial_rj_grp1%item_grp)
       end if
 !
       nlayer_ed = nlayer_ICB-1
       call set_item_sph_grp_by_rng(icou, nlayer_2_center, nlayer_ed,    &
-     &    sph_rj1%ist_rj(1), sph_rj1%ied_rj(1), ntot_radial_grp_rj,     &
-     &    item_radial_grp_rj)
+     &    sph_rj1%ist_rj(1), sph_rj1%ied_rj(1),                         &
+     &    radial_rj_grp1%num_item, radial_rj_grp1%item_grp)
 !
       call set_item_sph_grp_by_rng(icou, nlayer_ICB, nlayer_CMB,        &
      &    sph_rj1%ist_rj(1), sph_rj1%ied_rj(1),                         &
-     &    ntot_radial_grp_rj, item_radial_grp_rj)
+     &    radial_rj_grp1%num_item, radial_rj_grp1%item_grp)
 !
       do inum = 1, numlayer_sph_bc
         call set_item_sph_grp_by_rng(icou,                              &
      &      kr_sph_boundary(inum), kr_sph_boundary(inum),               &
-     &      sph_rj1%ist_rj(1), sph_rj1%ied_rj(1), ntot_radial_grp_rj,   &
-     &      item_radial_grp_rj)
+     &      sph_rj1%ist_rj(1), sph_rj1%ied_rj(1),                       &
+     &      radial_rj_grp1%num_item, radial_rj_grp1%item_grp)
       end do
 !
       end subroutine set_item_rj_radial_grp
@@ -145,19 +146,19 @@
       icou = 0
       call set_item_sph_grp_by_rng(icou, izero, izero,                  &
      &    sph_rj1%ist_rj(2), sph_rj1%ied_rj(2),                         &
-     &    ntot_sphere_grp_rj, item_sphere_grp_rj)
+     &    sphere_rj_grp1%num_item, sphere_rj_grp1%item_grp)
 !
       call set_item_sph_grp_by_rng(icou, ione, ione,                    &
      &    sph_rj1%ist_rj(2), sph_rj1%ied_rj(2),                         &
-     &    ntot_sphere_grp_rj, item_sphere_grp_rj)
+     &    sphere_rj_grp1%num_item, sphere_rj_grp1%item_grp)
 !
       call set_item_sph_grp_by_rng(icou, itwo, itwo,                    &
      &    sph_rj1%ist_rj(2), sph_rj1%ied_rj(2),                         &
-     &    ntot_sphere_grp_rj, item_sphere_grp_rj)
+     &    sphere_rj_grp1%num_item, sphere_rj_grp1%item_grp)
 !
       call set_item_sph_grp_by_rng(icou, ithree, ithree,                &
      &    sph_rj1%ist_rj(2), sph_rj1%ied_rj(2),                         &
-     &    ntot_sphere_grp_rj, item_sphere_grp_rj)
+     &    sphere_rj_grp1%num_item, sphere_rj_grp1%item_grp)
 !
       end subroutine set_item_rj_spectr_grp
 !

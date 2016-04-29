@@ -172,23 +172,23 @@
       call allocate_sph_gl_bc_param
 !
       ip = sph_rtp1%irank_sph_rtp(1) + 1
-      do igrp = 1, num_radial_grp_rtp
-        if(name_radial_grp_rtp(igrp) .eq. OC_ele_grp_name) then
-          nidx_local_rtp_OC(ip) =  istack_radial_grp_rtp(igrp)          &
-     &                           - istack_radial_grp_rtp(igrp-1)
-          ist = istack_radial_grp_rtp(igrp-1) + 1
-          inum = item_radial_grp_rtp(ist)
+      do igrp = 1, radial_rtp_grp1%num_grp
+        if(radial_rtp_grp1%grp_name(igrp) .eq. OC_ele_grp_name) then
+          nidx_local_rtp_OC(ip) =  radial_rtp_grp1%istack_grp(igrp)     &
+     &                           - radial_rtp_grp1%istack_grp(igrp-1)
+          ist = radial_rtp_grp1%istack_grp(igrp-1) + 1
+          inum = radial_rtp_grp1%item_grp(ist)
           ist_idx_local_rtp_OC(ip) = sph_rtp1%idx_gl_1d_rtp_r(inum) - 1
           exit
         end if
       end do
 !
-      do igrp = 1, num_radial_grp_rtp
-        if(name_radial_grp_rtp(igrp) .eq. IC_ele_grp_name) then
-          nidx_local_rtp_IC(ip) =  istack_radial_grp_rtp(igrp)          &
-     &                           - istack_radial_grp_rtp(igrp-1)
-          ist = istack_radial_grp_rtp(igrp-1) + 1
-          inum = item_radial_grp_rtp(ist)
+      do igrp = 1, radial_rtp_grp1%num_grp
+        if(radial_rtp_grp1%grp_name(igrp) .eq. IC_ele_grp_name) then
+          nidx_local_rtp_IC(ip) =  radial_rtp_grp1%istack_grp(igrp)     &
+     &                           - radial_rtp_grp1%istack_grp(igrp-1)
+          ist = radial_rtp_grp1%istack_grp(igrp-1) + 1
+          inum = radial_rtp_grp1%item_grp(ist)
           ist_idx_local_rtp_IC(ip) = sph_rtp1%idx_gl_1d_rtp_r(inum) - 1
           exit
         end if
@@ -197,10 +197,10 @@
       nidx_local_rtp_MT(ip) =  nidx_rtp(1) - nidx_local_rtp_OC(ip)      &
      &                                     - nidx_local_rtp_IC(ip)
       if(nidx_local_rtp_MT(ip) .gt. 0) then
-        do igrp = 1, num_radial_grp_rtp
-          if(name_radial_grp_rtp(igrp) .eq. OC_ele_grp_name) then
-            ist = istack_radial_grp_rtp(igrp)
-            inum = item_radial_grp_rtp(ist) + 1
+        do igrp = 1, radial_rtp_grp1%num_grp
+          if(radial_rtp_grp1%grp_name(igrp) .eq. OC_ele_grp_name) then
+            ist = radial_rtp_grp1%istack_grp(igrp)
+            inum = radial_rtp_grp1%item_grp(ist) + 1
             ist_idx_local_rtp_MT(ip)                                    &
      &            = sph_rtp1%idx_gl_1d_rtp_r(inum) - 1
             exit

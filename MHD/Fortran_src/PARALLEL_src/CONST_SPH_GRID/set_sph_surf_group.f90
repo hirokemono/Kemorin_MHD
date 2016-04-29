@@ -34,8 +34,9 @@
 !
 !
       surf_grp%num_grp =  0
-      do igrp = 1, num_radial_grp_rj
-        num = istack_radial_grp_rj(igrp) - istack_radial_grp_rj(igrp-1)
+      do igrp = 1, radial_rj_grp1%num_grp
+        num = radial_rj_grp1%istack_grp(igrp)                           &
+     &       - radial_rj_grp1%istack_grp(igrp-1)
         if(num .eq. 1) then
           surf_grp%num_grp =  surf_grp%num_grp + 1
         end if
@@ -60,14 +61,14 @@
 !
       icou = 0
       surf_grp%nitem_grp =  0
-      do igrp = 1, num_radial_grp_rj
-        kst = istack_radial_grp_rj(igrp-1) + 1
-        knum = istack_radial_grp_rj(igrp)
+      do igrp = 1, radial_rj_grp1%num_grp
+        kst = radial_rj_grp1%istack_grp(igrp-1) + 1
+        knum = radial_rj_grp1%istack_grp(igrp)
         if( (knum-kst) .eq. 0) then
           icou = icou + 1
-          surf_grp%grp_name(icou) = name_radial_grp_rj(igrp)
+          surf_grp%grp_name(icou) = radial_rj_grp1%grp_name(igrp)
 !
-          kr = item_radial_grp_rj(knum)
+          kr = radial_rj_grp1%item_grp(knum)
           if(surf_grp%grp_name(icou) .eq. ICB_nod_grp_name              &
      &         .or. surf_grp%grp_name(icou) .eq. CTR_nod_grp_name) then
             kl1 = irev_sph_r(kr,  ip_r)
@@ -109,14 +110,14 @@
 !
 !
       icou = 0
-      do igrp = 1, num_radial_grp_rj
-        kst = istack_radial_grp_rj(igrp-1) + 1
-        knum = istack_radial_grp_rj(igrp)
+      do igrp = 1, radial_rj_grp1%num_grp
+        kst = radial_rj_grp1%istack_grp(igrp-1) + 1
+        knum = radial_rj_grp1%istack_grp(igrp)
         if( (knum-kst) .eq. 0) then
           icou = icou + 1
           inum =  surf_grp%istack_grp(icou-1)
 !
-          kr = item_radial_grp_rj(knum)
+          kr = radial_rj_grp1%item_grp(knum)
           if(surf_grp%grp_name(icou) .eq. ICB_nod_grp_name              &
      &         .or. surf_grp%grp_name(icou) .eq. CTR_nod_grp_name) then
             kl1 = irev_sph_r(kr,  ip_r)

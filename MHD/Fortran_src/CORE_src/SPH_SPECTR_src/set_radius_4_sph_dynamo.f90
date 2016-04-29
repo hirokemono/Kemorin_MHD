@@ -69,19 +69,19 @@
 !
 !* --------  radius  --------------
 !
-      do k = 1, num_radial_grp_rj
-        if(     cmp_no_case(name_radial_grp_rj(k),                    &
+      do k = 1, radial_rj_grp1%num_grp
+        if(     cmp_no_case(radial_rj_grp1%grp_name(k),                 &
      &                      ICB_nod_grp_name)) then
-          kk = istack_radial_grp_rj(k-1) + 1
-          nlayer_ICB = item_radial_grp_rj(kk)
-        else if(cmp_no_case(name_radial_grp_rj(k),                    &
+          kk = radial_rj_grp1%istack_grp(k-1) + 1
+          nlayer_ICB = radial_rj_grp1%item_grp(kk)
+        else if(cmp_no_case(radial_rj_grp1%grp_name(k),                 &
      &                      CMB_nod_grp_name)) then
-          kk = istack_radial_grp_rj(k-1) + 1
-          nlayer_CMB = item_radial_grp_rj(kk)
-        else if(cmp_no_case(name_radial_grp_rj(k),                    &
+          kk = radial_rj_grp1%istack_grp(k-1) + 1
+          nlayer_CMB = radial_rj_grp1%item_grp(kk)
+        else if(cmp_no_case(radial_rj_grp1%grp_name(k),                 &
      &                      CTR_nod_grp_name)) then
-          kk = istack_radial_grp_rj(k-1) + 1
-          nlayer_2_center = item_radial_grp_rj(kk)
+          kk = radial_rj_grp1%istack_grp(k-1) + 1
+          nlayer_2_center = radial_rj_grp1%item_grp(kk)
         end if
       end do
 !

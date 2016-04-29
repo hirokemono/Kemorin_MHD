@@ -66,19 +66,19 @@
 !
 !
       kr_outside = 0
-      do igrp = 1, num_radial_grp_rj
-        if(name_radial_grp_rj(igrp) .eq. cmb_r_grp) then
-          inum = istack_radial_grp_rj(igrp-1) + 1
-          kr_outside = item_radial_grp_rj(inum)
+      do igrp = 1, radial_rj_grp1%num_grp
+        if(radial_rj_grp1%grp_name(igrp) .eq. cmb_r_grp) then
+          inum = radial_rj_grp1%istack_grp(igrp-1) + 1
+          kr_outside = radial_rj_grp1%item_grp(inum)
           exit
         end if
       end do
 !
       kr_inside = 0
-      do igrp = 1, num_radial_grp_rj
-        if(name_radial_grp_rj(igrp) .eq. icb_r_grp) then
-          inum = istack_radial_grp_rj(igrp-1) + 1
-          kr_inside = item_radial_grp_rj(inum)
+      do igrp = 1, radial_rj_grp1%num_grp
+        if(radial_rj_grp1%grp_name(igrp) .eq. icb_r_grp) then
+          inum = radial_rj_grp1%istack_grp(igrp-1) + 1
+          kr_inside = radial_rj_grp1%item_grp(inum)
           exit
         end if
       end do

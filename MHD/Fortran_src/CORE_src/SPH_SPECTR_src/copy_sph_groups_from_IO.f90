@@ -35,23 +35,21 @@
       subroutine copy_rtp_nod_grp_from_IO
 !
 !
-      num_bc_grp_rtp =  num_bc_grp_rtp_IO
-      call allocate_rtp_nod_grp_stack
+      bc_rtp_grp1%num_grp =  num_bc_grp_rtp_IO
+      call allocate_grp_type_num(bc_rtp_grp1)
 !
-      if (num_bc_grp_rtp .gt. izero) then
+      if (bc_rtp_grp1%num_grp .gt. izero) then
+        bc_rtp_grp1%grp_name(1:bc_rtp_grp1%num_grp)                     &
+     &        = name_bc_grp_rtp_IO(1:bc_rtp_grp1%num_grp)
+        bc_rtp_grp1%istack_grp(0:bc_rtp_grp1%num_grp)                   &
+     &        = istack_bc_grp_rtp_IO(0:bc_rtp_grp1%num_grp)
 !
-        ntot_bc_grp_rtp = ntot_bc_grp_rtp_IO
-        call allocate_rtp_nod_grp_item
+        call allocate_grp_type_item(bc_rtp_grp1)
 !
-        name_bc_grp_rtp(1:num_bc_grp_rtp)                               &
-     &        = name_bc_grp_rtp_IO(1:num_bc_grp_rtp)
-        istack_bc_grp_rtp(0:num_bc_grp_rtp)                             &
-     &        = istack_bc_grp_rtp_IO(0:num_bc_grp_rtp)
-        item_bc_grp_rtp(1:ntot_bc_grp_rtp)                              &
-     &        = item_bc_grp_rtp_IO(1:ntot_bc_grp_rtp)
+        bc_rtp_grp1%item_grp(1:bc_rtp_grp1%num_item)                    &
+     &        = item_bc_grp_rtp_IO(1:bc_rtp_grp1%num_item)
       else
-        ntot_bc_grp_rtp = 0
-        call allocate_rtp_nod_grp_item
+        call allocate_grp_type_item(bc_rtp_grp1)
       end if
 !
       call deallocate_rtp_nod_grp_IO_item
@@ -63,22 +61,20 @@
       subroutine copy_rtp_radial_grp_from_IO
 !
 !
-      num_radial_grp_rtp =  num_radial_grp_rtp_IO
+      radial_rtp_grp1%num_grp =  num_radial_grp_rtp_IO
       call allocate_rtp_r_grp_stack
 !
-      if (num_radial_grp_rtp .gt. izero) then
+      if (radial_rtp_grp1%num_grp .gt. izero) then
+        radial_rtp_grp1%grp_name(1:radial_rtp_grp1%num_grp)             &
+     &        = name_radial_grp_rtp_IO(1:radial_rtp_grp1%num_grp)
+        radial_rtp_grp1%istack_grp(0:radial_rtp_grp1%num_grp)           &
+     &        = istack_radial_grp_rtp_IO(0:radial_rtp_grp1%num_grp)
 !
-        ntot_radial_grp_rtp = ntot_radial_grp_rtp_IO
         call allocate_rtp_r_grp_item
 !
-        name_radial_grp_rtp(1:num_radial_grp_rtp)                       &
-     &        = name_radial_grp_rtp_IO(1:num_radial_grp_rtp)
-        istack_radial_grp_rtp(0:num_radial_grp_rtp)                     &
-     &        = istack_radial_grp_rtp_IO(0:num_radial_grp_rtp)
-        item_radial_grp_rtp(1:ntot_radial_grp_rtp)                      &
-     &        = item_radial_grp_rtp_IO(1:ntot_radial_grp_rtp)
+        radial_rtp_grp1%item_grp(1:radial_rtp_grp1%num_item)            &
+     &        = item_radial_grp_rtp_IO(1:radial_rtp_grp1%num_item)
       else
-        ntot_radial_grp_rtp = 0
         call allocate_rtp_r_grp_item
       end if
 !
@@ -91,22 +87,20 @@
       subroutine copy_rtp_theta_grp_from_IO
 !
 !
-      num_theta_grp_rtp =  num_theta_grp_rtp_IO
+      theta_rtp_grp1%num_grp =  num_theta_grp_rtp_IO
       call allocate_rtp_theta_grp_stack
 !
-      if (num_theta_grp_rtp .gt. izero) then
+      if (theta_rtp_grp1%num_grp .gt. izero) then
+        theta_rtp_grp1%grp_name(1:theta_rtp_grp1%num_grp)               &
+     &        = name_theta_grp_rtp_IO(1:theta_rtp_grp1%num_grp)
+        theta_rtp_grp1%istack_grp(0:theta_rtp_grp1%num_grp)             &
+     &        = istack_theta_grp_rtp_IO(0:theta_rtp_grp1%num_grp)
 !
-        ntot_theta_grp_rtp = ntot_theta_grp_rtp_IO
         call allocate_rtp_theta_grp_item
 !
-        name_theta_grp_rtp(1:num_theta_grp_rtp)                         &
-     &        = name_theta_grp_rtp_IO(1:num_theta_grp_rtp)
-        istack_theta_grp_rtp(0:num_theta_grp_rtp)                       &
-     &        = istack_theta_grp_rtp_IO(0:num_theta_grp_rtp)
-        item_theta_grp_rtp(1:ntot_theta_grp_rtp)                        &
-     &        = item_theta_grp_rtp_IO(1:ntot_theta_grp_rtp)
+        theta_rtp_grp1%item_grp(1:theta_rtp_grp1%num_item)              &
+     &        = item_theta_grp_rtp_IO(1:theta_rtp_grp1%num_item)
       else
-        ntot_theta_grp_rtp = 0
         call allocate_rtp_theta_grp_item
       end if
 !
@@ -119,22 +113,21 @@
       subroutine copy_rtp_zonal_grp_from_IO
 !
 !
-      num_zonal_grp_rtp =  num_zonal_grp_rtp_IO
+      zonal_rtp_grp%num_grp =  num_zonal_grp_rtp_IO
       call allocate_rtp_zonal_grp_stack
 !
-      if (num_zonal_grp_rtp .gt. izero) then
+      if (zonal_rtp_grp%num_grp .gt. izero) then
+        zonal_rtp_grp%grp_name(1:zonal_rtp_grp%num_grp)                 &
+     &        = name_zonal_grp_rtp_IO(1:zonal_rtp_grp%num_grp)
+        zonal_rtp_grp%istack_grp(0:zonal_rtp_grp%num_grp)               &
+     &        = istack_zonal_grp_rtp_IO(0:zonal_rtp_grp%num_grp)
 !
-        ntot_zonal_grp_rtp = ntot_zonal_grp_rtp_IO
         call allocate_rtp_zonal_grp_item
 !
-        name_zonal_grp_rtp(1:num_zonal_grp_rtp)                         &
-     &        = name_zonal_grp_rtp_IO(1:num_zonal_grp_rtp)
-        istack_zonal_grp_rtp(0:num_zonal_grp_rtp)                       &
-     &        = istack_zonal_grp_rtp_IO(0:num_zonal_grp_rtp)
-        item_zonal_grp_rtp(1:ntot_zonal_grp_rtp)                        &
-     &        = item_zonal_grp_rtp_IO(1:ntot_zonal_grp_rtp)
+        zonal_rtp_grp%item_grp(1:zonal_rtp_grp%num_item)                &
+     &        = item_zonal_grp_rtp_IO(1:zonal_rtp_grp%num_item)
       else
-        ntot_zonal_grp_rtp = 0
+        zonal_rtp_grp%num_item = 0
         call allocate_rtp_zonal_grp_item
       end if
 !
@@ -147,22 +140,20 @@
       subroutine copy_rj_radial_grp_from_IO
 !
 !
-      num_radial_grp_rj =  num_radial_grp_rj_IO
+      radial_rj_grp1%num_grp =  num_radial_grp_rj_IO
       call allocate_rj_r_grp_stack
 !
-      if (num_radial_grp_rj .gt. izero) then
+      if (radial_rj_grp1%num_grp .gt. izero) then
+        radial_rj_grp1%grp_name(1:radial_rj_grp1%num_grp)               &
+     &        = name_radial_grp_rj_IO(1:radial_rj_grp1%num_grp)
+        radial_rj_grp1%istack_grp(0:radial_rj_grp1%num_grp)             &
+     &        = istack_radial_grp_rj_IO(0:radial_rj_grp1%num_grp)
 !
-        ntot_radial_grp_rj = ntot_radial_grp_rj_IO
         call allocate_rj_r_grp_item
 !
-        name_radial_grp_rj(1:num_radial_grp_rj)                         &
-     &        = name_radial_grp_rj_IO(1:num_radial_grp_rj)
-        istack_radial_grp_rj(0:num_radial_grp_rj)                       &
-     &        = istack_radial_grp_rj_IO(0:num_radial_grp_rj)
-        item_radial_grp_rj(1:ntot_radial_grp_rj)                        &
-     &        = item_radial_grp_rj_IO(1:ntot_radial_grp_rj)
+        radial_rj_grp1%item_grp(1:radial_rj_grp1%num_item)              &
+     &        = item_radial_grp_rj_IO(1:radial_rj_grp1%num_item)
       else
-        ntot_radial_grp_rj = 0
         call allocate_rj_r_grp_item
       end if
 !
@@ -175,22 +166,20 @@
       subroutine copy_rj_sphere_grp_from_IO
 !
 !
-      num_sphere_grp_rj =  num_sphere_grp_rj_IO
+      sphere_rj_grp1%num_grp =  num_sphere_grp_rj_IO
       call allocate_rj_sphere_grp_stack
 !
-      if (num_sphere_grp_rj .gt. izero) then
+      if (sphere_rj_grp1%num_grp .gt. izero) then
+        sphere_rj_grp1%grp_name(1:sphere_rj_grp1%num_grp)               &
+     &        = name_sphere_grp_rj_IO(1:sphere_rj_grp1%num_grp)
+        sphere_rj_grp1%istack_grp(0:sphere_rj_grp1%num_grp)             &
+     &        = istack_sphere_grp_rj_IO(0:sphere_rj_grp1%num_grp)
 !
-        ntot_sphere_grp_rj = ntot_sphere_grp_rj_IO
         call allocate_rj_sphere_grp_item
 !
-        name_sphere_grp_rj(1:num_sphere_grp_rj)                         &
-     &        = name_sphere_grp_rj_IO(1:num_sphere_grp_rj)
-        istack_sphere_grp_rj(0:num_sphere_grp_rj)                       &
-     &        = istack_sphere_grp_rj_IO(0:num_sphere_grp_rj)
-        item_sphere_grp_rj(1:ntot_sphere_grp_rj)                        &
-     &        = item_sphere_grp_rj_IO(1:ntot_sphere_grp_rj)
+        sphere_rj_grp1%item_grp(1:sphere_rj_grp1%num_item)              &
+     &        = item_sphere_grp_rj_IO(1:sphere_rj_grp1%num_item)
       else
-        ntot_sphere_grp_rj = 0
         call allocate_rj_sphere_grp_item
       end if
 !

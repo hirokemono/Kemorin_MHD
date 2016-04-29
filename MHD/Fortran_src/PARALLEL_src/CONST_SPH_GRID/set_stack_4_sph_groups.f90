@@ -50,56 +50,57 @@
       icou = 0
       call set_stack_sph_grp_by_list(icou, nlayer_ICB, nlayer_ICB,      &
      &    nidx_rtp(1), sph_rtp1%idx_gl_1d_rtp_r, ICB_nod_grp_name,      &
-     &    num_radial_grp_rtp, istack_radial_grp_rtp,                    &
-     &    name_radial_grp_rtp)
+     &    radial_rtp_grp1%num_grp, radial_rtp_grp1%istack_grp,          &
+     &    radial_rtp_grp1%grp_name)
 !
       call set_stack_sph_grp_by_list(icou, nlayer_CMB, nlayer_CMB,      &
      &    nidx_rtp(1), sph_rtp1%idx_gl_1d_rtp_r, CMB_nod_grp_name,      &
-     &    num_radial_grp_rtp, istack_radial_grp_rtp,                    &
-     &    name_radial_grp_rtp)
+     &    radial_rtp_grp1%num_grp, radial_rtp_grp1%istack_grp,          &
+     &    radial_rtp_grp1%grp_name)
 !
       call set_stack_sph_grp_by_list(icou,                              &
      &    nlayer_2_center, nlayer_2_center,  nidx_rtp(1),               &
      &    sph_rtp1%idx_gl_1d_rtp_r, CTR_nod_grp_name,                   &
-     &    num_radial_grp_rtp, istack_radial_grp_rtp,                    &
-     &    name_radial_grp_rtp)
+     &    radial_rtp_grp1%num_grp, radial_rtp_grp1%istack_grp,          &
+     &    radial_rtp_grp1%grp_name)
 !
       if (sph_rtp1%nidx_global_rtp(1) .gt. nlayer_CMB) then
         call set_stack_sph_grp_by_list(icou,                            &
      &      sph_rtp1%nidx_global_rtp(1), sph_rtp1%nidx_global_rtp(1),   &
      &      nidx_rtp(1), sph_rtp1%idx_gl_1d_rtp_r, name_ED,             &
-     &      num_radial_grp_rtp, istack_radial_grp_rtp,                  &
-     &      name_radial_grp_rtp)
+     &      radial_rtp_grp1%num_grp, radial_rtp_grp1%istack_grp,        &
+     &      radial_rtp_grp1%grp_name)
       end if
 !
       if (nlayer_mid_OC .gt. 0) then
         call set_stack_sph_grp_by_list(icou,                            &
-     &      nlayer_mid_OC, nlayer_mid_OC, nidx_rtp(1),                  &
-     &      sph_rtp1%idx_gl_1d_rtp_r, name_mid, num_radial_grp_rtp,     &
-     &      istack_radial_grp_rtp, name_radial_grp_rtp)
+     &     nlayer_mid_OC, nlayer_mid_OC, nidx_rtp(1),                   &
+     &     sph_rtp1%idx_gl_1d_rtp_r, name_mid, radial_rtp_grp1%num_grp, &
+     &     radial_rtp_grp1%istack_grp, radial_rtp_grp1%grp_name)
       end if
 !
       nlayer_ed = nlayer_ICB-1
       call set_stack_sph_grp_by_list(icou, nlayer_2_center, nlayer_ed,  &
      &    nidx_rtp(1), sph_rtp1%idx_gl_1d_rtp_r, IC_ele_grp_name,       &
-     &    num_radial_grp_rtp, istack_radial_grp_rtp,                    &
-     &    name_radial_grp_rtp)
+     &    radial_rtp_grp1%num_grp, radial_rtp_grp1%istack_grp,          &
+     &    radial_rtp_grp1%grp_name)
 !
       call set_stack_sph_grp_by_list(icou, nlayer_ICB, nlayer_CMB,      &
      &    nidx_rtp(1), sph_rtp1%idx_gl_1d_rtp_r, OC_ele_grp_name,       &
-     &    num_radial_grp_rtp, istack_radial_grp_rtp,                    &
-     &    name_radial_grp_rtp)
+     &    radial_rtp_grp1%num_grp, radial_rtp_grp1%istack_grp,          &
+     &    radial_rtp_grp1%grp_name)
 !
 !
       do inum = 1, numlayer_sph_bc
         call set_stack_sph_grp_by_list(icou,                            &
      &      kr_sph_boundary(inum), kr_sph_boundary(inum),               &
      &      nidx_rtp(1), sph_rtp1%idx_gl_1d_rtp_r,                      &
-     &      sph_bondary_name(inum), num_radial_grp_rtp,                 &
-     &      istack_radial_grp_rtp, name_radial_grp_rtp)
+     &      sph_bondary_name(inum), radial_rtp_grp1%num_grp,            &
+     &      radial_rtp_grp1%istack_grp, radial_rtp_grp1%grp_name)
       end do
 !
-      ntot_radial_grp_rtp = istack_radial_grp_rtp(num_radial_grp_rtp)
+      radial_rtp_grp1%num_item                                          &
+     &      = radial_rtp_grp1%istack_grp(radial_rtp_grp1%num_grp)
 !
       end subroutine set_stack_rtp_radial_grp
 !
@@ -117,50 +118,55 @@
       icou = 0
       call set_stack_sph_grp_by_rng(icou, nlayer_ICB, nlayer_ICB,       &
      &    sph_rj1%ist_rj(1), sph_rj1%ied_rj(1), ICB_nod_grp_name,       &
-     &    num_radial_grp_rj, istack_radial_grp_rj, name_radial_grp_rj)
+     &    radial_rj_grp1%num_grp, radial_rj_grp1%istack_grp,            &
+     &    radial_rj_grp1%grp_name)
 !
       call set_stack_sph_grp_by_rng(icou, nlayer_CMB, nlayer_CMB,       &
      &    sph_rj1%ist_rj(1), sph_rj1%ied_rj(1), CMB_nod_grp_name,       &
-     &    num_radial_grp_rj, istack_radial_grp_rj, name_radial_grp_rj)
+     &    radial_rj_grp1%num_grp, radial_rj_grp1%istack_grp,            &
+     &    radial_rj_grp1%grp_name)
 !
       call set_stack_sph_grp_by_rng(icou, nlayer_2_center,              &
      &    nlayer_2_center, sph_rj1%ist_rj(1), sph_rj1%ied_rj(1),        &
-     &    CTR_nod_grp_name, num_radial_grp_rj, istack_radial_grp_rj,    &
-     &    name_radial_grp_rj)
+     &    CTR_nod_grp_name, radial_rj_grp1%num_grp,                     &
+     &    radial_rj_grp1%istack_grp, radial_rj_grp1%grp_name)
 !
       if (sph_rtp1%nidx_global_rtp(1) .gt. nlayer_CMB) then
         call set_stack_sph_grp_by_rng                                   &
      &     (icou, sph_rtp1%nidx_global_rtp(1),                          &
      &      sph_rtp1%nidx_global_rtp(1), sph_rj1%ist_rj(1),             &
-     &      sph_rj1%ied_rj(1), name_ED, num_radial_grp_rj,              &
-     &     istack_radial_grp_rj, name_radial_grp_rj)
+     &      sph_rj1%ied_rj(1), name_ED, radial_rj_grp1%num_grp,         &
+     &     radial_rj_grp1%istack_grp, radial_rj_grp1%grp_name)
       end if
 !
       if (nlayer_mid_OC .gt. 0) then
         call set_stack_sph_grp_by_rng(icou, nlayer_mid_OC,              &
      &     nlayer_mid_OC, sph_rj1%ist_rj(1), sph_rj1%ied_rj(1),         &
-     &     name_mid, num_radial_grp_rj, istack_radial_grp_rj,           &
-     &     name_radial_grp_rj)
+     &     name_mid, radial_rj_grp1%num_grp, radial_rj_grp1%istack_grp, &
+     &     radial_rj_grp1%grp_name)
       end if
 !
       nlayer_ed = nlayer_ICB-1
       call set_stack_sph_grp_by_rng(icou, nlayer_2_center, nlayer_ed,   &
      &    sph_rj1%ist_rj(1), sph_rj1%ied_rj(1), IC_ele_grp_name,        &
-     &    num_radial_grp_rj, istack_radial_grp_rj, name_radial_grp_rj)
+     &    radial_rj_grp1%num_grp, radial_rj_grp1%istack_grp,            &
+     &    radial_rj_grp1%grp_name)
 !
       call set_stack_sph_grp_by_rng(icou, nlayer_ICB, nlayer_CMB,       &
      &    sph_rj1%ist_rj(1), sph_rj1%ied_rj(1), OC_ele_grp_name,        &
-     &    num_radial_grp_rj, istack_radial_grp_rj, name_radial_grp_rj)
+     &    radial_rj_grp1%num_grp, radial_rj_grp1%istack_grp,            &
+     &    radial_rj_grp1%grp_name)
 !
       do inum = 1, numlayer_sph_bc
         call set_stack_sph_grp_by_rng                                   &
      &     (icou, kr_sph_boundary(inum), kr_sph_boundary(inum),         &
      &      sph_rj1%ist_rj(1), sph_rj1%ied_rj(1),                       &
-     &      sph_bondary_name(inum), num_radial_grp_rj,                  &
-     &      istack_radial_grp_rj, name_radial_grp_rj)
+     &      sph_bondary_name(inum), radial_rj_grp1%num_grp,             &
+     &      radial_rj_grp1%istack_grp, radial_rj_grp1%grp_name)
       end do
 !
-      ntot_radial_grp_rj = istack_radial_grp_rj(num_radial_grp_rj)
+      radial_rj_grp1%num_item                                           &
+     &      = radial_rj_grp1%istack_grp(radial_rj_grp1%num_grp)
 !
       end subroutine set_stack_rj_radial_grp
 !
@@ -176,25 +182,26 @@
       icou = 0
       call set_stack_sph_grp_by_rng(icou, izero, izero,                 &
      &    sph_rj1%ist_rj(2), sph_rj1%ied_rj(2),                         &
-     &    name_y00, num_sphere_grp_rj,                                  &
-     &    istack_sphere_grp_rj, name_sphere_grp_rj)
+     &    name_y00, sphere_rj_grp1%num_grp,                             &
+     &    sphere_rj_grp1%istack_grp, sphere_rj_grp1%grp_name)
 !
       call set_stack_sph_grp_by_rng(icou, ione, ione,                   &
      &    sph_rj1%ist_rj(2), sph_rj1%ied_rj(2),                         &
-     &    name_y11s, num_sphere_grp_rj,                                 &
-     &    istack_sphere_grp_rj, name_sphere_grp_rj)
+     &    name_y11s, sphere_rj_grp1%num_grp,                            &
+     &    sphere_rj_grp1%istack_grp, sphere_rj_grp1%grp_name)
 !
       call set_stack_sph_grp_by_rng(icou, itwo, itwo,                   &
      &    sph_rj1%ist_rj(2), sph_rj1%ied_rj(2),                         &
-     &    name_y10, num_sphere_grp_rj,                                  &
-     &    istack_sphere_grp_rj, name_sphere_grp_rj)
+     &    name_y10, sphere_rj_grp1%num_grp,                             &
+     &    sphere_rj_grp1%istack_grp, sphere_rj_grp1%grp_name)
 !
       call set_stack_sph_grp_by_rng(icou, ithree, ithree,               &
      &    sph_rj1%ist_rj(2), sph_rj1%ied_rj(2),                         &
-     &     name_y11c, num_sphere_grp_rj,                                &
-     &    istack_sphere_grp_rj, name_sphere_grp_rj)
+     &     name_y11c, sphere_rj_grp1%num_grp,                           &
+     &    sphere_rj_grp1%istack_grp, sphere_rj_grp1%grp_name)
 !
-      ntot_sphere_grp_rj = istack_sphere_grp_rj(num_sphere_grp_rj)
+      sphere_rj_grp1%num_item                                           &
+     &     = sphere_rj_grp1%istack_grp(sphere_rj_grp1%num_grp)
 !
       end subroutine set_stack_rj_spectr_grp
 !
