@@ -74,10 +74,10 @@
 !
       use m_spheric_parameter
       use m_sph_trans_comm_table
+      use t_sph_trans_comm_tbl
       use set_comm_table_rtp_rj
       use load_data_for_sph_IO
       use gen_sph_grids_modes
-      use copy_sph_comm_table_4_type
 !
       integer(kind = kint), intent(in) :: ndomain_sph
       type(sph_comm_tbl), intent(inout) :: comm_rlm(ndomain_sph)
@@ -92,10 +92,8 @@
      &             'start rlm table generation for',                    &
      &            ip_rank, 'on ', my_rank, nprocs
         call const_sph_rlm_modes(ip_rank)
-        if(iflag_debug .gt. 0) write(*,*) 'copy_comm_rlm_num_to_type'
-        call copy_comm_rlm_num_to_type(comm_rlm(ip))
-!
-        if(iflag_debug .gt. 0) write(*,*) 'copy_comm_rlm_num_to_type d'
+        if(iflag_debug .gt. 0) write(*,*) 'copy_sph_comm_neib'
+        call copy_sph_comm_neib(comm_rlm1, comm_rlm(ip))
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &        'output_modes_rlm_sph_trans', ip_rank
@@ -115,10 +113,10 @@
 !
       use m_spheric_parameter
       use m_sph_trans_comm_table
+      use t_sph_trans_comm_tbl
       use set_comm_table_rtp_rj
       use load_data_for_sph_IO
       use gen_sph_grids_modes
-      use copy_sph_comm_table_4_type
 !
       integer(kind = kint), intent(in) :: ndomain_sph
       type(sph_comm_tbl), intent(inout) :: comm_rtm(ndomain_sph)
@@ -133,7 +131,7 @@
      &             'start rtm table generation for',                    &
      &            ip_rank, 'on ', my_rank, nprocs
         call const_sph_rtm_grids(ip_rank)
-        call copy_comm_rtm_num_to_type(comm_rtm(ip))
+        call copy_sph_comm_neib(comm_rtm1, comm_rtm(ip))
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &        'output_geom_rtm_sph_trans', ip_rank

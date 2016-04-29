@@ -191,16 +191,17 @@
 !
       call allocate_domain_sr_tmp(ndomain_sph)
 !
-      nneib_domain_rj = 0
+      comm_rj1%nneib_domain = 0
       call count_comm_table_4_rj(ip_rank, ndomain_sph, comm_rlm)
 !
-      call allocate_sph_comm_stack_rj
+      call alloc_type_sph_comm_stack(comm_rj1)
 !
-      call set_comm_stack_rtp_rj(nneib_domain_rj, id_domain_rj,         &
-     &    istack_sr_rj, ntot_item_sr_rj)
+      call set_comm_stack_rtp_rj                                        &
+     &   (comm_rj1%nneib_domain, comm_rj1%id_domain,                    &
+     &    comm_rj1%istack_sr, comm_rj1%ntot_item_sr)
 !
       call deallocate_domain_sr_tmp
-      call allocate_sph_comm_item_rj(nnod_rj)
+      call alloc_type_sph_comm_item(nnod_rj,  comm_rj1)
 !
       icou = 0
       call set_comm_table_4_rj(ip_rank, ndomain_sph, comm_rlm, icou)
@@ -274,9 +275,9 @@
         end do
         if(iflag_jp .eq. 0) cycle
 !
-        nneib_domain_rj = nneib_domain_rj + 1
-        id_domain_tmp(nneib_domain_rj) = id_org_rank
-        nnod_sr_tmp(nneib_domain_rj)                                    &
+        comm_rj1%nneib_domain = comm_rj1%nneib_domain + 1
+        id_domain_tmp(comm_rj1%nneib_domain) = id_org_rank
+        nnod_sr_tmp(comm_rj1%nneib_domain)                              &
      &     =  comm_rlm(ip_org)%istack_sr(iflag_jp)                      &
      &      - comm_rlm(ip_org)%istack_sr(iflag_jp-1)
       end do
@@ -333,7 +334,7 @@
           j_glb = sph_rlm1%idx_global_rlm(jnod,2)
           k_tmp = idx_local_rj_r(k_glb)
           j_tmp = idx_local_rj_j(j_glb)
-          item_sr_rj(icou) =  j_tmp + (k_tmp-1) * nidx_rj(2)
+          comm_rj1%item_sr(icou) =  j_tmp + (k_tmp-1) * nidx_rj(2)
         end do
 !
         call dealloc_type_sph_comm_item(comm_rlm1)

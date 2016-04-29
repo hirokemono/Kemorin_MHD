@@ -169,8 +169,8 @@
      &    comm_rtm1%ntot_item_sr, comm_rtm1%item_sr, comm_rtm1%irev_sr)
       call set_reverse_import_table(sph_rlm1%nnod_rlm,                  &
      &    comm_rlm1%ntot_item_sr, comm_rlm1%item_sr, comm_rlm1%irev_sr)
-      call set_reverse_import_table(sph_rj1%nnod_rj, ntot_item_sr_rj,   &
-     &    item_sr_rj, irev_sr_rj)
+      call set_reverse_import_table(sph_rj1%nnod_rj,                    &
+     &    comm_rj1%ntot_item_sr,  comm_rj1%item_sr,  comm_rj1%irev_sr)
 !
       comm_rtp1%iflag_self                                              &
      &    = self_comm_flag(comm_rtp1%nneib_domain, comm_rtp1%id_domain)
@@ -178,7 +178,8 @@
      &    = self_comm_flag(comm_rtm1%nneib_domain, comm_rtm1%id_domain)
       comm_rlm1%iflag_self                                              &
      &    = self_comm_flag(comm_rlm1%nneib_domain, comm_rlm1%id_domain)
-      iflag_self_rj =  self_comm_flag(nneib_domain_rj,  id_domain_rj)
+      comm_rj1%iflag_self                                               &
+     &    = self_comm_flag(comm_rj1%nneib_domain,  comm_rj1%id_domain)
 !
       call count_interval_4_each_dir(ithree, sph_rtp1%nnod_rtp,         &
      &    sph_rtp1%idx_global_rtp, sph_rtp1%istep_rtp)
@@ -277,9 +278,11 @@
      &   (sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1, ierr)
 !      if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message_Rsmp)
 !
-      call set_reverse_import_table(sph_rj1%nnod_rj, ntot_item_sr_rj,   &
-     &    item_sr_rj, irev_sr_rj)
-      iflag_self_rj =  self_comm_flag(nneib_domain_rj,  id_domain_rj)
+      call set_reverse_import_table                                     &
+     &   (sph_rj1%nnod_rj, comm_rj1%ntot_item_sr,                       &
+     &    comm_rj1%item_sr, comm_rj1%irev_sr)
+      comm_rj1%iflag_self                                               &
+     &    =  self_comm_flag(comm_rj1%nneib_domain,  comm_rj1%id_domain)
 !
       call count_interval_4_each_dir(itwo, sph_rj1%nnod_rj,             &
      &    sph_rj1%idx_global_rj, sph_rj1%istep_rj)

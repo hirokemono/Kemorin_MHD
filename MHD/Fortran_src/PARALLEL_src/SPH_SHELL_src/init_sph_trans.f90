@@ -113,7 +113,7 @@
 !
 !
       call split_rtp_comms(comm_rtp1%nneib_domain, comm_rtp1%id_domain, &
-     &    nneib_domain_rj) 
+     &    comm_rj1%nneib_domain) 
       call init_sph_send_recv_N(ncomp_sph_trans)
 !
 !      if(iflag_sph_commN .eq. iflag_alltoall) then
@@ -125,9 +125,10 @@
 !     &      comm_rtm1%item_sr, comm_rtm1%irev_sr)
 !        call set_rev_all2all_import_tbl(nnod_rlm, nmax_sr_rj,          &
 !     &      comm_rlm1%nneib_domain, comm_rlm1%istack_sr,               &
-!     &      comm_rlm1%item_sr, irev_sr_rlm)
+!     &      comm_rlm1%item_sr, comm_rlm1%irev_sr)
 !        call set_rev_all2all_import_tbl(nnod_rj, nmax_sr_rj,           &
-!     &      nneib_domain_rj,  istack_sr_rj,  item_sr_rj,  irev_sr_rj)
+!     &      comm_rj1%nneib_domain,  comm_rj1%istack_sr,                &
+!     &      comm_rj1%item_sr,  comm_rj1%irev_sr)
 !      end if
 !
       if(my_rank .ne. 0) return

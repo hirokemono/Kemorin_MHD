@@ -65,8 +65,9 @@
 !
 !
       if(i_field*i_send .eq. 0) return
-      call sel_calypso_to_send_scalar(ncomp_send, nnod_rj, n_WS,        &
-     &    nmax_sr_rj,  nneib_domain_rj,  istack_sr_rj,  item_sr_rj,     &
+      call sel_calypso_to_send_scalar                                   &
+     &   (ncomp_send, nnod_rj, n_WS,  nmax_sr_rj,                       &
+     &    comm_rj1%nneib_domain, comm_rj1%istack_sr, comm_rj1%item_sr,  &
      &    rj_fld%ntot_phys, i_field, i_send, rj_fld%d_fld, WS)
 !
       if(iflag_rj_center .le. 0) return
@@ -96,8 +97,9 @@
 !
 !
       if(i_field*i_send .eq. 0) return
-      call sel_calypso_to_send_scalar(ncomp_send, nnod_rj, n_WS,        &
-     &    nmax_sr_rj,  nneib_domain_rj,  istack_sr_rj,  item_sr_rj,     &
+      call sel_calypso_to_send_scalar                                   &
+     &   (ncomp_send, nnod_rj, n_WS, nmax_sr_rj,                        &
+     &    comm_rj1%nneib_domain, comm_rj1%istack_sr, comm_rj1%item_sr,  &
      &    rj_fld%ntot_phys, i_field, i_send, rj_fld%d_fld, WS)
 !
       end subroutine sel_sph_rj_scalar_to_send
@@ -118,8 +120,9 @@
 !
 !
       if(i_field*i_send .eq. 0) return
-      call sel_calypso_to_send_vector(ncomp_send, nnod_rj, n_WS,        &
-     &    nmax_sr_rj,  nneib_domain_rj,  istack_sr_rj,  item_sr_rj,     &
+      call sel_calypso_to_send_vector                                   &
+     &   (ncomp_send, nnod_rj, n_WS, nmax_sr_rj,                        &
+     &    comm_rj1%nneib_domain, comm_rj1%istack_sr, comm_rj1%item_sr,  &
      &    rj_fld%ntot_phys, i_field, i_send, rj_fld%d_fld, WS)
 !
       end subroutine sel_sph_rj_vector_to_send
@@ -140,8 +143,9 @@
 !
 !
       if(i_field*i_send .eq. 0) return
-      call sel_calypso_to_send_tensor(ncomp_send, nnod_rj, n_WS,        &
-     &    nmax_sr_rj,  nneib_domain_rj,  istack_sr_rj,  item_sr_rj,     &
+      call sel_calypso_to_send_tensor                                   &
+     &   (ncomp_send, nnod_rj, n_WS,  nmax_sr_rj,                       &
+     &    comm_rj1%nneib_domain, comm_rj1%istack_sr, comm_rj1%item_sr,  &
      &    rj_fld%ntot_phys, i_field, i_send, rj_fld%d_fld, WS)
 !
       end subroutine sel_sph_rj_tensor_to_send
@@ -163,9 +167,10 @@
 !
 !
       if(i_field*i_recv .eq. 0) return
-      call sel_sph_scalar_from_recv(ncomp_recv, nnod_rj, n_WR,          &
-     &    nmax_sr_rj,  nneib_domain_rj,  istack_sr_rj,  item_sr_rj,     &
-     &    irev_sr_rj,  rj_fld%ntot_phys, i_field, i_recv,               &
+      call sel_sph_scalar_from_recv                                     &
+     &   (ncomp_recv, nnod_rj, n_WR, nmax_sr_rj,                        &
+     &    comm_rj1%nneib_domain, comm_rj1%istack_sr, comm_rj1%item_sr,  &
+     &    comm_rj1%irev_sr,  rj_fld%ntot_phys, i_field, i_recv,         &
      &    WR, rj_fld%d_fld)
 !
       end subroutine sel_sph_rj_scalar_from_recv
@@ -186,9 +191,10 @@
 !
 !
       if(i_field*i_recv .eq. 0) return
-      call sel_sph_vector_from_recv(ncomp_recv, nnod_rj, n_WR,          &
-     &    nmax_sr_rj,  nneib_domain_rj,  istack_sr_rj,  item_sr_rj,     &
-     &    irev_sr_rj,  rj_fld%ntot_phys, i_field, i_recv,               &
+      call sel_sph_vector_from_recv                                     &
+     &   (ncomp_recv, nnod_rj, n_WR, nmax_sr_rj,                        &
+     &    comm_rj1%nneib_domain, comm_rj1%istack_sr, comm_rj1%item_sr,  &
+     &    comm_rj1%irev_sr,  rj_fld%ntot_phys, i_field, i_recv,         &
      &    WR, rj_fld%d_fld)
 !
       end subroutine sel_sph_rj_vector_from_recv
@@ -209,9 +215,10 @@
 !
 !
       if(i_field*i_recv .eq. 0) return
-      call sel_sph_tensor_from_recv(ncomp_recv, nnod_rj, n_WR,          &
-     &    nmax_sr_rj,  nneib_domain_rj,  istack_sr_rj,  item_sr_rj,     &
-     &    irev_sr_rj,  rj_fld%ntot_phys, i_field, i_recv,               &
+      call sel_sph_tensor_from_recv                                     &
+     &   (ncomp_recv, nnod_rj, n_WR, nmax_sr_rj,                        &
+     &    comm_rj1%nneib_domain, comm_rj1%istack_sr, comm_rj1%item_sr,  &
+     &    comm_rj1%irev_sr,  rj_fld%ntot_phys, i_field, i_recv,         &
      &    WR, rj_fld%d_fld)
 !
       end subroutine sel_sph_rj_tensor_from_recv

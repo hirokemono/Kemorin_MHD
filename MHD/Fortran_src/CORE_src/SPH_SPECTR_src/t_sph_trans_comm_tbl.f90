@@ -18,6 +18,7 @@
 !!      subroutine dealloc_type_sph_comm_item(comm)
 !!        type(sph_comm_tbl), intent(inout) :: comm
 !!
+!!      subroutine copy_sph_comm_table(nnod_sph, comm_org, comm_new)
 !!      subroutine copy_sph_comm_neib(comm_org, comm_new)
 !!      subroutine copy_sph_comm_item(nnod_sph, comm_org, comm_new)
 !!        type(sph_comm_tbl), intent(in) :: comm_org
@@ -169,6 +170,20 @@
       end subroutine dealloc_type_sph_comm_item
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine copy_sph_comm_table(nnod_sph, comm_org, comm_new)
+!
+      integer(kind = kint), intent(in) :: nnod_sph
+      type(sph_comm_tbl), intent(in) :: comm_org
+      type(sph_comm_tbl), intent(inout) :: comm_new
+!
+!
+      call copy_sph_comm_neib(comm_org, comm_new)
+      call copy_sph_comm_item(nnod_sph, comm_org, comm_new)
+!
+      end subroutine copy_sph_comm_table
+!
 ! -----------------------------------------------------------------------
 !
       subroutine copy_sph_comm_neib(comm_org, comm_new)

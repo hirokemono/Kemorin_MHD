@@ -72,15 +72,15 @@
       nnod_max_send =  max(nnod_max_send,comm_rtm1%ntot_item_sr)
       nnod_max_recv =  max(nnod_max_recv,comm_rtp1%ntot_item_sr)
 !
-      nneib_max_send = max(nneib_max_send,nneib_domain_rj)
+      nneib_max_send = max(nneib_max_send,comm_rj1%nneib_domain)
       nneib_max_recv = max(nneib_max_recv,comm_rlm1%nneib_domain)
-      nnod_max_send =  max(nnod_max_send,ntot_item_sr_rj)
+      nnod_max_send =  max(nnod_max_send,comm_rj1%ntot_item_sr)
       nnod_max_recv =  max(nnod_max_recv,comm_rlm1%ntot_item_sr)
 !
       nneib_max_send = max(nneib_max_send,comm_rlm1%nneib_domain)
-      nneib_max_recv = max(nneib_max_recv,nneib_domain_rj)
+      nneib_max_recv = max(nneib_max_recv,comm_rj1%nneib_domain)
       nnod_max_send =  max(nnod_max_send,comm_rlm1%ntot_item_sr)
-      nnod_max_recv =  max(nnod_max_recv,ntot_item_sr_rj)
+      nnod_max_recv =  max(nnod_max_recv,comm_rj1%ntot_item_sr)
 !
       call resize_iwork_4_SR(nneib_max_send, nneib_max_recv,            &
      &    comm_rtp1%ntot_item_sr, comm_rtm1%ntot_item_sr)
@@ -178,8 +178,8 @@
 !
       call calypso_send_recv_int                                        &
      &   (iflag_sph_SR_int, nnod_rj, nnod_rlm,                          &
-     &    nneib_domain_rj, iflag_self_rj,                               &
-     &    id_domain_rj, istack_sr_rj, item_sr_rj,                       &
+     &    comm_rj1%nneib_domain, comm_rj1%iflag_self,                   &
+     &    comm_rj1%id_domain, comm_rj1%istack_sr, comm_rj1%item_sr,     &
      &    comm_rlm1%nneib_domain, comm_rlm1%iflag_self,                 &
      &    comm_rlm1%id_domain, comm_rlm1%istack_sr, comm_rlm1%item_sr,  &
      &    comm_rlm1%irev_sr, iX_rj, iX_rlm)
@@ -201,9 +201,9 @@
      &   (iflag_sph_SR_int, nnod_rlm, nnod_rj,                          &
      &    comm_rlm1%nneib_domain, comm_rlm1%iflag_self,                 &
      &    comm_rlm1%id_domain, comm_rlm1%istack_sr, comm_rlm1%item_sr,  &
-     &    nneib_domain_rj, iflag_self_rj,                               &
-     &    id_domain_rj, istack_sr_rj, item_sr_rj,                       &
-     &    irev_sr_rj, iX_rlm, iX_rj)
+     &    comm_rj1%nneib_domain, comm_rj1%iflag_self,                   &
+     &    comm_rj1%id_domain, comm_rj1%istack_sr, comm_rj1%item_sr,     &
+     &    comm_rj1%irev_sr, iX_rlm, iX_rj)
 !
       end subroutine send_recv_rlm_2_rj_int
 !

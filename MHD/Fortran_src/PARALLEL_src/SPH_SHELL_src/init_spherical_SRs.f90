@@ -179,7 +179,8 @@
 !     &    comm_rlm1%nneib_domain, comm_rlm1%istack_sr,                 &
 !     &    comm_rlm1%item_sr, comm_rlm1%irev_sr)
 !      call set_rev_all2all_import_tbl(nnod_rj, nmax_sr_rj,             &
-!     &    nneib_domain_rj,  istack_sr_rj,  item_sr_rj,  irev_sr_rj)
+!     &    comm_rj1%nneib_domain,  comm_rj1%istack_sr,                  &
+!     &    comm_rj1%item_sr,  comm_rj1%irev_sr)
 !
       endtime(0:2) = 0.0d0
       iflag_sph_commN = iflag_alltoall
@@ -193,8 +194,8 @@
      &    comm_rtm1%item_sr, comm_rtm1%irev_sr)
       call set_reverse_import_table(nnod_rlm, comm_rlm1%ntot_item_sr,   &
      &    comm_rlm1%item_sr, comm_rlm1%irev_sr)
-      call set_reverse_import_table(nnod_rj, ntot_item_sr_rj,           &
-     &    item_sr_rj, irev_sr_rj)
+      call set_reverse_import_table(nnod_rj,  comm_rj1%ntot_item_sr,    &
+     &    comm_rj1%item_sr,  comm_rj1%irev_sr)
 !
       iflag_sph_commN = iflag_send_recv
       starttime = MPI_WTIME()
@@ -298,15 +299,15 @@
       call calypso_MPI_Barrier
       if(my_rank .eq. 0) write(*,*) 'check rj -> rlm'
       call check_calypso_send_recv_N                                    &
-     &    (NB, nneib_domain_rj, iflag_self_rj,            &
-     &     istack_sr_rj, comm_rlm1%nneib_domain,          &
+     &    (NB, comm_rj1%nneib_domain, comm_rj1%iflag_self,              &
+     &     comm_rj1%istack_sr, comm_rlm1%nneib_domain,                  &
      &     comm_rlm1%iflag_self, comm_rlm1%istack_sr)
       call calypso_MPI_Barrier
       if(my_rank .eq. 0) write(*,*) 'check rlm -> rj'
       call check_calypso_send_recv_N                                    &
      &   (NB, comm_rlm1%nneib_domain, comm_rlm1%iflag_self,             &
-     &    comm_rlm1%istack_sr, nneib_domain_rj,         &
-     &    iflag_self_rj, istack_sr_rj)
+     &    comm_rlm1%istack_sr, comm_rj1%nneib_domain,                   &
+     &    comm_rj1%iflag_self, comm_rj1%istack_sr)
 !
       end subroutine check_spherical_SRs_N
 !
