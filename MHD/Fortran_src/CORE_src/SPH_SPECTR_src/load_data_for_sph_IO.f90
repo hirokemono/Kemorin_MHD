@@ -57,6 +57,7 @@
      &         (my_rank, l_truncation, sph_rtp)
 !
       use m_sph_trans_comm_table
+      use m_group_data_sph_specr
 !
       use copy_sph_comm_table_4_IO
       use copy_sph_node_4_IO
@@ -72,10 +73,10 @@
       call copy_sph_node_4_rtp_from_IO(l_truncation, sph_rtp)
       call copy_comm_rtp_from_IO(sph_rtp%nnod_rtp, comm_rtp1)
 !
-      call copy_rtp_nod_grp_from_IO
-      call copy_rtp_radial_grp_from_IO
-      call copy_rtp_theta_grp_from_IO
-      call copy_rtp_zonal_grp_from_IO
+      call copy_rtp_nod_grp_from_IO(bc_rtp_grp1)
+      call copy_rtp_radial_grp_from_IO(radial_rtp_grp1)
+      call copy_rtp_theta_grp_from_IO(theta_rtp_grp1)
+      call copy_rtp_zonal_grp_from_IO(zonal_rtp_grp)
 !
       end subroutine input_geom_rtp_sph_trans
 !
@@ -84,6 +85,7 @@
       subroutine input_modes_rj_sph_trans                               &
      &         (my_rank, l_truncation, sph_rj)
 !
+      use m_group_data_sph_specr
       use copy_sph_comm_table_4_IO
       use copy_sph_node_4_IO
       use copy_sph_groups_from_IO
@@ -98,8 +100,8 @@
       call copy_sph_node_4_rj_from_IO(l_truncation, sph_rj)
       call copy_comm_rj_from_IO(sph_rj%nnod_rj)
 !
-      call copy_rj_radial_grp_from_IO
-      call copy_rj_sphere_grp_from_IO
+      call copy_rj_radial_grp_from_IO(radial_rj_grp1)
+      call copy_rj_sphere_grp_from_IO(sphere_rj_grp1)
 !
       end subroutine input_modes_rj_sph_trans
 !
@@ -149,6 +151,7 @@
       subroutine output_geom_rtp_sph_trans                              &
      &         (my_rank, l_truncation, sph_rtp)
 !
+      use m_group_data_sph_specr
       use copy_sph_comm_table_4_IO
       use copy_sph_node_4_IO
       use copy_sph_groups_to_IO
@@ -161,10 +164,10 @@
       call copy_sph_node_4_rtp_to_IO(l_truncation, sph_rtp)
       call copy_comm_rtp_to_IO(my_rank)
 !
-      call copy_rtp_nod_grp_to_IO
-      call copy_rtp_radial_grp_to_IO
-      call copy_rtp_theta_grp_to_IO
-      call copy_rtp_zonal_grp_to_IO
+      call copy_rtp_nod_grp_to_IO(bc_rtp_grp1)
+      call copy_rtp_radial_grp_to_IO(radial_rtp_grp1)
+      call copy_rtp_theta_grp_to_IO(theta_rtp_grp1)
+      call copy_rtp_zonal_grp_to_IO(zonal_rtp_grp)
 !
       call sel_write_geom_rtp_file(my_rank)
 !
@@ -175,6 +178,7 @@
       subroutine output_modes_rj_sph_trans                              &
      &         (my_rank, l_truncation, sph_rj)
 !
+      use m_group_data_sph_specr
       use copy_sph_comm_table_4_IO
       use copy_sph_node_4_IO
       use copy_sph_groups_to_IO
@@ -187,8 +191,8 @@
       call copy_sph_node_4_rj_to_IO(l_truncation, sph_rj)
       call copy_comm_rj_to_IO(my_rank)
 !
-      call copy_rj_radial_grp_to_IO
-      call copy_rj_sphere_grp_to_IO
+      call copy_rj_radial_grp_to_IO(radial_rj_grp1)
+      call copy_rj_sphere_grp_to_IO(sphere_rj_grp1)
 !
       call sel_write_spectr_modes_rj_file(my_rank)
 !
