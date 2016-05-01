@@ -233,7 +233,7 @@
         call const_fem_mesh_for_sph(ip_rank)
       end do
 !
-      call deallocate_rj_r_grp_item
+      call deallocate_grp_type(radial_rj_grp1)
       call deallocate_gauss_points
       call deallocate_gauss_colatitude
 !
