@@ -33,7 +33,7 @@
 !
       subroutine read_geom_rtp_data_b(mesh_file_id)
 !
-      use sph_rtp_groups_IO_b
+      use sph_rj_groups_IO_b
 !
       integer(kind = kint), intent(in) :: mesh_file_id
 !
@@ -128,7 +128,7 @@
 !
       subroutine write_geom_rtp_data_b(id_mesh)
 !
-      use sph_rtp_groups_IO_b
+      use sph_rj_groups_IO_b
 !
       integer(kind = kint), intent(in) :: id_mesh
 !

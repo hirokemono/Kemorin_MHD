@@ -37,7 +37,7 @@
 !
       subroutine read_geom_rtp_data(mesh_file_id)
 !
-      use sph_rtp_groups_IO
+      use sph_rj_groups_IO
 !
       integer(kind = kint), intent(in) :: mesh_file_id
 !
@@ -132,7 +132,7 @@
       subroutine write_geom_rtp_data(id_mesh)
 !
       use m_sph_modes_grid_labels
-      use sph_rtp_groups_IO
+      use sph_rj_groups_IO
 !
       integer(kind = kint), intent(in) :: id_mesh
 !

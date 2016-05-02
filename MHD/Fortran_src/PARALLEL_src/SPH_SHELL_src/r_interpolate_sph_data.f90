@@ -336,8 +336,8 @@
       call deallocate_import_item_IO
       call deallocate_neib_domain_IO
 !
-      call deallocate_rj_r_grp_IO_item
-      call deallocate_rj_j_grp_IO_item
+      call deallocate_grp_type(radial_rj_grp_IO)
+      call deallocate_grp_type(sphere_rj_grp_IO)
 !
       end subroutine copy_original_sph_rj_from_IO
 !

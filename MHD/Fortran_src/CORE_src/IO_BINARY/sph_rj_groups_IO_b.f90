@@ -4,19 +4,19 @@
 !     Written by H. Matsui on July, 2007
 !
 !      subroutine read_modes_rj_groups_b(mesh_file_id)
+!      subroutine read_geom_rtp_groups_b(mesh_file_id)
 !      subroutine write_modes_rj_groups_b(mesh_file_id)
+!      subroutine write_geom_rtp_groups_b(mesh_file_id)
 !
       module sph_rj_groups_IO_b
 !
       use m_precision
+      use m_machine_parameter
 !
       use m_group_data_sph_specr_IO
       use group_data_IO_b
 !
       implicit none
-!
-      private :: read_rj_radial_grp_data_b, write_rj_radial_grp_data_b
-      private :: read_rj_sphere_grp_data_b, write_rj_sphere_grp_data_b
 !
 !------------------------------------------------------------------
 !
@@ -26,109 +26,107 @@
 !
       subroutine read_modes_rj_groups_b(mesh_file_id)
 !
+      use m_group_data_sph_specr_IO
+!
       integer(kind = kint), intent(in) :: mesh_file_id
 !
-      call read_rj_radial_grp_data_b(mesh_file_id)
-      call read_rj_sphere_grp_data_b(mesh_file_id)
+      call read_rj_grp_data_b(mesh_file_id, radial_rj_grp_IO)
+      call read_rj_grp_data_b(mesh_file_id, sphere_rj_grp_IO)
 !
       end subroutine read_modes_rj_groups_b
 !
 !------------------------------------------------------------------
 !
-      subroutine write_modes_rj_groups_b(mesh_file_id)
+      subroutine read_geom_rtp_groups_b(mesh_file_id)
+!
+      use m_group_data_sph_specr_IO
 !
       integer(kind = kint), intent(in) :: mesh_file_id
 !
-      call write_rj_radial_grp_data_b(mesh_file_id)
-      call write_rj_sphere_grp_data_b(mesh_file_id)
+      call read_rj_grp_data_b(mesh_file_id, bc_rtp_grp_IO)
+      call read_rj_grp_data_b(mesh_file_id, radial_rtp_grp_IO)
+      call read_rj_grp_data_b(mesh_file_id, theta_rtp_grp_IO)
+      call read_rj_grp_data_b(mesh_file_id, zonal_rtp_grp_IO)
+!
+      end subroutine read_geom_rtp_groups_b
+!
+!------------------------------------------------------------------
+!
+      subroutine write_modes_rj_groups_b(mesh_file_id)
+!
+      use m_group_data_sph_specr_IO
+!
+      integer(kind = kint), intent(in) :: mesh_file_id
+!
+      call write_rj_grp_data_b(mesh_file_id, radial_rj_grp_IO)
+      call write_rj_grp_data_b(mesh_file_id, sphere_rj_grp_IO)
 !
       end subroutine write_modes_rj_groups_b
 !
 !------------------------------------------------------------------
-!------------------------------------------------------------------
 !
-      subroutine read_rj_radial_grp_data_b(mesh_file_id)
+      subroutine write_geom_rtp_groups_b(mesh_file_id)
+!
+      use m_group_data_sph_specr_IO
 !
       integer(kind = kint), intent(in) :: mesh_file_id
 !
 !
-      read(mesh_file_id) num_radial_grp_rj_IO
+      call write_rj_grp_data_b(mesh_file_id, bc_rtp_grp_IO)
+      call write_rj_grp_data_b(mesh_file_id, radial_rtp_grp_IO)
+      call write_rj_grp_data_b(mesh_file_id, theta_rtp_grp_IO)
+      call write_rj_grp_data_b(mesh_file_id, zonal_rtp_grp_IO)
 !
-      call allocate_rj_r_grp_IO_stack
+      end subroutine write_geom_rtp_groups_b
 !
-      if (num_radial_grp_rj_IO .gt. 0) then
-        call read_group_stack_b(mesh_file_id, num_radial_grp_rj_IO,     &
-     &      ntot_radial_grp_rj_IO, istack_radial_grp_rj_IO)
+!------------------------------------------------------------------
+!------------------------------------------------------------------
 !
-        call allocate_rj_r_grp_IO_item
-        call read_group_item_b(mesh_file_id, num_radial_grp_rj_IO,      &
-     &      ntot_radial_grp_rj_IO, istack_radial_grp_rj_IO,             &
-     &      name_radial_grp_rj_IO, item_radial_grp_rj_IO)
+      subroutine read_rj_grp_data_b(mesh_file_id, rj_grp_IO)
+!
+      use t_group_data
+!
+      integer(kind = kint), intent(in) :: mesh_file_id
+      type(group_data), intent(inout) :: rj_grp_IO
+!
+!
+      read(mesh_file_id) rj_grp_IO%num_grp
+!
+      call allocate_grp_type_num(rj_grp_IO)
+!
+      if (rj_grp_IO%num_grp .gt. 0) then
+        call read_group_stack_b(mesh_file_id, rj_grp_IO%num_grp,        &
+     &      rj_grp_IO%num_item, rj_grp_IO%istack_grp)
+!
+        call allocate_grp_type_item(rj_grp_IO)
+        call read_group_item_b(mesh_file_id, rj_grp_IO%num_grp,         &
+     &      rj_grp_IO%num_item, rj_grp_IO%istack_grp,                   &
+     &      rj_grp_IO%grp_name, rj_grp_IO%item_grp)
 !
       else
-        ntot_radial_grp_rj_IO = 0
-        call allocate_rj_r_grp_IO_item
+        rj_grp_IO%num_item = 0
+        call allocate_grp_type_item(rj_grp_IO)
       end if
 !
-      end subroutine read_rj_radial_grp_data_b
+      end subroutine read_rj_grp_data_b
 !
 !------------------------------------------------------------------
 !
-      subroutine read_rj_sphere_grp_data_b(mesh_file_id)
+      subroutine write_rj_grp_data_b(mesh_file_id, rj_grp_IO)
+!
+      use t_group_data
 !
       integer(kind = kint), intent(in) :: mesh_file_id
+      type(group_data), intent(inout) :: rj_grp_IO
 !
 !
-      read(mesh_file_id) num_sphere_grp_rj_IO
+      call write_group_data_b(mesh_file_id, rj_grp_IO%num_grp,          &
+     &    rj_grp_IO%num_item, rj_grp_IO%istack_grp,                     &
+     &    rj_grp_IO%grp_name, rj_grp_IO%item_grp)
 !
-      call allocate_rj_j_grp_IO_stack
+      call deallocate_grp_type(rj_grp_IO)
 !
-      if (num_sphere_grp_rj_IO .gt. 0) then
-        call read_group_stack_b(mesh_file_id, num_sphere_grp_rj_IO,     &
-     &      ntot_sphere_grp_rj_IO, istack_sphere_grp_rj_IO)
-!
-        call allocate_rj_j_grp_IO_item
-        call read_group_item_b(mesh_file_id, num_sphere_grp_rj_IO,      &
-     &      ntot_sphere_grp_rj_IO, istack_sphere_grp_rj_IO,             &
-     &      name_sphere_grp_rj_IO, item_sphere_grp_rj_IO)
-!
-      else
-        ntot_sphere_grp_rj_IO = 0
-        call allocate_rj_j_grp_IO_item
-      end if
-!
-      end subroutine read_rj_sphere_grp_data_b
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine write_rj_radial_grp_data_b(mesh_file_id)
-!
-      integer(kind = kint), intent(in) :: mesh_file_id
-!
-!
-      call write_group_data_b(mesh_file_id, num_radial_grp_rj_IO,       &
-     &    ntot_radial_grp_rj_IO, istack_radial_grp_rj_IO,               &
-     &    name_radial_grp_rj_IO, item_radial_grp_rj_IO)
-!
-      call deallocate_rj_r_grp_IO_item
-!
-      end subroutine write_rj_radial_grp_data_b
-!
-!------------------------------------------------------------------
-!
-      subroutine write_rj_sphere_grp_data_b(mesh_file_id)
-!
-      integer(kind = kint), intent(in) :: mesh_file_id
-!
-!
-      call write_group_data_b(mesh_file_id, num_sphere_grp_rj_IO,       &
-     &    ntot_sphere_grp_rj_IO, istack_sphere_grp_rj_IO,               &
-     &    name_sphere_grp_rj_IO, item_sphere_grp_rj_IO)
-!
-      call deallocate_rj_j_grp_IO_item
-!
-      end subroutine write_rj_sphere_grp_data_b
+      end subroutine write_rj_grp_data_b
 !
 !------------------------------------------------------------------
 !

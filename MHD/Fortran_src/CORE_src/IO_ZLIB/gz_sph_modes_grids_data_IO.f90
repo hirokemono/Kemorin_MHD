@@ -31,7 +31,7 @@
 !
       subroutine read_geom_rtp_data_gz
 !
-      use gz_sph_rtp_groups_IO
+      use gz_sph_rj_groups_IO
 !
 !
 !      write(*,*) '! domain and communication'
@@ -121,7 +121,7 @@
       subroutine write_geom_rtp_data_gz
 !
       use m_sph_modes_grid_labels
-      use gz_sph_rtp_groups_IO
+      use gz_sph_rj_groups_IO
 !
 !
       textbuf = hd_sph_para() // char(0)
