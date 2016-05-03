@@ -45,7 +45,8 @@
 !
       use m_work_time
 !
-      real(kind = kreal), intent(in) :: reftemp_rj(nidx_rj(1),0:1)
+      real(kind = kreal), intent(in)                                    &
+     &      :: reftemp_rj(sph_rj1%nidx_rj(1),0:1)
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -56,7 +57,8 @@
 !
       if (iflag_4_ref_temp .eq. id_sphere_ref_temp) then
         call add_reftemp_advect_sph_MHD                                 &
-     &     (sph_bc_T%kr_in, sph_bc_T%kr_out, nidx_rj, sph_rj1%ar_1d_rj, &
+     &     (sph_bc_T%kr_in, sph_bc_T%kr_out,                            &
+     &      sph_rj1%nidx_rj, sph_rj1%ar_1d_rj,                          &
      &      rj_fld%n_point, rj_fld%ntot_phys, reftemp_rj, rj_fld%d_fld)
       end if
 !
@@ -65,7 +67,7 @@
       call start_eleps_time(13)
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call copy_icore_rot_to_tor_coriolis(sph_bc_U%kr_in,             &
-     &      sph_rj1%idx_rj_degree_one, nnod_rj, nidx_rj(2),             &
+     &      sph_rj1%idx_rj_degree_one, nnod_rj, sph_rj1%nidx_rj(2),     &
      &      rj_fld%ntot_phys, rj_fld%d_fld)
       end if
       call end_eleps_time(13)

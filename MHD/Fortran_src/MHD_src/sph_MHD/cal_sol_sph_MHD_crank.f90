@@ -266,9 +266,9 @@
       integer(kind = kint) :: j, k, inod
 !
       write(150+my_rank,*) 'j, k, s_velo, ds_velo, t_velo, w_diffuse'
-      do j = 1, nidx_rj(2)
-         do k = 1, nidx_rj(1)
-          inod = j + (k-1) * nidx_rj(2)
+      do j = 1, sph_rj1%nidx_rj(2)
+         do k = 1, sph_rj1%nidx_rj(1)
+          inod = j + (k-1) * sph_rj1%nidx_rj(2)
           write(150+my_rank,'(2i16,1p20E25.15e3)') j, k,                &
      &        rj_fld%d_fld(inod,ipol%i_velo),                           &
      &        rj_fld%d_fld(inod,idpdr%i_velo),                          &
@@ -287,9 +287,9 @@
       integer(kind = kint) :: j, k, inod
 !
       write(150+my_rank,*) 'j, k, s_vort, ds_vort, t_vort'
-      do j = 1, nidx_rj(2)
-         do k = 1, nidx_rj(1)
-          inod = j + (k-1) * nidx_rj(2)
+      do j = 1, sph_rj1%nidx_rj(2)
+         do k = 1, sph_rj1%nidx_rj(1)
+          inod = j + (k-1) * sph_rj1%nidx_rj(2)
           write(150+my_rank,'(2i16,1p20E25.15e3)') j, k,                &
      &        rj_fld%d_fld(inod,ipol%i_vort),                           &
      &        rj_fld%d_fld(inod,idpdr%i_vort),                          &

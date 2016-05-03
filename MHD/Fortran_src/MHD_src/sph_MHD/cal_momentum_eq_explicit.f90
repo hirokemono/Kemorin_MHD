@@ -71,7 +71,8 @@
 !$omp parallel
       if(iflag_t_evo_4_velo .gt.     id_no_evolution) then
         call cal_vorticity_eq_adams(sph_bc_U%kr_in, sph_bc_U%kr_out,    &
-     &      nnod_rj, nidx_rj(2), rj_fld%ntot_phys, rj_fld%d_fld)
+     &      nnod_rj, sph_rj1%nidx_rj(2),                                &
+     &      rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       if(iflag_t_evo_4_magne .gt.    id_no_evolution) then
@@ -112,7 +113,8 @@
 !$omp parallel
       if(iflag_t_evo_4_velo .gt.     id_no_evolution) then
         call cal_vorticity_eq_euler(sph_bc_U%kr_in, sph_bc_U%kr_out,    &
-     &      nnod_rj, nidx_rj(2), rj_fld%ntot_phys, rj_fld%d_fld)
+     &      nnod_rj, sph_rj1%nidx_rj(2),                                &
+     &      rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       if(iflag_t_evo_4_temp .gt.     id_no_evolution) then

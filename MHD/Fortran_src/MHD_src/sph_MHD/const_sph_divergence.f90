@@ -54,7 +54,7 @@
 !
 !
       call cal_sph_nod_vect_div2(sph_bc%kr_in, sph_bc%kr_out,           &
-     &    nidx_rj, sph_rj1%ar_1d_rj, is_flux, is_advect,                &
+     &    sph_rj1%nidx_rj, sph_rj1%ar_1d_rj, is_flux, is_advect,        &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       call sel_bc_sph_scalar_advect(sph_bc, is_flux, is_advect,         &
      &    sph_rj1, rj_fld)
@@ -78,13 +78,13 @@
 !
 !
       call cal_sph_nod_vect_div2(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
-     &    nidx_rj, sph_rj1%ar_1d_rj, is_fld, is_div,                    &
+     &    sph_rj1%nidx_rj, sph_rj1%ar_1d_rj, is_fld, is_div,            &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      call cal_sph_nod_nobc_in_div2(nnod_rj, nidx_rj(2),                &
+      call cal_sph_nod_nobc_in_div2(nnod_rj, sph_rj1%nidx_rj(2),        &
      &    sph_bc_U%kr_in, sph_bc_U%r_ICB, sph_bc_U%fdm2_fix_fld_ICB,    &
      &    is_fld, is_div, rj_fld%ntot_phys, rj_fld%d_fld)
-      call cal_sph_nod_nobc_out_div2(nnod_rj, nidx_rj(2),               &
+      call cal_sph_nod_nobc_out_div2(nnod_rj, sph_rj1%nidx_rj(2),       &
      &    sph_bc_U%kr_out, sph_bc_U%r_CMB, sph_bc_U%fdm2_fix_fld_CMB,   &
      &    is_fld, is_div, rj_fld%ntot_phys, rj_fld%d_fld)
 !

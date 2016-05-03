@@ -52,28 +52,32 @@
         if (iflag_debug.eq.1)                                           &
      &      write(*,*)'cal_rot_double_cst_buo_sph', ipol%i_temp
           call cal_rot_double_cst_buo_sph                               &
-     &       (sph_bc_U%kr_in, sph_bc_U%kr_out, coef_buo, ipol%i_temp,   &
-     &        coef_comp_buo, ipol%i_light, itor%i_rot_buoyancy,         &
-     &        nidx_rj, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &       (sph_bc_U%kr_in, sph_bc_U%kr_out,                          &
+     &        coef_buo, ipol%i_temp, coef_comp_buo, ipol%i_light,       &
+     &        itor%i_rot_buoyancy, sph_rj1%nidx_rj,                     &
+     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       else if ( iflag_4_gravity .gt. id_turn_OFF) then
 !
         if (iflag_debug.eq.1) write(*,*) 'cal_rot_cst_buo_sph'
         call cal_rot_cst_buo_sph(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
-     &      coef_buo, ipol%i_temp, itor%i_rot_buoyancy,                 &
-     &      nidx_rj, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &      coef_buo, ipol%i_temp,                                      &
+     &      itor%i_rot_buoyancy, sph_rj1%nidx_rj,                       &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       else if ( iflag_4_composit_buo .gt. id_turn_OFF) then
         if (iflag_debug.eq.1) write(*,*) 'cal_rot_cst_buo_sph'
         call cal_rot_cst_buo_sph(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
-     &      coef_comp_buo, ipol%i_light, itor%i_rot_comp_buo,           &
-     &      nidx_rj, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &      coef_comp_buo, ipol%i_light,                                &
+     &      itor%i_rot_comp_buo, sph_rj1%nidx_rj,                       &
+     &       rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       else if (iflag_4_filter_gravity .gt. id_turn_OFF) then
         if (iflag_debug.eq.1) write(*,*) 'cal_rot_cst_buo_sph'
         call cal_rot_cst_buo_sph(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
-     &      coef_buo, ipol%i_filter_temp, itor%i_rot_filter_buo,        &
-     &      nidx_rj, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &      coef_buo, ipol%i_filter_temp,                               &
+     &      itor%i_rot_filter_buo, sph_rj1%nidx_rj,                     &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       end subroutine cal_rot_radial_const_gravity

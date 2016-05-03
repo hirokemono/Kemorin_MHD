@@ -38,7 +38,8 @@
       use m_physical_property
 !
 !
-      call const_radial_mat_4_scalar_sph(nidx_rj(1), nidx_rj(2),        &
+      call const_radial_mat_4_scalar_sph                                &
+     &   (sph_rj1%nidx_rj(1), sph_rj1%nidx_rj(2),                       &
      &    sph_bc_T, coef_imp_t, coef_temp, coef_d_temp, temp_evo_mat,   &
      &    temp_evo_lu, temp_evo_det, i_temp_pivot)
 !
@@ -57,7 +58,8 @@
       use m_physical_property
 !
 !
-      call const_radial_mat_4_scalar_sph(nidx_rj(1), nidx_rj(2),        &
+      call const_radial_mat_4_scalar_sph                                &
+     &   (sph_rj1%nidx_rj(1), sph_rj1%nidx_rj(2),                       &
      &    sph_bc_C, coef_imp_c, coef_light, coef_d_light,               &
      &    composit_evo_mat, composit_evo_lu, composit_evo_det,          &
      &    i_composit_pivot)
@@ -91,26 +93,30 @@
 !
 !
       coef_p = - coef_press
-      call set_unit_mat_4_poisson(nidx_rj(1), nidx_rj(2),               &
+      call set_unit_mat_4_poisson                                       &
+     &   (sph_rj1%nidx_rj(1), sph_rj1%nidx_rj(2),                       &
      &    sph_bc_U%kr_in, sph_bc_U%kr_out, p_poisson_mat)
       call add_scalar_poisson_mat_sph                                   &
-     &   (nidx_rj(1), nidx_rj(2), sph_rj1%ar_1d_rj,                     &
+     &   (sph_rj1%nidx_rj(1), sph_rj1%nidx_rj(2), sph_rj1%ar_1d_rj,     &
      &    sph_bc_U%kr_in, sph_bc_U%kr_out, coef_p, p_poisson_mat)
 !
 !   Boundary condition for ICB
 !
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
-        call add_scalar_poisson_mat_ctr1(nidx_rj(1), nidx_rj(2),        &
-     &       sph_bc_U%r_ICB, fdm2_fix_fld_ctr1, coef_p, p_poisson_mat)
+        call add_scalar_poisson_mat_ctr1                                &
+     &     (sph_rj1%nidx_rj(1), sph_rj1%nidx_rj(2),                     &
+     &      sph_bc_U%r_ICB, fdm2_fix_fld_ctr1, coef_p, p_poisson_mat)
       else
-        call add_icb_scalar_poisson_mat(nidx_rj(1), nidx_rj(2),         &
+        call add_icb_scalar_poisson_mat                                 &
+     &     (sph_rj1%nidx_rj(1), sph_rj1%nidx_rj(2),                     &
      &      sph_bc_U%kr_in, sph_bc_U%r_ICB, sph_bc_U%fdm2_fix_dr_ICB,   &
      &      coef_p, p_poisson_mat)
       end if
 !
 !   Boundary condition for CMB
 !
-      call add_cmb_scalar_poisson_mat(nidx_rj(1), nidx_rj(2),           &
+      call add_cmb_scalar_poisson_mat                                   &
+     &   (sph_rj1%nidx_rj(1), sph_rj1%nidx_rj(2),                       &
      &    sph_bc_U%kr_out, sph_bc_U%r_CMB, sph_bc_U%fdm2_fix_dr_CMB,    &
      &    coef_p, p_poisson_mat)
 !
@@ -119,7 +125,7 @@
         jst = sph_rj1%istack_rj_j_smp(ip-1) + 1
         jed = sph_rj1%istack_rj_j_smp(ip  )
         do j = jst, jed
-          call ludcmp_3band(nidx_rj(1), p_poisson_mat(1,1,j),           &
+          call ludcmp_3band(sph_rj1%nidx_rj(1), p_poisson_mat(1,1,j),   &
      &        i_p_pivot(1,j), ierr, p_poisson_lu(1,1,j),                &
      &        p_poisson_det(1,j) )
         end do

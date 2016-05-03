@@ -51,30 +51,30 @@
 !$omp parallel
       call cal_radial_force_on_sph(sph_bc_U%kr_in,                      &
      &      ipol%i_v_diffuse, ipol%i_div_viscous,                       &
-     &      nnod_rj, nidx_rj, sph_rj1%ar_1d_rj,                         &
-     &       rj_fld%ntot_phys, rj_fld%d_fld)
+     &      nnod_rj, sph_rj1%nidx_rj, sph_rj1%ar_1d_rj,                 &
+     &      rj_fld%ntot_phys, rj_fld%d_fld)
       call cal_radial_force_on_sph(sph_bc_U%kr_out,                     &
      &      ipol%i_v_diffuse, ipol%i_div_viscous,                       &
-     &      nnod_rj, nidx_rj, sph_rj1%ar_1d_rj,                         &
+     &      nnod_rj, sph_rj1%nidx_rj, sph_rj1%ar_1d_rj,                 &
      &      rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call cal_radial_force_on_sph(sph_bc_U%kr_in,                      &
      &      ipol%i_m_advect, ipol%i_div_inertia,                        &
-     &      nnod_rj, nidx_rj, sph_rj1%ar_1d_rj,                         &
+     &      nnod_rj, sph_rj1%nidx_rj, sph_rj1%ar_1d_rj,                 &
      &      rj_fld%ntot_phys, rj_fld%d_fld)
       call cal_radial_force_on_sph(sph_bc_U%kr_out,                     &
      &      ipol%i_m_advect, ipol%i_div_inertia,                        &
-     &      nnod_rj, nidx_rj, sph_rj1%ar_1d_rj,                         &
+     &      nnod_rj, sph_rj1%nidx_rj, sph_rj1%ar_1d_rj,                 &
      &       rj_fld%ntot_phys, rj_fld%d_fld)
 !
       if( iflag_4_lorentz .gt. id_turn_OFF) then
         call cal_radial_force_on_sph(sph_bc_U%kr_in,                    &
      &      ipol%i_lorentz, ipol%i_div_inertia,                         &
-     &      nnod_rj, nidx_rj, sph_rj1%ar_1d_rj,                         &
+     &      nnod_rj, sph_rj1%nidx_rj, sph_rj1%ar_1d_rj,                 &
      &      rj_fld%ntot_phys, rj_fld%d_fld)
         call cal_radial_force_on_sph(sph_bc_U%kr_out,                   &
      &      ipol%i_lorentz, ipol%i_div_inertia,                         &
-     &      nnod_rj, nidx_rj, sph_rj1%ar_1d_rj,                         &
+     &      nnod_rj, sph_rj1%nidx_rj, sph_rj1%ar_1d_rj,                 &
      &      rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !$omp end parallel

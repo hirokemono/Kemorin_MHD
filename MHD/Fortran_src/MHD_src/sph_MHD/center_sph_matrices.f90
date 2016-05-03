@@ -82,6 +82,7 @@
 !
       use m_fdm_coefs
       use m_spheric_parameter
+!
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: r_CTR1(0:2)
       real(kind = kreal), intent(in) :: coef_p

@@ -45,19 +45,20 @@
       real(kind = kreal) :: coef_p
 !
 !
-      nri1 = nidx_rj(1) + 1
+      nri1 = sph_rj1%nidx_rj(1) + 1
       coef_p = - coef_press
 !
-      call copy_to_band3_mat_w_center(nidx_rj(1), zero,                 &
+      call copy_to_band3_mat_w_center(sph_rj1%nidx_rj(1), zero,         &
       &   p_poisson_mat(1,1,sph_rj1%idx_rj_degree_zero),                &
       &   p00_poisson_mat(1,0))
 !
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
-        call add_scalar_poisson_mat_fill_ctr(nidx_rj(1),                &
+        call add_scalar_poisson_mat_fill_ctr(sph_rj1%nidx_rj(1),        &
      &      sph_bc_U%r_ICB, fdm2_fix_dr_center, fdm2_fix_fld_ctr1,      &
      &      coef_p, p00_poisson_mat)
       else
-        call add_scalar_poisson_mat_no_fld(nidx_rj(1), p00_poisson_mat)
+        call add_scalar_poisson_mat_no_fld                              &
+     &     (sph_rj1%nidx_rj(1), p00_poisson_mat)
       end if
 !
       call ludcmp_3band(nri1, p00_poisson_mat(1,0), i_p00_pivot(0),     &
@@ -79,7 +80,7 @@
       use m_physical_property
 !
 !
-      call const_radial_mat_scalar00_sph(nidx_rj(1), sph_bc_T,          &
+      call const_radial_mat_scalar00_sph(sph_rj1%nidx_rj(1), sph_bc_T,  &
      &    coef_imp_t, coef_temp, coef_d_temp,                           &
      &    temp_evo_mat(1,1,sph_rj1%idx_rj_degree_zero), t00_evo_mat,    &
      &    t00_evo_lu, t00_evo_det, i_t00_pivot)
@@ -100,7 +101,7 @@
       use m_physical_property
 !
 !
-      call const_radial_mat_scalar00_sph(nidx_rj(1), sph_bc_C,          &
+      call const_radial_mat_scalar00_sph(sph_rj1%nidx_rj(1), sph_bc_C,  &
      &    coef_imp_c, coef_light, coef_d_light,                         &
      &    composit_evo_mat(1,1,sph_rj1%idx_rj_degree_zero),             &
      &    c00_evo_mat, c00_evo_lu, c00_evo_det, i_c00_pivot)

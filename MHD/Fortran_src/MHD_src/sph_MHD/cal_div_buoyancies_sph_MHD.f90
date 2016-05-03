@@ -53,19 +53,19 @@
      &        'cal_div_double_buoyancy_sph_MHD by temp', ipol%i_temp
           call cal_div_double_buoyancy_sph_MHD                          &
      &       (sph_bc_U%kr_in, sph_bc_U%kr_out,                          &
-     &        coef_buo, ipol%i_temp, ipol%i_grad_t,                     &
-     &        coef_comp_buo, ipol%i_light, ipol%i_grad_composit,        &
-     &        ipol%i_div_buoyancy,  nidx_rj, sph_rj1%radius_1d_rj_r,    &
+     &        coef_buo, ipol%i_temp, ipol%i_grad_t, coef_comp_buo,      &
+     &        ipol%i_light, ipol%i_grad_composit, ipol%i_div_buoyancy,  &
+     &        sph_rj1%nidx_rj, sph_rj1%radius_1d_rj_r,                  &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         else
           if (iflag_debug.ge.1) write(*,*)                              &
      &      'cal_div_double_buoyancy_sph_MHD by part.temp',             &
      &       ipol%i_par_temp
           call cal_div_double_buoyancy_sph_MHD                          &
-     &       (sph_bc_U%kr_in, sph_bc_U%kr_out,                          &
-     &        coef_buo, ipol%i_par_temp, ipol%i_grad_part_t,            &
-     &        coef_comp_buo, ipol%i_light, ipol%i_grad_composit,        &
-     &        ipol%i_div_buoyancy,  nidx_rj, sph_rj1%radius_1d_rj_r,    &
+     &       (sph_bc_U%kr_in, sph_bc_U%kr_out, coef_buo,                &
+     &        ipol%i_par_temp, ipol%i_grad_part_t, coef_comp_buo,       &
+     &        ipol%i_light, ipol%i_grad_composit, ipol%i_div_buoyancy,  &
+     &        sph_rj1%nidx_rj, sph_rj1%radius_1d_rj_r,                  &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
 !
@@ -76,7 +76,7 @@
           call cal_div_buoyancy_sph_MHD                                 &
      &       (sph_bc_U%kr_in, sph_bc_U%kr_out, coef_buo,                &
      &        ipol%i_temp, ipol%i_grad_t, ipol%i_div_buoyancy,          &
-     &        nidx_rj, sph_rj1%radius_1d_rj_r,                          &
+     &        sph_rj1%nidx_rj, sph_rj1%radius_1d_rj_r,                  &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         else
           if (iflag_debug.ge.1)  write(*,*)                             &
@@ -84,24 +84,27 @@
           call cal_div_buoyancy_sph_MHD                                 &
      &       (sph_bc_U%kr_in, sph_bc_U%kr_out, coef_buo,                &
      &        ipol%i_par_temp, ipol%i_grad_part_t, ipol%i_div_buoyancy, &
-     &        nidx_rj, sph_rj1%radius_1d_rj_r,                          &
+     &        sph_rj1%nidx_rj, sph_rj1%radius_1d_rj_r,                  &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
 !
       else if (iflag_4_composit_buo .gt. id_turn_OFF) then
           if (iflag_debug.ge.1)  write(*,*)                             &
      &      'cal_div_buoyancy_sph_MHD by composition'
-        call cal_div_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out,  &
-     &      coef_comp_buo, ipol%i_light, ipol%i_grad_composit,          &
-     &      ipol%i_div_comp_buo, nidx_rj, sph_rj1%radius_1d_rj_r,       &
+        call cal_div_buoyancy_sph_MHD                                   &
+     &     (sph_bc_U%kr_in, sph_bc_U%kr_out, coef_comp_buo,             &
+     &      ipol%i_light, ipol%i_grad_composit, ipol%i_div_comp_buo,    &
+     &      sph_rj1%nidx_rj, sph_rj1%radius_1d_rj_r,                    &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       else if(iflag_4_filter_gravity .gt. id_turn_OFF) then
           if (iflag_debug.ge.1)  write(*,*)                             &
      &      'cal_div_buoyancy_sph_MHD by filtrered temperature'
-        call cal_div_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out,  &
-     &      coef_buo, ipol%i_filter_temp, ipol%i_grad_filter_temp,      &
-     &      ipol%i_div_filter_buo, nidx_rj, sph_rj1%radius_1d_rj_r,     &
+        call cal_div_buoyancy_sph_MHD                                   &
+     &     (sph_bc_U%kr_in, sph_bc_U%kr_out, coef_buo,                  &
+     &      ipol%i_filter_temp, ipol%i_grad_filter_temp,                &
+     &      ipol%i_div_filter_buo,                                      &
+     &      sph_rj1%nidx_rj, sph_rj1%radius_1d_rj_r,                    &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
