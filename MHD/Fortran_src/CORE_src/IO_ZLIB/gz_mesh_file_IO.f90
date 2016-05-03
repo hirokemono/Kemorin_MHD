@@ -37,7 +37,8 @@
 !
       subroutine read_mesh_gz(my_rank)
 !
-      use gz_boundary_data_IO
+      use m_read_boundary_data
+      use gz_sph_rj_groups_IO
 !
       integer(kind = kint), intent(in) :: my_rank
       character(len=kchara) :: gzip_name
@@ -51,7 +52,13 @@
       call open_rd_gzfile(gzip_name)
 !
       call read_geometry_data_gz
-      call read_boundary_data_gz
+!
+!   read node group
+      call read_group_data_gz(bc_grp_IO)
+!  read element group ( not in use)
+      call read_group_data_gz(mat_grp_IO)
+!  read surface group
+      call read_surf_grp_data_gz(surf_grp_IO)
 !
       call close_gzfile
 !
@@ -123,7 +130,9 @@
 !
       subroutine write_mesh_file_gz(my_rank)
 !
-      use gz_boundary_data_IO
+      use m_read_boundary_data
+      use m_fem_mesh_labels
+      use gz_sph_rj_groups_IO
 !
       integer(kind = kint), intent(in) :: my_rank
       character(len=kchara) :: gzip_name
@@ -137,7 +146,21 @@
       call open_wt_gzfile(gzip_name)
 !
       call write_geometry_data_gz
-      call write_boundary_data_gz
+!
+!   write node group
+      textbuf = hd_fem_nodgrp() // char(0)
+      call gz_write_textbuf_no_lf
+      call write_grp_data_gz(bc_grp_IO)
+!
+!  write element group
+      textbuf = hd_fem_elegrp() // char(0)
+      call gz_write_textbuf_no_lf
+      call write_grp_data_gz(mat_grp_IO)
+!
+!  write surface group
+      textbuf = hd_fem_sfgrp() // char(0)
+      call gz_write_textbuf_no_lf
+      call write_surf_grp_data_gz(surf_grp_IO)
 !
       call close_gzfile
 !

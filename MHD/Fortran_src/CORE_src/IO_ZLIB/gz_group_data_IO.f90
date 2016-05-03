@@ -74,7 +74,7 @@
       integer(kind = kint), intent(in) :: ngrp, ntot
       integer(kind = kint), intent(in) :: istack(0:ngrp)
 !
-      integer(kind = kint), intent(inout) :: item_sf(ntot,2)
+      integer(kind = kint), intent(inout) :: item_sf(2,ntot)
       character(len = kchara), intent(inout) :: name(ngrp)
 !
       integer(kind = kint) :: i, ist, num
@@ -88,8 +88,10 @@
 !
         call skip_gz_comment_chara( name(i) )
 !
-        if(num .gt. 0) call read_gz_multi_int(num, item_sf(ist,1))
-        if(num .gt. 0) call read_gz_multi_int(num, item_sf(ist,2))
+        if(num .gt. 0) then
+          call read_gz_surf_group(ione, ntot, istack(i-1), item_sf)
+          call read_gz_surf_group(itwo, ntot, istack(i-1), item_sf)
+        end if
       end do
 !
       end subroutine read_surface_group_item_gz
@@ -142,7 +144,7 @@
 !
       integer(kind = kint), intent(in) :: ngrp, ntot
       integer(kind = kint), intent(in) :: istack(0:ngrp)
-      integer(kind = kint), intent(in) :: item_sf(ntot,2)
+      integer(kind = kint), intent(in) :: item_sf(2,ntot)
       character(len = kchara), intent(in) :: name(ngrp)
 !
       integer(kind = kint) :: i, ist, num
@@ -167,8 +169,8 @@
             write(textbuf,'(a1)') char(0)
             call gz_write_textbuf_w_lf
           else
-            call write_gz_multi_int_8i10(num, item_sf(ist,1))
-            call write_gz_multi_int_8i10(num, item_sf(ist,2))
+            call write_gz_surf_group(ione, ntot, istack(i-1), item_sf)
+            call write_gz_surf_group(itwo, ntot, istack(i-1), item_sf)
           end if
 !
         end do

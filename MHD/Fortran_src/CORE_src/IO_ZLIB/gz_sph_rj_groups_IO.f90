@@ -12,6 +12,8 @@
 !
       use m_precision
 !
+      use t_group_data
+!
       use gz_group_data_IO
       use skip_gz_comment
 !
@@ -23,91 +25,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_modes_rj_groups_gz
-!
-      use m_group_data_sph_specr_IO
-!
-!
-      call read_rj_grp_data_gz(radial_rj_grp_IO)
-      call read_rj_grp_data_gz(sphere_rj_grp_IO)
-!
-      end subroutine read_modes_rj_groups_gz
-!
-!------------------------------------------------------------------
-!
-      subroutine read_geom_rtp_groups_gz
-!
-      use m_group_data_sph_specr_IO
-!
-!
-!      write(*,*) 'read_rtp_node_grp_data_gz'
-      call read_rj_grp_data_gz(bc_rtp_grp_IO)
-!      write(*,*) 'read_rtp_radial_grp_data_gz'
-      call read_rj_grp_data_gz(radial_rtp_grp_IO)
-!      write(*,*) 'read_rtp_theta_grp_data_gz'
-      call read_rj_grp_data_gz(theta_rtp_grp_IO)
-!      write(*,*) 'read_rtp_zonal_grp_data_gz'
-      call read_rj_grp_data_gz(zonal_rtp_grp_IO)
-!
-      end subroutine read_geom_rtp_groups_gz
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine write_modes_rj_groups_gz
-!
-      use m_sph_modes_grid_labels
-      use m_group_data_sph_specr_IO
-!
-!
-      textbuf = hd_grphd() // char(0)
-      call gz_write_textbuf_no_lf
-!
-      textbuf = hd_kgrphd() // char(0)
-      call gz_write_textbuf_no_lf
-      call write_rj_grp_data_gz(radial_rj_grp_IO)
-!
-      textbuf = hd_jgrphd() // char(0)
-      call gz_write_textbuf_no_lf
-      call write_rj_grp_data_gz(sphere_rj_grp_IO)
-!
-      end subroutine write_modes_rj_groups_gz
-!
-!------------------------------------------------------------------
-!
-      subroutine write_geom_rtp_groups_gz
-!
-      use m_sph_modes_grid_labels
-      use m_group_data_sph_specr_IO
-!
-!
-      textbuf = hd_grphd() // char(0)
-      call gz_write_textbuf_no_lf
-!
-      textbuf = hd_ngrphd() // char(0)
-      call gz_write_textbuf_no_lf
-      call write_rj_grp_data_gz(bc_rtp_grp_IO)
-!
-      textbuf = hd_rgrphd() // char(0)
-      call gz_write_textbuf_no_lf
-      call write_rj_grp_data_gz(radial_rtp_grp_IO)
-!
-      textbuf = hd_tgrphd() // char(0)
-      call gz_write_textbuf_no_lf
-      call write_rj_grp_data_gz(theta_rtp_grp_IO)
-!
-      textbuf = hd_pgrphd() // char(0)
-      call gz_write_textbuf_no_lf
-      call write_rj_grp_data_gz(zonal_rtp_grp_IO)
-!
-      end subroutine write_geom_rtp_groups_gz
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine read_rj_grp_data_gz(rj_grp_IO)
-!
-      use t_group_data
+      subroutine read_group_data_gz(rj_grp_IO)
 !
       type(group_data), intent(inout) :: rj_grp_IO
 !
@@ -125,18 +43,40 @@
      &      rj_grp_IO%grp_name, rj_grp_IO%item_grp)
 !
       else
-        rj_grp_IO%num_item = 0
         call allocate_grp_type_item(rj_grp_IO)
       end if
 !
-      end subroutine read_rj_grp_data_gz
+      end subroutine read_group_data_gz
 !
 !------------------------------------------------------------------
 !
-      subroutine write_rj_grp_data_gz(rj_grp_IO)
+      subroutine read_surf_grp_data_gz(surf_grp_IO)
 !
-      use m_sph_modes_grid_labels
-      use t_group_data
+      type(surface_group_data), intent(inout) :: surf_grp_IO
+!
+!
+      call skip_gz_comment_int(surf_grp_IO%num_grp)
+      call allocate_sf_grp_type_num(surf_grp_IO)
+!
+      if (surf_grp_IO%num_grp .gt. 0) then
+        call read_group_stack_gz(surf_grp_IO%num_grp,                   &
+     &      surf_grp_IO%num_item, surf_grp_IO%istack_grp)
+!
+        call allocate_sf_grp_type_item(surf_grp_IO)
+        call read_surface_group_item_gz(surf_grp_IO%num_grp,            &
+     &      surf_grp_IO%num_item, surf_grp_IO%istack_grp,               &
+     &      surf_grp_IO%grp_name, surf_grp_IO%item_sf_grp)
+!
+      else
+        call allocate_sf_grp_type_item(surf_grp_IO)
+      end if
+!
+      end subroutine read_surf_grp_data_gz
+!
+!------------------------------------------------------------------
+!------------------------------------------------------------------
+!
+      subroutine write_grp_data_gz(rj_grp_IO)
 !
       type(group_data), intent(inout) :: rj_grp_IO
 !
@@ -147,7 +87,22 @@
 !
       call deallocate_grp_type(rj_grp_IO)
 !
-      end subroutine write_rj_grp_data_gz
+      end subroutine write_grp_data_gz
+!
+!------------------------------------------------------------------
+!
+      subroutine write_surf_grp_data_gz(surf_grp_IO)
+!
+      type(surface_group_data), intent(inout) :: surf_grp_IO
+!
+!
+      call write_surf_group_data_gz(surf_grp_IO%num_grp,                &
+     &    surf_grp_IO%num_item, surf_grp_IO%istack_grp,                 &
+     &    surf_grp_IO%grp_name, surf_grp_IO%item_sf_grp)
+!
+      call deallocate_sf_grp_type(surf_grp_IO)
+!
+      end subroutine write_surf_grp_data_gz
 !
 !------------------------------------------------------------------
 !

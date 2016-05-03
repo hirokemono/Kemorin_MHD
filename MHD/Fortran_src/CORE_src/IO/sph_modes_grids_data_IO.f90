@@ -37,7 +37,8 @@
 !
       subroutine read_geom_rtp_data(mesh_file_id)
 !
-      use sph_rj_groups_IO
+      use m_group_data_sph_specr_IO
+      use groups_IO
 !
       integer(kind = kint), intent(in) :: mesh_file_id
 !
@@ -59,7 +60,10 @@
       call read_import_data(mesh_file_id)
 !
 !      write(*,*) '! Group data'
-      call read_geom_rtp_groups(mesh_file_id)
+      call read_group_data(mesh_file_id, bc_rtp_grp_IO)
+      call read_group_data(mesh_file_id, radial_rtp_grp_IO)
+      call read_group_data(mesh_file_id, theta_rtp_grp_IO)
+      call read_group_data(mesh_file_id, zonal_rtp_grp_IO)
 !
       end subroutine read_geom_rtp_data
 !
@@ -67,7 +71,8 @@
 !
       subroutine read_spectr_modes_rj_data(mesh_file_id)
 !
-      use sph_rj_groups_IO
+      use m_group_data_sph_specr_IO
+      use groups_IO
 !
       integer(kind = kint), intent(in) :: mesh_file_id
 !
@@ -90,7 +95,8 @@
       call read_import_data(mesh_file_id)
 !
 !      write(*,*) '! Group data'
-      call read_modes_rj_groups(mesh_file_id)
+      call read_group_data(mesh_file_id, radial_rj_grp_IO)
+      call read_group_data(mesh_file_id, sphere_rj_grp_IO)
 !
       end subroutine read_spectr_modes_rj_data
 !
@@ -132,7 +138,8 @@
       subroutine write_geom_rtp_data(id_mesh)
 !
       use m_sph_modes_grid_labels
-      use sph_rj_groups_IO
+      use m_group_data_sph_specr_IO
+      use groups_IO
 !
       integer(kind = kint), intent(in) :: id_mesh
 !
@@ -154,7 +161,20 @@
       call write_import_data(id_mesh)
 !
 !      write(*,*) '! Group data'
-      call write_geom_rtp_groups(id_mesh)
+!
+      write(id_mesh,'(a)', advance='NO') hd_grphd()
+!
+      write(id_mesh,'(a)', advance='NO') hd_ngrphd()
+      call write_grp_data(id_mesh, bc_rtp_grp_IO)
+!
+      write(id_mesh,'(a)', advance='NO') hd_rgrphd()
+      call write_grp_data(id_mesh, radial_rtp_grp_IO)
+!
+      write(id_mesh,'(a)', advance='NO') hd_tgrphd()
+      call write_grp_data(id_mesh, theta_rtp_grp_IO)
+!
+      write(id_mesh,'(a)', advance='NO') hd_pgrphd()
+      call write_grp_data(id_mesh, zonal_rtp_grp_IO)
 !
 !      write(*,*) 'finish!!'
 !
@@ -165,7 +185,10 @@
       subroutine write_spectr_modes_rj_data(id_mesh)
 !
       use m_sph_modes_grid_labels
-      use sph_rj_groups_IO
+      use m_sph_modes_grid_labels
+      use m_group_data_sph_specr_IO
+!
+      use groups_IO
 !
       integer(kind = kint), intent(in) :: id_mesh
 !
@@ -188,7 +211,11 @@
       call write_import_data(id_mesh)
 !
 !      write(*,*) '! Group data'
-      call write_modes_rj_groups(id_mesh)
+      write(id_mesh,'(a)', advance='NO') hd_grphd()
+      write(id_mesh,'(a)', advance='NO') hd_kgrphd()
+      call write_grp_data(id_mesh, radial_rj_grp_IO)
+      write(id_mesh,'(a)', advance='NO') hd_jgrphd()
+      call write_grp_data(id_mesh, sphere_rj_grp_IO)
 !
       end subroutine write_spectr_modes_rj_data
 !

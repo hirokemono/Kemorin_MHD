@@ -31,6 +31,7 @@
 !
       subroutine read_geom_rtp_data_gz
 !
+      use m_group_data_sph_specr_IO
       use gz_sph_rj_groups_IO
 !
 !
@@ -51,8 +52,14 @@
 !      write(*,*) '! communication table between spectr data'
       call read_import_data_gz
 !
-!      write(*,*) '! Group data'
-      call read_geom_rtp_groups_gz
+!      write(*,*) 'read_rtp_node_grp_data_gz'
+      call read_group_data_gz(bc_rtp_grp_IO)
+!      write(*,*) 'read_rtp_radial_grp_data_gz'
+      call read_group_data_gz(radial_rtp_grp_IO)
+!      write(*,*) 'read_rtp_theta_grp_data_gz'
+      call read_group_data_gz(theta_rtp_grp_IO)
+!      write(*,*) 'read_rtp_zonal_grp_data_gz'
+      call read_group_data_gz(zonal_rtp_grp_IO)
 !
       end subroutine read_geom_rtp_data_gz
 !
@@ -60,6 +67,7 @@
 !
       subroutine read_spectr_modes_rj_data_gz
 !
+      use m_group_data_sph_specr_IO
       use gz_sph_rj_groups_IO
 !
 !
@@ -81,7 +89,8 @@
       call read_import_data_gz
 !
 !      write(*,*) '! Group data'
-      call read_modes_rj_groups_gz
+      call read_group_data_gz(radial_rj_grp_IO)
+      call read_group_data_gz(sphere_rj_grp_IO)
 !
       end subroutine read_spectr_modes_rj_data_gz
 !
@@ -121,6 +130,7 @@
       subroutine write_geom_rtp_data_gz
 !
       use m_sph_modes_grid_labels
+      use m_group_data_sph_specr_IO
       use gz_sph_rj_groups_IO
 !
 !
@@ -145,8 +155,24 @@
       call gz_write_textbuf_no_lf
       call write_import_data_gz
 !
-!      write(*,*) '! Group data'
-      call write_geom_rtp_groups_gz
+      textbuf = hd_grphd() // char(0)
+      call gz_write_textbuf_no_lf
+!
+      textbuf = hd_ngrphd() // char(0)
+      call gz_write_textbuf_no_lf
+      call write_grp_data_gz(bc_rtp_grp_IO)
+!
+      textbuf = hd_rgrphd() // char(0)
+      call gz_write_textbuf_no_lf
+      call write_grp_data_gz(radial_rtp_grp_IO)
+!
+      textbuf = hd_tgrphd() // char(0)
+      call gz_write_textbuf_no_lf
+      call write_grp_data_gz(theta_rtp_grp_IO)
+!
+      textbuf = hd_pgrphd() // char(0)
+      call gz_write_textbuf_no_lf
+      call write_grp_data_gz(zonal_rtp_grp_IO)
 !
 !      write(*,*) 'finish!!'
 !
@@ -157,6 +183,7 @@
       subroutine write_spectr_modes_rj_data_gz
 !
       use m_sph_modes_grid_labels
+      use m_group_data_sph_specr_IO
       use gz_sph_rj_groups_IO
 !
 !
@@ -181,8 +208,17 @@
       call gz_write_textbuf_no_lf
       call write_import_data_gz
 !
-!      write(*,*) '! Group data'
-      call write_modes_rj_groups_gz
+!
+      textbuf = hd_grphd() // char(0)
+      call gz_write_textbuf_no_lf
+!
+      textbuf = hd_kgrphd() // char(0)
+      call gz_write_textbuf_no_lf
+      call write_grp_data_gz(radial_rj_grp_IO)
+!
+      textbuf = hd_jgrphd() // char(0)
+      call gz_write_textbuf_no_lf
+      call write_grp_data_gz(sphere_rj_grp_IO)
 !
       end subroutine write_spectr_modes_rj_data_gz
 !

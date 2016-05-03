@@ -56,8 +56,9 @@
       subroutine read_mesh_file(my_rank)
 !
       use m_machine_parameter
+      use m_read_boundary_data
       use mesh_data_IO
-      use boundary_data_IO
+      use groups_IO
 !
       integer(kind = kint), intent(in) :: my_rank
 !
@@ -68,7 +69,14 @@
       open(input_file_code, file = mesh_file_name, form = 'formatted')
 !
       call read_geometry_data
-      call read_boundary_data_a(input_file_code)
+!
+!   read node group
+      call read_group_data(input_file_code, bc_grp_IO)
+!  read element group
+      call read_group_data(input_file_code, mat_grp_IO)
+!  read surface group
+      call read_surf_grp_data(input_file_code, surf_grp_IO)
+!
       close(input_file_code)
 !
       end subroutine read_mesh_file
@@ -146,8 +154,10 @@
       subroutine write_mesh_file(my_rank)
 !
       use m_machine_parameter
+      use m_fem_mesh_labels
+      use m_read_boundary_data
       use mesh_data_IO
-      use boundary_data_IO
+      use groups_IO
 !
       integer(kind = kint), intent(in) :: my_rank
 !
@@ -156,10 +166,21 @@
      &   'Write ascii mesh file: ', trim(mesh_file_name)
 !
       open(input_file_code, file = mesh_file_name, form = 'formatted')
-!       if (iflag_debug.gt.0) write(*,*) 'write_geometry_data'
+!
       call write_geometry_data
-!       if (iflag_debug.gt.0) write(*,*) 'write_boundary_data_a'
-      call write_boundary_data_a(input_file_code)
+!
+!   write node group
+      write(input_file_code,'(a)', advance='NO') hd_fem_nodgrp()
+      call write_grp_data(input_file_code, bc_grp_IO)
+!
+!  write element group
+      write(input_file_code,'(a)', advance='NO') hd_fem_elegrp()
+      call write_grp_data(input_file_code, mat_grp_IO)
+!
+!  write surface group
+      write(input_file_code,'(a)', advance='NO') hd_fem_sfgrp()
+      call write_surf_grp_data(input_file_code, surf_grp_IO)
+!
       close(input_file_code)
 !
       end subroutine write_mesh_file

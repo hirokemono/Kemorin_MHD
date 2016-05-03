@@ -33,7 +33,8 @@
 !
       subroutine read_geom_rtp_data_b(mesh_file_id)
 !
-      use sph_rj_groups_IO_b
+      use m_group_data_sph_specr_IO
+      use groups_IO_b
 !
       integer(kind = kint), intent(in) :: mesh_file_id
 !
@@ -56,7 +57,10 @@
       call read_import_data_b(mesh_file_id)
 !
 !      write(*,*) '! Group data'
-      call read_geom_rtp_groups_b(mesh_file_id)
+      call read_group_data_b(mesh_file_id, bc_rtp_grp_IO)
+      call read_group_data_b(mesh_file_id, radial_rtp_grp_IO)
+      call read_group_data_b(mesh_file_id, theta_rtp_grp_IO)
+      call read_group_data_b(mesh_file_id, zonal_rtp_grp_IO)
 !
       end subroutine read_geom_rtp_data_b
 !
@@ -64,7 +68,8 @@
 !
       subroutine read_spectr_modes_rj_data_b(mesh_file_id)
 !
-      use sph_rj_groups_IO_b
+      use m_group_data_sph_specr_IO
+      use groups_IO_b
 !
       integer(kind = kint), intent(in) :: mesh_file_id
 !
@@ -87,7 +92,8 @@
       call read_import_data_b(mesh_file_id)
 !
 !      write(*,*) '! Group data'
-      call read_modes_rj_groups_b(mesh_file_id)
+      call read_group_data_b(mesh_file_id, radial_rj_grp_IO)
+      call read_group_data_b(mesh_file_id, sphere_rj_grp_IO)
 !
       end subroutine read_spectr_modes_rj_data_b
 !
@@ -128,7 +134,8 @@
 !
       subroutine write_geom_rtp_data_b(id_mesh)
 !
-      use sph_rj_groups_IO_b
+      use m_group_data_sph_specr_IO
+      use groups_IO_b
 !
       integer(kind = kint), intent(in) :: id_mesh
 !
@@ -151,7 +158,10 @@
       call write_import_data_b(id_mesh)
 !
 !      write(*,*) '! Group data'
-      call write_geom_rtp_groups_b(id_mesh)
+      call write_grp_data_b(id_mesh, bc_rtp_grp_IO)
+      call write_grp_data_b(id_mesh, radial_rtp_grp_IO)
+      call write_grp_data_b(id_mesh, theta_rtp_grp_IO)
+      call write_grp_data_b(id_mesh, zonal_rtp_grp_IO)
 !
       end subroutine write_geom_rtp_data_b
 !
@@ -159,7 +169,8 @@
 !
       subroutine write_spectr_modes_rj_data_b(id_mesh)
 !
-      use sph_rj_groups_IO_b
+      use m_group_data_sph_specr_IO
+      use groups_IO_b
 !
       integer(kind = kint), intent(in) :: id_mesh
 !
@@ -182,7 +193,8 @@
       call write_import_data_b(id_mesh)
 !
 !      write(*,*) '! Group data'
-      call write_modes_rj_groups_b(id_mesh)
+      call write_grp_data_b(id_mesh, radial_rj_grp_IO)
+      call write_grp_data_b(id_mesh, sphere_rj_grp_IO)
 !
       end subroutine write_spectr_modes_rj_data_b
 !

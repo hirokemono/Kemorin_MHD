@@ -26,10 +26,10 @@
 !
       use m_read_mesh_data
       use m_comm_data_IO
+      use m_read_boundary_data
       use set_nnod_4_ele_by_type
       use set_node_data_4_IO
       use set_element_data_4_IO
-      use set_group_types_4_IO
 !
       integer (kind = kint) :: i
 !

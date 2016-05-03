@@ -114,6 +114,7 @@
       use t_mesh_data
       use t_comm_table
       use t_geometry_data
+      use m_read_boundary_data
       use m_spheric_parameter
       use m_gauss_points
       use m_group_data_sph_specr
@@ -127,7 +128,6 @@
       use set_comm_table_4_IO
       use set_node_data_4_IO
       use set_element_data_4_IO
-      use set_group_types_4_IO
       use mesh_IO_select
 !
       integer(kind = kint), intent(in) :: ip_rank

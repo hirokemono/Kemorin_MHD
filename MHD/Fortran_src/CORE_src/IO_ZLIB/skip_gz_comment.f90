@@ -14,10 +14,12 @@
 !!      subroutine skip_gz_comment_chara(chara_input)
 !!      subroutine skip_gz_comment_chara_int(chara_input, int_input)
 !!      subroutine skip_gz_comment_chara_lint(chara_input, int8_input)
-!
+!!
 !!      subroutine read_gz_multi_real(num, real_input)
 !!      subroutine read_gz_multi_int(num, int_input)
+!!      subroutine read_gz_surf_group(is1, ntot, istack, item_sf)
 !!      subroutine read_gz_multi_int8(num, int8_input)
+!!      subroutine write_gz_surf_group(is1, ntot, istack, item_sf)
 !!      subroutine write_gz_multi_int_8i10(num, int_output)
 !!      subroutine write_gz_multi_int_10i8(num, int_output)
 !!      subroutine write_gz_multi_int_10i12(num, int_output)
@@ -251,6 +253,34 @@
 !
 !------------------------------------------------------------------
 !
+      subroutine read_gz_surf_group(is1, ntot, istack, item_sf)
+!
+      integer(kind = kint), intent(in) :: is1, ntot
+      integer(kind = kint), intent(in) :: istack(0:1)
+      integer(kind = kint), intent(inout) :: item_sf(2,ntot)
+!
+      integer(kind = kint) :: ist
+!
+!
+      if((istack(1) - istack(0)) .le. 0) return
+!
+      call skip_gz_comment_get_nword
+      read(textbuf,*) item_sf(is1,istack(0)+1:istack(0)+num_word)
+!
+      if((istack(1) - istack(0)) .gt. num_word) then
+        ist = istack(0) + num_word
+        do
+          call get_one_line_from_gz_f
+          read(textbuf,*) item_sf(is1,ist+1:ist+num_word)
+          ist = ist + num_word
+          if(ist .ge. istack(1)) exit
+        end do
+      end if
+!
+      end subroutine read_gz_surf_group
+!
+!------------------------------------------------------------------
+!
       subroutine read_gz_multi_int8(num, int8_input)
 !
       integer(kind = kint), intent(in) :: num
@@ -277,6 +307,30 @@
       end subroutine read_gz_multi_int8
 !
 !------------------------------------------------------------------
+!------------------------------------------------------------------
+!
+      subroutine write_gz_surf_group(is1, ntot, istack, item_sf)
+!
+      integer(kind = kint), intent(in) :: is1, ntot
+      integer(kind = kint), intent(in) :: istack(0:1)
+      integer(kind = kint), intent(in) :: item_sf(2,ntot)
+!
+      integer(kind = kint) :: ist, n
+      character(len=kchara) :: fmt_txt
+!
+!
+      ist = istack(0)
+      do
+        n = min(istack(1)-ist-ione,iseven) + 1
+        write(fmt_txt,'(a1,i2,a7)') '(', n, 'i16,a1)'
+        write(textbuf,fmt_txt) item_sf(is1,ist+1:ist+n), char(0)
+        call gz_write_textbuf_w_lf
+        ist = ist + n
+        if(ist .ge. istack(1)) exit
+      end do
+!
+      end subroutine write_gz_surf_group
+!
 !------------------------------------------------------------------
 !
       subroutine write_gz_multi_int_8i10(num, int_output)

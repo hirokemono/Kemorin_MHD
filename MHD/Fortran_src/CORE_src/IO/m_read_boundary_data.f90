@@ -7,160 +7,74 @@
 !> @brief Array for group data IO
 !!
 !!@verbatim
-!!      subroutine allocate_bc_stack_dummy
-!!      subroutine allocate_bc_item_dummy
-!!      subroutine allocate_bc_ele_stack_dummy
-!!      subroutine allocate_bc_ele_item_dummy
-!!      subroutine allocate_bc_sf_stack_dummy
-!!      subroutine allocate_bc_sf_item_dummy
-!!
-!!      subroutine deallocate_bc_item_dummy
-!!      subroutine deallocate_bc_ele_item_dummy
-!!      subroutine deallocate_bc_sf_item_dummy
-!!
 !!      subroutine deallocate_boundary_arrays
 !!@endverbatim
 !
       module m_read_boundary_data
 !
       use m_precision
+      use t_group_data
 !
       implicit  none
 !
 !   node group
-!
-      integer(kind=kint) :: num_bc_dummy
-      integer(kind=kint) :: num_nod_bc_dummy
-! 
-      integer(kind=kint), allocatable :: bc_istack_dummy(:)
-      integer(kind=kint), allocatable :: bc_item_dummy(:)
-      character(len=kchara), allocatable :: bc_name_dummy(:)
+      type(group_data), save :: bc_grp_IO
 !
 !   element group
+      type(group_data), save :: mat_grp_IO
 !
-      integer(kind=kint) :: num_mat_dummy
-      integer(kind=kint) :: num_mat_bc_dummy
-      integer(kind=kint), allocatable :: mat_istack_dummy(:)
-      integer(kind=kint), allocatable :: mat_item_dummy(:)
-      character(len=kchara), allocatable :: mat_name_dummy(:)
-! 
 !   surface group
+      type(surface_group_data), save :: surf_grp_IO
+!surf_grp_IO%num_grp
 !
-      integer (kind=kint) :: num_surf_dummy
-      integer (kind=kint) :: num_surf_bc_dummy
-      integer (kind=kint), allocatable :: surf_istack_dummy(:)
-      integer (kind=kint), allocatable :: surf_item_dummy(:,:)
-      character (len=kchara), allocatable :: surf_name_dummy(:)
-! 
 ! ----------------------------------------------------------------------
 !
       contains
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_bc_stack_dummy
+      subroutine set_grp_data_from_IO(nod_grp, ele_grp, surf_grp)
 !
-        allocate(bc_istack_dummy(0:num_bc_dummy))
-        allocate(bc_name_dummy(num_bc_dummy))
-        bc_istack_dummy= 0
+      use set_group_types_4_IO
 !
-      end subroutine allocate_bc_stack_dummy
-!
-! ----------------------------------------------------------------------
-!
-      subroutine allocate_bc_item_dummy
-!
-        num_nod_bc_dummy=bc_istack_dummy(num_bc_dummy)
-!
-        allocate(bc_item_dummy(num_nod_bc_dummy))
-        if(num_nod_bc_dummy .gt. 0) bc_item_dummy=0
-!
-      end subroutine allocate_bc_item_dummy
-!
-! ----------------------------------------------------------------------
-!
-      subroutine allocate_bc_ele_stack_dummy
-!
-        allocate(mat_istack_dummy(0:num_mat_dummy))
-        allocate(mat_name_dummy(num_mat_dummy))
-        mat_istack_dummy=0
-!
-      end subroutine allocate_bc_ele_stack_dummy
-!
-! ----------------------------------------------------------------------
-!
-      subroutine allocate_bc_ele_item_dummy
-!
-        num_mat_bc_dummy=mat_istack_dummy(num_mat_dummy)
-!
-        allocate(mat_item_dummy(num_mat_bc_dummy))
-        if(num_mat_bc_dummy .gt. 0) mat_item_dummy=0
-!
-      end subroutine allocate_bc_ele_item_dummy
-!
-! ----------------------------------------------------------------------
-!
-      subroutine allocate_bc_sf_stack_dummy
-!
-        allocate(surf_istack_dummy(0:num_surf_dummy))
-        allocate(surf_name_dummy(num_surf_dummy))
-        surf_istack_dummy = 0
-!
-      end subroutine allocate_bc_sf_stack_dummy
-!
-! ----------------------------------------------------------------------
-!
-      subroutine allocate_bc_sf_item_dummy
-!
-        num_surf_bc_dummy = surf_istack_dummy(num_surf_dummy)
-!
-        allocate(surf_item_dummy(num_surf_bc_dummy,2))
-        if(num_surf_bc_dummy .gt. 0) surf_item_dummy=0
-!
-      end subroutine allocate_bc_sf_item_dummy
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine deallocate_bc_item_dummy
-!
-      deallocate(bc_istack_dummy)
-      deallocate(bc_name_dummy)
-      deallocate(bc_item_dummy)
-!
-      end subroutine deallocate_bc_item_dummy
-!
-! ----------------------------------------------------------------------
-!
-      subroutine deallocate_bc_ele_item_dummy
+      type(group_data), intent(inout) :: nod_grp, ele_grp
+      type(surface_group_data), intent(inout) :: surf_grp
 !
 !
-      deallocate(mat_istack_dummy)
-      deallocate(mat_name_dummy)
-      deallocate(mat_item_dummy)
+      call set_gruop_stracture(bc_grp_IO, nod_grp)
+      call set_gruop_stracture(mat_grp_IO, ele_grp)
+      call set_surf_grp_stracture(surf_grp_IO, surf_grp)
 !
-      end subroutine deallocate_bc_ele_item_dummy
+      call deallocate_grp_type(bc_grp_IO)
+      call deallocate_grp_type(mat_grp_IO)
+      call deallocate_sf_grp_type(surf_grp_IO)
 !
-! ----------------------------------------------------------------------
+      end subroutine set_grp_data_from_IO
 !
-      subroutine deallocate_bc_sf_item_dummy
+!-----------------------------------------------------------------------
+!
+      subroutine set_grp_data_to_IO(nod_grp, ele_grp, surf_grp)
+!
+      use set_group_types_4_IO
+!
+      type(group_data), intent(inout) :: nod_grp, ele_grp
+      type(surface_group_data), intent(inout) :: surf_grp
 !
 !
-      deallocate(surf_istack_dummy)
-      deallocate(surf_name_dummy)
-      deallocate(surf_item_dummy) 
+      call set_gruop_stracture(nod_grp, bc_grp_IO)
+      call set_gruop_stracture(ele_grp, mat_grp_IO)
+      call set_surf_grp_stracture(surf_grp, surf_grp_IO)
 !
-      end subroutine deallocate_bc_sf_item_dummy
+      end subroutine set_grp_data_to_IO
 !
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
+!-----------------------------------------------------------------------
 !
       subroutine deallocate_boundary_arrays
 !
 !
-      call deallocate_bc_item_dummy
-      call deallocate_bc_ele_item_dummy
-      call deallocate_bc_sf_item_dummy
+      call deallocate_grp_type(bc_grp_IO)
+      call deallocate_grp_type(mat_grp_IO)
+      call deallocate_sf_grp_type(surf_grp_IO)
 !
       end subroutine deallocate_boundary_arrays
 !

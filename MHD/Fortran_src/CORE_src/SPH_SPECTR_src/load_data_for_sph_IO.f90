@@ -62,7 +62,7 @@
 !
       use copy_sph_comm_table_4_IO
       use copy_sph_node_4_IO
-      use copy_sph_groups_from_IO
+      use set_group_types_4_IO
 !
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(inout) :: l_truncation
@@ -74,10 +74,15 @@
       call copy_sph_node_4_rtp_from_IO(l_truncation, sph_rtp)
       call copy_comm_rtp_from_IO(sph_rtp%nnod_rtp, comm_rtp1)
 !
-      call copy_rj_group_data(bc_rtp_grp_IO, bc_rtp_grp1)
-      call copy_rj_group_data(radial_rtp_grp_IO, radial_rtp_grp1)
-      call copy_rj_group_data(theta_rtp_grp_IO, theta_rtp_grp1)
-      call copy_rj_group_data(zonal_rtp_grp_IO, zonal_rtp_grp)
+      call set_gruop_stracture(bc_rtp_grp_IO, bc_rtp_grp1)
+      call set_gruop_stracture(radial_rtp_grp_IO, radial_rtp_grp1)
+      call set_gruop_stracture(theta_rtp_grp_IO, theta_rtp_grp1)
+      call set_gruop_stracture(zonal_rtp_grp_IO, zonal_rtp_grp)
+!
+      call deallocate_grp_type(bc_rtp_grp_IO)
+      call deallocate_grp_type(radial_rtp_grp_IO)
+      call deallocate_grp_type(theta_rtp_grp_IO)
+      call deallocate_grp_type(zonal_rtp_grp_IO)
 !
       end subroutine input_geom_rtp_sph_trans
 !
@@ -89,7 +94,7 @@
       use m_group_data_sph_specr
       use copy_sph_comm_table_4_IO
       use copy_sph_node_4_IO
-      use copy_sph_groups_from_IO
+      use set_group_types_4_IO
 !
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(inout) :: l_truncation
@@ -101,8 +106,11 @@
       call copy_sph_node_4_rj_from_IO(l_truncation, sph_rj)
       call copy_comm_rj_from_IO(sph_rj%nnod_rj)
 !
-      call copy_rj_group_data(radial_rj_grp_IO, radial_rj_grp1)
-      call copy_rj_group_data(sphere_rj_grp_IO, sphere_rj_grp1)
+      call set_gruop_stracture(radial_rj_grp_IO, radial_rj_grp1)
+      call set_gruop_stracture(sphere_rj_grp_IO, sphere_rj_grp1)
+!
+      call deallocate_grp_type(radial_rj_grp_IO)
+      call deallocate_grp_type(sphere_rj_grp_IO)
 !
       end subroutine input_modes_rj_sph_trans
 !
@@ -155,7 +163,7 @@
       use m_group_data_sph_specr
       use copy_sph_comm_table_4_IO
       use copy_sph_node_4_IO
-      use copy_sph_groups_from_IO
+      use set_group_types_4_IO
 !
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(in) :: l_truncation
@@ -165,10 +173,15 @@
       call copy_sph_node_4_rtp_to_IO(l_truncation, sph_rtp)
       call copy_comm_rtp_to_IO(my_rank)
 !
-      call copy_rj_group_data(bc_rtp_grp1, bc_rtp_grp_IO)
-      call copy_rj_group_data(radial_rtp_grp1, radial_rtp_grp_IO)
-      call copy_rj_group_data(theta_rtp_grp1, theta_rtp_grp_IO)
-      call copy_rj_group_data(zonal_rtp_grp, zonal_rtp_grp_IO)
+      call set_gruop_stracture(bc_rtp_grp1, bc_rtp_grp_IO)
+      call set_gruop_stracture(radial_rtp_grp1, radial_rtp_grp_IO)
+      call set_gruop_stracture(theta_rtp_grp1, theta_rtp_grp_IO)
+      call set_gruop_stracture(zonal_rtp_grp, zonal_rtp_grp_IO)
+!
+      call deallocate_grp_type(bc_rtp_grp1)
+      call deallocate_grp_type(radial_rtp_grp1)
+      call deallocate_grp_type(theta_rtp_grp1)
+      call deallocate_grp_type(zonal_rtp_grp)
 !
       call sel_write_geom_rtp_file(my_rank)
 !
@@ -182,7 +195,7 @@
       use m_group_data_sph_specr
       use copy_sph_comm_table_4_IO
       use copy_sph_node_4_IO
-      use copy_sph_groups_from_IO
+      use set_group_types_4_IO
 !
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(in) :: l_truncation
@@ -192,8 +205,11 @@
       call copy_sph_node_4_rj_to_IO(l_truncation, sph_rj)
       call copy_comm_rj_to_IO(my_rank)
 !
-      call copy_rj_group_data(radial_rj_grp1, radial_rj_grp_IO)
-      call copy_rj_group_data(sphere_rj_grp1, sphere_rj_grp_IO)
+      call set_gruop_stracture(radial_rj_grp1, radial_rj_grp_IO)
+      call set_gruop_stracture(sphere_rj_grp1, sphere_rj_grp_IO)
+!
+      call deallocate_grp_type(radial_rj_grp1)
+      call deallocate_grp_type(sphere_rj_grp1)
 !
       call sel_write_spectr_modes_rj_file(my_rank)
 !

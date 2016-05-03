@@ -29,8 +29,9 @@
       subroutine read_mesh_file_b(my_rank)
 !
       use m_machine_parameter
+      use m_read_boundary_data
       use mesh_data_IO
-      use boundary_data_IO_b
+      use groups_IO_b
 !
       integer(kind = kint), intent(in) :: my_rank
 !
@@ -43,8 +44,14 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'read_geometry_data_b'
       call read_geometry_data_b
-      if (iflag_debug.gt.0) write(*,*) 'read_boundary_data_b'
-      call read_boundary_data_b(input_file_code)
+!
+!   read node group
+      call read_group_data_b(input_file_code, bc_grp_IO)
+!  read element group
+      call read_group_data_b(input_file_code, mat_grp_IO)
+!  read surface group
+      call read_surf_grp_data_b(input_file_code, surf_grp_IO)
+!
       close(input_file_code)
 !
       end subroutine read_mesh_file_b
@@ -121,8 +128,9 @@
       subroutine write_mesh_file_b(my_rank)
 !
       use m_machine_parameter
+      use m_read_boundary_data
       use mesh_data_IO
-      use boundary_data_IO_b
+      use groups_IO_b
 !
       integer(kind = kint), intent(in) :: my_rank
 !
@@ -134,8 +142,14 @@
      &      form = 'unformatted')
       if (iflag_debug.gt.0) write(*,*) 'write_geometry_data_b'
       call write_geometry_data_b
-      if (iflag_debug.gt.0) write(*,*) 'write_boundary_data_b'
-      call write_boundary_data_b(input_file_code)
+!
+!   write node group
+      call write_grp_data_b(input_file_code, bc_grp_IO)
+!  write element group
+      call write_grp_data_b(input_file_code, mat_grp_IO)
+!  write surface group
+      call write_surf_grp_data_b(input_file_code, surf_grp_IO)
+!
       close(input_file_code)
 !
       end subroutine write_mesh_file_b

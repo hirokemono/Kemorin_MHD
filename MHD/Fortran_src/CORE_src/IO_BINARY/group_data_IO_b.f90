@@ -76,7 +76,7 @@
       integer(kind = kint), intent(in) :: ngrp, ntot
       integer(kind = kint), intent(in) :: istack(0:ngrp)
 !
-      integer(kind = kint), intent(inout) :: item_sf(ntot,2)
+      integer(kind = kint), intent(inout) :: item_sf(2,ntot)
       character(len = kchara), intent(inout) :: name(ngrp)
 !
       integer(kind = kint) :: i, ist, ied
@@ -88,8 +88,8 @@
           ied = istack(i  )
 !
           read(id_file) name(i)
-          read(id_file) item_sf(ist:ied,1)
-          read(id_file) item_sf(ist:ied,2)
+          read(id_file) item_sf(1,ist:ied)
+          read(id_file) item_sf(2,ist:ied)
         end do
       end if
 !
@@ -133,7 +133,7 @@
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: ngrp, ntot
       integer(kind = kint), intent(in) :: istack(0:ngrp)
-      integer(kind = kint), intent(in) :: item_sf(ntot,2)
+      integer(kind = kint), intent(in) :: item_sf(2,ntot)
       character(len = kchara), intent(in) :: name(ngrp)
 !
       integer(kind = kint) :: i, ist, ied
@@ -148,8 +148,8 @@
           ist = istack(i-1) + 1
           ied = istack(i  )
           write(id_file) name(i)
-          write(id_file) item_sf(ist:ied,1)
-          write(id_file) item_sf(ist:ied,2)
+          write(id_file) item_sf(1,ist:ied)
+          write(id_file) item_sf(2,ist:ied)
         end do
       end if
 !

@@ -48,7 +48,7 @@
       use sph_file_IO_select
       use copy_sph_node_4_IO
       use copy_sph_comm_tbl_type_4_IO
-      use copy_sph_groups_from_IO
+      use set_group_types_4_IO
 !
       integer(kind = kint), intent(in) :: my_rank
       type(sph_mesh_data), intent(inout) :: sph_mesh_set
@@ -63,10 +63,13 @@
      &    sph_mesh_set%sph_mesh%sph_rj%nnod_rj,                         &
      &    sph_mesh_set%sph_comms%comm_rj)
 !
-      call copy_rj_group_data                                           &
+      call set_gruop_stracture                                          &
      &   (radial_rj_grp_IO, sph_mesh_set%sph_grps%radial_rj_grp)
-      call copy_rj_group_data                                           &
+      call set_gruop_stracture                                          &
      &   (sphere_rj_grp_IO, sph_mesh_set%sph_grps%sphere_rj_grp)
+!
+      call deallocate_grp_type(radial_rj_grp_IO)
+      call deallocate_grp_type(sphere_rj_grp_IO)
 !
       end subroutine set_local_rj_mesh_4_merge
 !

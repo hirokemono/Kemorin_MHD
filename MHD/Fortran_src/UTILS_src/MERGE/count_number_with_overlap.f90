@@ -45,7 +45,6 @@
        use set_comm_table_4_IO
        use set_element_data_4_IO
        use set_node_data_4_IO
-       use set_group_types_4_IO
 !
        integer (kind = kint), intent(inout) :: nnod_4_ele
        integer (kind = kint) :: ip, my_rank

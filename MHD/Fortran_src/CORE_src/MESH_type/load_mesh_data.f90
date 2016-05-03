@@ -40,9 +40,9 @@
       subroutine input_mesh                                             &
      &         (my_rank, mesh, group, nnod_4_surf, nnod_4_edge)
 !
+      use m_read_boundary_data
       use mesh_IO_select
       use set_nnod_4_ele_by_type
-      use set_group_types_4_IO
 !
       integer(kind = kint), intent(in) :: my_rank
 !
@@ -85,11 +85,11 @@
 !
       subroutine output_mesh(my_rank, mesh, group)
 !
+      use m_read_boundary_data
       use mesh_IO_select
       use set_comm_table_4_IO
       use set_element_data_4_IO
       use set_node_data_4_IO
-      use set_group_types_4_IO
 !
       integer(kind = kint), intent(in) :: my_rank
 !
