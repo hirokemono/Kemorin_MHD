@@ -11,12 +11,11 @@
 !!      subroutine set_sph_comm_routine_ctl(send_recv_ctl)
 !!
 !!      subroutine finish_sph_send_recv(npe_send, isend_self)
-!!      subroutine check_calypso_sph_buf_N(NB, nmax_sr,                 &
-!!     &          npe_send, istack_send, npe_recv, istack_recv)
-!!      subroutine sel_calypso_sph_comm_N(NB, nmax_sr,                  &
-!!     &                  npe_send, isend_self, id_pe_send, istack_send,&
-!!     &                  npe_recv, irecv_self, id_pe_recv, istack_recv,&
-!!     &                  CALYPSO_SUB_COMM)
+!!      subroutine check_calypso_sph_buf_N                              &
+!!     &         (NB, npe_send, istack_send, npe_recv, istack_recv)
+!!      subroutine sel_calypso_sph_comm_N            ,                  &
+!!     &             (NB, npe_send, isend_self, id_pe_send, istack_send,&
+!!     &                  npe_recv, irecv_self, id_pe_recv, istack_recv)
 !!
 !!      subroutine sel_calypso_to_send_N(NB, nnod_org, n_WS, nmax_sr,   &
 !!     &                    npe_send, istack_send, inod_export,         &
@@ -26,26 +25,26 @@
 !!     &                    nmax_sr, npe_send, istack_send, inod_export,&
 !!     &                    ncomp_X, i_fld_X, i_fld_WS, d_org, WS)
 !!      subroutine sel_calypso_to_send_scalar(NB, nnod_org, n_WS,       &
-!!     &                    nmax_sr, npe_send, istack_send, inod_export,&
+!!     &                    npe_send, istack_send, inod_export,         &
 !!     &                    ncomp_X, i_fld_X, i_fld_WS, d_org, WS)
 !!      subroutine sel_calypso_to_send_tensor(NB, nnod_org, n_WS,       &
-!!     &                    nmax_sr, npe_send, istack_send, inod_export,&
+!!     &                    npe_send, istack_send, inod_export,         &
 !!     &                    ncomp_X, i_fld_X, i_fld_WS, d_org, WS)
 !!
-!!      subroutine sel_sph_vector_from_recv(NB, nnod_new, n_WR, nmax_sr,&
+!!      subroutine sel_sph_vector_from_recv(NB, nnod_new, n_WR,         &
 !!     &                    npe_recv, istack_recv, inod_import,         &
 !!     &                    irev_import, ncomp_X, i_fld_X, i_fld_WR,    &
 !!     &                    WR, d_new)
-!!      subroutine sel_sph_scalar_from_recv(NB, nnod_new, n_WR, nmax_sr,&
+!!      subroutine sel_sph_scalar_from_recv(NB, nnod_new, n_WR,         &
 !!     &                    npe_recv, istack_recv, inod_import,         &
 !!     &                    irev_import, ncomp_X, i_fld_X, i_fld_WR,    &
 !!     &                    WR, d_new)
-!!      subroutine sel_sph_tensor_from_recv(NB, nnod_new, n_WR, nmax_sr,&
+!!      subroutine sel_sph_tensor_from_recv(NB, nnod_new, n_WR,         &
 !!     &                    npe_recv, istack_recv, inod_import,         &
 !!     &                    irev_import, ncomp_X, i_fld_X, i_fld_WR,    &
 !!     &                    WR, d_new)
 !!
-!!      subroutine sel_calypso_from_recv_N(NB, nnod_new, n_WR, nmax_sr, &
+!!      subroutine sel_calypso_from_recv_N(NB, nnod_new, n_WR,          &
 !!     &                    npe_recv, istack_recv, inod_import,         &
 !!     &                    irev_import, WR, X_new)
 !!@endverbatim
@@ -158,14 +157,13 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine check_calypso_sph_buf_N(NB, nmax_sr,                   &
-     &          npe_send, istack_send, npe_recv, istack_recv)
+      subroutine check_calypso_sph_buf_N                                &
+     &         (NB, npe_send, istack_send, npe_recv, istack_recv)
 !
       use m_solver_SR
       use set_to_send_buffer
 !
       integer(kind = kint), intent(in) :: NB
-      integer(kind = kint), intent(in) :: nmax_sr
 !
       integer(kind = kint), intent(in) :: npe_send
       integer(kind = kint), intent(in) :: istack_send(0:npe_send)
@@ -176,31 +174,22 @@
       integer(kind = kint) :: nitem
 !
 !
-!      if     (iflag_sph_commN .eq. iflag_alltoall) then
-!        nitem = npe_send*nmax_sr
-!        call resize_work_4_SR(NB, npe_send, npe_recv, nitem, nitem)
-!      else
-        call resize_work_4_SR(NB, npe_send, npe_recv,                   &
+      call resize_work_4_SR(NB, npe_send, npe_recv,                     &
      &      istack_send(npe_send), istack_recv(npe_recv))
-!      end if
 !
       end subroutine check_calypso_sph_buf_N
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sel_calypso_sph_comm_N(NB, nmax_sr,                    &
-     &                  npe_send, isend_self, id_pe_send, istack_send,  &
-     &                  npe_recv, irecv_self, id_pe_recv, istack_recv,  &
-     &                  CALYPSO_SUB_COMM)
+      subroutine sel_calypso_sph_comm_N                                 &
+     &             (NB, npe_send, isend_self, id_pe_send, istack_send,  &
+     &                  npe_recv, irecv_self, id_pe_recv, istack_recv)
 !
       use m_solver_SR
       use calypso_SR_core
-!      use calypso_AlltoAll_core
       use set_from_recv_buf_rev
-!      use set_all2all_buffer
 !
-      integer, intent(in)  :: CALYPSO_SUB_COMM
-      integer(kind = kint), intent(in) :: NB, nmax_sr
+      integer(kind = kint), intent(in) :: NB
 !
       integer(kind = kint), intent(in) :: npe_send, isend_self
       integer(kind = kint), intent(in) :: id_pe_send(npe_send)
@@ -212,34 +201,23 @@
 !
 !
       call start_eleps_time(37)
-!      if     (iflag_sph_commN .eq. iflag_alltoall) then
-!        call calypso_AllToAll_Ncore(NB, nmax_sr, CALYPSO_SUB_COMM)
-!        call clear_addtional_AllToAll_recv(NB, nmax_sr, npe_recv, WR)
-!      else if(iflag_sph_commN .eq. iflag_alltoallv) then
-!        call calypso_AllToAllv_Ncore                                    &
-!     &     (NB, npe_send, istack_send, istack_recv, CALYPSO_SUB_COMM)
-!        call clear_addtional_SR_recv(NB, istack_recv(npe_recv), WR)
-!      else
-        call calypso_send_recv_core                                     &
-     &         (NB, npe_send, isend_self, id_pe_send, istack_send,      &
-     &              npe_recv, irecv_self, id_pe_recv, istack_recv)
-        call clear_addtional_SR_recv(NB, istack_recv(npe_recv), WR)
-!      end if
+      call calypso_send_recv_core                                       &
+     &       (NB, npe_send, isend_self, id_pe_send, istack_send,        &
+     &            npe_recv, irecv_self, id_pe_recv, istack_recv)
+      call clear_addtional_SR_recv(NB, istack_recv(npe_recv), WR)
       call end_eleps_time(37)
 !
       end subroutine sel_calypso_sph_comm_N
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sel_calypso_to_send_N(NB, nnod_org, n_WS, nmax_sr,     &
+      subroutine sel_calypso_to_send_N(NB, nnod_org, n_WS,              &
      &                    npe_send, istack_send, inod_export,           &
      &                    X_org, WS)
 !
-!      use set_all2all_buffer
       use set_to_send_buffer
 !
-      integer(kind = kint), intent(in) :: NB, nnod_org
-      integer(kind = kint), intent(in) :: nmax_sr, n_WS
+      integer(kind = kint), intent(in) :: NB, nnod_org, n_WS
 !
       integer(kind = kint), intent(in) :: npe_send
       integer(kind = kint), intent(in) :: istack_send(0:npe_send)
@@ -251,13 +229,8 @@
 !
 !
       call start_eleps_time(36)
-!      if(    iflag_sph_commN .eq. iflag_alltoall) then
-!        call set_to_all2all_buf_N(NB, nnod_org, nmax_sr, npe_send,     &
-!     &    istack_send, inod_export, X_org, WS(1))
-!      else
-        call set_to_send_buf_N(NB, nnod_org, istack_send(npe_send),     &
-     &      inod_export, X_org, WS(1))
-!      end if
+      call set_to_send_buf_N(NB, nnod_org, istack_send(npe_send),       &
+     &    inod_export, X_org, WS(1))
       call end_eleps_time(36)
 !
       end subroutine sel_calypso_to_send_N
@@ -265,13 +238,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine sel_calypso_to_send_vector(NB, nnod_org, n_WS,         &
-     &                    nmax_sr, npe_send, istack_send, inod_export,  &
+     &                    npe_send, istack_send, inod_export,           &
      &                    ncomp_X, i_fld_X, i_fld_WS, d_org, WS)
 !
-!      use sph_field_to_all2all
       use field_to_send_buffer
 !
-      integer(kind = kint), intent(in) :: NB, i_fld_WS, nmax_sr, n_WS
+      integer(kind = kint), intent(in) :: NB, i_fld_WS, n_WS
       integer(kind = kint), intent(in) :: ncomp_X, i_fld_X, nnod_org
 !
       integer(kind = kint), intent(in) :: npe_send
@@ -284,15 +256,9 @@
 !
 !
       call start_eleps_time(36)
-!      if(    iflag_sph_commN .eq. iflag_alltoall) then
-!        call set_to_all2all_buf_vector(NB, nnod_org, nmax_sr, npe_send,&
-!     &      istack_send, inod_export, ncomp_X, i_fld_X, i_fld_WS,      &
-!     &      d_org, WS(1))
-!      else
-        call set_to_send_buf_vector(NB, nnod_org,                       &
+      call set_to_send_buf_vector(NB, nnod_org,                         &
      &      istack_send(npe_send), inod_export, ncomp_X,                &
      &      i_fld_X, i_fld_WS, d_org, WS(1))
-!      end if
       call end_eleps_time(36)
 !
       end subroutine sel_calypso_to_send_vector
@@ -300,13 +266,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine sel_calypso_to_send_scalar(NB, nnod_org, n_WS,         &
-     &                    nmax_sr, npe_send, istack_send, inod_export,  &
+     &                    npe_send, istack_send, inod_export,           &
      &                    ncomp_X, i_fld_X, i_fld_WS, d_org, WS)
 !
-!      use sph_field_to_all2all
       use field_to_send_buffer
 !
-      integer(kind = kint), intent(in) :: NB, i_fld_WS, nmax_sr, n_WS
+      integer(kind = kint), intent(in) :: NB, i_fld_WS, n_WS
       integer(kind = kint), intent(in) :: ncomp_X, i_fld_X, nnod_org
 !
       integer(kind = kint), intent(in) :: npe_send
@@ -319,15 +284,9 @@
 !
 !
       call start_eleps_time(36)
-!      if(    iflag_sph_commN .eq. iflag_alltoall) then
-!        call set_to_all2all_buf_scalar(NB, nnod_org, nmax_sr, npe_send,&
-!     &      istack_send, inod_export, ncomp_X, i_fld_X, i_fld_WS,      &
-!     &      d_org, WS(1))
-!      else
-        call set_to_send_buf_scalar(NB, nnod_org,                       &
-     &      istack_send(npe_send), inod_export, ncomp_X,                &
-     &      i_fld_X, i_fld_WS, d_org, WS(1))
-!      end if
+      call set_to_send_buf_scalar(NB, nnod_org,                         &
+     &    istack_send(npe_send), inod_export, ncomp_X,                  &
+     &    i_fld_X, i_fld_WS, d_org, WS(1))
       call end_eleps_time(36)
 !
       end subroutine sel_calypso_to_send_scalar
@@ -335,13 +294,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine sel_calypso_to_send_tensor(NB, nnod_org, n_WS,         &
-     &                    nmax_sr, npe_send, istack_send, inod_export,  &
+     &                    npe_send, istack_send, inod_export,           &
      &                    ncomp_X, i_fld_X, i_fld_WS, d_org, WS)
 !
-!      use sph_field_to_all2all
       use field_to_send_buffer
 !
-      integer(kind = kint), intent(in) :: NB, i_fld_WS, nmax_sr, n_WS
+      integer(kind = kint), intent(in) :: NB, i_fld_WS, n_WS
       integer(kind = kint), intent(in) :: ncomp_X, i_fld_X, nnod_org
 !
       integer(kind = kint), intent(in) :: npe_send
@@ -354,15 +312,9 @@
 !
 !
       call start_eleps_time(36)
-!      if(    iflag_sph_commN .eq. iflag_alltoall) then
-!        call set_to_all2all_buf_tensor(NB, nnod_org, nmax_sr, npe_send,&
-!     &      istack_send, inod_export, ncomp_X, i_fld_X, i_fld_WS,      &
-!     &      d_org, WS(1))
-!      else
-        call set_to_send_buf_tensor(NB, nnod_org,                       &
+      call set_to_send_buf_tensor(NB, nnod_org,                         &
      &      istack_send(npe_send), inod_export, ncomp_X,                &
      &      i_fld_X, i_fld_WS, d_org, WS(1))
-!      end if
       call end_eleps_time(36)
 !
       end subroutine sel_calypso_to_send_tensor
@@ -370,16 +322,15 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine sel_sph_vector_from_recv(NB, nnod_new, n_WR, nmax_sr,  &
+      subroutine sel_sph_vector_from_recv(NB, nnod_new, n_WR,           &
      &                    npe_recv, istack_recv, inod_import,           &
      &                    irev_import, ncomp_X, i_fld_X, i_fld_WR,      &
      &                    WR, d_new)
 !
       use field_to_send_buffer
-!      use sph_field_to_all2all
 !
       integer(kind = kint), intent(in) :: nnod_new, ncomp_X, i_fld_X
-      integer(kind = kint), intent(in) :: NB, nmax_sr, n_WR, i_fld_WR
+      integer(kind = kint), intent(in) :: NB, n_WR, i_fld_WR
 !
       integer(kind = kint), intent(in) :: npe_recv
       integer(kind = kint), intent(in) :: istack_recv(0:npe_recv)
@@ -392,15 +343,6 @@
 !
 !
       call start_eleps_time(38)
-!      if(     iflag_sph_commN .eq. iflag_alltoall                      &
-!     &  .and. iflag_sph_SRN .eq. iflag_import_item) then
-!        call set_from_all2all_buf_vector(NB, nnod_new, nmax_sr,        &
-!     &      npe_recv, istack_recv, inod_import,                        &
-!     &      ncomp_X, i_fld_X, i_fld_WR, WR(1), d_new)
-!      else if(iflag_sph_commN .eq. iflag_alltoall) then
-!        call set_from_all2all_buf_rev_vect(NB, nnod_new, nmax_sr,      &
-!     &      npe_recv, irev_import, ncomp_X, i_fld_X, i_fld_WR,         &
-!     &      WR(1), d_new)
       if(iflag_sph_SRN .eq. iflag_import_item) then
         call set_from_recv_buf_vector(NB, nnod_new,                     &
      &      istack_recv(npe_recv), inod_import,                         &
@@ -416,16 +358,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sel_sph_scalar_from_recv(NB, nnod_new, n_WR, nmax_sr,  &
+      subroutine sel_sph_scalar_from_recv(NB, nnod_new, n_WR,           &
      &                    npe_recv, istack_recv, inod_import,           &
      &                    irev_import, ncomp_X, i_fld_X, i_fld_WR,      &
      &                    WR, d_new)
 !
       use field_to_send_buffer
-!      use sph_field_to_all2all
 !
       integer(kind = kint), intent(in) :: nnod_new, ncomp_X, i_fld_X
-      integer(kind = kint), intent(in) :: NB, nmax_sr, n_WR, i_fld_WR
+      integer(kind = kint), intent(in) :: NB, n_WR, i_fld_WR
 !
       integer(kind = kint), intent(in) :: npe_recv
       integer(kind = kint), intent(in) :: istack_recv(0:npe_recv)
@@ -438,15 +379,6 @@
 !
 !
       call start_eleps_time(38)
-!      if(     iflag_sph_commN .eq. iflag_alltoall                      &
-!     &  .and. iflag_sph_SRN .eq. iflag_import_item) then
-!        call set_from_all2all_buf_scalar(NB, nnod_new, nmax_sr,        &
-!     &      npe_recv, istack_recv, inod_import,                        &
-!     &      ncomp_X, i_fld_X, i_fld_WR, WR(1), d_new)
-!      else if(iflag_sph_commN .eq. iflag_alltoall) then
-!        call set_from_all2all_buf_rev_scl(NB, nnod_new, nmax_sr,       &
-!     &      npe_recv, irev_import, ncomp_X, i_fld_X, i_fld_WR,         &
-!     &      WR(1), d_new)
       if(iflag_sph_SRN .eq. iflag_import_item) then
         call set_from_recv_buf_scalar(NB, nnod_new,                     &
      &      istack_recv(npe_recv), inod_import,                         &
@@ -462,16 +394,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sel_sph_tensor_from_recv(NB, nnod_new, n_WR, nmax_sr,  &
+      subroutine sel_sph_tensor_from_recv(NB, nnod_new, n_WR,           &
      &                    npe_recv, istack_recv, inod_import,           &
      &                    irev_import, ncomp_X, i_fld_X, i_fld_WR,      &
      &                    WR, d_new)
 !
       use field_to_send_buffer
-!      use sph_field_to_all2all
 !
       integer(kind = kint), intent(in) :: nnod_new, ncomp_X, i_fld_X
-      integer(kind = kint), intent(in) :: NB, nmax_sr, n_WR, i_fld_WR
+      integer(kind = kint), intent(in) :: NB, n_WR, i_fld_WR
 !
       integer(kind = kint), intent(in) :: npe_recv
       integer(kind = kint), intent(in) :: istack_recv(0:npe_recv)
@@ -484,15 +415,6 @@
 !
 !
       call start_eleps_time(38)
-!      if(     iflag_sph_commN .eq. iflag_alltoall                      &
-!     &  .and. iflag_sph_SRN .eq. iflag_import_item) then
-!        call set_from_all2all_buf_tensor(NB, nnod_new, nmax_sr,        &
-!     &      npe_recv, istack_recv, inod_import,                        &
-!     &      ncomp_X, i_fld_X, i_fld_WR, WR(1), d_new)
-!      else if(iflag_sph_commN .eq. iflag_alltoall) then
-!        call set_from_all2all_buf_rev_tsr(NB, nnod_new, nmax_sr,       &
-!     &      npe_recv, irev_import, ncomp_X, i_fld_X, i_fld_WR,         &
-!     &      WR(1), d_new)
       if(iflag_sph_SRN .eq. iflag_import_item) then
         call set_from_recv_buf_tensor(NB, nnod_new,                     &
      &      istack_recv(npe_recv), inod_import,                         &
@@ -509,16 +431,14 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine sel_calypso_from_recv_N(NB, nnod_new, n_WR, nmax_sr,   &
+      subroutine sel_calypso_from_recv_N(NB, nnod_new, n_WR,            &
      &                    npe_recv, istack_recv, inod_import,           &
      &                    irev_import, WR, X_new)
 !
-!      use set_all2all_buffer
       use set_from_recv_buffer
       use set_from_recv_buf_rev
 !
-      integer(kind = kint), intent(in) :: NB, nnod_new
-      integer(kind = kint), intent(in) :: nmax_sr, n_WR
+      integer(kind = kint), intent(in) :: NB, nnod_new, n_WR
 !
       integer(kind = kint), intent(in) :: npe_recv
       integer(kind = kint), intent(in) :: istack_recv(0:npe_recv)
@@ -531,13 +451,6 @@
 !
 !
       call start_eleps_time(38)
-!      if(     iflag_sph_commN .eq. iflag_alltoall                      &
-!     &  .and. iflag_sph_SRN .eq. iflag_import_item) then
-!        call set_from_all2all_buf_N(NB, nnod_new, nmax_sr,             &
-!     &      npe_recv, istack_recv, inod_import, WR(1), X_new)
-!      else if(iflag_sph_commN .eq. iflag_alltoall) then
-!        call set_from_all2all_rev_N(NB, nnod_new, nmax_sr,             &
-!     &      npe_recv, irev_import, WR(1), X_new)
       if(iflag_sph_SRN .eq. iflag_import_item) then
         call set_from_recv_buf_N(NB, nnod_new,                          &
      &      istack_recv(npe_recv), inod_import, WR(1), X_new)

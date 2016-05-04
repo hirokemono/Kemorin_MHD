@@ -68,7 +68,7 @@
 !
       START_SRtime= MPI_WTIME()
       call start_eleps_time(18)
-      call calypso_sph_comm_rj_2_rlm_N(ncomp_trans)
+      call calypso_sph_comm_N(ncomp_trans, comm_rj1, comm_rlm1)
       call end_eleps_time(18)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
@@ -82,7 +82,7 @@
 !
       START_SRtime= MPI_WTIME()
       call start_eleps_time(19)
-      call calypso_sph_comm_rtm_2_rtp_N(ncomp_trans)
+      call calypso_sph_comm_N(ncomp_trans, comm_rtm1, comm_rtp1)
       call end_eleps_time(19)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
@@ -92,7 +92,7 @@
      &    ncomp_trans, n_WR, WR, v_rtp)
       call end_eleps_time(24)
 !
-      call finish_send_recv_rtm_2_rtp
+      call finish_send_recv_sph(comm_rtm1)
 !
       v_pole(1:nnod_pole,1:ncomp_trans) = zero
       call MPI_allreduce(v_pl_local, v_pole, (ncomp_trans*nnod_pole),   &
@@ -119,7 +119,7 @@
 !
       START_SRtime= MPI_WTIME()
       call start_eleps_time(20)
-      call calypso_sph_comm_rtp_2_rtm_N(ncomp_trans)
+      call calypso_sph_comm_N(ncomp_trans, comm_rtp1, comm_rtm1)
       call end_eleps_time(20)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
@@ -131,8 +131,8 @@
 !
       START_SRtime= MPI_WTIME()
       call start_eleps_time(21)
-      call calypso_sph_comm_rlm_2_rj_N(ncomp_trans)
-      call finish_send_recv_rlm_2_rj
+      call calypso_sph_comm_N(ncomp_trans, comm_rlm1, comm_rj1)
+      call finish_send_recv_sph(comm_rlm1)
       call end_eleps_time(21)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !

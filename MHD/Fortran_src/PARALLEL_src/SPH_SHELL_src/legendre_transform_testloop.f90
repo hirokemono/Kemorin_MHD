@@ -42,6 +42,7 @@
       subroutine leg_backward_trans_test                                &
      &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
 !
+      use m_sph_trans_comm_table
       use m_work_4_sph_trans_spin
       use legendre_bwd_trans_testloop
       use spherical_SRs_N
@@ -52,7 +53,7 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      call finish_send_recv_rj_2_rlm
+      call finish_send_recv_sph(comm_rj1)
 !$omp parallel workshare
       WS(1:ncomp*comm_rtm1%ntot_item_sr) = 0.0d0
 !$omp end parallel workshare
@@ -73,6 +74,7 @@
       subroutine leg_forward_trans_test                                 &
      &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
 !
+      use m_sph_trans_comm_table
       use legendre_fwd_trans_testloop
       use spherical_SRs_N
 !
@@ -82,7 +84,7 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      call finish_send_recv_rtp_2_rtm
+      call finish_send_recv_sph(comm_rtp1)
 !$omp parallel workshare
       WS(1:ncomp*comm_rlm1%ntot_item_sr) = 0.0d0
 !$omp end parallel workshare

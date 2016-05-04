@@ -67,7 +67,7 @@
       call legendre_b_trans_scalar_krin(ncomp, nvector, nscalar,        &
      &    sp_rlm_wk(1), vr_rtm_wk(1))
 !
-      call finish_send_recv_rj_2_rlm
+      call finish_send_recv_sph(comm_rj1)
       call back_b_trans_fields_krin(nidx_rtm, ncomp, nvector, nscalar,  &
      &    vr_rtm_wk(1), nmax_sr_rtp, comm_rtm1%nneib_domain,            &
      &    comm_rtm1%istack_sr, comm_rtm1%item_sr, WS(1))
@@ -102,7 +102,7 @@
       call legendre_f_trans_scalar_krin(ncomp, nvector, nscalar,        &
      &    vr_rtm_wk(1), sp_rlm_wk(1))
 !
-      call finish_send_recv_rtp_2_rtm
+      call finish_send_recv_sph(comm_rtp1)
       call back_f_trans_fields_krin(nidx_rlm, ncomp, nvector, nscalar,  &
      &    sp_rlm_wk(1), nmax_sr_rj, comm_rlm1%nneib_domain,             &
      &    comm_rlm1%istack_sr, comm_rlm1%item_sr, WS(1))

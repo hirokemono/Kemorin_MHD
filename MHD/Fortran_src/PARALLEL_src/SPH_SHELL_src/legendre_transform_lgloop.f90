@@ -29,6 +29,7 @@
       module legendre_transform_lgloop
 !
       use m_precision
+      use m_sph_trans_comm_table
 !
       implicit none
 !
@@ -51,7 +52,8 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      call calypso_rlm_from_recv_N(ncomp, n_WR, WR, sp_rlm_wk(1))
+      call calypso_sph_from_recv_N(ncomp, sph_rlm1%nnod_rlm,            &
+     &    comm_rlm1, n_WR, WR, sp_rlm_wk(1))
       call clear_bwd_legendre_work(ncomp)
 !
       call legendre_b_trans_vector_long                                 &
@@ -59,8 +61,9 @@
       call legendre_b_trans_scalar_long                                 &
      &     (ncomp, nvector, nscalar, sp_rlm_wk(1), vr_rtm_wk(1))
 !
-      call finish_send_recv_rj_2_rlm
-      call calypso_rtm_to_send_N(ncomp, n_WS, vr_rtm_wk(1), WS)
+      call finish_send_recv_sph(comm_rj1)
+      call calypso_sph_to_send_N(ncomp, sph_rtm1%nnod_rtm,              &
+     &    comm_rtm1, n_WS, vr_rtm_wk(1), WS)
 !
       end subroutine leg_backward_trans_long
 !
@@ -79,15 +82,17 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      call calypso_rtm_from_recv_N(ncomp, n_WR, WR, vr_rtm_wk(1))
+      call calypso_sph_from_recv_N(ncomp, sph_rtm1%nnod_rtm,            &
+     &    comm_rtm1, n_WR, WR, vr_rtm_wk(1))
 !
       call legendre_f_trans_vector_long                                 &
      &    (ncomp, nvector, vr_rtm_wk(1), sp_rlm_wk(1))
       call legendre_f_trans_scalar_long                                 &
      &    (ncomp, nvector, nscalar, vr_rtm_wk(1), sp_rlm_wk(1))
 !
-      call finish_send_recv_rtp_2_rtm
-      call calypso_rlm_to_send_N(ncomp, n_WS, sp_rlm_wk(1), WS)
+      call finish_send_recv_sph(comm_rtp1)
+      call calypso_sph_to_send_N(ncomp, sph_rlm1%nnod_rlm,              &
+     &    comm_rlm1, n_WS, sp_rlm_wk(1), WS)
 !
       end subroutine leg_forward_trans_long
 !

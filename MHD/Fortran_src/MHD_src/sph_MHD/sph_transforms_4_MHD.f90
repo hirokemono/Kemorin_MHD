@@ -172,8 +172,10 @@
       type(phys_data), intent(in) :: rj_fld
 !
 !
-      call check_calypso_rj_2_rlm_buf_N(ncomp_rj_2_rtp)
-      call check_calypso_rtm_2_rtp_buf_N(ncomp_rj_2_rtp)
+      call check_calypso_sph_comm_buf_N                                 &
+     &   (ncomp_rj_2_rtp, comm_rj1, comm_rlm1)
+      call check_calypso_sph_comm_buf_N                                 &
+     &   (ncomp_rj_2_rtp, comm_rtm1, comm_rtp1)
 !
 !      call start_eleps_time(51)
       if(iflag_debug .gt. 0) write(*,*) 'copy_mhd_spectr_to_send'
@@ -199,8 +201,10 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call check_calypso_rtp_2_rtm_buf_N(ncomp_rtp_2_rj)
-      call check_calypso_rlm_2_rj_buf_N(ncomp_rtp_2_rj)
+      call check_calypso_sph_comm_buf_N                                 &
+     &   (ncomp_rtp_2_rj, comm_rtp1, comm_rtm1)
+      call check_calypso_sph_comm_buf_N                                 &
+     &   (ncomp_rtp_2_rj, comm_rlm1, comm_rj1)
 !
       if(ncomp_rtp_2_rj .eq. 0) return
       call sph_f_trans_w_coriolis(ncomp_rtp_2_rj, nvector_rtp_2_rj,     &
@@ -230,8 +234,10 @@
       if(ncomp_snap_rj_2_rtp .le. 0) return
 !
       nscalar_trans = nscalar_snap_rj_2_rtp + 6*ntensor_snap_rj_2_rtp
-      call check_calypso_rj_2_rlm_buf_N(ncomp_snap_rj_2_rtp)
-      call check_calypso_rtm_2_rtp_buf_N(ncomp_snap_rj_2_rtp)
+      call check_calypso_sph_comm_buf_N                                 &
+     &   (ncomp_snap_rj_2_rtp, comm_rj1, comm_rlm1)
+      call check_calypso_sph_comm_buf_N                                 &
+     &   (ncomp_snap_rj_2_rtp, comm_rtm1, comm_rtp1)
 !
       call copy_snap_spectr_to_send                                     &
      &   (ncomp_snap_rj_2_rtp, rj_fld, n_WS, WS, flc_pl)
@@ -258,8 +264,10 @@
 !
       if(ncomp_snap_rtp_2_rj .le. 0) return
 !
-      call check_calypso_rtp_2_rtm_buf_N(ncomp_snap_rtp_2_rj)
-      call check_calypso_rlm_2_rj_buf_N(ncomp_snap_rtp_2_rj)
+      call check_calypso_sph_comm_buf_N                                 &
+     &   (ncomp_snap_rtp_2_rj, comm_rtp1, comm_rtm1)
+      call check_calypso_sph_comm_buf_N                                 &
+     &   (ncomp_snap_rtp_2_rj, comm_rlm1, comm_rj1)
 !
 !   transform for vectors and scalars
       call sph_forward_transforms(ncomp_snap_rtp_2_rj,                  &
@@ -288,8 +296,10 @@
 !
       if(ncomp_tmp_rtp_2_rj .eq. 0) return
 !
-      call check_calypso_rtp_2_rtm_buf_N(ncomp_tmp_rtp_2_rj)
-      call check_calypso_rlm_2_rj_buf_N(ncomp_tmp_rtp_2_rj)
+      call check_calypso_sph_comm_buf_N                                 &
+     &   (ncomp_tmp_rtp_2_rj, comm_rtp1, comm_rtm1)
+      call check_calypso_sph_comm_buf_N                                 &
+     &   (ncomp_tmp_rtp_2_rj, comm_rlm1, comm_rj1)
 !
 !   transform for vectors and scalars
       call sph_forward_transforms(ncomp_tmp_rtp_2_rj,                   &
@@ -317,8 +327,10 @@
 !
       if((ncomp_rj_2_rtp*ncomp_rtp_2_rj) .eq. 0) return
 !
-      call check_calypso_rj_2_rlm_buf_N(ncomp_rj_2_rtp)
-      call check_calypso_rlm_2_rj_buf_N(ncomp_rtp_2_rj)
+      call check_calypso_sph_comm_buf_N                                 &
+     &   (ncomp_rj_2_rtp, comm_rj1, comm_rlm1)
+      call check_calypso_sph_comm_buf_N                                 &
+     &   (ncomp_rtp_2_rj, comm_rlm1, comm_rj1)
 !
       call copy_mhd_spectr_to_send(ncomp_rj_2_rtp, rj_fld, n_WS, WS(1))
 !

@@ -124,18 +124,13 @@
       if( iflag_4_coriolis .eq. id_turn_OFF) return
 !
       call sel_calypso_to_send_scalar(ncomp_trans, nnod_rlm, n_WS,      &
-     &    nmax_sr_rj, comm_rlm1%nneib_domain, comm_rlm1%istack_sr,      &
+     &    comm_rlm1%nneib_domain, comm_rlm1%istack_sr,                  &
      &    comm_rlm1%item_sr, ncomp_coriolis_rlm, ip_rlm_rot_cor,        &
      &    f_trns%i_rot_Coriolis, d_cor_rlm(1,1), WS(1))
       call sel_calypso_to_send_scalar(ncomp_trans, nnod_rlm, n_WS,      &
-     &    nmax_sr_rj, comm_rlm1%nneib_domain, comm_rlm1%istack_sr,      &
+     &    comm_rlm1%nneib_domain, comm_rlm1%istack_sr,                  &
      &    comm_rlm1%item_sr, ncomp_coriolis_rlm, it_rlm_rot_cor,        &
      &    (f_trns%i_rot_Coriolis+2), d_cor_rlm(1,1), WS(1))
-!
-!      call sel_calypso_to_send_scalar(ncomp_trans, nnod_rlm, n_WS,     &
-!     &    nmax_sr_rj, comm_rlm1%nneib_domain, comm_rlm1%istack_sr,     &
-!     &    comm_rlm1%item_sr, ncomp_coriolis_rlm, ip_rlm_div_cor,       &
-!     &    f_trns%i_div_Coriolis, d_cor_rlm(1,1), WS(1))
 !
       end subroutine copy_coriolis_terms_rlm
 !

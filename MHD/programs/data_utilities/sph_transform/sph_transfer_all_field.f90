@@ -108,8 +108,10 @@
      &    nnod_rtp, ncomp_sph_trans, dall_rtp(1,1))
 !
       nscalar_trans = num_scalar_rtp + 6*num_tensor_rtp
-      call check_calypso_rtp_2_rtm_buf_N(ncomp_sph_trans)
-      call check_calypso_rlm_2_rj_buf_N(ncomp_sph_trans)
+      call check_calypso_sph_comm_buf_N                                 &
+     &   (ncomp_sph_trans, comm_rtp1, comm_rtm1)
+      call check_calypso_sph_comm_buf_N                                 &
+     &   (ncomp_sph_trans, comm_rlm1, comm_rj1)
 !
       if (iflag_debug.gt.0) write(*,*) 'sph_forward_transforms',        &
      &  ncomp_sph_trans, num_vector_rtp, num_scalar_rtp, num_tensor_rtp
@@ -159,8 +161,10 @@
       if(ncomp_sph_trans .le. 0) return
 !
       nscalar_trans = num_scalar_rtp + 6*num_tensor_rtp
-      call check_calypso_rj_2_rlm_buf_N(ncomp_sph_trans)
-      call check_calypso_rtm_2_rtp_buf_N(ncomp_sph_trans)
+      call check_calypso_sph_comm_buf_N                                 &
+     &   (ncomp_sph_trans, comm_rj1, comm_rlm1)
+      call check_calypso_sph_comm_buf_N                                 &
+     &   (ncomp_sph_trans, comm_rtm1, comm_rtp1)
 !
       if (iflag_debug.gt.0)                                             &
      &        write(*,*) 'set_all_vec_spec_to_sph_t'

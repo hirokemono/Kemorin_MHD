@@ -155,7 +155,6 @@
 !
       use m_sph_communicators
       use calypso_mpi
-!      use set_all2all_buffer
       use set_from_recv_buf_rev
 !
       integer (kind=kint), intent(in) :: NB
@@ -168,19 +167,6 @@
 !
 !
       if(iflag_sph_commN .ne. iflag_SR_UNDEFINED) return
-!
-!      call set_rev_all2all_import_tbl(nnod_rtp, nmax_sr_rtp,           &
-!     &    comm_rtp1%nneib_domain, comm_rtp1%istack_sr,                 &
-!     &    comm_rtp1%item_sr, comm_rtp1%irev_sr)
-!      call set_rev_all2all_import_tbl(nnod_rtm, nmax_sr_rtp,           &
-!     &    comm_rtm1%nneib_domain, comm_rtm1%istack_sr,                 &
-!     &    comm_rtm1%item_sr, comm_rtm1%irev_sr)
-!      call set_rev_all2all_import_tbl(nnod_rlm, nmax_sr_rj,            &
-!     &    comm_rlm1%nneib_domain, comm_rlm1%istack_sr,                 &
-!     &    comm_rlm1%item_sr, comm_rlm1%irev_sr)
-!      call set_rev_all2all_import_tbl(nnod_rj, nmax_sr_rj,             &
-!     &    comm_rj1%nneib_domain,  comm_rj1%istack_sr,                  &
-!     &    comm_rj1%item_sr,  comm_rj1%irev_sr)
 !
       endtime(0:2) = 0.0d0
       iflag_sph_commN = iflag_alltoall
@@ -241,10 +227,18 @@
       real (kind=kreal), intent(inout)::  X_rj(NB*nnod_rj)
 !
 !
-      call send_recv_rj_2_rlm_N(NB, X_rj, X_rlm)
-      call send_recv_rlm_2_rj_N(NB, X_rlm, X_rj)
-      call send_recv_rtp_2_rtm_N(NB, X_rtp, X_rtm)
-      call send_recv_rtm_2_rtp_N(NB, X_rtm, X_rtp)
+      call send_recv_sph_trans_N                                        &
+     &   (NB, sph_rj1%nnod_rj, sph_rlm1%nnod_rlm,                       &
+     &    comm_rj1, comm_rlm1, X_rj, X_rlm)
+      call send_recv_sph_trans_N                                        &
+     &   (NB, sph_rlm1%nnod_rlm, sph_rj1%nnod_rj,                       &
+     &    comm_rlm1, comm_rj1, X_rlm, X_rj)
+      call send_recv_sph_trans_N                                        &
+     &   (NB, sph_rj1%nnod_rj, sph_rlm1%nnod_rlm,                       &
+     &    comm_rj1, comm_rlm1, X_rj, X_rlm)
+      call send_recv_sph_trans_N                                        &
+     &   (NB, sph_rtm1%nnod_rtm, sph_rtp1%nnod_rtp,                     &
+     &    comm_rtm1, comm_rtp1, X_rtm, X_rtp)
 !
       end subroutine all_sph_send_recv_N
 !
@@ -257,19 +251,17 @@
       integer (kind=kint), intent(in) :: NB
 !
 !
-      call check_calypso_rj_2_rlm_buf_N(NB)
-      call check_calypso_rlm_2_rj_buf_N(NB)
-      call check_calypso_rtp_2_rtm_buf_N(NB)
-      call check_calypso_rtm_2_rtp_buf_N(NB)
+      call check_calypso_sph_buffer_N(NB)
 !
       call calypso_sph_comm_rj_2_rlm_N(NB)
-      call finish_send_recv_rj_2_rlm
-      call calypso_sph_comm_rlm_2_rj_N(NB)
-      call finish_send_recv_rlm_2_rj
-      call calypso_sph_comm_rtp_2_rtm_N(NB)
-      call finish_send_recv_rtp_2_rtm
-      call calypso_sph_comm_rtm_2_rtp_N(NB)
-      call finish_send_recv_rtm_2_rtp
+      call calypso_sph_comm_N(NB, comm_rj1, comm_rlm1)
+      call finish_send_recv_sph(comm_rj1)
+      call calypso_sph_comm_N(NB, comm_rlm1, comm_rj1)
+      call finish_send_recv_sph(comm_rlm1)
+      call calypso_sph_comm_N(NB, comm_rtp1, comm_rtm1)
+      call finish_send_recv_sph(comm_rtp1)
+      call calypso_sph_comm_N(NB, comm_rtm1, comm_rtp1)
+      call finish_send_recv_sph(comm_rtm1)
 !
       end subroutine all_sph_SR_core_N
 !

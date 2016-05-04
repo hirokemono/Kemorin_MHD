@@ -116,21 +116,6 @@
      &    comm_rj1%nneib_domain) 
       call init_sph_send_recv_N(ncomp_sph_trans)
 !
-!      if(iflag_sph_commN .eq. iflag_alltoall) then
-!        call set_rev_all2all_import_tbl(nnod_rtp, nmax_sr_rtp,         &
-!     &      comm_rtp1%nneib_domain, comm_rtp1%istack_sr,               &
-!     &      comm_rtp1%item_sr, comm_rtp1%irev_sr)
-!        call set_rev_all2all_import_tbl(nnod_rtm, nmax_sr_rtp,         &
-!     &      comm_rtm1%nneib_domain, comm_rtm1%istack_sr,               &
-!     &      comm_rtm1%item_sr, comm_rtm1%irev_sr)
-!        call set_rev_all2all_import_tbl(nnod_rlm, nmax_sr_rj,          &
-!     &      comm_rlm1%nneib_domain, comm_rlm1%istack_sr,               &
-!     &      comm_rlm1%item_sr, comm_rlm1%irev_sr)
-!        call set_rev_all2all_import_tbl(nnod_rj, nmax_sr_rj,           &
-!     &      comm_rj1%nneib_domain,  comm_rj1%istack_sr,                &
-!     &      comm_rj1%item_sr,  comm_rj1%irev_sr)
-!      end if
-!
       if(my_rank .ne. 0) return
       write(*,*) 'Vector length for Legendre transform:',               &
      &          nvector_legendre
