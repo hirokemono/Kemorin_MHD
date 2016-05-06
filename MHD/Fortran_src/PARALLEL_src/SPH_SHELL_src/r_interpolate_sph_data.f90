@@ -152,8 +152,8 @@
       call copy_original_sph_rj_from_IO
 !
       call const_radial_itp_table(nri_org, r_org,                       &
-     &    nidx_rj(1), sph_rj1%radius_1d_rj_r, kr_inside, kr_outside,    &
-     &    k_inter, rcoef_inter)
+     &    sph_rj1%nidx_rj(1), sph_rj1%radius_1d_rj_r,                   &
+     &    kr_inside, kr_outside, k_inter, rcoef_inter)
 !
       end subroutine input_old_rj_sph_trans
 !
@@ -195,7 +195,7 @@
      &         ) then
               call set_org_rj_phys_data_from_IO                         &
      &           (j_fld, fld_IO, n_rj_org, d_rj_org)
-              call r_interpolate_sph_vector(i_fld, nidx_rj,             &
+              call r_interpolate_sph_vector(i_fld, sph_rj1%nidx_rj,     &
      &            rj_fld%n_point, rj_fld%num_phys, rj_fld%ntot_phys,    &
      &            rj_fld%istack_component, kr_inside, kr_outside,       &
      &            nri_org, k_inter, rcoef_inter, n_rj_org, d_rj_org,    &
@@ -208,11 +208,11 @@
 !
       if (ipol%i_magne .gt. 0) then
         call ext_outside_potential(kr_outside, ipol%i_magne,            &
-     &      nidx_rj, sph_rj1%idx_gl_1d_rj_j,                            &
+     &      sph_rj1%nidx_rj, sph_rj1%idx_gl_1d_rj_j,                    &
      &      sph_rj1%radius_1d_rj_r, sph_rj1%a_r_1d_rj_r,                &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         call ext_inside_potential(kr_inside, ipol%i_magne,              &
-     &      nidx_rj, sph_rj1%idx_gl_1d_rj_j,                            &
+     &      sph_rj1%nidx_rj, sph_rj1%idx_gl_1d_rj_j,                    &
      &      sph_rj1%radius_1d_rj_r, sph_rj1%a_r_1d_rj_r,                &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
@@ -240,7 +240,7 @@
           if(rj_fld%phys_name(i_fld) .eq. fld_IO%fld_name(j_fld)) then
             call set_org_rj_phys_data_from_IO                           &
      &         (j_fld, fld_IO, n_rj_org, d_rj_org)
-            call r_interpolate_sph_vector(i_fld, nidx_rj,               &
+            call r_interpolate_sph_vector(i_fld, sph_rj1%nidx_rj,       &
      &          rj_fld%n_point, rj_fld%num_phys, rj_fld%ntot_phys,      &
      &          rj_fld%istack_component,  kr_inside, kr_outside,        &
      &          nri_org, k_inter, rcoef_inter, n_rj_org, d_rj_org,      &
@@ -252,11 +252,11 @@
 !
       if (ipol%i_magne .gt. 0) then
         call ext_outside_potential(kr_outside, ipol%i_magne,            &
-     &      nidx_rj, sph_rj1%idx_gl_1d_rj_j,                            &
+     &      sph_rj1%nidx_rj, sph_rj1%idx_gl_1d_rj_j,                    &
      &      sph_rj1%radius_1d_rj_r, sph_rj1%a_r_1d_rj_r,                &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         call ext_inside_potential(kr_inside, ipol%i_magne,              &
-     &      nidx_rj, sph_rj1%idx_gl_1d_rj_j,                            &
+     &      sph_rj1%nidx_rj, sph_rj1%idx_gl_1d_rj_j,                    &
      &      sph_rj1%radius_1d_rj_r, sph_rj1%a_r_1d_rj_r,                &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if

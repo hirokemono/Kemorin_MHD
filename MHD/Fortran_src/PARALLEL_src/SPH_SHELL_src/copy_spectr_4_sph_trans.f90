@@ -69,7 +69,7 @@
      &    comm_rj1%nneib_domain, comm_rj1%istack_sr, comm_rj1%item_sr,  &
      &    rj_fld%ntot_phys, i_field, i_send, rj_fld%d_fld, WS)
 !
-      if(iflag_rj_center .le. 0) return
+      if(sph_rj1%iflag_rj_center .le. 0) return
 !
       if(sph_rj1%inod_rj_center .gt. 0) then
         v_pl_local(nnod_pole,i_send)                                    &

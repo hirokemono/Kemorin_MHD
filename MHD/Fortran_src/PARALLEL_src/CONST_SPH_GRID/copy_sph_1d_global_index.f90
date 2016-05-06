@@ -22,8 +22,8 @@
       use m_precision
       use m_constants
 !
-      use m_spheric_parameter
       use m_sph_1d_global_index
+      use t_spheric_parameter
 !
       implicit none
 !
@@ -35,6 +35,7 @@
 !
       subroutine copy_sph_1d_gl_idx_rtp
 !
+      use m_spheric_parameter
       use m_sph_mesh_1d_connect
 !
       integer(kind = kint) :: i, j
@@ -66,6 +67,7 @@
 !
       subroutine copy_sph_1d_gl_idx_rtm
 !
+      use m_spheric_parameter
       use m_sph_mesh_1d_connect
 !
       integer(kind = kint) :: i, j
@@ -97,6 +99,7 @@
 !
       subroutine copy_sph_1d_gl_idx_rlm
 !
+      use m_spheric_parameter
       use m_sph_mesh_1d_connect
 !
       integer(kind = kint) :: i, j
@@ -124,6 +127,7 @@
 !
       subroutine copy_sph_1d_gl_idx_rj
 !
+      use m_spheric_parameter
       use m_sph_mesh_1d_connect
 !
       integer(kind = kint) :: i, j
@@ -150,19 +154,21 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine add_center_mode_rj
+      subroutine add_center_mode_rj(sph_rj1)
+!
+      type(sph_rj_grid), intent(inout) :: sph_rj1
 !
       integer(kind = kint) :: i, j
 !
 !
       sph_rj1%inod_rj_center = 0
-      if(iflag_rj_center .eq. izero) return
+      if(sph_rj1%iflag_rj_center .eq. izero) return
 !
-      do i = 1, nidx_rj(2)
+      do i = 1, sph_rj1%nidx_rj(2)
         j = i - 1 + sph_rj1%ist_rj(2)
         if(idx_global_rj_j(j,1) .eq. 0) then
           write(*,*) 'Add center mode!!'
-          nnod_rj = nnod_rj + 1
+          sph_rj1%nnod_rj = sph_rj1%nnod_rj + 1
           sph_rj1%inod_rj_center = 1
           exit
         end if

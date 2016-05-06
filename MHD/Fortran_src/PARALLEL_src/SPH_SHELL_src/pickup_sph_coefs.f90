@@ -98,12 +98,12 @@
       if( (num_pick_sph+num_pick_sph_l+num_pick_sph_m) .eq. 0) return
 !
       if(num_pick_layer .le. 0) then
-        num_pick_layer = nidx_rj(1) + iflag_rj_center
+        num_pick_layer = nidx_rj(1) + sph_rj1%iflag_rj_center
 !
         call allocate_num_pick_layer
 !
         do k = 1, num_pick_layer
-          id_pick_layer(k) = k - iflag_rj_center
+          id_pick_layer(k) = k - sph_rj1%iflag_rj_center
         end do
       end if
       call quicksort_int(num_pick_layer, id_pick_layer,                 &
@@ -148,8 +148,8 @@
 !
 !   Set field at center
       kst = 1
-      if(idx_pick_sph_gl(1,1).eq.0 .and. iflag_rj_center.gt.0           &
-     &   .and. iflag_rj_center.gt.0) then
+      if(idx_pick_sph_gl(1,1).eq.0                                      &
+     &   .and. sph_rj1%iflag_rj_center.gt.0) then
         kst = kst + 1
         inod = sph_rj1%inod_rj_center
 !

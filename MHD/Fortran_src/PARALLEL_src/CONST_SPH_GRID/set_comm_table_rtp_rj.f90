@@ -81,12 +81,12 @@
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                'copy_gl_2_local_rj_param', ip_rank
-      call copy_gl_2_local_rj_param(ip_rank)
+      call copy_gl_2_local_rj_param(ip_rank, sph_rj1)
 !
-      call add_center_mode_rj
+      call add_center_mode_rj(sph_rj1)
+      nnod_rj = sph_rj1%nnod_rj
+      nidx_rj(1:2) = sph_rj1%nidx_rj(1:2)
 !
-      sph_rj1%nnod_rj = nnod_rj
-      sph_rj1%nidx_rj(1:2) = nidx_rj(1:2)
       call alloc_type_spheric_param_rj(sph_rj1)
       call alloc_type_sph_1d_index_rj(sph_rj1)
 !
@@ -140,10 +140,10 @@
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                'copy_gl_2_local_rtp_param', ip_rank
-      call copy_gl_2_local_rtp_param(ip_rank)
+      call copy_gl_2_local_rtp_param(ip_rank, sph_rtp1)
+      nnod_rtp = sph_rtp1%nnod_rtp
+      nidx_rtp(1:3) = sph_rtp1%nidx_rtp(1:3)
 !
-      sph_rtp1%nnod_rtp = nnod_rtp
-      sph_rtp1%nidx_rtp(1:3) = nidx_rtp(1:3)
       call alloc_type_spheric_param_rtp(sph_rtp1)
       call alloc_type_sph_1d_index_rtp(sph_rtp1)
 !

@@ -152,7 +152,8 @@
       call cal_one_over_volume                                          &
      &   (kr_st, kr_ed, nidx_rj(1), sph_rj1%radius_1d_rj_r, avol)
       if(iflag_debug .gt. 0) write(*,*) 'sum_sph_layerd_rms'
-      call sum_sph_layerd_rms(kr_st, kr_ed, rj_fld)
+      call sum_sph_layerd_rms(kr_st, kr_ed,                             &
+     &    l_truncation, sph_rj1, rj_fld)
 !
       if(my_rank .eq. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'surf_ave_4_sph_rms_int'

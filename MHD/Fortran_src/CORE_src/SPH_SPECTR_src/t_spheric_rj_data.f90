@@ -46,6 +46,12 @@
 !
 !>        structure of index table for @f$ f(r,j) @f$
       type sph_rj_grid
+!>        integer flag for center point in spectr data
+!!@n      This flag should have same value for all processes
+!!@n      0: No center point
+!!@n      1: Center point is there
+        integer (kind=kint) :: iflag_rj_center =  0
+!
 !>        number of global 1d data points for @f$ f(r,j) @f$
         integer(kind = kint) :: nidx_global_rj(2)
 !>        1d subdomain ID for @f$ f(r,j) @f$ (start from 0)

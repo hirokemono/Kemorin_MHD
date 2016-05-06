@@ -81,7 +81,7 @@
 !
 !  --  Construct FEM mesh
       if(iflag_shell_mode .eq. iflag_no_FEMMESH) then
-        if(iflag_rj_center .gt. 0) then
+        if(sph_rj1%iflag_rj_center .gt. 0) then
           iflag_shell_mode =  iflag_MESH_w_center
         else
           iflag_shell_mode = iflag_MESH_same
@@ -204,10 +204,11 @@
       call set_sph_rj_center_flag(sph_rj1%nnod_rj, sph_rj1%nidx_rj,     &
      &    sph_rj1%inod_rj_center)
 !
-      iflag_rj_center = 0
-      call MPI_allREDUCE(sph_rj1%inod_rj_center, iflag_rj_center, ione, &
+      sph_rj1%iflag_rj_center = 0
+      call MPI_allREDUCE                                                &
+     &   (sph_rj1%inod_rj_center, sph_rj1%iflag_rj_center, ione,        &
      &    CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM, ierr_MPI)
-      if(iflag_rj_center .gt. 0) iflag_rj_center = 1
+      if(sph_rj1%iflag_rj_center .gt. 0) sph_rj1%iflag_rj_center = 1
 !
       end subroutine set_reverse_tables_4_SPH
 !
@@ -290,10 +291,11 @@
       call set_sph_rj_center_flag                                       &
      &   (sph_rj1%nnod_rj, sph_rj1%nidx_rj, sph_rj1%inod_rj_center)
 !
-      iflag_rj_center = 0
-      call MPI_allREDUCE(sph_rj1%inod_rj_center, iflag_rj_center, ione, &
+      sph_rj1%iflag_rj_center = 0
+      call MPI_allREDUCE                                                &
+     &   (sph_rj1%inod_rj_center, sph_rj1%iflag_rj_center, ione,        &
      &    CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM, ierr_MPI)
-      if(iflag_rj_center .gt. 0) iflag_rj_center = 1
+      if(sph_rj1%iflag_rj_center .gt. 0) sph_rj1%iflag_rj_center = 1
 !
       end subroutine load_para_rj_mesh
 !

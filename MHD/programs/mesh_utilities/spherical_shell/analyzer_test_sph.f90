@@ -69,8 +69,10 @@
       integer(kind = kint), parameter :: NB = 8
 !
 !
-      call allocate_idx_sph_recieve
-      call allocate_real_sph_test(ieight)
+      call allocate_idx_sph_recieve                                     &
+     &     (sph_rtp1%nnod_rtp, sph_rtm1%nnod_rtm,                       &
+     &      sph_rlm1%nnod_rlm, sph_rj1%nnod_rj)
+      call allocate_real_sph_test(NB)
 !
       call add_int_suffix(my_rank, check_header, fname_tmp)
       call add_dat_extension(fname_tmp, file_name)

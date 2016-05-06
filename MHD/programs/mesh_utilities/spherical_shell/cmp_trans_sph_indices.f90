@@ -3,9 +3,10 @@
 !
 !     Written by H. Matsui on Aug., 2007
 !
-!      subroutine allocate_idx_sph_recieve
-!      subroutine deallocate_idx_sph_recieve
-!
+!!      subroutine allocate_idx_sph_recieve                             &
+!!     &          (nnod_rtp, nnod_rtm, nnod_rlm, nnod_rj)
+!!      subroutine deallocate_idx_sph_recieve
+!!
 !!      subroutine sph_indices_transfer                                 &
 !!     &          (itype, nnod_rtp, nnod_rtm, nnod_rlm, nnod_rj,        &
 !!     &           idx_global_rtp, idx_global_rtm,                      &
@@ -36,9 +37,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_idx_sph_recieve
+      subroutine allocate_idx_sph_recieve                               &
+     &          (nnod_rtp, nnod_rtm, nnod_rlm, nnod_rj)
 !
-      use m_spheric_parameter
+      integer(kind = kint), intent(in) :: nnod_rtp, nnod_rtm
+      integer(kind = kint), intent(in) :: nnod_rlm, nnod_rj
 !
       allocate( idx_rtp_recieve(nnod_rtp,3) )
       allocate( idx_rtm_recieve(nnod_rtm,3) )

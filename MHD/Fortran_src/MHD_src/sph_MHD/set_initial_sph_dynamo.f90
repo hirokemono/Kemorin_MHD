@@ -68,17 +68,17 @@
      &   .or. iflag_restart .eq. i_rst_dbench_qcv) then
         isig = 400
         call set_initial_velo_sph                                       &
-     &     (nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
+     &     (rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         if(ipol%i_temp .gt. 0) then
-          call set_ini_reference_temp_sph                               &
-     &       (reftemp_rj, rj_fld%ntot_phys, rj_fld%d_fld)
-          call set_initial_temp_sph(isig, sph_rj1%radius_1d_rj_r,       &
-     &        rj_fld%ntot_phys, rj_fld%d_fld)
+          call set_ini_reference_temp_sph(reftemp_rj, sph_rj1,          &
+     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+          call set_initial_temp_sph(isig, sph_rj1,                      &
+     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
         if(ipol%i_light .gt. 0) then
-          call set_initial_light_sph(isig, ipol%i_light,                &
-     &        sph_rj1%radius_1d_rj_r, reftemp_rj,                       &
-     &        rj_fld%ntot_phys, rj_fld%d_fld)
+          call set_initial_light_sph                                    &
+     &       (isig, ipol%i_light, sph_rj1, reftemp_rj,                  &
+     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
 !
         if(iflag_restart .eq. i_rst_dbench1) then
@@ -103,24 +103,24 @@
       else if (iflag_restart .eq. i_rst_no_file) then
         if(ipol%i_temp .gt. 0)  then
           call set_noize_scalar_sph(ipol%i_temp, reftemp_rj,            &
-     &        sph_rj1%radius_1d_rj_r, rj_fld%ntot_phys, rj_fld%d_fld)
+     &        sph_rj1, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
         if(ipol%i_light .gt. 0) then
           call set_noize_scalar_sph(ipol%i_light, reftemp_rj,           &
-     &        sph_rj1%radius_1d_rj_r, rj_fld%ntot_phys, rj_fld%d_fld)
+     &        sph_rj1, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
         if(ipol%i_magne .gt. 0) then
-          call set_initial_magne_sph(sph_rj1%radius_1d_rj_r,            &
-     &        rj_fld%ntot_phys, rj_fld%d_fld)
+          call set_initial_magne_sph(sph_rj1,                           &
+     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
           call reduce_initial_magne_sph                                 &
      &       (nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
 !
       else if (iflag_restart .eq. i_rst_licv) then
-        call set_ini_reference_temp_sph                                 &
-     &     (reftemp_rj, rj_fld%ntot_phys, rj_fld%d_fld)
-        call set_all_part_temp_sph(sph_rj1%radius_1d_rj_r,              &
-     &      rj_fld%ntot_phys, rj_fld%d_fld)
+        call set_ini_reference_temp_sph(reftemp_rj, sph_rj1,            &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+        call set_all_part_temp_sph(sph_rj1,                             &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       if(iflag_debug .gt. 0) write(*,*) 'init_output_sph_restart_file'
@@ -137,16 +137,16 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_initial_velo_sph                                   &
-     &         (nnod_rj, ntot_phys_rj, d_rj)
+     &         (n_point, ntot_phys_rj, d_rj)
 !
-      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       integer ( kind = kint) :: inod
 !
 !
 !$omp parallel do
-      do inod = 1, nnod_rj
+      do inod = 1, n_point
         d_rj(inod,ipol%i_velo  ) = zero
         d_rj(inod,ipol%i_velo+1) = zero
         d_rj(inod,ipol%i_velo+2) = zero
@@ -158,51 +158,53 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_ini_reference_temp_sph                             &
-     &         (reftemp_rj, ntot_phys_rj, d_rj)
+     &         (reftemp_rj, sph_rj, n_point, ntot_phys_rj, d_rj)
 !
       use m_control_parameter
       use m_spheric_parameter
 !
-      integer(kind = kint), intent(in) :: ntot_phys_rj
-      real(kind=kreal), intent(in) :: reftemp_rj(nidx_rj(1),0:1)
+      type(sph_rj_grid), intent(in) :: sph_rj
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real(kind=kreal), intent(in) :: reftemp_rj(sph_rj%nidx_rj(1),0:1)
 !
-      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       integer ( kind = kint) :: inod, k, jj
 !
 !
 !$omp parallel do
-      do inod = 1, nnod_rj
+      do inod = 1, n_point
         d_rj(inod,ipol%i_temp) = zero
       end do
 !$omp end parallel do
 !
 !   set reference temperature (l = m = 0)
-      if (sph_rj1%idx_rj_degree_zero .gt. 0) then
+      if (sph_rj%idx_rj_degree_zero .gt. 0) then
         if ( iflag_4_ref_temp .eq. id_sphere_ref_temp ) then
-          do k = 1, nidx_rj(1)
-            inod = sph_rj1%idx_rj_degree_zero + (k-1)*nidx_rj(2)
+          do k = 1, sph_rj%nidx_rj(1)
+            inod = sph_rj%idx_rj_degree_zero + (k-1) * sph_rj%nidx_rj(2)
             d_rj(inod,ipol%i_temp) = reftemp_rj(k,0)
           end do
         else
           do k = 1, nlayer_ICB-1
-            inod = local_sph_node_address(sph_rj1, k, jj)
+            inod = local_sph_node_address(sph_rj, k, jj)
             d_rj(inod,ipol%i_temp) = 1.0d0
           end do
           do k = nlayer_ICB, nlayer_CMB
-            inod = sph_rj1%idx_rj_degree_zero + (k-1)*nidx_rj(2)
+            inod = sph_rj%idx_rj_degree_zero                            &
+     &            + (k-1) * sph_rj%nidx_rj(2)
             d_rj(inod,ipol%i_temp)                                      &
-     &           = (sph_rj1%ar_1d_rj(k,1) * 20.d0/13.0d0 - 1.0d0 )      &
+     &           = (sph_rj%ar_1d_rj(k,1) * 20.d0/13.0d0 - 1.0d0 )       &
      &            * 7.0d0 / 13.0d0
           end do
         end if
       end if
 !
 !    Center
-      if(sph_rj1%inod_rj_center .gt. 0) then
-        jj = find_local_sph_address(sph_rj1, 0, 0)
-        inod = local_sph_node_address(sph_rj1, 1, jj)
-        d_rj(sph_rj1%inod_rj_center,ipol%i_temp)                        &
+      if(sph_rj%inod_rj_center .gt. 0) then
+        jj = find_local_sph_address(sph_rj, 0, 0)
+        inod = local_sph_node_address(sph_rj, 1, jj)
+        d_rj(sph_rj%inod_rj_center,ipol%i_temp)                         &
      &       = d_rj(inod,ipol%i_temp)
       end if
 !
@@ -211,14 +213,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_all_part_temp_sph                                  &
-     &          (radius_1d_rj_r, ntot_phys_rj, d_rj)
+     &          (sph_rj, n_point, ntot_phys_rj, d_rj)
 !
       use m_control_parameter
       use m_spheric_parameter
 !
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
-      integer(kind = kint), intent(in) :: ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      type(sph_rj_grid), intent(in) :: sph_rj
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       integer ( kind = kint) :: inod, j, k, jj
       real (kind = kreal) :: pi, xr, shell
@@ -227,10 +229,11 @@
       pi = four * atan(one)
       shell = r_CMB - r_ICB
 !
-      do j = 1, nidx_rj(2)
+      do j = 1, sph_rj%nidx_rj(2)
         do k = nlayer_ICB, nlayer_CMB
-          xr = two * radius_1d_rj_r(k) - one * (r_CMB+r_ICB) / shell
-          inod = j + (k-1)*nidx_rj(2)
+          xr = two * sph_rj%radius_1d_rj_r(k)                           &
+     &        - one * (r_CMB+r_ICB) / shell
+          inod = j + (k-1) * sph_rj%nidx_rj(2)
 !
           d_rj(inod,ipol%i_temp) = (one-three*xr**2+three*xr**4-xr**6)  &
      &                            * 0.1d0 * six / (sqrt(pi))
@@ -238,10 +241,10 @@
       end do
 !
 !    Center
-      if(sph_rj1%inod_rj_center .gt. 0) then
-        jj = find_local_sph_address(sph_rj1, 0, 0)
-        inod = local_sph_node_address(sph_rj1, 1, jj)
-        d_rj(sph_rj1%inod_rj_center,ipol%i_temp)                        &
+      if(sph_rj%inod_rj_center .gt. 0) then
+        jj = find_local_sph_address(sph_rj, 0, 0)
+        inod = local_sph_node_address(sph_rj, 1, jj)
+        d_rj(sph_rj%inod_rj_center,ipol%i_temp)                         &
      &       = d_rj(inod,ipol%i_temp)
       end if
 !
@@ -250,15 +253,15 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_initial_temp_sph                                   &
-     &         (isig, radius_1d_rj_r, ntot_phys_rj, d_rj)
+     &         (isig, sph_rj, n_point, ntot_phys_rj, d_rj)
 !
       use m_control_parameter
       use m_spheric_parameter
 !
+      type(sph_rj_grid), intent(in) :: sph_rj
       integer ( kind = kint), intent(in) :: isig
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
-      integer(kind = kint), intent(in) :: ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       integer(kind = 4) ::  m
       integer(kind = kint) :: inod, k, jj
@@ -269,12 +272,13 @@
       shell = r_CMB - r_ICB
 !
       m = int( mod(isig,ikilo) / icent )
-      jj = find_local_sph_address(sph_rj1, m, m)
+      jj = find_local_sph_address(sph_rj, m, m)
 !
       if (jj .gt. 0) then
         do k = nlayer_ICB, nlayer_CMB
-          xr = two * radius_1d_rj_r(k) - one * (r_CMB+r_ICB) / shell
-          inod = jj + (k-1)*nidx_rj(2)
+          xr = two * sph_rj%radius_1d_rj_r(k)                           &
+     &        - one * (r_CMB+r_ICB) / shell
+          inod = jj + (k-1) * sph_rj%nidx_rj(2)
 !
           d_rj(inod,ipol%i_temp) = (one-three*xr**2+three*xr**4-xr**6)  &
      &                            * 0.1d0 * three / (sqrt(two*pi))
@@ -282,10 +286,10 @@
       end if
 !
 !    Center
-      if(sph_rj1%inod_rj_center .gt. 0) then
-        jj = find_local_sph_address(sph_rj1, 0, 0)
-        inod = local_sph_node_address(sph_rj1, 1, jj)
-        d_rj(sph_rj1%inod_rj_center,ipol%i_temp)                        &
+      if(sph_rj%inod_rj_center .gt. 0) then
+        jj = find_local_sph_address(sph_rj, 0, 0)
+        inod = local_sph_node_address(sph_rj, 1, jj)
+        d_rj(sph_rj%inod_rj_center,ipol%i_temp)                         &
      &       = d_rj(inod,ipol%i_temp)
       end if
 !
@@ -293,17 +297,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_light_sph(isig, is_fld, radius_1d_rj_r,    &
-     &          reftemp_rj, ntot_phys_rj, d_rj)
+      subroutine set_initial_light_sph(isig, is_fld, sph_rj,            &
+     &          reftemp_rj, n_point, ntot_phys_rj, d_rj)
 !
       use m_spheric_parameter
 !
+      type(sph_rj_grid), intent(in) :: sph_rj
       integer ( kind = kint), intent(in) :: isig, is_fld
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
-      integer(kind = kint), intent(in) :: ntot_phys_rj
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real(kind=kreal), intent(in) :: reftemp_rj(nidx_rj(1),0:1)
 !
-      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       integer(kind = 4) :: m
       integer ( kind = kint) :: inod, k, jj
@@ -314,38 +318,39 @@
       shell = r_CMB - r_ICB
 !
 !$omp parallel do
-      do inod = 1, nnod_rj
+      do inod = 1, n_point
         d_rj(inod,is_fld) = zero
       end do
 !$omp end parallel do
 !
 !
-      if (sph_rj1%idx_rj_degree_zero .gt. 0) then
-        do k = 1, nidx_rj(1)
-          inod = sph_rj1%idx_rj_degree_zero + (k-1)*nidx_rj(2)
+      if (sph_rj%idx_rj_degree_zero .gt. 0) then
+        do k = 1, sph_rj%nidx_rj(1)
+          inod = sph_rj%idx_rj_degree_zero + (k-1) * sph_rj%nidx_rj(2)
           d_rj(inod,is_fld) = reftemp_rj(k,0)
         end do
       end if
 !
 !
       m = int( mod(isig,ikilo) / icent )
-      jj = find_local_sph_address(sph_rj1, m, m)
+      jj = find_local_sph_address(sph_rj, m, m)
 !
 !
       if (jj .gt. 0) then
         do k = nlayer_ICB, nlayer_CMB
-          xr = two * radius_1d_rj_r(k) - one * (r_CMB+r_ICB) / shell
-          inod = jj + (k-1)*nidx_rj(2)
-          d_rj(inod,is_fld) = (one-three*xr**2+three*xr**4-xr**6)      &
+          xr = two * sph_rj%radius_1d_rj_r(k)                           &
+     &        - one * (r_CMB+r_ICB) / shell
+          inod = jj + (k-1) * sph_rj%nidx_rj(2)
+          d_rj(inod,is_fld) = (one-three*xr**2+three*xr**4-xr**6)       &
      &                            * 0.1d0 * three / (sqrt(two*pi))
         end do
       end if
 !
 !    Center
-      if(sph_rj1%inod_rj_center .gt. 0) then
-        jj = find_local_sph_address(sph_rj1, 0, 0)
-        inod = local_sph_node_address(sph_rj1, 1, jj)
-        d_rj(sph_rj1%inod_rj_center,is_fld) = d_rj(inod,is_fld)
+      if(sph_rj%inod_rj_center .gt. 0) then
+        jj = find_local_sph_address(sph_rj, 0, 0)
+        inod = local_sph_node_address(sph_rj, 1, jj)
+        d_rj(sph_rj%inod_rj_center,is_fld) = d_rj(inod,is_fld)
       end if
 !
       end subroutine set_initial_light_sph
@@ -353,26 +358,26 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_initial_magne_sph                                  &
-     &         (radius_1d_rj_r, ntot_phys_rj, d_rj)
+     &         (sph_rj, n_point, ntot_phys_rj, d_rj)
 !
       use m_spheric_parameter
       use m_boundary_params_sph_MHD
 !
-      integer(kind = kint), intent(in) :: ntot_phys_rj
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
-      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      type(sph_rj_grid), intent(in) :: sph_rj
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       real (kind = kreal) :: pi, rr
       integer(kind = kint) :: is, it, k, js, jt
 !
 !
-      js = find_local_sph_address(sph_rj1, 1,0)
-      jt = find_local_sph_address(sph_rj1, 2,0)
+      js = find_local_sph_address(sph_rj, 1,0)
+      jt = find_local_sph_address(sph_rj, 2,0)
 !
       pi = four * atan(one)
 !
 !$omp parallel do
-      do is = 1, nnod_rj
+      do is = 1, n_point
         d_rj(is,ipol%i_magne  ) = zero
         d_rj(is,ipol%i_magne+1) = zero
         d_rj(is,ipol%i_magne+2) = zero
@@ -386,8 +391,8 @@
 !
         if (js .gt. 0) then
           do k = nlayer_ICB, nlayer_CMB
-            is = js + (k-1)*nidx_rj(2)
-            rr = radius_1d_rj_r(k)
+            is = js + (k-1) * sph_rj%nidx_rj(2)
+            rr = sph_rj%radius_1d_rj_r(k)
 !
             d_rj(is,ipol%i_magne) =  (five / eight) * (-three * rr**3   &
      &                       + four * r_CMB * rr**2 - r_ICB**4 / rr)
@@ -399,8 +404,8 @@
 !
         if (jt .gt. 0) then
           do k = nlayer_ICB, nlayer_CMB
-            it = jt + (k-1)*nidx_rj(2)
-            rr = radius_1d_rj_r(k)
+            it = jt + (k-1) * sph_rj%nidx_rj(2)
+            rr = sph_rj%radius_1d_rj_r(k)
             d_rj(it,itor%i_magne)                                       &
      &            =  (ten/three) * rr * sin(pi*(rr-r_ICB))
             d_rj(it,ipol%i_current) =  d_rj(it,itor%i_magne)
@@ -414,8 +419,8 @@
 !
         if (js .gt. 0) then
           do k = 1, nlayer_CMB
-            is = js + (k-1)*nidx_rj(2)
-            rr = radius_1d_rj_r(k)
+            is = js + (k-1) * sph_rj%nidx_rj(2)
+            rr = sph_rj%radius_1d_rj_r(k)
             d_rj(is,ipol%i_magne) =  (five / two) * rr**2               &
      &                       * (four*r_CMB - three*rr) / (r_CMB+three)
             d_rj(is,idpdr%i_magne) = (five / two) * rr                  &
@@ -426,8 +431,8 @@
 !
         if (jt .gt. 0) then
           do k = 1, nlayer_CMB
-            it = jt + (k-1)*nidx_rj(2)
-            rr = radius_1d_rj_r(k)
+            it = jt + (k-1) * sph_rj%nidx_rj(2)
+            rr = sph_rj%radius_1d_rj_r(k)
 !
             d_rj(it,itor%i_magne)                                       &
      &          =  (ten / three) * rr * sin(pi*rr/r_CMB)
@@ -444,20 +449,20 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_noize_scalar_sph                                   &
-     &         (is_fld, reftemp_rj, radius_1d_rj_r, ntot_phys_rj, d_rj)
+      subroutine set_noize_scalar_sph(is_fld, reftemp_rj, sph_rj,       &
+     &          n_point, ntot_phys_rj, d_rj)
 !
       use m_spheric_parameter
       use m_control_parameter
 !
+      type(sph_rj_grid), intent(in) :: sph_rj
       integer(kind = kint), intent(in) :: is_fld
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
-      integer(kind = kint), intent(in) :: ntot_phys_rj
-      real(kind=kreal), intent(in) :: reftemp_rj(nidx_rj(1),0:1)
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real(kind=kreal), intent(in) :: reftemp_rj(sph_rj%nidx_rj(1),0:1)
 !
-      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
-      integer ( kind = kint) :: inod, j, k, jj
+      integer( kind = kint) :: inod, j, k, jj
       real (kind = kreal) :: pi, xr, shell
 !
 !
@@ -465,39 +470,39 @@
       shell = r_CMB - r_ICB
 !
 !$omp parallel do
-      do inod = 1, nnod_rj
+      do inod = 1, n_point
         d_rj(inod,is_fld) = zero
       end do
 !$omp end parallel do
 !
 !
-      if (sph_rj1%idx_rj_degree_zero .gt. 0) then
+      if (sph_rj%idx_rj_degree_zero .gt. 0) then
         if ( iflag_4_ref_temp .eq. id_sphere_ref_temp ) then
-          do k = 1, nidx_rj(1)
-            inod = sph_rj1%idx_rj_degree_zero + (k-1)*nidx_rj(2)
+          do k = 1, sph_rj%nidx_rj(1)
+            inod = sph_rj%idx_rj_degree_zero + (k-1)*sph_rj%nidx_rj(2)
             d_rj(inod,is_fld) = reftemp_rj(k,0)
           end do
         end if
       end if
 !
 !
-      do j = 1+sph_rj1%idx_rj_degree_zero, nidx_rj(2)
+      do j = 1+sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj(2)
         do k = nlayer_ICB+2, nlayer_CMB-2
-          inod = j + (k-1)*nidx_rj(2)
+          inod = j + (k-1) * sph_rj%nidx_rj(2)
 !
-          xr = two * radius_1d_rj_r(k)                                  &
-     &       - (radius_1d_rj_r(nlayer_ICB+2)                            &
-     &         +radius_1d_rj_r(nlayer_CMB-2) ) / shell
+          xr = two * sph_rj%radius_1d_rj_r(k)                           &
+     &       - (sph_rj%radius_1d_rj_r(nlayer_ICB+2)                     &
+     &         + sph_rj%radius_1d_rj_r(nlayer_CMB-2) ) / shell
           d_rj(inod,is_fld) = (one-three*xr**2+three*xr**4-xr**6)       &
      &                       * 1.0d-4 * six / (sqrt(pi))
         end do
       end do
 !
 !    Center
-      if(sph_rj1%inod_rj_center .gt. 0) then
-        jj = find_local_sph_address(sph_rj1, 0, 0)
-        inod = local_sph_node_address(sph_rj1, 1, jj)
-        d_rj(sph_rj1%inod_rj_center,is_fld) = d_rj(inod,is_fld)
+      if(sph_rj%inod_rj_center .gt. 0) then
+        jj = find_local_sph_address(sph_rj, 0, 0)
+        inod = local_sph_node_address(sph_rj, 1, jj)
+        d_rj(sph_rj%inod_rj_center,is_fld) = d_rj(inod,is_fld)
       end if
 !
       end subroutine set_noize_scalar_sph

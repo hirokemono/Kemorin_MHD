@@ -45,10 +45,10 @@
       integer(kind = kint), intent(in) :: ip_rank
 !
 !
-      call copy_gl_2_local_rlm_param(ip_rank)
+      call copy_gl_2_local_rlm_param(ip_rank, sph_rlm1)
 !
-      sph_rlm1%nnod_rlm = nnod_rlm
-      sph_rlm1%nidx_rlm(1:2) = nidx_rlm(1:2)
+      nnod_rlm = sph_rlm1%nnod_rlm
+      nidx_rlm(1:2) = sph_rlm1%nidx_rlm(1:2)
       call alloc_type_spheric_param_rlm(sph_rlm1)
       call alloc_type_sph_1d_index_rlm(sph_rlm1)
 !
@@ -83,10 +83,10 @@
       integer(kind = kint), intent(in) :: ip_rank
 !
 !
-      call copy_gl_2_local_rtm_param(ip_rank)
+      call copy_gl_2_local_rtm_param(ip_rank, sph_rtm1)
+      nnod_rtm = sph_rtm1%nnod_rtm
+      nidx_rtm(1:3) = sph_rtm1%nidx_rtm(1:3)
 !
-      sph_rtm1%nnod_rtm = nnod_rtm
-      sph_rtm1%nidx_rtm(1:3) = nidx_rtm(1:3)
       call alloc_type_spheric_param_rtm(sph_rtm1)
       call alloc_type_sph_1d_index_rtm(sph_rtm1)
 !
@@ -136,9 +136,11 @@
       type(mesh_groups) ::  group
 !
 !
-      call copy_gl_2_local_rtp_param(ip_rank)
-      nidx_local_fem(1:3) = nidx_rtp(1:3)
+      call copy_gl_2_local_rtp_param(ip_rank, sph_rtp1)
+      nidx_local_fem(1:3) = sph_rtp1%nidx_rtp(1:3)
       nidx_local_fem(3) =   m_folding * nidx_local_fem(3)
+      nnod_rtp = sph_rtp1%nnod_rtp
+      nidx_rtp = sph_rtp1%nidx_rtp
 !
       call s_const_FEM_mesh_for_sph(ip_rank, radius_1d_gl, mesh, group)
 !

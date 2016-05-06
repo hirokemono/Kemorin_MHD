@@ -62,17 +62,17 @@
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &      write(*,*) 'set_radius_dat_4_sph_dynamo'
       call set_radius_dat_4_sph_dynamo                                  &
-     &   (nidx_rj(1), sph_rj1%radius_1d_rj_r, iflag_radial_grid,        &
-     &    nlayer_ICB, nlayer_CMB, nlayer_2_center,                      &
+     &   (sph_rj1%nidx_rj(1), sph_rj1%radius_1d_rj_r,                   &
+     &    iflag_radial_grid, nlayer_ICB, nlayer_CMB, nlayer_2_center,   &
      &    sph_rj1%ar_1d_rj, sph_rj1%r_ele_rj, sph_rj1%ar_ele_rj,        &
      &    r_ICB, r_CMB, R_earth)
 !
 !   Choose radial grid mode
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &      write(*,*) 'set_dr_for_nonequi'
-      call allocate_dr_rj_noequi(nidx_rj(1))
+      call allocate_dr_rj_noequi(sph_rj1%nidx_rj(1))
       call set_dr_for_nonequi                                           &
-     &   (nlayer_CMB, nidx_rj(1), sph_rj1%radius_1d_rj_r)
+     &   (nlayer_CMB, sph_rj1%nidx_rj(1), sph_rj1%radius_1d_rj_r)
 !
 !*  ----------   reference of temperature --------
 !*
@@ -80,7 +80,7 @@
         if (iflag_debug .ge. iflag_routine_msg)                         &
      &               write(*,*) 'set_reftemp_4_sph'
         call set_reftemp_4_sph(sph_rj1%idx_rj_degree_zero,              &
-     &      nidx_rj, sph_rj1%ar_1d_rj, nlayer_ICB, nlayer_CMB,          &
+     &      sph_rj1%nidx_rj, sph_rj1%ar_1d_rj, nlayer_ICB, nlayer_CMB,  &
      &      r_hot, r_cold, temp_hot, temp_cold,                         &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
@@ -102,10 +102,10 @@
       use set_radius_func_noequi
 !
 !
-      call allocate_fdm_matrices(nidx_rj(1))
+      call allocate_fdm_matrices(sph_rj1%nidx_rj(1))
 !   Choose radial differences
       call nod_r_2nd_fdm_coefs_nonequi                                  &
-     &   (nlayer_ICB, nidx_rj(1), sph_rj1%radius_1d_rj_r)
+     &   (nlayer_ICB, sph_rj1%nidx_rj(1), sph_rj1%radius_1d_rj_r)
       call deallocate_dr_rj_noequi
 !
       end subroutine const_2nd_fdm_matrices
@@ -119,12 +119,13 @@
       use set_radius_func_noequi
 !
 !
-      call allocate_fdm_coefs(nidx_rj(1))
-      call copy_fdm_nod_coefs_from_mat(nidx_rj(1))
+      call allocate_fdm_coefs(sph_rj1%nidx_rj(1))
+      call copy_fdm_nod_coefs_from_mat(sph_rj1%nidx_rj(1))
       call deallocate_fdm_matrices
 !
       if(iflag_debug .eq. iflag_full_msg) then
-        call check_fdm_2_coefs(nidx_rj(1), sph_rj1%radius_1d_rj_r)
+        call check_fdm_2_coefs                                          &
+     &     (sph_rj1%nidx_rj(1), sph_rj1%radius_1d_rj_r)
       end if
 !
       end subroutine const_2nd_fdm_coefs
