@@ -82,8 +82,8 @@
       integer(kind = kint), parameter :: iflag_send_recv = 0
 !>      Integer flag to use MPI_AllToAllv
       integer(kind = kint), parameter :: iflag_alltoallv = 1
-!>      Integer flag to use MPI_AllToAll
-      integer(kind = kint), parameter :: iflag_alltoall =  2
+!!>      Integer flag to use MPI_AllToAll
+!      integer(kind = kint), parameter :: iflag_alltoall =  2
 !
 !
 !>      Data communication mode for arbitrary size data
@@ -91,6 +91,17 @@
 !
 !>      Data communication mode for arbitrary size data
       integer(kind = kint) :: iflag_sph_commN = iflag_SR_UNDEFINED
+!
+!>      Data communication mode for six components data
+      integer(kind = kint) :: iflag_sph_SR6 = iflag_import_item
+!>      Data communication mode for vector
+      integer(kind = kint) :: iflag_sph_SR3 = iflag_import_item
+!>      Data communication mode for soleinoidal vection
+      integer(kind = kint) :: iflag_sph_SR2 = iflag_import_item
+!>      Data communication mode for scalar
+      integer(kind = kint) :: iflag_sph_SR =  iflag_import_item
+!>      Data communication mode for integer
+      integer(kind = kint) :: iflag_sph_SR_int = iflag_import_item
 !
 !-----------------------------------------------------------------------
 !
@@ -131,8 +142,6 @@
         iflag_sph_commN = iflag_send_recv
 !      else if(cmp_no_case(send_recv_ctl, hd_all2allv)) then
 !        iflag_sph_commN = iflag_alltoallv
-!      else if(cmp_no_case(send_recv_ctl, hd_all2all) ) then
-!        iflag_sph_commN = iflag_alltoall
       else
         iflag_sph_commN = iflag_SR_UNDEFINED
       end if
@@ -170,8 +179,6 @@
 !
       integer(kind = kint), intent(in) :: npe_recv
       integer(kind = kint), intent(in) :: istack_recv(0:npe_recv)
-!
-      integer(kind = kint) :: nitem
 !
 !
       call resize_work_4_SR(NB, npe_send, npe_recv,                     &

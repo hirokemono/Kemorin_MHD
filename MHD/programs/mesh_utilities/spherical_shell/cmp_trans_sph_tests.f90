@@ -114,7 +114,9 @@
 !
       use calypso_mpi
       use m_spheric_parameter
-      use spherical_SRs
+      use m_sel_spherical_SRs
+      use m_sph_trans_comm_table
+      use spherical_SRs_N
 !
       integer(kind = kint), intent(in) ::itype
 !
@@ -123,17 +125,17 @@
       call set_transfer_sph_reals(ione)
 !
       if (my_rank .eq. 0) write(*,*) 'send_recv_rtp_2_rtm_1'
-      call send_recv_rtp_2_rtm                                          &
-     &    (X_global_rtp(1), X_rtm_recieve(1) )
+      call send_recv_sph_trans(sph_rtp1%nnod_rtp, sph_rtm1%nnod_rtm,    &
+     &   comm_rtp1, comm_rtm1, X_global_rtp(1), X_rtm_recieve(1) )
       if (my_rank .eq. 0) write(*,*) 'send_recv_rtm_2_rtp_1'
-      call send_recv_rtm_2_rtp                                          &
-     &    (X_global_rtm(1), X_rtp_recieve(1) )
+      call send_recv_sph_trans(sph_rtm1%nnod_rtm, sph_rtp1%nnod_rtp,    &
+     &    comm_rtm1, comm_rtp1, X_global_rtm(1), X_rtp_recieve(1) )
       if (my_rank .eq. 0) write(*,*) 'send_recv_rj_2_rlm_1'
-      call send_recv_rj_2_rlm                                           &
-     &    (X_global_rj(1), X_rlm_recieve(1) )
+      call send_recv_sph_trans(sph_rj1%nnod_rj, sph_rlm1%nnod_rlm,      &
+     &    comm_rj1, comm_rlm1, X_global_rj(1), X_rlm_recieve(1) )
       if (my_rank .eq. 0) write(*,*) 'send_recv_rlm_2_rj_1'
-      call send_recv_rlm_2_rj                                           &
-     &    (X_global_rlm(1), X_rj_recieve(1) )
+      call send_recv_sph_trans(sph_rlm1%nnod_rlm, sph_rj1%nnod_rj,      &
+     &    comm_rlm1, comm_rj1, X_global_rlm(1), X_rj_recieve(1) )
 !
       end subroutine sph_transfer_test_1
 !
@@ -143,7 +145,9 @@
 !
       use calypso_mpi
       use m_spheric_parameter
-      use spherical_SRs_2
+      use m_sel_spherical_SRs
+      use m_sph_trans_comm_table
+      use spherical_SRs_N
 !
       integer(kind = kint), intent(in) ::itype
 !
@@ -152,17 +156,17 @@
       call set_transfer_sph_reals(itwo)
 !
       if (my_rank .eq. 0) write(*,*) 'send_recv_rtp_2_rtm_2'
-      call send_recv_rtp_2_rtm_2                                        &
-     &    (X_global_rtp(1), X_rtm_recieve(1) )
+      call send_recv_sph_trans_2(sph_rtp1%nnod_rtp, sph_rtm1%nnod_rtm,  &
+     &    comm_rtp1, comm_rtm1, X_global_rtp(1), X_rtm_recieve(1) )
       if (my_rank .eq. 0) write(*,*) 'send_recv_rtm_2_rtp_2'
-      call send_recv_rtm_2_rtp_2                                        &
-     &    (X_global_rtm(1), X_rtp_recieve(1) )
+      call send_recv_sph_trans_2(sph_rtm1%nnod_rtm, sph_rtp1%nnod_rtp,  &
+     &    comm_rtm1, comm_rtp1, X_global_rtm(1), X_rtp_recieve(1) )
       if (my_rank .eq. 0) write(*,*) 'send_recv_rj_2_rlm_2'
-      call send_recv_rj_2_rlm_2                                         &
-     &    (X_global_rj(1), X_rlm_recieve(1) )
+      call send_recv_sph_trans_2(sph_rj1%nnod_rj, sph_rlm1%nnod_rlm,    &
+     &    comm_rj1, comm_rlm1, X_global_rj(1), X_rlm_recieve(1) )
       if (my_rank .eq. 0) write(*,*) 'send_recv_rlm_2_rj_2'
-      call send_recv_rlm_2_rj_2                                         &
-     &    (X_global_rlm(1), X_rj_recieve(1) )
+      call send_recv_sph_trans_2(sph_rlm1%nnod_rlm, sph_rj1%nnod_rj,    &
+     &    comm_rlm1, comm_rj1, X_global_rlm(1), X_rj_recieve(1) )
 !
       end subroutine sph_transfer_test_2
 !
@@ -172,7 +176,9 @@
 !
       use calypso_mpi
       use m_spheric_parameter
-      use spherical_SRs_3
+      use m_sph_trans_comm_table
+      use m_sel_spherical_SRs
+      use spherical_SRs_N
 !
       integer(kind = kint), intent(in) ::itype
 !
@@ -181,17 +187,17 @@
       call set_transfer_sph_reals(ithree)
 !
       if (my_rank .eq. 0) write(*,*) 'send_recv_rtp_2_rtm_3'
-      call send_recv_rtp_2_rtm_3                                        &
-     &    (X_global_rtp(1), X_rtm_recieve(1) )
+      call send_recv_sph_trans_3(sph_rtp1%nnod_rtp, sph_rtm1%nnod_rtm,  &
+     &    comm_rtp1, comm_rtm1, X_global_rtp(1), X_rtm_recieve(1) )
       if (my_rank .eq. 0) write(*,*) 'send_recv_rtm_2_rtp_3'
-      call send_recv_rtm_2_rtp_3                                        &
-     &    (X_global_rtm(1), X_rtp_recieve(1) )
+      call send_recv_sph_trans_3(sph_rtm1%nnod_rtm, sph_rtp1%nnod_rtp,  &
+     &    comm_rtm1, comm_rtp1, X_global_rtm(1), X_rtp_recieve(1) )
       if (my_rank .eq. 0) write(*,*) 'send_recv_rj_2_rlm_3'
-      call send_recv_rj_2_rlm_3                                         &
-     &    (X_global_rj(1), X_rlm_recieve(1) )
+      call send_recv_sph_trans_3(sph_rj1%nnod_rj, sph_rlm1%nnod_rlm,    &
+     &    comm_rj1, comm_rlm1, X_global_rj(1), X_rlm_recieve(1) )
       if (my_rank .eq. 0) write(*,*) 'send_recv_rlm_2_rj_3'
-      call send_recv_rlm_2_rj_3                                         &
-     &    (X_global_rlm(1), X_rj_recieve(1) )
+      call send_recv_sph_trans_3(sph_rlm1%nnod_rlm, sph_rj1%nnod_rj,    &
+     &    comm_rlm1, comm_rj1, X_global_rlm(1), X_rj_recieve(1) )
 !
       end subroutine sph_transfer_test_3
 !
@@ -201,7 +207,9 @@
 !
       use calypso_mpi
       use m_spheric_parameter
-      use spherical_SRs_6
+      use m_sph_trans_comm_table
+      use m_sel_spherical_SRs
+      use spherical_SRs_N
 !
       integer(kind = kint), intent(in) ::itype
 !
@@ -210,17 +218,21 @@
       call set_transfer_sph_reals(isix)
 !
       if (my_rank .eq. 0) write(*,*) 'send_recv_rtp_2_rtm_6'
-      call send_recv_rtp_2_rtm_6                                        &
-     &    (X_global_rtp(1), X_rtm_recieve(1) )
+      call send_recv_sph_trans_6                                        &
+     &   (sph_rtp1%nnod_rtp, sph_rtm1%nnod_rtm, comm_rtp1, comm_rtm1,   &
+     &    X_global_rtp(1), X_rtm_recieve(1) )
       if (my_rank .eq. 0) write(*,*) 'send_recv_rtm_2_rtp_6'
-      call send_recv_rtm_2_rtp_6                                        &
-     &    (X_global_rtm(1), X_rtp_recieve(1) )
+      call send_recv_sph_trans_6                                        &
+     &   (sph_rtm1%nnod_rtm, sph_rtp1%nnod_rtp, comm_rtm1, comm_rtp1,   &
+     &    X_global_rtm(1), X_rtp_recieve(1) )
       if (my_rank .eq. 0) write(*,*) 'send_recv_rj_2_rlm_6'
-      call send_recv_rj_2_rlm_6                                         &
-     &    (X_global_rj(1), X_rlm_recieve(1) )
+      call send_recv_sph_trans_6                                        &
+     &   (sph_rj1%nnod_rj, sph_rlm1%nnod_rlm, comm_rj1, comm_rlm1,      &
+     &    X_global_rj(1), X_rlm_recieve(1) )
       if (my_rank .eq. 0) write(*,*) 'send_recv_rlm_2_rj_6'
-      call send_recv_rlm_2_rj_6                                         &
-     &    (X_global_rlm(1), X_rj_recieve(1) )
+      call send_recv_sph_trans_6                                        &
+     &   (sph_rlm1%nnod_rlm, sph_rj1%nnod_rj, comm_rlm1, comm_rj1,      &
+     &    X_global_rlm(1), X_rj_recieve(1) )
 !
       end subroutine sph_transfer_test_6
 !

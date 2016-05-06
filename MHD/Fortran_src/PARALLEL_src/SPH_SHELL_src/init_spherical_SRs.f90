@@ -45,8 +45,6 @@
 !
       use calypso_mpi
 !
-      use m_spheric_parameter
-      use m_sph_trans_comm_table
       use m_sph_communicators
       use m_work_4_sph_trans_spin
       use spherical_SRs_N
@@ -63,7 +61,7 @@
 !
       call check_spherical_SRs_N(NB)
 !
-      call buffer_size_sph_send_recv(NB)
+      call check_calypso_sph_buffer_N(NB)
       call sel_sph_import_table(NB, X_rtp, vr_rtm_wk, sp_rlm_wk, X_rj)
 !
       deallocate(X_rj, X_rtp)
@@ -88,8 +86,6 @@
           write(*,'(3a)') ' (', trim(hd_sendrecv), ') '
         else if(iflag_sph_commN .eq. iflag_alltoallv) then
           write(*,'(3a)') ' (', trim(hd_all2allv), ') '
-        else if(iflag_sph_commN .eq. iflag_alltoall) then
-          write(*,'(3a)') ' (', trim(hd_all2all), ') '
         end if
       end if
 !
@@ -101,8 +97,6 @@
 !
       use calypso_mpi
 !
-      use m_spheric_parameter
-      use m_sph_trans_comm_table
       use m_sph_communicators
       use m_solver_SR
 !
@@ -169,19 +163,6 @@
       if(iflag_sph_commN .ne. iflag_SR_UNDEFINED) return
 !
       endtime(0:2) = 0.0d0
-      iflag_sph_commN = iflag_alltoall
-      starttime = MPI_WTIME()
-      call all_sph_SR_core_N(NB)
-      endtime(2) = MPI_WTIME() - starttime
-!
-      call set_reverse_import_table(nnod_rtp, comm_rtp1%ntot_item_sr,   &
-     &    comm_rtp1%item_sr, comm_rtp1%irev_sr)
-      call set_reverse_import_table(nnod_rtm, comm_rtm1%ntot_item_sr,   &
-     &    comm_rtm1%item_sr, comm_rtm1%irev_sr)
-      call set_reverse_import_table(nnod_rlm, comm_rlm1%ntot_item_sr,   &
-     &    comm_rlm1%item_sr, comm_rlm1%irev_sr)
-      call set_reverse_import_table(nnod_rj,  comm_rj1%ntot_item_sr,    &
-     &    comm_rj1%item_sr,  comm_rj1%irev_sr)
 !
       iflag_sph_commN = iflag_send_recv
       starttime = MPI_WTIME()
@@ -198,7 +179,7 @@
 !
       etime_shortest = etime_send_recv(0)
       iflag_sph_commN = iflag_send_recv
-      do i = 1, 2
+      do i = 1, 1
         if(etime_send_recv(i) .le. etime_shortest                       &
      &          .and. etime_send_recv(i) .gt. 0.0) then
           etime_shortest = etime_send_recv(i)
@@ -209,7 +190,6 @@
       if(my_rank .gt. 0) return
         write(*,*) '0: Time by MPI_ISEND_IRECV: ', etime_send_recv(0)
         write(*,*) '1: Time by MPI_AllToAllV: ',   etime_send_recv(1)
-        write(*,*) '2: Time by MPI_AllToAll:  ',   etime_send_recv(2)
 !
       end subroutine sel_sph_comm_routine
 !
@@ -270,7 +250,6 @@
       subroutine check_spherical_SRs_N(NB)
 !
       use calypso_mpi
-      use m_spheric_parameter
       use select_calypso_SR
 !
       integer (kind=kint), intent(in) :: NB

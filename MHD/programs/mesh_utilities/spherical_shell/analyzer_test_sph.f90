@@ -86,11 +86,14 @@
        end if
 !
         call sph_indices_transfer                                       &
-     &     (itype, nnod_rtp, nnod_rtm, nnod_rlm, nnod_rj,               &
+     &     (itype, sph_rtp1%nnod_rtp, sph_rtm1%nnod_rtm,                &
+     &      sph_rlm1%nnod_rlm, sph_rj1%nnod_rj,                         &
      &      sph_rtp1%idx_global_rtp, sph_rtm1%idx_global_rtm,           &
      &      sph_rlm1%idx_global_rlm, sph_rj1%idx_global_rj)
-        call check_missing_sph_indices(id_check)
-        call compare_transfer_sph_indices(id_check)
+        call check_missing_sph_indices(id_check,                        &
+     &      sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1)
+        call compare_transfer_sph_indices(id_check,                     &
+     &      sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1)
 !
         call sph_transfer_test_N(NB, itype)
         call compare_transfer_sph_reals(NB, id_check)
