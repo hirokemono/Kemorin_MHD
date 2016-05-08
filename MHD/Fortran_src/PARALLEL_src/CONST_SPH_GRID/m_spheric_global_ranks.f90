@@ -3,14 +3,16 @@
 !
 !     Written by H. Matsui on July, 2007
 !
-!      subroutine allocate_sph_ranks
-!      subroutine allocate_sph_1d_domain_id
-!
-!      subroutine deallocate_sph_ranks
-!      subroutine deallocate_sph_1d_domain_id
-!
-!      subroutine check_sph_ranks(my_rank)
-!      subroutine check_sph_1d_domain_id
+!!      subroutine allocate_sph_ranks
+!!      subroutine allocate_sph_1d_domain_id(sph_rtp, sph_rj)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!
+!!      subroutine deallocate_sph_ranks
+!!      subroutine deallocate_sph_1d_domain_id
+!!
+!!      subroutine check_sph_ranks(my_rank)
+!!      subroutine check_sph_1d_domain_id
 !
       module m_spheric_global_ranks
 !
@@ -63,15 +65,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_sph_1d_domain_id
+      subroutine allocate_sph_1d_domain_id(sph_rtp, sph_rj)
 !
-      use m_spheric_parameter
+      use t_spheric_parameter
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_rj_grid), intent(in) :: sph_rj
 !
       integer(kind = kint) :: n1, n2, n3
 !
-      n1 = sph_rtp1%nidx_global_rtp(1)
-      n2 = sph_rtp1%nidx_global_rtp(2)
-      n3 = sph_rtp1%nidx_global_rtp(3)
+      n1 = sph_rtp%nidx_global_rtp(1)
+      n2 = sph_rtp%nidx_global_rtp(2)
+      n3 = sph_rtp%nidx_global_rtp(3)
       allocate( id_domain_rtp_r(n1) )
       allocate( id_domain_rtp_t(n2) )
       allocate( id_domain_rtp_p(n3) )
@@ -82,8 +87,8 @@
 !
 !
 !
-      n1 = sph_rj1%nidx_global_rj(1)
-      n2 = sph_rj1%nidx_global_rj(2)
+      n1 = sph_rj%nidx_global_rj(1)
+      n2 = sph_rj%nidx_global_rj(2)
       allocate( id_domain_rj_r(n1) )
       allocate( id_domain_rj_j(0:n2) )
 !
@@ -144,26 +149,29 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_sph_1d_domain_id
+      subroutine check_sph_1d_domain_id(sph_rtp, sph_rj)
 !
-      use m_spheric_parameter
+      use t_spheric_parameter
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_rj_grid), intent(in) :: sph_rj
 !
       write(50,*) 'id_domain_rtp_r'
-      write(50,'(5i16)') id_domain_rtp_r(1:sph_rtp1%nidx_global_rtp(1))
+      write(50,'(5i16)') id_domain_rtp_r(1:sph_rtp%nidx_global_rtp(1))
 !
       write(50,*) 'id_domain_rtp_t'
-      write(50,'(5i16)') id_domain_rtp_t(1:sph_rtp1%nidx_global_rtp(2))
+      write(50,'(5i16)') id_domain_rtp_t(1:sph_rtp%nidx_global_rtp(2))
 !
       write(50,*) 'id_domain_rtp_p'
-      write(50,'(5i16)') id_domain_rtp_p(1:sph_rtp1%nidx_global_rtp(3))
+      write(50,'(5i16)') id_domain_rtp_p(1:sph_rtp%nidx_global_rtp(3))
 !
 !
       write(50,*) 'id_domain_rj_r'
-      write(50,'(5i16)') id_domain_rj_r(1:sph_rj1%nidx_global_rj(1))
+      write(50,'(5i16)') id_domain_rj_r(1:sph_rj%nidx_global_rj(1))
 !
       write(50,*) 'id_domain_rj_j'
       write(50,'(5i16)') id_domain_rj_j(0)
-      write(50,'(5i16)') id_domain_rj_j(1:sph_rj1%nidx_global_rj(2))
+      write(50,'(5i16)') id_domain_rj_j(1:sph_rj%nidx_global_rj(2))
 !
       end subroutine check_sph_1d_domain_id
 !

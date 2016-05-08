@@ -75,7 +75,7 @@
       call set_stack_rtp_radial_grp
 !
       call allocate_grp_type_item(radial_rtp_grp1)
-      call set_item_rtp_radial_grp
+      call set_item_rtp_radial_grp(sph_rtp1, radial_rtp_grp1)
 !
       end subroutine set_rtp_radial_grp
 !
@@ -92,7 +92,7 @@
       call set_stack_rj_radial_grp
 !
       call allocate_grp_type_item(radial_rj_grp1)
-      call set_item_rj_radial_grp
+      call set_item_rj_radial_grp(sph_rj1, radial_rj_grp1)
 !
       end subroutine set_rj_radial_grp
 !
@@ -113,7 +113,7 @@
 !      write(*,*) 'allocate_rj_sphere_grp_item'
       call allocate_grp_type_item(sphere_rj_grp1)
 !      write(*,*) 'set_item_rj_spectr_grp'
-      call set_item_rj_spectr_grp
+      call set_item_rj_spectr_grp(sph_rj1, sphere_rj_grp1)
 !
       end subroutine set_rj_spectr_grp
 !

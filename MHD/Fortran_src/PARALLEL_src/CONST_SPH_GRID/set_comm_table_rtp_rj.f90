@@ -63,8 +63,6 @@
 !
       subroutine const_sph_rj_modes(ip_rank, ndomain_sph, comm_rlm)
 !
-      use m_spheric_parameter
-!
       use t_spheric_rj_data
 !
       use load_data_for_sph_IO
@@ -90,7 +88,7 @@
       call alloc_type_spheric_param_rj(sph_rj1)
       call alloc_type_sph_1d_index_rj(sph_rj1)
 !
-      call copy_sph_1d_gl_idx_rj
+      call copy_sph_1d_gl_idx_rj(sph_rj1)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                 'set_global_sph_rj_id', ip_rank
@@ -122,8 +120,6 @@
 !
       subroutine const_sph_rtp_grids(ip_rank, ndomain_sph, comm_rtm)
 !
-      use m_spheric_parameter
-!
       use t_spheric_rtp_data
 !
       use load_data_for_sph_IO
@@ -147,7 +143,7 @@
       call alloc_type_spheric_param_rtp(sph_rtp1)
       call alloc_type_sph_1d_index_rtp(sph_rtp1)
 !
-      call copy_sph_1d_gl_idx_rtp
+      call copy_sph_1d_gl_idx_rtp(sph_rtp1)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                 'set_global_sph_rtp_id', ip_rank

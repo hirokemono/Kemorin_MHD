@@ -52,7 +52,8 @@
 !
 !
       call const_global_sph_FEM
-      call s_const_1d_ele_connect_4_sph
+      call s_const_1d_ele_connect_4_sph                                 &
+     &   (iflag_shell_mode, m_folding, sph_rtp1)
 !
       nidx_local_fem(1:3) = nidx_rtp(1:3)
       nidx_local_fem(3) =   m_folding * nidx_local_fem(3)
@@ -71,6 +72,7 @@
 !
       subroutine const_global_sph_FEM
 !
+      use m_spheric_parameter
       use m_spheric_global_ranks
       use m_sph_global_parameter
       use m_sph_1d_global_index
@@ -81,7 +83,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'const_global_rtp_mesh'
       call const_global_rtp_mesh
 !
-      call allocate_sph_1d_domain_id
+      call allocate_sph_1d_domain_id(sph_rtp1, sph_rj1)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_1d_domain_id_rtp'
       call set_sph_1d_domain_id_rtp

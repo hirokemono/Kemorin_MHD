@@ -57,6 +57,7 @@
 !
       subroutine s_const_global_sph_grids_modes
 !
+      use m_spheric_parameter
       use m_spheric_global_ranks
       use m_sph_global_parameter
       use m_sph_1d_global_index
@@ -99,7 +100,7 @@
      &   (sph_rj1%nidx_global_rj(2), jtbl_fsph)
       call set_sph_1d_global_idx_rj(sph_rj1%nidx_global_rj(2), jtbl_rj)
 !
-      call allocate_sph_1d_domain_id
+      call allocate_sph_1d_domain_id(sph_rtp1, sph_rj1)
 !
       call set_sph_1d_domain_id_rtp
       call set_sph_1d_domain_id_rj
@@ -108,7 +109,7 @@
         write(50,*) 'idx_global_rtp_r', idx_global_rtp_r
         write(50,*) 'idx_global_rtm_r', idx_global_rtm_r
         write(50,*) 'idx_global_rlm_r', idx_global_rlm_r
-!        call check_sph_1d_domain_id
+!        call check_sph_1d_domain_id(sph_rtp1, sph_rj1)
       end if
 !
       end subroutine s_const_global_sph_grids_modes
@@ -117,6 +118,7 @@
 !
       subroutine const_global_sph_FEM_grid
 !
+      use m_spheric_parameter
       use m_spheric_global_ranks
       use m_sph_global_parameter
       use m_sph_1d_global_index
@@ -144,7 +146,7 @@
       call set_sph_1d_global_idx_rtp                                    &
      &   (m_folding, sph_rtp1%nidx_global_rtp(3), mdx_ispack)
 !
-      call allocate_sph_1d_domain_id
+      call allocate_sph_1d_domain_id(sph_rtp1, sph_rj1)
 !
       call set_sph_1d_domain_id_rtp
 !

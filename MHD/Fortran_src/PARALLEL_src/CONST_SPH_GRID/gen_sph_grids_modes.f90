@@ -52,7 +52,7 @@
       call alloc_type_spheric_param_rlm(sph_rlm1)
       call alloc_type_sph_1d_index_rlm(sph_rlm1)
 !
-      call copy_sph_1d_gl_idx_rlm
+      call copy_sph_1d_gl_idx_rlm(sph_rlm1)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &          'set_global_sph_4_rlm', ip_rank
@@ -90,7 +90,7 @@
       call alloc_type_spheric_param_rtm(sph_rtm1)
       call alloc_type_sph_1d_index_rtm(sph_rtm1)
 !
-      call copy_sph_1d_gl_idx_rtm
+      call copy_sph_1d_gl_idx_rtm(sph_rtm1)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &          'set_global_sph_4_rtm', ip_rank

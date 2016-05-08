@@ -220,7 +220,8 @@
       call construct_gauss_coefs
       call set_gauss_colatitude
 !
-      call s_const_1d_ele_connect_4_sph
+      call s_const_1d_ele_connect_4_sph                                 &
+     &   (iflag_shell_mode, m_folding, sph_rtp1)
       call set_rj_radial_grp
 !
       do ip_rank = 0, ndomain_sph-1

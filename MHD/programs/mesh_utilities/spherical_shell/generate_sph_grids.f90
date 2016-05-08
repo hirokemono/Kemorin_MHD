@@ -46,7 +46,7 @@
 !
 !  ========= Generate spherical harmonics table ========================
 !
-      if(iflag_debug .gt. 0) write(*,*) 'count_nod_ele_4_sph_radial'
+      if(iflag_debug .gt. 0) write(*,*) 'const_global_sph_grids_modes'
       call s_const_global_sph_grids_modes
 !
       if(iflag_debug .gt. 0) write(*,*) 'gen_sph_rlm_grids'

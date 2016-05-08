@@ -84,7 +84,8 @@
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &    'sel_backward_legendre_trans', ncomp_trans, nvector, nscalar
       call sel_backward_legendre_trans                                  &
-     &   (ncomp_trans, nvector, nscalar, n_WR, n_WS, WR, WS)
+     &   (ncomp_trans, nvector, nscalar, sph_rlm1, sph_rtm1,            &
+     &    comm_rlm1, comm_rtm1, n_WR, n_WS, WR, WS)
       call end_eleps_time(22)
 !
 !
@@ -135,8 +136,8 @@
 !
       call start_eleps_time(23)
       if(iflag_debug .gt. 0) write(*,*) 'sel_forward_legendre_trans'
-      call sel_forward_legendre_trans                                   &
-     &   (ncomp_trans, nvector, nscalar, n_WR, n_WS, WR, WS)
+      call sel_forward_legendre_trans(ncomp_trans, nvector, nscalar,    &
+     &    sph_rtm1, sph_rlm1, comm_rtm1, comm_rlm1, n_WR, n_WS, WR, WS)
       call end_eleps_time(23)
 !
 !

@@ -3,19 +3,24 @@
 !
 !     Written by H. Matsui on March, 2012
 !
-!      subroutine s_const_1d_ele_connect_4_sph
+!!      subroutine s_const_1d_ele_connect_4_sph                         &
+!!     &         (iflag_shell_mode, m_folding, sph_rtp)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !
 !      subroutine count_nod_ele_4_sph_radial
-!      subroutine count_nod_ele_4_sph_theta
+!      subroutine count_nod_ele_4_sph_theta(iflag_shell_mode)
 !
       module const_1d_ele_connect_4_sph
 !
       use m_precision
       use m_constants
       use m_machine_parameter
+      use m_spheric_constants
       use m_sph_mesh_1d_connect
 !
       implicit none
+!
+      private :: count_nod_ele_4_sph_radial, count_nod_ele_4_sph_theta
 !
 ! ----------------------------------------------------------------------
 !
@@ -23,19 +28,24 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_const_1d_ele_connect_4_sph
+      subroutine s_const_1d_ele_connect_4_sph                           &
+     &         (iflag_shell_mode, m_folding, sph_rtp)
 !
       use m_spheric_global_ranks
-      use m_spheric_parameter
+      use t_spheric_parameter
+!
+      integer(kind = kint), intent(in) :: iflag_shell_mode
+      integer(kind = kint), intent(in) :: m_folding
+      type(sph_rtp_grid), intent(in) :: sph_rtp
 !
 !
       call allocate_nnod_nele_sph_mesh(ndomain_sph, ndomain_rtp,        &
-     &    sph_rtp1%nidx_global_rtp, m_folding)
+     &    sph_rtp%nidx_global_rtp, m_folding)
 !
       if(iflag_debug .gt. 0) write(*,*) 'count_nod_ele_4_sph_radial'
-      call count_nod_ele_4_sph_radial
+      call count_nod_ele_4_sph_radial(iflag_shell_mode)
       if(iflag_debug .gt. 0) write(*,*) 'count_nod_ele_4_sph_theta'
-      call count_nod_ele_4_sph_theta
+      call count_nod_ele_4_sph_theta(iflag_shell_mode)
 !
       call allocate_iele_sph_mesh
 !
@@ -53,10 +63,11 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine count_nod_ele_4_sph_radial
+      subroutine count_nod_ele_4_sph_radial(iflag_shell_mode)
 !
-      use m_spheric_parameter
       use m_sph_1d_global_index
+!
+      integer(kind = kint), intent(in) :: iflag_shell_mode
 !
       integer(kind = kint) :: k, kr, ip, jp, ist, ied
 !
@@ -140,10 +151,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_nod_ele_4_sph_theta
+      subroutine count_nod_ele_4_sph_theta(iflag_shell_mode)
 !
-      use m_spheric_parameter
       use m_sph_1d_global_index
+!
+      integer(kind = kint), intent(in) :: iflag_shell_mode
 !
       integer(kind = kint) :: k, ip, ist, ied, jp
 !
