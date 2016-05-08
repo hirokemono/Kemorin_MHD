@@ -101,10 +101,12 @@
       integer(kind = kint) :: n_jk_e(np_smp), n_jk_o(np_smp)
 !
 !
-      elaps(1:4) = 0
 !$omp parallel workshare
       WS(1:ncomp*comm_rlm%ntot_item_sr) = 0.0d0
 !$omp end parallel workshare
+!
+      if(nvector .le. 0) return
+      elaps(1:4) = 0
 !
       nle_rtm = (sph_rtm%nidx_rtm(2) + 1)/2
       nlo_rtm = sph_rtm%nidx_rtm(2) / 2
@@ -203,12 +205,8 @@
       integer(kind = kint) :: n_jk_e(np_smp), n_jk_o(np_smp)
 !
 !
+      if(nscalar .le. 0) return
       elaps(1:4) = 0
-      if(nvector .eq. 0) then
-!$omp parallel workshare
-        WS(1:ncomp*comm_rlm%ntot_item_sr) = 0.0d0
-!$omp end parallel workshare
-      end if
 !
       nle_rtm = (sph_rtm%nidx_rtm(2) + 1)/2
       nlo_rtm = sph_rtm%nidx_rtm(2) / 2
@@ -281,10 +279,12 @@
       integer(kind = kint) :: n_jk_e(np_smp), n_jk_o(np_smp)
 !
 !
-      elaps(1:4) = 0
 !$omp parallel workshare
       WS(1:ncomp*comm_rlm%ntot_item_sr) = 0.0d0
 !$omp end parallel workshare
+!
+      if(nvector .le. 0) return
+      elaps(1:4) = 0
 !
       nle_rtm = (sph_rtm%nidx_rtm(2) + 1)/2
       nlo_rtm = sph_rtm%nidx_rtm(2) / 2
@@ -383,12 +383,8 @@
       integer(kind = kint) :: n_jk_e(np_smp), n_jk_o(np_smp)
 !
 !
+      if(nscalar .le. 0) return
       elaps(1:4) = 0
-      if(nvector .eq. 0) then
-!$omp parallel workshare
-        WS(1:ncomp*comm_rlm%ntot_item_sr) = 0.0d0
-!$omp end parallel workshare
-      end if
 !
       nle_rtm = (sph_rtm%nidx_rtm(2) + 1)/2
       nlo_rtm = sph_rtm%nidx_rtm(2) / 2
@@ -461,10 +457,12 @@
       integer(kind = kint) :: n_jk_e(np_smp), n_jk_o(np_smp)
 !
 !
-      elaps(1:4) = 0
 !$omp parallel workshare
       WS(1:ncomp*comm_rlm%ntot_item_sr) = 0.0d0
 !$omp end parallel workshare
+!
+      if(nvector .le. 0) return
+      elaps(1:4) = 0
 !
       nle_rtm = (sph_rtm%nidx_rtm(2) + 1)/2
       nlo_rtm = sph_rtm%nidx_rtm(2) / 2
@@ -563,12 +561,8 @@
       integer(kind = kint) :: n_jk_e(np_smp), n_jk_o(np_smp)
 !
 !
+      if(nscalar .le. 0) return
       elaps(1:4) = 0
-      if(nvector .eq. 0) then
-!$omp parallel workshare
-        WS(1:ncomp*comm_rlm%ntot_item_sr) = 0.0d0
-!$omp end parallel workshare
-      end if
 !
       nle_rtm = (sph_rtm%nidx_rtm(2) + 1)/2
       nlo_rtm = sph_rtm%nidx_rtm(2) / 2

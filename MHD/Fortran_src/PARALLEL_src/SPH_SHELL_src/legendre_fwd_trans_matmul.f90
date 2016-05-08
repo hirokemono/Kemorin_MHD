@@ -7,6 +7,8 @@
 !>@brief  forward Legendre transform for testing
 !!
 !!@verbatim
+!!      subroutine alloc_vec_fleg_mat_test(nvector)
+!!
 !!      subroutine leg_f_trans_vector_matmul(ncomp, nvector,            &
 !!     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm,                 &
 !!     &          n_WR, n_WS, WR, WS)
@@ -24,7 +26,7 @@
 !!      subroutine leg_f_trans_vector_matprod(ncomp, nvector,           &
 !!     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm,                 &
 !!     &          n_WR, n_WS, WR, WS)
-!!      subroutine leg_f_trans_vector_matprod(ncomp, nvector, nscalar,  &
+!!      subroutine leg_f_trans_scalar_matprod(ncomp, nvector, nscalar,  &
 !!     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm,                 &
 !!     &          n_WR, n_WS, WR, WS)
 !!        Input:  vr_rtm
@@ -96,10 +98,12 @@
       integer(kind = kint) :: jst(np_smp), nj_rlm(np_smp)
 !
 !
-      elaps(1:4) = 0
 !$omp parallel workshare
       WS(1:ncomp*comm_rlm%ntot_item_sr) = 0.0d0
 !$omp end parallel workshare
+!
+      if(nvector .le. 0) return
+      elaps(1:4) = 0
 !
 !$omp parallel do schedule(static)                                      &
 !$omp             private(ip,mp_rlm,mn_rlm,st_elapsed)                  &
@@ -182,12 +186,8 @@
       integer(kind = kint) :: jst(np_smp), nj_rlm(np_smp)
 !
 !
+      if(nscalar .le. 0) return
       elaps(1:4) = 0
-      if(nvector .gt. 0) then
-!$omp parallel workshare
-        WS(1:ncomp*comm_rlm%ntot_item_sr) = 0.0d0
-!$omp end parallel workshare
-      end if
 !
 !$omp parallel do schedule(static)                                      &
 !$omp&            private(ip,mp_rlm,st_elapsed)                         &
@@ -253,10 +253,12 @@
       integer(kind = kint) :: jst(np_smp), nj_rlm(np_smp)
 !
 !
-      elaps(1:4) = 0
 !$omp parallel workshare
       WS(1:ncomp*comm_rlm%ntot_item_sr) = 0.0d0
 !$omp end parallel workshare
+!
+      if(nvector .le. 0) return
+      elaps(1:4) = 0
 !
 !$omp parallel do schedule(static)                                      &
 !$omp             private(ip,mp_rlm,mn_rlm,st_elapsed)                  &
@@ -282,19 +284,19 @@
 !
 !          st_elapsed = MPI_WTIME()
           call dgemm_fwd_leg_trans                                      &
-     &     (nkr(ip), nj_rlm(ip), sph_rtm%nidx_rtm(2),                   &
+     &       (nkr(ip), nj_rlm(ip), sph_rtm%nidx_rtm(2),                 &
      &      symp_r(1,ip), P_rtm(1,jst(ip)+1),    zero, pol_e(1,ip))
           call dgemm_fwd_leg_trans                                      &
-     &     (nkr(ip), nj_rlm(ip), sph_rtm%nidx_rtm(2),                   &
+     &       (nkr(ip), nj_rlm(ip), sph_rtm%nidx_rtm(2),                 &
      &      asmp_t(1,ip), dPdt_rtm(1,jst(ip)+1), zero, dpoldt_e(1,ip))
           call dgemm_fwd_leg_trans                                      &
-     &     (nkr(ip), nj_rlm(ip), sph_rtm%nidx_rtm(2),                   &
+     &       (nkr(ip), nj_rlm(ip), sph_rtm%nidx_rtm(2),                 &
      &      symn_p(1,ip), P_rtm(1,jst(ip)+1),    zero, dpoldp_e(1,ip))
           call dgemm_fwd_leg_trans                                      &
-     &     (nkr(ip), nj_rlm(ip), sph_rtm%nidx_rtm(2),                   &
+     &       (nkr(ip), nj_rlm(ip), sph_rtm%nidx_rtm(2),                 &
      &      symn_t(1,ip), P_rtm(1,jst(ip)+1),    zero, dtordp_e(1,ip))
           call dgemm_fwd_leg_trans                                      &
-     &     (nkr(ip), nj_rlm(ip), sph_rtm%nidx_rtm(2),                   &
+     &       (nkr(ip), nj_rlm(ip), sph_rtm%nidx_rtm(2),                 &
      &      asmp_p(1,ip), dPdt_rtm(1,jst(ip)+1), zero, dtordt_e(1,ip))
 !          elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
 !
@@ -339,12 +341,8 @@
       integer(kind = kint) :: jst(np_smp), nj_rlm(np_smp)
 !
 !
+      if(nscalar .le. 0) return
       elaps(1:4) = 0
-      if(nvector .gt. 0) then
-!$omp parallel workshare
-        WS(1:ncomp*comm_rlm%ntot_item_sr) = 0.0d0
-!$omp end parallel workshare
-      end if
 !
 !$omp parallel do schedule(static)                                      &
 !$omp&            private(ip,mp_rlm,st_elapsed)                         &
@@ -410,10 +408,12 @@
       integer(kind = kint) :: jst(np_smp), nj_rlm(np_smp)
 !
 !
-      elaps(1:4) = 0
 !$omp parallel workshare
       WS(1:ncomp*comm_rlm%ntot_item_sr) = 0.0d0
 !$omp end parallel workshare
+!
+      if(nvector .le. 0) return
+      elaps(1:4) = 0
 !
 !$omp parallel do schedule(static)                                      &
 !$omp             private(ip,mp_rlm,mn_rlm,st_elapsed)                  &
@@ -439,19 +439,19 @@
 !
 !          st_elapsed = MPI_WTIME()
           call matmat_fwd_leg_trans                                     &
-     &     (nkr(ip), nj_rlm(ip), sph_rtm%nidx_rtm(2),                   &
+     &       (nkr(ip), nj_rlm(ip), sph_rtm%nidx_rtm(2),                 &
      &      symp_r(1,ip), P_rtm(1,jst(ip)+1),    pol_e(1,ip))
           call matmat_fwd_leg_trans                                     &
-     &     (nkr(ip), nj_rlm(ip), sph_rtm%nidx_rtm(2),                   &
+     &       (nkr(ip), nj_rlm(ip), sph_rtm%nidx_rtm(2),                 &
      &      asmp_t(1,ip), dPdt_rtm(1,jst(ip)+1), dpoldt_e(1,ip))
           call matmat_fwd_leg_trans                                     &
-     &     (nkr(ip), nj_rlm(ip), sph_rtm%nidx_rtm(2),                   &
+     &       (nkr(ip), nj_rlm(ip), sph_rtm%nidx_rtm(2),                 &
      &      symn_p(1,ip), P_rtm(1,jst(ip)+1),    dpoldp_e(1,ip))
           call matmat_fwd_leg_trans                                     &
-     &     (nkr(ip), nj_rlm(ip), sph_rtm%nidx_rtm(2),                   &
+     &       (nkr(ip), nj_rlm(ip), sph_rtm%nidx_rtm(2),                 &
      &      symn_t(1,ip), P_rtm(1,jst(ip)+1),    dtordp_e(1,ip))
           call matmat_fwd_leg_trans                                     &
-     &     (nkr(ip), nj_rlm(ip), sph_rtm%nidx_rtm(2),                   &
+     &       (nkr(ip), nj_rlm(ip), sph_rtm%nidx_rtm(2),                 &
      &      asmp_p(1,ip), dPdt_rtm(1,jst(ip)+1), dtordt_e(1,ip))
 !          elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
 !
@@ -496,12 +496,8 @@
       integer(kind = kint) :: jst(np_smp), nj_rlm(np_smp)
 !
 !
+      if(nscalar .le. 0) return
       elaps(1:4) = 0
-      if(nvector .gt. 0) then
-!$omp parallel workshare
-        WS(1:ncomp*comm_rlm%ntot_item_sr) = 0.0d0
-!$omp end parallel workshare
-      end if
 !
 !$omp parallel do schedule(static)                                      &
 !$omp&            private(ip,mp_rlm,st_elapsed)                         &

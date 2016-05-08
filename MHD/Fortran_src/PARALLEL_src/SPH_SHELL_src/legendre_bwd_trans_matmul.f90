@@ -41,10 +41,6 @@
 !!       original layout: sp_rlm(j_rlm,k_rlm,icomp)
 !!        size: sp_rlm(nidx_rlm(2),nidx_rtm(1)*ncomp)
 !!      real(kind = kreal), allocatable :: sp_rlm(:,:)
-!!
-!!        type(sph_rlm_grid), intent(in) :: sph_rlm
-!!        type(sph_rtm_grid), intent(in) :: sph_rtm
-!!        type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
 !!@endverbatim
 !!
 !!@param   ncomp    Total number of components for spherical transform
@@ -91,7 +87,7 @@
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
-      type(sph_comm_tbl), intent(in) :: comm_rtm, comm_rlm
+      type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
       integer(kind = kint), intent(in) :: ncomp, nvector
       integer(kind = kint), intent(in) :: n_WR, n_WS
       real (kind=kreal), intent(inout):: WR(n_WR)
@@ -102,19 +98,21 @@
       integer(kind = kint) :: jst(np_smp), nj_rlm(np_smp)
 !
 !
-      elaps(1:4) = 0
 !$omp parallel workshare
       WS(1:ncomp*comm_rtm%ntot_item_sr) = 0.0d0
 !$omp end parallel workshare
+!
+      if(nvector .le. 0) return
+      elaps(1:4) = 0
 !
       nb_nri = nvector * sph_rtm%nidx_rtm(1)
 !$omp parallel do schedule(static)                                      &
 !$omp&            private(ip,mp_rlm,mn_rlm,st_elapsed)                  &
 !$omp& reduction(+:elaps)
       do ip = 1, np_smp
-        kst(ip) = nvector * sph_rtm%istack_rtm_kr_smp(ip-1)
-        nkr(ip) = nvector * (sph_rtm%istack_rtm_kr_smp(ip)              &
-     &                     - sph_rtm%istack_rtm_kr_smp(ip-1))
+        kst(ip) = nvector * sph_rlm%istack_rlm_kr_smp(ip-1)
+        nkr(ip) = nvector * (sph_rlm%istack_rlm_kr_smp(ip)              &
+     &                     - sph_rlm%istack_rlm_kr_smp(ip-1))
           do mp_rlm = 1, sph_rtm%nidx_rtm(3)
             mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
             jst(ip) = lstack_rlm(mp_rlm-1)
@@ -180,7 +178,7 @@
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
-      type(sph_comm_tbl), intent(in) :: comm_rtm, comm_rlm
+      type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR, n_WS
       real (kind=kreal), intent(inout):: WR(n_WR)
@@ -191,20 +189,16 @@
       integer(kind = kint) :: jst(np_smp), nj_rlm(np_smp)
 !
 !
+      if(nscalar .le. 0) return
       elaps(1:4) = 0
-      if(nvector .le. 0) then
-!$omp parallel workshare
-        WS(1:ncomp*comm_rtm%ntot_item_sr) = 0.0d0
-!$omp end parallel workshare
-      end if
 !
 !$omp parallel do schedule(static)                                      &
 !$omp&            private(ip,mp_rlm,st_elapsed)                         &
 !$omp& reduction(+:elaps)
       do ip = 1, np_smp
-        kst(ip) = nscalar * sph_rtm%istack_rtm_kr_smp(ip-1)
-        nkr(ip) = nscalar * (sph_rtm%istack_rtm_kr_smp(ip)              &
-     &                     - sph_rtm%istack_rtm_kr_smp(ip-1))
+        kst(ip) = nscalar * sph_rlm%istack_rlm_kr_smp(ip-1)
+        nkr(ip) = nscalar * (sph_rlm%istack_rlm_kr_smp(ip)              &
+     &                     - sph_rlm%istack_rlm_kr_smp(ip-1))
 !
         do mp_rlm = 1, sph_rtm%nidx_rtm(3)
           jst(ip) = lstack_rlm(mp_rlm-1)
@@ -227,9 +221,8 @@
 !          st_elapsed = MPI_WTIME()
           call cal_vr_rtm_scalar_matmul                                 &
      &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
-     &        sph_rlm%nidx_rlm, kst(ip), nkr(ip),                       &
-     &        mp_rlm, nscl_lk, symp(1,ip),                              &
-     &        ncomp, nvector, comm_rtm%irev_sr, n_WS, WS)
+     &        sph_rlm%nidx_rlm, kst(ip), nkr(ip), mp_rlm, nscl_lk,      &
+     &        symp(1,ip), ncomp, nvector, comm_rtm%irev_sr, n_WS, WS)
 !          elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
 !
         end do
@@ -253,7 +246,7 @@
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
-      type(sph_comm_tbl), intent(in) :: comm_rtm, comm_rlm
+      type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
       integer(kind = kint), intent(in) :: ncomp, nvector
       integer(kind = kint), intent(in) :: n_WR, n_WS
       real (kind=kreal), intent(inout):: WR(n_WR)
@@ -264,19 +257,21 @@
       integer(kind = kint) :: jst(np_smp), nj_rlm(np_smp)
 !
 !
-      elaps(1:4) = 0
 !$omp parallel workshare
       WS(1:ncomp*comm_rtm%ntot_item_sr) = 0.0d0
 !$omp end parallel workshare
+!
+      if(nvector .le. 0) return
+      elaps(1:4) = 0
 !
       nb_nri = nvector * sph_rtm%nidx_rtm(1)
 !$omp parallel do schedule(static)                                      &
 !$omp&            private(ip,mp_rlm,mn_rlm,st_elapsed)                  &
 !$omp& reduction(+:elaps)
       do ip = 1, np_smp
-        kst(ip) = nvector * sph_rtm%istack_rtm_kr_smp(ip-1)
-        nkr(ip) = nvector * (sph_rtm%istack_rtm_kr_smp(ip)              &
-     &                     - sph_rtm%istack_rtm_kr_smp(ip-1))
+        kst(ip) = nvector * sph_rlm%istack_rlm_kr_smp(ip-1)
+        nkr(ip) = nvector * (sph_rlm%istack_rlm_kr_smp(ip)              &
+     &                     - sph_rlm%istack_rlm_kr_smp(ip-1))
           do mp_rlm = 1, sph_rtm%nidx_rtm(3)
             mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
             jst(ip) = lstack_rlm(mp_rlm-1)
@@ -294,21 +289,21 @@
 !
 !   even l-m
 !          st_elapsed = MPI_WTIME()
-          call dgemm_bwd_leg_trans                                      &
-     &       (sph_rtm%nidx_rtm(2), nkr(ip), nj_rlm(ip),                 &
-     &        P_rtm(1,jst(ip)+1),     pol_e(1,ip), zero, symp_r(1,ip))
-          call dgemm_bwd_leg_trans                                      &
-     &       (sph_rtm%nidx_rtm(2), nkr(ip), nj_rlm(ip),                 &
+          call dgemm_bwd_leg_trans                                     &
+     &       (sph_rtm%nidx_rtm(2), nkr(ip), nj_rlm(ip),                &
+     &      P_rtm(1,jst(ip)+1),    pol_e(1,ip), zero, symp_r(1,ip))
+          call dgemm_bwd_leg_trans                                     &
+     &       (sph_rtm%nidx_rtm(2), nkr(ip), nj_rlm(ip),                &
      &      dPdt_rtm(1,jst(ip)+1), dpoldt_e(1,ip), zero, asmp_t(1,ip))
-          call dgemm_bwd_leg_trans                                      &
-     &       (sph_rtm%nidx_rtm(2), nkr(ip), nj_rlm(ip),                 &
+          call dgemm_bwd_leg_trans                                     &
+     &       (sph_rtm%nidx_rtm(2), nkr(ip), nj_rlm(ip),                &
      &      dPdt_rtm(1,jst(ip)+1), dtordt_e(1,ip), zero, asmp_p(1,ip))
 !
-          call dgemm_bwd_leg_trans                                      &
-     &       (sph_rtm%nidx_rtm(2), nkr(ip), nj_rlm(ip),                 &
+          call dgemm_bwd_leg_trans                                     &
+     &       (sph_rtm%nidx_rtm(2), nkr(ip), nj_rlm(ip),                &
      &      P_rtm(1,jst(ip)+1), dtordp_e(1,ip), zero, symn_t(1,ip))
-          call dgemm_bwd_leg_trans                                      &
-     &       (sph_rtm%nidx_rtm(2), nkr(ip), nj_rlm(ip),                 &
+          call dgemm_bwd_leg_trans                                     &
+     &       (sph_rtm%nidx_rtm(2), nkr(ip), nj_rlm(ip),                &
      &      P_rtm(1,jst(ip)+1), dpoldp_e(1,ip), zero, symn_p(1,ip))
 !          elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
 !
@@ -342,7 +337,7 @@
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
-      type(sph_comm_tbl), intent(in) :: comm_rtm, comm_rlm
+      type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR, n_WS
       real (kind=kreal), intent(inout):: WR(n_WR)
@@ -353,20 +348,16 @@
       integer(kind = kint) :: jst(np_smp), nj_rlm(np_smp)
 !
 !
+      if(nscalar .le. 0) return
       elaps(1:4) = 0
-      if(nvector .le. 0) then
-!$omp parallel workshare
-        WS(1:ncomp*comm_rtm%ntot_item_sr) = 0.0d0
-!$omp end parallel workshare
-      end if
 !
 !$omp parallel do schedule(static)                                      &
 !$omp&            private(ip,mp_rlm,st_elapsed)                         &
 !$omp& reduction(+:elaps)
       do ip = 1, np_smp
-        kst(ip) = nscalar * sph_rtm%istack_rtm_kr_smp(ip-1)
-        nkr(ip) = nscalar * (sph_rtm%istack_rtm_kr_smp(ip)              &
-     &                     - sph_rtm%istack_rtm_kr_smp(ip-1))
+        kst(ip) = nscalar * sph_rlm%istack_rlm_kr_smp(ip-1)
+        nkr(ip) = nscalar * (sph_rlm%istack_rlm_kr_smp(ip)              &
+     &                     - sph_rlm%istack_rlm_kr_smp(ip-1))
 !
         do mp_rlm = 1, sph_rtm%nidx_rtm(3)
           jst(ip) = lstack_rlm(mp_rlm-1)
@@ -389,9 +380,8 @@
 !          st_elapsed = MPI_WTIME()
           call cal_vr_rtm_scalar_matmul                                 &
      &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
-     &        sph_rlm%nidx_rlm, kst(ip), nkr(ip),                       &
-     &        mp_rlm, nscl_lk, symp(1,ip),                              &
-     &        ncomp, nvector, comm_rtm%irev_sr, n_WS, WS)
+     &        sph_rlm%nidx_rlm, kst(ip), nkr(ip), mp_rlm, nscl_lk,      &
+     &        symp(1,ip), ncomp, nvector, comm_rtm%irev_sr, n_WS, WS)
 !          elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
 !
         end do
@@ -415,7 +405,7 @@
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
-      type(sph_comm_tbl), intent(in) :: comm_rtm, comm_rlm
+      type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
       integer(kind = kint), intent(in) :: ncomp, nvector
       integer(kind = kint), intent(in) :: n_WR, n_WS
       real (kind=kreal), intent(inout):: WR(n_WR)
@@ -426,19 +416,21 @@
       integer(kind = kint) :: jst(np_smp), nj_rlm(np_smp)
 !
 !
-      elaps(1:4) = 0
 !$omp parallel workshare
       WS(1:ncomp*comm_rtm%ntot_item_sr) = 0.0d0
 !$omp end parallel workshare
+!
+      if(nvector .le. 0) return
+      elaps(1:4) = 0
 !
       nb_nri = nvector * sph_rtm%nidx_rtm(1)
 !$omp parallel do schedule(static)                                      &
 !$omp&            private(ip,mp_rlm,mn_rlm,st_elapsed)                  &
 !$omp& reduction(+:elaps)
       do ip = 1, np_smp
-        kst(ip) = nvector * sph_rtm%istack_rtm_kr_smp(ip-1)
-        nkr(ip) = nvector * (sph_rtm%istack_rtm_kr_smp(ip)              &
-     &                     - sph_rtm%istack_rtm_kr_smp(ip-1))
+        kst(ip) = nvector * sph_rlm%istack_rlm_kr_smp(ip-1)
+        nkr(ip) = nvector * (sph_rlm%istack_rlm_kr_smp(ip)              &
+     &                     - sph_rlm%istack_rlm_kr_smp(ip-1))
           do mp_rlm = 1, sph_rtm%nidx_rtm(3)
             mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
             jst(ip) = lstack_rlm(mp_rlm-1)
@@ -504,7 +496,7 @@
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
-      type(sph_comm_tbl), intent(in) :: comm_rtm, comm_rlm
+      type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR, n_WS
       real (kind=kreal), intent(inout):: WR(n_WR)
@@ -515,20 +507,16 @@
       integer(kind = kint) :: jst(np_smp), nj_rlm(np_smp)
 !
 !
+      if(nscalar .le. 0) return
       elaps(1:4) = 0
-      if(nvector .le. 0) then
-!$omp parallel workshare
-        WS(1:ncomp*comm_rtm%ntot_item_sr) = 0.0d0
-!$omp end parallel workshare
-      end if
 !
 !$omp parallel do schedule(static)                                      &
 !$omp&            private(ip,mp_rlm,st_elapsed)                         &
 !$omp& reduction(+:elaps)
       do ip = 1, np_smp
-        kst(ip) = nscalar * sph_rtm%istack_rtm_kr_smp(ip-1)
-        nkr(ip) = nscalar * (sph_rtm%istack_rtm_kr_smp(ip)              &
-     &                     - sph_rtm%istack_rtm_kr_smp(ip-1))
+        kst(ip) = nscalar * sph_rlm%istack_rlm_kr_smp(ip-1)
+        nkr(ip) = nscalar * (sph_rlm%istack_rlm_kr_smp(ip)              &
+     &                     - sph_rlm%istack_rlm_kr_smp(ip-1))
 !
         do mp_rlm = 1, sph_rtm%nidx_rtm(3)
           jst(ip) = lstack_rlm(mp_rlm-1)
@@ -551,9 +539,8 @@
 !          st_elapsed = MPI_WTIME()
           call cal_vr_rtm_scalar_matmul                                 &
      &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
-     &        sph_rlm%nidx_rlm, kst(ip), nkr(ip),                       &
-     &        mp_rlm, nscl_lk, symp(1,ip),                              &
-     &        ncomp, nvector, comm_rtm%irev_sr, n_WS, WS)
+     &        sph_rlm%nidx_rlm, kst(ip), nkr(ip), mp_rlm, nscl_lk,      &
+     &        symp(1,ip), ncomp, nvector, comm_rtm%irev_sr, n_WS, WS)
 !          elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
 !
         end do

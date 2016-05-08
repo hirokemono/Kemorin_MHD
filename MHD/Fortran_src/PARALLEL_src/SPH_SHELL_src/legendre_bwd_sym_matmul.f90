@@ -103,11 +103,12 @@
       integer(kind = kint) :: n_jk_e(np_smp), n_jk_o(np_smp)
 !
 !
-      elaps(1:4) = 0
 !$omp parallel workshare
       WS(1:ncomp*comm_rtm%ntot_item_sr) = 0.0d0
 !$omp end parallel workshare
 !
+      if(nvector .le. 0) return
+      elaps(1:4) = 0
       nl_rtm = (sph_rtm%nidx_rtm(2) + 1)/2
 !$omp parallel do schedule(static)                                      &
 !$omp&            private(ip,mp_rlm,mn_rlm,st_elapsed)                  &
@@ -205,12 +206,8 @@
       integer(kind = kint) :: n_jk_e(np_smp), n_jk_o(np_smp)
 !
 !
+      if(nscalar .le. 0) return
       elaps(1:4) = 0
-      if(nvector .eq. 0) then
-!$omp parallel workshare
-        WS(1:ncomp*comm_rtm%ntot_item_sr) = 0.0d0
-!$omp end parallel workshare
-      end if
 !
       nl_rtm = (sph_rtm%nidx_rtm(2) + 1)/2
 !$omp parallel do schedule(static)                                      &
@@ -286,10 +283,12 @@
       integer(kind = kint) :: n_jk_e(np_smp), n_jk_o(np_smp)
 !
 !
-      elaps(1:4) = 0
 !$omp parallel workshare
       WS(1:ncomp*comm_rtm%ntot_item_sr) = 0.0d0
 !$omp end parallel workshare
+!
+      if(nvector .le. 0) return
+      elaps(1:4) = 0
 !
       nl_rtm = (sph_rtm%nidx_rtm(2) + 1)/2
 !$omp parallel do schedule(static)                                      &
@@ -388,12 +387,8 @@
       integer(kind = kint) :: n_jk_e(np_smp), n_jk_o(np_smp)
 !
 !
+      if(nscalar .le. 0) return
       elaps(1:4) = 0
-      if(nvector .eq. 0) then
-!$omp parallel workshare
-        WS(1:ncomp*comm_rtm%ntot_item_sr) = 0.0d0
-!$omp end parallel workshare
-      end if
 !
       nl_rtm = (sph_rtm%nidx_rtm(2) + 1)/2
 !$omp parallel do schedule(static)                                      &
@@ -469,10 +464,12 @@
       integer(kind = kint) :: n_jk_e(np_smp), n_jk_o(np_smp)
 !
 !
-      elaps(1:4) = 0
 !$omp parallel workshare
       WS(1:ncomp*comm_rtm%ntot_item_sr) = 0.0d0
 !$omp end parallel workshare
+!
+      if(nvector .le. 0) return
+      elaps(1:4) = 0
 !
       nl_rtm = (sph_rtm%nidx_rtm(2) + 1)/2
 !$omp parallel do schedule(static)                                      &
@@ -571,12 +568,8 @@
       integer(kind = kint) :: n_jk_e(np_smp), n_jk_o(np_smp)
 !
 !
+      if(nscalar .le. 0) return
       elaps(1:4) = 0
-      if(nvector .eq. 0) then
-!$omp parallel workshare
-        WS(1:ncomp*comm_rtm%ntot_item_sr) = 0.0d0
-!$omp end parallel workshare
-      end if
 !
       nl_rtm = (sph_rtm%nidx_rtm(2) + 1)/2
 !$omp parallel do schedule(static)                                      &

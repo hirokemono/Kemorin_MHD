@@ -84,14 +84,10 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      if(nvector .gt. 0) then
-        call leg_b_trans_vec_sym_matmul(ncomp, nvector,                 &
-     &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, n_WR, n_WS, WR, WS)
-      end if
-      if(nscalar .gt. 0) then
-        call leg_b_trans_scl_sym_matmul(ncomp, nvector, nscalar,        &
-     &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, n_WR, n_WS, WR, WS)
-      end if
+      call leg_b_trans_vec_sym_matmul(ncomp, nvector,                   &
+     &    sph_rlm, sph_rtm, comm_rlm, comm_rtm, n_WR, n_WS, WR, WS)
+      call leg_b_trans_scl_sym_matmul(ncomp, nvector, nscalar,          &
+     &    sph_rlm, sph_rtm, comm_rlm, comm_rtm, n_WR, n_WS, WR, WS)
 !
       end subroutine leg_backward_trans_sym_matmul
 !
@@ -114,14 +110,10 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      if(nvector .gt. 0) then
-        call leg_f_trans_vec_sym_matmul(ncomp, nvector,                 &
-     &      sph_rtm, sph_rlm, comm_rtm, comm_rlm, n_WR, n_WS, WR, WS)
-      end if
-      if(nscalar .gt. 0) then
-        call leg_f_trans_scl_sym_matmul(ncomp, nvector, nscalar,        &
-     &      sph_rtm, sph_rlm, comm_rtm, comm_rlm, n_WR, n_WS, WR, WS)
-      end if
+      call leg_f_trans_vec_sym_matmul(ncomp, nvector,                   &
+     &    sph_rtm, sph_rlm, comm_rtm, comm_rlm, n_WR, n_WS, WR, WS)
+      call leg_f_trans_scl_sym_matmul(ncomp, nvector, nscalar,          &
+     &    sph_rtm, sph_rlm, comm_rtm, comm_rlm, n_WR, n_WS, WR, WS)
 !
       end subroutine leg_forward_trans_sym_matmul
 !
@@ -145,14 +137,10 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      if(nvector .gt. 0) then
-        call leg_b_trans_vec_sym_dgemm(ncomp, nvector,                  &
-     &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, n_WR, n_WS, WR, WS)
-      end if
-      if(nscalar .gt. 0) then
-        call leg_b_trans_scl_sym_dgemm(ncomp, nvector, nscalar,         &
-     &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, n_WR, n_WS, WR, WS)
-      end if
+      call leg_b_trans_vec_sym_dgemm(ncomp, nvector,                    &
+     &    sph_rlm, sph_rtm, comm_rlm, comm_rtm, n_WR, n_WS, WR, WS)
+      call leg_b_trans_scl_sym_dgemm(ncomp, nvector, nscalar,           &
+     &    sph_rlm, sph_rtm, comm_rlm, comm_rtm, n_WR, n_WS, WR, WS)
 !
       end subroutine leg_backward_trans_sym_dgemm
 !
@@ -175,14 +163,10 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      if(nvector .gt. 0) then
-        call leg_f_trans_vec_sym_dgemm(ncomp, nvector,                  &
-     &      sph_rtm, sph_rlm, comm_rtm, comm_rlm, n_WR, n_WS, WR, WS)
-      end if
-      if(nscalar .gt. 0) then
-        call leg_f_trans_scl_sym_dgemm(ncomp, nvector, nscalar,         &
-     &      sph_rtm, sph_rlm, comm_rtm, comm_rlm, n_WR, n_WS, WR, WS)
-      end if
+      call leg_f_trans_vec_sym_dgemm(ncomp, nvector,                    &
+     &    sph_rtm, sph_rlm, comm_rtm, comm_rlm, n_WR, n_WS, WR, WS)
+      call leg_f_trans_scl_sym_dgemm(ncomp, nvector, nscalar,           &
+     &    sph_rtm, sph_rlm, comm_rtm, comm_rlm, n_WR, n_WS, WR, WS)
 !
       end subroutine leg_forward_trans_sym_dgemm
 !
@@ -206,14 +190,10 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      if(nvector .gt. 0) then
-        call leg_b_trans_vec_sym_matprod(ncomp, nvector,                &
-     &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, n_WR, n_WS, WR, WS)
-      end if
-      if(nscalar .gt. 0) then
-        call leg_b_trans_scl_sym_matprod(ncomp, nvector, nscalar,       &
-     &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, n_WR, n_WS, WR, WS)
-      end if
+      call leg_b_trans_vec_sym_matprod(ncomp, nvector,                  &
+     &    sph_rlm, sph_rtm, comm_rlm, comm_rtm, n_WR, n_WS, WR, WS)
+      call leg_b_trans_scl_sym_matprod(ncomp, nvector, nscalar,         &
+     &    sph_rlm, sph_rtm, comm_rlm, comm_rtm, n_WR, n_WS, WR, WS)
 !
       end subroutine leg_backward_trans_sym_matprod
 !
@@ -236,14 +216,10 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      if(nvector .gt. 0) then
-        call leg_f_trans_vec_sym_matprod(ncomp, nvector,                &
-     &      sph_rtm, sph_rlm, comm_rtm, comm_rlm, n_WR, n_WS, WR, WS)
-      end if
-      if(nscalar .gt. 0) then
-        call leg_f_trans_scl_sym_matprod(ncomp, nvector, nscalar,       &
-     &      sph_rtm, sph_rlm, comm_rtm, comm_rlm, n_WR, n_WS, WR, WS)
-      end if
+      call leg_f_trans_vec_sym_matprod(ncomp, nvector,                  &
+     &    sph_rtm, sph_rlm, comm_rtm, comm_rlm, n_WR, n_WS, WR, WS)
+      call leg_f_trans_scl_sym_matprod(ncomp, nvector, nscalar,         &
+     &    sph_rtm, sph_rlm, comm_rtm, comm_rlm, n_WR, n_WS, WR, WS)
 !
       end subroutine leg_forward_trans_sym_matprod
 !
