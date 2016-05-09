@@ -57,7 +57,6 @@
       use t_mesh_data
 !
       use nod_phys_send_recv
-      use range_data_IO
       use node_monitor_IO
       use const_mesh_information
       use const_element_comm_tables

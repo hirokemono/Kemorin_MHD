@@ -9,13 +9,14 @@
 !!@verbatim
 !!      subroutine allocate_iflag_pick_sph(l_truncation)
 !!      subroutine deallocate_iflag_pick_sph
-!!      subroutine count_picked_sph_adrress                             &
-!!     &     (num_pick_sph, num_pick_sph_l, num_pick_sph_m,             &
+!!      subroutine count_picked_sph_adrress(l_truncation,               &
+!!     &      num_pick_sph, num_pick_sph_l, num_pick_sph_m,             &
 !!     &      idx_pick_sph, idx_pick_sph_l, idx_pick_sph_m, ntot_pickup)
-!!      subroutine set_picked_sph_address                               &
-!!     &         (num_pick_sph, num_pick_sph_l, num_pick_sph_m,         &
+!!      subroutine set_picked_sph_address(l_truncation, sph_rj,         &
+!!     &          num_pick_sph, num_pick_sph_l, num_pick_sph_m,         &
 !!     &          idx_pick_sph, idx_pick_sph_l, idx_pick_sph_m,         &
 !!     &          ntot_pickup, num_pickup, idx_pick_gl, idx_pick_lc)
+!!        type(sph_rj_grid), intent(in) :: sph_rj
 !!      subroutine set_scale_4_vect_l0(num_pickup,                      &
 !!     &          idx_pick_gl, scale_for_zelo)
 !!@endverbatim
@@ -59,11 +60,11 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine count_picked_sph_adrress                               &
-     &     (num_pick_sph, num_pick_sph_l, num_pick_sph_m,               &
+      subroutine count_picked_sph_adrress(l_truncation,                 &
+     &      num_pick_sph, num_pick_sph_l, num_pick_sph_m,               &
      &      idx_pick_sph, idx_pick_sph_l, idx_pick_sph_m, ntot_pickup)
 !
-      use m_spheric_parameter
+      integer(kind = kint), intent(in) :: l_truncation
 !
       integer(kind = kint), intent(in) :: num_pick_sph
       integer(kind = kint), intent(in) :: num_pick_sph_l
@@ -99,15 +100,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_picked_sph_address                                 &
-     &         (num_pick_sph, num_pick_sph_l, num_pick_sph_m,           &
+      subroutine set_picked_sph_address(l_truncation, sph_rj,           &
+     &          num_pick_sph, num_pick_sph_l, num_pick_sph_m,           &
      &          idx_pick_sph, idx_pick_sph_l, idx_pick_sph_m,           &
      &          ntot_pickup, num_pickup, idx_pick_gl, idx_pick_lc)
 !
-      use m_spheric_parameter
       use t_spheric_rj_data
       use spherical_harmonics
       use quicksort
+!
+      integer(kind = kint), intent(in) :: l_truncation
+      type(sph_rj_grid), intent(in) :: sph_rj
 !
       integer(kind = kint), intent(in) :: num_pick_sph
       integer(kind = kint), intent(in) :: num_pick_sph_l
@@ -136,7 +139,7 @@
         if(l .le. l_truncation) then
           icou = icou + 1
           idx_pick_gl(icou,1) = j
-          idx_pick_lc(icou) = find_local_sph_address(sph_rj1, l4, m4)
+          idx_pick_lc(icou) = find_local_sph_address(sph_rj, l4, m4)
           iflag_picked_sph(j)  = icou
         end if
       end do
@@ -152,7 +155,7 @@
               icou = icou + 1
               idx_pick_gl(icou,1) = j
               idx_pick_lc(icou)                                         &
-     &           = find_local_sph_address(sph_rj1, l4, m4)
+     &           = find_local_sph_address(sph_rj, l4, m4)
               iflag_picked_sph(j)  = icou
             end if
           end do
@@ -171,7 +174,7 @@
               icou = icou + 1
               idx_pick_gl(icou,1) = j
               idx_pick_lc(icou)                                         &
-     &              = find_local_sph_address(sph_rj1, l4, m4)
+     &              = find_local_sph_address(sph_rj, l4, m4)
               iflag_picked_sph(j)  = icou
             end if
           end do

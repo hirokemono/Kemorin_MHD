@@ -179,7 +179,8 @@
 !
 !      call start_eleps_time(51)
       if(iflag_debug .gt. 0) write(*,*) 'copy_mhd_spectr_to_send'
-      call copy_mhd_spectr_to_send(ncomp_rj_2_rtp, rj_fld, n_WS, WS)
+      call copy_mhd_spectr_to_send                                      &
+     &   (ncomp_rj_2_rtp, comm_rj1, rj_fld, n_WS, WS)
 !      call end_eleps_time(51)
 !
       if(ncomp_rj_2_rtp .eq. 0) return
@@ -211,7 +212,7 @@
      &    nscalar_rtp_2_rj, frc_rtp, n_WS, n_WR, WS(1), WR(1))
 !
       call copy_mhd_spectr_from_recv                                    &
-     &   (ncomp_rtp_2_rj, n_WR, WR(1), rj_fld)
+     &   (ncomp_rtp_2_rj, comm_rj1, n_WR, WR(1), rj_fld)
 !
       end subroutine sph_forward_trans_4_MHD
 !
@@ -220,6 +221,7 @@
 !
       subroutine sph_back_trans_snapshot_MHD(rj_fld)
 !
+      use m_spheric_parameter
       use m_solver_SR
       use m_addresses_trans_sph_snap
       use sph_transforms
@@ -240,7 +242,8 @@
      &   (ncomp_snap_rj_2_rtp, comm_rtm1, comm_rtp1)
 !
       call copy_snap_spectr_to_send                                     &
-     &   (ncomp_snap_rj_2_rtp, rj_fld, n_WS, WS, flc_pl)
+     &   (ncomp_snap_rj_2_rtp, sph_rj1, comm_rj1, rj_fld,               &
+     &    n_WS, WS, flc_pl)
 !
       call sph_backward_transforms                                      &
      &   (ncomp_snap_rj_2_rtp, nvector_snap_rj_2_rtp, nscalar_trans,    &
@@ -275,7 +278,7 @@
      &    frs_rtp, n_WS, n_WR, WS(1), WR(1))
 !
       call copy_snap_vec_spec_from_trans                                &
-     &   (ncomp_snap_rtp_2_rj, n_WR, WR(1), rj_fld)
+     &   (ncomp_snap_rtp_2_rj, comm_rj1, n_WR, WR(1), rj_fld)
 !
       end subroutine sph_forward_trans_snapshot_MHD
 !
@@ -307,7 +310,7 @@
      &    frt_rtp, n_WS, n_WR, WS, WR)
 !
       call copy_tmp_scl_spec_from_trans                                 &
-     &   (ncomp_tmp_rtp_2_rj, n_WR, WR, rj_fld)
+     &   (ncomp_tmp_rtp_2_rj, comm_rj1, n_WR, WR, rj_fld)
 !
       end subroutine sph_forward_trans_tmp_snap_MHD
 !
@@ -332,13 +335,14 @@
       call check_calypso_sph_comm_buf_N                                 &
      &   (ncomp_rtp_2_rj, comm_rlm1, comm_rj1)
 !
-      call copy_mhd_spectr_to_send(ncomp_rj_2_rtp, rj_fld, n_WS, WS(1))
+      call copy_mhd_spectr_to_send                                      &
+     &   (ncomp_rj_2_rtp, comm_rj1, rj_fld, n_WS, WS(1))
 !
       call sph_b_trans_licv(ncomp_rj_2_rtp, n_WR, WR(1))
       call sph_f_trans_licv(ncomp_rtp_2_rj, n_WS, WS(1))
 !
       call copy_mhd_spectr_from_recv                                    &
-     &   (ncomp_rtp_2_rj, n_WR, WR(1), rj_fld)
+     &   (ncomp_rtp_2_rj, comm_rj1, n_WR, WR(1), rj_fld)
 !
       end subroutine sph_transform_4_licv
 !

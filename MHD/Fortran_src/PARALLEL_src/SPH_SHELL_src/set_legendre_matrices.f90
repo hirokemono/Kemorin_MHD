@@ -7,8 +7,8 @@
 !>@brief  set legendre polynomials into matrices
 !!
 !!@verbatim
-!!      subroutine set_legendre_hemispher_rtm
-!!      subroutine set_trans_legendre_rtm
+!!      subroutine set_legendre_hemispher_rtm(mphi_rtm)
+!!      subroutine set_trans_legendre_rtm(nth_rtm, jmax_rlm)
 !!@endverbatim
 !
       module set_legendre_matrices
@@ -24,24 +24,25 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_legendre_hemispher_rtm
+      subroutine set_legendre_hemispher_rtm(mphi_rtm)
 !
-      use m_spheric_parameter
       use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans
+!
+      integer(kind = kint), intent(in) :: mphi_rtm
 !
       integer(kind = kint) :: l_rtm, j_rlm
       integer(kind = kint) :: mp_rlm, jst, nj_rlm, n_jk_e, n_jk_o, jj
 !
 !
-      do mp_rlm = 1, nidx_rtm(3)
+      do mp_rlm = 1, mphi_rtm
         jst = lstack_rlm(mp_rlm-1)
         nj_rlm = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
         lstack_even_rlm(mp_rlm) = jst + (nj_rlm+1) / 2
       end do
 !
 !$omp parallel do private(jst,nj_rlm,j_rlm,l_rtm,jj,n_jk_e,n_jk_o)
-      do mp_rlm = 1, nidx_rtm(3)
+      do mp_rlm = 1, mphi_rtm
         jst = lstack_rlm(mp_rlm-1)
         nj_rlm = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
         n_jk_e = (nj_rlm+1) / 2
@@ -76,18 +77,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_trans_legendre_rtm
+      subroutine set_trans_legendre_rtm(nth_rtm, jmax_rlm)
 !
-      use m_spheric_parameter
       use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans
 !
+      integer(kind = kint), intent(in) :: nth_rtm, jmax_rlm
       integer(kind = kint) :: l_rtm, j_rlm
 !
 !
 !$omp parallel do private(j_rlm,l_rtm)
-      do j_rlm = 1, nidx_rlm(2)
-        do l_rtm = 1, nidx_rtm(2)
+      do j_rlm = 1, jmax_rlm
+        do l_rtm = 1, nth_rtm
           P_jl(j_rlm,l_rtm) =     P_rtm(l_rtm,j_rlm)
           dPdt_jl(j_rlm,l_rtm) =  dPdt_rtm(l_rtm,j_rlm)
         end do

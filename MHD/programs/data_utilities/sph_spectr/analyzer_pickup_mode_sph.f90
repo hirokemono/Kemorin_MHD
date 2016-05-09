@@ -90,7 +90,7 @@
       integer(kind = kint) :: i_step
 !
 !
-      call init_sph_spec_4_monitor(rj_fld1)
+      call init_sph_spec_4_monitor(l_truncation, sph_rj1, rj_fld1)
 !
       do i_step = i_step_init, i_step_number, i_step_output_ucd
 !
@@ -105,8 +105,8 @@
 !  pickup components
 !
         call pickup_sph_spec_4_monitor                                  &
-     &     (rj_fld1%num_phys, rj_fld1%ntot_phys,                        &
-     &      rj_fld1%istack_component, rj_fld1%d_fld)
+     &     (sph_rj1, rj_fld1%n_point, rj_fld1%num_phys,                 &
+     &      rj_fld1%ntot_phys, rj_fld1%istack_component, rj_fld1%d_fld)
         call write_sph_spec_4_monitor(my_rank, i_step, time)
       end do
 !

@@ -40,7 +40,6 @@
 !
       use node_monitor_IO
       use open_sgs_model_coefs
-      use range_data_IO
 !
 !   matrix assembling
 !

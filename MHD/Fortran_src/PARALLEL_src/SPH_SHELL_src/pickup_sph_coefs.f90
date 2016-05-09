@@ -8,8 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine init_sph_spec_4_monitor(rj_fld)
-!!      subroutine pickup_sph_spec_4_monitor                            &
-!!     &         (num_phys_rj, ntot_phys_rj, istack_phys_comp_rj, d_rj)
+!!      subroutine pickup_sph_spec_4_monitor(sph_rj, n_point,           &
+!!     &          num_phys_rj, ntot_phys_rj, istack_phys_comp_rj, d_rj)
+!!        type(sph_rj_grid), intent(in) :: sph_rj
 !!@endverbatim
 !
       module pickup_sph_coefs
@@ -17,12 +18,15 @@
       use m_precision
       use m_constants
 !
-      use m_spheric_parameter
       use m_pickup_sph_spectr_data
+!
+      use t_spheric_rj_data
+!
       use pickup_sph_spectr
 !
       implicit  none
 !
+      private :: init_sph_radial_monitor_list
       private :: count_sph_labels_4_monitor, set_sph_fld_id_4_monitor
       private :: set_sph_labels_4_monitor
 !
@@ -32,19 +36,21 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_sph_spec_4_monitor(rj_fld)
+      subroutine init_sph_spec_4_monitor(l_truncation, sph_rj, rj_fld)
 !
       use calypso_mpi
       use quicksort
 !
       use t_phys_data
 !
+      integer(kind = kint), intent(in) :: l_truncation
+      type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_data), intent(inout) :: rj_fld
 !
       integer(kind = kint) :: l
 !
 !
-      call init_sph_radial_monitor_list
+      call init_sph_radial_monitor_list(sph_rj)
 !
       if( (num_pick_sph+num_pick_sph_l+num_pick_sph_m) .eq. 0) return
 !
@@ -58,16 +64,16 @@
 !
       call count_sph_labels_4_monitor(rj_fld%num_phys,                  &
      &    rj_fld%num_component, rj_fld%iflag_monitor)
-      call count_picked_sph_adrress                                     &
-     &   (num_pick_sph, num_pick_sph_l, num_pick_sph_m,                 &
+      call count_picked_sph_adrress(l_truncation,                       &
+     &    num_pick_sph, num_pick_sph_l, num_pick_sph_m,                 &
      &    idx_pick_sph_mode, idx_pick_sph_l, idx_pick_sph_m,            &
      &    ntot_pick_sph_mode)
 !
       call allocate_pick_sph_monitor
       call allocate_iflag_pick_sph(l_truncation)
 !
-      call set_picked_sph_address                                       &
-     &   (num_pick_sph, num_pick_sph_l, num_pick_sph_m,                 &
+      call set_picked_sph_address(l_truncation, sph_rj,                 &
+     &    num_pick_sph, num_pick_sph_l, num_pick_sph_m,                 &
      &    idx_pick_sph_mode, idx_pick_sph_l, idx_pick_sph_m,            &
      &    ntot_pick_sph_mode, num_pick_sph_mode, idx_pick_sph_gl(1,1),  &
      &    idx_pick_sph_lc)
@@ -87,10 +93,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_sph_radial_monitor_list
+      subroutine init_sph_radial_monitor_list(sph_rj)
 !
       use calypso_mpi
       use quicksort
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
 !
       integer(kind = kint) :: k, knum
 !
@@ -98,12 +106,12 @@
       if( (num_pick_sph+num_pick_sph_l+num_pick_sph_m) .eq. 0) return
 !
       if(num_pick_layer .le. 0) then
-        num_pick_layer = nidx_rj(1) + sph_rj1%iflag_rj_center
+        num_pick_layer = sph_rj%nidx_rj(1) + sph_rj%iflag_rj_center
 !
         call allocate_num_pick_layer
 !
         do k = 1, num_pick_layer
-          id_pick_layer(k) = k - sph_rj1%iflag_rj_center
+          id_pick_layer(k) = k - sph_rj%iflag_rj_center
         end do
       end if
       call quicksort_int(num_pick_layer, id_pick_layer,                 &
@@ -115,7 +123,7 @@
         if(k .le. 0) then
           r_pick_layer(knum) = 0.0d0
         else
-          r_pick_layer(knum) = sph_rj1%radius_1d_rj_r(k)
+          r_pick_layer(knum) = sph_rj%radius_1d_rj_r(k)
         end if
       end do
 !
@@ -123,16 +131,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine pickup_sph_spec_4_monitor                              &
-     &         (num_phys_rj, ntot_phys_rj, istack_phys_comp_rj, d_rj)
+      subroutine pickup_sph_spec_4_monitor(sph_rj, n_point,             &
+     &          num_phys_rj, ntot_phys_rj, istack_phys_comp_rj, d_rj)
 !
       use calypso_mpi
 !
+      type(sph_rj_grid), intent(in) :: sph_rj
+      integer(kind = kint), intent(in) :: n_point
       integer(kind = kint), intent(in) :: num_phys_rj, ntot_phys_rj
       integer(kind = kint), intent(in)                                  &
      &                  :: istack_phys_comp_rj(0:num_phys_rj)
 !
-      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       integer(kind = kint) :: inum, knum, j, k, nd, i_fld, j_fld
       integer(kind = kint) :: inod, ipick, num, icou, jcou, kst, ncomp
@@ -149,9 +159,9 @@
 !   Set field at center
       kst = 1
       if(idx_pick_sph_gl(1,1).eq.0                                      &
-     &   .and. sph_rj1%iflag_rj_center.gt.0) then
+     &   .and. sph_rj%iflag_rj_center.gt.0) then
         kst = kst + 1
-        inod = sph_rj1%inod_rj_center
+        inod = sph_rj%inod_rj_center
 !
         do j_fld = 1, num_fld_pick_sph
           i_fld = ifield_monitor_rj(j_fld)
@@ -179,7 +189,7 @@
 !!$omp do private(knum,k,inod,ipick,j_fld,i_fld,icou,jcou,nd)
           do knum = kst, num_pick_layer
             k = id_pick_layer(knum)
-            inod =  j +    (k-1) * nidx_rj(2)
+            inod =  j +    (k-1) * sph_rj%nidx_rj(2)
             ipick = knum + (inum-1) * num_pick_layer
 !
             do j_fld = 1, num_fld_pick_sph

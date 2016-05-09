@@ -129,7 +129,6 @@
       subroutine finalize_MHD_FFT_select
 !
       use m_spheric_parameter
-      use m_spheric_param_smp
 !
 !
 #ifdef FFTW3

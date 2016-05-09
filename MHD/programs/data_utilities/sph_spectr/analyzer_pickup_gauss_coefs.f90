@@ -90,7 +90,7 @@
       integer(kind = kint) :: i_step
 !
 !
-      call init_gauss_coefs_4_monitor(l_truncation)
+      call init_gauss_coefs_4_monitor(l_truncation, sph_rj1)
       do i_step = i_step_init, i_step_number, i_step_output_ucd
 !
 !   Input spectr data

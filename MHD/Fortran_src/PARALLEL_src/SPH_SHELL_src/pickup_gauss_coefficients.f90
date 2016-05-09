@@ -8,7 +8,8 @@
 !>@n      Evaluate Nusselt number without heat source
 !!
 !!@verbatim
-!!      subroutine init_gauss_coefs_4_monitor(l_truncation)
+!!      subroutine init_gauss_coefs_4_monitor(l_truncation, sph_rj)
+!!        type(sph_rj_grid), intent(in) :: sph_rj
 !!      subroutine cal_gauss_coefficients                               &
 !!     &         (nlayer_ICB, nlayer_CMB, nidx_rj, radius_1d_rj_r,      &
 !!     &          nnod_rj, ntot_phys_rj, d_rj)
@@ -35,12 +36,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_gauss_coefs_4_monitor(l_truncation)
+      subroutine init_gauss_coefs_4_monitor(l_truncation, sph_rj)
 !
+      use t_spheric_rj_data
       use m_sph_phys_address
       use m_gauss_coefs_monitor_data
 !
       integer(kind = kint), intent(in) :: l_truncation
+      type(sph_rj_grid), intent(in) :: sph_rj
 !
       integer(kind = kint) :: l
 !
@@ -55,8 +58,8 @@
           end do
         end if
 !
-        call count_picked_sph_adrress                                   &
-     &     (num_pick_gauss_coefs, num_pick_gauss_l, num_pick_gauss_m,   &
+        call count_picked_sph_adrress(l_truncation,                     &
+     &      num_pick_gauss_coefs, num_pick_gauss_l, num_pick_gauss_m,   &
      &      idx_pick_gauss_mode, idx_pick_gauss_l, idx_pick_gauss_m,    &
      &      ntot_pick_gauss_mode)
       else
@@ -67,8 +70,8 @@
       call allocate_iflag_pick_sph(l_truncation)
 !
       if (ipol%i_magne .gt. 0) then
-      call set_picked_sph_address                                       &
-     &   (num_pick_gauss_coefs, num_pick_gauss_l, num_pick_gauss_m,     &
+      call set_picked_sph_address(l_truncation, sph_rj,                 &
+     &    num_pick_gauss_coefs, num_pick_gauss_l, num_pick_gauss_m,     &
      &    idx_pick_gauss_mode, idx_pick_gauss_l, idx_pick_gauss_m,      &
      &    ntot_pick_gauss_mode, num_pick_gauss_mode,                    &
      &    idx_pick_gauss_coef_gl, idx_pick_gauss_coef_lc)

@@ -155,7 +155,7 @@
         if (iflag_debug.gt.0)                                           &
      &        write(*,*) 'set_all_vec_spec_to_sph_t'
         call set_all_vec_spec_to_sph_t                                  &
-     &     (ncomp_sph_trans, rj_fld, n_WS, WS)
+     &     (ncomp_sph_trans, comm_rj1, rj_fld, n_WS, WS)
 !
       if (iflag_debug.gt.0) write(*,*) 'sph_backward_transforms',       &
      &  ncomp_sph_trans, num_vector_rtp, num_scalar_rtp, num_tensor_rtp

@@ -1,4 +1,5 @@
 !
+      use t_sph_trans_comm_tbl
       use t_phys_address
       use t_phys_data
 !
@@ -86,7 +87,7 @@
 !
 !*   ------------------------------------------------------------------
 !
-      subroutine nonlinear_incuction_wSGS_SPH(conduct, rj_fld)
+      subroutine nonlinear_incuction_wSGS_SPH(comm_rj, conduct, rj_fld)
 !
       use m_solver_SR
 !
@@ -95,6 +96,7 @@
       use spherical_SRs_N
       use copy_nodal_fld_4_sph_trans
 !
+      type(sph_comm_tbl), intent(in) :: comm_rj
       type(field_geometry_data), intent(in) :: conduct
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -131,10 +133,10 @@
 !
       call sel_sph_rj_vector_from_recv(ncomp_xyz_2_rj,                  &
      &    ipol%i_vp_induct, f_hbd_trns%i_vp_induct,                     &
-     &    n_WR, WR(1), rj_fld)
+     &    comm_rj, n_WR, WR(1), rj_fld)
       call sel_sph_rj_vector_from_recv(ncomp_xyz_2_rj,                  &
      &    ipol%i_SGS_vp_induct, f_hbd_trns%i_SGS_vp_induct,             &
-     &    n_WR, WR(1), rj_fld)
+     &    comm_rj, n_WR, WR(1), rj_fld)
 !
 !
       call const_sph_rotation_uxb                                       &
@@ -146,12 +148,13 @@
 !
 !*   ------------------------------------------------------------------
 !
-      subroutine nonlinear_incuction_SPH(rj_fld)
+      subroutine nonlinear_incuction_SPH(comm_rj, rj_fld)
 !
       use m_solver_SR
       use spherical_SRs_N
       use copy_nodal_fld_4_sph_trans
 !
+      type(sph_comm_tbl), intent(in) :: comm_rj
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -173,7 +176,8 @@
      &    izero, izero, frc_hbd_rtp(1,1), n_WS, n_WR, WS(1), WR(1))
 !
       call sel_sph_rj_vector_from_recv(ncomp_xyz_2_rj,                  &
-     &   (ipol%i_vp_induct, f_hbd_trns%i_vp_induct, n_WR, WR, rj_fld)
+     &   (ipol%i_vp_induct, f_hbd_trns%i_vp_induct,                     &
+     &    comm_rj, n_WR, WR, rj_fld)
 !
       call const_sph_rotation_uxb                                       &
      &   (ipol%i_vp_induct, ipol%i_induction, rj_fld)

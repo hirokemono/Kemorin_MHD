@@ -122,17 +122,17 @@
       if (iflag_debug.gt.0)                                             &
      &      write(*,*) 'set_all_scalar_spec_from_sph_t'
       call set_all_scalar_spec_from_sph_t                               &
-     &   (ncomp_sph_trans, n_WR, WR, rj_fld)
+     &   (ncomp_sph_trans, comm_rj1, n_WR, WR, rj_fld)
 !
       if (iflag_debug.gt.0)                                             &
      &      write(*,*) 'set_all_vec_spec_from_sph_t'
       call set_all_vec_spec_from_sph_t                                  &
-     &   (ncomp_sph_trans, n_WR, WR, rj_fld)
+     &   (ncomp_sph_trans, comm_rj1, n_WR, WR, rj_fld)
 !
       if (iflag_debug.gt.0)                                             &
      &      write(*,*) 'set_all_tensor_spec_from_sph_t'
       call set_all_tensor_spec_from_sph_t                               &
-     &   (ncomp_sph_trans, n_WR, WR, rj_fld)
+     &   (ncomp_sph_trans, comm_rj1, n_WR, WR, rj_fld)
 !
       end subroutine sph_f_trans_all_field
 !
@@ -169,15 +169,16 @@
       if (iflag_debug.gt.0)                                             &
      &        write(*,*) 'set_all_vec_spec_to_sph_t'
       call set_all_vec_spec_to_sph_t                                    &
-     &    (ncomp_sph_trans, rj_fld, n_WS, WS)
+     &    (ncomp_sph_trans, comm_rj1, rj_fld, n_WS, WS)
       if (iflag_debug.gt.0)                                             &
      &      write(*,*) 'set_all_scalar_spec_to_sph_t'
       call set_all_scalar_spec_to_sph_t                                 &
-     &   (ncomp_sph_trans, rj_fld, n_WS, WS, dlcl_pole(1,1))
+     &   (ncomp_sph_trans, sph_rj1, comm_rj1, rj_fld,                   &
+     &    n_WS, WS, dlcl_pole(1,1))
       if (iflag_debug.gt.0)                                             &
      &      write(*,*) 'set_all_tensor_spec_to_sph_t'
       call set_all_tensor_spec_to_sph_t                                 &
-     &   (ncomp_sph_trans, rj_fld, n_WS, WS)
+     &   (ncomp_sph_trans, comm_rj1, rj_fld, n_WS, WS)
 !
       if (iflag_debug.gt.0) write(*,*) 'sph_backward_transforms',       &
      &  ncomp_sph_trans, num_vector_rtp, num_scalar_rtp, num_tensor_rtp

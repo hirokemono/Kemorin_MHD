@@ -48,9 +48,9 @@
       call init_rms_4_sph_spectr(rj_fld)
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_gauss_coefs_4_monitor'
-      call init_gauss_coefs_4_monitor(l_truncation)
+      call init_gauss_coefs_4_monitor(l_truncation, sph_rj1)
       if ( iflag_debug.gt.0 ) write(*,*) 'init_sph_spec_4_monitor'
-      call init_sph_spec_4_monitor(rj_fld)
+      call init_sph_spec_4_monitor(l_truncation, sph_rj1, rj_fld)
 !
       end subroutine open_sph_vol_rms_file_mhd
 !
@@ -83,7 +83,7 @@
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       if(iflag_debug.gt.0)  write(*,*) 'pickup_sph_spec_4_monitor'
       call pickup_sph_spec_4_monitor                                    &
-     &   (rj_fld%num_phys, rj_fld%ntot_phys,                            &
+     &   (sph_rj1, rj_fld%n_point, rj_fld%num_phys, rj_fld%ntot_phys,   &
      &    rj_fld%istack_component, rj_fld%d_fld)
       if(iflag_debug.gt.0)  write(*,*) 'cal_no_heat_source_Nu'
       call cal_no_heat_source_Nu(sph_bc_U%kr_in, sph_bc_U%kr_out,       &

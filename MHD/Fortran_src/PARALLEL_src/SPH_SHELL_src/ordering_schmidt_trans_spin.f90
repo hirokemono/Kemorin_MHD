@@ -200,7 +200,7 @@
 !
 !
 !
-      integer(kind = kint) :: ip, ist, inum, i, num, inod
+      integer(kind = kint) :: inum, i, inod
       integer(kind = kint) :: i_rlm, nd, j_rlm, k_rlm
 !
 !
@@ -258,7 +258,7 @@
       real (kind=kreal), intent(inout)                                  &
      &       :: WS(ncomp*istack_sr_rtm(nneib_domain_rtm))
 !
-      integer(kind = kint) :: ip, ist, num, inum, nd, i, inod
+      integer(kind = kint) :: inum, nd, i, inod
       integer(kind = kint) :: i_rtm, k_rtm, l_rtm, m_rtm, km_rtm
 !
 !

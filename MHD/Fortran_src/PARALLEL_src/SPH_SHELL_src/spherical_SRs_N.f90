@@ -63,7 +63,6 @@
 !
       subroutine check_calypso_sph_buffer_N(NB)
 !
-      use m_spheric_parameter
       use m_sph_trans_comm_table
       use m_sel_spherical_SRs
       use m_solver_SR
@@ -259,7 +258,6 @@
 !
       subroutine calypso_sph_comm_N(NB, send_comm, recv_comm)
 !
-      use m_spheric_parameter
       use m_sel_spherical_SRs
       use t_sph_trans_comm_tbl
 !

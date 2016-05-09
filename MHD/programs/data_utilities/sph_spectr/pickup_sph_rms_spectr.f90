@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine allocate_work_pick_rms_sph(nri, jmax)
-!!      subroutine init_sph_rms_4_monitor(l_truncation)
+!!      subroutine init_sph_rms_4_monitor(l_truncation, sph_rj)
 !!
 !!      subroutine pickup_sph_rms_4_monitor(sph_rj, rj_fld)
 !!      subroutine pickup_sph_rms_vol_monitor                           &
@@ -67,25 +67,27 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_sph_rms_4_monitor(l_truncation)
+      subroutine init_sph_rms_4_monitor(l_truncation, sph_rj)
 !
       use m_pickup_sph_spectr_data
+      use t_spheric_rj_data
 !
       integer(kind = kint), intent(in) ::l_truncation
+      type(sph_rj_grid), intent(in) :: sph_rj
 !
 !
       pickup_sph_rms_head = pickup_sph_head
 !
-      call count_picked_sph_adrress                                     &
-     &   (num_pick_sph, num_pick_sph_l, num_pick_sph_m,                 &
+      call count_picked_sph_adrress(l_truncation,                       &
+     &    num_pick_sph, num_pick_sph_l, num_pick_sph_m,                 &
      &    idx_pick_sph_mode, idx_pick_sph_l, idx_pick_sph_m,            &
      &    ntot_pick_sph_rms_mode)
 !
       call allocate_pick_sph_rms
       call allocate_iflag_pick_sph(l_truncation)
 !
-      call set_picked_sph_address                                       &
-     &   (num_pick_sph, num_pick_sph_l, num_pick_sph_m,                 &
+      call set_picked_sph_address(l_truncation, sph_rj,                 &
+     &    num_pick_sph, num_pick_sph_l, num_pick_sph_m,                 &
      &    idx_pick_sph_mode, idx_pick_sph_l, idx_pick_sph_m,            &
      &    ntot_pick_sph_rms_mode, num_pick_sph_rms_mode,                &
      &    idx_pick_sph_rms_gl, idx_pick_sph_rms_lc)

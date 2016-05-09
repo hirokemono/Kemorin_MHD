@@ -67,11 +67,12 @@
 !
       call allocate_trans_schmidt_rtm                                   &
      &   (sph_rtm1%nidx_rtm(2), sph_rlm1%nidx_rlm(2))
-      call set_trans_legendre_rtm
+      call set_trans_legendre_rtm                                       &
+     &   (sph_rtm1%nidx_rtm(2), sph_rlm1%nidx_rlm(2))
 !
       call allocate_hemi_schmidt_rtm                                    &
      &   (sph_rtm1%nidx_rtm(2), sph_rlm1%nidx_rlm(2))
-      call set_legendre_hemispher_rtm
+      call set_legendre_hemispher_rtm(sph_rtm1%nidx_rtm(3))
 !
       call set_blocks_4_leg_trans
 !
