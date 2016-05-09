@@ -78,6 +78,7 @@
       call start_eleps_time(13)
       if(iflag_debug .gt. 0) write(*,*) 'sum_coriolis_rlm'
       call sum_coriolis_rlm(ncomp_trans, n_WR, WR)
+      call finish_send_recv_sph(comm_rj1)
       call end_eleps_time(13)
 !
       call start_eleps_time(22)
@@ -131,6 +132,7 @@
       START_SRtime= MPI_WTIME()
       call start_eleps_time(20)
       call calypso_sph_comm_N(ncomp_trans, comm_rtp1, comm_rtm1)
+      call finish_send_recv_sph(comm_rtp1)
       call end_eleps_time(20)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !

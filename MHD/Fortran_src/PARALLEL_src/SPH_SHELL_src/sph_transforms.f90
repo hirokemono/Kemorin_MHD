@@ -75,6 +75,8 @@
       call start_eleps_time(22)
       call pole_backward_transforms(ncomp_trans, nvector, nscalar,      &
      &    n_WR, WR, v_pl_local)
+      call finish_send_recv_sph(comm_rj1)
+!
 !
       call sel_backward_legendre_trans                                  &
      &   (ncomp_trans, nvector, nscalar, sph_rlm1, sph_rtm1,            &
@@ -121,6 +123,7 @@
       START_SRtime= MPI_WTIME()
       call start_eleps_time(20)
       call calypso_sph_comm_N(ncomp_trans, comm_rtp1, comm_rtm1)
+      call finish_send_recv_sph(comm_rtp1)
       call end_eleps_time(20)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
