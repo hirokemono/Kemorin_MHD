@@ -2,23 +2,26 @@
 !     module copy_all_field_4_sph_trans
 !
 !!      subroutine set_sph_scalar_to_sph_trans                          &
-!!     &         (node, nod_fld, nnod_rtp, ncomp_trans, v_rtp)
+!!     &         (node, nod_fld, sph_rtp, ncomp_trans, v_rtp)
 !!        type(node_data), intent(in) :: node
 !!        type(phys_data), intent(in) :: nod_fld
 !!      subroutine set_sph_scalar_from_sph_trans                        &
-!!     &         (node, nnod_rtp, ncomp_trans, v_rtp, v_pole, nod_fld)
+!!     &         (sph_rtp, node, m_folding, ncomp_trans,                &
+!!     &          v_rtp, v_pole, nod_fld)
 !!        type(node_data), intent(in) :: node
 !!        type(phys_data), intent(inout) :: nod_fld
 !!
 !!      subroutine set_sph_vect_to_sph_trans                            &
-!!     &         (node, nod_fld, nnod_rtp, ncomp_trans, v_rtp)
+!!     &         (node, nod_fld, sph_rtp, ncomp_trans, v_rtp)
 !!      subroutine set_xyz_vect_from_sph_trans                          &
-!!     &         (node, nnod_rtp, ncomp_trans, v_rtp, v_pole, nod_fld)
+!!     &         (sph_rtp, node, m_folding, ncomp_trans,                &
+!!     &          v_rtp, v_pole, nod_fld)
 !!
 !!      subroutine set_sph_tensor_to_sph_trans                          &
-!!     &         (node, nod_fld, nnod_rtp, ncomp_trans, v_rtp)
+!!     &         (node, nod_fld, sph_rtp, ncomp_trans, v_rtp)
 !!      subroutine set_sph_tensor_from_sph_trans                        &
-!!     &         (node, nnod_rtp, ncomp_trans, v_rtp, v_pole, nod_fld)
+!!     &         (sph_rtp, node, m_folding, ncomp_trans,                &
+!!     &          v_rtp, v_pole, nod_fld)
 !
 !      Written by H. Matsui on Feb., 2008
 !
@@ -32,6 +35,7 @@
 !
       use t_phys_data
       use t_geometry_data
+      use t_spheric_rtp_data
 !
       use set_phys_name_4_sph_trans
 !
@@ -44,15 +48,17 @@
 ! -------------------------------------------------------------------
 !
       subroutine set_sph_scalar_to_sph_trans                            &
-     &         (node, nod_fld, nnod_rtp, ncomp_trans, v_rtp)
+     &         (node, nod_fld, sph_rtp, ncomp_trans, v_rtp)
 !
-      use copy_1st_nodal_4_sph_trans
+      use copy_nodal_fld_4_sph_trans
 !
+      type(sph_rtp_grid), intent(in) :: sph_rtp
       type(node_data), intent(in) :: node
       type(phys_data), intent(in) :: nod_fld
 !
-      integer(kind = kint), intent(in) :: nnod_rtp, ncomp_trans
-      real(kind = kreal), intent(inout) :: v_rtp(nnod_rtp,ncomp_trans)
+      integer(kind = kint), intent(in) :: ncomp_trans
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: v_rtp(sph_rtp%nnod_rtp,ncomp_trans)
 !
       integer(kind = kint) :: j, j0
       integer(kind = kint) :: i, i_field, itrans
@@ -66,7 +72,7 @@
           if (phys_name_rtp(j0) .eq. nod_fld%phys_name(i)) then
             i_field = nod_fld%istack_component(i- 1) + 1
             call copy_nod_scl_to_sph_trans                              &
-     &         (node, nod_fld, i_field, v_rtp(1,itrans))
+     &         (node, sph_rtp, nod_fld, i_field, v_rtp(1,itrans))
             exit
           end if
         end do
@@ -77,13 +83,17 @@
 ! -------------------------------------------------------------------
 !
       subroutine set_sph_scalar_from_sph_trans                          &
-     &         (node, nnod_rtp, ncomp_trans, v_rtp, v_pole, nod_fld)
+     &         (sph_rtp, node, m_folding, ncomp_trans,                  &
+     &          v_rtp, v_pole, nod_fld)
 !
-      use copy_1st_nodal_4_sph_trans
+      use copy_nodal_fld_4_sph_trans
 !
+      type(sph_rtp_grid), intent(in) :: sph_rtp
       type(node_data), intent(in) :: node
-      integer(kind = kint), intent(in) :: nnod_rtp, ncomp_trans
-      real(kind = kreal), intent(in) :: v_rtp(nnod_rtp,ncomp_trans)
+      integer(kind = kint), intent(in) :: m_folding
+      integer(kind = kint), intent(in) :: ncomp_trans
+      real(kind = kreal), intent(in)                                    &
+     &           :: v_rtp(sph_rtp%nnod_rtp,ncomp_trans)
       real(kind = kreal), intent(in) :: v_pole(nnod_pole,ncomp_trans)
 !
       type(phys_data), intent(inout) :: nod_fld
@@ -99,7 +109,8 @@
         do i = 1, nod_fld%num_phys
           if (phys_name_rtp(j0) .eq. nod_fld%phys_name(i)) then
             i_field = nod_fld%istack_component(i- 1) + 1
-            call copy_nod_scl_from_trans_wpole(ncomp_trans, itrans,     &
+            call copy_nod_scl_from_trans_wpole                          &
+     &         (sph_rtp, m_folding, ncomp_trans, itrans,                &
      &          v_rtp(1,1), v_pole(1,1), i_field, node, nod_fld)
             exit
           end if
@@ -112,15 +123,18 @@
 ! -------------------------------------------------------------------
 !
       subroutine set_sph_vect_to_sph_trans                              &
-     &         (node, nod_fld, nnod_rtp, ncomp_trans, v_rtp)
+     &         (node, nod_fld, sph_rtp, ncomp_trans, v_rtp)
 !
-      use copy_1st_nodal_4_sph_trans
+      use t_spheric_rtp_data
+      use copy_nodal_fld_4_sph_trans
 !
+      type(sph_rtp_grid), intent(in) :: sph_rtp
       type(node_data), intent(in) :: node
       type(phys_data), intent(in) :: nod_fld
 !
-      integer(kind = kint), intent(in) :: nnod_rtp, ncomp_trans
-      real(kind = kreal), intent(inout) :: v_rtp(nnod_rtp,ncomp_trans)
+      integer(kind = kint), intent(in) :: ncomp_trans
+      real(kind = kreal), intent(inout)                                 &
+     &           :: v_rtp(sph_rtp%nnod_rtp,ncomp_trans)
 !
       integer(kind = kint) :: j, j0
       integer(kind = kint) :: i, i_field, itrans
@@ -134,7 +148,7 @@
           if (phys_name_rtp(j0) .eq. nod_fld%phys_name(i)) then
             i_field = nod_fld%istack_component(i- 1) + 1
             call copy_nod_vec_to_sph_trans                              &
-     &         (node, nod_fld, i_field, v_rtp(1,itrans))
+     &         (node, sph_rtp, nod_fld, i_field, v_rtp(1,itrans))
             exit
           end if
         end do
@@ -145,13 +159,17 @@
 ! -------------------------------------------------------------------
 !
       subroutine set_xyz_vect_from_sph_trans                            &
-     &         (node, nnod_rtp, ncomp_trans, v_rtp, v_pole, nod_fld)
+     &         (sph_rtp, node, m_folding, ncomp_trans,                  &
+     &          v_rtp, v_pole, nod_fld)
 !
-      use copy_1st_nodal_4_sph_trans
+      use copy_nodal_fld_4_sph_trans
 !
+      type(sph_rtp_grid), intent(in) :: sph_rtp
       type(node_data), intent(in) :: node
-      integer(kind = kint), intent(in) :: nnod_rtp, ncomp_trans
-      real(kind = kreal), intent(in) :: v_rtp(nnod_rtp,ncomp_trans)
+      integer(kind = kint), intent(in) :: m_folding
+      integer(kind = kint), intent(in) :: ncomp_trans
+      real(kind = kreal), intent(in)                                    &
+     &           :: v_rtp(sph_rtp%nnod_rtp,ncomp_trans)
       real(kind = kreal), intent(in) :: v_pole(nnod_pole,ncomp_trans)
 !
       type(phys_data), intent(inout) :: nod_fld
@@ -167,7 +185,8 @@
         do i = 1, nod_fld%num_phys
           if (phys_name_rtp(j0) .eq. nod_fld%phys_name(i)) then
             i_field = nod_fld%istack_component(i- 1) + 1
-            call copy_nod_vec_from_trans_wpole(ncomp_trans, itrans,     &
+            call copy_nod_vec_from_trans_wpole                           &
+     &         (sph_rtp, m_folding, ncomp_trans, itrans,                 &
      &          v_rtp(1,1), v_pole(1,1), i_field, node, nod_fld)
             exit
           end if
@@ -180,15 +199,17 @@
 ! -------------------------------------------------------------------
 !
       subroutine set_sph_tensor_to_sph_trans                            &
-     &         (node, nod_fld, nnod_rtp, ncomp_trans, v_rtp)
+     &         (node, nod_fld, sph_rtp, ncomp_trans, v_rtp)
 !
-      use copy_1st_nodal_4_sph_trans
+      use copy_nodal_fld_4_sph_trans
 !
+      type(sph_rtp_grid), intent(in) :: sph_rtp
       type(node_data), intent(in) :: node
       type(phys_data), intent(in) :: nod_fld
 !
-      integer(kind = kint), intent(in) :: nnod_rtp, ncomp_trans
-      real(kind = kreal), intent(inout) :: v_rtp(nnod_rtp,ncomp_trans)
+      integer(kind = kint), intent(in) :: ncomp_trans
+      real(kind = kreal), intent(inout)                                 &
+     &              :: v_rtp(sph_rtp%nnod_rtp,ncomp_trans)
 !
       integer(kind = kint) :: j, j0
       integer(kind = kint) :: i, i_field, itrans
@@ -202,7 +223,7 @@
           if (phys_name_rtp(j0) .eq. nod_fld%phys_name(i)) then
             i_field = nod_fld%istack_component(i- 1) + 1
             call copy_nod_tsr_to_sph_trans                              &
-     &         (node, nod_fld, i_field, v_rtp(1,itrans))
+     &         (node, sph_rtp, nod_fld, i_field, v_rtp(1,itrans))
             exit
           end if
         end do
@@ -213,13 +234,18 @@
 ! -------------------------------------------------------------------
 !
       subroutine set_sph_tensor_from_sph_trans                          &
-     &         (node, nnod_rtp, ncomp_trans, v_rtp, v_pole, nod_fld)
+     &         (sph_rtp, node, m_folding, ncomp_trans,                  &
+     &          v_rtp, v_pole, nod_fld)
 !
-      use copy_1st_nodal_4_sph_trans
+      use t_spheric_rtp_data
+      use copy_nodal_fld_4_sph_trans
 !
+      type(sph_rtp_grid), intent(in) :: sph_rtp
       type(node_data), intent(in) :: node
-      integer(kind = kint), intent(in) :: nnod_rtp, ncomp_trans
-      real(kind = kreal), intent(in) :: v_rtp(nnod_rtp,ncomp_trans)
+      integer(kind = kint), intent(in) :: m_folding
+      integer(kind = kint), intent(in) :: ncomp_trans
+      real(kind = kreal), intent(in)                                    &
+     &           :: v_rtp(sph_rtp%nnod_rtp,ncomp_trans)
       real(kind = kreal), intent(in) :: v_pole(nnod_pole,ncomp_trans)
 !
       type(phys_data), intent(inout) :: nod_fld
@@ -235,7 +261,8 @@
         do i = 1, nod_fld%num_phys
           if (phys_name_rtp(j0) .eq. nod_fld%phys_name(i)) then
             i_field = nod_fld%istack_component(i- 1) + 1
-            call copy_nod_tsr_from_trans_wpole(ncomp_trans, itrans,     &
+            call copy_nod_tsr_from_trans_wpole                           &
+     &         (sph_rtp, m_folding, ncomp_trans, itrans,                 &
      &          v_rtp(1,1), v_pole(1,1), i_field, node, nod_fld)
             exit
           end if

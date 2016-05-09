@@ -93,7 +93,7 @@
       use t_geometry_data_MHD
 !
       use spherical_SRs_N
-      use copy_1st_nodal_4_sph_trans
+      use copy_nodal_fld_4_sph_trans
 !
       type(field_geometry_data), intent(in) :: conduct
       type(phys_data), intent(inout) :: rj_fld
@@ -150,7 +150,7 @@
 !
       use m_solver_SR
       use spherical_SRs_N
-      use copy_1st_nodal_4_sph_trans
+      use copy_nodal_fld_4_sph_trans
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -182,13 +182,16 @@
 !
 !*   ------------------------------------------------------------------
 !
-      subroutine cal_magneitc_field_by_SPH(rj_fld)
+      subroutine cal_magneitc_field_by_SPH(m_folding, sph_rtp, rj_fld)
 !
       use m_solver_SR
+      use t_spheric_rtp_data
       use spherical_SRs_N
       use copy_spectr_4_sph_trans
-      use copy_1st_nodal_4_sph_trans
+      use copy_nodal_fld_4_sph_trans
 !
+      integer(kind = kint), intent(in) :: m_folding
+      type(sph_rtp_grid), intent(in) :: sph_rtp
       type(phys_data), intent(in) :: rj_fld
 !
       if ( iflag_SGS_induction .ne. id_SGS_none) then
@@ -224,20 +227,25 @@
      &    n_WS, n_WR, WS, WR, fld_hbd_rtp, flc_hbd_pole, fld_hbd_pole)
 !
 !
-      call copy_nod_vec_from_trans_wpole(nvector_rj_2_xyz,              &
+      call copy_nod_vec_from_trans_wpole                                &
+     &   (sph_rtp, m_folding, nvector_rj_2_xyz,                         &
      &    b_hbd_trns%i_magne, fld_hbd_rtp(1,1), fld_hbd_pole,           &
      &    iphys_sph%i_magne, mesh_sph%node, sph_fld)
-      call copy_nod_vec_from_trans_wpole(nvector_rj_2_xyz,              &
+      call copy_nod_vec_from_trans_wpole                                &
+     &   (sph_rtp, m_folding, nvector_rj_2_xyz,                         &
      &    b_hbd_trns%i_current, fld_hbd_rtp(1,1), fld_hbd_pole,         &
      &    iphys_sph%i_current, mesh_sph%node, sph_fld)
-      call copy_nod_vec_from_trans_wpole(nvector_rj_2_xyz,              &
+      call copy_nod_vec_from_trans_wpole                                &
+     &   (sph_rtp, m_folding, nvector_rj_2_xyz,                         &
      &    b_hbd_trns%i_b_diffuse, fld_hbd_rtp(1,1), fld_hbd_pole,       &
-     &     iphys_sph%i_b_diffuse, mesh_sph%node, sph_fld)
-      call copy_nod_vec_from_trans_wpole(nvector_rj_2_xyz,              &
+     &    iphys_sph%i_b_diffuse, mesh_sph%node, sph_fld)
+      call copy_nod_vec_from_trans_wpole                                &
+     &   (sph_rtp, m_folding, nvector_rj_2_xyz,                         &
      &    b_hbd_trns%i_induction, fld_hbd_rtp(1,1), fld_hbd_pole,       &
      &    iphys_sph%i_induction, mesh_sph%node, sph_fld)
       if ( iflag_SGS_induction .ne. id_SGS_none) then
-        call copy_nod_vec_from_trans_wpole(nvector_rj_2_xyz,            &
+        call copy_nod_vec_from_trans_wpole                              &
+     &   (sph_rtp, m_folding, nvector_rj_2_xyz,                         &
      &    b_hbd_trns%i_SGS_induction, fld_hbd_rtp(1,1), fld_hbd_pole,   &
      &    iphys_sph%i_SGS_induction, mesh_sph%node, sph_fld)
       end if

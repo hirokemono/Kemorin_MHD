@@ -277,9 +277,12 @@
 !*
 !*  -----------  data transfer to FEM array --------------
 !*
-      call copy_forces_to_snapshot_rtp(mesh1%node, iphys, nod_fld1)
-      call copy_snap_vec_fld_from_trans(mesh1%node, iphys, nod_fld1)
-      call copy_snap_vec_fld_to_trans(mesh1%node, iphys, nod_fld1)
+      call copy_forces_to_snapshot_rtp                                  &
+     &   (m_folding, sph_rtp1, mesh1%node, iphys, nod_fld1)
+      call copy_snap_vec_fld_from_trans                                 &
+     &   (m_folding, sph_rtp1, mesh1%node, iphys, nod_fld1)
+      call copy_snap_vec_fld_to_trans                                   &
+     &   (m_folding, sph_rtp1, mesh1%node, iphys, nod_fld1)
 !
 ! ----  Take zonal mean
 !

@@ -10,7 +10,8 @@
 !!@verbatim
 !!  routines for backward transform
 !!      subroutine select_mhd_field_from_trans
-!!      subroutine copy_forces_to_snapshot_rtp(node, iphys, nod_fld)
+!!      subroutine copy_forces_to_snapshot_rtp                          &
+!!     &          (m_folding, sph_rtp, node, iphys, nod_fld)
 !!        type(node_data), intent(in) :: node
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -25,6 +26,7 @@
       use t_geometry_data
       use t_phys_address
       use t_phys_data
+      use t_spheric_rtp_data
 !
       implicit  none
 !
@@ -61,10 +63,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_forces_to_snapshot_rtp(node, iphys, nod_fld)
+      subroutine copy_forces_to_snapshot_rtp                            &
+     &          (m_folding, sph_rtp, node, iphys, nod_fld)
 !
       use m_addresses_trans_sph_MHD
 !
+      integer(kind = kint), intent(in) :: m_folding
+      type(sph_rtp_grid), intent(in) :: sph_rtp
       type(node_data), intent(in) :: node
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(inout) :: nod_fld
@@ -72,24 +77,30 @@
 !
 !   advection flag
       call copy_force_from_MHD_trans                                    &
-     &   (f_trns%i_m_advect, iphys%i_m_advect, node, nod_fld)
+     &   (f_trns%i_m_advect, iphys%i_m_advect,                          &
+     &    m_folding, sph_rtp, node, nod_fld)
 !   Coriolis flag
       call copy_force_from_MHD_trans                                    &
-     &   (f_trns%i_coriolis, iphys%i_coriolis, node, nod_fld)
+     &   (f_trns%i_coriolis, iphys%i_coriolis,                          &
+     &    m_folding, sph_rtp, node, nod_fld)
 !   Lorentz flag
       call copy_force_from_MHD_trans                                    &
-     &   (f_trns%i_lorentz, iphys%i_lorentz, node, nod_fld)
+     &   (f_trns%i_lorentz, iphys%i_lorentz,                            &
+     &    m_folding, sph_rtp, node, nod_fld)
 !
 !   induction flag
       call copy_force_from_MHD_trans                                    &
-     &   (f_trns%i_vp_induct, iphys%i_vp_induct, node, nod_fld)
+     &   (f_trns%i_vp_induct, iphys%i_vp_induct,                        &
+     &    m_folding, sph_rtp, node, nod_fld)
 !   divergence of heat flux flag
       call copy_force_from_MHD_trans                                    &
-     &   (f_trns%i_h_flux, iphys%i_h_flux, node, nod_fld)
+     &   (f_trns%i_h_flux, iphys%i_h_flux,                              &
+     &    m_folding, sph_rtp, node, nod_fld)
 !
 !   divergence of composition flux flag
       call copy_force_from_MHD_trans                                    &
-     &   (f_trns%i_c_flux, iphys%i_c_flux, node, nod_fld)
+     &   (f_trns%i_c_flux, iphys%i_c_flux,                              &
+     &    m_folding, sph_rtp, node, nod_fld)
 !
       end subroutine copy_forces_to_snapshot_rtp
 !
@@ -115,20 +126,22 @@
 !-----------------------------------------------------------------------
 !
       subroutine copy_force_from_MHD_trans                              &
-     &         (i_trns, i_field, node, nod_fld)
+     &         (i_trns, i_field, m_folding, sph_rtp, node, nod_fld)
 !
       use m_addresses_trans_sph_MHD
       use m_addresses_trans_sph_snap
-      use copy_field_4_sph_trans
+      use copy_nodal_fld_4_sph_trans
 !
       integer(kind = kint), intent(in) :: i_field, i_trns
+      integer(kind = kint), intent(in) :: m_folding
+      type(sph_rtp_grid), intent(in) :: sph_rtp
       type(node_data), intent(in) :: node
       type(phys_data), intent(inout) :: nod_fld
 !
 !
       if( (i_field*i_trns) .le. 0) return
       call copy_nodal_vector_from_trans                                 &
-     &   (ncomp_rtp_2_rj, i_trns, frm_rtp,                              &
+     &   (sph_rtp, m_folding, ncomp_rtp_2_rj, i_trns, frm_rtp,          &
      &    node%numnod, nod_fld%ntot_phys, i_field, nod_fld%d_fld)
 !
       end subroutine copy_force_from_MHD_trans

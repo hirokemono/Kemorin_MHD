@@ -166,11 +166,14 @@
 !*  -----------  data transfer to FEM array --------------
 !*
       if (iflag_debug.gt.0) write(*,*) 'copy_forces_to_snapshot_rtp'
-      call copy_forces_to_snapshot_rtp(mesh%node, iphys, nod_fld1)
+      call copy_forces_to_snapshot_rtp                                  &
+     &   (m_folding, sph_rtp1, mesh%node, iphys, nod_fld1)
       if (iflag_debug.gt.0) write(*,*) 'copy_snap_vec_fld_from_trans'
-      call copy_snap_vec_fld_from_trans(mesh%node, iphys, nod_fld1)
+      call copy_snap_vec_fld_from_trans                                 &
+     &   (m_folding, sph_rtp1, mesh%node, iphys, nod_fld1)
       if (iflag_debug.gt.0) write(*,*) 'copy_snap_vec_fld_to_trans'
-      call copy_snap_vec_fld_to_trans(mesh%node, iphys, nod_fld1)
+      call copy_snap_vec_fld_to_trans                                   &
+     &   (m_folding, sph_rtp1, mesh%node, iphys, nod_fld1)
 !
       if (iflag_debug.gt.0) write(*,*) 'overwrite_nodal_sph_2_xyz'
       call overwrite_nodal_sph_2_xyz(mesh%node, nod_fld1)

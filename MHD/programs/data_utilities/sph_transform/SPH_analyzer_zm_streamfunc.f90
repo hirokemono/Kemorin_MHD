@@ -169,7 +169,7 @@
      &     (nnod_rtp, nidx_rtp, sph_rtp1%radius_1d_rtp_r,               &
      &      ncomp_sph_trans, dall_rtp(1,1))
         call set_xyz_vect_from_sph_trans                                &
-     &     (mesh%node, nnod_rtp, ncomp_sph_trans,                       &
+     &     (sph_rtp1, mesh%node, m_folding, ncomp_sph_trans,            &
      &      dall_rtp(1,1), dall_pole(1,1), nod_fld)
       end if
 !

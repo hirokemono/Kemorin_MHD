@@ -7,13 +7,6 @@
 !>@brief  Copy spherical harmonics data
 !!
 !!@verbatim
-!!      subroutine copy_nodal_vector_from_trans                         &
-!!     &         (ncomp_rtp, i_trns, v_rtp,                             &
-!!     &          numnod, ncomp_nod, i_field, d_nod)
-!!      subroutine copy_nodal_scalar_from_trans                         &
-!!     &         (ncomp_rtp, i_trns, v_rtp,                             &
-!!     &          numnod, ncomp_nod, i_field, d_nod)
-!!
 !!      subroutine copy_scalar_from_trans(nnod_rtp, m_folding,          &
 !!     &         inod_rtp_smp_stack, nnod, v_rtp, d_sph)
 !!      subroutine copy_vector_from_trans(nnod_rtp, m_folding,          &
@@ -40,47 +33,6 @@
 !
       contains
 !
-! -------------------------------------------------------------------
-!
-      subroutine copy_nodal_vector_from_trans                           &
-     &         (ncomp_rtp, i_trns, v_rtp,                               &
-     &          numnod, ncomp_nod, i_field, d_nod)
-!
-      use m_spheric_parameter
-!
-      integer(kind = kint), intent(in) :: ncomp_rtp, i_trns
-      real(kind = kreal), intent(in) :: v_rtp(nnod_rtp,ncomp_rtp)
-      integer(kind = kint), intent(in) :: numnod, ncomp_nod, i_field
-      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
-!
-!
-      call copy_vector_from_trans                                       &
-     &   (nnod_rtp, m_folding, sph_rj1%istack_inod_rj_smp,              &
-     &    numnod, v_rtp(1,i_trns), d_nod(1,i_field) )
-!
-      end subroutine copy_nodal_vector_from_trans
-!
-!-----------------------------------------------------------------------
-!
-      subroutine copy_nodal_scalar_from_trans                           &
-     &         (ncomp_rtp, i_trns, v_rtp,                               &
-     &          numnod, ncomp_nod, i_field, d_nod)
-!
-      use m_spheric_parameter
-!
-      integer(kind = kint), intent(in) :: ncomp_rtp, i_trns
-      real(kind = kreal), intent(in) :: v_rtp(nnod_rtp,ncomp_rtp)
-      integer(kind = kint), intent(in) :: numnod, ncomp_nod, i_field
-      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
-!
-!
-      call copy_scalar_from_trans                                       &
-     &   (nnod_rtp, m_folding, sph_rj1%istack_inod_rj_smp,              &
-     &    numnod, v_rtp(1,i_trns), d_nod(1,i_field) )
-!
-      end subroutine copy_nodal_scalar_from_trans
-!
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine copy_scalar_from_trans(nnod_rtp, m_folding,            &

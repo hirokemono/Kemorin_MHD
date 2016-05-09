@@ -1,5 +1,5 @@
-!>@file   copy_1st_nodal_4_sph_trans.f90
-!!@brief  module copy_1st_nodal_4_sph_trans
+!>@file   copy_nodal_fld_4_sph_trans.f90
+!!@brief  module copy_nodal_fld_4_sph_trans
 !!
 !!@author H. Matsui
 !!@date Programmed in Nov., 2012
@@ -7,35 +7,45 @@
 !>@brief  Copy spherical transform data to 1st FEM data
 !!
 !!@verbatim
-!!      subroutine copy_nod_scl_from_trans_wpole                        &
-!!     &         (ncomp_trans, i_trns, d_rtp, v_pole, i_field,          &
+!!      subroutine copy_nodal_vector_from_trans                         &
+!!     &         (sph_rtp, m_folding, ncomp_trans, i_trns, v_rtp,       &
+!!     &          numnod, ncomp_nod, i_field, d_nod)
+!!      subroutine copy_nodal_scalar_from_trans                         &
+!!     &         (sph_rtp, m_folding, ncomp_trans, i_trns, v_rtp,       &
+!!     &          numnod, ncomp_nod, i_field, d_nod)
+!!
+!!      subroutine copy_nod_scl_from_trans_wpole(sph_rtp, m_folding,    &
+!!     &          ncomp_trans, i_trns, d_rtp, v_pole, i_field,          &
 !!     &          node, nod_fld)
-!!      subroutine copy_nod_vec_from_trans_wpole                        &
-!!     &         (ncomp_trans, i_trns, d_rtp, v_pole, i_field,          &
+!!      subroutine copy_nod_vec_from_trans_wpole(sph_rtp, m_folding,    &
+!!     &          ncomp_trans, i_trns, d_rtp, v_pole, i_field,          &
 !!     &          node, nod_fld)
-!!      subroutine copy_nod_tsr_from_trans_wpole                        &
-!!     &         (ncomp_trans, i_trns, d_rtp, v_pole, i_field,          &
+!!      subroutine copy_nod_tsr_from_trans_wpole(sph_rtp, m_folding,    &
+!!     &          ncomp_trans, i_trns, d_rtp, v_pole, i_field,          &
 !!     &          node, nod_fld)
 !!
-!!      subroutine copy_nod_scl_from_sph_trans(d_rtp,  i_field)
+!!      subroutine copy_nod_scl_from_sph_trans                          &
+!!     &         (sph_rtp, m_folding, d_rtp, i_field, node, nod_fld)
 !!      subroutine copy_nod_vec_from_sph_trans                          &
-!!     &         (d_rtp, i_field, node, nod_fld)
+!!     &         (sph_rtp, m_folding, d_rtp, i_field, node, nod_fld)
 !!      subroutine copy_nod_tsr_from_sph_trans                          &
-!!     &         (d_rtp, i_field, node, nod_fld)
+!!     &         (sph_rtp, m_folding, d_rtp, i_field, node, nod_fld)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(node_data), intent(in) :: node
 !!        type(phys_data),intent(inout) :: nod_fld
 !!
 !!      subroutine copy_nod_scl_to_sph_trans                            &
-!!     &         (node, nod_fld, i_field, d_rtp)
+!!     &         (node, sph_rtp, nod_fld, i_field, d_rtp)
 !!      subroutine copy_nod_vec_to_sph_trans                            &
-!!     &         (node, nod_fld, i_field, d_rtp)
+!!     &         (node, sph_rtp, nod_fld, i_field, d_rtp)
 !!      subroutine copy_nod_tsr_to_sph_trans                            &
-!!     &         (node, nod_fld, i_field, d_rtp)
+!!     &         (node, sph_rtp, nod_fld, i_field, d_rtp)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(node_data), intent(in) :: node
 !!        type(phys_data),intent(in) :: nod_fld
 !!@endverbatim
 !
-      module copy_1st_nodal_4_sph_trans
+      module copy_nodal_fld_4_sph_trans
 !
       use m_precision
 !
@@ -43,11 +53,13 @@
       use m_machine_parameter
       use m_phys_constants
 !
+      use t_spheric_rtp_data
       use t_geometry_data
       use t_phys_data
 !
       implicit  none
 !
+      private :: copy_nod_scl_from_sph_trans
       private :: copy_nod_vec_from_sph_trans
       private :: copy_nod_tsr_from_sph_trans
 !
@@ -57,17 +69,66 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine copy_nod_scl_from_trans_wpole                          &
-     &         (ncomp_trans, i_trns, d_rtp, v_pole, i_field,            &
+      subroutine copy_nodal_vector_from_trans                           &
+     &         (sph_rtp, m_folding, ncomp_trans, i_trns, v_rtp,         &
+     &          numnod, ncomp_nod, i_field, d_nod)
+!
+      use copy_field_4_sph_trans
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      integer(kind = kint), intent(in) :: m_folding
+      integer(kind = kint), intent(in) :: ncomp_trans, i_trns
+      real(kind = kreal), intent(in)                                    &
+     &         :: v_rtp(sph_rtp%nnod_rtp,ncomp_trans)
+      integer(kind = kint), intent(in) :: numnod, ncomp_nod, i_field
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
+!
+!
+      call copy_vector_from_trans                                       &
+     &   (sph_rtp%nnod_rtp, m_folding, sph_rtp%istack_inod_rtp_smp,     &
+     &    numnod, v_rtp(1,i_trns), d_nod(1,i_field) )
+!
+      end subroutine copy_nodal_vector_from_trans
+!
+!-----------------------------------------------------------------------
+!
+      subroutine copy_nodal_scalar_from_trans                           &
+     &         (sph_rtp, m_folding, ncomp_trans, i_trns, v_rtp,         &
+     &          numnod, ncomp_nod, i_field, d_nod)
+!
+      use copy_field_4_sph_trans
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      integer(kind = kint), intent(in) :: m_folding
+      integer(kind = kint), intent(in) :: ncomp_trans, i_trns
+      real(kind = kreal), intent(in)                                    &
+     &           :: v_rtp(sph_rtp%nnod_rtp,ncomp_trans)
+      integer(kind = kint), intent(in) :: numnod, ncomp_nod, i_field
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
+!
+!
+      call copy_scalar_from_trans                                       &
+     &   (sph_rtp%nnod_rtp, m_folding, sph_rtp%istack_inod_rtp_smp,     &
+     &    numnod, v_rtp(1,i_trns), d_nod(1,i_field) )
+!
+      end subroutine copy_nodal_scalar_from_trans
+!
+!-----------------------------------------------------------------------
+! -------------------------------------------------------------------
+!
+      subroutine copy_nod_scl_from_trans_wpole(sph_rtp, m_folding,      &
+     &          ncomp_trans, i_trns, d_rtp, v_pole, i_field,            &
      &          node, nod_fld)
 !
-      use m_spheric_parameter
       use m_work_pole_sph_trans
       use copy_pole_field_sph_trans
 !
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      integer(kind = kint), intent(in) :: m_folding
       integer(kind = kint), intent(in) :: i_field, i_trns
       integer(kind = kint), intent(in) :: ncomp_trans
-      real(kind = kreal), intent(in) :: d_rtp(nnod_rtp,ncomp_trans)
+      real(kind = kreal), intent(in)                                    &
+     &           :: d_rtp(sph_rtp%nnod_rtp,ncomp_trans)
       real(kind = kreal), intent(in) :: v_pole(nnod_pole,ncomp_trans)
 !
       type(node_data), intent(in) :: node
@@ -75,7 +136,7 @@
 !
 !
       call copy_nod_scl_from_sph_trans                                  &
-     &   (d_rtp(1,i_trns), i_field, node, nod_fld)
+     &   (sph_rtp, m_folding, d_rtp(1,i_trns), i_field, node, nod_fld)
       call copy_pole_scl_fld_from_trans                                 &
      &   (node%numnod, node%internal_node, node%xx, v_pole(1,i_trns),   &
      &    nod_fld%ntot_phys, i_field, nod_fld%d_fld)
@@ -84,17 +145,19 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine copy_nod_vec_from_trans_wpole                          &
-     &         (ncomp_trans, i_trns, d_rtp, v_pole, i_field,            &
+      subroutine copy_nod_vec_from_trans_wpole(sph_rtp, m_folding,      &
+     &          ncomp_trans, i_trns, d_rtp, v_pole, i_field,            &
      &          node, nod_fld)
 !
-      use m_spheric_parameter
       use m_work_pole_sph_trans
       use copy_pole_field_sph_trans
 !
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      integer(kind = kint), intent(in) :: m_folding
       integer(kind = kint), intent(in) :: i_field, i_trns
       integer(kind = kint), intent(in) :: ncomp_trans
-      real(kind = kreal), intent(in) :: d_rtp(nnod_rtp,ncomp_trans)
+      real(kind = kreal), intent(in)                                    &
+     &           :: d_rtp(sph_rtp%nnod_rtp,ncomp_trans)
       real(kind = kreal), intent(in) :: v_pole(nnod_pole,ncomp_trans)
 !
       type(node_data), intent(in) :: node
@@ -102,7 +165,7 @@
 !
 !
       call copy_nod_vec_from_sph_trans                                  &
-     &   (d_rtp(1,i_trns), i_field, node, nod_fld)
+     &   (sph_rtp, m_folding, d_rtp(1,i_trns), i_field, node, nod_fld)
       call copy_pole_vec_fld_from_trans                                 &
      &   (node%numnod, node%internal_node, node%xx, v_pole(1,i_trns),   &
      &    nod_fld%ntot_phys, i_field, nod_fld%d_fld)
@@ -111,17 +174,19 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine copy_nod_tsr_from_trans_wpole                          &
-     &         (ncomp_trans, i_trns, d_rtp, v_pole, i_field,            &
+      subroutine copy_nod_tsr_from_trans_wpole(sph_rtp, m_folding,      &
+     &          ncomp_trans, i_trns, d_rtp, v_pole, i_field,            &
      &          node, nod_fld)
 !
-      use m_spheric_parameter
       use m_work_pole_sph_trans
       use copy_pole_field_sph_trans
 !
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      integer(kind = kint), intent(in) :: m_folding
       integer(kind = kint), intent(in) :: i_field, i_trns
       integer(kind = kint), intent(in) :: ncomp_trans
-      real(kind = kreal), intent(in) :: d_rtp(nnod_rtp,ncomp_trans)
+      real(kind = kreal), intent(in)                                    &
+     &          :: d_rtp(sph_rtp%nnod_rtp,ncomp_trans)
       real(kind = kreal), intent(in) :: v_pole(nnod_pole,ncomp_trans)
 !
       type(node_data), intent(in) :: node
@@ -129,7 +194,7 @@
 !
 !
       call copy_nod_tsr_from_sph_trans                                  &
-     &   (d_rtp(1,i_trns), i_field, node, nod_fld)
+     &   (sph_rtp, m_folding, d_rtp(1,i_trns), i_field, node, nod_fld)
       call copy_pole_tsr_fld_from_trans                                 &
      &   (node%numnod, node%internal_node, node%xx,                     &
      &    v_pole(1,i_trns), nod_fld%ntot_phys, i_field, nod_fld%d_fld)
@@ -140,20 +205,21 @@
 ! -------------------------------------------------------------------
 !
       subroutine copy_nod_scl_from_sph_trans                            &
-     &         (d_rtp, i_field, node, nod_fld)
+     &         (sph_rtp, m_folding, d_rtp, i_field, node, nod_fld)
 !
-      use m_spheric_parameter
       use copy_xyz_field_4_sph_trans
 !
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      integer(kind = kint), intent(in) :: m_folding
       integer(kind = kint), intent(in) :: i_field
-      real(kind = kreal), intent(in) :: d_rtp(nnod_rtp)
+      real(kind = kreal), intent(in) :: d_rtp(sph_rtp%nnod_rtp)
 !
       type(node_data), intent(in) :: node
       type(phys_data),intent(inout) :: nod_fld
 !
 !
-      call copy_scalar_from_sph_trans(nnod_rtp, m_folding,              &
-     &    sph_rtp1%istack_inod_rtp_smp, node%numnod,                    &
+      call copy_scalar_from_sph_trans(sph_rtp%nnod_rtp, m_folding,      &
+     &    sph_rtp%istack_inod_rtp_smp, node%numnod,                     &
      &    d_rtp, i_field, nod_fld%ntot_phys, nod_fld%d_fld)
 !
       end subroutine copy_nod_scl_from_sph_trans
@@ -161,20 +227,21 @@
 ! -------------------------------------------------------------------
 !
       subroutine copy_nod_vec_from_sph_trans                            &
-     &         (d_rtp, i_field, node, nod_fld)
+     &         (sph_rtp, m_folding, d_rtp, i_field, node, nod_fld)
 !
-      use m_spheric_parameter
       use copy_xyz_field_4_sph_trans
 !
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      integer(kind = kint), intent(in) :: m_folding
       integer(kind = kint), intent(in) :: i_field
-      real(kind = kreal), intent(in) :: d_rtp(nnod_rtp,3)
+      real(kind = kreal), intent(in) :: d_rtp(sph_rtp%nnod_rtp,3)
 !
       type(node_data), intent(in) :: node
       type(phys_data),intent(inout) :: nod_fld
 !
 !
       call copy_xyz_vec_from_sph_trans                                  &
-     &   (nnod_rtp, m_folding, sph_rtp1%istack_inod_rtp_smp,            &
+     &   (sph_rtp%nnod_rtp, m_folding, sph_rtp%istack_inod_rtp_smp,     &
      &    node%numnod, node%theta, node%phi, d_rtp,                     &
      &    i_field, nod_fld%ntot_phys, nod_fld%d_fld)
 !
@@ -183,20 +250,21 @@
 ! -------------------------------------------------------------------
 !
       subroutine copy_nod_tsr_from_sph_trans                            &
-     &         (d_rtp, i_field, node, nod_fld)
+     &         (sph_rtp, m_folding, d_rtp, i_field, node, nod_fld)
 !
-      use m_spheric_parameter
       use copy_xyz_field_4_sph_trans
 !
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      integer(kind = kint), intent(in) :: m_folding
       integer(kind = kint), intent(in) :: i_field
-      real(kind = kreal), intent(in) :: d_rtp(nnod_rtp,6)
+      real(kind = kreal), intent(in) :: d_rtp(sph_rtp%nnod_rtp,6)
 !
       type(node_data), intent(in) :: node
       type(phys_data),intent(inout) :: nod_fld
 !
 !
       call copy_xyz_tsr_from_sph_trans                                  &
-     &   (nnod_rtp, m_folding, sph_rtp1%istack_inod_rtp_smp,            &
+     &   (sph_rtp%nnod_rtp, m_folding, sph_rtp%istack_inod_rtp_smp,     &
      &    node%numnod, node%xx, node%rr, node%ss, node%a_r, node%a_s,   &
      &    d_rtp, i_field, nod_fld%ntot_phys, nod_fld%d_fld)
 !
@@ -206,20 +274,20 @@
 ! -------------------------------------------------------------------
 !
       subroutine copy_nod_scl_to_sph_trans                              &
-     &         (node, nod_fld, i_field, d_rtp)
+     &         (node, sph_rtp, nod_fld, i_field, d_rtp)
 !
-      use m_spheric_parameter
       use copy_xyz_field_4_sph_trans
 !
+      type(sph_rtp_grid), intent(in) :: sph_rtp
       type(node_data), intent(in) :: node
       type(phys_data),intent(in) :: nod_fld
 !
       integer(kind = kint), intent(in) :: i_field
-      real(kind = kreal), intent(inout) :: d_rtp(nnod_rtp)
+      real(kind = kreal), intent(inout) :: d_rtp(sph_rtp%nnod_rtp)
 !
 !
       call copy_scalar_to_sph_trans                                     &
-     &   (nnod_rtp, sph_rtp1%istack_inod_rtp_smp, node%numnod,          &
+     &   (sph_rtp%nnod_rtp, sph_rtp%istack_inod_rtp_smp, node%numnod,   &
      &    i_field, nod_fld%ntot_phys, nod_fld%d_fld, d_rtp)
 !
       end subroutine copy_nod_scl_to_sph_trans
@@ -227,20 +295,20 @@
 ! -------------------------------------------------------------------
 !
       subroutine copy_nod_vec_to_sph_trans                              &
-     &         (node, nod_fld, i_field, d_rtp)
+     &         (node, sph_rtp, nod_fld, i_field, d_rtp)
 !
-      use m_spheric_parameter
       use copy_xyz_field_4_sph_trans
 !
+      type(sph_rtp_grid), intent(in) :: sph_rtp
       type(node_data), intent(in) :: node
       type(phys_data),intent(in) :: nod_fld
 !
       integer(kind = kint), intent(in) :: i_field
-      real(kind = kreal), intent(inout) :: d_rtp(nnod_rtp,3)
+      real(kind = kreal), intent(inout) :: d_rtp(sph_rtp%nnod_rtp,3)
 !
 !
       call copy_xyz_vec_to_sph_trans                                    &
-     &   (nnod_rtp, sph_rtp1%istack_inod_rtp_smp, node%numnod,          &
+     &   (sph_rtp%nnod_rtp, sph_rtp%istack_inod_rtp_smp, node%numnod,   &
      &    node%xx, node%rr, node%ss, node%a_r, node%a_s,                &
      &    i_field, nod_fld%ntot_phys, nod_fld%d_fld, d_rtp)
 !
@@ -249,20 +317,20 @@
 ! -------------------------------------------------------------------
 !
       subroutine copy_nod_tsr_to_sph_trans                              &
-     &         (node, nod_fld, i_field, d_rtp)
+     &         (node, sph_rtp, nod_fld, i_field, d_rtp)
 !
-      use m_spheric_parameter
       use copy_xyz_field_4_sph_trans
 !
+      type(sph_rtp_grid), intent(in) :: sph_rtp
       type(node_data), intent(in) :: node
       type(phys_data),intent(in) :: nod_fld
 !
       integer(kind = kint), intent(in) :: i_field
-      real(kind = kreal), intent(inout) :: d_rtp(nnod_rtp,6)
+      real(kind = kreal), intent(inout) :: d_rtp(sph_rtp%nnod_rtp,6)
 !
 !
       call copy_xyz_tsr_to_sph_trans                                    &
-     &   (nnod_rtp, sph_rtp1%istack_inod_rtp_smp, node%numnod,          &
+     &   (sph_rtp%nnod_rtp, sph_rtp%istack_inod_rtp_smp, node%numnod,   &
      &    node%xx, node%rr, node%ss, node%a_r, node%a_s,                &
      &    i_field, nod_fld%ntot_phys, nod_fld%d_fld, d_rtp)
 !
@@ -270,4 +338,4 @@
 !
 ! -------------------------------------------------------------------
 !
-      end module copy_1st_nodal_4_sph_trans
+      end module copy_nodal_fld_4_sph_trans
