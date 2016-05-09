@@ -145,7 +145,7 @@
      &     (plan_backward_smp(ip), IONE_4, Nfft4, howmany,              &
      &      C_FFTW(1,ist), inembed, istride, idist_c,                   &
      &      X_FFTW(1,ist), inembed, istride, idist_r, FFTW_ESTIMATE)
-#elseif FFTW3
+#else
         call dfftw_plan_many_dft_r2c                                    &
      &     (plan_forward_smp(ip), IONE_4, Nfft4, howmany,               &
      &      X_FFTW(1,ist), inembed, istride, idist_r,                   &
@@ -178,7 +178,7 @@
         call kemo_fftw_destroy_plan(plan_forward(j))
         call kemo_fftw_destroy_plan(plan_backward(j))
         call kemo_fftw_cleanup
-#elseif FFTW3
+#else
         call dfftw_destroy_plan(plan_forward(j))
         call dfftw_destroy_plan(plan_backward(j))
         call dfftw_cleanup
@@ -226,7 +226,7 @@
 #ifdef FFTW3_C
         call kemo_fftw_execute_dft_r2c(plan_forward_smp(ip),             &
      &        X_FFTW(1,ist), C_FFTW(1,ist))
-#elseif FFTW3
+#else
         call dfftw_execute_dft_r2c(plan_forward_smp(ip),                 &
      &        X_FFTW(1,ist), C_FFTW(1,ist))
 #endif
@@ -300,7 +300,7 @@
 #ifdef FFTW3_C
         call kemo_fftw_execute_dft_c2r(plan_backward_smp(ip),           &
      &        C_FFTW(1,ist), X_FFTW(1,ist))
-#elseif FFTW3
+#else
         call dfftw_execute_dft_c2r(plan_backward_smp(ip),               &
      &        C_FFTW(1,ist), X_FFTW(1,ist))
 #endif

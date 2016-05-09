@@ -127,7 +127,7 @@
      &      FFTW_t%X(1,j), FFTW_t%C(1,j) , FFTW_ESTIMATE)
         call kemo_fftw_plan_dft_c2r_1d(FFTW_t%plan_bwd(j), Nfft4,       &
      &      FFTW_t%C(1,j), FFTW_t%X(1,j) , FFTW_ESTIMATE)
-#elseif FFTW3
+#else
         call dfftw_plan_dft_r2c_1d(FFTW_t%plan_fwd(j), Nfft4,           &
      &      FFTW_t%X(1,j), FFTW_t%C(1,j) , FFTW_ESTIMATE)
         call dfftw_plan_dft_c2r_1d(FFTW_t%plan_bwd(j), Nfft4,           &
@@ -153,7 +153,7 @@
         call kemo_fftw_destroy_plan(FFTW_t%plan_bwd(j))
         call kemo_fftw_cleanup
       end do
-#elseif FFTW3
+#else
       do j = 1, np_smp
         call dfftw_destroy_plan(FFTW_t%plan_fwd(j))
         call dfftw_destroy_plan(FFTW_t%plan_bwd(j))
@@ -223,7 +223,7 @@
 !
 #ifdef FFTW3_C
             call kemo_fftw_execute(FFTW_t%plan_fwd(ip))
-#elseif FFTW3
+#else
             call dfftw_execute(FFTW_t%plan_fwd(ip))
 #endif
 !            call cpu_time(rtmp(ip,2))
@@ -312,7 +312,7 @@
 !          call cpu_time(dummy(ip,2))
 #ifdef FFTW3_C
            call kemo_fftw_execute(FFTW_t%plan_bwd(ip))
-#elseif FFTW3
+#else
            call dfftw_execute(FFTW_t%plan_bwd(ip))
 #endif
 !        call cpu_time(rtmp(ip,2))

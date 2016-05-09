@@ -127,7 +127,7 @@
      &      X_FFTW(1,j), C_FFTW(1,j) , FFTW_ESTIMATE)
         call kemo_fftw_plan_dft_c2r_1d(plan_backward(j), Nfft4,         &
      &      C_FFTW(1,j), X_FFTW(1,j) , FFTW_ESTIMATE)
-#elseif FFTW3
+#else
         call dfftw_plan_dft_r2c_1d(plan_forward(j), Nfft4,              &
      &      X_FFTW(1,j), C_FFTW(1,j) , FFTW_ESTIMATE)
         call dfftw_plan_dft_c2r_1d(plan_backward(j), Nfft4,             &
@@ -155,7 +155,7 @@
         call kemo_fftw_destroy_plan(plan_forward(j))
         call kemo_fftw_destroy_plan(plan_backward(j))
         call kemo_fftw_cleanup
-#elseif FFTW3
+#else
         call dfftw_destroy_plan(plan_forward(j))
         call dfftw_destroy_plan(plan_backward(j))
         call dfftw_cleanup
@@ -198,7 +198,7 @@
         do j = ist, ied
 #ifdef FFTW3_C
           call kemo_fftw_execute(plan_forward(j))
-#elseif FFTW3
+#else
           call dfftw_execute(plan_forward(j))
 #endif
         end do
@@ -266,7 +266,7 @@
         do j = ist, ied
 #ifdef FFTW3_C
           call kemo_fftw_execute(plan_backward(j))
-#elseif FFTW3
+#else
           call dfftw_execute(plan_backward(j))
 #endif
         end do
