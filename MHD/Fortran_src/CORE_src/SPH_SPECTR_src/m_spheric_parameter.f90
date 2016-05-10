@@ -62,23 +62,14 @@
 
 !    global parameteres for radius
 !
-!>      global radial ID for innermost point
-      integer(kind = kint) :: nlayer_2_center
 !>      global radial ID for ICB
       integer(kind = kint) :: nlayer_ICB
 !>      global radial ID for CMB
       integer(kind = kint) :: nlayer_CMB
-!>      global radial ID for mid-depth of the outer core
-      integer(kind = kint) :: nlayer_mid_OC
 !
-!>      radius for ICB @f$ r_{i} @f$
-      real(kind = kreal) :: r_ICB
-!>      radius for CMB @f$ r_{o} @f$
-      real(kind = kreal) :: r_CMB
-!>      Earth's radius @f$ Re @f$
-      real(kind = kreal) :: R_earth(0:2)
-!
-!    local parameters
+!>  Structure of grid and spectr data for spherical spectr method
+        type(sph_shell_parameters) :: sph_param1
+!sph_param1%radius_ICB
 !
 !>      number of data points for @f$ f(r,\theta,\phi) @f$
       integer(kind = kint) :: nnod_rtp

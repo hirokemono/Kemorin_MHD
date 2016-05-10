@@ -80,9 +80,11 @@
       sph_file_head = org_sph_head
       do ip = 1, np_sph_org
         irank_org = ip - 1
-        call set_local_rj_mesh_4_merge(irank_org, org_sph_mesh(ip))
+        call set_local_rj_mesh_4_merge(irank_org,                       &
+     &      org_sph_mesh(ip)%sph_mesh, org_sph_mesh(ip)%sph_comms,      &
+     &      org_sph_mesh(ip)%sph_grps)
         call set_sph_boundary_4_merge(org_sph_mesh(ip)%sph_grps,        &
-     &    nlayer_ICB_org, nlayer_CMB_org)
+     &      nlayer_ICB_org, nlayer_CMB_org)
       end do
 !
 !  set new spectr data
@@ -91,7 +93,9 @@
       sph_file_head = new_sph_head
       do jp = 1, np_sph_new
         irank_new = jp - 1
-        call set_local_rj_mesh_4_merge(irank_new, new_sph_mesh(jp))
+        call set_local_rj_mesh_4_merge(irank_new,                       &
+     &      new_sph_mesh(jp)%sph_mesh, new_sph_mesh(jp)%sph_comms,      &
+     &      new_sph_mesh(jp)%sph_grps)
         call set_sph_boundary_4_merge(new_sph_mesh(jp)%sph_grps,        &
      &      nlayer_ICB_new, nlayer_CMB_new)
       end do

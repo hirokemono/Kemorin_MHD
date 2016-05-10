@@ -63,9 +63,11 @@
      &      write(*,*) 'set_radius_dat_4_sph_dynamo'
       call set_radius_dat_4_sph_dynamo                                  &
      &   (sph_rj1%nidx_rj(1), sph_rj1%radius_1d_rj_r,                   &
-     &    iflag_radial_grid, nlayer_ICB, nlayer_CMB, nlayer_2_center,   &
+     &    iflag_radial_grid, nlayer_ICB,                                &
+     &    nlayer_CMB, sph_param1%nlayer_2_center,                       &
      &    sph_rj1%ar_1d_rj, sph_rj1%r_ele_rj, sph_rj1%ar_ele_rj,        &
-     &    r_ICB, r_CMB, R_earth)
+     &    sph_param1%radius_ICB, sph_param1%radius_CMB,                 &
+     &    sph_param1%R_earth)
 !
 !   Choose radial grid mode
       if (iflag_debug .ge. iflag_routine_msg)                           &

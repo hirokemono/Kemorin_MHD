@@ -146,10 +146,10 @@
           call dealloc_control_array_i_r(radius_ctl)
         end if
 !
-        nlayer_2_center = -1
+        sph_param1%nlayer_2_center = -1
         nlayer_ICB =       1
         nlayer_CMB =       sph_rtp1%nidx_global_rtp(1)
-        nlayer_mid_OC =   -1
+        sph_param1%nlayer_mid_OC =   -1
         if(radial_grp_ctl%icou .gt. 0) then
           do i = 1, radial_grp_ctl%num
             if     (cmp_no_case(radial_grp_ctl%c_tbl(i),                &
@@ -160,10 +160,10 @@
               nlayer_CMB = radial_grp_ctl%ivec(i)
             else if(cmp_no_case(radial_grp_ctl%c_tbl(i),                &
      &                      CTR_nod_grp_name) ) then
-              nlayer_2_center = radial_grp_ctl%ivec(i)
+              sph_param1%nlayer_2_center = radial_grp_ctl%ivec(i)
             else if(cmp_no_case(radial_grp_ctl%c_tbl(i),                &
      &                      'Mid_Depth') ) then
-              nlayer_mid_OC = radial_grp_ctl%ivec(i)
+              sph_param1%nlayer_mid_OC = radial_grp_ctl%ivec(i)
             end if
           end do
 !
@@ -174,23 +174,28 @@
       else
         if(ICB_radius_ctl%iflag .gt. 0                                  &
      &     .and. CMB_radius_ctl%iflag .gt. 0) then
-          r_ICB = ICB_radius_ctl%realvalue
-          r_CMB = CMB_radius_ctl%realvalue
+          sph_param1%radius_ICB = ICB_radius_ctl%realvalue
+          sph_param1%radius_CMB = CMB_radius_ctl%realvalue
         else if(fluid_core_size_ctl%iflag .gt. 0                        &
      &       .and. ICB_to_CMB_ratio_ctl%iflag .gt. 0) then
           ICB_to_CMB_ratio = ICB_to_CMB_ratio_ctl%realvalue
           fluid_core_size =  fluid_core_size_ctl%realvalue
-          r_ICB = fluid_core_size                                       &
+          sph_param1%radius_ICB = fluid_core_size                       &
      &           * ICB_to_CMB_ratio / (one - ICB_to_CMB_ratio)
-          r_CMB = r_ICB + fluid_core_size
+          sph_param1%radius_CMB = sph_param1%radius_ICB                 &
+     &                           + fluid_core_size
         else
           write(*,*)                                                    &
      &       'Set CMB and ICB radii or ratio and size of outer core'
           stop
         end if
 !
-        if(Min_radius_ctl%iflag.eq.0) Min_radius_ctl%realvalue = r_ICB
-        if(Max_radius_ctl%iflag.eq.0) Max_radius_ctl%realvalue = r_CMB
+        if(Min_radius_ctl%iflag.eq.0) then
+          Min_radius_ctl%realvalue = sph_param1%radius_ICB
+        end if
+        if(Max_radius_ctl%iflag.eq.0) then
+          Max_radius_ctl%realvalue = sph_param1%radius_CMB
+        end if
 !
         if(Min_radius_ctl%realvalue .eq. zero) then
           sph_rj1%iflag_rj_center = 1

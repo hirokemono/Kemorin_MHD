@@ -8,8 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine s_set_bc_sph_mhd                                     &
-!!     &        (CTR_nod_grp_name, CTR_sf_grp_name, idx_rj_degree_one,  &
-!!     &         nidx_rj, idx_gl_1d_rj_j, r_ICB, r_CMB, radius_1d_rj_r)
+!!     &        (CTR_nod_grp_name, CTR_sf_grp_name, sph_params, sph_rj)
+!!        type(sph_shell_parameters), intent(in) :: sph_params
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!@endverbatim
 !
       module set_bc_sph_mhd
@@ -20,6 +21,8 @@
       use m_control_parameter
       use m_boundary_condition_IDs
       use m_phys_labels
+!
+      use t_spheric_parameter
 !
       implicit none
 !
@@ -32,8 +35,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_bc_sph_mhd                                       &
-     &        (CTR_nod_grp_name, CTR_sf_grp_name, idx_rj_degree_one,    &
-     &         nidx_rj, idx_gl_1d_rj_j, r_ICB, r_CMB, radius_1d_rj_r)
+     &        (CTR_nod_grp_name, CTR_sf_grp_name, sph_params, sph_rj)
 !
       use m_phys_labels
       use m_boundary_params_sph_MHD
@@ -45,53 +47,62 @@
       use m_coef_fdm_to_center
       use cal_fdm_coefs_4_boundaries
 !
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rj_grid), intent(in) ::  sph_rj
       character(len=kchara), intent(in) :: CTR_nod_grp_name
       character(len=kchara), intent(in) :: CTR_sf_grp_name
-      integer(kind = kint), intent(in) :: idx_rj_degree_one(-1:1)
-      integer(kind = kint), intent(in) :: nidx_rj(2)
-      integer(kind = kint), intent(in) :: idx_gl_1d_rj_j(nidx_rj(2),3)
-      real(kind = kreal), intent(in) :: r_ICB, r_CMB
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
+!
+      integer(kind = kint) :: kst, ked
 !
 !
       if (iflag_t_evo_4_velo .gt.     id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_velo_sph'
-        call set_sph_bc_velo_sph                                        &
-     &     (idx_rj_degree_one, r_ICB, r_CMB, nidx_rj(2))
+        call set_sph_bc_velo_sph(sph_rj%idx_rj_degree_one,              &
+     &      sph_params%radius_ICB, sph_params%radius_CMB,               &
+     &      sph_rj%nidx_rj(2))
 !
-        call cal_fdm_coefs_4_BCs(nidx_rj(1), radius_1d_rj_r, sph_bc_U)
-        call cal_fdm2_ICB_free_vp(radius_1d_rj_r(sph_bc_U%kr_in))
-        call cal_fdm2_ICB_free_vt(radius_1d_rj_r(sph_bc_U%kr_in))
+        call cal_fdm_coefs_4_BCs                                        &
+     &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, sph_bc_U)
 !
-        call cal_fdm2_CMB_free_vp(radius_1d_rj_r(sph_bc_U%kr_out-1))
-        call cal_fdm2_CMB_free_vt(radius_1d_rj_r(sph_bc_U%kr_out-1))
+        kst = sph_bc_U%kr_in
+        ked = sph_bc_U%kr_in + 1
+        call cal_fdm2_ICB_free_vp(sph_rj%radius_1d_rj_r(kst:ked))
+        call cal_fdm2_ICB_free_vt(sph_rj%radius_1d_rj_r(kst:ked))
+!
+        kst = sph_bc_U%kr_out-1
+        ked = sph_bc_U%kr_out
+        call cal_fdm2_CMB_free_vp(sph_rj%radius_1d_rj_r(kst:ked))
+        call cal_fdm2_CMB_free_vt(sph_rj%radius_1d_rj_r(kst:ked))
       end if
 !
       if (iflag_t_evo_4_temp .gt.     id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_temp_sph'
         call set_sph_bc_temp_sph
-        call cal_fdm_coefs_4_BCs(nidx_rj(1), radius_1d_rj_r, sph_bc_T)
+        call cal_fdm_coefs_4_BCs                                       &
+     &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, sph_bc_T)
       end if
 !
       if (iflag_t_evo_4_magne .gt.    id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_magne_sph'
         call set_sph_bc_magne_sph                                       &
      &     (CTR_nod_grp_name, CTR_sf_grp_name)
-        call cal_fdm_coefs_4_BCs(nidx_rj(1), radius_1d_rj_r, sph_bc_B)
+        call cal_fdm_coefs_4_BCs                                       &
+     &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, sph_bc_B)
       end if
 !
       if (iflag_t_evo_4_composit .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_composition_sph'
         call set_sph_bc_composition_sph
-        call cal_fdm_coefs_4_BCs(nidx_rj(1), radius_1d_rj_r, sph_bc_C)
+        call cal_fdm_coefs_4_BCs                                       &
+     &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, sph_bc_C)
       end if
 !
 !      Set FDM matrices for Center
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_2nd_to_center_fixed_fdm'
-      call cal_2nd_to_center_fixed_fdm(radius_1d_rj_r(1))
-      call cal_2nd_center_fix_df_fdm(radius_1d_rj_r(1))
-      call cal_2nd_center_fixed_fdm(radius_1d_rj_r(1))
+      call cal_2nd_to_center_fixed_fdm(sph_rj%radius_1d_rj_r(1:2))
+      call cal_2nd_center_fix_df_fdm(sph_rj%radius_1d_rj_r(1))
+      call cal_2nd_center_fixed_fdm(sph_rj%radius_1d_rj_r(1:2))
 !
 !      Check data
 !
@@ -115,11 +126,11 @@
 !
         if (iflag_t_evo_4_temp .gt.     id_no_evolution) then
           call check_sph_boundary_spectra(fhd_temp,                     &
-     &        nidx_rj(2), idx_gl_1d_rj_j, sph_bc_T)
+     &        sph_rj%nidx_rj(2), sph_rj%idx_gl_1d_rj_j, sph_bc_T)
         end if
         if (iflag_t_evo_4_composit .gt. id_no_evolution) then
           call check_sph_boundary_spectra(fhd_light,                    &
-     &        nidx_rj(2), idx_gl_1d_rj_j, sph_bc_C)
+     &        sph_rj%nidx_rj(2), sph_rj%idx_gl_1d_rj_j, sph_bc_C)
         end if
       end if
 !

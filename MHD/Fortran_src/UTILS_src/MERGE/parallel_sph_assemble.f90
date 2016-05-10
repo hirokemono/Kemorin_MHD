@@ -57,7 +57,9 @@
         irank_org = ip - 1
         if(mod(irank_org,nprocs) .ne. my_rank) cycle
 !
-        call set_local_rj_mesh_4_merge(irank_org, org_sph_mesh(ip))
+        call set_local_rj_mesh_4_merge(irank_org,                       &
+     &      org_sph_mesh(ip)%sph_mesh, org_sph_mesh(ip)%sph_comms,      &
+     &      org_sph_mesh(ip)%sph_grps)
       end do
 !
 !

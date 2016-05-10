@@ -46,7 +46,8 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_ref_temp_sph_mhd'
       call allocate_reft_rj_data(sph_rj1)
-      call set_ref_temp_sph_mhd(sph_rj1%nidx_rj, r_ICB, r_CMB,          &
+      call set_ref_temp_sph_mhd(sph_rj1%nidx_rj,                        &
+     &    sph_param1%radius_ICB, sph_param1%radius_CMB,                 &
      &    sph_rj1%ar_1d_rj, sph_bc_T, reftemp_rj)
       call adjust_sph_temp_bc_by_reftemp                                &
      &   (sph_rj1%idx_rj_degree_zero, sph_rj1%nidx_rj(2),               &

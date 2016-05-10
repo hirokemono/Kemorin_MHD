@@ -34,12 +34,12 @@
       read(*,*) iflag_radial_grid
       if(iflag_radial_grid .ne. 0) iflag_radial_grid = 2
 !
-      r_ICB = shell * ratio / (one - ratio)
-      r_CMB = r_ICB + shell
+      sph_param1%radius_ICB = shell * ratio / (one - ratio)
+      sph_param1%radius_CMB = sph_param1%radius_ICB + shell
 !
       if(rmin.lt.0.0d0 .or. rmax.lt.0.0d0 .or. rmin.ge.rmax) then
-        rmin = r_ICB
-        rmax = r_CMB
+        rmin = sph_param1%radius_ICB
+        rmax = sph_param1%radius_CMB
       end if
 !
       call count_set_radial_grid(nele, rmin, rmax)

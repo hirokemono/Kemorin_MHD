@@ -41,8 +41,8 @@
 !!       nidx_rj(1) :: Number of radial grids
 !!       nlayer_ICB :: radial ID for ICB
 !!       nlayer_CMB :: radial ID for CMB
-!!       r_ICB :: ICB radius
-!!       r_CMB :: CMB radius
+!!       r_ICB() :: ICB radius
+!!       r_CMB() :: CMB radius
 !!@endverbatim
 !
 !
@@ -62,6 +62,7 @@
       private :: set_initial_temperature
       private :: set_initial_composition
       private :: set_initial_magne_sph
+      private :: r_CMB
 !
 !-----------------------------------------------------------------------
 !
@@ -156,6 +157,24 @@
       end function local_sph_data_address
 !
 !-----------------------------------------------------------------------
+!
+      real(kind = kreal) function r_CMB()
+      use m_spheric_parameter
+!
+      r_CMB = sph_param1%radius_CMB
+!
+      end function r_CMB
+!
+!-----------------------------------------------------------------------
+!
+      real(kind = kreal) function r_ICB()
+      use m_spheric_parameter
+!
+      r_ICB = sph_param1%radius_ICB
+!
+      end function r_ICB
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine set_initial_velocity(ntot_phys_rj, d_rj)
@@ -169,7 +188,7 @@
       real(kind = kreal), parameter :: A_light = 0.1d0
 !
       pi = four * atan(one)
-      shell = r_CMB - r_ICB
+      shell = r_CMB() - r_ICB()
 !
 !
 !$omp parallel do
@@ -194,7 +213,7 @@
         do k = nlayer_ICB, nlayer_CMB
           inod = local_sph_data_address(k,jj)
           xr = two * sph_rj1%radius_1d_rj_r(k)                          &
-    &         - one * (r_CMB+r_ICB) / shell
+    &         - one * (r_CMB() + r_ICB()) / shell
           d_rj(inod,itor%i_velo) = (one-three*xr**2+three*xr**4-xr**6)  &
     &                            * A_light * three / (sqrt(two*pi))
         end do
@@ -221,7 +240,7 @@
 !$omp end parallel do
 !
       pi = four * atan(one)
-      shell = r_CMB - r_ICB
+      shell = r_CMB() - r_ICB()
 !
 !   search address for (l = m = 0)
       jj = find_local_sph_mode_address(0, 0)
@@ -256,7 +275,7 @@
           inod = local_sph_data_address(k,jj)
 !
 !    set initial temperature
-          xr = two * rr - one * (r_CMB+r_ICB) / shell
+          xr = two * rr - one * (r_CMB() + r_ICB()) / shell
           d_rj(inod,ipol%i_temp) = (one-three*xr**2+three*xr**4-xr**6)  &
      &                            * A_temp * three / (sqrt(two*pi))
         end do
@@ -285,7 +304,7 @@
 !
 !
       pi = four * atan(one)
-      shell = r_CMB - r_ICB
+      shell = r_CMB() - r_ICB()
 !
 !$omp parallel do
       do inod = 1, nnod_rj
@@ -319,7 +338,7 @@
         do k = nlayer_ICB, nlayer_CMB
           inod = local_sph_data_address(k,jj)
           xr = two * sph_rj1%radius_1d_rj_r(k)                          &
-     &        - one * (r_CMB+r_ICB) / shell
+     &        - one * (r_CMB() + r_ICB()) / shell
           d_rj(inod,ipol%i_light) = (one-three*xr**2+three*xr**4-xr**6) &
      &                            * A_light * three / (sqrt(two*pi))
         end do
@@ -365,14 +384,14 @@
           rr = sph_rj1%radius_1d_rj_r(k)
 !   Substitute poloidal mangetic field
           d_rj(is,ipol%i_magne) =  (5.0d0/8.0d0) * (-3.0d0 * rr**3      &
-     &                     + 4.0d0 * r_CMB * rr**2 - r_ICB**4 / rr)
+     &                     + 4.0d0 * r_CMB() * rr**2 - r_ICB()**4 / rr)
         end do
 !
 !   Fill potential field if inner core exist
         is_ICB = local_sph_data_address(nlayer_ICB,js)
         do k = 1, nlayer_ICB-1
           is = local_sph_data_address(k,js)
-          rr = sph_rj1%radius_1d_rj_r(k) / r_ICB
+          rr = sph_rj1%radius_1d_rj_r(k) / r_ICB()
 !   Substitute poloidal mangetic field
           d_rj(is,ipol%i_magne) =  d_rj(is_ICB,ipol%i_magne)            &
      &                            * rr**(ione+1)
@@ -382,7 +401,7 @@
         is_CMB = local_sph_data_address(nlayer_CMB,js)
         do k = nlayer_CMB+1, nidx_rj(1)
           is = local_sph_data_address(k,js)
-          rr = sph_rj1%radius_1d_rj_r(k) / r_CMB
+          rr = sph_rj1%radius_1d_rj_r(k) / r_CMB()
 !   Substitute poloidal mangetic field
           d_rj(is,ipol%i_magne) =  d_rj(is_ICB,ipol%i_magne)            &
      &                            * rr**(-ione)
@@ -399,7 +418,7 @@
           rr = sph_rj1%radius_1d_rj_r(k)
 !   Substitute totoidal mangetic field
           d_rj(it,itor%i_magne) = (10.0d0/3.0d0) * rr                   &
-     &                           * sin(pi*(rr-r_ICB))
+     &                           * sin(pi*(rr - r_ICB()))
         end do
       end if
 !
@@ -433,7 +452,7 @@
           rr = sph_rj1%radius_1d_rj_r(k)
 !   Substitute initial heat source
           d_rj(inod,ipol%i_heat_source)                                 &
-     &         = 0.35 * four*r_CMB**2 / (four * r_ICB**3 / three)
+     &         = 0.35 * four*r_CMB()**2 / (four * r_ICB()**3 / three)
 !     &         = 1.0
         end do
       end if
@@ -441,7 +460,7 @@
 !    Center
       if(sph_rj1%inod_rj_center .gt. 0) then
         d_rj(sph_rj1%inod_rj_center,ipol%i_heat_source)                 &
-     &         = four*r_CMB**2 / (four * r_ICB**3 / three)
+     &         = four*r_CMB()**2 / (four * r_ICB()**3 / three)
       end if
 !
       end subroutine set_initial_heat_source_sph

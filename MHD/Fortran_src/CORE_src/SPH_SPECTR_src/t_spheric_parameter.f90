@@ -66,9 +66,8 @@
       character(len=kchara), parameter                                  &
      &                      :: CTR_sf_grp_name = 'to_Center_surf'
 !
-!
-!>  Structure of grid and spectr data for spherical spectr method
-      type sph_grids
+!>  Structure for spherical shell paramteres
+      type sph_shell_parameters
 !>        integer flag for FEM mesh type
 !!@n      iflag_MESH_same:     same grid point as Gauss-Legendre points
 !!@n      iflag_MESH_w_pole:   Gauss-Legendre points with poles
@@ -84,6 +83,31 @@
         integer(kind = kint) :: l_truncation
 !>        m-folding symmetry for longitudinal direction
         integer(kind = kint) :: m_folding = 1
+!
+!    global parameteres for radius
+!
+!>        global radial ID for innermost point
+        integer(kind = kint) :: nlayer_2_center
+!>        global radial ID for ICB
+        integer(kind = kint) :: nlayer_ICB
+!>        global radial ID for CMB
+        integer(kind = kint) :: nlayer_CMB
+!>        global radial ID for mid-depth of the outer core
+        integer(kind = kint) :: nlayer_mid_OC
+!
+!>        radius for ICB @f$ r_{i} @f$
+        real(kind = kreal) :: radius_ICB
+!>        radius for CMB @f$ r_{o} @f$
+        real(kind = kreal) :: radius_CMB
+!>        Earth's radius @f$ Re @f$
+        real(kind = kreal) :: R_earth(0:2)
+      end type sph_shell_parameters
+!
+!
+!>  Structure of grid and spectr data for spherical spectr method
+      type sph_grids
+!>  Structure of grid and spectr data for spherical spectr method
+        type(sph_shell_parameters) :: sph_params
 !
 !>        structure of index table for @f$ f(r,\theta,\phi) @f$
         type(sph_rtp_grid) :: sph_rtp
@@ -134,8 +158,8 @@
 !
       type(sph_grids), intent(in) :: sph
 !
-      write(50,*) 'l_truncation ', sph%l_truncation
-      write(50,*) 'm_folding ',    sph%m_folding
+      write(50,*) 'l_truncation ', sph%sph_params%l_truncation
+      write(50,*) 'm_folding ',    sph%sph_params%m_folding
       write(50,*) 'nidx_global_rtm ', sph%sph_rtm%nidx_global_rtm(1:3)
       write(50,*) 'nidx_global_rlm ', sph%sph_rlm%nidx_global_rlm(1:2)
       write(50,*) 'nidx_global_rj ',  sph%sph_rj%nidx_global_rj(1:2)

@@ -95,7 +95,9 @@
         irank_new = jp - 1
         if(mod(irank_new,nprocs) .ne. my_rank) cycle
 !
-        call set_local_rj_mesh_4_merge(irank_new, new_sph_mesh(jp))
+        call set_local_rj_mesh_4_merge(irank_new,                       &
+     &      new_sph_mesh(jp)%sph_mesh, new_sph_mesh(jp)%sph_comms,      &
+     &      new_sph_mesh(jp)%sph_grps)
 !
 !     Construct mode transfer table
         do ip = 1, np_sph_org

@@ -70,31 +70,40 @@
         call set_initial_velo_sph                                       &
      &     (rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         if(ipol%i_temp .gt. 0) then
-          call set_ini_reference_temp_sph(reftemp_rj, sph_rj1,          &
+          call set_ini_reference_temp_sph                               &
+     &       (reftemp_rj, sph_rj1, nlayer_ICB, nlayer_CMB,              &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
           call set_initial_temp_sph(isig, sph_rj1,                      &
+     &        sph_param1%radius_ICB, sph_param1%radius_CMB,             &
+     &        nlayer_ICB, nlayer_CMB,     &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
         if(ipol%i_light .gt. 0) then
-          call set_initial_light_sph                                    &
-     &       (isig, ipol%i_light, sph_rj1, reftemp_rj,                  &
+          call set_initial_light_sph(isig, ipol%i_light, sph_rj1,       &
+     &        sph_param1%radius_ICB, sph_param1%radius_CMB,             &
+     &        nlayer_ICB, nlayer_CMB, reftemp_rj,                       &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
 !
         if(iflag_restart .eq. i_rst_dbench1) then
           if(ipol%i_magne .gt. 0) then
             call initial_b_dynamobench_1                                &
-     &         (sph_rj1%radius_1d_rj_r, rj_fld%ntot_phys, rj_fld%d_fld)
+     &         (sph_rj1,  sph_param1%radius_ICB, sph_param1%radius_CMB, &
+     &          nlayer_ICB, nlayer_CMB,                                 &
+     &          rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
           end if
         else if(iflag_restart .eq. i_rst_dbench2) then
           if(ipol%i_magne .gt. 0) then
             call initial_b_dynamobench_2                                &
-     &         (sph_rj1%radius_1d_rj_r, rj_fld%ntot_phys, rj_fld%d_fld)
+     &         (sph_rj1, nlayer_CMB, sph_param1%radius_CMB,             &
+     &          rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
           end if
         else if(iflag_restart .eq. i_rst_dbench_qcv) then
           if(ipol%i_magne .gt. 0) then
            call initial_b_dynamobench_qcv                               &
-     &        (sph_rj1%radius_1d_rj_r, rj_fld%ntot_phys, rj_fld%d_fld)
+     &        (sph_rj1,  sph_param1%radius_ICB, sph_param1%radius_CMB,  &
+     &         nlayer_ICB, nlayer_CMB,                                  &
+     &         rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
           end if
         end if
 !
@@ -102,24 +111,33 @@
 !
       else if (iflag_restart .eq. i_rst_no_file) then
         if(ipol%i_temp .gt. 0)  then
-          call set_noize_scalar_sph(ipol%i_temp, reftemp_rj,            &
-     &        sph_rj1, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+          call set_noize_scalar_sph(ipol%i_temp, reftemp_rj, sph_rj1,   &
+     &        sph_param1%radius_ICB, sph_param1%radius_CMB,             &
+     &        nlayer_ICB, nlayer_CMB,     &
+     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
         if(ipol%i_light .gt. 0) then
-          call set_noize_scalar_sph(ipol%i_light, reftemp_rj,           &
-     &        sph_rj1, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+          call set_noize_scalar_sph(ipol%i_light, reftemp_rj, sph_rj1,  &
+     &        sph_param1%radius_ICB, sph_param1%radius_CMB,             &
+     &        nlayer_ICB, nlayer_CMB,     &
+     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
         if(ipol%i_magne .gt. 0) then
           call set_initial_magne_sph(sph_rj1,                           &
+     &        sph_param1%radius_ICB, sph_param1%radius_CMB,             &
+     &        nlayer_ICB, nlayer_CMB,     &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
           call reduce_initial_magne_sph                                 &
      &       (nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
 !
       else if (iflag_restart .eq. i_rst_licv) then
-        call set_ini_reference_temp_sph(reftemp_rj, sph_rj1,            &
+        call set_ini_reference_temp_sph                                 &
+     &     (reftemp_rj, sph_rj1, nlayer_ICB, nlayer_CMB,                &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         call set_all_part_temp_sph(sph_rj1,                             &
+     &      sph_param1%radius_ICB, sph_param1%radius_CMB,               &
+     &      nlayer_ICB, nlayer_CMB,       &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
@@ -158,12 +176,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_ini_reference_temp_sph                             &
-     &         (reftemp_rj, sph_rj, n_point, ntot_phys_rj, d_rj)
+     &         (reftemp_rj, sph_rj, nlayer_ICB, nlayer_CMB,             &
+     &          n_point, ntot_phys_rj, d_rj)
 !
       use m_control_parameter
-      use m_spheric_parameter
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real(kind=kreal), intent(in) :: reftemp_rj(sph_rj%nidx_rj(1),0:1)
 !
@@ -212,13 +231,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_all_part_temp_sph                                  &
-     &          (sph_rj, n_point, ntot_phys_rj, d_rj)
+      subroutine set_all_part_temp_sph(sph_rj,                          &
+     &          r_ICB, r_CMB, nlayer_ICB, nlayer_CMB,                   &
+     &          n_point, ntot_phys_rj, d_rj)
 !
       use m_control_parameter
-      use m_spheric_parameter
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+      real(kind = kreal), intent(in) :: r_ICB, r_CMB
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
@@ -252,13 +273,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_temp_sph                                   &
-     &         (isig, sph_rj, n_point, ntot_phys_rj, d_rj)
+      subroutine set_initial_temp_sph(isig, sph_rj,                     &
+     &          r_ICB, r_CMB, nlayer_ICB, nlayer_CMB,                   &
+     &          n_point, ntot_phys_rj, d_rj)
 !
       use m_control_parameter
-      use m_spheric_parameter
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+      real(kind = kreal), intent(in) :: r_ICB, r_CMB
       integer ( kind = kint), intent(in) :: isig
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
@@ -298,14 +321,15 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_initial_light_sph(isig, is_fld, sph_rj,            &
+     &          r_ICB, r_CMB, nlayer_ICB, nlayer_CMB,                   &
      &          reftemp_rj, n_point, ntot_phys_rj, d_rj)
 !
-      use m_spheric_parameter
-!
       type(sph_rj_grid), intent(in) :: sph_rj
+      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+      real(kind = kreal), intent(in) :: r_ICB, r_CMB
       integer ( kind = kint), intent(in) :: isig, is_fld
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
-      real(kind=kreal), intent(in) :: reftemp_rj(nidx_rj(1),0:1)
+      real(kind=kreal), intent(in) :: reftemp_rj(sph_rj%nidx_rj(1),0:1)
 !
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
@@ -357,13 +381,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_magne_sph                                  &
-     &         (sph_rj, n_point, ntot_phys_rj, d_rj)
+      subroutine set_initial_magne_sph(sph_rj,                          &
+     &          r_ICB, r_CMB, nlayer_ICB, nlayer_CMB,                   &
+     &          n_point, ntot_phys_rj, d_rj)
 !
-      use m_spheric_parameter
       use m_boundary_params_sph_MHD
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+      real(kind = kreal), intent(in) :: r_ICB, r_CMB
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
@@ -450,12 +476,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_noize_scalar_sph(is_fld, reftemp_rj, sph_rj,       &
+     &          r_ICB, r_CMB, nlayer_ICB, nlayer_CMB,                   &
      &          n_point, ntot_phys_rj, d_rj)
 !
-      use m_spheric_parameter
       use m_control_parameter
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+      real(kind = kreal), intent(in) :: r_ICB, r_CMB
       integer(kind = kint), intent(in) :: is_fld
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real(kind=kreal), intent(in) :: reftemp_rj(sph_rj%nidx_rj(1),0:1)

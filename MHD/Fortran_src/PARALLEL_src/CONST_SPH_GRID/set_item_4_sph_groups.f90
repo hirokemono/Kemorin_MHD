@@ -48,7 +48,7 @@
      &    radial_rtp_grp%num_item, radial_rtp_grp%item_grp)
 !
       call set_item_sph_grp_by_list(icou,                               &
-     &    nlayer_2_center, nlayer_2_center,                             &
+     &    sph_param1%nlayer_2_center, sph_param1%nlayer_2_center,       &
      &    sph_rtp%nidx_rtp(1), sph_rtp%idx_gl_1d_rtp_r,                 &
      &    radial_rtp_grp%num_item, radial_rtp_grp%item_grp)
 !
@@ -59,15 +59,16 @@
      &      radial_rtp_grp%num_item, radial_rtp_grp%item_grp)
       end if
 !
-      if (nlayer_mid_OC .gt. 0) then
+      if (sph_param1%nlayer_mid_OC .gt. 0) then
         call set_item_sph_grp_by_list(icou,                             &
-     &      nlayer_mid_OC, nlayer_mid_OC,                               &
+     &      sph_param1%nlayer_mid_OC, sph_param1%nlayer_mid_OC,         &
      &      sph_rtp%nidx_rtp(1), sph_rtp%idx_gl_1d_rtp_r,               &
      &      radial_rtp_grp%num_item, radial_rtp_grp%item_grp)
       end if
 !
       nlayer_ed = nlayer_ICB-1
-      call set_item_sph_grp_by_list(icou, nlayer_2_center, nlayer_ed,   &
+      call set_item_sph_grp_by_list                                     &
+     &   (icou, sph_param1%nlayer_2_center, nlayer_ed,                  &
      &    sph_rtp%nidx_rtp(1), sph_rtp%idx_gl_1d_rtp_r,                 &
      &    radial_rtp_grp%num_item, radial_rtp_grp%item_grp)
 !
@@ -108,7 +109,7 @@
      &    radial_rj_grp%num_item, radial_rj_grp%item_grp)
 !
       call set_item_sph_grp_by_rng(icou,                                &
-     &    nlayer_2_center, nlayer_2_center,                             &
+     &    sph_param1%nlayer_2_center, sph_param1%nlayer_2_center,       &
      &    sph_rj%ist_rj(1), sph_rj%ied_rj(1),                           &
      &    radial_rj_grp%num_item, radial_rj_grp%item_grp)
 !
@@ -119,15 +120,16 @@
      &      radial_rj_grp%item_grp)
       end if
 !
-      if (nlayer_mid_OC .gt. 0) then
+      if (sph_param1%nlayer_mid_OC .gt. 0) then
         call set_item_sph_grp_by_rng(icou,                              &
-     &      nlayer_mid_OC, nlayer_mid_OC,                               &
+     &      sph_param1%nlayer_mid_OC, sph_param1%nlayer_mid_OC,         &
      &      sph_rj%ist_rj(1), sph_rj%ied_rj(1),                         &
      &      radial_rj_grp%num_item, radial_rj_grp%item_grp)
       end if
 !
       nlayer_ed = nlayer_ICB-1
-      call set_item_sph_grp_by_rng(icou, nlayer_2_center, nlayer_ed,    &
+      call set_item_sph_grp_by_rng                                      &
+     &   (icou, sph_param1%nlayer_2_center, nlayer_ed,                  &
      &    sph_rj%ist_rj(1), sph_rj%ied_rj(1),                           &
      &    radial_rj_grp%num_item, radial_rj_grp%item_grp)
 !

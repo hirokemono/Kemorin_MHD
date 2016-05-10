@@ -10,9 +10,12 @@
 !!      subroutine alloc_sph_mesh_parallel_merge
 !!      subroutine dealloc_sph_mesh_4_merge
 !!
-!!      subroutine set_local_rj_mesh_4_merge(my_rank, sph_mesh)
+!!      subroutine set_local_rj_mesh_4_merge                            &
+!!     &         (my_rank, sph_mesh, sph_comms, sph_grps)
 !!        integer(kind = kint), intent(in) :: my_rank
-!!        type(sph_mesh_data), intent(inout) :: sph_mesh
+!!        type(sph_grids), intent(inout) ::       sph_mesh
+!!        type(sph_comm_tables), intent(inout) :: sph_comms
+!!        type(sph_group_data), intent(inout) ::  sph_grps
 !!      subroutine set_sph_boundary_4_merge(sph_grps,                   &
 !!     &          nlayer_ICB, nlayer_CMB)
 !!        type(sph_group_data), intent(in) ::  sph_grps
@@ -32,6 +35,9 @@
       use t_spheric_mesh
       use t_sph_spectr_data
       use t_field_data_IO
+      use t_spheric_parameter
+      use t_sph_trans_comm_tbl
+      use t_group_data
 !
       implicit none
 !
@@ -41,7 +47,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_local_rj_mesh_4_merge(my_rank, sph_mesh_set)
+      subroutine set_local_rj_mesh_4_merge                              &
+     &         (my_rank, sph_mesh, sph_comms, sph_grps)
 !
       use m_node_id_spherical_IO
       use m_group_data_sph_specr_IO
@@ -51,22 +58,22 @@
       use set_group_types_4_IO
 !
       integer(kind = kint), intent(in) :: my_rank
-      type(sph_mesh_data), intent(inout) :: sph_mesh_set
+      type(sph_grids), intent(inout) ::       sph_mesh
+      type(sph_comm_tables), intent(inout) :: sph_comms
+      type(sph_group_data), intent(inout) ::  sph_grps
 !
 !
       call sel_read_spectr_modes_rj_file(my_rank)
 !
       call copy_sph_node_4_rj_from_IO                                   &
-     &    (sph_mesh_set%sph_mesh%l_truncation,                          &
-     &     sph_mesh_set%sph_mesh%sph_rj)
-      call copy_comm_sph_type_from_IO(my_rank,                          &
-     &    sph_mesh_set%sph_mesh%sph_rj%nnod_rj,                         &
-     &    sph_mesh_set%sph_comms%comm_rj)
+     &    (sph_mesh%sph_params%l_truncation, sph_mesh%sph_rj)
+      call copy_comm_sph_type_from_IO                                   &
+     &   (my_rank, sph_mesh%sph_rj%nnod_rj, sph_comms%comm_rj)
 !
       call set_gruop_stracture                                          &
-     &   (radial_rj_grp_IO, sph_mesh_set%sph_grps%radial_rj_grp)
+     &   (radial_rj_grp_IO, sph_grps%radial_rj_grp)
       call set_gruop_stracture                                          &
-     &   (sphere_rj_grp_IO, sph_mesh_set%sph_grps%sphere_rj_grp)
+     &   (sphere_rj_grp_IO, sph_grps%sphere_rj_grp)
 !
       call deallocate_grp_type(radial_rj_grp_IO)
       call deallocate_grp_type(sphere_rj_grp_IO)
