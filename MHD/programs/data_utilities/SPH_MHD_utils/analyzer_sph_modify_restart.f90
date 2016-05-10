@@ -105,7 +105,7 @@
       integer(kind = kint), intent(in) :: i_step
 !
 !
-      call read_alloc_sph_rst_2_modify(i_step, rj_fld1)
+      call read_alloc_sph_rst_2_modify(i_step, sph_rj1, rj_fld1)
 !
 !*  ----------------Modify spectr data ... ----------
 !*

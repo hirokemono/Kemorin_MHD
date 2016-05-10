@@ -147,17 +147,17 @@
         end if
 !
         sph_param1%nlayer_2_center = -1
-        nlayer_ICB =       1
-        nlayer_CMB =       sph_rtp1%nidx_global_rtp(1)
+        sph_param1%nlayer_ICB =       1
+        sph_param1%nlayer_CMB = sph_rtp1%nidx_global_rtp(1)
         sph_param1%nlayer_mid_OC =   -1
         if(radial_grp_ctl%icou .gt. 0) then
           do i = 1, radial_grp_ctl%num
             if     (cmp_no_case(radial_grp_ctl%c_tbl(i),                &
      &                      ICB_nod_grp_name) ) then
-              nlayer_ICB = radial_grp_ctl%ivec(i)
+              sph_param1%nlayer_ICB = radial_grp_ctl%ivec(i)
             else if(cmp_no_case(radial_grp_ctl%c_tbl(i),                &
      &                      CMB_nod_grp_name) ) then
-              nlayer_CMB = radial_grp_ctl%ivec(i)
+              sph_param1%nlayer_CMB = radial_grp_ctl%ivec(i)
             else if(cmp_no_case(radial_grp_ctl%c_tbl(i),                &
      &                      CTR_nod_grp_name) ) then
               sph_param1%nlayer_2_center = radial_grp_ctl%ivec(i)

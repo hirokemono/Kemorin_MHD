@@ -23,6 +23,7 @@
 !
       subroutine SPH_initialize_back_trans(fld_IO)
 !
+      use m_spheric_parameter
       use m_t_step_parameter
       use m_ctl_params_sph_trans
       use m_node_id_spherical_IO
@@ -59,7 +60,7 @@
 !
       if(iflag_org_sph_rj_head .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'input_old_rj_sph_trans'
-        call input_old_rj_sph_trans(my_rank)
+        call input_old_rj_sph_trans(my_rank, l_truncation, sph_rj1)
         call set_sph_magne_address(rj_fld1)
       end if
 !
@@ -89,6 +90,7 @@
 !
       subroutine SPH_analyze_back_trans(i_step, visval, fld_IO)
 !
+      use m_spheric_parameter
       use m_sph_spectr_data
       use m_t_step_parameter
       use m_node_id_spherical_IO
@@ -128,11 +130,12 @@
 !
         if(iflag_org_sph_rj_head .eq. 0) then
           if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
-          call set_rj_phys_data_from_IO(nnod_rj, fld_IO, rj_fld1)
+          call set_rj_phys_data_from_IO                                 &
+     &       (sph_rj1%nnod_rj, fld_IO, rj_fld1)
         else
           if (iflag_debug.gt.0) write(*,*)                              &
      &                        'r_interpolate_sph_fld_from_IO'
-          call r_interpolate_sph_fld_from_IO(fld_IO, rj_fld1)
+          call r_interpolate_sph_fld_from_IO(fld_IO, sph_rj1, rj_fld1)
         end if
 !
 !          call check_all_field_data(my_rank, rj_fld1)

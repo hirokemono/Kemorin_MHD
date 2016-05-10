@@ -44,25 +44,28 @@
       call mid_eq_transfer_dynamobench(rj_fld)
 !
       call cal_mean_squre_in_shell                                      &
-     &   (nlayer_ICB, nlayer_CMB, l_truncation, sph_rj1, rj_fld)
+     &   (sph_param1%nlayer_ICB, sph_param1%nlayer_CMB, l_truncation,   &
+     &    sph_rj1, rj_fld)
       if(my_rank .eq. 0) call copy_energy_4_dynamobench
 !
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call pick_inner_core_rotation(sph_rj1%idx_rj_degree_one,        &
-     &      sph_rj1%nidx_rj, nlayer_ICB, sph_rj1%ar_1d_rj,              &
+     &      sph_rj1%nidx_rj, sph_param1%nlayer_ICB, sph_rj1%ar_1d_rj,   &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
         call cal_mean_squre_in_shell                                    &
-     &     (izero, nlayer_ICB, l_truncation, sph_rj1, rj_fld)
+     &     (izero, sph_param1%nlayer_ICB, l_truncation,                 &
+     &      sph_rj1, rj_fld)
         if(my_rank .eq. 0) call copy_icore_energy_4_dbench
       end if
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center                  &
      &   .and. sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
-        call pick_mag_torque_inner_core(sph_rj1%idx_rj_degree_one,      &
-     &      sph_rj1%nidx_rj, nlayer_ICB, sph_rj1%radius_1d_rj_r,        &
+        call pick_mag_torque_inner_core                                 &
+     &     (sph_rj1%idx_rj_degree_one,  sph_rj1%nidx_rj,                &
+     &      sph_param1%nlayer_ICB, sph_rj1%radius_1d_rj_r,              &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !

@@ -20,11 +20,11 @@
 !!        type(phys_data), intent(inout) :: rj_fld
 !!
 !!      subroutine init_radial_sph_interpolation
-!!      subroutine read_alloc_sph_rst_4_snap(i_step, rj_fld)
+!!      subroutine read_alloc_sph_rst_4_snap(i_step, sph_rj, rj_fld)
 !!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine output_spectr_4_snap(i_step, rj_fld)
 !!        type(phys_data), intent(in) :: rj_fld
-!!      subroutine read_alloc_sph_rst_2_modify(i_step, rj_fld)
+!!      subroutine read_alloc_sph_rst_2_modify(i_step, sph_rj, rj_fld)
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !!
@@ -161,32 +161,40 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine init_radial_sph_interpolation
+      subroutine init_radial_sph_interpolation(sph_params, sph_rj)
 !
       use m_control_params_2nd_files
       use m_node_id_spherical_IO
+      use m_spheric_parameter
+      use t_spheric_parameter
       use r_interpolate_sph_data
+!
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rj_grid), intent(inout) ::  sph_rj
 !
 !
       if(iflag_org_sph_rj_head .gt. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'input_old_rj_sph_trans'
-        call input_old_rj_sph_trans(my_rank)
+        call input_old_rj_sph_trans(my_rank, l_truncation, sph_rj)
       end if
 !
-      call copy_cmb_icb_radial_point
+      call copy_cmb_icb_radial_point                                    &
+     &   (sph_params%nlayer_ICB, sph_params%nlayer_CMB)
 !
       end subroutine init_radial_sph_interpolation
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_alloc_sph_rst_4_snap(i_step, rj_fld)
+      subroutine read_alloc_sph_rst_4_snap(i_step, sph_rj, rj_fld)
 !
       use m_control_params_2nd_files
       use m_node_id_spherical_IO
+      use t_spheric_rj_data
       use set_sph_restart_IO
       use r_interpolate_sph_data
 !
       integer(kind = kint), intent(in) :: i_step
+      type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_data), intent(inout) :: rj_fld
 !
       integer(kind = kint) :: istep_fld
@@ -203,7 +211,7 @@
       else
         if (iflag_debug.gt.0)                                           &
      &            write(*,*) 'r_interpolate_sph_rst_from_IO'
-        call r_interpolate_sph_rst_from_IO(sph_fst_IO, rj_fld)
+        call r_interpolate_sph_rst_from_IO(sph_fst_IO, sph_rj, rj_fld)
       end if
 !
       call dealloc_phys_data_IO(sph_fst_IO)
@@ -248,11 +256,13 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_alloc_sph_rst_2_modify(i_step, rj_fld)
+      subroutine read_alloc_sph_rst_2_modify(i_step, sph_rj, rj_fld)
 !
       use m_control_params_2nd_files
+      use t_spheric_rj_data
 !
       integer(kind = kint), intent(in) :: i_step
+      type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_data), intent(inout) :: rj_fld
 !
       integer(kind = kint) :: ifmt_rst_file_tmp
@@ -264,7 +274,7 @@
       sph_fst_IO%file_prefix = org_rst_header
       call set_field_file_fmt_prefix                                    &
      &   (ifmt_rst_file_tmp, org_rst_header, sph_fst_IO)
-      call read_alloc_sph_rst_4_snap(i_step, rj_fld)
+      call read_alloc_sph_rst_4_snap(i_step, sph_rj, rj_fld)
 !
       call set_field_file_fmt_prefix                                    &
      &   (ifmt_rst_file_tmp, restart_tmp_prefix, sph_fst_IO)

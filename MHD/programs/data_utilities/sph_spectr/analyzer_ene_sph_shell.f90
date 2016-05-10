@@ -113,13 +113,14 @@
      &      l_truncation, sph_rj1, rj_fld1)
 !
         call write_sph_vol_ave_file(i_step, time, l_truncation,         &
-     &      nlayer_ICB, nlayer_CMB, sph_rj1%idx_rj_degree_zero)
+     &      sph_param1%nlayer_ICB, sph_param1%nlayer_CMB,               &
+     &      sph_rj1%idx_rj_degree_zero)
         call write_sph_vol_ms_file(my_rank, i_step, time,               &
-     &      l_truncation, nlayer_ICB, nlayer_CMB)
+     &      l_truncation, sph_param1%nlayer_ICB, sph_param1%nlayer_CMB)
         call write_sph_vol_ms_spectr_file(my_rank, i_step, time,        &
-     &      l_truncation, nlayer_ICB, nlayer_CMB)
+     &      l_truncation, sph_param1%nlayer_ICB, sph_param1%nlayer_CMB)
         call write_sph_layer_ms_file(my_rank, i_step, time,             &
-     &      l_truncation, nlayer_ICB, nlayer_CMB)
+     &      l_truncation, sph_param1%nlayer_ICB, sph_param1%nlayer_CMB)
       end do
 !
       end subroutine analyze_ene_sph_shell

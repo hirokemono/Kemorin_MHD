@@ -66,6 +66,7 @@
 !
       subroutine SPH_analyze_gauss_back_trans(i_step, visval)
 !
+      use m_spheric_parameter
       use m_sph_spectr_data
       use m_t_step_parameter
       use m_ctl_params_sph_trans
@@ -102,7 +103,7 @@
 !
         if (iflag_debug.gt.0) write(*,*)                                &
      &                        'set_poloidal_b_by_gauss_coefs'
-        call set_poloidal_b_by_gauss_coefs(rj_fld1)
+        call set_poloidal_b_by_gauss_coefs(sph_rj1, rj_fld1)
         call deallocate_gauss_global_coefs
 !
 !        call check_all_field_data(my_rank, rj_fld1)

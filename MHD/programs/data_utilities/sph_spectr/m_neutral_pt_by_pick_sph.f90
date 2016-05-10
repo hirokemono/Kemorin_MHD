@@ -128,8 +128,8 @@
       end do
 !
       call allocate_dr_rj_noequi(sph_rj1%nidx_rj(1))
-      call set_dr_for_nonequi                                           &
-     &   (nlayer_CMB, sph_rj1%nidx_rj(1), sph_rj1%radius_1d_rj_r)
+      call set_dr_for_nonequi(sph_param1%nlayer_CMB,                    &
+     &   sph_rj1%nidx_rj(1), sph_rj1%radius_1d_rj_r)
       call const_2nd_fdm_matrices
       call const_2nd_fdm_coefs
 !

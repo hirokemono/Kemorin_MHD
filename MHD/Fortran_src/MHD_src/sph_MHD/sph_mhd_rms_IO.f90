@@ -77,9 +77,11 @@
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
       call cal_mean_squre_in_shell                                      &
-     &   (nlayer_ICB, nlayer_CMB, l_truncation, sph_rj1, rj_fld)
+     &   (sph_param1%nlayer_ICB, sph_param1%nlayer_CMB, l_truncation,   &
+     &    sph_rj1, rj_fld)
       if(iflag_debug.gt.0)  write(*,*) 'cal_gauss_coefficients'
-      call cal_gauss_coefficients(nlayer_ICB, nlayer_CMB,               &
+      call cal_gauss_coefficients                                       &
+     &   (sph_param1%nlayer_ICB, sph_param1%nlayer_CMB,                 &
      &    sph_rj1%nidx_rj, sph_rj1%radius_1d_rj_r,                      &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       if(iflag_debug.gt.0)  write(*,*) 'pickup_sph_spec_4_monitor'
@@ -96,13 +98,14 @@
       call write_total_energy_to_screen(my_rank, i_step_MHD, time)
 !
       call write_sph_vol_ave_file(i_step_MHD, time, l_truncation,       &
-     &          nlayer_ICB, nlayer_CMB, sph_rj1%idx_rj_degree_zero)
+     &    sph_param1%nlayer_ICB, sph_param1%nlayer_CMB,                 &
+     &    sph_rj1%idx_rj_degree_zero)
       call write_sph_vol_ms_file(my_rank, i_step_MHD, time,             &
-     &    l_truncation, nlayer_ICB, nlayer_CMB)
+     &    l_truncation, sph_param1%nlayer_ICB, sph_param1%nlayer_CMB)
       call write_sph_vol_ms_spectr_file(my_rank, i_step_MHD, time,      &
-     &    l_truncation, nlayer_ICB, nlayer_CMB)
+     &    l_truncation, sph_param1%nlayer_ICB, sph_param1%nlayer_CMB)
       call write_sph_layer_ms_file(my_rank, i_step_MHD, time,           &
-     &    l_truncation, nlayer_ICB, nlayer_CMB)
+     &    l_truncation, sph_param1%nlayer_ICB, sph_param1%nlayer_CMB)
 !
       call write_gauss_coefs_4_monitor(my_rank, istep_max_dt, time)
       call write_sph_spec_4_monitor(my_rank, istep_max_dt, time)

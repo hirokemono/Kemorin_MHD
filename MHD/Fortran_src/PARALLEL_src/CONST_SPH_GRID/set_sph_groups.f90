@@ -163,7 +163,7 @@
 !
       num_grp =  3 + numlayer_sph_bc
       if (sph_param1%nlayer_2_center .gt. 0) num_grp =  num_grp + 2
-      if (sph_rtp1%nidx_global_rtp(1) .gt. nlayer_CMB) then
+      if (sph_rtp1%nidx_global_rtp(1) .gt. sph_param1%nlayer_CMB) then
         num_grp =  num_grp + 1
       end if
       if (sph_param1%nlayer_mid_OC .gt. 0) num_grp =  num_grp + 1

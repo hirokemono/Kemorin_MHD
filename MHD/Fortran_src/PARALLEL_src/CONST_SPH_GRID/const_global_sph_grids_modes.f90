@@ -268,18 +268,19 @@
 !
 !
 !      write(*,*) 'cal_local_nums_st'
-      call cal_local_nums_st(ndomain_rtp(1), nlayer_ICB, nlayer_CMB,    &
+      call cal_local_nums_st(ndomain_rtp(1),                            &
+     &    sph_param1%nlayer_ICB, sph_param1%nlayer_CMB,                 &
      &    nidx_local_rtp_OC, ist_idx_local_rtp_OC)
 !
-      if (nlayer_ICB .gt. 1) then
-        ied = nlayer_ICB - 1
+      if (sph_param1%nlayer_ICB .gt. 1) then
+        ied = sph_param1%nlayer_ICB - 1
 !      write(*,*) 'cal_local_nums_rev'
         call cal_local_nums_rev(ndomain_rtp(1), ione, ied,              &
      &      nidx_local_rtp_IC, ist_idx_local_rtp_IC)
       end if
 !
-      if (nlayer_CMB .lt. sph_rtp1%nidx_global_rtp(1)) then
-        ist = nlayer_CMB + 1
+      if (sph_param1%nlayer_CMB .lt. sph_rtp1%nidx_global_rtp(1)) then
+        ist = sph_param1%nlayer_CMB + 1
 !      write(*,*) 'cal_local_nums_rev'
         call cal_local_nums_rev(ndomain_rtp(1), ist,                    &
      &      sph_rtp1%nidx_global_rtp(1), nidx_local_rtp_MT,             &
@@ -322,17 +323,18 @@
       call cal_local_num_rtm_m(ndomain_rtm(3), l_truncation,            &
      &    m_folding, nidx_local_rtm_m, istack_idx_local_rtm_m)
 !
-      call cal_local_nums_st(ndomain_rtm(1), nlayer_ICB, nlayer_CMB,    &
+      call cal_local_nums_st(ndomain_rtm(1),                            &
+     &    sph_param1%nlayer_ICB, sph_param1%nlayer_CMB,                 &
      &    nidx_local_rtm_OC, ist_idx_local_rtm_OC)
 !
-      if (nlayer_ICB .gt. 1) then
-        ied = nlayer_ICB - 1
+      if (sph_param1%nlayer_ICB .gt. 1) then
+        ied = sph_param1%nlayer_ICB - 1
         call cal_local_nums_rev(ndomain_rtm(1), ione, ied,              &
      &      nidx_local_rtm_IC, ist_idx_local_rtm_IC)
       end if
 !
-      if (nlayer_CMB .lt. sph_rtm1%nidx_global_rtm(1)) then
-        ist = nlayer_CMB + 1
+      if (sph_param1%nlayer_CMB .lt. sph_rtm1%nidx_global_rtm(1)) then
+        ist = sph_param1%nlayer_CMB + 1
         call cal_local_nums_rev(ndomain_rtm(1), ist,                    &
      &      sph_rtm1%nidx_global_rtm(1), nidx_local_rtm_MT,             &
      &      ist_idx_local_rtm_MT)

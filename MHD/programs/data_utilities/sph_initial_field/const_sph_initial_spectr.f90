@@ -39,8 +39,8 @@
 !!       Light element source :: d_rj(:,ipol%i_light_source)
 !!
 !!       nidx_rj(1) :: Number of radial grids
-!!       nlayer_ICB :: radial ID for ICB
-!!       nlayer_CMB :: radial ID for CMB
+!!       nlayer_ICB() :: radial ID for ICB
+!!       nlayer_CMB() :: radial ID for CMB
 !!       r_ICB() :: ICB radius
 !!       r_CMB() :: CMB radius
 !!@endverbatim
@@ -175,6 +175,24 @@
       end function r_ICB
 !
 !-----------------------------------------------------------------------
+!
+      integer(kind = kint) function nlayer_CMB()
+      use m_spheric_parameter
+!
+      nlayer_CMB = sph_param1%nlayer_CMB
+!
+      end function nlayer_CMB
+!
+!-----------------------------------------------------------------------
+!
+      integer(kind = kint) function nlayer_ICBB()
+      use m_spheric_parameter
+!
+      nlayer_ICBB = sph_param1%nlayer_ICB
+!
+      end function nlayer_ICBB
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine set_initial_velocity(ntot_phys_rj, d_rj)
@@ -200,7 +218,7 @@
 !
 !      jj = find_local_sph_mode_address(1, 0)
 !      if (jj .gt. 0) then
-!        do k = nlayer_ICB+1, nlayer_CMB
+!        do k = nlayer_ICBB()+1, nlayer_CMB()
 !          rr = sph_rj1%radius_1d_rj_r(k)
 !          inod = local_sph_data_address(k,jj)
 !          d_rj(inod,itor%i_velo) = half * rr*rr
@@ -210,7 +228,7 @@
       jj =  find_local_sph_mode_address(2, 1)
 !
       if (jj .gt. 0) then
-        do k = nlayer_ICB, nlayer_CMB
+        do k = nlayer_ICBB(), nlayer_CMB()
           inod = local_sph_data_address(k,jj)
           xr = two * sph_rj1%radius_1d_rj_r(k)                          &
     &         - one * (r_CMB() + r_ICB()) / shell
@@ -247,11 +265,11 @@
 !
 !   set reference temperature if (l = m = 0) mode is there
       if (jj .gt. 0) then
-        do k = 1, nlayer_ICB-1
+        do k = 1, nlayer_ICBB()-1
           inod = local_sph_data_address(k,jj)
           d_rj(inod,ipol%i_temp) = 1.0d0
         end do
-        do k = nlayer_ICB, nlayer_CMB
+        do k = nlayer_ICBB(), nlayer_CMB()
           inod = local_sph_data_address(k,jj)
           d_rj(inod,ipol%i_temp)                                        &
      &          = (sph_rj1%ar_1d_rj(k,1) * 20.d0/13.0d0   - 1.0d0 )     &
@@ -267,7 +285,7 @@
 !    If data for (l,m) = (4,4) is there, set initial temperature
       if (jj .gt. 0) then
 !    Set initial field from ICB to CMB
-        do k = nlayer_ICB, nlayer_CMB
+        do k = nlayer_ICBB(), nlayer_CMB()
 !
 !    Set radius data
           rr = sph_rj1%radius_1d_rj_r(k)
@@ -318,11 +336,11 @@
 !   set reference temperature if (l = m = 0) mode is there
 !
       if (jj .gt. 0) then
-        do k = 1, nlayer_ICB-1
+        do k = 1, nlayer_ICBB()-1
           inod = local_sph_data_address(k,jj)
           d_rj(inod,ipol%i_light) = 1.0d0
         end do
-        do k = nlayer_ICB, nidx_rj(1)
+        do k = nlayer_ICBB(), nidx_rj(1)
           inod = local_sph_data_address(k,jj)
           d_rj(inod,ipol%i_light)                                       &
      &          = (sph_rj1%ar_1d_rj(k,1) * 20.d0/13.0d0  - 1.0d0 )      &
@@ -335,7 +353,7 @@
       jj =  find_local_sph_mode_address(4, 4)
 !
       if (jj .gt. 0) then
-        do k = nlayer_ICB, nlayer_CMB
+        do k = nlayer_ICBB(), nlayer_CMB()
           inod = local_sph_data_address(k,jj)
           xr = two * sph_rj1%radius_1d_rj_r(k)                          &
      &        - one * (r_CMB() + r_ICB()) / shell
@@ -379,7 +397,7 @@
       js =  find_local_sph_mode_address(1,0)
 !
       if (js .gt. 0) then
-        do k = nlayer_ICB, nlayer_CMB
+        do k = nlayer_ICBB(), nlayer_CMB()
           is = local_sph_data_address(k,js)
           rr = sph_rj1%radius_1d_rj_r(k)
 !   Substitute poloidal mangetic field
@@ -388,8 +406,8 @@
         end do
 !
 !   Fill potential field if inner core exist
-        is_ICB = local_sph_data_address(nlayer_ICB,js)
-        do k = 1, nlayer_ICB-1
+        is_ICB = local_sph_data_address(nlayer_ICBB(),js)
+        do k = 1, nlayer_ICBB()-1
           is = local_sph_data_address(k,js)
           rr = sph_rj1%radius_1d_rj_r(k) / r_ICB()
 !   Substitute poloidal mangetic field
@@ -398,8 +416,8 @@
         end do
 !
 !   Fill potential field if external of the core exist
-        is_CMB = local_sph_data_address(nlayer_CMB,js)
-        do k = nlayer_CMB+1, nidx_rj(1)
+        is_CMB = local_sph_data_address(nlayer_CMB(),js)
+        do k = nlayer_CMB()+1, nidx_rj(1)
           is = local_sph_data_address(k,js)
           rr = sph_rj1%radius_1d_rj_r(k) / r_CMB()
 !   Substitute poloidal mangetic field
@@ -413,7 +431,7 @@
       jt =  find_local_sph_mode_address(1,-1)
 !
       if (jt .gt. 0) then
-        do k = 1, nlayer_CMB
+        do k = 1, nlayer_CMB()
           it = local_sph_data_address(k,jt)
           rr = sph_rj1%radius_1d_rj_r(k)
 !   Substitute totoidal mangetic field
@@ -447,7 +465,7 @@
       jj =  find_local_sph_mode_address(0, 0)
 !
       if (jj .gt. 0) then
-        do k = 1, nlayer_ICB
+        do k = 1, nlayer_ICBB()
           inod = local_sph_data_address(k,jj)
           rr = sph_rj1%radius_1d_rj_r(k)
 !   Substitute initial heat source
@@ -488,11 +506,11 @@
       jj =  find_local_sph_mode_address(0, 0)
 !
       if (jj .gt. 0) then
-        do k = 1, nlayer_ICB-1
+        do k = 1, nlayer_ICBB()-1
           inod = local_sph_data_address(k,jj)
           d_rj(inod,ipol%i_light) = 1.0d0
         end do
-        do k = nlayer_ICB, nlayer_CMB
+        do k = nlayer_ICBB(), nlayer_CMB()
           inod = local_sph_data_address(k,jj)
 !          rr = sph_rj1%radius_1d_rj_r(k)
 !    Substitute initial heat source
@@ -523,7 +541,7 @@
 !
 !   set reference temperature if (l = m = 0) mode is there
       if (jj .gt. 0) then
-        inod = local_sph_data_address(nlayer_CMB,jj)
+        inod = local_sph_data_address(nlayer_CMB(),jj)
         temp_CMB = d_rj(inod,ipol%i_temp)
 !
         do k = 1, nidx_rj(1)

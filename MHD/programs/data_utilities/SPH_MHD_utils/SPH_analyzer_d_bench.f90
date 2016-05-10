@@ -102,12 +102,13 @@
 !     --------------------- 
 !  set original spectr mesh data for extension of B
 !
-      call init_radial_sph_interpolation
+      call init_radial_sph_interpolation(sph_param1, sph_rj1)
 !
 !* -----  find mid-equator point -----------------
 !*
       call set_mid_equator_point_global(l_truncation,                   &
-     &    nlayer_ICB, nlayer_CMB, nidx_rj(1), sph_rj1%radius_1d_rj_r)
+     &    sph_param1%nlayer_ICB, sph_param1%nlayer_CMB,                 &
+     &    sph_rj1%nidx_rj(1), sph_rj1%radius_1d_rj_r)
 !
       end subroutine SPH_init_sph_dbench
 !
@@ -131,7 +132,7 @@
       integer(kind = kint), intent(in) :: i_step
 !
 !
-      call read_alloc_sph_rst_4_snap(i_step, rj_fld1)
+      call read_alloc_sph_rst_4_snap(i_step, sph_rj1, rj_fld1)
 !
       call sync_temp_by_per_temp_sph(reftemp_rj, rj_fld1)
 !

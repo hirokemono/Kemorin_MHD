@@ -147,7 +147,7 @@
       write(id_timer_file,*) 'Truncation level:      ', l_truncation
       write(id_timer_file,*) 'Longitudinal symmetry: ', m_folding
       write(id_timer_file,*) 'N_r for fluid shell:   ',                 &
-     &                      nlayer_CMB-nlayer_ICB
+     &            (sph_param1%nlayer_CMB - sph_param1%nlayer_ICB)
       write(id_timer_file,*) 'N_theta:               ', nidx_rtm(2)
       write(id_timer_file,*) 'N_phi:                 ', nidx_rtp(3)
 !

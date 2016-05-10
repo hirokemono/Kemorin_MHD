@@ -25,6 +25,7 @@
 !
       subroutine SPH_analyze_zm_streamfunc(i_step, visval, fld_IO)
 !
+      use m_spheric_parameter
       use m_sph_spectr_data
       use m_t_step_parameter
       use m_control_params_2nd_files
@@ -67,7 +68,7 @@
         else
           if (iflag_debug.gt.0) write(*,*)                              &
      &                        'r_interpolate_sph_fld_from_IO'
-          call r_interpolate_sph_fld_from_IO(fld_IO, rj_fld1)
+          call r_interpolate_sph_fld_from_IO(fld_IO, sph_rj1, rj_fld1)
         end if
 !
         call set_rj_phys_for_zm_streamfunc                              &

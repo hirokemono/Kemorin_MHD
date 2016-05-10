@@ -36,23 +36,23 @@
         call count_chebyshev_ext_layers                                 &
      &     (nele, sph_param1%radius_ICB, sph_param1%radius_CMB,         &
      &      rmin, rmax, sph_rtp1%nidx_global_rtp(1),                    &
-     &      nlayer_ICB, nlayer_CMB)
+     &      sph_param1%nlayer_ICB, sph_param1%nlayer_CMB)
       else if(iflag_radial_grid .eq. igrid_euqidistance) then
         call count_equi_ext_layers                                      &
      &     (nele, sph_param1%radius_ICB, sph_param1%radius_CMB,         &
      &      rmin, rmax, sph_rtp1%nidx_global_rtp(1),                    &
-     &      nlayer_ICB, nlayer_CMB)
+     &      sph_param1%nlayer_ICB, sph_param1%nlayer_CMB)
       end if
 !
       call allocate_radius_1d_gl(sph_rtp1%nidx_global_rtp(1))
 !
       if(iflag_radial_grid .eq. igrid_Chebyshev) then
         call set_chebyshev_distance_shell(sph_rtp1%nidx_global_rtp(1),  &
-     &      nlayer_ICB, nlayer_CMB,             &
+     &      sph_param1%nlayer_ICB, sph_param1%nlayer_CMB,               &
      &      sph_param1%radius_ICB, sph_param1%radius_CMB, radius_1d_gl)
       else if(iflag_radial_grid .eq. igrid_euqidistance) then
         call set_equi_distance_shell(sph_rtp1%nidx_global_rtp(1),       &
-     &      nlayer_ICB, nlayer_CMB,           &
+     &      sph_param1%nlayer_ICB, sph_param1%nlayer_CMB,               &
      &      sph_param1%radius_ICB, sph_param1%radius_CMB, radius_1d_gl)
       end if
 !
@@ -86,9 +86,9 @@
       write(id_file,'(a,i6)')                                           &
      &        '      boundaries_ctl  to_Center ', ione
       write(id_file,'(a,i6)')                                           &
-     &        '      boundaries_ctl  ICB       ', nlayer_ICB
+     &        '      boundaries_ctl  ICB       ', sph_param1%nlayer_ICB
       write(id_file,'(a,i6)')                                           &
-     &        '      boundaries_ctl  CMB       ', nlayer_CMB
+     &        '      boundaries_ctl  CMB       ', sph_param1%nlayer_CMB
       write(id_file,'(a)')    '    end array boundaries_ctl'
 !
       close(id_file)
