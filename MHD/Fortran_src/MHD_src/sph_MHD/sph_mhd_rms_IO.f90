@@ -45,7 +45,7 @@
 !
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_rms_4_sph_spectr'
-      call init_rms_4_sph_spectr(rj_fld)
+      call init_rms_4_sph_spectr(l_truncation, sph_rj1, rj_fld)
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_gauss_coefs_4_monitor'
       call init_gauss_coefs_4_monitor(l_truncation, sph_rj1)
@@ -76,7 +76,8 @@
       if (i_flag .ne. 0) return
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
-      call cal_rms_sph_outer_core(rj_fld)
+      call cal_mean_squre_in_shell                                      &
+     &   (nlayer_ICB, nlayer_CMB, l_truncation, sph_rj1, rj_fld)
       if(iflag_debug.gt.0)  write(*,*) 'cal_gauss_coefficients'
       call cal_gauss_coefficients(nlayer_ICB, nlayer_CMB,               &
      &    sph_rj1%nidx_rj, sph_rj1%radius_1d_rj_r,                      &

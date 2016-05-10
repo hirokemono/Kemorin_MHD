@@ -8,10 +8,10 @@
 !!       (innermost loop is spherical harmonics)
 !!
 !!@verbatim
-!!      subroutine allocate_work_sph_trans(ncomp)
+!!      subroutine allocate_work_sph_trans(ncomp, nnod_rtm, nnod_rlm)
 !!      subroutine deallocate_work_sph_trans
-!!      subroutine clear_fwd_legendre_work(ncomp)
-!!      subroutine clear_bwd_legendre_work(ncomp)
+!!      subroutine clear_fwd_legendre_work(ncomp, nnod_rlm)
+!!      subroutine clear_bwd_legendre_work(ncomp, nnod_rtm)
 !!
 !!    Data for single vector field
 !!      radial component:      vr_rtm_wk(3*i_rtm-2)
@@ -55,18 +55,17 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_work_sph_trans(ncomp)
-!
-      use m_spheric_parameter
+      subroutine allocate_work_sph_trans(ncomp, nnod_rtm, nnod_rlm)
 !
       integer(kind = kint), intent(in) :: ncomp
+      integer(kind = kint), intent(in) :: nnod_rtm, nnod_rlm
 !
 !
       allocate(sp_rlm_wk(nnod_rlm*ncomp))
       allocate(vr_rtm_wk(nnod_rtm*ncomp))
 !
-      call clear_bwd_legendre_work(ncomp)
-      call clear_fwd_legendre_work(ncomp)
+      call clear_bwd_legendre_work(ncomp, nnod_rtm)
+      call clear_fwd_legendre_work(ncomp, nnod_rlm)
 !
       end subroutine allocate_work_sph_trans
 !
@@ -81,11 +80,10 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine clear_fwd_legendre_work(ncomp)
-!
-      use m_spheric_parameter
+      subroutine clear_fwd_legendre_work(ncomp, nnod_rlm)
 !
       integer(kind = kint), intent(in) :: ncomp
+      integer(kind = kint), intent(in) :: nnod_rlm
 !
 !
       if(ncomp .le. 0) return
@@ -97,11 +95,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine clear_bwd_legendre_work(ncomp)
-!
-      use m_spheric_parameter
+      subroutine clear_bwd_legendre_work(ncomp, nnod_rtm)
 !
       integer(kind = kint), intent(in) :: ncomp
+      integer(kind = kint), intent(in) :: nnod_rtm
 !
 !
       if(ncomp .le. 0) return

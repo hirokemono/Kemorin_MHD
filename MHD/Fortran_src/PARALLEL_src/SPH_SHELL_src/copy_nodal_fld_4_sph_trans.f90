@@ -138,8 +138,7 @@
       call copy_nod_scl_from_sph_trans                                  &
      &   (sph_rtp, m_folding, d_rtp(1,i_trns), i_field, node, nod_fld)
       call copy_pole_scl_fld_from_trans                                 &
-     &   (node%numnod, node%internal_node, node%xx, v_pole(1,i_trns),   &
-     &    nod_fld%ntot_phys, i_field, nod_fld%d_fld)
+     &   (m_folding, sph_rtp, node, v_pole(1,i_trns), i_field, nod_fld)
 !
       end subroutine copy_nod_scl_from_trans_wpole
 !
@@ -166,9 +165,8 @@
 !
       call copy_nod_vec_from_sph_trans                                  &
      &   (sph_rtp, m_folding, d_rtp(1,i_trns), i_field, node, nod_fld)
-      call copy_pole_vec_fld_from_trans                                 &
-     &   (node%numnod, node%internal_node, node%xx, v_pole(1,i_trns),   &
-     &    nod_fld%ntot_phys, i_field, nod_fld%d_fld)
+      call copy_pole_vec_fld_from_trans(m_folding, sph_rtp, node,       &
+     &    v_pole(1,i_trns), i_field, nod_fld)
 !
       end subroutine copy_nod_vec_from_trans_wpole
 !
@@ -195,9 +193,8 @@
 !
       call copy_nod_tsr_from_sph_trans                                  &
      &   (sph_rtp, m_folding, d_rtp(1,i_trns), i_field, node, nod_fld)
-      call copy_pole_tsr_fld_from_trans                                 &
-     &   (node%numnod, node%internal_node, node%xx,                     &
-     &    v_pole(1,i_trns), nod_fld%ntot_phys, i_field, nod_fld%d_fld)
+      call copy_pole_tsr_fld_from_trans(m_folding, sph_rtp, node,       &
+     &    v_pole(1,i_trns), i_field, nod_fld)
 !
       end subroutine copy_nod_tsr_from_trans_wpole
 !

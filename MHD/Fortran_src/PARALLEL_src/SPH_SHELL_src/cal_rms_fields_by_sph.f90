@@ -7,11 +7,12 @@
 !> @brief evaluate mean square data from spectr data
 !!
 !!@verbatim
-!!      subroutine init_rms_4_sph_spectr(rj_fld)
+!!      subroutine init_rms_4_sph_spectr(l_truncation, sph_rj, rj_fld)
 !!
-!!      subroutine cal_rms_sph_spec_rms_whole(rj_fld)
-!!      subroutine cal_rms_sph_outer_core(rj_fld)
-!!      subroutine cal_rms_sph_inner_core(rj_fld)
+!!      subroutine cal_mean_squre_in_shell(kr_st, kr_ed, l_truncation,  &
+!!     &          sph_rj, rj_fld)
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(phys_data), intent(in) :: rj_fld
 !!@endverbatim
 !
       module cal_rms_fields_by_sph
@@ -20,12 +21,10 @@
       use m_constants
       use m_machine_parameter
 !
-!
+      use t_spheric_rj_data
       use t_phys_data
 !
       implicit none
-!
-      private :: cal_mean_squre_in_shell
 !
 ! -----------------------------------------------------------------------
 !
@@ -33,16 +32,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_rms_4_sph_spectr(rj_fld)
+      subroutine init_rms_4_sph_spectr(l_truncation, sph_rj, rj_fld)
 !
       use calypso_mpi
       use m_rms_4_sph_spectr
 !
-      use m_spheric_parameter
       use sum_sph_rms_data
       use volume_average_4_sph
       use quicksort
 !
+      integer(kind = kint), intent(in) :: l_truncation
+      type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_data), intent(in) :: rj_fld
 !
       integer(kind = kint) :: i_fld, j_fld
@@ -73,9 +73,9 @@
 !
       call allocate_rms_4_sph_spectr(my_rank, l_truncation)
       call allocate_ave_4_sph_spectr                                    &
-     &   (sph_rj1%idx_rj_degree_zero, sph_rj1%nidx_rj(1))
+     &   (sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj(1))
       call set_sum_table_4_sph_spectr                                   &
-     &   (l_truncation, nidx_rj, sph_rj1%idx_gl_1d_rj_j)
+     &   (l_truncation, sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j)
 !
 !
 
@@ -84,7 +84,7 @@
         if(k .le. 0) then
           r_for_rms(knum) = 0.0d0
         else
-          r_for_rms(knum) = sph_rj1%radius_1d_rj_r(k)
+          r_for_rms(knum) = sph_rj%radius_1d_rj_r(k)
         end if
       end do
 !
@@ -93,47 +93,10 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_rms_sph_spec_rms_whole(rj_fld)
-!
-      use m_spheric_parameter
-!
-      type(phys_data), intent(in) :: rj_fld
-!
-      call cal_mean_squre_in_shell(ione, nidx_rj(1), rj_fld)
-!
-      end subroutine cal_rms_sph_spec_rms_whole
-!
-! ----------------------------------------------------------------------
-!
-      subroutine cal_rms_sph_inner_core(rj_fld)
-!
-      use m_spheric_parameter
-!
-      type(phys_data), intent(in) :: rj_fld
-!
-      call cal_mean_squre_in_shell(izero, nlayer_ICB, rj_fld)
-!
-      end subroutine cal_rms_sph_inner_core
-!
-! ----------------------------------------------------------------------
-!
-      subroutine cal_rms_sph_outer_core(rj_fld)
-!
-      use m_spheric_parameter
-!
-      type(phys_data), intent(in) :: rj_fld
-!
-      call cal_mean_squre_in_shell(nlayer_ICB, nlayer_CMB, rj_fld)
-!
-      end subroutine cal_rms_sph_outer_core
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine cal_mean_squre_in_shell(kr_st, kr_ed, rj_fld)
+      subroutine cal_mean_squre_in_shell(kr_st, kr_ed, l_truncation,    &
+     &          sph_rj, rj_fld)
 !
       use calypso_mpi
-      use m_spheric_parameter
       use m_rms_4_sph_spectr
 !
       use volume_average_4_sph
@@ -141,6 +104,8 @@
       use sum_sph_rms_data
 !
       integer(kind = kint), intent(in) :: kr_st, kr_ed
+      integer(kind = kint), intent(in) :: l_truncation
+      type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_data), intent(in) :: rj_fld
 !
       real(kind = kreal) :: avol
@@ -149,21 +114,21 @@
       if(ntot_rms_rj .eq. 0) return
 
       if(iflag_debug .gt. 0) write(*,*) 'cal_one_over_volume'
-      call cal_one_over_volume                                          &
-     &   (kr_st, kr_ed, nidx_rj(1), sph_rj1%radius_1d_rj_r, avol)
+      call cal_one_over_volume(kr_st, kr_ed,                            &
+     &   sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, avol)
       if(iflag_debug .gt. 0) write(*,*) 'sum_sph_layerd_rms'
       call sum_sph_layerd_rms(kr_st, kr_ed,                             &
-     &    l_truncation, sph_rj1, rj_fld)
+     &    l_truncation, sph_rj, rj_fld)
 !
       if(my_rank .eq. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'surf_ave_4_sph_rms_int'
         call surf_ave_4_sph_rms_int                                     &
-     &     (l_truncation, nidx_rj(1), sph_rj1%a_r_1d_rj_r)
+     &     (l_truncation, sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r)
         call vol_ave_4_rms_sph(l_truncation, avol)
       end if
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_volume_average_sph'
-      call cal_volume_average_sph(kr_st, kr_ed, avol, sph_rj1, rj_fld)
+      call cal_volume_average_sph(kr_st, kr_ed, avol, sph_rj, rj_fld)
 !
       end subroutine cal_mean_squre_in_shell
 !

@@ -63,7 +63,7 @@
       call allocate_vector_for_solver(isix, nnod_rtp)
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_rms_4_sph_spectr'
-      call init_rms_4_sph_spectr(rj_fld1)
+      call init_rms_4_sph_spectr(l_truncation, sph_rj1, rj_fld1)
 !
 ! ---------------------------------
 !

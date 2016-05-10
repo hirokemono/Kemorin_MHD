@@ -43,7 +43,8 @@
       if(iflag_debug.gt.0)  write(*,*) 'mid_eq_transfer_dynamobench'
       call mid_eq_transfer_dynamobench(rj_fld)
 !
-      call cal_rms_sph_outer_core(rj_fld)
+      call cal_mean_squre_in_shell                                      &
+     &   (nlayer_ICB, nlayer_CMB, l_truncation, sph_rj1, rj_fld)
       if(my_rank .eq. 0) call copy_energy_4_dynamobench
 !
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
@@ -53,7 +54,8 @@
       end if
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
-        call cal_rms_sph_inner_core(rj_fld)
+        call cal_mean_squre_in_shell                                    &
+     &     (izero, nlayer_ICB, l_truncation, sph_rj1, rj_fld)
         if(my_rank .eq. 0) call copy_icore_energy_4_dbench
       end if
 !

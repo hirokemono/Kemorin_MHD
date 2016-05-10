@@ -278,7 +278,8 @@
         call alloc_leg_vec_test(sph_rtm1%maxidx_rtm_smp(2),             &
      &                          nvector, nscalar)
       else
-        call allocate_work_sph_trans(ncomp)
+        call allocate_work_sph_trans                                    &
+     &     (ncomp, sph_rtm1%nnod_rtm, sph_rlm1%nnod_rlm)
       end if
 !
       end subroutine sel_init_legendre_trans

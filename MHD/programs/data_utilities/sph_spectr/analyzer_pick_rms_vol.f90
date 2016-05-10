@@ -71,7 +71,7 @@
 !
       call set_sph_sprctr_data_address(sph_rj1, rj_fld1)
 !
-      call init_rms_4_sph_spectr(rj_fld1)
+      call init_rms_4_sph_spectr(l_truncation, sph_rj1, rj_fld1)
 !
       call allocate_work_pick_rms_sph                                   &
      &   (sph_rj1%nidx_rj(1), sph_rj1%nidx_rj(2))

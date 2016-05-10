@@ -69,7 +69,7 @@
 !
       call alloc_phys_data_type(nnod_rj, rj_fld1)
 !
-      call init_rms_4_sph_spectr(rj_fld1)
+      call init_rms_4_sph_spectr(l_truncation, sph_rj1, rj_fld1)
 !
       end subroutine initialization
 !

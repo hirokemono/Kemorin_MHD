@@ -64,7 +64,7 @@
 !
       call calypso_sph_from_recv_N(ncomp, sph_rlm%nnod_rlm,             &
      &    comm_rlm, n_WR, WR, sp_rlm_wk(1))
-      call clear_bwd_legendre_work(ncomp)
+      call clear_bwd_legendre_work(ncomp, sph_rtm%nnod_rtm)
 !
       call legendre_b_trans_vector_long                                 &
      &     (ncomp, nvector, sph_rlm, sph_rtm, sp_rlm_wk, vr_rtm_wk)

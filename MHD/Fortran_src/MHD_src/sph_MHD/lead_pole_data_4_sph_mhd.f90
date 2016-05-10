@@ -46,7 +46,8 @@
       if(iflag_shell_mode .eq. iflag_MESH_same) return
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_snap_vec_from_pole_trans'
-      call copy_snap_vec_from_pole_trans(node, iphys, nod_fld)
+      call copy_snap_vec_from_pole_trans                                  &
+     &   (m_folding, sph_rtp1, node, iphys, nod_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'pole_nonlinear_sph_MHD'
       call pole_nonlinear_sph_MHD(node, iphys, nod_fld)

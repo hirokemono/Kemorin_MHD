@@ -72,7 +72,7 @@
 !
       call set_sph_sprctr_data_address(sph_rj1, rj_fld1)
 !
-      call init_rms_4_sph_spectr(rj_fld1)
+      call init_rms_4_sph_spectr(l_truncation, sph_rj1, rj_fld1)
 !
       end subroutine initialize_ene_sph_shell
 !
@@ -108,8 +108,9 @@
 !
 !  evaluate energies
 !
-        if (iflag_debug.gt.0) write(*,*) 'cal_rms_sph_spec_rms_whole'
-        call cal_rms_sph_spec_rms_whole(rj_fld1)
+        if (iflag_debug.gt.0) write(*,*) 'cal_mean_squre_in_shell'
+        call cal_mean_squre_in_shell(ione, sph_rj1%nidx_rj(1),          &
+     &      l_truncation, sph_rj1, rj_fld1)
 !
         call write_sph_vol_ave_file(i_step, time, l_truncation,         &
      &      nlayer_ICB, nlayer_CMB, sph_rj1%idx_rj_degree_zero)

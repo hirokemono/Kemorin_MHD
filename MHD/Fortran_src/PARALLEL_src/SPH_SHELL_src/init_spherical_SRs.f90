@@ -53,7 +53,8 @@
 !
       real(kind = kreal), allocatable :: X_rtp(:), X_rj(:)
 !
-      call allocate_work_sph_trans(NB)
+      call allocate_work_sph_trans                                      &
+     &   (NB, sph_rtm1%nnod_rtm, sph_rlm1%nnod_rlm)
       allocate(X_rj(NB*nnod_rj))
       allocate(X_rtp(NB*nnod_rtp))
       X_rj = 0.0d0
