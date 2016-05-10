@@ -80,11 +80,11 @@
       end if
 !
 !  --  Construct FEM mesh
-      if(iflag_shell_mode .eq. iflag_no_FEMMESH) then
+      if(sph_param1%iflag_shell_mode .eq. iflag_no_FEMMESH) then
         if(sph_rj1%iflag_rj_center .gt. 0) then
-          iflag_shell_mode =  iflag_MESH_w_center
+          sph_param1%iflag_shell_mode =  iflag_MESH_w_center
         else
-          iflag_shell_mode = iflag_MESH_same
+          sph_param1%iflag_shell_mode = iflag_MESH_same
         end if
       end if
 !
@@ -229,7 +229,7 @@
 !
       nnod_full_shell = nnod_rtp * m_folding
       nsample = internal_node
-      iflag_shell_mode = 0
+      sph_param1%iflag_shell_mode = 0
       if(nsample .le. nnod_full_shell) then
         iflag_shell_local = iflag_MESH_same
       else if(nsample .eq. nnod_full_shell+nidx_rtp(1)) then
@@ -244,10 +244,10 @@
 !
       if(i_debug .eq. iflag_full_msg) write(*,*) 'iflag_shell_local',   &
      &     my_rank, iflag_shell_local, internal_node, nnod_full_shell
-      call MPI_allreduce(iflag_shell_local, iflag_shell_mode, ione,     &
-     &    CALYPSO_INTEGER, MPI_MAX, CALYPSO_COMM, ierr_MPI)
+      call MPI_allreduce(iflag_shell_local, sph_param1%iflag_shell_mode, &
+     &    ione, CALYPSO_INTEGER, MPI_MAX, CALYPSO_COMM, ierr_MPI)
       if(i_debug .eq. iflag_full_msg) write(*,*) 'iflag_shell_mode',    &
-     &     my_rank, iflag_shell_mode
+     &     my_rank, sph_param1%iflag_shell_mode
 !
       end subroutine set_fem_center_mode_4_SPH
 !

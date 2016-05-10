@@ -53,7 +53,7 @@
 !
       call const_global_sph_FEM
       call s_const_1d_ele_connect_4_sph                                 &
-     &   (iflag_shell_mode, m_folding, sph_rtp1)
+     &   (sph_param1%iflag_shell_mode, m_folding, sph_rtp1)
 !
       nidx_local_fem(1:3) = nidx_rtp(1:3)
       nidx_local_fem(3) =   m_folding * nidx_local_fem(3)

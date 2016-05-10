@@ -31,8 +31,10 @@
       read(*,*) nele
 !
       write(*,*) 'input grid type (0:equi-distance, 2:Chebyshev)'
-      read(*,*) iflag_radial_grid
-      if(iflag_radial_grid .ne. 0) iflag_radial_grid = 2
+      read(*,*) sph_param1%iflag_radial_grid
+      if(sph_param1%iflag_radial_grid .ne. 0) then
+        sph_param1%iflag_radial_grid = 2
+      end if
 !
       sph_param1%radius_ICB = shell * ratio / (one - ratio)
       sph_param1%radius_CMB = sph_param1%radius_ICB + shell

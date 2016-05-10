@@ -96,11 +96,11 @@
 !
 !  Construct node geometry
       call count_numnod_local_sph_mesh                                  &
-     &   (iflag_shell_mode, ip_r, ip_t, node)
+     &   (sph_param1%iflag_shell_mode, ip_r, ip_t, node)
 !
       call allocate_node_geometry_type(node)
       call set_local_nodes_sph_mesh                                     &
-     &   (iflag_shell_mode, ip_r, ip_t, r_global, node)
+     &   (sph_param1%iflag_shell_mode, ip_r, ip_t, r_global, node)
 !
 !  Construct element connectivity
       call count_local_elements_sph_mesh(ip_r, ip_t, ele)

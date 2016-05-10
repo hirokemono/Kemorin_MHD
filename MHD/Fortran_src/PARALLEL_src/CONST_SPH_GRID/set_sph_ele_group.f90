@@ -203,8 +203,8 @@
       nitem_grp = nitem_grp + nele_sph_t(ip_t)*nidx_global_fem(3)
 !
 !    Set elements for poles
-      if    (iflag_shell_mode .eq. iflag_MESH_w_pole                    &
-     &  .or. iflag_shell_mode .eq. iflag_MESH_w_center) then
+      if    (sph_param1%iflag_shell_mode .eq. iflag_MESH_w_pole         &
+     &  .or. sph_param1%iflag_shell_mode .eq. iflag_MESH_w_center) then
 !
 !    Set elements for south pole
         if(iflag_Spole_t(ip_t) .gt. 0)  then
@@ -272,8 +272,8 @@
       end do
 !
 !    Set elements for poles
-      if    (iflag_shell_mode .eq. iflag_MESH_w_pole                    &
-     &  .or. iflag_shell_mode .eq. iflag_MESH_w_center) then
+      if    (sph_param1%iflag_shell_mode .eq. iflag_MESH_w_pole         &
+     &  .or. sph_param1%iflag_shell_mode .eq. iflag_MESH_w_center) then
 !
 !    Set elements for south pole
         if(iflag_Spole_t(ip_t) .gt. 0)  then

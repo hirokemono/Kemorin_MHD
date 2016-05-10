@@ -40,21 +40,6 @@
       type(sph_rj_grid), save :: sph_rj1
 !sph_rj1%nidx_rj
 !
-!>      integer flag for FEM mesh type
-!!@n    iflag_MESH_same:     same grid point as Gauss-Legendre points
-!!@n    iflag_MESH_w_pole:   Gauss-Legendre points with poles
-!!@n    iflag_MESH_w_center: Gauss-Legendre points with center and poles
-      integer (kind=kint) :: iflag_shell_mode =  iflag_MESH_same
-!>      radial grid type flag
-!!@n    igrid_Chebyshev =    2 :: Chebyshev collocation points
-!!@n    igrid_non_euqidist = 1 :: non-equi-distance
-!!@n    igrid_euqidistance = 0 :: equi-distance
-      integer (kind=kint) :: iflag_radial_grid = igrid_non_euqidist
-!
-!>      local spectr index for @f$ l = m = 0 @f$ at center
-!!@n    if center does not exist in subdomain, inod_rj_center = 0.
-!      integer (kind=kint) :: inod_rj_center =   0
-!
 !>        Truncation for spherical harmonics
       integer(kind = kint) :: l_truncation
 !>        m-folding symmetry for longitudinal direction
@@ -63,7 +48,7 @@
 !
 !>  Structure of grid and spectr data for spherical spectr method
         type(sph_shell_parameters) :: sph_param1
-!sph_param1%nlayer_ICB
+!sph_param1%iflag_shell_mode
 !
 !>      number of data points for @f$ f(r,\theta,\phi) @f$
       integer(kind = kint) :: nnod_rtp

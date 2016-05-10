@@ -44,8 +44,8 @@
 !
 !    Set elements for poles
 !
-      if    (iflag_shell_mode .eq. iflag_MESH_w_pole                    &
-     &  .or. iflag_shell_mode .eq. iflag_MESH_w_center) then
+      if    (sph_param1%iflag_shell_mode .eq. iflag_MESH_w_pole         &
+     &  .or. sph_param1%iflag_shell_mode .eq. iflag_MESH_w_center) then
 !
 !    Set elements for South pole
         if(iflag_Spole_t(ip_t) .gt. 0)  then
@@ -62,7 +62,7 @@
 !
 !    Set elements for Center elements
 !
-      if    (iflag_shell_mode .eq. iflag_MESH_w_center) then
+      if    (sph_param1%iflag_shell_mode .eq. iflag_MESH_w_center) then
 !
 !     Mesh with center
         if     (iflag_center_r(ip_r) .gt. 0)  then
@@ -104,8 +104,8 @@
       call set_spherical_shell_element(ip_r, ip_t, ele)
 !
 !    Set elements for poles
-      if    (iflag_shell_mode .eq. iflag_MESH_w_pole                    &
-     &  .or. iflag_shell_mode .eq. iflag_MESH_w_center) then
+      if    (sph_param1%iflag_shell_mode .eq. iflag_MESH_w_pole         &
+     &  .or. sph_param1%iflag_shell_mode .eq. iflag_MESH_w_center) then
 !
 !    Set elements for south pole
         if(iflag_Spole_t(ip_t) .gt. 0)  then
@@ -121,7 +121,7 @@
 !
 !    Set elements for Center elements
 !
-      if    (iflag_shell_mode .eq. iflag_MESH_w_center) then
+      if    (sph_param1%iflag_shell_mode .eq. iflag_MESH_w_center) then
         if     (iflag_center_r(ip_r) .gt. 0)  then
           if(iflag_Spole_t(ip_t) .gt. 0)  then
             call set_inter_center_shell_ele(ip_r, ip_t, ele)

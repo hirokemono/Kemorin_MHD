@@ -63,7 +63,7 @@
         iflag_excluding_FEM_mesh = 1
       end if
 !
-      call set_FEM_mesh_mode_4_SPH(iflag_shell_mode)
+      call set_FEM_mesh_mode_4_SPH(sph_param1%iflag_shell_mode)
 !
       sph_rtp1%nidx_global_rtp(1) = 2
       sph_rtp1%nidx_global_rtp(2) = 2
@@ -71,13 +71,13 @@
       l_truncation = 2
       m_folding =    1
 !
-      iflag_radial_grid =  igrid_Chebyshev
+      sph_param1%iflag_radial_grid =  igrid_Chebyshev
       if(cmp_no_case(radial_grid_type_ctl%charavalue, label_explicit))  &
-     &       iflag_radial_grid =  igrid_non_euqidist
+     &       sph_param1%iflag_radial_grid =  igrid_non_euqidist
       if(cmp_no_case(radial_grid_type_ctl%charavalue, label_Chebyshev)) &
-     &       iflag_radial_grid =  igrid_Chebyshev
+     &       sph_param1%iflag_radial_grid =  igrid_Chebyshev
       if(cmp_no_case(radial_grid_type_ctl%charavalue, label_equi))      &
-     &       iflag_radial_grid =  igrid_euqidistance
+     &       sph_param1%iflag_radial_grid =  igrid_euqidistance
 !
       if (ltr_ctl%iflag .gt. 0) then
         l_truncation = ltr_ctl%intvalue
@@ -125,7 +125,7 @@
 !
 !   Set radial grid explicitly
       sph_rj1%iflag_rj_center = 0
-      if(iflag_radial_grid .eq. igrid_non_euqidist) then
+      if(sph_param1%iflag_radial_grid .eq. igrid_non_euqidist) then
         if(cmp_no_case(sph_coef_type_ctl%charavalue, 'with_center')     &
           .and. sph_coef_type_ctl%iflag .gt. 0) then
           sph_rj1%iflag_rj_center = 1

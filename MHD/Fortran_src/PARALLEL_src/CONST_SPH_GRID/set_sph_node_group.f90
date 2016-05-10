@@ -43,12 +43,12 @@
         end if
       end do
 !
-      if    (iflag_shell_mode .eq. iflag_MESH_w_pole                    &
-     &  .or. iflag_shell_mode .eq. iflag_MESH_w_center) then
+      if    (sph_param1%iflag_shell_mode .eq. iflag_MESH_w_pole         &
+     &  .or. sph_param1%iflag_shell_mode .eq. iflag_MESH_w_center) then
         nod_grp%num_grp =  nod_grp%num_grp + 2
       end if
 !
-      if    (iflag_shell_mode .eq. iflag_MESH_w_center) then
+      if    (sph_param1%iflag_shell_mode .eq. iflag_MESH_w_center) then
         nod_grp%num_grp =  nod_grp%num_grp + 1
       end if
 !
@@ -87,8 +87,8 @@
         end if
       end do
 !
-      if    (iflag_shell_mode .eq. iflag_MESH_w_pole                    &
-     &  .or. iflag_shell_mode .eq. iflag_MESH_w_center) then
+      if    (sph_param1%iflag_shell_mode .eq. iflag_MESH_w_pole         &
+     &  .or. sph_param1%iflag_shell_mode .eq. iflag_MESH_w_center) then
 !
 !    count nodes for south pole
         icou = icou + 1
@@ -110,7 +110,7 @@
         end if
       end if
 !
-      if    (iflag_shell_mode .eq. iflag_MESH_w_center) then
+      if    (sph_param1%iflag_shell_mode .eq. iflag_MESH_w_center) then
         icou = icou + 1
         nod_grp%grp_name(icou) = 'Center'
         if(iflag_center_r(ip_r) .gt. 0) nod_grp%nitem_grp(icou) = 1
@@ -149,8 +149,8 @@
         end if
       end do
 !
-      if    (iflag_shell_mode .eq. iflag_MESH_w_pole                    &
-     &  .or. iflag_shell_mode .eq. iflag_MESH_w_center) then
+      if    (sph_param1%iflag_shell_mode .eq. iflag_MESH_w_pole         &
+     &  .or. sph_param1%iflag_shell_mode .eq. iflag_MESH_w_center) then
 !
 !    Set nodes for south pole
         icou = icou + 1
@@ -179,7 +179,7 @@
         end if
       end if
 !
-      if    (iflag_shell_mode .eq. iflag_MESH_w_center) then
+      if    (sph_param1%iflag_shell_mode .eq. iflag_MESH_w_center) then
         icou = icou + 1
         if(iflag_center_r(ip_r) .gt. 0)  then
           inum = nod_grp%istack_grp(icou-1) + 1

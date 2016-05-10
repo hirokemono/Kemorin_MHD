@@ -105,8 +105,8 @@
       real(kind = kreal), intent(inout) :: v_pl_local(nnod_pole,ncomp)
 !
 !
-      if     (iflag_shell_mode.eq.iflag_no_FEMMESH                      &
-        .or.  iflag_shell_mode.eq.iflag_MESH_same) return
+      if     (sph_param1%iflag_shell_mode.eq.iflag_no_FEMMESH           &
+        .or.  sph_param1%iflag_shell_mode.eq.iflag_MESH_same) return
 !
       if (iflag_debug.gt.0)  write(*,*) 'schmidt_b_trans_pole_vect'
       call schmidt_b_trans_pole_vect(ncomp, nvector,                    &
@@ -122,7 +122,7 @@
      &    sph_rtp1%nidx_global_rtp, sph_rtm1%idx_gl_1d_rtm_r,           &
      &    comm_rlm1%irev_sr, n_WR, WR, v_pl_local)
 !
-      if(iflag_shell_mode .eq. iflag_MESH_w_center) then
+      if(sph_param1%iflag_shell_mode .eq. iflag_MESH_w_center) then
         call schmidt_b_trans_center_vect                                &
      &    (ncomp, nvector, sph_rtm1%ist_rtm_order_zero,                 &
      &     sph_rtm1%ist_rtm_order_1s, sph_rtm1%ist_rtm_order_1c,        &
