@@ -3,8 +3,12 @@
 !
 !     Written by H. Matsui on March, 2013
 !
-!      subroutine s_ordering_sph_mesh_for_rtp(ip_r, ip_t,               &
-!     &          node, ele, nod_grp, nod_comm)
+!!      subroutine s_ordering_sph_mesh_for_rtp(nidx_rtp, ip_r, ip_t,    &
+!!     &          node, ele, nod_grp, nod_comm)
+!!        type(node_data), intent(inout) :: node
+!!        type(element_data), intent(inout) :: ele
+!!        type(group_data), intent(inout) :: nod_grp
+!!        type(communication_table), intent(inout) :: nod_comm
 !
       module ordering_sph_mesh_to_rtp
 !
@@ -22,18 +26,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_ordering_sph_mesh_for_rtp(ip_r, ip_t,                &
+      subroutine s_ordering_sph_mesh_for_rtp(nidx_rtp, ip_r, ip_t,      &
      &          node, ele, nod_grp, nod_comm)
 !
       use t_geometry_data
       use t_comm_table
       use t_group_data
 !
-      use m_spheric_parameter
       use m_sph_1d_global_index
       use m_sph_mesh_1d_connect
       use cal_sph_node_addresses
 !
+      integer(kind = kint), intent(in) :: nidx_rtp(3)
       integer(kind = kint), intent(in) :: ip_r, ip_t
       type(node_data), intent(inout) :: node
       type(element_data), intent(inout) :: ele

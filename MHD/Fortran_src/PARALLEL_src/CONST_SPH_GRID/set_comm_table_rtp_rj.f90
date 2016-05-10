@@ -92,7 +92,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                 'set_global_sph_rj_id', ip_rank
-      call set_global_sph_rj_id
+      call set_global_sph_rj_id(sph_rj1)
 !
       if(iflag_debug .gt. 0) then
         call check_type_spheric_param_rj(ip_rank, sph_rj1)
@@ -147,7 +147,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                 'set_global_sph_rtp_id', ip_rank
-      call set_global_sph_rtp_id
+      call set_global_sph_rtp_id(sph_rtp1)
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'check_spheric_param_rtp', ip_rank

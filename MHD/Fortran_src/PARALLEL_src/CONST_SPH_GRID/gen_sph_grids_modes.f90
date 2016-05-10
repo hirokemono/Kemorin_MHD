@@ -56,7 +56,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &          'set_global_sph_4_rlm', ip_rank
-      call set_global_sph_4_rlm
+      call set_global_sph_4_rlm(sph_rlm1)
 !
       if(iflag_debug .gt. 0) then
         call check_type_spheric_param_rlm(ip_rank, sph_rlm1)
@@ -94,7 +94,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &          'set_global_sph_4_rtm', ip_rank
-      call set_global_sph_4_rtm
+      call set_global_sph_4_rtm(sph_rtm1)
 !
       if(iflag_debug .gt. 0) then
         call check_type_spheric_param_rtm(ip_rank, sph_rtm1)
@@ -142,7 +142,8 @@
       nnod_rtp = sph_rtp1%nnod_rtp
       nidx_rtp = sph_rtp1%nidx_rtp
 !
-      call s_const_FEM_mesh_for_sph(ip_rank, radius_1d_gl, mesh, group)
+      call s_const_FEM_mesh_for_sph                                     &
+     &   (ip_rank, sph_rtp1%nidx_rtp, radius_1d_gl, mesh, group)
 !
       call copy_comm_tbl_type_to_IO(ip_rank, mesh%nod_comm)
       call copy_node_geometry_to_IO(mesh%node)

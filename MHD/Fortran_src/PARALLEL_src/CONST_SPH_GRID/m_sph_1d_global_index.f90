@@ -276,9 +276,6 @@
 !
       subroutine check_spheric_global_stack(my_rank)
 !
-      use m_spheric_parameter
-!
-!
       integer(kind = kint), intent(in) :: my_rank
 !
       write(my_rank+50,*) 'istack_idx_local_rtp_r',                     &

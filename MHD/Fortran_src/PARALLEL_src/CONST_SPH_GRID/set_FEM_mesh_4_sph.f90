@@ -3,7 +3,10 @@
 !
 !     Written by H. Matsui on March, 2013
 !
-!      subroutine s_const_FEM_mesh_for_sph(ip_rank, mesh, group)
+!!      subroutine s_const_FEM_mesh_for_sph                             &
+!!     &         (ip_rank, nidx_rtp, r_global, mesh, group)
+!!        type(mesh_geometry), intent(inout) :: mesh
+!!        type(mesh_groups), intent(inout) ::  group
 !
       module set_FEM_mesh_4_sph
 !
@@ -22,7 +25,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_const_FEM_mesh_for_sph                               &
-     &         (ip_rank, r_global, mesh, group)
+     &         (ip_rank, nidx_rtp, r_global, mesh, group)
 !
       use t_mesh_data
       use t_comm_table
@@ -34,6 +37,7 @@
       use coordinate_converter
       use ordering_sph_mesh_to_rtp
 !
+      integer(kind = kint), intent(in) :: nidx_rtp(3)
       integer(kind = kint), intent(in) :: ip_rank
       real(kind= kreal), intent(in) :: r_global(nidx_global_fem(1))
 !
@@ -58,7 +62,7 @@
      &    mesh%nod_comm)
 !
 ! Ordering to connect rtp data
-      call s_ordering_sph_mesh_for_rtp(ip_r, ip_t,                      &
+      call s_ordering_sph_mesh_for_rtp(nidx_rtp, ip_r, ip_t,            &
      &    mesh%node, mesh%ele, group%nod_grp, mesh%nod_comm)
 !
 ! Convert spherical coordinate to certesian
