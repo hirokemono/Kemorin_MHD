@@ -69,7 +69,7 @@
       sph_rtp1%nidx_global_rtp(2) = 2
       sph_rtp1%nidx_global_rtp(3) = 4
       l_truncation = 2
-      m_folding =    1
+      sph_param1%m_folding =    1
 !
       sph_param1%iflag_radial_grid =  igrid_Chebyshev
       if(cmp_no_case(radial_grid_type_ctl%charavalue, label_explicit))  &
@@ -84,7 +84,7 @@
       end if
 !
       if (phi_symmetry_ctl%iflag .gt. 0) then
-        m_folding = phi_symmetry_ctl%intvalue
+        sph_param1%m_folding = phi_symmetry_ctl%intvalue
       end if
 !
       if (ngrid_elevation_ctl%iflag .gt. 0) then

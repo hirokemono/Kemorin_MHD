@@ -47,7 +47,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_snap_vec_from_pole_trans'
       call copy_snap_vec_from_pole_trans                                &
-     &   (m_folding, sph_rtp1, node, iphys, nod_fld)
+     &   (sph_param1%m_folding, sph_rtp1, node, iphys, nod_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'pole_nonlinear_sph_MHD'
       call pole_nonlinear_sph_MHD(node, iphys, nod_fld)

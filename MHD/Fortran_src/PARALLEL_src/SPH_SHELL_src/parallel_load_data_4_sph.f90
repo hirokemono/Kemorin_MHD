@@ -190,8 +190,8 @@
       call count_interval_4_each_dir(itwo,   sph_rj1%nnod_rj,           &
      &    sph_rj1%idx_global_rj, sph_rj1%istep_rj)
 !
-      m_folding = 2 * sph_rtp1%idx_gl_1d_rtp_p(2,2)                     &
-     &               / sph_rtp1%nidx_rtp(3)
+      sph_param1%m_folding = 2 * sph_rtp1%idx_gl_1d_rtp_p(2,2)          &
+     &                      / sph_rtp1%nidx_rtp(3)
 !
       call set_special_degree_order_flags                               &
      &   (sph_rj1%nidx_rj(2), sph_rlm1%nidx_rlm(2),                     &
@@ -227,7 +227,7 @@
       integer(kind = kint) :: nnod_full_shell
 !
 !
-      nnod_full_shell = nnod_rtp * m_folding
+      nnod_full_shell = nnod_rtp * sph_param1%m_folding
       nsample = internal_node
       sph_param1%iflag_shell_mode = 0
       if(nsample .le. nnod_full_shell) then

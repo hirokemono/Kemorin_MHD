@@ -190,18 +190,18 @@
       if (iflag_debug.gt.0)                                             &
      &        write(*,*) 'set_xyz_vect_from_sph_trans'
       call set_xyz_vect_from_sph_trans                                  &
-     &   (sph_rtp1, mesh%node, m_folding, ncomp_sph_trans,              &
+     &   (sph_rtp1, mesh%node, sph_param1%m_folding, ncomp_sph_trans,   &
      &    dall_rtp(1,1), dall_pole(1,1), nod_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'set_sph_scalar_from_sph_trans'
       call set_sph_scalar_from_sph_trans                                &
-     &   (sph_rtp1, mesh%node, m_folding, ncomp_sph_trans,              &
+     &   (sph_rtp1, mesh%node, sph_param1%m_folding, ncomp_sph_trans,   &
      &    dall_rtp(1,1), dall_pole(1,1), nod_fld)
 !
       if (iflag_debug.gt.0)                                             &
      &      write(*,*) 'set_sph_tensor_from_sph_trans'
       call set_sph_tensor_from_sph_trans                                &
-     &   (sph_rtp1, mesh%node, m_folding, ncomp_sph_trans,              &
+     &   (sph_rtp1, mesh%node, sph_param1%m_folding, ncomp_sph_trans,   &
      &    dall_rtp(1,1), dall_pole(1,1), nod_fld)
 !
       end subroutine sph_b_trans_all_field

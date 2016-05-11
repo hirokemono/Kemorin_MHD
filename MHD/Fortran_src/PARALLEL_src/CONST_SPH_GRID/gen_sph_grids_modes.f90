@@ -138,7 +138,7 @@
 !
       call copy_gl_2_local_rtp_param(ip_rank, sph_rtp1)
       nidx_local_fem(1:3) = sph_rtp1%nidx_rtp(1:3)
-      nidx_local_fem(3) =   m_folding * nidx_local_fem(3)
+      nidx_local_fem(3) =   sph_param1%m_folding * nidx_local_fem(3)
       nnod_rtp = sph_rtp1%nnod_rtp
       nidx_rtp = sph_rtp1%nidx_rtp
 !

@@ -3,27 +3,32 @@
 !
 !     Written by H. Matsui on July, 2007
 !
-!      subroutine set_global_sph_resolution
-!        required resoplution:  nidx_global_rtp(1)
-!                               nidx_global_rtp(2)
-!        required resolution:  l_truncation
-!
-!      subroutine set_gl_nnod_spherical(nproc,                          &
-!     &          ndomain_1, ndomain_2, ndomain_3, id_gl_rank,           &
-!     &          nidx_local_1, nidx_local_2, nidx_local_3,              &
-!     &          nidx_local, nnod_local)
-!      subroutine set_gl_nnod_spheric_rj(nproc, ndomain_1, ndomain_2,   &
-!     &          id_gl_rank, nidx_local_1, nidx_local_2,                &
-!     &          nidx_local, nnod_local)
-!
-!      integer(kind= kint) function set_rank_by_1b_sph_rank             &
-!     &                  (ndomain_3d, ip_r, ip_t, ip_p, ip_rank)
-!      integer(kind= kint) function set_rank_by_1b_rj_rank              &
-!     &                   (ndomain_2d, ip_r, ip_j)
-!      subroutine set_gl_rank_3d(nproc, ndomain_3d, id_gl_rank)
-!      subroutine set_gl_rank_2d(nproc, ndomain_2d, id_gl_rank)
-!
-!      subroutine check_spheric_global_numnod(my_rank)
+!!      subroutine set_global_sph_resolution(l_truncation, m_folding,   &
+!!     &          sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1)
+!!        type(sph_rtp_grid), intent(inout) :: sph_rtp1
+!!        type(sph_rtm_grid), intent(inout) :: sph_rtm1
+!!        type(sph_rlm_grid), intent(inout) :: sph_rlm1
+!!        type(sph_rj_grid), intent(inout) :: sph_rj1
+!!        required resoplution:  nidx_global_rtp(1)
+!!                               nidx_global_rtp(2)
+!!        required resolution:  l_truncation
+!!
+!!      subroutine set_gl_nnod_spherical(nproc,                         &
+!!     &          ndomain_1, ndomain_2, ndomain_3, id_gl_rank,          &
+!!     &          nidx_local_1, nidx_local_2, nidx_local_3,             &
+!!     &          nidx_local, nnod_local)
+!!      subroutine set_gl_nnod_spheric_rj(nproc, ndomain_1, ndomain_2,  &
+!!     &          id_gl_rank, nidx_local_1, nidx_local_2,               &
+!!     &          nidx_local, nnod_local)
+!!
+!!      integer(kind= kint) function set_rank_by_1b_sph_rank            &
+!!     &                  (ndomain_3d, ip_r, ip_t, ip_p, ip_rank)
+!!      integer(kind= kint) function set_rank_by_1b_rj_rank             &
+!!     &                   (ndomain_2d, ip_r, ip_j)
+!!      subroutine set_gl_rank_3d(nproc, ndomain_3d, id_gl_rank)
+!!      subroutine set_gl_rank_2d(nproc, ndomain_2d, id_gl_rank)
+!!
+!!      subroutine check_spheric_global_numnod(my_rank)
 !
       module set_global_spherical_param
 !
@@ -42,9 +47,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_global_sph_resolution
+      subroutine set_global_sph_resolution(l_truncation, m_folding,     &
+     &          sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1)
 !
-      use m_spheric_parameter
+      use t_spheric_parameter
+!
+      integer(kind = kint), intent(in) :: l_truncation, m_folding
+      type(sph_rtp_grid), intent(inout) :: sph_rtp1
+      type(sph_rtm_grid), intent(inout) :: sph_rtm1
+      type(sph_rlm_grid), intent(inout) :: sph_rlm1
+      type(sph_rj_grid), intent(inout) :: sph_rj1
 !
 !
       sph_rtp1%nidx_global_rtp(3)                                       &

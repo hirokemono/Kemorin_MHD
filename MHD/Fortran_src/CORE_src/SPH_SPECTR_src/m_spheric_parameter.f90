@@ -43,12 +43,12 @@
 !>        Truncation for spherical harmonics
       integer(kind = kint) :: l_truncation
 !>        m-folding symmetry for longitudinal direction
-      integer(kind = kint) :: m_folding = 1
+!      integer(kind = kint) :: m_folding = 1
 !
 !
 !>  Structure of grid and spectr data for spherical spectr method
         type(sph_shell_parameters) :: sph_param1
-!sph_param1%iflag_shell_mode
+!sph_param1%m_folding
 !
 !>      number of data points for @f$ f(r,\theta,\phi) @f$
       integer(kind = kint) :: nnod_rtp
@@ -78,7 +78,7 @@
 !
 !
       write(*,*) 'truncation degree:           ', l_truncation
-      write(*,*) 'm-folding symmetry:          ', m_folding
+      write(*,*) 'm-folding symmetry:          ', sph_param1%m_folding
       write(*,*) 'number of grid for f(r,t,p): ',                       &
      &            sph_rtp1%nidx_global_rtp(1:3)
 !

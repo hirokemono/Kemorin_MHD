@@ -53,10 +53,10 @@
 !
       call const_global_sph_FEM
       call s_const_1d_ele_connect_4_sph                                 &
-     &   (sph_param1%iflag_shell_mode, m_folding, sph_rtp1)
+     &   (sph_param1%iflag_shell_mode, sph_param1%m_folding, sph_rtp1)
 !
       nidx_local_fem(1:3) = nidx_rtp(1:3)
-      nidx_local_fem(3) =   m_folding * nidx_local_fem(3)
+      nidx_local_fem(3) =   sph_param1%m_folding * nidx_local_fem(3)
 !
       call s_const_FEM_mesh_for_sph                                     &
      &   (my_rank, sph_rtp1%nidx_rtp, sph_rj1%radius_1d_rj_r,           &

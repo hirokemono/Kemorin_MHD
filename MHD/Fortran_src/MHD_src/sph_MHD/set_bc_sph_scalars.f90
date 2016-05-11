@@ -391,7 +391,6 @@
       integer(kind = kint) :: icou, i, j, inum, num, ibc_in, ibc_out
       integer(kind = kint) :: igrp_bc(2), kr_bc(2)
       character(len=kchara) :: r_bc_grp_name(2)
-      character(len=kchara) :: sf_grp_name
 !
 !
       icou = 0

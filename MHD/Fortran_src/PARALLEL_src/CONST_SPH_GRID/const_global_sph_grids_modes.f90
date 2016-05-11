@@ -92,9 +92,10 @@
       call allocate_sph_1d_global_idx
 !
       call set_sph_1d_global_idx_rtp                                    &
-     &   (m_folding, sph_rtp1%nidx_global_rtp(3), mdx_ispack)
+     &   (sph_param1%m_folding, sph_rtp1%nidx_global_rtp(3),            &
+     &    mdx_ispack)
       call set_sph_1d_global_idx_rtm                                    &
-     &   (m_folding, sph_rtp1%nidx_global_rtp(3),                       &
+     &   (sph_param1%m_folding, sph_rtp1%nidx_global_rtp(3),            &
      &    mtbl_fft_2_lgd, mdx_4_lgd)
       call set_sph_1d_global_idx_rlm                                    &
      &   (sph_rj1%nidx_global_rj(2), jtbl_fsph)
@@ -144,7 +145,8 @@
       call allocate_sph_1d_global_idx
 !
       call set_sph_1d_global_idx_rtp                                    &
-     &   (m_folding, sph_rtp1%nidx_global_rtp(3), mdx_ispack)
+     &   (sph_param1%m_folding, sph_rtp1%nidx_global_rtp(3),            &
+     &    mdx_ispack)
 !
       call allocate_sph_1d_domain_id(sph_rtp1, sph_rj1)
 !
@@ -321,7 +323,8 @@
      &   (ndomain_rtm(2), ione, sph_rtm1%nidx_global_rtm(2),            &
      &    nidx_local_rtm_t, istack_idx_local_rtm_t)
       call cal_local_num_rtm_m(ndomain_rtm(3), l_truncation,            &
-     &    m_folding, nidx_local_rtm_m, istack_idx_local_rtm_m)
+     &    sph_param1%m_folding, nidx_local_rtm_m,                       &
+     &    istack_idx_local_rtm_m)
 !
       call cal_local_nums_st(ndomain_rtm(1),                            &
      &    sph_param1%nlayer_ICB, sph_param1%nlayer_CMB,                 &
@@ -405,16 +408,17 @@
 !
 !
       call set_wavenumber_4_ispack_fft(sph_rtp1%nidx_global_rtp(2),     &
-     &    sph_rtp1%nidx_global_rtp(3), m_folding,                       &
+     &    sph_rtp1%nidx_global_rtp(3), sph_param1%m_folding,            &
      &    mspec_4_ispack, mdx_ispack)
 !
       call set_zonal_wavenum_4_legendre(ndomain_rtm(3),                 &
-     &    l_truncation, m_folding, sph_rtp1%nidx_global_rtp(2),         &
-     &    sph_rtp1%nidx_global_rtp(3), jdx_fsph, mdx_4_lgd)
+     &    l_truncation, sph_param1%m_folding,                           &
+     &    sph_rtp1%nidx_global_rtp(2), sph_rtp1%nidx_global_rtp(3),     &
+     &    jdx_fsph, mdx_4_lgd)
 !
       call set_merged_index_4_sph_trans                                 &
      &   (ndomain_rtm(3), l_truncation, sph_rj1%nidx_global_rj(2),      &
-     &    sph_rtp1%nidx_global_rtp(3), m_folding,                       &
+     &    sph_rtp1%nidx_global_rtp(3), sph_param1%m_folding,            &
      &    istack_idx_local_rtm_m, mdx_4_lgd, nidx_local_rlm_j,          &
      &    istack_idx_local_rlm_j, jtbl_fsph)
 !
@@ -436,7 +440,8 @@
 !
       call set_trans_table_fft_2_lgd(l_truncation,                      &
      &    sph_rtp1%nidx_global_rtp(2), sph_rtp1%nidx_global_rtp(3),     &
-     &    m_folding, mspec_4_ispack,jdx_fsph, mtbl_fft_2_lgd)
+     &    sph_param1%m_folding, mspec_4_ispack,                         &
+     &    jdx_fsph, mtbl_fft_2_lgd)
 !
       end subroutine const_sph_transfer_tables
 !

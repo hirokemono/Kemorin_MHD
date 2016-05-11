@@ -57,7 +57,9 @@
       call read_control_4_gen_shell_grids
       call s_set_control_4_gen_shell_grids
 !
-      call set_global_sph_resolution
+      call set_global_sph_resolution                                    &
+     &   (l_truncation, sph_param1%m_folding,     &
+     &    sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1)
 !
       if(my_rank .eq. 0) then
         call check_global_spheric_parameter

@@ -144,12 +144,16 @@
 !
       write(id_timer_file,*)
       write(id_timer_file,*) '=========================================='
-      write(id_timer_file,*) 'Truncation level:      ', l_truncation
-      write(id_timer_file,*) 'Longitudinal symmetry: ', m_folding
+      write(id_timer_file,*) 'Truncation level:      ',                 &
+     &                      l_truncation
+      write(id_timer_file,*) 'Longitudinal symmetry: ',                 &
+     &                      sph_param1%m_folding
       write(id_timer_file,*) 'N_r for fluid shell:   ',                 &
      &            (sph_param1%nlayer_CMB - sph_param1%nlayer_ICB)
-      write(id_timer_file,*) 'N_theta:               ', nidx_rtm(2)
-      write(id_timer_file,*) 'N_phi:                 ', nidx_rtp(3)
+      write(id_timer_file,*) 'N_theta:               ',                 &
+     &                      sph_rtm1%nidx_rtm(2)
+      write(id_timer_file,*) 'N_phi:                 ',                 &
+     &                      sph_rtp1%nidx_rtp(3)
 !
       write(id_timer_file,*) 'Total MPI processes: ',  nprocs
       write(id_timer_file,*)                                            &
