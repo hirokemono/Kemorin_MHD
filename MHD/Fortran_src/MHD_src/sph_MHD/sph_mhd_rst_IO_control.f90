@@ -175,7 +175,8 @@
 !
       if(iflag_org_sph_rj_head .gt. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'input_old_rj_sph_trans'
-        call input_old_rj_sph_trans(my_rank, l_truncation, sph_rj)
+        call input_old_rj_sph_trans                                     &
+     &     (my_rank, sph_param1%l_truncation, sph_rj)
       end if
 !
       call copy_cmb_icb_radial_point                                    &

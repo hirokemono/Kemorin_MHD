@@ -73,7 +73,8 @@
       call init_send_recv(mesh1%nod_comm)
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_rms_4_sph_spectr'
-      call init_rms_4_sph_spectr(l_truncation, sph_rj1, rj_fld1)
+      call init_rms_4_sph_spectr                                        &
+     &   (sph_param1%l_truncation, sph_rj1, rj_fld1)
 !
 ! ---------------------------------
 !
@@ -117,7 +118,7 @@
 !* -----  find mid-equator point -----------------
 !
       call set_circle_point_global                                      &
-     &   (l_truncation, nidx_rj(1), sph_rj1%radius_1d_rj_r)
+     &   (sph_param1%l_truncation, nidx_rj(1), sph_rj1%radius_1d_rj_r)
 !
       end subroutine SPH_init_sph_pick_circle
 !

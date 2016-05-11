@@ -109,7 +109,8 @@
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                 'output_modes_rj_sph_trans', ip_rank
-      call output_modes_rj_sph_trans(ip_rank, l_truncation, sph_rj1)
+      call output_modes_rj_sph_trans                                    &
+     &   (ip_rank, sph_param1%l_truncation, sph_rj1)
 !
       write(*,'(a,i6,a)') 'Spherical modes for domain',                 &
      &          ip_rank, ' is done.'
@@ -164,7 +165,8 @@
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                 'output_geom_rtp_sph_trans', ip_rank
-      call output_geom_rtp_sph_trans(ip_rank, l_truncation, sph_rtp1)
+      call output_geom_rtp_sph_trans                                    &
+     &   (ip_rank, sph_param1%l_truncation, sph_rtp1)
 !
       write(*,'(a,i6,a)') 'Spherical grids for domain',                 &
      &          ip_rank, ' is done.'

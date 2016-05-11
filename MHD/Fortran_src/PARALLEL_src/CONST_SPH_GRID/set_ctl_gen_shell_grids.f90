@@ -68,7 +68,7 @@
       sph_rtp1%nidx_global_rtp(1) = 2
       sph_rtp1%nidx_global_rtp(2) = 2
       sph_rtp1%nidx_global_rtp(3) = 4
-      l_truncation = 2
+      sph_param1%l_truncation = 2
       sph_param1%m_folding =    1
 !
       sph_param1%iflag_radial_grid =  igrid_Chebyshev
@@ -80,7 +80,7 @@
      &       sph_param1%iflag_radial_grid =  igrid_euqidistance
 !
       if (ltr_ctl%iflag .gt. 0) then
-        l_truncation = ltr_ctl%intvalue
+        sph_param1%l_truncation = ltr_ctl%intvalue
       end if
 !
       if (phi_symmetry_ctl%iflag .gt. 0) then
@@ -287,9 +287,11 @@
         stop
       end if
 !
-      if(sph_rtp1%nidx_global_rtp(2) .lt. (l_truncation+1)*3/2) then
+      if(sph_rtp1%nidx_global_rtp(2)                                    &
+     &      .lt. (sph_param1%l_truncation+1)*3/2) then
         write(*,*) 'Spherical harmonics transform has Ailiasing'
-      else if (sph_rtp1%nidx_global_rtp(2) .lt. (l_truncation+1)) then
+      else if (sph_rtp1%nidx_global_rtp(2)                              &
+     &      .lt. (sph_param1%l_truncation+1)) then
         write(*,*) "Grid has less than Nyquist's sampling theorem"
       end if
 !

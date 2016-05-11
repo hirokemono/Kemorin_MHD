@@ -322,7 +322,7 @@
       call cal_local_nums                                               &
      &   (ndomain_rtm(2), ione, sph_rtm1%nidx_global_rtm(2),            &
      &    nidx_local_rtm_t, istack_idx_local_rtm_t)
-      call cal_local_num_rtm_m(ndomain_rtm(3), l_truncation,            &
+      call cal_local_num_rtm_m(ndomain_rtm(3), sph_param1%l_truncation, &
      &    sph_param1%m_folding, nidx_local_rtm_m,                       &
      &    istack_idx_local_rtm_m)
 !
@@ -412,12 +412,12 @@
      &    mspec_4_ispack, mdx_ispack)
 !
       call set_zonal_wavenum_4_legendre(ndomain_rtm(3),                 &
-     &    l_truncation, sph_param1%m_folding,                           &
+     &    sph_param1%l_truncation, sph_param1%m_folding,                &
      &    sph_rtp1%nidx_global_rtp(2), sph_rtp1%nidx_global_rtp(3),     &
      &    jdx_fsph, mdx_4_lgd)
 !
-      call set_merged_index_4_sph_trans                                 &
-     &   (ndomain_rtm(3), l_truncation, sph_rj1%nidx_global_rj(2),      &
+      call set_merged_index_4_sph_trans(ndomain_rtm(3),                 &
+     &    sph_param1%l_truncation, sph_rj1%nidx_global_rj(2),           &
      &    sph_rtp1%nidx_global_rtp(3), sph_param1%m_folding,            &
      &    istack_idx_local_rtm_m, mdx_4_lgd, nidx_local_rlm_j,          &
      &    istack_idx_local_rlm_j, jtbl_fsph)
@@ -438,7 +438,7 @@
       use set_sph_tranform_ordering
 !
 !
-      call set_trans_table_fft_2_lgd(l_truncation,                      &
+      call set_trans_table_fft_2_lgd(sph_param1%l_truncation,           &
      &    sph_rtp1%nidx_global_rtp(2), sph_rtp1%nidx_global_rtp(3),     &
      &    sph_param1%m_folding, mspec_4_ispack,                         &
      &    jdx_fsph, mtbl_fft_2_lgd)

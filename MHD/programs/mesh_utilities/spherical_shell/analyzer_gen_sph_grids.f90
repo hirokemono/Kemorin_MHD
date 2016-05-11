@@ -58,7 +58,7 @@
       call s_set_control_4_gen_shell_grids
 !
       call set_global_sph_resolution                                    &
-     &   (l_truncation, sph_param1%m_folding,     &
+     &   (sph_param1%l_truncation, sph_param1%m_folding,                &
      &    sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1)
 !
       if(my_rank .eq. 0) then
@@ -87,7 +87,7 @@
       allocate(comm_rlm_mul(ndomain_sph))
 !
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rlm_grids'
-      call para_gen_sph_rlm_grids(ndomain_sph, l_truncation,            &
+      call para_gen_sph_rlm_grids(ndomain_sph, sph_param1%l_truncation, &
      &    comm_rlm1, sph_rlm1, comm_rlm_mul)
       call end_eleps_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rj_modes'
@@ -101,7 +101,7 @@
       allocate(comm_rtm_mul(ndomain_sph))
 !
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rtm_grids'
-      call para_gen_sph_rtm_grids(ndomain_sph, l_truncation,            &
+      call para_gen_sph_rtm_grids(ndomain_sph, sph_param1%l_truncation, &
      &    comm_rtm1, sph_rtm1, comm_rtm_mul)
       call end_eleps_time(2)
       call start_eleps_time(3)

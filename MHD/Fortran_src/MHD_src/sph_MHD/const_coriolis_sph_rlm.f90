@@ -42,27 +42,29 @@
       integer(kind = kint) :: m
 !
 !
-      call alloacte_gaunt_coriolis_rlm(nidx_rlm(2))
-      call alloc_coriolis_coef_tri_rlm(nidx_rlm(2))
+      call alloacte_gaunt_coriolis_rlm(sph_rlm1%nidx_rlm(2))
+      call alloc_coriolis_coef_tri_rlm(sph_rlm1%nidx_rlm(2))
       call allocate_d_coriolis_rlm
 !
 !
-      idx_rlm_ICB = find_local_radius_rlm_address(nidx_rlm(1),          &
+      idx_rlm_ICB = find_local_radius_rlm_address(sph_rlm1%nidx_rlm(1), &
      &             sph_rlm1%idx_gl_1d_rlm_r, sph_bc_U%kr_in)
-      idx_rlm_degree_zero = find_local_sph_rlm_address(nidx_rlm(2),     &
-     &                     sph_rlm1%idx_gl_1d_rlm_j, izero, izero)
+      idx_rlm_degree_zero                                               &
+     &           = find_local_sph_rlm_address(sph_rlm1%nidx_rlm(2),     &
+     &                      sph_rlm1%idx_gl_1d_rlm_j, izero, izero)
       do m = -1, 1
-        idx_rlm_degree_one(m) = find_local_sph_rlm_address(nidx_rlm(2), &
+        idx_rlm_degree_one(m)                                           &
+     &           = find_local_sph_rlm_address(sph_rlm1%nidx_rlm(2),     &
      &                         sph_rlm1%idx_gl_1d_rlm_j, ione, m)
       end do
 !
 !
       if(iflag_debug.eq.1) write(*,*) 'cal_gaunt_coriolis_rlm'
-      call cal_gaunt_coriolis_rlm(l_truncation,                         &
-     &    nidx_rlm(2), sph_rlm1%idx_gl_1d_rlm_j)
+      call cal_gaunt_coriolis_rlm(sph_param1%l_truncation,              &
+     &    sph_rlm1%nidx_rlm(2), sph_rlm1%idx_gl_1d_rlm_j)
 !
       if(iflag_debug.eq.1) write(*,*) 'interact_rot_coriolis_rlm'
-      call interact_rot_coriolis_rlm(nidx_rlm(2))
+      call interact_rot_coriolis_rlm(sph_rlm1%nidx_rlm(2))
 !
       end subroutine init_sum_coriolis_rlm
 !
@@ -83,23 +85,27 @@
       if( iflag_4_coriolis .eq. id_turn_OFF) return
 !
       call sum_rot_coriolis_rlm_10                                      &
-     &   (nnod_rlm, nidx_rlm, sph_rlm1%a_r_1d_rlm_r,                    &
+     &   (sph_rlm1%nnod_rlm, sph_rlm1%nidx_rlm, sph_rlm1%a_r_1d_rlm_r,  &
      &    ncomp_trans, n_WR, comm_rlm1%irev_sr, WR)
 !
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call inner_core_rot_z_coriolis_rlm                              &
-     &     (nnod_rlm, nidx_rlm, sph_rlm1%radius_1d_rlm_r,               &
-     &      ncomp_trans, n_WR, comm_rlm1%irev_sr, WR)
+     &     (sph_rlm1%nnod_rlm, sph_rlm1%nidx_rlm,                       &
+     &      sph_rlm1%radius_1d_rlm_r, ncomp_trans, n_WR,                &
+     &      comm_rlm1%irev_sr, WR)
       end if
 !
-!      call sum_div_coriolis_rlm_10(nnod_rlm, nidx_rlm,                 &
+!      call sum_div_coriolis_rlm_10                                     &
+!     &   (sph_rlm1%nnod_rlm, sph_rlm1%nidx_rlm,                        &
 !     &    sph_rlm1%idx_gl_1d_rlm_j, sph_rlm1%a_r_1d_rlm_r,             &
 !     &    ncomp_trans, n_WR, comm_rlm1%irev_sr, WR)
-!      call sum_r_coriolis_bc_rlm_10(nnod_rlm, nidx_rlm,                &
+!      call sum_r_coriolis_bc_rlm_10                                    &
+!     &   (sph_rlm1%nnod_rlm, sph_rlm1%nidx_rlm,                        &
 !     &    sph_rlm1%idx_gl_1d_rlm_j, sph_rlm1%a_r_1d_rlm_r,             &
 !     &    ncomp_trans, kr_in_U_rlm, n_WR, comm_rlm1%irev_sr, WR,       &
 !     &    d_cor_in_rlm)
-!      call sum_r_coriolis_bc_rlm_10(nnod_rlm, nidx_rlm,                &
+!      call sum_r_coriolis_bc_rlm_10                                    &
+!     &   (sph_rlm1%nnod_rlm, sph_rlm1%nidx_rlm,                        &
 !     &    sph_rlm1%idx_gl_1d_rlm_j, sph_rlm1%a_r_1d_rlm_r,             &
 !     &    ncomp_trans, kr_out_U_rlm, n_WR, comm_rlm1%irev_sr, WR,      &
 !     &    d_cor_out_rlm)

@@ -110,14 +110,14 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'schmidt_b_trans_pole_vect'
       call schmidt_b_trans_pole_vect(ncomp, nvector,                    &
-     &    l_truncation, sph_rtm1%ist_rtm_order_zero,                    &
+     &    sph_param1%l_truncation, sph_rtm1%ist_rtm_order_zero,         &
      &    sph_rtm1%ist_rtm_order_1s, sph_rtm1%ist_rtm_order_1c,         &
      &    nnod_rlm, nidx_rtm(1), sph_rlm1%istep_rlm,                    &
      &    sph_rtp1%nidx_global_rtp, sph_rtm1%idx_gl_1d_rtm_r,           &
      &    sph_rtm1%a_r_1d_rtm_r, comm_rlm1%irev_sr,                     &
      &    n_WR, WR, v_pl_local)
       call schmidt_b_trans_pole_scalar(ncomp, nvector, nscalar,         &
-     &    l_truncation, sph_rtm1%ist_rtm_order_zero,                    &
+     &    sph_param1%l_truncation, sph_rtm1%ist_rtm_order_zero,         &
      &    nnod_rlm, nidx_rtm(1), sph_rlm1%istep_rlm,                    &
      &    sph_rtp1%nidx_global_rtp, sph_rtm1%idx_gl_1d_rtm_r,           &
      &    comm_rlm1%irev_sr, n_WR, WR, v_pl_local)

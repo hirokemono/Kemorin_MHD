@@ -199,7 +199,7 @@
       integer(kind = kint) :: l
 !
 !
-      ltr_half = 1*(l_truncation+1) / 2
+      ltr_half = 1*(sph_param1%l_truncation + 1) / 2
       allocate(ipick_degree(ltr_half))
       do l = 1, ltr_half
         ipick_degree(l) = l-1

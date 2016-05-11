@@ -69,7 +69,8 @@
 !
       call alloc_phys_data_type(nnod_rj, rj_fld1)
 !
-      call init_rms_4_sph_spectr(l_truncation, sph_rj1, rj_fld1)
+      call init_rms_4_sph_spectr                                        &
+     &   (sph_param1%l_truncation, sph_rj1, rj_fld1)
 !
       end subroutine initialization
 !
@@ -90,7 +91,8 @@
       integer(kind = kint) :: i_step
 !
 !
-      call init_sph_spec_4_monitor(l_truncation, sph_rj1, rj_fld1)
+      call init_sph_spec_4_monitor                                      &
+     &   (sph_param1%l_truncation, sph_rj1, rj_fld1)
 !
       do i_step = i_step_init, i_step_number, i_step_output_ucd
 !

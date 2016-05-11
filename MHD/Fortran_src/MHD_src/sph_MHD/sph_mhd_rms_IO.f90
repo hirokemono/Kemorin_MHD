@@ -45,12 +45,14 @@
 !
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_rms_4_sph_spectr'
-      call init_rms_4_sph_spectr(l_truncation, sph_rj1, rj_fld)
+      call init_rms_4_sph_spectr                                        &
+     &   (sph_param1%l_truncation, sph_rj1, rj_fld)
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_gauss_coefs_4_monitor'
-      call init_gauss_coefs_4_monitor(l_truncation, sph_rj1)
+      call init_gauss_coefs_4_monitor(sph_param1%l_truncation, sph_rj1)
       if ( iflag_debug.gt.0 ) write(*,*) 'init_sph_spec_4_monitor'
-      call init_sph_spec_4_monitor(l_truncation, sph_rj1, rj_fld)
+      call init_sph_spec_4_monitor                                      &
+     &   (sph_param1%l_truncation, sph_rj1, rj_fld)
 !
       end subroutine open_sph_vol_rms_file_mhd
 !
@@ -77,8 +79,8 @@
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
       call cal_mean_squre_in_shell                                      &
-     &   (sph_param1%nlayer_ICB, sph_param1%nlayer_CMB, l_truncation,   &
-     &    sph_rj1, rj_fld)
+     &   (sph_param1%nlayer_ICB, sph_param1%nlayer_CMB,                 &
+     &    sph_param1%l_truncation, sph_rj1, rj_fld)
       if(iflag_debug.gt.0)  write(*,*) 'cal_gauss_coefficients'
       call cal_gauss_coefficients                                       &
      &   (sph_param1%nlayer_ICB, sph_param1%nlayer_CMB,                 &
@@ -97,15 +99,19 @@
       if(iflag_debug.gt.0)  write(*,*) 'write_total_energy_to_screen'
       call write_total_energy_to_screen(my_rank, i_step_MHD, time)
 !
-      call write_sph_vol_ave_file(i_step_MHD, time, l_truncation,       &
+      call write_sph_vol_ave_file                                       &
+     &   (i_step_MHD, time, sph_param1%l_truncation,                    &
      &    sph_param1%nlayer_ICB, sph_param1%nlayer_CMB,                 &
      &    sph_rj1%idx_rj_degree_zero)
-      call write_sph_vol_ms_file(my_rank, i_step_MHD, time,             &
-     &    l_truncation, sph_param1%nlayer_ICB, sph_param1%nlayer_CMB)
-      call write_sph_vol_ms_spectr_file(my_rank, i_step_MHD, time,      &
-     &    l_truncation, sph_param1%nlayer_ICB, sph_param1%nlayer_CMB)
-      call write_sph_layer_ms_file(my_rank, i_step_MHD, time,           &
-     &    l_truncation, sph_param1%nlayer_ICB, sph_param1%nlayer_CMB)
+      call write_sph_vol_ms_file                                        &
+     &   (my_rank, i_step_MHD, time, sph_param1%l_truncation,           &
+     &    sph_param1%nlayer_ICB, sph_param1%nlayer_CMB)
+      call write_sph_vol_ms_spectr_file                                 &
+     &   (my_rank, i_step_MHD, time, sph_param1%l_truncation,           &
+     &    sph_param1%nlayer_ICB, sph_param1%nlayer_CMB)
+      call write_sph_layer_ms_file                                      &
+     &   (my_rank, i_step_MHD, time, sph_param1%l_truncation,           &
+     &    sph_param1%nlayer_ICB, sph_param1%nlayer_CMB)
 !
       call write_gauss_coefs_4_monitor(my_rank, istep_max_dt, time)
       call write_sph_spec_4_monitor(my_rank, istep_max_dt, time)

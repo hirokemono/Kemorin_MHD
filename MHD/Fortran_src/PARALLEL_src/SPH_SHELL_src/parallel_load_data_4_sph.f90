@@ -115,17 +115,21 @@
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'input_geom_rtp_sph_trans'
-      call input_geom_rtp_sph_trans(my_rank, l_truncation, sph_rtp1)
+      call input_geom_rtp_sph_trans                                     &
+     &    (my_rank, sph_param1%l_truncation, sph_rtp1)
 !
       if (iflag_debug.gt.0) write(*,*) 'input_modes_rj_sph_trans'
-      call input_modes_rj_sph_trans(my_rank, l_truncation, sph_rj1)
+      call input_modes_rj_sph_trans                                     &
+     &   (my_rank, sph_param1%l_truncation, sph_rj1)
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'input_geom_rtm_sph_trans'
-      call input_geom_rtm_sph_trans(my_rank, l_truncation, sph_rtm1)
+      call input_geom_rtm_sph_trans                                     &
+     &   (my_rank, sph_param1%l_truncation, sph_rtm1)
 !
       if (iflag_debug.gt.0) write(*,*) 'input_modes_rlm_sph_trans'
-      call input_modes_rlm_sph_trans(my_rank, l_truncation, sph_rlm1)
+      call input_modes_rlm_sph_trans                                    &
+     &   (my_rank, sph_param1%l_truncation, sph_rlm1)
 !
       nnod_rtp =      sph_rtp1%nnod_rtp
       nidx_rtp(1:3) = sph_rtp1%nidx_rtp(1:3)
@@ -270,7 +274,8 @@
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'input_modes_rj_sph_trans'
-      call input_modes_rj_sph_trans(my_rank, l_truncation, sph_rj1)
+      call input_modes_rj_sph_trans                                     &
+     &   (my_rank, sph_param1%l_truncation, sph_rj1)
       nnod_rj =      sph_rj1%nnod_rj
       nidx_rj(1:2) = sph_rj1%nidx_rj(1:2)
 !

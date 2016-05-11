@@ -33,8 +33,9 @@
       integer(kind = kint), intent(in) :: iflag_sph_coriolis_file
 !
 !
-      call check_gaunt_integrals_rlm(iflag_sph_coriolis_file,           &
-     &    l_truncation, nidx_rlm(2), sph_rlm1%idx_gl_1d_rlm_j)
+      call check_gaunt_integrals_rlm                                    &
+     &   (iflag_sph_coriolis_file, sph_param1%l_truncation,             &
+     &    sph_rlm1%nidx_rlm(2), sph_rlm1%idx_gl_1d_rlm_j)
       call check_interact_coriolis_rlm                                  &
      &   (nidx_rlm(2), sph_rlm1%idx_gl_1d_rlm_j)
 !

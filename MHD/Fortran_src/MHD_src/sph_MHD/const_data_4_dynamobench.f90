@@ -44,8 +44,8 @@
       call mid_eq_transfer_dynamobench(rj_fld)
 !
       call cal_mean_squre_in_shell                                      &
-     &   (sph_param1%nlayer_ICB, sph_param1%nlayer_CMB, l_truncation,   &
-     &    sph_rj1, rj_fld)
+     &   (sph_param1%nlayer_ICB, sph_param1%nlayer_CMB,                 &
+     &    sph_param1%l_truncation, sph_rj1, rj_fld)
       if(my_rank .eq. 0) call copy_energy_4_dynamobench
 !
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
@@ -56,7 +56,7 @@
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
         call cal_mean_squre_in_shell                                    &
-     &     (izero, sph_param1%nlayer_ICB, l_truncation,                 &
+     &     (izero, sph_param1%nlayer_ICB, sph_param1%l_truncation,      &
      &      sph_rj1, rj_fld)
         if(my_rank .eq. 0) call copy_icore_energy_4_dbench
       end if

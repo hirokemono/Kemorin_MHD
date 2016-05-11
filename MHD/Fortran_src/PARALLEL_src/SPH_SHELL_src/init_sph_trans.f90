@@ -55,11 +55,12 @@
       call allocate_work_4_sph_trans
 !
       call radial_4_sph_trans(sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1)
-      call set_mdx_rlm_rtm(l_truncation, nidx_rtm, nidx_rlm,            &
+      call set_mdx_rlm_rtm(sph_param1%l_truncation,                     &
+     &    sph_rtm1%nidx_rtm, sph_rlm1%nidx_rlm,                         &
      &    sph_rtm1%idx_gl_1d_rtm_m, sph_rlm1%idx_gl_1d_rlm_j)
 !
       call s_cal_schmidt_poly_rtm                                       &
-     &   (l_truncation, sph_rj1, sph_rtm1, sph_rlm1)
+     &   (sph_param1%l_truncation, sph_rj1, sph_rtm1, sph_rlm1)
 !
       call set_sin_theta_rtm(sph_rtm1%nidx_rtm(2))
       call set_sin_theta_rtp                                            &

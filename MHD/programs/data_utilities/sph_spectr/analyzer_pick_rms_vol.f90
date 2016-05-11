@@ -71,7 +71,8 @@
 !
       call set_sph_sprctr_data_address(sph_rj1, rj_fld1)
 !
-      call init_rms_4_sph_spectr(l_truncation, sph_rj1, rj_fld1)
+      call init_rms_4_sph_spectr                                        &
+     &   (sph_param1%l_truncation, sph_rj1, rj_fld1)
 !
       call allocate_work_pick_rms_sph                                   &
      &   (sph_rj1%nidx_rj(1), sph_rj1%nidx_rj(2))
@@ -96,7 +97,7 @@
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_rms_4_monitor'
-      call init_sph_rms_4_monitor(l_truncation, sph_rj1)
+      call init_sph_rms_4_monitor(sph_param1%l_truncation, sph_rj1)
 !
       do i_step = i_step_init, i_step_number, i_step_output_ucd
 !

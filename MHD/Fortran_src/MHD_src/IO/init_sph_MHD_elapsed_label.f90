@@ -145,7 +145,7 @@
       write(id_timer_file,*)
       write(id_timer_file,*) '=========================================='
       write(id_timer_file,*) 'Truncation level:      ',                 &
-     &                      l_truncation
+     &                      sph_param1%l_truncation
       write(id_timer_file,*) 'Longitudinal symmetry: ',                 &
      &                      sph_param1%m_folding
       write(id_timer_file,*) 'N_r for fluid shell:   ',                 &

@@ -63,7 +63,8 @@
       call allocate_vector_for_solver(isix, nnod_rtp)
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_rms_4_sph_spectr'
-      call init_rms_4_sph_spectr(l_truncation, sph_rj1, rj_fld1)
+      call init_rms_4_sph_spectr                                        &
+     &   (sph_param1%l_truncation, sph_rj1, rj_fld1)
 !
 ! ---------------------------------
 !
@@ -106,7 +107,7 @@
 !
 !* -----  find mid-equator point -----------------
 !*
-      call set_mid_equator_point_global(l_truncation,                   &
+      call set_mid_equator_point_global(sph_param1%l_truncation,        &
      &    sph_param1%nlayer_ICB, sph_param1%nlayer_CMB,                 &
      &    sph_rj1%nidx_rj(1), sph_rj1%radius_1d_rj_r)
 !

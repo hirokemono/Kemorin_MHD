@@ -55,7 +55,7 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &          'output_modes_rlm_sph_trans', ip_rank
         call output_modes_rlm_sph_trans                                 &
-     &     (ip_rank, l_truncation, sph_rlm1)
+     &     (ip_rank, sph_param1%l_truncation, sph_rlm1)
 !
         write(*,'(a,i6,a)') 'Legendre transform table rlm',             &
      &          ip_rank, ' is done.'
@@ -86,7 +86,8 @@
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &          'output_geom_rtm_sph_trans', ip_rank
-        call output_geom_rtm_sph_trans(ip_rank, l_truncation, sph_rtm1)
+        call output_geom_rtm_sph_trans                                  &
+     &     (ip_rank, sph_param1%l_truncation, sph_rtm1)
 !
         write(*,'(a,i6,a)') 'Legendre transform table rtm',             &
      &          ip_rank, ' is done.'
