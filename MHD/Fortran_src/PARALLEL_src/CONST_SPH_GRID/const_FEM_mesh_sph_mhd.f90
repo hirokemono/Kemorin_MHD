@@ -60,7 +60,7 @@
 !
       call s_const_FEM_mesh_for_sph                                     &
      &   (my_rank, sph_rtp1%nidx_rtp, sph_rj1%radius_1d_rj_r,           &
-     &    mesh, group)
+     &    sph_param1, radial_rj_grp1, mesh, group)
 !
       call deallocate_nnod_nele_sph_mesh
       call deallocate_gauss_points

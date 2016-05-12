@@ -24,9 +24,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_const_FEM_mesh_for_sph                               &
-     &         (ip_rank, nidx_rtp, r_global, mesh, group)
+      subroutine s_const_FEM_mesh_for_sph(ip_rank, nidx_rtp, r_global,  &
+     &          sph_params, radial_rj_grp, mesh, group)
 !
+      use t_spheric_parameter
       use t_mesh_data
       use t_comm_table
       use t_geometry_data
@@ -41,6 +42,9 @@
       integer(kind = kint), intent(in) :: ip_rank
       real(kind= kreal), intent(in) :: r_global(nidx_global_fem(1))
 !
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(group_data), intent(in) :: radial_rj_grp
+!
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::  group
 !
@@ -52,10 +56,11 @@
 !
 !  Construct element connectivity
       call const_FEM_geometry_for_sph(ip_r, ip_t, r_global,             &
-     &    mesh%node, mesh%ele)
+     &    sph_params, mesh%node, mesh%ele)
 !
 !  Construct groups
-      call const_FEM_groups_for_sph(ip_r, ip_t, group)
+      call const_FEM_groups_for_sph(ip_r, ip_t,                         &
+     &    sph_params, radial_rj_grp, group)
 !
 ! Set communication table
       call const_nod_comm_table_for_sph(ip_rank, ip_r, ip_t,            &
@@ -77,11 +82,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_FEM_geometry_for_sph(ip_r, ip_t, r_global,       &
-     &          node, ele)
+     &          sph_params, node, ele)
 !
       use calypso_mpi
       use t_geometry_data
-      use m_spheric_parameter
+      use t_spheric_parameter
       use m_spheric_global_ranks
       use m_sph_mesh_1d_connect
 !
@@ -90,30 +95,32 @@
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t
       real(kind= kreal), intent(in) :: r_global(nidx_global_fem(1))
+      type(sph_shell_parameters), intent(in) :: sph_params
 !
       type(node_data), intent(inout) :: node
       type(element_data), intent(inout) :: ele
 !
 !  Construct node geometry
       call count_numnod_local_sph_mesh                                  &
-     &   (sph_param1%iflag_shell_mode, ip_r, ip_t, node)
+     &   (sph_params%iflag_shell_mode, ip_r, ip_t, node)
 !
       call allocate_node_geometry_type(node)
       call set_local_nodes_sph_mesh                                     &
-     &   (sph_param1%iflag_shell_mode, ip_r, ip_t, r_global, node)
+     &   (sph_params%iflag_shell_mode, ip_r, ip_t, r_global, node)
 !
 !  Construct element connectivity
-      call count_local_elements_sph_mesh(ip_r, ip_t, ele)
+      call count_local_elements_sph_mesh(ip_r, ip_t, sph_params, ele)
 !
       call allocate_ele_connect_type(ele)
-      call set_local_elements_sph_mesh(ip_r, ip_t, ele)
+      call set_local_elements_sph_mesh(ip_r, ip_t, sph_params, ele)
 !
       end subroutine const_FEM_geometry_for_sph
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine const_FEM_groups_for_sph(ip_r, ip_t, group)
+      subroutine const_FEM_groups_for_sph                               &
+     &         (ip_r, ip_t, sph_params, radial_rj_grp, group)
 !
       use t_mesh_data
       use t_group_data
@@ -124,51 +131,60 @@
       use cal_minmax_and_stacks
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(group_data), intent(in) :: radial_rj_grp
 !
       type(mesh_groups), intent(inout) ::  group
 !
 !
 !  Construct node group
-      call count_sph_local_node_group(group%nod_grp)
+      call count_sph_local_node_group                                   &
+     &   (sph_params, radial_rj_grp, group%nod_grp)
 !
       call allocate_grp_type_num(group%nod_grp)
-      call count_sph_local_node_grp_item(ip_r, ip_t, group%nod_grp)
+      call count_sph_local_node_grp_item                                &
+     &   (ip_r, ip_t, sph_params, radial_rj_grp, group%nod_grp)
 !
       call s_cal_total_and_stacks(group%nod_grp%num_grp,                &
      &    group%nod_grp%nitem_grp, izero, group%nod_grp%istack_grp,     &
      &    group%nod_grp%num_item)
 !
       call allocate_grp_type_item(group%nod_grp)
-      call set_sph_local_node_grp_item(ip_r, ip_t, group%nod_grp)
+      call set_sph_local_node_grp_item                                  &
+     &   (ip_r, ip_t, sph_params, radial_rj_grp, group%nod_grp)
 !
 !  Construct element group
       call allocate_sph_ele_grp_flag
-      call count_sph_local_ele_group(group%ele_grp)
+      call count_sph_local_ele_group(group%ele_grp, radial_rj_grp)
 !
       call allocate_grp_type_num(group%ele_grp)
-      call count_sph_local_ele_grp_item(ip_r, ip_t, group%ele_grp)
+      call count_sph_local_ele_grp_item                                 &
+     &   (ip_r, ip_t, sph_params, radial_rj_grp, group%ele_grp)
 !
       call s_cal_total_and_stacks(group%ele_grp%num_grp,                &
      &    group%ele_grp%nitem_grp, izero, group%ele_grp%istack_grp,     &
      &    group%ele_grp%num_item)
 !
       call allocate_grp_type_item(group%ele_grp)
-      call set_sph_local_ele_grp_item(ip_r, ip_t, group%ele_grp)
+      call set_sph_local_ele_grp_item                                   &
+     &   (ip_r, ip_t, sph_params, radial_rj_grp, group%ele_grp)
 !
       call deallocate_sph_ele_grp_flag
 !
 !  Construct surf group
-      call count_sph_local_surf_group(group%surf_grp)
+      call count_sph_local_surf_group(radial_rj_grp, group%surf_grp)
 !
       call allocate_sf_grp_type_num(group%surf_grp)
-      call count_sph_local_surf_grp_item(ip_r, ip_t, group%surf_grp)
+      call count_sph_local_surf_grp_item                                &
+     &   (ip_r, ip_t, sph_params, radial_rj_grp, group%surf_grp)
 !
       call s_cal_total_and_stacks(group%surf_grp%num_grp,               &
      &    group%surf_grp%nitem_grp, izero, group%surf_grp%istack_grp,   &
      &    group%surf_grp%num_item)
 !
       call allocate_sf_grp_type_item(group%surf_grp)
-      call set_sph_local_surf_grp_item(ip_r, ip_t, group%surf_grp)
+      call set_sph_local_surf_grp_item                                  &
+     &   (ip_r, ip_t, sph_params, radial_rj_grp, group%surf_grp)
 !
       end subroutine const_FEM_groups_for_sph
 !

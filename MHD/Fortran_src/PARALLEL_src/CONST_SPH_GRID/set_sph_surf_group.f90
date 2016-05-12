@@ -1,9 +1,13 @@
 !set_sph_surf_group.f90
 !      module set_sph_surf_group
 !
-!      subroutine count_sph_local_surf_group(surf_grp)
-!      subroutine count_sph_local_surf_grp_item(ip_r, ip_t, surf_grp)
-!      subroutine set_sph_local_surf_grp_item(ip_r, ip_t, surf_grp)
+!!      subroutine count_sph_local_surf_group(radial_rj_grp, surf_grp)
+!!      subroutine count_sph_local_surf_grp_item                        &
+!!     &          (ip_r, ip_t, sph_params, radial_rj_grp, surf_grp)
+!!      subroutine set_sph_local_surf_grp_item                          &
+!!     &         (ip_r, ip_t, sph_params, radial_rj_grp, surf_grp)
+!!        type(sph_shell_parameters), intent(in) :: sph_params
+!!        type(surface_group_data), intent(inout) :: surf_grp
 !
 !     Written by H. Matsui on March, 2012
 !
@@ -11,8 +15,8 @@
 !
       use m_precision
       use m_constants
-      use m_group_data_sph_specr
 !
+      use t_spheric_parameter
       use t_group_data
 !
       implicit none
@@ -26,17 +30,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_sph_local_surf_group(surf_grp)
+      subroutine count_sph_local_surf_group(radial_rj_grp, surf_grp)
 !
+      type(group_data), intent(in) :: radial_rj_grp
       type(surface_group_data), intent(inout) :: surf_grp
 !
       integer(kind = kint) :: igrp, num
 !
 !
       surf_grp%num_grp =  0
-      do igrp = 1, radial_rj_grp1%num_grp
-        num = radial_rj_grp1%istack_grp(igrp)                           &
-     &       - radial_rj_grp1%istack_grp(igrp-1)
+      do igrp = 1, radial_rj_grp%num_grp
+        num = radial_rj_grp%istack_grp(igrp)                            &
+     &       - radial_rj_grp%istack_grp(igrp-1)
         if(num .eq. 1) then
           surf_grp%num_grp =  surf_grp%num_grp + 1
         end if
@@ -46,13 +51,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_sph_local_surf_grp_item(ip_r, ip_t, surf_grp)
+      subroutine count_sph_local_surf_grp_item                          &
+     &          (ip_r, ip_t, sph_params, radial_rj_grp, surf_grp)
 !
-      use m_spheric_parameter
       use m_sph_mesh_1d_connect
       use set_stack_4_sph_groups
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(group_data), intent(in) :: radial_rj_grp
       type(surface_group_data), intent(inout) :: surf_grp
 !
       integer(kind = kint) :: igrp, icou, knum, kr, kele, kst
@@ -61,14 +68,14 @@
 !
       icou = 0
       surf_grp%nitem_grp =  0
-      do igrp = 1, radial_rj_grp1%num_grp
-        kst = radial_rj_grp1%istack_grp(igrp-1) + 1
-        knum = radial_rj_grp1%istack_grp(igrp)
+      do igrp = 1, radial_rj_grp%num_grp
+        kst = radial_rj_grp%istack_grp(igrp-1) + 1
+        knum = radial_rj_grp%istack_grp(igrp)
         if( (knum-kst) .eq. 0) then
           icou = icou + 1
-          surf_grp%grp_name(icou) = radial_rj_grp1%grp_name(igrp)
+          surf_grp%grp_name(icou) = radial_rj_grp%grp_name(igrp)
 !
-          kr = radial_rj_grp1%item_grp(knum)
+          kr = radial_rj_grp%item_grp(knum)
           if(surf_grp%grp_name(icou) .eq. ICB_nod_grp_name              &
      &         .or. surf_grp%grp_name(icou) .eq. CTR_nod_grp_name) then
             kl1 = irev_sph_r(kr,  ip_r)
@@ -81,7 +88,7 @@
           do kele = 1, nele_sph_r(ip_r)
             if(ie_sph_r(kele,1,ip_r) .eq. kl1 &
      &         .and. ie_sph_r(kele,2,ip_r) .eq. kl2) then
-              call count_surf_grp_item_on_sphere(ip_t,                  &
+              call count_surf_grp_item_on_sphere(ip_t, sph_params,      &
      &            surf_grp%nitem_grp(icou))
             end if
           end do
@@ -94,14 +101,16 @@
 ! ----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sph_local_surf_grp_item(ip_r, ip_t, surf_grp)
+      subroutine set_sph_local_surf_grp_item                            &
+     &         (ip_r, ip_t, sph_params, radial_rj_grp, surf_grp)
 !
-      use m_spheric_parameter
       use m_sph_mesh_1d_connect
       use set_stack_4_sph_groups
       use cal_sph_node_addresses
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(group_data), intent(in) :: radial_rj_grp
       type(surface_group_data), intent(inout) :: surf_grp
 !
       integer(kind = kint) :: igrp, icou, inum, kst
@@ -110,14 +119,14 @@
 !
 !
       icou = 0
-      do igrp = 1, radial_rj_grp1%num_grp
-        kst = radial_rj_grp1%istack_grp(igrp-1) + 1
-        knum = radial_rj_grp1%istack_grp(igrp)
+      do igrp = 1, radial_rj_grp%num_grp
+        kst = radial_rj_grp%istack_grp(igrp-1) + 1
+        knum = radial_rj_grp%istack_grp(igrp)
         if( (knum-kst) .eq. 0) then
           icou = icou + 1
           inum =  surf_grp%istack_grp(icou-1)
 !
-          kr = radial_rj_grp1%item_grp(knum)
+          kr = radial_rj_grp%item_grp(knum)
           if(surf_grp%grp_name(icou) .eq. ICB_nod_grp_name              &
      &         .or. surf_grp%grp_name(icou) .eq. CTR_nod_grp_name) then
             kl1 = irev_sph_r(kr,  ip_r)
@@ -133,7 +142,7 @@
             if(ie_sph_r(kele,1,ip_r) .eq. kl1                           &
      &         .and. ie_sph_r(kele,2,ip_r) .eq. kl2) then
               call set_surf_grp_item_on_sphere(ip_r, ip_t, kele,        &
-     &            inum, isf, surf_grp)
+     &            inum, isf, sph_params, surf_grp)
               exit
             end if
           end do
@@ -145,11 +154,12 @@
 ! ----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine count_surf_grp_item_on_sphere(ip_t, nitem_grp)
+      subroutine count_surf_grp_item_on_sphere                          &
+     &         (ip_t, sph_params, nitem_grp)
 !
-      use m_spheric_parameter
       use m_sph_mesh_1d_connect
 !
+      type(sph_shell_parameters), intent(in) :: sph_params
       integer(kind = kint), intent(in) :: ip_t
       integer(kind = kint), intent(inout) :: nitem_grp
 !
@@ -157,8 +167,8 @@
       nitem_grp = nitem_grp + nele_sph_t(ip_t)*nidx_global_fem(3)
 !
 !    Set elements for poles
-      if    (sph_param1%iflag_shell_mode .eq. iflag_MESH_w_pole         &
-     &  .or. sph_param1%iflag_shell_mode .eq. iflag_MESH_w_center) then
+      if    (sph_params%iflag_shell_mode .eq. iflag_MESH_w_pole         &
+     &  .or. sph_params%iflag_shell_mode .eq. iflag_MESH_w_center) then
 !
 !    Set elements for south pole
         if(iflag_Spole_t(ip_t) .gt. 0)  then
@@ -177,14 +187,15 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_surf_grp_item_on_sphere(ip_r, ip_t, kr,            &
-     &          inum, isf, surf_grp)
+     &          inum, isf, sph_params, surf_grp)
 !
-      use m_spheric_parameter
       use m_sph_mesh_1d_connect
       use cal_sph_ele_addresses
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t, kr
       integer(kind = kint), intent(inout) :: inum, isf
+      type(sph_shell_parameters), intent(in) :: sph_params
+!
       type(surface_group_data), intent(inout) :: surf_grp
 !
       integer(kind = kint) :: l, m
@@ -200,8 +211,8 @@
       end do
 !
 !    Set elements for poles
-      if    (sph_param1%iflag_shell_mode .eq. iflag_MESH_w_pole         &
-     &  .or. sph_param1%iflag_shell_mode .eq. iflag_MESH_w_center) then
+      if    (sph_params%iflag_shell_mode .eq. iflag_MESH_w_pole         &
+     &  .or. sph_params%iflag_shell_mode .eq. iflag_MESH_w_center) then
 !
 !    Set elements for south pole
         if(iflag_Spole_t(ip_t) .gt. 0)  then

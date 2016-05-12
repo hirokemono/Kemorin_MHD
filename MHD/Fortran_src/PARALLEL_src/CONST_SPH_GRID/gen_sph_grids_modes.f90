@@ -143,7 +143,8 @@
       nidx_rtp = sph_rtp1%nidx_rtp
 !
       call s_const_FEM_mesh_for_sph                                     &
-     &   (ip_rank, sph_rtp1%nidx_rtp, radius_1d_gl, mesh, group)
+     &   (ip_rank, sph_rtp1%nidx_rtp, radius_1d_gl,                     &
+     &    sph_param1, radial_rj_grp1, mesh, group)
 !
       call copy_comm_tbl_type_to_IO(ip_rank, mesh%nod_comm)
       call copy_node_geometry_to_IO(mesh%node)

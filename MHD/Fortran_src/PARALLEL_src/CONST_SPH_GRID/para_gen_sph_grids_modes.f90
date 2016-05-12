@@ -218,12 +218,14 @@
       use m_gauss_points
       use m_group_data_sph_specr
       use m_sph_mesh_1d_connect
+      use m_group_data_sph_specr
       use const_1d_ele_connect_4_sph
       use set_local_index_table_sph
       use set_sph_groups
       use gen_sph_grids_modes
 !
       integer(kind = kint), intent(in) :: ndomain_sph
+!
       integer(kind = kint) :: ip_rank
 !
 !
@@ -236,7 +238,7 @@
 !
       call s_const_1d_ele_connect_4_sph                                 &
      &   (sph_param1%iflag_shell_mode, sph_param1%m_folding, sph_rtp1)
-      call set_rj_radial_grp
+      call set_rj_radial_grp(sph_param1, sph_rj1, radial_rj_grp1)
 !
       do ip_rank = 0, ndomain_sph-1
         if(mod(ip_rank,nprocs) .ne. my_rank) cycle
@@ -245,7 +247,8 @@
      &             'Construct FEM mesh for domain ', ip_rank,           &
      &             ' on ', my_rank
 !
-        call const_fem_mesh_for_sph(ip_rank)
+        call const_fem_mesh_for_sph                                     &
+     &     (ip_rank)
       end do
 !
       call deallocate_grp_type(radial_rj_grp1)

@@ -3,9 +3,12 @@
 !
 !     Written by H. Matsui on March, 2012
 !
-!      subroutine count_local_elements_sph_mesh(ip_r, ip_t, ele)
-!      subroutine set_local_elements_sph_mesh(ip_r, ip_t, ele)
-!        type(element_data), intent(inout) :: ele
+!!      subroutine count_local_elements_sph_mesh                        &
+!!     &         (ip_r, ip_t, sph_params, ele)
+!!      subroutine set_local_elements_sph_mesh                          &
+!!     &         (ip_r, ip_t, sph_params, ele)
+!!        type(sph_shell_parameters), intent(in) :: sph_params
+!!        type(element_data), intent(inout) :: ele
 !
       module set_sph_local_element
 !
@@ -14,6 +17,7 @@
 !
       use m_gauss_points
       use t_geometry_data
+      use t_spheric_parameter
 !
       implicit none
 !
@@ -23,15 +27,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine count_local_elements_sph_mesh(ip_r, ip_t, ele)
+      subroutine count_local_elements_sph_mesh                          &
+     &         (ip_r, ip_t, sph_params, ele)
 !
       use m_geometry_constants
-      use m_spheric_parameter
       use m_sph_mesh_1d_connect
       use cal_sph_node_addresses
       use cal_sph_ele_addresses
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t
+      type(sph_shell_parameters), intent(in) :: sph_params
       type(element_data), intent(inout) :: ele
 !
 !
@@ -44,8 +49,8 @@
 !
 !    Set elements for poles
 !
-      if    (sph_param1%iflag_shell_mode .eq. iflag_MESH_w_pole         &
-     &  .or. sph_param1%iflag_shell_mode .eq. iflag_MESH_w_center) then
+      if    (sph_params%iflag_shell_mode .eq. iflag_MESH_w_pole         &
+     &  .or. sph_params%iflag_shell_mode .eq. iflag_MESH_w_center) then
 !
 !    Set elements for South pole
         if(iflag_Spole_t(ip_t) .gt. 0)  then
@@ -62,7 +67,7 @@
 !
 !    Set elements for Center elements
 !
-      if    (sph_param1%iflag_shell_mode .eq. iflag_MESH_w_center) then
+      if    (sph_params%iflag_shell_mode .eq. iflag_MESH_w_center) then
 !
 !     Mesh with center
         if     (iflag_center_r(ip_r) .gt. 0)  then
@@ -86,15 +91,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_local_elements_sph_mesh(ip_r, ip_t, ele)
+      subroutine set_local_elements_sph_mesh                            &
+     &         (ip_r, ip_t, sph_params, ele)
 !
-      use m_spheric_parameter
       use m_sph_mesh_1d_connect
       use cal_sph_node_addresses
       use cal_sph_ele_connects
       use cal_sph_ele_addresses
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t
+      type(sph_shell_parameters), intent(in) :: sph_params
       type(element_data), intent(inout) :: ele
 !
 !
@@ -104,8 +110,8 @@
       call set_spherical_shell_element(ip_r, ip_t, ele)
 !
 !    Set elements for poles
-      if    (sph_param1%iflag_shell_mode .eq. iflag_MESH_w_pole         &
-     &  .or. sph_param1%iflag_shell_mode .eq. iflag_MESH_w_center) then
+      if    (sph_params%iflag_shell_mode .eq. iflag_MESH_w_pole         &
+     &  .or. sph_params%iflag_shell_mode .eq. iflag_MESH_w_center) then
 !
 !    Set elements for south pole
         if(iflag_Spole_t(ip_t) .gt. 0)  then
@@ -121,7 +127,7 @@
 !
 !    Set elements for Center elements
 !
-      if    (sph_param1%iflag_shell_mode .eq. iflag_MESH_w_center) then
+      if    (sph_params%iflag_shell_mode .eq. iflag_MESH_w_center) then
         if     (iflag_center_r(ip_r) .gt. 0)  then
           if(iflag_Spole_t(ip_t) .gt. 0)  then
             call set_inter_center_shell_ele(ip_r, ip_t, ele)

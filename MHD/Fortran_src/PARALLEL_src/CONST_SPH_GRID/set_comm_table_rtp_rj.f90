@@ -20,6 +20,7 @@
       use m_precision
       use m_machine_parameter
       use t_sph_trans_comm_tbl
+      use t_group_data
 !
       implicit none
 !
@@ -78,6 +79,9 @@
       integer(kind = kint), intent(in) :: ndomain_sph
       type(sph_comm_tbl), intent(in) :: comm_rlm(ndomain_sph)
 !
+      type(group_data) :: radial_rj_grp_lc
+      type(group_data) :: sphere_rj_grp_lc
+!
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                'copy_gl_2_local_rj_param', ip_rank
@@ -107,12 +111,13 @@
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                  'set_sph_rj_groups', ip_rank
-      call set_sph_rj_groups
+      call set_sph_rj_groups(sph_param1, sph_rj1,                       &
+     &    radial_rj_grp_lc, sphere_rj_grp_lc)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                 'output_modes_rj_sph_trans', ip_rank
       call output_modes_rj_sph_trans(ip_rank, sph_param1%l_truncation,  &
-     &    sph_rj1, comm_rj1, radial_rj_grp1, sphere_rj_grp1)
+     &    sph_rj1, comm_rj1, radial_rj_grp_lc, sphere_rj_grp_lc)
 !
       write(*,'(a,i6,a)') 'Spherical modes for domain',                 &
      &          ip_rank, ' is done.'
@@ -136,6 +141,11 @@
       integer(kind = kint), intent(in) :: ip_rank
       integer(kind = kint), intent(in) :: ndomain_sph
       type(sph_comm_tbl), intent(in) :: comm_rtm(ndomain_sph)
+!
+      type(group_data) :: bc_rtp_grp_lc
+      type(group_data) :: radial_rtp_grp_lc
+      type(group_data) :: theta_rtp_grp_lc
+      type(group_data) :: zonal_rtp_grp_lc
 !
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
@@ -164,13 +174,14 @@
      &   (ip_rank, nnod_rtp, ndomain_sph, comm_rtm)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_rtp_groups', ip_rank
-      call set_sph_rtp_groups
+      call set_sph_rtp_groups(sph_param1, sph_rtp1, bc_rtp_grp_lc,      &
+     &    radial_rtp_grp_lc, theta_rtp_grp_lc, zonal_rtp_grp_lc)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                 'output_geom_rtp_sph_trans', ip_rank
       call output_geom_rtp_sph_trans(ip_rank, sph_param1%l_truncation,  &
-     &    sph_rtp1, comm_rtp1, bc_rtp_grp1,                             &
-     &    radial_rtp_grp1, theta_rtp_grp1, zonal_rtp_grp)
+     &    sph_rtp1, comm_rtp1, bc_rtp_grp_lc,                           &
+     &    radial_rtp_grp_lc, theta_rtp_grp_lc, zonal_rtp_grp_lc)
 !
       write(*,'(a,i6,a)') 'Spherical grids for domain',                 &
      &          ip_rank, ' is done.'
@@ -336,7 +347,8 @@
           j_glb = sph_rlm1%idx_global_rlm(jnod,2)
           k_tmp = idx_local_rj_r(k_glb)
           j_tmp = idx_local_rj_j(j_glb)
-          comm_rj1%item_sr(icou) =  j_tmp + (k_tmp-1) * nidx_rj(2)
+          comm_rj1%item_sr(icou) =  j_tmp                               &
+     &                            + (k_tmp-1) * sph_rj1%nidx_rj(2)
         end do
 !
         call dealloc_type_sph_comm_item(comm_rlm1)
@@ -438,8 +450,9 @@
           k_tmp = idx_local_rtp_r(k_glb)
           l_tmp = idx_local_rtp_t(l_glb)
           m_tmp = idx_local_rtp_p(m_glb)
-          item_sr_rtp(icou) =  k_tmp + (l_tmp-1) * nidx_rtp(1)          &
-     &                        + (m_tmp-1) * nidx_rtp(1) * nidx_rtp(2)
+          item_sr_rtp(icou) =  k_tmp + (l_tmp-1) * sph_rtp1%nidx_rtp(1) &
+     &                               + (m_tmp-1) * sph_rtp1%nidx_rtp(1) &
+     &                                           * sph_rtp1%nidx_rtp(2)
         end do
 !
         call dealloc_type_sph_comm_item(comm_rtm1)

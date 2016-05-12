@@ -1,9 +1,14 @@
 !set_sph_ele_group.f90
 !      module set_sph_ele_group
 !
-!      subroutine count_sph_local_ele_group(ele_grp)
-!      subroutine count_sph_local_ele_grp_item(ip_r, ip_t, ele_grp)
-!      subroutine set_sph_local_ele_grp_item(ip_r, ip_t, ele_grp)
+!      subroutine count_sph_local_ele_group(ele_grp, radial_rj_grp)
+!!      subroutine count_sph_local_ele_grp_item                         &
+!!     &         (ip_r, ip_t, sph_params, radial_rj_grp, ele_grp)
+!!      subroutine set_sph_local_ele_grp_item                           &
+!!     &         (ip_r, ip_t, sph_params, radial_rj_grp, ele_grp)
+!!        type(sph_shell_parameters), intent(in) :: sph_params
+!!        type(group_data), intent(in) :: radial_rj_grp
+!!        type(group_data), intent(inout) :: ele_grp
 !
 !     Written by H. Matsui on March, 2012
 !
@@ -11,8 +16,8 @@
 !
       use m_precision
       use m_constants
-      use m_group_data_sph_specr
 !
+      use t_spheric_parameter
       use t_group_data
 !
       implicit none
@@ -55,18 +60,19 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine count_sph_local_ele_group(ele_grp)
+      subroutine count_sph_local_ele_group(ele_grp, radial_rj_grp)
 !
+      type(group_data), intent(in) :: radial_rj_grp
       type(group_data), intent(inout) :: ele_grp
 !
       integer(kind = kint) :: igrp, num
 !
 !
       ele_grp%num_grp =  0
-      do igrp = 1, radial_rj_grp1%num_grp
+      do igrp = 1, radial_rj_grp%num_grp
         iflag_r = 0
-        num = radial_rj_grp1%istack_grp(igrp)                           &
-     &       - radial_rj_grp1%istack_grp(igrp-1)
+        num = radial_rj_grp%istack_grp(igrp)                            &
+     &       - radial_rj_grp%istack_grp(igrp-1)
         if(num .gt. 1) then
           ele_grp%num_grp =  ele_grp%num_grp + 1
         end if
@@ -76,12 +82,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_sph_local_ele_grp_item(ip_r, ip_t, ele_grp)
+      subroutine count_sph_local_ele_grp_item                           &
+     &         (ip_r, ip_t, sph_params, radial_rj_grp, ele_grp)
 !
-      use m_spheric_parameter
       use m_sph_mesh_1d_connect
       use set_stack_4_sph_groups
 !
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(group_data), intent(in) :: radial_rj_grp
       integer(kind = kint), intent(in) :: ip_r, ip_t
       type(group_data), intent(inout) :: ele_grp
 !
@@ -91,16 +99,16 @@
 !
       icou = 0
       ele_grp%nitem_grp =  0
-      do igrp = 1, radial_rj_grp1%num_grp
-        kst = radial_rj_grp1%istack_grp(igrp-1) + 1
-        ked = radial_rj_grp1%istack_grp(igrp)
+      do igrp = 1, radial_rj_grp%num_grp
+        kst = radial_rj_grp%istack_grp(igrp-1) + 1
+        ked = radial_rj_grp%istack_grp(igrp)
         if( (ked-kst) .gt. 0) then
           icou = icou + 1
-          ele_grp%grp_name(icou) = radial_rj_grp1%grp_name(igrp)
+          ele_grp%grp_name(icou) = radial_rj_grp%grp_name(igrp)
 !
           iflag_r = 0
           do knum = kst, ked
-            kr = radial_rj_grp1%item_grp(knum)
+            kr = radial_rj_grp%item_grp(knum)
             iflag_r(kr) = 1
           end do
 !
@@ -110,11 +118,11 @@
             kg1 = inod_sph_r(kl1,ip_r)
             kg2 = inod_sph_r(kl2,ip_r)
             if(iflag_r(kg1)*iflag_r(kg2) .gt. 0) then
-              call count_ele_grp_item_on_sphere(ip_t,                   &
+              call count_ele_grp_item_on_sphere(ip_t, sph_params,       &
      &            ele_grp%nitem_grp(icou))
             else if(ele_grp%grp_name(icou) .eq. IC_ele_grp_name         &
      &           .and. iflag_r(kg1).gt.0) then
-              call count_ele_grp_item_on_sphere(ip_t,                   &
+              call count_ele_grp_item_on_sphere(ip_t, sph_params,       &
      &            ele_grp%nitem_grp(icou))
             end if
           end do
@@ -134,13 +142,15 @@
 ! ----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sph_local_ele_grp_item(ip_r, ip_t, ele_grp)
+      subroutine set_sph_local_ele_grp_item                             &
+     &         (ip_r, ip_t, sph_params, radial_rj_grp, ele_grp)
 !
-      use m_spheric_parameter
       use m_sph_mesh_1d_connect
       use set_stack_4_sph_groups
       use cal_sph_node_addresses
 !
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(group_data), intent(in) :: radial_rj_grp
       integer(kind = kint), intent(in) :: ip_r, ip_t
       type(group_data), intent(inout) :: ele_grp
 !
@@ -150,16 +160,16 @@
 !
 !
       icou = 0
-      do igrp = 1, radial_rj_grp1%num_grp
-        kst = radial_rj_grp1%istack_grp(igrp-1) + 1
-        ked = radial_rj_grp1%istack_grp(igrp)
+      do igrp = 1, radial_rj_grp%num_grp
+        kst = radial_rj_grp%istack_grp(igrp-1) + 1
+        ked = radial_rj_grp%istack_grp(igrp)
         if( (ked-kst) .gt. 0) then
           icou = icou + 1
           inum =  ele_grp%istack_grp(icou-1)
 !
           iflag_r = 0
           do knum = kst, ked
-            kr = radial_rj_grp1%item_grp(knum)
+            kr = radial_rj_grp%item_grp(knum)
             iflag_r(kr) = 1
           end do
 !
@@ -170,11 +180,11 @@
             kg2 = inod_sph_r(kl2,ip_r)
             if(iflag_r(kg1)*iflag_r(kg2) .gt. 0) then
               call set_ele_grp_item_on_sphere(ip_r, ip_t, kele,         &
-     &            inum, ele_grp)
+     &            sph_params, inum, ele_grp)
             else if(ele_grp%grp_name(icou) .eq. IC_ele_grp_name         &
      &           .and. iflag_r(kg1).gt.0) then
               call set_ele_grp_item_on_sphere(ip_r, ip_t, kele,         &
-     &            inum, ele_grp)
+     &            sph_params, inum, ele_grp)
             end if
           end do
 !
@@ -191,11 +201,12 @@
 ! ----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine count_ele_grp_item_on_sphere(ip_t, nitem_grp)
+      subroutine count_ele_grp_item_on_sphere                           &
+     &         (ip_t, sph_params, nitem_grp)
 !
-      use m_spheric_parameter
       use m_sph_mesh_1d_connect
 !
+      type(sph_shell_parameters), intent(in) :: sph_params
       integer(kind = kint), intent(in) :: ip_t
       integer(kind = kint), intent(inout) :: nitem_grp
 !
@@ -203,8 +214,8 @@
       nitem_grp = nitem_grp + nele_sph_t(ip_t)*nidx_global_fem(3)
 !
 !    Set elements for poles
-      if    (sph_param1%iflag_shell_mode .eq. iflag_MESH_w_pole         &
-     &  .or. sph_param1%iflag_shell_mode .eq. iflag_MESH_w_center) then
+      if    (sph_params%iflag_shell_mode .eq. iflag_MESH_w_pole         &
+     &  .or. sph_params%iflag_shell_mode .eq. iflag_MESH_w_center) then
 !
 !    Set elements for south pole
         if(iflag_Spole_t(ip_t) .gt. 0)  then
@@ -250,15 +261,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_ele_grp_item_on_sphere(ip_r, ip_t, kr,             &
-     &          inum, ele_grp)
+     &          sph_params, inum, ele_grp)
 !
-      use m_spheric_parameter
       use m_sph_mesh_1d_connect
       use cal_sph_ele_addresses
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t, kr
-      integer(kind = kint), intent(inout) :: inum
+      type(sph_shell_parameters), intent(in) :: sph_params
+!
       type(group_data), intent(inout) :: ele_grp
+      integer(kind = kint), intent(inout) :: inum
 !
       integer(kind = kint) :: l, m
 !
@@ -272,8 +284,8 @@
       end do
 !
 !    Set elements for poles
-      if    (sph_param1%iflag_shell_mode .eq. iflag_MESH_w_pole         &
-     &  .or. sph_param1%iflag_shell_mode .eq. iflag_MESH_w_center) then
+      if    (sph_params%iflag_shell_mode .eq. iflag_MESH_w_pole         &
+     &  .or. sph_params%iflag_shell_mode .eq. iflag_MESH_w_center) then
 !
 !    Set elements for south pole
         if(iflag_Spole_t(ip_t) .gt. 0)  then
