@@ -56,6 +56,8 @@
 !
       use m_spheric_constants
       use m_spheric_parameter
+      use m_sph_trans_comm_table
+      use m_group_data_sph_specr
       use load_mesh_data
       use copy_mesh_structures
       use const_FEM_mesh_sph_mhd
@@ -110,26 +112,29 @@
       use calypso_mpi
       use m_machine_parameter
       use m_spheric_parameter
+      use m_sph_trans_comm_table
+      use m_group_data_sph_specr
 !
       use load_data_for_sph_IO
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'input_geom_rtp_sph_trans'
-      call input_geom_rtp_sph_trans                                     &
-     &    (my_rank, sph_param1%l_truncation, sph_rtp1)
+      call input_geom_rtp_sph_trans(my_rank, sph_param1%l_truncation,   &
+     &    sph_rtp1, comm_rtp1, bc_rtp_grp1, &
+     &          radial_rtp_grp1, theta_rtp_grp1, zonal_rtp_grp)
 !
       if (iflag_debug.gt.0) write(*,*) 'input_modes_rj_sph_trans'
-      call input_modes_rj_sph_trans                                     &
-     &   (my_rank, sph_param1%l_truncation, sph_rj1)
+      call input_modes_rj_sph_trans(my_rank, sph_param1%l_truncation,   &
+     &    sph_rj1, comm_rj1, radial_rj_grp1, sphere_rj_grp1)
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'input_geom_rtm_sph_trans'
       call input_geom_rtm_sph_trans                                     &
-     &   (my_rank, sph_param1%l_truncation, sph_rtm1)
+     &   (my_rank, sph_param1%l_truncation, sph_rtm1, comm_rtm1)
 !
       if (iflag_debug.gt.0) write(*,*) 'input_modes_rlm_sph_trans'
       call input_modes_rlm_sph_trans                                    &
-     &   (my_rank, sph_param1%l_truncation, sph_rlm1)
+     &   (my_rank, sph_param1%l_truncation, sph_rlm1, comm_rlm1)
 !
       nnod_rtp =      sph_rtp1%nnod_rtp
       nidx_rtp(1:3) = sph_rtp1%nidx_rtp(1:3)
@@ -263,6 +268,7 @@
       use m_machine_parameter
       use m_spheric_parameter
       use m_sph_trans_comm_table
+      use m_group_data_sph_specr
 !
       use load_data_for_sph_IO
       use count_num_sph_smp
@@ -274,8 +280,8 @@
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'input_modes_rj_sph_trans'
-      call input_modes_rj_sph_trans                                     &
-     &   (my_rank, sph_param1%l_truncation, sph_rj1)
+      call input_modes_rj_sph_trans(my_rank, sph_param1%l_truncation,   &
+     &    sph_rj1, comm_rj1, radial_rj_grp1, sphere_rj_grp1)
       nnod_rj =      sph_rj1%nnod_rj
       nidx_rj(1:2) = sph_rj1%nidx_rj(1:2)
 !

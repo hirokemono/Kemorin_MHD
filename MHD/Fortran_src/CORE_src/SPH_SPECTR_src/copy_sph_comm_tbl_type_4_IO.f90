@@ -65,33 +65,5 @@
       end subroutine copy_comm_sph_type_from_IO
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine copy_comm_sph_type_to_IO(my_rank, comm)
-!
-      integer(kind = kint), intent(in) :: my_rank
-      type(sph_comm_tbl), intent(inout) :: comm
-!
-      my_rank_IO = my_rank
-      num_neib_domain_IO = comm%nneib_domain
-      ntot_import_IO =     comm%ntot_item_sr
-!
-      call allocate_neib_domain_IO
-      call allocate_import_stack_IO
-      call allocate_import_item_IO
-!
-      id_neib_domain_IO(1:comm%nneib_domain)                            &
-     &      = comm%id_domain(1:comm%nneib_domain)
-      istack_import_IO(0:comm%nneib_domain)                             &
-     &      = comm%istack_sr(0:comm%nneib_domain)
-!
-      item_import_IO(1:comm%ntot_item_sr)                               &
-     &      = comm%item_sr(1:comm%ntot_item_sr)
-!
-      call dealloc_type_sph_comm_item(comm)
-!
-      end subroutine copy_comm_sph_type_to_IO
-!
-! -----------------------------------------------------------------------
 !
       end module copy_sph_comm_tbl_type_4_IO

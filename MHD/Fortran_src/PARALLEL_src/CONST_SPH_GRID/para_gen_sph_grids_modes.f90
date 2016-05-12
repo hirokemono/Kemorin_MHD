@@ -90,7 +90,7 @@
 !
       integer(kind = kint), intent(in) :: ndomain_sph
       integer(kind = kint), intent(in) :: l_truncation
-      type(sph_comm_tbl), intent(in) :: comm_rlm
+      type(sph_comm_tbl), intent(inout) :: comm_rlm
       type(sph_rlm_grid), intent(inout) :: sph_rlm
       type(sph_comm_tbl), intent(inout) :: comm_rlm_mul(ndomain_sph)
 !
@@ -111,7 +111,7 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &        'output_modes_rlm_sph_trans', ip_rank
         call output_modes_rlm_sph_trans                                 &
-     &     (ip_rank, l_truncation, sph_rlm)
+     &     (ip_rank, l_truncation, sph_rlm, comm_rlm)
 !
         write(*,'(a,i6,a)') 'Spherical transform table for domain',     &
      &          ip_rank, ' is done.'
@@ -131,7 +131,7 @@
 !
       integer(kind = kint), intent(in) :: ndomain_sph
       integer(kind = kint), intent(in) :: l_truncation
-      type(sph_comm_tbl), intent(in) :: comm_rtm
+      type(sph_comm_tbl), intent(inout) :: comm_rtm
       type(sph_rtm_grid), intent(inout) :: sph_rtm
       type(sph_comm_tbl), intent(inout) :: comm_rtm_mul(ndomain_sph)
 !
@@ -150,7 +150,8 @@
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &        'output_geom_rtm_sph_trans', ip_rank
-        call output_geom_rtm_sph_trans(ip_rank, l_truncation, sph_rtm)
+        call output_geom_rtm_sph_trans                                  &
+     &     (ip_rank, l_truncation, sph_rtm, comm_rtm)
  
         write(*,'(a,i6,a)') 'Legendre transform table rtm',             &
      &          ip_rank, ' is done.'

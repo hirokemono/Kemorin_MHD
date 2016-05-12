@@ -8,16 +8,16 @@
 !!        (Serial version)
 !!
 !!@verbatim
-!!      subroutine gen_sph_rlm_grids(ndomain_sph, comm_rlm)
-!!      subroutine gen_sph_rtm_grids(ndomain_sph, comm_rtm)
+!!      subroutine gen_sph_rlm_grids(ndomain_sph, comm_rlm_mul)
+!!      subroutine gen_sph_rtm_grids(ndomain_sph, comm_rtm_mul)
 !!
-!!      subroutine gen_sph_rj_modes(ndomain_sph, comm_rlm)
-!!      subroutine gen_sph_rtp_grids(ndomain_sph, comm_rtm)
+!!      subroutine gen_sph_rj_modes(ndomain_sph, comm_rlm_mul)
+!!      subroutine gen_sph_rtp_grids(ndomain_sph, comm_rtm_mul)
 !!
 !!      subroutine gen_fem_mesh_for_sph(ndomain_sph)
 !!
-!!      subroutine dealloc_all_comm_stacks_rlm(ndomain_sph, comm_rlm)
-!!      subroutine dealloc_all_comm_stacks_rtm(ndomain_sph, comm_rtm)
+!!      subroutine dealloc_all_comm_stacks_rlm(ndomain_sph, comm_rlm_mul)
+!!      subroutine dealloc_all_comm_stacks_rtm(ndomain_sph, comm_rtm_mul)
 !!@endverbatim
 !
       module single_gen_sph_grids_modes
@@ -34,7 +34,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gen_sph_rlm_grids(ndomain_sph, comm_rlm)
+      subroutine gen_sph_rlm_grids(ndomain_sph, comm_rlm_mul)
 !
       use m_spheric_parameter
       use m_sph_trans_comm_table
@@ -43,19 +43,19 @@
       use gen_sph_grids_modes
 !
       integer(kind = kint), intent(in) :: ndomain_sph
-      type(sph_comm_tbl), intent(inout) :: comm_rlm(ndomain_sph)
+      type(sph_comm_tbl), intent(inout) :: comm_rlm_mul(ndomain_sph)
       integer(kind = kint) :: ip_rank, ip
 !
 !
       do ip = 1, ndomain_sph
         ip_rank = ip - 1
         call const_sph_rlm_modes(ip_rank)
-        call copy_sph_comm_neib(comm_rlm1, comm_rlm(ip))
+        call copy_sph_comm_neib(comm_rlm1, comm_rlm_mul(ip))
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &          'output_modes_rlm_sph_trans', ip_rank
         call output_modes_rlm_sph_trans                                 &
-     &     (ip_rank, sph_param1%l_truncation, sph_rlm1)
+     &     (ip_rank, sph_param1%l_truncation, sph_rlm1, comm_rlm1)
 !
         write(*,'(a,i6,a)') 'Legendre transform table rlm',             &
      &          ip_rank, ' is done.'
@@ -66,7 +66,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine gen_sph_rtm_grids(ndomain_sph, comm_rtm)
+      subroutine gen_sph_rtm_grids(ndomain_sph, comm_rtm_mul)
 !
       use m_spheric_parameter
       use m_sph_trans_comm_table
@@ -75,19 +75,19 @@
       use gen_sph_grids_modes
 !
       integer(kind = kint), intent(in) :: ndomain_sph
-      type(sph_comm_tbl), intent(inout) :: comm_rtm(ndomain_sph)
+      type(sph_comm_tbl), intent(inout) :: comm_rtm_mul(ndomain_sph)
       integer(kind = kint) :: ip_rank, ip
 !
 !
       do ip = 1, ndomain_sph
         ip_rank = ip - 1
         call const_sph_rtm_grids(ip_rank)
-        call copy_sph_comm_neib(comm_rtm1, comm_rtm(ip))
+        call copy_sph_comm_neib(comm_rtm1, comm_rtm_mul(ip))
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &          'output_geom_rtm_sph_trans', ip_rank
         call output_geom_rtm_sph_trans                                  &
-     &     (ip_rank, sph_param1%l_truncation, sph_rtm1)
+     &     (ip_rank, sph_param1%l_truncation, sph_rtm1, comm_rtm1)
 !
         write(*,'(a,i6,a)') 'Legendre transform table rtm',             &
      &          ip_rank, ' is done.'
@@ -99,19 +99,19 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine gen_sph_rj_modes(ndomain_sph, comm_rlm)
+      subroutine gen_sph_rj_modes(ndomain_sph, comm_rlm_mul)
 !
       use set_local_index_table_sph
       use set_comm_table_rtp_rj
 !
       integer(kind = kint), intent(in) :: ndomain_sph
-      type(sph_comm_tbl), intent(in) :: comm_rlm(ndomain_sph)
+      type(sph_comm_tbl), intent(in) :: comm_rlm_mul(ndomain_sph)
       integer(kind = kint) :: ip_rank
 !
 !
       call allocate_rj_1d_local_idx
       do ip_rank = 0, ndomain_sph-1
-        call const_sph_rj_modes(ip_rank, ndomain_sph, comm_rlm)
+        call const_sph_rj_modes(ip_rank, ndomain_sph, comm_rlm_mul)
       end do
       call deallocate_rj_1d_local_idx
 !
@@ -119,19 +119,19 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine gen_sph_rtp_grids(ndomain_sph, comm_rtm)
+      subroutine gen_sph_rtp_grids(ndomain_sph, comm_rtm_mul)
 !
       use set_local_index_table_sph
       use set_comm_table_rtp_rj
 !
       integer(kind = kint), intent(in) :: ndomain_sph
-      type(sph_comm_tbl), intent(in) :: comm_rtm(ndomain_sph)
+      type(sph_comm_tbl), intent(in) :: comm_rtm_mul(ndomain_sph)
       integer(kind = kint) :: ip_rank
 !
 !
       call allocate_rtp_1d_local_idx
       do ip_rank = 0, ndomain_sph-1
-        call const_sph_rtp_grids(ip_rank, ndomain_sph, comm_rtm)
+        call const_sph_rtp_grids(ip_rank, ndomain_sph, comm_rtm_mul)
       end do
       call deallocate_rtp_1d_local_idx
 !
@@ -177,32 +177,32 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine dealloc_all_comm_stacks_rlm(ndomain_sph, comm_rlm)
+      subroutine dealloc_all_comm_stacks_rlm(ndomain_sph, comm_rlm_mul)
 !
       integer(kind = kint), intent(in) :: ndomain_sph
-      type(sph_comm_tbl), intent(inout) :: comm_rlm(ndomain_sph)
+      type(sph_comm_tbl), intent(inout) :: comm_rlm_mul(ndomain_sph)
       integer(kind = kint) :: ip
 !
 !
       do ip = 1, ndomain_sph
-        call dealloc_type_sph_comm_stack(comm_rlm(ip))
-          comm_rlm(ip)%nneib_domain = 0
+        call dealloc_type_sph_comm_stack(comm_rlm_mul(ip))
+          comm_rlm_mul(ip)%nneib_domain = 0
       end do
 !
       end subroutine dealloc_all_comm_stacks_rlm
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine dealloc_all_comm_stacks_rtm(ndomain_sph, comm_rtm)
+      subroutine dealloc_all_comm_stacks_rtm(ndomain_sph, comm_rtm_mul)
 !
       integer(kind = kint), intent(in) :: ndomain_sph
-      type(sph_comm_tbl), intent(inout) :: comm_rtm(ndomain_sph)
+      type(sph_comm_tbl), intent(inout) :: comm_rtm_mul(ndomain_sph)
       integer(kind = kint) :: ip
 !
 !
       do ip = 1, ndomain_sph
-        call dealloc_type_sph_comm_stack(comm_rtm(ip))
-        comm_rtm(ip)%nneib_domain = 0
+        call dealloc_type_sph_comm_stack(comm_rtm_mul(ip))
+        comm_rtm_mul(ip)%nneib_domain = 0
       end do
 !
       end subroutine dealloc_all_comm_stacks_rtm

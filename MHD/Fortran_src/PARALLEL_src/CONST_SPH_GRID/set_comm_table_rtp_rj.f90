@@ -31,6 +31,7 @@
       private :: const_comm_table_4_rj,  const_comm_table_4_rtp
       private :: count_comm_table_4_rj,  set_comm_table_4_rj
       private :: count_comm_table_4_rtp, set_comm_table_4_rtp
+      private :: set_comm_stack_rtp_rj
 !
 ! -----------------------------------------------------------------------
 !
@@ -64,6 +65,7 @@
       subroutine const_sph_rj_modes(ip_rank, ndomain_sph, comm_rlm)
 !
       use t_spheric_rj_data
+      use m_sph_trans_comm_table
 !
       use load_data_for_sph_IO
       use set_sph_groups
@@ -109,8 +111,8 @@
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                 'output_modes_rj_sph_trans', ip_rank
-      call output_modes_rj_sph_trans                                    &
-     &   (ip_rank, sph_param1%l_truncation, sph_rj1)
+      call output_modes_rj_sph_trans(ip_rank, sph_param1%l_truncation,  &
+     &    sph_rj1, comm_rj1, radial_rj_grp1, sphere_rj_grp1)
 !
       write(*,'(a,i6,a)') 'Spherical modes for domain',                 &
      &          ip_rank, ' is done.'
@@ -122,6 +124,7 @@
       subroutine const_sph_rtp_grids(ip_rank, ndomain_sph, comm_rtm)
 !
       use t_spheric_rtp_data
+      use m_sph_trans_comm_table
 !
       use load_data_for_sph_IO
       use set_sph_groups
@@ -165,8 +168,9 @@
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                 'output_geom_rtp_sph_trans', ip_rank
-      call output_geom_rtp_sph_trans                                    &
-     &   (ip_rank, sph_param1%l_truncation, sph_rtp1)
+      call output_geom_rtp_sph_trans(ip_rank, sph_param1%l_truncation,  &
+     &    sph_rtp1, comm_rtp1, bc_rtp_grp1,                             &
+     &    radial_rtp_grp1, theta_rtp_grp1, zonal_rtp_grp)
 !
       write(*,'(a,i6,a)') 'Spherical grids for domain',                 &
      &          ip_rank, ' is done.'
