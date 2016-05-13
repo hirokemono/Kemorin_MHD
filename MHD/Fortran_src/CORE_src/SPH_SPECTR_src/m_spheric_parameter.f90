@@ -29,7 +29,7 @@
 !
 !
 !>  Structure of grid and spectr data for spherical spectr method
-        type(sph_shell_parameters) :: sph_param1
+      type(sph_shell_parameters), save :: sph_param1
 !sph_param1%l_truncation
 !
       type(sph_rtp_grid), save :: sph_rtp1

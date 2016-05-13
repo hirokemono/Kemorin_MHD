@@ -132,7 +132,8 @@
 !
       call allocate_rj_1d_local_idx(sph_rj1)
       do ip_rank = 0, ndomain_sph-1
-        call const_sph_rj_modes(ip_rank, ndomain_sph, comm_rlm_mul)
+        call const_sph_rj_modes(ip_rank, ndomain_sph,                   &
+     &      comm_rlm_mul, sph_param1, sph_rj1, sph_rlm1)
       end do
       call deallocate_rj_1d_local_idx
 !
@@ -153,7 +154,8 @@
 !
       call allocate_rtp_1d_local_idx(sph_rtp1)
       do ip_rank = 0, ndomain_sph-1
-        call const_sph_rtp_grids(ip_rank, ndomain_sph, comm_rtm_mul)
+        call const_sph_rtp_grids(ip_rank, ndomain_sph, comm_rtm_mul,    &
+     &      sph_param1, sph_rtp1, sph_rtm1)
       end do
       call deallocate_rtp_1d_local_idx
 !
