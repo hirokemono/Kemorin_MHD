@@ -7,7 +7,12 @@
 !>@brief  Construct FEM mesh from spherical harmonics transform data
 !!
 !!@verbatim
-!!      subroutine const_FEM_mesh_4_sph_mhd(mesh, group)
+!!      subroutine const_FEM_mesh_4_sph_mhd(sph_params, sph_rtp, sph_rj,&
+!!     &          radial_rtp_grp, radial_rj_grp, mesh, group)
+!!        type(sph_shell_parameters), intent(in) :: sph_params
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(group_data), intent(in) :: radial_rtp_grp, radial_rj_grp
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::  group
 !!@endverbatim
@@ -17,6 +22,10 @@
       use m_precision
       use m_constants
       use m_machine_parameter
+!
+      use t_spheric_parameter
+      use t_mesh_data
+      use t_group_data
 !
       implicit none
 !
@@ -28,39 +37,41 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine const_FEM_mesh_4_sph_mhd(mesh, group)
+      subroutine const_FEM_mesh_4_sph_mhd(sph_params, sph_rtp, sph_rj,  &
+     &          radial_rtp_grp, radial_rj_grp, mesh, group)
 !
       use calypso_mpi
-      use t_mesh_data
-      use t_group_data
-      use m_spheric_parameter
-      use m_group_data_sph_specr
       use m_gauss_points
       use m_spheric_global_ranks
       use set_FEM_mesh_4_sph
       use const_1d_ele_connect_4_sph
       use set_sph_groups
 !
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(group_data), intent(in) :: radial_rtp_grp, radial_rj_grp
+!
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::  group
 !
 !
-      call allocate_gauss_points(sph_rtp1%nidx_global_rtp(2))
+      call allocate_gauss_points(sph_rtp%nidx_global_rtp(2))
       call allocate_gauss_colatitude
       call construct_gauss_coefs
       call set_gauss_colatitude
 !
 !
-      call const_global_sph_FEM
+      call const_global_sph_FEM(sph_rtp, sph_rj, radial_rtp_grp)
       call s_const_1d_ele_connect_4_sph                                 &
-     &   (sph_param1%iflag_shell_mode, sph_param1%m_folding, sph_rtp1)
+     &   (sph_params%iflag_shell_mode, sph_params%m_folding, sph_rtp)
 !
-      nidx_local_fem(1:3) = nidx_rtp(1:3)
-      nidx_local_fem(3) =   sph_param1%m_folding * nidx_local_fem(3)
+      nidx_local_fem(1:3) = sph_rtp%nidx_rtp(1:3)
+      nidx_local_fem(3) =   sph_params%m_folding * nidx_local_fem(3)
 !
       call s_const_FEM_mesh_for_sph                                     &
-     &   (my_rank, sph_rtp1%nidx_rtp, sph_rj1%radius_1d_rj_r,           &
-     &    sph_param1, radial_rj_grp1, mesh, group)
+     &   (my_rank, sph_rtp%nidx_rtp, sph_rj%radius_1d_rj_r,             &
+     &    sph_params, radial_rj_grp, mesh, group)
 !
       call deallocate_nnod_nele_sph_mesh
       call deallocate_gauss_points
@@ -71,18 +82,21 @@
 !-----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine const_global_sph_FEM
+      subroutine const_global_sph_FEM(sph_rtp1, sph_rj1, radial_rtp_grp1)
 !
-      use m_spheric_parameter
       use m_spheric_global_ranks
       use m_sph_global_parameter
       use m_sph_1d_global_index
       use m_2d_sph_trans_table
       use set_sph_1d_domain_id
 !
+      type(sph_rtp_grid), intent(in) :: sph_rtp1
+      type(sph_rj_grid), intent(in) :: sph_rj1
+      type(group_data), intent(in) :: radial_rtp_grp1
+!
 !
       if(iflag_debug .gt. 0) write(*,*) 'const_global_rtp_mesh'
-      call const_global_rtp_mesh
+      call const_global_rtp_mesh(sph_rtp1, radial_rtp_grp1)
 !
       call allocate_sph_1d_domain_id(sph_rtp1, sph_rj1)
 !
@@ -98,11 +112,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine const_global_rtp_mesh
+      subroutine const_global_rtp_mesh(sph_rtp, radial_rtp_grp)
 !
       use calypso_mpi
-      use m_spheric_parameter
-      use m_group_data_sph_specr
       use m_spheric_global_ranks
       use m_sph_global_parameter
       use m_sph_1d_global_index
@@ -110,11 +122,14 @@
       use const_global_sph_grids_modes
       use set_global_spherical_param
 !
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(group_data), intent(in) :: radial_rtp_grp
+!
       integer(kind = kint) :: ist, ip, inc_r, inc_t, ip_rank
       integer(kind = kint) :: igrp, inum, inod
 !
 !
-      call MPI_allREDUCE(sph_rtp1%irank_sph_rtp, ndomain_rtp, ithree,   &
+      call MPI_allREDUCE(sph_rtp%irank_sph_rtp, ndomain_rtp, ithree,    &
      &    CALYPSO_INTEGER, MPI_MAX, CALYPSO_COMM, ierr_MPI)
       ndomain_rtp(1:3) = ndomain_rtp(1:3) + 1
 !
@@ -122,7 +137,7 @@
       call allocate_sph_ranks
       call allocate_sph_gl_parameter
 !
-      iglobal_rank_rtp(1:3,my_rank) = sph_rtp1%irank_sph_rtp(1:3)
+      iglobal_rank_rtp(1:3,my_rank) = sph_rtp%irank_sph_rtp(1:3)
       do ip = 0, nprocs-1
         call MPI_Bcast(iglobal_rank_rtp(1,ip), ithree, CALYPSO_INTEGER, &
      &      ip, CALYPSO_COMM, ierr_MPI)
@@ -141,10 +156,10 @@
       call allocate_nidx_local
       call allocate_sph_1d_global_stack
 !
-      ip = sph_rtp1%irank_sph_rtp(1) + 1
+      ip = sph_rtp%irank_sph_rtp(1) + 1
       nidx_local_rtp_r(ip)= nidx_rtp(1)
-      istack_idx_local_rtp_r(ip-1) = sph_rtp1%ist_rtp(1) - 1
-      istack_idx_local_rtp_r(ip) =   sph_rtp1%ied_rtp(1)
+      istack_idx_local_rtp_r(ip-1) = sph_rtp%ist_rtp(1) - 1
+      istack_idx_local_rtp_r(ip) =   sph_rtp%ied_rtp(1)
       do ip = 1, ndomain_rtp(1)
         ip_rank = (ip-1) * inc_r
         call MPI_Bcast(nidx_local_rtp_r(ip), ione,                      &
@@ -153,10 +168,10 @@
      &      CALYPSO_INTEGER, ip_rank, CALYPSO_COMM, ierr_MPI)
       end do
 !
-      ip = sph_rtp1%irank_sph_rtp(2) + 1
+      ip = sph_rtp%irank_sph_rtp(2) + 1
       nidx_local_rtp_t(ip)= nidx_rtp(2)
-      istack_idx_local_rtp_t(ip-1) = sph_rtp1%ist_rtp(2) - 1
-      istack_idx_local_rtp_t(ip) =   sph_rtp1%ied_rtp(2)
+      istack_idx_local_rtp_t(ip-1) = sph_rtp%ist_rtp(2) - 1
+      istack_idx_local_rtp_t(ip) =   sph_rtp%ied_rtp(2)
       do ip = 1, ndomain_rtp(2)
         ip_rank = (ip-1) * inc_t
         call MPI_Bcast(nidx_local_rtp_t(ip), ione,                      &
@@ -165,34 +180,34 @@
      &      CALYPSO_INTEGER, ip_rank, CALYPSO_COMM, ierr_MPI)
       end do
 !
-      ip = sph_rtp1%irank_sph_rtp(3) + 1
+      ip = sph_rtp%irank_sph_rtp(3) + 1
       nidx_local_rtp_p(ip)= nidx_rtp(3)
-      istack_idx_local_rtp_p(ip-1) = sph_rtp1%ist_rtp(3) - 1
-      istack_idx_local_rtp_p(ip) =   sph_rtp1%ied_rtp(3)
+      istack_idx_local_rtp_p(ip-1) = sph_rtp%ist_rtp(3) - 1
+      istack_idx_local_rtp_p(ip) =   sph_rtp%ied_rtp(3)
 !
 !
 !
       call allocate_sph_gl_bc_param
 !
-      ip = sph_rtp1%irank_sph_rtp(1) + 1
-      do igrp = 1, radial_rtp_grp1%num_grp
-        if(radial_rtp_grp1%grp_name(igrp) .eq. OC_ele_grp_name) then
-          nidx_local_rtp_OC(ip) =  radial_rtp_grp1%istack_grp(igrp)     &
-     &                           - radial_rtp_grp1%istack_grp(igrp-1)
-          ist = radial_rtp_grp1%istack_grp(igrp-1) + 1
-          inum = radial_rtp_grp1%item_grp(ist)
-          ist_idx_local_rtp_OC(ip) = sph_rtp1%idx_gl_1d_rtp_r(inum) - 1
+      ip = sph_rtp%irank_sph_rtp(1) + 1
+      do igrp = 1, radial_rtp_grp%num_grp
+        if(radial_rtp_grp%grp_name(igrp) .eq. OC_ele_grp_name) then
+          nidx_local_rtp_OC(ip) =  radial_rtp_grp%istack_grp(igrp)      &
+     &                           - radial_rtp_grp%istack_grp(igrp-1)
+          ist = radial_rtp_grp%istack_grp(igrp-1) + 1
+          inum = radial_rtp_grp%item_grp(ist)
+          ist_idx_local_rtp_OC(ip) = sph_rtp%idx_gl_1d_rtp_r(inum) - 1
           exit
         end if
       end do
 !
-      do igrp = 1, radial_rtp_grp1%num_grp
-        if(radial_rtp_grp1%grp_name(igrp) .eq. IC_ele_grp_name) then
-          nidx_local_rtp_IC(ip) =  radial_rtp_grp1%istack_grp(igrp)     &
-     &                           - radial_rtp_grp1%istack_grp(igrp-1)
-          ist = radial_rtp_grp1%istack_grp(igrp-1) + 1
-          inum = radial_rtp_grp1%item_grp(ist)
-          ist_idx_local_rtp_IC(ip) = sph_rtp1%idx_gl_1d_rtp_r(inum) - 1
+      do igrp = 1, radial_rtp_grp%num_grp
+        if(radial_rtp_grp%grp_name(igrp) .eq. IC_ele_grp_name) then
+          nidx_local_rtp_IC(ip) =  radial_rtp_grp%istack_grp(igrp)      &
+     &                           - radial_rtp_grp%istack_grp(igrp-1)
+          ist = radial_rtp_grp%istack_grp(igrp-1) + 1
+          inum = radial_rtp_grp%item_grp(ist)
+          ist_idx_local_rtp_IC(ip) = sph_rtp%idx_gl_1d_rtp_r(inum) - 1
           exit
         end if
       end do
@@ -200,12 +215,12 @@
       nidx_local_rtp_MT(ip) =  nidx_rtp(1) - nidx_local_rtp_OC(ip)      &
      &                                     - nidx_local_rtp_IC(ip)
       if(nidx_local_rtp_MT(ip) .gt. 0) then
-        do igrp = 1, radial_rtp_grp1%num_grp
-          if(radial_rtp_grp1%grp_name(igrp) .eq. OC_ele_grp_name) then
-            ist = radial_rtp_grp1%istack_grp(igrp)
-            inum = radial_rtp_grp1%item_grp(ist) + 1
+        do igrp = 1, radial_rtp_grp%num_grp
+          if(radial_rtp_grp%grp_name(igrp) .eq. OC_ele_grp_name) then
+            ist = radial_rtp_grp%istack_grp(igrp)
+            inum = radial_rtp_grp%item_grp(ist) + 1
             ist_idx_local_rtp_MT(ip)                                    &
-     &            = sph_rtp1%idx_gl_1d_rtp_r(inum) - 1
+     &            = sph_rtp%idx_gl_1d_rtp_r(inum) - 1
             exit
           end if
         end do
@@ -235,8 +250,8 @@
       call allocate_sph_1d_global_idx
 !
       do inum = 1, nidx_rtp(1)
-        inod = sph_rtp1%ist_rtp(1) + inum - 1
-        idx_global_rtp_r(inod) = sph_rtp1%idx_gl_1d_rtp_r(inum)
+        inod = sph_rtp%ist_rtp(1) + inum - 1
+        idx_global_rtp_r(inod) = sph_rtp%idx_gl_1d_rtp_r(inum)
       end do
       do ip = 1, ndomain_rtp(1)
         ip_rank = (ip-1) * inc_r
@@ -246,8 +261,8 @@
       end do
 !
       do inum = 1, nidx_rtp(2)
-        inod = sph_rtp1%ist_rtp(2) + inum - 1
-        idx_global_rtp_t(inod) = sph_rtp1%idx_gl_1d_rtp_t(inum)
+        inod = sph_rtp%ist_rtp(2) + inum - 1
+        idx_global_rtp_t(inod) = sph_rtp%idx_gl_1d_rtp_t(inum)
       end do
       do ip = 1, ndomain_rtp(2)
         ip_rank = (ip-1) * inc_t
@@ -257,8 +272,8 @@
       end do
 !
       do inod = 1, nidx_rtp(3)
-        idx_global_rtp_p(inod,1) = sph_rtp1%idx_gl_1d_rtp_p(inod,1)
-        idx_global_rtp_p(inod,2) = sph_rtp1%idx_gl_1d_rtp_p(inod,2)
+        idx_global_rtp_p(inod,1) = sph_rtp%idx_gl_1d_rtp_p(inod,1)
+        idx_global_rtp_p(inod,2) = sph_rtp%idx_gl_1d_rtp_p(inod,2)
       end do
 !
       call deallocate_nidx_local

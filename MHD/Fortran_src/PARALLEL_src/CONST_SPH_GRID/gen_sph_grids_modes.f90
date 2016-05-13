@@ -109,42 +109,43 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine const_fem_mesh_for_sph(ip_rank)
+      subroutine const_fem_mesh_for_sph                                 &
+     &         (ip_rank, sph_params, radial_rj_grp, sph_rtp)
 !
+      use t_spheric_parameter
       use t_mesh_data
       use t_comm_table
       use t_geometry_data
-      use m_read_boundary_data
-      use m_spheric_parameter
-      use m_gauss_points
-      use m_group_data_sph_specr
-      use set_local_index_table_sph
-      use set_local_sphere_by_global
-      use set_FEM_mesh_4_sph
-      use m_sph_mesh_1d_connect
 !
       use m_node_id_spherical_IO
       use m_read_mesh_data
+      use m_read_boundary_data
+      use m_gauss_points
+      use m_sph_mesh_1d_connect
+!
+      use set_local_sphere_by_global
+      use set_FEM_mesh_4_sph
       use set_comm_table_4_IO
       use set_node_data_4_IO
       use set_element_data_4_IO
       use mesh_IO_select
 !
       integer(kind = kint), intent(in) :: ip_rank
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(group_data), intent(in) :: radial_rj_grp
+      type(sph_rtp_grid), intent(inout) :: sph_rtp
 !
       type(mesh_geometry) :: mesh
       type(mesh_groups) ::  group
 !
 !
-      call copy_gl_2_local_rtp_param(ip_rank, sph_rtp1)
-      nidx_local_fem(1:3) = sph_rtp1%nidx_rtp(1:3)
-      nidx_local_fem(3) =   sph_param1%m_folding * nidx_local_fem(3)
-      nnod_rtp = sph_rtp1%nnod_rtp
-      nidx_rtp = sph_rtp1%nidx_rtp
+      call copy_gl_2_local_rtp_param(ip_rank, sph_rtp)
+      nidx_local_fem(1:3) = sph_rtp%nidx_rtp(1:3)
+      nidx_local_fem(3) =   sph_params%m_folding * nidx_local_fem(3)
 !
       call s_const_FEM_mesh_for_sph                                     &
-     &   (ip_rank, sph_rtp1%nidx_rtp, radius_1d_gl,                     &
-     &    sph_param1, radial_rj_grp1, mesh, group)
+     &   (ip_rank, sph_rtp%nidx_rtp, radius_1d_gl,                      &
+     &    sph_params, radial_rj_grp, mesh, group)
 !
       call copy_comm_tbl_type_to_IO(ip_rank, mesh%nod_comm)
       call copy_node_geometry_to_IO(mesh%node)

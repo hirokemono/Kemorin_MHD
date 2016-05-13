@@ -90,7 +90,10 @@
         end if
       end if
 !
-      call const_FEM_mesh_4_sph_mhd(mesh_s, group_s)
+      if (iflag_debug.gt.0) write(*,*) 'const_FEM_mesh_4_sph_mhd'
+      call const_FEM_mesh_4_sph_mhd                                     &
+     &   (sph_param1, sph_rtp1, sph_rj1, radial_rtp_grp1,               &
+     &    radial_rj_grp1, mesh_s, group_s)
 !      call compare_mesh_type                                           &
 !     &   (my_rank, mesh%nod_comm, mesh%node, mesh%ele, mesh_s)
 !      call compare_group_types(my_rank, group%nod_grp, group_s%nod_grp)

@@ -1,23 +1,32 @@
 !
 !      module set_local_index_table_sph
 !
-      module set_local_index_table_sph
-!
 !     Written by H. Matsui on July, 2007
 !
-!      subroutine set_local_idx_table_rtp
-!      subroutine set_local_idx_table_rtm
-!      subroutine set_local_idx_table_rlm
-!      subroutine set_local_idx_table_rj
+!!      subroutine allocate_rtp_1d_local_idx(sph_rtp)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!      subroutine allocate_rj_1d_local_idx(sph_rj)
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!
+!!      subroutine set_local_idx_table_rtp(sph_rtp)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!      subroutine set_local_idx_table_rtm(sph_rtm)
+!!        type(sph_rtm_grid), intent(in) :: sph_rtm
+!!      subroutine set_local_idx_table_rlm(sph_rlm)
+!!        type(sph_rlm_grid), intent(in) :: sph_rlm
+!!      subroutine set_local_idx_table_rj(sph_rj)
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!
+!!      subroutine deallocate_rtp_1d_local_idx
+!!      subroutine deallocate_rj_1d_local_idx
+!!      subroutine deallocate_rtm_1d_local_idx
+!!      subroutine deallocate_rlm_1d_local_idx
 !
-!      subroutine deallocate_rtp_1d_local_idx
-!      subroutine deallocate_rj_1d_local_idx
-!      subroutine deallocate_rtm_1d_local_idx
-!      subroutine deallocate_rlm_1d_local_idx
+      module set_local_index_table_sph
 !
       use m_precision
 !
-      use m_spheric_parameter
+      use t_spheric_parameter
 !
       implicit none
 !
@@ -43,13 +52,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_rtp_1d_local_idx
+      subroutine allocate_rtp_1d_local_idx(sph_rtp)
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
 !
       integer(kind = kint) :: n1, n2, n3
 !
-      n1 = sph_rtp1%nidx_global_rtp(1)
-      n2 = sph_rtp1%nidx_global_rtp(2)
-      n3 = sph_rtp1%nidx_global_rtp(3)
+      n1 = sph_rtp%nidx_global_rtp(1)
+      n2 = sph_rtp%nidx_global_rtp(2)
+      n3 = sph_rtp%nidx_global_rtp(3)
       allocate( idx_local_rtp_r(n1) )
       allocate( idx_local_rtp_t(n2) )
       allocate( idx_local_rtp_p(n3) )
@@ -61,12 +72,14 @@
       end subroutine allocate_rtp_1d_local_idx
 !
 ! -----------------------------------------------------------------------!
-      subroutine allocate_rj_1d_local_idx
+      subroutine allocate_rj_1d_local_idx(sph_rj)
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
 !
       integer(kind = kint) :: n1, n2
 !
-      n1 = sph_rj1%nidx_global_rj(1)
-      n2 = sph_rj1%nidx_global_rj(2)
+      n1 = sph_rj%nidx_global_rj(1)
+      n2 = sph_rj%nidx_global_rj(2)
       allocate( idx_local_rj_r(n1) )
       allocate( idx_local_rj_j(0:n2) )
 !
@@ -77,13 +90,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_rtm_1d_local_idx
+      subroutine allocate_rtm_1d_local_idx(sph_rtm)
+!
+      type(sph_rtm_grid), intent(in) :: sph_rtm
 !
       integer(kind = kint) :: n1, n2, n3
 !
-      n1 = sph_rtm1%nidx_global_rtm(1)
-      n2 = sph_rtm1%nidx_global_rtm(2)
-      n3 = sph_rtm1%nidx_global_rtm(3)
+      n1 = sph_rtm%nidx_global_rtm(1)
+      n2 = sph_rtm%nidx_global_rtm(2)
+      n3 = sph_rtm%nidx_global_rtm(3)
       allocate( idx_local_rtm_r(n1) )
       allocate( idx_local_rtm_t(n2) )
       allocate( idx_local_rtm_m(n3) )
@@ -95,12 +110,14 @@
       end subroutine allocate_rtm_1d_local_idx
 !
 ! -----------------------------------------------------------------------!
-      subroutine allocate_rlm_1d_local_idx
+      subroutine allocate_rlm_1d_local_idx(sph_rlm)
+!
+      type(sph_rlm_grid), intent(in) :: sph_rlm
 !
       integer(kind = kint) :: n1, n2
 !
-      n1 = sph_rlm1%nidx_global_rlm(1)
-      n2 = sph_rlm1%nidx_global_rlm(2)
+      n1 = sph_rlm%nidx_global_rlm(1)
+      n2 = sph_rlm%nidx_global_rlm(2)
       allocate( idx_local_rlm_r(n1) )
       allocate( idx_local_rlm_j(0:n2) )
 !
@@ -112,7 +129,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_local_idx_table_rtp
+      subroutine set_local_idx_table_rtp(sph_rtp)
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
 !
       integer(kind = kint) :: k, l, m, kk, ll, mm
 !
@@ -121,18 +140,18 @@
       idx_local_rtp_t = 0
       idx_local_rtp_p = 0
 !
-      do k = 1, nidx_rtp(1)
-        kk = sph_rtp1%idx_gl_1d_rtp_r(k)
+      do k = 1, sph_rtp%nidx_rtp(1)
+        kk = sph_rtp%idx_gl_1d_rtp_r(k)
         idx_local_rtp_r(kk) = k
       end do
 !
-      do l = 1, nidx_rtp(2)
-        ll = sph_rtp1%idx_gl_1d_rtp_t(l)
+      do l = 1, sph_rtp%nidx_rtp(2)
+        ll = sph_rtp%idx_gl_1d_rtp_t(l)
         idx_local_rtp_t(ll) = l
       end do
 !
-      do m = 1, nidx_rtp(3)
-        mm = sph_rtp1%idx_gl_1d_rtp_p(m,1)
+      do m = 1, sph_rtp%nidx_rtp(3)
+        mm = sph_rtp%idx_gl_1d_rtp_p(m,1)
         idx_local_rtp_p(mm) = m
       end do
 !
@@ -140,25 +159,27 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_local_idx_table_rtm
+      subroutine set_local_idx_table_rtm(sph_rtm)
+!
+      type(sph_rtm_grid), intent(in) :: sph_rtm
 !
       integer(kind = kint) :: k, l, m, kk, ll, mm
 !
 !
-      call allocate_rtm_1d_local_idx
+      call allocate_rtm_1d_local_idx(sph_rtm)
 !
-      do k = 1, nidx_rtm(1)
-        kk = sph_rtm1%idx_gl_1d_rtm_r(k)
+      do k = 1, sph_rtm%nidx_rtm(1)
+        kk = sph_rtm%idx_gl_1d_rtm_r(k)
         idx_local_rtm_r(kk) = k
       end do
 !
-      do l = 1, nidx_rtm(2)
-        ll = sph_rtm1%idx_gl_1d_rtm_t(l)
+      do l = 1, sph_rtm%nidx_rtm(2)
+        ll = sph_rtm%idx_gl_1d_rtm_t(l)
         idx_local_rtm_t(ll) = l
       end do
 !
-      do m = 1, nidx_rtm(3)
-        mm = sph_rtm1%idx_gl_1d_rtm_m(m,1)
+      do m = 1, sph_rtm%nidx_rtm(3)
+        mm = sph_rtm%idx_gl_1d_rtm_m(m,1)
         idx_local_rtm_m(mm) = m
       end do
 !
@@ -166,20 +187,22 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_local_idx_table_rlm
+      subroutine set_local_idx_table_rlm(sph_rlm)
+!
+      type(sph_rlm_grid), intent(in) :: sph_rlm
 !
       integer(kind = kint) :: k, j, kk, jj
 !
 !
-      call allocate_rlm_1d_local_idx
+      call allocate_rlm_1d_local_idx(sph_rlm)
 !
-      do k = 1, nidx_rlm(1)
-        kk = sph_rlm1%idx_gl_1d_rlm_r(k)
+      do k = 1, sph_rlm%nidx_rlm(1)
+        kk = sph_rlm%idx_gl_1d_rlm_r(k)
         idx_local_rlm_r(kk) = k
       end do
 !
-      do j = 1, nidx_rtm(2)
-        jj = sph_rlm1%idx_gl_1d_rlm_j(j,1)
+      do j = 1, sph_rlm%nidx_rlm(2)
+        jj = sph_rlm%idx_gl_1d_rlm_j(j,1)
         idx_local_rlm_j(jj) = j
       end do
 !
@@ -187,7 +210,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_local_idx_table_rj
+      subroutine set_local_idx_table_rj(sph_rj)
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
 !
       integer(kind = kint) :: k, j, kk, jj
 !
@@ -195,13 +220,13 @@
       idx_local_rj_r = 0
       idx_local_rj_j = 0
 !
-      do k = 1, nidx_rj(1)
-        kk = sph_rj1%idx_gl_1d_rj_r(k)
+      do k = 1, sph_rj%nidx_rj(1)
+        kk = sph_rj%idx_gl_1d_rj_r(k)
         idx_local_rj_r(kk) = k
       end do
 !
-      do j = 1, nidx_rj(2)
-        jj = sph_rj1%idx_gl_1d_rj_j(j,1)
+      do j = 1, sph_rj%nidx_rj(2)
+        jj = sph_rj%idx_gl_1d_rj_j(j,1)
         idx_local_rj_j(jj) = j
       end do
 !

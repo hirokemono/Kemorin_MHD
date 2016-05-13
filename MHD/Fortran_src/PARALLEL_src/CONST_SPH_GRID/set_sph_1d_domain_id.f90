@@ -3,14 +3,13 @@
 !
 !     Written by H. Matsui on July, 2007
 !
-!      subroutine set_sph_1d_domain_id_rtp
-!      subroutine set_sph_1d_domain_id_rj
+!!      subroutine set_sph_1d_domain_id_rtp
+!!      subroutine set_sph_1d_domain_id_rj
 !
       module set_sph_1d_domain_id
 !
       use m_precision
 !
-      use m_spheric_parameter
       use m_sph_1d_global_index
 !
       implicit none

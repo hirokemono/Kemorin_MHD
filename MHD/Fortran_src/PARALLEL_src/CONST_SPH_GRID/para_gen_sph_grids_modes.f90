@@ -164,6 +164,7 @@
 !
       subroutine para_gen_sph_rj_modes(ndomain_sph, comm_rlm_mul)
 !
+      use m_spheric_parameter
       use set_local_index_table_sph
       use set_comm_table_rtp_rj
 !
@@ -172,7 +173,7 @@
       integer(kind = kint) :: ip_rank
 !
 !
-      call allocate_rj_1d_local_idx
+      call allocate_rj_1d_local_idx(sph_rj1)
       do ip_rank = 0, ndomain_sph-1
         if(mod(ip_rank,nprocs) .ne. my_rank) cycle
 !
@@ -189,6 +190,7 @@
 !
       subroutine para_gen_sph_rtp_grids(ndomain_sph, comm_rtm_mul)
 !
+      use m_spheric_parameter
       use set_local_index_table_sph
       use set_comm_table_rtp_rj
 !
@@ -197,7 +199,7 @@
       integer(kind = kint) :: ip_rank
 !
 !
-      call allocate_rtp_1d_local_idx
+      call allocate_rtp_1d_local_idx(sph_rtp1)
       do ip_rank = 0, ndomain_sph-1
         if(mod(ip_rank,nprocs) .ne. my_rank) cycle
 !
@@ -214,10 +216,10 @@
 !
       subroutine para_gen_fem_mesh_for_sph(ndomain_sph)
 !
-      use m_spheric_parameter
       use m_gauss_points
       use m_group_data_sph_specr
       use m_sph_mesh_1d_connect
+      use m_spheric_parameter
       use m_group_data_sph_specr
       use const_1d_ele_connect_4_sph
       use set_local_index_table_sph
@@ -248,7 +250,7 @@
      &             ' on ', my_rank
 !
         call const_fem_mesh_for_sph                                     &
-     &     (ip_rank)
+     &     (ip_rank, sph_param1, radial_rj_grp1, sph_rtp1)
       end do
 !
       call deallocate_grp_type(radial_rj_grp1)
