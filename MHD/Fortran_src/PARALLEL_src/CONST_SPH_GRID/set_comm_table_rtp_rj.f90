@@ -325,6 +325,8 @@
 !
       integer(kind = kint), intent(inout) :: icou
 !
+      type(sph_comm_tbl) :: comm_rlm_lc
+!
       integer(kind = kint) :: jst, jed, j, jnod, k_tmp, j_tmp
       integer(kind = kint) :: k_glb, j_glb
       integer(kind = kint) :: ip1, jp, id_org_rank, ip_org
@@ -346,13 +348,13 @@
         end do
         if(iflag_jp .eq. 0) cycle
 !
-        call const_sph_rlm_modes(id_org_rank)
+        call const_sph_rlm_modes(id_org_rank, sph_rlm1, comm_rlm_lc)
 !
-        jst = comm_rlm1%istack_sr(iflag_jp-1)+1
-        jed = comm_rlm1%istack_sr(iflag_jp)
+        jst = comm_rlm_lc%istack_sr(iflag_jp-1)+1
+        jed = comm_rlm_lc%istack_sr(iflag_jp)
         do j =  jst, jed
           icou = icou + 1
-          jnod = comm_rlm1%item_sr(j)
+          jnod = comm_rlm_lc%item_sr(j)
           k_glb = sph_rlm1%idx_global_rlm(jnod,1)
           j_glb = sph_rlm1%idx_global_rlm(jnod,2)
           k_tmp = idx_local_rj_r(k_glb)
@@ -361,7 +363,7 @@
      &                            + (k_tmp-1) * sph_rj1%nidx_rj(2)
         end do
 !
-        call dealloc_type_sph_comm_item(comm_rlm1)
+        call dealloc_type_sph_comm_item(comm_rlm_lc)
         call dealloc_type_sph_1d_index_rlm(sph_rlm1)
         call dealloc_type_spheric_param_rlm(sph_rlm1)
       end do
@@ -428,6 +430,8 @@
       integer(kind = kint), intent(inout)                               &
      &              :: item_sr_rtp(ntot_item_sr_rtp)
 !
+      type(sph_comm_tbl) :: comm_rtm_lc
+!
       integer(kind = kint) :: jst, jed, j, jnod
       integer(kind = kint) :: k_tmp, l_tmp, m_tmp, k_glb, l_glb, m_glb
       integer(kind = kint) :: ip1, jp, id_org_rank, ip_org, iflag_jp
@@ -448,13 +452,13 @@
         end do
         if(iflag_jp .eq. 0) cycle
 !
-        call const_sph_rtm_grids(id_org_rank)
+        call const_sph_rtm_grids(id_org_rank, sph_rtm1, comm_rtm_lc)
 !
-        jst = comm_rtm1%istack_sr(iflag_jp-1)+1
-        jed = comm_rtm1%istack_sr(iflag_jp)
+        jst = comm_rtm_lc%istack_sr(iflag_jp-1)+1
+        jed = comm_rtm_lc%istack_sr(iflag_jp)
         do j =  jst, jed
           icou = icou + 1
-          jnod = comm_rtm1%item_sr(j)
+          jnod = comm_rtm_lc%item_sr(j)
           k_glb = sph_rtm1%idx_global_rtm(jnod,1)
           l_glb = sph_rtm1%idx_global_rtm(jnod,2)
           m_glb = sph_rtm1%idx_global_rtm(jnod,3)
@@ -466,7 +470,7 @@
      &                                           * sph_rtp1%nidx_rtp(2)
         end do
 !
-        call dealloc_type_sph_comm_item(comm_rtm1)
+        call dealloc_type_sph_comm_item(comm_rtm_lc)
         call dealloc_type_sph_1d_index_rtm(sph_rtm1)
         call dealloc_type_spheric_param_rtm(sph_rtm1)
       end do

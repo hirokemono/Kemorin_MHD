@@ -54,7 +54,8 @@
       if(iflag_debug .gt. 0) write(*,*) 'gen_sph_rlm_grids'
       allocate(comm_rlm_mul(ndomain_sph))
 !
-      call gen_sph_rlm_grids(ndomain_sph, comm_rlm_mul)
+      call gen_sph_rlm_grids                                            &
+     &   (ndomain_sph, sph_param1, sph_rlm1, comm_rlm_mul)
       if(iflag_debug .gt. 0) write(*,*) 'gen_sph_rj_modes'
       call gen_sph_rj_modes(ndomain_sph, comm_rlm_mul)
       call dealloc_all_comm_stacks_rlm(ndomain_sph, comm_rlm_mul)
@@ -63,7 +64,8 @@
       allocate(comm_rtm_mul(ndomain_sph))
 !
       if(iflag_debug .gt. 0) write(*,*) 'gen_sph_rtm_grids'
-      call gen_sph_rtm_grids(ndomain_sph, comm_rtm_mul)
+      call gen_sph_rtm_grids                                            &
+     &   (ndomain_sph, sph_param1, sph_rtm1, comm_rtm_mul)
       if(iflag_debug .gt. 0) write(*,*) 'gen_sph_rtp_grids'
       call gen_sph_rtp_grids(ndomain_sph, comm_rtm_mul)
       call dealloc_all_comm_stacks_rtm(ndomain_sph, comm_rtm_mul)

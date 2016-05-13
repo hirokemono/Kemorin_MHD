@@ -8,8 +8,16 @@
 !!        (Serial version)
 !!
 !!@verbatim
-!!      subroutine gen_sph_rlm_grids(ndomain_sph, comm_rlm_mul)
-!!      subroutine gen_sph_rtm_grids(ndomain_sph, comm_rtm_mul)
+!!      subroutine gen_sph_rlm_grids                                    &
+!!     &         (ndomain_sph, sph_params, sph_rlm, comm_rlm_mul)
+!!        type(sph_shell_parameters), intent(in) :: sph_params
+!!        type(sph_rlm_grid), intent(inout) :: sph_rlm
+!!        type(sph_comm_tbl), intent(inout) :: comm_rlm_mul(ndomain_sph)
+!!      subroutine gen_sph_rtm_grids                                    &
+!!     &         (ndomain_sph, sph_params, sph_rtm, comm_rtm_mul)
+!!        type(sph_shell_parameters), intent(in) :: sph_params
+!!        type(sph_rtm_grid), intent(inout) :: sph_rtm
+!!        type(sph_comm_tbl), intent(inout) :: comm_rtm_mul(ndomain_sph)
 !!
 !!      subroutine gen_sph_rj_modes(ndomain_sph, comm_rlm_mul)
 !!      subroutine gen_sph_rtp_grids(ndomain_sph, comm_rtm_mul)
@@ -24,6 +32,10 @@
 !
       use m_precision
       use m_machine_parameter
+!
+      use t_spheric_parameter
+      use t_spheric_rtm_data
+      use t_spheric_rlm_data
       use t_sph_trans_comm_tbl
 !
       implicit none
@@ -34,28 +46,32 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gen_sph_rlm_grids(ndomain_sph, comm_rlm_mul)
+      subroutine gen_sph_rlm_grids                                      &
+     &         (ndomain_sph, sph_params, sph_rlm, comm_rlm_mul)
 !
-      use m_spheric_parameter
-      use m_sph_trans_comm_table
       use set_comm_table_rtp_rj
       use load_data_for_sph_IO
       use gen_sph_grids_modes
 !
       integer(kind = kint), intent(in) :: ndomain_sph
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rlm_grid), intent(inout) :: sph_rlm
       type(sph_comm_tbl), intent(inout) :: comm_rlm_mul(ndomain_sph)
+!
       integer(kind = kint) :: ip_rank, ip
+!
+      type(sph_comm_tbl) :: comm_rlm_lc
 !
 !
       do ip = 1, ndomain_sph
         ip_rank = ip - 1
-        call const_sph_rlm_modes(ip_rank)
-        call copy_sph_comm_neib(comm_rlm1, comm_rlm_mul(ip))
+        call const_sph_rlm_modes(ip_rank, sph_rlm, comm_rlm_lc)
+        call copy_sph_comm_neib(comm_rlm_lc, comm_rlm_mul(ip))
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &          'output_modes_rlm_sph_trans', ip_rank
         call output_modes_rlm_sph_trans                                 &
-     &     (ip_rank, sph_param1%l_truncation, sph_rlm1, comm_rlm1)
+     &     (ip_rank, sph_params%l_truncation, sph_rlm, comm_rlm_lc)
 !
         write(*,'(a,i6,a)') 'Legendre transform table rlm',             &
      &          ip_rank, ' is done.'
@@ -66,28 +82,32 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine gen_sph_rtm_grids(ndomain_sph, comm_rtm_mul)
+      subroutine gen_sph_rtm_grids                                      &
+     &         (ndomain_sph, sph_params, sph_rtm, comm_rtm_mul)
 !
-      use m_spheric_parameter
-      use m_sph_trans_comm_table
       use set_comm_table_rtp_rj
       use load_data_for_sph_IO
       use gen_sph_grids_modes
 !
       integer(kind = kint), intent(in) :: ndomain_sph
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rtm_grid), intent(inout) :: sph_rtm
       type(sph_comm_tbl), intent(inout) :: comm_rtm_mul(ndomain_sph)
+!
       integer(kind = kint) :: ip_rank, ip
+!
+      type(sph_comm_tbl) :: comm_rtm_lc
 !
 !
       do ip = 1, ndomain_sph
         ip_rank = ip - 1
-        call const_sph_rtm_grids(ip_rank)
-        call copy_sph_comm_neib(comm_rtm1, comm_rtm_mul(ip))
+        call const_sph_rtm_grids(ip_rank, sph_rtm, comm_rtm_lc)
+        call copy_sph_comm_neib(comm_rtm_lc, comm_rtm_mul(ip))
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &          'output_geom_rtm_sph_trans', ip_rank
         call output_geom_rtm_sph_trans                                  &
-     &     (ip_rank, sph_param1%l_truncation, sph_rtm1, comm_rtm1)
+     &     (ip_rank, sph_params%l_truncation, sph_rtm, comm_rtm_lc)
 !
         write(*,'(a,i6,a)') 'Legendre transform table rtm',             &
      &          ip_rank, ' is done.'

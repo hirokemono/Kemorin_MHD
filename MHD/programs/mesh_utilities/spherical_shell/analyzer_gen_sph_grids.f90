@@ -88,7 +88,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rlm_grids'
       call para_gen_sph_rlm_grids(ndomain_sph, sph_param1%l_truncation, &
-     &    comm_rlm1, sph_rlm1, comm_rlm_mul)
+     &    sph_rlm1, comm_rlm_mul)
       call end_eleps_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rj_modes'
       call start_eleps_time(3)
@@ -102,7 +102,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rtm_grids'
       call para_gen_sph_rtm_grids(ndomain_sph, sph_param1%l_truncation, &
-     &    comm_rtm1, sph_rtm1, comm_rtm_mul)
+     &    sph_rtm1, comm_rtm_mul)
       call end_eleps_time(2)
       call start_eleps_time(3)
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rtp_grids'
