@@ -3,15 +3,25 @@
 !
 !     Written by H. Matsui on July, 2007
 !
-!      subroutine set_item_rtp_radial_grp
-!      subroutine set_item_rj_radial_grp
-!      subroutine set_item_rj_spectr_grp
+!!      subroutine set_item_rtp_radial_grp                              &
+!!     &         (sph_params, sph_rtp, radial_rtp_grp)
+!!        type(sph_shell_parameters) :: sph_params
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(group_data), intent(inout) :: radial_rtp_grp
+!!      subroutine set_item_rj_radial_grp                               &
+!!     &         (sph_params, sph_rj, radial_rj_grp)
+!!      subroutine set_item_rj_spectr_grp(sph_rj, sphere_rj_grp)
+!!        type(sph_shell_parameters) :: sph_params
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(group_data), intent(inout) :: radial_rj_grp
+!!        type(group_data), intent(inout) :: sphere_rj_grp
 !
       module set_item_4_sph_groups
 !
       use m_precision
       use m_constants
-      !
+!
+      use t_spheric_parameter
       use t_spheric_rtp_data
       use t_spheric_rtm_data
       use t_spheric_rlm_data
@@ -28,11 +38,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_item_rtp_radial_grp(sph_rtp, radial_rtp_grp)
+      subroutine set_item_rtp_radial_grp                                &
+     &         (sph_params, sph_rtp, radial_rtp_grp)
 !
-      use m_spheric_parameter
       use m_sph_1d_global_index
 !
+      type(sph_shell_parameters) :: sph_params
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(group_data), intent(inout) :: radial_rtp_grp
 !
@@ -40,42 +51,42 @@
 !
       icou = 0
       call set_item_sph_grp_by_list                                     &
-     &   (icou, sph_param1%nlayer_ICB, sph_param1%nlayer_ICB,           &
+     &   (icou, sph_params%nlayer_ICB, sph_params%nlayer_ICB,           &
      &    sph_rtp%nidx_rtp(1), sph_rtp%idx_gl_1d_rtp_r,                 &
      &    radial_rtp_grp%num_item, radial_rtp_grp%item_grp)
 !
       call set_item_sph_grp_by_list                                     &
-     &   (icou, sph_param1%nlayer_CMB, sph_param1%nlayer_CMB,           &
+     &   (icou, sph_params%nlayer_CMB, sph_params%nlayer_CMB,           &
      &    sph_rtp%nidx_rtp(1), sph_rtp%idx_gl_1d_rtp_r,                 &
      &    radial_rtp_grp%num_item, radial_rtp_grp%item_grp)
 !
       call set_item_sph_grp_by_list(icou,                               &
-     &    sph_param1%nlayer_2_center, sph_param1%nlayer_2_center,       &
+     &    sph_params%nlayer_2_center, sph_params%nlayer_2_center,       &
      &    sph_rtp%nidx_rtp(1), sph_rtp%idx_gl_1d_rtp_r,                 &
      &    radial_rtp_grp%num_item, radial_rtp_grp%item_grp)
 !
-      if (sph_rtp%nidx_global_rtp(1) .gt. sph_param1%nlayer_CMB) then
+      if (sph_rtp%nidx_global_rtp(1) .gt. sph_params%nlayer_CMB) then
         call set_item_sph_grp_by_list(icou,                             &
      &      sph_rtp%nidx_global_rtp(1), sph_rtp%nidx_global_rtp(1),     &
      &      sph_rtp%nidx_rtp(1), sph_rtp%idx_gl_1d_rtp_r,               &
      &      radial_rtp_grp%num_item, radial_rtp_grp%item_grp)
       end if
 !
-      if (sph_param1%nlayer_mid_OC .gt. 0) then
+      if (sph_params%nlayer_mid_OC .gt. 0) then
         call set_item_sph_grp_by_list(icou,                             &
-     &      sph_param1%nlayer_mid_OC, sph_param1%nlayer_mid_OC,         &
+     &      sph_params%nlayer_mid_OC, sph_params%nlayer_mid_OC,         &
      &      sph_rtp%nidx_rtp(1), sph_rtp%idx_gl_1d_rtp_r,               &
      &      radial_rtp_grp%num_item, radial_rtp_grp%item_grp)
       end if
 !
-      nlayer_ed = sph_param1%nlayer_ICB-1
+      nlayer_ed = sph_params%nlayer_ICB-1
       call set_item_sph_grp_by_list                                     &
-     &   (icou, sph_param1%nlayer_2_center, nlayer_ed,                  &
+     &   (icou, sph_params%nlayer_2_center, nlayer_ed,                  &
      &    sph_rtp%nidx_rtp(1), sph_rtp%idx_gl_1d_rtp_r,                 &
      &    radial_rtp_grp%num_item, radial_rtp_grp%item_grp)
 !
       call set_item_sph_grp_by_list                                     &
-     &   (icou, sph_param1%nlayer_ICB, sph_param1%nlayer_CMB,           &
+     &   (icou, sph_params%nlayer_ICB, sph_params%nlayer_CMB,           &
      &    sph_rtp%nidx_rtp(1), sph_rtp%idx_gl_1d_rtp_r,                 &
      &    radial_rtp_grp%num_item, radial_rtp_grp%item_grp)
 !
@@ -91,11 +102,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_item_rj_radial_grp(sph_rj, radial_rj_grp)
+      subroutine set_item_rj_radial_grp                                 &
+     &         (sph_params, sph_rj, radial_rj_grp)
 !
-      use m_spheric_parameter
       use m_sph_1d_global_index
 !
+      type(sph_shell_parameters) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
       type(group_data), intent(inout) :: radial_rj_grp
 !
@@ -104,42 +116,42 @@
 !
       icou = 0
       call set_item_sph_grp_by_rng                                      &
-     &   (icou, sph_param1%nlayer_ICB, sph_param1%nlayer_ICB,           &
+     &   (icou, sph_params%nlayer_ICB, sph_params%nlayer_ICB,           &
      &    sph_rj%ist_rj(1), sph_rj%ied_rj(1),                           &
      &    radial_rj_grp%num_item, radial_rj_grp%item_grp)
 !
       call set_item_sph_grp_by_rng                                      &
-     &   (icou, sph_param1%nlayer_CMB, sph_param1%nlayer_CMB,           &
+     &   (icou, sph_params%nlayer_CMB, sph_params%nlayer_CMB,           &
      &    sph_rj%ist_rj(1), sph_rj%ied_rj(1),                           &
      &    radial_rj_grp%num_item, radial_rj_grp%item_grp)
 !
       call set_item_sph_grp_by_rng(icou,                                &
-     &    sph_param1%nlayer_2_center, sph_param1%nlayer_2_center,       &
+     &    sph_params%nlayer_2_center, sph_params%nlayer_2_center,       &
      &    sph_rj%ist_rj(1), sph_rj%ied_rj(1),                           &
      &    radial_rj_grp%num_item, radial_rj_grp%item_grp)
 !
-      if (sph_rtp1%nidx_global_rtp(1) .gt. sph_param1%nlayer_CMB) then
-        call set_item_sph_grp_by_rng(icou, sph_rtp1%nidx_global_rtp(1), &
-     &      sph_rtp1%nidx_global_rtp(1), sph_rj%ist_rj(1),              &
+      if (sph_rj%nidx_global_rj(1) .gt. sph_params%nlayer_CMB) then
+        call set_item_sph_grp_by_rng(icou, sph_rj%nidx_global_rj(1),    &
+     &      sph_rj%nidx_global_rj(1), sph_rj%ist_rj(1),                 &
      &      sph_rj%ied_rj(1), radial_rj_grp%num_item,                   &
      &      radial_rj_grp%item_grp)
       end if
 !
-      if (sph_param1%nlayer_mid_OC .gt. 0) then
+      if (sph_params%nlayer_mid_OC .gt. 0) then
         call set_item_sph_grp_by_rng(icou,                              &
-     &      sph_param1%nlayer_mid_OC, sph_param1%nlayer_mid_OC,         &
+     &      sph_params%nlayer_mid_OC, sph_params%nlayer_mid_OC,         &
      &      sph_rj%ist_rj(1), sph_rj%ied_rj(1),                         &
      &      radial_rj_grp%num_item, radial_rj_grp%item_grp)
       end if
 !
-      nlayer_ed = sph_param1%nlayer_ICB-1
+      nlayer_ed = sph_params%nlayer_ICB-1
       call set_item_sph_grp_by_rng                                      &
-     &   (icou, sph_param1%nlayer_2_center, nlayer_ed,                  &
+     &   (icou, sph_params%nlayer_2_center, nlayer_ed,                  &
      &    sph_rj%ist_rj(1), sph_rj%ied_rj(1),                           &
      &    radial_rj_grp%num_item, radial_rj_grp%item_grp)
 !
       call set_item_sph_grp_by_rng                                      &
-     &   (icou, sph_param1%nlayer_ICB, sph_param1%nlayer_CMB,           &
+     &   (icou, sph_params%nlayer_ICB, sph_params%nlayer_CMB,           &
      &    sph_rj%ist_rj(1), sph_rj%ied_rj(1),                           &
      &    radial_rj_grp%num_item, radial_rj_grp%item_grp)
 !

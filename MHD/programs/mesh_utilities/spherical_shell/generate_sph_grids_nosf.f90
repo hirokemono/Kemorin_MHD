@@ -34,11 +34,12 @@
      &    sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1)
 !
       call check_global_spheric_parameter
-      call output_set_radial_grid
+      call output_set_radial_grid(sph_param1, sph_rtp1)
 !
 !  ========= Generate spherical harmonics table ========================
 !
-      call s_const_global_sph_grids_modes
+      call s_const_global_sph_grids_modes                               &
+     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rj1)
 !
       allocate(comm_rlm_mul(ndomain_sph))
 !

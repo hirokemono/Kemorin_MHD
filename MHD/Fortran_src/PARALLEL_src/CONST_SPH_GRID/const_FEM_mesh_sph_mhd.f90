@@ -157,7 +157,7 @@
       call allocate_sph_1d_global_stack
 !
       ip = sph_rtp%irank_sph_rtp(1) + 1
-      nidx_local_rtp_r(ip)= nidx_rtp(1)
+      nidx_local_rtp_r(ip)= sph_rtp%nidx_rtp(1)
       istack_idx_local_rtp_r(ip-1) = sph_rtp%ist_rtp(1) - 1
       istack_idx_local_rtp_r(ip) =   sph_rtp%ied_rtp(1)
       do ip = 1, ndomain_rtp(1)
@@ -169,7 +169,7 @@
       end do
 !
       ip = sph_rtp%irank_sph_rtp(2) + 1
-      nidx_local_rtp_t(ip)= nidx_rtp(2)
+      nidx_local_rtp_t(ip)= sph_rtp%nidx_rtp(2)
       istack_idx_local_rtp_t(ip-1) = sph_rtp%ist_rtp(2) - 1
       istack_idx_local_rtp_t(ip) =   sph_rtp%ied_rtp(2)
       do ip = 1, ndomain_rtp(2)
@@ -181,7 +181,7 @@
       end do
 !
       ip = sph_rtp%irank_sph_rtp(3) + 1
-      nidx_local_rtp_p(ip)= nidx_rtp(3)
+      nidx_local_rtp_p(ip)= sph_rtp%nidx_rtp(3)
       istack_idx_local_rtp_p(ip-1) = sph_rtp%ist_rtp(3) - 1
       istack_idx_local_rtp_p(ip) =   sph_rtp%ied_rtp(3)
 !
@@ -212,8 +212,9 @@
         end if
       end do
 !
-      nidx_local_rtp_MT(ip) =  nidx_rtp(1) - nidx_local_rtp_OC(ip)      &
-     &                                     - nidx_local_rtp_IC(ip)
+      nidx_local_rtp_MT(ip) =  sph_rtp%nidx_rtp(1)                      &
+     &                        - nidx_local_rtp_OC(ip)                   &
+     &                        - nidx_local_rtp_IC(ip)
       if(nidx_local_rtp_MT(ip) .gt. 0) then
         do igrp = 1, radial_rtp_grp%num_grp
           if(radial_rtp_grp%grp_name(igrp) .eq. OC_ele_grp_name) then
@@ -249,7 +250,7 @@
 !
       call allocate_sph_1d_global_idx
 !
-      do inum = 1, nidx_rtp(1)
+      do inum = 1, sph_rtp%nidx_rtp(1)
         inod = sph_rtp%ist_rtp(1) + inum - 1
         idx_global_rtp_r(inod) = sph_rtp%idx_gl_1d_rtp_r(inum)
       end do
@@ -260,7 +261,7 @@
      &      CALYPSO_INTEGER, ip_rank, CALYPSO_COMM, ierr_MPI)
       end do
 !
-      do inum = 1, nidx_rtp(2)
+      do inum = 1, sph_rtp%nidx_rtp(2)
         inod = sph_rtp%ist_rtp(2) + inum - 1
         idx_global_rtp_t(inod) = sph_rtp%idx_gl_1d_rtp_t(inum)
       end do
@@ -271,7 +272,7 @@
      &      CALYPSO_INTEGER, ip_rank, CALYPSO_COMM, ierr_MPI)
       end do
 !
-      do inod = 1, nidx_rtp(3)
+      do inod = 1, sph_rtp%nidx_rtp(3)
         idx_global_rtp_p(inod,1) = sph_rtp%idx_gl_1d_rtp_p(inod,1)
         idx_global_rtp_p(inod,2) = sph_rtp%idx_gl_1d_rtp_p(inod,2)
       end do

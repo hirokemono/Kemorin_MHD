@@ -44,7 +44,8 @@
         rmax = sph_param1%radius_CMB
       end if
 !
-      call count_set_radial_grid(nele, rmin, rmax)
+      call count_set_radial_grid                                        &
+     &   (nele, rmin, rmax, sph_param1, sph_rtp1)
 !
       stop
       end program const_radial_grid_sph

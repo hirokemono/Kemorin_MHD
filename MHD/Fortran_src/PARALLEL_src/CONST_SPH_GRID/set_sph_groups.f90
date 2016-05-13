@@ -110,7 +110,7 @@
      &   (sph_param, sph_rtp, radial_rtp_grp)
 !
       call allocate_grp_type_item(radial_rtp_grp)
-      call set_item_rtp_radial_grp(sph_rtp, radial_rtp_grp)
+      call set_item_rtp_radial_grp(sph_param, sph_rtp, radial_rtp_grp)
 !
       end subroutine set_rtp_radial_grp
 !
@@ -135,7 +135,7 @@
      &   (sph_param, sph_rj, radial_rj_grp)
 !
       call allocate_grp_type_item(radial_rj_grp)
-      call set_item_rj_radial_grp(sph_rj, radial_rj_grp)
+      call set_item_rj_radial_grp(sph_param, sph_rj, radial_rj_grp)
 !
       end subroutine set_rj_radial_grp
 !

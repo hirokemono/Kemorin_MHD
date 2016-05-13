@@ -63,7 +63,7 @@
 !
       if(my_rank .eq. 0) then
         call check_global_spheric_parameter
-        call output_set_radial_grid
+        call output_set_radial_grid(sph_param1, sph_rtp1)
       end if
 !
       end subroutine init_gen_sph_grids
@@ -81,7 +81,8 @@
 !
 !  ========= Generate spherical harmonics table ========================
 !
-      call s_const_global_sph_grids_modes
+      call s_const_global_sph_grids_modes                               &
+     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rj1)
 !
       call start_eleps_time(2)
       allocate(comm_rlm_mul(ndomain_sph))

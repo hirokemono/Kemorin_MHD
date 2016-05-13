@@ -202,7 +202,8 @@
         end if
 !
         call count_set_radial_grid(num_fluid_grid_ctl%intvalue,         &
-     &      Min_radius_ctl%realvalue, Max_radius_ctl%realvalue)
+     &      Min_radius_ctl%realvalue, Max_radius_ctl%realvalue,         &
+     &      sph_param1, sph_rtp1)
       end if
 !
       ndomain_rtp(1:3) = 1
