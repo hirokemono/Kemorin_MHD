@@ -34,6 +34,8 @@
       use m_ctl_data_4_sph_utils
       use m_ctl_params_sph_utils
       use m_spheric_parameter
+      use m_sph_trans_comm_table
+      use m_group_data_sph_specr
       use m_sph_spectr_data
       use m_sph_phys_address
       use parallel_load_data_4_sph
@@ -53,7 +55,9 @@
 !       set spectr grids
 !
       if (iflag_debug.gt.0) write(*,*) 'load_para_rj_mesh'
-      call load_para_rj_mesh
+      call load_para_rj_mesh                                            &
+     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1, comm_rj1,  &
+     &    radial_rj_grp1, sphere_rj_grp1)
 !
 !  ------  initialize spectr data
 !

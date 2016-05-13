@@ -43,6 +43,8 @@
 !
       use m_control_parameter
       use m_spheric_parameter
+      use m_sph_trans_comm_table
+      use m_group_data_sph_specr
       use m_sph_boundary_input_data
       use set_control_sph_mhd
       use parallel_load_data_4_sph
@@ -59,7 +61,11 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_mesh'
-      call load_para_SPH_and_FEM_mesh(mesh, group, ele_mesh)
+      call load_para_SPH_and_FEM_mesh                                   &
+     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,            &
+     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, bc_rtp_grp1,       &
+     &    radial_rtp_grp1, theta_rtp_grp1, zonal_rtp_grp,               &
+     &    radial_rj_grp1, sphere_rj_grp1, mesh, group, ele_mesh)
 !
       if (iflag_boundary_file .eq. id_read_boundary_file) then
         if (iflag_debug.eq.1) write(*,*) 'read_boundary_spectr_file'
@@ -74,6 +80,9 @@
       subroutine input_control_4_SPH_MHD_nosnap(rj_fld)
 !
       use m_control_parameter
+      use m_spheric_parameter
+      use m_sph_trans_comm_table
+      use m_group_data_sph_specr
       use m_sph_boundary_input_data
       use set_control_sph_mhd
       use parallel_load_data_4_sph
@@ -85,7 +94,11 @@
       call set_control_4_SPH_MHD(rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
-      call load_para_sph_mesh
+      call load_para_sph_mesh                                           &
+     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,            &
+     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, bc_rtp_grp1,       &
+     &    radial_rtp_grp1, theta_rtp_grp1, zonal_rtp_grp,               &
+     &    radial_rj_grp1, sphere_rj_grp1)
 !
       if (iflag_boundary_file .eq. id_read_boundary_file) then
         if (iflag_debug.eq.1) write(*,*) 'read_boundary_spectr_file'
@@ -100,6 +113,9 @@
       subroutine input_control_4_SPH_make_init(rj_fld)
 !
       use m_control_parameter
+      use m_spheric_parameter
+      use m_sph_trans_comm_table
+      use m_group_data_sph_specr
       use m_sph_boundary_input_data
       use set_control_sph_mhd
       use parallel_load_data_4_sph
@@ -111,7 +127,11 @@
       call set_control_4_SPH_MHD(rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
-      call load_para_sph_mesh
+      call load_para_sph_mesh                                           &
+     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,            &
+     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, bc_rtp_grp1,       &
+     &    radial_rtp_grp1, theta_rtp_grp1, zonal_rtp_grp,               &
+     &    radial_rj_grp1, sphere_rj_grp1)
 !
       end subroutine input_control_4_SPH_make_init
 !
@@ -121,6 +141,9 @@
       subroutine input_control_SPH_dynamobench(rj_fld)
 !
       use m_control_parameter
+      use m_spheric_parameter
+      use m_sph_trans_comm_table
+      use m_group_data_sph_specr
       use set_control_sph_mhd
       use set_control_sph_data_MHD
       use parallel_load_data_4_sph
@@ -134,7 +157,11 @@
       call set_ctl_params_dynamobench
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
-      call load_para_sph_mesh
+      call load_para_sph_mesh                                           &
+     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,            &
+     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, bc_rtp_grp1,       &
+     &    radial_rtp_grp1, theta_rtp_grp1, zonal_rtp_grp,               &
+     &    radial_rj_grp1, sphere_rj_grp1)
 !
       end subroutine input_control_SPH_dynamobench
 !

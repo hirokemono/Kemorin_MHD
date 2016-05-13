@@ -10,6 +10,7 @@
       use m_read_ctl_gen_sph_shell
       use m_spheric_global_ranks
       use m_spheric_parameter
+      use m_group_data_sph_specr
       use m_read_mesh_data
       use m_node_id_spherical_IO
       use set_ctl_gen_shell_grids
@@ -27,7 +28,8 @@
 !
 !
       call read_control_4_gen_shell_grids
-      call s_set_control_4_gen_shell_grids
+      call s_set_control_4_gen_shell_grids                              &
+     &   (sph_param1, sph_rtp1, sph_rj1)
 !
       call set_global_sph_resolution                                    &
      &   (sph_param1%l_truncation, sph_param1%m_folding,                &
@@ -47,7 +49,8 @@
       call gen_sph_rlm_grids                                            &
      &   (ndomain_sph, sph_param1, sph_rlm1, comm_rlm_mul)
       if(iflag_debug .gt. 0) write(*,*) 'gen_sph_rj_modes'
-      call gen_sph_rj_modes(ndomain_sph, comm_rlm_mul)
+      call gen_sph_rj_modes(ndomain_sph, comm_rlm_mul,                  &
+     &    sph_param1, sph_rlm1, sph_rj1)
       call dealloc_all_comm_stacks_rlm(ndomain_sph, comm_rlm_mul)
       deallocate(comm_rlm_mul)
 !
@@ -57,12 +60,14 @@
       call gen_sph_rtm_grids                                            &
      &   (ndomain_sph, sph_param1, sph_rtm1, comm_rtm_mul)
       if(iflag_debug .gt. 0) write(*,*) 'gen_sph_rtp_grids'
-      call gen_sph_rtp_grids(ndomain_sph, comm_rtm_mul)
+      call gen_sph_rtp_grids(ndomain_sph, comm_rtm_mul,                 &
+     &    sph_param1, sph_rtp1, sph_rtm1)
       call dealloc_all_comm_stacks_rtm(ndomain_sph, comm_rtm_mul)
       deallocate(comm_rtm_mul)
 !
       if(iflag_debug .gt. 0) write(*,*) 'gen_fem_mesh_for_sph'
-      call gen_fem_mesh_for_sph(ndomain_sph)
+      call gen_fem_mesh_for_sph(ndomain_sph,                            &
+     &    sph_param1, sph_rj1, sph_rtp1, radial_rj_grp1)
 !
       if(sph_param1%iflag_shell_mode .lt. iflag_MESH_same) then
         stop "*** spherical shell mesh done"

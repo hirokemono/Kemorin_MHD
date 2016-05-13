@@ -18,10 +18,25 @@
 !!        type(sph_rtm_grid), intent(inout) :: sph_rtm
 !!        type(sph_comm_tbl), intent(inout) :: comm_rtm_mul(ndomain_sph)
 !!
-!!      subroutine para_gen_sph_rj_modes(ndomain_sph, comm_rlm_mul)
-!!      subroutine para_gen_sph_rtp_grids(ndomain_sph, comm_rtm_mul)
+!!      subroutine para_gen_sph_rj_modes(ndomain_sph, comm_rlm_mul,     &
+!!     &          sph_params, sph_rlm, sph_rj)
+!!        type(sph_comm_tbl), intent(in) :: comm_rlm_mul(ndomain_sph)
+!!        type(sph_shell_parameters), intent(in) :: sph_params
+!!       type(sph_rlm_grid), intent(inout) :: sph_rlm
+!!        type(sph_rj_grid), intent(inout) :: sph_rj
+!!      subroutine para_gen_sph_rtp_grids(ndomain_sph, comm_rtm_mul,    &
+!!     &          sph_params, sph_rtp, sph_rtm)
+!!        type(sph_comm_tbl), intent(in) :: comm_rtm_mul(ndomain_sph)
+!!        type(sph_shell_parameters), intent(in) :: sph_params
+!!        type(sph_rtp_grid), intent(inout) :: sph_rtp
+!!        type(sph_rtm_grid), intent(inout) :: sph_rtm
 !!
-!!      subroutine para_gen_fem_mesh_for_sph(ndomain_sph)
+!!      subroutine para_gen_fem_mesh_for_sph(ndomain_sph,               &
+!!     &          sph_params, sph_rj, sph_rtp, radial_rj_grp)
+!!        type(sph_shell_parameters), intent(in) :: sph_params
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(sph_rtp_grid), intent(inout) :: sph_rtp
+!!        type(group_data), intent(inout) :: radial_rj_grp
 !!
 !!      subroutine dealloc_comm_stacks_sph(ndomain_sph, comm_rtm)
 !!@endverbatim
@@ -34,9 +49,9 @@
       use m_work_time
       use calypso_mpi
 !
-      use t_spheric_rtm_data
-      use t_spheric_rlm_data
+      use t_spheric_parameter
       use t_sph_trans_comm_tbl
+      use t_group_data
 !
       use set_local_sphere_by_global
 !
@@ -160,18 +175,22 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine para_gen_sph_rj_modes(ndomain_sph, comm_rlm_mul)
+      subroutine para_gen_sph_rj_modes(ndomain_sph, comm_rlm_mul,       &
+     &          sph_params, sph_rlm, sph_rj)
 !
-      use m_spheric_parameter
       use set_local_index_table_sph
       use set_comm_table_rtp_rj
 !
       integer(kind = kint), intent(in) :: ndomain_sph
       type(sph_comm_tbl), intent(in) :: comm_rlm_mul(ndomain_sph)
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rlm_grid), intent(inout) :: sph_rlm
+      type(sph_rj_grid), intent(inout) :: sph_rj
+!
       integer(kind = kint) :: ip_rank
 !
 !
-      call allocate_rj_1d_local_idx(sph_rj1)
+      call allocate_rj_1d_local_idx(sph_rj)
       do ip_rank = 0, ndomain_sph-1
         if(mod(ip_rank,nprocs) .ne. my_rank) cycle
 !
@@ -179,7 +198,7 @@
      &             'Construct spherical modes for domain ',             &
      &            ip_rank,  ' on ', my_rank
         call const_sph_rj_modes(ip_rank, ndomain_sph,                   &
-     &      comm_rlm_mul, sph_param1, sph_rj1, sph_rlm1)
+     &      comm_rlm_mul, sph_params, sph_rj, sph_rlm)
       end do
       call deallocate_rj_1d_local_idx
 !
@@ -187,18 +206,22 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine para_gen_sph_rtp_grids(ndomain_sph, comm_rtm_mul)
+      subroutine para_gen_sph_rtp_grids(ndomain_sph, comm_rtm_mul,      &
+     &          sph_params, sph_rtp, sph_rtm)
 !
-      use m_spheric_parameter
       use set_local_index_table_sph
       use set_comm_table_rtp_rj
 !
       integer(kind = kint), intent(in) :: ndomain_sph
       type(sph_comm_tbl), intent(in) :: comm_rtm_mul(ndomain_sph)
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rtp_grid), intent(inout) :: sph_rtp
+      type(sph_rtm_grid), intent(inout) :: sph_rtm
+!
       integer(kind = kint) :: ip_rank
 !
 !
-      call allocate_rtp_1d_local_idx(sph_rtp1)
+      call allocate_rtp_1d_local_idx(sph_rtp)
       do ip_rank = 0, ndomain_sph-1
         if(mod(ip_rank,nprocs) .ne. my_rank) cycle
 !
@@ -206,7 +229,7 @@
      &             'Construct spherical grids for domain ',             &
      &            ip_rank,  ' on ', my_rank
         call const_sph_rtp_grids(ip_rank, ndomain_sph, comm_rtm_mul,    &
-     &      sph_param1, sph_rtp1, sph_rtm1)
+     &      sph_params, sph_rtp, sph_rtm)
       end do
       call deallocate_rtp_1d_local_idx
 !
@@ -214,33 +237,36 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine para_gen_fem_mesh_for_sph(ndomain_sph)
+      subroutine para_gen_fem_mesh_for_sph(ndomain_sph,                 &
+     &          sph_params, sph_rj, sph_rtp, radial_rj_grp)
 !
       use m_gauss_points
-      use m_group_data_sph_specr
       use m_sph_mesh_1d_connect
-      use m_spheric_parameter
-      use m_group_data_sph_specr
       use const_1d_ele_connect_4_sph
       use set_local_index_table_sph
       use set_sph_groups
       use gen_sph_grids_modes
 !
       integer(kind = kint), intent(in) :: ndomain_sph
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rj_grid), intent(in) :: sph_rj
+!
+      type(sph_rtp_grid), intent(inout) :: sph_rtp
+      type(group_data), intent(inout) :: radial_rj_grp
 !
       integer(kind = kint) :: ip_rank
 !
 !
       if(iflag_excluding_FEM_mesh .gt. 0) return
 !
-      call allocate_gauss_points(sph_rtp1%nidx_global_rtp(2))
+      call allocate_gauss_points(sph_rtp%nidx_global_rtp(2))
       call allocate_gauss_colatitude
       call construct_gauss_coefs
       call set_gauss_colatitude
 !
       call s_const_1d_ele_connect_4_sph                                 &
-     &   (sph_param1%iflag_shell_mode, sph_param1%m_folding, sph_rtp1)
-      call set_rj_radial_grp(sph_param1, sph_rj1, radial_rj_grp1)
+     &   (sph_params%iflag_shell_mode, sph_params%m_folding, sph_rtp)
+      call set_rj_radial_grp(sph_params, sph_rj, radial_rj_grp)
 !
       do ip_rank = 0, ndomain_sph-1
         if(mod(ip_rank,nprocs) .ne. my_rank) cycle
@@ -250,10 +276,10 @@
      &             ' on ', my_rank
 !
         call const_fem_mesh_for_sph                                     &
-     &     (ip_rank, sph_param1, radial_rj_grp1, sph_rtp1)
+     &     (ip_rank, sph_params, radial_rj_grp, sph_rtp)
       end do
 !
-      call deallocate_grp_type(radial_rj_grp1)
+      call deallocate_grp_type(radial_rj_grp)
       call deallocate_gauss_points
       call deallocate_gauss_colatitude
 !

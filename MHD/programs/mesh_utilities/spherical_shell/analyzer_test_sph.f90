@@ -28,6 +28,9 @@
 !
       subroutine init_test_sph
 !
+      use m_spheric_parameter
+      use m_sph_trans_comm_table
+      use m_group_data_sph_specr
       use m_read_ctl_gen_sph_shell
       use set_control_platform_data
       use parallel_load_data_4_sph
@@ -48,7 +51,11 @@
       call set_control_sph_mesh
 !
       if (iflag_debug.gt.0) write(*,*) 'load_para_sph_mesh'
-      call load_para_sph_mesh
+      call load_para_sph_mesh                                           &
+     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,            &
+     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, bc_rtp_grp1,       &
+     &    radial_rtp_grp1, theta_rtp_grp1, zonal_rtp_grp,               &
+     &    radial_rj_grp1, sphere_rj_grp1)
 !
        end subroutine init_test_sph
 !

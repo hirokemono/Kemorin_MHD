@@ -6,17 +6,60 @@
 !>@brief Load spherical harmonics indexing data on multiple processes
 !!
 !!@verbatim
-!!      subroutine load_para_SPH_and_FEM_mesh(mesh, group, ele_mesh)
-!!      subroutine load_para_sph_mesh
+!!      subroutine load_para_SPH_and_FEM_mesh                           &
+!!     &         (sph_param, sph_rtp, sph_rtm, sph_rlm, sph_rj,         &
+!!     &          comm_rtp, comm_rtm, comm_rlm, comm_rj, bc_rtp_grp,    &
+!!     &          radial_rtp_grp, theta_rtp_grp, zonal_rtp_grp,         &
+!!     &          radial_rj_grp, sphere_rj_grp, mesh, group, ele_mesh)
+!!      subroutine load_para_sph_mesh                                   &
+!!     &         (sph_param, sph_rtp, sph_rtm, sph_rlm, sph_rj,         &
+!!     &          comm_rtp, comm_rtm, comm_rlm, comm_rj, bc_rtp_grp,    &
+!!     &          radial_rtp_grp, theta_rtp_grp, zonal_rtp_grp,         &
+!!     &          radial_rj_grp, sphere_rj_grp)
+!!        type(sph_shell_parameters), intent(inout) :: sph_param
+!!        type(sph_rtp_grid), intent(inout) :: sph_rtp
+!!        type(sph_rtm_grid), intent(inout) :: sph_rtm
+!!        type(sph_rlm_grid), intent(inout) :: sph_rlm
+!!        type(sph_rj_grid), intent(inout) :: sph_rj
+!!        type(sph_comm_tbl), intent(inout) :: comm_rtp
+!!        type(sph_comm_tbl), intent(inout) :: comm_rtm
+!!        type(sph_comm_tbl), intent(inout) :: comm_rlm
+!!        type(sph_comm_tbl), intent(inout) :: comm_rj
+!!        type(group_data), intent(inout) :: bc_rtp_grp
+!!        type(group_data), intent(inout) :: radial_rtp_grp
+!!        type(group_data), intent(inout) :: theta_rtp_grp
+!!        type(group_data), intent(inout) :: zonal_rtp_grp
+!!        type(group_data), intent(inout) :: radial_rj_grp
+!!        type(group_data), intent(inout) :: sphere_rj_grp
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(element_geometry), intent(inout) :: ele_mesh
+!!
+!!      subroutine load_para_rj_mesh                                    &
+!!     &         (sph_param, sph_rtp, sph_rtm, sph_rlm, sph_rj, comm_rj,&
+!!     &          radial_rj_grp, sphere_rj_grp)
+!!         type(sph_shell_parameters), intent(inout) :: sph_param
+!!         type(sph_rtp_grid), intent(inout) :: sph_rtp
+!!         type(sph_rtm_grid), intent(inout) :: sph_rtm
+!!         type(sph_rlm_grid), intent(inout) :: sph_rlm
+!!         type(sph_rj_grid), intent(inout) :: sph_rj
+!!         type(sph_comm_tbl), intent(inout) :: comm_rj
+!!         type(group_data), intent(inout) :: radial_rj_grp
+!!         type(group_data), intent(inout) :: sphere_rj_grp
 !!@endverbatim
 !
       module parallel_load_data_4_sph
 !
       use m_precision
       use m_constants
+!
+!      use m_spheric_parameter
+!      use m_sph_trans_comm_table
+!      use m_group_data_sph_specr
+!
+      use t_spheric_parameter
+      use t_sph_trans_comm_tbl
+      use t_group_data
 !
       implicit none
 !
@@ -29,24 +72,53 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine load_para_SPH_and_FEM_mesh(mesh, group, ele_mesh)
+      subroutine load_para_SPH_and_FEM_mesh                             &
+     &         (sph_param, sph_rtp, sph_rtm, sph_rlm, sph_rj,           &
+     &          comm_rtp, comm_rtm, comm_rlm, comm_rj, bc_rtp_grp,      &
+     &          radial_rtp_grp, theta_rtp_grp, zonal_rtp_grp,           &
+     &          radial_rj_grp, sphere_rj_grp, mesh, group, ele_mesh)
 !
       use t_mesh_data
+!
+      type(sph_shell_parameters), intent(inout) :: sph_param
+      type(sph_rtp_grid), intent(inout) :: sph_rtp
+      type(sph_rtm_grid), intent(inout) :: sph_rtm
+      type(sph_rlm_grid), intent(inout) :: sph_rlm
+      type(sph_rj_grid), intent(inout) :: sph_rj
+!
+      type(sph_comm_tbl), intent(inout) :: comm_rtp
+      type(sph_comm_tbl), intent(inout) :: comm_rtm
+      type(sph_comm_tbl), intent(inout) :: comm_rlm
+      type(sph_comm_tbl), intent(inout) :: comm_rj
+!
+      type(group_data), intent(inout) :: bc_rtp_grp
+      type(group_data), intent(inout) :: radial_rtp_grp
+      type(group_data), intent(inout) :: theta_rtp_grp
+      type(group_data), intent(inout) :: zonal_rtp_grp
+!
+      type(group_data), intent(inout) :: radial_rj_grp
+      type(group_data), intent(inout) :: sphere_rj_grp
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
 !
 !
-      call load_para_sph_mesh
-      call load_FEM_mesh_4_SPH(mesh, group, ele_mesh)
+      call load_para_sph_mesh                                           &
+     &   (sph_param, sph_rtp, sph_rtm, sph_rlm, sph_rj,                 &
+     &    comm_rtp, comm_rtm, comm_rlm, comm_rj, bc_rtp_grp,            &
+     &    radial_rtp_grp, theta_rtp_grp, zonal_rtp_grp,                 &
+     &    radial_rj_grp, sphere_rj_grp)
+      call load_FEM_mesh_4_SPH(sph_param, sph_rtp, sph_rj,              &
+     &    radial_rtp_grp, radial_rj_grp, mesh, group, ele_mesh)
 !
       end subroutine load_para_SPH_and_FEM_mesh
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine load_FEM_mesh_4_SPH(mesh, group, ele_mesh)
+      subroutine load_FEM_mesh_4_SPH(sph_param, sph_rtp, sph_rj,        &
+     &          radial_rtp_grp, radial_rj_grp, mesh, group, ele_mesh)
 !
       use calypso_mpi
       use t_mesh_data
@@ -55,17 +127,21 @@
       use t_group_data
 !
       use m_spheric_constants
-      use m_spheric_parameter
-      use m_sph_trans_comm_table
-      use m_group_data_sph_specr
       use load_mesh_data
       use copy_mesh_structures
       use const_FEM_mesh_sph_mhd
       use mesh_IO_select
 !
+      type(sph_shell_parameters), intent(inout) :: sph_param
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(group_data), intent(in) :: radial_rtp_grp
+      type(group_data), intent(in) :: radial_rj_grp
+!
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
+!
 !
       type(mesh_geometry) :: mesh_s
       type(mesh_groups) ::  group_s
@@ -77,23 +153,24 @@
         call input_mesh(my_rank, mesh, group,                           &
      &      ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
         call allocate_ele_geometry_type(mesh%ele)
-        call set_fem_center_mode_4_SPH(mesh%node%internal_node)
+        call set_fem_center_mode_4_SPH                                  &
+     &     (mesh%node%internal_node, sph_rtp, sph_param)
         return
       end if
 !
 !  --  Construct FEM mesh
-      if(sph_param1%iflag_shell_mode .eq. iflag_no_FEMMESH) then
-        if(sph_rj1%iflag_rj_center .gt. 0) then
-          sph_param1%iflag_shell_mode =  iflag_MESH_w_center
+      if(sph_param%iflag_shell_mode .eq. iflag_no_FEMMESH) then
+        if(sph_rj%iflag_rj_center .gt. 0) then
+          sph_param%iflag_shell_mode =  iflag_MESH_w_center
         else
-          sph_param1%iflag_shell_mode = iflag_MESH_same
+          sph_param%iflag_shell_mode = iflag_MESH_same
         end if
       end if
 !
       if (iflag_debug.gt.0) write(*,*) 'const_FEM_mesh_4_sph_mhd'
       call const_FEM_mesh_4_sph_mhd                                     &
-     &   (sph_param1, sph_rtp1, sph_rj1, radial_rtp_grp1,               &
-     &    radial_rj_grp1, mesh_s, group_s)
+     &   (sph_param, sph_rtp, sph_rj, radial_rtp_grp,                   &
+     &    radial_rj_grp, mesh_s, group_s)
 !      call compare_mesh_type                                           &
 !     &   (my_rank, mesh%nod_comm, mesh%node, mesh%ele, mesh_s)
 !      call compare_group_types(my_rank, group%nod_grp, group_s%nod_grp)
@@ -110,168 +187,212 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine load_para_sph_mesh
+      subroutine load_para_sph_mesh                                     &
+     &         (sph_param, sph_rtp, sph_rtm, sph_rlm, sph_rj,           &
+     &          comm_rtp, comm_rtm, comm_rlm, comm_rj, bc_rtp_grp,      &
+     &          radial_rtp_grp, theta_rtp_grp, zonal_rtp_grp,           &
+     &          radial_rj_grp, sphere_rj_grp)
 !
       use calypso_mpi
       use m_machine_parameter
       use m_spheric_parameter
-      use m_sph_trans_comm_table
-      use m_group_data_sph_specr
 !
       use load_data_for_sph_IO
 !
+      type(sph_shell_parameters), intent(inout) :: sph_param
+      type(sph_rtp_grid), intent(inout) :: sph_rtp
+      type(sph_rtm_grid), intent(inout) :: sph_rtm
+      type(sph_rlm_grid), intent(inout) :: sph_rlm
+      type(sph_rj_grid), intent(inout) :: sph_rj
+!
+      type(sph_comm_tbl), intent(inout) :: comm_rtp
+      type(sph_comm_tbl), intent(inout) :: comm_rtm
+      type(sph_comm_tbl), intent(inout) :: comm_rlm
+      type(sph_comm_tbl), intent(inout) :: comm_rj
+!
+      type(group_data), intent(inout) :: bc_rtp_grp
+      type(group_data), intent(inout) :: radial_rtp_grp
+      type(group_data), intent(inout) :: theta_rtp_grp
+      type(group_data), intent(inout) :: zonal_rtp_grp
+!
+      type(group_data), intent(inout) :: radial_rj_grp
+      type(group_data), intent(inout) :: sphere_rj_grp
+!
 !
       if (iflag_debug.gt.0) write(*,*) 'input_geom_rtp_sph_trans'
-      call input_geom_rtp_sph_trans(my_rank, sph_param1%l_truncation,   &
-     &    sph_rtp1, comm_rtp1, bc_rtp_grp1, &
-     &          radial_rtp_grp1, theta_rtp_grp1, zonal_rtp_grp)
+      call input_geom_rtp_sph_trans(my_rank, sph_param%l_truncation,    &
+     &    sph_rtp, comm_rtp, bc_rtp_grp,                                &
+     &    radial_rtp_grp, theta_rtp_grp, zonal_rtp_grp)
 !
       if (iflag_debug.gt.0) write(*,*) 'input_modes_rj_sph_trans'
-      call input_modes_rj_sph_trans(my_rank, sph_param1%l_truncation,   &
-     &    sph_rj1, comm_rj1, radial_rj_grp1, sphere_rj_grp1)
+      call input_modes_rj_sph_trans(my_rank, sph_param%l_truncation,    &
+     &    sph_rj, comm_rj, radial_rj_grp, sphere_rj_grp)
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'input_geom_rtm_sph_trans'
       call input_geom_rtm_sph_trans                                     &
-     &   (my_rank, sph_param1%l_truncation, sph_rtm1, comm_rtm1)
+     &   (my_rank, sph_param%l_truncation, sph_rtm, comm_rtm)
 !
       if (iflag_debug.gt.0) write(*,*) 'input_modes_rlm_sph_trans'
       call input_modes_rlm_sph_trans                                    &
-     &   (my_rank, sph_param1%l_truncation, sph_rlm1, comm_rlm1)
-!
-      nnod_rtp =      sph_rtp1%nnod_rtp
-      nidx_rtp(1:3) = sph_rtp1%nidx_rtp(1:3)
-      nnod_rj =       sph_rj1%nnod_rj
-      nidx_rj(1:2) =  sph_rj1%nidx_rj(1:2)
-      nnod_rtm =      sph_rtm1%nnod_rtm
-      nidx_rtm(1:3) = sph_rtm1%nidx_rtm(1:3)
-      nnod_rlm =      sph_rlm1%nnod_rlm
-      nidx_rlm(1:2) = sph_rlm1%nidx_rlm(1:2)
+     &   (my_rank, sph_param%l_truncation, sph_rlm, comm_rlm)
 !
       if (iflag_debug.gt.0) write(*,*) 'set_reverse_tables_4_SPH'
-      call set_reverse_tables_4_SPH
+      call set_reverse_tables_4_SPH                                     &
+     &   (sph_param, sph_rtp, sph_rtm, sph_rlm, sph_rj,                 &
+     &    comm_rtp, comm_rtm, comm_rlm, comm_rj)
+!
+      nnod_rtp =      sph_rtp%nnod_rtp
+      nidx_rtp(1:3) = sph_rtp%nidx_rtp(1:3)
+      nnod_rj =       sph_rj%nnod_rj
+      nidx_rj(1:2) =  sph_rj%nidx_rj(1:2)
+      nnod_rtm =      sph_rtm%nnod_rtm
+      nidx_rtm(1:3) = sph_rtm%nidx_rtm(1:3)
+      nnod_rlm =      sph_rlm%nnod_rlm
+      nidx_rlm(1:2) = sph_rlm%nidx_rlm(1:2)
 !
       end subroutine load_para_sph_mesh
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_reverse_tables_4_SPH
+      subroutine set_reverse_tables_4_SPH                               &
+     &         (sph_param, sph_rtp, sph_rtm, sph_rlm, sph_rj,           &
+     &          comm_rtp, comm_rtm, comm_rlm, comm_rj)
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_spheric_parameter
-      use m_sph_trans_comm_table
 !
       use count_num_sph_smp
       use set_special_sph_lm_flags
 !
       use set_from_recv_buf_rev
 !
+      type(sph_shell_parameters), intent(inout) :: sph_param
+      type(sph_rtp_grid), intent(inout) :: sph_rtp
+      type(sph_rtm_grid), intent(inout) :: sph_rtm
+      type(sph_rlm_grid), intent(inout) :: sph_rlm
+      type(sph_rj_grid), intent(inout) :: sph_rj
+!
+      type(sph_comm_tbl), intent(inout) :: comm_rtp
+      type(sph_comm_tbl), intent(inout) :: comm_rtm
+      type(sph_comm_tbl), intent(inout) :: comm_rlm
+      type(sph_comm_tbl), intent(inout) :: comm_rj
+!
+!
       integer(kind = kint) :: ierr
 !
 !
       if (iflag_debug.gt.0) write(*,*) 's_count_num_sph_smp'
       call s_count_num_sph_smp                                          &
-     &   (sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1, ierr)
+     &   (sph_rtp, sph_rtm, sph_rlm, sph_rj, ierr)
 !      if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message_Rsmp)
 !
-      call set_reverse_import_table(sph_rtp1%nnod_rtp,                  &
-     &    comm_rtp1%ntot_item_sr, comm_rtp1%item_sr, comm_rtp1%irev_sr)
-      call set_reverse_import_table(sph_rtm1%nnod_rtm,                  &
-     &    comm_rtm1%ntot_item_sr, comm_rtm1%item_sr, comm_rtm1%irev_sr)
-      call set_reverse_import_table(sph_rlm1%nnod_rlm,                  &
-     &    comm_rlm1%ntot_item_sr, comm_rlm1%item_sr, comm_rlm1%irev_sr)
-      call set_reverse_import_table(sph_rj1%nnod_rj,                    &
-     &    comm_rj1%ntot_item_sr,  comm_rj1%item_sr,  comm_rj1%irev_sr)
+      call set_reverse_import_table(sph_rtp%nnod_rtp,                   &
+     &    comm_rtp%ntot_item_sr, comm_rtp%item_sr, comm_rtp%irev_sr)
+      call set_reverse_import_table(sph_rtm%nnod_rtm,                   &
+     &    comm_rtm%ntot_item_sr, comm_rtm%item_sr, comm_rtm%irev_sr)
+      call set_reverse_import_table(sph_rlm%nnod_rlm,                   &
+     &    comm_rlm%ntot_item_sr, comm_rlm%item_sr, comm_rlm%irev_sr)
+      call set_reverse_import_table(sph_rj%nnod_rj,                     &
+     &    comm_rj%ntot_item_sr,  comm_rj%item_sr,  comm_rj%irev_sr)
 !
-      comm_rtp1%iflag_self                                              &
-     &    = self_comm_flag(comm_rtp1%nneib_domain, comm_rtp1%id_domain)
-      comm_rtm1%iflag_self                                              &
-     &    = self_comm_flag(comm_rtm1%nneib_domain, comm_rtm1%id_domain)
-      comm_rlm1%iflag_self                                              &
-     &    = self_comm_flag(comm_rlm1%nneib_domain, comm_rlm1%id_domain)
-      comm_rj1%iflag_self                                               &
-     &    = self_comm_flag(comm_rj1%nneib_domain,  comm_rj1%id_domain)
+      comm_rtp%iflag_self                                               &
+     &    = self_comm_flag(comm_rtp%nneib_domain, comm_rtp%id_domain)
+      comm_rtm%iflag_self                                               &
+     &    = self_comm_flag(comm_rtm%nneib_domain, comm_rtm%id_domain)
+      comm_rlm%iflag_self                                               &
+     &    = self_comm_flag(comm_rlm%nneib_domain, comm_rlm%id_domain)
+      comm_rj%iflag_self                                                &
+     &    = self_comm_flag(comm_rj%nneib_domain,  comm_rj%id_domain)
 !
-      call count_interval_4_each_dir(ithree, sph_rtp1%nnod_rtp,         &
-     &    sph_rtp1%idx_global_rtp, sph_rtp1%istep_rtp)
-      call count_interval_4_each_dir(ithree, sph_rtm1%nnod_rtm,         &
-     &    sph_rtm1%idx_global_rtm, sph_rtm1%istep_rtm)
-      call count_interval_4_each_dir(itwo,   sph_rlm1%nnod_rlm,         &
-     &    sph_rlm1%idx_global_rlm, sph_rlm1%istep_rlm)
-      call count_interval_4_each_dir(itwo,   sph_rj1%nnod_rj,           &
-     &    sph_rj1%idx_global_rj, sph_rj1%istep_rj)
+      call count_interval_4_each_dir(ithree, sph_rtp%nnod_rtp,          &
+     &    sph_rtp%idx_global_rtp, sph_rtp%istep_rtp)
+      call count_interval_4_each_dir(ithree, sph_rtm%nnod_rtm,          &
+     &    sph_rtm%idx_global_rtm, sph_rtm%istep_rtm)
+      call count_interval_4_each_dir(itwo,   sph_rlm%nnod_rlm,          &
+     &    sph_rlm%idx_global_rlm, sph_rlm%istep_rlm)
+      call count_interval_4_each_dir(itwo,   sph_rj%nnod_rj,            &
+     &    sph_rj%idx_global_rj, sph_rj%istep_rj)
 !
-      sph_param1%m_folding = 2 * sph_rtp1%idx_gl_1d_rtp_p(2,2)          &
-     &                      / sph_rtp1%nidx_rtp(3)
+      sph_param%m_folding = 2 * sph_rtp%idx_gl_1d_rtp_p(2,2)            &
+     &                      / sph_rtp%nidx_rtp(3)
 !
       call set_special_degree_order_flags                               &
-     &   (sph_rj1%nidx_rj(2), sph_rlm1%nidx_rlm(2),                     &
-     &    sph_rj1%idx_gl_1d_rj_j, sph_rlm1%idx_gl_1d_rlm_j,             &
-     &    sph_rj1%idx_rj_degree_zero, sph_rj1%idx_rj_degree_one,        &
-     &    sph_rtm1%ist_rtm_order_zero, sph_rtm1%ist_rtm_order_1s,       &
-     &    sph_rtm1%ist_rtm_order_1c)
+     &   (sph_rj%nidx_rj(2), sph_rlm%nidx_rlm(2),                       &
+     &    sph_rj%idx_gl_1d_rj_j, sph_rlm%idx_gl_1d_rlm_j,               &
+     &    sph_rj%idx_rj_degree_zero, sph_rj%idx_rj_degree_one,          &
+     &    sph_rtm%ist_rtm_order_zero, sph_rtm%ist_rtm_order_1s,         &
+     &    sph_rtm%ist_rtm_order_1c)
 !
 !
-      call set_sph_rj_center_flag(sph_rj1%nnod_rj, sph_rj1%nidx_rj,     &
-     &    sph_rj1%inod_rj_center)
+      call set_sph_rj_center_flag(sph_rj%nnod_rj, sph_rj%nidx_rj,       &
+     &    sph_rj%inod_rj_center)
 !
-      sph_rj1%iflag_rj_center = 0
+      sph_rj%iflag_rj_center = 0
       call MPI_allREDUCE                                                &
-     &   (sph_rj1%inod_rj_center, sph_rj1%iflag_rj_center, ione,        &
+     &   (sph_rj%inod_rj_center, sph_rj%iflag_rj_center, ione,          &
      &    CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM, ierr_MPI)
-      if(sph_rj1%iflag_rj_center .gt. 0) sph_rj1%iflag_rj_center = 1
+      if(sph_rj%iflag_rj_center .gt. 0) sph_rj%iflag_rj_center = 1
 !
       end subroutine set_reverse_tables_4_SPH
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_fem_center_mode_4_SPH(internal_node)
+      subroutine set_fem_center_mode_4_SPH                              &
+     &         (internal_node, sph_rtp, sph_param)
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_spheric_parameter
       use m_spheric_constants
 !
       integer(kind = kint), intent(in) :: internal_node
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_shell_parameters), intent(inout) :: sph_param
 !
       integer(kind = kint) :: iflag_shell_local, nsample
       integer(kind = kint) :: nnod_full_shell
+      integer(kind = kint) :: nnod_npole, nnod_npole_ctr
+      integer(kind = kint) :: nnod_spole, nnod_spole_ctr
 !
 !
-      nnod_full_shell = nnod_rtp * sph_param1%m_folding
+      nnod_full_shell = sph_rtp%nnod_rtp * sph_param%m_folding
+      nnod_npole = nnod_full_shell + sph_rtp%nidx_rtp(1)
+      nnod_spole = nnod_full_shell + 2 * sph_rtp%nidx_rtp(1)
+      nnod_npole_ctr = nnod_npole + 1
+      nnod_spole_ctr = nnod_spole + 1
+!
       nsample = internal_node
-      sph_param1%iflag_shell_mode = 0
+      sph_param%iflag_shell_mode = 0
       if(nsample .le. nnod_full_shell) then
         iflag_shell_local = iflag_MESH_same
-      else if(nsample .eq. nnod_full_shell+nidx_rtp(1)) then
+      else if(nsample .eq. nnod_npole) then
         iflag_shell_local = iflag_MESH_w_pole
-      else if(nsample .eq. nnod_full_shell+2*nidx_rtp(1)) then
+      else if(nsample .eq. nnod_spole) then
         iflag_shell_local = iflag_MESH_w_pole
-      else if(nsample .eq. nnod_full_shell+nidx_rtp(1)+1) then
+      else if(nsample .eq. nnod_npole_ctr) then
         iflag_shell_local = iflag_MESH_w_center
-      else if(nsample .eq. nnod_full_shell+2*nidx_rtp(1)+1) then
+      else if(nsample .eq. nnod_spole_ctr) then
         iflag_shell_local = iflag_MESH_w_center
       end if
 !
       if(i_debug .eq. iflag_full_msg) write(*,*) 'iflag_shell_local',   &
      &     my_rank, iflag_shell_local, internal_node, nnod_full_shell
-      call MPI_allreduce(iflag_shell_local, sph_param1%iflag_shell_mode, &
+      call MPI_allreduce(iflag_shell_local, sph_param%iflag_shell_mode, &
      &    ione, CALYPSO_INTEGER, MPI_MAX, CALYPSO_COMM, ierr_MPI)
       if(i_debug .eq. iflag_full_msg) write(*,*) 'iflag_shell_mode',    &
-     &     my_rank, sph_param1%iflag_shell_mode
+     &     my_rank, sph_param%iflag_shell_mode
 !
       end subroutine set_fem_center_mode_4_SPH
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine load_para_rj_mesh
+      subroutine load_para_rj_mesh                                      &
+     &         (sph_param, sph_rtp, sph_rtm, sph_rlm, sph_rj, comm_rj,  &
+     &          radial_rj_grp, sphere_rj_grp)
 !
       use calypso_mpi
       use m_machine_parameter
       use m_spheric_parameter
-      use m_sph_trans_comm_table
-      use m_group_data_sph_specr
 !
       use load_data_for_sph_IO
       use count_num_sph_smp
@@ -279,37 +400,47 @@
 !
       use set_from_recv_buf_rev
 !
+      type(sph_shell_parameters), intent(inout) :: sph_param
+      type(sph_rtp_grid), intent(inout) :: sph_rtp
+      type(sph_rtm_grid), intent(inout) :: sph_rtm
+      type(sph_rlm_grid), intent(inout) :: sph_rlm
+      type(sph_rj_grid), intent(inout) :: sph_rj
+      type(sph_comm_tbl), intent(inout) :: comm_rj
+      type(group_data), intent(inout) :: radial_rj_grp
+      type(group_data), intent(inout) :: sphere_rj_grp
+!
+!
       integer(kind = kint) :: ierr
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'input_modes_rj_sph_trans'
-      call input_modes_rj_sph_trans(my_rank, sph_param1%l_truncation,   &
-     &    sph_rj1, comm_rj1, radial_rj_grp1, sphere_rj_grp1)
-      nnod_rj =      sph_rj1%nnod_rj
-      nidx_rj(1:2) = sph_rj1%nidx_rj(1:2)
+      call input_modes_rj_sph_trans(my_rank, sph_param%l_truncation,    &
+     &    sph_rj, comm_rj, radial_rj_grp, sphere_rj_grp)
+      nnod_rj =      sph_rj%nnod_rj
+      nidx_rj(1:2) = sph_rj%nidx_rj(1:2)
 !
       if (iflag_debug.gt.0) write(*,*) 's_count_num_sph_smp'
       call s_count_num_sph_smp                                          &
-     &   (sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1, ierr)
+     &   (sph_rtp, sph_rtm, sph_rlm, sph_rj, ierr)
 !      if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message_Rsmp)
 !
       call set_reverse_import_table                                     &
-     &   (sph_rj1%nnod_rj, comm_rj1%ntot_item_sr,                       &
-     &    comm_rj1%item_sr, comm_rj1%irev_sr)
-      comm_rj1%iflag_self                                               &
-     &    =  self_comm_flag(comm_rj1%nneib_domain,  comm_rj1%id_domain)
+     &   (sph_rj%nnod_rj, comm_rj%ntot_item_sr,                         &
+     &    comm_rj%item_sr, comm_rj%irev_sr)
+      comm_rj%iflag_self                                                &
+     &    =  self_comm_flag(comm_rj%nneib_domain,  comm_rj%id_domain)
 !
-      call count_interval_4_each_dir(itwo, sph_rj1%nnod_rj,             &
-     &    sph_rj1%idx_global_rj, sph_rj1%istep_rj)
+      call count_interval_4_each_dir(itwo, sph_rj%nnod_rj,              &
+     &    sph_rj%idx_global_rj, sph_rj%istep_rj)
 !
       call set_sph_rj_center_flag                                       &
-     &   (sph_rj1%nnod_rj, sph_rj1%nidx_rj, sph_rj1%inod_rj_center)
+     &   (sph_rj%nnod_rj, sph_rj%nidx_rj, sph_rj%inod_rj_center)
 !
-      sph_rj1%iflag_rj_center = 0
+      sph_rj%iflag_rj_center = 0
       call MPI_allREDUCE                                                &
-     &   (sph_rj1%inod_rj_center, sph_rj1%iflag_rj_center, ione,        &
+     &   (sph_rj%inod_rj_center, sph_rj%iflag_rj_center, ione,          &
      &    CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM, ierr_MPI)
-      if(sph_rj1%iflag_rj_center .gt. 0) sph_rj1%iflag_rj_center = 1
+      if(sph_rj%iflag_rj_center .gt. 0) sph_rj%iflag_rj_center = 1
 !
       end subroutine load_para_rj_mesh
 !

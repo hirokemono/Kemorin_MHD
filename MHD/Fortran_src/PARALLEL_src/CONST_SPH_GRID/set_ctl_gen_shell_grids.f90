@@ -7,12 +7,18 @@
 !>@brief  Set control data for domain decomposition for spherical transform
 !!
 !!@verbatim
-!!      subroutine s_set_control_4_gen_shell_grids
+!!      subroutine s_set_control_4_gen_shell_grids                      &
+!!     &         (sph_params, sph_rtp, sph_rj)
+!!        type(sph_shell_parameters), intent(inout) :: sph_params
+!!        type(sph_rtp_grid), intent(inout) :: sph_rtp
+!!        type(sph_rj_grid), intent(inout) :: sph_rj
 !!@endverbatim
 !
       module set_ctl_gen_shell_grids
 !
       use m_precision
+!
+      use t_spheric_parameter
 !
       implicit  none
 !
@@ -22,13 +28,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_control_4_gen_shell_grids
+      subroutine s_set_control_4_gen_shell_grids                        &
+     &         (sph_params, sph_rtp, sph_rj)
 !
       use m_constants
       use m_machine_parameter
       use m_read_mesh_data
       use m_spheric_constants
-      use m_spheric_parameter
       use m_spheric_global_ranks
       use m_sph_1d_global_index
       use m_sph_mesh_1d_connect
@@ -45,6 +51,10 @@
       use set_control_platform_data
       use gen_sph_grids_modes
       use skip_comment_f
+!
+      type(sph_shell_parameters), intent(inout) :: sph_params
+      type(sph_rtp_grid), intent(inout) :: sph_rtp
+      type(sph_rj_grid), intent(inout) :: sph_rj
 !
       integer(kind = kint) :: nprocs_ctl
       integer(kind = kint) :: i, np, kr, icou
@@ -63,36 +73,36 @@
         iflag_excluding_FEM_mesh = 1
       end if
 !
-      call set_FEM_mesh_mode_4_SPH(sph_param1%iflag_shell_mode)
+      call set_FEM_mesh_mode_4_SPH(sph_params%iflag_shell_mode)
 !
-      sph_rtp1%nidx_global_rtp(1) = 2
-      sph_rtp1%nidx_global_rtp(2) = 2
-      sph_rtp1%nidx_global_rtp(3) = 4
-      sph_param1%l_truncation = 2
-      sph_param1%m_folding =    1
+      sph_rtp%nidx_global_rtp(1) = 2
+      sph_rtp%nidx_global_rtp(2) = 2
+      sph_rtp%nidx_global_rtp(3) = 4
+      sph_params%l_truncation = 2
+      sph_params%m_folding =    1
 !
-      sph_param1%iflag_radial_grid =  igrid_Chebyshev
+      sph_params%iflag_radial_grid =  igrid_Chebyshev
       if(cmp_no_case(radial_grid_type_ctl%charavalue, label_explicit))  &
-     &       sph_param1%iflag_radial_grid =  igrid_non_euqidist
+     &       sph_params%iflag_radial_grid =  igrid_non_euqidist
       if(cmp_no_case(radial_grid_type_ctl%charavalue, label_Chebyshev)) &
-     &       sph_param1%iflag_radial_grid =  igrid_Chebyshev
+     &       sph_params%iflag_radial_grid =  igrid_Chebyshev
       if(cmp_no_case(radial_grid_type_ctl%charavalue, label_equi))      &
-     &       sph_param1%iflag_radial_grid =  igrid_euqidistance
+     &       sph_params%iflag_radial_grid =  igrid_euqidistance
 !
       if (ltr_ctl%iflag .gt. 0) then
-        sph_param1%l_truncation = ltr_ctl%intvalue
+        sph_params%l_truncation = ltr_ctl%intvalue
       end if
 !
       if (phi_symmetry_ctl%iflag .gt. 0) then
-        sph_param1%m_folding = phi_symmetry_ctl%intvalue
+        sph_params%m_folding = phi_symmetry_ctl%intvalue
       end if
 !
       if (ngrid_elevation_ctl%iflag .gt. 0) then
-        sph_rtp1%nidx_global_rtp(2) = ngrid_elevation_ctl%intvalue
+        sph_rtp%nidx_global_rtp(2) = ngrid_elevation_ctl%intvalue
       end if
 !
 !      if (ngrid_azimuth_ctl%iflag .gt. 0) then
-!        sph_rtp1%nidx_global_rtp(3) = ngrid_azimuth_ctl%intvalue
+!        sph_rtp%nidx_global_rtp(3) = ngrid_azimuth_ctl%intvalue
 !      end if
 !
 !   Set radial group
@@ -124,21 +134,21 @@
       end do
 !
 !   Set radial grid explicitly
-      sph_rj1%iflag_rj_center = 0
-      if(sph_param1%iflag_radial_grid .eq. igrid_non_euqidist) then
+      sph_rj%iflag_rj_center = 0
+      if(sph_params%iflag_radial_grid .eq. igrid_non_euqidist) then
         if(cmp_no_case(sph_coef_type_ctl%charavalue, 'with_center')     &
           .and. sph_coef_type_ctl%iflag .gt. 0) then
-          sph_rj1%iflag_rj_center = 1
+          sph_rj%iflag_rj_center = 1
         end if
 !
         if (radius_ctl%icou .gt. 0) then
-          sph_rtp1%nidx_global_rtp(1) = radius_ctl%num
+          sph_rtp%nidx_global_rtp(1) = radius_ctl%num
         end if
 !
-        if (sph_rtp1%nidx_global_rtp(1) .gt. 0) then
-          call allocate_radius_1d_gl(sph_rtp1%nidx_global_rtp(1))
+        if (sph_rtp%nidx_global_rtp(1) .gt. 0) then
+          call allocate_radius_1d_gl(sph_rtp%nidx_global_rtp(1))
 !
-          do i = 1, sph_rtp1%nidx_global_rtp(1)
+          do i = 1, sph_rtp%nidx_global_rtp(1)
             kr = radius_ctl%ivec(i)
             radius_1d_gl(kr) = radius_ctl%vect(i)
           end do
@@ -146,24 +156,24 @@
           call dealloc_control_array_i_r(radius_ctl)
         end if
 !
-        sph_param1%nlayer_2_center = -1
-        sph_param1%nlayer_ICB =       1
-        sph_param1%nlayer_CMB = sph_rtp1%nidx_global_rtp(1)
-        sph_param1%nlayer_mid_OC =   -1
+        sph_params%nlayer_2_center = -1
+        sph_params%nlayer_ICB =       1
+        sph_params%nlayer_CMB = sph_rtp%nidx_global_rtp(1)
+        sph_params%nlayer_mid_OC =   -1
         if(radial_grp_ctl%icou .gt. 0) then
           do i = 1, radial_grp_ctl%num
             if     (cmp_no_case(radial_grp_ctl%c_tbl(i),                &
      &                      ICB_nod_grp_name) ) then
-              sph_param1%nlayer_ICB = radial_grp_ctl%ivec(i)
+              sph_params%nlayer_ICB = radial_grp_ctl%ivec(i)
             else if(cmp_no_case(radial_grp_ctl%c_tbl(i),                &
      &                      CMB_nod_grp_name) ) then
-              sph_param1%nlayer_CMB = radial_grp_ctl%ivec(i)
+              sph_params%nlayer_CMB = radial_grp_ctl%ivec(i)
             else if(cmp_no_case(radial_grp_ctl%c_tbl(i),                &
      &                      CTR_nod_grp_name) ) then
-              sph_param1%nlayer_2_center = radial_grp_ctl%ivec(i)
+              sph_params%nlayer_2_center = radial_grp_ctl%ivec(i)
             else if(cmp_no_case(radial_grp_ctl%c_tbl(i),                &
      &                      'Mid_Depth') ) then
-              sph_param1%nlayer_mid_OC = radial_grp_ctl%ivec(i)
+              sph_params%nlayer_mid_OC = radial_grp_ctl%ivec(i)
             end if
           end do
 !
@@ -174,15 +184,15 @@
       else
         if(ICB_radius_ctl%iflag .gt. 0                                  &
      &     .and. CMB_radius_ctl%iflag .gt. 0) then
-          sph_param1%radius_ICB = ICB_radius_ctl%realvalue
-          sph_param1%radius_CMB = CMB_radius_ctl%realvalue
+          sph_params%radius_ICB = ICB_radius_ctl%realvalue
+          sph_params%radius_CMB = CMB_radius_ctl%realvalue
         else if(fluid_core_size_ctl%iflag .gt. 0                        &
      &       .and. ICB_to_CMB_ratio_ctl%iflag .gt. 0) then
           ICB_to_CMB_ratio = ICB_to_CMB_ratio_ctl%realvalue
           fluid_core_size =  fluid_core_size_ctl%realvalue
-          sph_param1%radius_ICB = fluid_core_size                       &
+          sph_params%radius_ICB = fluid_core_size                       &
      &           * ICB_to_CMB_ratio / (one - ICB_to_CMB_ratio)
-          sph_param1%radius_CMB = sph_param1%radius_ICB                 &
+          sph_params%radius_CMB = sph_params%radius_ICB                 &
      &                           + fluid_core_size
         else
           write(*,*)                                                    &
@@ -191,19 +201,19 @@
         end if
 !
         if(Min_radius_ctl%iflag.eq.0) then
-          Min_radius_ctl%realvalue = sph_param1%radius_ICB
+          Min_radius_ctl%realvalue = sph_params%radius_ICB
         end if
         if(Max_radius_ctl%iflag.eq.0) then
-          Max_radius_ctl%realvalue = sph_param1%radius_CMB
+          Max_radius_ctl%realvalue = sph_params%radius_CMB
         end if
 !
         if(Min_radius_ctl%realvalue .eq. zero) then
-          sph_rj1%iflag_rj_center = 1
+          sph_rj%iflag_rj_center = 1
         end if
 !
         call count_set_radial_grid(num_fluid_grid_ctl%intvalue,         &
      &      Min_radius_ctl%realvalue, Max_radius_ctl%realvalue,         &
-     &      sph_param1, sph_rtp1)
+     &      sph_params, sph_rtp)
       end if
 !
       ndomain_rtp(1:3) = 1
@@ -283,16 +293,16 @@
         stop
       end if
 !
-      if(mod(sph_rtp1%nidx_global_rtp(3),2) .ne. 0) then
+      if(mod(sph_rtp%nidx_global_rtp(3),2) .ne. 0) then
         write(*,*) 'Set even number for the number of zonal grids'
         stop
       end if
 !
-      if(sph_rtp1%nidx_global_rtp(2)                                    &
-     &      .lt. (sph_param1%l_truncation+1)*3/2) then
+      if(sph_rtp%nidx_global_rtp(2)                                     &
+     &      .lt. (sph_params%l_truncation+1)*3/2) then
         write(*,*) 'Spherical harmonics transform has Ailiasing'
-      else if (sph_rtp1%nidx_global_rtp(2)                              &
-     &      .lt. (sph_param1%l_truncation+1)) then
+      else if (sph_rtp%nidx_global_rtp(2)                               &
+     &      .lt. (sph_params%l_truncation+1)) then
         write(*,*) "Grid has less than Nyquist's sampling theorem"
       end if
 !
