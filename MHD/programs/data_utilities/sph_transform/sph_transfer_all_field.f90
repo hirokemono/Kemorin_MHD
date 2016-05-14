@@ -79,6 +79,7 @@
       use t_phys_data
       use m_solver_SR
       use m_spheric_parameter
+      use m_sph_trans_comm_table
       use m_work_4_sph_trans
       use sph_transforms
       use copy_all_spec_4_sph_trans
@@ -115,8 +116,11 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'sph_forward_transforms',        &
      &  ncomp_sph_trans, num_vector_rtp, num_scalar_rtp, num_tensor_rtp
-      call sph_forward_transforms(ncomp_sph_trans, num_vector_rtp,      &
-     &    nscalar_trans, dall_rtp(1,1), n_WS, n_WR, WS(1), WR(1))
+      call sph_forward_transforms                                       &
+     &   (ncomp_sph_trans, num_vector_rtp, nscalar_trans,               &
+     &    sph_rtp1, sph_rtm1, sph_rlm1,                                 &
+     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1,                    &
+     &    dall_rtp(1,1), n_WS, n_WR, WS(1), WR(1))
 !
 !
       if (iflag_debug.gt.0)                                             &
@@ -145,6 +149,7 @@
 !
       use m_solver_SR
       use m_spheric_parameter
+      use m_sph_trans_comm_table
       use m_work_4_sph_trans
       use copy_all_spec_4_sph_trans
       use copy_all_field_4_sph_trans
@@ -182,9 +187,11 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'sph_backward_transforms',       &
      &  ncomp_sph_trans, num_vector_rtp, num_scalar_rtp, num_tensor_rtp
-      call sph_backward_transforms(ncomp_sph_trans, num_vector_rtp,     &
-     &    nscalar_trans, n_WS, n_WR, WS(1), WR(1), dall_rtp,            &
-     &    dlcl_pole, dall_pole)
+      call sph_backward_transforms                                      &
+     &   (ncomp_sph_trans, num_vector_rtp, nscalar_trans,               &
+     &    sph_param1, sph_rtp1, sph_rtm1, sph_rlm1,                     &
+     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1,                    &
+     &    n_WS, n_WR, WS(1), WR(1), dall_rtp, dlcl_pole, dall_pole)
 !
 !
       if (iflag_debug.gt.0)                                             &

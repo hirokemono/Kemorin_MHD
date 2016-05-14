@@ -54,8 +54,6 @@
       use m_constants
 !
 !      use m_spheric_parameter
-!      use m_sph_trans_comm_table
-!      use m_group_data_sph_specr
 !
       use t_spheric_parameter
       use t_sph_trans_comm_tbl

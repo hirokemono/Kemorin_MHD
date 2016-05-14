@@ -25,6 +25,8 @@
       use m_t_step_parameter
       use m_ctl_params_sph_trans
       use m_node_id_spherical_IO
+      use m_spheric_parameter
+      use m_sph_trans_comm_table
       use m_group_data_sph_specr
       use m_sph_spectr_data
 !
@@ -58,8 +60,10 @@
       if(id_legendre_transfer.eq.iflag_leg_undefined)                   &
      &            id_legendre_transfer = iflag_leg_orginal_loop
       call copy_sph_trans_nums_from_rtp
-      call initialize_sph_trans
-      call init_pole_transform
+      call initialize_sph_trans                                         &
+     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,            &
+     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1)
+      call init_pole_transform(sph_rtp1)
       call allocate_d_pole_4_all_trans
 !
       end subroutine SPH_init_gauss_back_trans

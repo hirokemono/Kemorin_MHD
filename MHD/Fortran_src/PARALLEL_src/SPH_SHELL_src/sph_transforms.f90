@@ -9,10 +9,24 @@
 !!       and gradient of scalar
 !!
 !!@verbatim
-!!      subroutine sph_backward_transforms(ncomp_trans,                 &
-!!     &          nvector, nscalar, n_WS, n_WR, WS, WR, v_rtp)
-!!      subroutine sph_forward_transforms(ncomp_trans,                  &
-!!     &          nvector, nscalar, v_rtp, n_WS, n_WR, WS, WR)
+!!      subroutine sph_backward_transforms                              &
+!!     &         (ncomp_trans, nvector, nscalar,                        &
+!!     &          sph_param, sph_rtp, sph_rtm, sph_rlm,                 &
+!!     &          comm_rtp, comm_rtm, comm_rlm, comm_rj,                &
+!!     &          n_WS, n_WR, WS, WR, v_rtp, v_pl_local, v_pole)
+!!      subroutine sph_forward_transforms                               &
+!!     &         (ncomp_trans, nvector, nscalar,                        &
+!!     &          sph_rtp, sph_rtm, sph_rlm,                            &
+!!     &          comm_rtp, comm_rtm, comm_rlm, comm_rj,                &
+!!     &          v_rtp, n_WS, n_WR, WS, WR)
+!!        type(sph_shell_parameters), intent(in) :: sph_param
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(sph_rtm_grid), intent(in) :: sph_rtm
+!!        type(sph_rlm_grid), intent(in) :: sph_rlm
+!!        type(sph_comm_tbl), intent(in) :: comm_rtp
+!!        type(sph_comm_tbl), intent(in) :: comm_rtm
+!!        type(sph_comm_tbl), intent(in) :: comm_rlm
+!!        type(sph_comm_tbl), intent(in) :: comm_rj
 !!
 !!   input /outpt arrays for single field
 !!
@@ -34,11 +48,12 @@
       use calypso_mpi
       use m_work_time
       use m_machine_parameter
-      use m_spheric_parameter
-      use m_sph_trans_comm_table
       use sph_FFT_selector
       use legendre_transform_select
       use spherical_SRs_N
+!
+      use t_spheric_parameter
+      use t_sph_trans_comm_tbl
 !
       implicit none
 !
@@ -48,19 +63,31 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sph_backward_transforms(ncomp_trans,                   &
-     &          nvector, nscalar, n_WS, n_WR, WS, WR, v_rtp,            &
-     &          v_pl_local, v_pole)
+      subroutine sph_backward_transforms                                &
+     &         (ncomp_trans, nvector, nscalar,                          &
+     &          sph_param, sph_rtp, sph_rtm, sph_rlm,                   &
+     &          comm_rtp, comm_rtm, comm_rlm, comm_rj,                  &
+     &          n_WS, n_WR, WS, WR, v_rtp, v_pl_local, v_pole)
 !
       use m_work_pole_sph_trans
       use pole_sph_transform
+!
+      type(sph_shell_parameters), intent(in) :: sph_param
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_rtm_grid), intent(in) :: sph_rtm
+      type(sph_rlm_grid), intent(in) :: sph_rlm
+      type(sph_comm_tbl), intent(in) :: comm_rtp
+      type(sph_comm_tbl), intent(in) :: comm_rtm
+      type(sph_comm_tbl), intent(in) :: comm_rlm
+      type(sph_comm_tbl), intent(in) :: comm_rj
 !
       integer(kind = kint), intent(in) :: ncomp_trans
       integer(kind = kint), intent(in) :: nvector, nscalar
       integer(kind = kint), intent(in) :: n_WS, n_WR
       real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
 !
-      real(kind = kreal), intent(inout) :: v_rtp(nnod_rtp,ncomp_trans)
+      real(kind = kreal), intent(inout)                                 &
+     &                :: v_rtp(sph_rtp%nnod_rtp,ncomp_trans)
       real(kind = kreal), intent(inout)                                 &
      &                :: v_pl_local(nnod_pole,ncomp_trans)
       real(kind = kreal), intent(inout)                                 &
@@ -69,33 +96,34 @@
 !
       START_SRtime= MPI_WTIME()
       call start_eleps_time(18)
-      call calypso_sph_comm_N(ncomp_trans, comm_rj1, comm_rlm1)
+      call calypso_sph_comm_N(ncomp_trans, comm_rj, comm_rlm)
       call end_eleps_time(18)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
       call start_eleps_time(22)
       call pole_backward_transforms(ncomp_trans, nvector, nscalar,      &
+     &    sph_param, sph_rtp, sph_rtm, sph_rlm, comm_rlm,               &
      &    n_WR, WR, v_pl_local)
-      call finish_send_recv_sph(comm_rj1)
+      call finish_send_recv_sph(comm_rj)
 !
 !
       call sel_backward_legendre_trans                                  &
-     &   (ncomp_trans, nvector, nscalar, sph_rlm1, sph_rtm1,            &
-     &    comm_rlm1, comm_rtm1, n_WR, n_WS, WR, WS)
+     &   (ncomp_trans, nvector, nscalar, sph_rlm, sph_rtm,              &
+     &    comm_rlm, comm_rtm, n_WR, n_WS, WR, WS)
       call end_eleps_time(22)
 !
       START_SRtime= MPI_WTIME()
       call start_eleps_time(19)
-      call calypso_sph_comm_N(ncomp_trans, comm_rtm1, comm_rtp1)
+      call calypso_sph_comm_N(ncomp_trans, comm_rtm, comm_rtp)
       call end_eleps_time(19)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
       call start_eleps_time(24)
       call back_FFT_select_from_recv                                    &
-     &   (sph_rtp1, comm_rtp1, ncomp_trans, n_WR, WR, v_rtp)
+     &   (sph_rtp, comm_rtp, ncomp_trans, n_WR, WR, v_rtp)
       call end_eleps_time(24)
 !
-      call finish_send_recv_sph(comm_rtm1)
+      call finish_send_recv_sph(comm_rtm)
 !
       v_pole(1:nnod_pole,1:ncomp_trans) = zero
       call MPI_allreduce(v_pl_local, v_pole, (ncomp_trans*nnod_pole),   &
@@ -105,37 +133,49 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sph_forward_transforms(ncomp_trans,                    &
-     &          nvector, nscalar, v_rtp, n_WS, n_WR, WS, WR)
+      subroutine sph_forward_transforms                                 &
+     &         (ncomp_trans, nvector, nscalar,                          &
+     &          sph_rtp, sph_rtm, sph_rlm,                              &
+     &          comm_rtp, comm_rtm, comm_rlm, comm_rj,                  &
+     &          v_rtp, n_WS, n_WR, WS, WR)
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_rtm_grid), intent(in) :: sph_rtm
+      type(sph_rlm_grid), intent(in) :: sph_rlm
+      type(sph_comm_tbl), intent(in) :: comm_rtp
+      type(sph_comm_tbl), intent(in) :: comm_rtm
+      type(sph_comm_tbl), intent(in) :: comm_rlm
+      type(sph_comm_tbl), intent(in) :: comm_rj
 !
       integer(kind = kint), intent(in) :: ncomp_trans
       integer(kind = kint), intent(in) :: nvector, nscalar
       integer(kind = kint), intent(in) :: n_WS, n_WR
-      real(kind = kreal), intent(in):: v_rtp(nnod_rtp,ncomp_trans)
+      real(kind = kreal), intent(in)                                    &
+     &                   :: v_rtp(sph_rtp%nnod_rtp,ncomp_trans)
       real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
 !
       call start_eleps_time(24)
       call fwd_FFT_select_to_send                                       &
-     &   (sph_rtp1, comm_rtp1, ncomp_trans, n_WS, v_rtp, WS)
+     &   (sph_rtp, comm_rtp, ncomp_trans, n_WS, v_rtp, WS)
       call end_eleps_time(24)
 !
       START_SRtime= MPI_WTIME()
       call start_eleps_time(20)
-      call calypso_sph_comm_N(ncomp_trans, comm_rtp1, comm_rtm1)
-      call finish_send_recv_sph(comm_rtp1)
+      call calypso_sph_comm_N(ncomp_trans, comm_rtp, comm_rtm)
+      call finish_send_recv_sph(comm_rtp)
       call end_eleps_time(20)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
       call start_eleps_time(23)
       if(iflag_debug .gt. 0) write(*,*) 'sel_forward_legendre_trans'
       call sel_forward_legendre_trans(ncomp_trans, nvector, nscalar,    &
-     &    sph_rtm1, sph_rlm1, comm_rtm1, comm_rlm1, n_WR, n_WS, WR, WS)
+     &    sph_rtm, sph_rlm, comm_rtm, comm_rlm, n_WR, n_WS, WR, WS)
       call end_eleps_time(23)
 !
       START_SRtime= MPI_WTIME()
       call start_eleps_time(21)
-      call calypso_sph_comm_N(ncomp_trans, comm_rlm1, comm_rj1)
-      call finish_send_recv_sph(comm_rlm1)
+      call calypso_sph_comm_N(ncomp_trans, comm_rlm, comm_rj)
+      call finish_send_recv_sph(comm_rlm)
       call end_eleps_time(21)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !

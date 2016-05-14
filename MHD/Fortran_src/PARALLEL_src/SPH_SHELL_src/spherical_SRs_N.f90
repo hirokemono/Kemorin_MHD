@@ -8,8 +8,6 @@
 !!@n      for spherical harmonics transform
 !!
 !!@verbatim
-!!      subroutine check_calypso_sph_buffer_N(NB)
-!!
 !!      subroutine send_recv_sph_trans_N(NB, nnod_send, nnod_recv,      &
 !!     &          send_comm, recv_comm, X_send, X_recv)
 !!      subroutine send_recv_sph_trans_6(nnod_send, nnod_recv,          &
@@ -53,6 +51,8 @@
       use m_constants
       use m_work_time
 !
+      use t_sph_trans_comm_tbl
+!
       implicit none
 !
 ! ----------------------------------------------------------------------
@@ -61,31 +61,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine check_calypso_sph_buffer_N(NB)
-!
-      use m_sph_trans_comm_table
-      use m_sel_spherical_SRs
-      use m_solver_SR
-!
-      integer (kind=kint), intent(in) :: NB
-!
-!
-      call check_calypso_sph_comm_buf_N(NB, comm_rtp1, comm_rtm1)
-      call check_calypso_sph_comm_buf_N(NB, comm_rtm1, comm_rtp1)
-      call check_calypso_sph_comm_buf_N(NB, comm_rj1, comm_rlm1)
-      call check_calypso_sph_comm_buf_N(NB, comm_rlm1, comm_rj1)
-!
-      end subroutine check_calypso_sph_buffer_N
-!
-!-----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
       subroutine send_recv_sph_trans_N(NB, nnod_send, nnod_recv,        &
      &          send_comm, recv_comm, X_send, X_recv)
 !
       use m_sel_spherical_SRs
       use m_solver_SR
-      use t_sph_trans_comm_tbl
 !
       integer (kind=kint), intent(in) :: NB, nnod_send, nnod_recv
       type(sph_comm_tbl), intent(in) :: send_comm
@@ -113,7 +93,6 @@
      &          send_comm, recv_comm, X_send, X_recv)
 !
       use m_sel_spherical_SRs
-      use t_sph_trans_comm_tbl
       use calypso_SR_6
 !
       integer (kind=kint), intent(in) :: nnod_send, nnod_recv
@@ -138,7 +117,6 @@
      &          send_comm, recv_comm, X_send, X_recv)
 !
       use m_sel_spherical_SRs
-      use t_sph_trans_comm_tbl
       use calypso_SR_3
 !
       integer (kind=kint), intent(in) :: nnod_send, nnod_recv
@@ -163,7 +141,6 @@
      &          send_comm, recv_comm, X_send, X_recv)
 !
       use m_sel_spherical_SRs
-      use t_sph_trans_comm_tbl
       use calypso_SR_2
 !
       integer (kind=kint), intent(in) :: nnod_send, nnod_recv
@@ -188,7 +165,6 @@
      &          send_comm, recv_comm, X_send, X_recv)
 !
       use m_sel_spherical_SRs
-      use t_sph_trans_comm_tbl
       use calypso_SR
 !
       integer (kind=kint), intent(in) :: nnod_send, nnod_recv
@@ -214,7 +190,6 @@
 !
       use m_sel_spherical_SRs
       use m_solver_SR
-      use t_sph_trans_comm_tbl
 !
       use calypso_SR_int
 !
@@ -242,7 +217,6 @@
 !
       use m_sel_spherical_SRs
       use m_solver_SR
-      use t_sph_trans_comm_tbl
 !
       integer (kind=kint), intent(in) :: NB
       type(sph_comm_tbl), intent(in) :: send_comm
@@ -259,7 +233,6 @@
       subroutine calypso_sph_comm_N(NB, send_comm, recv_comm)
 !
       use m_sel_spherical_SRs
-      use t_sph_trans_comm_tbl
 !
       integer (kind=kint), intent(in) :: NB
       type(sph_comm_tbl), intent(in) :: send_comm
@@ -279,7 +252,6 @@
       subroutine calypso_sph_to_send_N(NB, nnod_org,                    &
      &          comm_sph, n_WS, X_org, WS)
 !
-      use t_sph_trans_comm_tbl
       use set_to_send_buffer
 !
       type(sph_comm_tbl), intent(in) :: comm_sph
@@ -303,7 +275,6 @@
      &          comm_sph, n_WR, WR, X_sph)
 !
       use m_sel_spherical_SRs
-      use t_sph_trans_comm_tbl
 !
       type(sph_comm_tbl), intent(in) :: comm_sph
       integer (kind=kint), intent(in) :: NB, nnod_sph, n_WR
@@ -323,7 +294,6 @@
       subroutine finish_send_recv_sph(comm_sph)
 !
       use m_sel_spherical_SRs
-      use t_sph_trans_comm_tbl
 !
       type(sph_comm_tbl), intent(in) :: comm_sph
 !

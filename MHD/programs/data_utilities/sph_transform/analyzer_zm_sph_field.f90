@@ -88,6 +88,7 @@
       subroutine analyze_zm_sph_field
 !
       use m_control_params_2nd_files
+      use m_spheric_parameter
       use m_t_step_parameter
       use m_ctl_params_sph_trans
       use sph_rtp_zonal_rms_data
@@ -106,8 +107,9 @@
 !   Take zonal RMS
         if (iflag_debug.gt.0) write(*,*) 'zonal_mean_all_rtp_field'
         call overwrite_nodal_xyz_2_sph                                  &
-     &    (femmesh_STR%mesh%node, field_STR)
-        call zonal_mean_all_rtp_field(femmesh_STR%mesh%node, field_STR)
+     &     (femmesh_STR%mesh%node, field_STR)
+        call zonal_mean_all_rtp_field                                   &
+     &     (sph_rtp1, femmesh_STR%mesh%node, field_STR)
 !
         call set_ucd_file_prefix(zonal_udt_head, ucd_SPH_TRNS)
         call FEM_analyze_back_trans(ucd_SPH_TRNS, i_step,               &

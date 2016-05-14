@@ -33,6 +33,7 @@
       use m_constants
       use m_machine_parameter
       use m_work_time
+      use m_spheric_parameter
 !
       use t_phys_data
 !
@@ -61,6 +62,8 @@
       subroutine init_sph_transform_MHD(rj_fld)
 !
       use calypso_mpi
+      use m_spheric_parameter
+      use m_sph_trans_comm_table
       use m_addresses_trans_sph_MHD
       use m_addresses_trans_sph_snap
       use m_addresses_trans_sph_tmp
@@ -78,7 +81,7 @@
       character(len=kchara) :: tmpchara
 !
 !
-      call init_pole_transform
+      call init_pole_transform(sph_rtp1)
 !
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &                     'set_addresses_trans_sph_MHD'
@@ -97,7 +100,9 @@
       call allocate_tmp_trans_rtp
 !
       if (iflag_debug.eq.1) write(*,*) 'initialize_legendre_trans'
-      call initialize_legendre_trans
+      call initialize_legendre_trans                                    &
+     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,            &
+     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1)
       call init_fourier_transform_4_MHD(ncomp_sph_trans,                &
      &    ncomp_rtp_2_rj, ncomp_rj_2_rtp)
 !
@@ -112,7 +117,8 @@
       end if
 !
       call sel_init_legendre_trans                                      &
-     &    (ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+     &    (ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans,       &
+     &     sph_rtm1, sph_rlm1)
 !
       if(my_rank .ne. 0) return
         if     (id_legendre_transfer .eq. iflag_leg_orginal_loop) then
@@ -222,6 +228,7 @@
       subroutine sph_back_trans_snapshot_MHD(rj_fld)
 !
       use m_spheric_parameter
+      use m_sph_trans_comm_table
       use m_solver_SR
       use m_addresses_trans_sph_snap
       use sph_transforms
@@ -247,6 +254,8 @@
 !
       call sph_backward_transforms                                      &
      &   (ncomp_snap_rj_2_rtp, nvector_snap_rj_2_rtp, nscalar_trans,    &
+     &    sph_param1, sph_rtp1, sph_rtm1, sph_rlm1,                     &
+     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1,                    &
      &    n_WS, n_WR, WS(1), WR(1), fls_rtp, flc_pl, fls_pl)
 !
       end subroutine sph_back_trans_snapshot_MHD
@@ -256,6 +265,8 @@
       subroutine sph_forward_trans_snapshot_MHD(rj_fld)
 !
       use m_solver_SR
+      use m_spheric_parameter
+      use m_sph_trans_comm_table
       use m_addresses_trans_sph_snap
       use m_work_4_sph_trans
       use sph_transforms
@@ -275,6 +286,8 @@
 !   transform for vectors and scalars
       call sph_forward_transforms(ncomp_snap_rtp_2_rj,                  &
      &    nvector_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                 &
+     &    sph_rtp1, sph_rtm1, sph_rlm1,                                 &
+     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1,                    &
      &    frs_rtp, n_WS, n_WR, WS(1), WR(1))
 !
       call copy_snap_vec_spec_from_trans                                &
@@ -288,6 +301,8 @@
       subroutine sph_forward_trans_tmp_snap_MHD(rj_fld)
 !
       use m_solver_SR
+      use m_spheric_parameter
+      use m_sph_trans_comm_table
       use m_addresses_trans_sph_tmp
       use m_work_4_sph_trans
       use sph_transforms
@@ -307,6 +322,8 @@
 !   transform for vectors and scalars
       call sph_forward_transforms(ncomp_tmp_rtp_2_rj,                   &
      &    nvector_tmp_rtp_2_rj, nscalar_tmp_rtp_2_rj,                   &
+     &    sph_rtp1, sph_rtm1, sph_rlm1,                                 &
+     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1,                    &
      &    frt_rtp, n_WS, n_WR, WS, WR)
 !
       call copy_tmp_scl_spec_from_trans                                 &
@@ -373,7 +390,8 @@
         if(my_rank .eq. 0) write(*,*)                                   &
      &            'Test SPH transform for ', id_legendre_transfer
         call sel_init_legendre_trans                                    &
-     &      (ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+     &     (ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans,      &
+     &      sph_rtm1, sph_rlm1)
 !
         starttime = MPI_WTIME()
         call sph_back_trans_4_MHD(rj_fld)

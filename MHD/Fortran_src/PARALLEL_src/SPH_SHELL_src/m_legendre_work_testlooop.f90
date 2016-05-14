@@ -9,7 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine alloc_leg_vec_test                                   &
-!!     &         (maxidx_rtm_t_smp, nvector, nscalar)
+!!     &         (nri_rtm, maxidx_rtm_t_smp, nvector, nscalar)
 !!      subroutine dealloc_leg_vec_test
 !!      subroutine dealloc_leg_scl_test
 !!
@@ -36,7 +36,6 @@
       use calypso_mpi
 !
       use m_machine_parameter
-      use m_spheric_parameter
       use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans
       use matmul_for_legendre_trans
@@ -159,21 +158,21 @@
 ! -----------------------------------------------------------------------
 !
       subroutine alloc_leg_vec_test                                     &
-     &         (maxidx_rtm_t_smp, nvector, nscalar)
+     &         (nri_rtm, maxidx_rtm_t_smp, nvector, nscalar)
 !
-      integer(kind = kint), intent(in) :: maxidx_rtm_t_smp
-      integer(kind = kint), intent(in) ::nvector, nscalar
+      integer(kind = kint), intent(in) :: nri_rtm, maxidx_rtm_t_smp
+      integer(kind = kint), intent(in) :: nvector, nscalar
 !
 !
-      nvec_jk = ((maxdegree_rlm+1)/2) * nidx_rlm(1)*nvector
-      nscl_jk = ((maxdegree_rlm+1)/2) * nidx_rlm(1)*nscalar
+      nvec_jk = ((maxdegree_rlm+1)/2) * nri_rtm*nvector
+      nscl_jk = ((maxdegree_rlm+1)/2) * nri_rtm*nscalar
       allocate(pol_e(3*nvec_jk+nscl_jk,np_smp))
       allocate(tor_e(2*nvec_jk,np_smp))
       allocate(pol_o(3*nvec_jk+nscl_jk,np_smp))
       allocate(tor_o(2*nvec_jk,np_smp))
 !
-      nvec_lk = ((maxidx_rtm_t_smp+1)/2) * nidx_rlm(1)*nvector
-      nscl_lk = ((maxidx_rtm_t_smp+1)/2) * nidx_rlm(1)*nscalar
+      nvec_lk = ((maxidx_rtm_t_smp+1)/2) * nri_rtm*nvector
+      nscl_lk = ((maxidx_rtm_t_smp+1)/2) * nri_rtm*nscalar
       allocate(symp_r(3*nvec_lk+nscl_lk,np_smp))
       allocate(symp_p(2*nvec_lk,np_smp))
       allocate(asmp_r(3*nvec_lk+nscl_lk,np_smp))

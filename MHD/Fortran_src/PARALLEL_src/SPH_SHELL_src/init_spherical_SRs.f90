@@ -8,8 +8,17 @@
 !!@n      for spherical harmonics transform
 !!
 !!@verbatim
-!!      subroutine init_sph_send_recv_N(NB)
-!!      subroutine check_spherical_SRs_N(NB)
+!!      subroutine init_sph_send_recv_N                                 &
+!!     &         (NB, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,            &
+!!     &          comm_rtp, comm_rtm, comm_rlm, comm_rj)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp1
+!!        type(sph_rtm_grid), intent(in) :: sph_rtm1
+!!        type(sph_rlm_grid), intent(in) :: sph_rlm1
+!!        type(sph_rj_grid), intent(in) :: sph_rj1
+!!        type(sph_comm_tbl), intent(inout) :: comm_rtp
+!!        type(sph_comm_tbl), intent(inout) :: comm_rtm
+!!        type(sph_comm_tbl), intent(inout) :: comm_rlm
+!!        type(sph_comm_tbl), intent(inout) :: comm_rj
 !!@endverbatim
 !!
 !!
@@ -23,16 +32,16 @@
       use m_precision
 !
       use m_constants
-      use m_spheric_parameter
-      use m_sph_trans_comm_table
       use m_solver_SR
-!
       use m_sel_spherical_SRs
+!
+      use t_spheric_parameter
+      use t_sph_trans_comm_tbl
 !
       implicit none
 !
       private :: all_sph_send_recv_N, all_sph_SR_core_N
-      private :: check_spherical_SRs_N
+      private :: check_spherical_SRs_N, check_calypso_sph_buffer_N
       private :: sel_sph_import_table, sel_sph_comm_routine
 !
 ! ----------------------------------------------------------------------
@@ -41,7 +50,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_sph_send_recv_N(NB)
+      subroutine init_sph_send_recv_N                                   &
+     &         (NB, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,              &
+     &          comm_rtp, comm_rtm, comm_rlm, comm_rj)
 !
       use calypso_mpi
 !
@@ -50,20 +61,35 @@
       use spherical_SRs_N
 !
       integer (kind=kint), intent(in) :: NB
+      type(sph_rtp_grid), intent(in) :: sph_rtp1
+      type(sph_rtm_grid), intent(in) :: sph_rtm1
+      type(sph_rlm_grid), intent(in) :: sph_rlm1
+      type(sph_rj_grid), intent(in) :: sph_rj1
+!
+      type(sph_comm_tbl), intent(inout) :: comm_rtp
+      type(sph_comm_tbl), intent(inout) :: comm_rtm
+      type(sph_comm_tbl), intent(inout) :: comm_rlm
+      type(sph_comm_tbl), intent(inout) :: comm_rj
 !
       real(kind = kreal), allocatable :: X_rtp(:), X_rj(:)
 !
       call allocate_work_sph_trans                                      &
      &   (NB, sph_rtm1%nnod_rtm, sph_rlm1%nnod_rlm)
-      allocate(X_rj(NB*nnod_rj))
-      allocate(X_rtp(NB*nnod_rtp))
+      allocate(X_rj(NB*sph_rj1%nnod_rj))
+      allocate(X_rtp(NB*sph_rtp1%nnod_rtp))
       X_rj = 0.0d0
       X_rtp = 0.0d0
 !
-      call check_spherical_SRs_N(NB)
+      call check_spherical_SRs_N                                        &
+     &   (NB, comm_rtp, comm_rtm, comm_rlm, comm_rj)
 !
-      call check_calypso_sph_buffer_N(NB)
-      call sel_sph_import_table(NB, X_rtp, vr_rtm_wk, sp_rlm_wk, X_rj)
+      call check_calypso_sph_buffer_N                                   &
+     &   (NB, comm_rtp, comm_rtm, comm_rlm, comm_rj)
+      call sel_sph_import_table                                         &
+     &   (NB, comm_rtp, comm_rtm, comm_rlm, comm_rj,                    &
+     &    sph_rtp1%nnod_rtp, sph_rtm1%nnod_rtm,                         &
+     &    sph_rlm1%nnod_rlm, sph_rj1%nnod_rj,                           &
+     &    X_rtp, vr_rtm_wk, sp_rlm_wk, X_rj)
 !
       deallocate(X_rj, X_rtp)
       call deallocate_work_sph_trans
@@ -79,7 +105,8 @@
       end if
 !
       iflag_sph_commN = iflag_send_recv
-!      call sel_sph_comm_routine(NB)
+!      call sel_sph_comm_routine                                        &
+!     &   (NB, comm_rtp, comm_rtm, comm_rlm, comm_rj)
       if(my_rank .eq. 0) then
         write(*,'(a,i4)', advance='no')                                 &
      &   'Selected communication routine: ', iflag_sph_commN
@@ -94,7 +121,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sel_sph_import_table(NB, X_rtp, X_rtm, X_rlm, X_rj)
+      subroutine sel_sph_import_table                                   &
+     &         (NB, comm_rtp, comm_rtm, comm_rlm, comm_rj,              &
+     &          nnod_rtp, nnod_rtm, nnod_rlm, nnod_rj,                  &
+     &          X_rtp, X_rtm, X_rlm, X_rj)
 !
       use calypso_mpi
 !
@@ -102,6 +132,13 @@
       use m_solver_SR
 !
       integer (kind=kint), intent(in) :: NB
+      integer (kind=kint), intent(in) :: nnod_rtp, nnod_rtm
+      integer (kind=kint), intent(in) :: nnod_rlm, nnod_rj
+      type(sph_comm_tbl), intent(in) :: comm_rtp
+      type(sph_comm_tbl), intent(in) :: comm_rtm
+      type(sph_comm_tbl), intent(in) :: comm_rlm
+      type(sph_comm_tbl), intent(in) :: comm_rj
+!
       real (kind=kreal), intent(inout) :: X_rtp(NB*nnod_rtp)
       real (kind=kreal), intent(inout) :: X_rtm(NB*nnod_rtm)
       real (kind=kreal), intent(inout) :: X_rlm(NB*nnod_rlm)
@@ -111,20 +148,27 @@
       real(kind = kreal) :: etime_item_import(0:1) = 0.0d0
 !
 !
-      call check_spherical_SRs_N(NB)
+      call check_spherical_SRs_N                                        &
+     &   (NB, comm_rtp, comm_rtm, comm_rlm, comm_rj)
 !
       if(iflag_sph_SRN .ne. iflag_import_UNDEFINED) return
 !
       if(my_rank .eq. 0) write(*,*) 'test  send_recv with reg. import'
       iflag_sph_SRN = iflag_import_item
       starttime = MPI_WTIME()
-      call all_sph_send_recv_N(NB, X_rtp, X_rtm, X_rlm, X_rj)
+      call all_sph_send_recv_N                                          &
+     &   (NB, comm_rtp, comm_rtm, comm_rlm, comm_rj,                    &
+     &    nnod_rtp, nnod_rtm, nnod_rlm, nnod_rj,                        &
+     &    X_rtp, X_rtm, X_rlm, X_rj)
       endtime(0) = MPI_WTIME() - starttime
 !
       if(my_rank .eq. 0) write(*,*) 'test  send_recv with rev. import'
       iflag_sph_SRN = iflag_import_rev
       starttime = MPI_WTIME()
-      call all_sph_send_recv_N(NB, X_rtp, X_rtm, X_rlm, X_rj)
+      call all_sph_send_recv_N                                          &
+     &   (NB, comm_rtp, comm_rtm, comm_rlm, comm_rj,                    &
+     &    nnod_rtp, nnod_rtm, nnod_rlm, nnod_rj,                        &
+     &    X_rtp, X_rtm, X_rlm, X_rj)
       endtime(1) = MPI_WTIME() - starttime
 !
       endtime(1) = MPI_WTIME() - starttime
@@ -146,13 +190,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sel_sph_comm_routine(NB)
+      subroutine sel_sph_comm_routine                                   &
+     &         (NB, comm_rtp, comm_rtm, comm_rlm, comm_rj)
 !
       use m_sph_communicators
       use calypso_mpi
       use set_from_recv_buf_rev
 !
       integer (kind=kint), intent(in) :: NB
+      type(sph_comm_tbl), intent(inout) :: comm_rtp
+      type(sph_comm_tbl), intent(inout) :: comm_rtm
+      type(sph_comm_tbl), intent(inout) :: comm_rlm
+      type(sph_comm_tbl), intent(inout) :: comm_rj
 !
       real(kind = kreal) :: starttime, endtime(0:2)
       real(kind = kreal) :: etime_send_recv(0:2) =   0.0d0
@@ -167,12 +216,12 @@
 !
       iflag_sph_commN = iflag_send_recv
       starttime = MPI_WTIME()
-      call all_sph_SR_core_N(NB)
+      call all_sph_SR_core_N(NB, comm_rtp, comm_rtm, comm_rlm, comm_rj)
       endtime(0) = MPI_WTIME() - starttime
 !
       iflag_sph_commN = iflag_alltoallv
       starttime = MPI_WTIME()
-      call all_sph_SR_core_N(NB)
+      call all_sph_SR_core_N(NB, comm_rtp, comm_rtm, comm_rlm, comm_rj)
       endtime(1) = MPI_WTIME() - starttime
 !
       call MPI_allREDUCE (endtime(0), etime_send_recv(0), ithree,       &
@@ -197,11 +246,21 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine all_sph_send_recv_N(NB, X_rtp, X_rtm, X_rlm, X_rj)
+      subroutine all_sph_send_recv_N                                    &
+     &         (NB, comm_rtp, comm_rtm, comm_rlm, comm_rj,              &
+     &          nnod_rtp, nnod_rtm, nnod_rlm, nnod_rj,                  &
+     &          X_rtp, X_rtm, X_rlm, X_rj)
 !
       use spherical_SRs_N
 !
       integer (kind=kint), intent(in) :: NB
+      integer (kind=kint), intent(in) :: nnod_rtp, nnod_rtm
+      integer (kind=kint), intent(in) :: nnod_rlm, nnod_rj
+      type(sph_comm_tbl), intent(in) :: comm_rtp
+      type(sph_comm_tbl), intent(in) :: comm_rtm
+      type(sph_comm_tbl), intent(in) :: comm_rlm
+      type(sph_comm_tbl), intent(in) :: comm_rj
+!
       real (kind=kreal), intent(inout) :: X_rtp(NB*nnod_rtp)
       real (kind=kreal), intent(inout) :: X_rtm(NB*nnod_rtm)
       real (kind=kreal), intent(inout) :: X_rlm(NB*nnod_rlm)
@@ -209,80 +268,111 @@
 !
 !
       call send_recv_sph_trans_N                                        &
-     &   (NB, sph_rj1%nnod_rj, sph_rlm1%nnod_rlm,                       &
-     &    comm_rj1, comm_rlm1, X_rj, X_rlm)
+     &   (NB, nnod_rj, nnod_rlm, comm_rj, comm_rlm, X_rj, X_rlm)
       call send_recv_sph_trans_N                                        &
-     &   (NB, sph_rlm1%nnod_rlm, sph_rj1%nnod_rj,                       &
-     &    comm_rlm1, comm_rj1, X_rlm, X_rj)
+     &   (NB, nnod_rlm, nnod_rj, comm_rlm, comm_rj, X_rlm, X_rj)
       call send_recv_sph_trans_N                                        &
-     &   (NB, sph_rj1%nnod_rj, sph_rlm1%nnod_rlm,                       &
-     &    comm_rj1, comm_rlm1, X_rj, X_rlm)
+     &   (NB, nnod_rtp, nnod_rtm, comm_rtp, comm_rtm, X_rtp, X_rtm)
       call send_recv_sph_trans_N                                        &
-     &   (NB, sph_rtm1%nnod_rtm, sph_rtp1%nnod_rtp,                     &
-     &    comm_rtm1, comm_rtp1, X_rtm, X_rtp)
+     &   (NB, nnod_rtm, nnod_rtp, comm_rtm, comm_rtp, X_rtm, X_rtp)
 !
       end subroutine all_sph_send_recv_N
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine all_sph_SR_core_N(NB)
+      subroutine all_sph_SR_core_N                                      &
+     &         (NB, comm_rtp, comm_rtm, comm_rlm, comm_rj)
 !
       use spherical_SRs_N
 !
       integer (kind=kint), intent(in) :: NB
+      type(sph_comm_tbl), intent(inout) :: comm_rtp
+      type(sph_comm_tbl), intent(inout) :: comm_rtm
+      type(sph_comm_tbl), intent(inout) :: comm_rlm
+      type(sph_comm_tbl), intent(inout) :: comm_rj
 !
 !
-      call check_calypso_sph_buffer_N(NB)
+      call check_calypso_sph_buffer_N                                   &
+     &   (NB, comm_rtp, comm_rtm, comm_rlm, comm_rj)
 !
       call calypso_sph_comm_rj_2_rlm_N(NB)
-      call calypso_sph_comm_N(NB, comm_rj1, comm_rlm1)
-      call finish_send_recv_sph(comm_rj1)
-      call calypso_sph_comm_N(NB, comm_rlm1, comm_rj1)
-      call finish_send_recv_sph(comm_rlm1)
-      call calypso_sph_comm_N(NB, comm_rtp1, comm_rtm1)
-      call finish_send_recv_sph(comm_rtp1)
-      call calypso_sph_comm_N(NB, comm_rtm1, comm_rtp1)
-      call finish_send_recv_sph(comm_rtm1)
+      call calypso_sph_comm_N(NB, comm_rj, comm_rlm)
+      call finish_send_recv_sph(comm_rj)
+      call calypso_sph_comm_N(NB, comm_rlm, comm_rj)
+      call finish_send_recv_sph(comm_rlm)
+      call calypso_sph_comm_N(NB, comm_rtp, comm_rtm)
+      call finish_send_recv_sph(comm_rtp)
+      call calypso_sph_comm_N(NB, comm_rtm, comm_rtp)
+      call finish_send_recv_sph(comm_rtm)
 !
       end subroutine all_sph_SR_core_N
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine check_spherical_SRs_N(NB)
+      subroutine check_spherical_SRs_N                                  &
+     &         (NB, comm_rtp, comm_rtm, comm_rlm, comm_rj)
 !
       use calypso_mpi
       use select_calypso_SR
 !
       integer (kind=kint), intent(in) :: NB
+      type(sph_comm_tbl), intent(in) :: comm_rtp
+      type(sph_comm_tbl), intent(in) :: comm_rtm
+      type(sph_comm_tbl), intent(in) :: comm_rlm
+      type(sph_comm_tbl), intent(in) :: comm_rj
 !
 !
       call calypso_MPI_Barrier
       if(my_rank .eq. 0) write(*,*) 'check rtp -> rtm'
       call check_calypso_send_recv_N                                    &
-     &   (NB, comm_rtp1%nneib_domain, comm_rtp1%iflag_self,             &
-     &    comm_rtp1%istack_sr, comm_rtm1%nneib_domain,                  &
-     &    comm_rtm1%iflag_self, comm_rtm1%istack_sr)
+     &   (NB, comm_rtp%nneib_domain, comm_rtp%iflag_self,               &
+     &    comm_rtp%istack_sr, comm_rtm%nneib_domain,                    &
+     &    comm_rtm%iflag_self, comm_rtm%istack_sr)
       call calypso_MPI_Barrier
       if(my_rank .eq. 0) write(*,*) 'check rtm -> rtp'
       call check_calypso_send_recv_N                                    &
-     &   (NB, comm_rtm1%nneib_domain, comm_rtm1%iflag_self,             &
-     &    comm_rtm1%istack_sr, comm_rtp1%nneib_domain,                  &
-     &    comm_rtp1%iflag_self, comm_rtp1%istack_sr)
+     &   (NB, comm_rtm%nneib_domain, comm_rtm%iflag_self,               &
+     &    comm_rtm%istack_sr, comm_rtp%nneib_domain,                    &
+     &    comm_rtp%iflag_self, comm_rtp%istack_sr)
       call calypso_MPI_Barrier
       if(my_rank .eq. 0) write(*,*) 'check rj -> rlm'
       call check_calypso_send_recv_N                                    &
-     &    (NB, comm_rj1%nneib_domain, comm_rj1%iflag_self,              &
-     &     comm_rj1%istack_sr, comm_rlm1%nneib_domain,                  &
-     &     comm_rlm1%iflag_self, comm_rlm1%istack_sr)
+     &    (NB, comm_rj%nneib_domain, comm_rj%iflag_self,                &
+     &     comm_rj%istack_sr, comm_rlm%nneib_domain,                    &
+     &     comm_rlm%iflag_self, comm_rlm%istack_sr)
       call calypso_MPI_Barrier
       if(my_rank .eq. 0) write(*,*) 'check rlm -> rj'
       call check_calypso_send_recv_N                                    &
-     &   (NB, comm_rlm1%nneib_domain, comm_rlm1%iflag_self,             &
-     &    comm_rlm1%istack_sr, comm_rj1%nneib_domain,                   &
-     &    comm_rj1%iflag_self, comm_rj1%istack_sr)
+     &   (NB, comm_rlm%nneib_domain, comm_rlm%iflag_self,               &
+     &    comm_rlm%istack_sr, comm_rj%nneib_domain,                     &
+     &    comm_rj%iflag_self, comm_rj%istack_sr)
 !
       end subroutine check_spherical_SRs_N
 !
 ! ------------------------------------------------------------------
+!
+      subroutine check_calypso_sph_buffer_N                             &
+     &         (NB, comm_rtp, comm_rtm, comm_rlm, comm_rj)
+!
+      use t_sph_trans_comm_tbl
+      use m_sel_spherical_SRs
+      use m_solver_SR
+      use spherical_SRs_N
+!
+      integer (kind=kint), intent(in) :: NB
+      type(sph_comm_tbl), intent(inout) :: comm_rtp
+      type(sph_comm_tbl), intent(inout) :: comm_rtm
+      type(sph_comm_tbl), intent(inout) :: comm_rlm
+      type(sph_comm_tbl), intent(inout) :: comm_rj
+!
+!
+      call check_calypso_sph_comm_buf_N(NB, comm_rtp, comm_rtm)
+      call check_calypso_sph_comm_buf_N(NB, comm_rtm, comm_rtp)
+      call check_calypso_sph_comm_buf_N(NB, comm_rj, comm_rlm)
+      call check_calypso_sph_comm_buf_N(NB, comm_rlm, comm_rj)
+!
+      end subroutine check_calypso_sph_buffer_N
+!
+!-----------------------------------------------------------------------
 !
       end module init_spherical_SRs

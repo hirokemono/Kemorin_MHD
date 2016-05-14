@@ -58,13 +58,11 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'set_radius_rot_reft_dat_4_sph'
       call set_radius_rot_reft_dat_4_sph(depth_high_t, depth_low_t,     &
-     &    high_temp, low_temp, angular, rj_fld1)
+     &    high_temp, low_temp, angular, sph_rlm1, sph_rj1,              &
+     &    sph_param1, rj_fld1)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_2nd_fdm_matrices'
-      call const_2nd_fdm_matrices
-!
-      if (iflag_debug.gt.0) write(*,*) 'const_2nd_fdm_coefs'
-      call const_2nd_fdm_coefs
+      call const_2nd_fdm_matrices(sph_param1, sph_rj1)
 !
 ! ---------------------------------
 !

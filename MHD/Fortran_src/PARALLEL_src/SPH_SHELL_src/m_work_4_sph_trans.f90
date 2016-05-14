@@ -8,7 +8,8 @@
 !!        communication test
 !!
 !!@verbatim
-!!      subroutine allocate_work_4_sph_trans
+!!      subroutine allocate_work_4_sph_trans                            &
+!!     &         (nidx_rtp, nidx_rtm, nidx_rlm)
 !!      subroutine allocate_l_rtm_block
 !!
 !!      subroutine deallocate_work_4_sph_trans
@@ -72,9 +73,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_work_4_sph_trans
+      subroutine allocate_work_4_sph_trans                              &
+     &         (nidx_rtp, nidx_rtm, nidx_rlm)
 !
-      use m_spheric_parameter
+      integer(kind = kint), intent(in) :: nidx_rtp(3)
+      integer(kind = kint), intent(in) :: nidx_rtm(3)
+      integer(kind = kint), intent(in) :: nidx_rlm(2)
 !
 !
       allocate(lstack_rlm(0:nidx_rtm(3)))

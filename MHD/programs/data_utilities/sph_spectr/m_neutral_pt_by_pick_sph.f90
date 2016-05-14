@@ -130,8 +130,7 @@
       call allocate_dr_rj_noequi(sph_rj1%nidx_rj(1))
       call set_dr_for_nonequi(sph_param1%nlayer_CMB,                    &
      &   sph_rj1%nidx_rj(1), sph_rj1%radius_1d_rj_r)
-      call const_2nd_fdm_matrices
-      call const_2nd_fdm_coefs
+      call const_2nd_fdm_matrices(sph_param1, sph_rj1)
 !
       write(*,*) 'icomp_temp, icomp_light', icomp_temp, icomp_light
       write(*,*) 'ipick_l0m0', ipick_l0m0

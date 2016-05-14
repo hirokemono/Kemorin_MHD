@@ -10,7 +10,8 @@
 !!
 !!@verbatim
 !!      subroutine set_legendre_trans_mode_ctl(tranx_loop_ctl)
-!!      subroutine sel_init_legendre_trans(ncomp, nvector, nscalar))
+!!      subroutine sel_init_legendre_trans                              &
+!!     &         (ncomp, nvector, nscalar, sph_rtm, sph_rlm)
 !!      subroutine sel_finalize_legendre_trans
 !!
 !!    Backward transforms
@@ -27,6 +28,9 @@
 !!     &          n_WR, n_WS, WR, WS)
 !!        Input:  vr_rtm   (Order: radius,theta,phi)
 !!        Output: sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
+!!
+!!        type(sph_rtm_grid), intent(in) :: sph_rtm
+!!        type(sph_rlm_grid), intent(in) :: sph_rlm
 !!@endverbatim
 !!
 !!@param   ncomp    Total number of components for spherical transform
@@ -233,12 +237,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sel_init_legendre_trans(ncomp, nvector, nscalar)
+      subroutine sel_init_legendre_trans                                &
+     &         (ncomp, nvector, nscalar, sph_rtm, sph_rlm)
 !
       use m_leg_trans_sym_matmul_big
       use m_legendre_work_sym_matmul
       use m_legendre_work_testlooop
 !
+      type(sph_rtm_grid), intent(in) :: sph_rtm
+      type(sph_rlm_grid), intent(in) :: sph_rlm
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
 !
 !
@@ -246,40 +253,41 @@
      &   .or. id_legendre_transfer .eq. iflag_leg_sym_dgemm             &
      &   .or. id_legendre_transfer .eq. iflag_leg_sym_matprod) then
         call alloc_leg_vec_sym_matmul                                   &
-     &     (sph_rtm1%nidx_rtm(2), sph_rtm1%maxidx_rtm_smp(1),           &
+     &     (sph_rtm%nidx_rtm(2), sph_rtm%maxidx_rtm_smp(1),             &
      &      nvector)
         call alloc_leg_scl_sym_matmul                                   &
-     &     (sph_rtm1%nidx_rtm(2), sph_rtm1%maxidx_rtm_smp(1),           &
+     &     (sph_rtm%nidx_rtm(2), sph_rtm%maxidx_rtm_smp(1),             &
      &      nscalar)
       else if(id_legendre_transfer .eq. iflag_leg_sym_matmul_big        &
      &   .or. id_legendre_transfer .eq. iflag_leg_sym_dgemm_big         &
      &   .or. id_legendre_transfer .eq. iflag_leg_sym_matprod_big) then
         call alloc_leg_sym_matmul_big                                   &
-     &     (sph_rtm1%nidx_rtm(2), sph_rtm1%maxidx_rtm_smp(1),           &
+     &     (sph_rtm%nidx_rtm(2), sph_rtm%maxidx_rtm_smp(1),             &
      &      nvector, nscalar)
       else if(id_legendre_transfer .eq. iflag_leg_matmul                &
      &   .or. id_legendre_transfer .eq. iflag_leg_dgemm                 &
      &   .or. id_legendre_transfer .eq. iflag_leg_matprod) then
         call alloc_leg_vec_matmul                                       &
-     &     (sph_rtm1%nidx_rtm(2), sph_rtm1%maxidx_rtm_smp(1),           &
+     &     (sph_rtm%nidx_rtm(2), sph_rtm%maxidx_rtm_smp(1),             &
      &      nvector)
         call alloc_leg_scl_matmul                                       &
-     &     (sph_rtm1%nidx_rtm(2), sph_rtm1%maxidx_rtm_smp(1),           &
+     &     (sph_rtm%nidx_rtm(2), sph_rtm%maxidx_rtm_smp(1),             &
      &      nscalar)
       else if(id_legendre_transfer .eq. iflag_leg_symmetry              &
      &   .or. id_legendre_transfer .eq. iflag_leg_sym_spin_loop) then
-        call alloc_leg_vec_symmetry(sph_rtm1%nidx_rtm(2))
-        call alloc_leg_scl_symmetry(sph_rtm1%nidx_rtm(2))
+        call alloc_leg_vec_symmetry(sph_rtm%nidx_rtm(2))
+        call alloc_leg_scl_symmetry(sph_rtm%nidx_rtm(2))
       else if(id_legendre_transfer .eq. iflag_leg_blocked               &
      &   .or. id_legendre_transfer .eq. iflag_leg_krloop_outer) then
-        call alloc_leg_vec_blocked(sph_rtm1%nidx_rtm(2))
-        call alloc_leg_scl_blocked(sph_rtm1%nidx_rtm(2))
+        call alloc_leg_vec_blocked(sph_rtm%nidx_rtm(2))
+        call alloc_leg_scl_blocked(sph_rtm%nidx_rtm(2))
       else if(id_legendre_transfer .eq. iflag_leg_test_loop) then
-        call alloc_leg_vec_test(sph_rtm1%maxidx_rtm_smp(2),             &
-     &                          nvector, nscalar)
+        call alloc_leg_vec_test                                         &
+     &     (sph_rtm%nidx_rtm(1), sph_rtm%maxidx_rtm_smp(2),             &
+     &      nvector, nscalar)
       else
         call allocate_work_sph_trans                                    &
-     &     (ncomp, sph_rtm1%nnod_rtm, sph_rlm1%nnod_rlm)
+     &     (ncomp, sph_rtm%nnod_rtm, sph_rlm%nnod_rlm)
       end if
 !
       end subroutine sel_init_legendre_trans

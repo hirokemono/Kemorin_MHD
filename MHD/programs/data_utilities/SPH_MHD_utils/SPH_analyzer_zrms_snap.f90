@@ -82,6 +82,7 @@
 !
       use m_mesh_data
       use m_node_phys_data
+      use m_spheric_parameter
       use m_sph_spectr_data
       use output_viz_file_control
       use lead_pole_data_4_sph_mhd
@@ -110,8 +111,8 @@
 ! ----  Take zonal mean
 !
       if (iflag_debug.eq.1) write(*,*) 'zonal_cyl_rms_all_rtp_field'
-!      call zonal_rms_all_rtp_field(mesh1%node, nod_fld1)
-      call zonal_cyl_rms_all_rtp_field(mesh1%node, nod_fld1)
+!      call zonal_rms_all_rtp_field(sph_rtp1, mesh1%node, nod_fld1)
+      call zonal_cyl_rms_all_rtp_field(sph_rtp1, mesh1%node, nod_fld1)
 !
 !*  ----------- transform field at pole and center --------------
 !*

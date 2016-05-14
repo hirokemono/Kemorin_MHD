@@ -260,13 +260,14 @@
 !
       use m_mesh_data
       use m_node_phys_data
+      use m_spheric_parameter
+      use m_sph_spectr_data
       use output_viz_file_control
       use lead_pole_data_4_sph_mhd
       use nod_phys_send_recv
       use copy_snap_4_sph_trans
       use copy_MHD_4_sph_trans
       use sph_rtp_zonal_rms_data
-      use m_sph_spectr_data
 !
 !
       integer (kind =kint) :: iflag
@@ -287,7 +288,7 @@
 ! ----  Take zonal mean
 !
       if (iflag_debug.eq.1) write(*,*) 'zonal_mean_all_rtp_field'
-      call zonal_mean_all_rtp_field(mesh1%node, nod_fld1)
+      call zonal_mean_all_rtp_field(sph_rtp1, mesh1%node, nod_fld1)
 !
 !*  ----------- transform field at pole and center --------------
 !*

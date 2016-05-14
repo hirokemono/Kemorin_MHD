@@ -7,10 +7,16 @@
 !>@brief  Spherical transform for poles
 !!
 !!@verbatim
-!!      subroutine init_pole_transform
+!!      subroutine init_pole_transform(sph_rtp)
 !!
 !!      subroutine pole_backward_transforms(ncomp, nvector, nscalar,    &
+!!     &          sph_param1, sph_rtp, sph_rtm, sph_rlm, comm_rlm,      &
 !!     &          n_WR, WR, v_pl_local)
+!!        type(sph_shell_parameters), intent(in) :: sph_param1
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(sph_rtm_grid), intent(in) :: sph_rtm
+!!        type(sph_rlm_grid), intent(in) :: sph_rlm
+!!        type(sph_comm_tbl), intent(in) :: comm_rlm
 !!
 !!------------------------------------------------------------------
 !!
@@ -67,7 +73,9 @@
       use m_machine_parameter
       use m_phys_constants
       use m_spheric_constants
-      use m_spheric_parameter
+!
+      use t_spheric_parameter
+      use t_sph_trans_comm_tbl
 !
       implicit none
 !
@@ -77,25 +85,37 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_pole_transform
+      subroutine init_pole_transform(sph_rtp)
 !
       use m_work_pole_sph_trans
+      use cal_minmax_and_stacks
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
 !
 !
-      call init_num_pole_sph_trans
+      call allocate_num_pole_sph_trans(sph_rtp%nidx_global_rtp(1))
+!
+      call count_number_4_smp(np_smp, ione, nnod_pole,                  &
+     &    istack_npole_smp, max_npole_smp)
 !
       end subroutine init_pole_transform
 !
 ! -----------------------------------------------------------------------
 !
       subroutine pole_backward_transforms(ncomp, nvector, nscalar,      &
+     &          sph_param1, sph_rtp, sph_rtm, sph_rlm, comm_rlm,        &
      &          n_WR, WR, v_pl_local)
 !
       use calypso_mpi
-      use m_sph_trans_comm_table
       use m_work_pole_sph_trans
       use schmidt_b_trans_at_pole
       use schmidt_b_trans_at_center
+!
+      type(sph_shell_parameters), intent(in) :: sph_param1
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_rtm_grid), intent(in) :: sph_rtm
+      type(sph_rlm_grid), intent(in) :: sph_rlm
+      type(sph_comm_tbl), intent(in) :: comm_rlm
 !
       integer(kind = kint), intent(in) :: ncomp
       integer(kind = kint), intent(in) :: nvector, nscalar
@@ -110,24 +130,24 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'schmidt_b_trans_pole_vect'
       call schmidt_b_trans_pole_vect(ncomp, nvector,                    &
-     &    sph_param1%l_truncation, sph_rtm1%ist_rtm_order_zero,         &
-     &    sph_rtm1%ist_rtm_order_1s, sph_rtm1%ist_rtm_order_1c,         &
-     &    nnod_rlm, nidx_rtm(1), sph_rlm1%istep_rlm,                    &
-     &    sph_rtp1%nidx_global_rtp, sph_rtm1%idx_gl_1d_rtm_r,           &
-     &    sph_rtm1%a_r_1d_rtm_r, comm_rlm1%irev_sr,                     &
+     &    sph_param1%l_truncation, sph_rtm%ist_rtm_order_zero,          &
+     &    sph_rtm%ist_rtm_order_1s, sph_rtm%ist_rtm_order_1c,           &
+     &    sph_rlm%nnod_rlm, sph_rtm%nidx_rtm(1), sph_rlm%istep_rlm,     &
+     &    sph_rtp%nidx_global_rtp, sph_rtm%idx_gl_1d_rtm_r,             &
+     &    sph_rtm%a_r_1d_rtm_r, comm_rlm%irev_sr,                       &
      &    n_WR, WR, v_pl_local)
       call schmidt_b_trans_pole_scalar(ncomp, nvector, nscalar,         &
-     &    sph_param1%l_truncation, sph_rtm1%ist_rtm_order_zero,         &
-     &    nnod_rlm, nidx_rtm(1), sph_rlm1%istep_rlm,                    &
-     &    sph_rtp1%nidx_global_rtp, sph_rtm1%idx_gl_1d_rtm_r,           &
-     &    comm_rlm1%irev_sr, n_WR, WR, v_pl_local)
+     &    sph_param1%l_truncation, sph_rtm%ist_rtm_order_zero,          &
+     &    sph_rlm%nnod_rlm, sph_rtm%nidx_rtm(1), sph_rlm%istep_rlm,     &
+     &    sph_rtp%nidx_global_rtp, sph_rtm%idx_gl_1d_rtm_r,             &
+     &    comm_rlm%irev_sr, n_WR, WR, v_pl_local)
 !
       if(sph_param1%iflag_shell_mode .eq. iflag_MESH_w_center) then
         call schmidt_b_trans_center_vect                                &
-     &    (ncomp, nvector, sph_rtm1%ist_rtm_order_zero,                 &
-     &     sph_rtm1%ist_rtm_order_1s, sph_rtm1%ist_rtm_order_1c,        &
-     &     nnod_rlm, sph_rtm1%idx_gl_1d_rtm_r(1),                       &
-     &     sph_rtm1%a_r_1d_rtm_r(1), comm_rlm1%irev_sr,                 &
+     &    (ncomp, nvector, sph_rtm%ist_rtm_order_zero,                  &
+     &     sph_rtm%ist_rtm_order_1s, sph_rtm%ist_rtm_order_1c,          &
+     &     sph_rlm%nnod_rlm, sph_rtm%idx_gl_1d_rtm_r(1),                &
+     &     sph_rtm%a_r_1d_rtm_r(1), comm_rlm%irev_sr,                   &
      &     n_WR, WR, v_pl_local)
         call schmidt_b_trans_center_scalar                              &
      &     (ncomp, nvector, nscalar, v_pl_local)

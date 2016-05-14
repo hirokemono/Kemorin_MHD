@@ -43,7 +43,6 @@
       module legendre_transform_org
 !
       use m_precision
-      use m_sph_trans_comm_table
 !
       use t_spheric_rtm_data
       use t_spheric_rlm_data
