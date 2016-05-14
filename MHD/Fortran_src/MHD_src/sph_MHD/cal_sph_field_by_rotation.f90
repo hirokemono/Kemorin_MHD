@@ -36,6 +36,7 @@
       subroutine cal_rot_of_forces_sph_2(rj_fld)
 !
       use calypso_mpi
+      use m_spheric_parameter
       use m_boundary_params_sph_MHD
       use const_sph_radial_grad
       use const_sph_rotation
@@ -56,7 +57,8 @@
      &      ipol%i_lorentz, ipol%i_rot_Lorentz, rj_fld)
 !
         if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
-          call int_icore_toroidal_lorentz(sph_bc_U%kr_in, rj_fld)
+          call int_icore_toroidal_lorentz                               &
+     &       (sph_bc_U%kr_in, sph_rj1, rj_fld)
         end if
       end if
 !

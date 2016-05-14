@@ -44,7 +44,6 @@
 !
       use m_constants
       use m_t_int_parameter
-      use m_spheric_parameter
       use m_schmidt_poly_on_rtm
       use m_radial_matrices_sph
 !

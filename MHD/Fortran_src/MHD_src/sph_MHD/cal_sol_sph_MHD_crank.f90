@@ -152,6 +152,7 @@
 !
       subroutine update_after_vorticity_sph(rj_fld)
 !
+      use m_spheric_parameter
       use m_physical_property
       use m_boundary_params_sph_MHD
       use cal_inner_core_rotation
@@ -160,7 +161,7 @@
 !
 !
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
-        call set_inner_core_rotation(sph_bc_U%kr_in, rj_fld)
+        call set_inner_core_rotation(sph_bc_U%kr_in, sph_rj1, rj_fld)
       end if
 !
 !       Input: ipol%i_vort, itor%i_vort

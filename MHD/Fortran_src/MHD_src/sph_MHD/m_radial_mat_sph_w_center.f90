@@ -7,22 +7,23 @@
 !>@brief Radial band matrix for time evolutions
 !!
 !!@verbatim
-!!      subroutine allocate_temp00_mat_sph
-!!      subroutine allocate_press00_mat_sph
-!!      subroutine allocate_comp00_mat_sph
+!!      subroutine allocate_temp00_mat_sph(sph_rj)
+!!      subroutine allocate_press00_mat_sph(sph_rj)
+!!      subroutine allocate_comp00_mat_sph(sph_rj)
 !!
 !!      subroutine deallocate_temp00_mat_sph
 !!      subroutine deallocate_press00_mat_sph
 !!      subroutine deallocate_comp00_mat_sph
 !!
-!!      subroutine check_press00_mat_sph(my_rank)
-!!      subroutine check_temp00_mat_sph(my_rank)
-!!      subroutine check_comp00_mat_sph(my_rank)
+!!      subroutine check_press00_mat_sph(my_rank, sph_rj)
+!!      subroutine check_temp00_mat_sph(my_rank, sph_rj)
+!!      subroutine check_comp00_mat_sph(my_rank, sph_rj)
 !!@endverbatim
 !
       module m_radial_mat_sph_w_center
 !
       use m_precision
+      use t_spheric_rj_data
 !
       implicit none
 !
@@ -72,14 +73,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_temp00_mat_sph
+      subroutine allocate_temp00_mat_sph(sph_rj)
 !
-      use m_spheric_parameter
+      type(sph_rj_grid), intent(in) :: sph_rj
 !
       integer(kind = kint) :: nri
 !
 !
-      nri =  nidx_rj(1)
+      nri =  sph_rj%nidx_rj(1)
 !
       allocate( t00_solution(0:nri) )
       allocate( t00_evo_mat(3,0:nri) )
@@ -98,14 +99,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_press00_mat_sph
+      subroutine allocate_press00_mat_sph(sph_rj)
 !
-      use m_spheric_parameter
+      type(sph_rj_grid), intent(in) :: sph_rj
 !
       integer(kind = kint) :: nri
 !
 !
-      nri = nidx_rj(1)
+      nri = sph_rj%nidx_rj(1)
 !
       allocate( p00_solution(0:nri) )
       allocate( p00_poisson_mat(3,0:nri) )
@@ -123,14 +124,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_comp00_mat_sph
+      subroutine allocate_comp00_mat_sph(sph_rj)
 !
-      use m_spheric_parameter
+      type(sph_rj_grid), intent(in) :: sph_rj
 !
       integer(kind = kint) :: nri
 !
 !
-      nri =  nidx_rj(1)
+      nri =  sph_rj%nidx_rj(1)
 !
       allocate( c00_solution(0:nri) )
       allocate( c00_evo_mat(3,0:nri) )
@@ -184,49 +185,49 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_press00_mat_sph(my_rank)
+      subroutine check_press00_mat_sph(my_rank, sph_rj)
 !
-      use m_spheric_parameter
       use check_sph_radial_mat
 !
       integer(kind = kint), intent(in) :: my_rank
+      type(sph_rj_grid), intent(in) :: sph_rj
 !
 !
       write(50+my_rank,'(a)') 'poisson matrix for average  pressure'
-      call check_radial_3band_mat_w_ctr(my_rank, nidx_rj(1),            &
-     &    sph_rj1%radius_1d_rj_r, p00_poisson_mat)
+      call check_radial_3band_mat_w_ctr(my_rank, sph_rj%nidx_rj(1),     &
+     &    sph_rj%radius_1d_rj_r, p00_poisson_mat)
 !
       end subroutine check_press00_mat_sph
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_temp00_mat_sph(my_rank)
+      subroutine check_temp00_mat_sph(my_rank, sph_rj)
 !
-      use m_spheric_parameter
       use check_sph_radial_mat
 !
       integer(kind = kint), intent(in) :: my_rank
+      type(sph_rj_grid), intent(in) :: sph_rj
 !
 !
       write(50+my_rank,'(a)') 'evolution matrix for ave. temperature'
-      call check_radial_3band_mat_w_ctr(my_rank, nidx_rj(1),            &
-     &    sph_rj1%radius_1d_rj_r, t00_evo_mat)
+      call check_radial_3band_mat_w_ctr(my_rank, sph_rj%nidx_rj(1),     &
+     &    sph_rj%radius_1d_rj_r, t00_evo_mat)
 !
       end subroutine check_temp00_mat_sph
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_comp00_mat_sph(my_rank)
+      subroutine check_comp00_mat_sph(my_rank, sph_rj)
 !
-      use m_spheric_parameter
       use check_sph_radial_mat
 !
       integer(kind = kint), intent(in) :: my_rank
+      type(sph_rj_grid), intent(in) :: sph_rj
 !
 !
       write(50+my_rank,'(a)')  'evolution matrix for ave. composition'
-      call check_radial_3band_mat_w_ctr(my_rank, nidx_rj(1),            &
-     &    sph_rj1%radius_1d_rj_r, c00_evo_mat)
+      call check_radial_3band_mat_w_ctr(my_rank, sph_rj%nidx_rj(1),     &
+     &    sph_rj%radius_1d_rj_r, c00_evo_mat)
 !
       end subroutine check_comp00_mat_sph
 !

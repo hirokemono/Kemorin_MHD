@@ -6,9 +6,10 @@
 !>@brief Construct matrix for time evolution of scalar fields
 !!
 !!@verbatim
-!!      subroutine const_radial_mat_press00_sph
-!!      subroutine const_radial_mat_temp00_sph
-!!      subroutine const_radial_mat_comp00_sph
+!!      subroutine const_radial_mat_press00_sph(sph_rj)
+!!      subroutine const_radial_mat_temp00_sph(sph_rj)
+!!      subroutine const_radial_mat_comp00_sph(sph_rj)
+!!        type(sph_rj_grid), intent(in) :: sph_rj
 !!@endverbatim
 !
       module const_r_mat_w_center_sph
@@ -20,6 +21,8 @@
       use m_machine_parameter
       use m_t_int_parameter
 !
+      use t_spheric_rj_data
+!
       implicit none
 !
 ! -----------------------------------------------------------------------
@@ -28,9 +31,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_press00_sph
+      subroutine const_radial_mat_press00_sph(sph_rj)
 !
-      use m_spheric_parameter
       use m_boundary_params_sph_MHD
       use m_radial_matrices_sph
       use m_radial_mat_sph_w_center
@@ -39,78 +41,81 @@
       use m_ludcmp_3band
       use center_sph_matrices
 !
+      type(sph_rj_grid), intent(in) :: sph_rj
 !
       integer(kind = kint) :: ierr, nri1
-!
       real(kind = kreal) :: coef_p
 !
 !
-      nri1 = sph_rj1%nidx_rj(1) + 1
+      nri1 = sph_rj%nidx_rj(1) + 1
       coef_p = - coef_press
 !
-      call copy_to_band3_mat_w_center(sph_rj1%nidx_rj(1), zero,         &
-      &   p_poisson_mat(1,1,sph_rj1%idx_rj_degree_zero),                &
+      call copy_to_band3_mat_w_center(sph_rj%nidx_rj(1), zero,          &
+      &   p_poisson_mat(1,1,sph_rj%idx_rj_degree_zero),                 &
       &   p00_poisson_mat(1,0))
 !
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
-        call add_scalar_poisson_mat_fill_ctr(sph_rj1%nidx_rj(1),        &
+        call add_scalar_poisson_mat_fill_ctr(sph_rj%nidx_rj(1),         &
      &      sph_bc_U%r_ICB, fdm2_fix_dr_center, fdm2_fix_fld_ctr1,      &
      &      coef_p, p00_poisson_mat)
       else
         call add_scalar_poisson_mat_no_fld                              &
-     &     (sph_rj1%nidx_rj(1), p00_poisson_mat)
+     &     (sph_rj%nidx_rj(1), p00_poisson_mat)
       end if
 !
       call ludcmp_3band(nri1, p00_poisson_mat(1,0), i_p00_pivot(0),     &
      &    ierr, p00_poisson_lu(1,0), p00_poisson_det(0))
 !
       if(i_debug .eq. iflag_full_msg)                                   &
-     &     call check_press00_mat_sph(my_rank)
+     &     call check_press00_mat_sph(my_rank, sph_rj)
 !
       end subroutine const_radial_mat_press00_sph
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_temp00_sph
+      subroutine const_radial_mat_temp00_sph(sph_rj)
 !
-      use m_spheric_parameter
       use m_boundary_params_sph_MHD
       use m_radial_matrices_sph
       use m_radial_mat_sph_w_center
       use m_physical_property
 !
+      type(sph_rj_grid), intent(in) :: sph_rj
 !
-      call const_radial_mat_scalar00_sph(sph_rj1%nidx_rj(1), sph_bc_T,  &
+!
+      call const_radial_mat_scalar00_sph(sph_rj%nidx_rj(1), sph_bc_T,   &
      &    coef_imp_t, coef_temp, coef_d_temp,                           &
-     &    temp_evo_mat(1,1,sph_rj1%idx_rj_degree_zero), t00_evo_mat,    &
+     &    temp_evo_mat(1,1,sph_rj%idx_rj_degree_zero), t00_evo_mat,     &
      &    t00_evo_lu, t00_evo_det, i_t00_pivot)
 !
       if(i_debug .eq. iflag_full_msg)                                   &
-     &     call check_temp00_mat_sph(my_rank)
+     &     call check_temp00_mat_sph(my_rank, sph_rj)
 !
       end subroutine const_radial_mat_temp00_sph
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_comp00_sph
+      subroutine const_radial_mat_comp00_sph(sph_rj)
 !
-      use m_spheric_parameter
       use m_boundary_params_sph_MHD
       use m_radial_matrices_sph
       use m_radial_mat_sph_w_center
       use m_physical_property
 !
+      type(sph_rj_grid), intent(in) :: sph_rj
 !
-      call const_radial_mat_scalar00_sph(sph_rj1%nidx_rj(1), sph_bc_C,  &
+!
+      call const_radial_mat_scalar00_sph(sph_rj%nidx_rj(1), sph_bc_C,   &
      &    coef_imp_c, coef_light, coef_d_light,                         &
-     &    composit_evo_mat(1,1,sph_rj1%idx_rj_degree_zero),             &
+     &    composit_evo_mat(1,1,sph_rj%idx_rj_degree_zero),              &
      &    c00_evo_mat, c00_evo_lu, c00_evo_det, i_c00_pivot)
 !
       if(i_debug .eq. iflag_full_msg)                                   &
-     &       call check_comp00_mat_sph(my_rank)
+     &       call check_comp00_mat_sph(my_rank, sph_rj)
 !
       end subroutine const_radial_mat_comp00_sph
 !
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine const_radial_mat_scalar00_sph                          &

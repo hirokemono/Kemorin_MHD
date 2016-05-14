@@ -6,9 +6,10 @@
 !>@brief Construct matrix for time evolution of scalar fields
 !!
 !!@verbatim
-!!      subroutine const_radial_mat_4_temp_sph
-!!      subroutine const_radial_mat_4_composit_sph
-!!      subroutine const_radial_mat_4_press_sph
+!!      subroutine const_radial_mat_4_temp_sph(sph_rj)
+!!      subroutine const_radial_mat_4_composit_sph(sph_rj)
+!!      subroutine const_radial_mat_4_press_sph(sph_rj)
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!@endverbatim
 !
       module const_r_mat_4_scalar_sph
@@ -20,6 +21,8 @@
       use m_machine_parameter
       use m_t_int_parameter
 !
+      use t_spheric_rj_data
+!
       implicit none
 !
       private :: const_radial_mat_4_scalar_sph
@@ -30,51 +33,54 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_4_temp_sph
+      subroutine const_radial_mat_4_temp_sph(sph_rj)
 !
-      use m_spheric_parameter
       use m_boundary_params_sph_MHD
       use m_radial_matrices_sph
       use m_physical_property
 !
+      type(sph_rj_grid), intent(in) ::  sph_rj
+!
 !
       call const_radial_mat_4_scalar_sph                                &
-     &   (sph_rj1%nidx_rj(1), sph_rj1%nidx_rj(2),                       &
+     &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                         &
+     &    sph_rj%istack_rj_j_smp, sph_rj%ar_1d_rj,                      &
      &    sph_bc_T, coef_imp_t, coef_temp, coef_d_temp, temp_evo_mat,   &
      &    temp_evo_lu, temp_evo_det, i_temp_pivot)
 !
       if(i_debug .eq. iflag_full_msg)                                   &
-     &     call check_temp_matrices_sph(my_rank)
+     &     call check_temp_matrices_sph(my_rank, sph_rj)
 !
       end subroutine const_radial_mat_4_temp_sph
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_4_composit_sph
+      subroutine const_radial_mat_4_composit_sph(sph_rj)
 !
-      use m_spheric_parameter
       use m_boundary_params_sph_MHD
       use m_radial_matrices_sph
       use m_physical_property
 !
+      type(sph_rj_grid), intent(in) ::  sph_rj
+!
 !
       call const_radial_mat_4_scalar_sph                                &
-     &   (sph_rj1%nidx_rj(1), sph_rj1%nidx_rj(2),                       &
+     &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                         &
+     &    sph_rj%istack_rj_j_smp, sph_rj%ar_1d_rj,                      &
      &    sph_bc_C, coef_imp_c, coef_light, coef_d_light,               &
      &    composit_evo_mat, composit_evo_lu, composit_evo_det,          &
      &    i_composit_pivot)
 !
       if(i_debug .eq. iflag_full_msg)                                   &
-     &       call check_composit_matrix_sph(my_rank)
+     &       call check_composit_matrix_sph(my_rank, sph_rj)
 !
       end subroutine const_radial_mat_4_composit_sph
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_4_press_sph
+      subroutine const_radial_mat_4_press_sph(sph_rj)
 !
-      use m_spheric_parameter
       use m_physical_property
       use m_boundary_params_sph_MHD
       use m_coef_fdm_to_center
@@ -87,6 +93,8 @@
       use mat_product_3band_mul
       use set_radial_mat_sph
 !
+      type(sph_rj_grid), intent(in) ::  sph_rj
+!
       integer(kind = kint) :: ip, jst, jed, j
       integer(kind = kint) :: ierr
       real(kind = kreal) :: coef_p
@@ -94,21 +102,21 @@
 !
       coef_p = - coef_press
       call set_unit_mat_4_poisson                                       &
-     &   (sph_rj1%nidx_rj(1), sph_rj1%nidx_rj(2),                       &
+     &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                         &
      &    sph_bc_U%kr_in, sph_bc_U%kr_out, p_poisson_mat)
       call add_scalar_poisson_mat_sph                                   &
-     &   (sph_rj1%nidx_rj(1), sph_rj1%nidx_rj(2), sph_rj1%ar_1d_rj,     &
+     &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj,        &
      &    sph_bc_U%kr_in, sph_bc_U%kr_out, coef_p, p_poisson_mat)
 !
 !   Boundary condition for ICB
 !
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
         call add_scalar_poisson_mat_ctr1                                &
-     &     (sph_rj1%nidx_rj(1), sph_rj1%nidx_rj(2),                     &
+     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
      &      sph_bc_U%r_ICB, fdm2_fix_fld_ctr1, coef_p, p_poisson_mat)
       else
         call add_icb_scalar_poisson_mat                                 &
-     &     (sph_rj1%nidx_rj(1), sph_rj1%nidx_rj(2),                     &
+     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
      &      sph_bc_U%kr_in, sph_bc_U%r_ICB, sph_bc_U%fdm2_fix_dr_ICB,   &
      &      coef_p, p_poisson_mat)
       end if
@@ -116,16 +124,16 @@
 !   Boundary condition for CMB
 !
       call add_cmb_scalar_poisson_mat                                   &
-     &   (sph_rj1%nidx_rj(1), sph_rj1%nidx_rj(2),                       &
+     &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                         &
      &    sph_bc_U%kr_out, sph_bc_U%r_CMB, sph_bc_U%fdm2_fix_dr_CMB,    &
      &    coef_p, p_poisson_mat)
 !
 !$omp parallel do private(jst,jed,j)
       do ip = 1, np_smp
-        jst = sph_rj1%istack_rj_j_smp(ip-1) + 1
-        jed = sph_rj1%istack_rj_j_smp(ip  )
+        jst = sph_rj%istack_rj_j_smp(ip-1) + 1
+        jed = sph_rj%istack_rj_j_smp(ip  )
         do j = jst, jed
-          call ludcmp_3band(sph_rj1%nidx_rj(1), p_poisson_mat(1,1,j),   &
+          call ludcmp_3band(sph_rj%nidx_rj(1), p_poisson_mat(1,1,j),    &
      &        i_p_pivot(1,j), ierr, p_poisson_lu(1,1,j),                &
      &        p_poisson_det(1,j) )
         end do
@@ -138,10 +146,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_radial_mat_4_scalar_sph                          &
-     &         (nri, jmax, sph_bc, coef_imp, coef_f, coef_d,            &
+     &         (nri, jmax, istack_rj_j_smp,                             &
+     &          ar_1d_rj, sph_bc, coef_imp, coef_f, coef_d,             &
      &          evo_mat3, evo_lu, evo_det, i_pivot)
 !
-      use m_spheric_parameter
       use m_coef_fdm_to_center
       use m_ludcmp_3band
       use t_boundary_params_sph_MHD
@@ -150,7 +158,9 @@
       use set_sph_scalar_mat_bc
 !
       integer(kind = kint), intent(in) :: nri, jmax
+      integer(kind = kint), intent(in) :: istack_rj_j_smp(0:np_smp)
       type(sph_boundary_type), intent(in) :: sph_bc
+      real(kind = kreal), intent(in) :: ar_1d_rj(nri,3)
       real(kind = kreal), intent(in) :: coef_imp, coef_f, coef_d
       real(kind = kreal), intent(inout) :: evo_mat3(3,nri,jmax)
       real(kind = kreal), intent(inout) :: evo_lu(5,nri,jmax)
@@ -172,7 +182,7 @@
         call set_unit_mat_4_time_evo(nri, jmax, evo_mat3)
       end if
 !
-      call add_scalar_poisson_mat_sph(nri, jmax, sph_rj1%ar_1d_rj,      &
+      call add_scalar_poisson_mat_sph(nri, jmax, ar_1d_rj,              &
      &    sph_bc%kr_in, sph_bc%kr_out, coef, evo_mat3)
 !
       if     (sph_bc%iflag_icb .eq. iflag_sph_fill_center               &
@@ -197,8 +207,8 @@
 !
 !$omp parallel do private(jst,jed,j)
       do ip = 1, np_smp
-        jst = sph_rj1%istack_rj_j_smp(ip-1) + 1
-        jed = sph_rj1%istack_rj_j_smp(ip  )
+        jst = istack_rj_j_smp(ip-1) + 1
+        jed = istack_rj_j_smp(ip  )
         do j = jst, jed
           call ludcmp_3band(nri, evo_mat3(1,1,j), i_pivot(1,j),         &
      &        ierr, evo_lu(1,1,j), evo_det(1,j))

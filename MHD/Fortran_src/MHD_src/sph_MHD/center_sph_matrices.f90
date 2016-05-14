@@ -81,7 +81,6 @@
      &          fdm2_fix_dr_center, fdm2_fix_fld_ctr1, coef_p, mat00_3)
 !
       use m_fdm_coefs
-      use m_spheric_parameter
 !
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: r_CTR1(0:2)
