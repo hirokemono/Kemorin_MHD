@@ -24,6 +24,7 @@
       subroutine SPH_initialize_back_trans(fld_IO)
 !
       use m_spheric_parameter
+      use m_group_data_sph_specr
       use m_t_step_parameter
       use m_ctl_params_sph_trans
       use m_node_id_spherical_IO
@@ -65,7 +66,8 @@
         call set_sph_magne_address(rj_fld1)
       end if
 !
-      call set_cmb_icb_radial_point(cmb_radial_grp, icb_radial_grp)
+      call set_cmb_icb_radial_point                                     &
+     &   (cmb_radial_grp, icb_radial_grp, radial_rj_grp1)
 !
 !  ---- allocate spectr data
 !

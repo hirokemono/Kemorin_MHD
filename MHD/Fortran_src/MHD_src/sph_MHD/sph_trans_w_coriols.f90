@@ -46,6 +46,8 @@
       use m_work_time
       use m_machine_parameter
       use m_work_4_sph_trans
+      use m_spheric_parameter
+      use m_sph_trans_comm_table
       use MHD_FFT_selector
       use legendre_transform_select
       use spherical_SRs_N
@@ -103,8 +105,7 @@
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &    'back_MHD_FFT_sel_from_recv', ncomp_trans, nvector, nscalar
       call back_MHD_FFT_sel_from_recv                                   &
-     &   (nnod_rtp, nidx_rtp, sph_rtp1%istack_rtp_rt_smp,               &
-     &    ncomp_trans, n_WR, WR, fld_rtp)
+     &   (sph_rtp1, comm_rtp1, ncomp_trans, n_WR, WR, fld_rtp)
       call end_eleps_time(24)
 !
       if(iflag_debug .gt. 0) write(*,*) 'finish_send_recv_rtm_2_rtp'
@@ -125,8 +126,7 @@
 !
       call start_eleps_time(24)
       call fwd_MHD_FFT_sel_from_recv                                    &
-     &   (nnod_rtp, nidx_rtp, sph_rtp1%istack_rtp_rt_smp,               &
-     &    ncomp_trans, n_WS, frc_rtp, WS)
+     &   (sph_rtp1, comm_rtp1, ncomp_trans, n_WS, frc_rtp, WS)
       call end_eleps_time(24)
 !
       START_SRtime= MPI_WTIME()

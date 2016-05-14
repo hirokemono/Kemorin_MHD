@@ -22,6 +22,7 @@
       use m_work_time
       use m_machine_parameter
       use m_spheric_parameter
+      use m_sph_trans_comm_table
       use MHD_FFT_selector
 !
       implicit none
@@ -53,9 +54,8 @@
         iflag_FFT = iflag_selected
       end if
 !
-      call init_MHD_FFT_select(my_rank, nidx_rtp,                       &
-     &    sph_rtp1%istack_rtp_rt_smp, sph_rtp1%maxirt_rtp_smp,          &
-     &    ncomp_tot, ncomp_fwd, ncomp_bwd)
+      call init_MHD_FFT_select                                          &
+     &   (my_rank, sph_rtp1, ncomp_tot, ncomp_fwd, ncomp_bwd)
 !
       if(my_rank .gt. 0) return
       write(*,'(a,i4)', advance='no') 'Selected Fourier transform: ',   &
@@ -160,18 +160,15 @@
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'init_MHD_FFT_select'
-      call init_MHD_FFT_select(my_rank, nidx_rtp,                       &
-     &    sph_rtp1%istack_rtp_rt_smp, sph_rtp1%maxirt_rtp_smp,          &
-     &    ncomp, ncomp_fwd, ncomp_bwd)
+      call init_MHD_FFT_select                                          &
+     &   (my_rank, sph_rtp1, ncomp, ncomp_fwd, ncomp_bwd)
 !
       if(iflag_debug .gt. 0) write(*,*) 'back_MHD_FFT_sel_from_recv'
       starttime = MPI_WTIME()
       call back_MHD_FFT_sel_from_recv                                   &
-     &   (nnod_rtp, nidx_rtp, sph_rtp1%istack_rtp_rt_smp,               &
-     &    ncomp_bwd, n_WR, WR, fld_rtp)
+     &   (sph_rtp1, comm_rtp1, ncomp_bwd, n_WR, WR, fld_rtp)
       call fwd_MHD_FFT_sel_from_recv                                    &
-     &   (nnod_rtp, nidx_rtp, sph_rtp1%istack_rtp_rt_smp,               &
-     &    ncomp_fwd, n_WS, frc_rtp, WS)
+     &   (sph_rtp1, comm_rtp1, ncomp_fwd, n_WS, frc_rtp, WS)
       endtime = MPI_WTIME() - starttime
       if(iflag_debug .gt. 0) write(*,*) 'fwd_MHD_FFT_sel_from_recv end'
 !

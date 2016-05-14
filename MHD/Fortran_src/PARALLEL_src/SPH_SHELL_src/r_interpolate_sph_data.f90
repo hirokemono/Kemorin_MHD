@@ -6,7 +6,9 @@
 !      subroutine deallocate_original_sph_data
 !
 !!      subroutine copy_cmb_icb_radial_point(nlayer_ICB, nlayer_CMB)
-!!      subroutine set_cmb_icb_radial_point(cmb_r_grp, icb_r_grp)
+!!      subroutine set_cmb_icb_radial_point                             &
+!!     &         (cmb_r_grp, icb_r_grp, radial_rj_grp1)
+!!        type(group_data), intent(in) :: radial_rj_grp1
 !!      subroutine set_sph_magne_address(rj_fld)
 !!      subroutine input_old_rj_sph_trans(my_rank, l_truncation, sph_rj)
 !!
@@ -60,11 +62,14 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine set_cmb_icb_radial_point(cmb_r_grp, icb_r_grp)
+      subroutine set_cmb_icb_radial_point                               &
+     &         (cmb_r_grp, icb_r_grp, radial_rj_grp1)
 !
-      use m_group_data_sph_specr
+      use t_group_data
 !
       character(len = kchara), intent(in) :: cmb_r_grp, icb_r_grp
+      type(group_data), intent(in) :: radial_rj_grp1
+!
       integer(kind = kint) :: igrp, inum
 !
 !
