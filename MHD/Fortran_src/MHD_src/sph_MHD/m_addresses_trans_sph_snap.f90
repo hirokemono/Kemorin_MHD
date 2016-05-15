@@ -8,7 +8,7 @@
 !!       in MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine allocate_snap_trans_rtp
+!!      subroutine allocate_snap_trans_rtp(nnod_rtp)
 !!      subroutine deallocate_snap_trans_rtp
 !!
 !!      subroutine set_addresses_snapshot_trans
@@ -75,11 +75,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_snap_trans_rtp
+      subroutine allocate_snap_trans_rtp(nnod_rtp)
 !
-      use m_spheric_parameter
       use m_work_pole_sph_trans
       use m_addresses_trans_sph_MHD
+!
+      integer(kind = kint), intent(in) :: nnod_rtp
 !
 !
       allocate(fls_rtp(nnod_rtp,ncomp_snap_rj_2_rtp))

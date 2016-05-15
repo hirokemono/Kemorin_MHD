@@ -129,7 +129,6 @@
       subroutine cal_field_4_dynamobench
 !
       use calypso_mpi
-      use m_spheric_parameter
       use m_sph_phys_address
       use m_field_on_circle
       use m_circle_transform

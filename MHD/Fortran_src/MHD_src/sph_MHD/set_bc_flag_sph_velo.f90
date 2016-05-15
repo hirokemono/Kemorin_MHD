@@ -8,7 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine set_sph_bc_velo_sph                                  &
-!!     &         (idx_rj_degree_one, r_ICB, r_CMB, jmax)
+!!     &         (sph_rj, radial_rj_grp, r_ICB, r_CMB)
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(group_data), intent(in) :: radial_rj_grp
 !!@endverbatim
 !
       module set_bc_flag_sph_velo
@@ -34,40 +36,42 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_sph_bc_velo_sph                                    &
-     &         (idx_rj_degree_one, r_ICB, r_CMB, jmax)
+     &         (sph_rj, radial_rj_grp, r_ICB, r_CMB)
 !
       use m_boundary_params_sph_MHD
+      use t_spheric_rj_data
+      use t_group_data
       use set_bc_sph_scalars
 !
-      integer(kind = kint), intent(in) :: idx_rj_degree_one(-1:1)
-      integer(kind = kint), intent(in) :: jmax
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(group_data), intent(in) :: radial_rj_grp
       real(kind = kreal), intent(in) :: r_ICB, r_CMB
 !
       integer(kind = kint) :: i
       integer(kind = kint) :: igrp_icb, igrp_cmb
 !
 !
-      call find_both_sides_of_boundaries(velo_nod, torque_surf,         &
-     &    sph_bc_U, igrp_icb, igrp_cmb)
+      call find_both_sides_of_boundaries(sph_rj, radial_rj_grp,        &
+     &   velo_nod, torque_surf, sph_bc_U, igrp_icb, igrp_cmb)
 !
-      call allocate_vsp_bc_array(jmax)
+      call allocate_vsp_bc_array(sph_rj%nidx_rj(2))
 !
 !
       i = abs(igrp_icb)
       if(igrp_icb .lt. 0) then
-        call set_sph_velo_ICB_flag(idx_rj_degree_one, r_ICB,            &
+        call set_sph_velo_ICB_flag(sph_rj%idx_rj_degree_one, r_ICB,     &
      &     torque_surf%ibc_type(i), torque_surf%bc_magnitude(i))
       else
-        call set_sph_velo_ICB_flag(idx_rj_degree_one, r_ICB,            &
+        call set_sph_velo_ICB_flag(sph_rj%idx_rj_degree_one, r_ICB,     &
      &     velo_nod%ibc_type(i), velo_nod%bc_magnitude(i))
       end if
 !
       i = abs(igrp_cmb)
       if(igrp_icb .lt. 0) then
-        call set_sph_velo_CMB_flag(idx_rj_degree_one, r_CMB,            &
+        call set_sph_velo_CMB_flag(sph_rj%idx_rj_degree_one, r_CMB,     &
      &      torque_surf%ibc_type(i), torque_surf%bc_magnitude(i))
       else
-        call set_sph_velo_CMB_flag(idx_rj_degree_one, r_CMB,            &
+        call set_sph_velo_CMB_flag(sph_rj%idx_rj_degree_one, r_CMB,     &
      &      velo_nod%ibc_type(i), velo_nod%bc_magnitude(i))
       end if
 !

@@ -88,6 +88,7 @@
       subroutine set_circle_point_global                                &
      &         (l_truncation, nri, radius_1d_rj_r)
 !
+      use m_spheric_parameter
       use m_circle_transform
       use circle_transform_single
 !
@@ -97,7 +98,7 @@
       integer(kind = kint) :: kr
 !
 !
-      call allocate_circle_field
+      call allocate_circle_field(sph_rtp1, sph_rj1)
       call initialize_circle_transform(l_truncation,                    &
      &    s_circle, z_circle)
 !

@@ -10,7 +10,7 @@
 !!@verbatim
 !!************************************************
 !!
-!!      subroutine allocate_d_coriolis_rlm
+!!      subroutine allocate_d_coriolis_rlm(nnod_rlm, jmax_rlm)
 !!      subroutine deallocate_d_coriolis_rlm
 !!
 !!************************************************
@@ -107,11 +107,9 @@
 !
 !   ------------------------------------------------------------------
 !
-      subroutine allocate_d_coriolis_rlm
+      subroutine allocate_d_coriolis_rlm(nnod_rlm, jmax_rlm)
 !
-      use m_spheric_parameter
-!
-      integer(kind = kint) :: num
+      integer(kind = kint), intent(in) :: nnod_rlm, jmax_rlm
 !
 !
       ip_rlm_rot_cor = 1
@@ -121,9 +119,8 @@
       ncomp_coriolis_rlm = 3
       allocate( d_cor_rlm(nnod_rlm,ncomp_coriolis_rlm) )
 !
-      num = nidx_rlm(2)
-      allocate( d_cor_in_rlm(num) )
-      allocate( d_cor_out_rlm(num) )
+      allocate( d_cor_in_rlm(jmax_rlm) )
+      allocate( d_cor_out_rlm(jmax_rlm) )
 !
       d_cor_rlm = 0.0d0
       d_cor_in_rlm =  0.0d0

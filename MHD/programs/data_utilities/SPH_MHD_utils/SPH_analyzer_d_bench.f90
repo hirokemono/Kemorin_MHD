@@ -35,6 +35,7 @@
       use m_control_parameter
 !
       use m_spheric_parameter
+      use m_group_data_sph_specr
       use m_sph_spectr_data
       use m_sph_phys_address
       use m_rms_4_sph_spectr
@@ -84,8 +85,8 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_bc_sph_mhd'
-      call s_set_bc_sph_mhd(CTR_nod_grp_name, CTR_sf_grp_name,          &
-     &    sph_param1, sph_rj1)
+      call s_set_bc_sph_mhd(sph_param1, sph_rj1, radial_rj_grp1,        &
+     &    CTR_nod_grp_name, CTR_sf_grp_name)
       call init_reference_fields
 !
 !  -------------------------------

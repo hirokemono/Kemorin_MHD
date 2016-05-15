@@ -237,8 +237,6 @@
 !
       subroutine set_radius_params_by_file(rfld, nri, radius_data)
 !
-      use m_spheric_parameter
-!
       type(each_radial_parameter), intent(in) :: rfld
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(inout) :: radius_data(nri)

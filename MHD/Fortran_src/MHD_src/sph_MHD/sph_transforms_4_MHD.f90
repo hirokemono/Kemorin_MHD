@@ -95,9 +95,9 @@
         call check_addresses_temporal_trans
       end if
 !
-      call allocate_nonlinear_data
-      call allocate_snap_trans_rtp
-      call allocate_tmp_trans_rtp
+      call allocate_nonlinear_data(sph_rtp1%nnod_rtp)
+      call allocate_snap_trans_rtp(sph_rtp1%nnod_rtp)
+      call allocate_tmp_trans_rtp(sph_rtp1%nnod_rtp)
 !
       if (iflag_debug.eq.1) write(*,*) 'initialize_legendre_trans'
       call initialize_legendre_trans                                    &
@@ -107,9 +107,9 @@
      &    ncomp_rtp_2_rj, ncomp_rj_2_rtp)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_colatitude_rtp'
-      call set_colatitude_rtp
+      call set_colatitude_rtp(sph_rtp1, sph_rj1)
       if (iflag_debug.eq.1) write(*,*) 'init_sum_coriolis_rlm'
-      call init_sum_coriolis_rlm
+      call init_sum_coriolis_rlm(sph_param1%l_truncation, sph_rlm1)
 !
       if(id_legendre_transfer .eq. iflag_leg_undefined) then
         if (iflag_debug.eq.1) write(*,*) 'select_legendre_transform'

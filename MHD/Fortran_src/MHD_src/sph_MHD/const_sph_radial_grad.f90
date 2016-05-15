@@ -253,7 +253,8 @@
 !
 !$omp parallel
       call ovwrt_rj_coef_prod_vect_smp                                  &
-     &   ( (-coef_press), is_grad, rj_fld%ntot_phys, rj_fld%d_fld)
+     &   (sph_rj1, (-coef_press), is_grad,                              &
+     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !$omp end parallel
 !
       end subroutine const_pressure_gradient

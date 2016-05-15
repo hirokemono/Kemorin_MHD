@@ -8,7 +8,7 @@
 !!       in MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine allocate_tmp_trans_rtp
+!!      subroutine allocate_tmp_trans_rtp(nnod_rtp)
 !!      subroutine deallocate_tmp_trans_rtp
 !!
 !!      subroutine set_addresses_temporal_trans
@@ -60,9 +60,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_tmp_trans_rtp
+      subroutine allocate_tmp_trans_rtp(nnod_rtp)
 !
-      use m_spheric_parameter
+      integer(kind = kint), intent(in) :: nnod_rtp
 !
 !
       allocate(flt_rtp(nnod_rtp,ncomp_tmp_rj_2_rtp))

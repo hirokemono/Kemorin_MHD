@@ -8,7 +8,7 @@
 !!       in MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine allocate_nonlinear_data
+!!      subroutine allocate_nonlinear_data(nnod_rtp)
 !!      subroutine deallocate_nonlinear_data
 !!
 !!      subroutine set_addresses_trans_sph_MHD
@@ -60,9 +60,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_nonlinear_data
+      subroutine allocate_nonlinear_data(nnod_rtp)
 !
-      use m_spheric_parameter
+      integer(kind = kint), intent(in) :: nnod_rtp
 !
 !
       allocate(fld_rtp(nnod_rtp,ncomp_rj_2_rtp))

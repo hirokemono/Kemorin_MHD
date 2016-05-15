@@ -12,10 +12,11 @@
 !!      subroutine read_boundary_spectr_file
 !!      subroutine write_boundary_spectr_file
 !!
-!!      subroutine set_fixed_scalar_bc_by_file(field_name, jmax,        &
+!!      subroutine set_fixed_scalar_bc_by_file(field_name, sph_rj,      &
 !!     &          ref_grp, bc_data, iflag_bc_scalar)
-!!      subroutine set_fixed_gradient_bc_by_file(field_name, jmax,      &
+!!      subroutine set_fixed_gradient_bc_by_file(field_name, sph_rj,    &
 !!     &          ref_grp, bc_data, iflag_bc_scalar)
+!!        type(sph_rj_grid), intent(in) :: sph_rj
 !!
 !!  ---------------------------------------------------------------------
 !!      Data format
@@ -35,13 +36,13 @@
 !!                           the boundary condition by file
 !!@param    ref_grp          Boundary group name to be defined
 !!                           the boundary condition by file
-!!@param    jamx             Number of local spherical harmonics modes
-!!@param    bc_data(jmax)    Local boundary condition spectrum
+!!@param    bc_data(sph_rj%nidx_rj(2)) Local boundary condition spectrum
 !!@param    iflag_bc_scalar  Boundary condition type flag
 !
       module m_sph_boundary_input_data
 !
       use m_precision
+      use t_spheric_rj_data
 !
       implicit  none
 !
@@ -220,16 +221,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_fixed_scalar_bc_by_file(field_name, jmax,          &
+      subroutine set_fixed_scalar_bc_by_file(field_name, sph_rj,        &
      &          ref_grp, bc_data, iflag_bc_scalar)
 !
       use t_boundary_params_sph_MHD
       use skip_comment_f
 !
+      type(sph_rj_grid), intent(in) :: sph_rj
       character(len=kchara), intent(in) :: field_name
       character(len=kchara), intent(in) :: ref_grp
-      integer(kind = kint), intent(in) :: jmax
-      real(kind = kreal), intent(inout) :: bc_data(jmax)
+      real(kind = kreal), intent(inout) :: bc_data(sph_rj%nidx_rj(2))
       integer(kind = kint), intent(inout) :: iflag_bc_scalar
 !
       integer(kind = kint) :: igrp
@@ -241,7 +242,7 @@
      &     .and. cmp_no_case(bc_ctls(igrp)%bc_group, ref_grp)) then
           iflag_bc_scalar =  iflag_fixed_field
           call set_bc_for_sph_scalar_by_file                            &
-     &              (bc_ctls(igrp), jmax, bc_data)
+     &              (bc_ctls(igrp), sph_rj, bc_data)
         end if
       end do
 !
@@ -249,16 +250,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_fixed_gradient_bc_by_file(field_name, jmax,        &
+      subroutine set_fixed_gradient_bc_by_file(field_name, sph_rj,      &
      &          ref_grp, bc_data, iflag_bc_scalar)
 !
       use t_boundary_params_sph_MHD
       use skip_comment_f
 !
+      type(sph_rj_grid), intent(in) :: sph_rj
       character(len=kchara), intent(in) :: field_name
       character(len=kchara), intent(in) :: ref_grp
-      integer(kind = kint), intent(in) :: jmax
-      real(kind = kreal), intent(inout) :: bc_data(jmax)
+      real(kind = kreal), intent(inout) :: bc_data(sph_rj%nidx_rj(2))
       integer(kind = kint), intent(inout) :: iflag_bc_scalar
 !
       integer(kind = kint) :: igrp
@@ -270,7 +271,7 @@
      &    .and. cmp_no_case(bc_ctls(igrp)%bc_group, ref_grp)) then
           iflag_bc_scalar =  iflag_fixed_flux
           call set_bc_for_sph_scalar_by_file                            &
-     &                (bc_ctls(igrp), jmax, bc_data)
+     &                (bc_ctls(igrp), sph_rj, bc_data)
           return
         end if
       end do
@@ -279,14 +280,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_bc_for_sph_scalar_by_file(bc, jmax, bc_data)
+      subroutine set_bc_for_sph_scalar_by_file(bc, sph_rj, bc_data)
 !
-      use m_spheric_parameter
-      use t_spheric_rj_data
-!
+      type(sph_rj_grid), intent(in) :: sph_rj
       type(each_boundary_spectr), intent(in) :: bc
-      integer(kind = kint), intent(in) :: jmax
-      real(kind = kreal), intent(inout) :: bc_data(jmax)
+      real(kind = kreal), intent(inout) :: bc_data(sph_rj%nidx_rj(2))
 !
       integer(kind = kint) :: inum, j
       integer(kind = 4) :: l, m
@@ -295,7 +293,7 @@
       do inum = 1, bc%num_bc_mode
         l = int(bc%imode_gl(1,inum))
         m = int(bc%imode_gl(2,inum))
-        j = find_local_sph_address(sph_rj1, l, m)
+        j = find_local_sph_address(sph_rj, l, m)
         if(j .gt. 0) bc_data(j) = bc%bc_input(inum,1)
       end do
 !

@@ -10,6 +10,7 @@
       program t_ave_sph_picked_circle
 !
       use m_precision
+      use m_spheric_parameter
       use m_tave_field_on_circle
 !
       implicit none
@@ -25,7 +26,7 @@
 !    Evaluate time average
 !
       write(*,*) 'open_read_field_data_on_circle'
-      call open_read_field_data_on_circle
+      call open_read_field_data_on_circle(sph_rtp1, sph_rj1)
       call allocate_tave_circle_field
 !
       icou = 0
@@ -53,7 +54,7 @@
 !
 !  Evaluate standard deviation
 !
-      call open_read_field_data_on_circle
+      call open_read_field_data_on_circle(sph_rtp1, sph_rj1)
 !
       icou = 0
       do

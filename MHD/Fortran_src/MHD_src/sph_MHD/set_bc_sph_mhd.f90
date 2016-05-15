@@ -7,10 +7,11 @@
 !>@brief Set boundary conditions for MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine s_set_bc_sph_mhd                                     &
-!!     &        (CTR_nod_grp_name, CTR_sf_grp_name, sph_params, sph_rj)
+!!      subroutine s_set_bc_sph_mhd(sph_params, sph_rj, radial_rj_grp, &
+!!     &         CTR_nod_grp_name, CTR_sf_grp_name)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(group_data), intent(in) :: radial_rj_grp
 !!@endverbatim
 !
       module set_bc_sph_mhd
@@ -23,6 +24,7 @@
       use m_phys_labels
 !
       use t_spheric_parameter
+      use t_group_data
 !
       implicit none
 !
@@ -34,8 +36,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_bc_sph_mhd                                       &
-     &        (CTR_nod_grp_name, CTR_sf_grp_name, sph_params, sph_rj)
+      subroutine s_set_bc_sph_mhd(sph_params, sph_rj, radial_rj_grp,   &
+     &         CTR_nod_grp_name, CTR_sf_grp_name)
 !
       use m_phys_labels
       use m_boundary_params_sph_MHD
@@ -49,6 +51,7 @@
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(group_data), intent(in) :: radial_rj_grp
       character(len=kchara), intent(in) :: CTR_nod_grp_name
       character(len=kchara), intent(in) :: CTR_sf_grp_name
 !
@@ -57,9 +60,8 @@
 !
       if (iflag_t_evo_4_velo .gt.     id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_velo_sph'
-        call set_sph_bc_velo_sph(sph_rj%idx_rj_degree_one,              &
-     &      sph_params%radius_ICB, sph_params%radius_CMB,               &
-     &      sph_rj%nidx_rj(2))
+        call set_sph_bc_velo_sph(sph_rj, radial_rj_grp,                 &
+     &      sph_params%radius_ICB, sph_params%radius_CMB)
 !
         call cal_fdm_coefs_4_BCs                                        &
      &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, sph_bc_U)
@@ -77,22 +79,22 @@
 !
       if (iflag_t_evo_4_temp .gt.     id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_temp_sph'
-        call set_sph_bc_temp_sph
+        call set_sph_bc_temp_sph(sph_rj, radial_rj_grp)
         call cal_fdm_coefs_4_BCs                                       &
      &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, sph_bc_T)
       end if
 !
       if (iflag_t_evo_4_magne .gt.    id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_magne_sph'
-        call set_sph_bc_magne_sph                                       &
-     &     (CTR_nod_grp_name, CTR_sf_grp_name)
+        call set_sph_bc_magne_sph(sph_rj, radial_rj_grp,               &
+     &      CTR_nod_grp_name, CTR_sf_grp_name)
         call cal_fdm_coefs_4_BCs                                       &
      &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, sph_bc_B)
       end if
 !
       if (iflag_t_evo_4_composit .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_composition_sph'
-        call set_sph_bc_composition_sph
+        call set_sph_bc_composition_sph(sph_rj, radial_rj_grp)
         call cal_fdm_coefs_4_BCs                                       &
      &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, sph_bc_C)
       end if
@@ -158,8 +160,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sph_bc_magne_sph                                   &
-     &         (CTR_nod_grp_name, CTR_sf_grp_name)
+      subroutine set_sph_bc_magne_sph(sph_rj, radial_rj_grp,            &
+     &          CTR_nod_grp_name, CTR_sf_grp_name)
 !
       use m_boundary_params_sph_MHD
       use m_bc_data_list
@@ -168,13 +170,15 @@
 !
       character(len=kchara), intent(in) :: CTR_nod_grp_name
       character(len=kchara), intent(in) :: CTR_sf_grp_name
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(group_data), intent(in) :: radial_rj_grp
 !
       integer(kind = kint) :: i
       integer(kind = kint) :: igrp_icb, igrp_cmb
 !
 !
-      call find_both_sides_of_boundaries(magne_nod, magne_surf,         &
-     &    sph_bc_B, igrp_icb, igrp_cmb)
+      call find_both_sides_of_boundaries(sph_rj, radial_rj_grp,         &
+     &    magne_nod, magne_surf, sph_bc_B, igrp_icb, igrp_cmb)
 !
       sph_bc_B%iflag_icb = iflag_sph_insulator
       sph_bc_B%iflag_cmb = iflag_sph_insulator

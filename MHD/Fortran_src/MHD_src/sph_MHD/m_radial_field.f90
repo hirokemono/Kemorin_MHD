@@ -7,14 +7,8 @@
 !>@brief  Radial field data f(r)
 !!
 !!@verbatim
-!!      subroutine allocate_circle_field
-!!      subroutine deallocate_circle_field
-!!
-!!      subroutine write_field_data_on_circle(i_step, time)
-!!      subroutine read_field_data_on_circle(i_step, time, ierr)
-!!
-!!      subroutine open_read_field_data_on_circle
-!!      subroutine close_field_data_on_circle
+!!      subroutine allocate_radial_field(nri_rj)
+!!      subroutine deallocate_radial_field
 !!@endverbatim
 !
       module m_radial_field
@@ -40,15 +34,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_radial_field
+      subroutine allocate_radial_field(nri_rj)
 !
       use m_phys_constants
-      use m_spheric_parameter
       use m_control_parameter
       use m_phys_labels
       use m_radial_parameter_input
       use skip_comment_f
 !
+      integer(kind = kint), intent(in) :: nri_rj
       integer(kind = kint) :: icou, ncomp, i, j, ist, k, inum
 !
 !
@@ -113,7 +107,7 @@
       end if
       d_rad%ntot_phys = d_rad%istack_component(d_rad%num_phys)
 !
-      call alloc_phys_data_type(nidx_rj(1), d_rad)
+      call alloc_phys_data_type(nri_rj, d_rad)
 !
       do i = 1, num_r_param_ctl
         do j = 1, d_rad%ntot_phys
