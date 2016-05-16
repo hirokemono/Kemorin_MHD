@@ -7,9 +7,12 @@
 !>@brief  data at mid-depth of the shell at equator for dynamo benchmark
 !!
 !!@verbatim
-!!      subroutine set_mid_equator_point_global(l_truncation,           &
-!!     &          nlayer_ICB, nlayer_CMB, nri, radius_1d_rj_r)
+!!      subroutine set_mid_equator_point_global                         &
+!!     &         (sph_params, sph_rtp, sph_rj)
 !!      subroutine mid_eq_transfer_dynamobench(rj_fld)
+!!        type(sph_shell_parameters), intent(in) :: sph_params
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(phys_data), intent(in) :: rj_fld
 !!@endverbatim
 !
@@ -32,48 +35,52 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_mid_equator_point_global(l_truncation,             &
-     &          nlayer_ICB, nlayer_CMB, nri, radius_1d_rj_r)
+      subroutine set_mid_equator_point_global                           &
+     &         (sph_params, sph_rtp, sph_rj)
 !
       use m_phys_labels
-!
       use m_field_on_circle
       use m_circle_transform
+      use t_spheric_parameter
+!
       use sph_MHD_circle_transform
 !
-      integer(kind = kint), intent(in) :: l_truncation, nri
-      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_rj_grid), intent(in) ::  sph_rj
 !
       real(kind = kreal) :: r_MID
 !
 !
-      r_MID = half * (radius_1d_rj_r(nlayer_ICB)                        &
-     &              + radius_1d_rj_r(nlayer_CMB) )
+      r_MID = half * (sph_rj%radius_1d_rj_r(sph_params%nlayer_ICB)      &
+     &              + sph_rj%radius_1d_rj_r(sph_params%nlayer_CMB) )
 !
       s_circle = r_MID
       z_circle = zero
-      call set_circle_point_global(l_truncation, nri, radius_1d_rj_r)
+      call const_circle_point_global                                    &
+     &   (sph_params%l_truncation, sph_rtp, sph_rj)
 !
       end subroutine set_mid_equator_point_global
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine mid_eq_transfer_dynamobench(rj_fld)
+      subroutine mid_eq_transfer_dynamobench(sph_rj, rj_fld)
 !
       use calypso_mpi
       use m_sph_phys_address
       use m_field_on_circle
       use m_circle_transform
+      use t_spheric_rj_data
       use t_phys_data
 !
       use sph_MHD_circle_transform
 !
+      type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_data), intent(in) :: rj_fld
 !
 !    spherical transfer
 !
-      call sph_transfer_on_circle(rj_fld)
+      call sph_transfer_on_circle(sph_rj, rj_fld)
 !
       if(my_rank .gt. 0) return
 !

@@ -35,6 +35,8 @@
       subroutine SPH_analyze_zRMS_snap(i_step)
 !
       use m_work_time
+      use m_spheric_parameter
+      use m_sph_trans_comm_table
       use m_sph_spectr_data
       use m_t_step_parameter
       use m_node_id_spherical_IO
@@ -61,7 +63,9 @@
 !*  ----------------lead nonlinear term ... ----------
 !*
       call start_eleps_time(8)
-      call nonlinear(reftemp_rj, rj_fld1)
+      call nonlinear                                                    &
+     &   (reftemp_rj, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,            &
+     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, rj_fld1)
       call end_eleps_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=
@@ -71,7 +75,9 @@
       call trans_per_temp_to_temp_sph(reftemp_rj, sph_rj1, rj_fld1)
 !*
       if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
-      call s_lead_fields_4_sph_mhd(rj_fld1)
+      call s_lead_fields_4_sph_mhd                                      &
+     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,            &
+     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, rj_fld1)
       call end_eleps_time(9)
 !
       end subroutine SPH_analyze_zRMS_snap

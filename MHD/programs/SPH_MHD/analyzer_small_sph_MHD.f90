@@ -36,6 +36,9 @@
 !
       subroutine initialize_sph_mhd_only
 !
+      use m_spheric_parameter
+      use m_sph_trans_comm_table
+      use m_group_data_sph_specr
       use m_sph_spectr_data
       use m_ctl_data_sph_MHD_noviz
       use set_control_sph_mhd
@@ -53,7 +56,11 @@
       call start_eleps_time(4)
       call read_control_4_sph_MHD_noviz
 !
-      call input_control_4_SPH_MHD_nosnap(rj_fld1)
+      call input_control_4_SPH_MHD_nosnap                               &
+     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,            &
+     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, bc_rtp_grp1,       &
+     &    radial_rtp_grp1, theta_rtp_grp1, zonal_rtp_grp,               &
+     &    radial_rj_grp1, sphere_rj_grp1, rj_fld1)
       call end_eleps_time(4)
 !
 !    precondition elaps start

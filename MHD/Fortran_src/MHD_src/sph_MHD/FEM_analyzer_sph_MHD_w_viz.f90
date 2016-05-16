@@ -50,6 +50,8 @@
 !
       use m_t_step_parameter
       use m_fem_gauss_int_coefs
+      use m_node_phys_data
+      use m_cal_max_indices
 !
       use set_ele_id_4_node_type
       use FEM_analyzer_sph_MHD
@@ -68,7 +70,8 @@
 !  --  init FEM mesh data
 !
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
-      call FEM_initialize_sph_MHD(mesh, group, ele_mesh)
+      call FEM_initialize_sph_MHD(mesh, group, ele_mesh,                &
+     &    iphys, nod_fld1, range)
 !
 !  -------------------------------
 !

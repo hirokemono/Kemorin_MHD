@@ -7,7 +7,10 @@
 !> @brief Set initial data for spectrum dynamos
 !!
 !!@verbatim
-!!      subroutine sph_initial_data_control(reftemp_rj, rj_fld)
+!!      subroutine sph_initial_data_control                             &
+!!     &         (sph_params, sph_rj, reftemp_rj, rj_fld)
+!!        type(sph_shell_parameters), intent(in) :: sph_params
+!!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
@@ -19,6 +22,7 @@
       use m_constants
       use m_machine_parameter
       use m_sph_phys_address
+!
       use t_spheric_rj_data
 !
       implicit none
@@ -34,14 +38,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sph_initial_data_control(reftemp_rj, rj_fld)
+      subroutine sph_initial_data_control                               &
+     &         (sph_params, sph_rj, reftemp_rj, rj_fld)
 !
       use m_machine_parameter
       use m_initial_field_control
       use m_t_int_parameter
       use m_t_step_parameter
-      use m_spheric_parameter
 !
+      use t_spheric_parameter
       use t_phys_data
 !
       use set_sph_restart_IO
@@ -49,7 +54,10 @@
       use initial_magne_dynamobench
       use initial_magne_dbench_qvc
 !
-      real(kind=kreal), intent(in) :: reftemp_rj(nidx_rj(1),0:1)
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rj_grid), intent(in) :: sph_rj
+      real(kind=kreal), intent(in) :: reftemp_rj(sph_rj%nidx_rj(1),0:1)
+!
       type(phys_data), intent(inout) :: rj_fld
 !
       integer(kind = kint) :: isig
@@ -70,39 +78,39 @@
         call set_initial_velo_sph                                       &
      &     (rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         if(ipol%i_temp .gt. 0) then
-          call set_ini_reference_temp_sph(reftemp_rj, sph_rj1,          &
-     &        sph_param1%nlayer_ICB, sph_param1%nlayer_CMB,             &
+          call set_ini_reference_temp_sph(reftemp_rj, sph_rj,           &
+     &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-          call set_initial_temp_sph(isig, sph_rj1,                      &
-     &        sph_param1%radius_ICB, sph_param1%radius_CMB,             &
-     &        sph_param1%nlayer_ICB, sph_param1%nlayer_CMB,             &
+          call set_initial_temp_sph(isig, sph_rj,                       &
+     &        sph_params%radius_ICB, sph_params%radius_CMB,             &
+     &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
         if(ipol%i_light .gt. 0) then
-          call set_initial_light_sph(isig, ipol%i_light, sph_rj1,       &
-     &        sph_param1%radius_ICB, sph_param1%radius_CMB,             &
-     &        sph_param1%nlayer_ICB, sph_param1%nlayer_CMB, reftemp_rj, &
+          call set_initial_light_sph(isig, ipol%i_light, sph_rj,        &
+     &        sph_params%radius_ICB, sph_params%radius_CMB,             &
+     &        sph_params%nlayer_ICB, sph_params%nlayer_CMB, reftemp_rj, &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
 !
         if(iflag_restart .eq. i_rst_dbench1) then
           if(ipol%i_magne .gt. 0) then
             call initial_b_dynamobench_1                                &
-     &         (sph_rj1, sph_param1%radius_ICB, sph_param1%radius_CMB,  &
-     &          sph_param1%nlayer_ICB, sph_param1%nlayer_CMB,           &
+     &         (sph_rj, sph_params%radius_ICB, sph_params%radius_CMB,   &
+     &          sph_params%nlayer_ICB, sph_params%nlayer_CMB,           &
      &          rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
           end if
         else if(iflag_restart .eq. i_rst_dbench2) then
           if(ipol%i_magne .gt. 0) then
             call initial_b_dynamobench_2                                &
-     &         (sph_rj1, sph_param1%nlayer_CMB, sph_param1%radius_CMB,  &
+     &         (sph_rj, sph_params%nlayer_CMB, sph_params%radius_CMB,   &
      &          rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
           end if
         else if(iflag_restart .eq. i_rst_dbench_qcv) then
           if(ipol%i_magne .gt. 0) then
            call initial_b_dynamobench_qcv                               &
-     &        (sph_rj1, sph_param1%radius_ICB, sph_param1%radius_CMB,   &
-     &         sph_param1%nlayer_ICB, sph_param1%nlayer_CMB,            &
+     &        (sph_rj, sph_params%radius_ICB, sph_params%radius_CMB,    &
+     &         sph_params%nlayer_ICB, sph_params%nlayer_CMB,            &
      &         rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
           end if
         end if
@@ -111,33 +119,33 @@
 !
       else if (iflag_restart .eq. i_rst_no_file) then
         if(ipol%i_temp .gt. 0)  then
-          call set_noize_scalar_sph(ipol%i_temp, reftemp_rj, sph_rj1,   &
-     &        sph_param1%radius_ICB, sph_param1%radius_CMB,             &
-     &        sph_param1%nlayer_ICB, sph_param1%nlayer_CMB,             &
+          call set_noize_scalar_sph(ipol%i_temp, reftemp_rj, sph_rj,    &
+     &        sph_params%radius_ICB, sph_params%radius_CMB,             &
+     &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
         if(ipol%i_light .gt. 0) then
-          call set_noize_scalar_sph(ipol%i_light, reftemp_rj, sph_rj1,  &
-     &        sph_param1%radius_ICB, sph_param1%radius_CMB,             &
-     &        sph_param1%nlayer_ICB, sph_param1%nlayer_CMB,             &
+          call set_noize_scalar_sph(ipol%i_light, reftemp_rj, sph_rj,   &
+     &        sph_params%radius_ICB, sph_params%radius_CMB,             &
+     &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
         if(ipol%i_magne .gt. 0) then
-          call set_initial_magne_sph(sph_rj1,                           &
-     &        sph_param1%radius_ICB, sph_param1%radius_CMB,             &
-     &        sph_param1%nlayer_ICB, sph_param1%nlayer_CMB,             &
+          call set_initial_magne_sph(sph_rj,                            &
+     &        sph_params%radius_ICB, sph_params%radius_CMB,             &
+     &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
           call reduce_initial_magne_sph                                 &
-     &       (nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
+     &       (rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
 !
       else if (iflag_restart .eq. i_rst_licv) then
-        call set_ini_reference_temp_sph(reftemp_rj, sph_rj1,            &
-     &      sph_param1%nlayer_ICB, sph_param1%nlayer_CMB,               &
+        call set_ini_reference_temp_sph(reftemp_rj, sph_rj,             &
+     &      sph_params%nlayer_ICB, sph_params%nlayer_CMB,               &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-        call set_all_part_temp_sph(sph_rj1,                             &
-     &      sph_param1%radius_ICB, sph_param1%radius_CMB,               &
-     &      sph_param1%nlayer_ICB, sph_param1%nlayer_CMB,               &
+        call set_all_part_temp_sph(sph_rj,                              &
+     &      sph_params%radius_ICB, sph_params%radius_CMB,               &
+     &      sph_params%nlayer_ICB, sph_params%nlayer_CMB,               &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !

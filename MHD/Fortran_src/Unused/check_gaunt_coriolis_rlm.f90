@@ -8,6 +8,10 @@
 !>@brief  Coefficients for Coriolis term on f(r,l,m)
 !!
 !!@verbatim
+!!      subroutine s_check_gaunt_coriolis_rlm(iflag_sph_coriolis_file,  &
+!!     &          sph_params, sph_rlm)
+!!        type(sph_shell_parameters), intent(inout) :: sph_params
+!!        type(sph_rlm_grid), intent(inout) :: sph_rlm
 !!      subroutine check_gaunt_coriolis_rlm(iflag_sph_coriolis_file)
 !!@endverbatim
       module check_gaunt_coriolis_rlm
@@ -26,18 +30,21 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_check_gaunt_coriolis_rlm(iflag_sph_coriolis_file)
+      subroutine s_check_gaunt_coriolis_rlm(iflag_sph_coriolis_file,    &
+     &          sph_params, sph_rlm)
 !
-      use m_spheric_parameter
+      use t_spheric_parameter
 !
       integer(kind = kint), intent(in) :: iflag_sph_coriolis_file
+      type(sph_shell_parameters), intent(inout) :: sph_params
+      type(sph_rlm_grid), intent(inout) :: sph_rlm
 !
 !
       call check_gaunt_integrals_rlm                                    &
-     &   (iflag_sph_coriolis_file, sph_param1%l_truncation,             &
-     &    sph_rlm1%nidx_rlm(2), sph_rlm1%idx_gl_1d_rlm_j)
+     &   (iflag_sph_coriolis_file, sph_params%l_truncation,             &
+     &    sph_rlm%nidx_rlm(2), sph_rlm%idx_gl_1d_rlm_j)
       call check_interact_coriolis_rlm                                  &
-     &   (nidx_rlm(2), sph_rlm1%idx_gl_1d_rlm_j)
+     &   (sph_rlm%nidx_rlm(2), sph_rlm%idx_gl_1d_rlm_j)
 !
       end subroutine s_check_gaunt_coriolis_rlm
 !

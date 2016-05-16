@@ -65,8 +65,6 @@
      &          comm_rtp, comm_rtm, comm_rlm, comm_rj, rj_fld)
 !
       use calypso_mpi
-!      use m_spheric_parameter
-!      use m_sph_trans_comm_table
       use m_addresses_trans_sph_MHD
       use m_addresses_trans_sph_snap
       use m_addresses_trans_sph_tmp
@@ -117,7 +115,7 @@
      &   (sph_params, sph_rtp, sph_rtm, sph_rlm, sph_rj,                &
      &    comm_rtp, comm_rtm, comm_rlm, comm_rj)
       call init_fourier_transform_4_MHD(ncomp_sph_trans,                &
-     &    ncomp_rtp_2_rj, ncomp_rj_2_rtp, sph_rtp)
+     &    ncomp_rtp_2_rj, ncomp_rj_2_rtp, sph_rtp, comm_rtp)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_colatitude_rtp'
       call set_colatitude_rtp(sph_rtp, sph_rj)

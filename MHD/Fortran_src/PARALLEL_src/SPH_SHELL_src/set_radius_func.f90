@@ -11,9 +11,10 @@
 !!@verbatim
 !!      subroutine set_radius_rot_reft_dat_4_sph(r_hot, r_cold,         &
 !!     &          temp_hot, temp_cold, rotate, sph_rlm, sph_rj,         &
-!!     &          sph_params, rj_fld)
+!!     &          radial_rj_grp, sph_params, rj_fld)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(sph_rlm_grid), intent(in) :: sph_rlm
+!!        type(group_data), intent(in) :: radial_rj_grp
 !!        type(sph_shell_parameters), intent(inout) :: sph_params
 !!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine const_2nd_fdm_matrices
@@ -37,6 +38,7 @@
 !
       use t_spheric_parameter
       use t_phys_data
+      use t_group_data
 !
       implicit none
 !
@@ -48,7 +50,7 @@
 !
       subroutine set_radius_rot_reft_dat_4_sph(r_hot, r_cold,           &
      &          temp_hot, temp_cold, rotate, sph_rlm, sph_rj,           &
-     &          sph_params, rj_fld)
+     &          radial_rj_grp, sph_params, rj_fld)
 !
       use m_poloidal_rotation
       use m_sph_phys_address
@@ -59,6 +61,7 @@
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_rlm_grid), intent(in) :: sph_rlm
+      type(group_data), intent(in) :: radial_rj_grp
 !
       real(kind = kreal), intent(in) :: r_hot, r_cold
       real(kind = kreal), intent(in) :: temp_hot, temp_cold
@@ -72,7 +75,7 @@
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &      write(*,*) 'set_radius_dat_4_sph_dynamo'
       call set_radius_dat_4_sph_dynamo                                  &
-     &   (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                     &
+     &   (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, radial_rj_grp,      &
      &    sph_params%iflag_radial_grid, sph_params%nlayer_ICB,          &
      &    sph_params%nlayer_CMB, sph_params%nlayer_2_center,            &
      &    sph_rj%ar_1d_rj, sph_rj%r_ele_rj, sph_rj%ar_ele_rj,           &

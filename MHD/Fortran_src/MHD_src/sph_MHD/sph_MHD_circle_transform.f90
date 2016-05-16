@@ -7,10 +7,13 @@
 !>@brief  field data on specific circle at (s,z)
 !!
 !!@verbatim
-!!      subroutine sph_transfer_on_circle(rj_fld)
+!!      subroutine sph_transfer_on_circle(sph_rj, rj_fld)
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_data), intent(in) :: rj_fld
-!!      subroutine set_circle_point_global                              &
-!!     &         (l_truncation, nri, radius_1d_rj_r)
+!!      subroutine const_circle_point_global                            &
+!!     &         (l_truncation, sph_rtp, sph_rj)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!@endverbatim
 !
       module sph_MHD_circle_transform
@@ -23,7 +26,7 @@
 !
       implicit none
 !
-      private :: collect_spectr_for_circle
+      private :: collect_spectr_for_circle, set_circle_point_global
 !
 ! ----------------------------------------------------------------------
 !
@@ -31,25 +34,26 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sph_transfer_on_circle(rj_fld)
+      subroutine sph_transfer_on_circle(sph_rj, rj_fld)
 !
       use calypso_mpi
       use m_phys_constants
-      use m_spheric_parameter
       use m_sph_phys_address
       use m_circle_transform
 !
+      use t_spheric_rj_data
       use t_phys_data
 !
       use circle_transform_single
 !
+      type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_data), intent(in) :: rj_fld
 !
       integer(kind = kint) :: ifld, icomp, m, nd
 !
 !
-      call collect_spectr_for_circle                                    &
-     &   (nidx_rj(2), sph_rj1%nidx_global_rj, sph_rj1%idx_gl_1d_rj_j,   &
+      call collect_spectr_for_circle(sph_rj%nidx_rj(2),                 &
+     &    sph_rj%nidx_global_rj, sph_rj%idx_gl_1d_rj_j,                 &
      &    rj_fld%n_point, rj_fld%num_phys, rj_fld%ntot_phys,            &
      &    rj_fld%istack_component, rj_fld%phys_name, rj_fld%d_fld)
 !
@@ -85,26 +89,43 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_circle_point_global                                &
-     &         (l_truncation, nri, radius_1d_rj_r)
+      subroutine const_circle_point_global                              &
+     &         (l_truncation, sph_rtp, sph_rj)
 !
-      use m_spheric_parameter
+      use t_spheric_rtp_data
+      use t_spheric_rj_data
       use m_circle_transform
       use circle_transform_single
 !
-      integer(kind = kint), intent(in) :: l_truncation, nri
+      integer(kind = kint), intent(in) :: l_truncation
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_rj_grid), intent(in) ::  sph_rj
+!
+!
+      call allocate_circle_field                                        &
+     &   (sph_rtp%nidx_rtp(3), sph_rj%nidx_global_rj(2))
+      call initialize_circle_transform(l_truncation,                    &
+     &    s_circle, z_circle)
+      call set_circle_point_global                                      &
+     &   (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r)
+!
+      end subroutine const_circle_point_global
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_circle_point_global(nri, radius_1d_rj_r)
+!
+      use m_circle_transform
+!
+      integer(kind = kint), intent(in) ::  nri
       real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
 !
       integer(kind = kint) :: kr
 !
 !
-      call allocate_circle_field(sph_rtp1, sph_rj1)
-      call initialize_circle_transform(l_truncation,                    &
-     &    s_circle, z_circle)
-!
       kr_gl_rcirc_in =  izero
       kr_gl_rcirc_out = izero
-      do kr = 1, nri- 1
+      do kr = 1, nri - 1
         if(radius_1d_rj_r(kr) .eq. r_circle) then
           kr_gl_rcirc_in =  kr
           kr_gl_rcirc_out = izero

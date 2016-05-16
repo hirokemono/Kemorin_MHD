@@ -37,7 +37,9 @@
       subroutine initialize_const_sph_initial
 !
       use m_ctl_data_sph_MHD_noviz
-      use m_sph_spectr_data
+      use m_spheric_parameter
+      use m_sph_trans_comm_table
+      use m_group_data_sph_specr
       use m_sph_spectr_data
       use set_control_sph_mhd
       use init_sph_MHD_elapsed_label
@@ -56,7 +58,11 @@
       call read_control_4_sph_MHD_noviz
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_4_SPH_make_init'
-      call input_control_4_SPH_make_init(rj_fld1)
+      call input_control_4_SPH_make_init                                &
+     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,            &
+     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, bc_rtp_grp1,       &
+     &    radial_rtp_grp1, theta_rtp_grp1, zonal_rtp_grp,               &
+     &    radial_rj_grp1, sphere_rj_grp1, rj_fld1)
       call end_eleps_time(4)
 !
 !        Initialize spherical transform dynamo
@@ -103,7 +109,7 @@
       if (iflag_debug.gt.0) write(*,*) 'set_radius_rot_reft_dat_4_sph'
       call set_radius_rot_reft_dat_4_sph(depth_high_t, depth_low_t,     &
      &    high_temp, low_temp, angular, sph_rlm1, sph_rj1,              &
-     &    sph_param1, rj_fld1)
+     &    radial_rj_grp1, sph_param1, rj_fld1)
 !
       if(iflag_debug.gt.0) write(*,*) 's_set_bc_sph_mhd'
       call s_set_bc_sph_mhd(sph_param1, sph_rj1, radial_rj_grp1,        &

@@ -8,15 +8,25 @@
 !!       to FEM data for data visualization
 !!
 !!@verbatim
-!!      subroutine FEM_initialize_sph_MHD(mesh, group, ele_mesh)
+!!      subroutine FEM_initialize_sph_MHD                               &
+!!     &         (mesh, group, ele_mesh, iphys, nod_fld, range)
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(element_geometry), intent(inout) :: ele_mesh
+!!        type(phys_address), intent(inout) :: iphys
+!!        type(phys_data), intent(inout) :: nod_fld
+!!        type(maximum_informations), intent(inout) :: range
 !!      subroutine FEM_analyze_sph_MHD(i_step                           &
 !!     &          istep_psf, istep_iso, istep_pvr, istep_fline, visval)
 !!      subroutine FEM_finalize
 !!
-!!      subroutine SPH_to_FEM_bridge_MHD
+!!      subroutine SPH_to_FEM_bridge_MHD                                &
+!!     &         (sph_params, sph_rtp, mesh, iphys, nod_fld)
+!!        type(sph_shell_parameters), intent(in) :: sph_params
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(phys_address), intent(in) :: iphys
+!!        type(phys_data), intent(inout) :: nod_fld
 !!      subroutine FEM_to_SPH_bridge
 !!@endverbatim
 !!
@@ -46,13 +56,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_sph_MHD(mesh, group, ele_mesh)
+      subroutine FEM_initialize_sph_MHD                                 &
+     &         (mesh, group, ele_mesh, iphys, nod_fld, range)
 !
       use m_array_for_send_recv
       use m_t_step_parameter
-      use m_node_phys_data
-      use m_cal_max_indices
+      use t_phys_data
+      use t_phys_address
       use t_FEM_phys_data
+      use t_cal_max_indices
 !
       use t_mesh_data
 !
@@ -64,6 +76,9 @@
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
+      type(phys_address), intent(inout) :: iphys
+      type(phys_data), intent(inout) :: nod_fld
+      type(maximum_informations), intent(inout) :: range
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'set_local_node_id_4_monitor'
@@ -91,16 +106,16 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'set_field_address_type'
-      call set_field_address_type(mesh%node%numnod, nod_fld1, iphys)
+      call set_field_address_type(mesh%node%numnod, nod_fld, iphys)
 !
 !  connect grid data to volume output
 !
       if(i_step_output_ucd.gt.0) then
-        call alloc_phys_range(nod_fld1%ntot_phys_viz, range)
+        call alloc_phys_range(nod_fld%ntot_phys_viz, range)
       end if
 !
       if(iflag_debug .gt. 0) write(*,*) 'output_grd_file_4_snapshot'
-      call output_grd_file_4_snapshot(mesh, nod_fld1)
+      call output_grd_file_4_snapshot(mesh, nod_fld)
 !
       end subroutine FEM_initialize_sph_MHD
 !
@@ -141,12 +156,13 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine SPH_to_FEM_bridge_MHD(mesh)
+      subroutine SPH_to_FEM_bridge_MHD                                  &
+     &         (sph_params, sph_rtp, mesh, iphys, nod_fld)
 !
-      use m_spheric_parameter
-      use m_node_phys_data
-!
+      use t_spheric_parameter
       use t_mesh_data
+      use t_phys_data
+      use t_phys_address
 !
       use output_viz_file_control
       use lead_pole_data_4_sph_mhd
@@ -155,7 +171,11 @@
       use copy_MHD_4_sph_trans
       use coordinate_convert_4_sph
 !
-      type(mesh_geometry), intent(inout) :: mesh
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(mesh_geometry), intent(in) :: mesh
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(inout) :: nod_fld
 !
       integer (kind =kint) :: iflag
 !
@@ -167,25 +187,25 @@
 !*
       if (iflag_debug.gt.0) write(*,*) 'copy_forces_to_snapshot_rtp'
       call copy_forces_to_snapshot_rtp                                  &
-     &   (sph_param1%m_folding, sph_rtp1, mesh%node, iphys, nod_fld1)
+     &   (sph_params%m_folding, sph_rtp, mesh%node, iphys, nod_fld)
       if (iflag_debug.gt.0) write(*,*) 'copy_snap_vec_fld_from_trans'
       call copy_snap_vec_fld_from_trans                                 &
-     &   (sph_param1%m_folding, sph_rtp1, mesh%node, iphys, nod_fld1)
+     &   (sph_params%m_folding, sph_rtp, mesh%node, iphys, nod_fld)
       if (iflag_debug.gt.0) write(*,*) 'copy_snap_vec_fld_to_trans'
       call copy_snap_vec_fld_to_trans                                   &
-     &   (sph_param1%m_folding, sph_rtp1, mesh%node, iphys, nod_fld1)
+     &   (sph_params%m_folding, sph_rtp, mesh%node, iphys, nod_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'overwrite_nodal_sph_2_xyz'
-      call overwrite_nodal_sph_2_xyz(mesh%node, nod_fld1)
+      call overwrite_nodal_sph_2_xyz(mesh%node, nod_fld)
 !
 !*  ----------- transform field at pole and center --------------
 !*
       if (iflag_debug.gt.0) write(*,*) 'lead_pole_fields_4_sph_mhd'
       call lead_pole_fields_4_sph_mhd                                   &
-     &   (sph_param1, sph_rtp1, mesh%node, iphys, nod_fld1)
+     &   (sph_params, sph_rtp, mesh%node, iphys, nod_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(mesh%node, mesh%nod_comm, nod_fld1)
+      call nod_fields_send_recv(mesh%node, mesh%nod_comm, nod_fld)
 !
       end subroutine SPH_to_FEM_bridge_MHD
 !

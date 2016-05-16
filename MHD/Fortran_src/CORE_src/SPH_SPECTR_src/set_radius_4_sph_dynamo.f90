@@ -11,9 +11,10 @@
 !!      modified by H. Matsui on Apr., 2009
 !!
 !!      subroutine set_radius_dat_4_sph_dynamo                          &
-!!     &         (nri, radius_1d_rj_r, iflag_radial_grid,               &
+!!     &         (nri, radius_1d_rj_r, radial_rj_grp, iflag_radial_grid,&
 !!     &          nlayer_ICB, nlayer_CMB, nlayer_2_center,              &
 !!     &          ar_1d_rj, r_ele_rj, ar_ele_rj, r_ICB, r_CMB, R_earth)
+!!        type(group_data), intent(in) :: radial_rj_grp
 !!***********************************************************************
 !!*
 !!*       ar_1d_rj(k,1)   : 1 / r
@@ -33,6 +34,7 @@
       use m_spheric_constants
 !
       use t_spheric_parameter
+      use t_group_data
 !
       implicit none
 !
@@ -43,13 +45,14 @@
 !  -------------------------------------------------------------------
 !
       subroutine set_radius_dat_4_sph_dynamo                            &
-     &         (nri, radius_1d_rj_r, iflag_radial_grid,                 &
+     &         (nri, radius_1d_rj_r, radial_rj_grp, iflag_radial_grid,  &
      &          nlayer_ICB, nlayer_CMB, nlayer_2_center,                &
      &          ar_1d_rj, r_ele_rj, ar_ele_rj, r_ICB, r_CMB, R_earth)
 !
-      use m_group_data_sph_specr
       use set_radial_grid_sph_shell
       use skip_comment_f
+!
+      type(group_data), intent(in) :: radial_rj_grp
 !
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
@@ -69,19 +72,19 @@
 !
 !* --------  radius  --------------
 !
-      do k = 1, radial_rj_grp1%num_grp
-        if(     cmp_no_case(radial_rj_grp1%grp_name(k),                 &
+      do k = 1, radial_rj_grp%num_grp
+        if(     cmp_no_case(radial_rj_grp%grp_name(k),                  &
      &                      ICB_nod_grp_name)) then
-          kk = radial_rj_grp1%istack_grp(k-1) + 1
-          nlayer_ICB = radial_rj_grp1%item_grp(kk)
-        else if(cmp_no_case(radial_rj_grp1%grp_name(k),                 &
+          kk = radial_rj_grp%istack_grp(k-1) + 1
+          nlayer_ICB = radial_rj_grp%item_grp(kk)
+        else if(cmp_no_case(radial_rj_grp%grp_name(k),                  &
      &                      CMB_nod_grp_name)) then
-          kk = radial_rj_grp1%istack_grp(k-1) + 1
-          nlayer_CMB = radial_rj_grp1%item_grp(kk)
-        else if(cmp_no_case(radial_rj_grp1%grp_name(k),                 &
+          kk = radial_rj_grp%istack_grp(k-1) + 1
+          nlayer_CMB = radial_rj_grp%item_grp(kk)
+        else if(cmp_no_case(radial_rj_grp%grp_name(k),                  &
      &                      CTR_nod_grp_name)) then
-          kk = radial_rj_grp1%istack_grp(k-1) + 1
-          nlayer_2_center = radial_rj_grp1%item_grp(kk)
+          kk = radial_rj_grp%istack_grp(k-1) + 1
+          nlayer_2_center = radial_rj_grp%item_grp(kk)
         end if
       end do
 !

@@ -48,7 +48,7 @@
 !
 !
       if(iflag_debug.gt.0)  write(*,*) 'mid_eq_transfer_dynamobench'
-      call mid_eq_transfer_dynamobench(rj_fld)
+      call mid_eq_transfer_dynamobench(sph_rj, rj_fld)
 !
       call cal_mean_squre_in_shell                                      &
      &   (sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
