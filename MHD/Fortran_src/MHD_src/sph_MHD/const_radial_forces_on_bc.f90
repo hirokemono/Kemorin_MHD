@@ -7,7 +7,8 @@
 !>@brief Evaluate radial component of forces at boundaries
 !!
 !!@verbatim
-!!      subroutine s_const_radial_forces_on_bc(rj_fld)
+!!      subroutine s_const_radial_forces_on_bc(sph_rj, rj_fld)
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
@@ -31,51 +32,52 @@
 !
 !   ------------------------------------------------------------------
 !
-      subroutine s_const_radial_forces_on_bc(rj_fld)
+      subroutine s_const_radial_forces_on_bc(sph_rj, rj_fld)
 !
       use m_sph_phys_address
       use m_physical_property
-      use m_spheric_parameter
       use m_boundary_params_sph_MHD
 !
+      use t_spheric_rj_data
       use t_phys_data
 !
       use cal_r_buoyancies_on_sph
 !
+      type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call s_cal_r_buoyancies_on_sph(sph_bc_U%kr_in, rj_fld)
-      call s_cal_r_buoyancies_on_sph(sph_bc_U%kr_out, rj_fld)
+      call s_cal_r_buoyancies_on_sph(sph_bc_U%kr_in, sph_rj, rj_fld)
+      call s_cal_r_buoyancies_on_sph(sph_bc_U%kr_out, sph_rj, rj_fld)
 !
 !$omp parallel
       call cal_radial_force_on_sph(sph_bc_U%kr_in,                      &
      &      ipol%i_v_diffuse, ipol%i_div_viscous,                       &
-     &      nnod_rj, sph_rj1%nidx_rj, sph_rj1%ar_1d_rj,                 &
-     &      rj_fld%ntot_phys, rj_fld%d_fld)
+     &      sph_rj%nidx_rj, sph_rj%ar_1d_rj,                            &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       call cal_radial_force_on_sph(sph_bc_U%kr_out,                     &
      &      ipol%i_v_diffuse, ipol%i_div_viscous,                       &
-     &      nnod_rj, sph_rj1%nidx_rj, sph_rj1%ar_1d_rj,                 &
-     &      rj_fld%ntot_phys, rj_fld%d_fld)
+     &      sph_rj%nidx_rj, sph_rj%ar_1d_rj,                            &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call cal_radial_force_on_sph(sph_bc_U%kr_in,                      &
      &      ipol%i_m_advect, ipol%i_div_inertia,                        &
-     &      nnod_rj, sph_rj1%nidx_rj, sph_rj1%ar_1d_rj,                 &
-     &      rj_fld%ntot_phys, rj_fld%d_fld)
+     &      sph_rj%nidx_rj, sph_rj%ar_1d_rj,                            &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       call cal_radial_force_on_sph(sph_bc_U%kr_out,                     &
      &      ipol%i_m_advect, ipol%i_div_inertia,                        &
-     &      nnod_rj, sph_rj1%nidx_rj, sph_rj1%ar_1d_rj,                 &
-     &       rj_fld%ntot_phys, rj_fld%d_fld)
+     &      sph_rj%nidx_rj, sph_rj%ar_1d_rj,                            &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       if( iflag_4_lorentz .gt. id_turn_OFF) then
         call cal_radial_force_on_sph(sph_bc_U%kr_in,                    &
      &      ipol%i_lorentz, ipol%i_div_inertia,                         &
-     &      nnod_rj, sph_rj1%nidx_rj, sph_rj1%ar_1d_rj,                 &
-     &      rj_fld%ntot_phys, rj_fld%d_fld)
+     &      sph_rj%nidx_rj, sph_rj%ar_1d_rj,                            &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         call cal_radial_force_on_sph(sph_bc_U%kr_out,                   &
      &      ipol%i_lorentz, ipol%i_div_inertia,                         &
-     &      nnod_rj, sph_rj1%nidx_rj, sph_rj1%ar_1d_rj,                 &
-     &      rj_fld%ntot_phys, rj_fld%d_fld)
+     &      sph_rj%nidx_rj, sph_rj%ar_1d_rj,                            &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !$omp end parallel
 !
@@ -85,17 +87,17 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_radial_force_on_sph(kr, is_fld, is_fr,             &
-     &          nnod_rj, nidx_rj, ar_1d_rj, ntot_phys_rj, d_rj)
+     &          nidx_rj, ar_1d_rj, n_point, ntot_phys_rj, d_rj)
 !
       use m_schmidt_poly_on_rtm
 !
       integer(kind = kint), intent(in) :: is_fld, is_fr
       integer(kind = kint), intent(in) :: kr
-      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       integer(kind = kint), intent(in) :: nidx_rj(2)
       real(kind = kreal), intent(in) :: ar_1d_rj(nidx_rj(1),3)
 !
-      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      real(kind = kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, j
 !

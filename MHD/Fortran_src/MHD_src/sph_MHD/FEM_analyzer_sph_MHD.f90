@@ -143,6 +143,7 @@
 !
       subroutine SPH_to_FEM_bridge_MHD(mesh)
 !
+      use m_spheric_parameter
       use m_node_phys_data
 !
       use t_mesh_data

@@ -40,7 +40,6 @@
 !
       subroutine set_sph_restart_num_to_IO(rj_fld, fld_IO)
 !
-      use m_spheric_parameter
       use calypso_mpi
       use const_global_element_ids
 !
@@ -155,7 +154,6 @@
       use m_t_step_parameter
       use m_t_int_parameter
       use m_phys_labels
-      use m_spheric_parameter
       use m_sph_phys_address
       use copy_time_steps_4_restart
       use copy_rj_phys_data_4_IO
@@ -210,7 +208,6 @@
       use m_t_step_parameter
       use m_t_int_parameter
       use m_phys_labels
-      use m_spheric_parameter
       use m_sph_phys_address
       use copy_rj_phys_data_4_IO
 !

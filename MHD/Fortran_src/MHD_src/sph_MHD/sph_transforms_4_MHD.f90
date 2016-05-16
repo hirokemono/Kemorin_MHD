@@ -33,8 +33,9 @@
       use m_constants
       use m_machine_parameter
       use m_work_time
-      use m_spheric_parameter
 !
+      use t_spheric_parameter
+      use t_sph_trans_comm_tbl
       use t_phys_data
 !
       use legendre_transform_select
@@ -59,11 +60,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_sph_transform_MHD(rj_fld)
+      subroutine init_sph_transform_MHD                                 &
+     &         (sph_params, sph_rtp, sph_rtm, sph_rlm, sph_rj,          &
+     &          comm_rtp, comm_rtm, comm_rlm, comm_rj, rj_fld)
 !
       use calypso_mpi
-      use m_spheric_parameter
-      use m_sph_trans_comm_table
+!      use m_spheric_parameter
+!      use m_sph_trans_comm_table
       use m_addresses_trans_sph_MHD
       use m_addresses_trans_sph_snap
       use m_addresses_trans_sph_tmp
@@ -76,12 +79,22 @@
       use pole_sph_transform
       use skip_comment_f
 !
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rtp_grid), intent(inout) :: sph_rtp
+      type(sph_rtm_grid), intent(inout) :: sph_rtm
+      type(sph_rlm_grid), intent(inout) :: sph_rlm
+      type(sph_rj_grid), intent(inout) ::  sph_rj
+      type(sph_comm_tbl), intent(inout) :: comm_rtp
+      type(sph_comm_tbl), intent(inout) :: comm_rtm
+      type(sph_comm_tbl), intent(inout) :: comm_rlm
+      type(sph_comm_tbl), intent(inout) :: comm_rj
+!
       type(phys_data), intent(inout) :: rj_fld
 !
       character(len=kchara) :: tmpchara
 !
 !
-      call init_pole_transform(sph_rtp1)
+      call init_pole_transform(sph_rtp)
 !
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &                     'set_addresses_trans_sph_MHD'
@@ -95,30 +108,31 @@
         call check_addresses_temporal_trans
       end if
 !
-      call allocate_nonlinear_data(sph_rtp1%nnod_rtp)
-      call allocate_snap_trans_rtp(sph_rtp1%nnod_rtp)
-      call allocate_tmp_trans_rtp(sph_rtp1%nnod_rtp)
+      call allocate_nonlinear_data(sph_rtp%nnod_rtp)
+      call allocate_snap_trans_rtp(sph_rtp%nnod_rtp)
+      call allocate_tmp_trans_rtp(sph_rtp%nnod_rtp)
 !
       if (iflag_debug.eq.1) write(*,*) 'initialize_legendre_trans'
       call initialize_legendre_trans                                    &
-     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,            &
-     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1)
+     &   (sph_params, sph_rtp, sph_rtm, sph_rlm, sph_rj,                &
+     &    comm_rtp, comm_rtm, comm_rlm, comm_rj)
       call init_fourier_transform_4_MHD(ncomp_sph_trans,                &
-     &    ncomp_rtp_2_rj, ncomp_rj_2_rtp)
+     &    ncomp_rtp_2_rj, ncomp_rj_2_rtp, sph_rtp)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_colatitude_rtp'
-      call set_colatitude_rtp(sph_rtp1, sph_rj1)
+      call set_colatitude_rtp(sph_rtp, sph_rj)
       if (iflag_debug.eq.1) write(*,*) 'init_sum_coriolis_rlm'
-      call init_sum_coriolis_rlm(sph_param1%l_truncation, sph_rlm1)
+      call init_sum_coriolis_rlm(sph_params%l_truncation, sph_rlm)
 !
       if(id_legendre_transfer .eq. iflag_leg_undefined) then
         if (iflag_debug.eq.1) write(*,*) 'select_legendre_transform'
-        call select_legendre_transform(rj_fld)
+        call select_legendre_transform(sph_rtp, sph_rtm, sph_rlm,       &
+     &      comm_rtp, comm_rtm, comm_rlm, comm_rj, rj_fld)
       end if
 !
       call sel_init_legendre_trans                                      &
      &    (ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans,       &
-     &     sph_rtm1, sph_rlm1)
+     &     sph_rtm, sph_rlm)
 !
       if(my_rank .ne. 0) return
         if     (id_legendre_transfer .eq. iflag_leg_orginal_loop) then
@@ -167,37 +181,50 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine sph_back_trans_4_MHD(rj_fld)
+      subroutine sph_back_trans_4_MHD(sph_rtp, sph_rtm, sph_rlm,        &
+     &          comm_rtp, comm_rtm, comm_rlm, comm_rj, rj_fld)
 !
       use m_solver_SR
       use m_addresses_trans_sph_MHD
       use sph_trans_w_coriols
       use copy_sph_MHD_4_send_recv
       use spherical_SRs_N
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_rtm_grid), intent(in) :: sph_rtm
+      type(sph_rlm_grid), intent(in) :: sph_rlm
+      type(sph_comm_tbl), intent(in) :: comm_rtp
+      type(sph_comm_tbl), intent(in) :: comm_rtm
+      type(sph_comm_tbl), intent(in) :: comm_rlm
+      type(sph_comm_tbl), intent(in) :: comm_rj
 !
       type(phys_data), intent(in) :: rj_fld
 !
 !
       call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_rj_2_rtp, comm_rj1, comm_rlm1)
+     &   (ncomp_rj_2_rtp, comm_rj, comm_rlm)
       call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_rj_2_rtp, comm_rtm1, comm_rtp1)
+     &   (ncomp_rj_2_rtp, comm_rtm, comm_rtp)
 !
 !      call start_eleps_time(51)
       if(iflag_debug .gt. 0) write(*,*) 'copy_mhd_spectr_to_send'
       call copy_mhd_spectr_to_send                                      &
-     &   (ncomp_rj_2_rtp, comm_rj1, rj_fld, n_WS, WS)
+     &   (ncomp_rj_2_rtp, comm_rj, rj_fld, n_WS, WS)
 !      call end_eleps_time(51)
 !
       if(ncomp_rj_2_rtp .eq. 0) return
-      call sph_b_trans_w_coriolis(ncomp_rj_2_rtp, nvector_rj_2_rtp,     &
-     &    nscalar_rj_2_rtp, n_WS, n_WR, WS(1), WR(1), fld_rtp)
+      call sph_b_trans_w_coriolis                                       &
+     &   (ncomp_rj_2_rtp, nvector_rj_2_rtp, nscalar_rj_2_rtp,           &
+     &    sph_rtp, sph_rtm, sph_rlm,                                    &
+     &    comm_rtp, comm_rtm, comm_rlm, comm_rj,                        &
+     &    n_WS, n_WR, WS(1), WR(1), fld_rtp)
 !
       end subroutine sph_back_trans_4_MHD
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sph_forward_trans_4_MHD(rj_fld)
+      subroutine sph_forward_trans_4_MHD(sph_rtp, sph_rtm, sph_rlm,     &
+     &          comm_rtp, comm_rtm, comm_rlm, comm_rj, rj_fld)
 !
       use m_solver_SR
       use m_addresses_trans_sph_MHD
@@ -205,35 +232,56 @@
       use copy_sph_MHD_4_send_recv
       use spherical_SRs_N
 !
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_rtm_grid), intent(in) :: sph_rtm
+      type(sph_rlm_grid), intent(in) :: sph_rlm
+      type(sph_comm_tbl), intent(in) :: comm_rtp
+      type(sph_comm_tbl), intent(in) :: comm_rtm
+      type(sph_comm_tbl), intent(in) :: comm_rlm
+      type(sph_comm_tbl), intent(in) :: comm_rj
+!
       type(phys_data), intent(inout) :: rj_fld
 !
 !
       call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_rtp_2_rj, comm_rtp1, comm_rtm1)
+     &   (ncomp_rtp_2_rj, comm_rtp, comm_rtm)
       call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_rtp_2_rj, comm_rlm1, comm_rj1)
+     &   (ncomp_rtp_2_rj, comm_rlm, comm_rj)
 !
       if(ncomp_rtp_2_rj .eq. 0) return
-      call sph_f_trans_w_coriolis(ncomp_rtp_2_rj, nvector_rtp_2_rj,     &
-     &    nscalar_rtp_2_rj, frc_rtp, n_WS, n_WR, WS(1), WR(1))
+      call sph_f_trans_w_coriolis                                       &
+     &   (ncomp_rtp_2_rj, nvector_rtp_2_rj, nscalar_rtp_2_rj,           &
+     &    sph_rtp, sph_rtm, sph_rlm,                                    &
+     &    comm_rtp, comm_rtm, comm_rlm, comm_rj,                        &
+     &    frc_rtp, n_WS, n_WR, WS(1), WR(1))
 !
       call copy_mhd_spectr_from_recv                                    &
-     &   (ncomp_rtp_2_rj, comm_rj1, n_WR, WR(1), rj_fld)
+     &   (ncomp_rtp_2_rj, comm_rj, n_WR, WR(1), rj_fld)
 !
       end subroutine sph_forward_trans_4_MHD
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine sph_back_trans_snapshot_MHD(rj_fld)
+      subroutine sph_back_trans_snapshot_MHD                            &
+     &         (sph_params, sph_rtp, sph_rtm, sph_rlm, sph_rj,          &
+     &          comm_rtp, comm_rtm, comm_rlm, comm_rj, rj_fld)
 !
-      use m_spheric_parameter
-      use m_sph_trans_comm_table
       use m_solver_SR
       use m_addresses_trans_sph_snap
       use sph_transforms
       use copy_sph_MHD_4_send_recv
       use spherical_SRs_N
+!
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_rtm_grid), intent(in) :: sph_rtm
+      type(sph_rlm_grid), intent(in) :: sph_rlm
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(sph_comm_tbl), intent(in) :: comm_rtp
+      type(sph_comm_tbl), intent(in) :: comm_rtm
+      type(sph_comm_tbl), intent(in) :: comm_rlm
+      type(sph_comm_tbl), intent(in) :: comm_rj
 !
       type(phys_data), intent(in) :: rj_fld
 !
@@ -244,34 +292,42 @@
 !
       nscalar_trans = nscalar_snap_rj_2_rtp + 6*ntensor_snap_rj_2_rtp
       call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_snap_rj_2_rtp, comm_rj1, comm_rlm1)
+     &   (ncomp_snap_rj_2_rtp, comm_rj, comm_rlm)
       call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_snap_rj_2_rtp, comm_rtm1, comm_rtp1)
+     &   (ncomp_snap_rj_2_rtp, comm_rtm, comm_rtp)
 !
       call copy_snap_spectr_to_send                                     &
-     &   (ncomp_snap_rj_2_rtp, sph_rj1, comm_rj1, rj_fld,               &
+     &   (ncomp_snap_rj_2_rtp, sph_rj, comm_rj, rj_fld,                 &
      &    n_WS, WS, flc_pl)
 !
       call sph_backward_transforms                                      &
      &   (ncomp_snap_rj_2_rtp, nvector_snap_rj_2_rtp, nscalar_trans,    &
-     &    sph_param1, sph_rtp1, sph_rtm1, sph_rlm1,                     &
-     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1,                    &
+     &    sph_params, sph_rtp, sph_rtm, sph_rlm,                        &
+     &    comm_rtp, comm_rtm, comm_rlm, comm_rj,                        &
      &    n_WS, n_WR, WS(1), WR(1), fls_rtp, flc_pl, fls_pl)
 !
       end subroutine sph_back_trans_snapshot_MHD
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sph_forward_trans_snapshot_MHD(rj_fld)
+      subroutine sph_forward_trans_snapshot_MHD                         &
+     &         (sph_rtp, sph_rtm, sph_rlm,                              &
+     &          comm_rtp, comm_rtm, comm_rlm, comm_rj, rj_fld)
 !
       use m_solver_SR
-      use m_spheric_parameter
-      use m_sph_trans_comm_table
       use m_addresses_trans_sph_snap
       use m_work_4_sph_trans
       use sph_transforms
       use copy_sph_MHD_4_send_recv
       use spherical_SRs_N
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_rtm_grid), intent(in) :: sph_rtm
+      type(sph_rlm_grid), intent(in) :: sph_rlm
+      type(sph_comm_tbl), intent(in) :: comm_rtp
+      type(sph_comm_tbl), intent(in) :: comm_rtm
+      type(sph_comm_tbl), intent(in) :: comm_rlm
+      type(sph_comm_tbl), intent(in) :: comm_rj
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -279,35 +335,43 @@
       if(ncomp_snap_rtp_2_rj .le. 0) return
 !
       call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_snap_rtp_2_rj, comm_rtp1, comm_rtm1)
+     &   (ncomp_snap_rtp_2_rj, comm_rtp, comm_rtm)
       call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_snap_rtp_2_rj, comm_rlm1, comm_rj1)
+     &   (ncomp_snap_rtp_2_rj, comm_rlm, comm_rj)
 !
 !   transform for vectors and scalars
       call sph_forward_transforms(ncomp_snap_rtp_2_rj,                  &
      &    nvector_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                 &
-     &    sph_rtp1, sph_rtm1, sph_rlm1,                                 &
-     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1,                    &
+     &    sph_rtp, sph_rtm, sph_rlm,                                    &
+     &    comm_rtp, comm_rtm, comm_rlm, comm_rj,                        &
      &    frs_rtp, n_WS, n_WR, WS(1), WR(1))
 !
       call copy_snap_vec_spec_from_trans                                &
-     &   (ncomp_snap_rtp_2_rj, comm_rj1, n_WR, WR(1), rj_fld)
+     &   (ncomp_snap_rtp_2_rj, comm_rj, n_WR, WR(1), rj_fld)
 !
       end subroutine sph_forward_trans_snapshot_MHD
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine sph_forward_trans_tmp_snap_MHD(rj_fld)
+      subroutine sph_forward_trans_tmp_snap_MHD                         &
+     &         (sph_rtp, sph_rtm, sph_rlm,                              &
+     &          comm_rtp, comm_rtm, comm_rlm, comm_rj, rj_fld)
 !
       use m_solver_SR
-      use m_spheric_parameter
-      use m_sph_trans_comm_table
       use m_addresses_trans_sph_tmp
       use m_work_4_sph_trans
       use sph_transforms
       use copy_sph_MHD_4_send_recv
       use spherical_SRs_N
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_rtm_grid), intent(in) :: sph_rtm
+      type(sph_rlm_grid), intent(in) :: sph_rlm
+      type(sph_comm_tbl), intent(in) :: comm_rtp
+      type(sph_comm_tbl), intent(in) :: comm_rtm
+      type(sph_comm_tbl), intent(in) :: comm_rlm
+      type(sph_comm_tbl), intent(in) :: comm_rj
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -315,26 +379,27 @@
       if(ncomp_tmp_rtp_2_rj .eq. 0) return
 !
       call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_tmp_rtp_2_rj, comm_rtp1, comm_rtm1)
+     &   (ncomp_tmp_rtp_2_rj, comm_rtp, comm_rtm)
       call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_tmp_rtp_2_rj, comm_rlm1, comm_rj1)
+     &   (ncomp_tmp_rtp_2_rj, comm_rlm, comm_rj)
 !
 !   transform for vectors and scalars
       call sph_forward_transforms(ncomp_tmp_rtp_2_rj,                   &
      &    nvector_tmp_rtp_2_rj, nscalar_tmp_rtp_2_rj,                   &
-     &    sph_rtp1, sph_rtm1, sph_rlm1,                                 &
-     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1,                    &
+     &    sph_rtp, sph_rtm, sph_rlm,                                    &
+     &    comm_rtp, comm_rtm, comm_rlm, comm_rj,                        &
      &    frt_rtp, n_WS, n_WR, WS, WR)
 !
       call copy_tmp_scl_spec_from_trans                                 &
-     &   (ncomp_tmp_rtp_2_rj, comm_rj1, n_WR, WR, rj_fld)
+     &   (ncomp_tmp_rtp_2_rj, comm_rj, n_WR, WR, rj_fld)
 !
       end subroutine sph_forward_trans_tmp_snap_MHD
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine sph_transform_4_licv(rj_fld)
+      subroutine sph_transform_4_licv                                   &
+     &         (sph_rlm, comm_rlm, comm_rj, rj_fld)
 !
       use m_solver_SR
       use m_addresses_trans_sph_MHD
@@ -342,35 +407,50 @@
       use copy_sph_MHD_4_send_recv
       use spherical_SRs_N
 !
+      type(sph_rlm_grid), intent(in) :: sph_rlm
+      type(sph_comm_tbl), intent(in) :: comm_rlm
+      type(sph_comm_tbl), intent(in) :: comm_rj
+!
       type(phys_data), intent(inout) :: rj_fld
 !
 !
       if((ncomp_rj_2_rtp*ncomp_rtp_2_rj) .eq. 0) return
 !
       call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_rj_2_rtp, comm_rj1, comm_rlm1)
+     &   (ncomp_rj_2_rtp, comm_rj, comm_rlm)
       call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_rtp_2_rj, comm_rlm1, comm_rj1)
+     &   (ncomp_rtp_2_rj, comm_rlm, comm_rj)
 !
       call copy_mhd_spectr_to_send                                      &
-     &   (ncomp_rj_2_rtp, comm_rj1, rj_fld, n_WS, WS(1))
+     &   (ncomp_rj_2_rtp, comm_rj, rj_fld, n_WS, WS(1))
 !
-      call sph_b_trans_licv(ncomp_rj_2_rtp, n_WR, WR(1))
-      call sph_f_trans_licv(ncomp_rtp_2_rj, n_WS, WS(1))
+      call sph_b_trans_licv                                             &
+     &   (ncomp_rj_2_rtp, sph_rlm, comm_rlm, comm_rj, n_WR, WR(1))
+      call sph_f_trans_licv                                             &
+     &   (ncomp_rtp_2_rj, sph_rlm, comm_rlm, comm_rj, n_WS, WS(1))
 !
       call copy_mhd_spectr_from_recv                                    &
-     &   (ncomp_rtp_2_rj, comm_rj1, n_WR, WR(1), rj_fld)
+     &   (ncomp_rtp_2_rj, comm_rj, n_WR, WR(1), rj_fld)
 !
       end subroutine sph_transform_4_licv
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine select_legendre_transform(rj_fld)
+      subroutine select_legendre_transform(sph_rtp, sph_rtm, sph_rlm,   &
+     &          comm_rtp, comm_rtm, comm_rlm, comm_rj, rj_fld)
 !
       use calypso_mpi
       use m_machine_parameter
       use m_work_4_sph_trans
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_rtm_grid), intent(in) :: sph_rtm
+      type(sph_rlm_grid), intent(in) :: sph_rlm
+      type(sph_comm_tbl), intent(in) :: comm_rtp
+      type(sph_comm_tbl), intent(in) :: comm_rtm
+      type(sph_comm_tbl), intent(in) :: comm_rlm
+      type(sph_comm_tbl), intent(in) :: comm_rj
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -391,11 +471,13 @@
      &            'Test SPH transform for ', id_legendre_transfer
         call sel_init_legendre_trans                                    &
      &     (ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans,      &
-     &      sph_rtm1, sph_rlm1)
+     &      sph_rtm, sph_rlm)
 !
         starttime = MPI_WTIME()
-        call sph_back_trans_4_MHD(rj_fld)
-        call sph_forward_trans_4_MHD(rj_fld)
+        call sph_back_trans_4_MHD(sph_rtp, sph_rtm, sph_rlm,            &
+     &    comm_rtp, comm_rtm, comm_rlm, comm_rj, rj_fld)
+        call sph_forward_trans_4_MHD(sph_rtp, sph_rtm, sph_rlm,         &
+     &      comm_rtp, comm_rtm, comm_rlm, comm_rj, rj_fld)
         endtime(id_legendre_transfer) = MPI_WTIME() - starttime
 !
         call sel_finalize_legendre_trans

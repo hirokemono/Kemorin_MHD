@@ -43,13 +43,13 @@
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &     write(*,*) 'cal_rot_of_forces_sph_2'
-      call cal_rot_of_forces_sph_2(rj_fld)
+      call cal_rot_of_forces_sph_2(sph_rj1, rj_fld)
 !
-      call cal_rot_of_induction_sph(rj_fld)
+      call cal_rot_of_induction_sph(sph_rj1, rj_fld)
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &     write(*,*) 'cal_div_of_fluxes_sph'
-      call cal_div_of_fluxes_sph(rj_fld)
+      call cal_div_of_fluxes_sph(sph_rj1, rj_fld)
 !
       end subroutine cal_momentum_eq_exp_sph
 !

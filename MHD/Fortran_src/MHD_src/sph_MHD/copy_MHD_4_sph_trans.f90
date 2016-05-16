@@ -9,7 +9,8 @@
 !!
 !!@verbatim
 !!  routines for backward transform
-!!      subroutine select_mhd_field_from_trans
+!!      subroutine select_mhd_field_from_trans(sph_rtp)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!      subroutine copy_forces_to_snapshot_rtp                          &
 !!     &          (m_folding, sph_rtp, node, iphys, nod_fld)
 !!        type(node_data), intent(in) :: node
@@ -21,7 +22,6 @@
 !
       use m_precision
       use m_machine_parameter
-      use m_spheric_parameter
 !
       use t_geometry_data
       use t_phys_address
@@ -38,26 +38,28 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine select_mhd_field_from_trans
+      subroutine select_mhd_field_from_trans(sph_rtp)
 !
       use m_node_phys_data
       use m_addresses_trans_sph_MHD
 !
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+!
 !
 !   advection flag
-      call sel_force_from_MHD_trans(f_trns%i_m_advect)
+      call sel_force_from_MHD_trans(sph_rtp, f_trns%i_m_advect)
 !   Coriolis flag
-      call sel_force_from_MHD_trans(f_trns%i_coriolis)
+      call sel_force_from_MHD_trans(sph_rtp, f_trns%i_coriolis)
 !   Lorentz flag
-      call sel_force_from_MHD_trans(f_trns%i_lorentz)
+      call sel_force_from_MHD_trans(sph_rtp, f_trns%i_lorentz)
 !
 !   induction flag
-      call sel_force_from_MHD_trans(f_trns%i_vp_induct)
+      call sel_force_from_MHD_trans(sph_rtp, f_trns%i_vp_induct)
 !   divergence of heat flux flag
-      call sel_force_from_MHD_trans(f_trns%i_h_flux)
+      call sel_force_from_MHD_trans(sph_rtp, f_trns%i_h_flux)
 !
 !   divergence of composition flux flag
-      call sel_force_from_MHD_trans(f_trns%i_c_flux)
+      call sel_force_from_MHD_trans(sph_rtp, f_trns%i_c_flux)
 !
       end subroutine select_mhd_field_from_trans
 !
@@ -107,19 +109,20 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine sel_force_from_MHD_trans(i_trns)
+      subroutine sel_force_from_MHD_trans(sph_rtp, i_trns)
 !
       use m_addresses_trans_sph_MHD
       use m_addresses_trans_sph_snap
       use sel_fld_copy_4_sph_trans
 !
+      type(sph_rtp_grid), intent(in) :: sph_rtp
       integer(kind = kint), intent(in) :: i_trns
 !
 !
       if(i_trns .le. 0) return
-      call sel_vector_from_trans                                        &
-     &   (nnod_rtp, nidx_rtp, ione, sph_rj1%istack_inod_rj_smp,         &
-     &    nnod_rtp, frc_rtp(1,i_trns), frm_rtp(1,i_trns) )
+      call sel_vector_from_trans(sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,    &
+     &    ione, sph_rtp%istack_inod_rtp_smp, sph_rtp%nnod_rtp,          &
+     &    frc_rtp(1,i_trns), frm_rtp(1,i_trns) )
 !
       end subroutine sel_force_from_MHD_trans
 !

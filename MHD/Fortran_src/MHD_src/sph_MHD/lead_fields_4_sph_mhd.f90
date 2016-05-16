@@ -17,7 +17,11 @@
 !
       use m_precision
       use m_machine_parameter
+      use m_spheric_parameter
+      use m_sph_trans_comm_table
 !
+      use t_spheric_parameter
+      use t_sph_trans_comm_tbl
       use t_phys_data
 !
       implicit none
@@ -54,7 +58,7 @@
 !
       if(iflag .gt. 0) return
 !
-      call select_mhd_field_from_trans
+      call select_mhd_field_from_trans(sph_rtp1)
       if    (sph_param1%iflag_shell_mode .eq. iflag_MESH_w_pole         &
      &  .or. sph_param1%iflag_shell_mode .eq. iflag_MESH_w_center) then
         call cal_nonlinear_pole_MHD
@@ -69,6 +73,7 @@
 !
       subroutine pressure_4_sph_mhd(rj_fld)
 !
+      use m_spheric_parameter
       use m_sph_phys_address
       use m_boundary_params_sph_MHD
       use cal_sol_sph_fluid_crank
@@ -82,9 +87,9 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_div_of_forces_sph_2'
-      call cal_div_of_forces_sph_2(rj_fld)
+      call cal_div_of_forces_sph_2(sph_rj1, rj_fld)
 !
-      call s_const_radial_forces_on_bc(rj_fld)
+      call s_const_radial_forces_on_bc(sph_rj1, rj_fld)
 !
       call sum_div_of_forces(rj_fld)
 !
@@ -93,7 +98,7 @@
 !
       if(ipol%i_press_grad .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'const_pressure_gradient'
-        call const_pressure_gradient(sph_bc_U,                          &
+        call const_pressure_gradient(sph_rj1, sph_bc_U,                 &
      &     ipol%i_press, ipol%i_press_grad, rj_fld)
       end if
 !
@@ -103,6 +108,7 @@
 !
       subroutine enegy_fluxes_4_sph_mhd(rj_fld)
 !
+      use m_spheric_parameter
       use m_sph_phys_address
       use sph_transforms_4_MHD
       use cal_energy_flux_rtp
@@ -113,10 +119,12 @@
 !
 !      Evaluate fields for output in spectrum space
       if (iflag_debug.eq.1) write(*,*) 's_cal_energy_flux_rj'
-      call s_cal_energy_flux_rj(rj_fld)
+      call s_cal_energy_flux_rj(sph_rj1, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_snapshot_MHD'
-      call sph_back_trans_snapshot_MHD(rj_fld)
+      call sph_back_trans_snapshot_MHD                                  &
+     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,            &
+     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, rj_fld)
 !
 !      Evaluate fields for output in grid space
       if (iflag_debug.eq.1) write(*,*) 's_cal_energy_flux_rtp'
@@ -124,7 +132,8 @@
 !
       if (iflag_debug.eq.1) write(*,*)                                  &
      &                          'sph_forward_trans_snapshot_MHD'
-      call sph_forward_trans_snapshot_MHD(rj_fld)
+      call sph_forward_trans_snapshot_MHD(sph_rtp1, sph_rtm1, sph_rlm1, &
+     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1,rj_fld)
 !
       end subroutine enegy_fluxes_4_sph_mhd
 !
@@ -143,7 +152,8 @@
       call copy_velo_to_grad_v_rtp
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_tmp_snap_MHD'
-      call sph_forward_trans_tmp_snap_MHD(rj_fld)
+      call sph_forward_trans_tmp_snap_MHD(sph_rtp1, sph_rtm1, sph_rlm1, &
+     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_grad_of_velocities_sph'
       call cal_grad_of_velocities_sph(rj_fld)

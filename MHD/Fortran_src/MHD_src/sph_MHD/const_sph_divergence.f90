@@ -8,9 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine const_sph_scalar_advect                              &
-!!     &         (sph_bc, is_flux, is_advect, rj_fld)
+!!     &         (sph_rj, sph_bc, is_flux, is_advect, rj_fld)
 !!      subroutine const_sph_div_force                                  &
-!!     &         (sph_bc_U, is_fld, is_div, rj_fld)
+!!     &         (sph_rj, sph_bc_U, is_fld, is_div, rj_fld)
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(sph_boundary_type), intent(in) :: sph_bc
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        type(phys_data), intent(inout) :: rj_fld
@@ -28,6 +29,7 @@
       use m_precision
       use m_constants
 !
+      use t_spheric_rj_data
       use t_phys_data
       use t_boundary_params_sph_MHD
 !
@@ -40,13 +42,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_sph_scalar_advect                                &
-     &         (sph_bc, is_flux, is_advect, rj_fld)
+     &         (sph_rj, sph_bc, is_flux, is_advect, rj_fld)
 !
-      use m_spheric_parameter
       use m_coef_fdm_to_center
       use cal_sph_exp_rotation
       use select_exp_scalar_bc
 !
+      type(sph_rj_grid), intent(in) ::  sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc
       integer(kind = kint), intent(in) :: is_flux, is_advect
 !
@@ -54,10 +56,10 @@
 !
 !
       call cal_sph_nod_vect_div2(sph_bc%kr_in, sph_bc%kr_out,           &
-     &    sph_rj1%nidx_rj, sph_rj1%ar_1d_rj, is_flux, is_advect,        &
+     &    sph_rj%nidx_rj, sph_rj%ar_1d_rj, is_flux, is_advect,          &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       call sel_bc_sph_scalar_advect(sph_bc, is_flux, is_advect,         &
-     &    sph_rj1, rj_fld)
+     &    sph_rj, rj_fld)
 !
       end subroutine const_sph_scalar_advect
 !
@@ -65,12 +67,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_sph_div_force                                    &
-     &         (sph_bc_U, is_fld, is_div, rj_fld)
+     &         (sph_rj, sph_bc_U, is_fld, is_div, rj_fld)
 !
-      use m_spheric_parameter
       use cal_sph_exp_rotation
       use cal_sph_exp_nod_none_bc
 !
+      type(sph_rj_grid), intent(in) ::  sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc_U
       integer(kind = kint), intent(in) :: is_fld, is_div
 !
@@ -78,13 +80,15 @@
 !
 !
       call cal_sph_nod_vect_div2(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
-     &    sph_rj1%nidx_rj, sph_rj1%ar_1d_rj, is_fld, is_div,            &
+     &    sph_rj%nidx_rj, sph_rj%ar_1d_rj, is_fld, is_div,              &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      call cal_sph_nod_nobc_in_div2(nnod_rj, sph_rj1%nidx_rj(2),        &
+      call cal_sph_nod_nobc_in_div2                                     &
+     &   (sph_rj%nnod_rj, sph_rj%nidx_rj(2),                            &
      &    sph_bc_U%kr_in, sph_bc_U%r_ICB, sph_bc_U%fdm2_fix_fld_ICB,    &
      &    is_fld, is_div, rj_fld%ntot_phys, rj_fld%d_fld)
-      call cal_sph_nod_nobc_out_div2(nnod_rj, sph_rj1%nidx_rj(2),       &
+      call cal_sph_nod_nobc_out_div2                                    &
+     &   (sph_rj%nnod_rj, sph_rj%nidx_rj(2),                            &
      &    sph_bc_U%kr_out, sph_bc_U%r_CMB, sph_bc_U%fdm2_fix_fld_CMB,   &
      &    is_fld, is_div, rj_fld%ntot_phys, rj_fld%d_fld)
 !

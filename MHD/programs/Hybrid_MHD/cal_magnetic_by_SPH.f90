@@ -148,10 +148,10 @@
      &    comm_rj, n_WR, WR(1), rj_fld)
 !
 !
-      call const_sph_rotation_uxb                                       &
-     &   (ipol%i_vp_induct, ipol%i_induction, rj_fld)
-      call const_sph_rotation_uxb(ipol%i_SGS_vp_induct,                 &
-     &    ipol%i_SGS_induction, rj_fld)
+      call const_sph_rotation_uxb(sph_rj1, sph_bc_B,                    &
+     &    ipol%i_vp_induct, ipol%i_induction, rj_fld)
+      call const_sph_rotation_uxb(sph_rj1, sph_bc_B,                    &
+     &    ipol%i_SGS_vp_induct, ipol%i_SGS_induction, rj_fld)
 !*
       end subroutine nonlinear_incuction_wSGS_SPH
 !
@@ -193,8 +193,8 @@
      &   (ipol%i_vp_induct, f_hbd_trns%i_vp_induct,                     &
      &    comm_rj, n_WR, WR, rj_fld)
 !
-      call const_sph_rotation_uxb                                       &
-     &   (ipol%i_vp_induct, ipol%i_induction, rj_fld)
+      call const_sph_rotation_uxb(sph_rj1, sph_bc_B,                    &
+     &    ipol%i_vp_induct, ipol%i_induction, rj_fld)
 !
       end subroutine nonlinear_incuction_SPH
 !

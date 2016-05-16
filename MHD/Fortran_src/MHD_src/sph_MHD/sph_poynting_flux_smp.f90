@@ -72,12 +72,12 @@
       call copy_grad_vect_to_m_stretch                                  &
      &   (rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      call const_sph_gradient_no_bc                                     &
-     &     (sph_bc_U, (ipol%i_mag_stretch  ), ipol%i_grad_vx, rj_fld)
-      call const_sph_gradient_no_bc                                     &
-     &     (sph_bc_U, (ipol%i_mag_stretch+1), ipol%i_grad_vy, rj_fld)
-      call const_sph_gradient_no_bc                                     &
-     &     (sph_bc_U, (ipol%i_mag_stretch+2), ipol%i_grad_vz, rj_fld)
+      call const_sph_gradient_no_bc(sph_rj1, sph_bc_U,                  &
+     &   (ipol%i_mag_stretch  ), ipol%i_grad_vx, rj_fld)
+      call const_sph_gradient_no_bc(sph_rj1, sph_bc_U,                  &
+     &   (ipol%i_mag_stretch+1), ipol%i_grad_vy, rj_fld)
+      call const_sph_gradient_no_bc(sph_rj1, sph_bc_U,                  &
+     &   (ipol%i_mag_stretch+2), ipol%i_grad_vz, rj_fld)
 !
       end subroutine cal_grad_of_velocities_sph
 !

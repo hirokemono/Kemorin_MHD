@@ -108,7 +108,7 @@
       if(iflag_debug.gt.0) write(*,*) 's_set_bc_sph_mhd'
       call s_set_bc_sph_mhd(sph_param1, sph_rj1, radial_rj_grp1,        &
      &    CTR_nod_grp_name, CTR_sf_grp_name)
-      call init_reference_fields
+      call init_reference_fields(sph_param1, sph_rj1)
 !
 ! ---------------------------------
 !

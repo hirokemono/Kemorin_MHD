@@ -140,7 +140,7 @@
       call read_alloc_sph_rst_4_snap(i_step, sph_rj1, rj_fld1)
 !
       if (iflag_debug.eq.1) write(*,*)' sync_temp_by_per_temp_sph'
-      call sync_temp_by_per_temp_sph(reftemp_rj, rj_fld1)
+      call sync_temp_by_per_temp_sph(reftemp_rj, sph_rj1, rj_fld1)
 !
 !* obtain linear terms for starting
 !*
@@ -162,7 +162,7 @@
       call start_eleps_time(9)
 !
       if(iflag_debug.gt.0) write(*,*) 'trans_per_temp_to_temp_sph'
-      call trans_per_temp_to_temp_sph(reftemp_rj, rj_fld1)
+      call trans_per_temp_to_temp_sph(reftemp_rj, sph_rj1, rj_fld1)
 !*
       if(iflag_debug.gt.0) write(*,*) 'lead_special_fields_4_sph_mhd'
       call lead_special_fields_4_sph_mhd
@@ -232,6 +232,7 @@
 !
       use t_phys_address
       use m_spheric_parameter
+      use m_sph_trans_comm_table
       use m_sph_phys_address
       use m_sph_spectr_data
       use output_viz_file_control
@@ -243,9 +244,11 @@
 !
       call s_lead_fields_4_sph_mhd(rj_fld1)
 !
-      call sph_back_trans_4_MHD(rj_fld1)
+      call sph_back_trans_4_MHD(sph_rtp1, sph_rtm1, sph_rlm1,           &
+     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, rj_fld1)
 !
-      call sph_forward_trans_snapshot_MHD(rj_fld1)
+      call sph_forward_trans_snapshot_MHD(sph_rtp1, sph_rtm1, sph_rlm1, &
+     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1,rj_fld1)
 !
 ! ----  Take zonal mean
 !

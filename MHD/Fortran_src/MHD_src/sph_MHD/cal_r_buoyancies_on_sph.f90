@@ -7,7 +7,8 @@
 !>@brief Evaluate buoyancy at specific radius
 !!
 !!@verbatim
-!!      subroutine s_cal_r_buoyancies_on_sph(kr, rj_fld)
+!!      subroutine s_cal_r_buoyancies_on_sph(kr, sph_rj, rj_fld)
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !!
@@ -32,15 +33,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_r_buoyancies_on_sph(kr, rj_fld)
+      subroutine s_cal_r_buoyancies_on_sph(kr, sph_rj, rj_fld)
 !
       use m_machine_parameter
-      use m_spheric_parameter
       use m_physical_property
 !
+      use t_spheric_rj_data
       use t_phys_data
 !
       integer(kind= kint), intent(in) :: kr
+      type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -51,14 +53,14 @@
      &      write(*,*)'cal_r_double_buoyancy_on_sph', ipol%i_temp
           call cal_r_double_buoyancy_on_sph                             &
      &       (kr, ipol%i_temp, ipol%i_div_buoyancy,                     &
-     &        sph_rj1%nidx_rj, sph_rj1%radius_1d_rj_r,                  &
+     &        sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                    &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         else
           if (iflag_debug.eq.1)                                         &
      &      write(*,*)'cal_r_double_buoyancy_on_sph', ipol%i_par_temp
           call cal_r_double_buoyancy_on_sph                             &
      &       (kr, ipol%i_par_temp,ipol%i_div_buoyancy,                  &
-     &        sph_rj1%nidx_rj, sph_rj1%radius_1d_rj_r,                  &
+     &        sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                    &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
 !
@@ -68,13 +70,13 @@
           if (iflag_debug.eq.1) write(*,*) 'cal_r_buoyancy_on_sph'
           call cal_r_buoyancy_on_sph                                    &
      &       (kr, coef_buo, ipol%i_temp, ipol%i_div_buoyancy,           &
-     &        sph_rj1%nidx_rj, sph_rj1%radius_1d_rj_r,                  &
+     &        sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                    &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         else
           if (iflag_debug.eq.1) write(*,*) 'cal_r_buoyancy_on_sph'
           call cal_r_buoyancy_on_sph                                    &
      &       (kr, coef_buo, ipol%i_par_temp, ipol%i_div_buoyancy,       &
-     &        sph_rj1%nidx_rj, sph_rj1%radius_1d_rj_r,                  &
+     &        sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                    &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
 !
@@ -82,14 +84,14 @@
         if (iflag_debug.eq.1) write(*,*) 'cal_r_buoyancy_on_sph'
         call cal_r_buoyancy_on_sph                                      &
      &     (kr, coef_comp_buo, ipol%i_light, ipol%i_div_comp_buo,       &
-     &      sph_rj1%nidx_rj, sph_rj1%radius_1d_rj_r,                    &
+     &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       else if (iflag_4_filter_gravity .gt. id_turn_OFF) then
         if (iflag_debug.eq.1) write(*,*) 'cal_r_buoyancy_on_sph'
         call cal_r_buoyancy_on_sph                                      &
      &     (kr, coef_buo, ipol%i_filter_temp, ipol%i_div_filter_buo,    &
-     &      sph_rj1%nidx_rj, sph_rj1%radius_1d_rj_r,                    &
+     &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !

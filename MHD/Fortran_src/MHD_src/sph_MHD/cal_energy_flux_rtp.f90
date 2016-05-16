@@ -93,7 +93,7 @@
 !
       use m_machine_parameter
       use m_control_parameter
-      use m_spheric_parameter
+!      use m_spheric_parameter
       use m_physical_property
       use m_sph_phys_address
       use m_addresses_trans_sph_MHD
@@ -114,27 +114,27 @@
 !      end if
 !
       if(fs_trns%i_ujb .gt. 0) then
-        call cal_dot_prod_no_coef_smp(np_smp, nnod_rtp,                 &
+        call cal_dot_prod_no_coef_smp(np_smp, sph_rtp1%nnod_rtp,        &
      &      sph_rtp1%istack_inod_rtp_smp, frm_rtp(1,f_trns%i_lorentz),  &
      &      fls_rtp(1,bs_trns%i_velo), frs_rtp(1,fs_trns%i_ujb) )
       end if
 !
       if(fs_trns%i_nega_ujb .gt. 0) then
-        call cal_dot_prod_w_coef_smp(np_smp, nnod_rtp,                  &
+        call cal_dot_prod_w_coef_smp(np_smp, sph_rtp1%nnod_rtp,         &
      &      sph_rtp1%istack_inod_rtp_smp, dminus,                       &
      &      frm_rtp(1,f_trns%i_lorentz), fls_rtp(1,bs_trns%i_velo),     &
      &      frs_rtp(1,fs_trns%i_nega_ujb) )
       end if
 !
       if(fs_trns%i_me_gen .gt. 0) then
-        call cal_dot_prod_no_coef_smp(np_smp, nnod_rtp,                 &
+        call cal_dot_prod_no_coef_smp(np_smp, sph_rtp1%nnod_rtp,        &
      &    sph_rtp1%istack_inod_rtp_smp, fls_rtp(1,bs_trns%i_induction), &
      &    fls_rtp(1,bs_trns%i_magne), frs_rtp(1,fs_trns%i_me_gen))
       end if
 !
       if(fs_trns%i_electric .gt. 0) then
         call cal_electric_field_smp                                     &
-     &     (np_smp, nnod_rtp, sph_rtp1%istack_inod_rtp_smp,             &
+     &     (np_smp, sph_rtp1%nnod_rtp, sph_rtp1%istack_inod_rtp_smp,    &
      &      coef_d_magne, fls_rtp(1,bs_trns%i_current),                 &
      &      frm_rtp(1,f_trns%i_vp_induct),                              &
      &      frs_rtp(1,fs_trns%i_electric))
@@ -142,7 +142,7 @@
 !
       if(fs_trns%i_poynting .gt. 0) then
         call cal_poynting_flux_smp                                      &
-     &     (np_smp, nnod_rtp, sph_rtp1%istack_inod_rtp_smp,             &
+     &     (np_smp, sph_rtp1%nnod_rtp, sph_rtp1%istack_inod_rtp_smp,    &
      &      coef_d_magne, fls_rtp(1,bs_trns%i_current),                 &
      &      frm_rtp(1,f_trns%i_vp_induct), fls_rtp(1,bs_trns%i_magne),  &
      &      frs_rtp(1,fs_trns%i_poynting))
@@ -150,12 +150,14 @@
 !
       if(fs_trns%i_buo_gen .gt. 0) then
         if(iflag_4_ref_temp .eq. id_sphere_ref_temp) then
-          call cal_buoyancy_flux_rtp_smp(np_smp, nnod_rtp, nidx_rtp(1), &
+          call cal_buoyancy_flux_rtp_smp                                &
+     &       (np_smp, sph_rtp1%nnod_rtp, sph_rtp1%nidx_rtp(1),          &
      &        sph_rtp1%istack_inod_rtp_smp, sph_rtp1%radius_1d_rtp_r,   &
      &        coef_buo, fls_rtp(1,bs_trns%i_par_temp),                  &
      &        fls_rtp(1,bs_trns%i_velo), frs_rtp(1,fs_trns%i_buo_gen))
         else
-          call cal_buoyancy_flux_rtp_smp(np_smp, nnod_rtp, nidx_rtp(1), &
+          call cal_buoyancy_flux_rtp_smp                                &
+     &       (np_smp, sph_rtp1%nnod_rtp, sph_rtp1%nidx_rtp(1),          &
      &        sph_rtp1%istack_inod_rtp_smp, sph_rtp1%radius_1d_rtp_r,   &
      &        coef_buo, fls_rtp(1,bs_trns%i_temp),                      &
      &        fls_rtp(1,bs_trns%i_velo), frs_rtp(1,fs_trns%i_buo_gen))
@@ -163,15 +165,16 @@
       end if
 !
       if(fs_trns%i_c_buo_gen .gt. 0) then
-        call cal_buoyancy_flux_rtp_smp(np_smp, nnod_rtp,                &
-     &      nidx_rtp(1), sph_rtp1%istack_inod_rtp_smp,                  &
+        call cal_buoyancy_flux_rtp_smp(np_smp, sph_rtp1%nnod_rtp,       &
+     &      sph_rtp1%nidx_rtp(1), sph_rtp1%istack_inod_rtp_smp,         &
      &      sph_rtp1%radius_1d_rtp_r, coef_comp_buo,                    &
      &      fls_rtp(1,bs_trns%i_light), fls_rtp(1,bs_trns%i_velo),      &
      &      frs_rtp(1,fs_trns%i_c_buo_gen) )
       end if
 !
       if(fs_trns%i_f_buo_gen .gt. 0) then
-        call cal_buoyancy_flux_rtp_smp(np_smp, nnod_rtp, nidx_rtp(1),   &
+        call cal_buoyancy_flux_rtp_smp                                  &
+     &     (np_smp, sph_rtp1%nnod_rtp, sph_rtp1%nidx_rtp(1),            &
      &      sph_rtp1%istack_inod_rtp_smp, sph_rtp1%radius_1d_rtp_r,     &
      &      coef_buo, fls_rtp(1,bs_trns%i_filter_temp),                 &
      &      fls_rtp(1,bs_trns%i_velo), frs_rtp(1,fs_trns%i_f_buo_gen) )
@@ -179,25 +182,25 @@
 !
       if(fs_trns%i_velo_scale .gt. 0) then
         call cal_len_scale_by_rot_smp                                   &
-     &      (np_smp, nnod_rtp, sph_rtp1%istack_inod_rtp_smp,            &
+     &      (np_smp, sph_rtp1%nnod_rtp, sph_rtp1%istack_inod_rtp_smp,   &
      &      fls_rtp(1,bs_trns%i_velo), fls_rtp(1,bs_trns%i_vort),       &
      &      frs_rtp(1,fs_trns%i_velo_scale))
       end if
       if(fs_trns%i_magne_scale .gt. 0) then
         call cal_len_scale_by_rot_smp                                   &
-     &     (np_smp, nnod_rtp, sph_rtp1%istack_inod_rtp_smp,             &
+     &     (np_smp, sph_rtp1%nnod_rtp, sph_rtp1%istack_inod_rtp_smp,    &
      &      fls_rtp(1,bs_trns%i_magne), fls_rtp(1,bs_trns%i_current),   &
      &      frs_rtp(1,fs_trns%i_magne_scale))
       end if
       if(fs_trns%i_temp_scale .gt. 0) then
         call cal_len_scale_by_diffuse_smp                               &
-     &     (np_smp, nnod_rtp, sph_rtp1%istack_inod_rtp_smp,             &
+     &     (np_smp, sph_rtp1%nnod_rtp, sph_rtp1%istack_inod_rtp_smp,    &
      &      fls_rtp(1,bs_trns%i_temp), fls_rtp(1,bs_trns%i_t_diffuse),  &
      &      frs_rtp(1,fs_trns%i_temp_scale))
       end if
       if(fs_trns%i_comp_scale .gt. 0) then
         call cal_len_scale_by_diffuse_smp                               &
-     &     (np_smp, nnod_rtp, sph_rtp1%istack_inod_rtp_smp,             &
+     &     (np_smp, sph_rtp1%nnod_rtp, sph_rtp1%istack_inod_rtp_smp,    &
      &      fls_rtp(1,bs_trns%i_light), fls_rtp(1,bs_trns%i_c_diffuse), &
      &      frs_rtp(1,fs_trns%i_comp_scale))
       end if
@@ -208,8 +211,8 @@
         if (iflag_debug.eq.1) write(*,*) 'cal_rtp_magnetic_streach'
 !$omp parallel
         call cal_rtp_magnetic_streach                                   &
-     &     (np_smp, nnod_rtp, sph_rtp1%istack_inod_rtp_smp,             &
-     &      nidx_rtp(1), nidx_rtp(2),                                   &
+     &     (np_smp, sph_rtp1%nnod_rtp, sph_rtp1%istack_inod_rtp_smp,    &
+     &      sph_rtp1%nidx_rtp(1), sph_rtp1%nidx_rtp(2),                 &
      &      sph_rtp1%a_r_1d_rtp_r, cot_theta_1d_rtp,                    &
      &      fls_rtp(1,bs_trns%i_magne), fls_rtp(1,bs_trns%i_velo),      &
      &      fls_rtp(1,bs_trns%i_grad_vx), fls_rtp(1,bs_trns%i_grad_vy), &

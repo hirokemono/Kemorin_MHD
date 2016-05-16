@@ -35,6 +35,7 @@
       use m_control_parameter
 !
       use m_spheric_parameter
+      use m_sph_trans_comm_table
       use m_group_data_sph_specr
       use m_sph_spectr_data
       use m_sph_phys_address
@@ -87,12 +88,14 @@
       if (iflag_debug.eq.1) write(*,*) 's_set_bc_sph_mhd'
       call s_set_bc_sph_mhd(sph_param1, sph_rj1, radial_rj_grp1,        &
      &    CTR_nod_grp_name, CTR_sf_grp_name)
-      call init_reference_fields
+      call init_reference_fields(sph_param1, sph_rj1)
 !
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
-      call init_sph_transform_MHD(rj_fld1)
+      call init_sph_transform_MHD                                       &
+     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,            &
+     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, rj_fld1)
 !
 ! ---------------------------------
 !
@@ -134,7 +137,7 @@
 !
       call read_alloc_sph_rst_4_snap(i_step, sph_rj1, rj_fld1)
 !
-      call sync_temp_by_per_temp_sph(reftemp_rj, rj_fld1)
+      call sync_temp_by_per_temp_sph(reftemp_rj, sph_rj1, rj_fld1)
 !
 !* obtain linear terms for starting
 !*
@@ -151,7 +154,7 @@
 !*
       call start_eleps_time(9)
       if(iflag_debug.gt.0) write(*,*) 'trans_per_temp_to_temp_sph'
-      call trans_per_temp_to_temp_sph(reftemp_rj, rj_fld1)
+      call trans_per_temp_to_temp_sph(reftemp_rj, sph_rj1, rj_fld1)
 !*
       if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
       call s_lead_fields_4_sph_mhd(rj_fld1)
@@ -162,7 +165,7 @@
       call start_eleps_time(4)
       call start_eleps_time(11)
       if(iflag_debug.gt.0)  write(*,*) 'const_data_4_dynamobench'
-      call s_const_data_4_dynamobench(rj_fld1)
+      call s_const_data_4_dynamobench(sph_param1, sph_rj1, rj_fld1)
       call output_field_4_dynamobench(i_step, time)
       call end_eleps_time(11)
       call end_eleps_time(4)

@@ -7,8 +7,11 @@
 !>@brief Evaluate dynamo benchmark results
 !!
 !!@verbatim
-!!      subroutine s_const_data_4_dynamobench(rj_fld)
-!!      subroutine s_const_data_on_circle
+!!      subroutine s_const_data_4_dynamobench                           &
+!!     &         (sph_params, sph_rj, rj_fld)
+!!        type(sph_shell_parameters), intent(in) :: sph_params
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(phys_data), intent(in) :: rj_fld
 !!@endverbatim
 !
       module const_data_4_dynamobench
@@ -25,18 +28,22 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_const_data_4_dynamobench(rj_fld)
+      subroutine s_const_data_4_dynamobench                             &
+     &         (sph_params, sph_rj, rj_fld)
 !
-      use m_spheric_parameter
       use m_boundary_params_sph_MHD
       use m_field_at_mid_equator
 !
+      use t_spheric_parameter
+      use t_spheric_rj_data
       use t_phys_data
 !
       use calypso_mpi
       use cal_rms_fields_by_sph
       use global_field_4_dynamobench
 !
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_data), intent(in) :: rj_fld
 !
 !
@@ -44,28 +51,28 @@
       call mid_eq_transfer_dynamobench(rj_fld)
 !
       call cal_mean_squre_in_shell                                      &
-     &   (sph_param1%nlayer_ICB, sph_param1%nlayer_CMB,                 &
-     &    sph_param1%l_truncation, sph_rj1, rj_fld)
+     &   (sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
+     &    sph_params%l_truncation, sph_rj, rj_fld)
       if(my_rank .eq. 0) call copy_energy_4_dynamobench
 !
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
-        call pick_inner_core_rotation(sph_rj1%idx_rj_degree_one,        &
-     &      sph_rj1%nidx_rj, sph_param1%nlayer_ICB, sph_rj1%ar_1d_rj,   &
+        call pick_inner_core_rotation(sph_rj%idx_rj_degree_one,         &
+     &      sph_rj%nidx_rj, sph_params%nlayer_ICB, sph_rj%ar_1d_rj,     &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
         call cal_mean_squre_in_shell                                    &
-     &     (izero, sph_param1%nlayer_ICB, sph_param1%l_truncation,      &
-     &      sph_rj1, rj_fld)
+     &     (izero, sph_params%nlayer_ICB, sph_params%l_truncation,      &
+     &      sph_rj, rj_fld)
         if(my_rank .eq. 0) call copy_icore_energy_4_dbench
       end if
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center                  &
      &   .and. sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call pick_mag_torque_inner_core                                 &
-     &     (sph_rj1%idx_rj_degree_one,  sph_rj1%nidx_rj,                &
-     &      sph_param1%nlayer_ICB, sph_rj1%radius_1d_rj_r,              &
+     &     (sph_rj%idx_rj_degree_one,  sph_rj%nidx_rj,                  &
+     &      sph_params%nlayer_ICB, sph_rj%radius_1d_rj_r,               &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
