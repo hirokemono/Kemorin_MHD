@@ -93,7 +93,7 @@
 !* -----  set integrals for coriolis -----------------
 !*
       if(iflag_debug .gt. 0) write(*,*) 'open_sph_vol_rms_file_mhd'
-      call open_sph_vol_rms_file_mhd(rj_fld1)
+      call open_sph_vol_rms_file_mhd(sph_param1, sph_rj1, rj_fld1)
 !
       end subroutine SPH_init_sph_snap
 !
@@ -124,7 +124,7 @@
 !* obtain linear terms for starting
 !*
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
-      call set_sph_field_to_start(rj_fld1)
+      call set_sph_field_to_start(sph_rj1, rj_fld1)
 !
 !*  ----------------lead nonlinear term ... ----------
 !*
@@ -147,13 +147,13 @@
       call start_eleps_time(4)
       call start_eleps_time(11)
       if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
-      call output_rms_sph_mhd_control(rj_fld1)
+      call output_rms_sph_mhd_control(sph_param1, sph_rj1, rj_fld1)
       call end_eleps_time(11)
 !
 !*  -----------  Output spectr data --------------
 !*
       if(iflag_debug.gt.0)  write(*,*) 'output_spectr_4_snap'
-      call output_spectr_4_snap(i_step, rj_fld1)
+      call output_spectr_4_snap(i_step, sph_rj1, rj_fld1)
       call end_eleps_time(4)
 !
       end subroutine SPH_analyze_snap

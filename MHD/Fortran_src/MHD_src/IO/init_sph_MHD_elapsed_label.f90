@@ -9,7 +9,13 @@
 !!@verbatim
 !!      subroutine set_sph_MHD_elapsed_label
 !!      subroutine reset_elapse_4_init_sph_mhd
-!!      subroutine write_resolution_data
+!!      subroutine write_resolution_data                                &
+!!     &         (sph_params, sph_rtp, sph_rtm, sph_rlm, sph_rj)
+!!        type(sph_shell_parameters), intent(in) :: sph_params
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(sph_rtm_grid), intent(in) :: sph_rtm
+!!        type(sph_rlm_grid), intent(in) :: sph_rlm
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!@endverbatim
 !
       module init_sph_MHD_elapsed_label
@@ -114,23 +120,30 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine write_resolution_data
+      subroutine write_resolution_data                                  &
+     &         (sph_params, sph_rtp, sph_rtm, sph_rlm, sph_rj)
 !
       use calypso_mpi
       use m_work_time
-      use m_spheric_parameter
+      use t_spheric_parameter
+!
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_rtm_grid), intent(in) :: sph_rtm
+      type(sph_rlm_grid), intent(in) :: sph_rlm
+      type(sph_rj_grid), intent(in) ::  sph_rj
 !
       integer(kind = kint) :: nproc_rj_IO(2),  nproc_rlm_IO(2)
       integer(kind = kint) :: nproc_rtm_IO(3), nproc_rtp_IO(3)
 !
 !
-      call MPI_REDUCE(sph_rj1%irank_sph_rj, nproc_rj_IO, itwo,          &
+      call MPI_REDUCE(sph_rj%irank_sph_rj, nproc_rj_IO, itwo,           &
      &    CALYPSO_INTEGER, MPI_MAX, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_REDUCE(sph_rlm1%irank_sph_rlm, nproc_rlm_IO, itwo,       &
+      call MPI_REDUCE(sph_rlm%irank_sph_rlm, nproc_rlm_IO, itwo,        &
      &    CALYPSO_INTEGER, MPI_MAX, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_REDUCE(sph_rtm1%irank_sph_rtm, nproc_rtm_IO, ithree,     &
+      call MPI_REDUCE(sph_rtm%irank_sph_rtm, nproc_rtm_IO, ithree,      &
      &    CALYPSO_INTEGER, MPI_MAX, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_REDUCE(sph_rtp1%irank_sph_rtp, nproc_rtp_IO, ithree,     &
+      call MPI_REDUCE(sph_rtp%irank_sph_rtp, nproc_rtp_IO, ithree,      &
      &    CALYPSO_INTEGER, MPI_MAX, izero, CALYPSO_COMM, ierr_MPI)
 !
       if(my_rank .ne. 0) return
@@ -145,15 +158,15 @@
       write(id_timer_file,*)
       write(id_timer_file,*) '=========================================='
       write(id_timer_file,*) 'Truncation level:      ',                 &
-     &                      sph_param1%l_truncation
+     &                      sph_params%l_truncation
       write(id_timer_file,*) 'Longitudinal symmetry: ',                 &
-     &                      sph_param1%m_folding
+     &                      sph_params%m_folding
       write(id_timer_file,*) 'N_r for fluid shell:   ',                 &
-     &            (sph_param1%nlayer_CMB - sph_param1%nlayer_ICB)
+     &            (sph_params%nlayer_CMB - sph_params%nlayer_ICB)
       write(id_timer_file,*) 'N_theta:               ',                 &
-     &                      sph_rtm1%nidx_rtm(2)
+     &                      sph_rtm%nidx_rtm(2)
       write(id_timer_file,*) 'N_phi:                 ',                 &
-     &                      sph_rtp1%nidx_rtp(3)
+     &                      sph_rtp%nidx_rtp(3)
 !
       write(id_timer_file,*) 'Total MPI processes: ',  nprocs
       write(id_timer_file,*)                                            &

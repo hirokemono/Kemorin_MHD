@@ -93,6 +93,7 @@
 !
       subroutine evolution_sph_mhd
 !
+      use m_spheric_parameter
       use FEM_analyzer_sph_MHD
 !
       integer(kind = kint) :: visval, iflag_finish
@@ -164,7 +165,8 @@
       call end_eleps_time(1)
 !
       if (iflag_debug.eq.1) write(*,*) 'write_resolution_data'
-      call write_resolution_data
+      call write_resolution_data                                        &
+    &    (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1)
       if (iflag_debug.eq.1) write(*,*) 'output_elapsed_times '
       call output_elapsed_times
 !

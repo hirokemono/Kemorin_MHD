@@ -53,7 +53,7 @@
 !* obtain linear terms for starting
 !*
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
-      call set_sph_field_to_start(rj_fld1)
+      call set_sph_field_to_start(sph_rj1, rj_fld1)
 !
 !*  ----------------lead nonlinear term ... ----------
 !*
@@ -81,7 +81,7 @@
       call start_eleps_time(4)
       call start_eleps_time(11)
       if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
-      call output_rms_sph_mhd_control(rj_fld1)
+      call output_rms_sph_mhd_control(sph_param1, sph_rj1, rj_fld1)
       call end_eleps_time(11)
       call end_eleps_time(4)
 !
@@ -125,7 +125,8 @@
 !
 !*  ----------- transform field at pole and center --------------
 !*
-      call lead_pole_fields_4_sph_mhd(mesh1%node, iphys, nod_fld1)
+      call lead_pole_fields_4_sph_mhd                                   &
+     &   (sph_param1, sph_rtp1, mesh1%node, iphys, nod_fld1)
 !
       call nod_fields_send_recv(mesh1%node, mesh1%nod_comm, nod_fld1)
 !

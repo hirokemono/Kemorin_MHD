@@ -160,8 +160,8 @@
       call end_eleps_time(14)
 !
       call start_eleps_time(15)
-      if (iflag_debug.ge.1) write(*,*) 's_cal_nonlinear_sph_MHD'
-      call s_cal_nonlinear_sph_MHD
+      if (iflag_debug.ge.1) write(*,*) 'nonlinear_terms_in_rtp'
+      call nonlinear_terms_in_rtp(sph_rtp1)
       call end_eleps_time(15)
 !
       call start_eleps_time(16)
@@ -172,7 +172,7 @@
 !
       call start_eleps_time(17)
       if (iflag_debug.ge.1) write(*,*) 'cal_momentum_eq_exp_sph'
-      call cal_momentum_eq_exp_sph(rj_fld)
+      call cal_momentum_eq_exp_sph(sph_rj1, rj_fld)
       call end_eleps_time(17)
 !
       end subroutine nonlinear_by_pseudo_sph

@@ -181,7 +181,8 @@
 !*  ----------- transform field at pole and center --------------
 !*
       if (iflag_debug.gt.0) write(*,*) 'lead_pole_fields_4_sph_mhd'
-      call lead_pole_fields_4_sph_mhd(mesh%node, iphys, nod_fld1)
+      call lead_pole_fields_4_sph_mhd                                   &
+     &   (sph_param1, sph_rtp1, mesh%node, iphys, nod_fld1)
 !
       if (iflag_debug.gt.0) write(*,*) 'phys_send_recv_all'
       call nod_fields_send_recv(mesh%node, mesh%nod_comm, nod_fld1)

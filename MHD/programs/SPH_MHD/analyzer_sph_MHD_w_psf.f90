@@ -85,6 +85,8 @@
 !
       subroutine evolution_sph_mhd_w_psf
 !
+      use m_spheric_parameter
+!
       integer(kind = kint) :: visval, iflag_finish
       integer(kind = kint) :: istep_psf, istep_iso
       integer(kind = kint) :: istep_pvr, istep_fline
@@ -152,7 +154,8 @@
       call end_eleps_time(1)
 !
       if (iflag_debug.eq.1) write(*,*) 'write_resolution_data'
-      call write_resolution_data
+      call write_resolution_data                                        &
+    &    (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1)
       if (iflag_debug.eq.1) write(*,*) 'output_elapsed_times '
       call output_elapsed_times
 !

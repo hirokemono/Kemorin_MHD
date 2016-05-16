@@ -221,7 +221,6 @@
 !
       subroutine check_sph_boundary_spectra(label, jmax, j_rj, sph_bc)
 !
-      use m_spheric_parameter
       use m_bc_data_list
       use m_surf_data_list
 !

@@ -7,7 +7,8 @@
 !>@brief  Evaluate nonlinear terms in spherical coordinate grid
 !!
 !!@verbatim
-!!      subroutine s_cal_nonlinear_sph_MHD
+!!      subroutine nonlinear_terms_in_rtp(sph_rtp)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!      subroutine add_reftemp_advect_sph_MHD                           &
 !!     &         (kr_in, kr_out, nidx_rj, ar_1d_rj,                     &
 !!     &          nnod_rj, ntot_phys_rj, reftemp_rj, d_rj)
@@ -33,26 +34,28 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_nonlinear_sph_MHD
+      subroutine nonlinear_terms_in_rtp(sph_rtp)
 !
+      use t_spheric_rtp_data
       use m_machine_parameter
-      use m_spheric_parameter
       use m_addresses_trans_sph_MHD
       use const_wz_coriolis_rtp
       use cal_products_smp
 !
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+!
 !
 !$omp parallel
       if( (f_trns%i_m_advect*iflag_t_evo_4_velo) .gt. 0) then
-        call cal_cross_prod_w_coef_smp(np_smp, nnod_rtp,                &
-     &      sph_rtp1%istack_inod_rtp_smp, coef_velo,                    &
+        call cal_cross_prod_w_coef_smp(np_smp, sph_rtp%nnod_rtp,        &
+     &      sph_rtp%istack_inod_rtp_smp, coef_velo,                     &
      &      fld_rtp(1,b_trns%i_vort), fld_rtp(1,b_trns%i_velo),         &
      &      frc_rtp(1,f_trns%i_m_advect) )
       end if
 !
       if( (f_trns%i_lorentz*iflag_4_lorentz) .gt. 0) then
-        call cal_cross_prod_w_coef_smp(np_smp, nnod_rtp,                &
-     &      sph_rtp1%istack_inod_rtp_smp, coef_lor,                     &
+        call cal_cross_prod_w_coef_smp(np_smp, sph_rtp%nnod_rtp,        &
+     &      sph_rtp%istack_inod_rtp_smp, coef_lor,                      &
      &      fld_rtp(1,b_trns%i_current), fld_rtp(1,b_trns%i_magne),     &
      &      frc_rtp(1,f_trns%i_lorentz) )
       end if
@@ -60,34 +63,35 @@
 !
 !
       if( (f_trns%i_vp_induct*iflag_t_evo_4_magne) .gt. 0) then
-        call cal_cross_prod_w_coef_smp(np_smp, nnod_rtp,                &
-     &      sph_rtp1%istack_inod_rtp_smp, coef_induct,                  &
+        call cal_cross_prod_w_coef_smp(np_smp, sph_rtp%nnod_rtp,        &
+     &      sph_rtp%istack_inod_rtp_smp, coef_induct,                   &
      &      fld_rtp(1,b_trns%i_velo), fld_rtp(1,b_trns%i_magne),        &
      &      frc_rtp(1,f_trns%i_vp_induct) )
       end if
 !
 !
       if( (f_trns%i_h_flux*iflag_t_evo_4_temp) .gt. 0) then
-        call cal_vec_scalar_prod_w_coef_smp(np_smp, nnod_rtp,           &
-     &      sph_rtp1%istack_inod_rtp_smp, coef_temp,                    &
+        call cal_vec_scalar_prod_w_coef_smp(np_smp, sph_rtp%nnod_rtp,   &
+     &      sph_rtp%istack_inod_rtp_smp, coef_temp,                     &
      &      fld_rtp(1,b_trns%i_velo), fld_rtp(1,b_trns%i_temp),         &
      &      frc_rtp(1,f_trns%i_h_flux) )
       end if
 !
       if( (f_trns%i_c_flux*iflag_t_evo_4_composit) .gt. 0) then
-        call cal_vec_scalar_prod_w_coef_smp(np_smp, nnod_rtp,           &
-     &      sph_rtp1%istack_inod_rtp_smp, coef_light,                   &
+        call cal_vec_scalar_prod_w_coef_smp(np_smp, sph_rtp%nnod_rtp,   &
+     &      sph_rtp%istack_inod_rtp_smp, coef_light,                    &
      &      fld_rtp(1,b_trns%i_velo), fld_rtp(1,b_trns%i_light),        &
      &      frc_rtp(1,f_trns%i_c_flux) )
       end if
 !
 !      if( (f_trns%i_Coriolis*iflag_4_coriolis) .gt. 0) then
-!        call cal_wz_coriolis_rtp(sph_rtp1%nnod_rtp, sph_rtp1%nidx_rtp, &
+!        call cal_wz_coriolis_rtp                                       &
+!     &     (sph_rtp%sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                &
 !     &      fld_rtp(1,b_trns%i_velo), frc_rtp(1,f_trns%i_Coriolis))
 !      end if
 !$omp end parallel
 !
-      end subroutine s_cal_nonlinear_sph_MHD
+      end subroutine nonlinear_terms_in_rtp
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

@@ -96,7 +96,7 @@
 !* obtain linear terms for starting
 !*
        if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
-       call set_sph_field_to_start(rj_fld1)
+       call set_sph_field_to_start(sph_rj1, rj_fld1)
 !
 !* obtain nonlinear terms for starting
 !*
@@ -107,7 +107,7 @@
 !*
       if(iflag_debug .gt. 0) write(*,*) 'open_sph_vol_rms_file_mhd'
       call start_eleps_time(4)
-      call open_sph_vol_rms_file_mhd(rj_fld1)
+      call open_sph_vol_rms_file_mhd(sph_param1, sph_rj1, rj_fld1)
       call end_eleps_time(4)
 !
       end subroutine SPH_initialize_MHD
@@ -141,16 +141,16 @@
       call start_eleps_time(6)
       if(i_step .eq. 1) then
         if(iflag_debug.gt.0) write(*,*) 'cal_expricit_sph_euler'
-        call cal_expricit_sph_euler(i_step, rj_fld1)
+        call cal_expricit_sph_euler(i_step, sph_rj1, rj_fld1)
       else
         if(iflag_debug.gt.0) write(*,*) 'cal_expricit_sph_adams'
-        call cal_expricit_sph_adams(rj_fld1)
+        call cal_expricit_sph_adams(sph_rj1, rj_fld1)
       end if
 !*
 !*  ----------  time evolution by inplicit method ----------
 !*
       call start_eleps_time(7)
-      call s_cal_sol_sph_MHD_crank(rj_fld1)
+      call s_cal_sol_sph_MHD_crank(sph_rj1, rj_fld1)
       call end_eleps_time(7)
       call end_eleps_time(6)
 !*
@@ -192,7 +192,7 @@
 !*
       call start_eleps_time(11)
       if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
-      call output_rms_sph_mhd_control(rj_fld1)
+      call output_rms_sph_mhd_control(sph_param1, sph_rj1, rj_fld1)
       call end_eleps_time(11)
 !
       if(iflag_debug.gt.0) write(*,*) 'sync_temp_by_per_temp_sph'

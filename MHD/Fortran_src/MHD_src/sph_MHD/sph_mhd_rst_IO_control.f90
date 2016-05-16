@@ -22,7 +22,7 @@
 !!      subroutine init_radial_sph_interpolation
 !!      subroutine read_alloc_sph_rst_4_snap(i_step, sph_rj, rj_fld)
 !!        type(phys_data), intent(inout) :: rj_fld
-!!      subroutine output_spectr_4_snap(i_step, rj_fld)
+!!      subroutine output_spectr_4_snap(i_step, sph_rj, rj_fld)
 !!        type(phys_data), intent(in) :: rj_fld
 !!      subroutine read_alloc_sph_rst_2_modify(i_step, sph_rj, rj_fld)
 !!        type(phys_data), intent(inout) :: rj_fld
@@ -165,18 +165,17 @@
 !
       use m_control_params_2nd_files
       use m_node_id_spherical_IO
-      use m_spheric_parameter
       use t_spheric_parameter
       use r_interpolate_sph_data
 !
-      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_shell_parameters), intent(inout) :: sph_params
       type(sph_rj_grid), intent(inout) ::  sph_rj
 !
 !
       if(iflag_org_sph_rj_head .gt. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'input_old_rj_sph_trans'
         call input_old_rj_sph_trans                                     &
-     &     (my_rank, sph_param1%l_truncation, sph_rj)
+     &     (my_rank, sph_params%l_truncation, sph_rj)
       end if
 !
       call copy_cmb_icb_radial_point                                    &
@@ -222,14 +221,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine output_spectr_4_snap(i_step, rj_fld)
+      subroutine output_spectr_4_snap(i_step, sph_rj, rj_fld)
 !
+      use t_spheric_rj_data
       use m_t_int_parameter
       use m_control_params_sph_data
-      use m_spheric_parameter
       use copy_rj_phys_data_4_IO
       use copy_time_steps_4_restart
 !
+      type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_data), intent(in) :: rj_fld
       integer(kind = kint), intent(in) :: i_step
 !
@@ -241,9 +241,11 @@
 !
       istep_fld = i_step / i_step_output_ucd
       call copy_time_steps_to_restart
-      call copy_rj_viz_phys_name_to_IO(nnod_rj, rj_fld, sph_fst_IO)
+      call copy_rj_viz_phys_name_to_IO                                  &
+     &   (sph_rj%nnod_rj, rj_fld, sph_fst_IO)
       call alloc_phys_data_IO(sph_fst_IO)
-      call copy_rj_viz_phys_data_to_IO(nnod_rj, rj_fld, sph_fst_IO)
+      call copy_rj_viz_phys_data_to_IO                                  &
+     &   (sph_rj%nnod_rj, rj_fld, sph_fst_IO)
 !
       call set_spectr_prefix_fmt_2_fld_IO(sph_fst_IO)
       call sel_write_step_SPH_field_file                                &
