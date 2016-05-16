@@ -30,7 +30,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_spheric_parameter
       use m_work_pole_sph_trans
 !
       use t_phys_data
@@ -125,7 +124,6 @@
       subroutine set_sph_vect_to_sph_trans                              &
      &         (node, nod_fld, sph_rtp, ncomp_trans, v_rtp)
 !
-      use t_spheric_rtp_data
       use copy_nodal_fld_4_sph_trans
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -237,7 +235,6 @@
      &         (sph_rtp, node, m_folding, ncomp_trans,                  &
      &          v_rtp, v_pole, nod_fld)
 !
-      use t_spheric_rtp_data
       use copy_nodal_fld_4_sph_trans
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp

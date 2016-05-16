@@ -8,7 +8,7 @@
 !!       in hybrid dynamo
 !!
 !!@verbatim
-!!      subroutine allocate_hbd_trans_rtp
+!!      subroutine allocate_hbd_trans_rtp(nnod_rtp)
 !!      subroutine deallocate_hbd_trans_rtp
 !!
 !!      subroutine set_addresses_trans_hbd_MHD
@@ -65,11 +65,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_hbd_trans_rtp
+      subroutine allocate_hbd_trans_rtp(nnod_rtp)
 !
-      use m_spheric_parameter
       use m_work_pole_sph_trans
 !
+      integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint) :: num1
 !
 !

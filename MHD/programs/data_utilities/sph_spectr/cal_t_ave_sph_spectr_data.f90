@@ -5,16 +5,16 @@
 !
 !      Written by H. Matsui on Dec., 2008
 !
-!!      subroutine allocate_d_rj_tmp(ntot_phys_rj)
+!!      subroutine allocate_d_rj_tmp(n_point, ntot_phys_rj)
 !!      subroutine deallocate_d_rj_tmp
 !!
-!!      subroutine sum_sph_spectr_data(ntot_phys_rj, d_rj)
-!!      subroutine sum_deviation_sph_spectr(ntot_phys_rj, d_rj)
+!!      subroutine sum_sph_spectr_data(n_point, ntot_phys_rj, d_rj)
+!!      subroutine sum_deviation_sph_spectr(n_point, ntot_phys_rj, d_rj)
 !!
 !!      subroutine t_ave_sph_spectr_data                                &
-!!     &         (ist_step, ied_step, ntot_phys_rj, d_rj)
+!!     &         (ist_step, ied_step, n_point, ntot_phys_rj, d_rj)
 !!      subroutine sdev_sph_spectr_data                                 &
-!!     &         (ist_step, ied_step, ntot_phys_rj, d_rj)
+!!     &         (ist_step, ied_step, n_point, ntot_phys_rj, d_rj)
 !
       use m_precision
       use m_constants
@@ -32,17 +32,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_d_rj_tmp(ntot_phys_rj)
+      subroutine allocate_d_rj_tmp(n_point, ntot_phys_rj)
 !
-      use m_spheric_parameter
-!
-      integer(kind = kint), intent(in) :: ntot_phys_rj
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
 !
 !
-      allocate( d_rj_dev(nnod_rj,ntot_phys_rj) )
-      allocate( d_rj_ave(nnod_rj,ntot_phys_rj) )
+      allocate( d_rj_dev(n_point,ntot_phys_rj) )
+      allocate( d_rj_ave(n_point,ntot_phys_rj) )
 !
-      if(nnod_rj*ntot_phys_rj .le. 0) return
+      if(n_point*ntot_phys_rj .le. 0) return
       d_rj_dev = 0.0d0
       d_rj_ave = 0.0d0
 !
@@ -58,19 +56,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sum_sph_spectr_data(ntot_phys_rj, d_rj)
+      subroutine sum_sph_spectr_data(n_point, ntot_phys_rj, d_rj)
 !
-      use m_spheric_parameter
       use calypso_mpi
 !
-      integer(kind = kint), intent(in) ::  ntot_phys_rj
-      real (kind=kreal), intent(in) :: d_rj(nnod_rj,ntot_phys_rj)
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real (kind=kreal), intent(in) :: d_rj(n_point,ntot_phys_rj)
 !
       integer(kind = kint) :: nd, inod
 !
 !$omp parallel do private(inod)
       do nd = 1, ntot_phys_rj
-        do inod = 1, nnod_rj
+        do inod = 1, n_point
           d_rj_ave(inod,nd) = d_rj_ave(inod,nd) + d_rj(inod,nd)
         end do
       end do
@@ -80,19 +77,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sum_deviation_sph_spectr(ntot_phys_rj, d_rj)
+      subroutine sum_deviation_sph_spectr(n_point, ntot_phys_rj, d_rj)
 !
-      use m_spheric_parameter
       use calypso_mpi
 !
-      integer(kind = kint), intent(in) ::  ntot_phys_rj
-      real (kind=kreal), intent(in) :: d_rj(nnod_rj,ntot_phys_rj)
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real (kind=kreal), intent(in) :: d_rj(n_point,ntot_phys_rj)
 !
       integer(kind = kint) :: nd, inod
 !
 !$omp parallel do private(inod)
       do nd = 1, ntot_phys_rj
-        do inod = 1, nnod_rj
+        do inod = 1, n_point
           d_rj_dev(inod,nd) = d_rj_dev(inod,nd)                         &
      &                       + (d_rj(inod,nd) - d_rj_ave(inod,nd))**2
         end do
@@ -104,14 +100,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine t_ave_sph_spectr_data                                  &
-     &         (ist_step, ied_step, ntot_phys_rj, d_rj)
-!
-      use m_spheric_parameter
+     &         (ist_step, ied_step, n_point, ntot_phys_rj, d_rj)
 !
 !
       integer(kind = kint), intent(in) :: ist_step, ied_step
-      integer(kind = kint), intent(in) ::  ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       integer(kind = kint) :: nd, inod
       real(kind =  kreal) :: anum
@@ -121,7 +115,7 @@
 !
 !$omp parallel do private(inod)
       do nd = 1, ntot_phys_rj
-        do inod = 1, nnod_rj
+        do inod = 1, n_point
           d_rj(inod,nd) = d_rj_ave(inod,nd) * anum
         end do
       end do
@@ -134,14 +128,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine sdev_sph_spectr_data                                   &
-     &         (ist_step, ied_step, ntot_phys_rj, d_rj)
-!
-      use m_spheric_parameter
+     &         (ist_step, ied_step, n_point, ntot_phys_rj, d_rj)
 !
 !
       integer(kind = kint), intent(in) :: ist_step, ied_step
-      integer(kind = kint), intent(in) ::  ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       integer(kind = kint) :: nd, inod
       real(kind =  kreal) :: anum
@@ -151,7 +143,7 @@
 !
 !$omp parallel do private(inod)
       do nd = 1, ntot_phys_rj
-        do inod = 1, nnod_rj
+        do inod = 1, n_point
           d_rj(inod,nd) = sqrt(d_rj_dev(inod,nd)) * anum
         end do
       end do

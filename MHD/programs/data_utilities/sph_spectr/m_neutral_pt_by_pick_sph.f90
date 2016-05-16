@@ -10,7 +10,9 @@
 !!      subroutine alloc_neutral_point
 !!      subroutine dealloc_neutral_point
 !!      subroutine find_field_address
-!!      subroutine set_radius_for_fdm
+!!      subroutine set_radius_for_fdm(sph_params, sph_rj)
+!!        type(sph_shell_parameters), intent(inout) :: sph_params
+!!        type(sph_rj_grid), intent(inout) ::  sph_rj
 !!      subroutine set_radial_grad_scalars(istep, time, buo_ratio)
 !!@endverbatim
 !
@@ -19,11 +21,10 @@
       use m_precision
       use m_constants
 !
-      use m_spheric_parameter
       use m_phys_labels
-!
       use m_pickup_sph_spectr_data
       use m_fdm_coefs
+!
       use set_radius_func
       use set_radius_func_noequi
 !
@@ -108,29 +109,31 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_radius_for_fdm
+      subroutine set_radius_for_fdm(sph_params, sph_rj)
 !
-      use t_spheric_rj_data
+      use t_spheric_parameter
+!
+      type(sph_shell_parameters), intent(inout) :: sph_params
+      type(sph_rj_grid), intent(inout) ::  sph_rj
 !
       integer(kind = kint) :: i
 !
 !
-      sph_rj1%nidx_rj(1) = num_pick_layer
-      sph_rj1%nidx_rj(2) = 1
-      nidx_rj(1:2) = sph_rj1%nidx_rj(1:2)
-      call alloc_type_sph_1d_index_rj(sph_rj1)
+      sph_rj%nidx_rj(1) = num_pick_layer
+      sph_rj%nidx_rj(2) = 1
+      call alloc_type_sph_1d_index_rj(sph_rj)
 !
       do i = 1, num_pick_layer
-        sph_rj1%radius_1d_rj_r(i) = r_pick_layer(i)
+        sph_rj%radius_1d_rj_r(i) = r_pick_layer(i)
       end do
       do i = 1, num_pick_sph_mode
         if(idx_pick_sph_gl(i,1) .eq. 0) ipick_l0m0 = i
       end do
 !
-      call allocate_dr_rj_noequi(sph_rj1%nidx_rj(1))
-      call set_dr_for_nonequi(sph_param1%nlayer_CMB,                    &
-     &   sph_rj1%nidx_rj(1), sph_rj1%radius_1d_rj_r)
-      call const_2nd_fdm_matrices(sph_param1, sph_rj1)
+      call allocate_dr_rj_noequi(sph_rj%nidx_rj(1))
+      call set_dr_for_nonequi(sph_params%nlayer_CMB,                    &
+     &   sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r)
+      call const_2nd_fdm_matrices(sph_params, sph_rj)
 !
       write(*,*) 'icomp_temp, icomp_light', icomp_temp, icomp_light
       write(*,*) 'ipick_l0m0', ipick_l0m0

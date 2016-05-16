@@ -99,7 +99,7 @@
       integer(kind = kint) :: i_step
 !
 !
-      call allocate_d_rj_tmp(rj_fld1%ntot_phys)
+      call allocate_d_rj_tmp(rj_fld1%n_point, rj_fld1%ntot_phys)
 !
 !   Averaging
       do i_step = i_step_init, i_step_number, i_step_output_ucd
@@ -114,12 +114,13 @@
         if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
         call set_rj_phys_data_from_IO(nnod_rj, sph_fld_IN, rj_fld1)
 !
-        call sum_sph_spectr_data(rj_fld1%ntot_phys, rj_fld1%d_fld)
+        call sum_sph_spectr_data                                        &
+     &     (rj_fld1%n_point, rj_fld1%ntot_phys, rj_fld1%d_fld)
       end do
 
       call calypso_mpi_barrier
-      call t_ave_sph_spectr_data                                        &
-     &   (i_step_init, i_step_number, rj_fld1%ntot_phys, rj_fld1%d_fld)
+      call t_ave_sph_spectr_data(i_step_init, i_step_number,            &
+     &    rj_fld1%n_point, rj_fld1%ntot_phys, rj_fld1%d_fld)
 !
       call copy_rj_all_phys_name_to_IO(nnod_rj, rj_fld1, sph_fld_OUT)
       call alloc_phys_data_IO(sph_fld_OUT)
@@ -155,15 +156,16 @@
         if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
         call set_rj_phys_data_from_IO(nnod_rj, sph_fld_IN, rj_fld1)
 !
-        call sum_deviation_sph_spectr(rj_fld1%ntot_phys, rj_fld1%d_fld)
+        call sum_deviation_sph_spectr                                   &
+     &     (rj_fld1%n_point, rj_fld1%ntot_phys, rj_fld1%d_fld)
       end do
 !
       call calypso_mpi_barrier
       call dealloc_phys_data_IO(sph_fld_IN)
       call dealloc_phys_name_IO(sph_fld_IN)
 !
-      call sdev_sph_spectr_data                                         &
-     &   (i_step_init, i_step_number, rj_fld1%ntot_phys, rj_fld1%d_fld)
+      call sdev_sph_spectr_data(i_step_init, i_step_number,             &
+     &    rj_fld1%n_point, rj_fld1%ntot_phys, rj_fld1%d_fld)
 !
       call copy_rj_all_phys_name_to_IO(nnod_rj, rj_fld1, sph_fld_OUT)
       call alloc_phys_data_IO(sph_fld_OUT)

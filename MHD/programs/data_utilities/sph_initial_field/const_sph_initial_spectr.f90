@@ -51,7 +51,6 @@
       use m_precision
 !
       use m_constants
-      use m_spheric_parameter
       use m_sph_phys_address
 !
       implicit none

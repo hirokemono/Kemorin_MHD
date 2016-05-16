@@ -65,6 +65,7 @@
 !
       use m_solver_SR
       use m_spheric_parameter
+      use m_sph_trans_comm_table
       use cmp_trans_sph_indices
       use cmp_trans_sph_tests
       use set_parallel_file_name
@@ -79,7 +80,9 @@
       call allocate_idx_sph_recieve                                     &
      &     (sph_rtp1%nnod_rtp, sph_rtm1%nnod_rtm,                       &
      &      sph_rlm1%nnod_rlm, sph_rj1%nnod_rj)
-      call allocate_real_sph_test(NB)
+      call allocate_real_sph_test                                       &
+     &   (NB, sph_rtp1%nnod_rtp, sph_rtm1%nnod_rtm,                     &
+     &        sph_rlm1%nnod_rlm, sph_rj1%nnod_rj)
 !
       call add_int_suffix(my_rank, check_header, fname_tmp)
       call add_dat_extension(fname_tmp, file_name)
@@ -104,16 +107,35 @@
         call compare_transfer_sph_indices(id_check,                     &
      &      sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1)
 !
-        call sph_transfer_test_N(NB, itype)
-        call compare_transfer_sph_reals(NB, id_check)
-        call sph_transfer_test_6(itype)
-        call compare_transfer_sph_reals(isix, id_check)
-        call sph_transfer_test_3(itype)
-        call compare_transfer_sph_reals(ithree, id_check)
-        call sph_transfer_test_2(itype)
-        call compare_transfer_sph_reals(itwo, id_check)
-        call sph_transfer_test_1(itype)
-        call compare_transfer_sph_reals(ione, id_check)
+        call sph_transfer_test_N(NB, itype,                             &
+     &      sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,                      &
+     &      comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1)
+        call compare_transfer_sph_reals(NB, id_check,                   &
+     &      sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1)
+!
+        call sph_transfer_test_6(itype,                                 &
+     &      sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,                      &
+     &      comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1)
+        call compare_transfer_sph_reals(isix, id_check,                 &
+     &      sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1)
+!
+        call sph_transfer_test_3(itype,                                 &
+     &      sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,                      &
+     &      comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1)
+        call compare_transfer_sph_reals(ithree, id_check,               &
+     &      sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1)
+!
+        call sph_transfer_test_2(itype,                                 &
+     &      sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,                      &
+     &      comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1)
+        call compare_transfer_sph_reals(itwo, id_check,                 &
+     &      sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1)
+!
+        call sph_transfer_test_1(itype,                                 &
+     &      sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,                      &
+     &      comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1)
+        call compare_transfer_sph_reals(ione, id_check,                 &
+     &      sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1)
       end do
 !
       close(id_check)

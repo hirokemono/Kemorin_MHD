@@ -58,8 +58,6 @@
 !
       subroutine allocate_pick_sph_rms
 !
-      use m_spheric_parameter
-!
       integer(kind = kint) :: num
 !
 !
