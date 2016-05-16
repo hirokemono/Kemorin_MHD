@@ -112,7 +112,8 @@
         call copy_time_from_restart
 !
         if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
-        call set_rj_phys_data_from_IO(nnod_rj, sph_fld_IN, rj_fld1)
+        call set_rj_phys_data_from_IO                                   &
+     &     (sph_rj1%nnod_rj, sph_fld_IN, rj_fld1)
 !
         call sum_sph_spectr_data                                        &
      &     (rj_fld1%n_point, rj_fld1%ntot_phys, rj_fld1%d_fld)
@@ -122,9 +123,11 @@
       call t_ave_sph_spectr_data(i_step_init, i_step_number,            &
      &    rj_fld1%n_point, rj_fld1%ntot_phys, rj_fld1%d_fld)
 !
-      call copy_rj_all_phys_name_to_IO(nnod_rj, rj_fld1, sph_fld_OUT)
+      call copy_rj_all_phys_name_to_IO                                  &
+     &   (sph_rj1%nnod_rj, rj_fld1, sph_fld_OUT)
       call alloc_phys_data_IO(sph_fld_OUT)
-      call copy_rj_all_phys_data_to_IO(nnod_rj, rj_fld1, sph_fld_OUT)
+      call copy_rj_all_phys_data_to_IO                                  &
+     &   (sph_rj1%nnod_rj, rj_fld1, sph_fld_OUT)
 !
       call alloc_merged_field_stack(nprocs, sph_fld_OUT)
       call count_number_of_node_stack                                   &
@@ -154,7 +157,8 @@
         call copy_time_from_restart
 !
         if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
-        call set_rj_phys_data_from_IO(nnod_rj, sph_fld_IN, rj_fld1)
+        call set_rj_phys_data_from_IO                                   &
+     &     (sph_rj1%nnod_rj, sph_fld_IN, rj_fld1)
 !
         call sum_deviation_sph_spectr                                   &
      &     (rj_fld1%n_point, rj_fld1%ntot_phys, rj_fld1%d_fld)
@@ -167,9 +171,11 @@
       call sdev_sph_spectr_data(i_step_init, i_step_number,             &
      &    rj_fld1%n_point, rj_fld1%ntot_phys, rj_fld1%d_fld)
 !
-      call copy_rj_all_phys_name_to_IO(nnod_rj, rj_fld1, sph_fld_OUT)
+      call copy_rj_all_phys_name_to_IO                                  &
+     &   (sph_rj1%nnod_rj, rj_fld1, sph_fld_OUT)
       call alloc_phys_data_IO(sph_fld_OUT)
-      call copy_rj_all_phys_data_to_IO(nnod_rj, rj_fld1, sph_fld_OUT)
+      call copy_rj_all_phys_data_to_IO                                  &
+     &   (sph_rj1%nnod_rj, rj_fld1, sph_fld_OUT)
 !
       call alloc_merged_field_stack(nprocs, sph_fld_OUT)
       call count_number_of_node_stack                                   &

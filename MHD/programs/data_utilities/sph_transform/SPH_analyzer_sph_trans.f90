@@ -44,7 +44,7 @@
       if (iflag_debug.gt.0) write(*,*) 'copy_sph_name_rj_to_rtp'
       call copy_sph_name_rj_to_rtp(rj_fld1)
 !
-      call alloc_phys_data_type(nnod_rj, rj_fld1)
+      call alloc_phys_data_type(sph_rj1%nnod_rj, rj_fld1)
 !
 !  ---- initialize spherical harmonics transform
 !
@@ -92,7 +92,8 @@
 !
       if (iflag_debug.gt.0)                                             &
      &    write(*,*) 'copy_rj_all_phys_data_to_IO'
-      call copy_rj_all_phys_data_to_IO(nnod_rj, rj_fld1, fld_IO)
+      call copy_rj_all_phys_data_to_IO                                  &
+     &   (sph_rj1%nnod_rj, rj_fld1, fld_IO)
 !
       i_time_step_IO = 0
       time_IO = zero
@@ -140,7 +141,8 @@
 !
       if (iflag_debug.gt.0)                                             &
      &    write(*,*) 'copy_rj_all_phys_data_to_IO'
-      call copy_rj_all_phys_data_to_IO(nnod_rj, rj_fld1, fld_IO)
+      call copy_rj_all_phys_data_to_IO                                  &
+     &   (sph_rj1%nnod_rj, rj_fld1, fld_IO)
       call count_number_of_node_stack                                   &
      &   (fld_IO%nnod_IO, fld_IO%istack_numnod_IO)
 !

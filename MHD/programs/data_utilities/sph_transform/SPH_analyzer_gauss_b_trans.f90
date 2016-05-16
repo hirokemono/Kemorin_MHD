@@ -52,7 +52,7 @@
 !
 !  ---- allocate spectr data
 !
-      call alloc_phys_data_type(nnod_rj, rj_fld1)
+      call alloc_phys_data_type(sph_rj1%nnod_rj, rj_fld1)
 !
 !  ---- initialize spherical harmonics transform
 !

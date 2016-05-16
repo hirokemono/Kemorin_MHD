@@ -26,7 +26,8 @@
       subroutine SPH_analyze_zm_streamfunc(i_step, visval, fld_IO)
 !
       use m_spheric_parameter
-      use m_sph_spectr_data
+      use m_spheric_parameter
+      use m_sph_trans_comm_table
       use m_t_step_parameter
       use m_control_params_2nd_files
       use m_node_id_spherical_IO
@@ -64,20 +65,23 @@
 !
         if(iflag_org_sph_rj_head .eq. 0) then
           if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
-          call set_rj_phys_data_from_IO(nnod_rj, fld_IO, rj_fld1)
+          call set_rj_phys_data_from_IO                                 &
+     &       (sph_rj1%nnod_rj, fld_IO, rj_fld1)
         else
           if (iflag_debug.gt.0) write(*,*)                              &
      &                        'r_interpolate_sph_fld_from_IO'
           call r_interpolate_sph_fld_from_IO(fld_IO, sph_rj1, rj_fld1)
         end if
 !
-        call set_rj_phys_for_zm_streamfunc                              &
-     &     (rj_fld1%ntot_phys, rj_fld1%d_fld)
+        call set_rj_phys_for_zm_streamfunc(sph_rj1%nidx_rj,             &
+     &      rj_fld1%n_point, rj_fld1%ntot_phys, rj_fld1%d_fld)
         call zonal_mean_all_sph_spectr(sph_rj1, rj_fld1)
 !
 !  spherical transform for vector
         call sph_b_trans_streamline                                     &
-     &     (femmesh_STR%mesh, rj_fld1, field_STR)
+     &     (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1,                   &
+     &      comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1,                  &
+     &      femmesh_STR%mesh, rj_fld1, field_STR)
 !
       end if
 !
@@ -126,13 +130,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sph_b_trans_streamline(mesh, rj_fld, nod_fld)
+      subroutine sph_b_trans_streamline                                 &
+     &         (sph_params, sph_rtp, sph_rtm, sph_rlm,                  &
+     &          comm_rtp, comm_rtm, comm_rlm, comm_rj,                  &
+     &          mesh, rj_fld, nod_fld)
 !
+      use t_spheric_parameter
+      use t_sph_trans_comm_tbl
       use t_mesh_data
       use t_phys_data
 !
-      use m_spheric_parameter
-      use m_sph_trans_comm_table
       use m_solver_SR
       use copy_all_spec_4_sph_trans
       use copy_all_field_4_sph_trans
@@ -140,8 +147,19 @@
       use spherical_SRs_N
       use sph_transfer_all_field
 !
-      type(mesh_geometry), intent(in) :: mesh
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_rtm_grid), intent(in) :: sph_rtm
+      type(sph_rlm_grid), intent(in) :: sph_rlm
+!
+      type(sph_comm_tbl), intent(in) :: comm_rtp
+      type(sph_comm_tbl), intent(in) :: comm_rtm
+      type(sph_comm_tbl), intent(in) :: comm_rlm
+      type(sph_comm_tbl), intent(in) :: comm_rj
+!
       type(phys_data), intent(in) :: rj_fld
+      type(mesh_geometry), intent(in) :: mesh
+!
       type(phys_data), intent(inout) :: nod_fld
 !
       integer(kind = kint) :: nscalar_trans
@@ -151,30 +169,30 @@
 !
       nscalar_trans = num_scalar_rtp + 6*num_tensor_rtp
       call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_sph_trans, comm_rj1, comm_rlm1)
+     &   (ncomp_sph_trans, comm_rj, comm_rlm)
       call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_sph_trans, comm_rtm1, comm_rtp1)
+     &   (ncomp_sph_trans, comm_rtm, comm_rtp)
 !
         if (iflag_debug.gt.0)                                           &
      &        write(*,*) 'set_all_vec_spec_to_sph_t'
         call set_all_vec_spec_to_sph_t                                  &
-     &     (ncomp_sph_trans, comm_rj1, rj_fld, n_WS, WS)
+     &     (ncomp_sph_trans, comm_rj, rj_fld, n_WS, WS)
 !
       if (iflag_debug.gt.0) write(*,*) 'sph_backward_transforms',       &
      &  ncomp_sph_trans, num_vector_rtp, num_scalar_rtp, num_tensor_rtp
       call sph_backward_transforms                                      &
      &   (ncomp_sph_trans, num_vector_rtp, nscalar_trans,               &
-     &    sph_param1, sph_rtp1, sph_rtm1, sph_rlm1,                     &
-     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1,                    &
+     &    sph_params, sph_rtp, sph_rtm, sph_rlm,                        &
+     &    comm_rtp, comm_rtm, comm_rlm, comm_rj,                        &
      &    n_WS, n_WR, WS(1), WR(1), dall_rtp, dlcl_pole, dall_pole)
 !
         if (iflag_debug.gt.0)                                           &
      &        write(*,*) 'set_xyz_vect_from_sph_trans'
         call adjust_phi_comp_for_streamfunc                             &
-     &     (nnod_rtp, nidx_rtp, sph_rtp1%radius_1d_rtp_r,               &
-     &      ncomp_sph_trans, dall_rtp(1,1))
+     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
+     &      sph_rtp%radius_1d_rtp_r, ncomp_sph_trans, dall_rtp(1,1))
         call set_xyz_vect_from_sph_trans                                &
-     &     (sph_rtp1, mesh%node, sph_param1%m_folding, ncomp_sph_trans, &
+     &     (sph_rtp, mesh%node, sph_params%m_folding, ncomp_sph_trans,  &
      &      dall_rtp(1,1), dall_pole(1,1), nod_fld)
       end if
 !
@@ -182,14 +200,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_rj_phys_for_zm_streamfunc(ntot_phys_rj, d_rj)
+      subroutine set_rj_phys_for_zm_streamfunc                          &
+     &         (nidx_rj, n_point, ntot_phys_rj, d_rj)
 !
       use m_phys_labels
-      use m_spheric_parameter
       use m_sph_phys_address
 !
-      integer(kind = kint), intent(in) :: ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      integer(kind = kint), intent(in) :: nidx_rj(2)
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, k, j
 !

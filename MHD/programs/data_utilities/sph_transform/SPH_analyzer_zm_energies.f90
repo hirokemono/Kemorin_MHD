@@ -64,15 +64,16 @@
 !
         if(iflag_org_sph_rj_head .eq. 0) then
           if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
-          call set_rj_phys_data_from_IO(nnod_rj, fld_IO, rj_fld1)
+          call set_rj_phys_data_from_IO                                 &
+     &       (sph_rj1%nnod_rj, fld_IO, rj_fld1)
         else
           if (iflag_debug.gt.0) write(*,*)                              &
      &                        'r_interpolate_sph_fld_from_IO'
           call r_interpolate_sph_fld_from_IO(fld_IO, sph_rj1, rj_fld1)
         end if
 !
-!        call set_rj_phys_for_pol_kene                                  &
-!     &     (rj_fld1%num_phys, rj_fld1%ntot_phys, rj_fld1%phys_name,    &
+!        call set_rj_phys_for_pol_kene(sph_rj1%nidx_rj, rj_fld1%n_point,&
+!     &      rj_fld1%num_phys, rj_fld1%ntot_phys, rj_fld1%phys_name,    &
 !     &      rj_fld1%istack_component, rj_fld1%d_fld)
 !
         call set_rj_phys_for_convective_kene
@@ -80,7 +81,8 @@
 !  spherical transform for vector
         call sph_b_trans_all_field                                      &
      &     (femmesh_STR%mesh, rj_fld1, field_STR)
-        call cal_zm_energy_to_pressure(field_STR%n_point,               &
+        call cal_zm_energy_to_pressure                                  &
+     &     (sph_rtp1%nidx_rtp, field_STR%n_point,                       &
      &      field_STR%num_phys, field_STR%ntot_phys,                    &
      &      field_STR%istack_component, field_STR%d_fld)
 !
@@ -125,18 +127,20 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_rj_phys_for_pol_kene(num_phys_rj, ntot_phys_rj,    &
+      subroutine set_rj_phys_for_pol_kene                               &
+     &         (nidx_rj, n_point, num_phys_rj, ntot_phys_rj,            &
      &          phys_name_rj, istack_phys_comp_rj, d_rj)
 !
       use m_phys_labels
-      use m_spheric_parameter
       use m_sph_phys_address
 !
+      integer(kind = kint), intent(in) :: nidx_rj(2)
+      integer(kind = kint), intent(in) :: n_point
       integer(kind = kint), intent(in) ::  num_phys_rj, ntot_phys_rj
       character (len=kchara), intent(in) :: phys_name_rj(num_phys_rj)
       integer (kind=kint), intent(in)                                   &
      &       :: istack_phys_comp_rj(0:num_phys_rj)
-      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, ist_fld, i, k, j
 !
@@ -184,13 +188,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_zm_energy_to_pressure(numnod,                      &
+      subroutine cal_zm_energy_to_pressure(nidx_rtp, numnod,            &
      &          nfield_nod, ncomp_nod, istack_comp, d_nod)
 !
       use m_phys_labels
-      use m_spheric_parameter
       use m_sph_spectr_data
 !
+      integer(kind = kint), intent(in) :: nidx_rtp(3)
       integer (kind = kint), intent(in) :: numnod
       integer (kind = kint), intent(in) :: nfield_nod, ncomp_nod
       integer (kind = kint), intent(in) :: istack_comp(0:nfield_nod)

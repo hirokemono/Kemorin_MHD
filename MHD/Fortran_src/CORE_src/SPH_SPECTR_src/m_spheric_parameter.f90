@@ -54,7 +54,7 @@
 !>      number of data points for @f$ f(r,l,m) @f$
       integer(kind = kint) :: nnod_rlm
 !>      number of data points for @f$ f(r,j) @f$
-      integer(kind = kint) :: nnod_rj
+!      integer(kind = kint) :: nnod_rj
 !
 !>      number of 1d data points for @f$ f(r,\theta,\phi) @f$
       integer(kind = kint) :: nidx_rtp(3)
@@ -63,7 +63,7 @@
 !>      number of 1d data points for @f$ f(r,l,m) @f$
       integer(kind = kint) :: nidx_rlm(2)
 !>      number of 1d data points for @f$ f(r,j) @f$
-      integer(kind = kint) :: nidx_rj(2)
+!      integer(kind = kint) :: nidx_rj(2)
 !
 ! -----------------------------------------------------------------------
 !
