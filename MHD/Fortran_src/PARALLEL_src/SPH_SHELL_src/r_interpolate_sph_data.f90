@@ -7,8 +7,8 @@
 !
 !!      subroutine copy_cmb_icb_radial_point(nlayer_ICB, nlayer_CMB)
 !!      subroutine set_cmb_icb_radial_point                             &
-!!     &         (cmb_r_grp, icb_r_grp, radial_rj_grp1)
-!!        type(group_data), intent(in) :: radial_rj_grp1
+!!     &         (cmb_r_grp, icb_r_grp, radial_rj_grp)
+!!        type(group_data), intent(in) :: radial_rj_grp
 !!      subroutine set_sph_magne_address(rj_fld)
 !!      subroutine input_old_rj_sph_trans(my_rank, l_truncation, sph_rj)
 !!
@@ -63,30 +63,30 @@
 !  -------------------------------------------------------------------
 !
       subroutine set_cmb_icb_radial_point                               &
-     &         (cmb_r_grp, icb_r_grp, radial_rj_grp1)
+     &         (cmb_r_grp, icb_r_grp, radial_rj_grp)
 !
       use t_group_data
 !
       character(len = kchara), intent(in) :: cmb_r_grp, icb_r_grp
-      type(group_data), intent(in) :: radial_rj_grp1
+      type(group_data), intent(in) :: radial_rj_grp
 !
       integer(kind = kint) :: igrp, inum
 !
 !
       kr_outside = 0
-      do igrp = 1, radial_rj_grp1%num_grp
-        if(radial_rj_grp1%grp_name(igrp) .eq. cmb_r_grp) then
-          inum = radial_rj_grp1%istack_grp(igrp-1) + 1
-          kr_outside = radial_rj_grp1%item_grp(inum)
+      do igrp = 1, radial_rj_grp%num_grp
+        if(radial_rj_grp%grp_name(igrp) .eq. cmb_r_grp) then
+          inum = radial_rj_grp%istack_grp(igrp-1) + 1
+          kr_outside = radial_rj_grp%item_grp(inum)
           exit
         end if
       end do
 !
       kr_inside = 0
-      do igrp = 1, radial_rj_grp1%num_grp
-        if(radial_rj_grp1%grp_name(igrp) .eq. icb_r_grp) then
-          inum = radial_rj_grp1%istack_grp(igrp-1) + 1
-          kr_inside = radial_rj_grp1%item_grp(inum)
+      do igrp = 1, radial_rj_grp%num_grp
+        if(radial_rj_grp%grp_name(igrp) .eq. icb_r_grp) then
+          inum = radial_rj_grp%istack_grp(igrp-1) + 1
+          kr_inside = radial_rj_grp%item_grp(inum)
           exit
         end if
       end do

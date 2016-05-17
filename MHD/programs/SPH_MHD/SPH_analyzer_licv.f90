@@ -61,7 +61,7 @@
       if (iflag_debug.gt.0) write(*,*) 'set_radius_rot_reft_dat_4_sph'
       call set_radius_rot_reft_dat_4_sph(depth_high_t, depth_low_t,     &
      &    high_temp, low_temp, angular, sph1%sph_rlm, sph1%sph_rj,      &
-     &    radial_rj_grp1, sph1%sph_params, rj_fld1)
+     &    sph_grps1%radial_rj_grp, sph1%sph_params, rj_fld1)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_2nd_fdm_matrices'
       call const_2nd_fdm_matrices(sph1%sph_params, sph1%sph_rj)
@@ -75,7 +75,7 @@
 !
       if(iflag_debug.gt.0) write(*,*) 's_set_bc_sph_mhd'
       call s_set_bc_sph_mhd                                             &
-     &   (sph1%sph_params, sph1%sph_rj, radial_rj_grp1,                 &
+     &   (sph1%sph_params, sph1%sph_rj, sph_grps1%radial_rj_grp,        &
      &    CTR_nod_grp_name, CTR_sf_grp_name)
       call init_reference_fields(sph1%sph_params, sph1%sph_rj)
 !

@@ -68,7 +68,7 @@
       end if
 !
       call set_cmb_icb_radial_point                                     &
-     &   (cmb_radial_grp, icb_radial_grp, radial_rj_grp1)
+     &   (cmb_radial_grp, icb_radial_grp, sph_grps1%radial_rj_grp)
 !
 !  ---- allocate spectr data
 !

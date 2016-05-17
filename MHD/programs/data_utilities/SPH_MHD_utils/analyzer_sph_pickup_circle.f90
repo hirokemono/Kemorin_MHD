@@ -63,11 +63,7 @@
 !   Load spherical harmonics data
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
-      call load_para_sph_mesh                                           &
-     &   (sph1%sph_params, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,            &
-     &    comms_sph1%comm_rtp, comms_sph1%comm_rtm, comms_sph1%comm_rlm, comms_sph1%comm_rj, bc_rtp_grp1,       &
-     &    radial_rtp_grp1, theta_rtp_grp1, zonal_rtp_grp,               &
-     &    radial_rj_grp1, sphere_rj_grp1)
+      call load_para_sph_mesh(sph1, comms_sph1, sph_grps1)
 !
       call end_eleps_time(4)
 !

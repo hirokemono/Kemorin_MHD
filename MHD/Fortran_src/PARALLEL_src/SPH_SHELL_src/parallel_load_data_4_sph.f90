@@ -7,36 +7,16 @@
 !!
 !!@verbatim
 !!      subroutine load_para_SPH_and_FEM_mesh                           &
-!!     &         (sph_param, sph_rtp, sph_rtm, sph_rlm, sph_rj,         &
-!!     &          comm_rtp, comm_rtm, comm_rlm, comm_rj, bc_rtp_grp,    &
-!!     &          radial_rtp_grp, theta_rtp_grp, zonal_rtp_grp,         &
-!!     &          radial_rj_grp, sphere_rj_grp, mesh, group, ele_mesh)
-!!      subroutine load_para_sph_mesh                                   &
-!!     &         (sph_param, sph_rtp, sph_rtm, sph_rlm, sph_rj,         &
-!!     &          comm_rtp, comm_rtm, comm_rlm, comm_rj, bc_rtp_grp,    &
-!!     &          radial_rtp_grp, theta_rtp_grp, zonal_rtp_grp,         &
-!!     &          radial_rj_grp, sphere_rj_grp)
-!!        type(sph_shell_parameters), intent(inout) :: sph_param
-!!        type(sph_rtp_grid), intent(inout) :: sph_rtp
-!!        type(sph_rtm_grid), intent(inout) :: sph_rtm
-!!        type(sph_rlm_grid), intent(inout) :: sph_rlm
-!!        type(sph_rj_grid), intent(inout) :: sph_rj
-!!        type(sph_comm_tbl), intent(inout) :: comm_rtp
-!!        type(sph_comm_tbl), intent(inout) :: comm_rtm
-!!        type(sph_comm_tbl), intent(inout) :: comm_rlm
-!!        type(sph_comm_tbl), intent(inout) :: comm_rj
-!!        type(group_data), intent(inout) :: bc_rtp_grp
-!!        type(group_data), intent(inout) :: radial_rtp_grp
-!!        type(group_data), intent(inout) :: theta_rtp_grp
-!!        type(group_data), intent(inout) :: zonal_rtp_grp
-!!        type(group_data), intent(inout) :: radial_rj_grp
-!!        type(group_data), intent(inout) :: sphere_rj_grp
+!!     &         (sph, comms_sph, sph_grps, mesh, group, ele_mesh)
+!!      subroutine load_para_sph_mesh(sph, bc_rtp_grp, sph_grps)
+!!        type(sph_grids), intent(inout) :: sph
+!!        type(sph_comm_tables), intent(inout) :: comms_sph
+!!        type(sph_group_data), intent(inout) ::  sph_grps
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(element_geometry), intent(inout) :: ele_mesh
 !!
-!!      subroutine load_para_rj_mesh                                    &
-!!     &         (sph_param, sph_rtp, sph_rtm, sph_rlm, sph_rj, comm_rj,&
+!!      subroutine load_para_rj_mesh(sph_param, sph_rj, comm_rj,        &
 !!     &          radial_rj_grp, sphere_rj_grp)
 !!         type(sph_shell_parameters), intent(inout) :: sph_param
 !!         type(sph_rtp_grid), intent(inout) :: sph_rtp
@@ -55,10 +35,11 @@
 !
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
-      use t_group_data
+      use t_spheric_mesh
 !
       implicit none
 !
+      private :: set_reverse_tables_4_SPH
       private :: count_interval_4_each_dir, self_comm_flag
       private :: set_fem_center_mode_4_SPH, load_FEM_mesh_4_SPH
 !
@@ -69,44 +50,24 @@
 ! -----------------------------------------------------------------------
 !
       subroutine load_para_SPH_and_FEM_mesh                             &
-     &         (sph_param, sph_rtp, sph_rtm, sph_rlm, sph_rj,           &
-     &          comm_rtp, comm_rtm, comm_rlm, comm_rj, bc_rtp_grp,      &
-     &          radial_rtp_grp, theta_rtp_grp, zonal_rtp_grp,           &
-     &          radial_rj_grp, sphere_rj_grp, mesh, group, ele_mesh)
+     &         (sph, comms_sph, sph_grps, mesh, group, ele_mesh)
 !
       use t_mesh_data
 !
-      type(sph_shell_parameters), intent(inout) :: sph_param
-      type(sph_rtp_grid), intent(inout) :: sph_rtp
-      type(sph_rtm_grid), intent(inout) :: sph_rtm
-      type(sph_rlm_grid), intent(inout) :: sph_rlm
-      type(sph_rj_grid), intent(inout) :: sph_rj
-!
-      type(sph_comm_tbl), intent(inout) :: comm_rtp
-      type(sph_comm_tbl), intent(inout) :: comm_rtm
-      type(sph_comm_tbl), intent(inout) :: comm_rlm
-      type(sph_comm_tbl), intent(inout) :: comm_rj
-!
-      type(group_data), intent(inout) :: bc_rtp_grp
-      type(group_data), intent(inout) :: radial_rtp_grp
-      type(group_data), intent(inout) :: theta_rtp_grp
-      type(group_data), intent(inout) :: zonal_rtp_grp
-!
-      type(group_data), intent(inout) :: radial_rj_grp
-      type(group_data), intent(inout) :: sphere_rj_grp
+      type(sph_grids), intent(inout) :: sph
+      type(sph_comm_tables), intent(inout) :: comms_sph
+      type(sph_group_data), intent(inout) ::  sph_grps
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
 !
 !
-      call load_para_sph_mesh                                           &
-     &   (sph_param, sph_rtp, sph_rtm, sph_rlm, sph_rj,                 &
-     &    comm_rtp, comm_rtm, comm_rlm, comm_rj, bc_rtp_grp,            &
-     &    radial_rtp_grp, theta_rtp_grp, zonal_rtp_grp,                 &
-     &    radial_rj_grp, sphere_rj_grp)
-      call load_FEM_mesh_4_SPH(sph_param, sph_rtp, sph_rj,              &
-     &    radial_rtp_grp, radial_rj_grp, mesh, group, ele_mesh)
+      call load_para_sph_mesh(sph, comms_sph, sph_grps)
+      call load_FEM_mesh_4_SPH                                          &
+     &   (sph%sph_params, sph%sph_rtp, sph%sph_rj,                      &
+     &    sph_grps%radial_rtp_grp, sph_grps%radial_rj_grp,              &
+     &    mesh, group, ele_mesh)
 !
       end subroutine load_para_SPH_and_FEM_mesh
 !
@@ -183,59 +144,47 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine load_para_sph_mesh                                     &
-     &         (sph_param, sph_rtp, sph_rtm, sph_rlm, sph_rj,           &
-     &          comm_rtp, comm_rtm, comm_rlm, comm_rj, bc_rtp_grp,      &
-     &          radial_rtp_grp, theta_rtp_grp, zonal_rtp_grp,           &
-     &          radial_rj_grp, sphere_rj_grp)
+      subroutine load_para_sph_mesh(sph, comms_sph, sph_grps)
 !
       use calypso_mpi
       use m_machine_parameter
 !
       use load_data_for_sph_IO
 !
-      type(sph_shell_parameters), intent(inout) :: sph_param
-      type(sph_rtp_grid), intent(inout) :: sph_rtp
-      type(sph_rtm_grid), intent(inout) :: sph_rtm
-      type(sph_rlm_grid), intent(inout) :: sph_rlm
-      type(sph_rj_grid), intent(inout) :: sph_rj
+      type(sph_grids), intent(inout) :: sph
+      type(sph_comm_tables), intent(inout) :: comms_sph
+      type(sph_group_data), intent(inout) ::  sph_grps
 !
-      type(sph_comm_tbl), intent(inout) :: comm_rtp
-      type(sph_comm_tbl), intent(inout) :: comm_rtm
-      type(sph_comm_tbl), intent(inout) :: comm_rlm
-      type(sph_comm_tbl), intent(inout) :: comm_rj
-!
-      type(group_data), intent(inout) :: bc_rtp_grp
-      type(group_data), intent(inout) :: radial_rtp_grp
-      type(group_data), intent(inout) :: theta_rtp_grp
-      type(group_data), intent(inout) :: zonal_rtp_grp
-!
-      type(group_data), intent(inout) :: radial_rj_grp
-      type(group_data), intent(inout) :: sphere_rj_grp
+      integer(kind = kint) :: ierr
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'input_geom_rtp_sph_trans'
-      call input_geom_rtp_sph_trans(my_rank, sph_param%l_truncation,    &
-     &    sph_rtp, comm_rtp, bc_rtp_grp,                                &
-     &    radial_rtp_grp, theta_rtp_grp, zonal_rtp_grp)
+      call input_geom_rtp_sph_trans(my_rank,                            &
+     &    sph%sph_params%l_truncation, sph%sph_rtp, comms_sph%comm_rtp, &
+     &    sph_grps%bc_rtp_grp, sph_grps%radial_rtp_grp,                 &
+     &    sph_grps%theta_rtp_grp, sph_grps%zonal_rtp_grp, ierr)
 !
       if (iflag_debug.gt.0) write(*,*) 'input_modes_rj_sph_trans'
-      call input_modes_rj_sph_trans(my_rank, sph_param%l_truncation,    &
-     &    sph_rj, comm_rj, radial_rj_grp, sphere_rj_grp)
+      call input_modes_rj_sph_trans(my_rank,                            &
+     &    sph%sph_params%l_truncation, sph%sph_rj, comms_sph%comm_rj,   &
+     &    sph_grps%radial_rj_grp, sph_grps%sphere_rj_grp, ierr)
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'input_geom_rtm_sph_trans'
       call input_geom_rtm_sph_trans                                     &
-     &   (my_rank, sph_param%l_truncation, sph_rtm, comm_rtm)
+     &   (my_rank, sph%sph_params%l_truncation,                         &
+     &    sph%sph_rtm, comms_sph%comm_rtm, ierr)
 !
       if (iflag_debug.gt.0) write(*,*) 'input_modes_rlm_sph_trans'
       call input_modes_rlm_sph_trans                                    &
-     &   (my_rank, sph_param%l_truncation, sph_rlm, comm_rlm)
+     &   (my_rank, sph%sph_params%l_truncation,                         &
+     &    sph%sph_rlm, comms_sph%comm_rlm, ierr)
 !
       if (iflag_debug.gt.0) write(*,*) 'set_reverse_tables_4_SPH'
-      call set_reverse_tables_4_SPH                                     &
-     &   (sph_param, sph_rtp, sph_rtm, sph_rlm, sph_rj,                 &
-     &    comm_rtp, comm_rtm, comm_rlm, comm_rj)
+      call set_reverse_tables_4_SPH(sph%sph_params,                     &
+     &    sph%sph_rtp, sph%sph_rtm, sph%sph_rlm, sph%sph_rj,            &
+     &    comms_sph%comm_rtp, comms_sph%comm_rtm,                       &
+     &    comms_sph%comm_rlm, comms_sph%comm_rj)
 !
       end subroutine load_para_sph_mesh
 !
@@ -264,23 +213,6 @@
       type(sph_comm_tbl), intent(inout) :: comm_rlm
       type(sph_comm_tbl), intent(inout) :: comm_rj
 !
-!
-      integer(kind = kint) :: ierr
-!
-!
-      if (iflag_debug.gt.0) write(*,*) 's_count_num_sph_smp'
-      call s_count_num_sph_smp                                          &
-     &   (sph_rtp, sph_rtm, sph_rlm, sph_rj, ierr)
-!      if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message_Rsmp)
-!
-      call set_reverse_import_table(sph_rtp%nnod_rtp,                   &
-     &    comm_rtp%ntot_item_sr, comm_rtp%item_sr, comm_rtp%irev_sr)
-      call set_reverse_import_table(sph_rtm%nnod_rtm,                   &
-     &    comm_rtm%ntot_item_sr, comm_rtm%item_sr, comm_rtm%irev_sr)
-      call set_reverse_import_table(sph_rlm%nnod_rlm,                   &
-     &    comm_rlm%ntot_item_sr, comm_rlm%item_sr, comm_rlm%irev_sr)
-      call set_reverse_import_table(sph_rj%nnod_rj,                     &
-     &    comm_rj%ntot_item_sr,  comm_rj%item_sr,  comm_rj%irev_sr)
 !
       comm_rtp%iflag_self                                               &
      &    = self_comm_flag(comm_rtp%nneib_domain, comm_rtp%id_domain)
@@ -372,8 +304,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine load_para_rj_mesh                                      &
-     &         (sph_param, sph_rtp, sph_rtm, sph_rlm, sph_rj, comm_rj,  &
+      subroutine load_para_rj_mesh(sph_param, sph_rj, comm_rj,          &
      &          radial_rj_grp, sphere_rj_grp)
 !
       use calypso_mpi
@@ -386,9 +317,6 @@
       use set_from_recv_buf_rev
 !
       type(sph_shell_parameters), intent(inout) :: sph_param
-      type(sph_rtp_grid), intent(inout) :: sph_rtp
-      type(sph_rtm_grid), intent(inout) :: sph_rtm
-      type(sph_rlm_grid), intent(inout) :: sph_rlm
       type(sph_rj_grid), intent(inout) :: sph_rj
       type(sph_comm_tbl), intent(inout) :: comm_rj
       type(group_data), intent(inout) :: radial_rj_grp
@@ -399,16 +327,9 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'input_modes_rj_sph_trans'
       call input_modes_rj_sph_trans(my_rank, sph_param%l_truncation,    &
-     &    sph_rj, comm_rj, radial_rj_grp, sphere_rj_grp)
+     &    sph_rj, comm_rj, radial_rj_grp, sphere_rj_grp, ierr)
 !
-      if (iflag_debug.gt.0) write(*,*) 's_count_num_sph_smp'
-      call s_count_num_sph_smp                                          &
-     &   (sph_rtp, sph_rtm, sph_rlm, sph_rj, ierr)
 !      if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message_Rsmp)
-!
-      call set_reverse_import_table                                     &
-     &   (sph_rj%nnod_rj, comm_rj%ntot_item_sr,                         &
-     &    comm_rj%item_sr, comm_rj%irev_sr)
       comm_rj%iflag_self                                                &
      &    =  self_comm_flag(comm_rj%nneib_domain,  comm_rj%id_domain)
 !

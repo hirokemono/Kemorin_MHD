@@ -56,8 +56,8 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'load_para_rj_mesh'
       call load_para_rj_mesh                                            &
-     &   (sph1%sph_params, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,        &
-     &    comms_sph1%comm_rj, radial_rj_grp1, sphere_rj_grp1)
+     &   (sph1%sph_params, sph1%sph_rj, comms_sph1%comm_rj,             &
+     &    sph_grps1%radial_rj_grp, sph_grps1%sphere_rj_grp)
 !
 !  ------  initialize spectr data
 !

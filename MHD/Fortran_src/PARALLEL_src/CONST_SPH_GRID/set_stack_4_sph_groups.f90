@@ -9,7 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine set_stack_rtp_radial_grp                             &
-!!     &         (sph_param, sph_rtp, radial_rtp_grp1)
+!!     &         (sph_param, sph_rtp, radial_rtp_grp)
 !!      subroutine set_stack_rj_radial_grp                              &
 !!     &         (sph_param, sph_rj, radial_rj_grp)
 !!      subroutine set_stack_rj_spectr_grp(sph_rj, sphere_rj_grp)

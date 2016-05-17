@@ -59,10 +59,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_4_SPH_make_init'
       call input_control_4_SPH_make_init                                &
-     &   (sph1%sph_params, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,        &
-     &    comms_sph1%comm_rtp, comms_sph1%comm_rtm, comms_sph1%comm_rlm, comms_sph1%comm_rj, bc_rtp_grp1,       &
-     &    radial_rtp_grp1, theta_rtp_grp1, zonal_rtp_grp,               &
-     &    radial_rj_grp1, sphere_rj_grp1, rj_fld1)
+     &   (sph1, comms_sph1, sph_grps1, rj_fld1)
       call end_eleps_time(4)
 !
 !        Initialize spherical transform dynamo
@@ -109,11 +106,11 @@
       if (iflag_debug.gt.0) write(*,*) 'set_radius_rot_reft_dat_4_sph'
       call set_radius_rot_reft_dat_4_sph(depth_high_t, depth_low_t,     &
      &    high_temp, low_temp, angular, sph1%sph_rlm, sph1%sph_rj,      &
-     &    radial_rj_grp1, sph1%sph_params, rj_fld1)
+     &    sph_grps1%radial_rj_grp, sph1%sph_params, rj_fld1)
 !
       if(iflag_debug.gt.0) write(*,*) 's_set_bc_sph_mhd'
       call s_set_bc_sph_mhd                                             &
-     &   (sph1%sph_params, sph1%sph_rj, radial_rj_grp1,                 &
+     &   (sph1%sph_params, sph1%sph_rj, sph_grps1%radial_rj_grp,        &
      &    CTR_nod_grp_name, CTR_sf_grp_name)
       call init_reference_fields(sph1%sph_params, sph1%sph_rj)
 !

@@ -80,14 +80,17 @@
 !
       subroutine input_geom_rtp_sph_trans                               &
      &         (my_rank, l_truncation, sph_rtp, comm_rtp, bc_rtp_grp,   &
-     &          radial_rtp_grp, theta_rtp_grp, zonal_rtp_grp)
+     &          radial_rtp_grp, theta_rtp_grp, zonal_rtp_grp, ierr)
 !
       use copy_sph_comm_table_4_IO
       use copy_sph_node_4_IO
       use set_group_types_4_IO
+      use count_num_sph_smp
+      use set_from_recv_buf_rev
 !
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(inout) :: l_truncation
+      integer(kind = kint), intent(inout) :: ierr
       type(sph_rtp_grid), intent(inout) :: sph_rtp
       type(sph_comm_tbl), intent(inout) :: comm_rtp
 !
@@ -112,19 +115,26 @@
       call deallocate_grp_type(theta_rtp_grp_IO)
       call deallocate_grp_type(zonal_rtp_grp_IO)
 !
+      call count_num_rtp_smp(sph_rtp, ierr)
+      call set_reverse_import_table(sph_rtp%nnod_rtp,                   &
+     &    comm_rtp%ntot_item_sr, comm_rtp%item_sr, comm_rtp%irev_sr)
+!
       end subroutine input_geom_rtp_sph_trans
 !
 ! -----------------------------------------------------------------------
 !
       subroutine input_modes_rj_sph_trans(my_rank, l_truncation,        &
-     &          sph_rj, comm_rj, radial_rj_grp, sphere_rj_grp)
+     &          sph_rj, comm_rj, radial_rj_grp, sphere_rj_grp, ierr)
 !
       use copy_sph_comm_table_4_IO
       use copy_sph_node_4_IO
       use set_group_types_4_IO
+      use count_num_sph_smp
+      use set_from_recv_buf_rev
 !
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(inout) :: l_truncation
+      integer(kind = kint), intent(inout) :: ierr
       type(sph_rj_grid),  intent(inout) :: sph_rj
       type(sph_comm_tbl), intent(inout) :: comm_rj
       type(group_data), intent(inout) :: radial_rj_grp
@@ -142,18 +152,25 @@
       call deallocate_grp_type(radial_rj_grp_IO)
       call deallocate_grp_type(sphere_rj_grp_IO)
 !
+      call count_num_rj_smp(sph_rj, ierr)
+      call set_reverse_import_table(sph_rj%nnod_rj,                     &
+     &    comm_rj%ntot_item_sr,  comm_rj%item_sr,  comm_rj%irev_sr)
+!
       end subroutine input_modes_rj_sph_trans
 !
 ! -----------------------------------------------------------------------
 !
       subroutine input_geom_rtm_sph_trans                               &
-     &         (my_rank, l_truncation, sph_rtm, comm_rtm)
+     &         (my_rank, l_truncation, sph_rtm, comm_rtm, ierr)
 !
       use copy_sph_comm_table_4_IO
       use copy_sph_node_4_IO
+      use count_num_sph_smp
+      use set_from_recv_buf_rev
 !
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(inout) :: l_truncation
+      integer(kind = kint), intent(inout) :: ierr
       type(sph_rtm_grid), intent(inout) :: sph_rtm
       type(sph_comm_tbl), intent(inout) :: comm_rtm
 !
@@ -163,18 +180,25 @@
       call copy_sph_node_4_rtm_from_IO(l_truncation, sph_rtm)
       call copy_comm_sph_from_IO(sph_rtm%nnod_rtm, comm_rtm)
 !
+      call count_num_rtm_smp(sph_rtm, ierr)
+      call set_reverse_import_table(sph_rtm%nnod_rtm,                   &
+     &    comm_rtm%ntot_item_sr, comm_rtm%item_sr, comm_rtm%irev_sr)
+!
       end subroutine input_geom_rtm_sph_trans
 !
 ! -----------------------------------------------------------------------
 !
       subroutine input_modes_rlm_sph_trans                              &
-     &         (my_rank, l_truncation, sph_rlm, comm_rlm)
+     &         (my_rank, l_truncation, sph_rlm, comm_rlm, ierr)
 !
       use copy_sph_comm_table_4_IO
       use copy_sph_node_4_IO
+      use count_num_sph_smp
+      use set_from_recv_buf_rev
 !
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(inout) :: l_truncation
+      integer(kind = kint), intent(inout) :: ierr
       type(sph_rlm_grid), intent(inout) :: sph_rlm
       type(sph_comm_tbl), intent(inout) :: comm_rlm
 !
@@ -183,6 +207,10 @@
 !
       call copy_sph_node_4_rlm_from_IO(l_truncation, sph_rlm)
       call copy_comm_sph_from_IO(sph_rlm%nnod_rlm, comm_rlm)
+!
+      call count_num_rlm_smp(sph_rlm, ierr)
+      call set_reverse_import_table(sph_rlm%nnod_rlm,                   &
+     &    comm_rlm%ntot_item_sr, comm_rlm%item_sr, comm_rlm%irev_sr)
 !
       end subroutine input_modes_rlm_sph_trans
 !

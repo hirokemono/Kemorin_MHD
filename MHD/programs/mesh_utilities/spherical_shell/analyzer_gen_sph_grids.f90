@@ -123,7 +123,8 @@
       call start_eleps_time(4)
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_fem_mesh_for_sph'
       call para_gen_fem_mesh_for_sph(ndomain_sph,                       &
-     &    sph1%sph_params, sph1%sph_rj, sph1%sph_rtp, radial_rj_grp1)
+     &    sph1%sph_params, sph1%sph_rj, sph1%sph_rtp,                   &
+     &    sph_grps1%radial_rj_grp)
       call end_eleps_time(4)
 !
       call end_eleps_time(1)

@@ -68,7 +68,8 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'gen_fem_mesh_for_sph'
       call gen_fem_mesh_for_sph(ndomain_sph,                            &
-     &    sph1%sph_params, sph1%sph_rj, sph1%sph_rtp, radial_rj_grp1)
+     &    sph1%sph_params, sph1%sph_rj, sph1%sph_rtp,                   &
+     &    sph_grps1%radial_rj_grp)
 !
       if(sph1%sph_params%iflag_shell_mode .lt. iflag_MESH_same) then
         stop "*** spherical shell mesh done"
