@@ -139,15 +139,16 @@
       integer(kind = kint), intent(in) :: i_step
 !
 !
-      call read_alloc_sph_rst_4_snap(i_step, sph_rj1, rj_fld1)
+      call read_alloc_sph_rst_4_snap(i_step, sph1%sph_rj, rj_fld1)
 !
       if (iflag_debug.eq.1) write(*,*)' sync_temp_by_per_temp_sph'
-      call sync_temp_by_per_temp_sph(reftemp_rj, sph_rj1, rj_fld1)
+      call sync_temp_by_per_temp_sph                                    &
+     &   (reftemp_rj, sph1%sph_rj, rj_fld1)
 !
 !* obtain linear terms for starting
 !*
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
-      call set_sph_field_to_start(sph_rj1, rj_fld1)
+      call set_sph_field_to_start(sph1%sph_rj, rj_fld1)
 !
 !*  ----------------Modify spectr data ... ----------
 !*
@@ -157,7 +158,7 @@
 !*
       call start_eleps_time(8)
       call nonlinear                                                    &
-     &   (reftemp_rj, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,            &
+     &   (reftemp_rj, sph_rtp1, sph_rtm1, sph_rlm1, sph1%sph_rj,            &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, rj_fld1)
       call end_eleps_time(8)
 !
@@ -166,7 +167,7 @@
       call start_eleps_time(9)
 !
       if(iflag_debug.gt.0) write(*,*) 'trans_per_temp_to_temp_sph'
-      call trans_per_temp_to_temp_sph(reftemp_rj, sph_rj1, rj_fld1)
+      call trans_per_temp_to_temp_sph(reftemp_rj, sph1%sph_rj, rj_fld1)
 !*
       if(iflag_debug.gt.0) write(*,*) 'lead_special_fields_4_sph_mhd'
       call lead_special_fields_4_sph_mhd
@@ -177,13 +178,13 @@
       call start_eleps_time(4)
       call start_eleps_time(11)
       if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
-      call output_rms_sph_mhd_control(sph_param1, sph_rj1, rj_fld1)
+      call output_rms_sph_mhd_control(sph_param1, sph1%sph_rj, rj_fld1)
       call end_eleps_time(11)
       call end_eleps_time(4)
 !
 !*  -----------  Output spectr data --------------
 !*
-      call output_spectr_4_snap(i_step, sph_rj1, rj_fld1)
+      call output_spectr_4_snap(i_step, sph1%sph_rj, rj_fld1)
 !
       end subroutine SPH_analyze_special_snap
 !
@@ -210,23 +211,23 @@
       end do
 !
 !      call pick_degree_sph_spectr(ltr_half, ipick_degree,              &
-!     &    ithree, ipol%i_velo, sph_rj1, rj_fld1)
+!     &    ithree, ipol%i_velo, sph1%sph_rj, rj_fld1)
 !      call pick_degree_sph_spectr(ltr_half, ipick_degree,              &
 !     &    ithree, ipol%i_magne)
-!      deallocate(ipick_degree, sph_rj1, rj_fld1)
+!      deallocate(ipick_degree, sph1%sph_rj, rj_fld1)
 
       if (my_rank.eq.0) write(*,*) 'delete zonam mean velocity'
       call take_zonal_mean_rj_field                                     &
-     &   (ithree, ipol%i_velo, sph_rj1, rj_fld1)
+     &   (ithree, ipol%i_velo, sph1%sph_rj, rj_fld1)
       call take_zonal_mean_rj_field                                     &
-     &   (ithree, ipol%i_vort, sph_rj1, rj_fld1)
+     &   (ithree, ipol%i_vort, sph1%sph_rj, rj_fld1)
       if (my_rank.eq.0) write(*,*) 'delete zonam mean toroidal'
       call delete_zonal_mean_rj_field                                   &
-     &   (ione, ipol%i_velo, sph_rj1, rj_fld1)
+     &   (ione, ipol%i_velo, sph1%sph_rj, rj_fld1)
       call delete_zonal_mean_rj_field                                   &
-     &   (ione, idpdr%i_velo, sph_rj1, rj_fld1)
+     &   (ione, idpdr%i_velo, sph1%sph_rj, rj_fld1)
       call delete_zonal_mean_rj_field                                   &
-     &   (ione, itor%i_vort, sph_rj1, rj_fld1)
+     &   (ione, itor%i_vort, sph1%sph_rj, rj_fld1)
 !
       end subroutine set_special_rj_fields
 !
@@ -247,7 +248,7 @@
 !
 !
       call s_lead_fields_4_sph_mhd                                      &
-     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,            &
+     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph1%sph_rj,            &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, rj_fld1)
 !
       call sph_back_trans_4_MHD(sph_rtp1, sph_rtm1, sph_rlm1,           &
@@ -259,7 +260,7 @@
 ! ----  Take zonal mean
 !
       if (my_rank.eq.0) write(*,*) 'zonal_mean_all_sph_spectr'
-      call zonal_mean_all_sph_spectr(sph_rj1, rj_fld1)
+      call zonal_mean_all_sph_spectr(sph1%sph_rj, rj_fld1)
 !
       end subroutine lead_special_fields_4_sph_mhd
 !

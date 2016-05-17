@@ -57,8 +57,8 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'load_para_rj_mesh'
       call load_para_rj_mesh                                            &
-     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1, comm_rj1,  &
-     &    radial_rj_grp1, sphere_rj_grp1)
+     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph1%sph_rj,        &
+     &    comm_rj1, radial_rj_grp1, sphere_rj_grp1)
 !
 !  ------  initialize spectr data
 !
@@ -73,7 +73,7 @@
       call copy_time_from_restart
       call copy_rj_phys_name_from_IO(sph_fld_IN, rj_fld1)
 !
-      call set_sph_sprctr_data_address(sph_rj1, rj_fld1)
+      call set_sph_sprctr_data_address(sph1%sph_rj, rj_fld1)
 !
 !  -------------------------------
 !
@@ -113,7 +113,7 @@
 !
         if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
         call set_rj_phys_data_from_IO                                   &
-     &     (sph_rj1%nnod_rj, sph_fld_IN, rj_fld1)
+     &     (sph1%sph_rj%nnod_rj, sph_fld_IN, rj_fld1)
 !
         call sum_sph_spectr_data                                        &
      &     (rj_fld1%n_point, rj_fld1%ntot_phys, rj_fld1%d_fld)
@@ -124,10 +124,10 @@
      &    rj_fld1%n_point, rj_fld1%ntot_phys, rj_fld1%d_fld)
 !
       call copy_rj_all_phys_name_to_IO                                  &
-     &   (sph_rj1%nnod_rj, rj_fld1, sph_fld_OUT)
+     &   (sph1%sph_rj%nnod_rj, rj_fld1, sph_fld_OUT)
       call alloc_phys_data_IO(sph_fld_OUT)
       call copy_rj_all_phys_data_to_IO                                  &
-     &   (sph_rj1%nnod_rj, rj_fld1, sph_fld_OUT)
+     &   (sph1%sph_rj%nnod_rj, rj_fld1, sph_fld_OUT)
 !
       call alloc_merged_field_stack(nprocs, sph_fld_OUT)
       call count_number_of_node_stack                                   &
@@ -158,7 +158,7 @@
 !
         if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
         call set_rj_phys_data_from_IO                                   &
-     &     (sph_rj1%nnod_rj, sph_fld_IN, rj_fld1)
+     &     (sph1%sph_rj%nnod_rj, sph_fld_IN, rj_fld1)
 !
         call sum_deviation_sph_spectr                                   &
      &     (rj_fld1%n_point, rj_fld1%ntot_phys, rj_fld1%d_fld)
@@ -172,10 +172,10 @@
      &    rj_fld1%n_point, rj_fld1%ntot_phys, rj_fld1%d_fld)
 !
       call copy_rj_all_phys_name_to_IO                                  &
-     &   (sph_rj1%nnod_rj, rj_fld1, sph_fld_OUT)
+     &   (sph1%sph_rj%nnod_rj, rj_fld1, sph_fld_OUT)
       call alloc_phys_data_IO(sph_fld_OUT)
       call copy_rj_all_phys_data_to_IO                                  &
-     &   (sph_rj1%nnod_rj, rj_fld1, sph_fld_OUT)
+     &   (sph1%sph_rj%nnod_rj, rj_fld1, sph_fld_OUT)
 !
       call alloc_merged_field_stack(nprocs, sph_fld_OUT)
       call count_number_of_node_stack                                   &

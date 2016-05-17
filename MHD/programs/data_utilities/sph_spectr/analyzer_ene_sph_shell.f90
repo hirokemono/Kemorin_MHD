@@ -61,7 +61,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'load_para_sph_mesh'
       call load_para_sph_mesh                                           &
-     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,            &
+     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph1%sph_rj,        &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, bc_rtp_grp1,       &
      &    radial_rtp_grp1, theta_rtp_grp1, zonal_rtp_grp,               &
      &    radial_rj_grp1, sphere_rj_grp1)
@@ -76,10 +76,10 @@
 !
 !  -------------------------------
 !
-      call set_sph_sprctr_data_address(sph_rj1, rj_fld1)
+      call set_sph_sprctr_data_address(sph1%sph_rj, rj_fld1)
 !
       call init_rms_4_sph_spectr                                        &
-     &    (sph_param1%l_truncation, sph_rj1, rj_fld1)
+     &    (sph_param1%l_truncation, sph1%sph_rj, rj_fld1)
 !
       end subroutine initialize_ene_sph_shell
 !
@@ -112,18 +112,18 @@
      &     (nprocs, my_rank, i_step, sph_fld_IO)
 !
         call set_rj_phys_data_from_IO                                   &
-     &     (sph_rj1%nnod_rj, sph_fld_IO, rj_fld1)
+     &     (sph1%sph_rj%nnod_rj, sph_fld_IO, rj_fld1)
 !
 !  evaluate energies
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_mean_squre_in_shell'
-        call cal_mean_squre_in_shell(ione, sph_rj1%nidx_rj(1),          &
-     &      sph_param1%l_truncation, sph_rj1, rj_fld1)
+        call cal_mean_squre_in_shell(ione, sph1%sph_rj%nidx_rj(1),      &
+     &      sph_param1%l_truncation, sph1%sph_rj, rj_fld1)
 !
         call write_sph_vol_ave_file                                     &
      &     (i_step, time, sph_param1%l_truncation,                      &
      &      sph_param1%nlayer_ICB, sph_param1%nlayer_CMB,               &
-     &      sph_rj1%idx_rj_degree_zero)
+     &      sph1%sph_rj%idx_rj_degree_zero)
         call write_sph_vol_ms_file                                      &
      &     (my_rank, i_step, time, sph_param1%l_truncation,             &
      &      sph_param1%nlayer_ICB, sph_param1%nlayer_CMB)

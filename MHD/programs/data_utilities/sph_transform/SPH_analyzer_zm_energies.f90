@@ -66,14 +66,16 @@
         if(iflag_org_sph_rj_head .eq. 0) then
           if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
           call set_rj_phys_data_from_IO                                 &
-     &       (sph_rj1%nnod_rj, fld_IO, rj_fld1)
+     &       (sph1%sph_rj%nnod_rj, fld_IO, rj_fld1)
         else
           if (iflag_debug.gt.0) write(*,*)                              &
      &                        'r_interpolate_sph_fld_from_IO'
-          call r_interpolate_sph_fld_from_IO(fld_IO, sph_rj1, rj_fld1)
+          call r_interpolate_sph_fld_from_IO                            &
+     &       (fld_IO, sph1%sph_rj, rj_fld1)
         end if
 !
-!        call set_rj_phys_for_pol_kene(sph_rj1%nidx_rj, rj_fld1%n_point,&
+!        call set_rj_phys_for_pol_kene                                  &
+!     &     (sph1%sph_rj%nidx_rj, rj_fld1%n_point,                      &
 !     &      rj_fld1%num_phys, rj_fld1%ntot_phys, rj_fld1%phys_name,    &
 !     &      rj_fld1%istack_component, rj_fld1%d_fld)
 !
@@ -81,7 +83,7 @@
 !
 !  spherical transform for vector
         call sph_b_trans_all_field                                      &
-     &     (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,          &
+     &     (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph1%sph_rj,      &
      &      comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1,                  &
      &      femmesh_STR%mesh, rj_fld1, field_STR)
         call cal_zm_energy_to_pressure                                  &
@@ -183,7 +185,7 @@
         if     (rj_fld1%phys_name(i) .eq. fhd_velo) then
           ist_fld = rj_fld1%istack_component(i-1)+1
           call delete_zonal_mean_rj_field                               &
-     &       (n_vector, ist_fld, sph_rj1, rj_fld1)
+     &       (n_vector, ist_fld, sph1%sph_rj, rj_fld1)
         end if
       end do
 !

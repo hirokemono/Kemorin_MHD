@@ -40,7 +40,7 @@
       call read_sph_spec_4_monitor(id_pick, i_step, time, ierr)
       icou = 0
 !
-      call set_radius_for_fdm(sph_param1, sph_rj1)
+      call set_radius_for_fdm(sph_param1, sph1%sph_rj)
       call alloc_neutral_point
 !
       do
@@ -48,7 +48,7 @@
      &     .and. i_step.ge.istep_start) then
 !
           call set_radial_grad_scalars(i_step, time,                    &
-     &        sph_rj1%nidx_rj(1), sph_rj1%radius_1d_rj_r,               &
+     &        sph1%sph_rj%nidx_rj(1), sph1%sph_rj%radius_1d_rj_r,       &
      &        buoyancy_ratio)
           icou = icou + 1
           write(*,*) 'step ', i_step,                                   &

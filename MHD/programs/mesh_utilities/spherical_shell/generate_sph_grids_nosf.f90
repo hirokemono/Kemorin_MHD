@@ -29,11 +29,11 @@
 !
       call read_control_4_gen_shell_grids
       call s_set_control_4_gen_shell_grids                              &
-     &   (sph_param1, sph_rtp1, sph_rj1)
+     &   (sph_param1, sph_rtp1, sph1%sph_rj)
 !
       call set_global_sph_resolution                                    &
      &   (sph_param1%l_truncation, sph_param1%m_folding,                &
-     &    sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1)
+     &    sph_rtp1, sph_rtm1, sph_rlm1, sph1%sph_rj)
 !
       call check_global_spheric_parameter(sph_param1, sph_rtp1)
       call output_set_radial_grid(sph_param1, sph_rtp1)
@@ -41,7 +41,7 @@
 !  ========= Generate spherical harmonics table ========================
 !
       call s_const_global_sph_grids_modes                               &
-     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rj1)
+     &   (sph_param1, sph_rtp1, sph_rtm1, sph1%sph_rj)
 !
       allocate(comm_rlm_mul(ndomain_sph))
 !
@@ -50,7 +50,7 @@
      &   (ndomain_sph, sph_param1, sph_rlm1, comm_rlm_mul)
       if(iflag_debug .gt. 0) write(*,*) 'gen_sph_rj_modes'
       call gen_sph_rj_modes(ndomain_sph, comm_rlm_mul,                  &
-     &    sph_param1, sph_rlm1, sph_rj1)
+     &    sph_param1, sph_rlm1, sph1%sph_rj)
       call dealloc_all_comm_stacks_rlm(ndomain_sph, comm_rlm_mul)
       deallocate(comm_rlm_mul)
 !
@@ -67,7 +67,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'gen_fem_mesh_for_sph'
       call gen_fem_mesh_for_sph(ndomain_sph,                            &
-     &    sph_param1, sph_rj1, sph_rtp1, radial_rj_grp1)
+     &    sph_param1, sph1%sph_rj, sph_rtp1, radial_rj_grp1)
 !
       if(sph_param1%iflag_shell_mode .lt. iflag_MESH_same) then
         stop "*** spherical shell mesh done"

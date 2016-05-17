@@ -63,7 +63,7 @@
       if(iflag_org_sph_rj_head .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'input_old_rj_sph_trans'
         call input_old_rj_sph_trans                                     &
-     &     (my_rank, sph_param1%l_truncation, sph_rj1)
+     &     (my_rank, sph_param1%l_truncation, sph1%sph_rj)
         call set_sph_magne_address(rj_fld1)
       end if
 !
@@ -72,7 +72,7 @@
 !
 !  ---- allocate spectr data
 !
-      call set_sph_sprctr_data_address(sph_rj1, rj_fld1)
+      call set_sph_sprctr_data_address(sph1%sph_rj, rj_fld1)
 !
 !  ---- initialize spherical harmonics transform
 !
@@ -81,7 +81,7 @@
      &            id_legendre_transfer = iflag_leg_orginal_loop
       call copy_sph_trans_nums_from_rtp
       call initialize_sph_trans                                         &
-     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,            &
+     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph1%sph_rj,        &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1)
 !
       call init_pole_transform(sph_rtp1)
@@ -138,17 +138,18 @@
         if(iflag_org_sph_rj_head .eq. 0) then
           if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
           call set_rj_phys_data_from_IO                                 &
-     &       (sph_rj1%nnod_rj, fld_IO, rj_fld1)
+     &       (sph1%sph_rj%nnod_rj, fld_IO, rj_fld1)
         else
           if (iflag_debug.gt.0) write(*,*)                              &
      &                        'r_interpolate_sph_fld_from_IO'
-          call r_interpolate_sph_fld_from_IO(fld_IO, sph_rj1, rj_fld1)
+          call r_interpolate_sph_fld_from_IO                            &
+     &       (fld_IO, sph1%sph_rj, rj_fld1)
         end if
 !
 !          call check_all_field_data(my_rank, rj_fld1)
 !  spherical transform for vector
         call sph_b_trans_all_field                                      &
-     &     (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,          &
+     &     (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph1%sph_rj,      &
      &      comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1,                  &
      &      femmesh_STR%mesh, rj_fld1, field_STR)
       end if

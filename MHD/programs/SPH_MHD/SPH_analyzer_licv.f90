@@ -50,7 +50,7 @@
 !
 !   Allocate spectr field data
 !
-      call set_sph_sprctr_data_address(sph_rj1, rj_fld1)
+      call set_sph_sprctr_data_address(sph1%sph_rj, rj_fld1)
 !
 !
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
@@ -60,11 +60,11 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'set_radius_rot_reft_dat_4_sph'
       call set_radius_rot_reft_dat_4_sph(depth_high_t, depth_low_t,     &
-     &    high_temp, low_temp, angular, sph_rlm1, sph_rj1,              &
+     &    high_temp, low_temp, angular, sph_rlm1, sph1%sph_rj,          &
      &    radial_rj_grp1, sph_param1, rj_fld1)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_2nd_fdm_matrices'
-      call const_2nd_fdm_matrices(sph_param1, sph_rj1)
+      call const_2nd_fdm_matrices(sph_param1, sph1%sph_rj)
 !
 ! ---------------------------------
 !
@@ -74,46 +74,46 @@
 !  -------------------------------
 !
       if(iflag_debug.gt.0) write(*,*) 's_set_bc_sph_mhd'
-      call s_set_bc_sph_mhd(sph_param1, sph_rj1, radial_rj_grp1,        &
+      call s_set_bc_sph_mhd(sph_param1, sph1%sph_rj, radial_rj_grp1,    &
      &    CTR_nod_grp_name, CTR_sf_grp_name)
-      call init_reference_fields(sph_param1, sph_rj1)
+      call init_reference_fields(sph_param1, sph1%sph_rj)
 !
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
       call init_sph_transform_MHD                                       &
-     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,            &
+     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph1%sph_rj,        &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, rj_fld1)
 !
 ! ---------------------------------
 !
       if(iflag_debug.gt.0) write(*,*)' sph_initial_data_control'
       call sph_initial_data_control                                     &
-     &   (sph_param1, sph_rj1, reftemp_rj, rj_fld1)
+     &   (sph_param1, sph1%sph_rj, reftemp_rj, rj_fld1)
 !
       if(iflag_debug.gt.0) write(*,*)' sync_temp_by_per_temp_sph'
-      call sync_temp_by_per_temp_sph(reftemp_rj, sph_rj1, rj_fld1)
+      call sync_temp_by_per_temp_sph(reftemp_rj, sph1%sph_rj, rj_fld1)
 !
 !  -------------------------------
 !
       if(iflag_debug.gt.0) write(*,*)' const_radial_mat_sph_mhd'
-      call const_radial_mat_sph_mhd(sph_rj1)
+      call const_radial_mat_sph_mhd(sph1%sph_rj)
 !*
 !* obtain linear terms for starting
 !*
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
-      call set_sph_field_to_start(sph_rj1, rj_fld1)
+      call set_sph_field_to_start(sph1%sph_rj, rj_fld1)
 !
 !*  ----------------lead nonlinear term ... ----------
 !*
       if(iflag_debug .gt. 0) write(*,*) 'first licv_exp'
       call licv_exp(reftemp_rj,                                         &
-     &    sph_rlm1, sph_rj1, comm_rlm1, comm_rj1, rj_fld1)
+     &    sph_rlm1, sph1%sph_rj, comm_rlm1, comm_rj1, rj_fld1)
 !
 !* -----  Open Volume integration data files -----------------
 !*
       if(iflag_debug .gt. 0) write(*,*) 'open_sph_vol_rms_file_mhd'
-      call open_sph_vol_rms_file_mhd(sph_param1, sph_rj1, rj_fld1)
+      call open_sph_vol_rms_file_mhd(sph_param1, sph1%sph_rj, rj_fld1)
 !
       end subroutine SPH_initialize_linear_conv
 !
@@ -143,33 +143,33 @@
 !*
       if(i_step .eq. 1) then
         if(iflag_debug.gt.0) write(*,*) 'cal_expricit_sph_euler'
-        call cal_expricit_sph_euler(i_step, sph_rj1, rj_fld1)
+        call cal_expricit_sph_euler(i_step, sph1%sph_rj, rj_fld1)
       else
         if(iflag_debug.gt.0) write(*,*) 'cal_expricit_sph_adams'
-        call cal_expricit_sph_adams(sph_rj1, rj_fld1)
+        call cal_expricit_sph_adams(sph1%sph_rj, rj_fld1)
       end if
 !*
 !*  ----------  time evolution by inplicit method ----------
 !*
-      call s_cal_sol_sph_MHD_crank(sph_rj1, rj_fld1)
+      call s_cal_sol_sph_MHD_crank(sph1%sph_rj, rj_fld1)
 !*
 !* ----  Update fields after time evolution ------------------------=
 !*
 !
       call start_eleps_time(9)
       if(iflag_debug.gt.0) write(*,*) 'trans_per_temp_to_temp_sph'
-      call trans_per_temp_to_temp_sph(reftemp_rj, sph_rj1, rj_fld1)
+      call trans_per_temp_to_temp_sph(reftemp_rj, sph1%sph_rj, rj_fld1)
 !*
       if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
       call s_lead_fields_4_sph_mhd                                      &
-     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,            &
+     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph1%sph_rj,        &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, rj_fld1)
       call end_eleps_time(9)
 !
 !*  ----------------lead nonlinear term ... ----------
 !*
         call licv_exp(reftemp_rj,                                       &
-     &      sph_rlm1, sph_rj1, comm_rlm1, comm_rj1, rj_fld1)
+     &      sph_rlm1, sph1%sph_rj, comm_rlm1, comm_rj1, rj_fld1)
 !
 !*  -----------  output restart data --------------
 !*
@@ -180,7 +180,7 @@
 !
       total_time = MPI_WTIME() - total_start
       if      (istep_rst_end .eq. -1                                    &
-    &   .and. total_time.gt.elapsed_time) then
+     &   .and. total_time.gt.elapsed_time) then
         call output_sph_rst_by_elaps(rj_fld1)
         iflag_finish = 1
       end if
@@ -190,11 +190,12 @@
 !*
       call start_eleps_time(11)
       if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
-      call output_rms_sph_mhd_control(sph_param1, sph_rj1, rj_fld1)
+      call output_rms_sph_mhd_control                                   &
+     &    (sph_param1, sph1%sph_rj, rj_fld1)
       call end_eleps_time(11)
 !
       if(iflag_debug.gt.0) write(*,*) 'sync_temp_by_per_temp_sph'
-      call sync_temp_by_per_temp_sph(reftemp_rj, sph_rj1, rj_fld1)
+      call sync_temp_by_per_temp_sph(reftemp_rj, sph1%sph_rj, rj_fld1)
       call end_eleps_time(4)
 !
       if(i_step .ge. i_step_number .and. i_step_number.gt.0) then

@@ -53,7 +53,7 @@
 !  ------    set spectr grids
       if (iflag_debug.gt.0) write(*,*) 'load_para_SPH_and_FEM_mesh'
       call load_para_SPH_and_FEM_mesh                                   &
-     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,            &
+     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph1%sph_rj,            &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, bc_rtp_grp1,       &
      &    radial_rtp_grp1, theta_rtp_grp1, zonal_rtp_grp,               &
      &    radial_rj_grp1, sphere_rj_grp1,                               &
@@ -69,7 +69,7 @@
 !
 !    Set field IOP array by spectr fields
       if (iflag_debug.gt.0) write(*,*) 'SPH_to_FEM_bridge_sph_trans'
-      call SPH_to_FEM_bridge_sph_trans(sph_trns_IO)
+      call SPH_to_FEM_bridge_sph_trans(sph1%sph_rj, sph_trns_IO)
 !
       end subroutine init_zm_trans
 !

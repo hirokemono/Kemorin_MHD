@@ -59,7 +59,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_4_SPH_make_init'
       call input_control_4_SPH_make_init                                &
-     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,            &
+     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph1%sph_rj,        &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, bc_rtp_grp1,       &
      &    radial_rtp_grp1, theta_rtp_grp1, zonal_rtp_grp,               &
      &    radial_rj_grp1, sphere_rj_grp1, rj_fld1)
@@ -102,19 +102,19 @@
 !
 !   Allocate spectr field data
 !
-      call set_sph_sprctr_data_address(sph_rj1, rj_fld1)
+      call set_sph_sprctr_data_address(sph1%sph_rj, rj_fld1)
 !
 ! ---------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'set_radius_rot_reft_dat_4_sph'
       call set_radius_rot_reft_dat_4_sph(depth_high_t, depth_low_t,     &
-     &    high_temp, low_temp, angular, sph_rlm1, sph_rj1,              &
+     &    high_temp, low_temp, angular, sph_rlm1, sph1%sph_rj,          &
      &    radial_rj_grp1, sph_param1, rj_fld1)
 !
       if(iflag_debug.gt.0) write(*,*) 's_set_bc_sph_mhd'
-      call s_set_bc_sph_mhd(sph_param1, sph_rj1, radial_rj_grp1,        &
+      call s_set_bc_sph_mhd(sph_param1, sph1%sph_rj, radial_rj_grp1,    &
      &    CTR_nod_grp_name, CTR_sf_grp_name)
-      call init_reference_fields(sph_param1, sph_rj1)
+      call init_reference_fields(sph_param1, sph1%sph_rj)
 !
 ! ---------------------------------
 !

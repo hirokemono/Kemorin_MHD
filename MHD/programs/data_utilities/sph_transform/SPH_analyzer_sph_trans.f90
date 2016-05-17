@@ -44,7 +44,7 @@
       if (iflag_debug.gt.0) write(*,*) 'copy_sph_name_rj_to_rtp'
       call copy_sph_name_rj_to_rtp(rj_fld1)
 !
-      call alloc_phys_data_type(sph_rj1%nnod_rj, rj_fld1)
+      call alloc_phys_data_type(sph1%sph_rj%nnod_rj, rj_fld1)
 !
 !  ---- initialize spherical harmonics transform
 !
@@ -53,7 +53,7 @@
      &            id_legendre_transfer = iflag_leg_orginal_loop
       call copy_sph_trans_nums_from_rtp
       call initialize_sph_trans                                         &
-     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,            &
+     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph1%sph_rj,        &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1)
 !
       call allocate_d_rtp_4_all_trans(sph_rtp1)
@@ -97,7 +97,7 @@
       if (iflag_debug.gt.0)                                             &
      &    write(*,*) 'copy_rj_all_phys_data_to_IO'
       call copy_rj_all_phys_data_to_IO                                  &
-     &   (sph_rj1%nnod_rj, rj_fld1, fld_IO)
+     &   (sph1%sph_rj%nnod_rj, rj_fld1, fld_IO)
 !
       i_time_step_IO = 0
       time_IO = zero
@@ -143,14 +143,14 @@
 !  pick zonal mean
 !
       if (iflag_debug.gt.0)  write(*,*) 'zonal_mean_all_sph_spectr'
-      call zonal_mean_all_sph_spectr(sph_rj1, rj_fld1)
+      call zonal_mean_all_sph_spectr(sph1%sph_rj, rj_fld1)
 !
 !     data output
 !
       if (iflag_debug.gt.0)                                             &
      &    write(*,*) 'copy_rj_all_phys_data_to_IO'
       call copy_rj_all_phys_data_to_IO                                  &
-     &   (sph_rj1%nnod_rj, rj_fld1, fld_IO)
+     &   (sph1%sph_rj%nnod_rj, rj_fld1, fld_IO)
       call count_number_of_node_stack                                   &
      &   (fld_IO%nnod_IO, fld_IO%istack_numnod_IO)
 !

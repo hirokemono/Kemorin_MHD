@@ -38,7 +38,7 @@
 !!       Heat source ::          d_rj(:,ipol%i_heat_source)
 !!       Light element source :: d_rj(:,ipol%i_light_source)
 !!
-!!       sph_rj1%nidx_rj(1) :: Number of radial grids
+!!       nidx_rj(1) :: Number of radial grids
 !!       nlayer_ICB() :: radial ID for ICB
 !!       nlayer_CMB() :: radial ID for CMB
 !!       r_ICB() :: ICB radius
@@ -510,7 +510,7 @@
 !
 !
       find_local_sph_mode_address                                       &
-     &      = find_local_sph_address(sph_rj1, l, m)
+     &      = find_local_sph_address(sph1%sph_rj, l, m)
 !
       end function find_local_sph_mode_address
 !
@@ -525,7 +525,7 @@
 !
 !
       local_sph_data_address                                            &
-     &      = local_sph_node_address(sph_rj1, kr, j_lc)
+     &      = local_sph_node_address(sph1%sph_rj, kr, j_lc)
 !
       end function local_sph_data_address
 !
@@ -536,7 +536,7 @@
 !
       integer(kind = kint), intent(in) :: kr
 !
-      radius_1d_rj_r = sph_rj1%radius_1d_rj_r(kr)
+      radius_1d_rj_r = sph1%sph_rj%radius_1d_rj_r(kr)
 !
       end function radius_1d_rj_r
 !
@@ -581,7 +581,7 @@
       integer(kind = kint) function inod_rj_center()
       use m_spheric_parameter
 !
-      inod_rj_center = sph_rj1%inod_rj_center
+      inod_rj_center = sph1%sph_rj%inod_rj_center
 !
       end function inod_rj_center
 !
@@ -592,7 +592,7 @@
 !
       integer(kind = kint), intent(in) :: nd
 !
-      nidx_rj = sph_rj1%nidx_rj(nd)
+      nidx_rj = sph1%sph_rj%nidx_rj(nd)
 !
       end function nidx_rj
 !

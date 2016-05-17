@@ -106,7 +106,7 @@
       integer(kind = kint), intent(in) :: i_step
 !
 !
-      call read_alloc_sph_rst_2_modify(i_step, sph_rj1, rj_fld1)
+      call read_alloc_sph_rst_2_modify(i_step, sph1%sph_rj, rj_fld1)
 !
 !*  ----------------Modify spectr data ... ----------
 !*
@@ -117,13 +117,15 @@
       call output_sph_restart_control(rj_fld1)
 !*
       if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
-      call output_rms_sph_mhd_control(sph_param1, sph_rj1, rj_fld1)
+      call output_rms_sph_mhd_control                                   &
+     &   (sph_param1, sph1%sph_rj, rj_fld1)
 !
 !*  -----------  lead energy data --------------
 !*
       call start_eleps_time(11)
       if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
-      call output_rms_sph_mhd_control(sph_param1, sph_rj1, rj_fld1)
+      call output_rms_sph_mhd_control                                   &
+     &   (sph_param1, sph1%sph_rj, rj_fld1)
       call end_eleps_time(11)
       call end_eleps_time(4)
 !
@@ -150,10 +152,10 @@
 !
       if (my_rank.eq.0) write(*,*) 'Take zonam mean of light element'
       call take_zonal_mean_rj_field                                     &
-     &   (ione, ipol%i_light, sph_rj1, rj_fld1)
+     &   (ione, ipol%i_light, sph1%sph_rj, rj_fld1)
 !      if (my_rank.eq.0) write(*,*) 'Take sphere average of light element'
 !      call pick_degree_sph_spectr(ltr_half, ipick_degree,               &
-!     &    ione, ipol%i_light, sph_rj1, rj_fld1)
+!     &    ione, ipol%i_light, sph1%sph_rj, rj_fld1)
 !
       end subroutine set_modify_rj_fields
 !

@@ -66,16 +66,17 @@
         if(iflag_org_sph_rj_head .eq. 0) then
           if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
           call set_rj_phys_data_from_IO                                 &
-     &       (sph_rj1%nnod_rj, fld_IO, rj_fld1)
+     &       (sph1%sph_rj%nnod_rj, fld_IO, rj_fld1)
         else
           if (iflag_debug.gt.0) write(*,*)                              &
      &                        'r_interpolate_sph_fld_from_IO'
-          call r_interpolate_sph_fld_from_IO(fld_IO, sph_rj1, rj_fld1)
+          call r_interpolate_sph_fld_from_IO                            &
+     &       (fld_IO, sph1%sph_rj, rj_fld1)
         end if
 !
-        call set_rj_phys_for_zm_streamfunc(sph_rj1%nidx_rj,             &
+        call set_rj_phys_for_zm_streamfunc(sph1%sph_rj%nidx_rj,         &
      &      rj_fld1%n_point, rj_fld1%ntot_phys, rj_fld1%d_fld)
-        call zonal_mean_all_sph_spectr(sph_rj1, rj_fld1)
+        call zonal_mean_all_sph_spectr(sph1%sph_rj, rj_fld1)
 !
 !  spherical transform for vector
         call sph_b_trans_streamline                                     &

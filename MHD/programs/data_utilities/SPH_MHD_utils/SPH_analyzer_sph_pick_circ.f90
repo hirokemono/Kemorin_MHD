@@ -66,7 +66,7 @@
 !
 !   Allocate spectr field data
 !
-      call set_sph_sprctr_data_address(sph_rj1, rj_fld1)
+      call set_sph_sprctr_data_address(sph1%sph_rj, rj_fld1)
 !
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
       call allocate_vector_for_solver(isix, sph_rtp1%nnod_rtp)
@@ -76,17 +76,17 @@
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_rms_4_sph_spectr'
       call init_rms_4_sph_spectr                                        &
-     &   (sph_param1%l_truncation, sph_rj1, rj_fld1)
+     &   (sph_param1%l_truncation, sph1%sph_rj, rj_fld1)
 !
 ! ---------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'set_radius_rot_reft_dat_4_sph'
       call set_radius_rot_reft_dat_4_sph(depth_high_t, depth_low_t,     &
-     &    high_temp, low_temp, angular, sph_rlm1, sph_rj1,              &
+     &    high_temp, low_temp, angular, sph_rlm1, sph1%sph_rj,          &
      &    radial_rj_grp1, sph_param1, rj_fld1)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_2nd_fdm_matrices'
-      call const_2nd_fdm_matrices(sph_param1, sph_rj1)
+      call const_2nd_fdm_matrices(sph_param1, sph1%sph_rj)
 !
 ! ---------------------------------
 !
@@ -96,31 +96,31 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_bc_sph_mhd'
-      call s_set_bc_sph_mhd(sph_param1, sph_rj1, radial_rj_grp1,        &
+      call s_set_bc_sph_mhd(sph_param1, sph1%sph_rj, radial_rj_grp1,    &
      &    CTR_nod_grp_name, CTR_sf_grp_name)
-      call init_reference_fields(sph_param1, sph_rj1)
+      call init_reference_fields(sph_param1, sph1%sph_rj)
 !
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
       call init_sph_transform_MHD                                       &
-     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,            &
+     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph1%sph_rj,        &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, rj_fld1)
 !
 ! ---------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 'const_radial_mat_sph_snap'
-      call const_radial_mat_sph_snap(sph_rj1)
+      call const_radial_mat_sph_snap(sph1%sph_rj)
 !
 !     --------------------- 
 !  set original spectr mesh data for extension of B
 !
-      call init_radial_sph_interpolation(sph_param1, sph_rj1)
+      call init_radial_sph_interpolation(sph_param1, sph1%sph_rj)
 !
 !* -----  find mid-equator point -----------------
 !
       call const_circle_point_global                                    &
-     &   (sph_param1%l_truncation, sph_rtp1, sph_rj1)
+     &   (sph_param1%l_truncation, sph_rtp1, sph1%sph_rj)
 !
       end subroutine SPH_init_sph_pick_circle
 !
@@ -146,20 +146,20 @@
       integer(kind = kint), intent(in) :: i_step
 !
 !
-      call read_alloc_sph_rst_4_snap(i_step, sph_rj1, rj_fld1)
+      call read_alloc_sph_rst_4_snap(i_step, sph1%sph_rj, rj_fld1)
 !
-      call sync_temp_by_per_temp_sph(reftemp_rj, sph_rj1, rj_fld1)
+      call sync_temp_by_per_temp_sph(reftemp_rj, sph1%sph_rj, rj_fld1)
 !
 !* obtain linear terms for starting
 !*
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
-      call set_sph_field_to_start(sph_rj1, rj_fld1)
+      call set_sph_field_to_start(sph1%sph_rj, rj_fld1)
 !
 !*  ----------------lead nonlinear term ... ----------
 !*
       call start_eleps_time(8)
       call nonlinear                                                    &
-     &   (reftemp_rj, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,            &
+     &   (reftemp_rj, sph_rtp1, sph_rtm1, sph_rlm1, sph1%sph_rj,        &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, rj_fld1)
       call end_eleps_time(8)
 !
@@ -167,11 +167,11 @@
 !*
       call start_eleps_time(9)
       if(iflag_debug.gt.0) write(*,*) 'trans_per_temp_to_temp_sph'
-      call trans_per_temp_to_temp_sph(reftemp_rj, sph_rj1, rj_fld1)
+      call trans_per_temp_to_temp_sph(reftemp_rj, sph1%sph_rj, rj_fld1)
 !*
       if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
       call s_lead_fields_4_sph_mhd                                      &
-     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,            &
+     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph1%sph_rj,        &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, rj_fld1)
       call end_eleps_time(9)
 !
@@ -179,7 +179,7 @@
 !*
       call start_eleps_time(4)
       if(iflag_debug.gt.0)  write(*,*) 'sph_transfer_on_circle'
-      call sph_transfer_on_circle(sph_rj1, rj_fld1)
+      call sph_transfer_on_circle(sph1%sph_rj, rj_fld1)
       call write_field_data_on_circle(i_step, time)
       call end_eleps_time(4)
 !

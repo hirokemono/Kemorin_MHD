@@ -27,6 +27,9 @@
 !.
       implicit none
 !
+!>  Structure of grid and spectr data for spherical spectr method
+      type(sph_grids), save :: sph1
+!sph1%sph_rj
 !
 !>  Structure of grid and spectr data for spherical spectr method
       type(sph_shell_parameters), save :: sph_param1
@@ -37,6 +40,6 @@
 !
       type(sph_rlm_grid), save :: sph_rlm1
 !
-      type(sph_rj_grid), save :: sph_rj1
+!      type(sph_rj_grid), save :: sph_rj1
 !
       end module m_spheric_parameter
