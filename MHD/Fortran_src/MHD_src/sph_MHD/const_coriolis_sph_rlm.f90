@@ -111,16 +111,16 @@
 !      call sum_div_coriolis_rlm_10                                     &
 !     &   (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,                          &
 !     &    sph_rlm%idx_gl_1d_rlm_j, sph_rlm%a_r_1d_rlm_r,               &
-!     &    ncomp_trans, n_WR, comm_rlm1%irev_sr, WR)
+!     &    ncomp_trans, n_WR, comm_rlm%irev_sr, WR)
 !      call sum_r_coriolis_bc_rlm_10                                    &
 !     &   (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,                          &
 !     &    sph_rlm%idx_gl_1d_rlm_j, sph_rlm%a_r_1d_rlm_r,               &
-!     &    ncomp_trans, kr_in_U_rlm, n_WR, comm_rlm1%irev_sr, WR,       &
+!     &    ncomp_trans, kr_in_U_rlm, n_WR, comm_rlm%irev_sr, WR,        &
 !     &    d_cor_in_rlm)
 !      call sum_r_coriolis_bc_rlm_10                                    &
 !     &   (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,                          &
 !     &    sph_rlm%idx_gl_1d_rlm_j, sph_rlm%a_r_1d_rlm_r,               &
-!     &    ncomp_trans, kr_out_U_rlm, n_WR, comm_rlm1%irev_sr, WR,      &
+!     &    ncomp_trans, kr_out_U_rlm, n_WR, comm_rlm%irev_sr, WR,       &
 !     &    d_cor_out_rlm)
 !
       end subroutine sum_coriolis_rlm

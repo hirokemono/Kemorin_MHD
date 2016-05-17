@@ -106,7 +106,7 @@
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
       call init_sph_transform_MHD                                       &
      &   (sph1%sph_params, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,        &
-     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, rj_fld1)
+     &    comms_sph1%comm_rtp, comms_sph1%comm_rtm, comms_sph1%comm_rlm, comms_sph1%comm_rj, rj_fld1)
 !
 ! ---------------------------------
 !
@@ -161,7 +161,7 @@
       call start_eleps_time(8)
       call nonlinear                                                    &
      &   (reftemp_rj, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,        &
-     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, rj_fld1)
+     &    comms_sph1%comm_rtp, comms_sph1%comm_rtm, comms_sph1%comm_rlm, comms_sph1%comm_rj, rj_fld1)
       call end_eleps_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=
@@ -173,7 +173,7 @@
       if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
       call s_lead_fields_4_sph_mhd                                      &
      &   (sph1%sph_params, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,        &
-     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, rj_fld1)
+     &    comms_sph1%comm_rtp, comms_sph1%comm_rtm, comms_sph1%comm_rlm, comms_sph1%comm_rj, rj_fld1)
       call end_eleps_time(9)
 !
 !*  -----------  lead mid-equator field --------------

@@ -15,15 +15,15 @@
 !
 !>  Structure for communication table for spherical transform
       type(sph_comm_tables), save :: comms_sph1
-!comms_sph1%comm_rj
+!comms_sph1%comm_rlm
 !
 !>        Communication table for @f$ f(r,t,p) @f$ 
-      type(sph_comm_tbl), save :: comm_rtp1
+!      type(sph_comm_tbl), save :: comm_rtp1
 !>        Communication table for @f$ f(r,t,m) @f$ 
-      type(sph_comm_tbl), save :: comm_rtm1
+!      type(sph_comm_tbl), save :: comm_rtm1
 !>        Communication table for @f$ f(r,l,m) @f$ 
-      type(sph_comm_tbl), save :: comm_rlm1
+!      type(sph_comm_tbl), save :: comm_rlm1
 !>        Communication table for @f$ f(r,j) @f$ 
-      type(sph_comm_tbl), save :: comm_rj1
+!      type(sph_comm_tbl), save :: comm_rj1
 !
       end module m_sph_trans_comm_table

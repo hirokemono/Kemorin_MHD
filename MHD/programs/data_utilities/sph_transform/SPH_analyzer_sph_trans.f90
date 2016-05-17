@@ -54,7 +54,7 @@
       call copy_sph_trans_nums_from_rtp
       call initialize_sph_trans                                         &
      &   (sph1%sph_params, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,        &
-     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1)
+     &    comms_sph1%comm_rtp, comms_sph1%comm_rtm, comms_sph1%comm_rlm, comms_sph1%comm_rj)
 !
       call allocate_d_rtp_4_all_trans(sph1%sph_rtp)
 !
@@ -88,7 +88,7 @@
 !  spherical transform for vector
       call sph_f_trans_all_field                                        &
      &   (sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm,                     &
-     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1,                    &
+     &    comms_sph1%comm_rtp, comms_sph1%comm_rtm, comms_sph1%comm_rlm, comms_sph1%comm_rj,                    &
      &    femmesh_STR%mesh, field_STR, rj_fld1)
 !
 !      call check_all_field_data(my_rank, rj_fld1)
@@ -137,7 +137,7 @@
 !  spherical transform for vector
       call sph_f_trans_all_field                                        &
      &   (sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm,                     &
-     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1,                    &
+     &    comms_sph1%comm_rtp, comms_sph1%comm_rtm, comms_sph1%comm_rlm, comms_sph1%comm_rj,                    &
      &    femmesh_STR%mesh, field_STR, rj_fld1)
 !
 !      call check_all_field_data(my_rank, rj_fld1)
