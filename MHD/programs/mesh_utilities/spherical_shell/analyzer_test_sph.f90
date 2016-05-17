@@ -97,46 +97,28 @@
          write(id_check,*)  'USING IMPORT_REVERSE'
        end if
 !
-        call sph_indices_transfer                                       &
-     &     (itype, comms_sph1%comm_rtp, comms_sph1%comm_rtm, comms_sph1%comm_rlm, comms_sph1%comm_rj,           &
+        call sph_indices_transfer(itype, comms_sph1,                    &
      &      sph1%sph_rtp%nnod_rtp, sph1%sph_rtm%nnod_rtm,               &
      &      sph1%sph_rlm%nnod_rlm, sph1%sph_rj%nnod_rj,                 &
      &      sph1%sph_rtp%idx_global_rtp, sph1%sph_rtm%idx_global_rtm,   &
      &      sph1%sph_rlm%idx_global_rlm, sph1%sph_rj%idx_global_rj)
-        call check_missing_sph_indices(id_check,                        &
-     &      sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj)
-        call compare_transfer_sph_indices(id_check,                     &
-     &      sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj)
+        call check_missing_sph_indices(id_check, sph1)
+        call compare_transfer_sph_indices(id_check, sph1)
 !
-        call sph_transfer_test_N(NB, itype,                             &
-     &      sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,      &
-     &      comms_sph1%comm_rtp, comms_sph1%comm_rtm, comms_sph1%comm_rlm, comms_sph1%comm_rj)
-        call compare_transfer_sph_reals(NB, id_check,                   &
-     &      sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj)
+        call sph_transfer_test_N(NB, itype, sph1, comms_sph1)
+        call compare_transfer_sph_reals(NB, id_check, sph1)
 !
-        call sph_transfer_test_6(itype,                                 &
-     &      sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,      &
-     &      comms_sph1%comm_rtp, comms_sph1%comm_rtm, comms_sph1%comm_rlm, comms_sph1%comm_rj)
-        call compare_transfer_sph_reals(isix, id_check,                 &
-     &      sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj)
+        call sph_transfer_test_6(itype, sph1, comms_sph1)
+        call compare_transfer_sph_reals(isix, id_check, sph1)
 !
-        call sph_transfer_test_3(itype,                                 &
-     &      sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,      &
-     &      comms_sph1%comm_rtp, comms_sph1%comm_rtm, comms_sph1%comm_rlm, comms_sph1%comm_rj)
-        call compare_transfer_sph_reals(ithree, id_check,               &
-     &      sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj)
+        call sph_transfer_test_3(itype, sph1, comms_sph1)
+        call compare_transfer_sph_reals(ithree, id_check, sph1)
 !
-        call sph_transfer_test_2(itype,                                 &
-     &      sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,      &
-     &      comms_sph1%comm_rtp, comms_sph1%comm_rtm, comms_sph1%comm_rlm, comms_sph1%comm_rj)
-        call compare_transfer_sph_reals(itwo, id_check,                 &
-     &      sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj)
+        call sph_transfer_test_2(itype, sph1, comms_sph1)
+        call compare_transfer_sph_reals(itwo, id_check, sph1)
 !
-        call sph_transfer_test_1(itype,                                 &
-     &      sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,      &
-     &      comms_sph1%comm_rtp, comms_sph1%comm_rtm, comms_sph1%comm_rlm, comms_sph1%comm_rj)
-        call compare_transfer_sph_reals(ione, id_check,                 &
-     &      sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj)
+        call sph_transfer_test_1(itype, sph1, comms_sph1)
+        call compare_transfer_sph_reals(ione, id_check, sph1)
       end do
 !
       close(id_check)

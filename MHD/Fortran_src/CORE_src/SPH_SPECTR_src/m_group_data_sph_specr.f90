@@ -10,8 +10,12 @@
 !
       use m_precision
       use t_group_data
+      use t_spheric_mesh
 !
       implicit none
+!
+!> Structure for grid and comm table for spherical transform
+      type(sph_group_data), save :: sph_grps1
 !
 !>       node group for grid space
       type(group_data), save :: bc_rtp_grp1

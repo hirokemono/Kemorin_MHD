@@ -8,23 +8,15 @@
 !      subroutine deallocate_real_sph_test
 !
 !!      subroutine set_tesh_sph_elapsed_label
-!!      subroutine sph_transfer_test_1                                  &
-!!     &         (itype, sph_rtp, sph_rtm, sph_rlm, sph_rj,             &
-!!     &          comm_rtp, comm_rtm, comm_rlm, comm_rj)
-!!      subroutine sph_transfer_test_2                                  &
-!!     &         (itype, sph_rtp, sph_rtm, sph_rlm, sph_rj,             &
-!!     &          comm_rtp, comm_rtm, comm_rlm, comm_rj)
-!!      subroutine sph_transfer_test_3                                  &
-!!     &         (itype, sph_rtp, sph_rtm, sph_rlm, sph_rj,             &
-!!     &          comm_rtp, comm_rtm, comm_rlm, comm_rj)
-!!      subroutine sph_transfer_test_6                                  &
-!!     &         (itype, sph_rtp, sph_rtm, sph_rlm, sph_rj,             &
-!!     &          comm_rtp, comm_rtm, comm_rlm, comm_rj)
-!!      subroutine sph_transfer_test_N(NB, itype)
-!!     &         (NB, itype, sph_rtp, sph_rtm, sph_rlm, sph_rj,         &
-!!     &          comm_rtp, comm_rtm, comm_rlm, comm_rj)
-!!      subroutine compare_transfer_sph_reals                           &
-!!     &         (NB, id_check, sph_rtp, sph_rtm, sph_rlm, sph_rj)
+!!      subroutine sph_transfer_test_1(itype, sph, comms_sph)
+!!      subroutine sph_transfer_test_2(itype, sph, comms_sph)
+!!      subroutine sph_transfer_test_3(itype, sph, comms_sph)
+!!      subroutine sph_transfer_test_6(itype, sph, comms_sph)
+!!      subroutine sph_transfer_test_N(NB, itype, sph, comms_sph)
+!!        type(sph_grids), intent(in) :: sph
+!!        type(sph_comm_tables), intent(in) :: comms_sph
+!!      subroutine compare_transfer_sph_reals(NB, id_check, sph)
+!!        type(sph_grids), intent(in) :: sph
 !
       module cmp_trans_sph_tests
 !
@@ -125,217 +117,204 @@
 ! ----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine sph_transfer_test_1                                    &
-     &         (itype, sph_rtp, sph_rtm, sph_rlm, sph_rj,               &
-     &          comm_rtp, comm_rtm, comm_rlm, comm_rj)
+      subroutine sph_transfer_test_1(itype, sph, comms_sph)
 !
       use calypso_mpi
       use m_sel_spherical_SRs
       use spherical_SRs_N
 !
       integer(kind = kint), intent(in) ::itype
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_rtm_grid), intent(in) :: sph_rtm
-      type(sph_rlm_grid), intent(in) :: sph_rlm
-      type(sph_rj_grid), intent(in) ::  sph_rj
-!
-      type(sph_comm_tbl), intent(in) :: comm_rtp
-      type(sph_comm_tbl), intent(in) :: comm_rtm
-      type(sph_comm_tbl), intent(in) :: comm_rlm
-      type(sph_comm_tbl), intent(in) :: comm_rj
+      type(sph_grids), intent(in) :: sph
+      type(sph_comm_tables), intent(in) :: comms_sph
 !
 !
       iflag_sph_SR = itype
       call set_transfer_sph_reals                                       &
-     &   (ione, sph_rtp, sph_rtm, sph_rlm, sph_rj)
+     &   (ione, sph%sph_rtp, sph%sph_rtm, sph%sph_rlm, sph%sph_rj)
 !
       if (my_rank .eq. 0) write(*,*) 'send_recv_rtp_2_rtm_1'
-      call send_recv_sph_trans(sph_rtp%nnod_rtp, sph_rtm%nnod_rtm,      &
-     &   comm_rtp, comm_rtm, X_global_rtp(1), X_rtm_recieve(1) )
+      call send_recv_sph_trans                                          &
+     &   (sph%sph_rtp%nnod_rtp, sph%sph_rtm%nnod_rtm,                   &
+     &   comms_sph%comm_rtp, comms_sph%comm_rtm,                       &
+     &    X_global_rtp(1), X_rtm_recieve(1) )
       if (my_rank .eq. 0) write(*,*) 'send_recv_rtm_2_rtp_1'
-      call send_recv_sph_trans(sph_rtm%nnod_rtm, sph_rtp%nnod_rtp,      &
-     &    comm_rtm, comm_rtp, X_global_rtm(1), X_rtp_recieve(1) )
+      call send_recv_sph_trans                                          &
+     &   (sph%sph_rtm%nnod_rtm, sph%sph_rtp%nnod_rtp,                   &
+     &    comms_sph%comm_rtm, comms_sph%comm_rtp,                       &
+     &    X_global_rtm(1), X_rtp_recieve(1) )
       if (my_rank .eq. 0) write(*,*) 'send_recv_rj_2_rlm_1'
-      call send_recv_sph_trans(sph_rj%nnod_rj, sph_rlm%nnod_rlm,        &
-     &    comm_rj, comm_rlm, X_global_rj(1), X_rlm_recieve(1) )
+      call send_recv_sph_trans                                          &
+     &   (sph%sph_rj%nnod_rj, sph%sph_rlm%nnod_rlm,                     &
+     &    comms_sph%comm_rj, comms_sph%comm_rlm,                        &
+     &    X_global_rj(1), X_rlm_recieve(1) )
       if (my_rank .eq. 0) write(*,*) 'send_recv_rlm_2_rj_1'
-      call send_recv_sph_trans(sph_rlm%nnod_rlm, sph_rj%nnod_rj,        &
-     &    comm_rlm, comm_rj, X_global_rlm(1), X_rj_recieve(1) )
+      call send_recv_sph_trans                                          &
+     &   (sph%sph_rlm%nnod_rlm, sph%sph_rj%nnod_rj,                     &
+     &    comms_sph%comm_rlm, comms_sph%comm_rj,                        &
+     &    X_global_rlm(1), X_rj_recieve(1) )
 !
       end subroutine sph_transfer_test_1
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sph_transfer_test_2                                    &
-     &         (itype, sph_rtp, sph_rtm, sph_rlm, sph_rj,               &
-     &          comm_rtp, comm_rtm, comm_rlm, comm_rj)
+      subroutine sph_transfer_test_2(itype, sph, comms_sph)
 !
       use calypso_mpi
       use m_sel_spherical_SRs
       use spherical_SRs_N
 !
       integer(kind = kint), intent(in) ::itype
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_rtm_grid), intent(in) :: sph_rtm
-      type(sph_rlm_grid), intent(in) :: sph_rlm
-      type(sph_rj_grid), intent(in) ::  sph_rj
-!
-      type(sph_comm_tbl), intent(in) :: comm_rtp
-      type(sph_comm_tbl), intent(in) :: comm_rtm
-      type(sph_comm_tbl), intent(in) :: comm_rlm
-      type(sph_comm_tbl), intent(in) :: comm_rj
+      type(sph_grids), intent(in) :: sph
+      type(sph_comm_tables), intent(in) :: comms_sph
 !
 !
       iflag_sph_SR2 = itype
       call set_transfer_sph_reals                                       &
-     &   (itwo, sph_rtp, sph_rtm, sph_rlm, sph_rj)
+     &   (itwo, sph%sph_rtp, sph%sph_rtm, sph%sph_rlm, sph%sph_rj)
 !
       if (my_rank .eq. 0) write(*,*) 'send_recv_rtp_2_rtm_2'
-      call send_recv_sph_trans_2(sph_rtp%nnod_rtp, sph_rtm%nnod_rtm,    &
-     &    comm_rtp, comm_rtm, X_global_rtp(1), X_rtm_recieve(1) )
+      call send_recv_sph_trans_2                                        &
+     &   (sph%sph_rtp%nnod_rtp, sph%sph_rtm%nnod_rtm,                   &
+     &    comms_sph%comm_rtp, comms_sph%comm_rtm,                       &
+     &    X_global_rtp(1), X_rtm_recieve(1) )
       if (my_rank .eq. 0) write(*,*) 'send_recv_rtm_2_rtp_2'
-      call send_recv_sph_trans_2(sph_rtm%nnod_rtm, sph_rtp%nnod_rtp,    &
-     &    comm_rtm, comm_rtp, X_global_rtm(1), X_rtp_recieve(1) )
+      call send_recv_sph_trans_2                                        &
+     &   (sph%sph_rtm%nnod_rtm, sph%sph_rtp%nnod_rtp,                   &
+     &    comms_sph%comm_rtm, comms_sph%comm_rtp,                       &
+     &    X_global_rtm(1), X_rtp_recieve(1) )
       if (my_rank .eq. 0) write(*,*) 'send_recv_rj_2_rlm_2'
-      call send_recv_sph_trans_2(sph_rj%nnod_rj, sph_rlm%nnod_rlm,      &
-     &    comm_rj, comm_rlm, X_global_rj(1), X_rlm_recieve(1) )
+      call send_recv_sph_trans_2                                        &
+     &   (sph%sph_rj%nnod_rj, sph%sph_rlm%nnod_rlm,                     &
+     &    comms_sph%comm_rj, comms_sph%comm_rlm,                        &
+     &    X_global_rj(1), X_rlm_recieve(1) )
       if (my_rank .eq. 0) write(*,*) 'send_recv_rlm_2_rj_2'
-      call send_recv_sph_trans_2(sph_rlm%nnod_rlm, sph_rj%nnod_rj,      &
-     &    comm_rlm, comm_rj, X_global_rlm(1), X_rj_recieve(1) )
+      call send_recv_sph_trans_2                                        &
+     &   (sph%sph_rlm%nnod_rlm, sph%sph_rj%nnod_rj,                     &
+     &    comms_sph%comm_rlm, comms_sph%comm_rj,                        &
+     &    X_global_rlm(1), X_rj_recieve(1) )
 !
       end subroutine sph_transfer_test_2
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sph_transfer_test_3                                    &
-     &         (itype, sph_rtp, sph_rtm, sph_rlm, sph_rj,               &
-     &          comm_rtp, comm_rtm, comm_rlm, comm_rj)
+      subroutine sph_transfer_test_3(itype, sph, comms_sph)
 !
       use calypso_mpi
       use m_sel_spherical_SRs
       use spherical_SRs_N
 !
       integer(kind = kint), intent(in) ::itype
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_rtm_grid), intent(in) :: sph_rtm
-      type(sph_rlm_grid), intent(in) :: sph_rlm
-      type(sph_rj_grid), intent(in) ::  sph_rj
-!
-      type(sph_comm_tbl), intent(in) :: comm_rtp
-      type(sph_comm_tbl), intent(in) :: comm_rtm
-      type(sph_comm_tbl), intent(in) :: comm_rlm
-      type(sph_comm_tbl), intent(in) :: comm_rj
+      type(sph_grids), intent(in) :: sph
+      type(sph_comm_tables), intent(in) :: comms_sph
 !
 !
       iflag_sph_SR3 = itype
       call set_transfer_sph_reals                                       &
-     &   (ithree, sph_rtp, sph_rtm, sph_rlm, sph_rj)
+     &   (ithree, sph%sph_rtp, sph%sph_rtm, sph%sph_rlm, sph%sph_rj)
 !
       if (my_rank .eq. 0) write(*,*) 'send_recv_rtp_2_rtm_3'
-      call send_recv_sph_trans_3(sph_rtp%nnod_rtp, sph_rtm%nnod_rtm,    &
-     &    comm_rtp, comm_rtm, X_global_rtp(1), X_rtm_recieve(1) )
+      call send_recv_sph_trans_3                                        &
+     &   (sph%sph_rtp%nnod_rtp, sph%sph_rtm%nnod_rtm,                   &
+     &    comms_sph%comm_rtp, comms_sph%comm_rtm,                       &
+     &    X_global_rtp(1), X_rtm_recieve(1) )
       if (my_rank .eq. 0) write(*,*) 'send_recv_rtm_2_rtp_3'
-      call send_recv_sph_trans_3(sph_rtm%nnod_rtm, sph_rtp%nnod_rtp,    &
-     &    comm_rtm, comm_rtp, X_global_rtm(1), X_rtp_recieve(1) )
+      call send_recv_sph_trans_3                                        &
+     &   (sph%sph_rtm%nnod_rtm, sph%sph_rtp%nnod_rtp,                   &
+     &    comms_sph%comm_rtm, comms_sph%comm_rtp,                       &
+     &    X_global_rtm(1), X_rtp_recieve(1) )
       if (my_rank .eq. 0) write(*,*) 'send_recv_rj_2_rlm_3'
-      call send_recv_sph_trans_3(sph_rj%nnod_rj, sph_rlm%nnod_rlm,      &
-     &    comm_rj, comm_rlm, X_global_rj(1), X_rlm_recieve(1) )
+      call send_recv_sph_trans_3                                        &
+     &   (sph%sph_rj%nnod_rj, sph%sph_rlm%nnod_rlm,                     &
+     &    comms_sph%comm_rj, comms_sph%comm_rlm,                        &
+     &    X_global_rj(1), X_rlm_recieve(1) )
       if (my_rank .eq. 0) write(*,*) 'send_recv_rlm_2_rj_3'
-      call send_recv_sph_trans_3(sph_rlm%nnod_rlm, sph_rj%nnod_rj,      &
-     &    comm_rlm, comm_rj, X_global_rlm(1), X_rj_recieve(1) )
+      call send_recv_sph_trans_3                                        &
+     &   (sph%sph_rlm%nnod_rlm, sph%sph_rj%nnod_rj,                     &
+     &    comms_sph%comm_rlm, comms_sph%comm_rj,                        &
+     &    X_global_rlm(1), X_rj_recieve(1) )
 !
       end subroutine sph_transfer_test_3
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sph_transfer_test_6                                    &
-     &         (itype, sph_rtp, sph_rtm, sph_rlm, sph_rj,               &
-     &          comm_rtp, comm_rtm, comm_rlm, comm_rj)
+      subroutine sph_transfer_test_6(itype, sph, comms_sph)
 !
       use calypso_mpi
       use m_sel_spherical_SRs
       use spherical_SRs_N
 !
       integer(kind = kint), intent(in) ::itype
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_rtm_grid), intent(in) :: sph_rtm
-      type(sph_rlm_grid), intent(in) :: sph_rlm
-      type(sph_rj_grid), intent(in) ::  sph_rj
-!
-      type(sph_comm_tbl), intent(in) :: comm_rtp
-      type(sph_comm_tbl), intent(in) :: comm_rtm
-      type(sph_comm_tbl), intent(in) :: comm_rlm
-      type(sph_comm_tbl), intent(in) :: comm_rj
+      type(sph_grids), intent(in) :: sph
+      type(sph_comm_tables), intent(in) :: comms_sph
 !
 !
       iflag_sph_SR6 = itype
       call set_transfer_sph_reals                                       &
-     &   (isix, sph_rtp, sph_rtm, sph_rlm, sph_rj)
+     &   (isix, sph%sph_rtp, sph%sph_rtm, sph%sph_rlm, sph%sph_rj)
 !
       if (my_rank .eq. 0) write(*,*) 'send_recv_rtp_2_rtm_6'
       call send_recv_sph_trans_6                                        &
-     &   (sph_rtp%nnod_rtp, sph_rtm%nnod_rtm, comm_rtp, comm_rtm,       &
+     &   (sph%sph_rtp%nnod_rtp, sph%sph_rtm%nnod_rtm,                   &
+     &    comms_sph%comm_rtp, comms_sph%comm_rtm,                       &
      &    X_global_rtp(1), X_rtm_recieve(1) )
       if (my_rank .eq. 0) write(*,*) 'send_recv_rtm_2_rtp_6'
       call send_recv_sph_trans_6                                        &
-     &   (sph_rtm%nnod_rtm, sph_rtp%nnod_rtp, comm_rtm, comm_rtp,       &
+     &   (sph%sph_rtm%nnod_rtm, sph%sph_rtp%nnod_rtp,                   &
+     &    comms_sph%comm_rtm, comms_sph%comm_rtp,                       &
      &    X_global_rtm(1), X_rtp_recieve(1) )
       if (my_rank .eq. 0) write(*,*) 'send_recv_rj_2_rlm_6'
       call send_recv_sph_trans_6                                        &
-     &   (sph_rj%nnod_rj, sph_rlm%nnod_rlm, comm_rj, comm_rlm,          &
+     &   (sph%sph_rj%nnod_rj,  sph%sph_rlm%nnod_rlm,                    &
+     &    comms_sph%comm_rj, comms_sph%comm_rlm,                        &
      &    X_global_rj(1), X_rlm_recieve(1) )
       if (my_rank .eq. 0) write(*,*) 'send_recv_rlm_2_rj_6'
       call send_recv_sph_trans_6                                        &
-     &   (sph_rlm%nnod_rlm, sph_rj%nnod_rj, comm_rlm, comm_rj,          &
+     &   (sph%sph_rlm%nnod_rlm, sph%sph_rj%nnod_rj,                     &
+     &    comms_sph%comm_rlm, comms_sph%comm_rj,                        &
      &    X_global_rlm(1), X_rj_recieve(1) )
 !
       end subroutine sph_transfer_test_6
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sph_transfer_test_N                                    &
-     &         (NB, itype, sph_rtp, sph_rtm, sph_rlm, sph_rj,           &
-     &          comm_rtp, comm_rtm, comm_rlm, comm_rj)
+      subroutine sph_transfer_test_N(NB, itype, sph, comms_sph)
 !
       use calypso_mpi
       use m_sel_spherical_SRs
       use spherical_SRs_N
 !
       integer(kind = kint), intent(in) :: NB, itype
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_rtm_grid), intent(in) :: sph_rtm
-      type(sph_rlm_grid), intent(in) :: sph_rlm
-      type(sph_rj_grid), intent(in) ::  sph_rj
-!
-      type(sph_comm_tbl), intent(in) :: comm_rtp
-      type(sph_comm_tbl), intent(in) :: comm_rtm
-      type(sph_comm_tbl), intent(in) :: comm_rlm
-      type(sph_comm_tbl), intent(in) :: comm_rj
+      type(sph_grids), intent(in) :: sph
+      type(sph_comm_tables), intent(in) :: comms_sph
 !
 !
       iflag_sph_SRN = itype
       call set_transfer_sph_reals                                       &
-     &   (NB, sph_rtp, sph_rtm, sph_rlm, sph_rj)
+     &   (NB, sph%sph_rtp, sph%sph_rtm, sph%sph_rlm, sph%sph_rj)
 !
       if (my_rank .eq. 0) write(*,*) 'send_recv_rtp_2_rtm_N'
       call send_recv_sph_trans_N                                        &
-     &   (NB, sph_rtp%nnod_rtp, sph_rtm%nnod_rtm,                       &
-     &    comm_rtp, comm_rtm, X_global_rtp(1), X_rtm_recieve(1))
+     &   (NB, sph%sph_rtp%nnod_rtp, sph%sph_rtm%nnod_rtm,               &
+     &    comms_sph%comm_rtp, comms_sph%comm_rtm,                       &
+     &    X_global_rtp(1), X_rtm_recieve(1))
 !
       if (my_rank .eq. 0) write(*,*) 'send_recv_rtm_2_rtp_N'
       call send_recv_sph_trans_N                                        &
-     &   (NB, sph_rtm%nnod_rtm, sph_rtp%nnod_rtp,                       &
-     &    comm_rtm, comm_rtp, X_global_rtm(1), X_rtp_recieve(1))
+     &   (NB, sph%sph_rtm%nnod_rtm, sph%sph_rtp%nnod_rtp,               &
+     &    comms_sph%comm_rtm, comms_sph%comm_rtp,                       &
+     &    X_global_rtm(1), X_rtp_recieve(1))
 !
       if (my_rank .eq. 0) write(*,*) 'send_recv_rj_2_rlm_N'
       call send_recv_sph_trans_N                                        &
-     &   (NB, sph_rj%nnod_rj, sph_rlm%nnod_rlm,                         &
-     &    comm_rj, comm_rlm, X_global_rj(1), X_rlm_recieve(1))
+     &   (NB, sph%sph_rj%nnod_rj, sph%sph_rlm%nnod_rlm,                 &
+     &    comms_sph%comm_rj, comms_sph%comm_rlm,                        &
+     &    X_global_rj(1), X_rlm_recieve(1))
 !
       if (my_rank .eq. 0) write(*,*) 'send_recv_rlm_2_rj_N'
       call send_recv_sph_trans_N                                        &
-     &   (NB, sph_rlm%nnod_rlm, sph_rj%nnod_rj,                         &
-     &    comm_rlm, comm_rj, X_global_rlm(1), X_rj_recieve(1))
+     &   (NB, sph%sph_rlm%nnod_rlm, sph%sph_rj%nnod_rj,                 &
+     &    comms_sph%comm_rlm, comms_sph%comm_rj,                        &
+     &    X_global_rlm(1), X_rj_recieve(1))
 !
       end subroutine sph_transfer_test_N
 !
@@ -410,16 +389,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine compare_transfer_sph_reals                             &
-     &         (NB, id_check, sph_rtp, sph_rtm, sph_rlm, sph_rj)
+      subroutine compare_transfer_sph_reals(NB, id_check, sph)
 !
       use cmp_trans_sph_indices
 !
       integer(kind = kint), intent(in) :: NB, id_check
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_rtm_grid), intent(in) :: sph_rtm
-      type(sph_rlm_grid), intent(in) :: sph_rlm
-      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(sph_grids), intent(in) :: sph
 !
 !
       integer(kind = kint) :: inod, nd
@@ -427,7 +402,7 @@
 !
 !
       write(id_check,*) 'Wrong commnication in rtm => rtp with ', NB
-      do inod = 1, sph_rtp%nnod_rtp
+      do inod = 1, sph%sph_rtp%nnod_rtp
         if(   idx_rtp_recieve(inod,1) .eq. 0                            &
      &   .or. idx_rtp_recieve(inod,2) .eq. 0                            &
      &   .or. idx_rtp_recieve(inod,3) .eq. 0) then
@@ -437,14 +412,14 @@
           end do
           if (diff .gt. 1.0E-11) then
             write(id_check,'(4i16,1p3E23.15)') inod,                    &
-     &       sph_rtp%idx_global_rtp(inod,1:3), diff,                    &
+     &       sph%sph_rtp%idx_global_rtp(inod,1:3), diff,                &
      &       X_rtp_recieve(NB*inod-NB+1), X_global_rtp(NB*inod-NB+1)
           end if
         end if
       end do
 !
       write(id_check,*) 'Wrong commnication in rtp => rtm with ', NB
-      do inod = 1, sph_rtm%nnod_rtm
+      do inod = 1, sph%sph_rtm%nnod_rtm
         if(   idx_rtm_recieve(inod,1) .eq. 0                            &
      &   .or. idx_rtm_recieve(inod,2) .eq. 0                            &
      &   .or. idx_rtm_recieve(inod,3) .eq. 0) then
@@ -454,13 +429,13 @@
           end do
           if (diff .gt. 1.0E-11) then
             write(id_check,'(4i16,1pE23.15)') inod,                     &
-     &          sph_rtm%idx_global_rtm(inod,1:3), diff
+     &          sph%sph_rtm%idx_global_rtm(inod,1:3), diff
           end if
         end if
       end do
 !
       write(id_check,*) 'Wrong commnication in rj => rlm with ', NB
-      do inod = 1, sph_rlm%nnod_rlm
+      do inod = 1, sph%sph_rlm%nnod_rlm
         if(      idx_rlm_recieve(inod,1) .ge. 0                         &
      &      .or. idx_rlm_recieve(inod,2) .ge. 0) then
           diff = 0.0d0
@@ -470,13 +445,13 @@
           end do
           if (diff .gt. 1.0E-11) then
             write(id_check,'(3i16,1pE23.15)') inod,                     &
-     &          sph_rlm%idx_global_rlm(inod,1:2), diff
+     &          sph%sph_rlm%idx_global_rlm(inod,1:2), diff
           end if
         end if
       end do
 !
       write(id_check,*) 'Wrong commnication in rlm => rj with ', NB
-      do inod = 1, sph_rj%nnod_rj
+      do inod = 1, sph%sph_rj%nnod_rj
         if(      idx_rj_recieve(inod,1) .ge. 0                          &
      &      .or. idx_rj_recieve(inod,2) .ge. 0) then
           diff = 0.0d0
@@ -486,7 +461,7 @@
           end do
           if (diff .gt. 1.0E-11) then
             write(id_check,'(3i16,1p3E23.15)') inod,                    &
-     &          sph_rj%idx_global_rj(inod,1:2), diff
+     &          sph%sph_rj%idx_global_rj(inod,1:2), diff
           end if
         end if
       end do
