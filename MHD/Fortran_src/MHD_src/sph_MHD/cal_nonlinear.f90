@@ -7,17 +7,14 @@
 !>@brief Evaluate nonlinear terms by pseudo spectram scheme
 !!
 !!@verbatim
-!!      subroutine nonlinear                                            &
-!!     &         (reftemp_rj, sph_rtp, sph_rtm, sph_rlm, sph_rj,        &
-!!     &          comm_rtp, comm_rtm, comm_rlm, comm_rj, rj_fld)
+!!      subroutine nonlinear(sph, comms_sph, reftemp_rj, rj_fld)
+!!        type(sph_grids), intent(in) :: sph
+!!        type(sph_comm_tables), intent(in) :: comms_sph
+!!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine licv_exp(reftemp_rj,                                 &
 !!     &          sph_rlm, sph_rj, comm_rlm, comm_rj, rj_fld)
-!!        type(sph_rtp_grid), intent(in) :: sph_rtp
-!!        type(sph_rtm_grid), intent(in) :: sph_rtm
 !!        type(sph_rlm_grid), intent(in) :: sph_rlm
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
-!!        type(sph_comm_tbl), intent(in) :: comm_rtp
-!!        type(sph_comm_tbl), intent(in) :: comm_rtm
 !!        type(sph_comm_tbl), intent(in) :: comm_rlm
 !!        type(sph_comm_tbl), intent(in) :: comm_rj
 !!        type(phys_data), intent(inout) :: rj_fld
@@ -47,9 +44,7 @@
 !*
 !*   ------------------------------------------------------------------
 !*
-      subroutine nonlinear                                              &
-     &         (reftemp_rj, sph_rtp, sph_rtm, sph_rlm, sph_rj,          &
-     &          comm_rtp, comm_rtm, comm_rlm, comm_rj, rj_fld)
+      subroutine nonlinear(sph, comms_sph, reftemp_rj, rj_fld)
 !
       use m_sph_phys_address
       use m_boundary_params_sph_MHD
@@ -59,17 +54,11 @@
 !
       use m_work_time
 !
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_rtm_grid), intent(in) :: sph_rtm
-      type(sph_rlm_grid), intent(in) :: sph_rlm
-      type(sph_rj_grid), intent(in) ::  sph_rj
-      type(sph_comm_tbl), intent(in) :: comm_rtp
-      type(sph_comm_tbl), intent(in) :: comm_rtm
-      type(sph_comm_tbl), intent(in) :: comm_rlm
-      type(sph_comm_tbl), intent(in) :: comm_rj
+      type(sph_grids), intent(in) :: sph
+      type(sph_comm_tables), intent(in) :: comms_sph
 !
       real(kind = kreal), intent(in)                                    &
-     &      :: reftemp_rj(sph_rj%nidx_rj(1),0:1)
+     &      :: reftemp_rj(sph%sph_rj%nidx_rj(1),0:1)
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -77,13 +66,12 @@
 !   ----  lead nonlinear terms by phesdo spectrum
 !
       if (iflag_debug.eq.1) write(*,*) 'nonlinear_by_pseudo_sph'
-      call nonlinear_by_pseudo_sph(sph_rtp, sph_rtm, sph_rlm, sph_rj,   &
-     &    comm_rtp, comm_rtm, comm_rlm, comm_rj, rj_fld)
+      call nonlinear_by_pseudo_sph(sph, comms_sph, rj_fld)
 !
       if (iflag_4_ref_temp .eq. id_sphere_ref_temp) then
         call add_reftemp_advect_sph_MHD                                 &
      &     (sph_bc_T%kr_in, sph_bc_T%kr_out,                            &
-     &      sph_rj%nidx_rj, sph_rj%ar_1d_rj,                            &
+     &      sph%sph_rj%nidx_rj, sph%sph_rj%ar_1d_rj,                    &
      &      rj_fld%n_point, rj_fld%ntot_phys, reftemp_rj, rj_fld%d_fld)
       end if
 !
@@ -91,13 +79,14 @@
 !*
       call start_eleps_time(13)
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
-        call copy_icore_rot_to_tor_coriolis(sph_bc_U%kr_in,             &
-     &     sph_rj%idx_rj_degree_one, sph_rj%nnod_rj, sph_rj%nidx_rj(2), &
-     &     rj_fld%ntot_phys, rj_fld%d_fld)
+        call copy_icore_rot_to_tor_coriolis                             &
+     &     (sph_bc_U%kr_in, sph%sph_rj%idx_rj_degree_one,               &
+     &      sph%sph_rj%nnod_rj, sph%sph_rj%nidx_rj(2),                  &
+     &      rj_fld%ntot_phys, rj_fld%d_fld)
       end if
       call end_eleps_time(13)
 !
-      call sum_forces_by_explicit(sph_rj, rj_fld)
+      call sum_forces_by_explicit(sph%sph_rj, rj_fld)
 !
       end subroutine nonlinear
 !*
@@ -162,9 +151,7 @@
 !
 !*   ------------------------------------------------------------------
 !
-      subroutine nonlinear_by_pseudo_sph                                &
-     &         (sph_rtp, sph_rtm, sph_rlm, sph_rj,                      &
-     &          comm_rtp, comm_rtm, comm_rlm, comm_rj, rj_fld)
+      subroutine nonlinear_by_pseudo_sph(sph, comms_sph, rj_fld)
 !
       use sph_transforms_4_MHD
       use cal_nonlinear_sph_MHD
@@ -172,14 +159,8 @@
 !
       use m_work_time
 !
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_rtm_grid), intent(in) :: sph_rtm
-      type(sph_rlm_grid), intent(in) :: sph_rlm
-      type(sph_rj_grid), intent(in) ::  sph_rj
-      type(sph_comm_tbl), intent(in) :: comm_rtp
-      type(sph_comm_tbl), intent(in) :: comm_rtm
-      type(sph_comm_tbl), intent(in) :: comm_rlm
-      type(sph_comm_tbl), intent(in) :: comm_rj
+      type(sph_grids), intent(in) :: sph
+      type(sph_comm_tables), intent(in) :: comms_sph
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -187,24 +168,22 @@
 !
       call start_eleps_time(14)
       if (iflag_debug.ge.1) write(*,*) 'sph_back_trans_4_MHD'
-      call sph_back_trans_4_MHD(sph_rtp, sph_rtm, sph_rlm,              &
-     &    comm_rtp, comm_rtm, comm_rlm, comm_rj, rj_fld)
+      call sph_back_trans_4_MHD(sph, comms_sph, rj_fld)
       call end_eleps_time(14)
 !
       call start_eleps_time(15)
       if (iflag_debug.ge.1) write(*,*) 'nonlinear_terms_in_rtp'
-      call nonlinear_terms_in_rtp(sph_rtp)
+      call nonlinear_terms_in_rtp(sph%sph_rtp)
       call end_eleps_time(15)
 !
       call start_eleps_time(16)
       if (iflag_debug.ge.1) write(*,*) 'sph_forward_trans_4_MHD'
-      call sph_forward_trans_4_MHD(sph_rtp, sph_rtm, sph_rlm,           &
-     &    comm_rtp, comm_rtm, comm_rlm, comm_rj, rj_fld)
+      call sph_forward_trans_4_MHD(sph, comms_sph, rj_fld)
       call end_eleps_time(16)
 !
       call start_eleps_time(17)
       if (iflag_debug.ge.1) write(*,*) 'cal_momentum_eq_exp_sph'
-      call cal_momentum_eq_exp_sph(sph_rj, rj_fld)
+      call cal_momentum_eq_exp_sph(sph%sph_rj, rj_fld)
       call end_eleps_time(17)
 !
       end subroutine nonlinear_by_pseudo_sph

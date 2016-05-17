@@ -23,25 +23,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine induction_SPH_initialize(sph_params,                   &
-     &          sph_rtp, sph_rtm, sph_rlm, sph_rj,                      &
-     &          comm_rtp, comm_rtm, comm_rlm, comm_rj, rj_fld)
+      subroutine induction_SPH_initialize(sph, comms_sph, rj_fld)
 !
       use m_addresses_trans_hbd_MHD
       use interpolate_by_type
       use const_element_comm_tables
       use load_mesh_data
 !
-      type(sph_shell_parameters), intent(inout) :: sph_params
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_rtm_grid), intent(in) :: sph_rtm
-      type(sph_rlm_grid), intent(in) :: sph_rlm
-      type(sph_rj_grid), intent(in) ::  sph_rj
-!
-      type(sph_comm_tbl), intent(in) :: comm_rtp
-      type(sph_comm_tbl), intent(in) :: comm_rtm
-      type(sph_comm_tbl), intent(in) :: comm_rlm
-      type(sph_comm_tbl), intent(in) :: comm_rj
+      type(sph_grids), intent(in) :: sph
+      type(sph_comm_tables), intent(in) :: comms_sph
 !
 !
       iphys_sph%i_magne =      1
@@ -59,10 +49,10 @@
         sph_fld%ntot_phys = 21
       end if
 !
-      call init_pole_transform(sph_rtp)
+      call init_pole_transform(sph%sph_rtp)
 !
       call set_addresses_trans_hbd_MHD
-      call allocate_hbd_trans_rtp(sph_rtp%nnod_rtp)
+      call allocate_hbd_trans_rtp(sph%sph_rtp%nnod_rtp)
       call check_add_trans_hbd_MHD
 !
 !     ---------------------
@@ -92,9 +82,7 @@
 !
       if(id_legendre_transfer.eq.iflag_leg_undefined)                   &
      &            id_legendre_transfer = iflag_leg_orginal_loop
-      call initialize_sph_trans
-     &   (sph_params, sph_rtp, sph_rtm, sph_rlm, sph_rj,                &
-     &    comm_rtp, comm_rtm, comm_rlm, comm_rj)
+      call initialize_sph_trans(sph, comms_sph)
 !
 !     ---------------------
 !

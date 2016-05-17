@@ -60,9 +60,7 @@
       if(id_legendre_transfer.eq.iflag_leg_undefined)                   &
      &            id_legendre_transfer = iflag_leg_orginal_loop
       call copy_sph_trans_nums_from_rtp
-      call initialize_sph_trans                                         &
-     &   (sph1%sph_params, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,        &
-     &    comms_sph1%comm_rtp, comms_sph1%comm_rtm, comms_sph1%comm_rlm, comms_sph1%comm_rj)
+      call initialize_sph_trans(sph1, comms_sph1)
       call init_pole_transform(sph1%sph_rtp)
       call allocate_d_pole_4_all_trans
 !

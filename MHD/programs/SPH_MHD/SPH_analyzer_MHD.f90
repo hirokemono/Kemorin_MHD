@@ -78,9 +78,7 @@
 ! ---------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
-      call init_sph_transform_MHD                                       &
-     &   (sph1%sph_params, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,        &
-     &    comms_sph1%comm_rtp, comms_sph1%comm_rtm, comms_sph1%comm_rlm, comms_sph1%comm_rj, rj_fld1)
+      call init_sph_transform_MHD(sph1, comms_sph1, rj_fld1)
 !
 !  -------------------------------
 !
@@ -104,9 +102,7 @@
 !* obtain nonlinear terms for starting
 !*
       if(iflag_debug .gt. 0) write(*,*) 'first nonlinear'
-      call nonlinear                                                    &
-     &   (reftemp_rj, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,        &
-     &    comms_sph1%comm_rtp, comms_sph1%comm_rtm, comms_sph1%comm_rlm, comms_sph1%comm_rj, rj_fld1)
+      call nonlinear(sph1, comms_sph1, reftemp_rj, rj_fld1)
 !
 !* -----  Open Volume integration data files -----------------
 !*
@@ -165,9 +161,7 @@
 !*  ----------------lead nonlinear term ... ----------
 !*
       call start_eleps_time(8)
-      call nonlinear                                                    &
-     &   (reftemp_rj, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,        &
-     &    comms_sph1%comm_rtp, comms_sph1%comm_rtm, comms_sph1%comm_rlm, comms_sph1%comm_rj, rj_fld1)
+      call nonlinear(sph1, comms_sph1, reftemp_rj, rj_fld1)
       call end_eleps_time(8)
       call end_eleps_time(5)
 !
