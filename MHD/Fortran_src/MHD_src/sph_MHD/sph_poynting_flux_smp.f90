@@ -8,8 +8,8 @@
 !!@n     $omp parallel is required to use these routines
 !!
 !!@verbatim
-!!      subroutine copy_velo_to_grad_v_rtp(sph_rtp)
-!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!      subroutine copy_velo_to_grad_v_rtp(sph_rtp, b_trns, ft_trns,    &
+!!     &          ncomp_rj_2_rtp, ncomp_tmp_rtp_2_rj, fld_rtp, frt_rtp)
 !!      subroutine cal_grad_of_velocities_sph(sph_rj, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_data), intent(inout) :: rj_fld
@@ -31,15 +31,23 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_velo_to_grad_v_rtp(sph_rtp)
+      subroutine copy_velo_to_grad_v_rtp(sph_rtp, b_trns, ft_trns,      &
+     &          ncomp_rj_2_rtp, ncomp_tmp_rtp_2_rj, fld_rtp, frt_rtp)
 !
       use t_spheric_rtp_data
-      use m_addresses_trans_sph_MHD
-      use m_addresses_trans_sph_tmp
+      use t_phys_address
       use m_work_4_sph_trans
       use sel_fld_copy_4_sph_trans
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(phys_address), intent(in) :: b_trns
+      type(phys_address), intent(in) :: ft_trns
+      integer(kind = kint), intent(in) :: ncomp_rj_2_rtp
+      integer(kind = kint), intent(in) :: ncomp_tmp_rtp_2_rj
+      real(kind = kreal), intent(in)                                    &
+     &                   :: fld_rtp(sph_rtp%nnod_rtp,ncomp_rj_2_rtp)
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: frt_rtp(sph_rtp%nnod_rtp,ncomp_tmp_rtp_2_rj)
 !
 !
       if(ft_trns%i_grad_vx.gt.0) then

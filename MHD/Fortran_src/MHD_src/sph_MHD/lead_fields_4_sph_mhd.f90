@@ -38,6 +38,8 @@
 !
       use m_control_parameter
       use m_t_step_parameter
+      use m_addresses_trans_sph_MHD
+      use m_addresses_trans_sph_snap
       use output_viz_file_control
       use copy_MHD_4_sph_trans
       use cal_energy_flux_rtp
@@ -60,11 +62,12 @@
 !
       if(iflag .gt. 0) return
 !
-      call select_mhd_field_from_trans(sph%sph_rtp)
+      call select_mhd_field_from_trans(sph%sph_rtp, frm_rtp)
       if    (sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_pole     &
      &  .or. sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_center)  &
      & then
-        call cal_nonlinear_pole_MHD
+        call cal_nonlinear_pole_MHD(trns_MHD%f_trns, bs_trns,           &
+     &      ncomp_snap_rj_2_rtp, ncomp_rtp_2_rj, fls_pl, frm_pl)
       end if
 !
       call gradients_of_vectors_sph(sph, comms_sph, rj_fld)
@@ -111,6 +114,8 @@
 !
       subroutine enegy_fluxes_4_sph_mhd(sph, comms_sph, rj_fld)
 !
+      use m_addresses_trans_sph_MHD
+      use m_addresses_trans_sph_snap
       use m_sph_phys_address
       use sph_transforms_4_MHD
       use cal_energy_flux_rtp
@@ -131,7 +136,10 @@
 !
 !      Evaluate fields for output in grid space
       if (iflag_debug.eq.1) write(*,*) 's_cal_energy_flux_rtp'
-      call s_cal_energy_flux_rtp(sph%sph_rtp)
+      call s_cal_energy_flux_rtp(sph%sph_rtp,                           &
+     &    trns_MHD%f_trns, bs_trns, fs_trns, &
+     &    ncomp_rtp_2_rj, ncomp_snap_rj_2_rtp, ncomp_snap_rtp_2_rj,     &
+     &    frm_rtp, fls_rtp, frs_rtp)
 !
       if (iflag_debug.eq.1) write(*,*)                                  &
      &                          'sph_forward_trans_snapshot_MHD'
@@ -144,6 +152,8 @@
       subroutine gradients_of_vectors_sph(sph, comms_sph, rj_fld)
 !
       use m_sph_phys_address
+      use m_addresses_trans_sph_MHD
+      use m_addresses_trans_sph_tmp
       use sph_transforms_4_MHD
       use sph_poynting_flux_smp
 !
@@ -154,7 +164,10 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_velo_to_grad_v_rtp'
-      call copy_velo_to_grad_v_rtp(sph%sph_rtp)
+      call copy_velo_to_grad_v_rtp                                      &
+     &   (sph%sph_rtp, trns_MHD%b_trns, ft_trns,        &
+     &    ncomp_rj_2_rtp, ncomp_tmp_rtp_2_rj,        &
+     &    trns_MHD%fld_rtp, frt_rtp)
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_tmp_snap_MHD'
       call sph_forward_trans_tmp_snap_MHD(sph, comms_sph, rj_fld)

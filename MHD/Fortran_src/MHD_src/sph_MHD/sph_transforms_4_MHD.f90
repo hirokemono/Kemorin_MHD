@@ -89,12 +89,13 @@
 !
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &                     'set_addresses_trans_sph_MHD'
-      call set_addresses_trans_sph_MHD
+      call set_addresses_trans_sph_MHD                                  &
+     &   (trns_MHD%b_trns, trns_MHD%f_trns)
       call set_addresses_snapshot_trans
       call set_addresses_temporal_trans
 !
       if(iflag_debug .ge. iflag_routine_msg) then
-        call check_add_trans_sph_MHD
+        call check_add_trans_sph_MHD(trns_MHD%b_trns, trns_MHD%f_trns)
         call check_addresses_snapshot_trans
         call check_addresses_temporal_trans
       end if
@@ -193,13 +194,14 @@
 !      call start_eleps_time(51)
       if(iflag_debug .gt. 0) write(*,*) 'copy_mhd_spectr_to_send'
       call copy_mhd_spectr_to_send                                      &
-     &   (ncomp_rj_2_rtp, comms_sph%comm_rj, rj_fld, n_WS, WS)
+     &   (ncomp_rj_2_rtp, trns_MHD%b_trns, comms_sph%comm_rj,           &
+     &    rj_fld, n_WS, WS)
 !      call end_eleps_time(51)
 !
       if(ncomp_rj_2_rtp .eq. 0) return
       call sph_b_trans_w_coriolis                                       &
      &   (ncomp_rj_2_rtp, nvector_rj_2_rtp, nscalar_rj_2_rtp,           &
-     &    sph, comms_sph, n_WS, n_WR, WS(1), WR(1), fld_rtp)
+     &    sph, comms_sph, n_WS, n_WR, WS(1), WR(1), trns_MHD%fld_rtp)
 !
       end subroutine sph_back_trans_4_MHD
 !
@@ -227,10 +229,11 @@
       if(ncomp_rtp_2_rj .eq. 0) return
       call sph_f_trans_w_coriolis                                       &
      &   (ncomp_rtp_2_rj, nvector_rtp_2_rj, nscalar_rtp_2_rj,           &
-     &    sph, comms_sph, frc_rtp, n_WS, n_WR, WS(1), WR(1))
+     &    sph, comms_sph, trns_MHD%frc_rtp, n_WS, n_WR, WS(1), WR(1))
 !
       call copy_mhd_spectr_from_recv                                    &
-     &   (ncomp_rtp_2_rj, comms_sph%comm_rj, n_WR, WR(1), rj_fld)
+     &   (ncomp_rtp_2_rj, trns_MHD%f_trns, comms_sph%comm_rj,           &
+     &    n_WR, WR(1), rj_fld)
 !
       end subroutine sph_forward_trans_4_MHD
 !
@@ -261,9 +264,8 @@
       call check_calypso_sph_comm_buf_N                                 &
      &   (ncomp_snap_rj_2_rtp, comms_sph%comm_rtm, comms_sph%comm_rtp)
 !
-      call copy_snap_spectr_to_send                                     &
-     &   (ncomp_snap_rj_2_rtp, sph%sph_rj, comms_sph%comm_rj, rj_fld,   &
-     &    n_WS, WS, flc_pl)
+      call copy_snap_spectr_to_send(ncomp_snap_rj_2_rtp, bs_trns,       &
+     &    sph%sph_rj, comms_sph%comm_rj, rj_fld, n_WS, WS, flc_pl)
 !
       call sph_backward_transforms                                      &
      &   (ncomp_snap_rj_2_rtp, nvector_snap_rj_2_rtp, nscalar_trans,    &
@@ -303,7 +305,8 @@
      &    sph, comms_sph, frs_rtp, n_WS, n_WR, WS(1), WR(1))
 !
       call copy_snap_vec_spec_from_trans                                &
-     &   (ncomp_snap_rtp_2_rj, comms_sph%comm_rj, n_WR, WR(1), rj_fld)
+     &   (ncomp_snap_rtp_2_rj, fs_trns,      &
+     &    comms_sph%comm_rj, n_WR, WR(1), rj_fld)
 !
       end subroutine sph_forward_trans_snapshot_MHD
 !
@@ -339,7 +342,8 @@
      &    sph, comms_sph, frt_rtp, n_WS, n_WR, WS, WR)
 !
       call copy_tmp_scl_spec_from_trans                                 &
-     &   (ncomp_tmp_rtp_2_rj, comms_sph%comm_rj, n_WR, WR, rj_fld)
+     &   (ncomp_tmp_rtp_2_rj, ft_trns,        &
+     &    comms_sph%comm_rj, n_WR, WR, rj_fld)
 !
       end subroutine sph_forward_trans_tmp_snap_MHD
 !
@@ -370,7 +374,8 @@
      &   (ncomp_rtp_2_rj, comm_rlm, comm_rj)
 !
       call copy_mhd_spectr_to_send                                      &
-     &   (ncomp_rj_2_rtp, comm_rj, rj_fld, n_WS, WS(1))
+     &   (ncomp_rj_2_rtp, trns_MHD%b_trns, comm_rj, rj_fld,             &
+     &    n_WS, WS(1))
 !
       call sph_b_trans_licv                                             &
      &   (ncomp_rj_2_rtp, sph_rlm, comm_rlm, comm_rj, n_WR, WR(1))
@@ -378,7 +383,8 @@
      &   (ncomp_rtp_2_rj, sph_rlm, comm_rlm, comm_rj, n_WS, WS(1))
 !
       call copy_mhd_spectr_from_recv                                    &
-     &   (ncomp_rtp_2_rj, comm_rj, n_WR, WR(1), rj_fld)
+     &   (ncomp_rtp_2_rj, trns_MHD%f_trns, comm_rj,                     &
+     &    n_WR, WR(1), rj_fld)
 !
       end subroutine sph_transform_4_licv
 !

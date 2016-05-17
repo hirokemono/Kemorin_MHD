@@ -74,14 +74,6 @@
 !>        @$f dP_{l}{m}/d\theta @$f with A(j,theta)
       real(kind = kreal), allocatable :: dPdt_jl(:,:)
 !
-!
-!>        @$f P_{l}{m} @$f at gouss points
-!!        in northen hemisphere decomposited for SMP
-      real(kind = kreal), allocatable :: Ps_rtm_smp(:,:,:)
-!>        @$f dP_{l}{m}/d\theta @$f at gouss points 
-!!        in northen hemisphere decomposited for SMP
-      real(kind = kreal), allocatable :: dPsdt_rtm_smp(:,:,:)
-!
 ! -----------------------------------------------------------------------
 !
       contains

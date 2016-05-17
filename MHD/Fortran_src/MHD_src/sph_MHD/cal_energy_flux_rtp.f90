@@ -8,15 +8,23 @@
 !> @brief Evaluate energy fluxes for MHD dynamo in physical space
 !!
 !!@verbatim
-!!      subroutine cal_nonlinear_pole_MHD
-!!      subroutine s_cal_energy_flux_rtp(sph_rtp)
+!!      subroutine cal_nonlinear_pole_MHD(f_trns, bs_trns,              &
+!!     &          ncomp_snap_rj_2_rtp, ncomp_rtp_2_rj, fls_pl, frm_pl)
+!!      subroutine s_cal_energy_flux_rtp                                &
+!!     &         (sph_rtp, f_trns, bs_trns, fs_trns, ncomp_rtp_2_rj,    &
+!!     &          ncomp_snap_rj_2_rtp, ncomp_snap_rtp_2_rj,             &
+!!     &          frm_rtp, fls_rtp, frs_rtp)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(phys_address), intent(in) :: f_trns
+!!        type(phys_address), intent(in) :: bs_trns, fs_trns
 !!@endverbatim
 !
       module cal_energy_flux_rtp
 !
       use m_precision
       use m_constants
+!
+      use t_phys_address
 !
       implicit  none
 !
@@ -28,16 +36,24 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_nonlinear_pole_MHD
+      subroutine cal_nonlinear_pole_MHD(f_trns, bs_trns,                &
+     &          ncomp_snap_rj_2_rtp, ncomp_rtp_2_rj, fls_pl, frm_pl)
 !
       use m_machine_parameter
       use m_control_parameter
-      use m_addresses_trans_sph_MHD
-      use m_addresses_trans_sph_snap
       use m_physical_property
       use m_work_pole_sph_trans
       use const_wz_coriolis_rtp
       use cal_products_smp
+!
+      type(phys_address), intent(in) :: f_trns
+      type(phys_address), intent(in) :: bs_trns
+      integer(kind = kint), intent(in) :: ncomp_snap_rj_2_rtp
+      integer(kind = kint), intent(in) :: ncomp_rtp_2_rj
+      real(kind = kreal), intent(in)                                    &
+     &                   :: fls_pl(nnod_pole,ncomp_snap_rj_2_rtp)
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: frm_pl(nnod_pole,ncomp_rtp_2_rj)
 !
 !
 !$omp parallel
@@ -90,16 +106,18 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_energy_flux_rtp(sph_rtp)
+      subroutine s_cal_energy_flux_rtp                                  &
+     &         (sph_rtp, f_trns, bs_trns, fs_trns, ncomp_rtp_2_rj,      &
+     &          ncomp_snap_rj_2_rtp, ncomp_snap_rtp_2_rj,               &
+     &          frm_rtp, fls_rtp, frs_rtp)
 !
       use t_spheric_rtp_data
+      use t_phys_address
 !
       use m_machine_parameter
       use m_control_parameter
       use m_physical_property
       use m_sph_phys_address
-      use m_addresses_trans_sph_MHD
-      use m_addresses_trans_sph_snap
       use m_work_4_sph_trans
       use poynting_flux_smp
       use sph_transforms_4_MHD
@@ -108,6 +126,17 @@
       use cal_products_smp
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(phys_address), intent(in) :: f_trns
+      type(phys_address), intent(in) :: bs_trns, fs_trns
+      integer(kind = kint), intent(in) :: ncomp_rtp_2_rj
+      integer(kind = kint), intent(in) :: ncomp_snap_rj_2_rtp
+      integer(kind = kint), intent(in) :: ncomp_snap_rtp_2_rj
+      real(kind = kreal), intent(in)                                    &
+     &           :: frm_rtp(sph_rtp%nnod_rtp,ncomp_rtp_2_rj)
+      real(kind = kreal), intent(in)                                    &
+     &           :: fls_rtp(sph_rtp%nnod_rtp,ncomp_snap_rj_2_rtp)
+      real(kind = kreal), intent(inout)                                 &
+     &           :: frs_rtp(sph_rtp%nnod_rtp,ncomp_snap_rtp_2_rj)
 !
 !
 !$omp parallel

@@ -7,8 +7,10 @@
 !>@brief  Evaluate nonlinear terms in spherical coordinate grid
 !!
 !!@verbatim
-!!      subroutine nonlinear_terms_in_rtp(sph_rtp)
+!!      subroutine nonlinear_terms_in_rtp(sph_rtp, b_trns, f_trns,      &
+!!     &          ncomp_rj_2_rtp, ncomp_rtp_2_rj, fld_rtp, frc_rtp)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(phys_address), intent(in) :: b_trns, f_trns
 !!      subroutine add_reftemp_advect_sph_MHD                           &
 !!     &         (kr_in, kr_out, nidx_rj, ar_1d_rj,                     &
 !!     &          nnod_rj, ntot_phys_rj, reftemp_rj, d_rj)
@@ -26,6 +28,9 @@
       use m_physical_property
       use m_sph_phys_address
 !
+      use t_spheric_rtp_data
+      use t_phys_address
+!
       implicit none
 !
 !-----------------------------------------------------------------------
@@ -34,15 +39,21 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine nonlinear_terms_in_rtp(sph_rtp)
+      subroutine nonlinear_terms_in_rtp(sph_rtp, b_trns, f_trns,        &
+     &          ncomp_rj_2_rtp, ncomp_rtp_2_rj, fld_rtp, frc_rtp)
 !
-      use t_spheric_rtp_data
       use m_machine_parameter
-      use m_addresses_trans_sph_MHD
       use const_wz_coriolis_rtp
       use cal_products_smp
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(phys_address), intent(in) :: b_trns, f_trns
+      integer(kind = kint), intent(in) :: ncomp_rj_2_rtp
+      integer(kind = kint), intent(in) :: ncomp_rtp_2_rj
+      real(kind = kreal), intent(in)                                    &
+     &                   :: fld_rtp(sph_rtp%nnod_rtp,ncomp_rj_2_rtp)
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: frc_rtp(sph_rtp%nnod_rtp,ncomp_rtp_2_rj)
 !
 !
 !$omp parallel

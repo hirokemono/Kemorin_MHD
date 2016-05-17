@@ -85,6 +85,7 @@
 !
       use t_boundary_params_sph_MHD
       use m_boundary_params_sph_MHD
+      use m_addresses_trans_sph_MHD
       use m_coriolis_terms_rlm
       use sum_coriolis_terms_rlm
 !
@@ -97,28 +98,28 @@
 !
       if( iflag_4_coriolis .eq. id_turn_OFF) return
 !
-      call sum_rot_coriolis_rlm_10                                      &
-     &   (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm, sph_rlm%a_r_1d_rlm_r,     &
+      call sum_rot_coriolis_rlm_10(trns_MHD%b_trns,                     &
+     &    sph_rlm%nnod_rlm, sph_rlm%nidx_rlm, sph_rlm%a_r_1d_rlm_r,     &
      &    ncomp_trans, n_WR, comm_rlm%irev_sr, WR)
 !
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call inner_core_rot_z_coriolis_rlm                              &
-     &     (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,                         &
+     &     (trns_MHD%b_trns, sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,        &
      &      sph_rlm%radius_1d_rlm_r, ncomp_trans, n_WR,                 &
      &      comm_rlm%irev_sr, WR)
       end if
 !
 !      call sum_div_coriolis_rlm_10                                     &
-!     &   (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,                          &
+!     &   (trns_MHD%b_trns, sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,         &
 !     &    sph_rlm%idx_gl_1d_rlm_j, sph_rlm%a_r_1d_rlm_r,               &
 !     &    ncomp_trans, n_WR, comm_rlm%irev_sr, WR)
 !      call sum_r_coriolis_bc_rlm_10                                    &
-!     &   (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,                          &
+!     &   (trns_MHD%b_trns, sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,         &
 !     &    sph_rlm%idx_gl_1d_rlm_j, sph_rlm%a_r_1d_rlm_r,               &
 !     &    ncomp_trans, kr_in_U_rlm, n_WR, comm_rlm%irev_sr, WR,        &
 !     &    d_cor_in_rlm)
 !      call sum_r_coriolis_bc_rlm_10                                    &
-!     &   (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,                          &
+!     &   (trns_MHD%b_trns, sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,         &
 !     &    sph_rlm%idx_gl_1d_rlm_j, sph_rlm%a_r_1d_rlm_r,               &
 !     &    ncomp_trans, kr_out_U_rlm, n_WR, comm_rlm%irev_sr, WR,       &
 !     &    d_cor_out_rlm)
@@ -149,12 +150,12 @@
      &   (ncomp_trans, sph_rlm%nnod_rlm, n_WS,                          &
      &    comm_rlm%nneib_domain, comm_rlm%istack_sr,                    &
      &    comm_rlm%item_sr, ncomp_coriolis_rlm, ip_rlm_rot_cor,         &
-     &    f_trns%i_rot_Coriolis, d_cor_rlm(1,1), WS(1))
+     &    trns_MHD%f_trns%i_rot_Coriolis, d_cor_rlm(1,1), WS(1))
       call sel_calypso_to_send_scalar                                   &
      &   (ncomp_trans, sph_rlm%nnod_rlm, n_WS,                          &
      &    comm_rlm%nneib_domain, comm_rlm%istack_sr,                    &
      &    comm_rlm%item_sr, ncomp_coriolis_rlm, it_rlm_rot_cor,         &
-     &    (f_trns%i_rot_Coriolis+2), d_cor_rlm(1,1), WS(1))
+     &    (trns_MHD%f_trns%i_rot_Coriolis+2), d_cor_rlm(1,1), WS(1))
 !
       end subroutine copy_coriolis_terms_rlm
 !

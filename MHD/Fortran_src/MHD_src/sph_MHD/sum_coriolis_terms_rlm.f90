@@ -10,16 +10,17 @@
 !!@verbatim
 !!************************************************
 !!
-!!      subroutine sum_rot_coriolis_rlm_10(nnod_rlm, nidx_rlm,          &
+!!      subroutine sum_rot_coriolis_rlm_10(b_trns, nnod_rlm, nidx_rlm,  &
 !!     &          a_r_1d_rlm_r, NB, n_WR, irev_sr_rlm, WR)
-!!      subroutine sum_div_coriolis_rlm_10                              &
-!!     &         (nnod_rlm, nidx_rlm, idx_gl_1d_rlm_j, a_r_1d_rlm_r,    &
+!!      subroutine sum_div_coriolis_rlm_10(b_trns, nnod_rlm, nidx_rlm,  &
+!!     &          idx_gl_1d_rlm_j, a_r_1d_rlm_r,                        &
 !!     &          NB, n_WR, irev_sr_rlm, WR)
-!!      subroutine sum_r_coriolis_bc_rlm_10                             &
-!!     &         (nnod_rlm, nidx_rlm, idx_gl_1d_rlm_j, a_r_1d_rlm_r,    &
+!!      subroutine sum_r_coriolis_bc_rlm_10(b_trns, nnod_rlm, nidx_rlm, &
+!!     &          idx_gl_1d_rlm_j, a_r_1d_rlm_r,                        &
 !!     &          NB, kr, n_WR, irev_sr_rlm,  WR, d_cor_bc)
-!!      subroutine inner_core_rot_z_coriolis_rlm(nnod_rlm, nidx_rlm,    &
-!!     &          radius_1d_rlm_r,  NB, n_WR, irev_sr_rlm, WR)
+!!      subroutine inner_core_rot_z_coriolis_rlm                        &
+!!     &         (b_trns, nnod_rlm, nidx_rlm, radius_1d_rlm_r,          &
+!!     &          NB, n_WR, irev_sr_rlm, WR)
 !!
 !!************************************************
 !!
@@ -80,6 +81,8 @@
       use m_schmidt_poly_on_rtm
       use m_gaunt_coriolis_rlm
 !
+      use t_phys_address
+!
       implicit none
 !
 !   ------------------------------------------------------------------
@@ -88,12 +91,12 @@
 !
 !   ------------------------------------------------------------------
 !
-      subroutine sum_rot_coriolis_rlm_10(nnod_rlm, nidx_rlm,            &
+      subroutine sum_rot_coriolis_rlm_10(b_trns, nnod_rlm, nidx_rlm,    &
      &          a_r_1d_rlm_r, NB, n_WR, irev_sr_rlm, WR)
 !
       use m_coriolis_terms_rlm
-      use m_addresses_trans_sph_MHD
 !
+      type(phys_address), intent(in) :: b_trns
 !
       integer(kind = kint), intent(in) :: nnod_rlm
       integer(kind = kint), intent(in) :: nidx_rlm(2)
@@ -175,13 +178,13 @@
 !*
 !*   ------------------------------------------------------------------
 !*
-      subroutine sum_div_coriolis_rlm_10                                &
-     &         (nnod_rlm, nidx_rlm, idx_gl_1d_rlm_j, a_r_1d_rlm_r,      &
+      subroutine sum_div_coriolis_rlm_10(b_trns, nnod_rlm, nidx_rlm,    &
+     &          idx_gl_1d_rlm_j, a_r_1d_rlm_r,                          &
      &          NB, n_WR, irev_sr_rlm, WR)
 !
       use m_coriolis_terms_rlm
-      use m_addresses_trans_sph_MHD
 !
+      type(phys_address), intent(in) :: b_trns
 !
       integer(kind = kint), intent(in) :: nnod_rlm
       integer(kind = kint), intent(in) :: nidx_rlm(2)
@@ -264,12 +267,13 @@
 !*
 !*   ------------------------------------------------------------------
 !*
-      subroutine sum_r_coriolis_bc_rlm_10                               &
-     &         (nnod_rlm, nidx_rlm, idx_gl_1d_rlm_j, a_r_1d_rlm_r,      &
+      subroutine sum_r_coriolis_bc_rlm_10(b_trns, nnod_rlm, nidx_rlm,   &
+     &          idx_gl_1d_rlm_j, a_r_1d_rlm_r,                          &
      &          NB, kr, n_WR, irev_sr_rlm,  WR, d_cor_bc)
 !
-      use m_addresses_trans_sph_MHD
       use m_coriolis_terms_rlm
+!
+      type(phys_address), intent(in) :: b_trns
 !
       integer(kind = kint), intent(in) :: nnod_rlm
       integer(kind = kint), intent(in) :: nidx_rlm(2)
@@ -337,11 +341,13 @@
 !*
 !*   ------------------------------------------------------------------
 !
-      subroutine inner_core_rot_z_coriolis_rlm(nnod_rlm, nidx_rlm,      &
-     &          radius_1d_rlm_r, NB, n_WR, irev_sr_rlm, WR)
+      subroutine inner_core_rot_z_coriolis_rlm                          &
+     &         (b_trns, nnod_rlm, nidx_rlm, radius_1d_rlm_r,            &
+     &          NB, n_WR, irev_sr_rlm, WR)
 !
       use m_coriolis_terms_rlm
-      use m_addresses_trans_sph_MHD
+!
+      type(phys_address), intent(in) :: b_trns
 !
       integer(kind = kint), intent(in) :: nnod_rlm
       integer(kind = kint), intent(in) :: nidx_rlm(2)

@@ -20,8 +20,13 @@
       use m_precision
 !
       use t_phys_address
+      use t_addresses_sph_transform
 !
       implicit none
+!
+!>      strucutre for spherical transform data addresses
+      type(address_4_sph_trans), save :: trns_MHD
+!trns_MHD%b_trns
 !
 !>      number of components for backward spherical harmonics transform
       integer(kind = kint) :: ncomp_rj_2_rtp = 0
@@ -44,15 +49,15 @@
 !
 !
 !>      addresses of fields for backward transform
-      type(phys_address), save :: b_trns
+!      type(phys_address), save :: b_trns
 !
 !>      addresses of forces for forward transform
-      type(phys_address), save :: f_trns
+!      type(phys_address), save :: f_trns
 !
 !>      field data to evaluate nonliear terms in grid space
-      real(kind = kreal), allocatable :: fld_rtp(:,:)
+!      real(kind = kreal), allocatable :: fld_rtp(:,:)
 !>      Nonliear terms data in grid space
-      real(kind = kreal), allocatable :: frc_rtp(:,:)
+!      real(kind = kreal), allocatable :: frc_rtp(:,:)
 !
 !-----------------------------------------------------------------------
 !
@@ -65,10 +70,10 @@
       integer(kind = kint), intent(in) :: nnod_rtp
 !
 !
-      allocate(fld_rtp(nnod_rtp,ncomp_rj_2_rtp))
-      allocate(frc_rtp(nnod_rtp,ncomp_rtp_2_rj))
-      if(ncomp_rj_2_rtp .gt. 0) fld_rtp = 0.0d0
-      if(ncomp_rtp_2_rj .gt. 0) frc_rtp = 0.0d0
+      allocate(trns_MHD%fld_rtp(nnod_rtp,ncomp_rj_2_rtp))
+      allocate(trns_MHD%frc_rtp(nnod_rtp,ncomp_rtp_2_rj))
+      if(ncomp_rj_2_rtp .gt. 0) trns_MHD%fld_rtp = 0.0d0
+      if(ncomp_rtp_2_rj .gt. 0) trns_MHD%frc_rtp = 0.0d0
 !
       end subroutine allocate_nonlinear_data
 !
@@ -76,18 +81,19 @@
 !
       subroutine deallocate_nonlinear_data
 !
-      deallocate(fld_rtp, frc_rtp)
+      deallocate(trns_MHD%fld_rtp, trns_MHD%frc_rtp)
 !
       end subroutine deallocate_nonlinear_data
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_addresses_trans_sph_MHD
+      subroutine set_addresses_trans_sph_MHD(b_trns, f_trns)
 !
       use m_control_parameter
       use m_work_4_sph_trans
 !
+      type(phys_address), intent(inout) :: b_trns, f_trns
 !
       nvector_rj_2_rtp = 0
 !   velocity flag
@@ -190,10 +196,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine check_add_trans_sph_MHD
+      subroutine check_add_trans_sph_MHD(b_trns, f_trns)
 !
       use m_sph_phys_address
       use m_work_4_sph_trans
+!
+      type(phys_address), intent(in) :: b_trns, f_trns
 !
 !
       write(*,*) 'ncomp_sph_trans ', ncomp_sph_trans
