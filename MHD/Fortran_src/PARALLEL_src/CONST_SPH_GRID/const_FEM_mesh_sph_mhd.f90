@@ -82,7 +82,7 @@
 !-----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine const_global_sph_FEM(sph_rtp1, sph_rj1, radial_rtp_grp1)
+      subroutine const_global_sph_FEM(sph_rtp1, sph_rj, radial_rtp_grp)
 !
       use m_spheric_global_ranks
       use m_sph_global_parameter
@@ -91,14 +91,14 @@
       use set_sph_1d_domain_id
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp1
-      type(sph_rj_grid), intent(in) :: sph_rj1
-      type(group_data), intent(in) :: radial_rtp_grp1
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(group_data), intent(in) :: radial_rtp_grp
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'const_global_rtp_mesh'
-      call const_global_rtp_mesh(sph_rtp1, radial_rtp_grp1)
+      call const_global_rtp_mesh(sph_rtp1, radial_rtp_grp)
 !
-      call allocate_sph_1d_domain_id(sph_rtp1, sph_rj1)
+      call allocate_sph_1d_domain_id(sph_rtp1, sph_rj)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_1d_domain_id_rtp'
       call set_sph_1d_domain_id_rtp

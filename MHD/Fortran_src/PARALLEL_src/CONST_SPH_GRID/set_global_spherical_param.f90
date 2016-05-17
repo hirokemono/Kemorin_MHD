@@ -4,11 +4,11 @@
 !     Written by H. Matsui on July, 2007
 !
 !!      subroutine set_global_sph_resolution(l_truncation, m_folding,   &
-!!     &          sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1)
-!!        type(sph_rtp_grid), intent(inout) :: sph_rtp1
-!!        type(sph_rtm_grid), intent(inout) :: sph_rtm1
-!!        type(sph_rlm_grid), intent(inout) :: sph_rlm1
-!!        type(sph_rj_grid), intent(inout) :: sph_rj1
+!!     &          sph_rtp, sph_rtm, sph_rlm, sph_rj)
+!!        type(sph_rtp_grid), intent(inout) :: sph_rtp
+!!        type(sph_rtm_grid), intent(inout) :: sph_rtm
+!!        type(sph_rlm_grid), intent(inout) :: sph_rlm
+!!        type(sph_rj_grid), intent(inout) :: sph_rj
 !!        required resoplution:  nidx_global_rtp(1)
 !!                               nidx_global_rtp(2)
 !!        required resolution:  l_truncation
@@ -48,42 +48,42 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_global_sph_resolution(l_truncation, m_folding,     &
-     &          sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1)
+     &          sph_rtp, sph_rtm, sph_rlm, sph_rj)
 !
       use t_spheric_parameter
 !
       integer(kind = kint), intent(in) :: l_truncation, m_folding
-      type(sph_rtp_grid), intent(inout) :: sph_rtp1
-      type(sph_rtm_grid), intent(inout) :: sph_rtm1
-      type(sph_rlm_grid), intent(inout) :: sph_rlm1
-      type(sph_rj_grid), intent(inout) :: sph_rj1
+      type(sph_rtp_grid), intent(inout) :: sph_rtp
+      type(sph_rtm_grid), intent(inout) :: sph_rtm
+      type(sph_rlm_grid), intent(inout) :: sph_rlm
+      type(sph_rj_grid), intent(inout) :: sph_rj
 !
 !
-      sph_rtp1%nidx_global_rtp(3)                                       &
-     &                   = 2*sph_rtp1%nidx_global_rtp(2) / m_folding
+      sph_rtp%nidx_global_rtp(3)                                        &
+     &                   = 2*sph_rtp%nidx_global_rtp(2) / m_folding
 !
-      sph_rtm1%nidx_global_rtm(1) = sph_rtp1%nidx_global_rtp(1)
-      sph_rtm1%nidx_global_rtm(2) = sph_rtp1%nidx_global_rtp(2)
-      sph_rtm1%nidx_global_rtm(3) = 2*(l_truncation/m_folding + 1) 
+      sph_rtm%nidx_global_rtm(1) = sph_rtp%nidx_global_rtp(1)
+      sph_rtm%nidx_global_rtm(2) = sph_rtp%nidx_global_rtp(2)
+      sph_rtm%nidx_global_rtm(3) = 2*(l_truncation/m_folding + 1) 
 !
-      sph_rlm1%nidx_global_rlm(1) = sph_rtp1%nidx_global_rtp(1)
-      sph_rlm1%nidx_global_rlm(2)                                       &
+      sph_rlm%nidx_global_rlm(1) = sph_rtp%nidx_global_rtp(1)
+      sph_rlm%nidx_global_rlm(2)                                        &
      &                   = (l_truncation+2)*l_truncation / m_folding
 !
-      sph_rj1%nidx_global_rj(1) = sph_rtp1%nidx_global_rtp(1)
-      sph_rj1%nidx_global_rj(2)                                         &
+      sph_rj%nidx_global_rj(1) = sph_rtp%nidx_global_rtp(1)
+      sph_rj%nidx_global_rj(2)                                          &
      &                   = (l_truncation+2)*l_truncation / m_folding
 !
       nnod_global_rtp                                                   &
-     &  =  sph_rtp1%nidx_global_rtp(1) * sph_rtp1%nidx_global_rtp(2)    &
-     &   * sph_rtp1%nidx_global_rtp(3)
+     &  =  sph_rtp%nidx_global_rtp(1) * sph_rtp%nidx_global_rtp(2)      &
+     &   * sph_rtp%nidx_global_rtp(3)
       nnod_global_rtm                                                   &
-     &  =  sph_rtm1%nidx_global_rtm(1) * sph_rtm1%nidx_global_rtm(2)    &
-     &   * sph_rtm1%nidx_global_rtm(3)
+     &  =  sph_rtm%nidx_global_rtm(1) * sph_rtm%nidx_global_rtm(2)      &
+     &   * sph_rtm%nidx_global_rtm(3)
       nnod_global_rlm                                                   &
-     &  = sph_rlm1%nidx_global_rlm(1) * (sph_rlm1%nidx_global_rlm(2)+1)
+     &  = sph_rlm%nidx_global_rlm(1) * (sph_rlm%nidx_global_rlm(2)+1)
       nnod_global_rj                                                    &
-     &  = sph_rj1%nidx_global_rj(1) * (sph_rj1%nidx_global_rj(2) + 1)
+     &  = sph_rj%nidx_global_rj(1) * (sph_rj%nidx_global_rj(2) + 1)
 !
       end subroutine set_global_sph_resolution
 !

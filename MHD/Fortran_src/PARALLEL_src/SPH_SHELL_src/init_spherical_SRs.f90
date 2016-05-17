@@ -9,12 +9,12 @@
 !!
 !!@verbatim
 !!      subroutine init_sph_send_recv_N                                 &
-!!     &         (NB, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,            &
+!!     &         (NB, sph_rtp, sph_rtm, sph_rlm, sph_rj,                &
 !!     &          comm_rtp, comm_rtm, comm_rlm, comm_rj)
-!!        type(sph_rtp_grid), intent(in) :: sph_rtp1
-!!        type(sph_rtm_grid), intent(in) :: sph_rtm1
-!!        type(sph_rlm_grid), intent(in) :: sph_rlm1
-!!        type(sph_rj_grid), intent(in) :: sph_rj1
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(sph_rtm_grid), intent(in) :: sph_rtm
+!!        type(sph_rlm_grid), intent(in) :: sph_rlm
+!!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(sph_comm_tbl), intent(inout) :: comm_rtp
 !!        type(sph_comm_tbl), intent(inout) :: comm_rtm
 !!        type(sph_comm_tbl), intent(inout) :: comm_rlm
@@ -51,7 +51,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine init_sph_send_recv_N                                   &
-     &         (NB, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,              &
+     &         (NB, sph_rtp, sph_rtm, sph_rlm, sph_rj,                  &
      &          comm_rtp, comm_rtm, comm_rlm, comm_rj)
 !
       use calypso_mpi
@@ -61,10 +61,10 @@
       use spherical_SRs_N
 !
       integer (kind=kint), intent(in) :: NB
-      type(sph_rtp_grid), intent(in) :: sph_rtp1
-      type(sph_rtm_grid), intent(in) :: sph_rtm1
-      type(sph_rlm_grid), intent(in) :: sph_rlm1
-      type(sph_rj_grid), intent(in) :: sph_rj1
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_rtm_grid), intent(in) :: sph_rtm
+      type(sph_rlm_grid), intent(in) :: sph_rlm
+      type(sph_rj_grid), intent(in) :: sph_rj
 !
       type(sph_comm_tbl), intent(inout) :: comm_rtp
       type(sph_comm_tbl), intent(inout) :: comm_rtm
@@ -74,9 +74,9 @@
       real(kind = kreal), allocatable :: X_rtp(:), X_rj(:)
 !
       call allocate_work_sph_trans                                      &
-     &   (NB, sph_rtm1%nnod_rtm, sph_rlm1%nnod_rlm)
-      allocate(X_rj(NB*sph_rj1%nnod_rj))
-      allocate(X_rtp(NB*sph_rtp1%nnod_rtp))
+     &   (NB, sph_rtm%nnod_rtm, sph_rlm%nnod_rlm)
+      allocate(X_rj(NB*sph_rj%nnod_rj))
+      allocate(X_rtp(NB*sph_rtp%nnod_rtp))
       X_rj = 0.0d0
       X_rtp = 0.0d0
 !
@@ -87,8 +87,8 @@
      &   (NB, comm_rtp, comm_rtm, comm_rlm, comm_rj)
       call sel_sph_import_table                                         &
      &   (NB, comm_rtp, comm_rtm, comm_rlm, comm_rj,                    &
-     &    sph_rtp1%nnod_rtp, sph_rtm1%nnod_rtm,                         &
-     &    sph_rlm1%nnod_rlm, sph_rj1%nnod_rj,                           &
+     &    sph_rtp%nnod_rtp, sph_rtm%nnod_rtm,                           &
+     &    sph_rlm%nnod_rlm, sph_rj%nnod_rj,                             &
      &    X_rtp, vr_rtm_wk, sp_rlm_wk, X_rj)
 !
       deallocate(X_rj, X_rtp)

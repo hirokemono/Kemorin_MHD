@@ -11,7 +11,8 @@
 !!      subroutine set_sum_table_4_sph_spectr                           &
 !!     &         (l_truncation, nidx_rj, idx_gl_1d_rj_j)
 !!      subroutine sum_sph_layerd_rms(kg_st, kg_ed, l_truncation,       &
-!!     &          sph_rj1, rj_fld)
+!!     &          sph_rj, rj_fld)
+!!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(phys_data), intent(in) :: rj_fld
 !!@endverbatim
 !
@@ -206,7 +207,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sum_sph_layerd_rms(kg_st, kg_ed, l_truncation,         &
-     &          sph_rj1, rj_fld)
+     &          sph_rj, rj_fld)
 !
       use calypso_mpi
       use m_rms_4_sph_spectr
@@ -220,7 +221,7 @@
 !
       integer(kind = kint), intent(in) :: kg_st, kg_ed
       integer(kind = kint), intent(in) :: l_truncation
-      type(sph_rj_grid), intent(in) :: sph_rj1
+      type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_data), intent(in) :: rj_fld
 !
       integer(kind = kint) :: j_fld, i_fld
@@ -240,32 +241,32 @@
         icomp_rj = rj_fld%istack_component(i_fld-1) + 1
         jcomp_st = istack_rms_comp_rj(j_fld-1) + 1
         ncomp_rj = num_rms_comp_rj(j_fld)
-        num = sph_rj1%nidx_rj(2) * ncomp_rj
-        call cal_rms_sph_spec_one_field(sph_rj1, ncomp_rj, icomp_rj,    &
+        num = sph_rj%nidx_rj(2) * ncomp_rj
+        call cal_rms_sph_spec_one_field(sph_rj, ncomp_rj, icomp_rj,     &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,             &
      &      rms_sph_rj(0,1,1))
-        call radial_integration(kg_st, kg_ed, sph_rj1%nidx_rj(1),       &
-     &      sph_rj1%radius_1d_rj_r, num,                                &
+        call radial_integration(kg_st, kg_ed, sph_rj%nidx_rj(1),        &
+     &      sph_rj%radius_1d_rj_r, num,                                 &
      &      rms_sph_rj(0,1,1), rms_sph_vol_j(1,1))
 !
-        call sum_sph_v_rms_by_degree(l_truncation, sph_rj1%nidx_rj(2),  &
+        call sum_sph_v_rms_by_degree(l_truncation, sph_rj%nidx_rj(2),   &
      &      istack_mode_sum_l,  item_mode_sum_l,  ncomp_rj,             &
      &      rms_sph_vl_local(0,jcomp_st))
-        call sum_sph_v_rms_by_degree(l_truncation, sph_rj1%nidx_rj(2),  &
+        call sum_sph_v_rms_by_degree(l_truncation, sph_rj%nidx_rj(2),   &
      &      istack_mode_sum_m,  item_mode_sum_m,  ncomp_rj,             &
      &      rms_sph_vm_local(0,jcomp_st))
-        call sum_sph_v_rms_by_degree(l_truncation, sph_rj1%nidx_rj(2),  &
+        call sum_sph_v_rms_by_degree(l_truncation, sph_rj%nidx_rj(2),   &
      &      istack_mode_sum_lm, item_mode_sum_lm, ncomp_rj,             &
      &      rms_sph_vlm_local(0,jcomp_st))
 !
         if(nri_rms .le. 0) cycle
-        call sum_sph_rms_by_degree(l_truncation, sph_rj1%nidx_rj(2),    &
+        call sum_sph_rms_by_degree(l_truncation, sph_rj%nidx_rj(2),     &
      &      nri_rms, kr_for_rms, istack_mode_sum_l,  item_mode_sum_l,   &
      &      ncomp_rj, rms_sph_l_local(1,0,jcomp_st))
-        call sum_sph_rms_by_degree(l_truncation, sph_rj1%nidx_rj(2),    &
+        call sum_sph_rms_by_degree(l_truncation, sph_rj%nidx_rj(2),     &
      &      nri_rms, kr_for_rms, istack_mode_sum_m,  item_mode_sum_m,   &
      &      ncomp_rj, rms_sph_m_local(1,0,jcomp_st))
-        call sum_sph_rms_by_degree(l_truncation, sph_rj1%nidx_rj(2),    &
+        call sum_sph_rms_by_degree(l_truncation, sph_rj%nidx_rj(2),     &
      &      nri_rms, kr_for_rms, istack_mode_sum_lm, item_mode_sum_lm,  &
      &      ncomp_rj, rms_sph_lm_local(1,0,jcomp_st))
       end do

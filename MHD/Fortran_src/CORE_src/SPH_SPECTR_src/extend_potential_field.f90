@@ -38,12 +38,12 @@
 !!        Output: d_rj(1:kr_in,is_current)
 !!
 !!      subroutine gauss_to_poloidal_out(kr_out, ltr_w, r_gauss,        &
-!!     &          w_gauss, index_w, is_fld, sph_rj1,                    &
+!!     &          w_gauss, index_w, is_fld, sph_rj,                     &
 !!     &          n_point, ntot_phys_rj, d_rj)
 !!      subroutine gauss_to_poloidal_in(kr_in, ltr_w, r_gauss,          &
 !!     &          w_gauss, index_w, is_fld, sph_rj,                     &
 !!     &          n_point, ntot_phys_rj, d_rj)
-!!        type(sph_rj_grid), intent(in) :: sph_rj1
+!!        type(sph_rj_grid), intent(in) :: sph_rj
 !!@endverbatim
 !
       module extend_potential_field

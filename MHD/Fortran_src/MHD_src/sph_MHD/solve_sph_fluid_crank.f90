@@ -168,7 +168,7 @@
      &      is_field, n_point, ntot_phys_rj, d_rj, sol_00)
       end if
 !
-!      j = find_local_sph_address(sph_rj1, 30,-23)
+!      j = find_local_sph_address(sph_rj, 30,-23)
 !      if(j.gt.0) then
 !        write(*,*) 'matrix'
 !        call check_single_radial_3band_mat(my_rank, nri,               &
