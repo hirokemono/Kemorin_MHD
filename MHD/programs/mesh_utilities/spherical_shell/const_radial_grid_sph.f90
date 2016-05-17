@@ -31,21 +31,21 @@
       read(*,*) nele
 !
       write(*,*) 'input grid type (0:equi-distance, 2:Chebyshev)'
-      read(*,*) sph_param1%iflag_radial_grid
-      if(sph_param1%iflag_radial_grid .ne. 0) then
-        sph_param1%iflag_radial_grid = 2
+      read(*,*) sph1%sph_params%iflag_radial_grid
+      if(sph1%sph_params%iflag_radial_grid .ne. 0) then
+        sph1%sph_params%iflag_radial_grid = 2
       end if
 !
-      sph_param1%radius_ICB = shell * ratio / (one - ratio)
-      sph_param1%radius_CMB = sph_param1%radius_ICB + shell
+      sph1%sph_params%radius_ICB = shell * ratio / (one - ratio)
+      sph1%sph_params%radius_CMB = sph1%sph_params%radius_ICB + shell
 !
       if(rmin.lt.0.0d0 .or. rmax.lt.0.0d0 .or. rmin.ge.rmax) then
-        rmin = sph_param1%radius_ICB
-        rmax = sph_param1%radius_CMB
+        rmin = sph1%sph_params%radius_ICB
+        rmax = sph1%sph_params%radius_CMB
       end if
 !
       call count_set_radial_grid                                        &
-     &   (nele, rmin, rmax, sph_param1, sph1%sph_rtp)
+     &   (nele, rmin, rmax, sph1%sph_params, sph1%sph_rtp)
 !
       stop
       end program const_radial_grid_sph

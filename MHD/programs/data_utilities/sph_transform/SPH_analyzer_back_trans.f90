@@ -63,7 +63,7 @@
       if(iflag_org_sph_rj_head .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'input_old_rj_sph_trans'
         call input_old_rj_sph_trans                                     &
-     &     (my_rank, sph_param1%l_truncation, sph1%sph_rj)
+     &     (my_rank, sph1%sph_params%l_truncation, sph1%sph_rj)
         call set_sph_magne_address(rj_fld1)
       end if
 !
@@ -81,7 +81,7 @@
      &            id_legendre_transfer = iflag_leg_orginal_loop
       call copy_sph_trans_nums_from_rtp
       call initialize_sph_trans                                         &
-     &   (sph_param1, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,        &
+     &   (sph1%sph_params, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,        &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1)
 !
       call init_pole_transform(sph1%sph_rtp)
@@ -150,7 +150,7 @@
 !          call check_all_field_data(my_rank, rj_fld1)
 !  spherical transform for vector
         call sph_b_trans_all_field                                      &
-     &     (sph_param1, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,      &
+     &     (sph1%sph_params, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,      &
      &      comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1,                  &
      &      femmesh_STR%mesh, rj_fld1, field_STR)
       end if

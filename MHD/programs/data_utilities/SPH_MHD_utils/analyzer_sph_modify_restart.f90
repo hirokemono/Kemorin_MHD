@@ -118,14 +118,14 @@
 !*
       if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
       call output_rms_sph_mhd_control                                   &
-     &   (sph_param1, sph1%sph_rj, rj_fld1)
+     &   (sph1%sph_params, sph1%sph_rj, rj_fld1)
 !
 !*  -----------  lead energy data --------------
 !*
       call start_eleps_time(11)
       if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
       call output_rms_sph_mhd_control                                   &
-     &   (sph_param1, sph1%sph_rj, rj_fld1)
+     &   (sph1%sph_params, sph1%sph_rj, rj_fld1)
       call end_eleps_time(11)
       call end_eleps_time(4)
 !

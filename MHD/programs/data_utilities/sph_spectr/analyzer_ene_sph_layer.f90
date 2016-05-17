@@ -58,7 +58,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'load_para_sph_mesh'
       call load_para_sph_mesh                                           &
-     &   (sph_param1, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,        &
+     &   (sph1%sph_params, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,        &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, bc_rtp_grp1,       &
      &    radial_rtp_grp1, theta_rtp_grp1, zonal_rtp_grp,               &
      &    radial_rj_grp1, sphere_rj_grp1)
@@ -76,7 +76,7 @@
       call set_sph_sprctr_data_address(sph1%sph_rj, rj_fld1)
 !
       call init_rms_4_sph_spectr                                        &
-     &   (sph_param1%l_truncation, sph1%sph_rj, rj_fld1)
+     &   (sph1%sph_params%l_truncation, sph1%sph_rj, rj_fld1)
 !
 !
       end subroutine initialize_ene_sph_layer
@@ -113,13 +113,13 @@
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_mean_squre_in_shell'
         call cal_mean_squre_in_shell(ione, sph1%sph_rj%nidx_rj(1),      &
-     &      sph_param1%l_truncation, sph1%sph_rj, rj_fld1)
+     &      sph1%sph_params%l_truncation, sph1%sph_rj, rj_fld1)
 !
         if (iflag_debug.gt.0)                                           &
      &      write(*,*) 'write_sph_1layer_ms_spec_file'
         call write_sph_layer_ms_file                                    &
-     &     (my_rank, i_step, time, sph_param1%l_truncation,             &
-     &      sph_param1%nlayer_ICB, sph_param1%nlayer_CMB)
+     &     (my_rank, i_step, time, sph1%sph_params%l_truncation,        &
+     &      sph1%sph_params%nlayer_ICB, sph1%sph_params%nlayer_CMB)
       end do
 !
       end subroutine analyze_ene_sph_layer

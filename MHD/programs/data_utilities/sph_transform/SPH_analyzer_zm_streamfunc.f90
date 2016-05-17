@@ -80,7 +80,7 @@
 !
 !  spherical transform for vector
         call sph_b_trans_streamline                                     &
-     &     (sph_param1, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm,       &
+     &     (sph1%sph_params, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm,  &
      &      comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1,                  &
      &      femmesh_STR%mesh, rj_fld1, field_STR)
 !

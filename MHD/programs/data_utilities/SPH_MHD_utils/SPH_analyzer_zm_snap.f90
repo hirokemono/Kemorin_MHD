@@ -73,7 +73,7 @@
 !*
       if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
       call s_lead_fields_4_sph_mhd                                      &
-     &   (sph_param1, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,        &
+     &   (sph1%sph_params, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,        &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, rj_fld1)
       call end_eleps_time(9)
 !
@@ -88,7 +88,7 @@
       call start_eleps_time(11)
       if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
       call output_rms_sph_mhd_control                                   &
-     &   (sph_param1, sph1%sph_rj, rj_fld1)
+     &   (sph1%sph_params, sph1%sph_rj, rj_fld1)
       call end_eleps_time(11)
       call end_eleps_time(4)
 !
@@ -119,13 +119,13 @@
 !*  -----------  data transfer to FEM array --------------
 !*
       call copy_forces_to_snapshot_rtp                                  &
-     &   (sph_param1%m_folding, sph1%sph_rtp,       &
+     &   (sph1%sph_params%m_folding, sph1%sph_rtp,                      &
      &    mesh1%node, iphys, nod_fld1)
       call copy_snap_vec_fld_from_trans                                 &
-     &   (sph_param1%m_folding, sph1%sph_rtp,       &
+     &   (sph1%sph_params%m_folding, sph1%sph_rtp,                      &
      &    mesh1%node, iphys, nod_fld1)
       call copy_snap_vec_fld_to_trans                                   &
-     &   (sph_param1%m_folding, sph1%sph_rtp,       &
+     &   (sph1%sph_params%m_folding, sph1%sph_rtp,                      &
      &    mesh1%node, iphys, nod_fld1)
 !
 ! ----  Take zonal mean
@@ -136,7 +136,7 @@
 !*  ----------- transform field at pole and center --------------
 !*
       call lead_pole_fields_4_sph_mhd                                   &
-     &   (sph_param1, sph1%sph_rtp, mesh1%node, iphys, nod_fld1)
+     &   (sph1%sph_params, sph1%sph_rtp, mesh1%node, iphys, nod_fld1)
 !
       call nod_fields_send_recv(mesh1%node, mesh1%nod_comm, nod_fld1)
 !

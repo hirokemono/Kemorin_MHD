@@ -40,7 +40,7 @@
       call read_sph_spec_4_monitor(id_pick, i_step, time, ierr)
       icou = 0
 !
-      call set_radius_for_fdm(sph_param1, sph1%sph_rj)
+      call set_radius_for_fdm(sph1%sph_params, sph1%sph_rj)
       call alloc_neutral_point
 !
       do

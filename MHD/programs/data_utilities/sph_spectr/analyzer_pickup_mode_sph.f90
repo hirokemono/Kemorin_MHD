@@ -58,7 +58,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'load_para_sph_mesh'
       call load_para_sph_mesh                                           &
-     &   (sph_param1, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,        &
+     &   (sph1%sph_params, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,        &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, bc_rtp_grp1,       &
      &    radial_rtp_grp1, theta_rtp_grp1, zonal_rtp_grp,               &
      &    radial_rj_grp1, sphere_rj_grp1)
@@ -76,7 +76,7 @@
       call alloc_phys_data_type(sph1%sph_rj%nnod_rj, rj_fld1)
 !
       call init_rms_4_sph_spectr                                        &
-     &   (sph_param1%l_truncation, sph1%sph_rj, rj_fld1)
+     &   (sph1%sph_params%l_truncation, sph1%sph_rj, rj_fld1)
 !
       end subroutine initialization
 !
@@ -98,7 +98,7 @@
 !
 !
       call init_sph_spec_4_monitor                                      &
-     &   (sph_param1%l_truncation, sph1%sph_rj, rj_fld1)
+     &   (sph1%sph_params%l_truncation, sph1%sph_rj, rj_fld1)
 !
       do i_step = i_step_init, i_step_number, i_step_output_ucd
 !

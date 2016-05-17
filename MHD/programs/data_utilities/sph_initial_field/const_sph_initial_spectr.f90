@@ -545,7 +545,7 @@
       real(kind = kreal) function r_CMB()
       use m_spheric_parameter
 !
-      r_CMB = sph_param1%radius_CMB
+      r_CMB = sph1%sph_params%radius_CMB
 !
       end function r_CMB
 !
@@ -554,7 +554,7 @@
       real(kind = kreal) function r_ICB()
       use m_spheric_parameter
 !
-      r_ICB = sph_param1%radius_ICB
+      r_ICB = sph1%sph_params%radius_ICB
 !
       end function r_ICB
 !
@@ -563,7 +563,7 @@
       integer(kind = kint) function nlayer_CMB()
       use m_spheric_parameter
 !
-      nlayer_CMB = sph_param1%nlayer_CMB
+      nlayer_CMB = sph1%sph_params%nlayer_CMB
 !
       end function nlayer_CMB
 !
@@ -572,7 +572,7 @@
       integer(kind = kint) function nlayer_ICB()
       use m_spheric_parameter
 !
-      nlayer_ICB = sph_param1%nlayer_ICB
+      nlayer_ICB = sph1%sph_params%nlayer_ICB
 !
       end function nlayer_ICB
 !

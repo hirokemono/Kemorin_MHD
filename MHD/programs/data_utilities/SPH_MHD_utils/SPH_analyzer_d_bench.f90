@@ -66,17 +66,17 @@
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_rms_4_sph_spectr'
       call init_rms_4_sph_spectr                                        &
-     &   (sph_param1%l_truncation, sph1%sph_rj, rj_fld1)
+     &   (sph1%sph_params%l_truncation, sph1%sph_rj, rj_fld1)
 !
 ! ---------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'set_radius_rot_reft_dat_4_sph'
       call set_radius_rot_reft_dat_4_sph(depth_high_t, depth_low_t,     &
      &    high_temp, low_temp, angular, sph1%sph_rlm, sph1%sph_rj,      &
-     &    radial_rj_grp1, sph_param1, rj_fld1)
+     &    radial_rj_grp1, sph1%sph_params, rj_fld1)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_2nd_fdm_matrices'
-      call const_2nd_fdm_matrices(sph_param1, sph1%sph_rj)
+      call const_2nd_fdm_matrices(sph1%sph_params, sph1%sph_rj)
 !
 ! ---------------------------------
 !
@@ -86,15 +86,16 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_bc_sph_mhd'
-      call s_set_bc_sph_mhd(sph_param1, sph1%sph_rj, radial_rj_grp1,    &
+      call s_set_bc_sph_mhd                                             &
+     &   (sph1%sph_params, sph1%sph_rj, radial_rj_grp1,                 &
      &    CTR_nod_grp_name, CTR_sf_grp_name)
-      call init_reference_fields(sph_param1, sph1%sph_rj)
+      call init_reference_fields(sph1%sph_params, sph1%sph_rj)
 !
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
       call init_sph_transform_MHD                                       &
-     &   (sph_param1, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,            &
+     &   (sph1%sph_params, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,            &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, rj_fld1)
 !
 ! ---------------------------------
@@ -105,12 +106,12 @@
 !     --------------------- 
 !  set original spectr mesh data for extension of B
 !
-      call init_radial_sph_interpolation(sph_param1, sph1%sph_rj)
+      call init_radial_sph_interpolation(sph1%sph_params, sph1%sph_rj)
 !
 !* -----  find mid-equator point -----------------
 !*
       call set_mid_equator_point_global                                 &
-     &   (sph_param1, sph1%sph_rtp, sph1%sph_rj)
+     &   (sph1%sph_params, sph1%sph_rtp, sph1%sph_rj)
 !
       end subroutine SPH_init_sph_dbench
 !
@@ -161,7 +162,7 @@
 !*
       if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
       call s_lead_fields_4_sph_mhd                                      &
-     &   (sph_param1, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,            &
+     &   (sph1%sph_params, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,            &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, rj_fld1)
       call end_eleps_time(9)
 !
@@ -170,7 +171,8 @@
       call start_eleps_time(4)
       call start_eleps_time(11)
       if(iflag_debug.gt.0)  write(*,*) 'const_data_4_dynamobench'
-      call s_const_data_4_dynamobench(sph_param1, sph1%sph_rj, rj_fld1)
+      call s_const_data_4_dynamobench                                   &
+     &   (sph1%sph_params, sph1%sph_rj, rj_fld1)
       call output_field_4_dynamobench(i_step, time)
       call end_eleps_time(11)
       call end_eleps_time(4)

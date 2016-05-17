@@ -60,7 +60,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'load_para_sph_mesh'
       call load_para_sph_mesh                                           &
-     &   (sph_param1, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,        &
+     &   (sph1%sph_params, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,        &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, bc_rtp_grp1,       &
      &    radial_rtp_grp1, theta_rtp_grp1, zonal_rtp_grp,               &
      &    radial_rj_grp1, sphere_rj_grp1)
@@ -78,7 +78,7 @@
       call set_sph_sprctr_data_address(sph1%sph_rj, rj_fld1)
 !
       call init_rms_4_sph_spectr                                        &
-     &   (sph_param1%l_truncation, sph1%sph_rj, rj_fld1)
+     &   (sph1%sph_params%l_truncation, sph1%sph_rj, rj_fld1)
 !
       call allocate_work_pick_rms_sph                                   &
      &   (sph1%sph_rj%nidx_rj(1), sph1%sph_rj%nidx_rj(2))
@@ -103,7 +103,8 @@
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_rms_4_monitor'
-      call init_sph_rms_4_monitor(sph_param1%l_truncation, sph1%sph_rj)
+      call init_sph_rms_4_monitor                                       &
+     &   (sph1%sph_params%l_truncation, sph1%sph_rj)
 !
       do i_step = i_step_init, i_step_number, i_step_output_ucd
 !
