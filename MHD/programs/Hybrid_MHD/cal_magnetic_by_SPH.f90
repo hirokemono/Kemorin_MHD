@@ -105,9 +105,7 @@
 !*   ------------------------------------------------------------------
 !
       subroutine nonlinear_incuction_wSGS_SPH                           &
-     &         (sph_rtp, sph_rtm, sph_rlm, sph_rj,                      &
-     &          comm_rtp, comm_rtm, comm_rlm, comm_rj,                  &
-     &          conduct, rj_fld)
+     &         (sph, comms_sph, conduct, rj_fld)
 !
       use m_solver_SR
 !
@@ -116,15 +114,8 @@
       use spherical_SRs_N
       use copy_nodal_fld_4_sph_trans
 !
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_rtm_grid), intent(in) :: sph_rtm
-      type(sph_rlm_grid), intent(in) :: sph_rlm
-      type(sph_rj_grid), intent(in) ::  sph_rj
-!
-      type(sph_comm_tbl), intent(in) :: comm_rtp
-      type(sph_comm_tbl), intent(in) :: comm_rtm
-      type(sph_comm_tbl), intent(in) :: comm_rlm
-      type(sph_comm_tbl), intent(in) :: comm_rj
+      type(sph_grids), intent(in) :: sph
+      type(sph_comm_tables), intent(in) :: comms_sph
 !
       type(field_geometry_data), intent(in) :: conduct
       type(phys_data), intent(inout) :: rj_fld
@@ -147,9 +138,9 @@
 !
 !
       call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_xyz_2_rj, comm_rtp, comm_rtm)
+     &   (ncomp_xyz_2_rj, comms_sph%comm_rtp, comms_sph%comm_rtm)
       call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_xyz_2_rj, comm_rlm, comm_rj)
+     &   (ncomp_xyz_2_rj, comms_sph%comm_rlm, comms_sph%comm_rj)
 !
       call copy_nod_vec_to_sph_trans(node1, sph_fld,                    &
      &    iphys_sph%i_vp_induct, frc_hbd_rtp(1,f_hbd_trns%i_vp_induct))
@@ -159,46 +150,34 @@
 !
       call sph_forward_transforms                                       &
      &   (ncomp_xyz_2_rj, nvector_xyz_2_rj, izero,                      &
-     &    sph_rtp, sph_rtm, sph_rlm,                                    &
-     &    comm_rtp, comm_rtm, comm_rlm, comm_rj,                        &
-     &    frc_hbd_rtp(1,1), n_WS, n_WR, WS(1), WR(1))
+     &    sph, comms_sph, frc_hbd_rtp(1,1), n_WS, n_WR, WS(1), WR(1))
 !
       call sel_sph_rj_vector_from_recv(ncomp_xyz_2_rj,                  &
      &    ipol%i_vp_induct, f_hbd_trns%i_vp_induct,                     &
-     &    comm_rj, n_WR, WR(1), rj_fld)
+     &    comms_sph%comm_rj, n_WR, WR(1), rj_fld)
       call sel_sph_rj_vector_from_recv(ncomp_xyz_2_rj,                  &
      &    ipol%i_SGS_vp_induct, f_hbd_trns%i_SGS_vp_induct,             &
-     &    comm_rj, n_WR, WR(1), rj_fld)
+     &    comms_sph%comm_rj, n_WR, WR(1), rj_fld)
 !
 !
-      call const_sph_rotation_uxb(sph_rj, sph_bc_B,                     &
+      call const_sph_rotation_uxb(sph%sph_rj, sph_bc_B,                 &
      &    ipol%i_vp_induct, ipol%i_induction, rj_fld)
-      call const_sph_rotation_uxb(sph_rj, sph_bc_B,                     &
+      call const_sph_rotation_uxb(sph%sph_rj, sph_bc_B,                 &
      &    ipol%i_SGS_vp_induct, ipol%i_SGS_induction, rj_fld)
 !*
       end subroutine nonlinear_incuction_wSGS_SPH
 !
 !*   ------------------------------------------------------------------
 !
-      subroutine nonlinear_incuction_SPH                                &
-     &         (sph_rtp, sph_rtm, sph_rlm, sph_rj,                      &
-     &          comm_rtp, comm_rtm, comm_rlm, comm_rj, rj_fld)
+      subroutine nonlinear_incuction_SPH(sph, comms_sph, rj_fld)
 !
-      use m_spheric_parameter
       use m_sph_trans_comm_table
       use m_solver_SR
       use spherical_SRs_N
       use copy_nodal_fld_4_sph_trans
 !
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_rtm_grid), intent(in) :: sph_rtm
-      type(sph_rlm_grid), intent(in) :: sph_rlm
-      type(sph_rj_grid), intent(in) ::  sph_rj
-!
-      type(sph_comm_tbl), intent(in) :: comm_rtp
-      type(sph_comm_tbl), intent(in) :: comm_rtm
-      type(sph_comm_tbl), intent(in) :: comm_rlm
-      type(sph_comm_tbl), intent(in) :: comm_rj
+      type(sph_grids), intent(in) :: sph
+      type(sph_comm_tables), intent(in) :: comms_sph
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -213,46 +192,34 @@
      &    iphys_sph%i_vp_induct, frc_hbd_rtp(1,f_hbd_trns%i_vp_induct))
 !
       call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_xyz_2_rj, comm_rtp, comm_rtm)
+     &   (ncomp_xyz_2_rj, comms_sph%comm_rtp, comms_sph%comm_rtm)
       call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_xyz_2_rj, comm_rlm, comm_rj)
+     &   (ncomp_xyz_2_rj, comms_sph%comm_rlm, comms_sph%comm_rj)
 !
       call sph_forward_transforms                                       &
      &   (ncomp_xyz_2_rj, nvector_xyz_2_rj, izero,                      &
-     &    sph_rtp, sph_rtm, sph_rlm,                                    &
-     &    comm_rtp, comm_rtm, comm_rlm, comm_rj,                        &
-     &    frc_hbd_rtp(1,1), n_WS, n_WR, WS(1), WR(1))
+     &    sph, comms_sph, frc_hbd_rtp(1,1), n_WS, n_WR, WS(1), WR(1))
 !
       call sel_sph_rj_vector_from_recv(ncomp_xyz_2_rj,                  &
      &   (ipol%i_vp_induct, f_hbd_trns%i_vp_induct,                     &
-     &    comm_rj, n_WR, WR, rj_fld)
+     &    comms_sph%comm_rj, n_WR, WR, rj_fld)
 !
-      call const_sph_rotation_uxb(sph_rj, sph_bc_B,                     &
+      call const_sph_rotation_uxb(sph%sph_rj, sph_bc_B,                 &
      &    ipol%i_vp_induct, ipol%i_induction, rj_fld)
 !
       end subroutine nonlinear_incuction_SPH
 !
 !*   ------------------------------------------------------------------
 !
-      subroutine cal_magneitc_field_by_SPH(sph_params,                  &
-     &          sph_rtp, sph_rtm, sph_rlm, sph_rj,                      &
-     &          comm_rtp, comm_rtm, comm_rlm, comm_rj, rj_fld)
+      subroutine cal_magneitc_field_by_SPH(sph, comms_sph, rj_fld)
 !
       use m_solver_SR
       use spherical_SRs_N
       use copy_spectr_4_sph_trans
       use copy_nodal_fld_4_sph_trans
 !
-      type(sph_shell_parameters), intent(inout) :: sph_params
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_rtm_grid), intent(in) :: sph_rtm
-      type(sph_rlm_grid), intent(in) :: sph_rlm
-      type(sph_rj_grid), intent(in) ::  sph_rj
-!
-      type(sph_comm_tbl), intent(in) :: comm_rtp
-      type(sph_comm_tbl), intent(in) :: comm_rtm
-      type(sph_comm_tbl), intent(in) :: comm_rlm
-      type(sph_comm_tbl), intent(in) :: comm_rj
+      type(sph_grids), intent(in) :: sph
+      type(sph_comm_tables), intent(in) :: comms_sph
 !
       type(phys_data), intent(in) :: rj_fld
 !
@@ -264,14 +231,14 @@
      &     (rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
-      call cal_sol_magne_sph_crank(sph_rj, rj_fld)
+      call cal_sol_magne_sph_crank(sph%sph_rj, rj_fld)
       call update_after_magne_sph
 !
 !
       call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_rj_2_xyz, comm_rj, comm_rlm)
+     &   (ncomp_rj_2_xyz, comms_sph%comm_rj, comms_sph%comm_rlm)
       call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_rj_2_xyz, comm_rtm, comm_rtp)
+     &   (ncomp_rj_2_xyz, comms_sph%comm_rtm, comms_sph%comm_rtp)
 !
       call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                    &
      &    ipol%i_magne, b_hbd_trns%i_magne, rj_fld, n_WS, WS)
@@ -289,30 +256,29 @@
 !
       call sph_backward_transforms                                      &
      &   (ncomp_rj_2_xyz, nvector_rj_2_xyz, izero,                      &
-     &    sph_params, sph_rtp, sph_rtm, sph_rlm,                        &
-     &    comm_rtp, comm_rtm, comm_rlm, comm_rj,                        &
-     &    n_WS, n_WR, WS, WR, fld_hbd_rtp, flc_hbd_pole, fld_hbd_pole)
+     &    sph, comms_sph, n_WS, n_WR, WS, WR,                           &
+     &    fld_hbd_rtp, flc_hbd_pole, fld_hbd_pole)
 !
 !
       call copy_nod_vec_from_trans_wpole                                &
-     &   (sph_rtp, sph_params%m_folding, nvector_rj_2_xyz,              &
+     &   (sph%sph_rtp, sph%sph_params%m_folding, nvector_rj_2_xyz,      &
      &    b_hbd_trns%i_magne, fld_hbd_rtp(1,1), fld_hbd_pole,           &
      &    iphys_sph%i_magne, mesh_sph%node, sph_fld)
       call copy_nod_vec_from_trans_wpole                                &
-     &   (sph_rtp, sph_params%m_folding, nvector_rj_2_xyz,              &
+     &   (sph%sph_rtp, sph%sph_params%m_folding, nvector_rj_2_xyz,      &
      &    b_hbd_trns%i_current, fld_hbd_rtp(1,1), fld_hbd_pole,         &
      &    iphys_sph%i_current, mesh_sph%node, sph_fld)
       call copy_nod_vec_from_trans_wpole                                &
-     &   (sph_rtp, sph_params%m_folding, nvector_rj_2_xyz,              &
+     &   (sph%sph_rtp, sph%sph_params%m_folding, nvector_rj_2_xyz,      &
      &    b_hbd_trns%i_b_diffuse, fld_hbd_rtp(1,1), fld_hbd_pole,       &
      &    iphys_sph%i_b_diffuse, mesh_sph%node, sph_fld)
       call copy_nod_vec_from_trans_wpole                                &
-     &   (sph_rtp, sph_params%m_folding, nvector_rj_2_xyz,              &
+     &   (sph%sph_rtp, sph%sph_params%m_folding, nvector_rj_2_xyz,      &
      &    b_hbd_trns%i_induction, fld_hbd_rtp(1,1), fld_hbd_pole,       &
      &    iphys_sph%i_induction, mesh_sph%node, sph_fld)
       if ( iflag_SGS_induction .ne. id_SGS_none) then
         call copy_nod_vec_from_trans_wpole                              &
-     &   (sph_rtp, sph_params%m_folding, nvector_rj_2_xyz,              &
+     &   (sph%sph_rtp, sph%sph_params%m_folding, nvector_rj_2_xyz,      &
      &    b_hbd_trns%i_SGS_induction, fld_hbd_rtp(1,1), fld_hbd_pole,   &
      &    iphys_sph%i_SGS_induction, mesh_sph%node, sph_fld)
       end if

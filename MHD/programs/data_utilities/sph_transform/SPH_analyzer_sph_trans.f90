@@ -87,9 +87,7 @@
 !
 !  spherical transform for vector
       call sph_f_trans_all_field                                        &
-     &   (sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm,                     &
-     &    comms_sph1%comm_rtp, comms_sph1%comm_rtm, comms_sph1%comm_rlm, comms_sph1%comm_rj,                    &
-     &    femmesh_STR%mesh, field_STR, rj_fld1)
+     &   (sph1, comms_sph1, femmesh_STR%mesh, field_STR, rj_fld1)
 !
 !      call check_all_field_data(my_rank, rj_fld1)
 !
@@ -136,9 +134,7 @@
 !
 !  spherical transform for vector
       call sph_f_trans_all_field                                        &
-     &   (sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm,                     &
-     &    comms_sph1%comm_rtp, comms_sph1%comm_rtm, comms_sph1%comm_rlm, comms_sph1%comm_rj,                    &
-     &    femmesh_STR%mesh, field_STR, rj_fld1)
+     &   (sph1, comms_sph1, femmesh_STR%mesh, field_STR, rj_fld1)
 !
 !      call check_all_field_data(my_rank, rj_fld1)
 !

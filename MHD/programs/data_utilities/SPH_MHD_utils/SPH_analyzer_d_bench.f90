@@ -161,9 +161,7 @@
       call trans_per_temp_to_temp_sph(reftemp_rj, sph1%sph_rj, rj_fld1)
 !*
       if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
-      call s_lead_fields_4_sph_mhd                                      &
-     &   (sph1%sph_params, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,            &
-     &    comms_sph1%comm_rtp, comms_sph1%comm_rtm, comms_sph1%comm_rlm, comms_sph1%comm_rj, rj_fld1)
+      call s_lead_fields_4_sph_mhd(sph1, comms_sph1, rj_fld1)
       call end_eleps_time(9)
 !
 !*  -----------  lead mid-equator field --------------

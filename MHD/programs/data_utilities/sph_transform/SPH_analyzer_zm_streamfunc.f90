@@ -15,6 +15,7 @@
 !
       implicit none
 !
+      private :: sph_b_trans_streamline
       private :: set_rj_phys_for_zm_streamfunc
 !
 ! ----------------------------------------------------------------------
@@ -80,9 +81,7 @@
 !
 !  spherical transform for vector
         call sph_b_trans_streamline                                     &
-     &     (sph1%sph_params, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm,  &
-     &      comms_sph1%comm_rtp, comms_sph1%comm_rtm, comms_sph1%comm_rlm, comms_sph1%comm_rj,      &
-     &      femmesh_STR%mesh, rj_fld1, field_STR)
+     &     (sph1, comms_sph1, femmesh_STR%mesh, rj_fld1, field_STR)
 !
       end if
 !
@@ -132,9 +131,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sph_b_trans_streamline                                 &
-     &         (sph_params, sph_rtp, sph_rtm, sph_rlm,                  &
-     &          comm_rtp, comm_rtm, comm_rlm, comm_rj,                  &
-     &          mesh, rj_fld, nod_fld)
+     &         (sph, comms_sph, mesh, rj_fld, nod_fld)
 !
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
@@ -148,15 +145,8 @@
       use spherical_SRs_N
       use sph_transfer_all_field
 !
-      type(sph_shell_parameters), intent(in) :: sph_params
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_rtm_grid), intent(in) :: sph_rtm
-      type(sph_rlm_grid), intent(in) :: sph_rlm
-!
-      type(sph_comm_tbl), intent(in) :: comm_rtp
-      type(sph_comm_tbl), intent(in) :: comm_rtm
-      type(sph_comm_tbl), intent(in) :: comm_rlm
-      type(sph_comm_tbl), intent(in) :: comm_rj
+      type(sph_grids), intent(in) :: sph
+      type(sph_comm_tables), intent(in) :: comms_sph
 !
       type(phys_data), intent(in) :: rj_fld
       type(mesh_geometry), intent(in) :: mesh
@@ -170,31 +160,31 @@
 !
       nscalar_trans = num_scalar_rtp + 6*num_tensor_rtp
       call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_sph_trans, comm_rj, comm_rlm)
+     &   (ncomp_sph_trans, comms_sph%comm_rj, comms_sph%comm_rlm)
       call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_sph_trans, comm_rtm, comm_rtp)
+     &   (ncomp_sph_trans, comms_sph%comm_rtm, comms_sph%comm_rtp)
 !
         if (iflag_debug.gt.0)                                           &
      &        write(*,*) 'set_all_vec_spec_to_sph_t'
         call set_all_vec_spec_to_sph_t                                  &
-     &     (ncomp_sph_trans, comm_rj, rj_fld, n_WS, WS)
+     &     (ncomp_sph_trans, comms_sph%comm_rj, rj_fld, n_WS, WS)
 !
       if (iflag_debug.gt.0) write(*,*) 'sph_backward_transforms',       &
      &  ncomp_sph_trans, num_vector_rtp, num_scalar_rtp, num_tensor_rtp
       call sph_backward_transforms                                      &
      &   (ncomp_sph_trans, num_vector_rtp, nscalar_trans,               &
-     &    sph_params, sph_rtp, sph_rtm, sph_rlm,                        &
-     &    comm_rtp, comm_rtm, comm_rlm, comm_rj,                        &
-     &    n_WS, n_WR, WS(1), WR(1), dall_rtp, dlcl_pole, dall_pole)
+     &    sph, comms_sph, n_WS, n_WR, WS(1), WR(1),                     &
+     &    dall_rtp, dlcl_pole, dall_pole)
 !
         if (iflag_debug.gt.0)                                           &
      &        write(*,*) 'set_xyz_vect_from_sph_trans'
         call adjust_phi_comp_for_streamfunc                             &
-     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
-     &      sph_rtp%radius_1d_rtp_r, ncomp_sph_trans, dall_rtp(1,1))
+     &     (sph%sph_rtp%nnod_rtp, sph%sph_rtp%nidx_rtp,                 &
+     &      sph%sph_rtp%radius_1d_rtp_r, ncomp_sph_trans,               &
+     &      dall_rtp(1,1))
         call set_xyz_vect_from_sph_trans                                &
-     &     (sph_rtp, mesh%node, sph_params%m_folding, ncomp_sph_trans,  &
-     &      dall_rtp(1,1), dall_pole(1,1), nod_fld)
+     &     (sph%sph_rtp, mesh%node, sph%sph_params%m_folding,           &
+     &      ncomp_sph_trans, dall_rtp(1,1), dall_pole(1,1), nod_fld)
       end if
 !
       end subroutine sph_b_trans_streamline

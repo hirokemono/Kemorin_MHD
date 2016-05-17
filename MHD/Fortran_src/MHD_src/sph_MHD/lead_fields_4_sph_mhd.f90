@@ -7,23 +7,11 @@
 !>@brief  Evaluate pressure and energy fluxes for snapshots
 !!
 !!@verbatim
-!!      subroutine s_lead_fields_4_sph_mhd                              &
-!!     &         (sph_params, sph_rtp, sph_rtm, sph_rlm, sph_rj,        &
-!!     &          comm_rtp, comm_rtm, comm_rlm, comm_rj, rj_fld)
+!!      subroutine s_lead_fields_4_sph_mhd(sph, comms_sph, rj_fld)
 !!      subroutine pressure_4_sph_mhd(sph_rj, rj_fld)
-!!      subroutine enegy_fluxes_4_sph_mhd                               &
-!!     &         (sph_params, sph_rtp, sph_rtm, sph_rlm, sph_rj,        &
-!!     &          comm_rtp, comm_rtm, comm_rlm, comm_rj, rj_fld)
-!!        type(sph_shell_parameters), intent(in) :: sph_params
-!!        type(sph_rtp_grid), intent(in) :: sph_rtp
-!!        type(sph_rtm_grid), intent(in) :: sph_rtm
-!!        type(sph_rlm_grid), intent(in) :: sph_rlm
-!!        type(sph_rj_grid), intent(in) ::  sph_rj
-!!        type(sph_comm_tbl), intent(in) :: comm_rtp
-!!        type(sph_comm_tbl), intent(in) :: comm_rtm
-!!        type(sph_comm_tbl), intent(in) :: comm_rlm
-!!        type(sph_comm_tbl), intent(in) :: comm_rj
-!!        type(phys_data), intent(inout) :: rj_fld
+!!      subroutine enegy_fluxes_4_sph_mhd(sph, comms_sph, rj_fld)
+!!        type(sph_grids), intent(in) :: sph
+!!        type(sph_comm_tables), intent(in) :: comms_sph
 !!@endverbatim
 !
       module lead_fields_4_sph_mhd
@@ -46,9 +34,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_lead_fields_4_sph_mhd                                &
-     &         (sph_params, sph_rtp, sph_rtm, sph_rlm, sph_rj,          &
-     &          comm_rtp, comm_rtm, comm_rlm, comm_rj, rj_fld)
+      subroutine s_lead_fields_4_sph_mhd(sph, comms_sph, rj_fld)
 !
       use m_control_parameter
       use m_t_step_parameter
@@ -56,43 +42,33 @@
       use copy_MHD_4_sph_trans
       use cal_energy_flux_rtp
 !
-      integer (kind =kint) :: iflag
-!
-      type(sph_shell_parameters), intent(in) :: sph_params
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_rtm_grid), intent(in) :: sph_rtm
-      type(sph_rlm_grid), intent(in) :: sph_rlm
-      type(sph_rj_grid), intent(in) ::  sph_rj
-      type(sph_comm_tbl), intent(in) :: comm_rtp
-      type(sph_comm_tbl), intent(in) :: comm_rtm
-      type(sph_comm_tbl), intent(in) :: comm_rlm
-      type(sph_comm_tbl), intent(in) :: comm_rj
+      type(sph_grids), intent(in) :: sph
+      type(sph_comm_tables), intent(in) :: comms_sph
 !
       type(phys_data), intent(inout) :: rj_fld
+!
+      integer (kind =kint) :: iflag
 !
 !
       call set_lead_physical_values_flag(iflag)
 !
       if ( (iflag*mod(istep_max_dt,i_step_output_rst)) .eq.0 ) then
         if(iflag_t_evo_4_velo .gt. id_no_evolution) then
-          call pressure_4_sph_mhd(sph_rj, rj_fld)
+          call pressure_4_sph_mhd(sph%sph_rj, rj_fld)
         end if
       end if
 !
       if(iflag .gt. 0) return
 !
-      call select_mhd_field_from_trans(sph_rtp)
-      if    (sph_params%iflag_shell_mode .eq. iflag_MESH_w_pole         &
-     &  .or. sph_params%iflag_shell_mode .eq. iflag_MESH_w_center) then
+      call select_mhd_field_from_trans(sph%sph_rtp)
+      if    (sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_pole     &
+     &  .or. sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_center)  &
+     & then
         call cal_nonlinear_pole_MHD
       end if
 !
-      call gradients_of_vectors_sph                                     &
-     &   (sph_rtp, sph_rtm, sph_rlm, sph_rj,                            &
-     &    comm_rtp, comm_rtm, comm_rlm, comm_rj, rj_fld)
-      call enegy_fluxes_4_sph_mhd                                       &
-     &   (sph_params, sph_rtp, sph_rtm, sph_rlm, sph_rj,                &
-     &    comm_rtp, comm_rtm, comm_rlm, comm_rj, rj_fld)
+      call gradients_of_vectors_sph(sph, comms_sph, rj_fld)
+      call enegy_fluxes_4_sph_mhd(sph, comms_sph, rj_fld)
 !
       end subroutine s_lead_fields_4_sph_mhd
 !
@@ -133,79 +109,58 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine enegy_fluxes_4_sph_mhd                                 &
-     &         (sph_params, sph_rtp, sph_rtm, sph_rlm, sph_rj,          &
-     &          comm_rtp, comm_rtm, comm_rlm, comm_rj, rj_fld)
+      subroutine enegy_fluxes_4_sph_mhd(sph, comms_sph, rj_fld)
 !
       use m_sph_phys_address
       use sph_transforms_4_MHD
       use cal_energy_flux_rtp
       use cal_energy_flux_rj
 !
-      type(sph_shell_parameters), intent(in) :: sph_params
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_rtm_grid), intent(in) :: sph_rtm
-      type(sph_rlm_grid), intent(in) :: sph_rlm
-      type(sph_rj_grid), intent(in) ::  sph_rj
-      type(sph_comm_tbl), intent(in) :: comm_rtp
-      type(sph_comm_tbl), intent(in) :: comm_rtm
-      type(sph_comm_tbl), intent(in) :: comm_rlm
-      type(sph_comm_tbl), intent(in) :: comm_rj
+      type(sph_grids), intent(in) :: sph
+      type(sph_comm_tables), intent(in) :: comms_sph
 !
       type(phys_data), intent(inout) :: rj_fld
 !
 !
 !      Evaluate fields for output in spectrum space
       if (iflag_debug.eq.1) write(*,*) 's_cal_energy_flux_rj'
-      call s_cal_energy_flux_rj(sph_rj, rj_fld)
+      call s_cal_energy_flux_rj(sph%sph_rj, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_snapshot_MHD'
-      call sph_back_trans_snapshot_MHD                                  &
-     &   (sph_params, sph_rtp, sph_rtm, sph_rlm, sph_rj,                &
-     &    comm_rtp, comm_rtm, comm_rlm, comm_rj, rj_fld)
+      call sph_back_trans_snapshot_MHD(sph, comms_sph, rj_fld)
 !
 !      Evaluate fields for output in grid space
       if (iflag_debug.eq.1) write(*,*) 's_cal_energy_flux_rtp'
-      call s_cal_energy_flux_rtp(sph_rtp)
+      call s_cal_energy_flux_rtp(sph%sph_rtp)
 !
       if (iflag_debug.eq.1) write(*,*)                                  &
      &                          'sph_forward_trans_snapshot_MHD'
-      call sph_forward_trans_snapshot_MHD(sph_rtp, sph_rtm, sph_rlm,    &
-     &    comm_rtp, comm_rtm, comm_rlm, comm_rj, rj_fld)
+      call sph_forward_trans_snapshot_MHD(sph, comms_sph, rj_fld)
 !
       end subroutine enegy_fluxes_4_sph_mhd
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine gradients_of_vectors_sph                               &
-     &         (sph_rtp, sph_rtm, sph_rlm, sph_rj,                      &
-     &          comm_rtp, comm_rtm, comm_rlm, comm_rj, rj_fld)
+      subroutine gradients_of_vectors_sph(sph, comms_sph, rj_fld)
 !
       use m_sph_phys_address
       use sph_transforms_4_MHD
       use sph_poynting_flux_smp
 !
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_rtm_grid), intent(in) :: sph_rtm
-      type(sph_rlm_grid), intent(in) :: sph_rlm
-      type(sph_rj_grid), intent(in) ::  sph_rj
-      type(sph_comm_tbl), intent(in) :: comm_rtp
-      type(sph_comm_tbl), intent(in) :: comm_rtm
-      type(sph_comm_tbl), intent(in) :: comm_rlm
-      type(sph_comm_tbl), intent(in) :: comm_rj
+      type(sph_grids), intent(in) :: sph
+      type(sph_comm_tables), intent(in) :: comms_sph
 !
       type(phys_data), intent(inout) :: rj_fld
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_velo_to_grad_v_rtp'
-      call copy_velo_to_grad_v_rtp(sph_rtp)
+      call copy_velo_to_grad_v_rtp(sph%sph_rtp)
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_tmp_snap_MHD'
-      call sph_forward_trans_tmp_snap_MHD(sph_rtp, sph_rtm, sph_rlm,    &
-     &    comm_rtp, comm_rtm, comm_rlm, comm_rj, rj_fld)
+      call sph_forward_trans_tmp_snap_MHD(sph, comms_sph, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_grad_of_velocities_sph'
-      call cal_grad_of_velocities_sph(sph_rj, rj_fld)
+      call cal_grad_of_velocities_sph(sph%sph_rj, rj_fld)
 !
       end subroutine gradients_of_vectors_sph
 !

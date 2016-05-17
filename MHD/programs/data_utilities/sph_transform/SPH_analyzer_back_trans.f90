@@ -150,9 +150,7 @@
 !          call check_all_field_data(my_rank, rj_fld1)
 !  spherical transform for vector
         call sph_b_trans_all_field                                      &
-     &     (sph1%sph_params, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,      &
-     &      comms_sph1%comm_rtp, comms_sph1%comm_rtm, comms_sph1%comm_rlm, comms_sph1%comm_rj,                  &
-     &      femmesh_STR%mesh, rj_fld1, field_STR)
+     &     (sph1, comms_sph1, femmesh_STR%mesh, rj_fld1, field_STR)
       end if
 !
       end subroutine SPH_analyze_back_trans
