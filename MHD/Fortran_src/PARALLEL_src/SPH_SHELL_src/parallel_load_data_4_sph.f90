@@ -191,7 +191,6 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_spheric_parameter
 !
       use load_data_for_sph_IO
 !
@@ -237,13 +236,6 @@
       call set_reverse_tables_4_SPH                                     &
      &   (sph_param, sph_rtp, sph_rtm, sph_rlm, sph_rj,                 &
      &    comm_rtp, comm_rtm, comm_rlm, comm_rj)
-!
-!      nnod_rtp =      sph_rtp%nnod_rtp
-!      nidx_rtp(1:3) = sph_rtp%nidx_rtp(1:3)
-      nnod_rtm =      sph_rtm%nnod_rtm
-      nidx_rtm(1:3) = sph_rtm%nidx_rtm(1:3)
-      nnod_rlm =      sph_rlm%nnod_rlm
-      nidx_rlm(1:2) = sph_rlm%nidx_rlm(1:2)
 !
       end subroutine load_para_sph_mesh
 !
@@ -386,7 +378,6 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_spheric_parameter
 !
       use load_data_for_sph_IO
       use count_num_sph_smp
@@ -402,7 +393,6 @@
       type(sph_comm_tbl), intent(inout) :: comm_rj
       type(group_data), intent(inout) :: radial_rj_grp
       type(group_data), intent(inout) :: sphere_rj_grp
-!
 !
       integer(kind = kint) :: ierr
 !
