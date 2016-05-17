@@ -56,7 +56,7 @@
      &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,            &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1)
 !
-      call allocate_d_rtp_4_all_trans
+      call allocate_d_rtp_4_all_trans(sph_rtp1)
 !
       end subroutine SPH_initialize_sph_trans
 !
@@ -64,6 +64,8 @@
 !
       subroutine SPH_analyze_sph_trans(i_step, fld_IO)
 !
+      use m_spheric_parameter
+      use m_sph_trans_comm_table
       use m_sph_spectr_data
       use m_t_step_parameter
       use m_control_params_sph_data
@@ -84,7 +86,9 @@
 !
 !
 !  spherical transform for vector
-      call sph_f_trans_all_field(femmesh_STR%mesh, field_STR, rj_fld1)
+      call sph_f_trans_all_field(sph_rtp1, sph_rtm1, sph_rlm1,          &
+     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1,                    &
+     &    femmesh_STR%mesh, field_STR, rj_fld1)
 !
 !      call check_all_field_data(my_rank, rj_fld1)
 !
@@ -108,6 +112,8 @@
 !
       subroutine SPH_analyze_sph_zm_trans(i_step, fld_IO)
 !
+      use m_spheric_parameter
+      use m_sph_trans_comm_table
       use m_sph_spectr_data
       use m_t_step_parameter
       use m_time_data_IO
@@ -128,7 +134,9 @@
 !
 !
 !  spherical transform for vector
-      call sph_f_trans_all_field(femmesh_STR%mesh, field_STR, rj_fld1)
+      call sph_f_trans_all_field(sph_rtp1, sph_rtm1, sph_rlm1,          &
+     &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1,                    &
+     &    femmesh_STR%mesh, field_STR, rj_fld1)
 !
 !      call check_all_field_data(my_rank, rj_fld1)
 !

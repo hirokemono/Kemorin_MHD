@@ -238,10 +238,8 @@
      &   (sph_param, sph_rtp, sph_rtm, sph_rlm, sph_rj,                 &
      &    comm_rtp, comm_rtm, comm_rlm, comm_rj)
 !
-      nnod_rtp =      sph_rtp%nnod_rtp
-      nidx_rtp(1:3) = sph_rtp%nidx_rtp(1:3)
-!      nnod_rj =       sph_rj%nnod_rj
-!      nidx_rj(1:2) =  sph_rj%nidx_rj(1:2)
+!      nnod_rtp =      sph_rtp%nnod_rtp
+!      nidx_rtp(1:3) = sph_rtp%nidx_rtp(1:3)
       nnod_rtm =      sph_rtm%nnod_rtm
       nidx_rtm(1:3) = sph_rtm%nidx_rtm(1:3)
       nnod_rlm =      sph_rlm%nnod_rlm
@@ -412,8 +410,6 @@
       if (iflag_debug.gt.0) write(*,*) 'input_modes_rj_sph_trans'
       call input_modes_rj_sph_trans(my_rank, sph_param%l_truncation,    &
      &    sph_rj, comm_rj, radial_rj_grp, sphere_rj_grp)
-!      nnod_rj =      sph_rj%nnod_rj
-!      nidx_rj(1:2) = sph_rj%nidx_rj(1:2)
 !
       if (iflag_debug.gt.0) write(*,*) 's_count_num_sph_smp'
       call s_count_num_sph_smp                                          &

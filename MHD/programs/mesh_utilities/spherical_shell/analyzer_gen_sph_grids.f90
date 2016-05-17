@@ -63,7 +63,7 @@
      &    sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1)
 !
       if(my_rank .eq. 0) then
-        call check_global_spheric_parameter
+        call check_global_spheric_parameter(sph_param1, sph_rtp1)
         call output_set_radial_grid(sph_param1, sph_rtp1)
       end if
 !

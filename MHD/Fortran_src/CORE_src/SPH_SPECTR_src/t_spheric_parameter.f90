@@ -17,6 +17,9 @@
 !!      subroutine dealloc_type_spheric_parameter(sph)
 !!        type(sph_grids), intent(inout) :: sph
 !!
+!!      subroutine check_global_spheric_parameter(sph_params, sph_rtp)
+!!        type(sph_shell_parameters), intent(in) :: sph_params
+!!        type(sph_rtp_grid), intent(in)  :: sph_rtp
 !!      subroutine check_type_spheric_para_gl_part(sph)
 !!        type(sph_grids), intent(in) :: sph
 !!      subroutine check_type_spheric_parameter(my_rank, sph)
@@ -152,6 +155,21 @@
       end subroutine dealloc_type_spheric_parameter
 !
 ! -----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine check_global_spheric_parameter(sph_params, sph_rtp)
+!
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rtp_grid), intent(in)  :: sph_rtp
+!
+!
+      write(*,*) 'truncation degree:        ', sph_params%l_truncation
+      write(*,*) 'm-folding symmetry:       ', sph_params%m_folding
+      write(*,*) 'number of grid for f(r,t,p): ',                       &
+     &            sph_rtp%nidx_global_rtp(1:3)
+!
+      end subroutine check_global_spheric_parameter
+!
 ! ----------------------------------------------------------------------
 !
       subroutine check_type_spheric_para_gl_part(sph)

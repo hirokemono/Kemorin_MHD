@@ -73,6 +73,7 @@
       subroutine SPH_analyze_gauss_back_trans(i_step, visval)
 !
       use m_spheric_parameter
+      use m_sph_trans_comm_table
       use m_sph_spectr_data
       use m_t_step_parameter
       use m_ctl_params_sph_trans
@@ -115,7 +116,9 @@
 !        call check_all_field_data(my_rank, rj_fld1)
 !  spherical transform for vector
         call sph_b_trans_all_field                                      &
-     &     (femmesh_STR%mesh, rj_fld1, field_STR)
+     &     (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1,          &
+     &      comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1,                  &
+     &      femmesh_STR%mesh, rj_fld1, field_STR)
       end if
 !
       end subroutine SPH_analyze_gauss_back_trans

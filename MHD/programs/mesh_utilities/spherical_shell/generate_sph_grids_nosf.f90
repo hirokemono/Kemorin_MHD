@@ -35,7 +35,7 @@
      &   (sph_param1%l_truncation, sph_param1%m_folding,                &
      &    sph_rtp1, sph_rtm1, sph_rlm1, sph_rj1)
 !
-      call check_global_spheric_parameter
+      call check_global_spheric_parameter(sph_param1, sph_rtp1)
       call output_set_radial_grid(sph_param1, sph_rtp1)
 !
 !  ========= Generate spherical harmonics table ========================

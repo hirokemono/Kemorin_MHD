@@ -42,45 +42,20 @@
 !sph_rlm1%nidx_global_rlm
 !
       type(sph_rj_grid), save :: sph_rj1
-!sph_rj1%nidx_rj
-!
-!>        Truncation for spherical harmonics
-!      integer(kind = kint) :: l_truncation
 !
 !>      number of data points for @f$ f(r,\theta,\phi) @f$
-      integer(kind = kint) :: nnod_rtp
+!      integer(kind = kint) :: nnod_rtp
 !>      number of data points for @f$ f(r,\theta,m) @f$
       integer(kind = kint) :: nnod_rtm
 !>      number of data points for @f$ f(r,l,m) @f$
       integer(kind = kint) :: nnod_rlm
-!>      number of data points for @f$ f(r,j) @f$
-!      integer(kind = kint) :: nnod_rj
 !
 !>      number of 1d data points for @f$ f(r,\theta,\phi) @f$
-      integer(kind = kint) :: nidx_rtp(3)
+!      integer(kind = kint) :: nidx_rtp(3)
 !>      number of 1d data points for @f$ f(r,\theta,m) @f$
       integer(kind = kint) :: nidx_rtm(3)
 !>      number of 1d data points for @f$ f(r,l,m) @f$
       integer(kind = kint) :: nidx_rlm(2)
-!>      number of 1d data points for @f$ f(r,j) @f$
-!      integer(kind = kint) :: nidx_rj(2)
 !
-! -----------------------------------------------------------------------
-!
-      contains
-!
-! -----------------------------------------------------------------------
-!
-      subroutine check_global_spheric_parameter
-!
-!
-      write(*,*) 'truncation degree:        ', sph_param1%l_truncation
-      write(*,*) 'm-folding symmetry:       ', sph_param1%m_folding
-      write(*,*) 'number of grid for f(r,t,p): ',                       &
-     &            sph_rtp1%nidx_global_rtp(1:3)
-!
-      end subroutine check_global_spheric_parameter
-!
-! ----------------------------------------------------------------------
 !
       end module m_spheric_parameter

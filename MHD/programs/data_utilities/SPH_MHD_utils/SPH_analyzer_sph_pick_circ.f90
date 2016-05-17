@@ -69,7 +69,7 @@
       call set_sph_sprctr_data_address(sph_rj1, rj_fld1)
 !
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(isix, nnod_rtp)
+      call allocate_vector_for_solver(isix, sph_rtp1%nnod_rtp)
 !
       if(iflag_debug.gt.0) write(*,*)' init_send_recv'
       call init_send_recv(mesh1%nod_comm)
