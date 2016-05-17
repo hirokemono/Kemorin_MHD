@@ -13,6 +13,10 @@
 !
       implicit none
 !
+!>  Structure for communication table for spherical transform
+      type(sph_comm_tables), save :: comms_sph1
+!comms_sph1%comm_rj
+!
 !>        Communication table for @f$ f(r,t,p) @f$ 
       type(sph_comm_tbl), save :: comm_rtp1
 !>        Communication table for @f$ f(r,t,m) @f$ 
