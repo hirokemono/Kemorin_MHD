@@ -53,7 +53,7 @@
      &            id_legendre_transfer = iflag_leg_orginal_loop
       call copy_sph_trans_nums_from_rtp
       call initialize_sph_trans                                         &
-     &   (sph_param1, sph1%sph_rtp, sph1%sph_rtm, sph_rlm1, sph1%sph_rj,        &
+     &   (sph_param1, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,        &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1)
 !
       call allocate_d_rtp_4_all_trans(sph1%sph_rtp)
@@ -86,7 +86,8 @@
 !
 !
 !  spherical transform for vector
-      call sph_f_trans_all_field(sph1%sph_rtp, sph1%sph_rtm, sph_rlm1,          &
+      call sph_f_trans_all_field                                        &
+     &   (sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm,                     &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1,                    &
      &    femmesh_STR%mesh, field_STR, rj_fld1)
 !
@@ -135,7 +136,7 @@
 !
 !  spherical transform for vector
       call sph_f_trans_all_field                                        &
-     &   (sph1%sph_rtp, sph1%sph_rtm, sph_rlm1,                             &
+     &   (sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm,                     &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1,                    &
      &    femmesh_STR%mesh, field_STR, rj_fld1)
 !

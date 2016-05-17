@@ -10,9 +10,9 @@
 !!      subroutine init_pole_transform(sph_rtp)
 !!
 !!      subroutine pole_backward_transforms(ncomp, nvector, nscalar,    &
-!!     &          sph_param1, sph_rtp, sph_rtm, sph_rlm, comm_rlm,      &
+!!     &          sph_params, sph_rtp, sph_rtm, sph_rlm, comm_rlm,      &
 !!     &          n_WR, WR, v_pl_local)
-!!        type(sph_shell_parameters), intent(in) :: sph_param1
+!!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_rtm_grid), intent(in) :: sph_rtm
 !!        type(sph_rlm_grid), intent(in) :: sph_rlm
@@ -103,7 +103,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine pole_backward_transforms(ncomp, nvector, nscalar,      &
-     &          sph_param1, sph_rtp, sph_rtm, sph_rlm, comm_rlm,        &
+     &          sph_params, sph_rtp, sph_rtm, sph_rlm, comm_rlm,        &
      &          n_WR, WR, v_pl_local)
 !
       use calypso_mpi
@@ -111,7 +111,7 @@
       use schmidt_b_trans_at_pole
       use schmidt_b_trans_at_center
 !
-      type(sph_shell_parameters), intent(in) :: sph_param1
+      type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
@@ -125,24 +125,24 @@
       real(kind = kreal), intent(inout) :: v_pl_local(nnod_pole,ncomp)
 !
 !
-      if     (sph_param1%iflag_shell_mode.eq.iflag_no_FEMMESH           &
-        .or.  sph_param1%iflag_shell_mode.eq.iflag_MESH_same) return
+      if     (sph_params%iflag_shell_mode.eq.iflag_no_FEMMESH           &
+        .or.  sph_params%iflag_shell_mode.eq.iflag_MESH_same) return
 !
       if (iflag_debug.gt.0)  write(*,*) 'schmidt_b_trans_pole_vect'
       call schmidt_b_trans_pole_vect(ncomp, nvector,                    &
-     &    sph_param1%l_truncation, sph_rtm%ist_rtm_order_zero,          &
+     &    sph_params%l_truncation, sph_rtm%ist_rtm_order_zero,          &
      &    sph_rtm%ist_rtm_order_1s, sph_rtm%ist_rtm_order_1c,           &
      &    sph_rlm%nnod_rlm, sph_rtm%nidx_rtm(1), sph_rlm%istep_rlm,     &
      &    sph_rtp%nidx_global_rtp, sph_rtm%idx_gl_1d_rtm_r,             &
      &    sph_rtm%a_r_1d_rtm_r, comm_rlm%irev_sr,                       &
      &    n_WR, WR, v_pl_local)
       call schmidt_b_trans_pole_scalar(ncomp, nvector, nscalar,         &
-     &    sph_param1%l_truncation, sph_rtm%ist_rtm_order_zero,          &
+     &    sph_params%l_truncation, sph_rtm%ist_rtm_order_zero,          &
      &    sph_rlm%nnod_rlm, sph_rtm%nidx_rtm(1), sph_rlm%istep_rlm,     &
      &    sph_rtp%nidx_global_rtp, sph_rtm%idx_gl_1d_rtm_r,             &
      &    comm_rlm%irev_sr, n_WR, WR, v_pl_local)
 !
-      if(sph_param1%iflag_shell_mode .eq. iflag_MESH_w_center) then
+      if(sph_params%iflag_shell_mode .eq. iflag_MESH_w_center) then
         call schmidt_b_trans_center_vect                                &
      &    (ncomp, nvector, sph_rtm%ist_rtm_order_zero,                  &
      &     sph_rtm%ist_rtm_order_1s, sph_rtm%ist_rtm_order_1c,          &

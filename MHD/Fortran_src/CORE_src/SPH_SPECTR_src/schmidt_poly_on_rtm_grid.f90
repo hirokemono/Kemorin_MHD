@@ -26,8 +26,8 @@
 !
       implicit none
 !
-      private :: set_gauss_points_rtm
-      private :: set_lagender_4_rlm, set_lagender_pole_rlm
+!      private :: set_gauss_points_rtm, set_lagender_4_rlm
+      private :: set_lagender_pole_rlm
       private :: copy_sph_normalization_2_rlm
       private :: copy_sph_normalization_2_rj
 !

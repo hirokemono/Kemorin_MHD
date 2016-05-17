@@ -60,7 +60,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'set_radius_rot_reft_dat_4_sph'
       call set_radius_rot_reft_dat_4_sph(depth_high_t, depth_low_t,     &
-     &    high_temp, low_temp, angular, sph_rlm1, sph1%sph_rj,          &
+     &    high_temp, low_temp, angular, sph1%sph_rlm, sph1%sph_rj,      &
      &    radial_rj_grp1, sph_param1, rj_fld1)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_2nd_fdm_matrices'
@@ -82,7 +82,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
       call init_sph_transform_MHD                                       &
-     &   (sph_param1, sph1%sph_rtp, sph1%sph_rtm, sph_rlm1, sph1%sph_rj,        &
+     &   (sph_param1, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,        &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, rj_fld1)
 !
 ! ---------------------------------
@@ -108,7 +108,7 @@
 !*
       if(iflag_debug .gt. 0) write(*,*) 'first licv_exp'
       call licv_exp(reftemp_rj,                                         &
-     &    sph_rlm1, sph1%sph_rj, comm_rlm1, comm_rj1, rj_fld1)
+     &    sph1%sph_rlm, sph1%sph_rj, comm_rlm1, comm_rj1, rj_fld1)
 !
 !* -----  Open Volume integration data files -----------------
 !*
@@ -162,14 +162,14 @@
 !*
       if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
       call s_lead_fields_4_sph_mhd                                      &
-     &   (sph_param1, sph1%sph_rtp, sph1%sph_rtm, sph_rlm1, sph1%sph_rj,        &
+     &   (sph_param1, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj,        &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, rj_fld1)
       call end_eleps_time(9)
 !
 !*  ----------------lead nonlinear term ... ----------
 !*
         call licv_exp(reftemp_rj,                                       &
-     &      sph_rlm1, sph1%sph_rj, comm_rlm1, comm_rj1, rj_fld1)
+     &      sph1%sph_rlm, sph1%sph_rj, comm_rlm1, comm_rj1, rj_fld1)
 !
 !*  -----------  output restart data --------------
 !*

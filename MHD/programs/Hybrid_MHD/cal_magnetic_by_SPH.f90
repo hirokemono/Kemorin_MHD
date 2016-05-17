@@ -23,7 +23,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine induction_SPH_initialize(sph_param1,                   &
+      subroutine induction_SPH_initialize(sph_params,                   &
      &          sph_rtp, sph_rtm, sph_rlm, sph_rj,                      &
      &          comm_rtp, comm_rtm, comm_rlm, comm_rj, rj_fld)
 !
@@ -32,7 +32,7 @@
       use const_element_comm_tables
       use load_mesh_data
 !
-      type(sph_shell_parameters), intent(inout) :: sph_param1
+      type(sph_shell_parameters), intent(inout) :: sph_params
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
@@ -93,7 +93,7 @@
       if(id_legendre_transfer.eq.iflag_leg_undefined)                   &
      &            id_legendre_transfer = iflag_leg_orginal_loop
       call initialize_sph_trans
-     &   (sph_param1, sph_rtp, sph_rtm, sph_rlm, sph_rj,                &
+     &   (sph_params, sph_rtp, sph_rtm, sph_rlm, sph_rj,                &
      &    comm_rtp, comm_rtm, comm_rlm, comm_rj)
 !
 !     ---------------------
@@ -234,7 +234,7 @@
 !
 !*   ------------------------------------------------------------------
 !
-      subroutine cal_magneitc_field_by_SPH(sph_param1,                  &
+      subroutine cal_magneitc_field_by_SPH(sph_params,                  &
      &          sph_rtp, sph_rtm, sph_rlm, sph_rj,                      &
      &          comm_rtp, comm_rtm, comm_rlm, comm_rj, rj_fld)
 !
@@ -243,7 +243,7 @@
       use copy_spectr_4_sph_trans
       use copy_nodal_fld_4_sph_trans
 !
-      type(sph_shell_parameters), intent(inout) :: sph_param1
+      type(sph_shell_parameters), intent(inout) :: sph_params
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
@@ -289,30 +289,30 @@
 !
       call sph_backward_transforms                                      &
      &   (ncomp_rj_2_xyz, nvector_rj_2_xyz, izero,                      &
-     &    sph_param1, sph_rtp, sph_rtm, sph_rlm,                        &
+     &    sph_params, sph_rtp, sph_rtm, sph_rlm,                        &
      &    comm_rtp, comm_rtm, comm_rlm, comm_rj,                        &
      &    n_WS, n_WR, WS, WR, fld_hbd_rtp, flc_hbd_pole, fld_hbd_pole)
 !
 !
       call copy_nod_vec_from_trans_wpole                                &
-     &   (sph_rtp, sph_param1%m_folding, nvector_rj_2_xyz,              &
+     &   (sph_rtp, sph_params%m_folding, nvector_rj_2_xyz,              &
      &    b_hbd_trns%i_magne, fld_hbd_rtp(1,1), fld_hbd_pole,           &
      &    iphys_sph%i_magne, mesh_sph%node, sph_fld)
       call copy_nod_vec_from_trans_wpole                                &
-     &   (sph_rtp, sph_param1%m_folding, nvector_rj_2_xyz,              &
+     &   (sph_rtp, sph_params%m_folding, nvector_rj_2_xyz,              &
      &    b_hbd_trns%i_current, fld_hbd_rtp(1,1), fld_hbd_pole,         &
      &    iphys_sph%i_current, mesh_sph%node, sph_fld)
       call copy_nod_vec_from_trans_wpole                                &
-     &   (sph_rtp, sph_param1%m_folding, nvector_rj_2_xyz,              &
+     &   (sph_rtp, sph_params%m_folding, nvector_rj_2_xyz,              &
      &    b_hbd_trns%i_b_diffuse, fld_hbd_rtp(1,1), fld_hbd_pole,       &
      &    iphys_sph%i_b_diffuse, mesh_sph%node, sph_fld)
       call copy_nod_vec_from_trans_wpole                                &
-     &   (sph_rtp, sph_param1%m_folding, nvector_rj_2_xyz,              &
+     &   (sph_rtp, sph_params%m_folding, nvector_rj_2_xyz,              &
      &    b_hbd_trns%i_induction, fld_hbd_rtp(1,1), fld_hbd_pole,       &
      &    iphys_sph%i_induction, mesh_sph%node, sph_fld)
       if ( iflag_SGS_induction .ne. id_SGS_none) then
         call copy_nod_vec_from_trans_wpole                              &
-     &   (sph_rtp, sph_param1%m_folding, nvector_rj_2_xyz,              &
+     &   (sph_rtp, sph_params%m_folding, nvector_rj_2_xyz,              &
      &    b_hbd_trns%i_SGS_induction, fld_hbd_rtp(1,1), fld_hbd_pole,   &
      &    iphys_sph%i_SGS_induction, mesh_sph%node, sph_fld)
       end if

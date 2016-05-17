@@ -60,7 +60,7 @@
 !
       call set_global_sph_resolution                                    &
      &   (sph_param1%l_truncation, sph_param1%m_folding,                &
-     &    sph1%sph_rtp, sph1%sph_rtm, sph_rlm1, sph1%sph_rj)
+     &    sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj)
 !
       if(my_rank .eq. 0) then
         call check_global_spheric_parameter(sph_param1, sph1%sph_rtp)
@@ -91,12 +91,12 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rlm_grids'
       call para_gen_sph_rlm_grids(ndomain_sph, sph_param1%l_truncation, &
-     &    sph_rlm1, comm_rlm_mul)
+     &    sph1%sph_rlm, comm_rlm_mul)
       call end_eleps_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rj_modes'
       call start_eleps_time(3)
       call para_gen_sph_rj_modes(ndomain_sph, comm_rlm_mul,             &
-     &    sph_param1, sph_rlm1, sph1%sph_rj)
+     &    sph_param1, sph1%sph_rlm, sph1%sph_rj)
       call dealloc_comm_stacks_sph(ndomain_sph, comm_rlm_mul)
       deallocate(comm_rlm_mul)
       call end_eleps_time(3)

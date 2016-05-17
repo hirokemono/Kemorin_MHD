@@ -19,7 +19,7 @@
       use mag_pbar
       use ispack_lag
 !
-      use m_spheric_parameter
+      use t_spheric_parameter
       use m_schmidt_poly_on_rtm
       use m_gauss_points
       use m_schmidt_polynomial
@@ -29,6 +29,12 @@
       use schmidt_poly_on_rtm_grid
 !
       implicit none
+!
+      type(sph_shell_parameters), save :: sph_param_test
+!
+      type(sph_rtm_grid), save :: sph_rtm_test
+      type(sph_rlm_grid), save :: sph_rlm_test
+      type(sph_rj_grid), save ::  sph_rj_test
 !
       integer(kind = 4) :: ltr, ntheta, num_gauss
 !
@@ -45,22 +51,22 @@
       read(*,*)  ltr
 !
       nidx_rtm(2) = num_gauss
-      sph_rlm1%nidx_rlm(2) = ltr*(ltr+2) + 1
-      sph_param1%l_truncation = ltr
+      sph_rlm_test%nidx_rlm(2) = ltr*(ltr+2) + 1
+      sph_param_test%l_truncation = ltr
       nth = ltr
-      call alloc_type_sph_1d_index_rlm(sph_rlm1)
-      nidx_rlm(1:2) = sph_rlm1%nidx_rlm(1:2)
+      call alloc_type_sph_1d_index_rlm(sph_rlm_test)
+      nidx_rlm(1:2) = sph_rlm_test%nidx_rlm(1:2)
 !
       do l = 0, ltr
         do m = -l, l
           j = l*(l+1) + m
-          sph_rlm1%idx_gl_1d_rlm_j(j+1,1) = j
-          sph_rlm1%idx_gl_1d_rlm_j(j+1,2) = l
-          sph_rlm1%idx_gl_1d_rlm_j(j+1,3) = m
+          sph_rlm_test%idx_gl_1d_rlm_j(j+1,1) = j
+          sph_rlm_test%idx_gl_1d_rlm_j(j+1,2) = l
+          sph_rlm_test%idx_gl_1d_rlm_j(j+1,3) = m
         end do
       end do
 !
-      call allocate_gauss_colat_rtm(sph1%sph_rtm%nidx_rtm(2))
+      call allocate_gauss_colat_rtm(sph_rtm_test%nidx_rtm(2))
       call allocate_gauss_points(num_gauss)
       call construct_gauss_coefs
 !
@@ -72,12 +78,13 @@
       call deallocate_gauss_points
       call deallocate_gauss_colatitude
 !
-      call allocate_schmidt_poly_rtm                                    &
-     &   (sph_rtm%nidx_rtm(2), sph_rlm%nidx_rlm(2), sph_rj%nidx_rj(2))
-      call set_lagender_4_rlm
+      call allocate_schmidt_poly_rtm(sph_rtm_test%nidx_rtm(2),          &
+     &    sph_rlm_test%nidx_rlm(2), sph_rj_test%nidx_rj(2))
+      call set_lagender_4_rlm                                           &
+     &   (sph_param_test%l_truncation, sph_rtm_test, sph_rlm_test)
 !
 !      do j = 1, nidx_rlm(2)
-!        write(*,*) j, sph_rlm1%idx_gl_1d_rlm_j(j,1:3)
+!        write(*,*) j, sph_rlm_test%idx_gl_1d_rlm_j(j,1:3)
 !      end do
 !
       write(*,*) 'Gauss-Legendre colatitude'
@@ -115,10 +122,10 @@
         open(60,file='lagendre_Kemo.dat')
         write(60,'(a)') 'j, l, m, i, r, P_rtm, dPdt_rtm'
         do j = l_check*(l_check+1)+1, l_check*(l_check+2)+1
-          if(sph_rlm1%idx_gl_1d_rlm_j(j,3) .ge. 0) then
+          if(sph_rlm_test%idx_gl_1d_rlm_j(j,3) .ge. 0) then
             do i = 1, n_point
               write(60,'(4i5,1p3e23.14e3)')                             &
-     &            sph_rlm1%idx_gl_1d_rlm_j(j,1:3), i,                   &
+     &            sph_rlm_test%idx_gl_1d_rlm_j(j,1:3), i,               &
      &            g_colat_rtm(i), P_rtm(i,j), dPdt_rtm(i,j)
             end do
           end if

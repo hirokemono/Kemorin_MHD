@@ -33,7 +33,7 @@
 !
       call set_global_sph_resolution                                    &
      &   (sph_param1%l_truncation, sph_param1%m_folding,                &
-     &    sph1%sph_rtp, sph1%sph_rtm, sph_rlm1, sph1%sph_rj)
+     &    sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj)
 !
       call check_global_spheric_parameter(sph_param1, sph1%sph_rtp)
       call output_set_radial_grid(sph_param1, sph1%sph_rtp)
@@ -47,10 +47,10 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'gen_sph_rlm_grids'
       call gen_sph_rlm_grids                                            &
-     &   (ndomain_sph, sph_param1, sph_rlm1, comm_rlm_mul)
+     &   (ndomain_sph, sph_param1, sph1%sph_rlm, comm_rlm_mul)
       if(iflag_debug .gt. 0) write(*,*) 'gen_sph_rj_modes'
       call gen_sph_rj_modes(ndomain_sph, comm_rlm_mul,                  &
-     &    sph_param1, sph_rlm1, sph1%sph_rj)
+     &    sph_param1, sph1%sph_rlm, sph1%sph_rj)
       call dealloc_all_comm_stacks_rlm(ndomain_sph, comm_rlm_mul)
       deallocate(comm_rlm_mul)
 !
