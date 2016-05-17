@@ -54,7 +54,7 @@
 !
 !
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(isix, sph_rtp1%nnod_rtp)
+      call allocate_vector_for_solver(isix, sph1%sph_rtp%nnod_rtp)
 !
 ! ---------------------------------
 !
@@ -82,7 +82,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
       call init_sph_transform_MHD                                       &
-     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph1%sph_rj,        &
+     &   (sph_param1, sph1%sph_rtp, sph_rtm1, sph_rlm1, sph1%sph_rj,        &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, rj_fld1)
 !
 ! ---------------------------------
@@ -162,7 +162,7 @@
 !*
       if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
       call s_lead_fields_4_sph_mhd                                      &
-     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph1%sph_rj,        &
+     &   (sph_param1, sph1%sph_rtp, sph_rtm1, sph_rlm1, sph1%sph_rj,        &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, rj_fld1)
       call end_eleps_time(9)
 !

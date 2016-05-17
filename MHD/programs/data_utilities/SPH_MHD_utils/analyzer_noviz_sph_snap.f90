@@ -64,7 +64,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_mesh'
       call input_control_SPH_mesh                                       &
-     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph1%sph_rj,            &
+     &   (sph_param1, sph1%sph_rtp, sph_rtm1, sph_rlm1, sph1%sph_rj,            &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, bc_rtp_grp1,       &
      &    radial_rtp_grp1, theta_rtp_grp1, zonal_rtp_grp,               &
      &    radial_rj_grp1, sphere_rj_grp1, rj_fld1,                      &
@@ -128,7 +128,7 @@
 !
         if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_MHD'
         call SPH_to_FEM_bridge_MHD                                      &
-     &     (sph_param1, sph_rtp1, mesh1, iphys, nod_fld1)
+     &     (sph_param1, sph1%sph_rtp, mesh1, iphys, nod_fld1)
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
         call FEM_analyze_sph_MHD(i_step_MHD, istep_psf, istep_iso,      &
      &      istep_pvr, istep_fline, visval)

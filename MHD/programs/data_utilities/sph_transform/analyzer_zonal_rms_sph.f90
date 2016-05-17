@@ -60,7 +60,7 @@
 !  ------    set spectr grids
       if (iflag_debug.gt.0) write(*,*) 'load_para_SPH_and_FEM_mesh'
       call load_para_SPH_and_FEM_mesh                                   &
-     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph1%sph_rj,            &
+     &   (sph_param1, sph1%sph_rtp, sph_rtm1, sph_rlm1, sph1%sph_rj,            &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, bc_rtp_grp1,       &
      &    radial_rtp_grp1, theta_rtp_grp1, zonal_rtp_grp,               &
      &    radial_rj_grp1, sphere_rj_grp1,                               &
@@ -112,7 +112,7 @@
         call overwrite_nodal_xyz_2_sph                                  &
      &    (femmesh_STR%mesh%node, field_STR)
         call zonal_rms_all_rtp_field                                    &
-     &     (sph_rtp1, femmesh_STR%mesh%node, field_STR)
+     &     (sph1%sph_rtp, femmesh_STR%mesh%node, field_STR)
 !
         call set_ucd_file_prefix(zonal_udt_head, ucd_SPH_TRNS)
         call FEM_analyze_back_trans(ucd_SPH_TRNS, i_step,               &

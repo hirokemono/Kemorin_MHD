@@ -56,15 +56,15 @@
       call start_eleps_time(1)
       call read_control_4_gen_shell_grids
       call s_set_control_4_gen_shell_grids                              &
-     &   (sph_param1, sph_rtp1, sph1%sph_rj)
+     &   (sph_param1, sph1%sph_rtp, sph1%sph_rj)
 !
       call set_global_sph_resolution                                    &
      &   (sph_param1%l_truncation, sph_param1%m_folding,                &
-     &    sph_rtp1, sph_rtm1, sph_rlm1, sph1%sph_rj)
+     &    sph1%sph_rtp, sph_rtm1, sph_rlm1, sph1%sph_rj)
 !
       if(my_rank .eq. 0) then
-        call check_global_spheric_parameter(sph_param1, sph_rtp1)
-        call output_set_radial_grid(sph_param1, sph_rtp1)
+        call check_global_spheric_parameter(sph_param1, sph1%sph_rtp)
+        call output_set_radial_grid(sph_param1, sph1%sph_rtp)
       end if
 !
       end subroutine init_gen_sph_grids
@@ -84,7 +84,7 @@
 !  ========= Generate spherical harmonics table ========================
 !
       call s_const_global_sph_grids_modes                               &
-     &   (sph_param1, sph_rtp1, sph_rtm1, sph1%sph_rj)
+     &   (sph_param1, sph1%sph_rtp, sph_rtm1, sph1%sph_rj)
 !
       call start_eleps_time(2)
       allocate(comm_rlm_mul(ndomain_sph))
@@ -111,7 +111,7 @@
       call start_eleps_time(3)
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rtp_grids'
       call para_gen_sph_rtp_grids(ndomain_sph, comm_rtm_mul,            &
-     &    sph_param1, sph_rtp1, sph_rtm1)
+     &    sph_param1, sph1%sph_rtp, sph_rtm1)
       call dealloc_comm_stacks_sph(ndomain_sph, comm_rtm_mul)
 !
       deallocate(comm_rtm_mul)
@@ -120,7 +120,7 @@
       call start_eleps_time(4)
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_fem_mesh_for_sph'
       call para_gen_fem_mesh_for_sph(ndomain_sph,                       &
-     &    sph_param1, sph1%sph_rj, sph_rtp1, radial_rj_grp1)
+     &    sph_param1, sph1%sph_rj, sph1%sph_rtp, radial_rj_grp1)
       call end_eleps_time(4)
 !
       call end_eleps_time(1)

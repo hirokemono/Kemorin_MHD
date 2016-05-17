@@ -80,7 +80,7 @@
       end if
 !
 !      if( (f_trns%i_Coriolis*iflag_4_coriolis) .gt. 0) then
-!        call cal_wz_coriolis_rtp(nnod_pole, sph_rtp1%nidx_rtp,         &
+!        call cal_wz_coriolis_rtp(nnod_pole, sph1%sph_rtp%nidx_rtp,     &
 !     &      fls_pl(1,bs_trns%i_velo), frm_pl(1,f_trns%i_Coriolis))
 !      end if
 !$omp end parallel

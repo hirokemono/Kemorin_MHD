@@ -45,7 +45,7 @@
       end if
 !
       call count_set_radial_grid                                        &
-     &   (nele, rmin, rmax, sph_param1, sph_rtp1)
+     &   (nele, rmin, rmax, sph_param1, sph1%sph_rtp)
 !
       stop
       end program const_radial_grid_sph

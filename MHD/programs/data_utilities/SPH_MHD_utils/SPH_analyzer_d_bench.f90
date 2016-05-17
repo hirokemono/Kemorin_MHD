@@ -62,7 +62,7 @@
       call set_sph_sprctr_data_address(sph1%sph_rj, rj_fld1)
 !
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(isix, sph_rtp1%nnod_rtp)
+      call allocate_vector_for_solver(isix, sph1%sph_rtp%nnod_rtp)
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_rms_4_sph_spectr'
       call init_rms_4_sph_spectr                                        &
@@ -94,7 +94,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
       call init_sph_transform_MHD                                       &
-     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph1%sph_rj,            &
+     &   (sph_param1, sph1%sph_rtp, sph_rtm1, sph_rlm1, sph1%sph_rj,            &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, rj_fld1)
 !
 ! ---------------------------------
@@ -110,7 +110,7 @@
 !* -----  find mid-equator point -----------------
 !*
       call set_mid_equator_point_global                                 &
-     &   (sph_param1, sph_rtp1, sph1%sph_rj)
+     &   (sph_param1, sph1%sph_rtp, sph1%sph_rj)
 !
       end subroutine SPH_init_sph_dbench
 !
@@ -149,7 +149,7 @@
 !*
       call start_eleps_time(8)
       call nonlinear                                                    &
-     &   (reftemp_rj, sph_rtp1, sph_rtm1, sph_rlm1, sph1%sph_rj,            &
+     &   (reftemp_rj, sph1%sph_rtp, sph_rtm1, sph_rlm1, sph1%sph_rj,            &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, rj_fld1)
       call end_eleps_time(8)
 !
@@ -161,7 +161,7 @@
 !*
       if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
       call s_lead_fields_4_sph_mhd                                      &
-     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph1%sph_rj,            &
+     &   (sph_param1, sph1%sph_rtp, sph_rtm1, sph_rlm1, sph1%sph_rj,            &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, rj_fld1)
       call end_eleps_time(9)
 !

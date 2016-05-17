@@ -64,7 +64,7 @@
 !*
       call start_eleps_time(8)
       call nonlinear                                                    &
-     &   (reftemp_rj, sph_rtp1, sph_rtm1, sph_rlm1, sph1%sph_rj,        &
+     &   (reftemp_rj, sph1%sph_rtp, sph_rtm1, sph_rlm1, sph1%sph_rj,        &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, rj_fld1)
       call end_eleps_time(8)
 !
@@ -76,7 +76,7 @@
 !*
       if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
       call s_lead_fields_4_sph_mhd                                      &
-     &   (sph_param1, sph_rtp1, sph_rtm1, sph_rlm1, sph1%sph_rj,        &
+     &   (sph_param1, sph1%sph_rtp, sph_rtm1, sph_rlm1, sph1%sph_rj,        &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, rj_fld1)
       call end_eleps_time(9)
 !
@@ -108,22 +108,26 @@
 !*  -----------  data transfer to FEM array --------------
 !*
       call copy_forces_to_snapshot_rtp                                  &
-     &   (sph_param1%m_folding, sph_rtp1, mesh1%node, iphys, nod_fld1)
+     &   (sph_param1%m_folding, sph1%sph_rtp,    &
+     &    mesh1%node, iphys, nod_fld1)
       call copy_snap_vec_fld_from_trans                                 &
-     &   (sph_param1%m_folding, sph_rtp1, mesh1%node, iphys, nod_fld1)
+     &   (sph_param1%m_folding, sph1%sph_rtp,    &
+     &    mesh1%node, iphys, nod_fld1)
       call copy_snap_vec_fld_to_trans                                   &
-     &   (sph_param1%m_folding, sph_rtp1, mesh1%node, iphys, nod_fld1)
+     &   (sph_param1%m_folding, sph1%sph_rtp,    &
+     &    mesh1%node, iphys, nod_fld1)
 !
 ! ----  Take zonal mean
 !
       if (iflag_debug.eq.1) write(*,*) 'zonal_cyl_rms_all_rtp_field'
-!      call zonal_rms_all_rtp_field(sph_rtp1, mesh1%node, nod_fld1)
-      call zonal_cyl_rms_all_rtp_field(sph_rtp1, mesh1%node, nod_fld1)
+!      call zonal_rms_all_rtp_field(sph1%sph_rtp, mesh1%node, nod_fld1)
+      call zonal_cyl_rms_all_rtp_field                                  &
+     &   (sph1%sph_rtp, mesh1%node, nod_fld1)
 !
 !*  ----------- transform field at pole and center --------------
 !*
       call lead_pole_fields_4_sph_mhd                                   &
-     &   (sph_param1, sph_rtp1, mesh1%node, iphys, nod_fld1)
+     &   (sph_param1, sph1%sph_rtp, mesh1%node, iphys, nod_fld1)
 !
       call nod_fields_send_recv(mesh1%node, mesh1%nod_comm, nod_fld1)
 !

@@ -26,7 +26,7 @@
 !    Evaluate time average
 !
       write(*,*) 'open_read_field_data_on_circle'
-      call open_read_field_data_on_circle(sph_rtp1, sph1%sph_rj)
+      call open_read_field_data_on_circle(sph1%sph_rtp, sph1%sph_rj)
       call allocate_tave_circle_field
 !
       icou = 0
@@ -54,7 +54,7 @@
 !
 !  Evaluate standard deviation
 !
-      call open_read_field_data_on_circle(sph_rtp1, sph1%sph_rj)
+      call open_read_field_data_on_circle(sph1%sph_rtp, sph1%sph_rj)
 !
       icou = 0
       do
