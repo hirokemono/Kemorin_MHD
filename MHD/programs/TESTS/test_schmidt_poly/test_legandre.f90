@@ -60,7 +60,7 @@
         end do
       end do
 !
-      call allocate_gauss_colat_rtm(sph_rtm1%nidx_rtm(2))
+      call allocate_gauss_colat_rtm(sph1%sph_rtm%nidx_rtm(2))
       call allocate_gauss_points(num_gauss)
       call construct_gauss_coefs
 !

@@ -33,7 +33,7 @@
 !
       call set_global_sph_resolution                                    &
      &   (sph_param1%l_truncation, sph_param1%m_folding,                &
-     &    sph1%sph_rtp, sph_rtm1, sph_rlm1, sph1%sph_rj)
+     &    sph1%sph_rtp, sph1%sph_rtm, sph_rlm1, sph1%sph_rj)
 !
       call check_global_spheric_parameter(sph_param1, sph1%sph_rtp)
       call output_set_radial_grid(sph_param1, sph1%sph_rtp)
@@ -41,7 +41,7 @@
 !  ========= Generate spherical harmonics table ========================
 !
       call s_const_global_sph_grids_modes                               &
-     &   (sph_param1, sph1%sph_rtp, sph_rtm1, sph1%sph_rj)
+     &   (sph_param1, sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rj)
 !
       allocate(comm_rlm_mul(ndomain_sph))
 !
@@ -58,10 +58,10 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'gen_sph_rtm_grids'
       call gen_sph_rtm_grids                                            &
-     &   (ndomain_sph, sph_param1, sph_rtm1, comm_rtm_mul)
+     &   (ndomain_sph, sph_param1, sph1%sph_rtm, comm_rtm_mul)
       if(iflag_debug .gt. 0) write(*,*) 'gen_sph_rtp_grids'
       call gen_sph_rtp_grids(ndomain_sph, comm_rtm_mul,                 &
-     &    sph_param1, sph1%sph_rtp, sph_rtm1)
+     &    sph_param1, sph1%sph_rtp, sph1%sph_rtm)
       call dealloc_all_comm_stacks_rtm(ndomain_sph, comm_rtm_mul)
       deallocate(comm_rtm_mul)
 !

@@ -29,14 +29,14 @@
 !
 !>  Structure of grid and spectr data for spherical spectr method
       type(sph_grids), save :: sph1
-!sph1%sph_rtp
+!sph1%sph_rtm
 !
 !>  Structure of grid and spectr data for spherical spectr method
       type(sph_shell_parameters), save :: sph_param1
 !
 !      type(sph_rtp_grid), save :: sph_rtp1
 !
-      type(sph_rtm_grid), save :: sph_rtm1
+!      type(sph_rtm_grid), save :: sph_rtm1
 !
       type(sph_rlm_grid), save :: sph_rlm1
 !

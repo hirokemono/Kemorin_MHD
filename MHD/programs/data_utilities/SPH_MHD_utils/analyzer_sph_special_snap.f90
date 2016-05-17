@@ -158,7 +158,7 @@
 !*
       call start_eleps_time(8)
       call nonlinear                                                    &
-     &   (reftemp_rj, sph1%sph_rtp, sph_rtm1, sph_rlm1, sph1%sph_rj,            &
+     &   (reftemp_rj, sph1%sph_rtp, sph1%sph_rtm, sph_rlm1, sph1%sph_rj,            &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, rj_fld1)
       call end_eleps_time(8)
 !
@@ -248,14 +248,14 @@
 !
 !
       call s_lead_fields_4_sph_mhd                                      &
-     &   (sph_param1, sph1%sph_rtp, sph_rtm1, sph_rlm1, sph1%sph_rj,            &
+     &   (sph_param1, sph1%sph_rtp, sph1%sph_rtm, sph_rlm1, sph1%sph_rj,            &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, rj_fld1)
 !
-      call sph_back_trans_4_MHD(sph1%sph_rtp, sph_rtm1, sph_rlm1,       &
+      call sph_back_trans_4_MHD(sph1%sph_rtp, sph1%sph_rtm, sph_rlm1,   &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, rj_fld1)
 !
       call sph_forward_trans_snapshot_MHD                               &
-     &   (sph1%sph_rtp, sph_rtm1, sph_rlm1,             &
+     &   (sph1%sph_rtp, sph1%sph_rtm, sph_rlm1,             &
      &    comm_rtp1, comm_rtm1, comm_rlm1, comm_rj1, rj_fld1)
 !
 ! ----  Take zonal mean
