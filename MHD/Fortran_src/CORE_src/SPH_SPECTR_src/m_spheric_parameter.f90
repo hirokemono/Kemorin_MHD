@@ -23,11 +23,19 @@
 !
       use m_precision
       use m_spheric_constants
+      use t_spheric_mesh
       use t_spheric_parameter
+      use t_sph_trans_comm_tbl
 !.
       implicit none
 !
 !>  Structure of grid and spectr data for spherical spectr method
       type(sph_grids), save :: sph1
+!
+!>  Structure for communication table for spherical transform
+      type(sph_comm_tables), save :: comms_sph1
+!
+!> Structure for grid and comm table for spherical transform
+      type(sph_group_data), save :: sph_grps1
 !
       end module m_spheric_parameter

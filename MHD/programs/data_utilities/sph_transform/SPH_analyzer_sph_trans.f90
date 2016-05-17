@@ -31,7 +31,6 @@
       use m_node_id_spherical_IO
       use m_spheric_parameter
       use m_sph_spectr_data
-      use m_sph_trans_comm_table
 !
       use count_num_sph_smp
       use set_phys_name_4_sph_trans
@@ -63,7 +62,6 @@
       subroutine SPH_analyze_sph_trans(i_step, fld_IO)
 !
       use m_spheric_parameter
-      use m_sph_trans_comm_table
       use m_sph_spectr_data
       use m_t_step_parameter
       use m_control_params_sph_data
@@ -110,7 +108,6 @@
       subroutine SPH_analyze_sph_zm_trans(i_step, fld_IO)
 !
       use m_spheric_parameter
-      use m_sph_trans_comm_table
       use m_sph_spectr_data
       use m_t_step_parameter
       use m_time_data_IO

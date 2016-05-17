@@ -10,7 +10,6 @@
       use m_read_ctl_gen_sph_shell
       use m_spheric_global_ranks
       use m_spheric_parameter
-      use m_group_data_sph_specr
       use m_read_mesh_data
       use m_node_id_spherical_IO
       use set_ctl_gen_shell_grids

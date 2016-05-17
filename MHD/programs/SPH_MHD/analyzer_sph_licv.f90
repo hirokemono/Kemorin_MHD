@@ -33,8 +33,6 @@
       subroutine initialize_sph_licv
 !
       use m_spheric_parameter
-      use m_sph_trans_comm_table
-      use m_group_data_sph_specr
       use m_sph_spectr_data
       use m_ctl_data_sph_MHD_noviz
       use init_sph_MHD_elapsed_label

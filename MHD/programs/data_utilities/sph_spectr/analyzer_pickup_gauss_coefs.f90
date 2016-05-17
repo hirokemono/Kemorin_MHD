@@ -33,8 +33,6 @@
       use m_ctl_data_4_sph_utils
       use m_ctl_params_sph_utils
       use m_spheric_parameter
-      use m_sph_trans_comm_table
-      use m_group_data_sph_specr
       use m_sph_spectr_data
       use parallel_load_data_4_sph
       use copy_rj_phys_data_4_IO

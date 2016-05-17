@@ -38,8 +38,6 @@
 !
       use m_ctl_data_sph_MHD_noviz
       use m_spheric_parameter
-      use m_sph_trans_comm_table
-      use m_group_data_sph_specr
       use m_sph_spectr_data
       use set_control_sph_mhd
       use init_sph_MHD_elapsed_label
@@ -79,7 +77,6 @@
       subroutine SPH_const_initial_field
 !
       use m_spheric_parameter
-      use m_group_data_sph_specr
       use m_sph_spectr_data
       use m_sph_phys_address
       use m_physical_property

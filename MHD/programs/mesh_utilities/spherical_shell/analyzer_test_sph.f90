@@ -29,8 +29,6 @@
       subroutine init_test_sph
 !
       use m_spheric_parameter
-      use m_sph_trans_comm_table
-      use m_group_data_sph_specr
       use m_read_ctl_gen_sph_shell
       use set_control_platform_data
       use parallel_load_data_4_sph
@@ -61,7 +59,6 @@
 !
       use m_solver_SR
       use m_spheric_parameter
-      use m_sph_trans_comm_table
       use cmp_trans_sph_indices
       use cmp_trans_sph_tests
       use set_parallel_file_name

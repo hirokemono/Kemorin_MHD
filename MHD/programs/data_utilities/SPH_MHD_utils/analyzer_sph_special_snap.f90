@@ -125,7 +125,6 @@
       use m_work_time
       use m_t_step_parameter
       use m_spheric_parameter
-      use m_sph_trans_comm_table
       use m_sph_spectr_data
       use m_node_id_spherical_IO
 !
@@ -236,7 +235,6 @@
 !
       use t_phys_address
       use m_spheric_parameter
-      use m_sph_trans_comm_table
       use m_sph_phys_address
       use m_sph_spectr_data
       use output_viz_file_control

@@ -37,8 +37,6 @@
 !
       use m_ctl_data_sph_MHD_noviz
       use m_spheric_parameter
-      use m_sph_trans_comm_table
-      use m_group_data_sph_specr
       use m_sph_spectr_data
       use set_control_sph_mhd
       use set_control_sph_data_MHD

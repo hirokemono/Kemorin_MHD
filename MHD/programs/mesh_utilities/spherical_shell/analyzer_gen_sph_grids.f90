@@ -75,8 +75,6 @@
       subroutine analyze_gen_sph_grids
 !
       use m_spheric_parameter
-      use m_sph_trans_comm_table
-      use m_group_data_sph_specr
       use m_spheric_global_ranks
       use para_gen_sph_grids_modes
       use set_comm_table_rtp_rj

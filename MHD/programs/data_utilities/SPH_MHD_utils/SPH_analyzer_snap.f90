@@ -26,8 +26,6 @@
       use m_control_parameter
 !
       use m_spheric_parameter
-      use m_sph_trans_comm_table
-      use m_group_data_sph_specr
       use m_sph_spectr_data
       use m_sph_phys_address
       use m_rms_4_sph_spectr
@@ -104,7 +102,6 @@
       use m_work_time
       use m_t_step_parameter
       use m_spheric_parameter
-      use m_sph_trans_comm_table
       use m_sph_spectr_data
       use m_node_id_spherical_IO
 !

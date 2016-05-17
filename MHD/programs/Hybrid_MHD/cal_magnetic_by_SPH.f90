@@ -159,7 +159,7 @@
 !
       subroutine nonlinear_incuction_SPH(sph, comms_sph, rj_fld)
 !
-      use m_sph_trans_comm_table
+      use m_spheric_parameter
       use m_solver_SR
       use spherical_SRs_N
       use copy_nodal_fld_4_sph_trans

@@ -27,7 +27,6 @@
       subroutine SPH_analyze_zm_energies(i_step, visval, fld_IO)
 !
       use m_spheric_parameter
-      use m_sph_trans_comm_table
       use m_sph_spectr_data
       use m_t_step_parameter
       use m_control_params_2nd_files
