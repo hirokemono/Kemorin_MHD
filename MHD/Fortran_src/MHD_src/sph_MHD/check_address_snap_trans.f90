@@ -8,7 +8,8 @@
 !!       in MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine set_addresses_snapshot_trans
+!!        subroutine check_address_trans_sph_snap(trns_snap)
+!!        type(address_4_sph_trans), intent(in) :: trns_snap
 !!@endverbatim
 !
       module check_address_snap_trans
@@ -28,9 +29,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine check_address_trans_sph_snap
+      subroutine check_address_trans_sph_snap(trns_snap)
 !
-      use m_addresses_trans_sph_snap
+      type(address_4_sph_trans), intent(in) :: trns_snap
 !
       call check_addresses_snapshot_trans                               &
      &   (trns_snap%b_trns, trns_snap%f_trns,                           &

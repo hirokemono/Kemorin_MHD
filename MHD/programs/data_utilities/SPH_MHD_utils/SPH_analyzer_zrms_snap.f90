@@ -39,6 +39,7 @@
       use m_sph_spectr_data
       use m_t_step_parameter
       use m_node_id_spherical_IO
+      use m_addresses_trans_sph_MHD
 !
       use cal_nonlinear
       use cal_sol_sph_MHD_crank
@@ -62,7 +63,7 @@
 !*  ----------------lead nonlinear term ... ----------
 !*
       call start_eleps_time(8)
-      call nonlinear(sph1, comms_sph1, reftemp_rj, rj_fld1)
+      call nonlinear(sph1, comms_sph1, reftemp_rj, trns_MHD, rj_fld1)
       call end_eleps_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=
@@ -107,12 +108,12 @@
       call copy_forces_to_snapshot_rtp                                  &
      &   (sph1%sph_params%m_folding, sph1%sph_rtp,                      &
      &    trns_MHD%f_trns, trns_MHD%ncomp_rtp_2_rj,                     &
-     &    mesh1%node, iphys, nod_fld1)
+     &    mesh1%node, iphys, frm_rtp, nod_fld1)
       call copy_snap_vec_fld_from_trans                                 &
-     &   (sph1%sph_params%m_folding, sph1%sph_rtp, trns_snap%b_trns,    &
+     &   (sph1%sph_params%m_folding, sph1%sph_rtp, trns_snap,           &
      &    mesh1%node, iphys, nod_fld1)
       call copy_snap_vec_fld_to_trans                                   &
-     &   (sph1%sph_params%m_folding, sph1%sph_rtp, trns_snap%f_trns,    &
+     &   (sph1%sph_params%m_folding, sph1%sph_rtp, trns_snap,           &
      &    mesh1%node, iphys, nod_fld1)
 !
 ! ----  Take zonal mean
@@ -125,7 +126,8 @@
 !*  ----------- transform field at pole and center --------------
 !*
       call lead_pole_fields_4_sph_mhd                                   &
-     &   (sph1%sph_params, sph1%sph_rtp, mesh1%node, iphys, nod_fld1)
+     &   (sph1%sph_params, sph1%sph_rtp, trns_snap, fls_pl,             &
+     &    mesh1%node, iphys, nod_fld1)
 !
       call nod_fields_send_recv(mesh1%node, mesh1%nod_comm, nod_fld1)
 !

@@ -190,14 +190,14 @@
       if (iflag_debug.gt.0) write(*,*) 'copy_forces_to_snapshot_rtp'
       call copy_forces_to_snapshot_rtp(sph_params%m_folding, sph_rtp,   &
      &    trns_MHD%f_trns, trns_MHD%ncomp_rtp_2_rj, mesh%node, iphys,   &
-     &    nod_fld)
+     &    frm_rtp, nod_fld)
       if (iflag_debug.gt.0) write(*,*) 'copy_snap_vec_fld_from_trans'
       call copy_snap_vec_fld_from_trans                                 &
-     &   (sph_params%m_folding, sph_rtp, trns_snap%b_trns,              &
+     &   (sph_params%m_folding, sph_rtp, trns_snap,                     &
      &    mesh%node, iphys, nod_fld)
       if (iflag_debug.gt.0) write(*,*) 'copy_snap_vec_fld_to_trans'
       call copy_snap_vec_fld_to_trans                                   &
-     &   (sph_params%m_folding, sph_rtp, trns_snap%f_trns,              &
+     &   (sph_params%m_folding, sph_rtp, trns_snap,                     &
      &    mesh%node, iphys, nod_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'overwrite_nodal_sph_2_xyz'
@@ -207,7 +207,8 @@
 !*
       if (iflag_debug.gt.0) write(*,*) 'lead_pole_fields_4_sph_mhd'
       call lead_pole_fields_4_sph_mhd                                   &
-     &   (sph_params, sph_rtp, mesh%node, iphys, nod_fld)
+     &   (sph_params, sph_rtp, trns_snap, fls_pl,                       &
+     &    mesh%node, iphys, nod_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'phys_send_recv_all'
       call nod_fields_send_recv(mesh%node, mesh%nod_comm, nod_fld)

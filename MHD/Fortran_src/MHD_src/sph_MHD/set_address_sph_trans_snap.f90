@@ -8,7 +8,9 @@
 !!       in MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine check_addresses_snapshot_trans
+!!     subroutine set_addresses_snapshot_trans(trns_snap,               &
+!!    &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!!        type(address_4_sph_trans), intent(inout) :: trns_snap
 !!@endverbatim
 !
       module set_address_sph_trans_snap
@@ -26,13 +28,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_addresses_snapshot_trans                           &
-     &         (ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+      subroutine set_addresses_snapshot_trans(trns_snap,                &
+     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       use m_node_phys_data
       use m_sph_phys_address
-      use m_addresses_trans_sph_snap
 !
+      type(address_4_sph_trans), intent(inout) :: trns_snap
       integer(kind = kint), intent(inout) :: ncomp_sph_trans
       integer(kind = kint), intent(inout) :: nvector_sph_trans
       integer(kind = kint), intent(inout) :: nscalar_sph_trans

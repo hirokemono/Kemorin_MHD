@@ -8,9 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine lead_pole_fields_4_sph_mhd                           &
-!!     &         (sph_params, sph_rtp, node, iphys, nod_fld)
+!!     &         (sph_params, sph_rtp, trns_snap, fls_pl,               &
+!!     &          node, iphys, nod_fld)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(address_4_sph_trans), intent(in) :: trns_snap
 !!        type(node_data), intent(in) :: node
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -25,6 +27,7 @@
       use t_geometry_data
       use t_phys_address
       use t_phys_data
+      use t_addresses_sph_transform
 !
       implicit  none
 !
@@ -35,19 +38,24 @@
 !-----------------------------------------------------------------------
 !
       subroutine lead_pole_fields_4_sph_mhd                             &
-     &         (sph_params, sph_rtp, node, iphys, nod_fld)
+     &         (sph_params, sph_rtp, trns_snap, fls_pl,                 &
+     &          node, iphys, nod_fld)
 !
       use m_machine_parameter
       use m_spheric_constants
-      use m_addresses_trans_sph_snap
+      use m_work_pole_sph_trans
 !
       use pole_energy_flux_sph
       use copy_MHD_4_pole_trans
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(address_4_sph_trans), intent(in) :: trns_snap
       type(node_data), intent(in) :: node
       type(phys_address), intent(in) :: iphys
+      real(kind = kreal), intent(inout)                                 &
+     &           :: fls_pl(nnod_pole,trns_snap%ncomp_rj_2_rtp)
+!
       type(phys_data), intent(inout) :: nod_fld
 !
 !

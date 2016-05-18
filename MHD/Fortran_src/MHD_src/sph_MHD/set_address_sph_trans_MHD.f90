@@ -27,7 +27,7 @@
       private :: b_trans_address_vector_MHD
       private :: b_trans_address_scalar_MHD
       private :: f_trans_address_vector_MHD
-      private :: f_trans_address_scsalar_MHD
+      private :: f_trans_address_scalar_MHD
       private :: check_add_trans_sph_MHD
 !
 !-----------------------------------------------------------------------
@@ -57,7 +57,7 @@
 !
       call f_trans_address_vector_MHD                                   &
      &   (trns_MHD%nvector_rtp_2_rj, trns_MHD%f_trns)
-      call f_trans_address_scsalar_MHD                                  &
+      call f_trans_address_scalar_MHD                                   &
      &   (trns_MHD%nvector_rtp_2_rj, trns_MHD%nscalar_rtp_2_rj,         &
      &    trns_MHD%f_trns)
       trns_MHD%ntensor_rtp_2_rj = 0
@@ -215,7 +215,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine f_trans_address_scsalar_MHD(nvector_rtp_2_rj,          &
+      subroutine f_trans_address_scalar_MHD(nvector_rtp_2_rj,           &
      &          nscalar_rtp_2_rj, f_trns)
 !
       use m_control_parameter
@@ -232,7 +232,7 @@
         f_trns%i_div_Coriolis = nscalar_rtp_2_rj + 3*nvector_rtp_2_rj
       end if
 !
-      end subroutine f_trans_address_scsalar_MHD
+      end subroutine f_trans_address_scalar_MHD
 !
 !-----------------------------------------------------------------------
 !

@@ -7,7 +7,8 @@
 !>@brief Evaluate nonlinear terms by pseudo spectram scheme
 !!
 !!@verbatim
-!!      subroutine nonlinear(sph, comms_sph, reftemp_rj, rj_fld)
+!!      subroutine nonlinear                                            &
+!!     &         (sph, comms_sph, reftemp_rj, trns_MHD, rj_fld)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(phys_data), intent(inout) :: rj_fld
@@ -33,6 +34,7 @@
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
       use t_phys_data
+      use t_addresses_sph_transform
 !
       implicit none
 !
@@ -44,7 +46,8 @@
 !*
 !*   ------------------------------------------------------------------
 !*
-      subroutine nonlinear(sph, comms_sph, reftemp_rj, rj_fld)
+      subroutine nonlinear                                              &
+     &         (sph, comms_sph, reftemp_rj, trns_MHD, rj_fld)
 !
       use m_sph_phys_address
       use m_boundary_params_sph_MHD
@@ -60,13 +63,14 @@
       real(kind = kreal), intent(in)                                    &
      &      :: reftemp_rj(sph%sph_rj%nidx_rj(1),0:1)
 !
+      type(address_4_sph_trans), intent(inout) :: trns_MHD
       type(phys_data), intent(inout) :: rj_fld
 !
 !
 !   ----  lead nonlinear terms by phesdo spectrum
 !
       if (iflag_debug.eq.1) write(*,*) 'nonlinear_by_pseudo_sph'
-      call nonlinear_by_pseudo_sph(sph, comms_sph, rj_fld)
+      call nonlinear_by_pseudo_sph(sph, comms_sph, trns_MHD, rj_fld)
 !
       if (iflag_4_ref_temp .eq. id_sphere_ref_temp) then
         call add_reftemp_advect_sph_MHD                                 &
@@ -151,9 +155,9 @@
 !
 !*   ------------------------------------------------------------------
 !
-      subroutine nonlinear_by_pseudo_sph(sph, comms_sph, rj_fld)
+      subroutine nonlinear_by_pseudo_sph                                &
+     &         (sph, comms_sph, trns_MHD, rj_fld)
 !
-      use m_addresses_trans_sph_MHD
       use sph_transforms_4_MHD
       use cal_nonlinear_sph_MHD
       use cal_momentum_eq_explicit
@@ -163,13 +167,14 @@
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
 !
+      type(address_4_sph_trans), intent(inout) :: trns_MHD
       type(phys_data), intent(inout) :: rj_fld
 !
 !   ----  lead nonlinear terms by phesdo spectrum
 !
       call start_eleps_time(14)
       if (iflag_debug.ge.1) write(*,*) 'sph_back_trans_4_MHD'
-      call sph_back_trans_4_MHD(sph, comms_sph, rj_fld)
+      call sph_back_trans_4_MHD(sph, comms_sph, rj_fld, trns_MHD)
       call end_eleps_time(14)
 !
       call start_eleps_time(15)
@@ -182,7 +187,7 @@
 !
       call start_eleps_time(16)
       if (iflag_debug.ge.1) write(*,*) 'sph_forward_trans_4_MHD'
-      call sph_forward_trans_4_MHD(sph, comms_sph, rj_fld)
+      call sph_forward_trans_4_MHD(sph, comms_sph, trns_MHD, rj_fld)
       call end_eleps_time(16)
 !
       call start_eleps_time(17)
@@ -196,7 +201,7 @@
 !*   ------------------------------------------------------------------
 !*
       subroutine licv_exp(reftemp_rj,                                   &
-     &          sph_rlm, sph_rj, comm_rlm, comm_rj, rj_fld)
+     &          sph_rlm, sph_rj, comm_rlm, comm_rj, trns_MHD, rj_fld)
 !
       use m_sph_phys_address
       use m_boundary_params_sph_MHD
@@ -208,6 +213,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(sph_comm_tbl), intent(in) :: comm_rlm
       type(sph_comm_tbl), intent(in) :: comm_rj
+      type(address_4_sph_trans), intent(in) :: trns_MHD
 !
       real(kind = kreal), intent(in)                                    &
      &                   :: reftemp_rj(sph_rj%nidx_rj(1),0:1)
@@ -218,7 +224,7 @@
       if (iflag_debug.eq.1) write(*,*) 'sph_transform_4_licv'
       if(iflag_4_coriolis .ne. id_turn_OFF) then
         call sph_transform_4_licv                                       &
-     &     (sph_rlm, comm_rlm, comm_rj, rj_fld)
+     &     (sph_rlm, comm_rlm, comm_rj, trns_MHD, rj_fld)
       end if
 !
 !   ----  lead nonlinear terms by phesdo spectrum

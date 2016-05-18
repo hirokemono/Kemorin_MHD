@@ -10,19 +10,21 @@
 !!
 !!@verbatim
 !!      subroutine sph_b_trans_w_coriolis(ncomp_trans, nvector, nscalar,&
-!!     &          sph, comms_sph, n_WS, n_WR, WS, WR, fld_rtp)
+!!     &          sph, comms_sph, n_WS, n_WR, WS, WR, trns_MHD)
 !!      subroutine sph_f_trans_w_coriolis(ncomp_trans, nvector, nscalar,&
-!!     &          sph, comms_sph, frc_rtp, n_WS, n_WR, WS, WR)
+!!     &          sph, comms_sph, trns_MHD, n_WS, n_WR, WS, WR)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
+!!        type(address_4_sph_trans), intent(inout) :: trns_MHD
 !!
-!!      subroutine sph_b_trans_licv                                     &
-!!     &         (ncomp_trans, sph_rlm, comm_rlm, comm_rj, n_WR, WR)
-!!      subroutine sph_f_trans_licv                                     &
-!!     &         (ncomp_trans, sph_rlm, comm_rlm, comm_rj, n_WS, WS)
+!!      subroutine sph_b_trans_licv(ncomp_trans,                        &
+!!     &          sph_rlm, comm_rlm, comm_rj, trns_MHD, n_WR, WR)
+!!      subroutine sph_f_trans_licv(ncomp_trans,                        &
+!!     &         sph_rlm, comm_rlm, comm_rj, trns_MHD, n_WS, WS)
 !!        type(sph_rlm_grid), intent(in) :: sph_rlm
 !!        type(sph_comm_tbl), intent(in) :: comm_rlm
 !!        type(sph_comm_tbl), intent(in) :: comm_rj
+!!        type(address_4_sph_trans), intent(in) :: trns_MHD
 !!
 !!   input /outpt arrays for single vector
 !!      radial component:      v_rtp(i_rtp,1)
@@ -60,6 +62,7 @@
 !
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
+      use t_addresses_sph_transform
 !
       implicit none
 !
@@ -70,16 +73,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sph_b_trans_w_coriolis(ncomp_trans, nvector, nscalar,  &
-     &          sph, comms_sph, n_WS, n_WR, WS, WR, fld_rtp)
+     &          sph, comms_sph, n_WS, n_WR, WS, WR, trns_MHD)
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
 !
       integer(kind = kint), intent(in) :: ncomp_trans, nvector, nscalar
+!
       integer(kind = kint), intent(in) :: n_WS, n_WR
       real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
-      real (kind=kreal), intent(inout)                                  &
-     &                  :: fld_rtp(sph%sph_rtp%nnod_rtp,ncomp_trans)
+      type(address_4_sph_trans), intent(inout) :: trns_MHD
 !
 !
       START_SRtime= MPI_WTIME()
@@ -92,8 +95,8 @@
 !
       call start_eleps_time(13)
       if(iflag_debug .gt. 0) write(*,*) 'sum_coriolis_rlm'
-      call sum_coriolis_rlm                                             &
-     &   (ncomp_trans, sph%sph_rlm, comms_sph%comm_rlm, n_WR, WR)
+      call sum_coriolis_rlm(ncomp_trans,                                &
+     &   sph%sph_rlm, comms_sph%comm_rlm, trns_MHD, n_WR, WR)
       call finish_send_recv_sph(comms_sph%comm_rj)
       call end_eleps_time(13)
 !
@@ -121,7 +124,7 @@
      &    'back_MHD_FFT_sel_from_recv', ncomp_trans, nvector, nscalar
       call back_MHD_FFT_sel_from_recv                                   &
      &   (sph%sph_rtp, comms_sph%comm_rtp, ncomp_trans,       &
-     &    n_WR, WR, fld_rtp)
+     &    n_WR, WR, trns_MHD%fld_rtp)
       call end_eleps_time(24)
 !
       if(iflag_debug .gt. 0) write(*,*) 'finish_send_recv_rtm_2_rtp'
@@ -132,22 +135,21 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sph_f_trans_w_coriolis(ncomp_trans, nvector, nscalar,  &
-     &          sph, comms_sph, frc_rtp, n_WS, n_WR, WS, WR)
+     &          sph, comms_sph, trns_MHD, n_WS, n_WR, WS, WR)
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
 !
       integer(kind = kint), intent(in) :: ncomp_trans, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WS, n_WR
-      real (kind=kreal), intent(inout)                                  &
-     &                  :: frc_rtp(sph%sph_rtp%nnod_rtp,ncomp_trans)
       real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
+      type(address_4_sph_trans), intent(inout) :: trns_MHD
 !
 !
       call start_eleps_time(24)
       call fwd_MHD_FFT_sel_from_recv                                    &
      &   (sph%sph_rtp, comms_sph%comm_rtp, ncomp_trans,                 &
-     &    n_WS, frc_rtp, WS)
+     &    n_WS, trns_MHD%frc_rtp, WS)
       call end_eleps_time(24)
 !
       START_SRtime= MPI_WTIME()
@@ -168,8 +170,8 @@
 !
       call start_eleps_time(13)
       if(iflag_debug .gt. 0) write(*,*) 'copy_coriolis_terms_rlm'
-      call copy_coriolis_terms_rlm                                      &
-     &   (ncomp_trans, sph%sph_rlm, comms_sph%comm_rlm, n_WS, WS)
+      call copy_coriolis_terms_rlm(ncomp_trans,                         &
+     &   sph%sph_rlm, comms_sph%comm_rlm, trns_MHD, n_WS, WS)
       call end_eleps_time(13)
 !
       START_SRtime= MPI_WTIME()
@@ -185,12 +187,13 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine sph_b_trans_licv                                       &
-     &         (ncomp_trans, sph_rlm, comm_rlm, comm_rj, n_WR, WR)
+      subroutine sph_b_trans_licv(ncomp_trans,                          &
+     &          sph_rlm, comm_rlm, comm_rj, trns_MHD, n_WR, WR)
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rlm
       type(sph_comm_tbl), intent(in) :: comm_rj
+      type(address_4_sph_trans), intent(in) :: trns_MHD
 !
       integer(kind = kint), intent(in) :: ncomp_trans
       integer(kind = kint), intent(in) :: n_WR
@@ -205,7 +208,8 @@
 !
       call start_eleps_time(13)
       if(iflag_debug .gt. 0) write(*,*) 'sum_coriolis_rlm'
-      call sum_coriolis_rlm(ncomp_trans, sph_rlm, comm_rlm, n_WR, WR)
+      call sum_coriolis_rlm(ncomp_trans, sph_rlm, comm_rlm, trns_MHD,   &
+     &    n_WR, WR)
       call end_eleps_time(13)
 !
       call finish_send_recv_sph(comm_rj)
@@ -214,12 +218,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sph_f_trans_licv                                       &
-     &         (ncomp_trans, sph_rlm, comm_rlm, comm_rj, n_WS, WS)
+      subroutine sph_f_trans_licv(ncomp_trans,                          &
+     &         sph_rlm, comm_rlm, comm_rj, trns_MHD, n_WS, WS)
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rlm
       type(sph_comm_tbl), intent(in) :: comm_rj
+      type(address_4_sph_trans), intent(in) :: trns_MHD
 !
       integer(kind = kint), intent(in) :: ncomp_trans
       integer(kind = kint), intent(in) :: n_WS
@@ -229,7 +234,7 @@
       call start_eleps_time(13)
       if(iflag_debug .gt. 0) write(*,*) 'copy_coriolis_terms_rlm'
       call copy_coriolis_terms_rlm                                      &
-     &   (ncomp_trans, sph_rlm, comm_rlm, n_WS, WS)
+     &   (ncomp_trans, sph_rlm, comm_rlm, trns_MHD, n_WS, WS)
       call end_eleps_time(24)
 !
       START_SRtime= MPI_WTIME()

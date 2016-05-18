@@ -133,7 +133,6 @@
       subroutine copy_snap_spectr_to_send(ncomp_send, bs_trns,          &
      &          sph_rj, comm_rj, rj_fld, n_WS, WS, v_pl_local)
 !
-!      use m_addresses_trans_sph_snap
       use m_work_pole_sph_trans
 !
       type(sph_rj_grid), intent(in) ::  sph_rj

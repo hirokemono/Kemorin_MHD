@@ -10,9 +10,6 @@
 !!@verbatim
 !!      subroutine allocate_snap_trans_rtp(nnod_rtp)
 !!      subroutine deallocate_snap_trans_rtp
-!!
-!!      subroutine set_addresses_snapshot_trans
-!!      subroutine check_addresses_snapshot_trans
 !!@endverbatim
 !
       module m_addresses_trans_sph_snap
@@ -75,9 +72,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine dealloc_nonlinear_data
+      subroutine deallocate_snap_trans_rtp
 !
-      call alloc_nonlinear_data(trns_snap)
+      call dealloc_nonlinear_data(trns_snap)
       deallocate(frm_rtp, fls_pl, flc_pl, frs_pl, frm_pl)
 !
       end subroutine deallocate_snap_trans_rtp

@@ -100,7 +100,7 @@
 !* obtain nonlinear terms for starting
 !*
       if(iflag_debug .gt. 0) write(*,*) 'first nonlinear'
-      call nonlinear(sph1, comms_sph1, reftemp_rj, rj_fld1)
+      call nonlinear(sph1, comms_sph1, reftemp_rj, trns_MHD, rj_fld1)
 !
 !* -----  Open Volume integration data files -----------------
 !*
@@ -121,6 +121,7 @@
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_t_step_parameter
+      use m_addresses_trans_sph_MHD
 !
       use cal_momentum_eq_explicit
       use cal_sol_sph_MHD_crank
@@ -158,7 +159,7 @@
 !*  ----------------lead nonlinear term ... ----------
 !*
       call start_eleps_time(8)
-      call nonlinear(sph1, comms_sph1, reftemp_rj, rj_fld1)
+      call nonlinear(sph1, comms_sph1, reftemp_rj, trns_MHD, rj_fld1)
       call end_eleps_time(8)
       call end_eleps_time(5)
 !

@@ -14,7 +14,7 @@
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!      subroutine copy_forces_to_snapshot_rtp                          &
 !!     &          (m_folding, sph_rtp, f_trns, ncomp_rtp_2_rj, node,    &
-!!     &           iphys, nod_fld)
+!!     &           iphys, frm_rtp, nod_fld)
 !!        type(node_data), intent(in) :: node
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -29,6 +29,7 @@
       use t_phys_address
       use t_phys_data
       use t_spheric_rtp_data
+      use t_addresses_sph_transform
 !
       implicit  none
 !
@@ -83,18 +84,17 @@
 !
       subroutine copy_forces_to_snapshot_rtp                            &
      &          (m_folding, sph_rtp, f_trns, ncomp_rtp_2_rj, node,      &
-     &           iphys, nod_fld)
-!
-      use m_addresses_trans_sph_snap
+     &           iphys, frm_rtp, nod_fld)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(phys_address), intent(in) :: f_trns
       type(node_data), intent(in) :: node
       type(phys_address), intent(in) :: iphys
 !
-      integer(kind = kint), intent(in) :: ncomp_rtp_2_rj
-!
       integer(kind = kint), intent(in) :: m_folding
+      integer(kind = kint), intent(in) :: ncomp_rtp_2_rj
+      real(kind = kreal), intent(in)                                    &
+     &     :: frm_rtp(sph_rtp%nnod_rtp,ncomp_rtp_2_rj)
 !
       type(phys_data), intent(inout) :: nod_fld
 !

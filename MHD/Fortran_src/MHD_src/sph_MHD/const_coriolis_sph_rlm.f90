@@ -10,10 +10,11 @@
 !!@verbatim
 !!      subroutine init_sum_coriolis_rlm(l_truncation, sph_rlm)
 !!      subroutine sum_coriolis_rlm                                     &
-!!     &         (ncomp_trans, sph_rlm, comm_rlm, n_WR, WR)
+!!     &         (ncomp_trans, sph_rlm, comm_rlm, trns_MHD, n_WR, WR)
 !!      subroutine copy_coriolis_terms_rlm                              &
-!!     &         (ncomp_trans, sph_rlm, comm_rlm, n_WS, WS)
-!!        type(sph_rlm_grid), save :: sph_rlm
+!!     &         (ncomp_trans, sph_rlm, comm_rlm, trns_MHD, n_WS, WS)
+!!        type(sph_rlm_grid), intent(in)  :: sph_rlm
+!!        type(address_4_sph_trans), intent(in) :: trns_MHD
 !!        type(sph_comm_tbl), intent(inout) :: comm_rlm
 !!@endverbatim
 !
@@ -28,6 +29,7 @@
 !
       use t_spheric_rlm_data
       use t_sph_trans_comm_tbl
+      use t_addresses_sph_transform
 !
       implicit none
 !
@@ -81,16 +83,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sum_coriolis_rlm                                       &
-     &         (ncomp_trans, sph_rlm, comm_rlm, n_WR, WR)
+     &         (ncomp_trans, sph_rlm, comm_rlm, trns_MHD, n_WR, WR)
 !
       use t_boundary_params_sph_MHD
       use m_boundary_params_sph_MHD
-      use m_addresses_trans_sph_MHD
       use m_coriolis_terms_rlm
       use sum_coriolis_terms_rlm
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rlm
+      type(address_4_sph_trans), intent(in) :: trns_MHD
 !
       integer(kind = kint), intent(in) :: ncomp_trans, n_WR
       real(kind = kreal), intent(in) :: WR(n_WR)
@@ -129,16 +131,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine copy_coriolis_terms_rlm                                &
-     &         (ncomp_trans, sph_rlm, comm_rlm, n_WS, WS)
+     &         (ncomp_trans, sph_rlm, comm_rlm, trns_MHD, n_WS, WS)
 !
       use m_sph_communicators
       use m_sel_spherical_SRs
-      use m_addresses_trans_sph_MHD
       use m_coriolis_terms_rlm
       use sum_coriolis_terms_rlm
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rlm
+      type(address_4_sph_trans), intent(in) :: trns_MHD
 !
       integer(kind = kint), intent(in) :: ncomp_trans, n_WS
       real(kind = kreal), intent(inout) :: WS(n_WS)
