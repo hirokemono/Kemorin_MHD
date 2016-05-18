@@ -72,6 +72,7 @@
 !
       use init_sph_trans
       use init_FFT_4_MHD
+      use set_address_sph_trans_MHD
       use const_wz_coriolis_rtp
       use const_coriolis_sph_rlm
       use pole_sph_transform
@@ -89,25 +90,25 @@
 !
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &                     'set_addresses_trans_sph_MHD'
-      call set_addresses_trans_sph_MHD                                  &
-     &   (trns_MHD%b_trns, trns_MHD%f_trns)
+      call set_addresses_trans_sph_MHD(trns_MHD,                        &
+     &    ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
       call set_addresses_snapshot_trans
       call set_addresses_temporal_trans
 !
       if(iflag_debug .ge. iflag_routine_msg) then
-        call check_add_trans_sph_MHD(trns_MHD%b_trns, trns_MHD%f_trns)
+        call check_address_trans_sph_MHD(trns_MHD, ncomp_sph_trans)
         call check_addresses_snapshot_trans
         call check_addresses_temporal_trans
       end if
 !
-      call allocate_nonlinear_data(sph%sph_rtp%nnod_rtp)
+      call alloc_nonlinear_data(sph%sph_rtp%nnod_rtp, trns_MHD)
       call allocate_snap_trans_rtp(sph%sph_rtp%nnod_rtp)
       call allocate_tmp_trans_rtp(sph%sph_rtp%nnod_rtp)
 !
       if (iflag_debug.eq.1) write(*,*) 'initialize_legendre_trans'
       call initialize_legendre_trans(sph, comms_sph)
-      call init_fourier_transform_4_MHD                                 &
-     &   (ncomp_sph_trans, ncomp_rtp_2_rj, ncomp_rj_2_rtp,              &
+      call init_fourier_transform_4_MHD(ncomp_sph_trans,                &
+     &    trns_MHD%ncomp_rtp_2_rj, trns_MHD%ncomp_rj_2_rtp,             &
      &    sph%sph_rtp, comms_sph%comm_rtp)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_colatitude_rtp'
@@ -186,21 +187,21 @@
       type(phys_data), intent(in) :: rj_fld
 !
 !
-      call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_rj_2_rtp, comms_sph%comm_rj, comms_sph%comm_rlm)
-      call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_rj_2_rtp, comms_sph%comm_rtm, comms_sph%comm_rtp)
+      call check_calypso_sph_comm_buf_N(trns_MHD%ncomp_rj_2_rtp,        &
+     &   comms_sph%comm_rj, comms_sph%comm_rlm)
+      call check_calypso_sph_comm_buf_N(trns_MHD%ncomp_rj_2_rtp,        &
+     &   comms_sph%comm_rtm, comms_sph%comm_rtp)
 !
 !      call start_eleps_time(51)
       if(iflag_debug .gt. 0) write(*,*) 'copy_mhd_spectr_to_send'
       call copy_mhd_spectr_to_send                                      &
-     &   (ncomp_rj_2_rtp, trns_MHD%b_trns, comms_sph%comm_rj,           &
+     &   (trns_MHD%ncomp_rj_2_rtp, trns_MHD%b_trns, comms_sph%comm_rj,  &
      &    rj_fld, n_WS, WS)
 !      call end_eleps_time(51)
 !
-      if(ncomp_rj_2_rtp .eq. 0) return
-      call sph_b_trans_w_coriolis                                       &
-     &   (ncomp_rj_2_rtp, nvector_rj_2_rtp, nscalar_rj_2_rtp,           &
+      if(trns_MHD%ncomp_rj_2_rtp .eq. 0) return
+      call sph_b_trans_w_coriolis(trns_MHD%ncomp_rj_2_rtp,              &
+     &    trns_MHD%nvector_rj_2_rtp, trns_MHD%nscalar_rj_2_rtp,         &
      &    sph, comms_sph, n_WS, n_WR, WS(1), WR(1), trns_MHD%fld_rtp)
 !
       end subroutine sph_back_trans_4_MHD
@@ -221,19 +222,18 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_rtp_2_rj, comms_sph%comm_rtp, comms_sph%comm_rtm)
-      call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_rtp_2_rj, comms_sph%comm_rlm, comms_sph%comm_rj)
+      call check_calypso_sph_comm_buf_N(trns_MHD%ncomp_rtp_2_rj,        &
+     &    comms_sph%comm_rtp, comms_sph%comm_rtm)
+      call check_calypso_sph_comm_buf_N(trns_MHD%ncomp_rtp_2_rj,        &
+     &    comms_sph%comm_rlm, comms_sph%comm_rj)
 !
-      if(ncomp_rtp_2_rj .eq. 0) return
-      call sph_f_trans_w_coriolis                                       &
-     &   (ncomp_rtp_2_rj, nvector_rtp_2_rj, nscalar_rtp_2_rj,           &
+      if(trns_MHD%ncomp_rtp_2_rj .eq. 0) return
+      call sph_f_trans_w_coriolis(trns_MHD%ncomp_rtp_2_rj,              &
+     &    trns_MHD%nvector_rtp_2_rj, trns_MHD%nscalar_rtp_2_rj,         &
      &    sph, comms_sph, trns_MHD%frc_rtp, n_WS, n_WR, WS(1), WR(1))
 !
-      call copy_mhd_spectr_from_recv                                    &
-     &   (ncomp_rtp_2_rj, trns_MHD%f_trns, comms_sph%comm_rj,           &
-     &    n_WR, WR(1), rj_fld)
+      call copy_mhd_spectr_from_recv(trns_MHD%ncomp_rtp_2_rj,           &
+     &    trns_MHD%f_trns, comms_sph%comm_rj, n_WR, WR(1), rj_fld)
 !
       end subroutine sph_forward_trans_4_MHD
 !
@@ -366,24 +366,24 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if((ncomp_rj_2_rtp*ncomp_rtp_2_rj) .eq. 0) return
+      if(trns_MHD%ncomp_rj_2_rtp .eq. 0                                 &
+     &   .or. trns_MHD%ncomp_rtp_2_rj .eq. 0) return
 !
       call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_rj_2_rtp, comm_rj, comm_rlm)
+     &   (trns_MHD%ncomp_rj_2_rtp, comm_rj, comm_rlm)
       call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_rtp_2_rj, comm_rlm, comm_rj)
+     &   (trns_MHD%ncomp_rtp_2_rj, comm_rlm, comm_rj)
 !
-      call copy_mhd_spectr_to_send                                      &
-     &   (ncomp_rj_2_rtp, trns_MHD%b_trns, comm_rj, rj_fld,             &
-     &    n_WS, WS(1))
+      call copy_mhd_spectr_to_send(trns_MHD%ncomp_rj_2_rtp,             &
+     &   trns_MHD%b_trns, comm_rj, rj_fld, n_WS, WS(1))
 !
-      call sph_b_trans_licv                                             &
-     &   (ncomp_rj_2_rtp, sph_rlm, comm_rlm, comm_rj, n_WR, WR(1))
-      call sph_f_trans_licv                                             &
-     &   (ncomp_rtp_2_rj, sph_rlm, comm_rlm, comm_rj, n_WS, WS(1))
+      call sph_b_trans_licv(trns_MHD%ncomp_rj_2_rtp,                    &
+     &    sph_rlm, comm_rlm, comm_rj, n_WR, WR(1))
+      call sph_f_trans_licv(trns_MHD%ncomp_rtp_2_rj,                    &
+     &    sph_rlm, comm_rlm, comm_rj, n_WS, WS(1))
 !
       call copy_mhd_spectr_from_recv                                    &
-     &   (ncomp_rtp_2_rj, trns_MHD%f_trns, comm_rj,                     &
+     &   (trns_MHD%ncomp_rtp_2_rj, trns_MHD%f_trns, comm_rj,            &
      &    n_WR, WR(1), rj_fld)
 !
       end subroutine sph_transform_4_licv

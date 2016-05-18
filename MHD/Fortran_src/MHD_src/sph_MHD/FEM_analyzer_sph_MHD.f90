@@ -163,6 +163,7 @@
       use t_mesh_data
       use t_phys_data
       use t_phys_address
+      use m_addresses_trans_sph_MHD
 !
       use output_viz_file_control
       use lead_pole_data_4_sph_mhd
@@ -186,8 +187,9 @@
 !*  -----------  data transfer to FEM array --------------
 !*
       if (iflag_debug.gt.0) write(*,*) 'copy_forces_to_snapshot_rtp'
-      call copy_forces_to_snapshot_rtp                                  &
-     &   (sph_params%m_folding, sph_rtp, mesh%node, iphys, nod_fld)
+      call copy_forces_to_snapshot_rtp(sph_params%m_folding, sph_rtp,   &
+     &    trns_MHD%f_trns, trns_MHD%ncomp_rtp_2_rj, mesh%node, iphys,   &
+     &    nod_fld)
       if (iflag_debug.gt.0) write(*,*) 'copy_snap_vec_fld_from_trans'
       call copy_snap_vec_fld_from_trans                                 &
      &   (sph_params%m_folding, sph_rtp, mesh%node, iphys, nod_fld)

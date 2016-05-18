@@ -20,6 +20,7 @@
       use m_precision
 !
       use t_phys_address
+      use t_addresses_sph_transform
 !
       implicit none
 !
@@ -85,22 +86,22 @@
 !
       allocate(fls_rtp(nnod_rtp,ncomp_snap_rj_2_rtp))
       allocate(frs_rtp(nnod_rtp,ncomp_snap_rtp_2_rj))
-      allocate(frm_rtp(nnod_rtp,ncomp_rtp_2_rj))
+      allocate(frm_rtp(nnod_rtp,trns_MHD%ncomp_rtp_2_rj))
 !
       if(ncomp_snap_rj_2_rtp .gt. 0) fls_rtp = 0.0d0
       if(ncomp_snap_rtp_2_rj .gt. 0) frs_rtp = 0.0d0
-      if(ncomp_rtp_2_rj .gt. 0)      frm_rtp = 0.0d0
+      if(trns_MHD%ncomp_rtp_2_rj .gt. 0) frm_rtp = 0.0d0
 !
 !
       allocate(fls_pl(nnod_pole,ncomp_snap_rj_2_rtp))
       allocate(flc_pl(nnod_pole,ncomp_snap_rj_2_rtp))
       allocate(frs_pl(nnod_pole,ncomp_snap_rtp_2_rj))
-      allocate(frm_pl(nnod_pole,ncomp_rtp_2_rj))
+      allocate(frm_pl(nnod_pole,trns_MHD%ncomp_rtp_2_rj))
 !
       if(ncomp_snap_rj_2_rtp .gt. 0) fls_pl = 0.0d0
       if(ncomp_snap_rj_2_rtp .gt. 0) flc_pl = 0.0d0
       if(ncomp_snap_rtp_2_rj .gt. 0) frs_pl = 0.0d0
-      if(ncomp_rtp_2_rj .gt. 0)      frm_pl = 0.0d0
+      if(trns_MHD%ncomp_rtp_2_rj .gt. 0) frm_pl = 0.0d0
 !
       end subroutine allocate_snap_trans_rtp
 !

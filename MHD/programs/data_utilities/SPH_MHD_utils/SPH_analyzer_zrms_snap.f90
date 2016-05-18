@@ -85,6 +85,7 @@
       use m_node_phys_data
       use m_spheric_parameter
       use m_sph_spectr_data
+      use m_addresses_trans_sph_MHD
       use output_viz_file_control
       use lead_pole_data_4_sph_mhd
       use nod_phys_send_recv
@@ -104,6 +105,7 @@
 !*
       call copy_forces_to_snapshot_rtp                                  &
      &   (sph1%sph_params%m_folding, sph1%sph_rtp,                      &
+     &    trns_MHD%f_trns, trns_MHD%ncomp_rtp_2_rj,                     &
      &    mesh1%node, iphys, nod_fld1)
       call copy_snap_vec_fld_from_trans                                 &
      &   (sph1%sph_params%m_folding, sph1%sph_rtp,                      &

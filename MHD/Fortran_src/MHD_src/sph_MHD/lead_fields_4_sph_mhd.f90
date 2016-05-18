@@ -62,12 +62,15 @@
 !
       if(iflag .gt. 0) return
 !
-      call select_mhd_field_from_trans(sph%sph_rtp, frm_rtp)
+      call select_mhd_field_from_trans(sph%sph_rtp,                     &
+     &    trns_MHD%f_trns, trns_MHD%ncomp_rtp_2_rj, trns_MHD%frc_rtp,   &
+     &    frm_rtp)
       if    (sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_pole     &
      &  .or. sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_center)  &
      & then
         call cal_nonlinear_pole_MHD(trns_MHD%f_trns, bs_trns,           &
-     &      ncomp_snap_rj_2_rtp, ncomp_rtp_2_rj, fls_pl, frm_pl)
+     &      ncomp_snap_rj_2_rtp, trns_MHD%ncomp_rtp_2_rj,               &
+     &      fls_pl, frm_pl)
       end if
 !
       call gradients_of_vectors_sph(sph, comms_sph, rj_fld)
@@ -137,8 +140,8 @@
 !      Evaluate fields for output in grid space
       if (iflag_debug.eq.1) write(*,*) 's_cal_energy_flux_rtp'
       call s_cal_energy_flux_rtp(sph%sph_rtp,                           &
-     &    trns_MHD%f_trns, bs_trns, fs_trns, &
-     &    ncomp_rtp_2_rj, ncomp_snap_rj_2_rtp, ncomp_snap_rtp_2_rj,     &
+     &    trns_MHD%f_trns, bs_trns, fs_trns, trns_MHD%ncomp_rtp_2_rj,   &
+     &    ncomp_snap_rj_2_rtp, ncomp_snap_rtp_2_rj,     &
      &    frm_rtp, fls_rtp, frs_rtp)
 !
       if (iflag_debug.eq.1) write(*,*)                                  &
@@ -166,7 +169,7 @@
       if (iflag_debug.eq.1) write(*,*) 'copy_velo_to_grad_v_rtp'
       call copy_velo_to_grad_v_rtp                                      &
      &   (sph%sph_rtp, trns_MHD%b_trns, ft_trns,        &
-     &    ncomp_rj_2_rtp, ncomp_tmp_rtp_2_rj,        &
+     &    trns_MHD%ncomp_rj_2_rtp, ncomp_tmp_rtp_2_rj,        &
      &    trns_MHD%fld_rtp, frt_rtp)
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_tmp_snap_MHD'

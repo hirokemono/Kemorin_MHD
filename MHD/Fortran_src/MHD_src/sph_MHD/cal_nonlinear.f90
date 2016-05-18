@@ -176,7 +176,7 @@
       if (iflag_debug.ge.1) write(*,*) 'nonlinear_terms_in_rtp'
       call nonlinear_terms_in_rtp                                       &
      &   (sph%sph_rtp, trns_MHD%b_trns, trns_MHD%f_trns,                &
-     &    ncomp_rj_2_rtp, ncomp_rtp_2_rj,      &
+     &    trns_MHD%ncomp_rj_2_rtp, trns_MHD%ncomp_rtp_2_rj,             &
      &    trns_MHD%fld_rtp, trns_MHD%frc_rtp)
       call end_eleps_time(15)
 !
