@@ -68,8 +68,8 @@
       if    (sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_pole     &
      &  .or. sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_center)  &
      & then
-        call cal_nonlinear_pole_MHD(trns_MHD%f_trns, bs_trns,           &
-     &      ncomp_snap_rj_2_rtp, trns_MHD%ncomp_rtp_2_rj,               &
+        call cal_nonlinear_pole_MHD(trns_MHD%f_trns, trns_snap%b_trns,  &
+     &      trns_snap%ncomp_rj_2_rtp, trns_MHD%ncomp_rtp_2_rj,          &
      &      fls_pl, frm_pl)
       end if
 !
@@ -139,10 +139,10 @@
 !
 !      Evaluate fields for output in grid space
       if (iflag_debug.eq.1) write(*,*) 's_cal_energy_flux_rtp'
-      call s_cal_energy_flux_rtp(sph%sph_rtp,                           &
-     &    trns_MHD%f_trns, bs_trns, fs_trns, trns_MHD%ncomp_rtp_2_rj,   &
-     &    ncomp_snap_rj_2_rtp, ncomp_snap_rtp_2_rj,     &
-     &    frm_rtp, fls_rtp, frs_rtp)
+      call s_cal_energy_flux_rtp(sph%sph_rtp, trns_MHD%f_trns,          &
+     &    trns_snap%b_trns, trns_snap%f_trns, trns_MHD%ncomp_rtp_2_rj,  &
+     &    trns_snap%ncomp_rj_2_rtp, trns_snap%ncomp_rtp_2_rj,           &
+     &    frm_rtp, trns_snap%fld_rtp, trns_snap%frc_rtp)
 !
       if (iflag_debug.eq.1) write(*,*)                                  &
      &                          'sph_forward_trans_snapshot_MHD'

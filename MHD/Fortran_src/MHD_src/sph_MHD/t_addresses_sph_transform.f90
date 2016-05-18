@@ -10,6 +10,11 @@
 !!@verbatim
 !!      subroutine alloc_nonlinear_data(nnod_rtp)
 !!      subroutine dealloc_nonlinear_data
+!!
+!!      subroutine add_scalar_trans_flag(is_fld, irtp_fld,              &
+!!     &          nfield_vec, num_trans, itrans)
+!!      subroutine add_vec_trans_flag(is_fld, irtp_fld,                 &
+!!     &          num_trans, itrans)
 !!@endverbatim
 !
       module t_addresses_sph_transform
@@ -80,6 +85,39 @@
       deallocate(trns%fld_rtp, trns%frc_rtp)
 !
       end subroutine dealloc_nonlinear_data
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine add_scalar_trans_flag(is_fld, irtp_fld,                &
+     &          nfield_vec, num_trans, itrans)
+!
+      integer(kind = kint), intent(in) :: is_fld, irtp_fld, nfield_vec
+      integer(kind = kint), intent(inout) :: num_trans, itrans
+!
+!
+      if( (is_fld*irtp_fld) .gt. 0) then
+        num_trans = num_trans + 1
+        itrans = num_trans + 3*nfield_vec
+      end if
+!
+      end subroutine add_scalar_trans_flag
+!
+!-----------------------------------------------------------------------
+!
+      subroutine add_vec_trans_flag(is_fld, irtp_fld,                   &
+     &          num_trans, itrans)
+!
+      integer(kind = kint), intent(in) :: is_fld, irtp_fld
+      integer(kind = kint), intent(inout) :: num_trans, itrans
+!
+!
+      if( (is_fld*irtp_fld) .gt. 0) then
+        num_trans = num_trans + 1
+        itrans = 3*num_trans - 2
+      end if
+!
+      end subroutine add_vec_trans_flag
 !
 !-----------------------------------------------------------------------
 !

@@ -73,8 +73,10 @@
       use init_sph_trans
       use init_FFT_4_MHD
       use set_address_sph_trans_MHD
+      use set_address_sph_trans_snap
       use const_wz_coriolis_rtp
       use const_coriolis_sph_rlm
+      use check_address_snap_trans
       use pole_sph_transform
       use skip_comment_f
 !
@@ -92,12 +94,13 @@
      &                     'set_addresses_trans_sph_MHD'
       call set_addresses_trans_sph_MHD(trns_MHD,                        &
      &    ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
-      call set_addresses_snapshot_trans
+      call set_addresses_snapshot_trans                                 &
+     &   (ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
       call set_addresses_temporal_trans
 !
       if(iflag_debug .ge. iflag_routine_msg) then
         call check_address_trans_sph_MHD(trns_MHD, ncomp_sph_trans)
-        call check_addresses_snapshot_trans
+        call check_address_trans_sph_snap
         call check_addresses_temporal_trans
       end if
 !
@@ -256,21 +259,23 @@
       integer(kind = kint) :: nscalar_trans
 !
 !
-      if(ncomp_snap_rj_2_rtp .le. 0) return
+      if(trns_snap%ncomp_rj_2_rtp .le. 0) return
 !
-      nscalar_trans = nscalar_snap_rj_2_rtp + 6*ntensor_snap_rj_2_rtp
-      call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_snap_rj_2_rtp, comms_sph%comm_rj, comms_sph%comm_rlm)
-      call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_snap_rj_2_rtp, comms_sph%comm_rtm, comms_sph%comm_rtp)
+      nscalar_trans = trns_snap%nscalar_rj_2_rtp                        &
+     &               + 6*trns_snap%ntensor_rj_2_rtp
+      call check_calypso_sph_comm_buf_N(trns_snap%ncomp_rj_2_rtp,       &
+     &   comms_sph%comm_rj, comms_sph%comm_rlm)
+      call check_calypso_sph_comm_buf_N(trns_snap%ncomp_rj_2_rtp,       &
+     &   comms_sph%comm_rtm, comms_sph%comm_rtp)
 !
-      call copy_snap_spectr_to_send(ncomp_snap_rj_2_rtp, bs_trns,       &
+      call copy_snap_spectr_to_send                                     &
+     &   (trns_snap%ncomp_rj_2_rtp, trns_snap%b_trns,                   &
      &    sph%sph_rj, comms_sph%comm_rj, rj_fld, n_WS, WS, flc_pl)
 !
       call sph_backward_transforms                                      &
-     &   (ncomp_snap_rj_2_rtp, nvector_snap_rj_2_rtp, nscalar_trans,    &
-     &    sph, comms_sph, n_WS, n_WR, WS(1), WR(1),                     &
-     &    fls_rtp, flc_pl, fls_pl)
+     &   (trns_snap%ncomp_rj_2_rtp, trns_snap%nvector_rj_2_rtp,         &
+     &    nscalar_trans, sph, comms_sph, n_WS, n_WR, WS(1), WR(1),      &
+     &    trns_snap%fld_rtp, flc_pl, fls_pl)
 !
       end subroutine sph_back_trans_snapshot_MHD
 !
@@ -292,20 +297,20 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if(ncomp_snap_rtp_2_rj .le. 0) return
+      if(trns_snap%ncomp_rtp_2_rj .le. 0) return
 !
-      call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_snap_rtp_2_rj, comms_sph%comm_rtp, comms_sph%comm_rtm)
-      call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_snap_rtp_2_rj, comms_sph%comm_rlm, comms_sph%comm_rj)
+      call check_calypso_sph_comm_buf_N(trns_snap%ncomp_rtp_2_rj,       &
+     &    comms_sph%comm_rtp, comms_sph%comm_rtm)
+      call check_calypso_sph_comm_buf_N(trns_snap%ncomp_rtp_2_rj,       &
+     &    comms_sph%comm_rlm, comms_sph%comm_rj)
 !
 !   transform for vectors and scalars
-      call sph_forward_transforms(ncomp_snap_rtp_2_rj,                  &
-     &    nvector_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                 &
-     &    sph, comms_sph, frs_rtp, n_WS, n_WR, WS(1), WR(1))
+      call sph_forward_transforms(trns_snap%ncomp_rtp_2_rj,             &
+     &    trns_snap%nvector_rtp_2_rj, trns_snap%nscalar_rtp_2_rj,       &
+     &    sph, comms_sph, trns_snap%frc_rtp, n_WS, n_WR, WS(1), WR(1))
 !
       call copy_snap_vec_spec_from_trans                                &
-     &   (ncomp_snap_rtp_2_rj, fs_trns,      &
+     &   (trns_snap%ncomp_rtp_2_rj, trns_snap%f_trns,                   &
      &    comms_sph%comm_rj, n_WR, WR(1), rj_fld)
 !
       end subroutine sph_forward_trans_snapshot_MHD

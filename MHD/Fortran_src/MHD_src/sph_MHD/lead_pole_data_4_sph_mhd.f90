@@ -39,6 +39,7 @@
 !
       use m_machine_parameter
       use m_spheric_constants
+      use m_addresses_trans_sph_snap
 !
       use pole_energy_flux_sph
       use copy_MHD_4_pole_trans
@@ -54,7 +55,9 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_snap_vec_from_pole_trans'
       call copy_snap_vec_from_pole_trans                                &
-     &   (sph_params%m_folding, sph_rtp, node, iphys, nod_fld)
+     &   (sph_params%m_folding, sph_rtp,                                &
+     &    trns_snap%b_trns, trns_snap%ncomp_rj_2_rtp, fls_pl,           &
+     &    node, iphys, nod_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'pole_nonlinear_sph_MHD'
       call pole_nonlinear_sph_MHD(sph_rtp, node, iphys, nod_fld)

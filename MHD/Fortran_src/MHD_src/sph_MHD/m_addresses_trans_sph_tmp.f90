@@ -20,6 +20,7 @@
       use m_precision
 !
       use t_phys_address
+      use t_addresses_sph_transform
 !
       implicit none
 !
@@ -94,18 +95,18 @@
 !
       nvector_tmp_rtp_2_rj = 0
 !      call add_vec_trans_flag(ipol%i_coriolis, iphys%i_coriolis,       &
-!     &    nvector_tmp_rtp_2_rj, fs_trns%i_coriolis)
+!     &    nvector_tmp_rtp_2_rj, trns_snap%f_trns%i_coriolis)
       ncomp_tmp_rtp_2_rj = 3*nvector_tmp_rtp_2_rj
 !
       nscalar_tmp_rtp_2_rj = 0
       call add_scalar_trans_flag(ipol%i_grad_vx, iphys%i_grad_vx,       &
-     &    ncomp_tmp_rtp_2_rj, nscalar_tmp_rtp_2_rj,                     &
+     &    nvector_tmp_rtp_2_rj, nscalar_tmp_rtp_2_rj,                   &
      &    ft_trns%i_grad_vx)
       call add_scalar_trans_flag(ipol%i_grad_vy, iphys%i_grad_vy,       &
-     &    ncomp_tmp_rtp_2_rj, nscalar_tmp_rtp_2_rj,                     &
+     &    nvector_tmp_rtp_2_rj, nscalar_tmp_rtp_2_rj,                   &
      &    ft_trns%i_grad_vy)
       call add_scalar_trans_flag(ipol%i_grad_vz, iphys%i_grad_vz,       &
-     &    ncomp_tmp_rtp_2_rj, nscalar_tmp_rtp_2_rj,                     &
+     &    nvector_tmp_rtp_2_rj, nscalar_tmp_rtp_2_rj,                   &
      &    ft_trns%i_grad_vz)
       ncomp_tmp_rtp_2_rj = ncomp_tmp_rtp_2_rj + nscalar_tmp_rtp_2_rj
 !

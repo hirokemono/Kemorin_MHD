@@ -7,9 +7,11 @@
 !> @brief copy spectr data for spherical transform at poles
 !!
 !!@verbatim
-!!      subroutine copy_snap_vec_from_pole_trans                        &
-!!     &         (m_folding, sph_rtp, node, iphys, nod_fld)
+!!      subroutine copy_snap_vec_from_pole_trans(m_folding,             &
+!!     &          sph_rtp, bs_trns, ncomp_snap_rj_2_rtp, fls_pl,        &
+!!     &          node, iphys, nod_fld)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(phys_address), intent(in) :: bs_trns
 !!        type(node_data), intent(in) :: node
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -33,20 +35,26 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_snap_vec_from_pole_trans                          &
-     &         (m_folding, sph_rtp, node, iphys, nod_fld)
+      subroutine copy_snap_vec_from_pole_trans(m_folding,               &
+     &          sph_rtp, bs_trns, ncomp_snap_rj_2_rtp, fls_pl,          &
+     &          node, iphys, nod_fld)
 !
       use m_control_parameter
       use m_machine_parameter
-      use m_addresses_trans_sph_snap
+      use m_work_pole_sph_trans
 !
       use copy_pole_field_sph_trans
 !
       integer(kind = kint), intent(in) :: m_folding
       type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(phys_address), intent(in) :: bs_trns
       type(node_data), intent(in) :: node
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(inout) :: nod_fld
+!
+      integer(kind = kint), intent(in) :: ncomp_snap_rj_2_rtp
+      real(kind = kreal), intent(in)                                    &
+     &                   :: fls_pl(nnod_pole,ncomp_snap_rj_2_rtp)
 !
 !
       call copy_pole_vec_fld_from_trans(m_folding, sph_rtp, node,       &

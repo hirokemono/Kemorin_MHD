@@ -164,6 +164,7 @@
       use t_phys_data
       use t_phys_address
       use m_addresses_trans_sph_MHD
+      use m_addresses_trans_sph_snap
 !
       use output_viz_file_control
       use lead_pole_data_4_sph_mhd
@@ -192,10 +193,12 @@
      &    nod_fld)
       if (iflag_debug.gt.0) write(*,*) 'copy_snap_vec_fld_from_trans'
       call copy_snap_vec_fld_from_trans                                 &
-     &   (sph_params%m_folding, sph_rtp, mesh%node, iphys, nod_fld)
+     &   (sph_params%m_folding, sph_rtp, trns_snap%b_trns,              &
+     &    mesh%node, iphys, nod_fld)
       if (iflag_debug.gt.0) write(*,*) 'copy_snap_vec_fld_to_trans'
       call copy_snap_vec_fld_to_trans                                   &
-     &   (sph_params%m_folding, sph_rtp, mesh%node, iphys, nod_fld)
+     &   (sph_params%m_folding, sph_rtp, trns_snap%f_trns,              &
+     &    mesh%node, iphys, nod_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'overwrite_nodal_sph_2_xyz'
       call overwrite_nodal_sph_2_xyz(mesh%node, nod_fld)
