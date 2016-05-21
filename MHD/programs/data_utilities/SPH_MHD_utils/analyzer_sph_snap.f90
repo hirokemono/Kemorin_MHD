@@ -43,6 +43,8 @@
       use m_spheric_parameter
       use m_mesh_data
       use m_sph_spectr_data
+      use m_sph_trans_arrays_MHD
+!
       use init_sph_MHD_elapsed_label
       use FEM_analyzer_sph_MHD_w_viz
       use input_control_sph_MHD
@@ -90,6 +92,8 @@
 !
       use m_spheric_parameter
       use m_node_phys_data
+      use m_sph_trans_arrays_MHD
+!
       use FEM_analyzer_sph_MHD
 !
       integer(kind = kint) :: visval
@@ -124,7 +128,8 @@
 !
         if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_MHD'
         call SPH_to_FEM_bridge_MHD                                      &
-     &     (sph1%sph_params, sph1%sph_rtp, mesh1, iphys, nod_fld1)
+     &     (sph1%sph_params, sph1%sph_rtp, trns_WK1,                    &
+     &      mesh1, iphys, nod_fld1)
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
         call FEM_analyze_sph_MHD(i_step_MHD, istep_psf, istep_iso,      &
      &      istep_pvr, istep_fline, visval)

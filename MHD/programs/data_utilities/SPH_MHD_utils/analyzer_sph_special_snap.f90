@@ -127,7 +127,7 @@
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_node_id_spherical_IO
-      use m_addresses_trans_sph_MHD
+      use m_sph_trans_arrays_MHD
 !
       use cal_nonlinear
       use cal_sol_sph_MHD_crank
@@ -157,7 +157,8 @@
 !*  ----------------lead nonlinear term ... ----------
 !*
       call start_eleps_time(8)
-      call nonlinear(sph1, comms_sph1, reftemp_rj, trns_MHD, rj_fld1)
+      call nonlinear                                                    &
+     &   (sph1, comms_sph1, reftemp_rj, trns_WK1%trns_MHD, rj_fld1)
       call end_eleps_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=
@@ -168,7 +169,7 @@
       call trans_per_temp_to_temp_sph(reftemp_rj, sph1%sph_rj, rj_fld1)
 !*
       if(iflag_debug.gt.0) write(*,*) 'lead_special_fields_4_sph_mhd'
-      call lead_special_fields_4_sph_mhd
+      call lead_special_fields_4_sph_mhd(trns_WK1)
       call end_eleps_time(9)
 !
 !*  -----------  lead energy data --------------
@@ -232,28 +233,29 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine lead_special_fields_4_sph_mhd
+      subroutine lead_special_fields_4_sph_mhd(trns_WK)
 !
       use t_phys_address
+      use t_sph_trans_arrays_MHD
       use m_spheric_parameter
       use m_sph_phys_address
       use m_sph_spectr_data
-      use m_addresses_trans_sph_MHD
-      use m_addresses_trans_sph_snap
       use output_viz_file_control
       use lead_fields_4_sph_mhd
 !
       use cal_zonal_mean_sph_spectr
       use sph_transforms_4_MHD
 !
+      type(works_4_sph_trans_MHD), intent(inout) :: trns_WK
 !
 !
-      call s_lead_fields_4_sph_mhd(sph1, comms_sph1, rj_fld1)
+      call s_lead_fields_4_sph_mhd(sph1, comms_sph1, rj_fld1, trns_WK)
 !
-      call sph_back_trans_4_MHD(sph1, comms_sph1, rj_fld1, trns_MHD)
+      call sph_back_trans_4_MHD                                         &
+     &   (sph1, comms_sph1, rj_fld1, trns_WK%trns_MHD)
 !
       call sph_forward_trans_snapshot_MHD                               &
-     &   (sph1, comms_sph1, trns_snap, rj_fld1)
+     &   (sph1, comms_sph1, trns_WK%trns_snap, rj_fld1)
 !
 ! ----  Take zonal mean
 !
@@ -270,8 +272,7 @@
       use m_node_phys_data
       use m_spheric_parameter
       use m_sph_spectr_data
-      use m_addresses_trans_sph_MHD
-      use m_addresses_trans_sph_snap
+      use m_sph_trans_arrays_MHD
       use output_viz_file_control
       use lead_pole_data_4_sph_mhd
       use nod_phys_send_recv
@@ -290,13 +291,13 @@
 !*
       call copy_forces_to_snapshot_rtp                                  &
      &   (sph1%sph_params%m_folding, sph1%sph_rtp,                      &
-     &    trns_MHD%f_trns, trns_MHD%ncomp_rtp_2_rj,                     &
-     &    mesh1%node, iphys, frm_rtp, nod_fld1)
+     &    trns_WK1%trns_MHD%f_trns, trns_WK1%trns_MHD%ncomp_rtp_2_rj,   &
+     &    mesh1%node, iphys, trns_WK1%frm_rtp, nod_fld1)
       call copy_snap_vec_fld_from_trans                                 &
-     &   (sph1%sph_params%m_folding, sph1%sph_rtp, trns_snap,           &
+     &   (sph1%sph_params%m_folding, sph1%sph_rtp, trns_WK1%trns_snap,  &
      &    mesh1%node, iphys, nod_fld1)
       call copy_snap_vec_fld_to_trans                                   &
-     &   (sph1%sph_params%m_folding, sph1%sph_rtp, trns_snap,           &
+     &   (sph1%sph_params%m_folding, sph1%sph_rtp, trns_WK1%trns_snap,  &
      &    mesh1%node, iphys, nod_fld1)
 !
 ! ----  Take zonal mean
@@ -307,8 +308,8 @@
 !*  ----------- transform field at pole and center --------------
 !*
       call lead_pole_fields_4_sph_mhd                                   &
-     &   (sph1%sph_params, sph1%sph_rtp, trns_snap, fls_pl,             &
-     &    mesh1%node, iphys, nod_fld1)
+     &   (sph1%sph_params, sph1%sph_rtp, trns_WK1%trns_snap,            &
+     &    trns_WK1%fls_pl, mesh1%node, iphys, nod_fld1)
 !
       call nod_fields_send_recv(mesh1%node, mesh1%nod_comm, nod_fld1)
 !

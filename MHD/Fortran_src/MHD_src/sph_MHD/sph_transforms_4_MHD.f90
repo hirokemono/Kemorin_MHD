@@ -47,6 +47,7 @@
       use t_sph_trans_comm_tbl
       use t_phys_data
       use t_addresses_sph_transform
+      use t_sph_trans_arrays_MHD
 !
       use legendre_transform_select
 !
@@ -70,12 +71,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_sph_transform_MHD(sph, comms_sph, rj_fld)
+      subroutine init_sph_transform_MHD                                 &
+     &         (sph, comms_sph, trns_WK, rj_fld)
 !
       use calypso_mpi
-      use m_addresses_trans_sph_MHD
-      use m_addresses_trans_sph_snap
-      use m_addresses_trans_sph_tmp
       use m_work_4_sph_trans
 !
       use init_sph_trans
@@ -92,6 +91,7 @@
       type(sph_grids), intent(inout) :: sph
       type(sph_comm_tables), intent(inout) :: comms_sph
 !
+      type(works_4_sph_trans_MHD), intent(inout) :: trns_WK
       type(phys_data), intent(inout) :: rj_fld
 !
       character(len=kchara) :: tmpchara
@@ -101,28 +101,26 @@
 !
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &                     'set_addresses_trans_sph_MHD'
-      call set_addresses_trans_sph_MHD(trns_MHD,                        &
+      call set_addresses_trans_sph_MHD(trns_WK%trns_MHD,                &
      &    ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
-      call set_addresses_snapshot_trans(trns_snap,                      &
+      call set_addresses_snapshot_trans(trns_WK%trns_snap,              &
      &    ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
-      call set_addresses_temporal_trans(trns_tmp,                       &
+      call set_addresses_temporal_trans(trns_WK%trns_tmp,               &
      &    ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       if(iflag_debug .ge. iflag_routine_msg) then
-        call check_address_trans_sph_MHD(trns_MHD, ncomp_sph_trans)
-        call check_address_trans_sph_snap(trns_snap)
-        call check_address_trans_sph_tmp(trns_tmp)
+        call check_address_trans_sph_MHD                                &
+     &     (trns_WK%trns_MHD, ncomp_sph_trans)
+        call check_address_trans_sph_snap(trns_WK%trns_snap)
+        call check_address_trans_sph_tmp(trns_WK%trns_tmp)
       end if
 !
-      call alloc_nonlinear_data(sph%sph_rtp%nnod_rtp, trns_MHD)
-      call allocate_snap_trans_rtp(sph%sph_rtp%nnod_rtp)
-      call alloc_nonlinear_data(sph%sph_rtp%nnod_rtp, trns_tmp)
+      call alloc_sph_trans_address(sph%sph_rtp, trns_WK)
 !
       if (iflag_debug.eq.1) write(*,*) 'initialize_legendre_trans'
       call initialize_legendre_trans(sph, comms_sph)
       call init_fourier_transform_4_MHD(ncomp_sph_trans,                &
-     &    trns_MHD%ncomp_rtp_2_rj, trns_MHD%ncomp_rj_2_rtp,             &
-     &    sph%sph_rtp, comms_sph%comm_rtp, trns_MHD)
+     &    sph%sph_rtp, comms_sph%comm_rtp, trns_WK%trns_MHD)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_colatitude_rtp'
       call set_colatitude_rtp(sph%sph_rtp, sph%sph_rj)
@@ -133,7 +131,7 @@
       if(id_legendre_transfer .eq. iflag_leg_undefined) then
         if (iflag_debug.eq.1) write(*,*) 'select_legendre_transform'
         call select_legendre_transform                                  &
-     &     (sph, comms_sph, rj_fld, trns_MHD)
+     &     (sph, comms_sph, rj_fld, trns_WK%trns_MHD)
       end if
 !
       call sel_init_legendre_trans                                      &

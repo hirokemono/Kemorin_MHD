@@ -97,6 +97,8 @@
       subroutine evolution_sph_mhd
 !
       use m_spheric_parameter
+      use m_sph_trans_arrays_MHD
+!
       use FEM_analyzer_sph_MHD
 !
       integer(kind = kint) :: visval, iflag_finish
@@ -131,7 +133,8 @@
 !
         if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_MHD'
         call SPH_to_FEM_bridge_MHD                                      &
-     &     (sph1%sph_params, sph1%sph_rtp, mesh1, iphys, nod_fld1)
+     &     (sph1%sph_params, sph1%sph_rtp, trns_WK1,                    &
+     &      mesh1, iphys, nod_fld1)
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
         call FEM_analyze_sph_MHD(i_step_MHD, istep_psf, istep_iso,      &
      &      istep_pvr, istep_fline, visval)

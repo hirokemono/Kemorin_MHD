@@ -7,11 +7,14 @@
 !>@brief  Evaluate pressure and energy fluxes for snapshots
 !!
 !!@verbatim
-!!      subroutine s_lead_fields_4_sph_mhd(sph, comms_sph, rj_fld)
+!!      subroutine s_lead_fields_4_sph_mhd                              &
+!!     &         (sph, comms_sph, rj_fld, trns_WK)
 !!      subroutine pressure_4_sph_mhd(sph_rj, rj_fld)
 !!      subroutine enegy_fluxes_4_sph_mhd(sph, comms_sph, rj_fld)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
+!!        type(works_4_sph_trans_MHD), intent(inout) :: trns_WK
+!!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
       module lead_fields_4_sph_mhd
@@ -23,6 +26,7 @@
       use t_sph_trans_comm_tbl
       use t_phys_data
       use t_addresses_sph_transform
+      use t_sph_trans_arrays_MHD
 !
       implicit none
 !
@@ -35,23 +39,19 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_lead_fields_4_sph_mhd(sph, comms_sph, rj_fld)
+      subroutine s_lead_fields_4_sph_mhd                                &
+     &         (sph, comms_sph, rj_fld, trns_WK)
 !
       use m_control_parameter
       use m_t_step_parameter
-      use m_addresses_trans_sph_MHD
-      use m_addresses_trans_sph_snap
-      use m_addresses_trans_sph_tmp
       use output_viz_file_control
       use copy_MHD_4_sph_trans
       use cal_energy_flux_rtp
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
-!      type(address_4_sph_trans), intent(in) :: trns_MHD
-!      type(address_4_sph_trans), intent(in) :: trns_snap
-!      type(address_4_sph_trans), intent(inout) :: trns_tmp
 !
+      type(works_4_sph_trans_MHD), intent(inout) :: trns_WK
       type(phys_data), intent(inout) :: rj_fld
 !
       integer (kind =kint) :: iflag
@@ -67,22 +67,25 @@
 !
       if(iflag .gt. 0) return
 !
-      call select_mhd_field_from_trans(sph%sph_rtp,                     &
-     &    trns_MHD%f_trns, trns_MHD%ncomp_rtp_2_rj, trns_MHD%frc_rtp,   &
-     &    frm_rtp)
+      call select_mhd_field_from_trans                                  &
+     &   (sph%sph_rtp, trns_WK%trns_MHD%f_trns,                         &
+     &    trns_WK%trns_MHD%ncomp_rtp_2_rj, trns_WK%trns_MHD%frc_rtp,    &
+     &    trns_WK%frm_rtp)
       if    (sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_pole     &
      &  .or. sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_center)  &
      & then
-        call cal_nonlinear_pole_MHD(trns_MHD%f_trns, trns_snap%b_trns,  &
-     &      trns_snap%ncomp_rj_2_rtp, trns_MHD%ncomp_rtp_2_rj,          &
-     &      fls_pl, frm_pl)
+        call cal_nonlinear_pole_MHD                                     &
+     &     (trns_WK%trns_MHD%f_trns, trns_WK%trns_snap%b_trns,          &
+     &      trns_WK%trns_snap%ncomp_rj_2_rtp,                           &
+     &      trns_WK%trns_MHD%ncomp_rtp_2_rj,                            &
+     &      trns_WK%fls_pl, trns_WK%frm_pl)
       end if
 !
       call gradients_of_vectors_sph                                     &
-     &   (sph, comms_sph, trns_MHD, trns_tmp, rj_fld)
+     &   (sph, comms_sph, trns_WK%trns_MHD, trns_WK%trns_tmp, rj_fld)
       call enegy_fluxes_4_sph_mhd                                       &
-     &   (sph, comms_sph, trns_MHD, trns_snap, rj_fld,                  &
-     &    frm_rtp, flc_pl, fls_pl)
+     &   (sph, comms_sph, trns_WK%trns_MHD, trns_WK%trns_snap, rj_fld,  &
+     &    trns_WK%frm_rtp, trns_WK%flc_pl, trns_WK%fls_pl)
 !
       end subroutine s_lead_fields_4_sph_mhd
 !

@@ -8,8 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine init_fourier_transform_4_MHD                         &
-!!     &         (ncomp_tot, ncomp_fwd, ncomp_bwd, sph_rtp, comm_rtp,   &
-!!     &          trns_MHD)
+!!     &         (ncomp_tot, sph_rtp, comm_rtp, trns_MHD)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in) :: comm_rtp
 !!        type(address_4_sph_trans), intent(inout) :: trns_MHD
@@ -46,27 +45,25 @@
 ! -----------------------------------------------------------------------
 !
       subroutine init_fourier_transform_4_MHD                           &
-     &         (ncomp_tot, ncomp_fwd, ncomp_bwd, sph_rtp, comm_rtp,     &
-     &          trns_MHD)
+     &         (ncomp_tot, sph_rtp, comm_rtp, trns_MHD)
 !
       use m_solver_SR
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in) :: comm_rtp
       integer(kind = kint), intent(in) :: ncomp_tot
-      integer(kind = kint), intent(in) :: ncomp_fwd, ncomp_bwd
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD
 !
 !
       if(iflag_FFT .eq. iflag_UNDEFINED_FFT) then
-        call compare_FFT_4_MHD(ncomp_tot, ncomp_fwd, ncomp_bwd,         &
-     &      sph_rtp, comm_rtp, n_WS, n_WR, WS, WR, trns_MHD)
+        call compare_FFT_4_MHD(ncomp_tot, sph_rtp, comm_rtp,            &
+     &      n_WS, n_WR, WS, WR, trns_MHD)
         iflag_FFT = iflag_selected
       end if
 !
-      call init_MHD_FFT_select                                          &
-     &   (my_rank, sph_rtp, ncomp_tot, ncomp_fwd, ncomp_bwd)
+      call init_MHD_FFT_select(my_rank, sph_rtp, ncomp_tot,             &
+     &    trns_MHD%ncomp_rtp_2_rj, trns_MHD%ncomp_rj_2_rtp)
 !
       if(my_rank .gt. 0) return
       write(*,'(a,i4)', advance='no') 'Selected Fourier transform: ',   &
@@ -88,13 +85,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine compare_FFT_4_MHD(ncomp_tot, ncomp_fwd, ncomp_bwd,     &
-     &          sph_rtp, comm_rtp, n_WS, n_WR, WS, WR, trns_MHD)
+      subroutine compare_FFT_4_MHD(ncomp_tot, sph_rtp, comm_rtp,        &
+     &          n_WS, n_WR, WS, WR, trns_MHD)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in) :: comm_rtp
       integer(kind = kint), intent(in) :: ncomp_tot
-      integer(kind = kint), intent(in) :: ncomp_fwd, ncomp_bwd
       integer(kind = kint), intent(in) :: n_WS, n_WR
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD
@@ -105,38 +101,38 @@
 !
 !
       iflag_FFT = iflag_FFTPACK
-      call test_fourier_trans_4_MHD(ncomp_tot, ncomp_fwd, ncomp_bwd,    &
-     &    sph_rtp, comm_rtp, n_WS, n_WR, WS, WR, trns_MHD,              &
+      call test_fourier_trans_4_MHD                                     &
+     &   (ncomp_tot, sph_rtp, comm_rtp, n_WS, n_WR, WS, WR, trns_MHD,   &
      &    etime_fft(iflag_FFT))
 !
 !
 #ifdef FFTW3
       iflag_FFT = iflag_FFTW
-      call test_fourier_trans_4_MHD(ncomp_tot, ncomp_fwd, ncomp_bwd,    &
-     &    sph_rtp, comm_rtp, n_WS, n_WR, WS, WR, trns_MHD,              &
+      call test_fourier_trans_4_MHD                                     &
+     &   (ncomp_tot, sph_rtp, comm_rtp, n_WS, n_WR, WS, WR, trns_MHD,   &
      &    etime_fft(iflag_FFTW))
 !
       iflag_FFT = iflag_FFTW_FIELD
-      call test_fourier_trans_4_MHD(ncomp_tot, ncomp_fwd, ncomp_bwd,    &
-     &    sph_rtp, comm_rtp, n_WS, n_WR, WS, WR, trns_MHD,              &
+      call test_fourier_trans_4_MHD                                     &
+     &   (ncomp_tot, sph_rtp, comm_rtp, n_WS, n_WR, WS, WR, trns_MHD,   &
      &    etime_fft(iflag_FFTW_FIELD))
 !
       iflag_FFT = iflag_FFTW_SINGLE
-      call test_fourier_trans_4_MHD(ncomp_tot, ncomp_fwd, ncomp_bwd,    &
-     &    sph_rtp, comm_rtp, n_WS, n_WR, WS, WR, trns_MHD,              &
+      call test_fourier_trans_4_MHD                                     &
+     &   (ncomp_tot, sph_rtp, comm_rtp, n_WS, n_WR, WS, WR, trns_MHD,   &
      &    etime_fft(iflag_FFTW_SINGLE))
 #endif
 !
 !#ifdef FFTW3_C
 !      iflag_FFT = iflag_FFTW
-!      call test_fourier_trans_4_MHD(ncomp_tot, ncomp_fwd, ncomp_bwd,   &
-!     &    sph_rtp, comm_rtp, n_WS, n_WR, WS, WR, trns_MHD,             &
+!      call test_fourier_trans_4_MHD                                    &
+!     &   (ncomp_tot, sph_rtp, comm_rtp, n_WS, n_WR, WS, WR, trns_MHD,  &
 !     &    etime_fft(iflag_FFTW))
 !#endif
 !
       iflag_FFT = iflag_ISPACK
-      call test_fourier_trans_4_MHD(ncomp_tot, ncomp_fwd, ncomp_bwd,    &
-     &    sph_rtp, comm_rtp, n_WS, n_WR, WS, WR, trns_MHD,              &
+      call test_fourier_trans_4_MHD                                     &
+     &   (ncomp_tot, sph_rtp, comm_rtp, n_WS, n_WR, WS, WR, trns_MHD,   &
      &    etime_fft(iflag_ISPACK))
 !
       iflag_selected = minloc(etime_fft,1)
@@ -165,15 +161,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine test_fourier_trans_4_MHD(ncomp, ncomp_fwd, ncomp_bwd,  &
-     &          sph_rtp, comm_rtp, n_WS, n_WR, WS, WR, trns_MHD,        &
-     &          etime_fft)
+      subroutine test_fourier_trans_4_MHD(ncomp, sph_rtp, comm_rtp,     &
+     &          n_WS, n_WR, WS, WR, trns_MHD, etime_fft)
 !
       use calypso_mpi
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in) :: comm_rtp
-      integer(kind = kint), intent(in) :: ncomp, ncomp_fwd, ncomp_bwd
+      integer(kind = kint), intent(in) :: ncomp
       integer(kind = kint), intent(in) :: n_WS, n_WR
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD
@@ -185,15 +180,15 @@
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'init_MHD_FFT_select'
-      call init_MHD_FFT_select                                          &
-     &   (my_rank, sph_rtp, ncomp, ncomp_fwd, ncomp_bwd)
+      call init_MHD_FFT_select(my_rank, sph_rtp, ncomp,                 &
+     &    trns_MHD%ncomp_rtp_2_rj, trns_MHD%ncomp_rj_2_rtp)
 !
       if(iflag_debug .gt. 0) write(*,*) 'back_MHD_FFT_sel_from_recv'
       starttime = MPI_WTIME()
-      call back_MHD_FFT_sel_from_recv                                   &
-     &   (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR, fld_rtp)
-      call fwd_MHD_FFT_sel_from_recv                                    &
-     &   (sph_rtp, comm_rtp, ncomp_fwd, n_WS, frc_rtp, WS)
+      call back_MHD_FFT_sel_from_recv(sph_rtp, comm_rtp,                &
+     &    trns_MHD%ncomp_rj_2_rtp, n_WR, WR, trns_MHD%fld_rtp)
+      call fwd_MHD_FFT_sel_from_recv(sph_rtp, comm_rtp,                 &
+     &    trns_MHD%ncomp_rtp_2_rj, n_WS, trns_MHD%frc_rtp, WS)
       endtime = MPI_WTIME() - starttime
       if(iflag_debug .gt. 0) write(*,*) 'fwd_MHD_FFT_sel_from_recv end'
 !

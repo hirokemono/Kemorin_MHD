@@ -31,6 +31,7 @@
       use m_rms_4_sph_spectr
       use m_node_id_spherical_IO
       use m_physical_property
+      use m_sph_trans_arrays_MHD
 !
       use set_control_sph_mhd
       use adjust_reference_fields
@@ -75,7 +76,7 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
-      call init_sph_transform_MHD(sph1, comms_sph1, rj_fld1)
+      call init_sph_transform_MHD(sph1, comms_sph1, trns_WK1, rj_fld1)
 !
 ! ---------------------------------
 !
@@ -104,7 +105,7 @@
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_node_id_spherical_IO
-      use m_addresses_trans_sph_MHD
+      use m_sph_trans_arrays_MHD
 !
       use cal_nonlinear
       use cal_sol_sph_MHD_crank
@@ -129,7 +130,8 @@
 !*  ----------------lead nonlinear term ... ----------
 !*
       call start_eleps_time(8)
-      call nonlinear(sph1, comms_sph1, reftemp_rj, trns_MHD, rj_fld1)
+      call nonlinear                                                    &
+     &   (sph1, comms_sph1, reftemp_rj, trns_WK1%trns_MHD, rj_fld1)
       call end_eleps_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=
@@ -139,7 +141,7 @@
       call trans_per_temp_to_temp_sph(reftemp_rj, sph1%sph_rj, rj_fld1)
 !*
       if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
-      call s_lead_fields_4_sph_mhd(sph1, comms_sph1, rj_fld1)
+      call s_lead_fields_4_sph_mhd(sph1, comms_sph1, rj_fld1, trns_WK1)
       call end_eleps_time(9)
 !
 !*  -----------  lead energy data --------------
