@@ -8,10 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine schmidt_b_trans_center_scalar                        &
-!!     &         (ncomp, nvector, nscalar, v_pl_local)
+!!     &         (ncomp, nvector, nscalar, nnod_pole, v_pl_local)
 !!      subroutine schmidt_b_trans_center_vect(ncomp, nvector,          &
 !!     &         ist_rtm_order_zero, ist_rtm_order_1s, ist_rtm_order_1c,&
-!!     &         nnod_rlm, idx_gl_1d_rtm_r1, a_r_1d_rtm_r1,             &
+!!     &         nnod_rlm, nnod_pole, idx_gl_1d_rtm_r1, a_r_1d_rtm_r1,  &
 !!     &         irev_sr_rlm, n_WR, WR, v_pl_local)
 !!
 !!------------------------------------------------------------------
@@ -36,7 +36,6 @@
       use m_machine_parameter
 !
       use m_work_4_sph_trans
-      use m_work_pole_sph_trans
 !
       implicit none
 !
@@ -47,9 +46,10 @@
 !------------------------------------------------------------------
 !
       subroutine schmidt_b_trans_center_scalar                          &
-     &         (ncomp, nvector, nscalar, v_pl_local)
+     &         (ncomp, nvector, nscalar, nnod_pole, v_pl_local)
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
+      integer(kind = kint), intent(in) :: nnod_pole
       real(kind = kreal), intent(inout) :: v_pl_local(nnod_pole,ncomp)
 !
       integer(kind = kint) :: nd
@@ -68,13 +68,13 @@
 !
       subroutine schmidt_b_trans_center_vect(ncomp, nvector,            &
      &         ist_rtm_order_zero, ist_rtm_order_1s, ist_rtm_order_1c,  &
-     &         nnod_rlm, idx_gl_1d_rtm_r1, a_r_1d_rtm_r1,               &
+     &         nnod_rlm, nnod_pole, idx_gl_1d_rtm_r1, a_r_1d_rtm_r1,    &
      &         irev_sr_rlm, n_WR, WR, v_pl_local)
 !
       integer(kind = kint), intent(in) :: ist_rtm_order_zero
       integer(kind = kint), intent(in) :: ist_rtm_order_1s
       integer(kind = kint), intent(in) :: ist_rtm_order_1c
-      integer(kind = kint), intent(in) :: nnod_rlm
+      integer(kind = kint), intent(in) :: nnod_rlm, nnod_pole
       integer(kind = kint), intent(in) :: idx_gl_1d_rtm_r1
       real(kind = kreal), intent(in) :: a_r_1d_rtm_r1
 !

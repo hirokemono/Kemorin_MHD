@@ -57,7 +57,6 @@
      &         (ncomp_trans, nvector, nscalar, sph, comms_sph,          &
      &          n_WS, n_WR, WS, WR, v_rtp, v_pl_local, v_pole)
 !
-      use m_work_pole_sph_trans
       use pole_sph_transform
 !
       type(sph_grids), intent(in) :: sph
@@ -71,9 +70,11 @@
       real(kind = kreal), intent(inout)                                 &
      &                :: v_rtp(sph%sph_rtp%nnod_rtp,ncomp_trans)
       real(kind = kreal), intent(inout)                                 &
-     &                :: v_pl_local(nnod_pole,ncomp_trans)
+     &                :: v_pl_local(sph%sph_rtp%nnod_pole,ncomp_trans)
       real(kind = kreal), intent(inout)                                 &
-     &                :: v_pole(nnod_pole,ncomp_trans)
+     &                :: v_pole(sph%sph_rtp%nnod_pole,ncomp_trans)
+!
+      integer(kind = kint) :: ncomp_pole
 !
 !
       START_SRtime= MPI_WTIME()
@@ -109,8 +110,9 @@
 !
       call finish_send_recv_sph(comms_sph%comm_rtm)
 !
-      v_pole(1:nnod_pole,1:ncomp_trans) = zero
-      call MPI_allreduce(v_pl_local, v_pole, (ncomp_trans*nnod_pole),   &
+      v_pole(1:sph%sph_rtp%nnod_pole,1:ncomp_trans) = zero
+      ncomp_pole = ncomp_trans * sph%sph_rtp%nnod_pole
+      call MPI_allreduce(v_pl_local, v_pole, ncomp_pole,                &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine sph_backward_transforms

@@ -4,8 +4,9 @@
 !     Written by H. Matsui on June, 2012
 !
 !!      subroutine allocate_d_rtp_4_all_trans(sph_rtp)
+!!      subroutine allocate_d_pole_4_all_trans(sph_rtp)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
-!!      subroutine allocate_d_pole_4_all_trans
+!!
 !!      subroutine deallocate_d_rtp_4_all_trans
 !!      subroutine deallocate_d_pole_4_all_trans
 !!      subroutine sph_f_trans_all_field                                &
@@ -25,6 +26,7 @@
       use t_spheric_parameter
       use t_mesh_data
       use t_phys_data
+      use t_spheric_rtp_data
 !
       implicit none
 !
@@ -41,7 +43,6 @@
 !
       subroutine allocate_d_rtp_4_all_trans(sph_rtp)
 !
-      use t_spheric_rtp_data
       use m_work_4_sph_trans
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -54,14 +55,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_d_pole_4_all_trans
+      subroutine allocate_d_pole_4_all_trans(sph_rtp)
 !
       use m_work_4_sph_trans
-      use m_work_pole_sph_trans
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
 !
 !
-      allocate(dall_pole(nnod_pole,ncomp_sph_trans))
-      allocate(dlcl_pole(nnod_pole,ncomp_sph_trans))
+      allocate(dall_pole(sph_rtp%nnod_pole,ncomp_sph_trans))
+      allocate(dlcl_pole(sph_rtp%nnod_pole,ncomp_sph_trans))
       if(ncomp_sph_trans .gt. 0) dall_pole = 0.0d0
       if(ncomp_sph_trans .gt. 0) dlcl_pole = 0.0d0
 !
@@ -188,8 +190,8 @@
      &    (ncomp_sph_trans, comms_sph%comm_rj, rj_fld, n_WS, WS)
       if (iflag_debug.gt.0)                                             &
      &      write(*,*) 'set_all_scalar_spec_to_sph_t'
-      call set_all_scalar_spec_to_sph_t                                 &
-     &   (ncomp_sph_trans, sph%sph_rj, comms_sph%comm_rj, rj_fld,       &
+      call set_all_scalar_spec_to_sph_t(sph%sph_rtp%nnod_pole,          &
+     &    ncomp_sph_trans, sph%sph_rj, comms_sph%comm_rj, rj_fld,       &
      &    n_WS, WS, dlcl_pole(1,1))
       if (iflag_debug.gt.0)                                             &
      &      write(*,*) 'set_all_tensor_spec_to_sph_t'

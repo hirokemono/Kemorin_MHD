@@ -60,7 +60,7 @@
       call copy_sph_trans_nums_from_rtp
       call initialize_sph_trans(sph1, comms_sph1)
       call init_pole_transform(sph1%sph_rtp)
-      call allocate_d_pole_4_all_trans
+      call allocate_d_pole_4_all_trans(sph1%sph_rtp)
 !
       end subroutine SPH_init_gauss_back_trans
 !

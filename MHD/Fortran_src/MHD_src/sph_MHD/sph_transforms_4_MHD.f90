@@ -257,7 +257,6 @@
       subroutine sph_back_trans_snapshot_MHD                            &
      &         (sph, comms_sph, rj_fld, trns_snap, flc_pl, fls_pl)
 !
-      use m_work_pole_sph_trans
       use m_solver_SR
       use sph_transforms
       use copy_sph_MHD_4_send_recv
@@ -269,9 +268,9 @@
 !
       type(address_4_sph_trans), intent(inout) :: trns_snap
       real(kind = kreal), intent(inout)                                 &
-     &           :: flc_pl(nnod_pole,trns_snap%ncomp_rj_2_rtp)
+     &       :: flc_pl(sph%sph_rtp%nnod_pole,trns_snap%ncomp_rj_2_rtp)
       real(kind = kreal), intent(inout)                                 &
-     &           :: fls_pl(nnod_pole,trns_snap%ncomp_rj_2_rtp)
+     &       :: fls_pl(sph%sph_rtp%nnod_pole,trns_snap%ncomp_rj_2_rtp)
 !
       integer(kind = kint) :: nscalar_trans
 !
@@ -285,8 +284,8 @@
       call check_calypso_sph_comm_buf_N(trns_snap%ncomp_rj_2_rtp,       &
      &   comms_sph%comm_rtm, comms_sph%comm_rtp)
 !
-      call copy_snap_spectr_to_send                                     &
-     &   (trns_snap%ncomp_rj_2_rtp, trns_snap%b_trns,                   &
+      call copy_snap_spectr_to_send(sph%sph_rtp%nnod_pole,              &
+     &    trns_snap%ncomp_rj_2_rtp, trns_snap%b_trns,                   &
      &    sph%sph_rj, comms_sph%comm_rj, rj_fld, n_WS, WS, flc_pl)
 !
       call sph_backward_transforms                                      &

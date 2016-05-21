@@ -120,7 +120,6 @@
      &          ncomp_trans, i_trns, d_rtp, v_pole, i_field,            &
      &          node, nod_fld)
 !
-      use m_work_pole_sph_trans
       use copy_pole_field_sph_trans
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -129,7 +128,8 @@
       integer(kind = kint), intent(in) :: ncomp_trans
       real(kind = kreal), intent(in)                                    &
      &           :: d_rtp(sph_rtp%nnod_rtp,ncomp_trans)
-      real(kind = kreal), intent(in) :: v_pole(nnod_pole,ncomp_trans)
+      real(kind = kreal), intent(in)                                    &
+     &           :: v_pole(sph_rtp%nnod_pole,ncomp_trans)
 !
       type(node_data), intent(in) :: node
       type(phys_data),intent(inout) :: nod_fld
@@ -148,7 +148,6 @@
      &          ncomp_trans, i_trns, d_rtp, v_pole, i_field,            &
      &          node, nod_fld)
 !
-      use m_work_pole_sph_trans
       use copy_pole_field_sph_trans
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -157,7 +156,8 @@
       integer(kind = kint), intent(in) :: ncomp_trans
       real(kind = kreal), intent(in)                                    &
      &           :: d_rtp(sph_rtp%nnod_rtp,ncomp_trans)
-      real(kind = kreal), intent(in) :: v_pole(nnod_pole,ncomp_trans)
+      real(kind = kreal), intent(in)                                    &
+     &           :: v_pole(sph_rtp%nnod_pole,ncomp_trans)
 !
       type(node_data), intent(in) :: node
       type(phys_data),intent(inout) :: nod_fld
@@ -176,7 +176,6 @@
      &          ncomp_trans, i_trns, d_rtp, v_pole, i_field,            &
      &          node, nod_fld)
 !
-      use m_work_pole_sph_trans
       use copy_pole_field_sph_trans
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -185,7 +184,8 @@
       integer(kind = kint), intent(in) :: ncomp_trans
       real(kind = kreal), intent(in)                                    &
      &          :: d_rtp(sph_rtp%nnod_rtp,ncomp_trans)
-      real(kind = kreal), intent(in) :: v_pole(nnod_pole,ncomp_trans)
+      real(kind = kreal), intent(in)                                    &
+     &          :: v_pole(sph_rtp%nnod_pole,ncomp_trans)
 !
       type(node_data), intent(in) :: node
       type(phys_data),intent(inout) :: nod_fld

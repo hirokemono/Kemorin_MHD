@@ -30,7 +30,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_work_pole_sph_trans
 !
       use t_phys_data
       use t_geometry_data
@@ -93,7 +92,8 @@
       integer(kind = kint), intent(in) :: ncomp_trans
       real(kind = kreal), intent(in)                                    &
      &           :: v_rtp(sph_rtp%nnod_rtp,ncomp_trans)
-      real(kind = kreal), intent(in) :: v_pole(nnod_pole,ncomp_trans)
+      real(kind = kreal), intent(in)                                    &
+     &           :: v_pole(sph_rtp%nnod_pole,ncomp_trans)
 !
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -168,7 +168,8 @@
       integer(kind = kint), intent(in) :: ncomp_trans
       real(kind = kreal), intent(in)                                    &
      &           :: v_rtp(sph_rtp%nnod_rtp,ncomp_trans)
-      real(kind = kreal), intent(in) :: v_pole(nnod_pole,ncomp_trans)
+      real(kind = kreal), intent(in)                                    &
+     &           :: v_pole(sph_rtp%nnod_pole,ncomp_trans)
 !
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -183,8 +184,8 @@
         do i = 1, nod_fld%num_phys
           if (phys_name_rtp(j0) .eq. nod_fld%phys_name(i)) then
             i_field = nod_fld%istack_component(i- 1) + 1
-            call copy_nod_vec_from_trans_wpole                           &
-     &         (sph_rtp, m_folding, ncomp_trans, itrans,                 &
+            call copy_nod_vec_from_trans_wpole                          &
+     &         (sph_rtp, m_folding, ncomp_trans, itrans,                &
      &          v_rtp(1,1), v_pole(1,1), i_field, node, nod_fld)
             exit
           end if
@@ -243,7 +244,8 @@
       integer(kind = kint), intent(in) :: ncomp_trans
       real(kind = kreal), intent(in)                                    &
      &           :: v_rtp(sph_rtp%nnod_rtp,ncomp_trans)
-      real(kind = kreal), intent(in) :: v_pole(nnod_pole,ncomp_trans)
+      real(kind = kreal), intent(in)                                    &
+     &           :: v_pole(sph_rtp%nnod_pole,ncomp_trans)
 !
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -258,8 +260,8 @@
         do i = 1, nod_fld%num_phys
           if (phys_name_rtp(j0) .eq. nod_fld%phys_name(i)) then
             i_field = nod_fld%istack_component(i- 1) + 1
-            call copy_nod_tsr_from_trans_wpole                           &
-     &         (sph_rtp, m_folding, ncomp_trans, itrans,                 &
+            call copy_nod_tsr_from_trans_wpole                          &
+     &         (sph_rtp, m_folding, ncomp_trans, itrans,                &
      &          v_rtp(1,1), v_pole(1,1), i_field, node, nod_fld)
             exit
           end if

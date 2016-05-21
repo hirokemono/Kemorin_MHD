@@ -41,7 +41,6 @@
 !
       use m_control_parameter
       use m_machine_parameter
-      use m_work_pole_sph_trans
 !
       use copy_pole_field_sph_trans
 !
@@ -54,7 +53,7 @@
 !
       integer(kind = kint), intent(in) :: ncomp_snap_rj_2_rtp
       real(kind = kreal), intent(in)                                    &
-     &                   :: fls_pl(nnod_pole,ncomp_snap_rj_2_rtp)
+     &           :: fls_pl(sph_rtp%nnod_pole,ncomp_snap_rj_2_rtp)
 !
 !
       call copy_pole_vec_fld_from_trans(m_folding, sph_rtp, node,       &

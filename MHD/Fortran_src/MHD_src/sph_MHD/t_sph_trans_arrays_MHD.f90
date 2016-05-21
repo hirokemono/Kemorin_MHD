@@ -55,10 +55,11 @@
       subroutine alloc_sph_trans_address(sph_rtp, WK)
 !
       use t_spheric_rtp_data
-      use m_work_pole_sph_trans
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(works_4_sph_trans_MHD), intent(inout) :: WK
+!
+      integer(kind = kint) :: ncomp
 !
 !
       call alloc_nonlinear_data(sph_rtp%nnod_rtp, wk%trns_MHD)
@@ -69,10 +70,13 @@
       if(WK%trns_MHD%ncomp_rtp_2_rj .gt. 0) WK%frm_rtp = 0.0d0
 !
 !
-      allocate(WK%fls_pl(nnod_pole,WK%trns_snap%ncomp_rj_2_rtp))
-      allocate(WK%flc_pl(nnod_pole,WK%trns_snap%ncomp_rj_2_rtp))
-      allocate(WK%frs_pl(nnod_pole,WK%trns_snap%ncomp_rtp_2_rj))
-      allocate(WK%frm_pl(nnod_pole,WK%trns_MHD%ncomp_rtp_2_rj))
+      ncomp = WK%trns_snap%ncomp_rj_2_rtp
+      allocate(WK%fls_pl(sph_rtp%nnod_pole,ncomp))
+      allocate(WK%flc_pl(sph_rtp%nnod_pole,ncomp))
+      ncomp = WK%trns_snap%ncomp_rtp_2_rj
+      allocate(WK%frs_pl(sph_rtp%nnod_pole,ncomp))
+      ncomp = WK%trns_MHD%ncomp_rtp_2_rj
+      allocate(WK%frm_pl(sph_rtp%nnod_pole,ncomp))
 !
       if(WK%trns_snap%ncomp_rj_2_rtp .gt. 0) WK%fls_pl = 0.0d0
       if(WK%trns_snap%ncomp_rj_2_rtp .gt. 0) WK%flc_pl = 0.0d0

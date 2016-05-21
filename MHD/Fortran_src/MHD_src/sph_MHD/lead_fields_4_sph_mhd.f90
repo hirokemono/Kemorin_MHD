@@ -74,8 +74,8 @@
       if    (sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_pole     &
      &  .or. sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_center)  &
      & then
-        call cal_nonlinear_pole_MHD                                     &
-     &     (trns_WK%trns_MHD%f_trns, trns_WK%trns_snap%b_trns,          &
+        call cal_nonlinear_pole_MHD(sph%sph_rtp,                        &
+     &      trns_WK%trns_MHD%f_trns, trns_WK%trns_snap%b_trns,          &
      &      trns_WK%trns_snap%ncomp_rj_2_rtp,                           &
      &      trns_WK%trns_MHD%ncomp_rtp_2_rj,                            &
      &      trns_WK%fls_pl, trns_WK%frm_pl)
@@ -130,7 +130,6 @@
      &          (sph, comms_sph, trns_MHD, trns_snap, rj_fld,           &
      &           frm_rtp, flc_pl, fls_pl)
 !
-      use m_work_pole_sph_trans
       use m_sph_phys_address
       use sph_transforms_4_MHD
       use cal_energy_flux_rtp
@@ -145,9 +144,9 @@
       real(kind = kreal), intent(inout)                                 &
      &       :: frm_rtp(sph%sph_rtp%nnod_rtp,trns_snap%ncomp_rj_2_rtp)
       real(kind = kreal), intent(inout)                                 &
-     &       :: flc_pl(nnod_pole,trns_snap%ncomp_rj_2_rtp)
+     &       :: flc_pl(sph%sph_rtp%nnod_pole,trns_snap%ncomp_rj_2_rtp)
       real(kind = kreal), intent(inout)                                 &
-     &       :: fls_pl(nnod_pole,trns_snap%ncomp_rj_2_rtp)
+     &       :: fls_pl(sph%sph_rtp%nnod_pole,trns_snap%ncomp_rj_2_rtp)
 !
 !
 !      Evaluate fields for output in spectrum space

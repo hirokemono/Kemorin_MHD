@@ -8,7 +8,7 @@
 !> @brief Evaluate energy fluxes for MHD dynamo in physical space
 !!
 !!@verbatim
-!!      subroutine cal_nonlinear_pole_MHD(f_trns, bs_trns,              &
+!!      subroutine cal_nonlinear_pole_MHD(sph_rtp, f_trns, bs_trns,     &
 !!     &          ncomp_snap_rj_2_rtp, ncomp_rtp_2_rj, fls_pl, frm_pl)
 !!      subroutine s_cal_energy_flux_rtp                                &
 !!     &         (sph_rtp, f_trns, bs_trns, fs_trns, ncomp_rtp_2_rj,    &
@@ -36,37 +36,38 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_nonlinear_pole_MHD(f_trns, bs_trns,                &
+      subroutine cal_nonlinear_pole_MHD(sph_rtp, f_trns, bs_trns,       &
      &          ncomp_snap_rj_2_rtp, ncomp_rtp_2_rj, fls_pl, frm_pl)
 !
+      use t_spheric_rtp_data
       use m_machine_parameter
       use m_control_parameter
       use m_physical_property
-      use m_work_pole_sph_trans
       use const_wz_coriolis_rtp
       use cal_products_smp
 !
+      type(sph_rtp_grid), intent(in) :: sph_rtp
       type(phys_address), intent(in) :: f_trns
       type(phys_address), intent(in) :: bs_trns
       integer(kind = kint), intent(in) :: ncomp_snap_rj_2_rtp
       integer(kind = kint), intent(in) :: ncomp_rtp_2_rj
       real(kind = kreal), intent(in)                                    &
-     &                   :: fls_pl(nnod_pole,ncomp_snap_rj_2_rtp)
+     &           :: fls_pl(sph_rtp%nnod_pole,ncomp_snap_rj_2_rtp)
       real(kind = kreal), intent(inout)                                 &
-     &                   :: frm_pl(nnod_pole,ncomp_rtp_2_rj)
+     &           :: frm_pl(sph_rtp%nnod_pole,ncomp_rtp_2_rj)
 !
 !
 !$omp parallel
       if( (f_trns%i_m_advect*iflag_t_evo_4_velo) .gt. 0) then
-        call cal_cross_prod_w_coef_smp                                  &
-     &     (np_smp, nnod_pole, istack_npole_smp, coef_velo,             &
+        call cal_cross_prod_w_coef_smp(np_smp,                          &
+     &     sph_rtp%nnod_pole, sph_rtp%istack_npole_smp, coef_velo,      &
      &      fls_pl(1,bs_trns%i_vort), fls_pl(1,bs_trns%i_velo),         &
      &      frm_pl(1,f_trns%i_m_advect) )
       end if
 !
       if( (f_trns%i_lorentz*iflag_4_lorentz) .gt. 0) then
-        call cal_cross_prod_w_coef_smp                                  &
-     &     (np_smp, nnod_pole, istack_npole_smp, coef_lor,              &
+        call cal_cross_prod_w_coef_smp(np_smp,                          &
+     &     sph_rtp%nnod_pole, sph_rtp%istack_npole_smp, coef_lor,       &
      &      fls_pl(1,bs_trns%i_current), fls_pl(1,bs_trns%i_magne),     &
      &      frm_pl(1,f_trns%i_lorentz) )
       end if
@@ -74,23 +75,23 @@
 !
 !
       if( (f_trns%i_vp_induct*iflag_t_evo_4_magne) .gt. 0) then
-        call cal_cross_prod_w_coef_smp                                  &
-     &     (np_smp, nnod_pole, istack_npole_smp, coef_induct,           &
+        call cal_cross_prod_w_coef_smp(np_smp,                          &
+     &      sph_rtp%nnod_pole, sph_rtp%istack_npole_smp, coef_induct,   &
      &      fls_pl(1,bs_trns%i_velo), fls_pl(1,bs_trns%i_magne),        &
      &      frm_pl(1,f_trns%i_vp_induct) )
       end if
 !
 !
       if( (f_trns%i_h_flux*iflag_t_evo_4_temp) .gt. 0) then
-        call cal_vec_scalar_prod_w_coef_smp                             &
-     &     (np_smp, nnod_pole, istack_npole_smp, coef_temp,             &
+        call cal_vec_scalar_prod_w_coef_smp(np_smp,                     &
+     &     sph_rtp%nnod_pole, sph_rtp%istack_npole_smp, coef_temp,      &
      &      fls_pl(1,bs_trns%i_velo), fls_pl(1,bs_trns%i_temp),         &
      &      frm_pl(1,f_trns%i_h_flux) )
       end if
 !
       if( (f_trns%i_c_flux*iflag_t_evo_4_composit) .gt. 0) then
-        call cal_vec_scalar_prod_w_coef_smp                             &
-     &     (np_smp, nnod_pole, istack_npole_smp, coef_light,            &
+        call cal_vec_scalar_prod_w_coef_smp(np_smp,                     &
+     &     sph_rtp%nnod_pole, sph_rtp%istack_npole_smp, coef_light,     &
      &      fls_pl(1,bs_trns%i_velo), fls_pl(1,bs_trns%i_light),        &
      &      frm_pl(1,f_trns%i_c_flux) )
       end if

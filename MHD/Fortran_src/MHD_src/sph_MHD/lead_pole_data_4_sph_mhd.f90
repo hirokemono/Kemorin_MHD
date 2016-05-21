@@ -43,7 +43,6 @@
 !
       use m_machine_parameter
       use m_spheric_constants
-      use m_work_pole_sph_trans
 !
       use pole_energy_flux_sph
       use copy_MHD_4_pole_trans
@@ -54,7 +53,7 @@
       type(node_data), intent(in) :: node
       type(phys_address), intent(in) :: iphys
       real(kind = kreal), intent(inout)                                 &
-     &           :: fls_pl(nnod_pole,trns_snap%ncomp_rj_2_rtp)
+     &           :: fls_pl(sph_rtp%nnod_pole,trns_snap%ncomp_rj_2_rtp)
 !
       type(phys_data), intent(inout) :: nod_fld
 !

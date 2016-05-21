@@ -81,7 +81,7 @@
       call initialize_sph_trans(sph1, comms_sph1)
 !
       call init_pole_transform(sph1%sph_rtp)
-      call allocate_d_pole_4_all_trans
+      call allocate_d_pole_4_all_trans(sph1%sph_rtp)
 !
 !      call calypso_MPI_barrier
 !      call check_schmidt_poly_rtm                                      &

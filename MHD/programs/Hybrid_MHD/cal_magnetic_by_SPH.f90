@@ -23,15 +23,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine induction_SPH_initialize(sph, comms_sph, rj_fld)
+      subroutine induction_SPH_initialize(comms_sph, sph, rj_fld)
 !
       use m_addresses_trans_hbd_MHD
       use interpolate_by_type
       use const_element_comm_tables
       use load_mesh_data
 !
-      type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
+      type(sph_grids), intent(inout) :: sph
 !
 !
       iphys_sph%i_magne =      1
@@ -52,7 +52,7 @@
       call init_pole_transform(sph%sph_rtp)
 !
       call set_addresses_trans_hbd_MHD
-      call allocate_hbd_trans_rtp(sph%sph_rtp%nnod_rtp)
+      call allocate_hbd_trans_rtp(sph%sph_rtp)
       call check_add_trans_hbd_MHD
 !
 !     ---------------------

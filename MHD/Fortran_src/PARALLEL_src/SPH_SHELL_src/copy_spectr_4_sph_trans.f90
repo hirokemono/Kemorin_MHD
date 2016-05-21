@@ -9,8 +9,8 @@
 !!
 !!@verbatim
 !!      subroutine sel_sph_rj_scalar_2_send_wpole                       &
-!!     &         (ncomp_send, i_field, i_send, sph_rj, comm_rj, rj_fld, &
-!!     &          n_WS, WS, v_pl_local)
+!!     &         (ncomp_send, i_field, i_send, nnod_pole,               &
+!!     &          sph_rj, comm_rj, rj_fld, n_WS, WS, v_pl_local)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!      subroutine sel_sph_rj_scalar_to_send                            &
 !!     &         (ncomp_send, i_field, i_send, comm_rj, rj_fld,         &
@@ -55,18 +55,18 @@
 ! -------------------------------------------------------------------
 !
       subroutine sel_sph_rj_scalar_2_send_wpole                         &
-     &         (ncomp_send, i_field, i_send, sph_rj, comm_rj, rj_fld,   &
-     &          n_WS, WS, v_pl_local)
+     &         (ncomp_send, i_field, i_send, nnod_pole,                 &
+     &          sph_rj, comm_rj, rj_fld, n_WS, WS, v_pl_local)
 !
       use m_sph_communicators
       use m_sel_spherical_SRs
-      use m_work_pole_sph_trans
 !
       use t_spheric_rj_data
 !
       type(sph_comm_tbl), intent(in) :: comm_rj
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_data), intent(in) :: rj_fld
+      integer(kind = kint), intent(in) :: nnod_pole
       integer(kind = kint), intent(in) :: i_field, i_send
       integer(kind = kint), intent(in) :: ncomp_send, n_WS
 !

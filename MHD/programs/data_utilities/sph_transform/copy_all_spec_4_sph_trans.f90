@@ -4,8 +4,10 @@
 !        programmed by H.Matsui on Jan., 2008
 !
 !!      subroutine set_all_scalar_spec_to_sph_t                         &
-!!     &         (ncomp_send, sph_rj, comm_rj, rj_fld,                  &
+!!     &         (nnod_pole, ncomp_send, sph_rj, comm_rj, rj_fld,       &
 !!     &          n_WS, WS, v_pl_local)
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(sph_comm_tbl), intent(in) :: comm_rj
 !!        type(phys_data), intent(in) :: rj_fld
 !!      subroutine set_all_scalar_spec_from_sph_t                       &
 !!     &         (ncomp_recv, comm_rj, n_WR, WR, rj_fld)
@@ -26,7 +28,6 @@
       use m_precision
 !
       use m_work_4_sph_trans
-      use m_work_pole_sph_trans
       use set_phys_name_4_sph_trans
 !
       use t_sph_trans_comm_tbl
@@ -41,13 +42,13 @@
 ! -------------------------------------------------------------------
 !
       subroutine set_all_scalar_spec_to_sph_t                           &
-     &         (ncomp_send, sph_rj, comm_rj, rj_fld,                    &
+     &         (nnod_pole, ncomp_send, sph_rj, comm_rj, rj_fld,         &
      &          n_WS, WS, v_pl_local)
 !
       use t_spheric_rj_data
       use copy_spectr_4_sph_trans
 !
-      integer(kind = kint), intent(in) :: ncomp_send, n_WS
+      integer(kind = kint), intent(in) :: ncomp_send, n_WS, nnod_pole
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(sph_comm_tbl), intent(in) :: comm_rj
       type(phys_data), intent(in) :: rj_fld
@@ -65,8 +66,8 @@
           if ( phys_name_rtp(j0) .eq. rj_fld%phys_name(i) ) then
             i_field = rj_fld%istack_component(i-1) + 1
             call sel_sph_rj_scalar_2_send_wpole                         &
-     &         (ncomp_send, i_field, itrans, sph_rj, comm_rj, rj_fld,   &
-     &          n_WS, WS, v_pl_local)
+     &         (ncomp_send, i_field, itrans, nnod_pole,                 &
+     &          sph_rj, comm_rj, rj_fld, n_WS, WS, v_pl_local)
             exit
           end if
         end do

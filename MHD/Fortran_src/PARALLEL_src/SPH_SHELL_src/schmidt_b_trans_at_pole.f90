@@ -9,13 +9,13 @@
 !!@verbatim
 !!      subroutine schmidt_b_trans_pole_scalar(ncomp, nvector, nscalar, &
 !!     &          l_truncation, ist_rtm_order_zero, nnod_rlm, nri_rtm,  &
-!!     &          istep_rlm, nidx_global_rtp, idx_gl_1d_rtm_r,          &
-!!     &          irev_sr_rlm, n_WR, WR, v_pl_local)
+!!     &          nnod_pole, istep_rlm, nidx_global_rtp,                &
+!!     &          idx_gl_1d_rtm_r, irev_sr_rlm, n_WR, WR, v_pl_local)
 !!      subroutine schmidt_b_trans_pole_vect                            &
 !!     &        (ncomp, nvector, l_truncation,                          &
 !!     &         ist_rtm_order_zero, ist_rtm_order_1s, ist_rtm_order_1c,&
-!!     &         nnod_rlm, nri_rtm, istep_rlm, nidx_global_rtp,         &
-!!     &         idx_gl_1d_rtm_r, a_r_1d_rtm_r,                         &
+!!     &         nnod_rlm, nri_rtm, nnod_pole, istep_rlm,               &
+!!     &         nidx_global_rtp, idx_gl_1d_rtm_r, a_r_1d_rtm_r,        &
 !!     &         irev_sr_rlm, n_WR, WR, v_pl_local)
 !!
 !!------------------------------------------------------------------
@@ -77,7 +77,6 @@
 !
       use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans
-      use m_work_pole_sph_trans
 !
       implicit none
 !
@@ -89,14 +88,14 @@
 !
       subroutine schmidt_b_trans_pole_scalar(ncomp, nvector, nscalar,   &
      &          l_truncation, ist_rtm_order_zero, nnod_rlm, nri_rtm,    &
-     &          istep_rlm, nidx_global_rtp, idx_gl_1d_rtm_r,            &
-     &          irev_sr_rlm, n_WR, WR, v_pl_local)
+     &          nnod_pole, istep_rlm, nidx_global_rtp,                  &
+     &          idx_gl_1d_rtm_r, irev_sr_rlm, n_WR, WR, v_pl_local)
 !
       use calypso_mpi
 !
       integer(kind = kint), intent(in) :: l_truncation
       integer(kind = kint), intent(in) :: ist_rtm_order_zero
-      integer(kind = kint), intent(in) :: nnod_rlm, nri_rtm
+      integer(kind = kint), intent(in) :: nnod_rlm, nri_rtm, nnod_pole
       integer(kind = kint), intent(in) :: istep_rlm(2)
       integer(kind = kint), intent(in) :: nidx_global_rtp(3)
       integer(kind = kint), intent(in) :: idx_gl_1d_rtm_r(nri_rtm)
@@ -144,8 +143,8 @@
       subroutine schmidt_b_trans_pole_vect                              &
      &        (ncomp, nvector, l_truncation,                            &
      &         ist_rtm_order_zero, ist_rtm_order_1s, ist_rtm_order_1c,  &
-     &         nnod_rlm, nri_rtm, istep_rlm, nidx_global_rtp,           &
-     &         idx_gl_1d_rtm_r, a_r_1d_rtm_r,                           &
+     &         nnod_rlm, nri_rtm, nnod_pole, istep_rlm,                 &
+     &         nidx_global_rtp, idx_gl_1d_rtm_r, a_r_1d_rtm_r,          &
      &         irev_sr_rlm, n_WR, WR, v_pl_local)
 !
       use calypso_mpi
@@ -154,7 +153,7 @@
       integer(kind = kint), intent(in) :: ist_rtm_order_zero
       integer(kind = kint), intent(in) :: ist_rtm_order_1s
       integer(kind = kint), intent(in) :: ist_rtm_order_1c
-      integer(kind = kint), intent(in) :: nnod_rlm, nri_rtm
+      integer(kind = kint), intent(in) :: nnod_rlm, nri_rtm, nnod_pole
       integer(kind = kint), intent(in) :: istep_rlm(2)
       integer(kind = kint), intent(in)  :: nidx_global_rtp(3)
       integer(kind = kint), intent(in) :: idx_gl_1d_rtm_r(nri_rtm)

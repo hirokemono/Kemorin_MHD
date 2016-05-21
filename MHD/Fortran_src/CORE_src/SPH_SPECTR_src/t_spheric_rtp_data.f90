@@ -10,11 +10,13 @@
 !!      subroutine alloc_type_spheric_param_rtp(sph_rtp)
 !!      subroutine alloc_type_sph_1d_index_rtp(sph_rtp)
 !!      subroutine alloc_rtp_param_smp(sph_rtp)
+!!      subroutine alloc_num_pole_sph_trans(sph_rtp)
 !!        type(sph_rtp_grid), intent(inout) :: sph_rtp
 !!
 !!      subroutine dealloc_type_spheric_param_rtp(sph_rtp)
 !!      subroutine dealloc_type_sph_1d_index_rtp(sph_rtp)
 !!      subroutine dealloc_rtp_param_smp(sph_rtp)
+!!      subroutine dealloc_num_pole_sph_trans(sph_rtp)
 !!        type(sph_rtp_grid), intent(inout) :: sph_rtp
 !!
 !!      subroutine copy_spheric_rtp_data                                &
@@ -46,6 +48,8 @@
 !
 !>        number of data points for @f$ f(r,\theta,\phi) @f$
         integer(kind = kint) :: nnod_rtp
+!>        number of data points at pole
+        integer(kind = kint) :: nnod_pole
 !
 !>        number of 1d data points for @f$ f(r,\theta,\phi) @f$
         integer(kind = kint) :: nidx_rtp(3)
@@ -68,6 +72,9 @@
 !
 !>        SMP stacks for indexing @f$ r, t@f$
       integer(kind = kint), pointer :: istack_rtp_rt_smp(:)
+!
+!>        SMP stacks for pole indexing
+      integer(kind = kint), pointer :: istack_npole_smp(:)
 !
 !>        Maximum SMP number for spectr data @f$ f(r,t,p) @f$
       integer(kind = kint)  ::  maxirt_rtp_smp =  0
@@ -158,6 +165,21 @@
       end subroutine alloc_rtp_param_smp
 !
 ! -----------------------------------------------------------------------
+!
+      subroutine alloc_num_pole_sph_trans(sph_rtp)
+!
+      use m_machine_parameter
+!
+      type(sph_rtp_grid), intent(inout) :: sph_rtp
+!
+!
+      sph_rtp%nnod_pole = 2 * sph_rtp%nidx_global_rtp(1) + 1
+      allocate(sph_rtp%istack_npole_smp(0:np_smp) )
+      sph_rtp%istack_npole_smp = 0
+!
+      end subroutine alloc_num_pole_sph_trans
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine dealloc_type_spheric_param_rtp(sph_rtp)
@@ -197,6 +219,17 @@
       end subroutine dealloc_rtp_param_smp
 !
 ! -----------------------------------------------------------------------
+!
+      subroutine dealloc_num_pole_sph_trans(sph_rtp)
+!
+      type(sph_rtp_grid), intent(inout) :: sph_rtp
+!
+!
+      deallocate(sph_rtp%istack_npole_smp)
+!
+      end subroutine dealloc_num_pole_sph_trans
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine copy_spheric_rtp_data                                  &
