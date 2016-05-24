@@ -10,7 +10,7 @@
 !!      subroutine set_inner_core_rotation(kr_in, sph_rj, rj_fld)
 !!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine set_icore_viscous_matrix                             &
-!!     &         (kr_in, fdm1_fix_fld_ICB, sph_rj)
+!!     &         (kr_in, fdm1_fix_fld_ICB, sph_rj, band_vt_evo)
 !!      subroutine cal_icore_viscous_drag_explicit                      &
 !!     &         (kr_in, fdm1_fix_fld_ICB, sph_rj, coef_d,              &
 !!     &          it_velo, it_viscous, rj_fld)
@@ -22,6 +22,7 @@
 !!      subroutine int_icore_toroidal_lorentz(kr_in, sph_rj, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_data), intent(inout) :: rj_fld
+!!        type(band_matrix_type), intent(inout) :: band_vt_evo
 !!@endverbatim
 !!
 !!@n @param coef_d  Coefficient for diffusion term
@@ -75,25 +76,27 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_icore_viscous_matrix                               &
-     &         (kr_in, fdm1_fix_fld_ICB, sph_rj)
+     &         (kr_in, fdm1_fix_fld_ICB, sph_rj, band_vt_evo)
 !
+      use t_sph_matrices
       use m_t_int_parameter
       use m_physical_property
 !
       integer(kind = kint), intent(in) :: kr_in
       real(kind = kreal), intent(in) :: fdm1_fix_fld_ICB(0:1,2)
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(band_matrix_type), intent(inout) :: band_vt_evo
 !
 !
       call set_rotate_icb_vt_sph_mat(sph_rj%idx_rj_degree_one(-1),      &
-     &    kr_in, sph_rj%nidx_rj(1), sph_rj%ar_1d_rj,                    &
-     &    fdm1_fix_fld_ICB, coef_imp_v, coef_d_velo)
+     &    kr_in, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj, &
+     &    fdm1_fix_fld_ICB, coef_imp_v, coef_d_velo, band_vt_evo%mat)
       call set_rotate_icb_vt_sph_mat(sph_rj%idx_rj_degree_one( 0),      &
-     &    kr_in, sph_rj%nidx_rj(1), sph_rj%ar_1d_rj,                    &
-     &    fdm1_fix_fld_ICB, coef_imp_v, coef_d_velo)
+     &    kr_in, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj, &
+     &    fdm1_fix_fld_ICB, coef_imp_v, coef_d_velo, band_vt_evo%mat)
       call set_rotate_icb_vt_sph_mat(sph_rj%idx_rj_degree_one( 1),      &
-     &    kr_in, sph_rj%nidx_rj(1), sph_rj%ar_1d_rj,                    &
-     &    fdm1_fix_fld_ICB, coef_imp_v, coef_d_velo)
+     &    kr_in, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj, &
+     &    fdm1_fix_fld_ICB, coef_imp_v, coef_d_velo, band_vt_evo%mat)
 !!
       end subroutine set_icore_viscous_matrix
 !
@@ -230,18 +233,20 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_rotate_icb_vt_sph_mat(idx_rj_l0, kr_in,            &
-     &          nri, ar_1d_rj, fdm1_fix_fld_ICB, coef_imp, coef_d)
+     &          nri, jmax, ar_1d_rj, fdm1_fix_fld_ICB, coef_imp,        &
+     &          coef_d, vt_evo_mat)
 !
       use m_t_int_parameter
       use m_schmidt_poly_on_rtm
-      use m_radial_matrices_sph
       use m_fdm_coefs
 !
-      integer(kind = kint), intent(in) :: nri
+      integer(kind = kint), intent(in) :: nri, jmax
       integer(kind = kint), intent(in) :: kr_in, idx_rj_l0
       real(kind = kreal), intent(in) :: fdm1_fix_fld_ICB(0:1,2)
       real(kind = kreal), intent(in) :: coef_imp, coef_d
       real(kind= kreal), intent(in) :: ar_1d_rj(nri,3)
+!
+      real(kind = kreal), intent(inout) :: vt_evo_mat(3,nri,jmax)
 !
 !
       if(idx_rj_l0 .le. 0) return

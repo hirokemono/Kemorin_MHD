@@ -80,9 +80,7 @@
       call set_bc_velo_sph_crank(ipol%i_velo, sph_rj, rj_fld)
 !
       call solve_velo_by_vort_sph_crank                                 &
-     &   (sph_rj, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                 &
-     &    vp_evo_lu, vt_evo_lu, i_vp_pivot, i_vt_pivot,                 &
-     &    ipol%i_velo, itor%i_velo,                                     &
+     &   (sph_rj, band_vp_evo, band_vt_evo, ipol%i_velo, itor%i_velo,   &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine cal_sol_velo_by_vort_sph_crank
@@ -100,8 +98,7 @@
 !
 !
       call solve_pressure_by_div_v                                      &
-     &   (sph_rj, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                 &
-     &    p_poisson_lu, i_p_pivot, ipol%i_press,                        &
+     &   (sph_rj, band_p_poisson, ipol%i_press,                         &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call adjust_by_ave_pressure_on_CMB                                &

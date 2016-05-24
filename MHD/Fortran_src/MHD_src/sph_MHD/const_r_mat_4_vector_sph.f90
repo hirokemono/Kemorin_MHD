@@ -58,16 +58,16 @@
         coef_dvt = one
         call set_unit_mat_4_poisson                                     &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
-     &      sph_bc_U%kr_in, sph_bc_U%kr_out, vt_evo_mat)
+     &      sph_bc_U%kr_in, sph_bc_U%kr_out, band_vt_evo%mat)
         call set_unit_mat_4_poisson                                     &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
-     &      sph_bc_U%kr_in, sph_bc_U%kr_out, wt_evo_mat)
+     &      sph_bc_U%kr_in, sph_bc_U%kr_out, band_wt_evo%mat)
       else
         coef_dvt = coef_imp_v * coef_d_velo * dt
         call set_unit_mat_4_time_evo                                    &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), vt_evo_mat)
+     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), band_vt_evo%mat)
         call set_unit_mat_4_time_evo                                    &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), wt_evo_mat)
+     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), band_wt_evo%mat)
       end if
 !
       call set_unit_mat_4_poisson                                       &
@@ -76,10 +76,10 @@
 !
       call add_vector_poisson_mat_sph                                   &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj,        &
-     &    sph_bc_U%kr_in, sph_bc_U%kr_out, coef_dvt, vt_evo_mat)
+     &    sph_bc_U%kr_in, sph_bc_U%kr_out, coef_dvt, band_vt_evo%mat)
       call add_vector_poisson_mat_sph                                   &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj,        &
-     &    sph_bc_U%kr_in, sph_bc_U%kr_out, coef_dvt, wt_evo_mat)
+     &    sph_bc_U%kr_in, sph_bc_U%kr_out, coef_dvt, band_wt_evo%mat)
       call add_vector_poisson_mat_sph                                   &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj,        &
      &    sph_bc_U%kr_in, sph_bc_U%kr_out, one, vs_poisson_mat)
@@ -88,11 +88,11 @@
 !
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
         call add_vector_poisson_mat_center                              &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
-     &      sph_bc_U%r_ICB, fdm2_fix_fld_ctr1, coef_dvt, vt_evo_mat)
+     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_bc_U%r_ICB,       &
+     &      fdm2_fix_fld_ctr1, coef_dvt, band_vt_evo%mat)
         call add_vector_poisson_mat_center                              &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
-     &      sph_bc_U%r_ICB, fdm2_fix_fld_ctr1, coef_dvt, wt_evo_mat)
+     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_bc_U%r_ICB,       &
+     &      fdm2_fix_fld_ctr1, coef_dvt, band_wt_evo%mat)
         call add_vector_poisson_mat_center                              &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
      &      sph_bc_U%r_ICB, fdm2_fix_fld_ctr1, one, vs_poisson_mat)
@@ -100,13 +100,13 @@
         call add_fix_flux_icb_poisson_mat                               &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
      &      sph_bc_U%kr_in, sph_bc_U%r_ICB, sph_bc_U%fdm2_fix_dr_ICB,   &
-     &      coef_dvt, wt_evo_mat)
+     &      coef_dvt, band_wt_evo%mat)
 !
         if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then
           call add_fix_flux_icb_poisson_mat                             &
      &       (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                     &
      &        sph_bc_U%kr_in, sph_bc_U%r_ICB, fdm2_free_vt_ICB,         &
-     &        coef_dvt, vt_evo_mat)
+     &        coef_dvt, band_vt_evo%mat)
           call add_fix_flux_icb_poisson_mat                             &
      &       (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                     &
      &        sph_bc_U%kr_in, sph_bc_U%r_ICB, fdm2_free_vp_ICB,         &
@@ -114,7 +114,7 @@
         else
           call set_fix_fld_icb_poisson_mat                              &
      &       (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                     &
-     &        sph_bc_U%kr_in, vt_evo_mat)
+     &        sph_bc_U%kr_in, band_vt_evo%mat)
           call add_fix_flux_icb_poisson_mat                             &
      &       (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                     &
      &        sph_bc_U%kr_in, sph_bc_U%r_ICB, sph_bc_U%fdm2_fix_dr_ICB, &
@@ -126,7 +126,8 @@
 !
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call set_icore_viscous_matrix                                   &
-     &     (sph_bc_U%kr_in, sph_bc_U%fdm1_fix_fld_ICB, sph_rj)
+     &     (sph_bc_U%kr_in, sph_bc_U%fdm1_fix_fld_ICB,                  &
+     &      sph_rj, band_vt_evo)
       end if
 !
 !   Boundary condition for CMB
@@ -134,13 +135,13 @@
       call add_fix_flux_cmb_poisson_mat                                 &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                         &
      &    sph_bc_U%kr_out, sph_bc_U%r_CMB, sph_bc_U%fdm2_fix_dr_CMB,    &
-     &    coef_dvt, wt_evo_mat)
+     &    coef_dvt, band_wt_evo%mat)
 !
       if(sph_bc_U%iflag_cmb .eq. iflag_free_slip) then
         call add_fix_flux_cmb_poisson_mat                               &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
      &      sph_bc_U%kr_out, sph_bc_U%r_CMB, fdm2_free_vt_CMB,          &
-     &      coef_dvt, vt_evo_mat)
+     &      coef_dvt, band_vt_evo%mat)
         call add_fix_flux_cmb_poisson_mat                               &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
      &      sph_bc_U%kr_out, sph_bc_U%r_CMB, fdm2_free_vp_CMB,          &
@@ -148,7 +149,7 @@
       else
         call set_fix_fld_cmb_poisson_mat                                &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
-     &      sph_bc_U%kr_out, vt_evo_mat)
+     &      sph_bc_U%kr_out, band_vt_evo%mat)
         call add_fix_flux_cmb_poisson_mat                               &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
      &      sph_bc_U%kr_out, sph_bc_U%r_CMB, sph_bc_U%fdm2_fix_dr_CMB,  &
@@ -158,26 +159,25 @@
 !
       call cal_mat_product_3band_mul                                    &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                         &
-     &    sph_bc_U%kr_in, sph_bc_U%kr_out, wt_evo_mat, vs_poisson_mat,  &
-     &    vp_evo_mat)
+     &    sph_bc_U%kr_in, sph_bc_U%kr_out, band_wt_evo%mat,             &
+     &    vs_poisson_mat, band_vp_evo%mat)
 !
       if(i_debug .eq. iflag_full_msg)                                   &
      &          call check_vorticity_matrices_sph(my_rank, sph_rj)
+!
+      call ludcmp_5band_mul_t                                           &
+     &   (np_smp, sph_rj%istack_rj_j_smp, band_vp_evo)
+      call ludcmp_3band_mul_t                                           &
+     &   (np_smp, sph_rj%istack_rj_j_smp, band_vt_evo)
+      call ludcmp_3band_mul_t                                           &
+     &   (np_smp, sph_rj%istack_rj_j_smp, band_wt_evo)
+!
 !
 !$omp parallel do private(jst,jed,j)
       do ip = 1, np_smp
         jst = sph_rj%istack_rj_j_smp(ip-1) + 1
         jed = sph_rj%istack_rj_j_smp(ip  )
         do j = jst, jed
-          call ludcmp_band                                              &
-     &       (sph_rj%nidx_rj(1), ifive, vp_evo_mat(1,1,j),              &
-     &        vp_evo_lu(1,1,j) ,i_vp_pivot(1,j), vp_evo_det(1,j))
-          call ludcmp_3band                                             &
-     &       (sph_rj%nidx_rj(1), vt_evo_mat(1,1,j),                     &
-     &        i_vt_pivot(1,j), ierr, vt_evo_lu(1,1,j), vt_evo_det(1,j))
-          call ludcmp_3band                                             &
-     &       (sph_rj%nidx_rj(1), wt_evo_mat(1,1,j),                     &
-     &        i_wt_pivot(1,j), ierr, wt_evo_lu(1,1,j), wt_evo_det(1,j))
           call ludcmp_3band(sph_rj%nidx_rj(1), vs_poisson_mat(1,1,j),   &
      &        i_vs_pivot(1,j), ierr, vs_poisson_lu(1,1,j),              &
      &        vs_poisson_det(1,j) )
@@ -187,11 +187,13 @@
 !
 !      do j = 1, sph_rj%nidx_rj(2)
 !        do k = 1, sph_rj%nidx_rj(1)
-!          vp_evo_det(1,j) = vp_evo_det(1,j) * vp_evo_lu(5,k,j)
-!          vt_evo_det(1,j) = vt_evo_det(1,j) * vt_evo_lu(3,k,j)
+!          band_vp_evo%det(1,j)                                         &
+!     &                = band_vp_evo%det(1,j) * band_vp_evo%lu(5,k,j)
+!          band_vt_evo%det(1,j)                                         &
+!     &                = band_vt_evo%det(1,j) * band_vt_evo%lu(3,k,j)
 !        end do
 !        write(my_rank+60,*) 'det vp', j,                               &
-!     &                       vp_evo_det(1,j), vt_evo_det(1,j)
+!     &                       band_vp_evo%det(1,j), band_vt_evo%det(1,j)
 !      end do
 !
       end subroutine const_radial_mat_vort_2step

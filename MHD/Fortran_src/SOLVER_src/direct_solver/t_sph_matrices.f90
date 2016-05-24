@@ -8,12 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine alloc_band_mat_sph(nband, nri, jmax, smat)
+!!      subroutine set_unit_on_diag(smat)
 !!      subroutine dealloc_band_mat_sph(smat)
 !!@endverbatim
 !
       module t_sph_matrices
 !
       use m_precision
+      use m_machine_parameter
 !
       implicit none
 !
@@ -53,13 +55,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-!      call alloc_band_mat_sph(nband, nidx_rj(1), nidx_rj(2), smat)
       subroutine alloc_band_mat_sph(nband, nri, jmax, smat)
 !
       integer(kind = kint), intent(in) :: nband, nri, jmax
       type(band_matrix_type), intent(inout) :: smat
-!
-      integer(kind = kint) :: l_diag
 !
 !
       smat%n_vect =      nri
@@ -78,10 +77,21 @@
       smat%det =   0.0d0
       smat%i_pivot =   0
 !
+      end subroutine alloc_band_mat_sph
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_unit_on_diag(smat)
+!
+      type(band_matrix_type), intent(inout) :: smat
+!
+      integer(kind = kint) :: l_diag
+!
+!
       l_diag = (smat%n_band + 1) / 2
       smat%mat(l_diag,1:smat%n_vect,1:smat%n_comp) = 1.0d0
 !
-      end subroutine alloc_band_mat_sph
+      end subroutine set_unit_on_diag
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -97,5 +107,109 @@
       end subroutine dealloc_band_mat_sph
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine ludcmp_3band_mul_t(Msmp, Msmp_stack, smat)
+!
+      use ludcmp_357band_mul
+!
+      integer (kind = kint), intent(in) :: Msmp
+      integer (kind = kint), intent(in) :: Msmp_stack(0:Msmp)
+      type(band_matrix_type), intent(inout) :: smat
+!
+!
+      call ludcmp_3band_mul(Msmp, Msmp_stack, smat%n_comp, smat%n_vect, &
+     &    smat%mat, smat%lu, smat%i_pivot, smat%det)
+!
+      end subroutine ludcmp_3band_mul_t
+!
+! ----------------------------------------------------------------------
+!
+      subroutine ludcmp_5band_mul_t(Msmp, Msmp_stack, smat)
+!
+      use ludcmp_357band_mul
+!
+      integer (kind = kint), intent(in) :: Msmp
+      integer (kind = kint), intent(in) :: Msmp_stack(0:Msmp)
+      type(band_matrix_type), intent(inout) :: smat
+!
+!
+      call ludcmp_5band_mul(Msmp, Msmp_stack, smat%n_comp, smat%n_vect, &
+     &    smat%mat, smat%lu, smat%i_pivot, smat%det)
+!
+      end subroutine ludcmp_5band_mul_t
+!
+! ----------------------------------------------------------------------
+!
+      subroutine ludcmp_7band_mul_t(Msmp, Msmp_stack, smat)
+!
+      use ludcmp_357band_mul
+!
+      integer (kind = kint), intent(in) :: Msmp
+      integer (kind = kint), intent(in) :: Msmp_stack(0:Msmp)
+      type(band_matrix_type), intent(inout) :: smat
+!
+!
+      call ludcmp_7band_mul(Msmp, Msmp_stack, smat%n_comp, smat%n_vect, &
+     &    smat%mat, smat%lu, smat%i_pivot, smat%det)
+!
+      end subroutine ludcmp_7band_mul_t
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine lubksb_3band_mul_t(Msmp, Msmp_stack, smat, x)
+!
+      use lubksb_357band_mul
+!
+      integer (kind = kint), intent(in) :: Msmp
+      integer (kind = kint), intent(in) :: Msmp_stack(0:Msmp)
+      type(band_matrix_type), intent(in) :: smat
+!
+      real(kind = kreal), intent(inout) :: x(smat%n_comp,smat%n_vect)
+!
+!
+      call lubksb_3band_mul(Msmp, Msmp_stack, smat%n_comp, smat%n_vect, &
+     &    smat%lu, smat%i_pivot, x)
+!
+      end subroutine lubksb_3band_mul_t
+!
+! ----------------------------------------------------------------------
+!
+      subroutine lubksb_5band_mul_t(Msmp, Msmp_stack, smat, x)
+!
+      use lubksb_357band_mul
+!
+      integer (kind = kint), intent(in) :: Msmp
+      integer (kind = kint), intent(in) :: Msmp_stack(0:Msmp)
+      type(band_matrix_type), intent(in) :: smat
+!
+      real(kind = kreal), intent(inout) :: x(smat%n_comp,smat%n_vect)
+!
+!
+      call lubksb_5band_mul(Msmp, Msmp_stack, smat%n_comp, smat%n_vect, &
+     &    smat%lu, smat%i_pivot, x)
+!
+      end subroutine lubksb_5band_mul_t
+!
+! ----------------------------------------------------------------------
+!
+      subroutine lubksb_7band_mul_t(Msmp, Msmp_stack, smat, x)
+!
+      use lubksb_357band_mul
+!
+      integer (kind = kint), intent(in) :: Msmp
+      integer (kind = kint), intent(in) :: Msmp_stack(0:Msmp)
+      type(band_matrix_type), intent(in) :: smat
+!
+      real(kind = kreal), intent(inout) :: x(smat%n_comp,smat%n_vect)
+!
+!
+      call lubksb_7band_mul(Msmp, Msmp_stack, smat%n_comp, smat%n_vect, &
+     &    smat%lu, smat%i_pivot, x)
+!
+      end subroutine lubksb_7band_mul_t
+!
+! ----------------------------------------------------------------------
 !
       end module t_sph_matrices

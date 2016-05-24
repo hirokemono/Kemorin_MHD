@@ -7,14 +7,13 @@
 !>@brief  Update each field for MHD dynamo model
 !!
 !!@verbatim
-!!      subroutine solve_velo_by_vort_sph_crank(sph_rj, nri, jmax,      &
-!!     &          vp_evo_lu, vt_evo_lu, i_vp_pivot, i_vt_pivot,         &
+!!      subroutine solve_velo_by_vort_sph_crank                         &
+!!     &         (sph_rj, band_vp_evo, band_vt_evo,                     &
 !!     &          is_velo, it_velo, n_point, ntot_phys_rj, d_rj)
 !!        Input address:    is_velo, it_velo
 !!        Solution address: is_velo, it_velo
 !!
-!!      subroutine solve_pressure_by_div_v                              &
-!!     &         (sph_rj, nri, jmax, p_poisson_lu, i_p_pivot,           &
+!!      subroutine solve_pressure_by_div_v(sph_rj, band_p_poisson,      &
 !!     &          is_press, n_point, ntot_phys_rj, d_rj)
 !!
 !!      subroutine solve_magne_sph_crank(sph_rj, nri, jmax,             &
@@ -41,6 +40,7 @@
       use m_machine_parameter
       use m_sph_phys_address
       use t_spheric_rj_data
+      use t_sph_matrices
 !
       use set_reference_sph_mhd
       use lubksb_357band_mul
@@ -56,18 +56,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine solve_velo_by_vort_sph_crank(sph_rj, nri, jmax,        &
-     &          vp_evo_lu, vt_evo_lu, i_vp_pivot, i_vt_pivot,           &
+      subroutine solve_velo_by_vort_sph_crank                           &
+     &         (sph_rj, band_vp_evo, band_vt_evo,                       &
      &          is_velo, it_velo, n_point, ntot_phys_rj, d_rj)
 !
       type(sph_rj_grid), intent(in) :: sph_rj
-      integer(kind = kint), intent(in) :: nri, jmax
-      real(kind = kreal), intent(in) :: vp_evo_lu(9,nri,jmax)
-      real(kind = kreal), intent(in) :: vt_evo_lu(5,nri,jmax)
-      integer(kind = kint), intent(in) :: i_vp_pivot(nri,jmax)
-      integer(kind = kint), intent(in) :: i_vt_pivot(nri,jmax)
       integer(kind = kint), intent(in) ::  n_point, ntot_phys_rj
       integer(kind = kint), intent(in) :: is_velo, it_velo
+      type(band_matrix_type), intent(in) :: band_vp_evo
+      type(band_matrix_type), intent(in) :: band_vt_evo
+!
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
 !      integer(kind = kint) :: inod, k, j
@@ -83,32 +81,29 @@
 !        end do
 !      end do
 !
-      call lubksb_5band_mul(np_smp, sph_rj%istack_rj_j_smp,             &
-     &    jmax, nri, vp_evo_lu, i_vp_pivot, d_rj(1,is_velo) )
+      call lubksb_5band_mul_t                                           &
+     &   (np_smp, sph_rj%istack_rj_j_smp, band_vp_evo, d_rj(1,is_velo))
 !
-      call lubksb_3band_mul(np_smp, sph_rj%istack_rj_j_smp,             &
-     &    jmax, nri, vt_evo_lu, i_vt_pivot, d_rj(1,it_velo) )
+      call lubksb_3band_mul_t                                           &
+     &   (np_smp, sph_rj%istack_rj_j_smp, band_vt_evo, d_rj(1,it_velo))
 !
 !
       end subroutine solve_velo_by_vort_sph_crank
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine solve_pressure_by_div_v                                &
-     &         (sph_rj, nri, jmax, p_poisson_lu, i_p_pivot,             &
+      subroutine solve_pressure_by_div_v(sph_rj, band_p_poisson,        &
      &          is_press, n_point, ntot_phys_rj, d_rj)
 !
       type(sph_rj_grid), intent(in) :: sph_rj
-      integer(kind = kint), intent(in) :: nri, jmax
-      real(kind = kreal), intent(in) :: p_poisson_lu(5,nri,jmax)
-      integer(kind = kint), intent(in) :: i_p_pivot(nri,jmax)
+      type(band_matrix_type), intent(in) :: band_p_poisson
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       integer(kind = kint), intent(in) :: is_press
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
 !
-      call lubksb_3band_mul(np_smp, sph_rj%istack_rj_j_smp,             &
-     &    jmax, nri, p_poisson_lu, i_p_pivot, d_rj(1,is_press) )
+      call lubksb_3band_mul_t(np_smp, sph_rj%istack_rj_j_smp,           &
+     &    band_p_poisson, d_rj(1,is_press))
 !
       end subroutine solve_pressure_by_div_v
 !

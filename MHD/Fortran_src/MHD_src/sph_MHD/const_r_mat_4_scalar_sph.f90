@@ -128,17 +128,8 @@
      &    sph_bc_U%kr_out, sph_bc_U%r_CMB, sph_bc_U%fdm2_fix_dr_CMB,    &
      &    coef_p, p_poisson_mat)
 !
-!$omp parallel do private(jst,jed,j)
-      do ip = 1, np_smp
-        jst = sph_rj%istack_rj_j_smp(ip-1) + 1
-        jed = sph_rj%istack_rj_j_smp(ip  )
-        do j = jst, jed
-          call ludcmp_3band(sph_rj%nidx_rj(1), p_poisson_mat(1,1,j),    &
-     &        i_p_pivot(1,j), ierr, p_poisson_lu(1,1,j),                &
-     &        p_poisson_det(1,j) )
-        end do
-      end do
-!$omp end parallel do
+      call ludcmp_3band_mul_t                                           &
+     &   (np_smp, sph_rj%istack_rj_j_smp, band_p_poisson)
 !
       end subroutine const_radial_mat_4_press_sph
 !
