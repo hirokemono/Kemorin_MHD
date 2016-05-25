@@ -19,18 +19,15 @@
 !
       use m_precision
       use t_spheric_rj_data
+      use t_sph_matrices
 !
       implicit none
 !
-      real(kind = kreal), allocatable :: vs_evo5_mat(:,:,:)
-      real(kind = kreal), allocatable :: vs_evo5_lu(:,:,:)
-      real(kind = kreal), allocatable :: vs_evo5_det(:,:)
-      integer(kind = kint), allocatable :: i_vs_evo5_pivot(:,:)
+!>      Structure of band matrices for poloidal velocity
+      type(band_matrix_type), save :: band5_vp_evo
 !
-      real(kind = kreal), allocatable :: vs_poisson3_mat(:,:,:)
-      real(kind = kreal), allocatable :: vs_poisson3_lu(:,:,:)
-      real(kind = kreal), allocatable :: vs_poisson3_det(:,:)
-      integer(kind = kint), allocatable :: i_vs_poisson3_pivot(:,:)
+!>      Structure of band matrices for poloidal velocity
+      type(band_matrix_type), save :: band3_vp_poisson
 !
 ! -----------------------------------------------------------------------
 !
@@ -47,38 +44,10 @@
       integer(kind = kint) :: nri, jmax
 !
 !
-      nri =  sph_rj%nidx_rj(1)
-      jmax = sph_rj%nidx_rj(2)
-!
-      allocate( vs_poisson3_mat(3,nri,jmax) )
-      allocate( vs_poisson3_lu(5,nri,jmax) )
-      allocate( vs_poisson3_det(nri,jmax) )
-      allocate( i_vs_poisson3_pivot(nri,jmax) )
-!
-      allocate( vs_evo5_mat(7,nri,jmax) )
-      allocate( vs_evo5_lu(9,nri,jmax) )
-      allocate( vs_evo5_det(nri,jmax) )
-      allocate( i_vs_evo5_pivot(nri,jmax) )
-!
-      vs_evo5_mat =   0.0d0
-      vs_evo5_lu =    0.0d0
-      vs_evo5_det =   0.0d0
-      i_vs_evo5_pivot =   0
-!
-      vs_poisson3_mat =   0.0d0
-      vs_poisson3_lu =    0.0d0
-      vs_poisson3_det =   0.0d0
-      i_vs_poisson3_pivot =   0
-!
-      vs_evo5_mat(3,1:nri,1:jmax) = 1.0d0
-!
-      if(nlayer_ICB .gt. 1) then
-        vs_poisson3_mat(2,1:nlayer_ICB-1,1:jmax) = 1.0d0
-      end if
-!
-      if(nlayer_CMB .lt. nri) then
-        vs_poisson3_mat(2,nlayer_CMB+1:nri,1:jmax) = 1.0d0
-      end if
+      call alloc_band_mat_sph(ithree, sph_rj, band5_vp_evo)
+      call set_unit_on_diag(band5_vp_evo)
+      call alloc_band_mat_sph(ifive, sph_rj, band3_vp_poisson)
+      call set_unit_on_diag(band3_vp_poisson)
 !
       end subroutine allocate_vpol_evo5_mat_sph
 !
@@ -88,11 +57,8 @@
       subroutine deallocate_vpol_evo5_mat_sph
 !
 !
-      deallocate( vs_poisson3_mat, vs_poisson3_lu )
-      deallocate( vs_poisson3_det, i_vs_poisson3_pivot )
-!
-      deallocate( vs_evo5_mat, vs_evo5_lu )
-      deallocate( vs_evo5_det, i_vs_evo5_pivot )
+      call dealloc_band_mat_sph(band5_vp_evo)
+      call dealloc_band_mat_sph(band3_vp_poisson)
 !
       end subroutine deallocate_vpol_evo5_mat_sph
 !
@@ -108,15 +74,10 @@
 !
 !
       write(50+my_rank,'(a)') 'poisson matrix for poloidal velocity'
-      call check_radial_3band_mat                                       &
-     &   (my_rank, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                &
-     &    sph_rj%idx_gl_1d_rj_j, sph_rj%radius_1d_rj_r,                 &
-     &    vs_poisson3_mat)
+      call check_radial_band_mat(my_rank, sph_rj, band3_vp_poisson)
 !
       write(50+my_rank,'(a)') 'crank matrix for poloidal velocity'
-      call check_radial_5band_mat                                       &
-     &   (my_rank, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                &
-     &    sph_rj%idx_gl_1d_rj_j, sph_rj%radius_1d_rj_r, vs_evo5_mat)
+      call check_radial_band_mat(my_rank, sph_rj, band5_vp_evo)
 !
       end subroutine check_vpol_evo5_mat_sph
 !

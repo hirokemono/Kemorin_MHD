@@ -6,9 +6,12 @@
 !>@brief Construct matrix for time evolution of scalar fields
 !!
 !!@verbatim
-!!      subroutine const_radial_mat_press00_sph(sph_rj)
-!!      subroutine const_radial_mat_temp00_sph(sph_rj)
-!!      subroutine const_radial_mat_comp00_sph(sph_rj)
+!!      subroutine const_radial_mat_press00_sph                         &
+!!     &         (sph_rj, n_vect, n_comp, p_poisson_mat)
+!!      subroutine const_radial_mat_temp00_sph                          &
+!!     &         (sph_rj, n_vect, n_comp, temp_evo_mat)
+!!      subroutine const_radial_mat_comp00_sph                          &
+!!     &         (sph_rj, n_vect, n_comp, comp_evo_mat)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!@endverbatim
 !
@@ -31,10 +34,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_press00_sph(sph_rj)
+      subroutine const_radial_mat_press00_sph                           &
+     &         (sph_rj, n_vect, n_comp, p_poisson_mat)
 !
       use m_boundary_params_sph_MHD
-      use m_radial_matrices_sph
       use m_radial_mat_sph_w_center
       use m_physical_property
       use m_coef_fdm_to_center
@@ -42,6 +45,8 @@
       use center_sph_matrices
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      integer(kind= kint), intent(in) :: n_vect, n_comp
+      real(kind = kreal), intent(in) :: p_poisson_mat(3,n_vect,n_comp)
 !
       integer(kind = kint) :: ierr, nri1
       real(kind = kreal) :: coef_p
@@ -49,6 +54,8 @@
 !
       nri1 = sph_rj%nidx_rj(1) + 1
       coef_p = - coef_press
+!
+      call allocate_press00_mat_sph(sph_rj)
 !
       call copy_to_band3_mat_w_center(sph_rj%nidx_rj(1), zero,          &
       &   p_poisson_mat(1,1,sph_rj%idx_rj_degree_zero),                 &
@@ -73,14 +80,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_temp00_sph(sph_rj)
+      subroutine const_radial_mat_temp00_sph                            &
+     &         (sph_rj, n_vect, n_comp, temp_evo_mat)
 !
       use m_boundary_params_sph_MHD
-      use m_radial_matrices_sph
       use m_radial_mat_sph_w_center
       use m_physical_property
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      integer(kind= kint), intent(in) :: n_vect, n_comp
+      real(kind = kreal), intent(in) :: temp_evo_mat(3,n_vect,n_comp)
 !
 !
       call const_radial_mat_scalar00_sph(sph_rj%nidx_rj(1), sph_bc_T,   &
@@ -95,19 +104,21 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_comp00_sph(sph_rj)
+      subroutine const_radial_mat_comp00_sph                            &
+     &         (sph_rj, n_vect, n_comp, comp_evo_mat)
 !
       use m_boundary_params_sph_MHD
-      use m_radial_matrices_sph
       use m_radial_mat_sph_w_center
       use m_physical_property
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      integer(kind= kint), intent(in) :: n_vect, n_comp
+      real(kind = kreal), intent(in) :: comp_evo_mat(3,n_vect,n_comp)
 !
 !
       call const_radial_mat_scalar00_sph(sph_rj%nidx_rj(1), sph_bc_C,   &
      &    coef_imp_c, coef_light, coef_d_light,                         &
-     &    composit_evo_mat(1,1,sph_rj%idx_rj_degree_zero),              &
+     &    comp_evo_mat(1,1,sph_rj%idx_rj_degree_zero),                  &
      &    c00_evo_mat, c00_evo_lu, c00_evo_det, i_c00_pivot)
 !
       if(i_debug .eq. iflag_full_msg)                                   &

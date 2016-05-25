@@ -122,9 +122,7 @@
       call set_bc_magne_sph_crank(ipol%i_magne, sph_rj, rj_fld)
 !
       call solve_magne_sph_crank                                        &
-     &   (sph_rj, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                 &
-     &    bs_evo_lu, bt_evo_lu, i_bs_pivot, i_bt_pivot,                 &
-     &    ipol%i_magne, itor%i_magne,                                   &
+     &   (sph_rj, band_bp_evo, band_bt_evo, ipol%i_magne, itor%i_magne, &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine cal_sol_magne_sph_crank
@@ -148,7 +146,7 @@
 !
       call solve_scalar_sph_crank                                       &
      &   (sph_rj, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                 &
-     &    temp_evo_lu, i_temp_pivot, t00_evo_lu, i_t00_pivot,           &
+     &    band_temp_evo, t00_evo_lu, i_t00_pivot,                       &
      &    ipol%i_temp, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,  &
      &    t00_solution)
 !
@@ -173,7 +171,7 @@
 !
       call solve_scalar_sph_crank                                       &
      &   (sph_rj, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                 &
-     &    composit_evo_lu, i_composit_pivot, c00_evo_lu, i_c00_pivot,   &
+     &    band_temp_evo, c00_evo_lu, i_c00_pivot,                       &
      &    ipol%i_light, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld, &
      &    c00_solution)
 !

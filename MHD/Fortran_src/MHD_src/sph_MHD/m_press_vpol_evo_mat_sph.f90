@@ -8,9 +8,9 @@
 !!        of poloidal velocity and pressure
 !!
 !!@verbatim
-!!      subroutine allocate_press_vpol_mat_sph(sph_rj)
-!!      subroutine deallocate_press_vpol_mat_sph
-!!      subroutine check_velocity_matrices_sph(my_rank, sph_rj)
+!!      subroutine allocate_press_vpol_mat_sph(sph_rj, smat)
+!!      subroutine deallocate_press_vpol_mat_sph(smat)
+!!      subroutine check_velocity_matrices_sph(my_rank, sph_rj, smat)
 !!        type(sph_rj_grid), intent(inout) :: sph_rj
 !!@endverbatim
 !
@@ -19,19 +19,12 @@
 !
       use m_precision
       use t_spheric_rj_data
+      use t_sph_matrices
 !
       implicit none
 !
-!>      7-band matrix for time evlution of poloidal velocity and pressure
-      real(kind = kreal), allocatable :: vsp_evo_mat(:,:,:)
-!>      LU-decompositted matrix for time evlution
-!!      of poloidal velocity and pressure
-      real(kind = kreal), allocatable :: vsp_evo_lu(:,:,:)
-!>      Determinant of time evlution of poloidal velocity and pressure
-      real(kind = kreal), allocatable :: vsp_evo_det(:,:)
-!>      Pivot information
-!!       for time evlution matrix of poloidal velocity and pressure
-      integer(kind = kint), allocatable :: i_vsp_pivot(:,:)
+!>      Structure of band matrices for poloidal velocity
+      type(band_matrix_type), save :: band_vsp_evo
 !
 ! -----------------------------------------------------------------------
 !
@@ -39,63 +32,71 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_press_vpol_mat_sph(sph_rj)
+      subroutine allocate_press_vpol_mat_sph(sph_rj, smat)
 !
-      type(sph_rj_grid), intent(inout) :: sph_rj
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(band_matrix_type), intent(inout) :: smat
 !
       integer(kind = kint) :: nri, jmax
 !
-      nri =  sph_rj%nidx_rj(1)
-      jmax = sph_rj%nidx_rj(2)
+      smat%n_vect =    2*sph_rj%nidx_rj(1)
+      smat%n_comp =      sph_rj%nidx_rj(2)
+      smat%n_band =      iseven
+      smat%n_band_lu = 2*smat%n_band - 1
 !
 !
-      allocate( vsp_evo_mat(7,2*nri,jmax) )
-      allocate( vsp_evo_lu(13,2*nri,jmax) )
-      allocate( vsp_evo_det(2*nri,jmax) )
-      allocate( i_vsp_pivot(2*nri,jmax) )
+      allocate( smat%mat(smat%n_band,smat%n_vect,smat%n_comp) )
+      allocate( smat%lu(smat%n_band_lu ,smat%n_vect,smat%n_comp) )
+      allocate( smat%det(smat%n_vect,smat%n_comp) )
+      allocate( smat%i_pivot(smat%n_vect,smat%n_comp) )
 !
-      vsp_evo_mat =   0.0d0
-      vsp_evo_lu =    0.0d0
-      vsp_evo_det =   0.0d0
-      i_vsp_pivot =   0
+      smat%mat =   0.0d0
+      smat%lu =    0.0d0
+      smat%det =   0.0d0
+      smat%i_pivot =   0
 !
-      vsp_evo_mat(4,1:2*nri,1:jmax) = 1.0d0
+      smat%mat(4,1:2*nri,1:jmax) = 1.0d0
 !
       end subroutine allocate_press_vpol_mat_sph
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine deallocate_press_vpol_mat_sph
+      subroutine deallocate_press_vpol_mat_sph(smat)
+!
+      type(band_matrix_type), intent(inout) :: smat
 !
 !
-      deallocate( vsp_evo_mat, vsp_evo_lu )
-      deallocate( vsp_evo_det, i_vsp_pivot )
+      call dealloc_band_mat_sph(smat)
 !
       end subroutine deallocate_press_vpol_mat_sph
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_velocity_matrices_sph(my_rank, sph_rj)
+      subroutine check_velocity_matrices_sph(my_rank, sph_rj, smat)
 !
       use m_radial_matrices_sph
       use check_sph_radial_mat
 !
       integer(kind = kint), intent(in) :: my_rank
-      type(sph_rj_grid), intent(inout) :: sph_rj
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(band_matrix_type), intent(in) :: smat
+!
+      real(kind = kreal) :: rr(2*sph_rj%nidx_rj(1))
+      integer(kind = kint) :: k
 !
 !
-      write(50+my_rank,'(a)') 'evolution matrix for poloidal velocity'
-      call check_radial_7band_mat                                       &
-     &   (my_rank, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                &
-     &    sph_rj%idx_gl_1d_rj_j, sph_rj%radius_1d_rj_r, vsp_evo_mat)
+      do k = 1, sph_rj%nidx_rj(1)
+        rr(k) = sph_rj%radius_1d_rj_r(k)
+        rr(sph_rj%nidx_rj(1)+k) = sph_rj%radius_1d_rj_r(k)
+      end do
+!
+      call check_radial_7band_mat(my_rank, (2*sph_rj%nidx_rj(1)),       &
+     &    sph_rj%nidx_rj(2), sph_rj%idx_gl_1d_rj_j, rr, smat%mat)
 !
       write(50+my_rank,'(a)') 'evolution matrix for toroidal velocity'
-      call check_radial_3band_mat                                       &
-     &   (my_rank, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                &
-     &    sph_rj%idx_gl_1d_rj_j, sph_rj%radius_1d_rj_r,                 &
-     &    band_vt_evo%mat)
+      call check_radial_band_mat(my_rank, sph_rj, band_vt_evo)
 !
       end subroutine check_velocity_matrices_sph
 !

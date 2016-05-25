@@ -16,9 +16,9 @@
 !!      subroutine solve_pressure_by_div_v(sph_rj, band_p_poisson,      &
 !!     &          is_press, n_point, ntot_phys_rj, d_rj)
 !!
-!!      subroutine solve_magne_sph_crank(sph_rj, nri, jmax,             &
-!!     &          bs_evo_lu, bt_evo_lu, i_bs_pivot, i_bt_pivot,         &
-!!     &          is_magne, it_magne, n_point, ntot_phys_rj, d_rj)
+!!      subroutine solve_magne_sph_crank                                &
+!!     &         (sph_rj, band_bp_evo, band_bt_evo, is_magne, it_magne, &
+!!     &          n_point, ntot_phys_rj, d_rj)
 !!        Input address:    is_magne, it_magne
 !!        Solution address: is_magne, it_magne
 !!
@@ -109,34 +109,31 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine solve_magne_sph_crank(sph_rj, nri, jmax,               &
-     &          bs_evo_lu, bt_evo_lu, i_bs_pivot, i_bt_pivot,           &
-     &          is_magne, it_magne, n_point, ntot_phys_rj, d_rj)
+      subroutine solve_magne_sph_crank                                  &
+     &         (sph_rj, band_bp_evo, band_bt_evo, is_magne, it_magne,   &
+     &          n_point, ntot_phys_rj, d_rj)
 !
       type(sph_rj_grid), intent(in) :: sph_rj
-      integer(kind = kint), intent(in) :: nri, jmax
-      real(kind = kreal), intent(in) :: bs_evo_lu(5,nri,jmax)
-      real(kind = kreal), intent(in) :: bt_evo_lu(5,nri,jmax)
-      integer(kind = kint), intent(in) :: i_bs_pivot(nri,jmax)
-      integer(kind = kint), intent(in) :: i_bt_pivot(nri,jmax)
+      type(band_matrix_type), intent(in) :: band_bp_evo
+      type(band_matrix_type), intent(in) :: band_bt_evo
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       integer(kind = kint), intent(in) :: is_magne, it_magne
 !
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
 !
-      call lubksb_3band_mul(np_smp, sph_rj%istack_rj_j_smp,             &
-     &    jmax, nri, bs_evo_lu, i_bs_pivot, d_rj(1,is_magne) )
+      call lubksb_3band_mul_t(np_smp, sph_rj%istack_rj_j_smp,           &
+     &    band_bp_evo, d_rj(1,is_magne) )
 !
-      call lubksb_3band_mul(np_smp, sph_rj%istack_rj_j_smp,             &
-     &    jmax, nri, bt_evo_lu, i_bt_pivot, d_rj(1,it_magne) )
+      call lubksb_3band_mul_t(np_smp, sph_rj%istack_rj_j_smp,           &
+     &    band_bt_evo, d_rj(1,it_magne) )
 !
       end subroutine solve_magne_sph_crank
 !
 ! -----------------------------------------------------------------------
 !
       subroutine solve_scalar_sph_crank(sph_rj, nri, jmax,              &
-     &          evo_lu, i_pivot, s00_evo_lu, i_s00_pivot, is_field,     &
+     &          band_s_evo, s00_evo_lu, i_s00_pivot, is_field,          &
      &          n_point, ntot_phys_rj, d_rj, sol_00)
 !
       use m_t_int_parameter
@@ -144,9 +141,8 @@
       use lubksb_357band
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(band_matrix_type), intent(in) :: band_s_evo
       integer(kind = kint), intent(in) :: nri, jmax
-      real(kind = kreal), intent(in) :: evo_lu(5,nri,jmax)
-      integer(kind = kint), intent(in) :: i_pivot(nri,jmax)
       real(kind = kreal), intent(in) :: s00_evo_lu(5,0:nri)
       integer(kind = kint), intent(in) :: i_s00_pivot(0:nri)
 !
@@ -167,11 +163,11 @@
 !      if(j.gt.0) then
 !        write(*,*) 'matrix'
 !        call check_single_radial_3band_mat(my_rank, nri,               &
-!     &      sph_rj%radius_1d_rj_r, evo_mat(1,1,j))
+!     &      sph_rj%radius_1d_rj_r, band_s_evo%mat(1,1,j))
 !      end if
 !
-      call lubksb_3band_mul(np_smp, sph_rj%istack_rj_j_smp,             &
-     &    jmax, nri, evo_lu, i_pivot, d_rj(1,is_field) )
+      call lubksb_3band_mul_t(np_smp, sph_rj%istack_rj_j_smp,           &
+     &    band_s_evo, d_rj(1,is_field))
 !
 !       write(*,*) 'solution'
 !       call check_temperature                                          &

@@ -9,16 +9,8 @@
 !!@verbatim
 !!      subroutine allocate_temp_mat_sph(sph_rj)
 !!      subroutine allocate_velo_mat_sph(sph_rj)
-!!      subroutine allocate_press_mat_sph(sph_rj)
 !!      subroutine allocate_magne_mat_sph(sph_rj)
-!!      subroutine allocate_composit_mat_sph(sph_rj)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
-!!
-!!      subroutine deallocate_temp_mat_sph
-!!      subroutine deallocate_velo_mat_sph
-!!      subroutine deallocate_press_mat_sph
-!!      subroutine deallocate_magne_mat_sph
-!!      subroutine deallocate_composit_mat_sph
 !!
 !!      subroutine check_vorticity_matrices_sph(my_rank, sph_rj)
 !!      subroutine check_press_matrices_sph(my_rank, sph_rj)
@@ -42,288 +34,34 @@
 !>      Structure of band matrices for toroidal velocity
       type(band_matrix_type), save :: band_vt_evo
 !
-!>      Structure of band matrices for toroidal velocity
+!>      Structure of band matrices for toroidal vorticity
       type(band_matrix_type), save :: band_wt_evo
 !
-!>      Structure of band matrices for toroidal velocity
+!>      Structure of band matrices for poloidal velocity poisson
+      type(band_matrix_type), save :: band_vs_poisson
+!
+!
+!>      Structure of band matrices for pressure poisson
       type(band_matrix_type), save :: band_p_poisson
-!band_p_poisson%det
-!
-!>     Band matrix for Poisson equation of pressure
-      real(kind = kreal), allocatable :: p_poisson_mat(:,:,:)
-!>     LU decompositted matrix for Poisson equation of pressure
-      real(kind = kreal), allocatable :: p_poisson_lu(:,:,:)
-!>     Source of detarminant for Poisson equation of pressure
-!      real(kind = kreal), allocatable :: p_poisson_det(:,:)
-!>     Pivot table for Poisson equation of pressure
-!      integer(kind = kint), allocatable :: i_p_pivot(:,:)
-!
-!>     Band matrix for Poisson equation of toroidal vorticity
-      real(kind = kreal), allocatable :: vs_poisson_mat(:,:,:)
-!>     LU decompositted matrix for Poisson equation of toroidal vorticity
-      real(kind = kreal), allocatable :: vs_poisson_lu(:,:,:)
-!>     Source of detarminant for Poisson equation of toroidal vorticity
-      real(kind = kreal), allocatable :: vs_poisson_det(:,:)
-!>     Pivot table for Poisson equation of toroidal vorticity
-      integer(kind = kint), allocatable :: i_vs_pivot(:,:)
 !
 !
-!>     Band matrix for time evolution of poloidal magnetic field
-      real(kind = kreal), allocatable :: bs_evo_mat(:,:,:)
-!>     LU decompositted matrix for time evolution
-!!     of poloidal magnetic field
-      real(kind = kreal), allocatable :: bs_evo_lu(:,:,:)
-!>     Source of detarminant for time evolution
-!!     of poloidal magnetic field
-      real(kind = kreal), allocatable :: bs_evo_det(:,:)
-!>     Pivot table for time evolution of poloidal vorticity
-      integer(kind = kint), allocatable :: i_bs_pivot(:,:)
+!>      Structure of band matrices for poloidal magnetic field
+      type(band_matrix_type), save :: band_bp_evo
 !
-!>     Band matrix for time evolution of toroidal magnetic field
-      real(kind = kreal), allocatable :: bt_evo_mat(:,:,:)
-!>     LU decompositted matrix for time evolution
-!!     of toroidal magnetic field
-      real(kind = kreal), allocatable :: bt_evo_lu(:,:,:)
-!>     Source of detarminant for time evolution
-!!     of toroidal magnetic field
-      real(kind = kreal), allocatable :: bt_evo_det(:,:)
-!>     Pivot table for time evolution of toroidal vorticity
-      integer(kind = kint), allocatable :: i_bt_pivot(:,:)
+!>      Structure of band matrices for toroidal magnetic field
+      type(band_matrix_type), save :: band_bt_evo
 !
 !
-!>     Band matrix for time evolution of temperature
-      real(kind = kreal), allocatable :: temp_evo_mat(:,:,:)
-!>     LU decompositted matrix for time evolution of temperature
-      real(kind = kreal), allocatable :: temp_evo_lu(:,:,:)
-!>     Source of detarminant for time evolution of temperature
-      real(kind = kreal), allocatable :: temp_evo_det(:,:)
-!>     Pivot table for time evolution of temperature
-      integer(kind = kint), allocatable :: i_temp_pivot(:,:)
+!>      Structure of band matrices for temperature
+      type(band_matrix_type), save :: band_temp_evo
 !
-!
-!>     Band matrix for time evolution of composition
-      real(kind = kreal), allocatable :: composit_evo_mat(:,:,:)
-!>     LU decompositted matrix for time evolution of composition
-      real(kind = kreal), allocatable :: composit_evo_lu(:,:,:)
-!>     Source of detarminant for time evolution of composition
-      real(kind = kreal), allocatable :: composit_evo_det(:,:)
-!>     Pivot table for time evolution of composition
-      integer(kind = kint), allocatable :: i_composit_pivot(:,:)
+!>      Structure of band matrices for composition
+      type(band_matrix_type), save :: band_comp_evo
 !
 ! -----------------------------------------------------------------------
 !
       contains
 !
-! -----------------------------------------------------------------------
-!
-      subroutine allocate_temp_mat_sph(sph_rj)
-!
-      type(sph_rj_grid), intent(in) :: sph_rj
-!
-      integer(kind = kint) :: nri, jmax
-!
-      nri =  sph_rj%nidx_rj(1)
-      jmax = sph_rj%nidx_rj(2)
-!
-      allocate( temp_evo_mat(3,nri,jmax) )
-      allocate( temp_evo_lu(5,nri,jmax) )
-      allocate( temp_evo_det(nri,jmax) )
-      allocate( i_temp_pivot(nri,jmax) )
-!
-      temp_evo_mat =  0.0d0
-      temp_evo_lu =   0.0d0
-      temp_evo_det =   0.0d0
-      i_temp_pivot =   0
-      temp_evo_mat(2,1:nri,1:jmax) = 1.0d0
-!
-      end subroutine allocate_temp_mat_sph
-!
-! -----------------------------------------------------------------------
-!
-      subroutine allocate_velo_mat_sph(sph_rj)
-!
-      type(sph_rj_grid), intent(in) :: sph_rj
-!
-      integer(kind = kint) :: nri, jmax
-!
-      nri = sph_rj%nidx_rj(1)
-      jmax = sph_rj%nidx_rj(2)
-!
-!
-      allocate( vs_poisson_mat(3,nri,jmax) )
-      allocate( vs_poisson_lu(5,nri,jmax) )
-      allocate( vs_poisson_det(nri,jmax) )
-      allocate( i_vs_pivot(nri,jmax) )
-!
-      call alloc_band_mat_sph                                           &
-     &   (ifive, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), band_vp_evo)
-      call set_unit_on_diag(band_vp_evo)
-!
-      call alloc_band_mat_sph                                           &
-     &   (ithree, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), band_vt_evo)
-      call set_unit_on_diag(band_vt_evo)
-!
-      call alloc_band_mat_sph                                           &
-     &   (ithree, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), band_wt_evo)
-      call set_unit_on_diag(band_wt_evo)
-!
-      band_vp_evo%mat =   0.0d0
-      band_vp_evo%lu =    0.0d0
-      band_vp_evo%det =   0.0d0
-      band_vp_evo%i_pivot =   0
-!
-      vs_poisson_mat =   0.0d0
-      vs_poisson_lu =    0.0d0
-      vs_poisson_det =   0.0d0
-      i_vs_pivot =   0
-!
-      end subroutine allocate_velo_mat_sph
-!
-! -----------------------------------------------------------------------
-!
-      subroutine allocate_press_mat_sph(sph_rj)
-!
-      type(sph_rj_grid), intent(in) :: sph_rj
-!
-      integer(kind = kint) :: nri, jmax
-!
-      nri = sph_rj%nidx_rj(1)
-      jmax = sph_rj%nidx_rj(2)
-!
-!
-      allocate( p_poisson_mat(3,nri,jmax) )
-      allocate( p_poisson_lu(5,nri,jmax) )
-      allocate( band_p_poisson%det(nri,jmax) )
-      allocate( band_p_poisson%i_pivot(nri,jmax) )
-!
-      p_poisson_mat = 0.0d0
-      p_poisson_lu =  0.0d0
-      band_p_poisson%det = 0.0d0
-      band_p_poisson%i_pivot =     0
-!
-      end subroutine allocate_press_mat_sph
-!
-! -----------------------------------------------------------------------
-!
-      subroutine allocate_magne_mat_sph(sph_rj)
-!
-      type(sph_rj_grid), intent(in) :: sph_rj
-!
-      integer(kind = kint) :: nri, jmax
-!
-!
-      nri = sph_rj%nidx_rj(1)
-      jmax = sph_rj%nidx_rj(2)
-!
-      allocate( bs_evo_mat(3,nri,jmax) )
-      allocate( bs_evo_lu(5,nri,jmax) )
-      allocate( bs_evo_det(nri,jmax) )
-      allocate( i_bs_pivot(nri,jmax) )
-!
-      allocate( bt_evo_mat(3,nri,jmax) )
-      allocate( bt_evo_lu(5,nri,jmax) )
-      allocate( bt_evo_det(nri,jmax) )
-      allocate( i_bt_pivot(nri,jmax) )
-!
-      bs_evo_mat =  0.0d0
-      bs_evo_lu =   0.0d0
-      bs_evo_det =  0.0d0
-      i_bs_pivot =  0
-!
-      bt_evo_mat =  0.0d0
-      bt_evo_lu =   0.0d0
-      bt_evo_det =  0.0d0
-      i_bt_pivot =  0
-!
-      bs_evo_mat(2,1:nri,1:jmax) = 1.0d0
-      bt_evo_mat(2,1:nri,1:jmax) = 1.0d0
-!
-      end subroutine allocate_magne_mat_sph
-!
-! -----------------------------------------------------------------------
-!
-      subroutine allocate_composit_mat_sph(sph_rj)
-!
-      type(sph_rj_grid), intent(in) :: sph_rj
-!
-      integer(kind = kint) :: nri, jmax
-!
-      nri =  sph_rj%nidx_rj(1)
-      jmax = sph_rj%nidx_rj(2)
-!
-      allocate( composit_evo_mat(3,nri,jmax) )
-      allocate( composit_evo_lu(5,nri,jmax) )
-      allocate( composit_evo_det(nri,jmax) )
-      allocate( i_composit_pivot(nri,jmax) )
-!
-      composit_evo_mat =  0.0d0
-      composit_evo_lu =   0.0d0
-      composit_evo_det =  0.0d0
-      i_composit_pivot =      0
-      composit_evo_mat(2,1:nri,1:jmax) = 1.0d0
-!
-      end subroutine allocate_composit_mat_sph
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_temp_mat_sph
-!
-!
-      deallocate( temp_evo_mat, temp_evo_lu )
-      deallocate( temp_evo_det, i_temp_pivot)
-!
-      end subroutine deallocate_temp_mat_sph
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_velo_mat_sph
-!
-!
-      deallocate( vs_poisson_mat, vs_poisson_lu )
-      deallocate( vs_poisson_det, i_vs_pivot )
-!
-!
-      call dealloc_band_mat_sph(band_vp_evo)
-      call dealloc_band_mat_sph(band_vt_evo)
-      call dealloc_band_mat_sph(band_wt_evo)
-!
-      end subroutine deallocate_velo_mat_sph
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_press_mat_sph
-!
-!
-      deallocate( p_poisson_mat, p_poisson_lu )
-      deallocate( band_p_poisson%det, band_p_poisson%i_pivot )
-!
-      end subroutine deallocate_press_mat_sph
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_magne_mat_sph
-!
-!
-      deallocate( bs_evo_mat, bs_evo_lu )
-      deallocate( bs_evo_det, i_bs_pivot )
-!
-      deallocate( bt_evo_mat, bt_evo_lu )
-      deallocate( bt_evo_det, i_bt_pivot )
-!
-      end subroutine deallocate_magne_mat_sph
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_composit_mat_sph
-!
-!
-      deallocate( composit_evo_mat, composit_evo_lu )
-      deallocate( composit_evo_det, i_composit_pivot )
-!
-      end subroutine deallocate_composit_mat_sph
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine check_vorticity_matrices_sph(my_rank, sph_rj)
@@ -335,22 +73,13 @@
 !
 !
       write(50+my_rank,'(a)') 'evolution matrix for toroidal velocity'
-      call check_radial_3band_mat                                       &
-     &   (my_rank, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                &
-     &    sph_rj%idx_gl_1d_rj_j, sph_rj%radius_1d_rj_r,                 &
-     &    band_vt_evo%mat)
+      call check_radial_band_mat(my_rank, sph_rj, band_vt_evo)
 !
       write(50+my_rank,'(a)') 'evolution matrix for toroidal vorticity'
-      call check_radial_3band_mat                                       &
-     &   (my_rank, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                &
-     &    sph_rj%idx_gl_1d_rj_j, sph_rj%radius_1d_rj_r,                 &
-     &    band_wt_evo%mat)
+      call check_radial_band_mat(my_rank, sph_rj, band_wt_evo)
 !
       write(50+my_rank,'(a)') 'evolution matrix for poloidal velocity'
-      call check_radial_5band_mat                                       &
-     &   (my_rank, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                &
-     &    sph_rj%idx_gl_1d_rj_j, sph_rj%radius_1d_rj_r,                 &
-     &     band_vp_evo%mat)
+      call check_radial_band_mat(my_rank, sph_rj, band_vp_evo)
 !
       end subroutine check_vorticity_matrices_sph
 !
@@ -365,9 +94,7 @@
 !
 !
       write(50+my_rank,'(a)') 'poisson matrix for pressure'
-      call check_radial_3band_mat                                       &
-     &   (my_rank, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                &
-     &    sph_rj%idx_gl_1d_rj_j, sph_rj%radius_1d_rj_r, p_poisson_mat)
+      call check_radial_band_mat(my_rank, sph_rj, band_p_poisson)
 !
       end subroutine check_press_matrices_sph
 !
@@ -382,14 +109,10 @@
 !
 !
       write(50+my_rank,'(a)') 'evolution matrix for poloidal magne'
-      call check_radial_3band_mat                                       &
-     &   (my_rank, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                &
-     &    sph_rj%idx_gl_1d_rj_j, sph_rj%radius_1d_rj_r, bs_evo_mat)
+      call check_radial_band_mat(my_rank, sph_rj, band_bp_evo)
 !
       write(50+my_rank,'(a)') 'evolution matrix for toroidal magne'
-      call check_radial_3band_mat                                       &
-     &   (my_rank, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                &
-     &    sph_rj%idx_gl_1d_rj_j, sph_rj%radius_1d_rj_r, bt_evo_mat)
+      call check_radial_band_mat(my_rank, sph_rj, band_bt_evo)
 !
       end subroutine check_magne_matrices_sph
 !
@@ -404,9 +127,7 @@
 !
 !
       write(50+my_rank,'(a)') 'evolution matrix for temperature'
-      call check_radial_3band_mat                                       &
-     &   (my_rank, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                &
-     &    sph_rj%idx_gl_1d_rj_j, sph_rj%radius_1d_rj_r, temp_evo_mat)
+      call check_radial_band_mat(my_rank, sph_rj, band_temp_evo)
 !
       end subroutine check_temp_matrices_sph
 !
@@ -421,10 +142,7 @@
 !
 !
       write(50+my_rank,'(a)') 'evolution matrix for composition'
-      call check_radial_3band_mat                                       &
-     &   (my_rank, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                &
-     &    sph_rj%idx_gl_1d_rj_j, sph_rj%radius_1d_rj_r,                 &
-     &    composit_evo_mat)
+      call check_radial_band_mat(my_rank, sph_rj, band_temp_evo)
 !
       end subroutine check_composit_matrix_sph
 !

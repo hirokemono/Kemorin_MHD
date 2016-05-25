@@ -7,9 +7,12 @@
 !>@brief structures of radial matrices
 !!
 !!@verbatim
-!!      subroutine alloc_band_mat_sph(nband, nri, jmax, smat)
+!!      subroutine alloc_band_mat_sph(nband, sph_rj, smat)
 !!      subroutine set_unit_on_diag(smat)
 !!      subroutine dealloc_band_mat_sph(smat)
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(band_matrix_type), intent(inout) :: smat
+!!      subroutine check_radial_band_mat(my_rank, sph_rj, smat)
 !!@endverbatim
 !
       module t_sph_matrices
@@ -55,14 +58,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_band_mat_sph(nband, nri, jmax, smat)
+      subroutine alloc_band_mat_sph(nband, sph_rj, smat)
 !
-      integer(kind = kint), intent(in) :: nband, nri, jmax
+      use t_spheric_rj_data
+!
+      integer(kind = kint), intent(in) :: nband
+      type(sph_rj_grid), intent(in) ::  sph_rj
       type(band_matrix_type), intent(inout) :: smat
 !
 !
-      smat%n_vect =      nri
-      smat%n_comp =      jmax
+      smat%n_vect =      sph_rj%nidx_rj(1)
+      smat%n_comp =      sph_rj%nidx_rj(2)
       smat%n_band =      nband
       smat%n_band_lu = 2*nband - 1
 !
@@ -211,5 +217,34 @@
       end subroutine lubksb_7band_mul_t
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine check_radial_band_mat(my_rank, sph_rj, smat)
+!
+      use t_spheric_rj_data
+      use check_sph_radial_mat
+!
+      integer(kind = kint), intent(in) :: my_rank
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(band_matrix_type), intent(in) :: smat
+!
+!
+      if(smat%n_band .eq. ithree) then
+        call check_radial_3band_mat(my_rank, smat%n_vect, smat%n_comp,  &
+     &      sph_rj%idx_gl_1d_rj_j, sph_rj%radius_1d_rj_r, smat%mat)
+!
+      else if(smat%n_band .eq. ifive) then
+        call check_radial_5band_mat(my_rank, smat%n_vect, smat%n_comp,  &
+     &      sph_rj%idx_gl_1d_rj_j, sph_rj%radius_1d_rj_r, smat%mat)
+!
+      else if(smat%n_band .eq. iseven) then
+        call check_radial_7band_mat(my_rank, smat%n_vect, smat%n_comp,  &
+     &      sph_rj%idx_gl_1d_rj_j, sph_rj%radius_1d_rj_r, smat%mat)
+      end if
+!
+!
+      end subroutine check_radial_band_mat
+!
+! -----------------------------------------------------------------------
 !
       end module t_sph_matrices
