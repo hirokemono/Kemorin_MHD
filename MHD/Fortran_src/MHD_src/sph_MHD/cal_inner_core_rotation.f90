@@ -22,7 +22,7 @@
 !!      subroutine int_icore_toroidal_lorentz(kr_in, sph_rj, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_data), intent(inout) :: rj_fld
-!!        type(band_matrix_type), intent(inout) :: band_vt_evo
+!!        type(band_matrices_type), intent(inout) :: band_vt_evo
 !!@endverbatim
 !!
 !!@n @param coef_d  Coefficient for diffusion term
@@ -85,7 +85,7 @@
       integer(kind = kint), intent(in) :: kr_in
       real(kind = kreal), intent(in) :: fdm1_fix_fld_ICB(0:1,2)
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(band_matrix_type), intent(inout) :: band_vt_evo
+      type(band_matrices_type), intent(inout) :: band_vt_evo
 !
 !
       call set_rotate_icb_vt_sph_mat(sph_rj%idx_rj_degree_one(-1),      &

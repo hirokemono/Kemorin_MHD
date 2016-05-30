@@ -22,8 +22,8 @@
 !!        Input address:    is_magne, it_magne
 !!        Solution address: is_magne, it_magne
 !!
-!!      subroutine solve_scalar_sph_crank(sph_rj, nri, jmax,            &
-!!     &          evo_lu, i_pivot, s00_evo_lu, i_s00_pivot, is_field,   &
+!!      subroutine solve_scalar_sph_crank                               &
+!!     &         (sph_rj, band_s_evo, band_s00_evo, is_field,           &
 !!     &          n_point, ntot_phys_rj, d_rj, sol_00)
 !!        Input address:    is_field
 !!        Solution address: is_field
@@ -63,8 +63,8 @@
       type(sph_rj_grid), intent(in) :: sph_rj
       integer(kind = kint), intent(in) ::  n_point, ntot_phys_rj
       integer(kind = kint), intent(in) :: is_velo, it_velo
-      type(band_matrix_type), intent(in) :: band_vp_evo
-      type(band_matrix_type), intent(in) :: band_vt_evo
+      type(band_matrices_type), intent(in) :: band_vp_evo
+      type(band_matrices_type), intent(in) :: band_vt_evo
 !
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
@@ -96,7 +96,7 @@
      &          is_press, n_point, ntot_phys_rj, d_rj)
 !
       type(sph_rj_grid), intent(in) :: sph_rj
-      type(band_matrix_type), intent(in) :: band_p_poisson
+      type(band_matrices_type), intent(in) :: band_p_poisson
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       integer(kind = kint), intent(in) :: is_press
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
@@ -114,8 +114,8 @@
      &          n_point, ntot_phys_rj, d_rj)
 !
       type(sph_rj_grid), intent(in) :: sph_rj
-      type(band_matrix_type), intent(in) :: band_bp_evo
-      type(band_matrix_type), intent(in) :: band_bt_evo
+      type(band_matrices_type), intent(in) :: band_bp_evo
+      type(band_matrices_type), intent(in) :: band_bt_evo
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       integer(kind = kint), intent(in) :: is_magne, it_magne
 !
@@ -132,29 +132,28 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine solve_scalar_sph_crank(sph_rj, nri, jmax,              &
-     &          band_s_evo, s00_evo_lu, i_s00_pivot, is_field,          &
+      subroutine solve_scalar_sph_crank                                 &
+     &         (sph_rj, band_s_evo, band_s00_evo, is_field,             &
      &          n_point, ntot_phys_rj, d_rj, sol_00)
 !
       use m_t_int_parameter
+      use t_sph_center_matrix
       use cal_sph_exp_center
-      use lubksb_357band
 !
       type(sph_rj_grid), intent(in) :: sph_rj
-      type(band_matrix_type), intent(in) :: band_s_evo
-      integer(kind = kint), intent(in) :: nri, jmax
-      real(kind = kreal), intent(in) :: s00_evo_lu(5,0:nri)
-      integer(kind = kint), intent(in) :: i_s00_pivot(0:nri)
+      type(band_matrices_type), intent(in) :: band_s_evo
+      type(band_matrix_type), intent(in) :: band_s00_evo
 !
       integer(kind = kint), intent(in) :: is_field
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
 !
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
-      real(kind = kreal), intent(inout) :: sol_00(0:nri)
+      real(kind = kreal), intent(inout) :: sol_00(0:sph_rj%nidx_rj(1))
 !
 !
       if(sph_rj%inod_rj_center .gt. 0) then
-        call copy_degree0_comps_to_sol(nri, jmax,                       &
+        call copy_degree0_comps_to_sol                                  &
+     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
      &      sph_rj%inod_rj_center, sph_rj%idx_rj_degree_zero,           &
      &      is_field, n_point, ntot_phys_rj, d_rj, sol_00)
       end if
@@ -162,7 +161,7 @@
 !      j = find_local_sph_address(sph_rj, 30,-23)
 !      if(j.gt.0) then
 !        write(*,*) 'matrix'
-!        call check_single_radial_3band_mat(my_rank, nri,               &
+!        call check_single_radial_3band_mat(my_rank, sph_rj%nidx_rj(1), &
 !     &      sph_rj%radius_1d_rj_r, band_s_evo%mat(1,1,j))
 !      end if
 !
@@ -178,8 +177,9 @@
 !
 !   Solve l=m=0 including center
       if(sph_rj%inod_rj_center .eq. 0) return
-      call lubksb_3band(nri+1, s00_evo_lu, i_s00_pivot, sol_00)
-      call copy_degree0_comps_from_sol(nri, jmax,                       &
+      call lubksb_3band_ctr(band_s00_evo, sol_00)
+      call copy_degree0_comps_from_sol                                  &
+     &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                         &
      &    sph_rj%inod_rj_center, sph_rj%idx_rj_degree_zero, sol_00,     &
      &    is_field, n_point, ntot_phys_rj, d_rj)
 !

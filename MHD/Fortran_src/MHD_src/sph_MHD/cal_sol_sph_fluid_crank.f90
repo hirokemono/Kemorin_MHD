@@ -7,22 +7,27 @@
 !>@brief  Update each field for MHD dynamo model
 !!
 !!@verbatim
-!!      subroutine cal_sol_velo_by_vort_sph_crank(sph_rj, rj_fld)
+!!      subroutine cal_sol_velo_by_vort_sph_crank                       &
+!!     &         (sph_rj, band_vp_evo, band_vt_evo, rj_fld)
 !!        Input address:    ipol%i_vort, itor%i_vort
 !!        Solution address: ipol%i_velo, itor%i_velo
 !!
-!!      subroutine cal_sol_pressure_by_div_v(sph_rj, rj_fld)
+!!      subroutine cal_sol_pressure_by_div_v                            &
+!!     &         (sph_rj, band_p_poisson, rj_fld)
 !!        Solution address: ipol%i_press
 !!
 !!
-!!      subroutine cal_sol_magne_sph_crank(sph_rj, rj_fld)
+!!      subroutine cal_sol_magne_sph_crank                              &
+!!     &         (sph_rj, band_bp_evo, band_bt_evo, rj_fld)
 !!        Input address:    ipol%i_magne, itor%i_magne
 !!        Solution address: ipol%i_magne, itor%i_magne
 !!
-!!      subroutine cal_sol_temperature_sph_crank(sph_rj, rj_fld)
+!!      subroutine cal_sol_temperature_sph_crank                        &
+!!     &         (sph_rj, band_temp_evo, rj_fld)
 !!        Input address:    ipol%i_temp
 !!        Solution address: ipol%i_temp
-!!      subroutine cal_sol_composition_sph_crank(sph_rj, rj_fld)
+!!      subroutine cal_sol_composition_sph_crank                        &
+!!     &         (sph_rj, band_comp_evo, rj_fld)
 !!        Input address:    ipol%i_light
 !!        Solution address: ipol%i_light
 !!@endverbatim
@@ -37,10 +42,10 @@
       use calypso_mpi
       use m_machine_parameter
       use m_sph_phys_address
-      use m_radial_matrices_sph
 !
       use t_spheric_rj_data
       use t_phys_data
+      use t_sph_matrices
       use t_boundary_params_sph_MHD
 !
       use set_reference_sph_mhd
@@ -56,7 +61,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sol_velo_by_vort_sph_crank(sph_rj, rj_fld)
+      subroutine cal_sol_velo_by_vort_sph_crank                         &
+     &         (sph_rj, band_vp_evo, band_vt_evo, rj_fld)
 !
       use m_boundary_params_sph_MHD
       use m_coef_fdm_free_ICB
@@ -65,6 +71,8 @@
       use solve_sph_fluid_crank
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(band_matrices_type), intent(in) :: band_vp_evo, band_vt_evo
+!
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -87,13 +95,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sol_pressure_by_div_v(sph_rj, rj_fld)
+      subroutine cal_sol_pressure_by_div_v                              &
+     &         (sph_rj, band_p_poisson, rj_fld)
 !
       use m_boundary_params_sph_MHD
       use set_reference_sph_mhd
       use solve_sph_fluid_crank
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(band_matrices_type), intent(in) :: band_p_poisson
+!
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -110,12 +121,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sol_magne_sph_crank(sph_rj, rj_fld)
+      subroutine cal_sol_magne_sph_crank                                &
+     &         (sph_rj, band_bp_evo, band_bt_evo, rj_fld)
 !
       use m_boundary_params_sph_MHD
       use solve_sph_fluid_crank
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(band_matrices_type), intent(in) :: band_bp_evo, band_bt_evo
+!
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -129,7 +143,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sol_temperature_sph_crank(sph_rj, rj_fld)
+      subroutine cal_sol_temperature_sph_crank                          &
+     &         (sph_rj, band_temp_evo, rj_fld)
 !
       use m_t_int_parameter
       use m_physical_property
@@ -138,6 +153,8 @@
       use solve_sph_fluid_crank
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(band_matrices_type), intent(in) :: band_temp_evo
+!
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -145,16 +162,16 @@
      &    coef_temp, coef_d_temp, coef_imp_t, ipol%i_temp, rj_fld)
 !
       call solve_scalar_sph_crank                                       &
-     &   (sph_rj, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                 &
-     &    band_temp_evo, t00_evo_lu, i_t00_pivot,                       &
+     &   (sph_rj, band_temp_evo, band_temp00_evo,                       &
      &    ipol%i_temp, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,  &
-     &    t00_solution)
+     &    x00_w_center)
 !
       end subroutine cal_sol_temperature_sph_crank
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sol_composition_sph_crank(sph_rj, rj_fld)
+      subroutine cal_sol_composition_sph_crank                          &
+     &         (sph_rj, band_comp_evo, rj_fld)
 !
       use m_t_int_parameter
       use m_physical_property
@@ -163,6 +180,8 @@
       use solve_sph_fluid_crank
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(band_matrices_type), intent(in) :: band_comp_evo
+!
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -170,10 +189,9 @@
      &    coef_light, coef_d_light, coef_imp_c, ipol%i_light, rj_fld)
 !
       call solve_scalar_sph_crank                                       &
-     &   (sph_rj, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                 &
-     &    band_temp_evo, c00_evo_lu, i_c00_pivot,                       &
+     &   (sph_rj, band_comp_evo, band_comp00_evo,                       &
      &    ipol%i_light, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld, &
-     &    c00_solution)
+     &    x00_w_center)
 !
       end subroutine cal_sol_composition_sph_crank
 !

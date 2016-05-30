@@ -27,6 +27,7 @@
       use t_phys_data
       use t_addresses_sph_transform
       use t_sph_trans_arrays_MHD
+      use t_sph_matrices
 !
       implicit none
 !
@@ -44,6 +45,7 @@
 !
       use m_control_parameter
       use m_t_step_parameter
+      use m_radial_matrices_sph
       use output_viz_file_control
       use copy_MHD_4_sph_trans
       use cal_energy_flux_rtp
@@ -61,7 +63,7 @@
 !
       if ( (iflag*mod(istep_max_dt,i_step_output_rst)) .eq.0 ) then
         if(iflag_t_evo_4_velo .gt. id_no_evolution) then
-          call pressure_4_sph_mhd(sph%sph_rj, rj_fld)
+          call pressure_4_sph_mhd(sph%sph_rj, band_p_poisson, rj_fld)
         end if
       end if
 !
@@ -91,7 +93,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine pressure_4_sph_mhd(sph_rj, rj_fld)
+      subroutine pressure_4_sph_mhd(sph_rj, band_p_poisson, rj_fld)
 !
       use m_sph_phys_address
       use m_boundary_params_sph_MHD
@@ -103,6 +105,8 @@
       use const_sph_radial_grad
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(band_matrices_type), intent(in) :: band_p_poisson
+!
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -114,7 +118,7 @@
       call sum_div_of_forces(rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_pressure_by_div_v'
-      call cal_sol_pressure_by_div_v(sph_rj, rj_fld)
+      call cal_sol_pressure_by_div_v(sph_rj, band_p_poisson, rj_fld)
 !
       if(ipol%i_press_grad .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'const_pressure_gradient'

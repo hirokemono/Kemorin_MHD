@@ -10,8 +10,11 @@
 !!@verbatim
 !!      subroutine allocate_press_vpol_mat_sph(sph_rj, smat)
 !!      subroutine deallocate_press_vpol_mat_sph(smat)
-!!      subroutine check_velocity_matrices_sph(my_rank, sph_rj, smat)
-!!        type(sph_rj_grid), intent(inout) :: sph_rj
+!!      subroutine check_velocity_matrices_sph                          &
+!!     &         (my_rank, sph_rj, band_vt_evo, smat)
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(band_matrices_type), intent(in) :: band_vt_evo
+!!        type(band_matrices_type), intent(in) :: smat
 !!@endverbatim
 !
 !
@@ -24,7 +27,7 @@
       implicit none
 !
 !>      Structure of band matrices for poloidal velocity
-      type(band_matrix_type), save :: band_vsp_evo
+      type(band_matrices_type), save :: band_vsp_evo
 !
 ! -----------------------------------------------------------------------
 !
@@ -35,7 +38,7 @@
       subroutine allocate_press_vpol_mat_sph(sph_rj, smat)
 !
       type(sph_rj_grid), intent(in) :: sph_rj
-      type(band_matrix_type), intent(inout) :: smat
+      type(band_matrices_type), intent(inout) :: smat
 !
       integer(kind = kint) :: nri, jmax
 !
@@ -47,7 +50,7 @@
 !
       allocate( smat%mat(smat%n_band,smat%n_vect,smat%n_comp) )
       allocate( smat%lu(smat%n_band_lu ,smat%n_vect,smat%n_comp) )
-      allocate( smat%det(smat%n_vect,smat%n_comp) )
+      allocate( smat%det(smat%n_comp) )
       allocate( smat%i_pivot(smat%n_vect,smat%n_comp) )
 !
       smat%mat =   0.0d0
@@ -64,7 +67,7 @@
 !
       subroutine deallocate_press_vpol_mat_sph(smat)
 !
-      type(band_matrix_type), intent(inout) :: smat
+      type(band_matrices_type), intent(inout) :: smat
 !
 !
       call dealloc_band_mat_sph(smat)
@@ -74,14 +77,15 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_velocity_matrices_sph(my_rank, sph_rj, smat)
+      subroutine check_velocity_matrices_sph                            &
+     &         (my_rank, sph_rj, band_vt_evo, smat)
 !
-      use m_radial_matrices_sph
       use check_sph_radial_mat
 !
       integer(kind = kint), intent(in) :: my_rank
       type(sph_rj_grid), intent(in) :: sph_rj
-      type(band_matrix_type), intent(in) :: smat
+      type(band_matrices_type), intent(in) :: band_vt_evo
+      type(band_matrices_type), intent(in) :: smat
 !
       real(kind = kreal) :: rr(2*sph_rj%nidx_rj(1))
       integer(kind = kint) :: k

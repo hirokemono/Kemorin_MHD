@@ -10,8 +10,17 @@
 !!      subroutine alloc_band_mat_sph(nband, sph_rj, smat)
 !!      subroutine set_unit_on_diag(smat)
 !!      subroutine dealloc_band_mat_sph(smat)
+!!
+!!      subroutine ludcmp_3band_mul_t(Msmp, Msmp_stack, smat)
+!!      subroutine ludcmp_5band_mul_t(Msmp, Msmp_stack, smat)
+!!      subroutine ludcmp_7band_mul_t(Msmp, Msmp_stack, smat)
+!!
+!!      subroutine lubksb_3band_mul_t(Msmp, Msmp_stack, smat, x)
+!!      subroutine lubksb_5band_mul_t(Msmp, Msmp_stack, smat, x)
+!!      subroutine lubksb_7band_mul_t(Msmp, Msmp_stack, smat, x)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
-!!        type(band_matrix_type), intent(inout) :: smat
+!!        type(band_matrices_type), intent(inout) :: smat
+!!
 !!      subroutine check_radial_band_mat(my_rank, sph_rj, smat)
 !!@endverbatim
 !
@@ -23,7 +32,7 @@
       implicit none
 !
 !>      Structure for band matrices
-      type band_matrix_type
+      type band_matrices_type
 !>        name of matrices
         character(len = kchara) :: mat_name
 !
@@ -46,11 +55,11 @@
         real(kind = kreal), pointer :: lu(:,:,:)
 !
 !>        Determinant of matrices for spectr data
-        real(kind = kreal), pointer :: det(:,:)
+        real(kind = kreal), pointer :: det(:)
 !
 !>        Pivot information for matrices for spectr data
         integer(kind = kint), pointer :: i_pivot(:,:)
-      end type band_matrix_type
+      end type band_matrices_type
 !
 ! -----------------------------------------------------------------------
 !
@@ -64,7 +73,7 @@
 !
       integer(kind = kint), intent(in) :: nband
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(band_matrix_type), intent(inout) :: smat
+      type(band_matrices_type), intent(inout) :: smat
 !
 !
       smat%n_vect =      sph_rj%nidx_rj(1)
@@ -74,8 +83,8 @@
 !
 !
       allocate( smat%mat(smat%n_band,smat%n_vect,smat%n_comp) )
-      allocate( smat%lu(smat%n_band_lu ,smat%n_vect,smat%n_comp) )
-      allocate( smat%det(smat%n_vect,smat%n_comp) )
+      allocate( smat%lu(smat%n_band_lu,smat%n_vect,smat%n_comp) )
+      allocate( smat%det(smat%n_comp) )
       allocate( smat%i_pivot(smat%n_vect,smat%n_comp) )
 !
       smat%mat =   0.0d0
@@ -89,7 +98,7 @@
 !
       subroutine set_unit_on_diag(smat)
 !
-      type(band_matrix_type), intent(inout) :: smat
+      type(band_matrices_type), intent(inout) :: smat
 !
       integer(kind = kint) :: l_diag
 !
@@ -104,7 +113,7 @@
 !
       subroutine dealloc_band_mat_sph(smat)
 !
-      type(band_matrix_type), intent(inout) :: smat
+      type(band_matrices_type), intent(inout) :: smat
 !
 !
       deallocate( smat%mat, smat%lu )
@@ -121,7 +130,7 @@
 !
       integer (kind = kint), intent(in) :: Msmp
       integer (kind = kint), intent(in) :: Msmp_stack(0:Msmp)
-      type(band_matrix_type), intent(inout) :: smat
+      type(band_matrices_type), intent(inout) :: smat
 !
 !
       call ludcmp_3band_mul(Msmp, Msmp_stack, smat%n_comp, smat%n_vect, &
@@ -137,7 +146,7 @@
 !
       integer (kind = kint), intent(in) :: Msmp
       integer (kind = kint), intent(in) :: Msmp_stack(0:Msmp)
-      type(band_matrix_type), intent(inout) :: smat
+      type(band_matrices_type), intent(inout) :: smat
 !
 !
       call ludcmp_5band_mul(Msmp, Msmp_stack, smat%n_comp, smat%n_vect, &
@@ -153,7 +162,7 @@
 !
       integer (kind = kint), intent(in) :: Msmp
       integer (kind = kint), intent(in) :: Msmp_stack(0:Msmp)
-      type(band_matrix_type), intent(inout) :: smat
+      type(band_matrices_type), intent(inout) :: smat
 !
 !
       call ludcmp_7band_mul(Msmp, Msmp_stack, smat%n_comp, smat%n_vect, &
@@ -170,7 +179,7 @@
 !
       integer (kind = kint), intent(in) :: Msmp
       integer (kind = kint), intent(in) :: Msmp_stack(0:Msmp)
-      type(band_matrix_type), intent(in) :: smat
+      type(band_matrices_type), intent(in) :: smat
 !
       real(kind = kreal), intent(inout) :: x(smat%n_comp,smat%n_vect)
 !
@@ -188,7 +197,7 @@
 !
       integer (kind = kint), intent(in) :: Msmp
       integer (kind = kint), intent(in) :: Msmp_stack(0:Msmp)
-      type(band_matrix_type), intent(in) :: smat
+      type(band_matrices_type), intent(in) :: smat
 !
       real(kind = kreal), intent(inout) :: x(smat%n_comp,smat%n_vect)
 !
@@ -206,7 +215,7 @@
 !
       integer (kind = kint), intent(in) :: Msmp
       integer (kind = kint), intent(in) :: Msmp_stack(0:Msmp)
-      type(band_matrix_type), intent(in) :: smat
+      type(band_matrices_type), intent(in) :: smat
 !
       real(kind = kreal), intent(inout) :: x(smat%n_comp,smat%n_vect)
 !
@@ -226,7 +235,7 @@
 !
       integer(kind = kint), intent(in) :: my_rank
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(band_matrix_type), intent(in) :: smat
+      type(band_matrices_type), intent(in) :: smat
 !
 !
       if(smat%n_band .eq. ithree) then

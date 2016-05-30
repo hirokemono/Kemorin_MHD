@@ -219,7 +219,8 @@
      &     (rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
-      call cal_sol_magne_sph_crank(sph%sph_rj, rj_fld)
+      call cal_sol_magne_sph_crank                                      &
+     &   (sph%sph_rj, band_bp_evo, band_bt_evo, rj_fld)
       call update_after_magne_sph
 !
 !

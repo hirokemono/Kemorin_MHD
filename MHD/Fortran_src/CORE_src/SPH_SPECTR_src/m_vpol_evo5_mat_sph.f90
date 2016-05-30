@@ -24,10 +24,10 @@
       implicit none
 !
 !>      Structure of band matrices for poloidal velocity
-      type(band_matrix_type), save :: band5_vp_evo
+      type(band_matrices_type), save :: band5_vp_evo
 !
 !>      Structure of band matrices for poloidal velocity
-      type(band_matrix_type), save :: band3_vp_poisson
+      type(band_matrices_type), save :: band3_vp_poisson
 !
 ! -----------------------------------------------------------------------
 !

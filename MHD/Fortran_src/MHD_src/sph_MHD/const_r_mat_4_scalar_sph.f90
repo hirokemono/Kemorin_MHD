@@ -6,9 +6,9 @@
 !>@brief Construct matrix for time evolution of scalar fields
 !!
 !!@verbatim
-!!      subroutine const_radial_mat_4_temp_sph(sph_rj)
-!!      subroutine const_radial_mat_4_composit_sph(sph_rj)
-!!      subroutine const_radial_mat_4_press_sph(sph_rj)
+!!      subroutine const_radial_mat_4_temp_sph(sph_rj, band_temp_evo)
+!!      subroutine const_radial_mat_4_composit_sph(sph_rj, band_comp_evo)
+!!      subroutine const_radial_mat_4_press_sph(sph_rj, band_p_poisson)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!@endverbatim
 !
@@ -34,49 +34,57 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_4_temp_sph(sph_rj)
+      subroutine const_radial_mat_4_temp_sph(sph_rj, band_temp_evo)
 !
       use m_boundary_params_sph_MHD
-      use m_radial_matrices_sph
       use m_physical_property
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(band_matrices_type), intent(inout) :: band_temp_evo
 !
 !
-      call alloc_band_mat_sph(ifive, sph_rj, band_temp_evo)
+      call alloc_band_mat_sph(ithree, sph_rj, band_temp_evo)
       call set_unit_on_diag(band_temp_evo)
 !
       call const_radial_mat_4_scalar_sph(sph_rj, sph_bc_T,              &
      &    coef_imp_t, coef_temp, coef_d_temp, band_temp_evo)
 !
-      if(i_debug .eq. iflag_full_msg)                                   &
-     &     call check_temp_matrices_sph(my_rank, sph_rj)
+      if(i_debug .eq. iflag_full_msg) then
+        write(50+my_rank,'(a)') 'evolution matrix for temperature'
+        call check_radial_band_mat(my_rank, sph_rj, band_temp_evo)
+      end if
 !
       end subroutine const_radial_mat_4_temp_sph
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_4_composit_sph(sph_rj)
+      subroutine const_radial_mat_4_composit_sph(sph_rj, band_comp_evo)
 !
       use m_boundary_params_sph_MHD
-      use m_radial_matrices_sph
       use m_physical_property
+      use check_sph_radial_mat
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(band_matrices_type), intent(inout) :: band_comp_evo
 !
+!
+      call alloc_band_mat_sph(ithree, sph_rj, band_comp_evo)
+      call set_unit_on_diag(band_comp_evo)
 !
       call const_radial_mat_4_scalar_sph(sph_rj, sph_bc_C,              &
      &    coef_imp_c, coef_light, coef_d_light, band_comp_evo)
 !
-      if(i_debug .eq. iflag_full_msg)                                   &
-     &       call check_composit_matrix_sph(my_rank, sph_rj)
+      if(i_debug .eq. iflag_full_msg) then
+        write(50+my_rank,'(a)') 'evolution matrix for composition'
+        call check_radial_band_mat(my_rank, sph_rj, band_comp_evo)
+      end if
 !
       end subroutine const_radial_mat_4_composit_sph
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_4_press_sph(sph_rj)
+      subroutine const_radial_mat_4_press_sph(sph_rj, band_p_poisson)
 !
       use m_physical_property
       use m_boundary_params_sph_MHD
@@ -89,13 +97,17 @@
       use center_sph_matrices
       use mat_product_3band_mul
       use set_radial_mat_sph
+      use check_sph_radial_mat
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(band_matrices_type), intent(inout) :: band_p_poisson
 !
       real(kind = kreal) :: coef_p
 !
 !
       coef_p = - coef_press
+      call alloc_band_mat_sph(ithree, sph_rj, band_p_poisson)
+
       call set_unit_mat_4_poisson                                       &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                         &
      &    sph_bc_U%kr_in, sph_bc_U%kr_out, band_p_poisson%mat)
@@ -127,6 +139,11 @@
       call ludcmp_3band_mul_t                                           &
      &   (np_smp, sph_rj%istack_rj_j_smp, band_p_poisson)
 !
+      if(i_debug .eq. iflag_full_msg) then
+        write(50+my_rank,'(a)') 'poisson matrix for pressure'
+        call check_radial_band_mat(my_rank, sph_rj, band_p_poisson)
+      end if
+!
       end subroutine const_radial_mat_4_press_sph
 !
 ! -----------------------------------------------------------------------
@@ -146,7 +163,7 @@
       type(sph_boundary_type), intent(in) :: sph_bc
       real(kind = kreal), intent(in) :: coef_imp, coef_f, coef_d
 !
-      type(band_matrix_type), intent(inout) :: band_s_evo
+      type(band_matrices_type), intent(inout) :: band_s_evo
 !
       real(kind = kreal) :: coef
 !

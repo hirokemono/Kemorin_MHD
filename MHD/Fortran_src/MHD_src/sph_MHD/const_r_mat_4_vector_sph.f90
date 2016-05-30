@@ -6,8 +6,10 @@
 !>@brief Construct matrix for time evolution of vector fields
 !!
 !!@verbatim
-!!      subroutine const_radial_mat_vort_2step(sph_rj)
-!!      subroutine const_radial_mat_4_magne_sph(sph_rj)
+!!      subroutine const_radial_mat_vort_2step(sph_rj, band_vs_poisson, &
+!!     &          band_vp_evo, band_vt_evo, band_wt_evo)
+!!      subroutine const_radial_mat_4_magne_sph                         &
+!!     &         (sph_rj, band_bp_evo, band_bt_evo)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!@endverbatim
 !
@@ -19,11 +21,11 @@
       use m_constants
       use m_machine_parameter
       use m_t_int_parameter
-      use m_radial_matrices_sph
       use m_physical_property
       use m_ludcmp_3band
 !
       use t_spheric_rj_data
+      use t_sph_matrices
 !
       use set_radial_mat_sph
 !
@@ -35,7 +37,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_vort_2step(sph_rj)
+      subroutine const_radial_mat_vort_2step(sph_rj, band_vs_poisson,   &
+     &          band_vp_evo, band_vt_evo, band_wt_evo)
 !
       use m_boundary_params_sph_MHD
       use m_coef_fdm_to_center
@@ -46,8 +49,13 @@
       use cal_inner_core_rotation
       use center_sph_matrices
       use mat_product_3band_mul
+      use check_sph_radial_mat
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(band_matrices_type), intent(inout) :: band_vp_evo
+      type(band_matrices_type), intent(inout) :: band_vt_evo
+      type(band_matrices_type), intent(inout) :: band_wt_evo
+      type(band_matrices_type), intent(inout) :: band_vs_poisson
 !
 !      integer(kind = kint) :: j
       real(kind = kreal) :: coef_dvt
@@ -170,9 +178,6 @@
      &    sph_bc_U%kr_in, sph_bc_U%kr_out, band_wt_evo%mat,             &
      &    band_vs_poisson%mat, band_vp_evo%mat)
 !
-      if(i_debug .eq. iflag_full_msg)                                   &
-     &          call check_vorticity_matrices_sph(my_rank, sph_rj)
-!
       call ludcmp_5band_mul_t                                           &
      &   (np_smp, sph_rj%istack_rj_j_smp, band_vp_evo)
       call ludcmp_3band_mul_t                                           &
@@ -182,31 +187,45 @@
       call ludcmp_3band_mul_t                                           &
      &   (np_smp, sph_rj%istack_rj_j_smp, band_vs_poisson)
 !
+      if(i_debug .eq. iflag_full_msg) then
+        write(50+my_rank,'(a)') 'evolution matrix for toroidal velocity'
+        call check_radial_band_mat(my_rank, sph_rj, band_vt_evo)
+!
+        write(50+my_rank,'(a)') 'evolution matrix for toroidal vorticity'
+        call check_radial_band_mat(my_rank, sph_rj, band_wt_evo)
+!
+        write(50+my_rank,'(a)') 'evolution matrix for poloidal velocity'
+        call check_radial_band_mat(my_rank, sph_rj, band_vp_evo)
+      end if
 !
 !      do j = 1, sph_rj%nidx_rj(2)
 !        do k = 1, sph_rj%nidx_rj(1)
-!          band_vp_evo%det(1,j)                                         &
-!     &                = band_vp_evo%det(1,j) * band_vp_evo%lu(5,k,j)
-!          band_vt_evo%det(1,j)                                         &
-!     &                = band_vt_evo%det(1,j) * band_vt_evo%lu(3,k,j)
+!          band_vp_evo%det(j)                                           &
+!     &                = band_vp_evo%det(j) * band_vp_evo%lu(5,k,j)
+!          band_vt_evo%det(j)                                           &
+!     &                = band_vt_evo%det(j) * band_vt_evo%lu(3,k,j)
 !        end do
 !        write(my_rank+60,*) 'det vp', j,                               &
-!     &                       band_vp_evo%det(1,j), band_vt_evo%det(1,j)
+!     &                       band_vp_evo%det(j), band_vt_evo%det(j)
 !      end do
 !
       end subroutine const_radial_mat_vort_2step
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_4_magne_sph(sph_rj)
+      subroutine const_radial_mat_4_magne_sph                           &
+     &         (sph_rj, band_bp_evo, band_bt_evo)
 !
       use m_boundary_params_sph_MHD
       use m_coef_fdm_to_center
       use set_sph_scalar_mat_bc
       use set_sph_magne_mat_bc
       use center_sph_matrices
+      use check_sph_radial_mat
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(band_matrices_type), intent(inout) :: band_bp_evo
+      type(band_matrices_type), intent(inout) :: band_bt_evo
 !
       real(kind = kreal) :: coef_dbt
 !
@@ -287,8 +306,13 @@
       call ludcmp_3band_mul_t                                           &
      &   (np_smp, sph_rj%istack_rj_j_smp, band_bt_evo)
 !
-      if(i_debug .eq. iflag_full_msg)                                   &
-     &     call check_magne_matrices_sph(my_rank, sph_rj)
+      if(i_debug .eq. iflag_full_msg) then
+        write(50+my_rank,'(a)') 'evolution matrix for poloidal magne'
+        call check_radial_band_mat(my_rank, sph_rj, band_bp_evo)
+!
+        write(50+my_rank,'(a)') 'evolution matrix for toroidal magne'
+        call check_radial_band_mat(my_rank, sph_rj, band_bt_evo)
+      end if
 !
       end subroutine const_radial_mat_4_magne_sph
 !
