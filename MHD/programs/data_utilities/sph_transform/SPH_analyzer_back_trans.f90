@@ -3,8 +3,9 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine SPH_initialize_back_trans(fld_IO)
-!      subroutine SPH_analyze_back_trans(i_step, visval, fld_IO)
+!!      subroutine SPH_initialize_back_trans(sph_mesh, rj_fld, fld_IO)
+!!      subroutine SPH_analyze_back_trans                               &
+!!     &         (i_step, sph_mesh, rj_fld, fld_IO, visval)
 !
       module SPH_analyzer_back_trans
 !
@@ -21,15 +22,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_initialize_back_trans(fld_IO)
+      subroutine SPH_initialize_back_trans(sph_mesh, rj_fld, fld_IO)
 !
-      use m_spheric_parameter
       use m_t_step_parameter
       use m_ctl_params_sph_trans
       use m_node_id_spherical_IO
-      use m_sph_spectr_data
       use m_sph_phys_address
       use m_control_params_2nd_files
+!
+      use t_spheric_mesh
+      use t_phys_data
       use t_field_data_IO
 !
       use r_interpolate_sph_data
@@ -41,6 +43,8 @@
       use legendre_transform_select
       use sph_transfer_all_field
 !
+      type(sph_mesh_data), intent(inout) :: sph_mesh
+      type(phys_data), intent(inout) :: rj_fld
       type(field_IO), intent(inout) :: fld_IO
 !
 !
@@ -54,23 +58,23 @@
      &   (nprocs, my_rank, i_step_init, fld_IO)
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_sph_name_rj_to_rtp'
-      call copy_sph_name_rj_to_rtp(rj_fld1)
+      call copy_sph_name_rj_to_rtp(rj_fld)
 !
 !  ------    set original spectr modes
 !
       if(iflag_org_sph_rj_head .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'input_old_rj_sph_trans'
-        call input_old_rj_sph_trans                                     &
-     &     (my_rank, sph1%sph_params%l_truncation, sph1%sph_rj)
-        call set_sph_magne_address(rj_fld1)
+        call input_old_rj_sph_trans(my_rank,                            &
+     &     sph_mesh%sph%sph_params%l_truncation, sph_mesh%sph%sph_rj)
+        call set_sph_magne_address(rj_fld)
       end if
 !
-      call set_cmb_icb_radial_point                                     &
-     &   (cmb_radial_grp, icb_radial_grp, sph_grps1%radial_rj_grp)
+      call set_cmb_icb_radial_point(cmb_radial_grp, icb_radial_grp,     &
+     &    sph_mesh%sph_grps%radial_rj_grp)
 !
 !  ---- allocate spectr data
 !
-      call set_sph_sprctr_data_address(sph1%sph_rj, rj_fld1)
+      call set_sph_sprctr_data_address(sph_mesh%sph%sph_rj, rj_fld)
 !
 !  ---- initialize spherical harmonics transform
 !
@@ -78,26 +82,27 @@
       if(id_legendre_transfer.eq.iflag_leg_undefined)                   &
      &            id_legendre_transfer = iflag_leg_orginal_loop
       call copy_sph_trans_nums_from_rtp
-      call initialize_sph_trans(sph1, comms_sph1)
+      call initialize_sph_trans(sph_mesh%sph, sph_mesh%sph_comms)
 !
-      call init_pole_transform(sph1%sph_rtp)
-      call allocate_d_pole_4_all_trans(sph1%sph_rtp)
+      call init_pole_transform(sph_mesh%sph%sph_rtp)
+      call allocate_d_pole_4_all_trans(sph_mesh%sph%sph_rtp)
 !
 !      call calypso_MPI_barrier
 !      call check_schmidt_poly_rtm                                      &
-!     &   (my_rank+40, sph1%sph_rtm, sph1%sph_rlm)
+!     &   (my_rank+40, sph_mesh%sph%sph_rtm, sph_mesh%sph%sph_rlm)
 !
       end subroutine SPH_initialize_back_trans
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_back_trans(i_step, visval, fld_IO)
+      subroutine SPH_analyze_back_trans                                 &
+     &         (i_step, sph_mesh, rj_fld, fld_IO, visval)
 !
-      use m_spheric_parameter
-      use m_sph_spectr_data
       use m_t_step_parameter
       use m_node_id_spherical_IO
       use m_control_params_2nd_files
+      use t_spheric_mesh
+      use t_phys_data
       use t_field_data_IO
 !
       use field_IO_select
@@ -109,7 +114,9 @@
 !
 !
       integer(kind = kint), intent(in) :: i_step
+      type(sph_mesh_data), intent(in) :: sph_mesh
       integer(kind = kint), intent(inout) :: visval
+      type(phys_data), intent(inout) :: rj_fld
       type(field_IO), intent(inout) :: fld_IO
 !
       integer(kind = kint) :: i_udt
@@ -134,18 +141,18 @@
         if(iflag_org_sph_rj_head .eq. 0) then
           if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
           call set_rj_phys_data_from_IO                                 &
-     &       (sph1%sph_rj%nnod_rj, fld_IO, rj_fld1)
+     &       (sph_mesh%sph%sph_rj%nnod_rj, fld_IO, rj_fld)
         else
           if (iflag_debug.gt.0) write(*,*)                              &
      &                        'r_interpolate_sph_fld_from_IO'
           call r_interpolate_sph_fld_from_IO                            &
-     &       (fld_IO, sph1%sph_rj, rj_fld1)
+     &       (fld_IO, sph_mesh%sph%sph_rj, rj_fld)
         end if
 !
-!          call check_all_field_data(my_rank, rj_fld1)
+!          call check_all_field_data(my_rank, rj_fld)
 !  spherical transform for vector
-        call sph_b_trans_all_field                                      &
-     &     (sph1, comms_sph1, femmesh_STR%mesh, rj_fld1, field_STR)
+        call sph_b_trans_all_field(sph_mesh%sph, sph_mesh%sph_comms,    &
+     &      femmesh_STR%mesh, rj_fld, field_STR)
       end if
 !
       end subroutine SPH_analyze_back_trans

@@ -8,15 +8,20 @@
       use m_precision
 !
       use m_constants
-      use m_spheric_parameter
+      use t_spheric_parameter
+      use t_spheric_rtp_data
 !
       use const_sph_radial_grid
 !
       implicit none
 !
-!
       integer(kind = kint) :: nele
       real(kind = kreal) :: shell, ratio, rmin, rmax
+!
+!>  Structure of grid and spectr data for spherical spectr method
+      type(sph_shell_parameters) :: sph_params_rgrid
+!>        structure of index table for @f$ f(r,\theta,\phi) @f$
+      type(sph_rtp_grid) :: sph_rtp_rgrid
 !
 !
       write(*,*) 'input outer core shell width'
@@ -31,21 +36,21 @@
       read(*,*) nele
 !
       write(*,*) 'input grid type (0:equi-distance, 2:Chebyshev)'
-      read(*,*) sph1%sph_params%iflag_radial_grid
-      if(sph1%sph_params%iflag_radial_grid .ne. 0) then
-        sph1%sph_params%iflag_radial_grid = 2
+      read(*,*) sph_params_rgrid%iflag_radial_grid
+      if(sph_params_rgrid%iflag_radial_grid .ne. 0) then
+        sph_params_rgrid%iflag_radial_grid = 2
       end if
 !
-      sph1%sph_params%radius_ICB = shell * ratio / (one - ratio)
-      sph1%sph_params%radius_CMB = sph1%sph_params%radius_ICB + shell
+      sph_params_rgrid%radius_ICB = shell * ratio / (one - ratio)
+      sph_params_rgrid%radius_CMB = sph_params_rgrid%radius_ICB + shell
 !
       if(rmin.lt.0.0d0 .or. rmax.lt.0.0d0 .or. rmin.ge.rmax) then
-        rmin = sph1%sph_params%radius_ICB
-        rmax = sph1%sph_params%radius_CMB
+        rmin = sph_params_rgrid%radius_ICB
+        rmax = sph_params_rgrid%radius_CMB
       end if
 !
       call count_set_radial_grid                                        &
-     &   (nele, rmin, rmax, sph1%sph_params, sph1%sph_rtp)
+     &   (nele, rmin, rmax, sph_params_rgrid, sph_rtp_rgrid)
 !
       stop
       end program const_radial_grid_sph

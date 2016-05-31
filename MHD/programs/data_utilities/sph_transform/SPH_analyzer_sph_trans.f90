@@ -5,8 +5,14 @@
 !
 !      subroutine SPH_initialize_sph_trans
 !
-!      subroutine SPH_analyze_sph_trans(i_step, fld_IO)
-!      subroutine SPH_analyze_sph_zm_trans(i_step, fld_IO)
+!!      subroutine SPH_initialize_sph_trans(sph_mesh, rj_fld)
+!!      subroutine SPH_analyze_sph_trans                                &
+!!     &         (i_step, sph_mesh, rj_fld, fld_IO)
+!!      subroutine SPH_analyze_sph_zm_trans                             &
+!!     &         (i_step, sph_mesh, rj_fld, fld_IO)
+!!        type(sph_mesh_data), intent(in) :: sph_mesh
+!!        type(phys_data), intent(inout) :: rj_fld
+!!        type(field_IO), intent(inout) :: fld_IO
 !
       module SPH_analyzer_sph_trans
 !
@@ -24,13 +30,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_initialize_sph_trans
+      subroutine SPH_initialize_sph_trans(sph_mesh, rj_fld)
 !
       use m_t_step_parameter
       use m_ctl_params_sph_trans
       use m_node_id_spherical_IO
-      use m_spheric_parameter
-      use m_sph_spectr_data
+!
+      use t_spheric_mesh
+      use t_phys_data
 !
       use count_num_sph_smp
       use set_phys_name_4_sph_trans
@@ -38,12 +45,15 @@
       use legendre_transform_select
       use sph_transfer_all_field
 !
+      type(sph_mesh_data), intent(inout) :: sph_mesh
+      type(phys_data), intent(inout) :: rj_fld
+!
 !  ---- allocate spectr data
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_sph_name_rj_to_rtp'
-      call copy_sph_name_rj_to_rtp(rj_fld1)
+      call copy_sph_name_rj_to_rtp(rj_fld)
 !
-      call alloc_phys_data_type(sph1%sph_rj%nnod_rj, rj_fld1)
+      call alloc_phys_data_type(sph_mesh%sph%sph_rj%nnod_rj, rj_fld)
 !
 !  ---- initialize spherical harmonics transform
 !
@@ -51,24 +61,23 @@
       if(id_legendre_transfer.eq.iflag_leg_undefined)                   &
      &            id_legendre_transfer = iflag_leg_orginal_loop
       call copy_sph_trans_nums_from_rtp
-      call initialize_sph_trans(sph1, comms_sph1)
+      call initialize_sph_trans(sph_mesh%sph, sph_mesh%sph_comms)
 !
-      call allocate_d_rtp_4_all_trans(sph1%sph_rtp)
+      call allocate_d_rtp_4_all_trans(sph_mesh%sph%sph_rtp)
 !
       end subroutine SPH_initialize_sph_trans
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_sph_trans(i_step, fld_IO)
+      subroutine SPH_analyze_sph_trans                                  &
+     &         (i_step, sph_mesh, rj_fld, fld_IO)
 !
-      use m_spheric_parameter
-      use m_sph_spectr_data
       use m_t_step_parameter
       use m_control_params_sph_data
       use m_time_data_IO
-      use m_spheric_parameter
-      use m_sph_spectr_data
       use m_node_id_spherical_IO
+      use t_spheric_mesh
+      use t_phys_data
       use t_field_data_IO
 !
       use field_IO_select
@@ -78,21 +87,23 @@
 !
 !
       integer(kind = kint), intent(in) :: i_step
+      type(sph_mesh_data), intent(in) :: sph_mesh
+      type(phys_data), intent(inout) :: rj_fld
       type(field_IO), intent(inout) :: fld_IO
 !
 !
 !  spherical transform for vector
-      call sph_f_trans_all_field                                        &
-     &   (sph1, comms_sph1, femmesh_STR%mesh, field_STR, rj_fld1)
+      call sph_f_trans_all_field(sph_mesh%sph, sph_mesh%sph_comms,      &
+     &    femmesh_STR%mesh, field_STR, rj_fld)
 !
-!      call check_all_field_data(my_rank, rj_fld1)
+!      call check_all_field_data(my_rank, rj_fld)
 !
 !     data output
 !
       if (iflag_debug.gt.0)                                             &
      &    write(*,*) 'copy_rj_all_phys_data_to_IO'
       call copy_rj_all_phys_data_to_IO                                  &
-     &   (sph1%sph_rj%nnod_rj, rj_fld1, fld_IO)
+     &   (sph_mesh%sph%sph_rj%nnod_rj, rj_fld, fld_IO)
 !
       i_time_step_IO = 0
       time_IO = zero
@@ -105,15 +116,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_sph_zm_trans(i_step, fld_IO)
+      subroutine SPH_analyze_sph_zm_trans                               &
+     &         (i_step, sph_mesh, rj_fld, fld_IO)
 !
-      use m_spheric_parameter
-      use m_sph_spectr_data
       use m_t_step_parameter
       use m_time_data_IO
-      use m_spheric_parameter
-      use m_sph_spectr_data
       use m_node_id_spherical_IO
+      use t_spheric_mesh
+      use t_phys_data
       use t_field_data_IO
 !
       use field_IO_select
@@ -124,26 +134,28 @@
       use const_global_element_ids
 !
       integer(kind = kint), intent(in) :: i_step
+      type(sph_mesh_data), intent(in) :: sph_mesh
+      type(phys_data), intent(inout) :: rj_fld
       type(field_IO), intent(inout) :: fld_IO
 !
 !
 !  spherical transform for vector
-      call sph_f_trans_all_field                                        &
-     &   (sph1, comms_sph1, femmesh_STR%mesh, field_STR, rj_fld1)
+      call sph_f_trans_all_field(sph_mesh%sph, sph_mesh%sph_comms,      &
+     &    femmesh_STR%mesh, field_STR, rj_fld)
 !
-!      call check_all_field_data(my_rank, rj_fld1)
+!      call check_all_field_data(my_rank, rj_fld)
 !
 !  pick zonal mean
 !
       if (iflag_debug.gt.0)  write(*,*) 'zonal_mean_all_sph_spectr'
-      call zonal_mean_all_sph_spectr(sph1%sph_rj, rj_fld1)
+      call zonal_mean_all_sph_spectr(sph_mesh%sph%sph_rj, rj_fld)
 !
 !     data output
 !
       if (iflag_debug.gt.0)                                             &
      &    write(*,*) 'copy_rj_all_phys_data_to_IO'
       call copy_rj_all_phys_data_to_IO                                  &
-     &   (sph1%sph_rj%nnod_rj, rj_fld1, fld_IO)
+     &   (sph_mesh%sph%sph_rj%nnod_rj, rj_fld, fld_IO)
       call count_number_of_node_stack                                   &
      &   (fld_IO%nnod_IO, fld_IO%istack_numnod_IO)
 !

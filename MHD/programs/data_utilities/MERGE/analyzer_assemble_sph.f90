@@ -96,15 +96,15 @@
         if(mod(irank_new,nprocs) .ne. my_rank) cycle
 !
         call set_local_rj_mesh_4_merge(irank_new,                       &
-     &      new_sph_mesh(jp)%sph_mesh, new_sph_mesh(jp)%sph_comms,      &
+     &      new_sph_mesh(jp)%sph, new_sph_mesh(jp)%sph_comms,           &
      &      new_sph_mesh(jp)%sph_grps)
 !
 !     Construct mode transfer table
         do ip = 1, np_sph_org
           call alloc_each_mode_tbl_4_assemble                           &
-     &      (org_sph_mesh(ip)%sph_mesh, j_table(ip,jp))
-          call set_mode_table_4_assemble(org_sph_mesh(ip)%sph_mesh,     &
-     &        new_sph_mesh(jp)%sph_mesh, j_table(ip,jp))
+     &      (org_sph_mesh(ip)%sph, j_table(ip,jp))
+          call set_mode_table_4_assemble(org_sph_mesh(ip)%sph,          &
+     &        new_sph_mesh(jp)%sph, j_table(ip,jp))
         end do
       end do
 !
@@ -121,7 +121,7 @@
       do jp = 1, np_sph_new
         irank_new = jp - 1
         if(mod(irank_new,nprocs) .ne. my_rank) cycle
-        nnod_list_lc(jp) = new_sph_mesh(jp)%sph_mesh%sph_rj%nnod_rj
+        nnod_list_lc(jp) = new_sph_mesh(jp)%sph%sph_rj%nnod_rj
       end do
 !
       call MPI_allREDUCE(nnod_list_lc, nnod_list, np_sph_new,           &
@@ -144,10 +144,10 @@
      &      nlayer_ICB_new, nlayer_CMB_new)
 !
         call sph_radial_interpolation_coef                              &
-     &     (org_sph_mesh(1)%sph_mesh%sph_rj%nidx_rj(1),                 &
-     &      org_sph_mesh(1)%sph_mesh%sph_rj%radius_1d_rj_r,             &
-     &      new_sph_mesh(1)%sph_mesh%sph_rj%nidx_rj(1),                 &
-     &      new_sph_mesh(1)%sph_mesh%sph_rj%radius_1d_rj_r, r_itp)
+     &     (org_sph_mesh(1)%sph%sph_rj%nidx_rj(1),                      &
+     &      org_sph_mesh(1)%sph%sph_rj%radius_1d_rj_r,                  &
+     &      new_sph_mesh(1)%sph%sph_rj%nidx_rj(1),                      &
+     &      new_sph_mesh(1)%sph%sph_rj%radius_1d_rj_r, r_itp)
       end if
 !
 !      write(*,*) 'share_r_interpolation_tbl'
@@ -160,7 +160,7 @@
 !      write(*,*) 'load_field_name_assemble_sph'
       call load_field_name_assemble_sph(org_sph_fst_head,               &
      &      ifmt_org_sph_fst, istep_start, np_sph_org,                  &
-     &      new_sph_mesh(1)%sph_mesh, org_sph_phys(1), new_sph_phys(1))
+     &      new_sph_mesh(1)%sph, org_sph_phys(1), new_sph_phys(1))
 !
 !      write(*,*) 'share_spectr_field_names'
       call share_spectr_field_names(np_sph_org, np_sph_new,             &
@@ -170,7 +170,7 @@
 !      do jp = 1, np_sph_new
 !        if(mod(jp-1,nprocs) .ne. my_rank) cycle
 !        do ip = 1, np_sph_org
-!          do j = 1, org_sph_mesh(1)%sph_mesh%sph_rj%nidx_rj(2)
+!          do j = 1, org_sph_mesh(1)%sph%sph_rj%nidx_rj(2)
 !            if(j_table(ip,jp)%j_org_to_new(j).gt. 0)                   &
 !     &          write(50+my_rank,*) jp, ip, j,                         &
 !     &                              j_table(ip,jp)%j_org_to_new(j)
@@ -207,7 +207,7 @@
           irank_new = my_rank + iloop * nprocs
           ip = irank_new + 1
           call load_org_sph_data(org_sph_fst_head, ifmt_org_sph_fst,    &
-     &        ip, istep, np_sph_org, org_sph_mesh(ip)%sph_mesh,         &
+     &        ip, istep, np_sph_org, org_sph_mesh(ip)%sph,              &
      &        org_sph_phys(ip))
         call calypso_mpi_barrier
         end do
@@ -221,8 +221,8 @@
 !     Copy spectr data to temporal array
           do jp = 1, np_sph_new
            if(mod(jp-1,nprocs) .ne. my_rank) cycle
-            call set_assembled_sph_data(org_sph_mesh(ip)%sph_mesh,      &
-     &          new_sph_mesh(jp)%sph_mesh, j_table(ip,jp), r_itp,       &
+            call set_assembled_sph_data(org_sph_mesh(ip)%sph,           &
+     &          new_sph_mesh(jp)%sph, j_table(ip,jp), r_itp,            &
      &          org_sph_phys(ip), new_sph_phys(jp))
           end do
           call dealloc_phys_data_type(org_sph_phys(ip))
@@ -237,7 +237,7 @@
 
           if(irank_new .lt. np_sph_new) then
             call const_assembled_sph_data                               &
-     &          (b_sph_ratio, new_sph_mesh(jp)%sph_mesh,                &
+     &          (b_sph_ratio, new_sph_mesh(jp)%sph,                     &
      &           r_itp, new_sph_phys(jp), new_fst_IO(jloop))
           end if
 !

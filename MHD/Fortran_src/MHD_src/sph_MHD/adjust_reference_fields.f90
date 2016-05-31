@@ -7,7 +7,6 @@
 !>@brief Set boundary conditions for MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine init_reference_fields(sph_params, sph_rj)
 !!      subroutine adjust_press_by_average_on_CMB                       &
 !!     &         (kr_in, kr_out, sph_rj, rj_fld)
 !!      subroutine sync_temp_by_per_temp_sph(reftemp_rj, sph_rj, rj_fld)
@@ -41,32 +40,6 @@
 !
       contains
 !
-! -----------------------------------------------------------------------
-!
-      subroutine init_reference_fields(sph_params, sph_rj)
-!
-      use m_sph_spectr_data
-      use m_boundary_params_sph_MHD
-!
-      use set_reference_sph_mhd
-!
-      type(sph_shell_parameters), intent(in) :: sph_params
-      type(sph_rj_grid), intent(in) ::  sph_rj
-!
-!      Set reference temperature and adjust boundary conditions
-!
-      if(iflag_debug .gt. 0) write(*,*) 'set_ref_temp_sph_mhd'
-      call allocate_reft_rj_data(sph_rj)
-      call set_ref_temp_sph_mhd(sph_rj%nidx_rj,                         &
-     &    sph_params%radius_ICB, sph_params%radius_CMB,                 &
-     &    sph_rj%ar_1d_rj, sph_bc_T, reftemp_rj)
-      call adjust_sph_temp_bc_by_reftemp                                &
-     &   (sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj(2),                 &
-     &    reftemp_rj, sph_bc_T)
-!
-      end subroutine init_reference_fields
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine adjust_press_by_average_on_CMB                         &

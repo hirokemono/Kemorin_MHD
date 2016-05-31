@@ -52,6 +52,7 @@ endif
 SOURCES = $(shell ls *.f90)
 
 MOD_TAVE_SPH_SPEC = \
+m_spheric_data_sph_spetr.o \
 m_ctl_data_4_sph_utils.o \
 m_ctl_params_sph_utils.o \
 \
@@ -60,6 +61,7 @@ analyzer_time_ave_sph.o \
 main_time_ave_sph.o
 
 MOD_SPH_ENE_SPEC = \
+m_spheric_data_sph_spetr.o \
 m_ctl_data_4_sph_utils.o \
 m_ctl_params_sph_utils.o \
 \
@@ -67,6 +69,7 @@ analyzer_ene_sph_shell.o \
 main_ene_sph_shell.o
 
 MOD_SPH_ENE_LAYER = \
+m_spheric_data_sph_spetr.o \
 m_ctl_data_4_sph_utils.o \
 m_ctl_params_sph_utils.o \
 \
@@ -74,24 +77,27 @@ analyzer_ene_sph_layer.o \
 main_ene_sph_layer.o
 
 MOD_PICK_SPH_VOL_ENE = \
+m_spheric_data_sph_spetr.o \
 m_ctl_data_4_sph_utils.o \
 m_ctl_params_sph_utils.o \
-\
 m_pickup_sph_rms_data.o \
+\
 pickup_sph_rms_spectr.o \
 analyzer_pick_rms_vol.o \
 main_pick_rms_vol.o
 
 MOD_PICK_SPH_ENE = \
+m_spheric_data_sph_spetr.o \
 m_ctl_data_4_sph_utils.o \
 m_ctl_params_sph_utils.o \
-\
 m_pickup_sph_rms_data.o \
+\
 pickup_sph_rms_spectr.o \
 analyzer_pick_rms_sph.o \
 main_pick_rms_sph.o
 
 MOD_PICK_SPH_SPEC = \
+m_spheric_data_sph_spetr.o \
 m_ctl_data_4_sph_utils.o \
 m_ctl_params_sph_utils.o \
 \
@@ -99,6 +105,7 @@ analyzer_pickup_mode_sph.o \
 main_pickup_mode_sph.o
 
 MOD_PICK_GAUSS_COEF = \
+m_spheric_data_sph_spetr.o \
 m_ctl_data_4_sph_utils.o \
 m_ctl_params_sph_utils.o \
 \
@@ -107,6 +114,7 @@ main_pickup_gauss_coefs.o
 
 
 MOD_ZM_SPH_SPEC = \
+m_spheric_data_sph_spetr.o \
 m_ctl_data_4_sph_utils.o \
 m_ctl_params_sph_utils.o \
 \
@@ -115,6 +123,7 @@ main_zonal_mean_sph.o
 
 MOD_SPH_NEUTRAL = \
 neutral_point_by_pick_sph.o \
+m_spheric_data_sph_spetr.o \
 m_neutral_pt_by_pick_sph.o
 
 

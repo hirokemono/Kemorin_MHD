@@ -13,15 +13,13 @@
       use calypso_mpi
       use m_work_time
       use m_SPH_transforms
-      use t_field_data_IO
+      use m_spheric_data_transform
 !
       use SPH_analyzer_back_trans
       use FEM_analyzer_back_trans
       use visualizer_all
 !
       implicit none
-!
-      type(field_IO), save, private :: sph_trns_IO
 !
 ! ----------------------------------------------------------------------
 !
@@ -33,8 +31,6 @@
 !
       use m_ctl_data_4_sph_trans
       use m_ctl_params_sph_trans
-      use m_spheric_parameter
-      use m_sph_spectr_data
       use parallel_load_data_4_sph
 !
 !
@@ -47,11 +43,12 @@
       call read_control_data_sph_trans
 !
       if (iflag_debug.gt.0) write(*,*) 'set_control_4_sph_back_trans'
-      call set_control_4_sph_back_trans(ucd_SPH_TRNS, rj_fld1)
+      call set_control_4_sph_back_trans(ucd_SPH_TRNS, rj_fld_trans)
 !
 !  ------    set spectr grids
       if (iflag_debug.gt.0) write(*,*) 'load_para_SPH_and_FEM_mesh'
-      call load_para_SPH_and_FEM_mesh(sph1, comms_sph1, sph_grps1,      &
+      call load_para_SPH_and_FEM_mesh(sph_mesh_trans%sph,               &
+     &    sph_mesh_trans%sph_comms, sph_mesh_trans%sph_grps,            &
      &    femmesh_STR%mesh, femmesh_STR%group, elemesh_STR)
 !
 !  -------------------------------
@@ -63,7 +60,8 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'SPH_initialize_back_trans'
-      call SPH_initialize_back_trans(sph_trns_IO)
+      call SPH_initialize_back_trans                                    &
+     &   (sph_mesh_trans, rj_fld_trans, sph_trns_IO)
 !
 !  -------------------------------
 !
@@ -87,7 +85,8 @@
       do i_step = i_step_init, i_step_number
         if (iflag_debug.gt.0) write(*,*) 'step ', i_step, 'start...'
 !
-        call SPH_analyze_back_trans(i_step, visval, sph_trns_IO)
+        call SPH_analyze_back_trans                                     &
+     &     (i_step, sph_mesh_trans, rj_fld_trans, sph_trns_IO, visval)
 !
         call FEM_analyze_back_trans(ucd_SPH_TRNS, i_step,               &
      &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)

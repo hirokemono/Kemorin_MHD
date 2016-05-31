@@ -7,7 +7,7 @@
 !
       use m_precision
       use m_constants
-      use m_spheric_parameter
+      use m_spheric_data_sph_spetr
       use m_pickup_sph_spectr_data
       use m_neutral_pt_by_pick_sph
 !
@@ -40,7 +40,8 @@
       call read_sph_spec_4_monitor(id_pick, i_step, time, ierr)
       icou = 0
 !
-      call set_radius_for_fdm(sph1%sph_params, sph1%sph_rj)
+      call set_radius_for_fdm                                           &
+     &   (sph_mesh_spec%sph%sph_params, sph_mesh_spec%sph%sph_rj)
       call alloc_neutral_point
 !
       do
@@ -48,7 +49,8 @@
      &     .and. i_step.ge.istep_start) then
 !
           call set_radial_grad_scalars(i_step, time,                    &
-     &        sph1%sph_rj%nidx_rj(1), sph1%sph_rj%radius_1d_rj_r,       &
+     &        sph_mesh_spec%sph%sph_rj%nidx_rj(1),                      &
+     &        sph_mesh_spec%sph%sph_rj%radius_1d_rj_r,                  &
      &        buoyancy_ratio)
           icou = icou + 1
           write(*,*) 'step ', i_step,                                   &

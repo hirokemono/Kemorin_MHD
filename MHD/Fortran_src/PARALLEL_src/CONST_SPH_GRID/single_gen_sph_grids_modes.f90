@@ -33,11 +33,10 @@
 !!        type(sph_rtp_grid), intent(inout) :: sph_rtp
 !!
 !!      subroutine gen_fem_mesh_for_sph(ndomain_sph, sph_params,       &
-!!     &          sph_rj, sph_rtp, radial_rj_grp)
+!!     &          sph_rj, sph_rtp)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(sph_rtp_grid), intent(inout) :: sph_rtp
-!!        type(group_data), intent(inout) :: radial_rj_grp
 !!
 !!      subroutine dealloc_all_comm_stacks_rlm(ndomain_sph, comm_rlm_mul)
 !!      subroutine dealloc_all_comm_stacks_rtm(ndomain_sph, comm_rtm_mul)
@@ -187,7 +186,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine gen_fem_mesh_for_sph(ndomain_sph, sph_params,         &
-     &          sph_rj, sph_rtp, radial_rj_grp)
+     &          sph_rj, sph_rtp)
 !
       use m_gauss_points
       use m_sph_mesh_1d_connect
@@ -201,9 +200,9 @@
       type(sph_rj_grid), intent(in) :: sph_rj
 !
       type(sph_rtp_grid), intent(inout) :: sph_rtp
-      type(group_data), intent(inout) :: radial_rj_grp
 !
       integer(kind = kint) :: ip_rank
+      type(group_data) :: radial_rj_grp_lc
 !
 !
       if(iflag_excluding_FEM_mesh .gt. 0) return
@@ -215,14 +214,14 @@
 !
       call s_const_1d_ele_connect_4_sph                                 &
      &   (sph_params%iflag_shell_mode, sph_params%m_folding, sph_rtp)
-      call set_rj_radial_grp(sph_params, sph_rj, radial_rj_grp)
+      call set_rj_radial_grp(sph_params, sph_rj, radial_rj_grp_lc)
 !
       do ip_rank = 0, ndomain_sph-1
         call const_fem_mesh_for_sph                                     &
-     &     (ip_rank, sph_params, radial_rj_grp, sph_rtp)
+     &     (ip_rank, sph_params, radial_rj_grp_lc, sph_rtp)
       end do
 !
-      call deallocate_grp_type(radial_rj_grp)
+      call deallocate_grp_type(radial_rj_grp_lc)
       call deallocate_gauss_points
       call deallocate_gauss_colatitude
 !

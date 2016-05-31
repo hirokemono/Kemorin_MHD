@@ -3,7 +3,11 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine SPH_analyze_zm_energies(i_step, visval)
+!!      subroutine SPH_analyze_zm_energies                              &
+!!     &         (i_step, sph_mesh, rj_fld, fld_IO, visval)
+!!        type(sph_grids), intent(in) :: sph_mesh
+!!        type(phys_data), intent(inout) :: rj_fld
+!!        type(field_IO), intent(inout) :: fld_IO
 !
       module SPH_analyzer_zm_energies
 !
@@ -17,6 +21,7 @@
       implicit none
 !
       private :: cal_zm_energy_to_pressure
+      private :: set_rj_phys_for_convective_kene
 !
 ! ----------------------------------------------------------------------
 !
@@ -24,13 +29,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_zm_energies(i_step, visval, fld_IO)
+      subroutine SPH_analyze_zm_energies                                &
+     &         (i_step, sph_mesh, rj_fld, fld_IO, visval)
 !
-      use m_spheric_parameter
-      use m_sph_spectr_data
       use m_t_step_parameter
       use m_control_params_2nd_files
       use m_node_id_spherical_IO
+      use t_spheric_mesh
+      use t_phys_data
       use t_field_data_IO
 !
       use field_IO_select
@@ -43,7 +49,10 @@
 !
 !
       integer(kind = kint), intent(in) :: i_step
+      type(sph_mesh_data), intent(in) :: sph_mesh
+!
       integer(kind = kint), intent(inout) :: visval
+      type(phys_data), intent(inout) :: rj_fld
       type(field_IO), intent(inout) :: fld_IO
 !
       integer(kind = kint) :: i_udt
@@ -65,28 +74,28 @@
         if(iflag_org_sph_rj_head .eq. 0) then
           if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
           call set_rj_phys_data_from_IO                                 &
-     &       (sph1%sph_rj%nnod_rj, fld_IO, rj_fld1)
+     &       (sph_mesh%sph%sph_rj%nnod_rj, fld_IO, rj_fld)
         else
           if (iflag_debug.gt.0) write(*,*)                              &
      &                        'r_interpolate_sph_fld_from_IO'
           call r_interpolate_sph_fld_from_IO                            &
-     &       (fld_IO, sph1%sph_rj, rj_fld1)
+     &       (fld_IO, sph_mesh%sph%sph_rj, rj_fld)
         end if
 !
 !        call set_rj_phys_for_pol_kene                                  &
-!     &     (sph1%sph_rj%nidx_rj, rj_fld1%n_point,                      &
-!     &      rj_fld1%num_phys, rj_fld1%ntot_phys, rj_fld1%phys_name,    &
-!     &      rj_fld1%istack_component, rj_fld1%d_fld)
+!     &     (sph_mesh%sph%sph_rj%nidx_rj, rj_fld%n_point,               &
+!     &      rj_fld%num_phys, rj_fld%ntot_phys, rj_fld%phys_name,       &
+!     &      rj_fld%istack_component, rj_fld%d_fld)
 !
-        call set_rj_phys_for_convective_kene
+        call set_rj_phys_for_convective_kene(sph_mesh%sph, rj_fld)
 !
 !  spherical transform for vector
-        call sph_b_trans_all_field                                      &
-     &     (sph1, comms_sph1, femmesh_STR%mesh, rj_fld1, field_STR)
+        call sph_b_trans_all_field(sph_mesh%sph, sph_mesh%sph_comms,    &
+     &      femmesh_STR%mesh, rj_fld, field_STR)
         call cal_zm_energy_to_pressure                                  &
-     &     (sph1%sph_rtp%nidx_rtp, field_STR%n_point,                   &
+     &     (sph_mesh%sph%sph_rtp%nidx_rtp, field_STR%n_point,           &
      &      field_STR%num_phys, field_STR%ntot_phys,                    &
-     &      field_STR%istack_component, field_STR%d_fld)
+     &      field_STR%istack_component, rj_fld, field_STR%d_fld)
 !
       end if
 !
@@ -165,24 +174,26 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_rj_phys_for_convective_kene
+      subroutine set_rj_phys_for_convective_kene(sph, rj_fld)
 !
-      use m_spheric_parameter
+      use t_spheric_parameter
+      use t_phys_data
       use m_phys_labels
-      use m_sph_spectr_data
       use m_phys_constants
       use m_sph_phys_address
       use cal_zonal_mean_sph_spectr
 !
+      type(sph_grids), intent(in) :: sph
+      type(phys_data), intent(inout) :: rj_fld
 !
       integer(kind = kint) :: ist_fld, i
 !
 !
-      do i = 1, rj_fld1%num_phys
-        if     (rj_fld1%phys_name(i) .eq. fhd_velo) then
-          ist_fld = rj_fld1%istack_component(i-1)+1
+      do i = 1, rj_fld%num_phys
+        if     (rj_fld%phys_name(i) .eq. fhd_velo) then
+          ist_fld = rj_fld%istack_component(i-1)+1
           call delete_zonal_mean_rj_field                               &
-     &       (n_vector, ist_fld, sph1%sph_rj, rj_fld1)
+     &       (n_vector, ist_fld, sph%sph_rj, rj_fld)
         end if
       end do
 !
@@ -191,15 +202,16 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_zm_energy_to_pressure(nidx_rtp, numnod,            &
-     &          nfield_nod, ncomp_nod, istack_comp, d_nod)
+     &          nfield_nod, ncomp_nod, istack_comp, rj_fld, d_nod)
 !
       use m_phys_labels
-      use m_sph_spectr_data
+      use t_phys_data
 !
       integer(kind = kint), intent(in) :: nidx_rtp(3)
       integer (kind = kint), intent(in) :: numnod
       integer (kind = kint), intent(in) :: nfield_nod, ncomp_nod
       integer (kind = kint), intent(in) :: istack_comp(0:nfield_nod)
+      type(phys_data), intent(in) :: rj_fld
       real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
 !
@@ -208,10 +220,10 @@
       real(kind = kreal) :: ave_ratio
 !
 !
-      do i = 1, rj_fld1%num_phys
-        if     (rj_fld1%phys_name(i) .eq. fhd_velo) then
+      do i = 1, rj_fld%num_phys
+        if     (rj_fld%phys_name(i) .eq. fhd_velo) then
           i_velo =  istack_comp(i- 1) + 1
-        else if(rj_fld1%phys_name(i) .eq. fhd_press) then
+        else if(rj_fld%phys_name(i) .eq. fhd_press) then
           i_press = istack_comp(i- 1) + 1
         end if
       end do

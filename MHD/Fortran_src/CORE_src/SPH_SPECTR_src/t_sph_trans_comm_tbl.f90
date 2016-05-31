@@ -8,9 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine alloc_type_sph_comms_stack(comms_sph)
-!!      subroutine alloc_type_sph_comms_item(sph_mesh, comms_sph)
+!!      subroutine alloc_type_sph_comms_item(sph, comms_sph)
 !!      subroutine dealloc_type_sph_comms_item(comms_sph)
-!!        type(sph_grids), intent(in) :: sph_mesh
+!!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
 !!
 !!      subroutine alloc_type_sph_comm_stack(comm)
@@ -85,21 +85,21 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_type_sph_comms_item(sph_mesh, comms_sph)
+      subroutine alloc_type_sph_comms_item(sph, comms_sph)
 !
       use t_spheric_parameter
 !
-      type(sph_grids), intent(in) :: sph_mesh
+      type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(inout) :: comms_sph
 !
 !
-      call alloc_type_sph_comm_item(sph_mesh%sph_rtp%nnod_rtp,          &
+      call alloc_type_sph_comm_item(sph%sph_rtp%nnod_rtp,               &
      &    comms_sph%comm_rtp)
-      call alloc_type_sph_comm_item(sph_mesh%sph_rtm%nnod_rtm,          &
+      call alloc_type_sph_comm_item(sph%sph_rtm%nnod_rtm,               &
      &    comms_sph%comm_rtm)
-      call alloc_type_sph_comm_item(sph_mesh%sph_rlm%nnod_rlm,          &
+      call alloc_type_sph_comm_item(sph%sph_rlm%nnod_rlm,               &
      &    comms_sph%comm_rlm)
-      call alloc_type_sph_comm_item(sph_mesh%sph_rj%nnod_rj,            &
+      call alloc_type_sph_comm_item(sph%sph_rj%nnod_rj,                 &
      &    comms_sph%comm_rj)
 !
       end subroutine alloc_type_sph_comms_item

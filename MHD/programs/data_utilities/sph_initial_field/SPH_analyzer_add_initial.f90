@@ -81,6 +81,7 @@
       use m_sph_spectr_data
       use m_sph_phys_address
       use m_physical_property
+      use m_boundary_params_sph_MHD
 !
       use set_control_sph_mhd
       use const_sph_initial_spectr
@@ -110,7 +111,8 @@
       call s_set_bc_sph_mhd                                             &
      &   (sph1%sph_params, sph1%sph_rj, sph_grps1%radial_rj_grp,        &
      &    CTR_nod_grp_name, CTR_sf_grp_name)
-      call init_reference_fields(sph1%sph_params, sph1%sph_rj)
+      call init_reference_fields                                        &
+     &   (sph1%sph_params, sph1%sph_rj, sph_bc_T)
 !
 ! ---------------------------------
 !

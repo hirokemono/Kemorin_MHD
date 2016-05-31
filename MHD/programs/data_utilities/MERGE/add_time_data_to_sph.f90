@@ -81,7 +81,7 @@
       do ip = 1, np_sph_org
         irank_org = ip - 1
         call set_local_rj_mesh_4_merge(irank_org,                       &
-     &      org_sph_mesh(ip)%sph_mesh, org_sph_mesh(ip)%sph_comms,      &
+     &      org_sph_mesh(ip)%sph, org_sph_mesh(ip)%sph_comms,           &
      &      org_sph_mesh(ip)%sph_grps)
         call set_sph_boundary_4_merge(org_sph_mesh(ip)%sph_grps,        &
      &      nlayer_ICB_org, nlayer_CMB_org)
@@ -94,7 +94,7 @@
       do jp = 1, np_sph_new
         irank_new = jp - 1
         call set_local_rj_mesh_4_merge(irank_new,                       &
-     &      new_sph_mesh(jp)%sph_mesh, new_sph_mesh(jp)%sph_comms,      &
+     &      new_sph_mesh(jp)%sph, new_sph_mesh(jp)%sph_comms,           &
      &      new_sph_mesh(jp)%sph_grps)
         call set_sph_boundary_4_merge(new_sph_mesh(jp)%sph_grps,        &
      &      nlayer_ICB_new, nlayer_CMB_new)
@@ -106,9 +106,9 @@
       do jp = 1, np_sph_new
         do ip = 1, np_sph_org
           call alloc_each_mode_tbl_4_assemble                           &
-     &      (org_sph_mesh(ip)%sph_mesh, j_table_s(jp,ip))
-          call set_mode_table_4_assemble(org_sph_mesh(ip)%sph_mesh,     &
-     &      new_sph_mesh(jp)%sph_mesh, j_table_s(jp,ip))
+     &      (org_sph_mesh(ip)%sph, j_table_s(jp,ip))
+          call set_mode_table_4_assemble(org_sph_mesh(ip)%sph,          &
+     &      new_sph_mesh(jp)%sph, j_table_s(jp,ip))
         end do
       end do
 !
@@ -116,7 +116,7 @@
       istsack_nnod_list(0) = 0
       do jp = 1, np_sph_new
         istsack_nnod_list(jp) = istsack_nnod_list(jp-1)                 &
-     &                       + new_sph_mesh(jp)%sph_mesh%sph_rj%nnod_rj
+     &                       + new_sph_mesh(jp)%sph%sph_rj%nnod_rj
       end do
       new_fst_IO%istack_numnod_IO => istsack_nnod_list
 !
@@ -124,16 +124,16 @@
 !
 !     construct interpolation table
       call sph_radial_interpolation_coef                                &
-     &     (org_sph_mesh(1)%sph_mesh%sph_rj%nidx_rj(1),                 &
-     &      org_sph_mesh(1)%sph_mesh%sph_rj%radius_1d_rj_r,             &
-     &      new_sph_mesh(1)%sph_mesh%sph_rj%nidx_rj(1),                 &
-     &      new_sph_mesh(1)%sph_mesh%sph_rj%radius_1d_rj_r, r_itp)
+     &     (org_sph_mesh(1)%sph%sph_rj%nidx_rj(1),                      &
+     &      org_sph_mesh(1)%sph%sph_rj%radius_1d_rj_r,                  &
+     &      new_sph_mesh(1)%sph%sph_rj%nidx_rj(1),                      &
+     &      new_sph_mesh(1)%sph%sph_rj%radius_1d_rj_r, r_itp)
 !
 !      Construct field list from spectr file
 !
       call load_field_name_assemble_sph                                 &
      &   (org_sph_fst_head, ifmt_org_sph_fst, istep_start,              &
-     &    np_sph_org, new_sph_mesh(1)%sph_mesh,                         &
+     &    np_sph_org, new_sph_mesh(1)%sph,                              &
      &    org_sph_phys(1), new_sph_phys(1))
 !
       do jp = 2, np_sph_new
@@ -142,7 +142,7 @@
 !
         call alloc_phys_name_type(new_sph_phys(jp))
         call alloc_phys_data_type                                       &
-     &     (new_sph_mesh(jp)%sph_mesh%sph_rj%nnod_rj, new_sph_phys(jp))
+     &     (new_sph_mesh(jp)%sph%sph_rj%nnod_rj, new_sph_phys(jp))
 !
         new_sph_phys(jp)%num_component = new_sph_phys(1)%num_component
         new_sph_phys(jp)%istack_component                               &
@@ -154,7 +154,7 @@
 !
 !      do jp = 1, np_sph_new
 !        do ip = 1, np_sph_org
-!          do j = 1, org_sph_mesh(1)%sph_mesh%sph_rj%nidx_rj(2)
+!          do j = 1, org_sph_mesh(1)%sph%sph_rj%nidx_rj(2)
 !            if(j_table_s(jp,ip)%j_org_to_new(j).gt. 0)                 &
 !     &        write(50+my_rank,*) ip, j,                               &
 !     &        j_table_s(jp,ip)%j_org_to_new(j)
@@ -167,7 +167,7 @@
 !     Load original spectr data
         do ip = 1, np_sph_org
           call load_org_fld_data(org_sph_fst_head, ifmt_org_sph_fst,    &
-     &        ip, istep, org_sph_mesh(ip)%sph_mesh, org_sph_phys(ip))
+     &        ip, istep, org_sph_mesh(ip)%sph, org_sph_phys(ip))
         end do
         time = 0.0d0
         dt =   0.0d0
@@ -180,18 +180,18 @@
 !     Copy spectr data to temporal array
             if(r_itp%iflag_same_rgrid .eq. 0) then
               call r_itp_field_data_sph_assemble                        &
-     &          (org_sph_mesh(ip)%sph_mesh, new_sph_mesh(jp)%sph_mesh,  &
+     &          (org_sph_mesh(ip)%sph, new_sph_mesh(jp)%sph,            &
      &           r_itp, j_table_s(jp,ip), new_sph_phys(jp)%ntot_phys,   &
      &           org_sph_phys(ip)%d_fld, new_sph_phys(jp)%d_fld)
             else
-              call copy_field_data_sph_assemble&
-     &          (org_sph_mesh(ip)%sph_mesh, new_sph_mesh(jp)%sph_mesh,  &
+              call copy_field_data_sph_assemble                         &
+     &          (org_sph_mesh(ip)%sph, new_sph_mesh(jp)%sph,            &
      &           j_table_s(jp,ip), new_sph_phys(jp)%ntot_phys,          &
      &           org_sph_phys(ip)%d_fld, new_sph_phys(jp)%d_fld)
             end if
 !
             call copy_field_data_sph_center                             &
-     &          (org_sph_mesh(ip)%sph_mesh, new_sph_mesh(jp)%sph_mesh,  &
+     &          (org_sph_mesh(ip)%sph, new_sph_mesh(jp)%sph,            &
      &           j_table_s(jp,ip), new_sph_phys(jp)%ntot_phys,          &
      &           org_sph_phys(ip)%d_fld, new_sph_phys(jp)%d_fld)
 !
@@ -204,7 +204,7 @@
         do jp = 1, np_sph_new
           irank_new = jp - 1
           call const_assembled_sph_data                                 &
-     &       (b_sph_ratio, new_sph_mesh(jp)%sph_mesh,                   &
+     &       (b_sph_ratio, new_sph_mesh(jp)%sph,                        &
      &        r_itp, new_sph_phys(jp), new_fst_IO)
 !
           call sel_write_step_SPH_field_file                            &

@@ -3,8 +3,9 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine SPH_init_gauss_back_trans
-!      subroutine SPH_analyze_gauss_back_trans(i_step, visval)
+!!      subroutine SPH_init_gauss_back_trans(sph_mesh, rj_fld)
+!!      subroutine SPH_analyze_gauss_back_trans                         &
+!!     &         (i_step, sph_mesh, rj_fld, visval)
 !
       module SPH_analyzer_gauss_b_trans
 !
@@ -20,13 +21,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_init_gauss_back_trans
+      subroutine SPH_init_gauss_back_trans(sph_mesh, rj_fld)
 !
       use m_t_step_parameter
       use m_ctl_params_sph_trans
       use m_node_id_spherical_IO
-      use m_spheric_parameter
-      use m_sph_spectr_data
+      use t_spheric_mesh
+      use t_phys_data
 !
       use r_interpolate_sph_data
       use count_num_sph_smp
@@ -37,20 +38,23 @@
       use legendre_transform_select
       use sph_transfer_all_field
 !
+      type(sph_mesh_data), intent(inout) :: sph_mesh
+      type(phys_data), intent(inout) :: rj_fld
+!
 !  ------  initialize spectr data
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_sph_name_rj_to_rtp'
-      call copy_sph_name_rj_to_rtp(rj_fld1)
+      call copy_sph_name_rj_to_rtp(rj_fld)
 !
 !  ------    set original spectr modes
 !
-      call set_sph_magne_address(rj_fld1)
-      call set_cmb_icb_radial_point                                     &
-     &   (cmb_radial_grp, icb_radial_grp, sph_grps1%radial_rj_grp)
+      call set_sph_magne_address(rj_fld)
+      call set_cmb_icb_radial_point(cmb_radial_grp, icb_radial_grp,     &
+     &    sph_mesh%sph_grps%radial_rj_grp)
 !
 !  ---- allocate spectr data
 !
-      call alloc_phys_data_type(sph1%sph_rj%nnod_rj, rj_fld1)
+      call alloc_phys_data_type(sph_mesh%sph%sph_rj%nnod_rj, rj_fld)
 !
 !  ---- initialize spherical harmonics transform
 !
@@ -58,21 +62,22 @@
       if(id_legendre_transfer.eq.iflag_leg_undefined)                   &
      &            id_legendre_transfer = iflag_leg_orginal_loop
       call copy_sph_trans_nums_from_rtp
-      call initialize_sph_trans(sph1, comms_sph1)
-      call init_pole_transform(sph1%sph_rtp)
-      call allocate_d_pole_4_all_trans(sph1%sph_rtp)
+      call initialize_sph_trans(sph_mesh%sph, sph_mesh%sph_comms)
+      call init_pole_transform(sph_mesh%sph%sph_rtp)
+      call allocate_d_pole_4_all_trans(sph_mesh%sph%sph_rtp)
 !
       end subroutine SPH_init_gauss_back_trans
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_gauss_back_trans(i_step, visval)
+      subroutine SPH_analyze_gauss_back_trans                           &
+     &         (i_step, sph_mesh, rj_fld, visval)
 !
-      use m_spheric_parameter
-      use m_sph_spectr_data
       use m_t_step_parameter
       use m_ctl_params_sph_trans
       use m_global_gauss_coefs
+      use t_spheric_mesh
+      use t_phys_data
 !
       use r_interpolate_sph_data
 !
@@ -82,7 +87,11 @@
 !
 !
       integer(kind = kint), intent(in) :: i_step
+      type(sph_mesh_data), intent(in) :: sph_mesh
+!
       integer(kind = kint), intent(inout) :: visval
+      type(phys_data), intent(inout) :: rj_fld
+!
       character(len=kchara) :: fname_tmp
 !
       integer(kind = kint) :: i_udt
@@ -105,13 +114,14 @@
 !
         if (iflag_debug.gt.0) write(*,*)                                &
      &                        'set_poloidal_b_by_gauss_coefs'
-        call set_poloidal_b_by_gauss_coefs(sph1%sph_rj, rj_fld1)
+        call set_poloidal_b_by_gauss_coefs                              &
+     &     (sph_mesh%sph%sph_rj, rj_fld)
         call deallocate_gauss_global_coefs
 !
-!        call check_all_field_data(my_rank, rj_fld1)
+!        call check_all_field_data(my_rank, rj_fld)
 !  spherical transform for vector
-        call sph_b_trans_all_field                                      &
-     &     (sph1, comms_sph1, femmesh_STR%mesh, rj_fld1, field_STR)
+        call sph_b_trans_all_field(sph_mesh%sph, sph_mesh%sph_comms,    &
+     &      femmesh_STR%mesh, rj_fld, field_STR)
       end if
 !
       end subroutine SPH_analyze_gauss_back_trans

@@ -17,6 +17,7 @@ TARGET_ZMEAN_KENE =        sph_zm_kinetic_energies
 SOURCES = $(shell ls *.f90)
 
 MOD_SPH_TRANSFORM = \
+m_spheric_data_transform.o \
 m_SPH_transforms.o \
 m_ctl_data_4_sph_trans.o \
 m_ctl_params_sph_trans.o \

@@ -11,9 +11,9 @@
 !!      subroutine dealloc_sph_mesh_4_merge
 !!
 !!      subroutine set_local_rj_mesh_4_merge                            &
-!!     &         (my_rank, sph_mesh, sph_comms, sph_grps)
+!!     &         (my_rank, sph, sph_comms, sph_grps)
 !!        integer(kind = kint), intent(in) :: my_rank
-!!        type(sph_grids), intent(inout) ::       sph_mesh
+!!        type(sph_grids), intent(inout) ::       sph
 !!        type(sph_comm_tables), intent(inout) :: sph_comms
 !!        type(sph_group_data), intent(inout) ::  sph_grps
 !!      subroutine set_sph_boundary_4_merge(sph_grps,                   &
@@ -48,7 +48,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_local_rj_mesh_4_merge                              &
-     &         (my_rank, sph_mesh, sph_comms, sph_grps)
+     &         (my_rank, sph, sph_comms, sph_grps)
 !
       use m_node_id_spherical_IO
       use m_group_data_sph_specr_IO
@@ -58,7 +58,7 @@
       use set_group_types_4_IO
 !
       integer(kind = kint), intent(in) :: my_rank
-      type(sph_grids), intent(inout) ::       sph_mesh
+      type(sph_grids), intent(inout) ::       sph
       type(sph_comm_tables), intent(inout) :: sph_comms
       type(sph_group_data), intent(inout) ::  sph_grps
 !
@@ -66,9 +66,9 @@
       call sel_read_spectr_modes_rj_file(my_rank)
 !
       call copy_sph_node_4_rj_from_IO                                   &
-     &    (sph_mesh%sph_params%l_truncation, sph_mesh%sph_rj)
+     &    (sph%sph_params%l_truncation, sph%sph_rj)
       call copy_comm_sph_type_from_IO                                   &
-     &   (my_rank, sph_mesh%sph_rj%nnod_rj, sph_comms%comm_rj)
+     &   (my_rank, sph%sph_rj%nnod_rj, sph_comms%comm_rj)
 !
       call set_gruop_stracture                                          &
      &   (radial_rj_grp_IO, sph_grps%radial_rj_grp)

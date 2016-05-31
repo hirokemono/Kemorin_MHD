@@ -7,10 +7,8 @@
 !!     &          (nnod_rtp, nnod_rtm, nnod_rlm, nnod_rj)
 !!      subroutine deallocate_idx_sph_recieve
 !!
-!!      subroutine sph_indices_transfer(itype, comms_sph,               &
-!!     &           nnod_rtp, nnod_rtm, nnod_rlm, nnod_rj,               &
-!!     &           idx_global_rtp, idx_global_rtm,                      &
-!!     &           idx_global_rlm, idx_global_rj)
+!!      subroutine sph_type_indices_transfer(itype, sph, comms_sph)
+!!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!      subroutine compare_transfer_sph_indices(id_check, sph)
 !!      subroutine check_missing_sph_indices(id_check, sph)
@@ -26,6 +24,8 @@
       integer(kind = kint), allocatable :: idx_rtm_recieve(:,:)
       integer(kind = kint), allocatable :: idx_rlm_recieve(:,:)
       integer(kind = kint), allocatable :: idx_rj_recieve(:,:)
+!
+      private :: sph_indices_transfer
 !
 ! -----------------------------------------------------------------------
 !
@@ -61,6 +61,28 @@
       deallocate(idx_rj_recieve )
 !
       end subroutine deallocate_idx_sph_recieve
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine sph_type_indices_transfer(itype, sph, comms_sph)
+!
+      use t_spheric_parameter
+      use t_sph_trans_comm_tbl
+!
+      type(sph_grids), intent(in) :: sph
+      type(sph_comm_tables), intent(in) :: comms_sph
+!
+      integer(kind = kint), intent(in) :: itype
+!
+!
+      call sph_indices_transfer(itype, comms_sph,                       &
+     &    sph%sph_rtp%nnod_rtp, sph%sph_rtm%nnod_rtm,                   &
+     &    sph%sph_rlm%nnod_rlm, sph%sph_rj%nnod_rj,                     &
+     &    sph%sph_rtp%idx_global_rtp, sph%sph_rtm%idx_global_rtm,       &
+     &    sph%sph_rlm%idx_global_rlm, sph%sph_rj%idx_global_rj)
+!
+      end subroutine sph_type_indices_transfer
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

@@ -12,6 +12,7 @@
       use calypso_mpi
       use m_SPH_transforms
       use m_work_time
+      use m_spheric_data_transform
 !
       use FEM_analyzer_back_trans
       use SPH_analyzer_gauss_b_trans
@@ -29,8 +30,6 @@
 !
       use m_ctl_data_4_sph_trans
       use m_ctl_params_sph_trans
-      use m_spheric_parameter
-      use m_sph_spectr_data
       use parallel_load_data_4_sph
 !
 !
@@ -42,11 +41,12 @@
       if (iflag_debug.gt.0) write(*,*) 'read_control_data_sph_trans'
       call read_control_data_sph_trans
       if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_sph_trans'
-      call s_set_ctl_data_4_sph_trans(ucd_SPH_TRNS, rj_fld1)
+      call s_set_ctl_data_4_sph_trans(ucd_SPH_TRNS, rj_fld_trans)
 !
 !  ------    set spectr grids
       if (iflag_debug.gt.0) write(*,*) 'load_para_SPH_and_FEM_mesh'
-      call load_para_SPH_and_FEM_mesh(sph1, comms_sph1, sph_grps1,      &
+      call load_para_SPH_and_FEM_mesh(sph_mesh_trans%sph,               &
+     &    sph_mesh_trans%sph_comms, sph_mesh_trans%sph_grps,            &
      &    femmesh_STR%mesh, femmesh_STR%group, elemesh_STR)
 !
 !  ------  initialize FEM data
@@ -58,7 +58,7 @@
 !  ------  initialize spectr data
 !
       if (iflag_debug.gt.0) write(*,*) 'SPH_init_gauss_back_trans'
-      call SPH_init_gauss_back_trans
+      call SPH_init_gauss_back_trans(sph_mesh_trans, rj_fld_trans)
 !
       call init_visualize(femmesh_STR%mesh, femmesh_STR%group,          &
      &    elemesh_STR, field_STR)
@@ -79,7 +79,8 @@
       do i_step = i_step_init, i_step_number
         if (iflag_debug.gt.0) write(*,*) 'step ', i_step, 'start...'
 !
-        call SPH_analyze_gauss_back_trans(i_step, visval)
+        call SPH_analyze_gauss_back_trans                               &
+     &     (i_step, sph_mesh_trans, rj_fld_trans, visval)
 !
         call FEM_analyze_back_trans(ucd_SPH_TRNS, i_step,               &
      &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)

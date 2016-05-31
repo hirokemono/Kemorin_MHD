@@ -8,6 +8,7 @@
 !!@verbatim
 !!      subroutine load_para_SPH_and_FEM_mesh                           &
 !!     &         (sph, comms_sph, sph_grps, mesh, group, ele_mesh)
+!!      subroutine load_para_SPH_rj_mesh(sph, comms_sph, sph_grps)
 !!      subroutine load_para_sph_mesh(sph, bc_rtp_grp, sph_grps)
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
@@ -70,6 +71,21 @@
      &    mesh, group, ele_mesh)
 !
       end subroutine load_para_SPH_and_FEM_mesh
+!
+! -----------------------------------------------------------------------
+!
+      subroutine load_para_SPH_rj_mesh(sph, comms_sph, sph_grps)
+!
+      type(sph_grids), intent(inout) :: sph
+      type(sph_comm_tables), intent(inout) :: comms_sph
+      type(sph_group_data), intent(inout) ::  sph_grps
+!
+!
+      call load_para_rj_mesh                                            &
+     &   (sph%sph_params, sph%sph_rj, comms_sph%comm_rj,                &
+     &    sph_grps%radial_rj_grp, sph_grps%sphere_rj_grp)
+!
+      end subroutine load_para_SPH_rj_mesh
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
