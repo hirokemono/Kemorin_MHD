@@ -10,7 +10,7 @@
 !!@verbatim
 !!      subroutine copy_velo_to_grad_v_rtp(sph_rtp, b_trns, ft_trns,    &
 !!     &          ncomp_rj_2_rtp, ncomp_tmp_rtp_2_rj, fld_rtp, frt_rtp)
-!!      subroutine cal_grad_of_velocities_sph(sph_rj, rj_fld)
+!!      subroutine cal_grad_of_velocities_sph(sph_rj, g_sph_rj, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
@@ -73,7 +73,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_grad_of_velocities_sph(sph_rj, rj_fld)
+      subroutine cal_grad_of_velocities_sph(sph_rj, g_sph_rj, rj_fld)
 !
       use t_spheric_rj_data
       use t_phys_data
@@ -81,6 +81,8 @@
       use const_sph_radial_grad
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
+      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
+!
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -89,11 +91,11 @@
       call copy_grad_vect_to_m_stretch(sph_rj%istack_inod_rj_smp,       &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      call const_sph_gradient_no_bc(sph_rj, sph_bc_U,                   &
+      call const_sph_gradient_no_bc(sph_rj, sph_bc_U, g_sph_rj,         &
      &   (ipol%i_mag_stretch  ), ipol%i_grad_vx, rj_fld)
-      call const_sph_gradient_no_bc(sph_rj, sph_bc_U,                   &
+      call const_sph_gradient_no_bc(sph_rj, sph_bc_U, g_sph_rj,         &
      &   (ipol%i_mag_stretch+1), ipol%i_grad_vy, rj_fld)
-      call const_sph_gradient_no_bc(sph_rj, sph_bc_U,                   &
+      call const_sph_gradient_no_bc(sph_rj, sph_bc_U, g_sph_rj,         &
      &   (ipol%i_mag_stretch+2), ipol%i_grad_vz, rj_fld)
 !
       end subroutine cal_grad_of_velocities_sph

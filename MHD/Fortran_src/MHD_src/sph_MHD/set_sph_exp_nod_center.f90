@@ -7,14 +7,15 @@
 !>@brief  Evaluate field approaching to center
 !!
 !!@verbatim
-!!      subroutine sph_center_fld_and_curl(n_point, jmax, a2r_k1,       &
-!!     &          is_fld, is_rot, ntot_phys_rj, d_rj)
+!!      subroutine sph_center_fld_and_curl(jmax, a2r_k1, g_sph_rj,      &
+!!     &          is_fld, is_rot, n_point, ntot_phys_rj, d_rj)
 !!      subroutine cal_dsdr_sph_center_2                                &
-!!     &         (n_point, jmax, is_fld, ntot_phys_rj, d_rj)
-!!      subroutine cal_sph_nod_center_rot2(n_point, jmax, a2r_k1,       &
-!!     &          is_fld, is_rot, ntot_phys_rj, d_rj)
-!!      subroutine cal_sph_nod_center_diffuse2(n_point, jmax, a2r_k1,   &
-!!     &          coef_d, is_fld, is_diffuse, ntot_phys_rj, d_rj)
+!!     &         (jmax, is_fld, n_point, ntot_phys_rj, d_rj)
+!!      subroutine cal_sph_nod_center_rot2(jmax, a2r_k1, g_sph_rj,      &
+!!     &         is_fld, is_rot, n_point, ntot_phys_rj, d_rj)
+!!      subroutine cal_sph_nod_center_diffuse2                          &
+!!     &         (jmax, a2r_k1, g_sph_rj, coef_d, is_fld, is_diffuse,   &
+!!     &          n_point, ntot_phys_rj, d_rj)
 !!@endverbatim
 !!
 !!@n @param n_point  Number of points for spectrum data
@@ -32,9 +33,7 @@
       module set_sph_exp_nod_center
 !
       use m_precision
-!
       use m_constants
-      use m_schmidt_poly_on_rtm
       use m_fdm_coefs
 !
       implicit none
@@ -45,12 +44,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sph_center_fld_and_curl(n_point, jmax, a2r_k1,         &
-     &          is_fld, is_rot, ntot_phys_rj, d_rj)
+      subroutine sph_center_fld_and_curl(jmax, a2r_k1, g_sph_rj,        &
+     &          is_fld, is_rot, n_point, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax
       integer(kind = kint), intent(in) :: is_fld
       integer(kind = kint), intent(in) :: is_rot
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real (kind=kreal), intent(in) :: a2r_k1
 !
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
@@ -85,7 +85,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_dsdr_sph_center_2                                  &
-     &         (n_point, jmax, is_fld, ntot_phys_rj, d_rj)
+     &         (jmax, is_fld, n_point, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax
       integer(kind = kint), intent(in) :: is_fld
@@ -111,12 +111,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_center_rot2(n_point, jmax, a2r_k1,         &
-     &          is_fld, is_rot, ntot_phys_rj, d_rj)
+      subroutine cal_sph_nod_center_rot2(jmax, a2r_k1, g_sph_rj,        &
+     &         is_fld, is_rot, n_point, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax
       integer(kind = kint), intent(in) :: is_fld
       integer(kind = kint), intent(in) :: is_rot
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real (kind=kreal), intent(in) :: a2r_k1
 !
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
@@ -147,12 +148,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_center_diffuse2(n_point, jmax, a2r_k1,     &
-     &          coef_d, is_fld, is_diffuse, ntot_phys_rj, d_rj)
+      subroutine cal_sph_nod_center_diffuse2                            &
+     &         (jmax, a2r_k1, g_sph_rj, coef_d, is_fld, is_diffuse,     &
+     &          n_point, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax
       integer(kind = kint), intent(in) :: is_fld
       integer(kind = kint), intent(in) :: is_diffuse
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real (kind=kreal), intent(in) :: a2r_k1
       real(kind = kreal), intent(in) :: coef_d
 !

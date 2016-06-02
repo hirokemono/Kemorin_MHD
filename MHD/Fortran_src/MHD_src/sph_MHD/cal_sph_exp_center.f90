@@ -7,32 +7,36 @@
 !>@brief  Set center fields by explicit method
 !!
 !!@verbatim
-!!      subroutine cal_sph_fixed_center(inod_rj_center, n_point,        &
-!!     &          CTR_fld, is_fld, ntot_phys_rj, d_rj)
-!!      subroutine cal_sph_center1_grad22(n_point, jmax, r_CTR1,        &
-!!     &          fdm2_fix_fld_ctr1, is_fld, is_grd, ntot_phys_rj, d_rj)
+!!      subroutine cal_sph_fixed_center(inod_rj_center, CTR_fld, is_fld,&
+!!     &          n_point, ntot_phys_rj, d_rj)
+!!      subroutine cal_sph_center1_grad22(jmax, r_CTR1, g_sph_rj,       &
+!!     &          fdm2_fix_fld_ctr1, is_fld, is_grd,                    &
+!!     &          n_point, ntot_phys_rj, d_rj)
 !!      subroutine sph0_scalar_fill_ctr_grad2                           &
-!!     &         (inod_rj_center, idx_rj_degree_zero, n_point, jmax,    &
-!!     &          fdm2_fix_fld_ctr1, is_fld, is_grd, ntot_phys_rj, d_rj)
+!!     &         (inod_rj_center, idx_rj_degree_zero, jmax,             &
+!!     &          fdm2_fix_fld_ctr1, is_fld, is_grd,                    &
+!!     &          n_point, ntot_phys_rj, d_rj)
 !!      subroutine dsdr_sph_lm0_fixed_ctr_2                             &
-!!     &        (inod_rj_center, idx_rj_degree_zero, n_point, jmax,     &
-!!     &         r_CTR1, d_center, fdm2_fix_fld_ctr1, fdm2_fixed_center,&
-!!     &         is_fld, is_grd, ntot_phys_rj, d_rj)
+!!     &        (inod_rj_center, idx_rj_degree_zero, jmax, r_CTR1,      &
+!!     &         g_sph_rj, d_center, fdm2_fix_fld_ctr1,                 &
+!!     &         fdm2_fixed_center, is_fld, is_grd,                     &
+!!     &         n_point, ntot_phys_rj, d_rj)
 !!
-!!      subroutine cal_sph_div_flux_4_fix_ctr(n_point, jmax,            &
-!!     &          r_CTR1, fix_ICB, fdm2_fix_fld_ctr1, is_fld, is_div,   &
-!!     &          ntot_phys_rj, d_rj)
+!!      subroutine cal_sph_div_flux_4_fix_ctr(jmax, r_CTR1, g_sph_rj,   &
+!!     &          fix_ICB, fdm2_fix_fld_ctr1, is_fld, is_div,           &
+!!     &          n_point, ntot_phys_rj, d_rj)
 !!
-!!      subroutine cal_sph_fixed_center1_diffuse2(n_point, jmax,        &
-!!     &          r_CTR1, fdm2_fix_fld_ctr1, fix_CTR, coef_d,           &
-!!     &          is_fld, is_diffuse, ntot_phys_rj, d_rj)
+!!      subroutine cal_sph_fixed_center1_diffuse2(jmax, r_CTR1,         &
+!!     &          g_sph_rj, fdm2_fix_fld_ctr1, fix_CTR, coef_d,         &
+!!     &          is_fld, is_diffuse, n_point, ntot_phys_rj, d_rj)
 !!      subroutine cal_sph_filled_center_diffuse2                       &
-!!     &         (inod_rj_center, idx_rj_degree_zero, n_point, jmax,    &
-!!     &          r_CTR1, fdm2_fix_fld_ctr1, fdm2_fix_dr_center,        &
-!!     &          coef_d, is_fld, is_diffuse, ntot_phys_rj, d_rj)
+!!     &         (inod_rj_center, idx_rj_degree_zero, jmax, r_CTR1,     &
+!!     &          g_sph_rj, fdm2_fix_fld_ctr1, fdm2_fix_dr_center,      &
+!!     &          coef_d, is_fld, is_diffuse,                           &
+!!     &          n_point, ntot_phys_rj, d_rj)
 !!      subroutine cal_sph_fixed_center_diffuse2                        &
-!!     &          (inod_rj_center, idx_rj_degree_zero, n_point,         &
-!!     &           is_diffuse, ntot_phys_rj, d_rj)
+!!     &          (inod_rj_center, idx_rj_degree_zero,                  &
+!!     &           is_diffuse, n_point, ntot_phys_rj, d_rj)
 !!@endverbatim
 !!
 !!@n @param inod_rj_center        Local address for center
@@ -55,9 +59,7 @@
       module cal_sph_exp_center
 !
       use m_precision
-!
       use m_constants
-      use m_schmidt_poly_on_rtm
 !
       implicit none
 !
@@ -67,8 +69,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_fixed_center(inod_rj_center, n_point,          &
-     &          CTR_fld, is_fld, ntot_phys_rj, d_rj)
+      subroutine cal_sph_fixed_center(inod_rj_center, CTR_fld, is_fld,  &
+     &          n_point, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: inod_rj_center
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
@@ -85,12 +87,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_center1_grad22(n_point, jmax, r_CTR1,          &
-     &          fdm2_fix_fld_ctr1, is_fld, is_grd, ntot_phys_rj, d_rj)
+      subroutine cal_sph_center1_grad22(jmax, r_CTR1, g_sph_rj,         &
+     &          fdm2_fix_fld_ctr1, is_fld, is_grd,                      &
+     &          n_point, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       integer(kind = kint), intent(in) :: is_fld, is_grd
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_CTR1(0:2)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_ctr1(-1:1,3)
 !
@@ -118,8 +122,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sph0_scalar_fill_ctr_grad2                             &
-     &         (inod_rj_center, idx_rj_degree_zero, n_point, jmax,      &
-     &          fdm2_fix_fld_ctr1, is_fld, is_grd, ntot_phys_rj, d_rj)
+     &         (inod_rj_center, idx_rj_degree_zero, jmax,               &
+     &          fdm2_fix_fld_ctr1, is_fld, is_grd,                      &
+     &          n_point, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: inod_rj_center
       integer(kind = kint), intent(in) :: idx_rj_degree_zero
@@ -156,14 +161,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine dsdr_sph_lm0_fixed_ctr_2                               &
-     &        (inod_rj_center, idx_rj_degree_zero, n_point, jmax,       &
-     &         r_CTR1, d_center, fdm2_fix_fld_ctr1, fdm2_fixed_center,  &
-     &         is_fld, is_grd, ntot_phys_rj, d_rj)
+     &        (inod_rj_center, idx_rj_degree_zero, jmax, r_CTR1,        &
+     &         g_sph_rj, d_center, fdm2_fix_fld_ctr1,                   &
+     &         fdm2_fixed_center, is_fld, is_grd,                       &
+     &         n_point, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: inod_rj_center
       integer(kind = kint), intent(in) :: idx_rj_degree_zero
       integer(kind = kint), intent(in) :: jmax
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: d_center
       real(kind = kreal), intent(in) :: r_CTR1(0:2)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_ctr1(-1:1,3)
@@ -203,13 +210,14 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_div_flux_4_fix_ctr(n_point, jmax,              &
-     &          r_CTR1, fix_ICB, fdm2_fix_fld_ctr1, is_fld, is_div,     &
-     &          ntot_phys_rj, d_rj)
+      subroutine cal_sph_div_flux_4_fix_ctr(jmax, r_CTR1, g_sph_rj,     &
+     &          fix_ICB, fdm2_fix_fld_ctr1, is_fld, is_div,             &
+     &          n_point, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       integer(kind = kint), intent(in) :: is_fld, is_div
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_CTR1(0:2)
       real(kind = kreal), intent(in) :: fix_ICB(jmax)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_ctr1(-1:1,3)
@@ -238,13 +246,14 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_fixed_center1_diffuse2(n_point, jmax,          &
-     &          r_CTR1, fdm2_fix_fld_ctr1, fix_CTR, coef_d,             &
-     &          is_fld, is_diffuse, ntot_phys_rj, d_rj)
+      subroutine cal_sph_fixed_center1_diffuse2(jmax, r_CTR1,           &
+     &          g_sph_rj, fdm2_fix_fld_ctr1, fix_CTR, coef_d,           &
+     &          is_fld, is_diffuse, n_point, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: is_fld, is_diffuse
       integer(kind = kint), intent(in) :: jmax
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: fix_CTR(jmax)
       real(kind = kreal), intent(in) :: r_CTR1(0:2)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_ctr1(-1:1,3)
@@ -279,15 +288,17 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sph_filled_center_diffuse2                         &
-     &         (inod_rj_center, idx_rj_degree_zero, n_point, jmax,      &
-     &          r_CTR1, fdm2_fix_fld_ctr1, fdm2_fix_dr_center,          &
-     &          coef_d, is_fld, is_diffuse, ntot_phys_rj, d_rj)
+     &         (inod_rj_center, idx_rj_degree_zero, jmax, r_CTR1,       &
+     &          g_sph_rj, fdm2_fix_fld_ctr1, fdm2_fix_dr_center,        &
+     &          coef_d, is_fld, is_diffuse,                             &
+     &          n_point, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       integer(kind = kint), intent(in) :: inod_rj_center
       integer(kind = kint), intent(in) :: idx_rj_degree_zero
       integer(kind = kint), intent(in) :: is_fld, is_diffuse
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_CTR1(0:2)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_ctr1(-1:1,3)
       real(kind = kreal), intent(in) :: fdm2_fix_dr_center(-1:1,3)
@@ -342,8 +353,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sph_fixed_center_diffuse2                          &
-     &          (inod_rj_center, idx_rj_degree_zero, n_point,           &
-     &           is_diffuse, ntot_phys_rj, d_rj)
+     &          (inod_rj_center, idx_rj_degree_zero,                    &
+     &           is_diffuse, n_point, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: inod_rj_center
       integer(kind = kint), intent(in) :: idx_rj_degree_zero

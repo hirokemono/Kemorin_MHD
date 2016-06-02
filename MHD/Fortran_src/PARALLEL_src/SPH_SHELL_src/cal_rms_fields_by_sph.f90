@@ -98,6 +98,7 @@
 !
       use calypso_mpi
       use m_rms_4_sph_spectr
+      use m_schmidt_poly_on_rtm
 !
       use volume_average_4_sph
       use cal_ave_4_rms_vector_sph
@@ -118,7 +119,7 @@
      &   sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, avol)
       if(iflag_debug .gt. 0) write(*,*) 'sum_sph_layerd_rms'
       call sum_sph_layerd_rms(kr_st, kr_ed,                             &
-     &    l_truncation, sph_rj, rj_fld)
+     &    l_truncation, sph_rj, g_sph_rj, rj_fld)
 !
       if(my_rank .eq. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'surf_ave_4_sph_rms_int'

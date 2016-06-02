@@ -9,20 +9,20 @@
 !!
 !!@verbatim
 !!      subroutine cal_sph_icb_rigid_v_and_w_s4t2                       &
-!!     &         (nnod_rj, jmax, kr_in, r_ICB, r_ICB1, fdm2_fix_fld_ICB,&
-!!     &          fdm4_noslip_ICB, fdm4_noslip_ICB1, Vt_ICB,            &
-!!     &          is_fld, is_rot, ntot_phys_rj, d_rj)
+!!     &        (jmax, g_sph_rj, kr_in, r_ICB, r_ICB1, fdm2_fix_fld_ICB,&
+!!     &         fdm4_noslip_ICB, fdm4_noslip_ICB1, Vt_ICB,             &
+!!     &         is_fld, is_rot, n_point, ntot_phys_rj, d_rj)
 !!      subroutine cal_sph_icb_rigid_rot_s4t2                           &
-!!     &         (nnod_rj, jmax, kr_in, r_ICB1, fdm2_fix_fld_ICB,       &
-!!     &          fdm4_noslip_ICB, fdm4_noslip_ICB1, is_fld, is_rot,    &
-!!!    &          ntot_phys_rj, d_rj)
+!!     &        (jmax, g_sph_rj, kr_in, r_ICB1, fdm2_fix_fld_ICB,       &
+!!     &         fdm4_noslip_ICB, fdm4_noslip_ICB1, is_fld, is_rot,     &
+!!!    &         n_point, ntot_phys_rj, d_rj)
 !!      subroutine cal_sph_icb_rigid_diffuse_s4t2                       &
-!!     &         (nnod_rj, jmax, kr_in, r_ICB, r_ICB1, fdm2_fix_fld_ICB,&
-!!     &          fdm4_noslip_ICB, fdm4_noslip_ICB1, coef_d,            &
-!!     &          is_fld, is_diffuse, ntot_phys_rj, d_rj)
+!!     &        (jmax, g_sph_rj, kr_in, r_ICB, r_ICB1, fdm2_fix_fld_ICB,&
+!!     &         fdm4_noslip_ICB, fdm4_noslip_ICB1, coef_d,             &
+!!     &         is_fld, is_diffuse, n_point, ntot_phys_rj, d_rj)
 !!@endverbatim
 !!
-!!@n @param nnod_rj  Number of points for spectrum data
+!!@n @param n_point  Number of points for spectrum data
 !!@n @param jmax  Number of modes for spherical harmonics @f$L*(L+2)@f$
 !!@n @param kr_in       Radial ID for inner boundary
 !!@n @param r_ICB(0:2)    Radius at ICB
@@ -52,7 +52,6 @@
       use m_precision
 !
       use m_constants
-      use m_schmidt_poly_on_rtm
       use m_fdm_coefs
 !
       implicit none
@@ -64,20 +63,21 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sph_icb_rigid_v_and_w_s4t2                         &
-     &         (nnod_rj, jmax, kr_in, r_ICB, r_ICB1, fdm2_fix_fld_ICB,  &
+     &         (jmax, g_sph_rj, kr_in, r_ICB, r_ICB1, fdm2_fix_fld_ICB, &
      &          fdm4_noslip_ICB, fdm4_noslip_ICB1, Vt_ICB,              &
-     &          is_fld, is_rot, ntot_phys_rj, d_rj)
+     &          is_fld, is_rot, n_point, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax, kr_in
       integer(kind = kint), intent(in) :: is_fld, is_rot
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_ICB(0:2), r_ICB1(0:2)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_ICB(0:2,3)
       real(kind = kreal), intent(in) :: fdm4_noslip_ICB(0:2,3:5)
       real(kind = kreal), intent(in) :: fdm4_noslip_ICB1(-1:2,5)
       real(kind = kreal), intent(in) :: Vt_ICB(jmax)
 !
-      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, j, i_p1, i_p2, i_p3
       real(kind = kreal) :: d1s_dr1, d2s_dr2, d1t_dr1
@@ -130,19 +130,20 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sph_icb_rigid_rot_s4t2                             &
-     &         (nnod_rj, jmax, kr_in, r_ICB1, fdm2_fix_fld_ICB,         &
+     &         (jmax, g_sph_rj, kr_in, r_ICB1, fdm2_fix_fld_ICB,        &
      &          fdm4_noslip_ICB, fdm4_noslip_ICB1, is_fld, is_rot,      &
-     &          ntot_phys_rj, d_rj)
+     &          n_point, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax, kr_in
       integer(kind = kint), intent(in) :: is_fld, is_rot
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_ICB1(0:2)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_ICB(0:2,3)
       real(kind = kreal), intent(in) :: fdm4_noslip_ICB(0:2,3:5)
       real(kind = kreal), intent(in) :: fdm4_noslip_ICB1(-1:2,5)
 !
-      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, j, i_p1, i_p2, i_p3
       real(kind = kreal) :: d2s_dr2, d1t_dr1
@@ -186,20 +187,21 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sph_icb_rigid_diffuse_s4t2                         &
-     &         (nnod_rj, jmax, kr_in, r_ICB, r_ICB1, fdm2_fix_fld_ICB,  &
+     &         (jmax, g_sph_rj, kr_in, r_ICB, r_ICB1, fdm2_fix_fld_ICB, &
      &          fdm4_noslip_ICB, fdm4_noslip_ICB1, coef_d,              &
-     &          is_fld, is_diffuse, ntot_phys_rj, d_rj)
+     &          is_fld, is_diffuse, n_point, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax, kr_in
       integer(kind = kint), intent(in) :: is_fld, is_diffuse
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_ICB(0:2), r_ICB1(0:2)
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: fdm2_fix_fld_ICB(0:2,3)
       real(kind = kreal), intent(in) :: fdm4_noslip_ICB(0:2,3:5)
       real(kind = kreal), intent(in) :: fdm4_noslip_ICB1(-1:2,5)
 !
-      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, j, i_p1, i_p2, i_p3
       real(kind = kreal) :: d2s_dr2, d2t_dr2

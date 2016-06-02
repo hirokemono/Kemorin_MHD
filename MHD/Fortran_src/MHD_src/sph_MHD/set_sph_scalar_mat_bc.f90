@@ -9,17 +9,17 @@
 !!@verbatim
 !!      subroutine set_fix_fld_icb_poisson_mat(nri, jmax, kr_in,        &
 !!     &          evo_mat)
-!!      subroutine add_fix_flux_icb_poisson_mat(nri, jmax, kr_in,       &
-!!     &          r_ICB, fdm2_fix_dr_ICB, coef_p, evo_mat)
-!!      subroutine add_icb_scalar_poisson_mat(nri, jmax, kr_in,         &
-!!     &          r_ICB, fdm2_fix_dr_ICB, coef_p, p_mat)
+!!      subroutine add_fix_flux_icb_poisson_mat(nri, jmax, g_sph_rj,    &
+!!     &          kr_in, r_ICB, fdm2_fix_dr_ICB, coef_p, evo_mat)
+!!      subroutine add_icb_scalar_poisson_mat(nri, jmax, g_sph_rj,      &
+!!     &          kr_in, r_ICB, fdm2_fix_dr_ICB, coef_p, p_mat)
 !!
 !!      subroutine set_fix_fld_cmb_poisson_mat(nri, jmax, kr_out,       &
 !!     &          evo_mat)
-!!      subroutine add_fix_flux_cmb_poisson_mat(nri, jmax, kr_out,      &
-!!     &          r_CMB, fdm2_fix_dr_CMB, coef_p, evo_mat)
-!!      subroutine add_cmb_scalar_poisson_mat(nri, jmax, kr_out, r_CMB, &
-!!     &          fdm2_fix_dr_CMB, coef_p, p_mat)
+!!      subroutine add_fix_flux_cmb_poisson_mat(nri, jmax, g_sph_rj,    &
+!!     &          kr_out, r_CMB, fdm2_fix_dr_CMB, coef_p, evo_mat)
+!!      subroutine add_cmb_scalar_poisson_mat(nri, jmax, g_sph_rj,      &
+!!     &          kr_out, r_CMB, fdm2_fix_dr_CMB, coef_p, p_mat)
 !!@endverbatim
 !!
 !!@n @param nri     Number of radial points
@@ -44,7 +44,6 @@
 !
       use m_constants
       use m_t_int_parameter
-      use m_schmidt_poly_on_rtm
 !
       implicit none
 !
@@ -73,10 +72,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_fix_flux_icb_poisson_mat(nri, jmax, kr_in,         &
-     &          r_ICB, fdm2_fix_dr_ICB, coef_p, evo_mat)
+      subroutine add_fix_flux_icb_poisson_mat(nri, jmax, g_sph_rj,      &
+     &          kr_in, r_ICB, fdm2_fix_dr_ICB, coef_p, evo_mat)
 !
       integer(kind = kint), intent(in) :: jmax, nri, kr_in
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: coef_p
       real(kind = kreal), intent(in) :: r_ICB(0:2)
       real(kind = kreal), intent(in) :: fdm2_fix_dr_ICB(-1:1,3)
@@ -100,10 +100,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_icb_scalar_poisson_mat(nri, jmax, kr_in,           &
-     &          r_ICB, fdm2_fix_dr_ICB, coef_p, p_mat)
+      subroutine add_icb_scalar_poisson_mat(nri, jmax, g_sph_rj,        &
+     &          kr_in, r_ICB, fdm2_fix_dr_ICB, coef_p, p_mat)
 !
       integer(kind = kint), intent(in) :: nri, jmax, kr_in
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_ICB(0:2)
       real(kind = kreal), intent(in) :: fdm2_fix_dr_ICB(-1:1,3)
       real(kind = kreal), intent(in) :: coef_p
@@ -147,10 +148,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_fix_flux_cmb_poisson_mat(nri, jmax, kr_out,        &
-     &          r_CMB, fdm2_fix_dr_CMB, coef_p, evo_mat)
+      subroutine add_fix_flux_cmb_poisson_mat(nri, jmax, g_sph_rj,      &
+     &          kr_out, r_CMB, fdm2_fix_dr_CMB, coef_p, evo_mat)
 !
       integer(kind = kint), intent(in) :: jmax, nri, kr_out
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: coef_p
       real(kind = kreal), intent(in) :: r_CMB(0:2)
       real(kind = kreal), intent(in) :: fdm2_fix_dr_CMB(-1:1,3)
@@ -174,10 +176,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_cmb_scalar_poisson_mat(nri, jmax, kr_out, r_CMB,   &
-     &          fdm2_fix_dr_CMB, coef_p, p_mat)
+      subroutine add_cmb_scalar_poisson_mat(nri, jmax, g_sph_rj,        &
+     &          kr_out, r_CMB, fdm2_fix_dr_CMB, coef_p, p_mat)
 !
       integer(kind = kint), intent(in) :: nri, jmax, kr_out
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_CMB(0:2)
       real(kind = kreal), intent(in) :: fdm2_fix_dr_CMB(-1:1,3)
       real(kind = kreal), intent(in) :: coef_p

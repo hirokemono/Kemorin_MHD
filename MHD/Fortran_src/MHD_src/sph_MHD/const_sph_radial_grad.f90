@@ -8,16 +8,16 @@
 !!
 !!@verbatim
 !!      subroutine const_radial_grad_scalar                             &
-!!     &         (sph_rj, sph_bc, is_fld, is_grad, rj_fld)
+!!     &         (sph_rj, sph_bc, g_sph_rj, is_fld, is_grad, rj_fld)
 !!        Input:    is_fld
 !!        Solution: is_grad
 !!
 !!      subroutine const_grad_vp_and_vorticity                          &
-!!     &         (sph_rj, is_velo, is_vort, rj_fld)
+!!     &         (sph_rj, g_sph_rj, is_velo, is_vort, rj_fld)
 !!        Input:    ipol%i_velo, itor%i_velo
 !!        Solution: idpdr%i_velo, ipol%i_vort, itor%i_vort, idpdr%i_vort
 !!
-!!      subroutine const_grad_bp_and_current(sph_rj, sph_bc_B,          &
+!!      subroutine const_grad_bp_and_current(sph_rj, sph_bc_B, g_sph_rj,&
 !!     &           is_magne, is_current, rj_fld)
 !!        Input:    ipol%i_magne, itor%i_magne
 !!        Solution: idpdr%i_magne,
@@ -28,17 +28,17 @@
 !!        Solution: is_fld+1
 !!
 !!      subroutine const_grad_poloidal_magne                            &
-!!     &        (sph_rj, sph_bc_B, is_magne, rj_fld)
+!!     &        (sph_rj, sph_bc_B, g_sph_rj, is_magne, rj_fld)
 !!        Input:    ipol%i_magne, itor%i_magne
 !!        Solution: idpdr%i_magne
 !!
 !!      subroutine const_pressure_gradient                              &
-!!     &         (sph_rj, sph_bc_U, is_press, is_grad, rj_fld)
+!!     &         (sph_rj, sph_bc_U, g_sph_rj, is_press, is_grad, rj_fld)
 !!        Input:    ipol%i_press
 !!        Solution: ipol%i_press_grad
 !!
 !!      subroutine const_sph_gradient_no_bc                             &
-!!     &         (sph_rj, sph_bc, is_fld, is_grad, rj_fld)
+!!     &         (sph_rj, sph_bc, g_sph_rj, is_fld, is_grad, rj_fld)
 !!        Input:    is_fld
 !!        Solution: is_grad, it_grad, ids_grad
 !!
@@ -88,12 +88,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_radial_grad_scalar                               &
-     &         (sph_rj, sph_bc, is_fld, is_grad, rj_fld)
+     &         (sph_rj, sph_bc, g_sph_rj, is_fld, is_grad, rj_fld)
 !
       use select_exp_scalar_bc
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc
+      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       integer(kind = kint), intent(in) :: is_fld, is_grad
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -101,9 +102,9 @@
 !
       call cal_sph_nod_gradient_2(sph_bc%kr_in, sph_bc%kr_out,          &
      &    is_fld, is_grad, sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,       &
-     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      call sel_bc_radial_grad_scalar(sph_bc, is_fld, is_grad,           &
-     &    sph_rj, rj_fld)
+     &    g_sph_rj, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+      call sel_bc_radial_grad_scalar(sph_rj, sph_bc, g_sph_rj,          &
+     &    is_fld, is_grad, rj_fld)
       call normalize_sph_average_grad(is_grad,                          &
      &    sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj,                    &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
@@ -114,29 +115,30 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_grad_vp_and_vorticity                            &
-     &         (sph_rj, is_velo, is_vort, rj_fld)
+     &         (sph_rj, g_sph_rj, is_velo, is_vort, rj_fld)
 !
       use m_boundary_params_sph_MHD
       use cal_sph_exp_rotation
       use select_exp_velocity_bc
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
+      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       integer(kind = kint), intent(in) :: is_velo, is_vort
 !
       type(phys_data), intent(inout) :: rj_fld
 !
 !
       call sel_bc_grad_vp_and_vorticity                                 &
-     &   (is_velo, is_vort, sph_rj, rj_fld)
+     &   (sph_rj, g_sph_rj, is_velo, is_vort, rj_fld)
       call cal_sph_diff_pol_and_rot2(sph_bc_U%kr_in, sph_bc_U%kr_out,   &
-     &    sph_rj%nidx_rj, sph_rj%ar_1d_rj, is_velo, is_vort,            &
+     &    sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj, is_velo, is_vort,  &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine const_grad_vp_and_vorticity
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_grad_bp_and_current(sph_rj, sph_bc_B,            &
+      subroutine const_grad_bp_and_current(sph_rj, sph_bc_B, g_sph_rj,  &
      &           is_magne, is_current, rj_fld)
 !
       use extend_potential_field
@@ -145,16 +147,17 @@
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc_B
+      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       integer(kind = kint), intent(in) :: is_magne, is_current
 !
       type(phys_data), intent(inout) :: rj_fld
 !
 !
       call sel_bc_grad_bp_and_current                                   &
-     &   (sph_bc_B, is_magne, is_current, sph_rj, rj_fld)
+     &   (sph_rj, sph_bc_B, g_sph_rj, is_magne, is_current, rj_fld)
       call cal_sph_diff_pol_and_rot2(sph_bc_B%kr_in, sph_bc_B%kr_out,   &
-     &    sph_rj%nidx_rj, sph_rj%ar_1d_rj, is_magne, is_current,        &
-     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &    sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj, is_magne,          &
+     &    is_current, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
 !      Extend potential field
       call ext_outside_potential_with_j                                 &
@@ -187,7 +190,7 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call sel_bc_grad_poloidal_moment(is_fld, sph_rj, rj_fld)
+      call sel_bc_grad_poloidal_moment(sph_rj, is_fld, rj_fld)
       call cal_sph_diff_poloidal2                                       &
      &   (sph_bc_U%kr_in, sph_bc_U%kr_out, sph_rj%nidx_rj,              &
      &    is_fld, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
@@ -197,7 +200,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_grad_poloidal_magne                              &
-     &         (sph_rj, sph_bc_B, is_magne, rj_fld)
+     &         (sph_rj, sph_bc_B, g_sph_rj, is_magne, rj_fld)
 !
       use extend_potential_field
       use cal_sph_exp_rotation
@@ -205,13 +208,14 @@
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc_B
+      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       integer(kind = kint), intent(in) :: is_magne
 !
       type(phys_data), intent(inout) :: rj_fld
 !
 !
       call sel_bc_grad_poloidal_magne                                   &
-     &   (sph_bc_B, is_magne, sph_rj, rj_fld)
+     &   (sph_rj, sph_bc_B, g_sph_rj, is_magne, rj_fld)
 !
       call cal_sph_diff_poloidal2                                       &
      &   (sph_bc_B%kr_in, sph_bc_B%kr_out, sph_rj%nidx_rj,              &
@@ -235,7 +239,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_pressure_gradient                                &
-     &         (sph_rj, sph_bc_U, is_press, is_grad, rj_fld)
+     &         (sph_rj, sph_bc_U, g_sph_rj, is_press, is_grad, rj_fld)
 !
       use m_physical_property
       use cal_sph_exp_nod_none_bc
@@ -243,6 +247,7 @@
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc_U
+      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       integer(kind = kint), intent(in) :: is_press, is_grad
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -250,15 +255,15 @@
 !
       call cal_sph_nod_gradient_2(sph_bc_U%kr_in, sph_bc_U%kr_out,      &
      &    is_press, is_grad, sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,     &
-     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &    g_sph_rj, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       call normalize_sph_average_grad(is_grad,                          &
      &    sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj,                    &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      call delete_bc_rj_vector(sph_rj%nnod_rj, sph_rj%nidx_rj(2),       &
-     &    sph_bc_U%kr_in, is_grad, rj_fld%ntot_phys, rj_fld%d_fld)
-      call delete_bc_rj_vector(sph_rj%nnod_rj, sph_rj%nidx_rj(2),       &
-     &    sph_bc_U%kr_out, is_grad, rj_fld%ntot_phys, rj_fld%d_fld)
+      call delete_bc_rj_vector(sph_rj%nidx_rj(2), sph_bc_U%kr_in,       &
+     &    is_grad, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+      call delete_bc_rj_vector(sph_rj%nidx_rj(2), sph_bc_U%kr_out,      &
+     &    is_grad, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
 !$omp parallel
       call ovwrt_rj_coef_prod_vect_smp                                  &
@@ -271,29 +276,30 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_sph_gradient_no_bc                               &
-     &         (sph_rj, sph_bc, is_fld, is_grad, rj_fld)
+     &         (sph_rj, sph_bc, g_sph_rj, is_fld, is_grad, rj_fld)
 !
       use cal_sph_exp_nod_none_bc
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc
+      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       integer(kind = kint), intent(in) :: is_fld, is_grad
 !
       type(phys_data), intent(inout) :: rj_fld
 !
 !
       call cal_sph_nod_nobc_in_grad2                                    &
-     &   (sph_rj%nnod_rj, sph_rj%nidx_rj(2),                            &
-     &    sph_bc%kr_in, sph_bc%r_ICB, sph_bc%fdm2_fix_fld_ICB,          &
-     &    is_fld, is_grad, rj_fld%ntot_phys, rj_fld%d_fld)
+     &   (sph_rj%nidx_rj(2), g_sph_rj, sph_bc%kr_in,                    &
+     &    sph_bc%r_ICB, sph_bc%fdm2_fix_fld_ICB, is_fld, is_grad,       &
+     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       call cal_sph_nod_nobc_out_grad2                                   &
-     &   (sph_rj%nnod_rj, sph_rj%nidx_rj(2),                            &
-     &    sph_bc%kr_out, sph_bc%r_CMB, sph_bc%fdm2_fix_fld_CMB,         &
-     &    is_fld, is_grad, rj_fld%ntot_phys, rj_fld%d_fld)
+     &   (sph_rj%nidx_rj(2), g_sph_rj, sph_bc%kr_out,                   &
+     &    sph_bc%r_CMB, sph_bc%fdm2_fix_fld_CMB, is_fld, is_grad,       &
+     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call cal_sph_nod_gradient_2(sph_bc%kr_in, sph_bc%kr_out,          &
      &    is_fld, is_grad, sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,       &
-     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &    g_sph_rj, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       call normalize_sph_average_grad(is_grad,                          &
      &    sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj,                    &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)

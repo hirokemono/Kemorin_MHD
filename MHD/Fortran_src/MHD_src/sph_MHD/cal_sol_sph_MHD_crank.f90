@@ -27,6 +27,7 @@
       use m_radial_matrices_sph
       use m_sph_phys_address
       use m_physical_property
+      use m_schmidt_poly_on_rtm
       use const_sph_radial_grad
       use const_sph_rotation
       use const_sph_diffusion
@@ -69,7 +70,7 @@
         call cal_sol_velo_by_vort_sph_crank                             &
      &     (sph_rj, band_vp_evo, band_vt_evo, rj_fld)
         call const_grad_vp_and_vorticity                                &
-     &     (sph_rj, ipol%i_velo, ipol%i_vort, rj_fld)
+     &     (sph_rj, g_sph_rj, ipol%i_velo, ipol%i_vort, rj_fld)
       end if
 !
 !  Input: ipol%i_temp,  Solution: ipol%i_temp
@@ -91,9 +92,9 @@
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_magne_sph_crank'
       if(iflag_t_evo_4_magne .gt. id_no_evolution) then
         call cal_sol_magne_sph_crank                                    &
-     &     (sph_rj, band_bp_evo, band_bt_evo, rj_fld)
-        call const_grad_bp_and_current                                  &
-     &     (sph_rj, sph_bc_B, ipol%i_magne, ipol%i_current, rj_fld)
+     &     (sph_rj, band_bp_evo, band_bt_evo, g_sph_rj, rj_fld)
+        call const_grad_bp_and_current(sph_rj, sph_bc_B, g_sph_rj,      &
+     &      ipol%i_magne, ipol%i_current, rj_fld)
       end if
 !
 !*  ---- update after evolution ------------------
@@ -131,7 +132,7 @@
 !
       if(ipol%i_velo*ipol%i_vort .gt. 0) then
         call const_grad_vp_and_vorticity                                &
-     &     (sph_rj, ipol%i_velo, ipol%i_vort, rj_fld)
+     &     (sph_rj, g_sph_rj, ipol%i_velo, ipol%i_vort, rj_fld)
       end if
 !
       if(iflag_t_evo_4_velo .gt. id_no_evolution) then
@@ -147,8 +148,8 @@
       call update_after_composit_sph(sph_rj, rj_fld)
 !
       if(ipol%i_magne*ipol%i_current .gt. 0) then
-        call const_grad_bp_and_current                                  &
-     &     (sph_rj, sph_bc_B, ipol%i_magne, ipol%i_current, rj_fld)
+        call const_grad_bp_and_current(sph_rj, sph_bc_B, g_sph_rj,      &
+     &      ipol%i_magne, ipol%i_current, rj_fld)
       end if
 !
       call update_after_magne_sph(sph_rj, rj_fld)
@@ -176,7 +177,8 @@
 !       Solution: ipol%i_v_diffuse, itor%i_v_diffuse, idpdr%i_v_diffuse
       if(ipol%i_v_diffuse .gt. 0) then
         if(iflag_debug.gt.0) write(*,*) 'const_sph_viscous_by_vort2'
-        call const_sph_viscous_by_vort2(sph_rj, sph_bc_U, coef_d_velo,  &
+        call const_sph_viscous_by_vort2                                 &
+     &     (sph_rj, sph_bc_U, g_sph_rj, coef_d_velo,                    &
      &      ipol%i_velo, ipol%i_vort, ipol%i_v_diffuse, rj_fld)
       end if
 !
@@ -184,7 +186,7 @@
 !       Solution: ipol%i_w_diffuse, itor%i_w_diffuse, idpdr%i_w_diffuse
       if(ipol%i_w_diffuse .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)'const_sph_vorticirty_diffusion'
-        call const_sph_vorticirty_diffusion(sph_rj, sph_bc_U,           &
+        call const_sph_vorticirty_diffusion(sph_rj, sph_bc_U, g_sph_rj, &
      &      coef_d_velo, ipol%i_vort, ipol%i_w_diffuse, rj_fld)
       end if
 !
@@ -207,7 +209,7 @@
       if(ipol%i_b_diffuse .gt. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'const_sph_mag_diffuse_by_j'
         call const_sph_mag_diffuse_by_j                                 &
-     &     (sph_rj, sph_bc_B, coef_d_magne,                             &
+     &     (sph_rj, sph_bc_B, g_sph_rj, coef_d_magne,                   &
      &      ipol%i_magne, ipol%i_current, ipol%i_b_diffuse, rj_fld)
       end if
 !
@@ -227,7 +229,7 @@
       if(iflag_debug .gt. 0)  write(*,*)                                &
      &           'const_radial_grad_temp', ipol%i_grad_t
       if(ipol%i_grad_t .gt. 0) then
-        call const_radial_grad_scalar(sph_rj, sph_bc_T,                 &
+        call const_radial_grad_scalar(sph_rj, sph_bc_T, g_sph_rj,       &
      &     ipol%i_temp, ipol%i_grad_t, rj_fld)
       end if
 !
@@ -235,7 +237,7 @@
       if(ipol%i_t_diffuse .gt. 0) then
         if(iflag_debug .gt. 0)  write(*,*)                              &
      &           'const_sph_scalar_diffusion', ipol%i_t_diffuse
-        call const_sph_scalar_diffusion(sph_rj, sph_bc_T,               &
+        call const_sph_scalar_diffusion(sph_rj, sph_bc_T, g_sph_rj,     &
      &      coef_d_temp, ipol%i_temp, ipol%i_t_diffuse, rj_fld)
       end if
 !
@@ -254,7 +256,7 @@
 !
 !         Input: ipol%i_light,  Solution: ipol%i_grad_composit
       if(ipol%i_grad_composit .gt. 0) then
-        call const_radial_grad_scalar(sph_rj, sph_bc_C,                 &
+        call const_radial_grad_scalar(sph_rj, sph_bc_C, g_sph_rj,       &
      &     ipol%i_light, ipol%i_grad_composit, rj_fld)
       end if
 !
@@ -262,7 +264,7 @@
       if(ipol%i_c_diffuse .gt. 0) then
         if(iflag_debug .gt. 0)  write(*,*)                              &
      &           'const_sph_scalar_diffusion', ipol%i_c_diffuse
-        call const_sph_scalar_diffusion(sph_rj, sph_bc_C,               &
+        call const_sph_scalar_diffusion(sph_rj, sph_bc_C, g_sph_rj,     &
      &      coef_d_light, ipol%i_light, ipol%i_c_diffuse, rj_fld)
       end if
 !

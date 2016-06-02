@@ -34,6 +34,7 @@
 !
       subroutine cal_momentum_eq_exp_sph(sph_rj, rj_fld)
 !
+      use m_schmidt_poly_on_rtm
       use cal_explicit_terms
       use calypso_mpi
       use cal_sph_field_by_rotation
@@ -45,13 +46,13 @@
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &     write(*,*) 'cal_rot_of_forces_sph_2'
-      call cal_rot_of_forces_sph_2(sph_rj, rj_fld)
+      call cal_rot_of_forces_sph_2(sph_rj, g_sph_rj, rj_fld)
 !
-      call cal_rot_of_induction_sph(sph_rj, rj_fld)
+      call cal_rot_of_induction_sph(sph_rj, g_sph_rj, rj_fld)
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &     write(*,*) 'cal_div_of_fluxes_sph'
-      call cal_div_of_fluxes_sph(sph_rj, rj_fld)
+      call cal_div_of_fluxes_sph(sph_rj, g_sph_rj, rj_fld)
 !
       end subroutine cal_momentum_eq_exp_sph
 !

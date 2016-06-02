@@ -21,7 +21,6 @@
       use m_constants
       use m_control_parameter
       use m_sph_phys_address
-      use m_schmidt_poly_on_rtm
 !
       implicit  none
 !

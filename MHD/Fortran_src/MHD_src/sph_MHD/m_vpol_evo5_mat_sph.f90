@@ -73,10 +73,10 @@
       type(sph_rj_grid), intent(in) :: sph_rj
 !
 !
-      write(50+my_rank,'(a)') 'poisson matrix for poloidal velocity'
+      write(band3_vp_poisson%mat_name,'(a)') 'pressure_poisson'
       call check_radial_band_mat(my_rank, sph_rj, band3_vp_poisson)
 !
-      write(50+my_rank,'(a)') 'crank matrix for poloidal velocity'
+      write(band5_vp_evo%mat_name,'(a)') 'poloidal_velocity_evolution'
       call check_radial_band_mat(my_rank, sph_rj, band5_vp_evo)
 !
       end subroutine check_vpol_evo5_mat_sph

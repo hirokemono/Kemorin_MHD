@@ -12,7 +12,7 @@
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(phys_address), intent(in) :: b_trns, f_trns
 !!      subroutine add_reftemp_advect_sph_MHD                           &
-!!     &         (kr_in, kr_out, nidx_rj, ar_1d_rj,                     &
+!!     &         (kr_in, kr_out, nidx_rj, ar_1d_rj, g_sph_rj,           &
 !!     &          nnod_rj, ntot_phys_rj, reftemp_rj, d_rj)
 !!@endverbatim
 !!
@@ -108,15 +108,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine add_reftemp_advect_sph_MHD                             &
-     &         (kr_in, kr_out, nidx_rj, ar_1d_rj,                       &
+     &         (kr_in, kr_out, nidx_rj, ar_1d_rj, g_sph_rj,             &
      &          nnod_rj, ntot_phys_rj, reftemp_rj, d_rj)
-!
-      use m_schmidt_poly_on_rtm
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
       integer(kind = kint), intent(in) :: nidx_rj(2)
-      integer (kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
-      real(kind= kreal), intent(in) :: ar_1d_rj(nidx_rj(1),3)
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real(kind = kreal), intent(in) :: g_sph_rj(nidx_rj(2),13)
+      real(kind = kreal), intent(in) :: ar_1d_rj(nidx_rj(1),3)
       real(kind = kreal), intent(in) :: reftemp_rj(nidx_rj(1),0:1)
       real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !

@@ -8,7 +8,8 @@
 !!@verbatim
 !!      subroutine const_radial_mat_4_temp_sph(sph_rj, band_temp_evo)
 !!      subroutine const_radial_mat_4_composit_sph(sph_rj, band_comp_evo)
-!!      subroutine const_radial_mat_4_press_sph(sph_rj, band_p_poisson)
+!!      subroutine const_radial_mat_4_press_sph                         &
+!!     &         (sph_rj, g_sph_rj, band_p_poisson)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!@endverbatim
 !
@@ -26,65 +27,14 @@
 !
       implicit none
 !
-      private :: const_radial_mat_4_scalar_sph
-!
 ! -----------------------------------------------------------------------
 !
       contains
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_4_temp_sph(sph_rj, band_temp_evo)
-!
-      use m_boundary_params_sph_MHD
-      use m_physical_property
-!
-      type(sph_rj_grid), intent(in) ::  sph_rj
-      type(band_matrices_type), intent(inout) :: band_temp_evo
-!
-!
-      call alloc_band_mat_sph(ithree, sph_rj, band_temp_evo)
-      call set_unit_on_diag(band_temp_evo)
-!
-      call const_radial_mat_4_scalar_sph(sph_rj, sph_bc_T,              &
-     &    coef_imp_t, coef_temp, coef_d_temp, band_temp_evo)
-!
-      if(i_debug .eq. iflag_full_msg) then
-        write(50+my_rank,'(a)') 'evolution matrix for temperature'
-        call check_radial_band_mat(my_rank, sph_rj, band_temp_evo)
-      end if
-!
-      end subroutine const_radial_mat_4_temp_sph
-!
-! -----------------------------------------------------------------------
-!
-      subroutine const_radial_mat_4_composit_sph(sph_rj, band_comp_evo)
-!
-      use m_boundary_params_sph_MHD
-      use m_physical_property
-      use check_sph_radial_mat
-!
-      type(sph_rj_grid), intent(in) ::  sph_rj
-      type(band_matrices_type), intent(inout) :: band_comp_evo
-!
-!
-      call alloc_band_mat_sph(ithree, sph_rj, band_comp_evo)
-      call set_unit_on_diag(band_comp_evo)
-!
-      call const_radial_mat_4_scalar_sph(sph_rj, sph_bc_C,              &
-     &    coef_imp_c, coef_light, coef_d_light, band_comp_evo)
-!
-      if(i_debug .eq. iflag_full_msg) then
-        write(50+my_rank,'(a)') 'evolution matrix for composition'
-        call check_radial_band_mat(my_rank, sph_rj, band_comp_evo)
-      end if
-!
-      end subroutine const_radial_mat_4_composit_sph
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine const_radial_mat_4_press_sph(sph_rj, band_p_poisson)
+      subroutine const_radial_mat_4_press_sph                           &
+     &         (sph_rj, g_sph_rj, band_p_poisson)
 !
       use m_physical_property
       use m_boundary_params_sph_MHD
@@ -100,6 +50,8 @@
       use check_sph_radial_mat
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
+      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
+!
       type(band_matrices_type), intent(inout) :: band_p_poisson
 !
       real(kind = kreal) :: coef_p
@@ -113,18 +65,19 @@
      &    sph_bc_U%kr_in, sph_bc_U%kr_out, band_p_poisson%mat)
       call add_scalar_poisson_mat_sph                                   &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj,        &
-     &    sph_bc_U%kr_in, sph_bc_U%kr_out, coef_p, band_p_poisson%mat)
+     &    g_sph_rj, sph_bc_U%kr_in, sph_bc_U%kr_out,                    &
+     &    coef_p, band_p_poisson%mat)
 !
 !   Boundary condition for ICB
 !
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
         call add_scalar_poisson_mat_ctr1                                &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
+     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
      &      sph_bc_U%r_ICB, fdm2_fix_fld_ctr1, coef_p,                  &
      &      band_p_poisson%mat)
       else
         call add_icb_scalar_poisson_mat                                 &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
+     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
      &      sph_bc_U%kr_in, sph_bc_U%r_ICB, sph_bc_U%fdm2_fix_dr_ICB,   &
      &      coef_p, band_p_poisson%mat)
       end if
@@ -132,7 +85,7 @@
 !   Boundary condition for CMB
 !
       call add_cmb_scalar_poisson_mat                                   &
-     &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                         &
+     &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,               &
      &    sph_bc_U%kr_out, sph_bc_U%r_CMB, sph_bc_U%fdm2_fix_dr_CMB,    &
      &    coef_p, band_p_poisson%mat)
 !
@@ -140,7 +93,7 @@
      &   (np_smp, sph_rj%istack_rj_j_smp, band_p_poisson)
 !
       if(i_debug .eq. iflag_full_msg) then
-        write(50+my_rank,'(a)') 'poisson matrix for pressure'
+        write(band_p_poisson%mat_name,'(a)') 'pressure_poisson'
         call check_radial_band_mat(my_rank, sph_rj, band_p_poisson)
       end if
 !
@@ -149,8 +102,8 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_4_scalar_sph                          &
-     &         (sph_rj, sph_bc, coef_imp, coef_f, coef_d, band_s_evo)
+      subroutine const_radial_mat_4_scalar_sph(sph_rj, sph_bc,          &
+     &          g_sph_rj, coef_imp, coef_f, coef_d, band_s_evo)
 !
       use m_coef_fdm_to_center
       use m_ludcmp_3band
@@ -158,15 +111,20 @@
       use center_sph_matrices
       use set_radial_mat_sph
       use set_sph_scalar_mat_bc
+      use check_sph_radial_mat
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc
+      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_imp, coef_f, coef_d
 !
       type(band_matrices_type), intent(inout) :: band_s_evo
 !
       real(kind = kreal) :: coef
 !
+!
+      call alloc_band_mat_sph(ithree, sph_rj, band_s_evo)
+      call set_unit_on_diag(band_s_evo)
 !
       if(coef_f .eq. zero) then
         coef = one
@@ -181,17 +139,18 @@
 !
       call add_scalar_poisson_mat_sph                                   &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj,        &
-     &    sph_bc%kr_in, sph_bc%kr_out, coef, band_s_evo%mat)
+     &    g_sph_rj, sph_bc%kr_in, sph_bc%kr_out, coef, band_s_evo%mat)
 !
       if     (sph_bc%iflag_icb .eq. iflag_sph_fill_center               &
      &   .or. sph_bc%iflag_icb .eq. iflag_sph_fix_center) then
         call add_scalar_poisson_mat_ctr1                                &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
+     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
      &      sph_bc%r_ICB, fdm2_fix_fld_ctr1, coef, band_s_evo%mat)
       else if (sph_bc%iflag_icb .eq. iflag_fixed_flux) then
         call add_fix_flux_icb_poisson_mat                               &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_bc%kr_in,         &
-     &      sph_bc%r_ICB, sph_bc%fdm2_fix_dr_ICB, coef, band_s_evo%mat)
+     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
+     &      sph_bc%kr_in, sph_bc%r_ICB, sph_bc%fdm2_fix_dr_ICB, coef,   &
+     &      band_s_evo%mat)
       else
         call set_fix_fld_icb_poisson_mat                                &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
@@ -200,8 +159,9 @@
 !
       if (sph_bc%iflag_cmb .eq. iflag_fixed_flux) then
         call add_fix_flux_cmb_poisson_mat                               &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_bc%kr_out,        &
-     &      sph_bc%r_CMB, sph_bc%fdm2_fix_dr_CMB, coef, band_s_evo%mat)
+     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
+     &      sph_bc%kr_out, sph_bc%r_CMB, sph_bc%fdm2_fix_dr_CMB, coef,  &
+     &      band_s_evo%mat)
       else
         call set_fix_fld_cmb_poisson_mat                                &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
@@ -210,6 +170,10 @@
 !
       call ludcmp_3band_mul_t                                           &
      &   (np_smp, sph_rj%istack_rj_j_smp, band_s_evo)
+!
+      if(i_debug .eq. iflag_full_msg) then
+        call check_radial_band_mat(my_rank, sph_rj, band_s_evo)
+      end if
 !
       end subroutine const_radial_mat_4_scalar_sph
 !

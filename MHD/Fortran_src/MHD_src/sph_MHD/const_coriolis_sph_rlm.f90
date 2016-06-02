@@ -45,10 +45,11 @@
       use m_boundary_params_sph_MHD
       use m_gaunt_coriolis_rlm
       use m_coriolis_terms_rlm
+      use m_schmidt_poly_on_rtm
       use interact_coriolis_rlm
 !
-      integer(kind = kint), intent(in) :: l_truncation
       type(sph_rlm_grid), intent(in) :: sph_rlm
+      integer(kind = kint), intent(in) :: l_truncation
 !
       integer(kind = kint) :: m
 !
@@ -76,7 +77,7 @@
      &    sph_rlm%nidx_rlm(2), sph_rlm%idx_gl_1d_rlm_j)
 !
       if(iflag_debug.eq.1) write(*,*) 'interact_rot_coriolis_rlm'
-      call interact_rot_coriolis_rlm(sph_rlm%nidx_rlm(2))
+      call interact_rot_coriolis_rlm(sph_rlm%nidx_rlm(2), g_sph_rlm)
 !
       end subroutine init_sum_coriolis_rlm
 !

@@ -8,23 +8,25 @@
 !!        using 4-th order FDM for poloidal velocity
 !!
 !!@verbatim
-!!      subroutine free_icb_vp_poisson5_mat(nri, jmax, kr_in,           &
+!!      subroutine free_icb_vp_poisson5_mat(nri, jmax, g_sph_rj, kr_in, &
 !!     &          r_ICB, r_ICB1, fdm4_free_vp_ICB0, fdm4_free_vp_ICB1,  &
 !!     &          poisson_mat5)
 !!
-!!      subroutine cal_sph_icb_free_v_and_w_s4t2(nnod_rj, jmax, kr_in,  &
+!!      subroutine cal_sph_icb_free_v_and_w_s4t2(jmax, g_sph_rj, kr_in, &
 !!     &          r_ICB1, fdm4_free_vp_ICB0, fdm4_free_vp_ICB1,         &
-!!     &          fdm2_free_vt_ICB, is_fld, is_rot, ntot_phys_rj, d_rj)
-!!      subroutine cal_sph_icb_free_rot_s4t2(nnod_rj, jmax, kr_in,      &
+!!     &          fdm2_free_vt_ICB, is_fld, is_rot,                     &
+!!     &          n_point, ntot_phys_rj, d_rj)
+!!      subroutine cal_sph_icb_free_rot_s4t2(jmax, g_sph_rj, kr_in,     &
 !!     &          r_ICB1, fdm4_free_vp_ICB0, fdm4_free_vp_ICB1,         &
-!!     &          fdm2_free_vt_ICB, is_fld, is_rot, ntot_phys_rj, d_rj)
-!!      subroutine cal_sph_icb_free_diffuse_s4t2(nnod_rj, jmax, kr_in,  &
+!!     &          fdm2_free_vt_ICB, is_fld, is_rot,                     &
+!!     &          n_point, ntot_phys_rj, d_rj)
+!!      subroutine cal_sph_icb_free_diffuse_s4t2(jmax, g_sph_rj, kr_in, &
 !!     &          r_ICB, r_ICB1, fdm4_free_vp_ICB0, fdm4_free_vp_ICB1,  &
 !!     &          fdm2_free_vt_ICB, coef_d, is_fld, is_diffuse,         &
-!!     &          ntot_phys_rj, d_rj)
+!!     &          n_point, ntot_phys_rj, d_rj)
 !!@endverbatim
 !!
-!!@n @param nnod_rj  Number of points for spectrum data
+!!@n @param n_point  Number of points for spectrum data
 !!@n @param jmax  Number of modes for spherical harmonics @f$L*(L+2)@f$
 !!@n @param kr_in       Radial ID for inner boundary
 !!@n @param r_ICB(0:2)    Radius at ICB
@@ -40,7 +42,7 @@
 !!         Matrix to evaluate toroidal velocity
 !!         with free slip boundary at ICB
 !!
-!!@n @param nnod_rj  Number of points for spectrum data
+!!@n @param n_point  Number of points for spectrum data
 !!@n @param coef_d     Coefficient for diffusion term
 !!@n @param is_fld     Address of poloidal velocity in d_rj
 !!@n @param is_rot     Address of poloidal vorticity in d_rj
@@ -52,9 +54,7 @@
       module set_sph_exp_free_ICB_s4t2
 !
       use m_precision
-!
       use m_constants
-      use m_schmidt_poly_on_rtm
 !
       implicit none
 !
@@ -64,11 +64,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine free_icb_vp_poisson5_mat(nri, jmax, kr_in,             &
+      subroutine free_icb_vp_poisson5_mat(nri, jmax, g_sph_rj, kr_in,   &
      &          r_ICB, r_ICB1, fdm4_free_vp_ICB0, fdm4_free_vp_ICB1,    &
      &          poisson_mat5)
 !
       integer(kind = kint), intent(in) :: nri, jmax, kr_in
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_ICB(0:2), r_ICB1(0:2)
       real(kind = kreal), intent(in) :: fdm4_free_vp_ICB0(0:2,4)
       real(kind = kreal), intent(in) :: fdm4_free_vp_ICB1(-1:2,5)
@@ -96,21 +97,23 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_icb_free_v_and_w_s4t2(nnod_rj, jmax, kr_in,    &
+      subroutine cal_sph_icb_free_v_and_w_s4t2(jmax, g_sph_rj, kr_in,   &
      &          r_ICB1, fdm4_free_vp_ICB0, fdm4_free_vp_ICB1,           &
-     &          fdm2_free_vt_ICB, is_fld, is_rot, ntot_phys_rj, d_rj)
+     &          fdm2_free_vt_ICB, is_fld, is_rot,                       &
+     &          n_point, ntot_phys_rj, d_rj)
 !
       use m_fdm_coefs
 !
       integer(kind = kint), intent(in) :: jmax, kr_in
       integer(kind = kint), intent(in) :: is_fld, is_rot
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_ICB1(0:2)
       real(kind = kreal), intent(in) :: fdm4_free_vp_ICB0(0:2,4)
       real(kind = kreal), intent(in) :: fdm4_free_vp_ICB1(-1:2,5)
       real(kind = kreal), intent(in) :: fdm2_free_vt_ICB(0:1,3)
 !
-      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, j, i_p1, i_p2, i_p3
       real(kind = kreal) :: d1s_dr1, d2s_dr2, d1t_dr1
@@ -161,21 +164,23 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_icb_free_rot_s4t2(nnod_rj, jmax, kr_in,        &
+      subroutine cal_sph_icb_free_rot_s4t2(jmax, g_sph_rj, kr_in,       &
      &          r_ICB1, fdm4_free_vp_ICB0, fdm4_free_vp_ICB1,           &
-     &          fdm2_free_vt_ICB, is_fld, is_rot, ntot_phys_rj, d_rj)
+     &          fdm2_free_vt_ICB, is_fld, is_rot,                       &
+     &          n_point, ntot_phys_rj, d_rj)
 !
       use m_fdm_coefs
 !
       integer(kind = kint), intent(in) :: jmax, kr_in
       integer(kind = kint), intent(in) :: is_fld, is_rot
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_ICB1(0:2)
       real(kind = kreal), intent(in) :: fdm4_free_vp_ICB0(0:2,4)
       real(kind = kreal), intent(in) :: fdm4_free_vp_ICB1(-1:2,5)
       real(kind = kreal), intent(in) :: fdm2_free_vt_ICB(0:1,3)
 !
-      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, j, i_p1, i_p2, i_p3
       real(kind = kreal) :: d2s_dr2, d1t_dr1
@@ -216,23 +221,24 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_icb_free_diffuse_s4t2(nnod_rj, jmax, kr_in,    &
+      subroutine cal_sph_icb_free_diffuse_s4t2(jmax, g_sph_rj, kr_in,   &
      &          r_ICB, r_ICB1, fdm4_free_vp_ICB0, fdm4_free_vp_ICB1,    &
      &          fdm2_free_vt_ICB, coef_d, is_fld, is_diffuse,           &
-     &          ntot_phys_rj, d_rj)
+     &          n_point, ntot_phys_rj, d_rj)
 !
       use m_fdm_coefs
 !
       integer(kind = kint), intent(in) :: jmax, kr_in
       integer(kind = kint), intent(in) :: is_fld, is_diffuse
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_ICB(0:2), r_ICB1(0:2)
       real(kind = kreal), intent(in) :: fdm4_free_vp_ICB0(0:2,4)
       real(kind = kreal), intent(in) :: fdm4_free_vp_ICB1(-1:2,5)
       real(kind = kreal), intent(in) :: fdm2_free_vt_ICB(0:1,3)
       real(kind = kreal), intent(in) :: coef_d
 !
-      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, j, i_p1, i_p2, i_p3
       real(kind = kreal) :: d2s_dr2, d2t_dr2

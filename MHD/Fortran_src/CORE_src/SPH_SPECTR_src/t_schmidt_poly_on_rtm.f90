@@ -65,11 +65,6 @@
         real(kind = kreal), pointer :: dPsdt_jl(:,:)
 !
 !
-!>        Normalization constants for spherical harmonics in (r,l,m)
-        real(kind = kreal), pointer:: g_sph_rlm(:,:)
-!>        Normalization constants for spherical harmonics in (r,j)
-        real(kind = kreal), pointer:: g_sph_rj(:,:)
-!
 !>        @$f P_{l}{m} @$f at poles
         real(kind = kreal), pointer :: P_pole_rtm(:,:)
 !>        @$f dP_{l}{m}/d\theta @$f at poles
@@ -80,6 +75,12 @@
         real(kind = kreal), pointer :: P_jl(:,:)
 !>        @$f dP_{l}{m}/d\theta @$f with A(j,theta)
         real(kind = kreal), pointer :: dPdt_jl(:,:)
+!
+!
+!>        Normalization constants for spherical harmonics in (r,l,m)
+        real(kind = kreal), pointer:: g_sph_rlm(:,:)
+!>        Normalization constants for spherical harmonics in (r,j)
+        real(kind = kreal), pointer:: g_sph_rj(:,:)
       end type legendre_4_sph_transform
 !
 ! -----------------------------------------------------------------------

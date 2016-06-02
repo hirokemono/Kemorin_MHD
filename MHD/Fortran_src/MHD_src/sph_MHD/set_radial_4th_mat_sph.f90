@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine set_radial_vp5_mat_sph(nri, jmax, kr_in, kr_out,     &
-!!     &          ar_1d_rj, poisson_mat)
+!!     &          ar_1d_rj, g_sph_rj, poisson_mat)
 !!
 !!    Format of band matrix
 !!               | a(2,1)  a(1,2)  ........     0         0     |
@@ -54,7 +54,6 @@
       use calypso_mpi
       use m_constants
       use m_t_int_parameter
-      use m_schmidt_poly_on_rtm
       use m_fdm_4th_coefs
 !
       implicit none
@@ -66,11 +65,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_radial_vp5_mat_sph(nri, jmax, kr_in, kr_out,       &
-     &          ar_1d_rj, poisson_mat)
+     &          ar_1d_rj, g_sph_rj, poisson_mat)
 !
       integer(kind = kint), intent(in) :: jmax, nri
       integer(kind = kint), intent(in) :: kr_in, kr_out
-      real(kind= kreal), intent(in) :: ar_1d_rj(nri,3)
+      real(kind = kreal), intent(in) :: ar_1d_rj(nri,3)
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
 !
       real(kind = kreal), intent(inout) :: poisson_mat(5,nri,jmax)
 !

@@ -10,7 +10,7 @@
 !!@verbatim
 !!      subroutine cal_gaunt_coriolis_rlm(l_truncation,                 &
 !!     &          jmax_rlm, idx_gl_1d_rlm_j)
-!!      subroutine interact_rot_coriolis_rlm(jmax_rlm)
+!!      subroutine interact_rot_coriolis_rlm(jmax_rlm, g_sph_rlm)
 !!@endverbatim
 !!
 !!@param   l_truncation   Truncation level
@@ -104,12 +104,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine interact_rot_coriolis_rlm(jmax_rlm)
+      subroutine interact_rot_coriolis_rlm(jmax_rlm, g_sph_rlm)
 !
-      use m_schmidt_poly_on_rtm
       use m_gaunt_coriolis_rlm
 !
       integer(kind = kint), intent(in) :: jmax_rlm
+      real(kind = kreal), intent(in):: g_sph_rlm(jmax_rlm,17)
+!
       integer(kind = kint) :: j3
 !
 !

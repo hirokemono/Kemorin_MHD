@@ -99,7 +99,6 @@
       call check_radial_7band_mat(my_rank, (2*sph_rj%nidx_rj(1)),       &
      &    sph_rj%nidx_rj(2), sph_rj%idx_gl_1d_rj_j, rr, smat%mat)
 !
-      write(50+my_rank,'(a)') 'evolution matrix for toroidal velocity'
       call check_radial_band_mat(my_rank, sph_rj, band_vt_evo)
 !
       end subroutine check_velocity_matrices_sph

@@ -7,21 +7,22 @@
 !> @brief Evaluate diffusion terms explicitly
 !!
 !!@verbatim
-!!      subroutine const_sph_viscous_diffusion(sph_rj, sph_bc_U,        &
-!!     &          coef_diffuse, is_velo, is_viscous, rj_fld)
+!!      subroutine const_sph_viscous_diffusion                          &
+!!     &         (sph_rj, sph_bc_U, g_sph_rj, coef_diffuse,             &
+!!     &          is_velo, it_velo, is_viscous, rj_fld)
 !!        Input:    ipol%i_velo, itor%i_velo
 !!        Solution: ipol%i_v_diffuse, itor%i_v_diffuse, idpdr%i_v_diffuse
 !!      subroutine const_sph_vorticirty_diffusion(sph_rj, sph_bc_U,     &
-!!     &          coef_diffuse, is_vort, is_w_diffuse, rj_fld)
+!!     &          g_sph_rj, coef_diffuse, is_vort, is_w_diffuse, rj_fld)
 !!        Input:    ipol%i_vort, itor%i_vort
 !!        Solution: ipol%i_w_diffuse, itor%i_w_diffuse, idpdr%i_w_diffuse
 !!
 !!      subroutine const_sph_magnetic_diffusion(sph_rj, sph_bc_B,       &
-!!     &          coef_diffuse, is_magne, is_ohmic, rj_fld)
+!!     &          g_sph_rj, coef_diffuse, is_magne, is_ohmic, rj_fld)
 !!        Input:    ipol%i_magne, itor%i_magne
 !!        Solution: ipol%i_b_diffuse, itor%i_b_diffuse, idpdr%i_b_diffuse
 !!
-!!      subroutine const_sph_scalar_diffusion(sph_rj, sph_bc,           &
+!!      subroutine const_sph_scalar_diffusion(sph_rj, sph_bc, g_sph_rj, &
 !!     &          coef_diffuse,is_fld, is_diffuse, rj_fld)
 !!
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
@@ -57,13 +58,13 @@
       module const_sph_diffusion
 !
       use m_precision
-!
       use m_constants
-      use cal_sph_exp_diffusion
 !
       use t_spheric_rj_data
       use t_phys_data
       use t_boundary_params_sph_MHD
+!
+      use cal_sph_exp_diffusion
 !
       implicit none
 !
@@ -73,8 +74,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_sph_viscous_diffusion(sph_rj, sph_bc_U,          &
-     &          coef_diffuse, is_velo, it_velo, is_viscous, rj_fld)
+      subroutine const_sph_viscous_diffusion                            &
+     &         (sph_rj, sph_bc_U, g_sph_rj, coef_diffuse,               &
+     &          is_velo, it_velo, is_viscous, rj_fld)
 !
       use cal_sph_exp_1st_diff
       use cal_sph_exp_fixed_scalar
@@ -83,6 +85,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc_U
       integer(kind = kint), intent(in) :: is_velo, it_velo, is_viscous
+      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_diffuse
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -94,21 +97,22 @@
 !
       call cal_sph_nod_vect_diffuse2(sph_bc_U%kr_in, sph_bc_U%kr_out,   &
      &    coef_diffuse, is_velo, is_viscous,                            &
-     &    sph_rj%nnod_rj, sph_rj%nidx_rj, sph_rj%ar_1d_rj,              &
-     &    rj_fld%ntot_phys, rj_fld%d_fld)
+     &    sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                    &
+     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       call cal_sph_nod_vect_dr_2(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
      &    is_viscous, idp_diffuse, sph_rj%nidx_rj,                      &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      call sel_bc_sph_viscous_diffusion(sph_bc_U, coef_diffuse,         &
-     &    is_velo, it_velo, is_viscous, idp_diffuse, sph_rj, rj_fld)
+      call sel_bc_sph_viscous_diffusion(sph_rj, sph_bc_U, g_sph_rj,     &
+     &    coef_diffuse, is_velo, it_velo, is_viscous, idp_diffuse,      &
+     &    rj_fld)
 !
       end subroutine const_sph_viscous_diffusion
 !
 ! -----------------------------------------------------------------------
 !
       subroutine const_sph_vorticirty_diffusion(sph_rj, sph_bc_U,       &
-     &          coef_diffuse, is_vort, is_w_diffuse, rj_fld)
+     &          g_sph_rj, coef_diffuse, is_vort, is_w_diffuse, rj_fld)
 !
       use cal_sph_exp_1st_diff
       use select_exp_velocity_bc
@@ -116,6 +120,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc_U
       integer(kind = kint), intent(in) :: is_vort, is_w_diffuse
+      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_diffuse
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -127,14 +132,14 @@
 !
       call cal_sph_nod_vect_diffuse2(sph_bc_U%kr_in, sph_bc_U%kr_out,   &
      &    coef_diffuse, is_vort, is_w_diffuse,                          &
-     &    sph_rj%nnod_rj, sph_rj%nidx_rj, sph_rj%ar_1d_rj,              &
-     &    rj_fld%ntot_phys, rj_fld%d_fld)
+     &    sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                    &
+     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       call cal_sph_nod_vect_dr_2(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
      &    is_w_diffuse, idp_diffuse, sph_rj%nidx_rj,                    &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      call sel_bc_sph_vort_diffusion(sph_bc_U, coef_diffuse,            &
-     &    is_vort, is_w_diffuse, idp_diffuse, sph_rj, rj_fld)
+      call sel_bc_sph_vort_diffusion(sph_rj, sph_bc_U, g_sph_rj,        &
+     &    coef_diffuse, is_vort, is_w_diffuse, idp_diffuse, rj_fld)
 !
       end subroutine const_sph_vorticirty_diffusion
 !
@@ -142,7 +147,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_sph_magnetic_diffusion(sph_rj, sph_bc_B,         &
-     &          coef_diffuse, is_magne, is_ohmic, rj_fld)
+     &          g_sph_rj, coef_diffuse, is_magne, is_ohmic, rj_fld)
 !
       use cal_sph_exp_1st_diff
       use select_exp_magne_bc
@@ -150,6 +155,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc_B
       integer(kind = kint), intent(in) :: is_magne, is_ohmic
+      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_diffuse
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -161,20 +167,20 @@
 !
       call cal_sph_nod_vect_diffuse2(sph_bc_B%kr_in, sph_bc_B%kr_out,   &
      &     coef_diffuse, is_magne, is_ohmic,                            &
-     &     sph_rj%nnod_rj, sph_rj%nidx_rj, sph_rj%ar_1d_rj,             &
-     &     rj_fld%ntot_phys, rj_fld%d_fld)
+     &     sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                   &
+     &     rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       call cal_sph_nod_vect_dr_2(sph_bc_B%kr_in, sph_bc_B%kr_out,       &
      &    is_ohmic, idp_diffuse, sph_rj%nidx_rj,                        &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      call sel_bc_sph_magnetic_diffusion(sph_bc_B, coef_diffuse,        &
-     &    is_magne, is_ohmic, idp_diffuse, sph_rj, rj_fld)
+      call sel_bc_sph_magnetic_diffusion(sph_rj, sph_bc_B, g_sph_rj,    &
+     &    coef_diffuse, is_magne, is_ohmic, idp_diffuse, rj_fld)
 !
       end subroutine const_sph_magnetic_diffusion
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_sph_scalar_diffusion(sph_rj, sph_bc,             &
+      subroutine const_sph_scalar_diffusion(sph_rj, sph_bc, g_sph_rj,   &
      &          coef_diffuse, is_fld, is_diffuse, rj_fld)
 !
       use select_exp_scalar_bc
@@ -182,6 +188,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc
       integer(kind = kint), intent(in) :: is_fld, is_diffuse
+      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_diffuse
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -189,11 +196,11 @@
 !
       call cal_sph_nod_scalar_diffuse2(sph_bc%kr_in, sph_bc%kr_out,     &
      &    coef_diffuse, is_fld, is_diffuse,                             &
-     &    sph_rj%nnod_rj, sph_rj%nidx_rj, sph_rj%ar_1d_rj,              &
-     &    rj_fld%ntot_phys, rj_fld%d_fld)
+     &    sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                    &
+     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      call sel_bc_sph_scalar_diffusion(sph_bc, coef_diffuse,            &
-     &    is_fld, is_diffuse, sph_rj, rj_fld)
+      call sel_bc_sph_scalar_diffusion(sph_rj, sph_bc, g_sph_rj,        &
+     &    coef_diffuse, is_fld, is_diffuse, rj_fld)
 !
       end subroutine const_sph_scalar_diffusion
 !

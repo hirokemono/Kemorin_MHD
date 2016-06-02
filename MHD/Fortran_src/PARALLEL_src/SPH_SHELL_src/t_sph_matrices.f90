@@ -238,6 +238,8 @@
       type(band_matrices_type), intent(in) :: smat
 !
 !
+      write(50+my_rank,'(a,a)') 'Matrix ', trim(smat%mat_name)
+!
       if(smat%n_band .eq. ithree) then
         call check_radial_3band_mat(my_rank, smat%n_vect, smat%n_comp,  &
      &      sph_rj%idx_gl_1d_rj_j, sph_rj%radius_1d_rj_r, smat%mat)

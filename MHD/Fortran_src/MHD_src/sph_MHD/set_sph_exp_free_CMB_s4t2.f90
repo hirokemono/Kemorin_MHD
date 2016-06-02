@@ -9,19 +9,21 @@
 !!
 !!@verbatim
 !!      subroutine free_cmb_vp_poisson5_mat                             &
-!!     &          (nri, jmax, kr_out, r_CMB, r_CMB1,                    &
+!!     &          (nri, jmax, g_sph_rj, kr_out, r_CMB, r_CMB1,          &
 !!     &          fdm4_free_vp_CMB0, fdm4_free_vp_CMB1, poisson_mat5)
 !!
-!!      subroutine cal_sph_cmb_free_v_and_w_s4t2(nnod_rj, jmax, kr_out, &
+!!      subroutine cal_sph_cmb_free_v_and_w_s4t2(jmax, g_sph_rj, kr_out,&
 !!     &          r_CMB1, fdm4_free_vp_CMB0, fdm4_free_vp_CMB1,         &
-!!     &          fdm2_free_vt_CMB, is_fld, is_rot, ntot_phys_rj, d_rj)
-!!      subroutine cal_sph_cmb_free_rot_s4t2(nnod_rj, jmax, kr_out,     &
+!!     &          fdm2_free_vt_CMB, is_fld, is_rot,                     &
+!!     &          n_point, ntot_phys_rj, d_rj)
+!!      subroutine cal_sph_cmb_free_rot_s4t2(jmax, g_sph_rj, kr_out,    &
 !!     &          r_CMB1, fdm4_free_vp_CMB0, fdm4_free_vp_CMB1,         &
-!!     &          fdm2_free_vt_CMB, is_fld, is_rot, ntot_phys_rj, d_rj)
-!!      subroutine cal_sph_cmb_free_diffuse_s4t2(nnod_rj, jmax, kr_out, &
+!!     &          fdm2_free_vt_CMB, is_fld, is_rot,                     &
+!!     &          n_point,ntot_phys_rj, d_rj)
+!!      subroutine cal_sph_cmb_free_diffuse_s4t2(jmax, g_sph_rj, kr_out,&
 !!     &          r_CMB, r_CMB1, fdm4_free_vp_CMB0, fdm4_free_vp_CMB1,  &
 !!     &          fdm2_free_vt_CMB, coef_d, is_fld, is_diffuse,         &
-!!     &          ntot_phys_rj, d_rj)
+!!     &          n_point, ntot_phys_rj, d_rj)
 !!@endverbatim
 !!
 !!@n @param nri   Number of radial grid
@@ -48,9 +50,7 @@
       module set_sph_exp_free_CMB_s4t2
 !
       use m_precision
-!
       use m_constants
-      use m_schmidt_poly_on_rtm
 !
       implicit none
 !
@@ -61,10 +61,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine free_cmb_vp_poisson5_mat                               &
-     &          (nri, jmax, kr_out, r_CMB, r_CMB1,                      &
+     &          (nri, jmax, g_sph_rj, kr_out, r_CMB, r_CMB1,            &
      &          fdm4_free_vp_CMB0, fdm4_free_vp_CMB1, poisson_mat5)
 !
       integer(kind = kint), intent(in) :: nri, jmax, kr_out
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_CMB(0:2), r_CMB1(0:2)
       real(kind = kreal), intent(in) :: fdm4_free_vp_CMB0(-2:0,2:4)
       real(kind = kreal), intent(in) :: fdm4_free_vp_CMB1(-2:1,2:5)
@@ -91,21 +92,23 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_cmb_free_v_and_w_s4t2(nnod_rj, jmax, kr_out,   &
+      subroutine cal_sph_cmb_free_v_and_w_s4t2(jmax, g_sph_rj, kr_out,  &
      &          r_CMB1, fdm4_free_vp_CMB0, fdm4_free_vp_CMB1,           &
-     &          fdm2_free_vt_CMB, is_fld, is_rot, ntot_phys_rj, d_rj)
+     &          fdm2_free_vt_CMB, is_fld, is_rot,                       &
+     &          n_point, ntot_phys_rj, d_rj)
 !
       use m_fdm_coefs
 !
       integer(kind = kint), intent(in) :: jmax, kr_out
       integer(kind = kint), intent(in) :: is_fld, is_rot
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_CMB1(0:2)
       real(kind = kreal), intent(in) :: fdm4_free_vp_CMB0(-2:0,2:4)
       real(kind = kreal), intent(in) :: fdm4_free_vp_CMB1(-2:1,2:5)
       real(kind = kreal), intent(in) :: fdm2_free_vt_CMB(-1:0,3)
 !
-      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, j, i_n1, i_n2, i_n3
       real(kind = kreal) :: d1s_dr1, d2s_dr2, d1t_dr1
@@ -156,21 +159,23 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_cmb_free_rot_s4t2(nnod_rj, jmax, kr_out,       &
+      subroutine cal_sph_cmb_free_rot_s4t2(jmax, g_sph_rj, kr_out,      &
      &          r_CMB1, fdm4_free_vp_CMB0, fdm4_free_vp_CMB1,           &
-     &          fdm2_free_vt_CMB, is_fld, is_rot, ntot_phys_rj, d_rj)
+     &          fdm2_free_vt_CMB, is_fld, is_rot,                       &
+     &          n_point,ntot_phys_rj, d_rj)
 !
       use m_fdm_coefs
 !
       integer(kind = kint), intent(in) :: jmax, kr_out
       integer(kind = kint), intent(in) :: is_fld, is_rot
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_CMB1(0:2)
       real(kind = kreal), intent(in) :: fdm4_free_vp_CMB0(-2:0,2:4)
       real(kind = kreal), intent(in) :: fdm4_free_vp_CMB1(-2:1,2:5)
       real(kind = kreal), intent(in) :: fdm2_free_vt_CMB(-1:0,3)
 !
-      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, j, i_n1, i_n2, i_n3
       real(kind = kreal) :: d2s_dr2, d1t_dr1
@@ -212,23 +217,24 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_cmb_free_diffuse_s4t2(nnod_rj, jmax, kr_out,   &
+      subroutine cal_sph_cmb_free_diffuse_s4t2(jmax, g_sph_rj, kr_out,  &
      &          r_CMB, r_CMB1, fdm4_free_vp_CMB0, fdm4_free_vp_CMB1,    &
      &          fdm2_free_vt_CMB, coef_d, is_fld, is_diffuse,           &
-     &          ntot_phys_rj, d_rj)
+     &          n_point, ntot_phys_rj, d_rj)
 !
       use m_fdm_coefs
 !
       integer(kind = kint), intent(in) :: jmax, kr_out
       integer(kind = kint), intent(in) :: is_fld, is_diffuse
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_CMB(0:2), r_CMB1(0:2)
       real(kind = kreal), intent(in) :: fdm4_free_vp_CMB0(-2:0,2:4)
       real(kind = kreal), intent(in) :: fdm4_free_vp_CMB1(-2:1,2:5)
       real(kind = kreal), intent(in) :: fdm2_free_vt_CMB(-1:0,3)
       real(kind = kreal), intent(in) :: coef_d
 !
-      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       integer(kind = kint) :: inod, j, i_n1, i_n2, i_n3
       real(kind = kreal) :: d2s_dr2, d2t_dr2

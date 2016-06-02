@@ -7,20 +7,18 @@
 !>@brief  Construct poisson matrix for poloidal elocity at boundaries
 !!
 !!@verbatim
-!!      subroutine rigid_icb_vp_poisson5_mat(nri, jmax, kr_in, r_ICB,   &
+!!      subroutine rigid_icb_vp_poisson5_mat(nri, jmax, g_sph_rj, kr_in,&
+!!     &          r_ICB, r_ICB1, fdm4_noslip_ICB, fdm4_noslip_ICB1,     &
 !!     &          poisson_mat5)
-!!      subroutine rigid_cmb_vp_poisson5_mat(nri, jmax, kr_out, r_CMB,  &
-!!     &          poisson_mat5)
-!!      subroutine free_icb_vp_poisson5_mat(nri, jmax, kr_in, r_ICB,    &
-!!     &          poisson_mat5)
+!!      subroutine rigid_cmb_vp_poisson5_mat(nri, jmax, g_sph_rj,       &
+!!     &          kr_out, r_CMB, r_CMB1, fdm4_noslip_CMB,               &
+!!     &          fdm4_noslip_CMB1, poisson_mat5)
 !!@endverbatim
 !
       module set_bc_vp_poisson5_mat
 !
       use m_precision
-!
       use m_constants
-      use m_schmidt_poly_on_rtm
 !
       implicit none
 !
@@ -30,11 +28,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine rigid_icb_vp_poisson5_mat(nri, jmax, kr_in,            &
-     &           r_ICB, r_ICB1, fdm4_noslip_ICB, fdm4_noslip_ICB1,      &
-     &           poisson_mat5)
+      subroutine rigid_icb_vp_poisson5_mat(nri, jmax, g_sph_rj, kr_in,  &
+     &          r_ICB, r_ICB1, fdm4_noslip_ICB, fdm4_noslip_ICB1,       &
+     &          poisson_mat5)
 !
       integer(kind = kint), intent(in) :: nri, jmax, kr_in
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_ICB(0:2), r_ICB1(0:2)
       real(kind = kreal), intent(in) :: fdm4_noslip_ICB(0:2,3:5)
       real(kind = kreal), intent(in) :: fdm4_noslip_ICB1(-1:2,5)
@@ -61,11 +60,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine rigid_cmb_vp_poisson5_mat(nri, jmax, kr_out,           &
-     &          r_CMB, r_CMB1, fdm4_noslip_CMB, fdm4_noslip_CMB1,       &
-     &          poisson_mat5)
+      subroutine rigid_cmb_vp_poisson5_mat(nri, jmax, g_sph_rj,         &
+     &          kr_out, r_CMB, r_CMB1, fdm4_noslip_CMB,                 &
+     &          fdm4_noslip_CMB1, poisson_mat5)
 !
       integer(kind = kint), intent(in) :: nri, jmax, kr_out
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_CMB(0:2), r_CMB1(0:2)
       real(kind = kreal), intent(in) :: fdm4_noslip_CMB(-2:0,3:4)
       real(kind = kreal), intent(in) :: fdm4_noslip_CMB1(-2:1,5)

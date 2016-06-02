@@ -106,6 +106,7 @@
 !
       use calypso_mpi
       use t_spheric_rj_data
+      use m_schmidt_poly_on_rtm
       use m_pickup_sph_spectr_data
       use cal_rms_by_sph_spectr
 !
@@ -129,7 +130,8 @@
         ncomp = num_rms_comp_rj(j_fld)
         ist_fld =  rj_fld%istack_component(i_fld-1)
         jst_rms = istack_rms_comp_rj(j_fld-1)
-        call cal_rms_sph_spec_one_field(sph_rj, ncomp, (ist_fld+1),     &
+        call cal_rms_sph_spec_one_field                                 &
+     &     (sph_rj, ncomp, (ist_fld+1), g_sph_rj,                       &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld, rms_sph_rj)
 !
 !$omp parallel do private(icomp,j,kr,inum,knum)
@@ -163,6 +165,7 @@
 !
       use calypso_mpi
       use t_spheric_rj_data
+      use m_schmidt_poly_on_rtm
       use cal_rms_by_sph_spectr
       use radial_int_for_sph_spec
 !
@@ -189,7 +192,8 @@
         ncomp = num_rms_comp_rj(j_fld)
         ist_fld =  rj_fld%istack_component(i_fld-1)
         jst_rms = istack_rms_comp_rj(j_fld-1)
-        call cal_rms_sph_spec_one_field(sph_rj, ncomp, (ist_fld+1),     &
+        call cal_rms_sph_spec_one_field                                 &
+     &     (sph_rj, ncomp, (ist_fld+1), g_sph_rj,                       &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld, rms_sph_rj)
         call radial_integration(kg_st, kg_ed, sph_rj%nidx_rj(1),        &
      &      sph_rj%radius_1d_rj_r, sph_rj%nidx_rj(2),                   &

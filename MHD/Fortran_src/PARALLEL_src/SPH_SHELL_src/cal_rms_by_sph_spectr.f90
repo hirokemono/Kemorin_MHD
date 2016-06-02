@@ -7,9 +7,9 @@
 !>@brief  Evaluate mean square data for each spherical harmonics mode
 !!
 !!@verbatim
-!!      subroutine cal_rms_sph_spec_one_field(sph_rj,                   &
-!!     &          ncomp_rj, icomp_rj, n_point, ntot_phys_rj, d_rj,      &
-!!     &          rms_sph_rj)
+!!      subroutine cal_rms_sph_spec_one_field                           &
+!!     &         (sph_rj, ncomp_rj, icomp_rj, g_sph_rj,                 &
+!!     &          n_point, ntot_phys_rj, d_rj, rms_sph_rj)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!
 !!        (1/4\pi) \int (\bf{u}_{l}^{m})^2 sin \theta d\theta d\phi
@@ -24,9 +24,7 @@
       module cal_rms_by_sph_spectr
 !
       use m_precision
-!
       use m_constants
-      use m_schmidt_poly_on_rtm
 !
       implicit none
 !
@@ -40,9 +38,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_rms_sph_spec_one_field(sph_rj,                     &
-     &          ncomp_rj, icomp_rj, n_point, ntot_phys_rj, d_rj,        &
-     &          rms_sph_rj)
+      subroutine cal_rms_sph_spec_one_field                             &
+     &         (sph_rj, ncomp_rj, icomp_rj, g_sph_rj,                   &
+     &          n_point, ntot_phys_rj, d_rj, rms_sph_rj)
 !
       use t_spheric_rj_data
       use m_phys_constants
@@ -52,7 +50,7 @@
       integer(kind = kint), intent(in) :: ncomp_rj, icomp_rj
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real (kind=kreal), intent(in) :: d_rj(n_point,ntot_phys_rj)
-!
+      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
       real(kind = kreal), intent(inout)                                 &
      &    :: rms_sph_rj(0:sph_rj%nidx_rj(1),sph_rj%nidx_rj(2),ncomp_rj)
@@ -62,13 +60,13 @@
           call cal_rms_each_scalar_sph_spec                             &
      &       (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                     &
      &        sph_rj%idx_rj_degree_zero, sph_rj%inod_rj_center,         &
-     &        sph_rj%radius_1d_rj_r, n_point,                           &
+     &        sph_rj%radius_1d_rj_r, g_sph_rj, n_point,                 &
      &        d_rj(1,icomp_rj), rms_sph_rj(0,1,1))
       else if(ncomp_rj .eq. n_vector) then
         call cal_rms_each_vector_sph_spec                               &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
      &      sph_rj%idx_rj_degree_zero, sph_rj%inod_rj_center,           &
-     &      sph_rj%a_r_1d_rj_r, n_point, d_rj(1,icomp_rj),              &
+     &      sph_rj%a_r_1d_rj_r, g_sph_rj, n_point, d_rj(1,icomp_rj),    &
      &      rms_sph_rj(0,1,1))
 !
         if (   icomp_rj .eq. ipol%i_velo                                &
@@ -87,12 +85,13 @@
 !
       subroutine cal_rms_each_scalar_sph_spec(nri, jmax,                &
      &          idx_rj_degree_zero, inod_rj_center, radius_1d_rj_r,     &
-     &          n_point, d_rj, rms_sph_rj)
+     &          g_sph_rj, n_point, d_rj, rms_sph_rj)
 !
       integer(kind = kint), intent(in) :: n_point, nri, jmax
       integer(kind = kint), intent(in) :: idx_rj_degree_zero
       integer(kind = kint), intent(in) :: inod_rj_center
       real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: d_rj(n_point)
       real(kind = kreal), intent(inout) :: rms_sph_rj(0:nri,jmax)
 !
@@ -120,12 +119,13 @@
 !
       subroutine cal_rms_each_vector_sph_spec(nri, jmax,                &
      &          idx_rj_degree_zero, inod_rj_center, a_r_1d_rj_r,        &
-     &          n_point, d_rj, rms_sph_rj)
+     &          g_sph_rj, n_point, d_rj, rms_sph_rj)
 !
       integer(kind = kint), intent(in) :: n_point, nri, jmax
       integer(kind = kint), intent(in) :: idx_rj_degree_zero
       integer(kind = kint), intent(in) :: inod_rj_center
       real(kind = kreal), intent(in) :: a_r_1d_rj_r(nri)
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: d_rj(n_point,3)
       real(kind = kreal), intent(inout) :: rms_sph_rj(0:nri,jmax,3)
 !

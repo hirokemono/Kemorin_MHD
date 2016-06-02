@@ -97,6 +97,7 @@
 !
       use m_sph_phys_address
       use m_boundary_params_sph_MHD
+      use m_schmidt_poly_on_rtm
       use cal_sol_sph_fluid_crank
 !
       use cal_sph_field_by_rotation
@@ -111,9 +112,9 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_div_of_forces_sph_2'
-      call cal_div_of_forces_sph_2(sph_rj, rj_fld)
+      call cal_div_of_forces_sph_2(sph_rj, g_sph_rj, rj_fld)
 !
-      call s_const_radial_forces_on_bc(sph_rj, rj_fld)
+      call s_const_radial_forces_on_bc(sph_rj, g_sph_rj, rj_fld)
 !
       call sum_div_of_forces(rj_fld)
 !
@@ -122,7 +123,7 @@
 !
       if(ipol%i_press_grad .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'const_pressure_gradient'
-        call const_pressure_gradient(sph_rj, sph_bc_U,                  &
+        call const_pressure_gradient(sph_rj, sph_bc_U, g_sph_rj,        &
      &     ipol%i_press, ipol%i_press_grad, rj_fld)
       end if
 !
@@ -181,6 +182,7 @@
      &         (sph, comms_sph, trns_MHD, trns_tmp, rj_fld)
 !
       use m_sph_phys_address
+      use m_schmidt_poly_on_rtm
       use sph_transforms_4_MHD
       use sph_poynting_flux_smp
 !
@@ -203,7 +205,7 @@
      &   (sph, comms_sph, trns_tmp, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_grad_of_velocities_sph'
-      call cal_grad_of_velocities_sph(sph%sph_rj, rj_fld)
+      call cal_grad_of_velocities_sph(sph%sph_rj, g_sph_rj, rj_fld)
 !
       end subroutine gradients_of_vectors_sph
 !

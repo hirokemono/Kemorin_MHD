@@ -18,7 +18,7 @@
 !!
 !!
 !!      subroutine cal_sol_magne_sph_crank                              &
-!!     &         (sph_rj, band_bp_evo, band_bt_evo, rj_fld)
+!!     &         (sph_rj, band_bp_evo, band_bt_evo, g_sph_rj, rj_fld)
 !!        Input address:    ipol%i_magne, itor%i_magne
 !!        Solution address: ipol%i_magne, itor%i_magne
 !!
@@ -53,7 +53,7 @@
 !
       implicit none
 !
-      private :: set_bc_scalar_sph_crank
+      private :: set_bc_magne_sph_crank, set_bc_scalar_sph_crank
 !
 ! -----------------------------------------------------------------------
 !
@@ -122,18 +122,20 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sol_magne_sph_crank                                &
-     &         (sph_rj, band_bp_evo, band_bt_evo, rj_fld)
+     &         (sph_rj, band_bp_evo, band_bt_evo, g_sph_rj, rj_fld)
 !
       use m_boundary_params_sph_MHD
       use solve_sph_fluid_crank
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(band_matrices_type), intent(in) :: band_bp_evo, band_bt_evo
+      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call set_bc_magne_sph_crank(ipol%i_magne, sph_rj, rj_fld)
+      call set_bc_magne_sph_crank                                       &
+     &   (sph_rj, g_sph_rj, ipol%i_magne, rj_fld)
 !
       call solve_magne_sph_crank                                        &
      &   (sph_rj, band_bp_evo, band_bt_evo, ipol%i_magne, itor%i_magne, &
@@ -219,38 +221,37 @@
      &    sph_rj%nidx_rj, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       if     (sph_bc_U%iflag_icb .eq. iflag_free_slip) then
-        call cal_sph_nod_icb_free_vpol2(rj_fld%n_point,                 &
-     &      sph_rj%nidx_rj(2), sph_bc_U%kr_in, fdm2_free_vp_ICB,        &
-     &      is_velo, rj_fld%ntot_phys, rj_fld%d_fld)
+        call cal_sph_nod_icb_free_vpol2                                 &
+     &     (sph_rj%nidx_rj(2), sph_bc_U%kr_in, fdm2_free_vp_ICB,        &
+     &      is_velo, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call cal_sph_nod_icb_rotate_velo2                               &
      &     (sph_rj%idx_rj_degree_zero, sph_rj%idx_rj_degree_one,        &
-     &      rj_fld%n_point, sph_rj%nidx_rj,                             &
-     &      sph_bc_U%kr_in, sph_bc_U%r_ICB, sph_rj%radius_1d_rj_r,      &
-     &      vt_ICB_bc, is_velo, rj_fld%ntot_phys, rj_fld%d_fld)
+     &      sph_rj%nidx_rj, sph_bc_U%kr_in, sph_bc_U%r_ICB,             &
+     &      sph_rj%radius_1d_rj_r, vt_ICB_bc, is_velo,                  &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else
-        call cal_sph_nod_icb_rigid_velo2                                &
-     &     (rj_fld%n_point, sph_rj%nidx_rj(2),                          &
+        call cal_sph_nod_icb_rigid_velo2(sph_rj%nidx_rj(2),             &
      &      sph_bc_U%kr_in, sph_bc_U%r_ICB, vt_ICB_bc, is_velo,         &
-     &      rj_fld%ntot_phys, rj_fld%d_fld)
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       if(sph_bc_U%iflag_cmb .eq. iflag_free_slip) then
-        call cal_sph_nod_cmb_free_vpol2(rj_fld%n_point,                 &
-     &      sph_rj%nidx_rj(2), sph_bc_U%kr_out, fdm2_free_vp_CMB,       &
-     &      is_velo, rj_fld%ntot_phys, rj_fld%d_fld)
+        call cal_sph_nod_cmb_free_vpol2                                 &
+     &     (sph_rj%nidx_rj(2), sph_bc_U%kr_out, fdm2_free_vp_CMB,       &
+     &      is_velo, rj_fld%n_point,rj_fld%ntot_phys, rj_fld%d_fld)
       else
-        call cal_sph_nod_cmb_rigid_velo2                                &
-     &     (rj_fld%n_point, sph_rj%nidx_rj(2),                          &
+        call cal_sph_nod_cmb_rigid_velo2(sph_rj%nidx_rj(2),             &
      &      sph_bc_U%kr_out, sph_bc_U%r_CMB, vt_CMB_bc, is_velo,        &
-     &      rj_fld%ntot_phys, rj_fld%d_fld)
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       end subroutine set_bc_velo_sph_crank
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_bc_magne_sph_crank(is_magne, sph_rj, rj_fld)
+      subroutine set_bc_magne_sph_crank                                 &
+     &         (sph_rj, g_sph_rj, is_magne, rj_fld)
 !
       use m_boundary_params_sph_MHD
       use const_sph_radial_grad
@@ -259,8 +260,9 @@
       use cal_sph_exp_nod_cmb_qvac
       use cal_sph_exp_nod_icb_qvac
 !
-      integer(kind = kint), intent(in) :: is_magne
       type(sph_rj_grid), intent(in) :: sph_rj
+      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
+      integer(kind = kint), intent(in) :: is_magne
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -270,23 +272,23 @@
      &    rj_fld%ntot_phys, rj_fld%d_fld)
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_insulator) then
-        call cal_sph_nod_icb_ins_mag2                                   &
-     &     (rj_fld%n_point, sph_rj%nidx_rj(2), sph_bc_B%kr_in,          &
-     &      sph_bc_B%r_ICB, is_magne, rj_fld%ntot_phys, rj_fld%d_fld)
+        call cal_sph_nod_icb_ins_mag2(sph_rj%nidx_rj(2), g_sph_rj,      &
+     &      sph_bc_B%kr_in, sph_bc_B%r_ICB, is_magne,                   &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else if(sph_bc_B%iflag_icb .eq. iflag_radial_magne) then
         call cal_sph_nod_icb_qvc_mag2                                   &
-     &     (rj_fld%n_point, sph_rj%nidx_rj(2), sph_bc_B%kr_in,          &
-     &      is_magne, rj_fld%ntot_phys, rj_fld%d_fld)
+     &     (sph_rj%nidx_rj(2), sph_bc_B%kr_in, is_magne,                &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       if(sph_bc_B%iflag_cmb .eq. iflag_radial_magne) then
         call cal_sph_nod_cmb_qvc_mag2                                   &
-     &     (rj_fld%n_point, sph_rj%nidx_rj(2), sph_bc_B%kr_out,         &
-     &      is_magne, rj_fld%ntot_phys, rj_fld%d_fld)
+     &     (sph_rj%nidx_rj(2), sph_bc_B%kr_out, is_magne,               &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else
-        call cal_sph_nod_cmb_ins_mag2                                   &
-     &     (rj_fld%n_point, sph_rj%nidx_rj(2), sph_bc_B%kr_out,         &
-     &      sph_bc_B%r_CMB, is_magne, rj_fld%ntot_phys, rj_fld%d_fld)
+        call cal_sph_nod_cmb_ins_mag2(sph_rj%nidx_rj(2), g_sph_rj,      &
+     &      sph_bc_B%kr_out, sph_bc_B%r_CMB, is_magne,                  &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       end subroutine set_bc_magne_sph_crank
@@ -332,9 +334,9 @@
      &      ione, sph_bc%kr_in, is_field, sph_bc%ICB_fld,               &
      &      rj_fld%ntot_phys, rj_fld%d_fld)
       else if (sph_bc%iflag_icb .eq. iflag_sph_fix_center) then
-        call cal_sph_fixed_center(sph_rj%inod_rj_center,                &
-     &      rj_fld%n_point, sph_bc%CTR_fld, is_field,                   &
-     &      rj_fld%ntot_phys, rj_fld%d_fld)
+        call cal_sph_fixed_center                                       &
+     &     (sph_rj%inod_rj_center, sph_bc%CTR_fld, is_field,            &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else if(sph_bc%iflag_icb .eq. iflag_fixed_flux                    &
      &     .and. coef_f .ne. 0.0d0) then
         call adjust_in_fixed_flux_sph(rj_fld%n_point,                   &

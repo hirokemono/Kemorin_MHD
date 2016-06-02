@@ -8,17 +8,18 @@
 !!        using 4-th order FDM for poloidal velocity
 !!
 !!@verbatim
-!!      subroutine cal_sph_cmb_rigid_v_and_w_s4t2(nnod_rj, jmax, kr_out,&
-!!     &          r_CMB, r_CMB1, fdm2_fix_fld_CMB, fdm4_noslip_CMB,     &
-!!     &          fdm4_noslip_CMB1, Vt_CMB, is_fld, is_rot,             &
-!!     &          ntot_phys_rj, d_rj)
-!!      subroutine cal_sph_cmb_rigid_rot_s4t2(nnod_rj, jmax, kr_out,    &
-!!     &          r_CMB1, fdm2_fix_fld_CMB, fdm4_noslip_CMB,            &
-!!     &          fdm4_noslip_CMB1, is_fld, is_rot, ntot_phys_rj, d_rj)
-!!      subroutine cal_sph_cmb_rigid_diffuse_s4t2(nnod_rj, jmax, kr_out,&
-!!     &          r_CMB, r_CMB1, fdm2_fix_fld_CMB, fdm4_noslip_CMB,     &
-!!     &          fdm4_noslip_CMB1, coef_d, is_fld, is_diffuse,         &
-!!     &          ntot_phys_rj, d_rj)
+!!      subroutine cal_sph_cmb_rigid_v_and_w_s4t2                       &
+!!     &         (nnod_rj, jmax, g_sph_rj, kr_out, r_CMB, r_CMB1,       &
+!!     &          fdm2_fix_fld_CMB, fdm4_noslip_CMB, fdm4_noslip_CMB1,  &
+!!     &          Vt_CMB, is_fld, is_rot, ntot_phys_rj, d_rj)
+!!      subroutine cal_sph_cmb_rigid_rot_s4t2                           &
+!!     &         (nnod_rj, jmax, g_sph_rj, kr_out, r_CMB1,              &
+!!     &          fdm2_fix_fld_CMB, fdm4_noslip_CMB, fdm4_noslip_CMB1,  &
+!!     &          is_fld, is_rot, ntot_phys_rj, d_rj)
+!!      subroutine cal_sph_cmb_rigid_diffuse_s4t2                       &
+!!     &         (nnod_rj, jmax, g_sph_rj, kr_out,  r_CMB, r_CMB1,      &
+!!     &          fdm2_fix_fld_CMB, fdm4_noslip_CMB, fdm4_noslip_CMB1,  &
+!!     &          coef_d, is_fld, is_diffuse, ntot_phys_rj, d_rj)
 !!@endverbatim
 !!
 !!@n @param nnod_rj  Number of points for spectrum data
@@ -49,7 +50,6 @@
       use m_precision
 !
       use m_constants
-      use m_schmidt_poly_on_rtm
       use m_fdm_coefs
 !
       implicit none
@@ -60,13 +60,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_cmb_rigid_v_and_w_s4t2(nnod_rj, jmax, kr_out,  &
-     &          r_CMB, r_CMB1, fdm2_fix_fld_CMB, fdm4_noslip_CMB,       &
-     &          fdm4_noslip_CMB1, Vt_CMB, is_fld, is_rot,               &
-     &          ntot_phys_rj, d_rj)
+      subroutine cal_sph_cmb_rigid_v_and_w_s4t2                         &
+     &         (nnod_rj, jmax, g_sph_rj, kr_out, r_CMB, r_CMB1,         &
+     &          fdm2_fix_fld_CMB, fdm4_noslip_CMB, fdm4_noslip_CMB1,    &
+     &          Vt_CMB, is_fld, is_rot, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax, kr_out
       integer(kind = kint), intent(in) :: is_fld, is_rot
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_CMB(0:2), r_CMB1(0:2)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(0:2,3)
       real(kind = kreal), intent(in) :: fdm4_noslip_CMB(-2:0,3:4)
@@ -126,12 +127,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_cmb_rigid_rot_s4t2(nnod_rj, jmax, kr_out,      &
-     &          r_CMB1, fdm2_fix_fld_CMB, fdm4_noslip_CMB,              &
-     &          fdm4_noslip_CMB1, is_fld, is_rot, ntot_phys_rj, d_rj)
+      subroutine cal_sph_cmb_rigid_rot_s4t2                             &
+     &         (nnod_rj, jmax, g_sph_rj, kr_out, r_CMB1,                &
+     &          fdm2_fix_fld_CMB, fdm4_noslip_CMB, fdm4_noslip_CMB1,    &
+     &          is_fld, is_rot, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax, kr_out
       integer(kind = kint), intent(in) :: is_fld, is_rot
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_CMB1(0:2)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(0:2,3)
       real(kind = kreal), intent(in) :: fdm4_noslip_CMB(-2:0,3:4)
@@ -181,13 +184,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_cmb_rigid_diffuse_s4t2(nnod_rj, jmax, kr_out,  &
-     &          r_CMB, r_CMB1, fdm2_fix_fld_CMB, fdm4_noslip_CMB,       &
-     &          fdm4_noslip_CMB1, coef_d, is_fld, is_diffuse,           &
-     &          ntot_phys_rj, d_rj)
+      subroutine cal_sph_cmb_rigid_diffuse_s4t2                         &
+     &         (nnod_rj, jmax, g_sph_rj, kr_out,  r_CMB, r_CMB1,        &
+     &          fdm2_fix_fld_CMB, fdm4_noslip_CMB, fdm4_noslip_CMB1,    &
+     &          coef_d, is_fld, is_diffuse, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax, kr_out
       integer(kind = kint), intent(in) :: is_fld, is_diffuse
+      real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: coef_d
       real(kind = kreal), intent(in) :: r_CMB(0:2), r_CMB1(0:2)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(0:2,3)

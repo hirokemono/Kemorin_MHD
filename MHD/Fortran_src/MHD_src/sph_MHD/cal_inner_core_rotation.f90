@@ -237,7 +237,6 @@
      &          coef_d, vt_evo_mat)
 !
       use m_t_int_parameter
-      use m_schmidt_poly_on_rtm
       use m_fdm_coefs
 !
       integer(kind = kint), intent(in) :: nri, jmax

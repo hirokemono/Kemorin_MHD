@@ -51,6 +51,7 @@
 !
       use m_sph_phys_address
       use m_boundary_params_sph_MHD
+      use m_schmidt_poly_on_rtm
       use cal_inner_core_rotation
 !
       use cal_nonlinear_sph_MHD
@@ -75,7 +76,7 @@
       if (iflag_4_ref_temp .eq. id_sphere_ref_temp) then
         call add_reftemp_advect_sph_MHD                                 &
      &     (sph_bc_T%kr_in, sph_bc_T%kr_out,                            &
-     &      sph%sph_rj%nidx_rj, sph%sph_rj%ar_1d_rj,                    &
+     &      sph%sph_rj%nidx_rj, sph%sph_rj%ar_1d_rj, g_sph_rj,          &
      &      rj_fld%n_point, rj_fld%ntot_phys, reftemp_rj, rj_fld%d_fld)
       end if
 !
@@ -205,6 +206,7 @@
 !
       use m_sph_phys_address
       use m_boundary_params_sph_MHD
+      use m_schmidt_poly_on_rtm
       use sph_transforms_4_MHD
       use cal_nonlinear_sph_MHD
       use cal_vorticity_terms_adams
@@ -244,7 +246,7 @@
       if (iflag_4_ref_temp .eq. id_sphere_ref_temp) then
         call add_reftemp_advect_sph_MHD                                 &
      &     (sph_bc_T%kr_in, sph_bc_T%kr_out,                            &
-     &      sph_rj%nidx_rj, sph_rj%ar_1d_rj,                            &
+     &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                  &
      &      rj_fld%n_point, rj_fld%ntot_phys, reftemp_rj, rj_fld%d_fld)
       end if
 !
