@@ -55,7 +55,7 @@
       use calypso_mpi
 !
       use m_machine_parameter
-      use m_schmidt_poly_on_rtm
+!      use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans
       use matmul_for_legendre_trans
 !

@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine set_sp_rlm_vector_blocked                            &
 !!     &       (nnod_rlm, nidx_rlm, istep_rlm, idx_gl_1d_rlm_j,         &
-!!     &        jst, nd, k_rlm, a1r_1d_rlm_r, a2r_1d_rlm_r,             &
+!!     &        g_sph_rlm, jst, nd, k_rlm, a1r_1d_rlm_r, a2r_1d_rlm_r,  &
 !!     &        ncomp, n_WR, irev_sr_rlm, WR, nj_rlm,                   &
 !!     &        pol_e, dpoldt_e, dpoldp_e, dtordt_e, dtordp_e)
 !!      subroutine set_sp_rlm_scalar_blocked(nnod_rlm, istep_rlm,       &
@@ -18,7 +18,7 @@
 !!
 !!      subroutine set_sp_rlm_vector_symmetry                           &
 !!     &       (nnod_rlm, nidx_rlm, istep_rlm, idx_gl_1d_rlm_j,         &
-!!     &        jst, nd, k_rlm, a1r_1d_rlm_r, a2r_1d_rlm_r,             &
+!!     &        g_sph_rlm, jst, nd, k_rlm, a1r_1d_rlm_r, a2r_1d_rlm_r,  &
 !!     &        ncomp, n_WR, irev_sr_rlm, WR, nj_rlm,                   &
 !!     &        pol_e, dpoldt_e, dpoldp_e, dtordt_e, dtordp_e,          &
 !!     &        pol_o, dpoldt_o, dpoldp_o, dtordt_o, dtordp_o)
@@ -28,7 +28,7 @@
 !!
 !!      subroutine set_sp_rlm_vector_equator                            &
 !!     &       (nnod_rlm, nidx_rlm, istep_rlm, idx_gl_1d_rlm_j,         &
-!!     &        jst, nd, k_rlm, a1r_1d_rlm_r, a2r_1d_rlm_r,             &
+!!     &        g_sph_rlm, jst, nd, k_rlm, a1r_1d_rlm_r, a2r_1d_rlm_r,  &
 !!     &        ncomp, n_WR, irev_sr_rlm, WR, nj_rlm,                   &
 !!     &        pol_e, dpoldp_e, dtordp_e, dpoldt_o, dtordt_o)
 !!      subroutine set_sp_rlm_scalar_equator(nnod_rlm, istep_rlm,       &
@@ -50,11 +50,9 @@
 !
       subroutine set_sp_rlm_vector_blocked                              &
      &       (nnod_rlm, nidx_rlm, istep_rlm, idx_gl_1d_rlm_j,           &
-     &        jst, nd, k_rlm, a1r_1d_rlm_r, a2r_1d_rlm_r,               &
+     &        g_sph_rlm, jst, nd, k_rlm, a1r_1d_rlm_r, a2r_1d_rlm_r,    &
      &        ncomp, n_WR, irev_sr_rlm, WR, nj_rlm,                     &
      &        pol_e, dpoldt_e, dpoldp_e, dtordt_e, dtordp_e)
-!
-      use m_schmidt_poly_on_rtm
 !
       integer(kind = kint), intent(in) :: nnod_rlm
       integer(kind = kint), intent(in) :: nidx_rlm(2)
@@ -64,6 +62,7 @@
 !
       integer(kind = kint), intent(in) :: jst, nd, k_rlm
       real(kind = kreal), intent(in)  :: a1r_1d_rlm_r, a2r_1d_rlm_r
+      real(kind = kreal), intent(in) :: g_sph_rlm(nidx_rlm(2),17)
       integer(kind = kint), intent(in) :: ncomp, n_WR
       integer(kind = kint), intent(in) :: irev_sr_rlm(nnod_rlm)
       real (kind=kreal), intent(inout):: WR(n_WR)
@@ -132,12 +131,10 @@
 !
       subroutine set_sp_rlm_vector_symmetry                             &
      &       (nnod_rlm, nidx_rlm, istep_rlm, idx_gl_1d_rlm_j,           &
-     &        jst, nd, k_rlm, a1r_1d_rlm_r, a2r_1d_rlm_r,               &
+     &        g_sph_rlm, jst, nd, k_rlm, a1r_1d_rlm_r, a2r_1d_rlm_r,    &
      &        ncomp, n_WR, irev_sr_rlm, WR, nj_rlm,                     &
      &        pol_e, dpoldt_e, dpoldp_e, dtordt_e, dtordp_e,            &
      &        pol_o, dpoldt_o, dpoldp_o, dtordt_o, dtordp_o)
-!
-      use m_schmidt_poly_on_rtm
 !
       integer(kind = kint), intent(in) :: nnod_rlm
       integer(kind = kint), intent(in) :: nidx_rlm(2)
@@ -147,6 +144,7 @@
 !
       integer(kind = kint), intent(in) :: jst, nd, k_rlm
       real(kind = kreal), intent(in)  :: a1r_1d_rlm_r, a2r_1d_rlm_r
+      real(kind = kreal), intent(in) :: g_sph_rlm(nidx_rlm(2),17)
       integer(kind = kint), intent(in) :: ncomp, n_WR
       integer(kind = kint), intent(in) :: irev_sr_rlm(nnod_rlm)
       real (kind=kreal), intent(inout):: WR(n_WR)
@@ -243,11 +241,9 @@
 !
       subroutine set_sp_rlm_vector_equator                              &
      &       (nnod_rlm, nidx_rlm, istep_rlm, idx_gl_1d_rlm_j,           &
-     &        jst, nd, k_rlm, a1r_1d_rlm_r, a2r_1d_rlm_r,               &
+     &        g_sph_rlm, jst, nd, k_rlm, a1r_1d_rlm_r, a2r_1d_rlm_r,    &
      &        ncomp, n_WR, irev_sr_rlm, WR, nj_rlm,                     &
      &        pol_e, dpoldp_e, dtordp_e, dpoldt_o, dtordt_o)
-!
-      use m_schmidt_poly_on_rtm
 !
       integer(kind = kint), intent(in) :: nnod_rlm
       integer(kind = kint), intent(in) :: nidx_rlm(2)
@@ -257,6 +253,7 @@
 !
       integer(kind = kint), intent(in) :: jst, nd, k_rlm
       real(kind = kreal), intent(in)  :: a1r_1d_rlm_r, a2r_1d_rlm_r
+      real(kind = kreal), intent(in) :: g_sph_rlm(nidx_rlm(2),17)
       integer(kind = kint), intent(in) :: ncomp, n_WR
       integer(kind = kint), intent(in) :: irev_sr_rlm(nnod_rlm)
       real (kind=kreal), intent(inout):: WR(n_WR)

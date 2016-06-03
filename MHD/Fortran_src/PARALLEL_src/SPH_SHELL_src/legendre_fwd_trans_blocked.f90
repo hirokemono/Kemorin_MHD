@@ -98,7 +98,8 @@
                 i_send = 3*nd-2 + (comm_rlm%irev_sr(i_rlm) - 1) * ncomp
 !
                 call set_vr_rtm_vector_blocked                          &
-     &             (sph_rtm%nnod_rtm, sph_rtm%istep_rtm, nd, k_rlm,     &
+     &             (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm,                 &
+     &              sph_rtm%istep_rtm, weight_rtm, nd, k_rlm,           &
      &              mdx_p_rlm_rtm(j_rlm), mdx_n_rlm_rtm(j_rlm),         &
      &              asin_theta_1d_rtm(1+lst), lst, nth,                 &
      &              ncomp, comm_rtm%irev_sr, n_WR, WR,                  &
@@ -161,7 +162,8 @@
      &                      + (comm_rlm%irev_sr(i_rlm) - 1) * ncomp
 !
                 call set_vr_rtm_scalar_blocked                          &
-     &             (sph_rtm%nnod_rtm, sph_rtm%istep_rtm,                &
+     &             (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm,                 &
+     &              sph_rtm%istep_rtm, weight_rtm,                      &
      &              nd, k_rlm, mdx_p_rlm_rtm(j_rlm), lst, nth,          &
      &              ncomp, nvector, comm_rtm%irev_sr,                   &
      &              n_WR, WR, symp(1,ip))

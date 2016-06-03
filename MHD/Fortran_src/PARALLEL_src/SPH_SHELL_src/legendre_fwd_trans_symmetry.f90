@@ -114,8 +114,9 @@
 !
                 call set_vr_rtm_vector_symmetry                         &
      &             (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm,                 &
-     &              sph_rtm%istep_rtm, nd, k_rlm, mp_rlm, mn_rlm,       &
-     &              asin_theta_1d_rtm(1), izero, nle_rtm, nlo_rtm,      &
+     &              sph_rtm%istep_rtm, weight_rtm, nd, k_rlm,           &
+     &              mp_rlm, mn_rlm, asin_theta_1d_rtm(1),               &
+     &              izero, nle_rtm, nlo_rtm,                            &
      &              ncomp, comm_rtm%irev_sr, n_WR, WR, symp_r(1,ip),    &
      &              asmp_t(1,ip), asmp_p(1,ip), symn_t(1,ip),           &
      &              symn_p(1,ip), asmp_r(1,ip), symp_t(1,ip),           &
@@ -147,8 +148,9 @@
 !
                 call set_vr_rtm_vector_symmetry                         &
      &             (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm,                 &
-     &              sph_rtm%istep_rtm, nd, k_rlm, mp_rlm, mn_rlm,       &
-     &              asin_theta_1d_rtm(1), izero, nle_rtm, nlo_rtm,      &
+     &              sph_rtm%istep_rtm, weight_rtm, nd, k_rlm,           &
+     &              mp_rlm, mn_rlm, asin_theta_1d_rtm(1),               &
+     &              izero, nle_rtm, nlo_rtm,                            &
      &              ncomp, comm_rtm%irev_sr, n_WR, WR, symp_r(1,ip),    &
      &              asmp_t(1,ip), asmp_p(1,ip), symn_t(1,ip),           &
      &              symn_p(1,ip), asmp_r(1,ip), symp_t(1,ip),           &
@@ -225,9 +227,9 @@
      &                       + (comm_rlm%irev_sr(io_rlm) - 1) * ncomp
                 call set_vr_rtm_scalar_symmetry                         &
      &             (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm,                 &
-     &              sph_rtm%istep_rtm, nd, k_rlm, mp_rlm, izero,        &
-     &              nle_rtm, nlo_rtm, ncomp, nvector, comm_rtm%irev_sr, &
-     &              n_WR, WR, symp(1,ip), asmp(1,ip))
+     &              sph_rtm%istep_rtm, weight_rtm, nd, k_rlm, mp_rlm,   &
+     &              izero, nle_rtm, nlo_rtm, ncomp, nvector,            &
+     &              comm_rtm%irev_sr, n_WR, WR, symp(1,ip), asmp(1,ip))
 !
                 call cal_scalar_sp_rlm_dotprod                          &
      &             (nle_rtm, g_sph_rlm(je_rlm,6),                       &
@@ -245,9 +247,9 @@
               do nd = 1, nscalar
                 call set_vr_rtm_scalar_symmetry                         &
      &             (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm,                 &
-     &              sph_rtm%istep_rtm, nd, k_rlm, mp_rlm, izero,        &
-     &              nle_rtm, nlo_rtm, ncomp, nvector, comm_rtm%irev_sr, &
-     &              n_WR, WR, symp(1,ip), asmp(1,ip))
+     &              sph_rtm%istep_rtm, weight_rtm, nd, k_rlm, mp_rlm,   &
+     &              izero, nle_rtm, nlo_rtm, ncomp, nvector,            &
+     &              comm_rtm%irev_sr, n_WR, WR, symp(1,ip), asmp(1,ip))
 !
                 ie_rlm = 1 + (je_rlm-1) * sph_rlm%istep_rlm(2)          &
      &                     + (k_rlm-1) *  sph_rlm%istep_rlm(1)

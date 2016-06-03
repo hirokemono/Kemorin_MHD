@@ -10,7 +10,7 @@
 !!      subroutine init_rms_4_sph_spectr(l_truncation, sph_rj, rj_fld)
 !!
 !!      subroutine cal_mean_squre_in_shell(kr_st, kr_ed, l_truncation,  &
-!!     &          sph_rj, rj_fld)
+!!     &          sph_rj, rj_fld, g_sph_rj)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(phys_data), intent(in) :: rj_fld
 !!@endverbatim
@@ -94,20 +94,20 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_mean_squre_in_shell(kr_st, kr_ed, l_truncation,    &
-     &          sph_rj, rj_fld)
+     &          sph_rj, rj_fld, g_sph_rj)
 !
       use calypso_mpi
       use m_rms_4_sph_spectr
-      use m_schmidt_poly_on_rtm
 !
       use volume_average_4_sph
       use cal_ave_4_rms_vector_sph
       use sum_sph_rms_data
 !
-      integer(kind = kint), intent(in) :: kr_st, kr_ed
-      integer(kind = kint), intent(in) :: l_truncation
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_data), intent(in) :: rj_fld
+      integer(kind = kint), intent(in) :: l_truncation
+      integer(kind = kint), intent(in) :: kr_st, kr_ed
+      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
       real(kind = kreal) :: avol
 !

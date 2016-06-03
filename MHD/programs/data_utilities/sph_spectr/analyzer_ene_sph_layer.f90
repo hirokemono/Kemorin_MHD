@@ -81,6 +81,7 @@
       use m_t_step_parameter
       use m_ctl_params_sph_utils
       use m_rms_4_sph_spectr
+      use m_schmidt_poly_on_rtm
       use copy_rj_phys_data_4_IO
       use output_sph_m_square_file
 !
@@ -106,7 +107,7 @@
         call cal_mean_squre_in_shell                                    &
      &     (ione, sph_mesh_spec%sph%sph_rj%nidx_rj(1),                  &
      &      sph_mesh_spec%sph%sph_params%l_truncation,                  &
-     &      sph_mesh_spec%sph%sph_rj, rj_fld_spec)
+     &      sph_mesh_spec%sph%sph_rj, rj_fld_spec, g_sph_rj)
 !
         if (iflag_debug.gt.0)                                           &
      &      write(*,*) 'write_sph_1layer_ms_spec_file'

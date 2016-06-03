@@ -70,6 +70,7 @@
       use m_t_step_parameter
       use m_boundary_params_sph_MHD
       use m_no_heat_Nusselt_num
+      use m_schmidt_poly_on_rtm
 !
       use set_exit_flag_4_visualizer
       use cal_rms_fields_by_sph
@@ -89,7 +90,7 @@
       if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
       call cal_mean_squre_in_shell                                      &
      &   (sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
-     &    sph_params%l_truncation, sph_rj, rj_fld)
+     &    sph_params%l_truncation, sph_rj, rj_fld, g_sph_rj)
       if(iflag_debug.gt.0)  write(*,*) 'cal_gauss_coefficients'
       call cal_gauss_coefficients                                       &
      &   (sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &

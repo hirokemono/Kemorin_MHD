@@ -8,31 +8,31 @@
 !!
 !!@verbatim
 !!      subroutine cal_sp_rlm_vector_matmul(nnod_rlm, nidx_rlm,         &
-!!     &         istep_rlm, idx_gl_1d_rlm_j, radius_1d_rlm_r,           &
-!!     &          kst, nkr, jst, nj_rlm, nvec_jk,                       &
-!!     &          pol_e, dpoldt_e, dpoldp_e, dtordt_e, dtordp_e,        &
-!!     &          ncomp, irev_sr_rlm, n_WS, WS)
-!!      subroutine cal_sp_rlm_scalar_matmul                             &
-!!     &        (nnod_rlm, nidx_rlm, istep_rlm,  kst, nkr, jst, nj_rlm, &
-!!     &         nscl_jk, scl_e, ncomp, nvector, irev_sr_rlm, n_WS, WS)
+!!     &         istep_rlm, idx_gl_1d_rlm_j, radius_1d_rlm_r, g_sph_rlm,&
+!!     &         kst, nkr, jst, nj_rlm, nvec_jk,                        &
+!!     &         pol_e, dpoldt_e, dpoldp_e, dtordt_e, dtordp_e,         &
+!!     &         ncomp, irev_sr_rlm, n_WS, WS)
+!!      subroutine cal_sp_rlm_scalar_matmul(nnod_rlm, nidx_rlm,         &
+!!     &          istep_rlm, g_sph_rlm, kst, nkr, jst, nj_rlm,          &
+!!     &          nscl_jk, scl_e, ncomp, nvector, irev_sr_rlm, n_WS, WS)
 !!
 !!      subroutine cal_sp_rlm_vector_sym_matmul(nnod_rlm, nidx_rlm,     &
-!!     &          istep_rlm, idx_gl_1d_rlm_j, radius_1d_rlm_r,          &
-!!     &          kst, nkr, jst, n_jk_o, n_jk_e,                        &
-!!     &          pol_e, pol_o, dpoldt_e, dpoldp_e, dpoldt_o, dpoldp_o, &
-!!     &          dtordt_e, dtordp_e, dtordt_o, dtordp_o,               &
-!!     &          ncomp, irev_sr_rlm, n_WS, WS)
+!!     &         istep_rlm, idx_gl_1d_rlm_j, radius_1d_rlm_r, g_sph_rlm,&
+!!     &         kst, nkr, jst, n_jk_o, n_jk_e,                         &
+!!     &         pol_e, pol_o, dpoldt_e, dpoldp_e, dpoldt_o, dpoldp_o,  &
+!!     &         dtordt_e, dtordp_e, dtordt_o, dtordp_o,                &
+!!     &         ncomp, irev_sr_rlm, n_WS, WS)
 !!      subroutine cal_sp_rlm_scalar_sym_matmul                         &
-!!     &         (nnod_rlm, nidx_rlm, istep_rlm,                        &
+!!     &         (nnod_rlm, nidx_rlm, istep_rlm, g_sph_rlm,             &
 !!     &          kst, nkr, jst, n_jk_o, n_jk_e, scl_e, scl_o,          &
 !!     &          ncomp, nvector, irev_sr_rlm, n_WS, WS)
 !!
 !!      subroutine cal_sp_rlm_vec_sym_matmul_big(nnod_rlm, nidx_rlm,    &
-!!     &          istep_rlm, idx_gl_1d_rlm_j, radius_1d_rlm_r,          &
-!!     &          kst, nkr, jst, n_jk_o, n_jk_e, pol_e, pol_o,          &
-!!     &          tor_e, tor_o, ncomp, nvector, irev_sr_rlm, n_WS, WS)
+!!     &         istep_rlm, idx_gl_1d_rlm_j, radius_1d_rlm_r, g_sph_rlm,&
+!!     &         kst, nkr, jst, n_jk_o, n_jk_e, pol_e, pol_o,           &
+!!     &         tor_e, tor_o, ncomp, nvector, irev_sr_rlm, n_WS, WS)
 !!      subroutine cal_sp_rlm_scl_sym_matmul_big                        &
-!!     &         (nnod_rlm, nidx_rlm, istep_rlm,                        &
+!!     &         (nnod_rlm, nidx_rlm, istep_rlm, g_sph_rlm,             &
 !!     &          kst, nkr, jst, n_jk_o, n_jk_e, scl_e, scl_o,          &
 !!     &          ncomp, nvector, nscalar, irev_sr_rlm, n_WS, WS)
 !!@endverbatim
@@ -42,7 +42,6 @@
 !
       use m_precision
       use m_constants
-      use m_schmidt_poly_on_rtm
 !
       implicit none
 !
@@ -53,10 +52,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sp_rlm_vector_matmul(nnod_rlm, nidx_rlm,           &
-     &         istep_rlm, idx_gl_1d_rlm_j, radius_1d_rlm_r,             &
-     &          kst, nkr, jst, nj_rlm, nvec_jk,                         &
-     &          pol_e, dpoldt_e, dpoldp_e, dtordt_e, dtordp_e,          &
-     &          ncomp, irev_sr_rlm, n_WS, WS)
+     &         istep_rlm, idx_gl_1d_rlm_j, radius_1d_rlm_r, g_sph_rlm,  &
+     &         kst, nkr, jst, nj_rlm, nvec_jk,                          &
+     &         pol_e, dpoldt_e, dpoldp_e, dtordt_e, dtordp_e,           &
+     &         ncomp, irev_sr_rlm, n_WS, WS)
 !
       integer(kind = kint), intent(in) :: nnod_rlm
       integer(kind = kint), intent(in) :: nidx_rlm(2)
@@ -64,6 +63,7 @@
       integer(kind = kint), intent(in)                                  &
      &            :: idx_gl_1d_rlm_j(nidx_rlm(2),3)
       real(kind = kreal), intent(in) :: radius_1d_rlm_r(nidx_rlm(1))
+      real(kind = kreal), intent(in) :: g_sph_rlm(nidx_rlm(2),17)
 !
       integer(kind = kint), intent(in) :: nvec_jk
       integer(kind = kint), intent(in) :: kst, nkr
@@ -123,13 +123,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sp_rlm_scalar_matmul                               &
-     &         (nnod_rlm, nidx_rlm, istep_rlm,  kst, nkr, jst, nj_rlm,  &
+      subroutine cal_sp_rlm_scalar_matmul(nnod_rlm, nidx_rlm,           &
+     &          istep_rlm, g_sph_rlm, kst, nkr, jst, nj_rlm,            &
      &          nscl_jk, scl_e, ncomp, nvector, irev_sr_rlm, n_WS, WS)
 !
       integer(kind = kint), intent(in) :: nnod_rlm
       integer(kind = kint), intent(in) :: nidx_rlm(2)
       integer(kind = kint), intent(in) :: istep_rlm(2)
+      real(kind = kreal), intent(in) :: g_sph_rlm(nidx_rlm(2),17)
 !
       integer(kind = kint), intent(in) :: kst, nkr
       integer(kind = kint), intent(in) :: jst, nj_rlm
@@ -169,11 +170,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sp_rlm_vector_sym_matmul(nnod_rlm, nidx_rlm,       &
-     &          istep_rlm, idx_gl_1d_rlm_j, radius_1d_rlm_r,            &
-     &          kst, nkr, jst, n_jk_o, n_jk_e,                          &
-     &          pol_e, pol_o, dpoldt_e, dpoldp_e, dpoldt_o, dpoldp_o,   &
-     &          dtordt_e, dtordp_e, dtordt_o, dtordp_o,                 &
-     &          ncomp, irev_sr_rlm, n_WS, WS)
+     &         istep_rlm, idx_gl_1d_rlm_j, radius_1d_rlm_r, g_sph_rlm,  &
+     &         kst, nkr, jst, n_jk_o, n_jk_e,                           &
+     &         pol_e, pol_o, dpoldt_e, dpoldp_e, dpoldt_o, dpoldp_o,    &
+     &         dtordt_e, dtordp_e, dtordt_o, dtordp_o,                  &
+     &         ncomp, irev_sr_rlm, n_WS, WS)
 !
       integer(kind = kint), intent(in) :: nnod_rlm
       integer(kind = kint), intent(in) :: nidx_rlm(2)
@@ -181,6 +182,7 @@
       integer(kind = kint), intent(in)                                  &
      &            :: idx_gl_1d_rlm_j(nidx_rlm(2),3)
       real(kind = kreal), intent(in) :: radius_1d_rlm_r(nidx_rlm(1))
+      real(kind = kreal), intent(in) :: g_sph_rlm(nidx_rlm(2),17)
 !
       integer(kind = kint), intent(in) :: kst, nkr
       integer(kind = kint), intent(in) :: jst, n_jk_o, n_jk_e
@@ -292,13 +294,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sp_rlm_scalar_sym_matmul                           &
-     &         (nnod_rlm, nidx_rlm, istep_rlm,                          &
+     &         (nnod_rlm, nidx_rlm, istep_rlm, g_sph_rlm,               &
      &          kst, nkr, jst, n_jk_o, n_jk_e, scl_e, scl_o,            &
      &          ncomp, nvector, irev_sr_rlm, n_WS, WS)
 !
       integer(kind = kint), intent(in) :: nnod_rlm
       integer(kind = kint), intent(in) :: nidx_rlm(2)
       integer(kind = kint), intent(in) :: istep_rlm(2)
+      real(kind = kreal), intent(in) :: g_sph_rlm(nidx_rlm(2),17)
 !
       integer(kind = kint), intent(in) :: kst, nkr
       integer(kind = kint), intent(in) :: jst, n_jk_o, n_jk_e
@@ -360,9 +363,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sp_rlm_vec_sym_matmul_big(nnod_rlm, nidx_rlm,      &
-     &          istep_rlm, idx_gl_1d_rlm_j, radius_1d_rlm_r,            &
-     &          kst, nkr, jst, n_jk_o, n_jk_e, pol_e, pol_o,            &
-     &          tor_e, tor_o, ncomp, nvector, irev_sr_rlm, n_WS, WS)
+     &         istep_rlm, idx_gl_1d_rlm_j, radius_1d_rlm_r, g_sph_rlm,  &
+     &         kst, nkr, jst, n_jk_o, n_jk_e, pol_e, pol_o,             &
+     &         tor_e, tor_o, ncomp, nvector, irev_sr_rlm, n_WS, WS)
 !
       integer(kind = kint), intent(in) :: nnod_rlm
       integer(kind = kint), intent(in) :: nidx_rlm(2)
@@ -370,6 +373,7 @@
       integer(kind = kint), intent(in)                                  &
      &            :: idx_gl_1d_rlm_j(nidx_rlm(2),3)
       real(kind = kreal), intent(in) :: radius_1d_rlm_r(nidx_rlm(1))
+      real(kind = kreal), intent(in) :: g_sph_rlm(nidx_rlm(2),17)
 !
       integer(kind = kint), intent(in) :: kst, nkr
       integer(kind = kint), intent(in) :: jst, n_jk_o, n_jk_e
@@ -474,13 +478,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sp_rlm_scl_sym_matmul_big                          &
-     &         (nnod_rlm, nidx_rlm, istep_rlm,                          &
+     &         (nnod_rlm, nidx_rlm, istep_rlm, g_sph_rlm,               &
      &          kst, nkr, jst, n_jk_o, n_jk_e, scl_e, scl_o,            &
      &          ncomp, nvector, nscalar, irev_sr_rlm, n_WS, WS)
 !
       integer(kind = kint), intent(in) :: nnod_rlm
       integer(kind = kint), intent(in) :: nidx_rlm(2)
       integer(kind = kint), intent(in) :: istep_rlm(2)
+      real(kind = kreal), intent(in) :: g_sph_rlm(nidx_rlm(2),17)
 !
       integer(kind = kint), intent(in) :: kst, nkr
       integer(kind = kint), intent(in) :: jst, n_jk_o, n_jk_e

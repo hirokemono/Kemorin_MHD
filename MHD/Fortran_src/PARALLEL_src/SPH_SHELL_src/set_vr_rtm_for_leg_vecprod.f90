@@ -7,22 +7,23 @@
 !>@brief  forward Legendre transform using dot products
 !!
 !!@verbatim
-!!      subroutine set_vr_rtm_vector_blocked(nnod_rtm, istep_rtm,       &
+!!      subroutine set_vr_rtm_vector_blocked                            &
+!!     &         (nnod_rtm, nidx_rtm, istep_rtm, weight_rtm,            &
 !!     &          nd, k_rlm, mp_rlm, mn_rlm, asin_rtm, lst, nle_rtm,    &
 !!     &          ncomp, irev_sr_rtm, n_WR, WR,                         &
 !!     &          symp_r, asmp_t, asmp_p, symn_t, symn_p)
-!!      subroutine set_vr_rtm_scalar_blocked(nnod_rtm, istep_rtm,       &
-!!     &          nd, k_rlm, mp_rlm, lst, nle_rtm,                      &
-!!     &          ncomp, nvector, irev_sr_rtm, n_WR, WR, symp)
+!!      subroutine set_vr_rtm_scalar_blocked(nnod_rtm, nidx_rtm,        &
+!!     &         istep_rtm, weight_rtm, nd, k_rlm, mp_rlm, lst, nle_rtm,&
+!!     &         ncomp, nvector, irev_sr_rtm, n_WR, WR, symp)
 !!
 !!      subroutine set_vr_rtm_vector_symmetry                           &
-!!     &         (nnod_rtm, nidx_rtm, istep_rtm, nd,                    &
+!!     &         (nnod_rtm, nidx_rtm, istep_rtm, weight_rtm, nd,        &
 !!     &          k_rlm, mp_rlm, mn_rlm, asin_rtm, lst,                 &
 !!     &          nle_rtm, nlo_rtm, ncomp, irev_sr_rtm, n_WR, WR,       &
 !!     &          symp_r, asmp_t, asmp_p, symn_t, symn_p, asmp_r,       &
 !!     &          symp_t, symp_p, asmn_t, asmn_p)
 !!      subroutine set_vr_rtm_scalar_symmetry                           &
-!!     &         (nnod_rtm, nidx_rtm, istep_rtm, nd,                    &
+!!     &         (nnod_rtm, nidx_rtm, istep_rtm, weight_rtm, nd,        &
 !!     &          k_rlm, mp_rlm, lst, nle_rtm, nlo_rtm,                 &
 !!     &          ncomp, nvector, irev_sr_rtm, n_WR, WR, symp, asmp)
 !!@endverbatim
@@ -31,7 +32,6 @@
 !
       use m_precision
       use m_constants
-      use m_schmidt_poly_on_rtm
 !
       implicit none
 !
@@ -41,13 +41,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_vr_rtm_vector_blocked(nnod_rtm, istep_rtm,         &
+      subroutine set_vr_rtm_vector_blocked                              &
+     &         (nnod_rtm, nidx_rtm, istep_rtm, weight_rtm,              &
      &          nd, k_rlm, mp_rlm, mn_rlm, asin_rtm, lst, nle_rtm,      &
      &          ncomp, irev_sr_rtm, n_WR, WR,                           &
      &          symp_r, asmp_t, asmp_p, symn_t, symn_p)
 !
       integer(kind = kint), intent(in) :: nnod_rtm
+      integer(kind = kint), intent(in) :: nidx_rtm(3)
       integer(kind = kint), intent(in) :: istep_rtm(3)
+      real(kind = kreal), intent(in) :: weight_rtm(nidx_rtm(2))
 !
       integer(kind = kint), intent(in) :: nd, k_rlm
       integer(kind = kint), intent(in) :: mp_rlm, mn_rlm
@@ -97,12 +100,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_vr_rtm_scalar_blocked(nnod_rtm, istep_rtm,         &
-     &          nd, k_rlm, mp_rlm, lst, nle_rtm,                        &
-     &          ncomp, nvector, irev_sr_rtm, n_WR, WR, symp)
+      subroutine set_vr_rtm_scalar_blocked(nnod_rtm, nidx_rtm,          &
+     &         istep_rtm, weight_rtm, nd, k_rlm, mp_rlm, lst, nle_rtm,  &
+     &         ncomp, nvector, irev_sr_rtm, n_WR, WR, symp)
 !
       integer(kind = kint), intent(in) :: nnod_rtm
+      integer(kind = kint), intent(in) :: nidx_rtm(3)
       integer(kind = kint), intent(in) :: istep_rtm(3)
+      real(kind = kreal), intent(in) :: weight_rtm(nidx_rtm(2))
 !
       integer(kind = kint), intent(in) :: nd, k_rlm
       integer(kind = kint), intent(in) :: mp_rlm
@@ -137,7 +142,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_vr_rtm_vector_symmetry                             &
-     &         (nnod_rtm, nidx_rtm, istep_rtm, nd,                      &
+     &         (nnod_rtm, nidx_rtm, istep_rtm, weight_rtm, nd,          &
      &          k_rlm, mp_rlm, mn_rlm, asin_rtm, lst,                   &
      &          nle_rtm, nlo_rtm, ncomp, irev_sr_rtm, n_WR, WR,         &
      &          symp_r, asmp_t, asmp_p, symn_t, symn_p, asmp_r,         &
@@ -146,6 +151,7 @@
       integer(kind = kint), intent(in) :: nnod_rtm
       integer(kind = kint), intent(in) :: nidx_rtm(3)
       integer(kind = kint), intent(in) :: istep_rtm(3)
+      real(kind = kreal), intent(in) :: weight_rtm(nidx_rtm(2))
 !
       integer(kind = kint), intent(in) :: nd, k_rlm
       integer(kind = kint), intent(in) :: mp_rlm, mn_rlm
@@ -249,13 +255,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_vr_rtm_scalar_symmetry                             &
-     &         (nnod_rtm, nidx_rtm, istep_rtm, nd,                      &
+     &         (nnod_rtm, nidx_rtm, istep_rtm, weight_rtm, nd,          &
      &          k_rlm, mp_rlm, lst, nle_rtm, nlo_rtm,                   &
      &          ncomp, nvector, irev_sr_rtm, n_WR, WR, symp, asmp)
 !
       integer(kind = kint), intent(in) :: nnod_rtm
       integer(kind = kint), intent(in) :: nidx_rtm(3)
       integer(kind = kint), intent(in) :: istep_rtm(3)
+      real(kind = kreal), intent(in) :: weight_rtm(nidx_rtm(2))
 !
       integer(kind = kint), intent(in) :: nd, k_rlm
       integer(kind = kint), intent(in) :: mp_rlm

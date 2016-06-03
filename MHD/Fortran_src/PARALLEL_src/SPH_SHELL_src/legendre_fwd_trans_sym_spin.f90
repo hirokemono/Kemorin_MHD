@@ -115,7 +115,7 @@
 !
                 call set_vr_rtm_vector_symmetry(sph_rtm%nnod_rtm,       &
      &              sph_rtm%nidx_rtm, sph_rtm%istep_rtm,                &
-     &              nd, k_rlm, mp_rlm, mn_rlm,                          &
+     &              weight_rtm, nd, k_rlm, mp_rlm, mn_rlm,              &
      &              asin_theta_1d_rtm(1), izero, nle_rtm, nlo_rtm,      &
      &              ncomp, comm_rtm%irev_sr, n_WR, WR, symp_r(1,ip),    &
      &              asmp_t(1,ip), asmp_p(1,ip), symn_t(1,ip),           &
@@ -145,8 +145,8 @@
      &                   + (comm_rlm%irev_sr(ie_rlm) - 1) * ncomp
 !
                 call set_vr_rtm_vector_symmetry(sph_rtm%nnod_rtm,       &
-     &             sph_rtm%nidx_rtm, sph_rtm%istep_rtm,                 &
-     &              nd, k_rlm, mp_rlm, mn_rlm,                          &
+     &              sph_rtm%nidx_rtm, sph_rtm%istep_rtm,                &
+     &              weight_rtm, nd, k_rlm, mp_rlm, mn_rlm,              &
      &              asin_theta_1d_rtm(1), izero, nle_rtm, nlo_rtm,      &
      &              ncomp, comm_rtm%irev_sr, n_WR, WR, symp_r(1,ip),    &
      &              asmp_t(1,ip), asmp_p(1,ip), symn_t(1,ip),           &
@@ -224,7 +224,7 @@
                 io_send = nd + 3*nvector                                &
      &                       + (comm_rlm%irev_sr(io_rlm) - 1) * ncomp
                 call set_vr_rtm_scalar_symmetry(sph_rtm%nnod_rtm,       &
-     &              sph_rtm%nidx_rtm, sph_rtm%istep_rtm,                &
+     &              sph_rtm%nidx_rtm, sph_rtm%istep_rtm, weight_rtm,    &
      &              nd, k_rlm, mp_rlm, izero, nle_rtm, nlo_rtm,         &
      &              ncomp, nvector, comm_rtm%irev_sr, n_WR, WR,         &
      &              symp(1,ip), asmp(1,ip))
@@ -242,7 +242,7 @@
               do jj = nj_rlm/2+1, (nj_rlm+1)/2
                 je_rlm = 2*jj + jst - 1
                 call set_vr_rtm_scalar_symmetry(sph_rtm%nnod_rtm,       &
-     &              sph_rtm%nidx_rtm, sph_rtm%istep_rtm,                &
+     &              sph_rtm%nidx_rtm, sph_rtm%istep_rtm, weight_rtm,    &
      &              nd, k_rlm, mp_rlm, izero, nle_rtm, nlo_rtm,         &
      &              ncomp, nvector, comm_rtm%irev_sr, n_WR, WR,         &
      &              symp(1,ip), asmp(1,ip))

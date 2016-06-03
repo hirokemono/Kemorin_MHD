@@ -126,7 +126,8 @@
                   call set_sp_rlm_vector_symmetry                       &
      &               (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,               &
      &                sph_rlm%istep_rlm, sph_rlm%idx_gl_1d_rlm_j,       &
-     &                jst, nd, k_rlm, a1r_1d_rlm_r, a2r_1d_rlm_r,       &
+     &                g_sph_rlm, jst, nd, k_rlm,                        &
+     &                a1r_1d_rlm_r, a2r_1d_rlm_r,                       &
      &                ncomp, n_WR, comm_rlm%irev_sr, WR, nj_rlm,        &
      &                pol_e(1,ip), dpoldt_e(1,ip), dpoldp_e(1,ip),      &
      &                dtordt_e(1,ip), dtordp_e(1,ip),                   &
@@ -178,7 +179,8 @@
                 call set_sp_rlm_vector_equator                          &
      &             (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,                 &
      &              sph_rlm%istep_rlm, sph_rlm%idx_gl_1d_rlm_j,         &
-     &              jst, nd, k_rlm, a1r_1d_rlm_r, a2r_1d_rlm_r,         &
+     &              g_sph_rlm, jst, nd, k_rlm,                          &
+     &              a1r_1d_rlm_r, a2r_1d_rlm_r,                         &
      &              ncomp, n_WR, comm_rlm%irev_sr, WR, nj_rlm,          &
      &              pol_e(1,ip), dpoldp_e(1,ip), dtordp_e(1,ip),        &
      &              dpoldt_o(1,ip), dtordt_o(1,ip))
