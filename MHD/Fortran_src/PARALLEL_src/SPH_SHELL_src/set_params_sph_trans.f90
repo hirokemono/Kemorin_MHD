@@ -7,10 +7,11 @@
 !>@brief  Initialize spherical harmonics transform
 !!
 !!@verbatim
+!!      subroutine const_sin_theta_rtp(sph_rtp)
+!!        type(sph_rtp_grid), intent(inout) :: sph_rtp
 !!      subroutine set_mdx_rlm_rtm(l_truncation, nidx_rtm, nidx_rlm,    &
 !!     &          idx_gl_1d_rtm_m, idx_gl_1d_rlm_j)
 !!      subroutine set_sin_theta_rtm(nth_rtm)
-!!      subroutine set_sin_theta_rtp(nth_rtp, idx_gl_1d_rtp_t)
 !!      subroutine radial_4_sph_trans(sph_rtp, sph_rtm, sph_rlm, sph_rj)
 !!        type(sph_rtp_grid), intent(inout) :: sph_rtp
 !!        type(sph_rtm_grid), intent(inout) :: sph_rtm
@@ -25,10 +26,29 @@
 !
       implicit none
 !
+      private :: set_sin_theta_rtp
+!
 ! -----------------------------------------------------------------------
 !
       contains
 !
+! -----------------------------------------------------------------------
+!
+      subroutine const_sin_theta_rtp(sph_rtp)
+!
+      use t_spheric_rtp_data
+!
+      type(sph_rtp_grid), intent(inout) :: sph_rtp
+!
+!
+      call alloc_theta_4_rtp(sph_rtp)
+      call set_sin_theta_rtp(sph_rtp%nidx_rtp(2),                       &
+     &    sph_rtp%idx_gl_1d_rtp_t, sph_rtp%cos_theta_1d_rtp,            &
+     &    sph_rtp%sin_theta_1d_rtp, sph_rtp%cot_theta_1d_rtp)
+!
+      end subroutine const_sin_theta_rtp
+!
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine set_mdx_rlm_rtm(l_truncation, nidx_rtm, nidx_rlm,      &
@@ -120,13 +140,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sin_theta_rtp(nth_rtp, idx_gl_1d_rtp_t)
+      subroutine set_sin_theta_rtp(nth_rtp, idx_gl_1d_rtp_t,            &
+     &          cos_theta_1d_rtp, sin_theta_1d_rtp, cot_theta_1d_rtp)
 !
       use m_schmidt_poly_on_rtm
-      use m_work_4_sph_trans
 !
       integer(kind = kint), intent(in) :: nth_rtp
       integer(kind = kint), intent(in) :: idx_gl_1d_rtp_t(nth_rtp)
+!
+      real(kind= kreal), intent(inout) :: cos_theta_1d_rtp(nth_rtp)
+      real(kind= kreal), intent(inout) :: sin_theta_1d_rtp(nth_rtp)
+      real(kind= kreal), intent(inout) :: cot_theta_1d_rtp(nth_rtp)
 !
       integer(kind = kint) :: l_rtp, l_gl
 !

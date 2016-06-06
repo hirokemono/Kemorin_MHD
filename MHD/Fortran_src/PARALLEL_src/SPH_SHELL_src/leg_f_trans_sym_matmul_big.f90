@@ -11,14 +11,14 @@
 !!@verbatim
 !!      subroutine leg_fwd_trans_sym_matmul_big(ncomp, nvector,         &
 !!     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm,                 &
-!!     &          n_WR, n_WS, WR, WS)
+!!     &          g_sph_rlm, weight_rtm, n_WR, n_WS, WR, WS)
 !!      subroutine leg_fwd_trans_sym_dgemm_big(ncomp, nvector, nscalar, &
 !!     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm,                 &
-!!     &          n_WR, n_WS, WR, WS)
+!!     &          g_sph_rlm, weight_rtm, n_WR, n_WS, WR, WS)
 !!      subroutine leg_fwd_trans_sym_matprod_big                        &
 !!     &         (ncomp, nvector, nscalar,                              &
 !!     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm,                 &
-!!     &          n_WR, n_WS, WR, WS)
+!!     &          g_sph_rlm, weight_rtm, n_WR, n_WS, WR, WS)
 !!        Input:  vr_rtm   (Order: radius,theta,phi)
 !!        Output: sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
 !!@endverbatim
@@ -37,7 +37,6 @@
       use calypso_mpi
 !
       use m_machine_parameter
-      use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans
       use m_leg_trans_sym_matmul_big
 !
@@ -61,7 +60,7 @@
 !
       subroutine leg_fwd_trans_sym_matmul_big(ncomp, nvector, nscalar,  &
      &          sph_rtm, sph_rlm, comm_rtm, comm_rlm,                   &
-     &          n_WR, n_WS, WR, WS)
+     &          g_sph_rlm, weight_rtm, n_WR, n_WS, WR, WS)
 !
       use set_vr_rtm_for_leg_matmul
       use cal_sp_rlm_by_matmul
@@ -69,6 +68,10 @@
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rtm, comm_rlm
+      real(kind = kreal), intent(in)                                    &
+     &           :: g_sph_rlm(sph_rlm%nidx_rlm(2),17)
+      real(kind = kreal), intent(in) :: weight_rtm(sph_rtm%nidx_rtm(2))
+!
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR, n_WS
       real (kind=kreal), intent(inout):: WR(n_WR)
@@ -122,16 +125,16 @@
 !
 !          st_elapsed = MPI_WTIME()
 !  even l-m
-          call matmul_fwd_leg_trans(nkrs(ip), n_jk_e(ip), nth_hemi_rtm, &
-     &        symp_r(1,ip), Ps_rtm(1,jst(ip)+1), pol_e(1,ip))
-          call matmul_fwd_leg_trans(nkrt(ip), n_jk_e(ip), nth_hemi_rtm, &
-     &        asmp_p(1,ip), dPsdt_rtm(1,jst(ip)+1), tor_e(1,ip))
+          call matmul_fwd_leg_trans(nkrs(ip), n_jk_e(ip), nth_sym,      &
+     &        symp_r(1,ip), Ps_tj(1,jst(ip)+1), pol_e(1,ip))
+          call matmul_fwd_leg_trans(nkrt(ip), n_jk_e(ip), nth_sym,      &
+     &        asmp_p(1,ip), dPsdt_tj(1,jst(ip)+1), tor_e(1,ip))
 !
 !  odd l-m
-          call matmul_fwd_leg_trans(nkrs(ip), n_jk_o(ip), nth_hemi_rtm, &
-     &        asmp_r(1,ip), Ps_rtm(1,jst_h(ip)), pol_o(1,ip))
-          call matmul_fwd_leg_trans(nkrt(ip), n_jk_o(ip), nth_hemi_rtm, &
-     &        symp_p(1,ip), dPsdt_rtm(1,jst_h(ip)), tor_o(1,ip))
+          call matmul_fwd_leg_trans(nkrs(ip), n_jk_o(ip), nth_sym,      &
+     &        asmp_r(1,ip), Ps_tj(1,jst_h(ip)), pol_o(1,ip))
+          call matmul_fwd_leg_trans(nkrt(ip), n_jk_o(ip), nth_sym,      &
+     &        symp_p(1,ip), dPsdt_tj(1,jst_h(ip)), tor_o(1,ip))
   !          elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
 !
 !          st_elapsed = MPI_WTIME()
@@ -162,7 +165,7 @@
 !
       subroutine leg_fwd_trans_sym_dgemm_big(ncomp, nvector, nscalar,   &
      &          sph_rtm, sph_rlm, comm_rtm, comm_rlm,                   &
-     &          n_WR, n_WS, WR, WS)
+     &          g_sph_rlm, weight_rtm, n_WR, n_WS, WR, WS)
 !
       use set_vr_rtm_for_leg_matmul
       use cal_sp_rlm_by_matmul
@@ -170,6 +173,10 @@
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rtm, comm_rlm
+      real(kind = kreal), intent(in)                                    &
+     &           :: g_sph_rlm(sph_rlm%nidx_rlm(2),17)
+      real(kind = kreal), intent(in) :: weight_rtm(sph_rtm%nidx_rtm(2))
+!
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR, n_WS
       real (kind=kreal), intent(inout):: WR(n_WR)
@@ -223,16 +230,16 @@
 !
 !          st_elapsed = MPI_WTIME()
 !  even l-m
-          call dgemm_fwd_leg_trans(nkrs(ip), n_jk_e(ip), nth_hemi_rtm,  &
-     &        symp_r(1,ip), Ps_rtm(1,jst(ip)+1), zero, pol_e(1,ip))
-          call dgemm_fwd_leg_trans(nkrt(ip), n_jk_e(ip), nth_hemi_rtm,  &
-     &        asmp_p(1,ip), dPsdt_rtm(1,jst(ip)+1), zero, tor_e(1,ip))
+          call dgemm_fwd_leg_trans(nkrs(ip), n_jk_e(ip), nth_sym,       &
+     &        symp_r(1,ip), Ps_tj(1,jst(ip)+1), zero, pol_e(1,ip))
+          call dgemm_fwd_leg_trans(nkrt(ip), n_jk_e(ip), nth_sym,       &
+     &        asmp_p(1,ip), dPsdt_tj(1,jst(ip)+1), zero, tor_e(1,ip))
 !
 !  odd l-m
-          call dgemm_fwd_leg_trans(nkrs(ip), n_jk_o(ip), nth_hemi_rtm,  &
-     &        asmp_r(1,ip), Ps_rtm(1,jst_h(ip)), zero, pol_o(1,ip))
-          call dgemm_fwd_leg_trans(nkrt(ip), n_jk_o(ip), nth_hemi_rtm,  &
-     &        symp_p(1,ip), dPsdt_rtm(1,jst_h(ip)), zero, tor_o(1,ip))
+          call dgemm_fwd_leg_trans(nkrs(ip), n_jk_o(ip), nth_sym,       &
+     &        asmp_r(1,ip), Ps_tj(1,jst_h(ip)), zero, pol_o(1,ip))
+          call dgemm_fwd_leg_trans(nkrt(ip), n_jk_o(ip), nth_sym,       &
+     &        symp_p(1,ip), dPsdt_tj(1,jst_h(ip)), zero, tor_o(1,ip))
   !          elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
 !
 !          st_elapsed = MPI_WTIME()
@@ -264,7 +271,7 @@
       subroutine leg_fwd_trans_sym_matprod_big                          &
      &         (ncomp, nvector, nscalar,                                &
      &          sph_rtm, sph_rlm, comm_rtm, comm_rlm,                   &
-     &          n_WR, n_WS, WR, WS)
+     &          g_sph_rlm, weight_rtm, n_WR, n_WS, WR, WS)
 !
       use set_vr_rtm_for_leg_matmul
       use cal_sp_rlm_by_matmul
@@ -272,6 +279,10 @@
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rtm, comm_rlm
+      real(kind = kreal), intent(in)                                    &
+     &           :: g_sph_rlm(sph_rlm%nidx_rlm(2),17)
+      real(kind = kreal), intent(in) :: weight_rtm(sph_rtm%nidx_rtm(2))
+!
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR, n_WS
       real (kind=kreal), intent(inout):: WR(n_WR)
@@ -325,16 +336,16 @@
 !
 !          st_elapsed = MPI_WTIME()
 !  even l-m
-          call matmat_fwd_leg_trans(nkrs(ip), n_jk_e(ip), nth_hemi_rtm, &
-     &        symp_r(1,ip), Ps_rtm(1,jst(ip)+1), pol_e(1,ip))
-          call matmat_fwd_leg_trans(nkrt(ip), n_jk_e(ip), nth_hemi_rtm, &
-     &        asmp_p(1,ip), dPsdt_rtm(1,jst(ip)+1), tor_e(1,ip))
+          call matmat_fwd_leg_trans(nkrs(ip), n_jk_e(ip), nth_sym,      &
+     &        symp_r(1,ip), Ps_tj(1,jst(ip)+1), pol_e(1,ip))
+          call matmat_fwd_leg_trans(nkrt(ip), n_jk_e(ip), nth_sym,      &
+     &        asmp_p(1,ip), dPsdt_tj(1,jst(ip)+1), tor_e(1,ip))
 !
 !  odd l-m
-          call matmat_fwd_leg_trans(nkrs(ip), n_jk_o(ip), nth_hemi_rtm, &
-     &        asmp_r(1,ip), Ps_rtm(1,jst_h(ip)), pol_o(1,ip))
-          call matmat_fwd_leg_trans(nkrt(ip), n_jk_o(ip), nth_hemi_rtm, &
-     &        symp_p(1,ip), dPsdt_rtm(1,jst_h(ip)), tor_o(1,ip))
+          call matmat_fwd_leg_trans(nkrs(ip), n_jk_o(ip), nth_sym,      &
+     &        asmp_r(1,ip), Ps_tj(1,jst_h(ip)), pol_o(1,ip))
+          call matmat_fwd_leg_trans(nkrt(ip), n_jk_o(ip), nth_sym,      &
+     &        symp_p(1,ip), dPsdt_tj(1,jst_h(ip)), tor_o(1,ip))
   !          elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
 !
 !          st_elapsed = MPI_WTIME()

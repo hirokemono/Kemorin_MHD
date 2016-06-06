@@ -21,6 +21,7 @@
 !
       private :: sph_b_trans_streamline
       private :: set_rj_phys_for_zm_streamfunc
+      private :: adjust_phi_comp_for_streamfunc
 !
 ! ----------------------------------------------------------------------
 !
@@ -187,8 +188,8 @@
      &        write(*,*) 'set_xyz_vect_from_sph_trans'
         call adjust_phi_comp_for_streamfunc                             &
      &     (sph%sph_rtp%nnod_rtp, sph%sph_rtp%nidx_rtp,                 &
-     &      sph%sph_rtp%radius_1d_rtp_r, ncomp_sph_trans,               &
-     &      dall_rtp(1,1))
+     &      sph%sph_rtp%radius_1d_rtp_r, sph%sph_rtp%sin_theta_1d_rtp,  &
+     &      ncomp_sph_trans, dall_rtp(1,1))
         call set_xyz_vect_from_sph_trans                                &
      &     (sph%sph_rtp, mesh%node, sph%sph_params%m_folding,           &
      &      ncomp_sph_trans, dall_rtp(1,1), dall_pole(1,1), nod_fld)
@@ -250,7 +251,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine adjust_phi_comp_for_streamfunc                         &
-     &         (nnod_rtp, nidx_rtp, radius_1d_rtp_r,                    &
+     &         (nnod_rtp, nidx_rtp, radius_1d_rtp_r, sin_theta_1d_rtp,  &
      &          ncomp_trans, v_rtp)
 !
       use m_phys_labels
@@ -259,7 +260,8 @@
 !
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)
-      real(kind = kreal), intent(in) :: radius_1d_rtp_r(:)
+      real(kind = kreal), intent(in) :: radius_1d_rtp_r(nidx_rtp(1))
+      real(kind = kreal), intent(in) :: sin_theta_1d_rtp(nidx_rtp(2))
 !
       integer(kind = kint), intent(in) ::  ncomp_trans
       real(kind = kreal), intent(inout) :: v_rtp(nnod_rtp,ncomp_trans)

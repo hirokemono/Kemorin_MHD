@@ -11,12 +11,14 @@
 !!      subroutine alloc_type_sph_1d_index_rtp(sph_rtp)
 !!      subroutine alloc_rtp_param_smp(sph_rtp)
 !!      subroutine alloc_num_pole_sph_trans(sph_rtp)
+!!      subroutine alloc_theta_4_rtp(sph_rtp)
 !!        type(sph_rtp_grid), intent(inout) :: sph_rtp
 !!
 !!      subroutine dealloc_type_spheric_param_rtp(sph_rtp)
 !!      subroutine dealloc_type_sph_1d_index_rtp(sph_rtp)
 !!      subroutine dealloc_rtp_param_smp(sph_rtp)
 !!      subroutine dealloc_num_pole_sph_trans(sph_rtp)
+!!      subroutine dealloc_theta_4_rtp(sph_rtp)
 !!        type(sph_rtp_grid), intent(inout) :: sph_rtp
 !!
 !!      subroutine copy_spheric_rtp_data                                &
@@ -93,6 +95,13 @@
         real(kind = kreal), pointer :: radius_1d_rtp_r(:)
 !>        1 / radius_1d_rtp_r
         real(kind = kreal), pointer :: a_r_1d_rtp_r(:)
+!
+!>      @f$ \sin \theta @f$ in sapherical grid (one-dimentional)
+        real(kind = kreal), pointer :: sin_theta_1d_rtp(:)
+!>      @f$ \cos \theta @f$ in sapherical grid (one-dimentional)
+        real(kind = kreal), pointer :: cos_theta_1d_rtp(:)
+!>      @f$ \cot \theta @f$ in sapherical grid (one-dimentional)
+        real(kind = kreal), pointer :: cot_theta_1d_rtp(:)
       end type sph_rtp_grid
 !
 ! -----------------------------------------------------------------------
@@ -180,6 +189,23 @@
       end subroutine alloc_num_pole_sph_trans
 !
 ! ----------------------------------------------------------------------
+!
+      subroutine alloc_theta_4_rtp(sph_rtp)
+!
+      type(sph_rtp_grid), intent(inout) :: sph_rtp
+!
+!
+      allocate(sph_rtp%cos_theta_1d_rtp(sph_rtp%nidx_rtp(2)))
+      allocate(sph_rtp%sin_theta_1d_rtp(sph_rtp%nidx_rtp(2)))
+      allocate(sph_rtp%cot_theta_1d_rtp(sph_rtp%nidx_rtp(2)))
+!
+      sph_rtp%cos_theta_1d_rtp = 0.0d0
+      sph_rtp%sin_theta_1d_rtp = 0.0d0
+      sph_rtp%cot_theta_1d_rtp = 0.0d0
+!
+      end subroutine alloc_theta_4_rtp
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine dealloc_type_spheric_param_rtp(sph_rtp)
@@ -228,6 +254,19 @@
       deallocate(sph_rtp%istack_npole_smp)
 !
       end subroutine dealloc_num_pole_sph_trans
+!
+! ----------------------------------------------------------------------
+!
+      subroutine dealloc_theta_4_rtp(sph_rtp)
+!
+      type(sph_rtp_grid), intent(inout) :: sph_rtp
+!
+!
+      deallocate(sph_rtp%cos_theta_1d_rtp)
+      deallocate(sph_rtp%sin_theta_1d_rtp)
+      deallocate(sph_rtp%cot_theta_1d_rtp)
+!
+      end subroutine dealloc_theta_4_rtp
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

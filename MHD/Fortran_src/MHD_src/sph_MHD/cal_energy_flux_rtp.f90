@@ -246,7 +246,7 @@
         call cal_rtp_magnetic_streach                                   &
      &     (np_smp, sph_rtp%nnod_rtp, sph_rtp%istack_inod_rtp_smp,      &
      &      sph_rtp%nidx_rtp(1), sph_rtp%nidx_rtp(2),                   &
-     &      sph_rtp%a_r_1d_rtp_r, cot_theta_1d_rtp,                     &
+     &      sph_rtp%a_r_1d_rtp_r, sph_rtp%cot_theta_1d_rtp,             &
      &      fls_rtp(1,bs_trns%i_magne), fls_rtp(1,bs_trns%i_velo),      &
      &      fls_rtp(1,bs_trns%i_grad_vx), fls_rtp(1,bs_trns%i_grad_vy), &
      &      fls_rtp(1,bs_trns%i_grad_vz),                               &

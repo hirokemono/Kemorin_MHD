@@ -41,23 +41,6 @@
 !>        @$f dP_{l}{m}/d\theta @$f at gouss points
       real(kind = kreal), allocatable :: dPdt_rtm(:,:)
 !
-!>        Number of meridional grid points in northern hemisphere
-      integer(kind = kint) :: nth_hemi_rtm
-!>        @$f P_{l}{m} @$f
-!!        at gouss points in northen hemisphere
-      real(kind = kreal), allocatable :: Ps_rtm(:,:)
-!>        @$f dP_{l}{m}/d\theta @$f  with even (l-m) 
-!!        at gouss points in northen hemisphere
-      real(kind = kreal), allocatable :: dPsdt_rtm(:,:)
-!
-!>        @$f P_{l}{m} @$f
-!!        at gouss points in northen hemisphere
-      real(kind = kreal), allocatable :: Ps_jl(:,:)
-!>        @$f dP_{l}{m}/d\theta @$f  with even (l-m) 
-!!        at gouss points in northen hemisphere
-      real(kind = kreal), allocatable :: dPsdt_jl(:,:)
-!
-!
 !>        Normalization constants for spherical harmonics in (r,l,m)
       real(kind = kreal), allocatable:: g_sph_rlm(:,:)
 !>        Normalization constants for spherical harmonics in (r,j)
@@ -117,28 +100,6 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_hemi_schmidt_rtm(nth_rtm, jmax_rlm)
-!
-      integer(kind = kint), intent(in) :: nth_rtm, jmax_rlm
-!
-!
-      nth_hemi_rtm = (nth_rtm+1) / 2
-      allocate( Ps_rtm(nth_hemi_rtm,jmax_rlm) )
-      allocate( dPsdt_rtm(nth_hemi_rtm,jmax_rlm) )
-!
-      allocate( Ps_jl(jmax_rlm,nth_hemi_rtm) )
-      allocate( dPsdt_jl(jmax_rlm,nth_hemi_rtm) )
-!
-      Ps_rtm =    0.0d0
-      dPsdt_rtm = 0.0d0
-!
-      Ps_jl =    0.0d0
-      dPsdt_jl = 0.0d0
-!
-      end subroutine allocate_hemi_schmidt_rtm
-!
-! -----------------------------------------------------------------------
-!
       subroutine allocate_trans_schmidt_rtm(nth_rtm, jmax_rlm)
 !
       integer(kind = kint), intent(in) :: nth_rtm, jmax_rlm
@@ -186,15 +147,6 @@
       deallocate( g_sph_rlm, g_sph_rj)
 !
       end subroutine deallocate_schmidt_poly_rtm
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_hemi_schmidt_rtm
-!
-      deallocate(Ps_rtm, dPsdt_rtm)
-      deallocate(Ps_jl,  dPsdt_jl)
-!
-      end subroutine deallocate_hemi_schmidt_rtm
 !
 ! -----------------------------------------------------------------------
 !

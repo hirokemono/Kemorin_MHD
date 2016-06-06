@@ -108,6 +108,7 @@
      &          sph_rlm, sph_rtm, comm_rlm, comm_rtm,                   &
      &          n_WR, n_WS, WR, WS)
 !
+      use m_schmidt_poly_on_rtm
       use legendre_bwd_trans_sym_spin
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
@@ -120,9 +121,11 @@
 !
 !
       call leg_bwd_trans_vector_sym_spin(ncomp, nvector,                &
-     &    sph_rlm, sph_rtm, comm_rlm, comm_rtm, n_WR, n_WS, WR, WS)
+     &    sph_rlm, sph_rtm, comm_rlm, comm_rtm, g_sph_rlm,              &
+     &    n_WR, n_WS, WR, WS)
       call leg_bwd_trans_scalar_sym_spin(ncomp, nvector, nscalar,       &
-     &    sph_rlm, sph_rtm, comm_rlm, comm_rtm, n_WR, n_WS, WR, WS)
+     &    sph_rlm, sph_rtm, comm_rlm, comm_rtm,                         &
+     &    n_WR, n_WS, WR, WS)
 !
       end subroutine leg_backward_trans_sym_spin
 !
@@ -132,6 +135,7 @@
      &          sph_rtm, sph_rlm, comm_rtm, comm_rlm,                   &
      &          n_WR, n_WS, WR, WS)
 !
+      use m_schmidt_poly_on_rtm
       use legendre_fwd_trans_sym_spin
 !
       type(sph_rtm_grid), intent(in) :: sph_rtm
@@ -144,9 +148,11 @@
 !
 !
       call leg_fwd_trans_vector_sym_spin(ncomp, nvector,                &
-     &    sph_rtm, sph_rlm, comm_rtm, comm_rlm, n_WR, n_WS, WR, WS)
+     &    sph_rtm, sph_rlm, comm_rtm, comm_rlm, g_sph_rlm, weight_rtm,  &
+     &    n_WR, n_WS, WR, WS)
       call leg_fwd_trans_scalar_sym_spin(ncomp, nvector, nscalar,       &
-     &    sph_rtm, sph_rlm, comm_rtm, comm_rlm, n_WR, n_WS, WR, WS)
+     &    sph_rtm, sph_rlm, comm_rtm, comm_rlm, g_sph_rlm, weight_rtm,  &
+     &    n_WR, n_WS, WR, WS)
 !
       end subroutine leg_forward_trans_sym_spin
 !

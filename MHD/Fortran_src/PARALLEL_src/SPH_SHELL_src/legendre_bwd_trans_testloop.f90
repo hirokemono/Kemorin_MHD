@@ -9,8 +9,9 @@
 !!       (Blocked loop version)
 !!
 !!@verbatim
-!!      subroutine legendre_b_trans_vector_test(ncomp, nvector,         &
-!!     &          comm_rlm, n_WR, WR, WS)
+!!      subroutine legendre_b_trans_vector_test(ncomp, nvector, nscalar,&
+!!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, g_sph_rlm,      &
+!!     &          n_WR, n_WS, WR, WS)
 !!        Input:  vr_rtm   (Order: radius,theta,phi)
 !!        Output: sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
 !!      subroutine legendre_b_trans_scalar_test(ncomp, nvector, nscalar,&
@@ -33,7 +34,6 @@
       use calypso_mpi
 !
       use m_machine_parameter
-      use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans
       use m_legendre_work_testlooop
       use matmul_for_legendre_trans
@@ -55,12 +55,15 @@
 ! -----------------------------------------------------------------------
 !
       subroutine legendre_b_trans_vector_test(ncomp, nvector, nscalar,  &
-     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm,                   &
+     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, g_sph_rlm,        &
      &          n_WR, n_WS, WR, WS)
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
+      real(kind = kreal), intent(in)                                    &
+     &           :: g_sph_rlm(sph_rlm%nidx_rlm(2),17)
+!
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR, n_WS
       real (kind=kreal), intent(inout):: WR(n_WR)
@@ -103,7 +106,7 @@
 !          st_elapsed = MPI_WTIME()
           call set_sp_rlm_vector_sym_matmul                             &
      &       (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm, sph_rlm%istep_rlm,    &
-     &        sph_rlm%idx_gl_1d_rlm_j, sph_rlm%a_r_1d_rlm_r,            &
+     &        sph_rlm%idx_gl_1d_rlm_j, sph_rlm%a_r_1d_rlm_r, g_sph_rlm, &
      &        kst(ip), nkr(ip), jst(ip), n_jk_e(ip), n_jk_o(ip),        &
      &        ncomp, nvector, comm_rlm%irev_sr, n_WR, WR,               &
      &        pol_e(1,ip), tor_e(1,ip), pol_o(1,ip), tor_o(1,ip) )
@@ -117,14 +120,14 @@
 !   even l-m
 !          st_elapsed = MPI_WTIME()
           call matmul_bwd_leg_trans(nl_rtm, nkrs(ip), n_jk_e(ip),       &
-     &        Ps_rtm(1,jst(ip)+1), pol_e(1,ip), symp_r(1,ip))
+     &        Ps_tj(1,jst(ip)+1), pol_e(1,ip), symp_r(1,ip))
           call matmul_bwd_leg_trans(nl_rtm, nkrt(ip), n_jk_e(ip),       &
-     &        dPsdt_rtm(1,jst(ip)+1), tor_e(1,ip), asmp_p(1,ip))
+     &        dPsdt_tj(1,jst(ip)+1), tor_e(1,ip), asmp_p(1,ip))
 !   odd l-m
           call matmul_bwd_leg_trans(nl_rtm, nkrs(ip), n_jk_o(ip),       &
-     &        Ps_rtm(1,jst_h(ip)), pol_o(1,ip), asmp_r(1,ip))
+     &        Ps_tj(1,jst_h(ip)), pol_o(1,ip), asmp_r(1,ip))
           call matmul_bwd_leg_trans(nl_rtm, nkrt(ip), n_jk_o(ip),       &
-     &        dPsdt_rtm(1,jst_h(ip)), tor_o(1,ip), symp_p(1,ip))
+     &        dPsdt_tj(1,jst_h(ip)), tor_o(1,ip), symp_p(1,ip))
 !          elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
 !
 !          st_elapsed = MPI_WTIME()
@@ -154,17 +157,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_sp_rlm_vector_sym_matmul(nnod_rlm, nidx_rlm,       &
-     &          istep_rlm, idx_gl_1d_rlm_j, a_r_1d_rlm_r,               &
+     &          istep_rlm, idx_gl_1d_rlm_j, a_r_1d_rlm_r, g_sph_rlm,    &
      &          kst, nkr, jst, n_jk_e, n_jk_o, ncomp, nvector,          &
      &          irev_sr_rlm, n_WR, WR,  pol_e, tor_e, pol_o, tor_o)
-!
-      use m_schmidt_poly_on_rtm
 !
       integer(kind = kint), intent(in) :: nnod_rlm
       integer(kind = kint), intent(in) :: nidx_rlm(2)
       integer(kind = kint), intent(in) :: istep_rlm(2)
       integer(kind = kint), intent(in) :: idx_gl_1d_rlm_j(nidx_rlm(2),3)
       real(kind = kreal), intent(in) :: a_r_1d_rlm_r(nidx_rlm(1))
+      real(kind = kreal), intent(in) :: g_sph_rlm(nidx_rlm(2),17)
 !
       integer(kind = kint), intent(in) :: kst, nkr
       integer(kind = kint), intent(in) :: jst, n_jk_e, n_jk_o

@@ -8,6 +8,9 @@
 !>@n      data are strored communication buffer
 !!
 !!@verbatim
+!!      subroutine allocate_hemi_schmidt_rtm(nth_rtm, jmax_rlm)
+!!      subroutine deallocate_hemi_schmidt_rtm
+!!
 !!      subroutine alloc_leg_vec_sym_matmul                             &
 !!     &         (nth_rtm, maxidx_rtm_r_smp, nvector)
 !!      subroutine alloc_leg_scl_sym_matmul                             &
@@ -20,17 +23,12 @@
 !!      subroutine alloc_leg_scl_matmul                                 &
 !!     &         (nth_rtm, maxidx_rtm_r_smp, nscalar)
 !!      subroutine dealloc_leg_vec_matmul
-!!      subroutine dealloc_leg_scl_matmul
 !!
 !!      subroutine alloc_leg_vec_symmetry(nth_rtm)
 !!      subroutine alloc_leg_scl_symmetry(nth_rtm)
-!!      subroutine dealloc_leg_vec_symmetry
-!!      subroutine dealloc_leg_scl_symmetry
 !!
 !!      subroutine alloc_leg_vec_blocked(nth_rtm)
 !!      subroutine alloc_leg_scl_blocked(nth_rtm)
-!!      subroutine dealloc_leg_vec_blocked
-!!      subroutine dealloc_leg_scl_blocked
 !!
 !!     field data for Legendre transform
 !!       original layout: vr_rtm(l_rtm,m_rtm,k_rtm,icomp)
@@ -55,11 +53,27 @@
       use calypso_mpi
 !
       use m_machine_parameter
-!      use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans
       use matmul_for_legendre_trans
 !
       implicit none
+!
+!>        Number of meridional grid points in northern hemisphere
+      integer(kind = kint) :: nth_hemi_rtm
+!>        @$f P_{l}{m} @$f
+!!        at gouss points in northen hemisphere
+      real(kind = kreal), allocatable :: Ps_rtm(:,:)
+!>        @$f dP_{l}{m}/d\theta @$f  with even (l-m) 
+!!        at gouss points in northen hemisphere
+      real(kind = kreal), allocatable :: dPsdt_rtm(:,:)
+!
+!>        @$f P_{l}{m} @$f
+!!        at gouss points in northen hemisphere
+      real(kind = kreal), allocatable :: Ps_jl(:,:)
+!>        @$f dP_{l}{m}/d\theta @$f  with even (l-m) 
+!!        at gouss points in northen hemisphere
+      real(kind = kreal), allocatable :: dPsdt_jl(:,:)
+!
 !
 !>     Maximum matrix size for spectr data
       integer(kind = kint) :: nvec_jk
@@ -125,6 +139,102 @@
 !
       contains
 !
+! -----------------------------------------------------------------------
+!
+      subroutine init_legendre_sym_matmul                               &
+     &         (sph_rtm, sph_rlm, nvector, nscalar)
+!
+      use t_spheric_rtm_data
+      use t_spheric_rlm_data
+!
+      type(sph_rtm_grid), intent(in) :: sph_rtm
+      type(sph_rlm_grid), intent(in) :: sph_rlm
+      integer(kind = kint), intent(in) :: nvector, nscalar
+!
+!
+      call const_symmetric_legendres(sph_rlm%nidx_rlm(2),             &
+     &    sph_rtm%nidx_rtm(2), sph_rtm%nidx_rtm(3))
+!
+      call alloc_leg_vec_sym_matmul                                   &
+     &   (sph_rtm%nidx_rtm(2), sph_rtm%maxidx_rtm_smp(1), nvector)
+      call alloc_leg_scl_sym_matmul                                   &
+     &   (sph_rtm%nidx_rtm(2), sph_rtm%maxidx_rtm_smp(1), nscalar)
+!
+      end subroutine init_legendre_sym_matmul
+!
+! -----------------------------------------------------------------------
+!
+      subroutine init_legendre_symmetry(sph_rtm, sph_rlm)
+!
+      use t_spheric_rtm_data
+      use t_spheric_rlm_data
+!
+      type(sph_rtm_grid), intent(in) :: sph_rtm
+      type(sph_rlm_grid), intent(in) :: sph_rlm
+!
+!
+      call const_symmetric_legendres(sph_rlm%nidx_rlm(2),               &
+     &    sph_rtm%nidx_rtm(2), sph_rtm%nidx_rtm(3))
+!
+      call alloc_leg_vec_symmetry(sph_rtm%nidx_rtm(2))
+      call alloc_leg_scl_symmetry(sph_rtm%nidx_rtm(2))
+!
+      end subroutine init_legendre_symmetry
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine const_symmetric_legendres(jmax_rlm, nth_rtm, mphi_rtm)
+!
+      use m_schmidt_poly_on_rtm
+      use set_legendre_matrices
+!
+      integer(kind = kint), intent(in) :: nth_rtm, mphi_rtm, jmax_rlm
+!
+!
+      call allocate_hemi_schmidt_rtm(nth_rtm, jmax_rlm)
+!
+      call set_symmetric_legendre_lj(nth_rtm, mphi_rtm,                 &
+     &    jmax_rlm, nth_hemi_rtm, lstack_rlm, lstack_even_rlm,          &
+     &    P_rtm, dPdt_rtm, Ps_rtm, dPsdt_rtm)
+      call set_symmetric_legendre_jl(nth_rtm, mphi_rtm,                 &
+     &    jmax_rlm, nth_hemi_rtm, lstack_rlm, lstack_even_rlm,          &
+     &    P_rtm, dPdt_rtm, Ps_jl, dPsdt_jl)
+!
+      end subroutine const_symmetric_legendres
+!
+! -----------------------------------------------------------------------
+!
+      subroutine allocate_hemi_schmidt_rtm(nth_rtm, jmax_rlm)
+!
+      integer(kind = kint), intent(in) :: nth_rtm, jmax_rlm
+!
+!
+      nth_hemi_rtm = (nth_rtm+1) / 2
+      allocate( Ps_rtm(nth_hemi_rtm,jmax_rlm) )
+      allocate( dPsdt_rtm(nth_hemi_rtm,jmax_rlm) )
+!
+      allocate( Ps_jl(jmax_rlm,nth_hemi_rtm) )
+      allocate( dPsdt_jl(jmax_rlm,nth_hemi_rtm) )
+!
+      Ps_rtm =    0.0d0
+      dPsdt_rtm = 0.0d0
+!
+      Ps_jl =    0.0d0
+      dPsdt_jl = 0.0d0
+!
+      end subroutine allocate_hemi_schmidt_rtm
+!
+! -----------------------------------------------------------------------
+!
+      subroutine deallocate_hemi_schmidt_rtm
+!
+      deallocate(Ps_rtm, dPsdt_rtm)
+      deallocate(Ps_jl,  dPsdt_jl)
+!
+      end subroutine deallocate_hemi_schmidt_rtm
+!
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine alloc_leg_vec_sym_matmul                               &
@@ -258,16 +368,9 @@
       deallocate(pol_e, dpoldt_e, dpoldp_e, dtordt_e, dtordp_e)
       deallocate(symp_r, symn_t, symn_p, asmp_t, asmp_p)
 !
-      end subroutine dealloc_leg_vec_matmul
-!
-! -----------------------------------------------------------------------
-!
-      subroutine dealloc_leg_scl_matmul
-!
-!
       deallocate(scl_e, symp)
 !
-      end subroutine dealloc_leg_scl_matmul
+      end subroutine dealloc_leg_vec_matmul
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -322,22 +425,6 @@
       end subroutine alloc_leg_scl_symmetry
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine dealloc_leg_vec_symmetry
-!
-      call dealloc_leg_vec_sym_matmul
-!
-      end subroutine dealloc_leg_vec_symmetry
-!
-! -----------------------------------------------------------------------
-!
-      subroutine dealloc_leg_scl_symmetry
-!
-      call dealloc_leg_scl_sym_matmul
-!
-      end subroutine dealloc_leg_scl_symmetry
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine alloc_leg_vec_blocked(nth_rtm)
@@ -375,22 +462,6 @@
       allocate(symp(nscl_lk,np_smp))
 !
       end subroutine alloc_leg_scl_blocked
-!
-! -----------------------------------------------------------------------
-!
-      subroutine dealloc_leg_vec_blocked
-!
-      call dealloc_leg_vec_matmul
-!
-      end subroutine dealloc_leg_vec_blocked
-!
-! -----------------------------------------------------------------------
-!
-      subroutine dealloc_leg_scl_blocked
-!
-      call dealloc_leg_scl_matmul
-!
-      end subroutine dealloc_leg_scl_blocked
 !
 ! -----------------------------------------------------------------------
 !

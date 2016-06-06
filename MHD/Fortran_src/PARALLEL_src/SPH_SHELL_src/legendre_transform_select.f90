@@ -252,18 +252,13 @@
       if     (id_legendre_transfer .eq. iflag_leg_sym_matmul            &
      &   .or. id_legendre_transfer .eq. iflag_leg_sym_dgemm             &
      &   .or. id_legendre_transfer .eq. iflag_leg_sym_matprod) then
-        call alloc_leg_vec_sym_matmul                                   &
-     &     (sph_rtm%nidx_rtm(2), sph_rtm%maxidx_rtm_smp(1),             &
-     &      nvector)
-        call alloc_leg_scl_sym_matmul                                   &
-     &     (sph_rtm%nidx_rtm(2), sph_rtm%maxidx_rtm_smp(1),             &
-     &      nscalar)
+        call init_legendre_sym_matmul                                   &
+     &     (sph_rtm, sph_rlm,  nvector, nscalar)
       else if(id_legendre_transfer .eq. iflag_leg_sym_matmul_big        &
      &   .or. id_legendre_transfer .eq. iflag_leg_sym_dgemm_big         &
      &   .or. id_legendre_transfer .eq. iflag_leg_sym_matprod_big) then
-        call alloc_leg_sym_matmul_big                                   &
-     &     (sph_rtm%nidx_rtm(2), sph_rtm%maxidx_rtm_smp(1),             &
-     &      nvector, nscalar)
+        call init_leg_sym_matmul_big                                    &
+     &     (sph_rtm, sph_rlm, nvector, nscalar)
       else if(id_legendre_transfer .eq. iflag_leg_matmul                &
      &   .or. id_legendre_transfer .eq. iflag_leg_dgemm                 &
      &   .or. id_legendre_transfer .eq. iflag_leg_matprod) then
@@ -275,16 +270,13 @@
      &      nscalar)
       else if(id_legendre_transfer .eq. iflag_leg_symmetry              &
      &   .or. id_legendre_transfer .eq. iflag_leg_sym_spin_loop) then
-        call alloc_leg_vec_symmetry(sph_rtm%nidx_rtm(2))
-        call alloc_leg_scl_symmetry(sph_rtm%nidx_rtm(2))
+        call init_legendre_symmetry(sph_rtm, sph_rlm)
       else if(id_legendre_transfer .eq. iflag_leg_blocked               &
      &   .or. id_legendre_transfer .eq. iflag_leg_krloop_outer) then
         call alloc_leg_vec_blocked(sph_rtm%nidx_rtm(2))
         call alloc_leg_scl_blocked(sph_rtm%nidx_rtm(2))
       else if(id_legendre_transfer .eq. iflag_leg_test_loop) then
-        call alloc_leg_vec_test                                         &
-     &     (sph_rtm%nidx_rtm(1), sph_rtm%maxidx_rtm_smp(2),             &
-     &      nvector, nscalar)
+        call init_legendre_testloop(sph_rtm, sph_rlm, nvector, nscalar)
       else
         call allocate_work_sph_trans                                    &
      &     (ncomp, sph_rtm%nnod_rtm, sph_rlm%nnod_rlm)
@@ -314,15 +306,13 @@
      &   .or. id_legendre_transfer .eq. iflag_leg_dgemm                 &
      &   .or. id_legendre_transfer .eq. iflag_leg_matprod) then
         call dealloc_leg_vec_matmul
-        call dealloc_leg_scl_matmul
       else if(id_legendre_transfer .eq. iflag_leg_symmetry              &
      &   .or. id_legendre_transfer .eq. iflag_leg_sym_spin_loop) then
-        call dealloc_leg_vec_symmetry
-        call dealloc_leg_scl_symmetry
+        call dealloc_leg_vec_sym_matmul
+        call dealloc_leg_scl_sym_matmul
       else if(id_legendre_transfer .eq. iflag_leg_blocked               &
      &   .or. id_legendre_transfer .eq. iflag_leg_krloop_outer) then
-        call dealloc_leg_vec_blocked
-        call dealloc_leg_scl_blocked
+        call dealloc_leg_vec_matmul
       else if(id_legendre_transfer .eq. iflag_leg_test_loop) then
         call dealloc_leg_vec_test
       else

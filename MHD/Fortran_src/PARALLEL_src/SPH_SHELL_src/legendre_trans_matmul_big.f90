@@ -54,6 +54,7 @@
       module legendre_trans_matmul_big
 !
       use m_precision
+      use m_schmidt_poly_on_rtm
 !
       use t_spheric_rtm_data
       use t_spheric_rlm_data
@@ -86,7 +87,8 @@
 !
       if(ncomp .le. 0) return
         call leg_bwd_trans_sym_matmul_big(ncomp, nvector, nscalar,      &
-     &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, n_WR, n_WS, WR, WS)
+     &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, g_sph_rlm,            &
+     &      n_WR, n_WS, WR, WS)
 !
       end subroutine leg_backward_trans_matmul_big
 !
@@ -110,7 +112,8 @@
 !
       if(ncomp .le. 0) return
         call leg_fwd_trans_sym_matmul_big(ncomp, nvector, nscalar,      &
-     &      sph_rtm, sph_rlm, comm_rtm, comm_rlm, n_WR, n_WS, WR, WS)
+     &      sph_rtm, sph_rlm, comm_rtm, comm_rlm,                       &
+     &      g_sph_rlm, weight_rtm, n_WR, n_WS, WR, WS)
 !
       end subroutine leg_forward_trans_matmul_big
 !
@@ -136,7 +139,8 @@
 !
       if(ncomp .le. 0) return
         call leg_bwd_trans_sym_dgemm_big(ncomp, nvector, nscalar,       &
-     &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, n_WR, n_WS, WR, WS)
+     &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, g_sph_rlm,            &
+     &      n_WR, n_WS, WR, WS)
 !
       end subroutine leg_backward_trans_dgemm_big
 !
@@ -160,7 +164,8 @@
 !
       if(ncomp .le. 0) return
         call leg_fwd_trans_sym_dgemm_big(ncomp, nvector, nscalar,       &
-     &      sph_rtm, sph_rlm, comm_rtm, comm_rlm, n_WR, n_WS, WR, WS)
+     &      sph_rtm, sph_rlm, comm_rtm, comm_rlm,                       &
+     &      g_sph_rlm, weight_rtm, n_WR, n_WS, WR, WS)
 !
       end subroutine leg_forward_trans_dgemm_big
 !
@@ -186,7 +191,8 @@
 !
       if(ncomp .le. 0) return
         call leg_bwd_trans_sym_matprod_big(ncomp, nvector, nscalar,     &
-     &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, n_WR, n_WS, WR, WS)
+     &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, g_sph_rlm,            &
+     &      n_WR, n_WS, WR, WS)
 !
       end subroutine leg_backward_trans_matprod_big
 !
@@ -210,7 +216,8 @@
 !
       if(ncomp .le. 0) return
         call leg_fwd_trans_sym_matprod_big(ncomp, nvector, nscalar,     &
-     &      sph_rtm, sph_rlm, comm_rtm, comm_rlm, n_WR, n_WS, WR, WS)
+     &      sph_rtm, sph_rlm, comm_rtm, comm_rlm,                       &
+     &      g_sph_rlm, weight_rtm, n_WR, n_WS, WR, WS)
 !
       end subroutine leg_forward_trans_matprod_big
 !

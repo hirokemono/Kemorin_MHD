@@ -36,11 +36,20 @@
       use calypso_mpi
 !
       use m_machine_parameter
-      use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans
       use matmul_for_legendre_trans
 !
       implicit none
+!
+!>        Number of meridional grid points in northern hemisphere
+      integer(kind = kint) :: nth_sym
+!>        @$f P_{l}{m} @$f
+!!        at gouss points in northen hemisphere
+      real(kind = kreal), allocatable :: Ps_tj(:,:)
+!>        @$f dP_{l}{m}/d\theta @$f  with even (l-m) 
+!!        at gouss points in northen hemisphere
+      real(kind = kreal), allocatable :: dPsdt_tj(:,:)
+!
 !
 !>     Maximum matrix size for spectr data
       integer(kind = kint) :: nvec_jk
@@ -151,9 +160,56 @@
 !>     Anti-symmetric scalar component
       real(kind = kreal), allocatable :: asmp(:,:)
 !
+      private :: const_legendre_testloop, alloc_leg_vec_test
+!
 ! -----------------------------------------------------------------------
 !
       contains
+!
+! -----------------------------------------------------------------------
+!
+      subroutine init_legendre_testloop                                 &
+     &         (sph_rtm, sph_rlm, nvector, nscalar)
+!
+      use t_spheric_rtm_data
+      use t_spheric_rlm_data
+!
+      use m_schmidt_poly_on_rtm
+!
+      type(sph_rtm_grid), intent(in) :: sph_rtm
+      type(sph_rlm_grid), intent(in) :: sph_rlm
+      integer(kind = kint), intent(in) :: nvector, nscalar
+!
+!
+      call const_legendre_testloop(sph_rlm%nidx_rlm(2),                 &
+     &    sph_rtm%nidx_rtm(2), sph_rtm%nidx_rtm(3))
+      call alloc_leg_vec_test                                           &
+     &   (sph_rtm%nidx_rtm(2), sph_rtm%maxidx_rtm_smp(1),               &
+     &    nvector, nscalar)
+!
+      end subroutine init_legendre_testloop
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine const_legendre_testloop                                &
+     &         (jmax_rlm, nth_rtm, mphi_rtm)
+!
+      use m_schmidt_poly_on_rtm
+      use set_legendre_matrices
+!
+      integer(kind = kint), intent(in) :: nth_rtm, mphi_rtm, jmax_rlm
+!
+!
+      nth_sym = (nth_rtm+1) / 2
+      allocate( Ps_tj(nth_sym,jmax_rlm) )
+      allocate( dPsdt_tj(nth_sym,jmax_rlm) )
+!
+      call set_symmetric_legendre_lj(nth_rtm, mphi_rtm,                 &
+     &    jmax_rlm, nth_sym, lstack_rlm, lstack_even_rlm,               &
+     &    P_rtm, dPdt_rtm, Ps_tj, dPsdt_tj)
+!
+      end subroutine const_legendre_testloop
 !
 ! -----------------------------------------------------------------------
 !
@@ -187,6 +243,7 @@
 !
       deallocate(pol_e, tor_e, pol_o, tor_o)
       deallocate(symp_r, symp_p, asmp_r, asmp_p)
+      deallocate(Ps_tj, dPsdt_tj)
 !
       end subroutine dealloc_leg_vec_test
 !

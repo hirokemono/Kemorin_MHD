@@ -62,8 +62,8 @@
       type(sph_comm_tables), intent(inout) :: comms_sph
 !
 !
-      call allocate_work_4_sph_trans(sph%sph_rtp%nidx_rtp,              &
-     &    sph%sph_rtm%nidx_rtm, sph%sph_rlm%nidx_rlm)
+      call allocate_work_4_sph_trans                                    &
+     &   (sph%sph_rtm%nidx_rtm, sph%sph_rlm%nidx_rlm)
 !
       call radial_4_sph_trans                                           &
      &   (sph%sph_rtp, sph%sph_rtm, sph%sph_rlm, sph%sph_rj)
@@ -75,17 +75,17 @@
      &    sph%sph_rj, sph%sph_rtm, sph%sph_rlm)
 !
       call set_sin_theta_rtm(sph%sph_rtm%nidx_rtm(2))
-      call set_sin_theta_rtp                                            &
-     &   (sph%sph_rtp%nidx_rtp(2), sph%sph_rtp%idx_gl_1d_rtp_t)
+!
+      call const_sin_theta_rtp(sph%sph_rtp)
 !
       call allocate_trans_schmidt_rtm                                   &
      &   (sph%sph_rtm%nidx_rtm(2), sph%sph_rlm%nidx_rlm(2))
       call set_trans_legendre_rtm                                       &
-     &   (sph%sph_rtm%nidx_rtm(2), sph%sph_rlm%nidx_rlm(2))
+     &   (sph%sph_rtm%nidx_rtm(2), sph%sph_rlm%nidx_rlm(2),             &
+     &    P_rtm, dPdt_rtm, P_jl, dPdt_jl)
 !
-      call allocate_hemi_schmidt_rtm                                    &
-     &   (sph%sph_rtm%nidx_rtm(2), sph%sph_rlm%nidx_rlm(2))
-      call set_legendre_hemispher_rtm(sph%sph_rtm%nidx_rtm(3))
+      call set_sym_legendre_stack                                       &
+     &   (sph%sph_rtm%nidx_rtm(3), lstack_rlm, lstack_even_rlm)
 !
       call set_blocks_4_leg_trans(sph, comms_sph)
 !
@@ -124,9 +124,6 @@
       call count_number_4_smp                                           &
      &   (nblock_l_rtm, ione, sph%sph_rtm%nidx_rtm(2),                  &
      &    lstack_block_rtm, lmax_block_rtm)
-      call count_number_4_smp                                           &
-     &   (nblock_j_rlm, ione, sph%sph_rlm%nidx_rlm(2),                  &
-     &    jstack_block_rlm, jmax_block_rlm)
 !
 !
       call split_rtp_comms(comms_sph%comm_rtp%nneib_domain,             &
