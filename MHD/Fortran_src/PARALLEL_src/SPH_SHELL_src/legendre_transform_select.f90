@@ -242,6 +242,7 @@
 !
       use m_leg_trans_sym_matmul_big
       use m_legendre_work_sym_matmul
+      use m_legendre_work_matmul
       use m_legendre_work_testlooop
 !
       type(sph_rtm_grid), intent(in) :: sph_rtm
@@ -290,14 +291,16 @@
 !
       use m_leg_trans_sym_matmul_big
       use m_legendre_work_sym_matmul
+      use m_legendre_work_matmul
       use m_legendre_work_testlooop
 !
 !
       if     (id_legendre_transfer .eq. iflag_leg_sym_matmul            &
      &   .or. id_legendre_transfer .eq. iflag_leg_sym_dgemm             &
-     &   .or. id_legendre_transfer .eq. iflag_leg_sym_matprod) then
-        call dealloc_leg_vec_sym_matmul
-        call dealloc_leg_scl_sym_matmul
+     &   .or. id_legendre_transfer .eq. iflag_leg_sym_matprod           &
+     &   .or. id_legendre_transfer .eq. iflag_leg_symmetry              &
+     &   .or. id_legendre_transfer .eq. iflag_leg_sym_spin_loop) then
+        call finalize_legendre_sym_matmul
       else if(id_legendre_transfer .eq. iflag_leg_sym_matmul_big        &
      &   .or. id_legendre_transfer .eq. iflag_leg_sym_dgemm_big         &
      &   .or. id_legendre_transfer .eq. iflag_leg_sym_matprod_big) then
@@ -306,10 +309,6 @@
      &   .or. id_legendre_transfer .eq. iflag_leg_dgemm                 &
      &   .or. id_legendre_transfer .eq. iflag_leg_matprod) then
         call dealloc_leg_vec_matmul
-      else if(id_legendre_transfer .eq. iflag_leg_symmetry              &
-     &   .or. id_legendre_transfer .eq. iflag_leg_sym_spin_loop) then
-        call dealloc_leg_vec_sym_matmul
-        call dealloc_leg_scl_sym_matmul
       else if(id_legendre_transfer .eq. iflag_leg_blocked               &
      &   .or. id_legendre_transfer .eq. iflag_leg_krloop_outer) then
         call dealloc_leg_vec_matmul
