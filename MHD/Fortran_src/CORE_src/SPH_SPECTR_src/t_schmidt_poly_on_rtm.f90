@@ -12,13 +12,13 @@
 !!     &         (nth_rtm, jmax_rlm, jmax_rj, Plm_WK)
 !!      subroutine alloc_trans_schmidt_rtm(nth_rtm, jmax_rlm, Plm_WK)
 !!      subroutine alloc_schmidt_p_rtm_pole(jmax_rlm, Plm_WK)
-!!        type(legendre_4_sph_transform), intent(inout) :: Plm_WK
+!!        type(legendre_4_sph_trans), intent(inout) :: Plm_WK
 !!
 !!      subroutine dealloc_gauss_colat_rtm(Plm_WK)
 !!      subroutine dealloc_schmidt_poly_rtm(Plm_WK)
 !!      subroutine dealloc_trans_schmidt_rtm(Plm_WK)
 !!      subroutine dealloc_schmidt_p_rtm_pole(Plm_WK)
-!!        type(legendre_4_sph_transform), intent(inout) :: Plm_WK
+!!        type(legendre_4_sph_trans), intent(inout) :: Plm_WK
 !!
 !!      subroutine check_gauss_colat_rtm(my_rank, nth_rtm, Plm_WK)
 !!      subroutine check_schmidt_poly_rtm                               &
@@ -26,7 +26,7 @@
 !!      subroutine check_schmidt_p_rtm_pole(my_rank, sph_rlm, Plm_WK)
 !!        type(sph_rtm_grid), intent(in) :: sph_rtm
 !!        type(sph_rlm_grid), intent(in) :: sph_rlm
-!!        type(legendre_4_sph_transform), intent(in) :: Plm_WK
+!!        type(legendre_4_sph_trans), intent(in) :: Plm_WK
 !!@endverbatim
 !
       module t_schmidt_poly_on_rtm
@@ -36,7 +36,7 @@
       implicit none
 !
 !>      Structures for Legendre polynomials for spherical transform
-      type legendre_4_sph_transform
+      type legendre_4_sph_trans
         real(kind = kreal), pointer :: g_point_rtm(:)
         real(kind = kreal), pointer :: g_colat_rtm(:)
         real(kind = kreal), pointer :: weight_rtm(:)
@@ -61,7 +61,7 @@
         real(kind = kreal), pointer :: P_jl(:,:)
 !>        @$f dP_{l}{m}/d\theta @$f with A(j,theta)
         real(kind = kreal), pointer :: dPdt_jl(:,:)
-      end type legendre_4_sph_transform
+      end type legendre_4_sph_trans
 !
 ! -----------------------------------------------------------------------
 !
@@ -72,7 +72,7 @@
       subroutine alloc_gauss_colat_rtm(nth_rtm, Plm_WK)
 !
       integer(kind = kint), intent(in) :: nth_rtm
-      type(legendre_4_sph_transform), intent(inout) :: Plm_WK
+      type(legendre_4_sph_trans), intent(inout) :: Plm_WK
 !
       allocate( Plm_WK%g_point_rtm(nth_rtm) )
       allocate( Plm_WK%g_colat_rtm(nth_rtm) )
@@ -90,7 +90,7 @@
      &         (nth_rtm, jmax_rlm, jmax_rj, Plm_WK)
 !
       integer(kind = kint), intent(in) :: nth_rtm, jmax_rlm, jmax_rj
-      type(legendre_4_sph_transform), intent(inout) :: Plm_WK
+      type(legendre_4_sph_trans), intent(inout) :: Plm_WK
 !
 !
       allocate( Plm_WK%P_rtm(nth_rtm,jmax_rlm) )
@@ -112,7 +112,7 @@
       subroutine alloc_trans_schmidt_rtm(nth_rtm, jmax_rlm, Plm_WK)
 !
       integer(kind = kint), intent(in) :: nth_rtm, jmax_rlm
-      type(legendre_4_sph_transform), intent(inout) :: Plm_WK
+      type(legendre_4_sph_trans), intent(inout) :: Plm_WK
 !
 !
       allocate( Plm_WK%P_jl(jmax_rlm,nth_rtm) )
@@ -128,7 +128,7 @@
       subroutine alloc_schmidt_p_rtm_pole(jmax_rlm, Plm_WK)
 !
       integer(kind = kint), intent(in) :: jmax_rlm
-      type(legendre_4_sph_transform), intent(inout) :: Plm_WK
+      type(legendre_4_sph_trans), intent(inout) :: Plm_WK
 !
 !
       allocate( Plm_WK%P_pole_rtm(2,jmax_rlm) )
@@ -144,7 +144,7 @@
 !
       subroutine dealloc_gauss_colat_rtm(Plm_WK)
 !
-      type(legendre_4_sph_transform), intent(inout) :: Plm_WK
+      type(legendre_4_sph_trans), intent(inout) :: Plm_WK
 !
       deallocate( Plm_WK%g_point_rtm )
       deallocate( Plm_WK%g_colat_rtm )
@@ -156,9 +156,9 @@
 !
       subroutine dealloc_schmidt_poly_rtm(Plm_WK)
 !
-      type(legendre_4_sph_transform), intent(inout) :: Plm_WK
+      type(legendre_4_sph_trans), intent(inout) :: Plm_WK
 !
-      call dealloc_schmidt_p_rtm_pole(Plm_WK)
+      deallocate( Plm_WK%P_rtm, Plm_WK%dPdt_rtm )
       deallocate( Plm_WK%g_sph_rlm, Plm_WK%g_sph_rj)
 !
       end subroutine dealloc_schmidt_poly_rtm
@@ -167,7 +167,7 @@
 !
       subroutine dealloc_trans_schmidt_rtm(Plm_WK)
 !
-      type(legendre_4_sph_transform), intent(inout) :: Plm_WK
+      type(legendre_4_sph_trans), intent(inout) :: Plm_WK
 !
       deallocate( Plm_WK%P_jl, Plm_WK%dPdt_jl)
 !
@@ -177,9 +177,9 @@
 !
       subroutine dealloc_schmidt_p_rtm_pole(Plm_WK)
 !
-      type(legendre_4_sph_transform), intent(inout) :: Plm_WK
+      type(legendre_4_sph_trans), intent(inout) :: Plm_WK
 !
-      deallocate( Plm_WK%P_rtm, Plm_WK%dPdt_rtm )
+      deallocate( Plm_WK%P_pole_rtm, Plm_WK%dPdt_pole_rtm )
 !
       end subroutine dealloc_schmidt_p_rtm_pole
 !
@@ -190,7 +190,7 @@
 !
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(in) :: nth_rtm
-      type(legendre_4_sph_transform), intent(in) :: Plm_WK
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
 !
       integer(kind = kint) :: i
 !
@@ -215,7 +215,7 @@
       integer(kind = kint), intent(in) :: my_rank
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
-      type(legendre_4_sph_transform), intent(in) :: Plm_WK
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
 !
       integer(kind = kint) :: i, j
 !
@@ -242,7 +242,7 @@
 !
       integer(kind = kint), intent(in) :: my_rank
       type(sph_rlm_grid), intent(in) :: sph_rlm
-      type(legendre_4_sph_transform), intent(in) :: Plm_WK
+      type(legendre_4_sph_trans), intent(in) :: Plm_WK
 !
       integer(kind = kint) :: i, j
 !

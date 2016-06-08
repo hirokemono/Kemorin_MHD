@@ -207,7 +207,7 @@
 !
       call set_symmetric_legendre_lj(nth_rtm, mphi_rtm,                 &
      &    jmax_rlm, nth_sym, lstack_rlm, lstack_even_rlm,               &
-     &    P_rtm, dPdt_rtm, Ps_tj, dPsdt_tj)
+     &    leg1%P_rtm, leg1%dPdt_rtm, Ps_tj, dPsdt_tj)
 !
       end subroutine const_legendre_testloop
 !

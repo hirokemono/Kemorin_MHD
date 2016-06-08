@@ -89,7 +89,7 @@
 !
 !      call calypso_MPI_barrier
 !      call check_schmidt_poly_rtm                                      &
-!     &   (my_rank+40, sph_mesh%sph%sph_rtm, sph_mesh%sph%sph_rlm)
+!     &  (my_rank+40, sph_mesh%sph%sph_rtm, sph_mesh%sph%sph_rlm, leg1)
 !
       end subroutine SPH_initialize_back_trans
 !

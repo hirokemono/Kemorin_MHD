@@ -81,7 +81,8 @@
       call allocate_schmidt_poly_rtm(sph_rtm_test%nidx_rtm(2),          &
      &    sph_rlm_test%nidx_rlm(2), sph_rj_test%nidx_rj(2))
       call set_lagender_4_rlm                                           &
-     &   (sph_param_test%l_truncation, sph_rtm_test, sph_rlm_test)
+     &   (sph_param_test%l_truncation, sph_rtm_test, sph_rlm_test,      &
+     &    g_colat_rtm, leg1%P_rtm, leg1%dPdt_rtm)
 !
 !      do j = 1, nidx_rlm(2)
 !        write(*,*) j, sph_rlm_test%idx_gl_1d_rlm_j(j,1:3)
@@ -126,7 +127,7 @@
             do i = 1, n_point
               write(60,'(4i5,1p3e23.14e3)')                             &
      &            sph_rlm_test%idx_gl_1d_rlm_j(j,1:3), i,               &
-     &            g_colat_rtm(i), P_rtm(i,j), dPdt_rtm(i,j)
+     &            g_colat_rtm(i), P_rtm(i,j), leg1%dPdt_rtm(i,j)
             end do
           end if
         end do

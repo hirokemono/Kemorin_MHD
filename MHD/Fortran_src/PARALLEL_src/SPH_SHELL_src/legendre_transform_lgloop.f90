@@ -69,9 +69,9 @@
 !
       call legendre_b_trans_vector_long                                 &
      &    (ncomp, nvector, sph_rlm, sph_rtm, g_sph_rlm,                 &
-     &     P_rtm, dPdt_rtm, sp_rlm_wk, vr_rtm_wk)
+     &     leg1%P_rtm, leg1%dPdt_rtm, sp_rlm_wk, vr_rtm_wk)
       call legendre_b_trans_scalar_long                                 &
-     &    (ncomp, nvector, nscalar, sph_rlm, sph_rtm, P_rtm,            &
+     &    (ncomp, nvector, nscalar, sph_rlm, sph_rtm, leg1%P_rtm,       &
      &     sp_rlm_wk, vr_rtm_wk)
 !
       call calypso_sph_to_send_N(ncomp, sph_rtm%nnod_rtm,               &
@@ -103,10 +103,10 @@
 !
       call legendre_f_trans_vector_long                                 &
      &    (ncomp, nvector, sph_rtm, sph_rlm,  g_sph_rlm, weight_rtm,    &
-     &     P_rtm, dPdt_rtm, vr_rtm_wk, sp_rlm_wk)
+     &     leg1%P_rtm, leg1%dPdt_rtm, vr_rtm_wk, sp_rlm_wk)
       call legendre_f_trans_scalar_long                                 &
      &    (ncomp, nvector, nscalar, sph_rtm, sph_rlm,                   &
-     &     g_sph_rlm, weight_rtm, P_rtm, vr_rtm_wk, sp_rlm_wk)
+     &     g_sph_rlm, weight_rtm, leg1%P_rtm, vr_rtm_wk, sp_rlm_wk)
 !
       call calypso_sph_to_send_N(ncomp, sph_rlm%nnod_rlm,               &
      &    comm_rlm, n_WS, sp_rlm_wk(1), WS)

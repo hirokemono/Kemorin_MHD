@@ -82,7 +82,7 @@
      &   (sph%sph_rtm%nidx_rtm(2), sph%sph_rlm%nidx_rlm(2))
       call set_trans_legendre_rtm                                       &
      &   (sph%sph_rtm%nidx_rtm(2), sph%sph_rlm%nidx_rlm(2),             &
-     &    P_rtm, dPdt_rtm, P_jl, dPdt_jl)
+     &    leg1%P_rtm, leg1%dPdt_rtm, leg1%P_jl, leg1%dPdt_jl)
 !
       call set_sym_legendre_stack                                       &
      &   (sph%sph_rtm%nidx_rtm(3), lstack_rlm, lstack_even_rlm)

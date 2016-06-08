@@ -73,10 +73,10 @@
      &    n_WR, WR, sp_rlm_wk(1))
 !
       call legendre_b_trans_vector_krin(ncomp, nvector,                 &
-     &    sph_rlm, sph_rtm, g_sph_rlm, P_jl, dPdt_jl,                   &
+     &    sph_rlm, sph_rtm, g_sph_rlm, leg1%P_jl, leg1%dPdt_jl,         &
      &    sp_rlm_wk(1), vr_rtm_wk(1))
       call legendre_b_trans_scalar_krin(ncomp, nvector, nscalar,        &
-     &    sph_rlm, sph_rtm, P_jl, sp_rlm_wk(1), vr_rtm_wk(1))
+     &    sph_rlm, sph_rtm, leg1%P_jl, sp_rlm_wk(1), vr_rtm_wk(1))
 !
       call back_b_trans_fields_krin                                     &
      &   (sph_rtm%nidx_rtm, ncomp, nvector, nscalar,                    &
@@ -112,11 +112,13 @@
      &    ncomp, nvector, nscalar, comm_rtm%irev_sr,                    &
      &    n_WR, WR, vr_rtm_wk(1))
 !
-      call legendre_f_trans_vector_krin(ncomp, nvector,                 &
-     &    sph_rtm, sph_rlm, g_sph_rlm, weight_rtm, P_rtm, dPdt_rtm,     &
+      call legendre_f_trans_vector_krin                                 &
+     &   (ncomp, nvector, sph_rtm, sph_rlm,                             &
+     &    g_sph_rlm, weight_rtm, leg1%P_rtm, leg1%dPdt_rtm,     &
      &    vr_rtm_wk(1), sp_rlm_wk(1))
-      call legendre_f_trans_scalar_krin(ncomp, nvector, nscalar,        &
-     &    sph_rtm, sph_rlm, g_sph_rlm, weight_rtm, P_rtm,               &
+      call legendre_f_trans_scalar_krin                                 &
+     &   (ncomp, nvector, nscalar, sph_rtm, sph_rlm,                    &
+     &    g_sph_rlm, weight_rtm, leg1%P_rtm,               &
      &    vr_rtm_wk(1), sp_rlm_wk(1))
 !
       call back_f_trans_fields_krin                                     &
