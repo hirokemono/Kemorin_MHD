@@ -10,9 +10,10 @@
 !!
 !!@verbatim
 !!      subroutine legendre_b_trans_vector_krin(ncomp, nvector,         &
-!!     &          sph_rlm, sph_rtm, sp_rlm_krin, vr_rtm_spin)
+!!     &          sph_rlm, sph_rtm, g_sph_rlm, P_jl, dPdt_jl,           &
+!!     &          sp_rlm_krin, vr_rtm_spin)
 !!      subroutine legendre_b_trans_scalar_krin(ncomp, nvector, nscalar,&
-!!     &          sph_rlm, sph_rtm, sp_rlm_krin, vr_rtm_spin)
+!!     &          sph_rlm, sph_rtm, P_jl, sp_rlm_krin, vr_rtm_spin)
 !!        Input:  vr_rtm_spin
 !!        Output: sp_rlm_krin
 !!
@@ -36,7 +37,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans
 !
       use t_spheric_rtm_data
@@ -51,10 +51,18 @@
 ! -----------------------------------------------------------------------
 !
       subroutine legendre_b_trans_vector_krin(ncomp, nvector,           &
-     &          sph_rlm, sph_rtm, sp_rlm_krin, vr_rtm_spin)
+     &          sph_rlm, sph_rtm, g_sph_rlm, P_jl, dPdt_jl,             &
+     &          sp_rlm_krin, vr_rtm_spin)
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
+      real(kind = kreal), intent(in)                                    &
+     &           :: g_sph_rlm(sph_rlm%nidx_rlm(2),17)
+      real(kind= kreal), intent(in)                                     &
+     &           :: P_jl(sph_rlm%nidx_rlm(2),sph_rtm%nidx_rtm(2))
+      real(kind= kreal), intent(in)                                     &
+     &           :: dPdt_jl(sph_rlm%nidx_rlm(2),sph_rtm%nidx_rtm(2))
+!
       integer(kind = kint), intent(in) :: ncomp, nvector
       real(kind = kreal), intent(inout)                                 &
      &    :: sp_rlm_krin(sph_rlm%nidx_rlm(1)*ncomp,sph_rlm%nidx_rlm(2))
@@ -158,10 +166,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine legendre_b_trans_scalar_krin(ncomp, nvector, nscalar,  &
-     &          sph_rlm, sph_rtm, sp_rlm_krin, vr_rtm_spin)
+     &          sph_rlm, sph_rtm, P_jl, sp_rlm_krin, vr_rtm_spin)
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
+      real(kind= kreal), intent(in)                                     &
+     &           :: P_jl(sph_rlm%nidx_rlm(2),sph_rtm%nidx_rtm(2))
+!
       integer(kind = kint), intent(in) :: ncomp, nscalar, nvector
       real(kind = kreal), intent(in)                                    &
      &      :: sp_rlm_krin(sph_rlm%nidx_rlm(1)*ncomp,                   &

@@ -41,6 +41,7 @@
 !
       use m_precision
       use m_work_time
+      use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans_spin
 !
       use t_spheric_rtm_data
@@ -71,9 +72,11 @@
 !
 !
         call legendre_b_trans_vector_spin(ncomp, nvector,               &
-     &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, n_WR, n_WS, WR, WS)
+     &      sph_rlm, sph_rtm, comm_rlm, comm_rtm,                       &
+     &      g_sph_rlm, P_jl, dPdt_jl, n_WR, n_WS, WR, WS)
         call legendre_b_trans_scalar_spin(ncomp, nvector, nscalar,      &
-     &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, n_WR, n_WS, WR, WS)
+     &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, P_jl,                 &
+     &      n_WR, n_WS, WR, WS)
 !
       end subroutine leg_backward_trans_spin
 !
@@ -95,9 +98,12 @@
 !
 !
         call legendre_f_trans_vector_spin(ncomp, nvector,               &
-     &      sph_rtm, sph_rlm, comm_rtm, comm_rlm, n_WR, n_WS, WR, WS)
+     &      sph_rtm, sph_rlm, comm_rtm, comm_rlm,                       &
+     &      g_sph_rlm, weight_rtm, P_rtm, dPdt_rtm,                     &
+     &      n_WR, n_WS, WR, WS)
         call legendre_f_trans_scalar_spin(ncomp, nvector, nscalar,      &
-     &      sph_rtm, sph_rlm, comm_rtm, comm_rlm, n_WR, n_WS, WR, WS)
+     &      sph_rtm, sph_rlm, comm_rtm, comm_rlm,                       &
+     &      g_sph_rlm, weight_rtm, P_rtm, n_WR, n_WS, WR, WS)
 !
       end subroutine leg_forward_trans_spin
 !

@@ -9,12 +9,13 @@
 !!       (longest loop version)
 !!
 !!@verbatim
-!!      subroutine legendre_b_trans_vector_long                         &
-!!     &         (ncomp, nvector, sp_rlm, vr_rtm)
+!!      subroutine legendre_b_trans_vector_long(ncomp, nvector,         &
+!!     &          sph_rlm, sph_rtm, g_sph_rlm, P_rtm, dPdt_rtm,         &
+!!     &          sp_rlm, vr_rtm)
 !!        Input:  sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
 !!        Output: vr_rtm   (Order: radius,theta,phi)
 !!      subroutine legendre_b_trans_scalar_long                         &
-!!     &         (ncomp, nvector, nscalar, sph_rlm, sph_rtm,            &
+!!     &         (ncomp, nvector, nscalar, sph_rlm, sph_rtm, P_rtm,     &
 !!     &          sp_rlm, vr_rtm)
 !!        Input:  sp_rlm
 !!        Output: vr_rtm
@@ -30,7 +31,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans
 !
       use t_spheric_rtm_data
@@ -45,10 +45,18 @@
 ! -----------------------------------------------------------------------
 !
       subroutine legendre_b_trans_vector_long(ncomp, nvector,           &
-     &          sph_rlm, sph_rtm, sp_rlm, vr_rtm)
+     &          sph_rlm, sph_rtm, g_sph_rlm, P_rtm, dPdt_rtm,           &
+     &          sp_rlm, vr_rtm)
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
+      real(kind = kreal), intent(in)                                    &
+     &           :: g_sph_rlm(sph_rlm%nidx_rlm(2),17)
+      real(kind= kreal), intent(in)                                     &
+     &           :: P_rtm(sph_rtm%nidx_rtm(2),sph_rlm%nidx_rlm(2))
+      real(kind= kreal), intent(in)                                     &
+     &           :: dPdt_rtm(sph_rtm%nidx_rtm(2),sph_rlm%nidx_rlm(2))
+!
       integer(kind = kint), intent(in) :: ncomp, nvector
       real(kind = kreal), intent(inout)                                 &
      &           :: sp_rlm(ncomp*sph_rlm%nnod_rlm)
@@ -154,11 +162,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine legendre_b_trans_scalar_long                           &
-     &         (ncomp, nvector, nscalar, sph_rlm, sph_rtm,              &
+     &         (ncomp, nvector, nscalar, sph_rlm, sph_rtm, P_rtm,       &
      &          sp_rlm, vr_rtm)
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
+      real(kind= kreal), intent(in)                                     &
+     &           :: P_rtm(sph_rtm%nidx_rtm(2),sph_rlm%nidx_rlm(2))
+!
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       real(kind = kreal), intent(inout)                                 &
      &           :: sp_rlm(ncomp*sph_rlm%nnod_rlm)

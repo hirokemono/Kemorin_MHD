@@ -33,6 +33,7 @@
       module legendre_transform_krin
 !
       use m_precision
+      use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans_spin
 !
       use t_spheric_rtm_data
@@ -72,9 +73,10 @@
      &    n_WR, WR, sp_rlm_wk(1))
 !
       call legendre_b_trans_vector_krin(ncomp, nvector,                 &
-     &    sph_rlm, sph_rtm, sp_rlm_wk(1), vr_rtm_wk(1))
+     &    sph_rlm, sph_rtm, g_sph_rlm, P_jl, dPdt_jl,                   &
+     &    sp_rlm_wk(1), vr_rtm_wk(1))
       call legendre_b_trans_scalar_krin(ncomp, nvector, nscalar,        &
-     &    sph_rlm, sph_rtm, sp_rlm_wk(1), vr_rtm_wk(1))
+     &    sph_rlm, sph_rtm, P_jl, sp_rlm_wk(1), vr_rtm_wk(1))
 !
       call back_b_trans_fields_krin                                     &
      &   (sph_rtm%nidx_rtm, ncomp, nvector, nscalar,                    &
@@ -111,9 +113,11 @@
      &    n_WR, WR, vr_rtm_wk(1))
 !
       call legendre_f_trans_vector_krin(ncomp, nvector,                 &
-     &    sph_rtm, sph_rlm, vr_rtm_wk(1), sp_rlm_wk(1))
+     &    sph_rtm, sph_rlm, g_sph_rlm, weight_rtm, P_rtm, dPdt_rtm,     &
+     &    vr_rtm_wk(1), sp_rlm_wk(1))
       call legendre_f_trans_scalar_krin(ncomp, nvector, nscalar,        &
-     &    sph_rtm, sph_rlm, vr_rtm_wk(1), sp_rlm_wk(1))
+     &    sph_rtm, sph_rlm, g_sph_rlm, weight_rtm, P_rtm,               &
+     &    vr_rtm_wk(1), sp_rlm_wk(1))
 !
       call back_f_trans_fields_krin                                     &
      &   (sph_rlm%nidx_rlm, ncomp, nvector, nscalar,                    &

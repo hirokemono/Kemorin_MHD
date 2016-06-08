@@ -10,24 +10,24 @@
 !!@verbatim
 !!      subroutine leg_f_trans_vec_sym_matmul(ncomp, nvector,           &
 !!     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm,                 &
-!!     &          n_WR, n_WS, WR, WS)
+!!     &          g_sph_rlm, weight_rtm, n_WR, n_WS, WR, WS)
 !!      subroutine leg_f_trans_scl_sym_matmul(ncomp, nvector, nscalar,  &
 !!     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm,                 &
-!!     &          n_WR, n_WS, WR, WS)
+!!     &          g_sph_rlm, weight_rtm, n_WR, n_WS, WR, WS)
 !!
 !!      subroutine leg_f_trans_vec_sym_dgemm(ncomp, nvector,            &
 !!     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm,                 &
-!!     &          n_WR, n_WS, WR, WS)
+!!     &          g_sph_rlm, weight_rtm, n_WR, n_WS, WR, WS)
 !!      subroutine leg_f_trans_scl_sym_dgemm(ncomp, nvector, nscalar,   &
 !!     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm,                 &
-!!     &          n_WR, n_WS, WR, WS)
+!!     &          g_sph_rlm, weight_rtm, n_WR, n_WS, WR, WS)
 !!
 !!      subroutine leg_f_trans_vec_sym_matprod(ncomp, nvector,          &
 !!     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm,                 &
-!!     &          n_WR, n_WS, WR, WS)
+!!     &          g_sph_rlm, weight_rtm, n_WR, n_WS, WR, WS)
 !!      subroutine leg_f_trans_scl_sym_matprod(ncomp, nvector, nscalar, &
 !!     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm,                 &
-!!     &          n_WR, n_WS, WR, WS)
+!!     &          g_sph_rlm, weight_rtm, n_WR, n_WS, WR, WS)
 !!        type(sph_rtm_grid), intent(in) :: sph_rtm
 !!        type(sph_rlm_grid), intent(in) :: sph_rlm
 !!
@@ -58,7 +58,6 @@
       use calypso_mpi
 !
       use m_machine_parameter
-      use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans
       use m_legendre_work_sym_matmul
 !
@@ -82,7 +81,7 @@
 !
       subroutine leg_f_trans_vec_sym_matmul(ncomp, nvector,             &
      &          sph_rtm, sph_rlm, comm_rtm, comm_rlm,                   &
-     &          n_WR, n_WS, WR, WS)
+     &          g_sph_rlm, weight_rtm, n_WR, n_WS, WR, WS)
 !
       use set_vr_rtm_for_leg_matmul
       use cal_sp_rlm_by_matmul
@@ -90,6 +89,10 @@
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rtm, comm_rlm
+      real(kind = kreal), intent(in)                                    &
+     &           :: g_sph_rlm(sph_rlm%nidx_rlm(2),17)
+      real(kind = kreal), intent(in) :: weight_rtm(sph_rtm%nidx_rtm(2))
+!
       integer(kind = kint), intent(in) :: ncomp, nvector
       integer(kind = kint), intent(in) :: n_WR, n_WS
       real (kind=kreal), intent(inout):: WR(n_WR)
@@ -187,7 +190,7 @@
 !
       subroutine leg_f_trans_scl_sym_matmul(ncomp, nvector, nscalar,    &
      &          sph_rtm, sph_rlm, comm_rtm, comm_rlm,                   &
-     &          n_WR, n_WS, WR, WS)
+     &          g_sph_rlm, weight_rtm, n_WR, n_WS, WR, WS)
 !
       use set_vr_rtm_for_leg_matmul
       use cal_sp_rlm_by_matmul
@@ -195,6 +198,10 @@
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rtm, comm_rlm
+      real(kind = kreal), intent(in)                                    &
+     &           :: g_sph_rlm(sph_rlm%nidx_rlm(2),17)
+      real(kind = kreal), intent(in) :: weight_rtm(sph_rtm%nidx_rtm(2))
+!
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR, n_WS
       real (kind=kreal), intent(inout):: WR(n_WR)
@@ -262,7 +269,7 @@
 !
       subroutine leg_f_trans_vec_sym_dgemm(ncomp, nvector,              &
      &          sph_rtm, sph_rlm, comm_rtm, comm_rlm,                   &
-     &          n_WR, n_WS, WR, WS)
+     &          g_sph_rlm, weight_rtm, n_WR, n_WS, WR, WS)
 !
       use set_vr_rtm_for_leg_matmul
       use cal_sp_rlm_by_matmul
@@ -270,6 +277,10 @@
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rtm, comm_rlm
+      real(kind = kreal), intent(in)                                    &
+     &           :: g_sph_rlm(sph_rlm%nidx_rlm(2),17)
+      real(kind = kreal), intent(in) :: weight_rtm(sph_rtm%nidx_rtm(2))
+!
       integer(kind = kint), intent(in) :: ncomp, nvector
       integer(kind = kint), intent(in) :: n_WR, n_WS
       real (kind=kreal), intent(inout):: WR(n_WR)
@@ -367,7 +378,7 @@
 !
       subroutine leg_f_trans_scl_sym_dgemm(ncomp, nvector, nscalar,     &
      &          sph_rtm, sph_rlm, comm_rtm, comm_rlm,                   &
-     &          n_WR, n_WS, WR, WS)
+     &          g_sph_rlm, weight_rtm, n_WR, n_WS, WR, WS)
 !
       use set_vr_rtm_for_leg_matmul
       use cal_sp_rlm_by_matmul
@@ -375,6 +386,10 @@
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rtm, comm_rlm
+      real(kind = kreal), intent(in)                                    &
+     &           :: g_sph_rlm(sph_rlm%nidx_rlm(2),17)
+      real(kind = kreal), intent(in) :: weight_rtm(sph_rtm%nidx_rtm(2))
+!
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR, n_WS
       real (kind=kreal), intent(inout):: WR(n_WR)
@@ -442,7 +457,7 @@
 !
       subroutine leg_f_trans_vec_sym_matprod(ncomp, nvector,            &
      &          sph_rtm, sph_rlm, comm_rtm, comm_rlm,                   &
-     &          n_WR, n_WS, WR, WS)
+     &          g_sph_rlm, weight_rtm, n_WR, n_WS, WR, WS)
 !
       use set_vr_rtm_for_leg_matmul
       use cal_sp_rlm_by_matmul
@@ -450,6 +465,10 @@
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rtm, comm_rlm
+      real(kind = kreal), intent(in)                                    &
+     &           :: g_sph_rlm(sph_rlm%nidx_rlm(2),17)
+      real(kind = kreal), intent(in) :: weight_rtm(sph_rtm%nidx_rtm(2))
+!
       integer(kind = kint), intent(in) :: ncomp, nvector
       integer(kind = kint), intent(in) :: n_WR, n_WS
       real (kind=kreal), intent(inout):: WR(n_WR)
@@ -547,7 +566,7 @@
 !
       subroutine leg_f_trans_scl_sym_matprod(ncomp, nvector, nscalar,   &
      &          sph_rtm, sph_rlm, comm_rtm, comm_rlm,                   &
-     &          n_WR, n_WS, WR, WS)
+     &          g_sph_rlm, weight_rtm, n_WR, n_WS, WR, WS)
 !
       use set_vr_rtm_for_leg_matmul
       use cal_sp_rlm_by_matmul
@@ -555,6 +574,10 @@
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rtm, comm_rlm
+      real(kind = kreal), intent(in)                                    &
+     &           :: g_sph_rlm(sph_rlm%nidx_rlm(2),17)
+      real(kind = kreal), intent(in) :: weight_rtm(sph_rtm%nidx_rtm(2))
+!
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR, n_WS
       real (kind=kreal), intent(inout):: WR(n_WR)

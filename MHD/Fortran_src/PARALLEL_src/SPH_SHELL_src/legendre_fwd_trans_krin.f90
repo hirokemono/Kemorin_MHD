@@ -10,9 +10,11 @@
 !!
 !!@verbatim
 !!      subroutine legendre_f_trans_vector_krin(ncomp, nvector,         &
-!!     &          sph_rtm, sph_rlm, vr_rtm_krin, sp_rlm_spin)
+!!     &          sph_rtm, sph_rlm, g_sph_rlm, weight_rtm,              &
+!!     &          P_rtm, dPdt_rtm, vr_rtm_krin, sp_rlm_spin)
 !!      subroutine legendre_f_trans_scalar_krin(ncomp, nvector, nscalar,&
-!!     &          sph_rtm, sph_rlm, vr_rtm_krin, sp_rlm_spin)
+!!     &          sph_rtm, sph_rlm, g_sph_rlm, weight_rtm, P_rtm,       &
+!!     &          vr_rtm_krin, sp_rlm_spin)
 !!        Input:  vr_rtm_krin
 !!        Output: sp_rlm_spin
 !!
@@ -36,7 +38,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans
 !
       use t_spheric_rtm_data
@@ -51,10 +52,19 @@
 ! -----------------------------------------------------------------------
 !
       subroutine legendre_f_trans_vector_krin(ncomp, nvector,           &
-     &          sph_rtm, sph_rlm, vr_rtm_krin, sp_rlm_spin)
+     &          sph_rtm, sph_rlm, g_sph_rlm, weight_rtm,                &
+     &          P_rtm, dPdt_rtm, vr_rtm_krin, sp_rlm_spin)
 !
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
+      real(kind = kreal), intent(in)                                    &
+     &           :: g_sph_rlm(sph_rlm%nidx_rlm(2),17)
+      real(kind = kreal), intent(in) :: weight_rtm(sph_rtm%nidx_rtm(2))
+      real(kind= kreal), intent(in)                                     &
+     &           :: P_rtm(sph_rtm%nidx_rtm(2),sph_rlm%nidx_rlm(2))
+      real(kind= kreal), intent(in)                                     &
+     &           :: dPdt_rtm(sph_rtm%nidx_rtm(2),sph_rlm%nidx_rlm(2))
+!
       integer(kind = kint), intent(in) :: ncomp, nvector
       real(kind = kreal), intent(in)                                    &
      &      :: vr_rtm_krin(sph_rtm%nidx_rtm(1)*ncomp,                   &
@@ -155,10 +165,17 @@
 ! -----------------------------------------------------------------------
 !
       subroutine legendre_f_trans_scalar_krin(ncomp, nvector, nscalar,  &
-     &          sph_rtm, sph_rlm, vr_rtm_krin, sp_rlm_spin)
+     &          sph_rtm, sph_rlm, g_sph_rlm, weight_rtm, P_rtm,         &
+     &          vr_rtm_krin, sp_rlm_spin)
 !
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
+      real(kind = kreal), intent(in)                                    &
+     &           :: g_sph_rlm(sph_rlm%nidx_rlm(2),17)
+      real(kind = kreal), intent(in) :: weight_rtm(sph_rtm%nidx_rtm(2))
+      real(kind= kreal), intent(in)                                     &
+     &           :: P_rtm(sph_rtm%nidx_rtm(2),sph_rlm%nidx_rlm(2))
+!
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       real(kind = kreal), intent(in)                                    &
      &      :: vr_rtm_krin(sph_rtm%nidx_rtm(1)*ncomp,                   &
