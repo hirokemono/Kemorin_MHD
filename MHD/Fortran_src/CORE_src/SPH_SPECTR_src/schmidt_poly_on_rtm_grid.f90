@@ -69,7 +69,8 @@
       call set_lagender_4_rlm(l_truncation, sph_rtm, sph_rlm)
 !
       call allocate_schmidt_p_rtm_pole(sph_rlm%nidx_rlm(2))
-      call set_lagender_pole_rlm(l_truncation, sph_rtm, sph_rlm)
+      call set_lagender_pole_rlm(l_truncation, sph_rtm, sph_rlm,        &
+     &    P_pole_rtm, dPdt_pole_rtm)
 !
       end subroutine s_cal_schmidt_poly_rtm
 !
@@ -204,10 +205,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_lagender_pole_rlm(l_truncation, sph_rtm, sph_rlm)
+      subroutine set_lagender_pole_rlm(l_truncation, sph_rtm, sph_rlm,  &
+     &          P_pole_rtm, dPdt_pole_rtm)
 !
       use m_constants
-      use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans
 !
       use schmidt_fix_m
@@ -215,6 +216,11 @@
       integer(kind = kint), intent(in) :: l_truncation
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
+!
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: P_pole_rtm(2,sph_rlm%nidx_rlm(2))
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: dPdt_pole_rtm(2,sph_rlm%nidx_rlm(2))
 !
       integer(kind = kint) :: j, l, m, mm, jj, jst, jed
       real(kind = kreal) :: pi

@@ -106,6 +106,7 @@
      &          sph_params, sph_rtp, sph_rtm, sph_rlm, comm_rlm,        &
      &          n_WR, WR, v_pl_local)
 !
+      use m_schmidt_poly_on_rtm
       use calypso_mpi
       use schmidt_b_trans_at_pole
       use schmidt_b_trans_at_center
@@ -130,18 +131,19 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'schmidt_b_trans_pole_vect'
       call schmidt_b_trans_pole_vect(ncomp, nvector,                    &
-     &    sph_params%l_truncation, sph_rtm%ist_rtm_order_zero,          &
-     &    sph_rtm%ist_rtm_order_1s, sph_rtm%ist_rtm_order_1c,           &
-     &    sph_rlm%nnod_rlm, sph_rtm%nidx_rtm(1), sph_rtp%nnod_pole,     &
-     &    sph_rlm%istep_rlm, sph_rtp%nidx_global_rtp,                   &
-     &    sph_rtm%idx_gl_1d_rtm_r, sph_rtm%a_r_1d_rtm_r,                &
-     &    comm_rlm%irev_sr, n_WR, WR, v_pl_local)
+     &   sph_params%l_truncation, sph_rtm%ist_rtm_order_zero,           &
+     &   sph_rtm%ist_rtm_order_1s, sph_rtm%ist_rtm_order_1c,            &
+     &   sph_rlm%nnod_rlm, sph_rlm%nidx_rlm(1), sph_rlm%nidx_rlm(2),    &
+     &   sph_rtp%nnod_pole, sph_rlm%istep_rlm, sph_rtp%nidx_global_rtp, &
+     &   sph_rlm%idx_gl_1d_rlm_r, sph_rlm%a_r_1d_rlm_r,                 &
+     &   comm_rlm%irev_sr, g_sph_rlm, P_pole_rtm, dPdt_pole_rtm,        &
+     &   n_WR, WR, v_pl_local)
       call schmidt_b_trans_pole_scalar(ncomp, nvector, nscalar,         &
-     &    sph_params%l_truncation, sph_rtm%ist_rtm_order_zero,          &
-     &    sph_rlm%nnod_rlm, sph_rtm%nidx_rtm(1), sph_rtp%nnod_pole,     &
-     &    sph_rlm%istep_rlm, sph_rtp%nidx_global_rtp,                   &
-     &    sph_rtm%idx_gl_1d_rtm_r, comm_rlm%irev_sr, n_WR, WR,          &
-     &    v_pl_local)
+     &   sph_params%l_truncation, sph_rtm%ist_rtm_order_zero,           &
+     &   sph_rlm%nnod_rlm, sph_rlm%nidx_rlm(1), sph_rlm%nidx_rlm(2),    &
+     &   sph_rtp%nnod_pole, sph_rlm%istep_rlm, sph_rtp%nidx_global_rtp, &
+     &   sph_rlm%idx_gl_1d_rlm_r, comm_rlm%irev_sr, P_pole_rtm,         &
+     &   n_WR, WR, v_pl_local)
 !
       if(sph_params%iflag_shell_mode .eq. iflag_MESH_w_center) then
         call schmidt_b_trans_center_vect                                &

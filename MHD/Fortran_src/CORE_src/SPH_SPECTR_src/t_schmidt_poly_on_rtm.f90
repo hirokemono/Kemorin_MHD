@@ -10,14 +10,12 @@
 !!      subroutine alloc_gauss_colat_rtm(nth_rtm, Plm_WK)
 !!      subroutine alloc_schmidt_poly_rtm                               &
 !!     &         (nth_rtm, jmax_rlm, jmax_rj, Plm_WK)
-!!      subroutine alloc_hemi_schmidt_rtm(nth_rtm, jmax_rlm, Plm_WK)
 !!      subroutine alloc_trans_schmidt_rtm(nth_rtm, jmax_rlm, Plm_WK)
 !!      subroutine alloc_schmidt_p_rtm_pole(jmax_rlm, Plm_WK)
 !!        type(legendre_4_sph_transform), intent(inout) :: Plm_WK
 !!
 !!      subroutine dealloc_gauss_colat_rtm(Plm_WK)
 !!      subroutine dealloc_schmidt_poly_rtm(Plm_WK)
-!!      subroutine dealloc_hemi_schmidt_rtm(Plm_WK)
 !!      subroutine dealloc_trans_schmidt_rtm(Plm_WK)
 !!      subroutine dealloc_schmidt_p_rtm_pole(Plm_WK)
 !!        type(legendre_4_sph_transform), intent(inout) :: Plm_WK
@@ -48,39 +46,21 @@
 !>        @$f dP_{l}{m}/d\theta @$f at gouss points
         real(kind = kreal), pointer :: dPdt_rtm(:,:)
 !
-!>        Number of meridional grid points in northern hemisphere
-        integer(kind = kint) :: nth_hemi_rtm
-!>        @$f P_{l}{m} @$f
-!!        at gouss points in northen hemisphere
-        real(kind = kreal), pointer :: Ps_rtm(:,:)
-!>        @$f dP_{l}{m}/d\theta @$f  with even (l-m) 
-!!        at gouss points in northen hemisphere
-        real(kind = kreal), pointer :: dPsdt_rtm(:,:)
-!
-!>        @$f P_{l}{m} @$f
-!!        at gouss points in northen hemisphere
-        real(kind = kreal), pointer :: Ps_jl(:,:)
-!>        @$f dP_{l}{m}/d\theta @$f  with even (l-m) 
-!!        at gouss points in northen hemisphere
-        real(kind = kreal), pointer :: dPsdt_jl(:,:)
-!
-!
 !>        @$f P_{l}{m} @$f at poles
         real(kind = kreal), pointer :: P_pole_rtm(:,:)
 !>        @$f dP_{l}{m}/d\theta @$f at poles
         real(kind = kreal), pointer :: dPdt_pole_rtm(:,:)
+!
+!>        Normalization constants for spherical harmonics in (r,l,m)
+        real(kind = kreal), pointer:: g_sph_rlm(:,:)
+!>        Normalization constants for spherical harmonics in (r,j)
+        real(kind = kreal), pointer:: g_sph_rj(:,:)
 !
 !
 !>        @$f P_{l}{m} @$f with A(j,theta)
         real(kind = kreal), pointer :: P_jl(:,:)
 !>        @$f dP_{l}{m}/d\theta @$f with A(j,theta)
         real(kind = kreal), pointer :: dPdt_jl(:,:)
-!
-!
-!>        Normalization constants for spherical harmonics in (r,l,m)
-        real(kind = kreal), pointer:: g_sph_rlm(:,:)
-!>        Normalization constants for spherical harmonics in (r,j)
-        real(kind = kreal), pointer:: g_sph_rj(:,:)
       end type legendre_4_sph_transform
 !
 ! -----------------------------------------------------------------------
@@ -126,29 +106,6 @@
       Plm_WK%g_sph_rj =  0.0d0
 !
       end subroutine alloc_schmidt_poly_rtm
-!
-! -----------------------------------------------------------------------
-!
-      subroutine alloc_hemi_schmidt_rtm(nth_rtm, jmax_rlm, Plm_WK)
-!
-      integer(kind = kint), intent(in) :: nth_rtm, jmax_rlm
-      type(legendre_4_sph_transform), intent(inout) :: Plm_WK
-!
-!
-      Plm_WK%nth_hemi_rtm = (nth_rtm+1) / 2
-      allocate( Plm_WK%Ps_rtm(Plm_WK%nth_hemi_rtm,jmax_rlm) )
-      allocate( Plm_WK%dPsdt_rtm(Plm_WK%nth_hemi_rtm,jmax_rlm) )
-!
-      allocate( Plm_WK%Ps_jl(jmax_rlm,Plm_WK%nth_hemi_rtm) )
-      allocate( Plm_WK%dPsdt_jl(jmax_rlm,Plm_WK%nth_hemi_rtm) )
-!
-      Plm_WK%Ps_rtm =    0.0d0
-      Plm_WK%dPsdt_rtm = 0.0d0
-!
-      Plm_WK%Ps_jl =    0.0d0
-      Plm_WK%dPsdt_jl = 0.0d0
-!
-      end subroutine alloc_hemi_schmidt_rtm
 !
 ! -----------------------------------------------------------------------
 !
@@ -205,17 +162,6 @@
       deallocate( Plm_WK%g_sph_rlm, Plm_WK%g_sph_rj)
 !
       end subroutine dealloc_schmidt_poly_rtm
-!
-! -----------------------------------------------------------------------
-!
-      subroutine dealloc_hemi_schmidt_rtm(Plm_WK)
-!
-      type(legendre_4_sph_transform), intent(inout) :: Plm_WK
-!
-      deallocate(Plm_WK%Ps_rtm, Plm_WK%dPsdt_rtm)
-      deallocate(Plm_WK%Ps_jl,  Plm_WK%dPsdt_jl)
-!
-      end subroutine dealloc_hemi_schmidt_rtm
 !
 ! -----------------------------------------------------------------------
 !
