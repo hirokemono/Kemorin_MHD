@@ -43,6 +43,7 @@
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_sph_phys_address
+      use m_schmidt_poly_on_rtm
       use m_rms_4_sph_spectr
       use m_node_id_spherical_IO
       use m_physical_property
@@ -105,12 +106,13 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
-      call init_sph_transform_MHD(sph1, comms_sph1, trns_WK1, rj_fld1)
+      call init_sph_transform_MHD                                       &
+     &   (sph1, comms_sph1, leg1, trns_WK1, rj_fld1)
 !
 ! ---------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 'const_radial_mat_sph_snap'
-      call const_radial_mat_sph_snap(sph1%sph_rj)
+      call const_radial_mat_sph_snap(sph1%sph_rj, leg1)
 !
 !     --------------------- 
 !  set original spectr mesh data for extension of B
@@ -133,6 +135,7 @@
       use m_node_id_spherical_IO
       use m_spheric_parameter
       use m_sph_spectr_data
+      use m_schmidt_poly_on_rtm
       use m_field_on_circle
       use m_sph_trans_arrays_MHD
 !
@@ -153,13 +156,13 @@
 !* obtain linear terms for starting
 !*
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
-      call set_sph_field_to_start(sph1%sph_rj, rj_fld1)
+      call set_sph_field_to_start(sph1%sph_rj, leg1, rj_fld1)
 !
 !*  ----------------lead nonlinear term ... ----------
 !*
       call start_eleps_time(8)
-      call nonlinear                                                    &
-     &   (sph1, comms_sph1, reftemp_rj, trns_WK1%trns_MHD, rj_fld1)
+      call nonlinear(sph1, comms_sph1, leg1, reftemp_rj,                &
+     &    trns_WK1%trns_MHD, rj_fld1)
       call end_eleps_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=
@@ -169,7 +172,8 @@
       call trans_per_temp_to_temp_sph(reftemp_rj, sph1%sph_rj, rj_fld1)
 !*
       if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
-      call s_lead_fields_4_sph_mhd(sph1, comms_sph1, rj_fld1, trns_WK1)
+      call s_lead_fields_4_sph_mhd                                      &
+     &   (sph1, comms_sph1, leg1, rj_fld1, trns_WK1)
       call end_eleps_time(9)
 !
 !*  -----------  lead mid-equator field --------------

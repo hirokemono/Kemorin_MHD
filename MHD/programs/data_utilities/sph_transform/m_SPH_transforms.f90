@@ -21,6 +21,7 @@
       use t_ucd_data
       use t_next_node_ele_4_node
       use t_jacobian_3d
+      use t_schmidt_poly_on_rtm
 !
       implicit none
 !
@@ -49,6 +50,10 @@
       type(jacobians_3d), save :: jac_STR_l
 !>     Stracture for Jacobians for quad element
       type(jacobians_3d), save :: jac_STR_q
+!
+!
+!>      Structures for Legendre polynomials for spherical transform
+      type(legendre_4_sph_trans), save :: leg_trans
 !
 ! ----------------------------------------------------------------------
 !

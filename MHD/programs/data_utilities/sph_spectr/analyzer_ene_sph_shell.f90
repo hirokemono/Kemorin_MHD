@@ -37,8 +37,7 @@
       use parallel_load_data_4_sph
       use copy_rj_phys_data_4_IO
       use count_num_sph_smp
-      use init_sph_trans
-      use legendre_transform_select
+      use schmidt_poly_on_rtm_grid
       use cal_rms_fields_by_sph
 !
 !     --------------------- 
@@ -73,6 +72,12 @@
       call init_rms_4_sph_spectr                                        &
      &   (sph_mesh_spec%sph%sph_params%l_truncation,                    &
      &    sph_mesh_spec%sph%sph_rj, rj_fld_spec)
+!
+      call alloc_schmidt_normalize                                      &
+     &   (sph_mesh_spec%sph%sph_rlm%nidx_rlm(2),                        &
+     &    sph_mesh_spec%sph%sph_rj%nidx_rj(2), leg_s)
+      call copy_sph_normalization_2_rj                                  &
+     &   (sph_mesh_spec%sph%sph_rj, leg_s%g_sph_rj)
 !
       end subroutine initialize_ene_sph_shell
 !
@@ -112,7 +117,7 @@
         call cal_mean_squre_in_shell                                    &
      &     (ione, sph_mesh_spec%sph%sph_rj%nidx_rj(1),                  &
      &      sph_mesh_spec%sph%sph_params%l_truncation,                  &
-     &      sph_mesh_spec%sph%sph_rj, rj_fld_spec, g_sph_rj)
+     &      sph_mesh_spec%sph%sph_rj, rj_fld_spec, leg_s%g_sph_rj)
 !
         call write_sph_vol_ave_file                                     &
      &     (i_step, time, sph_mesh_spec%sph%sph_params%l_truncation,    &

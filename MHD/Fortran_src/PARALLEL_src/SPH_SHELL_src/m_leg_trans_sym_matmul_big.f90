@@ -8,10 +8,11 @@
 !>@n      data are strored communication buffer
 !!
 !!@verbatim
-!!      subroutine alloc_leg_sym_matmul_big                             &
-!!     &         (jmax_rlm, nth_rtm, maxidx_rtm_r_smp, nvector, nscalar)
-!!      subroutine alloc_leg_sym_matmul_big2(jmax_rlm, nri_rtm, nth_rtm,&
-!!     &          maxidx_rtm_t_smp, nvector, nscalar)
+!!      subroutine init_leg_sym_matmul_big                              &
+!!     &         (sph_rtm, sph_rlm, leg, nvector, nscalar)
+!!      subroutine init_leg_sym_matmul_big2                             &
+!!     &         (sph_rtm, sph_rlm, leg, nvector, nscalar)
+!!
 !!      subroutine dealloc_leg_sym_matmul_big
 !!
 !!     field data for Legendre transform
@@ -38,6 +39,11 @@
 !
       use m_machine_parameter
       use m_work_4_sph_trans
+!
+      use t_spheric_rtm_data
+      use t_spheric_rlm_data
+      use t_schmidt_poly_on_rtm
+!
       use matmul_for_legendre_trans
 !
       implicit none
@@ -158,20 +164,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine init_leg_sym_matmul_big                                &
-     &         (sph_rtm, sph_rlm, nvector, nscalar)
-!
-      use t_spheric_rtm_data
-      use t_spheric_rlm_data
-!
-      use m_schmidt_poly_on_rtm
+     &         (sph_rtm, sph_rlm, leg, nvector, nscalar)
 !
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
+      type(legendre_4_sph_trans), intent(in) :: leg
       integer(kind = kint), intent(in) :: nvector, nscalar
 !
 !
       call const_symmetric_legendre_lj(sph_rlm%nidx_rlm(2),             &
-     &    sph_rtm%nidx_rtm(2), sph_rtm%nidx_rtm(3))
+     &    sph_rtm%nidx_rtm(2), sph_rtm%nidx_rtm(3), leg)
       call alloc_leg_sym_matmul_big                                     &
      &   (sph_rtm%nidx_rtm(2), sph_rtm%maxidx_rtm_smp(1),               &
      &    nvector, nscalar)
@@ -181,20 +183,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine init_leg_sym_matmul_big2                               &
-     &         (sph_rtm, sph_rlm, nvector, nscalar)
-!
-      use t_spheric_rtm_data
-      use t_spheric_rlm_data
-!
-      use m_schmidt_poly_on_rtm
+     &         (sph_rtm, sph_rlm, leg, nvector, nscalar)
 !
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
+      type(legendre_4_sph_trans), intent(in) :: leg
       integer(kind = kint), intent(in) :: nvector, nscalar
 !
 !
       call const_symmetric_legendre_lj(sph_rlm%nidx_rlm(2),             &
-     &    sph_rtm%nidx_rtm(2), sph_rtm%nidx_rtm(3))
+     &    sph_rtm%nidx_rtm(2), sph_rtm%nidx_rtm(3), leg)
       call alloc_leg_sym_matmul_big2                                    &
      &   (sph_rtm%nidx_rtm(1), sph_rtm%maxidx_rtm_smp(1),               &
      &    nvector, nscalar)
@@ -205,12 +203,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_symmetric_legendre_lj                            &
-     &         (jmax_rlm, nth_rtm, mphi_rtm)
+     &         (jmax_rlm, nth_rtm, mphi_rtm, leg)
 !
-      use m_schmidt_poly_on_rtm
       use set_legendre_matrices
 !
       integer(kind = kint), intent(in) :: nth_rtm, mphi_rtm, jmax_rlm
+      type(legendre_4_sph_trans), intent(in) :: leg
 !
 !
       nth_sym = (nth_rtm+1) / 2
@@ -219,7 +217,7 @@
 !
       call set_symmetric_legendre_lj(nth_rtm, mphi_rtm,                 &
      &    jmax_rlm, nth_sym, lstack_rlm, lstack_even_rlm,               &
-     &    leg1%P_rtm, leg1%dPdt_rtm, Ps_tj, dPsdt_tj)
+     &    leg%P_rtm, leg%dPdt_rtm, Ps_tj, dPsdt_tj)
 !
       end subroutine const_symmetric_legendre_lj
 !
@@ -227,8 +225,6 @@
 !
       subroutine alloc_leg_sym_matmul_big                               &
      &         (nth_rtm, maxidx_rtm_r_smp, nvector, nscalar)
-!
-      use m_schmidt_poly_on_rtm
 !
       integer(kind = kint), intent(in) :: nth_rtm
       integer(kind = kint), intent(in) :: maxidx_rtm_r_smp
@@ -255,8 +251,6 @@
 !
       subroutine alloc_leg_sym_matmul_big2                              &
      &         (nri_rtm, maxidx_rtm_t_smp, nvector, nscalar)
-!
-      use m_schmidt_poly_on_rtm
 !
       integer(kind = kint), intent(in) :: nri_rtm
       integer(kind = kint), intent(in) :: maxidx_rtm_t_smp

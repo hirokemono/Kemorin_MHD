@@ -181,7 +181,7 @@
      &  ncomp_sph_trans, num_vector_rtp, num_scalar_rtp, num_tensor_rtp
       call sph_backward_transforms                                      &
      &   (ncomp_sph_trans, num_vector_rtp, nscalar_trans,               &
-     &    sph, comms_sph, n_WS, n_WR, WS(1), WR(1),                     &
+     &    sph, comms_sph, leg_trans, n_WS, n_WR, WS(1), WR(1),          &
      &    dall_rtp, dlcl_pole, dall_pole)
 !
         if (iflag_debug.gt.0)                                           &

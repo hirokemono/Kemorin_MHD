@@ -21,6 +21,7 @@
       use t_spheric_mesh
       use t_phys_data
       use t_field_data_IO
+      use t_schmidt_poly_on_rtm
 !
       implicit none
 !
@@ -31,6 +32,8 @@
       type(phys_data), save :: rj_fld_spec
 !
 !>  Structure for field data IO
-     type(field_IO), save :: sph_spec_IO
+      type(field_IO), save :: sph_spec_IO
+!
+      type(legendre_4_sph_trans), save :: leg_s
 !
       end module m_spheric_data_sph_spetr

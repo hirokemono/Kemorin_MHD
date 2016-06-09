@@ -9,9 +9,10 @@
 !!@verbatim
 !!      subroutine open_sph_vol_rms_file_mhd(sph_params, sph_rj, rj_fld)
 !!      subroutine output_rms_sph_mhd_control                           &
-!!     &         (sph_params, sph_rj, rj_fld)
+!!     &         (sph_params, sph_rj, leg, rj_fld)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(phys_data), intent(in) :: rj_fld
 !!@endverbatim
 !
@@ -25,6 +26,7 @@
       use m_pickup_sph_spectr_data
 !
       use t_spheric_parameter
+      use t_schmidt_poly_on_rtm
       use t_phys_data
 !
       use pickup_sph_coefs
@@ -64,13 +66,12 @@
 !  --------------------------------------------------------------------
 !
       subroutine output_rms_sph_mhd_control                             &
-     &         (sph_params, sph_rj, rj_fld)
+     &         (sph_params, sph_rj, leg, rj_fld)
 !
       use m_machine_parameter
       use m_t_step_parameter
       use m_boundary_params_sph_MHD
       use m_no_heat_Nusselt_num
-      use m_schmidt_poly_on_rtm
 !
       use set_exit_flag_4_visualizer
       use cal_rms_fields_by_sph
@@ -78,6 +79,7 @@
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_data), intent(in) :: rj_fld
 !
       integer (kind = kint) :: i_flag
@@ -90,7 +92,7 @@
       if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
       call cal_mean_squre_in_shell                                      &
      &   (sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
-     &    sph_params%l_truncation, sph_rj, rj_fld, g_sph_rj)
+     &    sph_params%l_truncation, sph_rj, rj_fld, leg%g_sph_rj)
       if(iflag_debug.gt.0)  write(*,*) 'cal_gauss_coefficients'
       call cal_gauss_coefficients                                       &
      &   (sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &

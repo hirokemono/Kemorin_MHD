@@ -61,7 +61,8 @@
       if(id_legendre_transfer.eq.iflag_leg_undefined)                   &
      &            id_legendre_transfer = iflag_leg_orginal_loop
       call copy_sph_trans_nums_from_rtp
-      call initialize_sph_trans(sph_mesh%sph, sph_mesh%sph_comms)
+      call initialize_sph_trans(sph_mesh%sph, sph_mesh%sph_comms,       &
+     &    leg_trans)
 !
       call allocate_d_rtp_4_all_trans(sph_mesh%sph%sph_rtp)
 !
@@ -94,7 +95,7 @@
 !
 !  spherical transform for vector
       call sph_f_trans_all_field(sph_mesh%sph, sph_mesh%sph_comms,      &
-     &    femmesh_STR%mesh, field_STR, rj_fld)
+     &    femmesh_STR%mesh, leg_trans, field_STR, rj_fld)
 !
 !      call check_all_field_data(my_rank, rj_fld)
 !
@@ -141,7 +142,7 @@
 !
 !  spherical transform for vector
       call sph_f_trans_all_field(sph_mesh%sph, sph_mesh%sph_comms,      &
-     &    femmesh_STR%mesh, field_STR, rj_fld)
+     &    femmesh_STR%mesh, leg_trans, field_STR, rj_fld)
 !
 !      call check_all_field_data(my_rank, rj_fld)
 !

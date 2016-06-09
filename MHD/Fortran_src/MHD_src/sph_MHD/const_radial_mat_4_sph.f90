@@ -7,9 +7,10 @@
 !>@brief Construct 1D matrices for MHD dynamo simulaiton
 !!
 !!@verbatim
-!!      subroutine const_radial_mat_sph_mhd(sph_rj)
-!!      subroutine const_radial_mat_sph_snap(sph_rj)
+!!      subroutine const_radial_mat_sph_mhd(sph_rj, leg)
+!!      subroutine const_radial_mat_sph_snap(sph_rj, leg)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(legendre_4_sph_trans), intent(in) :: leg
 !!@endverbatim
 !
       module const_radial_mat_4_sph
@@ -20,6 +21,7 @@
       use m_machine_parameter
 !
       use t_spheric_rj_data
+      use t_schmidt_poly_on_rtm
 !
       use calypso_mpi
 !
@@ -34,14 +36,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_sph_mhd(sph_rj)
-!
-      use m_schmidt_poly_on_rtm
+      subroutine const_radial_mat_sph_mhd(sph_rj, leg)
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(legendre_4_sph_trans), intent(in) :: leg
 !
 !
-      call const_radial_matrices_sph(sph_rj, g_sph_rj)
+      call const_radial_matrices_sph(sph_rj, leg%g_sph_rj)
 !
       call calypso_mpi_barrier
 !      if(sph_rj%inod_rj_center .eq. 0) return
@@ -54,23 +55,23 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_sph_snap(sph_rj)
+      subroutine const_radial_mat_sph_snap(sph_rj, leg)
 !
       use m_control_parameter
       use m_radial_matrices_sph
       use m_radial_mat_sph_w_center
-      use m_schmidt_poly_on_rtm
       use const_r_mat_4_scalar_sph
       use const_r_mat_w_center_sph
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(legendre_4_sph_trans), intent(in) :: leg
 !
 !
       if (iflag_t_evo_4_velo .lt. id_Crank_nicolson) return
       if(iflag_debug .gt. 0)                                            &
      &          write(*,*) 'const_radial_mat_4_press_sph'
       call const_radial_mat_4_press_sph                                 &
-     &   (sph_rj, g_sph_rj, band_p_poisson)
+     &   (sph_rj, leg%g_sph_rj, band_p_poisson)
 !
       if(sph_rj%inod_rj_center .eq. 0) return
 !

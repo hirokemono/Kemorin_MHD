@@ -7,10 +7,11 @@
 !>@brief  Initialize spherical harmonics transform
 !!
 !!@verbatim
-!!      subroutine initialize_sph_trans(sph, comms_sph)
-!!      subroutine initialize_legendre_trans(sph, comms_sph)
+!!      subroutine initialize_sph_trans(sph, comms_sph, leg)
+!!      subroutine initialize_legendre_trans(sph, comms_sph, leg)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
+!!        type(legendre_4_sph_trans), intent(inout) :: leg
 !!@endverbatim
 !
       module init_sph_trans
@@ -20,6 +21,7 @@
 !
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
+      use t_schmidt_poly_on_rtm
 !
       implicit none
 !
@@ -31,16 +33,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine initialize_sph_trans(sph, comms_sph)
+      subroutine initialize_sph_trans(sph, comms_sph, leg)
 !
       use init_FFT_4_sph
       use m_work_4_sph_trans
 !
       type(sph_grids), intent(inout) :: sph
       type(sph_comm_tables), intent(inout) :: comms_sph
+      type(legendre_4_sph_trans), intent(inout) :: leg
 !
 !
-      call initialize_legendre_trans(sph, comms_sph)
+      call initialize_legendre_trans(sph, comms_sph, leg)
       call init_fourier_transform_4_sph                                 &
      &   (ncomp_sph_trans, sph%sph_rtp, comms_sph%comm_rtp)
 !
@@ -49,9 +52,8 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine initialize_legendre_trans(sph, comms_sph)
+      subroutine initialize_legendre_trans(sph, comms_sph, leg)
 !
-      use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans
       use m_FFT_selector
       use schmidt_poly_on_rtm_grid
@@ -60,6 +62,7 @@
 !
       type(sph_grids), intent(inout) :: sph
       type(sph_comm_tables), intent(inout) :: comms_sph
+      type(legendre_4_sph_trans), intent(inout) :: leg
 !
 !
       call allocate_work_4_sph_trans                                    &
@@ -72,17 +75,11 @@
      &    sph%sph_rtm%idx_gl_1d_rtm_m, sph%sph_rlm%idx_gl_1d_rlm_j)
 !
       call s_cal_schmidt_poly_rtm(sph%sph_params%l_truncation,          &
-     &    sph%sph_rj, sph%sph_rtm, sph%sph_rlm)
+     &    sph%sph_rj, sph%sph_rtm, sph%sph_rlm, leg)
 !
-      call set_sin_theta_rtm(sph%sph_rtm%nidx_rtm(2))
+      call set_sin_theta_rtm(sph%sph_rtm%nidx_rtm(2), leg%g_colat_rtm)
 !
-      call const_sin_theta_rtp(sph%sph_rtp)
-!
-      call allocate_trans_schmidt_rtm                                   &
-     &   (sph%sph_rtm%nidx_rtm(2), sph%sph_rlm%nidx_rlm(2))
-      call set_trans_legendre_rtm                                       &
-     &   (sph%sph_rtm%nidx_rtm(2), sph%sph_rlm%nidx_rlm(2),             &
-     &    leg1%P_rtm, leg1%dPdt_rtm, leg1%P_jl, leg1%dPdt_jl)
+      call const_sin_theta_rtp(leg, sph%sph_rtm, sph%sph_rtp)
 !
       call set_sym_legendre_stack                                       &
      &   (sph%sph_rtm%nidx_rtm(3), lstack_rlm, lstack_even_rlm)

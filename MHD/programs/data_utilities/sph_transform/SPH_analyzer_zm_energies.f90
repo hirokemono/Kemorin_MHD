@@ -91,7 +91,7 @@
 !
 !  spherical transform for vector
         call sph_b_trans_all_field(sph_mesh%sph, sph_mesh%sph_comms,    &
-     &      femmesh_STR%mesh, rj_fld, field_STR)
+     &      femmesh_STR%mesh, leg_trans, rj_fld, field_STR)
         call cal_zm_energy_to_pressure                                  &
      &     (sph_mesh%sph%sph_rtp%nidx_rtp, field_STR%n_point,           &
      &      field_STR%num_phys, field_STR%ntot_phys,                    &

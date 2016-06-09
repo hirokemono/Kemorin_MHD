@@ -10,10 +10,10 @@
 !!
 !!@verbatim
 !!      subroutine sph_backward_transforms                              &
-!!     &         (ncomp_trans, nvector, nscalar, sph, comms_sph,        &
+!!     &         (ncomp_trans, nvector, nscalar, sph, comms_sph, leg,   &
 !!     &          n_WS, n_WR, WS, WR, v_rtp, v_pl_local, v_pole)
 !!      subroutine sph_forward_transforms                               &
-!!     &         (ncomp_trans, nvector, nscalar, sph, comms_sph,        &
+!!     &         (ncomp_trans, nvector, nscalar, sph, comms_sph, leg,   &
 !!     &          v_rtp, n_WS, n_WR, WS, WR)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
@@ -44,6 +44,7 @@
 !
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
+      use t_schmidt_poly_on_rtm
 !
       implicit none
 !
@@ -54,13 +55,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sph_backward_transforms                                &
-     &         (ncomp_trans, nvector, nscalar, sph, comms_sph,          &
+     &         (ncomp_trans, nvector, nscalar, sph, comms_sph, leg,     &
      &          n_WS, n_WR, WS, WR, v_rtp, v_pl_local, v_pole)
 !
       use pole_sph_transform
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
+      type(legendre_4_sph_trans), intent(in) :: leg
 !
       integer(kind = kint), intent(in) :: ncomp_trans
       integer(kind = kint), intent(in) :: nvector, nscalar
@@ -87,13 +89,14 @@
       call start_eleps_time(22)
       call pole_backward_transforms(ncomp_trans, nvector, nscalar,      &
      &    sph%sph_params, sph%sph_rtp, sph%sph_rtm, sph%sph_rlm,        &
-     &    comms_sph%comm_rlm, n_WR, WR, v_pl_local)
+     &    comms_sph%comm_rlm, leg, n_WR, WR, v_pl_local)
       call finish_send_recv_sph(comms_sph%comm_rj)
 !
 !
       call sel_backward_legendre_trans                                  &
      &   (ncomp_trans, nvector, nscalar, sph%sph_rlm, sph%sph_rtm,      &
-     &    comms_sph%comm_rlm, comms_sph%comm_rtm, n_WR, n_WS, WR, WS)
+     &    comms_sph%comm_rlm, comms_sph%comm_rtm, leg,                  &
+     &    n_WR, n_WS, WR, WS)
       call end_eleps_time(22)
 !
       START_SRtime= MPI_WTIME()
@@ -120,11 +123,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sph_forward_transforms                                 &
-     &         (ncomp_trans, nvector, nscalar, sph, comms_sph,          &
+     &         (ncomp_trans, nvector, nscalar, sph, comms_sph, leg,     &
      &          v_rtp, n_WS, n_WR, WS, WR)
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
+      type(legendre_4_sph_trans), intent(in) :: leg
 !
       integer(kind = kint), intent(in) :: ncomp_trans
       integer(kind = kint), intent(in) :: nvector, nscalar
@@ -150,7 +154,8 @@
       if(iflag_debug .gt. 0) write(*,*) 'sel_forward_legendre_trans'
       call sel_forward_legendre_trans                                   &
      &   (ncomp_trans, nvector, nscalar, sph%sph_rtm, sph%sph_rlm,      &
-     &    comms_sph%comm_rtm, comms_sph%comm_rlm, n_WR, n_WS, WR, WS)
+     &    comms_sph%comm_rtm, comms_sph%comm_rlm, leg,                  &
+     &    n_WR, n_WS, WR, WS)
       call end_eleps_time(23)
 !
       START_SRtime= MPI_WTIME()

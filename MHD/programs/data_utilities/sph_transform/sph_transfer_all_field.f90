@@ -10,12 +10,13 @@
 !!      subroutine deallocate_d_rtp_4_all_trans
 !!      subroutine deallocate_d_pole_4_all_trans
 !!      subroutine sph_f_trans_all_field                                &
-!!     &         (sph, comms_sph, mesh, nod_fld, rj_fld)
+!!     &         (sph, comms_sph, mesh, leg, nod_fld, rj_fld)
 !!      subroutine sph_b_trans_all_field                                &
-!!     &         (sph, comms_sph, mesh, rj_fld, nod_fld)
+!!     &         (sph, comms_sph, mesh, leg, rj_fld, nod_fld)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(mesh_geometry), intent(in) :: mesh
+!!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(phys_data), intent(inout) :: nod_fld
 !
@@ -27,6 +28,7 @@
       use t_mesh_data
       use t_phys_data
       use t_spheric_rtp_data
+      use t_schmidt_poly_on_rtm
 !
       implicit none
 !
@@ -90,7 +92,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sph_f_trans_all_field                                  &
-     &         (sph, comms_sph, mesh, nod_fld, rj_fld)
+     &         (sph, comms_sph, mesh, leg, nod_fld, rj_fld)
 !
       use m_solver_SR
       use m_work_4_sph_trans
@@ -101,6 +103,7 @@
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
+      type(legendre_4_sph_trans), intent(in) :: leg
 !
       type(mesh_geometry), intent(in) :: mesh
       type(phys_data), intent(in) :: nod_fld
@@ -134,7 +137,7 @@
      &  ncomp_sph_trans, num_vector_rtp, num_scalar_rtp, num_tensor_rtp
       call sph_forward_transforms                                       &
      &   (ncomp_sph_trans, num_vector_rtp, nscalar_trans,               &
-     &    sph, comms_sph, dall_rtp(1,1), n_WS, n_WR, WS(1), WR(1))
+     &    sph, comms_sph, leg, dall_rtp(1,1), n_WS, n_WR, WS(1), WR(1))
 !
 !
       if (iflag_debug.gt.0)                                             &
@@ -157,7 +160,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sph_b_trans_all_field                                  &
-     &         (sph, comms_sph, mesh, rj_fld, nod_fld)
+     &         (sph, comms_sph, mesh, leg, rj_fld, nod_fld)
 !
       use m_solver_SR
       use m_work_4_sph_trans
@@ -168,6 +171,7 @@
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
+      type(legendre_4_sph_trans), intent(in) :: leg
 !
       type(mesh_geometry), intent(in) :: mesh
       type(phys_data), intent(in) :: rj_fld
@@ -202,7 +206,7 @@
      &  ncomp_sph_trans, num_vector_rtp, num_scalar_rtp, num_tensor_rtp
       call sph_backward_transforms                                      &
      &   (ncomp_sph_trans, num_vector_rtp, nscalar_trans,               &
-     &    sph, comms_sph, n_WS, n_WR, WS(1), WR(1),                     &
+     &    sph, comms_sph, leg, n_WS, n_WR, WS(1), WR(1),                &
      &    dall_rtp, dlcl_pole, dall_pole)
 !
 !

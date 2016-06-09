@@ -23,8 +23,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine induction_SPH_initialize(comms_sph, sph, rj_fld)
+      subroutine induction_SPH_initialize(comms_sph, sph, leg, rj_fld)
 !
+      use m_schmidt_poly_on_rtm
       use m_addresses_trans_hbd_MHD
       use interpolate_by_type
       use const_element_comm_tables
@@ -32,6 +33,8 @@
 !
       type(sph_comm_tables), intent(in) :: comms_sph
       type(sph_grids), intent(inout) :: sph
+      type(legendre_4_sph_trans), intent(inout) :: leg
+      type(phys_data), intent(inout) :: rj_fld
 !
 !
       iphys_sph%i_magne =      1
@@ -82,7 +85,7 @@
 !
       if(id_legendre_transfer.eq.iflag_leg_undefined)                   &
      &            id_legendre_transfer = iflag_leg_orginal_loop
-      call initialize_sph_trans(sph, comms_sph)
+      call initialize_sph_trans(sph, comms_sph, leg)
 !
 !     ---------------------
 !
@@ -93,9 +96,10 @@
 !*   ------------------------------------------------------------------
 !
       subroutine nonlinear_incuction_wSGS_SPH                           &
-     &         (sph, comms_sph, conduct, rj_fld)
+     &         (sph, comms_sph, leg, conduct, rj_fld)
 !
       use m_solver_SR
+      use m_schmidt_poly_on_rtm
 !
       use t_geometry_data_MHD
 !
@@ -104,6 +108,7 @@
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
+      type(legendre_4_sph_trans), intent(in) :: leg
 !
       type(field_geometry_data), intent(in) :: conduct
       type(phys_data), intent(inout) :: rj_fld
@@ -137,8 +142,8 @@
      &    frc_hbd_rtp(1,f_hbd_trns%i_SGS_vp_induct))
 !
       call sph_forward_transforms                                       &
-     &   (ncomp_xyz_2_rj, nvector_xyz_2_rj, izero,                      &
-     &    sph, comms_sph, frc_hbd_rtp(1,1), n_WS, n_WR, WS(1), WR(1))
+     &   (ncomp_xyz_2_rj, nvector_xyz_2_rj, izero, sph, comms_sph, leg, &
+     &    frc_hbd_rtp(1,1), n_WS, n_WR, WS(1), WR(1))
 !
       call sel_sph_rj_vector_from_recv(ncomp_xyz_2_rj,                  &
      &    ipol%i_vp_induct, f_hbd_trns%i_vp_induct,                     &
@@ -157,7 +162,7 @@
 !
 !*   ------------------------------------------------------------------
 !
-      subroutine nonlinear_incuction_SPH(sph, comms_sph, rj_fld)
+      subroutine nonlinear_incuction_SPH(sph, comms_sph, leg, rj_fld)
 !
       use m_spheric_parameter
       use m_solver_SR
@@ -166,6 +171,7 @@
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
+      type(legendre_4_sph_trans), intent(in) :: leg
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -185,8 +191,8 @@
      &   (ncomp_xyz_2_rj, comms_sph%comm_rlm, comms_sph%comm_rj)
 !
       call sph_forward_transforms                                       &
-     &   (ncomp_xyz_2_rj, nvector_xyz_2_rj, izero,                      &
-     &    sph, comms_sph, frc_hbd_rtp(1,1), n_WS, n_WR, WS(1), WR(1))
+     &   (ncomp_xyz_2_rj, nvector_xyz_2_rj, izero, sph, comms_sph, leg, &
+     &    frc_hbd_rtp(1,1), n_WS, n_WR, WS(1), WR(1))
 !
       call sel_sph_rj_vector_from_recv(ncomp_xyz_2_rj,                  &
      &   (ipol%i_vp_induct, f_hbd_trns%i_vp_induct,                     &
@@ -199,15 +205,17 @@
 !
 !*   ------------------------------------------------------------------
 !
-      subroutine cal_magneitc_field_by_SPH(sph, comms_sph, rj_fld)
+      subroutine cal_magneitc_field_by_SPH(sph, comms_sph, leg, rj_fld)
 !
       use m_solver_SR
+      use m_schmidt_poly_on_rtm
       use spherical_SRs_N
       use copy_spectr_4_sph_trans
       use copy_nodal_fld_4_sph_trans
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
+      type(legendre_4_sph_trans), intent(in) :: leg
 !
       type(phys_data), intent(in) :: rj_fld
 !
@@ -221,7 +229,7 @@
 !
       call cal_sol_magne_sph_crank                                      &
      &   (sph%sph_rj, band_bp_evo, band_bt_evo, g_sph_rj, rj_fld)
-      call update_after_magne_sph
+      call update_after_magne_sph(sph%sph_rj, leg, rj_fld)
 !
 !
       call check_calypso_sph_comm_buf_N                                 &
@@ -245,7 +253,7 @@
 !
       call sph_backward_transforms                                      &
      &   (ncomp_rj_2_xyz, nvector_rj_2_xyz, izero,                      &
-     &    sph, comms_sph, n_WS, n_WR, WS, WR,                           &
+     &    sph, comms_sph, leg, n_WS, n_WR, WS, WR,                      &
      &    fld_hbd_rtp, flc_hbd_pole, fld_hbd_pole)
 !
 !

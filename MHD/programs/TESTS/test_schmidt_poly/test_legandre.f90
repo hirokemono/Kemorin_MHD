@@ -20,7 +20,7 @@
       use ispack_lag
 !
       use t_spheric_parameter
-      use m_schmidt_poly_on_rtm
+      use t_schmidt_poly_on_rtm
       use m_gauss_points
       use m_schmidt_polynomial
 !
@@ -31,6 +31,7 @@
       implicit none
 !
       type(sph_shell_parameters), save :: sph_param_test
+      type(legendre_4_sph_trans), save :: leg_t
 !
       type(sph_rtm_grid), save :: sph_rtm_test
       type(sph_rlm_grid), save :: sph_rlm_test
@@ -66,23 +67,23 @@
         end do
       end do
 !
-      call allocate_gauss_colat_rtm(sph_rtm_test%nidx_rtm(2))
+      call alloc_gauss_colat_rtm(sph_rtm_test%nidx_rtm(2), leg_t)
       call allocate_gauss_points(num_gauss)
       call construct_gauss_coefs
 !
       call allocate_gauss_colatitude
       call set_gauss_colatitude
 !
-      call set_gauss_points_rtm
+      call set_gauss_points_rtm(leg_t)
 !
       call deallocate_gauss_points
       call deallocate_gauss_colatitude
 !
       call allocate_schmidt_poly_rtm(sph_rtm_test%nidx_rtm(2),          &
-     &    sph_rlm_test%nidx_rlm(2), sph_rj_test%nidx_rj(2))
+     &    sph_rlm_test%nidx_rlm(2), sph_rj_test%nidx_rj(2), leg_t)
       call set_lagender_4_rlm                                           &
      &   (sph_param_test%l_truncation, sph_rtm_test, sph_rlm_test,      &
-     &    g_colat_rtm, leg1%P_rtm, leg1%dPdt_rtm)
+     &    leg_t%g_colat_rtm, leg_t%P_rtm, leg_t%dPdt_rtm)
 !
 !      do j = 1, nidx_rlm(2)
 !        write(*,*) j, sph_rlm_test%idx_gl_1d_rlm_j(j,1:3)
@@ -127,7 +128,7 @@
             do i = 1, n_point
               write(60,'(4i5,1p3e23.14e3)')                             &
      &            sph_rlm_test%idx_gl_1d_rlm_j(j,1:3), i,               &
-     &            g_colat_rtm(i), P_rtm(i,j), leg1%dPdt_rtm(i,j)
+     &            g_colat_rtm(i), P_rtm(i,j), leg_t%dPdt_rtm(i,j)
             end do
           end if
         end do
@@ -164,8 +165,8 @@
       call dealloc_mag_lag
 !
       call deallocate_schmidt_polynomial
-      call deallocate_schmidt_poly_rtm
-      call deallocate_gauss_colat_rtm
+      call dealloc_schmidt_poly_rtm(leg_t)
+      call dealloc_gauss_colat_rtm(leg_t)
 !
 !      go to 10
 !

@@ -82,14 +82,15 @@
       if(id_legendre_transfer.eq.iflag_leg_undefined)                   &
      &            id_legendre_transfer = iflag_leg_orginal_loop
       call copy_sph_trans_nums_from_rtp
-      call initialize_sph_trans(sph_mesh%sph, sph_mesh%sph_comms)
+      call initialize_sph_trans(sph_mesh%sph, sph_mesh%sph_comms,       &
+     &    leg_trans)
 !
       call init_pole_transform(sph_mesh%sph%sph_rtp)
       call allocate_d_pole_4_all_trans(sph_mesh%sph%sph_rtp)
 !
 !      call calypso_MPI_barrier
-!      call check_schmidt_poly_rtm                                      &
-!     &  (my_rank+40, sph_mesh%sph%sph_rtm, sph_mesh%sph%sph_rlm, leg1)
+!      call check_schmidt_poly_rtm(my_rank+40, sph_mesh%sph%sph_rtm,    &
+!     &    sph_mesh%sph%sph_rlm, leg_trans)
 !
       end subroutine SPH_initialize_back_trans
 !
@@ -152,7 +153,7 @@
 !          call check_all_field_data(my_rank, rj_fld)
 !  spherical transform for vector
         call sph_b_trans_all_field(sph_mesh%sph, sph_mesh%sph_comms,    &
-     &      femmesh_STR%mesh, rj_fld, field_STR)
+     &      femmesh_STR%mesh, leg_trans, rj_fld, field_STR)
       end if
 !
       end subroutine SPH_analyze_back_trans

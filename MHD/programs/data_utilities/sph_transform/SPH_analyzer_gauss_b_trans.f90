@@ -13,7 +13,11 @@
       use m_machine_parameter
       use calypso_mpi
 !
+      use t_schmidt_poly_on_rtm
+!
       implicit none
+!
+      type(legendre_4_sph_trans), save :: leg_gauss
 !
 ! ----------------------------------------------------------------------
 !
@@ -62,7 +66,8 @@
       if(id_legendre_transfer.eq.iflag_leg_undefined)                   &
      &            id_legendre_transfer = iflag_leg_orginal_loop
       call copy_sph_trans_nums_from_rtp
-      call initialize_sph_trans(sph_mesh%sph, sph_mesh%sph_comms)
+      call initialize_sph_trans(sph_mesh%sph, sph_mesh%sph_comms,       &
+     &    leg_gauss)
       call init_pole_transform(sph_mesh%sph%sph_rtp)
       call allocate_d_pole_4_all_trans(sph_mesh%sph%sph_rtp)
 !
@@ -121,7 +126,7 @@
 !        call check_all_field_data(my_rank, rj_fld)
 !  spherical transform for vector
         call sph_b_trans_all_field(sph_mesh%sph, sph_mesh%sph_comms,    &
-     &      femmesh_STR%mesh, rj_fld, field_STR)
+     &      femmesh_STR%mesh, leg_gauss, rj_fld, field_STR)
       end if
 !
       end subroutine SPH_analyze_gauss_back_trans

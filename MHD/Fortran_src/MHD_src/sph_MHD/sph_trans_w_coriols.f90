@@ -10,20 +10,22 @@
 !!
 !!@verbatim
 !!      subroutine sph_b_trans_w_coriolis(ncomp_trans, nvector, nscalar,&
-!!     &          sph, comms_sph, n_WS, n_WR, WS, WR, trns_MHD)
+!!     &          sph, comms_sph, leg, n_WS, n_WR, WS, WR, trns_MHD)
 !!      subroutine sph_f_trans_w_coriolis(ncomp_trans, nvector, nscalar,&
-!!     &          sph, comms_sph, trns_MHD, n_WS, n_WR, WS, WR)
+!!     &          sph, comms_sph, leg, trns_MHD, n_WS, n_WR, WS, WR)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
+!!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(address_4_sph_trans), intent(inout) :: trns_MHD
 !!
 !!      subroutine sph_b_trans_licv(ncomp_trans,                        &
-!!     &          sph_rlm, comm_rlm, comm_rj, trns_MHD, n_WR, WR)
+!!     &          sph_rlm, comm_rlm, comm_rj, leg, trns_MHD, n_WR, WR)
 !!      subroutine sph_f_trans_licv(ncomp_trans,                        &
 !!     &         sph_rlm, comm_rlm, comm_rj, trns_MHD, n_WS, WS)
 !!        type(sph_rlm_grid), intent(in) :: sph_rlm
 !!        type(sph_comm_tbl), intent(in) :: comm_rlm
 !!        type(sph_comm_tbl), intent(in) :: comm_rj
+!!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(address_4_sph_trans), intent(in) :: trns_MHD
 !!
 !!   input /outpt arrays for single vector
@@ -63,6 +65,7 @@
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
       use t_addresses_sph_transform
+      use t_schmidt_poly_on_rtm
 !
       implicit none
 !
@@ -73,10 +76,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sph_b_trans_w_coriolis(ncomp_trans, nvector, nscalar,  &
-     &          sph, comms_sph, n_WS, n_WR, WS, WR, trns_MHD)
+     &          sph, comms_sph, leg, n_WS, n_WR, WS, WR, trns_MHD)
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
+      type(legendre_4_sph_trans), intent(in) :: leg
 !
       integer(kind = kint), intent(in) :: ncomp_trans, nvector, nscalar
 !
@@ -96,7 +100,7 @@
       call start_eleps_time(13)
       if(iflag_debug .gt. 0) write(*,*) 'sum_coriolis_rlm'
       call sum_coriolis_rlm(ncomp_trans,                                &
-     &   sph%sph_rlm, comms_sph%comm_rlm, trns_MHD, n_WR, WR)
+     &    sph%sph_rlm, comms_sph%comm_rlm, trns_MHD, leg, n_WR, WR)
       call finish_send_recv_sph(comms_sph%comm_rj)
       call end_eleps_time(13)
 !
@@ -105,7 +109,8 @@
      &    'sel_backward_legendre_trans', ncomp_trans, nvector, nscalar
       call sel_backward_legendre_trans                                  &
      &   (ncomp_trans, nvector, nscalar, sph%sph_rlm, sph%sph_rtm,      &
-     &    comms_sph%comm_rlm, comms_sph%comm_rtm, n_WR, n_WS, WR, WS)
+     &    comms_sph%comm_rlm, comms_sph%comm_rtm, leg,                  &
+     &    n_WR, n_WS, WR, WS)
       call end_eleps_time(22)
 !
 !
@@ -123,7 +128,7 @@
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &    'back_MHD_FFT_sel_from_recv', ncomp_trans, nvector, nscalar
       call back_MHD_FFT_sel_from_recv                                   &
-     &   (sph%sph_rtp, comms_sph%comm_rtp, ncomp_trans,       &
+     &   (sph%sph_rtp, comms_sph%comm_rtp, ncomp_trans,                 &
      &    n_WR, WR, trns_MHD%fld_rtp)
       call end_eleps_time(24)
 !
@@ -135,10 +140,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sph_f_trans_w_coriolis(ncomp_trans, nvector, nscalar,  &
-     &          sph, comms_sph, trns_MHD, n_WS, n_WR, WS, WR)
+     &          sph, comms_sph, leg, trns_MHD, n_WS, n_WR, WS, WR)
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
+      type(legendre_4_sph_trans), intent(in) :: leg
 !
       integer(kind = kint), intent(in) :: ncomp_trans, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WS, n_WR
@@ -164,7 +170,8 @@
       if(iflag_debug .gt. 0) write(*,*) 'sel_forward_legendre_trans'
       call sel_forward_legendre_trans                                   &
      &   (ncomp_trans, nvector, nscalar, sph%sph_rtm, sph%sph_rlm,      &
-     &    comms_sph%comm_rtm, comms_sph%comm_rlm, n_WR, n_WS, WR, WS)
+     &    comms_sph%comm_rtm, comms_sph%comm_rlm, leg,                  &
+     &    n_WR, n_WS, WR, WS)
       call end_eleps_time(23)
 !
 !
@@ -188,11 +195,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sph_b_trans_licv(ncomp_trans,                          &
-     &          sph_rlm, comm_rlm, comm_rj, trns_MHD, n_WR, WR)
+     &          sph_rlm, comm_rlm, comm_rj, leg, trns_MHD, n_WR, WR)
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rlm
       type(sph_comm_tbl), intent(in) :: comm_rj
+      type(legendre_4_sph_trans), intent(in) :: leg
       type(address_4_sph_trans), intent(in) :: trns_MHD
 !
       integer(kind = kint), intent(in) :: ncomp_trans
@@ -208,8 +216,8 @@
 !
       call start_eleps_time(13)
       if(iflag_debug .gt. 0) write(*,*) 'sum_coriolis_rlm'
-      call sum_coriolis_rlm(ncomp_trans, sph_rlm, comm_rlm, trns_MHD,   &
-     &    n_WR, WR)
+      call sum_coriolis_rlm(ncomp_trans,                                &
+     &    sph_rlm, comm_rlm, trns_MHD, leg, n_WR, WR)
       call end_eleps_time(13)
 !
       call finish_send_recv_sph(comm_rj)

@@ -126,6 +126,7 @@
       use m_t_step_parameter
       use m_spheric_parameter
       use m_sph_spectr_data
+      use m_schmidt_poly_on_rtm
       use m_node_id_spherical_IO
       use m_sph_trans_arrays_MHD
 !
@@ -148,7 +149,7 @@
 !* obtain linear terms for starting
 !*
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
-      call set_sph_field_to_start(sph1%sph_rj, rj_fld1)
+      call set_sph_field_to_start(sph1%sph_rj, leg1, rj_fld1)
 !
 !*  ----------------Modify spectr data ... ----------
 !*
@@ -157,8 +158,8 @@
 !*  ----------------lead nonlinear term ... ----------
 !*
       call start_eleps_time(8)
-      call nonlinear                                                    &
-     &   (sph1, comms_sph1, reftemp_rj, trns_WK1%trns_MHD, rj_fld1)
+      call nonlinear(sph1, comms_sph1, leg1, reftemp_rj,                &
+     &    trns_WK1%trns_MHD, rj_fld1)
       call end_eleps_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=
@@ -178,7 +179,7 @@
       call start_eleps_time(11)
       if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
       call output_rms_sph_mhd_control                                   &
-     &   (sph1%sph_params, sph1%sph_rj, rj_fld1)
+     &   (sph1%sph_params, sph1%sph_rj, leg1, rj_fld1)
       call end_eleps_time(11)
       call end_eleps_time(4)
 !
@@ -240,6 +241,7 @@
       use m_spheric_parameter
       use m_sph_phys_address
       use m_sph_spectr_data
+      use m_schmidt_poly_on_rtm
       use output_viz_file_control
       use lead_fields_4_sph_mhd
 !
@@ -249,13 +251,14 @@
       type(works_4_sph_trans_MHD), intent(inout) :: trns_WK
 !
 !
-      call s_lead_fields_4_sph_mhd(sph1, comms_sph1, rj_fld1, trns_WK)
+      call s_lead_fields_4_sph_mhd                                      &
+     &   (sph1, comms_sph1, leg1, rj_fld1, trns_WK)
 !
       call sph_back_trans_4_MHD                                         &
-     &   (sph1, comms_sph1, rj_fld1, trns_WK%trns_MHD)
+     &   (sph1, comms_sph1, leg1, rj_fld1, trns_WK%trns_MHD)
 !
       call sph_forward_trans_snapshot_MHD                               &
-     &   (sph1, comms_sph1, trns_WK%trns_snap, rj_fld1)
+     &   (sph1, comms_sph1, leg1, trns_WK%trns_snap, rj_fld1)
 !
 ! ----  Take zonal mean
 !

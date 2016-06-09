@@ -9,7 +9,8 @@
 !!@verbatim
 !!      subroutine dealloc_sphere_ave_coriolis
 !!
-!!      subroutine set_colatitude_rtp(sph_rtp, sph_rj)
+!!      subroutine set_colatitude_rtp(sph_rtp, sph_rj, leg)
+!!        type(legendre_4_sph_trans), intent(in) :: leg
 !!      subroutine cal_wz_coriolis_rtp                                  &
 !!     &         (nnod, nidx_rtp, velo_rtp, coriolis_rtp)
 !!      subroutine cal_wz_div_coriolis_rtp(nnod, nidx_rtp, velo_rtp,    &
@@ -91,13 +92,14 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_colatitude_rtp(sph_rtp, sph_rj)
+      subroutine set_colatitude_rtp(sph_rtp, sph_rj, leg)
 !
       use m_work_4_sph_trans
-      use m_schmidt_poly_on_rtm
+      use t_schmidt_poly_on_rtm
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(legendre_4_sph_trans), intent(in) :: leg
 !
       integer(kind = kint) :: l_rtp, l_rtm
 !
@@ -106,7 +108,7 @@
 !
       do l_rtp = 1, sph_rtp%nidx_rtp(2)
         l_rtm = sph_rtp%idx_gl_1d_rtp_t(l_rtp)
-        theta_1d_rtp(l_rtp) = g_colat_rtm(l_rtm)
+        theta_1d_rtp(l_rtp) = leg%g_colat_rtm(l_rtm)
       end do
 !
       end subroutine set_colatitude_rtp

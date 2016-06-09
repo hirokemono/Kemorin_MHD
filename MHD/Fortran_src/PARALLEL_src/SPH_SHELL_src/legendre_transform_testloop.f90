@@ -10,14 +10,16 @@
 !!
 !!
 !!@verbatim
-!!      subroutine leg_backward_trans_test                              &
-!!     &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
+!!      subroutine leg_backward_trans_test(ncomp, nvector, nscalar,     &
+!!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg,            &
+!!     &          n_WR, n_WS, WR, WS)
 !!        Input:  sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
 !!        Output: vr_rtm   (Order: radius,theta,phi)
 !!
 !!    Forward transforms
-!!      subroutine leg_forward_trans_test                               &
-!!     &         (ncomp, nvector, nscalar, n_WR, n_WS, WR, WS)
+!!      subroutine leg_forward_trans_test(ncomp, nvector, nscalar,      &
+!!     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, leg,            &
+!!     &          n_WR, n_WS, WR, WS)
 !!        Input:  vr_rtm   (Order: radius,theta,phi)
 !!        Output: sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
 !!@endverbatim
@@ -34,6 +36,7 @@
       use t_spheric_rtm_data
       use t_spheric_rlm_data
       use t_sph_trans_comm_tbl
+      use t_schmidt_poly_on_rtm
 !
       implicit none
 !
@@ -44,10 +47,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine leg_backward_trans_test(ncomp, nvector, nscalar,       &
-     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm,                   &
+     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg,              &
      &          n_WR, n_WS, WR, WS)
 !
-      use m_schmidt_poly_on_rtm
       use m_work_4_sph_trans_spin
       use legendre_bwd_trans_testloop
       use spherical_SRs_N
@@ -55,6 +57,7 @@
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
+      type(legendre_4_sph_trans), intent(in) :: leg
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR, n_WS
       real (kind=kreal), intent(inout):: WR(n_WR)
@@ -62,7 +65,7 @@
 !
 !
         call legendre_b_trans_vector_test(ncomp, nvector, nscalar,      &
-     &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, g_sph_rlm,            &
+     &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg%g_sph_rlm,        &
      &      n_WR, n_WS, WR, WS)
 !
       end subroutine leg_backward_trans_test
@@ -70,16 +73,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine leg_forward_trans_test(ncomp, nvector, nscalar,        &
-     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm,                   &
+     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, leg,              &
      &          n_WR, n_WS, WR, WS)
 !
-      use m_schmidt_poly_on_rtm
       use legendre_fwd_trans_testloop
       use spherical_SRs_N
 !
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
+      type(legendre_4_sph_trans), intent(in) :: leg
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR, n_WS
       real (kind=kreal), intent(inout):: WR(n_WR)
@@ -88,7 +91,7 @@
 !
         call legendre_f_trans_vector_test(ncomp, nvector, nscalar,      &
      &      sph_rtm, sph_rlm, comm_rtm, comm_rlm,                       &
-     &      g_sph_rlm, weight_rtm, n_WR, n_WS, WR, WS)
+     &      leg%g_sph_rlm, leg%weight_rtm, n_WR, n_WS, WR, WS)
 !
       end subroutine leg_forward_trans_test
 !

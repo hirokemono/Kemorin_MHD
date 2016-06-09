@@ -8,8 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine alloc_gauss_colat_rtm(nth_rtm, Plm_WK)
-!!      subroutine alloc_schmidt_poly_rtm                               &
-!!     &         (nth_rtm, jmax_rlm, jmax_rj, Plm_WK)
+!!      subroutine alloc_schmidt_normalize(jmax_rlm, jmax_rj, Plm_WK)
+!!      subroutine alloc_schmidt_poly_rtm(nth_rtm, jmax_rlm, Plm_WK)
 !!      subroutine alloc_trans_schmidt_rtm(nth_rtm, jmax_rlm, Plm_WK)
 !!      subroutine alloc_schmidt_p_rtm_pole(jmax_rlm, Plm_WK)
 !!        type(legendre_4_sph_trans), intent(inout) :: Plm_WK
@@ -86,24 +86,33 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_schmidt_poly_rtm                                 &
-     &         (nth_rtm, jmax_rlm, jmax_rj, Plm_WK)
+      subroutine alloc_schmidt_normalize(jmax_rlm, jmax_rj, Plm_WK)
 !
-      integer(kind = kint), intent(in) :: nth_rtm, jmax_rlm, jmax_rj
+      integer(kind = kint), intent(in) :: jmax_rlm, jmax_rj
+      type(legendre_4_sph_trans), intent(inout) :: Plm_WK
+!
+!
+      allocate( Plm_WK%g_sph_rlm(jmax_rlm,17) )
+      allocate( Plm_WK%g_sph_rj(jmax_rj,13) )
+!
+      Plm_WK%g_sph_rlm = 0.0d0
+      Plm_WK%g_sph_rj =  0.0d0
+!
+      end subroutine alloc_schmidt_normalize
+!
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_schmidt_poly_rtm(nth_rtm, jmax_rlm, Plm_WK)
+!
+      integer(kind = kint), intent(in) :: nth_rtm, jmax_rlm
       type(legendre_4_sph_trans), intent(inout) :: Plm_WK
 !
 !
       allocate( Plm_WK%P_rtm(nth_rtm,jmax_rlm) )
       allocate( Plm_WK%dPdt_rtm(nth_rtm,jmax_rlm) )
 !
-      allocate( Plm_WK%g_sph_rlm(jmax_rlm,17) )
-      allocate( Plm_WK%g_sph_rj(jmax_rj,13) )
-!
       Plm_WK%P_rtm = 0.0d0
       Plm_WK%dPdt_rtm = 0.0d0
-!
-      Plm_WK%g_sph_rlm = 0.0d0
-      Plm_WK%g_sph_rj =  0.0d0
 !
       end subroutine alloc_schmidt_poly_rtm
 !
