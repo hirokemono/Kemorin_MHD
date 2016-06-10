@@ -23,7 +23,7 @@
       implicit none
 !
       type(index_4_sph_trans), save :: idx_trns1
-!idx_trns1%lstack_rlm
+!idx_trns1%maxdegree_rlm
 !
 !>      total number of components for spherical harmonics transform
       integer(kind = kint) :: ncomp_sph_trans
@@ -54,7 +54,7 @@
 !>      End address of spherical harmonics order for SMP parallelization
 !      integer(kind = kint), allocatable :: lstack_rlm(:)
 !>      Maximum point of each block for grid in  hermonics degree
-      integer(kind = kint) :: maxdegree_rlm
+!      integer(kind = kint) :: maxdegree_rlm
 !>      End address of spherical harmonics order for SMP parallelization
 !      integer(kind = kint), allocatable :: lstack_even_rlm(:)
 !
@@ -79,7 +79,7 @@
 !
       idx_trns1%lstack_rlm = 0
       idx_trns1%lstack_even_rlm = 0
-      maxdegree_rlm = 0
+      idx_trns1%maxdegree_rlm = 0
       mdx_p_rlm_rtm = 0
       mdx_n_rlm_rtm = 0
       asin_theta_1d_rtm = 0.0d0
@@ -106,7 +106,7 @@
       deallocate(mdx_p_rlm_rtm, mdx_n_rlm_rtm)
       deallocate(asin_theta_1d_rtm)
 !
-      maxdegree_rlm =   0
+      idx_trns1%maxdegree_rlm =   0
 !
       end subroutine deallocate_work_4_sph_trans
 !

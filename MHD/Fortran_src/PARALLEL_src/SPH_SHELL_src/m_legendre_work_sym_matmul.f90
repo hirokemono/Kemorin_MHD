@@ -247,7 +247,8 @@
       integer(kind = kint), intent(in) :: nvector
 !
 !
-      nvec_jk = ((maxdegree_rlm+1)/2) * maxidx_rtm_r_smp * nvector
+      nvec_jk = ((idx_trns1%maxdegree_rlm+1)/2)                         &
+     &         * maxidx_rtm_r_smp * nvector
       allocate(pol_e(nvec_jk,np_smp))
       allocate(dpoldt_e(nvec_jk,np_smp))
       allocate(dpoldp_e(nvec_jk,np_smp))
@@ -284,7 +285,8 @@
       integer(kind = kint), intent(in) :: nscalar
 !
 !
-      nscl_jk = ((maxdegree_rlm+1)/2) * maxidx_rtm_r_smp * nscalar
+      nscl_jk = ((idx_trns1%maxdegree_rlm+1)/2)                         &
+     &         * maxidx_rtm_r_smp * nscalar
       allocate(scl_e(nscl_jk,np_smp))
       allocate(scl_o(nscl_jk,np_smp))
 !
@@ -325,7 +327,7 @@
       integer(kind = kint), intent(in) :: nth_rtm
 !
 !
-      nvec_jk = (maxdegree_rlm+1)/2
+      nvec_jk = (idx_trns1%maxdegree_rlm+1)/2
       allocate(pol_e(nvec_jk,np_smp))
       allocate(dpoldt_e(nvec_jk,np_smp))
       allocate(dpoldp_e(nvec_jk,np_smp))
@@ -359,7 +361,7 @@
       integer(kind = kint), intent(in) :: nth_rtm
 !
 !
-      nscl_jk = (maxdegree_rlm+1)/2
+      nscl_jk = (idx_trns1%maxdegree_rlm+1)/2
       allocate(scl_e(nscl_jk,np_smp))
       allocate(scl_o(nscl_jk,np_smp))
 !

@@ -224,8 +224,8 @@
       integer(kind = kint), intent(in) :: nvector, nscalar
 !
 !
-      nvec_jk = ((maxdegree_rlm+1)/2) * nri_rtm*nvector
-      nscl_jk = ((maxdegree_rlm+1)/2) * nri_rtm*nscalar
+      nvec_jk = ((idx_trns1%maxdegree_rlm+1)/2) * nri_rtm*nvector
+      nscl_jk = ((idx_trns1%maxdegree_rlm+1)/2) * nri_rtm*nscalar
       allocate(pol_e(3*nvec_jk+nscl_jk,np_smp))
       allocate(tor_e(2*nvec_jk,np_smp))
       allocate(pol_o(3*nvec_jk+nscl_jk,np_smp))
