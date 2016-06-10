@@ -95,15 +95,17 @@
         do mp_rlm = 1, sph_rtm%nidx_rtm(3)
           mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
           jst(ip) = lstack_rlm(mp_rlm-1)
-          jst_h(ip) = lstack_even_rlm(mp_rlm) + 1
-          n_jk_e(ip) = lstack_even_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
-          n_jk_o(ip) = lstack_rlm(mp_rlm) - lstack_even_rlm(mp_rlm)
+          jst_h(ip) = idx_trns1%lstack_even_rlm(mp_rlm) + 1
+          n_jk_e(ip) = idx_trns1%lstack_even_rlm(mp_rlm)                &
+     &                - lstack_rlm(mp_rlm-1)
+          n_jk_o(ip) = lstack_rlm(mp_rlm)                               &
+     &                - idx_trns1%lstack_even_rlm(mp_rlm)
 !
 !          st_elapsed = MPI_WTIME()
           call set_vr_rtm_vector_sym_matmul                             &
      &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
-     &        sph_rlm%nidx_rlm, weight_rtm, kst(ip), nkr(ip),           &
-     &        mp_rlm, mn_rlm, nle_rtm, nlo_rtm,                         &
+     &        sph_rlm%nidx_rlm, asin_theta_1d_rtm, weight_rtm,          &
+     &        kst(ip), nkr(ip), mp_rlm, mn_rlm, nle_rtm, nlo_rtm,       &
      &        ncomp, nvector, comm_rtm%irev_sr, n_WR, WR,               &
      &        symp_r(1,ip), asmp_p(1,ip), asmp_r(1,ip), symp_p(1,ip) )
           call set_vr_rtm_scalar_sym_matmul                             &
@@ -154,19 +156,18 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_vr_rtm_vector_sym_matmul                           &
-     &         (nnod_rtm, nidx_rtm, istep_rtm, nidx_rlm, weight_rtm,    &
+      subroutine set_vr_rtm_vector_sym_matmul(nnod_rtm, nidx_rtm,       &
+     &          istep_rtm, nidx_rlm, asin_theta_1d_rtm, weight_rtm,     &
      &          kst, nkr, mp_rlm, mn_rlm, nle_rtm, nlo_rtm,             &
      &          ncomp, nvector, irev_sr_rtm, n_WR, WR,                  &
      &          symp_r, asmp_p, asmp_r, symp_p)
-!
-      use m_work_4_sph_trans
 !
       integer(kind = kint), intent(in) :: nnod_rtm
       integer(kind = kint), intent(in) :: nidx_rtm(3)
       integer(kind = kint), intent(in) :: istep_rtm(3)
       integer(kind = kint), intent(in) :: nidx_rlm(2)
       real(kind = kreal), intent(in) :: weight_rtm(nidx_rtm(2))
+      real(kind = kreal), intent(in) :: asin_theta_1d_rtm(nidx_rtm(2))
 !
       integer(kind = kint), intent(in) :: kst, nkr
       integer(kind = kint), intent(in) :: mp_rlm, mn_rlm

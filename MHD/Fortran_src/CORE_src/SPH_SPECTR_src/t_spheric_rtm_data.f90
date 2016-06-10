@@ -64,17 +64,17 @@
         integer(kind = kint) :: ied_rtm(3)
 !
 !>        SMP stack for spectr data @f$ f(r,t,m) @f$
-      integer(kind = kint), pointer :: istack_inod_rtm_smp(:)
+        integer(kind = kint), pointer :: istack_inod_rtm_smp(:)
 !
 !>        SMP stacks for indexing @f$ r@f$
-      integer(kind = kint), pointer :: istack_rtm_kr_smp(:)
+        integer(kind = kint), pointer :: istack_rtm_kr_smp(:)
 !>        SMP stacks for indexing @f$ t @f$
-      integer(kind = kint), pointer :: istack_rtm_lt_smp(:)
+        integer(kind = kint), pointer :: istack_rtm_lt_smp(:)
 !>        SMP stacks for indexing @f$ m @f$
-      integer(kind = kint), pointer :: istack_rtm_m_smp(:)
+        integer(kind = kint), pointer :: istack_rtm_m_smp(:)
 !
 !>        SMP stacks for indexing @f$ r, t@f$
-      integer(kind = kint), pointer :: istack_rtm_rt_smp(:)
+        integer(kind = kint), pointer :: istack_rtm_rt_smp(:)
 !
 !>        Maximum SMP number for indexing @f$ r, t, m@f$
         integer(kind = kint)  ::  maxidx_rtm_smp(3) = (/0,0,0/)

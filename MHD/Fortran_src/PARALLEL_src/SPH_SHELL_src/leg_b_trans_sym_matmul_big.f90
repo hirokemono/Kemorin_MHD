@@ -103,9 +103,11 @@
         do mp_rlm = 1, sph_rtm%nidx_rtm(3)
           mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
           jst(ip) = lstack_rlm(mp_rlm-1)
-          jst_h(ip) = lstack_even_rlm(mp_rlm) + 1
-          n_jk_e(ip) = lstack_even_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
-          n_jk_o(ip) = lstack_rlm(mp_rlm) - lstack_even_rlm(mp_rlm)
+          jst_h(ip) = idx_trns1%lstack_even_rlm(mp_rlm) + 1
+          n_jk_e(ip) = idx_trns1%lstack_even_rlm(mp_rlm)                &
+     &                - lstack_rlm(mp_rlm-1)
+          n_jk_o(ip) = lstack_rlm(mp_rlm)                               &
+     &                - idx_trns1%lstack_even_rlm(mp_rlm)
 !
 !          st_elapsed = MPI_WTIME()
           call set_sp_rlm_vec_sym_matmul_big                            &
@@ -137,8 +139,8 @@
 !          st_elapsed = MPI_WTIME()
           call cal_vr_rtm_vec_sym_matmul_big                            &
      &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
-     &        sph_rlm%nidx_rlm, kst(ip), nkr(ip),                       &
-     &        mp_rlm, mn_rlm, nl_rtm,                                   &
+     &        sph_rlm%nidx_rlm, asin_theta_1d_rtm,                      &
+     &        kst(ip), nkr(ip), mp_rlm, mn_rlm, nl_rtm,                 &
      &        symp_r(1,ip), asmp_p(1,ip), asmp_r(1,ip), symp_p(1,ip),   &
      &        ncomp, nvector, comm_rtm%irev_sr, n_WS, WS)
           call cal_vr_rtm_scl_sym_matmul_big                            &
@@ -204,9 +206,11 @@
         do mp_rlm = 1, sph_rtm%nidx_rtm(3)
           mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
           jst(ip) = lstack_rlm(mp_rlm-1)
-          jst_h(ip) = lstack_even_rlm(mp_rlm) + 1
-          n_jk_e(ip) = lstack_even_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
-          n_jk_o(ip) = lstack_rlm(mp_rlm) - lstack_even_rlm(mp_rlm)
+          jst_h(ip) = idx_trns1%lstack_even_rlm(mp_rlm) + 1
+          n_jk_e(ip) = idx_trns1%lstack_even_rlm(mp_rlm)                &
+     &                - lstack_rlm(mp_rlm-1)
+          n_jk_o(ip) = lstack_rlm(mp_rlm)                               &
+     &                - idx_trns1%lstack_even_rlm(mp_rlm)
 !
 !          st_elapsed = MPI_WTIME()
           call set_sp_rlm_vec_sym_matmul_big                            &
@@ -238,8 +242,8 @@
 !          st_elapsed = MPI_WTIME()
           call cal_vr_rtm_vec_sym_matmul_big                            &
      &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
-     &        sph_rlm%nidx_rlm, kst(ip), nkr(ip),                       &
-     &        mp_rlm, mn_rlm, nl_rtm,                                   &
+     &        sph_rlm%nidx_rlm, asin_theta_1d_rtm,                      &
+     &        kst(ip), nkr(ip), mp_rlm, mn_rlm, nl_rtm,                 &
      &        symp_r(1,ip), asmp_p(1,ip), asmp_r(1,ip), symp_p(1,ip),   &
      &        ncomp, nvector, comm_rtm%irev_sr, n_WS, WS)
           call cal_vr_rtm_scl_sym_matmul_big                            &
@@ -306,9 +310,11 @@
         do mp_rlm = 1, sph_rtm%nidx_rtm(3)
           mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
           jst(ip) = lstack_rlm(mp_rlm-1)
-          jst_h(ip) = lstack_even_rlm(mp_rlm) + 1
-          n_jk_e(ip) = lstack_even_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
-          n_jk_o(ip) = lstack_rlm(mp_rlm) - lstack_even_rlm(mp_rlm)
+          jst_h(ip) = idx_trns1%lstack_even_rlm(mp_rlm) + 1
+          n_jk_e(ip) = idx_trns1%lstack_even_rlm(mp_rlm)                &
+     &                - lstack_rlm(mp_rlm-1)
+          n_jk_o(ip) = lstack_rlm(mp_rlm)                               &
+     &                - idx_trns1%lstack_even_rlm(mp_rlm)
 !
 !          st_elapsed = MPI_WTIME()
           call set_sp_rlm_vec_sym_matmul_big                            &
@@ -340,8 +346,8 @@
 !          st_elapsed = MPI_WTIME()
           call cal_vr_rtm_vec_sym_matmul_big                            &
      &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
-     &        sph_rlm%nidx_rlm, kst(ip), nkr(ip),                       &
-     &        mp_rlm, mn_rlm, nl_rtm,                                   &
+     &        sph_rlm%nidx_rlm, asin_theta_1d_rtm,                      &
+     &        kst(ip), nkr(ip), mp_rlm, mn_rlm, nl_rtm,                 &
      &        symp_r(1,ip), asmp_p(1,ip), asmp_r(1,ip), symp_p(1,ip),   &
      &        ncomp, nvector, comm_rtm%irev_sr, n_WS, WS)
           call cal_vr_rtm_scl_sym_matmul_big                            &

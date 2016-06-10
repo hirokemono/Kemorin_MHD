@@ -81,8 +81,8 @@
 !
       call const_sin_theta_rtp(leg, sph%sph_rtm, sph%sph_rtp)
 !
-      call set_sym_legendre_stack                                       &
-     &   (sph%sph_rtm%nidx_rtm(3), lstack_rlm, lstack_even_rlm)
+      call set_sym_legendre_stack(sph%sph_rtm%nidx_rtm(3),              &
+     &    lstack_rlm, idx_trns1%lstack_even_rlm)
 !
       call set_blocks_4_leg_trans(sph, comms_sph)
 !

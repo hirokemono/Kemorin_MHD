@@ -130,8 +130,9 @@
 !          st_elapsed = MPI_WTIME()
           call set_vr_rtm_vector_matmul                                 &
      &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
-     &        sph_rlm%nidx_rlm, weight_rtm, kst(ip), nkr(ip), mp_rlm,   &
-     &        mn_rlm, ncomp, comm_rtm%irev_sr, n_WR, WR, nvec_lk,       &
+     &        sph_rlm%nidx_rlm, asin_theta_1d_rtm, weight_rtm,          &
+     &        kst(ip), nkr(ip), mp_rlm, mn_rlm,                         &
+     &        ncomp, comm_rtm%irev_sr, n_WR, WR, nvec_lk,               &
      &        symp_r(1,ip), asmp_t(1,ip), asmp_p(1,ip),                 &
      &        symn_t(1,ip), symn_p(1,ip))
 !          elaps(2) = MPI_WTIME() - st_elapsed + elaps(2) 
@@ -300,8 +301,9 @@
 !          st_elapsed = MPI_WTIME()
           call set_vr_rtm_vector_matmul                                 &
      &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
-     &        sph_rlm%nidx_rlm, weight_rtm, kst(ip), nkr(ip), mp_rlm,   &
-     &        mn_rlm, ncomp, comm_rtm%irev_sr, n_WR, WR, nvec_lk,       &
+     &        sph_rlm%nidx_rlm, asin_theta_1d_rtm, weight_rtm,          &
+     &        kst(ip), nkr(ip), mp_rlm, mn_rlm,                         &
+     &        ncomp, comm_rtm%irev_sr, n_WR, WR, nvec_lk,               &
      &        symp_r(1,ip), asmp_t(1,ip), asmp_p(1,ip),                 &
      &        symn_t(1,ip), symn_p(1,ip))
 !          elaps(2) = MPI_WTIME() - st_elapsed + elaps(2) 
@@ -470,8 +472,9 @@
 !          st_elapsed = MPI_WTIME()
           call set_vr_rtm_vector_matmul                                 &
      &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
-     &        sph_rlm%nidx_rlm, weight_rtm, kst(ip), nkr(ip), mp_rlm,   &
-     &        mn_rlm, ncomp, comm_rtm%irev_sr, n_WR, WR, nvec_lk,       &
+     &        sph_rlm%nidx_rlm, asin_theta_1d_rtm, weight_rtm,          &
+     &        kst(ip), nkr(ip), mp_rlm, mn_rlm,                         &
+     &        ncomp, comm_rtm%irev_sr, n_WR, WR, nvec_lk,               &
      &        symp_r(1,ip), asmp_t(1,ip), asmp_p(1,ip),                 &
      &        symn_t(1,ip), symn_p(1,ip))
 !          elaps(2) = MPI_WTIME() - st_elapsed + elaps(2) 
