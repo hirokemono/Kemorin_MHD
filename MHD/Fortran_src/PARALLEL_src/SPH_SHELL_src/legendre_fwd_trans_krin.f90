@@ -105,8 +105,8 @@
           led = lstack_block_rtm(lp  )
 !
           do j_rlm = jst, jed
-            mp_rlm = mdx_p_rlm_rtm(j_rlm)
-            mn_rlm = mdx_n_rlm_rtm(j_rlm)
+            mp_rlm = idx_trns1%mdx_p_rlm_rtm(j_rlm)
+            mn_rlm = idx_trns1%mdx_n_rlm_rtm(j_rlm)
 !
             do l_rtm = lst, led
               Pvw_l(l_rtm) = P_rtm(l_rtm,j_rlm)                         &
@@ -210,7 +210,7 @@
           led = lstack_block_rtm(lp  )
 !
           do j_rlm = jst, jed
-            mp_rlm = mdx_p_rlm_rtm(j_rlm)
+            mp_rlm = idx_trns1%mdx_p_rlm_rtm(j_rlm)
 !
             do l_rtm = lst, led
               Pws_l(l_rtm) = P_rtm(l_rtm,j_rlm)                         &

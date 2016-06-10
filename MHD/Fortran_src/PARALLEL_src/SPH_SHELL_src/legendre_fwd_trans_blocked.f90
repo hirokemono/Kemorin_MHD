@@ -109,7 +109,8 @@
                 call set_vr_rtm_vector_blocked                          &
      &             (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm,                 &
      &              sph_rtm%istep_rtm, weight_rtm, nd, k_rlm,           &
-     &              mdx_p_rlm_rtm(j_rlm), mdx_n_rlm_rtm(j_rlm),         &
+     &              idx_trns1%mdx_p_rlm_rtm(j_rlm),                     &
+     &              idx_trns1%mdx_n_rlm_rtm(j_rlm),                     &
      &              asin_theta_1d_rtm(1+lst), lst, nth,                 &
      &              ncomp, comm_rtm%irev_sr, n_WR, WR,                  &
      &              symp_r(1,ip), asmp_t(1,ip), asmp_p(1,ip),           &
@@ -178,8 +179,8 @@
 !
                 call set_vr_rtm_scalar_blocked                          &
      &             (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm,                 &
-     &              sph_rtm%istep_rtm, weight_rtm,                      &
-     &              nd, k_rlm, mdx_p_rlm_rtm(j_rlm), lst, nth,          &
+     &              sph_rtm%istep_rtm, weight_rtm, nd, k_rlm,           &
+     &              idx_trns1%mdx_p_rlm_rtm(j_rlm), lst, nth,           &
      &              ncomp, nvector, comm_rtm%irev_sr,                   &
      &              n_WR, WR, symp(1,ip))
                 call cal_scalar_sp_rlm_dotprod(nth, g_sph_rlm(j_rlm,6), &

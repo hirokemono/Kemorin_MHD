@@ -110,7 +110,7 @@
                 ip_rtm = 3*nd                                           &
      &                  + ncomp*((l_rtm-1) * sph_rtm%istep_rtm(2)       &
      &                         + (k_rlm-1) * sph_rtm%istep_rtm(1)       &
-     &                  + (mdx_p_rlm_rtm(j_rlm)-1)                      &
+     &                  + (idx_trns1%mdx_p_rlm_rtm(j_rlm)-1)            &
      &                                     * sph_rtm%istep_rtm(3))
 !
                 i_rlm = 3*nd                                            &
@@ -138,7 +138,7 @@
                 in_rtm = 3*nd                                           &
      &                  + ncomp*((l_rtm-1) * sph_rtm%istep_rtm(2)       &
      &                         + (k_rlm-1) * sph_rtm%istep_rtm(1)       &
-     &                  + (mdx_n_rlm_rtm(j_rlm)-1)                      &
+     &                  + (idx_trns1%mdx_n_rlm_rtm(j_rlm)-1)            &
      &                   * sph_rtm%istep_rtm(3))
 !
                 i_rlm = 3*nd                                            &
@@ -200,7 +200,8 @@
                 ip_rtm = nd + 3*nvector                                 &
      &                      + ncomp*((l_rtm-1) * sph_rtm%istep_rtm(2)   &
      &                             + (k_rlm-1) * sph_rtm%istep_rtm(1)   &
-     &              + (mdx_p_rlm_rtm(j_rlm)-1) * sph_rtm%istep_rtm(3))
+     &                      + (idx_trns1%mdx_p_rlm_rtm(j_rlm)-1)        &
+     &                                         * sph_rtm%istep_rtm(3))
 !
                 i_rlm = nd + 3*nvector                                  &
      &                     + ncomp * ((j_rlm-1) * sph_rlm%istep_rlm(2)  &

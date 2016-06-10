@@ -23,7 +23,7 @@
       implicit none
 !
       type(index_4_sph_trans), save :: idx_trns1
-!idx_trns1%maxdegree_rlm
+!idx_trns1%mdx_p_rlm_rtm
 !
 !>      total number of components for spherical harmonics transform
       integer(kind = kint) :: ncomp_sph_trans
@@ -34,9 +34,9 @@
 !
 !
 !>      Spectr harmonics order for Legendre transform
-      integer(kind = kint), allocatable :: mdx_p_rlm_rtm(:)
+!      integer(kind = kint), allocatable :: mdx_p_rlm_rtm(:)
 !>      Spectr harmonics order for Legendre transform
-      integer(kind = kint), allocatable :: mdx_n_rlm_rtm(:)
+!      integer(kind = kint), allocatable :: mdx_n_rlm_rtm(:)
 !>      @f$ 1 / \sin \theta @f$  for Legendre transform
       real(kind = kreal), allocatable :: asin_theta_1d_rtm(:)
 !
@@ -50,13 +50,6 @@
 !>      Number of block for grid in hermonics degree
       integer(kind = kint) :: nblock_j_rlm = 1
 !
-!
-!>      End address of spherical harmonics order for SMP parallelization
-!      integer(kind = kint), allocatable :: lstack_rlm(:)
-!>      Maximum point of each block for grid in  hermonics degree
-!      integer(kind = kint) :: maxdegree_rlm
-!>      End address of spherical harmonics order for SMP parallelization
-!      integer(kind = kint), allocatable :: lstack_even_rlm(:)
 !
 ! ----------------------------------------------------------------------
 !
@@ -73,15 +66,15 @@
       allocate(idx_trns1%lstack_rlm(0:nidx_rtm(3)))
       allocate(idx_trns1%lstack_even_rlm(0:nidx_rtm(3)))
 !
-      allocate(mdx_p_rlm_rtm(nidx_rlm(2)))
-      allocate(mdx_n_rlm_rtm(nidx_rlm(2)))
+      allocate(idx_trns1%mdx_p_rlm_rtm(nidx_rlm(2)))
+      allocate(idx_trns1%mdx_n_rlm_rtm(nidx_rlm(2)))
       allocate(asin_theta_1d_rtm(nidx_rtm(2)))
 !
       idx_trns1%lstack_rlm = 0
       idx_trns1%lstack_even_rlm = 0
       idx_trns1%maxdegree_rlm = 0
-      mdx_p_rlm_rtm = 0
-      mdx_n_rlm_rtm = 0
+      idx_trns1%mdx_p_rlm_rtm = 0
+      idx_trns1%mdx_n_rlm_rtm = 0
       asin_theta_1d_rtm = 0.0d0
 !
       end subroutine allocate_work_4_sph_trans
@@ -103,7 +96,7 @@
 !
 !
       deallocate(idx_trns1%lstack_rlm, idx_trns1%lstack_even_rlm)
-      deallocate(mdx_p_rlm_rtm, mdx_n_rlm_rtm)
+      deallocate(idx_trns1%mdx_p_rlm_rtm, idx_trns1%mdx_n_rlm_rtm)
       deallocate(asin_theta_1d_rtm)
 !
       idx_trns1%maxdegree_rlm =   0
