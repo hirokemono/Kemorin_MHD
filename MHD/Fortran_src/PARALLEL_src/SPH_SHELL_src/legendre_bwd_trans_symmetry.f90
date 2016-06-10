@@ -92,8 +92,9 @@
 !
           do mp_rlm = 1, sph_rtm%nidx_rtm(3)
             mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
-            jst = lstack_rlm(mp_rlm-1)
-            nj_rlm = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
+            jst = idx_trns1%lstack_rlm(mp_rlm-1)
+            nj_rlm = idx_trns1%lstack_rlm(mp_rlm)                       &
+     &              - idx_trns1%lstack_rlm(mp_rlm-1)
             je = 1 + jst
             jo = 1 + jst + (nj_rlm+1) / 2
             do k_rlm = kst, ked
@@ -158,8 +159,9 @@
         do lp_rtm = sph_rtm%nidx_rtm(2)/2+1, (sph_rtm%nidx_rtm(2)+1)/2
           do mp_rlm = 1, sph_rtm%nidx_rtm(3)
             mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
-            jst = lstack_rlm(mp_rlm-1)
-            nj_rlm = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
+            jst = idx_trns1%lstack_rlm(mp_rlm-1)
+            nj_rlm = idx_trns1%lstack_rlm(mp_rlm)                       &
+     &              - idx_trns1%lstack_rlm(mp_rlm-1)
             je = 1 + jst
             jo = 1 + jst + (nj_rlm+1) / 2
             do k_rlm = kst, ked
@@ -241,8 +243,9 @@
           nl_rtm = lstack_block_rtm(lp  )/2 - lstack_block_rtm(lp-1)/2
 !
           do mp_rlm = 1, sph_rtm%nidx_rtm(3)
-            jst = lstack_rlm(mp_rlm-1)
-            nj_rlm = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
+            jst = idx_trns1%lstack_rlm(mp_rlm-1)
+            nj_rlm = idx_trns1%lstack_rlm(mp_rlm)                       &
+     &              - idx_trns1%lstack_rlm(mp_rlm-1)
             je = 1 + jst
             jo = 1 + jst + (nj_rlm+1) / 2
             do k_rlm = kst, ked
@@ -283,8 +286,9 @@
 !   Equator (if necessary)
         do lp_rtm = sph_rtm%nidx_rtm(2)/2+1, (sph_rtm%nidx_rtm(2)+1)/2
           do mp_rlm = 1, sph_rtm%nidx_rtm(3)
-            jst = lstack_rlm(mp_rlm-1)
-            nj_rlm = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
+            jst = idx_trns1%lstack_rlm(mp_rlm-1)
+            nj_rlm = idx_trns1%lstack_rlm(mp_rlm)                       &
+     &              - idx_trns1%lstack_rlm(mp_rlm-1)
             je = 1 + jst
             do k_rlm = kst, ked
               do nd = 1, nscalar

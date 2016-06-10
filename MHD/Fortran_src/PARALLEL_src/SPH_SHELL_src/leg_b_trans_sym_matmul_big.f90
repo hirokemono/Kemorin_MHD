@@ -102,11 +102,11 @@
 !
         do mp_rlm = 1, sph_rtm%nidx_rtm(3)
           mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
-          jst(ip) = lstack_rlm(mp_rlm-1)
+          jst(ip) = idx_trns1%lstack_rlm(mp_rlm-1)
           jst_h(ip) = idx_trns1%lstack_even_rlm(mp_rlm) + 1
           n_jk_e(ip) = idx_trns1%lstack_even_rlm(mp_rlm)                &
-     &                - lstack_rlm(mp_rlm-1)
-          n_jk_o(ip) = lstack_rlm(mp_rlm)                               &
+     &                - idx_trns1%lstack_rlm(mp_rlm-1)
+          n_jk_o(ip) = idx_trns1%lstack_rlm(mp_rlm)                     &
      &                - idx_trns1%lstack_even_rlm(mp_rlm)
 !
 !          st_elapsed = MPI_WTIME()
@@ -205,11 +205,11 @@
 !
         do mp_rlm = 1, sph_rtm%nidx_rtm(3)
           mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
-          jst(ip) = lstack_rlm(mp_rlm-1)
+          jst(ip) = idx_trns1%lstack_rlm(mp_rlm-1)
           jst_h(ip) = idx_trns1%lstack_even_rlm(mp_rlm) + 1
           n_jk_e(ip) = idx_trns1%lstack_even_rlm(mp_rlm)                &
-     &                - lstack_rlm(mp_rlm-1)
-          n_jk_o(ip) = lstack_rlm(mp_rlm)                               &
+     &                - idx_trns1%lstack_rlm(mp_rlm-1)
+          n_jk_o(ip) = idx_trns1%lstack_rlm(mp_rlm)                     &
      &                - idx_trns1%lstack_even_rlm(mp_rlm)
 !
 !          st_elapsed = MPI_WTIME()
@@ -309,11 +309,11 @@
 !
         do mp_rlm = 1, sph_rtm%nidx_rtm(3)
           mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
-          jst(ip) = lstack_rlm(mp_rlm-1)
+          jst(ip) = idx_trns1%lstack_rlm(mp_rlm-1)
           jst_h(ip) = idx_trns1%lstack_even_rlm(mp_rlm) + 1
           n_jk_e(ip) = idx_trns1%lstack_even_rlm(mp_rlm)                &
-     &                - lstack_rlm(mp_rlm-1)
-          n_jk_o(ip) = lstack_rlm(mp_rlm)                               &
+     &                - idx_trns1%lstack_rlm(mp_rlm-1)
+          n_jk_o(ip) = idx_trns1%lstack_rlm(mp_rlm)                     &
      &                - idx_trns1%lstack_even_rlm(mp_rlm)
 !
 !          st_elapsed = MPI_WTIME()

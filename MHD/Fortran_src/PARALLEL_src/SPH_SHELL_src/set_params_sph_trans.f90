@@ -12,7 +12,9 @@
 !!        type(sph_rtm_grid), intent(in) ::    sph_rtm
 !!        type(sph_rtp_grid), intent(inout) :: sph_rtp
 !!      subroutine set_mdx_rlm_rtm(l_truncation, nidx_rtm, nidx_rlm,    &
-!!     &          idx_gl_1d_rtm_m, idx_gl_1d_rlm_j)
+!!     &          idx_gl_1d_rtm_m, idx_gl_1d_rlm_j,                     &
+!!     &          mdx_p_rlm_rtm, mdx_n_rlm_rtm, maxdegree_rlm,          &
+!!     &          lstack_rlm)
 !!      subroutine set_sin_theta_rtm(nth_rtm)
 !!      subroutine radial_4_sph_trans(sph_rtp, sph_rtm, sph_rlm, sph_rj)
 !!        type(sph_rtp_grid), intent(inout) :: sph_rtp
@@ -59,10 +61,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_mdx_rlm_rtm(l_truncation, nidx_rtm, nidx_rlm,      &
-     &          idx_gl_1d_rtm_m, idx_gl_1d_rlm_j)
+     &          idx_gl_1d_rtm_m, idx_gl_1d_rlm_j,                       &
+     &          mdx_p_rlm_rtm, mdx_n_rlm_rtm, maxdegree_rlm,            &
+     &          lstack_rlm)
 !
       use calypso_mpi
-      use m_work_4_sph_trans
 !
       integer(kind = kint), intent(in) :: l_truncation
       integer(kind = kint), intent(in) :: nidx_rtm(3)
@@ -71,6 +74,11 @@
       integer(kind = kint), intent(in) :: nidx_rlm(2)
       integer(kind = kint), intent(in)                                  &
      &             :: idx_gl_1d_rlm_j(nidx_rlm(2),3)
+!
+      integer(kind = kint), intent(inout) :: mdx_p_rlm_rtm(nidx_rlm(2))
+      integer(kind = kint), intent(inout) :: mdx_n_rlm_rtm(nidx_rlm(2))
+      integer(kind = kint), intent(inout) :: maxdegree_rlm
+      integer(kind = kint), intent(inout) :: lstack_rlm(0:nidx_rtm(3))
 !
       integer(kind = kint) :: m, mm, j, mst, med
       integer(kind = kint), allocatable :: mdx_rlm_rtm(:)

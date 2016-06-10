@@ -194,13 +194,13 @@
 !
       call allocate_hemi_schmidt_rtm(nth_rtm, jmax_rlm)
 !
-      call set_symmetric_legendre_lj(nth_rtm, mphi_rtm,                 &
-     &    jmax_rlm, nth_hemi_rtm,         &
-     &    lstack_rlm, idx_trns1%lstack_even_rlm, &
+      call set_symmetric_legendre_lj                                    &
+     &   (nth_rtm, mphi_rtm, jmax_rlm, nth_hemi_rtm,                    &
+     &    idx_trns1%lstack_rlm, idx_trns1%lstack_even_rlm,              &
      &    leg%P_rtm, leg%dPdt_rtm, Ps_rtm, dPsdt_rtm)
-      call set_symmetric_legendre_jl(nth_rtm, mphi_rtm,                 &
-     &    jmax_rlm, nth_hemi_rtm,         &
-     &    lstack_rlm, idx_trns1%lstack_even_rlm, &
+      call set_symmetric_legendre_jl                                    &
+     &   (nth_rtm, mphi_rtm, jmax_rlm, nth_hemi_rtm,                    &
+     &    idx_trns1%lstack_rlm, idx_trns1%lstack_even_rlm,              &
      &    leg%P_rtm, leg%dPdt_rtm, Ps_jl, dPsdt_jl)
 !
       end subroutine const_symmetric_legendres

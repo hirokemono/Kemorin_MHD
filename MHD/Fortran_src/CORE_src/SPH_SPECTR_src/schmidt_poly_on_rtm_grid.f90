@@ -203,8 +203,8 @@
 !
           do m = 1, sph_rtm%nidx_rtm(3)
             mm = abs(sph_rtm%idx_gl_1d_rtm_m(m,2))
-            jst = lstack_rlm(m-1) + 1
-            jed = lstack_rlm(m)
+            jst = idx_trns1%lstack_rlm(m-1) + 1
+            jed = idx_trns1%lstack_rlm(m)
 !
             call schmidt_legendres_m(l_truncation, mm, g_colat_rtm(i),  &
      &          p_m, dp_m, pmn1, pmp1, df_m)
@@ -251,8 +251,8 @@
 !
       do m = 1, sph_rtm%nidx_rtm(3)
         mm = abs(sph_rtm%idx_gl_1d_rtm_m(m,2))
-        jst = lstack_rlm(m-1) + 1
-        jed = lstack_rlm(m)
+        jst = idx_trns1%lstack_rlm(m-1) + 1
+        jed = idx_trns1%lstack_rlm(m)
 !
         if(mm .le. 1) then
           call schmidt_legendres_m(l_truncation, mm, zero,              &
@@ -273,8 +273,8 @@
       pi = four * atan(one)
       do m = 1, sph_rtm%nidx_rtm(3)
         mm = abs(sph_rtm%idx_gl_1d_rtm_m(m,2))
-        jst = lstack_rlm(m-1) + 1
-        jed = lstack_rlm(m)
+        jst = idx_trns1%lstack_rlm(m-1) + 1
+        jed = idx_trns1%lstack_rlm(m)
 !
         if(mm .le. 1) then
           call schmidt_legendres_m(l_truncation, mm, pi,               &

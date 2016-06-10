@@ -95,8 +95,9 @@
 !
             do mp_rlm = 1, sph_rtm%nidx_rtm(3)
               mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
-              jst = lstack_rlm(mp_rlm-1)
-              nj_rlm = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
+              jst = idx_trns1%lstack_rlm(mp_rlm-1)
+              nj_rlm = idx_trns1%lstack_rlm(mp_rlm)                     &
+     &                - idx_trns1%lstack_rlm(mp_rlm-1)
               n_jk_e = (nj_rlm+1) / 2
               n_jk_o =  nj_rlm - n_jk_e
 !    even l-m
@@ -213,8 +214,9 @@
         do k_rlm = kst, ked
           do nd = 1, nscalar
             do mp_rlm = 1, sph_rtm%nidx_rtm(3)
-              jst = lstack_rlm(mp_rlm-1)
-              nj_rlm = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
+              jst = idx_trns1%lstack_rlm(mp_rlm-1)
+              nj_rlm = idx_trns1%lstack_rlm(mp_rlm)                     &
+     &                - idx_trns1%lstack_rlm(mp_rlm-1)
               n_jk_e = (nj_rlm+1) / 2
               n_jk_o =  nj_rlm - n_jk_e
 !    even l-m

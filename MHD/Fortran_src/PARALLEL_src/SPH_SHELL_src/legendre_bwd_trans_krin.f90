@@ -95,8 +95,8 @@
           end do
 !
           do mp_rlm = 1, sph_rtm%nidx_rtm(3)
-            jst = lstack_rlm(mp_rlm-1) + 1
-            jed = lstack_rlm(mp_rlm)
+            jst = idx_trns1%lstack_rlm(mp_rlm-1) + 1
+            jed = idx_trns1%lstack_rlm(mp_rlm)
             vr1(1:nb_nri) = 0.0d0
             vr2(1:nb_nri) = 0.0d0
             vr3(1:nb_nri) = 0.0d0
@@ -137,8 +137,8 @@
 !
           do mp_rlm = 1, sph_rtm%nidx_rtm(3)
             mn_rlm = 1 + sph_rtm%nidx_rtm(3) - mp_rlm
-            jst = lstack_rlm(mp_rlm-1) + 1
-            jed = lstack_rlm(mp_rlm)
+            jst = idx_trns1%lstack_rlm(mp_rlm-1) + 1
+            jed = idx_trns1%lstack_rlm(mp_rlm)
             vr2(1:nb_nri) = 0.0d0
             vr3(1:nb_nri) = 0.0d0
             do j_rlm = jst, jed
@@ -200,8 +200,8 @@
           P_j(1:sph_rlm%nidx_rlm(2))                                    &
      &           = P_jl(1:sph_rlm%nidx_rlm(2),l_rtm)
           do mp_rlm = 1, sph_rtm%nidx_rtm(3)
-            jst = lstack_rlm(mp_rlm-1) + 1
-            jed = lstack_rlm(mp_rlm)
+            jst = idx_trns1%lstack_rlm(mp_rlm-1) + 1
+            jed = idx_trns1%lstack_rlm(mp_rlm)
             vr1(1:nb_nri) = 0.0d0
             do j_rlm = jst, jed
               do kr_nd = 1, nb_nri

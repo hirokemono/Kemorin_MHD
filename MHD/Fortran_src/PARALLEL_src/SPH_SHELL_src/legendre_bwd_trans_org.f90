@@ -101,8 +101,8 @@
 !
         do mp_rlm = 1, sph_rtm%nidx_rtm(3)
           mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
-          jst = lstack_rlm(mp_rlm-1) + 1
-          jed = lstack_rlm(mp_rlm)
+          jst = idx_trns1%lstack_rlm(mp_rlm-1) + 1
+          jed = idx_trns1%lstack_rlm(mp_rlm)
           do k_rlm = kst, ked
             do l_rtm = 1, sph_rtm%nidx_rtm(2)
               do j_rlm = jst, jed
@@ -137,8 +137,8 @@
 !
         do mp_rlm = 1, sph_rtm%nidx_rtm(3)
           mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
-          jst = lstack_rlm(mp_rlm-1) + 1
-          jed = lstack_rlm(mp_rlm)
+          jst = idx_trns1%lstack_rlm(mp_rlm-1) + 1
+          jed = idx_trns1%lstack_rlm(mp_rlm)
           do k_rlm = kst, ked
             do l_rtm = 1, sph_rtm%nidx_rtm(2)
               do j_rlm = jst, jed
@@ -206,8 +206,8 @@
         ked = sph_rtm%istack_rtm_kr_smp(ip  )
 !
         do mp_rlm = 1, sph_rtm%nidx_rtm(3)
-          jst = lstack_rlm(mp_rlm-1) + 1
-          jed = lstack_rlm(mp_rlm)
+          jst = idx_trns1%lstack_rlm(mp_rlm-1) + 1
+          jed = idx_trns1%lstack_rlm(mp_rlm)
           do k_rlm = kst, ked
 !
             do l_rtm = 1, sph_rtm%nidx_rtm(2)

@@ -72,7 +72,9 @@
      &   (sph%sph_rtp, sph%sph_rtm, sph%sph_rlm, sph%sph_rj)
       call set_mdx_rlm_rtm(sph%sph_params%l_truncation,                 &
      &    sph%sph_rtm%nidx_rtm, sph%sph_rlm%nidx_rlm,                   &
-     &    sph%sph_rtm%idx_gl_1d_rtm_m, sph%sph_rlm%idx_gl_1d_rlm_j)
+     &    sph%sph_rtm%idx_gl_1d_rtm_m, sph%sph_rlm%idx_gl_1d_rlm_j,     &
+     &    mdx_p_rlm_rtm, mdx_n_rlm_rtm,   &
+     &    maxdegree_rlm, idx_trns1%lstack_rlm)
 !
       call s_cal_schmidt_poly_rtm(sph%sph_params%l_truncation,          &
      &    sph%sph_rj, sph%sph_rtm, sph%sph_rlm, leg)
@@ -82,7 +84,7 @@
       call const_sin_theta_rtp(leg, sph%sph_rtm, sph%sph_rtp)
 !
       call set_sym_legendre_stack(sph%sph_rtm%nidx_rtm(3),              &
-     &    lstack_rlm, idx_trns1%lstack_even_rlm)
+     &    idx_trns1%lstack_rlm, idx_trns1%lstack_even_rlm)
 !
       call set_blocks_4_leg_trans(sph, comms_sph)
 !

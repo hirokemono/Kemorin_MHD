@@ -124,8 +124,9 @@
 !
         do mp_rlm = 1, sph_rtm%nidx_rtm(3)
           mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
-          jst(ip) = lstack_rlm(mp_rlm-1)
-          nj_rlm(ip) = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
+          jst(ip) = idx_trns1%lstack_rlm(mp_rlm-1)
+          nj_rlm(ip) = idx_trns1%lstack_rlm(mp_rlm)                     &
+     &                - idx_trns1%lstack_rlm(mp_rlm-1)
 !
 !          st_elapsed = MPI_WTIME()
           call set_vr_rtm_vector_matmul                                 &
@@ -213,8 +214,9 @@
         nkr(ip) = nscalar * (sph_rlm%istack_rlm_kr_smp(ip)              &
      &                     - sph_rlm%istack_rlm_kr_smp(ip-1))
         do mp_rlm = 1, sph_rtm%nidx_rtm(3)
-          jst(ip) = lstack_rlm(mp_rlm-1)
-          nj_rlm(ip) = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
+          jst(ip) = idx_trns1%lstack_rlm(mp_rlm-1)
+          nj_rlm(ip) = idx_trns1%lstack_rlm(mp_rlm)                     &
+     &                - idx_trns1%lstack_rlm(mp_rlm-1)
 !
 !          st_elapsed = MPI_WTIME()
           call set_vr_rtm_scalar_matmul                                 &
@@ -295,8 +297,9 @@
 !
         do mp_rlm = 1, sph_rtm%nidx_rtm(3)
           mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
-          jst(ip) = lstack_rlm(mp_rlm-1)
-          nj_rlm(ip) = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
+          jst(ip) = idx_trns1%lstack_rlm(mp_rlm-1)
+          nj_rlm(ip) = idx_trns1%lstack_rlm(mp_rlm)                     &
+     &                - idx_trns1%lstack_rlm(mp_rlm-1)
 !
 !          st_elapsed = MPI_WTIME()
           call set_vr_rtm_vector_matmul                                 &
@@ -384,8 +387,9 @@
         nkr(ip) = nscalar * (sph_rlm%istack_rlm_kr_smp(ip)              &
      &                     - sph_rlm%istack_rlm_kr_smp(ip-1))
         do mp_rlm = 1, sph_rtm%nidx_rtm(3)
-          jst(ip) = lstack_rlm(mp_rlm-1)
-          nj_rlm(ip) = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
+          jst(ip) = idx_trns1%lstack_rlm(mp_rlm-1)
+          nj_rlm(ip) = idx_trns1%lstack_rlm(mp_rlm)                     &
+     &                - idx_trns1%lstack_rlm(mp_rlm-1)
 !
 !          st_elapsed = MPI_WTIME()
           call set_vr_rtm_scalar_matmul                                 &
@@ -466,8 +470,9 @@
 !
         do mp_rlm = 1, sph_rtm%nidx_rtm(3)
           mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
-          jst(ip) = lstack_rlm(mp_rlm-1)
-          nj_rlm(ip) = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
+          jst(ip) = idx_trns1%lstack_rlm(mp_rlm-1)
+          nj_rlm(ip) = idx_trns1%lstack_rlm(mp_rlm)                     &
+     &                - idx_trns1%lstack_rlm(mp_rlm-1)
 !
 !          st_elapsed = MPI_WTIME()
           call set_vr_rtm_vector_matmul                                 &
@@ -555,8 +560,9 @@
         nkr(ip) = nscalar * (sph_rlm%istack_rlm_kr_smp(ip)              &
      &                     - sph_rlm%istack_rlm_kr_smp(ip-1))
         do mp_rlm = 1, sph_rtm%nidx_rtm(3)
-          jst(ip) = lstack_rlm(mp_rlm-1)
-          nj_rlm(ip) = lstack_rlm(mp_rlm) - lstack_rlm(mp_rlm-1)
+          jst(ip) = idx_trns1%lstack_rlm(mp_rlm-1)
+          nj_rlm(ip) = idx_trns1%lstack_rlm(mp_rlm)                     &
+     &                - idx_trns1%lstack_rlm(mp_rlm-1)
 !
 !          st_elapsed = MPI_WTIME()
           call set_vr_rtm_scalar_matmul                                 &

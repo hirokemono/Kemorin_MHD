@@ -208,8 +208,9 @@
       allocate( Ps_tj(nth_sym,jmax_rlm) )
       allocate( dPsdt_tj(nth_sym,jmax_rlm) )
 !
-      call set_symmetric_legendre_lj(nth_rtm, mphi_rtm,                 &
-     &    jmax_rlm, nth_sym, lstack_rlm, idx_trns1%lstack_even_rlm,     &
+      call set_symmetric_legendre_lj                                    &
+     &   (nth_rtm, mphi_rtm, jmax_rlm, nth_sym,                         &
+     &    idx_trns1%lstack_rlm, idx_trns1%lstack_even_rlm,              &
      &    leg%P_rtm, leg%dPdt_rtm, Ps_tj, dPsdt_tj)
 !
       end subroutine const_legendre_testloop
