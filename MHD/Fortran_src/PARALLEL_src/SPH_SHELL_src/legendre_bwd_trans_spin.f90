@@ -94,9 +94,9 @@
           k_rlm = 1 + (kr_nd - nd) / nvector
           a1r_1d_rlm_r = sph_rlm%a_r_1d_rlm_r(k_rlm)
           a2r_1d_rlm_r = a1r_1d_rlm_r**2
-          do lp = 1, nblock_l_rtm
-            lst = lstack_block_rtm(lp-1) + 1
-            led = lstack_block_rtm(lp  )
+          do lp = 1, idx_trns1%nblock_l_rtm
+            lst = idx_trns1%lstack_block_rtm(lp-1) + 1
+            led = idx_trns1%lstack_block_rtm(lp  )
             do mp_rlm = 1, sph_rtm%nidx_rtm(3)
               mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
               jst = idx_trns1%lstack_rlm(mp_rlm-1)
@@ -176,9 +176,9 @@
         do kr_nd = kst, ked
           nd = 1 + mod((kr_nd-1),nscalar)
           k_rlm = 1 + (kr_nd - nd) / nscalar
-          do lp = 1, nblock_l_rtm
-            lst = lstack_block_rtm(lp-1) + 1
-            led = lstack_block_rtm(lp  )
+          do lp = 1, idx_trns1%nblock_l_rtm
+            lst = idx_trns1%lstack_block_rtm(lp-1) + 1
+            led = idx_trns1%lstack_block_rtm(lp  )
 !
             do mp_rlm = 1, sph_rtm%nidx_rtm(3)
               jst = idx_trns1%lstack_rlm(mp_rlm-1)

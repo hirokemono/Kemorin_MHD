@@ -119,8 +119,8 @@
 !
                 call set_vr_rtm_vector_symmetry(sph_rtm%nnod_rtm,       &
      &              sph_rtm%nidx_rtm, sph_rtm%istep_rtm,                &
-     &              weight_rtm, nd, k_rlm, mp_rlm, mn_rlm,              &
-     &              asin_theta_1d_rtm(1), izero, nle_rtm, nlo_rtm,      &
+     &              weight_rtm, asin_theta_1d_rtm, nd, k_rlm,           &
+     &              mp_rlm, mn_rlm, nle_rtm, nlo_rtm,                   &
      &              ncomp, comm_rtm%irev_sr, n_WR, WR, symp_r(1,ip),    &
      &              asmp_t(1,ip), asmp_p(1,ip), symn_t(1,ip),           &
      &              symn_p(1,ip), asmp_r(1,ip), symp_t(1,ip),           &
@@ -150,8 +150,8 @@
 !
                 call set_vr_rtm_vector_symmetry(sph_rtm%nnod_rtm,       &
      &              sph_rtm%nidx_rtm, sph_rtm%istep_rtm,                &
-     &              weight_rtm, nd, k_rlm, mp_rlm, mn_rlm,              &
-     &              asin_theta_1d_rtm(1), izero, nle_rtm, nlo_rtm,      &
+     &              weight_rtm, asin_theta_1d_rtm, nd, k_rlm,           &
+     &              mp_rlm, mn_rlm, nle_rtm, nlo_rtm,                   &
      &              ncomp, comm_rtm%irev_sr, n_WR, WR, symp_r(1,ip),    &
      &              asmp_t(1,ip), asmp_p(1,ip), symn_t(1,ip),           &
      &              symn_p(1,ip), asmp_r(1,ip), symp_t(1,ip),           &

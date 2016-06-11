@@ -94,9 +94,9 @@
           end do
         end do
 !
-        do lp = 1, nblock_l_rtm
-          lst = lstack_block_rtm(lp-1) + 1
-          led = lstack_block_rtm(lp  )
+        do lp = 1, idx_trns1%nblock_l_rtm
+          lst = idx_trns1%lstack_block_rtm(lp-1) + 1
+          led = idx_trns1%lstack_block_rtm(lp  )
 !
           do l_rtm = lst, led
             do j_rlm = 1, sph_rlm%nidx_rlm(2)
@@ -187,9 +187,9 @@
       do ip = 1, np_smp
         kst = nscalar*sph_rlm%istack_rlm_kr_smp(ip-1) + 1
         ked = nscalar*sph_rlm%istack_rlm_kr_smp(ip  )
-        do lp = 1, nblock_l_rtm
-          lst = lstack_block_rtm(lp-1) + 1
-          led = lstack_block_rtm(lp  )
+        do lp = 1, idx_trns1%nblock_l_rtm
+          lst = idx_trns1%lstack_block_rtm(lp-1) + 1
+          led = idx_trns1%lstack_block_rtm(lp  )
 !
           do j_rlm = 1, sph_rlm%nidx_rlm(2)
             do kr_nd = kst, ked

@@ -23,7 +23,7 @@
       implicit none
 !
       type(index_4_sph_trans), save :: idx_trns1
-!idx_trns1%mdx_p_rlm_rtm
+!idx_trns1%nblock_l_rtm
 !
 !>      total number of components for spherical harmonics transform
       integer(kind = kint) :: ncomp_sph_trans
@@ -41,14 +41,12 @@
       real(kind = kreal), allocatable :: asin_theta_1d_rtm(:)
 !
 !>      Number of block for grid in @f$ \theta @f$-direction
-      integer(kind = kint) :: nblock_l_rtm = 1
+!      integer(kind = kint) :: nblock_l_rtm = 1
 !>      End point of each block for grid in @f$ \theta @f$-direction
-      integer(kind = kint), allocatable :: lstack_block_rtm(:)
-!>      Maximum point of each block for grid in @f$ \theta @f$-direction
-      integer(kind = kint) :: lmax_block_rtm
+!      integer(kind = kint), allocatable :: lstack_block_rtm(:)
 !
 !>      Number of block for grid in hermonics degree
-      integer(kind = kint) :: nblock_j_rlm = 1
+!      integer(kind = kint) :: nblock_j_rlm = 1
 !
 !
 ! ----------------------------------------------------------------------
@@ -84,9 +82,8 @@
       subroutine allocate_l_rtm_block
 !
 !
-      allocate(lstack_block_rtm(0:nblock_l_rtm))
-      lstack_block_rtm = 0
-      lmax_block_rtm = 0
+      allocate(idx_trns1%lstack_block_rtm(0:idx_trns1%nblock_l_rtm))
+      idx_trns1%lstack_block_rtm = 0
 !
       end subroutine allocate_l_rtm_block
 !
@@ -108,8 +105,7 @@
       subroutine deallocate_l_rtm_block
 !
 !
-      deallocate(lstack_block_rtm)
-      lmax_block_rtm = 0
+      deallocate(idx_trns1%lstack_block_rtm)
 !
       end subroutine deallocate_l_rtm_block
 !

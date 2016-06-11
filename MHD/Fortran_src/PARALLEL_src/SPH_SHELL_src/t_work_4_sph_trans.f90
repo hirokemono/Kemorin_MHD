@@ -34,19 +34,14 @@
         integer(kind = kint), allocatable :: mdx_p_rlm_rtm(:)
 !>      Spectr harmonics order for Legendre transform
         integer(kind = kint), allocatable :: mdx_n_rlm_rtm(:)
-!>      @f$ 1 / \sin \theta @f$  for Legendre transform
-        real(kind = kreal), allocatable :: asin_theta_1d_rtm(:)
 !
 !>      Number of block for grid in @f$ \theta @f$-direction
         integer(kind = kint) :: nblock_l_rtm = 1
 !>      End point of each block for grid in @f$ \theta @f$-direction
         integer(kind = kint), allocatable :: lstack_block_rtm(:)
-!>      Maximum point of each block for grid in @f$ \theta @f$-direction
-        integer(kind = kint) :: lmax_block_rtm
 !
 !>      Number of block for grid in hermonics degree
         integer(kind = kint) :: nblock_j_rlm = 1
-!
 !
 !>      End address of spherical harmonics order for SMP parallelization
         integer(kind = kint), allocatable :: lstack_rlm(:)
@@ -74,14 +69,12 @@
 !
       allocate(idx_trns%mdx_p_rlm_rtm(nidx_rlm(2)))
       allocate(idx_trns%mdx_n_rlm_rtm(nidx_rlm(2)))
-      allocate(idx_trns%asin_theta_1d_rtm(nidx_rtm(2)))
 !
       idx_trns%lstack_rlm = 0
       idx_trns%lstack_even_rlm = 0
       idx_trns%maxdegree_rlm = 0
       idx_trns%mdx_p_rlm_rtm = 0
       idx_trns%mdx_n_rlm_rtm = 0
-      idx_trns%asin_theta_1d_rtm = 0.0d0
 !
       end subroutine alloc_work_4_sph_trans
 !
@@ -94,7 +87,6 @@
 !
       allocate(idx_trns%lstack_block_rtm(0:idx_trns%nblock_l_rtm))
       idx_trns%lstack_block_rtm = 0
-      idx_trns%lmax_block_rtm = 0
 !
       end subroutine alloc_l_rtm_block
 !
@@ -108,7 +100,6 @@
 !
       deallocate(idx_trns%lstack_rlm, idx_trns%lstack_even_rlm)
       deallocate(idx_trns%mdx_p_rlm_rtm, idx_trns%mdx_n_rlm_rtm)
-      deallocate(idx_trns%asin_theta_1d_rtm)
 !
       idx_trns%maxdegree_rlm =   0
 !
@@ -122,7 +113,6 @@
 !
 !
       deallocate(idx_trns%lstack_block_rtm)
-      idx_trns%lmax_block_rtm = 0
 !
       end subroutine dealloc_l_rtm_block
 !

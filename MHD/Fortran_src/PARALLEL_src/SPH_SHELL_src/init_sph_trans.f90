@@ -105,24 +105,28 @@
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
 !
+      integer(kind = kint) :: lmax_block_rtm
+!
 !
       if(nvector_legendre .le. 0                                        &
      &     .or. nvector_legendre .gt. sph%sph_rtm%nidx_rtm(2)) then
-        nblock_l_rtm =  1
+        idx_trns1%nblock_l_rtm =  1
       else
-        nblock_l_rtm =  sph%sph_rtm%nidx_rtm(2) / nvector_legendre
+        idx_trns1%nblock_l_rtm                                          &
+     &         =  sph%sph_rtm%nidx_rtm(2) / nvector_legendre
       end if
       if(nvector_legendre .le. 0                                        &
      &     .or. nvector_legendre .gt. sph%sph_rlm%nidx_rlm(2)) then
-        nblock_j_rlm =  1
+        idx_trns1%nblock_j_rlm =  1
       else
-        nblock_j_rlm =  sph%sph_rlm%nidx_rlm(2) / nvector_legendre
+        idx_trns1%nblock_j_rlm                                          &
+     &          =  sph%sph_rlm%nidx_rlm(2) / nvector_legendre
       end if
 !
       call allocate_l_rtm_block
       call count_number_4_smp                                           &
-     &   (nblock_l_rtm, ione, sph%sph_rtm%nidx_rtm(2),                  &
-     &    lstack_block_rtm, lmax_block_rtm)
+     &   (idx_trns1%nblock_l_rtm, ione, sph%sph_rtm%nidx_rtm(2),        &
+     &    idx_trns1%lstack_block_rtm, lmax_block_rtm)
 !
 !
       call split_rtp_comms(comms_sph%comm_rtp%nneib_domain,             &
@@ -132,8 +136,10 @@
       if(my_rank .ne. 0) return
       write(*,*) 'Vector length for Legendre transform:',               &
      &          nvector_legendre
-      write(*,*) 'Block number for meridinal grid: ', nblock_l_rtm
-      write(*,*) 'Block number for Legendre transform: ', nblock_j_rlm
+      write(*,*) 'Block number for meridinal grid: ',                   &
+     &          idx_trns1%nblock_l_rtm
+      write(*,*) 'Block number for Legendre transform: ',               &
+     &          idx_trns1%nblock_j_rlm
 !
       end subroutine set_blocks_4_leg_trans
 !

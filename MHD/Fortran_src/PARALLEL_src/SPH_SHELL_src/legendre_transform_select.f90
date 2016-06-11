@@ -262,7 +262,7 @@
      &   .or. id_legendre_transfer .eq. iflag_leg_sym_dgemm_big         &
      &   .or. id_legendre_transfer .eq. iflag_leg_sym_matprod_big) then
         call init_leg_sym_matmul_big                                    &
-     &     (sph_rtm, sph_rlm, leg, nvector, nscalar)
+     &     (sph_rtm, sph_rlm, leg, idx_trns1, nvector, nscalar)
       else if(id_legendre_transfer .eq. iflag_leg_matmul                &
      &   .or. id_legendre_transfer .eq. iflag_leg_dgemm                 &
      &   .or. id_legendre_transfer .eq. iflag_leg_matprod) then

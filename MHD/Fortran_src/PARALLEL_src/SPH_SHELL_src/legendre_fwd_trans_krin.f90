@@ -100,9 +100,9 @@
           end do
         end do
 !
-        do lp = 1, nblock_l_rtm
-          lst = lstack_block_rtm(lp-1) + 1
-          led = lstack_block_rtm(lp  )
+        do lp = 1, idx_trns1%nblock_l_rtm
+          lst = idx_trns1%lstack_block_rtm(lp-1) + 1
+          led = idx_trns1%lstack_block_rtm(lp  )
 !
           do j_rlm = jst, jed
             mp_rlm = idx_trns1%mdx_p_rlm_rtm(j_rlm)
@@ -205,9 +205,9 @@
           end do
         end do
 !
-        do lp = 1, nblock_l_rtm
-          lst = lstack_block_rtm(lp-1) + 1
-          led = lstack_block_rtm(lp  )
+        do lp = 1, idx_trns1%nblock_l_rtm
+          lst = idx_trns1%lstack_block_rtm(lp-1) + 1
+          led = idx_trns1%lstack_block_rtm(lp  )
 !
           do j_rlm = jst, jed
             mp_rlm = idx_trns1%mdx_p_rlm_rtm(j_rlm)

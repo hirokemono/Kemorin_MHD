@@ -91,10 +91,10 @@
           a1r_1d_rlm_r = sph_rlm%a_r_1d_rlm_r(k_rlm)
           a2r_1d_rlm_r = a1r_1d_rlm_r**2
           do nd = 1, nvector
-            do lp = 1, nblock_l_rtm
-              lst = lstack_block_rtm(lp-1)/2
-              nl_rtm = lstack_block_rtm(lp  )/2                         &
-     &                - lstack_block_rtm(lp-1)/2
+            do lp = 1, idx_trns1%nblock_l_rtm
+              lst = idx_trns1%lstack_block_rtm(lp-1)/2
+              nl_rtm = idx_trns1%lstack_block_rtm(lp  )/2               &
+     &                - idx_trns1%lstack_block_rtm(lp-1)/2
 !
               do mp_rlm = 1, sph_rtm%nidx_rtm(3)
                 mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
@@ -238,10 +238,10 @@
         ked = sph_rtm%istack_rtm_kr_smp(ip  )
         do k_rlm = kst, ked
           do nd = 1, nscalar
-            do lp = 1, nblock_l_rtm
-              lst = lstack_block_rtm(lp-1)/2
-              nl_rtm = lstack_block_rtm(lp  )/2                         &
-     &                - lstack_block_rtm(lp-1)/2
+            do lp = 1, idx_trns1%nblock_l_rtm
+              lst = idx_trns1%lstack_block_rtm(lp-1)/2
+              nl_rtm = idx_trns1%lstack_block_rtm(lp  )/2               &
+     &                - idx_trns1%lstack_block_rtm(lp-1)/2
 !
               do mp_rlm = 1, sph_rtm%nidx_rtm(3)
                 jst = idx_trns1%lstack_rlm(mp_rlm-1)

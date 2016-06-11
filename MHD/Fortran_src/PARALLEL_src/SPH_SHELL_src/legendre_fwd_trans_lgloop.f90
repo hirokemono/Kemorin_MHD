@@ -91,9 +91,9 @@
           sp_rlm(i_rlm  ) = 0.0d0
         end do
 !
-        do lp = 1, nblock_l_rtm
-          lst = lstack_block_rtm(lp-1) + 1
-          led = lstack_block_rtm(lp  )
+        do lp = 1, idx_trns1%nblock_l_rtm
+          lst = idx_trns1%lstack_block_rtm(lp-1) + 1
+          led = idx_trns1%lstack_block_rtm(lp  )
 !
           do inum = ist, ied
             nd =    1 + mod( (inum-1),nvector)
@@ -191,9 +191,9 @@
           sp_rlm(i_rlm) = 0.0d0
         end do
 !
-        do lp = 1, nblock_l_rtm
-          lst = lstack_block_rtm(lp-1) + 1
-          led = lstack_block_rtm(lp  )
+        do lp = 1, idx_trns1%nblock_l_rtm
+          lst = idx_trns1%lstack_block_rtm(lp-1) + 1
+          led = idx_trns1%lstack_block_rtm(lp  )
 !
           do inum = ist, ied
             nd =    1 + mod( (inum-1),nscalar)

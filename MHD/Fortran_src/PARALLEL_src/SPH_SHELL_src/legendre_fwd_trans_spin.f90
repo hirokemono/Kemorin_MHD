@@ -94,9 +94,10 @@
           r1_1d_rlm_r = sph_rlm%radius_1d_rlm_r(k_rlm)
           r2_1d_rlm_r = r1_1d_rlm_r*r1_1d_rlm_r
 !
-          do lp = 1, nblock_l_rtm
-            lst = lstack_block_rtm(lp-1) 
-            nth = lstack_block_rtm(lp  ) - lstack_block_rtm(lp-1)
+          do lp = 1, idx_trns1%nblock_l_rtm
+            lst = idx_trns1%lstack_block_rtm(lp-1) 
+            nth = idx_trns1%lstack_block_rtm(lp  )                      &
+     &           - idx_trns1%lstack_block_rtm(lp-1)
 !
             do j_rlm = 1, sph_rlm%nidx_rlm(2)
               g7 = g_sph_rlm(j_rlm,7)
@@ -108,10 +109,9 @@
 !
               call set_vr_rtm_vector_blocked                            &
      &             (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm,                 &
-     &              sph_rtm%istep_rtm, weight_rtm, nd, k_rlm,           &
-     &              idx_trns1%mdx_p_rlm_rtm(j_rlm),                     &
-     &              idx_trns1%mdx_n_rlm_rtm(j_rlm),                     &
-     &              asin_theta_1d_rtm(1+lst), lst, nth,                 &
+     &              sph_rtm%istep_rtm, weight_rtm, asin_theta_1d_rtm,   &
+     &              nd, k_rlm, idx_trns1%mdx_p_rlm_rtm(j_rlm),          &
+     &              idx_trns1%mdx_n_rlm_rtm(j_rlm), lst, nth,           &
      &              ncomp, comm_rtm%irev_sr, n_WR, WR,                  &
      &              symp_r(1,ip), asmp_t(1,ip), asmp_p(1,ip),           &
      &              symn_t(1,ip), symn_p(1,ip))
@@ -167,9 +167,10 @@
         do kr_nd = kst, ked
           nd = 1 + mod((kr_nd-1),nscalar)
           k_rlm = 1 + (kr_nd - nd) / nscalar
-          do lp = 1, nblock_l_rtm
-            lst = lstack_block_rtm(lp-1)
-            nth = lstack_block_rtm(lp  ) - lstack_block_rtm(lp-1)
+          do lp = 1, idx_trns1%nblock_l_rtm
+            lst = idx_trns1%lstack_block_rtm(lp-1)
+            nth = idx_trns1%lstack_block_rtm(lp  )                      &
+     &           - idx_trns1%lstack_block_rtm(lp-1)
 !
             do j_rlm = 1, sph_rlm%nidx_rlm(2)
               i_rlm = 1 + (j_rlm-1) * sph_rlm%istep_rlm(2)              &

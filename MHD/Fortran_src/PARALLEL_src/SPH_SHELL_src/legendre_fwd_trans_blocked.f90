@@ -89,9 +89,10 @@
         kst = sph_rlm%istack_rlm_kr_smp(ip-1) + 1
         ked = sph_rlm%istack_rlm_kr_smp(ip  )
 !
-        do lp = 1, nblock_l_rtm
-          lst = lstack_block_rtm(lp-1) 
-          nth = lstack_block_rtm(lp  ) - lstack_block_rtm(lp-1)
+        do lp = 1, idx_trns1%nblock_l_rtm
+          lst = idx_trns1%lstack_block_rtm(lp-1) 
+          nth = idx_trns1%lstack_block_rtm(lp  )                        &
+     &         - idx_trns1%lstack_block_rtm(lp-1)
 !
           do k_rlm = kst, ked
             r1_1d_rlm_r = sph_rlm%radius_1d_rlm_r(k_rlm)
@@ -108,10 +109,9 @@
 !
                 call set_vr_rtm_vector_blocked                          &
      &             (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm,                 &
-     &              sph_rtm%istep_rtm, weight_rtm, nd, k_rlm,           &
-     &              idx_trns1%mdx_p_rlm_rtm(j_rlm),                     &
-     &              idx_trns1%mdx_n_rlm_rtm(j_rlm),                     &
-     &              asin_theta_1d_rtm(1+lst), lst, nth,                 &
+     &              sph_rtm%istep_rtm, weight_rtm, asin_theta_1d_rtm,   &
+     &              nd, k_rlm, idx_trns1%mdx_p_rlm_rtm(j_rlm),          &
+     &              idx_trns1%mdx_n_rlm_rtm(j_rlm), lst, nth,           &
      &              ncomp, comm_rtm%irev_sr, n_WR, WR,                  &
      &              symp_r(1,ip), asmp_t(1,ip), asmp_p(1,ip),           &
      &              symn_t(1,ip), symn_p(1,ip))
@@ -165,9 +165,10 @@
         kst = sph_rlm%istack_rlm_kr_smp(ip-1) + 1
         ked = sph_rlm%istack_rlm_kr_smp(ip  )
 !
-        do lp = 1, nblock_l_rtm
-          lst = lstack_block_rtm(lp-1)
-          nth = lstack_block_rtm(lp  ) - lstack_block_rtm(lp-1)
+        do lp = 1, idx_trns1%nblock_l_rtm
+          lst = idx_trns1%lstack_block_rtm(lp-1)
+          nth = idx_trns1%lstack_block_rtm(lp  )                        &
+     &         - idx_trns1%lstack_block_rtm(lp-1)
 !
           do k_rlm = kst, ked
             do j_rlm = 1, sph_rlm%nidx_rlm(2)
