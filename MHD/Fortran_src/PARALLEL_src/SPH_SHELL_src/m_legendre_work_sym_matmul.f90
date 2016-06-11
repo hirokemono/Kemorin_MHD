@@ -9,8 +9,12 @@
 !!
 !!@verbatim
 !!      subroutine init_legendre_sym_matmul                             &
-!!     &         (sph_rtm, sph_rlm, leg, nvector, nscalar)
+!!     &         (sph_rtm, sph_rlm, leg, idx_trns, nvector, nscalar)
 !!      subroutine init_legendre_symmetry(sph_rtm, sph_rlm, leg)
+!!         type(sph_rtm_grid), intent(in) :: sph_rtm
+!!         type(sph_rlm_grid), intent(in) :: sph_rlm
+!!         type(legendre_4_sph_trans), intent(in) :: leg
+!!         type(index_4_sph_trans), intent(in) :: idx_trns1
 !!
 !!      subroutine deallocate_hemi_schmidt_rtm
 !!
@@ -34,14 +38,15 @@
 !
       use m_precision
       use m_constants
+      use m_machine_parameter
+!
       use calypso_mpi
 !
       use t_spheric_rtm_data
       use t_spheric_rlm_data
       use t_schmidt_poly_on_rtm
+      use t_work_4_sph_trans
 !
-      use m_machine_parameter
-      use m_work_4_sph_trans
       use matmul_for_legendre_trans
 !
       implicit none
@@ -123,6 +128,7 @@
 !>     Anti-symmetric scalar component
       real(kind = kreal), allocatable :: asmp(:,:)
 !
+      private :: const_symmetric_legendres
       private :: alloc_leg_vec_sym_matmul, dealloc_leg_vec_sym_matmul
       private :: alloc_leg_scl_sym_matmul, dealloc_leg_scl_sym_matmul
       private :: alloc_leg_vec_symmetry, alloc_leg_scl_symmetry
@@ -134,38 +140,43 @@
 ! -----------------------------------------------------------------------
 !
       subroutine init_legendre_sym_matmul                               &
-     &         (sph_rtm, sph_rlm, leg, nvector, nscalar)
+     &         (sph_rtm, sph_rlm, leg, idx_trns, nvector, nscalar)
 !
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(legendre_4_sph_trans), intent(in) :: leg
+      type(index_4_sph_trans), intent(in) :: idx_trns
       integer(kind = kint), intent(in) :: nvector, nscalar
 !
 !
-      call const_symmetric_legendres(sph_rlm%nidx_rlm(2),             &
-     &    sph_rtm%nidx_rtm(2), sph_rtm%nidx_rtm(3), leg)
+      call const_symmetric_legendres(sph_rlm%nidx_rlm(2),               &
+     &    sph_rtm%nidx_rtm(2), sph_rtm%nidx_rtm(3), leg, idx_trns)
 !
-      call alloc_leg_vec_sym_matmul                                   &
-     &   (sph_rtm%nidx_rtm(2), sph_rtm%maxidx_rtm_smp(1), nvector)
-      call alloc_leg_scl_sym_matmul                                   &
-     &   (sph_rtm%nidx_rtm(2), sph_rtm%maxidx_rtm_smp(1), nscalar)
+      call alloc_leg_vec_sym_matmul                                     &
+     &   (sph_rtm%nidx_rtm(2), sph_rtm%maxidx_rtm_smp(1),               &
+     &    nvector, idx_trns)
+      call alloc_leg_scl_sym_matmul                                     &
+     &   (sph_rtm%nidx_rtm(2), sph_rtm%maxidx_rtm_smp(1),               &
+     &    nscalar, idx_trns)
 !
       end subroutine init_legendre_sym_matmul
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_legendre_symmetry(sph_rtm, sph_rlm, leg)
+      subroutine init_legendre_symmetry                                 &
+     &         (sph_rtm, sph_rlm, leg, idx_trns)
 !
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(legendre_4_sph_trans), intent(in) :: leg
+      type(index_4_sph_trans), intent(in) :: idx_trns
 !
 !
       call const_symmetric_legendres(sph_rlm%nidx_rlm(2),               &
-     &    sph_rtm%nidx_rtm(2), sph_rtm%nidx_rtm(3), leg)
+     &    sph_rtm%nidx_rtm(2), sph_rtm%nidx_rtm(3), leg, idx_trns)
 !
-      call alloc_leg_vec_symmetry(sph_rtm%nidx_rtm(2))
-      call alloc_leg_scl_symmetry(sph_rtm%nidx_rtm(2))
+      call alloc_leg_vec_symmetry(sph_rtm%nidx_rtm(2), idx_trns)
+      call alloc_leg_scl_symmetry(sph_rtm%nidx_rtm(2), idx_trns)
 !
       end subroutine init_legendre_symmetry
 !
@@ -184,23 +195,24 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_symmetric_legendres                              &
-     &         (jmax_rlm, nth_rtm, mphi_rtm, leg)
+     &         (jmax_rlm, nth_rtm, mphi_rtm, leg, idx_trns)
 !
       use set_legendre_matrices
 !
       integer(kind = kint), intent(in) :: nth_rtm, mphi_rtm, jmax_rlm
       type(legendre_4_sph_trans), intent(in) :: leg
+      type(index_4_sph_trans), intent(in) :: idx_trns
 !
 !
       call allocate_hemi_schmidt_rtm(nth_rtm, jmax_rlm)
 !
       call set_symmetric_legendre_lj                                    &
      &   (nth_rtm, mphi_rtm, jmax_rlm, nth_hemi_rtm,                    &
-     &    idx_trns1%lstack_rlm, idx_trns1%lstack_even_rlm,              &
+     &    idx_trns%lstack_rlm, idx_trns%lstack_even_rlm,                &
      &    leg%P_rtm, leg%dPdt_rtm, Ps_rtm, dPsdt_rtm)
       call set_symmetric_legendre_jl                                    &
      &   (nth_rtm, mphi_rtm, jmax_rlm, nth_hemi_rtm,                    &
-     &    idx_trns1%lstack_rlm, idx_trns1%lstack_even_rlm,              &
+     &    idx_trns%lstack_rlm, idx_trns%lstack_even_rlm,                &
      &    leg%P_rtm, leg%dPdt_rtm, Ps_jl, dPsdt_jl)
 !
       end subroutine const_symmetric_legendres
@@ -240,14 +252,15 @@
 ! -----------------------------------------------------------------------
 !
       subroutine alloc_leg_vec_sym_matmul                               &
-     &         (nth_rtm, maxidx_rtm_r_smp, nvector)
+     &         (nth_rtm, maxidx_rtm_r_smp, nvector, idx_trns)
 !
       integer(kind = kint), intent(in) :: nth_rtm
       integer(kind = kint), intent(in) :: maxidx_rtm_r_smp
       integer(kind = kint), intent(in) :: nvector
+      type(index_4_sph_trans), intent(in) :: idx_trns
 !
 !
-      nvec_jk = ((idx_trns1%maxdegree_rlm+1)/2)                         &
+      nvec_jk = ((idx_trns%maxdegree_rlm+1)/2)                          &
      &         * maxidx_rtm_r_smp * nvector
       allocate(pol_e(nvec_jk,np_smp))
       allocate(dpoldt_e(nvec_jk,np_smp))
@@ -278,14 +291,15 @@
 ! -----------------------------------------------------------------------
 !
       subroutine alloc_leg_scl_sym_matmul                               &
-     &         (nth_rtm, maxidx_rtm_r_smp, nscalar)
+     &         (nth_rtm, maxidx_rtm_r_smp, nscalar, idx_trns)
 !
       integer(kind = kint), intent(in) :: nth_rtm
       integer(kind = kint), intent(in) :: maxidx_rtm_r_smp
       integer(kind = kint), intent(in) :: nscalar
+      type(index_4_sph_trans), intent(in) :: idx_trns
 !
 !
-      nscl_jk = ((idx_trns1%maxdegree_rlm+1)/2)                         &
+      nscl_jk = ((idx_trns%maxdegree_rlm+1)/2)                          &
      &         * maxidx_rtm_r_smp * nscalar
       allocate(scl_e(nscl_jk,np_smp))
       allocate(scl_o(nscl_jk,np_smp))
@@ -322,12 +336,13 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_leg_vec_symmetry(nth_rtm)
+      subroutine alloc_leg_vec_symmetry(nth_rtm, idx_trns)
 !
       integer(kind = kint), intent(in) :: nth_rtm
+      type(index_4_sph_trans), intent(in) :: idx_trns
 !
 !
-      nvec_jk = (idx_trns1%maxdegree_rlm+1)/2
+      nvec_jk = (idx_trns%maxdegree_rlm+1)/2
       allocate(pol_e(nvec_jk,np_smp))
       allocate(dpoldt_e(nvec_jk,np_smp))
       allocate(dpoldp_e(nvec_jk,np_smp))
@@ -356,12 +371,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_leg_scl_symmetry(nth_rtm)
+      subroutine alloc_leg_scl_symmetry(nth_rtm, idx_trns)
 !
       integer(kind = kint), intent(in) :: nth_rtm
+      type(index_4_sph_trans), intent(in) :: idx_trns
 !
 !
-      nscl_jk = (idx_trns1%maxdegree_rlm+1)/2
+      nscl_jk = (idx_trns%maxdegree_rlm+1)/2
       allocate(scl_e(nscl_jk,np_smp))
       allocate(scl_o(nscl_jk,np_smp))
 !

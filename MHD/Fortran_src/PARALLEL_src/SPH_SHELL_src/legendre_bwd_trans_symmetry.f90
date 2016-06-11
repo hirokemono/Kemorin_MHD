@@ -8,12 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine leg_bwd_trans_vector_sym_org(ncomp, nvector,         &
-!!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, g_sph_rlm,      &
-!!     &          n_WR, n_WS, WR, WS)
+!!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,       &
+!!     &          asin_theta_1d_rtm, g_sph_rlm, n_WR, n_WS, WR, WS)
 !!        Input:  vr_rtm   (Order: radius,theta,phi)
 !!        Output: sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
 !!      subroutine leg_bwd_trans_scalar_sym_org(ncomp, nvector, nscalar,&
-!!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm,                 &
+!!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,       &
 !!     &          n_WR, n_WS, WR, WS)
 !!        Input:  vr_rtm
 !!        Output: sp_rlm
@@ -28,14 +28,14 @@
 !
       use m_precision
       use m_constants
-!
       use m_machine_parameter
-      use m_work_4_sph_trans
+!
       use m_legendre_work_sym_matmul
 !
       use t_spheric_rtm_data
       use t_spheric_rlm_data
       use t_sph_trans_comm_tbl
+      use t_work_4_sph_trans
 !
       implicit none
 !
@@ -46,8 +46,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine leg_bwd_trans_vector_sym_org(ncomp, nvector,           &
-     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, g_sph_rlm,        &
-     &          n_WR, n_WS, WR, WS)
+     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,         &
+     &          asin_theta_1d_rtm, g_sph_rlm, n_WR, n_WS, WR, WS)
 !
       use cal_vr_rtm_by_vecprod
       use set_sp_rlm_for_leg_vecprod
@@ -55,6 +55,9 @@
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
+      type(index_4_sph_trans), intent(in) :: idx_trns
+      real(kind = kreal), intent(in)                                    &
+     &           :: asin_theta_1d_rtm(sph_rtm%nidx_rtm(2))
       real(kind = kreal), intent(in)                                    &
      &           :: g_sph_rlm(sph_rlm%nidx_rlm(2),17)
 !
@@ -86,16 +89,16 @@
       do ip = 1, np_smp
         kst = sph_rtm%istack_rtm_kr_smp(ip-1) + 1
         ked = sph_rtm%istack_rtm_kr_smp(ip  )
-        do lp = 1, idx_trns1%nblock_l_rtm
-          lst = idx_trns1%lstack_block_rtm(lp-1)/2
-          nl_rtm = idx_trns1%lstack_block_rtm(lp  )/2                   &
-     &            - idx_trns1%lstack_block_rtm(lp-1)/2
+        do lp = 1, idx_trns%nblock_l_rtm
+          lst = idx_trns%lstack_block_rtm(lp-1)/2
+          nl_rtm = idx_trns%lstack_block_rtm(lp  )/2                    &
+     &            - idx_trns%lstack_block_rtm(lp-1)/2
 !
           do mp_rlm = 1, sph_rtm%nidx_rtm(3)
             mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
-            jst = idx_trns1%lstack_rlm(mp_rlm-1)
-            nj_rlm = idx_trns1%lstack_rlm(mp_rlm)                       &
-     &              - idx_trns1%lstack_rlm(mp_rlm-1)
+            jst = idx_trns%lstack_rlm(mp_rlm-1)
+            nj_rlm = idx_trns%lstack_rlm(mp_rlm)                        &
+     &              - idx_trns%lstack_rlm(mp_rlm-1)
             je = 1 + jst
             jo = 1 + jst + (nj_rlm+1) / 2
             do k_rlm = kst, ked
@@ -160,9 +163,9 @@
         do lp_rtm = sph_rtm%nidx_rtm(2)/2+1, (sph_rtm%nidx_rtm(2)+1)/2
           do mp_rlm = 1, sph_rtm%nidx_rtm(3)
             mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
-            jst = idx_trns1%lstack_rlm(mp_rlm-1)
-            nj_rlm = idx_trns1%lstack_rlm(mp_rlm)                       &
-     &              - idx_trns1%lstack_rlm(mp_rlm-1)
+            jst = idx_trns%lstack_rlm(mp_rlm-1)
+            nj_rlm = idx_trns%lstack_rlm(mp_rlm)                        &
+     &              - idx_trns%lstack_rlm(mp_rlm-1)
             je = 1 + jst
             jo = 1 + jst + (nj_rlm+1) / 2
             do k_rlm = kst, ked
@@ -209,7 +212,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine leg_bwd_trans_scalar_sym_org(ncomp, nvector, nscalar,  &
-     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm,                   &
+     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,         &
      &          n_WR, n_WS, WR, WS)
 !
       use cal_vr_rtm_by_vecprod
@@ -218,6 +221,7 @@
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
+      type(index_4_sph_trans), intent(in) :: idx_trns
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR, n_WS
@@ -239,15 +243,15 @@
       do ip = 1, np_smp
         kst = sph_rtm%istack_rtm_kr_smp(ip-1) + 1
         ked = sph_rtm%istack_rtm_kr_smp(ip  )
-        do lp = 1, idx_trns1%nblock_l_rtm
-          lst = idx_trns1%lstack_block_rtm(lp-1)/2
-          nl_rtm = idx_trns1%lstack_block_rtm(lp  )/2                   &
-     &            - idx_trns1%lstack_block_rtm(lp-1)/2
+        do lp = 1, idx_trns%nblock_l_rtm
+          lst = idx_trns%lstack_block_rtm(lp-1)/2
+          nl_rtm = idx_trns%lstack_block_rtm(lp  )/2                    &
+     &            - idx_trns%lstack_block_rtm(lp-1)/2
 !
           do mp_rlm = 1, sph_rtm%nidx_rtm(3)
-            jst = idx_trns1%lstack_rlm(mp_rlm-1)
-            nj_rlm = idx_trns1%lstack_rlm(mp_rlm)                       &
-     &              - idx_trns1%lstack_rlm(mp_rlm-1)
+            jst = idx_trns%lstack_rlm(mp_rlm-1)
+            nj_rlm = idx_trns%lstack_rlm(mp_rlm)                        &
+     &              - idx_trns%lstack_rlm(mp_rlm-1)
             je = 1 + jst
             jo = 1 + jst + (nj_rlm+1) / 2
             do k_rlm = kst, ked
@@ -288,9 +292,9 @@
 !   Equator (if necessary)
         do lp_rtm = sph_rtm%nidx_rtm(2)/2+1, (sph_rtm%nidx_rtm(2)+1)/2
           do mp_rlm = 1, sph_rtm%nidx_rtm(3)
-            jst = idx_trns1%lstack_rlm(mp_rlm-1)
-            nj_rlm = idx_trns1%lstack_rlm(mp_rlm)                       &
-     &              - idx_trns1%lstack_rlm(mp_rlm-1)
+            jst = idx_trns%lstack_rlm(mp_rlm-1)
+            nj_rlm = idx_trns%lstack_rlm(mp_rlm)                        &
+     &              - idx_trns%lstack_rlm(mp_rlm-1)
             je = 1 + jst
             do k_rlm = kst, ked
               do nd = 1, nscalar

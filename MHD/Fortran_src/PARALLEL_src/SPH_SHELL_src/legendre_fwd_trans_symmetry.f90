@@ -8,15 +8,21 @@
 !!
 !!@verbatim
 !!      subroutine leg_fwd_trans_vector_sym_org(ncomp, nvector,         &
-!!     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm,                 &
-!!     &          g_sph_rlm, weight_rtm, n_WR, n_WS, WR, WS)
+!!     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns,       &
+!!     &          asin_theta_1d_rtm, g_sph_rlm, weight_rtm,             &
+!!     &          n_WR, n_WS, WR, WS)
 !!        Input:  vr_rtm   (Order: radius,theta,phi)
 !!        Output: sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
 !!      subroutine leg_fwd_trans_scalar_sym_org(ncomp, nvector, nscalar,&
-!!     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm,                 &
+!!     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns,       &
 !!     &          g_sph_rlm, weight_rtm, n_WR, n_WS, WR, WS)
 !!        Input:  vr_rtm
 !!        Output: sp_rlm
+!!
+!!        type(sph_rtm_grid), intent(in) :: sph_rtm
+!!        type(sph_rlm_grid), intent(in) :: sph_rlm
+!!        type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
+!!        type(index_4_sph_trans), intent(in) :: idx_trns
 !!@endverbatim
 !!
 !!@param   ncomp    Total number of components for spherical transform
@@ -27,14 +33,14 @@
       module legendre_fwd_trans_symmetry
 !
       use m_precision
-!
       use m_machine_parameter
-      use m_work_4_sph_trans
+!
       use m_legendre_work_sym_matmul
 !
       use t_spheric_rtm_data
       use t_spheric_rlm_data
       use t_sph_trans_comm_tbl
+      use t_work_4_sph_trans
 !
       implicit none
 !
@@ -45,8 +51,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine leg_fwd_trans_vector_sym_org(ncomp, nvector,           &
-     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm,                   &
-     &          g_sph_rlm, weight_rtm, n_WR, n_WS, WR, WS)
+     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns,         &
+     &          asin_theta_1d_rtm, g_sph_rlm, weight_rtm,               &
+     &          n_WR, n_WS, WR, WS)
 !
       use set_vr_rtm_for_leg_vecprod
       use cal_sp_rlm_by_vecprod
@@ -54,6 +61,9 @@
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
+      type(index_4_sph_trans), intent(in) :: idx_trns
+      real(kind = kreal), intent(in)                                    &
+     &           :: asin_theta_1d_rtm(sph_rtm%nidx_rtm(2))
       real(kind = kreal), intent(in)                                    &
      &           :: g_sph_rlm(sph_rlm%nidx_rlm(2),17)
       real(kind = kreal), intent(in) :: weight_rtm(sph_rtm%nidx_rtm(2))
@@ -93,9 +103,9 @@
 !
           do mp_rlm = 1, sph_rtm%nidx_rtm(3)
             mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
-            jst = idx_trns1%lstack_rlm(mp_rlm-1)
-            nj_rlm = idx_trns1%lstack_rlm(mp_rlm)                       &
-     &              - idx_trns1%lstack_rlm(mp_rlm-1)
+            jst = idx_trns%lstack_rlm(mp_rlm-1)
+            nj_rlm = idx_trns%lstack_rlm(mp_rlm)                        &
+     &              - idx_trns%lstack_rlm(mp_rlm-1)
             n_jk_e = (nj_rlm+1) / 2
             n_jk_o =  nj_rlm - n_jk_e
 !    even l-m
@@ -176,7 +186,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine leg_fwd_trans_scalar_sym_org(ncomp, nvector, nscalar,  &
-     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm,                   &
+     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns,         &
      &          g_sph_rlm, weight_rtm, n_WR, n_WS, WR, WS)
 !
       use set_vr_rtm_for_leg_vecprod
@@ -185,6 +195,7 @@
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
+      type(index_4_sph_trans), intent(in) :: idx_trns
       real(kind = kreal), intent(in)                                    &
      &           :: g_sph_rlm(sph_rlm%nidx_rlm(2),17)
       real(kind = kreal), intent(in) :: weight_rtm(sph_rtm%nidx_rtm(2))
@@ -214,9 +225,9 @@
         ked = sph_rlm%istack_rlm_kr_smp(ip  )
         do k_rlm = kst, ked
           do mp_rlm = 1, sph_rtm%nidx_rtm(3)
-            jst = idx_trns1%lstack_rlm(mp_rlm-1)
-            nj_rlm = idx_trns1%lstack_rlm(mp_rlm)                       &
-     &              - idx_trns1%lstack_rlm(mp_rlm-1)
+            jst = idx_trns%lstack_rlm(mp_rlm-1)
+            nj_rlm = idx_trns%lstack_rlm(mp_rlm)                        &
+     &              - idx_trns%lstack_rlm(mp_rlm-1)
             n_jk_e = (nj_rlm+1) / 2
             n_jk_o =  nj_rlm - n_jk_e
 !    even l-m

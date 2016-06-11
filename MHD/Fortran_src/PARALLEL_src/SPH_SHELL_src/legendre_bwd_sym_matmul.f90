@@ -10,24 +10,24 @@
 !!
 !!@verbatim
 !!      subroutine leg_b_trans_vec_sym_matmul(ncomp, nvector,           &
-!!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, g_sph_rlm,      &
-!!     &          n_WR, n_WS, WR, WS)
+!!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,       &
+!!     &          asin_theta_1d_rtm, g_sph_rlm, n_WR, n_WS, WR, WS)
 !!      subroutine leg_b_trans_scl_sym_matmul(ncomp, nvector, nscalar,  &
-!!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm,                 &
+!!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,       &
 !!     &          n_WR, n_WS, WR, WS)
 !!
 !!      subroutine leg_b_trans_vec_sym_dgemm(ncomp, nvector,            &
-!!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, g_sph_rlm,      &
-!!     &          n_WR, n_WS, WR, WS)
+!!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,       &
+!!     &          asin_theta_1d_rtm, g_sph_rlm, n_WR, n_WS, WR, WS)
 !!      subroutine leg_b_trans_scl_sym_dgemm(ncomp, nvector, nscalar,   &
-!!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm,                 &
+!!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,       &
 !!     &          n_WR, n_WS, WR, WS)
 !!
 !!      subroutine leg_b_trans_vec_sym_matprod(ncomp, nvector,          &
-!!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, g_sph_rlm,      &
-!!     &          n_WR, n_WS, WR, WS)
+!!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,       &
+!!     &          asin_theta_1d_rtm, g_sph_rlm, n_WR, n_WS, WR, WS)
 !!      subroutine leg_b_trans_scl_sym_matprod(ncomp, nvector, nscalar, &
-!!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm,                 &
+!!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,       &
 !!     &          n_WR, n_WS, WR, WS)
 !!        type(sph_rtm_grid), intent(in) :: sph_rtm
 !!        type(sph_rlm_grid), intent(in) :: sph_rlm
@@ -55,16 +55,16 @@
 !
       use m_precision
       use m_constants
+      use m_machine_parameter
       use m_work_time
       use calypso_mpi
 !
-      use m_machine_parameter
-      use m_work_4_sph_trans
       use m_legendre_work_sym_matmul
 !
       use t_spheric_rtm_data
       use t_spheric_rlm_data
       use t_sph_trans_comm_tbl
+      use t_work_4_sph_trans
 !
       use matmul_for_legendre_trans
 !
@@ -81,8 +81,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine leg_b_trans_vec_sym_matmul(ncomp, nvector,             &
-     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, g_sph_rlm,        &
-     &          n_WR, n_WS, WR, WS)
+     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,         &
+     &          asin_theta_1d_rtm, g_sph_rlm, n_WR, n_WS, WR, WS)
 !
       use set_sp_rlm_for_leg_matmul
       use cal_vr_rtm_by_matmul
@@ -90,6 +90,9 @@
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
+      type(index_4_sph_trans), intent(in) :: idx_trns
+      real(kind = kreal), intent(in)                                    &
+     &           :: asin_theta_1d_rtm(sph_rtm%nidx_rtm(2))
       real(kind = kreal), intent(in)                                    &
      &           :: g_sph_rlm(sph_rlm%nidx_rlm(2),17)
 !
@@ -121,12 +124,12 @@
      &                     - sph_rtm%istack_rtm_kr_smp(ip-1))
         do mp_rlm = 1, sph_rtm%nidx_rtm(3)
           mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
-          jst(ip) = idx_trns1%lstack_rlm(mp_rlm-1)
-          jst_h(ip) = idx_trns1%lstack_even_rlm(mp_rlm) + 1
-          n_jk_e(ip) = idx_trns1%lstack_even_rlm(mp_rlm)                &
-     &                - idx_trns1%lstack_rlm(mp_rlm-1)
-          n_jk_o(ip) = idx_trns1%lstack_rlm(mp_rlm)                     &
-     &                - idx_trns1%lstack_even_rlm(mp_rlm)
+          jst(ip) = idx_trns%lstack_rlm(mp_rlm-1)
+          jst_h(ip) = idx_trns%lstack_even_rlm(mp_rlm) + 1
+          n_jk_e(ip) = idx_trns%lstack_even_rlm(mp_rlm)                 &
+     &                - idx_trns%lstack_rlm(mp_rlm-1)
+          n_jk_o(ip) = idx_trns%lstack_rlm(mp_rlm)                      &
+     &                - idx_trns%lstack_even_rlm(mp_rlm)
 !
 !          st_elapsed = MPI_WTIME()
           call set_sp_rlm_vector_sym_matmul                             &
@@ -189,7 +192,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine leg_b_trans_scl_sym_matmul(ncomp, nvector, nscalar,    &
-     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm,                   &
+     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,         &
      &          n_WR, n_WS, WR, WS)
 !
       use set_sp_rlm_for_leg_matmul
@@ -198,6 +201,7 @@
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
+      type(index_4_sph_trans), intent(in) :: idx_trns
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR, n_WS
       real (kind=kreal), intent(inout):: WR(n_WR)
@@ -223,12 +227,12 @@
      &                     - sph_rtm%istack_rtm_kr_smp(ip-1))
 !
         do mp_rlm = 1, sph_rtm%nidx_rtm(3)
-          jst(ip) = idx_trns1%lstack_rlm(mp_rlm-1)
-          jst_h(ip) = idx_trns1%lstack_even_rlm(mp_rlm) + 1
-          n_jk_e(ip) = idx_trns1%lstack_even_rlm(mp_rlm)                &
-     &                - idx_trns1%lstack_rlm(mp_rlm-1)
-          n_jk_o(ip) = idx_trns1%lstack_rlm(mp_rlm)                     &
-     &                - idx_trns1%lstack_even_rlm(mp_rlm)
+          jst(ip) = idx_trns%lstack_rlm(mp_rlm-1)
+          jst_h(ip) = idx_trns%lstack_even_rlm(mp_rlm) + 1
+          n_jk_e(ip) = idx_trns%lstack_even_rlm(mp_rlm)                 &
+     &                - idx_trns%lstack_rlm(mp_rlm-1)
+          n_jk_o(ip) = idx_trns%lstack_rlm(mp_rlm)                      &
+     &                - idx_trns%lstack_even_rlm(mp_rlm)
 !
 !          st_elapsed = MPI_WTIME()
           call set_sp_rlm_scalar_sym_matmul                             &
@@ -268,8 +272,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine leg_b_trans_vec_sym_dgemm(ncomp, nvector,              &
-     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, g_sph_rlm,        &
-     &          n_WR, n_WS, WR, WS)
+     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,         &
+     &          asin_theta_1d_rtm, g_sph_rlm, n_WR, n_WS, WR, WS)
 !
       use set_sp_rlm_for_leg_matmul
       use cal_vr_rtm_by_matmul
@@ -277,6 +281,9 @@
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
+      type(index_4_sph_trans), intent(in) :: idx_trns
+      real(kind = kreal), intent(in)                                    &
+     &           :: asin_theta_1d_rtm(sph_rtm%nidx_rtm(2))
       real(kind = kreal), intent(in)                                    &
      &           :: g_sph_rlm(sph_rlm%nidx_rlm(2),17)
 !
@@ -309,12 +316,12 @@
      &                     - sph_rtm%istack_rtm_kr_smp(ip-1))
         do mp_rlm = 1, sph_rtm%nidx_rtm(3)
           mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
-          jst(ip) = idx_trns1%lstack_rlm(mp_rlm-1)
-          jst_h(ip) = idx_trns1%lstack_even_rlm(mp_rlm) + 1
-          n_jk_e(ip) = idx_trns1%lstack_even_rlm(mp_rlm)                &
-     &                - idx_trns1%lstack_rlm(mp_rlm-1)
-          n_jk_o(ip) = idx_trns1%lstack_rlm(mp_rlm)                     &
-     &                - idx_trns1%lstack_even_rlm(mp_rlm)
+          jst(ip) = idx_trns%lstack_rlm(mp_rlm-1)
+          jst_h(ip) = idx_trns%lstack_even_rlm(mp_rlm) + 1
+          n_jk_e(ip) = idx_trns%lstack_even_rlm(mp_rlm)                 &
+     &                - idx_trns%lstack_rlm(mp_rlm-1)
+          n_jk_o(ip) = idx_trns%lstack_rlm(mp_rlm)                      &
+     &                - idx_trns%lstack_even_rlm(mp_rlm)
 !
 !          st_elapsed = MPI_WTIME()
           call set_sp_rlm_vector_sym_matmul                             &
@@ -377,7 +384,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine leg_b_trans_scl_sym_dgemm(ncomp, nvector, nscalar,     &
-     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm,                   &
+     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,         &
      &          n_WR, n_WS, WR, WS)
 !
       use set_sp_rlm_for_leg_matmul
@@ -386,6 +393,7 @@
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
+      type(index_4_sph_trans), intent(in) :: idx_trns
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR, n_WS
       real (kind=kreal), intent(inout):: WR(n_WR)
@@ -411,12 +419,12 @@
      &                     - sph_rtm%istack_rtm_kr_smp(ip-1))
 !
         do mp_rlm = 1, sph_rtm%nidx_rtm(3)
-          jst(ip) = idx_trns1%lstack_rlm(mp_rlm-1)
-          jst_h(ip) = idx_trns1%lstack_even_rlm(mp_rlm) + 1
-          n_jk_e(ip) = idx_trns1%lstack_even_rlm(mp_rlm)                &
-     &                - idx_trns1%lstack_rlm(mp_rlm-1)
-          n_jk_o(ip) = idx_trns1%lstack_rlm(mp_rlm)                     &
-     &                - idx_trns1%lstack_even_rlm(mp_rlm)
+          jst(ip) = idx_trns%lstack_rlm(mp_rlm-1)
+          jst_h(ip) = idx_trns%lstack_even_rlm(mp_rlm) + 1
+          n_jk_e(ip) = idx_trns%lstack_even_rlm(mp_rlm)                 &
+     &                - idx_trns%lstack_rlm(mp_rlm-1)
+          n_jk_o(ip) = idx_trns%lstack_rlm(mp_rlm)                      &
+     &                - idx_trns%lstack_even_rlm(mp_rlm)
 !
 !          st_elapsed = MPI_WTIME()
           call set_sp_rlm_scalar_sym_matmul                             &
@@ -456,8 +464,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine leg_b_trans_vec_sym_matprod(ncomp, nvector,            &
-     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, g_sph_rlm,        &
-     &          n_WR, n_WS, WR, WS)
+     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,         &
+     &          asin_theta_1d_rtm, g_sph_rlm, n_WR, n_WS, WR, WS)
 !
       use set_sp_rlm_for_leg_matmul
       use cal_vr_rtm_by_matmul
@@ -465,6 +473,9 @@
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
+      type(index_4_sph_trans), intent(in) :: idx_trns
+      real(kind = kreal), intent(in)                                    &
+     &           :: asin_theta_1d_rtm(sph_rtm%nidx_rtm(2))
       real(kind = kreal), intent(in)                                    &
      &           :: g_sph_rlm(sph_rlm%nidx_rlm(2),17)
 !
@@ -497,12 +508,12 @@
      &                     - sph_rtm%istack_rtm_kr_smp(ip-1))
         do mp_rlm = 1, sph_rtm%nidx_rtm(3)
           mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
-          jst(ip) = idx_trns1%lstack_rlm(mp_rlm-1)
-          jst_h(ip) = idx_trns1%lstack_even_rlm(mp_rlm) + 1
-          n_jk_e(ip) = idx_trns1%lstack_even_rlm(mp_rlm)                &
-     &                - idx_trns1%lstack_rlm(mp_rlm-1)
-          n_jk_o(ip) = idx_trns1%lstack_rlm(mp_rlm)                     &
-     &                - idx_trns1%lstack_even_rlm(mp_rlm)
+          jst(ip) = idx_trns%lstack_rlm(mp_rlm-1)
+          jst_h(ip) = idx_trns%lstack_even_rlm(mp_rlm) + 1
+          n_jk_e(ip) = idx_trns%lstack_even_rlm(mp_rlm)                 &
+     &                - idx_trns%lstack_rlm(mp_rlm-1)
+          n_jk_o(ip) = idx_trns%lstack_rlm(mp_rlm)                      &
+     &                - idx_trns%lstack_even_rlm(mp_rlm)
 !
 !          st_elapsed = MPI_WTIME()
           call set_sp_rlm_vector_sym_matmul                             &
@@ -565,7 +576,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine leg_b_trans_scl_sym_matprod(ncomp, nvector, nscalar,   &
-     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm,                   &
+     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,         &
      &          n_WR, n_WS, WR, WS)
 !
       use set_sp_rlm_for_leg_matmul
@@ -574,6 +585,7 @@
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
+      type(index_4_sph_trans), intent(in) :: idx_trns
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR, n_WS
       real (kind=kreal), intent(inout):: WR(n_WR)
@@ -599,12 +611,12 @@
      &                     - sph_rtm%istack_rtm_kr_smp(ip-1))
 !
         do mp_rlm = 1, sph_rtm%nidx_rtm(3)
-          jst(ip) = idx_trns1%lstack_rlm(mp_rlm-1)
-          jst_h(ip) = idx_trns1%lstack_even_rlm(mp_rlm) + 1
-          n_jk_e(ip) = idx_trns1%lstack_even_rlm(mp_rlm)                &
-     &                - idx_trns1%lstack_rlm(mp_rlm-1)
-          n_jk_o(ip) = idx_trns1%lstack_rlm(mp_rlm)                     &
-     &                - idx_trns1%lstack_even_rlm(mp_rlm)
+          jst(ip) = idx_trns%lstack_rlm(mp_rlm-1)
+          jst_h(ip) = idx_trns%lstack_even_rlm(mp_rlm) + 1
+          n_jk_e(ip) = idx_trns%lstack_even_rlm(mp_rlm)                 &
+     &                - idx_trns%lstack_rlm(mp_rlm-1)
+          n_jk_o(ip) = idx_trns%lstack_rlm(mp_rlm)                      &
+     &                - idx_trns%lstack_even_rlm(mp_rlm)
 !
 !          st_elapsed = MPI_WTIME()
           call set_sp_rlm_scalar_sym_matmul                             &

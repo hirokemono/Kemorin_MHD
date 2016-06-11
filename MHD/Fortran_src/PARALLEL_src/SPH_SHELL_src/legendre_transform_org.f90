@@ -50,6 +50,7 @@
       use t_spheric_rlm_data
       use t_sph_trans_comm_tbl
       use t_schmidt_poly_on_rtm
+      use m_work_4_sph_trans
 !
       implicit none
 !
@@ -206,10 +207,11 @@
 !
 !
       call leg_bwd_trans_vector_sym_org(ncomp, nvector,                 &
-     &    sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg%g_sph_rlm,          &
-     &    n_WR, n_WS, WR, WS)
+     &    sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns1,              &
+     &    asin_theta_1d_rtm, leg%g_sph_rlm, n_WR, n_WS, WR, WS)
       call leg_bwd_trans_scalar_sym_org(ncomp, nvector, nscalar,        &
-     &    sph_rlm, sph_rtm, comm_rlm, comm_rtm, n_WR, n_WS, WR, WS)
+     &    sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns1,              &
+     &    n_WR, n_WS, WR, WS)
 !
       end subroutine leg_backward_trans_sym_org
 !
@@ -232,10 +234,11 @@
 !
 !
       call leg_fwd_trans_vector_sym_org(ncomp, nvector,                 &
-     &    sph_rtm, sph_rlm, comm_rtm, comm_rlm,                         &
-     &    leg%g_sph_rlm, leg%weight_rtm, n_WR, n_WS, WR, WS)
+     &    sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns1,              &
+     &    asin_theta_1d_rtm, leg%g_sph_rlm, leg%weight_rtm,             &
+     &    n_WR, n_WS, WR, WS)
       call leg_fwd_trans_scalar_sym_org(ncomp, nvector, nscalar,        &
-     &    sph_rtm, sph_rlm, comm_rtm, comm_rlm,                         &
+     &    sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns1,              &
      &    leg%g_sph_rlm, leg%weight_rtm, n_WR, n_WS, WR, WS)
 !
       end subroutine leg_forward_trans_sym_org
