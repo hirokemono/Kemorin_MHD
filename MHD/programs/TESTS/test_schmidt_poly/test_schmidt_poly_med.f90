@@ -5,27 +5,29 @@
 !
 !     Written by H. Matsui on June, 2007
 !
-      use m_schmidt_poly_on_gauss
+      use t_schmidt_poly_on_gauss
       use m_spherical_harmonics
       use schmidt_poly_on_meridian
 !
       implicit none
+!
+      type(gauss_legendre_data), save :: leg_t
 !
       integer(kind = kint) :: j, l, m, i, itime
       integer(kind = kint) :: iend, istart, t_rate, t_max, lst, led
 !
 !
       write(*,*) 'input num. of points'
-      read(*,*) nth_g
+      read(*,*) leg_t%nth_g
 !
       write(*,*) 'input range of point'
       read(*,*) lst, led
 !
       write(*,*) 'input truncation'
-      read(*,*) ltr_g
+      read(*,*) leg_t%ltr_g
 !
       call system_clock(istart)
-      call cal_full_legendre_on_med(lst, led)
+      call cal_full_legendre_on_med(lst, led, leg_t)
       call system_clock(iend, t_rate, t_max)
       write(*,*) 'Elapsed time:', (iend-istart) / dble(t_rate)
 !
@@ -40,12 +42,13 @@
 !
       open (50,file='schmidt_polynomials.dat')
       write(50,'(a)') 'j, l, m, i, theta, P_lm, dPdr_lm'
-      l = ltr_g
+      l = leg_t%ltr_g
       do m = 0, l
         j = l*(l+1) + m
         do i = lst, led
           write(50,'(4i16,1p4E25.15e3)') j, l, m, i,                    &
-     &      g_colat_med(i), P_org(i,j), P_smdt(i,j), dPdt_smdt(i,j)
+     &      leg_t%g_colat_med(i), leg_t%P_org(i,j),                     &
+     &      leg_t%P_smdt(i,j), leg_t%dPdt_smdt(i,j)
         end do
       end do
       close(50)
