@@ -37,6 +37,7 @@
       use t_spheric_rlm_data
       use t_sph_trans_comm_tbl
       use t_schmidt_poly_on_rtm
+      use m_work_4_sph_trans
 !
       implicit none
 !

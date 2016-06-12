@@ -9,7 +9,11 @@
 !!
 !!@verbatim
 !!      subroutine init_legendre_testloop                               &
-!!     &         (sph_rtm, sph_rlm, leg, nvector, nscalar)
+!!     &         (sph_rtm, sph_rlm, leg, idx_trns, nvector, nscalar)
+!!        type(sph_rtm_grid), intent(in) :: sph_rtm
+!!        type(sph_rlm_grid), intent(in) :: sph_rlm
+!!        type(legendre_4_sph_trans), intent(in) :: leg
+!!        type(index_4_sph_trans), intent(in) :: idx_trns
 !!
 !!      subroutine alloc_leg_vec_test                                   &
 !!     &         (nri_rtm, maxidx_rtm_t_smp, nvector, nscalar)
@@ -39,12 +43,12 @@
       use calypso_mpi
 !
       use m_machine_parameter
-      use m_work_4_sph_trans
       use matmul_for_legendre_trans
 !
       use t_spheric_rtm_data
       use t_spheric_rlm_data
       use t_schmidt_poly_on_rtm
+      use t_work_4_sph_trans
 !
       implicit none
 !
@@ -176,19 +180,20 @@
 ! -----------------------------------------------------------------------
 !
       subroutine init_legendre_testloop                                 &
-     &         (sph_rtm, sph_rlm, leg, nvector, nscalar)
+     &         (sph_rtm, sph_rlm, leg, idx_trns, nvector, nscalar)
 !
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(legendre_4_sph_trans), intent(in) :: leg
+      type(index_4_sph_trans), intent(in) :: idx_trns
       integer(kind = kint), intent(in) :: nvector, nscalar
 !
 !
       call const_legendre_testloop(sph_rlm%nidx_rlm(2),                 &
-     &    sph_rtm%nidx_rtm(2), sph_rtm%nidx_rtm(3), leg)
+     &    sph_rtm%nidx_rtm(2), sph_rtm%nidx_rtm(3), leg, idx_trns)
       call alloc_leg_vec_test                                           &
      &   (sph_rtm%nidx_rtm(2), sph_rtm%maxidx_rtm_smp(1),               &
-     &    nvector, nscalar)
+     &    nvector, nscalar, idx_trns)
 !
       end subroutine init_legendre_testloop
 !
@@ -196,12 +201,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_legendre_testloop                                &
-     &         (jmax_rlm, nth_rtm, mphi_rtm, leg)
+     &         (jmax_rlm, nth_rtm, mphi_rtm, leg, idx_trns)
 !
       use set_legendre_matrices
 !
       integer(kind = kint), intent(in) :: nth_rtm, mphi_rtm, jmax_rlm
       type(legendre_4_sph_trans), intent(in) :: leg
+      type(index_4_sph_trans), intent(in) :: idx_trns
 !
 !
       nth_sym = (nth_rtm+1) / 2
@@ -210,7 +216,7 @@
 !
       call set_symmetric_legendre_lj                                    &
      &   (nth_rtm, mphi_rtm, jmax_rlm, nth_sym,                         &
-     &    idx_trns1%lstack_rlm, idx_trns1%lstack_even_rlm,              &
+     &    idx_trns%lstack_rlm, idx_trns%lstack_even_rlm,                &
      &    leg%P_rtm, leg%dPdt_rtm, Ps_tj, dPsdt_tj)
 !
       end subroutine const_legendre_testloop
@@ -218,14 +224,15 @@
 ! -----------------------------------------------------------------------
 !
       subroutine alloc_leg_vec_test                                     &
-     &         (nri_rtm, maxidx_rtm_t_smp, nvector, nscalar)
+     &         (nri_rtm, maxidx_rtm_t_smp, nvector, nscalar, idx_trns)
 !
       integer(kind = kint), intent(in) :: nri_rtm, maxidx_rtm_t_smp
       integer(kind = kint), intent(in) :: nvector, nscalar
+      type(index_4_sph_trans), intent(in) :: idx_trns
 !
 !
-      nvec_jk = ((idx_trns1%maxdegree_rlm+1)/2) * nri_rtm*nvector
-      nscl_jk = ((idx_trns1%maxdegree_rlm+1)/2) * nri_rtm*nscalar
+      nvec_jk = ((idx_trns%maxdegree_rlm+1)/2) * nri_rtm*nvector
+      nscl_jk = ((idx_trns%maxdegree_rlm+1)/2) * nri_rtm*nscalar
       allocate(pol_e(3*nvec_jk+nscl_jk,np_smp))
       allocate(tor_e(2*nvec_jk,np_smp))
       allocate(pol_o(3*nvec_jk+nscl_jk,np_smp))

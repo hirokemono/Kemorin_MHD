@@ -281,7 +281,7 @@
         call alloc_leg_scl_blocked(sph_rtm%nidx_rtm(2), idx_trns1)
       else if(id_legendre_transfer .eq. iflag_leg_test_loop) then
         call init_legendre_testloop                                     &
-     &     (sph_rtm, sph_rlm, leg, nvector, nscalar)
+     &     (sph_rtm, sph_rlm, leg, idx_trns1, nvector, nscalar)
       else
         call allocate_work_sph_trans                                    &
      &     (ncomp, sph_rtm%nnod_rtm, sph_rlm%nnod_rlm)
