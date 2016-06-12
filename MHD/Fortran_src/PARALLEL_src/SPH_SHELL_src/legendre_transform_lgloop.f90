@@ -37,6 +37,7 @@
       use t_spheric_rlm_data
       use t_sph_trans_comm_tbl
       use t_schmidt_poly_on_rtm
+      use m_work_4_sph_trans
 !
       implicit none
 !
@@ -69,12 +70,12 @@
       call clear_bwd_legendre_work(ncomp, sph_rtm%nnod_rtm)
 !
       call legendre_b_trans_vector_long                                 &
-     &    (ncomp, nvector, sph_rlm, sph_rtm,                            &
-     &     leg%g_sph_rlm, leg%P_rtm, leg%dPdt_rtm,                      &
+     &    (ncomp, nvector, sph_rlm, sph_rtm, idx_trns1,                 &
+     &     asin_theta_1d_rtm, leg%g_sph_rlm, leg%P_rtm, leg%dPdt_rtm,   &
      &     sp_rlm_wk, vr_rtm_wk)
       call legendre_b_trans_scalar_long                                 &
-     &    (ncomp, nvector, nscalar, sph_rlm, sph_rtm, leg%P_rtm,        &
-     &     sp_rlm_wk, vr_rtm_wk)
+     &    (ncomp, nvector, nscalar, sph_rlm, sph_rtm, idx_trns1,        &
+     &     leg%P_rtm, sp_rlm_wk, vr_rtm_wk)
 !
       call calypso_sph_to_send_N(ncomp, sph_rtm%nnod_rtm,               &
      &    comm_rtm, n_WS, vr_rtm_wk(1), WS)
@@ -105,11 +106,11 @@
      &    comm_rtm, n_WR, WR, vr_rtm_wk(1))
 !
       call legendre_f_trans_vector_long                                 &
-     &    (ncomp, nvector, sph_rtm, sph_rlm,                            &
-     &     leg%g_sph_rlm, leg%weight_rtm, leg%P_rtm, leg%dPdt_rtm,      &
-     &     vr_rtm_wk, sp_rlm_wk)
+     &    (ncomp, nvector, sph_rtm, sph_rlm, idx_trns1,                 &
+     &     asin_theta_1d_rtm, leg%g_sph_rlm, leg%weight_rtm,            &
+     &     leg%P_rtm, leg%dPdt_rtm, vr_rtm_wk, sp_rlm_wk)
       call legendre_f_trans_scalar_long                                 &
-     &    (ncomp, nvector, nscalar, sph_rtm, sph_rlm,                   &
+     &    (ncomp, nvector, nscalar, sph_rtm, sph_rlm, idx_trns1,        &
      &     leg%g_sph_rlm, leg%weight_rtm, leg%P_rtm,                    &
      &     vr_rtm_wk, sp_rlm_wk)
 !
