@@ -58,12 +58,12 @@
 !* obtain linear terms for starting
 !*
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
-      call set_sph_field_to_start(sph1%sph_rj, leg1, rj_fld1)
+      call set_sph_field_to_start(sph1%sph_rj, trans_p1%leg, rj_fld1)
 !
 !*  ----------------lead nonlinear term ... ----------
 !*
       call start_eleps_time(8)
-      call nonlinear(sph1, comms_sph1, leg1, reftemp_rj,                &
+      call nonlinear(sph1, comms_sph1, trans_p1, reftemp_rj,            &
      &    trns_WK1%trns_MHD, rj_fld1)
       call end_eleps_time(8)
 !
@@ -75,7 +75,7 @@
 !*
       if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
       call s_lead_fields_4_sph_mhd                                      &
-     &   (sph1, comms_sph1, leg1, rj_fld1, trns_WK1)
+     &   (sph1, comms_sph1, trans_p1, rj_fld1, trns_WK1)
       call end_eleps_time(9)
 !
       end subroutine SPH_analyze_zRMS_snap

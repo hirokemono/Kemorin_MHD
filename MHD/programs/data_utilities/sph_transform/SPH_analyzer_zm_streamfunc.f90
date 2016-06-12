@@ -88,8 +88,9 @@
         call zonal_mean_all_sph_spectr(sph_mesh%sph%sph_rj, rj_fld)
 !
 !  spherical transform for vector
-        call sph_b_trans_streamline(sph_mesh%sph, sph_mesh%sph_comms,   &
-     &     femmesh_STR%mesh, rj_fld, field_STR)
+        call sph_b_trans_streamline                                     &
+     &     (ncomp_sph_trans, sph_mesh%sph, sph_mesh%sph_comms,          &
+     &      femmesh_STR%mesh, rj_fld, field_STR)
 !
       end if
 !
@@ -139,7 +140,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sph_b_trans_streamline                                 &
-     &         (sph, comms_sph, mesh, rj_fld, nod_fld)
+     &         (ncomp_sph_trans, sph, comms_sph, mesh, rj_fld, nod_fld)
 !
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
@@ -153,6 +154,7 @@
       use spherical_SRs_N
       use sph_transfer_all_field
 !
+      integer(kind = kint), intent(in) :: ncomp_sph_trans
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
 !
@@ -181,7 +183,7 @@
      &  ncomp_sph_trans, num_vector_rtp, num_scalar_rtp, num_tensor_rtp
       call sph_backward_transforms                                      &
      &   (ncomp_sph_trans, num_vector_rtp, nscalar_trans,               &
-     &    sph, comms_sph, leg_trans, n_WS, n_WR, WS(1), WR(1),          &
+     &    sph, comms_sph, trns_param, n_WS, n_WR, WS(1), WR(1),         &
      &    dall_rtp, dlcl_pole, dall_pole)
 !
         if (iflag_debug.gt.0)                                           &
@@ -255,7 +257,6 @@
      &          ncomp_trans, v_rtp)
 !
       use m_phys_labels
-      use m_work_4_sph_trans
       use set_phys_name_4_sph_trans
 !
       integer(kind = kint), intent(in) :: nnod_rtp

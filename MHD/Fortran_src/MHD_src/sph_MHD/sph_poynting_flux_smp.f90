@@ -36,7 +36,6 @@
 !
       use t_spheric_rtp_data
       use t_phys_address
-      use m_work_4_sph_trans
       use sel_fld_copy_4_sph_trans
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp

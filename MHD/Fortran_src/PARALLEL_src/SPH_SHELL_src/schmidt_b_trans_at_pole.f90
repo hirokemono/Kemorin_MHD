@@ -76,7 +76,6 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_work_4_sph_trans
 !
       implicit none
 !

@@ -38,7 +38,6 @@
       use m_control_params_2nd_files
       use m_node_id_spherical_IO
       use m_physical_property
-      use m_work_4_sph_trans
       use m_file_format_switch
 !
       use m_sph_boundary_input_data

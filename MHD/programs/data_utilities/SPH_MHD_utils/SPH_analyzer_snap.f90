@@ -80,12 +80,12 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
       call init_sph_transform_MHD                                       &
-     &   (sph1, comms_sph1, leg1, trns_WK1, rj_fld1)
+     &   (sph1, comms_sph1, trans_p1, trns_WK1, rj_fld1)
 !
 ! ---------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 'const_radial_mat_sph_snap'
-      call const_radial_mat_sph_snap(sph1%sph_rj, leg1)
+      call const_radial_mat_sph_snap(sph1%sph_rj, trans_p1%leg)
 !
 !     --------------------- 
 !  set original spectr mesh data for extension of B
@@ -130,12 +130,12 @@
 !* obtain linear terms for starting
 !*
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
-      call set_sph_field_to_start(sph1%sph_rj, leg1, rj_fld1)
+      call set_sph_field_to_start(sph1%sph_rj, trans_p1%leg, rj_fld1)
 !
 !*  ----------------lead nonlinear term ... ----------
 !*
       call start_eleps_time(8)
-      call nonlinear(sph1, comms_sph1, leg1, reftemp_rj,                &
+      call nonlinear(sph1, comms_sph1, trans_p1, reftemp_rj,            &
      &    trns_WK1%trns_MHD, rj_fld1)
       call end_eleps_time(8)
 !
@@ -147,7 +147,7 @@
 !*
       if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
       call s_lead_fields_4_sph_mhd                                      &
-     &   (sph1, comms_sph1, leg1, rj_fld1, trns_WK1)
+     &   (sph1, comms_sph1, trans_p1, rj_fld1, trns_WK1)
       call end_eleps_time(9)
 !
 !*  -----------  lead energy data --------------
@@ -156,7 +156,7 @@
       call start_eleps_time(11)
       if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
       call output_rms_sph_mhd_control                                   &
-     &   (sph1%sph_params, sph1%sph_rj, leg1, rj_fld1)
+     &   (sph1%sph_params, sph1%sph_rj, trans_p1%leg, rj_fld1)
       call end_eleps_time(11)
 !
 !*  -----------  Output spectr data --------------

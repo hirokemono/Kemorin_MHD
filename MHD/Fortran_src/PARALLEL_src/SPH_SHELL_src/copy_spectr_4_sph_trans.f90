@@ -41,7 +41,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_work_4_sph_trans
 !
       use t_sph_trans_comm_tbl
       use t_phys_data

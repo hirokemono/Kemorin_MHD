@@ -8,12 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine s_lead_fields_4_sph_mhd                              &
-!!     &         (sph, comms_sph, leg, rj_fld, trns_WK)
+!!     &         (sph, comms_sph, trans_p, rj_fld, trns_WK)
 !!      subroutine pressure_4_sph_mhd(sph_rj, rj_fld)
 !!      subroutine enegy_fluxes_4_sph_mhd(sph, comms_sph, rj_fld)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
-!!        type(legendre_4_sph_trans), intent(in) :: leg
+!!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(works_4_sph_trans_MHD), intent(inout) :: trns_WK
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
@@ -30,6 +30,7 @@
       use t_sph_trans_arrays_MHD
       use t_sph_matrices
       use t_schmidt_poly_on_rtm
+      use t_work_4_sph_trans
 !
       implicit none
 !
@@ -43,7 +44,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_lead_fields_4_sph_mhd                                &
-     &         (sph, comms_sph, leg, rj_fld, trns_WK)
+     &         (sph, comms_sph, trans_p, rj_fld, trns_WK)
 !
       use m_control_parameter
       use m_t_step_parameter
@@ -54,7 +55,7 @@
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
-      type(legendre_4_sph_trans), intent(in) :: leg
+      type(parameters_4_sph_trans), intent(in) :: trans_p
 !
       type(works_4_sph_trans_MHD), intent(inout) :: trns_WK
       type(phys_data), intent(inout) :: rj_fld
@@ -67,7 +68,7 @@
       if ( (iflag*mod(istep_max_dt,i_step_output_rst)) .eq.0 ) then
         if(iflag_t_evo_4_velo .gt. id_no_evolution) then
           call pressure_4_sph_mhd                                       &
-     &       (sph%sph_rj, leg, band_p_poisson, rj_fld)
+     &       (sph%sph_rj, trans_p%leg, band_p_poisson, rj_fld)
         end if
       end if
 !
@@ -87,9 +88,9 @@
      &      trns_WK%fls_pl, trns_WK%frm_pl)
       end if
 !
-      call gradients_of_vectors_sph(sph, comms_sph, leg,                &
+      call gradients_of_vectors_sph(sph, comms_sph, trans_p,            &
      &    trns_WK%trns_MHD, trns_WK%trns_tmp, rj_fld)
-      call enegy_fluxes_4_sph_mhd(sph, comms_sph, leg,                  &
+      call enegy_fluxes_4_sph_mhd(sph, comms_sph, trans_p,              &
      &    trns_WK%trns_MHD, trns_WK%trns_snap, rj_fld,                  &
      &    trns_WK%frm_rtp, trns_WK%flc_pl, trns_WK%fls_pl)
 !
@@ -137,7 +138,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine enegy_fluxes_4_sph_mhd                                 &
-     &          (sph, comms_sph, leg, trns_MHD, trns_snap, rj_fld,      &
+     &          (sph, comms_sph, trans_p, trns_MHD, trns_snap, rj_fld,  &
      &           frm_rtp, flc_pl, fls_pl)
 !
       use m_sph_phys_address
@@ -147,7 +148,7 @@
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
-      type(legendre_4_sph_trans), intent(in) :: leg
+      type(parameters_4_sph_trans), intent(in) :: trans_p
 !
       type(address_4_sph_trans), intent(in) :: trns_MHD
       type(address_4_sph_trans), intent(inout) :: trns_snap
@@ -166,7 +167,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_snapshot_MHD'
       call sph_back_trans_snapshot_MHD                                  &
-     &   (sph, comms_sph, leg, rj_fld, trns_snap, flc_pl, fls_pl)
+     &   (sph, comms_sph, trans_p, rj_fld, trns_snap, flc_pl, fls_pl)
 !
 !      Evaluate fields for output in grid space
       if (iflag_debug.eq.1) write(*,*) 's_cal_energy_flux_rtp'
@@ -178,14 +179,14 @@
       if (iflag_debug.eq.1) write(*,*)                                  &
      &                          'sph_forward_trans_snapshot_MHD'
       call sph_forward_trans_snapshot_MHD                               &
-     &   (sph, comms_sph, leg, trns_snap, rj_fld)
+     &   (sph, comms_sph, trans_p, trns_snap, rj_fld)
 !
       end subroutine enegy_fluxes_4_sph_mhd
 !
 ! ----------------------------------------------------------------------
 !
       subroutine gradients_of_vectors_sph                               &
-     &         (sph, comms_sph, leg, trns_MHD, trns_tmp, rj_fld)
+     &         (sph, comms_sph, trans_p, trns_MHD, trns_tmp, rj_fld)
 !
       use m_sph_phys_address
       use sph_transforms_4_MHD
@@ -193,7 +194,7 @@
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
-      type(legendre_4_sph_trans), intent(in) :: leg
+      type(parameters_4_sph_trans), intent(in) :: trans_p
       type(address_4_sph_trans), intent(in) :: trns_MHD
 !
       type(address_4_sph_trans), intent(inout) :: trns_tmp
@@ -208,11 +209,11 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_tmp_snap_MHD'
       call sph_forward_trans_tmp_snap_MHD                               &
-     &   (sph, comms_sph, leg, trns_tmp, rj_fld)
+     &   (sph, comms_sph, trans_p, trns_tmp, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_grad_of_velocities_sph'
       call cal_grad_of_velocities_sph                                   &
-     &   (sph%sph_rj, leg%g_sph_rj, rj_fld)
+     &   (sph%sph_rj, trans_p%leg%g_sph_rj, rj_fld)
 !
       end subroutine gradients_of_vectors_sph
 !

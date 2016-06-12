@@ -94,7 +94,6 @@
 !
       subroutine set_colatitude_rtp(sph_rtp, sph_rj, leg)
 !
-      use m_work_4_sph_trans
       use t_schmidt_poly_on_rtm
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -120,7 +119,6 @@
 !
       use m_sph_phys_address
       use m_physical_property
-      use m_work_4_sph_trans
 !
       integer(kind = kint), intent(in) :: nnod
       integer(kind = kint), intent(in) :: nidx_rtp(3)
@@ -164,7 +162,6 @@
      &          div_coriolis_rtp)
 !
       use m_physical_property
-      use m_work_4_sph_trans
 !
       integer(kind = kint), intent(in) :: nnod
       integer(kind = kint), intent(in) :: nidx_rtp(3)
@@ -203,7 +200,6 @@
 !
       use calypso_mpi
       use m_sph_phys_address
-      use m_work_4_sph_trans
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_rj_grid), intent(in) ::  sph_rj

@@ -5,6 +5,7 @@
 !!@date Programmed in Jan., 2008
 !
 !!@verbatim
+!!      subroutine copy_sph_trans_nums_from_rtp(ncomp_sph_trans)
 !!      subroutine copy_sph_name_rj_to_rtp(rj_fld)
 !!        type(phys_data), intent(in) :: rj_fld
 !!@endverbatim
@@ -58,11 +59,12 @@
 !
 !  --------------------------------------------------------------------
 !
-      subroutine copy_sph_trans_nums_from_rtp
+      subroutine copy_sph_trans_nums_from_rtp(ncomp_sph_trans)
 !
       use m_machine_parameter
       use m_phys_constants
-      use m_work_4_sph_trans
+!
+      integer(kind = kint), intent(inout) :: ncomp_sph_trans
 !
 !
       ncomp_sph_trans =  num_tensor_rtp * n_sym_tensor                  &
@@ -83,7 +85,6 @@
       use m_constants
       use m_machine_parameter
       use m_phys_constants
-      use m_work_4_sph_trans
 !
       use t_phys_data
 !

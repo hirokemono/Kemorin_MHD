@@ -15,7 +15,8 @@
 !!     &          idx_gl_1d_rtm_m, idx_gl_1d_rlm_j,                     &
 !!     &          mdx_p_rlm_rtm, mdx_n_rlm_rtm, maxdegree_rlm,          &
 !!     &          lstack_rlm)
-!!      subroutine set_sin_theta_rtm(nth_rtm)
+!!      subroutine set_sin_theta_rtm                                    &
+!!     &         (nth_rtm, g_colat_rtm, asin_theta_1d_rtm)
 !!      subroutine radial_4_sph_trans(sph_rtp, sph_rtm, sph_rlm, sph_rj)
 !!        type(sph_rtp_grid), intent(inout) :: sph_rtp
 !!        type(sph_rtm_grid), intent(inout) :: sph_rtm
@@ -137,19 +138,21 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sin_theta_rtm(nth_rtm, g_colat_rtm)
-!
-      use m_work_4_sph_trans
+      subroutine set_sin_theta_rtm                                      &
+     &         (nth_rtm, g_colat_rtm, asin_theta_1d_rtm)
 !
       integer(kind = kint), intent(in) :: nth_rtm
       real(kind= kreal), intent(in) :: g_colat_rtm(nth_rtm)
+      real(kind= kreal), intent(inout) :: asin_theta_1d_rtm(nth_rtm)
 !
       integer(kind = kint) :: l_rtm
 !
 !
+!$omp parallel do
       do l_rtm = 1, nth_rtm
         asin_theta_1d_rtm(l_rtm) = one / sin(g_colat_rtm(l_rtm))
       end do
+!$omp end parallel do
 !
       end subroutine set_sin_theta_rtm
 !
@@ -170,6 +173,7 @@
       integer(kind = kint) :: l_rtp, l_gl
 !
 !
+!$omp parallel do private(l_gl)
       do l_rtp = 1, nth_rtp
         l_gl = idx_gl_1d_rtp_t(l_rtp)
         cos_theta_1d_rtp(l_rtp) = cos(g_colat_rtm(l_gl))
@@ -177,6 +181,7 @@
         cot_theta_1d_rtp(l_rtp) = cos_theta_1d_rtp(l_rtp)               &
      &                           / sin_theta_1d_rtp(l_rtp)
       end do
+!$omp end parallel do
 !
       end subroutine set_sin_theta_rtp
 !
@@ -193,6 +198,7 @@
       type(sph_rj_grid), intent(inout) :: sph_rj
 !
 !
+!$omp parallel workshare
       sph_rtp%a_r_1d_rtp_r(1:sph_rtp%nidx_rtp(1))                       &
      &      = one / sph_rtp%radius_1d_rtp_r(1:sph_rtp%nidx_rtp(1))
       sph_rtm%a_r_1d_rtm_r(1:sph_rtm%nidx_rtm(1))                       &
@@ -201,6 +207,7 @@
      &      = one / sph_rlm%radius_1d_rlm_r(1:sph_rlm%nidx_rlm(1))
       sph_rj%a_r_1d_rj_r(1:sph_rj%nidx_rj(1))                           &
      &      = one / sph_rj%radius_1d_rj_r(1:sph_rj%nidx_rj(1))
+!$omp end parallel workshare
 !
       end subroutine radial_4_sph_trans
 !

@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine nonlinear                                            &
-!!     &         (sph, comms_sph, leg, reftemp_rj, trns_MHD, rj_fld)
+!!     &         (sph, comms_sph, trans_p, reftemp_rj, trns_MHD, rj_fld)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(phys_data), intent(inout) :: rj_fld
@@ -37,6 +37,7 @@
       use t_phys_data
       use t_addresses_sph_transform
       use t_schmidt_poly_on_rtm
+      use t_work_4_sph_trans
 !
       implicit none
 !
@@ -49,7 +50,7 @@
 !*   ------------------------------------------------------------------
 !*
       subroutine nonlinear                                              &
-     &         (sph, comms_sph, leg, reftemp_rj, trns_MHD, rj_fld)
+     &         (sph, comms_sph, trans_p, reftemp_rj, trns_MHD, rj_fld)
 !
       use m_sph_phys_address
       use m_boundary_params_sph_MHD
@@ -61,7 +62,7 @@
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
-      type(legendre_4_sph_trans), intent(in) :: leg
+      type(parameters_4_sph_trans), intent(in) :: trans_p
 !
       real(kind = kreal), intent(in)                                    &
      &      :: reftemp_rj(sph%sph_rj%nidx_rj(1),0:1)
@@ -74,12 +75,12 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'nonlinear_by_pseudo_sph'
       call nonlinear_by_pseudo_sph                                      &
-     &   (sph, comms_sph, leg, trns_MHD, rj_fld)
+     &   (sph, comms_sph, trans_p, trns_MHD, rj_fld)
 !
       if (iflag_4_ref_temp .eq. id_sphere_ref_temp) then
         call add_reftemp_advect_sph_MHD                                 &
-     &     (sph_bc_T%kr_in, sph_bc_T%kr_out,                            &
-     &      sph%sph_rj%nidx_rj, sph%sph_rj%ar_1d_rj, leg%g_sph_rj,      &
+     &     (sph_bc_T%kr_in, sph_bc_T%kr_out, sph%sph_rj%nidx_rj,        &
+     &      sph%sph_rj%ar_1d_rj, trans_p%leg%g_sph_rj,                  &
      &      rj_fld%n_point, rj_fld%ntot_phys, reftemp_rj, rj_fld%d_fld)
       end if
 !
@@ -160,7 +161,7 @@
 !*   ------------------------------------------------------------------
 !
       subroutine nonlinear_by_pseudo_sph                                &
-     &         (sph, comms_sph, leg, trns_MHD, rj_fld)
+     &         (sph, comms_sph, trans_p, trns_MHD, rj_fld)
 !
       use sph_transforms_4_MHD
       use cal_nonlinear_sph_MHD
@@ -170,7 +171,7 @@
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
-      type(legendre_4_sph_trans), intent(in) :: leg
+      type(parameters_4_sph_trans), intent(in) :: trans_p
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD
       type(phys_data), intent(inout) :: rj_fld
@@ -180,7 +181,7 @@
       call start_eleps_time(14)
       if (iflag_debug.ge.1) write(*,*) 'sph_back_trans_4_MHD'
       call sph_back_trans_4_MHD                                         &
-     &   (sph, comms_sph, leg, rj_fld, trns_MHD)
+     &   (sph, comms_sph, trans_p, rj_fld, trns_MHD)
       call end_eleps_time(14)
 !
       call start_eleps_time(15)
@@ -194,12 +195,12 @@
       call start_eleps_time(16)
       if (iflag_debug.ge.1) write(*,*) 'sph_forward_trans_4_MHD'
       call sph_forward_trans_4_MHD                                      &
-     &   (sph, comms_sph, leg, trns_MHD, rj_fld)
+     &   (sph, comms_sph, trans_p, trns_MHD, rj_fld)
       call end_eleps_time(16)
 !
       call start_eleps_time(17)
       if (iflag_debug.ge.1) write(*,*) 'cal_momentum_eq_exp_sph'
-      call cal_momentum_eq_exp_sph(sph%sph_rj, leg, rj_fld)
+      call cal_momentum_eq_exp_sph(sph%sph_rj, trans_p%leg, rj_fld)
       call end_eleps_time(17)
 !
       end subroutine nonlinear_by_pseudo_sph

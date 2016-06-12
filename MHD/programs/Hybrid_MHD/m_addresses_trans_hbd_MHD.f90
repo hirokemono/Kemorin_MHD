@@ -98,7 +98,6 @@
       subroutine set_addresses_trans_hbd_MHD
 !
       use m_control_parameter
-      use m_work_4_sph_trans
 !
 !
       nvector_rj_2_xyz = 0
@@ -151,13 +150,6 @@
       nscalar_xyz_2_rj = 0
       ncomp_xyz_2_rj = ncomp_xyz_2_rj + nscalar_xyz_2_rj
 !
-!      ncomp_sph_trans = max(ncomp_rj_2_xyz, ncomp_xyz_2_rj)
-!      nvector_sph_trans                                                 &
-!     &      = max(nvector_rj_2_xyz, nvector_xyz_2_rj)
-!      nscalar_sph_trans                                                 &
-!     &      = max((nscalar_rj_2_xyz+6*ntensor_rj_2_xyz),        &
-!     &            (nscalar_xyz_2_rj+6*ntensor_xyz_2_rj))
-!
       end subroutine set_addresses_trans_hbd_MHD
 !
 !-----------------------------------------------------------------------
@@ -165,10 +157,8 @@
       subroutine check_add_trans_hbd_MHD
 !
       use m_sph_phys_address
-      use m_work_4_sph_trans
 !
 !
-      write(*,*) 'ncomp_sph_trans ', ncomp_sph_trans
       write(*,*) 'ncomp_rj_2_xyz  ', ncomp_rj_2_xyz
       write(*,*) 'ncomp_xyz_2_rj  ', ncomp_xyz_2_rj
 !

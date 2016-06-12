@@ -27,11 +27,10 @@
 !
       use m_precision
 !
-      use m_work_4_sph_trans
-      use set_phys_name_4_sph_trans
-!
       use t_sph_trans_comm_tbl
       use t_phys_data
+!
+      use set_phys_name_4_sph_trans
 !
       implicit  none
 !

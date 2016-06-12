@@ -18,38 +18,47 @@
       module t_work_4_sph_trans
 !
       use m_precision
+      use t_schmidt_poly_on_rtm
 !
       implicit none
 !
 !>      Structure of indices for spherical transforms
       type index_4_sph_trans
-!>      total number of components for spherical harmonics transform
+!>       total number of components for spherical harmonics transform
         integer(kind = kint) :: ncomp_sph_trans
-!>      total number of vectors for spherical harmonics transform
+!>       total number of vectors for spherical harmonics transform
         integer(kind = kint) :: nvector_sph_trans
-!>      total number of svalars for spherical harmonics transform
+!>       total number of svalars for spherical harmonics transform
         integer(kind = kint) :: nscalar_sph_trans
 !
-!>      Spectr harmonics order for Legendre transform
+!>       Spectr harmonics order for Legendre transform
         integer(kind = kint), allocatable :: mdx_p_rlm_rtm(:)
-!>      Spectr harmonics order for Legendre transform
+!>       Spectr harmonics order for Legendre transform
         integer(kind = kint), allocatable :: mdx_n_rlm_rtm(:)
 !
-!>      Number of block for grid in @f$ \theta @f$-direction
+!>       Number of block for grid in @f$ \theta @f$-direction
         integer(kind = kint) :: nblock_l_rtm = 1
-!>      End point of each block for grid in @f$ \theta @f$-direction
+!>       End point of each block for grid in @f$ \theta @f$-direction
         integer(kind = kint), allocatable :: lstack_block_rtm(:)
 !
-!>      Number of block for grid in hermonics degree
+!>       Number of block for grid in hermonics degree
         integer(kind = kint) :: nblock_j_rlm = 1
 !
-!>      End address of spherical harmonics order for SMP parallelization
+!>       End address of spherical harmonics order for SMP parallelization
         integer(kind = kint), allocatable :: lstack_rlm(:)
-!>      Maximum point of each block for grid in  hermonics degree
+!>       Maximum point of each block for grid in  hermonics degree
         integer(kind = kint) :: maxdegree_rlm
-!>      End address of spherical harmonics order for SMP parallelization
+!>       End address of spherical harmonics order for SMP parallelization
         integer(kind = kint), allocatable :: lstack_even_rlm(:)
       end type index_4_sph_trans
+!
+!>        Structures of parameters for spherical transform
+      type parameters_4_sph_trans
+!>        Structures of Legendre polynomials for spherical transform
+        type(legendre_4_sph_trans) :: leg
+!>        Structure of indices for spherical transforms
+        type(index_4_sph_trans) :: idx_trns
+      end type parameters_4_sph_trans
 !
 ! ----------------------------------------------------------------------
 !
@@ -70,11 +79,15 @@
       allocate(idx_trns%mdx_p_rlm_rtm(nidx_rlm(2)))
       allocate(idx_trns%mdx_n_rlm_rtm(nidx_rlm(2)))
 !
-      idx_trns%lstack_rlm = 0
-      idx_trns%lstack_even_rlm = 0
+      if(nidx_rtm(3) .gt. 0) then
+        idx_trns%lstack_rlm = 0
+        idx_trns%lstack_even_rlm = 0
+      end if
+      if(nidx_rlm(2) .gt. 0) then
+        idx_trns%mdx_p_rlm_rtm = 0
+        idx_trns%mdx_n_rlm_rtm = 0
+      end if
       idx_trns%maxdegree_rlm = 0
-      idx_trns%mdx_p_rlm_rtm = 0
-      idx_trns%mdx_n_rlm_rtm = 0
 !
       end subroutine alloc_work_4_sph_trans
 !

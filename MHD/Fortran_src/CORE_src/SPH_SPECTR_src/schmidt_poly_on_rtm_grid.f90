@@ -9,21 +9,24 @@
 !!
 !!@verbatim
 !!      subroutine s_cal_schmidt_poly_rtm                               &
-!!     &         (l_truncation, sph_rj, sph_rtm, sph_rlm, leg)
+!!     &         (l_truncation, sph_rj, sph_rtm, sph_rlm, idx_trns, leg)
 !!        integer(kind = kint), intent(in) :: l_truncation
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(sph_rtm_grid), intent(in) :: sph_rtm
 !!        type(sph_rlm_grid), intent(in) :: sph_rlm
+!!        type(index_4_sph_trans), intent(in) :: idx_trns
 !!        type(legendre_4_sph_trans), intent(inout) :: leg
 !!@endverbatim
 !
       module schmidt_poly_on_rtm_grid
 !
       use m_precision
+      use m_constants
 !
       use t_spheric_rtm_data
       use t_spheric_rlm_data
       use t_spheric_rj_data
+      use t_work_4_sph_trans
 !
       implicit none
 !
@@ -39,16 +42,18 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_cal_schmidt_poly_rtm                                 &
-     &         (l_truncation, sph_rj, sph_rtm, sph_rlm, leg)
+     &         (l_truncation, sph_rj, sph_rtm, sph_rlm, idx_trns, leg)
 !
       use t_schmidt_poly_on_rtm
       use m_gauss_points
       use set_legendre_matrices
+      use set_params_sph_trans
 !
       integer(kind = kint), intent(in) :: l_truncation
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
+      type(index_4_sph_trans), intent(in) :: idx_trns
 !
       type(legendre_4_sph_trans), intent(inout) :: leg
 !
@@ -73,7 +78,7 @@
       call alloc_schmidt_poly_rtm                                       &
      &   (sph_rtm%nidx_rtm(2), sph_rlm%nidx_rlm(2), leg)
       call set_lagender_4_rlm(l_truncation, sph_rtm, sph_rlm,           &
-     &    leg%g_colat_rtm, leg%P_rtm, leg%dPdt_rtm)
+     &    idx_trns, leg%g_colat_rtm, leg%P_rtm, leg%dPdt_rtm)
 !
       call alloc_trans_schmidt_rtm                                      &
      &   (sph_rtm%nidx_rtm(2), sph_rlm%nidx_rlm(2), leg)
@@ -81,9 +86,12 @@
      &   (sph_rtm%nidx_rtm(2), sph_rlm%nidx_rlm(2),                     &
      &    leg%P_rtm, leg%dPdt_rtm, leg%P_jl, leg%dPdt_jl)
 !
+      call set_sin_theta_rtm(sph_rtm%nidx_rtm(2), leg%g_colat_rtm,      &
+     &    leg%asin_t_rtm)
+!
       call alloc_schmidt_p_rtm_pole(sph_rlm%nidx_rlm(2), leg)
       call set_lagender_pole_rlm(l_truncation, sph_rtm, sph_rlm,        &
-     &    leg%P_pole_rtm, leg%dPdt_pole_rtm)
+     &    idx_trns, leg%P_pole_rtm, leg%dPdt_pole_rtm)
 !
       end subroutine s_cal_schmidt_poly_rtm
 !
@@ -114,7 +122,6 @@
 !
       subroutine copy_sph_normalization_2_rlm(sph_rlm, g_sph_rlm)
 !
-      use m_constants
       use spherical_harmonics
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
@@ -170,14 +177,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_lagender_4_rlm(l_truncation, sph_rtm, sph_rlm,     &
-     &          g_colat_rtm, P_rtm, dPdt_rtm)
+     &          idx_trns, g_colat_rtm, P_rtm, dPdt_rtm)
 !
       use m_machine_parameter
-      use m_work_4_sph_trans
       use schmidt_fix_m
 !
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
+      type(index_4_sph_trans), intent(in) :: idx_trns
 !
       integer(kind = kint), intent(in) :: l_truncation
       real(kind= kreal), intent(in) :: g_colat_rtm(sph_rtm%nidx_rtm(2))
@@ -203,8 +210,8 @@
 !
           do m = 1, sph_rtm%nidx_rtm(3)
             mm = abs(sph_rtm%idx_gl_1d_rtm_m(m,2))
-            jst = idx_trns1%lstack_rlm(m-1) + 1
-            jed = idx_trns1%lstack_rlm(m)
+            jst = idx_trns%lstack_rlm(m-1) + 1
+            jed = idx_trns%lstack_rlm(m)
 !
             call schmidt_legendres_m(l_truncation, mm, g_colat_rtm(i),  &
      &          p_m, dp_m, pmn1, pmp1, df_m)
@@ -226,16 +233,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_lagender_pole_rlm(l_truncation, sph_rtm, sph_rlm,  &
-     &          P_pole_rtm, dPdt_pole_rtm)
-!
-      use m_constants
-      use m_work_4_sph_trans
+     &          idx_trns, P_pole_rtm, dPdt_pole_rtm)
 !
       use schmidt_fix_m
 !
       integer(kind = kint), intent(in) :: l_truncation
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
+      type(index_4_sph_trans), intent(in) :: idx_trns
 !
       real(kind = kreal), intent(inout)                                 &
      &                   :: P_pole_rtm(2,sph_rlm%nidx_rlm(2))
@@ -251,8 +256,8 @@
 !
       do m = 1, sph_rtm%nidx_rtm(3)
         mm = abs(sph_rtm%idx_gl_1d_rtm_m(m,2))
-        jst = idx_trns1%lstack_rlm(m-1) + 1
-        jed = idx_trns1%lstack_rlm(m)
+        jst = idx_trns%lstack_rlm(m-1) + 1
+        jed = idx_trns%lstack_rlm(m)
 !
         if(mm .le. 1) then
           call schmidt_legendres_m(l_truncation, mm, zero,              &
@@ -273,8 +278,8 @@
       pi = four * atan(one)
       do m = 1, sph_rtm%nidx_rtm(3)
         mm = abs(sph_rtm%idx_gl_1d_rtm_m(m,2))
-        jst = idx_trns1%lstack_rlm(m-1) + 1
-        jed = idx_trns1%lstack_rlm(m)
+        jst = idx_trns%lstack_rlm(m-1) + 1
+        jed = idx_trns%lstack_rlm(m)
 !
         if(mm .le. 1) then
           call schmidt_legendres_m(l_truncation, mm, pi,               &

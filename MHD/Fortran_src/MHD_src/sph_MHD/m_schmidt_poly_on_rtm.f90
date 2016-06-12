@@ -9,11 +9,11 @@
       module m_schmidt_poly_on_rtm
 !
       use m_precision
-      use t_schmidt_poly_on_rtm
+      use t_work_4_sph_trans
 !
       implicit none
 !
-!>      Structures for Legendre polynomials for spherical transform
-      type(legendre_4_sph_trans), save :: leg1
+      type(parameters_4_sph_trans), save :: trans_p1
+!trans_p1%leg
 !
       end module m_schmidt_poly_on_rtm

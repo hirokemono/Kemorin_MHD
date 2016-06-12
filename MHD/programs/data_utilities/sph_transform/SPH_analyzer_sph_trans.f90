@@ -60,11 +60,12 @@
       if (iflag_debug.gt.0) write(*,*) 'initialize_sph_trans'
       if(id_legendre_transfer.eq.iflag_leg_undefined)                   &
      &            id_legendre_transfer = iflag_leg_orginal_loop
-      call copy_sph_trans_nums_from_rtp
-      call initialize_sph_trans(sph_mesh%sph, sph_mesh%sph_comms,       &
-     &    leg_trans)
+      call copy_sph_trans_nums_from_rtp(ncomp_sph_trans)
+      call initialize_sph_trans(ncomp_sph_trans,                        &
+     &    sph_mesh%sph, sph_mesh%sph_comms, trns_param)
 !
-      call allocate_d_rtp_4_all_trans(sph_mesh%sph%sph_rtp)
+      call allocate_d_rtp_4_all_trans                                   &
+     &   (ncomp_sph_trans, sph_mesh%sph%sph_rtp)
 !
       end subroutine SPH_initialize_sph_trans
 !
@@ -94,8 +95,9 @@
 !
 !
 !  spherical transform for vector
-      call sph_f_trans_all_field(sph_mesh%sph, sph_mesh%sph_comms,      &
-     &    femmesh_STR%mesh, leg_trans, field_STR, rj_fld)
+      call sph_f_trans_all_field                                        &
+     &   (ncomp_sph_trans, sph_mesh%sph, sph_mesh%sph_comms,            &
+     &    femmesh_STR%mesh, trns_param, field_STR, rj_fld)
 !
 !      call check_all_field_data(my_rank, rj_fld)
 !
@@ -141,8 +143,9 @@
 !
 !
 !  spherical transform for vector
-      call sph_f_trans_all_field(sph_mesh%sph, sph_mesh%sph_comms,      &
-     &    femmesh_STR%mesh, leg_trans, field_STR, rj_fld)
+      call sph_f_trans_all_field                                        &
+     &   (ncomp_sph_trans, sph_mesh%sph, sph_mesh%sph_comms,            &
+     &    femmesh_STR%mesh, trns_param, field_STR, rj_fld)
 !
 !      call check_all_field_data(my_rank, rj_fld)
 !

@@ -14,7 +14,7 @@
 !!         type(sph_rtm_grid), intent(in) :: sph_rtm
 !!         type(sph_rlm_grid), intent(in) :: sph_rlm
 !!         type(legendre_4_sph_trans), intent(in) :: leg
-!!         type(index_4_sph_trans), intent(in) :: idx_trns1
+!!         type(index_4_sph_trans), intent(in) :: idx_trns
 !!
 !!      subroutine deallocate_hemi_schmidt_rtm
 !!

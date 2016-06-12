@@ -193,7 +193,6 @@
      &          nscalar_tmp_rj_2_rtp, ncomp_tmp_rtp_2_rj,               &
      &          nvector_tmp_rtp_2_rj, nscalar_tmp_rtp_2_rj)
 !
-      use m_work_4_sph_trans
       use m_node_phys_data
       use m_sph_phys_address
 !

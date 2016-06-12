@@ -22,6 +22,7 @@
       use t_next_node_ele_4_node
       use t_jacobian_3d
       use t_schmidt_poly_on_rtm
+      use t_work_4_sph_trans
 !
       implicit none
 !
@@ -52,8 +53,10 @@
       type(jacobians_3d), save :: jac_STR_q
 !
 !
-!>      Structures for Legendre polynomials for spherical transform
-      type(legendre_4_sph_trans), save :: leg_trans
+!>      total number of components for spherical harmonics transform
+      integer(kind = kint) :: ncomp_sph_trans
+!>        Structures of parameters for spherical transform
+      type(parameters_4_sph_trans), save :: trns_param
 !
 ! ----------------------------------------------------------------------
 !

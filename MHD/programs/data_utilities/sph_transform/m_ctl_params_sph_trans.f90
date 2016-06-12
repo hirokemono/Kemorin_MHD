@@ -203,8 +203,6 @@
       use m_machine_parameter
       use m_t_step_parameter
       use m_read_mesh_data
-      use m_rms_4_sph_spectr
-      use m_work_4_sph_trans
       use m_global_gauss_coefs
       use m_node_id_spherical_IO
       use m_control_params_2nd_files

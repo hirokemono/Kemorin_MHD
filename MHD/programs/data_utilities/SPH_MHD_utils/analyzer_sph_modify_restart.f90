@@ -121,7 +121,7 @@
       call start_eleps_time(11)
       if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
       call output_rms_sph_mhd_control                                   &
-     &   (sph1%sph_params, sph1%sph_rj, leg1, rj_fld1)
+     &   (sph1%sph_params, sph1%sph_rj, trans_p1%leg, rj_fld1)
       call end_eleps_time(11)
       call end_eleps_time(4)
 !
