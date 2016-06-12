@@ -34,6 +34,7 @@
 !
       use m_precision
       use m_work_4_sph_trans_spin
+      use m_work_4_sph_trans
 !
       use t_spheric_rtm_data
       use t_spheric_rlm_data
@@ -73,11 +74,13 @@
      &    ncomp, nvector, nscalar, comm_rlm%irev_sr,                    &
      &    n_WR, WR, sp_rlm_wk(1))
 !
-      call legendre_b_trans_vector_krin(ncomp, nvector,                 &
-     &    sph_rlm, sph_rtm, leg%g_sph_rlm, leg%P_jl, leg%dPdt_jl,       &
+      call legendre_b_trans_vector_krin                                 &
+     &   (ncomp, nvector, sph_rlm, sph_rtm, idx_trns1,                  &
+     &    asin_theta_1d_rtm, leg%g_sph_rlm, leg%P_jl, leg%dPdt_jl,      &
      &    sp_rlm_wk(1), vr_rtm_wk(1))
       call legendre_b_trans_scalar_krin(ncomp, nvector, nscalar,        &
-     &    sph_rlm, sph_rtm, leg%P_jl, sp_rlm_wk(1), vr_rtm_wk(1))
+     &    sph_rlm, sph_rtm, idx_trns1, leg%P_jl,                        &
+     &    sp_rlm_wk(1), vr_rtm_wk(1))
 !
       call back_b_trans_fields_krin                                     &
      &   (sph_rtm%nidx_rtm, ncomp, nvector, nscalar,                    &
@@ -115,11 +118,11 @@
      &    n_WR, WR, vr_rtm_wk(1))
 !
       call legendre_f_trans_vector_krin                                 &
-     &   (ncomp, nvector, sph_rtm, sph_rlm,                             &
-     &    leg%g_sph_rlm, leg%weight_rtm, leg%P_rtm, leg%dPdt_rtm,       &
-     &    vr_rtm_wk(1), sp_rlm_wk(1))
+     &   (ncomp, nvector, sph_rtm, sph_rlm, idx_trns1,                  &
+     &    asin_theta_1d_rtm, leg%g_sph_rlm, leg%weight_rtm,             &
+     &    leg%P_rtm, leg%dPdt_rtm, vr_rtm_wk(1), sp_rlm_wk(1))
       call legendre_f_trans_scalar_krin                                 &
-     &   (ncomp, nvector, nscalar, sph_rtm, sph_rlm,                    &
+     &   (ncomp, nvector, nscalar, sph_rtm, sph_rlm, idx_trns1,         &
      &    leg%g_sph_rlm, leg%weight_rtm, leg%P_rtm,                     &
      &    vr_rtm_wk(1), sp_rlm_wk(1))
 !

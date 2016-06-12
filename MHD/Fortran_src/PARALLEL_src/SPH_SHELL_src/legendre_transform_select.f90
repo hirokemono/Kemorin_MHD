@@ -268,17 +268,17 @@
      &   .or. id_legendre_transfer .eq. iflag_leg_matprod) then
         call alloc_leg_vec_matmul                                       &
      &     (sph_rtm%nidx_rtm(2), sph_rtm%maxidx_rtm_smp(1),             &
-     &      nvector)
+     &      nvector, idx_trns1)
         call alloc_leg_scl_matmul                                       &
      &     (sph_rtm%nidx_rtm(2), sph_rtm%maxidx_rtm_smp(1),             &
-     &      nscalar)
+     &      nscalar, idx_trns1)
       else if(id_legendre_transfer .eq. iflag_leg_symmetry              &
      &   .or. id_legendre_transfer .eq. iflag_leg_sym_spin_loop) then
         call init_legendre_symmetry(sph_rtm, sph_rlm, leg, idx_trns1)
       else if(id_legendre_transfer .eq. iflag_leg_blocked               &
      &   .or. id_legendre_transfer .eq. iflag_leg_krloop_outer) then
-        call alloc_leg_vec_blocked(sph_rtm%nidx_rtm(2))
-        call alloc_leg_scl_blocked(sph_rtm%nidx_rtm(2))
+        call alloc_leg_vec_blocked(sph_rtm%nidx_rtm(2), idx_trns1)
+        call alloc_leg_scl_blocked(sph_rtm%nidx_rtm(2), idx_trns1)
       else if(id_legendre_transfer .eq. iflag_leg_test_loop) then
         call init_legendre_testloop                                     &
      &     (sph_rtm, sph_rlm, leg, nvector, nscalar)

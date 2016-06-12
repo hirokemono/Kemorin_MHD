@@ -9,12 +9,18 @@
 !!       (innermost loop is field and radius)
 !!
 !!@verbatim
-!!      subroutine legendre_f_trans_vector_krin(ncomp, nvector,         &
-!!     &          sph_rtm, sph_rlm, g_sph_rlm, weight_rtm,              &
+!!      subroutine legendre_f_trans_vector_krin                         &
+!!     &         (ncomp, nvector, sph_rtm, sph_rlm, idx_trns,           &
+!!     &          asin_theta_1d_rtm, g_sph_rlm, weight_rtm,             &
 !!     &          P_rtm, dPdt_rtm, vr_rtm_krin, sp_rlm_spin)
-!!      subroutine legendre_f_trans_scalar_krin(ncomp, nvector, nscalar,&
-!!     &          sph_rtm, sph_rlm, g_sph_rlm, weight_rtm, P_rtm,       &
+!!      subroutine legendre_f_trans_scalar_krin                         &
+!!     &         (ncomp, nvector, nscalar, sph_rtm, sph_rlm, idx_trns,  &
+!!     &          g_sph_rlm, weight_rtm, P_rtm,                         &
 !!     &          vr_rtm_krin, sp_rlm_spin)
+!!        type(sph_rtm_grid), intent(in) :: sph_rtm
+!!        type(sph_rlm_grid), intent(in) :: sph_rlm
+!!        type(index_4_sph_trans), intent(in) :: idx_trns
+!!
 !!        Input:  vr_rtm_krin
 !!        Output: sp_rlm_spin
 !!
@@ -36,12 +42,11 @@
       module legendre_fwd_trans_krin
 !
       use m_precision
-!
       use m_machine_parameter
-      use m_work_4_sph_trans
 !
       use t_spheric_rtm_data
       use t_spheric_rlm_data
+      use t_work_4_sph_trans
 !
       implicit none
 !
@@ -51,12 +56,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine legendre_f_trans_vector_krin(ncomp, nvector,           &
-     &          sph_rtm, sph_rlm, g_sph_rlm, weight_rtm,                &
+      subroutine legendre_f_trans_vector_krin                           &
+     &         (ncomp, nvector, sph_rtm, sph_rlm, idx_trns,             &
+     &          asin_theta_1d_rtm, g_sph_rlm, weight_rtm,               &
      &          P_rtm, dPdt_rtm, vr_rtm_krin, sp_rlm_spin)
 !
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
+      type(index_4_sph_trans), intent(in) :: idx_trns
+      real(kind = kreal), intent(in)                                    &
+     &           :: asin_theta_1d_rtm(sph_rtm%nidx_rtm(2))
       real(kind = kreal), intent(in)                                    &
      &           :: g_sph_rlm(sph_rlm%nidx_rlm(2),17)
       real(kind = kreal), intent(in) :: weight_rtm(sph_rtm%nidx_rtm(2))
@@ -100,13 +109,13 @@
           end do
         end do
 !
-        do lp = 1, idx_trns1%nblock_l_rtm
-          lst = idx_trns1%lstack_block_rtm(lp-1) + 1
-          led = idx_trns1%lstack_block_rtm(lp  )
+        do lp = 1, idx_trns%nblock_l_rtm
+          lst = idx_trns%lstack_block_rtm(lp-1) + 1
+          led = idx_trns%lstack_block_rtm(lp  )
 !
           do j_rlm = jst, jed
-            mp_rlm = idx_trns1%mdx_p_rlm_rtm(j_rlm)
-            mn_rlm = idx_trns1%mdx_n_rlm_rtm(j_rlm)
+            mp_rlm = idx_trns%mdx_p_rlm_rtm(j_rlm)
+            mn_rlm = idx_trns%mdx_n_rlm_rtm(j_rlm)
 !
             do l_rtm = lst, led
               Pvw_l(l_rtm) = P_rtm(l_rtm,j_rlm)                         &
@@ -164,12 +173,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine legendre_f_trans_scalar_krin(ncomp, nvector, nscalar,  &
-     &          sph_rtm, sph_rlm, g_sph_rlm, weight_rtm, P_rtm,         &
+      subroutine legendre_f_trans_scalar_krin                           &
+     &         (ncomp, nvector, nscalar, sph_rtm, sph_rlm, idx_trns,    &
+     &          g_sph_rlm, weight_rtm, P_rtm,                           &
      &          vr_rtm_krin, sp_rlm_spin)
 !
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
+      type(index_4_sph_trans), intent(in) :: idx_trns
       real(kind = kreal), intent(in)                                    &
      &           :: g_sph_rlm(sph_rlm%nidx_rlm(2),17)
       real(kind = kreal), intent(in) :: weight_rtm(sph_rtm%nidx_rtm(2))
@@ -205,12 +216,12 @@
           end do
         end do
 !
-        do lp = 1, idx_trns1%nblock_l_rtm
-          lst = idx_trns1%lstack_block_rtm(lp-1) + 1
-          led = idx_trns1%lstack_block_rtm(lp  )
+        do lp = 1, idx_trns%nblock_l_rtm
+          lst = idx_trns%lstack_block_rtm(lp-1) + 1
+          led = idx_trns%lstack_block_rtm(lp  )
 !
           do j_rlm = jst, jed
-            mp_rlm = idx_trns1%mdx_p_rlm_rtm(j_rlm)
+            mp_rlm = idx_trns%mdx_p_rlm_rtm(j_rlm)
 !
             do l_rtm = lst, led
               Pws_l(l_rtm) = P_rtm(l_rtm,j_rlm)                         &

@@ -10,10 +10,15 @@
 !!
 !!@verbatim
 !!      subroutine legendre_b_trans_vector_krin(ncomp, nvector,         &
-!!     &          sph_rlm, sph_rtm, g_sph_rlm, P_jl, dPdt_jl,           &
-!!     &          sp_rlm_krin, vr_rtm_spin)
+!!     &          sph_rlm, sph_rtm, idx_trns, asin_theta_1d_rtm,        &
+!!     &          g_sph_rlm, P_jl, dPdt_jl, sp_rlm_krin, vr_rtm_spin)
 !!      subroutine legendre_b_trans_scalar_krin(ncomp, nvector, nscalar,&
-!!     &          sph_rlm, sph_rtm, P_jl, sp_rlm_krin, vr_rtm_spin)
+!!     &          sph_rlm, sph_rtm, idx_trns, P_jl,                     &
+!!     &          sp_rlm_krin, vr_rtm_spin)
+!!        type(sph_rlm_grid), intent(in) :: sph_rlm
+!!        type(sph_rtm_grid), intent(in) :: sph_rtm
+!!        type(index_4_sph_trans), intent(in) :: idx_trns
+!!
 !!        Input:  vr_rtm_spin
 !!        Output: sp_rlm_krin
 !!
@@ -37,10 +42,10 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_work_4_sph_trans
 !
       use t_spheric_rtm_data
       use t_spheric_rlm_data
+      use t_work_4_sph_trans
 !
       implicit none
 !
@@ -51,11 +56,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine legendre_b_trans_vector_krin(ncomp, nvector,           &
-     &          sph_rlm, sph_rtm, g_sph_rlm, P_jl, dPdt_jl,             &
-     &          sp_rlm_krin, vr_rtm_spin)
+     &          sph_rlm, sph_rtm, idx_trns, asin_theta_1d_rtm,          &
+     &          g_sph_rlm, P_jl, dPdt_jl, sp_rlm_krin, vr_rtm_spin)
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
+      type(index_4_sph_trans), intent(in) :: idx_trns
+      real(kind = kreal), intent(in)                                    &
+     &           :: asin_theta_1d_rtm(sph_rtm%nidx_rtm(2))
       real(kind = kreal), intent(in)                                    &
      &           :: g_sph_rlm(sph_rlm%nidx_rlm(2),17)
       real(kind= kreal), intent(in)                                     &
@@ -95,8 +103,8 @@
           end do
 !
           do mp_rlm = 1, sph_rtm%nidx_rtm(3)
-            jst = idx_trns1%lstack_rlm(mp_rlm-1) + 1
-            jed = idx_trns1%lstack_rlm(mp_rlm)
+            jst = idx_trns%lstack_rlm(mp_rlm-1) + 1
+            jed = idx_trns%lstack_rlm(mp_rlm)
             vr1(1:nb_nri) = 0.0d0
             vr2(1:nb_nri) = 0.0d0
             vr3(1:nb_nri) = 0.0d0
@@ -137,8 +145,8 @@
 !
           do mp_rlm = 1, sph_rtm%nidx_rtm(3)
             mn_rlm = 1 + sph_rtm%nidx_rtm(3) - mp_rlm
-            jst = idx_trns1%lstack_rlm(mp_rlm-1) + 1
-            jed = idx_trns1%lstack_rlm(mp_rlm)
+            jst = idx_trns%lstack_rlm(mp_rlm-1) + 1
+            jed = idx_trns%lstack_rlm(mp_rlm)
             vr2(1:nb_nri) = 0.0d0
             vr3(1:nb_nri) = 0.0d0
             do j_rlm = jst, jed
@@ -166,10 +174,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine legendre_b_trans_scalar_krin(ncomp, nvector, nscalar,  &
-     &          sph_rlm, sph_rtm, P_jl, sp_rlm_krin, vr_rtm_spin)
+     &          sph_rlm, sph_rtm, idx_trns, P_jl,                       &
+     &          sp_rlm_krin, vr_rtm_spin)
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
+      type(index_4_sph_trans), intent(in) :: idx_trns
       real(kind= kreal), intent(in)                                     &
      &           :: P_jl(sph_rlm%nidx_rlm(2),sph_rtm%nidx_rtm(2))
 !
@@ -200,8 +210,8 @@
           P_j(1:sph_rlm%nidx_rlm(2))                                    &
      &           = P_jl(1:sph_rlm%nidx_rlm(2),l_rtm)
           do mp_rlm = 1, sph_rtm%nidx_rtm(3)
-            jst = idx_trns1%lstack_rlm(mp_rlm-1) + 1
-            jed = idx_trns1%lstack_rlm(mp_rlm)
+            jst = idx_trns%lstack_rlm(mp_rlm-1) + 1
+            jed = idx_trns%lstack_rlm(mp_rlm)
             vr1(1:nb_nri) = 0.0d0
             do j_rlm = jst, jed
               do kr_nd = 1, nb_nri

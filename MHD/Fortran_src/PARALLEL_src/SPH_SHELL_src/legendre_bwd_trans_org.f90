@@ -9,15 +9,21 @@
 !!       (Original version)
 !!
 !!@verbatim
-!!      subroutine legendre_b_trans_vector_org(ncomp, nvector,          &
-!!     &          sph_rlm, sph_rtm, g_sph_rlm, P_jl, dPdt_jl,           &
+!!      subroutine legendre_b_trans_vector_org                          &
+!!     &         (ncomp, nvector, sph_rlm, sph_rtm, idx_trns,           &
+!!     &          asin_theta_1d_rtm, g_sph_rlm, P_jl, dPdt_jl,          &
 !!     &          sp_rlm, vr_rtm)
 !!        Input:  vr_rtm   (Order: radius,theta,phi)
 !!        Output: sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
-!!      subroutine legendre_b_trans_scalar_org(ncomp, nvector, nscalar, &
-!!     &          sph_rlm, sph_rtm, P_jl, sp_rlm, vr_rtm)
+!!      subroutine legendre_b_trans_scalar_org                          &
+!!     &         (ncomp, nvector, nscalar, sph_rlm, sph_rtm, idx_trns,  &
+!!     &          P_jl, sp_rlm, vr_rtm)
 !!        Input:  vr_rtm
 !!        Output: sp_rlm
+!!
+!!        type(sph_rtm_grid), intent(in) :: sph_rtm
+!!        type(sph_rlm_grid), intent(in) :: sph_rlm
+!!        type(index_4_sph_trans), intent(in) :: idx_trns
 !!@endverbatim
 !!
 !!@param   ncomp    Total number of components for spherical transform
@@ -28,12 +34,11 @@
       module legendre_bwd_trans_org
 !
       use m_precision
-!
       use m_machine_parameter
-      use m_work_4_sph_trans
 !
       use t_spheric_rtm_data
       use t_spheric_rlm_data
+      use t_work_4_sph_trans
 !
       implicit none
 !
@@ -43,12 +48,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine legendre_b_trans_vector_org(ncomp, nvector,            &
-     &          sph_rlm, sph_rtm, g_sph_rlm, P_jl, dPdt_jl,             &
+      subroutine legendre_b_trans_vector_org                            &
+     &         (ncomp, nvector, sph_rlm, sph_rtm, idx_trns,             &
+     &          asin_theta_1d_rtm, g_sph_rlm, P_jl, dPdt_jl,            &
      &          sp_rlm, vr_rtm)
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
+      type(index_4_sph_trans), intent(in) :: idx_trns
+      real(kind = kreal), intent(in)                                    &
+     &           :: asin_theta_1d_rtm(sph_rtm%nidx_rtm(2))
       real(kind = kreal), intent(in)                                    &
      &           :: g_sph_rlm(sph_rlm%nidx_rlm(2),17)
       real(kind= kreal), intent(in)                                     &
@@ -101,8 +110,8 @@
 !
         do mp_rlm = 1, sph_rtm%nidx_rtm(3)
           mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
-          jst = idx_trns1%lstack_rlm(mp_rlm-1) + 1
-          jed = idx_trns1%lstack_rlm(mp_rlm)
+          jst = idx_trns%lstack_rlm(mp_rlm-1) + 1
+          jed = idx_trns%lstack_rlm(mp_rlm)
           do k_rlm = kst, ked
             do l_rtm = 1, sph_rtm%nidx_rtm(2)
               do j_rlm = jst, jed
@@ -137,8 +146,8 @@
 !
         do mp_rlm = 1, sph_rtm%nidx_rtm(3)
           mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
-          jst = idx_trns1%lstack_rlm(mp_rlm-1) + 1
-          jed = idx_trns1%lstack_rlm(mp_rlm)
+          jst = idx_trns%lstack_rlm(mp_rlm-1) + 1
+          jed = idx_trns%lstack_rlm(mp_rlm)
           do k_rlm = kst, ked
             do l_rtm = 1, sph_rtm%nidx_rtm(2)
               do j_rlm = jst, jed
@@ -176,11 +185,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine legendre_b_trans_scalar_org(ncomp, nvector, nscalar,   &
-     &          sph_rlm, sph_rtm, P_jl, sp_rlm, vr_rtm)
+      subroutine legendre_b_trans_scalar_org                            &
+     &         (ncomp, nvector, nscalar, sph_rlm, sph_rtm, idx_trns,    &
+     &          P_jl, sp_rlm, vr_rtm)
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
+      type(index_4_sph_trans), intent(in) :: idx_trns
       real(kind= kreal), intent(in)                                     &
      &          :: P_jl(sph_rlm%nidx_rlm(2),sph_rtm%nidx_rtm(2))
 !
@@ -206,8 +217,8 @@
         ked = sph_rtm%istack_rtm_kr_smp(ip  )
 !
         do mp_rlm = 1, sph_rtm%nidx_rtm(3)
-          jst = idx_trns1%lstack_rlm(mp_rlm-1) + 1
-          jed = idx_trns1%lstack_rlm(mp_rlm)
+          jst = idx_trns%lstack_rlm(mp_rlm-1) + 1
+          jed = idx_trns%lstack_rlm(mp_rlm)
           do k_rlm = kst, ked
 !
             do l_rtm = 1, sph_rtm%nidx_rtm(2)

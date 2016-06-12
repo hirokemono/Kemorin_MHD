@@ -74,11 +74,11 @@
 !
 !
         call legendre_b_trans_vector_spin(ncomp, nvector,               &
-     &      sph_rlm, sph_rtm, comm_rlm, comm_rtm,                       &
-     &      leg%g_sph_rlm, leg%P_jl, leg%dPdt_jl,                       &
+     &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns1,            &
+     &      asin_theta_1d_rtm, leg%g_sph_rlm, leg%P_jl, leg%dPdt_jl,    &
      &      n_WR, n_WS, WR, WS)
         call legendre_b_trans_scalar_spin(ncomp, nvector, nscalar,      &
-     &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg%P_jl,             &
+     &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns1, leg%P_jl,  &
      &      n_WR, n_WS, WR, WS)
 !
       end subroutine leg_backward_trans_spin
@@ -102,11 +102,11 @@
 !
 !
         call legendre_f_trans_vector_spin(ncomp, nvector,               &
-     &      sph_rtm, sph_rlm, comm_rtm, comm_rlm,                       &
-     &      leg%g_sph_rlm, leg%weight_rtm, leg%P_rtm, leg%dPdt_rtm,     &
-     &      n_WR, n_WS, WR, WS)
+     &      sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns1,            &
+     &      asin_theta_1d_rtm, leg%g_sph_rlm, leg%weight_rtm,           &
+     &      leg%P_rtm, leg%dPdt_rtm, n_WR, n_WS, WR, WS)
         call legendre_f_trans_scalar_spin(ncomp, nvector, nscalar,      &
-     &      sph_rtm, sph_rlm, comm_rtm, comm_rlm,                       &
+     &      sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns1,            &
      &      leg%g_sph_rlm, leg%weight_rtm, leg%P_rtm,                   &
      &      n_WR, n_WS, WR, WS)
 !

@@ -8,27 +8,18 @@
 !>@n      data are strored communication buffer
 !!
 !!@verbatim
-!!      subroutine allocate_hemi_schmidt_rtm(nth_rtm, jmax_rlm)
-!!      subroutine deallocate_hemi_schmidt_rtm
-!!
-!!      subroutine alloc_leg_vec_sym_matmul                             &
-!!     &         (nth_rtm, maxidx_rtm_r_smp, nvector)
-!!      subroutine alloc_leg_scl_sym_matmul                             &
-!!     &         (nth_rtm, maxidx_rtm_r_smp, nscalar)
-!!      subroutine dealloc_leg_vec_sym_matmul
-!!      subroutine dealloc_leg_scl_sym_matmul
-!!
 !!      subroutine alloc_leg_vec_matmul                                 &
-!!     &         (nth_rtm, maxidx_rtm_r_smp, nvector)
+!!     &         (nth_rtm, maxidx_rtm_r_smp, nvector, idx_trns)
 !!      subroutine alloc_leg_scl_matmul                                 &
-!!     &         (nth_rtm, maxidx_rtm_r_smp, nscalar)
+!!     &         (nth_rtm, maxidx_rtm_r_smp, nscalar, idx_trns)
 !!      subroutine dealloc_leg_vec_matmul
 !!
 !!      subroutine alloc_leg_vec_symmetry(nth_rtm)
 !!      subroutine alloc_leg_scl_symmetry(nth_rtm)
 !!
-!!      subroutine alloc_leg_vec_blocked(nth_rtm)
-!!      subroutine alloc_leg_scl_blocked(nth_rtm)
+!!      subroutine alloc_leg_vec_blocked(nth_rtm, idx_trns)
+!!      subroutine alloc_leg_scl_blocked(nth_rtm, idx_trns)
+!!        type(index_4_sph_trans), intent(in) :: idx_trns
 !!
 !!     field data for Legendre transform
 !!       original layout: vr_rtm(l_rtm,m_rtm,k_rtm,icomp)
@@ -50,10 +41,11 @@
 !
       use m_precision
       use m_constants
+      use m_machine_parameter
       use calypso_mpi
 !
-      use m_machine_parameter
-      use m_work_4_sph_trans
+      use t_work_4_sph_trans
+!
       use matmul_for_legendre_trans
 !
       implicit none
@@ -102,14 +94,15 @@
 ! -----------------------------------------------------------------------
 !
       subroutine alloc_leg_vec_matmul                                   &
-     &         (nth_rtm, maxidx_rtm_r_smp, nvector)
+     &         (nth_rtm, maxidx_rtm_r_smp, nvector, idx_trns)
 !
       integer(kind = kint), intent(in) :: nth_rtm
       integer(kind = kint), intent(in) :: maxidx_rtm_r_smp
       integer(kind = kint), intent(in) :: nvector
+      type(index_4_sph_trans), intent(in) :: idx_trns
 !
 !
-      nvec_jk = idx_trns1%maxdegree_rlm * maxidx_rtm_r_smp * nvector
+      nvec_jk = idx_trns%maxdegree_rlm * maxidx_rtm_r_smp * nvector
       allocate(pol_e(nvec_jk,np_smp))
       allocate(dpoldt_e(nvec_jk,np_smp))
       allocate(dpoldp_e(nvec_jk,np_smp))
@@ -128,14 +121,15 @@
 ! -----------------------------------------------------------------------
 !
       subroutine alloc_leg_scl_matmul                                   &
-     &         (nth_rtm, maxidx_rtm_r_smp, nscalar)
+     &         (nth_rtm, maxidx_rtm_r_smp, nscalar, idx_trns)
 !
       integer(kind = kint), intent(in) :: nth_rtm
       integer(kind = kint), intent(in) :: maxidx_rtm_r_smp
       integer(kind = kint), intent(in) :: nscalar
+      type(index_4_sph_trans), intent(in) :: idx_trns
 !
 !
-      nscl_jk = idx_trns1%maxdegree_rlm * maxidx_rtm_r_smp * nscalar
+      nscl_jk = idx_trns%maxdegree_rlm * maxidx_rtm_r_smp * nscalar
       allocate(scl_e(nscl_jk,np_smp))
 !
       nscl_lk = nth_rtm * maxidx_rtm_r_smp * nscalar
@@ -158,12 +152,13 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_leg_vec_blocked(nth_rtm)
+      subroutine alloc_leg_vec_blocked(nth_rtm, idx_trns)
 !
       integer(kind = kint), intent(in) :: nth_rtm
+      type(index_4_sph_trans), intent(in) :: idx_trns
 !
 !
-      nvec_jk = idx_trns1%maxdegree_rlm
+      nvec_jk = idx_trns%maxdegree_rlm
       allocate(pol_e(nvec_jk,np_smp))
       allocate(dpoldt_e(nvec_jk,np_smp))
       allocate(dpoldp_e(nvec_jk,np_smp))
@@ -181,12 +176,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_leg_scl_blocked(nth_rtm)
+      subroutine alloc_leg_scl_blocked(nth_rtm, idx_trns)
 !
       integer(kind = kint), intent(in) :: nth_rtm
+      type(index_4_sph_trans), intent(in) :: idx_trns
 !
 !
-      nscl_jk = idx_trns1%maxdegree_rlm
+      nscl_jk = idx_trns%maxdegree_rlm
       allocate(scl_e(nscl_jk,np_smp))
 !
       nscl_lk = nth_rtm

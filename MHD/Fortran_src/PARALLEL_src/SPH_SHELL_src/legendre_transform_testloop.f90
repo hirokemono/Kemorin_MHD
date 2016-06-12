@@ -65,8 +65,8 @@
 !
 !
         call legendre_b_trans_vector_test(ncomp, nvector, nscalar,      &
-     &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg%g_sph_rlm,        &
-     &      n_WR, n_WS, WR, WS)
+     &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns1,            &
+     &      asin_theta_1d_rtm, leg%g_sph_rlm, n_WR, n_WS, WR, WS)
 !
       end subroutine leg_backward_trans_test
 !
@@ -90,8 +90,9 @@
 !
 !
         call legendre_f_trans_vector_test(ncomp, nvector, nscalar,      &
-     &      sph_rtm, sph_rlm, comm_rtm, comm_rlm,                       &
-     &      leg%g_sph_rlm, leg%weight_rtm, n_WR, n_WS, WR, WS)
+     &      sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns1,            &
+     &      asin_theta_1d_rtm, leg%g_sph_rlm, leg%weight_rtm,           &
+     &      n_WR, n_WS, WR, WS)
 !
       end subroutine leg_forward_trans_test
 !

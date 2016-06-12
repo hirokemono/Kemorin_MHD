@@ -45,6 +45,7 @@
 !
       use m_precision
 !
+      use m_work_4_sph_trans
       use t_spheric_rtm_data
       use t_spheric_rlm_data
       use t_sph_trans_comm_tbl
@@ -75,12 +76,12 @@
 !
 !
       call leg_b_trans_vector_matmul(ncomp, nvector,                    &
-     &    sph_rlm, sph_rtm, comm_rlm, comm_rtm,                         &
-     &    leg%g_sph_rlm, leg%P_rtm, leg%dPdt_rtm,                       &
+     &    sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns1,              &
+     &    asin_theta_1d_rtm, leg%g_sph_rlm, leg%P_rtm, leg%dPdt_rtm,    &
      &    n_WR, n_WS, WR, WS)
       call leg_b_trans_scalar_matmul(ncomp, nvector, nscalar,           &
-     &    sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg%P_rtm,              &
-     &    n_WR, n_WS, WR, WS)
+     &    sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns1,              &
+     &    leg%P_rtm, n_WR, n_WS, WR, WS)
 !
       end subroutine leg_backward_trans_matmul
 !
@@ -103,11 +104,11 @@
 !
 !
       call leg_f_trans_vector_matmul(ncomp, nvector,                    &
-     &    sph_rtm, sph_rlm, comm_rtm, comm_rlm,                         &
-     &    leg%g_sph_rlm, leg%weight_rtm, leg%P_rtm, leg%dPdt_rtm,       &
-     &    n_WR, n_WS, WR, WS)
+     &    sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns1,              &
+     &    asin_theta_1d_rtm, leg%g_sph_rlm, leg%weight_rtm,             &
+     &    leg%P_rtm, leg%dPdt_rtm, n_WR, n_WS, WR, WS)
       call leg_f_trans_scalar_matmul(ncomp, nvector, nscalar,           &
-     &    sph_rtm, sph_rlm, comm_rtm, comm_rlm,                         &
+     &    sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns1,              &
      &    leg%g_sph_rlm, leg%weight_rtm, leg%P_rtm,                     &
      &    n_WR, n_WS, WR, WS)
 !
@@ -133,12 +134,12 @@
 !
 !
       call leg_b_trans_vector_dgemm(ncomp, nvector,                     &
-     &    sph_rlm, sph_rtm, comm_rlm, comm_rtm,                         &
-     &    leg%g_sph_rlm, leg%P_rtm, leg%dPdt_rtm,                       &
+     &    sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns1,              &
+     &    asin_theta_1d_rtm, leg%g_sph_rlm, leg%P_rtm, leg%dPdt_rtm,    &
      &    n_WR, n_WS, WR, WS)
       call leg_b_trans_scalar_dgemm(ncomp, nvector, nscalar,            &
-     &    sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg%P_rtm,              &
-     &    n_WR, n_WS, WR, WS)
+     &    sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns1,              &
+     &    leg%P_rtm, n_WR, n_WS, WR, WS)
 !
       end subroutine leg_backward_trans_dgemm
 !
@@ -161,11 +162,11 @@
 !
 !
       call leg_f_trans_vector_dgemm(ncomp, nvector,                     &
-     &    sph_rtm, sph_rlm, comm_rtm, comm_rlm,                         &
-     &    leg%g_sph_rlm, leg%weight_rtm, leg%P_rtm, leg%dPdt_rtm,       &
-     &    n_WR, n_WS, WR, WS)
+     &    sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns1,              &
+     &    asin_theta_1d_rtm, leg%g_sph_rlm, leg%weight_rtm,             &
+     &    leg%P_rtm, leg%dPdt_rtm, n_WR, n_WS, WR, WS)
       call leg_f_trans_scalar_dgemm(ncomp, nvector, nscalar,            &
-     &    sph_rtm, sph_rlm, comm_rtm, comm_rlm,                         &
+     &    sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns1,              &
      &    leg%g_sph_rlm, leg%weight_rtm, leg%P_rtm,                     &
      &    n_WR, n_WS, WR, WS)
 !
@@ -191,12 +192,12 @@
 !
 !
       call leg_b_trans_vector_matprod(ncomp, nvector,                   &
-     &    sph_rlm, sph_rtm, comm_rlm, comm_rtm,                         &
-     &    leg%g_sph_rlm, leg%P_rtm, leg%dPdt_rtm,                       &
+     &    sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns1,              &
+     &    asin_theta_1d_rtm, leg%g_sph_rlm, leg%P_rtm, leg%dPdt_rtm,    &
      &    n_WR, n_WS, WR, WS)
       call leg_b_trans_scalar_matprod(ncomp, nvector, nscalar,          &
-     &    sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg%P_rtm,              &
-     &    n_WR, n_WS, WR, WS)
+     &    sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns1,              &
+     &    leg%P_rtm, n_WR, n_WS, WR, WS)
 !
       end subroutine leg_backward_trans_matprod
 !
@@ -219,11 +220,11 @@
 !
 !
       call leg_f_trans_vector_matprod(ncomp, nvector,                   &
-     &    sph_rtm, sph_rlm, comm_rtm, comm_rlm,                         &
-     &    leg%g_sph_rlm, leg%weight_rtm, leg%P_rtm, leg%dPdt_rtm,       &
-     &    n_WR, n_WS, WR, WS)
+     &    sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns1,              &
+     &    asin_theta_1d_rtm, leg%g_sph_rlm, leg%weight_rtm,             &
+     &    leg%P_rtm, leg%dPdt_rtm, n_WR, n_WS, WR, WS)
       call leg_f_trans_scalar_matprod(ncomp, nvector, nscalar,          &
-     &    sph_rtm, sph_rlm, comm_rtm, comm_rlm,                         &
+     &    sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns1,              &
      &    leg%g_sph_rlm, leg%weight_rtm, leg%P_rtm,                     &
      &    n_WR, n_WS, WR, WS)
 !

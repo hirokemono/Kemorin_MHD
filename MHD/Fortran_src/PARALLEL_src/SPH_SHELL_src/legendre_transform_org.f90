@@ -82,11 +82,13 @@
      &    comm_rlm, n_WR, WR, sp_rlm_wk(1))
       call clear_bwd_legendre_work(ncomp, sph_rtm%nnod_rtm)
 !
-      call legendre_b_trans_vector_org(ncomp, nvector,                  &
-     &    sph_rlm, sph_rtm, leg%g_sph_rlm, leg%P_jl, leg%dPdt_jl,       &
+      call legendre_b_trans_vector_org                                  &
+     &   (ncomp, nvector, sph_rlm, sph_rtm, idx_trns1,                  &
+     &    asin_theta_1d_rtm, leg%g_sph_rlm, leg%P_jl, leg%dPdt_jl,      &
      &    sp_rlm_wk(1), vr_rtm_wk(1))
-      call legendre_b_trans_scalar_org(ncomp, nvector, nscalar,         &
-     &    sph_rlm, sph_rtm, leg%P_jl, sp_rlm_wk(1), vr_rtm_wk(1))
+      call legendre_b_trans_scalar_org                                  &
+     &   (ncomp, nvector, nscalar, sph_rlm, sph_rtm, idx_trns1,         &
+     &    leg%P_jl, sp_rlm_wk(1), vr_rtm_wk(1))
 !
       call calypso_sph_to_send_N(ncomp, sph_rtm%nnod_rtm,               &
      &    comm_rtm, n_WS, vr_rtm_wk(1), WS)
@@ -118,11 +120,12 @@
       call clear_fwd_legendre_work(ncomp, sph_rlm%nnod_rlm)
 !
       call legendre_f_trans_vector_org                                  &
-     &   (ncomp, nvector, sph_rtm, sph_rlm,                             &
-     &    leg%g_sph_rlm, leg%weight_rtm, leg%P_rtm, leg%dPdt_rtm,       &
-     &    vr_rtm_wk(1), sp_rlm_wk(1))
-      call legendre_f_trans_scalar_org(ncomp, nvector, nscalar,         &
-     &    sph_rtm, sph_rlm, leg%g_sph_rlm, leg%weight_rtm, leg%P_rtm,   &
+     &   (ncomp, nvector, sph_rtm, sph_rlm, idx_trns1,                  &
+     &    asin_theta_1d_rtm, leg%g_sph_rlm, leg%weight_rtm,             &
+     &    leg%P_rtm, leg%dPdt_rtm, vr_rtm_wk(1), sp_rlm_wk(1))
+      call legendre_f_trans_scalar_org                                  &
+     &   (ncomp, nvector, nscalar, sph_rtm, sph_rlm, idx_trns1,         &
+     &    leg%g_sph_rlm, leg%weight_rtm, leg%P_rtm,                     &
      &    vr_rtm_wk(1), sp_rlm_wk(1))
 !
       call calypso_sph_to_send_N(ncomp, sph_rlm%nnod_rlm,               &
@@ -150,10 +153,11 @@
 !
 !
       call leg_b_trans_vector_blocked(ncomp, nvector,                   &
-     &    sph_rlm, sph_rtm, comm_rlm, comm_rtm,                         &
-     &    leg%g_sph_rlm, leg%P_jl, leg%dPdt_jl, n_WR, n_WS, WR, WS)
+     &    sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns1,              &
+     &    asin_theta_1d_rtm, leg%g_sph_rlm, leg%P_jl, leg%dPdt_jl,      &
+     &    n_WR, n_WS, WR, WS)
       call leg_b_trans_scalar_blocked(ncomp, nvector, nscalar,          &
-     &    sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg%P_jl,               &
+     &    sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns1, leg%P_jl,    &
      &    n_WR, n_WS, WR, WS)
 !
       end subroutine leg_backward_trans_blocked
@@ -177,11 +181,11 @@
 !
 !
       call leg_f_trans_vector_blocked(ncomp, nvector,                  &
-     &    sph_rtm, sph_rlm, comm_rtm, comm_rlm,                        &
-     &    leg%g_sph_rlm, leg%weight_rtm, leg%P_rtm, leg%dPdt_rtm,      &
-     &    n_WR, n_WS, WR, WS)
+     &    sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns1,             &
+     &    asin_theta_1d_rtm, leg%g_sph_rlm, leg%weight_rtm,            &
+     &    leg%P_rtm, leg%dPdt_rtm, n_WR, n_WS, WR, WS)
       call leg_f_trans_scalar_blocked(ncomp, nvector, nscalar,         &
-     &    sph_rtm, sph_rlm, comm_rtm, comm_rlm,                        &
+     &    sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns1,             &
      &    leg%g_sph_rlm, leg%weight_rtm, leg%P_rtm,                    &
      &    n_WR, n_WS, WR, WS)
 !

@@ -10,15 +10,21 @@
 !!
 !!@verbatim
 !!      subroutine leg_b_trans_vector_blocked(ncomp, nvector,           &
-!!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm,                 &
-!!     &          g_sph_rlm, P_jl, dPdt_jl, n_WR, n_WS, WR, WS)
+!!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,       &
+!!     &          asin_theta_1d_rtm, g_sph_rlm, P_jl, dPdt_jl,          &
+!!     &          n_WR, n_WS, WR, WS)
 !!        Input:  vr_rtm   (Order: radius,theta,phi)
 !!        Output: sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
 !!      subroutine leg_b_trans_scalar_blocked(ncomp, nvector, nscalar,  &
-!!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, P_jl,           &
+!!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns, P_jl, &
 !!     &          n_WR, n_WS, WR, WS)
 !!        Input:  vr_rtm
 !!        Output: sp_rlm
+!!
+!!        type(sph_rlm_grid), intent(in) :: sph_rlm
+!!        type(sph_rtm_grid), intent(in) :: sph_rtm
+!!        type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
+!!        type(index_4_sph_trans), intent(in) :: idx_trns
 !!@endverbatim
 !!
 !!@param   ncomp    Total number of components for spherical transform
@@ -29,14 +35,14 @@
       module legendre_bwd_trans_blocked
 !
       use m_precision
-!
       use m_machine_parameter
-      use m_work_4_sph_trans
+!
       use m_legendre_work_matmul
 !
       use t_spheric_rtm_data
       use t_spheric_rlm_data
       use t_sph_trans_comm_tbl
+      use t_work_4_sph_trans
 !
       implicit none
 !
@@ -47,8 +53,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine leg_b_trans_vector_blocked(ncomp, nvector,             &
-     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm,                   &
-     &          g_sph_rlm, P_jl, dPdt_jl, n_WR, n_WS, WR, WS)
+     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,         &
+     &          asin_theta_1d_rtm, g_sph_rlm, P_jl, dPdt_jl,            &
+     &          n_WR, n_WS, WR, WS)
 !
       use cal_vr_rtm_by_vecprod
       use set_sp_rlm_for_leg_vecprod
@@ -56,6 +63,9 @@
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
+      type(index_4_sph_trans), intent(in) :: idx_trns
+      real(kind = kreal), intent(in)                                    &
+     &           :: asin_theta_1d_rtm(sph_rtm%nidx_rtm(2))
       real(kind = kreal), intent(in)                                    &
      &           :: g_sph_rlm(sph_rlm%nidx_rlm(2),17)
       real(kind= kreal), intent(in)                                     &
@@ -89,14 +99,14 @@
       do ip = 1, np_smp
         kst = sph_rtm%istack_rtm_kr_smp(ip-1) + 1
         ked = sph_rtm%istack_rtm_kr_smp(ip)
-        do lp = 1, idx_trns1%nblock_l_rtm
-          lst = idx_trns1%lstack_block_rtm(lp-1) + 1
-          led = idx_trns1%lstack_block_rtm(lp  )
+        do lp = 1, idx_trns%nblock_l_rtm
+          lst = idx_trns%lstack_block_rtm(lp-1) + 1
+          led = idx_trns%lstack_block_rtm(lp  )
           do mp_rlm = 1, sph_rtm%nidx_rtm(3)
             mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
-            jst = idx_trns1%lstack_rlm(mp_rlm-1)
-            nj_rlm = idx_trns1%lstack_rlm(mp_rlm)                       &
-     &              - idx_trns1%lstack_rlm(mp_rlm-1)
+            jst = idx_trns%lstack_rlm(mp_rlm-1)
+            nj_rlm = idx_trns%lstack_rlm(mp_rlm)                        &
+     &              - idx_trns%lstack_rlm(mp_rlm-1)
             do k_rlm = kst, ked
               a1r_1d_rlm_r = sph_rlm%a_r_1d_rlm_r(k_rlm)
               a2r_1d_rlm_r = sph_rlm%a_r_1d_rlm_r(k_rlm)**2
@@ -144,7 +154,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine leg_b_trans_scalar_blocked(ncomp, nvector, nscalar,    &
-     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, P_jl,             &
+     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns, P_jl,   &
      &          n_WR, n_WS, WR, WS)
 !
       use cal_vr_rtm_by_vecprod
@@ -153,6 +163,7 @@
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
+      type(index_4_sph_trans), intent(in) :: idx_trns
       real(kind= kreal), intent(in)                                     &
      &           :: P_jl(sph_rlm%nidx_rlm(2),sph_rtm%nidx_rtm(2))
 !
@@ -175,14 +186,14 @@
       do ip = 1, np_smp
         kst = sph_rtm%istack_rtm_kr_smp(ip-1) + 1
         ked = sph_rtm%istack_rtm_kr_smp(ip)
-        do lp = 1, idx_trns1%nblock_l_rtm
-          lst = idx_trns1%lstack_block_rtm(lp-1) + 1
-          led = idx_trns1%lstack_block_rtm(lp  )
+        do lp = 1, idx_trns%nblock_l_rtm
+          lst = idx_trns%lstack_block_rtm(lp-1) + 1
+          led = idx_trns%lstack_block_rtm(lp  )
 !
           do mp_rlm = 1, sph_rtm%nidx_rtm(3)
-            jst = idx_trns1%lstack_rlm(mp_rlm-1)
-            nj_rlm = idx_trns1%lstack_rlm(mp_rlm)                       &
-     &              - idx_trns1%lstack_rlm(mp_rlm-1)
+            jst = idx_trns%lstack_rlm(mp_rlm-1)
+            nj_rlm = idx_trns%lstack_rlm(mp_rlm)                        &
+     &              - idx_trns%lstack_rlm(mp_rlm-1)
             do k_rlm = kst, ked
 !
               do l_rtm = lst, led
