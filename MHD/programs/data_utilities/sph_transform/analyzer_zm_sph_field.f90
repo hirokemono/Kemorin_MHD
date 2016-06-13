@@ -46,7 +46,8 @@
       call read_control_data_sph_trans
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_sph_trans'
-      call s_set_ctl_data_4_sph_trans(ucd_SPH_TRNS, rj_fld_trans)
+      call s_set_ctl_data_4_sph_trans                                   &
+     &   (ucd_SPH_TRNS, rj_fld_trans, d_gauss_trans)
       call set_ctl_data_4_pick_zm
 !
 !  ------    set spectr grids

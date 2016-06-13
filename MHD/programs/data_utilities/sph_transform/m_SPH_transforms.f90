@@ -23,6 +23,7 @@
       use t_jacobian_3d
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
+      use t_global_gauss_coefs
 !
       implicit none
 !
@@ -57,6 +58,9 @@
       integer(kind = kint) :: ncomp_sph_trans
 !>        Structures of parameters for spherical transform
       type(parameters_4_sph_trans), save :: trns_param
+!
+!>        Structures of Gauss points
+      type(global_gauss_points), save :: d_gauss_trans
 !
 ! ----------------------------------------------------------------------
 !

@@ -3,9 +3,9 @@
 !
 !        programmed by H.Matsui on Oct., 2007
 !
-!      subroutine set_control_4_sph_transform(ucd, rj_fld)
-!      subroutine set_control_4_sph_back_trans(ucd, rj_fld)
-!      subroutine s_set_ctl_data_4_sph_trans(ucd, rj_fld)
+!      subroutine set_control_4_sph_transform(ucd, rj_fld, d_gauss)
+!      subroutine set_control_4_sph_back_trans(ucd, rj_fld, d_gauss)
+!      subroutine s_set_ctl_data_4_sph_trans(ucd, rj_fld, d_gauss)
 !        type(ucd_data), intent(inout) :: ucd
 !        type(phys_data), intent(inout) :: rj_fld
 !      subroutine set_ctl_data_4_zm_trans
@@ -19,6 +19,7 @@
       use m_SPH_transforms
 !
       use t_phys_data
+      use t_global_gauss_coefs
 !
       implicit  none
 !
@@ -38,11 +39,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_sph_transform(ucd, rj_fld)
+      subroutine set_control_4_sph_transform(ucd, rj_fld, d_gauss)
 !
       use t_ucd_data
       use calypso_mpi
-      use m_global_gauss_coefs
       use m_FFT_selector
 !
       use set_control_nodal_data
@@ -57,6 +57,7 @@
 !
       type(ucd_data), intent(inout) :: ucd
       type(phys_data), intent(inout) :: rj_fld
+      type(global_gauss_points), intent(inout) :: d_gauss
 !
       integer(kind = kint) :: ierr
 !
@@ -109,18 +110,17 @@
         icb_radial_grp = icb_radial_grp_ctl
       end if
       if(i_gauss_file_name .gt. 0) then
-        fhead_gauss = gauss_sph_fhead_ctl
+        d_gauss%fhead_gauss = gauss_sph_fhead_ctl
       end if
 !
       end subroutine set_control_4_sph_transform
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_sph_back_trans(ucd, rj_fld)
+      subroutine set_control_4_sph_back_trans(ucd, rj_fld, d_gauss)
 !
       use calypso_mpi
       use t_ucd_data
-      use m_global_gauss_coefs
 !
       use m_control_params_2nd_files
       use m_FFT_selector
@@ -136,6 +136,7 @@
 !
       type(ucd_data), intent(inout) :: ucd
       type(phys_data), intent(inout) :: rj_fld
+      type(global_gauss_points), intent(inout) :: d_gauss
 !
       integer(kind = kint) :: ierr
 !
@@ -189,21 +190,20 @@
         icb_radial_grp = icb_radial_grp_ctl
       end if
       if(i_gauss_file_name .gt. 0) then
-        fhead_gauss = gauss_sph_fhead_ctl
+        d_gauss%fhead_gauss = gauss_sph_fhead_ctl
       end if
 !
       end subroutine set_control_4_sph_back_trans
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_ctl_data_4_sph_trans(ucd, rj_fld)
+      subroutine s_set_ctl_data_4_sph_trans(ucd, rj_fld, d_gauss)
 !
       use calypso_mpi
       use t_ucd_data
       use m_machine_parameter
       use m_t_step_parameter
       use m_read_mesh_data
-      use m_global_gauss_coefs
       use m_node_id_spherical_IO
       use m_control_params_2nd_files
       use m_FFT_selector
@@ -226,6 +226,7 @@
 !
       type(ucd_data), intent(inout) :: ucd
       type(phys_data), intent(inout) :: rj_fld
+      type(global_gauss_points), intent(inout) :: d_gauss
 !
       integer(kind = kint) :: ierr
 !
@@ -299,7 +300,7 @@
         icb_radial_grp = icb_radial_grp_ctl
       end if
       if(i_gauss_file_name .gt. 0) then
-        fhead_gauss = gauss_sph_fhead_ctl
+        d_gauss%fhead_gauss = gauss_sph_fhead_ctl
       end if
 !
       end subroutine s_set_ctl_data_4_sph_trans

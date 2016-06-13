@@ -1,0 +1,1 @@
+/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/Fortran_src/CORE_src/SPH_SPECTR_src/t_global_gauss_coefs.f90

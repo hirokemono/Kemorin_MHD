@@ -81,7 +81,6 @@
 !
       use m_t_step_parameter
       use m_ctl_params_sph_trans
-      use m_global_gauss_coefs
       use t_spheric_mesh
       use t_phys_data
 !
@@ -112,17 +111,18 @@
 !
 !   Input spectr data
         if (iflag_debug.gt.0) write(*,*) 'read_gauss_global_coefs'
-        call add_int_suffix(i_step, fhead_gauss, fname_tmp)
-        call add_dat_extension(fname_tmp, fname_gauss)
-        call read_gauss_global_coefs
+        call add_int_suffix                                             &
+     &     (i_step, d_gauss_trans%fhead_gauss, fname_tmp)
+        call add_dat_extension(fname_tmp, d_gauss_trans%fname_gauss)
+        call read_gauss_global_coefs(d_gauss_trans)
 !
 !    copy and extend magnetic field to outside
 !
         if (iflag_debug.gt.0) write(*,*)                                &
      &                        'set_poloidal_b_by_gauss_coefs'
         call set_poloidal_b_by_gauss_coefs                              &
-     &     (sph_mesh%sph%sph_rj, rj_fld)
-        call deallocate_gauss_global_coefs
+     &     (sph_mesh%sph%sph_rj, rj_fld, d_gauss_trans)
+        call dealloc_gauss_global_coefs(d_gauss_trans)
 !
 !        call check_all_field_data(my_rank, rj_fld)
 !  spherical transform for vector

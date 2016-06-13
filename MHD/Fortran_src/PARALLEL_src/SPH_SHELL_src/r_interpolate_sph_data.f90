@@ -14,8 +14,11 @@
 !!
 !!      subroutine r_interpolate_sph_rst_from_IO(fld_IO, sph_rj, rj_fld)
 !!      subroutine r_interpolate_sph_fld_from_IO(fld_IO, sph_rj, rj_fld)
-!!      subroutine set_poloidal_b_by_gauss_coefs(sph_rj, rj_fld)
-!!        type(phys_data), intent(inout) :: rj_fld
+!!      subroutine set_poloidal_b_by_gauss_coefs                        &
+!!     &         (sph_rj, rj_fld, d_gauss)
+!!      type(sph_rj_grid), intent(in) ::  sph_rj
+!!      type(phys_data), intent(in) :: rj_fld
+!!      type(global_gauss_points), intent(in) :: d_gauss
 !
       module r_interpolate_sph_data
 !
@@ -278,24 +281,28 @@
 ! -----------------------------------------------------------------------
 !  -------------------------------------------------------------------
 !
-      subroutine set_poloidal_b_by_gauss_coefs(sph_rj, rj_fld)
+      subroutine set_poloidal_b_by_gauss_coefs                          &
+     &         (sph_rj, rj_fld, d_gauss)
 !
       use m_sph_phys_address
-      use m_global_gauss_coefs
       use t_phys_data
+      use t_global_gauss_coefs
       use extend_potential_field
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_data), intent(in) :: rj_fld
+      type(global_gauss_points), intent(in) :: d_gauss
 !
 !
       write(*,*) ' ipol%i_magne', ipol%i_magne, kr_outside, kr_inside
       if (ipol%i_magne .gt. 0) then
-        call gauss_to_poloidal_out(kr_outside, ltr_w, r_gauss,          &
-     &      w_gauss, index_w, ipol%i_magne, sph_rj,                     &
+        call gauss_to_poloidal_out                                      &
+     &     (kr_outside, d_gauss%ltr_w, d_gauss%r_gauss,                 &
+     &      d_gauss%w_gauss, d_gauss%index_w, ipol%i_magne, sph_rj,     &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-        call gauss_to_poloidal_in(kr_inside, ltr_w, r_gauss,            &
-     &      w_gauss, index_w, ipol%i_magne, sph_rj,                     &
+        call gauss_to_poloidal_in                                       &
+     &     (kr_inside, d_gauss%ltr_w, d_gauss%r_gauss,                  &
+     &      d_gauss%w_gauss, d_gauss%index_w, ipol%i_magne, sph_rj,     &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
