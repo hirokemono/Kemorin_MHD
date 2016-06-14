@@ -21,6 +21,7 @@
       use m_constants
       use m_machine_parameter
       use m_t_int_parameter
+      use m_fdm_coefs
 !
       use t_spheric_rj_data
       use t_sph_matrices
@@ -66,7 +67,7 @@
       call add_scalar_poisson_mat_sph                                   &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj,        &
      &    g_sph_rj, sph_bc_U%kr_in, sph_bc_U%kr_out,                    &
-     &    coef_p, band_p_poisson%mat)
+     &    coef_p, d1nod_mat_fdm_2, d2nod_mat_fdm_2, band_p_poisson%mat)
 !
 !   Boundary condition for ICB
 !
@@ -139,7 +140,8 @@
 !
       call add_scalar_poisson_mat_sph                                   &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj,        &
-     &    g_sph_rj, sph_bc%kr_in, sph_bc%kr_out, coef, band_s_evo%mat)
+     &    g_sph_rj, sph_bc%kr_in, sph_bc%kr_out, coef,                  &
+     &    d1nod_mat_fdm_2, d2nod_mat_fdm_2, band_s_evo%mat)
 !
       if     (sph_bc%iflag_icb .eq. iflag_sph_fill_center               &
      &   .or. sph_bc%iflag_icb .eq. iflag_sph_fix_center) then

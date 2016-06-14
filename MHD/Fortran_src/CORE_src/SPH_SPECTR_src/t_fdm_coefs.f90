@@ -1,0 +1,167 @@
+!>@file   t_fdm_coefs.f90
+!!@brief  module t_fdm_coefs
+!!
+!!@author H. Matsui
+!!@date Programmed in Jan, 2010
+!
+!>@brief  Coefficients to obtain radial derivatives
+!!        by finite difference method
+!!
+!!@verbatim
+!! ----------------------------------------------------------------------
+!!      Coeeficients for derivatives by 1d finite difference method
+!!
+!!     define of elemental field
+!!       r_ele(k) = half *(r_nod(k-1) + r_nod(k))
+!!       d_ele(k) = half *(d_nod(k-1) + d_nod(k))
+!!
+!!    2nd order derivatives on node by nodal field
+!!      dfdr =    fdmn_nod%fdm(1)%dmat(k,-1) * d_nod(k-1)
+!!              + fdmn_nod%fdm(1)%dmat(k, 0) * d_nod(k  )
+!!              + fdmn_nod%fdm(1)%dmat(k, 1) * d_nod(k+1)
+!!      d2fdr2 =  fdmn_nod%fdm(2)%dmat(k,-1) * d_nod(k-1)
+!!              + fdmn_nod%fdm(2)%dmat(k, 0) * d_nod(k  )
+!!              + fdmn_nod%fdm(2)%dmat(k, 1) * d_nod(k+1)
+!! ----------------------------------------------------------------------
+!!
+!!      subroutine alloc_nod_fdm_matrices(nri, num_order, fdm)
+!!      subroutine dealloc_nod_fdm_matrices(fdmn_nod)
+!!      subroutine check_fdm_coefs(nri, r, fdmn_nod)
+!!@endverbatim
+!!
+!!@n @param nri    number of radial grid points
+!!@n @param r(nri) radius
+!
+      module t_fdm_coefs
+!
+      use m_precision
+!
+      implicit none
+!
+!
+!>        Structure of FDM matrix
+      type fdm_matrix
+!>        Coefficients to evaluate first radial derivative
+        integer(kind = kint) :: n_wid
+!>        Coefficients to evaluate first radial derivative
+!!        from nodal field by FDM
+        real(kind = kreal), pointer :: dmat(:,:)
+      end type fdm_matrix
+!
+!>        Structure of FDM matrices
+      type fdm_matrices
+!>        Coefficients to evaluate first radial derivative
+        integer(kind = kint) :: n_order
+!>        Structure of FDM matrix
+        type(fdm_matrix), pointer :: fdm(:)
+      end type fdm_matrices
+!
+      private :: alloc_fdm_matrix, dealloc_nod_fdm_matrices
+      private :: check_fdm_coef
+!
+! -----------------------------------------------------------------------
+!
+      contains
+!
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_nod_fdm_matrices(nri, num_order, fdmn_nod)
+!
+      integer(kind = kint), intent(in) :: nri, num_order
+      type(fdm_matrices), intent(inout) :: fdmn_nod
+!
+      integer(kind = kint) :: i, ncomp
+!
+!
+      fdmn_nod%n_order = num_order
+      allocate( fdmn_nod%fdm(fdmn_nod%n_order) )
+!
+      do i = 1, fdmn_nod%n_order
+        call alloc_fdm_matrix(nri, fdmn_nod%n_order, fdmn_nod%fdm(i))
+      end do
+!
+      end subroutine alloc_nod_fdm_matrices
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_nod_fdm_matrices(fdmn_nod)
+!
+      type(fdm_matrices), intent(inout) :: fdmn_nod
+!
+      integer(kind = kint) :: i
+!
+!
+      do i = 1, fdmn_nod%n_order
+        call dealloc_fdm_matrix(fdmn_nod%fdm(i))
+      end do
+!
+      deallocate(fdmn_nod%fdm)
+!
+      end subroutine dealloc_nod_fdm_matrices
+!
+! -----------------------------------------------------------------------
+!
+      subroutine check_fdm_coefs(nri, r, fdmn_nod)
+!
+      integer(kind = kint), intent(in) :: nri
+      real(kind = kreal), intent(in) :: r(nri)
+      type(fdm_matrices), intent(in) :: fdmn_nod
+!
+      integer(kind = kint) :: i
+!
+!
+      do i = 1, nri
+        write(50,*) 'Matrix for differences: ', i
+        call check_fdm_coef(nri, r, fdmn_nod%fdm(i))
+      end do
+!
+      end subroutine check_fdm_coefs
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_fdm_matrix(nri, n_order, fdm)
+!
+      integer(kind = kint), intent(in) :: nri, n_order
+      type(fdm_matrix), intent(inout) :: fdm
+!
+!
+      fdm%n_wid = n_order / 2
+      allocate( fdm%dmat(nri,-fdm%n_wid:fdm%n_wid) )
+!
+      if(nri .gt. 0) fdm%dmat = 0.0d0
+!
+      end subroutine alloc_fdm_matrix
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_fdm_matrix(fdm)
+!
+      type(fdm_matrix), intent(inout) :: fdm
+!
+      deallocate(fdm%dmat)
+!
+      end subroutine dealloc_fdm_matrix
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine check_fdm_coef(nri, r, fdm)
+!
+      integer(kind = kint), intent(in) :: nri
+      real(kind = kreal), intent(in) :: r(nri)
+      type(fdm_matrix), intent(in) :: fdm
+!
+      integer(kind = kint) :: kr
+!
+      write(50,*) 'kr, r, df_n1, df_0, df_p1'
+      do kr = 1, nri
+        write(50,'(i5,1p40e20.12)')                                     &
+     &       kr, r(kr), fdm%dmat(kr,-fdm%n_wid:fdm%n_wid)
+      end do
+!
+      end subroutine check_fdm_coef
+!
+! -----------------------------------------------------------------------
+!
+      end module t_fdm_coefs

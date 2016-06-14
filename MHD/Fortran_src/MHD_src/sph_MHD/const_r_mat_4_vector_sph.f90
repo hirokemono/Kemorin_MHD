@@ -29,6 +29,7 @@
       use m_t_int_parameter
       use m_physical_property
       use m_ludcmp_3band
+      use m_fdm_coefs
 !
       use t_spheric_rj_data
       use t_sph_matrices
@@ -105,15 +106,15 @@
       call add_vector_poisson_mat_sph                                   &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj,        &
      &    g_sph_rj, sph_bc_U%kr_in, sph_bc_U%kr_out,                    &
-     &    coef_dvt, band_vt_evo%mat)
+     &    coef_dvt, d2nod_mat_fdm_2, band_vt_evo%mat)
       call add_vector_poisson_mat_sph                                   &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj,        &
      &    g_sph_rj, sph_bc_U%kr_in, sph_bc_U%kr_out,                    &
-     &    coef_dvt, band_wt_evo%mat)
+     &    coef_dvt, d2nod_mat_fdm_2, band_wt_evo%mat)
       call add_vector_poisson_mat_sph                                   &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj,        &
      &    g_sph_rj, sph_bc_U%kr_in, sph_bc_U%kr_out,                    &
-     &    one, band_vs_poisson%mat)
+     &    one, d2nod_mat_fdm_2, band_vs_poisson%mat)
 !
 !   Boundary condition for ICB
 !
@@ -273,11 +274,11 @@
       call add_vector_poisson_mat_sph                                   &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj,        &
      &    g_sph_rj, sph_bc_B%kr_in, sph_bc_B%kr_out,                    &
-     &    coef_dbt, band_bp_evo%mat)
+     &    coef_dbt, d2nod_mat_fdm_2, band_bp_evo%mat)
       call add_vector_poisson_mat_sph                                   &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj,        &
      &    g_sph_rj, sph_bc_B%kr_in, sph_bc_B%kr_out,                    &
-     &    coef_dbt, band_bt_evo%mat)
+     &    coef_dbt, d2nod_mat_fdm_2, band_bt_evo%mat)
 !
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then

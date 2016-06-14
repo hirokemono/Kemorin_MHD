@@ -13,7 +13,8 @@
 !!      subroutine set_radius_for_fdm(sph_params, sph_rj)
 !!        type(sph_shell_parameters), intent(inout) :: sph_params
 !!        type(sph_rj_grid), intent(inout) ::  sph_rj
-!!      subroutine set_radial_grad_scalars(istep, time, buo_ratio)
+!!      subroutine set_radial_grad_scalars(istep, time,                 &
+!!     &          nri, radius_1d_rj_r, d1nod_mat_fdm_2, buo_ratio)
 !!@endverbatim
 !
       module m_neutral_pt_by_pick_sph
@@ -23,7 +24,6 @@
 !
       use m_phys_labels
       use m_pickup_sph_spectr_data
-      use m_fdm_coefs
 !
       use set_radius_func
       use set_radius_func_noequi
@@ -143,7 +143,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_radial_grad_scalars(istep, time,                   &
-     &          nri, radius_1d_rj_r, buo_ratio)
+     &          nri, radius_1d_rj_r, d1nod_mat_fdm_2, buo_ratio)
 !
       use m_sph_phys_address
 !
@@ -152,6 +152,7 @@
 !
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
+      real(kind = kreal), intent(in) :: d1nod_mat_fdm_2(nri,-1:1)
 !
       integer(kind = kint) :: k, ipick
 !

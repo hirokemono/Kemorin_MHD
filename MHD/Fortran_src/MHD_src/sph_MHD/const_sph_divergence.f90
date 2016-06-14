@@ -28,6 +28,7 @@
 !
       use m_precision
       use m_constants
+      use m_fdm_coefs
 !
       use t_spheric_rj_data
       use t_phys_data
@@ -57,8 +58,9 @@
 !
 !
       call cal_sph_nod_vect_div2(sph_bc%kr_in, sph_bc%kr_out,           &
-     &    sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj, is_flux,           &
-     &    is_advect, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &    sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj, d1nod_mat_fdm_2,   &
+     &    is_flux, is_advect, rj_fld%n_point, rj_fld%ntot_phys,         &
+     &    rj_fld%d_fld)
       call sel_bc_sph_scalar_advect(sph_rj, sph_bc, g_sph_rj,           &
      &    is_flux, is_advect, rj_fld)
 !
@@ -82,8 +84,9 @@
 !
 !
       call cal_sph_nod_vect_div2(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
-     &    sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj, is_fld, is_div,    &
-     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &    sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj, d1nod_mat_fdm_2,   &
+     &    is_fld, is_div, rj_fld%n_point, rj_fld%ntot_phys,             &
+     &    rj_fld%d_fld)
 !
       call cal_sph_nod_nobc_in_div2                                     &
      &   (sph_rj%nidx_rj(2), g_sph_rj, sph_bc_U%kr_in,                  &

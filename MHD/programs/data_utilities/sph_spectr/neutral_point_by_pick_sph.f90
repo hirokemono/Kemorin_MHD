@@ -8,6 +8,7 @@
       use m_precision
       use m_constants
       use m_spheric_data_sph_spetr
+      use m_fdm_coefs
       use m_pickup_sph_spectr_data
       use m_neutral_pt_by_pick_sph
 !
@@ -51,7 +52,7 @@
           call set_radial_grad_scalars(i_step, time,                    &
      &        sph_mesh_spec%sph%sph_rj%nidx_rj(1),                      &
      &        sph_mesh_spec%sph%sph_rj%radius_1d_rj_r,                  &
-     &        buoyancy_ratio)
+     &        d1nod_mat_fdm_2, buoyancy_ratio)
           icou = icou + 1
           write(*,*) 'step ', i_step,                                   &
      &        ' is added for time average: count is  ', icou

@@ -7,33 +7,34 @@
 !>@brief  Evaluate derivatives explicitly
 !!
 !!@verbatim
-!!      subroutine cal_sph_diff_pol_and_rot2(kr_in, kr_out,             &
-!!     &          nidx_rj, ar_1d_rj, g_sph_rj, is_fld, is_rot,          &
-!!     &          nnod_rj, ntot_phys_rj, d_rj)
+!!      subroutine cal_sph_diff_pol_and_rot2(kr_in, kr_out, nidx_rj,    &
+!!     &          ar_1d_rj, g_sph_rj, d1nod_mat_fdm_2, d2nod_mat_fdm_2, &
+!!     &          is_fld, is_rot, nnod_rj, ntot_phys_rj, d_rj)
 !!        input:  d_rj(:,is_fld),   d_rj(:,is_fld+2)
 !!        output: d_rj(:,is_fld+1), d_rj(:,is_rot:is_rot+2)
 !!
 !!      subroutine cal_sph_diff_poloidal2(kr_in, kr_out, nidx_rj,       &
-!!     &          is_fld,  nnod_rj, ntot_phys_rj, d_rj)
+!!     &          d1nod_mat_fdm_2, is_fld, nnod_rj, ntot_phys_rj, d_rj)
 !!        input:  d_rj(:,is_fld)
 !!        output: d_rj(:,is_fld+1)
 !!
-!!      subroutine cal_sph_nod_vect_rot2(kr_in, kr_out,                 &
-!!     &          nidx_rj, ar_1d_rj, g_sph_rj, is_fld, is_rot,          &
+!!      subroutine cal_sph_nod_vect_rot2                                &
+!!     &         (kr_in, kr_out, nidx_rj, ar_1d_rj, g_sph_rj,           &
+!!     &          d1nod_mat_fdm_2, d2nod_mat_fdm_2, is_fld, is_rot,     &
 !!     &          nnod_rj, ntot_phys_rj, d_rj)
 !!        input:  d_rj(:,is_fld),   d_rj(:,is_fld+2)
 !!        output: d_rj(:,is_rot:is_rot+2)
 !!
 !!      subroutine cal_sph_nod_vect_w_div_rot2(kr_in, kr_out,           &
-!!     &           nidx_rj, ar_1d_rj, g_sph_rj, is_fld, is_rot,         &
-!!     &           nnod_rj, ntot_phys_rj, d_rj)
+!!     &          nidx_rj, ar_1d_rj, g_sph_rj, d1nod_mat_fdm_2,         &
+!!     &          is_fld, is_rot, nnod_rj, ntot_phys_rj, d_rj)
 !!      subroutine cal_sph_nod_vect_div2(kr_in, kr_out,                 &
-!!     &          nidx_rj, ar_1d_rj, g_sph_rj, is_fld, is_div,          &
-!!     &          nnod_rj, ntot_phys_rj, d_rj)
+!!     &          nidx_rj, ar_1d_rj, g_sph_rj, d1nod_mat_fdm_2,         &
+!!     &          is_fld, is_div, nnod_rj, ntot_phys_rj, d_rj)
 !!
-!!      subroutine cal_sph_nod_diffuse_by_rot2(kr_in, kr_out,           &
-!!     &          nidx_rj, ar_1d_rj, g_sph_rj, coef_d, is_fld, is_rot,  &
-!!     &          nnod_rj, ntot_phys_rj, d_rj)
+!!      subroutine cal_sph_nod_diffuse_by_rot2(kr_in, kr_out, nidx_rj,  &
+!!     &          ar_1d_rj, g_sph_rj, d1nod_mat_fdm_2, d2nod_mat_fdm_2, &
+!!     &          coef_d, is_fld, is_rot, nnod_rj, ntot_phys_rj, d_rj)
 !!@endverbatim
 !!
 !!@n @param kr_in    Radial ID for inner boundary
@@ -52,7 +53,6 @@
 !
       use m_precision
       use m_constants
-      use m_fdm_coefs
 !
       implicit none
 !
@@ -62,9 +62,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_diff_pol_and_rot2(kr_in, kr_out,               &
-     &          nidx_rj, ar_1d_rj, g_sph_rj, is_fld, is_rot,            &
-     &          nnod_rj, ntot_phys_rj, d_rj)
+      subroutine cal_sph_diff_pol_and_rot2(kr_in, kr_out, nidx_rj,      &
+     &          ar_1d_rj, g_sph_rj, d1nod_mat_fdm_2, d2nod_mat_fdm_2,   &
+     &          is_fld, is_rot, nnod_rj, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
       integer(kind = kint), intent(in) :: is_fld, is_rot
@@ -72,6 +72,10 @@
       integer(kind = kint), intent(in) ::  nnod_rj, ntot_phys_rj
       real(kind = kreal), intent(in) :: g_sph_rj(nidx_rj(2),13)
       real(kind = kreal), intent(in) :: ar_1d_rj(nidx_rj(1),3)
+      real(kind = kreal), intent(in)                                    &
+     &                   :: d1nod_mat_fdm_2(nidx_rj(1),-1:1)
+      real(kind = kreal), intent(in)                                    &
+     &                   :: d2nod_mat_fdm_2(nidx_rj(1),-1:1)
 !
       real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
@@ -113,12 +117,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sph_diff_poloidal2(kr_in, kr_out, nidx_rj,         &
-     &          is_fld,  nnod_rj, ntot_phys_rj, d_rj)
+     &          d1nod_mat_fdm_2, is_fld, nnod_rj, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
       integer(kind = kint), intent(in) :: is_fld
       integer(kind = kint), intent(in) :: nidx_rj(2)
       integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real(kind = kreal), intent(in)                                    &
+     &                   :: d1nod_mat_fdm_2(nidx_rj(1),-1:1)
 !
       real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
@@ -148,8 +154,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_vect_rot2(kr_in, kr_out,                   &
-     &          nidx_rj, ar_1d_rj, g_sph_rj, is_fld, is_rot,            &
+      subroutine cal_sph_nod_vect_rot2                                  &
+     &         (kr_in, kr_out, nidx_rj, ar_1d_rj, g_sph_rj,             &
+     &          d1nod_mat_fdm_2, d2nod_mat_fdm_2, is_fld, is_rot,       &
      &          nnod_rj, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
@@ -158,6 +165,10 @@
       integer(kind = kint), intent(in) :: nidx_rj(2)
       real(kind = kreal), intent(in) :: g_sph_rj(nidx_rj(2),13)
       real(kind = kreal), intent(in) :: ar_1d_rj(nidx_rj(1),3)
+      real(kind = kreal), intent(in)                                    &
+     &                   :: d1nod_mat_fdm_2(nidx_rj(1),-1:1)
+      real(kind = kreal), intent(in)                                    &
+     &                   :: d2nod_mat_fdm_2(nidx_rj(1),-1:1)
 !
       real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
@@ -194,8 +205,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sph_nod_vect_w_div_rot2(kr_in, kr_out,             &
-     &           nidx_rj, ar_1d_rj, g_sph_rj, is_fld, is_rot,           &
-     &           nnod_rj, ntot_phys_rj, d_rj)
+     &          nidx_rj, ar_1d_rj, g_sph_rj, d1nod_mat_fdm_2,           &
+     &          is_fld, is_rot, nnod_rj, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
       integer(kind = kint), intent(in) :: is_fld, is_rot
@@ -203,6 +214,8 @@
       integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real(kind = kreal), intent(in) :: g_sph_rj(nidx_rj(2),13)
       real(kind = kreal), intent(in) :: ar_1d_rj(nidx_rj(1),3)
+      real(kind = kreal), intent(in)                                    &
+     &                   :: d1nod_mat_fdm_2(nidx_rj(1),-1:1)
 !
       real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
@@ -239,8 +252,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sph_nod_vect_div2(kr_in, kr_out,                   &
-     &          nidx_rj, ar_1d_rj, g_sph_rj, is_fld, is_div,            &
-     &          nnod_rj, ntot_phys_rj, d_rj)
+     &          nidx_rj, ar_1d_rj, g_sph_rj, d1nod_mat_fdm_2,           &
+     &          is_fld, is_div, nnod_rj, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
       integer(kind = kint), intent(in) :: is_fld, is_div
@@ -248,6 +261,8 @@
       integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real(kind = kreal), intent(in) :: g_sph_rj(nidx_rj(2),13)
       real(kind = kreal), intent(in) :: ar_1d_rj(nidx_rj(1),3)
+      real(kind = kreal), intent(in)                                    &
+     &                   :: d1nod_mat_fdm_2(nidx_rj(1),-1:1)
 !
       real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
@@ -279,9 +294,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_diffuse_by_rot2(kr_in, kr_out,             &
-     &          nidx_rj, ar_1d_rj, g_sph_rj, coef_d, is_fld, is_rot,    &
-     &          nnod_rj, ntot_phys_rj, d_rj)
+      subroutine cal_sph_nod_diffuse_by_rot2(kr_in, kr_out, nidx_rj,    &
+     &          ar_1d_rj, g_sph_rj, d1nod_mat_fdm_2, d2nod_mat_fdm_2,   &
+     &          coef_d, is_fld, is_rot, nnod_rj, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
       real(kind = kreal), intent(in) :: coef_d
@@ -291,6 +306,10 @@
       integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real(kind = kreal), intent(in) :: g_sph_rj(nidx_rj(2),13)
       real(kind = kreal), intent(in) :: ar_1d_rj(nidx_rj(1),3)
+      real(kind = kreal), intent(in)                                    &
+     &                   :: d1nod_mat_fdm_2(nidx_rj(1),-1:1)
+      real(kind = kreal), intent(in)                                    &
+     &                   :: d2nod_mat_fdm_2(nidx_rj(1),-1:1)
 !
       real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !

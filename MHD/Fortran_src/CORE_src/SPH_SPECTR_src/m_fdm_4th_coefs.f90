@@ -16,26 +16,31 @@
 !!       d_ele(k) = half *(d_nod(k-1) + d_nod(k))
 !!
 !!    4th order derivatives on node by nodal field
-!!      dfdr =    d1nod_mat_fdm_4(-2,1) *  d_nod(k-2)
-!!              + d1nod_mat_fdm_4(-1,2) *  d_nod(k-1)
-!!              + d1nod_mat_fdm_4( 0,3) *  d_nod(k  )
-!!              + d1nod_mat_fdm_4( 1,3) *  d_nod(k+1)
-!!              + d1nod_mat_fdm_4( 2,4) *  d_nod(k+2)
-!!      d2fdr2 =  d2nod_mat_fdm_4(-2,1) *  d_nod(k-2)
-!!              + d2nod_mat_fdm_4(-1,2) *  d_nod(k-1)
-!!              + d2nod_mat_fdm_4( 1,3) *  d_nod(k  )
-!!              + d2nod_mat_fdm_4( 0,3) *  d_nod(k+1)
-!!              + d2nod_mat_fdm_4( 2,4) *  d_nod(k+2)
-!!      d3fdr3 =  d3nod_mat_fdm_4(-2,1) *  d_nod(k-2)
-!!              + d3nod_mat_fdm_4(-1,2) *  d_nod(k-1)
-!!              + d3nod_mat_fdm_4( 0,3) *  d_nod(k  )
-!!              + d3nod_mat_fdm_4( 1,3) *  d_nod(k+1)
-!!              + d3nod_mat_fdm_4( 2,4) *  d_nod(k+2)
-!!      d4fdr4 =  d4nod_mat_fdm_4(-2,1) *  d_nod(k-2)
-!!              + d4nod_mat_fdm_4(-1,2) *  d_nod(k-1)
-!!              + d4nod_mat_fdm_4( 0,3) *  d_nod(k  )
-!!              + d4nod_mat_fdm_4( 1,3) *  d_nod(k+1)
-!!              + d4nod_mat_fdm_4( 2,4) *  d_nod(k+2)
+!!      dfdr =    r_4th%fdm(1)%dmat(-2,1) *  d_nod(k-2)
+!!              + r_4th%fdm(1)%dmat(-1,2) *  d_nod(k-1)
+!!              + r_4th%fdm(1)%dmat( 0,3) *  d_nod(k  )
+!!              + r_4th%fdm(1)%dmat( 1,3) *  d_nod(k+1)
+!!              + r_4th%fdm(1)%dmat( 2,4) *  d_nod(k+2)
+!!      d2fdr2 =  r_4th%fdm(2)%dmat(-2,1) *  d_nod(k-2)
+!!              + r_4th%fdm(2)%dmat(-1,2) *  d_nod(k-1)
+!!              + r_4th%fdm(2)%dmat( 1,3) *  d_nod(k  )
+!!              + r_4th%fdm(2)%dmat( 0,3) *  d_nod(k+1)
+!!              + r_4th%fdm(2)%dmat( 2,4) *  d_nod(k+2)
+!!      d3fdr3 =  r_4th%fdm(3)%dmat(-2,1) *  d_nod(k-2)
+!!              + r_4th%fdm(3)%dmat(-1,2) *  d_nod(k-1)
+!!              + r_4th%fdm(3)%dmat( 0,3) *  d_nod(k  )
+!!              + r_4th%fdm(3)%dmat( 1,3) *  d_nod(k+1)
+!!              + r_4th%fdm(3)%dmat( 2,4) *  d_nod(k+2)
+!!      d4fdr4 =  r_4th%fdm(4)%dmat(-2,1) *  d_nod(k-2)
+!!              + r_4th%fdm(4)%dmat(-1,2) *  d_nod(k-1)
+!!              + r_4th%fdm(4)%dmat( 0,3) *  d_nod(k  )
+!!              + r_4th%fdm(4)%dmat( 1,3) *  d_nod(k+1)
+!!              + r_4th%fdm(4)%dmat( 2,4) *  d_nod(k+2)
+!!
+!!       r_4th%fdm(1)%dmat = d1nod_mat_fdm_4
+!!       r_4th%fdm(2)%dmat = d2nod_mat_fdm_4
+!!       r_4th%fdm(3)%dmat = d3nod_mat_fdm_4
+!!       r_4th%fdm(4)%dmat = d4nod_mat_fdm_4
 !!
 !! ----------------------------------------------------------------------
 !!      Work array to obtain 1d FDM
@@ -80,23 +85,15 @@
       module m_fdm_4th_coefs
 !
       use m_precision
+      use m_constants
+      use t_fdm_coefs
 !
       implicit none
 !
 !
-!>      Coefficients to evaluate first radial derivative
-!!      from nodal field by FDM
-      real(kind = kreal), allocatable :: d1nod_mat_fdm_4(:,:)
-!>      Coefficients to evaluate second radial derivative
-!!      from nodal field by FDM
-      real(kind = kreal), allocatable :: d2nod_mat_fdm_4(:,:)
-!>      Coefficients to evaluate third radial derivative
-!!      from nodal field by FDM
-      real(kind = kreal), allocatable :: d3nod_mat_fdm_4(:,:)
-!>      Coefficients to evaluate forth radial derivative
-!!      from nodal field by FDM
-      real(kind = kreal), allocatable :: d4nod_mat_fdm_4(:,:)
-!
+!>        Structure of FDM matrices
+      type(fdm_matrices), save :: r_4th
+!r_4th%fdm(1)%dmat
 !
 !>      Work matrix to construct radial derivatives with 5 points
       real(kind = kreal), allocatable :: mat_fdm_4(:,:,:)
@@ -112,17 +109,7 @@
       integer(kind = kint), intent(in) :: nri
 !
 !
-      allocate( d1nod_mat_fdm_4(nri,-2:2) )
-      allocate( d2nod_mat_fdm_4(nri,-2:2) )
-      allocate( d3nod_mat_fdm_4(nri,-2:2) )
-      allocate( d4nod_mat_fdm_4(nri,-2:2) )
-!
-      if(nri .gt. 0) then
-        d1nod_mat_fdm_4 = 0.0d0
-        d2nod_mat_fdm_4 = 0.0d0
-        d3nod_mat_fdm_4 = 0.0d0
-        d4nod_mat_fdm_4 = 0.0d0
-      end if
+      call alloc_nod_fdm_matrices(nri, ifour, r_4th)
 !
       end subroutine allocate_fdm4_coefs
 !
@@ -144,8 +131,7 @@
       subroutine deallocate_fdm4_coefs
 !
 !
-      deallocate( d1nod_mat_fdm_4, d2nod_mat_fdm_4 )
-      deallocate( d3nod_mat_fdm_4, d4nod_mat_fdm_4 )
+      call dealloc_nod_fdm_matrices(r_4th)
 !
       end subroutine deallocate_fdm4_coefs
 !
@@ -164,36 +150,22 @@
       subroutine copy_fdm4_nod_coefs_from_mat(nri)
 !
       integer(kind = kint), intent(in) :: nri
-      integer(kind= kint) :: k
+      integer(kind= kint) :: i, k
 !
 !
-!$omp parallel do private (k)
-      do k = 1, nri
-        d1nod_mat_fdm_4(k,-2) = mat_fdm_4(2,5,k)
-        d1nod_mat_fdm_4(k,-1) = mat_fdm_4(2,3,k)
-        d1nod_mat_fdm_4(k, 0) = mat_fdm_4(2,1,k)
-        d1nod_mat_fdm_4(k, 1) = mat_fdm_4(2,2,k)
-        d1nod_mat_fdm_4(k, 2) = mat_fdm_4(2,4,k)
-!
-        d2nod_mat_fdm_4(k,-2) = mat_fdm_4(3,5,k)
-        d2nod_mat_fdm_4(k,-1) = mat_fdm_4(3,3,k)
-        d2nod_mat_fdm_4(k, 0) = mat_fdm_4(3,1,k)
-        d2nod_mat_fdm_4(k, 1) = mat_fdm_4(3,2,k)
-        d2nod_mat_fdm_4(k, 2) = mat_fdm_4(3,4,k)
-!
-        d3nod_mat_fdm_4(k,-2) = mat_fdm_4(4,5,k)
-        d3nod_mat_fdm_4(k,-1) = mat_fdm_4(4,3,k)
-        d3nod_mat_fdm_4(k, 0) = mat_fdm_4(4,1,k)
-        d3nod_mat_fdm_4(k, 1) = mat_fdm_4(4,2,k)
-        d3nod_mat_fdm_4(k, 2) = mat_fdm_4(4,4,k)
-!
-        d4nod_mat_fdm_4(k,-2) = mat_fdm_4(5,5,k)
-        d4nod_mat_fdm_4(k,-1) = mat_fdm_4(5,3,k)
-        d4nod_mat_fdm_4(k, 0) = mat_fdm_4(5,1,k)
-        d4nod_mat_fdm_4(k, 1) = mat_fdm_4(5,2,k)
-        d4nod_mat_fdm_4(k, 2) = mat_fdm_4(5,4,k)
+!$omp parallel private (i)
+      do i = 1, 4
+!$omp do private (k)
+        do k = 1, nri
+          r_4th%fdm(i)%dmat(k,-2) = mat_fdm_4(i+1,5,k)
+          r_4th%fdm(i)%dmat(k,-1) = mat_fdm_4(i+1,3,k)
+          r_4th%fdm(i)%dmat(k, 0) = mat_fdm_4(i+1,1,k)
+          r_4th%fdm(i)%dmat(k, 1) = mat_fdm_4(i+1,2,k)
+          r_4th%fdm(i)%dmat(k, 2) = mat_fdm_4(i+1,4,k)
+        end do
+!$omp end do nowait
       end do
-!$omp end parallel do
+!$omp end parallel
 !
       end subroutine copy_fdm4_nod_coefs_from_mat
 !
@@ -204,24 +176,8 @@
 !
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: r(nri)
-      integer(kind = kint) :: kr
 !
-      write(50,*) 'kr, r, d1f_n2, d1f_n1, d1f_0, d1f_p1, d2f_p2'
-      do kr = 1, nri
-        write(50,'(i5,1p10e20.12)') kr, r(kr), d1nod_mat_fdm_4(kr,-2:2)
-      end do
-      write(50,*) 'kr, r, d2f_n2, d2f_n1, d2f_0, d2f_p1, d2f_p2'
-      do kr = 1, nri
-        write(50,'(i5,1p10e20.12)') kr, r(kr), d2nod_mat_fdm_4(kr,-2:2)
-      end do
-      write(50,*) 'kr, r, d3f_n2, d3f_n1, d3f_0, d3f_p1, d3f_p2'
-      do kr = 1, nri
-        write(50,'(i5,1p10e20.12)') kr, r(kr), d3nod_mat_fdm_4(kr,-2:2)
-      end do
-      write(50,*) 'kr, r, d4f_n2, d4f_n1, d4f_0, d4f_p1, d4f_p2'
-      do kr = 1, nri
-        write(50,'(i5,1p10e20.12)') kr, r(kr), d4nod_mat_fdm_4(kr,-2:2)
-      end do
+      call check_fdm_coefs(nri, r, r_4th)
 !
       end subroutine check_fdm_4_coefs
 !

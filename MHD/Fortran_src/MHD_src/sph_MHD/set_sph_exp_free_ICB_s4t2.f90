@@ -12,16 +12,17 @@
 !!     &          r_ICB, r_ICB1, fdm4_free_vp_ICB0, fdm4_free_vp_ICB1,  &
 !!     &          poisson_mat5)
 !!
-!!      subroutine cal_sph_icb_free_v_and_w_s4t2(jmax, g_sph_rj, kr_in, &
-!!     &          r_ICB1, fdm4_free_vp_ICB0, fdm4_free_vp_ICB1,         &
-!!     &          fdm2_free_vt_ICB, is_fld, is_rot,                     &
-!!     &          n_point, ntot_phys_rj, d_rj)
-!!      subroutine cal_sph_icb_free_rot_s4t2(jmax, g_sph_rj, kr_in,     &
-!!     &          r_ICB1, fdm4_free_vp_ICB0, fdm4_free_vp_ICB1,         &
-!!     &          fdm2_free_vt_ICB, is_fld, is_rot,                     &
-!!     &          n_point, ntot_phys_rj, d_rj)
-!!      subroutine cal_sph_icb_free_diffuse_s4t2(jmax, g_sph_rj, kr_in, &
-!!     &          r_ICB, r_ICB1, fdm4_free_vp_ICB0, fdm4_free_vp_ICB1,  &
+!!      subroutine cal_sph_icb_free_v_and_w_s4t2                        &
+!!     &        (nri, jmax, g_sph_rj, kr_in, r_ICB1, d1nod_mat_fdm_2,   &
+!!     &         fdm4_free_vp_ICB0, fdm4_free_vp_ICB1, fdm2_free_vt_ICB,&
+!!     &         is_fld, is_rot, n_point, ntot_phys_rj, d_rj)
+!!      subroutine cal_sph_icb_free_rot_s4t2                            &
+!!     &        (nri, jmax, g_sph_rj, kr_in, r_ICB1, d1nod_mat_fdm_2,   &
+!!     &         fdm4_free_vp_ICB0, fdm4_free_vp_ICB1, fdm2_free_vt_ICB,&
+!!     &         is_fld, is_rot, n_point, ntot_phys_rj, d_rj)
+!!      subroutine cal_sph_icb_free_diffuse_s4t2                        &
+!!     &         (nri, jmax, g_sph_rj, kr_in, r_ICB, r_ICB1,            &
+!!     &          d2nod_mat_fdm_2, fdm4_free_vp_ICB0, fdm4_free_vp_ICB1,&
 !!     &          fdm2_free_vt_ICB, coef_d, is_fld, is_diffuse,         &
 !!     &          n_point, ntot_phys_rj, d_rj)
 !!@endverbatim
@@ -97,17 +98,16 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_icb_free_v_and_w_s4t2(jmax, g_sph_rj, kr_in,   &
-     &          r_ICB1, fdm4_free_vp_ICB0, fdm4_free_vp_ICB1,           &
-     &          fdm2_free_vt_ICB, is_fld, is_rot,                       &
-     &          n_point, ntot_phys_rj, d_rj)
+      subroutine cal_sph_icb_free_v_and_w_s4t2                          &
+     &        (nri, jmax, g_sph_rj, kr_in, r_ICB1, d1nod_mat_fdm_2,     &
+     &         fdm4_free_vp_ICB0, fdm4_free_vp_ICB1, fdm2_free_vt_ICB,  &
+     &         is_fld, is_rot, n_point, ntot_phys_rj, d_rj)
 !
-      use m_fdm_coefs
-!
-      integer(kind = kint), intent(in) :: jmax, kr_in
+      integer(kind = kint), intent(in) :: nri, jmax, kr_in
       integer(kind = kint), intent(in) :: is_fld, is_rot
       real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_ICB1(0:2)
+      real(kind = kreal), intent(in) :: d1nod_mat_fdm_2(nri,-1:1)
       real(kind = kreal), intent(in) :: fdm4_free_vp_ICB0(0:2,4)
       real(kind = kreal), intent(in) :: fdm4_free_vp_ICB1(-1:2,5)
       real(kind = kreal), intent(in) :: fdm2_free_vt_ICB(0:1,3)
@@ -148,9 +148,9 @@
      &           + fdm4_free_vp_ICB1( 1,3) * d_rj(i_p2,is_fld  )        &
      &           + fdm4_free_vp_ICB1( 0,3) * d_rj(i_p1,is_fld  )        &
      &           + fdm4_free_vp_ICB1(-1,3) * d_rj(inod,is_fld  )
-        d1t_dr1 =  d1nod_mat_fdm_2(-1,kr_in+1) * d_rj(inod,is_fld+2)    &
-     &           + d1nod_mat_fdm_2( 0,kr_in+1) * d_rj(i_p1,is_fld+2)    &
-     &           + d1nod_mat_fdm_2( 1,kr_in+1) * d_rj(i_p2,is_fld+2)
+        d1t_dr1 =  d1nod_mat_fdm_2(kr_in+1,-1) * d_rj(inod,is_fld+2)    &
+     &           + d1nod_mat_fdm_2(kr_in+1, 0) * d_rj(i_p1,is_fld+2)    &
+     &           + d1nod_mat_fdm_2(kr_in+1, 1) * d_rj(i_p2,is_fld+2)
 !
         d_rj(i_p1,is_fld+1) =  d1s_dr1
         d_rj(i_p1,is_rot  ) =  d_rj(i_p1,is_fld+2)
@@ -164,17 +164,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_icb_free_rot_s4t2(jmax, g_sph_rj, kr_in,       &
-     &          r_ICB1, fdm4_free_vp_ICB0, fdm4_free_vp_ICB1,           &
-     &          fdm2_free_vt_ICB, is_fld, is_rot,                       &
-     &          n_point, ntot_phys_rj, d_rj)
+      subroutine cal_sph_icb_free_rot_s4t2                              &
+     &        (nri, jmax, g_sph_rj, kr_in, r_ICB1, d1nod_mat_fdm_2,     &
+     &         fdm4_free_vp_ICB0, fdm4_free_vp_ICB1, fdm2_free_vt_ICB,  &
+     &         is_fld, is_rot, n_point, ntot_phys_rj, d_rj)
 !
-      use m_fdm_coefs
-!
-      integer(kind = kint), intent(in) :: jmax, kr_in
+      integer(kind = kint), intent(in) :: nri, jmax, kr_in
       integer(kind = kint), intent(in) :: is_fld, is_rot
       real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_ICB1(0:2)
+      real(kind = kreal), intent(in) :: d1nod_mat_fdm_2(nri,-1:1)
       real(kind = kreal), intent(in) :: fdm4_free_vp_ICB0(0:2,4)
       real(kind = kreal), intent(in) :: fdm4_free_vp_ICB1(-1:2,5)
       real(kind = kreal), intent(in) :: fdm2_free_vt_ICB(0:1,3)
@@ -206,9 +205,9 @@
      &           + fdm4_free_vp_ICB1( 1,3) * d_rj(i_p2,is_fld  )        &
      &           + fdm4_free_vp_ICB1( 0,3) * d_rj(i_p1,is_fld  )        &
      &           + fdm4_free_vp_ICB1(-1,3) * d_rj(inod,is_fld  )
-        d1t_dr1 =  d1nod_mat_fdm_2(-1,kr_in+1) * d_rj(inod,is_fld+2)    &
-     &           + d1nod_mat_fdm_2( 0,kr_in+1) * d_rj(i_p1,is_fld+2)    &
-     &           + d1nod_mat_fdm_2( 1,kr_in+1) * d_rj(i_p2,is_fld+2)
+        d1t_dr1 =  d1nod_mat_fdm_2(kr_in+1,-1) * d_rj(inod,is_fld+2)    &
+     &           + d1nod_mat_fdm_2(kr_in+1, 0) * d_rj(i_p1,is_fld+2)    &
+     &           + d1nod_mat_fdm_2(kr_in+1, 1) * d_rj(i_p2,is_fld+2)
 !
         d_rj(i_p1,is_rot  ) =  d_rj(i_p1,is_fld+2)
         d_rj(i_p1,is_rot+1) =  d1t_dr1
@@ -221,17 +220,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_icb_free_diffuse_s4t2(jmax, g_sph_rj, kr_in,   &
-     &          r_ICB, r_ICB1, fdm4_free_vp_ICB0, fdm4_free_vp_ICB1,    &
+      subroutine cal_sph_icb_free_diffuse_s4t2                          &
+     &         (nri, jmax, g_sph_rj, kr_in, r_ICB, r_ICB1,              &
+     &          d2nod_mat_fdm_2, fdm4_free_vp_ICB0, fdm4_free_vp_ICB1,  &
      &          fdm2_free_vt_ICB, coef_d, is_fld, is_diffuse,           &
      &          n_point, ntot_phys_rj, d_rj)
 !
-      use m_fdm_coefs
-!
-      integer(kind = kint), intent(in) :: jmax, kr_in
+      integer(kind = kint), intent(in) :: nri, jmax, kr_in
       integer(kind = kint), intent(in) :: is_fld, is_diffuse
       real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_ICB(0:2), r_ICB1(0:2)
+      real(kind = kreal), intent(in) :: d2nod_mat_fdm_2(nri,-1:1)
       real(kind = kreal), intent(in) :: fdm4_free_vp_ICB0(0:2,4)
       real(kind = kreal), intent(in) :: fdm4_free_vp_ICB1(-1:2,5)
       real(kind = kreal), intent(in) :: fdm2_free_vt_ICB(0:1,3)
@@ -265,9 +264,9 @@
      &           + fdm4_free_vp_ICB1( 1,3) * d_rj(i_p2,is_fld  )        &
      &           + fdm4_free_vp_ICB1( 0,3) * d_rj(i_p1,is_fld  )        &
      &           + fdm4_free_vp_ICB1(-1,3) * d_rj(inod,is_fld  )
-        d2t_dr2 =  d2nod_mat_fdm_2(-1,kr_in+1) * d_rj(inod,is_fld+2)    &
-     &           + d2nod_mat_fdm_2( 0,kr_in+1) * d_rj(i_p1,is_fld+2)    &
-     &           + d2nod_mat_fdm_2( 1,kr_in+1) * d_rj(i_p2,is_fld+2)
+        d2t_dr2 =  d2nod_mat_fdm_2(kr_in+1,-1) * d_rj(inod,is_fld+2)    &
+     &           + d2nod_mat_fdm_2(kr_in+1, 0) * d_rj(i_p1,is_fld+2)    &
+     &           + d2nod_mat_fdm_2(kr_in+1, 1) * d_rj(i_p2,is_fld+2)
 !
         d_rj(i_p1,is_diffuse  ) =  coef_d * (d2s_dr2                    &
      &    - g_sph_rj(j,3)*r_ICB1(2)*d_rj(i_p1,is_fld  ) )

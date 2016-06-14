@@ -237,7 +237,6 @@
      &          coef_d, vt_evo_mat)
 !
       use m_t_int_parameter
-      use m_fdm_coefs
 !
       integer(kind = kint), intent(in) :: nri, jmax
       integer(kind = kint), intent(in) :: kr_in, idx_rj_l0
@@ -307,8 +306,6 @@
       subroutine cal_icore_viscous_drag_l1(idx_rj_l0, kr_in,            &
      &          fdm1_fix_fld_ICB, coef_d, it_velo, it_viscous,          &
      &          nri, jmax, ar_1d_rj, n_point, ntot_phys_rj, d_rj)
-!
-      use m_fdm_coefs
 !
       integer(kind = kint), intent(in) :: n_point, nri, jmax
       real(kind = kreal), intent(in) :: coef_d

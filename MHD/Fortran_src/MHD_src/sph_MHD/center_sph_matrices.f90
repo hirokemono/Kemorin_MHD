@@ -79,8 +79,6 @@
       subroutine add_scalar_poisson_mat_fill_ctr(nri, r_CTR1,           &
      &          fdm2_fix_dr_center, fdm2_fix_fld_ctr1, coef_p, mat00_3)
 !
-      use m_fdm_coefs
-!
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: r_CTR1(0:2)
       real(kind = kreal), intent(in) :: coef_p

@@ -72,6 +72,7 @@
 !
       use m_constants
       use m_sph_phys_address
+      use m_fdm_coefs
 !
       use t_spheric_rj_data
       use t_phys_data
@@ -102,7 +103,8 @@
 !
       call cal_sph_nod_gradient_2(sph_bc%kr_in, sph_bc%kr_out,          &
      &    is_fld, is_grad, sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,       &
-     &    g_sph_rj, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &    g_sph_rj, d1nod_mat_fdm_2, rj_fld%n_point, rj_fld%ntot_phys,  &
+     &    rj_fld%d_fld)
       call sel_bc_radial_grad_scalar(sph_rj, sph_bc, g_sph_rj,          &
      &    is_fld, is_grad, rj_fld)
       call normalize_sph_average_grad(is_grad,                          &
@@ -131,7 +133,8 @@
       call sel_bc_grad_vp_and_vorticity                                 &
      &   (sph_rj, g_sph_rj, is_velo, is_vort, rj_fld)
       call cal_sph_diff_pol_and_rot2(sph_bc_U%kr_in, sph_bc_U%kr_out,   &
-     &    sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj, is_velo, is_vort,  &
+     &    sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                    &
+     &    d1nod_mat_fdm_2, d2nod_mat_fdm_2, is_velo, is_vort,           &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine const_grad_vp_and_vorticity
@@ -156,8 +159,9 @@
       call sel_bc_grad_bp_and_current                                   &
      &   (sph_rj, sph_bc_B, g_sph_rj, is_magne, is_current, rj_fld)
       call cal_sph_diff_pol_and_rot2(sph_bc_B%kr_in, sph_bc_B%kr_out,   &
-     &    sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj, is_magne,          &
-     &    is_current, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &    sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                    &
+     &    d1nod_mat_fdm_2, d2nod_mat_fdm_2, is_magne, is_current,       &
+     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
 !      Extend potential field
       call ext_outside_potential_with_j                                 &
@@ -191,9 +195,9 @@
 !
 !
       call sel_bc_grad_poloidal_moment(sph_rj, is_fld, rj_fld)
-      call cal_sph_diff_poloidal2                                       &
-     &   (sph_bc_U%kr_in, sph_bc_U%kr_out, sph_rj%nidx_rj,              &
-     &    is_fld, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+      call cal_sph_diff_poloidal2(sph_bc_U%kr_in, sph_bc_U%kr_out,      &
+     &    sph_rj%nidx_rj, d1nod_mat_fdm_2, is_fld,                      &
+     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine const_grad_poloidal_moment
 !
@@ -217,9 +221,9 @@
       call sel_bc_grad_poloidal_magne                                   &
      &   (sph_rj, sph_bc_B, g_sph_rj, is_magne, rj_fld)
 !
-      call cal_sph_diff_poloidal2                                       &
-     &   (sph_bc_B%kr_in, sph_bc_B%kr_out, sph_rj%nidx_rj,              &
-     &    is_magne, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+      call cal_sph_diff_poloidal2(sph_bc_B%kr_in, sph_bc_B%kr_out,      &
+     &    sph_rj%nidx_rj, d1nod_mat_fdm_2, is_magne,                    &
+     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
 !      Extend potential field
       call ext_outside_potential(sph_bc_B%kr_out, is_magne,             &
@@ -255,7 +259,8 @@
 !
       call cal_sph_nod_gradient_2(sph_bc_U%kr_in, sph_bc_U%kr_out,      &
      &    is_press, is_grad, sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,     &
-     &    g_sph_rj, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &    g_sph_rj, d1nod_mat_fdm_2, rj_fld%n_point, rj_fld%ntot_phys,  &
+     &    rj_fld%d_fld)
       call normalize_sph_average_grad(is_grad,                          &
      &    sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj,                    &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
@@ -299,7 +304,8 @@
 !
       call cal_sph_nod_gradient_2(sph_bc%kr_in, sph_bc%kr_out,          &
      &    is_fld, is_grad, sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,       &
-     &    g_sph_rj, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &    g_sph_rj, d1nod_mat_fdm_2, rj_fld%n_point, rj_fld%ntot_phys,  &
+     &    rj_fld%d_fld)
       call normalize_sph_average_grad(is_grad,                          &
      &    sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj,                    &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
