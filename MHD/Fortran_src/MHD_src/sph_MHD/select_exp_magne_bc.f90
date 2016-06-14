@@ -91,7 +91,7 @@
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
         call sph_center_fld_and_curl                                    &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj(1,2), &
-     &      g_sph_rj, d1nod_mat_fdm_2, d2nod_mat_fdm_2,                 &
+     &      g_sph_rj, r_2nd%fdm(1)%dmat, r_2nd%fdm(2)%dmat,             &
      &      is_magne, is_current, rj_fld%n_point, rj_fld%ntot_phys,     &
      &      rj_fld%d_fld)
       else if(sph_bc_B%iflag_icb .eq. iflag_radial_magne) then
@@ -139,7 +139,7 @@
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
         call cal_dsdr_sph_center_2                                      &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), d1nod_mat_fdm_2,      &
+     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), r_2nd%fdm(1)%dmat,    &
      &      is_magne, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else if(sph_bc_B%iflag_icb .eq. iflag_radial_magne) then
         call cal_sph_nod_icb_qvc_mag2                                   &
@@ -180,7 +180,7 @@
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
         call cal_sph_nod_center_rot2                                    &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj(1,2), &
-     &      g_sph_rj, d1nod_mat_fdm_2, d2nod_mat_fdm_2,                 &
+     &      g_sph_rj, r_2nd%fdm(1)%dmat, r_2nd%fdm(2)%dmat,             &
      &      is_magne, is_current, rj_fld%n_point, rj_fld%ntot_phys,     &
      &      rj_fld%d_fld)
       else if(sph_bc_B%iflag_icb .eq. iflag_radial_magne) then
@@ -229,8 +229,9 @@
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
         call cal_sph_nod_center_rot2                                    &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj(1,2), &
-     &      g_sph_rj, d1nod_mat_fdm_2, d2nod_mat_fdm_2, is_fld, is_rot, &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &      g_sph_rj, r_2nd%fdm(1)%dmat, r_2nd%fdm(2)%dmat,             &
+     &      is_fld, is_rot, rj_fld%n_point, rj_fld%ntot_phys,           &
+     &      rj_fld%d_fld)
       else if(sph_bc_B%iflag_icb .eq. iflag_radial_magne) then
         call cal_sph_nod_icb_qvc_vp_rot2                                &
      &     (sph_rj%nidx_rj(2), sph_bc_B%kr_in, is_fld, is_rot,          &
@@ -277,11 +278,11 @@
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
         call cal_sph_nod_center_diffuse2                                &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj(1,2), &
-     &      g_sph_rj, d2nod_mat_fdm_2, coef_diffuse,                    &
+     &      g_sph_rj, r_2nd%fdm(2)%dmat, coef_diffuse,                  &
      &      is_magne, is_ohmic, rj_fld%n_point, rj_fld%ntot_phys,       &
      &      rj_fld%d_fld)
         call cal_dsdr_sph_center_2                                      &
-     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), d1nod_mat_fdm_2,      &
+     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), r_2nd%fdm(1)%dmat,    &
      &      is_ohmic, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else if(sph_bc_B%iflag_icb .eq. iflag_radial_magne) then
         call cal_sph_nod_icb_qvc_diffuse2                               &

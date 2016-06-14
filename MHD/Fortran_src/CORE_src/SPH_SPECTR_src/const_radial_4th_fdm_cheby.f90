@@ -8,8 +8,8 @@
 !!@n      modified by H. Matsui in Apr., 2013
 !!
 !!@verbatim
-!!      subroutine nod_r_4th_fdm_coefs_cheby                            &
-!!     &         (nlayer_ICB, nlayer_CMB, nri, radius_1d_rj_r)
+!!      subroutine nod_r_4th_fdm_coefs_cheby(nlayer_ICB, nlayer_CMB,    &
+!!     &          nri, radius_1d_rj_r, mat_fdm_4)
 !!
 !!**********************************************************************
 !!
@@ -32,7 +32,6 @@
       module const_radial_4th_fdm_cheby
 !
       use m_precision
-!
       use m_constants
 !
       implicit none
@@ -45,15 +44,15 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine nod_r_4th_fdm_coefs_cheby                              &
-     &         (nlayer_ICB, nlayer_CMB, nri, radius_1d_rj_r)
+      subroutine nod_r_4th_fdm_coefs_cheby(nlayer_ICB, nlayer_CMB,      &
+     &          nri, radius_1d_rj_r, mat_fdm_4)
 !
       use m_fdm_4th_coefs
-      use const_radial_4th_fdm_noequi
 !
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
+      real(kind = kreal), intent(inout) :: mat_fdm_4(5,5,nri)
 !
       integer(kind = kint) :: kr, kst, ked
       real(kind = kreal) :: dr_p1, dr_n1, dr_p2, dr_n2

@@ -121,20 +121,19 @@
       type(sph_rj_grid), intent(in) :: sph_rj
 !
 !
-      call allocate_fdm_matrices(sph_rj%nidx_rj(1))
+      call alloc_nod_fdm_matrices(sph_rj%nidx_rj(1), itwo, r_2nd)
+      call alloc_fdm_work(sph_rj%nidx_rj(1), r_2nd)
 !   Choose radial differences
       call nod_r_2nd_fdm_coefs_nonequi(sph_params%nlayer_ICB,           &
-     &    sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r)
+     &    sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, r_2nd%wk_mat)
       call deallocate_dr_rj_noequi
 !
-!
-      call allocate_fdm_coefs(sph_rj%nidx_rj(1))
-      call copy_fdm_nod_coefs_from_mat(sph_rj%nidx_rj(1))
-      call deallocate_fdm_matrices
+      call copy_fdm2_nod_coefs_from_mat(sph_rj%nidx_rj(1), r_2nd)
+      call dealloc_fdm_work(r_2nd)
 !
       if(iflag_debug .eq. iflag_full_msg) then
-        call check_fdm_2_coefs                                          &
-     &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r)
+        call check_fdm_coefs                                            &
+     &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, r_2nd)
       end if
 !
       end subroutine const_2nd_fdm_matrices

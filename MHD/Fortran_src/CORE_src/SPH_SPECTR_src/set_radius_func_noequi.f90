@@ -16,9 +16,9 @@
 !!      subroutine set_dr_for_nonequi(nlayer_CMB, nri, radius_1d_rj_r)
 !!
 !!      subroutine nod_r_2nd_fdm_coefs_equi                             &
-!!     &         (nlayer_ICB, nri, radius_1d_rj_r)
+!!     &         (nlayer_ICB, nri, radius_1d_rj_r, mat_fdm_2)
 !!      subroutine nod_r_2nd_fdm_coefs_nonequi                          &
-!!     &         (nlayer_ICB, nri, radius_1d_rj_r)
+!!     &         (nlayer_ICB, nri, radius_1d_rj_r, mat_fdm_2)
 !!
 !!      subroutine nod_r_2nd_fdm_coef_noequi(kr, dr_p1, dr_n1, mat_fdm)
 !!*
@@ -164,12 +164,11 @@
 !  -------------------------------------------------------------------
 !
       subroutine nod_r_2nd_fdm_coefs_equi                               &
-     &         (nlayer_ICB, nri, radius_1d_rj_r)
-!
-      use m_fdm_coefs
+     &         (nlayer_ICB, nri, radius_1d_rj_r, mat_fdm_2)
 !
       integer(kind = kint), intent(in) :: nlayer_ICB, nri
       real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
+      real(kind = kreal), intent(inout) :: mat_fdm_2(3,3,nri)
 !
       integer(kind = kint) :: kr
 !
@@ -192,12 +191,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine nod_r_2nd_fdm_coefs_nonequi                            &
-     &         (nlayer_ICB, nri, radius_1d_rj_r)
-!
-      use m_fdm_coefs
+     &         (nlayer_ICB, nri, radius_1d_rj_r, mat_fdm_2)
 !
       integer(kind = kint), intent(in) :: nlayer_ICB, nri
       real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
+!
+      real(kind = kreal), intent(inout) :: mat_fdm_2(3,3,nri)
 !
       integer(kind = kint) :: kr
 !

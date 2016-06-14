@@ -13,7 +13,7 @@
 !!      subroutine set_dr_for_cheby                                     &
 !!     &         (nlayer_ICB, nlayer_CMB, nri, radius_1d_rj_r)
 !!      subroutine nod_r_2nd_fdm_coefs_cheby                            &
-!!     &         (nlayer_ICB, nlayer_CMB, nri, radius_1d_rj_r)
+!!     &        (nlayer_ICB, nlayer_CMB, nri, radius_1d_rj_r, mat_fdm_2)
 !!
 !!**********************************************************************
 !!
@@ -179,13 +179,13 @@
 !  -------------------------------------------------------------------
 !
       subroutine nod_r_2nd_fdm_coefs_cheby                              &
-     &         (nlayer_ICB, nlayer_CMB, nri, radius_1d_rj_r)
+     &        (nlayer_ICB, nlayer_CMB, nri, radius_1d_rj_r, mat_fdm_2)
 !
-      use m_fdm_coefs
       use set_radius_func_noequi
 !
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB, nri
       real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
+      real(kind = kreal), intent(inout) :: mat_fdm_2(3,3,nri)
 !
       integer(kind = kint) :: kr, kst, ked
 !

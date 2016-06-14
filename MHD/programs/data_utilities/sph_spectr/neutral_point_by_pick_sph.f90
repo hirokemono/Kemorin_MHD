@@ -52,7 +52,7 @@
           call set_radial_grad_scalars(i_step, time,                    &
      &        sph_mesh_spec%sph%sph_rj%nidx_rj(1),                      &
      &        sph_mesh_spec%sph%sph_rj%radius_1d_rj_r,                  &
-     &        d1nod_mat_fdm_2, buoyancy_ratio)
+     &        r_2nd%fdm(1)%dmat, buoyancy_ratio)
           icou = icou + 1
           write(*,*) 'step ', i_step,                                   &
      &        ' is added for time average: count is  ', icou

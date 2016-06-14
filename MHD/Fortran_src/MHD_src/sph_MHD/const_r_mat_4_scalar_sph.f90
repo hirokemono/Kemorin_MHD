@@ -66,8 +66,8 @@
      &    sph_bc_U%kr_in, sph_bc_U%kr_out, band_p_poisson%mat)
       call add_scalar_poisson_mat_sph                                   &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj,        &
-     &    g_sph_rj, sph_bc_U%kr_in, sph_bc_U%kr_out,                    &
-     &    coef_p, d1nod_mat_fdm_2, d2nod_mat_fdm_2, band_p_poisson%mat)
+     &    g_sph_rj, sph_bc_U%kr_in, sph_bc_U%kr_out, coef_p,            &
+     &    r_2nd%fdm(1)%dmat, r_2nd%fdm(2)%dmat, band_p_poisson%mat)
 !
 !   Boundary condition for ICB
 !
@@ -141,7 +141,7 @@
       call add_scalar_poisson_mat_sph                                   &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj,        &
      &    g_sph_rj, sph_bc%kr_in, sph_bc%kr_out, coef,                  &
-     &    d1nod_mat_fdm_2, d2nod_mat_fdm_2, band_s_evo%mat)
+     &    r_2nd%fdm(1)%dmat, r_2nd%fdm(2)%dmat, band_s_evo%mat)
 !
       if     (sph_bc%iflag_icb .eq. iflag_sph_fill_center               &
      &   .or. sph_bc%iflag_icb .eq. iflag_sph_fix_center) then
