@@ -20,6 +20,7 @@
       use m_precision
       use t_spheric_mesh
       use t_phys_data
+      use t_phys_address
       use t_field_data_IO
       use t_schmidt_poly_on_rtm
 !
@@ -28,6 +29,12 @@
 !>  Structure of grid and spectr data for spherical spectr method
       type(sph_mesh_data), save :: sph_mesh_spec
 !
+!>   address for spectr data (poloidal component for vector)
+      type(phys_address), save :: ipol_spec
+!>   address for radial gradient for poloidal component
+      type(phys_address), save :: idpdr_spec
+!>   address for toroidal component
+      type(phys_address), save :: itor_spec
 !>  Structure for field data
       type(phys_data), save :: rj_fld_spec
 !

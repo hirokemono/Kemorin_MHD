@@ -20,7 +20,8 @@
 !!        type(phys_data), intent(inout) :: rj_fld
 !!
 !!      subroutine init_radial_sph_interpolation
-!!      subroutine read_alloc_sph_rst_4_snap(i_step, sph_rj, rj_fld)
+!!      subroutine read_alloc_sph_rst_4_snap                            &
+!!     &         (i_step, sph_rj, ipol, rj_fld)
 !!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine output_spectr_4_snap(i_step, sph_rj, rj_fld)
 !!        type(phys_data), intent(in) :: rj_fld
@@ -40,6 +41,7 @@
       use m_t_step_parameter
       use m_file_format_switch
 !
+      use t_phys_address
       use t_phys_data
       use t_field_data_IO
 !
@@ -185,7 +187,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_alloc_sph_rst_4_snap(i_step, sph_rj, rj_fld)
+      subroutine read_alloc_sph_rst_4_snap                              &
+     &         (i_step, sph_rj, ipol, rj_fld)
 !
       use m_control_params_2nd_files
       use m_node_id_spherical_IO
@@ -195,6 +198,7 @@
 !
       integer(kind = kint), intent(in) :: i_step
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(phys_address), intent(in) :: ipol
       type(phys_data), intent(inout) :: rj_fld
 !
       integer(kind = kint) :: istep_fld
@@ -211,7 +215,8 @@
       else
         if (iflag_debug.gt.0)                                           &
      &            write(*,*) 'r_interpolate_sph_rst_from_IO'
-        call r_interpolate_sph_rst_from_IO(sph_fst_IO, sph_rj, rj_fld)
+        call r_interpolate_sph_rst_from_IO                              &
+     &     (sph_fst_IO, sph_rj, ipol, rj_fld)
       end if
 !
       call dealloc_phys_data_IO(sph_fst_IO)
@@ -259,13 +264,15 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_alloc_sph_rst_2_modify(i_step, sph_rj, rj_fld)
+      subroutine read_alloc_sph_rst_2_modify                            &
+     &         (i_step, sph_rj, ipol, rj_fld)
 !
       use m_control_params_2nd_files
       use t_spheric_rj_data
 !
       integer(kind = kint), intent(in) :: i_step
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(phys_address), intent(in) :: ipol
       type(phys_data), intent(inout) :: rj_fld
 !
       integer(kind = kint) :: ifmt_rst_file_tmp
@@ -277,7 +284,7 @@
       sph_fst_IO%file_prefix = org_rst_header
       call set_field_file_fmt_prefix                                    &
      &   (ifmt_rst_file_tmp, org_rst_header, sph_fst_IO)
-      call read_alloc_sph_rst_4_snap(i_step, sph_rj, rj_fld)
+      call read_alloc_sph_rst_4_snap(i_step, sph_rj, ipol, rj_fld)
 !
       call set_field_file_fmt_prefix                                    &
      &   (ifmt_rst_file_tmp, restart_tmp_prefix, sph_fst_IO)

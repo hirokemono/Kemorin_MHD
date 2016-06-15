@@ -52,7 +52,7 @@
       type(address_4_sph_trans), intent(in) :: trns_snap
       type(node_data), intent(in) :: node
       type(phys_address), intent(in) :: iphys
-      real(kind = kreal), intent(inout)                                 &
+      real(kind = kreal), intent(in)                                    &
      &           :: fls_pl(sph_rtp%nnod_pole,trns_snap%ncomp_rj_2_rtp)
 !
       type(phys_data), intent(inout) :: nod_fld

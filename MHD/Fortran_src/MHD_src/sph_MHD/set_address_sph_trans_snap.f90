@@ -8,8 +8,9 @@
 !!       in MHD dynamo simulation
 !!
 !!@verbatim
-!!     subroutine set_addresses_snapshot_trans(trns_snap,               &
+!!     subroutine set_addresses_snapshot_trans(ipol, trns_snap,         &
 !!    &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!!        type(phys_address), intent(in) :: ipol
 !!        type(address_4_sph_trans), intent(inout) :: trns_snap
 !!@endverbatim
 !
@@ -22,18 +23,23 @@
 !
       implicit none
 !
+      private :: b_trans_address_vector_snap
+      private :: b_trans_address_scalar_snap
+      private :: f_trans_address_vector_snap
+      private :: f_trans_address_scalar_snap
+!
 !-----------------------------------------------------------------------
 !
       contains
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_addresses_snapshot_trans(trns_snap,                &
+      subroutine set_addresses_snapshot_trans(ipol, trns_snap,          &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       use m_node_phys_data
-      use m_sph_phys_address
 !
+      type(phys_address), intent(in) :: ipol
       type(address_4_sph_trans), intent(inout) :: trns_snap
       integer(kind = kint), intent(inout) :: ncomp_sph_trans
       integer(kind = kint), intent(inout) :: nvector_sph_trans
@@ -43,14 +49,16 @@
 !
 !
       call b_trans_address_vector_snap                                  &
-     &  (trns_snap%nvector_rj_2_rtp, trns_snap%b_trns)
-      call b_trans_address_scalar_snap(trns_snap%nvector_rj_2_rtp,      &
+     &   (ipol, trns_snap%nvector_rj_2_rtp, trns_snap%b_trns)
+      call b_trans_address_scalar_snap                                  &
+     &   (ipol, trns_snap%nvector_rj_2_rtp,                             &
      &    trns_snap%nscalar_rj_2_rtp, trns_snap%b_trns)
       trns_snap%ntensor_rj_2_rtp = 0
 !
       call f_trans_address_vector_snap                                  &
-     &   (trns_snap%nvector_rtp_2_rj, trns_snap%f_trns)
-      call f_trans_address_scalar_snap(trns_snap%nvector_rtp_2_rj,      &
+     &   (ipol, trns_snap%nvector_rtp_2_rj, trns_snap%f_trns)
+      call f_trans_address_scalar_snap                                  &
+     &   (ipol, trns_snap%nvector_rtp_2_rj,                             &
      &    trns_snap%nscalar_rtp_2_rj, trns_snap%f_trns)
        trns_snap%ntensor_rtp_2_rj = 0
 !
@@ -82,11 +90,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine b_trans_address_vector_snap                            &
-     &         (nvector_snap_rj_2_rtp, bs_trns)
+     &         (ipol, nvector_snap_rj_2_rtp, bs_trns)
 !
       use m_node_phys_data
-      use m_sph_phys_address
 !
+      type(phys_address), intent(in) :: ipol
       integer(kind = kint), intent(inout) :: nvector_snap_rj_2_rtp
       type(phys_address), intent(inout) :: bs_trns
 !
@@ -143,23 +151,23 @@
      &    iphys%i_grad_composit, nvector_snap_rj_2_rtp,                 &
      &    bs_trns%i_grad_composit)
 !
-      call add_vec_trans_flag(ipol%i_grad_vx, iphys%i_grad_vx,         &
+      call add_vec_trans_flag(ipol%i_grad_vx, iphys%i_grad_vx,          &
      &    nvector_snap_rj_2_rtp, bs_trns%i_grad_vx)
-      call add_vec_trans_flag(ipol%i_grad_vy, iphys%i_grad_vy,         &
+      call add_vec_trans_flag(ipol%i_grad_vy, iphys%i_grad_vy,          &
      &    nvector_snap_rj_2_rtp, bs_trns%i_grad_vy)
-      call add_vec_trans_flag(ipol%i_grad_vz, iphys%i_grad_vz,         &
+      call add_vec_trans_flag(ipol%i_grad_vz, iphys%i_grad_vz,          &
      &    nvector_snap_rj_2_rtp, bs_trns%i_grad_vz)
 !
       end subroutine b_trans_address_vector_snap
 !
 !-----------------------------------------------------------------------
 !
-      subroutine b_trans_address_scalar_snap(nvector_snap_rj_2_rtp,     &
-     &          nscalar_snap_rj_2_rtp, bs_trns)
+      subroutine b_trans_address_scalar_snap(ipol,                      &
+     &          nvector_snap_rj_2_rtp, nscalar_snap_rj_2_rtp, bs_trns)
 !
       use m_node_phys_data
-      use m_sph_phys_address
 !
+      type(phys_address), intent(in) :: ipol
       integer(kind = kint), intent(in) :: nvector_snap_rj_2_rtp
       integer(kind = kint), intent(inout) :: nscalar_snap_rj_2_rtp
       type(phys_address), intent(inout) :: bs_trns
@@ -207,11 +215,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine f_trans_address_vector_snap                            &
-     &         (nvector_snap_rtp_2_rj, fs_trns)
+     &         (ipol, nvector_snap_rtp_2_rj, fs_trns)
 !
       use m_node_phys_data
-      use m_sph_phys_address
 !
+      type(phys_address), intent(in) :: ipol
       integer(kind = kint), intent(inout) :: nvector_snap_rtp_2_rj
       type(phys_address), intent(inout) :: fs_trns
 !
@@ -229,12 +237,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine f_trans_address_scalar_snap(nvector_snap_rtp_2_rj,     &
-     &          nscalar_snap_rtp_2_rj, fs_trns)
+      subroutine f_trans_address_scalar_snap(ipol,                      &
+     &          nvector_snap_rtp_2_rj, nscalar_snap_rtp_2_rj, fs_trns)
 !
       use m_node_phys_data
-      use m_sph_phys_address
 !
+      type(phys_address), intent(in) :: ipol
       integer(kind = kint), intent(in) :: nvector_snap_rtp_2_rj
       integer(kind = kint), intent(inout) :: nscalar_snap_rtp_2_rj
       type(phys_address), intent(inout) :: fs_trns

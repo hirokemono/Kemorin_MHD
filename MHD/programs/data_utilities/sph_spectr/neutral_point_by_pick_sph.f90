@@ -8,11 +8,13 @@
       use m_precision
       use m_constants
       use m_spheric_data_sph_spetr
-      use m_fdm_coefs
       use m_pickup_sph_spectr_data
       use m_neutral_pt_by_pick_sph
+      use t_fdm_coefs
 !
       implicit  none
+!
+      type(fdm_matrices), save :: r_2nd_newtral
 !
       character(len=kchara) :: evo_header
       real(kind = kreal) :: buoyancy_ratio
@@ -42,7 +44,8 @@
       icou = 0
 !
       call set_radius_for_fdm                                           &
-     &   (sph_mesh_spec%sph%sph_params, sph_mesh_spec%sph%sph_rj)
+     &   (sph_mesh_spec%sph%sph_params, sph_mesh_spec%sph%sph_rj,       &
+     &    r_2nd_newtral)
       call alloc_neutral_point
 !
       do
@@ -52,7 +55,7 @@
           call set_radial_grad_scalars(i_step, time,                    &
      &        sph_mesh_spec%sph%sph_rj%nidx_rj(1),                      &
      &        sph_mesh_spec%sph%sph_rj%radius_1d_rj_r,                  &
-     &        r_2nd%fdm(1)%dmat, buoyancy_ratio)
+     &        r_2nd_newtral%fdm(1)%dmat, buoyancy_ratio)
           icou = icou + 1
           write(*,*) 'step ', i_step,                                   &
      &        ' is added for time average: count is  ', icou

@@ -207,7 +207,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sum_sph_layerd_rms(kg_st, kg_ed, l_truncation,         &
-     &          sph_rj, g_sph_rj, rj_fld)
+     &          sph_rj, ipol, g_sph_rj, rj_fld)
 !
       use calypso_mpi
       use m_rms_4_sph_spectr
@@ -220,6 +220,7 @@
       use radial_int_for_sph_spec
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(phys_address), intent(in) :: ipol
       type(phys_data), intent(in) :: rj_fld
       integer(kind = kint), intent(in) :: kg_st, kg_ed
       integer(kind = kint), intent(in) :: l_truncation
@@ -243,9 +244,9 @@
         jcomp_st = istack_rms_comp_rj(j_fld-1) + 1
         ncomp_rj = num_rms_comp_rj(j_fld)
         num = sph_rj%nidx_rj(2) * ncomp_rj
-        call cal_rms_sph_spec_one_field(sph_rj, ncomp_rj, icomp_rj,     &
-     &      g_sph_rj, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,   &
-     &      rms_sph_rj(0,1,1))
+        call cal_rms_sph_spec_one_field(sph_rj, ipol,                   &
+     &      ncomp_rj, icomp_rj, g_sph_rj, rj_fld%n_point,               &
+     &      rj_fld%ntot_phys, rj_fld%d_fld, rms_sph_rj(0,1,1))
         call radial_integration(kg_st, kg_ed, sph_rj%nidx_rj(1),        &
      &      sph_rj%radius_1d_rj_r, num,                                 &
      &      rms_sph_rj(0,1,1), rms_sph_vol_j(1,1))

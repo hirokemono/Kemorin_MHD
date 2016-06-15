@@ -7,9 +7,10 @@
 !>@brief  I/O routines for mean square and averaga data
 !!
 !!@verbatim
-!!      subroutine open_sph_vol_rms_file_mhd(sph_params, sph_rj, rj_fld)
+!!      subroutine open_sph_vol_rms_file_mhd                            &
+!!     &         (sph_params, sph_rj, ipol, rj_fld)
 !!      subroutine output_rms_sph_mhd_control                           &
-!!     &         (sph_params, sph_rj, leg, rj_fld)
+!!     &         (sph_params, sph_rj, leg, ipol, rj_fld)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(legendre_4_sph_trans), intent(in) :: leg
@@ -27,6 +28,7 @@
 !
       use t_spheric_parameter
       use t_schmidt_poly_on_rtm
+      use t_phys_address
       use t_phys_data
 !
       use pickup_sph_coefs
@@ -41,13 +43,16 @@
 !
 !  --------------------------------------------------------------------
 !
-      subroutine open_sph_vol_rms_file_mhd(sph_params, sph_rj, rj_fld)
+      subroutine open_sph_vol_rms_file_mhd                              &
+     &         (sph_params, sph_rj, ipol, rj_fld)
 !
       use m_rms_4_sph_spectr
       use cal_rms_fields_by_sph
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(phys_address), intent(in) :: ipol
+!
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -56,7 +61,8 @@
      &   (sph_params%l_truncation, sph_rj, rj_fld)
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_gauss_coefs_4_monitor'
-      call init_gauss_coefs_4_monitor(sph_params%l_truncation, sph_rj)
+      call init_gauss_coefs_4_monitor                                   &
+     &   (sph_params%l_truncation, sph_rj, ipol)
       if ( iflag_debug.gt.0 ) write(*,*) 'init_sph_spec_4_monitor'
       call init_sph_spec_4_monitor                                      &
      &   (sph_params%l_truncation, sph_rj, rj_fld)
@@ -66,7 +72,7 @@
 !  --------------------------------------------------------------------
 !
       subroutine output_rms_sph_mhd_control                             &
-     &         (sph_params, sph_rj, leg, rj_fld)
+     &         (sph_params, sph_rj, leg, ipol, rj_fld)
 !
       use m_machine_parameter
       use m_t_step_parameter
@@ -80,6 +86,7 @@
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(legendre_4_sph_trans), intent(in) :: leg
+      type(phys_address), intent(in) :: ipol
       type(phys_data), intent(in) :: rj_fld
 !
       integer (kind = kint) :: i_flag
@@ -92,11 +99,11 @@
       if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
       call cal_mean_squre_in_shell                                      &
      &   (sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
-     &    sph_params%l_truncation, sph_rj, rj_fld, leg%g_sph_rj)
+     &    sph_params%l_truncation, sph_rj, ipol, rj_fld, leg%g_sph_rj)
       if(iflag_debug.gt.0)  write(*,*) 'cal_gauss_coefficients'
       call cal_gauss_coefficients                                       &
      &   (sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
-     &    sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                        &
+     &    sph_rj%nidx_rj, sph_rj%radius_1d_rj_r, ipol,                  &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       if(iflag_debug.gt.0)  write(*,*) 'pickup_sph_spec_4_monitor'
       call pickup_sph_spec_4_monitor                                    &
@@ -105,7 +112,7 @@
       if(iflag_debug.gt.0)  write(*,*) 'cal_no_heat_source_Nu'
       call cal_no_heat_source_Nu(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
      &    sph_bc_U%r_ICB(0), sph_bc_U%r_CMB(0),                         &
-     &    sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj,                    &
+     &    sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj, ipol,              &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       if(iflag_debug.gt.0)  write(*,*) 'write_total_energy_to_screen'

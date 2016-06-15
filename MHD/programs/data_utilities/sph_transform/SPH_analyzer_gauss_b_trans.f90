@@ -3,9 +3,9 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine SPH_init_gauss_back_trans(sph_mesh, rj_fld)
+!!      subroutine SPH_init_gauss_back_trans(sph_mesh, ipol, rj_fld)
 !!      subroutine SPH_analyze_gauss_back_trans                         &
-!!     &         (i_step, sph_mesh, rj_fld, visval)
+!!     &         (i_step, sph_mesh, ipol, rj_fld, visval)
 !
       module SPH_analyzer_gauss_b_trans
 !
@@ -14,6 +14,9 @@
       use calypso_mpi
 !
       use t_work_4_sph_trans
+      use t_spheric_mesh
+      use t_phys_address
+      use t_phys_data
 !
       implicit none
 !
@@ -25,13 +28,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_init_gauss_back_trans(sph_mesh, rj_fld)
+      subroutine SPH_init_gauss_back_trans(sph_mesh, ipol, rj_fld)
 !
       use m_t_step_parameter
       use m_ctl_params_sph_trans
       use m_node_id_spherical_IO
-      use t_spheric_mesh
-      use t_phys_data
 !
       use r_interpolate_sph_data
       use count_num_sph_smp
@@ -43,6 +44,7 @@
       use sph_transfer_all_field
 !
       type(sph_mesh_data), intent(inout) :: sph_mesh
+      type(phys_address), intent(inout) :: ipol
       type(phys_data), intent(inout) :: rj_fld
 !
 !  ------  initialize spectr data
@@ -52,7 +54,7 @@
 !
 !  ------    set original spectr modes
 !
-      call set_sph_magne_address(rj_fld)
+      call set_sph_magne_address(rj_fld, ipol)
       call set_cmb_icb_radial_point(cmb_radial_grp, icb_radial_grp,     &
      &    sph_mesh%sph_grps%radial_rj_grp)
 !
@@ -77,12 +79,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_analyze_gauss_back_trans                           &
-     &         (i_step, sph_mesh, rj_fld, visval)
+     &         (i_step, sph_mesh, ipol, rj_fld, visval)
 !
       use m_t_step_parameter
       use m_ctl_params_sph_trans
-      use t_spheric_mesh
-      use t_phys_data
 !
       use r_interpolate_sph_data
 !
@@ -93,6 +93,7 @@
 !
       integer(kind = kint), intent(in) :: i_step
       type(sph_mesh_data), intent(in) :: sph_mesh
+      type(phys_address), intent(in) :: ipol
 !
       integer(kind = kint), intent(inout) :: visval
       type(phys_data), intent(inout) :: rj_fld
@@ -121,7 +122,7 @@
         if (iflag_debug.gt.0) write(*,*)                                &
      &                        'set_poloidal_b_by_gauss_coefs'
         call set_poloidal_b_by_gauss_coefs                              &
-     &     (sph_mesh%sph%sph_rj, rj_fld, d_gauss_trans)
+     &     (sph_mesh%sph%sph_rj, rj_fld, ipol, d_gauss_trans)
         call dealloc_gauss_global_coefs(d_gauss_trans)
 !
 !        call check_all_field_data(my_rank, rj_fld)

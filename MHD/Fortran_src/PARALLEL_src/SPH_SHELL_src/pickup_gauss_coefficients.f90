@@ -8,15 +8,18 @@
 !>@n      Evaluate Nusselt number without heat source
 !!
 !!@verbatim
-!!      subroutine init_gauss_coefs_4_monitor(l_truncation, sph_rj)
+!!      subroutine init_gauss_coefs_4_monitor                           &
+!!     &          (l_truncation, sph_rj, ipol)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(phys_address), intent(in) :: ipol
 !!      subroutine cal_gauss_coefficients                               &
-!!     &         (nlayer_ICB, nlayer_CMB, nidx_rj, radius_1d_rj_r,      &
+!!     &         (nlayer_ICB, nlayer_CMB, nidx_rj, radius_1d_rj_r, ipol,&
 !!     &          nnod_rj, ntot_phys_rj, d_rj)
 !!
 !!      subroutine cal_no_heat_source_Nu(kr_in, kr_out, r_in, r_out,    &
 !!     &          idx_rj_degree_zero, nidx_rj,                          &
 !!     &          nnod_rj, ntot_phys_rj, d_rj)
+!!        type(phys_address), intent(in) :: ipol
 !!@endverbatim
 !
       module pickup_gauss_coefficients
@@ -24,6 +27,7 @@
       use m_precision
       use m_constants
 !
+      use t_phys_address
       use pickup_sph_spectr
 !
       implicit  none
@@ -36,14 +40,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_gauss_coefs_4_monitor(l_truncation, sph_rj)
+      subroutine init_gauss_coefs_4_monitor                             &
+     &          (l_truncation, sph_rj, ipol)
 !
       use t_spheric_rj_data
-      use m_sph_phys_address
       use m_gauss_coefs_monitor_data
 !
       integer(kind = kint), intent(in) :: l_truncation
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(phys_address), intent(in) :: ipol
 !
       integer(kind = kint) :: l
 !
@@ -89,13 +94,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_gauss_coefficients                                 &
-     &         (nlayer_ICB, nlayer_CMB, nidx_rj, radius_1d_rj_r,        &
+     &         (nlayer_ICB, nlayer_CMB, nidx_rj, radius_1d_rj_r, ipol,  &
      &          nnod_rj, ntot_phys_rj, d_rj)
 !
       use calypso_mpi
-      use m_sph_phys_address
       use m_gauss_coefs_monitor_data
 !
+      type(phys_address), intent(in) :: ipol
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       integer(kind = kint), intent(in) :: nidx_rj(2)
       integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
@@ -187,11 +192,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_no_heat_source_Nu(kr_in, kr_out, r_in, r_out,      &
-     &          idx_rj_degree_zero, nidx_rj,                            &
+     &          idx_rj_degree_zero, nidx_rj, ipol,                      &
      &          nnod_rj, ntot_phys_rj, d_rj)
 !
-      use m_sph_phys_address
       use m_no_heat_Nusselt_num
+!
+      type(phys_address), intent(in) :: ipol
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
       real(kind = kreal), intent(in) :: r_in, r_out

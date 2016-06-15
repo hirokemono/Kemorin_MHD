@@ -8,9 +8,10 @@
 !!        for center of the element
 !!
 !!@verbatim
-!!      subroutine const_2e_fdm_coefs(nlayer_ICB, sph_rj)
 !!      subroutine cal_sph_vect_dr_ele_2(kr_in, kr_out, sph_rj,         &
-!!     &          dele_rj, dnod_dr)
+!!     &          dele_rj, dnod_dr, d1nod_mat_fdm_2e)
+!!      subroutine cal_2nd_ele_r_fdm_coefs                              &
+!!     &         (nlayer_ICB, nri, r, mat_fdm_2e)
 !!@endverbatim
 !!
 !!@n @param kr_in      Address of inner boundary
@@ -34,31 +35,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_2e_fdm_coefs(nlayer_ICB, sph_rj)
-!
-      use m_fdm_2e_coefs
-!
-      integer(kind = kint), intent(in) :: nlayer_ICB
-      type(sph_rj_grid), intent(in) ::  sph_rj
-!
-!
-      call allocate_fdm_2e_coefs(sph_rj%nidx_rj(1))
-      call cal_2nd_ele_r_fdm_coefs(nlayer_ICB,                          &
-     &    sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r)
-!
-      end subroutine const_2e_fdm_coefs
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
       subroutine cal_sph_vect_dr_ele_2(kr_in, kr_out, sph_rj,           &
-     &          dele_rj, dnod_dr)
-!
-      use m_fdm_2e_coefs
+     &          dele_rj, dnod_dr, d1nod_mat_fdm_2e)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       integer(kind = kint), intent(in) :: kr_in, kr_out
       real(kind = kreal), intent(in) :: dele_rj(sph_rj%nnod_rj)
+      real(kind = kreal), intent(in)                                    &
+     &                    :: d1nod_mat_fdm_2e(sph_rj%nidx_rj(1),0:1)
 !
       real(kind = kreal), intent(inout) :: dnod_dr(sph_rj%nnod_rj)
 !
@@ -80,6 +64,48 @@
 !$omp end parallel do
 !
       end subroutine cal_sph_vect_dr_ele_2
+!
+! -----------------------------------------------------------------------
+!
+      subroutine cal_2nd_ele_r_fdm_coefs                                &
+     &         (nlayer_ICB, nri, r, mat_fdm_2e)
+!
+      use cal_inverse_small_matrix
+!
+      integer(kind = kint), intent(in) :: nri, nlayer_ICB
+      real(kind = kreal), intent(in) :: r(nri)
+      real(kind = kreal), intent(inout) :: mat_fdm_2e(2,2,nri)
+!
+      integer(kind = kint) :: ierr
+      integer(kind = kint) :: kr
+!
+      real(kind = kreal) :: dr_p1, dr_n1
+      real(kind = kreal) :: mat_taylor_2(2,2)
+!
+!
+      do kr = 1, nri-1
+        dr_p1 = (r(kr+1) - r(kr)) * half
+        if (kr.eq.1) then
+          if(nlayer_ICB.gt.1) then
+            dr_n1 = r(1) * half
+          else
+            dr_n1 = (r(2) - r(1)) * half
+          end if
+        else
+          dr_n1 = (r(2) - r(1)) * half
+        end if
+!
+        mat_taylor_2(1,1) = one
+        mat_taylor_2(1,2) = dr_p1
+!
+        mat_taylor_2(2,1) = one
+        mat_taylor_2(2,2) =-dr_n1
+!
+        call cal_inverse_22_matrix(mat_taylor_2, mat_fdm_2e(1,1,kr),    &
+     &      ierr)
+      end do
+!
+      end subroutine cal_2nd_ele_r_fdm_coefs
 !
 ! -----------------------------------------------------------------------
 !

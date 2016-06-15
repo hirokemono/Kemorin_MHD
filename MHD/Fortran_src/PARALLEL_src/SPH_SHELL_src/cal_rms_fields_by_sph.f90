@@ -10,7 +10,7 @@
 !!      subroutine init_rms_4_sph_spectr(l_truncation, sph_rj, rj_fld)
 !!
 !!      subroutine cal_mean_squre_in_shell(kr_st, kr_ed, l_truncation,  &
-!!     &          sph_rj, rj_fld, g_sph_rj)
+!!     &          sph_rj, ipol, rj_fld, g_sph_rj)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(phys_data), intent(in) :: rj_fld
 !!@endverbatim
@@ -23,6 +23,7 @@
 !
       use t_spheric_rj_data
       use t_phys_data
+      use t_phys_address
 !
       implicit none
 !
@@ -94,7 +95,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_mean_squre_in_shell(kr_st, kr_ed, l_truncation,    &
-     &          sph_rj, rj_fld, g_sph_rj)
+     &          sph_rj, ipol, rj_fld, g_sph_rj)
 !
       use calypso_mpi
       use m_rms_4_sph_spectr
@@ -105,6 +106,7 @@
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_data), intent(in) :: rj_fld
+      type(phys_address), intent(in) :: ipol
       integer(kind = kint), intent(in) :: l_truncation
       integer(kind = kint), intent(in) :: kr_st, kr_ed
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
@@ -119,7 +121,7 @@
      &   sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, avol)
       if(iflag_debug .gt. 0) write(*,*) 'sum_sph_layerd_rms'
       call sum_sph_layerd_rms(kr_st, kr_ed,                             &
-     &    l_truncation, sph_rj, g_sph_rj, rj_fld)
+     &    l_truncation, sph_rj, ipol, g_sph_rj, rj_fld)
 !
       if(my_rank .eq. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'surf_ave_4_sph_rms_int'

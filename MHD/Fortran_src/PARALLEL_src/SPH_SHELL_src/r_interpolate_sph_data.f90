@@ -9,16 +9,21 @@
 !!      subroutine set_cmb_icb_radial_point                             &
 !!     &         (cmb_r_grp, icb_r_grp, radial_rj_grp)
 !!        type(group_data), intent(in) :: radial_rj_grp
-!!      subroutine set_sph_magne_address(rj_fld)
+!!      subroutine set_sph_magne_address(rj_fld, ipol)
+!!        type(phys_data), intent(in) :: rj_fld
+!!        type(phys_address), intent(inout) :: ipol
 !!      subroutine input_old_rj_sph_trans(my_rank, l_truncation, sph_rj)
 !!
-!!      subroutine r_interpolate_sph_rst_from_IO(fld_IO, sph_rj, rj_fld)
-!!      subroutine r_interpolate_sph_fld_from_IO(fld_IO, sph_rj, rj_fld)
+!!      subroutine r_interpolate_sph_rst_from_IO                        &
+!!     &         (fld_IO, sph_rj, ipol, rj_fld)
+!!      subroutine r_interpolate_sph_fld_from_IO                        &
+!!     &         (fld_IO, sph_rj, ipol, rj_fld)
 !!      subroutine set_poloidal_b_by_gauss_coefs                        &
-!!     &         (sph_rj, rj_fld, d_gauss)
-!!      type(sph_rj_grid), intent(in) ::  sph_rj
-!!      type(phys_data), intent(in) :: rj_fld
-!!      type(global_gauss_points), intent(in) :: d_gauss
+!!     &         (sph_rj, rj_fld, ipol, d_gauss)
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(phys_data), intent(in) :: rj_fld
+!!        type(phys_address), intent(in) :: ipol
+!!        type(global_gauss_points), intent(in) :: d_gauss
 !
       module r_interpolate_sph_data
 !
@@ -29,6 +34,8 @@
       use m_machine_parameter
 !
       use t_spheric_rj_data
+      use t_phys_address
+      use t_phys_data
 !
       implicit  none
 !
@@ -127,13 +134,13 @@
 !  -------------------------------------------------------------------
 !  -------------------------------------------------------------------
 !
-      subroutine set_sph_magne_address(rj_fld)
+      subroutine set_sph_magne_address(rj_fld, ipol)
 !
       use m_phys_labels
-      use m_sph_phys_address
-      use t_phys_data
 !
       type(phys_data), intent(in) :: rj_fld
+      type(phys_address), intent(inout) :: ipol
+!
       integer(kind = kint) :: i
 !
       do i = 1, rj_fld%num_phys
@@ -172,17 +179,18 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine r_interpolate_sph_rst_from_IO(fld_IO, sph_rj, rj_fld)
+      subroutine r_interpolate_sph_rst_from_IO                          &
+     &         (fld_IO, sph_rj, ipol, rj_fld)
 !
       use m_phys_labels
-      use m_sph_phys_address
-      use t_phys_data
       use t_field_data_IO
       use extend_potential_field
       use radial_interpolation
 !
       type(field_IO), intent(in) :: fld_IO
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(phys_address), intent(in) :: ipol
+!
       type(phys_data), intent(inout) :: rj_fld
 !
       integer(kind = kint) :: i_fld, j_fld
@@ -235,16 +243,16 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine r_interpolate_sph_fld_from_IO(fld_IO, sph_rj, rj_fld)
+      subroutine r_interpolate_sph_fld_from_IO                          &
+     &         (fld_IO, sph_rj, ipol, rj_fld)
 !
-      use m_sph_phys_address
-      use t_phys_data
       use t_field_data_IO
       use extend_potential_field
       use radial_interpolation
 !
       type(field_IO), intent(in) :: fld_IO
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(phys_address), intent(in) :: ipol
       type(phys_data), intent(inout) :: rj_fld
 !
       integer(kind = kint) ::  i_fld, j_fld
@@ -282,15 +290,14 @@
 !  -------------------------------------------------------------------
 !
       subroutine set_poloidal_b_by_gauss_coefs                          &
-     &         (sph_rj, rj_fld, d_gauss)
+     &         (sph_rj, rj_fld, ipol, d_gauss)
 !
-      use m_sph_phys_address
-      use t_phys_data
       use t_global_gauss_coefs
       use extend_potential_field
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_data), intent(in) :: rj_fld
+      type(phys_address), intent(in) :: ipol
       type(global_gauss_points), intent(in) :: d_gauss
 !
 !

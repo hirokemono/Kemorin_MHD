@@ -63,8 +63,9 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'SPH_initialize_back_trans'
-      call SPH_initialize_back_trans                                    &
-     &   (sph_mesh_trans, rj_fld_trans, sph_trns_IO)
+      call SPH_initialize_back_trans(sph_mesh_trans,                    &
+     &    ipol_trans, idpdr_trans, itor_trans, rj_fld_trans,            &
+     &    sph_trns_IO)
 !
 !  -------------------------------
 !
@@ -88,8 +89,9 @@
       do i_step = i_step_init, i_step_number
         if (iflag_debug.gt.0) write(*,*) 'step ', i_step, 'start...'
 !
-        call SPH_analyze_zm_streamfunc                                  &
-     &     (i_step, sph_mesh_trans, rj_fld_trans, sph_trns_IO, visval)
+        call SPH_analyze_zm_streamfunc(i_step, sph_mesh_trans,          &
+     &      ipol_trans, idpdr_trans, itor_trans, rj_fld_trans,          &
+     &      sph_trns_IO, visval)
 !
         call FEM_analyze_back_trans(ucd_SPH_TRNS, i_step,               &
      &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)

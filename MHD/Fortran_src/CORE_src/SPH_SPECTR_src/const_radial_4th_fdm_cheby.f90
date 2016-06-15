@@ -47,8 +47,6 @@
       subroutine nod_r_4th_fdm_coefs_cheby(nlayer_ICB, nlayer_CMB,      &
      &          nri, radius_1d_rj_r, mat_fdm_4)
 !
-      use m_fdm_4th_coefs
-!
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)

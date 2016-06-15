@@ -43,6 +43,7 @@
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_sph_phys_address
+      use m_fdm_coefs
       use m_schmidt_poly_on_rtm
       use m_rms_4_sph_spectr
       use m_node_id_spherical_IO
@@ -51,6 +52,8 @@
       use m_boundary_params_sph_MHD
 !
       use set_control_sph_mhd
+      use set_sph_phys_address
+      use const_fdm_coefs
       use adjust_reference_fields
       use set_bc_sph_mhd
       use adjust_reference_fields
@@ -67,7 +70,8 @@
 !
 !   Allocate spectr field data
 !
-      call set_sph_sprctr_data_address(sph1%sph_rj, rj_fld1)
+      call set_sph_sprctr_data_address                                  &
+     &   (sph1%sph_rj, ipol, idpdr, itor, rj_fld1)
 !
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
       call allocate_vector_for_solver(isix, sph1%sph_rtp%nnod_rtp)
@@ -84,10 +88,10 @@
       if (iflag_debug.gt.0) write(*,*) 'set_radius_rot_reft_dat_4_sph'
       call set_radius_rot_reft_dat_4_sph(depth_high_t, depth_low_t,     &
      &    high_temp, low_temp, angular, sph1%sph_rlm, sph1%sph_rj,      &
-     &    sph_grps1%radial_rj_grp, sph1%sph_params, rj_fld1)
+     &    sph_grps1%radial_rj_grp, ipol, sph1%sph_params, rj_fld1)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_2nd_fdm_matrices'
-      call const_2nd_fdm_matrices(sph1%sph_params, sph1%sph_rj)
+      call const_2nd_fdm_matrices(sph1%sph_params, sph1%sph_rj, r_2nd)
 !
 ! ---------------------------------
 !
@@ -149,7 +153,8 @@
       integer(kind = kint), intent(in) :: i_step
 !
 !
-      call read_alloc_sph_rst_4_snap(i_step, sph1%sph_rj, rj_fld1)
+      call read_alloc_sph_rst_4_snap                                    &
+     &   (i_step, sph1%sph_rj, ipol, rj_fld1)
 !
       call sync_temp_by_per_temp_sph(reftemp_rj, sph1%sph_rj, rj_fld1)
 !

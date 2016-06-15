@@ -4,8 +4,9 @@
 !      Written by H. Matsui
 !
 !!      subroutine SPH_analyze_zm_energies                              &
-!!     &         (i_step, sph_mesh, rj_fld, fld_IO, visval)
+!!     &         (i_step, sph_mesh, ipol, rj_fld, fld_IO, visval)
 !!        type(sph_grids), intent(in) :: sph_mesh
+!!        type(phys_address), intent(in) :: ipol
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(field_IO), intent(inout) :: fld_IO
 !
@@ -30,11 +31,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_analyze_zm_energies                                &
-     &         (i_step, sph_mesh, rj_fld, fld_IO, visval)
+     &         (i_step, sph_mesh, ipol, rj_fld, fld_IO, visval)
 !
       use m_t_step_parameter
       use m_control_params_2nd_files
       use m_node_id_spherical_IO
+      use t_phys_address
       use t_spheric_mesh
       use t_phys_data
       use t_field_data_IO
@@ -50,6 +52,7 @@
 !
       integer(kind = kint), intent(in) :: i_step
       type(sph_mesh_data), intent(in) :: sph_mesh
+      type(phys_address), intent(in) :: ipol
 !
       integer(kind = kint), intent(inout) :: visval
       type(phys_data), intent(inout) :: rj_fld
@@ -79,7 +82,7 @@
           if (iflag_debug.gt.0) write(*,*)                              &
      &                        'r_interpolate_sph_fld_from_IO'
           call r_interpolate_sph_fld_from_IO                            &
-     &       (fld_IO, sph_mesh%sph%sph_rj, rj_fld)
+     &       (fld_IO, sph_mesh%sph%sph_rj, ipol, rj_fld)
         end if
 !
 !        call set_rj_phys_for_pol_kene                                  &
@@ -144,7 +147,6 @@
      &          phys_name_rj, istack_phys_comp_rj, d_rj)
 !
       use m_phys_labels
-      use m_sph_phys_address
 !
       integer(kind = kint), intent(in) :: nidx_rj(2)
       integer(kind = kint), intent(in) :: n_point
@@ -181,7 +183,6 @@
       use t_phys_data
       use m_phys_labels
       use m_phys_constants
-      use m_sph_phys_address
       use cal_zonal_mean_sph_spectr
 !
       type(sph_grids), intent(in) :: sph

@@ -11,8 +11,9 @@
 !!@verbatim
 !!      subroutine set_reftemp_4_sph(idx_rj_degree_zero, nidx_rj,       &
 !!     &          ar_1d_rj, nlayer_ICB, nlayer_CMB,                     &
-!!     &          r_hot, r_cold, temp_hot, temp_cold,                   &
+!!     &          r_hot, r_cold, temp_hot, temp_cold, ipol,             &
 !!     &          nnod_rj, ntot_phys_rj, d_rj)
+!!        type(phys_address), intent(in) :: ipol
 !!***********************************************************************
 !!*
 !!*     ref_temp(k,0) : reference of temperature  (output)
@@ -40,6 +41,8 @@
       use m_machine_parameter
       use m_spheric_constants
 !
+      use t_phys_address
+!
       implicit none
 !
 !  -------------------------------------------------------------------
@@ -50,11 +53,10 @@
 !
       subroutine set_reftemp_4_sph(idx_rj_degree_zero, nidx_rj,         &
      &          ar_1d_rj, nlayer_ICB, nlayer_CMB,                       &
-     &          r_hot, r_cold, temp_hot, temp_cold,                     &
+     &          r_hot, r_cold, temp_hot, temp_cold, ipol,               &
      &          nnod_rj, ntot_phys_rj, d_rj)
 !
-      use m_sph_phys_address
-!
+      type(phys_address), intent(in) :: ipol
       integer(kind = kint), intent(in) ::  nidx_rj(2)
       integer(kind = kint), intent(in) ::  nlayer_ICB, nlayer_CMB
       integer(kind = kint), intent(in) ::  idx_rj_degree_zero

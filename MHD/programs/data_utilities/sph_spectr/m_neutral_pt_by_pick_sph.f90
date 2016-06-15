@@ -10,9 +10,10 @@
 !!      subroutine alloc_neutral_point
 !!      subroutine dealloc_neutral_point
 !!      subroutine find_field_address
-!!      subroutine set_radius_for_fdm(sph_params, sph_rj)
+!!      subroutine set_radius_for_fdm(sph_params, sph_rj, r_2nd)
 !!        type(sph_shell_parameters), intent(inout) :: sph_params
 !!        type(sph_rj_grid), intent(inout) ::  sph_rj
+!!        type(fdm_matrices), intent(inout) :: r_2nd
 !!      subroutine set_radial_grad_scalars(istep, time,                 &
 !!     &          nri, radius_1d_rj_r, d1nod_mat_fdm_2, buo_ratio)
 !!@endverbatim
@@ -109,12 +110,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_radius_for_fdm(sph_params, sph_rj)
+      subroutine set_radius_for_fdm(sph_params, sph_rj, r_2nd)
 !
       use t_spheric_parameter
+      use t_fdm_coefs
+      use const_fdm_coefs
 !
       type(sph_shell_parameters), intent(inout) :: sph_params
       type(sph_rj_grid), intent(inout) ::  sph_rj
+      type(fdm_matrices), intent(inout) :: r_2nd
 !
       integer(kind = kint) :: i
 !
@@ -133,7 +137,7 @@
       call allocate_dr_rj_noequi(sph_rj%nidx_rj(1))
       call set_dr_for_nonequi(sph_params%nlayer_CMB,                    &
      &   sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r)
-      call const_2nd_fdm_matrices(sph_params, sph_rj)
+      call const_2nd_fdm_matrices(sph_params, sph_rj, r_2nd)
 !
       write(*,*) 'icomp_temp, icomp_light', icomp_temp, icomp_light
       write(*,*) 'ipick_l0m0', ipick_l0m0
@@ -144,8 +148,6 @@
 !
       subroutine set_radial_grad_scalars(istep, time,                   &
      &          nri, radius_1d_rj_r, d1nod_mat_fdm_2, buo_ratio)
-!
-      use m_sph_phys_address
 !
       integer(kind = kint), intent(in) :: istep
       real(kind = kreal), intent(in) :: time, buo_ratio

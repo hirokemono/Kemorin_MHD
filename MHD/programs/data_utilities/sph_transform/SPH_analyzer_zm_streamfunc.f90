@@ -3,8 +3,8 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine SPH_analyze_zm_streamfunc                            &
-!!     &         (i_step, sph_mesh, rj_fld, fld_IO, visval)
+!!      subroutine SPH_analyze_zm_streamfunc(i_step, sph_mesh,          &
+!!     &          ipol, idpdr, itor, rj_fld, fld_IO, visval)
 !!        type(sph_grids), intent(in) :: sph_mesh
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(field_IO), intent(inout) :: fld_IO
@@ -29,13 +29,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_zm_streamfunc                              &
-     &         (i_step, sph_mesh, rj_fld, fld_IO, visval)
+      subroutine SPH_analyze_zm_streamfunc(i_step, sph_mesh,            &
+     &          ipol, idpdr, itor, rj_fld, fld_IO, visval)
 !
       use m_t_step_parameter
       use m_control_params_2nd_files
       use m_node_id_spherical_IO
       use t_spheric_mesh
+      use t_phys_address
       use t_phys_data
       use t_field_data_IO
 !
@@ -50,6 +51,7 @@
 !
       integer(kind = kint), intent(in) :: i_step
       type(sph_mesh_data), intent(in) :: sph_mesh
+      type(phys_address), intent(in) :: ipol, idpdr, itor
       type(phys_data), intent(inout) :: rj_fld
 !
       integer(kind = kint), intent(inout) :: visval
@@ -79,11 +81,11 @@
           if (iflag_debug.gt.0) write(*,*)                              &
      &                        'r_interpolate_sph_fld_from_IO'
           call r_interpolate_sph_fld_from_IO                            &
-     &       (fld_IO, sph_mesh%sph%sph_rj, rj_fld)
+     &       (fld_IO, sph_mesh%sph%sph_rj, ipol, rj_fld)
         end if
 !
         call set_rj_phys_for_zm_streamfunc                              &
-     &     (sph_mesh%sph%sph_rj%nidx_rj,                                &
+     &     (ipol, idpdr, itor, sph_mesh%sph%sph_rj%nidx_rj,             &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         call zonal_mean_all_sph_spectr(sph_mesh%sph%sph_rj, rj_fld)
 !
@@ -201,11 +203,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_rj_phys_for_zm_streamfunc                          &
-     &         (nidx_rj, n_point, ntot_phys_rj, d_rj)
+      subroutine set_rj_phys_for_zm_streamfunc(ipol, idpdr, itor,       &
+     &          nidx_rj, n_point, ntot_phys_rj, d_rj)
 !
       use m_phys_labels
-      use m_sph_phys_address
+      use t_phys_address
+!
+      type(phys_address), intent(in) :: ipol, idpdr, itor
 !
       integer(kind = kint), intent(in) :: nidx_rj(2)
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj

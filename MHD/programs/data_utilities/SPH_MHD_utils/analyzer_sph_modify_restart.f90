@@ -106,7 +106,8 @@
       integer(kind = kint), intent(in) :: i_step
 !
 !
-      call read_alloc_sph_rst_2_modify(i_step, sph1%sph_rj, rj_fld1)
+      call read_alloc_sph_rst_2_modify                                  &
+     &   (i_step, sph1%sph_rj, ipol, rj_fld1)
 !
 !*  ----------------Modify spectr data ... ----------
 !*
@@ -121,7 +122,7 @@
       call start_eleps_time(11)
       if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
       call output_rms_sph_mhd_control                                   &
-     &   (sph1%sph_params, sph1%sph_rj, trans_p1%leg, rj_fld1)
+     &   (sph1%sph_params, sph1%sph_rj, trans_p1%leg, ipol, rj_fld1)
       call end_eleps_time(11)
       call end_eleps_time(4)
 !

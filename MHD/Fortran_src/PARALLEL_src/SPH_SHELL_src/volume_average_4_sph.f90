@@ -42,7 +42,6 @@
 !
       use m_phys_constants
       use m_rms_4_sph_spectr
-      use m_sph_phys_address
 !
       use t_spheric_rj_data
       use t_phys_data
@@ -72,7 +71,6 @@
       subroutine cal_sphere_average_sph(sph_rj, rj_fld)
 !
       use m_phys_constants
-      use m_sph_phys_address
       use m_rms_4_sph_spectr
 !
       use t_spheric_rj_data

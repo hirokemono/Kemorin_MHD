@@ -27,6 +27,12 @@
 !>  Structure of grid and spectr data for spherical spectr method
       type(sph_mesh_data), save :: sph_mesh_trans
 !
+!>   address for spectr data (poloidal component for vector)
+      type(phys_address), save :: ipol_trans
+!>   address for radial gradient for poloidal component
+      type(phys_address), save :: idpdr_trans
+!>   address for toroidal component
+      type(phys_address), save :: itor_trans
 !>  Structure for field data
       type(phys_data), save :: rj_fld_trans
 !

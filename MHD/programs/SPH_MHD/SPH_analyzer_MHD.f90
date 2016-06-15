@@ -28,11 +28,14 @@
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_sph_phys_address
+      use m_fdm_coefs
       use m_rms_4_sph_spectr
       use m_sph_trans_arrays_MHD
       use m_boundary_params_sph_MHD
 !
       use set_control_sph_mhd
+      use set_sph_phys_address
+      use const_fdm_coefs
       use set_initial_sph_dynamo
       use adjust_reference_fields
       use set_bc_sph_mhd
@@ -49,17 +52,18 @@
 !
 !   Allocate spectr field data
 !
-      call set_sph_sprctr_data_address(sph1%sph_rj, rj_fld1)
+      call set_sph_sprctr_data_address                                  &
+     &   (sph1%sph_rj, ipol, idpdr, itor, rj_fld1)
 !
 ! ---------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'set_radius_rot_reft_dat_4_sph'
       call set_radius_rot_reft_dat_4_sph(depth_high_t, depth_low_t,     &
      &    high_temp, low_temp, angular, sph1%sph_rlm, sph1%sph_rj,      &
-     &    sph_grps1%radial_rj_grp, sph1%sph_params, rj_fld1)
+     &    sph_grps1%radial_rj_grp, ipol, sph1%sph_params, rj_fld1)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_2nd_fdm_matrices'
-      call const_2nd_fdm_matrices(sph1%sph_params, sph1%sph_rj)
+      call const_2nd_fdm_matrices(sph1%sph_params, sph1%sph_rj, r_2nd)
 !
 ! ---------------------------------
 !
@@ -111,7 +115,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'open_sph_vol_rms_file_mhd'
       call start_eleps_time(4)
       call open_sph_vol_rms_file_mhd                                    &
-     &   (sph1%sph_params, sph1%sph_rj, rj_fld1)
+     &   (sph1%sph_params, sph1%sph_rj, ipol, rj_fld1)
       call end_eleps_time(4)
 !
       end subroutine SPH_initialize_MHD
@@ -201,7 +205,7 @@
       call start_eleps_time(11)
       if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
       call output_rms_sph_mhd_control                                   &
-     &   (sph1%sph_params, sph1%sph_rj, trans_p1%leg, rj_fld1)
+     &   (sph1%sph_params, sph1%sph_rj, trans_p1%leg, ipol, rj_fld1)
       call end_eleps_time(11)
 !
       if(iflag_debug.gt.0) write(*,*) 'sync_temp_by_per_temp_sph'

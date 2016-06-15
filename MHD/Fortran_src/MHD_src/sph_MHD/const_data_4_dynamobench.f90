@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine s_const_data_4_dynamobench                           &
-!!     &         (sph_params, sph_rj, rj_fld)
+!!     &         (sph_params, sph_rj, ipol, rj_fld)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(legendre_4_sph_trans), intent(in) :: leg
@@ -30,13 +30,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_const_data_4_dynamobench                             &
-     &         (sph_params, sph_rj, leg, rj_fld)
+     &         (sph_params, sph_rj, leg, ipol, rj_fld)
 !
       use m_boundary_params_sph_MHD
       use m_field_at_mid_equator
 !
       use t_spheric_parameter
       use t_spheric_rj_data
+      use t_phys_address
       use t_phys_data
       use t_schmidt_poly_on_rtm
 !
@@ -47,6 +48,7 @@
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(legendre_4_sph_trans), intent(in) :: leg
+      type(phys_address), intent(in) :: ipol
       type(phys_data), intent(in) :: rj_fld
 !
 !
@@ -55,7 +57,7 @@
 !
       call cal_mean_squre_in_shell                                      &
      &   (sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
-     &    sph_params%l_truncation, sph_rj, rj_fld, leg%g_sph_rj)
+     &    sph_params%l_truncation, sph_rj, ipol, rj_fld, leg%g_sph_rj)
       if(my_rank .eq. 0) call copy_energy_4_dynamobench
 !
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
@@ -67,7 +69,7 @@
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
         call cal_mean_squre_in_shell                                    &
      &     (izero, sph_params%nlayer_ICB, sph_params%l_truncation,      &
-     &      sph_rj, rj_fld, leg%g_sph_rj)
+     &      sph_rj, ipol, rj_fld, leg%g_sph_rj)
         if(my_rank .eq. 0) call copy_icore_energy_4_dbench
       end if
 !

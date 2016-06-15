@@ -11,15 +11,13 @@
 !!@verbatim
 !!      subroutine set_radius_rot_reft_dat_4_sph(r_hot, r_cold,         &
 !!     &          temp_hot, temp_cold, rotate, sph_rlm, sph_rj,         &
-!!     &          radial_rj_grp, sph_params, rj_fld)
+!!     &          radial_rj_grp, ipol, sph_params, rj_fld)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(sph_rlm_grid), intent(in) :: sph_rlm
 !!        type(group_data), intent(in) :: radial_rj_grp
+!!        type(phys_address), intent(in) :: ipol
 !!        type(sph_shell_parameters), intent(inout) :: sph_params
 !!        type(phys_data), intent(inout) :: rj_fld
-!!      subroutine const_2nd_fdm_matrices
-!!        type(sph_shell_parameters), intent(in) :: sph_params
-!!        type(sph_rj_grid), intent(in) :: sph_rj
 !!@endverbatim
 !!
 !!@n @param r_hot        radius at highest temperature point
@@ -39,6 +37,7 @@
       use t_spheric_parameter
       use t_phys_data
       use t_group_data
+      use t_phys_address
 !
       implicit none
 !
@@ -50,10 +49,9 @@
 !
       subroutine set_radius_rot_reft_dat_4_sph(r_hot, r_cold,           &
      &          temp_hot, temp_cold, rotate, sph_rlm, sph_rj,           &
-     &          radial_rj_grp, sph_params, rj_fld)
+     &          radial_rj_grp, ipol, sph_params, rj_fld)
 !
       use m_poloidal_rotation
-      use m_sph_phys_address
 !
       use set_radius_func_noequi
       use set_radius_4_sph_dynamo
@@ -62,6 +60,7 @@
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(group_data), intent(in) :: radial_rj_grp
+      type(phys_address), intent(in) :: ipol
 !
       real(kind = kreal), intent(in) :: r_hot, r_cold
       real(kind = kreal), intent(in) :: temp_hot, temp_cold
@@ -97,7 +96,7 @@
         call set_reftemp_4_sph(sph_rj%idx_rj_degree_zero,               &
      &      sph_rj%nidx_rj, sph_rj%ar_1d_rj,                            &
      &      sph_params%nlayer_ICB, sph_params%nlayer_CMB,               &
-     &      r_hot, r_cold, temp_hot, temp_cold,                         &
+     &      r_hot, r_cold, temp_hot, temp_cold, ipol,                   &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !*
@@ -110,34 +109,5 @@
       end subroutine set_radius_rot_reft_dat_4_sph
 !
 !  -------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine const_2nd_fdm_matrices(sph_params, sph_rj)
-!
-      use m_fdm_coefs
-      use set_radius_func_noequi
-!
-      type(sph_shell_parameters), intent(in) :: sph_params
-      type(sph_rj_grid), intent(in) :: sph_rj
-!
-!
-      call alloc_nod_fdm_matrices(sph_rj%nidx_rj(1), itwo, r_2nd)
-      call alloc_fdm_work(sph_rj%nidx_rj(1), r_2nd)
-!   Choose radial differences
-      call nod_r_2nd_fdm_coefs_nonequi(sph_params%nlayer_ICB,           &
-     &    sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, r_2nd%wk_mat)
-      call deallocate_dr_rj_noequi
-!
-      call copy_fdm2_nod_coefs_from_mat(sph_rj%nidx_rj(1), r_2nd)
-      call dealloc_fdm_work(r_2nd)
-!
-      if(iflag_debug .eq. iflag_full_msg) then
-        call check_fdm_coefs                                            &
-     &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, r_2nd)
-      end if
-!
-      end subroutine const_2nd_fdm_matrices
-!
-! -----------------------------------------------------------------------
 !
       end module set_radius_func

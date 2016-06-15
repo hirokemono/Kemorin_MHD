@@ -1,5 +1,5 @@
-!>@file   m_sph_phys_address.f90
-!!@brief  module m_sph_phys_address
+!>@file   set_sph_phys_address.f90
+!!@brief  module set_sph_phys_address
 !!
 !!@author H. Matsui
 !!@date Programmed in Dec., 2007
@@ -7,12 +7,14 @@
 !>@brief  start addresses for spetr fields
 !!
 !!@verbatim
-!!      subroutine set_sph_sprctr_data_address(sph_rj, rj_fld)
+!!      subroutine set_sph_sprctr_data_address                          &
+!!     &         (sph_rj, ipol, idpdr, itor, rj_fld)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(phys_address), intent(inout) :: ipol, idpdr, itor
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
-      module m_sph_phys_address
+      module set_sph_phys_address
 !
       use m_precision
       use m_constants
@@ -20,15 +22,6 @@
       use t_phys_address
 !
       implicit  none
-!
-!>   address for spectr data (poloidal component for vector)
-      type(phys_address), save :: ipol
-!
-!>   address for radial gradient for poloidal component
-      type(phys_address), save :: idpdr
-!
-!>   address for toroidal component
-      type(phys_address), save :: itor
 !
       private :: set_sph_vect_spec_address, set_vect_sph_address
 !
@@ -38,7 +31,8 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine set_sph_sprctr_data_address(sph_rj, rj_fld)
+      subroutine set_sph_sprctr_data_address                            &
+     &         (sph_rj, ipol, idpdr, itor, rj_fld)
 !
       use t_spheric_rj_data
       use t_phys_data
@@ -46,6 +40,7 @@
       use set_field_address
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(phys_address), intent(inout) :: ipol, idpdr, itor
       type(phys_data), intent(inout) :: rj_fld
 !
 !   set address of spectr fields
@@ -54,14 +49,16 @@
       call set_field_addresses(ione, rj_fld%num_phys,                   &
      &    rj_fld%phys_name, rj_fld%num_component, ipol)
 !
-      call set_sph_vect_spec_address
+      call set_sph_vect_spec_address(ipol, idpdr, itor)
 !
       end subroutine set_sph_sprctr_data_address
 !
 !  --------------------------------------------------------------------
 !  --------------------------------------------------------------------
 !
-      subroutine set_sph_vect_spec_address
+      subroutine set_sph_vect_spec_address(ipol, idpdr, itor)
+!
+      type(phys_address), intent(inout) :: ipol, idpdr, itor
 !
 !
       call set_vect_sph_address(ipol%i_velo, itor%i_velo, idpdr%i_velo)
@@ -234,4 +231,4 @@
 !
 !  --------------------------------------------------------------------
 !
-      end module m_sph_phys_address
+      end module set_sph_phys_address

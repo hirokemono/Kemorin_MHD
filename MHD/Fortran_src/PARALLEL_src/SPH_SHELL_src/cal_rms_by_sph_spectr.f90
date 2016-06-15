@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine cal_rms_sph_spec_one_field                           &
-!!     &         (sph_rj, ncomp_rj, icomp_rj, g_sph_rj,                 &
+!!     &         (sph_rj, ipol, ncomp_rj, icomp_rj, g_sph_rj,           &
 !!     &          n_point, ntot_phys_rj, d_rj, rms_sph_rj)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!
@@ -39,14 +39,15 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_rms_sph_spec_one_field                             &
-     &         (sph_rj, ncomp_rj, icomp_rj, g_sph_rj,                   &
+     &         (sph_rj, ipol, ncomp_rj, icomp_rj, g_sph_rj,             &
      &          n_point, ntot_phys_rj, d_rj, rms_sph_rj)
 !
       use t_spheric_rj_data
+      use t_phys_address
       use m_phys_constants
-      use m_sph_phys_address
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(phys_address), intent(in) :: ipol
       integer(kind = kint), intent(in) :: ncomp_rj, icomp_rj
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real (kind=kreal), intent(in) :: d_rj(n_point,ntot_phys_rj)

@@ -59,7 +59,8 @@
 !  ------  initialize spectr data
 !
       if (iflag_debug.gt.0) write(*,*) 'SPH_init_gauss_back_trans'
-      call SPH_init_gauss_back_trans(sph_mesh_trans, rj_fld_trans)
+      call SPH_init_gauss_back_trans                                    &
+     &   (sph_mesh_trans, ipol_trans, rj_fld_trans)
 !
       call init_visualize(femmesh_STR%mesh, femmesh_STR%group,          &
      &    elemesh_STR, field_STR)
@@ -81,7 +82,7 @@
         if (iflag_debug.gt.0) write(*,*) 'step ', i_step, 'start...'
 !
         call SPH_analyze_gauss_back_trans                               &
-     &     (i_step, sph_mesh_trans, rj_fld_trans, visval)
+     &     (i_step, sph_mesh_trans, ipol_trans, rj_fld_trans, visval)
 !
         call FEM_analyze_back_trans(ucd_SPH_TRNS, i_step,               &
      &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)

@@ -31,6 +31,7 @@
       use m_ctl_data_4_sph_utils
       use m_ctl_params_sph_utils
       use parallel_load_data_4_sph
+      use set_sph_phys_address
       use copy_rj_phys_data_4_IO
       use count_num_sph_smp
       use init_sph_trans
@@ -71,6 +72,9 @@
      &   (sph_mesh_spec%sph%sph_params%l_truncation,                    &
      &    sph_mesh_spec%sph%sph_rj, rj_fld_spec)
 !
+      call set_sph_sprctr_data_address(sph_mesh_spec%sph%sph_rj,        &
+     &    ipol_spec, idpdr_spec, itor_spec, rj_fld_spec)
+!
       end subroutine initialize_pick_gauss_coef
 !
 ! ----------------------------------------------------------------------
@@ -90,7 +94,7 @@
 !
       call init_gauss_coefs_4_monitor                                   &
      &   (sph_mesh_spec%sph%sph_params%l_truncation,                    &
-     &    sph_mesh_spec%sph%sph_rj)
+     &    sph_mesh_spec%sph%sph_rj, ipol_spec)
       do i_step = i_step_init, i_step_number, i_step_output_ucd
 !
 !   Input spectr data
@@ -109,7 +113,7 @@
      &     (sph_mesh_spec%sph%sph_params%nlayer_ICB,                    &
      &      sph_mesh_spec%sph%sph_params%nlayer_CMB,                    &
      &      sph_mesh_spec%sph%sph_rj%nidx_rj,                           &
-     &      sph_mesh_spec%sph%sph_rj%radius_1d_rj_r,                    &
+     &      sph_mesh_spec%sph%sph_rj%radius_1d_rj_r, ipol_spec,         &
      &      rj_fld_spec%n_point, rj_fld_spec%ntot_phys,                 &
      &      rj_fld_spec%d_fld)
         call write_gauss_coefs_4_monitor(my_rank, i_step, time)

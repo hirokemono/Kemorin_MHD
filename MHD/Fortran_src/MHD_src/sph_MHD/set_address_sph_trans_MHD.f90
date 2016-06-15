@@ -12,7 +12,9 @@
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !!        type(address_4_sph_trans), intent(inout) :: trns_MHD
 !!      subroutine check_address_trans_sph_MHD                          &
-!!     &         (trns_MHD, ncomp_sph_trans)
+!!     &         (ipol, idpdr, itor, trns_MHD, ncomp_sph_trans)
+!!        type(phys_address), intent(in) :: ipol, idpdr, itor
+!!        type(address_4_sph_trans), intent(in) :: trns_MHD
 !!@endverbatim
 !
       module set_address_sph_trans_MHD
@@ -83,13 +85,15 @@
 !-----------------------------------------------------------------------
 !
       subroutine check_address_trans_sph_MHD                            &
-     &         (trns_MHD, ncomp_sph_trans)
+     &         (ipol, idpdr, itor, trns_MHD, ncomp_sph_trans)
 !
+      type(phys_address), intent(in) :: ipol, idpdr, itor
       type(address_4_sph_trans), intent(in) :: trns_MHD
       integer(kind = kint), intent(in) :: ncomp_sph_trans
 !
 !
-      call check_add_trans_sph_MHD(trns_MHD%b_trns, trns_MHD%f_trns,    &
+      call check_add_trans_sph_MHD                                      &
+     &   (ipol, idpdr, itor, trns_MHD%b_trns, trns_MHD%f_trns,          &
      &    trns_MHD%ncomp_rj_2_rtp, trns_MHD%nvector_rj_2_rtp,           &
      &    trns_MHD%nscalar_rj_2_rtp, trns_MHD%ncomp_rtp_2_rj,           &
      &    trns_MHD%nvector_rtp_2_rj, trns_MHD%nscalar_rtp_2_rj,         &
@@ -236,13 +240,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine check_add_trans_sph_MHD(b_trns, f_trns,                &
+      subroutine check_add_trans_sph_MHD                                &
+     &         (ipol, idpdr, itor, b_trns, f_trns,                      &
      &          ncomp_rj_2_rtp, nvector_rj_2_rtp, nscalar_rj_2_rtp,     &
      &          ncomp_rtp_2_rj, nvector_rtp_2_rj, nscalar_rtp_2_rj,     &
      &          ncomp_sph_trans)
 !
-      use m_sph_phys_address
-!
+      type(phys_address), intent(in) :: ipol, idpdr, itor
       type(phys_address), intent(in) :: b_trns, f_trns
       integer(kind = kint), intent(in) :: ncomp_rj_2_rtp
       integer(kind = kint), intent(in) :: nvector_rj_2_rtp

@@ -83,6 +83,7 @@
       use m_boundary_params_sph_MHD
 !
       use set_control_sph_mhd
+      use set_sph_phys_address
       use parallel_load_data_4_sph
       use const_sph_initial_spectr
       use set_reference_sph_mhd
@@ -97,14 +98,15 @@
 !
 !   Allocate spectr field data
 !
-      call set_sph_sprctr_data_address(sph1%sph_rj, rj_fld1)
+      call set_sph_sprctr_data_address                                  &
+     &   (sph1%sph_rj, ipol, idpdr, itor, rj_fld1)
 !
 ! ---------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'set_radius_rot_reft_dat_4_sph'
       call set_radius_rot_reft_dat_4_sph(depth_high_t, depth_low_t,     &
      &    high_temp, low_temp, angular, sph1%sph_rlm, sph1%sph_rj,      &
-     &    sph_grps1%radial_rj_grp, sph1%sph_params, rj_fld1)
+     &    sph_grps1%radial_rj_grp, ipol, sph1%sph_params, rj_fld1)
 !
       if(iflag_debug.gt.0) write(*,*) 's_set_bc_sph_mhd'
       call s_set_bc_sph_mhd                                             &

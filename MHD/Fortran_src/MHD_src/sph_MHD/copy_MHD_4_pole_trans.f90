@@ -49,11 +49,11 @@
       type(phys_address), intent(in) :: bs_trns
       type(node_data), intent(in) :: node
       type(phys_address), intent(in) :: iphys
-      type(phys_data), intent(inout) :: nod_fld
-!
       integer(kind = kint), intent(in) :: ncomp_snap_rj_2_rtp
       real(kind = kreal), intent(in)                                    &
      &           :: fls_pl(sph_rtp%nnod_pole,ncomp_snap_rj_2_rtp)
+!
+      type(phys_data), intent(inout) :: nod_fld
 !
 !
       call copy_pole_vec_fld_from_trans(m_folding, sph_rtp, node,       &

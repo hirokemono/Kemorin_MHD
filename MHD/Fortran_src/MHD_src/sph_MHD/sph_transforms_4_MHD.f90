@@ -96,6 +96,7 @@
       subroutine init_sph_transform_MHD                                 &
      &         (sph, comms_sph, trans_p, trns_WK, rj_fld)
 !
+      use m_sph_phys_address
       use init_sph_trans
       use init_FFT_4_MHD
       use set_address_sph_trans_MHD
@@ -123,16 +124,16 @@
      &                     'set_addresses_trans_sph_MHD'
       call set_addresses_trans_sph_MHD(trns_WK%trns_MHD,                &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-      call set_addresses_snapshot_trans(trns_WK%trns_snap,              &
+      call set_addresses_snapshot_trans(ipol, trns_WK%trns_snap,        &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-      call set_addresses_temporal_trans(trns_WK%trns_tmp,               &
+      call set_addresses_temporal_trans(ipol, trns_WK%trns_tmp,         &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
       if(iflag_debug .ge. iflag_routine_msg) then
         call check_address_trans_sph_MHD                                &
-     &     (trns_WK%trns_MHD, ncomp_max_trans)
+     &     (ipol, idpdr, itor, trns_WK%trns_MHD, ncomp_max_trans)
         call check_address_trans_sph_snap(trns_WK%trns_snap)
-        call check_address_trans_sph_tmp(trns_WK%trns_tmp)
+        call check_address_trans_sph_tmp(ipol, trns_WK%trns_tmp)
       end if
 !
       call alloc_sph_trans_address(sph%sph_rtp, trns_WK)

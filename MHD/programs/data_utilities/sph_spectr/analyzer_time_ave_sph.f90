@@ -33,8 +33,8 @@
       use m_t_step_parameter
       use m_ctl_data_4_sph_utils
       use m_ctl_params_sph_utils
-      use m_sph_phys_address
       use parallel_load_data_4_sph
+      use set_sph_phys_address
       use copy_time_steps_4_restart
       use copy_rj_phys_data_4_IO
       use count_num_sph_smp
@@ -68,8 +68,8 @@
       call copy_time_from_restart
       call copy_rj_phys_name_from_IO(sph_fld_IN, rj_fld_spec)
 !
-      call set_sph_sprctr_data_address                                  &
-     &   (sph_mesh_spec%sph%sph_rj, rj_fld_spec)
+      call set_sph_sprctr_data_address(sph_mesh_spec%sph%sph_rj,        &
+     &    ipol_spec, idpdr_spec, itor_spec, rj_fld_spec)
 !
 !  -------------------------------
 !

@@ -31,6 +31,7 @@
 !!
 !!      subroutine copy_fdm2_nod_coefs_from_mat(nri, fdm2_nod)
 !!      subroutine copy_fdm4_nod_coefs_from_mat(nri, fdm4_nod)
+!!      subroutine copy_fdm2_ele_coefs_from_mat(nri, fdm2_ele)
 !!
 !!      subroutine check_fdm_coefs(nri, r, fdmn_nod)
 !!      subroutine check_fdm_mat(nri, r, fdmn_nod)
@@ -48,9 +49,11 @@
 !
 !>        Structure of FDM matrix
       type fdm_matrix
-!>        Coefficients to evaluate first radial derivative
+!>        Width of matrix (one side)
         integer(kind = kint) :: n_wid
-!>        Coefficients to evaluate first radial derivative
+!>        flag for odd orders
+        integer(kind = kint) :: iflag_odd
+!>        Coefficients to evaluate radial derivative
 !!        from nodal field by FDM
         real(kind = kreal), pointer :: dmat(:,:)
       end type fdm_matrix
@@ -188,6 +191,25 @@
       end subroutine copy_fdm4_nod_coefs_from_mat
 !
 ! -----------------------------------------------------------------------
+!
+      subroutine copy_fdm2_ele_coefs_from_mat(nri, fdm2_ele)
+!
+      integer(kind = kint), intent(in) :: nri
+      type(fdm_matrices), intent(inout) :: fdm2_ele
+!
+      integer(kind= kint) :: k
+!
+!
+!$omp parallel do private (k)
+      do k = 1, nri-1
+        fdm2_ele%fdm(1)%dmat(k, 0) = fdm2_ele%wk_mat(2,1,k)
+        fdm2_ele%fdm(1)%dmat(k, 1) = fdm2_ele%wk_mat(2,2,k)
+      end do
+!$omp end parallel do
+!
+      end subroutine copy_fdm2_ele_coefs_from_mat
+!
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine check_fdm_coefs(nri, r, fdmn_nod)
@@ -235,8 +257,9 @@
       type(fdm_matrix), intent(inout) :: fdm
 !
 !
-      fdm%n_wid = n_order / 2
-      allocate( fdm%dmat(nri,-fdm%n_wid:fdm%n_wid) )
+      fdm%iflag_odd = mod(n_order,2)
+      fdm%n_wid = (n_order + fdm%iflag_odd) / 2
+      allocate( fdm%dmat(nri,-fdm%n_wid+fdm%iflag_odd:fdm%n_wid) )
 !
       if(nri .gt. 0) fdm%dmat = 0.0d0
 !
@@ -266,7 +289,7 @@
       write(50,*) 'kr, r, coefficients'
       do kr = 1, nri
         write(50,'(i5,1p40e20.12)')                                     &
-     &       kr, r(kr), fdm%dmat(kr,-fdm%n_wid:fdm%n_wid)
+     &       kr, r(kr), fdm%dmat(kr,-fdm%n_wid+fdm%iflag_odd:fdm%n_wid)
       end do
 !
       end subroutine check_fdm_coef
