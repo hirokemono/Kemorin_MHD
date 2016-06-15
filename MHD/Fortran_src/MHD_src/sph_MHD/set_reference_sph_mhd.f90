@@ -8,8 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine adjust_by_ave_pressure_on_CMB(kr_in, kr_out,         &
-!!     &          idx_rj_degree_zero, n_point, nidx_rj,                 &
-!!     &          ntot_phys_rj, d_rj)
+!!     &          idx_rj_degree_zero, nidx_rj, i_press,                 &
+!!     &          n_point, ntot_phys_rj, d_rj)
 !!
 !!      subroutine set_ref_temp_sph_mhd(nidx_rj, r_ICB, r_CMB, ar_1d_rj,&
 !!     &          sph_bc_T, reftemp_rj)
@@ -17,8 +17,8 @@
 !!     &         (idx_rj_degree_zero, nri, reftemp_rj, sph_bc_T)
 !!
 !!      subroutine chenge_temp_to_per_temp_sph(idx_rj_degree_zero,      &
-!!     &         n_point, nidx_rj, radius_1d_rj_r, reftemp_rj,          &
-!!     &         ntot_phys_rj, d_rj)
+!!     &         nidx_rj, radius_1d_rj_r, reftemp_rj, ipol, idpdr,      &
+!!     &         n_point, ntot_phys_rj, d_rj)
 !!        d_rj(inod,ipol%i_temp):        T => \Theta = T - T0
 !!        d_rj(inod,ipol%i_par_temp):    \Theta = T - T0
 !!        d_rj(inod,ipol%i_grad_t):      T => d \Theta / dr
@@ -26,8 +26,9 @@
 !!
 !!
 !!      subroutine transfer_per_temp_to_temp_sph(idx_rj_degree_zero,    &
-!!     &          n_point, nidx_rj, radius_1d_rj_r, reftemp_rj,         &
-!!     &          ntot_phys_rj, d_rj)
+!!     &          nidx_rj, radius_1d_rj_r, reftemp_rj, ipol, idpdr,     &
+!!     &          n_point, ntot_phys_rj, d_rj)
+!!        type(phys_address), intent(in) :: ipol, idpdr
 !!        d_rj(inod,ipol%i_temp):        \Theta = T - T0 => T
 !!        d_rj(inod,ipol%i_par_temp):    \Theta = T - T0
 !!        d_rj(inod,ipol%i_grad_t):      d \Theta / dr   => dT / dr
@@ -51,6 +52,7 @@
       use m_constants
       use calypso_mpi
       use m_control_parameter
+      use t_phys_address
 !
       implicit none
 !
@@ -61,15 +63,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine adjust_by_ave_pressure_on_CMB(kr_in, kr_out,           &
-     &          idx_rj_degree_zero, n_point, nidx_rj,                   &
-     &          ntot_phys_rj, d_rj)
-!
-      use m_sph_phys_address
+     &          idx_rj_degree_zero, nidx_rj, i_press,                   &
+     &          n_point, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
       integer(kind = kint), intent(in) :: idx_rj_degree_zero
-      integer(kind = kint), intent(in) :: n_point, nidx_rj(2)
-      integer(kind = kint), intent(in) :: ntot_phys_rj
+      integer(kind = kint), intent(in) :: nidx_rj(2)
+      integer(kind = kint), intent(in) :: i_press
+      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
 !
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
@@ -80,11 +81,11 @@
       if (idx_rj_degree_zero .eq. 0) return
 !
       inod = idx_rj_degree_zero + (kr_out-1)*nidx_rj(2)
-      ref_p = d_rj(inod,ipol%i_press)
+      ref_p = d_rj(inod,i_press)
 !
       do k = kr_in, kr_out
         inod = idx_rj_degree_zero + (k-1)*nidx_rj(2)
-        d_rj(inod,ipol%i_press) = d_rj(inod,ipol%i_press) - ref_p
+        d_rj(inod,i_press) = d_rj(inod,i_press) - ref_p
       end do
 !
       end subroutine adjust_by_ave_pressure_on_CMB
@@ -172,11 +173,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine chenge_temp_to_per_temp_sph(idx_rj_degree_zero,        &
-     &         n_point, nidx_rj, radius_1d_rj_r, reftemp_rj,            &
-     &         ntot_phys_rj, d_rj)
+     &         nidx_rj, radius_1d_rj_r, reftemp_rj, ipol, idpdr,        &
+     &         n_point, ntot_phys_rj, d_rj)
 !
-      use m_sph_phys_address
-!
+      type(phys_address), intent(in) :: ipol, idpdr
       integer(kind = kint), intent(in) :: idx_rj_degree_zero
       integer(kind = kint), intent(in) :: nidx_rj(2)
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
@@ -214,11 +214,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine transfer_per_temp_to_temp_sph(idx_rj_degree_zero,      &
-     &          n_point, nidx_rj, radius_1d_rj_r, reftemp_rj,           &
-     &          ntot_phys_rj, d_rj)
+     &          nidx_rj, radius_1d_rj_r, reftemp_rj, ipol, idpdr,       &
+     &          n_point, ntot_phys_rj, d_rj)
 !
-      use m_sph_phys_address
-!
+      type(phys_address), intent(in) :: ipol, idpdr
       integer(kind = kint), intent(in) :: idx_rj_degree_zero
       integer(kind = kint), intent(in) :: nidx_rj(2)
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj

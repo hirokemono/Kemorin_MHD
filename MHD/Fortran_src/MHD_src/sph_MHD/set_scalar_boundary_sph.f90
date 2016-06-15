@@ -56,9 +56,7 @@
       module set_scalar_boundary_sph
 !
       use m_precision
-!
       use m_constants
-      use m_sph_phys_address
 !
       implicit none
 !
@@ -70,7 +68,7 @@
 !
       subroutine set_fixed_scalar_sph(n_point, jmax,                    &
      &          kr_bc_st, kr_bc_ed, is_fld, fixed_bc,                   &
-     &           ntot_phys_rj, d_rj)
+     &          ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: is_fld
       integer(kind = kint), intent(in) :: jmax, kr_bc_st, kr_bc_ed

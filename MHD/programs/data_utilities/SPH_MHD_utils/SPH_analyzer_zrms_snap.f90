@@ -55,7 +55,8 @@
      &   (i_step, sph1%sph_rj, ipol, rj_fld1)
 !
       if (iflag_debug.eq.1) write(*,*)' sync_temp_by_per_temp_sph'
-      call sync_temp_by_per_temp_sph(reftemp_rj, sph1%sph_rj, rj_fld1)
+      call sync_temp_by_per_temp_sph                                    &
+     &   (reftemp_rj, sph1%sph_rj, ipol, idpdr, rj_fld1)
 !
 !* obtain linear terms for starting
 !*
@@ -74,7 +75,8 @@
 !*
       call start_eleps_time(9)
       if(iflag_debug.gt.0) write(*,*) 'trans_per_temp_to_temp_sph'
-      call trans_per_temp_to_temp_sph(reftemp_rj, sph1%sph_rj, rj_fld1)
+      call trans_per_temp_to_temp_sph                                   &
+     &   (reftemp_rj, sph1%sph_rj, ipol, idpdr, rj_fld1)
 !*
       if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
       call s_lead_fields_4_sph_mhd                                      &

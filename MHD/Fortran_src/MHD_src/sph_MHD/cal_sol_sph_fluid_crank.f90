@@ -114,8 +114,8 @@
 !
       call adjust_by_ave_pressure_on_CMB                                &
      &   (sph_bc_U%kr_in, sph_bc_U%kr_out, sph_rj%idx_rj_degree_zero,   &
-     &    rj_fld%n_point, sph_rj%nidx_rj,                               &
-     &    rj_fld%ntot_phys, rj_fld%d_fld)
+     &    sph_rj%nidx_rj, ipol%i_press,                                 &
+     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine cal_sol_pressure_by_div_v
 !
