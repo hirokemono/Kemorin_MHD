@@ -6,11 +6,12 @@
 !>@brief Construct matrix for time evolution of vector fields
 !!
 !!@verbatim
-!!      subroutine const_radial_mat_vort_2step(sph_rj, g_sph_rj,        &
+!!      subroutine const_radial_mat_vort_2step(sph_rj, r_2nd, g_sph_rj, &
 !!     &         band_vs_poisson, band_vp_evo, band_vt_evo, band_wt_evo)
 !!      subroutine const_radial_mat_4_magne_sph                         &
-!!     &         (sph_rj, g_sph_rj, band_bp_evo, band_bt_evo)
+!!     &         (sph_rj, r_2nd, g_sph_rj, band_bp_evo, band_bt_evo)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(band_matrices_type), intent(inout) :: band_vp_evo
 !!        type(band_matrices_type), intent(inout) :: band_vt_evo
 !!        type(band_matrices_type), intent(inout) :: band_wt_evo
@@ -29,10 +30,10 @@
       use m_t_int_parameter
       use m_physical_property
       use m_ludcmp_3band
-      use m_fdm_coefs
 !
       use t_spheric_rj_data
       use t_sph_matrices
+      use t_fdm_coefs
 !
       use set_radial_mat_sph
 !
@@ -44,7 +45,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_vort_2step(sph_rj, g_sph_rj,          &
+      subroutine const_radial_mat_vort_2step(sph_rj, r_2nd, g_sph_rj,   &
      &         band_vs_poisson, band_vp_evo, band_vt_evo, band_wt_evo)
 !
       use m_boundary_params_sph_MHD
@@ -59,6 +60,7 @@
       use check_sph_radial_mat
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(fdm_matrices), intent(in) :: r_2nd
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
       type(band_matrices_type), intent(inout) :: band_vp_evo
@@ -228,7 +230,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_radial_mat_4_magne_sph                           &
-     &         (sph_rj, g_sph_rj, band_bp_evo, band_bt_evo)
+     &         (sph_rj, r_2nd, g_sph_rj, band_bp_evo, band_bt_evo)
 !
       use m_boundary_params_sph_MHD
       use m_coef_fdm_to_center
@@ -238,6 +240,7 @@
       use check_sph_radial_mat
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(fdm_matrices), intent(in) :: r_2nd
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
       type(band_matrices_type), intent(inout) :: band_bp_evo

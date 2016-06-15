@@ -7,10 +7,11 @@
 !>@brief Time integration for momentum equation by explicit scheme
 !!
 !!@verbatim
-!!      subroutine cal_momentum_eq_exp_sph(sph_rj, leg, rj_fld)
+!!      subroutine cal_momentum_eq_exp_sph(sph_rj, r_2nd, leg, rj_fld)
 !!      subroutine cal_expricit_sph_adams(sph_rj, rj_fld)
 !!      subroutine cal_expricit_sph_euler(i_step, sph_rj, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
@@ -24,6 +25,7 @@
 !
       use t_spheric_rj_data
       use t_phys_data
+      use t_fdm_coefs
       use t_schmidt_poly_on_rtm
 !
       implicit  none
@@ -34,7 +36,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_momentum_eq_exp_sph(sph_rj, leg, rj_fld)
+      subroutine cal_momentum_eq_exp_sph(sph_rj, r_2nd, leg, rj_fld)
 !
       use cal_explicit_terms
       use calypso_mpi
@@ -42,19 +44,21 @@
       use cal_nonlinear_sph_MHD
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(fdm_matrices), intent(in) :: r_2nd
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_data), intent(inout) :: rj_fld
 !
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &     write(*,*) 'cal_rot_of_forces_sph_2'
-      call cal_rot_of_forces_sph_2(sph_rj, leg%g_sph_rj, rj_fld)
+      call cal_rot_of_forces_sph_2(sph_rj, r_2nd, leg%g_sph_rj, rj_fld)
 !
-      call cal_rot_of_induction_sph(sph_rj, leg%g_sph_rj, rj_fld)
+      call cal_rot_of_induction_sph                                     &
+     &   (sph_rj, r_2nd, leg%g_sph_rj, rj_fld)
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &     write(*,*) 'cal_div_of_fluxes_sph'
-      call cal_div_of_fluxes_sph(sph_rj, leg%g_sph_rj, rj_fld)
+      call cal_div_of_fluxes_sph(sph_rj, r_2nd, leg%g_sph_rj, rj_fld)
 !
       end subroutine cal_momentum_eq_exp_sph
 !

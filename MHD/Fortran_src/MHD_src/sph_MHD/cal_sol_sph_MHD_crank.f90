@@ -7,14 +7,15 @@
 !>@brief  Update fields for MHD dynamo model
 !!
 !!@verbatim
-!!      subroutine s_cal_sol_sph_MHD_crank(sph_rj, rj_fld)
-!!      subroutine set_sph_field_to_start(sph_rj, leg, rj_fld)
+!!      subroutine s_cal_sol_sph_MHD_crank(sph_rj, r_2nd, leg, rj_fld)
+!!      subroutine set_sph_field_to_start(sph_rj, r_2nd, leg, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(fdm_matrices), intent(in) :: r_2nd
+!!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(phys_data), intent(inout) :: rj_fld
 !!
 !!      subroutine check_ws_spectr(sph_rj, rj_fld)
-!!        type(sph_rj_grid), intent(in) ::  sph_rj
-!!        type(phys_data), intent(in) :: rj_fld
+!!      subroutine update_after_magne_sph(sph_rj, r_2nd, leg, rj_fld)
 !!@endverbatim
 !
       module cal_sol_sph_MHD_crank
@@ -34,6 +35,7 @@
 !
       use t_spheric_rj_data
       use t_phys_data
+      use t_fdm_coefs
 !
       implicit none
 !
@@ -46,7 +48,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_cal_sol_sph_MHD_crank(sph_rj, leg, rj_fld)
+      subroutine s_cal_sol_sph_MHD_crank(sph_rj, r_2nd, leg, rj_fld)
 !
       use m_boundary_params_sph_MHD
       use cal_rot_buoyancies_sph_MHD
@@ -54,6 +56,7 @@
       use const_sph_radial_grad
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(fdm_matrices), intent(in) :: r_2nd
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -70,8 +73,8 @@
      &       write(*,*) 'cal_sol_velo_by_vort_sph_crank'
         call cal_sol_velo_by_vort_sph_crank                             &
      &     (sph_rj, band_vp_evo, band_vt_evo, rj_fld)
-        call const_grad_vp_and_vorticity                                &
-     &     (sph_rj, leg%g_sph_rj, ipol%i_velo, ipol%i_vort, rj_fld)
+        call const_grad_vp_and_vorticity(sph_rj, r_2nd, leg%g_sph_rj,   &
+     &      ipol%i_velo, ipol%i_vort, rj_fld)
       end if
 !
 !  Input: ipol%i_temp,  Solution: ipol%i_temp
@@ -94,26 +97,26 @@
       if(iflag_t_evo_4_magne .gt. id_no_evolution) then
         call cal_sol_magne_sph_crank                                    &
      &     (sph_rj, band_bp_evo, band_bt_evo, leg%g_sph_rj, rj_fld)
-        call const_grad_bp_and_current(sph_rj, sph_bc_B, leg%g_sph_rj,  &
-     &      ipol%i_magne, ipol%i_current, rj_fld)
+        call const_grad_bp_and_current(sph_rj, r_2nd, sph_bc_B,         &
+     &      leg%g_sph_rj, ipol%i_magne, ipol%i_current, rj_fld)
       end if
 !
 !*  ---- update after evolution ------------------
 !      call check_vs_spectr(sph_rj, rj_fld)
 !
       if(iflag_t_evo_4_velo .gt. id_no_evolution) then
-        call update_after_vorticity_sph(sph_rj, leg, rj_fld)
+        call update_after_vorticity_sph(sph_rj, r_2nd, leg, rj_fld)
         call cal_rot_radial_self_gravity(sph_rj, sph_bc_U, rj_fld)
       end if
 !
       if(iflag_t_evo_4_temp .gt.     id_no_evolution) then
-        call update_after_heat_sph(sph_rj, leg, rj_fld)
+        call update_after_heat_sph(sph_rj, r_2nd, leg, rj_fld)
       end if
       if(iflag_t_evo_4_composit .gt. id_no_evolution) then
-        call update_after_composit_sph(sph_rj, leg, rj_fld)
+        call update_after_composit_sph(sph_rj, r_2nd, leg, rj_fld)
       end if
       if(iflag_t_evo_4_magne .gt.    id_no_evolution) then
-        call update_after_magne_sph(sph_rj, leg, rj_fld)
+        call update_after_magne_sph(sph_rj, r_2nd, leg, rj_fld)
       end if
 !
       end subroutine s_cal_sol_sph_MHD_crank
@@ -121,53 +124,55 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sph_field_to_start(sph_rj, leg, rj_fld)
+      subroutine set_sph_field_to_start(sph_rj, r_2nd, leg, rj_fld)
 !
       use m_boundary_params_sph_MHD
       use const_sph_radial_grad
       use cal_rot_buoyancies_sph_MHD
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(fdm_matrices), intent(in) :: r_2nd
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_data), intent(inout) :: rj_fld
 !
 !
       if(ipol%i_velo*ipol%i_vort .gt. 0) then
-        call const_grad_vp_and_vorticity                                &
-     &     (sph_rj, leg%g_sph_rj, ipol%i_velo, ipol%i_vort, rj_fld)
+        call const_grad_vp_and_vorticity(sph_rj, r_2nd, leg%g_sph_rj,   &
+     &      ipol%i_velo, ipol%i_vort, rj_fld)
       end if
 !
       if(iflag_t_evo_4_velo .gt. id_no_evolution) then
         if(iflag_debug.gt.0) write(*,*) 'update_after_vorticity_sph'
-        call update_after_vorticity_sph(sph_rj, leg, rj_fld)
+        call update_after_vorticity_sph(sph_rj, r_2nd, leg, rj_fld)
         if(iflag_debug.gt.0) write(*,*) 'cal_rot_radial_self_gravity'
         call cal_rot_radial_self_gravity(sph_rj, sph_bc_U, rj_fld)
       end if
 !
       if(iflag_debug.gt.0) write(*,*) 'update_after_heat_sph'
-      call update_after_heat_sph(sph_rj, leg, rj_fld)
+      call update_after_heat_sph(sph_rj, r_2nd, leg, rj_fld)
       if(iflag_debug.gt.0) write(*,*) 'update_after_composit_sph'
-      call update_after_composit_sph(sph_rj, leg, rj_fld)
+      call update_after_composit_sph(sph_rj, r_2nd, leg, rj_fld)
 !
       if(ipol%i_magne*ipol%i_current .gt. 0) then
-        call const_grad_bp_and_current(sph_rj, sph_bc_B, leg%g_sph_rj,  &
-     &      ipol%i_magne, ipol%i_current, rj_fld)
+        call const_grad_bp_and_current(sph_rj, r_2nd, sph_bc_B,         &
+     &      leg%g_sph_rj, ipol%i_magne, ipol%i_current, rj_fld)
       end if
 !
-      call update_after_magne_sph(sph_rj, leg, rj_fld)
+      call update_after_magne_sph(sph_rj, r_2nd, leg, rj_fld)
 !
       end subroutine set_sph_field_to_start
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine update_after_vorticity_sph(sph_rj, leg, rj_fld)
+      subroutine update_after_vorticity_sph(sph_rj, r_2nd, leg, rj_fld)
 !
       use m_physical_property
       use m_boundary_params_sph_MHD
       use cal_inner_core_rotation
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(fdm_matrices), intent(in) :: r_2nd
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -181,7 +186,7 @@
       if(ipol%i_v_diffuse .gt. 0) then
         if(iflag_debug.gt.0) write(*,*) 'const_sph_viscous_by_vort2'
         call const_sph_viscous_by_vort2                                 &
-     &     (sph_rj, sph_bc_U, leg%g_sph_rj, coef_d_velo,                &
+     &     (sph_rj, r_2nd, sph_bc_U, leg%g_sph_rj, coef_d_velo,         &
      &      ipol%i_velo, ipol%i_vort, ipol%i_v_diffuse, rj_fld)
       end if
 !
@@ -189,7 +194,7 @@
 !       Solution: ipol%i_w_diffuse, itor%i_w_diffuse, idpdr%i_w_diffuse
       if(ipol%i_w_diffuse .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)'const_sph_vorticirty_diffusion'
-        call const_sph_vorticirty_diffusion(sph_rj, sph_bc_U,           &
+        call const_sph_vorticirty_diffusion(sph_rj, r_2nd, sph_bc_U,    &
      &      leg%g_sph_rj, coef_d_velo, ipol%i_vort, ipol%i_w_diffuse,   &
      &      rj_fld)
       end if
@@ -199,12 +204,13 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine update_after_magne_sph(sph_rj, leg, rj_fld)
+      subroutine update_after_magne_sph(sph_rj, r_2nd, leg, rj_fld)
 !
       use m_physical_property
       use m_boundary_params_sph_MHD
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(fdm_matrices), intent(in) :: r_2nd
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -214,7 +220,7 @@
       if(ipol%i_b_diffuse .gt. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'const_sph_mag_diffuse_by_j'
         call const_sph_mag_diffuse_by_j                                 &
-     &     (sph_rj, sph_bc_B, leg%g_sph_rj, coef_d_magne,               &
+     &     (sph_rj, r_2nd, sph_bc_B, leg%g_sph_rj, coef_d_magne,        &
      &      ipol%i_magne, ipol%i_current, ipol%i_b_diffuse, rj_fld)
       end if
 !
@@ -222,12 +228,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine update_after_heat_sph(sph_rj, leg, rj_fld)
+      subroutine update_after_heat_sph(sph_rj, r_2nd, leg, rj_fld)
 !
       use m_boundary_params_sph_MHD
       use m_physical_property
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(fdm_matrices), intent(in) :: r_2nd
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -235,15 +242,15 @@
       if(iflag_debug .gt. 0)  write(*,*)                                &
      &           'const_radial_grad_temp', ipol%i_grad_t
       if(ipol%i_grad_t .gt. 0) then
-        call const_radial_grad_scalar(sph_rj, sph_bc_T, leg%g_sph_rj,  &
-     &     ipol%i_temp, ipol%i_grad_t, rj_fld)
+        call const_radial_grad_scalar(sph_rj, r_2nd, sph_bc_T,          &
+     &      leg%g_sph_rj, ipol%i_temp, ipol%i_grad_t, rj_fld)
       end if
 !
 !         Input: ipol%i_temp,  Solution: ipol%i_t_diffuse
       if(ipol%i_t_diffuse .gt. 0) then
         if(iflag_debug .gt. 0)  write(*,*)                              &
      &           'const_sph_scalar_diffusion', ipol%i_t_diffuse
-        call const_sph_scalar_diffusion(sph_rj, sph_bc_T,               &
+        call const_sph_scalar_diffusion(sph_rj, r_2nd, sph_bc_T,        &
      &      leg%g_sph_rj, coef_d_temp, ipol%i_temp, ipol%i_t_diffuse,   &
      &      rj_fld)
       end if
@@ -252,27 +259,28 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine update_after_composit_sph(sph_rj, leg, rj_fld)
+      subroutine update_after_composit_sph(sph_rj, r_2nd, leg, rj_fld)
 !
       use m_boundary_params_sph_MHD
       use m_physical_property
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(fdm_matrices), intent(in) :: r_2nd
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_data), intent(inout) :: rj_fld
 !
 !
 !         Input: ipol%i_light,  Solution: ipol%i_grad_composit
       if(ipol%i_grad_composit .gt. 0) then
-        call const_radial_grad_scalar(sph_rj, sph_bc_C, leg%g_sph_rj,   &
-     &     ipol%i_light, ipol%i_grad_composit, rj_fld)
+        call const_radial_grad_scalar(sph_rj, r_2nd, sph_bc_C,          &
+     &      leg%g_sph_rj, ipol%i_light, ipol%i_grad_composit, rj_fld)
       end if
 !
 !         Input: ipol%i_light,  Solution: ipol%i_c_diffuse
       if(ipol%i_c_diffuse .gt. 0) then
         if(iflag_debug .gt. 0)  write(*,*)                              &
      &           'const_sph_scalar_diffusion', ipol%i_c_diffuse
-        call const_sph_scalar_diffusion(sph_rj, sph_bc_C,               &
+        call const_sph_scalar_diffusion(sph_rj, r_2nd, sph_bc_C,        &
      &      leg%g_sph_rj, coef_d_light, ipol%i_light,                   &
      &      ipol%i_c_diffuse, rj_fld)
       end if

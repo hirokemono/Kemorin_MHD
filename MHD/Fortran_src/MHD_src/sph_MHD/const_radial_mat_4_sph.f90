@@ -7,9 +7,10 @@
 !>@brief Construct 1D matrices for MHD dynamo simulaiton
 !!
 !!@verbatim
-!!      subroutine const_radial_mat_sph_mhd(sph_rj, leg)
-!!      subroutine const_radial_mat_sph_snap(sph_rj, leg)
+!!      subroutine const_radial_mat_sph_mhd(sph_rj, r_2nd, leg)
+!!      subroutine const_radial_mat_sph_snap(sph_rj, r_2nd, leg)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!@endverbatim
 !
@@ -21,6 +22,7 @@
       use m_machine_parameter
 !
       use t_spheric_rj_data
+      use t_fdm_coefs
       use t_schmidt_poly_on_rtm
 !
       use calypso_mpi
@@ -36,13 +38,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_sph_mhd(sph_rj, leg)
+      subroutine const_radial_mat_sph_mhd(sph_rj, r_2nd, leg)
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(fdm_matrices), intent(in) :: r_2nd
       type(legendre_4_sph_trans), intent(in) :: leg
 !
 !
-      call const_radial_matrices_sph(sph_rj, leg%g_sph_rj)
+      call const_radial_matrices_sph(sph_rj, r_2nd, leg%g_sph_rj)
 !
       call calypso_mpi_barrier
 !      if(sph_rj%inod_rj_center .eq. 0) return
@@ -55,7 +58,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_sph_snap(sph_rj, leg)
+      subroutine const_radial_mat_sph_snap(sph_rj, r_2nd, leg)
 !
       use m_control_parameter
       use m_radial_matrices_sph
@@ -64,6 +67,7 @@
       use const_r_mat_w_center_sph
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(fdm_matrices), intent(in) :: r_2nd
       type(legendre_4_sph_trans), intent(in) :: leg
 !
 !
@@ -71,7 +75,7 @@
       if(iflag_debug .gt. 0)                                            &
      &          write(*,*) 'const_radial_mat_4_press_sph'
       call const_radial_mat_4_press_sph                                 &
-     &   (sph_rj, leg%g_sph_rj, band_p_poisson)
+     &   (sph_rj, r_2nd, leg%g_sph_rj, band_p_poisson)
 !
       if(sph_rj%inod_rj_center .eq. 0) return
 !
@@ -85,7 +89,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_matrices_sph(sph_rj, g_sph_rj)
+      subroutine const_radial_matrices_sph(sph_rj, r_2nd, g_sph_rj)
 !
       use m_control_parameter
       use m_radial_matrices_sph
@@ -95,39 +99,42 @@
       use const_r_mat_4_vector_sph
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(fdm_matrices), intent(in) :: r_2nd
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
 !
       if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
         if(iflag_debug .gt. 0)                                          &
      &          write(*,*) 'const_radial_mat_vort_2step'
-        call const_radial_mat_vort_2step(sph_rj, g_sph_rj,              &
+        call const_radial_mat_vort_2step(sph_rj, r_2nd, g_sph_rj,       &
      &      band_vs_poisson, band_vp_evo, band_vt_evo, band_wt_evo)
         call const_radial_mat_4_press_sph                               &
-     &     (sph_rj, g_sph_rj, band_p_poisson)
+     &     (sph_rj, r_2nd, g_sph_rj, band_p_poisson)
       end if
 !
       if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
           if(iflag_debug .gt. 0)                                        &
      &          write(*,*) 'const_radial_mat_4_temp_sph'
         write(band_temp_evo%mat_name,'(a)') 'Temperature_evolution'
-        call const_radial_mat_4_scalar_sph(sph_rj, sph_bc_T, g_sph_rj,  &
-     &      coef_imp_t, coef_temp, coef_d_temp, band_temp_evo)
+        call const_radial_mat_4_scalar_sph                              &
+     &     (sph_rj, r_2nd, sph_bc_T, g_sph_rj, coef_imp_t,              &
+     &      coef_temp, coef_d_temp, band_temp_evo)
       end if
 !
       if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
           if(iflag_debug .gt. 0)                                        &
      &          write(*,*) 'const_radial_mat_4_magne_sph'
         call const_radial_mat_4_magne_sph                               &
-     &     (sph_rj, g_sph_rj, band_bp_evo, band_bt_evo)
+     &     (sph_rj, r_2nd, g_sph_rj, band_bp_evo, band_bt_evo)
       end if
 !
       if(iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
           if(iflag_debug .gt. 0)                                        &
      &          write(*,*) 'const_radial_mat_4_composit_sph'
         write(band_comp_evo%mat_name,'(a)') 'Composition_evolution'
-        call const_radial_mat_4_scalar_sph(sph_rj, sph_bc_C, g_sph_rj,  &
-     &      coef_imp_c, coef_light, coef_d_light, band_comp_evo)
+        call const_radial_mat_4_scalar_sph                              &
+     &     (sph_rj, r_2nd, sph_bc_C, g_sph_rj, coef_imp_c,              &
+     &      coef_light, coef_d_light, band_comp_evo)
       end if
 !
       end subroutine const_radial_matrices_sph

@@ -125,7 +125,9 @@
       use m_work_time
       use m_t_step_parameter
       use m_spheric_parameter
+      use m_sph_phys_address
       use m_sph_spectr_data
+      use m_fdm_coefs
       use m_schmidt_poly_on_rtm
       use m_node_id_spherical_IO
       use m_sph_trans_arrays_MHD
@@ -150,16 +152,17 @@
 !* obtain linear terms for starting
 !*
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
-      call set_sph_field_to_start(sph1%sph_rj, trans_p1%leg, rj_fld1)
+      call set_sph_field_to_start                                       &
+     &   (sph1%sph_rj, r_2nd, trans_p1%leg, rj_fld1)
 !
 !*  ----------------Modify spectr data ... ----------
 !*
-      call set_special_rj_fields
+      call set_special_rj_fields(sph1, ipol, idpdr, itor, rj_fld1)
 !
 !*  ----------------lead nonlinear term ... ----------
 !*
       call start_eleps_time(8)
-      call nonlinear(sph1, comms_sph1, trans_p1, reftemp_rj,            &
+      call nonlinear(sph1, comms_sph1, r_2nd, trans_p1, reftemp_rj,     &
      &    trns_WK1%trns_MHD, rj_fld1)
       call end_eleps_time(8)
 !
@@ -171,7 +174,8 @@
       call trans_per_temp_to_temp_sph(reftemp_rj, sph1%sph_rj, rj_fld1)
 !*
       if(iflag_debug.gt.0) write(*,*) 'lead_special_fields_4_sph_mhd'
-      call lead_special_fields_4_sph_mhd(trns_WK1)
+      call lead_special_fields_4_sph_mhd                                &
+     &   (sph1, comms_sph1, r_2nd, trns_WK1, rj_fld1)
       call end_eleps_time(9)
 !
 !*  -----------  lead energy data --------------
@@ -189,84 +193,6 @@
       call output_spectr_4_snap(i_step, sph1%sph_rj, rj_fld1)
 !
       end subroutine SPH_analyze_special_snap
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine set_special_rj_fields
-!
-      use m_sph_phys_address
-      use m_spheric_parameter
-      use m_sph_spectr_data
-!
-      use cal_zonal_mean_sph_spectr
-!
-      integer (kind =kint), allocatable :: ipick_degree(:)
-      integer(kind = kint) :: ltr_half
-      integer(kind = kint) :: l
-!
-!
-      ltr_half = 1*(sph1%sph_params%l_truncation + 1) / 2
-      allocate(ipick_degree(ltr_half))
-      do l = 1, ltr_half
-        ipick_degree(l) = l-1
-      end do
-!
-!      call pick_degree_sph_spectr(ltr_half, ipick_degree,              &
-!     &    ithree, ipol%i_velo, sph1%sph_rj, rj_fld1)
-!      call pick_degree_sph_spectr(ltr_half, ipick_degree,              &
-!     &    ithree, ipol%i_magne)
-!      deallocate(ipick_degree, sph1%sph_rj, rj_fld1)
-
-      if (my_rank.eq.0) write(*,*) 'delete zonam mean velocity'
-      call take_zonal_mean_rj_field                                     &
-     &   (ithree, ipol%i_velo, sph1%sph_rj, rj_fld1)
-      call take_zonal_mean_rj_field                                     &
-     &   (ithree, ipol%i_vort, sph1%sph_rj, rj_fld1)
-      if (my_rank.eq.0) write(*,*) 'delete zonam mean toroidal'
-      call delete_zonal_mean_rj_field                                   &
-     &   (ione, ipol%i_velo, sph1%sph_rj, rj_fld1)
-      call delete_zonal_mean_rj_field                                   &
-     &   (ione, idpdr%i_velo, sph1%sph_rj, rj_fld1)
-      call delete_zonal_mean_rj_field                                   &
-     &   (ione, itor%i_vort, sph1%sph_rj, rj_fld1)
-!
-      end subroutine set_special_rj_fields
-!
-! ----------------------------------------------------------------------
-!
-      subroutine lead_special_fields_4_sph_mhd(trns_WK)
-!
-      use t_phys_address
-      use t_sph_trans_arrays_MHD
-      use m_spheric_parameter
-      use m_sph_phys_address
-      use m_sph_spectr_data
-      use m_schmidt_poly_on_rtm
-      use output_viz_file_control
-      use lead_fields_4_sph_mhd
-!
-      use cal_zonal_mean_sph_spectr
-      use sph_transforms_4_MHD
-!
-      type(works_4_sph_trans_MHD), intent(inout) :: trns_WK
-!
-!
-      call s_lead_fields_4_sph_mhd                                      &
-     &   (sph1, comms_sph1, trans_p1, rj_fld1, trns_WK)
-!
-      call sph_back_trans_4_MHD                                         &
-     &   (sph1, comms_sph1, trans_p1, rj_fld1, trns_WK%trns_MHD)
-!
-      call sph_forward_trans_snapshot_MHD                               &
-     &   (sph1, comms_sph1, trans_p1, trns_WK%trns_snap, rj_fld1)
-!
-! ----  Take zonal mean
-!
-      if (my_rank.eq.0) write(*,*) 'zonal_mean_all_sph_spectr'
-      call zonal_mean_all_sph_spectr(sph1%sph_rj, rj_fld1)
-!
-      end subroutine lead_special_fields_4_sph_mhd
 !
 ! ----------------------------------------------------------------------
 !
@@ -318,6 +244,93 @@
       call nod_fields_send_recv(mesh1%node, mesh1%nod_comm, nod_fld1)
 !
       end subroutine SPH_to_FEM_bridge_special_snap
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine set_special_rj_fields(sph, ipol, idpdr, itor, rj_fld)
+!
+      use t_spheric_parameter
+      use t_phys_address
+      use t_phys_data
+!
+      use cal_zonal_mean_sph_spectr
+!
+      type(sph_grids), intent(in) :: sph
+      type(phys_address), intent(inout) :: ipol, idpdr, itor
+      type(phys_data), intent(inout) :: rj_fld
+!
+      integer (kind =kint), allocatable :: ipick_degree(:)
+      integer(kind = kint) :: ltr_half
+      integer(kind = kint) :: l
+!
+!
+      ltr_half = 1*(sph%sph_params%l_truncation + 1) / 2
+      allocate(ipick_degree(ltr_half))
+      do l = 1, ltr_half
+        ipick_degree(l) = l-1
+      end do
+!
+!      call pick_degree_sph_spectr(ltr_half, ipick_degree,              &
+!     &    ithree, ipol%i_velo, sph%sph_rj, rj_fld)
+!      call pick_degree_sph_spectr(ltr_half, ipick_degree,              &
+!     &    ithree, ipol%i_magne)
+!      deallocate(ipick_degree, sph%sph_rj, rj_fld)
+
+      if (my_rank.eq.0) write(*,*) 'delete zonam mean velocity'
+      call take_zonal_mean_rj_field                                     &
+     &   (ithree, ipol%i_velo, sph%sph_rj, rj_fld)
+      call take_zonal_mean_rj_field                                     &
+     &   (ithree, ipol%i_vort, sph%sph_rj, rj_fld)
+      if (my_rank.eq.0) write(*,*) 'delete zonam mean toroidal'
+      call delete_zonal_mean_rj_field                                   &
+     &   (ione, ipol%i_velo, sph%sph_rj, rj_fld)
+      call delete_zonal_mean_rj_field                                   &
+     &   (ione, idpdr%i_velo, sph%sph_rj, rj_fld)
+      call delete_zonal_mean_rj_field                                   &
+     &   (ione, itor%i_vort, sph%sph_rj, rj_fld)
+!
+      end subroutine set_special_rj_fields
+!
+! ----------------------------------------------------------------------
+!
+      subroutine lead_special_fields_4_sph_mhd                          &
+     &         (sph, comms_sph, r_2nd, trns_WK, rj_fld)
+!
+      use t_spheric_parameter
+      use t_phys_address
+      use t_phys_data
+      use t_fdm_coefs
+      use t_sph_trans_arrays_MHD
+      use m_schmidt_poly_on_rtm
+      use output_viz_file_control
+      use lead_fields_4_sph_mhd
+!
+      use cal_zonal_mean_sph_spectr
+      use sph_transforms_4_MHD
+!
+      type(sph_grids), intent(in) :: sph
+      type(sph_comm_tables), intent(in) :: comms_sph
+      type(fdm_matrices), intent(in) :: r_2nd
+      type(works_4_sph_trans_MHD), intent(inout) :: trns_WK
+      type(phys_data), intent(inout) :: rj_fld
+!
+!
+      call s_lead_fields_4_sph_mhd                                      &
+     &   (sph, comms_sph, r_2nd, trans_p1, rj_fld, trns_WK)
+!
+      call sph_back_trans_4_MHD                                         &
+     &   (sph, comms_sph, trans_p1, rj_fld, trns_WK%trns_MHD)
+!
+      call sph_forward_trans_snapshot_MHD                               &
+     &   (sph, comms_sph, trans_p1, trns_WK%trns_snap, rj_fld)
+!
+! ----  Take zonal mean
+!
+      if (my_rank.eq.0) write(*,*) 'zonal_mean_all_sph_spectr'
+      call zonal_mean_all_sph_spectr(sph%sph_rj, rj_fld)
+!
+      end subroutine lead_special_fields_4_sph_mhd
 !
 ! ----------------------------------------------------------------------
 !

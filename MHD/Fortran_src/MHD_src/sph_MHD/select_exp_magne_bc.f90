@@ -7,31 +7,32 @@
 !> @brief Select boundary condition routines for magnetic field
 !!
 !!@verbatim
-!!      subroutine sel_bc_grad_bp_and_current(sph_rj, sph_bc_B,         &
+!!      subroutine sel_bc_grad_bp_and_current(sph_rj, r_2nd, sph_bc_B,  &
 !!     &          g_sph_rj, is_magne, is_current, rj_fld)
 !!        Input:    ipol%i_magne, itor%i_magne
 !!        Solution: idpdr%i_magne,
 !!                  ipol%i_current, itor%i_current, idpdr%i_current
 !!      subroutine sel_bc_grad_poloidal_magne                           &
-!!     &         (sph_rj, sph_bc_B, g_sph_rj, is_magne, rj_fld)
+!!     &         (sph_rj, r_2nd, sph_bc_B, g_sph_rj, is_magne, rj_fld)
 !!        Input:    ipol%i_magne, itor%i_magne
 !!        Solution: idpdr%i_magne
 !!
-!!      subroutine sel_bc_sph_current(sph_rj, sph_bc_B, g_sph_rj,       &
+!!      subroutine sel_bc_sph_current(sph_rj, r_2nd, sph_bc_B, g_sph_rj,&
 !!     &          is_magne, is_current, rj_fld)
 !!        Input:    ipol%i_magne, itor%i_magne
 !!        Solution: ipol%i_current, itor%i_current, idpdr%i_current
-!!      subroutine sel_bc_sph_rotation_uxb                              &
-!!     &         (sph_rj, sph_bc_B, g_sph_rj, is_fld, is_rot, rj_fld)
+!!      subroutine sel_bc_sph_rotation_uxb(sph_rj, r_2nd, sph_bc_B,     &
+!!     &          g_sph_rj, is_fld, is_rot, rj_fld)
 !!        Input:    is_fld, it_fld
 !!        Solution: is_rot, it_rot, ids_rot
 !!      subroutine sel_bc_sph_magnetic_diffusion                        &
-!!     &         (sph_rj, sph_bc_B, g_sph_rj, coef_diffuse,             &
+!!     &         (sph_rj, r_2nd, sph_bc_B, g_sph_rj, coef_diffuse,      &
 !!     &          is_magne, is_ohmic, ids_ohmic, rj_fld)
 !!        Input:    ipol%i_magne, itor%i_magne
 !!        Solution: ipol%i_b_diffuse, itor%i_b_diffuse, idpdr%i_b_diffuse
 !!          type(sph_boundary_type), intent(in) :: sph_bc_B
 !!          type(sph_rj_grid), intent(in) :: sph_rj
+!!          type(fdm_matrices), intent(in) :: r_2nd
 !!          type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !!
@@ -57,10 +58,10 @@
 !
       use m_precision
       use m_constants
-      use m_fdm_coefs
 !
       use t_spheric_rj_data
       use t_phys_data
+      use t_fdm_coefs
       use t_boundary_params_sph_MHD
 !
       use cal_sph_exp_nod_icb_ins
@@ -77,11 +78,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sel_bc_grad_bp_and_current(sph_rj, sph_bc_B,           &
+      subroutine sel_bc_grad_bp_and_current(sph_rj, r_2nd, sph_bc_B,    &
      &          g_sph_rj, is_magne, is_current, rj_fld)
 !
       type(sph_boundary_type), intent(in) :: sph_bc_B
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(fdm_matrices), intent(in) :: r_2nd
       integer(kind = kint), intent(in) :: is_magne, is_current
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
@@ -127,10 +129,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sel_bc_grad_poloidal_magne                             &
-     &         (sph_rj, sph_bc_B, g_sph_rj, is_magne, rj_fld)
+     &         (sph_rj, r_2nd, sph_bc_B, g_sph_rj, is_magne, rj_fld)
 !
       type(sph_boundary_type), intent(in) :: sph_bc_B
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(fdm_matrices), intent(in) :: r_2nd
       integer(kind = kint), intent(in) :: is_magne
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
@@ -166,11 +169,12 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine sel_bc_sph_current(sph_rj, sph_bc_B, g_sph_rj,         &
+      subroutine sel_bc_sph_current(sph_rj, r_2nd, sph_bc_B, g_sph_rj,  &
      &          is_magne, is_current, rj_fld)
 !
       type(sph_boundary_type), intent(in) :: sph_bc_B
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(fdm_matrices), intent(in) :: r_2nd
       integer(kind = kint), intent(in) :: is_magne, is_current
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
@@ -215,11 +219,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sel_bc_sph_rotation_uxb                                &
-     &         (sph_rj, sph_bc_B, g_sph_rj, is_fld, is_rot, rj_fld)
+      subroutine sel_bc_sph_rotation_uxb(sph_rj, r_2nd, sph_bc_B,       &
+     &          g_sph_rj, is_fld, is_rot, rj_fld)
 !
       type(sph_boundary_type), intent(in) :: sph_bc_B
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(fdm_matrices), intent(in) :: r_2nd
       integer(kind = kint), intent(in) :: is_fld, is_rot
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
@@ -260,13 +265,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sel_bc_sph_magnetic_diffusion                          &
-     &         (sph_rj, sph_bc_B, g_sph_rj, coef_diffuse,               &
+     &         (sph_rj, r_2nd, sph_bc_B, g_sph_rj, coef_diffuse,        &
      &          is_magne, is_ohmic, ids_ohmic, rj_fld)
 !
       use cal_sph_exp_fixed_scalar
 !
       type(sph_boundary_type), intent(in) :: sph_bc_B
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(fdm_matrices), intent(in) :: r_2nd
       integer(kind = kint), intent(in) :: is_magne
       integer(kind = kint), intent(in) :: is_ohmic, ids_ohmic
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)

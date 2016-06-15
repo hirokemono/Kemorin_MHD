@@ -7,11 +7,12 @@
 !>@brief Evaluate divergence of forces
 !!
 !!@verbatim
-!!      subroutine const_sph_scalar_advect                              &
-!!     &         (sph_rj, sph_bc, g_sph_rj, is_flux, is_advect, rj_fld)
-!!      subroutine const_sph_div_force                                  &
-!!     &         (sph_rj, sph_bc_U, g_sph_rj, is_fld, is_div, rj_fld)
+!!      subroutine const_sph_scalar_advect(sph_rj, r_2nd, sph_bc,       &
+!!     &          g_sph_rj, is_flux, is_advect, rj_fld)
+!!      subroutine const_sph_div_force(sph_rj, r_2nd, sph_bc_U,         &
+!!     &          g_sph_rj, is_fld, is_div, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(sph_boundary_type), intent(in) :: sph_bc
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        type(phys_data), intent(inout) :: rj_fld
@@ -28,10 +29,10 @@
 !
       use m_precision
       use m_constants
-      use m_fdm_coefs
 !
       use t_spheric_rj_data
       use t_phys_data
+      use t_fdm_coefs
       use t_boundary_params_sph_MHD
 !
       implicit none
@@ -42,14 +43,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_sph_scalar_advect                                &
-     &         (sph_rj, sph_bc, g_sph_rj, is_flux, is_advect, rj_fld)
+      subroutine const_sph_scalar_advect(sph_rj, r_2nd, sph_bc,         &
+     &          g_sph_rj, is_flux, is_advect, rj_fld)
 !
       use m_coef_fdm_to_center
       use cal_sph_exp_rotation
       use select_exp_scalar_bc
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(fdm_matrices), intent(in) :: r_2nd
       type(sph_boundary_type), intent(in) :: sph_bc
       integer(kind = kint), intent(in) :: is_flux, is_advect
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
@@ -69,13 +71,14 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine const_sph_div_force                                    &
-     &         (sph_rj, sph_bc_U, g_sph_rj, is_fld, is_div, rj_fld)
+      subroutine const_sph_div_force(sph_rj, r_2nd, sph_bc_U,           &
+     &          g_sph_rj, is_fld, is_div, rj_fld)
 !
       use cal_sph_exp_rotation
       use cal_sph_exp_nod_none_bc
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(fdm_matrices), intent(in) :: r_2nd
       type(sph_boundary_type), intent(in) :: sph_bc_U
       integer(kind = kint), intent(in) :: is_fld, is_div
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)

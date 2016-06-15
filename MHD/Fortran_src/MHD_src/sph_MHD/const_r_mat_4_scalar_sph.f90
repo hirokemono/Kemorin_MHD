@@ -6,11 +6,12 @@
 !>@brief Construct matrix for time evolution of scalar fields
 !!
 !!@verbatim
-!!      subroutine const_radial_mat_4_temp_sph(sph_rj, band_temp_evo)
-!!      subroutine const_radial_mat_4_composit_sph(sph_rj, band_comp_evo)
 !!      subroutine const_radial_mat_4_press_sph                         &
-!!     &         (sph_rj, g_sph_rj, band_p_poisson)
+!!     &         (sph_rj, r_2nd, g_sph_rj, band_p_poisson)
+!!      subroutine const_radial_mat_4_scalar_sph(sph_rj, r_2nd, sph_bc, &
+!!     &          g_sph_rj, coef_imp, coef_f, coef_d, band_s_evo)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(fdm_matrices), intent(in) :: r_2nd
 !!@endverbatim
 !
       module const_r_mat_4_scalar_sph
@@ -21,10 +22,10 @@
       use m_constants
       use m_machine_parameter
       use m_t_int_parameter
-      use m_fdm_coefs
 !
       use t_spheric_rj_data
       use t_sph_matrices
+      use t_fdm_coefs
 !
       implicit none
 !
@@ -35,7 +36,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_radial_mat_4_press_sph                           &
-     &         (sph_rj, g_sph_rj, band_p_poisson)
+     &         (sph_rj, r_2nd, g_sph_rj, band_p_poisson)
 !
       use m_physical_property
       use m_boundary_params_sph_MHD
@@ -51,6 +52,7 @@
       use check_sph_radial_mat
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(fdm_matrices), intent(in) :: r_2nd
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
       type(band_matrices_type), intent(inout) :: band_p_poisson
@@ -103,7 +105,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_4_scalar_sph(sph_rj, sph_bc,          &
+      subroutine const_radial_mat_4_scalar_sph(sph_rj, r_2nd, sph_bc,   &
      &          g_sph_rj, coef_imp, coef_f, coef_d, band_s_evo)
 !
       use m_coef_fdm_to_center
@@ -115,6 +117,7 @@
       use check_sph_radial_mat
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(fdm_matrices), intent(in) :: r_2nd
       type(sph_boundary_type), intent(in) :: sph_bc
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: coef_imp, coef_f, coef_d
