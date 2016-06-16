@@ -9,8 +9,9 @@
 !!
 !!@verbatim
 !!      subroutine cal_div_radial_const_gravity                         &
-!!     &         (sph_rj, sph_bc_U, rj_fld)
+!!     &         (sph_rj, ipol, sph_bc_U, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(phys_address), intent(in) :: ipol
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
@@ -21,11 +22,11 @@
       module cal_div_r_const_buo_sph
 !
       use m_precision
+      use m_machine_parameter
 !
       use m_constants
       use m_control_parameter
       use m_physical_property
-      use m_sph_phys_address
 !
       implicit  none
 !
@@ -39,14 +40,15 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_div_radial_const_gravity                           &
-     &         (sph_rj, sph_bc_U, rj_fld)
+     &         (sph_rj, ipol, sph_bc_U, rj_fld)
 !
-      use m_machine_parameter
       use t_spheric_rj_data
+      use t_phys_address
       use t_phys_data
       use t_boundary_params_sph_MHD
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(phys_address), intent(in) :: ipol
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(phys_data), intent(inout) :: rj_fld
 !
