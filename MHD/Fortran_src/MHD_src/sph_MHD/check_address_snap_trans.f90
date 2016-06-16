@@ -8,7 +8,8 @@
 !!       in MHD dynamo simulation
 !!
 !!@verbatim
-!!        subroutine check_address_trans_sph_snap(trns_snap)
+!!      subroutine check_address_trans_sph_snap(ipol, trns_snap)
+!!        type(phys_address), intent(in) :: ipol
 !!        type(address_4_sph_trans), intent(in) :: trns_snap
 !!@endverbatim
 !
@@ -29,12 +30,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine check_address_trans_sph_snap(trns_snap)
+      subroutine check_address_trans_sph_snap(ipol, trns_snap)
 !
+      type(phys_address), intent(in) :: ipol
       type(address_4_sph_trans), intent(in) :: trns_snap
 !
       call check_addresses_snapshot_trans                               &
-     &   (trns_snap%b_trns, trns_snap%f_trns,                           &
+     &   (ipol, trns_snap%b_trns, trns_snap%f_trns,                     &
      &    trns_snap%ncomp_rj_2_rtp, trns_snap%nvector_rj_2_rtp,         &
      &    trns_snap%nscalar_rj_2_rtp, trns_snap%ncomp_rtp_2_rj,         &
      &    trns_snap%nvector_rtp_2_rj, trns_snap%nscalar_rtp_2_rj)
@@ -43,14 +45,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine check_addresses_snapshot_trans(bs_trns, fs_trns,       &
+      subroutine check_addresses_snapshot_trans(ipol, bs_trns, fs_trns, &
      &          ncomp_snap_rj_2_rtp, nvector_snap_rj_2_rtp,             &
      &          nscalar_snap_rj_2_rtp, ncomp_snap_rtp_2_rj,             &
      &          nvector_snap_rtp_2_rj, nscalar_snap_rtp_2_rj)
 !
       use m_node_phys_data
-      use m_sph_phys_address
 !
+      type(phys_address), intent(in) :: ipol
       type(phys_address), intent(in) :: bs_trns, fs_trns
       integer(kind = kint), intent(in) :: ncomp_snap_rj_2_rtp
       integer(kind = kint), intent(in) :: nvector_snap_rj_2_rtp
