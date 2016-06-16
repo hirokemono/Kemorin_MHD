@@ -51,14 +51,16 @@
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &     write(*,*) 'cal_rot_of_forces_sph_2'
-      call cal_rot_of_forces_sph_2(sph_rj, r_2nd, leg%g_sph_rj, rj_fld)
+      call cal_rot_of_forces_sph_2                                      &
+     &   (sph_rj, r_2nd, leg%g_sph_rj, ipol, itor, rj_fld)
 !
       call cal_rot_of_induction_sph                                     &
-     &   (sph_rj, r_2nd, leg%g_sph_rj, rj_fld)
+     &   (sph_rj, r_2nd, leg%g_sph_rj, ipol, rj_fld)
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &     write(*,*) 'cal_div_of_fluxes_sph'
-      call cal_div_of_fluxes_sph(sph_rj, r_2nd, leg%g_sph_rj, rj_fld)
+      call cal_div_of_fluxes_sph                                        &
+     &   (sph_rj, r_2nd, leg%g_sph_rj, ipol, rj_fld)
 !
       end subroutine cal_momentum_eq_exp_sph
 !

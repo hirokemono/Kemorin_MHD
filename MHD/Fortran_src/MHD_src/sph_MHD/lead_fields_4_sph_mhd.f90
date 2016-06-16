@@ -123,11 +123,13 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_div_of_forces_sph_2'
-      call cal_div_of_forces_sph_2(sph_rj, r_2nd, leg%g_sph_rj, rj_fld)
+      call cal_div_of_forces_sph_2                                      &
+     &   (sph_rj, r_2nd, leg%g_sph_rj, ipol, rj_fld)
 !
-      call s_const_radial_forces_on_bc(sph_rj, leg%g_sph_rj, rj_fld)
+      call s_const_radial_forces_on_bc                                  &
+     &   (sph_rj, leg%g_sph_rj, ipol, rj_fld)
 !
-      call sum_div_of_forces(rj_fld)
+      call sum_div_of_forces(ipol, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_pressure_by_div_v'
       call cal_sol_pressure_by_div_v(sph_rj, band_p_poisson, rj_fld)
