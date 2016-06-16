@@ -147,7 +147,7 @@
 !
       if (iflag_debug.eq.1) write(*,*)' sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph                                    &
-     &   (reftemp_rj, sph1%sph_rj, ipol, idpdr, rj_fld1)
+     &   (ref_temp1%t_rj, sph1%sph_rj, ipol, idpdr, rj_fld1)
 !
 !* obtain linear terms for starting
 !*
@@ -163,7 +163,7 @@
 !*
       call start_eleps_time(8)
       call nonlinear(sph1, comms_sph1, omega_sph1, r_2nd, trans_p1,     &
-     &    reftemp_rj, ipol, itor, trns_WK1%trns_MHD, rj_fld1)
+     &    ref_temp1%t_rj, ipol, itor, trns_WK1%trns_MHD, rj_fld1)
       call end_eleps_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=
@@ -172,7 +172,7 @@
 !
       if(iflag_debug.gt.0) write(*,*) 'trans_per_temp_to_temp_sph'
       call trans_per_temp_to_temp_sph                                   &
-     &   (reftemp_rj, sph1%sph_rj, ipol, idpdr, rj_fld1)
+     &   (ref_temp1%t_rj, sph1%sph_rj, ipol, idpdr, rj_fld1)
 !*
       if(iflag_debug.gt.0) write(*,*) 'lead_special_fields_4_sph_mhd'
       call lead_special_fields_4_sph_mhd                                &

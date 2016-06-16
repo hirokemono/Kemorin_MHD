@@ -58,8 +58,8 @@
 ! ---------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
-      call init_r_infos_sph_mhd_evo                                     &
-     &   (sph_grps1, ipol, sph1, omega_sph1, r_2nd, rj_fld1, sph_bc_T)
+      call init_r_infos_sph_mhd_evo(sph_grps1, ipol, sph1,              &
+     &    omega_sph1, ref_temp1, r_2nd, rj_fld1, sph_bc_T)
 !
 ! ---------------------------------
 !
@@ -71,12 +71,12 @@
 !
       if(iflag_debug.gt.0) write(*,*)' sph_initial_data_control'
       call sph_initial_data_control                                     &
-     &   (sph1%sph_params, sph1%sph_rj, reftemp_rj,                     &
+     &   (sph1%sph_params, sph1%sph_rj, ref_temp1%t_rj,                 &
      &    ipol, idpdr, itor, rj_fld1)
 !
       if(iflag_debug.gt.0) write(*,*)' sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph                                    &
-     &   (reftemp_rj, sph1%sph_rj, ipol, idpdr, rj_fld1)
+     &   (ref_temp1%t_rj, sph1%sph_rj, ipol, idpdr, rj_fld1)
 !
 !  -------------------------------
 !
@@ -93,7 +93,7 @@
 !*
       if(iflag_debug .gt. 0) write(*,*) 'first nonlinear'
       call nonlinear(sph1, comms_sph1, omega_sph1, r_2nd, trans_p1,     &
-     &    reftemp_rj, ipol, itor, trns_WK1%trns_MHD, rj_fld1)
+     &    ref_temp1%t_rj, ipol, itor, trns_WK1%trns_MHD, rj_fld1)
 !
 !* -----  Open Volume integration data files -----------------
 !*
@@ -157,7 +157,7 @@
 !*
       call start_eleps_time(8)
       call nonlinear(sph1, comms_sph1, omega_sph1, r_2nd, trans_p1,     &
-     &    reftemp_rj, ipol, itor, trns_WK1%trns_MHD, rj_fld1)
+     &    ref_temp1%t_rj, ipol, itor, trns_WK1%trns_MHD, rj_fld1)
       call end_eleps_time(8)
       call end_eleps_time(5)
 !
@@ -166,7 +166,7 @@
       call start_eleps_time(9)
       if(iflag_debug.gt.0) write(*,*) 'trans_per_temp_to_temp_sph'
       call trans_per_temp_to_temp_sph                                   &
-     &   (reftemp_rj, sph1%sph_rj, ipol, idpdr, rj_fld1)
+     &   (ref_temp1%t_rj, sph1%sph_rj, ipol, idpdr, rj_fld1)
 !*
       if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
       call s_lead_fields_4_sph_mhd                                      &
@@ -200,7 +200,7 @@
 !
       if(iflag_debug.gt.0) write(*,*) 'sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph                                    &
-     &   (reftemp_rj, sph1%sph_rj, ipol, idpdr, rj_fld1)
+     &   (ref_temp1%t_rj, sph1%sph_rj, ipol, idpdr, rj_fld1)
 !
       if(i_step .ge. i_step_number .and. i_step_number.gt.0) then
         iflag_finish = 1

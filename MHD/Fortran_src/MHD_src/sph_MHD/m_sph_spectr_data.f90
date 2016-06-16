@@ -8,12 +8,6 @@
 !!
 !!
 !!@verbatim
-!!      subroutine init_reference_fields(sph_params, sph_rj, sph_bc_T)
-!!        type(sph_shell_parameters), intent(in) :: sph_params
-!!        type(sph_rj_grid), intent(in) ::  sph_rj
-!!        type(sph_boundary_type), intent(inout) :: sph_bc_T
-!!      subroutine deallocate_reft_rj_data
-!!
 !!***********************************************************************
 !!*
 !!*     rot_e(k,j) : rotation of earth  (output)
@@ -34,6 +28,9 @@
 !!*                         dr
 !!*                    = 1.0
 !!*
+!!*        ref_temp1%t_rj(kr,0) ... T_0
+!!*        ref_temp1%t_rj(kr,1) ... d T_0 / dr
+!!*
 !!***********************************************************************
 !!@endverbatim
 !!
@@ -45,6 +42,7 @@
       use t_spheric_parameter
       use t_spheric_rj_data
       use t_poloidal_rotation
+      use t_radial_reference_temp
       use t_phys_data
 !
       implicit  none
@@ -55,41 +53,8 @@
 !>      Structure for rotatin vector
       type(sph_rotation), save :: omega_sph1
 !
-!
-!>      Number of radial points for reference temperature
-      integer(kind = kint) :: nri_reftemp
-!
-!>    reference temerature spectr @f$ f(r,j) @f$
-!!@verbatim
-!!        reftemp_rj(kr,0) ... T_0
-!!        reftemp_rj(kr,1) ... d T_0 / dr
-!!@endverbatim
-      real (kind=kreal), allocatable :: reftemp_rj(:,:)
-!
-! -----------------------------------------------------------------------
-!
-      contains
-!
-! -----------------------------------------------------------------------
-!
-      subroutine allocate_reft_rj_data(sph_rj)
-!
-      type(sph_rj_grid), intent(in) :: sph_rj
-!
-      nri_reftemp = sph_rj%nidx_rj(1)
-      allocate( reftemp_rj(nri_reftemp,0:1)   )
-      reftemp_rj =  0.0d0
-!
-      end subroutine allocate_reft_rj_data
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_reft_rj_data
-!
-      deallocate( reftemp_rj )
-!
-      end subroutine deallocate_reft_rj_data
-!
-!  --------------------------------------------------------------------
+!>      Structure of reference temperature
+      type(reference_temperature), save :: ref_temp1
+!ref_temp1%t_rj
 !
       end module m_sph_spectr_data
