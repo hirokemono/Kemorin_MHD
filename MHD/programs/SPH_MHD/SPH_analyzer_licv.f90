@@ -117,7 +117,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'first licv_exp'
       call licv_exp(reftemp_rj, sph1%sph_rlm, sph1%sph_rj,              &
      &    comms_sph1%comm_rlm, comms_sph1%comm_rj, trans_p1%leg,        &
-     &    trns_WK1%trns_MHD, rj_fld1)
+     &    trns_WK1%trns_MHD, ipol, itor, rj_fld1)
 !
 !* -----  Open Volume integration data files -----------------
 !*
@@ -135,6 +135,7 @@
       use m_work_time
       use m_t_step_parameter
       use m_spheric_parameter
+      use m_sph_phys_address
       use m_sph_spectr_data
       use m_fdm_coefs
       use m_sph_trans_arrays_MHD
@@ -183,7 +184,7 @@
 !*
         call licv_exp(reftemp_rj, sph1%sph_rlm, sph1%sph_rj,            &
      &      comms_sph1%comm_rlm, comms_sph1%comm_rj, trans_p1%leg,      &
-     &      trns_WK1%trns_MHD, rj_fld1)
+     &      trns_WK1%trns_MHD, ipol, itor, rj_fld1)
 !
 !*  -----------  output restart data --------------
 !*
