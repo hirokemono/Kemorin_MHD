@@ -9,24 +9,27 @@
 !!
 !!@verbatim
 !!      subroutine copy_mhd_spectr_to_send                              &
-!!     &         (ncomp_send, b_trns, comm_rj, rj_fld, n_WS, WS)
+!!     &         (ncomp_send, b_trns, comm_rj, ipol, rj_fld, n_WS, WS)
 !!        type(phys_address), intent(in) :: b_trns
 !!      subroutine copy_mhd_spectr_from_recv                            &
-!!     &         (ncomp_recv, f_trns, comm_rj, n_WR, WR, rj_fld)
+!!     &         (ncomp_recv, f_trns, comm_rj, ipol, n_WR, WR, rj_fld)
 !!        type(phys_address), intent(in) :: f_trns
 !!
 !!      subroutine copy_snap_spectr_to_send(nnod_pole, ncomp_send,      &
-!!     &          bs_trns, sph_rj, comm_rj, rj_fld,                     &
+!!     &          bs_trns, sph_rj, comm_rj, ipol, rj_fld,               &
 !!     &          n_WS, WS, v_pl_local)
 !!      subroutine copy_snap_vec_spec_from_trans                        &
-!!     &         (ncomp_recv, fs_trns, comm_rj, n_WR, WR, rj_fld)
+!!     &         (ncomp_recv, fs_trns, comm_rj, ipol, n_WR, WR, rj_fld)
 !!        type(phys_address), intent(in) :: bs_trns
 !!        type(sph_comm_tbl), intent(in) :: comm_rj
+!!        type(phys_address), intent(in) :: ipol
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_data), intent(inout) :: rj_fld
 !!
 !!      subroutine copy_tmp_scl_spec_from_trans                         &
-!!     &         (ncomp_recv, ft_trns, comm_rj, n_WR, WR, rj_fld)
+!!     &         (ncomp_recv, ft_trns, comm_rj, ipol, n_WR, WR, rj_fld)
+!!        type(sph_comm_tbl), intent(in) :: comm_rj
+!!        type(phys_address), intent(in) :: ipol
 !!        type(phys_address), intent(in) :: ft_trns
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
@@ -35,7 +38,6 @@
 !
       use m_precision
       use m_machine_parameter
-      use m_sph_phys_address
       use copy_spectr_4_sph_trans
 !
       use t_sph_trans_comm_tbl
@@ -52,9 +54,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine copy_mhd_spectr_to_send                                &
-     &         (ncomp_send, b_trns, comm_rj, rj_fld, n_WS, WS)
+     &         (ncomp_send, b_trns, comm_rj, ipol, rj_fld, n_WS, WS)
 !
       type(sph_comm_tbl), intent(in) :: comm_rj
+      type(phys_address), intent(in) :: ipol
       type(phys_address), intent(in) :: b_trns
       type(phys_data), intent(in) :: rj_fld
       integer(kind = kint), intent(in) :: ncomp_send, n_WS
@@ -86,9 +89,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine copy_mhd_spectr_from_recv                              &
-     &         (ncomp_recv, f_trns, comm_rj, n_WR, WR, rj_fld)
+     &         (ncomp_recv, f_trns, comm_rj, ipol, n_WR, WR, rj_fld)
 !
       type(sph_comm_tbl), intent(in) :: comm_rj
+      type(phys_address), intent(in) :: ipol
       type(phys_address), intent(in) :: f_trns
       integer(kind = kint), intent(in) :: ncomp_recv, n_WR
       real(kind = kreal), intent(inout) :: WR(n_WR)
@@ -132,11 +136,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine copy_snap_spectr_to_send(nnod_pole, ncomp_send,        &
-     &          bs_trns, sph_rj, comm_rj, rj_fld,                       &
+     &          bs_trns, sph_rj, comm_rj, ipol, rj_fld,                 &
      &          n_WS, WS, v_pl_local)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(sph_comm_tbl), intent(in) :: comm_rj
+      type(phys_address), intent(in) :: ipol
       type(phys_address), intent(in) :: bs_trns
       type(phys_data), intent(in) :: rj_fld
       integer(kind = kint), intent(in) :: nnod_pole
@@ -241,9 +246,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine copy_snap_vec_spec_from_trans                          &
-     &         (ncomp_recv, fs_trns, comm_rj, n_WR, WR, rj_fld)
+     &         (ncomp_recv, fs_trns, comm_rj, ipol, n_WR, WR, rj_fld)
 !
       type(sph_comm_tbl), intent(in) :: comm_rj
+      type(phys_address), intent(in) :: ipol
       type(phys_address), intent(in) :: fs_trns
       integer(kind = kint), intent(in) :: ncomp_recv, n_WR
       real(kind = kreal), intent(inout) :: WR(n_WR)
@@ -303,9 +309,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine copy_tmp_scl_spec_from_trans                           &
-     &         (ncomp_recv, ft_trns, comm_rj, n_WR, WR, rj_fld)
+     &         (ncomp_recv, ft_trns, comm_rj, ipol, n_WR, WR, rj_fld)
 !
       type(sph_comm_tbl), intent(in) :: comm_rj
+      type(phys_address), intent(in) :: ipol
       type(phys_address), intent(in) :: ft_trns
       integer(kind = kint), intent(in) :: ncomp_recv, n_WR
       real(kind = kreal), intent(inout) :: WR(n_WR)
