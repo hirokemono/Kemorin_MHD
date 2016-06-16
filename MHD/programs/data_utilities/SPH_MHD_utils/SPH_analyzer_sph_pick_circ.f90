@@ -110,8 +110,8 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
-      call init_sph_transform_MHD                                       &
-     &   (sph1, comms_sph1, trans_p1, trns_WK1, rj_fld1)
+      call init_sph_transform_MHD(ipol, idpdr, itor,                    &
+     &    sph1, comms_sph1, trans_p1, trns_WK1, rj_fld1)
 !
 ! ---------------------------------
 !

@@ -174,8 +174,8 @@
       call s_cal_energy_flux_rj(sph%sph_rj, r_2nd, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_snapshot_MHD'
-      call sph_back_trans_snapshot_MHD                                  &
-     &   (sph, comms_sph, trans_p, rj_fld, trns_snap, flc_pl, fls_pl)
+      call sph_back_trans_snapshot_MHD(sph, comms_sph, trans_p,         &
+     &    ipol, rj_fld, trns_snap, flc_pl, fls_pl)
 !
 !      Evaluate fields for output in grid space
       if (iflag_debug.eq.1) write(*,*) 's_cal_energy_flux_rtp'
@@ -187,7 +187,7 @@
       if (iflag_debug.eq.1) write(*,*)                                  &
      &                          'sph_forward_trans_snapshot_MHD'
       call sph_forward_trans_snapshot_MHD                               &
-     &   (sph, comms_sph, trans_p, trns_snap, rj_fld)
+     &   (sph, comms_sph, trans_p, trns_snap, ipol, rj_fld)
 !
       end subroutine enegy_fluxes_4_sph_mhd
 !
@@ -218,7 +218,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_tmp_snap_MHD'
       call sph_forward_trans_tmp_snap_MHD                               &
-     &   (sph, comms_sph, trans_p, trns_tmp, rj_fld)
+     &   (sph, comms_sph, trans_p, trns_tmp, ipol, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_grad_of_velocities_sph'
       call cal_grad_of_velocities_sph                                   &

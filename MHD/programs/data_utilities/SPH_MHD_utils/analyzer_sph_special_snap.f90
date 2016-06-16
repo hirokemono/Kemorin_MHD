@@ -176,7 +176,7 @@
 !*
       if(iflag_debug.gt.0) write(*,*) 'lead_special_fields_4_sph_mhd'
       call lead_special_fields_4_sph_mhd                                &
-     &   (sph1, comms_sph1, r_2nd, trns_WK1, rj_fld1)
+     &   (sph1, comms_sph1, r_2nd, ipol, trns_WK1, rj_fld1)
       call end_eleps_time(9)
 !
 !*  -----------  lead energy data --------------
@@ -296,7 +296,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine lead_special_fields_4_sph_mhd                          &
-     &         (sph, comms_sph, r_2nd, trns_WK, rj_fld)
+     &         (sph, comms_sph, r_2nd, ipol, trns_WK, rj_fld)
 !
       use t_spheric_parameter
       use t_phys_address
@@ -313,6 +313,7 @@
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(fdm_matrices), intent(in) :: r_2nd
+      type(phys_address), intent(in) :: ipol
       type(works_4_sph_trans_MHD), intent(inout) :: trns_WK
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -321,10 +322,10 @@
      &   (sph, comms_sph, r_2nd, trans_p1, rj_fld, trns_WK)
 !
       call sph_back_trans_4_MHD                                         &
-     &   (sph, comms_sph, trans_p1, rj_fld, trns_WK%trns_MHD)
+     &   (sph, comms_sph, trans_p1, ipol, rj_fld, trns_WK%trns_MHD)
 !
       call sph_forward_trans_snapshot_MHD                               &
-     &   (sph, comms_sph, trans_p1, trns_WK%trns_snap, rj_fld)
+     &   (sph, comms_sph, trans_p1, trns_WK%trns_snap, ipol, rj_fld)
 !
 ! ----  Take zonal mean
 !

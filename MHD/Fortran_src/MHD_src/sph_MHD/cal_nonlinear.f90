@@ -187,7 +187,7 @@
       call start_eleps_time(14)
       if (iflag_debug.ge.1) write(*,*) 'sph_back_trans_4_MHD'
       call sph_back_trans_4_MHD                                         &
-     &   (sph, comms_sph, trans_p, rj_fld, trns_MHD)
+     &   (sph, comms_sph, trans_p, ipol, rj_fld, trns_MHD)
       call end_eleps_time(14)
 !
       call start_eleps_time(15)
@@ -201,7 +201,7 @@
       call start_eleps_time(16)
       if (iflag_debug.ge.1) write(*,*) 'sph_forward_trans_4_MHD'
       call sph_forward_trans_4_MHD                                      &
-     &   (sph, comms_sph, trans_p, trns_MHD, rj_fld)
+     &   (sph, comms_sph, trans_p, ipol, trns_MHD, rj_fld)
       call end_eleps_time(16)
 !
       call start_eleps_time(17)
@@ -240,7 +240,7 @@
       if (iflag_debug.eq.1) write(*,*) 'sph_transform_4_licv'
       if(iflag_4_coriolis .ne. id_turn_OFF) then
         call sph_transform_4_licv                                       &
-     &     (sph_rlm, comm_rlm, comm_rj, leg, trns_MHD, rj_fld)
+     &     (sph_rlm, comm_rlm, comm_rj, leg, trns_MHD, ipol, rj_fld)
       end if
 !
 !   ----  lead nonlinear terms by phesdo spectrum
