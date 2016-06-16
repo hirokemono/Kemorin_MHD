@@ -93,8 +93,8 @@
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call copy_icore_rot_to_tor_coriolis                             &
      &     (sph_bc_U%kr_in, sph%sph_rj%idx_rj_degree_one,               &
-     &      sph%sph_rj%nnod_rj, sph%sph_rj%nidx_rj(2),                  &
-     &      rj_fld%ntot_phys, rj_fld%d_fld)
+     &      sph%sph_rj%nidx_rj(2), ipol, itor,                          &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
       call end_eleps_time(13)
 !

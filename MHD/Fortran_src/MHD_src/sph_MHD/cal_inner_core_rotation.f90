@@ -7,7 +7,10 @@
 !> @brief Evaluate torques for inner core rotation
 !!
 !!@verbatim
-!!      subroutine set_inner_core_rotation(kr_in, sph_rj, rj_fld)
+!!      subroutine set_inner_core_rotation                              &
+!!     &         (kr_in, sph_rj, ipol, itor, rj_fld)
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(phys_address), intent(in) :: ipol, itor
 !!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine set_icore_viscous_matrix                             &
 !!     &         (kr_in, fdm1_fix_fld_ICB, sph_rj, band_vt_evo)
@@ -15,12 +18,15 @@
 !!     &         (kr_in, fdm1_fix_fld_ICB, sph_rj, coef_d,              &
 !!     &          it_velo, it_viscous, rj_fld)
 !!      subroutine copy_icore_rot_to_tor_coriolis                       &
-!!     &         (kr_in, ntot_phys_rj, d_rj)
+!!     &         (kr_in, idx_rj_degree_one, jmax, ipol, itor,           &
+!!     &          n_point, ntot_phys_rj, d_rj)
 !!      subroutine inner_core_coriolis_rj                               &
-!!     &         (kr_in, idx_rj_degree_one, nnod_rj, nri, jmax,         &
-!!     &          radius_1d_rj_r, ntot_phys_rj, d_rj)
-!!      subroutine int_icore_toroidal_lorentz(kr_in, sph_rj, rj_fld)
+!!     &         (kr_in, idx_rj_degree_one,  nri, jmax,                 &
+!!     &          radius_1d_rj_r, ipol, n_point, ntot_phys_rj, d_rj)
+!!      subroutine int_icore_toroidal_lorentz                           &
+!!     &         (kr_in, sph_rj, ipol, itor, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(phys_address), intent(in) :: ipol, itor
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(band_matrices_type), intent(inout) :: band_vt_evo
 !!@endverbatim
@@ -32,11 +38,10 @@
       module cal_inner_core_rotation
 !
       use m_precision
-!
       use m_constants
-      use m_sph_phys_address
 !
       use t_spheric_rj_data
+      use t_phys_address
       use t_phys_data
 !
       implicit  none
@@ -50,22 +55,27 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_inner_core_rotation(kr_in, sph_rj, rj_fld)
+      subroutine set_inner_core_rotation                                &
+     &         (kr_in, sph_rj, ipol, itor, rj_fld)
 !
       integer(kind = kint), intent(in) :: kr_in
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(phys_address), intent(in) :: ipol, itor
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call set_inner_core_rot_l1(sph_rj%idx_rj_degree_one(-1),          &
+      call set_inner_core_rot_l1                                        &
+     &   (ipol, itor, sph_rj%idx_rj_degree_one(-1),                     &
      &    kr_in, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                  &
      &    sph_rj%radius_1d_rj_r, sph_rj%ar_1d_rj,                       &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      call set_inner_core_rot_l1(sph_rj%idx_rj_degree_one( 0),          &
+      call set_inner_core_rot_l1                                        &
+     &   (ipol, itor, sph_rj%idx_rj_degree_one( 0),                     &
      &    kr_in, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                  &
      &    sph_rj%radius_1d_rj_r, sph_rj%ar_1d_rj,                       &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      call set_inner_core_rot_l1(sph_rj%idx_rj_degree_one( 1),          &
+      call set_inner_core_rot_l1                                        &
+     &   (ipol, itor, sph_rj%idx_rj_degree_one( 1),                     &
      &    kr_in, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                  &
      &    sph_rj%radius_1d_rj_r, sph_rj%ar_1d_rj,                       &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
@@ -134,15 +144,16 @@
 ! ----------------------------------------------------------------------
 !
       subroutine copy_icore_rot_to_tor_coriolis                         &
-     &         (kr_in, idx_rj_degree_one, nnod_rj, jmax,                &
-     &          ntot_phys_rj, d_rj)
+     &         (kr_in, idx_rj_degree_one, jmax, ipol, itor,             &
+     &          n_point, ntot_phys_rj, d_rj)
 !
+      type(phys_address), intent(in) :: ipol, itor
       integer(kind = kint), intent(in) :: idx_rj_degree_one(-1:1)
-      integer(kind = kint), intent(in) :: nnod_rj, jmax
+      integer(kind = kint), intent(in) :: n_point, jmax
       integer(kind = kint), intent(in) :: kr_in
       integer(kind = kint), intent(in) :: ntot_phys_rj
 !
-      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      real(kind = kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       integer(kind = kint) :: m, i1
 !
@@ -159,19 +170,20 @@
 ! ----------------------------------------------------------------------
 !
       subroutine inner_core_coriolis_rj                                 &
-     &         (kr_in, idx_rj_degree_one, nnod_rj, nri, jmax,           &
-     &          radius_1d_rj_r, ntot_phys_rj, d_rj)
+     &         (kr_in, idx_rj_degree_one,  nri, jmax,                   &
+     &          radius_1d_rj_r, ipol, n_point, ntot_phys_rj, d_rj)
 !
       use m_physical_property
       use m_poloidal_rotation
 !
+      type(phys_address), intent(in) :: ipol
       integer(kind = kint), intent(in) :: idx_rj_degree_one(-1:1)
-      integer(kind = kint), intent(in) :: nnod_rj, nri, jmax
+      integer(kind = kint), intent(in) :: n_point, nri, jmax
       integer(kind = kint), intent(in) :: kr_in
       integer(kind = kint), intent(in) :: ntot_phys_rj
       real(kind= kreal), intent(in) :: radius_1d_rj_r(nri)
 !
-      real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+      real(kind = kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       integer(kind = kint) :: i11s, i10c, i11c
 !
@@ -207,22 +219,27 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_icore_toroidal_lorentz(kr_in, sph_rj, rj_fld)
+      subroutine int_icore_toroidal_lorentz                             &
+     &         (kr_in, sph_rj, ipol, itor, rj_fld)
 !
       integer(kind = kint), intent(in) :: kr_in
+      type(phys_address), intent(in) :: ipol, itor
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call int_icore_tor_lorentz_l1(sph_rj%idx_rj_degree_one(-1),       &
+      call int_icore_tor_lorentz_l1                                     &
+     &   (ipol, itor, sph_rj%idx_rj_degree_one(-1),                     &
      &    kr_in, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                  &
      &    sph_rj%radius_1d_rj_r, sph_rj%ar_1d_rj,                       &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      call int_icore_tor_lorentz_l1(sph_rj%idx_rj_degree_one( 0),       &
+      call int_icore_tor_lorentz_l1                                     &
+     &   (ipol, itor, sph_rj%idx_rj_degree_one( 0),                     &
      &    kr_in, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                  &
      &    sph_rj%radius_1d_rj_r, sph_rj%ar_1d_rj,                       &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      call int_icore_tor_lorentz_l1(sph_rj%idx_rj_degree_one( 1),       &
+      call int_icore_tor_lorentz_l1                                     &
+     &   (ipol, itor, sph_rj%idx_rj_degree_one( 1),                     &
      &    kr_in, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                  &
      &    sph_rj%radius_1d_rj_r, sph_rj%ar_1d_rj,                       &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
@@ -262,10 +279,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_inner_core_rot_l1(idx_rj_l0, kr_in,                &
+      subroutine set_inner_core_rot_l1(ipol, itor, idx_rj_l0, kr_in,    &
      &          nri, jmax, radius_1d_rj_r, ar_1d_rj,                    &
      &          nnod_rj, ntot_phys_rj, d_rj)
 !
+      type(phys_address), intent(in) :: ipol, itor
       integer(kind = kint), intent(in) :: nri, jmax
       integer(kind = kint), intent(in) :: kr_in, idx_rj_l0
       integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
@@ -338,10 +356,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_icore_tor_lorentz_l1(idx_rj_l0, kr_in,             &
+      subroutine int_icore_tor_lorentz_l1(ipol, itor, idx_rj_l0, kr_in, &
      &          nri, jmax, radius_1d_rj_r, ar_1d_rj,                    &
      &          nnod_rj, ntot_phys_rj, d_rj)
 !
+      type(phys_address), intent(in) :: ipol, itor
       integer(kind = kint), intent(in) :: nri, jmax
       integer(kind = kint), intent(in) :: kr_in, idx_rj_l0
       integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
