@@ -7,10 +7,11 @@
 !>@brief Evaluate nonlinear terms by pseudo spectram scheme
 !!
 !!@verbatim
-!!      subroutine nonlinear(sph, comms_sph, r_2nd, trans_p,            &
+!!      subroutine nonlinear(sph, comms_sph, omega_sph, r_2nd, trans_p, &
 !!     &          reftemp_rj, ipol, itor, trns_MHD, rj_fld)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
+!!        type(sph_rotation), intent(in) :: omega_sph
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(phys_address), intent(in) :: ipol, itor
 !!        type(phys_data), intent(inout) :: rj_fld
@@ -20,6 +21,7 @@
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(sph_comm_tbl), intent(in) :: comm_rlm
 !!        type(sph_comm_tbl), intent(in) :: comm_rj
+!!        type(sph_rotation), intent(in) :: omega_sph
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(phys_address), intent(in) :: ipol, itor
@@ -38,6 +40,7 @@
 !
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
+      use t_poloidal_rotation
       use t_phys_address
       use t_phys_data
       use t_fdm_coefs
@@ -55,7 +58,7 @@
 !*
 !*   ------------------------------------------------------------------
 !*
-      subroutine nonlinear(sph, comms_sph, r_2nd, trans_p,              &
+      subroutine nonlinear(sph, comms_sph, omega_sph, r_2nd, trans_p,   &
      &          reftemp_rj, ipol, itor, trns_MHD, rj_fld)
 !
       use m_boundary_params_sph_MHD
@@ -67,6 +70,7 @@
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
+      type(sph_rotation), intent(in) :: omega_sph
       type(fdm_matrices), intent(in) :: r_2nd
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(phys_address), intent(in) :: ipol, itor
@@ -81,8 +85,8 @@
 !   ----  lead nonlinear terms by phesdo spectrum
 !
       if (iflag_debug.eq.1) write(*,*) 'nonlinear_by_pseudo_sph'
-      call nonlinear_by_pseudo_sph                                      &
-     &   (sph, comms_sph, r_2nd, trans_p, trns_MHD, ipol, itor, rj_fld)
+      call nonlinear_by_pseudo_sph(sph, comms_sph, omega_sph, r_2nd,    &
+     &    trans_p, trns_MHD, ipol, itor, rj_fld)
 !
       if (iflag_4_ref_temp .eq. id_sphere_ref_temp) then
         call add_reftemp_advect_sph_MHD                                 &
@@ -169,8 +173,8 @@
 !
 !*   ------------------------------------------------------------------
 !
-      subroutine nonlinear_by_pseudo_sph(sph, comms_sph, r_2nd,         &
-     &          trans_p, trns_MHD, ipol, itor, rj_fld)
+      subroutine nonlinear_by_pseudo_sph(sph, comms_sph, omega_sph,     &
+     &          r_2nd, trans_p, trns_MHD, ipol, itor, rj_fld)
 !
       use sph_transforms_4_MHD
       use cal_nonlinear_sph_MHD
@@ -181,6 +185,7 @@
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(fdm_matrices), intent(in) :: r_2nd
+      type(sph_rotation), intent(in) :: omega_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(phys_address), intent(in) :: ipol, itor
 !
@@ -192,7 +197,7 @@
       call start_eleps_time(14)
       if (iflag_debug.ge.1) write(*,*) 'sph_back_trans_4_MHD'
       call sph_back_trans_4_MHD                                         &
-     &   (sph, comms_sph, trans_p, ipol, rj_fld, trns_MHD)
+     &   (sph, comms_sph, omega_sph, trans_p, ipol, rj_fld, trns_MHD)
       call end_eleps_time(14)
 !
       call start_eleps_time(15)
@@ -221,7 +226,8 @@
 !*   ------------------------------------------------------------------
 !*
       subroutine licv_exp(reftemp_rj, sph_rlm, sph_rj,                  &
-     &          comm_rlm, comm_rj, leg, trns_MHD, ipol, itor, rj_fld)
+     &          comm_rlm, comm_rj, omega_sph, leg, trns_MHD,            &
+     &          ipol, itor, rj_fld)
 !
       use m_boundary_params_sph_MHD
       use sph_transforms_4_MHD
@@ -232,6 +238,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(sph_comm_tbl), intent(in) :: comm_rlm
       type(sph_comm_tbl), intent(in) :: comm_rj
+      type(sph_rotation), intent(in) :: omega_sph
       type(address_4_sph_trans), intent(in) :: trns_MHD
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_address), intent(in) :: ipol, itor
@@ -245,7 +252,8 @@
       if (iflag_debug.eq.1) write(*,*) 'sph_transform_4_licv'
       if(iflag_4_coriolis .ne. id_turn_OFF) then
         call sph_transform_4_licv                                       &
-     &     (sph_rlm, comm_rlm, comm_rj, leg, trns_MHD, ipol, rj_fld)
+     &     (sph_rlm, comm_rlm, comm_rj, omega_sph, leg,                 &
+     &      trns_MHD, ipol, rj_fld)
       end if
 !
 !   ----  lead nonlinear terms by phesdo spectrum

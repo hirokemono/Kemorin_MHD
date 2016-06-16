@@ -9,15 +9,16 @@
 !!        by finite difference method
 !!
 !!@verbatim
-!!      subroutine init_r_infos_sph_mhd_evo                             &
-!!     &         (sph_grps1, ipol, sph1, r_2nd, rj_fld1, sph_bc_T)
+!!      subroutine init_r_infos_sph_mhd_evo(sph_grps, ipol,             &
+!!     &          sph, omega_sph, r_2nd, rj_fld, sph_bc_T)
 !!      subroutine init_r_infos_sph_mhd                                 &
-!!     &         (sph_grps1, ipol, sph1, rj_fld1, sph_bc_T)
-!!        type(sph_group_data), intent(in) :: sph_grps1
+!!     &         (sph_grps, ipol, sph, rj_fld, sph_bc_T)
+!!        type(sph_group_data), intent(in) :: sph_grps
 !!        type(phys_address), intent(in) :: ipol
-!!        type(sph_grids), intent(inout) :: sph1
+!!        type(sph_grids), intent(inout) :: sph
+!!        type(sph_rotation), intent(inout) :: omega_sph
 !!        type(fdm_matrices), intent(inout) :: r_2nd
-!!        type(phys_data), intent(inout) :: rj_fld1
+!!        type(phys_data), intent(inout) :: rj_fld
 !!        type(sph_boundary_type), intent(inout) :: sph_bc_T
 !!@endverbatim
 !!
@@ -38,6 +39,7 @@
       use t_spheric_parameter
       use t_spheric_mesh
       use t_group_data
+      use t_poloidal_rotation
       use t_phys_address
       use t_phys_data
       use t_fdm_coefs
@@ -53,26 +55,27 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine init_r_infos_sph_mhd_evo                               &
-     &         (sph_grps1, ipol, sph1, r_2nd, rj_fld1, sph_bc_T)
+      subroutine init_r_infos_sph_mhd_evo(sph_grps, ipol,               &
+     &          sph, omega_sph, r_2nd, rj_fld, sph_bc_T)
 !
       use const_fdm_coefs
       use material_property
 !
-      type(sph_group_data), intent(in) :: sph_grps1
+      type(sph_group_data), intent(in) :: sph_grps
       type(phys_address), intent(in) :: ipol
 !
-      type(sph_grids), intent(inout) :: sph1
+      type(sph_grids), intent(inout) :: sph
+      type(sph_rotation), intent(inout) :: omega_sph
       type(fdm_matrices), intent(inout) :: r_2nd
-      type(phys_data), intent(inout) :: rj_fld1
+      type(phys_data), intent(inout) :: rj_fld
       type(sph_boundary_type), intent(inout) :: sph_bc_T
 !
 !
       call init_r_infos_sph_mhd                                         &
-     &  (sph_grps1, ipol, sph1, rj_fld1, sph_bc_T)
+     &  (sph_grps, ipol, sph, omega_sph, rj_fld, sph_bc_T)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_2nd_fdm_matrices'
-      call const_2nd_fdm_matrices(sph1%sph_params, sph1%sph_rj, r_2nd)
+      call const_2nd_fdm_matrices(sph%sph_params, sph%sph_rj, r_2nd)
 !
       if(iflag_debug.gt.0) write(*,*)' set_material_property'
       call set_material_property
@@ -82,38 +85,39 @@
 !  -------------------------------------------------------------------
 !
       subroutine init_r_infos_sph_mhd                                   &
-     &         (sph_grps1, ipol, sph1, rj_fld1, sph_bc_T)
+     &         (sph_grps, ipol, sph, omega_sph, rj_fld, sph_bc_T)
 !
       use m_physical_property
-      use m_poloidal_rotation
 !
       use set_bc_sph_mhd
 !
-      type(sph_group_data), intent(in) :: sph_grps1
+      type(sph_group_data), intent(in) :: sph_grps
       type(phys_address), intent(in) :: ipol
 !
-      type(sph_grids), intent(inout) :: sph1
-      type(phys_data), intent(inout) :: rj_fld1
+      type(sph_grids), intent(inout) :: sph
+      type(sph_rotation), intent(inout) :: omega_sph
+      type(phys_data), intent(inout) :: rj_fld
       type(sph_boundary_type), intent(inout) :: sph_bc_T
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'set_radius_rot_reft_dat_4_sph'
       call set_radius_rot_reft_dat_4_sph(depth_high_t, depth_low_t,     &
-     &    high_temp, low_temp, sph1%sph_rj, sph_grps1%radial_rj_grp,    &
-     &    ipol, sph1%sph_params, rj_fld1)
+     &    high_temp, low_temp, sph%sph_rj, sph_grps%radial_rj_grp,      &
+     &    ipol, sph%sph_params, rj_fld)
 !
 !*  ----------  rotation of earth  ---------------
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &                write(*,*) 'set_rot_earth_4_sph'
-      call set_rot_earth_4_sph(sph1%sph_rlm, sph1%sph_rj, angular)
+      call set_rot_earth_4_sph(sph%sph_rlm, sph%sph_rj, angular,        &
+     &    omega_sph)
 !
 !*  ---------- boudary conditions  ---------------
       if(iflag_debug.gt.0) write(*,*) 's_set_bc_sph_mhd'
       call s_set_bc_sph_mhd                                             &
-     &   (sph1%sph_params, sph1%sph_rj, sph_grps1%radial_rj_grp,        &
+     &   (sph%sph_params, sph%sph_rj, sph_grps%radial_rj_grp,           &
      &    CTR_nod_grp_name, CTR_sf_grp_name)
       call init_reference_fields                                        &
-     &   (sph1%sph_params, sph1%sph_rj, sph_bc_T)
+     &   (sph%sph_params, sph%sph_rj, sph_bc_T)
 !
       end subroutine init_r_infos_sph_mhd
 !

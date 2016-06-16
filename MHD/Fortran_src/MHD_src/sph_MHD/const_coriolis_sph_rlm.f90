@@ -10,12 +10,13 @@
 !!@verbatim
 !!      subroutine init_sum_coriolis_rlm(l_truncation, sph_rlm, leg)
 !!      subroutine sum_coriolis_rlm(ncomp_trans, sph_rlm, comm_rlm,     &
-!!     &         trns_MHD, leg, n_WR, WR)
+!!     &          omega_sph, trns_MHD, leg, n_WR, WR)
 !!      subroutine copy_coriolis_terms_rlm                              &
 !!     &         (ncomp_trans, sph_rlm, comm_rlm, trns_MHD, n_WS, WS)
 !!        type(sph_rlm_grid), intent(in)  :: sph_rlm
-!!        type(address_4_sph_trans), intent(in) :: trns_MHD
 !!        type(sph_comm_tbl), intent(inout) :: comm_rlm
+!!        type(sph_rotation), intent(in) :: omega_sph
+!!        type(address_4_sph_trans), intent(in) :: trns_MHD
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!@endverbatim
 !
@@ -30,6 +31,7 @@
 !
       use t_spheric_rlm_data
       use t_sph_trans_comm_tbl
+      use t_poloidal_rotation
       use t_addresses_sph_transform
       use t_schmidt_poly_on_rtm
 !
@@ -87,7 +89,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sum_coriolis_rlm(ncomp_trans, sph_rlm, comm_rlm,       &
-     &         trns_MHD, leg, n_WR, WR)
+     &          omega_sph, trns_MHD, leg, n_WR, WR)
 !
       use t_boundary_params_sph_MHD
       use m_boundary_params_sph_MHD
@@ -96,7 +98,8 @@
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rlm
-      type(address_4_sph_trans), intent(in) :: trns_MHD
+      type(sph_rotation), intent(in) :: omega_sph
+      type(address_4_sph_trans), intent(in) :: trns_MHD 
       type(legendre_4_sph_trans), intent(in) :: leg
 !
       integer(kind = kint), intent(in) :: ncomp_trans, n_WR
@@ -107,29 +110,30 @@
 !
       call sum_rot_coriolis_rlm_10(trns_MHD%b_trns,                     &
      &    sph_rlm%nnod_rlm, sph_rlm%nidx_rlm, sph_rlm%a_r_1d_rlm_r,     &
-     &    leg%g_sph_rlm, ncomp_trans, n_WR, comm_rlm%irev_sr, WR)
+     &    leg%g_sph_rlm, omega_sph%ws_rlm, ncomp_trans,                 &
+     &    n_WR, comm_rlm%irev_sr, WR)
 !
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call inner_core_rot_z_coriolis_rlm                              &
      &     (trns_MHD%b_trns, sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,        &
-     &      sph_rlm%radius_1d_rlm_r, ncomp_trans, n_WR,                 &
-     &      comm_rlm%irev_sr, WR)
+     &      sph_rlm%radius_1d_rlm_r, omega_sph%ws_rlm, ncomp_trans,     &
+     &      n_WR, comm_rlm%irev_sr, WR)
       end if
 !
 !      call sum_div_coriolis_rlm_10                                     &
 !     &   (trns_MHD%b_trns, sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,         &
 !     &    sph_rlm%idx_gl_1d_rlm_j, sph_rlm%a_r_1d_rlm_r,               &
-!     &    ncomp_trans, n_WR, comm_rlm%irev_sr, WR)
+!     &    omega_sph%ws_rlm, ncomp_trans, n_WR, comm_rlm%irev_sr, WR)
 !      call sum_r_coriolis_bc_rlm_10                                    &
 !     &   (trns_MHD%b_trns, sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,         &
 !     &    sph_rlm%idx_gl_1d_rlm_j, sph_rlm%a_r_1d_rlm_r,               &
-!     &    ncomp_trans, kr_in_U_rlm, n_WR, comm_rlm%irev_sr, WR,        &
-!     &    d_cor_in_rlm)
+!     &    omega_sph%ws_rlm, ncomp_trans, kr_in_U_rlm, n_WR,            &
+!     &    comm_rlm%irev_sr, WR, d_cor_in_rlm)
 !      call sum_r_coriolis_bc_rlm_10                                    &
 !     &   (trns_MHD%b_trns, sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,         &
 !     &    sph_rlm%idx_gl_1d_rlm_j, sph_rlm%a_r_1d_rlm_r,               &
-!     &    ncomp_trans, kr_out_U_rlm, n_WR, comm_rlm%irev_sr, WR,       &
-!     &    d_cor_out_rlm)
+!     &    omega_sph%ws_rlm, ncomp_trans, kr_out_U_rlm, n_WR,           &
+!     &    comm_rlm%irev_sr, WR, d_cor_out_rlm)
 !
       end subroutine sum_coriolis_rlm
 !

@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine init_sph_transform_MHD(ipol, idpdr, itor,            &
-!!     &          sph, comms_sph, trans_p, trns_WK, rj_fld)
+!!     &          sph, comms_sph, omega_sph, trans_p, trns_WK, rj_fld)
 !!        type(phys_address), intent(in) :: ipol, idpdr, itor
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
@@ -16,9 +16,10 @@
 !!        type(works_4_sph_trans_MHD), intent(inout) :: trns_WK
 !!        type(phys_data), intent(inout) :: rj_fld
 !!
-!!      subroutine sph_back_trans_4_MHD                                 &
-!!     &         (sph, comms_sph, trans_p, ipol, rj_fld, trns_MHD)
+!!      subroutine sph_back_trans_4_MHD(sph, comms_sph, omega_sph,      &
+!!     &          trans_p, ipol, rj_fld, trns_MHD)
 !!        type(sph_grids), intent(inout) :: sph
+!!        type(sph_comm_tables), intent(inout) :: comms_sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(phys_address), intent(in) :: ipol
@@ -28,6 +29,7 @@
 !!     &         (sph, comms_sph, trans_p, ipol, trns_MHD, rj_fld)
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
+!!        type(sph_rotation), intent(in) :: omega_sph
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(phys_address), intent(in) :: ipol
 !!        type(address_4_sph_trans), intent(in) :: trns_MHD
@@ -47,7 +49,7 @@
 !!        type(phys_data), intent(inout) :: rj_fld
 !!
 !!      subroutine sph_transform_4_licv(sph_rlm, comm_rlm, comm_rj,     &
-!!     &          leg, trns_MHD, ipol, rj_fld)
+!!     &          omega_sph, leg, trns_MHD, ipol, rj_fld)
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !!
@@ -65,6 +67,7 @@
       use t_phys_address
       use t_phys_data
       use t_addresses_sph_transform
+      use t_poloidal_rotation
       use t_sph_trans_arrays_MHD
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
@@ -101,7 +104,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine init_sph_transform_MHD(ipol, idpdr, itor,              &
-     &          sph, comms_sph, trans_p, trns_WK, rj_fld)
+     &          sph, comms_sph, omega_sph, trans_p, trns_WK, rj_fld)
 !
       use init_sph_trans
       use init_FFT_4_MHD
@@ -118,6 +121,7 @@
 !
       type(sph_grids), intent(inout) :: sph
       type(sph_comm_tables), intent(inout) :: comms_sph
+      type(sph_rotation), intent(in) :: omega_sph
 !
       type(parameters_4_sph_trans), intent(inout) :: trans_p
       type(works_4_sph_trans_MHD), intent(inout) :: trns_WK
@@ -160,8 +164,8 @@
 !
       if(id_legendre_transfer .eq. iflag_leg_undefined) then
         if (iflag_debug.eq.1) write(*,*) 'select_legendre_transform'
-        call select_legendre_transform                                  &
-     &     (sph, comms_sph, trans_p, ipol, rj_fld, trns_WK%trns_MHD)
+        call select_legendre_transform(sph, comms_sph, omega_sph,       &
+     &      trans_p, ipol, rj_fld, trns_WK%trns_MHD)
       end if
 !
       call sel_init_legendre_trans                                      &
@@ -215,8 +219,8 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine sph_back_trans_4_MHD                                   &
-     &         (sph, comms_sph, trans_p, ipol, rj_fld, trns_MHD)
+      subroutine sph_back_trans_4_MHD(sph, comms_sph, omega_sph,        &
+     &          trans_p, ipol, rj_fld, trns_MHD)
 !
       use m_solver_SR
       use sph_trans_w_coriols
@@ -225,6 +229,7 @@
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
+      type(sph_rotation), intent(in) :: omega_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(phys_address), intent(in) :: ipol
       type(phys_data), intent(in) :: rj_fld
@@ -247,7 +252,8 @@
       if(trns_MHD%ncomp_rj_2_rtp .eq. 0) return
       call sph_b_trans_w_coriolis(trns_MHD%ncomp_rj_2_rtp,              &
      &    trns_MHD%nvector_rj_2_rtp, trns_MHD%nscalar_rj_2_rtp,         &
-     &    sph, comms_sph, trans_p, n_WS, n_WR, WS(1), WR(1), trns_MHD)
+     &    sph, comms_sph, omega_sph, trans_p,                           &
+     &    n_WS, n_WR, WS(1), WR(1), trns_MHD)
 !
       end subroutine sph_back_trans_4_MHD
 !
@@ -414,7 +420,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine sph_transform_4_licv(sph_rlm, comm_rlm, comm_rj,       &
-     &          leg, trns_MHD, ipol, rj_fld)
+     &          omega_sph, leg, trns_MHD, ipol, rj_fld)
 !
       use m_solver_SR
       use sph_trans_w_coriols
@@ -424,6 +430,7 @@
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rlm
       type(sph_comm_tbl), intent(in) :: comm_rj
+      type(sph_rotation), intent(in) :: omega_sph
       type(legendre_4_sph_trans), intent(in) :: leg
       type(address_4_sph_trans), intent(in) :: trns_MHD
       type(phys_address), intent(in) :: ipol
@@ -443,7 +450,8 @@
      &    trns_MHD%b_trns, comm_rj, ipol, rj_fld, n_WS, WS(1))
 !
       call sph_b_trans_licv(trns_MHD%ncomp_rj_2_rtp,                    &
-     &    sph_rlm, comm_rlm, comm_rj, leg, trns_MHD, n_WR, WR(1))
+     &    sph_rlm, comm_rlm, comm_rj, omega_sph,                        &
+     &    leg, trns_MHD, n_WR, WR(1))
       call sph_f_trans_licv(trns_MHD%ncomp_rtp_2_rj,                    &
      &    sph_rlm, comm_rlm, comm_rj, trns_MHD, n_WS, WS(1))
 !
@@ -456,11 +464,12 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine select_legendre_transform                              &
-     &         (sph, comms_sph, trans_p, ipol, rj_fld, trns_MHD)
+      subroutine select_legendre_transform(sph, comms_sph, omega_sph,   &
+     &          trans_p, ipol, rj_fld, trns_MHD)
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
+      type(sph_rotation), intent(in) :: omega_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(phys_address), intent(in) :: ipol
 !
@@ -487,8 +496,8 @@
      &      sph%sph_rtm, sph%sph_rlm, trans_p%leg, trans_p%idx_trns)
 !
         starttime = MPI_WTIME()
-        call sph_back_trans_4_MHD                                       &
-     &     (sph, comms_sph, trans_p, ipol, rj_fld, trns_MHD)
+        call sph_back_trans_4_MHD(sph, comms_sph, omega_sph,            &
+     &      trans_p, ipol, rj_fld, trns_MHD)
         call sph_forward_trans_4_MHD                                    &
      &     (sph, comms_sph, trans_p, ipol, trns_MHD, rj_fld)
         endtime(id_legendre_transfer) = MPI_WTIME() - starttime

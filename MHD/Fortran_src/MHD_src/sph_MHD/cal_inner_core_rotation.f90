@@ -21,8 +21,8 @@
 !!     &         (kr_in, idx_rj_degree_one, jmax, ipol, itor,           &
 !!     &          n_point, ntot_phys_rj, d_rj)
 !!      subroutine inner_core_coriolis_rj                               &
-!!     &         (kr_in, idx_rj_degree_one,  nri, jmax,                 &
-!!     &          radius_1d_rj_r, ipol, n_point, ntot_phys_rj, d_rj)
+!!     &         (kr_in, idx_rj_degree_one,  nri, jmax, radius_1d_rj_r, &
+!!     &          omega_rj, ipol, n_point, ntot_phys_rj, d_rj)
 !!      subroutine int_icore_toroidal_lorentz                           &
 !!     &         (kr_in, sph_rj, ipol, itor, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
@@ -170,18 +170,18 @@
 ! ----------------------------------------------------------------------
 !
       subroutine inner_core_coriolis_rj                                 &
-     &         (kr_in, idx_rj_degree_one,  nri, jmax,                   &
-     &          radius_1d_rj_r, ipol, n_point, ntot_phys_rj, d_rj)
+     &         (kr_in, idx_rj_degree_one,  nri, jmax, radius_1d_rj_r,   &
+     &          omega_rj, ipol, n_point, ntot_phys_rj, d_rj)
 !
       use m_physical_property
-      use m_poloidal_rotation
 !
       type(phys_address), intent(in) :: ipol
       integer(kind = kint), intent(in) :: idx_rj_degree_one(-1:1)
       integer(kind = kint), intent(in) :: n_point, nri, jmax
       integer(kind = kint), intent(in) :: kr_in
       integer(kind = kint), intent(in) :: ntot_phys_rj
-      real(kind= kreal), intent(in) :: radius_1d_rj_r(nri)
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
+      real(kind = kreal), intent(in) :: omega_rj(nri,0:2,3)
 !
       real(kind = kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
