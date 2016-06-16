@@ -7,8 +7,10 @@
 !>@brief Evaluate radial component of forces at boundaries
 !!
 !!@verbatim
-!!      subroutine s_const_radial_forces_on_bc(sph_rj, rj_fld)
+!!      subroutine s_const_radial_forces_on_bc                          &
+!!     &         (sph_rj, g_sph_rj, ipol, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(phys_address), intent(in) :: ipol
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
@@ -20,7 +22,6 @@
       use m_constants
       use m_control_parameter
       use m_spherical_harmonics
-      use m_sph_phys_address
 !
       implicit none
 !
@@ -32,19 +33,21 @@
 !
 !   ------------------------------------------------------------------
 !
-      subroutine s_const_radial_forces_on_bc(sph_rj, g_sph_rj, rj_fld)
+      subroutine s_const_radial_forces_on_bc                            &
+     &         (sph_rj, g_sph_rj, ipol, rj_fld)
 !
-      use m_sph_phys_address
       use m_physical_property
       use m_boundary_params_sph_MHD
 !
       use t_spheric_rj_data
+      use t_phys_address
       use t_phys_data
 !
       use cal_r_buoyancies_on_sph
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
+      type(phys_address), intent(in) :: ipol
 !
       type(phys_data), intent(inout) :: rj_fld
 !

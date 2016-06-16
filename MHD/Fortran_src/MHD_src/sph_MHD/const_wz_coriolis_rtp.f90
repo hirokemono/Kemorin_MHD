@@ -16,7 +16,7 @@
 !!      subroutine cal_wz_div_coriolis_rtp(nnod, nidx_rtp, velo_rtp,    &
 !!     &          div_coriolis_rtp)
 !!      subroutine subtract_sphere_ave_coriolis(sph_rtp, sph_rj,        &
-!!     &          ntot_phys_rj, d_rj, coriolis_rtp)
+!!     &          is_coriolis, ntot_phys_rj, d_rj, coriolis_rtp)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!
@@ -117,7 +117,6 @@
       subroutine cal_wz_coriolis_rtp                                    &
      &         (nnod, nidx_rtp, velo_rtp, coriolis_rtp)
 !
-      use m_sph_phys_address
       use m_physical_property
 !
       integer(kind = kint), intent(in) :: nnod
@@ -196,13 +195,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine subtract_sphere_ave_coriolis(sph_rtp, sph_rj,          &
-     &          ntot_phys_rj, d_rj, coriolis_rtp)
+     &          is_coriolis, ntot_phys_rj, d_rj, coriolis_rtp)
 !
       use calypso_mpi
-      use m_sph_phys_address
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_rj_grid), intent(in) ::  sph_rj
+      integer(kind = kint), intent(in) :: is_coriolis
       integer(kind = kint), intent(in) :: ntot_phys_rj
       real(kind = kreal), intent(inout)                                 &
      &           :: d_rj(sph_rj%nnod_rj,ntot_phys_rj)
@@ -215,13 +214,13 @@
       if(sph_rj%idx_rj_degree_zero .gt. 0) then
         do kr = 1, sph_rj%nidx_rj(1)
           inod = sph_rj%idx_rj_degree_zero + (kr-1)*sph_rj%nidx_rj(2)
-          sphere_ave_coriolis_l(kr) = d_rj(inod,ipol%i_coriolis)
+          sphere_ave_coriolis_l(kr) = d_rj(inod,is_coriolis)
         end do
       else
           sphere_ave_coriolis_l(1:sph_rj%nidx_rj(1)) = zero
       end if
       call clear_rj_degree0_scalar_smp                                  &
-     &   (sph_rj, ipol%i_coriolis, sph_rj%nnod_rj, ntot_phys_rj, d_rj)
+     &   (sph_rj, is_coriolis, sph_rj%nnod_rj, ntot_phys_rj, d_rj)
 !
       call MPI_Allreduce(sphere_ave_coriolis_l, sphere_ave_coriolis_g,  &
      &    sph_rj%nidx_rj(1), CALYPSO_REAL, MPI_SUM,                     &

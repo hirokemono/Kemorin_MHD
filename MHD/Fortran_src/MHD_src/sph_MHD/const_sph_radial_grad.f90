@@ -73,7 +73,6 @@
       use m_precision
 !
       use m_constants
-      use m_sph_phys_address
 !
       use t_spheric_rj_data
       use t_phys_data
