@@ -89,7 +89,8 @@
 !
       if(iflag_debug.gt.0) write(*,*)' sph_initial_data_control'
       call sph_initial_data_control                                     &
-     &   (sph1%sph_params, sph1%sph_rj, reftemp_rj, rj_fld1)
+     &   (sph1%sph_params, sph1%sph_rj, reftemp_rj,                     &
+     &    ipol, idpdr, itor, rj_fld1)
 !
       if(iflag_debug.gt.0) write(*,*)' sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph                                    &
