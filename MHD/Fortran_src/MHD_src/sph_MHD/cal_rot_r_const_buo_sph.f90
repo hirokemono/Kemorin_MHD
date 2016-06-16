@@ -7,8 +7,11 @@
 !>@brief Evaluate rotation of buoyancy under constant radial gravity
 !!
 !!@verbatim
-!!      subroutine cal_rot_radial_const_gravity(sph_rj, sph_bc_U, rj_fld)
+!!      subroutine cal_rot_radial_const_gravity                         &
+!!     &         (sph_rj, ipol, itor, sph_bc_U, rj_fld)
+!
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(phys_address), intent(in) :: ipol, itor
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
@@ -23,7 +26,6 @@
       use m_constants
       use m_control_parameter
       use m_physical_property
-      use m_sph_phys_address
 !
       implicit  none
 !
@@ -36,15 +38,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_rot_radial_const_gravity(sph_rj, sph_bc_U, rj_fld)
+      subroutine cal_rot_radial_const_gravity                           &
+     &         (sph_rj, ipol, itor, sph_bc_U, rj_fld)
 !
       use m_machine_parameter
 !
       use t_spheric_rj_data
+      use t_phys_address
       use t_phys_data
       use t_boundary_params_sph_MHD
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(phys_address), intent(in) :: ipol, itor
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(phys_data), intent(inout) :: rj_fld
 !

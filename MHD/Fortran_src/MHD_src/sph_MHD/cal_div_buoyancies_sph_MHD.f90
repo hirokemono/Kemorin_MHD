@@ -7,8 +7,10 @@
 !>@brief Evaluate divergence of buoyancy for pressure evaluation
 !!
 !!@verbatim
-!!      subroutine sel_div_buoyancies_sph_MHD(sph_rj, sph_bc_U, rj_fld)
+!!      subroutine sel_div_buoyancies_sph_MHD                           &
+!!     &          (sph_rj, ipol, sph_bc_U, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(phys_address), intent(in) :: ipol
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
@@ -19,11 +21,11 @@
       module cal_div_buoyancies_sph_MHD
 !
       use m_precision
-!
+      use m_machine_parameter
       use m_constants
+!
       use m_control_parameter
       use m_physical_property
-      use m_sph_phys_address
 !
       implicit  none
 !
@@ -36,14 +38,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sel_div_buoyancies_sph_MHD(sph_rj, sph_bc_U, rj_fld)
+      subroutine sel_div_buoyancies_sph_MHD                             &
+     &          (sph_rj, ipol, sph_bc_U, rj_fld)
 !
-      use m_machine_parameter
       use t_spheric_rj_data
+      use t_phys_address
       use t_phys_data
       use t_boundary_params_sph_MHD
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(phys_address), intent(in) :: ipol
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(phys_data), intent(inout) :: rj_fld
 !

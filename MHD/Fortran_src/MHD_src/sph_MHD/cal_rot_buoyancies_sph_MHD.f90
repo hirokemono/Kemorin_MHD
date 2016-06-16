@@ -7,12 +7,15 @@
 !>@brief Evaluate rotation of buoyancy
 !!
 !!@verbatim
-!!      subroutine cal_rot_radial_self_gravity(sph_rj, sph_bc_U, rj_fld)
+!!      subroutine cal_rot_radial_self_gravity                          &
+!!     &         (sph_rj, ipol, itor, sph_bc_U, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(phys_address), intent(in) :: ipol, itor
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        type(phys_data), intent(inout) :: rj_fld
-!!      subroutine cal_boussinesq_density_sph(kr_in, kr_out,            &
+!!      subroutine cal_boussinesq_density_sph(ipol, kr_in, kr_out,      &
 !!     &          nidx_rj, nnod_rj, ntot_phys_rj, d_rj)
+!!        type(phys_address), intent(in) :: ipol
 !!@endverbatim
 !!
 !!@param sph_bc_U  Structure for basic velocity
@@ -27,7 +30,6 @@
       use m_constants
       use m_control_parameter
       use m_physical_property
-      use m_sph_phys_address
 !
       implicit  none
 !
@@ -40,15 +42,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_rot_radial_self_gravity(sph_rj, sph_bc_U, rj_fld)
+      subroutine cal_rot_radial_self_gravity                            &
+     &         (sph_rj, ipol, itor, sph_bc_U, rj_fld)
 !
       use m_machine_parameter
 !
       use t_spheric_rj_data
-      use t_boundary_params_sph_MHD
+      use t_phys_address
       use t_phys_data
+      use t_boundary_params_sph_MHD
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(phys_address), intent(in) :: ipol, itor
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -158,9 +163,12 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine cal_boussinesq_density_sph(kr_in, kr_out,              &
+      subroutine cal_boussinesq_density_sph(ipol, kr_in, kr_out,        &
      &          nidx_rj, nnod_rj, ntot_phys_rj, d_rj)
 !
+      use t_phys_address
+!
+      type(phys_address), intent(in) :: ipol
       integer(kind = kint), intent(in) :: kr_in, kr_out
       integer(kind = kint), intent(in) :: nidx_rj(2)
       integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
