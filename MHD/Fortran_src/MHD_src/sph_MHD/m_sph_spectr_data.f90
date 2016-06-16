@@ -47,8 +47,17 @@
 !
       implicit  none
 !
+!
+!>   address for spectr data (poloidal component for vector)
+      type(phys_address), save :: ipol
+!>   address for radial gradient for poloidal component
+      type(phys_address), save :: idpdr
+!>   address for toroidal component
+      type(phys_address), save :: itor
+!
 !>      Structure for field data
       type(phys_data), save :: rj_fld1
+!
 !
 !>      Structure for rotatin vector
       type(sph_rotation), save :: omega_sph1

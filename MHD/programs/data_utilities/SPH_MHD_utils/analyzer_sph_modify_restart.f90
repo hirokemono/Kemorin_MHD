@@ -91,7 +91,6 @@
       use m_t_step_parameter
       use m_node_id_spherical_IO
       use m_spheric_parameter
-      use m_sph_phys_address
       use m_sph_spectr_data
 !
       use m_ctl_data_4_platforms
@@ -134,7 +133,6 @@
 !
       subroutine set_modify_rj_fields
 !
-      use m_sph_phys_address
       use m_spheric_parameter
       use m_sph_spectr_data
 !

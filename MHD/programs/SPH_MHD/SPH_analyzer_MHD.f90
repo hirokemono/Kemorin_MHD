@@ -27,7 +27,6 @@
 !
       use m_spheric_parameter
       use m_sph_spectr_data
-      use m_sph_phys_address
       use m_fdm_coefs
       use m_rms_4_sph_spectr
       use m_sph_trans_arrays_MHD
@@ -112,7 +111,6 @@
 !
       use m_work_time
       use m_spheric_parameter
-      use m_sph_phys_address
       use m_sph_spectr_data
       use m_fdm_coefs
       use m_t_step_parameter

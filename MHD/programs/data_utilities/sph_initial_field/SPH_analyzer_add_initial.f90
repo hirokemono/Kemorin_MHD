@@ -79,7 +79,6 @@
 !
       use m_spheric_parameter
       use m_sph_spectr_data
-      use m_sph_phys_address
       use m_physical_property
       use m_boundary_params_sph_MHD
 !
@@ -115,7 +114,7 @@
      istep_max_dt = i_step_init
 !
      if(iflag_debug.gt.0) write(*,*)' sph_initial_spectrum'
-     call sph_initial_spectrum(rj_fld1)
+     call sph_initial_spectrum(ipol, itor, rj_fld1)
 !
       end subroutine SPH_add_initial_field
 !

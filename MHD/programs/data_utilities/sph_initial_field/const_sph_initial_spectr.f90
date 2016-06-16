@@ -7,7 +7,8 @@
 !> @brief Set initial data for spectrum dynamos
 !!
 !!@verbatim
-!!      subroutine sph_initial_spectrum(rj_fld)
+!!      subroutine sph_initial_spectrum(ipol, itor, rj_fld)
+!!        type(phys_address), intent(in) :: ipol, itor
 !!        type(phys_data), intent(inout) :: rj_fld
 !!
 !!       Sample program to generate initial field
@@ -49,9 +50,9 @@
       module const_sph_initial_spectr
 !
       use m_precision
-!
       use m_constants
-      use m_sph_phys_address
+!
+      use t_phys_address
 !
       implicit none
 !
@@ -70,7 +71,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sph_initial_spectrum(rj_fld)
+      subroutine sph_initial_spectrum(ipol, itor, rj_fld)
 !
       use m_initial_field_control
       use m_t_int_parameter
@@ -80,42 +81,43 @@
       use sph_mhd_rst_IO_control
       use set_sph_restart_IO
 !
+      type(phys_address), intent(in) :: ipol, itor
       type(phys_data), intent(inout) :: rj_fld
 !
 !
 !  Set initial velocity if velocity is exist
       if(ipol%i_velo .gt. izero) then
         call  set_initial_velocity                                      &
-     &     (rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &     (ipol, itor, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
 !  Set initial temperature if temperature is exist
       if(ipol%i_temp .gt. izero) then
         call  set_initial_temperature                                   &
-     &     (rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &     (ipol, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
 !  Set initial composition if composition is exist
       if(ipol%i_light .gt. izero) then
         call set_initial_composition                                    &
-     &     (rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &     (ipol, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
 !  Set initial magnetic field if magnetic field is exist
       if(ipol%i_magne .gt. izero) then
         call set_initial_magne_sph                                      &
-     &     (rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &     (ipol, itor, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
 !  Set heat source if  heat source is exist
       if(ipol%i_heat_source .gt. izero) then
         call set_initial_heat_source_sph                                &
-     &     (rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &     (ipol, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !  Set light element source if light element is exist
       if(ipol%i_light_source .gt. izero) then
         call set_initial_light_source_sph                               &
-     &     (rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &     (ipol, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
 !  Copy initial field to restart IO data
@@ -132,8 +134,10 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_velocity(n_point, ntot_phys_rj, d_rj)
+      subroutine set_initial_velocity                                   &
+     &         (ipol, itor, n_point, ntot_phys_rj, d_rj)
 !
+      type(phys_address), intent(in) :: ipol, itor
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
@@ -178,8 +182,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_temperature(n_point, ntot_phys_rj, d_rj)
+      subroutine set_initial_temperature                                &
+     &         (ipol, n_point, ntot_phys_rj, d_rj)
 !
+      type(phys_address), intent(in) :: ipol
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
@@ -247,8 +253,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_composition(n_point, ntot_phys_rj, d_rj)
+      subroutine set_initial_composition                                &
+     &         (ipol, n_point, ntot_phys_rj, d_rj)
 !
+      type(phys_address), intent(in) :: ipol
       integer(kind = kint), intent(in) ::  n_point, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
@@ -309,8 +317,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_magne_sph(n_point, ntot_phys_rj, d_rj)
+      subroutine set_initial_magne_sph                                  &
+     &         (ipol, itor, n_point, ntot_phys_rj, d_rj)
 !
+      type(phys_address), intent(in) :: ipol, itor
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
@@ -381,8 +391,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_initial_heat_source_sph                            &
-     &         (n_point, ntot_phys_rj, d_rj)
+     &         (ipol, n_point, ntot_phys_rj, d_rj)
 !
+      type(phys_address), intent(in) :: ipol
       integer(kind = kint), intent(in) ::  n_point, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
@@ -422,10 +433,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_initial_light_source_sph                           &
-     &         (n_point, ntot_phys_rj, d_rj)
+     &         (ipol, n_point, ntot_phys_rj, d_rj)
 !
       use calypso_mpi
 !
+      type(phys_address), intent(in) :: ipol
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
@@ -464,8 +476,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine adjust_by_CMB_temp(n_point, ntot_phys_rj, d_rj)
+      subroutine adjust_by_CMB_temp(ipol, n_point, ntot_phys_rj, d_rj)
 !
+      type(phys_address), intent(in) :: ipol
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !

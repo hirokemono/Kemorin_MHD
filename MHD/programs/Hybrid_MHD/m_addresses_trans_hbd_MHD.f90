@@ -154,9 +154,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine check_add_trans_hbd_MHD
+      subroutine check_add_trans_hbd_MHD(ipol, idpdr, itor)
 !
-      use m_sph_phys_address
+      type(phys_address), intent(in) :: ipol, idpdr, itor
 !
 !
       write(*,*) 'ncomp_rj_2_xyz  ', ncomp_rj_2_xyz

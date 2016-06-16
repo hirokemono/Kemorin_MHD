@@ -25,7 +25,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine induction_SPH_initialize                               &
-     &         (comms_sph, sph, trans_p, rj_fld)
+     &         (ipol, idpdr, itor, comms_sph, sph, trans_p, rj_fld)
 !
       use t_work_4_sph_trans
       use m_addresses_trans_hbd_MHD
@@ -33,6 +33,7 @@
       use const_element_comm_tables
       use load_mesh_data
 !
+      type(phys_address), intent(in) :: ipol, idpdr, itor
       type(sph_comm_tables), intent(in) :: comms_sph
       type(sph_grids), intent(inout) :: sph
       type(parameters_4_sph_trans), intent(inout) :: trans_p
@@ -58,7 +59,7 @@
 !
       call set_addresses_trans_hbd_MHD
       call allocate_hbd_trans_rtp(sph%sph_rtp)
-      call check_add_trans_hbd_MHD
+      call check_add_trans_hbd_MHD(ipol, idpdr, itor)
 !
 !     ---------------------
 !
@@ -99,7 +100,7 @@
 !*   ------------------------------------------------------------------
 !
       subroutine nonlinear_incuction_wSGS_SPH                           &
-     &         (sph, comms_sph, trans_p, conduct, rj_fld)
+     &         (sph, comms_sph, trans_p, conduct, ipol, rj_fld)
 !
       use m_solver_SR
       use m_schmidt_poly_on_rtm
@@ -112,6 +113,7 @@
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
+      type(phys_address), intent(in) :: ipol
 !
       type(field_geometry_data), intent(in) :: conduct
       type(phys_data), intent(inout) :: rj_fld
@@ -167,7 +169,7 @@
 !*   ------------------------------------------------------------------
 !
       subroutine nonlinear_incuction_SPH                                &
-     &         (sph, comms_sph, trans_p, rj_fld)
+     &         (sph, comms_sph, trans_p, ipol, rj_fld)
 !
       use m_spheric_parameter
       use m_solver_SR
@@ -177,6 +179,7 @@
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
+      type(phys_address), intent(in) :: ipol
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -212,7 +215,7 @@
 !*   ------------------------------------------------------------------
 !
       subroutine cal_magneitc_field_by_SPH                              &
-     &         (sph, comms_sph, trans_p, rj_fld)
+     &         (sph, comms_sph, trans_p, ipol, itor, rj_fld)
 !
       use m_solver_SR
       use m_schmidt_poly_on_rtm
@@ -223,6 +226,7 @@
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
+      type(phys_address), intent(in) :: ipol, itor
 !
       type(phys_data), intent(in) :: rj_fld
 !
