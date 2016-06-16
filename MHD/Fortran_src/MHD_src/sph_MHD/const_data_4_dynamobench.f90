@@ -8,10 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine s_const_data_4_dynamobench                           &
-!!     &         (sph_params, sph_rj, ipol, rj_fld)
+!!     &         (sph_params, sph_rj, ipol, itor, rj_fld)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(legendre_4_sph_trans), intent(in) :: leg
+!!        type(phys_address), intent(in) :: ipol, itor
 !!        type(phys_data), intent(in) :: rj_fld
 !!@endverbatim
 !
@@ -30,7 +31,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_const_data_4_dynamobench                             &
-     &         (sph_params, sph_rj, leg, ipol, rj_fld)
+     &         (sph_params, sph_rj, leg, ipol, itor, rj_fld)
 !
       use m_boundary_params_sph_MHD
       use m_field_at_mid_equator
@@ -48,7 +49,7 @@
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(legendre_4_sph_trans), intent(in) :: leg
-      type(phys_address), intent(in) :: ipol
+      type(phys_address), intent(in) :: ipol, itor
       type(phys_data), intent(in) :: rj_fld
 !
 !
@@ -63,7 +64,8 @@
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call pick_inner_core_rotation(sph_rj%idx_rj_degree_one,         &
      &      sph_rj%nidx_rj, sph_params%nlayer_ICB, sph_rj%ar_1d_rj,     &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &      itor%i_velo, rj_fld%n_point, rj_fld%ntot_phys,              &
+     &      rj_fld%d_fld)
       end if
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
@@ -78,7 +80,8 @@
         call pick_mag_torque_inner_core                                 &
      &     (sph_rj%idx_rj_degree_one,  sph_rj%nidx_rj,                  &
      &      sph_params%nlayer_ICB, sph_rj%radius_1d_rj_r,               &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &      itor%i_lorentz, rj_fld%n_point, rj_fld%ntot_phys,           &
+     &      rj_fld%d_fld)
       end if
 !
       end subroutine s_const_data_4_dynamobench

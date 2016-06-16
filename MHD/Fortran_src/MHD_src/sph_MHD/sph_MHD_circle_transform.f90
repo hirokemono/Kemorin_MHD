@@ -38,7 +38,6 @@
 !
       use calypso_mpi
       use m_phys_constants
-      use m_sph_phys_address
       use m_circle_transform
 !
       use t_spheric_rj_data
@@ -154,7 +153,6 @@
      &          istack_phys_comp_rj, phys_name_rj, d_rj)
 !
       use calypso_mpi
-      use m_sph_phys_address
 !
       integer(kind = kint), intent(in) :: nnod_rj, jmax
       integer(kind = kint), intent(in) :: nidx_global_rj(2)

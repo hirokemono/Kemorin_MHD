@@ -67,7 +67,6 @@
       subroutine mid_eq_transfer_dynamobench(sph_rj, rj_fld)
 !
       use calypso_mpi
-      use m_sph_phys_address
       use m_field_on_circle
       use m_circle_transform
       use t_spheric_rj_data
@@ -136,7 +135,6 @@
       subroutine cal_field_4_dynamobench
 !
       use calypso_mpi
-      use m_sph_phys_address
       use m_field_on_circle
       use m_circle_transform
 !

@@ -7,8 +7,8 @@
 !>@brief  Dynamo benchmark results
 !!
 !!@verbatim
-!!      subroutine open_dynamobench_monitor_file
-!!      subroutine output_field_4_dynamobench(i_step, time)
+!!      subroutine open_dynamobench_monitor_file(ipol)
+!!      subroutine output_field_4_dynamobench(i_step, time, ipol)
 !!@endverbatim
 !!
 !!@param i_step   time step
@@ -19,6 +19,7 @@
       use m_precision
       use m_constants
       use calypso_mpi
+      use t_phys_address
 !
       implicit none
 !
@@ -77,10 +78,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine open_dynamobench_monitor_file
+      subroutine open_dynamobench_monitor_file(ipol)
 !
       use m_boundary_params_sph_MHD
-      use m_sph_phys_address
+!
+      type(phys_address), intent(in) :: ipol
 !
 !
       open(id_dynamobench, file=dynamobench_field_name,                 &
@@ -129,18 +131,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine output_field_4_dynamobench(i_step, time)
+      subroutine output_field_4_dynamobench(i_step, time, ipol)
 !
       use m_boundary_params_sph_MHD
-      use m_sph_phys_address
 !
+      type(phys_address), intent(in) :: ipol
       integer(kind = kint), intent(in) :: i_step
       real(kind = kreal), intent(in) :: time
 !
 !
       if(my_rank .ne. 0) return
 !
-      call open_dynamobench_monitor_file
+      call open_dynamobench_monitor_file(ipol)
 !
       write(id_dynamobench,'(i15,1pE25.15e3)', advance='NO')            &
      &     i_step, time

@@ -154,7 +154,7 @@
 !*
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
       call set_sph_field_to_start                                       &
-     &   (sph1%sph_rj, r_2nd, trans_p1%leg, rj_fld1)
+     &   (sph1%sph_rj, r_2nd, trans_p1%leg, ipol, itor, rj_fld1)
 !
 !*  ----------------lead nonlinear term ... ----------
 !*
@@ -180,9 +180,9 @@
       call start_eleps_time(4)
       call start_eleps_time(11)
       if(iflag_debug.gt.0)  write(*,*) 'const_data_4_dynamobench'
-      call s_const_data_4_dynamobench                                   &
-     &   (sph1%sph_params, sph1%sph_rj, trans_p1%leg, ipol, rj_fld1)
-      call output_field_4_dynamobench(i_step, time)
+      call s_const_data_4_dynamobench(sph1%sph_params, sph1%sph_rj,     &
+     &    trans_p1%leg, ipol, itor, rj_fld1)
+      call output_field_4_dynamobench(i_step, time, ipol)
       call end_eleps_time(11)
       call end_eleps_time(4)
 !

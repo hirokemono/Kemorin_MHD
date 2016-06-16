@@ -153,7 +153,7 @@
 !*
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
       call set_sph_field_to_start                                       &
-     &   (sph1%sph_rj, r_2nd, trans_p1%leg, rj_fld1)
+     &   (sph1%sph_rj, r_2nd, trans_p1%leg, ipol, itor, rj_fld1)
 !
 !*  ----------------Modify spectr data ... ----------
 !*

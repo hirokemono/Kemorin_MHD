@@ -237,7 +237,7 @@
       call cal_sol_magne_sph_crank                                      &
      &   (sph%sph_rj, band_bp_evo, band_bt_evo, g_sph_rj, rj_fld)
       call update_after_magne_sph                                       &
-     &   (sph%sph_rj, r_2nd, trans_p%leg, rj_fld)
+     &   (sph%sph_rj, r_2nd, trans_p%leg, ipol, itor, rj_fld)
 !
 !
       call check_calypso_sph_comm_buf_N                                 &

@@ -56,7 +56,6 @@
       subroutine nonlinear(sph, comms_sph, r_2nd, trans_p,              &
      &          reftemp_rj, trns_MHD, rj_fld)
 !
-      use m_sph_phys_address
       use m_boundary_params_sph_MHD
       use cal_inner_core_rotation
 !
@@ -219,7 +218,6 @@
       subroutine licv_exp(reftemp_rj, sph_rlm, sph_rj,                  &
      &          comm_rlm, comm_rj, leg, trns_MHD, rj_fld)
 !
-      use m_sph_phys_address
       use m_boundary_params_sph_MHD
       use sph_transforms_4_MHD
       use cal_nonlinear_sph_MHD
