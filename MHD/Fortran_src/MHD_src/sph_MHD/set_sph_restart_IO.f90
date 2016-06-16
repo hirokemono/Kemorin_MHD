@@ -154,7 +154,6 @@
       use m_t_step_parameter
       use m_t_int_parameter
       use m_phys_labels
-      use m_sph_phys_address
       use copy_time_steps_4_restart
       use copy_rj_phys_data_4_IO
 !
@@ -208,7 +207,6 @@
       use m_t_step_parameter
       use m_t_int_parameter
       use m_phys_labels
-      use m_sph_phys_address
       use copy_rj_phys_data_4_IO
 !
       type(field_IO), intent(in) :: fld_IO
