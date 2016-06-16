@@ -70,7 +70,7 @@
 !
         if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
           call int_icore_toroidal_lorentz                               &
-     &       (sph_bc_U%kr_in, sph_rj, rj_fld)
+     &       (sph_bc_U%kr_in, sph_rj, ipol, itor, rj_fld)
         end if
       end if
 !
