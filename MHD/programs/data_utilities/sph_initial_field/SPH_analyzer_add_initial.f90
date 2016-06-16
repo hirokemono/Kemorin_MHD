@@ -91,7 +91,7 @@
       use adjust_reference_fields
       use material_property
       use sph_transforms_4_MHD
-      use set_radius_func
+      use init_radial_infos_sph_mhd
       use const_radial_mat_4_sph
       use set_initial_sph_dynamo
       use sph_mhd_rst_IO_control
@@ -104,17 +104,9 @@
 !
 ! ---------------------------------
 !
-      if (iflag_debug.gt.0) write(*,*) 'set_radius_rot_reft_dat_4_sph'
-      call set_radius_rot_reft_dat_4_sph(depth_high_t, depth_low_t,     &
-     &    high_temp, low_temp, angular, sph1%sph_rlm, sph1%sph_rj,      &
-     &    sph_grps1%radial_rj_grp, ipol, sph1%sph_params, rj_fld1)
-!
-      if(iflag_debug.gt.0) write(*,*) 's_set_bc_sph_mhd'
-      call s_set_bc_sph_mhd                                             &
-     &   (sph1%sph_params, sph1%sph_rj, sph_grps1%radial_rj_grp,        &
-     &    CTR_nod_grp_name, CTR_sf_grp_name)
-      call init_reference_fields                                        &
-     &   (sph1%sph_params, sph1%sph_rj, sph_bc_T)
+      if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd'
+      call init_r_infos_sph_mhd                                         &
+     &   (sph_grps1, ipol, sph1, rj_fld1, sph_bc_T)
 !
 ! ---------------------------------
 !

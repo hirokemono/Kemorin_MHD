@@ -43,7 +43,7 @@
       use adjust_reference_fields
       use material_property
       use sph_transforms_4_MHD
-      use set_radius_func
+      use init_radial_infos_sph_mhd
       use const_radial_mat_4_sph
       use sph_mhd_rms_IO
       use cal_sol_sph_MHD_crank
@@ -62,27 +62,9 @@
 !
 ! ---------------------------------
 !
-      if (iflag_debug.gt.0) write(*,*) 'set_radius_rot_reft_dat_4_sph'
-      call set_radius_rot_reft_dat_4_sph(depth_high_t, depth_low_t,     &
-     &    high_temp, low_temp, angular, sph1%sph_rlm, sph1%sph_rj,      &
-     &    sph_grps1%radial_rj_grp, ipol, sph1%sph_params, rj_fld1)
-!
-      if (iflag_debug.gt.0) write(*,*) 'const_2nd_fdm_matrices'
-      call const_2nd_fdm_matrices(sph1%sph_params, sph1%sph_rj, r_2nd)
-!
-! ---------------------------------
-!
-      if(iflag_debug.gt.0) write(*,*)' set_material_property'
-      call set_material_property
-!
-!  -------------------------------
-!
-      if(iflag_debug.gt.0) write(*,*) 's_set_bc_sph_mhd'
-      call s_set_bc_sph_mhd                                             &
-     &   (sph1%sph_params, sph1%sph_rj, sph_grps1%radial_rj_grp,        &
-     &    CTR_nod_grp_name, CTR_sf_grp_name)
-      call init_reference_fields                                        &
-     &   (sph1%sph_params, sph1%sph_rj, sph_bc_T)
+      if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
+      call init_r_infos_sph_mhd_evo                                     &
+     &   (sph_grps1, ipol, sph1, r_2nd, rj_fld1, sph_bc_T)
 !
 !  -------------------------------
 !

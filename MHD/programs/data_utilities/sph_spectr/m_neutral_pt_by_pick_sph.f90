@@ -26,7 +26,6 @@
       use m_phys_labels
       use m_pickup_sph_spectr_data
 !
-      use set_radius_func
       use set_radius_func_noequi
 !
       implicit  none
