@@ -34,8 +34,8 @@
 !
       use t_spheric_parameter
       use t_spheric_rj_data
-      use t_phys_data
       use t_phys_address
+      use t_phys_data
 !
       implicit  none
 !
