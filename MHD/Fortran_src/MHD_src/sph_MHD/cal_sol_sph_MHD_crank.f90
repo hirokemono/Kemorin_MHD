@@ -106,7 +106,8 @@
 !
       if(iflag_t_evo_4_velo .gt. id_no_evolution) then
         call update_after_vorticity_sph(sph_rj, r_2nd, leg, rj_fld)
-        call cal_rot_radial_self_gravity(sph_rj, sph_bc_U, rj_fld)
+        call cal_rot_radial_self_gravity                                &
+     &     (sph_rj, ipol, itor, sph_bc_U, rj_fld)
       end if
 !
       if(iflag_t_evo_4_temp .gt.     id_no_evolution) then
@@ -145,7 +146,8 @@
         if(iflag_debug.gt.0) write(*,*) 'update_after_vorticity_sph'
         call update_after_vorticity_sph(sph_rj, r_2nd, leg, rj_fld)
         if(iflag_debug.gt.0) write(*,*) 'cal_rot_radial_self_gravity'
-        call cal_rot_radial_self_gravity(sph_rj, sph_bc_U, rj_fld)
+        call cal_rot_radial_self_gravity                                &
+     &     (sph_rj, ipol, itor, sph_bc_U, rj_fld)
       end if
 !
       if(iflag_debug.gt.0) write(*,*) 'update_after_heat_sph'

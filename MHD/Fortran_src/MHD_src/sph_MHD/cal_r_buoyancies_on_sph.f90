@@ -7,7 +7,7 @@
 !>@brief Evaluate buoyancy at specific radius
 !!
 !!@verbatim
-!!      subroutine s_cal_r_buoyancies_on_sph(kr, sph_rj, rj_fld)
+!!      subroutine s_cal_r_buoyancies_on_sph(kr, sph_rj, ipol, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_address), intent(in) :: ipol
 !!        type(phys_data), intent(inout) :: rj_fld

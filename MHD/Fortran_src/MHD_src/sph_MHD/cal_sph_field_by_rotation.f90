@@ -106,7 +106,7 @@
      &      ipol%i_coriolis, ipol%i_div_Coriolis, rj_fld)
       end if
 !
-      call sel_div_buoyancies_sph_MHD(sph_rj, sph_bc_U, rj_fld)
+      call sel_div_buoyancies_sph_MHD(sph_rj, ipol, sph_bc_U, rj_fld)
 !
       end subroutine cal_div_of_forces_sph_2
 !

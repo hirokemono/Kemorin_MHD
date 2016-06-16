@@ -49,8 +49,10 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call s_cal_r_buoyancies_on_sph(sph_bc_U%kr_in, sph_rj, rj_fld)
-      call s_cal_r_buoyancies_on_sph(sph_bc_U%kr_out, sph_rj, rj_fld)
+      call s_cal_r_buoyancies_on_sph                                    &
+     &   (sph_bc_U%kr_in, sph_rj, ipol, rj_fld)
+      call s_cal_r_buoyancies_on_sph                                    &
+     &   (sph_bc_U%kr_out, sph_rj, ipol, rj_fld)
 !
 !$omp parallel
       call cal_radial_force_on_sph(sph_bc_U%kr_in,                      &
