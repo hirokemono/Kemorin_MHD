@@ -77,7 +77,7 @@
 !*
       if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
       call s_lead_fields_4_sph_mhd                                      &
-     &   (sph1, comms_sph1, r_2nd, trans_p1, rj_fld1, trns_WK1)
+     &   (sph1, comms_sph1, r_2nd, trans_p1, ipol, rj_fld1, trns_WK1)
       call end_eleps_time(9)
 !
 ! ----  Take zonal mean

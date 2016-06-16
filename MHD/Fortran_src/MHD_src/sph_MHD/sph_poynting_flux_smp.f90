@@ -11,19 +11,20 @@
 !!      subroutine copy_velo_to_grad_v_rtp(sph_rtp, b_trns, ft_trns,    &
 !!     &          ncomp_rj_2_rtp, ncomp_tmp_rtp_2_rj, fld_rtp, frt_rtp)
 !!      subroutine cal_grad_of_velocities_sph                           &
-!!     &         (sph_rj, r_2nd, g_sph_rj, rj_fld)
+!!     &         (sph_rj, r_2nd, g_sph_rj, ipol, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
+!!        type(phys_address), intent(in) :: ipol
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
       module sph_poynting_flux_smp
 !
       use m_precision
-!
       use m_machine_parameter
-      use m_sph_phys_address
       use m_physical_property
+!
+      use t_phys_address
 !
       private :: copy_grad_vect_to_m_stretch
 !
@@ -75,7 +76,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_grad_of_velocities_sph                             &
-     &         (sph_rj, r_2nd, g_sph_rj, rj_fld)
+     &         (sph_rj, r_2nd, g_sph_rj, ipol, rj_fld)
 !
       use t_spheric_rj_data
       use t_phys_data
@@ -85,6 +86,7 @@
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
+      type(phys_address), intent(in) :: ipol
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -92,7 +94,7 @@
 !
       if(ipol%i_mag_stretch .eq. 0) return
 !
-      call copy_grad_vect_to_m_stretch(sph_rj%istack_inod_rj_smp,       &
+      call copy_grad_vect_to_m_stretch(ipol, sph_rj%istack_inod_rj_smp, &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call const_sph_gradient_no_bc(sph_rj, r_2nd, sph_bc_U, g_sph_rj,  &
@@ -107,8 +109,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine copy_grad_vect_to_m_stretch                            &
-     &         (inod_rj_smp_stack, n_point, ntot_phys_rj, d_rj)
+     &         (ipol, inod_rj_smp_stack, n_point, ntot_phys_rj, d_rj)
 !
+      type(phys_address), intent(in) :: ipol
       integer(kind = kint), intent(in) :: inod_rj_smp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)

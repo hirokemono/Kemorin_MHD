@@ -38,7 +38,6 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_sph_phys_address
       use t_spheric_rj_data
       use t_sph_matrices
 !

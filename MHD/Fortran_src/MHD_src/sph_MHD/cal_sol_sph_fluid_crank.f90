@@ -8,26 +8,27 @@
 !!
 !!@verbatim
 !!      subroutine cal_sol_velo_by_vort_sph_crank                       &
-!!     &         (sph_rj, band_vp_evo, band_vt_evo, rj_fld)
+!!     &         (sph_rj, band_vp_evo, band_vt_evo, ipol, itor, rj_fld)
 !!        Input address:    ipol%i_vort, itor%i_vort
 !!        Solution address: ipol%i_velo, itor%i_velo
 !!
 !!      subroutine cal_sol_pressure_by_div_v                            &
-!!     &         (sph_rj, band_p_poisson, rj_fld)
+!!     &         (sph_rj, band_p_poisson, ipol, rj_fld)
 !!        Solution address: ipol%i_press
 !!
 !!
 !!      subroutine cal_sol_magne_sph_crank                              &
-!!     &         (sph_rj, band_bp_evo, band_bt_evo, g_sph_rj, rj_fld)
+!!     &         (sph_rj, band_bp_evo, band_bt_evo, g_sph_rj,           &
+!!     &          ipol, itor, rj_fld)
 !!        Input address:    ipol%i_magne, itor%i_magne
 !!        Solution address: ipol%i_magne, itor%i_magne
 !!
 !!      subroutine cal_sol_temperature_sph_crank                        &
-!!     &         (sph_rj, band_temp_evo, rj_fld)
+!!     &         (sph_rj, band_temp_evo, ipol, rj_fld)
 !!        Input address:    ipol%i_temp
 !!        Solution address: ipol%i_temp
 !!      subroutine cal_sol_composition_sph_crank                        &
-!!     &         (sph_rj, band_comp_evo, rj_fld)
+!!     &         (sph_rj, band_comp_evo, ipol, rj_fld)
 !!        Input address:    ipol%i_light
 !!        Solution address: ipol%i_light
 !!@endverbatim
@@ -41,9 +42,9 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_sph_phys_address
 !
       use t_spheric_rj_data
+      use t_phys_address
       use t_phys_data
       use t_sph_matrices
       use t_boundary_params_sph_MHD
@@ -62,7 +63,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sol_velo_by_vort_sph_crank                         &
-     &         (sph_rj, band_vp_evo, band_vt_evo, rj_fld)
+     &         (sph_rj, band_vp_evo, band_vt_evo, ipol, itor, rj_fld)
 !
       use m_boundary_params_sph_MHD
       use m_coef_fdm_free_ICB
@@ -72,6 +73,7 @@
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(band_matrices_type), intent(in) :: band_vp_evo, band_vt_evo
+      type(phys_address), intent(in) :: ipol, itor
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -96,7 +98,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sol_pressure_by_div_v                              &
-     &         (sph_rj, band_p_poisson, rj_fld)
+     &         (sph_rj, band_p_poisson, ipol, rj_fld)
 !
       use m_boundary_params_sph_MHD
       use set_reference_sph_mhd
@@ -104,6 +106,7 @@
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(band_matrices_type), intent(in) :: band_p_poisson
+      type(phys_address), intent(in) :: ipol
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -122,13 +125,15 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sol_magne_sph_crank                                &
-     &         (sph_rj, band_bp_evo, band_bt_evo, g_sph_rj, rj_fld)
+     &         (sph_rj, band_bp_evo, band_bt_evo, g_sph_rj,             &
+     &          ipol, itor, rj_fld)
 !
       use m_boundary_params_sph_MHD
       use solve_sph_fluid_crank
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(band_matrices_type), intent(in) :: band_bp_evo, band_bt_evo
+      type(phys_address), intent(in) :: ipol, itor
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -146,7 +151,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sol_temperature_sph_crank                          &
-     &         (sph_rj, band_temp_evo, rj_fld)
+     &         (sph_rj, band_temp_evo, ipol, rj_fld)
 !
       use m_t_int_parameter
       use m_physical_property
@@ -156,6 +161,7 @@
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(band_matrices_type), intent(in) :: band_temp_evo
+      type(phys_address), intent(in) :: ipol
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -173,7 +179,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sol_composition_sph_crank                          &
-     &         (sph_rj, band_comp_evo, rj_fld)
+     &         (sph_rj, band_comp_evo, ipol, rj_fld)
 !
       use m_t_int_parameter
       use m_physical_property
@@ -183,6 +189,7 @@
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(band_matrices_type), intent(in) :: band_comp_evo
+      type(phys_address), intent(in) :: ipol
 !
       type(phys_data), intent(inout) :: rj_fld
 !

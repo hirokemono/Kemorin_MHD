@@ -319,7 +319,7 @@
 !
 !
       call s_lead_fields_4_sph_mhd                                      &
-     &   (sph, comms_sph, r_2nd, trans_p1, rj_fld, trns_WK)
+     &   (sph, comms_sph, r_2nd, trans_p1, ipol, rj_fld, trns_WK)
 !
       call sph_back_trans_4_MHD                                         &
      &   (sph, comms_sph, trans_p1, ipol, rj_fld, trns_WK%trns_MHD)
