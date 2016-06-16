@@ -8,15 +8,16 @@
 !!
 !!@verbatim
 !!      subroutine cal_rot_of_forces_sph_2                              &
-!!     &         (sph_rj, r_2nd, g_sph_rj, rj_fld)
+!!     &         (sph_rj, r_2nd, g_sph_rj, ipol, itor, rj_fld)
 !!      subroutine cal_div_of_forces_sph_2                              &
-!!     &         (sph_rj, r_2nd, g_sph_rj, rj_fld)
+!!     &         (sph_rj, r_2nd, g_sph_rj, ipol, rj_fld)
 !!      subroutine cal_rot_of_induction_sph                             &
-!!     &         (sph_rj, r_2nd, g_sph_rj, rj_fld)
+!!     &         (sph_rj, r_2nd, g_sph_rj, ipol, rj_fld)
 !!      subroutine cal_div_of_fluxes_sph                                &
-!!     &         (sph_rj, r_2nd, g_sph_rj, rj_fld)
+!!     &         (sph_rj, r_2nd, g_sph_rj, ipol, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
+!!        type(phys_address), intent(in) :: ipol, itor
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
@@ -27,9 +28,9 @@
       use m_constants
       use m_machine_parameter
       use m_control_parameter
-      use m_sph_phys_address
 !
       use t_spheric_rj_data
+      use t_phys_address
       use t_phys_data
       use t_fdm_coefs
 !
@@ -42,7 +43,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_rot_of_forces_sph_2                                &
-     &         (sph_rj, r_2nd, g_sph_rj, rj_fld)
+     &         (sph_rj, r_2nd, g_sph_rj, ipol, itor, rj_fld)
 !
       use calypso_mpi
       use m_boundary_params_sph_MHD
@@ -52,6 +53,7 @@
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
+      type(phys_address), intent(in) :: ipol, itor
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -79,7 +81,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_div_of_forces_sph_2                                &
-     &         (sph_rj, r_2nd, g_sph_rj, rj_fld)
+     &         (sph_rj, r_2nd, g_sph_rj, ipol, rj_fld)
 !
       use m_physical_property
       use m_boundary_params_sph_MHD
@@ -88,6 +90,7 @@
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
+      type(phys_address), intent(in) :: ipol
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -114,7 +117,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_rot_of_induction_sph                               &
-     &         (sph_rj, r_2nd, g_sph_rj, rj_fld)
+     &         (sph_rj, r_2nd, g_sph_rj, ipol, rj_fld)
 !
       use calypso_mpi
       use m_boundary_params_sph_MHD
@@ -123,6 +126,7 @@
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
+      type(phys_address), intent(in) :: ipol
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -139,15 +143,15 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_div_of_fluxes_sph                                  &
-     &         (sph_rj, r_2nd, g_sph_rj, rj_fld)
+     &         (sph_rj, r_2nd, g_sph_rj, ipol, rj_fld)
 !
       use calypso_mpi
-      use m_sph_phys_address
       use m_boundary_params_sph_MHD
       use const_sph_divergence
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
+      type(phys_address), intent(in) :: ipol
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
       type(phys_data), intent(inout) :: rj_fld
