@@ -7,12 +7,15 @@
 !>@brief Time integration for momentum equation by explicit scheme
 !!
 !!@verbatim
-!!      subroutine cal_momentum_eq_exp_sph(sph_rj, r_2nd, leg, rj_fld)
-!!      subroutine cal_expricit_sph_adams(sph_rj, rj_fld)
-!!      subroutine cal_expricit_sph_euler(i_step, sph_rj, rj_fld)
+!!      subroutine cal_momentum_eq_exp_sph                              &
+!!     &         (sph_rj, r_2nd, leg, ipol, itor, rj_fld)
+!!      subroutine cal_expricit_sph_adams(sph_rj, ipol, itor, rj_fld)
+!!      subroutine cal_expricit_sph_euler                               &
+!!     &         (i_step, sph_rj, ipol, itor, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(legendre_4_sph_trans), intent(in) :: leg
+!!        type(phys_address), intent(in) :: ipol, itor
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !!
@@ -22,7 +25,6 @@
 !
       use m_precision
       use m_control_parameter
-      use m_sph_phys_address
 !
       use t_spheric_rj_data
       use t_phys_address
@@ -38,7 +40,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_momentum_eq_exp_sph(sph_rj, r_2nd, leg, rj_fld)
+      subroutine cal_momentum_eq_exp_sph                                &
+     &         (sph_rj, r_2nd, leg, ipol, itor, rj_fld)
 !
       use cal_explicit_terms
       use calypso_mpi
@@ -48,6 +51,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(legendre_4_sph_trans), intent(in) :: leg
+      type(phys_address), intent(in) :: ipol, itor
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -69,7 +73,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_expricit_sph_adams(sph_rj, rj_fld)
+      subroutine cal_expricit_sph_adams(sph_rj, ipol, itor, rj_fld)
 !
       use m_boundary_params_sph_MHD
       use m_physical_property
@@ -79,6 +83,7 @@
       use select_diff_adv_source
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(phys_address), intent(in) :: ipol, itor
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -113,7 +118,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_expricit_sph_euler(i_step, sph_rj, rj_fld)
+      subroutine cal_expricit_sph_euler                                 &
+     &         (i_step, sph_rj, ipol, itor, rj_fld)
 !
       use m_boundary_params_sph_MHD
       use m_physical_property
@@ -123,6 +129,7 @@
 !
       integer(kind = kint), intent(in) :: i_step
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(phys_address), intent(in) :: ipol, itor
       type(phys_data), intent(inout) :: rj_fld
 !
 !$omp parallel

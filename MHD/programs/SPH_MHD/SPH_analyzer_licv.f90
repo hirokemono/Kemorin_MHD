@@ -154,10 +154,11 @@
 !*
       if(i_step .eq. 1) then
         if(iflag_debug.gt.0) write(*,*) 'cal_expricit_sph_euler'
-        call cal_expricit_sph_euler(i_step, sph1%sph_rj, rj_fld1)
+        call cal_expricit_sph_euler                                     &
+     &     (i_step, sph1%sph_rj, ipol, itor, rj_fld1)
       else
         if(iflag_debug.gt.0) write(*,*) 'cal_expricit_sph_adams'
-        call cal_expricit_sph_adams(sph1%sph_rj, rj_fld1)
+        call cal_expricit_sph_adams(sph1%sph_rj, ipol, itor, rj_fld1)
       end if
 !*
 !*  ----------  time evolution by inplicit method ----------

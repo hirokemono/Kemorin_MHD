@@ -172,7 +172,7 @@
 !
 !      Evaluate fields for output in spectrum space
       if (iflag_debug.eq.1) write(*,*) 's_cal_energy_flux_rj'
-      call s_cal_energy_flux_rj(sph%sph_rj, r_2nd, rj_fld)
+      call s_cal_energy_flux_rj(sph%sph_rj, r_2nd, ipol, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_snapshot_MHD'
       call sph_back_trans_snapshot_MHD(sph, comms_sph, trans_p,         &
