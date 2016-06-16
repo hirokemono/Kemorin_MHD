@@ -31,10 +31,12 @@
 !
       use m_machine_parameter
       use m_control_parameter
+      use m_sph_phys_address
       use calypso_mpi
 !
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
+      use t_phys_address
       use t_phys_data
       use t_fdm_coefs
       use t_addresses_sph_transform
@@ -116,44 +118,44 @@
       if(      iflag_4_gravity  .ne. id_turn_OFF                        &
      &   .and. iflag_4_coriolis .ne. id_turn_OFF                        &
      &   .and. iflag_4_lorentz  .ne. id_turn_OFF) then
-        call set_MHD_terms_to_force(itor%i_rot_buoyancy,                &
+        call set_MHD_terms_to_force(ipol, itor, itor%i_rot_buoyancy,    &
      &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
       else if( iflag_4_gravity  .eq.     id_turn_OFF                    &
      &   .and. iflag_4_composit_buo .ne. id_turn_OFF                    &
      &   .and. iflag_4_coriolis .ne.     id_turn_OFF                    &
      &   .and. iflag_4_lorentz  .ne.     id_turn_OFF) then
-        call set_MHD_terms_to_force(itor%i_rot_comp_buo,                &
+        call set_MHD_terms_to_force(ipol, itor, itor%i_rot_comp_buo,    &
      &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
       else if( iflag_4_gravity  .ne. id_turn_OFF                        &
      &   .and. iflag_4_coriolis .ne. id_turn_OFF                        &
      &   .and. iflag_4_lorentz  .eq. id_turn_OFF) then
-        call set_rot_cv_terms_to_force(itor%i_rot_buoyancy,             &
+        call set_rot_cv_terms_to_force(ipol, itor, itor%i_rot_buoyancy, &
      &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
       else if( iflag_4_gravity  .eq.     id_turn_OFF                    &
      &   .and. iflag_4_composit_buo .ne. id_turn_OFF                    &
      &   .and. iflag_4_coriolis .ne.     id_turn_OFF                    &
      &   .and. iflag_4_lorentz  .eq.     id_turn_OFF) then
-        call set_rot_cv_terms_to_force(itor%i_rot_comp_buo,             &
+        call set_rot_cv_terms_to_force(ipol, itor, itor%i_rot_comp_buo, &
      &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
       else
         call set_rot_advection_to_force                                 &
-     &     (sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
+     &     (ipol, itor, sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
         if(iflag_4_coriolis .ne. id_turn_OFF) then
-          call add_coriolis_to_vort_force                               &
-     &       (sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
+          call add_coriolis_to_vort_force(ipol, itor,                   &
+     &        sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
         if(iflag_4_lorentz .ne.  id_turn_OFF) then
-          call add_lorentz_to_vort_force                                &
-     &       (sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
+          call add_lorentz_to_vort_force (ipol, itor,                   &
+     &        sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
         if(iflag_4_gravity .ne.  id_turn_OFF) then
-          call add_buoyancy_to_vort_force(itor%i_rot_buoyancy,          &
+          call add_buoyancy_to_vort_force(itor, itor%i_rot_buoyancy,    &
      &        sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
         else if(iflag_4_composit_buo .ne. id_turn_OFF) then
-          call add_buoyancy_to_vort_force(itor%i_rot_comp_buo,          &
+          call add_buoyancy_to_vort_force(itor, itor%i_rot_comp_buo,    &
      &        sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
         else if(iflag_4_filter_gravity .ne. id_turn_OFF) then
-          call add_buoyancy_to_vort_force(itor%i_rot_filter_buo,        &
+          call add_buoyancy_to_vort_force(itor, itor%i_rot_filter_buo,  &
      &        sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
       end if
@@ -264,14 +266,14 @@
 !
 !$omp parallel
       if(iflag_4_coriolis .ne. id_turn_OFF) then
-        call add_coriolis_to_vort_force                                 &
-     &     (sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
+        call add_coriolis_to_vort_force(ipol, itor,                     &
+     &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
       if(iflag_4_gravity .ne.  id_turn_OFF) then
-        call add_buoyancy_to_vort_force(itor%i_rot_buoyancy,            &
+        call add_buoyancy_to_vort_force(itor, itor%i_rot_buoyancy,      &
      &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
       else if(iflag_4_composit_buo .ne. id_turn_OFF) then
-        call add_buoyancy_to_vort_force(itor%i_rot_comp_buo,            &
+        call add_buoyancy_to_vort_force(itor, itor%i_rot_comp_buo,      &
      &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !$omp end parallel

@@ -22,8 +22,10 @@
 !
       use m_precision
       use m_control_parameter
+      use m_sph_phys_address
 !
       use t_spheric_rj_data
+      use t_phys_address
       use t_phys_data
       use t_fdm_coefs
       use t_schmidt_poly_on_rtm
@@ -82,14 +84,14 @@
 !
 !$omp parallel
       if(iflag_t_evo_4_velo .gt.     id_no_evolution) then
-        call cal_vorticity_eq_adams                                     &
-     &     (sph_bc_U%kr_in, sph_bc_U%kr_out, rj_fld%n_point,            &
+        call cal_vorticity_eq_adams(ipol, itor,                         &
+     &      sph_bc_U%kr_in, sph_bc_U%kr_out, rj_fld%n_point,            &
      &      sph_rj%nidx_rj(2), rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       if(iflag_t_evo_4_magne .gt.    id_no_evolution) then
         call cal_diff_induction_MHD_adams                               &
-     &     (rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &     (ipol, itor, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
       if(iflag_t_evo_4_temp .gt.     id_no_evolution) then
         call sel_scalar_diff_adv_src_adams                              &
@@ -125,8 +127,8 @@
 !
 !$omp parallel
       if(iflag_t_evo_4_velo .gt.     id_no_evolution) then
-        call cal_vorticity_eq_euler                                     &
-     &     (sph_bc_U%kr_in, sph_bc_U%kr_out, rj_fld%n_point,            &
+        call cal_vorticity_eq_euler(ipol, itor,                         &
+     &      sph_bc_U%kr_in, sph_bc_U%kr_out, rj_fld%n_point,            &
      &      sph_rj%nidx_rj(2), rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
@@ -139,7 +141,7 @@
       end if
       if(iflag_t_evo_4_magne .gt.    id_no_evolution) then
         call cal_diff_induction_MHD_euler                               &
-     &     (rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &     (ipol, itor, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
       if(iflag_t_evo_4_composit .gt. id_no_evolution) then
         call sel_scalar_diff_adv_src_euler                              &
@@ -151,8 +153,8 @@
 !
       if (i_step .eq. 1) then
         if(iflag_t_evo_4_velo .gt.     id_no_evolution) then
-          call set_ini_adams_inertia                                    &
-     &       (rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+          call set_ini_adams_inertia(ipol, itor,                        &
+     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
         if(iflag_t_evo_4_temp .gt.     id_no_evolution) then
           call sel_ini_adams_scalar_w_src                               &
@@ -161,8 +163,8 @@
      &        coef_h_src, sph_rj, rj_fld)
         end if
         if(iflag_t_evo_4_magne .gt.    id_no_evolution) then
-          call set_ini_adams_mag_induct                                 &
-     &       (rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+          call set_ini_adams_mag_induct(ipol, itor,                     &
+     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
         if(iflag_t_evo_4_composit .gt. id_no_evolution) then
           call sel_ini_adams_scalar_w_src                               &

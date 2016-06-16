@@ -8,24 +8,25 @@
 !!
 !!@verbatim
 !!      subroutine cal_diff_induction_MHD_adams                         &
-!!     &         (n_point, ntot_phys_rj, d_rj)
+!!     &         (ipol, itor, n_point, ntot_phys_rj, d_rj)
 !!      subroutine cal_diff_induction_wSGS_adams                        &
-!!     &         (n_point, ntot_phys_rj, d_rj)
+!!     &         (ipol, itor, n_point, ntot_phys_rj, d_rj)
 !!      subroutine cal_diff_induction_MHD_euler                         &
-!!     &         (n_point, ntot_phys_rj, d_rj)
+!!     &         (ipol, itor, n_point, ntot_phys_rj, d_rj)
 !!      subroutine cal_diff_induction_wSGS_euler                        &
-!!     &         (n_point, ntot_phys_rj, d_rj)
+!!     &         (ipol, itor, n_point, ntot_phys_rj, d_rj)
 !!
 !!      subroutine set_ini_adams_mag_induct                             &
-!!     &         (n_point, ntot_phys_rj, d_rj)
+!!     &         (ipol, itor, n_point, ntot_phys_rj, d_rj)
+!!        type(phys_address), intent(in) :: ipol, itor
 !!@endverbatim
 !
       module cal_explicit_terms
 !
       use m_precision
-!
       use m_t_int_parameter
-      use m_sph_phys_address
+!
+      use t_phys_address
 !
       implicit  none
 !
@@ -36,8 +37,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_diff_induction_MHD_adams                           &
-     &         (n_point, ntot_phys_rj, d_rj)
+     &         (ipol, itor, n_point, ntot_phys_rj, d_rj)
 !
+      type(phys_address), intent(in) :: ipol, itor
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
@@ -65,8 +67,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_diff_induction_wSGS_adams                          &
-     &         (n_point, ntot_phys_rj, d_rj)
+     &         (ipol, itor, n_point, ntot_phys_rj, d_rj)
 !
+      type(phys_address), intent(in) :: ipol, itor
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
@@ -99,8 +102,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_diff_induction_MHD_euler                           &
-     &         (n_point, ntot_phys_rj, d_rj)
+     &         (ipol, itor, n_point, ntot_phys_rj, d_rj)
 !
+      type(phys_address), intent(in) :: ipol, itor
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
@@ -123,8 +127,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_diff_induction_wSGS_euler                          &
-     &         (n_point, ntot_phys_rj, d_rj)
+     &         (ipol, itor, n_point, ntot_phys_rj, d_rj)
 !
+      type(phys_address), intent(in) :: ipol, itor
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
@@ -150,8 +155,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_ini_adams_mag_induct                               &
-     &         (n_point, ntot_phys_rj, d_rj)
+     &         (ipol, itor, n_point, ntot_phys_rj, d_rj)
 !
+      type(phys_address), intent(in) :: ipol, itor
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !

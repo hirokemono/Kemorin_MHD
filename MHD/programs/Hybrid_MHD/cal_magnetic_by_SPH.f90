@@ -228,10 +228,10 @@
 !
       if ( iflag_SGS_induction .ne. id_SGS_none) then
         call cal_diff_induction_MHD_adams                               &
-     &     (rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &     (ipol, itor, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else
         call cal_diff_induction_wSGS_adams                              &
-     &     (rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &     (ipol, itor, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       call cal_sol_magne_sph_crank                                      &
