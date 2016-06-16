@@ -8,21 +8,21 @@
 !!        pseudo vacuume boundary banchmark
 !!
 !!@verbatim
-!!      subroutine initial_b_dynamobench_1                              &
-!!     &         (sph_rj, r_ICB, r_CMB, nlayer_ICB, nlayer_CMB,         &
+!!      subroutine initial_b_dynamobench_1(sph_rj,  ipol, idpdr, itor,  &
+!!     &          r_ICB, r_CMB, nlayer_ICB, nlayer_CMB,                 &
 !!     &          n_point, ntot_phys_rj, d_rj)
-!!      subroutine initial_b_dynamobench_2                              &
-!!     &         (sph_rj, nlayer_CMB, r_CMB, n_point, ntot_phys_rj, d_rj)
+!!      subroutine initial_b_dynamobench_2(sph_rj, ipol, idpdr, itor,   &
+!!     &          nlayer_CMB, r_CMB, n_point, ntot_phys_rj, d_rj)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(phys_address), intent(in) :: ipol, idpdr, itor
 !!@endverbatim
 !
       module initial_magne_dynamobench
 !
       use m_precision
-!
       use m_constants
-      use m_sph_phys_address
 !
+      use t_phys_address
       use t_spheric_rj_data
 !
       implicit none
@@ -33,11 +33,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine initial_b_dynamobench_1                                &
-     &         (sph_rj, r_ICB, r_CMB, nlayer_ICB, nlayer_CMB,           &
+      subroutine initial_b_dynamobench_1(sph_rj,  ipol, idpdr, itor,    &
+     &          r_ICB, r_CMB, nlayer_ICB, nlayer_CMB,                   &
      &          n_point, ntot_phys_rj, d_rj)
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(phys_address), intent(in) :: ipol, idpdr, itor
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       real(kind = kreal), intent(in) :: r_ICB, r_CMB
 !
@@ -93,10 +94,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine initial_b_dynamobench_2                                &
-     &         (sph_rj, nlayer_CMB, r_CMB, n_point, ntot_phys_rj, d_rj)
+      subroutine initial_b_dynamobench_2(sph_rj, ipol, idpdr, itor,     &
+     &          nlayer_CMB, r_CMB, n_point, ntot_phys_rj, d_rj)
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(phys_address), intent(in) :: ipol, idpdr, itor
       integer(kind = kint), intent(in) ::  nlayer_CMB
       real(kind = kreal), intent(in) :: r_CMB
 !
