@@ -8,9 +8,10 @@
 !> @brief Evaluate energy fluxes for MHD dynamo in physical space
 !!
 !!@verbatim
-!!      subroutine s_cal_energy_flux_rj(sph_rj, r_2nd, rj_fld)
+!!      subroutine s_cal_energy_flux_rj(sph_rj, r_2nd, ipol, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
+!!        type(phys_address), intent(in) :: ipol
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
@@ -20,6 +21,7 @@
       use m_constants
 !
       use t_spheric_rj_data
+      use t_phys_address
       use t_phys_data
       use t_fdm_coefs
 !
@@ -31,13 +33,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_cal_energy_flux_rj(sph_rj, r_2nd, rj_fld)
+      subroutine s_cal_energy_flux_rj(sph_rj, r_2nd, ipol, rj_fld)
 !
-      use m_sph_phys_address
       use const_sph_radial_grad
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
+      type(phys_address), intent(in) :: ipol
       type(phys_data), intent(inout) :: rj_fld
 !
 !

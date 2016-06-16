@@ -118,7 +118,6 @@
       use m_machine_parameter
       use m_control_parameter
       use m_physical_property
-      use m_sph_phys_address
       use poynting_flux_smp
       use sph_transforms_4_MHD
       use mag_of_field_smp
