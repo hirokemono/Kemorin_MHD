@@ -138,6 +138,7 @@
       use m_t_int_parameter
       use t_sph_center_matrix
       use cal_sph_exp_center
+      use check_sph_radial_mat
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(band_matrices_type), intent(in) :: band_s_evo
@@ -149,6 +150,8 @@
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
       real(kind = kreal), intent(inout) :: sol_00(0:sph_rj%nidx_rj(1))
 !
+      integer(kind = kint) :: j
+!
 !
       if(sph_rj%inod_rj_center .gt. 0) then
         call copy_degree0_comps_to_sol                                  &
@@ -157,7 +160,7 @@
      &      is_field, n_point, ntot_phys_rj, d_rj, sol_00)
       end if
 !
-!      j = find_local_sph_address(sph_rj, 30,-23)
+!      j = find_local_sph_address(sph_rj, 0,0)
 !      if(j.gt.0) then
 !        write(*,*) 'matrix'
 !        call check_single_radial_3band_mat(my_rank, sph_rj%nidx_rj(1), &
@@ -176,6 +179,11 @@
 !
 !   Solve l=m=0 including center
       if(sph_rj%inod_rj_center .eq. 0) return
+!
+!      write(50+my_rank,*) 'matrix for l=m=0'
+!      call check_single_radial_3band_mat(my_rank, sph_rj%nidx_rj(1),   &
+!     &    sph_rj%radius_1d_rj_r, band_s00_evo%mat)
+!
       call lubksb_3band_ctr(band_s00_evo, sol_00)
       call copy_degree0_comps_from_sol                                  &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                         &

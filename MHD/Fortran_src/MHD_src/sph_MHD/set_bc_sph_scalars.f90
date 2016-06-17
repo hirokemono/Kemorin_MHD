@@ -64,10 +64,7 @@
       call set_sph_bc_scalar_sph(fhd_temp, fhd_h_flux,                  &
      &    temp_nod, h_flux_surf, sph_rj, radial_rj_grp, sph_bc_T)
 !
-      sph_bc_T%ICB_flux(1:sph_rj%nidx_rj(2))                            &
-     &      = -sph_bc_T%ICB_flux(1:sph_rj%nidx_rj(2))
-!
-      if(iflag_debug .gt. 0) then
+      if(i_debug .gt. 0) then
         do i = 1, sph_rj%nidx_rj(2)
           if( sph_bc_T%ICB_fld(i) .ne. 0.0d0) write(*,*)                &
      &      ' sph_bc_T%ICB_fld', i,  sph_rj%idx_gl_1d_rj_j(i,2:3),      &
@@ -124,7 +121,7 @@
       call set_sph_bc_scalar_sph(fhd_light, fhd_c_flux,                 &
      &    light_nod, light_surf, sph_rj, radial_rj_grp, sph_bc_C)
 !
-      if(iflag_debug .gt. 0) then
+      if(i_debug .gt. 0) then
         do i = 1, sph_rj%nidx_rj(2)
           if( sph_bc_C%ICB_fld(i) .ne. 0.0d0) write(*,*)                &
      &      ' sph_bc_C%ICB_fld', i,  sph_rj%idx_gl_1d_rj_j(i,2:3),      &
