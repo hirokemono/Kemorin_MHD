@@ -303,9 +303,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine scalar_stable_diffusion(kr_st, kr_ed, jmax,            &
+      subroutine scalar_stable_diffusion                                &
+     &         (kr_st, kr_ed, jmax, inod_rj_center,                     &
      &          ipol_scalar, n_point, ntot_phys_rj, d_rj)
 !
+      integer(kind = kint), intent(in) :: inod_rj_center
       integer(kind = kint), intent(in) :: kr_st, kr_ed, jmax
       integer(kind = kint), intent(in) :: ipol_scalar
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
@@ -322,6 +324,8 @@
         d_rj(inod,ipol_scalar) = zero
       end do
 !$omp end do
+!
+      if(inod_rj_center .gt. 0) d_rj(inod_rj_center,ipol_scalar) = zero
 !
       end subroutine scalar_stable_diffusion
 !

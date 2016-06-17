@@ -46,7 +46,6 @@
 !
       implicit none
 !
-      private :: copy_degree0_comps_to_sol, copy_degree0_comps_from_sol
       private :: check_temperature, check_NaN_temperature
 !
 ! -----------------------------------------------------------------------
@@ -139,6 +138,7 @@
       use t_sph_center_matrix
       use cal_sph_exp_center
       use check_sph_radial_mat
+      use fill_scalar_field
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(band_matrices_type), intent(in) :: band_s_evo
@@ -191,72 +191,6 @@
      &    is_field, n_point, ntot_phys_rj, d_rj)
 !
       end subroutine solve_scalar_sph_crank
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine copy_degree0_comps_to_sol(nri, jmax,                   &
-     &          inod_rj_center, idx_rj_degree_zero, is_field,           &
-     &          n_point, ntot_phys_rj, d_rj, sol_00)
-!
-      integer(kind = kint), intent(in) :: nri, jmax
-      integer(kind = kint), intent(in) :: inod_rj_center
-      integer(kind = kint), intent(in) :: idx_rj_degree_zero
-      integer(kind = kint), intent(in) :: is_field
-      integer(kind = kint), intent(in) :: n_point,  ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
-!
-      real(kind = kreal), intent(inout) :: sol_00(0:nri)
-!
-      integer(kind = kint) :: kr, inod
-!
-!$omp parallel do private(inod)
-      do kr = 1, nri
-        inod = idx_rj_degree_zero + (kr-1) * jmax
-        sol_00(kr) = d_rj(inod,is_field)
-      end do
-!$omp end parallel do
-      sol_00(0) = d_rj(inod_rj_center,is_field)
-!
-!       write(*,*) 'kr, Average RHS'
-!       do kr = 0, nri
-!         write(*,*) kr, sol_00(kr)
-!       end do
-
-      end subroutine copy_degree0_comps_to_sol
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine copy_degree0_comps_from_sol(nri, jmax,                 &
-     &          inod_rj_center, idx_rj_degree_zero, sol_00, is_field,   &
-     &          n_point, ntot_phys_rj, d_rj)
-!
-      integer(kind = kint), intent(in) :: nri, jmax
-      integer(kind = kint), intent(in) :: inod_rj_center
-      integer(kind = kint), intent(in) :: idx_rj_degree_zero
-      integer(kind = kint), intent(in) :: is_field
-      real(kind = kreal), intent(in) :: sol_00(0:nri)
-!
-      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
-!
-      integer(kind = kint) :: kr, inod
-!
-!$omp parallel do private(inod)
-      do kr = 1, nri
-        inod = idx_rj_degree_zero + (kr-1) * jmax
-        d_rj(inod,is_field) = sol_00(kr)
-      end do
-!$omp end parallel do
-      d_rj(inod_rj_center,is_field) = sol_00(0)
-!
-!       write(*,*) 'kr, average Solution'
-!       do kr = 0, nri
-!         write(*,*) kr, sol_00(kr)
-!      end do
-!
-      end subroutine copy_degree0_comps_from_sol
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

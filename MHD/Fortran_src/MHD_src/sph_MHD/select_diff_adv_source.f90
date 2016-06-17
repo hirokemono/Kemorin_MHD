@@ -98,9 +98,10 @@
 !
 !
       if(coef_adv .eq. zero) then
+        write(*,*) 'coef_adv', coef_adv
         if(ipol_source .eq. izero) then
-          call scalar_stable_diffusion                                  &
-     &       (kr_st, kr_ed, sph_rj%nidx_rj(2), ipol_scalar,             &
+          call scalar_stable_diffusion(kr_st, kr_ed,                    &
+     &        sph_rj%nidx_rj(2), sph_rj%inod_rj_center, ipol_scalar,    &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         else
           call scalar_stable_diff_src                                   &

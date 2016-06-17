@@ -157,7 +157,6 @@
       use m_physical_property
       use m_boundary_params_sph_MHD
       use m_radial_mat_sph_w_center
-      use solve_sph_fluid_crank
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(band_matrices_type), intent(in) :: band_temp_evo
@@ -166,13 +165,9 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call set_bc_scalar_sph_crank(sph_rj, sph_bc_T,                    &
+      call cal_sol_scalar_sph_crank                                     &
+     &   (sph_rj, sph_bc_T, band_temp_evo, band_temp00_evo,             &
      &    coef_temp, coef_d_temp, coef_imp_t, ipol%i_temp, rj_fld)
-!
-      call solve_scalar_sph_crank                                       &
-     &   (sph_rj, band_temp_evo, band_temp00_evo,                       &
-     &    ipol%i_temp, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,  &
-     &    x00_w_center)
 !
       end subroutine cal_sol_temperature_sph_crank
 !
@@ -185,7 +180,6 @@
       use m_physical_property
       use m_boundary_params_sph_MHD
       use m_radial_mat_sph_w_center
-      use solve_sph_fluid_crank
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(band_matrices_type), intent(in) :: band_comp_evo
@@ -194,17 +188,50 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call set_bc_scalar_sph_crank(sph_rj, sph_bc_C,                    &
+      call cal_sol_scalar_sph_crank                                     &
+     &   (sph_rj, sph_bc_C, band_comp_evo, band_comp00_evo,             &
      &    coef_light, coef_d_light, coef_imp_c, ipol%i_light, rj_fld)
-!
-      call solve_scalar_sph_crank                                       &
-     &   (sph_rj, band_comp_evo, band_comp00_evo,                       &
-     &    ipol%i_light, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld, &
-     &    x00_w_center)
 !
       end subroutine cal_sol_composition_sph_crank
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine cal_sol_scalar_sph_crank                               &
+     &         (sph_rj, sph_bc, band_s_evo, band_s00_evo,               &
+     &          coef_adv, coef_diffuse, coef_imp, is_light, rj_fld)
+!
+      use m_radial_mat_sph_w_center
+      use t_sph_center_matrix
+      use t_boundary_params_sph_MHD
+      use solve_sph_fluid_crank
+      use fill_scalar_field
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(sph_boundary_type), intent(in) :: sph_bc
+      type(band_matrices_type), intent(in) :: band_s_evo
+      type(band_matrix_type), intent(in) :: band_s00_evo
+      real(kind = kreal), intent(in) :: coef_adv, coef_diffuse
+      real(kind = kreal), intent(in) :: coef_imp
+      integer(kind = kint), intent(in) :: is_light
+!
+      type(phys_data), intent(inout) :: rj_fld
+!
+!
+      call set_bc_scalar_sph_crank(sph_rj, sph_bc,                      &
+     &    coef_adv, coef_diffuse, coef_imp, is_light, rj_fld)
+!
+      call solve_scalar_sph_crank(sph_rj, band_s_evo, band_s00_evo,     &
+     &    is_light, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,     &
+     &    x00_w_center)
+!
+      call fill_scalar_at_external(sph_bc%kr_in, sph_bc%kr_out,         &
+     &    sph_rj%inod_rj_center, sph_rj%idx_rj_degree_zero,             &
+     &    sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                         &
+     &    is_light, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+!
+      end subroutine cal_sol_scalar_sph_crank
+!
 ! -----------------------------------------------------------------------
 !
       subroutine set_bc_velo_sph_crank(is_velo, sph_rj, rj_fld)
@@ -320,41 +347,45 @@
 !
 !   Set RHS vector for CMB
       if (sph_bc%iflag_cmb .eq. iflag_fixed_field) then
-        call set_fixed_scalar_sph(rj_fld%n_point, sph_rj%nidx_rj(2),    &
+        call set_fixed_scalar_sph(sph_rj%nidx_rj(2),                    &
+     &      sph_rj%inod_rj_center, sph_rj%idx_rj_degree_zero,           &
      &      sph_bc%kr_out, sph_rj%nidx_rj(1), is_field, sph_bc%CMB_fld, &
-     &      rj_fld%ntot_phys, rj_fld%d_fld)
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else if(coef_f .ne. 0.0d0) then
-        call adjust_out_fixed_flux_sph(rj_fld%n_point,                  &
-     &      sph_rj%nidx_rj(2), sph_bc%kr_out, sph_bc%r_CMB,             &
+        call adjust_out_fixed_flux_sph                                  &
+     &     (sph_rj%nidx_rj(2), sph_bc%kr_out, sph_bc%r_CMB,             &
      &      sph_bc%fdm2_fix_dr_CMB, sph_bc%CMB_flux, coef_d,            &
-     &      coef_imp, dt, is_field, rj_fld%ntot_phys, rj_fld%d_fld)
+     &      coef_imp, dt, is_field, rj_fld%n_point, rj_fld%ntot_phys,   &
+     &      rj_fld%d_fld)
       else
-        call poisson_out_fixed_flux_sph(rj_fld%n_point,                 &
-     &      sph_rj%nidx_rj(2), sph_bc%kr_out, sph_bc%r_CMB,             &
+        call poisson_out_fixed_flux_sph                                 &
+     &     (sph_rj%nidx_rj(2), sph_bc%kr_out, sph_bc%r_CMB,             &
      &      sph_bc%fdm2_fix_dr_CMB, sph_bc%CMB_flux, is_field,          &
-     &      rj_fld%ntot_phys, rj_fld%d_fld)
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
 !   Set RHS vector for ICB
       if (sph_bc%iflag_icb .eq. iflag_fixed_field) then
-        call set_fixed_scalar_sph(rj_fld%n_point, sph_rj%nidx_rj(2),    &
+        call set_fixed_scalar_sph(sph_rj%nidx_rj(2),                    &
+     &      sph_rj%inod_rj_center, sph_rj%idx_rj_degree_zero,           &
      &      ione, sph_bc%kr_in, is_field, sph_bc%ICB_fld,               &
-     &      rj_fld%ntot_phys, rj_fld%d_fld)
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else if (sph_bc%iflag_icb .eq. iflag_sph_fix_center) then
         call cal_sph_fixed_center                                       &
      &     (sph_rj%inod_rj_center, sph_bc%CTR_fld, is_field,            &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else if(sph_bc%iflag_icb .eq. iflag_fixed_flux                    &
      &     .and. coef_f .ne. 0.0d0) then
-        call adjust_in_fixed_flux_sph(rj_fld%n_point,                   &
-     &      sph_rj%nidx_rj(2), sph_bc%kr_in, sph_bc%r_ICB,              &
+        call adjust_in_fixed_flux_sph                                   &
+     &     (sph_rj%nidx_rj(2), sph_bc%kr_in, sph_bc%r_ICB,              &
      &      sph_bc%fdm2_fix_dr_ICB, sph_bc%ICB_flux, coef_d,            &
-     &      coef_imp, dt, is_field, rj_fld%ntot_phys, rj_fld%d_fld)
+     &      coef_imp, dt, is_field, rj_fld%n_point, rj_fld%ntot_phys,   &
+     &      rj_fld%d_fld)
       else if (sph_bc%iflag_icb .eq. iflag_fixed_flux) then
-        call poisson_in_fixed_flux_sph(rj_fld%n_point,                  &
-     &      sph_rj%nidx_rj(2), sph_bc%kr_in, sph_bc%r_ICB,              &
+        call poisson_in_fixed_flux_sph                                  &
+     &     (sph_rj%nidx_rj(2), sph_bc%kr_in, sph_bc%r_ICB,              &
      &      sph_bc%fdm2_fix_dr_ICB, sph_bc%ICB_flux,                    &
-     &      is_field, rj_fld%ntot_phys, rj_fld%d_fld)
+     &      is_field, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       end subroutine set_bc_scalar_sph_crank
