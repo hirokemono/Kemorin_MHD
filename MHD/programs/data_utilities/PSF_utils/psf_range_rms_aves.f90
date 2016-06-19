@@ -62,6 +62,8 @@
       write(*,*) 'input radius range'
       read(*,*) rmin, rmax
 !
+      psf1%iflag_psf_fmt =   iflag_psf_fmt
+      psf1%psf_file_header = psf_file_header
 !
       call load_psf_data_to_link_IO(istep_start, psf1, psf_ucd)
       call alloc_psf_averages(psf1%psf_phys, psf_ave1)

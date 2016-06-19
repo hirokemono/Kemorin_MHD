@@ -72,11 +72,12 @@
       write(psf_rms_header, '(a9,a)') 'time_rms_', trim(fname_tmp)
       write(psf_sdev_header,'(a9,a)') 'time_dev_', trim(fname_tmp)
 !
+      psf1%iflag_psf_fmt =   iflag_psf_fmt
+      psf1%psf_file_header = psf_file_header
 !
       call load_psf_data_to_link_IO(istep_start, psf1, psf_ucd)
       call alloc_psf_averages(psf1%psf_phys, psf_ave1)
 !
-      psf_ucd%ifmt_file = iflag_udt
       psf_ucd%file_prefix = psf_ave_header
       call sel_write_grd_file(iminus, psf_ucd)
       psf_ucd%file_prefix = psf_rms_header
@@ -97,6 +98,7 @@
       call set_averaging_range(rmin, rmax, psf_norm1)
 !
       call open_psf_ave_rms_data(psf_file_header, psf1%psf_phys)
+      call open_psf_range_data(psf_file_header,  psf1%psf_phys)
 !
       allocate(tave_psf(psf1%psf_nod%numnod,psf1%psf_phys%ntot_phys))
       allocate(trms_psf(psf1%psf_nod%numnod,psf1%psf_phys%ntot_phys))
@@ -113,7 +115,7 @@
      &          'read for averaging. Step:  ', istep_start
       do istep = istep_start, istep_end, istep_int
         icou = icou + 1
-        write(*,'(10a1)', advance='NO') (char(8),i=1,10)
+        write(*,'(15a1)', advance='NO') (char(8),i=1,15)
         write(*,'(i15)', advance='NO') istep
 !
         call sel_read_udt_file(iminus, istep, psf_ucd)
@@ -138,9 +140,11 @@
 !$omp end parallel
 !
         call write_psf_ave_rms_data(istep, psf_norm1%area, psf_ave1)
+        call write_psf_range_data(istep, psf_ave1)
       end do
       write(*,*)
       call close_psf_ave_rms_data
+      call close_psf_range_data
 !
       acou = one / dble(icou)
 !$omp parallel
@@ -160,7 +164,7 @@
      &          'read for RMS. Step:  ', istep
       do istep = istep_start, istep_end, istep_int
         icou = icou + 1
-        write(*,'(10a1)', advance='NO') (char(8),i=1,10)
+        write(*,'(15a1)', advance='NO') (char(8),i=1,15)
         write(*,'(i15)', advance='NO') istep
 !
         call sel_read_udt_file(iminus, istep, psf_ucd)
