@@ -74,13 +74,13 @@
         end do
         write(*,*) 'step is', istep, time
 !
-        call load_psf_data(istep, psf1)
-        call find_psf_edges(psf1%psf_ele)
-        call pick_psf_by_sections                                       &
-     &     (nd, xref, psf1%psf_nod, psf1%psf_ele, psf1%psf_phys, line)
+        call load_psf_data(istep, psf_u)
+        call find_psf_edges(psf_u%psf_ele)
+        call pick_psf_by_sections(nd, xref, psf_u%psf_nod,              &
+     &      psf_u%psf_ele, psf_u%psf_phys, line)
 !
         call deallocate_psf_edge
-        call dealloc_psf_results(psf1)
+        call dealloc_psf_results(psf_u)
 !
         call cal_dynamobench_data_by_psf(istep, time, line)
 !        call write_psf_line_data(iflag_ucd, line_udt_head, istep, line)

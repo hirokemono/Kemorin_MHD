@@ -22,13 +22,13 @@
 !
 !
 !>      structure for section data
-      type(psf_results), save :: psf1
+      type(psf_results), save :: psf_u
 !
 !>      structure for normals
-      type(psf_normals), save :: psf_norm1
+      type(psf_normals), save :: psf_normal
 !
 !>      structure for averages
-      type(psf_averages), save :: psf_ave1
+      type(psf_averages), save :: psf_average
 !psf_aves%ntot_comp
 !
       character(len=kchara) :: psf_file_header
