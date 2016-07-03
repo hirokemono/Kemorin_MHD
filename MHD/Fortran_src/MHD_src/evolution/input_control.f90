@@ -9,13 +9,14 @@
 !>@brief  Load mesh and filtering data for MHD simulation
 !!
 !!@verbatim
-!!      subroutine input_control_4_MHD(mesh, group, ele_mesh,           &
+!!      subroutine input_control_4_MHD(mesh, group, ele_mesh, IO_bc,    &
 !!     &          filtering, wide_filtering, wk_filter, MHD_matrices)
 !!      subroutine input_control_4_snapshot(mesh, group, ele_mesh,      &
-!!     &         (mesh, group, filtering, wide_filtering, wk_filter)
+!!     &          IO_bc, filtering, wide_filtering, wk_filter)
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(element_geometry), intent(inout) :: ele_mesh
+!!        type(IO_boundary), intent(inout) :: IO_bc
 !!        type(filtering_data_type), intent(inout) :: filtering
 !!        type(filtering_data_type), intent(inout) :: wide_filtering
 !!        type(filtering_work_type), intent(inout) :: wk_filter
@@ -31,6 +32,7 @@
       use calypso_mpi
 !
       use t_mesh_data
+      use t_boundary_field_IO
       use t_filtering_data
       use t_solver_djds_MHD
 !
@@ -44,7 +46,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine input_control_4_MHD(mesh, group, ele_mesh,             &
+      subroutine input_control_4_MHD(mesh, group, ele_mesh, IO_bc,      &
      &          filtering, wide_filtering, wk_filter, MHD_matrices)
 !
       use m_ctl_data_fem_MHD
@@ -59,6 +61,7 @@
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
 !
+      type(IO_boundary), intent(inout) :: IO_bc
       type(filtering_data_type), intent(inout) :: filtering
       type(filtering_data_type), intent(inout) :: wide_filtering
       type(filtering_work_type), intent(inout) :: wk_filter
@@ -75,7 +78,7 @@
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
       call input_meshes_4_MHD                                           &
-     &   (mesh, group, filtering, wide_filtering, wk_filter)
+     &   (mesh, group, IO_bc, filtering, wide_filtering, wk_filter)
 !
       if(cmp_no_case(method_4_solver, cflag_mgcg)) then
         call alloc_MHD_MG_DJDS_mat(num_MG_level, MHD_matrices)
@@ -91,7 +94,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine input_control_4_snapshot(mesh, group, ele_mesh,        &
-     &          filtering, wide_filtering, wk_filter)
+     &          IO_bc, filtering, wide_filtering, wk_filter)
 !
       use m_ctl_data_fem_MHD
       use set_control_FEM_MHD
@@ -101,6 +104,7 @@
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
 !
+      type(IO_boundary), intent(inout) :: IO_bc
       type(filtering_data_type), intent(inout) :: filtering
       type(filtering_data_type), intent(inout) :: wide_filtering
       type(filtering_work_type), intent(inout) :: wk_filter
@@ -116,15 +120,15 @@
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
       call input_meshes_4_MHD                                           &
-     &   (mesh, group, filtering, wide_filtering, wk_filter)
+     &   (mesh, group, IO_bc, filtering, wide_filtering, wk_filter)
 !
       end subroutine input_control_4_snapshot
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine input_meshes_4_MHD                                     &
-     &         (mesh, group, filtering, wide_filtering, wk_filter)
+      subroutine input_meshes_4_MHD(mesh, group,                        &
+     &          IO_bc, filtering, wide_filtering, wk_filter)
 !
       use m_machine_parameter
       use m_control_parameter
@@ -138,11 +142,11 @@
       use set_surface_data_4_IO
       use set_edge_data_4_IO
       use node_monitor_IO
-      use read_bc_values_file
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
 !
+      type(IO_boundary), intent(inout) :: IO_bc
       type(filtering_data_type), intent(inout) :: filtering
       type(filtering_data_type), intent(inout) :: wide_filtering
       type(filtering_work_type), intent(inout) :: wk_filter
@@ -155,8 +159,8 @@
 ! ----  open data file for boundary data
 !
       if (iflag_boundary_file .eq. id_read_boundary_file) then
-        call s_read_bc_values_file                                      &
-     &     (my_rank, group%nod_grp, group%surf_grp)
+        call read_bc_condition_file                                     &
+     &     (my_rank, group%nod_grp, group%surf_grp, IO_bc)
       end if
 !
 ! ---------------------------------

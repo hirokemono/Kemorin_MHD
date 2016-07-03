@@ -4,8 +4,9 @@
 !      Written by H. Matsui nad H. Okuda
 !      Modified by H. Matsui on Oct., 2005
 !
-!!      subroutine set_bc_fixed_velo_id(node, nod_grp, bc_list,         &
+!!      subroutine set_bc_fixed_velo_id(IO_bc, node, nod_grp, bc_list,  &
 !!     &          nod_bc_v, sgs_bc_v, nod_bc_rot)
+!!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(node_data), intent(in) :: node
 !!        type(group_data), intent(in) :: nod_grp
 !!        type(nod_bc_list_type), intent(in) :: bc_list
@@ -13,22 +14,25 @@
 !!        type(vect_fixed_nod_bc_type), intent(inout) :: sgs_bc_v
 !!        type(scaler_rotaion_nod_bc_type), intent(inout) :: nod_bc_rot
 !!
-!!      subroutine set_bc_fixed_vect_p_id(node, nod_grp, bc_list,       &
-!!     &          nod_bc_a, sgs_bc_a)
+!!      subroutine set_bc_fixed_vect_p_id                               &
+!!     &         (IO_bc, node, nod_grp, bc_list, nod_bc_a, sgs_bc_a)
+!!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(node_data), intent(in) :: node
 !!        type(group_data), intent(in) :: nod_grp
 !!        type(nod_bc_list_type), intent(in) :: bc_list
 !!        type(vect_fixed_nod_bc_type), intent(inout) :: nod_bc_a
 !!        type(vect_fixed_nod_bc_type), intent(inout) :: sgs_bc_a
-!!      subroutine set_bc_fixed_magne_id(node, nod_grp, bc_list,        &
-!!     &          nod_bc_b, sgs_bc_b)
+!!      subroutine set_bc_fixed_magne_id                                &
+!!     &         (IO_bc, node, nod_grp, bc_list, nod_bc_b, sgs_bc_b)
+!!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(node_data), intent(in) :: node
 !!        type(group_data), intent(in) :: nod_grp
 !!        type(nod_bc_list_type), intent(in) :: bc_list
 !!        type(vect_fixed_nod_bc_type), intent(inout) :: nod_bc_b
 !!        type(vect_fixed_nod_bc_type), intent(inout) :: sgs_bc_b
-!!      subroutine set_bc_fixed_current_id(node, nod_grp, bc_list,      &
-!!     &          nod_bc_j)
+!!      subroutine set_bc_fixed_current_id                              &
+!!     &         (IO_bc, node, nod_grp, bc_list, nod_bc_j)
+!!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(node_data), intent(in) :: node
 !!        type(group_data), intent(in) :: nod_grp
 !!        type(nod_bc_list_type), intent(in) :: bc_list
@@ -44,6 +48,7 @@
       use t_geometry_data
       use t_group_data
       use t_nodal_bc_data
+      use t_boundary_field_IO
       use set_nod_bc_vector_id
 !
       implicit none
@@ -56,11 +61,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_bc_fixed_velo_id(node, nod_grp, bc_list,           &
+      subroutine set_bc_fixed_velo_id(IO_bc, node, nod_grp, bc_list,    &
      &          nod_bc_v, sgs_bc_v, nod_bc_rot)
 !
       use m_bc_data_list
 !
+      type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
       type(nod_bc_list_type), intent(in) :: bc_list
@@ -74,7 +80,7 @@
 !
       l_f(1:3) = 0
       call set_bc_fixed_vect_id                                         &
-     &   (node, nod_grp, bc_list, nod_bc_v, l_f)
+     &   (IO_bc, node, nod_grp, bc_list, nod_bc_v, l_f)
 !
       l_s(1:3) = 0
       call set_bc_sgs_vect_id                                           &
@@ -93,11 +99,12 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_bc_fixed_vect_p_id(node, nod_grp, bc_list,         &
-     &          nod_bc_a, sgs_bc_a)
+      subroutine set_bc_fixed_vect_p_id                                 &
+     &         (IO_bc, node, nod_grp, bc_list, nod_bc_a, sgs_bc_a)
 !
       use m_bc_data_list
 !
+      type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
       type(nod_bc_list_type), intent(in) :: bc_list
@@ -109,7 +116,8 @@
 !
 !
       l_f(1:3) = 0
-      call set_bc_fixed_vect_id(node, nod_grp, bc_list, nod_bc_a, l_f)
+      call set_bc_fixed_vect_id                                         &
+     &   (IO_bc, node, nod_grp, bc_list, nod_bc_a, l_f)
 !
       l_s(1:3) = 0
       call set_bc_sgs_vect_id(node, nod_grp, bc_list, sgs_bc_a, l_s)
@@ -119,11 +127,12 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_bc_fixed_magne_id(node, nod_grp, bc_list,          &
-     &          nod_bc_b, sgs_bc_b)
+      subroutine set_bc_fixed_magne_id                                  &
+     &         (IO_bc, node, nod_grp, bc_list, nod_bc_b, sgs_bc_b)
 !
       use m_bc_data_list
 !
+      type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
       type(nod_bc_list_type), intent(in) :: bc_list
@@ -136,7 +145,8 @@
 !
 !
       l_f(1:3) = 0
-      call set_bc_fixed_vect_id(node, nod_grp, bc_list, nod_bc_b, l_f)
+      call set_bc_fixed_vect_id                                         &
+     &   (IO_bc, node, nod_grp, bc_list, nod_bc_b, l_f)
 !
       call set_sph_magne_id(node, nod_grp, bc_list%num_bc,              &
      &    bc_list%bc_name, bc_list%ibc_type, nod_bc_b, l_f)
@@ -149,11 +159,12 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_bc_fixed_current_id(node, nod_grp, bc_list,        &
-     &          nod_bc_j)
+      subroutine set_bc_fixed_current_id                                &
+     &         (IO_bc, node, nod_grp, bc_list, nod_bc_j)
 !
       use m_bc_data_list
 !
+      type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
       type(nod_bc_list_type), intent(in) :: bc_list
@@ -164,7 +175,8 @@
 !
 !
       l_f(1:3) = 0
-      call set_bc_fixed_vect_id(node, nod_grp, bc_list, nod_bc_j, l_f)
+      call set_bc_fixed_vect_id                                         &
+     &   (IO_bc, node, nod_grp, bc_list, nod_bc_j, l_f)
 !
       end subroutine set_bc_fixed_current_id
 !
@@ -172,11 +184,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_bc_fixed_vect_id                                   &
-     &         (node, nod_grp, bc_list, vector_bc, l_f)
+     &         (IO_bc, node, nod_grp, bc_list, vector_bc, l_f)
 !
       use t_nodal_bc_data
       use m_bc_data_list
 !
+      type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
       type(nod_bc_list_type), intent(in) :: bc_list
@@ -186,7 +199,7 @@
 !
 !
       call set_fixed_vector_id                                          &
-     &   (node, nod_grp, bc_list%num_bc, bc_list%bc_name,               &
+     &   (IO_bc, node, nod_grp, bc_list%num_bc, bc_list%bc_name,        &
      &    bc_list%ibc_type, bc_list%bc_magnitude,                       &
      &    vector_bc%ibc, vector_bc%ibc2, vector_bc%nmax_bc,             &
      &    vector_bc%ibc_id, vector_bc%bc_apt, vector_bc%vect_bc_name,   &

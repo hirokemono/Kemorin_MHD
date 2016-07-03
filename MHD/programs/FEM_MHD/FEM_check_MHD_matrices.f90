@@ -38,6 +38,7 @@
       use m_SGS_model_coefs
       use m_bc_data_velo
       use m_solver_djds_MHD
+      use m_boundary_field_IO
 !
       use initialization_4_MHD
 !
@@ -48,7 +49,7 @@
 !   matrix assembling
 !
       if (iflag_debug.eq.1) write(*,*) 'init_analyzer_fl'
-      call init_analyzer_fl(mesh1, group1, ele_mesh1,                   &
+      call init_analyzer_fl(IO_bc1, mesh1, group1, ele_mesh1,           &
      &    MHD_mesh1, layer_tbl1)
 !
 !   construct matrix for Poisson and diffusion terms

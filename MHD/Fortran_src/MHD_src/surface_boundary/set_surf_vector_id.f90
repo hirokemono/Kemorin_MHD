@@ -3,13 +3,20 @@
 !
 !      Written by H. Matsui on Sep. 2005
 !
-!!      subroutine s_count_num_surf_vector(sf_grp, sf_grp_nod,          &
+!!      subroutine s_count_num_surf_vector(IO_bc, sf_grp, sf_grp_nod,   &
 !!     &           num_bc_sf, bc_sf_name, ibc_sf_type,                  &
 !!     &           field_name, sgs_sf, norm_sf)
 !!      subroutine s_set_surf_vector_id                                 &
-!!     &          (node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v,       &
+!!     &          (IO_bc, node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v,&
 !!     &           num_bc_sf, bc_sf_name, ibc_sf_type, bc_sf_mag,       &
 !!     &           field_name, sgs_sf, norm_sf)
+!!        type(IO_boundary), intent(in) :: IO_bc
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(in) :: surf
+!!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(surface_node_grp_data), intent(in) :: sf_grp_nod
+!!        type(surface_group_geometry), intent(in) :: sf_grp_v
 !!        type(scaler_surf_bc_data_type),  intent(inout) :: sgs_sf(3)
 !!        type(scaler_surf_flux_bc_type),  intent(inout) :: norm_sf
 !
@@ -23,6 +30,7 @@
       use t_group_data
       use t_surface_group_connect
       use t_surface_bc_data
+      use t_boundary_field_IO
       use set_surface_bc
 !
       implicit  none
@@ -33,10 +41,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_count_num_surf_vector(sf_grp, sf_grp_nod,            &
+      subroutine s_count_num_surf_vector(IO_bc, sf_grp, sf_grp_nod,     &
      &           num_bc_sf, bc_sf_name, ibc_sf_type,                    &
      &           field_name, sgs_sf, norm_sf)
 !
+      type(IO_boundary), intent(in) :: IO_bc
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !
@@ -86,7 +95,8 @@
      &                         - sf_grp_nod%inod_stack_sf_grp(i-1)
                 isig_s(1:3) = 1
               else if (ibc_sf_type(j) .eq. -iflag_fixed_norm) then
-                call count_surf_nod_group_from_data(i, ngrp_sf_dat_n,   &
+                call count_surf_nod_group_from_data                     &
+     &             (IO_bc, i, ngrp_sf_dat_n,                            &
      &              nnod_sf_dat_n, field_name, sf_grp%num_grp,          &
      &              sf_grp_nod%inod_stack_sf_grp, sf_grp%grp_name)
                 isig_s(1:3) = 1
@@ -110,12 +120,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_set_surf_vector_id                                   &
-     &          (node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v,         &
+     &          (IO_bc, node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v,  &
      &           num_bc_sf, bc_sf_name, ibc_sf_type, bc_sf_mag,         &
      &           field_name, sgs_sf, norm_sf)
 !
       use t_surface_group_geometry
 !
+      type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
@@ -170,7 +181,7 @@
      &            norm_sf%sf_apt_fix_fx, bc_sf_mag(j))
               isig_s(1:3) = 1
             else if (ibc_sf_type(j) .eq. -iflag_fixed_norm) then
-              call set_sf_nod_grp_from_data(l_10, i,                    &
+              call set_sf_nod_grp_from_data(IO_bc, l_10, i,             &
      &            node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v,        &
      &            norm_sf%ngrp_sf_fix_fx, norm_sf%nitem_sf_fix_fx,      &
      &            norm_sf%id_grp_sf_fix_fx, norm_sf%ist_ele_sf_fix_fx,  &

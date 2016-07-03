@@ -3,8 +3,14 @@
 !!
 !!      Written by Kemorin on Feb., 2004
 !!
-!!      subroutine set_bc_temp_id(node, ele, fluid, nod_grp, Snod_bcs)
-!!      subroutine set_bc_composition_id(node, ele, fluid, nod_grp)
+!!      subroutine set_bc_temp_id                                       &
+!!     &         (IO_bc, node, ele, fluid, nod_grp, Snod_bcs)
+!!        type(IO_boundary), intent(in) :: IO_bc
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(field_geometry_data), intent(in) :: fluid
+!!        type(group_data), intent(in) :: nod_grp
+!!        type(nodal_bcs_4_scalar_type), intent(inout) :: Snod_bcs
 !
 !
       module t_bc_data_temp
@@ -28,11 +34,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_bc_temp_id(node, ele, fluid, nod_grp, Snod_bcs)
+      subroutine set_bc_temp_id                                         &
+     &         (IO_bc, node, ele, fluid, nod_grp, Snod_bcs)
 !
       use t_geometry_data
       use t_group_data
       use t_geometry_data_MHD
+      use t_boundary_field_IO
       use m_control_parameter
       use m_bc_data_list
       use count_num_nod_bc_MHD
@@ -40,6 +48,7 @@
       use set_ele_nod_bc_vectors
       use set_nodal_boundary
 !
+      type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
@@ -55,7 +64,7 @@
       call alloc_scalar_nod_bc_type(node%numnod, Snod_bcs%sgs_bc_s)
 !
       Snod_bcs%nod_bc_s%scalar_bc_name = fhd_temp
-      call set_bc_fixed_temp_id(node, nod_grp, temp_nod,                &
+      call set_bc_fixed_temp_id(IO_bc, node, nod_grp, temp_nod,         &
      &    Snod_bcs%nod_bc_s, Snod_bcs%sgs_bc_s)
 !
 !   set node id in an element for the temperature boundary 

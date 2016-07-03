@@ -6,10 +6,10 @@
 !
 !!      subroutine set_bc_velo_4_sphere_id(node, nod_grp, bc_list,      &
 !!     &          nod_bc_vfree, nod_bc_vr0, nod_bc_vsp)
-!!      subroutine set_bc_fixed_temp_id(node, nod_grp, bc_list,         &
+!!      subroutine set_bc_fixed_temp_id(IO_bc, node, nod_grp, bc_list,  &
 !!     &          nod_bc_t, sgs_bc_t)
-!!      subroutine set_bc_fixed_m_potential_id(node, nod_grp, bc_list,  &
-!!     &          nod_bc_f, sgs_bc_f)
+!!      subroutine set_bc_fixed_m_potential_id                          &
+!!     &         (IO_bc, node, nod_grp, bc_list, nod_bc_f, sgs_bc_f)
 !
       module set_bc_scalars
 !
@@ -22,6 +22,7 @@
       use t_geometry_data
       use t_group_data
       use t_nodal_bc_data
+      use t_boundary_field_IO
       use set_nod_bc_scalar_id
 !
       implicit none
@@ -76,9 +77,10 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_bc_fixed_temp_id(node, nod_grp, bc_list,           &
+      subroutine set_bc_fixed_temp_id(IO_bc, node, nod_grp, bc_list,    &
      &          nod_bc_t, sgs_bc_t)
 !
+      type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
       type(nod_bc_list_type), intent(in) :: bc_list
@@ -90,7 +92,8 @@
 !
 !
       ii = 0
-      call set_bc_fixed_scalar_id(node, nod_grp, bc_list, nod_bc_t, ii)
+      call set_bc_fixed_scalar_id                                       &
+     &   (IO_bc, node, nod_grp, bc_list, nod_bc_t, ii)
 !
       i0 = 0
       call set_bc_sgs_scalar_id(node, nod_grp, bc_list, sgs_bc_t, i0)
@@ -100,9 +103,10 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_bc_fixed_m_potential_id(node, nod_grp, bc_list,    &
-     &          nod_bc_f, sgs_bc_f)
+      subroutine set_bc_fixed_m_potential_id                            &
+     &         (IO_bc, node, nod_grp, bc_list, nod_bc_f, sgs_bc_f)
 !
+      type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
       type(nod_bc_list_type), intent(in) :: bc_list
@@ -114,7 +118,8 @@
 !
 !
       ii = 0
-      call set_bc_fixed_scalar_id(node, nod_grp, bc_list, nod_bc_f, ii)
+      call set_bc_fixed_scalar_id                                       &
+     &   (IO_bc, node, nod_grp, bc_list, nod_bc_f, ii)
 !
       call set_bc_sph_magne_p_id(node, nod_grp, bc_list%num_bc,         &
      &    bc_list%bc_name, bc_list%ibc_type, ii, nod_bc_f)
@@ -128,8 +133,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_bc_fixed_scalar_id                                 &
-     &         (node, nod_grp, bc_list, scalar_bc, ii)
+     &         (IO_bc, node, nod_grp, bc_list, scalar_bc, ii)
 !
+      type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
       type(nod_bc_list_type), intent(in) :: bc_list
@@ -139,7 +145,7 @@
 !
 !
       call set_fixed_bc_scalar_id                                       &
-     &   (node, nod_grp, bc_list%num_bc, bc_list%bc_name,               &
+     &   (IO_bc, node, nod_grp, bc_list%num_bc, bc_list%bc_name,        &
      &    bc_list%ibc_type,  bc_list%bc_magnitude, scalar_bc%ibc,       &
      &    scalar_bc%ibc2, scalar_bc%num_bc_nod, scalar_bc%ibc_id,       &
      &    scalar_bc%bc_apt, scalar_bc%scalar_bc_name, ii)

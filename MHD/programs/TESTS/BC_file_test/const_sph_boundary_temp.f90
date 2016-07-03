@@ -3,7 +3,10 @@
 !
 !      programmed by H.Matsui on Sep. 2009
 !
-!      subroutine const_sph_temp_bc(node, nod_grp)
+!!      subroutine const_sph_temp_bc(node, nod_grp, IO_bc)
+!!        type(node_data), intent(in) :: node
+!!        type(group_data), intent(in) :: nod_grp
+!!        type(IO_boundary), intent(inout) :: IO_bc
 !
       module const_sph_boundary_temp
 !
@@ -23,15 +26,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine const_sph_temp_bc(node, nod_grp)
+      subroutine const_sph_temp_bc(node, nod_grp, IO_bc)
 !
       use calypso_mpi
       use m_ctl_params_test_bc_temp
-      use m_boundary_field_IO
-      use boundary_field_file_IO
+      use t_boundary_field_IO
 !
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
+!
+      type(IO_boundary), intent(inout) :: IO_bc
+!
       integer(kind = kint) :: igrp
 !
 !
@@ -43,25 +48,24 @@
       end do
 !
 !
-      num_bc_group_IO = ione
-      call allocate_num_bc_values
+      IO_bc%num_group = ione
+      call alloc_num_bc_values(IO_bc)
 !
-      bc_group_type_IO(1) = flag_nod_grp
-      bc_data_group_IO(1) = nod_grp%grp_name(igrp_nod_bc)
-      bc_field_type_IO(1) = 'temperature'
+      IO_bc%group_type(1) = flag_nod_grp
+      IO_bc%group_name(1) = nod_grp%grp_name(igrp_nod_bc)
+      IO_bc%field_type(1) = 'temperature'
 !
-      istack_bc_data_IO(0) = 0
-      istack_bc_data_IO(1) = nod_grp%istack_grp(igrp_nod_bc)            &
+      IO_bc%istack_data(0) = 0
+      IO_bc%istack_data(1) = nod_grp%istack_grp(igrp_nod_bc)            &
      &                      - nod_grp%istack_grp(igrp_nod_bc-1)
-      ntot_boundary_field_IO = istack_bc_data_IO(1)
-      call allocate_boundary_values
+      IO_bc%ntot_field = IO_bc%istack_data(1)
+      call alloc_boundary_values(IO_bc)
 !
       call set_sph_temp_bc                                              &
      &   (igrp_nod_bc, l_sph_bc, m_sph_bc, node, nod_grp,               &
-     &    ntot_boundary_field_IO, id_local_bc_fld_IO(1),                &
-     &    boundary_field_IO(1))
+     &    IO_bc%ntot_field, IO_bc%id_local_fld, IO_bc%d_field)
 !
-      call write_boundary_values_file(my_rank)
+      call write_boundary_values_file(my_rank, IO_bc)
 !
       end subroutine const_sph_temp_bc
 !

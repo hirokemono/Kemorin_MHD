@@ -4,11 +4,13 @@
 !
 !     Written by Kemorin
 !
-!!      subroutine set_bc_vect_p_id(node, ele, nod_grp, Bnod_bcs)
-!!      subroutine set_bc_magne_id(node, ele, nod_grp, Bnod_bcs)
-!!      subroutine set_bc_current_id(node, ele, nod_grp, Bnod_bcs)
-!!      subroutine set_bc_m_potential_id                                &
-!!     &         (node, ele, conduct, insulate, nod_grp, Bnod_bcs)
+!!      subroutine set_bc_vect_p_id(IO_bc, node, ele, nod_grp, Bnod_bcs)
+!!      subroutine set_bc_magne_id(IO_bc, node, ele, nod_grp, Bnod_bcs)
+!!      subroutine set_bc_current_id                                    &
+!!     &         (IO_bc, node, ele, nod_grp, Bnod_bcs)
+!!      subroutine set_bc_m_potential_id(IO_bc, node, ele,              &
+!!     &          conduct, insulate, nod_grp, Bnod_bcs)
+!!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: conduct, insulate
@@ -18,7 +20,10 @@
       module t_bc_data_magne
 !
       use m_precision
+      use t_geometry_data
+      use t_group_data
       use t_nodal_bc_data
+      use t_boundary_field_IO
 !
       implicit  none
 !
@@ -49,16 +54,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_bc_vect_p_id(node, ele, nod_grp, Bnod_bcs)
+      subroutine set_bc_vect_p_id(IO_bc, node, ele, nod_grp, Bnod_bcs)
 !
-      use t_geometry_data
-      use t_group_data
       use m_bc_data_list
       use m_boundary_condition_IDs
       use count_num_nod_bc_MHD
       use set_bc_vectors
       use set_ele_nod_bc_vectors
 !
+      type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(group_data), intent(in) :: nod_grp
@@ -78,8 +82,8 @@
       Bnod_bcs%nod_bc_a%vect_bc_name(2) = 'vector_potential_y'
       Bnod_bcs%nod_bc_a%vect_bc_name(3) = 'vector_potential_z'
 !
-      call set_bc_fixed_vect_p_id(node, nod_grp, a_potential_nod,       &
-     &    Bnod_bcs%nod_bc_a, Bnod_bcs%sgs_bc_a)
+      call set_bc_fixed_vect_p_id(IO_bc, node, nod_grp,                 &
+     &    a_potential_nod, Bnod_bcs%nod_bc_a, Bnod_bcs%sgs_bc_a)
 !
 !   set node id in an element
       call ele_nodal_bc_vector_whole(node, ele, Bnod_bcs%nod_bc_a)
@@ -89,16 +93,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_bc_magne_id(node, ele, nod_grp, Bnod_bcs)
+      subroutine set_bc_magne_id(IO_bc, node, ele, nod_grp, Bnod_bcs)
 !
-      use t_geometry_data
-      use t_group_data
       use m_bc_data_list
       use m_boundary_condition_IDs
       use count_num_nod_bc_MHD
       use set_bc_vectors
       use set_ele_nod_bc_vectors
 !
+      type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(group_data), intent(in) :: nod_grp
@@ -118,7 +121,7 @@
       Bnod_bcs%nod_bc_b%vect_bc_name(2) = 'magnetic_y'
       Bnod_bcs%nod_bc_b%vect_bc_name(3) = 'magnetic_z'
 !
-      call set_bc_fixed_magne_id(node, nod_grp, magne_nod,              &
+      call set_bc_fixed_magne_id(IO_bc, node, nod_grp, magne_nod,       &
      &    Bnod_bcs%nod_bc_b, Bnod_bcs%sgs_bc_b)
 !
 !   set node id in an element for magnetic boundary 
@@ -130,16 +133,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_bc_current_id(node, ele, nod_grp, Bnod_bcs)
+      subroutine set_bc_current_id                                      &
+     &         (IO_bc, node, ele, nod_grp, Bnod_bcs)
 !
-      use t_geometry_data
-      use t_group_data
       use m_boundary_condition_IDs
       use m_bc_data_list
       use count_num_nod_bc_MHD
       use set_bc_vectors
       use set_ele_nod_bc_vectors
 !
+      type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(group_data), intent(in) :: nod_grp
@@ -156,7 +159,7 @@
       Bnod_bcs%nod_bc_j%vect_bc_name(2) = 'current_y'
       Bnod_bcs%nod_bc_j%vect_bc_name(3) = 'current_z'
 !
-      call set_bc_fixed_current_id(node, nod_grp, current_nod,          &
+      call set_bc_fixed_current_id(IO_bc, node, nod_grp, current_nod,   &
      &    Bnod_bcs%nod_bc_j)
 !
       call ele_nodal_bc_vector_whole(node, ele, Bnod_bcs%nod_bc_j)
@@ -165,17 +168,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_bc_m_potential_id                                  &
-     &         (node, ele, conduct, insulate, nod_grp, Bnod_bcs)
+      subroutine set_bc_m_potential_id(IO_bc, node, ele,                &
+     &          conduct, insulate, nod_grp, Bnod_bcs)
 !
-      use t_geometry_data
-      use t_group_data
       use t_geometry_data_MHD
       use m_bc_data_list
       use count_num_nod_bc_MHD
       use set_bc_scalars
       use set_ele_nod_bc_vectors
 !
+      type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: conduct, insulate
@@ -192,7 +194,7 @@
 !
       Bnod_bcs%nod_bc_f%scalar_bc_name = fhd_mag_potential
 !
-      call set_bc_fixed_m_potential_id(node, nod_grp,                   &
+      call set_bc_fixed_m_potential_id(IO_bc, node, nod_grp,            &
      &    e_potential_nod, Bnod_bcs%nod_bc_f, Bnod_bcs%sgs_bc_f)
 !
 !   set node id in an element for the pressure boundary 

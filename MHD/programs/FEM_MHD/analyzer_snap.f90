@@ -29,6 +29,7 @@
 !
       use input_control
       use m_3d_filter_coef_MHD
+      use m_boundary_field_IO
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -47,7 +48,7 @@
 !     --------------------- 
 !
       call input_control_4_snapshot(mesh1, group1, ele_mesh1,           &
-     &    filtering1, wide_filtering, wk_filter1)
+     &    IO_bc1, filtering1, wide_filtering, wk_filter1)
 !
 !     --------------------- 
 !

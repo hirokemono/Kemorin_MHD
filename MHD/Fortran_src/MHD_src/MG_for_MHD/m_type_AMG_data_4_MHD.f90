@@ -28,6 +28,7 @@
       use t_solver_djds
       use t_crs_connect
       use t_bc_data_MHD
+      use t_boundary_field_IO
 !
       implicit  none
 !
@@ -62,5 +63,7 @@
 !
       type(SGS_terms_address), save :: MG_ifld_diff(max_MG_level)
       type(MHD_coefficients_type), save :: MG_diff_coefs(max_MG_level)
+!
+      type(IO_boundary), save :: IO_MG_bc(max_MG_level)
 !
       end module m_type_AMG_data_4_MHD

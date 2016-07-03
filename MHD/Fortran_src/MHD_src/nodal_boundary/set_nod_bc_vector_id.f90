@@ -7,7 +7,7 @@
 !        modified by Kemorin on Oct. 2005
 !
 !!      subroutine set_fixed_vector_id                                  &
-!!     &         (node, nod_grp, num_bc_field, bc_field_name,           &
+!!     &         (IO_bc, node, nod_grp, num_bc_field, bc_field_name,    &
 !!     &          ibc_field_type, bc_field_mag, ibc, ibc2, nmax_bc_nod, &
 !!     &          ibc_id, bc_apt, field_name, ii)
 !!      subroutine set_bc_vector_id                                     &
@@ -19,6 +19,9 @@
 !!     &          ibc, ibc2, num_bc_nod, ibc_id, bc_apt, iref, ii)
 !!      subroutine set_sph_magne_id(node, nod_grp, num_bc_field,        &
 !!     &          bc_field_name, ibc_field_type, nod_bc_b, l_f)
+!!        type(IO_boundary), intent(in) :: IO_bc
+!!        type(node_data), intent(in) :: node
+!!        type(group_data), intent(in) :: nod_grp
 !
       module set_nod_bc_vector_id
 !
@@ -26,6 +29,7 @@
 !
       use t_geometry_data
       use t_group_data
+      use t_boundary_field_IO
       use set_nodal_boundary
 !
       implicit none
@@ -37,10 +41,11 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_fixed_vector_id                                    &
-     &         (node, nod_grp, num_bc_field, bc_field_name,             &
+     &         (IO_bc, node, nod_grp, num_bc_field, bc_field_name,      &
      &          ibc_field_type, bc_field_mag, ibc, ibc2, nmax_bc_nod,   &
      &          ibc_id, bc_apt, field_name, ii)
 !
+      type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
       integer (kind=kint), intent(in) :: num_bc_field
@@ -78,7 +83,7 @@
 !
 ! -----------set boundary from data file
               else if (ibc_field_type(j)==-nd) then
-                call set_nod_bc_from_data(nod_grp, node%numnod,         &
+                call set_nod_bc_from_data(IO_bc, nod_grp, node%numnod,  &
      &              nmax_bc_nod, ii(nd), i, ibc_id(1,nd),               &
      &              ibc(1,nd), ibc2(1,nd), bc_apt(1,nd),                &
      &              field_name(nd))

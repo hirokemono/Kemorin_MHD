@@ -4,7 +4,9 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine s_set_bc_id_type_data(mesh, group, MHD_mesh, nodal_bc)
+!!      subroutine s_set_bc_id_type_data                                &
+!!     &         (IO_bc, mesh, group, MHD_mesh, nodal_bc)
+!!        type(IO_boundary),          intent(in) :: IO_bc
 !!        type(mesh_geometry),       intent(in) :: mesh
 !!        type(mesh_groups),         intent(in) :: group
 !!        type(mesh_data_MHD),       intent(in) :: MHD_mesh
@@ -38,7 +40,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_bc_id_type_data(mesh, group, MHD_mesh, nodal_bc)
+      subroutine s_set_bc_id_type_data                                  &
+     &         (IO_bc, mesh, group, MHD_mesh, nodal_bc)
 !
       use m_control_parameter
       use m_bc_data_list
@@ -46,8 +49,10 @@
       use t_mesh_data
       use t_geometry_data_MHD
       use t_nodal_bc_data
+      use t_boundary_field_IO
 !
 !
+      type(IO_boundary),          intent(in) :: IO_bc
       type(mesh_geometry),       intent(in) :: mesh
       type(mesh_groups),         intent(in) :: group
       type(mesh_data_MHD),       intent(in) :: MHD_mesh
@@ -56,43 +61,43 @@
 !
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         if ( iflag_debug .eq.1) write(*,*)  'set boundary id 4 v'
-        call set_bc_velo_id(mesh%node, mesh%ele, MHD_mesh%fluid,        &
-     &      group%nod_grp, nodal_bc%Vnod_bcs)
+        call set_bc_velo_id(IO_bc, mesh%node, mesh%ele,                 &
+     &      MHD_mesh%fluid, group%nod_grp, nodal_bc%Vnod_bcs)
         if ( iflag_debug .eq.1) write(*,*)  'set boundary id 4 P'
-        call set_bc_press_id(mesh%node, mesh%ele, MHD_mesh%fluid,       &
-     &      group%nod_grp, nodal_bc%Vnod_bcs)
+        call set_bc_press_id(IO_bc, mesh%node, mesh%ele,                &
+     &      MHD_mesh%fluid, group%nod_grp, nodal_bc%Vnod_bcs)
       end if
 !
       if (iflag_t_evo_4_temp .gt. id_no_evolution) then
-        call set_bc_temp_id(mesh%node, mesh%ele, MHD_mesh%fluid,        &
-     &      group%nod_grp, nodal_bc%Tnod_bcs)
+        call set_bc_temp_id(IO_bc, mesh%node, mesh%ele,                 &
+     &      MHD_mesh%fluid, group%nod_grp, nodal_bc%Tnod_bcs)
       end if
 !
 !
       if (iflag_t_evo_4_composit .gt. id_no_evolution) then
-        call set_bc_temp_id(mesh%node, mesh%ele, MHD_mesh%fluid,        &
-     &      group%nod_grp, nodal_bc%Cnod_bcs)
+        call set_bc_temp_id(IO_bc, mesh%node, mesh%ele,                 &
+     &      MHD_mesh%fluid, group%nod_grp, nodal_bc%Cnod_bcs)
       end if
 !
 !
       if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
      &  .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*)  'set boundary ID 4 magne'
-        call set_bc_magne_id                                            &
-     &     (mesh%node, mesh%ele, group%nod_grp, nodal_bc%Bnod_bcs)
+        call set_bc_magne_id(IO_bc, mesh%node, mesh%ele,                &
+     &     group%nod_grp, nodal_bc%Bnod_bcs)
         if (iflag_debug.eq.1)  write(*,*) 'set boundary ID 4 magne_p'
-        call set_bc_current_id                                          &
-     &     (mesh%node, mesh%ele, group%nod_grp, nodal_bc%Bnod_bcs)
+        call set_bc_current_id(IO_bc, mesh%node, mesh%ele,              &
+     &      group%nod_grp, nodal_bc%Bnod_bcs)
         if (iflag_debug.eq.1)  write(*,*) 'set boundary ID 4 current'
-        call set_bc_m_potential_id                                      &
-     &     (mesh%node, mesh%ele, MHD_mesh%conduct, MHD_mesh%insulate,   &
+        call set_bc_m_potential_id(IO_bc, mesh%node, mesh%ele,          &
+     &      MHD_mesh%conduct, MHD_mesh%insulate,                        &
      &      group%nod_grp, nodal_bc%Bnod_bcs)
       end if
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         if (iflag_debug .eq.1) write(*,*) 'set boundary ID 4 vect_p'
-        call set_bc_vect_p_id                                           &
-     &     (mesh%node, mesh%ele, group%nod_grp, nodal_bc%Bnod_bcs)
+        call set_bc_vect_p_id(IO_bc, mesh%node, mesh%ele,               &
+     &      group%nod_grp, nodal_bc%Bnod_bcs)
       end if
 !
       end subroutine s_set_bc_id_type_data

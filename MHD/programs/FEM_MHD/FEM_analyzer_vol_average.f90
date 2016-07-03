@@ -30,6 +30,7 @@
       use m_control_parameter
       use m_layering_ele_list
       use m_geometry_data_MHD
+      use m_boundary_field_IO
 !
       use initialize_4_snapshot
 !
@@ -40,7 +41,7 @@
 !   matrix assembling
 !
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
-      call init_analyzer_snap(mesh1, group1, ele_mesh1,                 &
+      call init_analyzer_snap(IO_bc1, mesh1, group1, ele_mesh1,         &
      &    MHD_mesh1, layer_tbl1)
 !
       end subroutine FEM_initialize_vol_average

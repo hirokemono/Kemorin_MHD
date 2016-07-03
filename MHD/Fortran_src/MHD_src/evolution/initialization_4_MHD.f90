@@ -3,8 +3,9 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine init_analyzer_fl(mesh, group, ele_mesh,              &
+!!      subroutine init_analyzer_fl(IO_bc, mesh, group, ele_mesh,       &
 !!     &          MHD_mesh, layer_tbl)
+!!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(element_geometry), intent(inout) :: ele_mesh
@@ -23,7 +24,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer_fl(mesh, group, ele_mesh,                &
+      subroutine init_analyzer_fl(IO_bc, mesh, group, ele_mesh,         &
      &          MHD_mesh, layer_tbl)
 !
       use calypso_mpi
@@ -55,6 +56,7 @@
       use t_geometry_data_MHD
       use t_layering_ele_list
       use t_work_layer_correlate
+      use t_boundary_field_IO
 !
       use count_whole_num_element
 !
@@ -89,6 +91,8 @@
 !
       use nod_phys_send_recv
       use solver_MGCG_MHD
+!
+      type(IO_boundary), intent(in) :: IO_bc
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
@@ -271,7 +275,7 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_data'
-      call set_boundary_data(mesh, ele_mesh, MHD_mesh, group,           &
+      call set_boundary_data(IO_bc, mesh, ele_mesh, MHD_mesh, group,    &
      &    iphys, nod_fld1)
 !
 !     ---------------------

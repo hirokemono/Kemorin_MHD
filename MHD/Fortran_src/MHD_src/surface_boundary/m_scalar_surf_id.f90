@@ -4,12 +4,18 @@
 !      Written by H. Matsui on Sep. 2005
 !
 !!      subroutine count_num_surf_gradient                              &
-!!     &         (name_grad, sf_grp, scalar_surf, Ssf_bcs)
+!!     &         (name_grad, IO_bc, sf_grp, scalar_surf, Ssf_bcs)
 !!      subroutine count_num_wall_potential                             &
-!!     &         (name_grad, sf_grp, potential_surf, Psf_bcs)
+!!     &         (name_grad, IO_bc, sf_grp, potential_surf, Psf_bcs)
 !!
-!!      subroutine set_surf_grad_scalar_id(sf_grp, scalar_surf, Ssf_bcs)
-!!      subroutine set_wall_potential_id(sf_grp, potential_surf, Psf_bcs)
+!!      subroutine set_surf_grad_scalar_id                              &
+!!     &         (IO_bc, sf_grp, scalar_surf, Ssf_bcs)
+!!      subroutine set_wall_potential_id                                &
+!!     &         (IO_bc, sf_grp, potential_surf, Psf_bcs)
+!!        type(IO_boundary), intent(in) :: IO_bc
+!!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(surface_bc_list_type), intent(in) :: scalar_surf
+!!        type(scaler_surf_bc_type),  intent(inout) :: Ssf_bcs
 !
       module m_scalar_surf_id
 !
@@ -19,6 +25,7 @@
       use m_header_4_surface_bc
       use t_group_data
       use t_surface_bc_data
+      use t_boundary_field_IO
 !
       implicit  none
 !
@@ -29,12 +36,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine count_num_surf_gradient                                &
-     &         (name_grad, sf_grp, scalar_surf, Ssf_bcs)
+     &         (name_grad, IO_bc, sf_grp, scalar_surf, Ssf_bcs)
 !
       use set_surf_scalar_id
       use set_sf_grad_scalar_id
 !
       character(len=kchara), intent(in) :: name_grad
+      type(IO_boundary), intent(in) :: IO_bc
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_bc_list_type), intent(in) :: scalar_surf
       type(scaler_surf_bc_type),  intent(inout) :: Ssf_bcs
@@ -44,7 +52,7 @@
      &    scalar_surf%num_bc, scalar_surf%bc_name,                      &
      &    scalar_surf%ibc_type, Ssf_bcs%sgs%ngrp_sf_dat)
       call count_num_surf_grad_scalar                                   &
-     &    (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,          &
+     &    (IO_bc, sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,   &
      &     scalar_surf%num_bc, scalar_surf%bc_name,                     &
      &     scalar_surf%ibc_type, name_grad,                             &
      &     Ssf_bcs%flux%ngrp_sf_fix_fx, Ssf_bcs%flux%nitem_sf_fix_fx,   &
@@ -55,13 +63,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine count_num_wall_potential                               &
-     &         (name_grad, sf_grp, potential_surf, Psf_bcs)
+     &         (name_grad, IO_bc, sf_grp, potential_surf, Psf_bcs)
 !
       use set_surf_scalar_id
       use set_sf_grad_scalar_id
       use set_wall_scalar_id
 !
       character(len=kchara), intent(in) :: name_grad
+      type(IO_boundary), intent(in) :: IO_bc
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_bc_list_type), intent(in) :: potential_surf
       type(potential_surf_bc_type),  intent(inout) :: Psf_bcs
@@ -71,7 +80,7 @@
      &    potential_surf%num_bc, potential_surf%bc_name,                &
      &    potential_surf%ibc_type, Psf_bcs%sgs%ngrp_sf_dat)
       call count_num_surf_grad_scalar                                   &
-     &    (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,          &
+     &    (IO_bc, sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,   &
      &     potential_surf%num_bc, potential_surf%bc_name,               &
      &     potential_surf%ibc_type, name_grad,                          &
      &     Psf_bcs%grad%ngrp_sf_fix_fx, Psf_bcs%grad%nitem_sf_fix_fx,   &
@@ -87,11 +96,13 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_surf_grad_scalar_id(sf_grp, scalar_surf, Ssf_bcs)
+      subroutine set_surf_grad_scalar_id                                &
+     &         (IO_bc, sf_grp, scalar_surf, Ssf_bcs)
 !
       use set_surf_scalar_id
       use set_sf_grad_scalar_id
 !
+      type(IO_boundary), intent(in) :: IO_bc
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_bc_list_type), intent(in) :: scalar_surf
       type(scaler_surf_bc_type),  intent(inout) :: Ssf_bcs
@@ -101,7 +112,7 @@
      &   scalar_surf%num_bc, scalar_surf%bc_name, scalar_surf%ibc_type, &
      &   Ssf_bcs%sgs%ngrp_sf_dat, Ssf_bcs%sgs%id_grp_sf_dat)
 !
-      call s_set_surf_grad_scalar_id(sf_grp,                            &
+      call s_set_surf_grad_scalar_id(IO_bc, sf_grp,                     &
      &   scalar_surf%num_bc, scalar_surf%bc_name,                       &
      &   scalar_surf%ibc_type, scalar_surf%bc_magnitude, name_dsg,      &
      &   Ssf_bcs%flux%ngrp_sf_fix_fx, Ssf_bcs%flux%id_grp_sf_fix_fx,    &
@@ -115,12 +126,14 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_wall_potential_id(sf_grp, potential_surf, Psf_bcs)
+      subroutine set_wall_potential_id                                  &
+     &         (IO_bc, sf_grp, potential_surf, Psf_bcs)
 !
       use set_surf_scalar_id
       use set_sf_grad_scalar_id
       use set_wall_scalar_id
 !
+      type(IO_boundary), intent(in) :: IO_bc
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_bc_list_type), intent(in) :: potential_surf
       type(potential_surf_bc_type),  intent(inout) :: Psf_bcs
@@ -131,7 +144,7 @@
      &   potential_surf%ibc_type, Psf_bcs%sgs%ngrp_sf_dat,              &
      &   Psf_bcs%sgs%id_grp_sf_dat)
 !
-      call s_set_surf_grad_scalar_id(sf_grp,                            &
+      call s_set_surf_grad_scalar_id(IO_bc, sf_grp,                     &
      &    potential_surf%num_bc, potential_surf%bc_name,                &
      &    potential_surf%ibc_type, potential_surf%bc_magnitude,         &
      &    name_pg, Psf_bcs%grad%ngrp_sf_fix_fx,                         &

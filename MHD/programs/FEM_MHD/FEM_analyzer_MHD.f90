@@ -48,6 +48,7 @@
       use m_work_4_dynamic_model
       use m_solver_djds_MHD
       use m_flexible_time_step
+      use m_boundary_field_IO
 !
       use initialization_4_MHD
       use lead_physical_values
@@ -63,7 +64,7 @@
 !
 !   matrix assembling
 !
-      call init_analyzer_fl(mesh1, group1, ele_mesh1,                   &
+      call init_analyzer_fl(IO_bc1, mesh1, group1, ele_mesh1,           &
      &    MHD_mesh1, layer_tbl1)
 !
       call nod_fields_send_recv(mesh1%node, mesh1%nod_comm, nod_fld1)

@@ -4,54 +4,56 @@
 !      Written by H. Matsui on july, 2005
 !      Modified by H. Matsui on Jan., 2009
 !
-!      subroutine set_nod_bc_type_from_ctl(ii, i, nod_grp,              &
-!     &          scalar_bc, bc_magnitude )
-!        integer(kind = kint), intent(in) :: i
-!        real ( kind = kreal), intent(in) :: bc_magnitude
-!        type(group_data), intent(in) :: nod_grp
-!        integer(kind = kint), intent(inout) :: ii
-!        type(scaler_fixed_nod_bc_type), intent(inout) :: scalar_bc
-!      subroutine set_vect_nod_bc_type_from_ctl(ii, i, nd, nod_grp,     &
-!     &          vect_bc, bc_magnitude )
-!        integer(kind = kint), intent(in) :: i, nd
-!        real ( kind = kreal), intent(in) :: bc_magnitude
-!        type(group_data), intent(in) :: nod_grp
-!        integer(kind = kint), intent(inout) :: ii
-!        type(vect_fixed_nod_bc_type), intent(inout) :: vect_bc
-!      subroutine set_rot_nod_bc_type_from_ctl(ii, i, nd, nod_grp,      &
-!     &          rotation, bc_magnitude )
-!        integer(kind = kint), intent(in) :: i, nd
-!        real ( kind = kreal), intent(in) :: bc_magnitude
-!        type(group_data), intent(in) :: nod_grp
-!        integer(kind = kint), intent(inout) :: ii(3)
-!        type(scaler_rotaion_nod_bc_type), intent(inout) :: rotation
-!      subroutine set_nod_bc_type_from_data(ii, i, nod_grp,             &
-!     &          scalar_bc, field_name )
-!        character(len=kchara), intent(in) :: field_name
-!        integer(kind = kint), intent(in) :: i
-!        type(group_data),          intent(in) :: nod_grp
-!        integer(kind = kint), intent(inout) :: ii
-!        type(scaler_fixed_nod_bc_type), intent(inout) :: scalar_bc
-!      subroutine set_vect_nod_bc_type_from_data(ii, i, nd, nod_grp,    &
-!     &          vect_bc, field_name )
-!        character(len=kchara), intent(in) :: field_name
-!        integer(kind = kint), intent(in) :: i, nd
-!        type(group_data),          intent(in) :: nod_grp
-!        integer(kind = kint), intent(inout) :: ii
-!        type(vect_fixed_nod_bc_type), intent(inout) :: vect_bc
-!      subroutine set_magne_nod_bc_type_from_sph(ii, i, nod_grp,        &
-!     &          magne_bc )
-!        integer(kind = kint), intent(in) :: i
-!        type(group_data),          intent(in) :: nod_grp
-!
-!        integer(kind = kint), intent(inout) :: ii(3)
-!        type(vect_fixed_nod_bc_type), intent(inout) :: magne_bc
-!      subroutine set_mag_p_nod_bc_type_from_sph(ii, i, nod_grp,        &
-!     &          scalar_bc )
-!        integer(kind = kint), intent(in) :: i
-!        type(group_data),          intent(in) :: nod_grp
-!        integer(kind = kint), intent(inout) :: ii
-!        type(scaler_fixed_nod_bc_type), intent(inout) :: scalar_bc
+!!      subroutine set_nod_bc_type_from_ctl(ii, i, nod_grp,             &
+!!     &          scalar_bc, bc_magnitude )
+!!        integer(kind = kint), intent(in) :: i
+!!        real ( kind = kreal), intent(in) :: bc_magnitude
+!!        type(group_data), intent(in) :: nod_grp
+!!        integer(kind = kint), intent(inout) :: ii
+!!        type(scaler_fixed_nod_bc_type), intent(inout) :: scalar_bc
+!!      subroutine set_vect_nod_bc_type_from_ctl(ii, i, nd, nod_grp,    &
+!!     &          vect_bc, bc_magnitude )
+!!        integer(kind = kint), intent(in) :: i, nd
+!!        real ( kind = kreal), intent(in) :: bc_magnitude
+!!        type(group_data), intent(in) :: nod_grp
+!!        integer(kind = kint), intent(inout) :: ii
+!!        type(vect_fixed_nod_bc_type), intent(inout) :: vect_bc
+!!      subroutine set_rot_nod_bc_type_from_ctl(ii, i, nd, nod_grp,     &
+!!     &          rotation, bc_magnitude )
+!!        integer(kind = kint), intent(in) :: i, nd
+!!        real ( kind = kreal), intent(in) :: bc_magnitude
+!!        type(group_data), intent(in) :: nod_grp
+!!        integer(kind = kint), intent(inout) :: ii(3)
+!!        type(scaler_rotaion_nod_bc_type), intent(inout) :: rotation
+!!      subroutine set_nod_bc_type_from_data(ii, i, IO_bc, nod_grp,     &
+!!     &          scalar_bc, field_name )
+!!        character(len=kchara), intent(in) :: field_name
+!!        integer(kind = kint), intent(in) :: i
+!!        type(IO_boundary), intent(in) :: IO_bc
+!!        type(group_data),          intent(in) :: nod_grp
+!!        integer(kind = kint), intent(inout) :: ii
+!!        type(scaler_fixed_nod_bc_type), intent(inout) :: scalar_bc
+!!      subroutine set_vect_nod_bc_type_from_data(ii, i, nd,            &
+!!     &          IO_bc, nod_grp, vect_bc, field_name )
+!!        character(len=kchara), intent(in) :: field_name
+!!        integer(kind = kint), intent(in) :: i, nd
+!!        type(IO_boundary), intent(in) :: IO_bc
+!!        type(group_data), intent(in) :: nod_grp
+!!        integer(kind = kint), intent(inout) :: ii
+!!        type(vect_fixed_nod_bc_type), intent(inout) :: vect_bc
+!!      subroutine set_magne_nod_bc_type_from_sph(ii, i, nod_grp,       &
+!!     &          magne_bc )
+!!        integer(kind = kint), intent(in) :: i
+!!        type(group_data),          intent(in) :: nod_grp
+!!
+!!        integer(kind = kint), intent(inout) :: ii(3)
+!!        type(vect_fixed_nod_bc_type), intent(inout) :: magne_bc
+!!      subroutine set_mag_p_nod_bc_type_from_sph(ii, i, nod_grp,       &
+!!     &          scalar_bc )
+!!        integer(kind = kint), intent(in) :: i
+!!        type(group_data),          intent(in) :: nod_grp
+!!        integer(kind = kint), intent(inout) :: ii
+!!        type(scaler_fixed_nod_bc_type), intent(inout) :: scalar_bc
 !
       module set_nodal_bc_type
 !
@@ -179,17 +181,18 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_nod_bc_type_from_data(ii, i, nod_grp,              &
+      subroutine set_nod_bc_type_from_data(ii, i, IO_bc, nod_grp,       &
      &          scalar_bc, field_name )
 !
       use t_group_data
       use t_nodal_bc_data
-      use m_boundary_field_IO
+      use t_boundary_field_IO
 !
       character(len=kchara), intent(in) :: field_name
       integer(kind = kint), intent(in) :: i
 !
-      type(group_data),          intent(in) :: nod_grp
+      type(IO_boundary), intent(in) :: IO_bc
+      type(group_data), intent(in) :: nod_grp
 !
       integer(kind = kint), intent(inout) :: ii
       type(scaler_fixed_nod_bc_type), intent(inout) :: scalar_bc
@@ -197,10 +200,10 @@
       integer(kind = kint) :: k, ia, inod
 !
 !
-      do ia = 1, num_bc_group_IO
-        if(bc_group_type_IO(ia) .eq. flag_nod_grp) then
-          if (bc_data_group_IO(ia) .eq. nod_grp%grp_name(i)             &
-     &        .and. bc_field_type_IO(ia) .eq. field_name ) then
+      do ia = 1, IO_bc%num_group
+        if(IO_bc%group_type(ia) .eq. flag_nod_grp) then
+          if (IO_bc%group_name(ia) .eq. nod_grp%grp_name(i)             &
+     &        .and. IO_bc%field_type(ia) .eq. field_name ) then
 !
             do k = nod_grp%istack_grp(i-1)+1, nod_grp%istack_grp(i)
               ii = ii + 1
@@ -220,17 +223,18 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_vect_nod_bc_type_from_data(ii, i, nd, nod_grp,     &
-     &          vect_bc, field_name )
+      subroutine set_vect_nod_bc_type_from_data(ii, i, nd,              &
+     &          IO_bc, nod_grp, vect_bc, field_name )
 !
       use t_group_data
       use t_nodal_bc_data
-      use m_boundary_field_IO
+      use t_boundary_field_IO
 !
       character(len=kchara), intent(in) :: field_name
       integer(kind = kint), intent(in) :: i, nd
 !
-      type(group_data),          intent(in) :: nod_grp
+      type(IO_boundary), intent(in) :: IO_bc
+      type(group_data), intent(in) :: nod_grp
 !
       integer(kind = kint), intent(inout) :: ii(3)
       type(vect_fixed_nod_bc_type), intent(inout) :: vect_bc
@@ -238,10 +242,10 @@
       integer(kind = kint) :: k, ia, inod
 !
 !
-      do ia = 1, num_bc_group_IO
-        if(bc_group_type_IO(ia) .eq. flag_nod_grp) then
-          if ( bc_data_group_IO(ia) .eq. nod_grp%grp_name(i)            &
-     &        .and. bc_field_type_IO(ia) .eq. field_name ) then
+      do ia = 1, IO_bc%num_group
+        if(IO_bc%group_type(ia) .eq. flag_nod_grp) then
+          if ( IO_bc%group_name(ia) .eq. nod_grp%grp_name(i)            &
+     &        .and. IO_bc%field_type(ia) .eq. field_name ) then
 !
             do k = nod_grp%istack_grp(i-1)+1, nod_grp%istack_grp(i)
               ii(nd) = ii(nd) + 1

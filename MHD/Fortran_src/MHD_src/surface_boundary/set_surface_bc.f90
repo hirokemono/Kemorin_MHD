@@ -4,25 +4,33 @@
 !      Written by H. Matsui on July, 2005
 !      Modified by H. Matsui on Jan., 2009
 !
-!      subroutine  count_surf_group_from_data(i_sf, ngrp_sf, nele_sf,   &
-!     &           field_name, num_surf, surf_istack, surf_name)
-!      subroutine  count_surf_nod_group_from_data(i_sf, ngrp_sf,        &
-!     &           nnod_sf, field_name, num_surf, inod_stack_sf_grp,     &
-!     &           surf_name)
-!
-!      subroutine  set_surf_group_from_ctl(num_surf, surf_istack,       &
-!     &           ngrp_sf, nele_sf, i_dest, igrp, id_grp, ist_sf,       &
-!     &           sf_dat, surf_magnitude)
-!      subroutine set_surf_group_from_data(sf_grp,                      &
-!     &           ngrp_sf, nele_sf, i_dest, igrp, id_grp, ist_sf,       &
-!     &           sf_dat, field_name)
-!
+!!      subroutine count_surf_group_from_data                           &
+!!     &         (IO_bc, i_sf, ngrp_sf, nele_sf,                        &
+!!     &          field_name, num_surf, surf_istack, surf_name)
+!!      subroutine  count_surf_nod_group_from_data(IO_bc, i_sf, ngrp_sf,&
+!!     &           nnod_sf, field_name, num_surf, inod_stack_sf_grp,    &
+!!     &           surf_name)
+!!
+!!      subroutine  set_surf_group_from_ctl(num_surf, surf_istack,      &
+!!     &           ngrp_sf, nele_sf, i_dest, igrp, id_grp, ist_sf,      &
+!!     &           sf_dat, surf_magnitude)
+!!      subroutine set_surf_group_from_data(IO_bc, sf_grp,              &
+!!     &           ngrp_sf, nele_sf, i_dest, igrp, id_grp, ist_sf,      &
+!!     &           sf_dat, field_name)
+!!
 !!      subroutine  set_sf_nod_grp_from_ctl(i_dest, igrp,               &
 !!     &           num_surf, inod_stack_sf_grp, ngrp_sf, nnod_sf,       &
 !!     &           id_grp, ist_nod, sf_dat, surf_magnitude)
-!!      subroutine  set_sf_nod_grp_from_data(i_dest, igrp,              &
+!!      subroutine  set_sf_nod_grp_from_data(IO_bc, i_dest, igrp,       &
 !!     &           node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v,       &
 !!     &           ngrp_sf, nnod_sf, id_grp, ist_nod, sf_dat, field_name)
+!!        type(IO_boundary), intent(in) :: IO_bc
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(in) :: surf
+!!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(surface_node_grp_data), intent(in) :: sf_grp_nod
+!!        type(surface_group_geometry), intent(in) :: sf_grp_v
 !
       module set_surface_bc
 !
@@ -36,11 +44,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine  count_surf_group_from_data(i_sf, ngrp_sf, nele_sf,    &
-     &           field_name, num_surf, surf_istack, surf_name)
+      subroutine count_surf_group_from_data                             &
+     &         (IO_bc, i_sf, ngrp_sf, nele_sf,                          &
+     &          field_name, num_surf, surf_istack, surf_name)
 !
-      use m_boundary_field_IO
+      use t_boundary_field_IO
 !
+      type(IO_boundary), intent(in) :: IO_bc
       integer(kind=kint), intent(in) :: num_surf
       integer(kind = kint), intent(in) :: surf_istack(0:num_surf)
       character(len=kchara), intent(in) :: surf_name(num_surf)
@@ -51,10 +61,10 @@
 !
       integer(kind = kint) :: ia
 !
-      do ia = 1, num_bc_group_IO
-        if(bc_group_type_IO(ia) .eq. flag_surf_grp) then
-          if ( bc_data_group_IO(ia) .eq. surf_name(i_sf)                &
-     &       .and. bc_field_type_IO(ia) .eq. field_name ) then
+      do ia = 1, IO_bc%num_group
+        if(IO_bc%group_type(ia) .eq. flag_surf_grp) then
+          if ( IO_bc%group_name(ia) .eq. surf_name(i_sf)                &
+     &       .and. IO_bc%field_type(ia) .eq. field_name ) then
             ngrp_sf = ngrp_sf + 1
             nele_sf = nele_sf + surf_istack(i_sf) - surf_istack(i_sf-1)
           end if
@@ -65,12 +75,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine  count_surf_nod_group_from_data(i_sf, ngrp_sf,         &
+      subroutine  count_surf_nod_group_from_data(IO_bc, i_sf, ngrp_sf,  &
      &           nnod_sf, field_name, num_surf, inod_stack_sf_grp,      &
      &           surf_name)
 !
-      use m_boundary_field_IO
+      use t_boundary_field_IO
 !
+      type(IO_boundary), intent(in) :: IO_bc
       integer(kind=kint), intent(in) :: num_surf
       integer(kind = kint), intent(in) :: inod_stack_sf_grp(0:num_surf)
       character(len=kchara), intent(in) :: surf_name(num_surf)
@@ -81,10 +92,10 @@
 !
       integer(kind = kint) :: ia
 !
-      do ia = 1, num_bc_group_IO
-        if(bc_group_type_IO(ia) .eq. flag_surf_grp) then
-          if ( bc_data_group_IO(ia) .eq. surf_name(i_sf)                &
-     &       .and. bc_field_type_IO(ia) .eq. field_name ) then
+      do ia = 1, IO_bc%num_group
+        if(IO_bc%group_type(ia) .eq. flag_surf_grp) then
+          if ( IO_bc%group_name(ia) .eq. surf_name(i_sf)                &
+     &       .and. IO_bc%field_type(ia) .eq. field_name ) then
             ngrp_sf = ngrp_sf + 1
             nnod_sf = nnod_sf                                           &
      &           + inod_stack_sf_grp(i_sf) - inod_stack_sf_grp(i_sf-1)
@@ -129,14 +140,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_surf_group_from_data(sf_grp,                       &
+      subroutine set_surf_group_from_data(IO_bc, sf_grp,                &
      &           ngrp_sf, nele_sf, i_dest, igrp, id_grp, ist_sf,        &
      &           sf_dat, field_name)
 !
       use t_group_data
-      use m_boundary_field_IO
+      use t_boundary_field_IO
       use set_surface_values
 !
+      type(IO_boundary), intent(in) :: IO_bc
       type(surface_group_data), intent(in) :: sf_grp
 !
       character(len=kchara), intent(in) :: field_name
@@ -149,15 +161,16 @@
       integer(kind = kint) :: ia
 !
 !
-      do ia = 1, num_bc_group_IO
-        if(bc_group_type_IO(ia) .eq. flag_surf_grp) then
-          if ( bc_data_group_IO(ia) .eq. sf_grp%grp_name(igrp)          &
-     &        .and.  bc_field_type_IO(ia) .eq. field_name) then
+      do ia = 1, IO_bc%num_group
+        if(IO_bc%group_type(ia) .eq. flag_surf_grp) then
+          if ( IO_bc%group_name(ia) .eq. sf_grp%grp_name(igrp)          &
+     &        .and.  IO_bc%field_type(ia) .eq. field_name) then
             i_dest = i_dest + 1
             id_grp(i_dest) = igrp
 !
-            call set_surf_bc_1st(sf_grp, ngrp_sf, nele_sf,              &
-     &          igrp, ia, i_dest, ist_sf, sf_dat)
+            call set_surf_bc_dat                                        &
+     &         (IO_bc, ngrp_sf, nele_sf, igrp, ia, i_dest,              &
+     &          sf_grp%num_grp, sf_grp%istack_grp, ist_sf, sf_dat)
           end if
         end if
       end do
@@ -199,18 +212,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine  set_sf_nod_grp_from_data(i_dest, igrp,                &
+      subroutine  set_sf_nod_grp_from_data(IO_bc, i_dest, igrp,         &
      &           node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v,         &
      &           ngrp_sf, nnod_sf, id_grp, ist_nod, sf_dat, field_name)
 !
-      use m_boundary_field_IO
-      use set_surface_values
+      use t_boundary_field_IO
       use t_geometry_data
       use t_surface_data
       use t_group_data
       use t_surface_group_connect
       use t_surface_group_geometry
+      use set_surface_values
 !
+      type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
@@ -227,16 +241,16 @@
 !
       integer(kind = kint) :: ia
 !
-      do ia = 1, num_bc_group_IO
-        if(bc_group_type_IO(ia) .eq. flag_surf_grp) then
-          if ( bc_data_group_IO(ia) .eq. sf_grp%grp_name(igrp)          &
-     &      .and. bc_field_type_IO(ia) .eq. field_name) then
+      do ia = 1, IO_bc%num_group
+        if(IO_bc%group_type(ia) .eq. flag_surf_grp) then
+          if ( IO_bc%group_name(ia) .eq. sf_grp%grp_name(igrp)          &
+     &      .and. IO_bc%field_type(ia) .eq. field_name) then
 !
             i_dest = i_dest + 1
             id_grp(i_dest) = igrp
 !
-            call set_surf_bc_on_node_1st                                &
-     &         (node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v,          &
+            call set_surf_bc_on_node                                    &
+     &         (IO_bc, node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v,   &
      &          ngrp_sf, nnod_sf, igrp, ia, i_dest, ist_nod, sf_dat)
           end if
         end if

@@ -16,11 +16,13 @@
 !
       use calypso_mpi
       use t_mesh_data
+      use t_boundary_field_IO
 !
       implicit none
 !
       type(mesh_data), save :: femmesh
       type(element_geometry), save :: ele_mesh
+      type(IO_boundary), save :: IO_bc_t
 !
 ! ----------------------------------------------------------------------
 !
@@ -60,11 +62,12 @@
 !
       subroutine analyze_bc_temp
 !
+      use m_boundary_field_IO
       use const_sph_boundary_temp
 !
       if (iflag_debug.gt.0) write(*,*) 'const_sph_temp_bc'
       call const_sph_temp_bc                                            &
-     &   (femmesh%mesh%node, femmesh%group%nod_grp)
+     &   (femmesh%mesh%node, femmesh%group%nod_grp, IO_bc_t)
 !
       end subroutine analyze_bc_temp
 !

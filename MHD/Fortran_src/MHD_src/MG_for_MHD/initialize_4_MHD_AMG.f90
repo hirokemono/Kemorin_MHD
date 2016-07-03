@@ -267,12 +267,13 @@
 !     --------------------- 
 !
       do i_level = 1, num_MG_level
-        call s_set_bc_id_type_data( MG_mesh(i_level)%mesh,              &
+        call s_set_bc_id_type_data                                      &
+     &     (IO_MG_bc(i_level), MG_mesh(i_level)%mesh,                   &
      &      MG_mesh(i_level)%group, MG_MHD_mesh(i_level),               &
      &      MG_node_bc(i_level))
 !
-        call set_bc_surface_data                                        &
-     &     (MG_mesh(i_level)%mesh%node, MG_mesh(i_level)%mesh%ele,      &
+        call set_bc_surface_data(IO_MG_bc(i_level),                     &
+     &      MG_mesh(i_level)%mesh%node, MG_mesh(i_level)%mesh%ele,      &
      &      MG_ele_mesh(i_level)%surf, MG_mesh(i_level)%group%surf_grp, &
      &      MG_mesh(i_level)%group%surf_nod_grp,                        &
      &      MG_mesh(i_level)%group%surf_grp_geom,                       &

@@ -4,9 +4,9 @@
 !      Written by H. Matsui on Sep. 2005
 !
 !      subroutine count_num_sf_grad_vector                              &
-!     &          (sf_grp, num_bc_sf, bc_sf_name, ibc_sf_type,           &
+!     &          (IO_bc, sf_grp, num_bc_sf, bc_sf_name, ibc_sf_type,    &
 !     &           field_name, sf_bc_grad, sf_bc_lead)
-!      subroutine s_set_sf_grad_vector_id(sf_grp,                       &
+!      subroutine s_set_sf_grad_vector_id(IO_bc, sf_grp,                &
 !     &           num_bc_sf, bc_sf_name, ibc_sf_type, bc_sf_mag,        &
 !     &           field_name, sf_bc_grad, sf_bc_lead)
 !        type(surface_group_data), intent(in) :: sf_grp
@@ -19,6 +19,7 @@
 !
       use t_group_data
       use t_surface_bc_data
+      use t_boundary_field_IO
       use set_surface_bc
 !
       implicit  none
@@ -30,9 +31,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine count_num_sf_grad_vector                               &
-     &          (sf_grp, num_bc_sf, bc_sf_name, ibc_sf_type,            &
+     &          (IO_bc, sf_grp, num_bc_sf, bc_sf_name, ibc_sf_type,     &
      &           field_name, sf_bc_grad, sf_bc_lead)
 !
+      type(IO_boundary), intent(in) :: IO_bc
       type(surface_group_data), intent(in) :: sf_grp
 !
       integer (kind=kint) :: num_bc_sf
@@ -72,7 +74,8 @@
 ! -----------set boundary from data file
                 else if (ibc_sf_type(j) .eq. -(iflag_fixed_grad + nd))  &
      &              then
-                  call count_surf_group_from_data(i, ngrp_sf_fix(nd),   &
+                  call count_surf_group_from_data                       &
+     &               (IO_bc, i, ngrp_sf_fix(nd),                        &
      &                nele_sf_fix(nd), field_name(nd), sf_grp%num_grp,  &
      &                sf_grp%istack_grp, sf_grp%grp_name )
 !
@@ -99,10 +102,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_sf_grad_vector_id(sf_grp,                        &
+      subroutine s_set_sf_grad_vector_id(IO_bc, sf_grp,                 &
      &           num_bc_sf, bc_sf_name, ibc_sf_type, bc_sf_mag,         &
      &           field_name, sf_bc_grad, sf_bc_lead)
 !
+      type(IO_boundary), intent(in) :: IO_bc
       type(surface_group_data), intent(in) :: sf_grp
 !
       integer (kind=kint) :: num_bc_sf
@@ -144,7 +148,7 @@
 !
 ! -----------set boundary from data file
               else if ( ibc_sf_type(j) .eq. -(iflag_fixed_grad+nd) ) then
-                call set_surf_group_from_data(sf_grp,                   &
+                call set_surf_group_from_data(IO_bc, sf_grp,            &
      &              sf_bc_grad(nd)%ngrp_sf_fix_fx,                      &
      &              sf_bc_grad(nd)%nitem_sf_fix_fx, l_f1(nd), i,        &
      &              sf_bc_grad(nd)%id_grp_sf_fix_fx,                    &

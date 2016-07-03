@@ -4,15 +4,17 @@
 !      Written by H. Matsui on Sep. 2005
 !      Modified by H. Matsui on Feb., 2009
 !
-!      subroutine count_num_surf_grad_scalar                            &
-!     &          (num_surf, surf_istack, surf_name,                     &
-!     &           num_bc_sf, bc_sf_name, ibc_sf_type,                   &
-!     &           ngrp_sf_fix, nele_sf_fix, ngrp_sf_lead)
-!      subroutine s_set_surf_grad_scalar_id(sf_grp,                     &
-!     &           num_bc_sf, bc_sf_name, ibc_sf_type, bc_sf_mag,        &
-!     &           field_name, ngrp_sf_fix, id_grp_sf_fix,               &
-!     &           nele_sf_fix, ist_sf_fix, sf_apt_fix,                  &
-!     &           ngrp_sf_lead, id_grp_sf_lead)
+!!      subroutine count_num_surf_grad_scalar                           &
+!!     &          (IO_bc, num_surf, surf_istack, surf_name,             &
+!!     &           num_bc_sf, bc_sf_name, ibc_sf_type,                  &
+!!     &           ngrp_sf_fix, nele_sf_fix, ngrp_sf_lead)
+!!      subroutine s_set_surf_grad_scalar_id(IO_bc, sf_grp,             &
+!!     &           num_bc_sf, bc_sf_name, ibc_sf_type, bc_sf_mag,       &
+!!     &           field_name, ngrp_sf_fix, id_grp_sf_fix,              &
+!!     &           nele_sf_fix, ist_sf_fix, sf_apt_fix,                 &
+!!     &           ngrp_sf_lead, id_grp_sf_lead)
+!!        type(IO_boundary), intent(in) :: IO_bc
+!!        type(surface_group_data), intent(in) :: sf_grp
 !
       module set_sf_grad_scalar_id
 !
@@ -20,6 +22,7 @@
 !
       use m_precision
       use m_boundary_condition_IDs
+      use t_boundary_field_IO
 !
       implicit  none
 !
@@ -30,10 +33,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine count_num_surf_grad_scalar                             &
-     &          (num_surf, surf_istack, surf_name,                      &
+     &          (IO_bc, num_surf, surf_istack, surf_name,               &
      &           num_bc_sf, bc_sf_name, ibc_sf_type,                    &
      &           field_name, ngrp_sf_fix, nele_sf_fix, ngrp_sf_lead)
 !
+      type(IO_boundary), intent(in) :: IO_bc
       integer(kind=kint), intent(in) :: num_surf
       integer(kind = kint), intent(in) :: surf_istack(0:num_surf)
       character(len=kchara), intent(in) :: surf_name(num_surf)
@@ -72,7 +76,7 @@
               nele_sf_fix = nele_sf_fix                                 &
      &                   + surf_istack(i) - surf_istack(i-1)
             else if (ibc_sf_type(j) .eq. (-iflag_fixed_grad_s)) then
-              call count_surf_group_from_data(i, ngrp_sf_fix,           &
+              call count_surf_group_from_data(IO_bc, i, ngrp_sf_fix,    &
      &            nele_sf_fix, field_name, num_surf, surf_istack,       &
      &            surf_name)
             else if (ibc_sf_type(j) .eq. iflag_lead_grad_s) then
@@ -87,7 +91,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_set_surf_grad_scalar_id(sf_grp,                      &
+      subroutine s_set_surf_grad_scalar_id(IO_bc, sf_grp,               &
      &           num_bc_sf, bc_sf_name, ibc_sf_type, bc_sf_mag,         &
      &           field_name, ngrp_sf_fix, id_grp_sf_fix,                &
      &           nele_sf_fix, ist_sf_fix, sf_apt_fix,                   &
@@ -95,6 +99,7 @@
 !
       use t_group_data
 !
+      type(IO_boundary), intent(in) :: IO_bc
       type(surface_group_data), intent(in) :: sf_grp
 !
       integer (kind=kint), intent(in) :: num_bc_sf
@@ -134,7 +139,7 @@
      &            ist_sf_fix, sf_apt_fix, bc_sf_mag(j))
 !
             else if (ibc_sf_type(j) .eq. (-iflag_fixed_grad_s)) then
-              call  set_surf_group_from_data(sf_grp,                    &
+              call  set_surf_group_from_data(IO_bc, sf_grp,             &
      &            ngrp_sf_fix, nele_sf_fix, l_f1, i, id_grp_sf_fix,     &
      &            ist_sf_fix, sf_apt_fix, field_name)
 !

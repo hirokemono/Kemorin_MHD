@@ -4,8 +4,11 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine set_bc_velo_id(node, ele, fluid, nod_grp, Vnod_bcs)
-!!      subroutine set_bc_press_id(node, ele, fluid, nod_grp, Vnod_bcs)
+!!      subroutine set_bc_velo_id                                       &
+!!     &          (IO_bc, node, ele, fluid, nod_grp, Vnod_bcs)
+!!      subroutine set_bc_press_id                                      &
+!!     &          (IO_bc, node, ele, fluid, nod_grp, Vnod_bcs)
+!!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid
@@ -16,6 +19,10 @@
 !
       use m_precision
       use t_nodal_bc_data
+      use t_geometry_data
+      use t_group_data
+      use t_geometry_data_MHD
+      use t_boundary_field_IO
 !
       implicit  none
 !
@@ -51,11 +58,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_bc_velo_id(node, ele, fluid, nod_grp, Vnod_bcs)
+      subroutine set_bc_velo_id                                         &
+     &          (IO_bc, node, ele, fluid, nod_grp, Vnod_bcs)
 !
-      use t_geometry_data
-      use t_group_data
-      use t_geometry_data_MHD
       use m_bc_data_list
       use count_num_nod_bc_MHD
       use set_bc_vectors
@@ -63,6 +68,7 @@
 !
       use set_ele_nod_bc_vectors
 !
+      type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
@@ -96,7 +102,7 @@
       Vnod_bcs%nod_bc_v%vect_bc_name(3) = 'velocity_z'
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_bc_fixed_velo_id'
-      call set_bc_fixed_velo_id(node, nod_grp, velo_nod,                &
+      call set_bc_fixed_velo_id(IO_bc, node, nod_grp, velo_nod,         &
      &    Vnod_bcs%nod_bc_v, Vnod_bcs%sgs_bc_v, Vnod_bcs%nod_bc_rot)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_bc_velo_4_sphere_id'
@@ -129,17 +135,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_bc_press_id(node, ele, fluid, nod_grp, Vnod_bcs)
+      subroutine set_bc_press_id                                        &
+     &          (IO_bc, node, ele, fluid, nod_grp, Vnod_bcs)
 !
-      use t_geometry_data
-      use t_group_data
-      use t_geometry_data_MHD
       use m_bc_data_list
       use count_num_nod_bc_MHD
       use set_bc_scalars
       use set_ele_nod_bc_vectors
       use set_nodal_boundary
 !
+      type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
@@ -156,7 +161,7 @@
       call alloc_scalar_nod_bc_type(node%numnod, Vnod_bcs%sgs_bc_p)
 !
       Vnod_bcs%nod_bc_p%scalar_bc_name = fhd_press
-      call set_bc_fixed_temp_id(node, nod_grp, press_nod,               &
+      call set_bc_fixed_temp_id(IO_bc, node, nod_grp, press_nod,        &
      &    Vnod_bcs%nod_bc_p, Vnod_bcs%sgs_bc_p)
 !
       call set_potential_4_fixed_press(Vnod_bcs%nod_bc_p)

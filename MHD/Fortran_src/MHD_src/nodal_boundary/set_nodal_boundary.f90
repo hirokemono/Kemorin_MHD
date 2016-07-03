@@ -6,8 +6,11 @@
 !
 !!      subroutine set_nod_bc_from_ctl(nod_grp, numnod, num_phys_bc,    &
 !!     &          ii, i, ibc_id, ibc, ibc2, bc_id_apt, bc_magnitude )
-!!      subroutine set_nod_bc_from_data(nod_grp, numnod, num_phys_bc,   &
+!!      subroutine set_nod_bc_from_data                                 &
+!!     &         (IO_bc, nod_grp, numnod, num_phys_bc,                  &
 !!     &          ii, i, ibc_id, ibc, ibc2, bc_id_apt, field_name)
+!!        type(IO_boundary), intent(in) :: IO_bc
+!!        type(group_data), intent(in) :: nod_grp
 !!      subroutine set_fixed_bc_4_par_temp                              &
 !!     &         (numnod, ncomp_nod, i_ref_t, d_nod, nod_bc_t)
 !!      subroutine set_potential_4_fixed_press(nod_bc_p)
@@ -67,13 +70,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_nod_bc_from_data(nod_grp, numnod, num_phys_bc,     &
+      subroutine set_nod_bc_from_data                                   &
+     &         (IO_bc, nod_grp, numnod, num_phys_bc,                    &
      &          ii, i, ibc_id, ibc, ibc2, bc_id_apt, field_name)
 !
       use t_group_data
-      use m_boundary_field_IO
+      use t_boundary_field_IO
 !
       integer(kind = kint), intent(in) :: numnod
+      type(IO_boundary), intent(in) :: IO_bc
       type(group_data), intent(in) :: nod_grp
 !
       character(len=kchara), intent(in) :: field_name
@@ -88,17 +93,17 @@
       integer(kind = kint) :: k, ja, ia
 !
 !
-      do ia = 1, num_bc_group_IO
-        if(bc_group_type_IO(ia) .eq. flag_nod_grp) then
-          if ( bc_data_group_IO(ia) .eq. nod_grp%grp_name(i)            &
-     &       .and. bc_field_type_IO(ia) .eq. field_name ) then
+      do ia = 1, IO_bc%num_group
+        if(IO_bc%group_type(ia) .eq. flag_nod_grp) then
+          if ( IO_bc%group_name(ia) .eq. nod_grp%grp_name(i)            &
+     &       .and. IO_bc%field_type(ia) .eq. field_name ) then
 !
             do k=1, nod_grp%istack_grp(i)-nod_grp%istack_grp(i-1)
-              ja = istack_bc_data_IO(ia-1) + k
+              ja = IO_bc%istack_data(ia-1) + k
               ii=ii+1
 !
               ibc_id(ii)=nod_grp%item_grp(k+nod_grp%istack_grp(i-1))
-              bc_id_apt(ii)=boundary_field_IO(ja)
+              bc_id_apt(ii)=IO_bc%d_field(ja)
 !
               ibc( nod_grp%item_grp(k+nod_grp%istack_grp(i-1)) ) = 1
               ibc2(nod_grp%item_grp(k+nod_grp%istack_grp(i-1)) ) = 1
