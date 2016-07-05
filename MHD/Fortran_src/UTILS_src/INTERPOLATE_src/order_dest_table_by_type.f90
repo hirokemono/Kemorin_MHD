@@ -49,9 +49,9 @@
       integer(kind = kint) :: i, j, k, ist, ied, ist_type
 !
 !
-      do i = 1, num_org_domain
-        ist = istack_nod_tbl_dest(i-1) + 1
-        ied = istack_nod_tbl_dest(i)
+      do i = 1, itp1_dest%num_org_domain
+        ist = itp1_dest%istack_nod_tbl_dest(i-1) + 1
+        ied = itp1_dest%istack_nod_tbl_dest(i)
         ist_type = 4*(i-1)
 !
 !        write(*,*) 'count', i, ist, ied
@@ -68,9 +68,9 @@
       end do
 !
 !
-      call allocate_itp_coef_stack(num_org_domain)
+      call allocate_itp_coef_stack(itp1_dest%num_org_domain)
       istack_nod_tbl_wtype_dest(0) = 0
-      do i = 1, num_org_domain
+      do i = 1, itp1_dest%num_org_domain
         do j = 1, 4
           k = 4*(i-1) + j
           istack_nod_tbl_wtype_dest(k)                                  &
@@ -79,9 +79,9 @@
         end do
       end do
 !
-      do i = 1, num_org_domain
-        ist = istack_nod_tbl_dest(i-1) + 1
-        ied = istack_nod_tbl_dest(i)
+      do i = 1, itp1_dest%num_org_domain
+        ist = itp1_dest%istack_nod_tbl_dest(i-1) + 1
+        ied = itp1_dest%istack_nod_tbl_dest(i)
         ist_type = 4*(i-1)
 !
         if (ele%nnod_4_ele .eq. num_t_linear) then
@@ -101,7 +101,8 @@
 !
       call copy_table_2_order
 !
-      ntot_table_dest = istack_nod_tbl_dest(num_org_domain)
+      ntot_table_dest                                                   &
+     &   = itp1_dest%istack_nod_tbl_dest(itp1_dest%num_org_domain)
 !
       do i = 1, node%internal_node
         inod_gl_dest(i) = int(node%inod_global(inod_dest_4_dest(i)))

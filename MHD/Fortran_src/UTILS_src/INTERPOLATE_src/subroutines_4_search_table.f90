@@ -18,6 +18,7 @@
       module subroutines_4_search_table
 !
       use m_precision
+      use m_constants
 !
       implicit none
 !
@@ -171,7 +172,6 @@
       real(kind = kreal), intent(inout) ::   xi(3)
 !
       integer(kind = kint) :: nd
-      real(kind= kreal), parameter :: one = 1.0d0
 !
 !
       do nd = 1, 3

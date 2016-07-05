@@ -65,7 +65,7 @@
       call dealloc_itp_table_org(itp1_org)
 !
       call deallocate_itp_table_dest
-      call deallocate_itp_num_dest
+      call dealloc_itp_num_dest(itp1_dest)
 !
       call deallocate_ele_connect_type(finermesh%ele)
       call deallocate_node_geometry_type(finermesh%node)

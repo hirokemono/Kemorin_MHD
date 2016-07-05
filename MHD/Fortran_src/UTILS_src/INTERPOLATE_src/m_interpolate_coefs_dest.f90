@@ -11,7 +11,6 @@
 !!
 !!      subroutine check_table_in_org_2(id_file)
 !!
-!!      subroutine allocate_itp_num_dest(num_org_pe)
 !!      subroutine allocate_itp_table_dest
 !!
 !!      subroutine deallocate_itp_num_dest
@@ -101,15 +100,15 @@
       write(id_file,*) '#   domain IDs'
       write(id_file,*) '#'
 !
-      write(id_file,'(i16)') num_org_domain
-      write(id_file,'(10i16)') id_org_domain(1:num_org_domain)
+      write(id_file,'(i16)') itp1_dest%num_org_domain
+      write(id_file,'(10i16)') itp1_dest%id_org_domain(1:itp1_dest%num_org_domain)
 !
       write(id_file,*) '#'
       write(id_file,*) '#  node, domain for original, belonged element'
       write(id_file,*) '#   coefficients'
       write(id_file,*) '#'
 !
-      write(id_file,'(10i16)') istack_nod_tbl_dest(1:num_org_domain)
+      write(id_file,'(10i16)') itp1_dest%istack_nod_tbl_dest(1:itp1_dest%num_org_domain)
       do inod = 1, ntot_table_dest 
         write(id_file,'(2i16,1p3E25.15e3)') inod_dest_4_dest(inod),     &
      &        iele_org_4_dest(inod), coef_inter_dest(inod,1:3)
@@ -126,9 +125,9 @@
       use m_interpolate_table_dest_IO
 !
 !
-      num_org_domain_IO = num_org_domain
+      num_org_domain_IO = itp1_dest%num_org_domain
 !
-      if (num_org_domain .le. 0) return
+      if (itp1_dest%num_org_domain .le. 0) return
 !
         ntot_table_dest_IO = ntot_table_dest
 !
@@ -136,12 +135,12 @@
         call allocate_itp_nod_dst_IO
         call allocate_itp_coefs_dst_IO
 !
-        id_org_domain_IO(1:num_org_domain)                              &
-     &      = id_org_domain(1:num_org_domain)
-        istack_table_dest_IO(0:num_org_domain)                          &
-     &      = istack_nod_tbl_dest(0:num_org_domain)
-        istack_table_wtype_dest_IO(0:4*num_org_domain)                  &
-     &      = istack_nod_tbl_wtype_dest(0:4*num_org_domain)
+        id_org_domain_IO(1:itp1_dest%num_org_domain)                              &
+     &      = itp1_dest%id_org_domain(1:itp1_dest%num_org_domain)
+        istack_table_dest_IO(0:itp1_dest%num_org_domain)                          &
+     &      = itp1_dest%istack_nod_tbl_dest(0:itp1_dest%num_org_domain)
+        istack_table_wtype_dest_IO(0:4*itp1_dest%num_org_domain)                  &
+     &      = istack_nod_tbl_wtype_dest(0:4*itp1_dest%num_org_domain)
 !
 !
         inod_dest_IO(1:ntot_table_dest)                                 &
@@ -164,7 +163,7 @@
 !
       call deallocate_itp_coef_dest
       call deallocate_itp_table_dest
-      call deallocate_itp_num_dest
+      call dealloc_itp_num_dest(itp1_dest)
 !
       end subroutine copy_itp_table_dest_to_IO
 !

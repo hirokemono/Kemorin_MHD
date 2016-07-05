@@ -7,17 +7,19 @@
 !> @brief Structure of interpolation table for target mesh
 !!
 !!@verbatim
+!!      subroutine set_num_org_domain(num_org_pe, tbl_dest)
 !!      subroutine alloc_type_itp_num_dest(tbl_dest)
 !!      subroutine alloc_type_itp_table_dest(tbl_dest)
 !!      subroutine alloc_type_zero_itp_tbl_dest(tbl_dest)
 !!
-!!      subroutine dealloc_type_itp_num_dest(tbl_dest)
+!!      subroutine dealloc_itp_num_dest(tbl_dest)
 !!      subroutine dealloc_type_itp_table_dest(tbl_dest)
 !!@endverbatim
 !
       module t_interpolate_tbl_dest
 !
       use m_precision
+      use m_constants
 !
       implicit none
 !
@@ -48,7 +50,19 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine alloc_type_itp_num_dest(tbl_dest)
+      subroutine set_num_org_domain(num_org_pe, tbl_dest)
+!
+      integer(kind = kint), intent(in) :: num_org_pe
+      type(interpolate_table_dest), intent(inout) :: tbl_dest
+!
+!
+      tbl_dest%num_org_domain = num_org_pe
+!
+      end subroutine set_num_org_domain
+!
+!-----------------------------------------------------------------------
+!
+      subroutine alloc_itp_num_dest(tbl_dest)
 !
       type(interpolate_table_dest), intent(inout) :: tbl_dest
 !
@@ -59,7 +73,7 @@
       if (tbl_dest%num_org_domain .gt. 0) tbl_dest%id_org_domain = 0
       tbl_dest%istack_nod_tbl_dest =       -1
 !
-      end subroutine alloc_type_itp_num_dest
+      end subroutine alloc_itp_num_dest
 !
 !-----------------------------------------------------------------------
 !
@@ -84,9 +98,9 @@
       type(interpolate_table_dest), intent(inout) :: tbl_dest
 !
 !
-      tbl_dest%num_org_domain =  0
       tbl_dest%ntot_table_dest = 0
-      call alloc_type_itp_num_dest(tbl_dest)
+      call set_num_org_domain(izero, tbl_dest)
+      call alloc_itp_num_dest(tbl_dest)
       call alloc_type_itp_table_dest(tbl_dest)
 !
       end subroutine alloc_type_zero_itp_tbl_dest
@@ -94,7 +108,7 @@
 !------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine dealloc_type_itp_num_dest(tbl_dest)
+      subroutine dealloc_itp_num_dest(tbl_dest)
 !
       type(interpolate_table_dest), intent(inout) :: tbl_dest
 !
@@ -102,7 +116,7 @@
       deallocate( tbl_dest%id_org_domain )
       deallocate( tbl_dest%istack_nod_tbl_dest)
 !
-      end subroutine dealloc_type_itp_num_dest
+      end subroutine dealloc_itp_num_dest
 !
 !-----------------------------------------------------------------------
 !

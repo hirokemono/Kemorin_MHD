@@ -39,24 +39,25 @@
         numnod_dest(jp) = numnod_dest(jp) + 1
       end do
 !
-      num_org_domain = 0
-      istack_nod_tbl_dest(0) = 0
+      itp1_dest%num_org_domain = 0
+      itp1_dest%istack_nod_tbl_dest(0) = 0
       do j = 1, nprocs_2nd
         my_rank_2nd = mod(my_rank+j,nprocs_2nd)
 !
         if (numnod_dest(my_rank_2nd+1) .gt. 0) then
-          num_org_domain = num_org_domain + 1
-          id_org_domain(num_org_domain) = my_rank_2nd
-          istack_nod_tbl_dest(num_org_domain)                           &
-     &               = istack_nod_tbl_dest(num_org_domain-1)            &
-     &                + numnod_dest(my_rank_2nd+1)
+          itp1_dest%num_org_domain = itp1_dest%num_org_domain + 1
+          itp1_dest%id_org_domain(itp1_dest%num_org_domain)             &
+     &               = my_rank_2nd
+          itp1_dest%istack_nod_tbl_dest(itp1_dest%num_org_domain)       &
+     &      = itp1_dest%istack_nod_tbl_dest(itp1_dest%num_org_domain-1) &
+     &       + numnod_dest(my_rank_2nd+1)
         end if
       end do
-      write(*,*) 'num_org_domain', num_org_domain
+      write(*,*) 'num_org_domain', itp1_dest%num_org_domain
 !
-      do j = 1, num_org_domain
-        jp = id_org_domain(j) + 1
-        icou = istack_nod_tbl_dest(j-1)
+      do j = 1, itp1_dest%num_org_domain
+        jp = itp1_dest%id_org_domain(j) + 1
+        icou = itp1_dest%istack_nod_tbl_dest(j-1)
 !
         do inod = 1, internal_node
           if (iflag_org_domain(inod) .eq. jp) then

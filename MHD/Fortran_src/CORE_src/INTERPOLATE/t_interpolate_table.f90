@@ -60,7 +60,7 @@
 !
 !
       call dealloc_type_itp_table_dest(itp_info%tbl_dest)
-      call dealloc_type_itp_num_dest(itp_info%tbl_dest)
+      call dealloc_itp_num_dest(itp_info%tbl_dest)
 !
       call dealloc_itp_table_org(itp_info%tbl_org)
       call dealloc_itp_num_org(itp_info%tbl_org)

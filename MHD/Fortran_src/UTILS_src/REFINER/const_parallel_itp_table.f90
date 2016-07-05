@@ -104,7 +104,7 @@
      &      nele_org_1pe, ipe_ele_local_org, nnod_tgt_1pe,              &
      &      ipe_nod_local_tgt, itp_para(ip)%tbl_dest%num_org_domain)
 !
-        call alloc_type_itp_num_dest(itp_para(ip)%tbl_dest)
+        call alloc_itp_num_dest(itp_para(ip)%tbl_dest)
 !
         call set_id_org_domain_para_itp(ip, nprocs_org, itp_sgl,        &
      &      nele_org_1pe, ipe_ele_local_org, nnod_tgt_1pe,              &

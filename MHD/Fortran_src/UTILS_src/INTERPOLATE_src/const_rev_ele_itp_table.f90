@@ -157,17 +157,18 @@
           itp_rev%tbl_org%coef_inter_org(i,1:3) =     0.0d0
         end do
 !
-        call dealloc_type_itp_num_dest(itp_tbl%tbl_dest)
+        call dealloc_itp_num_dest(itp_tbl%tbl_dest)
         call dealloc_type_itp_table_dest(itp_tbl%tbl_dest)
       end if
 !
 !
 !
-      itp_rev%tbl_dest%num_org_domain = itp_tbl%tbl_org%num_dest_domain
       itp_rev%tbl_dest%ntot_table_dest = itp_tbl%tbl_org%ntot_table_org
+      call set_num_org_domain                                           &
+     &   (itp_tbl%tbl_org%num_dest_domain, itp_rev%tbl_dest)
 !
       if(itp_rev%tbl_dest%num_org_domain .gt. 0) then
-        call alloc_type_itp_num_dest(itp_rev%tbl_dest)
+        call alloc_itp_num_dest(itp_rev%tbl_dest)
         call alloc_type_itp_table_dest(itp_rev%tbl_dest)
 !
         num = itp_rev%tbl_dest%num_org_domain

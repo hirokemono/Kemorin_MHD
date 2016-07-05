@@ -59,26 +59,26 @@
       integer(kind = kint) :: ilast_domain
 !
 !
-      tbl_dest%num_org_domain = num_org_domain
       tbl_dest%iflag_self_itp_recv = 0
+      call set_num_org_domain(itp1_dest%num_org_domain, tbl_dest)
 !
       if (tbl_dest%num_org_domain .gt. 0) then
 !
         tbl_dest%ntot_table_dest = ntot_table_dest
 !
-        call alloc_type_itp_num_dest(tbl_dest)
+        call alloc_itp_num_dest(tbl_dest)
         call alloc_type_itp_table_dest(tbl_dest)
 !
         tbl_dest%id_org_domain(1:tbl_dest%num_org_domain)               &
-     &      = id_org_domain(1:tbl_dest%num_org_domain)
+     &      = itp1_dest%id_org_domain(1:tbl_dest%num_org_domain)
         tbl_dest%istack_nod_tbl_dest(0:tbl_dest%num_org_domain)         &
-     &      = istack_nod_tbl_dest(0:tbl_dest%num_org_domain)
+     &      = itp1_dest%istack_nod_tbl_dest(0:tbl_dest%num_org_domain)
 !
         tbl_dest%inod_dest_4_dest(1:tbl_dest%ntot_table_dest)           &
      &      = inod_dest_4_dest(1:tbl_dest%ntot_table_dest)
 !
         call deallocate_itp_table_dest
-        call deallocate_itp_num_dest
+        call dealloc_itp_num_dest(itp1_dest)
 !
         ilast_domain = tbl_dest%num_org_domain
         if (tbl_dest%id_org_domain(ilast_domain) .eq. my_rank) then

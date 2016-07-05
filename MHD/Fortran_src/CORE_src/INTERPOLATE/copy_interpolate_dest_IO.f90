@@ -26,20 +26,20 @@
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      num_org_domain = num_org_domain_IO
-      iflag_self_itp_recv = 0
+      itp1_dest%iflag_self_itp_recv = 0
+      call set_num_org_domain(num_org_domain_IO, itp1_dest)
 !
-      if (num_org_domain .gt. 0) then
+      if (itp1_dest%num_org_domain .gt. 0) then
 !
         ntot_table_dest = ntot_table_dest_IO
 !
-        call allocate_itp_num_dest(num_org_domain)
+        call alloc_itp_num_dest(itp1_dest)
         call allocate_itp_table_dest
 !
-        id_org_domain(1:num_org_domain)                                 &
-     &      = id_org_domain_IO(1:num_org_domain)
-        istack_nod_tbl_dest(0:num_org_domain)                           &
-     &      = istack_table_dest_IO(0:num_org_domain)
+        itp1_dest%id_org_domain(1:itp1_dest%num_org_domain)                                 &
+     &      = id_org_domain_IO(1:itp1_dest%num_org_domain)
+        itp1_dest%istack_nod_tbl_dest(0:itp1_dest%num_org_domain)                           &
+     &      = istack_table_dest_IO(0:itp1_dest%num_org_domain)
 !
         inod_dest_4_dest(1:ntot_table_dest)                             &
      &        = inod_dest_IO(1:ntot_table_dest)
@@ -47,12 +47,12 @@
         call deallocate_itp_nod_dst_IO
         call deallocate_itp_num_dst_IO
 !
-        if ( id_org_domain(num_org_domain) .eq. my_rank) then
-          iflag_self_itp_recv = 1
+        if ( itp1_dest%id_org_domain(itp1_dest%num_org_domain) .eq. my_rank) then
+          itp1_dest%iflag_self_itp_recv = 1
         end if
       else
         ntot_table_dest = 0
-        call allocate_itp_num_dest(num_org_domain)
+        call alloc_itp_num_dest(itp1_dest)
         call allocate_itp_table_dest
       end if
 !

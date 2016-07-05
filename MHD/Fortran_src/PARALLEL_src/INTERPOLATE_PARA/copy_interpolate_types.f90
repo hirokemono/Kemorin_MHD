@@ -65,30 +65,29 @@
       type(interpolate_table_dest), intent(in) :: tbl_dst_in
       type(interpolate_table_dest), intent(inout) :: tbl_dst_cp
 !
-      integer(kind = kint) :: ilast_domain, num
+      integer(kind = kint) :: ilast_domain
 !
 !
-      num = tbl_dst_in%num_org_domain
-      tbl_dst_cp%num_org_domain = num
       tbl_dst_cp%iflag_self_itp_recv = 0
+      call set_num_org_domain(tbl_dst_in%num_org_domain, tbl_dst_cp)
 !
       if (tbl_dst_cp%num_org_domain .gt. 0) then
 !
         tbl_dst_cp%ntot_table_dest = tbl_dst_in%ntot_table_dest
 !
-        call alloc_type_itp_num_dest(tbl_dst_cp)
+        call alloc_itp_num_dest(tbl_dst_cp)
         call alloc_type_itp_table_dest(tbl_dst_cp)
 !
-        tbl_dst_cp%id_org_domain(1:num)                                 &
-     &      = tbl_dst_in%id_org_domain(1:num)
-        tbl_dst_cp%istack_nod_tbl_dest(0:num)                           &
-     &      = tbl_dst_in%istack_nod_tbl_dest(0:num)
+        tbl_dst_cp%id_org_domain(1:tbl_dst_cp%num_org_domain)           &
+     &   = tbl_dst_in%id_org_domain(1:tbl_dst_cp%num_org_domain)
+        tbl_dst_cp%istack_nod_tbl_dest(0:tbl_dst_cp%num_org_domain)     &
+     &   = tbl_dst_in%istack_nod_tbl_dest(0:tbl_dst_cp%num_org_domain)
 !
         tbl_dst_cp%inod_dest_4_dest(1:tbl_dst_cp%ntot_table_dest)       &
-     &      = tbl_dst_in%inod_dest_4_dest(1:tbl_dst_cp%ntot_table_dest)
+     &   = tbl_dst_in%inod_dest_4_dest(1:tbl_dst_cp%ntot_table_dest)
 !
         call deallocate_itp_table_dest
-        call deallocate_itp_num_dest
+        call dealloc_itp_num_dest(itp1_dest)
 !
         ilast_domain = tbl_dst_cp%num_org_domain
         if (tbl_dst_cp%id_org_domain(ilast_domain) .eq. my_rank) then

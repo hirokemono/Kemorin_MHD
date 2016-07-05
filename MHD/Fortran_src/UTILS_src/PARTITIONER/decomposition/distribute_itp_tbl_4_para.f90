@@ -91,7 +91,7 @@
       call count_itp_domain_4_para(nprocs_table, para_tbl)
 !
       do ip = 1, nprocs_itp_dest
-        call alloc_type_itp_num_dest(para_tbl(ip)%tbl_dest)
+        call alloc_itp_num_dest(para_tbl(ip)%tbl_dest)
         call set_itp_dest_domain_4_para(ip, para_tbl(ip)%tbl_dest)
       end do
       do jp = 1, nprocs_itp_org

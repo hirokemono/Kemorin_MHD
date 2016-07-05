@@ -151,14 +151,14 @@
       integer(kind = kint) :: inod
 !
 !
-      num_org_domain =      ione
-      iflag_self_itp_recv = ione
+      itp1_dest%iflag_self_itp_recv = ione
 !
-      call allocate_itp_num_dest(num_org_domain)
+      call set_num_org_domain(ione, itp1_dest)
+      call alloc_itp_num_dest(itp1_dest)
 !
-      id_org_domain(1) =         izero
-      istack_nod_tbl_dest(0) = izero
-      istack_nod_tbl_dest(1) = nnod_2
+      itp1_dest%id_org_domain(1) =       izero
+      itp1_dest%istack_nod_tbl_dest(0) = izero
+      itp1_dest%istack_nod_tbl_dest(1) = nnod_2
       ntot_table_dest =        nnod_2
 !
       call allocate_itp_table_dest
@@ -224,14 +224,14 @@
       integer(kind = kint) :: inod
 !
 !
-      num_org_domain =      ione
-      iflag_self_itp_recv = ione
+      itp1_dest%iflag_self_itp_recv = ione
 !
-      call allocate_itp_num_dest(num_org_domain)
+      call set_num_org_domain(ione, itp1_dest)
+      call alloc_itp_num_dest(itp1_dest)
 !
-      id_org_domain(1) =         izero
-      istack_nod_tbl_dest(0) = izero
-      istack_nod_tbl_dest(1) = ntot_nod_refine_nod
+      itp1_dest%id_org_domain(1) =       izero
+      itp1_dest%istack_nod_tbl_dest(0) = izero
+      itp1_dest%istack_nod_tbl_dest(1) = ntot_nod_refine_nod
       ntot_table_dest =        ntot_nod_refine_nod
 !
       call allocate_itp_table_dest

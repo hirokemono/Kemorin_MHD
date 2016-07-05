@@ -182,9 +182,9 @@
      &   (iflag_import_item, itp1_org%ntot_table_org, NP_dest,          &
      &    itp1_org%num_dest_domain, itp1_org%iflag_self_itp_send,       &
      &    itp1_org%id_dest_domain, itp1_org%istack_nod_tbl_org,         &
-     &    itp1_org%inod_itp_send,   &
-     &           num_org_domain, iflag_self_itp_recv,                   &
-     &           id_org_domain, istack_nod_tbl_dest,                    &
+     &    itp1_org%inod_itp_send,                                       &
+     &    itp1_dest%num_org_domain, itp1_dest%iflag_self_itp_recv,      &
+     &    itp1_dest%id_org_domain, itp1_dest%istack_nod_tbl_dest,       &
      &           inod_dest_4_dest, irev_dest_4_dest,                    &
      &    itp1_org%inod_gl_dest_4_org, ivec_2nd(1) )
 !

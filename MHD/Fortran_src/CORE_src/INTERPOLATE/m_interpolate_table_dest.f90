@@ -17,18 +17,22 @@
       module m_interpolate_table_dest
 !
       use m_precision
+      use t_interpolate_tbl_dest
 !
       implicit none
 !
+!> Structure of interpolation table for target grid
+      type(interpolate_table_dest), save :: itp1_dest
+!itp1_dest%istack_nod_tbl_dest
 !
 !>   number of subdomain to receive interpolated data
-      integer(kind = kint) :: num_org_domain
+!      integer(kind = kint) :: num_org_domain
 !>   flag if original nodes have same prosess
-      integer(kind = kint) :: iflag_self_itp_recv
+!      integer(kind = kint) :: iflag_self_itp_recv
 !>   subdomain rank to receive interpolated data
-      integer(kind = kint), allocatable :: id_org_domain(:)
+!      integer(kind = kint), allocatable :: id_org_domain(:)
 !>   end address to receive interpolated data
-      integer(kind = kint), allocatable :: istack_nod_tbl_dest(:)
+!      integer(kind = kint), allocatable :: istack_nod_tbl_dest(:)
 !
 !>   total number of interpolated node in target subdomain
       integer(kind = kint) :: ntot_table_dest
@@ -40,21 +44,6 @@
 !-----------------------------------------------------------------------
 !
       contains
-!
-!-----------------------------------------------------------------------
-!
-      subroutine allocate_itp_num_dest(num_org_pe)
-!
-      integer(kind = kint), intent(in) :: num_org_pe
-!
-!
-      allocate( id_org_domain(num_org_pe) )
-      allocate( istack_nod_tbl_dest(0:num_org_pe) )
-!
-      id_org_domain = 0
-      istack_nod_tbl_dest = 0
-!
-      end subroutine allocate_itp_num_dest
 !
 !-----------------------------------------------------------------------
 !
@@ -71,15 +60,6 @@
       end subroutine allocate_itp_table_dest
 !
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine deallocate_itp_num_dest
-!
-      deallocate( id_org_domain )
-      deallocate( istack_nod_tbl_dest)
-!
-      end subroutine deallocate_itp_num_dest
-!
 !-----------------------------------------------------------------------
 !
       subroutine deallocate_itp_table_dest

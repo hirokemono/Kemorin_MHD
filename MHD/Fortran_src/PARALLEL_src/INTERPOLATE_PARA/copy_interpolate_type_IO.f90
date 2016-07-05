@@ -73,13 +73,13 @@
       integer(kind = kint) :: ilast_domain
 !
 !
-      tbl_dest%num_org_domain = num_org_domain_IO
       tbl_dest%iflag_self_itp_recv = 0
+      call set_num_org_domain(num_org_domain_IO, tbl_dest)
 !
       if (tbl_dest%num_org_domain .gt. 0) then
         tbl_dest%ntot_table_dest = ntot_table_dest_IO
 !
-        call alloc_type_itp_num_dest(tbl_dest)
+        call alloc_itp_num_dest(tbl_dest)
         call alloc_type_itp_table_dest(tbl_dest)
 !
         tbl_dest%id_org_domain(1:tbl_dest%num_org_domain)               &
@@ -99,7 +99,7 @@
         end if
       else
         tbl_dest%ntot_table_dest = 0
-        call alloc_type_itp_num_dest(tbl_dest)
+        call alloc_itp_num_dest(tbl_dest)
         call alloc_type_itp_table_dest(tbl_dest)
       end if
 !
@@ -190,7 +190,7 @@
       end if
 !
       call dealloc_type_itp_table_dest(tbl_dest)
-      call dealloc_type_itp_num_dest(tbl_dest)
+      call dealloc_itp_num_dest(tbl_dest)
 !
       end subroutine copy_itp_tbl_type_dest_to_IO
 !
