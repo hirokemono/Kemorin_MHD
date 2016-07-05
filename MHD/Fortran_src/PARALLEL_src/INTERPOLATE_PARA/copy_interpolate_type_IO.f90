@@ -7,7 +7,9 @@
 !      subroutine copy_interpolate_types_to_IO(itp_table)
 !
 !      subroutine copy_itp_tbl_type_dest_from_IO(my_rank, tbl_dest)
-!      subroutine copy_itp_tbl_type_org_from_IO(my_rank, tbl_org)
+!      subroutine copy_itp_table_org_from_IO(my_rank, tbl_org)
+!      subroutine copy_itp_tbl_type_dest_to_IO(tbl_dest)
+!      subroutine copy_itp_table_org_to_IO(tbl_org)
 !
       module copy_interpolate_type_IO
 !
@@ -16,9 +18,7 @@
       implicit none
 !
       private :: copy_itp_tbl_type_dest_from_IO
-      private :: copy_itp_tbl_type_org_from_IO
       private :: copy_itp_tbl_type_dest_to_IO
-      private :: copy_itp_tbl_type_org_to_IO
 !
 !-----------------------------------------------------------------------
 !
@@ -37,8 +37,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_itp_tbl_type_dest_from_IO'
       call copy_itp_tbl_type_dest_from_IO(my_rank, itp_table%tbl_dest)
-      if (iflag_debug.eq.1) write(*,*) 'copy_itp_tbl_type_org_from_IO'
-      call copy_itp_tbl_type_org_from_IO(my_rank, itp_table%tbl_org)
+      if (iflag_debug.eq.1) write(*,*) 'copy_itp_table_org_from_IO'
+      call copy_itp_table_org_from_IO(my_rank, itp_table%tbl_org)
 !
       end subroutine copy_interpolate_types_from_IO
 !
@@ -54,8 +54,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_itp_tbl_type_dest_to_IO'
       call copy_itp_tbl_type_dest_to_IO(itp_table%tbl_dest)
-      if (iflag_debug.eq.1) write(*,*) 'copy_itp_tbl_type_org_to_IO'
-      call copy_itp_tbl_type_org_to_IO(itp_table%tbl_org)
+      if (iflag_debug.eq.1) write(*,*) 'copy_itp_table_org_to_IO'
+      call copy_itp_table_org_to_IO(itp_table%tbl_org)
 !
       end subroutine copy_interpolate_types_to_IO
 !
@@ -107,7 +107,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_itp_tbl_type_org_from_IO(my_rank, tbl_org)
+      subroutine copy_itp_table_org_from_IO(my_rank, tbl_org)
 !
       use t_interpolate_tbl_org
       use m_machine_parameter
@@ -120,12 +120,12 @@
 !
 !
       tbl_org%iflag_self_itp_send = 0
-      tbl_org%num_dest_domain = num_dest_domain_IO
+      call set_num_dest_domain(num_dest_domain_IO, tbl_org)
+      call alloc_itp_num_org(np_smp, tbl_org)
 !
       if (tbl_org%num_dest_domain .gt. 0) then
         tbl_org%ntot_table_org = ntot_table_org_IO
 !
-        call alloc_itp_num_org(np_smp, tbl_org)
         call alloc_itp_table_org(tbl_org)
 !
         tbl_org%id_dest_domain(1:tbl_org%num_dest_domain)               &
@@ -158,7 +158,7 @@
         call alloc_itp_table_org(tbl_org)
       end if
 !
-      end subroutine copy_itp_tbl_type_org_from_IO
+      end subroutine copy_itp_table_org_from_IO
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -196,7 +196,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_itp_tbl_type_org_to_IO(tbl_org)
+      subroutine copy_itp_table_org_to_IO(tbl_org)
 !
       use t_interpolate_tbl_org
       use m_interpolate_table_org_IO
@@ -204,7 +204,7 @@
       type(interpolate_table_org), intent(inout) :: tbl_org
 !
 !
-       num_dest_domain_IO = tbl_org%num_dest_domain
+      num_dest_domain_IO = tbl_org%num_dest_domain
 !
       if (num_dest_domain_IO .gt. 0) then
 !
@@ -241,7 +241,7 @@
       call dealloc_itp_table_org(tbl_org)
       call dealloc_itp_num_org(tbl_org)
 !
-      end subroutine copy_itp_tbl_type_org_to_IO
+      end subroutine copy_itp_table_org_to_IO
 !
 !-----------------------------------------------------------------------
 !

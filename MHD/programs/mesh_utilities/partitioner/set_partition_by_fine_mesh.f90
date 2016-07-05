@@ -83,7 +83,7 @@
       use m_interpolate_coefs_dest
       use itp_table_IO_select_4_zlib
       use copy_interpolate_dest_IO
-      use copy_interpolate_org_IO
+      use copy_interpolate_type_IO
 !
       integer(kind = kint), parameter :: my_rank = 0
       integer(kind = kint) :: ierr
@@ -95,7 +95,7 @@
       call sel_read_interpolate_table(my_rank, ierr)
 !
       call copy_itp_table_dest_from_IO(my_rank)
-      call copy_itp_table_org_from_IO(my_rank)
+      call copy_itp_table_org_from_IO(my_rank, itp1_org)
 !
       call set_stack_tbl_wtype_org_smp(itp1_org)
 !

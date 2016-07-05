@@ -33,6 +33,7 @@
       use m_ctl_params_4_gen_table
       use m_ctl_data_gen_table
       use m_read_mesh_data
+      use m_interpolate_table_orgin
 !
       use set_ctl_interpolation
 !
@@ -41,7 +42,7 @@
 !
       use itp_table_IO_select_4_zlib
       use copy_interpolate_dest_IO
-      use copy_interpolate_org_IO
+      use copy_interpolate_type_IO
       use interpolate_nod_field_2_type
 !
       type(mesh_data), intent(inout) :: org_femmesh
@@ -97,7 +98,7 @@
       if (iflag_debug.eq.1) write(*,*) 'copy_itp_table_dest_from_IO'
       call copy_itp_table_dest_from_IO(my_rank)
       if (iflag_debug.eq.1) write(*,*) 'copy_itp_table_org_from_IO'
-      call copy_itp_table_org_from_IO(my_rank)
+      call copy_itp_table_org_from_IO(my_rank, itp1_org)
 !
       if (iflag_debug.eq.1) write(*,*) 'init_interpolate_nodal_data'
       call init_interpolate_nodal_data                                  &

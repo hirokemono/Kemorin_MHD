@@ -30,7 +30,7 @@
       use m_interpolate_table_orgin
 !
       use itp_table_IO_select_4_zlib
-      use copy_interpolate_org_IO
+      use copy_interpolate_type_IO
 !
       integer(kind = kint) :: jp
       integer(kind = kint) :: my_rank_2nd, ierr
@@ -61,7 +61,7 @@
 !
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'copy_itp_table_org_to_IO', my_rank_2nd, nprocs
-          call copy_itp_table_org_to_IO
+          call copy_itp_table_org_to_IO(itp1_org)
 !
           if (my_rank_2nd .ge. nprocs) then
             num_org_domain_IO = 0

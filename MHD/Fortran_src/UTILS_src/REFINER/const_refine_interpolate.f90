@@ -93,7 +93,7 @@
       use m_work_merge_refine_itp
       use set_refine_interpolate_tbl
       use copy_interpolate_dest_IO
-      use copy_interpolate_org_IO
+      use copy_interpolate_type_IO
       use copy_interpolate_type_raw
 !
       type(element_data), intent(in) :: ele
@@ -112,7 +112,7 @@
       call allocate_itp_coef_dest
       call allocate_itp_coef_stack(ione)
       if(iflag_debug .gt. 0) write(*,*) 'copy_itp_table_org_to_IO'
-      call copy_itp_table_org_to_IO
+      call copy_itp_table_org_to_IO(itp1_org)
       if(iflag_debug .gt. 0) write(*,*) 'copy_itp_table_dest_to_IO'
       call copy_itp_table_dest_to_IO
 !
@@ -130,7 +130,7 @@
       call allocate_itp_coef_dest
       call allocate_itp_coef_stack(ione)
       if(iflag_debug .gt. 0) write(*,*) 'copy_itp_table_org_to_IO'
-      call copy_itp_table_org_to_IO
+      call copy_itp_table_org_to_IO(itp1_org)
       if(iflag_debug .gt. 0) write(*,*) 'copy_itp_table_dest_to_IO'
       call copy_itp_table_dest_to_IO
 !
@@ -182,7 +182,7 @@
       use set_refine_interpolate_tbl
       use set_merged_refine_itp
       use copy_interpolate_dest_IO
-      use copy_interpolate_org_IO
+      use copy_interpolate_type_IO
 !
       integer(kind = kint), intent(in) :: nnod_4_ele
       integer(kind = kint), intent(in) :: nnod_2, nnod_4_ele_2
@@ -196,7 +196,7 @@
      &   (nnod_4_ele, nnod_2, nnod_4_ele_2, xx_2)
 !
       call allocate_itp_coef_dest
-      call copy_itp_table_org_to_IO
+      call copy_itp_table_org_to_IO(itp1_org)
       call copy_itp_table_dest_to_IO
 !
 !
@@ -215,7 +215,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'allocate_itp_coef_dest'
       call allocate_itp_coef_dest
       if(iflag_debug .gt. 0) write(*,*) 'copy_itp_table_org_to_IO'
-      call copy_itp_table_org_to_IO
+      call copy_itp_table_org_to_IO(itp1_org)
       if(iflag_debug .gt. 0) write(*,*) 'copy_itp_table_dest_to_IO'
       call copy_itp_table_dest_to_IO
 !

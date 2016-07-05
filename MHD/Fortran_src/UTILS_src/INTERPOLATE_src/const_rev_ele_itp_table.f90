@@ -31,7 +31,7 @@
       use m_interpolate_table_orgin
 !
       use copy_interpolate_type_IO
-      use copy_interpolate_org_IO
+      use copy_interpolate_type_IO
       use itp_table_IO_select_4_zlib
       use const_interpolate_4_org
 !
@@ -64,7 +64,7 @@
 !
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'copy_itp_table_org_to_IO', my_rank_2nd, nprocs
-          call copy_itp_table_org_to_IO
+          call copy_itp_table_org_to_IO(itp1_org)
 !
           if (my_rank_2nd .ge. nprocs) then
             num_org_domain_IO = 0
