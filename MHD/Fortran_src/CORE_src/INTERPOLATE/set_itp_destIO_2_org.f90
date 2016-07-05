@@ -31,10 +31,11 @@
       do i = 1, num_org_domain_IO
 !
         if (id_org_domain_IO(i) .eq. n_org_rank) then
-          num_dest_domain = num_dest_domain + 1
-          id_dest_domain(num_dest_domain) = n_dest_rank
-          istack_nod_tbl_org(num_dest_domain)                           &
-     &                       = istack_nod_tbl_org(num_dest_domain-1)    &
+          itp1_org%num_dest_domain = itp1_org%num_dest_domain + 1
+          itp1_org%id_dest_domain(itp1_org%num_dest_domain)             &
+     &       = n_dest_rank
+          itp1_org%istack_nod_tbl_org(itp1_org%num_dest_domain)         &
+     &       = itp1_org%istack_nod_tbl_org(itp1_org%num_dest_domain-1)  &
      &                        + istack_table_dest_IO(i)                 &
      &                        - istack_table_dest_IO(i-1)
         end if
@@ -57,19 +58,21 @@
 !
       do i = 1, num_org_domain_IO
         if (id_org_domain_IO(i) .eq. n_org_rank) then
-          num_dest_domain = num_dest_domain + 1
+          itp1_org%num_dest_domain = itp1_org%num_dest_domain + 1
 !
           do j = 1, 4
-            istack_org_para_type(4*(num_dest_domain-1)+j)               &
-     &         = istack_org_para_type(4*(num_dest_domain-1)+j-1)        &
+            istack_org_para_type(4*(itp1_org%num_dest_domain-1)+j)      &
+     &       = istack_org_para_type(4*(itp1_org%num_dest_domain-1)+j-1) &
      &            + istack_table_wtype_dest_IO(4*(i-1)+j)               &
      &            - istack_table_wtype_dest_IO(4*(i-1)+j-1)
           end do
 !
-          nnod = istack_nod_tbl_org(num_dest_domain)                    &
-     &          - istack_nod_tbl_org(num_dest_domain-1)
+          nnod = itp1_org%istack_nod_tbl_org(itp1_org%num_dest_domain)  &
+     &        - itp1_org%istack_nod_tbl_org(itp1_org%num_dest_domain-1)
           do inum = 1, nnod
-            iorg =  istack_nod_tbl_org(num_dest_domain-1) + inum
+            iorg                                                        &
+     &       =  itp1_org%istack_nod_tbl_org(itp1_org%num_dest_domain-1) &
+     &        + inum
             idest = istack_table_dest_IO(i-1) + inum
 !
             inod_itp_send(iorg) =      iorg

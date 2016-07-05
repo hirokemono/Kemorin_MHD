@@ -143,7 +143,7 @@
           call copy_each_merge_itp_tbl_refine(inod_2nd, icou)
         end if
       end do
-      istack_itp_type_org(1) =  icou
+      itp1_org%istack_itp_type_org(1) =  icou
 !
       do inod_2nd = 1, ntot_table_org
         iflag = c2f_mgd%tbl_org%itype_inter_org(inod_2nd)
@@ -152,7 +152,7 @@
           call copy_each_merge_itp_tbl_refine(inod_2nd, icou)
         end if
       end do
-      istack_itp_type_org(2) =  icou
+      itp1_org%istack_itp_type_org(2) =  icou
 !
       do inod_2nd = 1, ntot_table_org
         iflag = c2f_mgd%tbl_org%itype_inter_org(inod_2nd)
@@ -161,7 +161,7 @@
           call copy_each_merge_itp_tbl_refine(inod_2nd, icou)
         end if
       end do
-      istack_itp_type_org(3) =  icou
+      itp1_org%istack_itp_type_org(3) =  icou
 !
       do inod_2nd = 1, ntot_table_org
         iflag = c2f_mgd%tbl_org%itype_inter_org(inod_2nd)
@@ -170,8 +170,8 @@
           call copy_each_merge_itp_tbl_refine(inod_2nd, icou)
         end if
       end do
-      istack_itp_type_org(4) =  icou
-      istack_nod_tbl_org(1) =   istack_itp_type_org(4)
+      itp1_org%istack_itp_type_org(4) =  icou
+      itp1_org%istack_nod_tbl_org(1) = itp1_org%istack_itp_type_org(4)
 !
 !
       end subroutine sort_merge_itp_table_refine

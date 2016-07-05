@@ -7,14 +7,15 @@
 !> @brief Structure of interpolation table for source mesh
 !!
 !!@verbatim
-!!      subroutine alloc_type_itp_num_org(tbl_org)
+!!      subroutine set_num_dest_domain(num_dest_pe, tbl_org)
+!!      subroutine alloc_type_itp_num_org(np_smp, tbl_org)
 !!      subroutine alloc_type_itp_table_org(tbl_org)
 !!      subroutine alloc_type_zero_itp_tbl_org(np_smp, tbl_org)
 !!
-!!      subroutine dealloc_type_itp_num_org(tbl_org)
+!!      subroutine deallocate_itp_num_org(tbl_org)
 !!      subroutine dealloc_type_itp_table_org(tbl_org)
 !!
-!!      subroutine set_stack_tbl_org_smp_type(tbl_org)
+!!      subroutine set_stack_tbl_wtype_org_smp(tbl_org)
 !!@endverbatim
 !
       module t_interpolate_tbl_org
@@ -64,16 +65,25 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine set_num_dest_domain(num_dest_pe, tbl_org)
+!
+      integer(kind = kint), intent(in) :: num_dest_pe
+      type(interpolate_table_org), intent(inout) :: tbl_org
+!
+      tbl_org%num_dest_domain = num_dest_pe
+!
+      end subroutine set_num_dest_domain
+!
+!-----------------------------------------------------------------------
+!
       subroutine alloc_type_itp_num_org(np_smp, tbl_org)
 !
       integer(kind = kint), intent(in) :: np_smp
       type(interpolate_table_org), intent(inout) :: tbl_org
-      integer(kind = kint) :: num
+!
 !
       allocate( tbl_org%id_dest_domain(tbl_org%num_dest_domain) )
       allocate( tbl_org%istack_nod_tbl_org(0:tbl_org%num_dest_domain) )
-!
-      num = 4*tbl_org%num_dest_domain
       allocate( tbl_org%istack_itp_type_org(0:4) )
 !
       allocate(tbl_org%istack_tbl_type_org_smp(0:4*np_smp))
@@ -128,7 +138,7 @@
 !------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine dealloc_type_itp_num_org(tbl_org)
+      subroutine deallocate_itp_num_org(tbl_org)
 !
       type(interpolate_table_org), intent(inout) :: tbl_org
 !
@@ -137,7 +147,7 @@
       deallocate( tbl_org%istack_itp_type_org )
       deallocate( tbl_org%istack_tbl_type_org_smp )
 !
-      end subroutine dealloc_type_itp_num_org
+      end subroutine deallocate_itp_num_org
 !
 !-----------------------------------------------------------------------
 !
@@ -156,7 +166,7 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_stack_tbl_org_smp_type(tbl_org)
+      subroutine set_stack_tbl_wtype_org_smp(tbl_org)
 !
       use m_machine_parameter
       use cal_minmax_and_stacks
@@ -177,7 +187,7 @@
      &        tbl_org%imax_tbl_wtype_org_smp)
       end do
 !
-      end subroutine set_stack_tbl_org_smp_type
+      end subroutine set_stack_tbl_wtype_org_smp
 !
 !-----------------------------------------------------------------------
 !

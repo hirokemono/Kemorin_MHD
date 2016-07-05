@@ -30,8 +30,8 @@
       use t_interpolate_tbl_org
 !
 !
-      call ordering_itp_orgin_table(num_dest_domain, ntot_table_org,    &
-     &          istack_itp_type_org, inod_itp_send, inod_gl_dest_4_org, &
+      call ordering_itp_orgin_table(itp1_org%num_dest_domain, ntot_table_org,    &
+     &          itp1_org%istack_itp_type_org, inod_itp_send, inod_gl_dest_4_org, &
      &          iele_org_4_org, itype_inter_org, coef_inter_org)
 !
       end subroutine ordering_itp_orgin_tbl_m

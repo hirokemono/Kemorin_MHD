@@ -180,9 +180,10 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'calypso_send_recv_int'
       call calypso_send_recv_int                                        &
-     &          (iflag_import_item, ntot_table_org, NP_dest,            &
-     &           num_dest_domain, iflag_self_itp_send,                  &
-     &           id_dest_domain, istack_nod_tbl_org, inod_itp_send,     &
+     &   (iflag_import_item, ntot_table_org, NP_dest,                   &
+     &    itp1_org%num_dest_domain, itp1_org%iflag_self_itp_send,       &
+     &    itp1_org%id_dest_domain, itp1_org%istack_nod_tbl_org,         &
+     &    inod_itp_send,   &
      &           num_org_domain, iflag_self_itp_recv,                   &
      &           id_org_domain, istack_nod_tbl_dest,                    &
      &           inod_dest_4_dest, irev_dest_4_dest,                    &

@@ -45,8 +45,8 @@
         my_rank_2nd = mod(my_rank+jp-1,nprocs_2nd)
 !
         if (my_rank .eq. mod(my_rank_2nd,nprocs) ) then
-!
-          call allocate_itp_num_org(np_smp, nprocs)
+          call set_num_dest_domain(nprocs, itp1_org)
+          call alloc_type_itp_num_org(np_smp, itp1_org)
 !
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'count_interpolate_4_orgin', my_rank_2nd, nprocs
@@ -79,7 +79,7 @@
           end if
 !
           call copy_interpolate_types_from_IO(my_rank_2nd, itp_ele_c2f)
-          call set_stack_tbl_org_smp_type(itp_ele_c2f%tbl_org)
+          call set_stack_tbl_wtype_org_smp(itp_ele_c2f%tbl_org)
 !
           call reverse_ele_itp_table_type(itp_ele_c2f, itp_ele_f2c)
           call copy_interpolate_types_to_IO(itp_ele_f2c)
@@ -98,7 +98,7 @@
         num_dest_domain_IO = 0
         ntot_table_org_IO =  0
         call copy_interpolate_types_from_IO(my_rank, itp_ele_c2f)
-        call set_stack_tbl_org_smp_type(itp_ele_c2f%tbl_org)
+        call set_stack_tbl_wtype_org_smp(itp_ele_c2f%tbl_org)
 !
         call reverse_ele_itp_table_type(itp_ele_c2f, itp_ele_f2c)
         call copy_interpolate_types_to_IO(itp_ele_f2c)
@@ -180,7 +180,7 @@
         itp_rev%tbl_dest%inod_dest_4_dest(1:num)                        &
      &    = itp_tbl%tbl_org%iele_org_4_org(1:num)
 !
-        call dealloc_type_itp_num_org(itp_tbl%tbl_org)
+        call deallocate_itp_num_org(itp_tbl%tbl_org)
         call dealloc_type_itp_table_org(itp_tbl%tbl_org)
       end if
 !

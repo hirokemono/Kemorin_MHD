@@ -18,20 +18,13 @@
       module m_interpolate_table_orgin
 !
       use m_precision
+      use t_interpolate_tbl_org
 !
       implicit none
 !
-!
-!>   number of subdomain to send interpolated data
-      integer(kind = kint) :: num_dest_domain
-!>   flag if target nodes have same prosess
-      integer(kind = kint) :: iflag_self_itp_send
-!>   subdomain rank to send interpolated data
-      integer(kind = kint), allocatable :: id_dest_domain(:)
-!>   end address to send interpolated data
-      integer(kind = kint), allocatable :: istack_nod_tbl_org(:)
-!>   end address for interplation modes
-      integer(kind = kint), allocatable :: istack_itp_type_org(:)
+!> Structure of interpolation table for source grid
+      type(interpolate_table_org) :: itp1_org
+!itp1_org%istack_tbl_type_org_smp
 !
 !>   total number of node to interpolate in original subdomain
       integer(kind = kint) :: ntot_table_org
@@ -46,35 +39,12 @@
 !>   Coordinate of target node in element coordinate
       real(kind = kreal), allocatable :: coef_inter_org(:,:)
 !
-!>   end address of table to interpolation at original elements
-      integer(kind = kint), allocatable                                 &
-     &            :: istack_tbl_type_org_smp(:)
 !>   maximum number of interpolation at original elements
       integer(kind = kint) :: imax_table_type_org_smp
 !
 !-----------------------------------------------------------------------
 !
       contains
-!
-!-----------------------------------------------------------------------
-!
-      subroutine allocate_itp_num_org(np_smp, num_dest_pe)
-!
-      integer(kind = kint), intent(in) :: np_smp
-      integer(kind = kint), intent(in) :: num_dest_pe
-!
-      allocate( id_dest_domain(num_dest_pe) )
-      allocate( istack_nod_tbl_org(0:num_dest_pe) )
-      allocate( istack_itp_type_org(0:4) )
-!
-      allocate(istack_tbl_type_org_smp(0:4*np_smp))
-!
-      if(num_dest_pe .gt. 0) id_dest_domain = 0
-      istack_nod_tbl_org =  0
-      istack_itp_type_org = 0
-      istack_tbl_type_org_smp = 0
-!
-      end subroutine allocate_itp_num_org
 !
 !-----------------------------------------------------------------------
 !
@@ -99,16 +69,6 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine deallocate_itp_num_org
-!
-      deallocate( id_dest_domain )
-      deallocate( istack_nod_tbl_org, istack_itp_type_org)
-      deallocate(istack_tbl_type_org_smp)
-!
-      end subroutine deallocate_itp_num_org
-!
-!-----------------------------------------------------------------------
-!
       subroutine deallocate_itp_table_org
 !
       deallocate( inod_itp_send )
@@ -118,27 +78,6 @@
       deallocate( coef_inter_org )
 !
       end subroutine deallocate_itp_table_org
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine set_stack_tbl_wtype_org_smp
-!
-      use m_machine_parameter
-      use cal_minmax_and_stacks
-!
-      integer(kind = kint) :: itype, ist, ied, ist_smp
-!
-!
-      do itype = 1, 4
-        ist = istack_itp_type_org(itype-1) + 1
-        ied = istack_itp_type_org(itype  )
-        ist_smp = np_smp * (itype-1)
-        call count_number_4_smp( np_smp, ist, ied,                      &
-     &     istack_tbl_type_org_smp(ist_smp), imax_table_type_org_smp)
-      end do
-!
-      end subroutine set_stack_tbl_wtype_org_smp
 !
 !-----------------------------------------------------------------------
 !

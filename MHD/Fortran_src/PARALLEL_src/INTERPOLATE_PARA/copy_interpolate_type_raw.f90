@@ -41,7 +41,7 @@
       call copy_itp_tbl_type_org_from_raw(my_rank, itp_table%tbl_org)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_stack_tbl_org_smp_type'
-      call set_stack_tbl_org_smp_type(itp_table%tbl_org)
+      call set_stack_tbl_wtype_org_smp(itp_table%tbl_org)
 !
       end subroutine copy_interpolate_types_from_raw
 !
@@ -104,7 +104,7 @@
 !
 !
       tbl_org%iflag_self_itp_send = 0
-      tbl_org%num_dest_domain = num_dest_domain
+      tbl_org%num_dest_domain = itp1_org%num_dest_domain
 !
       if (tbl_org%num_dest_domain .gt. 0) then
 !
@@ -114,10 +114,11 @@
         call alloc_type_itp_table_org(tbl_org)
 !
         tbl_org%id_dest_domain(1:tbl_org%num_dest_domain)               &
-     &     = id_dest_domain(1:tbl_org%num_dest_domain)
+     &     = itp1_org%id_dest_domain(1:tbl_org%num_dest_domain)
         tbl_org%istack_nod_tbl_org(0:tbl_org%num_dest_domain)           &
-     &     = istack_nod_tbl_org(0:tbl_org%num_dest_domain)
-        tbl_org%istack_itp_type_org(0:4) = istack_itp_type_org(0:4)
+     &     = itp1_org%istack_nod_tbl_org(0:tbl_org%num_dest_domain)
+        tbl_org%istack_itp_type_org(0:4)                                &
+     &     = itp1_org%istack_itp_type_org(0:4)
 !
         do i = 1, tbl_org%ntot_table_org
           tbl_org%inod_itp_send(i) =      inod_itp_send(i)
@@ -131,7 +132,7 @@
         end do
 !
         call deallocate_itp_table_org
-        call deallocate_itp_num_org
+        call deallocate_itp_num_org(itp1_org)
 !
         ilast_domain = tbl_org%num_dest_domain
         if ( tbl_org%id_dest_domain(ilast_domain) .eq. my_rank) then

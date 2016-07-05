@@ -48,7 +48,7 @@
      &    itp_copied%tbl_org)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_stack_tbl_org_smp_type'
-      call set_stack_tbl_org_smp_type(itp_copied%tbl_org)
+      call set_stack_tbl_wtype_org_smp(itp_copied%tbl_org)
 !
       end subroutine copy_interpolate_between_types
 !
@@ -106,7 +106,6 @@
 !
       use t_interpolate_tbl_org
       use m_machine_parameter
-      use m_interpolate_table_orgin
 !
       integer(kind = kint), intent(in) :: my_rank
       type(interpolate_table_org), intent(in) :: tbl_org_in

@@ -42,7 +42,8 @@
         my_rank_2nd = mod(my_rank+jp-1,nprocs_2nd)
 !
         if (my_rank .eq. mod(my_rank_2nd,nprocs) ) then
-          call allocate_itp_num_org(np_smp, nprocs)
+          call set_num_dest_domain(nprocs, itp1_org)
+          call alloc_type_itp_num_org(np_smp, itp1_org)
 !
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'count_interpolate_4_orgin', my_rank_2nd, nprocs
@@ -111,8 +112,8 @@
       integer(kind = kint) :: ip, n_dest_rank, ierr
 !
 !
-      num_dest_domain = 0
-      istack_nod_tbl_org(0:nprocs_dest) = 0
+      itp1_org%num_dest_domain = 0
+      itp1_org%istack_nod_tbl_org(0:nprocs_dest) = 0
       do ip = 1, nprocs_dest
 !
         n_dest_rank = mod(n_org_rank+ip,nprocs_dest)
@@ -125,7 +126,8 @@
         call count_num_interpolation_4_orgin(n_org_rank, n_dest_rank)
 !
       end do
-      ntot_table_org = istack_nod_tbl_org(num_dest_domain)
+      ntot_table_org                                                    &
+     &     = itp1_org%istack_nod_tbl_org(itp1_org%num_dest_domain)
 !
       end subroutine count_interpolate_4_orgin
 !
@@ -145,7 +147,7 @@
 !
       call allocate_istack_org_ptype(nprocs_dest)
 !
-      num_dest_domain = 0
+      itp1_org%num_dest_domain = 0
       do ip = 1, nprocs_dest
         n_dest_rank = mod(n_org_rank+ip,nprocs_dest)
         table_file_header = work_header

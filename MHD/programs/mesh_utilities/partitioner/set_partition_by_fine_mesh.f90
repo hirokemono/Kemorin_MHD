@@ -61,7 +61,7 @@
 !
       call deallocate_finer_domain_group
 !
-      call deallocate_itp_num_org
+      call deallocate_itp_num_org(itp1_org)
       call deallocate_itp_table_org
 !
       call deallocate_itp_table_dest
@@ -97,7 +97,7 @@
       call copy_itp_table_dest_from_IO(my_rank)
       call copy_itp_table_org_from_IO(my_rank)
 !
-      call set_stack_tbl_wtype_org_smp
+      call set_stack_tbl_wtype_org_smp(itp1_org)
 !
       end subroutine input_interpolate_table_4_part
 !
@@ -120,8 +120,9 @@
 !
       call s_interporate_imark_para(np_smp, new_node%numnod,            &
      &    new_ele%numele, new_ele%nnod_4_ele, new_ele%ie,               &
-     &    IGROUP_FINER(1), istack_tbl_type_org_smp, ntot_table_org,     &
-     &    iele_org_4_org, itype_inter_org, IGROUP_nod(1) )
+     &    IGROUP_FINER(1), itp1_org%istack_tbl_type_org_smp,            &
+     &    ntot_table_org, iele_org_4_org,                               &
+     &    itype_inter_org, IGROUP_nod(1) )
 !
       end subroutine interpolate_domain_group
 !

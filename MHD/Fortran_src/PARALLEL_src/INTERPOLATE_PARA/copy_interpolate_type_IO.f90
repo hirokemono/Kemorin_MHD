@@ -239,7 +239,7 @@
       end if
 !
       call dealloc_type_itp_table_org(tbl_org)
-      call dealloc_type_itp_num_org(tbl_org)
+      call deallocate_itp_num_org(tbl_org)
 !
       end subroutine copy_itp_tbl_type_org_to_IO
 !

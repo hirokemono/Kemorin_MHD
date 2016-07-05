@@ -51,7 +51,7 @@
       table_file_header = sgl_table_file_head
       call sel_read_interpolate_table(izero, ierr)
       call copy_interpolate_types_from_IO(izero, single_tbl)
-      call set_stack_tbl_org_smp_type(single_tbl%tbl_org)
+      call set_stack_tbl_wtype_org_smp(single_tbl%tbl_org)
       write(*,*) 'interplation table is loaded'
 !
 !

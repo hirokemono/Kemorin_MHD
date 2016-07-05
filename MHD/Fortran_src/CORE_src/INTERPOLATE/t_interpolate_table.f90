@@ -5,8 +5,13 @@
 !
 !      Written by H.Matsui on Dec., 2008
 !
-!      subroutine alloc_zero_itp_tables(inp_smp, tp_info)
-!        type(interpolate_table), intent(inout) :: itp_info
+!!      subroutine dealloc_interpolate_tbl_type(itp_info)
+!!      subroutine alloc_zero_itp_tables(inp_smp, tp_info)
+!!      subroutine const_interporate_mat_type(ele_org, tbl_org, mat)
+!!        type(interpolate_table), intent(inout) :: itp_info
+!!        type(element_data), intent(in) :: ele_org
+!!        type(interpolate_table_org), intent(in) :: tbl_org
+!!        type(CRS_SMP_CONNECT_MATRIX), intent(inout) :: mat
 !
 !
       module t_interpolate_table
@@ -58,7 +63,7 @@
       call dealloc_type_itp_num_dest(itp_info%tbl_dest)
 !
       call dealloc_type_itp_table_org(itp_info%tbl_org)
-      call dealloc_type_itp_num_org(itp_info%tbl_org)
+      call deallocate_itp_num_org(itp_info%tbl_org)
 !
       call dealloc_crs_smp_mat(itp_info%mat)
 !

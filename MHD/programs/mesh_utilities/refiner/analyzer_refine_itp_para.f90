@@ -56,17 +56,17 @@
       table_file_header = course_2_fine_head
       call sel_read_interpolate_table(izero, ierr)
       call copy_interpolate_types_from_IO(izero, c2f_single)
-      call set_stack_tbl_org_smp_type(c2f_single%tbl_org)
+      call set_stack_tbl_wtype_org_smp(c2f_single%tbl_org)
 !
       table_file_header = fine_2_course_head
       call sel_read_interpolate_table(izero, ierr)
       call copy_interpolate_types_from_IO(izero, f2c_single)
-      call set_stack_tbl_org_smp_type(f2c_single%tbl_org)
+      call set_stack_tbl_wtype_org_smp(f2c_single%tbl_org)
 !
       table_file_header = refine_info_head
       call sel_read_interpolate_table(izero, ierr)
       call copy_interpolate_types_from_IO(izero, f2c_ele_single)
-      call set_stack_tbl_org_smp_type(f2c_ele_single%tbl_org)
+      call set_stack_tbl_wtype_org_smp(f2c_ele_single%tbl_org)
 !
 !
 !

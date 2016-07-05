@@ -46,7 +46,7 @@
      &   (nnod_4_ele, nnod_2, nnod_4_ele_2, xx_2)
 !
       call dealloc_type_itp_table_org(c2f_mgd%tbl_org)
-      call dealloc_type_itp_num_org(c2f_mgd%tbl_org)
+      call deallocate_itp_num_org(c2f_mgd%tbl_org)
 !
       end subroutine set_merged_itp_course_to_fine
 !
@@ -63,19 +63,20 @@
       real(kind = kreal), intent(in) :: xx_2(nnod_2,3)
 !
 !
-      num_dest_domain =     c2f_mgd%tbl_org%num_dest_domain
-      iflag_self_itp_send = c2f_mgd%tbl_org%iflag_self_itp_send
+      itp1_org%iflag_self_itp_send = c2f_mgd%tbl_org%iflag_self_itp_send
+      call set_num_dest_domain                                          &
+     &   (c2f_mgd%tbl_org%num_dest_domain, itp1_org)
+      call alloc_type_itp_num_org(np_smp, itp1_org)
 !
       ntot_table_org = c2f_mgd%tbl_org%ntot_table_org
 !
-      call allocate_itp_num_org(np_smp, num_dest_domain)
       call allocate_itp_table_org
 !
 !
-      id_dest_domain =     c2f_mgd%tbl_org%id_dest_domain
-      istack_nod_tbl_org = c2f_mgd%tbl_org%istack_nod_tbl_org
+      itp1_org%id_dest_domain =     c2f_mgd%tbl_org%id_dest_domain
+      itp1_org%istack_nod_tbl_org = c2f_mgd%tbl_org%istack_nod_tbl_org
 !
-      istack_itp_type_org(0) = izero
+      itp1_org%istack_itp_type_org(0) = izero
 !
       call set_merged_refine_data_org                                   &
      &   (nnod_4_ele, nnod_2, nnod_4_ele_2, xx_2)
@@ -96,19 +97,18 @@
       real(kind = kreal) :: xi_ele(3)
 !
 !
-      num_dest_domain =     ione
-      iflag_self_itp_send = ione
+      itp1_org%iflag_self_itp_send = ione
+      call set_num_dest_domain(ione, itp1_org)
+      call alloc_type_itp_num_org(np_smp, itp1_org)
 !
-      call allocate_itp_num_org(np_smp, num_dest_domain)
-!
-      id_dest_domain(1) = izero
-      istack_itp_type_org(0) = izero
-      istack_itp_type_org(1) = node_org_refine%numnod
-      istack_itp_type_org(2) = node_org_refine%numnod
-      istack_itp_type_org(3) = node_org_refine%numnod
-      istack_itp_type_org(4) = node_org_refine%numnod
-      istack_nod_tbl_org(0) = izero
-      istack_nod_tbl_org(1) = node_org_refine%numnod
+      itp1_org%id_dest_domain(1) = izero
+      itp1_org%istack_itp_type_org(0) = izero
+      itp1_org%istack_itp_type_org(1) = node_org_refine%numnod
+      itp1_org%istack_itp_type_org(2) = node_org_refine%numnod
+      itp1_org%istack_itp_type_org(3) = node_org_refine%numnod
+      itp1_org%istack_itp_type_org(4) = node_org_refine%numnod
+      itp1_org%istack_nod_tbl_org(0) = izero
+      itp1_org%istack_nod_tbl_org(1) = node_org_refine%numnod
       ntot_table_org =        node_org_refine%numnod
 !
       call allocate_itp_table_org

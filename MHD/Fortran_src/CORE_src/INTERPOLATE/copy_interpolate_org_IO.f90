@@ -27,21 +27,21 @@
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      iflag_self_itp_send = 0
-      num_dest_domain = num_dest_domain_IO
+      itp1_org%iflag_self_itp_send = 0
+      call set_num_dest_domain(num_dest_domain_IO, itp1_org)
+      call alloc_type_itp_num_org(np_smp, itp1_org)
 !
-      if (num_dest_domain .gt. 0) then
+      if (itp1_org%num_dest_domain .gt. 0) then
 !
         ntot_table_org = ntot_table_org_IO
 !
-        call allocate_itp_num_org(np_smp, num_dest_domain)
         call allocate_itp_table_org
 !
-        id_dest_domain(1:num_dest_domain)                               &
-     &          = id_dest_domain_IO(1:num_dest_domain)
-        istack_nod_tbl_org(0:num_dest_domain)                           &
-     &          = istack_nod_table_org_IO(0:num_dest_domain)
-        istack_itp_type_org(0:4) = istack_itp_type_org_IO(0:4)
+        itp1_org%id_dest_domain(1:itp1_org%num_dest_domain)                               &
+     &          = id_dest_domain_IO(1:itp1_org%num_dest_domain)
+        itp1_org%istack_nod_tbl_org(0:itp1_org%num_dest_domain)                           &
+     &          = istack_nod_table_org_IO(0:itp1_org%num_dest_domain)
+        itp1_org%istack_itp_type_org(0:4) = istack_itp_type_org_IO(0:4)
 !
         inod_itp_send(1:ntot_table_org)                                 &
      &          = inod_itp_send_IO(1:ntot_table_org)
@@ -62,12 +62,11 @@
         call deallocate_itp_table_org_IO
         call deallocate_itp_num_org_IO
 !
-        if ( id_dest_domain(num_dest_domain) .eq. my_rank) then
-          iflag_self_itp_send = 1
+        if ( itp1_org%id_dest_domain(itp1_org%num_dest_domain) .eq. my_rank) then
+          itp1_org%iflag_self_itp_send = 1
         end if
       else
         ntot_table_org = 0
-        call allocate_itp_num_org(np_smp, num_dest_domain)
         call allocate_itp_table_org
       end if
 !
@@ -78,20 +77,20 @@
       subroutine copy_itp_table_org_to_IO
 !
 !
-       num_dest_domain_IO = num_dest_domain
+       num_dest_domain_IO = itp1_org%num_dest_domain
 !
-      if (num_dest_domain .gt. 0) then
+      if (itp1_org%num_dest_domain .gt. 0) then
 !
         ntot_table_org_IO = ntot_table_org
 !
         call allocate_itp_num_org_IO
         call allocate_itp_table_org_IO
 !
-        id_dest_domain_IO(1:num_dest_domain)                            &
-     &          = id_dest_domain(1:num_dest_domain)
-        istack_nod_table_org_IO(0:num_dest_domain)                      &
-     &          = istack_nod_tbl_org(0:num_dest_domain)
-        istack_itp_type_org_IO(0:4) = istack_itp_type_org(0:4)
+        id_dest_domain_IO(1:itp1_org%num_dest_domain)                            &
+     &          = itp1_org%id_dest_domain(1:itp1_org%num_dest_domain)
+        istack_nod_table_org_IO(0:itp1_org%num_dest_domain)                      &
+     &          = itp1_org%istack_nod_tbl_org(0:itp1_org%num_dest_domain)
+        istack_itp_type_org_IO(0:4) = itp1_org%istack_itp_type_org(0:4)
 !
 !
         inod_itp_send_IO(1:ntot_table_org)                              &
@@ -113,7 +112,7 @@
       end if
 !
       call deallocate_itp_table_org
-      call deallocate_itp_num_org
+      call deallocate_itp_num_org(itp1_org)
 !
       end subroutine copy_itp_table_org_to_IO
 !

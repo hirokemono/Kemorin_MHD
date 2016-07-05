@@ -51,8 +51,8 @@
       type(interpolate_table), intent(inout) :: itp_table
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_stack_tbl_org_smp_type'
-      call set_stack_tbl_org_smp_type(itp_table%tbl_org)
+      if (iflag_debug.eq.1) write(*,*) 'set_stack_tbl_wtype_org_smp'
+      call set_stack_tbl_wtype_org_smp(itp_table%tbl_org)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_interporate_mat_type'
       call const_interporate_mat_type                                   &
