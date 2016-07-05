@@ -33,11 +33,13 @@
 !
       use t_comm_table
       use t_interpolate_table
+      use t_work_4_interpolation
 !
-      use m_work_4_interpolation
       use select_copy_from_recv
 !
       implicit none
+!
+      type(work_4_interoplation), private, save ::  itp_WORK
 !
 !  ---------------------------------------------------------------------
 !
@@ -54,12 +56,13 @@
       if (iflag_debug.eq.1) write(*,*) 'set_stack_tbl_wtype_org_smp'
       call set_stack_tbl_wtype_org_smp(itp_table%tbl_org)
 !
-      if (iflag_debug.eq.1) write(*,*) 'const_interporate_mat_type'
-      call const_interporate_mat_type                                   &
+      if (iflag_debug.eq.1) write(*,*) 'const_interporate_matrix'
+      call const_interporate_matrix                                     &
      &   (ele_org, itp_table%tbl_org, itp_table%mat)
 !
       call verifty_work_4_itp_field                                     &
-     &   (isix, itp_table%tbl_org%ntot_table_org)
+     &   (isix, itp_table%tbl_org%ntot_table_org, itp_table%tbl_org,    &
+     &    itp_WORK)
 !
       end subroutine init_interpolate_mat_type
 !
@@ -84,7 +87,8 @@
 !     initialize
 !
       call verifty_work_4_itp_field(ione,                               &
-     &    itp_table%tbl_org%ntot_table_org)
+     &    itp_table%tbl_org%ntot_table_org, itp_table%tbl_org,          &
+     &    itp_WORK)
 !
 !    interpolation
 !
@@ -93,7 +97,7 @@
      &      itp_table%mat%NC, itp_table%mat%NCM, itp_table%mat%INM,     &
      &      itp_table%mat%IAM, itp_table%mat%AM,                        &
      &      itp_table%mat%NUM_SUM(4), itp_table%mat%IEND_SUM_smp,       &
-     &      X_dest)
+     &      itp_WORK%x_inter_org)
       end if
 !
 !     communication
@@ -111,7 +115,7 @@
      &           itp_table%tbl_dest%istack_nod_tbl_dest,                &
      &           itp_table%tbl_dest%inod_dest_4_dest,                   &
      &           itp_table%tbl_dest%irev_dest_4_dest,                   &
-     &           x_inter_org(1), X_dest(1) )
+     &           itp_WORK%x_inter_org, X_dest(1) )
 !
 !
       if (comm_dest%num_neib .gt. 0) then
@@ -144,7 +148,8 @@
 !     initialize
 !
       call verifty_work_4_itp_field(ithree,                             &
-     &    itp_table%tbl_org%ntot_table_org)
+     &    itp_table%tbl_org%ntot_table_org, itp_table%tbl_org,          &
+     &    itp_WORK)
 !
 !    interpolation
 !
@@ -153,7 +158,7 @@
      &      itp_table%mat%NC, itp_table%mat%NCM, itp_table%mat%INM,     &
      &      itp_table%mat%IAM, itp_table%mat%AM,                        &
      &      itp_table%mat%NUM_SUM(4), itp_table%mat%IEND_SUM_smp,       &
-     &      X_dest)
+     &      itp_WORK%x_inter_org)
       end if
 !
 !     communication
@@ -171,7 +176,7 @@
      &           itp_table%tbl_dest%istack_nod_tbl_dest,                &
      &           itp_table%tbl_dest%inod_dest_4_dest,                   &
      &           itp_table%tbl_dest%irev_dest_4_dest,                   &
-     &           x_inter_org(1), X_dest(1) )
+     &           itp_WORK%x_inter_org, X_dest(1) )
 !
 !
       if (comm_dest%num_neib .gt. 0) then
@@ -204,7 +209,8 @@
 !     initialize
 !
       call verifty_work_4_itp_field(isix,                               &
-     &    itp_table%tbl_org%ntot_table_org)
+     &    itp_table%tbl_org%ntot_table_org, itp_table%tbl_org,          &
+     &    itp_WORK)
 !
 !    interpolation
 !
@@ -213,7 +219,7 @@
      &      itp_table%mat%NC, itp_table%mat%NCM, itp_table%mat%INM,     &
      &      itp_table%mat%IAM, itp_table%mat%AM,                        &
      &      itp_table%mat%NUM_SUM(4), itp_table%mat%IEND_SUM_smp,       &
-     &      X_dest)
+     &      itp_WORK%x_inter_org)
       end if
 !
 !     communication
@@ -231,7 +237,7 @@
      &           itp_table%tbl_dest%istack_nod_tbl_dest,                &
      &           itp_table%tbl_dest%inod_dest_4_dest,                   &
      &           itp_table%tbl_dest%irev_dest_4_dest,                   &
-     &           x_inter_org(1), X_dest(1) )
+     &           itp_WORK%x_inter_org, X_dest(1) )
 !
 !
       if (comm_dest%num_neib .gt. 0) then
@@ -264,7 +270,8 @@
 !     initialize
 !
       call verifty_work_4_itp_field(NB,                                 &
-     &    itp_table%tbl_org%ntot_table_org)
+     &    itp_table%tbl_org%ntot_table_org, itp_table%tbl_org,          &
+     &    itp_WORK)
 !
 !    interpolation
 !
@@ -273,7 +280,7 @@
      &      itp_table%mat%NC, itp_table%mat%NCM, itp_table%mat%INM,     &
      &      itp_table%mat%IAM, itp_table%mat%AM,                        &
      &      itp_table%mat%NUM_SUM(4), itp_table%mat%IEND_SUM_smp,       &
-     &      X_dest)
+     &      itp_WORK%x_inter_org)
       end if
 !
 !     communication
@@ -291,7 +298,7 @@
      &           itp_table%tbl_dest%istack_nod_tbl_dest,                &
      &           itp_table%tbl_dest%inod_dest_4_dest,                   &
      &           itp_table%tbl_dest%irev_dest_4_dest,                   &
-     &           x_inter_org(1), X_dest(1) )
+     &           itp_WORK%x_inter_org, X_dest(1) )
 !
       call finish_calypso_send_recv                                     &
      &          (itp_table%tbl_org%num_dest_domain,                     &

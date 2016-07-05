@@ -30,11 +30,9 @@
 !
       use m_constants
       use m_2nd_pallalel_vector
-      use m_interpolate_matrix
       use m_interpolated_geometry
 !
       use m_array_for_send_recv
-      use m_work_4_interpolation
 !
       use interpolate_by_module
 !
@@ -76,8 +74,6 @@
       use m_interpolated_geometry
 !
       use m_array_for_send_recv
-      use m_work_4_interpolation
-      use m_interpolate_matrix
 !
       use interpolate_by_module
 !
@@ -118,11 +114,8 @@
       use m_2nd_pallalel_vector
       use m_interpolated_geometry
       use m_interpolate_table_dest
-      use m_interpolate_matrix
 !
       use m_array_for_send_recv
-      use m_work_4_interpolation
-      use m_interpolate_matrix
 !
       use interpolate_by_module
       use matvec_by_djo

@@ -4,6 +4,11 @@
 !        programmed by H.Matsui on Sep. 2006 (ver 1.2)
 !
 !      subroutine const_interpolate_table_4_orgin
+!!
+!!      subroutine count_interpolate_4_orgin                            &
+!!     &         (n_org_rank, nprocs_dest, itp_org)
+!!      subroutine search_interpolate_4_orgin                           &
+!!     &          (n_org_rank, nprocs_dest, itp1_org)
 !
       module const_interpolate_4_org
 !
@@ -11,8 +16,12 @@
 !
       use calypso_mpi
       use m_machine_parameter
+      use t_interpolate_tbl_org
 !
       implicit none
+!
+!> Structure of interpolation table for source grid
+      type(interpolate_table_org), private :: itp_org_c
 !
 !-----------------------------------------------------------------------
 !
@@ -27,7 +36,6 @@
 !
       use m_interpolate_table_dest_IO
       use m_interpolate_table_org_IO
-      use m_interpolate_table_orgin
 !
       use itp_table_IO_select_4_zlib
       use copy_interpolate_type_IO
@@ -35,33 +43,34 @@
       integer(kind = kint) :: jp
       integer(kind = kint) :: my_rank_2nd, ierr
 !
-!
 !    set domain ID to be searched
 !
       do jp = 1, nprocs_2nd
         my_rank_2nd = mod(my_rank+jp-1,nprocs_2nd)
 !
         if (my_rank .eq. mod(my_rank_2nd,nprocs) ) then
-          call set_num_dest_domain(nprocs, itp1_org)
-          call alloc_itp_num_org(np_smp, itp1_org)
+          call set_num_dest_domain(nprocs, itp_org_c)
+          call alloc_itp_num_org(np_smp, itp_org_c)
 !
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'count_interpolate_4_orgin', my_rank_2nd, nprocs
-          call count_interpolate_4_orgin(my_rank_2nd, nprocs)
+          call count_interpolate_4_orgin                                &
+     &       (my_rank_2nd, nprocs, itp_org_c)
 !
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'allocate_itp_table_org'
-          call alloc_itp_table_org(itp1_org)
+          call alloc_itp_table_org(itp_org_c)
 !
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'search_interpolate_4_orgin'
-          call search_interpolate_4_orgin(my_rank_2nd, nprocs)
+          call search_interpolate_4_orgin                               &
+     &       (my_rank_2nd, nprocs, itp_org_c)
 !
 !
 !
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'copy_itp_table_org_to_IO', my_rank_2nd, nprocs
-          call copy_itp_table_org_to_IO(itp1_org)
+          call copy_itp_table_org_to_IO(itp_org_c)
 !
           if (my_rank_2nd .ge. nprocs) then
             num_org_domain_IO = 0
@@ -100,20 +109,22 @@
       end subroutine const_interpolate_table_4_orgin
 !
 !-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
 !
-      subroutine count_interpolate_4_orgin(n_org_rank, nprocs_dest)
+      subroutine count_interpolate_4_orgin                              &
+     &         (n_org_rank, nprocs_dest, itp_org)
 !
-      use m_interpolate_table_orgin
       use itp_table_IO_select_4_zlib
       use set_itp_destIO_2_org
 !
       integer(kind = kint), intent(in) :: n_org_rank, nprocs_dest
+      type(interpolate_table_org), intent(inout)  :: itp_org
 !
       integer(kind = kint) :: ip, n_dest_rank, ierr
 !
 !
-      itp1_org%num_dest_domain = 0
-      itp1_org%istack_nod_tbl_org(0:nprocs_dest) = 0
+      itp_org%num_dest_domain = 0
+      itp_org%istack_nod_tbl_org(0:nprocs_dest) = 0
       do ip = 1, nprocs_dest
 !
         n_dest_rank = mod(n_org_rank+ip,nprocs_dest)
@@ -126,28 +137,29 @@
         call count_num_interpolation_4_orgin(n_org_rank, n_dest_rank)
 !
       end do
-      itp1_org%ntot_table_org                                           &
-     &     = itp1_org%istack_nod_tbl_org(itp1_org%num_dest_domain)
+      itp_org%ntot_table_org                                            &
+     &     = itp_org%istack_nod_tbl_org(itp_org%num_dest_domain)
 !
       end subroutine count_interpolate_4_orgin
 !
 !-----------------------------------------------------------------------
 !
-      subroutine search_interpolate_4_orgin(n_org_rank, nprocs_dest)
+      subroutine search_interpolate_4_orgin                             &
+     &          (n_org_rank, nprocs_dest, itp_org)
 !
-      use m_interpolate_table_orgin
       use itp_table_IO_select_4_zlib
       use set_itp_destIO_2_org
       use ordering_itp_org_tbl
       use m_work_const_itp_table
 !
       integer(kind = kint), intent(in) :: n_org_rank, nprocs_dest
+      type(interpolate_table_org), intent(inout)  :: itp_org
 !
       integer(kind = kint) :: ip, n_dest_rank, ierr
 !
       call allocate_istack_org_ptype(nprocs_dest)
 !
-      itp1_org%num_dest_domain = 0
+      itp_org%num_dest_domain = 0
       do ip = 1, nprocs_dest
         n_dest_rank = mod(n_org_rank+ip,nprocs_dest)
         table_file_header = work_header
@@ -157,7 +169,7 @@
         call set_interpolation_4_orgin(n_org_rank)
       end do
 !
-      call ordering_itp_orgin_tbl_t(itp1_org)
+      call ordering_itp_orgin_tbl_t(itp_org)
       call deallocate_istack_org_ptype
 !
       end subroutine search_interpolate_4_orgin

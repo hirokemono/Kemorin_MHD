@@ -28,6 +28,9 @@
 !
       type(interpolate_table), save :: itp1_info
 !
+!> Structure of interpolation matrix
+      type(CRS_SMP_CONNECT_MATRIX), save :: itp1_mat
+!
 !------------------------------------------------------------------
 !
        contains
@@ -53,21 +56,14 @@
       end subroutine allocate_zero_itp_tables
 !
 !------------------------------------------------------------------
-!------------------------------------------------------------------
 !
-      subroutine const_interporate_matrix(ele_org)
-!
-      use m_machine_parameter
-      use interpolate_matrix_para
-!
-      type(element_data), intent(in) :: ele_org
+      subroutine deallocate_itp_mat_item
 !
 !
-      call const_interporate_mat_type                                   &
-     &  (ele_org, itp1_info%tbl_org, itp1_info%mat)
+      call dealloc_crs_smp_mat(itp1_mat)
 !
-      end subroutine const_interporate_matrix
+      end subroutine deallocate_itp_mat_item
 !
-! ----------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
       end module m_interpolate_table

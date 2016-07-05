@@ -11,6 +11,8 @@
       use m_constants
 !
       use t_mesh_data
+      use t_interpolate_tbl_org
+      use t_interpolate_tbl_dest
 !
       implicit none
 !
@@ -30,13 +32,13 @@
       use m_ctl_param_partitioner
       use m_subdomain_table_IO
       use m_read_mesh_data
-      use m_interpolate_table_orgin
-      use m_interpolate_table_dest
       use m_domain_group_4_partition
 !
       use load_mesh_data
       use copy_domain_list_4_IO
 !
+      type(interpolate_table_org) :: itp_org
+      type(interpolate_table_dest) :: itp_dest
 !
 !     read finer mesh
 !
@@ -46,7 +48,7 @@
 !
 !     read interpolate table
 !
-      call input_interpolate_table_4_part
+      call input_interpolate_table_4_part(itp_org, itp_dest)
 !
 !     read interpolate table
 !
@@ -55,17 +57,18 @@
 !
 !     construct group table
 !
-      call interpolate_domain_group(finermesh%node, finermesh%ele)
+      call interpolate_domain_group                                     &
+     &   (finermesh%node, finermesh%ele, itp_org)
 !
 !     deallocate arrays
 !
       call deallocate_finer_domain_group
 !
-      call dealloc_itp_num_org(itp1_org)
-      call dealloc_itp_table_org(itp1_org)
+      call dealloc_itp_num_org(itp_org)
+      call dealloc_itp_table_org(itp_org)
 !
-      call dealloc_itp_table_dest(itp1_dest)
-      call dealloc_itp_num_dest(itp1_dest)
+      call dealloc_itp_table_dest(itp_dest)
+      call dealloc_itp_num_dest(itp_dest)
 !
       call deallocate_ele_connect_type(finermesh%ele)
       call deallocate_node_geometry_type(finermesh%node)
@@ -76,14 +79,15 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine input_interpolate_table_4_part
+      subroutine input_interpolate_table_4_part(itp_org, itp_dest)
 !
       use m_ctl_param_partitioner
-      use m_interpolate_table_orgin
-      use m_interpolate_table_dest
       use m_interpolate_coefs_dest
       use itp_table_IO_select_4_zlib
       use copy_interpolate_type_IO
+!
+      type(interpolate_table_org), intent(inout) :: itp_org
+      type(interpolate_table_dest), intent(inout) :: itp_dest
 !
       integer(kind = kint), parameter :: my_rank = 0
       integer(kind = kint) :: ierr
@@ -94,35 +98,34 @@
      &           trim(table_file_header)
       call sel_read_interpolate_table(my_rank, ierr)
 !
-      call copy_itp_table_dest_from_IO(my_rank, itp1_dest)
-      call copy_itp_table_org_from_IO(my_rank, itp1_org)
+      call copy_itp_table_dest_from_IO(my_rank, itp_dest)
+      call copy_itp_table_org_from_IO(my_rank, itp_org)
 !
-      call set_stack_tbl_wtype_org_smp(itp1_org)
+      call set_stack_tbl_wtype_org_smp(itp_org)
 !
       end subroutine input_interpolate_table_4_part
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine interpolate_domain_group(new_node, new_ele)
+      subroutine interpolate_domain_group(new_node, new_ele, itp_org)
 !
       use t_geometry_data
 !
       use m_machine_parameter
       use m_domain_group_4_partition
-      use m_interpolate_table_orgin
-      use m_interpolate_table_dest
       use interpolate_imark_1pe
 !
-      type(node_data), intent(inout) :: new_node
-      type(element_data), intent(inout) :: new_ele
+      type(node_data), intent(in) :: new_node
+      type(element_data), intent(in) :: new_ele
+      type(interpolate_table_org), intent(in) :: itp_org
 !
 !      transfer interpolate table
 !
       call s_interporate_imark_para(np_smp, new_node%numnod,            &
      &    new_ele%numele, new_ele%nnod_4_ele, new_ele%ie,               &
-     &    IGROUP_FINER(1), itp1_org%istack_tbl_type_org_smp,            &
-     &    itp1_org%ntot_table_org, itp1_org%iele_org_4_org,             &
-     &    itp1_org%itype_inter_org, IGROUP_nod(1) )
+     &    IGROUP_FINER(1), itp_org%istack_tbl_type_org_smp,             &
+     &    itp_org%ntot_table_org, itp_org%iele_org_4_org,               &
+     &    itp_org%itype_inter_org, IGROUP_nod(1) )
 !
       end subroutine interpolate_domain_group
 !

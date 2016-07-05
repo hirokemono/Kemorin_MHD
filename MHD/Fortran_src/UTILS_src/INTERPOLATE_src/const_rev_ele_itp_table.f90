@@ -50,7 +50,7 @@
 !
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'count_interpolate_4_orgin', my_rank_2nd, nprocs
-          call count_interpolate_4_orgin(my_rank_2nd, nprocs)
+          call count_interpolate_4_orgin(my_rank_2nd, nprocs, itp1_org)
 !
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'allocate_itp_table_org'
@@ -58,7 +58,8 @@
 !
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'search_interpolate_4_orgin'
-          call search_interpolate_4_orgin(my_rank_2nd, nprocs)
+          call search_interpolate_4_orgin                               &
+     &       (my_rank_2nd, nprocs, itp1_org)
 !
 !
 !

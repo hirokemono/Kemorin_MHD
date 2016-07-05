@@ -47,7 +47,7 @@
       use m_array_for_send_recv
       use m_2nd_pallalel_vector
       use m_interpolate_table_orgin
-      use m_interpolate_matrix
+      use m_interpolate_table
 !
       type(node_data), intent(in) :: node_org
       type(element_data), intent(in) :: ele_org
@@ -57,9 +57,8 @@
       if (iflag_debug.eq.1) write(*,*) 'set_stack_tbl_wtype_org_smp'
       call set_stack_tbl_wtype_org_smp(itp1_org)
 !
-      if (iflag_debug.eq.1) write(*,*) 'const_interporate_mat'
-      call const_interporate_mat                                        &
-     &   (ele_org%numele, ele_org%nnod_4_ele, ele_org%ie)
+      if (iflag_debug.eq.1) write(*,*) 'const_interporate_matrix'
+      call const_interporate_matrix(ele_org, itp1_org, itp1_mat)
 !
       call verify_vector_for_solver(n_sym_tensor, node_org%numnod)
       call verify_2nd_iccg_matrix(n_sym_tensor, nod_dest%numnod)

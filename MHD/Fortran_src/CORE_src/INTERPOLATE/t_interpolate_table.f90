@@ -7,7 +7,7 @@
 !
 !!      subroutine dealloc_interpolate_tbl_type(itp_info)
 !!      subroutine alloc_zero_itp_tables(inp_smp, tp_info)
-!!      subroutine const_interporate_mat_type(ele_org, tbl_org, mat)
+!!      subroutine const_interporate_matrix(ele_org, tbl_org, mat)
 !!        type(interpolate_table), intent(inout) :: itp_info
 !!        type(element_data), intent(in) :: ele_org
 !!        type(interpolate_table_org), intent(in) :: tbl_org
@@ -87,7 +87,7 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine const_interporate_mat_type(ele_org, tbl_org, mat)
+      subroutine const_interporate_matrix(ele_org, tbl_org, mat)
 !
       use m_machine_parameter
       use interpolate_matrix_para
@@ -116,7 +116,7 @@
      &    tbl_org%coef_inter_org, mat%NC, mat%NCM,                      &
      &    mat%INM, mat%IAM, mat%AM, mat%IEND_SUM_smp)
 !
-      end subroutine const_interporate_mat_type
+      end subroutine const_interporate_matrix
 !
 ! ----------------------------------------------------------------------
 !
