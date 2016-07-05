@@ -159,12 +159,12 @@
       itp1_dest%id_org_domain(1) =       izero
       itp1_dest%istack_nod_tbl_dest(0) = izero
       itp1_dest%istack_nod_tbl_dest(1) = nnod_2
-      ntot_table_dest =        nnod_2
+      itp1_dest%ntot_table_dest =        nnod_2
 !
-      call allocate_itp_table_dest
+      call alloc_itp_table_dest(itp1_dest)
 !
       do inod = 1, nnod_2
-        inod_dest_4_dest(inod) = inod
+        itp1_dest%inod_dest_4_dest(inod) = inod
       end do
 !
       end subroutine set_itp_course_to_fine_dest
@@ -232,12 +232,12 @@
       itp1_dest%id_org_domain(1) =       izero
       itp1_dest%istack_nod_tbl_dest(0) = izero
       itp1_dest%istack_nod_tbl_dest(1) = ntot_nod_refine_nod
-      ntot_table_dest =        ntot_nod_refine_nod
+      itp1_dest%ntot_table_dest =        ntot_nod_refine_nod
 !
-      call allocate_itp_table_dest
+      call alloc_itp_table_dest(itp1_dest)
 !
       do inod = 1, ntot_nod_refine_nod
-        inod_dest_4_dest(inod) = inod
+        itp1_dest%inod_dest_4_dest(inod) = inod
       end do
 !
       end subroutine set_itp_fine_to_course_dest

@@ -112,7 +112,7 @@
       end do
 !
       do ip = 1, nprocs_itp_dest
-        call alloc_type_itp_table_dest(para_tbl(ip)%tbl_dest)
+        call alloc_itp_table_dest(para_tbl(ip)%tbl_dest)
         call set_itp_dest_tbl_4_para(ip, dest_wk(ip),                   &
      &      para_tbl(ip)%tbl_dest)
 !

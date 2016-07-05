@@ -342,7 +342,8 @@
           call swap_interpolation_table(icou, inod)
 !
         else
-          write(*,*) 'Where I am???', my_rank, inod_dest_4_dest(inod),  &
+          write(*,*) 'Where I am???', my_rank,                          &
+     &              itp1_dest%inod_dest_4_dest(inod),                   &
      &              iele_org_4_dest(inod), coef_inter_dest(inod,1:3)
         end if
 !

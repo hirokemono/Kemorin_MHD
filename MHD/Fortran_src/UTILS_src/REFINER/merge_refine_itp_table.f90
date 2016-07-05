@@ -196,7 +196,7 @@
           itp1_org%coef_inter_org(icou,1:3)                             &
      &         = c2f_mgd%tbl_org%coef_inter_org(inod_2nd,1:3)
 !
-          inod_dest_4_dest(icou) = inod_2nd
+          itp1_dest%inod_dest_4_dest(icou) = inod_2nd
 !
       end subroutine copy_each_merge_itp_tbl_refine
 !

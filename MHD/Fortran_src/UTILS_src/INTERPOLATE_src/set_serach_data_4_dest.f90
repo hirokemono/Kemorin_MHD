@@ -45,10 +45,10 @@
       if (iflag_debug.eq.1)                                             &
      &     write(*,*)  'allocate_interpolate_table'
 !
-      ntot_table_dest = dest_node%internal_node
+      itp1_dest%ntot_table_dest = dest_node%internal_node
       call set_num_org_domain(nprocs_2nd, itp1_dest)
       call alloc_itp_num_dest(itp1_dest)
-      call allocate_itp_table_dest
+      call alloc_itp_table_dest(itp1_dest)
       call allocate_itp_coef_dest
       call allocate_itp_work_dest(nprocs_2nd)
       call allocate_work_const_itp_tbl(dest_node%numnod)

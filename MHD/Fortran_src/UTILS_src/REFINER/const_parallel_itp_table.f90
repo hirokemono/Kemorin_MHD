@@ -116,7 +116,7 @@
      &      nele_org_1pe, ipe_ele_local_org, nnod_tgt_1pe,              &
      &      ipe_nod_local_tgt, dest_wk(ip), itp_para(ip)%tbl_dest)
 !
-        call alloc_type_itp_table_dest(itp_para(ip)%tbl_dest)
+        call alloc_itp_table_dest(itp_para(ip)%tbl_dest)
 !
         call set_node_tbl_dest_para_itp(ip, itp_sgl, dest_sgl,          &
      &      nele_org_1pe, ipe_ele_local_org, nnod_tgt_1pe,              &

@@ -64,7 +64,7 @@
       call dealloc_itp_num_org(itp1_org)
       call dealloc_itp_table_org(itp1_org)
 !
-      call deallocate_itp_table_dest
+      call dealloc_itp_table_dest(itp1_dest)
       call dealloc_itp_num_dest(itp1_dest)
 !
       call deallocate_ele_connect_type(finermesh%ele)
@@ -80,9 +80,9 @@
 !
       use m_ctl_param_partitioner
       use m_interpolate_table_orgin
+      use m_interpolate_table_dest
       use m_interpolate_coefs_dest
       use itp_table_IO_select_4_zlib
-      use copy_interpolate_dest_IO
       use copy_interpolate_type_IO
 !
       integer(kind = kint), parameter :: my_rank = 0
@@ -94,7 +94,7 @@
      &           trim(table_file_header)
       call sel_read_interpolate_table(my_rank, ierr)
 !
-      call copy_itp_table_dest_from_IO(my_rank)
+      call copy_itp_table_dest_from_IO(my_rank, itp1_dest)
       call copy_itp_table_org_from_IO(my_rank, itp1_org)
 !
       call set_stack_tbl_wtype_org_smp(itp1_org)

@@ -9,11 +9,11 @@
 !!@verbatim
 !!      subroutine set_num_org_domain(num_org_pe, tbl_dest)
 !!      subroutine alloc_type_itp_num_dest(tbl_dest)
-!!      subroutine alloc_type_itp_table_dest(tbl_dest)
+!!      subroutine alloc_itp_table_dest(tbl_dest)
 !!      subroutine alloc_type_zero_itp_tbl_dest(tbl_dest)
 !!
 !!      subroutine dealloc_itp_num_dest(tbl_dest)
-!!      subroutine dealloc_type_itp_table_dest(tbl_dest)
+!!      subroutine dealloc_itp_table_dest(tbl_dest)
 !!@endverbatim
 !
       module t_interpolate_tbl_dest
@@ -77,7 +77,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine alloc_type_itp_table_dest(tbl_dest)
+      subroutine alloc_itp_table_dest(tbl_dest)
 !
       type(interpolate_table_dest), intent(inout) :: tbl_dest
 !
@@ -89,7 +89,7 @@
         tbl_dest%irev_dest_4_dest = 0
       end if
 !
-      end subroutine alloc_type_itp_table_dest
+      end subroutine alloc_itp_table_dest
 !
 !-----------------------------------------------------------------------
 !
@@ -101,7 +101,7 @@
       tbl_dest%ntot_table_dest = 0
       call set_num_org_domain(izero, tbl_dest)
       call alloc_itp_num_dest(tbl_dest)
-      call alloc_type_itp_table_dest(tbl_dest)
+      call alloc_itp_table_dest(tbl_dest)
 !
       end subroutine alloc_type_zero_itp_tbl_dest
 !
@@ -120,14 +120,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine dealloc_type_itp_table_dest(tbl_dest)
+      subroutine dealloc_itp_table_dest(tbl_dest)
 !
       type(interpolate_table_dest), intent(inout) :: tbl_dest
 !
 !
       deallocate(tbl_dest%inod_dest_4_dest, tbl_dest%irev_dest_4_dest)
 !
-      end subroutine dealloc_type_itp_table_dest
+      end subroutine dealloc_itp_table_dest
 !
 !-----------------------------------------------------------------------
 !

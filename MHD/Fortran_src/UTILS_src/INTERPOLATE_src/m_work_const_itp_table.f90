@@ -89,15 +89,15 @@
 !
       integer(kind = kint), intent(in) :: numnod
 !
-      allocate( id_search_area(ntot_table_dest,3) )
+      allocate( id_search_area(itp1_dest%ntot_table_dest,3) )
       allocate( iflag_org_domain(numnod) )
 !
       iflag_org_domain = 0
       id_search_area = 0
 !
-      allocate( inod_dest_ordered(ntot_table_dest) )
-      allocate( iele_orgin_ordered(ntot_table_dest) )
-      allocate( coef_inter_ordered(ntot_table_dest,3) )
+      allocate( inod_dest_ordered(itp1_dest%ntot_table_dest) )
+      allocate( iele_orgin_ordered(itp1_dest%ntot_table_dest) )
+      allocate( coef_inter_ordered(itp1_dest%ntot_table_dest,3) )
 !
      coef_inter_ordered = 0.0d0
      inod_dest_ordered = 0
@@ -178,7 +178,7 @@
       integer(kind = kint), intent(in) :: idest, inod
 !
 !
-      inod_dest_ordered(idest) =       inod_dest_4_dest(inod)
+      inod_dest_ordered(idest) =       itp1_dest%inod_dest_4_dest(inod)
       iele_orgin_ordered(idest) =      iele_org_4_dest(inod)
       coef_inter_ordered(idest,1:3) = coef_inter_dest(inod,1:3)
 !
@@ -192,17 +192,17 @@
       use m_interpolate_coefs_dest
 !
 !
-      inod_dest_4_dest(1:ntot_table_dest)                               &
-     &      = inod_dest_ordered(1:ntot_table_dest)
-      iele_org_4_dest(1:ntot_table_dest)                                &
-     &         = iele_orgin_ordered(1:ntot_table_dest)
+      itp1_dest%inod_dest_4_dest(1:itp1_dest%ntot_table_dest)                               &
+     &      = inod_dest_ordered(1:itp1_dest%ntot_table_dest)
+      iele_org_4_dest(1:itp1_dest%ntot_table_dest)                                &
+     &         = iele_orgin_ordered(1:itp1_dest%ntot_table_dest)
 !
-      coef_inter_dest(1:ntot_table_dest,1)                              &
-     &         = coef_inter_ordered(1:ntot_table_dest,1)
-      coef_inter_dest(1:ntot_table_dest,2)                              &
-     &         = coef_inter_ordered(1:ntot_table_dest,2)
-      coef_inter_dest(1:ntot_table_dest,3)                              &
-     &         = coef_inter_ordered(1:ntot_table_dest,3)
+      coef_inter_dest(1:itp1_dest%ntot_table_dest,1)                              &
+     &         = coef_inter_ordered(1:itp1_dest%ntot_table_dest,1)
+      coef_inter_dest(1:itp1_dest%ntot_table_dest,2)                              &
+     &         = coef_inter_ordered(1:itp1_dest%ntot_table_dest,2)
+      coef_inter_dest(1:itp1_dest%ntot_table_dest,3)                              &
+     &         = coef_inter_ordered(1:itp1_dest%ntot_table_dest,3)
 !
 !
       end subroutine copy_table_2_order
@@ -222,8 +222,8 @@
       write(id_file,*) '#  sphere block ID for search'
       write(id_file,*) '#'
 !
-      write(id_file,'(i16)') ntot_table_dest
-      do inod = 1, ntot_table_dest
+      write(id_file,'(i16)') itp1_dest%ntot_table_dest
+      do inod = 1, itp1_dest%ntot_table_dest
         write(id_file,'(4i16)') inod, id_search_area(inod,1:3)
       end do
 !

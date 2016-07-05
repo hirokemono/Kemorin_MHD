@@ -10,11 +10,6 @@
 !!      subroutine deallocate_itp_coef_dest
 !!
 !!      subroutine check_table_in_org_2(id_file)
-!!
-!!      subroutine allocate_itp_table_dest
-!!
-!!      subroutine deallocate_itp_num_dest
-!!      subroutine deallocate_itp_table_dest
 !!@endverbatim
 !
 !
@@ -61,12 +56,12 @@
       use m_interpolate_table_dest
 !
 !
-      allocate( inod_gl_dest(ntot_table_dest) )
-      allocate( iele_org_4_dest(ntot_table_dest) )
-      allocate( itype_inter_dest(ntot_table_dest) )
-      allocate( coef_inter_dest(ntot_table_dest,3) )
+      allocate( inod_gl_dest(itp1_dest%ntot_table_dest) )
+      allocate( iele_org_4_dest(itp1_dest%ntot_table_dest) )
+      allocate( itype_inter_dest(itp1_dest%ntot_table_dest) )
+      allocate( coef_inter_dest(itp1_dest%ntot_table_dest,3) )
 !
-      if(ntot_table_dest .gt. 0) then
+      if(itp1_dest%ntot_table_dest .gt. 0) then
         inod_gl_dest = 0
         iele_org_4_dest = 0
         itype_inter_dest = -1
@@ -109,8 +104,9 @@
       write(id_file,*) '#'
 !
       write(id_file,'(10i16)') itp1_dest%istack_nod_tbl_dest(1:itp1_dest%num_org_domain)
-      do inod = 1, ntot_table_dest 
-        write(id_file,'(2i16,1p3E25.15e3)') inod_dest_4_dest(inod),     &
+      do inod = 1, itp1_dest%ntot_table_dest 
+        write(id_file,'(2i16,1p3E25.15e3)')                             &
+     &        itp1_dest%inod_dest_4_dest(inod),                         &
      &        iele_org_4_dest(inod), coef_inter_dest(inod,1:3)
       end do
 !
@@ -129,7 +125,7 @@
 !
       if (itp1_dest%num_org_domain .le. 0) return
 !
-        ntot_table_dest_IO = ntot_table_dest
+        ntot_table_dest_IO = itp1_dest%ntot_table_dest
 !
         call allocate_itp_num_dst_IO
         call allocate_itp_nod_dst_IO
@@ -143,26 +139,26 @@
      &      = istack_nod_tbl_wtype_dest(0:4*itp1_dest%num_org_domain)
 !
 !
-        inod_dest_IO(1:ntot_table_dest)                                 &
-     &        = inod_dest_4_dest(1:ntot_table_dest)
+        inod_dest_IO(1:itp1_dest%ntot_table_dest)                                 &
+     &        = itp1_dest%inod_dest_4_dest(1:itp1_dest%ntot_table_dest)
 !
-        inod_global_dest_IO(1:ntot_table_dest)                          &
-     &     = inod_gl_dest(1:ntot_table_dest)
+        inod_global_dest_IO(1:itp1_dest%ntot_table_dest)                          &
+     &     = inod_gl_dest(1:itp1_dest%ntot_table_dest)
 !
-        itype_inter_dest_IO(1:ntot_table_dest)                          &
-     &     = itype_inter_dest(1:ntot_table_dest)
-        iele_orgin_IO(1:ntot_table_dest)                                &
-     &        = iele_org_4_dest(1:ntot_table_dest)
+        itype_inter_dest_IO(1:itp1_dest%ntot_table_dest)                          &
+     &     = itype_inter_dest(1:itp1_dest%ntot_table_dest)
+        iele_orgin_IO(1:itp1_dest%ntot_table_dest)                                &
+     &        = iele_org_4_dest(1:itp1_dest%ntot_table_dest)
 !
-        coef_inter_dest_IO(1:ntot_table_dest,1)                         &
-     &      = coef_inter_dest(1:ntot_table_dest,1)
-        coef_inter_dest_IO(1:ntot_table_dest,2)                         &
-     &      = coef_inter_dest(1:ntot_table_dest,2)
-        coef_inter_dest_IO(1:ntot_table_dest,3)                         &
-     &      = coef_inter_dest(1:ntot_table_dest,3)
+        coef_inter_dest_IO(1:itp1_dest%ntot_table_dest,1)                         &
+     &      = coef_inter_dest(1:itp1_dest%ntot_table_dest,1)
+        coef_inter_dest_IO(1:itp1_dest%ntot_table_dest,2)                         &
+     &      = coef_inter_dest(1:itp1_dest%ntot_table_dest,2)
+        coef_inter_dest_IO(1:itp1_dest%ntot_table_dest,3)                         &
+     &      = coef_inter_dest(1:itp1_dest%ntot_table_dest,3)
 !
       call deallocate_itp_coef_dest
-      call deallocate_itp_table_dest
+      call dealloc_itp_table_dest(itp1_dest)
       call dealloc_itp_num_dest(itp1_dest)
 !
       end subroutine copy_itp_table_dest_to_IO

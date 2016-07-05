@@ -92,7 +92,6 @@
       use m_interpolate_table_dest_IO
       use m_work_merge_refine_itp
       use set_refine_interpolate_tbl
-      use copy_interpolate_dest_IO
       use copy_interpolate_type_IO
       use copy_interpolate_type_raw
 !
@@ -181,7 +180,6 @@
       use m_interpolate_table_dest_IO
       use set_refine_interpolate_tbl
       use set_merged_refine_itp
-      use copy_interpolate_dest_IO
       use copy_interpolate_type_IO
 !
       integer(kind = kint), intent(in) :: nnod_4_ele

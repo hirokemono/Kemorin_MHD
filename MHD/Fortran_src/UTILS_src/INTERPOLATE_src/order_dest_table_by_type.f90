@@ -101,11 +101,12 @@
 !
       call copy_table_2_order
 !
-      ntot_table_dest                                                   &
+      itp1_dest%ntot_table_dest                                         &
      &   = itp1_dest%istack_nod_tbl_dest(itp1_dest%num_org_domain)
 !
       do i = 1, node%internal_node
-        inod_gl_dest(i) = int(node%inod_global(inod_dest_4_dest(i)))
+        inod_gl_dest(i)                                                 &
+     &     = int(node%inod_global(itp1_dest%inod_dest_4_dest(i)))
       end do
 !
       end subroutine s_order_dest_table_by_type

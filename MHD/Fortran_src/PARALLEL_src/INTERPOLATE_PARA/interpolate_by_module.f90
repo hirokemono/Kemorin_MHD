@@ -79,7 +79,7 @@
      &           itp1_org%id_dest_domain, itp1_org%istack_nod_tbl_org, itp1_org%inod_itp_send,     &
      &           itp1_dest%num_org_domain, itp1_dest%iflag_self_itp_recv,                   &
      &           itp1_dest%id_org_domain, itp1_dest%istack_nod_tbl_dest, &
-     &           inod_dest_4_dest, irev_dest_4_dest,                    &
+     &           itp1_dest%inod_dest_4_dest, itp1_dest%irev_dest_4_dest,                    &
      &           x_inter_org(1), X_dest(1) )
 !
       if (comm_dest%num_neib .gt. 0) then
@@ -127,7 +127,7 @@
      &           itp1_org%id_dest_domain, itp1_org%istack_nod_tbl_org, itp1_org%inod_itp_send,     &
      &           itp1_dest%num_org_domain, itp1_dest%iflag_self_itp_recv,                   &
      &           itp1_dest%id_org_domain, itp1_dest%istack_nod_tbl_dest, &
-     &           inod_dest_4_dest, irev_dest_4_dest,                    &
+     &           itp1_dest%inod_dest_4_dest, itp1_dest%irev_dest_4_dest,                    &
      &           x_inter_org(1), X_dest(1) )
 !
 !
@@ -173,7 +173,7 @@
      &           itp1_org%id_dest_domain, itp1_org%istack_nod_tbl_org, itp1_org%inod_itp_send,     &
      &           itp1_dest%num_org_domain, itp1_dest%iflag_self_itp_recv,                   &
      &           itp1_dest%id_org_domain, itp1_dest%istack_nod_tbl_dest, &
-     &           inod_dest_4_dest, irev_dest_4_dest,                    &
+     &           itp1_dest%inod_dest_4_dest, itp1_dest%irev_dest_4_dest,                    &
      &           x_inter_org(1), X_dest(1) )
 !
       if (comm_dest%num_neib.gt.0) then
@@ -217,7 +217,7 @@
      &           itp1_org%id_dest_domain, itp1_org%istack_nod_tbl_org, itp1_org%inod_itp_send,     &
      &           itp1_dest%num_org_domain, itp1_dest%iflag_self_itp_recv,                   &
      &           itp1_dest%id_org_domain, itp1_dest%istack_nod_tbl_dest, &
-     &           inod_dest_4_dest, irev_dest_4_dest,                    &
+     &           itp1_dest%inod_dest_4_dest, itp1_dest%irev_dest_4_dest,                    &
      &           x_inter_org(1), X_dest(1) )
 !
       call finish_calypso_send_recv                                     &
@@ -281,7 +281,7 @@
      &    itp1_org%inod_itp_send,                                       &
      &    itp1_dest%num_org_domain, itp1_dest%iflag_self_itp_recv,      &
      &    itp1_dest%id_org_domain, itp1_dest%istack_nod_tbl_dest,       &
-     &    inod_dest_4_dest, irev_dest_4_dest,                    &
+     &    itp1_dest%inod_dest_4_dest, itp1_dest%irev_dest_4_dest,       &
      &    i_inter_org(1), ivec_2nd(1) )
 !
 !

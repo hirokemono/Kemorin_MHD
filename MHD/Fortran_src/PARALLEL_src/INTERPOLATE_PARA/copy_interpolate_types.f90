@@ -76,7 +76,7 @@
         tbl_dst_cp%ntot_table_dest = tbl_dst_in%ntot_table_dest
 !
         call alloc_itp_num_dest(tbl_dst_cp)
-        call alloc_type_itp_table_dest(tbl_dst_cp)
+        call alloc_itp_table_dest(tbl_dst_cp)
 !
         tbl_dst_cp%id_org_domain(1:tbl_dst_cp%num_org_domain)           &
      &   = tbl_dst_in%id_org_domain(1:tbl_dst_cp%num_org_domain)
@@ -86,7 +86,7 @@
         tbl_dst_cp%inod_dest_4_dest(1:tbl_dst_cp%ntot_table_dest)       &
      &   = tbl_dst_in%inod_dest_4_dest(1:tbl_dst_cp%ntot_table_dest)
 !
-        call deallocate_itp_table_dest
+        call dealloc_itp_table_dest(itp1_dest)
         call dealloc_itp_num_dest(itp1_dest)
 !
         ilast_domain = tbl_dst_cp%num_org_domain
@@ -110,12 +110,11 @@
       type(interpolate_table_org), intent(in) :: tbl_org_in
       type(interpolate_table_org), intent(inout) :: tbl_org_cp
 !
-      integer(kind = kint) :: i, ilast_domain, num
+      integer(kind = kint) :: i, ilast_domain
 !
 !
       tbl_org_cp%iflag_self_itp_send = 0
-      num = tbl_org_in%num_dest_domain
-      tbl_org_cp%num_dest_domain = num
+      tbl_org_cp%num_dest_domain = tbl_org_in%num_dest_domain
 !
       if (tbl_org_cp%num_dest_domain .gt. 0) then
 !
@@ -124,12 +123,12 @@
         call alloc_itp_num_org(np_smp, tbl_org_cp)
         call alloc_itp_table_org(tbl_org_cp)
 !
-        tbl_org_cp%id_dest_domain(1:num)                                &
-     &     = tbl_org_in%id_dest_domain(1:num)
-        tbl_org_cp%istack_nod_tbl_org(0:num)                            &
-     &     = tbl_org_in%istack_nod_tbl_org(0:num)
+        tbl_org_cp%id_dest_domain(1:tbl_org_cp%num_dest_domain)         &
+     &   = tbl_org_in%id_dest_domain(1:tbl_org_cp%num_dest_domain)
+        tbl_org_cp%istack_nod_tbl_org(0:tbl_org_cp%num_dest_domain)     &
+     &   = tbl_org_in%istack_nod_tbl_org(0:tbl_org_cp%num_dest_domain)
         tbl_org_cp%istack_itp_type_org(0:4)                             &
-     &     = tbl_org_in%istack_itp_type_org(0:4)
+     &   = tbl_org_in%istack_itp_type_org(0:4)
 !
         do i = 1, tbl_org_cp%ntot_table_org
           tbl_org_cp%inod_itp_send(i)                                   &
@@ -158,7 +157,6 @@
 !
       end subroutine copy_itp_tbl_types_org
 !
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       end module copy_interpolate_types

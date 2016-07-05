@@ -35,7 +35,7 @@
 !
       do inod = 1, internal_node
         jp = iflag_org_domain(inod)
-        inod_dest_4_dest(inod) = inod
+        itp1_dest%inod_dest_4_dest(inod) = inod
         numnod_dest(jp) = numnod_dest(jp) + 1
       end do
 !

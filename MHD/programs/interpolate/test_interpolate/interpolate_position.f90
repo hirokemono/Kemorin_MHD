@@ -185,7 +185,7 @@
      &    itp1_org%inod_itp_send,                                       &
      &    itp1_dest%num_org_domain, itp1_dest%iflag_self_itp_recv,      &
      &    itp1_dest%id_org_domain, itp1_dest%istack_nod_tbl_dest,       &
-     &           inod_dest_4_dest, irev_dest_4_dest,                    &
+     &    itp1_dest%inod_dest_4_dest, itp1_dest%irev_dest_4_dest,       &
      &    itp1_org%inod_gl_dest_4_org, ivec_2nd(1) )
 !
 !

@@ -158,7 +158,7 @@
         end do
 !
         call dealloc_itp_num_dest(itp_tbl%tbl_dest)
-        call dealloc_type_itp_table_dest(itp_tbl%tbl_dest)
+        call dealloc_itp_table_dest(itp_tbl%tbl_dest)
       end if
 !
 !
@@ -169,7 +169,7 @@
 !
       if(itp_rev%tbl_dest%num_org_domain .gt. 0) then
         call alloc_itp_num_dest(itp_rev%tbl_dest)
-        call alloc_type_itp_table_dest(itp_rev%tbl_dest)
+        call alloc_itp_table_dest(itp_rev%tbl_dest)
 !
         num = itp_rev%tbl_dest%num_org_domain
         itp_rev%tbl_dest%id_org_domain(1:num)                           &
