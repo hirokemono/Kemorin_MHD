@@ -95,7 +95,7 @@
         call set_itp_dest_domain_4_para(ip, para_tbl(ip)%tbl_dest)
       end do
       do jp = 1, nprocs_itp_org
-        call alloc_type_itp_num_org(np_smp, para_tbl(jp)%tbl_org)
+        call alloc_itp_num_org(np_smp, para_tbl(jp)%tbl_org)
         call set_itp_org_domain_4_para(jp, para_tbl(jp)%tbl_org)
       end do
 !
@@ -124,7 +124,7 @@
       do jp = 1, nprocs_itp_org
         call allocate_istack_org_ptype                                  &
      &     (para_tbl((jp))%tbl_org%num_dest_domain)
-        call alloc_type_itp_table_org(para_tbl(jp)%tbl_org)
+        call alloc_itp_table_org(para_tbl(jp)%tbl_org)
         call set_itp_org_tbl_4_para(jp, single_tbl%tbl_org,             &
      &      para_tbl(jp)%tbl_org)
         call ordering_itp_orgin_tbl_t(para_tbl(jp)%tbl_org)
@@ -135,7 +135,7 @@
         call alloc_type_zero_itp_tbl_dest(para_tbl(ip)%tbl_dest)
       end do
       do jp = nprocs_itp_org+1, nprocs_table
-        call alloc_type_zero_itp_tbl_org(np_smp, para_tbl(jp)%tbl_org)
+        call alloc_zero_itp_tbl_org(np_smp, para_tbl(jp)%tbl_org)
       end do
 !
       end subroutine const_parallel_itp_tbl

@@ -117,7 +117,6 @@
       use m_constants
       use m_2nd_pallalel_vector
       use m_interpolated_geometry
-      use m_interpolate_table_orgin
       use m_interpolate_table_dest
       use m_interpolate_matrix
 !
@@ -180,14 +179,14 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'calypso_send_recv_int'
       call calypso_send_recv_int                                        &
-     &   (iflag_import_item, ntot_table_org, NP_dest,                   &
+     &   (iflag_import_item, itp1_org%ntot_table_org, NP_dest,          &
      &    itp1_org%num_dest_domain, itp1_org%iflag_self_itp_send,       &
      &    itp1_org%id_dest_domain, itp1_org%istack_nod_tbl_org,         &
-     &    inod_itp_send,   &
+     &    itp1_org%inod_itp_send,   &
      &           num_org_domain, iflag_self_itp_recv,                   &
      &           id_org_domain, istack_nod_tbl_dest,                    &
      &           inod_dest_4_dest, irev_dest_4_dest,                    &
-     &           inod_gl_dest_4_org, ivec_2nd(1) )
+     &    itp1_org%inod_gl_dest_4_org, ivec_2nd(1) )
 !
 !
       if (iflag_debug.eq.1)  write(*,*) 'solver_send_recv_i'

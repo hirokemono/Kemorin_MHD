@@ -8,12 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine set_num_dest_domain(num_dest_pe, tbl_org)
-!!      subroutine alloc_type_itp_num_org(np_smp, tbl_org)
-!!      subroutine alloc_type_itp_table_org(tbl_org)
-!!      subroutine alloc_type_zero_itp_tbl_org(np_smp, tbl_org)
+!!      subroutine alloc_itp_num_org(np_smp, tbl_org)
+!!      subroutine alloc_itp_table_org(tbl_org)
+!!      subroutine alloc_zero_itp_tbl_org(np_smp, tbl_org)
 !!
-!!      subroutine deallocate_itp_num_org(tbl_org)
-!!      subroutine dealloc_type_itp_table_org(tbl_org)
+!!      subroutine dealloc_itp_num_org(tbl_org)
+!!      subroutine dealloc_itp_table_org(tbl_org)
 !!
 !!      subroutine set_stack_tbl_wtype_org_smp(tbl_org)
 !!@endverbatim
@@ -76,7 +76,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine alloc_type_itp_num_org(np_smp, tbl_org)
+      subroutine alloc_itp_num_org(np_smp, tbl_org)
 !
       integer(kind = kint), intent(in) :: np_smp
       type(interpolate_table_org), intent(inout) :: tbl_org
@@ -93,11 +93,11 @@
       tbl_org%istack_itp_type_org =     0
       tbl_org%istack_tbl_type_org_smp = 0
 !
-      end subroutine alloc_type_itp_num_org
+      end subroutine alloc_itp_num_org
 !
 !-----------------------------------------------------------------------
 !
-      subroutine alloc_type_itp_table_org(tbl_org)
+      subroutine alloc_itp_table_org(tbl_org)
 !
       type(interpolate_table_org), intent(inout) :: tbl_org
 !
@@ -116,11 +116,11 @@
         tbl_org%coef_inter_org = 0.0d0
       end if
 !
-      end subroutine alloc_type_itp_table_org
+      end subroutine alloc_itp_table_org
 !
 !-----------------------------------------------------------------------
 !
-      subroutine alloc_type_zero_itp_tbl_org(np_smp, tbl_org)
+      subroutine alloc_zero_itp_tbl_org(np_smp, tbl_org)
 !
       use m_constants
 !
@@ -130,15 +130,15 @@
 !
       tbl_org%num_dest_domain = 0
       tbl_org%ntot_table_org =  0
-      call alloc_type_itp_num_org(np_smp, tbl_org)
-      call alloc_type_itp_table_org(tbl_org)
+      call alloc_itp_num_org(np_smp, tbl_org)
+      call alloc_itp_table_org(tbl_org)
 !
-      end subroutine alloc_type_zero_itp_tbl_org
+      end subroutine alloc_zero_itp_tbl_org
 !
 !------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine deallocate_itp_num_org(tbl_org)
+      subroutine dealloc_itp_num_org(tbl_org)
 !
       type(interpolate_table_org), intent(inout) :: tbl_org
 !
@@ -147,11 +147,11 @@
       deallocate( tbl_org%istack_itp_type_org )
       deallocate( tbl_org%istack_tbl_type_org_smp )
 !
-      end subroutine deallocate_itp_num_org
+      end subroutine dealloc_itp_num_org
 !
 !-----------------------------------------------------------------------
 !
-      subroutine dealloc_type_itp_table_org(tbl_org)
+      subroutine dealloc_itp_table_org(tbl_org)
 !
       type(interpolate_table_org), intent(inout) :: tbl_org
 !
@@ -161,7 +161,7 @@
       deallocate( tbl_org%itype_inter_org )
       deallocate( tbl_org%coef_inter_org )
 !
-      end subroutine dealloc_type_itp_table_org
+      end subroutine dealloc_itp_table_org
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

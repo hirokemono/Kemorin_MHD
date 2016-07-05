@@ -61,8 +61,8 @@
 !
       call deallocate_finer_domain_group
 !
-      call deallocate_itp_num_org(itp1_org)
-      call deallocate_itp_table_org
+      call dealloc_itp_num_org(itp1_org)
+      call dealloc_itp_table_org(itp1_org)
 !
       call deallocate_itp_table_dest
       call deallocate_itp_num_dest
@@ -121,8 +121,8 @@
       call s_interporate_imark_para(np_smp, new_node%numnod,            &
      &    new_ele%numele, new_ele%nnod_4_ele, new_ele%ie,               &
      &    IGROUP_FINER(1), itp1_org%istack_tbl_type_org_smp,            &
-     &    ntot_table_org, iele_org_4_org,                               &
-     &    itype_inter_org, IGROUP_nod(1) )
+     &    itp1_org%ntot_table_org, itp1_org%iele_org_4_org,             &
+     &    itp1_org%itype_inter_org, IGROUP_nod(1) )
 !
       end subroutine interpolate_domain_group
 !

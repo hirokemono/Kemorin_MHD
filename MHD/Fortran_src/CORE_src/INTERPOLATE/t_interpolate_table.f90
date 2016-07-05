@@ -62,8 +62,8 @@
       call dealloc_type_itp_table_dest(itp_info%tbl_dest)
       call dealloc_type_itp_num_dest(itp_info%tbl_dest)
 !
-      call dealloc_type_itp_table_org(itp_info%tbl_org)
-      call deallocate_itp_num_org(itp_info%tbl_org)
+      call dealloc_itp_table_org(itp_info%tbl_org)
+      call dealloc_itp_num_org(itp_info%tbl_org)
 !
       call dealloc_crs_smp_mat(itp_info%mat)
 !
@@ -77,7 +77,7 @@
       type(interpolate_table), intent(inout) :: itp_info
 !
 !
-      call alloc_type_zero_itp_tbl_org(np_smp, itp_info%tbl_org)
+      call alloc_zero_itp_tbl_org(np_smp, itp_info%tbl_org)
       call alloc_type_zero_itp_tbl_dest(itp_info%tbl_dest)
 !
       call alloc_zero_crs_smp_mat(np_smp, itp_info%mat)

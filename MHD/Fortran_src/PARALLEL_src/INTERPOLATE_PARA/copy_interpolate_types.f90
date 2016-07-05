@@ -122,8 +122,8 @@
 !
         tbl_org_cp%ntot_table_org = tbl_org_in%ntot_table_org
 !
-        call alloc_type_itp_num_org(np_smp, tbl_org_cp)
-        call alloc_type_itp_table_org(tbl_org_cp)
+        call alloc_itp_num_org(np_smp, tbl_org_cp)
+        call alloc_itp_table_org(tbl_org_cp)
 !
         tbl_org_cp%id_dest_domain(1:num)                                &
      &     = tbl_org_in%id_dest_domain(1:num)

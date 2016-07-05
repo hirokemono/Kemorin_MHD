@@ -108,10 +108,10 @@
 !
       if (tbl_org%num_dest_domain .gt. 0) then
 !
-        tbl_org%ntot_table_org = ntot_table_org
+        tbl_org%ntot_table_org = itp1_org%ntot_table_org
 !
-        call alloc_type_itp_num_org(np_smp, tbl_org)
-        call alloc_type_itp_table_org(tbl_org)
+        call alloc_itp_num_org(np_smp, tbl_org)
+        call alloc_itp_table_org(tbl_org)
 !
         tbl_org%id_dest_domain(1:tbl_org%num_dest_domain)               &
      &     = itp1_org%id_dest_domain(1:tbl_org%num_dest_domain)
@@ -121,18 +121,18 @@
      &     = itp1_org%istack_itp_type_org(0:4)
 !
         do i = 1, tbl_org%ntot_table_org
-          tbl_org%inod_itp_send(i) =      inod_itp_send(i)
-          tbl_org%inod_gl_dest_4_org(i) = inod_gl_dest_4_org(i)
-          tbl_org%iele_org_4_org(i) =     iele_org_4_org(i)
-          tbl_org%itype_inter_org(i) =    itype_inter_org(i)
+          tbl_org%inod_itp_send(i) =      itp1_org%inod_itp_send(i)
+          tbl_org%inod_gl_dest_4_org(i) = itp1_org%inod_gl_dest_4_org(i)
+          tbl_org%iele_org_4_org(i) =     itp1_org%iele_org_4_org(i)
+          tbl_org%itype_inter_org(i) =    itp1_org%itype_inter_org(i)
 !
-          tbl_org%coef_inter_org(i,1) =   coef_inter_org(i,1)
-          tbl_org%coef_inter_org(i,2) =   coef_inter_org(i,2)
-          tbl_org%coef_inter_org(i,3) =   coef_inter_org(i,3)
+          tbl_org%coef_inter_org(i,1) =   itp1_org%coef_inter_org(i,1)
+          tbl_org%coef_inter_org(i,2) =   itp1_org%coef_inter_org(i,2)
+          tbl_org%coef_inter_org(i,3) =   itp1_org%coef_inter_org(i,3)
         end do
 !
-        call deallocate_itp_table_org
-        call deallocate_itp_num_org(itp1_org)
+        call dealloc_itp_table_org(itp1_org)
+        call dealloc_itp_num_org(itp1_org)
 !
         ilast_domain = tbl_org%num_dest_domain
         if ( tbl_org%id_dest_domain(ilast_domain) .eq. my_rank) then

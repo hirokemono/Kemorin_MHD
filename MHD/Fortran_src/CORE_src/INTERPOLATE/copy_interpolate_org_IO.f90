@@ -29,13 +29,13 @@
 !
       itp1_org%iflag_self_itp_send = 0
       call set_num_dest_domain(num_dest_domain_IO, itp1_org)
-      call alloc_type_itp_num_org(np_smp, itp1_org)
+      call alloc_itp_num_org(np_smp, itp1_org)
 !
       if (itp1_org%num_dest_domain .gt. 0) then
 !
-        ntot_table_org = ntot_table_org_IO
+        itp1_org%ntot_table_org = ntot_table_org_IO
 !
-        call allocate_itp_table_org
+        call alloc_itp_table_org(itp1_org)
 !
         itp1_org%id_dest_domain(1:itp1_org%num_dest_domain)                               &
      &          = id_dest_domain_IO(1:itp1_org%num_dest_domain)
@@ -43,21 +43,21 @@
      &          = istack_nod_table_org_IO(0:itp1_org%num_dest_domain)
         itp1_org%istack_itp_type_org(0:4) = istack_itp_type_org_IO(0:4)
 !
-        inod_itp_send(1:ntot_table_org)                                 &
-     &          = inod_itp_send_IO(1:ntot_table_org)
-        inod_gl_dest_4_org(1:ntot_table_org)                            &
-     &          = inod_gl_dest_4_org_IO(1:ntot_table_org)
-        iele_org_4_org(1:ntot_table_org)                                &
-     &          = iele_org_4_org_IO(1:ntot_table_org)
-        itype_inter_org(1:ntot_table_org)                               &
-     &          = itype_inter_org_IO(1:ntot_table_org)
+        itp1_org%inod_itp_send(1:itp1_org%ntot_table_org)                                 &
+     &          = inod_itp_send_IO(1:itp1_org%ntot_table_org)
+        itp1_org%inod_gl_dest_4_org(1:itp1_org%ntot_table_org)                            &
+     &          = inod_gl_dest_4_org_IO(1:itp1_org%ntot_table_org)
+        itp1_org%iele_org_4_org(1:itp1_org%ntot_table_org)                                &
+     &          = iele_org_4_org_IO(1:itp1_org%ntot_table_org)
+        itp1_org%itype_inter_org(1:itp1_org%ntot_table_org)                               &
+     &          = itype_inter_org_IO(1:itp1_org%ntot_table_org)
 !
-        coef_inter_org(1:ntot_table_org,1)                              &
-     &          = coef_inter_org_IO(1:ntot_table_org,1)
-        coef_inter_org(1:ntot_table_org,2)                              &
-     &          = coef_inter_org_IO(1:ntot_table_org,2)
-        coef_inter_org(1:ntot_table_org,3)                              &
-     &          = coef_inter_org_IO(1:ntot_table_org,3)
+        itp1_org%coef_inter_org(1:itp1_org%ntot_table_org,1)                              &
+     &          = coef_inter_org_IO(1:itp1_org%ntot_table_org,1)
+        itp1_org%coef_inter_org(1:itp1_org%ntot_table_org,2)                              &
+     &          = coef_inter_org_IO(1:itp1_org%ntot_table_org,2)
+        itp1_org%coef_inter_org(1:itp1_org%ntot_table_org,3)                              &
+     &          = coef_inter_org_IO(1:itp1_org%ntot_table_org,3)
 !
         call deallocate_itp_table_org_IO
         call deallocate_itp_num_org_IO
@@ -66,8 +66,8 @@
           itp1_org%iflag_self_itp_send = 1
         end if
       else
-        ntot_table_org = 0
-        call allocate_itp_table_org
+        itp1_org%ntot_table_org = 0
+        call alloc_itp_table_org(itp1_org)
       end if
 !
       end subroutine copy_itp_table_org_from_IO
@@ -81,7 +81,7 @@
 !
       if (itp1_org%num_dest_domain .gt. 0) then
 !
-        ntot_table_org_IO = ntot_table_org
+        ntot_table_org_IO = itp1_org%ntot_table_org
 !
         call allocate_itp_num_org_IO
         call allocate_itp_table_org_IO
@@ -93,26 +93,26 @@
         istack_itp_type_org_IO(0:4) = itp1_org%istack_itp_type_org(0:4)
 !
 !
-        inod_itp_send_IO(1:ntot_table_org)                              &
-     &          = inod_itp_send(1:ntot_table_org)
-        inod_gl_dest_4_org_IO(1:ntot_table_org)                         &
-     &          = inod_gl_dest_4_org(1:ntot_table_org)
-        iele_org_4_org_IO(1:ntot_table_org)                             &
-     &          = iele_org_4_org(1:ntot_table_org)
-        itype_inter_org_IO(1:ntot_table_org)                            &
-     &          = itype_inter_org(1:ntot_table_org)
+        inod_itp_send_IO(1:itp1_org%ntot_table_org)                              &
+     &          = itp1_org%inod_itp_send(1:itp1_org%ntot_table_org)
+        inod_gl_dest_4_org_IO(1:itp1_org%ntot_table_org)                         &
+     &          = itp1_org%inod_gl_dest_4_org(1:itp1_org%ntot_table_org)
+        iele_org_4_org_IO(1:itp1_org%ntot_table_org)                             &
+     &          = itp1_org%iele_org_4_org(1:itp1_org%ntot_table_org)
+        itype_inter_org_IO(1:itp1_org%ntot_table_org)                            &
+     &          = itp1_org%itype_inter_org(1:itp1_org%ntot_table_org)
 !
-        coef_inter_org_IO(1:ntot_table_org,1)                           &
-     &          = coef_inter_org(1:ntot_table_org,1)
-        coef_inter_org_IO(1:ntot_table_org,2)                           &
-     &          = coef_inter_org(1:ntot_table_org,2)
-        coef_inter_org_IO(1:ntot_table_org,3)                           &
-     &          = coef_inter_org(1:ntot_table_org,3)
+        coef_inter_org_IO(1:itp1_org%ntot_table_org,1)                           &
+     &          = itp1_org%coef_inter_org(1:itp1_org%ntot_table_org,1)
+        coef_inter_org_IO(1:itp1_org%ntot_table_org,2)                           &
+     &          = itp1_org%coef_inter_org(1:itp1_org%ntot_table_org,2)
+        coef_inter_org_IO(1:itp1_org%ntot_table_org,3)                           &
+     &          = itp1_org%coef_inter_org(1:itp1_org%ntot_table_org,3)
 !
       end if
 !
-      call deallocate_itp_table_org
-      call deallocate_itp_num_org(itp1_org)
+      call dealloc_itp_table_org(itp1_org)
+      call dealloc_itp_num_org(itp1_org)
 !
       end subroutine copy_itp_table_org_to_IO
 !

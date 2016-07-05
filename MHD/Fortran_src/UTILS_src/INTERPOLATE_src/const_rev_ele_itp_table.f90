@@ -46,7 +46,7 @@
 !
         if (my_rank .eq. mod(my_rank_2nd,nprocs) ) then
           call set_num_dest_domain(nprocs, itp1_org)
-          call alloc_type_itp_num_org(np_smp, itp1_org)
+          call alloc_itp_num_org(np_smp, itp1_org)
 !
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'count_interpolate_4_orgin', my_rank_2nd, nprocs
@@ -54,7 +54,7 @@
 !
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'allocate_itp_table_org'
-          call allocate_itp_table_org
+          call alloc_itp_table_org(itp1_org)
 !
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'search_interpolate_4_orgin'
@@ -126,8 +126,8 @@
       call allocate_istack_org_ptype(itp_rev%tbl_org%num_dest_domain)
 !
       if(itp_rev%tbl_org%num_dest_domain .gt. 0) then
-        call alloc_type_itp_num_org(np_smp, itp_rev%tbl_org)
-        call alloc_type_itp_table_org(itp_rev%tbl_org)
+        call alloc_itp_num_org(np_smp, itp_rev%tbl_org)
+        call alloc_itp_table_org(itp_rev%tbl_org)
 !
         num = itp_rev%tbl_org%num_dest_domain
         itp_rev%tbl_org%id_dest_domain(1:num)                           &
@@ -180,8 +180,8 @@
         itp_rev%tbl_dest%inod_dest_4_dest(1:num)                        &
      &    = itp_tbl%tbl_org%iele_org_4_org(1:num)
 !
-        call deallocate_itp_num_org(itp_tbl%tbl_org)
-        call dealloc_type_itp_table_org(itp_tbl%tbl_org)
+        call dealloc_itp_num_org(itp_tbl%tbl_org)
+        call dealloc_itp_table_org(itp_tbl%tbl_org)
       end if
 !
       call deallocate_istack_org_ptype

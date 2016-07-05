@@ -48,7 +48,7 @@
 !
       itp1_org%iflag_self_itp_send = ione
       call set_num_dest_domain(ione, itp1_org)
-      call alloc_type_itp_num_org(np_smp, itp1_org)
+      call alloc_itp_num_org(np_smp, itp1_org)
 !
       itp1_org%id_dest_domain(1) =             izero
       itp1_org%istack_itp_type_org(0) = izero
@@ -62,23 +62,23 @@
 !
       itp1_org%istack_nod_tbl_org(0) = izero
       itp1_org%istack_nod_tbl_org(1) = itp1_org%istack_itp_type_org(4)
-      ntot_table_org =        itp1_org%istack_nod_tbl_org(1)
+      itp1_org%ntot_table_org =        itp1_org%istack_nod_tbl_org(1)
 !
-      call allocate_itp_table_org
-      itype_inter_org(1:ntot_table_org) = -1
+      call alloc_itp_table_org(itp1_org)
+      itp1_org%itype_inter_org(1:itp1_org%ntot_table_org) = -1
 !
       do iele = 1, ele%numele
 !
         do k1 = 1, ele%nnod_4_ele
           inod = ele%ie(iele,k1)
 !
-          if(itype_inter_org(inod) .eq. -1) then
+          if(itp1_org%itype_inter_org(inod) .eq. -1) then
             call copy_node_local_posi_2_element(k1, xi_ele)
 !
-            inod_gl_dest_4_org(inod) = inod
-            iele_org_4_org(inod) =     iele
-            itype_inter_org(inod) =    k1
-            coef_inter_org(inod,1:3) = xi_ele(1:3)
+            itp1_org%inod_gl_dest_4_org(inod) = inod
+            itp1_org%iele_org_4_org(inod) =     iele
+            itp1_org%itype_inter_org(inod) =    k1
+            itp1_org%coef_inter_org(inod,1:3) = xi_ele(1:3)
           end if
         end do
 !
@@ -91,14 +91,14 @@
             do inum = ist, ied
               inod = inum + ntot_nod_refine_nod
 !
-              if(itype_inter_org(inod) .eq. -1) then
+              if(itp1_org%itype_inter_org(inod) .eq. -1) then
                 call copy_edge_local_posi_2_element(ied_ele, isig,      &
      &              xi_refine_edge(inum,1), xi_ele)
 !
-                inod_gl_dest_4_org(inod) = inod
-                iele_org_4_org(inod) =     iele
-                itype_inter_org(inod) =    100 + ied_ele
-                coef_inter_org(inod,1:3) = xi_ele(1:3)
+                itp1_org%inod_gl_dest_4_org(inod) = inod
+                itp1_org%iele_org_4_org(inod) =     iele
+                itp1_org%itype_inter_org(inod) =    100 + ied_ele
+                itp1_org%coef_inter_org(inod,1:3) = xi_ele(1:3)
               end if
             end do
         end do
@@ -111,16 +111,16 @@
             do inum = ist, ied
               inod = inum + ntot_nod_refine_nod + ntot_nod_refine_edge
 !
-              if(itype_inter_org(inod) .eq. -1) then
+              if(itp1_org%itype_inter_org(inod) .eq. -1) then
                 xi_surf(1) = xi_refine_surf(inum,1)
                 xi_surf(2) = xi_refine_surf(inum,2)
                 call copy_surf_local_posi_2_element(isf_ele,            &
      &              surf%isf_rot_ele(iele,isf_ele), xi_surf, xi_ele)
 !
-                inod_gl_dest_4_org(inod) = inod
-                iele_org_4_org(inod) =     iele
-                itype_inter_org(inod) =    200 + isf_ele
-                coef_inter_org(inod,1:3) = xi_ele(1:3)
+                itp1_org%inod_gl_dest_4_org(inod) = inod
+                itp1_org%iele_org_4_org(inod) =     iele
+                itp1_org%itype_inter_org(inod) =    200 + isf_ele
+                itp1_org%coef_inter_org(inod,1:3) = xi_ele(1:3)
               end if
             end do
           end if
@@ -132,10 +132,10 @@
           inod = inum + ntot_nod_refine_nod + ntot_nod_refine_edge      &
      &                + ntot_nod_refine_surf
 !
-          inod_gl_dest_4_org(inod) = inod
-          iele_org_4_org(inod) =     iele
-          itype_inter_org(inod) =    izero
-          coef_inter_org(inod,1:3) = xi_refine_ele(inum,1:3)
+          itp1_org%inod_gl_dest_4_org(inod) = inod
+          itp1_org%iele_org_4_org(inod) =     iele
+          itp1_org%itype_inter_org(inod) =    izero
+          itp1_org%coef_inter_org(inod,1:3) = xi_refine_ele(inum,1:3)
         end do
 !
       end do
@@ -182,7 +182,7 @@
 !
       itp1_org%iflag_self_itp_send = ione
       call set_num_dest_domain(ione, itp1_org)
-      call alloc_type_itp_num_org(np_smp, itp1_org)
+      call alloc_itp_num_org(np_smp, itp1_org)
 !
       itp1_org%id_dest_domain(1) = izero
       itp1_org%istack_itp_type_org(0) = izero
@@ -192,10 +192,10 @@
       itp1_org%istack_itp_type_org(4) = ntot_nod_refine_nod
       itp1_org%istack_nod_tbl_org(0) = izero
       itp1_org%istack_nod_tbl_org(1) = ntot_nod_refine_nod
-      ntot_table_org =        itp1_org%istack_nod_tbl_org(1)
+      itp1_org%ntot_table_org =        itp1_org%istack_nod_tbl_org(1)
 !
-      call allocate_itp_table_org
-      itype_inter_org(1:ntot_table_org) = -1
+      call alloc_itp_table_org(itp1_org)
+      itp1_org%itype_inter_org(1:itp1_org%ntot_table_org) = -1
 !
       do iele = 1, ntot_ele_refined
 !
@@ -203,13 +203,13 @@
           inod = ie_refined(iele,k1)
 !
           if(inod.le.ntot_nod_refine_nod) then
-            if(itype_inter_org(inod).eq.-1) then
+            if(itp1_org%itype_inter_org(inod).eq.-1) then
               call copy_node_local_posi_2_element(k1, xi_ele)
 !
-              inod_gl_dest_4_org(inod) = inod
-              iele_org_4_org(inod) =     iele
-              itype_inter_org(inod) =     k1
-              coef_inter_org(inod,1:3) = xi_ele(1:3)
+              itp1_org%inod_gl_dest_4_org(inod) = inod
+              itp1_org%iele_org_4_org(inod) =     iele
+              itp1_org%itype_inter_org(inod) =     k1
+              itp1_org%coef_inter_org(inod,1:3) = xi_ele(1:3)
             end if
           end if
         end do

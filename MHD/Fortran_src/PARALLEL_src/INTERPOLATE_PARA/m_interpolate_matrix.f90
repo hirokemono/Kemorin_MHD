@@ -95,7 +95,7 @@
       integer(kind = kint), intent(in) :: ie_org(nele_org,nnod_ele_org)
 !
 !
-      NC_itp = ntot_table_org
+      NC_itp = itp1_org%ntot_table_org
       NUM_NCOMP_itp = 4
 !
       call allocate_itp_mat_num
@@ -107,8 +107,9 @@
 !
       call allocate_itp_mat_item
 !
-      call set_interporate_mat_para(np_smp, nele_org, nnod_ele_org,     &
-     &    ie_org, iele_org_4_org, itype_inter_org, coef_inter_org,      &
+      call set_interporate_mat_para(np_smp, nele_org,                   &
+     &    nnod_ele_org, ie_org, itp1_org%iele_org_4_org,                &
+     &    itp1_org%itype_inter_org, itp1_org%coef_inter_org,            &
      &    NC_itp, NCM_itp, INM_itp, IAM_itp, AM_itp, IEND_SUM_itp_smp)
 !
       end subroutine const_interporate_mat

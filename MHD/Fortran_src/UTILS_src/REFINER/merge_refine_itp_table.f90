@@ -61,8 +61,8 @@
       c2f_mgd%tbl_org%ntot_table_org                                    &
      &     = c2f_2nd%tbl_org%ntot_table_org
 !
-      call alloc_type_itp_num_org(np_smp, c2f_mgd%tbl_org)
-      call alloc_type_itp_table_org(c2f_mgd%tbl_org)
+      call alloc_itp_num_org(np_smp, c2f_mgd%tbl_org)
+      call alloc_itp_table_org(c2f_mgd%tbl_org)
 !
       c2f_mgd%tbl_org%id_dest_domain                                    &
      &     = c2f_2nd%tbl_org%id_dest_domain
@@ -136,7 +136,7 @@
 !
 !
       icou = 0
-      do inod_2nd = 1, ntot_table_org
+      do inod_2nd = 1, itp1_org%ntot_table_org
         iflag = c2f_mgd%tbl_org%itype_inter_org(inod_2nd)
         if( iflag .ge. 1 .and. iflag .le. 8) then
           icou = icou + 1
@@ -145,7 +145,7 @@
       end do
       itp1_org%istack_itp_type_org(1) =  icou
 !
-      do inod_2nd = 1, ntot_table_org
+      do inod_2nd = 1, itp1_org%ntot_table_org
         iflag = c2f_mgd%tbl_org%itype_inter_org(inod_2nd)
         if( iflag .ge. 101 .and. iflag .le. 112) then
           icou = icou + 1
@@ -154,7 +154,7 @@
       end do
       itp1_org%istack_itp_type_org(2) =  icou
 !
-      do inod_2nd = 1, ntot_table_org
+      do inod_2nd = 1, itp1_org%ntot_table_org
         iflag = c2f_mgd%tbl_org%itype_inter_org(inod_2nd)
         if( iflag .ge. 201 .and. iflag .le. 206) then
           icou = icou + 1
@@ -163,7 +163,7 @@
       end do
       itp1_org%istack_itp_type_org(3) =  icou
 !
-      do inod_2nd = 1, ntot_table_org
+      do inod_2nd = 1, itp1_org%ntot_table_org
         iflag = c2f_mgd%tbl_org%itype_inter_org(inod_2nd)
         if( iflag .eq. 0) then
           icou = icou + 1
@@ -187,13 +187,13 @@
 !
 !
           c2f_mgd%tbl_org%inod_itp_send(inod_2nd) = inod_2nd
-          inod_gl_dest_4_org(icou)                                      &
+          itp1_org%inod_gl_dest_4_org(icou)                             &
      &         = c2f_mgd%tbl_org%inod_gl_dest_4_org(inod_2nd)
-          iele_org_4_org(icou)                                          &
+          itp1_org%iele_org_4_org(icou)                                 &
      &         = c2f_mgd%tbl_org%iele_org_4_org(inod_2nd)
-          itype_inter_org(icou)                                         &
+          itp1_org%itype_inter_org(icou)                                &
      &         = c2f_mgd%tbl_org%itype_inter_org(inod_2nd)
-          coef_inter_org(icou,1:3)                                      &
+          itp1_org%coef_inter_org(icou,1:3)                             &
      &         = c2f_mgd%tbl_org%coef_inter_org(inod_2nd,1:3)
 !
           inod_dest_4_dest(icou) = inod_2nd

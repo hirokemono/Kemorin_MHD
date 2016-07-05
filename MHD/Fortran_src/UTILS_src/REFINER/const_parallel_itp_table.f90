@@ -161,7 +161,7 @@
      &      nele_org_1pe, ipe_ele_local_org, nnod_tgt_1pe,              &
      &      ipe_nod_local_tgt, itp_para(ip)%tbl_org%num_dest_domain)
 !
-        call alloc_type_itp_num_org(np_smp, itp_para(ip)%tbl_org)
+        call alloc_itp_num_org(np_smp, itp_para(ip)%tbl_org)
         call allocate_istack_org_ptype                                  &
      &     (itp_para(ip)%tbl_org%num_dest_domain)
 !
@@ -172,7 +172,7 @@
      &      nele_org_1pe, ipe_ele_local_org, nnod_tgt_1pe,              &
      &      ipe_nod_local_tgt, itp_para(ip)%tbl_org)
 !
-        call alloc_type_itp_table_org(itp_para(ip)%tbl_org)
+        call alloc_itp_table_org(itp_para(ip)%tbl_org)
 !
         call set_elem_tbl_org_para_itp(ip, itp_sgl,                     &
      &      nele_org_1pe, iele_local_org, ipe_ele_local_org,            &

@@ -63,7 +63,7 @@
 !
 !
 !  initialize
-      call verifty_work_4_itp_field(ione, ntot_table_org)
+      call verifty_work_4_itp_field(ione, itp1_org%ntot_table_org)
 !
 !  interpolation
       if (itp1_org%num_dest_domain .gt. 0) then
@@ -74,9 +74,9 @@
 !
 !   communication
       call calypso_send_recv                                            &
-     &          (iflag_import_item, ntot_table_org, NP_dest,            &
+     &          (iflag_import_item, itp1_org%ntot_table_org, NP_dest,   &
      &           itp1_org%num_dest_domain, itp1_org%iflag_self_itp_send,                  &
-     &           itp1_org%id_dest_domain, itp1_org%istack_nod_tbl_org, inod_itp_send,     &
+     &           itp1_org%id_dest_domain, itp1_org%istack_nod_tbl_org, itp1_org%inod_itp_send,     &
      &           num_org_domain, iflag_self_itp_recv,                   &
      &           id_org_domain, istack_nod_tbl_dest,                    &
      &           inod_dest_4_dest, irev_dest_4_dest,                    &
@@ -109,7 +109,7 @@
       real(kind = kreal), intent(inout) :: X_dest(3*NP_dest)
 !
 !
-      call verifty_work_4_itp_field(ithree, ntot_table_org)
+      call verifty_work_4_itp_field(ithree, itp1_org%ntot_table_org)
 !
 !    interpolation
 !
@@ -122,9 +122,9 @@
 !     communication
 !
       call calypso_send_recv_3                                          &
-     &          (iflag_import_item, ntot_table_org, NP_dest,            &
+     &          (iflag_import_item, itp1_org%ntot_table_org, NP_dest,            &
      &           itp1_org%num_dest_domain, itp1_org%iflag_self_itp_send,                  &
-     &           itp1_org%id_dest_domain, itp1_org%istack_nod_tbl_org, inod_itp_send,     &
+     &           itp1_org%id_dest_domain, itp1_org%istack_nod_tbl_org, itp1_org%inod_itp_send,     &
      &           num_org_domain, iflag_self_itp_recv,                   &
      &           id_org_domain, istack_nod_tbl_dest,                    &
      &           inod_dest_4_dest, irev_dest_4_dest,                    &
@@ -158,7 +158,7 @@
       real(kind = kreal), intent(inout) :: X_dest(6*NP_dest)
 !
 !
-      call verifty_work_4_itp_field(isix, ntot_table_org)
+      call verifty_work_4_itp_field(isix, itp1_org%ntot_table_org)
 !
 !
       if (itp1_org%num_dest_domain.gt.0) then
@@ -168,9 +168,9 @@
       end if
 !
       call calypso_send_recv_6                                          &
-     &          (iflag_import_item, ntot_table_org, NP_dest,            &
+     &          (iflag_import_item, itp1_org%ntot_table_org, NP_dest,            &
      &           itp1_org%num_dest_domain, itp1_org%iflag_self_itp_send,                  &
-     &           itp1_org%id_dest_domain, itp1_org%istack_nod_tbl_org, inod_itp_send,     &
+     &           itp1_org%id_dest_domain, itp1_org%istack_nod_tbl_org, itp1_org%inod_itp_send,     &
      &           num_org_domain, iflag_self_itp_recv,                   &
      &           id_org_domain, istack_nod_tbl_dest,                    &
      &           inod_dest_4_dest, irev_dest_4_dest,                    &
@@ -203,7 +203,7 @@
       real(kind = kreal), intent(inout) :: X_dest(NB*NP_dest)
 !
 !
-      call verifty_work_4_itp_field(NB, ntot_table_org)
+      call verifty_work_4_itp_field(NB, itp1_org%ntot_table_org)
 !
       if (itp1_org%num_dest_domain.gt.0) then
         call itp_matvec_fields(np_smp, NP_org, NB,                      &
@@ -212,9 +212,9 @@
       end if
 !
       call sel_calypso_send_recv_N                                      &
-     &          (iflag_import_item, NB, ntot_table_org, NP_dest,        &
+     &          (iflag_import_item, NB, itp1_org%ntot_table_org, NP_dest,        &
      &           itp1_org%num_dest_domain, itp1_org%iflag_self_itp_send,                  &
-     &           itp1_org%id_dest_domain, itp1_org%istack_nod_tbl_org, inod_itp_send,     &
+     &           itp1_org%id_dest_domain, itp1_org%istack_nod_tbl_org, itp1_org%inod_itp_send,     &
      &           num_org_domain, iflag_self_itp_recv,                   &
      &           id_org_domain, istack_nod_tbl_dest,                    &
      &           inod_dest_4_dest, irev_dest_4_dest,                    &
@@ -256,7 +256,7 @@
 !
       call verify_2nd_iccg_int_mat(NP_dest)
 !
-      call verifty_work_4_itp_int(ntot_table_org)
+      call verifty_work_4_itp_int(itp1_org%ntot_table_org)
 !
 !
       ix_vec(1:NP_org) = i_vector_org(1:NP_org)
@@ -267,18 +267,18 @@
         call s_interporate_imark_para(np_smp, NP_org,                   &
      &      ele_org%numele, ele_org%nnod_4_ele, ele_org%ie,             &
      &      ix_vec(1), itp1_org%istack_tbl_type_org_smp,                &
-     &      ntot_table_org, iele_org_4_org,                             &
-     &      itype_inter_org, i_inter_org(1) )
+     &      itp1_org%ntot_table_org, itp1_org%iele_org_4_org,           &
+     &      itp1_org%itype_inter_org, i_inter_org(1) )
       end if
 !
 !
 !     communication
 !
       call calypso_send_recv_int                                        &
-     &   (iflag_import_item, ntot_table_org, NP_dest,                   &
+     &   (iflag_import_item, itp1_org%ntot_table_org, NP_dest,          &
      &    itp1_org%num_dest_domain, itp1_org%iflag_self_itp_send,       &
      &    itp1_org%id_dest_domain, itp1_org%istack_nod_tbl_org,         &
-     &    inod_itp_send,   &
+     &    itp1_org%inod_itp_send,   &
      &           num_org_domain, iflag_self_itp_recv,                   &
      &           id_org_domain, istack_nod_tbl_dest,                    &
      &           inod_dest_4_dest, irev_dest_4_dest,                    &

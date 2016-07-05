@@ -8,7 +8,6 @@
 !!        by interpolation type
 !!
 !!@verbatim
-!!      subroutine ordering_itp_orgin_tbl_m
 !!      subroutine ordering_itp_orgin_tbl_t(itp_org)
 !!@endverbatim
 !
@@ -21,20 +20,6 @@
 !-----------------------------------------------------------------------
 !
       contains
-!
-!-----------------------------------------------------------------------
-!
-      subroutine ordering_itp_orgin_tbl_m
-!
-      use m_interpolate_table_orgin
-      use t_interpolate_tbl_org
-!
-!
-      call ordering_itp_orgin_table(itp1_org%num_dest_domain, ntot_table_org,    &
-     &          itp1_org%istack_itp_type_org, inod_itp_send, inod_gl_dest_4_org, &
-     &          iele_org_4_org, itype_inter_org, coef_inter_org)
-!
-      end subroutine ordering_itp_orgin_tbl_m
 !
 !-----------------------------------------------------------------------
 !
@@ -86,7 +71,7 @@
       if(num_dest_domain .eq. 0) return
 !
       itp_otmp%ntot_table_org = ntot_table_org
-      call alloc_type_itp_table_org(itp_otmp)
+      call alloc_itp_table_org(itp_otmp)
 !
       do inum = 1, ntot_table_org
         itp_otmp%inod_itp_send(inum) = inod_itp_send(inum)
@@ -130,7 +115,7 @@
         end do
       end do
 !
-      call dealloc_type_itp_table_org(itp_otmp)
+      call dealloc_itp_table_org(itp_otmp)
 !
       end subroutine ordering_itp_orgin_table
 !

@@ -37,7 +37,7 @@
       integer(kind = kint), intent(in) :: numdir, nsize_itp
 !
 !
-      if (ntot_table_org.ne.0                                           &
+      if (itp1_org%ntot_table_org.ne.0                                  &
      &     .and. isize_itp_work .ge. 0                                  &
      &     .and. isize_itp_work .lt. (numdir*nsize_itp)) then
         call deallocate_work_4_itp_field
@@ -81,7 +81,7 @@
       integer(kind = kint), intent(in) :: nsize_itp
 !
 !
-      if (ntot_table_org.ne.0                                           &
+      if (itp1_org%ntot_table_org.ne.0                                  &
      &     .and. isize_itp_work .ge. 0                                  &
      &     .and. isize_itp_work .lt. nsize_itp) then
         call deallocate_work_4_itp_int

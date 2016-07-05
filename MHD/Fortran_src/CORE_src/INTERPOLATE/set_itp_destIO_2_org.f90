@@ -75,11 +75,11 @@
      &        + inum
             idest = istack_table_dest_IO(i-1) + inum
 !
-            inod_itp_send(iorg) =      iorg
-            inod_gl_dest_4_org(iorg) = inod_global_dest_IO(idest)
-            iele_org_4_org(iorg) =     iele_orgin_IO(idest)
-            itype_inter_org(iorg) =    itype_inter_dest_IO(idest)
-            coef_inter_org(iorg,1:3) = coef_inter_dest_IO(idest,1:3)
+            itp1_org%inod_itp_send(iorg) =      iorg
+            itp1_org%inod_gl_dest_4_org(iorg) = inod_global_dest_IO(idest)
+            itp1_org%iele_org_4_org(iorg) =     iele_orgin_IO(idest)
+            itp1_org%itype_inter_org(iorg) =    itype_inter_dest_IO(idest)
+            itp1_org%coef_inter_org(iorg,1:3) = coef_inter_dest_IO(idest,1:3)
           end do
         end if
       end do

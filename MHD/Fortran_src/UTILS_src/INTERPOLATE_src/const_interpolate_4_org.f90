@@ -43,7 +43,7 @@
 !
         if (my_rank .eq. mod(my_rank_2nd,nprocs) ) then
           call set_num_dest_domain(nprocs, itp1_org)
-          call alloc_type_itp_num_org(np_smp, itp1_org)
+          call alloc_itp_num_org(np_smp, itp1_org)
 !
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'count_interpolate_4_orgin', my_rank_2nd, nprocs
@@ -51,7 +51,7 @@
 !
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'allocate_itp_table_org'
-          call allocate_itp_table_org
+          call alloc_itp_table_org(itp1_org)
 !
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'search_interpolate_4_orgin'
@@ -126,7 +126,7 @@
         call count_num_interpolation_4_orgin(n_org_rank, n_dest_rank)
 !
       end do
-      ntot_table_org                                                    &
+      itp1_org%ntot_table_org                                           &
      &     = itp1_org%istack_nod_tbl_org(itp1_org%num_dest_domain)
 !
       end subroutine count_interpolate_4_orgin
@@ -157,7 +157,7 @@
         call set_interpolation_4_orgin(n_org_rank)
       end do
 !
-      call ordering_itp_orgin_tbl_m
+      call ordering_itp_orgin_tbl_t(itp1_org)
       call deallocate_istack_org_ptype
 !
       end subroutine search_interpolate_4_orgin

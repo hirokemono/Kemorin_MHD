@@ -125,8 +125,8 @@
       if (tbl_org%num_dest_domain .gt. 0) then
         tbl_org%ntot_table_org = ntot_table_org_IO
 !
-        call alloc_type_itp_num_org(np_smp, tbl_org)
-        call alloc_type_itp_table_org(tbl_org)
+        call alloc_itp_num_org(np_smp, tbl_org)
+        call alloc_itp_table_org(tbl_org)
 !
         tbl_org%id_dest_domain(1:tbl_org%num_dest_domain)               &
      &     = id_dest_domain_IO(1:tbl_org%num_dest_domain)
@@ -154,8 +154,8 @@
         end if
       else
         tbl_org%ntot_table_org = 0
-        call alloc_type_itp_num_org(np_smp, tbl_org)
-        call alloc_type_itp_table_org(tbl_org)
+        call alloc_itp_num_org(np_smp, tbl_org)
+        call alloc_itp_table_org(tbl_org)
       end if
 !
       end subroutine copy_itp_tbl_type_org_from_IO
@@ -238,8 +238,8 @@
 !
       end if
 !
-      call dealloc_type_itp_table_org(tbl_org)
-      call deallocate_itp_num_org(tbl_org)
+      call dealloc_itp_table_org(tbl_org)
+      call dealloc_itp_num_org(tbl_org)
 !
       end subroutine copy_itp_tbl_type_org_to_IO
 !
