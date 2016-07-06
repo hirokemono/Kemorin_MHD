@@ -28,7 +28,7 @@
       use t_geometry_data
       use t_solver_djds_MHD
       use t_interpolate_table
-      use interpolate_by_type
+      use interpolate_by_module
 !
       type(element_data), intent(inout) :: ele_1st
       type(MHD_MG_matrices), intent(inout) :: MHD_matrices
@@ -41,9 +41,11 @@
      &    MHD_matrices%MG_comm_fluid(1))
 !
       call init_interpolate_mat_type                                    &
-     &    (ele_1st, MHD_matrices%MG_interpolate(1)%f2c)
-      call init_interpolate_mat_type                                    &
-     &   (MG_mesh(1)%mesh%ele, MHD_matrices%MG_interpolate(1)%c2f)
+     &    (ele_1st, MHD_matrices%MG_interpolate(1)%f2c%tbl_org,         &
+     &     MHD_matrices%MG_interpolate(1)%f2c%mat)
+      call init_interpolate_mat_type(MG_mesh(1)%mesh%ele,               &
+     &    MHD_matrices%MG_interpolate(1)%c2f%tbl_org,                   &
+     &    MHD_matrices%MG_interpolate(1)%c2f%mat)
 !
       do i_level = 2, num_MG_level
         call link_comm_tbl_types(MG_mesh(i_level)%mesh%nod_comm,        &
@@ -52,9 +54,11 @@
      &      MHD_matrices%MG_comm_fluid(i_level))
 !
         call init_interpolate_mat_type(MG_mesh(i_level-1)%mesh%ele,     &
-     &      MHD_matrices%MG_interpolate(i_level)%f2c)
+     &      MHD_matrices%MG_interpolate(i_level)%f2c%tbl_org,           &
+     &      MHD_matrices%MG_interpolate(i_level)%f2c%mat)
         call init_interpolate_mat_type(MG_mesh(i_level)%mesh%ele,       &
-     &      MHD_matrices%MG_interpolate(i_level)%c2f)
+     &      MHD_matrices%MG_interpolate(i_level)%c2f%tbl_org,           &
+     &      MHD_matrices%MG_interpolate(i_level)%c2f%mat)
       end do
 !
       end subroutine s_link_MG_MHD_mesh_data

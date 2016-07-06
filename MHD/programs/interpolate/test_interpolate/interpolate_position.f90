@@ -32,6 +32,7 @@
       use m_constants
       use m_2nd_pallalel_vector
       use m_interpolated_geometry
+      use m_interpolate_table
 !
       use m_array_for_send_recv
 !
@@ -55,8 +56,9 @@
         x_vec(3*inod  ) = node%xx(inod,3)
       end do
 !
-      call interpolate_mod_3(comm_dest, node%numnod, NP_dest,           &
-     &    x_vec(1), xvec_2nd(1))
+      call interpolate_mod_3(comm_dest,                                 &
+     &    itp1_info%tbl_org, itp1_info%tbl_dest, itp1_info%mat,         &
+     &    np_smp, node%numnod, NP_dest, x_vec(1), xvec_2nd(1))
 !
       do inod = 1, NP_dest
         xx_interpolate(inod,1) = xvec_2nd(3*inod-2)
@@ -73,6 +75,7 @@
       use m_constants
       use m_2nd_pallalel_vector
       use m_interpolated_geometry
+      use m_interpolate_table
 !
       use m_array_for_send_recv
 !
@@ -96,8 +99,9 @@
         x_vec(3*inod  ) = node%xx(inod,3)
       end do
 !
-      call interpolate_mod_N(comm_dest, node%numnod, NP_dest, ithree,   &
-     &    x_vec(1), xvec_2nd(1))
+      call interpolate_mod_N(comm_dest,                                 &
+     &    itp1_info%tbl_org, itp1_info%tbl_dest, itp1_info%mat,         &
+     &    np_smp, node%numnod, NP_dest, ithree, x_vec(1), xvec_2nd(1))
 !
       do inod = 1, NP_dest
         xx_interpolate(inod,1) = xvec_2nd(3*inod-2)
@@ -138,8 +142,9 @@
           x_vec(inod  ) = node%xx(inod,nd)
         end do
 !
-        call interpolate_mod_1(comm_dest, node%numnod, NP_dest,         &
-     &      x_vec(1), xvec_2nd(1))
+        call interpolate_mod_1(comm_dest,                               &
+     &      itp1_info%tbl_org, itp1_info%tbl_dest, itp1_info%mat,       &
+     &      np_smp, node%numnod, NP_dest, x_vec(1), xvec_2nd(1))
 !
         do inod = 1, NP_dest
           xx_interpolate(inod,nd) = xvec_2nd(inod  )

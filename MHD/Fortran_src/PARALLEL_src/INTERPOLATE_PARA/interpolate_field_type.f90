@@ -36,7 +36,7 @@
       subroutine interpolate_scalar_type(i_origin, i_dest,              &
      &          itp_table, mesh_org, mesh_dst, fld_org, fld_dst)
 !
-      use interpolate_by_type
+      use interpolate_by_module
 !
 !
       integer(kind = kint), intent(in) :: i_origin, i_dest
@@ -62,10 +62,10 @@
 !$omp end parallel do
 !
 !    interpolation
-!
-      call interpolate_type_1                                           &
-     &  (mesh_org%node%numnod, mesh_dst%node%numnod, mesh_dst%nod_comm, &
-     &    itp_table, x_vec, xvec_2nd, np_smp)
+      call interpolate_mod_1(mesh_dst%nod_comm,                         &
+     &    itp_table%tbl_org, itp_table%tbl_dest, itp_table%mat,         &
+     &    np_smp, mesh_org%node%numnod, mesh_dst%node%numnod,           &
+     &    x_vec, xvec_2nd)
 !
 !$omp parallel do
       do inod = 1, mesh_dst%node%numnod
@@ -80,7 +80,7 @@
       subroutine interpolate_vector_type(i_origin, i_dest,              &
      &          itp_table, mesh_org, mesh_dst, fld_org, fld_dst)
 !
-      use interpolate_by_type
+      use interpolate_by_module
 !
 !
       integer(kind = kint), intent(in) :: i_origin, i_dest
@@ -109,9 +109,10 @@
 !
 !    interpolation
 !
-      call interpolate_type_3                                           &
-     &  (mesh_org%node%numnod, mesh_dst%node%numnod, mesh_dst%nod_comm, &
-     &    itp_table, x_vec, xvec_2nd, np_smp)
+      call interpolate_mod_3(mesh_dst%nod_comm,                         &
+     &    itp_table%tbl_org, itp_table%tbl_dest, itp_table%mat,         &
+     &    np_smp, mesh_org%node%numnod, mesh_dst%node%numnod,           &
+     &    x_vec, xvec_2nd)
 !
 !$omp parallel do
       do inod = 1, mesh_dst%node%numnod
@@ -128,7 +129,7 @@
       subroutine interpolate_tensor_type(i_origin, i_dest,              &
      &          itp_table, mesh_org, mesh_dst, fld_org, fld_dst)
 !
-      use interpolate_by_type
+      use interpolate_by_module
 !
 !
       integer(kind = kint), intent(in) :: i_origin, i_dest
@@ -159,10 +160,10 @@
 !$omp end parallel do
 !
 !    interpolation
-!
-      call interpolate_type_6                                           &
-     &  (mesh_org%node%numnod, mesh_dst%node%numnod, mesh_dst%nod_comm, &
-     &    itp_table, x_vec, xvec_2nd, np_smp)
+      call interpolate_mod_6(mesh_dst%nod_comm,                         &
+     &    itp_table%tbl_org, itp_table%tbl_dest, itp_table%mat,         &
+     &    np_smp, mesh_org%node%numnod, mesh_dst%node%numnod,           &
+     &    x_vec, xvec_2nd)
 !
 !$omp parallel do
       do inod = 1, mesh_dst%node%numnod

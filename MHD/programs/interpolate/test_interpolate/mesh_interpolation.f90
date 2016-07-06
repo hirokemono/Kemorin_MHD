@@ -39,7 +39,7 @@
       if (iflag_debug.eq.1)   write(*,*) 's_interpolate_global_node'
       call s_interpolate_global_node                                    &
      &   (dest_mesh%node%numnod, dest_mesh%nod_comm,                    &
-     &    itp1_org, itp1_dest)
+     &    itp1_info%tbl_org, itp1_info%tbl_dest)
 !
 !     interpolate 2nd mesh from 1st mesh
 !

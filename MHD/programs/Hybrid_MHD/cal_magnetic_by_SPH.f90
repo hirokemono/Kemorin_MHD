@@ -29,7 +29,7 @@
 !
       use t_work_4_sph_trans
       use m_addresses_trans_hbd_MHD
-      use interpolate_by_type
+      use interpolate_by_module
       use const_element_comm_tables
       use load_mesh_data
 !
@@ -83,8 +83,10 @@
       call sel_read_interpolate_table(my_rank, ierr)
       call copy_interpolate_types_from_IO(my_rank, itp_SPH_2_FEM)
 !
-      call init_interpolate_mat_type(mesh_fem%ele, itp_FEM_2_SPH)
-      call init_interpolate_mat_type(mesh_sph%ele, itp_SPH_2_FEM)
+      call init_interpolate_mat_type(mesh_fem%ele,                      &
+     &    itp_FEM_2_SPH%tbl_org, itp_FEM_2_SPH%mat)
+      call init_interpolate_mat_type(mesh_sph%ele,                      &
+     &    itp_SPH_2_FEM%tbl_org, itp_FEM_2_SPH%mat)
 !
       if(id_legendre_transfer.eq.iflag_leg_undefined)                   &
      &            id_legendre_transfer = iflag_leg_orginal_loop

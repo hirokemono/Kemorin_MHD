@@ -36,9 +36,10 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_itp_tbl_type_dst_from_raw'
       call copy_itp_tbl_types_dst                                       &
-     &   (my_rank, itp1_dest, itp_table%tbl_dest)
+     &   (my_rank, itp1_info%tbl_dest, itp_table%tbl_dest)
       if (iflag_debug.eq.1) write(*,*) 'copy_itp_tbl_types_org'
-      call copy_itp_tbl_types_org(my_rank, itp1_org, itp_table%tbl_org)
+      call copy_itp_tbl_types_org                                       &
+     &   (my_rank, itp1_info%tbl_org, itp_table%tbl_org)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_stack_tbl_org_smp_type'
       call set_stack_tbl_wtype_org_smp(itp_table%tbl_org)

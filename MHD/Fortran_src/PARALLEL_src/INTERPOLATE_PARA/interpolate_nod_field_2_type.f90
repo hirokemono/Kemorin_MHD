@@ -54,10 +54,11 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_stack_tbl_wtype_org_smp'
-      call set_stack_tbl_wtype_org_smp(itp1_org)
+      call set_stack_tbl_wtype_org_smp(itp1_info%tbl_org)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_interporate_matrix'
-      call const_interporate_matrix(ele_org, itp1_org, itp1_mat)
+      call const_interporate_matrix                                     &
+     &   (ele_org, itp1_info%tbl_org, itp1_info%mat)
 !
       call verify_vector_for_solver(n_sym_tensor, node_org%numnod)
       call verify_2nd_iccg_matrix(n_sym_tensor, nod_dest%numnod)
@@ -125,6 +126,7 @@
 !
       use m_array_for_send_recv
       use m_2nd_pallalel_vector
+      use m_interpolate_table
       use interpolate_by_module
 !
       integer(kind = kint), intent(in) :: i_dest, i_origin
@@ -147,8 +149,9 @@
       end do
 !$omp end parallel do
 !
-      call interpolate_mod_1(comm_dest, numnod, nod_dest%numnod,        &
-     &    x_vec(1), xvec_2nd(1))
+      call interpolate_mod_1(comm_dest,                                 &
+     &    itp1_info%tbl_org, itp1_info%tbl_dest, itp1_info%mat,         &
+     &    np_smp, numnod, nod_dest%numnod, x_vec(1), xvec_2nd(1))
 !
 !$omp parallel do
       do inod = 1, nod_dest%numnod
@@ -165,6 +168,7 @@
 !
       use m_array_for_send_recv
       use m_2nd_pallalel_vector
+      use m_interpolate_table
       use interpolate_by_module
 !
 !
@@ -193,8 +197,9 @@
 !
 !    interpolation
 !
-      call interpolate_mod_3(comm_dest, numnod, nod_dest%numnod,        &
-     &    x_vec(1), xvec_2nd(1))
+      call interpolate_mod_3(comm_dest,                                 &
+     &    itp1_info%tbl_org, itp1_info%tbl_dest, itp1_info%mat,         &
+     &    np_smp, numnod, nod_dest%numnod, x_vec(1), xvec_2nd(1))
 !
 !$omp parallel do
       do inod = 1, nod_dest%numnod
@@ -212,6 +217,7 @@
      &          ncomp_nod, d_nod, comm_dest, nod_dest, phys_dest)
 !
       use m_array_for_send_recv
+      use m_interpolate_table
       use m_2nd_pallalel_vector
       use interpolate_by_module
 !
@@ -246,8 +252,9 @@
 !$omp end parallel do
 !
 !    interpolation
-      call interpolate_mod_6(comm_dest, numnod, nod_dest%numnod,        &
-     &    x_vec(1), xvec_2nd(1))
+      call interpolate_mod_6(comm_dest,                                 &
+     &    itp1_info%tbl_org, itp1_info%tbl_dest, itp1_info%mat,         &
+     &    np_smp, numnod, nod_dest%numnod, x_vec, xvec_2nd)
 !
 !$omp parallel do
       do inod = 1, nod_dest%numnod
@@ -269,6 +276,7 @@
      &         (numdir, i_dest, i_origin, numnod, ncomp_nod, d_nod,     &
      &          comm_dest, nod_dest, phys_dest)
 !
+      use m_interpolate_table
       use m_array_for_send_recv
       use m_2nd_pallalel_vector
       use interpolate_by_module
@@ -301,8 +309,9 @@
 !$omp end parallel
 !
 !    interpolation
-      call interpolate_mod_N(comm_dest, numdir, nod_dest%numnod,        &
-     &                       numdir, x_vec(1), xvec_2nd(1))
+      call interpolate_mod_N(comm_dest,                                 &
+     &    itp1_info%tbl_org, itp1_info%tbl_dest, itp1_info%mat,         &
+     &    np_smp, numdir, nod_dest%numnod, numdir, x_vec, xvec_2nd)
 !
 !$omp parallel private(inod)
       do nd = 1, numdir

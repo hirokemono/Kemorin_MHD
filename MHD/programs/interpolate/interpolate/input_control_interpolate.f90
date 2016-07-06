@@ -95,9 +95,9 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_itp_table_dest_from_IO'
-      call copy_itp_table_dest_from_IO(my_rank, itp1_dest)
+      call copy_itp_table_dest_from_IO(my_rank, itp1_info%tbl_dest)
       if (iflag_debug.eq.1) write(*,*) 'copy_itp_table_org_from_IO'
-      call copy_itp_table_org_from_IO(my_rank, itp1_org)
+      call copy_itp_table_org_from_IO(my_rank, itp1_info%tbl_org)
 !
       if (iflag_debug.eq.1) write(*,*) 'init_interpolate_nodal_data'
       call init_interpolate_nodal_data                                  &

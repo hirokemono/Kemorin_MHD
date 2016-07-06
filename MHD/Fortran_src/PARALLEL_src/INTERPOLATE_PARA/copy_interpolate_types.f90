@@ -36,7 +36,7 @@
       use t_interpolate_tbl_org
 !
       integer(kind = kint), intent(in) :: my_rank
-      type(interpolate_table), intent(in) :: itp_input
+      type(interpolate_table), intent(inout) :: itp_input
       type(interpolate_table), intent(inout) :: itp_copied
 
 !
@@ -59,10 +59,9 @@
      &          tbl_dst_in, tbl_dst_cp)
 !
       use t_interpolate_tbl_dest
-      use m_interpolate_table
 !
       integer(kind = kint), intent(in) :: my_rank
-      type(interpolate_table_dest), intent(in) :: tbl_dst_in
+      type(interpolate_table_dest), intent(inout) :: tbl_dst_in
       type(interpolate_table_dest), intent(inout) :: tbl_dst_cp
 !
       integer(kind = kint) :: ilast_domain
@@ -86,8 +85,8 @@
         tbl_dst_cp%inod_dest_4_dest(1:tbl_dst_cp%ntot_table_dest)       &
      &   = tbl_dst_in%inod_dest_4_dest(1:tbl_dst_cp%ntot_table_dest)
 !
-        call dealloc_itp_table_dest(itp1_dest)
-        call dealloc_itp_num_dest(itp1_dest)
+        call dealloc_itp_table_dest(tbl_dst_in)
+        call dealloc_itp_num_dest(tbl_dst_in)
 !
         ilast_domain = tbl_dst_cp%num_org_domain
         if (tbl_dst_cp%id_org_domain(ilast_domain) .eq. my_rank) then

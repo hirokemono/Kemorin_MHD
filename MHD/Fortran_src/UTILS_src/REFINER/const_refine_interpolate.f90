@@ -104,16 +104,17 @@
 !
       iflag_debug = 1
       if(iflag_debug .gt. 0) write(*,*) 'set_itp_course_to_fine_origin'
-      call set_itp_course_to_fine_origin(ele, surf, edge, itp1_org)
+      call set_itp_course_to_fine_origin                                &
+     &   (ele, surf, edge, itp1_info%tbl_org)
       if(iflag_debug .gt. 0) write(*,*) 'set_itp_course_to_fine_dest'
-      call set_itp_course_to_fine_dest(nnod_2, itp1_dest)
+      call set_itp_course_to_fine_dest(nnod_2, itp1_info%tbl_dest)
 !
-      call allocate_itp_coef_dest(itp1_dest)
+      call allocate_itp_coef_dest(itp1_info%tbl_dest)
       call allocate_itp_coef_stack(ione)
       if(iflag_debug .gt. 0) write(*,*) 'copy_itp_table_org_to_IO'
-      call copy_itp_table_org_to_IO(itp1_org)
+      call copy_itp_table_org_to_IO(itp1_info%tbl_org)
       if(iflag_debug .gt. 0) write(*,*) 'copy_itp_coefs_dest_to_IO'
-      call copy_itp_coefs_dest_to_IO(itp1_dest)
+      call copy_itp_coefs_dest_to_IO(itp1_info%tbl_dest)
 !
       table_file_header = course_2_fine_head
       ifmt_itp_table_file = id_ascii_file_fmt
@@ -122,16 +123,17 @@
       call deallocate_itp_coefs_dst_IO
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_itp_fine_to_course_origin'
-      call set_itp_fine_to_course_origin(ele%nnod_4_ele, itp1_org)
-      call set_itp_fine_to_course_dest(itp1_dest)
+      call set_itp_fine_to_course_origin                                &
+     &   (ele%nnod_4_ele, itp1_info%tbl_org)
+      call set_itp_fine_to_course_dest(itp1_info%tbl_dest)
 !
       if(iflag_debug .gt. 0) write(*,*) 'allocate_itp_coef_dest'
-      call allocate_itp_coef_dest(itp1_dest)
+      call allocate_itp_coef_dest(itp1_info%tbl_dest)
       call allocate_itp_coef_stack(ione)
       if(iflag_debug .gt. 0) write(*,*) 'copy_itp_table_org_to_IO'
-      call copy_itp_table_org_to_IO(itp1_org)
+      call copy_itp_table_org_to_IO(itp1_info%tbl_org)
       if(iflag_debug .gt. 0) write(*,*) 'copy_itp_coefs_dest_to_IO'
-      call copy_itp_coefs_dest_to_IO(itp1_dest)
+      call copy_itp_coefs_dest_to_IO(itp1_info%tbl_dest)
 !
       table_file_header = fine_2_course_head
       write(*,*) 'table field header: ', trim(table_file_header)
@@ -159,8 +161,9 @@
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_itp_course_to_fine_origin'
-      call set_itp_course_to_fine_origin(ele, surf, edge, itp1_org)
-      call set_itp_course_to_fine_dest(nnod_2, itp1_dest)
+      call set_itp_course_to_fine_origin                                &
+     &   (ele, surf, edge, itp1_info%tbl_org)
+      call set_itp_course_to_fine_dest(nnod_2, itp1_info%tbl_dest)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                       'copy_interpolate_types_from_raw c2f_2nd'

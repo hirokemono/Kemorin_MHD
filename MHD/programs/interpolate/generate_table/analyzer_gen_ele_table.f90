@@ -103,7 +103,8 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_serach_data_4_dest'
-      call s_set_serach_data_4_dest(org_femmesh%mesh%node, itp1_dest)
+      call s_set_serach_data_4_dest                                     &
+     &   (org_femmesh%mesh%node, itp1_info%tbl_dest)
 !
       end subroutine init_analyzer
 !
@@ -135,17 +136,19 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_order_dest_table_by_domain'
       call s_order_dest_table_by_domain                                 &
-     &   (org_femmesh%mesh%node%internal_node, ierr_missing, itp1_dest)
+     &   (org_femmesh%mesh%node%internal_node, ierr_missing,            &
+     &    itp1_info%tbl_dest)
 !
-!      call check_table_in_org_2(13, itp1_dest)
+!      call check_table_in_org_2(13, itp1_info%tbl_dest)
 !
 !   ordering destination table by interpolation type
 !
       if (iflag_debug.eq.1) write(*,*) 's_order_dest_table_by_type'
       call s_order_dest_table_by_type                                   &
-     &   (org_femmesh%mesh%node, org_femmesh%mesh%ele, itp1_dest)
+     &   (org_femmesh%mesh%node, org_femmesh%mesh%ele,                  &
+     &    itp1_info%tbl_dest)
 !
-      call copy_itp_coefs_dest_to_IO(itp1_dest)
+      call copy_itp_coefs_dest_to_IO(itp1_info%tbl_dest)
 !
       table_file_header = work_header
       call sel_write_itp_coefs_dest(my_rank)
