@@ -17,8 +17,6 @@
 !
       implicit none
 !
-      private :: copy_itp_table_dest_to_IO
-!
 !-----------------------------------------------------------------------
 !
       contains

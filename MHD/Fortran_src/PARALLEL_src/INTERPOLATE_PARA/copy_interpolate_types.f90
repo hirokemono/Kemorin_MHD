@@ -59,7 +59,7 @@
      &          tbl_dst_in, tbl_dst_cp)
 !
       use t_interpolate_tbl_dest
-      use m_interpolate_table_dest
+      use m_interpolate_table
 !
       integer(kind = kint), intent(in) :: my_rank
       type(interpolate_table_dest), intent(in) :: tbl_dst_in

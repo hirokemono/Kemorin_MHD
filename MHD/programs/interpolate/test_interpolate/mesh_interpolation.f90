@@ -22,6 +22,9 @@
       use m_machine_parameter
       use m_ctl_params_4_gen_table
       use m_interpolated_geometry
+      use m_interpolate_table
+      use t_interpolate_tbl_org
+      use t_interpolate_tbl_dest
       use interpolate_position
       use m_read_mesh_data
       use t_mesh_data
@@ -35,7 +38,8 @@
 !
       if (iflag_debug.eq.1)   write(*,*) 's_interpolate_global_node'
       call s_interpolate_global_node                                    &
-     &   (dest_mesh%node%numnod, dest_mesh%nod_comm)
+     &   (dest_mesh%node%numnod, dest_mesh%nod_comm,                    &
+     &    itp1_org, itp1_dest)
 !
 !     interpolate 2nd mesh from 1st mesh
 !

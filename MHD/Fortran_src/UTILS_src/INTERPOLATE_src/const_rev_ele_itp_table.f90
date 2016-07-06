@@ -23,12 +23,14 @@
       subroutine const_rev_ele_interpolate_table
 !
       use calypso_mpi
+!
+      use t_interpolate_tbl_org
+!
       use m_2nd_pallalel_vector
       use m_ctl_params_4_gen_table
 !
       use m_interpolate_table_dest_IO
       use m_interpolate_table_org_IO
-      use m_interpolate_table_orgin
 !
       use copy_interpolate_type_IO
       use copy_interpolate_type_IO
@@ -37,6 +39,7 @@
 !
       integer(kind = kint) :: jp
       integer(kind = kint) :: my_rank_2nd, ierr
+      type(interpolate_table_org) :: itp_org_e
 !
 !
 !    set domain ID to be searched
@@ -45,27 +48,28 @@
         my_rank_2nd = mod(my_rank+jp-1,nprocs_2nd)
 !
         if (my_rank .eq. mod(my_rank_2nd,nprocs) ) then
-          call set_num_dest_domain(nprocs, itp1_org)
-          call alloc_itp_num_org(np_smp, itp1_org)
+          call set_num_dest_domain(nprocs, itp_org_e)
+          call alloc_itp_num_org(np_smp, itp_org_e)
 !
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'count_interpolate_4_orgin', my_rank_2nd, nprocs
-          call count_interpolate_4_orgin(my_rank_2nd, nprocs, itp1_org)
+          call count_interpolate_4_orgin                                &
+     &       (my_rank_2nd, nprocs, itp_org_e)
 !
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'allocate_itp_table_org'
-          call alloc_itp_table_org(itp1_org)
+          call alloc_itp_table_org(itp_org_e)
 !
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'search_interpolate_4_orgin'
           call search_interpolate_4_orgin                               &
-     &       (my_rank_2nd, nprocs, itp1_org)
+     &       (my_rank_2nd, nprocs, itp_org_e)
 !
 !
 !
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'copy_itp_table_org_to_IO', my_rank_2nd, nprocs
-          call copy_itp_table_org_to_IO(itp1_org)
+          call copy_itp_table_org_to_IO(itp_org_e)
 !
           if (my_rank_2nd .ge. nprocs) then
             num_org_domain_IO = 0

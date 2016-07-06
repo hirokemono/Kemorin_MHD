@@ -28,6 +28,11 @@
 !
       type(interpolate_table), save :: itp1_info
 !
+!
+!> Structure of interpolation table for target grid
+      type(interpolate_table_dest), save :: itp1_dest
+!> Structure of interpolation table for source grid
+      type(interpolate_table_org) :: itp1_org
 !> Structure of interpolation matrix
       type(CRS_SMP_CONNECT_MATRIX), save :: itp1_mat
 !

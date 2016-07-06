@@ -8,7 +8,7 @@
 !!      subroutine count_interpolate_4_orgin                            &
 !!     &         (n_org_rank, nprocs_dest, itp_org)
 !!      subroutine search_interpolate_4_orgin                           &
-!!     &          (n_org_rank, nprocs_dest, itp1_org)
+!!     &          (n_org_rank, nprocs_dest, itp_org)
 !
       module const_interpolate_4_org
 !
@@ -134,7 +134,8 @@
 !
         if (ierr.ne.0) call calypso_MPI_abort(ierr,'Check work file')
 !
-        call count_num_interpolation_4_orgin(n_org_rank, n_dest_rank)
+        call count_num_interpolation_4_orgin                            &
+     &     (n_org_rank, n_dest_rank, itp_org)
 !
       end do
       itp_org%ntot_table_org                                            &
@@ -166,7 +167,7 @@
         call sel_read_itp_coefs_dest(n_dest_rank, ierr)
         if (ierr.ne.0) call calypso_MPI_abort(ierr,'Check work file')
 !
-        call set_interpolation_4_orgin(n_org_rank)
+        call set_interpolation_4_orgin(n_org_rank, itp_org)
       end do
 !
       call ordering_itp_orgin_tbl_t(itp_org)

@@ -7,16 +7,16 @@
 !> @brief Work array to construct interpolation table
 !!
 !!@verbatim
-!!      subroutine allocate_work_const_itp_tbl(numnod)
+!!      subroutine allocate_work_const_itp_tbl(numnod, itp_dest)
 !!      subroutine deallocate__work_const_itp_tbl
 !!
 !!      subroutine allocate_itp_work_dest(num_org_pe)
 !!      subroutine deallocate_itp_work_dest
 !!
-!!      subroutine swap_interpolation_table(idest, inod)
-!!      subroutine copy_table_2_order
+!!      subroutine swap_interpolation_table(idest, inod, itp_dest)
+!!      subroutine copy_table_2_order(itp_dest)
 !!
-!!      subroutine check_search_ID(id_file)
+!!      subroutine check_search_ID(id_file, itp_dest)
 !!@endverbatim
 !
       module m_work_const_itp_table
@@ -83,21 +83,22 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_work_const_itp_tbl(numnod)
+      subroutine allocate_work_const_itp_tbl(numnod, itp_dest)
 !
-      use m_interpolate_table_dest
+      use t_interpolate_tbl_dest
 !
       integer(kind = kint), intent(in) :: numnod
+      type(interpolate_table_dest), intent(in) :: itp_dest
 !
-      allocate( id_search_area(itp1_dest%ntot_table_dest,3) )
+      allocate( id_search_area(itp_dest%ntot_table_dest,3) )
       allocate( iflag_org_domain(numnod) )
 !
       iflag_org_domain = 0
       id_search_area = 0
 !
-      allocate( inod_dest_ordered(itp1_dest%ntot_table_dest) )
-      allocate( iele_orgin_ordered(itp1_dest%ntot_table_dest) )
-      allocate( coef_inter_ordered(itp1_dest%ntot_table_dest,3) )
+      allocate( inod_dest_ordered(itp_dest%ntot_table_dest) )
+      allocate( iele_orgin_ordered(itp_dest%ntot_table_dest) )
+      allocate( coef_inter_ordered(itp_dest%ntot_table_dest,3) )
 !
      coef_inter_ordered = 0.0d0
      inod_dest_ordered = 0
@@ -170,15 +171,16 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine swap_interpolation_table(idest, inod)
+      subroutine swap_interpolation_table(idest, inod, itp_dest)
 !
-      use m_interpolate_table_dest
+      use t_interpolate_tbl_dest
       use m_interpolate_coefs_dest
 !
       integer(kind = kint), intent(in) :: idest, inod
+      type(interpolate_table_dest), intent(in) :: itp_dest
 !
 !
-      inod_dest_ordered(idest) =       itp1_dest%inod_dest_4_dest(inod)
+      inod_dest_ordered(idest) =       itp_dest%inod_dest_4_dest(inod)
       iele_orgin_ordered(idest) =      iele_org_4_dest(inod)
       coef_inter_ordered(idest,1:3) = coef_inter_dest(inod,1:3)
 !
@@ -186,23 +188,25 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_table_2_order
+      subroutine copy_table_2_order(itp_dest)
 !
-      use m_interpolate_table_dest
+      use t_interpolate_tbl_dest
       use m_interpolate_coefs_dest
 !
+      type(interpolate_table_dest), intent(inout) :: itp_dest
 !
-      itp1_dest%inod_dest_4_dest(1:itp1_dest%ntot_table_dest)                               &
-     &      = inod_dest_ordered(1:itp1_dest%ntot_table_dest)
-      iele_org_4_dest(1:itp1_dest%ntot_table_dest)                                &
-     &         = iele_orgin_ordered(1:itp1_dest%ntot_table_dest)
 !
-      coef_inter_dest(1:itp1_dest%ntot_table_dest,1)                              &
-     &         = coef_inter_ordered(1:itp1_dest%ntot_table_dest,1)
-      coef_inter_dest(1:itp1_dest%ntot_table_dest,2)                              &
-     &         = coef_inter_ordered(1:itp1_dest%ntot_table_dest,2)
-      coef_inter_dest(1:itp1_dest%ntot_table_dest,3)                              &
-     &         = coef_inter_ordered(1:itp1_dest%ntot_table_dest,3)
+      itp_dest%inod_dest_4_dest(1:itp_dest%ntot_table_dest)             &
+     &      = inod_dest_ordered(1:itp_dest%ntot_table_dest)
+      iele_org_4_dest(1:itp_dest%ntot_table_dest)                       &
+     &         = iele_orgin_ordered(1:itp_dest%ntot_table_dest)
+!
+      coef_inter_dest(1:itp_dest%ntot_table_dest,1)                     &
+     &         = coef_inter_ordered(1:itp_dest%ntot_table_dest,1)
+      coef_inter_dest(1:itp_dest%ntot_table_dest,2)                     &
+     &         = coef_inter_ordered(1:itp_dest%ntot_table_dest,2)
+      coef_inter_dest(1:itp_dest%ntot_table_dest,3)                     &
+     &         = coef_inter_ordered(1:itp_dest%ntot_table_dest,3)
 !
 !
       end subroutine copy_table_2_order
@@ -210,20 +214,22 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine check_search_ID(id_file)
+      subroutine check_search_ID(id_file, itp_dest)
 !
-      use m_interpolate_table_dest
+      use t_interpolate_tbl_dest
 !
 !
       integer(kind = kint), intent(in) :: id_file
+      type(interpolate_table_dest), intent(in) :: itp_dest
+!
       integer(kind = kint) :: inod
 !
       write(id_file,*) '#'
       write(id_file,*) '#  sphere block ID for search'
       write(id_file,*) '#'
 !
-      write(id_file,'(i16)') itp1_dest%ntot_table_dest
-      do inod = 1, itp1_dest%ntot_table_dest
+      write(id_file,'(i16)') itp_dest%ntot_table_dest
+      do inod = 1, itp_dest%ntot_table_dest
         write(id_file,'(4i16)') inod, id_search_area(inod,1:3)
       end do
 !

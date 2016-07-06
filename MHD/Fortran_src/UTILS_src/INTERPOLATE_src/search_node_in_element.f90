@@ -18,7 +18,7 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_interpolate_table_dest
+      use m_interpolate_table
       use m_work_const_itp_table
       use cal_interpolate_coefs
 !

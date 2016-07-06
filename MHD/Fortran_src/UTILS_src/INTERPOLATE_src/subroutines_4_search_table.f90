@@ -164,7 +164,7 @@
       subroutine set_results_2_array(n_rank_org, inod, jele, xi)
 !
       use m_ctl_params_4_gen_table
-      use m_interpolate_table_dest
+      use m_interpolate_table
       use m_interpolate_coefs_dest
       use m_work_const_itp_table
 !
@@ -196,7 +196,7 @@
 !
       use m_constants
       use m_ctl_params_4_gen_table
-      use m_interpolate_table_dest
+      use m_interpolate_table
       use m_interpolate_coefs_dest
 !
       integer(kind = kint), intent(in) :: n_rank_org, inod, jele

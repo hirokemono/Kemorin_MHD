@@ -25,8 +25,7 @@
       subroutine copy_interpolate_types_from_raw(my_rank, itp_table)
 !
       use m_machine_parameter
-      use m_interpolate_table_orgin
-      use m_interpolate_table_dest
+      use m_interpolate_table
       use t_interpolate_table
       use t_interpolate_tbl_org
       use copy_interpolate_types

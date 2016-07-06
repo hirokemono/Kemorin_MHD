@@ -6,7 +6,8 @@
 !      subroutine s_interpolate_position(node, NP_dest, comm_dest)
 !      subroutine s_interpolate_position_by_N(node, NP_dest, comm_dest)
 !      subroutine s_interpolate_position_by_s(node, NP_dest, comm_dest)
-!      subroutine s_interpolate_global_node(NP_dest, comm_dest)
+!!      subroutine s_interpolate_global_node                            &
+!!     &         (NP_dest, comm_dest, itp_org, itp_dest)
 !
       module interpolate_position
 !
@@ -113,7 +114,7 @@
       use m_constants
       use m_2nd_pallalel_vector
       use m_interpolated_geometry
-      use m_interpolate_table_dest
+      use m_interpolate_table
 !
       use m_array_for_send_recv
 !
@@ -149,11 +150,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_interpolate_global_node(NP_dest, comm_dest)
+      subroutine s_interpolate_global_node                              &
+     &         (NP_dest, comm_dest, itp_org, itp_dest)
 !
       use m_solver_SR
-      use m_interpolate_table_orgin
-      use m_interpolate_table_dest
+      use t_interpolate_tbl_org
+      use t_interpolate_tbl_dest
 !
       use m_interpolated_geometry
       use m_2nd_pallalel_vector
@@ -164,6 +166,8 @@
 !
       integer(kind = kint), intent(in) :: NP_dest
       type(communication_table), intent(in) :: comm_dest
+      type(interpolate_table_org), intent(in) :: itp_org
+      type(interpolate_table_dest), intent(in) :: itp_dest
 !
       call verify_2nd_iccg_int_mat(NP_dest)
 !
@@ -172,14 +176,14 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'calypso_send_recv_int'
       call calypso_send_recv_int                                        &
-     &   (iflag_import_item, itp1_org%ntot_table_org, NP_dest,          &
-     &    itp1_org%num_dest_domain, itp1_org%iflag_self_itp_send,       &
-     &    itp1_org%id_dest_domain, itp1_org%istack_nod_tbl_org,         &
-     &    itp1_org%inod_itp_send,                                       &
-     &    itp1_dest%num_org_domain, itp1_dest%iflag_self_itp_recv,      &
-     &    itp1_dest%id_org_domain, itp1_dest%istack_nod_tbl_dest,       &
-     &    itp1_dest%inod_dest_4_dest, itp1_dest%irev_dest_4_dest,       &
-     &    itp1_org%inod_gl_dest_4_org, ivec_2nd(1) )
+     &   (iflag_import_item, itp_org%ntot_table_org, NP_dest,           &
+     &    itp_org%num_dest_domain, itp_org%iflag_self_itp_send,         &
+     &    itp_org%id_dest_domain, itp_org%istack_nod_tbl_org,           &
+     &    itp_org%inod_itp_send,                                        &
+     &    itp_dest%num_org_domain, itp_dest%iflag_self_itp_recv,        &
+     &    itp_dest%id_org_domain, itp_dest%istack_nod_tbl_dest,         &
+     &    itp_dest%inod_dest_4_dest, itp_dest%irev_dest_4_dest,         &
+     &    itp_org%inod_gl_dest_4_org, ivec_2nd(1) )
 !
 !
       if (iflag_debug.eq.1)  write(*,*) 'solver_send_recv_i'

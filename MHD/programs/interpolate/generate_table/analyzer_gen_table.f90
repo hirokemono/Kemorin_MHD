@@ -41,8 +41,9 @@
 !
       use m_ctl_params_4_gen_table
       use m_2nd_pallalel_vector
-!
       use m_read_mesh_data
+      use m_interpolate_table
+!
       use input_control_gen_table
       use const_mesh_information
       use set_table_type_RHS_assemble
@@ -98,7 +99,7 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_serach_data_4_dest'
-      call s_set_serach_data_4_dest(org_femmesh%mesh%node)
+      call s_set_serach_data_4_dest(org_femmesh%mesh%node, itp1_dest)
 !
       end subroutine init_make_interpolate_table
 !
@@ -107,6 +108,7 @@
       subroutine analyze_make_interpolate_table
 !
       use calypso_mpi
+      use m_interpolate_table
       use m_interpolate_coefs_dest
       use construct_interpolate_table
       use const_interpolate_4_org
@@ -127,18 +129,18 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_order_dest_table_by_domain'
       call s_order_dest_table_by_domain                                 &
-     &   (org_femmesh%mesh%node%internal_node, ierr_missing)
+     &   (org_femmesh%mesh%node%internal_node, ierr_missing, itp1_dest)
 !
-!      call check_table_in_org_2(13)
+!      call check_table_in_org_2(13, itp1_dest)
 !
 !   ordering destination table by interpolation type
 !
       if (iflag_debug.eq.1) write(*,*) 's_order_dest_table_by_type'
       call s_order_dest_table_by_type                                   &
-     &   (org_femmesh%mesh%node, org_femmesh%mesh%ele)
+     &   (org_femmesh%mesh%node, org_femmesh%mesh%ele, itp1_dest)
 !
-      if (iflag_debug.eq.1) write(*,*) 'copy_itp_table_dest_to_IO'
-      call copy_itp_table_dest_to_IO
+      if (iflag_debug.eq.1) write(*,*) 'copy_itp_coefs_dest_to_IO'
+      call copy_itp_coefs_dest_to_IO(itp1_dest)
 !
       table_file_header = work_header
       call sel_write_itp_coefs_dest(my_rank)

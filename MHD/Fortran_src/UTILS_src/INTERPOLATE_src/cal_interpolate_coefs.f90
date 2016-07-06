@@ -160,7 +160,7 @@
       subroutine check_interpolation                                    &
      &         (new_node, org_node, org_ele, id_file, my_rank_org)
 !
-      use m_interpolate_table_dest
+      use m_interpolate_table
       use m_interpolate_coefs_dest
       use m_work_const_itp_table
 !

@@ -46,7 +46,6 @@
 !
       use m_array_for_send_recv
       use m_2nd_pallalel_vector
-      use m_interpolate_table_orgin
       use m_interpolate_table
 !
       type(node_data), intent(in) :: node_org

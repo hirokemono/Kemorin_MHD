@@ -29,8 +29,7 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_interpolate_table_orgin
-      use m_interpolate_table_dest
+      use m_interpolate_table
 !
       use select_copy_from_recv
 !
