@@ -5,7 +5,7 @@
 !
 !      subroutine s_input_control_interpolate                           &
 !     &         (org_femmesh, org_ele_mesh, new_femmesh, new_ele_mesh,  &
-!     &          ierr)
+!     &          itp_info, ierr)
 !      subroutine set_ctl_interpolate_udt(nod_fld)
 !
       module input_control_interpolate
@@ -25,15 +25,15 @@
 !
       subroutine s_input_control_interpolate                            &
      &         (org_femmesh, org_ele_mesh, new_femmesh, new_ele_mesh,   &
-     &          ierr)
+     &          itp_info, ierr)
 !
       use t_mesh_data
+      use t_interpolate_table
 !
       use m_2nd_pallalel_vector
       use m_ctl_params_4_gen_table
       use m_ctl_data_gen_table
       use m_read_mesh_data
-      use m_interpolate_table
 !
       use set_ctl_interpolation
 !
@@ -49,6 +49,7 @@
 !
       type(mesh_data), intent(inout) :: new_femmesh
       type(element_geometry), intent(inout) :: new_ele_mesh
+      type(interpolate_table), intent(inout) :: itp_info
       integer(kind = kint), intent(inout) :: ierr
 !
 !
@@ -95,14 +96,14 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_itp_table_dest_from_IO'
-      call copy_itp_table_dest_from_IO(my_rank, itp1_info%tbl_dest)
+      call copy_itp_table_dest_from_IO(my_rank, itp_info%tbl_dest)
       if (iflag_debug.eq.1) write(*,*) 'copy_itp_table_org_from_IO'
-      call copy_itp_table_org_from_IO(my_rank, itp1_info%tbl_org)
+      call copy_itp_table_org_from_IO(my_rank, itp_info%tbl_org)
 !
       if (iflag_debug.eq.1) write(*,*) 'init_interpolate_nodal_data'
       call init_interpolate_nodal_data                                  &
      &   (org_femmesh%mesh%node, org_femmesh%mesh%ele,                  &
-     &    new_femmesh%mesh%node)
+     &    new_femmesh%mesh%node, itp_info)
 !
       end subroutine s_input_control_interpolate
 !

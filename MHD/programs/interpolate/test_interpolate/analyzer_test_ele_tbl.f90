@@ -16,6 +16,7 @@
       use m_machine_parameter
 !
       use t_mesh_data
+      use t_interpolate_table
 !
       implicit none
 !
@@ -24,6 +25,8 @@
 !
       type(mesh_data), save :: new_femmesh
       type(element_geometry), save :: new_ele_mesh
+!
+      type(interpolate_table), save :: itp_ele_t
 !
 ! ----------------------------------------------------------------------
 !
@@ -52,8 +55,8 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_itp_mesh'
-      call s_input_control_interpolate                                  &
-     &   (org_femmesh, org_ele_mesh, new_femmesh, new_ele_mesh, ierr)
+      call s_input_control_interpolate(org_femmesh, org_ele_mesh,       &
+     &   new_femmesh, new_ele_mesh, itp_ele_t, ierr)
 !
 !     --------------------- 
 !
@@ -85,7 +88,7 @@
 !
        if (iflag_debug.eq.1) write(*,*) 'interpolation_4_mesh_test'
       call interpolation_4_mesh_test                                    &
-     &   (org_femmesh%mesh, new_femmesh%mesh)
+     &   (org_femmesh%mesh, new_femmesh%mesh, itp_ele_t)
 !
       end subroutine analyze
 !

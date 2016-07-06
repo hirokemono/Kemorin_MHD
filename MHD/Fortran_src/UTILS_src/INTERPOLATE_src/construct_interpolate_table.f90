@@ -117,8 +117,6 @@
         write(*,*) 'There is missing nodes in domain ', my_rank
       end if
 !
-!      call check_table_in_org_2(13, itp1_info%tbl_dest)
-!
       end subroutine s_construct_interpolate_table
 !
 ! ----------------------------------------------------------------------

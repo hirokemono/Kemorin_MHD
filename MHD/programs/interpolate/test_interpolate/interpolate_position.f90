@@ -3,9 +3,12 @@
 !
 !     Written by H. Matsui on Sep., 2006
 !
-!      subroutine s_interpolate_position(node, NP_dest, comm_dest)
-!      subroutine s_interpolate_position_by_N(node, NP_dest, comm_dest)
-!      subroutine s_interpolate_position_by_s(node, NP_dest, comm_dest)
+!!      subroutine s_interpolate_position                               &
+!!     &         (node, NP_dest, comm_dest, itp_info)
+!!      subroutine s_interpolate_position_by_N                          &
+!!     &         (node, NP_dest, comm_dest, itp_info)
+!!      subroutine s_interpolate_position_by_s                          &
+!!     &         (node, NP_dest, comm_dest, itp_info)
 !!      subroutine s_interpolate_global_node                            &
 !!     &         (NP_dest, comm_dest, itp_org, itp_dest)
 !
@@ -18,6 +21,7 @@
 !
       use t_comm_table
       use t_geometry_data
+      use t_interpolate_table
 !
       implicit none
 !
@@ -27,12 +31,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_interpolate_position(node, NP_dest, comm_dest)
+      subroutine s_interpolate_position                                 &
+     &         (node, NP_dest, comm_dest, itp_info)
 !
       use m_constants
       use m_2nd_pallalel_vector
       use m_interpolated_geometry
-      use m_interpolate_table
 !
       use m_array_for_send_recv
 !
@@ -41,6 +45,7 @@
       type(node_data), intent(inout) :: node
       integer(kind = kint), intent(in) :: NP_dest
       type(communication_table), intent(in) :: comm_dest
+      type(interpolate_table), intent(in) :: itp_info
 !
       integer(kind = kint) :: inod
 !
@@ -57,7 +62,7 @@
       end do
 !
       call interpolate_mod_3(comm_dest,                                 &
-     &    itp1_info%tbl_org, itp1_info%tbl_dest, itp1_info%mat,         &
+     &    itp_info%tbl_org, itp_info%tbl_dest, itp_info%mat,            &
      &    np_smp, node%numnod, NP_dest, x_vec(1), xvec_2nd(1))
 !
       do inod = 1, NP_dest
@@ -70,12 +75,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_interpolate_position_by_N(node, NP_dest, comm_dest)
+      subroutine s_interpolate_position_by_N                            &
+     &         (node, NP_dest, comm_dest, itp_info)
 !
       use m_constants
       use m_2nd_pallalel_vector
       use m_interpolated_geometry
-      use m_interpolate_table
 !
       use m_array_for_send_recv
 !
@@ -84,6 +89,7 @@
       type(node_data), intent(inout) :: node
       integer(kind = kint), intent(in) :: NP_dest
       type(communication_table), intent(in) :: comm_dest
+      type(interpolate_table), intent(in) :: itp_info
 !
       integer(kind = kint) :: inod
 !
@@ -100,7 +106,7 @@
       end do
 !
       call interpolate_mod_N(comm_dest,                                 &
-     &    itp1_info%tbl_org, itp1_info%tbl_dest, itp1_info%mat,         &
+     &    itp_info%tbl_org, itp_info%tbl_dest, itp_info%mat,            &
      &    np_smp, node%numnod, NP_dest, ithree, x_vec(1), xvec_2nd(1))
 !
       do inod = 1, NP_dest
@@ -113,12 +119,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_interpolate_position_by_s(node, NP_dest, comm_dest)
+      subroutine s_interpolate_position_by_s                            &
+     &         (node, NP_dest, comm_dest, itp_info)
 !
       use m_constants
       use m_2nd_pallalel_vector
       use m_interpolated_geometry
-      use m_interpolate_table
 !
       use m_array_for_send_recv
 !
@@ -128,6 +134,7 @@
       type(node_data), intent(inout) :: node
       integer(kind = kint), intent(in) :: NP_dest
       type(communication_table), intent(in) :: comm_dest
+      type(interpolate_table), intent(in) :: itp_info
 !
       integer(kind = kint) :: inod, nd
 !
@@ -143,7 +150,7 @@
         end do
 !
         call interpolate_mod_1(comm_dest,                               &
-     &      itp1_info%tbl_org, itp1_info%tbl_dest, itp1_info%mat,       &
+     &      itp_info%tbl_org, itp_info%tbl_dest, itp_info%mat,          &
      &      np_smp, node%numnod, NP_dest, x_vec(1), xvec_2nd(1))
 !
         do inod = 1, NP_dest

@@ -21,6 +21,7 @@
       use t_geometry_data
       use t_surface_data
       use t_edge_data
+      use t_interpolate_table
 !
       use itp_table_IO_select_4_zlib
       use set_parallel_file_name
@@ -55,11 +56,13 @@
       type(edge_data), intent(in) :: edge
       type(mesh_geometry), intent(in) :: newmesh
 !
+      type(interpolate_table)  :: itp_refine
+!
 !
       if(iflag_tmp_tri_refine .eq. 0 .and. iflag_merge .eq. 0) then
         write(*,*) 'const_single_refine_itp_tbl'
         call const_single_refine_itp_tbl(ele, surf, edge,               &
-     &                                   newmesh%node%numnod)
+     &      newmesh%node%numnod, itp_refine)
         call write_refinement_table(ele%numele, ione)
       else if(iflag_tmp_tri_refine .gt. 0 .or. iflag_merge .eq. 0) then
         write(*,*) 'copy_original_mesh_conn_refine'
@@ -70,7 +73,7 @@
       else if(iflag_merge .gt. 0) then
         write(*,*) 'const_second_refine_itp_tbl'
         call const_second_refine_itp_tbl(ele, surf, edge,               &
-     &                                   newmesh%node%numnod)
+     &      newmesh%node%numnod, itp_refine)
         write(*,*) 'const_merged_refine_itp_tbl'
         call const_merged_refine_itp_tbl(ele%nnod_4_ele,                &
      &      newmesh%node%numnod, newmesh%ele%nnod_4_ele,                &
@@ -85,36 +88,36 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine const_single_refine_itp_tbl(ele, surf, edge, nnod_2)
+      subroutine const_single_refine_itp_tbl                            &
+     &         (ele, surf, edge, nnod_2, itp_info)
 !
-      use m_interpolate_table
       use m_interpolate_coefs_dest
       use m_interpolate_table_dest_IO
       use m_work_merge_refine_itp
       use set_refine_interpolate_tbl
       use copy_interpolate_type_IO
-      use copy_interpolate_type_raw
 !
+      integer(kind = kint), intent(in) :: nnod_2
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(edge_data), intent(in) :: edge
 !
-      integer(kind = kint), intent(in) :: nnod_2
+      type(interpolate_table), intent(inout) :: itp_info
 !
 !
       iflag_debug = 1
       if(iflag_debug .gt. 0) write(*,*) 'set_itp_course_to_fine_origin'
       call set_itp_course_to_fine_origin                                &
-     &   (ele, surf, edge, itp1_info%tbl_org)
+     &   (ele, surf, edge, itp_info%tbl_org)
       if(iflag_debug .gt. 0) write(*,*) 'set_itp_course_to_fine_dest'
-      call set_itp_course_to_fine_dest(nnod_2, itp1_info%tbl_dest)
+      call set_itp_course_to_fine_dest(nnod_2, itp_info%tbl_dest)
 !
-      call allocate_itp_coef_dest(itp1_info%tbl_dest)
+      call allocate_itp_coef_dest(itp_info%tbl_dest)
       call allocate_itp_coef_stack(ione)
       if(iflag_debug .gt. 0) write(*,*) 'copy_itp_table_org_to_IO'
-      call copy_itp_table_org_to_IO(itp1_info%tbl_org)
+      call copy_itp_table_org_to_IO(itp_info%tbl_org)
       if(iflag_debug .gt. 0) write(*,*) 'copy_itp_coefs_dest_to_IO'
-      call copy_itp_coefs_dest_to_IO(itp1_info%tbl_dest)
+      call copy_itp_coefs_dest_to_IO(itp_info%tbl_dest)
 !
       table_file_header = course_2_fine_head
       ifmt_itp_table_file = id_ascii_file_fmt
@@ -124,16 +127,16 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_itp_fine_to_course_origin'
       call set_itp_fine_to_course_origin                                &
-     &   (ele%nnod_4_ele, itp1_info%tbl_org)
-      call set_itp_fine_to_course_dest(itp1_info%tbl_dest)
+     &   (ele%nnod_4_ele, itp_info%tbl_org)
+      call set_itp_fine_to_course_dest(itp_info%tbl_dest)
 !
       if(iflag_debug .gt. 0) write(*,*) 'allocate_itp_coef_dest'
-      call allocate_itp_coef_dest(itp1_info%tbl_dest)
+      call allocate_itp_coef_dest(itp_info%tbl_dest)
       call allocate_itp_coef_stack(ione)
       if(iflag_debug .gt. 0) write(*,*) 'copy_itp_table_org_to_IO'
-      call copy_itp_table_org_to_IO(itp1_info%tbl_org)
+      call copy_itp_table_org_to_IO(itp_info%tbl_org)
       if(iflag_debug .gt. 0) write(*,*) 'copy_itp_coefs_dest_to_IO'
-      call copy_itp_coefs_dest_to_IO(itp1_info%tbl_dest)
+      call copy_itp_coefs_dest_to_IO(itp_info%tbl_dest)
 !
       table_file_header = fine_2_course_head
       write(*,*) 'table field header: ', trim(table_file_header)
@@ -146,28 +149,29 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine const_second_refine_itp_tbl(ele, surf, edge, nnod_2)
+      subroutine const_second_refine_itp_tbl                            &
+     &         (ele, surf, edge, nnod_2, itp_info)
 !
-      use m_interpolate_table
       use m_work_merge_refine_itp
       use set_refine_interpolate_tbl
-      use copy_interpolate_type_raw
+      use copy_interpolate_types
 !
+      integer(kind = kint), intent(in) :: nnod_2
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(edge_data), intent(in) :: edge
 !
-      integer(kind = kint), intent(in) :: nnod_2
+      type(interpolate_table), intent(inout) :: itp_info
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_itp_course_to_fine_origin'
       call set_itp_course_to_fine_origin                                &
-     &   (ele, surf, edge, itp1_info%tbl_org)
-      call set_itp_course_to_fine_dest(nnod_2, itp1_info%tbl_dest)
+     &   (ele, surf, edge, itp_info%tbl_org)
+      call set_itp_course_to_fine_dest(nnod_2, itp_info%tbl_dest)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                       'copy_interpolate_types_from_raw c2f_2nd'
-      call copy_interpolate_types_from_raw(izero, c2f_2nd)
+      call copy_interpolate_between_types(izero, itp_info, c2f_2nd)
 !
       end subroutine const_second_refine_itp_tbl
 !
@@ -180,7 +184,6 @@
       use m_work_merge_refine_itp
 !      use copy_interpolate_type_IO
 !
-      use m_interpolate_table
       use m_interpolate_coefs_dest
       use m_interpolate_table_dest_IO
       use set_refine_interpolate_tbl

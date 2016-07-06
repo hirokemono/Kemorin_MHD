@@ -17,6 +17,7 @@
       use t_mesh_data
       use t_next_node_ele_4_node
       use t_jacobian_3d
+      use t_interpolate_table
 !
       implicit none
 !
@@ -31,6 +32,8 @@
       type(jacobians_3d), save :: jac_3d_l
       type(jacobians_3d), save :: jac_3d_q
 !
+      type(interpolate_table), save :: itp_nod
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -42,7 +45,6 @@
       use m_ctl_params_4_gen_table
       use m_2nd_pallalel_vector
       use m_read_mesh_data
-      use m_interpolate_table
 !
       use input_control_gen_table
       use const_mesh_information
@@ -100,7 +102,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_serach_data_4_dest'
       call s_set_serach_data_4_dest                                     &
-     &   (org_femmesh%mesh%node, itp1_info%tbl_dest)
+     &   (org_femmesh%mesh%node, itp_nod%tbl_dest)
 !
       end subroutine init_make_interpolate_table
 !
@@ -109,8 +111,8 @@
       subroutine analyze_make_interpolate_table
 !
       use calypso_mpi
-      use m_interpolate_table
       use m_interpolate_coefs_dest
+!
       use construct_interpolate_table
       use const_interpolate_4_org
       use order_dest_table_by_domain
@@ -131,19 +133,19 @@
       if (iflag_debug.eq.1) write(*,*) 's_order_dest_table_by_domain'
       call s_order_dest_table_by_domain                                 &
      &   (org_femmesh%mesh%node%internal_node,                          &
-     &    ierr_missing, itp1_info%tbl_dest)
+     &    ierr_missing, itp_nod%tbl_dest)
 !
-!      call check_table_in_org_2(13, itp1_info%tbl_dest)
+!      call check_table_in_org_2(13, itp_nod%tbl_dest)
 !
 !   ordering destination table by interpolation type
 !
       if (iflag_debug.eq.1) write(*,*) 's_order_dest_table_by_type'
       call s_order_dest_table_by_type                                   &
      &   (org_femmesh%mesh%node, org_femmesh%mesh%ele,                  &
-     &    itp1_info%tbl_dest)
+     &    itp_nod%tbl_dest)
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_itp_coefs_dest_to_IO'
-      call copy_itp_coefs_dest_to_IO(itp1_info%tbl_dest)
+      call copy_itp_coefs_dest_to_IO(itp_nod%tbl_dest)
 !
       table_file_header = work_header
       call sel_write_itp_coefs_dest(my_rank)

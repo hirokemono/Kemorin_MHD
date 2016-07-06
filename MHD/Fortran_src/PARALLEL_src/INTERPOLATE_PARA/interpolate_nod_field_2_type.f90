@@ -8,9 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine init_interpolate_nodal_data                          &
-!!     &         (node_org, ele_org, nod_dest)
-!!      subroutine interpolate_nodal_data                               &
-!!     &          (node_org, fld_org, comm_dest, nod_dest, phys_dest)
+!!     &         (node_org, ele_org, nod_dest, itp_info)
+!!      subroutine interpolate_nodal_data(node_org, fld_org,            &
+!!     &          comm_dest, itp_info, nod_dest, phys_dest)
 !!        integer(kind = kint), intent(in) :: numdir, i_dest, i_origin
 !!        type(node_data), intent(in) :: node_org
 !!        type(element_data), intent(in) :: ele_org
@@ -29,6 +29,7 @@
       use t_geometry_data
       use t_comm_table
       use t_phys_data
+      use t_interpolate_table
 !
       implicit none
 !
@@ -42,23 +43,24 @@
 ! ----------------------------------------------------------------------
 !
       subroutine init_interpolate_nodal_data                            &
-     &         (node_org, ele_org, nod_dest)
+     &         (node_org, ele_org, nod_dest, itp_info)
 !
       use m_array_for_send_recv
       use m_2nd_pallalel_vector
-      use m_interpolate_table
 !
       type(node_data), intent(in) :: node_org
       type(element_data), intent(in) :: ele_org
       type(node_data), intent(in) :: nod_dest
 !
+      type(interpolate_table), intent(inout) :: itp_info
+!
 !
       if (iflag_debug.eq.1) write(*,*) 'set_stack_tbl_wtype_org_smp'
-      call set_stack_tbl_wtype_org_smp(itp1_info%tbl_org)
+      call set_stack_tbl_wtype_org_smp(itp_info%tbl_org)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_interporate_matrix'
       call const_interporate_matrix                                     &
-     &   (ele_org, itp1_info%tbl_org, itp1_info%mat)
+     &   (ele_org, itp_info%tbl_org, itp_info%mat)
 !
       call verify_vector_for_solver(n_sym_tensor, node_org%numnod)
       call verify_2nd_iccg_matrix(n_sym_tensor, nod_dest%numnod)
@@ -68,8 +70,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine interpolate_nodal_data                                 &
-     &          (node_org, fld_org, comm_dest, nod_dest, phys_dest)
+      subroutine interpolate_nodal_data(node_org, fld_org,              &
+     &          comm_dest, itp_info, nod_dest, phys_dest)
 !
       use calypso_mpi
 !
@@ -79,6 +81,8 @@
 !
       type(node_data), intent(in) :: nod_dest
       type(communication_table), intent(in) :: comm_dest
+      type(interpolate_table), intent(in) :: itp_info
+!
       type(phys_data), intent(inout) :: phys_dest
 !
 !
@@ -90,28 +94,28 @@
      &            trim(fld_org%phys_name(i)), '  ', i_dest, i_origin
           call s_interpolate_scalar(i_dest, i_origin,                   &
      &        node_org%numnod, fld_org%ntot_phys, fld_org%d_fld,        &
-     &        comm_dest, nod_dest, phys_dest)
+     &        comm_dest, itp_info, nod_dest, phys_dest)
 !
         else if (fld_org%num_component(i) .eq. n_vector) then
           if (my_rank.eq.0) write(*,*) ' interpolate vector: ',         &
      &            trim(fld_org%phys_name(i)), '  ', i_dest, i_origin
           call s_interpolate_vector(i_dest, i_origin,                   &
      &        node_org%numnod, fld_org%ntot_phys, fld_org%d_fld,        &
-     &        comm_dest, nod_dest, phys_dest)
+     &        comm_dest, itp_info, nod_dest, phys_dest)
 !
         else if (fld_org%num_component(i) .eq. n_sym_tensor) then
           if (my_rank.eq.0) write(*,*) ' interpolate tensor: ',         &
      &            trim(fld_org%phys_name(i)), '  ', i_dest, i_origin
           call s_interpolate_tensor(i_dest, i_origin,                   &
      &        node_org%numnod, fld_org%ntot_phys, fld_org%d_fld,        &
-     &        comm_dest, nod_dest, phys_dest)
+     &        comm_dest, itp_info, nod_dest, phys_dest)
         else
           if (my_rank.eq.0) write(*,*) ' interpolate tensor: ',         &
      &            trim(fld_org%phys_name(i)), '  ', i_dest, i_origin
           call s_interpolate_fields                                     &
      &       (fld_org%num_component(i), i_dest, i_origin,               &
      &        node_org%numnod, fld_org%ntot_phys, fld_org%d_fld,        &
-     &        comm_dest, nod_dest, phys_dest)
+     &        comm_dest, itp_info, nod_dest, phys_dest)
         end if
       end do
 !
@@ -122,11 +126,10 @@
 !
       subroutine s_interpolate_scalar                                   &
      &         (i_dest, i_origin, numnod, ncomp_nod, d_nod,             &
-     &          comm_dest, nod_dest, phys_dest)
+     &          comm_dest, itp_info, nod_dest, phys_dest)
 !
       use m_array_for_send_recv
       use m_2nd_pallalel_vector
-      use m_interpolate_table
       use interpolate_by_module
 !
       integer(kind = kint), intent(in) :: i_dest, i_origin
@@ -136,6 +139,8 @@
 !
       type(node_data), intent(in) :: nod_dest
       type(communication_table), intent(in) :: comm_dest
+      type(interpolate_table), intent(in) :: itp_info
+!
       type(phys_data), intent(inout) :: phys_dest
 !
       integer(kind = kint) :: inod
@@ -150,7 +155,7 @@
 !$omp end parallel do
 !
       call interpolate_mod_1(comm_dest,                                 &
-     &    itp1_info%tbl_org, itp1_info%tbl_dest, itp1_info%mat,         &
+     &    itp_info%tbl_org, itp_info%tbl_dest, itp_info%mat,            &
      &    np_smp, numnod, nod_dest%numnod, x_vec(1), xvec_2nd(1))
 !
 !$omp parallel do
@@ -164,11 +169,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_interpolate_vector(i_dest, i_origin, numnod,         &
-     &          ncomp_nod, d_nod, comm_dest, nod_dest, phys_dest)
+     &          ncomp_nod, d_nod, comm_dest, itp_info,                  &
+     &          nod_dest, phys_dest)
 !
       use m_array_for_send_recv
       use m_2nd_pallalel_vector
-      use m_interpolate_table
       use interpolate_by_module
 !
 !
@@ -179,6 +184,8 @@
 !
       type(node_data), intent(in) :: nod_dest
       type(communication_table), intent(in) :: comm_dest
+      type(interpolate_table), intent(in) :: itp_info
+!
       type(phys_data), intent(inout) :: phys_dest
 !
       integer(kind = kint) :: inod
@@ -198,7 +205,7 @@
 !    interpolation
 !
       call interpolate_mod_3(comm_dest,                                 &
-     &    itp1_info%tbl_org, itp1_info%tbl_dest, itp1_info%mat,         &
+     &    itp_info%tbl_org, itp_info%tbl_dest, itp_info%mat,            &
      &    np_smp, numnod, nod_dest%numnod, x_vec(1), xvec_2nd(1))
 !
 !$omp parallel do
@@ -214,10 +221,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_interpolate_tensor(i_dest, i_origin, numnod,         &
-     &          ncomp_nod, d_nod, comm_dest, nod_dest, phys_dest)
+     &          ncomp_nod, d_nod, comm_dest, itp_info,                  &
+     &          nod_dest, phys_dest)
 !
       use m_array_for_send_recv
-      use m_interpolate_table
       use m_2nd_pallalel_vector
       use interpolate_by_module
 !
@@ -229,6 +236,7 @@
 !
       type(node_data), intent(in) :: nod_dest
       type(communication_table), intent(in) :: comm_dest
+      type(interpolate_table), intent(in) :: itp_info
 !
       type(phys_data), intent(inout) :: phys_dest
 !
@@ -253,7 +261,7 @@
 !
 !    interpolation
       call interpolate_mod_6(comm_dest,                                 &
-     &    itp1_info%tbl_org, itp1_info%tbl_dest, itp1_info%mat,         &
+     &    itp_info%tbl_org, itp_info%tbl_dest, itp_info%mat,            &
      &    np_smp, numnod, nod_dest%numnod, x_vec, xvec_2nd)
 !
 !$omp parallel do
@@ -274,9 +282,8 @@
 !
       subroutine s_interpolate_fields                                   &
      &         (numdir, i_dest, i_origin, numnod, ncomp_nod, d_nod,     &
-     &          comm_dest, nod_dest, phys_dest)
+     &          comm_dest, itp_info, nod_dest, phys_dest)
 !
-      use m_interpolate_table
       use m_array_for_send_recv
       use m_2nd_pallalel_vector
       use interpolate_by_module
@@ -289,6 +296,7 @@
 !
       type(node_data), intent(in) :: nod_dest
       type(communication_table), intent(in) :: comm_dest
+      type(interpolate_table), intent(in) :: itp_info
       type(phys_data), intent(inout) :: phys_dest
 !
       integer(kind = kint) :: inod, nd
@@ -310,7 +318,7 @@
 !
 !    interpolation
       call interpolate_mod_N(comm_dest,                                 &
-     &    itp1_info%tbl_org, itp1_info%tbl_dest, itp1_info%mat,         &
+     &    itp_info%tbl_org, itp_info%tbl_dest, itp_info%mat,            &
      &    np_smp, numdir, nod_dest%numnod, numdir, x_vec, xvec_2nd)
 !
 !$omp parallel private(inod)

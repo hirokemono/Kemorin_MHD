@@ -19,6 +19,7 @@
       use t_phys_data
       use t_phys_address
       use t_ucd_data
+      use t_interpolate_table
 !
       implicit none
 !
@@ -27,6 +28,8 @@
 !
       type(mesh_data), save :: new_femmesh
       type(element_geometry), save :: new_ele_mesh
+!
+      type(interpolate_table), save :: itp_udt
 !
       type(phys_address), save :: iphys_ITP
       type(phys_data), save :: nod_fld_ITP
@@ -61,8 +64,8 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_interpolate'
-      call s_input_control_interpolate                                  &
-     &   (org_femmesh, org_ele_mesh, new_femmesh, new_ele_mesh, ierr)
+      call s_input_control_interpolate(org_femmesh, org_ele_mesh,       &
+     &   new_femmesh, new_ele_mesh, itp_udt, ierr)
 !
       call set_ctl_interpolate_udt(nod_fld_ITP)
 !
@@ -122,7 +125,8 @@
 !
         if (iflag_debug.gt.0) write(*,*) 's_interpolate_nodal_data'
         call interpolate_nodal_data(org_femmesh%mesh%node, nod_fld_ITP, &
-     &      new_femmesh%mesh%nod_comm, new_femmesh%mesh%node, new_phys)
+     &      new_femmesh%mesh%nod_comm, itp_udt,                         &
+     &      new_femmesh%mesh%node, new_phys)
 !
 !    output udt data
 !
