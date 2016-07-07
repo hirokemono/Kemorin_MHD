@@ -144,8 +144,8 @@
      &    (l_truncation, nri_rms, ntot_rms_rj,                          &
      &     WK_pwr%shl_l_local, WK_pwr%shl_m_local, WK_pwr%shl_lm_local, &
      &     WK_pwr%vol_l_local, WK_pwr%vol_m_local, WK_pwr%vol_lm_local, &
-     &     rms_sph_l, rms_sph_m, rms_sph_lm,                            &
-     &     rms_sph_vol_l, rms_sph_vol_m, rms_sph_vol_lm,                &
+     &     pwr1%shl_l, pwr1%shl_m, pwr1%shl_lm,                         &
+     &     pwr1%vol_l, pwr1%vol_m, pwr1%vol_lm,                         &
      &     pwr1%shl_sq, pwr1%shl_m0, pwr1%ratio_shl_m0,                 &
      &     pwr1%vol_sq, pwr1%vol_m0, pwr1%ratio_vol_m0)
 !
@@ -154,9 +154,9 @@
         call surf_ave_4_sph_rms_int                                     &
      &     (l_truncation, sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,        &
      &      nri_rms, ntot_rms_rj, kr_for_rms,                           &
-     &      rms_sph_l, rms_sph_m, rms_sph_lm, pwr1%shl_sq, pwr1%shl_m0)
+     &      pwr1%shl_l, pwr1%shl_m, pwr1%shl_lm, pwr1%shl_sq, pwr1%shl_m0)
         call vol_ave_4_rms_sph(l_truncation, ntot_rms_rj, avol,         &
-     &      rms_sph_vol_l, rms_sph_vol_m, rms_sph_vol_lm,               &
+     &      pwr1%vol_l, pwr1%vol_m, pwr1%vol_lm,                        &
      &      pwr1%vol_sq, pwr1%vol_m0)
       end if
 !

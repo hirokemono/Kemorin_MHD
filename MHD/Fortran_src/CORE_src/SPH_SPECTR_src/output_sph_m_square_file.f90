@@ -196,7 +196,7 @@
         write(mode_label,'(a)') 'degree'
         call write_sph_volume_spec_file(fname_rms, mode_label,          &
      &      istep, time, l_truncation, nlayer_ICB, nlayer_CMB,          &
-     &      rms_sph_vol_l)
+     &      pwr1%vol_l)
       end if
 !
       if(iflag_spectr_m .gt. izero) then
@@ -204,7 +204,7 @@
         write(mode_label,'(a)') 'order'
         call write_sph_volume_spec_file(fname_rms, mode_label,          &
      &      istep, time, l_truncation, nlayer_ICB, nlayer_CMB,          &
-     &      rms_sph_vol_m)
+     &      pwr1%vol_m)
       end if
 !
       if(iflag_spectr_lm .gt. izero) then
@@ -212,7 +212,7 @@
         write(mode_label,'(a)') 'diff_deg_order'
         call write_sph_volume_spec_file(fname_rms, mode_label,          &
      &      istep, time, l_truncation, nlayer_ICB, nlayer_CMB,          &
-     &      rms_sph_vol_lm)
+     &      pwr1%vol_lm)
       end if
 !
       if(iflag_spectr_m0 .gt. izero) then
@@ -260,7 +260,7 @@
         write(mode_label,'(a)') 'radial_id    degree'
         call write_sph_layer_spec_file                                  &
      &     (fname_rms, mode_label, istep, time,                         &
-     &      l_truncation, nlayer_ICB, nlayer_CMB, rms_sph_l)
+     &      l_truncation, nlayer_ICB, nlayer_CMB, pwr1%shl_l)
       end if
 !
       if(iflag_spectr_m .gt. izero) then
@@ -268,7 +268,7 @@
         write(mode_label,'(a)') 'radial_id    order'
         call write_sph_layer_spec_file                                  &
      &     (fname_rms, mode_label, istep, time,                         &
-     &      l_truncation, nlayer_ICB, nlayer_CMB, rms_sph_m)
+     &      l_truncation, nlayer_ICB, nlayer_CMB, pwr1%shl_m)
       end if
 !
       if(iflag_spectr_lm .gt. izero) then
@@ -276,7 +276,7 @@
         write(mode_label,'(a)') 'radial_id    diff_deg_order'
         call write_sph_layer_spec_file                                  &
      &     (fname_rms, mode_label, istep, time,                         &
-     &      l_truncation, nlayer_ICB, nlayer_CMB, rms_sph_lm)
+     &      l_truncation, nlayer_ICB, nlayer_CMB, pwr1%shl_lm)
       end if
 !
       if(iflag_spectr_m0 .gt. izero) then
