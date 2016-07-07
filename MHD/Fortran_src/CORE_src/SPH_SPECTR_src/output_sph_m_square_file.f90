@@ -88,7 +88,7 @@
         if (rms_name_rj(i) .eq. fhd_velo) then
           icomp = istack_rms_comp_rj(i)
           write(*,'(a,1pe15.8)',advance='no')                           &
-     &              '  E_kin = ', rms_sph_vol(icomp)
+     &              '  E_kin = ', pwr1%vol_sq(icomp)
           exit
         end if
       end do
@@ -97,7 +97,7 @@
         if (rms_name_rj(i) .eq. fhd_magne) then
           icomp = istack_rms_comp_rj(i)
           write(*,'(a,1pe15.8)',advance='no')                           &
-     &              '  E_mag = ', rms_sph_vol(icomp)
+     &              '  E_mag = ', pwr1%vol_sq(icomp)
           exit
         end if
       end do
@@ -164,7 +164,7 @@
       write(mode_label,'(a)') 'EMPTY'
       call write_sph_volume_pwr_file                                    &
      &   (fname_rms, mode_label, istep, time,                           &
-     &    l_truncation, nlayer_ICB, nlayer_CMB, rms_sph_vol)
+     &    l_truncation, nlayer_ICB, nlayer_CMB, pwr1%vol_sq)
 !
       end subroutine write_sph_vol_ms_file
 !
@@ -220,7 +220,7 @@
         write(mode_label,'(a)') 'EMPTY'
         call write_sph_volume_pwr_file                                  &
      &     (fname_rms, mode_label, istep, time,                         &
-     &      l_truncation, nlayer_ICB, nlayer_CMB, rms_sph_vol_m0)
+     &      l_truncation, nlayer_ICB, nlayer_CMB, pwr1%vol_m0)
       end if
 !
       end subroutine write_sph_vol_ms_spectr_file
@@ -253,7 +253,7 @@
       write(mode_label,'(a)') 'radial_id'
       call write_sph_layer_pwr_file                                     &
      &   (fname_rms, mode_label, istep, time,                           &
-     &    l_truncation, nlayer_ICB, nlayer_CMB, rms_sph)
+     &    l_truncation, nlayer_ICB, nlayer_CMB, pwr1%shl_sq)
 !
       if(iflag_spectr_l .gt. izero) then
         write(fname_rms, '(a,a6)') trim(fhead_rms_layer), '_l.dat'
@@ -284,7 +284,7 @@
         write(mode_label,'(a)') 'radial_id'
         call write_sph_layer_pwr_file                                   &
      &     (fname_rms, mode_label, istep, time,                         &
-     &      l_truncation, nlayer_ICB, nlayer_CMB, rms_sph_m0)
+     &      l_truncation, nlayer_ICB, nlayer_CMB, pwr1%shl_m0)
       end if
 !
       end subroutine write_sph_layer_ms_file

@@ -32,7 +32,7 @@
 !
 !>      Structure of mean square data
       type(sph_mean_squares), save :: pwr1
-!pwr1%ratio_vol_m0
+!pwr1%shl_sq
 !
 !>      Number of field for mean square
       integer (kind=kint) :: num_rms_rj
@@ -72,11 +72,11 @@
       real(kind = kreal), allocatable :: rms_sph_lm(:,:,:)
 !
 !>       Mean square on spheres
-      real(kind = kreal), allocatable :: rms_sph(:,:)
+!      real(kind = kreal), allocatable :: rms_sph(:,:)
 !>       Mean square of axis-symmetric component on spheres
-      real(kind = kreal), allocatable :: rms_sph_m0(:,:)
+!      real(kind = kreal), allocatable :: rms_sph_m0(:,:)
 !>      Ratio of axis-symmetric componbent to total mean square
-      real(kind = kreal), allocatable :: ratio_sph_m0(:,:)
+!      real(kind = kreal), allocatable :: ratio_sph_m0(:,:)
 !
 !
 !>      Volume mean square spectrum for degree
@@ -89,11 +89,11 @@
       real(kind = kreal), allocatable :: rms_sph_vol_lm(:,:)
 !
 !>      Volume mean square
-      real(kind = kreal), allocatable :: rms_sph_vol(:)
+!      real(kind = kreal), allocatable :: rms_sph_vol(:)
 !>      Volume mean square of axis-symmetric component
-      real(kind = kreal), allocatable :: rms_sph_vol_m0(:)
+!      real(kind = kreal), allocatable :: rms_sph_vol_m0(:)
 !>      Ratio of axis-symmetric componbent to total mean square
-      real(kind = kreal), allocatable :: ratio_sph_vol_m0(:)
+!      real(kind = kreal), allocatable :: ratio_sph_vol_m0(:)
 !
 !
 !>      Number of radial point for average
@@ -158,13 +158,13 @@
       allocate( rms_sph_m(nri_rms,0:l_truncation,ntot_rms_rj) )
       allocate( rms_sph_lm(nri_rms,0:l_truncation,ntot_rms_rj) )
 !
-      allocate( rms_sph(nri_rms,ntot_rms_rj) )
-      allocate( rms_sph_m0(nri_rms,ntot_rms_rj) )
-      allocate( ratio_sph_m0(nri_rms,ntot_rms_rj) )
+      allocate( pwr1%shl_sq(nri_rms,ntot_rms_rj) )
+      allocate( pwr1%shl_m0(nri_rms,ntot_rms_rj) )
+      allocate( pwr1%ratio_shl_m0(nri_rms,ntot_rms_rj) )
       if(nri_rms .gt. 0) then
-        rms_sph =    0.0d0
-        rms_sph_m0 = 0.0d0
-        ratio_sph_m0 = 0.0d0
+        pwr1%shl_sq =       0.0d0
+        pwr1%shl_m0 =       0.0d0
+        pwr1%ratio_shl_m0 = 0.0d0
 !
         rms_sph_l =  0.0d0
         rms_sph_m =  0.0d0
@@ -175,16 +175,16 @@
       allocate( rms_sph_vol_m(0:l_truncation,ntot_rms_rj) )
       allocate( rms_sph_vol_lm(0:l_truncation,ntot_rms_rj) )
 !
-      allocate( rms_sph_vol(ntot_rms_rj) )
-      allocate( rms_sph_vol_m0(ntot_rms_rj) )
-      allocate( ratio_sph_vol_m0(ntot_rms_rj) )
+      allocate( pwr1%vol_sq(ntot_rms_rj) )
+      allocate( pwr1%vol_m0(ntot_rms_rj) )
+      allocate( pwr1%ratio_vol_m0(ntot_rms_rj) )
       rms_sph_vol_l = 0.0d0
       rms_sph_vol_m = 0.0d0
       rms_sph_vol_lm = 0.0d0
 !
-      rms_sph_vol =      0.0d0
-      rms_sph_vol_m0 =   0.0d0
-      ratio_sph_vol_m0 = 0.0d0
+      pwr1%vol_sq =   0.0d0
+      pwr1%vol_m0 =   0.0d0
+      pwr1%ratio_vol_m0 = 0.0d0
 !
 !
       end subroutine allocate_rms_4_sph_spectr
@@ -199,10 +199,11 @@
       deallocate(r_for_rms, kr_for_rms)
 !
       if(my_rank .gt. 0) return
-      deallocate(rms_sph_l, rms_sph_m, rms_sph_lm, rms_sph, rms_sph_m0)
+      deallocate(rms_sph_l, rms_sph_m, rms_sph_lm)
+      deallocate( pwr1%shl_sq, pwr1%shl_m0)
 !
       deallocate(rms_sph_vol_l, rms_sph_vol_m, rms_sph_vol_lm)
-      deallocate(rms_sph_vol, rms_sph_vol_m0, ratio_sph_vol_m0)
+      deallocate(pwr1%vol_sq, pwr1%vol_m0, pwr1%ratio_vol_m0)
 !
       deallocate(num_rms_comp_rj, istack_rms_comp_rj)
       deallocate(rms_name_rj, ifield_rms_rj)
