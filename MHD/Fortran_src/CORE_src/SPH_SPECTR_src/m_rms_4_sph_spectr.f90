@@ -26,6 +26,7 @@
       module m_rms_4_sph_spectr
 !
       use m_precision
+!      use t_rms_4_sph_spectr
 !
       implicit none
 !

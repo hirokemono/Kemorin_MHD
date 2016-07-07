@@ -184,7 +184,6 @@
       pwr%vol_m0 =       0.0d0
       pwr%ratio_vol_m0 = 0.0d0
 !
-!
       end subroutine alloc_rms_4_sph_spectr
 !
 ! -----------------------------------------------------------------------
@@ -198,7 +197,6 @@
 !
 !
       if(idx_rj_degree_zero .eq. 0) return
-!
 !
       pwr%nri_ave = nri_rj
       allocate(pwr%vol_ave(pwr%ntot_comp_sq))

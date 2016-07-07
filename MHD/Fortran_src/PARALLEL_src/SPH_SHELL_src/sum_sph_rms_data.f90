@@ -7,7 +7,6 @@
 !> @brief  Evaluate mean square by spherical hermonics coefficients
 !!
 !!@verbatim
-!!      subroutine allocate_rms_sph_local_data((l_truncation, nidx_rj)
 !!      subroutine set_sum_table_4_sph_spectr                           &
 !!     &         (l_truncation, nidx_rj, idx_gl_1d_rj_j)
 !!      subroutine sum_sph_layerd_rms(kg_st, kg_ed, l_truncation,       &
@@ -23,135 +22,46 @@
 !
       implicit none
 !
-      real(kind = kreal), allocatable :: rms_sph_rj(:,:,:)
-!
-      real(kind = kreal), allocatable :: rms_sph_vol_j(:,:)
-!
-      integer(kind = kint), allocatable :: num_mode_sum_l(:)
-      integer(kind = kint), allocatable :: num_mode_sum_m(:)
-      integer(kind = kint), allocatable :: num_mode_sum_lm(:)
-      integer(kind = kint), allocatable :: istack_mode_sum_l(:)
-      integer(kind = kint), allocatable :: istack_mode_sum_m(:)
-      integer(kind = kint), allocatable :: istack_mode_sum_lm(:)
-!
-      integer(kind = kint), allocatable :: item_mode_sum_l(:)
-      integer(kind = kint), allocatable :: item_mode_sum_m(:)
-      integer(kind = kint), allocatable :: item_mode_sum_lm(:)
-!
-      real(kind = kreal), allocatable :: rms_sph_l_local(:,:,:)
-      real(kind = kreal), allocatable :: rms_sph_m_local(:,:,:)
-      real(kind = kreal), allocatable :: rms_sph_lm_local(:,:,:)
-!
-      real(kind = kreal), allocatable :: rms_sph_vl_local(:,:)
-      real(kind = kreal), allocatable :: rms_sph_vm_local(:,:)
-      real(kind = kreal), allocatable :: rms_sph_vlm_local(:,:)
-!
-      private :: rms_sph_rj
-      private :: num_mode_sum_l,  istack_mode_sum_l,  item_mode_sum_l
-      private :: num_mode_sum_m,  istack_mode_sum_m,  item_mode_sum_m
-      private :: num_mode_sum_lm, istack_mode_sum_lm, item_mode_sum_lm
-!
-      private :: rms_sph_l_local, rms_sph_m_local, rms_sph_lm_local
-!
-      private :: allocate_rms_sph_local_data
-      private :: sum_sph_rms_by_degree, sum_sph_v_rms_by_degree
-!
 ! -----------------------------------------------------------------------
 !
       contains
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_rms_sph_local_data(l_truncation, nidx_rj)
-!
-      use m_rms_4_sph_spectr
-!
-      integer(kind = kint), intent(in) :: l_truncation
-      integer(kind = kint), intent(in) :: nidx_rj(2)
-!
-      integer(kind = kint) :: nri, jmax
-!
-!
-      nri =  nidx_rj(1)
-      jmax = nidx_rj(2)
-      allocate( rms_sph_rj(0:nri,jmax,3) )
-      rms_sph_rj = 0.0d0
-!
-      allocate( rms_sph_vol_j(jmax,3) )
-      rms_sph_vol_j = 0.0d0
-!
-      allocate( rms_sph_l_local(nri_rms,0:l_truncation,ntot_rms_rj) )
-      allocate( rms_sph_m_local(nri_rms,0:l_truncation,ntot_rms_rj) )
-      allocate( rms_sph_lm_local(nri_rms,0:l_truncation,ntot_rms_rj) )
-      if(ntot_rms_rj .gt. 0) then
-        rms_sph_l_local = 0.0d0
-        rms_sph_m_local = 0.0d0
-        rms_sph_lm_local = 0.0d0
-      end if
-!
-      allocate( rms_sph_vl_local(0:l_truncation,ntot_rms_rj) )
-      allocate( rms_sph_vm_local(0:l_truncation,ntot_rms_rj) )
-      allocate( rms_sph_vlm_local(0:l_truncation,ntot_rms_rj) )
-      if(ntot_rms_rj .gt. 0) then
-        rms_sph_vl_local = 0.0d0
-        rms_sph_vm_local = 0.0d0
-        rms_sph_vlm_local = 0.0d0
-      end if
-!
-      allocate( num_mode_sum_l(0:l_truncation) )
-      allocate( num_mode_sum_m(0:l_truncation) )
-      allocate( num_mode_sum_lm(0:l_truncation) )
-      allocate( istack_mode_sum_l(-1:l_truncation) )
-      allocate( istack_mode_sum_m(-1:l_truncation) )
-      allocate( istack_mode_sum_lm(-1:l_truncation) )
-      allocate( item_mode_sum_l(jmax) )
-      allocate( item_mode_sum_m(jmax) )
-      allocate( item_mode_sum_lm(jmax) )
-!
-      num_mode_sum_l =      0
-      num_mode_sum_m =      0
-      num_mode_sum_lm =     0
-      istack_mode_sum_l =   0
-      istack_mode_sum_m =   0
-      istack_mode_sum_lm =  0
-      item_mode_sum_l =     0
-      item_mode_sum_m =     0
-      item_mode_sum_lm =    0
-!
-      end subroutine allocate_rms_sph_local_data
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_rms_sph_local_data
-!
-!
-      deallocate(rms_sph_rj, rms_sph_vol_j)
-      deallocate(rms_sph_l_local, rms_sph_m_local, rms_sph_lm_local)
-      deallocate(rms_sph_vl_local, rms_sph_vm_local, rms_sph_vlm_local)
-!
-      deallocate(num_mode_sum_l,  istack_mode_sum_l,  item_mode_sum_l )
-      deallocate(num_mode_sum_m,  istack_mode_sum_m,  item_mode_sum_m )
-      deallocate(num_mode_sum_lm, istack_mode_sum_lm, item_mode_sum_lm)
-!
-      end subroutine deallocate_rms_sph_local_data
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
       subroutine set_sum_table_4_sph_spectr                             &
-     &         (l_truncation, nidx_rj, idx_gl_1d_rj_j)
-!
-      use m_rms_4_sph_spectr
+     &      (l_truncation, nidx_rj, idx_gl_1d_rj_j,                     &
+     &       num_mode_sum_l, num_mode_sum_m, num_mode_sum_lm,           &
+     &       istack_mode_sum_l, istack_mode_sum_m, istack_mode_sum_lm,  &
+     &       item_mode_sum_l, item_mode_sum_m, item_mode_sum_lm)
 !
       integer(kind = kint), intent(in) :: l_truncation
       integer(kind = kint), intent(in) :: nidx_rj(2)
       integer(kind = kint), intent(in) :: idx_gl_1d_rj_j(nidx_rj(2),3)
 !
+      integer(kind = kint), intent(inout)                               &
+     &           :: num_mode_sum_l(0:l_truncation)
+      integer(kind = kint), intent(inout)                               &
+     &           :: num_mode_sum_m(0:l_truncation)
+      integer(kind = kint), intent(inout)                               &
+     &           :: num_mode_sum_lm(0:l_truncation)
+!
+      integer(kind = kint), intent(inout)                               &
+     &           :: istack_mode_sum_l(-1:l_truncation)
+      integer(kind = kint), intent(inout)                               &
+     &           :: istack_mode_sum_m(-1:l_truncation)
+      integer(kind = kint), intent(inout)                               &
+     &           :: istack_mode_sum_lm(-1:l_truncation)
+!
+      integer(kind = kint), intent(inout)                               &
+     &           :: item_mode_sum_l(nidx_rj(2))
+      integer(kind = kint), intent(inout)                               &
+     &           :: item_mode_sum_m(nidx_rj(2))
+      integer(kind = kint), intent(inout)                               &
+     &           :: item_mode_sum_lm(nidx_rj(2))
+!
       integer(kind = kint) :: j, lg, mg, lm
       integer(kind = kint) :: icou, lcou, mcou
 !
-!
-     call allocate_rms_sph_local_data(l_truncation, nidx_rj)
 !
       num_mode_sum_l(0:l_truncation) =  0
       num_mode_sum_m(0:l_truncation) =  0
@@ -207,12 +117,15 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sum_sph_layerd_rms(kg_st, kg_ed, l_truncation,         &
-     &          sph_rj, ipol, g_sph_rj, rj_fld)
+     &       sph_rj, ipol, g_sph_rj, rj_fld, nri_rms, num_rms_rj,       &
+     &       ntot_rms_rj, istack_rms_comp_rj, ifield_rms_rj,            &
+     &       istack_mode_sum_l, istack_mode_sum_m, istack_mode_sum_lm,  &
+     &       item_mode_sum_l, item_mode_sum_m, item_mode_sum_lm,        &
+     &       kr_for_rms, rms_sph_rj, rms_sph_vol_j,                     &
+     &       rms_sph_l_local, rms_sph_m_local, rms_sph_lm_local,        &
+     &       rms_sph_vl_local, rms_sph_vm_local, rms_sph_vlm_local)
 !
-      use calypso_mpi
-      use m_rms_4_sph_spectr
-!
-      use t_spheric_parameter
+      use t_spheric_rj_data
       use t_phys_data
 !
       use cal_rms_by_sph_spectr
@@ -224,7 +137,46 @@
       type(phys_data), intent(in) :: rj_fld
       integer(kind = kint), intent(in) :: kg_st, kg_ed
       integer(kind = kint), intent(in) :: l_truncation
+      integer(kind = kint), intent(in) :: nri_rms
+      integer(kind = kint), intent(in) :: num_rms_rj, ntot_rms_rj
+      integer(kind = kint), intent(in)                                  &
+     &            :: istack_rms_comp_rj(0:num_rms_rj)
+      integer(kind = kint), intent(in) :: ifield_rms_rj(num_rms_rj)
+      integer(kind = kint), intent(in) :: kr_for_rms(nri_rms)
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
+!
+      integer(kind = kint), intent(in)                                  &
+     &           :: istack_mode_sum_l(-1:l_truncation)
+      integer(kind = kint), intent(in)                                  &
+     &           :: istack_mode_sum_m(-1:l_truncation)
+      integer(kind = kint), intent(in)                                  &
+     &           :: istack_mode_sum_lm(-1:l_truncation)
+!
+      integer(kind = kint), intent(in)                                  &
+     &           :: item_mode_sum_l(sph_rj%nidx_rj(2))
+      integer(kind = kint), intent(in)                                  &
+     &           :: item_mode_sum_m(sph_rj%nidx_rj(2))
+      integer(kind = kint), intent(in)                                  &
+     &           :: item_mode_sum_lm(sph_rj%nidx_rj(2))
+!
+      real(kind = kreal), intent(inout)                                 &
+     &          :: rms_sph_rj(0:nri_rms,sph_rj%nidx_rj(2),3)
+      real(kind = kreal), intent(inout)                                 &
+     &          :: rms_sph_vol_j(sph_rj%nidx_rj(2),3)
+!
+      real(kind = kreal), intent(inout)                                 &
+     &          :: rms_sph_l_local(nri_rms,0:l_truncation,ntot_rms_rj)
+      real(kind = kreal), intent(inout)                                 &
+     &          :: rms_sph_m_local(nri_rms,0:l_truncation,ntot_rms_rj)
+      real(kind = kreal), intent(inout)                                 &
+     &          :: rms_sph_lm_local(nri_rms,0:l_truncation,ntot_rms_rj)
+!
+      real(kind = kreal), intent(inout)                                 &
+     &          :: rms_sph_vl_local(0:l_truncation,ntot_rms_rj)
+      real(kind = kreal), intent(inout)                                 &
+     &          :: rms_sph_vm_local(0:l_truncation,ntot_rms_rj)
+      real(kind = kreal), intent(inout)                                 &
+     &          :: rms_sph_vlm_local(0:l_truncation,ntot_rms_rj)
 !
       integer(kind = kint) :: j_fld, i_fld
       integer(kind = kint) :: icomp_rj, jcomp_st, ncomp_rj
@@ -242,7 +194,8 @@
         i_fld = ifield_rms_rj(j_fld)
         icomp_rj = rj_fld%istack_component(i_fld-1) + 1
         jcomp_st = istack_rms_comp_rj(j_fld-1) + 1
-        ncomp_rj = num_rms_comp_rj(j_fld)
+        ncomp_rj = istack_rms_comp_rj(j_fld)                            &
+     &            - istack_rms_comp_rj(j_fld-1)
         num = sph_rj%nidx_rj(2) * ncomp_rj
         call cal_rms_sph_spec_one_field(sph_rj, ipol,                   &
      &      ncomp_rj, icomp_rj, g_sph_rj, rj_fld%n_point,               &
@@ -253,71 +206,40 @@
 !
         call sum_sph_v_rms_by_degree(l_truncation, sph_rj%nidx_rj(2),   &
      &      istack_mode_sum_l,  item_mode_sum_l,  ncomp_rj,             &
-     &      rms_sph_vl_local(0,jcomp_st))
+     &      rms_sph_vol_j, rms_sph_vl_local(0,jcomp_st))
         call sum_sph_v_rms_by_degree(l_truncation, sph_rj%nidx_rj(2),   &
      &      istack_mode_sum_m,  item_mode_sum_m,  ncomp_rj,             &
-     &      rms_sph_vm_local(0,jcomp_st))
+     &      rms_sph_vol_j, rms_sph_vm_local(0,jcomp_st))
         call sum_sph_v_rms_by_degree(l_truncation, sph_rj%nidx_rj(2),   &
      &      istack_mode_sum_lm, item_mode_sum_lm, ncomp_rj,             &
-     &      rms_sph_vlm_local(0,jcomp_st))
+     &      rms_sph_vol_j, rms_sph_vlm_local(0,jcomp_st))
 !
         if(nri_rms .le. 0) cycle
         call sum_sph_rms_by_degree(l_truncation, sph_rj%nidx_rj(2),     &
      &      nri_rms, kr_for_rms, istack_mode_sum_l,  item_mode_sum_l,   &
-     &      ncomp_rj, rms_sph_l_local(1,0,jcomp_st))
+     &      ncomp_rj, rms_sph_rj, rms_sph_l_local(1,0,jcomp_st))
         call sum_sph_rms_by_degree(l_truncation, sph_rj%nidx_rj(2),     &
      &      nri_rms, kr_for_rms, istack_mode_sum_m,  item_mode_sum_m,   &
-     &      ncomp_rj, rms_sph_m_local(1,0,jcomp_st))
+     &      ncomp_rj, rms_sph_rj, rms_sph_m_local(1,0,jcomp_st))
         call sum_sph_rms_by_degree(l_truncation, sph_rj%nidx_rj(2),     &
      &      nri_rms, kr_for_rms, istack_mode_sum_lm, item_mode_sum_lm,  &
-     &      ncomp_rj, rms_sph_lm_local(1,0,jcomp_st))
+     &      ncomp_rj, rms_sph_rj, rms_sph_lm_local(1,0,jcomp_st))
       end do
-!
-      num = ntot_rms_rj * (l_truncation + 1)
-      call MPI_REDUCE (rms_sph_vl_local, rms_sph_vol_l,                 &
-     &    num, CALYPSO_REAL, MPI_SUM, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_REDUCE (rms_sph_vm_local, rms_sph_vol_m,                 &
-     &    num, CALYPSO_REAL, MPI_SUM, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_REDUCE (rms_sph_vlm_local, rms_sph_vol_lm,               &
-     &    num, CALYPSO_REAL, MPI_SUM, izero, CALYPSO_COMM, ierr_MPI)
-!
-      if(my_rank .eq. 0) then
-        call sum_sph_vol_rms_all_modes(l_truncation, ntot_rms_rj,       &
-     &      rms_sph_vol_l(0,1), rms_sph_vol(1) )
-        call pick_axis_sph_vol_pwr(l_truncation, ntot_rms_rj,           &
-     &     rms_sph_vol_m(0,1), rms_sph_vol(1),                          &
-     &     rms_sph_vol_m0(1), ratio_sph_vol_m0(1))
-      end if
-!
-      if(nri_rms .le. 0) return
-      num = ntot_rms_rj * nri_rms * (l_truncation + 1)
-      call MPI_REDUCE (rms_sph_l_local, rms_sph_l, num, CALYPSO_REAL,   &
-     &    MPI_SUM, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_REDUCE (rms_sph_m_local, rms_sph_m, num, CALYPSO_REAL,   &
-     &    MPI_SUM, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_REDUCE (rms_sph_lm_local, rms_sph_lm, num, CALYPSO_REAL, &
-     &    MPI_SUM, izero, CALYPSO_COMM, ierr_MPI)
-!
-      if(my_rank .gt. 0) return
-      call sum_sph_rms_all_modes(l_truncation, nri_rms, ntot_rms_rj,    &
-     &    rms_sph_l(1,0,1), rms_sph(1,1) )
-      call pick_axis_sph_power(l_truncation, nri_rms, ntot_rms_rj,      &
-     &    rms_sph_m(1,0,1), rms_sph(1,1),                               &
-     &    rms_sph_m0(1,1), ratio_sph_m0(1,1))
 !
       end subroutine sum_sph_layerd_rms
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine sum_sph_v_rms_by_degree(ltr, nidx_j,                   &
-     &          istack_sum, item_mode_4_sum, ncomp, rms_sph_vlc)
+      subroutine sum_sph_v_rms_by_degree(ltr, nidx_j, istack_sum,       &
+     &          item_mode_4_sum, ncomp, rms_sph_vol_j, rms_sph_vlc)
 !
       integer(kind = kint), intent(in) :: ltr, nidx_j
       integer(kind = kint), intent(in) :: ncomp
 !
       integer(kind = kint), intent(in) :: istack_sum(-1:ltr)
       integer(kind = kint), intent(in) :: item_mode_4_sum(nidx_j)
+      real(kind = kreal), intent(in) :: rms_sph_vol_j(nidx_j,3)
 !
       real(kind = kreal), intent(inout) :: rms_sph_vlc(0:ltr,ncomp)
 !
@@ -347,7 +269,7 @@
 !
       subroutine sum_sph_rms_by_degree(ltr, nidx_j, nri_rms,            &
      &          kr_for_rms, istack_sum, item_mode_4_sum, ncomp,         &
-     &          rms_sph_lc)
+     &          rms_sph_rj, rms_sph_lc)
 !
       integer(kind = kint), intent(in) :: ltr, nri_rms, nidx_j
       integer(kind = kint), intent(in) :: kr_for_rms(nri_rms)
@@ -355,6 +277,7 @@
 !
       integer(kind = kint), intent(in) :: istack_sum(-1:ltr)
       integer(kind = kint), intent(in) :: item_mode_4_sum(nidx_j)
+      real(kind = kreal), intent(in) :: rms_sph_rj(0:nri_rms,nidx_j,3)
 !
       real(kind = kreal), intent(inout)                                 &
      &                   :: rms_sph_lc(nri_rms,0:ltr,ncomp)
