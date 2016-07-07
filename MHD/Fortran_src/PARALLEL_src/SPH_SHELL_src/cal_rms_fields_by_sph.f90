@@ -73,7 +73,8 @@
       end do
       ntot_rms_rj = istack_rms_comp_rj(num_rms_rj)
 !
-      call quicksort_int(nri_rms, kr_for_rms, ione, nri_rms)
+      call quicksort_int                                                &
+     &   (pwr1%nri_rms, pwr1%kr_4_rms, ione, pwr1%nri_rms)
 !
       call allocate_rms_4_sph_spectr(my_rank, l_truncation)
       call alloc_ave_4_sph_spectr                                       &
@@ -90,12 +91,12 @@
      &    WK_pwr%item_mode_sum_lm)
 !
 !
-      do knum = 1, nri_rms
-        k = kr_for_rms(knum)
+      do knum = 1, pwr1%nri_rms
+        k = pwr1%kr_4_rms(knum)
         if(k .le. 0) then
-          r_for_rms(knum) = 0.0d0
+          pwr1%r_4_rms(knum) = 0.0d0
         else
-          r_for_rms(knum) = sph_rj%radius_1d_rj_r(k)
+          pwr1%r_4_rms(knum) = sph_rj%radius_1d_rj_r(k)
         end if
       end do
 !
@@ -131,17 +132,17 @@
      &   sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, avol)
       if(iflag_debug .gt. 0) write(*,*) 'sum_sph_layerd_rms'
       call sum_sph_layerd_rms(kr_st, kr_ed, l_truncation,               &
-     &    sph_rj, ipol, g_sph_rj, rj_fld, nri_rms,                      &
+     &    sph_rj, ipol, g_sph_rj, rj_fld, pwr1%nri_rms,                 &
      &    num_rms_rj, ntot_rms_rj, istack_rms_comp_rj, ifield_rms_rj,   &
      &    WK_pwr%istack_mode_sum_l,  WK_pwr%istack_mode_sum_m,          &
      &    WK_pwr%istack_mode_sum_lm, WK_pwr%item_mode_sum_l,            &
      &    WK_pwr%item_mode_sum_m,    WK_pwr%item_mode_sum_lm,           &
-     &    kr_for_rms, WK_pwr%shl_rj, WK_pwr%volume_j,                   &
+     &    pwr1%kr_4_rms, WK_pwr%shl_rj, WK_pwr%volume_j,                &
      &    WK_pwr%shl_l_local, WK_pwr%shl_m_local, WK_pwr%shl_lm_local,  &
      &    WK_pwr%vol_l_local, WK_pwr%vol_m_local, WK_pwr%vol_lm_local)
 !
       call global_sum_sph_layerd_rms                                    &
-     &    (l_truncation, nri_rms, ntot_rms_rj,                          &
+     &    (l_truncation, pwr1%nri_rms, ntot_rms_rj,                     &
      &     WK_pwr%shl_l_local, WK_pwr%shl_m_local, WK_pwr%shl_lm_local, &
      &     WK_pwr%vol_l_local, WK_pwr%vol_m_local, WK_pwr%vol_lm_local, &
      &     pwr1%shl_l, pwr1%shl_m, pwr1%shl_lm,                         &
@@ -153,7 +154,7 @@
         if(iflag_debug .gt. 0) write(*,*) 'surf_ave_4_sph_rms_int'
         call surf_ave_4_sph_rms_int                                     &
      &     (l_truncation, sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,        &
-     &      nri_rms, ntot_rms_rj, kr_for_rms,                           &
+     &      pwr1%nri_rms, ntot_rms_rj, pwr1%kr_4_rms,                   &
      &      pwr1%shl_l, pwr1%shl_m, pwr1%shl_lm, pwr1%shl_sq, pwr1%shl_m0)
         call vol_ave_4_rms_sph(l_truncation, ntot_rms_rj, avol,         &
      &      pwr1%vol_l, pwr1%vol_m, pwr1%vol_lm,                        &

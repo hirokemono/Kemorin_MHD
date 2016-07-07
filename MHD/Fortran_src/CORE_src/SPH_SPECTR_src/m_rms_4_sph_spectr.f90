@@ -32,7 +32,7 @@
 !
 !>      Structure of mean square data
       type(sph_mean_squares), save :: pwr1
-!pwr1%shl_l
+!pwr1%nri_rms
 !
 !>      Number of field for mean square
       integer (kind=kint) :: num_rms_rj
@@ -54,32 +54,17 @@
 !
 !
 !>      Number of radial points for mean square
-      integer(kind=kint) :: nri_rms = 0
+!      integer(kind=kint) :: nri_rms = 0
 !
 !>      Radial ID from layered mean square
-      integer(kind=kint), allocatable :: kr_for_rms(:)
+!      integer(kind=kint), allocatable :: kr_for_rms(:)
 !
 !>      Radius from layered mean square
-      real(kind = kreal), allocatable :: r_for_rms(:)
+!      real(kind = kreal), allocatable :: r_for_rms(:)
 !
 ! -----------------------------------------------------------------------
 !
       contains
-!
-! -----------------------------------------------------------------------
-!
-      subroutine allocate_num_spec_layer
-!
-!
-      pwr1%nri_rms = nri_rms
-      allocate( kr_for_rms(nri_rms) )
-      allocate( r_for_rms(nri_rms) )
-      if(nri_rms .gt. 0) then
-        kr_for_rms = 0
-        r_for_rms =  0.0d0
-      end if
-!
-      end subroutine allocate_num_spec_layer
 !
 ! -----------------------------------------------------------------------
 !
@@ -120,7 +105,7 @@
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      deallocate(r_for_rms, kr_for_rms)
+      deallocate(pwr1%r_4_rms, pwr1%kr_4_rms)
 !
       if(my_rank .gt. 0) return
       deallocate(pwr1%shl_l, pwr1%shl_m, pwr1%shl_lm)

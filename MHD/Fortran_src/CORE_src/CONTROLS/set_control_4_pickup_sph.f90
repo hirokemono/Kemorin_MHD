@@ -60,16 +60,15 @@
       if(no_flag(axis_spectr_switch%charavalue))   iflag_spectr_m0 = 0
 !
 !   set pickup layer
-      nri_rms = 0
       if(idx_spec_layer_ctl%num .gt. 0) then
-        nri_rms = idx_spec_layer_ctl%num
-        call allocate_num_spec_layer
+        call alloc_num_spec_layer(idx_spec_layer_ctl%num, pwr1)
 !
-        do inum = 1, nri_rms
-          kr_for_rms(inum) = idx_spec_layer_ctl%ivec(inum)
-        end do
+        pwr1%kr_4_rms(1:pwr1%nri_rms)                                   &
+     &         = idx_spec_layer_ctl%ivec(1:pwr1%nri_rms)
 !
         call deallocate_num_spec_layer_ctl
+      else
+        call alloc_num_spec_layer(izero, pwr1)
       end if
 !
 !   Define spectr pick up

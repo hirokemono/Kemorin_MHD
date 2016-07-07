@@ -104,8 +104,8 @@
       subroutine alloc_num_spec_layer(nri_in, pwr)
 !
       integer(kind = kint), intent(in) :: nri_in
-!
       type(sph_mean_squares), intent(inout) :: pwr
+!
 !
       pwr%nri_rms = nri_in
 !
