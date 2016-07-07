@@ -60,8 +60,8 @@
 !
         call radial_integration                                         &
      &     (kg_st, kg_ed, sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,     &
-     &      ntot_rms_rj, ave_sph(0,1),  ave_sph_vol(1))
-        call averaging_4_sph_ave_int(ntot_rms_rj, avol, ave_sph_vol)
+     &      ntot_rms_rj, pwr1%shl_ave, pwr1%vol_ave)
+        call averaging_4_sph_ave_int(ntot_rms_rj, avol, pwr1%vol_ave)
       end if
 !
       end subroutine cal_volume_average_sph
@@ -84,7 +84,7 @@
       integer(kind = kint) :: i_fld, j_fld, icomp_st, jcomp_st
 !
 !
-      ave_sph = 0.0d0
+      pwr1%shl_ave = 0.0d0
 !
       do j_fld = 1, num_rms_rj
         i_fld = ifield_rms_rj(j_fld)
@@ -95,13 +95,13 @@
      &       (icomp_st, jcomp_st, rj_fld%n_point, sph_rj%nidx_rj,       &
      &        sph_rj%idx_rj_degree_zero, sph_rj%inod_rj_center,         &
      &        rj_fld%ntot_phys, rj_fld%d_fld, sph_rj%radius_1d_rj_r,    &
-     &        nri_ave, ntot_rms_rj, ave_sph)
+     &        pwr1%nri_ave, ntot_rms_rj, pwr1%shl_ave)
         else if (rj_fld%num_component(i_fld) .eq. n_vector) then
           call cal_ave_vector_sph_spectr                                &
      &       (icomp_st, jcomp_st, rj_fld%n_point, sph_rj%nidx_rj,       &
      &        sph_rj%idx_rj_degree_zero, sph_rj%inod_rj_center,         &
      &        rj_fld%ntot_phys, rj_fld%d_fld, sph_rj%radius_1d_rj_r,    &
-     &        nri_ave, ntot_rms_rj, ave_sph)
+     &        pwr1%nri_ave, ntot_rms_rj, pwr1%shl_ave)
         end if
       end do
 !

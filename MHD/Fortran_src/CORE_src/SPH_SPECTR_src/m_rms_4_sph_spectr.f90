@@ -32,7 +32,7 @@
 !
 !>      Structure of mean square data
       type(sph_mean_squares), save :: pwr1
-!pwr1%vol_ave
+!pwr1%ratio_vol_m0
 !
 !>      Number of field for mean square
       integer (kind=kint) :: num_rms_rj
@@ -97,13 +97,13 @@
 !
 !
 !>      Number of radial point for average
-      integer(kind = kint) :: nri_ave
+!      integer(kind = kint) :: nri_ave
 !
 !>      Average over single sphere
-      real(kind = kreal), allocatable :: ave_sph(:,:)
+!      real(kind = kreal), allocatable :: ave_sph(:,:)
 !
 !>      Volume average
-      real(kind = kreal), allocatable :: ave_sph_vol(:)
+!      real(kind = kreal), allocatable :: ave_sph_vol(:)
 !
 ! -----------------------------------------------------------------------
 !
@@ -114,6 +114,7 @@
       subroutine allocate_num_spec_layer
 !
 !
+      pwr1%nri_rms = nri_rms
       allocate( kr_for_rms(nri_rms) )
       allocate( r_for_rms(nri_rms) )
       if(nri_rms .gt. 0) then
@@ -128,6 +129,7 @@
       subroutine allocate_rms_name_sph_spec
 !
 !
+      pwr1%num_rms_rj = num_rms_rj
       allocate(ifield_rms_rj(num_rms_rj))
       allocate(num_rms_comp_rj(num_rms_rj))
       allocate(istack_rms_comp_rj(0:num_rms_rj))
@@ -149,6 +151,7 @@
       integer(kind = kint), intent(in) :: l_truncation
 !
 !
+      pwr1%ntot_rms_rj = ntot_rms_rj
       if(my_rank .gt. 0) return
 !
       allocate( rms_sph_l(nri_rms,0:l_truncation,ntot_rms_rj) )
@@ -188,28 +191,6 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_ave_4_sph_spectr(idx_rj_degree_zero, nri_rj)
-!
-      integer(kind = kint), intent(in) :: idx_rj_degree_zero
-      integer(kind = kint), intent(in) :: nri_rj
-!
-!
-      if(idx_rj_degree_zero .eq. 0) return
-!
-!
-      nri_ave = nri_rj
-      allocate(ave_sph_vol(ntot_rms_rj))
-      allocate(ave_sph(0:nri_ave,ntot_rms_rj))
-!
-      if(nri_ave*ntot_rms_rj .gt. 0) then
-        ave_sph=     0.0d0
-        ave_sph_vol = 0.0d0
-      end if
-!
-      end subroutine allocate_ave_4_sph_spectr
-!
-! -----------------------------------------------------------------------
-!
       subroutine deallocate_rms_4_sph_spectr(my_rank)
 !
       integer(kind = kint), intent(in) :: my_rank
@@ -227,18 +208,6 @@
       deallocate(rms_name_rj, ifield_rms_rj)
 !
       end subroutine deallocate_rms_4_sph_spectr
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_ave_4_sph_spectr(idx_rj_degree_zero)
-!
-      integer(kind = kint), intent(in) :: idx_rj_degree_zero
-!
-!
-      if(idx_rj_degree_zero .eq. 0) return
-      deallocate(ave_sph, ave_sph_vol)
-!
-      end subroutine deallocate_ave_4_sph_spectr
 !
 ! -----------------------------------------------------------------------
 !

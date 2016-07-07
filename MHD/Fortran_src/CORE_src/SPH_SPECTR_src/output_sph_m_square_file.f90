@@ -134,7 +134,7 @@
      &    rms_name_rj, nri_rms, nlayer_ICB, nlayer_CMB)
 !
       write(id_file_rms,'(i15,1pe23.14e3,1p200e23.14e3)')               &
-     &                 istep, time, ave_sph_vol(1:ntot_rms_rj)
+     &                 istep, time, pwr1%vol_ave(1:ntot_rms_rj)
       close(id_file_rms)
 !
       end subroutine write_sph_vol_ave_file
