@@ -124,7 +124,7 @@
       real(kind = kreal) :: avol
 !
 !
-      if(pwr1%num_comp_rms .eq. 0) return
+      if(pwr1%ntot_comp_sq .eq. 0) return
 
       if(iflag_debug .gt. 0) write(*,*) 'cal_one_over_volume'
       call cal_one_over_volume(kr_st, kr_ed,                            &
@@ -132,7 +132,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'sum_sph_layerd_rms'
       call sum_sph_layerd_rms(kr_st, kr_ed, l_truncation,               &
      &    sph_rj, ipol, g_sph_rj, rj_fld,                               &
-     &    pwr1%nri_rms, pwr1%num_fld_rms, pwr1%num_comp_rms,            &
+     &    pwr1%nri_rms, pwr1%num_fld_sq, pwr1%ntot_comp_sq,             &
      &    pwr1%istack_comp_sq, pwr1%id_field,                           &
      &    WK_pwr%istack_mode_sum_l,  WK_pwr%istack_mode_sum_m,          &
      &    WK_pwr%istack_mode_sum_lm, WK_pwr%item_mode_sum_l,            &
@@ -142,7 +142,7 @@
      &    WK_pwr%vol_l_local, WK_pwr%vol_m_local, WK_pwr%vol_lm_local)
 !
       call global_sum_sph_layerd_rms                                    &
-     &    (l_truncation, pwr1%nri_rms, pwr1%num_comp_rms,               &
+     &    (l_truncation, pwr1%nri_rms, pwr1%ntot_comp_sq,               &
      &     WK_pwr%shl_l_local, WK_pwr%shl_m_local, WK_pwr%shl_lm_local, &
      &     WK_pwr%vol_l_local, WK_pwr%vol_m_local, WK_pwr%vol_lm_local, &
      &     pwr1%shl_l, pwr1%shl_m, pwr1%shl_lm,                         &
@@ -154,9 +154,9 @@
         if(iflag_debug .gt. 0) write(*,*) 'surf_ave_4_sph_rms_int'
         call surf_ave_4_sph_rms_int                                     &
      &     (l_truncation, sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,        &
-     &      pwr1%nri_rms, pwr1%num_comp_rms, pwr1%kr_4_rms,             &
+     &      pwr1%nri_rms, pwr1%ntot_comp_sq, pwr1%kr_4_rms,             &
      &      pwr1%shl_l, pwr1%shl_m, pwr1%shl_lm, pwr1%shl_sq, pwr1%shl_m0)
-        call vol_ave_4_rms_sph(l_truncation, pwr1%num_comp_rms, avol,   &
+        call vol_ave_4_rms_sph(l_truncation, pwr1%ntot_comp_sq, avol,   &
      &      pwr1%vol_l, pwr1%vol_m, pwr1%vol_lm,                        &
      &      pwr1%vol_sq, pwr1%vol_m0)
       end if

@@ -125,11 +125,11 @@
 !
 !$omp parallel do
       do inum = 1, num_pick_sph_rms_mode*num_pick_layer
-        d_rms_pick_sph_lc(1:pwr1%num_comp_rms,inum) = zero
+        d_rms_pick_sph_lc(1:pwr1%ntot_comp_sq,inum) = zero
       end do
 !$omp end parallel do
 !
-      do j_fld = 1, pwr1%num_fld_rms
+      do j_fld = 1, pwr1%num_fld_sq
         i_fld =   pwr1%id_field(j_fld)
         ncomp =   pwr1%num_comp_sq(j_fld)
         ist_fld = rj_fld%istack_component(i_fld-1)
@@ -155,7 +155,7 @@
 !$omp end parallel do
       end do
 !
-      num = pwr1%num_comp_rms * num_pick_layer * num_pick_sph_rms_mode
+      num = pwr1%ntot_comp_sq * num_pick_layer * num_pick_sph_rms_mode
       call MPI_allREDUCE(d_rms_pick_sph_lc(1,1),                        &
      &    d_rms_pick_sph_gl(1,1), num, CALYPSO_REAL, MPI_SUM,           &
      &    CALYPSO_COMM, ierr_MPI)
@@ -193,7 +193,7 @@
      &                - sph_rj%radius_1d_rj_r(kg_st)**3 )
       end if
 !
-      do j_fld = 1, pwr1%num_fld_rms
+      do j_fld = 1, pwr1%num_fld_sq
         i_fld =   pwr1%id_field(j_fld)
         ncomp =   pwr1%num_comp_sq(j_fld)
         ist_fld = rj_fld%istack_component(i_fld-1)
@@ -216,7 +216,7 @@
         end do
       end do
 !
-      num = pwr1%num_comp_rms * num_pick_sph_rms_mode
+      num = pwr1%ntot_comp_sq * num_pick_sph_rms_mode
       call MPI_allREDUCE(d_rms_pick_sph_lc(1,1),                        &
      &    d_rms_pick_sph_gl(1,1), num, CALYPSO_REAL, MPI_SUM,           &
      &    CALYPSO_COMM, ierr_MPI)
@@ -234,7 +234,7 @@
       integer(kind = kint) :: i_fld, ist
 !
 !
-      do i_fld = 1, pwr1%num_fld_rms
+      do i_fld = 1, pwr1%num_fld_sq
         ist = pwr1%istack_comp_sq(i_fld-1)
           if      (pwr1%pwr_name(i_fld) .eq. fhd_velo) then
             write(rms_pick_sph_name(ist+1),'(a)') 'K_ene_pol'
@@ -272,7 +272,7 @@
      &          rms_pick_sph_name(ist+5), rms_pick_sph_name(ist+6))
           end if
       end do
-      ncomp_pick_sph_rms = pwr1%num_comp_rms
+      ncomp_pick_sph_rms = pwr1%ntot_comp_sq
 !
       end subroutine set_sph_rms_labels_4_monitor
 !
