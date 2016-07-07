@@ -84,18 +84,18 @@
       write(*,'(a10,i16,a10,1pe15.8)',advance='no')                     &
      &            'time step=',istep,'time=',time
 !
-      do i = 1, num_rms_rj
-        if (rms_name_rj(i) .eq. fhd_velo) then
-          icomp = istack_rms_comp_rj(i)
+      do i = 1, pwr1%num_fld_rms
+        if (pwr1%pwr_name(i) .eq. fhd_velo) then
+          icomp = pwr1%istack_comp_sq(i)
           write(*,'(a,1pe15.8)',advance='no')                           &
      &              '  E_kin = ', pwr1%vol_sq(icomp)
           exit
         end if
       end do
 !
-      do i = 1, num_rms_rj
-        if (rms_name_rj(i) .eq. fhd_magne) then
-          icomp = istack_rms_comp_rj(i)
+      do i = 1, pwr1%num_fld_rms
+        if (pwr1%pwr_name(i) .eq. fhd_magne) then
+          icomp = pwr1%istack_comp_sq(i)
           write(*,'(a,1pe15.8)',advance='no')                           &
      &              '  E_mag = ', pwr1%vol_sq(icomp)
           exit
@@ -125,16 +125,16 @@
 !
 !
       if(idx_rj_degree_zero .eq. 0)  return
-      if(ntot_rms_rj .eq. 0)  return
+      if(pwr1%num_comp_rms .eq. 0)  return
 !
       write(fname_rms, '(a,a4)') trim(fhead_ave_vol), '.dat'
       write(mode_label,'(a)') 'EMPTY'
       call open_sph_mean_sq_file(id_file_rms, fname_rms, mode_label,    &
-     &    l_truncation, num_rms_rj, ntot_rms_rj, num_rms_comp_rj,       &
-     &    rms_name_rj, pwr1%nri_rms, nlayer_ICB, nlayer_CMB)
+     &    l_truncation, pwr1%num_fld_rms, pwr1%num_comp_rms, pwr1%num_comp_sq,&
+     &    pwr1%pwr_name, pwr1%nri_rms, nlayer_ICB, nlayer_CMB)
 !
       write(id_file_rms,'(i15,1pe23.14e3,1p200e23.14e3)')               &
-     &                 istep, time, pwr1%vol_ave(1:ntot_rms_rj)
+     &                 istep, time, pwr1%vol_ave(1:pwr1%num_comp_rms)
       close(id_file_rms)
 !
       end subroutine write_sph_vol_ave_file
@@ -158,7 +158,7 @@
 !
 !
       if(my_rank .ne. 0)  return
-      if(ntot_rms_rj .eq. 0)  return
+      if(pwr1%num_comp_rms .eq. 0)  return
 !
       call add_dat_extension(fhead_rms_vol, fname_rms)
       write(mode_label,'(a)') 'EMPTY'
@@ -188,7 +188,7 @@
 !
       if(my_rank .ne. 0)  return
       if(iflag_volume_rms_spec .eq. 0)  return
-      if(ntot_rms_rj .eq. 0)  return
+      if(pwr1%num_comp_rms .eq. 0)  return
 !
 !
       if(iflag_spectr_l .gt. izero) then
@@ -246,7 +246,7 @@
 !
       if(my_rank .ne. 0)  return
       if(iflag_layer_rms_spec .eq. izero)  return
-      if(ntot_rms_rj .eq. 0)  return
+      if(pwr1%num_comp_rms .eq. 0)  return
 !
 !
       write(fname_rms,   '(a,a4)') trim(fhead_rms_layer), '.dat'
@@ -304,15 +304,15 @@
       integer(kind = kint), intent(in) :: l_truncation
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       real(kind = kreal), intent(in)                                    &
-     &      :: rms_sph_x(0:l_truncation, ntot_rms_rj)
+     &      :: rms_sph_x(0:l_truncation, pwr1%num_comp_rms)
       character(len=kchara), intent(in) :: fname_rms, mode_label
 !
 !
       call open_sph_mean_sq_file(id_file_rms, fname_rms, mode_label,    &
-     &    l_truncation, num_rms_rj, ntot_rms_rj, num_rms_comp_rj,       &
-     &    rms_name_rj, pwr1%nri_rms, nlayer_ICB, nlayer_CMB)
+     &    l_truncation, pwr1%num_fld_rms, pwr1%num_comp_rms, pwr1%num_comp_sq,&
+     &    pwr1%pwr_name, pwr1%nri_rms, nlayer_ICB, nlayer_CMB)
       call write_sph_volume_data(id_file_rms, istep, time,              &
-     &    l_truncation, ntot_rms_rj, rms_sph_x)
+     &    l_truncation, pwr1%num_comp_rms, rms_sph_x)
       close(id_file_rms)
 !
       end subroutine write_sph_volume_spec_file
@@ -332,17 +332,17 @@
       real(kind = kreal), intent(in) :: time
       integer(kind = kint), intent(in) :: l_truncation
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
-      real(kind = kreal), intent(in) :: rms_sph_v(ntot_rms_rj)
+      real(kind = kreal), intent(in) :: rms_sph_v(pwr1%num_comp_rms)
 !
       character(len=kchara), intent(in) :: fname_rms, mode_label
 !
 !
       call open_sph_mean_sq_file(id_file_rms, fname_rms, mode_label,    &
-     &    l_truncation, num_rms_rj, ntot_rms_rj, num_rms_comp_rj,       &
-     &    rms_name_rj, pwr1%nri_rms, nlayer_ICB, nlayer_CMB)
+     &    l_truncation, pwr1%num_fld_rms, pwr1%num_comp_rms, pwr1%num_comp_sq,&
+     &    pwr1%pwr_name, pwr1%nri_rms, nlayer_ICB, nlayer_CMB)
 !
       write(id_file_rms,'(i16,1pe23.14e3,1p200e23.14e3)')               &
-     &                 istep, time, rms_sph_v(1:ntot_rms_rj)
+     &                 istep, time, rms_sph_v(1:pwr1%num_comp_rms)
       close(id_file_rms)
 !
       end subroutine write_sph_volume_pwr_file
@@ -360,15 +360,15 @@
       integer(kind = kint), intent(in) :: l_truncation
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       real(kind = kreal), intent(in) :: time
-      real(kind = kreal), intent(in) :: rms_sph_x(pwr1%nri_rms, ntot_rms_rj)
+      real(kind = kreal), intent(in) :: rms_sph_x(pwr1%nri_rms, pwr1%num_comp_rms)
       character(len=kchara), intent(in) :: fname_rms, mode_label
 !
 !
       call open_sph_mean_sq_file(id_file_rms, fname_rms, mode_label,    &
-     &    l_truncation, num_rms_rj, ntot_rms_rj, num_rms_comp_rj,       &
-     &    rms_name_rj, pwr1%nri_rms, nlayer_ICB, nlayer_CMB)
+     &    l_truncation, pwr1%num_fld_rms, pwr1%num_comp_rms, pwr1%num_comp_sq,&
+     &    pwr1%pwr_name, pwr1%nri_rms, nlayer_ICB, nlayer_CMB)
       call write_sph_layerd_power(id_file_rms, istep, time,             &
-     &    ntot_rms_rj, pwr1%nri_rms, pwr1%kr_4_rms, pwr1%r_4_rms, rms_sph_x)
+     &    pwr1%num_comp_rms, pwr1%nri_rms, pwr1%kr_4_rms, pwr1%r_4_rms, rms_sph_x)
       close(id_file_rms)
 !
       end subroutine write_sph_layer_pwr_file
@@ -387,14 +387,14 @@
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       real(kind = kreal), intent(in) :: time
       real(kind = kreal), intent(in)                                    &
-     &      :: rms_sph_x(pwr1%nri_rms,0:l_truncation, ntot_rms_rj)
+     &      :: rms_sph_x(pwr1%nri_rms,0:l_truncation, pwr1%num_comp_rms)
       character(len=kchara), intent(in) :: fname_rms, mode_label
 !
       call open_sph_mean_sq_file(id_file_rms, fname_rms, mode_label,    &
-     &    l_truncation, num_rms_rj, ntot_rms_rj, num_rms_comp_rj,       &
-     &    rms_name_rj, pwr1%nri_rms, nlayer_ICB, nlayer_CMB)
+     &    l_truncation, pwr1%num_fld_rms, pwr1%num_comp_rms, pwr1%num_comp_sq,      &
+     &    pwr1%pwr_name, pwr1%nri_rms, nlayer_ICB, nlayer_CMB)
       call write_sph_layer_data(id_file_rms, istep, time, l_truncation, &
-     &    ntot_rms_rj, pwr1%nri_rms, pwr1%kr_4_rms, pwr1%r_4_rms, rms_sph_x)
+     &    pwr1%num_comp_rms, pwr1%nri_rms, pwr1%kr_4_rms, pwr1%r_4_rms, rms_sph_x)
       close(id_file_rms)
 !
       end subroutine write_sph_layer_spec_file

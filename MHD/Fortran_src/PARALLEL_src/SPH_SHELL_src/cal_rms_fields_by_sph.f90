@@ -50,33 +50,32 @@
       type(phys_data), intent(in) :: rj_fld
 !
       integer(kind = kint) :: i_fld, j_fld
-      integer(kind = kint) :: k, knum
+      integer(kind = kint) :: k, knum, num_field
 !
 !
-      num_rms_rj = 0
+      num_field = 0
       do i_fld = 1, rj_fld%num_phys
-        num_rms_rj = num_rms_rj + rj_fld%iflag_monitor(i_fld)
+        num_field = num_field + rj_fld%iflag_monitor(i_fld)
       end do
 !
-      call allocate_rms_name_sph_spec
+      call alloc_rms_name_sph_spec(num_field, pwr1)
 !
       j_fld = 0
       do i_fld = 1, rj_fld%num_phys
         if(rj_fld%iflag_monitor(i_fld) .gt. 0) then
           j_fld = j_fld + 1
-          ifield_rms_rj(j_fld) =   i_fld
-          num_rms_comp_rj(j_fld) = rj_fld%num_component(i_fld)
-          istack_rms_comp_rj(j_fld) = istack_rms_comp_rj(j_fld-1)       &
+          pwr1%id_field(j_fld) =   i_fld
+          pwr1%num_comp_sq(j_fld) =    rj_fld%num_component(i_fld)
+          pwr1%istack_comp_sq(j_fld) = pwr1%istack_comp_sq(j_fld-1)     &
      &                              + rj_fld%num_component(i_fld)
-          rms_name_rj(j_fld) =     rj_fld%phys_name(i_fld)
+          pwr1%pwr_name(j_fld) =   rj_fld%phys_name(i_fld)
         end if
       end do
-      ntot_rms_rj = istack_rms_comp_rj(num_rms_rj)
 !
       call quicksort_int                                                &
      &   (pwr1%nri_rms, pwr1%kr_4_rms, ione, pwr1%nri_rms)
 !
-      call allocate_rms_4_sph_spectr(my_rank, l_truncation)
+      call alloc_rms_4_sph_spectr(my_rank, l_truncation, pwr1)
       call alloc_ave_4_sph_spectr                                       &
      &   (sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj(1), pwr1)
       call allocate_rms_sph_local_data                                  &
@@ -125,15 +124,16 @@
       real(kind = kreal) :: avol
 !
 !
-      if(ntot_rms_rj .eq. 0) return
+      if(pwr1%num_comp_rms .eq. 0) return
 
       if(iflag_debug .gt. 0) write(*,*) 'cal_one_over_volume'
       call cal_one_over_volume(kr_st, kr_ed,                            &
      &   sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, avol)
       if(iflag_debug .gt. 0) write(*,*) 'sum_sph_layerd_rms'
       call sum_sph_layerd_rms(kr_st, kr_ed, l_truncation,               &
-     &    sph_rj, ipol, g_sph_rj, rj_fld, pwr1%nri_rms,                 &
-     &    num_rms_rj, ntot_rms_rj, istack_rms_comp_rj, ifield_rms_rj,   &
+     &    sph_rj, ipol, g_sph_rj, rj_fld,                               &
+     &    pwr1%nri_rms, pwr1%num_fld_rms, pwr1%num_comp_rms,            &
+     &    pwr1%istack_comp_sq, pwr1%id_field,                           &
      &    WK_pwr%istack_mode_sum_l,  WK_pwr%istack_mode_sum_m,          &
      &    WK_pwr%istack_mode_sum_lm, WK_pwr%item_mode_sum_l,            &
      &    WK_pwr%item_mode_sum_m,    WK_pwr%item_mode_sum_lm,           &
@@ -142,7 +142,7 @@
      &    WK_pwr%vol_l_local, WK_pwr%vol_m_local, WK_pwr%vol_lm_local)
 !
       call global_sum_sph_layerd_rms                                    &
-     &    (l_truncation, pwr1%nri_rms, ntot_rms_rj,                     &
+     &    (l_truncation, pwr1%nri_rms, pwr1%num_comp_rms,               &
      &     WK_pwr%shl_l_local, WK_pwr%shl_m_local, WK_pwr%shl_lm_local, &
      &     WK_pwr%vol_l_local, WK_pwr%vol_m_local, WK_pwr%vol_lm_local, &
      &     pwr1%shl_l, pwr1%shl_m, pwr1%shl_lm,                         &
@@ -154,9 +154,9 @@
         if(iflag_debug .gt. 0) write(*,*) 'surf_ave_4_sph_rms_int'
         call surf_ave_4_sph_rms_int                                     &
      &     (l_truncation, sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,        &
-     &      pwr1%nri_rms, ntot_rms_rj, pwr1%kr_4_rms,                   &
+     &      pwr1%nri_rms, pwr1%num_comp_rms, pwr1%kr_4_rms,             &
      &      pwr1%shl_l, pwr1%shl_m, pwr1%shl_lm, pwr1%shl_sq, pwr1%shl_m0)
-        call vol_ave_4_rms_sph(l_truncation, ntot_rms_rj, avol,         &
+        call vol_ave_4_rms_sph(l_truncation, pwr1%num_comp_rms, avol,   &
      &      pwr1%vol_l, pwr1%vol_m, pwr1%vol_lm,                        &
      &      pwr1%vol_sq, pwr1%vol_m0)
       end if

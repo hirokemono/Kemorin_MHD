@@ -125,15 +125,15 @@
 !
 !$omp parallel do
       do inum = 1, num_pick_sph_rms_mode*num_pick_layer
-        d_rms_pick_sph_lc(1:ntot_rms_rj,inum) = zero
+        d_rms_pick_sph_lc(1:pwr1%num_comp_rms,inum) = zero
       end do
 !$omp end parallel do
 !
-      do j_fld = 1, num_rms_rj
-        i_fld = ifield_rms_rj(j_fld)
-        ncomp = num_rms_comp_rj(j_fld)
-        ist_fld =  rj_fld%istack_component(i_fld-1)
-        jst_rms = istack_rms_comp_rj(j_fld-1)
+      do j_fld = 1, pwr1%num_fld_rms
+        i_fld =   pwr1%id_field(j_fld)
+        ncomp =   pwr1%num_comp_sq(j_fld)
+        ist_fld = rj_fld%istack_component(i_fld-1)
+        jst_rms = pwr1%istack_comp_sq(j_fld-1)
         call cal_rms_sph_spec_one_field                                 &
      &     (sph_rj, ipol, ncomp, (ist_fld+1), leg%g_sph_rj,             &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld, rms_sph_rj)
@@ -155,7 +155,7 @@
 !$omp end parallel do
       end do
 !
-      num = ntot_rms_rj*num_pick_layer*num_pick_sph_rms_mode
+      num = pwr1%num_comp_rms * num_pick_layer * num_pick_sph_rms_mode
       call MPI_allREDUCE(d_rms_pick_sph_lc(1,1),                        &
      &    d_rms_pick_sph_gl(1,1), num, CALYPSO_REAL, MPI_SUM,           &
      &    CALYPSO_COMM, ierr_MPI)
@@ -193,11 +193,11 @@
      &                - sph_rj%radius_1d_rj_r(kg_st)**3 )
       end if
 !
-      do j_fld = 1, num_rms_rj
-        i_fld = ifield_rms_rj(j_fld)
-        ncomp = num_rms_comp_rj(j_fld)
-        ist_fld =  rj_fld%istack_component(i_fld-1)
-        jst_rms = istack_rms_comp_rj(j_fld-1)
+      do j_fld = 1, pwr1%num_fld_rms
+        i_fld =   pwr1%id_field(j_fld)
+        ncomp =   pwr1%num_comp_sq(j_fld)
+        ist_fld = rj_fld%istack_component(i_fld-1)
+        jst_rms = pwr1%istack_comp_sq(j_fld-1)
         call cal_rms_sph_spec_one_field                                 &
      &     (sph_rj, ipol, ncomp, (ist_fld+1), leg%g_sph_rj,             &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld, rms_sph_rj)
@@ -216,7 +216,7 @@
         end do
       end do
 !
-      num = ntot_rms_rj*num_pick_sph_rms_mode
+      num = pwr1%num_comp_rms * num_pick_sph_rms_mode
       call MPI_allREDUCE(d_rms_pick_sph_lc(1,1),                        &
      &    d_rms_pick_sph_gl(1,1), num, CALYPSO_REAL, MPI_SUM,           &
      &    CALYPSO_COMM, ierr_MPI)
@@ -234,45 +234,45 @@
       integer(kind = kint) :: i_fld, ist
 !
 !
-      do i_fld = 1, num_rms_rj
-        ist = istack_rms_comp_rj(i_fld-1)
-          if ( rms_name_rj(i_fld) .eq. fhd_velo) then
+      do i_fld = 1, pwr1%num_fld_rms
+        ist = pwr1%istack_comp_sq(i_fld-1)
+          if      (pwr1%pwr_name(i_fld) .eq. fhd_velo) then
             write(rms_pick_sph_name(ist+1),'(a)') 'K_ene_pol'
             write(rms_pick_sph_name(ist+2),'(a)') 'K_ene_tor'
             write(rms_pick_sph_name(ist+3),'(a)') 'K_ene'
 !
-          else if (rms_name_rj(i_fld) .eq. fhd_magne) then
+          else if (pwr1%pwr_name(i_fld) .eq. fhd_magne) then
             write(rms_pick_sph_name(ist+1),'(a)') 'M_ene_pol'
             write(rms_pick_sph_name(ist+2),'(a)') 'M_ene_tor'
             write(rms_pick_sph_name(ist+3),'(a)') 'M_ene'
 !
-          else if (rms_name_rj(i_fld) .eq. fhd_filter_v) then
+          else if (pwr1%pwr_name(i_fld) .eq. fhd_filter_v) then
             write(rms_pick_sph_name(ist+1),'(a)') 'filter_KE_pol'
             write(rms_pick_sph_name(ist+2),'(a)') 'filter_KE_tor'
             write(rms_pick_sph_name(ist+3),'(a)') 'filter_KE'
 !
-          else if (rms_name_rj(i_fld) .eq. fhd_filter_b) then
+          else if (pwr1%pwr_name(i_fld) .eq. fhd_filter_b) then
             write(rms_pick_sph_name(ist+1),'(a)') 'filter_ME_pol'
             write(rms_pick_sph_name(ist+2),'(a)') 'filter_ME_tor'
             write(rms_pick_sph_name(ist+3),'(a)') 'filter_ME'
 !
-          else if (num_rms_comp_rj(i_fld) .eq. 1) then
+          else if (pwr1%num_comp_sq(i_fld) .eq. 1) then
             write(rms_pick_sph_name(ist+1),'(a)')                       &
-     &                      trim(rms_name_rj(i_fld))
+     &                      trim(pwr1%pwr_name(i_fld))
 !
-          else if (num_rms_comp_rj(i_fld) .eq. 3) then
-            call add_vector_power_sph_label(rms_name_rj(i_fld),         &
+          else if (pwr1%num_comp_sq(i_fld) .eq. 3) then
+            call add_vector_power_sph_label(pwr1%pwr_name(i_fld),       &
      &          rms_pick_sph_name(ist+1), rms_pick_sph_name(ist+2),     &
      &          rms_pick_sph_name(ist+3))
-            write(rms_pick_sph_name(ist+3),'(a)') rms_name_rj(i_fld)
-          else if (num_rms_comp_rj(i_fld) .eq. 6) then
-            call add_tensor_direction_label_rtp(rms_name_rj(i_fld),     &
+            write(rms_pick_sph_name(ist+3),'(a)') pwr1%pwr_name(i_fld)
+          else if (pwr1%num_comp_sq(i_fld) .eq. 6) then
+            call add_tensor_direction_label_rtp(pwr1%pwr_name(i_fld),   &
      &          rms_pick_sph_name(ist+1), rms_pick_sph_name(ist+2),     &
      &          rms_pick_sph_name(ist+3), rms_pick_sph_name(ist+4),     &
      &          rms_pick_sph_name(ist+5), rms_pick_sph_name(ist+6))
           end if
       end do
-      ncomp_pick_sph_rms = ntot_rms_rj
+      ncomp_pick_sph_rms = pwr1%num_comp_rms
 !
       end subroutine set_sph_rms_labels_4_monitor
 !

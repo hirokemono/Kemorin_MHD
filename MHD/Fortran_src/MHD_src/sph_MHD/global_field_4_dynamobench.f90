@@ -41,9 +41,9 @@
       integer(kind = kint) :: i_fld, i_comp
 !
 !
-      do i_fld = 1, num_rms_rj
-        if(rms_name_rj(i_fld) .eq. fhd_velo) then
-          i_comp = istack_rms_comp_rj(i_fld-1) + 1
+      do i_fld = 1, pwr1%num_fld_rms
+        if(pwr1%pwr_name(i_fld) .eq. fhd_velo) then
+          i_comp = pwr1%istack_comp_sq(i_fld-1) + 1
           KE_bench(1) = pwr1%vol_sq(i_comp  )
           KE_bench(2) = pwr1%vol_sq(i_comp+1)
           KE_bench(3) = pwr1%vol_sq(i_comp+2)
@@ -51,9 +51,9 @@
         end if
       end do
 !
-      do i_fld = 1, num_rms_rj
-        if(rms_name_rj(i_fld) .eq. fhd_magne) then
-          i_comp = istack_rms_comp_rj(i_fld-1) + 1
+      do i_fld = 1, pwr1%num_fld_rms
+        if(pwr1%pwr_name(i_fld) .eq. fhd_magne) then
+          i_comp = pwr1%istack_comp_sq(i_fld-1) + 1
           ME_bench(1) = pwr1%vol_sq(i_comp  )
           ME_bench(2) = pwr1%vol_sq(i_comp+1)
           ME_bench(3) = pwr1%vol_sq(i_comp+2)
@@ -73,9 +73,9 @@
       integer(kind = kint) :: i_fld, i_comp
 !
 !
-      do i_fld = 1, num_rms_rj
-        if(rms_name_rj(i_fld) .eq. fhd_magne) then
-          i_comp = istack_rms_comp_rj(i_fld-1) + 1
+      do i_fld = 1, pwr1%num_fld_rms
+        if(pwr1%pwr_name(i_fld) .eq. fhd_magne) then
+          i_comp = pwr1%istack_comp_sq(i_fld-1) + 1
           mene_icore(1) = pwr1%vol_sq(i_comp  )
           mene_icore(2) = pwr1%vol_sq(i_comp+1)
           mene_icore(3) = pwr1%vol_sq(i_comp+2)
