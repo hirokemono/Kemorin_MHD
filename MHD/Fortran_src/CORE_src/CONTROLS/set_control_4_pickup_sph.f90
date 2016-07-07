@@ -8,7 +8,7 @@
 !> @brief Set control parameter for monitoring spectrum
 !!
 !!@verbatim
-!!      subroutine set_ctl_params_pick_sph
+!!      subroutine set_ctl_params_pick_sph(pwr)
 !!      subroutine set_ctl_params_pick_gauss
 !!
 !!      subroutine set_ctl_params_no_heat_Nu(rj_fld)
@@ -27,13 +27,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_ctl_params_pick_sph
+      subroutine set_ctl_params_pick_sph(pwr)
 !
       use m_ctl_data_4_pickup_sph
       use m_pickup_sph_spectr_data
-      use m_rms_4_sph_spectr
+      use t_rms_4_sph_spectr
       use output_sph_m_square_file
       use skip_comment_f
+!
+      type(sph_mean_squares), intent(inout) :: pwr
 !
       integer(kind = kint) :: inum
 !
@@ -61,14 +63,14 @@
 !
 !   set pickup layer
       if(idx_spec_layer_ctl%num .gt. 0) then
-        call alloc_num_spec_layer(idx_spec_layer_ctl%num, pwr1)
+        call alloc_num_spec_layer(idx_spec_layer_ctl%num, pwr)
 !
-        pwr1%kr_4_rms(1:pwr1%nri_rms)                                   &
-     &         = idx_spec_layer_ctl%ivec(1:pwr1%nri_rms)
+        pwr%kr_4_rms(1:pwr%nri_rms)                                     &
+     &         = idx_spec_layer_ctl%ivec(1:pwr%nri_rms)
 !
         call deallocate_num_spec_layer_ctl
       else
-        call alloc_num_spec_layer(izero, pwr1)
+        call alloc_num_spec_layer(izero, pwr)
       end if
 !
 !   Define spectr pick up

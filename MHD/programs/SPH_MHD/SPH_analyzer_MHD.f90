@@ -99,7 +99,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'open_sph_vol_rms_file_mhd'
       call start_eleps_time(4)
       call open_sph_vol_rms_file_mhd                                    &
-     &   (sph1%sph_params, sph1%sph_rj, ipol, rj_fld1)
+     &   (sph1%sph_params, sph1%sph_rj, ipol, rj_fld1, pwr1, WK_pwr)
       call end_eleps_time(4)
 !
       end subroutine SPH_initialize_MHD
@@ -115,6 +115,7 @@
       use m_fdm_coefs
       use m_t_step_parameter
       use m_sph_trans_arrays_MHD
+      use m_rms_4_sph_spectr
 !
       use cal_momentum_eq_explicit
       use cal_sol_sph_MHD_crank
@@ -192,8 +193,8 @@
 !*
       call start_eleps_time(11)
       if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
-      call output_rms_sph_mhd_control                                   &
-     &   (sph1%sph_params, sph1%sph_rj, trans_p1%leg, ipol, rj_fld1)
+      call output_rms_sph_mhd_control(sph1%sph_params, sph1%sph_rj,     &
+     &    trans_p1%leg, ipol, rj_fld1, pwr1, WK_pwr)
       call end_eleps_time(11)
 !
       if(iflag_debug.gt.0) write(*,*) 'sync_temp_by_per_temp_sph'

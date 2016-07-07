@@ -69,8 +69,8 @@
       call allocate_vector_for_solver(isix, sph1%sph_rtp%nnod_rtp)
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_rms_4_sph_spectr'
-      call init_rms_4_sph_spectr                                        &
-     &   (sph1%sph_params%l_truncation, sph1%sph_rj, rj_fld1)
+      call init_rms_4_sph_spectr(sph1%sph_params%l_truncation,          &
+     &    sph1%sph_rj, rj_fld1, pwr1, WK_pwr)
 !
 ! ---------------------------------
 !
@@ -114,6 +114,7 @@
       use m_schmidt_poly_on_rtm
       use m_field_4_dynamobench
       use m_sph_trans_arrays_MHD
+      use m_rms_4_sph_spectr
 !
       use cal_nonlinear
       use cal_sol_sph_MHD_crank
@@ -162,7 +163,7 @@
       call start_eleps_time(11)
       if(iflag_debug.gt.0)  write(*,*) 'const_data_4_dynamobench'
       call s_const_data_4_dynamobench(sph1%sph_params, sph1%sph_rj,     &
-     &    trans_p1%leg, ipol, itor, rj_fld1)
+     &    trans_p1%leg, ipol, itor, rj_fld1, pwr1, WK_pwr)
       call output_field_4_dynamobench(i_step, time, ipol)
       call end_eleps_time(11)
       call end_eleps_time(4)

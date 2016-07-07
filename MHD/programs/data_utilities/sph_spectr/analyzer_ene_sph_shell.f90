@@ -48,7 +48,7 @@
       call read_control_data_sph_utils
 !
       if (iflag_debug.gt.0) write(*,*) 'set_ctl_data_4_sph_utils'
-      call set_ctl_data_4_sph_utils(rj_fld_spec)
+      call set_ctl_data_4_sph_utils(rj_fld_spec, pwr_spec)
 !
 !       set spectr grids
 !
@@ -71,7 +71,7 @@
 !
       call init_rms_4_sph_spectr                                        &
      &   (sph_mesh_spec%sph%sph_params%l_truncation,                    &
-     &    sph_mesh_spec%sph%sph_rj, rj_fld_spec)
+     &    sph_mesh_spec%sph%sph_rj, rj_fld_spec, pwr_spec, WK_pwr_spec)
 !
       call alloc_schmidt_normalize                                      &
      &   (sph_mesh_spec%sph%sph_rlm%nidx_rlm(2),                        &
@@ -88,7 +88,6 @@
       use m_t_step_parameter
       use m_ctl_params_sph_utils
       use m_control_params_sph_data
-      use m_rms_4_sph_spectr
       use m_schmidt_poly_on_rtm
       use copy_rj_phys_data_4_IO
       use output_sph_m_square_file
@@ -118,28 +117,17 @@
      &     (ione, sph_mesh_spec%sph%sph_rj%nidx_rj(1),                  &
      &      sph_mesh_spec%sph%sph_params%l_truncation,                  &
      &      sph_mesh_spec%sph%sph_rj, ipol_spec, rj_fld_spec,           &
-     &      leg_s%g_sph_rj)
+     &      leg_s%g_sph_rj, pwr_spec, WK_pwr_spec)
 !
         call write_sph_vol_ave_file                                     &
-     &     (i_step, time, sph_mesh_spec%sph%sph_params%l_truncation,    &
-     &      sph_mesh_spec%sph%sph_params%nlayer_ICB,                    &
-     &      sph_mesh_spec%sph%sph_params%nlayer_CMB,                    &
-     &      sph_mesh_spec%sph%sph_rj%idx_rj_degree_zero)
-        call write_sph_vol_ms_file                                      &
-     &     (my_rank, i_step, time,                                      &
-     &      sph_mesh_spec%sph%sph_params%l_truncation,                  &
-     &      sph_mesh_spec%sph%sph_params%nlayer_ICB,                    &
-     &      sph_mesh_spec%sph%sph_params%nlayer_CMB)
-        call write_sph_vol_ms_spectr_file                               &
-     &     (my_rank, i_step, time,                                      &
-     &      sph_mesh_spec%sph%sph_params%l_truncation,                  &
-     &      sph_mesh_spec%sph%sph_params%nlayer_ICB,                    &
-     &      sph_mesh_spec%sph%sph_params%nlayer_CMB)
-        call write_sph_layer_ms_file                                    &
-     &     (my_rank, i_step, time,                                      &
-     &      sph_mesh_spec%sph%sph_params%l_truncation,                  &
-     &      sph_mesh_spec%sph%sph_params%nlayer_ICB,                    &
-     &      sph_mesh_spec%sph%sph_params%nlayer_CMB)
+     &     (i_step, time, sph_mesh_spec%sph%sph_params,                 &
+     &      sph_mesh_spec%sph%sph_rj, pwr_spec)
+        call write_sph_vol_ms_file(my_rank, i_step, time,               &
+     &      sph_mesh_spec%sph%sph_params, pwr_spec)
+        call write_sph_vol_ms_spectr_file(my_rank, i_step, time,        &
+     &      sph_mesh_spec%sph%sph_params, pwr_spec)
+        call write_sph_layer_ms_file(my_rank, i_step, time,             &
+     &      sph_mesh_spec%sph%sph_params, pwr_spec)
       end do
 !
       end subroutine analyze_ene_sph_shell

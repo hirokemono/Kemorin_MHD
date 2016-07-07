@@ -8,9 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine cal_volume_average_sph                               &
-!!     &         (kg_st, kg_ed, avol, sph_rj, rj_fld)
+!!     &         (kg_st, kg_ed, avol, sph_rj, rj_fld, pwr)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(phys_data), intent(in) :: rj_fld
+!!        type(sph_mean_squares), intent(inout) :: pwr
 !!@endverbatim
 !!
 !!@n @param istep         time step number
@@ -38,11 +39,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_volume_average_sph                                 &
-     &         (kg_st, kg_ed, avol, sph_rj, rj_fld)
+     &         (kg_st, kg_ed, avol, sph_rj, rj_fld, pwr)
 !
       use m_phys_constants
-      use m_rms_4_sph_spectr
 !
+      use t_rms_4_sph_spectr
       use t_spheric_rj_data
       use t_phys_data
 !
@@ -54,26 +55,28 @@
       integer(kind = kint), intent(in) :: kg_st, kg_ed
       real(kind = kreal), intent(in) :: avol
 !
+      type(sph_mean_squares), intent(inout) :: pwr
+!
 !
       if(sph_rj%idx_rj_degree_zero .gt. izero) then
-        call cal_sphere_average_sph(sph_rj, rj_fld)
+        call cal_sphere_average_sph(sph_rj, rj_fld, pwr)
 !
         call radial_integration                                         &
      &     (kg_st, kg_ed, sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,     &
-     &      pwr1%ntot_comp_sq, pwr1%shl_ave, pwr1%vol_ave)
+     &      pwr%ntot_comp_sq, pwr%shl_ave, pwr%vol_ave)
         call averaging_4_sph_ave_int                                    &
-     &     (pwr1%ntot_comp_sq, avol, pwr1%vol_ave)
+     &     (pwr%ntot_comp_sq, avol, pwr%vol_ave)
       end if
 !
       end subroutine cal_volume_average_sph
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sphere_average_sph(sph_rj, rj_fld)
+      subroutine cal_sphere_average_sph(sph_rj, rj_fld, pwr)
 !
       use m_phys_constants
-      use m_rms_4_sph_spectr
 !
+      use t_rms_4_sph_spectr
       use t_spheric_rj_data
       use t_phys_data
 !
@@ -82,27 +85,29 @@
       type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_data), intent(in) :: rj_fld
 !
+      type(sph_mean_squares), intent(inout) :: pwr
+!
       integer(kind = kint) :: i_fld, j_fld, icomp_st, jcomp_st
 !
 !
-      pwr1%shl_ave = 0.0d0
+      pwr%shl_ave = 0.0d0
 !
-      do j_fld = 1, pwr1%num_fld_sq
-        i_fld =    pwr1%id_field(j_fld)
+      do j_fld = 1, pwr%num_fld_sq
+        i_fld =    pwr%id_field(j_fld)
         icomp_st = rj_fld%istack_component(i_fld-1) + 1
-        jcomp_st = pwr1%istack_comp_sq(j_fld-1) +  1
+        jcomp_st = pwr%istack_comp_sq(j_fld-1) +  1
         if (rj_fld%num_component(i_fld) .eq. n_scalar) then
           call cal_ave_scalar_sph_spectr                                &
      &       (icomp_st, jcomp_st, rj_fld%n_point, sph_rj%nidx_rj,       &
      &        sph_rj%idx_rj_degree_zero, sph_rj%inod_rj_center,         &
      &        rj_fld%ntot_phys, rj_fld%d_fld, sph_rj%radius_1d_rj_r,    &
-     &        pwr1%nri_ave, pwr1%ntot_comp_sq, pwr1%shl_ave)
+     &        pwr%nri_ave, pwr%ntot_comp_sq, pwr%shl_ave)
         else if (rj_fld%num_component(i_fld) .eq. n_vector) then
           call cal_ave_vector_sph_spectr                                &
      &       (icomp_st, jcomp_st, rj_fld%n_point, sph_rj%nidx_rj,       &
      &        sph_rj%idx_rj_degree_zero, sph_rj%inod_rj_center,         &
      &        rj_fld%ntot_phys, rj_fld%d_fld, sph_rj%radius_1d_rj_r,    &
-     &        pwr1%nri_ave, pwr1%ntot_comp_sq, pwr1%shl_ave)
+     &        pwr%nri_ave, pwr%ntot_comp_sq, pwr%shl_ave)
         end if
       end do
 !

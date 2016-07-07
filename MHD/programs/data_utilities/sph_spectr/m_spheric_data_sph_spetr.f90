@@ -23,6 +23,8 @@
       use t_phys_address
       use t_field_data_IO
       use t_schmidt_poly_on_rtm
+      use t_rms_4_sph_spectr
+      use t_sum_sph_rms_data
 !
       implicit none
 !
@@ -42,5 +44,11 @@
       type(field_IO), save :: sph_spec_IO
 !
       type(legendre_4_sph_trans), save :: leg_s
+!
+!
+!>      Structure of mean square data
+      type(sph_mean_squares), save :: pwr_spec
+!>      Work structure of mean square data
+      type(sph_mean_square_work), save :: WK_pwr_spec
 !
       end module m_spheric_data_sph_spetr

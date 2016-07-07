@@ -81,7 +81,7 @@
 !*
       if(iflag_debug .gt. 0) write(*,*) 'open_sph_vol_rms_file_mhd'
       call open_sph_vol_rms_file_mhd                                    &
-     &   (sph1%sph_params, sph1%sph_rj, ipol, rj_fld1)
+     &   (sph1%sph_params, sph1%sph_rj, ipol, rj_fld1, pwr1, WK_pwr)
 !
       end subroutine SPH_init_sph_snap
 !
@@ -97,6 +97,7 @@
       use m_schmidt_poly_on_rtm
       use m_node_id_spherical_IO
       use m_sph_trans_arrays_MHD
+      use m_rms_4_sph_spectr
 !
       use cal_nonlinear
       use cal_sol_sph_MHD_crank
@@ -145,8 +146,8 @@
       call start_eleps_time(4)
       call start_eleps_time(11)
       if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
-      call output_rms_sph_mhd_control                                   &
-     &   (sph1%sph_params, sph1%sph_rj, trans_p1%leg, ipol, rj_fld1)
+      call output_rms_sph_mhd_control(sph1%sph_params, sph1%sph_rj,     &
+     &    trans_p1%leg, ipol, rj_fld1, pwr1, WK_pwr)
       call end_eleps_time(11)
 !
 !*  -----------  Output spectr data --------------

@@ -3,13 +3,16 @@
 !
 !        programmed by H.Matsui on Oct., 2007
 !
-!      subroutine set_ctl_data_4_sph_utils(rj_fld)
+!!      subroutine set_ctl_data_4_sph_utils(rj_fld, pwr)
+!!        type(phys_data), intent(inout) :: rj_fld
+!!        type(sph_mean_squares), intent(inout) :: pwr
 !
       module m_ctl_params_sph_utils
 !
       use m_precision
 !
       use t_phys_data
+      use t_rms_4_sph_spectr
 !
       implicit  none
 !
@@ -35,7 +38,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_ctl_data_4_sph_utils(rj_fld)
+      subroutine set_ctl_data_4_sph_utils(rj_fld, pwr)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -43,7 +46,6 @@
       use m_read_mesh_data
       use m_sph_spectr_data
       use m_file_format_switch
-      use m_rms_4_sph_spectr
       use m_node_id_spherical_IO
       use m_control_params_2nd_files
 !
@@ -61,6 +63,7 @@
       use m_ctl_data_4_org_data
 !
       type(phys_data), intent(inout) :: rj_fld
+      type(sph_mean_squares), intent(inout) :: pwr
 !
       integer(kind = kint) :: ierr
 !
@@ -120,7 +123,7 @@
       end if
 !   set pickup mode
 !
-      call set_ctl_params_pick_sph
+      call set_ctl_params_pick_sph(pwr)
       call set_ctl_params_pick_gauss
 !
 !   set physical values

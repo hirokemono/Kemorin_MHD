@@ -38,6 +38,7 @@
       use m_ctl_data_sph_MHD_noviz
       use m_spheric_parameter
       use m_sph_spectr_data
+      use m_rms_4_sph_spectr
       use set_control_sph_mhd
       use set_control_sph_data_MHD
       use init_sph_MHD_elapsed_label
@@ -55,7 +56,7 @@
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_snap_noviz'
       call read_control_4_sph_snap_noviz
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
-      call set_control_4_SPH_MHD(rj_fld1)
+      call set_control_4_SPH_MHD(rj_fld1, pwr1)
       call set_ctl_params_pick_circle
 !
 !   Load spherical harmonics data

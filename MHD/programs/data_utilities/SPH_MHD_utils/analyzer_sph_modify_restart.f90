@@ -92,6 +92,7 @@
       use m_node_id_spherical_IO
       use m_spheric_parameter
       use m_sph_spectr_data
+      use m_rms_4_sph_spectr
 !
       use m_ctl_data_4_platforms
       use m_ctl_data_4_org_data
@@ -121,8 +122,8 @@
 !*
       call start_eleps_time(11)
       if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
-      call output_rms_sph_mhd_control                                   &
-     &   (sph1%sph_params, sph1%sph_rj, trans_p1%leg, ipol, rj_fld1)
+      call output_rms_sph_mhd_control(sph1%sph_params, sph1%sph_rj,     &
+     &    trans_p1%leg, ipol, rj_fld1, pwr1, WK_pwr)
       call end_eleps_time(11)
       call end_eleps_time(4)
 !

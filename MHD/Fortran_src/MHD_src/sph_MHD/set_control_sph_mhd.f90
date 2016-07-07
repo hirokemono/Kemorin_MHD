@@ -7,8 +7,9 @@
 !>@brief Set control data for spherical transform MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine set_control_4_SPH_MHD(rj_fld)
+!!      subroutine set_control_4_SPH_MHD(rj_fld, pwr)
 !!        type(phys_data), intent(inout) :: rj_fld
+!!        type(sph_mean_squares), intent(inout) :: pwr
 !!@endverbatim
 !
       module set_control_sph_mhd
@@ -26,12 +27,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_4_SPH_MHD(rj_fld)
+      subroutine set_control_4_SPH_MHD(rj_fld, pwr)
 !
       use m_control_params_2nd_files
       use m_ucd_data
 !
       use t_phys_data
+      use t_rms_4_sph_spectr
 !
       use set_control_platform_data
       use set_ctl_parallel_platform
@@ -53,6 +55,7 @@
       use check_dependency_for_MHD
 !
       type(phys_data), intent(inout) :: rj_fld
+      type(sph_mean_squares), intent(inout) :: pwr
 !
 !
 !   set parameters for data files
@@ -126,7 +129,7 @@
 !
 !   set_pickup modes
 !
-      call set_ctl_params_pick_sph
+      call set_ctl_params_pick_sph(pwr)
       call set_ctl_params_pick_gauss
       call set_ctl_params_no_heat_Nu(rj_fld)
 !

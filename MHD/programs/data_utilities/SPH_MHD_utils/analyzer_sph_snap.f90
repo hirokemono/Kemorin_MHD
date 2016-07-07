@@ -44,6 +44,7 @@
       use m_mesh_data
       use m_sph_spectr_data
       use m_sph_trans_arrays_MHD
+      use m_rms_4_sph_spectr
 !
       use init_sph_MHD_elapsed_label
       use FEM_analyzer_sph_MHD_w_viz
@@ -63,7 +64,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_mesh'
       call input_control_SPH_mesh(sph1, comms_sph1, sph_grps1, rj_fld1, &
-     &    mesh1, group1, ele_mesh1)
+     &    pwr1, mesh1, group1, ele_mesh1)
       call end_eleps_time(4)
 !
 !     --------------------- 

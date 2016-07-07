@@ -7,12 +7,14 @@
 !> @brief evaluate mean square data from spectr data
 !!
 !!@verbatim
-!!      subroutine init_rms_4_sph_spectr(l_truncation, sph_rj, rj_fld)
-!!
+!!      subroutine init_rms_4_sph_spectr                                &
+!!     &         (l_truncation, sph_rj, rj_fld, pwr, WK_pwr)
 !!      subroutine cal_mean_squre_in_shell(kr_st, kr_ed, l_truncation,  &
-!!     &          sph_rj, ipol, rj_fld, g_sph_rj)
+!!     &          sph_rj, ipol, rj_fld, g_sph_rj, pwr, WK_pwr)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(phys_data), intent(in) :: rj_fld
+!!        type(sph_mean_squares), intent(inout) :: pwr
+!!        type(sph_mean_square_work), intent(inout) :: WK_pwr
 !!@endverbatim
 !
       module cal_rms_fields_by_sph
@@ -25,10 +27,9 @@
       use t_phys_data
       use t_phys_address
       use t_sum_sph_rms_data
+      use t_rms_4_sph_spectr
 !
       implicit none
-!
-      type(sph_mean_square_work), save, private :: WK_pwr
 !
 ! -----------------------------------------------------------------------
 !
@@ -36,10 +37,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_rms_4_sph_spectr(l_truncation, sph_rj, rj_fld)
+      subroutine init_rms_4_sph_spectr                                  &
+     &         (l_truncation, sph_rj, rj_fld, pwr, WK_pwr)
 !
       use calypso_mpi
-      use m_rms_4_sph_spectr
 !
       use sum_sph_rms_data
       use volume_average_4_sph
@@ -48,6 +49,9 @@
       integer(kind = kint), intent(in) :: l_truncation
       type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_data), intent(in) :: rj_fld
+!
+      type(sph_mean_squares), intent(inout) :: pwr
+      type(sph_mean_square_work), intent(inout) :: WK_pwr
 !
       integer(kind = kint) :: i_fld, j_fld
       integer(kind = kint) :: k, knum, num_field
@@ -58,28 +62,28 @@
         num_field = num_field + rj_fld%iflag_monitor(i_fld)
       end do
 !
-      call alloc_rms_name_sph_spec(num_field, pwr1)
+      call alloc_rms_name_sph_spec(num_field, pwr)
 !
       j_fld = 0
       do i_fld = 1, rj_fld%num_phys
         if(rj_fld%iflag_monitor(i_fld) .gt. 0) then
           j_fld = j_fld + 1
-          pwr1%id_field(j_fld) =   i_fld
-          pwr1%num_comp_sq(j_fld) =    rj_fld%num_component(i_fld)
-          pwr1%istack_comp_sq(j_fld) = pwr1%istack_comp_sq(j_fld-1)     &
+          pwr%id_field(j_fld) =   i_fld
+          pwr%num_comp_sq(j_fld) =    rj_fld%num_component(i_fld)
+          pwr%istack_comp_sq(j_fld) = pwr%istack_comp_sq(j_fld-1)       &
      &                              + rj_fld%num_component(i_fld)
-          pwr1%pwr_name(j_fld) =   rj_fld%phys_name(i_fld)
+          pwr%pwr_name(j_fld) =   rj_fld%phys_name(i_fld)
         end if
       end do
 !
       call quicksort_int                                                &
-     &   (pwr1%nri_rms, pwr1%kr_4_rms, ione, pwr1%nri_rms)
+     &   (pwr%nri_rms, pwr%kr_4_rms, ione, pwr%nri_rms)
 !
-      call alloc_rms_4_sph_spectr(my_rank, l_truncation, pwr1)
+      call alloc_rms_4_sph_spectr(my_rank, l_truncation, pwr)
       call alloc_ave_4_sph_spectr                                       &
-     &   (sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj(1), pwr1)
-      call allocate_rms_sph_local_data                                  &
-     &   (l_truncation, sph_rj%nidx_rj, WK_pwr)
+     &   (sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj(1), pwr)
+      call allocate_rms_sph_local_data(l_truncation, sph_rj%nidx_rj,    &
+     &    pwr%nri_rms, pwr%ntot_comp_sq, WK_pwr)
 !
       call set_sum_table_4_sph_spectr                                   &
      &   (l_truncation, sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j,          &
@@ -90,12 +94,12 @@
      &    WK_pwr%item_mode_sum_lm)
 !
 !
-      do knum = 1, pwr1%nri_rms
-        k = pwr1%kr_4_rms(knum)
+      do knum = 1, pwr%nri_rms
+        k = pwr%kr_4_rms(knum)
         if(k .le. 0) then
-          pwr1%r_4_rms(knum) = 0.0d0
+          pwr%r_4_rms(knum) = 0.0d0
         else
-          pwr1%r_4_rms(knum) = sph_rj%radius_1d_rj_r(k)
+          pwr%r_4_rms(knum) = sph_rj%radius_1d_rj_r(k)
         end if
       end do
 !
@@ -105,10 +109,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_mean_squre_in_shell(kr_st, kr_ed, l_truncation,    &
-     &          sph_rj, ipol, rj_fld, g_sph_rj)
+     &          sph_rj, ipol, rj_fld, g_sph_rj, pwr, WK_pwr)
 !
       use calypso_mpi
-      use m_rms_4_sph_spectr
 !
       use volume_average_4_sph
       use cal_ave_4_rms_vector_sph
@@ -121,10 +124,13 @@
       integer(kind = kint), intent(in) :: kr_st, kr_ed
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
+      type(sph_mean_squares), intent(inout) :: pwr
+      type(sph_mean_square_work), intent(inout) :: WK_pwr
+!
       real(kind = kreal) :: avol
 !
 !
-      if(pwr1%ntot_comp_sq .eq. 0) return
+      if(pwr%ntot_comp_sq .eq. 0) return
 
       if(iflag_debug .gt. 0) write(*,*) 'cal_one_over_volume'
       call cal_one_over_volume(kr_st, kr_ed,                            &
@@ -132,37 +138,38 @@
       if(iflag_debug .gt. 0) write(*,*) 'sum_sph_layerd_rms'
       call sum_sph_layerd_rms(kr_st, kr_ed, l_truncation,               &
      &    sph_rj, ipol, g_sph_rj, rj_fld,                               &
-     &    pwr1%nri_rms, pwr1%num_fld_sq, pwr1%ntot_comp_sq,             &
-     &    pwr1%istack_comp_sq, pwr1%id_field,                           &
+     &    pwr%nri_rms, pwr%num_fld_sq, pwr%ntot_comp_sq,                &
+     &    pwr%istack_comp_sq, pwr%id_field,                             &
      &    WK_pwr%istack_mode_sum_l,  WK_pwr%istack_mode_sum_m,          &
      &    WK_pwr%istack_mode_sum_lm, WK_pwr%item_mode_sum_l,            &
      &    WK_pwr%item_mode_sum_m,    WK_pwr%item_mode_sum_lm,           &
-     &    pwr1%kr_4_rms, WK_pwr%shl_rj, WK_pwr%volume_j,                &
+     &    pwr%kr_4_rms, WK_pwr%shl_rj, WK_pwr%volume_j,                 &
      &    WK_pwr%shl_l_local, WK_pwr%shl_m_local, WK_pwr%shl_lm_local,  &
      &    WK_pwr%vol_l_local, WK_pwr%vol_m_local, WK_pwr%vol_lm_local)
 !
       call global_sum_sph_layerd_rms                                    &
-     &    (l_truncation, pwr1%nri_rms, pwr1%ntot_comp_sq,               &
+     &    (l_truncation, pwr%nri_rms, pwr%ntot_comp_sq,                 &
      &     WK_pwr%shl_l_local, WK_pwr%shl_m_local, WK_pwr%shl_lm_local, &
      &     WK_pwr%vol_l_local, WK_pwr%vol_m_local, WK_pwr%vol_lm_local, &
-     &     pwr1%shl_l, pwr1%shl_m, pwr1%shl_lm,                         &
-     &     pwr1%vol_l, pwr1%vol_m, pwr1%vol_lm,                         &
-     &     pwr1%shl_sq, pwr1%shl_m0, pwr1%ratio_shl_m0,                 &
-     &     pwr1%vol_sq, pwr1%vol_m0, pwr1%ratio_vol_m0)
+     &     pwr%shl_l, pwr%shl_m, pwr%shl_lm,                            &
+     &     pwr%vol_l, pwr%vol_m, pwr%vol_lm,                            &
+     &     pwr%shl_sq, pwr%shl_m0, pwr%ratio_shl_m0,                    &
+     &     pwr%vol_sq, pwr%vol_m0, pwr%ratio_vol_m0)
 !
       if(my_rank .eq. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'surf_ave_4_sph_rms_int'
         call surf_ave_4_sph_rms_int                                     &
      &     (l_truncation, sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,        &
-     &      pwr1%nri_rms, pwr1%ntot_comp_sq, pwr1%kr_4_rms,             &
-     &      pwr1%shl_l, pwr1%shl_m, pwr1%shl_lm, pwr1%shl_sq, pwr1%shl_m0)
-        call vol_ave_4_rms_sph(l_truncation, pwr1%ntot_comp_sq, avol,   &
-     &      pwr1%vol_l, pwr1%vol_m, pwr1%vol_lm,                        &
-     &      pwr1%vol_sq, pwr1%vol_m0)
+     &      pwr%nri_rms, pwr%ntot_comp_sq, pwr%kr_4_rms,                &
+     &      pwr%shl_l, pwr%shl_m, pwr%shl_lm, pwr%shl_sq, pwr%shl_m0)
+        call vol_ave_4_rms_sph(l_truncation, pwr%ntot_comp_sq, avol,    &
+     &      pwr%vol_l, pwr%vol_m, pwr%vol_lm,                           &
+     &      pwr%vol_sq, pwr%vol_m0)
       end if
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_volume_average_sph'
-      call cal_volume_average_sph(kr_st, kr_ed, avol, sph_rj, rj_fld)
+      call cal_volume_average_sph                                       &
+     &   (kr_st, kr_ed, avol, sph_rj, rj_fld, pwr)
 !
       end subroutine cal_mean_squre_in_shell
 !

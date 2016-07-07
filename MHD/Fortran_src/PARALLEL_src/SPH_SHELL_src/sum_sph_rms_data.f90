@@ -8,9 +8,18 @@
 !!
 !!@verbatim
 !!      subroutine set_sum_table_4_sph_spectr                           &
-!!     &         (l_truncation, nidx_rj, idx_gl_1d_rj_j)
+!!     &      (l_truncation, nidx_rj, idx_gl_1d_rj_j,                   &
+!!     &       num_mode_sum_l, num_mode_sum_m, num_mode_sum_lm,         &
+!!     &       istack_mode_sum_l, istack_mode_sum_m, istack_mode_sum_lm,&
+!!     &       item_mode_sum_l, item_mode_sum_m, item_mode_sum_lm)
 !!      subroutine sum_sph_layerd_rms(kg_st, kg_ed, l_truncation,       &
-!!     &          sph_rj, g_sph_rj, rj_fld)
+!!     &       sph_rj, ipol, g_sph_rj, rj_fld, nri_rms, num_rms_rj,     &
+!!     &       ntot_rms_rj, istack_rms_comp_rj, ifield_rms_rj,          &
+!!     &       istack_mode_sum_l, istack_mode_sum_m, istack_mode_sum_lm,&
+!!     &       item_mode_sum_l, item_mode_sum_m, item_mode_sum_lm,      &
+!!     &       kr_for_rms, rms_sph_rj, rms_sph_vol_j,                   &
+!!     &       rms_sph_l_local, rms_sph_m_local, rms_sph_lm_local,      &
+!!     &       rms_sph_vl_local, rms_sph_vm_local, rms_sph_vlm_local)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(phys_data), intent(in) :: rj_fld
 !!@endverbatim
@@ -21,6 +30,8 @@
       use m_constants
 !
       implicit none
+!
+      private :: sum_sph_v_rms_by_degree, sum_sph_rms_by_degree
 !
 ! -----------------------------------------------------------------------
 !

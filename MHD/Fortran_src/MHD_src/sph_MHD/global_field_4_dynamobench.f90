@@ -7,8 +7,9 @@
 !>@brief Evaluate global data for dynamo benchmark test
 !!
 !!@verbatim
-!!      subroutine copy_energy_4_dynamobench
-!!      subroutine copy_icore_energy_4_dbench
+!!      subroutine copy_energy_4_dynamobench(pwr)
+!!      subroutine copy_icore_energy_4_dbench(pwr)
+!!        type(sph_mean_squares), intent(in) :: pwr
 !!
 !!      subroutine pick_inner_core_rotation(idx_rj_degree_one, nidx_rj, &
 !!     &          nlayer_ICB, ar_1d_rj, it_velo,                        &
@@ -33,30 +34,32 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine copy_energy_4_dynamobench
+      subroutine copy_energy_4_dynamobench(pwr)
 !
       use m_phys_labels
-      use m_rms_4_sph_spectr
+      use t_rms_4_sph_spectr
+!
+      type(sph_mean_squares), intent(in) :: pwr
 !
       integer(kind = kint) :: i_fld, i_comp
 !
 !
-      do i_fld = 1, pwr1%num_fld_sq
-        if(pwr1%pwr_name(i_fld) .eq. fhd_velo) then
-          i_comp = pwr1%istack_comp_sq(i_fld-1) + 1
-          KE_bench(1) = pwr1%vol_sq(i_comp  )
-          KE_bench(2) = pwr1%vol_sq(i_comp+1)
-          KE_bench(3) = pwr1%vol_sq(i_comp+2)
+      do i_fld = 1, pwr%num_fld_sq
+        if(pwr%pwr_name(i_fld) .eq. fhd_velo) then
+          i_comp = pwr%istack_comp_sq(i_fld-1) + 1
+          KE_bench(1) = pwr%vol_sq(i_comp  )
+          KE_bench(2) = pwr%vol_sq(i_comp+1)
+          KE_bench(3) = pwr%vol_sq(i_comp+2)
           exit
         end if
       end do
 !
-      do i_fld = 1, pwr1%num_fld_sq
-        if(pwr1%pwr_name(i_fld) .eq. fhd_magne) then
-          i_comp = pwr1%istack_comp_sq(i_fld-1) + 1
-          ME_bench(1) = pwr1%vol_sq(i_comp  )
-          ME_bench(2) = pwr1%vol_sq(i_comp+1)
-          ME_bench(3) = pwr1%vol_sq(i_comp+2)
+      do i_fld = 1, pwr%num_fld_sq
+        if(pwr%pwr_name(i_fld) .eq. fhd_magne) then
+          i_comp = pwr%istack_comp_sq(i_fld-1) + 1
+          ME_bench(1) = pwr%vol_sq(i_comp  )
+          ME_bench(2) = pwr%vol_sq(i_comp+1)
+          ME_bench(3) = pwr%vol_sq(i_comp+2)
           exit
         end if
       end do
@@ -65,20 +68,22 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine copy_icore_energy_4_dbench
+      subroutine copy_icore_energy_4_dbench(pwr)
 !
       use m_phys_labels
-      use m_rms_4_sph_spectr
+      use t_rms_4_sph_spectr
+!
+      type(sph_mean_squares), intent(in) :: pwr
 !
       integer(kind = kint) :: i_fld, i_comp
 !
 !
-      do i_fld = 1, pwr1%num_fld_sq
-        if(pwr1%pwr_name(i_fld) .eq. fhd_magne) then
-          i_comp = pwr1%istack_comp_sq(i_fld-1) + 1
-          mene_icore(1) = pwr1%vol_sq(i_comp  )
-          mene_icore(2) = pwr1%vol_sq(i_comp+1)
-          mene_icore(3) = pwr1%vol_sq(i_comp+2)
+      do i_fld = 1, pwr%num_fld_sq
+        if(pwr%pwr_name(i_fld) .eq. fhd_magne) then
+          i_comp = pwr%istack_comp_sq(i_fld-1) + 1
+          mene_icore(1) = pwr%vol_sq(i_comp  )
+          mene_icore(2) = pwr%vol_sq(i_comp+1)
+          mene_icore(3) = pwr%vol_sq(i_comp+2)
 !
           exit
         end if

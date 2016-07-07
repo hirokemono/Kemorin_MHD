@@ -3,14 +3,14 @@
 !
 !        programmed by H.Matsui on Oct., 2007
 !
-!      subroutine set_control_4_sph_transform(ucd, rj_fld, d_gauss)
-!      subroutine set_control_4_sph_back_trans(ucd, rj_fld, d_gauss)
-!      subroutine s_set_ctl_data_4_sph_trans(ucd, rj_fld, d_gauss)
-!        type(ucd_data), intent(inout) :: ucd
-!        type(phys_data), intent(inout) :: rj_fld
-!      subroutine set_ctl_data_4_zm_trans
-!      subroutine set_ctl_data_4_pick_zm
-!      subroutine set_ctl_data_4_zm_streamline
+!!      subroutine set_control_4_sph_transform(ucd, rj_fld, d_gauss)
+!!      subroutine set_control_4_sph_back_trans(ucd, rj_fld, d_gauss)
+!!      subroutine s_set_ctl_data_4_sph_trans(ucd, rj_fld, d_gauss)
+!!        type(ucd_data), intent(inout) :: ucd
+!!        type(phys_data), intent(inout) :: rj_fld
+!!      subroutine set_ctl_data_4_zm_trans
+!!      subroutine set_ctl_data_4_pick_zm
+!!      subroutine set_ctl_data_4_zm_streamline
 !
       module m_ctl_params_sph_trans
 !
@@ -20,6 +20,7 @@
 !
       use t_phys_data
       use t_global_gauss_coefs
+      use t_rms_4_sph_spectr
 !
       implicit  none
 !
@@ -53,7 +54,6 @@
       use ucd_IO_select
 !
       use m_ctl_data_4_sph_trans
-      use set_control_4_pickup_sph
 !
       type(ucd_data), intent(inout) :: ucd
       type(phys_data), intent(inout) :: rj_fld
@@ -93,10 +93,6 @@
 !
       call s_set_fixed_time_step_params(ierr, e_message)
 !
-!   set pickup mode
-!
-      call set_ctl_params_pick_sph
-!
 !   set physical values
 !
       call s_set_control_sph_data(rj_fld, ierr)
@@ -132,7 +128,6 @@
       use ucd_IO_select
 !
       use m_ctl_data_4_sph_trans
-      use set_control_4_pickup_sph
 !
       type(ucd_data), intent(inout) :: ucd
       type(phys_data), intent(inout) :: rj_fld
@@ -172,10 +167,6 @@
 !      stepping parameter
 !
       call s_set_fixed_time_step_params(ierr, e_message)
-!
-!   set pickup mode
-!
-      call set_ctl_params_pick_sph
 !
 !   set physical values
 !
@@ -218,10 +209,8 @@
       use m_ctl_data_4_time_steps
       use m_ctl_data_4_sph_trans
       use m_ctl_data_4_fields
-      use m_ctl_data_4_pickup_sph
       use m_control_params_2nd_files
       use skip_comment_f
-      use set_control_4_pickup_sph
       use parallel_ucd_IO_select
 !
       type(ucd_data), intent(inout) :: ucd
@@ -282,10 +271,6 @@
 !      stepping parameter
 !
       call s_set_fixed_time_step_params(ierr, e_message)
-!
-!   set pickup mode
-!
-      call set_ctl_params_pick_sph
 !
 !   set physical values
 !

@@ -2,9 +2,9 @@
 !      module analyzer_gauss_back_trans
 !..................................................
 !
-      module analyzer_gauss_back_trans
-!
 !      modified by H. Matsui on Jan., 2008
+!
+      module analyzer_gauss_back_trans
 !
       use m_precision
       use m_constants

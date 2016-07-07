@@ -7,13 +7,15 @@
 !>@brief Evaluate dynamo benchmark results
 !!
 !!@verbatim
-!!      subroutine s_const_data_4_dynamobench                           &
-!!     &         (sph_params, sph_rj, ipol, itor, rj_fld)
+!!      subroutine s_const_data_4_dynamobench(sph_params, sph_rj,       &
+!!     &          leg, ipol, itor, rj_fld, pwr, WK_pwr)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(phys_address), intent(in) :: ipol, itor
 !!        type(phys_data), intent(in) :: rj_fld
+!!        type(sph_mean_squares), intent(inout) :: pwr
+!!        type(sph_mean_square_work), intent(inout) :: WK_pwr
 !!@endverbatim
 !
       module const_data_4_dynamobench
@@ -30,8 +32,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_const_data_4_dynamobench                             &
-     &         (sph_params, sph_rj, leg, ipol, itor, rj_fld)
+      subroutine s_const_data_4_dynamobench(sph_params, sph_rj,         &
+     &          leg, ipol, itor, rj_fld, pwr, WK_pwr)
 !
       use m_boundary_params_sph_MHD
       use m_field_at_mid_equator
@@ -41,6 +43,8 @@
       use t_phys_address
       use t_phys_data
       use t_schmidt_poly_on_rtm
+      use t_rms_4_sph_spectr
+      use t_sum_sph_rms_data
 !
       use calypso_mpi
       use cal_rms_fields_by_sph
@@ -52,14 +56,18 @@
       type(phys_address), intent(in) :: ipol, itor
       type(phys_data), intent(in) :: rj_fld
 !
+      type(sph_mean_squares), intent(inout) :: pwr
+      type(sph_mean_square_work), intent(inout) :: WK_pwr
+!
 !
       if(iflag_debug.gt.0)  write(*,*) 'mid_eq_transfer_dynamobench'
       call mid_eq_transfer_dynamobench(sph_rj, rj_fld)
 !
       call cal_mean_squre_in_shell                                      &
      &   (sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
-     &    sph_params%l_truncation, sph_rj, ipol, rj_fld, leg%g_sph_rj)
-      if(my_rank .eq. 0) call copy_energy_4_dynamobench
+     &    sph_params%l_truncation, sph_rj, ipol, rj_fld, leg%g_sph_rj,  &
+     &    pwr, WK_pwr)
+      if(my_rank .eq. 0) call copy_energy_4_dynamobench(pwr)
 !
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call pick_inner_core_rotation(sph_rj%idx_rj_degree_one,         &
@@ -71,8 +79,8 @@
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
         call cal_mean_squre_in_shell                                    &
      &     (izero, sph_params%nlayer_ICB, sph_params%l_truncation,      &
-     &      sph_rj, ipol, rj_fld, leg%g_sph_rj)
-        if(my_rank .eq. 0) call copy_icore_energy_4_dbench
+     &      sph_rj, ipol, rj_fld, leg%g_sph_rj, pwr, WK_pwr)
+        if(my_rank .eq. 0) call copy_icore_energy_4_dbench(pwr)
       end if
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center                  &

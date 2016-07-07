@@ -46,7 +46,7 @@
       call read_control_data_sph_utils
 !
       if (iflag_debug.gt.0) write(*,*) 'set_ctl_data_4_sph_utils'
-      call set_ctl_data_4_sph_utils(rj_fld_spec)
+      call set_ctl_data_4_sph_utils(rj_fld_spec, pwr_spec)
 !
 !       set spectr grids
 !
@@ -69,7 +69,7 @@
 !
       call init_rms_4_sph_spectr                                        &
      &   (sph_mesh_spec%sph%sph_params%l_truncation,                    &
-     &    sph_mesh_spec%sph%sph_rj, rj_fld_spec)
+     &    sph_mesh_spec%sph%sph_rj, rj_fld_spec, pwr_spec, WK_pwr_spec)
 !
       end subroutine initialization
 !
@@ -79,7 +79,6 @@
 !
       use m_t_step_parameter
       use m_ctl_params_sph_utils
-      use m_rms_4_sph_spectr
       use m_pickup_sph_spectr_data
       use copy_rj_phys_data_4_IO
 !

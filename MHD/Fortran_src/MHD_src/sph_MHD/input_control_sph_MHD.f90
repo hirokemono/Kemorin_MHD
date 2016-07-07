@@ -8,19 +8,20 @@
 !!
 !!@verbatim
 !!      subroutine input_control_SPH_mesh                               &
-!!     &         (sph, comms_sph, sph_grps, rj_fld,                     &
+!!     &         (sph, comms_sph, sph_grps, rj_fld, pwr,                &
 !!     &          mesh, group, ele_mesh)
 !!      subroutine input_control_4_SPH_MHD_nosnap                       &
-!!     &         (sph, comms_sph, sph_grps, rj_fld)
+!!     &         (sph, comms_sph, sph_grps, rj_fld, pwr)
 !!
 !!      subroutine input_control_4_SPH_make_init                        &
-!!     &         (sph, comms_sph, sph_grps, rj_fld)
+!!     &         (sph, comms_sph, sph_grps, rj_fld, pwr)
 !!      subroutine input_control_SPH_dynamobench                        &
-!!     &         (sph, comms_sph, sph_grps, rj_fld)
+!!     &         (sph, comms_sph, sph_grps, rj_fld, pwr)
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
 !!        type(sph_group_data), intent(inout) ::  sph_grps
 !!        type(phys_data), intent(inout) :: rj_fld
+!!        type(sph_mean_squares), intent(inout) :: pwr
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(element_geometry), intent(inout) :: ele_mesh
@@ -38,6 +39,7 @@
       use t_phys_data
       use t_spheric_mesh
       use t_group_data
+      use t_rms_4_sph_spectr
 !
       implicit none
 !
@@ -50,7 +52,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine input_control_SPH_mesh                                 &
-     &         (sph, comms_sph, sph_grps, rj_fld,                       &
+     &         (sph, comms_sph, sph_grps, rj_fld, pwr,                  &
      &          mesh, group, ele_mesh)
 !
       use m_control_parameter
@@ -63,6 +65,7 @@
       type(sph_group_data), intent(inout) ::  sph_grps
 !
       type(phys_data), intent(inout) :: rj_fld
+      type(sph_mean_squares), intent(inout) :: pwr
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
@@ -70,7 +73,7 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
-      call set_control_4_SPH_MHD(rj_fld)
+      call set_control_4_SPH_MHD(rj_fld, pwr)
       call set_control_4_SPH_to_FEM(sph%sph_params, rj_fld)
 !
 !
@@ -89,7 +92,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine input_control_4_SPH_MHD_nosnap                         &
-     &         (sph, comms_sph, sph_grps, rj_fld)
+     &         (sph, comms_sph, sph_grps, rj_fld, pwr)
 !
       use m_control_parameter
       use m_sph_boundary_input_data
@@ -101,10 +104,11 @@
       type(sph_group_data), intent(inout) ::  sph_grps
 !
       type(phys_data), intent(inout) :: rj_fld
+      type(sph_mean_squares), intent(inout) :: pwr
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
-      call set_control_4_SPH_MHD(rj_fld)
+      call set_control_4_SPH_MHD(rj_fld, pwr)
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
       call load_para_sph_mesh(sph, comms_sph, sph_grps)
@@ -120,7 +124,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine input_control_4_SPH_make_init                          &
-     &         (sph, comms_sph, sph_grps, rj_fld)
+     &         (sph, comms_sph, sph_grps, rj_fld, pwr)
 !
       use m_control_parameter
       use m_sph_boundary_input_data
@@ -132,10 +136,11 @@
       type(sph_group_data), intent(inout) ::  sph_grps
 !
       type(phys_data), intent(inout) :: rj_fld
+      type(sph_mean_squares), intent(inout) :: pwr
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
-      call set_control_4_SPH_MHD(rj_fld)
+      call set_control_4_SPH_MHD(rj_fld, pwr)
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
       call load_para_sph_mesh(sph, comms_sph, sph_grps)
@@ -146,7 +151,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine input_control_SPH_dynamobench                          &
-     &         (sph, comms_sph, sph_grps, rj_fld)
+     &         (sph, comms_sph, sph_grps, rj_fld, pwr)
 !
       use m_control_parameter
       use set_control_sph_mhd
@@ -158,10 +163,11 @@
       type(sph_group_data), intent(inout) ::  sph_grps
 !
       type(phys_data), intent(inout) :: rj_fld
+      type(sph_mean_squares), intent(inout) :: pwr
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
-      call set_control_4_SPH_MHD(rj_fld)
+      call set_control_4_SPH_MHD(rj_fld, pwr)
       call set_control_4_SPH_to_FEM(sph%sph_params, rj_fld)
       call set_ctl_params_dynamobench
 !

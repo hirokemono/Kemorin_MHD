@@ -47,7 +47,7 @@
       call read_control_data_sph_utils
 !
       if (iflag_debug.gt.0) write(*,*) 'set_ctl_data_4_sph_utils'
-      call set_ctl_data_4_sph_utils(rj_fld_spec)
+      call set_ctl_data_4_sph_utils(rj_fld_spec, pwr_spec)
 !
 !       set spectr grids
 !
@@ -70,7 +70,7 @@
 !
       call init_rms_4_sph_spectr                                        &
      &   (sph_mesh_spec%sph%sph_params%l_truncation,                    &
-     &    sph_mesh_spec%sph%sph_rj, rj_fld_spec)
+     &    sph_mesh_spec%sph%sph_rj, rj_fld_spec, pwr_spec, WK_pwr_spec)
 !
       call allocate_work_pick_rms_sph                                   &
      &   (sph_mesh_spec%sph%sph_rj%nidx_rj(1),                          &
@@ -90,7 +90,6 @@
 !
       use m_t_step_parameter
       use m_ctl_params_sph_utils
-      use m_rms_4_sph_spectr
       use m_pickup_sph_spectr_data
       use m_pickup_sph_rms_data
       use copy_rj_phys_data_4_IO
@@ -102,7 +101,7 @@
       if (iflag_debug.gt.0) write(*,*) 'init_sph_rms_4_monitor'
       call init_sph_rms_4_monitor                                       &
      &   (sph_mesh_spec%sph%sph_params%l_truncation,                    &
-     &    sph_mesh_spec%sph%sph_rj)
+     &    sph_mesh_spec%sph%sph_rj, pwr_spec)
 !
       do i_step = i_step_init, i_step_number, i_step_output_ucd
 !
@@ -121,7 +120,8 @@
         if (iflag_debug.gt.0) write(*,*) 'pickup_sph_rms_vol_monitor'
         call pickup_sph_rms_vol_monitor                                 &
      &     (ione, sph_mesh_spec%sph%sph_rj%nidx_rj(1),                  &
-     &      sph_mesh_spec%sph%sph_rj, leg_s, ipol_spec, rj_fld_spec)
+     &      sph_mesh_spec%sph%sph_rj, leg_s, ipol_spec,                 &
+     &      rj_fld_spec, pwr_spec)
 !
         num_pick_layer = 1
         if (iflag_debug.gt.0) write(*,*) 'write_sph_rms_4_monitor'
