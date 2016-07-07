@@ -152,8 +152,12 @@
       if(my_rank .eq. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'surf_ave_4_sph_rms_int'
         call surf_ave_4_sph_rms_int                                     &
-     &     (l_truncation, sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r)
-        call vol_ave_4_rms_sph(l_truncation, avol)
+     &     (l_truncation, sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,        &
+     &      nri_rms, ntot_rms_rj, kr_for_rms,                           &
+     &      rms_sph_l, rms_sph_m, rms_sph_lm, rms_sph, rms_sph_m0)
+        call vol_ave_4_rms_sph(l_truncation, ntot_rms_rj, avol,         &
+     &      rms_sph_vol_l, rms_sph_vol_m, rms_sph_vol_lm,               &
+     &      rms_sph_vol, rms_sph_vol_m0)
       end if
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_volume_average_sph'

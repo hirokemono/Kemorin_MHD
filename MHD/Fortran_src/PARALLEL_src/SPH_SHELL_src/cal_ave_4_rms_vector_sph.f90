@@ -10,9 +10,12 @@
 !!      subroutine cal_one_over_volume                                  &
 !!     &         (kg_st, kg_ed, nri, radius_1d_rj_r, avol)
 !!
-!!      subroutine surf_ave_4_sph_rms_int                               &
-!!     &         (l_truncation, nri, a_r_1d_rj_r)
-!!      subroutine vol_ave_4_rms_sph(l_truncation, avol)
+!!      subroutine surf_ave_4_sph_rms_int(l_truncation, nri,            &
+!!     &          a_r_1d_rj_r, nri_rms, ntot_rms_rj, kr_for_rms,        &
+!!     &          rms_sph_l, rms_sph_m, rms_sph_lm, rms_sph, rms_sph_m0)
+!!      subroutine vol_ave_4_rms_sph(l_truncation, ntot_rms_rj, avol,   &
+!!     &          rms_sph_vol_l, rms_sph_vol_m, rms_sph_vol_lm,         &
+!!     &          rms_sph_vol, rms_sph_vol_m0)
 !!
 !!      subroutine sum_sph_vol_rms_all_modes(ltr, ntot_rms,             &
 !!     &          rms_sph_vl, rms_v_sph)
@@ -34,7 +37,6 @@
       module cal_ave_4_rms_vector_sph
 !
       use m_precision
-!
       use m_constants
 !
       implicit none
@@ -66,13 +68,25 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine surf_ave_4_sph_rms_int                                 &
-     &         (l_truncation, nri, a_r_1d_rj_r)
-!
-      use m_rms_4_sph_spectr
+      subroutine surf_ave_4_sph_rms_int(l_truncation, nri,              &
+     &          a_r_1d_rj_r, nri_rms, ntot_rms_rj, kr_for_rms,          &
+     &          rms_sph_l, rms_sph_m, rms_sph_lm, rms_sph, rms_sph_m0)
 !
       integer(kind = kint), intent(in) :: nri, l_truncation
+      integer(kind = kint), intent(in) :: nri_rms, ntot_rms_rj
+      integer(kind=kint), intent(in) :: kr_for_rms(nri_rms)
       real(kind = kreal), intent(in) :: a_r_1d_rj_r(nri)
+!
+      real(kind = kreal), intent(inout)                                 &
+     &           :: rms_sph_l(nri_rms,0:l_truncation,ntot_rms_rj)
+      real(kind = kreal), intent(inout)                                 &
+     &           :: rms_sph_m(nri_rms,0:l_truncation,ntot_rms_rj)
+      real(kind = kreal), intent(inout)                                 &
+     &           :: rms_sph_lm(nri_rms,0:l_truncation,ntot_rms_rj)
+      real(kind = kreal), intent(inout)                                 &
+     &           :: rms_sph(nri_rms,ntot_rms_rj)
+      real(kind = kreal), intent(inout)                                 &
+     &           :: rms_sph_m0(nri_rms,ntot_rms_rj)
 !
       integer(kind = kint) :: lm, k, kg, icou
 !
@@ -102,12 +116,22 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine vol_ave_4_rms_sph(l_truncation, avol)
+      subroutine vol_ave_4_rms_sph(l_truncation, ntot_rms_rj, avol,     &
+     &          rms_sph_vol_l, rms_sph_vol_m, rms_sph_vol_lm,           &
+     &          rms_sph_vol, rms_sph_vol_m0)
 !
-      use m_rms_4_sph_spectr
-!
-      integer(kind = kint), intent(in) :: l_truncation
+      integer(kind = kint), intent(in) :: l_truncation, ntot_rms_rj
       real(kind = kreal), intent(in) :: avol
+!
+      real(kind = kreal), intent(inout)                                 &
+     &           :: rms_sph_vol_l(0:l_truncation,ntot_rms_rj)
+      real(kind = kreal), intent(inout)                                 &
+     &           :: rms_sph_vol_m(0:l_truncation,ntot_rms_rj)
+      real(kind = kreal), intent(inout)                                 &
+     &           :: rms_sph_vol_lm(0:l_truncation,ntot_rms_rj)
+      real(kind = kreal), intent(inout) :: rms_sph_vol(ntot_rms_rj)
+      real(kind = kreal), intent(inout) :: rms_sph_vol_m0(ntot_rms_rj)
+!
       integer(kind = kint) :: lm, icou
 !
 !

@@ -26,10 +26,13 @@
       module m_rms_4_sph_spectr
 !
       use m_precision
-!      use t_rms_4_sph_spectr
+      use t_rms_4_sph_spectr
 !
       implicit none
 !
+!>      Structure of mean square data
+      type(sph_mean_squares), save :: pwr1
+!pwr1%vol_ave
 !
 !>      Number of field for mean square
       integer (kind=kint) :: num_rms_rj

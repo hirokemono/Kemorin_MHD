@@ -61,7 +61,7 @@
         call radial_integration                                         &
      &     (kg_st, kg_ed, sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,     &
      &      ntot_rms_rj, ave_sph(0,1),  ave_sph_vol(1))
-        call averaging_4_sph_ave_int(avol)
+        call averaging_4_sph_ave_int(ntot_rms_rj, avol, ave_sph_vol)
       end if
 !
       end subroutine cal_volume_average_sph
@@ -94,12 +94,14 @@
           call cal_ave_scalar_sph_spectr                                &
      &       (icomp_st, jcomp_st, rj_fld%n_point, sph_rj%nidx_rj,       &
      &        sph_rj%idx_rj_degree_zero, sph_rj%inod_rj_center,         &
-     &        rj_fld%ntot_phys, rj_fld%d_fld, sph_rj%radius_1d_rj_r)
+     &        rj_fld%ntot_phys, rj_fld%d_fld, sph_rj%radius_1d_rj_r,    &
+     &        nri_ave, ntot_rms_rj, ave_sph)
         else if (rj_fld%num_component(i_fld) .eq. n_vector) then
           call cal_ave_vector_sph_spectr                                &
      &       (icomp_st, jcomp_st, rj_fld%n_point, sph_rj%nidx_rj,       &
      &        sph_rj%idx_rj_degree_zero, sph_rj%inod_rj_center,         &
-     &        rj_fld%ntot_phys, rj_fld%d_fld, sph_rj%radius_1d_rj_r)
+     &        rj_fld%ntot_phys, rj_fld%d_fld, sph_rj%radius_1d_rj_r,    &
+     &        nri_ave, ntot_rms_rj, ave_sph)
         end if
       end do
 !
@@ -107,15 +109,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine averaging_4_sph_ave_int(avol)
+      subroutine averaging_4_sph_ave_int                                &
+     &         (ntot_rms_rj, avol, ave_sph_vol)
 !
-      use m_rms_4_sph_spectr
-!
+      integer(kind = kint), intent(in) :: ntot_rms_rj
       real(kind = kreal), intent(in) :: avol
-      integer(kind = kint) :: k, icou
+!
+      real(kind = kreal), intent(inout) :: ave_sph_vol(ntot_rms_rj)
+!
+      integer(kind = kint) :: icou
 !
 !
-!$omp parallel do private(k,icou)
+!$omp parallel do private(icou)
       do icou = 1, ntot_rms_rj
         ave_sph_vol(icou) = avol * ave_sph_vol(icou)
       end do
@@ -128,9 +133,8 @@
 !
       subroutine cal_ave_scalar_sph_spectr(icomp, jcomp,                &
      &          n_point, nidx_rj, idx_rj_degree_zero, inod_rj_center,   &
-     &          ntot_phys_rj, d_rj, radius_1d_rj_r)
-!
-      use m_rms_4_sph_spectr
+     &          ntot_phys_rj, d_rj, radius_1d_rj_r,                     &
+     &          nri_ave, ntot_rms_rj, ave_sph)
 !
       integer(kind = kint), intent(in) :: nidx_rj(2)
       integer(kind = kint), intent(in) :: idx_rj_degree_zero
@@ -140,6 +144,11 @@
       integer(kind = kint), intent(in) :: icomp, jcomp
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real(kind = kreal), intent(in) :: d_rj(n_point,ntot_phys_rj)
+!
+      integer(kind = kint), intent(in) :: nri_ave, ntot_rms_rj
+!
+      real(kind = kreal), intent(inout)                                 &
+     &           :: ave_sph(0:nri_ave,ntot_rms_rj)
 !
       integer(kind = kint) :: k, inod
 !
@@ -158,9 +167,8 @@
 !
       subroutine cal_ave_vector_sph_spectr(icomp, jcomp,                &
      &          n_point, nidx_rj, idx_rj_degree_zero, inod_rj_center,   &
-     &          ntot_phys_rj, d_rj, radius_1d_rj_r)
-!
-      use m_rms_4_sph_spectr
+     &          ntot_phys_rj, d_rj, radius_1d_rj_r,                     &
+     &          nri_ave, ntot_rms_rj, ave_sph)
 !
       integer(kind = kint), intent(in) :: nidx_rj(2)
       integer(kind = kint), intent(in) :: idx_rj_degree_zero
@@ -170,6 +178,11 @@
       integer(kind = kint), intent(in) :: icomp, jcomp
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real(kind = kreal), intent(in) :: d_rj(n_point,ntot_phys_rj)
+!
+      integer(kind = kint), intent(in) :: nri_ave, ntot_rms_rj
+!
+      real(kind = kreal), intent(inout)                                 &
+     &           :: ave_sph(0:nri_ave,ntot_rms_rj)
 !
       integer(kind = kint) :: k, inod
 !
