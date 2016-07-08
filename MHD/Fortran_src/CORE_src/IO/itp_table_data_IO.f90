@@ -70,7 +70,8 @@
       if (num_dest_domain_IO .gt. 0) then
         write(id_file,'(8i16)')                                         &
               istack_nod_table_org_IO(1:num_dest_domain_IO)
-        write(id_file,'(8i16)') inod_itp_send_IO(1:ntot_table_org_IO)
+        write(id_file,'(8i16)')                                         &
+     &        IO_itp_org%inod_itp_send(1:IO_itp_org%ntot_table_org)
 !
       else
         write(id_file,*)
@@ -101,10 +102,12 @@
       if (num_dest_domain_IO .gt. 0) then
         write(id_file,'(4i16)') istack_itp_type_org_IO(1:4)
 !
-        do inod = 1, ntot_table_org_IO
+        do inod = 1, IO_itp_org%ntot_table_org
           write(id_file,'(3i16,1p3E25.15e3)')                           &
-     &        inod_gl_dest_4_org_IO(inod), iele_org_4_org_IO(inod),     &
-     &        itype_inter_org_IO(inod), coef_inter_org_IO(inod,1:3)
+     &        IO_itp_org%inod_gl_dest_4_org(inod),                      &
+     &        IO_itp_org%iele_org_4_org(inod),                          &
+     &        IO_itp_org%itype_inter_org(inod),                         &
+     &        IO_itp_org%coef_inter_org(inod,1:3)
         end do
 !
       else
@@ -153,11 +156,13 @@
 !
       call read_stack_array(character_4_read, id_file,                  &
      &      num_dest_domain_IO, istack_nod_table_org_IO)
-      ntot_table_org_IO = istack_nod_table_org_IO(num_dest_domain_IO)
+      IO_itp_org%ntot_table_org                                         &
+     &     = istack_nod_table_org_IO(num_dest_domain_IO)
 !
-      call allocate_itp_table_org_IO
+      call alloc_itp_table_org(IO_itp_org)
 !
-      read(id_file,*) inod_itp_send_IO(1:ntot_table_org_IO)
+      read(id_file,*)                                                   &
+     &      IO_itp_org%inod_itp_send(1:IO_itp_org%ntot_table_org)
 !
       end subroutine read_interpolate_table_org
 !
@@ -178,10 +183,11 @@
       call read_stack_array(character_4_read, id_file,                  &
      &      ifour, istack_itp_type_org_IO(0) )
 !
-      do i = 1, ntot_table_org_IO
-        read(id_file,*) inod_gl_dest_4_org_IO(i),                       &
-     &        iele_org_4_org_IO(i), itype_inter_org_IO(i),              &
-     &        coef_inter_org_IO(i,1:3)
+      do i = 1, IO_itp_org%ntot_table_org
+        read(id_file,*) IO_itp_org%inod_gl_dest_4_org(i),               &
+     &        IO_itp_org%iele_org_4_org(i),                             &
+     &        IO_itp_org%itype_inter_org(i),                            &
+     &        IO_itp_org%coef_inter_org(i,1:3)
       end do
 !
       end subroutine read_interpolate_coefs_org

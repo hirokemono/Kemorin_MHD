@@ -121,7 +121,7 @@
       call alloc_itp_num_org(np_smp, tbl_org)
 !
       if (tbl_org%num_dest_domain .gt. 0) then
-        tbl_org%ntot_table_org = ntot_table_org_IO
+        tbl_org%ntot_table_org = IO_itp_org%ntot_table_org
 !
         call alloc_itp_table_org(tbl_org)
 !
@@ -132,17 +132,18 @@
         tbl_org%istack_itp_type_org(0:4) = istack_itp_type_org_IO(0:4)
 !
         do i = 1, tbl_org%ntot_table_org
-          tbl_org%inod_itp_send(i) =      inod_itp_send_IO(i)
-          tbl_org%inod_gl_dest_4_org(i) = inod_gl_dest_4_org_IO(i)
-          tbl_org%iele_org_4_org(i) =     iele_org_4_org_IO(i)
-          tbl_org%itype_inter_org(i) =    itype_inter_org_IO(i)
+          tbl_org%inod_itp_send(i) =      IO_itp_org%inod_itp_send(i)
+          tbl_org%inod_gl_dest_4_org(i)                                 &
+     &       = IO_itp_org%inod_gl_dest_4_org(i)
+          tbl_org%iele_org_4_org(i) =  IO_itp_org%iele_org_4_org(i)
+          tbl_org%itype_inter_org(i) = IO_itp_org%itype_inter_org(i)
 !
-          tbl_org%coef_inter_org(i,1) =   coef_inter_org_IO(i,1)
-          tbl_org%coef_inter_org(i,2) =   coef_inter_org_IO(i,2)
-          tbl_org%coef_inter_org(i,3) =   coef_inter_org_IO(i,3)
+          tbl_org%coef_inter_org(i,1) = IO_itp_org%coef_inter_org(i,1)
+          tbl_org%coef_inter_org(i,2) = IO_itp_org%coef_inter_org(i,2)
+          tbl_org%coef_inter_org(i,3) = IO_itp_org%coef_inter_org(i,3)
         end do
 !
-        call deallocate_itp_table_org_IO
+        call dealloc_itp_table_org(IO_itp_org)
         call deallocate_itp_num_org_IO
 !
         ilast_domain = tbl_org%num_dest_domain
@@ -205,10 +206,10 @@
 !
       if (num_dest_domain_IO .gt. 0) then
 !
-        ntot_table_org_IO = tbl_org%ntot_table_org
+        IO_itp_org%ntot_table_org = tbl_org%ntot_table_org
 !
         call allocate_itp_num_org_IO
-        call allocate_itp_table_org_IO
+        call alloc_itp_table_org(IO_itp_org)
 !
         id_dest_domain_IO(1:num_dest_domain_IO)                         &
      &       = tbl_org%id_dest_domain(1:num_dest_domain_IO)
@@ -217,21 +218,21 @@
         istack_itp_type_org_IO(0:4) = tbl_org%istack_itp_type_org(0:4)
 !
 !
-        inod_itp_send_IO(1:ntot_table_org_IO)                           &
-     &          = tbl_org%inod_itp_send(1:ntot_table_org_IO)
-        inod_gl_dest_4_org_IO(1:ntot_table_org_IO)                      &
-     &          = tbl_org%inod_gl_dest_4_org(1:ntot_table_org_IO)
-        iele_org_4_org_IO(1:ntot_table_org_IO)                          &
-     &          = tbl_org%iele_org_4_org(1:ntot_table_org_IO)
-        itype_inter_org_IO(1:ntot_table_org_IO)                         &
-     &          = tbl_org%itype_inter_org(1:ntot_table_org_IO)
+        IO_itp_org%inod_itp_send(1:IO_itp_org%ntot_table_org)           &
+     &          = tbl_org%inod_itp_send(1:IO_itp_org%ntot_table_org)
+        IO_itp_org%inod_gl_dest_4_org(1:IO_itp_org%ntot_table_org)      &
+     &          = tbl_org%inod_gl_dest_4_org(1:IO_itp_org%ntot_table_org)
+        IO_itp_org%iele_org_4_org(1:IO_itp_org%ntot_table_org)          &
+     &          = tbl_org%iele_org_4_org(1:IO_itp_org%ntot_table_org)
+        IO_itp_org%itype_inter_org(1:IO_itp_org%ntot_table_org)         &
+     &          = tbl_org%itype_inter_org(1:IO_itp_org%ntot_table_org)
 !
-        coef_inter_org_IO(1:ntot_table_org_IO,1)                        &
-     &          = tbl_org%coef_inter_org(1:ntot_table_org_IO,1)
-        coef_inter_org_IO(1:ntot_table_org_IO,2)                        &
-     &          = tbl_org%coef_inter_org(1:ntot_table_org_IO,2)
-        coef_inter_org_IO(1:ntot_table_org_IO,3)                        &
-     &          = tbl_org%coef_inter_org(1:ntot_table_org_IO,3)
+        IO_itp_org%coef_inter_org(1:IO_itp_org%ntot_table_org,1)        &
+     &          = tbl_org%coef_inter_org(1:IO_itp_org%ntot_table_org,1)
+        IO_itp_org%coef_inter_org(1:IO_itp_org%ntot_table_org,2)        &
+     &          = tbl_org%coef_inter_org(1:IO_itp_org%ntot_table_org,2)
+        IO_itp_org%coef_inter_org(1:IO_itp_org%ntot_table_org,3)        &
+     &          = tbl_org%coef_inter_org(1:IO_itp_org%ntot_table_org,3)
 !
       end if
 !

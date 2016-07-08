@@ -101,7 +101,7 @@
         if (ierr.ne.0) call calypso_MPI_abort(ierr,'Check work file')
 !
         num_dest_domain_IO = 0
-        ntot_table_org_IO =  0
+        IO_itp_org%ntot_table_org =  0
         call copy_interpolate_types_from_IO(my_rank, itp_ele_c2f)
         call set_stack_tbl_wtype_org_smp(itp_ele_c2f%tbl_org)
 !

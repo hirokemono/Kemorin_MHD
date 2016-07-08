@@ -110,7 +110,7 @@
 !
       call deallocate_element_refine_IO
       call deallocate_itp_num_org_IO
-      call deallocate_itp_table_org_IO
+      call dealloc_itp_table_org(IO_itp_org)
 !
       call deallocate_itp_nod_dst_IO
       call deallocate_itp_num_dst_IO

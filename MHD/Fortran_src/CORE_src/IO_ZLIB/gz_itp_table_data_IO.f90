@@ -77,8 +77,8 @@
       if (num_dest_domain_IO .gt. 0) then
         call write_gz_multi_int_8i10(num_dest_domain_IO,                &
      &      istack_nod_table_org_IO(1))
-        call write_gz_multi_int_8i10(ntot_table_org_IO,                 &
-     &      inod_itp_send_IO(1))
+        call write_gz_multi_int_8i10(IO_itp_org%ntot_table_org,         &
+     &      IO_itp_org%inod_itp_send)
       else
         write(textbuf,'(a1)') char(0)
         call gz_write_textbuf_w_lf
@@ -114,11 +114,12 @@
       if (num_dest_domain_IO .gt. 0) then
         call write_gz_multi_int_8i10(ifour, istack_itp_type_org_IO(1) )
 !
-        do inod = 1, ntot_table_org_IO
+        do inod = 1, IO_itp_org%ntot_table_org
           write(textbuf,'(3i16,1p3E25.15e3,a1)')                        &
-     &        inod_gl_dest_4_org_IO(inod), iele_org_4_org_IO(inod),     &
-     &        itype_inter_org_IO(inod), coef_inter_org_IO(inod,1:3),    &
-     &        char(0)
+     &        IO_itp_org%inod_gl_dest_4_org(inod),                      &
+     &        IO_itp_org%iele_org_4_org(inod),                          &
+     &        IO_itp_org%itype_inter_org(inod),                         &
+     &        IO_itp_org%coef_inter_org(inod,1:3), char(0)
           call gz_write_textbuf_w_lf
         end do
 !
@@ -160,10 +161,12 @@
         istack_nod_table_org_IO(0) = 0
         call read_gz_multi_int(num_dest_domain_IO,                      &
      &      istack_nod_table_org_IO(1))
-        ntot_table_org_IO = istack_nod_table_org_IO(num_dest_domain_IO)
+        IO_itp_org%ntot_table_org                                       &
+     &         = istack_nod_table_org_IO(num_dest_domain_IO)
 !
-        call allocate_itp_table_org_IO
-        call read_gz_multi_int(ntot_table_org_IO, inod_itp_send_IO)
+        call alloc_itp_table_org(IO_itp_org)
+        call read_gz_multi_int                                          &
+     &     (IO_itp_org%ntot_table_org, IO_itp_org%inod_itp_send)
 !
       end subroutine read_gz_itp_table_org
 !
@@ -181,11 +184,12 @@
         istack_itp_type_org_IO(0) = 0
         call read_gz_multi_int(ifour, istack_itp_type_org_IO(1) )
 !
-        do inod = 1, ntot_table_org_IO
+        do inod = 1, IO_itp_org%ntot_table_org
           call get_one_line_from_gz_f
-          read(textbuf,*) inod_gl_dest_4_org_IO(inod),                  &
-     &        iele_org_4_org_IO(inod), itype_inter_org_IO(inod),        &
-     &        coef_inter_org_IO(inod,1:3)
+          read(textbuf,*) IO_itp_org%inod_gl_dest_4_org(inod),          &
+     &        IO_itp_org%iele_org_4_org(inod),                          &
+     &        IO_itp_org%itype_inter_org(inod),                         &
+     &        IO_itp_org%coef_inter_org(inod,1:3)
         end do
 !
       end subroutine read_gz_itp_coefs_org

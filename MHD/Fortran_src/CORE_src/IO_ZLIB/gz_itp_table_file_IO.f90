@@ -49,7 +49,7 @@
       call close_gzfile
 !
       if (num_dest_domain_IO .gt. 0) then
-        call deallocate_itp_table_org_IO
+        call dealloc_itp_table_org(IO_itp_org)
         call deallocate_itp_num_org_IO
       end if
 !

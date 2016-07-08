@@ -20,6 +20,7 @@
 !
       use m_precision
       use t_comm_table
+      use t_solver_djds
 !
       use skip_comment_f
 !

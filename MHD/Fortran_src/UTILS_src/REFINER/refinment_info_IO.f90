@@ -86,7 +86,7 @@
       call read_element_refine_file(izero, izero)
 !
       call deallocate_itp_num_org_IO
-      call deallocate_itp_table_org_IO
+      call dealloc_itp_table_org(IO_itp_org)
 !
       call deallocate_itp_num_dst_IO
       call deallocate_itp_nod_dst_IO
@@ -202,9 +202,9 @@
 !
 !
       num_dest_domain_IO = ione
-      ntot_table_org_IO =  nele_ref_IO
+      IO_itp_org%ntot_table_org =  nele_ref_IO
       call allocate_itp_num_org_IO
-      call allocate_itp_table_org_IO
+      call alloc_itp_table_org(IO_itp_org)
 !
       id_dest_domain_IO(1) =     izero
       istack_nod_table_org_IO(0) = izero
@@ -213,13 +213,15 @@
       istack_itp_type_org_IO(1:4) = nele_ref_IO
 !
       do iele_neo = 1, nele_ref_IO
-        inod_itp_send_IO(iele_neo) = iele_neo
-        inod_gl_dest_4_org_IO(iele_neo) = iele_global_new_IO(iele_neo)
-        iele_org_4_org_IO(iele_neo) =     iele_global_new_IO(iele_neo)
-        itype_inter_org_IO(iele_neo) =    izero
-        coef_inter_org_IO(iele_neo,1) =    zero
-        coef_inter_org_IO(iele_neo,2) =    zero
-        coef_inter_org_IO(iele_neo,3) =    zero
+        IO_itp_org%inod_itp_send(iele_neo) = iele_neo
+        IO_itp_org%inod_gl_dest_4_org(iele_neo)                         &
+     &                = iele_global_new_IO(iele_neo)
+        IO_itp_org%iele_org_4_org(iele_neo)                             &
+     &                = iele_global_new_IO(iele_neo)
+        IO_itp_org%itype_inter_org(iele_neo) = izero
+        IO_itp_org%coef_inter_org(iele_neo,1) = zero
+        IO_itp_org%coef_inter_org(iele_neo,2) = zero
+        IO_itp_org%coef_inter_org(iele_neo,3) = zero
       end do
 !
       end subroutine  set_elem_refine_itp_tbl_2_IO
