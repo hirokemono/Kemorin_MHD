@@ -39,6 +39,7 @@
 !
       use itp_table_IO_select_4_zlib
       use copy_interpolate_type_IO
+      use copy_interpolate_types
 !
       integer(kind = kint) :: jp
       integer(kind = kint) :: my_rank_2nd, ierr
@@ -69,8 +70,10 @@
 !
 !
           if (iflag_debug.eq.1)                                         &
-     &      write(*,*) 'copy_itp_table_org_to_IO', my_rank_2nd, nprocs
-          call copy_itp_table_org_to_IO(itp_org_c)
+     &      write(*,*) 'copy_itp_tbl_types_org', my_rank_2nd, nprocs
+          call copy_itp_tbl_types_org(my_rank, itp_org_c, IO_itp_org)
+          call dealloc_itp_table_org(itp_org_c)
+          call dealloc_itp_num_org(itp_org_c)
 !
           if (my_rank_2nd .ge. nprocs) then
             num_org_domain_IO = 0
@@ -99,7 +102,7 @@
 !
         if (ierr.ne.0) call calypso_MPI_abort(ierr,'Check work file')
 !
-        num_dest_domain_IO = 0
+        IO_itp_org%num_dest_domain = 0
 !
         table_file_header = table_file_head
         call sel_write_interpolate_table(my_rank)

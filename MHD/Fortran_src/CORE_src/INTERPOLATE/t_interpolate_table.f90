@@ -6,7 +6,7 @@
 !      Written by H.Matsui on Dec., 2008
 !
 !!      subroutine dealloc_interpolate_tbl_type(itp_info)
-!!      subroutine alloc_zero_itp_tables(inp_smp, tp_info)
+!!      subroutine alloc_zero_itp_tables(inp_smp, itp_info)
 !!      subroutine const_interporate_matrix(ele_org, tbl_org, mat)
 !!        type(interpolate_table), intent(inout) :: itp_info
 !!        type(element_data), intent(in) :: ele_org

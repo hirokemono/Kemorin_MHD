@@ -69,7 +69,7 @@
       write(*,*) 'table field header: ', trim(table_file_header)
       do ip = 1, nprocs_table
         my_rank = ip - 1
-        call copy_interpolate_types_to_IO( para_tbl(ip) )
+        call copy_interpolate_types_to_IO(my_rank, para_tbl(ip))
         call sel_write_interpolate_table(my_rank)
       end do
 !

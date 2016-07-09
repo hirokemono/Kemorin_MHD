@@ -127,17 +127,17 @@
         my_rank = ip - 1
 !
         table_file_header = c2f_para_head
-        call copy_interpolate_types_to_IO( c2f_para(ip) )
+        call copy_interpolate_types_to_IO(my_rank, c2f_para(ip) )
         write(*,*) 'table field header: ', trim(table_file_header)
         call sel_write_interpolate_table(my_rank)
 !
         table_file_header = f2c_para_head
-        call copy_interpolate_types_to_IO( f2c_para(ip) )
+        call copy_interpolate_types_to_IO(my_rank, f2c_para(ip) )
         write(*,*) 'table field header: ', trim(table_file_header)
         call sel_write_interpolate_table(my_rank)
 !
         table_file_header = f2c_ele_para_head
-        call copy_interpolate_types_to_IO( f2c_ele_para(ip) )
+        call copy_interpolate_types_to_IO(my_rank, f2c_ele_para(ip) )
         write(*,*) 'table field header: ', trim(table_file_header)
         call sel_write_interpolate_table(my_rank)
       end do

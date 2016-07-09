@@ -205,7 +205,7 @@
      &      refined_fem%mesh, refined_fem%group)
 !
         write(*,*) 's_const_refine_interpolate_tbl'
-        call s_const_refine_interpolate_tbl(org_mesh%node,              &
+        call s_const_refine_interpolate_tbl(my_rank, org_mesh%node,     &
      &      org_mesh%ele, org_ele_mesh%surf, org_ele_mesh%edge,         &
      &      refined_fem%mesh)
 !

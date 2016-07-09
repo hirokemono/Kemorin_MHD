@@ -10,14 +10,18 @@
       module refinment_info_IO
 !
       use m_precision
+      use m_machine_parameter
 !
       use m_constants
       use m_refined_element_data
       use m_element_refinement_IO
+      use t_interpolate_tbl_org
 !
       use set_parallel_file_name
 !
       implicit  none
+!
+      type(interpolate_table_org), save, private :: IO_itp_e_org
 !
       private :: set_element_refine_flags_2_IO
       private :: set_merged_refine_flags_2_IO
@@ -40,7 +44,7 @@
 !
 !
       call set_element_refine_flags_2_IO(numele)
-      call set_elem_refine_itp_tbl_2_IO
+      call set_elem_refine_itp_tbl_2_IO(IO_itp_e_org)
 !
 !
       if (iflag_tmp_tri_refine .eq. 1) then
@@ -49,7 +53,7 @@
         refine_info_fhead = refine_info_head
       end if
 !
-      call write_element_refine_file(izero, izero)
+      call write_element_refine_file(izero, izero, IO_itp_e_org)
 !
       end subroutine write_refinement_table
 !
@@ -64,10 +68,10 @@
 !
 !
       call set_merged_refine_flags_2_IO(numele)
-      call set_elem_refine_itp_tbl_2_IO
+      call set_elem_refine_itp_tbl_2_IO(IO_itp_e_org)
 !
       refine_info_fhead = refine_info_head
-      call write_element_refine_file(izero, izero)
+      call write_element_refine_file(izero, izero, IO_itp_e_org)
 !
       end subroutine write_merged_refinement_tbl
 !
@@ -83,10 +87,10 @@
 !
 !
       refine_info_fhead = refine_info_head
-      call read_element_refine_file(izero, izero)
+      call read_element_refine_file(izero, izero, IO_itp_e_org)
 !
-      call deallocate_itp_num_org_IO
-      call dealloc_itp_table_org(IO_itp_org)
+      call dealloc_itp_num_org(IO_itp_e_org)
+      call dealloc_itp_table_org(IO_itp_e_org)
 !
       call deallocate_itp_num_dst_IO
       call deallocate_itp_nod_dst_IO
@@ -179,11 +183,11 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine  set_elem_refine_itp_tbl_2_IO
+      subroutine  set_elem_refine_itp_tbl_2_IO(IO_itp_org)
 !
       use m_interpolate_table_dest_IO
-      use m_interpolate_table_org_IO
 !
+      type(interpolate_table_org), intent(inout) :: IO_itp_org
       integer(kind = kint) :: iele_neo
 !
 !
@@ -201,16 +205,16 @@
       end do
 !
 !
-      num_dest_domain_IO = ione
+      IO_itp_org%num_dest_domain = ione
       IO_itp_org%ntot_table_org =  nele_ref_IO
-      call allocate_itp_num_org_IO
+      call alloc_itp_num_org(np_smp, IO_itp_org)
       call alloc_itp_table_org(IO_itp_org)
 !
-      id_dest_domain_IO(1) =     izero
-      istack_nod_table_org_IO(0) = izero
-      istack_nod_table_org_IO(1) = nele_ref_IO
-      istack_itp_type_org_IO(0) = izero
-      istack_itp_type_org_IO(1:4) = nele_ref_IO
+      IO_itp_org%id_dest_domain(1) =        izero
+      IO_itp_org%istack_nod_tbl_org(0) =    izero
+      IO_itp_org%istack_nod_tbl_org(1) =    nele_ref_IO
+      IO_itp_org%istack_itp_type_org(0) =   izero
+      IO_itp_org%istack_itp_type_org(1:4) = nele_ref_IO
 !
       do iele_neo = 1, nele_ref_IO
         IO_itp_org%inod_itp_send(iele_neo) = iele_neo

@@ -33,7 +33,7 @@
       use m_interpolate_table_org_IO
 !
       use copy_interpolate_type_IO
-      use copy_interpolate_type_IO
+      use copy_interpolate_types
       use itp_table_IO_select_4_zlib
       use const_interpolate_4_org
 !
@@ -68,8 +68,10 @@
 !
 !
           if (iflag_debug.eq.1)                                         &
-     &      write(*,*) 'copy_itp_table_org_to_IO', my_rank_2nd, nprocs
-          call copy_itp_table_org_to_IO(itp_org_e)
+     &      write(*,*) 'copy_itp_tbl_types_org', my_rank_2nd, nprocs
+          call copy_itp_tbl_types_org(my_rank, itp_org_e, IO_itp_org)
+          call dealloc_itp_table_org(itp_org_e)
+          call dealloc_itp_num_org(itp_org_e)
 !
           if (my_rank_2nd .ge. nprocs) then
             num_org_domain_IO = 0
@@ -87,7 +89,7 @@
           call set_stack_tbl_wtype_org_smp(itp_ele_c2f%tbl_org)
 !
           call reverse_ele_itp_table_type(itp_ele_c2f, itp_ele_f2c)
-          call copy_interpolate_types_to_IO(itp_ele_f2c)
+          call copy_interpolate_types_to_IO(my_rank, itp_ele_f2c)
 !
           table_file_header = table_file_head
           call sel_write_interpolate_table(my_rank)
@@ -100,13 +102,13 @@
 !
         if (ierr.ne.0) call calypso_MPI_abort(ierr,'Check work file')
 !
-        num_dest_domain_IO = 0
+        IO_itp_org%num_dest_domain = 0
         IO_itp_org%ntot_table_org =  0
         call copy_interpolate_types_from_IO(my_rank, itp_ele_c2f)
         call set_stack_tbl_wtype_org_smp(itp_ele_c2f%tbl_org)
 !
         call reverse_ele_itp_table_type(itp_ele_c2f, itp_ele_f2c)
-        call copy_interpolate_types_to_IO(itp_ele_f2c)
+        call copy_interpolate_types_to_IO(my_rank, itp_ele_f2c)
 !
         table_file_header = table_file_head
         call sel_write_interpolate_table(my_rank)

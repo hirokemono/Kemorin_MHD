@@ -3,8 +3,11 @@
 !
 !        programmed by H.Matsui on Sep. 2006 (ver 1.2)
 !
-!      subroutine gz_write_itp_table_file(file_name, my_rank)
-!      subroutine gz_read_itp_table_file(file_name, my_rank, ierr)
+!      subroutine gz_write_itp_table_file                                &
+!     &         (file_name, my_rank, IO_itp_org)
+!      subroutine gz_read_itp_table_file                                 &
+!     &         (file_name, my_rank, IO_itp_org, ierr)
+!        type(interpolate_table_org), intent(inout) :: IO_itp_org
 !
 !      subroutine gz_write_itp_coefs_dest_file(file_name, my_rank)
 !      subroutine gz_read_itp_coefs_dest_file(file_name, my_rank, ierr)
@@ -17,7 +20,7 @@
       use m_error_IDs
 !
       use m_interpolate_table_dest_IO
-      use m_interpolate_table_org_IO
+      use t_interpolate_tbl_org
 !
       use set_parallel_file_name
       use gz_itp_table_data_IO
@@ -32,10 +35,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine gz_write_itp_table_file(file_name, my_rank)
+      subroutine gz_write_itp_table_file                                &
+     &         (file_name, my_rank, IO_itp_org)
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind= kint), intent(in) :: my_rank
+!
+      type(interpolate_table_org), intent(inout) :: IO_itp_org
 !
 !
       call add_gzip_extension(file_name, gzip_name)
@@ -43,14 +49,14 @@
 !
       call write_gz_itp_table_dest(my_rank)
 !
-      call write_gz_itp_table_org(my_rank)
-      call write_gz_itp_coefs_org
+      call write_gz_itp_table_org(my_rank, IO_itp_org)
+      call write_gz_itp_coefs_org(IO_itp_org)
 !
       call close_gzfile
 !
-      if (num_dest_domain_IO .gt. 0) then
+      if (IO_itp_org%num_dest_domain .gt. 0) then
         call dealloc_itp_table_org(IO_itp_org)
-        call deallocate_itp_num_org_IO
+        call dealloc_itp_num_org(IO_itp_org)
       end if
 !
       if (num_org_domain_IO .gt. 0) then
@@ -62,10 +68,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine gz_read_itp_table_file(file_name, my_rank, ierr)
+      subroutine gz_read_itp_table_file                                 &
+     &         (file_name, my_rank, IO_itp_org, ierr)
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank
+!
+      type(interpolate_table_org), intent(inout) :: IO_itp_org
       integer(kind = kint), intent(inout) :: ierr
 !
       integer(kind = kint) :: n_rank_file
@@ -80,10 +89,10 @@
       call read_gz_itp_table_dest
 !
 !        write(*,*) 'read_gz_itp_domain_org'
-      call read_gz_itp_domain_org(n_rank_file)
+      call read_gz_itp_domain_org(n_rank_file, IO_itp_org)
 !        write(*,*) 'read_gz_itp_coefs_org'
-      call read_gz_itp_table_org
-      call read_gz_itp_coefs_org
+      call read_gz_itp_table_org(IO_itp_org)
+      call read_gz_itp_coefs_org(IO_itp_org)
 !
       call close_gzfile
 !

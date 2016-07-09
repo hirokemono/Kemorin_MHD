@@ -116,7 +116,6 @@
       tbl_org_cp%num_dest_domain = tbl_org_in%num_dest_domain
 !
       if (tbl_org_cp%num_dest_domain .gt. 0) then
-!
         tbl_org_cp%ntot_table_org = tbl_org_in%ntot_table_org
 !
         call alloc_itp_num_org(np_smp, tbl_org_cp)
@@ -130,14 +129,11 @@
      &   = tbl_org_in%istack_itp_type_org(0:4)
 !
         do i = 1, tbl_org_cp%ntot_table_org
-          tbl_org_cp%inod_itp_send(i)                                   &
-     &       = tbl_org_in%inod_itp_send(i)
+          tbl_org_cp%inod_itp_send(i) = tbl_org_in%inod_itp_send(i)
           tbl_org_cp%inod_gl_dest_4_org(i)                              &
      &       = tbl_org_in%inod_gl_dest_4_org(i)
-          tbl_org_cp%iele_org_4_org(i)                                  &
-     &       =     tbl_org_in%iele_org_4_org(i)
-          tbl_org_cp%itype_inter_org(i)                                 &
-     &       =    tbl_org_in%itype_inter_org(i)
+          tbl_org_cp%iele_org_4_org(i) = tbl_org_in%iele_org_4_org(i)
+          tbl_org_cp%itype_inter_org(i) = tbl_org_in%itype_inter_org(i)
 !
           tbl_org_cp%coef_inter_org(i,1)                                &
      &       =   tbl_org_in%coef_inter_org(i,1)
@@ -152,6 +148,10 @@
           tbl_org_cp%iflag_self_itp_send = 1
         end if
 !
+      else
+        tbl_org_cp%ntot_table_org = 0
+        call alloc_itp_num_org(np_smp, tbl_org_cp)
+        call alloc_itp_table_org(tbl_org_cp)
       end if
 !
       end subroutine copy_itp_tbl_types_org

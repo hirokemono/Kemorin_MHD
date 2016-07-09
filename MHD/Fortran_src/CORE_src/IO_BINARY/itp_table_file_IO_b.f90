@@ -3,13 +3,15 @@
 !
 !        programmed by H.Matsui on Sep. 2006 (ver 1.2)
 !
-!      subroutine write_itp_table_file_b(file_name, my_rank)
-!      subroutine read_itp_table_file_b(file_name, my_rank, ierr)
-!
-!      subroutine write_itp_coefs_dest_file_b(file_name, my_rank)
-!      subroutine read_itp_coefs_dest_file_b(file_name, my_rank, ierr)
-!      subroutine read_itp_table_dest_file_b(file_name, my_rank, ierr)
-!      subroutine read_itp_domain_dest_file_b(file_name, my_rank, ierr)
+!!      subroutine write_itp_table_file_b(file_name, my_rank, IO_itp_org)
+!!      subroutine read_itp_table_file_b                                &
+!!     &         (file_name, my_rank, IO_itp_org, ierr)
+!!        type(interpolate_table_org), intent(inout) :: IO_itp_org
+!!
+!!      subroutine write_itp_coefs_dest_file_b(file_name, my_rank)
+!!      subroutine read_itp_coefs_dest_file_b(file_name, my_rank, ierr)
+!!      subroutine read_itp_table_dest_file_b(file_name, my_rank, ierr)
+!!      subroutine read_itp_domain_dest_file_b(file_name, my_rank, ierr)
 !
       module itp_table_file_IO_b
 !
@@ -17,7 +19,7 @@
       use m_error_IDs
 !
       use m_interpolate_table_dest_IO
-      use m_interpolate_table_org_IO
+      use t_interpolate_tbl_org
 !
       use itp_table_data_IO_b
 !
@@ -32,23 +34,25 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_itp_table_file_b(file_name, my_rank)
+      subroutine write_itp_table_file_b(file_name, my_rank, IO_itp_org)
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind= kint), intent(in) :: my_rank
+      type(interpolate_table_org), intent(inout) :: IO_itp_org
 !
 !
       open (id_tbl_file, file = file_name, form = 'unformatted')
       call write_interpolate_table_dest_b(id_tbl_file, my_rank)
 !
-      call write_interpolate_table_org_b(id_tbl_file, my_rank)
-      call write_interpolate_coefs_org_b(id_tbl_file)
+      call write_interpolate_table_org_b                                &
+     &   (id_tbl_file, my_rank, IO_itp_org)
+      call write_interpolate_coefs_org_b(id_tbl_file, IO_itp_org)
 !
       close(id_tbl_file)
 !
-      if (num_dest_domain_IO .gt. 0) then
+      if (IO_itp_org%num_dest_domain .gt. 0) then
         call dealloc_itp_table_org(IO_itp_org)
-        call deallocate_itp_num_org_IO
+        call dealloc_itp_num_org(IO_itp_org)
       end if
 !
       if (num_org_domain_IO .gt. 0) then
@@ -60,10 +64,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_itp_table_file_b(file_name, my_rank, ierr)
+      subroutine read_itp_table_file_b                                  &
+     &         (file_name, my_rank, IO_itp_org, ierr)
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank
+!
+      type(interpolate_table_org), intent(inout) :: IO_itp_org
       integer(kind = kint), intent(inout) :: ierr
 !
       integer(kind = kint) :: n_rank_file
@@ -73,9 +80,10 @@
       call read_interpolate_domain_dest_b(id_tbl_file, n_rank_file)
       call read_interpolate_table_dest_b(id_tbl_file)
 !
-      call read_interpolate_domain_org_b(id_tbl_file, n_rank_file)
-      call read_interpolate_table_org_b(id_tbl_file)
-      call read_interpolate_coefs_org_b(id_tbl_file)
+      call read_interpolate_domain_org_b                                &
+     &    (id_tbl_file, n_rank_file, IO_itp_org)
+      call read_interpolate_table_org_b(id_tbl_file, IO_itp_org)
+      call read_interpolate_coefs_org_b(id_tbl_file, IO_itp_org)
 !
       close(id_tbl_file)
 !

@@ -3,12 +3,16 @@
 !
 !        programmed by H.Matsui on Sep. 2006 (ver 1.2)
 !
-!      subroutine write_interpolate_table_org_b(id_file, my_rank)
-!      subroutine write_interpolate_coefs_org_b(id_file)
+!      subroutine write_interpolate_table_org_b                         &
+!     &         (id_file, my_rank, IO_itp_org)
+!      subroutine write_interpolate_coefs_org_b(id_file, IO_itp_org)
+!        type(interpolate_table_org), intent(in) :: IO_itp_org
 !
-!      subroutine read_interpolate_domain_org_b(id_file, n_rank)
-!      subroutine read_interpolate_table_org_b(id_file)
-!      subroutine read_interpolate_coefs_org_b(id_file)
+!      subroutine read_interpolate_domain_org_b                         &
+!     &         (id_file, n_rank, IO_itp_org)
+!      subroutine read_interpolate_table_org_b(id_file, IO_itp_org)
+!      subroutine read_interpolate_coefs_org_b(id_file, IO_itp_org)
+!        type(interpolate_table_org), intent(inout) :: IO_itp_org
 !
 !      subroutine write_interpolate_table_dest_b(id_file, my_rank)
 !      subroutine write_interpolate_coefs_dest_b(id_file)
@@ -20,6 +24,7 @@
       module itp_table_data_IO_b
 !
       use m_precision
+      use m_machine_parameter
 !
       implicit none
 !
@@ -29,37 +34,42 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_interpolate_table_org_b(id_file, my_rank)
+      subroutine write_interpolate_table_org_b                          &
+     &         (id_file, my_rank, IO_itp_org)
 !
-      use m_interpolate_table_org_IO
+      use t_interpolate_tbl_org
 !
       integer(kind = kint), intent(in) :: id_file, my_rank
+      type(interpolate_table_org), intent(in) :: IO_itp_org
 !
 !
       write(id_file) my_rank
-      write(id_file) num_dest_domain_IO
+      write(id_file) IO_itp_org%num_dest_domain
 !
-      if (num_dest_domain_IO .gt. 0) then
-        write(id_file) id_dest_domain_IO(1:num_dest_domain_IO)
-        write(id_file) istack_nod_table_org_IO(1:num_dest_domain_IO)
+      if (IO_itp_org%num_dest_domain .gt. 0) then
         write(id_file)                                                  &
-     &        IO_itp_org%inod_itp_send(1:IO_itp_org%ntot_table_org)
+     &      IO_itp_org%id_dest_domain(1:IO_itp_org%num_dest_domain)
+        write(id_file)                                                  &
+     &      IO_itp_org%istack_nod_tbl_org(1:IO_itp_org%num_dest_domain)
+        write(id_file)                                                  &
+     &      IO_itp_org%inod_itp_send(1:IO_itp_org%ntot_table_org)
       end if
 !
       end subroutine write_interpolate_table_org_b
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_interpolate_coefs_org_b(id_file)
+      subroutine write_interpolate_coefs_org_b(id_file, IO_itp_org)
 !
-      use m_interpolate_table_org_IO
+      use t_interpolate_tbl_org
 !
       integer(kind = kint), intent(in) :: id_file
+      type(interpolate_table_org), intent(in) :: IO_itp_org
 !
       integer(kind = kint) :: i, num
 !
-      if (num_dest_domain_IO .eq. 0) return
-        write(id_file) istack_itp_type_org_IO(0:4)
+      if (IO_itp_org%num_dest_domain .eq. 0) return
+        write(id_file) IO_itp_org%istack_itp_type_org(0:4)
 !
         num = IO_itp_org%ntot_table_org
         write(id_file) IO_itp_org%inod_gl_dest_4_org(1:num)
@@ -74,40 +84,46 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine read_interpolate_domain_org_b(id_file, n_rank)
+      subroutine read_interpolate_domain_org_b                          &
+     &         (id_file, n_rank, IO_itp_org)
 !
-      use m_interpolate_table_org_IO
+      use t_interpolate_tbl_org
 !
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(inout) :: n_rank
+      type(interpolate_table_org), intent(inout) :: IO_itp_org
 !
 !
       read(id_file) n_rank
-      read(id_file) num_dest_domain_IO
+      read(id_file) IO_itp_org%num_dest_domain
 !
-      if (num_dest_domain_IO .gt. 0) then
-        call allocate_itp_num_org_IO
-        read(id_file) id_dest_domain_IO(1:num_dest_domain_IO)
+      if (IO_itp_org%num_dest_domain .gt. 0) then
+        call alloc_itp_num_org(np_smp, IO_itp_org)
+        read(id_file)                                                   &
+     &        IO_itp_org%id_dest_domain(1:IO_itp_org%num_dest_domain)
       end if
 !
       end subroutine read_interpolate_domain_org_b
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_interpolate_table_org_b(id_file)
+      subroutine read_interpolate_table_org_b(id_file, IO_itp_org)
 !
-      use m_interpolate_table_org_IO
+      use t_interpolate_tbl_org
 !
       integer(kind = kint), intent(in) :: id_file
+      type(interpolate_table_org), intent(inout) :: IO_itp_org
 !
 !
-      if (num_dest_domain_IO .eq. 0) return
+      if (IO_itp_org%num_dest_domain .eq. 0) return
 !
-        read(id_file) istack_nod_table_org_IO(1:num_dest_domain_IO)
+        IO_itp_org%istack_nod_tbl_org(0) = 0
+        read(id_file)                                                   &
+     &     IO_itp_org%istack_nod_tbl_org(1:IO_itp_org%num_dest_domain)
         IO_itp_org%ntot_table_org                                       &
-     &        = istack_nod_table_org_IO(num_dest_domain_IO)
+     &     = IO_itp_org%istack_nod_tbl_org(IO_itp_org%num_dest_domain)
 !
         call alloc_itp_table_org(IO_itp_org)
         read(id_file)                                                   &
@@ -117,17 +133,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_interpolate_coefs_org_b(id_file)
+      subroutine read_interpolate_coefs_org_b(id_file, IO_itp_org)
 !
-      use m_interpolate_table_org_IO
+      use t_interpolate_tbl_org
 !
       integer(kind = kint), intent(in) :: id_file
+      type(interpolate_table_org), intent(inout) :: IO_itp_org
 !
       integer(kind = kint) :: i, num
 !
 !
-      if (num_dest_domain_IO .eq. 0) return
-        read(id_file) istack_itp_type_org_IO(0:4)
+      if (IO_itp_org%num_dest_domain .eq. 0) return
+        read(id_file) IO_itp_org%istack_itp_type_org(0:4)
 !
         num = IO_itp_org%ntot_table_org
         read(id_file) IO_itp_org%inod_gl_dest_4_org(1:num)

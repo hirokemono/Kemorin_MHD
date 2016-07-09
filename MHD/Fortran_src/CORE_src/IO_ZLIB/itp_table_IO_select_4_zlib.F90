@@ -48,15 +48,16 @@
 !
 #ifdef ZLIB_IO
       if(ifmt_itp_table_file .eq. id_gzip_txt_file_fmt) then
-        call gz_write_itp_table_file(tbl_file_name, my_rank)
+        call gz_write_itp_table_file                                    &
+     &     (tbl_file_name, my_rank, IO_itp_org)
         return
       end if
 #endif
 !
       if (ifmt_itp_table_file .eq. id_binary_file_fmt) then
-        call write_itp_table_file_b(tbl_file_name, my_rank)
+        call write_itp_table_file_b(tbl_file_name, my_rank, IO_itp_org)
       else if(ifmt_itp_table_file .eq. id_ascii_file_fmt) then
-        call write_itp_table_file_a(tbl_file_name, my_rank)
+        call write_itp_table_file_a(tbl_file_name, my_rank, IO_itp_org)
       end if
 !
       end subroutine sel_write_interpolate_table
@@ -73,15 +74,18 @@
 !
 #ifdef ZLIB_IO
       if(ifmt_itp_table_file .eq. id_gzip_txt_file_fmt) then
-        call gz_read_itp_table_file(tbl_file_name, my_rank, ierr)
+        call gz_read_itp_table_file                                     &
+     &     (tbl_file_name, my_rank, IO_itp_org, ierr)
         return
       end if
 #endif
 !
       if (ifmt_itp_table_file .eq. id_binary_file_fmt) then
-        call read_itp_table_file_b(tbl_file_name, my_rank, ierr)
+        call read_itp_table_file_b                                      &
+     &     (tbl_file_name, my_rank, IO_itp_org, ierr)
       else if(ifmt_itp_table_file .eq. id_ascii_file_fmt) then
-        call read_itp_table_file_a(tbl_file_name, my_rank, ierr)
+        call read_itp_table_file_a                                      &
+     &     (tbl_file_name, my_rank, IO_itp_org, ierr)
       end if
 !
       end subroutine sel_read_interpolate_table
