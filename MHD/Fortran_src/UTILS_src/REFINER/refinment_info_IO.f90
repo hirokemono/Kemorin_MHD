@@ -191,17 +191,18 @@
       integer(kind = kint) :: iele_neo
 !
 !
-      num_org_domain_IO =   ione
-      ntot_table_dest_IO =  nele_ref_IO
+      IO_itp_dest%num_org_domain =   ione
+      IO_itp_dest%ntot_table_dest =  nele_ref_IO
       call allocate_itp_num_dst_IO
       call allocate_itp_nod_dst_IO
 !
-      id_org_domain_IO(1) =     izero
-      istack_table_dest_IO(0) = izero
-      istack_table_dest_IO(1) = nele_ref_IO
+      IO_itp_dest%id_org_domain(1) =     izero
+      IO_itp_dest%istack_nod_tbl_dest(0) = izero
+      IO_itp_dest%istack_nod_tbl_dest(1) = nele_ref_IO
 !
       do iele_neo = 1, nele_ref_IO
-        inod_dest_IO(iele_neo) = iele_global_org_IO(iele_neo)
+        IO_itp_dest%inod_dest_4_dest(iele_neo)                          &
+     &          = iele_global_org_IO(iele_neo)
       end do
 !
 !

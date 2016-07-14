@@ -37,51 +37,51 @@
 !
 !   for nodes
 !
-        if (     coef_inter_dest(inod,1) .eq. -one                      &
-     &    .and.  coef_inter_dest(inod,2) .eq. -one                      &
-     &    .and.  coef_inter_dest(inod,3) .eq. -one) then
+        if (      itp_coef_dest%coef_inter_dest(inod,1) .eq. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .eq. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .eq. -one) then
 !
           nnod_interpolate_type(1) = nnod_interpolate_type(1) + 1
 !
-        else if( coef_inter_dest(inod,1) .eq.  one                      &
-     &    .and.  coef_inter_dest(inod,2) .eq. -one                      &
-     &    .and.  coef_inter_dest(inod,3) .eq. -one) then
+        else if(  itp_coef_dest%coef_inter_dest(inod,1) .eq.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .eq. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .eq. -one) then
 !
           nnod_interpolate_type(1) = nnod_interpolate_type(1) + 1
 !
-        else if( coef_inter_dest(inod,1) .eq.  one                      &
-     &    .and.  coef_inter_dest(inod,2) .eq.  one                      &
-     &    .and.  coef_inter_dest(inod,3) .eq. -one) then
+        else if(  itp_coef_dest%coef_inter_dest(inod,1) .eq.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .eq.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .eq. -one) then
 !
           nnod_interpolate_type(1) = nnod_interpolate_type(1) + 1
 !
-        else if( coef_inter_dest(inod,1) .eq. -one                      &
-     &    .and.  coef_inter_dest(inod,2) .eq.  one                      &
-     &    .and.  coef_inter_dest(inod,3) .eq. -one) then
+        else if(  itp_coef_dest%coef_inter_dest(inod,1) .eq. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .eq.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .eq. -one) then
 !
           nnod_interpolate_type(1) = nnod_interpolate_type(1) + 1
 !
-        else if( coef_inter_dest(inod,1) .eq. -one                      &
-     &    .and.  coef_inter_dest(inod,2) .eq. -one                      &
-     &    .and.  coef_inter_dest(inod,3) .eq.  one) then
+        else if(  itp_coef_dest%coef_inter_dest(inod,1) .eq. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .eq. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .eq.  one) then
 !
           nnod_interpolate_type(1) = nnod_interpolate_type(1) + 1
 !
-        else if( coef_inter_dest(inod,1) .eq.  one                      &
-     &    .and.  coef_inter_dest(inod,2) .eq. -one                      &
-     &    .and.  coef_inter_dest(inod,3) .eq.  one) then
+        else if(  itp_coef_dest%coef_inter_dest(inod,1) .eq.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .eq. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .eq.  one) then
 !
           nnod_interpolate_type(1) = nnod_interpolate_type(1) + 1
 !
-        else if( coef_inter_dest(inod,1) .eq.  one                      &
-     &    .and.  coef_inter_dest(inod,2) .eq.  one                      &
-     &    .and.  coef_inter_dest(inod,3) .eq.  one) then
+        else if(  itp_coef_dest%coef_inter_dest(inod,1) .eq.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .eq.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .eq.  one) then
 !
           nnod_interpolate_type(1) = nnod_interpolate_type(1) + 1
 !
-        else if( coef_inter_dest(inod,1) .eq. -one                      &
-     &    .and.  coef_inter_dest(inod,2) .eq.  one                      &
-     &    .and.  coef_inter_dest(inod,3) .eq.  one) then
+        else if(  itp_coef_dest%coef_inter_dest(inod,1) .eq. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .eq.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .eq.  one) then
 !
           nnod_interpolate_type(1) = nnod_interpolate_type(1) + 1
 !
@@ -89,92 +89,92 @@
 !   for edges
 !
 !
-        else if( coef_inter_dest(inod,1) .gt. -one                      &
-     &     .and. coef_inter_dest(inod,1) .lt.  one                      &
-     &    .and.  coef_inter_dest(inod,2) .eq. -one                      &
-     &    .and.  coef_inter_dest(inod,3) .eq. -one) then
+        else if(  itp_coef_dest%coef_inter_dest(inod,1) .gt. -one       &
+     &     .and.  itp_coef_dest%coef_inter_dest(inod,1) .lt.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .eq. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .eq. -one) then
 !
           nnod_interpolate_type(2) = nnod_interpolate_type(2) + 1
 !
-        else if( coef_inter_dest(inod,1) .eq.  one                      &
-     &    .and.  coef_inter_dest(inod,2) .gt. -one                      &
-     &    .and.  coef_inter_dest(inod,2) .lt.  one                      &
-     &    .and.  coef_inter_dest(inod,3) .eq. -one) then
+        else if(  itp_coef_dest%coef_inter_dest(inod,1) .eq.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .gt. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .lt.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .eq. -one) then
 !
           nnod_interpolate_type(2) = nnod_interpolate_type(2) + 1
 !
-        else if( coef_inter_dest(inod,1) .gt. -one                      &
-     &    .and.  coef_inter_dest(inod,1) .lt.  one                      &
-     &    .and.  coef_inter_dest(inod,2) .eq.  one                      &
-     &    .and.  coef_inter_dest(inod,3) .eq. -one) then
+        else if(  itp_coef_dest%coef_inter_dest(inod,1) .gt. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,1) .lt.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .eq.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .eq. -one) then
 !
           nnod_interpolate_type(2) = nnod_interpolate_type(2) + 1
 !
-        else if( coef_inter_dest(inod,1) .eq. -one                      &
-     &    .and.  coef_inter_dest(inod,2) .gt. -one                      &
-     &    .and.  coef_inter_dest(inod,2) .lt.  one                      &
-     &    .and.  coef_inter_dest(inod,3) .eq. -one) then
-!
-          nnod_interpolate_type(2) = nnod_interpolate_type(2) + 1
-!
-!
-        else if( coef_inter_dest(inod,1) .gt. -one                      &
-     &    .and.  coef_inter_dest(inod,1) .lt.  one                      &
-     &    .and.  coef_inter_dest(inod,2) .eq. -one                      &
-     &    .and.  coef_inter_dest(inod,3) .eq.  one) then
-!
-          nnod_interpolate_type(2) = nnod_interpolate_type(2) + 1
-!
-        else if( coef_inter_dest(inod,1) .eq.  one                      &
-     &    .and.  coef_inter_dest(inod,2) .gt. -one                      &
-     &    .and.  coef_inter_dest(inod,2) .lt.  one                      &
-     &    .and.  coef_inter_dest(inod,3) .eq.  one) then
-!
-          nnod_interpolate_type(2) = nnod_interpolate_type(2) + 1
-!
-        else if( coef_inter_dest(inod,1) .gt. -one                      &
-     &    .and.  coef_inter_dest(inod,1) .lt.  one                      &
-     &    .and.  coef_inter_dest(inod,2) .eq.  one                      &
-     &    .and.  coef_inter_dest(inod,3) .eq.  one) then
-!
-          nnod_interpolate_type(2) = nnod_interpolate_type(2) + 1
-!
-        else if( coef_inter_dest(inod,1) .eq. -one                      &
-     &    .and.  coef_inter_dest(inod,2) .gt. -one                      &
-     &    .and.  coef_inter_dest(inod,2) .lt.  one                      &
-     &    .and.  coef_inter_dest(inod,3) .eq.  one) then
+        else if(  itp_coef_dest%coef_inter_dest(inod,1) .eq. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .gt. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .lt.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .eq. -one) then
 !
           nnod_interpolate_type(2) = nnod_interpolate_type(2) + 1
 !
 !
-        else if( coef_inter_dest(inod,1) .eq. -one                      &
-     &    .and.  coef_inter_dest(inod,2) .eq. -one                      &
-     &    .and.  coef_inter_dest(inod,3) .gt. -one                      &
-     &    .and.  coef_inter_dest(inod,3) .lt.  one                      &
+        else if(  itp_coef_dest%coef_inter_dest(inod,1) .gt. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,1) .lt.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .eq. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .eq.  one) then
+!
+          nnod_interpolate_type(2) = nnod_interpolate_type(2) + 1
+!
+        else if(  itp_coef_dest%coef_inter_dest(inod,1) .eq.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .gt. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .lt.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .eq.  one) then
+!
+          nnod_interpolate_type(2) = nnod_interpolate_type(2) + 1
+!
+        else if(  itp_coef_dest%coef_inter_dest(inod,1) .gt. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,1) .lt.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .eq.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .eq.  one) then
+!
+          nnod_interpolate_type(2) = nnod_interpolate_type(2) + 1
+!
+        else if(  itp_coef_dest%coef_inter_dest(inod,1) .eq. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .gt. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .lt.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .eq.  one) then
+!
+          nnod_interpolate_type(2) = nnod_interpolate_type(2) + 1
+!
+!
+        else if(  itp_coef_dest%coef_inter_dest(inod,1) .eq. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .eq. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .gt. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .lt.  one       &
      &  ) then
 !
           nnod_interpolate_type(2) = nnod_interpolate_type(2) + 1
 !
-        else if( coef_inter_dest(inod,1) .eq.  one                      &
-     &    .and.  coef_inter_dest(inod,2) .eq. -one                      &
-     &    .and.  coef_inter_dest(inod,3) .gt. -one                      &
-     &    .and.  coef_inter_dest(inod,3) .lt.  one                      &
+        else if(  itp_coef_dest%coef_inter_dest(inod,1) .eq.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .eq. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .gt. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .lt.  one       &
      &  ) then
 !
           nnod_interpolate_type(2) = nnod_interpolate_type(2) + 1
 !
-        else if( coef_inter_dest(inod,1) .eq.  one                      &
-     &    .and.  coef_inter_dest(inod,2) .eq.  one                      &
-     &    .and.  coef_inter_dest(inod,3) .gt. -one                      &
-     &    .and.  coef_inter_dest(inod,3) .lt.  one                      &
+        else if(  itp_coef_dest%coef_inter_dest(inod,1) .eq.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .eq.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .gt. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .lt.  one       &
      &  ) then
 !
           nnod_interpolate_type(2) = nnod_interpolate_type(2) + 1
 !
-        else if( coef_inter_dest(inod,1) .eq. -one                      &
-     &    .and.  coef_inter_dest(inod,2) .eq.  one                      &
-     &    .and.  coef_inter_dest(inod,3) .gt. -one                      &
-     &    .and.  coef_inter_dest(inod,3) .lt.  one                      &
+        else if(  itp_coef_dest%coef_inter_dest(inod,1) .eq. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .eq.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .gt. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .lt.  one       &
      &  ) then
 !
           nnod_interpolate_type(2) = nnod_interpolate_type(2) + 1
@@ -183,57 +183,57 @@
 !   for surfaces
 !
 !
-        else if( coef_inter_dest(inod,1) .eq. -one                      &
-     &    .and.  coef_inter_dest(inod,2) .gt. -one                      &
-     &    .and.  coef_inter_dest(inod,2) .lt.  one                      &
-     &    .and.  coef_inter_dest(inod,3) .gt. -one                      &
-     &    .and.  coef_inter_dest(inod,3) .lt.  one                      &
+        else if(  itp_coef_dest%coef_inter_dest(inod,1) .eq. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .gt. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .lt.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .gt. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .lt.  one       &
      &  ) then
 !
           nnod_interpolate_type(3) = nnod_interpolate_type(3) + 1
 !
-        else if( coef_inter_dest(inod,1) .eq.  one                      &
-     &    .and.  coef_inter_dest(inod,2) .gt. -one                      &
-     &    .and.  coef_inter_dest(inod,2) .lt.  one                      &
-     &    .and.  coef_inter_dest(inod,3) .gt. -one                      &
-     &    .and.  coef_inter_dest(inod,3) .lt.  one                      &
-     &  ) then
-!
-          nnod_interpolate_type(3) = nnod_interpolate_type(3) + 1
-!
-!
-        else if( coef_inter_dest(inod,1) .gt. -one                      &
-     &    .and.  coef_inter_dest(inod,1) .lt.  one                      &
-     &    .and.  coef_inter_dest(inod,2) .eq. -one                      &
-     &    .and.  coef_inter_dest(inod,3) .gt. -one                      &
-     &    .and.  coef_inter_dest(inod,3) .lt.  one                      &
-     &  ) then
-!
-          nnod_interpolate_type(3) = nnod_interpolate_type(3) + 1
-!
-        else if( coef_inter_dest(inod,1) .gt. -one                      &
-     &    .and.  coef_inter_dest(inod,1) .lt.  one                      &
-     &    .and.  coef_inter_dest(inod,2) .eq.  one                      &
-     &    .and.  coef_inter_dest(inod,3) .gt. -one                      &
-     &    .and.  coef_inter_dest(inod,3) .lt.  one                      &
+        else if(  itp_coef_dest%coef_inter_dest(inod,1) .eq.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .gt. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .lt.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .gt. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .lt.  one       &
      &  ) then
 !
           nnod_interpolate_type(3) = nnod_interpolate_type(3) + 1
 !
 !
-        else if( coef_inter_dest(inod,1) .gt. -one                      &
-     &    .and.  coef_inter_dest(inod,1) .lt.  one                      &
-     &    .and.  coef_inter_dest(inod,2) .gt. -one                      &
-     &    .and.  coef_inter_dest(inod,2) .lt.  one                      &
-     &    .and.  coef_inter_dest(inod,3) .eq. -one) then
+        else if(  itp_coef_dest%coef_inter_dest(inod,1) .gt. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,1) .lt.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .eq. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .gt. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .lt.  one       &
+     &  ) then
 !
           nnod_interpolate_type(3) = nnod_interpolate_type(3) + 1
 !
-        else if( coef_inter_dest(inod,1) .gt. -one                      &
-     &    .and.  coef_inter_dest(inod,1) .lt.  one                      &
-     &    .and.  coef_inter_dest(inod,2) .gt. -one                      &
-     &    .and.  coef_inter_dest(inod,2) .lt.  one                      &
-     &    .and.  coef_inter_dest(inod,3) .eq.  one) then
+        else if(  itp_coef_dest%coef_inter_dest(inod,1) .gt. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,1) .lt.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .eq.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .gt. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .lt.  one       &
+     &  ) then
+!
+          nnod_interpolate_type(3) = nnod_interpolate_type(3) + 1
+!
+!
+        else if(  itp_coef_dest%coef_inter_dest(inod,1) .gt. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,1) .lt.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .gt. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .lt.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .eq. -one) then
+!
+          nnod_interpolate_type(3) = nnod_interpolate_type(3) + 1
+!
+        else if(  itp_coef_dest%coef_inter_dest(inod,1) .gt. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,1) .lt.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .gt. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .lt.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .eq.  one) then
 !
           nnod_interpolate_type(3) = nnod_interpolate_type(3) + 1
 !
@@ -241,12 +241,12 @@
 !   for volume
 !
 !
-        else if( coef_inter_dest(inod,1) .gt. -one                      &
-     &    .and.  coef_inter_dest(inod,1) .lt.  one                      &
-     &    .and.  coef_inter_dest(inod,2) .gt. -one                      &
-     &    .and.  coef_inter_dest(inod,2) .lt.  one                      &
-     &    .and.  coef_inter_dest(inod,3) .gt. -one                      &
-     &    .and.  coef_inter_dest(inod,3) .lt.  one                      &
+        else if(  itp_coef_dest%coef_inter_dest(inod,1) .gt. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,1) .lt.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .gt. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,2) .lt.  one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .gt. -one       &
+     &    .and.   itp_coef_dest%coef_inter_dest(inod,3) .lt.  one       &
      &  ) then
 !
           nnod_interpolate_type(4) = nnod_interpolate_type(4) + 1

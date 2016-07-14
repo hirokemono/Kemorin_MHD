@@ -74,7 +74,7 @@
           call dealloc_itp_num_org(itp_org_e)
 !
           if (my_rank_2nd .ge. nprocs) then
-            num_org_domain_IO = 0
+            IO_itp_dest%num_org_domain = 0
           else
             table_file_header = work_header
 !

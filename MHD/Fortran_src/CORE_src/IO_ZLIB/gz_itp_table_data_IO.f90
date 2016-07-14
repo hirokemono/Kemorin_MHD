@@ -229,12 +229,12 @@
 !
       write(textbuf,'(i16,a1)') my_rank, char(0)
       call gz_write_textbuf_w_lf
-      write(textbuf,'(i16,a1)') num_org_domain_IO, char(0)
+      write(textbuf,'(i16,a1)') IO_itp_dest%num_org_domain, char(0)
       call gz_write_textbuf_w_lf
 !
-      if (num_org_domain_IO .gt. 0) then
-        call write_gz_multi_int_10i8(num_org_domain_IO,                 &
-     &     id_org_domain_IO)
+      if (IO_itp_dest%num_org_domain .gt. 0) then
+        call write_gz_multi_int_10i8(IO_itp_dest%num_org_domain,        &
+     &     IO_itp_dest%id_org_domain)
       else
         write(textbuf,'(a1)') char(0)
         call gz_write_textbuf_w_lf
@@ -250,11 +250,11 @@
       write(textbuf,'(a,a1)') '!', char(0)
       call gz_write_textbuf_w_lf
 !
-      if (num_org_domain_IO .gt. 0) then
-        call write_gz_multi_int_8i10(num_org_domain_IO,                 &
-     &      istack_table_dest_IO(1))
-        call write_gz_multi_int_8i10(ntot_table_dest_IO,                &
-     &      inod_dest_IO(1))
+      if (IO_itp_dest%num_org_domain .gt. 0) then
+        call write_gz_multi_int_8i10(IO_itp_dest%num_org_domain,        &
+     &   IO_itp_dest%istack_nod_tbl_dest(1:IO_itp_dest%num_org_domain))
+        call write_gz_multi_int_8i10(IO_itp_dest%ntot_table_dest,       &
+     &      IO_itp_dest%inod_dest_4_dest)
       else
         write(textbuf,'(a1)') char(0)
         call gz_write_textbuf_w_lf
@@ -286,13 +286,13 @@
       write(textbuf,'(a,a1)') '!', char(0)
       call gz_write_textbuf_w_lf
 !
-      if (num_org_domain_IO .gt. 0) then
-        do i = 1, num_org_domain_IO
+      if (IO_itp_dest%num_org_domain .gt. 0) then
+        do i = 1, IO_itp_dest%num_org_domain
           call write_gz_multi_int_8i10(ifour,                           &
      &        istack_table_wtype_dest_IO(4*i-3))
         end do
 !
-        do inod = 1, ntot_table_dest_IO
+        do inod = 1, IO_itp_dest%ntot_table_dest
           write(textbuf,'(3i16,1p3E25.15e3,a1)')                        &
      &        inod_global_dest_IO(inod), iele_orgin_IO(inod),           &
      &        itype_inter_dest_IO(inod), coef_inter_dest_IO(inod,1:3),  &
@@ -318,11 +318,12 @@
 !
 !
       call skip_gz_comment_int(n_rank)
-      call skip_gz_comment_int(num_org_domain_IO)
+      call skip_gz_comment_int(IO_itp_dest%num_org_domain)
 !
-      if (num_org_domain_IO .gt. 0) then
+      if (IO_itp_dest%num_org_domain .gt. 0) then
         call allocate_itp_num_dst_IO
-        call read_gz_multi_int(num_org_domain_IO, id_org_domain_IO)
+        call read_gz_multi_int                                          &
+     &     (IO_itp_dest%num_org_domain, IO_itp_dest%id_org_domain)
       end if
 !
       end subroutine read_gz_itp_domain_dest
@@ -334,14 +335,16 @@
       use m_interpolate_table_dest_IO
 !
 !
-      if (num_org_domain_IO .eq. 0) return
-        istack_table_dest_IO(0) = 0
-        call read_gz_multi_int(num_org_domain_IO,                       &
-     &      istack_table_dest_IO(1))
-        ntot_table_dest_IO = istack_table_dest_IO(num_org_domain_IO)
+      if (IO_itp_dest%num_org_domain .eq. 0) return
+      IO_itp_dest%istack_nod_tbl_dest(0) = 0
+      call read_gz_multi_int(IO_itp_dest%num_org_domain,                &
+     &   IO_itp_dest%istack_nod_tbl_dest(1:IO_itp_dest%num_org_domain))
+      IO_itp_dest%ntot_table_dest                                       &
+     &   = IO_itp_dest%istack_nod_tbl_dest(IO_itp_dest%num_org_domain)
 !
-        call allocate_itp_nod_dst_IO
-        call read_gz_multi_int(ntot_table_dest_IO, inod_dest_IO)
+      call allocate_itp_nod_dst_IO
+      call read_gz_multi_int                                            &
+     &   (IO_itp_dest%ntot_table_dest, IO_itp_dest%inod_dest_4_dest)
 !
       end subroutine read_gz_itp_table_dest
 !
@@ -354,18 +357,18 @@
       integer(kind = kint) :: i, inod
 !
 !
-      if (num_org_domain_IO .eq. 0) return
+      if (IO_itp_dest%num_org_domain .eq. 0) return
         istack_table_wtype_dest_IO(0) = 0
-        do i = 1, num_org_domain_IO
+        do i = 1, IO_itp_dest%num_org_domain
           call read_gz_multi_int(ifour,                                 &
      &        istack_table_wtype_dest_IO(4*i-3) )
         end do
-        ntot_table_dest_IO                                              &
-     &        = istack_table_wtype_dest_IO(4*num_org_domain_IO)
+        IO_itp_dest%ntot_table_dest                                     &
+     &     = istack_table_wtype_dest_IO(4*IO_itp_dest%num_org_domain)
 !
         call allocate_itp_coefs_dst_IO
 !
-        do inod = 1, ntot_table_dest_IO
+        do inod = 1, IO_itp_dest%ntot_table_dest
           call get_one_line_from_gz_f
           read(textbuf,*) inod_global_dest_IO(inod),                    &
      &        iele_orgin_IO(inod), itype_inter_dest_IO(inod),           &

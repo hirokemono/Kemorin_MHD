@@ -55,7 +55,7 @@
         call dealloc_itp_num_org(IO_itp_org)
       end if
 !
-      if (num_org_domain_IO .gt. 0) then
+      if (IO_itp_dest%num_org_domain .gt. 0) then
         call deallocate_itp_nod_dst_IO
         call deallocate_itp_num_dst_IO
       end if
@@ -106,7 +106,7 @@
       call write_interpolate_coefs_dest_b(id_tbl_file)
       close(id_tbl_file)
 !
-      if (num_org_domain_IO .gt. 0) then
+      if (IO_itp_dest%num_org_domain .gt. 0) then
         call deallocate_itp_coefs_dst_IO
         call deallocate_itp_nod_dst_IO
         call deallocate_itp_num_dst_IO

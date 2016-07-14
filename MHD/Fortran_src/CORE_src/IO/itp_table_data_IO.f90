@@ -219,11 +219,11 @@
       write(id_file,'(a)') '!'
 !
       write(id_file,'(i16)') my_rank
-      write(id_file,'(i16)') num_org_domain_IO
+      write(id_file,'(i16)') IO_itp_dest%num_org_domain
 !
-      if (num_org_domain_IO .gt. 0) then
+      if (IO_itp_dest%num_org_domain .gt. 0) then
         write(id_file,'(10i16)')                                        &
-     &          id_org_domain_IO(1:num_org_domain_IO)
+     &          IO_itp_dest%id_org_domain(1:IO_itp_dest%num_org_domain)
       else
         write(id_file,*)
       end if
@@ -234,10 +234,11 @@
       write(id_file,'(a)') '!  imported node ID'
       write(id_file,'(a)') '!'
 !
-      if (num_org_domain_IO .gt. 0) then
+      if (IO_itp_dest%num_org_domain .gt. 0) then
         write(id_file,'(8i16)')                                         &
-              istack_table_dest_IO(1:num_org_domain_IO)
-        write(id_file,'(8i16)') inod_dest_IO(1:ntot_table_dest_IO)
+          IO_itp_dest%istack_nod_tbl_dest(1:IO_itp_dest%num_org_domain)
+        write(id_file,'(8i16)')                                         &
+     &    IO_itp_dest%inod_dest_4_dest(1:IO_itp_dest%ntot_table_dest)
 !
       else
         write(id_file,*)
@@ -263,13 +264,13 @@
       write(id_file,'(a)') '!  generalized position '
       write(id_file,'(a)') '!'
 !
-      if (num_org_domain_IO .gt. 0) then
-        do i = 1, num_org_domain_IO
+      if (IO_itp_dest%num_org_domain .gt. 0) then
+        do i = 1, IO_itp_dest%num_org_domain
           write(id_file,'(8i16)')                                       &
      &                istack_table_wtype_dest_IO(4*i-3:4*i)
         end do
 !
-        do inod = 1, ntot_table_dest_IO
+        do inod = 1, IO_itp_dest%ntot_table_dest
           write(id_file,'(3i16,1p3E25.15e3)')                           &
      &        inod_global_dest_IO(inod), iele_orgin_IO(inod),           &
      &        itype_inter_dest_IO(inod), coef_inter_dest_IO(inod,1:3)
@@ -296,11 +297,12 @@
       call skip_comment(character_4_read, id_file)
       read(character_4_read,*) n_rank
       call skip_comment(character_4_read, id_file)
-      read(character_4_read,*) num_org_domain_IO
+      read(character_4_read,*) IO_itp_dest%num_org_domain
 !
-      if (num_org_domain_IO .gt. 0) then
+      if (IO_itp_dest%num_org_domain .gt. 0) then
         call allocate_itp_num_dst_IO
-        read(id_file,*) id_org_domain_IO(1:num_org_domain_IO)
+        read(id_file,*)                                                 &
+     &        IO_itp_dest%id_org_domain(1:IO_itp_dest%num_org_domain)
       end if
 !
       end subroutine read_interpolate_domain_dest
@@ -316,15 +318,17 @@
       integer(kind = kint), intent(in) :: id_file
 !
 !
-      if (num_org_domain_IO .eq. 0) return
+      if (IO_itp_dest%num_org_domain .eq. 0) return
 !
       call read_stack_array(character_4_read, id_file,                  &
-     &    num_org_domain_IO, istack_table_dest_IO)
-      ntot_table_dest_IO = istack_table_dest_IO(num_org_domain_IO)
+     &    IO_itp_dest%num_org_domain, IO_itp_dest%istack_nod_tbl_dest)
+      IO_itp_dest%ntot_table_dest                                       &
+     &   = IO_itp_dest%istack_nod_tbl_dest(IO_itp_dest%num_org_domain)
 !
       call allocate_itp_nod_dst_IO
 !
-      read(id_file,*) inod_dest_IO(1:ntot_table_dest_IO)
+      read(id_file,*)                                                   &
+     &     IO_itp_dest%inod_dest_4_dest(1:IO_itp_dest%ntot_table_dest)
 !
       end subroutine read_interpolate_table_dest
 !
@@ -341,19 +345,19 @@
       integer(kind = kint) :: i, inod
 !
 !
-      if (num_org_domain_IO .eq. 0) return
+      if (IO_itp_dest%num_org_domain .eq. 0) return
 !
         call read_stack_array(character_4_read, id_file,                &
      &      ifour, istack_table_wtype_dest_IO(0) )
-        do i = 2, num_org_domain_IO
+        do i = 2, IO_itp_dest%num_org_domain
           read(id_file,*) istack_table_wtype_dest_IO(4*i-3:4*i)
         end do
-        ntot_table_dest_IO                                              &
-     &        = istack_table_wtype_dest_IO(4*num_org_domain_IO)
+        IO_itp_dest%ntot_table_dest                                     &
+     &       = istack_table_wtype_dest_IO(4*IO_itp_dest%num_org_domain)
 !
         call allocate_itp_coefs_dst_IO
 !
-        do inod = 1, ntot_table_dest_IO
+        do inod = 1, IO_itp_dest%ntot_table_dest
           read(id_file,*) inod_global_dest_IO(inod),                    &
      &        iele_orgin_IO(inod), itype_inter_dest_IO(inod),           &
      &        coef_inter_dest_IO(inod,1:3)

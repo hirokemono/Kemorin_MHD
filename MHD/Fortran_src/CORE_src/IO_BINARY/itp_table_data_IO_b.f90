@@ -167,13 +167,16 @@
 !
 !
       write(id_file) my_rank
-      write(id_file) num_org_domain_IO
+      write(id_file) IO_itp_dest%num_org_domain
 !
-      if (num_org_domain_IO .gt. 0) then
-        write(id_file) id_org_domain_IO(1:num_org_domain_IO)
+      if (IO_itp_dest%num_org_domain .gt. 0) then
+        write(id_file)                                                  &
+     &    IO_itp_dest%id_org_domain(1:IO_itp_dest%num_org_domain)
 !
-        write(id_file) istack_table_dest_IO(1:num_org_domain_IO)
-        write(id_file) inod_dest_IO(1:ntot_table_dest_IO)
+        write(id_file)                                                  &
+     &    IO_itp_dest%istack_nod_tbl_dest(1:IO_itp_dest%num_org_domain)
+        write(id_file)                                                  &
+     &    IO_itp_dest%inod_dest_4_dest(1:IO_itp_dest%ntot_table_dest)
       end if
 !
       end subroutine write_interpolate_table_dest_b
@@ -188,16 +191,20 @@
 !
       integer(kind = kint) :: i
 !
-      if (num_org_domain_IO .eq. 0) return
+      if (IO_itp_dest%num_org_domain .eq. 0) return
 !
         write(id_file)                                                  &
-     &          istack_table_wtype_dest_IO(0:4*num_org_domain_IO)
+     &      istack_table_wtype_dest_IO(0:4*IO_itp_dest%num_org_domain)
 !
-        write(id_file) inod_global_dest_IO(1:ntot_table_dest_IO)
-        write(id_file) iele_orgin_IO(1:ntot_table_dest_IO)
-        write(id_file) itype_inter_dest_IO(1:ntot_table_dest_IO)
+        write(id_file)                                                  &
+     &      inod_global_dest_IO(1:IO_itp_dest%ntot_table_dest)
+        write(id_file)                                                  &
+     &      iele_orgin_IO(1:IO_itp_dest%ntot_table_dest)
+        write(id_file)                                                  &
+     &      itype_inter_dest_IO(1:IO_itp_dest%ntot_table_dest)
         do i = 1, 3
-          write(id_file) coef_inter_dest_IO(1:ntot_table_dest_IO,i)
+          write(id_file)                                                &
+     &      coef_inter_dest_IO(1:IO_itp_dest%ntot_table_dest,i)
         end do
 !
       end subroutine write_interpolate_coefs_dest_b
@@ -216,11 +223,12 @@
 !
 !
       read(id_file) n_rank
-      read(id_file) num_org_domain_IO
+      read(id_file) IO_itp_dest%num_org_domain
 !
-      if (num_org_domain_IO .gt. 0) then
+      if (IO_itp_dest%num_org_domain .gt. 0) then
         call allocate_itp_num_dst_IO
-        read(id_file) id_org_domain_IO(1:num_org_domain_IO)
+        read(id_file)                                                   &
+     &      IO_itp_dest%id_org_domain(1:IO_itp_dest%num_org_domain)
       end if
 !
       end subroutine read_interpolate_domain_dest_b
@@ -236,13 +244,16 @@
       integer(kind = kint), intent(in) :: id_file
 !
 !
-      if (num_org_domain_IO .eq. 0) return
+      if (IO_itp_dest%num_org_domain .eq. 0) return
 !
-        read(id_file) istack_table_dest_IO(1:num_org_domain_IO)
-        ntot_table_dest_IO = istack_table_dest_IO(num_org_domain_IO)
+        read(id_file)                                                   &
+     &    IO_itp_dest%istack_nod_tbl_dest(1:IO_itp_dest%num_org_domain)
+        IO_itp_dest%ntot_table_dest                                     &
+     &    = IO_itp_dest%istack_nod_tbl_dest(IO_itp_dest%num_org_domain)
 !
         call allocate_itp_nod_dst_IO
-        read(id_file) inod_dest_IO(1:ntot_table_dest_IO)
+        read(id_file)                                                   &
+     &     IO_itp_dest%inod_dest_4_dest(1:IO_itp_dest%ntot_table_dest)
 !
       end subroutine read_interpolate_table_dest_b
 !
@@ -259,19 +270,24 @@
       integer(kind = kint) :: i
 !
 !
-      if (num_org_domain_IO .eq. 0) return
+      if (IO_itp_dest%num_org_domain .eq. 0) return
 !
-        read(id_file) istack_table_wtype_dest_IO(0:num_org_domain_IO)
-        ntot_table_dest_IO                                              &
-     &        = istack_table_wtype_dest_IO(4*num_org_domain_IO)
+        read(id_file)                                                   &
+     &     istack_table_wtype_dest_IO(0:IO_itp_dest%num_org_domain)
+        IO_itp_dest%ntot_table_dest                                     &
+     &     = istack_table_wtype_dest_IO(4*IO_itp_dest%num_org_domain)
 !
         call allocate_itp_coefs_dst_IO
 !
-        read(id_file) inod_global_dest_IO(1:ntot_table_dest_IO)
-        read(id_file) iele_orgin_IO(1:ntot_table_dest_IO)
-        read(id_file) itype_inter_dest_IO(1:ntot_table_dest_IO)
+        read(id_file)                                                   &
+     &      inod_global_dest_IO(1:IO_itp_dest%ntot_table_dest)
+        read(id_file)                                                   &
+     &      iele_orgin_IO(1:IO_itp_dest%ntot_table_dest)
+        read(id_file)                                                   &
+     &      itype_inter_dest_IO(1:IO_itp_dest%ntot_table_dest)
         do i = 1, 3
-          read(id_file) coef_inter_dest_IO(1:ntot_table_dest_IO,i)
+          read(id_file)                                                 &
+     &      coef_inter_dest_IO(1:IO_itp_dest%ntot_table_dest,i)
         end do
 !
       end subroutine read_interpolate_coefs_dest_b

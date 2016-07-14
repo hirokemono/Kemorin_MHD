@@ -184,7 +184,7 @@
 !
       iflag_org_domain(inod) = n_rank_org + 1
       iele_org_4_dest(inod) =  jele
-      coef_inter_dest(inod,1:3) = xi(1:3)
+      itp1_coef_dest%coef_inter_dest(inod,1:3) = xi(1:3)
 !
       end subroutine set_results_2_array
 !
@@ -215,7 +215,7 @@
 !
       iflag_org_tmp = n_rank_org + 1
       iele_org_4_dest(inod) =  jele
-      coef_inter_dest(inod,1:3) = xi(1:3)
+      itp1_coef_dest%coef_inter_dest(inod,1:3) = xi(1:3)
       differ_tmp = differ_res
 !
       end subroutine set_results_2_array_fin

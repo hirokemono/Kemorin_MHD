@@ -79,21 +79,21 @@
 !
 !
       tbl_dest%iflag_self_itp_recv = 0
-      call set_num_org_domain(num_org_domain_IO, tbl_dest)
+      call set_num_org_domain(IO_itp_dest%num_org_domain, tbl_dest)
 !
       if (tbl_dest%num_org_domain .gt. 0) then
-        tbl_dest%ntot_table_dest = ntot_table_dest_IO
+        tbl_dest%ntot_table_dest = IO_itp_dest%ntot_table_dest
 !
         call alloc_itp_num_dest(tbl_dest)
         call alloc_itp_table_dest(tbl_dest)
 !
         tbl_dest%id_org_domain(1:tbl_dest%num_org_domain)               &
-     &      = id_org_domain_IO(1:tbl_dest%num_org_domain)
+     &     = IO_itp_dest%id_org_domain(1:tbl_dest%num_org_domain)
         tbl_dest%istack_nod_tbl_dest(0:tbl_dest%num_org_domain)         &
-     &        = istack_table_dest_IO(0:tbl_dest%num_org_domain)
+     &     = IO_itp_dest%istack_nod_tbl_dest(0:tbl_dest%num_org_domain)
 !
         tbl_dest%inod_dest_4_dest(1:tbl_dest%ntot_table_dest)           &
-     &        = inod_dest_IO(1:tbl_dest%ntot_table_dest)
+     &     = IO_itp_dest%inod_dest_4_dest(1:tbl_dest%ntot_table_dest)
 !
         call deallocate_itp_nod_dst_IO
         call deallocate_itp_num_dst_IO
@@ -121,22 +121,22 @@
       type(interpolate_table_dest), intent(inout) :: tbl_dest
 !
 !
-      num_org_domain_IO = tbl_dest%num_org_domain
+      IO_itp_dest%num_org_domain = tbl_dest%num_org_domain
 !
-      if (num_org_domain_IO .gt. 0) then
-        ntot_table_dest_IO = tbl_dest%ntot_table_dest
+      if (IO_itp_dest%num_org_domain .gt. 0) then
+        IO_itp_dest%ntot_table_dest = tbl_dest%ntot_table_dest
 !
         call allocate_itp_num_dst_IO
         call allocate_itp_nod_dst_IO
 !
-        id_org_domain_IO(1:num_org_domain_IO)                           &
-     &      = tbl_dest%id_org_domain(1:num_org_domain_IO)
-        istack_table_dest_IO(0:num_org_domain_IO)                       &
-     &      = tbl_dest%istack_nod_tbl_dest(0:num_org_domain_IO)
+        IO_itp_dest%id_org_domain(1:IO_itp_dest%num_org_domain)         &
+     &    = tbl_dest%id_org_domain(1:IO_itp_dest%num_org_domain)
+        IO_itp_dest%istack_nod_tbl_dest(0:IO_itp_dest%num_org_domain)   &
+     &    = tbl_dest%istack_nod_tbl_dest(0:IO_itp_dest%num_org_domain)
 !
 !
-        inod_dest_IO(1:ntot_table_dest_IO)                              &
-     &      = tbl_dest%inod_dest_4_dest(1:ntot_table_dest_IO)
+        IO_itp_dest%inod_dest_4_dest(1:IO_itp_dest%ntot_table_dest)     &
+     &      = tbl_dest%inod_dest_4_dest(1:IO_itp_dest%ntot_table_dest)
       end if
 !
       call dealloc_itp_table_dest(tbl_dest)

@@ -31,16 +31,16 @@
 !
       integer(kind = kint) :: i
 !
-      do i = 1, num_org_domain_IO
+      do i = 1, IO_itp_dest%num_org_domain
 !
-        if (id_org_domain_IO(i) .eq. n_org_rank) then
+        if (IO_itp_dest%id_org_domain(i) .eq. n_org_rank) then
           itp_org%num_dest_domain = itp_org%num_dest_domain + 1
           itp_org%id_dest_domain(itp_org%num_dest_domain)               &
      &       = n_dest_rank
           itp_org%istack_nod_tbl_org(itp_org%num_dest_domain)           &
      &       = itp_org%istack_nod_tbl_org(itp_org%num_dest_domain-1)    &
-     &                        + istack_table_dest_IO(i)                 &
-     &                        - istack_table_dest_IO(i-1)
+     &                        + IO_itp_dest%istack_nod_tbl_dest(i)      &
+     &                        - IO_itp_dest%istack_nod_tbl_dest(i-1)
         end if
       end do
 !
@@ -61,8 +61,8 @@
       integer(kind = kint) :: i, j, nnod, inum, iorg, idest
 !
 !
-      do i = 1, num_org_domain_IO
-        if (id_org_domain_IO(i) .eq. n_org_rank) then
+      do i = 1, IO_itp_dest%num_org_domain
+        if (IO_itp_dest%id_org_domain(i) .eq. n_org_rank) then
           itp_org%num_dest_domain = itp_org%num_dest_domain + 1
 !
           do j = 1, 4
@@ -78,7 +78,7 @@
             iorg                                                        &
      &       =  itp_org%istack_nod_tbl_org(itp_org%num_dest_domain-1)   &
      &        + inum
-            idest = istack_table_dest_IO(i-1) + inum
+            idest = IO_itp_dest%istack_nod_tbl_dest(i-1) + inum
 !
             itp_org%inod_itp_send(iorg) =      iorg
             itp_org%inod_gl_dest_4_org(iorg)                            &

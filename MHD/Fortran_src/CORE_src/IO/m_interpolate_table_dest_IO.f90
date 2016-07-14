@@ -24,19 +24,23 @@
       module m_interpolate_table_dest_IO
 !
       use m_precision
+      use t_interpolate_tbl_dest
 !
       implicit none
 !
+!> Structure of interpolation table for target grid
+      type(interpolate_table_dest), save :: IO_itp_dest
+!IO_itp_dest%inod_dest_4_dest
 !
-      integer(kind = kint) :: num_org_domain_IO
-      integer(kind = kint), allocatable :: id_org_domain_IO(:)
+!      integer(kind = kint) :: num_org_domain_IO
+!      integer(kind = kint), allocatable :: id_org_domain_IO(:)
 !
-      integer(kind = kint), allocatable :: istack_table_dest_IO(:)
+!      integer(kind = kint), allocatable :: istack_table_dest_IO(:)
       integer(kind = kint), allocatable                                 &
      &              :: istack_table_wtype_dest_IO(:)
 !
-      integer(kind = kint) :: ntot_table_dest_IO
-      integer(kind = kint), allocatable :: inod_dest_IO(:)
+!      integer(kind = kint) :: ntot_table_dest_IO
+!      integer(kind = kint), allocatable :: inod_dest_IO(:)
 !
       integer(kind = kint), allocatable :: inod_global_dest_IO(:)
       integer(kind = kint), allocatable :: itype_inter_dest_IO(:)
@@ -51,11 +55,9 @@
 !
       subroutine allocate_itp_num_dst_IO
 !
-      allocate(id_org_domain_IO(num_org_domain_IO))
-      allocate(istack_table_dest_IO(0:num_org_domain_IO))
-      allocate(istack_table_wtype_dest_IO(0:4*num_org_domain_IO))
-      id_org_domain_IO = 0
-      istack_table_dest_IO = 0
+      call alloc_itp_num_dest(IO_itp_dest)
+!
+      allocate(istack_table_wtype_dest_IO(0:4*IO_itp_dest%num_org_domain))
       istack_table_wtype_dest_IO = 0
 !
       end subroutine allocate_itp_num_dst_IO
@@ -64,8 +66,8 @@
 !
       subroutine allocate_itp_nod_dst_IO
 !
-      allocate(inod_dest_IO(ntot_table_dest_IO))
-      inod_dest_IO = 0
+      allocate(IO_itp_dest%inod_dest_4_dest(IO_itp_dest%ntot_table_dest))
+      IO_itp_dest%inod_dest_4_dest = 0
 !
       end subroutine allocate_itp_nod_dst_IO
 !
@@ -73,10 +75,10 @@
 !
       subroutine allocate_itp_coefs_dst_IO
 !
-      allocate(inod_global_dest_IO(ntot_table_dest_IO))
-      allocate(iele_orgin_IO(ntot_table_dest_IO))
-      allocate(itype_inter_dest_IO(ntot_table_dest_IO))
-      allocate(coef_inter_dest_IO(ntot_table_dest_IO,3))
+      allocate(inod_global_dest_IO(IO_itp_dest%ntot_table_dest))
+      allocate(iele_orgin_IO(IO_itp_dest%ntot_table_dest))
+      allocate(itype_inter_dest_IO(IO_itp_dest%ntot_table_dest))
+      allocate(coef_inter_dest_IO(IO_itp_dest%ntot_table_dest,3))
 !
       inod_global_dest_IO = 0
       iele_orgin_IO = 0
@@ -90,8 +92,7 @@
 !
       subroutine deallocate_itp_num_dst_IO
 !
-      deallocate(id_org_domain_IO)
-      deallocate(istack_table_dest_IO)
+      call dealloc_itp_num_dest(IO_itp_dest)
       deallocate(istack_table_wtype_dest_IO)
 !
       end subroutine deallocate_itp_num_dst_IO
@@ -100,7 +101,7 @@
 !
       subroutine deallocate_itp_nod_dst_IO
 !
-      deallocate(inod_dest_IO)
+      deallocate(IO_itp_dest%inod_dest_4_dest)
 !
       end subroutine deallocate_itp_nod_dst_IO
 !
