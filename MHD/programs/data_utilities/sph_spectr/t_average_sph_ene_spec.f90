@@ -48,11 +48,13 @@
       icou = 0
       write(*,'(a5,i12,a30,i12)',advance="NO")                          &
      &       'step= ', istep,   ' averaging finished. Count=  ', icou
+      write(*,*) 'aho'
       do
         if(iflag_sph_ene_file .eq. 1) then
           call read_org_volume_ene_data(istep, ierr)
         else
           call read_org_layer_ene_data(istep, ierr)
+          write(*,*) 'ierr', ierr
         end if
         if(ierr.gt.0) go to 99
 !
@@ -71,6 +73,7 @@
           end if
         end if
 !
+        write(*,*) 'time_sph', start_time, time_sph, end_time
         write(*,'(59a1,a5,i12,a30,i12)',advance="NO") (char(8),i=1,59), &
      &       'step= ', istep,   ' averaging finished. Count=   ', icou
         if (time_sph .ge. end_time) exit

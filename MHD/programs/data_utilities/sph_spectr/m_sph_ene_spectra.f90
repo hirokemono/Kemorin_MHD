@@ -38,6 +38,7 @@
       real(kind = kreal) :: time_sph, time_ini, pre_time
 !
       integer(kind = kint), allocatable :: kr_sph(:)
+      real(kind = kreal), allocatable :: r_sph(:)
       real(kind = kreal), allocatable :: spectr_t(:,:)
       real(kind = kreal), allocatable :: spectr_l(:,:,:)
       real(kind = kreal), allocatable :: spectr_m(:,:,:)
@@ -91,6 +92,7 @@
 !
 !
       allocate( kr_sph(nri_sph) )
+      allocate( r_sph(nri_sph) )
 !
       allocate( spectr_t(ncomp_sph_spec,nri_sph) )
       allocate( spectr_l(ncomp_sph_spec,0:ltr_sph,nri_sph) )
@@ -101,6 +103,8 @@
       allocate( spectr_pre_l(ncomp_sph_spec,0:ltr_sph,nri_sph) )
       allocate( spectr_pre_m(ncomp_sph_spec,0:ltr_sph,nri_sph) )
       allocate( spectr_pre_lm(ncomp_sph_spec,0:ltr_sph,nri_sph) )
+!
+      r_sph = zero
 !
       spectr_t =  zero
       spectr_l =  zero
@@ -118,7 +122,7 @@
 !
       subroutine deallocate_tave_sph_espec_data
 !
-      deallocate(ene_sph_spec_name, kr_sph)
+      deallocate(ene_sph_spec_name, kr_sph, r_sph)
       deallocate(spectr_t, spectr_l, spectr_m, spectr_lm)
       deallocate(spectr_pre_t, spectr_pre_l)
       deallocate(spectr_pre_m, spectr_pre_lm)
@@ -261,19 +265,20 @@
       integer(kind = kint), intent(inout) :: istep, ierr
       integer(kind = kint) :: itmp
       integer(kind = kint) :: kr, lth
+      real(kind = kreal) :: rtmp
 !
 !
       ierr = 0
       do kr = 1, nri_sph
         read(id_file_rms,*,err=99,end=99) istep, time_sph,              &
-     &         kr_sph(kr), spectr_t(1:ncomp_sph_spec,kr)
+     &         kr_sph(kr), r_sph(kr), spectr_t(1:ncomp_sph_spec,kr)
         do lth = 0, ltr_sph
           read(id_file_rms_l,*,err=99,end=99) istep, time_sph,          &
-     &         itmp, itmp, spectr_l(1:ncomp_sph_spec,lth,kr)
+     &         itmp, rtmp, itmp, spectr_l(1:ncomp_sph_spec,lth,kr)
           read(id_file_rms_m,*,err=99,end=99) istep, time_sph,          &
-     &         itmp, itmp, spectr_m(1:ncomp_sph_spec,lth,kr)
+     &         itmp, rtmp, itmp, spectr_m(1:ncomp_sph_spec,lth,kr)
           read(id_file_rms_lm,*,err=99,end=99) istep, time_sph,         &
-     &         itmp, itmp, spectr_lm(1:ncomp_sph_spec,lth,kr)
+     &         itmp, rtmp, itmp, spectr_lm(1:ncomp_sph_spec,lth,kr)
         end do
       end do
       return
@@ -363,7 +368,7 @@
       call skip_comment(character_4_read, id_file_rms_l)
       read(id_file_rms_l,*) nfld, ncomp_sph_spec
 !
-      num_time_labels = 4
+      num_time_labels = 5
       write(*,*) 'ncomp_sph_spec', ncomp_sph_spec
       call allocate_sph_espec_name
 !
@@ -404,7 +409,7 @@
       call skip_comment(character_4_read, id_file_rms_l)
       read(id_file_rms_l,*) nfld, ncomp_sph_spec
 !
-      num_time_labels = 4
+      num_time_labels = 5
       write(*,*) 'ncomp_sph_spec', ncomp_sph_spec
       call allocate_sph_espec_name
 !
