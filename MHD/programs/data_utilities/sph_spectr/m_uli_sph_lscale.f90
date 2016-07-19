@@ -161,7 +161,8 @@
 !
       do kr = 1, nri
         write(id_lscale,'(i16,1pE25.15e3,2i16,1p255E25.15e3)')          &
-     &     istep, time_sph, kr_sph(kr), izero, spec_l(1:ncomp,kr)
+     &     istep, time_sph, kr_sph(kr), r_sph(kr),                      &
+     &     izero, spec_l(1:ncomp,kr)
       end do
 !
       end subroutine write_layer_sph_lscale

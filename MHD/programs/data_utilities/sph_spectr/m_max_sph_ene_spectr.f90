@@ -218,11 +218,14 @@
 !
       do kr = 1, nri
         write(id_max_rms_l,'(i16,1pE25.15e3,2i16,1p255E25.15e3)')       &
-     &     istep, time_sph, kr_sph(kr), izero, spec_l(1:ncomp,kr)
+     &     istep, time_sph, kr_sph(kr),  r_sph(kr),                     &
+     &     izero, spec_l(1:ncomp,kr)
         write(id_max_rms_m,'(i16,1pE25.15e3,2i16,1p255E25.15e3)')       &
-     &     istep, time_sph, kr_sph(kr), izero, spec_m(1:ncomp,kr)
+     &     istep, time_sph, kr_sph(kr),  r_sph(kr),                     &
+     &     izero, spec_m(1:ncomp,kr)
         write(id_max_rms_lm,'(i16,1pE25.15e3,2i16,1p255E25.15e3)')      &
-     &     istep, time_sph, kr_sph(kr), izero, spec_lm(1:ncomp,kr)
+     &     istep, time_sph, kr_sph(kr),  r_sph(kr),                     &
+     &     izero, spec_lm(1:ncomp,kr)
       end do
 !
       end subroutine write_max_layer_sph_data

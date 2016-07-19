@@ -278,7 +278,7 @@
 !
 !
       write(fname_rms,   '(a,a4)') trim(fhead_rms_layer), '.dat'
-      write(mode_label,'(a)') 'radial_id'
+      write(mode_label,'(a)') 'radial_id  radius'
       call write_sph_layer_pwr_file                                     &
      &   (fname_rms, mode_label, istep, time, sph_params%l_truncation,  &
      &    sph_params%nlayer_ICB, sph_params%nlayer_CMB, pwr%nri_rms,    &
@@ -287,7 +287,7 @@
 !
       if(iflag_spectr_l .gt. izero) then
         write(fname_rms, '(a,a6)') trim(fhead_rms_layer), '_l.dat'
-        write(mode_label,'(a)') 'radial_id    degree'
+        write(mode_label,'(a)') 'radial_id  radius  degree'
         call write_sph_layer_spec_file(fname_rms, mode_label,           &
      &      istep, time, sph_params%l_truncation,                       &
      &      sph_params%nlayer_ICB, sph_params%nlayer_CMB, pwr%nri_rms,  &
@@ -297,7 +297,7 @@
 !
       if(iflag_spectr_m .gt. izero) then
         write(fname_rms, '(a,a6)') trim(fhead_rms_layer), '_m.dat'
-        write(mode_label,'(a)') 'radial_id    order'
+        write(mode_label,'(a)') 'radial_id  radius  order'
         call write_sph_layer_spec_file                                  &
      &    (fname_rms, mode_label, istep, time, sph_params%l_truncation, &
      &     sph_params%nlayer_ICB, sph_params%nlayer_CMB, pwr%nri_rms,   &
@@ -307,7 +307,7 @@
 !
       if(iflag_spectr_lm .gt. izero) then
         write(fname_rms,'(a,a7)') trim(fhead_rms_layer), '_lm.dat'
-        write(mode_label,'(a)') 'radial_id    diff_deg_order'
+        write(mode_label,'(a)') 'radial_id  radius  diff_deg_order'
         call write_sph_layer_spec_file                                  &
      &    (fname_rms, mode_label, istep, time, sph_params%l_truncation, &
      &     sph_params%nlayer_ICB, sph_params%nlayer_CMB, pwr%nri_rms,   &
@@ -317,7 +317,7 @@
 !
       if(iflag_spectr_m0 .gt. izero) then
         write(fname_rms,'(a,a7)') trim(fhead_rms_layer), '_m0.dat'
-        write(mode_label,'(a)') 'radial_id'
+        write(mode_label,'(a)') 'radial_id  radius'
         call write_sph_layer_pwr_file                                   &
      &    (fname_rms, mode_label, istep, time, sph_params%l_truncation, &
      &     sph_params%nlayer_ICB, sph_params%nlayer_CMB, pwr%nri_rms,   &
