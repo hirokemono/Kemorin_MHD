@@ -13,8 +13,10 @@
 !!      subroutine allocate_itp_work_dest(num_org_pe)
 !!      subroutine deallocate_itp_work_dest
 !!
-!!      subroutine swap_interpolation_table(idest, inod, itp_dest)
-!!      subroutine copy_table_2_order(itp_dest)
+!!      subroutine swap_interpolation_table                             &
+!!     &         (idest, inod, itp_dest, itp_coef)
+!!      subroutine copy_table_2_order(itp_dest, itp_coef)
+!!        type(interpolate_coefs_dest), intent(in) :: itp_coef
 !!
 !!      subroutine check_search_ID(id_file, itp_dest)
 !!@endverbatim
@@ -171,41 +173,45 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine swap_interpolation_table(idest, inod, itp_dest)
+      subroutine swap_interpolation_table                               &
+     &         (idest, inod, itp_dest, itp_coef)
 !
       use t_interpolate_tbl_dest
-      use m_interpolate_coefs_dest
+      use t_interpolate_coefs_dest
 !
       integer(kind = kint), intent(in) :: idest, inod
       type(interpolate_table_dest), intent(in) :: itp_dest
+      type(interpolate_coefs_dest), intent(in) :: itp_coef
 !
 !
-      inod_dest_ordered(idest) =       itp_dest%inod_dest_4_dest(inod)
-      iele_orgin_ordered(idest) =      iele_org_4_dest(inod)
-      coef_inter_ordered(idest,1:3) = coef_inter_dest(inod,1:3)
+      inod_dest_ordered(idest) =  itp_dest%inod_dest_4_dest(inod)
+      iele_orgin_ordered(idest) = itp_coef%iele_org_4_dest(inod)
+      coef_inter_ordered(idest,1:3)                                     &
+     &      = itp_coef%coef_inter_dest(inod,1:3)
 !
       end subroutine swap_interpolation_table
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_table_2_order(itp_dest)
+      subroutine copy_table_2_order(itp_dest, itp_coef)
 !
       use t_interpolate_tbl_dest
-      use m_interpolate_coefs_dest
+      use t_interpolate_coefs_dest
 !
       type(interpolate_table_dest), intent(inout) :: itp_dest
+      type(interpolate_coefs_dest), intent(inout) :: itp_coef
 !
 !
       itp_dest%inod_dest_4_dest(1:itp_dest%ntot_table_dest)             &
      &      = inod_dest_ordered(1:itp_dest%ntot_table_dest)
-      iele_org_4_dest(1:itp_dest%ntot_table_dest)                       &
+      itp_coef%iele_org_4_dest(1:itp_dest%ntot_table_dest)              &
      &         = iele_orgin_ordered(1:itp_dest%ntot_table_dest)
 !
-      coef_inter_dest(1:itp_dest%ntot_table_dest,1)                     &
+      itp_coef%coef_inter_dest(1:itp_dest%ntot_table_dest,1)            &
      &         = coef_inter_ordered(1:itp_dest%ntot_table_dest,1)
-      coef_inter_dest(1:itp_dest%ntot_table_dest,2)                     &
+      itp_coef%coef_inter_dest(1:itp_dest%ntot_table_dest,2)            &
      &         = coef_inter_ordered(1:itp_dest%ntot_table_dest,2)
-      coef_inter_dest(1:itp_dest%ntot_table_dest,3)                     &
+      itp_coef%coef_inter_dest(1:itp_dest%ntot_table_dest,3)            &
      &         = coef_inter_ordered(1:itp_dest%ntot_table_dest,3)
 !
 !

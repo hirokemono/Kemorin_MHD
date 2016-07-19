@@ -4,8 +4,9 @@
 !     Written by H. Matsui on Sep., 2006
 !
 !!      subroutine s_order_dest_table_by_domain                         &
-!!     &         (internal_node, ierr_missing, itp_dest)
+!!     &         (internal_node, ierr_missing, itp_dest, itp_coef_dest)
 !!        type(interpolate_table_dest), intent(inout) :: itp_dest
+!!        type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
 !
       module order_dest_table_by_domain
 !
@@ -20,10 +21,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_order_dest_table_by_domain                           &
-     &         (internal_node, ierr_missing, itp_dest)
+     &         (internal_node, ierr_missing, itp_dest, itp_coef_dest)
 !
       use calypso_mpi
       use t_interpolate_tbl_dest
+      use t_interpolate_coefs_dest
       use m_2nd_pallalel_vector
       use m_work_const_itp_table
 !
@@ -31,6 +33,7 @@
       integer(kind = kint), intent(in) :: ierr_missing
 !
       type(interpolate_table_dest), intent(inout) :: itp_dest
+      type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
 !
       integer(kind = kint) :: j, jp, inod, icou
       integer(kind = kint) :: my_rank_2nd
@@ -65,7 +68,8 @@
         do inod = 1, internal_node
           if (iflag_org_domain(inod) .eq. jp) then
             icou = icou + 1
-            call swap_interpolation_table(icou, inod, itp_dest)
+            call swap_interpolation_table                               &
+     &         (icou, inod, itp_dest, itp_coef_dest)
           end if
         end do
 !
@@ -77,12 +81,13 @@
         do inod = 1, internal_node
           if (iflag_org_domain(inod) .eq. 0) then
             icou = icou + 1
-            call swap_interpolation_table(icou, inod, itp_dest)
+            call swap_interpolation_table                               &
+     &         (icou, inod, itp_dest, itp_coef_dest)
           end if
         end do
       end if
 !
-      call copy_table_2_order(itp_dest)
+      call copy_table_2_order(itp_dest, itp_coef_dest)
 !
       end subroutine s_order_dest_table_by_domain
 !

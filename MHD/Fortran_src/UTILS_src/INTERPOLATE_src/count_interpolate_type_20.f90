@@ -3,13 +3,15 @@
 !
 !     Written by H. Matsui on Sep., 2006
 !
-!      subroutine s_count_interpolate_type_20(ist, ied,                 &
-!     &          nnod_interpolate_type)
+!!      subroutine s_count_interpolate_type_20(ist, ied, itp_coef_dest, &
+!!     &          nnod_interpolate_type)
+!!        type(interpolate_coefs_dest), intent(in) :: itp_coef_dest
 !
       module count_interpolate_type_20
 !
       use m_precision
       use m_constants
+      use t_interpolate_coefs_dest
 !
       implicit none
 !
@@ -19,17 +21,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_count_interpolate_type_20(ist, ied,                  &
+      subroutine s_count_interpolate_type_20(ist, ied, itp_coef_dest,   &
      &          nnod_interpolate_type)
 !
-      use m_interpolate_coefs_dest
-!
       integer(kind = kint), intent(in) :: ist, ied
+      type(interpolate_coefs_dest), intent(in) :: itp_coef_dest
 !
       integer(kind = kint), intent(inout)                               &
      &      :: nnod_interpolate_type(4)
 !
-      integer(kind = kint) :: inod, icou
+      integer(kind = kint) :: inod
 !
 !
       nnod_interpolate_type(1:4) = 0

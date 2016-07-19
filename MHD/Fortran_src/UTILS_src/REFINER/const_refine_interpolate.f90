@@ -92,7 +92,7 @@
       subroutine const_single_refine_itp_tbl                            &
      &         (my_rank, ele, surf, edge, nnod_2, itp_info)
 !
-      use m_interpolate_coefs_dest
+      use t_interpolate_coefs_dest
       use m_interpolate_table_dest_IO
       use m_work_merge_refine_itp
       use set_refine_interpolate_tbl
@@ -106,6 +106,8 @@
 !
       type(interpolate_table), intent(inout) :: itp_info
 !
+      type(interpolate_coefs_dest) :: itp_coef_dest
+!
 !
       iflag_debug = 1
       if(iflag_debug .gt. 0) write(*,*) 'set_itp_course_to_fine_origin'
@@ -114,15 +116,15 @@
       if(iflag_debug .gt. 0) write(*,*) 'set_itp_course_to_fine_dest'
       call set_itp_course_to_fine_dest(nnod_2, itp_info%tbl_dest)
 !
-      call allocate_itp_coef_dest(itp_info%tbl_dest)
-      call allocate_itp_coef_stack(ione)
+      call alloc_itp_coef_dest(itp_info%tbl_dest, itp_coef_dest)
+      call alloc_itp_coef_stack(ione, itp_coef_dest)
       if(iflag_debug .gt. 0) write(*,*) 'copy_itp_tbl_types_org'
       call copy_itp_tbl_types_org                                       &
      &   (my_rank, itp_info%tbl_org, IO_itp_org)
       call dealloc_itp_table_org(itp_info%tbl_org)
       call dealloc_itp_num_org(itp_info%tbl_org)
       if(iflag_debug .gt. 0) write(*,*) 'copy_itp_coefs_dest_to_IO'
-      call copy_itp_coefs_dest_to_IO(itp_info%tbl_dest)
+      call copy_itp_coefs_dest_to_IO(itp_info%tbl_dest, itp_coef_dest)
 !
       table_file_header = course_2_fine_head
       ifmt_itp_table_file = id_ascii_file_fmt
@@ -135,16 +137,16 @@
      &   (ele%nnod_4_ele, itp_info%tbl_org)
       call set_itp_fine_to_course_dest(itp_info%tbl_dest)
 !
-      if(iflag_debug .gt. 0) write(*,*) 'allocate_itp_coef_dest'
-      call allocate_itp_coef_dest(itp_info%tbl_dest)
-      call allocate_itp_coef_stack(ione)
+      if(iflag_debug .gt. 0) write(*,*) 'alloc_itp_coef_dest'
+      call alloc_itp_coef_dest(itp_info%tbl_dest, itp_coef_dest)
+      call alloc_itp_coef_stack(ione, itp_coef_dest)
       if(iflag_debug .gt. 0) write(*,*) 'copy_itp_tbl_types_org'
       call copy_itp_tbl_types_org                                       &
      &   (my_rank, itp_info%tbl_org, IO_itp_org)
       call dealloc_itp_table_org(itp_info%tbl_org)
       call dealloc_itp_num_org(itp_info%tbl_org)
       if(iflag_debug .gt. 0) write(*,*) 'copy_itp_coefs_dest_to_IO'
-      call copy_itp_coefs_dest_to_IO(itp_info%tbl_dest)
+      call copy_itp_coefs_dest_to_IO(itp_info%tbl_dest, itp_coef_dest)
 !
       table_file_header = fine_2_course_head
       write(*,*) 'table field header: ', trim(table_file_header)
@@ -189,10 +191,10 @@
      &         (my_rank, nnod_4_ele, nnod_2, nnod_4_ele_2, xx_2)
 !
       use t_interpolate_tbl_dest
+      use t_interpolate_coefs_dest
       use m_work_merge_refine_itp
 !      use copy_interpolate_type_IO
 !
-      use m_interpolate_coefs_dest
       use m_interpolate_table_dest_IO
       use set_refine_interpolate_tbl
       use set_merged_refine_itp
@@ -206,6 +208,7 @@
 !
       type(interpolate_table_org)  :: itp_org_r
       type(interpolate_table_dest) :: itp_dest_r
+      type(interpolate_coefs_dest) :: itp_coef_r
 !
 !
       if(iflag_merge .eq. 0) return
@@ -214,11 +217,11 @@
       call set_merged_itp_course_to_fine                                &
      &   (nnod_4_ele, nnod_2, nnod_4_ele_2, xx_2, itp_org_r, itp_dest_r)
 !
-      call allocate_itp_coef_dest(itp_dest_r)
+      call alloc_itp_coef_dest(itp_dest_r, itp_coef_r)
       call copy_itp_tbl_types_org(my_rank, itp_org_r, IO_itp_org)
       call dealloc_itp_table_org(itp_org_r)
       call dealloc_itp_num_org(itp_org_r)
-      call copy_itp_coefs_dest_to_IO(itp_dest_r)
+      call copy_itp_coefs_dest_to_IO(itp_dest_r, itp_coef_r)
 !
 !
       table_file_header = course_2_fine_head
@@ -233,14 +236,14 @@
       call set_merged_itp_fine_to_course(nnod_4_ele, itp_org_r)
       call set_itp_fine_to_course_dest(itp_dest_r)
 !
-      if(iflag_debug .gt. 0) write(*,*) 'allocate_itp_coef_dest'
-      call allocate_itp_coef_dest(itp_dest_r)
+      if(iflag_debug .gt. 0) write(*,*) 'alloc_itp_coef_dest'
+      call alloc_itp_coef_dest(itp_dest_r, itp_coef_r)
       if(iflag_debug .gt. 0) write(*,*) 'copy_itp_tbl_types_org'
       call copy_itp_tbl_types_org(my_rank, itp_org_r, IO_itp_org)
       call dealloc_itp_table_org(itp_org_r)
       call dealloc_itp_num_org(itp_org_r)
       if(iflag_debug .gt. 0) write(*,*) 'copy_itp_coefs_dest_to_IO'
-      call copy_itp_coefs_dest_to_IO(itp_dest_r)
+      call copy_itp_coefs_dest_to_IO(itp_dest_r, itp_coef_r)
 !
       table_file_header = fine_2_course_head
 !

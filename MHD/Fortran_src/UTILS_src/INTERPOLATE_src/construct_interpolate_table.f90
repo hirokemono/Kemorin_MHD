@@ -4,11 +4,13 @@
 !     Written by H. Matsui on Aug., 2006
 !
 !!      subroutine s_construct_interpolate_table                        &
-!!     &         (node, neib_nod, org_mesh, org_grp, ierr_missing)
+!!     &         (node, neib_nod, org_mesh, org_grp, itp_coef_dest,     &
+!!     &          ierr_missing)
 !!        type(node_data), intent(in) :: node
 !!        type(next_nod_id_4_nod), intent(in)  :: neib_nod
 !!        type(mesh_geometry), intent(inout) :: org_mesh
 !!        type(mesh_groups), intent(inout) ::   org_grp
+!!        type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
 !
       module construct_interpolate_table
 !
@@ -24,7 +26,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_construct_interpolate_table                          &
-     &         (node, neib_nod, org_mesh, org_grp, ierr_missing)
+     &         (node, neib_nod, org_mesh, org_grp, itp_coef_dest,       &
+     &          ierr_missing)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -36,6 +39,7 @@
 !
       use t_mesh_data
       use t_next_node_ele_4_node
+      use t_interpolate_coefs_dest
 !
       use set_2nd_geometry_4_table
       use search_node_in_element
@@ -47,6 +51,7 @@
       integer(kind = kint), intent(inout) :: ierr_missing
       type(mesh_geometry), intent(inout) :: org_mesh
       type(mesh_groups), intent(inout) ::   org_grp
+      type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
 !
       integer(kind = kint) :: ierr_local
       integer(kind = kint) :: ilevel, jp
@@ -74,30 +79,32 @@
      &        write(*,*) 'search_node_in_element_1st', ilevel, my_rank
             call search_node_in_element_1st(my_rank_2nd,                &
      &          org_mesh%node, org_mesh%ele, org_blocks(my_rank_2nd+1), &
-     &          node)
+     &          node, itp_coef_dest)
           else if (ilevel .eq. (num_search_times+1)) then
             if (i_debug.ge.iflag_routine_msg .and. jp.eq.1)             &
      &        write(*,*) 'search_node_in_all_element', ilevel, my_rank
             error_level_final = search_error_level(num_search_times)*2
             call search_node_in_all_element(my_rank_2nd,                &
-     &          error_level_final, org_mesh%node, org_mesh%ele, node)
+     &          error_level_final, org_mesh%node, org_mesh%ele, node,   &
+     &          itp_coef_dest)
           else if (ilevel .eq. (num_search_times+2)) then
             if (i_debug.ge.iflag_routine_msg .and. jp.eq.1)             &
      &        write(*,*) 'giveup_to_search_element', ilevel, my_rank
             error_level_final = search_error_level(num_search_times)*2
             call giveup_to_search_element(my_rank_2nd,                  &
      &          error_level_final, neib_nod%istack_next,                &
-     &          org_mesh%node, org_mesh%ele, node)
+     &          org_mesh%node, org_mesh%ele, node, itp_coef_dest)
           else
             if (i_debug.ge.iflag_routine_msg .and. jp.eq.1)             &
      &        write(*,*) 'search_node_in_element_2nd', ilevel, my_rank
             call search_node_in_element_2nd                             &
      &         ((ilevel-1), my_rank_2nd, org_mesh%node, org_mesh%ele,   &
-     &          org_blocks(my_rank_2nd+1), node)
+     &          org_blocks(my_rank_2nd+1), node, itp_coef_dest)
           end if
 !
 !          if (ilevel.eq.3) call check_interpolation                    &
-!     &     (node, org_mesh%node, org_mesh%ele, 14, my_rank_2nd)
+!     &     (node, org_mesh%node, org_mesh%ele, itp_coef_dest,          &
+!     &      14, my_rank_2nd)
 !
           call deallocate_work_4_interpolate
           call unlink_2nd_geometry_4_table(org_mesh, org_grp)

@@ -4,13 +4,19 @@
 !     Written by H. Matsui on Sep., 2006
 !
 !!      subroutine search_node_in_element_1st(my_rank,                  &
-!!     &          org_node, org_ele, org_blk, dest_node)
+!!     &          org_node, org_ele, org_blk, dest_node, itp_coef_dest)
 !!      subroutine search_node_in_element_2nd(iinc, my_rank,            &
-!!     &          org_node, org_ele, org_blk, dest_node)
+!!     &          org_node, org_ele, org_blk, dest_node, itp_coef_dest)
 !!      subroutine search_node_in_all_element(my_rank_2nd, error_level  &
-!!     &          org_node, org_ele, dest_node)
+!!     &          org_node, org_ele, dest_node, itp_coef_dest)
 !!      subroutine giveup_to_search_element(my_rank_2nd, error_level,   &
-!!     &          inod_next_stack_4_node, org_node, org_ele, dest_node)
+!!     &          inod_next_stack_4_node, org_node, org_ele, dest_node, &
+!!     &          itp_coef_dest)
+!!       type(node_data), intent(in) :: org_node
+!!       type(element_data), intent(in) :: org_ele
+!!       type(block_4_interpolate), intent(in) :: org_blk
+!!       type(node_data), intent(in) :: dest_node
+!!       type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
 !
       module search_node_in_element
 !
@@ -23,6 +29,7 @@
 !
       use m_search_bolck_4_itp
       use t_geometry_data
+      use t_interpolate_coefs_dest
 !
       implicit none
 !
@@ -36,7 +43,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine search_node_in_element_1st(my_rank,                    &
-     &          org_node, org_ele, org_blk, dest_node)
+     &          org_node, org_ele, org_blk, dest_node, itp_coef_dest)
 !
       integer(kind = kint), intent(in) :: my_rank
 !
@@ -45,6 +52,7 @@
       type(block_4_interpolate), intent(in) :: org_blk
 !
       type(node_data), intent(in) :: dest_node
+      type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
 !
       integer(kind = kint) :: ip, ist, ied, inod
       integer(kind = kint) :: ihash, jst, jed, jnum, jele
@@ -74,8 +82,9 @@
      &              ) then
 !
                  call s_cal_interpolate_coefs                           &
-     &              (dest_node, org_node, org_ele, my_rank, inod, jele, &
-     &               zero, iflag_nomessage, iflag_org_tmp)
+     &              (dest_node, org_node, org_ele, my_rank,             &
+     &               inod, jele, zero, iflag_nomessage,                 &
+     &               iflag_org_tmp, itp_coef_dest)
                  if ( iflag_org_domain(inod) .gt. 0) go to 10
                end if
 !
@@ -91,7 +100,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine search_node_in_element_2nd(iinc, my_rank,              &
-     &          org_node, org_ele, org_blk, dest_node)
+     &          org_node, org_ele, org_blk, dest_node, itp_coef_dest)
 !
       integer(kind = kint), intent(in) :: my_rank, iinc
 !
@@ -100,6 +109,7 @@
       type(block_4_interpolate), intent(in) :: org_blk
 !
       type(node_data), intent(in) :: dest_node
+      type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
 !
       integer(kind = kint) :: ip, ist, ied, inod, i1, i2, i3
       integer(kind = kint) :: igh(3)
@@ -131,8 +141,9 @@
               jele = org_blk%ele_list_by_rng%item_grp(jnum)
 !
                 call s_cal_interpolate_coefs                            &
-     &              (dest_node, org_node, org_ele, my_rank, inod, jele, &
-     &               zero, iflag_nomessage, iflag_org_tmp)
+     &              (dest_node, org_node, org_ele, my_rank,             &
+     &               inod, jele, zero, iflag_nomessage,                 &
+     &               iflag_org_tmp, itp_coef_dest)
                 if ( iflag_org_domain(inod) .gt. 0) go to 10
 !
             end do
@@ -150,7 +161,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine search_node_in_all_element(my_rank_2nd, error_level,   &
-     &          org_node, org_ele, dest_node)
+     &          org_node, org_ele, dest_node, itp_coef_dest)
 !
       integer(kind = kint), intent(in) :: my_rank_2nd
       real(kind = kreal), intent(in) :: error_level
@@ -159,6 +170,7 @@
       type(element_data), intent(in) :: org_ele
 !
       type(node_data), intent(in) :: dest_node
+      type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
 !
       integer(kind = kint) :: ip, ist, ied, inod, jele
       integer(kind = kint), parameter :: iflag_message = 1
@@ -179,7 +191,7 @@
               call s_cal_interpolate_coefs                              &
      &           (dest_node, org_node, org_ele, my_rank_2nd,            &
      &            inod, jele,  error_level, iflag_message,              &
-     &            iflag_org_tmp)
+     &            iflag_org_tmp, itp_coef_dest)
               if ( iflag_org_domain(inod) .gt. 0) go to  10
             end do
 !
@@ -194,7 +206,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine giveup_to_search_element(my_rank_2nd, error_level,     &
-     &          inod_next_stack_4_node, org_node, org_ele, dest_node)
+     &          inod_next_stack_4_node, org_node, org_ele, dest_node,   &
+     &          itp_coef_dest)
 !
       type(node_data), intent(in) :: org_node
       type(element_data), intent(in) :: org_ele
@@ -206,6 +219,8 @@
 !
       integer(kind = kint), intent(in) :: my_rank_2nd
       real(kind = kreal), intent(in) :: error_level
+!
+      type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
 !
       integer(kind = kint) :: ip, ist, ied, inod, jele
       integer(kind = kint) :: kst, ked
@@ -229,8 +244,9 @@
             do jele = 1, org_ele%numele
 !
               call s_cal_interpolate_coefs                              &
-     &          (dest_node, org_node, org_ele, my_rank_2nd, inod, jele, &
-     &            error_level, iflag_message, iflag_org_tmp)
+     &           (dest_node, org_node, org_ele, my_rank_2nd,            &
+     &            inod, jele, error_level, iflag_message,               &
+     &            iflag_org_tmp, itp_coef_dest)
               if ( iflag_org_domain(inod) .gt. 0) go to  10
             end do
 !

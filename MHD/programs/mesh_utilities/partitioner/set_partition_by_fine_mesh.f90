@@ -82,7 +82,6 @@
       subroutine input_interpolate_table_4_part(itp_org, itp_dest)
 !
       use m_ctl_param_partitioner
-      use m_interpolate_coefs_dest
       use itp_table_IO_select_4_zlib
       use copy_interpolate_type_IO
       use copy_interpolate_types
