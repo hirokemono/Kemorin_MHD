@@ -18,12 +18,20 @@
 !!      subroutine read_interpolate_coefs_org(id_file, IO_itp_org)
 !!        type(interpolate_table_org), intent(inout) :: IO_itp_org
 !!
-!!      subroutine write_interpolate_table_dest(id_file, my_rank)
-!!      subroutine write_interpolate_coefs_dest(id_file)
+!!      subroutine write_interpolate_table_dest                         &
+!!     &         (id_file, my_rank, IO_itp_dest)
+!!      subroutine write_interpolate_coefs_dest                         &
+!!     &         (id_file, IO_itp_dest, IO_itp_c_dest)
+!!        type(interpolate_table_dest), intent(in) :: IO_itp_dest
+!!        type(interpolate_coefs_dest), intent(in) :: IO_itp_c_dest
 !!
-!!      subroutine read_interpolate_domain_dest(id_file, n_rank)
-!!      subroutine read_interpolate_table_dest(id_file)
-!!      subroutine read_interpolate_coefs_dest(id_file)
+!!      subroutine read_interpolate_domain_dest                         &
+!!     &         (id_file, n_rank, IO_itp_dest)
+!!      subroutine read_interpolate_table_dest(id_file, IO_itp_dest)
+!!      subroutine read_interpolate_coefs_dest                          &
+!!     &         (id_file, IO_itp_dest, IO_itp_c_dest)
+!!        type(interpolate_table_dest), intent(inout) :: IO_itp_dest
+!!        type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !!@endverbatim
 !
       module itp_table_data_IO
@@ -205,11 +213,13 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine write_interpolate_table_dest(id_file, my_rank)
+      subroutine write_interpolate_table_dest                           &
+     &         (id_file, my_rank, IO_itp_dest)
 !
-      use m_interpolate_table_dest_IO
+      use t_interpolate_tbl_dest
 !
       integer(kind = kint), intent(in) :: id_file, my_rank
+      type(interpolate_table_dest), intent(in) :: IO_itp_dest
 !
 !
       write(id_file,'(a)') '!'
@@ -248,11 +258,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_interpolate_coefs_dest(id_file)
+      subroutine write_interpolate_coefs_dest                           &
+     &         (id_file, IO_itp_dest, IO_itp_c_dest)
 !
-      use m_interpolate_table_dest_IO
+      use t_interpolate_tbl_dest
+      use t_interpolate_coefs_dest
 !
       integer(kind = kint), intent(in) :: id_file
+      type(interpolate_coefs_dest), intent(in) :: IO_itp_c_dest
+      type(interpolate_table_dest), intent(in) :: IO_itp_dest
 !
       integer(kind = kint) :: i, inod
 !
@@ -267,13 +281,15 @@
       if (IO_itp_dest%num_org_domain .gt. 0) then
         do i = 1, IO_itp_dest%num_org_domain
           write(id_file,'(8i16)')                                       &
-     &                istack_table_wtype_dest_IO(4*i-3:4*i)
+     &             IO_itp_c_dest%istack_nod_tbl_wtype_dest(4*i-3:4*i)
         end do
 !
         do inod = 1, IO_itp_dest%ntot_table_dest
           write(id_file,'(3i16,1p3E25.15e3)')                           &
-     &        inod_global_dest_IO(inod), iele_orgin_IO(inod),           &
-     &        itype_inter_dest_IO(inod), coef_inter_dest_IO(inod,1:3)
+     &        IO_itp_c_dest%inod_gl_dest(inod),                         &
+     &        IO_itp_c_dest%iele_org_4_dest(inod),                      &
+     &        IO_itp_c_dest%itype_inter_dest(inod),                     &
+     &        IO_itp_c_dest%coef_inter_dest(inod,1:3)
         end do
 !
       else
@@ -284,14 +300,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_interpolate_domain_dest(id_file, n_rank)
+      subroutine read_interpolate_domain_dest                           &
+     &         (id_file, n_rank, IO_itp_dest)
 !
-      use m_interpolate_table_dest_IO
+      use t_interpolate_tbl_dest
 !
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(inout) :: n_rank
+      type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
 !
       call skip_comment(character_4_read, id_file)
@@ -300,7 +318,7 @@
       read(character_4_read,*) IO_itp_dest%num_org_domain
 !
       if (IO_itp_dest%num_org_domain .gt. 0) then
-        call allocate_itp_num_dst_IO
+        call alloc_itp_num_dest(IO_itp_dest)
         read(id_file,*)                                                 &
      &        IO_itp_dest%id_org_domain(1:IO_itp_dest%num_org_domain)
       end if
@@ -309,13 +327,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_interpolate_table_dest(id_file)
+      subroutine read_interpolate_table_dest(id_file, IO_itp_dest)
 !
-      use m_interpolate_table_dest_IO
+      use t_interpolate_tbl_dest
 !
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_file
+      type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
 !
       if (IO_itp_dest%num_org_domain .eq. 0) return
@@ -325,7 +344,7 @@
       IO_itp_dest%ntot_table_dest                                       &
      &   = IO_itp_dest%istack_nod_tbl_dest(IO_itp_dest%num_org_domain)
 !
-      call allocate_itp_nod_dst_IO
+      call alloc_itp_table_dest(IO_itp_dest)
 !
       read(id_file,*)                                                   &
      &     IO_itp_dest%inod_dest_4_dest(1:IO_itp_dest%ntot_table_dest)
@@ -334,33 +353,42 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_interpolate_coefs_dest(id_file)
+      subroutine read_interpolate_coefs_dest                            &
+     &         (id_file, IO_itp_dest, IO_itp_c_dest)
 !
-      use m_interpolate_table_dest_IO
+      use t_interpolate_tbl_dest
+      use t_interpolate_coefs_dest
 !
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_file
+      type(interpolate_table_dest), intent(inout) :: IO_itp_dest
+      type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !
-      integer(kind = kint) :: i, inod
+      integer(kind = kint) :: i, inod, num
 !
 !
       if (IO_itp_dest%num_org_domain .eq. 0) return
+        call alloc_itp_coef_stack                                       &
+     &     (IO_itp_dest%num_org_domain, IO_itp_c_dest)
 !
         call read_stack_array(character_4_read, id_file,                &
-     &      ifour, istack_table_wtype_dest_IO(0) )
+     &      ifour, IO_itp_c_dest%istack_nod_tbl_wtype_dest(0:ifour))
         do i = 2, IO_itp_dest%num_org_domain
-          read(id_file,*) istack_table_wtype_dest_IO(4*i-3:4*i)
+          read(id_file,*)                                               &
+     &             IO_itp_c_dest%istack_nod_tbl_wtype_dest(4*i-3:4*i)
         end do
+        num = 4*IO_itp_dest%num_org_domain
         IO_itp_dest%ntot_table_dest                                     &
-     &       = istack_table_wtype_dest_IO(4*IO_itp_dest%num_org_domain)
+     &    = IO_itp_c_dest%istack_nod_tbl_wtype_dest(num)
 !
-        call allocate_itp_coefs_dst_IO
+        call alloc_itp_coef_dest(IO_itp_dest, IO_itp_c_dest)
 !
         do inod = 1, IO_itp_dest%ntot_table_dest
-          read(id_file,*) inod_global_dest_IO(inod),                    &
-     &        iele_orgin_IO(inod), itype_inter_dest_IO(inod),           &
-     &        coef_inter_dest_IO(inod,1:3)
+          read(id_file,*) IO_itp_c_dest%inod_gl_dest(inod),             &
+     &        IO_itp_c_dest%iele_org_4_dest(inod),                      &
+     &        IO_itp_c_dest%itype_inter_dest(inod),                     &
+     &        IO_itp_c_dest%coef_inter_dest(inod,1:3)
         end do
 !
       end subroutine read_interpolate_coefs_dest

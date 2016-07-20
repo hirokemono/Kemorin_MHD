@@ -7,10 +7,10 @@
       use m_ctl_data_gen_table
       use m_read_mesh_data
       use m_work_ditribute_itp
+      use m_interpolate_table_IO
       use distribute_itp_tbl_4_para
       use set_parallel_mesh_in_1pe
       use itp_table_IO_select_4_zlib
-      use copy_interpolate_type_IO
 !
       implicit  none
 !
@@ -49,9 +49,7 @@
 !
 !
       table_file_header = sgl_table_file_head
-      call sel_read_interpolate_table(izero, ierr)
-      call copy_interpolate_types_from_IO(izero, single_tbl)
-      call set_stack_tbl_wtype_org_smp(single_tbl%tbl_org)
+      call load_interpolate_table(izero, single_tbl)
       write(*,*) 'interplation table is loaded'
 !
 !
@@ -69,8 +67,7 @@
       write(*,*) 'table field header: ', trim(table_file_header)
       do ip = 1, nprocs_table
         my_rank = ip - 1
-        call copy_interpolate_types_to_IO(my_rank, para_tbl(ip))
-        call sel_write_interpolate_table(my_rank)
+        call output_interpolate_table(my_rank, para_tbl(ip))
       end do
 !
       stop 'Distibution finished'

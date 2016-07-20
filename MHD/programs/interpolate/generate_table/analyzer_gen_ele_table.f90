@@ -118,6 +118,7 @@
       subroutine analyze
 !
       use calypso_mpi
+      use m_interpolate_table_IO
       use m_ctl_params_4_gen_table
 !
       use construct_interpolate_table
@@ -126,6 +127,7 @@
       use order_dest_table_by_domain
       use order_dest_table_by_type
       use itp_table_IO_select_4_zlib
+      use copy_interpolate_types
       use delete_data_files
 !
       integer(kind = kint) :: ierr_missing
@@ -152,10 +154,12 @@
      &   (org_femmesh%mesh%node, org_femmesh%mesh%ele,                  &
      &    itp_ele%tbl_dest, itp_e_coef)
 !
-      call copy_itp_coefs_dest_to_IO(itp_ele%tbl_dest, itp_e_coef)
+      call copy_itp_coefs_dest(my_rank,                                 &
+     &    itp_ele%tbl_dest, itp_e_coef, IO_itp_dest, IO_itp_c_dest)
 !
       table_file_header = work_header
-      call sel_write_itp_coefs_dest(my_rank)
+      call sel_write_itp_coefs_dest                                     &
+     &   (my_rank, IO_itp_dest, IO_itp_c_dest)
 !
 !   construct table for originate domain
 !
@@ -164,7 +168,7 @@
      &     write(*,*) 'const_rev_ele_interpolate_table'
         call const_rev_ele_interpolate_table
       else
-        if (iflag_debug.eq.1)                                          &
+        if (iflag_debug.eq.1)                                           &
      &     write(*,*) 'const_interpolate_table_4_orgin'
         call const_interpolate_table_4_orgin
       end if

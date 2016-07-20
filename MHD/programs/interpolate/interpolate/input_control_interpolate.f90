@@ -34,6 +34,7 @@
       use m_ctl_params_4_gen_table
       use m_ctl_data_gen_table
       use m_read_mesh_data
+      use m_interpolate_table_IO
 !
       use set_ctl_interpolation
 !
@@ -41,7 +42,6 @@
       use const_mesh_information
 !
       use itp_table_IO_select_4_zlib
-      use copy_interpolate_type_IO
       use copy_interpolate_types
       use interpolate_nod_field_2_type
 !
@@ -90,17 +90,9 @@
 !
 !  --  read interpolate table
 !
+      if (iflag_debug.eq.1) write(*,*) 'load_interpolate_table'
       table_file_header = table_file_head
-      if (iflag_debug.gt.0) write(*,*) 'sel_read_interpolate_table: ',  &
-     &                                trim(table_file_header)
-      call sel_read_interpolate_table(my_rank, ierr)
-!
-!
-      if (iflag_debug.eq.1) write(*,*) 'copy_itp_table_dest_from_IO'
-      call copy_itp_table_dest_from_IO(my_rank, itp_info%tbl_dest)
-      if (iflag_debug.eq.1) write(*,*) 'copy_itp_tbl_types_org'
-      call copy_itp_tbl_types_org                                       &
-     &   (my_rank, IO_itp_org, itp_info%tbl_org)
+      call load_interpolate_table(my_rank, itp_info)
 !
       if (iflag_debug.eq.1) write(*,*) 'init_interpolate_nodal_data'
       call init_interpolate_nodal_data                                  &

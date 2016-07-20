@@ -76,12 +76,11 @@
 !
       ifmt_itp_table_file = ifile_type
       table_file_header = FEM_2_SPH_tbl_head
-      call sel_read_interpolate_table(my_rank, ierr)
-      call copy_interpolate_types_from_IO(my_rank, itp_FEM_2_SPH)
+      call load_interpolate_table(my_rank, itp_FEM_2_SPH)
 !
       table_file_header = SPH_2_FEM_tbl_head
-      call sel_read_interpolate_table(my_rank, ierr)
-      call copy_interpolate_types_from_IO(my_rank, itp_SPH_2_FEM)
+      call load_interpolate_table(my_rank, itp_SPH_2_FEM)
+!
 !
       call init_interpolate_mat_type(mesh_fem%ele,                      &
      &    itp_FEM_2_SPH%tbl_org, itp_FEM_2_SPH%mat)

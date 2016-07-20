@@ -12,6 +12,7 @@
 !!      subroutine write_element_refine_file                            &
 !!     &         (my_rank, ifile_type, IO_itp_org)
 !!        type(interpolate_table_org), intent(inout) :: IO_itp_org
+!!        type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !!@endverbatim
 !
       module element_refine_file_IO
@@ -19,7 +20,7 @@
       use m_precision
 !
       use m_element_refinement_IO
-      use m_interpolate_table_dest_IO
+      use t_interpolate_tbl_dest
       use t_interpolate_tbl_org
       use itp_table_data_IO
       use itp_table_data_IO_b
@@ -34,10 +35,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine read_element_refine_file                               &
-    &          (my_rank, ifile_type, IO_itp_org)
+    &          (my_rank, ifile_type, IO_itp_org, IO_itp_dest)
 !
       integer(kind = kint), intent(in) :: my_rank, ifile_type
       type(interpolate_table_org), intent(inout) :: IO_itp_org
+      type(interpolate_table_dest), intent(inout) :: IO_itp_dest
+!
       integer(kind = kint) :: nrank_ref
 !
 !
@@ -50,7 +53,8 @@
         open (id_refine_table,file=refine_info_fname,                   &
      &      form='unformatted')
 !
-        call read_interpolate_table_dest_b(id_refine_table)
+        call read_interpolate_table_dest_b                              &
+     &     (id_refine_table, IO_itp_dest)
         call read_interpolate_domain_org_b                              &
      &     (id_refine_table, nrank_ref, IO_itp_org)
         call read_interpolate_table_org_b(id_refine_table, IO_itp_org)
@@ -65,7 +69,7 @@
      &            trim(refine_info_fname)
         open (id_refine_table,file = refine_info_fname)
 !
-        call read_interpolate_table_dest(id_refine_table)
+        call read_interpolate_table_dest(id_refine_table, IO_itp_dest)
         call read_interpolate_domain_org                                &
      &     (id_refine_table, nrank_ref, IO_itp_org)
         call read_interpolate_table_org(id_refine_table, IO_itp_org)
@@ -81,10 +85,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine write_element_refine_file                              &
-     &         (my_rank, ifile_type, IO_itp_org)
+     &         (my_rank, ifile_type, IO_itp_org, IO_itp_dest)
 !
       integer(kind = kint), intent(in) :: my_rank, ifile_type
       type(interpolate_table_org), intent(inout) :: IO_itp_org
+      type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
 !
       call add_int_suffix(my_rank, refine_info_fhead,                   &
@@ -96,7 +101,8 @@
         open (id_refine_table,file=refine_info_fname,                   &
      &      form='unformatted')
 !
-        call write_interpolate_table_dest_b(id_refine_table, my_rank)
+        call write_interpolate_table_dest_b                             &
+     &     (id_refine_table, my_rank, IO_itp_dest)
         call write_interpolate_table_org_b                              &
      &     (id_refine_table, my_rank, IO_itp_org)
         call write_interpolate_coefs_org_b(id_refine_table, IO_itp_org)
@@ -109,7 +115,8 @@
      &            trim(refine_info_fname)
         open (id_refine_table,file = refine_info_fname)
 !
-        call write_interpolate_table_dest(id_refine_table, my_rank)
+        call write_interpolate_table_dest                               &
+     &     (id_refine_table, my_rank, IO_itp_dest)
         call write_interpolate_table_org                                &
      &     (id_refine_table, my_rank, IO_itp_org)
         call write_interpolate_coefs_org(id_refine_table, IO_itp_org)
@@ -123,8 +130,8 @@
       call dealloc_itp_num_org(IO_itp_org)
       call dealloc_itp_table_org(IO_itp_org)
 !
-      call deallocate_itp_nod_dst_IO
-      call deallocate_itp_num_dst_IO
+      call dealloc_itp_table_dest(IO_itp_dest)
+      call dealloc_itp_num_dest(IO_itp_dest)
 !
       end subroutine write_element_refine_file
 !

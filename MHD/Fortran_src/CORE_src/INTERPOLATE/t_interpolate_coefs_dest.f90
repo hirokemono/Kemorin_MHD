@@ -7,10 +7,10 @@
 !> @brief Interpolation coefficients on target mesh
 !!@verbatim
 !!      subroutine alloc_itp_coef_dest(itp_dest, coef_dest)
+!!      subroutine dealloc_itp_coef_stack(coef_dest)
 !!      subroutine dealloc_itp_coef_dest(coef_dest)
 !!
 !!      subroutine check_table_in_org_2(id_file, itp_dest, coef_dest)
-!!      subroutine copy_itp_coefs_dest_to_IO(itp_dest, coef_dest)
 !!@endverbatim
 !
 !
@@ -22,6 +22,7 @@
       implicit none
 !
 !
+!> Structure of interpolation coefficients for target grid
       type interpolate_coefs_dest
 !>   global node ID for target domain
         integer(kind = kint), allocatable :: inod_gl_dest(:)
@@ -78,6 +79,17 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine dealloc_itp_coef_stack(coef_dest)
+!
+      type(interpolate_coefs_dest), intent(inout) :: coef_dest
+!
+!
+      deallocate(coef_dest%istack_nod_tbl_wtype_dest)
+!
+      end subroutine dealloc_itp_coef_stack
+!
+!-----------------------------------------------------------------------
+!
       subroutine dealloc_itp_coef_dest(coef_dest)
 !
       type(interpolate_coefs_dest), intent(inout) :: coef_dest
@@ -85,7 +97,6 @@
 !
       deallocate(coef_dest%inod_gl_dest, coef_dest%iele_org_4_dest)
       deallocate(coef_dest%itype_inter_dest, coef_dest%coef_inter_dest)
-      deallocate(coef_dest%istack_nod_tbl_wtype_dest)
 !
       end subroutine dealloc_itp_coef_dest
 !
@@ -123,47 +134,6 @@
       end do
 !
       end subroutine check_table_in_org_2
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine copy_itp_coefs_dest_to_IO(itp_dest, coef_dest)
-!
-      use m_interpolate_table_dest_IO
-      use copy_interpolate_type_IO
-!
-      type(interpolate_table_dest), intent(inout) :: itp_dest
-      type(interpolate_coefs_dest), intent(inout) :: coef_dest
-!
-      integer(kind = kint) :: num
-!
-      call copy_itp_table_dest_to_IO(itp_dest)
-!
-      if (IO_itp_dest%num_org_domain .le. 0) return
-        call allocate_itp_coefs_dst_IO
-!
-        num = 4*IO_itp_dest%num_org_domain
-        istack_table_wtype_dest_IO(0:num)                               &
-     &      = coef_dest%istack_nod_tbl_wtype_dest(0:num)
-!
-        inod_global_dest_IO(1:IO_itp_dest%ntot_table_dest)              &
-     &     = coef_dest%inod_gl_dest(1:IO_itp_dest%ntot_table_dest)
-!
-        itype_inter_dest_IO(1:IO_itp_dest%ntot_table_dest)              &
-     &     = coef_dest%itype_inter_dest(1:IO_itp_dest%ntot_table_dest)
-        iele_orgin_IO(1:IO_itp_dest%ntot_table_dest)                    &
-     &     = coef_dest%iele_org_4_dest(1:IO_itp_dest%ntot_table_dest)
-!
-        coef_inter_dest_IO(1:IO_itp_dest%ntot_table_dest,1)             &
-     &     = coef_dest%coef_inter_dest(1:IO_itp_dest%ntot_table_dest,1)
-        coef_inter_dest_IO(1:IO_itp_dest%ntot_table_dest,2)             &
-     &     = coef_dest%coef_inter_dest(1:IO_itp_dest%ntot_table_dest,2)
-        coef_inter_dest_IO(1:IO_itp_dest%ntot_table_dest,3)             &
-     &     = coef_dest%coef_inter_dest(1:IO_itp_dest%ntot_table_dest,3)
-!
-      call dealloc_itp_coef_dest(coef_dest)
-!
-      end subroutine copy_itp_coefs_dest_to_IO
 !
 !-----------------------------------------------------------------------
 !

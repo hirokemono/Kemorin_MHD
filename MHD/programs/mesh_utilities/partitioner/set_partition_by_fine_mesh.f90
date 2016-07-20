@@ -11,6 +11,7 @@
       use m_constants
 !
       use t_mesh_data
+      use t_interpolate_table
       use t_interpolate_tbl_org
       use t_interpolate_tbl_dest
 !
@@ -18,7 +19,6 @@
 !
       type(mesh_geometry), save :: finermesh
 !
-      private :: input_interpolate_table_4_part
       private :: interpolate_domain_group
 !
 !  ---------------------------------------------------------------------
@@ -33,12 +33,14 @@
       use m_subdomain_table_IO
       use m_read_mesh_data
       use m_domain_group_4_partition
+      use m_ctl_param_partitioner
+      use m_interpolate_table_IO
 !
       use load_mesh_data
       use copy_domain_list_4_IO
+      use itp_table_IO_select_4_zlib
 !
-      type(interpolate_table_org) :: itp_org
-      type(interpolate_table_dest) :: itp_dest
+      type(interpolate_table)  :: itp_table
 !
 !     read finer mesh
 !
@@ -48,7 +50,8 @@
 !
 !     read interpolate table
 !
-      call input_interpolate_table_4_part(itp_org, itp_dest)
+      table_file_header = finer_inter_file_head
+      call load_interpolate_table(izero, itp_table)
 !
 !     read interpolate table
 !
@@ -58,17 +61,17 @@
 !     construct group table
 !
       call interpolate_domain_group                                     &
-     &   (finermesh%node, finermesh%ele, itp_org)
+     &   (finermesh%node, finermesh%ele, itp_table%tbl_org)
 !
 !     deallocate arrays
 !
       call deallocate_finer_domain_group
 !
-      call dealloc_itp_num_org(itp_org)
-      call dealloc_itp_table_org(itp_org)
+      call dealloc_itp_num_org(itp_table%tbl_org)
+      call dealloc_itp_table_org(itp_table%tbl_org)
 !
-      call dealloc_itp_table_dest(itp_dest)
-      call dealloc_itp_num_dest(itp_dest)
+      call dealloc_itp_table_dest(itp_table%tbl_dest)
+      call dealloc_itp_num_dest(itp_table%tbl_dest)
 !
       call deallocate_ele_connect_type(finermesh%ele)
       call deallocate_node_geometry_type(finermesh%node)
@@ -77,34 +80,6 @@
       end subroutine s_set_partition_by_fine_mesh
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine input_interpolate_table_4_part(itp_org, itp_dest)
-!
-      use m_ctl_param_partitioner
-      use itp_table_IO_select_4_zlib
-      use copy_interpolate_type_IO
-      use copy_interpolate_types
-!
-      type(interpolate_table_org), intent(inout) :: itp_org
-      type(interpolate_table_dest), intent(inout) :: itp_dest
-!
-      integer(kind = kint), parameter :: my_rank = 0
-      integer(kind = kint) :: ierr
-!
-!
-      table_file_header = finer_inter_file_head
-      write(*,*) 'sel_read_interpolate_table: ',                        &
-     &           trim(table_file_header)
-      call sel_read_interpolate_table(my_rank, ierr)
-!
-      call copy_itp_table_dest_from_IO(my_rank, itp_dest)
-      call copy_itp_tbl_types_org(my_rank, IO_itp_org, itp_org)
-!
-      call set_stack_tbl_wtype_org_smp(itp_org)
-!
-      end subroutine input_interpolate_table_4_part
-!
 !  ---------------------------------------------------------------------
 !
       subroutine interpolate_domain_group(new_node, new_ele, itp_org)

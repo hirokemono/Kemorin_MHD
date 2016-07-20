@@ -3,21 +3,25 @@
 !
 !        programmed by H.Matsui on Sep. 2012
 !
-!      subroutine write_gz_itp_table_org(my_rank, IO_itp_org)
-!      subroutine write_gz_itp_coefs_org(IO_itp_org)
+!!      subroutine write_gz_itp_table_org(my_rank, IO_itp_org)
+!!      subroutine write_gz_itp_coefs_org(IO_itp_org)
 !!        type(interpolate_table_org), intent(in) :: IO_itp_org
-!
-!      subroutine read_gz_itp_domain_org(n_rank, IO_itp_org)
-!      subroutine read_gz_itp_table_org(IO_itp_org)
-!      subroutine read_gz_itp_coefs_org(IO_itp_org)
+!!
+!!      subroutine read_gz_itp_domain_org(n_rank, IO_itp_org)
+!!      subroutine read_gz_itp_table_org(IO_itp_org)
+!!      subroutine read_gz_itp_coefs_org(IO_itp_org)
 !!        type(interpolate_table_org), intent(inout) :: IO_itp_org
-!
-!      subroutine write_gz_itp_table_dest(my_rank)
-!      subroutine write_gz_itp_coefs_dest
-!
-!      subroutine read_gz_itp_domain_dest(n_rank)
-!      subroutine read_gz_itp_table_dest
-!      subroutine read_gz_itp_coefs_dest
+!!
+!!      subroutine write_gz_itp_table_dest(my_rank, IO_itp_dest)
+!!      subroutine write_gz_itp_coefs_dest(IO_itp_dest, IO_itp_c_dest)
+!!        type(interpolate_table_dest), intent(in) :: IO_itp_dest
+!!        type(interpolate_coefs_dest), intent(in) :: IO_itp_c_dest
+!!
+!!      subroutine read_gz_itp_domain_dest(n_rank, IO_itp_dest)
+!!      subroutine read_gz_itp_table_dest(IO_itp_dest)
+!!      subroutine read_gz_itp_coefs_dest(IO_itp_dest, IO_itp_c_dest)
+!!        type(interpolate_table_dest), intent(inout) :: IO_itp_dest
+!!        type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !
       module gz_itp_table_data_IO
 !
@@ -209,10 +213,11 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine write_gz_itp_table_dest(my_rank)
+      subroutine write_gz_itp_table_dest(my_rank, IO_itp_dest)
 !
-      use m_interpolate_table_dest_IO
+      use t_interpolate_tbl_dest
 !
+      type(interpolate_table_dest), intent(in) :: IO_itp_dest
       integer(kind = kint), intent(in) :: my_rank
 !
 !
@@ -264,9 +269,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_gz_itp_coefs_dest
+      subroutine write_gz_itp_coefs_dest(IO_itp_dest, IO_itp_c_dest)
 !
-      use m_interpolate_table_dest_IO
+      use t_interpolate_tbl_dest
+      use t_interpolate_coefs_dest
+!
+      type(interpolate_table_dest), intent(in) :: IO_itp_dest
+      type(interpolate_coefs_dest), intent(in) :: IO_itp_c_dest
 !
       integer(kind = kint) :: i, inod
 !
@@ -289,13 +298,15 @@
       if (IO_itp_dest%num_org_domain .gt. 0) then
         do i = 1, IO_itp_dest%num_org_domain
           call write_gz_multi_int_8i10(ifour,                           &
-     &        istack_table_wtype_dest_IO(4*i-3))
+     &        IO_itp_c_dest%istack_nod_tbl_wtype_dest(4*i-3:4*i))
         end do
 !
         do inod = 1, IO_itp_dest%ntot_table_dest
           write(textbuf,'(3i16,1p3E25.15e3,a1)')                        &
-     &        inod_global_dest_IO(inod), iele_orgin_IO(inod),           &
-     &        itype_inter_dest_IO(inod), coef_inter_dest_IO(inod,1:3),  &
+     &        IO_itp_c_dest%inod_gl_dest(inod),                         &
+     &        IO_itp_c_dest%iele_org_4_dest(inod),                      &
+     &        IO_itp_c_dest%itype_inter_dest(inod),                     &
+     &        IO_itp_c_dest%coef_inter_dest(inod,1:3),                  &
      &        char(0)
           call gz_write_textbuf_w_lf
         end do
@@ -310,18 +321,19 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine read_gz_itp_domain_dest(n_rank)
+      subroutine read_gz_itp_domain_dest(n_rank, IO_itp_dest)
 !
-      use m_interpolate_table_dest_IO
+      use t_interpolate_tbl_dest
 !
       integer(kind = kint), intent(inout) :: n_rank
+      type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
 !
       call skip_gz_comment_int(n_rank)
       call skip_gz_comment_int(IO_itp_dest%num_org_domain)
 !
       if (IO_itp_dest%num_org_domain .gt. 0) then
-        call allocate_itp_num_dst_IO
+        call alloc_itp_num_dest(IO_itp_dest)
         call read_gz_multi_int                                          &
      &     (IO_itp_dest%num_org_domain, IO_itp_dest%id_org_domain)
       end if
@@ -330,9 +342,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_gz_itp_table_dest
+      subroutine read_gz_itp_table_dest(IO_itp_dest)
 !
-      use m_interpolate_table_dest_IO
+      use t_interpolate_tbl_dest
+!
+      type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
 !
       if (IO_itp_dest%num_org_domain .eq. 0) return
@@ -342,7 +356,7 @@
       IO_itp_dest%ntot_table_dest                                       &
      &   = IO_itp_dest%istack_nod_tbl_dest(IO_itp_dest%num_org_domain)
 !
-      call allocate_itp_nod_dst_IO
+      call alloc_itp_table_dest(IO_itp_dest)
       call read_gz_multi_int                                            &
      &   (IO_itp_dest%ntot_table_dest, IO_itp_dest%inod_dest_4_dest)
 !
@@ -350,29 +364,38 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_gz_itp_coefs_dest
+      subroutine read_gz_itp_coefs_dest(IO_itp_dest, IO_itp_c_dest)
 !
-      use m_interpolate_table_dest_IO
+      use t_interpolate_tbl_dest
+      use t_interpolate_coefs_dest
 !
-      integer(kind = kint) :: i, inod
+      type(interpolate_table_dest), intent(inout) :: IO_itp_dest
+      type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
+!
+      integer(kind = kint) :: i, inod, num
 !
 !
       if (IO_itp_dest%num_org_domain .eq. 0) return
-        istack_table_wtype_dest_IO(0) = 0
+        call alloc_itp_coef_stack                                       &
+     &     (IO_itp_dest%num_org_domain, IO_itp_c_dest)
+        IO_itp_c_dest%istack_nod_tbl_wtype_dest(0) = 0
+!
         do i = 1, IO_itp_dest%num_org_domain
           call read_gz_multi_int(ifour,                                 &
-     &        istack_table_wtype_dest_IO(4*i-3) )
+     &        IO_itp_c_dest%istack_nod_tbl_wtype_dest(4*i-3:4*i) )
         end do
+        num = 4*IO_itp_dest%num_org_domain
         IO_itp_dest%ntot_table_dest                                     &
-     &     = istack_table_wtype_dest_IO(4*IO_itp_dest%num_org_domain)
+     &     = IO_itp_c_dest%istack_nod_tbl_wtype_dest(num)
 !
-        call allocate_itp_coefs_dst_IO
+        call alloc_itp_coef_dest(IO_itp_dest, IO_itp_c_dest)
 !
         do inod = 1, IO_itp_dest%ntot_table_dest
           call get_one_line_from_gz_f
-          read(textbuf,*) inod_global_dest_IO(inod),                    &
-     &        iele_orgin_IO(inod), itype_inter_dest_IO(inod),           &
-     &        coef_inter_dest_IO(inod,1:3)
+          read(textbuf,*) IO_itp_c_dest%inod_gl_dest(inod),             &
+     &        IO_itp_c_dest%iele_org_4_dest(inod),                      &
+     &        IO_itp_c_dest%itype_inter_dest(inod),                     &
+     &        IO_itp_c_dest%coef_inter_dest(inod,1:3)
         end do
 !
       end subroutine read_gz_itp_coefs_dest

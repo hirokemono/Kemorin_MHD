@@ -66,8 +66,8 @@
 !
       subroutine input_MG_itp_tables(MG_itp)
 !
+      use m_interpolate_table_IO
       use itp_table_IO_select_4_zlib
-      use copy_interpolate_type_IO
 !
       type(MG_itp_table), intent(inout) :: MG_itp(num_MG_level)
 !
@@ -77,14 +77,12 @@
       do i_level = 1, num_MG_level
         if(i_level.eq.1 .or. my_rank.lt.MG_mpi(i_level-1)%nprocs)       &
      &      then
+          write(*,*) 'MG_f2c_tbl_head format', ifmt_itp_table_file
           table_file_header = MG_f2c_tbl_head(i_level)
           ifmt_itp_table_file = ifmt_MG_table_file(i_level)
-          write(*,*) 'MG_f2c_tbl_head format', ifmt_itp_table_file
-          call sel_read_interpolate_table(my_rank, ierr)
-          call copy_interpolate_types_from_IO(my_rank,                  &
-     &        MG_itp(i_level)%f2c )
+          call load_interpolate_table(my_rank, MG_itp(i_level)%f2c)
         else
-          call alloc_zero_itp_tables(np_smp, MG_itp(i_level)%f2c)
+          call load_zero_interpolate_table(MG_itp(i_level)%f2c)
         end if
 !
       end do
@@ -94,14 +92,12 @@
       do i_level = 1, num_MG_level
         if(i_level.eq.1 .or. my_rank.lt.MG_mpi(i_level-1)%nprocs)       &
      &      then
+          write(*,*) 'MG_c2f_tbl_head format', ifmt_itp_table_file
           table_file_header = MG_c2f_tbl_head(i_level)
           ifmt_itp_table_file = ifmt_MG_table_file(i_level)
-          write(*,*) 'MG_c2f_tbl_head format', ifmt_itp_table_file
-          call sel_read_interpolate_table(my_rank, ierr)
-          call copy_interpolate_types_from_IO(my_rank,                  &
-     &        MG_itp(i_level)%c2f )
+          call load_interpolate_table(my_rank, MG_itp(i_level)%c2f)
         else
-          call alloc_zero_itp_tables(np_smp, MG_itp(i_level)%c2f)
+          call load_zero_interpolate_table(MG_itp(i_level)%c2f)
         end if
 !
       end do
@@ -113,12 +109,10 @@
           if(i_level.eq.1 .or. my_rank.lt.MG_mpi(i_level-1)%nprocs)     &
      &      then
             table_file_header = MG_f2c_eletbl_head(i_level)
-            call sel_read_interpolate_table(my_rank, ierr)
-!
-            call copy_interpolate_types_from_IO(my_rank,                &
-     &           MG_c2f_ele_tbl(i_level) )
+            call load_interpolate_table                                 &
+     &         (my_rank, MG_c2f_ele_tbl(i_level) )
           else
-            call alloc_zero_itp_tables(np_smp, MG_c2f_ele_tbl(i_level))
+            call load_zero_interpolate_table(MG_c2f_ele_tbl(i_level))
           end if
 !
         end do

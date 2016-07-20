@@ -28,11 +28,8 @@
 !
       use m_2nd_pallalel_vector
       use m_ctl_params_4_gen_table
+      use m_interpolate_table_IO
 !
-      use m_interpolate_table_dest_IO
-      use m_interpolate_table_org_IO
-!
-      use copy_interpolate_type_IO
       use copy_interpolate_types
       use itp_table_IO_select_4_zlib
       use const_interpolate_4_org
@@ -78,40 +75,36 @@
           else
             table_file_header = work_header
 !
-            call sel_read_itp_table_dest(my_rank_2nd, ierr)
+            call sel_read_itp_table_dest                                &
+     &         (my_rank_2nd, IO_itp_dest, ierr)
             if (ierr .ne. 0) then
               call calypso_MPI_abort(ierr,'Check work file')
             end if
-!
           end if
 !
-          call copy_interpolate_types_from_IO(my_rank_2nd, itp_ele_c2f)
-          call set_stack_tbl_wtype_org_smp(itp_ele_c2f%tbl_org)
+          call load_interpolate_table(my_rank_2nd, itp_ele_c2f)
 !
           call reverse_ele_itp_table_type(itp_ele_c2f, itp_ele_f2c)
-          call copy_interpolate_types_to_IO(my_rank, itp_ele_f2c)
 !
           table_file_header = table_file_head
-          call sel_write_interpolate_table(my_rank)
+          call output_interpolate_table(my_rank, itp_ele_f2c)
         end if
       end do
 !
       if (my_rank .ge. nprocs_2nd) then
         table_file_header = work_header
-        call sel_read_itp_table_dest(my_rank, ierr)
+        call sel_read_itp_table_dest(my_rank, IO_itp_dest, ierr)
 !
         if (ierr.ne.0) call calypso_MPI_abort(ierr,'Check work file')
 !
         IO_itp_org%num_dest_domain = 0
         IO_itp_org%ntot_table_org =  0
-        call copy_interpolate_types_from_IO(my_rank, itp_ele_c2f)
-        call set_stack_tbl_wtype_org_smp(itp_ele_c2f%tbl_org)
+        call load_interpolate_table(my_rank, itp_ele_c2f)
 !
         call reverse_ele_itp_table_type(itp_ele_c2f, itp_ele_f2c)
-        call copy_interpolate_types_to_IO(my_rank, itp_ele_f2c)
 !
         table_file_header = table_file_head
-        call sel_write_interpolate_table(my_rank)
+        call output_interpolate_table(my_rank, itp_ele_f2c)
       end if
 !
       end subroutine const_rev_ele_interpolate_table

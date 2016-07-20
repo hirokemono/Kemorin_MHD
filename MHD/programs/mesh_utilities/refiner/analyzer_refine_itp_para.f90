@@ -31,8 +31,8 @@
       use m_constants
       use m_read_mesh_data
       use m_control_data_refine_para
+      use m_interpolate_table_IO
       use itp_table_IO_select_4_zlib
-      use copy_interpolate_type_IO
       use num_nod_ele_merge_by_type
       use merge_domain_local_by_type
 !
@@ -54,19 +54,13 @@
 !
 !
       table_file_header = course_2_fine_head
-      call sel_read_interpolate_table(izero, ierr)
-      call copy_interpolate_types_from_IO(izero, c2f_single)
-      call set_stack_tbl_wtype_org_smp(c2f_single%tbl_org)
+      call load_interpolate_table(izero, c2f_single)
 !
       table_file_header = fine_2_course_head
-      call sel_read_interpolate_table(izero, ierr)
-      call copy_interpolate_types_from_IO(izero, f2c_single)
-      call set_stack_tbl_wtype_org_smp(f2c_single%tbl_org)
+      call load_interpolate_table(izero, f2c_single)
 !
       table_file_header = refine_info_head
-      call sel_read_interpolate_table(izero, ierr)
-      call copy_interpolate_types_from_IO(izero, f2c_ele_single)
-      call set_stack_tbl_wtype_org_smp(f2c_ele_single%tbl_org)
+      call load_interpolate_table(izero, f2c_ele_single)
 !
 !
 !
@@ -89,8 +83,8 @@
       use t_interpolate_table
       use m_geometry_data_4_merge
       use m_2nd_geometry_4_merge
+      use m_interpolate_table_IO
       use const_parallel_itp_table
-      use copy_interpolate_type_IO
       use itp_table_IO_select_4_zlib
 !
       integer(kind = kint) :: ip, my_rank
@@ -127,19 +121,13 @@
         my_rank = ip - 1
 !
         table_file_header = c2f_para_head
-        call copy_interpolate_types_to_IO(my_rank, c2f_para(ip) )
-        write(*,*) 'table field header: ', trim(table_file_header)
-        call sel_write_interpolate_table(my_rank)
+        call output_interpolate_table(my_rank, c2f_para(ip) )
 !
         table_file_header = f2c_para_head
-        call copy_interpolate_types_to_IO(my_rank, f2c_para(ip) )
-        write(*,*) 'table field header: ', trim(table_file_header)
-        call sel_write_interpolate_table(my_rank)
+        call output_interpolate_table(my_rank, f2c_para(ip) )
 !
         table_file_header = f2c_ele_para_head
-        call copy_interpolate_types_to_IO(my_rank, f2c_ele_para(ip) )
-        write(*,*) 'table field header: ', trim(table_file_header)
-        call sel_write_interpolate_table(my_rank)
+        call output_interpolate_table(my_rank, f2c_ele_para(ip) )
       end do
 !
 !

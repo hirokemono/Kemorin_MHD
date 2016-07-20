@@ -114,11 +114,13 @@
 !
       use calypso_mpi
 !
+      use m_interpolate_table_IO
       use construct_interpolate_table
       use const_interpolate_4_org
       use order_dest_table_by_domain
       use order_dest_table_by_type
       use itp_table_IO_select_4_zlib
+      use copy_interpolate_types
       use delete_data_files
 !
       integer(kind = kint) :: ierr_missing
@@ -145,11 +147,13 @@
      &   (org_femmesh%mesh%node, org_femmesh%mesh%ele,                  &
      &    itp_nod%tbl_dest, itp_n_coef)
 !
-      if (iflag_debug.eq.1) write(*,*) 'copy_itp_coefs_dest_to_IO'
-      call copy_itp_coefs_dest_to_IO(itp_nod%tbl_dest, itp_n_coef)
+      if (iflag_debug.eq.1) write(*,*) 'copy_itp_coefs_dest'
+      call copy_itp_coefs_dest(my_rank,                                 &
+     &    itp_nod%tbl_dest, itp_n_coef, IO_itp_dest, IO_itp_c_dest)
 !
       table_file_header = work_header
-      call sel_write_itp_coefs_dest(my_rank)
+      call sel_write_itp_coefs_dest                                     &
+     &   (my_rank, IO_itp_dest, IO_itp_c_dest)
 !
 !   construct table for originate domain
 !
