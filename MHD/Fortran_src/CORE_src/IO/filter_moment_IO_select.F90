@@ -7,8 +7,9 @@
 !> @brief Filter data file IO selector
 !!
 !!@verbatim
-!!      subroutine sel_read_sort_filter_coef_file(my_rank)
-!!      subroutine sel_write_sort_filter_coef_file(my_rank)
+!!      subroutine sel_read_sort_filter_coef_file(my_rank, IO_filters)
+!!      subroutine sel_write_sort_filter_coef_file(my_rank, IO_filters)
+!!        type(filter_coefficients_type), intent(inout) :: IO_filters
 !!      subroutine sel_read_filter_geometry_file(my_rank)
 !!      subroutine sel_write_filter_geometry_file(my_rank)
 !!
@@ -35,8 +36,9 @@
 !
       use m_filter_file_names
       use m_file_format_switch
+      use t_filter_coefficients
 !
-        implicit none
+      implicit none
 !
 !------------------------------------------------------------------
 !
@@ -44,12 +46,13 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine sel_read_sort_filter_coef_file(my_rank)
+      subroutine sel_read_sort_filter_coef_file(my_rank, IO_filters)
 !
       use filter_coefs_file_IO
       use gz_filter_coefs_file_IO
 !
       integer(kind = kint), intent(in) :: my_rank
+      type(filter_coefficients_type), intent(inout) :: IO_filters
 !
       character(len=kchara) :: file_name
 !
@@ -57,28 +60,31 @@
       call add_int_suffix(my_rank, filter_file_head, file_name)
 !
       if (ifmt_filter_file .eq. id_binary_file_fmt) then
-        call read_sorted_filter_coef_file_b(file_name, my_rank)
+        call read_sorted_filter_coef_file_b                             &
+     &     (file_name, my_rank, IO_filters)
 !
 #ifdef ZLIB_IO
       else if(ifmt_filter_file .eq. id_gzip_txt_file_fmt) then
-        call read_sort_filter_coef_file_gz(file_name, my_rank)
+        call read_sort_filter_coef_file_gz                              &
+     &     (file_name, my_rank, IO_filters)
 #endif
 !
       else
-        call read_sorted_filter_coef_file(file_name, my_rank)
+        call read_sorted_filter_coef_file                               &
+     &     (file_name, my_rank, IO_filters)
       end if
 !
       end subroutine sel_read_sort_filter_coef_file
 !
 !------------------------------------------------------------------
 !
-      subroutine sel_write_sort_filter_coef_file(my_rank)
+      subroutine sel_write_sort_filter_coef_file(my_rank, IO_filters)
 !
-      use m_combained_filter_IO
       use filter_coefs_file_IO
       use gz_filter_coefs_file_IO
 !
       integer(kind = kint), intent(in) :: my_rank
+      type(filter_coefficients_type), intent(inout) :: IO_filters
 !
       character(len=kchara) :: file_name
 !
@@ -86,20 +92,24 @@
       call add_int_suffix(my_rank, filter_file_head, file_name)
 !
       if (ifmt_filter_file .eq. id_binary_file_fmt) then
-        call write_sorted_filter_coef_file_b(file_name, my_rank)
+        call write_sorted_filter_coef_file_b                            &
+     &     (file_name, my_rank, IO_filters)
 !
 #ifdef ZLIB_IO
       else if(ifmt_filter_file .eq. id_gzip_txt_file_fmt) then
-        call write_sort_filter_coef_file_gz(file_name, my_rank)
+        call write_sort_filter_coef_file_gz                             &
+     &     (file_name, my_rank, IO_filters)
 #endif
 !
       else
-        call write_sorted_filter_coef_file(file_name, my_rank)
+        call write_sorted_filter_coef_file                              &
+     &     (file_name, my_rank, IO_filters)
       end if
 !
-      call deallocate_3d_filter_data_IO
-      call deallocate_inod_filter_comb_IO
-      call deallocate_num_filtering_IO
+      call dealloc_3d_filter_weight(IO_filters)
+      call dealloc_3d_filter_function(IO_filters)
+      call dealloc_inod_filter_weights(IO_filters)
+      call dealloc_num_filtering_comb(IO_filters)
 !
       end subroutine sel_write_sort_filter_coef_file
 !

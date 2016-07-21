@@ -1,24 +1,35 @@
+!>@file   t_filter_coefficients.f90
+!!@brief  module t_filter_coefficients
+!!
+!!@author H. Matsui
+!!@date Programmed in Nov., 2006
 !
-!      module t_filter_coefficients
-!
-!     Written by H. Matsui on Nov., 2006
-!
-!
-!      subroutine alloc_num_filtering_comb(np_smp, filters)
-!      subroutine alloc_inod_filter_comb(filters)
-!      subroutine alloc_3d_filter_comb(filters)
-!      subroutine alloc_3d_filter_func(filters)
-!
-!      subroutine alloc_stack_vec_filter(np_smp, filters)
-!      subroutine alloc_istart_vec_filter(filters)
-!
-!      subroutine dealloc_num_filtering_comb(filters)
-!      subroutine dealloc_inod_filter_weights(filters)
-!      subroutine dealloc_3d_filter_function(filters)
-!      subroutine dealloc_3d_filter_weight(filters)
-!
-!      subroutine dealloc_stack_vec_filter(filters)
-!      subroutine dealloc_istart_vec_filter(filters)
+!>@brief Structure for filtering informations
+!!
+!!@verbatim
+!!      subroutine alloc_num_filtering_comb(np_smp, filters)
+!!      subroutine alloc_inod_filter_comb(filters)
+!!      subroutine alloc_3d_filter_comb(filters)
+!!      subroutine alloc_3d_filter_func(filters)
+!!
+!!      subroutine alloc_stack_vec_filter(np_smp, filters)
+!!      subroutine alloc_istart_vec_filter(filters)
+!!
+!!      subroutine dealloc_num_filtering_comb(filters)
+!!      subroutine dealloc_inod_filter_weights(filters)
+!!      subroutine dealloc_3d_filter_function(filters)
+!!      subroutine dealloc_3d_filter_weight(filters)
+!!
+!!      subroutine dealloc_stack_vec_filter(filters)
+!!      subroutine dealloc_istart_vec_filter(filters)
+!!
+!!      subroutine copy_3d_filter_stacks(org_filter, new_filter)
+!!      subroutine copy_3d_filter_weights(org_filter, new_filter)
+!!      subroutine copy_3d_filter_weight_func(org_filter, new_filter)
+!!        type(filter_coefficients_type), intent(inout) :: org_filter
+!!        type(filter_coefficients_type), intent(inout) :: new_filter
+!!
+!!@endverbatim
 !
       module t_filter_coefficients
 !
@@ -223,6 +234,80 @@
       deallocate(filters%ist_nsum, filters%ied_nsum)
 !
       end subroutine dealloc_istart_vec_filter
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_3d_filter_stacks(org_filter, new_filter)
+!
+      type(filter_coefficients_type), intent(inout) :: org_filter
+      type(filter_coefficients_type), intent(inout) :: new_filter
+!
+!
+      new_filter%ngrp_node = org_filter%ngrp_node
+      call alloc_num_filtering_comb(ione, new_filter)
+!
+      new_filter%group_name(1:new_filter%ngrp_node)                     &
+     &         = org_filter%group_name(1:new_filter%ngrp_node)
+      new_filter%num_node(1:new_filter%ngrp_node)                       &
+     &         = org_filter%num_node(1:new_filter%ngrp_node)
+      new_filter%istack_node(0:new_filter%ngrp_node)                    &
+     &         = org_filter%istack_node(0:new_filter%ngrp_node)
+!
+      new_filter%ntot_nod = org_filter%ntot_nod
+      call alloc_inod_filter_comb(new_filter)
+!
+      new_filter%inod_filter(1:new_filter%ntot_nod)                     &
+     &      = org_filter%inod_filter(1:new_filter%ntot_nod)
+      new_filter%nnod_near(1:new_filter%ntot_nod)                       &
+     &      = org_filter%nnod_near(1:new_filter%ntot_nod)
+      new_filter%istack_near_nod(0:new_filter%ntot_nod)                 &
+     &      = org_filter%istack_near_nod(0:new_filter%ntot_nod)
+      new_filter%ntot_near_nod = org_filter%ntot_near_nod
+!
+      call dealloc_inod_filter_weights(org_filter)
+      call dealloc_num_filtering_comb(org_filter)
+!
+      end subroutine copy_3d_filter_stacks
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_3d_filter_weights(org_filter, new_filter)
+!
+      type(filter_coefficients_type), intent(inout) :: org_filter
+      type(filter_coefficients_type), intent(inout) :: new_filter
+!
+!
+      new_filter%ntot_near_nod = org_filter%ntot_near_nod
+      call alloc_3d_filter_comb(new_filter)
+!
+      new_filter%inod_near(1:new_filter%ntot_near_nod)                  &
+     &      = org_filter%inod_near(1:new_filter%ntot_near_nod)
+      new_filter%weight(1:new_filter%ntot_near_nod)                     &
+     &      = org_filter%weight(1:new_filter%ntot_near_nod)
+!
+      call dealloc_3d_filter_weight(org_filter)
+!
+      end subroutine copy_3d_filter_weights
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_3d_filter_weight_func(org_filter, new_filter)
+!
+      type(filter_coefficients_type), intent(inout) :: org_filter
+      type(filter_coefficients_type), intent(inout) :: new_filter
+!
+!
+      call copy_3d_filter_weights(org_filter, new_filter)
+!
+      call alloc_3d_filter_func(new_filter)
+!
+      new_filter%func(1:org_filter%ntot_near_nod)                       &
+     &      = org_filter%func(1:org_filter%ntot_near_nod)
+!
+      call dealloc_3d_filter_function(org_filter)
+!
+      end subroutine copy_3d_filter_weight_func
 !
 !  ---------------------------------------------------------------------
 !

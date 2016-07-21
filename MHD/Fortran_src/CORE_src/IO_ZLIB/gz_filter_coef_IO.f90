@@ -5,17 +5,19 @@
 !     Modified by H. Matsui on Apr., 2008
 !     Modified by H. Matsui on Nov., 2008
 !
-!      subroutine read_3d_filter_stack_gz
-!      subroutine read_3d_filter_weights_coef_gz
-!
-!      subroutine write_3d_filter_stack_gz
-!      subroutine write_3d_filter_weights_coef_gz
+!!      subroutine read_3d_filter_stack_gz(IO_filters)
+!!      subroutine read_3d_filter_weights_coef_gz(IO_filters)
+!!        type(filter_coefficients_type), intent(inout) :: IO_filters
+!!
+!!      subroutine write_3d_filter_stack_gz(IO_filters)
+!!      subroutine write_3d_filter_weights_coef_gz(IO_filters)
+!!        type(filter_coefficients_type), intent(in) :: IO_filters
 !
       module gz_filter_coef_IO
 !
       use m_precision
 !
-      use m_combained_filter_IO
+      use t_filter_coefficients
       use skip_gz_comment
 !
       implicit none
@@ -26,62 +28,68 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_3d_filter_stack_gz
+      subroutine read_3d_filter_stack_gz(IO_filters)
 !
       use cal_minmax_and_stacks
+!
+      type(filter_coefficients_type), intent(inout) :: IO_filters
 !
       integer(kind = kint) :: i, j, ist, ied
 !
 !
-      call skip_gz_comment_int(ngrp_nod_filter_IO)
+      call skip_gz_comment_int(IO_filters%ngrp_node)
 !
-      call allocate_num_filtering_IO
+      call alloc_num_filtering_comb(ione, IO_filters)
 !
-      call read_gz_multi_int(ngrp_nod_filter_IO,                        &
-     &    istack_nod_filter_IO(1))
+      call read_gz_multi_int(IO_filters%ngrp_node,                      &
+     &    IO_filters%istack_node(1:IO_filters%ngrp_node))
 !
-      call s_cal_numbers_from_stack(ngrp_nod_filter_IO,                 &
-     &    num_nod_filter_IO, istack_nod_filter_IO)
-      ntot_nod_filter_IO = istack_nod_filter_IO(ngrp_nod_filter_IO)
+      call s_cal_numbers_from_stack(IO_filters%ngrp_node,               &
+     &    IO_filters%num_node, IO_filters%istack_node)
+      IO_filters%ntot_nod                                               &
+     &     = IO_filters%istack_node(IO_filters%ngrp_node)
 !
-      call allocate_inod_filter_comb_IO
+      call alloc_inod_filter_comb(IO_filters)
 !
-      do i = 1, ngrp_nod_filter_IO
-        ist = istack_nod_filter_IO(i-1)+1
-        ied = istack_nod_filter_IO(i)
+      do i = 1, IO_filters%ngrp_node
+        ist = IO_filters%istack_node(i-1)+1
+        ied = IO_filters%istack_node(i)
 !
         call get_one_line_from_gz_f
-        read(textbuf,*) grp_name_filter_IO(i)
+        read(textbuf,*) IO_filters%group_name(i)
 !
         do j = ist, ied
           call get_one_line_from_gz_f
-          read(textbuf,*) inod_filter_IO(j),                            &
-     &                    istack_near_nod_filter_IO(j)
+          read(textbuf,*) IO_filters%inod_filter(j),                    &
+     &                    IO_filters%istack_near_nod(j)
         end do
       end do
 !
-      call s_cal_numbers_from_stack(ntot_nod_filter_IO,                 &
-     &    num_near_nod_filter_IO, istack_near_nod_filter_IO)
-      ntot_near_nod_filter_IO                                           &
-     &       = istack_near_nod_filter_IO(ntot_nod_filter_IO)
+      call s_cal_numbers_from_stack(IO_filters%ntot_nod,                &
+     &    IO_filters%nnod_near, IO_filters%istack_near_nod)
+      IO_filters%ntot_near_nod                                          &
+     &       = IO_filters%istack_near_nod(IO_filters%ntot_nod)
 !
       end subroutine read_3d_filter_stack_gz
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_3d_filter_weights_coef_gz
+      subroutine read_3d_filter_weights_coef_gz(IO_filters)
+!
+      type(filter_coefficients_type), intent(inout) :: IO_filters
 !
       integer(kind = kint) :: j, itmp
 !
 !
-      call allocate_3d_filter_data_IO
+      call alloc_3d_filter_comb(IO_filters)
+      call alloc_3d_filter_func(IO_filters)
 !
       call skip_gz_comment_int(itmp)
 !
-      do j = 1, ntot_near_nod_filter_IO
+      do j = 1, IO_filters%ntot_near_nod
         call get_one_line_from_gz_f
-        read(textbuf,*) itmp, inod_near_nod_IO(j), filter_func_IO(j),   &
-     &                  filter_weight_IO(j)
+        read(textbuf,*) itmp, IO_filters%inod_near(j),                  &
+     &                  IO_filters%func(j), IO_filters%weight(j)
       end do
 !
       end subroutine read_3d_filter_weights_coef_gz
@@ -89,7 +97,9 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine write_3d_filter_stack_gz
+      subroutine write_3d_filter_stack_gz(IO_filters)
+!
+      type(filter_coefficients_type), intent(in) :: IO_filters
 !
       integer(kind = kint) :: i, j, ist, ied
 !
@@ -101,19 +111,19 @@
       write(textbuf,'(a,a1)') '!', char(0)
       call gz_write_textbuf_w_lf
 !
-      write(textbuf,'(i12,a1)') ngrp_nod_filter_IO, char(0)
+      write(textbuf,'(i12,a1)') IO_filters%ngrp_node, char(0)
       call gz_write_textbuf_w_lf
-      call write_gz_multi_int_10i12(ngrp_nod_filter_IO,                 &
-     &     istack_nod_filter_IO(1) )
+      call write_gz_multi_int_10i12(IO_filters%ngrp_node,               &
+     &    IO_filters%istack_node(1:IO_filters%ngrp_node) )
 !
-      do i = 1, ngrp_nod_filter_IO
-        ist = istack_nod_filter_IO(i-1)+1
-        ied = istack_nod_filter_IO(i)
-        write(textbuf,'(a,a1)') trim(grp_name_filter_IO(i)), char(0)
+      do i = 1, IO_filters%ngrp_node
+        ist = IO_filters%istack_node(i-1)+1
+        ied = IO_filters%istack_node(i)
+        write(textbuf,'(a,a1)') trim(IO_filters%group_name(i)), char(0)
         call gz_write_textbuf_w_lf
         do j = ist, ied
-          write(textbuf,'(3i12,a1)') inod_filter_IO(j),                 &
-     &                         istack_near_nod_filter_IO(j), char(0)
+          write(textbuf,'(3i12,a1)') IO_filters%inod_filter(j),         &
+     &                         IO_filters%istack_near_nod(j), char(0)
           call gz_write_textbuf_w_lf
         end do
       end do
@@ -122,7 +132,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine write_3d_filter_weights_coef_gz
+      subroutine write_3d_filter_weights_coef_gz(IO_filters)
+!
+      type(filter_coefficients_type), intent(in) :: IO_filters
 !
       integer(kind = kint) :: j
 !
@@ -134,12 +146,13 @@
       write(textbuf,'(a,a1)') '!', char(0)
       call gz_write_textbuf_w_lf
 !
-      write(textbuf,'(i12)') ntot_near_nod_filter_IO
+      write(textbuf,'(i12)') IO_filters%ntot_near_nod
       call gz_write_textbuf_w_lf
 !
-      do j = 1, ntot_near_nod_filter_IO
-        write(textbuf,'(2i12,1p2E25.15e3,a1)') j, inod_near_nod_IO(j),  &
-     &     filter_func_IO(j), filter_weight_IO(j), char(0)
+      do j = 1, IO_filters%ntot_near_nod
+        write(textbuf,'(2i12,1p2E25.15e3,a1)')                          &
+     &     j, IO_filters%inod_near(j),                                  &
+     &     IO_filters%func(j), IO_filters%weight(j), char(0)
         call gz_write_textbuf_w_lf
       end do
 !

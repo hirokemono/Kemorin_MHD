@@ -3,7 +3,7 @@
 !
 !        programmed by H.Matsui on Sep. 2006 (ver 1.2)
 !
-!      subroutine const_interpolate_table_4_orgin
+!!      subroutine const_interpolate_table_4_orgin
 !!
 !!      subroutine count_interpolate_4_orgin                            &
 !!     &         (n_org_rank, nprocs_dest, itp_org)

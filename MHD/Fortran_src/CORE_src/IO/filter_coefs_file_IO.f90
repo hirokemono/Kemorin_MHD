@@ -7,13 +7,20 @@
 !> @brief ASCII filter data file IO
 !!
 !!@verbatim
-!!      subroutine read_sorted_filter_coef_file(file_name, my_rank)
-!!      subroutine write_sorted_filter_coef_file(file_name, my_rank)
+!!      subroutine read_sorted_filter_coef_file                         &
+!!     &          (file_name, my_rank, IO_filters)
+!!      subroutine read_sorted_filter_coef_file_b                       &
+!!     &         (file_name, my_rank, IO_filters)
+!!        type(filter_coefficients_type), intent(inout) :: IO_filters
+!!      subroutine write_sorted_filter_coef_file                        &
+!!     &         (file_name, my_rank, IO_filters)
+!!      subroutine write_sorted_filter_coef_file_b                      &
+!!     &         (file_name, my_rank, IO_filters)
+!!        type(filter_coefficients_type), intent(in) :: IO_filters
+!!
 !!      subroutine read_filter_geometry_file(file_name, my_rank)
 !!      subroutine write_filter_geometry_file(file_name, my_rank)
 !!
-!!      subroutine read_sorted_filter_coef_file_b(file_name, my_rank)
-!!      subroutine write_sorted_filter_coef_file_b(file_name, my_rank)
 !!      subroutine read_filter_geometry_file_b(file_name, my_rank)
 !!      subroutine write_filter_geometry_file_b(file_name, my_rank)
 !!@endverbatim
@@ -24,6 +31,7 @@
       use m_machine_parameter
 !
       use m_file_format_switch
+      use t_filter_coefficients
 !
         implicit none
 !
@@ -33,7 +41,8 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_sorted_filter_coef_file(file_name, my_rank)
+      subroutine read_sorted_filter_coef_file                           &
+     &          (file_name, my_rank, IO_filters)
 !
       use m_filter_file_names
       use filter_geometry_IO
@@ -41,6 +50,7 @@
 !
       integer(kind = kint), intent(in) :: my_rank
       character(len=kchara), intent(in) :: file_name
+      type(filter_coefficients_type), intent(inout) :: IO_filters
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) then
@@ -50,15 +60,16 @@
       open(filter_coef_code, file=file_name,                            &
      &      form='formatted', status= 'old')
       call read_filter_geometry(filter_coef_code)
-      call read_3d_filter_stack(filter_coef_code)
-      call read_3d_filter_weights_coef(filter_coef_code)
+      call read_3d_filter_stack(filter_coef_code, IO_filters)
+      call read_3d_filter_weights_coef(filter_coef_code, IO_filters)
       close (filter_coef_code)
 !
       end subroutine read_sorted_filter_coef_file
 !
 !------------------------------------------------------------------
 !
-      subroutine write_sorted_filter_coef_file(file_name, my_rank)
+      subroutine write_sorted_filter_coef_file                          &
+     &         (file_name, my_rank, IO_filters)
 !
       use m_filter_file_names
       use filter_geometry_IO
@@ -66,6 +77,7 @@
 !
       integer(kind = kint), intent(in) :: my_rank
       character(len=kchara), intent(in) :: file_name
+      type(filter_coefficients_type), intent(in) :: IO_filters
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) then
@@ -74,8 +86,8 @@
 !
       open(filter_coef_code, file=file_name, form='formatted')
       call write_filter_geometry(filter_coef_code)
-      call write_3d_filter_stack(filter_coef_code)
-      call write_3d_filter_weights_coef(filter_coef_code)
+      call write_3d_filter_stack(filter_coef_code, IO_filters)
+      call write_3d_filter_weights_coef(filter_coef_code, IO_filters)
       close(filter_coef_code)
 !
       end subroutine write_sorted_filter_coef_file
@@ -128,7 +140,8 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine read_sorted_filter_coef_file_b(file_name, my_rank)
+      subroutine read_sorted_filter_coef_file_b                         &
+     &         (file_name, my_rank, IO_filters)
 !
       use m_filter_file_names
       use filter_geometry_IO
@@ -136,6 +149,7 @@
 !
       integer(kind = kint), intent(in) :: my_rank
       character(len=kchara), intent(in) :: file_name
+      type(filter_coefficients_type), intent(inout) :: IO_filters
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) then
@@ -145,15 +159,16 @@
       open(filter_coef_code, file=file_name,                            &
      &      form='unformatted', status= 'old')
       call read_filter_geometry_b(filter_coef_code)
-      call read_3d_filter_stack_b(filter_coef_code)
-      call read_3d_filter_weights_coef_b(filter_coef_code)
+      call read_3d_filter_stack_b(filter_coef_code, IO_filters)
+      call read_3d_filter_weights_coef_b(filter_coef_code, IO_filters)
       close (filter_coef_code)
 !
       end subroutine read_sorted_filter_coef_file_b
 !
 !------------------------------------------------------------------
 !
-      subroutine write_sorted_filter_coef_file_b(file_name, my_rank)
+      subroutine write_sorted_filter_coef_file_b                        &
+     &         (file_name, my_rank, IO_filters)
 !
       use m_filter_file_names
       use filter_geometry_IO
@@ -161,6 +176,7 @@
 !
       integer(kind = kint), intent(in) :: my_rank
       character(len=kchara), intent(in) :: file_name
+      type(filter_coefficients_type), intent(in) :: IO_filters
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) then
@@ -170,8 +186,8 @@
       open(filter_coef_code, file=file_name,                            &
      &      form='unformatted')
       call write_filter_geometry_b(filter_coef_code)
-      call write_3d_filter_stack_b(filter_coef_code)
-      call write_3d_filter_weights_coef_b(filter_coef_code)
+      call write_3d_filter_stack_b(filter_coef_code, IO_filters)
+      call write_3d_filter_weights_coef_b(filter_coef_code, IO_filters)
 !
       close(filter_coef_code)
 !

@@ -11,6 +11,7 @@
       use m_machine_parameter
       use t_mesh_data
       use t_filtering_data
+      use t_filter_coefficients
 !
       implicit none
 !
@@ -58,15 +59,17 @@
       use m_nod_filter_comm_table
       use m_filter_func_4_sorting
 !
+      use t_filter_coefficients
+!
       use load_mesh_data
       use sorting_by_filtering_area
       use filter_moment_IO_select
       use read_filter_file_4_sorting
       use set_filter_geometry_4_IO
       use set_comm_table_4_IO
-      use copy_3d_filters_4_IO
 !
       integer(kind=kint ) :: ip
+      type (filter_coefficients_type), save :: IO_filters
 !
 !
 !  ---------------------------------------------------
@@ -110,15 +113,16 @@
         call copy_comm_tbl_type_to_IO(my_rank, filtering_gen%comm)
         call copy_filtering_geometry_to_IO
 !
-        call copy_3d_filter_stacks_to_IO(filtering_gen%filter)
-        call copy_3d_filter_weights_to_IO(filtering_gen%filter)
+        call copy_3d_filter_stacks(filtering_gen%filter, IO_filters)
+        call copy_3d_filter_weight_func                                 &
+     &     (filtering_gen%filter, IO_filters)
 !
         call deallocate_globalnod_filter
         call deallocate_type_comm_tbl(filtering_gen%comm)
 !
         ifmt_filter_file = ifmt_3d_filter
         filter_file_head = filter_3d_head
-        call sel_write_sort_filter_coef_file(my_rank)
+        call sel_write_sort_filter_coef_file(my_rank, IO_filters)
 !
 !  ---------------------------------------------------
 !       output filter moment

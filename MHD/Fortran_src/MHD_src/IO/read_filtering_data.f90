@@ -23,6 +23,9 @@
 !
       implicit none
 !
+      type (filter_coefficients_type), save :: IO_filters
+!
+      private :: IO_filters
       private :: read_3d_filtering_data
       private :: read_3d_filter_moments, read_line_filtering_data
 !
@@ -80,7 +83,6 @@
 !
       use filter_moment_IO_select
       use set_filter_geometry_4_IO
-      use copy_3d_filters_4_IO
       use set_parallel_file_name
       use set_comm_table_4_IO
 !
@@ -91,13 +93,14 @@
 !
       ifmt_filter_file = ifmt_filter
       filter_file_head = filter_head
-      call sel_read_sort_filter_coef_file(my_rank)
+      call sel_read_sort_filter_coef_file(my_rank, IO_filters)
 !
       call copy_comm_tbl_type_from_IO(filtering%comm)
       call copy_filtering_geometry_from_IO
 !
-      call copy_3d_filter_stacks_from_IO(filtering%filter)
-      call copy_3d_filter_weights_from_IO(filtering%filter)
+      call copy_3d_filter_stacks(IO_filters, filtering%filter)
+      call copy_3d_filter_weights(IO_filters, filtering%filter)
+      call dealloc_3d_filter_function(IO_filters)
 !
       call deallocate_globalnod_filter
 !
