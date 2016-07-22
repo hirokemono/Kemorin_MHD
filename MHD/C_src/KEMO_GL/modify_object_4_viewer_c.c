@@ -140,6 +140,13 @@ int set_viewtype(struct view_element *view, int selected, int current_view){
 	}
 	else if(selected == VIEW_YZ) {
 		view_for_yz_plane(view);
+    };
+    
+    if(selected == VIEW_MAP) {
+        set_gl_map_lighting_c();
+    }
+    else{
+        set_gl_3D_lighting_c();
 	};
 	
 	return selected;

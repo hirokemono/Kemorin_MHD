@@ -8,6 +8,7 @@ static const GLfloat white[4] =   {WHITE_R,WHITE_G,WHITE_B,WHITE_A};
 static const GLfloat default_background[4] = { 0.9, 0.9, 0.9, 1.0 };
 
 static GLfloat  lightposition[4] = {1.5,0.5,2.0,0.0};
+static GLfloat  maplightposition[4] = {0.0,0.0,10.0,0.0};
 
 /* GLfloat light0_pos[4]   =   { -35.0, 35.0, 50.0, 0.0 }; */
 /* white light*/
@@ -73,10 +74,14 @@ void kemo_gl_initial_lighting_c(struct view_element *view_s){
 	glLightfv(GL_LIGHT2, GL_DIFFUSE,  light2_color );
 	glLightfv(GL_LIGHT2, GL_POSITION, light2_pos );
 	
+    glLightfv(GL_LIGHT3, GL_DIFFUSE, white);
+    glLightfv(GL_LIGHT3, GL_POSITION, maplightposition);
+    
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 	glEnable(GL_LIGHT1);
 	glDisable(GL_LIGHT2);
+    glDisable(GL_LIGHT3);
 
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, Whitelight_color);
 	glEnable(GL_NORMALIZE);
@@ -87,6 +92,30 @@ void kemo_gl_initial_lighting_c(struct view_element *view_s){
 	base= glGenLists(IONE);
 	
 	return;
+}
+
+void set_gl_3D_lighting_c(){
+    
+    glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT1);
+    glDisable(GL_LIGHT2);
+    glDisable(GL_LIGHT3);
+    
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, Whitelight_color);
+    
+    return;
+}
+
+void set_gl_map_lighting_c(){
+
+    glDisable(GL_LIGHT0);
+    glDisable(GL_LIGHT1);
+    glDisable(GL_LIGHT2);
+    glEnable(GL_LIGHT3);
+    
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, Whitelight_color);
+    
+    return;
 }
 
 void reset_light_from_white_sf_c(int surface_color){

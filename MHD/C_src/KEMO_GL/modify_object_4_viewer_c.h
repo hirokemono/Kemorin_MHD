@@ -12,6 +12,7 @@
 #include "m_psf_data_4_viewer_c.h"
 #include "m_gl_transfer_matrix.h"
 #include "move_draw_objects_gl.h"
+#include "init_gl_lighting_c.h"
 
 
 /* prototypes */

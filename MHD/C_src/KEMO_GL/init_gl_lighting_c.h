@@ -16,6 +16,8 @@ void set_bg_color_kemoview(struct mesh_menu_val *mesh_m);
 void init_bg_color_kemoview(struct mesh_menu_val *mesh_m);
 
 void kemo_gl_initial_lighting_c(struct view_element *view_s);
+void set_gl_3D_lighting_c();
+void set_gl_map_lighting_c();
 void reset_light_from_white_sf_c(int surface_color);
 void reset_light_by_size_of_domain(GLdouble r_max);
 
