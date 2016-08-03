@@ -87,15 +87,17 @@
       call allocate_iflag_pick_sph(l_truncation)
 !
       call count_picked_sph_adrress(l_truncation,                       &
-     &    num_pick_sph, num_pick_sph_l, num_pick_sph_m,                 &
-     &    idx_pick_sph_mode, idx_pick_sph_l, idx_pick_sph_m,            &
+     &    pick_list1%num_modes, pick_list1%num_degree,                  &
+     &    pick_list1%num_order, pick_list1%idx_pick_mode,               &
+     &    pick_list1%idx_pick_l, pick_list1%idx_pick_m,                 &
      &    num_pick_sph_rms_mode)
 !
       call allocate_pick_sph_rms
 !
       call set_picked_sph_address(l_truncation, sph_rj,                 &
-     &    num_pick_sph, num_pick_sph_l, num_pick_sph_m,                 &
-     &    idx_pick_sph_mode, idx_pick_sph_l, idx_pick_sph_m,            &
+     &    pick_list1%num_modes, pick_list1%num_degree,                  &
+     &    pick_list1%num_order, pick_list1%idx_pick_mode,               &
+     &    pick_list1%idx_pick_l, pick_list1%idx_pick_m,                 &
      &    num_pick_sph_rms_mode, idx_pick_sph_rms_gl,                   &
      &    idx_pick_sph_rms_lc)
 !

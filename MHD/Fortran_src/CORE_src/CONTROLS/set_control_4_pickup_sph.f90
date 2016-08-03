@@ -78,9 +78,9 @@
       if(picked_mode_head_ctl%iflag .gt. 0) then
         pickup_sph_head = picked_mode_head_ctl%charavalue
       else
-        num_pick_sph = 0
-        num_pick_sph_l = 0
-        num_pick_sph_m = 0
+        pick_list1%num_modes =  0
+        pick_list1%num_degree = 0
+        pick_list1%num_order =  0
         pick1%num_layer = 0
         call allocate_pick_sph_mode
         call allocate_pick_sph_l
@@ -91,35 +91,36 @@
 !
 !   set pickup mode
 !
-      num_pick_sph = idx_pick_sph_ctl%num
+      pick_list1%num_modes = idx_pick_sph_ctl%num
       call allocate_pick_sph_mode
 !
-      do inum = 1, num_pick_sph
-        idx_pick_sph_mode(inum,1) = idx_pick_sph_ctl%int1(inum)
-        idx_pick_sph_mode(inum,2) = idx_pick_sph_ctl%int2(inum)
+      do inum = 1, pick_list1%num_modes
+        pick_list1%idx_pick_mode(inum,1) = idx_pick_sph_ctl%int1(inum)
+        pick_list1%idx_pick_mode(inum,2) = idx_pick_sph_ctl%int2(inum)
       end do
       call deallocate_pick_sph_ctl
 !
-      num_pick_sph_m = idx_pick_sph_m_ctl%num
+      pick_list1%num_order = idx_pick_sph_m_ctl%num
       call allocate_pick_sph_m
 !
-      do inum = 1, num_pick_sph_m
-        idx_pick_sph_m(inum) = idx_pick_sph_m_ctl%ivec(inum)
+      do inum = 1, pick_list1%num_order
+        pick_list1%idx_pick_m(inum) = idx_pick_sph_m_ctl%ivec(inum)
       end do
       call deallocate_pick_sph_m_ctl
 !
 !
-      num_pick_sph_l = idx_pick_sph_l_ctl%num
-      if(num_pick_sph_l .gt. 0) then
+      pick_list1%num_degree = idx_pick_sph_l_ctl%num
+      if(pick_list1%num_degree .gt. 0) then
         call allocate_pick_sph_l
 !
-        do inum = 1, num_pick_sph_l
-          idx_pick_sph_l(inum) = idx_pick_sph_l_ctl%ivec(inum)
+        do inum = 1, pick_list1%num_degree
+          pick_list1%idx_pick_l(inum) = idx_pick_sph_l_ctl%ivec(inum)
         end do
       call deallocate_pick_sph_l_ctl
       else if(picked_mode_head_ctl%iflag .gt. 0                         &
-     &   .and. num_pick_sph_m .le. 0  .and. num_pick_sph .le. 0) then
-        num_pick_sph_l = -9999
+     &   .and. pick_list1%num_order .le. 0                              &
+     &   .and. pick_list1%num_modes .le. 0) then
+        pick_list1%num_degree = -9999
       else 
         call allocate_pick_sph_l
       end if

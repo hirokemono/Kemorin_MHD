@@ -40,7 +40,7 @@
 !
 !>        Structure for pickup list
       type(pickup_mode_list), save :: pick_list1
-!pick_list1%radius_gl
+!pick_list1%num_modes
 !>        Structure for pickup list
       type(picked_spectrum_data), save :: pick1
 !pick1%radius_gl
@@ -51,17 +51,17 @@
       character(len = kchara) :: pickup_sph_head =  'picked_ene_spec'
 !
 !>      Number of modes of monitoring spectrum to be evaluated
-      integer(kind = kint) :: num_pick_sph = 0
+!      integer(kind = kint) :: num_pick_sph = 0
 !>      Degree and Order ID of  monitoring spectrum to be evaluated
-      integer(kind = kint), allocatable :: idx_pick_sph_mode(:,:)
+!      integer(kind = kint), allocatable :: idx_pick_sph_mode(:,:)
 !>      Number of degrees of  monitoring spectrum to be evaluated
-      integer(kind = kint) :: num_pick_sph_l = 0
+!      integer(kind = kint) :: num_pick_sph_l = 0
 !>      Degree ID of  monitoring spectrum to be evaluated
-      integer(kind = kint), allocatable :: idx_pick_sph_l(:)
+!      integer(kind = kint), allocatable :: idx_pick_sph_l(:)
 !>      Number of orders of  monitoring spectrum to be evaluated
-      integer(kind = kint) :: num_pick_sph_m = 0
+!      integer(kind = kint) :: num_pick_sph_m = 0
 !>      Order ID of  monitoring spectrum to be evaluated
-      integer(kind = kint), allocatable :: idx_pick_sph_m(:)
+!      integer(kind = kint), allocatable :: idx_pick_sph_m(:)
 !
 !>      Number of radial layer for monitoring spectrum
 !      integer(kind = kint) :: num_pick_layer = 0
@@ -114,8 +114,8 @@
 !
       subroutine allocate_pick_sph_mode
 !
-      allocate( idx_pick_sph_mode(num_pick_sph,2) )
-      if(num_pick_sph .gt. 0) idx_pick_sph_mode = 0
+      allocate( pick_list1%idx_pick_mode(pick_list1%num_modes,2) )
+      if(pick_list1%num_modes .gt. 0) pick_list1%idx_pick_mode = 0
 !
       end subroutine allocate_pick_sph_mode
 !
@@ -123,8 +123,8 @@
 !
       subroutine allocate_pick_sph_l
 !
-      allocate( idx_pick_sph_l(num_pick_sph_l) )
-      if(num_pick_sph_l .gt. 0) idx_pick_sph_l = 0
+      allocate( pick_list1%idx_pick_l(pick_list1%num_degree) )
+      if(pick_list1%num_degree .gt. 0) pick_list1%idx_pick_l = 0
 !
       end subroutine allocate_pick_sph_l
 !
@@ -132,8 +132,8 @@
 !
       subroutine allocate_pick_sph_m
 !
-      allocate( idx_pick_sph_m(num_pick_sph_m) )
-      if(num_pick_sph_m .gt. 0) idx_pick_sph_m = 0
+      allocate( pick_list1%idx_pick_m(pick_list1%num_order) )
+      if(pick_list1%num_order .gt. 0) pick_list1%idx_pick_m = 0
 !
       end subroutine allocate_pick_sph_m
 !
@@ -183,8 +183,8 @@
       subroutine deallocate_pick_sph_mode
 !
 !
-      deallocate( idx_pick_sph_mode )
-      deallocate( idx_pick_sph_l, idx_pick_sph_m )
+      deallocate( pick_list1%idx_pick_mode )
+      deallocate( pick_list1%idx_pick_l, pick_list1%idx_pick_m )
 !
       end subroutine deallocate_pick_sph_mode
 !

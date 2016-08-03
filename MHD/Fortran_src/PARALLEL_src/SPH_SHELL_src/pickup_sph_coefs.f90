@@ -47,18 +47,20 @@
       type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_data), intent(inout) :: rj_fld
 !
-      integer(kind = kint) :: l
+      integer(kind = kint) :: l, num
 !
 !
       call init_sph_radial_monitor_list(sph_rj)
 !
-      if( (num_pick_sph+num_pick_sph_l+num_pick_sph_m) .eq. 0) return
+      num = pick_list1%num_modes                                        &
+     &     + pick_list1%num_degree + pick_list1%num_order
+      if(num .eq. 0) return
 !
-      if(num_pick_sph_l .eq. -9999) then
-        num_pick_sph_l = l_truncation+1
+      if(pick_list1%num_degree .eq. -9999) then
+        pick_list1%num_degree = l_truncation+1
         call allocate_pick_sph_l
         do l = 0, l_truncation
-          idx_pick_sph_l(l+1) = l
+          pick_list1%idx_pick_l(l+1) = l
         end do
       end if
 !
@@ -67,15 +69,17 @@
       call count_sph_labels_4_monitor(rj_fld%num_phys,                  &
      &    rj_fld%num_component, rj_fld%iflag_monitor)
       call count_picked_sph_adrress(l_truncation,                       &
-     &    num_pick_sph, num_pick_sph_l, num_pick_sph_m,                 &
-     &    idx_pick_sph_mode, idx_pick_sph_l, idx_pick_sph_m,            &
+     &    pick_list1%num_modes, pick_list1%num_degree,                  &
+     &    pick_list1%num_order, pick_list1%idx_pick_mode,               &
+     &    pick_list1%idx_pick_l, pick_list1%idx_pick_m,                 &
      &    num_pick_sph_mode)
 !
       call allocate_pick_sph_monitor
 !
       call set_picked_sph_address(l_truncation, sph_rj,                 &
-     &    num_pick_sph, num_pick_sph_l, num_pick_sph_m,                 &
-     &    idx_pick_sph_mode, idx_pick_sph_l, idx_pick_sph_m,            &
+     &    pick_list1%num_modes, pick_list1%num_degree,                  &
+     &    pick_list1%num_order, pick_list1%idx_pick_mode,               &
+     &    pick_list1%idx_pick_l, pick_list1%idx_pick_m,                 &
      &    num_pick_sph_mode, idx_pick_sph_gl, idx_pick_sph_lc)
       call set_scale_4_vect_l0                                          &
      &   (num_pick_sph_mode, idx_pick_sph_gl(1,1), scale_for_zelo(1))
@@ -100,10 +104,12 @@
 !
       type(sph_rj_grid), intent(in) :: sph_rj
 !
-      integer(kind = kint) :: k, knum
+      integer(kind = kint) :: k, knum, num
 !
 !
-      if( (num_pick_sph+num_pick_sph_l+num_pick_sph_m) .eq. 0) return
+      num = pick_list1%num_modes                                        &
+     &     + pick_list1%num_degree + pick_list1%num_order
+      if(num  .eq. 0) return
 !
       if(pick1%num_layer .le. 0) then
         pick1%num_layer = sph_rj%nidx_rj(1) + sph_rj%iflag_rj_center
