@@ -53,6 +53,8 @@
       integer(kind = kint) :: l
 !
 !
+      call allocate_iflag_pick_sph(l_truncation)
+!
       if (ipol%i_magne .gt. 0) then
 !
         if(num_pick_gauss_l .eq. -9999) then
@@ -66,20 +68,19 @@
         call count_picked_sph_adrress(l_truncation,                     &
      &      num_pick_gauss_coefs, num_pick_gauss_l, num_pick_gauss_m,   &
      &      idx_pick_gauss_mode, idx_pick_gauss_l, idx_pick_gauss_m,    &
-     &      ntot_pick_gauss_mode)
+     &      num_pick_gauss_mode)
       else
-        ntot_pick_gauss_mode = 0
+        num_pick_gauss_mode = 0
       end if
 !
       call allocate_gauss_coef_monitor
-      call allocate_iflag_pick_sph(l_truncation)
 !
       if (ipol%i_magne .gt. 0) then
       call set_picked_sph_address(l_truncation, sph_rj,                 &
      &    num_pick_gauss_coefs, num_pick_gauss_l, num_pick_gauss_m,     &
      &    idx_pick_gauss_mode, idx_pick_gauss_l, idx_pick_gauss_m,      &
-     &    ntot_pick_gauss_mode, num_pick_gauss_mode,                    &
-     &    idx_pick_gauss_coef_gl, idx_pick_gauss_coef_lc)
+     &    num_pick_gauss_mode, idx_pick_gauss_coef_gl,                  &
+     &    idx_pick_gauss_coef_lc)
       else
         num_pick_gauss_mode = 0
       end if

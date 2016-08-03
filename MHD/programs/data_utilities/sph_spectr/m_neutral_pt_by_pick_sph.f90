@@ -59,12 +59,12 @@
 !
       subroutine alloc_neutral_point
 !
-      allocate(temp00(num_pick_layer))
-      allocate(comp00(num_pick_layer))
-      allocate(grad_temp00(num_pick_layer))
-      allocate(grad_comp00(num_pick_layer))
-      allocate(freq(num_pick_layer))
-      allocate(freq2(num_pick_layer))
+      allocate(temp00(pick1%num_layer))
+      allocate(comp00(pick1%num_layer))
+      allocate(grad_temp00(pick1%num_layer))
+      allocate(grad_comp00(pick1%num_layer))
+      allocate(freq(pick1%num_layer))
+      allocate(freq2(pick1%num_layer))
       temp00 = 0.0d0
       comp00 = 0.0d0
       grad_temp00 = 0.0d0
@@ -122,12 +122,12 @@
       integer(kind = kint) :: i
 !
 !
-      sph_rj%nidx_rj(1) = num_pick_layer
+      sph_rj%nidx_rj(1) = pick1%num_layer
       sph_rj%nidx_rj(2) = 1
       call alloc_type_sph_1d_index_rj(sph_rj)
 !
-      do i = 1, num_pick_layer
-        sph_rj%radius_1d_rj_r(i) = r_pick_layer(i)
+      do i = 1, pick1%num_layer
+        sph_rj%radius_1d_rj_r(i) = pick1%radius_gl(i)
       end do
       do i = 1, num_pick_sph_mode
         if(idx_pick_sph_gl(i,1) .eq. 0) ipick_l0m0 = i
@@ -159,13 +159,13 @@
 !
       real(kind = kreal) :: r_neut
 !
-      do k = 1, num_pick_layer
-        ipick = k + (ipick_l0m0-1) * num_pick_layer
+      do k = 1, pick1%num_layer
+        ipick = k + (ipick_l0m0-1) * pick1%num_layer
         temp00(k) = d_rj_pick_sph_gl(icomp_temp, ipick)
         comp00(k) = d_rj_pick_sph_gl(icomp_light,ipick)
       end do
 !
-      do k = 2, num_pick_layer-1
+      do k = 2, pick1%num_layer - 1
         grad_temp00(k) =  d1nod_mat_fdm_2(k,-1) * temp00(k-1)           &
      &                  + d1nod_mat_fdm_2(k, 0) * temp00(k  )           &
      &                  + d1nod_mat_fdm_2(k, 1) * temp00(k+1)
@@ -178,7 +178,7 @@
         freq2(k) = freq2(k) * radius_1d_rj_r(k  )**2
       end do
 !
-      do k = num_pick_layer-2, 2, - 1
+      do k = pick1%num_layer - 2, 2, - 1
         if( freq2(k).lt.0.0d0 .and. freq2(k+1).ge.0.0d0) then
           r_neut = (radius_1d_rj_r(k  )*abs(freq2(k+1))                 &
      &            + radius_1d_rj_r(k+1)*abs(freq2(k)  ) )               &
@@ -187,7 +187,7 @@
         end if
       end do
 !
-      do k = 1, num_pick_layer
+      do k = 1, pick1%num_layer
             write(id_ave_den,'(i15,1pE25.15e3,i15,1p7E25.15e3)')        &
      &           istep, time, k, radius_1d_rj_r(k),                     &
      &           temp00(k), comp00(k), grad_temp00(k), grad_comp00(k),  &

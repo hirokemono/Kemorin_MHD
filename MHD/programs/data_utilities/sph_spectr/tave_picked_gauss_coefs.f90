@@ -31,7 +31,7 @@
 !
       call open_gauss_coefs_read_monitor(id_pick)
 !
-      allocate( ave_gauss(ntot_pick_gauss_mode))
+      allocate( ave_gauss(num_pick_gauss_mode))
       ave_gauss = 0.0d0
 !
 !

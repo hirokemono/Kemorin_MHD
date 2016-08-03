@@ -81,7 +81,7 @@
         num_pick_sph = 0
         num_pick_sph_l = 0
         num_pick_sph_m = 0
-        num_pick_layer = 0
+        pick1%num_layer = 0
         call allocate_pick_sph_mode
         call allocate_pick_sph_l
         call allocate_pick_sph_m
@@ -125,13 +125,13 @@
       end if
 !
 !   set pickup layer
-      num_pick_layer = 0
+      pick1%num_layer = 0
       if(idx_pick_layer_ctl%num .gt. 0) then
-        num_pick_layer = idx_pick_layer_ctl%num
+        pick1%num_layer = idx_pick_layer_ctl%num
         call allocate_num_pick_layer
 !
-        do inum = 1, num_pick_layer
-          id_pick_layer(inum) = idx_pick_layer_ctl%ivec(inum)
+        do inum = 1, pick1%num_layer
+          pick1%id_radius(inum) = idx_pick_layer_ctl%ivec(inum)
         end do
 !
         call deallocate_num_pick_layer_ctl

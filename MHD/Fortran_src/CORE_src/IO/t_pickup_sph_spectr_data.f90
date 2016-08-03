@@ -7,14 +7,14 @@
 !>@brief  Data arrays to monitoring spectrum data
 !!
 !!@verbatim
+!!      subroutine alloc_pick_sph_mode(list_pick)
+!!      subroutine alloc_pick_sph_l(list_pick)
+!!      subroutine alloc_pick_sph_m(list_pick)
 !!      subroutine alloc_num_pick_layer(picked)
-!!      subroutine alloc_pick_sph_mode(picked)
-!!      subroutine alloc_pick_sph_l(picked)
-!!      subroutine alloc_pick_sph_m(picked)
 !!      subroutine alloc_pick_sph_monitor(picked)
 !!
+!!      subroutine dealloc_pick_sph_mode(list_pick)
 !!      subroutine dealloc_num_pick_layer(picked)
-!!      subroutine dealloc_pick_sph_mode(picked)
 !!      subroutine dealloc_pick_sph_monitor(picked)
 !!
 !!      subroutine write_sph_spec_monitor                               &
@@ -41,23 +41,28 @@
 !>      File ID for spectrum monitor file
       integer(kind = kint), parameter :: id_pick_mode = 22
 !
+!
+!>        Structure for pickup list
+      type pickup_mode_list
+!>        Number of modes of monitoring spectrum to be evaluated
+        integer(kind = kint) :: num_modes = 0
+!>        Degree and Order ID of  monitoring spectrum to be evaluated
+        integer(kind = kint), pointer :: idx_pick_mode(:,:)
+!>        Number of degrees of  monitoring spectrum to be evaluated
+        integer(kind = kint) :: num_degree = 0
+!>        Degree ID of  monitoring spectrum to be evaluated
+        integer(kind = kint), pointer :: idx_pick_l(:)
+!>        Number of orders of  monitoring spectrum to be evaluated
+        integer(kind = kint) :: num_order = 0
+!>        Order ID of  monitoring spectrum to be evaluated
+        integer(kind = kint), pointer :: idx_pick_m(:)
+      end type pickup_mode_list
+!
+!
 !>        Structure for picked spectr data
       type picked_spectrum_data
 !>        File prefix for spectr monitoring file
         character(len = kchara) :: file_prefix =  'picked_ene_spec'
-!
-!>        Number of modes of monitoring spectrum to be evaluated
-        integer(kind = kint) :: num_modes = 0
-!>        Degree and Order ID of  monitoring spectrum to be evaluated
-        integer(kind = kint), pointer :: idx_pick_sph_mode(:,:)
-!>        Number of degrees of  monitoring spectrum to be evaluated
-        integer(kind = kint) :: num_degree = 0
-!>        Degree ID of  monitoring spectrum to be evaluated
-        integer(kind = kint), pointer :: idx_pick_sph_l(:)
-!>        Number of orders of  monitoring spectrum to be evaluated
-        integer(kind = kint) :: num_order = 0
-!>        Order ID of  monitoring spectrum to be evaluated
-        integer(kind = kint), pointer :: idx_pick_sph_m(:)
 !
 !>        Number of radial layer for monitoring spectrum
         integer(kind = kint) :: num_layer = 0
@@ -66,8 +71,6 @@
 !>        Radius for monitoring spectrum
         real(kind = kreal), pointer :: radius_gl(:)
 !
-!>        Total number of modes of  monitoring spectrum to be evaluated
-        integer(kind = kint) :: ntot_sph_mode = 0
 !>        Number of modes of  monitoring spectrum to be evaluated
         integer(kind = kint) :: num_sph_mode =  0
 !>        Global spherical harmonics ID to evaluate  monitoring spectrum
@@ -102,6 +105,42 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine alloc_pick_sph_mode(list_pick)
+!
+      type(pickup_mode_list), intent(inout) :: list_pick
+!
+!
+      allocate(list_pick%idx_pick_mode(list_pick%num_modes,2) )
+      if(list_pick%num_modes .gt. 0) list_pick%idx_pick_mode = 0
+!
+      end subroutine alloc_pick_sph_mode
+!
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_pick_sph_l(list_pick)
+!
+      type(pickup_mode_list), intent(inout) :: list_pick
+!
+!
+      allocate( list_pick%idx_pick_l(list_pick%num_degree) )
+      if(list_pick%num_degree .gt. 0) list_pick%idx_pick_l = 0
+!
+      end subroutine alloc_pick_sph_l
+!
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_pick_sph_m(list_pick)
+!
+      type(pickup_mode_list), intent(inout) :: list_pick
+!
+!
+      allocate( list_pick%idx_pick_m(list_pick%num_order) )
+      if(list_pick%num_order .gt. 0) list_pick%idx_pick_m = 0
+!
+      end subroutine alloc_pick_sph_m
+!
+! -----------------------------------------------------------------------
+!
       subroutine alloc_num_pick_layer(picked)
 !
       type(picked_spectrum_data), intent(inout) :: picked
@@ -118,42 +157,6 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_pick_sph_mode(picked)
-!
-      type(picked_spectrum_data), intent(inout) :: picked
-!
-!
-      allocate(picked%idx_pick_sph_mode(picked%num_modes,2) )
-      if(picked%num_modes .gt. 0) picked%idx_pick_sph_mode = 0
-!
-      end subroutine alloc_pick_sph_mode
-!
-! -----------------------------------------------------------------------
-!
-      subroutine alloc_pick_sph_l(picked)
-!
-      type(picked_spectrum_data), intent(inout) :: picked
-!
-!
-      allocate( picked%idx_pick_sph_l(picked%num_degree) )
-      if(picked%num_degree .gt. 0) picked%idx_pick_sph_l = 0
-!
-      end subroutine alloc_pick_sph_l
-!
-! -----------------------------------------------------------------------
-!
-      subroutine alloc_pick_sph_m(picked)
-!
-      type(picked_spectrum_data), intent(inout) :: picked
-!
-!
-      allocate( picked%idx_pick_sph_m(picked%num_order) )
-      if(picked%num_order .gt. 0) picked%idx_pick_sph_m = 0
-!
-      end subroutine alloc_pick_sph_m
-!
-! -----------------------------------------------------------------------
-!
       subroutine alloc_pick_sph_monitor(picked)
 !
       type(picked_spectrum_data), intent(inout) :: picked
@@ -161,11 +164,11 @@
       integer(kind = kint) :: num
 !
 !
-      num = picked%ntot_sph_mode*picked%num_layer
+      num = picked%num_sph_mode*picked%num_layer
 !
-      allocate( picked%idx_gl(picked%ntot_sph_mode,3) )
-      allocate( picked%idx_lc(picked%ntot_sph_mode) )
-      allocate( picked%scale_for_zelo(picked%ntot_sph_mode) )
+      allocate( picked%idx_gl(picked%num_sph_mode,3) )
+      allocate( picked%idx_lc(picked%num_sph_mode) )
+      allocate( picked%scale_for_zelo(picked%num_sph_mode) )
       allocate( picked%d_rj_lc(picked%ntot_comp_rj,num) )
       allocate( picked%d_rj_gl(picked%ntot_comp_rj,num) )
       allocate( picked%spectr_name(picked%ntot_comp_rj) )
@@ -189,6 +192,18 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
+      subroutine dealloc_pick_sph_mode(list_pick)
+!
+      type(pickup_mode_list), intent(inout) :: list_pick
+!
+!
+      deallocate( list_pick%idx_pick_mode )
+      deallocate( list_pick%idx_pick_l, list_pick%idx_pick_m )
+!
+      end subroutine dealloc_pick_sph_mode
+!
+! -----------------------------------------------------------------------
+!
       subroutine dealloc_num_pick_layer(picked)
 !
       type(picked_spectrum_data), intent(inout) :: picked
@@ -197,18 +212,6 @@
       deallocate( picked%id_radius, picked%radius_gl)
 !
       end subroutine dealloc_num_pick_layer
-!
-! -----------------------------------------------------------------------
-!
-      subroutine dealloc_pick_sph_mode(picked)
-!
-      type(picked_spectrum_data), intent(inout) :: picked
-!
-!
-      deallocate( picked%idx_pick_sph_mode )
-      deallocate( picked%idx_pick_sph_l, picked%idx_pick_sph_m )
-!
-      end subroutine dealloc_pick_sph_mode
 !
 ! -----------------------------------------------------------------------
 !
@@ -331,7 +334,7 @@
       call skip_comment(tmpchara,id_pick)
       read(tmpchara,*) picked%ntot_comp_rj
 !
-      picked%ntot_sph_mode = picked%num_sph_mode
+      picked%num_sph_mode = picked%num_sph_mode
       call alloc_num_pick_layer(picked)
       call alloc_pick_sph_monitor(picked)
 !

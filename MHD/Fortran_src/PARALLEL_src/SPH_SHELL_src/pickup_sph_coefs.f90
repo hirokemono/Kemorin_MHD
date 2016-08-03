@@ -62,21 +62,21 @@
         end do
       end if
 !
+      call allocate_iflag_pick_sph(l_truncation)
+!
       call count_sph_labels_4_monitor(rj_fld%num_phys,                  &
      &    rj_fld%num_component, rj_fld%iflag_monitor)
       call count_picked_sph_adrress(l_truncation,                       &
      &    num_pick_sph, num_pick_sph_l, num_pick_sph_m,                 &
      &    idx_pick_sph_mode, idx_pick_sph_l, idx_pick_sph_m,            &
-     &    ntot_pick_sph_mode)
+     &    num_pick_sph_mode)
 !
       call allocate_pick_sph_monitor
-      call allocate_iflag_pick_sph(l_truncation)
 !
       call set_picked_sph_address(l_truncation, sph_rj,                 &
      &    num_pick_sph, num_pick_sph_l, num_pick_sph_m,                 &
      &    idx_pick_sph_mode, idx_pick_sph_l, idx_pick_sph_m,            &
-     &    ntot_pick_sph_mode, num_pick_sph_mode, idx_pick_sph_gl(1,1),  &
-     &    idx_pick_sph_lc)
+     &    num_pick_sph_mode, idx_pick_sph_gl, idx_pick_sph_lc)
       call set_scale_4_vect_l0                                          &
      &   (num_pick_sph_mode, idx_pick_sph_gl(1,1), scale_for_zelo(1))
       call deallocate_iflag_pick_sph
@@ -105,25 +105,25 @@
 !
       if( (num_pick_sph+num_pick_sph_l+num_pick_sph_m) .eq. 0) return
 !
-      if(num_pick_layer .le. 0) then
-        num_pick_layer = sph_rj%nidx_rj(1) + sph_rj%iflag_rj_center
+      if(pick1%num_layer .le. 0) then
+        pick1%num_layer = sph_rj%nidx_rj(1) + sph_rj%iflag_rj_center
 !
         call allocate_num_pick_layer
 !
-        do k = 1, num_pick_layer
-          id_pick_layer(k) = k - sph_rj%iflag_rj_center
+        do k = 1, pick1%num_layer
+          pick1%id_radius(k) = k - sph_rj%iflag_rj_center
         end do
       end if
-      call quicksort_int(num_pick_layer, id_pick_layer,                 &
-     &    ione, num_pick_layer)
+      call quicksort_int(pick1%num_layer, pick1%id_radius,              &
+     &    ione, pick1%num_layer)
 !
 !
-      do knum = 1, num_pick_layer
-        k = id_pick_layer(knum)
+      do knum = 1, pick1%num_layer
+        k = pick1%id_radius(knum)
         if(k .le. 0) then
-          r_pick_layer(knum) = 0.0d0
+          pick1%radius_gl(knum) = 0.0d0
         else
-          r_pick_layer(knum) = sph_rj%radius_1d_rj_r(k)
+          pick1%radius_gl(knum) = sph_rj%radius_1d_rj_r(k)
         end if
       end do
 !
@@ -148,10 +148,10 @@
       integer(kind = kint) :: inod, ipick, num, icou, jcou, kst, ncomp
 !
 !
-      if(num_pick_sph_mode*num_pick_layer .eq. 0) return
+      if(num_pick_sph_mode * pick1%num_layer .eq. 0) return
 !
 !$omp parallel do
-      do inum = 1, num_pick_sph_mode*num_pick_layer
+      do inum = 1, num_pick_sph_mode*pick1%num_layer
         d_rj_pick_sph_lc(1:ntot_comp_pick_sph,inum) = zero
       end do
 !$omp end parallel do
@@ -187,10 +187,10 @@
         j = idx_pick_sph_lc(inum)
         if(j .gt. izero) then
 !!$omp do private(knum,k,inod,ipick,j_fld,i_fld,icou,jcou,nd)
-          do knum = kst, num_pick_layer
-            k = id_pick_layer(knum)
+          do knum = kst, pick1%num_layer
+            k = pick1%id_radius(knum)
             inod =  j +    (k-1) * sph_rj%nidx_rj(2)
-            ipick = knum + (inum-1) * num_pick_layer
+            ipick = knum + (inum-1) * pick1%num_layer
 !
             do j_fld = 1, num_fld_pick_sph
               i_fld = ifield_monitor_rj(j_fld)
@@ -218,7 +218,8 @@
       end do
 !!$omp end parallel
 !
-      num = ntot_comp_pick_sph*num_pick_layer*num_pick_sph_mode
+      num = ntot_comp_pick_sph * pick1%num_layer                        &
+     &     * num_pick_sph_mode
       call MPI_allREDUCE(d_rj_pick_sph_lc(1,1), d_rj_pick_sph_gl(1,1),  &
      &    num, CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !

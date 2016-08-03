@@ -10,12 +10,13 @@
 !!      subroutine allocate_iflag_pick_sph(l_truncation)
 !!      subroutine deallocate_iflag_pick_sph
 !!      subroutine count_picked_sph_adrress(l_truncation,               &
-!!     &      num_pick_sph, num_pick_sph_l, num_pick_sph_m,             &
-!!     &      idx_pick_sph, idx_pick_sph_l, idx_pick_sph_m, ntot_pickup)
+!!     &          num_pick_sph, num_pick_sph_l, num_pick_sph_m,         &
+!!     &          idx_pick_sph, idx_pick_sph_l, idx_pick_sph_m,         &
+!!     &          num_pickup)
 !!      subroutine set_picked_sph_address(l_truncation, sph_rj,         &
 !!     &          num_pick_sph, num_pick_sph_l, num_pick_sph_m,         &
 !!     &          idx_pick_sph, idx_pick_sph_l, idx_pick_sph_m,         &
-!!     &          ntot_pickup, num_pickup, idx_pick_gl, idx_pick_lc)
+!!     &          num_pickup, idx_pick_gl, idx_pick_lc)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!      subroutine set_scale_4_vect_l0(num_pickup,                      &
 !!     &          idx_pick_gl, scale_for_zelo)
@@ -45,7 +46,7 @@
       num = l_truncation*(l_truncation+2)
       allocate( iflag_picked_sph(0:num) )
 !
-      iflag_picked_sph = 0
+      iflag_picked_sph = -1
 !
       end subroutine allocate_iflag_pick_sph
 !
@@ -61,8 +62,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine count_picked_sph_adrress(l_truncation,                 &
-     &      num_pick_sph, num_pick_sph_l, num_pick_sph_m,               &
-     &      idx_pick_sph, idx_pick_sph_l, idx_pick_sph_m, ntot_pickup)
+     &          num_pick_sph, num_pick_sph_l, num_pick_sph_m,           &
+     &          idx_pick_sph, idx_pick_sph_l, idx_pick_sph_m,           &
+     &          num_pickup)
+!
+      use spherical_harmonics
 !
       integer(kind = kint), intent(in) :: l_truncation
 !
@@ -73,26 +77,47 @@
       integer(kind = kint), intent(in) :: idx_pick_sph_l(num_pick_sph_l)
       integer(kind = kint), intent(in) :: idx_pick_sph_m(num_pick_sph_m)
 !
-      integer(kind = kint), intent(inout) :: ntot_pickup
+      integer(kind = kint), intent(inout) :: num_pickup
 !
-      integer(kind = kint) :: inum, mm
+      integer(kind = kint) :: l, m, mm, j, inum
 !
 !
-      ntot_pickup = 0
+      iflag_picked_sph = -1
+      num_pickup = 0
       do inum = 1, num_pick_sph
-        if(idx_pick_sph(inum,1) .le. l_truncation) then
-          ntot_pickup = ntot_pickup + 1
+        l = idx_pick_sph(inum,1)
+        m = idx_pick_sph(inum,2)
+        if(l .le. l_truncation) then
+          j = get_idx_by_full_degree_order(l,m)
+          num_pickup = num_pickup + 1
+          iflag_picked_sph(j)  = num_pickup
         end if
       end do
+!
       do inum = 1, num_pick_sph_l
-        if(idx_pick_sph_l(inum) .le. l_truncation) then
-          ntot_pickup = ntot_pickup + 2*idx_pick_sph_l(inum) + 1
+        l = idx_pick_sph_l(inum)
+        if(l .le. l_truncation) then
+          do m = -l, l
+            j = get_idx_by_full_degree_order(l,m)
+            if(iflag_picked_sph(j) .lt. izero) then
+              num_pickup = num_pickup + 1
+              iflag_picked_sph(j)  = num_pickup
+            end if
+          end do
         end if
       end do
+!
       do inum = 1, num_pick_sph_m
-        mm = abs(idx_pick_sph_m(inum))
+        m = idx_pick_sph_m(inum)
+        mm = abs(m)
         if(mm .le. l_truncation) then
-          ntot_pickup = ntot_pickup + l_truncation + 1 - mm
+          do l = mm, l_truncation
+            j = get_idx_by_full_degree_order(l,m)
+            if(iflag_picked_sph(j) .lt. izero) then
+              num_pickup = num_pickup + 1
+              iflag_picked_sph(j)  = num_pickup
+            end if
+          end do
         end if
       end do
 !
@@ -103,7 +128,7 @@
       subroutine set_picked_sph_address(l_truncation, sph_rj,           &
      &          num_pick_sph, num_pick_sph_l, num_pick_sph_m,           &
      &          idx_pick_sph, idx_pick_sph_l, idx_pick_sph_m,           &
-     &          ntot_pickup, num_pickup, idx_pick_gl, idx_pick_lc)
+     &          num_pickup, idx_pick_gl, idx_pick_lc)
 !
       use t_spheric_rj_data
       use spherical_harmonics
@@ -119,16 +144,16 @@
       integer(kind = kint), intent(in) :: idx_pick_sph_l(num_pick_sph_l)
       integer(kind = kint), intent(in) :: idx_pick_sph_m(num_pick_sph_m)
 !
-      integer(kind = kint), intent(in) :: ntot_pickup
+      integer(kind = kint), intent(in) :: num_pickup
 !
-      integer(kind = kint), intent(inout) :: num_pickup
-      integer(kind = kint), intent(inout) :: idx_pick_gl(ntot_pickup,3)
-      integer(kind = kint), intent(inout) :: idx_pick_lc(ntot_pickup)
+      integer(kind = kint), intent(inout) :: idx_pick_gl(num_pickup,3)
+      integer(kind = kint), intent(inout) :: idx_pick_lc(num_pickup)
 !
       integer(kind = kint) :: l, m, mm, j, icou, inum
       integer(kind = 4) :: l4, m4
 !
 !
+      iflag_picked_sph = -1
       icou = 0
       do inum = 1, num_pick_sph
         l = idx_pick_sph(inum,1)
@@ -151,7 +176,7 @@
            l4 = int(l)
            m4 = int(m)
            j = get_idx_by_full_degree_order(l,m)
-            if(iflag_picked_sph(j) .le. izero) then
+            if(iflag_picked_sph(j) .lt. izero) then
               icou = icou + 1
               idx_pick_gl(icou,1) = j
               idx_pick_lc(icou)                                         &
@@ -170,7 +195,7 @@
             l4 = int(l)
             m4 = int(m)
             j = get_idx_by_full_degree_order(l,m)
-            if(iflag_picked_sph(j) .le. izero) then
+            if(iflag_picked_sph(j) .lt. izero) then
               icou = icou + 1
               idx_pick_gl(icou,1) = j
               idx_pick_lc(icou)                                         &
@@ -180,7 +205,6 @@
           end do
         end if
       end do
-      num_pickup = icou
 !
       call quicksort_w_index(num_pickup, idx_pick_gl(1,1),              &
      &    ione, num_pickup, idx_pick_lc(1))

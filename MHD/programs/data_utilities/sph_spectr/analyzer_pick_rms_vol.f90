@@ -123,7 +123,7 @@
      &      sph_mesh_spec%sph%sph_rj, leg_s, ipol_spec,                 &
      &      rj_fld_spec, pwr_spec)
 !
-        num_pick_layer = 1
+        pick1%num_layer = 1
         if (iflag_debug.gt.0) write(*,*) 'write_sph_rms_4_monitor'
         call write_sph_rms_4_monitor(my_rank, i_step, time)
       end do

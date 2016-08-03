@@ -84,20 +84,20 @@
 !
 !
       pickup_sph_rms_head = pickup_sph_head
+      call allocate_iflag_pick_sph(l_truncation)
 !
       call count_picked_sph_adrress(l_truncation,                       &
      &    num_pick_sph, num_pick_sph_l, num_pick_sph_m,                 &
      &    idx_pick_sph_mode, idx_pick_sph_l, idx_pick_sph_m,            &
-     &    ntot_pick_sph_rms_mode)
+     &    num_pick_sph_rms_mode)
 !
       call allocate_pick_sph_rms
-      call allocate_iflag_pick_sph(l_truncation)
 !
       call set_picked_sph_address(l_truncation, sph_rj,                 &
      &    num_pick_sph, num_pick_sph_l, num_pick_sph_m,                 &
      &    idx_pick_sph_mode, idx_pick_sph_l, idx_pick_sph_m,            &
-     &    ntot_pick_sph_rms_mode, num_pick_sph_rms_mode,                &
-     &    idx_pick_sph_rms_gl, idx_pick_sph_rms_lc)
+     &    num_pick_sph_rms_mode, idx_pick_sph_rms_gl,                   &
+     &    idx_pick_sph_rms_lc)
 !
       call deallocate_iflag_pick_sph
       call deallocate_pick_sph_mode
@@ -130,7 +130,7 @@
 !
 !
 !$omp parallel do
-      do inum = 1, num_pick_sph_rms_mode*num_pick_layer
+      do inum = 1, num_pick_sph_rms_mode*pick1%num_layer
         d_rms_pick_sph_lc(1:pwr%ntot_comp_sq,inum) = zero
       end do
 !$omp end parallel do
@@ -148,9 +148,9 @@
         do inum = 1, num_pick_sph_rms_mode
           j = idx_pick_sph_rms_lc(inum)
           if(j .gt. izero) then
-            do knum = 1, num_pick_layer
-              kr = id_pick_layer(knum)
-              ipick = knum + (inum-1) * num_pick_layer
+            do knum = 1, pick1%num_layer
+              kr = pick1%id_radius(knum)
+              ipick = knum + (inum-1) * pick1%num_layer
               do icomp = 1, ncomp
                 d_rms_pick_sph_lc(jst_rms+icomp,ipick)                  &
      &            = rms_sph_rj(kr,j,icomp) * sph_rj%a_r_1d_rj_r(kr)**2
@@ -161,7 +161,7 @@
 !$omp end parallel do
       end do
 !
-      num = pwr%ntot_comp_sq * num_pick_layer * num_pick_sph_rms_mode
+      num = pwr%ntot_comp_sq * pick1%num_layer * num_pick_sph_rms_mode
       call MPI_allREDUCE(d_rms_pick_sph_lc(1,1),                        &
      &    d_rms_pick_sph_gl(1,1), num, CALYPSO_REAL, MPI_SUM,           &
      &    CALYPSO_COMM, ierr_MPI)
