@@ -57,32 +57,33 @@
 !
       if (ipol%i_magne .gt. 0) then
 !
-        if(num_pick_gauss_l .eq. -9999) then
-          num_pick_gauss_l = l_truncation+1
+        if(gauss_list1%num_degree .eq. -9999) then
+          gauss_list1%num_degree = l_truncation+1
           call allocate_pick_gauss_l
           do l = 0, l_truncation
-            idx_pick_gauss_l(l+1) = l
+            gauss_list1%idx_pick_l(l+1) = l
           end do
         end if
 !
         call count_picked_sph_adrress(l_truncation,                     &
-     &      num_pick_gauss_coefs, num_pick_gauss_l, num_pick_gauss_m,   &
-     &      idx_pick_gauss_mode, idx_pick_gauss_l, idx_pick_gauss_m,    &
-     &      num_pick_gauss_mode)
+     &      gauss_list1%num_modes, gauss_list1%num_degree,              &
+     &      gauss_list1%num_order, gauss_list1%idx_pick_mode,           &
+     &      gauss_list1%idx_pick_l, gauss_list1%idx_pick_m,             &
+     &      gauss1%num_sph_mode)
       else
-        num_pick_gauss_mode = 0
+        gauss1%num_sph_mode = 0
       end if
 !
       call allocate_gauss_coef_monitor
 !
       if (ipol%i_magne .gt. 0) then
       call set_picked_sph_address(l_truncation, sph_rj,                 &
-     &    num_pick_gauss_coefs, num_pick_gauss_l, num_pick_gauss_m,     &
-     &    idx_pick_gauss_mode, idx_pick_gauss_l, idx_pick_gauss_m,      &
-     &    num_pick_gauss_mode, idx_pick_gauss_coef_gl,                  &
-     &    idx_pick_gauss_coef_lc)
+     &    gauss_list1%num_modes, gauss_list1%num_degree,                &
+     &    gauss_list1%num_order, gauss_list1%idx_pick_mode,             &
+     &    gauss_list1%idx_pick_l, gauss_list1%idx_pick_m,               &
+     &    gauss1%num_sph_mode, gauss1%idx_gl, gauss1%idx_lc)
       else
-        num_pick_gauss_mode = 0
+        gauss1%num_sph_mode = 0
       end if
 !
       call deallocate_iflag_pick_sph
@@ -113,11 +114,11 @@
       real(kind = kreal) :: a2r_4_gauss
 !
 !
-      if(num_pick_gauss_mode .eq. 0) return
+      if(gauss1%num_sph_mode .eq. 0) return
 !
 !$omp parallel do
-      do inum = 1, num_pick_gauss_mode
-        gauss_coef_lc(inum) = 0.0d0
+      do inum = 1, gauss1%num_sph_mode
+        gauss1%d_rj_lc(1,inum) = 0.0d0
       end do
 !$omp end parallel do
 !
@@ -125,12 +126,12 @@
         a2r_4_gauss = one / (r_4_gauss_coefs**2)
         rcmb_to_Re = radius_1d_rj_r(nlayer_CMB) / r_4_gauss_coefs
 !$omp parallel do private(j,l,inod)
-        do inum = 1, num_pick_gauss_mode
-          j = idx_pick_gauss_coef_lc(inum)
-          l = idx_pick_gauss_coef_gl(inum,2)
+        do inum = 1, gauss1%num_sph_mode
+          j = gauss1%idx_lc(inum)
+          l = gauss1%idx_gl(inum,2)
           if(j .gt. izero) then
             inod =  j +    (nlayer_CMB-1) * nidx_rj(2)
-            gauss_coef_lc(inum) = d_rj(inod,ipol%i_magne) * dble(l)     &
+            gauss1%d_rj_lc(1,inum) = d_rj(inod,ipol%i_magne) * dble(l)  &
      &                        * rcmb_to_Re**l *a2r_4_gauss
           end if
         end do
@@ -140,20 +141,21 @@
         a2r_4_gauss = one / (radius_1d_rj_r(nlayer_ICB)**2)
         ricb_to_Rref = r_4_gauss_coefs / radius_1d_rj_r(nlayer_ICB)
 !$omp parallel do private(j,l,inod)
-        do inum = 1, num_pick_gauss_mode
-          j = idx_pick_gauss_coef_lc(inum)
-          l = idx_pick_gauss_coef_gl(inum,2)
+        do inum = 1, gauss1%num_sph_mode
+          j = gauss1%idx_lc(inum)
+          l = gauss1%idx_gl(inum,2)
           if(j .gt. izero) then
             inod =  j +    (nlayer_ICB-1) * nidx_rj(2)
-            gauss_coef_lc(inum) = - d_rj(inod,ipol%i_magne) * dble(l+1) &
-     &                            * ricb_to_Rref**(l-1) *a2r_4_gauss
+            gauss1%d_rj_lc(1,inum) = - d_rj(inod,ipol%i_magne)          &
+     &                             * dble(l+1) * ricb_to_Rref**(l-1)    &
+     &                             * a2r_4_gauss
           end if
         end do
 !$omp end parallel do
       end if
 !
-      call MPI_allREDUCE(gauss_coef_lc(1), gauss_coef_gl(1),            &
-     &    num_pick_gauss_mode, CALYPSO_REAL, MPI_SUM, CALYPSO_COMM,     &
+      call MPI_allREDUCE(gauss1%d_rj_lc, gauss1%d_rj_gl,                &
+     &    gauss1%num_sph_mode, CALYPSO_REAL, MPI_SUM, CALYPSO_COMM,     &
      &    ierr_MPI)
 !
       end subroutine cal_gauss_coefficients
@@ -170,10 +172,10 @@
       character(len=kchara) :: gauss_head
 !
 !
-      do inum = 1, num_pick_gauss_mode
-        j = idx_pick_gauss_coef_gl(inum,1)
-        l = idx_pick_gauss_coef_gl(inum,2)
-        m = idx_pick_gauss_coef_gl(inum,3)
+      do inum = 1, gauss1%num_sph_mode
+        j = gauss1%idx_gl(inum,1)
+        l = gauss1%idx_gl(inum,2)
+        m = gauss1%idx_gl(inum,3)
         mm = abs(m)
 !
         if(m .lt. izero) then

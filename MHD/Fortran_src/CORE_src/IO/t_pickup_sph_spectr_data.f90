@@ -91,8 +91,6 @@
         real(kind = kreal), pointer :: d_rj_gl(:,:)
 !>        Localy evaluated  monitoring spectrum
         real(kind = kreal), pointer :: d_rj_lc(:,:)
-!>        Scale factor for vector at l=m=0
-        real(kind = kreal), pointer :: scale_for_zelo(:)
 !>        Name of  monitoring spectrum
         character(len=kchara), pointer :: spectr_name(:)
       end type picked_spectrum_data
@@ -168,7 +166,6 @@
 !
       allocate( picked%idx_gl(picked%num_sph_mode,3) )
       allocate( picked%idx_lc(picked%num_sph_mode) )
-      allocate( picked%scale_for_zelo(picked%num_sph_mode) )
       allocate( picked%d_rj_lc(picked%ntot_comp_rj,num) )
       allocate( picked%d_rj_gl(picked%ntot_comp_rj,num) )
       allocate( picked%spectr_name(picked%ntot_comp_rj) )
@@ -184,7 +181,6 @@
         picked%idx_lc =  0
         picked%d_rj_lc = 0.0d0
         picked%d_rj_gl = 0.0d0
-        picked%scale_for_zelo   = 1.0d0
       end if
 !
       end subroutine alloc_pick_sph_monitor
@@ -222,7 +218,6 @@
 !
       deallocate(picked%idx_gl, picked%d_rj_gl)
       deallocate(picked%idx_lc, picked%d_rj_lc)
-      deallocate(picked%scale_for_zelo)
       deallocate(picked%spectr_name)
       deallocate(picked%istack_comp_rj, picked%ifield_monitor_rj)
 !

@@ -37,10 +37,10 @@
 !
       call open_sph_spec_read_monitor(id_pick)
 !
-      num = num_pick_sph_mode * pick1%num_layer
-      allocate( prev_spec(ntot_comp_pick_sph,num) )
-      allocate( ave_spec(ntot_comp_pick_sph,num) )
-      allocate( sdev_spec(ntot_comp_pick_sph,num) )
+      num = pick1%num_sph_mode * pick1%num_layer
+      allocate( prev_spec(pick1%ntot_comp_rj,num) )
+      allocate( ave_spec(pick1%ntot_comp_rj,num) )
+      allocate( sdev_spec(pick1%ntot_comp_rj,num) )
       prev_spec =  0.0d0
       ave_spec =   0.0d0
       sdev_spec =  0.0d0
@@ -53,19 +53,19 @@
         if(ierr .gt. 0) exit
 !
         if(time .ge. start_time) then
-          do ipick = 1, num_pick_sph_mode*pick1%num_layer
-            do nd = 1, ntot_comp_pick_sph
-              prev_spec(nd,ipick) = d_rj_pick_sph_gl(nd,ipick)
+          do ipick = 1, pick1%num_sph_mode*pick1%num_layer
+            do nd = 1, pick1%ntot_comp_rj
+              prev_spec(nd,ipick) = pick1%d_rj_gl(nd,ipick)
             end do
           end do
 !
           if(icou .eq. 0) then
             true_start = time
           else
-            do ipick = 1, num_pick_sph_mode*pick1%num_layer
-              do nd = 1, ntot_comp_pick_sph
+            do ipick = 1, pick1%num_sph_mode*pick1%num_layer
+              do nd = 1, pick1%ntot_comp_rj
                 ave_spec(nd,ipick) = ave_spec(nd,ipick) + half          &
-     &            * (d_rj_pick_sph_gl(nd,ipick) + prev_spec(nd,ipick))  &
+     &            * (pick1%d_rj_gl(nd,ipick) + prev_spec(nd,ipick))     &
      &            * (time - prev_time)
               end do
             end do
@@ -82,8 +82,8 @@
       close(id_pick)
 !
       acou = one / (end_time - true_start)
-      do ipick = 1, num_pick_sph_mode*pick1%num_layer
-        do nd = 1, ntot_comp_pick_sph
+      do ipick = 1, pick1%num_sph_mode*pick1%num_layer
+        do nd = 1, pick1%ntot_comp_rj
           ave_spec(nd,ipick) = ave_spec(nd,ipick) * acou
         end do
       end do
@@ -101,10 +101,10 @@
         if(ierr .gt. 0) exit
 !
         if(time .ge. start_time) then
-          do ipick = 1, num_pick_sph_mode*pick1%num_layer
-            do nd = 1, ntot_comp_pick_sph
+          do ipick = 1, pick1%num_sph_mode*pick1%num_layer
+            do nd = 1, pick1%ntot_comp_rj
               prev_spec(nd,ipick)                                       &
-     &          = (d_rj_pick_sph_gl(nd,ipick) - ave_spec(nd,ipick))**2
+     &          = (pick1%d_rj_gl(nd,ipick) - ave_spec(nd,ipick))**2
             end do
           end do
 !
@@ -112,10 +112,10 @@
             true_start = time
 !
           else
-            do ipick = 1, num_pick_sph_mode*pick1%num_layer
-              do nd = 1, ntot_comp_pick_sph
+            do ipick = 1, pick1%num_sph_mode*pick1%num_layer
+              do nd = 1, pick1%ntot_comp_rj
                 sdev_spec(nd,ipick) = sdev_spec(nd,ipick) + half        &
-     &            * ((d_rj_pick_sph_gl(nd,ipick)-ave_spec(nd,ipick))**2 &
+     &            * ((pick1%d_rj_gl(nd,ipick)-ave_spec(nd,ipick))**2    &
      &             + prev_spec(nd,ipick)) * (time - prev_time)
               end do
             end do
@@ -132,17 +132,17 @@
       close(id_pick)
 !
       acou = one / (end_time - true_start)
-      do ipick = 1, num_pick_sph_mode*pick1%num_layer
-        do nd = 1, ntot_comp_pick_sph
+      do ipick = 1, pick1%num_sph_mode*pick1%num_layer
+        do nd = 1, pick1%ntot_comp_rj
           sdev_spec(nd,ipick) = sqrt(sdev_spec(nd,ipick)) * acou
         end do
       end do
 !
 !    output time average
 !
-      do ipick = 1, num_pick_sph_mode*pick1%num_layer
-        do nd = 1, ntot_comp_pick_sph
-          d_rj_pick_sph_gl(nd,ipick) = ave_spec(nd,ipick)
+      do ipick = 1, pick1%num_sph_mode*pick1%num_layer
+        do nd = 1, pick1%ntot_comp_rj
+          pick1%d_rj_gl(nd,ipick) = ave_spec(nd,ipick)
         end do
       end do
 !
@@ -151,9 +151,9 @@
 !
 !    output standard deviation
 !
-      do ipick = 1, num_pick_sph_mode*pick1%num_layer
-        do nd = 1, ntot_comp_pick_sph
-          d_rj_pick_sph_gl(nd,ipick) = sdev_spec(nd,ipick)
+      do ipick = 1, pick1%num_sph_mode*pick1%num_layer
+        do nd = 1, pick1%ntot_comp_rj
+          pick1%d_rj_gl(nd,ipick) = sdev_spec(nd,ipick)
         end do
       end do
 !

@@ -41,59 +41,41 @@
 !>        Structure for pickup list
       type(pickup_mode_list), save :: pick_list1
 !pick_list1%num_modes
+!
 !>        Structure for pickup list
       type(picked_spectrum_data), save :: pick1
-!pick1%radius_gl
+!pick1%ifield_monitor_rj
 !
 !>      File ID for spectrum monitor file
 !      integer(kind = kint), parameter :: id_pick_mode = 22
 !>      File prefix for spectr monitoring file
       character(len = kchara) :: pickup_sph_head =  'picked_ene_spec'
 !
-!>      Number of modes of monitoring spectrum to be evaluated
-!      integer(kind = kint) :: num_pick_sph = 0
-!>      Degree and Order ID of  monitoring spectrum to be evaluated
-!      integer(kind = kint), allocatable :: idx_pick_sph_mode(:,:)
-!>      Number of degrees of  monitoring spectrum to be evaluated
-!      integer(kind = kint) :: num_pick_sph_l = 0
-!>      Degree ID of  monitoring spectrum to be evaluated
-!      integer(kind = kint), allocatable :: idx_pick_sph_l(:)
-!>      Number of orders of  monitoring spectrum to be evaluated
-!      integer(kind = kint) :: num_pick_sph_m = 0
-!>      Order ID of  monitoring spectrum to be evaluated
-!      integer(kind = kint), allocatable :: idx_pick_sph_m(:)
-!
-!>      Number of radial layer for monitoring spectrum
-!      integer(kind = kint) :: num_pick_layer = 0
-!>      Radial ID for monitoring spectrum
-!      integer(kind = kint), allocatable :: id_pick_layer(:)
-!>      Radius for monitoring spectrum
-!      real(kind = kreal), allocatable :: r_pick_layer(:)
 !
 !>      Number of modes of  monitoring spectrum to be evaluated
-      integer(kind = kint) :: num_pick_sph_mode =  0
+!      integer(kind = kint) :: num_pick_sph_mode =  0
 !>      Global spherical harmonics ID to evaluate  monitoring spectrum
-      integer(kind = kint), allocatable :: idx_pick_sph_gl(:,:)
+!      integer(kind = kint), allocatable :: idx_pick_sph_gl(:,:)
 !>      Local spherical harmonics ID to evaluate  monitoring spectrum
-      integer(kind = kint), allocatable :: idx_pick_sph_lc(:)
+!      integer(kind = kint), allocatable :: idx_pick_sph_lc(:)
 !
 !>      Number of fields for monitoring output
 !!       @f$ f(r,\theta,\phi) @f$
-      integer (kind=kint) ::  num_fld_pick_sph =    0
+!      integer (kind=kint) ::  num_fld_pick_sph =    0
 !>      Total number of component for monitoring spectrum
-      integer(kind = kint) :: ntot_comp_pick_sph =  0
+!      integer(kind = kint) :: ntot_comp_pick_sph =  0
 !>      Number of component for monitoring spectrum
-      integer (kind=kint), allocatable :: istack_comp_pick_sph(:)
+!      integer (kind=kint), allocatable :: istack_comp_pick_sph(:)
 !>       Field  address for monitoring of @f$ f(r,j) @f$
-      integer (kind=kint), allocatable :: ifield_monitor_rj(:)
+!      integer (kind=kint), allocatable :: ifield_monitor_rj(:)
 !>      monitoring spectrum
-      real(kind = kreal), allocatable :: d_rj_pick_sph_gl(:,:)
+!      real(kind = kreal), allocatable :: d_rj_pick_sph_gl(:,:)
 !>      Localy evaluated  monitoring spectrum
-      real(kind = kreal), allocatable :: d_rj_pick_sph_lc(:,:)
+!      real(kind = kreal), allocatable :: d_rj_pick_sph_lc(:,:)
 !>      Scale factor for vector at l=m=0
       real(kind = kreal), allocatable :: scale_for_zelo(:)
 !>      Name of  monitoring spectrum
-      character(len=kchara), allocatable :: pick_sph_spec_name(:)
+!      character(len=kchara), allocatable :: pick_sph_spec_name(:)
 !
       private :: open_sph_spec_4_monitor
 !
@@ -114,8 +96,7 @@
 !
       subroutine allocate_pick_sph_mode
 !
-      allocate( pick_list1%idx_pick_mode(pick_list1%num_modes,2) )
-      if(pick_list1%num_modes .gt. 0) pick_list1%idx_pick_mode = 0
+      call alloc_pick_sph_mode(pick_list1)
 !
       end subroutine allocate_pick_sph_mode
 !
@@ -123,8 +104,7 @@
 !
       subroutine allocate_pick_sph_l
 !
-      allocate( pick_list1%idx_pick_l(pick_list1%num_degree) )
-      if(pick_list1%num_degree .gt. 0) pick_list1%idx_pick_l = 0
+      call alloc_pick_sph_l(pick_list1)
 !
       end subroutine allocate_pick_sph_l
 !
@@ -132,8 +112,7 @@
 !
       subroutine allocate_pick_sph_m
 !
-      allocate( pick_list1%idx_pick_m(pick_list1%num_order) )
-      if(pick_list1%num_order .gt. 0) pick_list1%idx_pick_m = 0
+      call alloc_pick_sph_m(pick_list1)
 !
       end subroutine allocate_pick_sph_m
 !
@@ -141,31 +120,11 @@
 !
       subroutine allocate_pick_sph_monitor
 !
-      integer(kind = kint) :: num
 !
+      call alloc_pick_sph_monitor(pick1)
 !
-      num = num_pick_sph_mode*pick1%num_layer
-!
-      allocate( idx_pick_sph_gl(num_pick_sph_mode,3) )
-      allocate( idx_pick_sph_lc(num_pick_sph_mode) )
-      allocate( scale_for_zelo(num_pick_sph_mode) )
-      allocate( d_rj_pick_sph_lc(ntot_comp_pick_sph,num) )
-      allocate( d_rj_pick_sph_gl(ntot_comp_pick_sph,num) )
-      allocate( pick_sph_spec_name(ntot_comp_pick_sph) )
-      allocate( istack_comp_pick_sph(0:num_fld_pick_sph) )
-      allocate( ifield_monitor_rj(num_fld_pick_sph) )
-!
-      if(num_fld_pick_sph .gt. 0) then
-        ifield_monitor_rj = 0
-        istack_comp_pick_sph = 0
-      end if
-      if(num .gt. 0) then
-        idx_pick_sph_gl = -1
-        idx_pick_sph_lc =  0
-        d_rj_pick_sph_lc = 0.0d0
-        d_rj_pick_sph_gl = 0.0d0
-        scale_for_zelo   = 1.0d0
-      end if
+      allocate( scale_for_zelo(pick1%num_sph_mode) )
+      if(pick1%num_sph_mode .gt. 0) scale_for_zelo   = 1.0d0
 !
       end subroutine allocate_pick_sph_monitor
 !
@@ -183,8 +142,7 @@
       subroutine deallocate_pick_sph_mode
 !
 !
-      deallocate( pick_list1%idx_pick_mode )
-      deallocate( pick_list1%idx_pick_l, pick_list1%idx_pick_m )
+      call dealloc_pick_sph_mode(pick_list1)
 !
       end subroutine deallocate_pick_sph_mode
 !
@@ -193,10 +151,10 @@
       subroutine deallocate_pick_sph_monitor
 !
 !
-      deallocate(idx_pick_sph_gl, d_rj_pick_sph_gl)
-      deallocate(idx_pick_sph_lc, d_rj_pick_sph_lc, scale_for_zelo)
-      deallocate(pick_sph_spec_name)
-      deallocate(istack_comp_pick_sph, ifield_monitor_rj)
+      deallocate(pick1%idx_gl, pick1%d_rj_gl)
+      deallocate(pick1%idx_lc, pick1%d_rj_lc, scale_for_zelo)
+      deallocate(pick1%spectr_name)
+      deallocate(pick1%istack_comp_rj, pick1%ifield_monitor_rj)
 !
       end subroutine deallocate_pick_sph_monitor
 !
@@ -223,16 +181,16 @@
       write(id_pick_mode,'(a)')
       write(id_pick_mode,'(a)')    '# num_layers, num_spectr'
       write(id_pick_mode,'(2i16)')                                      &
-     &         pick1%num_layer, num_pick_sph_mode
+     &         pick1%num_layer, pick1%num_sph_mode
       write(id_pick_mode,'(a)')    '# number of component'
-      write(id_pick_mode,'(i16)') ntot_comp_pick_sph
+      write(id_pick_mode,'(i16)') pick1%ntot_comp_rj
 !
       write(id_pick_mode,'(a)',advance='NO')    't_step    time    '
       write(id_pick_mode,'(a)',advance='NO')    'radius_ID    radius    '
       write(id_pick_mode,'(a)',advance='NO')    'degree    order    '
 !
-      call write_multi_labels(id_pick_mode, ntot_comp_pick_sph,         &
-     &    pick_sph_spec_name)
+      call write_multi_labels(id_pick_mode, pick1%ntot_comp_rj,         &
+     &    pick1%spectr_name)
 
       write(id_pick_mode,'(a)') ''
 !
@@ -250,22 +208,22 @@
       integer(kind = kint) :: inum, knum, ipick, i_fld
 !
 !
-      if(num_pick_sph_mode .eq. izero) return
+      if(pick1%num_sph_mode .eq. izero) return
       if(my_rank .gt. izero) return
 !
       call open_sph_spec_4_monitor
 !
-      do inum = 1, num_pick_sph_mode
+      do inum = 1, pick1%num_sph_mode
         do knum = 1, pick1%num_layer
           ipick = knum + (inum-1) * pick1%num_layer
           write(id_pick_mode,'(i16,1pe23.14e3)', advance='NO')          &
      &               i_step, time
           write(id_pick_mode,'(i16,1pe23.14e3,2i16)', advance='NO')     &
      &          pick1%id_radius(knum), pick1%radius_gl(knum),           &
-     &          idx_pick_sph_gl(inum,2:3)
-          do i_fld = 1, ntot_comp_pick_sph
+     &          pick1%idx_gl(inum,2:3)
+          do i_fld = 1, pick1%ntot_comp_rj
             write(id_pick_mode,'(1pe23.14e3)', advance='NO')            &
-     &              d_rj_pick_sph_gl(i_fld,ipick)
+     &              pick1%d_rj_gl(i_fld,ipick)
           end do
           write(id_pick_mode,'(a)') ''
         end do
@@ -294,15 +252,15 @@
       open(id_pick, file = pickup_sph_name)
 !
       call skip_comment(tmpchara,id_pick)
-      read(tmpchara,*) pick1%num_layer, num_pick_sph_mode
+      read(tmpchara,*) pick1%num_layer, pick1%num_sph_mode
       call skip_comment(tmpchara,id_pick)
-      read(tmpchara,*) ntot_comp_pick_sph
+      read(tmpchara,*) pick1%ntot_comp_rj
 !
       call allocate_num_pick_layer
       call allocate_pick_sph_monitor
 !
       read(id_pick,*) (tmpchara,i=1,6),                                 &
-     &                 pick_sph_spec_name(1:ntot_comp_pick_sph)
+     &                 pick1%spectr_name(1:pick1%ntot_comp_rj)
 !
       end subroutine open_sph_spec_read_monitor
 !
@@ -320,15 +278,15 @@
 !
 !
       ierr = 0
-      do inum = 1, num_pick_sph_mode
+      do inum = 1, pick1%num_sph_mode
         do knum = 1, pick1%num_layer
           ipick = knum + (inum-1) * pick1%num_layer
           read(id_pick,*,err=99,end=99) i_step, time,                   &
      &          pick1%id_radius(knum), pick1%radius_gl(knum),           &
-     &          l, m, d_rj_pick_sph_gl(1:ntot_comp_pick_sph,ipick)
-          idx_pick_sph_gl(inum,1) = get_idx_by_full_degree_order(l, m)
-          idx_pick_sph_gl(inum,2) = l
-          idx_pick_sph_gl(inum,3) = m
+     &          l, m, pick1%d_rj_gl(1:pick1%ntot_comp_rj,ipick)
+          pick1%idx_gl(inum,1) = get_idx_by_full_degree_order(l, m)
+          pick1%idx_gl(inum,2) = l
+          pick1%idx_gl(inum,3) = m
         end do
       end do
       return

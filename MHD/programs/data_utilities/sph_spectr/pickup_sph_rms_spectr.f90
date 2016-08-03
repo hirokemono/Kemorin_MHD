@@ -90,7 +90,7 @@
      &    pick_list1%num_modes, pick_list1%num_degree,                  &
      &    pick_list1%num_order, pick_list1%idx_pick_mode,               &
      &    pick_list1%idx_pick_l, pick_list1%idx_pick_m,                 &
-     &    num_pick_sph_rms_mode)
+     &    pick_rms1%num_sph_mode)
 !
       call allocate_pick_sph_rms
 !
@@ -98,8 +98,7 @@
      &    pick_list1%num_modes, pick_list1%num_degree,                  &
      &    pick_list1%num_order, pick_list1%idx_pick_mode,               &
      &    pick_list1%idx_pick_l, pick_list1%idx_pick_m,                 &
-     &    num_pick_sph_rms_mode, idx_pick_sph_rms_gl,                   &
-     &    idx_pick_sph_rms_lc)
+     &    pick_rms1%num_sph_mode, pick_rms1%idx_gl, pick_rms1%idx_lc)
 !
       call deallocate_iflag_pick_sph
       call deallocate_pick_sph_mode
@@ -132,8 +131,8 @@
 !
 !
 !$omp parallel do
-      do inum = 1, num_pick_sph_rms_mode*pick1%num_layer
-        d_rms_pick_sph_lc(1:pwr%ntot_comp_sq,inum) = zero
+      do inum = 1, pick_rms1%num_sph_mode*pick1%num_layer
+        pick_rms1%d_rj_lc(1:pwr%ntot_comp_sq,inum) = zero
       end do
 !$omp end parallel do
 !
@@ -147,14 +146,14 @@
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld, rms_sph_rj)
 !
 !$omp parallel do private(icomp,j,kr,inum,knum)
-        do inum = 1, num_pick_sph_rms_mode
-          j = idx_pick_sph_rms_lc(inum)
+        do inum = 1, pick_rms1%num_sph_mode
+          j = pick_rms1%idx_lc(inum)
           if(j .gt. izero) then
             do knum = 1, pick1%num_layer
               kr = pick1%id_radius(knum)
               ipick = knum + (inum-1) * pick1%num_layer
               do icomp = 1, ncomp
-                d_rms_pick_sph_lc(jst_rms+icomp,ipick)                  &
+                pick_rms1%d_rj_lc(jst_rms+icomp,ipick)                  &
      &            = rms_sph_rj(kr,j,icomp) * sph_rj%a_r_1d_rj_r(kr)**2
               end do
             end do
@@ -163,10 +162,9 @@
 !$omp end parallel do
       end do
 !
-      num = pwr%ntot_comp_sq * pick1%num_layer * num_pick_sph_rms_mode
-      call MPI_allREDUCE(d_rms_pick_sph_lc(1,1),                        &
-     &    d_rms_pick_sph_gl(1,1), num, CALYPSO_REAL, MPI_SUM,           &
-     &    CALYPSO_COMM, ierr_MPI)
+      num = pwr%ntot_comp_sq * pick1%num_layer * pick_rms1%num_sph_mode
+      call MPI_allREDUCE(pick_rms1%d_rj_lc, pick_rms1%d_rj_gl, num,     &
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine pickup_sph_rms_4_monitor
 !
@@ -193,7 +191,7 @@
       real(kind = kreal) :: avol
 !
 !
-      d_rms_pick_sph_lc = 0.0d0
+      pick_rms1%d_rj_lc = 0.0d0
 
       if(kg_st .eq. 0) then
         avol = three / (sph_rj%radius_1d_rj_r(kg_ed)**3)
@@ -215,20 +213,20 @@
      &      rms_sph_rj, rms_sph_v)
 !
         do icomp = 1, ncomp
-          do inum = 1, num_pick_sph_rms_mode
-            j = idx_pick_sph_rms_lc(inum)
+          do inum = 1, pick_rms1%num_sph_mode
+            j = pick_rms1%idx_lc(inum)
             if(j .gt. izero) then
-              d_rms_pick_sph_lc(jst_rms+icomp,inum)                     &
+              pick_rms1%d_rj_lc(jst_rms+icomp,inum)                     &
      &                         = avol * rms_sph_v(j,icomp)
             end if
           end do
         end do
       end do
 !
-      num = pwr%ntot_comp_sq * num_pick_sph_rms_mode
-      call MPI_allREDUCE(d_rms_pick_sph_lc(1,1),                        &
-     &    d_rms_pick_sph_gl(1,1), num, CALYPSO_REAL, MPI_SUM,           &
-     &    CALYPSO_COMM, ierr_MPI)
+      num = pwr%ntot_comp_sq * pick_rms1%num_sph_mode
+      call MPI_allREDUCE                                                &
+     &   (pick_rms1%d_rj_lc(1,1), pick_rms1%d_rj_gl(1,1),               &
+     &    num, CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine pickup_sph_rms_vol_monitor
 !
@@ -247,42 +245,47 @@
       do i_fld = 1, pwr%num_fld_sq
         ist = pwr%istack_comp_sq(i_fld-1)
           if      (pwr%pwr_name(i_fld) .eq. fhd_velo) then
-            write(rms_pick_sph_name(ist+1),'(a)') 'K_ene_pol'
-            write(rms_pick_sph_name(ist+2),'(a)') 'K_ene_tor'
-            write(rms_pick_sph_name(ist+3),'(a)') 'K_ene'
+            write(pick_rms1%spectr_name(ist+1),'(a)') 'K_ene_pol'
+            write(pick_rms1%spectr_name(ist+2),'(a)') 'K_ene_tor'
+            write(pick_rms1%spectr_name(ist+3),'(a)') 'K_ene'
 !
           else if (pwr%pwr_name(i_fld) .eq. fhd_magne) then
-            write(rms_pick_sph_name(ist+1),'(a)') 'M_ene_pol'
-            write(rms_pick_sph_name(ist+2),'(a)') 'M_ene_tor'
-            write(rms_pick_sph_name(ist+3),'(a)') 'M_ene'
+            write(pick_rms1%spectr_name(ist+1),'(a)') 'M_ene_pol'
+            write(pick_rms1%spectr_name(ist+2),'(a)') 'M_ene_tor'
+            write(pick_rms1%spectr_name(ist+3),'(a)') 'M_ene'
 !
           else if (pwr%pwr_name(i_fld) .eq. fhd_filter_v) then
-            write(rms_pick_sph_name(ist+1),'(a)') 'filter_KE_pol'
-            write(rms_pick_sph_name(ist+2),'(a)') 'filter_KE_tor'
-            write(rms_pick_sph_name(ist+3),'(a)') 'filter_KE'
+            write(pick_rms1%spectr_name(ist+1),'(a)') 'filter_KE_pol'
+            write(pick_rms1%spectr_name(ist+2),'(a)') 'filter_KE_tor'
+            write(pick_rms1%spectr_name(ist+3),'(a)') 'filter_KE'
 !
           else if (pwr%pwr_name(i_fld) .eq. fhd_filter_b) then
-            write(rms_pick_sph_name(ist+1),'(a)') 'filter_ME_pol'
-            write(rms_pick_sph_name(ist+2),'(a)') 'filter_ME_tor'
-            write(rms_pick_sph_name(ist+3),'(a)') 'filter_ME'
+            write(pick_rms1%spectr_name(ist+1),'(a)') 'filter_ME_pol'
+            write(pick_rms1%spectr_name(ist+2),'(a)') 'filter_ME_tor'
+            write(pick_rms1%spectr_name(ist+3),'(a)') 'filter_ME'
 !
           else if (pwr%num_comp_sq(i_fld) .eq. 1) then
-            write(rms_pick_sph_name(ist+1),'(a)')                       &
+            write(pick_rms1%spectr_name(ist+1),'(a)')                   &
      &                      trim(pwr%pwr_name(i_fld))
 !
           else if (pwr%num_comp_sq(i_fld) .eq. 3) then
             call add_vector_power_sph_label(pwr%pwr_name(i_fld),        &
-     &          rms_pick_sph_name(ist+1), rms_pick_sph_name(ist+2),     &
-     &          rms_pick_sph_name(ist+3))
-            write(rms_pick_sph_name(ist+3),'(a)') pwr%pwr_name(i_fld)
+     &          pick_rms1%spectr_name(ist+1),                           &
+     &          pick_rms1%spectr_name(ist+2),                           &
+     &          pick_rms1%spectr_name(ist+3))
+            write(pick_rms1%spectr_name(ist+3),'(a)')                   &
+     &          pwr%pwr_name(i_fld)
           else if (pwr%num_comp_sq(i_fld) .eq. 6) then
             call add_tensor_direction_label_rtp(pwr%pwr_name(i_fld),    &
-     &          rms_pick_sph_name(ist+1), rms_pick_sph_name(ist+2),     &
-     &          rms_pick_sph_name(ist+3), rms_pick_sph_name(ist+4),     &
-     &          rms_pick_sph_name(ist+5), rms_pick_sph_name(ist+6))
+     &          pick_rms1%spectr_name(ist+1),                           &
+     &          pick_rms1%spectr_name(ist+2),                           &
+     &          pick_rms1%spectr_name(ist+3),                           &
+     &          pick_rms1%spectr_name(ist+4),                           &
+     &          pick_rms1%spectr_name(ist+5),                           &
+     &          pick_rms1%spectr_name(ist+6))
           end if
       end do
-      ncomp_pick_sph_rms = pwr%ntot_comp_sq
+      pick_rms1%ntot_comp_rj = pwr%ntot_comp_sq
 !
       end subroutine set_sph_rms_labels_4_monitor
 !

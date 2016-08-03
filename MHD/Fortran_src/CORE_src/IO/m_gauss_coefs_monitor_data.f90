@@ -38,7 +38,10 @@
 !
 !>        Structure for pickup list
       type(pickup_mode_list), save :: gauss_list1
+!gauss_list1%num_modes
 !
+      type(picked_spectrum_data), save :: gauss1
+!gauss1%d_rj_lc
 !
 !>      File ID for Gauss coefficients IO
       integer(kind = kint), parameter :: id_gauss_coef = 23
@@ -46,28 +49,19 @@
       character(len = kchara) :: gauss_coefs_file_head
 !
 !>      Number of modes of Gauss coefficients to be evaluated
-      integer(kind = kint) :: num_pick_gauss_coefs = 0
-!>      Degree and Order ID of Gauss coefficients to be evaluated
-      integer(kind = kint), allocatable :: idx_pick_gauss_mode(:,:)
-!>      Number of degrees of Gauss coefficients to be evaluated
-      integer(kind = kint) :: num_pick_gauss_l = 0
-!>      Degree ID of Gauss coefficients to be evaluated
-      integer(kind = kint), allocatable :: idx_pick_gauss_l(:)
-!>      Number of orders of Gauss coefficients to be evaluated
-      integer(kind = kint) :: num_pick_gauss_m = 0
-!>      Order ID of Gauss coefficients to be evaluated
-      integer(kind = kint), allocatable :: idx_pick_gauss_m(:)
-!
-!>      Number of modes of Gauss coefficients to be evaluated
-      integer(kind = kint) :: num_pick_gauss_mode
+!      integer(kind = kint) :: num_pick_gauss_mode
 !>      Global spherical harmonics ID to evaluate Gauss coefficients
-      integer(kind = kint), allocatable :: idx_pick_gauss_coef_gl(:,:)
+!      integer(kind = kint), allocatable :: idx_pick_gauss_coef_gl(:,:)
 !>      Local spherical harmonics ID to evaluate Gauss coefficients
-      integer(kind = kint), allocatable :: idx_pick_gauss_coef_lc(:)
+!      integer(kind = kint), allocatable :: idx_pick_gauss_coef_lc(:)
+!
+!      integer (kind=kint) ::  num_fld_gauss =   1
+!>      Total number of component for gauss coefficient (of course 1)
+!      integer(kind = kint) :: ntot_comp_gauss = 1
 !>      Gauss coefficients
-      real(kind = kreal), allocatable :: gauss_coef_gl(:)
+!      real(kind = kreal), allocatable :: gauss_coef_gl(:,:)
 !>      Localy evaluated Gauss coefficients
-      real(kind = kreal), allocatable :: gauss_coef_lc(:)
+!      real(kind = kreal), allocatable :: gauss_coef_lc(:,:)
 !>      Name of Gauss coefficients  (g_{l}^{m} or h_{l}^{m})
       character(len=kchara), allocatable :: gauss_mode_name(:)
 !
@@ -84,8 +78,7 @@
 !
       subroutine allocate_pick_gauss
 !
-      allocate( idx_pick_gauss_mode(num_pick_gauss_coefs,2) )
-      if(num_pick_gauss_coefs .gt. 0) idx_pick_gauss_mode = -1
+      call alloc_pick_sph_mode(gauss_list1)
 !
       end subroutine allocate_pick_gauss
 !
@@ -93,8 +86,7 @@
 !
       subroutine allocate_pick_gauss_l
 !
-      allocate( idx_pick_gauss_l(num_pick_gauss_l) )
-      if(num_pick_gauss_l .gt. 0) idx_pick_gauss_l = -1
+      call alloc_pick_sph_l(gauss_list1)
 !
       end subroutine allocate_pick_gauss_l
 !
@@ -102,8 +94,7 @@
 !
       subroutine allocate_pick_gauss_m
 !
-      allocate( idx_pick_gauss_m(num_pick_gauss_m) )
-      if(num_pick_gauss_m .gt. 0) idx_pick_gauss_m = -1
+      call alloc_pick_sph_m(gauss_list1)
 !
       end subroutine allocate_pick_gauss_m
 !
@@ -112,17 +103,20 @@
       subroutine allocate_gauss_coef_monitor
 !
 !
-      allocate( idx_pick_gauss_coef_gl(num_pick_gauss_mode,3) )
-      allocate( idx_pick_gauss_coef_lc(num_pick_gauss_mode) )
-      allocate( gauss_coef_lc(num_pick_gauss_mode) )
-      allocate( gauss_coef_gl(num_pick_gauss_mode) )
-      allocate( gauss_mode_name(num_pick_gauss_mode) )
+      gauss1%num_layer =    1
+      gauss1%num_field_rj = 1
+      gauss1%ntot_comp_rj = 1
+      allocate( gauss1%idx_gl(gauss1%num_sph_mode,3) )
+      allocate( gauss1%idx_lc(gauss1%num_sph_mode) )
+      allocate( gauss1%d_rj_lc(gauss1%ntot_comp_rj,gauss1%num_sph_mode) )
+      allocate( gauss1%d_rj_gl(gauss1%ntot_comp_rj,gauss1%num_sph_mode) )
+      allocate( gauss_mode_name(gauss1%num_sph_mode) )
 !
-      if(num_pick_gauss_mode .gt. 0) then
-        idx_pick_gauss_coef_gl = -1
-        idx_pick_gauss_coef_lc =  0
-        gauss_coef_lc = 0.0d0
-        gauss_coef_gl = 0.0d0
+      if(gauss1%num_sph_mode .gt. 0) then
+        gauss1%idx_gl = -1
+        gauss1%idx_lc =  0
+        gauss1%d_rj_lc = 0.0d0
+        gauss1%d_rj_gl = 0.0d0
       end if
 !
       end subroutine allocate_gauss_coef_monitor
@@ -132,8 +126,7 @@
 !
       subroutine deallocate_pick_gauss
 !
-      deallocate( idx_pick_gauss_mode )
-      deallocate( idx_pick_gauss_l, idx_pick_gauss_m )
+      call dealloc_pick_sph_mode(gauss_list1)
 !
       end subroutine deallocate_pick_gauss
 !
@@ -142,8 +135,8 @@
       subroutine deallocate_gauss_coef_monitor
 !
 !
-      deallocate(idx_pick_gauss_coef_gl, gauss_coef_gl)
-      deallocate(idx_pick_gauss_coef_lc, gauss_coef_lc)
+      deallocate(gauss1%idx_gl, gauss1%d_rj_gl)
+      deallocate(gauss1%idx_lc, gauss1%d_rj_lc)
       deallocate(gauss_mode_name)
 !
       end subroutine deallocate_gauss_coef_monitor
@@ -172,11 +165,11 @@
 !
       write(id_gauss_coef,'(a)')    'num_spectr, reference_radius'
       write(id_gauss_coef,'(i16,1pe25.15e3)')                           &
-     &     num_pick_gauss_mode, r_4_gauss_coefs
+     &     gauss1%num_sph_mode, r_4_gauss_coefs
 !
       write(id_gauss_coef,'(a)',advance='NO')    't_step    time    '
 !
-      call write_multi_labels(id_gauss_coef, num_pick_gauss_mode,       &
+      call write_multi_labels(id_gauss_coef, gauss1%num_sph_mode,       &
      &    gauss_mode_name)
       write(id_gauss_coef,'(a)') ''
 !
@@ -193,16 +186,16 @@
       integer(kind = kint) :: inum
 !
 !
-      if(num_pick_gauss_mode .eq. izero) return
+      if(gauss1%num_sph_mode .eq. izero) return
       if(my_rank .gt. izero) return
 !
       call open_gauss_coefs_4_monitor
 !
       write(id_gauss_coef,'(i16,1pe23.14e3)', advance='NO')             &
      &       i_step, time
-      do inum = 1, num_pick_gauss_mode
+      do inum = 1, gauss1%num_sph_mode
         write(id_gauss_coef,'(1pe23.14e3)', advance='NO')               &
-     &       gauss_coef_gl(inum)
+     &       gauss1%d_rj_gl(1,inum)
       end do
       write(id_gauss_coef,'(a)') ''
 !
@@ -230,12 +223,12 @@
       open(id_pick, file = gauss_coefs_file_name)
 !
       call skip_comment(tmpchara,id_pick)
-      read(id_pick,*) num_pick_gauss_mode
+      read(id_pick,*) gauss1%num_sph_mode
 !
       call allocate_gauss_coef_monitor
 !
       read(id_pick,*) (tmpchara,i=1,2),                                 &
-     &                 gauss_mode_name(1:num_pick_gauss_mode)
+     &                 gauss_mode_name(1:gauss1%num_sph_mode)
 !
       end subroutine open_gauss_coefs_read_monitor
 !
@@ -251,7 +244,7 @@
 !
       ierr = 0
       read(id_pick,*,err=99,end=99) i_step, time,                       &
-     &       gauss_coef_gl(1:num_pick_gauss_mode)
+     &       gauss1%d_rj_gl(1,1:gauss1%num_sph_mode)
       write(*,*) 'i_step', i_step, time
 !
       return

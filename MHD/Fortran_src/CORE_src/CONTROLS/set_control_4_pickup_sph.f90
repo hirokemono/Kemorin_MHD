@@ -155,9 +155,9 @@
       if(gauss_coefs_prefix%iflag .gt. 0) then
         gauss_coefs_file_head = gauss_coefs_prefix%charavalue
       else
-        num_pick_gauss_coefs = 0
-        num_pick_gauss_l = 0
-        num_pick_gauss_m = 0
+        gauss_list1%num_modes =  0
+        gauss_list1%num_degree = 0
+        gauss_list1%num_order =  0
         call allocate_pick_gauss
         call allocate_pick_gauss_l
         call allocate_pick_gauss_m
@@ -169,38 +169,38 @@
         r_4_gauss_coefs = gauss_coefs_radius_ctl%realvalue
       end if
 !
-      num_pick_gauss_coefs = idx_gauss_ctl%num
+      gauss_list1%num_modes = idx_gauss_ctl%num
       call allocate_pick_gauss
 !
-      do inum = 1, num_pick_gauss_coefs
-        idx_pick_gauss_mode(inum,1) = idx_gauss_ctl%int1(inum)
-        idx_pick_gauss_mode(inum,2) = idx_gauss_ctl%int2(inum)
+      do inum = 1, gauss_list1%num_modes
+        gauss_list1%idx_pick_mode(inum,1) = idx_gauss_ctl%int1(inum)
+        gauss_list1%idx_pick_mode(inum,2) = idx_gauss_ctl%int2(inum)
       end do
 !
-      if(num_pick_gauss_coefs .gt. 0) call deallocate_pick_gauss_ctl
+      if(gauss_list1%num_modes .gt. 0) call deallocate_pick_gauss_ctl
 !
 !
-      num_pick_gauss_m = idx_gauss_m_ctl%num
+      gauss_list1%num_order = idx_gauss_m_ctl%num
       call allocate_pick_gauss_m
 !
-      do inum = 1, num_pick_gauss_m
-        idx_pick_gauss_m(inum) = idx_gauss_m_ctl%ivec(inum)
+      do inum = 1, gauss_list1%num_order
+        gauss_list1%idx_pick_m(inum) = idx_gauss_m_ctl%ivec(inum)
       end do
       call deallocate_pick_gauss_m_ctl
 !
 !
-      num_pick_gauss_l = idx_gauss_l_ctl%num
-      if(num_pick_gauss_l .gt. 0) then
+      gauss_list1%num_degree = idx_gauss_l_ctl%num
+      if(gauss_list1%num_degree .gt. 0) then
         call allocate_pick_gauss_l
 !
-        do inum = 1, num_pick_gauss_l
-          idx_pick_gauss_l(inum) = idx_gauss_l_ctl%ivec(inum)
+        do inum = 1, gauss_list1%num_degree
+          gauss_list1%idx_pick_l(inum) = idx_gauss_l_ctl%ivec(inum)
         end do
         call deallocate_pick_gauss_l_ctl
       else if(gauss_coefs_prefix%iflag .gt. 0                           &
-     &   .and. num_pick_gauss_m .le. 0                                  &
-     &   .and. num_pick_gauss_coefs .le. 0) then
-       num_pick_gauss_l = -9999
+     &   .and. gauss_list1%num_order .le. 0                             &
+     &   .and. gauss_list1%num_modes .le. 0) then
+       gauss_list1%num_degree = -9999
       end if
 !
       end subroutine set_ctl_params_pick_gauss

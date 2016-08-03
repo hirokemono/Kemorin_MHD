@@ -31,21 +31,16 @@
       use m_precision
       use m_constants
 !
+      use t_pickup_sph_spectr_data
       use m_pickup_sph_spectr_data
 !
       implicit  none
 !
 !
+!>        Structure for pickup list
+      type(picked_spectrum_data), save :: pick_rms1
+!
       character(len = kchara) :: pickup_sph_rms_head =  'picked_ene_spec'
-!
-      integer(kind = kint) :: num_pick_sph_rms_mode =  0
-      integer(kind = kint), allocatable :: idx_pick_sph_rms_gl(:,:)
-      integer(kind = kint), allocatable :: idx_pick_sph_rms_lc(:)
-!
-      integer(kind = kint) :: ncomp_pick_sph_rms =  0
-      real(kind = kreal), allocatable :: d_rms_pick_sph_gl(:,:)
-      real(kind = kreal), allocatable :: d_rms_pick_sph_lc(:,:)
-      character(len=kchara), allocatable :: rms_pick_sph_name(:)
 !
       private :: open_sph_rms_4_monitor
 !
@@ -60,20 +55,8 @@
       integer(kind = kint) :: num
 !
 !
-      num = num_pick_sph_rms_mode*pick1%num_layer
-!
-      allocate( idx_pick_sph_rms_gl(num_pick_sph_rms_mode,3) )
-      allocate( idx_pick_sph_rms_lc(num_pick_sph_rms_mode) )
-      allocate( d_rms_pick_sph_lc(ncomp_pick_sph_rms,num) )
-      allocate( d_rms_pick_sph_gl(ncomp_pick_sph_rms,num) )
-      allocate( rms_pick_sph_name(ncomp_pick_sph_rms) )
-!
-      if(num .gt. 0) then
-        idx_pick_sph_rms_gl = -1
-        idx_pick_sph_rms_lc =  0
-        d_rms_pick_sph_lc = 0.0d0
-        d_rms_pick_sph_gl = 0.0d0
-      end if
+      pick_rms1%num_layer = pick1%num_layer
+      call alloc_pick_sph_monitor(pick_rms1)
 !
       end subroutine allocate_pick_sph_rms
 !
@@ -83,8 +66,8 @@
       subroutine deallocate_pick_sph_rms
 !
 !
-      deallocate(idx_pick_sph_rms_gl, d_rms_pick_sph_gl)
-      deallocate(idx_pick_sph_rms_lc, d_rms_pick_sph_lc)
+      deallocate(pick_rms1%idx_gl, pick_rms1%d_rj_gl)
+      deallocate(pick_rms1%idx_lc, pick_rms1%d_rj_lc)
 !
       end subroutine deallocate_pick_sph_rms
 !
@@ -111,17 +94,17 @@
       write(id_pick_mode,'(a)')
       write(id_pick_mode,'(a)')    '# num_layers, num_spectr'
       write(id_pick_mode,'(2i16)')                                      &
-     &        pick1%num_layer, num_pick_sph_rms_mode
+     &        pick1%num_layer, pick_rms1%num_sph_mode
       write(id_pick_mode,'(a)')    '# number of component'
-      write(id_pick_mode,'(i16)') ncomp_pick_sph_rms
+      write(id_pick_mode,'(i16)') pick_rms1%ntot_comp_rj
 !
 !
       write(id_pick_mode,'(a)',advance='NO') 't_step    time    '
       write(id_pick_mode,'(a)',advance='NO') 'radius_ID    radius    '
       write(id_pick_mode,'(a)',advance='NO') 'degree    order    '
 !
-      call write_multi_labels(id_pick_mode, ncomp_pick_sph_rms,         &
-     &    rms_pick_sph_name)
+      call write_multi_labels(id_pick_mode, pick_rms1%ntot_comp_rj,     &
+     &    pick_rms1%spectr_name)
       write(id_pick_mode,'(a)') ''
 !
       end subroutine open_sph_rms_4_monitor
@@ -137,22 +120,22 @@
       integer(kind = kint) :: inum, knum, ipick, i_fld
 !
 !
-      if(num_pick_sph_rms_mode .eq. izero) return
+      if(pick_rms1%num_sph_mode .eq. izero) return
       if(my_rank .gt. izero) return
 !
       call open_sph_rms_4_monitor
 !
-      do inum = 1, num_pick_sph_rms_mode
+      do inum = 1, pick_rms1%num_sph_mode
         do knum = 1, pick1%num_layer
           ipick = knum + (inum-1) * pick1%num_layer
           write(id_pick_mode,'(i16,1pe23.14e3)', advance='NO')          &
      &           i_step, time
           write(id_pick_mode,'(i16,1pe23.14e3,2i16)', advance='NO')     &
      &          pick1%id_radius(knum), pick1%radius_gl(knum),           &
-     &          idx_pick_sph_rms_gl(inum,2:3)
-          do i_fld = 1, ncomp_pick_sph_rms
+     &          pick_rms1%idx_gl(inum,2:3)
+          do i_fld = 1, pick_rms1%ntot_comp_rj
             write(id_pick_mode,'(1pe23.14e3)', advance='NO')            &
-     &              d_rms_pick_sph_gl(i_fld,ipick)
+     &              pick_rms1%d_rj_gl(i_fld,ipick)
           end do
           write(id_pick_mode,'(a)') ''
         end do
@@ -182,14 +165,14 @@
 !
 !
       call skip_comment(tmpchara,id_pick)
-      read(tmpchara,*) pick1%num_layer, num_pick_sph_rms_mode
+      read(tmpchara,*) pick1%num_layer, pick_rms1%num_sph_mode
       call skip_comment(tmpchara,id_pick)
-      read(tmpchara,*) ncomp_pick_sph_rms
+      read(tmpchara,*) pick_rms1%ntot_comp_rj
 !
       call allocate_pick_sph_rms
 !
       read(id_pick,*) (tmpchara,i=1,6),                                 &
-     &                 rms_pick_sph_name(1:ncomp_pick_sph_rms)
+     &                 pick_rms1%spectr_name(1:pick_rms1%ntot_comp_rj)
 !
       end subroutine open_sph_rms_read_monitor
 !
@@ -207,16 +190,16 @@
 !
 !
       ierr = 0
-      do inum = 1, num_pick_sph_rms_mode
+      do inum = 1, pick_rms1%num_sph_mode
         do knum = 1, pick1%num_layer
           ipick = knum + (inum-1) * pick1%num_layer
           read(id_pick,*,err=99,end=99) i_step, time,                   &
      &          pick1%id_radius(knum), pick1%radius_gl(knum),           &
-     &          l, m, d_rms_pick_sph_gl(1:ncomp_pick_sph_rms,ipick)
-          idx_pick_sph_rms_gl(inum,1)                                   &
+     &          l, m, pick_rms1%d_rj_gl(1:pick_rms1%ntot_comp_rj,ipick)
+          pick_rms1%idx_gl(inum,1)                                      &
      &              = get_idx_by_full_degree_order(l,m)
-          idx_pick_sph_rms_gl(inum,2) = l
-          idx_pick_sph_rms_gl(inum,3) = m
+          pick_rms1%idx_gl(inum,2) = l
+          pick_rms1%idx_gl(inum,3) = m
         end do
       end do
       return

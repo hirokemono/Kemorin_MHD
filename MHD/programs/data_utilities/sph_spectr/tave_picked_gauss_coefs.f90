@@ -31,7 +31,7 @@
 !
       call open_gauss_coefs_read_monitor(id_pick)
 !
-      allocate( ave_gauss(num_pick_gauss_mode))
+      allocate( ave_gauss(gauss1%num_sph_mode))
       ave_gauss = 0.0d0
 !
 !
@@ -43,8 +43,9 @@
         if(mod((i_step-istep_start),istep_inc) .eq. 0                   &
      &     .and. i_step.ge.istep_start) then
 !
-          do ipick = 1, num_pick_gauss_mode
-            ave_gauss(ipick) = ave_gauss(ipick) + gauss_coef_gl(ipick)
+          do ipick = 1, gauss1%num_sph_mode
+            ave_gauss(ipick)                                            &
+     &          = ave_gauss(ipick) + gauss1%d_rj_gl(1,ipick)
           end do
           icou = icou + 1
           write(*,*) 'step ', i_step, ' is added: count is  ', icou
@@ -55,8 +56,8 @@
       close(id_pick)
 !
       acou = one / dble(icou)
-      do ipick = 1, num_pick_gauss_mode
-        gauss_coef_gl(ipick) = ave_gauss(ipick) * acou
+      do ipick = 1, gauss1%num_sph_mode
+        gauss1%d_rj_gl(1,ipick) = ave_gauss(ipick) * acou
       end do
 !
       deallocate(ave_gauss)

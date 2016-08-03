@@ -36,8 +36,8 @@
 !
       call open_sph_rms_read_monitor(id_pick)
 !
-      num = num_pick_sph_rms_mode*pick1%num_layer
-      allocate( ave_rms_pick_sph(ncomp_pick_sph_rms,num) )
+      num = pick_rms1%num_sph_mode * pick1%num_layer
+      allocate( ave_rms_pick_sph(pick_rms1%ntot_comp_rj,num) )
       ave_rms_pick_sph = 0.0d0
 !
 !
@@ -49,10 +49,10 @@
         if(mod((i_step-istep_start),istep_inc) .eq. 0                   &
      &     .and. i_step.ge.istep_start) then
 !
-          do ipick = 1, num_pick_sph_rms_mode*pick1%num_layer
-            do nd = 1, ncomp_pick_sph_rms
+          do ipick = 1, pick_rms1%num_sph_mode * pick1%num_layer
+            do nd = 1, pick_rms1%ntot_comp_rj
               ave_rms_pick_sph(nd,ipick) = ave_rms_pick_sph(nd,ipick)   &
-     &                                    + d_rms_pick_sph_gl(nd,ipick)
+     &                                    + pick_rms1%d_rj_gl(nd,ipick)
             end do
           end do
           icou = icou + 1
@@ -64,9 +64,9 @@
       close(id_pick)
 !
       acou = one / dble(icou)
-      do ipick = 1, num_pick_sph_rms_mode*pick1%num_layer
-        do nd = 1, ncomp_pick_sph_rms
-          d_rms_pick_sph_gl(nd,ipick) = ave_rms_pick_sph(nd,ipick)      &
+      do ipick = 1, pick_rms1%num_sph_mode * pick1%num_layer
+        do nd = 1, pick_rms1%ntot_comp_rj
+          pick_rms1%d_rj_gl(nd,ipick) = ave_rms_pick_sph(nd,ipick)      &
      &                                 * acou
         end do
       end do

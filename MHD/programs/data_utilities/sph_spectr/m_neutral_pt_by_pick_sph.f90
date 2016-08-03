@@ -100,9 +100,9 @@
 !
       integer(kind = kint) :: i
 !
-      do i = 1, ntot_comp_pick_sph
-        if(pick_sph_spec_name(i) .eq. fhd_temp)  icomp_temp =  i
-        if(pick_sph_spec_name(i) .eq. fhd_light) icomp_light = i
+      do i = 1, pick1%ntot_comp_rj
+        if(pick1%spectr_name(i) .eq. fhd_temp)  icomp_temp =  i
+        if(pick1%spectr_name(i) .eq. fhd_light) icomp_light = i
       end do
 !
       end subroutine find_field_address
@@ -129,8 +129,8 @@
       do i = 1, pick1%num_layer
         sph_rj%radius_1d_rj_r(i) = pick1%radius_gl(i)
       end do
-      do i = 1, num_pick_sph_mode
-        if(idx_pick_sph_gl(i,1) .eq. 0) ipick_l0m0 = i
+      do i = 1, pick1%num_sph_mode
+        if(pick1%idx_gl(i,1) .eq. 0) ipick_l0m0 = i
       end do
 !
       call allocate_dr_rj_noequi(sph_rj%nidx_rj(1))
@@ -161,8 +161,8 @@
 !
       do k = 1, pick1%num_layer
         ipick = k + (ipick_l0m0-1) * pick1%num_layer
-        temp00(k) = d_rj_pick_sph_gl(icomp_temp, ipick)
-        comp00(k) = d_rj_pick_sph_gl(icomp_light,ipick)
+        temp00(k) = pick1%d_rj_gl(icomp_temp, ipick)
+        comp00(k) = pick1%d_rj_gl(icomp_light,ipick)
       end do
 !
       do k = 2, pick1%num_layer - 1
