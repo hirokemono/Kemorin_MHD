@@ -81,6 +81,7 @@
       use m_ctl_params_sph_utils
       use copy_rj_phys_data_4_IO
       use pickup_sph_spectr_data
+      use picked_sph_spectr_data_IO
 !
       integer(kind = kint) :: i_step
 !

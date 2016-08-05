@@ -7,9 +7,15 @@
       use m_precision
       use m_constants
 !
-      use m_gauss_coefs_monitor_data
+      use t_pickup_sph_spectr_data
+      use gauss_coefs_monitor_IO
 !
       implicit  none
+!
+!>      Structure for gauss coeffciients
+      type(picked_spectrum_data), save :: gauss_org
+!>      File prefix for Gauss coefficients file
+      character(len = kchara) :: gauss_coefs_file_prefix
 !
       real(kind = kreal), allocatable :: ave_gauss(:)
       character(len=kchara) :: tave_pick_gauss_head
@@ -21,31 +27,33 @@
 !
 !
       write(*,*) 'input picked gauss coefficients file prefix'
-      read(5,*) gauss_coefs_file_head
+      read(5,*) gauss_coefs_file_prefix
 !
       write(tave_pick_gauss_head,'(a6,a)')                              &
-        't_ave_', trim(gauss_coefs_file_head)
+        't_ave_', trim(gauss_coefs_file_prefix)
 !
       write(*,*) 'input start, end, increment steps'
       read(5,*) istep_start, istep_end, istep_inc
 !
-      call open_gauss_coefs_read_monitor(id_pick)
+      call open_gauss_coefs_read_monitor                                &
+     &   (id_pick, gauss_coefs_file_prefix, gauss_org)
 !
-      allocate( ave_gauss(gauss1%num_sph_mode))
+      allocate( ave_gauss(gauss_org%num_sph_mode))
       ave_gauss = 0.0d0
 !
 !
       icou = 0
       do
-        call read_gauss_coefs_4_monitor(id_pick, i_step, time, ierr)
+        call read_gauss_coefs_4_monitor                                 &
+     &     (id_pick, i_step, time, gauss_org, ierr)
         if(ierr .gt. 0) exit
 !
         if(mod((i_step-istep_start),istep_inc) .eq. 0                   &
      &     .and. i_step.ge.istep_start) then
 !
-          do ipick = 1, gauss1%num_sph_mode
+          do ipick = 1, gauss_org%num_sph_mode
             ave_gauss(ipick)                                            &
-     &          = ave_gauss(ipick) + gauss1%d_rj_gl(1,ipick)
+     &          = ave_gauss(ipick) + gauss_org%d_rj_gl(1,ipick)
           end do
           icou = icou + 1
           write(*,*) 'step ', i_step, ' is added: count is  ', icou
@@ -56,14 +64,14 @@
       close(id_pick)
 !
       acou = one / dble(icou)
-      do ipick = 1, gauss1%num_sph_mode
-        gauss1%d_rj_gl(1,ipick) = ave_gauss(ipick) * acou
+      do ipick = 1, gauss_org%num_sph_mode
+        gauss_org%d_rj_gl(1,ipick) = ave_gauss(ipick) * acou
       end do
 !
       deallocate(ave_gauss)
 !
-      gauss_coefs_file_head = tave_pick_gauss_head
-      call write_gauss_coefs_4_monitor(izero, i_step, time)
+      call write_gauss_coefs_4_monitor                                  &
+     &   (izero, i_step, time, tave_pick_gauss_head, gauss_org)
 !
       write(*,*) '***** program finished *****'
       stop

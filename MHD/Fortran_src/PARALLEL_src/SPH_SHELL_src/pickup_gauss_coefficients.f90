@@ -9,12 +9,12 @@
 !!
 !!@verbatim
 !!      subroutine init_gauss_coefs_4_monitor                           &
-!!     &          (l_truncation, sph_rj, ipol)
+!!     &          (l_truncation, sph_rj, ipol, gauss_list, gauss_coef)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(phys_address), intent(in) :: ipol
 !!      subroutine cal_gauss_coefficients                               &
 !!     &         (nlayer_ICB, nlayer_CMB, nidx_rj, radius_1d_rj_r, ipol,&
-!!     &          nnod_rj, ntot_phys_rj, d_rj)
+!!     &          nnod_rj, ntot_phys_rj, d_rj, gauss_coef)
 !!
 !!      subroutine cal_no_heat_source_Nu(kr_in, kr_out, r_in, r_out,    &
 !!     &          idx_rj_degree_zero, nidx_rj,                          &
@@ -41,46 +41,48 @@
 ! -----------------------------------------------------------------------
 !
       subroutine init_gauss_coefs_4_monitor                             &
-     &          (l_truncation, sph_rj, ipol)
+     &          (l_truncation, sph_rj, ipol, gauss_list, gauss_coef)
 !
       use t_spheric_rj_data
+      use t_pickup_sph_spectr_data
       use m_phys_labels
-      use m_gauss_coefs_monitor_data
 !
       integer(kind = kint), intent(in) :: l_truncation
       type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_address), intent(in) :: ipol
 !
+      type(pickup_mode_list), intent(inout) :: gauss_list
+      type(picked_spectrum_data), intent(inout) :: gauss_coef
+!
       integer(kind = kint) :: l
 !
 !
-      gauss1%num_layer =    1
-      gauss1%num_field_rj = 1
-      gauss1%ntot_comp_rj = 1
+      gauss_coef%num_field_rj = 1
+      gauss_coef%ntot_comp_rj = 1
 !
       if (ipol%i_magne .gt. 0) then
-        if(gauss_list1%num_degree .eq. -9999) then
-          gauss_list1%num_degree = l_truncation+1
-          call alloc_pick_sph_l(gauss_list1)
+        if(gauss_list%num_degree .eq. -9999) then
+          gauss_list%num_degree = l_truncation+1
+          call alloc_pick_sph_l(gauss_list)
           do l = 0, l_truncation
-            gauss_list1%idx_pick_l(l+1) = l
+            gauss_list%idx_pick_l(l+1) = l
           end do
         end if
 !
         call const_picked_sph_address                                   &
-     &    (l_truncation, sph_rj, gauss_list1, gauss1)
+     &    (l_truncation, sph_rj, gauss_list, gauss_coef)
 !
       else
-        gauss1%num_sph_mode = 0
-        call alloc_pick_sph_monitor(gauss1)
-        call dealloc_pick_sph_mode(gauss_list1)
+        gauss_coef%num_sph_mode = 0
+        call alloc_pick_sph_monitor(gauss_coef)
+        call dealloc_pick_sph_mode(gauss_list)
       end if
 !
-      gauss1%spectr_name(1) = fhd_magne
-      gauss1%istack_comp_rj(1) = 1
-      gauss1%ifield_monitor_rj(1) = 1
-      call allocate_gauss_coef_monitor
-      call set_gauss_coefs_labels
+      gauss_coef%spectr_name(1) = fhd_magne
+      gauss_coef%istack_comp_rj(1) = 1
+      gauss_coef%ifield_monitor_rj(1) = 1
+      call alloc_gauss_coef_monitor(gauss_coef)
+      call set_gauss_coefs_labels(gauss_coef)
 !
       end subroutine init_gauss_coefs_4_monitor
 !
@@ -88,10 +90,10 @@
 !
       subroutine cal_gauss_coefficients                                 &
      &         (nlayer_ICB, nlayer_CMB, nidx_rj, radius_1d_rj_r, ipol,  &
-     &          nnod_rj, ntot_phys_rj, d_rj)
+     &          nnod_rj, ntot_phys_rj, d_rj, gauss_coef)
 !
       use calypso_mpi
-      use m_gauss_coefs_monitor_data
+      use t_pickup_sph_spectr_data
 !
       type(phys_address), intent(in) :: ipol
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
@@ -100,29 +102,33 @@
       real(kind = kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
       real (kind=kreal), intent(in) :: d_rj(nnod_rj,ntot_phys_rj)
 !
+      type(picked_spectrum_data), intent(inout) :: gauss_coef
+!
       integer(kind = kint) :: inum, j, l, inod
       real(kind = kreal) :: rcmb_to_Re, ricb_to_Rref
-      real(kind = kreal) :: a2r_4_gauss
+      real(kind = kreal) :: r_4_gauss_coefs, a2r_4_gauss
 !
 !
-      if(gauss1%num_sph_mode .eq. 0) return
+      if(gauss_coef%num_sph_mode .eq. 0) return
 !
 !$omp parallel do
-      do inum = 1, gauss1%num_sph_mode
-        gauss1%d_rj_lc(1,inum) = 0.0d0
+      do inum = 1, gauss_coef%num_sph_mode
+        gauss_coef%d_rj_lc(1,inum) = 0.0d0
       end do
 !$omp end parallel do
 !
+      r_4_gauss_coefs = gauss_coef%radius_gl(1)
       if(r_4_gauss_coefs .ge. radius_1d_rj_r(nlayer_CMB)) then
         a2r_4_gauss = one / (r_4_gauss_coefs**2)
         rcmb_to_Re = radius_1d_rj_r(nlayer_CMB) / r_4_gauss_coefs
 !$omp parallel do private(j,l,inod)
-        do inum = 1, gauss1%num_sph_mode
-          j = gauss1%idx_lc(inum)
-          l = gauss1%idx_gl(inum,2)
+        do inum = 1, gauss_coef%num_sph_mode
+          j = gauss_coef%idx_lc(inum)
+          l = gauss_coef%idx_gl(inum,2)
           if(j .gt. izero) then
             inod =  j +    (nlayer_CMB-1) * nidx_rj(2)
-            gauss1%d_rj_lc(1,inum) = d_rj(inod,ipol%i_magne) * dble(l)  &
+            gauss_coef%d_rj_lc(1,inum)                                  &
+     &                       = d_rj(inod,ipol%i_magne) * dble(l)        &
      &                        * rcmb_to_Re**l *a2r_4_gauss
           end if
         end do
@@ -132,21 +138,21 @@
         a2r_4_gauss = one / (radius_1d_rj_r(nlayer_ICB)**2)
         ricb_to_Rref = r_4_gauss_coefs / radius_1d_rj_r(nlayer_ICB)
 !$omp parallel do private(j,l,inod)
-        do inum = 1, gauss1%num_sph_mode
-          j = gauss1%idx_lc(inum)
-          l = gauss1%idx_gl(inum,2)
+        do inum = 1, gauss_coef%num_sph_mode
+          j = gauss_coef%idx_lc(inum)
+          l = gauss_coef%idx_gl(inum,2)
           if(j .gt. izero) then
             inod =  j +    (nlayer_ICB-1) * nidx_rj(2)
-            gauss1%d_rj_lc(1,inum) = - d_rj(inod,ipol%i_magne)          &
-     &                             * dble(l+1) * ricb_to_Rref**(l-1)    &
-     &                             * a2r_4_gauss
+            gauss_coef%d_rj_lc(1,inum)                                  &
+     &                      = - d_rj(inod,ipol%i_magne)  * dble(l+1)    &
+     &                         * ricb_to_Rref**(l-1) * a2r_4_gauss
           end if
         end do
 !$omp end parallel do
       end if
 !
-      call MPI_allREDUCE(gauss1%d_rj_lc, gauss1%d_rj_gl,                &
-     &    gauss1%num_sph_mode, CALYPSO_REAL, MPI_SUM, CALYPSO_COMM,     &
+      call MPI_allREDUCE(gauss_coef%d_rj_lc, gauss_coef%d_rj_gl,        &
+     &    gauss_coef%num_sph_mode, CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, &
      &    ierr_MPI)
 !
       end subroutine cal_gauss_coefficients
@@ -154,19 +160,21 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_gauss_coefs_labels
+      subroutine set_gauss_coefs_labels(gauss)
 !
       use set_parallel_file_name
-      use m_gauss_coefs_monitor_data
+      use t_pickup_sph_spectr_data
+!
+      type(picked_spectrum_data), intent(inout) :: gauss
 !
       integer(kind = kint) :: j, l, m, mm, inum
       character(len=kchara) :: gauss_head
 !
 !
-      do inum = 1, gauss1%num_sph_mode
-        j = gauss1%idx_gl(inum,1)
-        l = gauss1%idx_gl(inum,2)
-        m = gauss1%idx_gl(inum,3)
+      do inum = 1, gauss%num_sph_mode
+        j = gauss%idx_gl(inum,1)
+        l = gauss%idx_gl(inum,2)
+        m = gauss%idx_gl(inum,3)
         mm = abs(m)
 !
         if(m .lt. izero) then
@@ -175,9 +183,12 @@
           write(gauss_head,'(a1)') 'g'
         end if
 !
-        call add_index_after_name(l, gauss_head, gauss_mode_name(inum))
-        write(gauss_head,'(a,a1)') trim(gauss_mode_name(inum)), '_'
-        call add_index_after_name(mm, gauss_head, gauss_mode_name(inum))
+        call add_index_after_name                                       &
+     &     (l, gauss_head, gauss%gauss_mode_name(inum))
+        write(gauss_head,'(a,a1)')                                      &
+     &     trim(gauss%gauss_mode_name(inum)), '_'
+        call add_index_after_name                                       &
+     &     (mm, gauss_head, gauss%gauss_mode_name(inum))
       end do
 !
       end subroutine set_gauss_coefs_labels

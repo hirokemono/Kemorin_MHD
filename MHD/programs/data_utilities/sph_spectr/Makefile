@@ -80,7 +80,6 @@ MOD_PICK_SPH_VOL_ENE = \
 m_spheric_data_sph_spetr.o \
 m_ctl_data_4_sph_utils.o \
 m_ctl_params_sph_utils.o \
-m_pickup_sph_rms_data.o \
 \
 pickup_sph_rms_spectr.o \
 analyzer_pick_rms_vol.o \
@@ -90,7 +89,6 @@ MOD_PICK_SPH_ENE = \
 m_spheric_data_sph_spetr.o \
 m_ctl_data_4_sph_utils.o \
 m_ctl_params_sph_utils.o \
-m_pickup_sph_rms_data.o \
 \
 pickup_sph_rms_spectr.o \
 analyzer_pick_rms_sph.o \
@@ -151,7 +149,6 @@ MOD_T_AVE_PICK_SPH = \
 tave_picked_sph_spec_data.o
 
 MOD_T_AVE_PICK_SPH_ENE = \
-m_pickup_sph_rms_data.o \
 tave_picked_sph_rms_data.o
 
 MOD_T_AVE_NUSSELT = \

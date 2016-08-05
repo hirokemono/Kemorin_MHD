@@ -83,9 +83,9 @@
 !
       use m_t_step_parameter
       use m_ctl_params_sph_utils
-      use m_gauss_coefs_monitor_data
-      use copy_rj_phys_data_4_IO
 !
+      use copy_rj_phys_data_4_IO
+      use gauss_coefs_monitor_IO
       use pickup_gauss_coefficients
 !
       integer(kind = kint) :: i_step
@@ -93,7 +93,7 @@
 !
       call init_gauss_coefs_4_monitor                                   &
      &   (sph_mesh_spec%sph%sph_params%l_truncation,                    &
-     &    sph_mesh_spec%sph%sph_rj, ipol_spec)
+     &    sph_mesh_spec%sph%sph_rj, ipol_spec, gauss_list_u, gauss_u)
       do i_step = i_step_init, i_step_number, i_step_output_ucd
 !
 !   Input spectr data
@@ -114,8 +114,9 @@
      &      sph_mesh_spec%sph%sph_rj%nidx_rj,                           &
      &      sph_mesh_spec%sph%sph_rj%radius_1d_rj_r, ipol_spec,         &
      &      rj_fld_spec%n_point, rj_fld_spec%ntot_phys,                 &
-     &      rj_fld_spec%d_fld)
-        call write_gauss_coefs_4_monitor(my_rank, i_step, time)
+     &      rj_fld_spec%d_fld, gauss_u)
+        call write_gauss_coefs_4_monitor                                &
+     &     (my_rank, i_step, time, gauss_coefs_file_prefix, gauss_u)
       end do
 !
       end subroutine analyze_pick_gauss_coef

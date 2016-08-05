@@ -25,7 +25,6 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_gauss_coefs_monitor_data
 !
       use t_spheric_parameter
       use t_schmidt_poly_on_rtm
@@ -46,9 +45,18 @@
       type(pickup_mode_list), save :: pick_list1
 !>        Structure for pickup list
       type(picked_spectrum_data), save :: pick1
-!
+!>        File prefix for picked spectrum file
       character(len = kchara) :: pickup_sph_head =  'picked_ene_spec'
 !
+!
+!>      Structure for pickup list for gauss coefficients
+      type(pickup_mode_list), save :: gauss_list1
+!>      Structure for gauss coeffciients
+!!      Radius to evaluate Gauss coefficients (Default: 6400km/2200km)
+!!      gauss1%radius_gl(1) = 2.91
+      type(picked_spectrum_data), save :: gauss1
+!>      File prefix for Gauss coefficients file
+      character(len = kchara) :: gauss_coefs_file_head
 !
 !  --------------------------------------------------------------------
 !
@@ -76,7 +84,7 @@
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_gauss_coefs_4_monitor'
       call init_gauss_coefs_4_monitor                                   &
-     &   (sph_params%l_truncation, sph_rj, ipol)
+     &   (sph_params%l_truncation, sph_rj, ipol, gauss_list1, gauss1)
       if ( iflag_debug.gt.0 ) write(*,*) 'init_sph_spec_4_monitor'
       call init_sph_spec_4_monitor                                      &
      &   (sph_params%l_truncation, sph_rj, rj_fld, pick_list1, pick1)
@@ -96,6 +104,8 @@
       use set_exit_flag_4_visualizer
       use cal_rms_fields_by_sph
       use volume_average_4_sph
+      use picked_sph_spectr_data_IO
+      use gauss_coefs_monitor_IO
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
@@ -122,7 +132,7 @@
       call cal_gauss_coefficients                                       &
      &   (sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
      &    sph_rj%nidx_rj, sph_rj%radius_1d_rj_r, ipol,                  &
-     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld, gauss1)
       if(iflag_debug.gt.0)  write(*,*) 'pickup_sph_spec_4_monitor'
       call pickup_sph_spec_4_monitor                                    &
      &   (sph_rj, rj_fld%n_point, rj_fld%num_phys, rj_fld%ntot_phys,    &
@@ -146,7 +156,8 @@
       call write_sph_layer_ms_file                                      &
      &   (my_rank, i_step_MHD, time, sph_params, pwr)
 !
-      call write_gauss_coefs_4_monitor(my_rank, istep_max_dt, time)
+      call write_gauss_coefs_4_monitor                                  &
+     &   (my_rank, istep_max_dt, time, gauss_coefs_file_head, gauss1)
       call write_sph_spec_monitor                                       &
      &   (pickup_sph_head, my_rank, istep_max_dt, time, pick1)
 !

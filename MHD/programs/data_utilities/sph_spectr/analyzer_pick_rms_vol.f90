@@ -90,8 +90,8 @@
 !
       use m_t_step_parameter
       use m_ctl_params_sph_utils
-      use m_pickup_sph_rms_data
       use copy_rj_phys_data_4_IO
+      use picked_sph_spectr_data_IO
 !
 !
       integer(kind = kint) :: i_step
