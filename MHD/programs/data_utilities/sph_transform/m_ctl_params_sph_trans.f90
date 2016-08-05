@@ -21,9 +21,12 @@
       use t_phys_data
       use t_global_gauss_coefs
       use t_rms_4_sph_spectr
+      use t_field_data_IO
 !
       implicit  none
 !
+!
+      type(field_IO_params), save :: sph_file_trns_p
 !
       character(len = kchara) :: zm_spec_file_head = 'zm_spectral'
       character(len = kchara) :: zonal_udt_head = 'z_mean_out'
@@ -64,7 +67,7 @@
 !
       call turn_off_debug_flag_by_ctl(my_rank)
       call set_control_smp_def(my_rank)
-      call set_control_sph_mesh
+      call set_control_sph_mesh(sph_file_trns_p)
       call set_ucd_file_define(ucd)
 !
 !   setting for spherical transform
@@ -138,7 +141,7 @@
 !
       call turn_off_debug_flag_by_ctl(my_rank)
       call set_control_smp_def(my_rank)
-      call set_control_sph_mesh
+      call set_control_sph_mesh(sph_file_trns_p)
       call set_control_org_sph_mesh
       call set_ucd_file_define(ucd)
 !
@@ -223,7 +226,7 @@
       call turn_off_debug_flag_by_ctl(my_rank)
       call set_control_smp_def(my_rank)
       call set_control_mesh_def
-      call set_control_sph_mesh
+      call set_control_sph_mesh(sph_file_trns_p)
       call set_control_org_sph_mesh
       call set_merged_ucd_file_define(ucd)
       call set_control_org_fld_file_def

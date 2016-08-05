@@ -19,8 +19,11 @@
       use m_precision
 !
       use t_spheric_parameter
+      use t_field_data_IO
 !
       implicit  none
+!
+      type(field_IO_params), save, private :: sph_file_param
 !
 !  ---------------------------------------------------------------------
 !
@@ -65,7 +68,7 @@
       if(ndomain_ctl%iflag .gt. 0) nprocs_ctl = ndomain_ctl%intvalue
       call turn_off_debug_flag_by_ctl(izero)
       call set_control_mesh_def
-      call set_control_sph_mesh
+      call set_control_sph_mesh(sph_file_param)
 !
       iflag_excluding_FEM_mesh = 0
       if(excluding_FEM_mesh_ctl%iflag .gt. 0                            &

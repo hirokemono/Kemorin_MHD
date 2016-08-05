@@ -32,7 +32,6 @@
       use m_t_step_parameter
       use m_ctl_data_4_sph_utils
       use m_ctl_params_sph_utils
-      use m_control_params_sph_data
       use parallel_load_data_4_sph
       use set_sph_phys_address
       use copy_rj_phys_data_4_IO
@@ -60,7 +59,8 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_read_alloc_step_SPH_file'
       call set_field_file_fmt_prefix                                    &
-     &   (iflag_sph_spectr_fmt, spectr_file_head, sph_spec_IO)
+     &  (sph_file_spec_p%iflag_format, sph_file_spec_p%file_prefix,     &
+     &   sph_spec_IO)
       call sel_read_alloc_step_SPH_file                                 &
      &   (nprocs, my_rank, i_step_init, sph_spec_IO)
 !
@@ -87,7 +87,6 @@
 !
       use m_t_step_parameter
       use m_ctl_params_sph_utils
-      use m_control_params_sph_data
       use m_schmidt_poly_on_rtm
       use copy_rj_phys_data_4_IO
       use output_sph_m_square_file
@@ -98,7 +97,8 @@
 !
 !
       call set_field_file_fmt_prefix                                    &
-     &   (iflag_sph_spectr_fmt, spectr_file_head, sph_spec_IO)
+     &  (sph_file_spec_p%iflag_format, sph_file_spec_p%file_prefix,     &
+     &   sph_spec_IO)
 !
       do i_step = i_step_init, i_step_number, i_step_output_ucd
 !

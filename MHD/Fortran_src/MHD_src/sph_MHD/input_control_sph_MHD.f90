@@ -57,6 +57,7 @@
 !
       use m_control_parameter
       use m_sph_boundary_input_data
+      use sph_mhd_rst_IO_control
       use set_control_sph_mhd
       use parallel_load_data_4_sph
 !
@@ -73,7 +74,8 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
-      call set_control_4_SPH_MHD(rj_fld, pwr)
+      call set_control_4_SPH_MHD                                        &
+     &   (rj_fld, sph_file_param, sph_fst_IO, pwr)
       call set_control_4_SPH_to_FEM(sph%sph_params, rj_fld)
 !
 !
@@ -96,6 +98,7 @@
 !
       use m_control_parameter
       use m_sph_boundary_input_data
+      use sph_mhd_rst_IO_control
       use set_control_sph_mhd
       use parallel_load_data_4_sph
 !
@@ -108,7 +111,8 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
-      call set_control_4_SPH_MHD(rj_fld, pwr)
+      call set_control_4_SPH_MHD                                        &
+     &   (rj_fld, sph_file_param, sph_fst_IO, pwr)
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
       call load_para_sph_mesh(sph, comms_sph, sph_grps)
@@ -128,6 +132,7 @@
 !
       use m_control_parameter
       use m_sph_boundary_input_data
+      use sph_mhd_rst_IO_control
       use set_control_sph_mhd
       use parallel_load_data_4_sph
 !
@@ -140,7 +145,8 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
-      call set_control_4_SPH_MHD(rj_fld, pwr)
+      call set_control_4_SPH_MHD                                        &
+     &   (rj_fld, sph_file_param, sph_fst_IO, pwr)
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
       call load_para_sph_mesh(sph, comms_sph, sph_grps)
@@ -154,6 +160,7 @@
      &         (sph, comms_sph, sph_grps, rj_fld, pwr)
 !
       use m_control_parameter
+      use sph_mhd_rst_IO_control
       use set_control_sph_mhd
       use set_control_sph_data_MHD
       use parallel_load_data_4_sph
@@ -167,7 +174,8 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
-      call set_control_4_SPH_MHD(rj_fld, pwr)
+      call set_control_4_SPH_MHD                                        &
+     &   (rj_fld, sph_file_param, sph_fst_IO, pwr)
       call set_control_4_SPH_to_FEM(sph%sph_params, rj_fld)
       call set_ctl_params_dynamobench
 !

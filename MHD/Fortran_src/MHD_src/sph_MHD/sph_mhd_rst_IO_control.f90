@@ -8,7 +8,6 @@
 !>@brief  I/O routines for restart data
 !!
 !!@verbatim
-!!      subroutine set_ctl_restart_4_sph_mhd
 !!      subroutine set_rst_file_by_orignal_mesh
 !!
 !!      subroutine init_output_sph_restart_file(rj_fld)
@@ -49,22 +48,13 @@
 !
       implicit  none
 !
-      type(field_IO), save, private :: sph_fst_IO
+      type(field_IO_params), save :: sph_file_param
+!
+      type(field_IO), save :: sph_fst_IO
 !
 ! -----------------------------------------------------------------------
 !
       contains
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_ctl_restart_4_sph_mhd
-!
-      use set_control_platform_data
-!
-!
-      call set_control_restart_file_def(sph_fst_IO)
-!
-      end subroutine set_ctl_restart_4_sph_mhd
 !
 ! -----------------------------------------------------------------------
 !
@@ -230,7 +220,6 @@
 !
       use t_spheric_rj_data
       use m_t_int_parameter
-      use m_control_params_sph_data
       use copy_rj_phys_data_4_IO
       use copy_time_steps_4_restart
 !
@@ -241,7 +230,7 @@
       integer(kind = kint) :: istep_fld
 !
 !
-      if( (iflag_sph_spec_output*i_step_output_ucd) .eq. 0) return
+      if( (sph_file_param%iflag_IO*i_step_output_ucd) .eq. 0) return
       if(mod(i_step,i_step_output_ucd) .eq. 0) return
 !
       istep_fld = i_step / i_step_output_ucd
@@ -252,7 +241,9 @@
       call copy_rj_viz_phys_data_to_IO                                  &
      &   (sph_rj%nnod_rj, rj_fld, sph_fst_IO)
 !
-      call set_spectr_prefix_fmt_2_fld_IO(sph_fst_IO)
+      call set_field_file_fmt_prefix                                    &
+     &   (sph_file_param%iflag_format, sph_file_param%file_prefix,      &
+     &    sph_fst_IO)
       call sel_write_step_SPH_field_file                                &
      &   (nprocs, my_rank, istep_fld, sph_fst_IO)
 !

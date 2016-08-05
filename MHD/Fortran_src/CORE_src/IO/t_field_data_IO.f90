@@ -60,6 +60,16 @@
         integer(kind = kint_gl), pointer :: istack_numnod_IO(:)
       end type field_IO
 !
+!>      Structure for field data IO paramters
+      type field_IO_params
+!>        Output flag for spherical harmonics coefficients data
+        integer(kind = kint) :: iflag_IO = 0
+!>        file header for spherical harmonics coefficients data
+        character(len=kchara) :: file_prefix
+!>        file header for spherical harmonics coefficients data
+        integer(kind = kint) ::  iflag_format = 0
+      end type field_IO_params
+!
 ! -------------------------------------------------------------------
 !
       contains

@@ -7,8 +7,11 @@
 !>@brief Set control data for spherical transform MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine set_control_4_SPH_MHD(rj_fld, pwr)
+!!      subroutine set_control_4_SPH_MHD                                &
+!!     &         (rj_fld, sph_file_param, sph_fst_IO, pwr)
 !!        type(phys_data), intent(inout) :: rj_fld
+!!        type(field_IO_params), intent(inout) :: sph_file_param
+!!        type(field_IO), intent(inout) :: sph_fst_IO
 !!        type(sph_mean_squares), intent(inout) :: pwr
 !!@endverbatim
 !
@@ -27,7 +30,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_4_SPH_MHD(rj_fld, pwr)
+      subroutine set_control_4_SPH_MHD                                  &
+     &         (rj_fld, sph_file_param, sph_fst_IO, pwr)
 !
       use m_control_params_2nd_files
       use m_ucd_data
@@ -35,6 +39,7 @@
 !
       use t_phys_data
       use t_rms_4_sph_spectr
+      use t_field_data_IO
 !
       use set_control_platform_data
       use set_ctl_parallel_platform
@@ -50,12 +55,13 @@
       use set_control_4_magne
       use set_control_4_composition
       use set_control_4_pickup_sph
-      use sph_mhd_rst_IO_control
       use check_read_bc_file
 !
       use check_dependency_for_MHD
 !
       type(phys_data), intent(inout) :: rj_fld
+      type(field_IO_params), intent(inout) :: sph_file_param
+      type(field_IO), intent(inout) :: sph_fst_IO
       type(sph_mean_squares), intent(inout) :: pwr
 !
 !
@@ -65,8 +71,8 @@
       call check_control_num_domains
       call set_control_smp_def(my_rank)
       call set_control_mesh_def
-      call set_control_sph_mesh
-      call set_ctl_restart_4_sph_mhd
+      call set_control_sph_mesh(sph_file_param)
+      call set_control_restart_file_def(sph_fst_IO)
       call set_control_MHD_field_file
       call set_control_org_sph_mesh
       call set_control_org_fld_file_def

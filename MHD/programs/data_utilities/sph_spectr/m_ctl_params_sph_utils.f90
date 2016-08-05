@@ -14,11 +14,14 @@
       use t_phys_data
       use t_rms_4_sph_spectr
       use t_pickup_sph_spectr_data
+      use t_field_data_IO
 !
       implicit  none
 !
 !
       type(phys_data), save :: nod_fld
+!
+      type(field_IO_params), save :: sph_file_spec_p
 !
 !>        Structure for pickup list
       type(pickup_mode_list), save :: pick_list_u
@@ -94,7 +97,7 @@
       call turn_off_debug_flag_by_ctl(my_rank)
       call set_control_smp_def(my_rank)
       call set_control_mesh_def
-      call set_control_sph_mesh
+      call set_control_sph_mesh(sph_file_spec_p)
       call set_control_org_sph_mesh
       call set_control_org_fld_file_def
 !

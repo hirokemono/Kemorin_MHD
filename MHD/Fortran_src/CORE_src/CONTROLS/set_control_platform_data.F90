@@ -11,7 +11,8 @@
 !!      subroutine turn_off_debug_flag_by_ctl(my_rank)
 !!      subroutine set_control_smp_def(my_rank)
 !!      subroutine set_control_mesh_def
-!!      subroutine set_control_sph_mesh
+!!      subroutine set_control_sph_mesh(sph_file_param)
+!!        type(field_IO_params), intent(inout) :: sph_file_param
 !!      subroutine set_control_restart_file_def(fld_IO)
 !!@endverbatim
 !!
@@ -111,18 +112,20 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_sph_mesh
+      subroutine set_control_sph_mesh(sph_file_param)
 !
       use m_read_mesh_data
-      use m_control_params_sph_data
       use m_node_id_spherical_IO
       use m_file_format_switch
+      use t_field_data_IO
+!
+      type(field_IO_params), intent(inout) :: sph_file_param
 !
 !   set data format
 !
       call choose_file_format(sph_file_fmt_ctl, iflag_sph_file_fmt)
       call choose_file_format                                           &
-     &   (spectr_file_fmt_ctl, iflag_sph_spectr_fmt)
+     &   (spectr_file_fmt_ctl, sph_file_param%iflag_format)
 !
 !   set file header at once
 !
@@ -133,9 +136,9 @@
         iflag_mesh_file_fmt = iflag_sph_file_fmt
       end if
 !
-      iflag_sph_spec_output = spectr_file_head_ctl%iflag
-      if(iflag_sph_spec_output .gt. 0) then
-        spectr_file_head = spectr_file_head_ctl%charavalue
+      sph_file_param%iflag_IO = spectr_file_head_ctl%iflag
+      if(sph_file_param%iflag_IO .gt. 0) then
+        sph_file_param%file_prefix = spectr_file_head_ctl%charavalue
       end if
 !
       end subroutine set_control_sph_mesh

@@ -75,9 +75,9 @@
      &         (i_step, sph_mesh, rj_fld, fld_IO)
 !
       use m_t_step_parameter
-      use m_control_params_sph_data
       use m_time_data_IO
       use m_node_id_spherical_IO
+      use m_ctl_params_sph_trans
       use t_spheric_mesh
       use t_phys_data
       use t_field_data_IO
@@ -111,7 +111,9 @@
       i_time_step_IO = 0
       time_IO = zero
       delta_t_IO = zero
-      call set_spectr_prefix_fmt_2_fld_IO(fld_IO)
+      call set_field_file_fmt_prefix                                    &
+     &   (sph_file_trns_p%iflag_format, sph_file_trns_p%file_prefix,    &
+     &    fld_IO)
       call sel_write_step_SPH_field_file                                &
      &   (nprocs, my_rank, i_step, fld_IO)
 !
