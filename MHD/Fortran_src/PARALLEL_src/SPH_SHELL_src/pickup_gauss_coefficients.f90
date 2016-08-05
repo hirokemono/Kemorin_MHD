@@ -44,6 +44,7 @@
      &          (l_truncation, sph_rj, ipol)
 !
       use t_spheric_rj_data
+      use m_phys_labels
       use m_gauss_coefs_monitor_data
 !
       integer(kind = kint), intent(in) :: l_truncation
@@ -53,42 +54,32 @@
       integer(kind = kint) :: l
 !
 !
-      call allocate_iflag_pick_sph(l_truncation)
+      gauss1%num_layer =    1
+      gauss1%num_field_rj = 1
+      gauss1%ntot_comp_rj = 1
 !
       if (ipol%i_magne .gt. 0) then
-!
         if(gauss_list1%num_degree .eq. -9999) then
           gauss_list1%num_degree = l_truncation+1
-          call allocate_pick_gauss_l
+          call alloc_pick_sph_l(gauss_list1)
           do l = 0, l_truncation
             gauss_list1%idx_pick_l(l+1) = l
           end do
         end if
 !
-        call count_picked_sph_adrress(l_truncation,                     &
-     &      gauss_list1%num_modes, gauss_list1%num_degree,              &
-     &      gauss_list1%num_order, gauss_list1%idx_pick_mode,           &
-     &      gauss_list1%idx_pick_l, gauss_list1%idx_pick_m,             &
-     &      gauss1%num_sph_mode)
+        call const_picked_sph_address                                   &
+     &    (l_truncation, sph_rj, gauss_list1, gauss1)
+!
       else
         gauss1%num_sph_mode = 0
+        call alloc_pick_sph_monitor(gauss1)
+        call dealloc_pick_sph_mode(gauss_list1)
       end if
 !
+      gauss1%spectr_name(1) = fhd_magne
+      gauss1%istack_comp_rj(1) = 1
+      gauss1%ifield_monitor_rj(1) = 1
       call allocate_gauss_coef_monitor
-!
-      if (ipol%i_magne .gt. 0) then
-      call set_picked_sph_address(l_truncation, sph_rj,                 &
-     &    gauss_list1%num_modes, gauss_list1%num_degree,                &
-     &    gauss_list1%num_order, gauss_list1%idx_pick_mode,             &
-     &    gauss_list1%idx_pick_l, gauss_list1%idx_pick_m,               &
-     &    gauss1%num_sph_mode, gauss1%idx_gl, gauss1%idx_lc)
-      else
-        gauss1%num_sph_mode = 0
-      end if
-!
-      call deallocate_iflag_pick_sph
-      call deallocate_pick_gauss
-!
       call set_gauss_coefs_labels
 !
       end subroutine init_gauss_coefs_4_monitor

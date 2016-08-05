@@ -7,6 +7,12 @@
 !> @brief Make spectrum data list
 !!
 !!@verbatim
+!!      subroutine const_picked_sph_address                             &
+!!     &         (l_truncation, sph_rj, pick_list, picked)
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(pickup_mode_list), intent(inout) :: pick_list
+!!        type(picked_spectrum_data), intent(inout) :: picked
+!!
 !!      subroutine allocate_iflag_pick_sph(l_truncation)
 !!      subroutine deallocate_iflag_pick_sph
 !!      subroutine count_picked_sph_adrress(l_truncation,               &
@@ -36,6 +42,43 @@
 !
       contains
 !
+! -----------------------------------------------------------------------
+!
+      subroutine const_picked_sph_address                               &
+     &         (l_truncation, sph_rj, pick_list, picked)
+!
+      use t_spheric_rj_data
+      use t_pickup_sph_spectr_data
+!
+      integer(kind = kint), intent(in) ::l_truncation
+      type(sph_rj_grid), intent(in) :: sph_rj
+!
+      type(pickup_mode_list), intent(inout) :: pick_list
+      type(picked_spectrum_data), intent(inout) :: picked
+!
+!
+      call allocate_iflag_pick_sph(l_truncation)
+!
+      call count_picked_sph_adrress(l_truncation,                       &
+     &    pick_list%num_modes, pick_list%num_degree,                    &
+     &    pick_list%num_order, pick_list%idx_pick_mode,                 &
+     &    pick_list%idx_pick_l, pick_list%idx_pick_m,                   &
+     &    picked%num_sph_mode)
+!
+      call alloc_pick_sph_monitor(picked)
+!
+      call set_picked_sph_address(l_truncation, sph_rj,                 &
+     &    pick_list%num_modes, pick_list%num_degree,                    &
+     &    pick_list%num_order, pick_list%idx_pick_mode,                 &
+     &    pick_list%idx_pick_l, pick_list%idx_pick_m,                   &
+     &    picked%num_sph_mode, picked%idx_gl, picked%idx_lc)
+!
+      call deallocate_iflag_pick_sph
+      call dealloc_pick_sph_mode(pick_list)
+!
+      end subroutine const_picked_sph_address
+!
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine allocate_iflag_pick_sph(l_truncation)

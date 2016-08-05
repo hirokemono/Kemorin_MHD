@@ -32,7 +32,7 @@
 !
       implicit none
 !
-      private :: write_sph_mean_sq_header, set_sph_rms_labels
+      private :: write_sph_mean_sq_header
 !
 ! -----------------------------------------------------------------------
 !

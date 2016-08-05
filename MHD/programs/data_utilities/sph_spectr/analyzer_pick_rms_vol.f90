@@ -90,7 +90,6 @@
 !
       use m_t_step_parameter
       use m_ctl_params_sph_utils
-      use m_pickup_sph_spectr_data
       use m_pickup_sph_rms_data
       use copy_rj_phys_data_4_IO
 !
@@ -98,10 +97,12 @@
       integer(kind = kint) :: i_step
 !
 !
+      pickup_sph_rms_head = pickup_sph_head
+      pick_rms1%num_layer = pick_sph_u%num_layer
       if (iflag_debug.gt.0) write(*,*) 'init_sph_rms_4_monitor'
       call init_sph_rms_4_monitor                                       &
      &   (sph_mesh_spec%sph%sph_params%l_truncation,                    &
-     &    sph_mesh_spec%sph%sph_rj, pwr_spec)
+     &    sph_mesh_spec%sph%sph_rj, pwr_spec, pick_list_u, pick_rms1)
 !
       do i_step = i_step_init, i_step_number, i_step_output_ucd
 !
@@ -121,11 +122,16 @@
         call pickup_sph_rms_vol_monitor                                 &
      &     (ione, sph_mesh_spec%sph%sph_rj%nidx_rj(1),                  &
      &      sph_mesh_spec%sph%sph_rj, leg_s, ipol_spec,                 &
-     &      rj_fld_spec, pwr_spec)
+     &      rj_fld_spec, pwr_spec, pick_rms1)
 !
-        pick1%num_layer = 1
-        if (iflag_debug.gt.0) write(*,*) 'write_sph_rms_4_monitor'
-        call write_sph_rms_4_monitor(my_rank, i_step, time)
+        pick_sph_u%num_layer = 1
+        pick_rms1%num_layer = pick_sph_u%num_layer
+        pick_rms1%id_radius = pick_sph_u%id_radius
+        pick_rms1%radius_gl = pick_sph_u%radius_gl
+!
+        if (iflag_debug.gt.0) write(*,*) 'write_sph_spec_monitor'
+        call write_sph_spec_monitor                                     &
+     &     (pickup_sph_rms_head, my_rank, i_step, time, pick_rms1)
       end do
 !
       end subroutine analyze_pick_rms_vol

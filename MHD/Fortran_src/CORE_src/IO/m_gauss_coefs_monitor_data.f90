@@ -49,19 +49,6 @@
       character(len = kchara) :: gauss_coefs_file_head
 !
 !>      Number of modes of Gauss coefficients to be evaluated
-!      integer(kind = kint) :: num_pick_gauss_mode
-!>      Global spherical harmonics ID to evaluate Gauss coefficients
-!      integer(kind = kint), allocatable :: idx_pick_gauss_coef_gl(:,:)
-!>      Local spherical harmonics ID to evaluate Gauss coefficients
-!      integer(kind = kint), allocatable :: idx_pick_gauss_coef_lc(:)
-!
-!      integer (kind=kint) ::  num_fld_gauss =   1
-!>      Total number of component for gauss coefficient (of course 1)
-!      integer(kind = kint) :: ntot_comp_gauss = 1
-!>      Gauss coefficients
-!      real(kind = kreal), allocatable :: gauss_coef_gl(:,:)
-!>      Localy evaluated Gauss coefficients
-!      real(kind = kreal), allocatable :: gauss_coef_lc(:,:)
 !>      Name of Gauss coefficients  (g_{l}^{m} or h_{l}^{m})
       character(len=kchara), allocatable :: gauss_mode_name(:)
 !
@@ -76,67 +63,20 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_pick_gauss
-!
-      call alloc_pick_sph_mode(gauss_list1)
-!
-      end subroutine allocate_pick_gauss
-!
-! -----------------------------------------------------------------------
-!
-      subroutine allocate_pick_gauss_l
-!
-      call alloc_pick_sph_l(gauss_list1)
-!
-      end subroutine allocate_pick_gauss_l
-!
-! -----------------------------------------------------------------------
-!
-      subroutine allocate_pick_gauss_m
-!
-      call alloc_pick_sph_m(gauss_list1)
-!
-      end subroutine allocate_pick_gauss_m
-!
-! -----------------------------------------------------------------------
-!
       subroutine allocate_gauss_coef_monitor
 !
 !
-      gauss1%num_layer =    1
-      gauss1%num_field_rj = 1
-      gauss1%ntot_comp_rj = 1
-      allocate( gauss1%idx_gl(gauss1%num_sph_mode,3) )
-      allocate( gauss1%idx_lc(gauss1%num_sph_mode) )
-      allocate( gauss1%d_rj_lc(gauss1%ntot_comp_rj,gauss1%num_sph_mode) )
-      allocate( gauss1%d_rj_gl(gauss1%ntot_comp_rj,gauss1%num_sph_mode) )
       allocate( gauss_mode_name(gauss1%num_sph_mode) )
-!
-      if(gauss1%num_sph_mode .gt. 0) then
-        gauss1%idx_gl = -1
-        gauss1%idx_lc =  0
-        gauss1%d_rj_lc = 0.0d0
-        gauss1%d_rj_gl = 0.0d0
-      end if
 !
       end subroutine allocate_gauss_coef_monitor
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine deallocate_pick_gauss
-!
-      call dealloc_pick_sph_mode(gauss_list1)
-!
-      end subroutine deallocate_pick_gauss
-!
-! -----------------------------------------------------------------------
-!
       subroutine deallocate_gauss_coef_monitor
 !
 !
-      deallocate(gauss1%idx_gl, gauss1%d_rj_gl)
-      deallocate(gauss1%idx_lc, gauss1%d_rj_lc)
+      call dealloc_pick_sph_monitor(gauss1)
       deallocate(gauss_mode_name)
 !
       end subroutine deallocate_gauss_coef_monitor
@@ -208,6 +148,7 @@
 !
       subroutine open_gauss_coefs_read_monitor(id_pick)
 !
+      use m_phys_labels
       use skip_comment_f
       use set_parallel_file_name
 !
@@ -225,7 +166,15 @@
       call skip_comment(tmpchara,id_pick)
       read(id_pick,*) gauss1%num_sph_mode
 !
+      gauss1%num_layer =    1
+      gauss1%num_field_rj = 1
+      gauss1%ntot_comp_rj = 1
+      call alloc_pick_sph_monitor(gauss1)
+!
       call allocate_gauss_coef_monitor
+      gauss1%istack_comp_rj(1) = 1
+      gauss1%ifield_monitor_rj(1) = 1
+      gauss1%spectr_name(1) = fhd_magne
 !
       read(id_pick,*) (tmpchara,i=1,2),                                 &
      &                 gauss_mode_name(1:gauss1%num_sph_mode)

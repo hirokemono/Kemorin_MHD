@@ -79,17 +79,16 @@
 !
       use m_t_step_parameter
       use m_ctl_params_sph_utils
-      use m_pickup_sph_spectr_data
       use copy_rj_phys_data_4_IO
-!
-      use pickup_sph_coefs
+      use pickup_sph_spectr_data
 !
       integer(kind = kint) :: i_step
 !
 !
       call init_sph_spec_4_monitor                                      &
      &   (sph_mesh_spec%sph%sph_params%l_truncation,                    &
-     &    sph_mesh_spec%sph%sph_rj, rj_fld_spec)
+     &    sph_mesh_spec%sph%sph_rj, rj_fld_spec,                        &
+     &    pick_list_u, pick_sph_u)
 !
       do i_step = i_step_init, i_step_number, i_step_output_ucd
 !
@@ -107,8 +106,9 @@
         call pickup_sph_spec_4_monitor(sph_mesh_spec%sph%sph_rj,        &
      &      rj_fld_spec%n_point, rj_fld_spec%num_phys,                  &
      &      rj_fld_spec%ntot_phys, rj_fld_spec%istack_component,        &
-     &      rj_fld_spec%d_fld)
-        call write_sph_spec_4_monitor(my_rank, i_step, time)
+     &      rj_fld_spec%d_fld, pick_sph_u)
+        call write_sph_spec_monitor                                     &
+     &     (pickup_sph_head, my_rank, i_step, time, pick_sph_u)
       end do
 !
       end subroutine evolution

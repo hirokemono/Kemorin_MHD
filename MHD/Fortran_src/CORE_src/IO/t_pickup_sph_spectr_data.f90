@@ -12,15 +12,17 @@
 !!      subroutine alloc_pick_sph_m(list_pick)
 !!      subroutine alloc_num_pick_layer(picked)
 !!      subroutine alloc_pick_sph_monitor(picked)
+!!      subroutine alloc_scale_4_l0(picked)
 !!
 !!      subroutine dealloc_pick_sph_mode(list_pick)
 !!      subroutine dealloc_num_pick_layer(picked)
 !!      subroutine dealloc_pick_sph_monitor(picked)
+!!      subroutine deallocate_scale_4_l0(picked)
 !!
 !!      subroutine write_sph_spec_monitor                               &
-!!     &         (my_rank, i_step, time, picked)
+!!     &         (file_prefix, my_rank, i_step, time, picked)
 !!
-!!      subroutine open_sph_spec_read(id_pick, picked)
+!!      subroutine open_sph_spec_read(id_pick, file_prefix, picked)
 !!      subroutine read_sph_spec_monitor                                &
 !!     &         (id_pick, i_step, time, picked, ierr)
 !!@endverbatim
@@ -93,6 +95,9 @@
         real(kind = kreal), pointer :: d_rj_lc(:,:)
 !>        Name of  monitoring spectrum
         character(len=kchara), pointer :: spectr_name(:)
+!
+!>      Scale factor for vector at l=m=0
+        real(kind = kreal), pointer :: scale_for_zelo(:)
       end type picked_spectrum_data
 !
       private :: open_sph_spec_4_monitor
@@ -186,6 +191,17 @@
       end subroutine alloc_pick_sph_monitor
 !
 ! -----------------------------------------------------------------------
+!
+      subroutine alloc_scale_4_l0(picked)
+!
+      type(picked_spectrum_data), intent(inout) :: picked
+!
+      allocate(picked%scale_for_zelo(picked%num_sph_mode) )
+      if(picked%num_sph_mode .gt. 0) picked%scale_for_zelo   = 1.0d0
+!
+      end subroutine alloc_scale_4_l0
+!
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine dealloc_pick_sph_mode(list_pick)
@@ -224,19 +240,30 @@
       end subroutine dealloc_pick_sph_monitor
 !
 ! -----------------------------------------------------------------------
+!
+      subroutine deallocate_scale_4_l0(picked)
+!
+      type(picked_spectrum_data), intent(inout) :: picked
+!
+      deallocate(picked%scale_for_zelo)
+!
+      end subroutine deallocate_scale_4_l0
+!
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine open_sph_spec_4_monitor(picked)
+      subroutine open_sph_spec_4_monitor(file_prefix, picked)
 !
       use set_parallel_file_name
       use write_field_labels
 !
       type(picked_spectrum_data), intent(in) :: picked
+      character(len = kchara), intent(in) :: file_prefix
 !
       character(len = kchara) :: pickup_sph_name
 !
 !
-      call add_dat_extension(picked%file_prefix, pickup_sph_name)
+      call add_dat_extension(file_prefix, pickup_sph_name)
       open(id_pick_mode, file = pickup_sph_name, form='formatted',      &
      &    status='old', position='append', err = 99)
       return
@@ -267,8 +294,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine write_sph_spec_monitor                                 &
-     &         (my_rank, i_step, time, picked)
+     &         (file_prefix, my_rank, i_step, time, picked)
 !
+      character(len = kchara), intent(in) :: file_prefix
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(in) :: i_step
       real(kind = kreal), intent(in) :: time
@@ -281,7 +309,7 @@
       if(picked%num_sph_mode .eq. izero) return
       if(my_rank .gt. izero) return
 !
-      call open_sph_spec_4_monitor(picked)
+      call open_sph_spec_4_monitor(file_prefix, picked)
 !
       do inum = 1, picked%num_sph_mode
         do knum = 1, picked%num_layer
@@ -306,12 +334,13 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine open_sph_spec_read(id_pick, picked)
+      subroutine open_sph_spec_read(id_pick, file_prefix, picked)
 !
       use set_parallel_file_name
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_pick
+      character(len = kchara), intent(in) :: file_prefix
       type(picked_spectrum_data), intent(inout) :: picked
 !
 !
@@ -321,7 +350,7 @@
       character(len=255) :: tmpchara
 !
 !
-      call add_dat_extension(picked%file_prefix, pickup_sph_name)
+      call add_dat_extension(file_prefix, pickup_sph_name)
       open(id_pick, file = pickup_sph_name)
 !
       call skip_comment(tmpchara,id_pick)
@@ -329,7 +358,6 @@
       call skip_comment(tmpchara,id_pick)
       read(tmpchara,*) picked%ntot_comp_rj
 !
-      picked%num_sph_mode = picked%num_sph_mode
       call alloc_num_pick_layer(picked)
       call alloc_pick_sph_monitor(picked)
 !

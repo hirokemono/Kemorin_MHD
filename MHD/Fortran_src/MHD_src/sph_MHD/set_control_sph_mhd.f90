@@ -31,6 +31,7 @@
 !
       use m_control_params_2nd_files
       use m_ucd_data
+      use sph_mhd_rms_IO
 !
       use t_phys_data
       use t_rms_4_sph_spectr
@@ -129,7 +130,8 @@
 !
 !   set_pickup modes
 !
-      call set_ctl_params_pick_sph(pwr)
+      call set_ctl_params_pick_sph                                      &
+     &   (pwr, pickup_sph_head, pick_list1, pick1)
       call set_ctl_params_pick_gauss
       call set_ctl_params_no_heat_Nu(rj_fld)
 !

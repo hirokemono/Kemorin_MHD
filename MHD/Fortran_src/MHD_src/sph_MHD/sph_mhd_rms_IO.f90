@@ -26,7 +26,6 @@
       use calypso_mpi
       use m_machine_parameter
       use m_gauss_coefs_monitor_data
-      use m_pickup_sph_spectr_data
 !
       use t_spheric_parameter
       use t_schmidt_poly_on_rtm
@@ -34,12 +33,22 @@
       use t_phys_data
       use t_rms_4_sph_spectr
       use t_sum_sph_rms_data
+      use t_pickup_sph_spectr_data
 !
-      use pickup_sph_coefs
+      use pickup_sph_spectr_data
       use pickup_gauss_coefficients
       use output_sph_m_square_file
 !
       implicit none
+!
+!
+!>        Structure for pickup list
+      type(pickup_mode_list), save :: pick_list1
+!>        Structure for pickup list
+      type(picked_spectrum_data), save :: pick1
+!
+      character(len = kchara) :: pickup_sph_head =  'picked_ene_spec'
+!
 !
 !  --------------------------------------------------------------------
 !
@@ -70,7 +79,7 @@
      &   (sph_params%l_truncation, sph_rj, ipol)
       if ( iflag_debug.gt.0 ) write(*,*) 'init_sph_spec_4_monitor'
       call init_sph_spec_4_monitor                                      &
-     &   (sph_params%l_truncation, sph_rj, rj_fld)
+     &   (sph_params%l_truncation, sph_rj, rj_fld, pick_list1, pick1)
 !
       end subroutine open_sph_vol_rms_file_mhd
 !
@@ -117,7 +126,7 @@
       if(iflag_debug.gt.0)  write(*,*) 'pickup_sph_spec_4_monitor'
       call pickup_sph_spec_4_monitor                                    &
      &   (sph_rj, rj_fld%n_point, rj_fld%num_phys, rj_fld%ntot_phys,    &
-     &    rj_fld%istack_component, rj_fld%d_fld)
+     &    rj_fld%istack_component, rj_fld%d_fld, pick1)
       if(iflag_debug.gt.0)  write(*,*) 'cal_no_heat_source_Nu'
       call cal_no_heat_source_Nu(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
      &    sph_bc_U%r_ICB(0), sph_bc_U%r_CMB(0),                         &
@@ -138,7 +147,8 @@
      &   (my_rank, i_step_MHD, time, sph_params, pwr)
 !
       call write_gauss_coefs_4_monitor(my_rank, istep_max_dt, time)
-      call write_sph_spec_4_monitor(my_rank, istep_max_dt, time)
+      call write_sph_spec_monitor                                       &
+     &   (pickup_sph_head, my_rank, istep_max_dt, time, pick1)
 !
       call write_no_heat_source_Nu(sph_rj%idx_rj_degree_zero,           &
      &    istep_max_dt, time)

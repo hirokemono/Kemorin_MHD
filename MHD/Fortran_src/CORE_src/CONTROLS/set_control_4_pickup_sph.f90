@@ -8,7 +8,11 @@
 !> @brief Set control parameter for monitoring spectrum
 !!
 !!@verbatim
-!!      subroutine set_ctl_params_pick_sph(pwr)
+!!      subroutine set_ctl_params_pick_sph(pwr,                         &
+!!     &          pickup_sph_head, pick_list, picked_sph)
+!!        type(sph_mean_squares), intent(inout) :: pwr
+!!        type(pickup_mode_list), intent(inout) :: pick_list
+!!        type(picked_spectrum_data), intent(inout) :: picked_sph
 !!      subroutine set_ctl_params_pick_gauss
 !!
 !!      subroutine set_ctl_params_no_heat_Nu(rj_fld)
@@ -27,15 +31,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_ctl_params_pick_sph(pwr)
+      subroutine set_ctl_params_pick_sph(pwr,                           &
+     &          pickup_sph_head, pick_list, picked_sph)
 !
       use m_ctl_data_4_pickup_sph
-      use m_pickup_sph_spectr_data
+      use t_pickup_sph_spectr_data
       use t_rms_4_sph_spectr
       use output_sph_m_square_file
       use skip_comment_f
 !
       type(sph_mean_squares), intent(inout) :: pwr
+      type(pickup_mode_list), intent(inout) :: pick_list
+      type(picked_spectrum_data), intent(inout) :: picked_sph
+      character(len = kchara), intent(inout) :: pickup_sph_head
 !
       integer(kind = kint) :: inum
 !
@@ -78,61 +86,61 @@
       if(picked_mode_head_ctl%iflag .gt. 0) then
         pickup_sph_head = picked_mode_head_ctl%charavalue
       else
-        pick_list1%num_modes =  0
-        pick_list1%num_degree = 0
-        pick_list1%num_order =  0
-        pick1%num_layer = 0
-        call allocate_pick_sph_mode
-        call allocate_pick_sph_l
-        call allocate_pick_sph_m
-        call allocate_num_pick_layer
+        pick_list%num_modes =  0
+        pick_list%num_degree = 0
+        pick_list%num_order =  0
+        picked_sph%num_layer = 0
+        call alloc_pick_sph_mode(pick_list)
+        call alloc_pick_sph_l(pick_list)
+        call alloc_pick_sph_m(pick_list)
+        call alloc_num_pick_layer(picked_sph)
         return
       end if
 !
 !   set pickup mode
 !
-      pick_list1%num_modes = idx_pick_sph_ctl%num
-      call allocate_pick_sph_mode
+      pick_list%num_modes = idx_pick_sph_ctl%num
+      call alloc_pick_sph_mode(pick_list)
 !
-      do inum = 1, pick_list1%num_modes
-        pick_list1%idx_pick_mode(inum,1) = idx_pick_sph_ctl%int1(inum)
-        pick_list1%idx_pick_mode(inum,2) = idx_pick_sph_ctl%int2(inum)
+      do inum = 1, pick_list%num_modes
+        pick_list%idx_pick_mode(inum,1) = idx_pick_sph_ctl%int1(inum)
+        pick_list%idx_pick_mode(inum,2) = idx_pick_sph_ctl%int2(inum)
       end do
       call deallocate_pick_sph_ctl
 !
-      pick_list1%num_order = idx_pick_sph_m_ctl%num
-      call allocate_pick_sph_m
+      pick_list%num_order = idx_pick_sph_m_ctl%num
+      call alloc_pick_sph_m(pick_list)
 !
-      do inum = 1, pick_list1%num_order
-        pick_list1%idx_pick_m(inum) = idx_pick_sph_m_ctl%ivec(inum)
+      do inum = 1, pick_list%num_order
+        pick_list%idx_pick_m(inum) = idx_pick_sph_m_ctl%ivec(inum)
       end do
       call deallocate_pick_sph_m_ctl
 !
 !
-      pick_list1%num_degree = idx_pick_sph_l_ctl%num
-      if(pick_list1%num_degree .gt. 0) then
-        call allocate_pick_sph_l
+      pick_list%num_degree = idx_pick_sph_l_ctl%num
+      if(pick_list%num_degree .gt. 0) then
+        call alloc_pick_sph_l(pick_list)
 !
-        do inum = 1, pick_list1%num_degree
-          pick_list1%idx_pick_l(inum) = idx_pick_sph_l_ctl%ivec(inum)
+        do inum = 1, pick_list%num_degree
+          pick_list%idx_pick_l(inum) = idx_pick_sph_l_ctl%ivec(inum)
         end do
       call deallocate_pick_sph_l_ctl
       else if(picked_mode_head_ctl%iflag .gt. 0                         &
-     &   .and. pick_list1%num_order .le. 0                              &
-     &   .and. pick_list1%num_modes .le. 0) then
-        pick_list1%num_degree = -9999
+     &   .and. pick_list%num_order .le. 0                               &
+     &   .and. pick_list%num_modes .le. 0) then
+        pick_list%num_degree = -9999
       else 
-        call allocate_pick_sph_l
+        call alloc_pick_sph_l(pick_list)
       end if
 !
 !   set pickup layer
-      pick1%num_layer = 0
+      picked_sph%num_layer = 0
       if(idx_pick_layer_ctl%num .gt. 0) then
-        pick1%num_layer = idx_pick_layer_ctl%num
-        call allocate_num_pick_layer
+        picked_sph%num_layer = idx_pick_layer_ctl%num
+        call alloc_num_pick_layer(picked_sph)
 !
-        do inum = 1, pick1%num_layer
-          pick1%id_radius(inum) = idx_pick_layer_ctl%ivec(inum)
+        do inum = 1, picked_sph%num_layer
+          picked_sph%id_radius(inum) = idx_pick_layer_ctl%ivec(inum)
         end do
 !
         call deallocate_num_pick_layer_ctl
@@ -158,9 +166,9 @@
         gauss_list1%num_modes =  0
         gauss_list1%num_degree = 0
         gauss_list1%num_order =  0
-        call allocate_pick_gauss
-        call allocate_pick_gauss_l
-        call allocate_pick_gauss_m
+        call alloc_pick_sph_mode(gauss_list1)
+        call alloc_pick_sph_l(gauss_list1)
+        call alloc_pick_sph_m(gauss_list1)
         return
       end if
 !
@@ -170,7 +178,7 @@
       end if
 !
       gauss_list1%num_modes = idx_gauss_ctl%num
-      call allocate_pick_gauss
+      call alloc_pick_sph_mode(gauss_list1)
 !
       do inum = 1, gauss_list1%num_modes
         gauss_list1%idx_pick_mode(inum,1) = idx_gauss_ctl%int1(inum)
@@ -181,7 +189,7 @@
 !
 !
       gauss_list1%num_order = idx_gauss_m_ctl%num
-      call allocate_pick_gauss_m
+      call alloc_pick_sph_m(gauss_list1)
 !
       do inum = 1, gauss_list1%num_order
         gauss_list1%idx_pick_m(inum) = idx_gauss_m_ctl%ivec(inum)
@@ -191,7 +199,7 @@
 !
       gauss_list1%num_degree = idx_gauss_l_ctl%num
       if(gauss_list1%num_degree .gt. 0) then
-        call allocate_pick_gauss_l
+        call alloc_pick_sph_l(gauss_list1)
 !
         do inum = 1, gauss_list1%num_degree
           gauss_list1%idx_pick_l(inum) = idx_gauss_l_ctl%ivec(inum)
