@@ -229,7 +229,8 @@
       call set_control_sph_mesh(sph_file_trns_p)
       call set_control_org_sph_mesh
       call set_merged_ucd_file_define(ucd)
-      call set_control_org_fld_file_def
+      call set_control_org_rst_file_def
+      call set_control_org_udt_file_def
 !
 !    file header for field data
 !
@@ -239,8 +240,8 @@
 !
 !   using rstart data for spherical dynamo
 !
-      if( (iflag_org_sph_rj_head*iflag_org_rst) .gt. 0) then
-        sph_file_head = org_rst_header
+      if( (rj_org_param%iflag_IO*rst_org_param%iflag_IO) .gt. 0) then
+        sph_file_head = rst_org_param%file_prefix
       end if
 !
       if (restart_file_prefix%iflag .gt. 0) then
@@ -315,7 +316,7 @@
 !
 !
       if(udt_file_head_ctl%iflag .eq. 0) return
-      org_ucd_header = udt_file_head_ctl%charavalue
+      udt_org_param%file_prefix = udt_file_head_ctl%charavalue
 !
       end subroutine set_ctl_data_4_pick_zm
 !

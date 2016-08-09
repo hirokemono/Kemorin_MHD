@@ -48,6 +48,7 @@
 !
       implicit  none
 !
+!>      Structure for restart file  paramters
       type(field_IO_params), save :: sph_file_param
 !
       type(field_IO), save :: sph_fst_IO
@@ -62,8 +63,8 @@
 !
       use m_control_params_2nd_files
 !
-      if( (iflag_org_sph_rj_head*iflag_org_rst) .eq. 0) return
-      sph_fst_IO%file_prefix = org_rst_header
+      if( (rj_org_param%iflag_IO*rst_org_param%iflag_IO) .eq. 0) return
+      sph_fst_IO%file_prefix = rst_org_param%file_prefix
 !
       end subroutine set_rst_file_by_orignal_mesh
 !
@@ -164,7 +165,7 @@
       type(sph_rj_grid), intent(inout) ::  sph_rj
 !
 !
-      if(iflag_org_sph_rj_head .gt. 0) then
+      if(rj_org_param%iflag_IO .gt. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'input_old_rj_sph_trans'
         call input_old_rj_sph_trans                                     &
      &     (my_rank, sph_params%l_truncation, sph_rj)
@@ -198,7 +199,7 @@
       call sel_read_alloc_step_SPH_file                                 &
      &   (nprocs, my_rank, istep_fld, sph_fst_IO)
 !
-      if(iflag_org_sph_rj_head .eq. 0) then
+      if(rj_org_param%iflag_IO .eq. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_sph_restart_from_IO'
         call set_sph_restart_from_IO(sph_fst_IO, rj_fld)
         time = time_init
@@ -272,9 +273,9 @@
 !
       ifmt_rst_file_tmp =  sph_fst_IO%iflag_file_fmt
       restart_tmp_prefix = sph_fst_IO%file_prefix
-      sph_fst_IO%file_prefix = org_rst_header
+      sph_fst_IO%file_prefix = rst_org_param%file_prefix
       call set_field_file_fmt_prefix                                    &
-     &   (ifmt_rst_file_tmp, org_rst_header, sph_fst_IO)
+     &   (ifmt_rst_file_tmp, rst_org_param%file_prefix, sph_fst_IO)
       call read_alloc_sph_rst_4_snap(i_step, sph_rj, ipol, rj_fld)
 !
       call set_field_file_fmt_prefix                                    &

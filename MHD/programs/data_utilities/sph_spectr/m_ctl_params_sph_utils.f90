@@ -99,7 +99,8 @@
       call set_control_mesh_def
       call set_control_sph_mesh(sph_file_spec_p)
       call set_control_org_sph_mesh
-      call set_control_org_fld_file_def
+      call set_control_org_rst_file_def
+      call set_control_org_udt_file_def
 !
 !      stepping parameter
 !
@@ -126,8 +127,8 @@
         i_step_output_ucd =   i_step_output_rst
       end if
 !
-      if( (iflag_org_sph_rj_head) .gt. 0) then
-        org_sph_file_head =  org_rst_header
+      if( (rj_org_param%iflag_IO) .gt. 0) then
+        org_sph_file_head =  rst_org_param%file_prefix
         i_step_output_ucd =  i_step_output_rst
         call choose_file_format                                         &
      &     (org_sph_file_fmt_ctl, iflag_org_sph_file_fmt)

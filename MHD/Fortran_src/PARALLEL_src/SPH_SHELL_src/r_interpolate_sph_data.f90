@@ -167,7 +167,7 @@
 !
 !
       call set_sph_mesh_file_fmt_prefix                                 &
-     &   (ifmt_org_sph_rj_head, org_sph_rj_head)
+     &   (rj_org_param%iflag_format, rj_org_param%file_prefix)
       call sel_read_spectr_modes_rj_file(my_rank)
       call copy_original_sph_rj_from_IO(l_truncation, sph_rj)
 !

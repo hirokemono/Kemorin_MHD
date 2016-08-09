@@ -161,12 +161,13 @@
           istep_ucd = istep / i_step_output_ucd
 !
           call set_data_by_read_ucd_once(my_rank, istep_ucd,            &
-     &        ifmt_org_ucd, ref_udt_file_head, field_FUTIL)
+     &        udt_org_param%iflag_format, ref_udt_file_head,            &
+     &        field_FUTIL)
 !
-          ucd_FUTIL%ifmt_file = ifmt_org_ucd
+          ucd_FUTIL%ifmt_file = udt_org_param%iflag_format
           ucd_FUTIL%file_prefix = tgt_udt_file_head
           call set_data_by_read_ucd_once(my_rank, istep_ucd,            &
-     &        ifmt_org_ucd, tgt_udt_file_head, phys_ref)
+     &        udt_org_param%iflag_format, tgt_udt_file_head, phys_ref)
 !
           call nod_fields_send_recv                                     &
      &       (femmesh_FUTIL%mesh%node, femmesh_FUTIL%mesh%nod_comm,     &

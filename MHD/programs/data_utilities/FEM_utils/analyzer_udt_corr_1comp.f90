@@ -160,7 +160,8 @@
           istep_ucd = istep / i_step_output_ucd
 !
           call set_data_by_read_ucd_once(my_rank, istep_ucd,            &
-     &        ifmt_org_ucd, ref_udt_file_head, field_FUTIL)
+     &        udt_org_param%iflag_format, ref_udt_file_head,            &
+     &        field_FUTIL)
 !
           call nod_fields_send_recv                                     &
      &       (femmesh_FUTIL%mesh%node, femmesh_FUTIL%mesh%nod_comm,     &

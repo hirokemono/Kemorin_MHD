@@ -35,7 +35,8 @@
       if (mod(i_step,i_step_output_ucd) .ne. izero) return
       istep_ucd = i_step / i_step_output_ucd
       call set_data_by_read_ucd_once(my_rank, istep_ucd,                &
-    &       ifmt_org_ucd, org_ucd_header, nod_fld1)
+    &     udt_org_param%iflag_format, udt_org_param%file_prefix,        &
+    &     nod_fld1)
 !
       end subroutine read_udt_4_snap
 !

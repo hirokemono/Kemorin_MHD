@@ -59,8 +59,8 @@
 !  -------------------------------
 !
       call calypso_MPI_barrier
-      call set_ucd_file_format(ifmt_org_ucd, input_ucd)
-      call set_ucd_file_prefix(org_ucd_header, input_ucd)
+      call set_ucd_file_format(udt_org_param%iflag_format, input_ucd)
+      call set_ucd_file_prefix(udt_org_param%file_prefix, input_ucd)
 !
       input_ucd%nnod = ione
       call sel_read_udt_param(my_rank, i_step_init, input_ucd)
@@ -88,7 +88,7 @@
 !*  -----------  Output volume data --------------
 !*
       if(visval .eq. 0) then
-        call set_ucd_file_prefix(org_ucd_header, input_ucd)
+        call set_ucd_file_prefix(udt_org_param%file_prefix, input_ucd)
         call set_data_by_read_ucd                                       &
      &    (my_rank, i_step, input_ucd, field_STR)
         call nod_fields_send_recv                                       &

@@ -40,7 +40,8 @@
       call set_control_smp_def(my_rank)
       call set_control_mesh_def
       call set_ucd_file_define(ucd)
-      call set_control_org_fld_file_def
+      call set_control_org_rst_file_def
+      call set_control_org_udt_file_def
 !
       call s_set_fixed_time_step_params(ierr, e_message)
       if(ierr .gt. 0) return

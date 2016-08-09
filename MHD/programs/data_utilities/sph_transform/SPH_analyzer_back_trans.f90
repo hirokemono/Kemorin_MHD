@@ -56,8 +56,9 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_read_alloc_step_fld_file'
       call set_field_file_fmt_prefix                                    &
-     &   (ifmt_org_rst, org_rst_header, fld_IO)
-      write(*,*) 'ifmt_org_rst', ifmt_org_rst
+     &   (rst_org_param%iflag_format, rst_org_param%file_prefix,        &
+     &    fld_IO)
+      write(*,*) 'ifmt_org_rst', rst_org_param%iflag_format
       call sel_read_alloc_step_SPH_file                                 &
      &   (nprocs, my_rank, i_step_init, fld_IO)
 !
@@ -66,7 +67,7 @@
 !
 !  ------    set original spectr modes
 !
-      if(iflag_org_sph_rj_head .gt. 0) then
+      if(rj_org_param%iflag_IO .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'input_old_rj_sph_trans'
         call input_old_rj_sph_trans(my_rank,                            &
      &     sph_mesh%sph%sph_params%l_truncation, sph_mesh%sph%sph_rj)
@@ -131,8 +132,9 @@
       call set_output_flag(i_udt, i_step, i_step_output_ucd)
       call set_output_flag_4_viz(i_step, visval)
       call set_field_file_fmt_prefix                                    &
-     &   (ifmt_org_rst, org_rst_header, fld_IO)
-      write(*,*) 'ifmt_org_rst', ifmt_org_rst
+     &   (rst_org_param%iflag_format, rst_org_param%file_prefix,        &
+     &    fld_IO)
+      write(*,*) 'ifmt_org_rst', rst_org_param%iflag_format
       visval = visval * i_udt
 !
       if(visval .eq. 0) then
@@ -144,7 +146,7 @@
 !
 !    copy and extend magnetic field to outside
 !
-        if(iflag_org_sph_rj_head .eq. 0) then
+        if(rj_org_param%iflag_IO .eq. 0) then
           if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
           call set_rj_phys_data_from_IO                                 &
      &       (sph_mesh%sph%sph_rj%nnod_rj, fld_IO, rj_fld)
