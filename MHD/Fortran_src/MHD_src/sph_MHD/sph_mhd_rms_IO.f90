@@ -33,6 +33,7 @@
       use t_rms_4_sph_spectr
       use t_sum_sph_rms_data
       use t_pickup_sph_spectr_data
+      use t_no_heat_Nusselt
 !
       use pickup_sph_spectr_data
       use pickup_gauss_coefficients
@@ -57,6 +58,9 @@
       type(picked_spectrum_data), save :: gauss1
 !>      File prefix for Gauss coefficients file
       character(len = kchara) :: gauss_coefs_file_head
+!
+!>      Structure for Nusselt number data
+      type(nusselt_number_data), save :: Nu_type1
 !
 !  --------------------------------------------------------------------
 !
@@ -99,7 +103,6 @@
       use m_machine_parameter
       use m_t_step_parameter
       use m_boundary_params_sph_MHD
-      use m_no_heat_Nusselt_num
 !
       use set_exit_flag_4_visualizer
       use cal_rms_fields_by_sph
@@ -141,7 +144,7 @@
       call cal_no_heat_source_Nu(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
      &    sph_bc_U%r_ICB(0), sph_bc_U%r_CMB(0),                         &
      &    sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj, ipol,              &
-     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld, Nu_type1)
 !
       if(iflag_debug.gt.0)  write(*,*) 'write_total_energy_to_screen'
       call write_total_energy_to_screen                                 &
@@ -162,7 +165,7 @@
      &   (pickup_sph_head, my_rank, istep_max_dt, time, pick1)
 !
       call write_no_heat_source_Nu(sph_rj%idx_rj_degree_zero,           &
-     &    istep_max_dt, time)
+     &    istep_max_dt, time, Nu_type1)
 !
       end subroutine output_rms_sph_mhd_control
 !

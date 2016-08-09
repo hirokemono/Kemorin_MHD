@@ -18,8 +18,9 @@
 !!
 !!      subroutine cal_no_heat_source_Nu(kr_in, kr_out, r_in, r_out,    &
 !!     &          idx_rj_degree_zero, nidx_rj,                          &
-!!     &          nnod_rj, ntot_phys_rj, d_rj)
+!!     &          nnod_rj, ntot_phys_rj, d_rj, Nu_type)
 !!        type(phys_address), intent(in) :: ipol
+!!        type(nusselt_number_data), intent(inout) :: Nu_type
 !!@endverbatim
 !
       module pickup_gauss_coefficients
@@ -198,9 +199,9 @@
 !
       subroutine cal_no_heat_source_Nu(kr_in, kr_out, r_in, r_out,      &
      &          idx_rj_degree_zero, nidx_rj, ipol,                      &
-     &          nnod_rj, ntot_phys_rj, d_rj)
+     &          nnod_rj, ntot_phys_rj, d_rj, Nu_type)
 !
-      use m_no_heat_Nusselt_num
+      use t_no_heat_Nusselt
 !
       type(phys_address), intent(in) :: ipol
 !
@@ -213,6 +214,8 @@
       integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real (kind=kreal), intent(in) :: d_rj(nnod_rj,ntot_phys_rj)
 !
+      type(nusselt_number_data), intent(inout) :: Nu_type
+!
       real(kind = kreal) :: temp_ICB, temp_CMB
 !      real(kind = kreal) :: dTdr_ICB, dTdr_CMB
       real(kind = kreal) :: c1, c2
@@ -220,11 +223,11 @@
       integer(kind = kint) :: inod_ICB, inod_CMB
 !
 !
-      if(iflag_no_source_Nu .eq. izero) return
+      if(Nu_type%iflag_no_source_Nu .eq. izero) return
       if(idx_rj_degree_zero .eq. 0) return
 !
-      r_ICB_Nu = r_in
-      r_CMB_Nu = r_out
+      Nu_type%r_ICB_Nu = r_in
+      Nu_type%r_CMB_Nu = r_out
 !
       inod_ICB = idx_rj_degree_zero + (kr_in-1) * nidx_rj(2)
       temp_ICB = d_rj(inod_ICB,ipol%i_temp)
@@ -236,18 +239,18 @@
 !      dTdr_CMB = half*d_rj(inod_CMB,ipol%i_grad_t)                     &
 !     &          * a_r_1d_rj_r(kr_out)**2
 !
-      c1 = (r_CMB_Nu*temp_CMB - r_ICB_Nu*temp_ICB)                      &
-     &    / ( r_CMB_Nu - r_ICB_Nu )
-      c2 = r_CMB_Nu * r_ICB_Nu * (temp_ICB - temp_CMB)                  &
-     &    / ( r_CMB_Nu - r_ICB_Nu )
+      c1 = (Nu_type%r_CMB_Nu*temp_CMB - Nu_type%r_ICB_Nu*temp_ICB)      &
+     &    / ( Nu_type%r_CMB_Nu - Nu_type%r_ICB_Nu )
+      c2 =  Nu_type%r_CMB_Nu * Nu_type%r_ICB_Nu * (temp_ICB - temp_CMB) &
+     &    / ( Nu_type%r_CMB_Nu - Nu_type%r_ICB_Nu )
 !
 !      dTdr_diff_ICB = - c2 * a_r_1d_rj_r(kr_in)**2
 !      dTdr_diff_CMB = - c2 * a_r_1d_rj_r(kr_out)**2
-!      Nu_ICB = dTdr_ICB / dTdr_diff_ICB
-!      Nu_CMB = dTdr_CMB / dTdr_diff_CMB
+!      Nu_type%Nu_ICB = dTdr_ICB / dTdr_diff_ICB
+!      Nu_type%Nu_CMB = dTdr_CMB / dTdr_diff_CMB
 !
-      Nu_ICB = - half*d_rj(inod_ICB,ipol%i_grad_t) / c2
-      Nu_CMB = - half*d_rj(inod_CMB,ipol%i_grad_t) / c2
+      Nu_type%Nu_ICB = - half*d_rj(inod_ICB,ipol%i_grad_t) / c2
+      Nu_type%Nu_CMB = - half*d_rj(inod_CMB,ipol%i_grad_t) / c2
 !
       end subroutine cal_no_heat_source_Nu
 !

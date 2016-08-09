@@ -1,5 +1,5 @@
-!>@file   m_no_heat_Nusselt_num.f90
-!!@brief  module m_no_heat_Nusselt_num
+!>@file   t_no_heat_Nusselt.f90
+!!@brief  module t_no_heat_Nusselt
 !!
 !!@author H. Matsui
 !!@date Programmed in Dec., 2012
@@ -8,13 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine write_no_heat_source_Nu(idx_rj_degree_zero,          &
-!!     &          i_step, time)
+!!     &          i_step, time, Nu_type)
 !!
-!!      subroutine open_read_no_heat_source_Nu(id_pick)
-!!      subroutine read_no_heat_source_Nu(id_pick, i_step, time, ierr)
+!!      subroutine open_read_no_heat_source_Nu(id_pick, Nu_type)
+!!      subroutine read_no_heat_source_Nu                               &
+!!     &         (id_pick, i_step, time, Nu_type, ierr)
 !!@endverbatim
 !
-      module m_no_heat_Nusselt_num
+      module t_no_heat_Nusselt
 !
       use m_precision
       use m_constants
@@ -22,22 +23,27 @@
       implicit  none
 !
 !
-!>      Output flag for Nusselt number IO
-      integer(kind = kint) :: iflag_no_source_Nu = 0
 !>      File ID for Nusselt number IO
       integer(kind = kint), parameter :: id_Nusselt = 23
-!>      File prefix for Nusselt number file
-      character(len = kchara) :: Nusselt_file_head = 'Nusselt'
 !
-!>      Radius at inner boundary
-      real(kind = kreal) :: r_ICB_Nu
-!>      Radius at outer boundary
-      real(kind = kreal) :: r_CMB_Nu
-!>      Nusselt number at inner boundary
-      real(kind = kreal) :: Nu_ICB
-!>      Nusselt number at outer boundary
-      real(kind = kreal) :: Nu_CMB
+!>      Structure for Nusselt number data
+      type nusselt_number_data
+!>        Output flag for Nusselt number IO
+        integer(kind = kint) :: iflag_no_source_Nu = 0
+!>        File prefix for Nusselt number file
+        character(len = kchara) :: Nusselt_file_head = 'Nusselt'
 !
+!>        Radius at inner boundary
+        real(kind = kreal) :: r_ICB_Nu
+!>        Radius at outer boundary
+        real(kind = kreal) :: r_CMB_Nu
+!>        Nusselt number at inner boundary
+        real(kind = kreal) :: Nu_ICB
+!>        Nusselt number at outer boundary
+        real(kind = kreal) :: Nu_CMB
+      end type nusselt_number_data
+!
+      private :: id_Nusselt
       private :: open_no_heat_source_Nu
 !
 ! -----------------------------------------------------------------------
@@ -46,26 +52,28 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine open_no_heat_source_Nu
+      subroutine open_no_heat_source_Nu(Nu_type)
 !
       use set_parallel_file_name
       use write_field_labels
 !
-      character(len = kchara) :: Nusselt_file_name
+      type(nusselt_number_data), intent(in) :: Nu_type
+      character(len = kchara) :: file_name
 !
 !
-      call add_dat_extension(Nusselt_file_head, Nusselt_file_name)
-      open(id_Nusselt, file = Nusselt_file_name,                        &
+      call add_dat_extension(Nu_type%Nusselt_file_head, file_name)
+      open(id_Nusselt, file = file_name,                                &
      &    form='formatted', status='old', position='append', err = 99)
       return
 !
    99 continue
-      open(id_Nusselt, file = Nusselt_file_name,                        &
+      open(id_Nusselt, file = file_name,                                &
      &    form='formatted', status='replace')
 !
 !
       write(id_Nusselt,'(a)')    '# Inner_radius, Outer_radius'
-      write(id_Nusselt,'(1p2e25.15e3)') r_ICB_Nu, r_CMB_Nu
+      write(id_Nusselt,'(1p2e25.15e3)')                                 &
+     &                         Nu_type%r_ICB_Nu, Nu_type%r_CMB_Nu
 !
       write(id_Nusselt,'(a)',advance='NO')                              &
      &    't_step    time    Nu_ICB    Nu_CMB'
@@ -76,19 +84,20 @@
 ! -----------------------------------------------------------------------
 !
       subroutine write_no_heat_source_Nu(idx_rj_degree_zero,            &
-     &          i_step, time)
+     &          i_step, time, Nu_type)
 !
       integer(kind = kint), intent(in) :: idx_rj_degree_zero, i_step
       real(kind = kreal), intent(in) :: time
+      type(nusselt_number_data), intent(in) :: Nu_type
 !
 !
-      if(iflag_no_source_Nu .eq. izero) return
+      if(Nu_type%iflag_no_source_Nu .eq. izero) return
       if(idx_rj_degree_zero .eq. izero) return
 !
-      call open_no_heat_source_Nu
+      call open_no_heat_source_Nu(Nu_type)
 !
       write(id_Nusselt,'(i16,1p3e23.14e3)')                             &
-     &       i_step, time, Nu_ICB, Nu_CMB
+     &       i_step, time, Nu_type%Nu_ICB, Nu_type%Nu_CMB
 !
       close(id_Nusselt)
 !
@@ -97,23 +106,25 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine open_read_no_heat_source_Nu(id_pick)
+      subroutine open_read_no_heat_source_Nu(id_pick, Nu_type)
 !
       use skip_comment_f
       use set_parallel_file_name
 !
       integer(kind = kint), intent(in) :: id_pick
-      character(len = kchara) :: Nusselt_file_name
+      type(nusselt_number_data), intent(inout) :: Nu_type
+!
+      character(len = kchara) :: file_name
 !
       integer(kind = kint) :: i
       character(len=255) :: tmpchara
 !
 !
-      call add_dat_extension(Nusselt_file_head, Nusselt_file_name)
-      open(id_pick, file = Nusselt_file_name)
+      call add_dat_extension(Nu_type%Nusselt_file_head, file_name)
+      open(id_pick, file = file_name)
 !
       call skip_comment(tmpchara,id_pick)
-      read(tmpchara,*) r_ICB_Nu, r_CMB_Nu
+      read(tmpchara,*) Nu_type%r_ICB_Nu, Nu_type%r_CMB_Nu
 !
       read(id_pick,*) (tmpchara,i=1,4)
 !
@@ -121,15 +132,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_no_heat_source_Nu(id_pick, i_step, time, ierr)
+      subroutine read_no_heat_source_Nu                                 &
+     &         (id_pick, i_step, time, Nu_type, ierr)
 !
       integer(kind = kint), intent(in) :: id_pick
       integer(kind = kint), intent(inout) :: i_step, ierr
       real(kind = kreal), intent(inout) :: time
+      type(nusselt_number_data), intent(inout) :: Nu_type
 !
 !
       ierr = 0
-      read(id_pick,*,err=99,end=99) i_step, time, Nu_ICB, Nu_CMB
+      read(id_pick,*,err=99,end=99)                                     &
+     &        i_step, time, Nu_type%Nu_ICB, Nu_type%Nu_CMB
 !
       return
 !
@@ -141,4 +155,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module m_no_heat_Nusselt_num
+      end module t_no_heat_Nusselt

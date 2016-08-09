@@ -8,11 +8,12 @@
       use m_precision
       use m_constants
 !
-      use m_no_heat_Nusselt_num
       use m_sph_ene_spectra
+      use t_no_heat_Nusselt
 !
       implicit  none
 !
+      type(nusselt_number_data), save :: Nu_t
       real(kind = kreal) :: prev_Nu(2)
       real(kind = kreal) :: ave_Nu(2)
       real(kind = kreal) :: sdev_Nu(2)
@@ -32,12 +33,12 @@
       write(*,*) '-----------------------------------------------'
       write(*,*) ''
       write(*,*) 'Input picked harmonics coefficients file prefix'
-      read(5,*) Nusselt_file_head
+      read(5,*) Nu_t%Nusselt_file_head
 !
       write(*,*) 'Input start and end time'
       read(5,*) start_time, end_time
 !
-      call open_read_no_heat_source_Nu(id_pick)
+      call open_read_no_heat_source_Nu(id_pick, Nu_t)
 !
 !       Evaluate time average
 !
@@ -45,21 +46,22 @@
       write(*,'(a5,i12,a30,i12)',advance="NO")                          &
      &       'step= ', i_step,  ' averaging finished. Count=  ', icou
       do
-        call read_no_heat_source_Nu(id_pick, i_step, time, ierr)
+        call read_no_heat_source_Nu                                     &
+     &     (id_pick, i_step, time, Nu_t, ierr)
         if(ierr .gt. 0) exit
 !
         if(time .ge. start_time) then
-          prev_Nu(1) = Nu_ICB
-          prev_Nu(2) = Nu_CMB
+          prev_Nu(1) = Nu_t%Nu_ICB
+          prev_Nu(2) = Nu_t%Nu_CMB
 !
           if(icou .eq. 0) then
             true_start = time
             pre_time = time_sph
           else
-            ave_Nu(1) = ave_Nu(1)                                       &
-     &             + half*(Nu_ICB + prev_Nu(1)) * (time - prev_time)
-            ave_Nu(2) = ave_Nu(2)                                       &
-     &             + half*(Nu_CMB + prev_Nu(2)) * (time - prev_time)
+            ave_Nu(1) = ave_Nu(1) + half*(Nu_t%Nu_ICB + prev_Nu(1))     &
+     &                 * (time - prev_time)
+            ave_Nu(2) = ave_Nu(2) + half*(Nu_t%Nu_CMB + prev_Nu(2))     &
+     &                 * (time - prev_time)
           end if
 !
           icou = icou + 1
@@ -78,28 +80,29 @@
 !
 !       Evaluate standard deviation
 !
-      call open_read_no_heat_source_Nu(id_pick)
+      call open_read_no_heat_source_Nu(id_pick, Nu_t)
 !
       write(*,'(a5,i12,a30,i12)',advance="NO")                          &
      &       'step= ', i_step,  ' deviation finished. Count=  ', icou
       icou = 0
       do
-        call read_no_heat_source_Nu(id_pick, i_step, time, ierr)
+        call read_no_heat_source_Nu                                     &
+     &     (id_pick, i_step, time, Nu_t, ierr)
         if(ierr .gt. 0) exit
 !
         if(time .ge. start_time) then
-          prev_Nu(1) = (Nu_ICB - ave_Nu(1))**2
-          prev_Nu(2) = (Nu_CMB - ave_Nu(2))**2
+          prev_Nu(1) = (Nu_t%Nu_ICB - ave_Nu(1))**2
+          prev_Nu(2) = (Nu_t%Nu_CMB - ave_Nu(2))**2
 !
           if(icou .eq. 0) then
             true_start = time
             pre_time = time_sph
           else
             sdev_Nu(1) = sdev_Nu(1)                                     &
-     &             + half*( (Nu_ICB - ave_Nu(1))**2 + prev_Nu(1))       &
+     &           + half*( (Nu_t%Nu_ICB - ave_Nu(1))**2 + prev_Nu(1))    &
      &                   * (time - prev_time)
             sdev_Nu(2) = sdev_Nu(2)                                     &
-     &             + half*( (Nu_CMB - ave_Nu(2))**2 + prev_Nu(2))       &
+     &           + half*( (Nu_t%Nu_CMB - ave_Nu(2))**2 + prev_Nu(2))    &
      &                   * (time - prev_time)
           end if
 !
@@ -120,7 +123,7 @@
 !    output Results
 !
       write(*,'(a,1p2e25.15e3)') 'Inner and outer radius: ',            &
-     &                          r_ICB_Nu, r_CMB_Nu
+     &                          Nu_t%r_ICB_Nu, Nu_t%r_CMB_Nu
       write(*,'(a,1p2e25.15e3)') 'Start and end time:     ',            &
      &                          true_start, end_time
       write(*,'(a)') 'Average and Std. Dev. of Nu at ICB:'

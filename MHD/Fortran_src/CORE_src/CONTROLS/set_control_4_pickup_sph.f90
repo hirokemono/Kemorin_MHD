@@ -19,8 +19,9 @@
 !!        type(picked_spectrum_data), intent(inout) :: gauss_coef
 !!        character(len = kchara), intent(inout) :: gauss_coefs_file_head
 !!
-!!      subroutine set_ctl_params_no_heat_Nu(rj_fld)
+!!      subroutine set_ctl_params_no_heat_Nu(rj_fld, Nu_type)
 !!        type(phys_data), intent(in) :: rj_fld
+!!        type(nusselt_number_data), intent(inout) :: Nu_type
 !!@endverbatim
 !!
       module set_control_4_pickup_sph
@@ -227,38 +228,39 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_ctl_params_no_heat_Nu(rj_fld)
+      subroutine set_ctl_params_no_heat_Nu(rj_fld, Nu_type)
 !
       use t_phys_data
 !
       use m_ctl_data_4_pickup_sph
       use m_phys_labels
-      use m_no_heat_Nusselt_num
+      use t_no_heat_Nusselt
 !
       type(phys_data), intent(in) :: rj_fld
+      type(nusselt_number_data), intent(inout) :: Nu_type
 !
       integer(kind = kint) :: i
 !
 !    Turn On Nusselt number if temperature gradient is there
-      iflag_no_source_Nu = 0
+      Nu_type%iflag_no_source_Nu = 0
       do i = 1, rj_fld%num_phys
         if(rj_fld%phys_name(i) .eq. fhd_grad_temp) then
-          iflag_no_source_Nu = 1
+          Nu_type%iflag_no_source_Nu = 1
           exit
         end if
       end do
 !
       if(Nusselt_file_prefix%iflag .gt. 0) then
-        iflag_no_source_Nu = 1
-        Nusselt_file_head = Nusselt_file_prefix%charavalue
+        Nu_type%iflag_no_source_Nu = 1
+        Nu_type%Nusselt_file_head = Nusselt_file_prefix%charavalue
       else
-        iflag_no_source_Nu = 0
+        Nu_type%iflag_no_source_Nu = 0
       end if
 !
 !    Turn Off Nusselt number if heat source is there
       do i = 1, rj_fld%num_phys
         if(rj_fld%phys_name(i) .eq. fhd_heat_source) then
-          iflag_no_source_Nu = 0
+          Nu_type%iflag_no_source_Nu = 0
           exit
         end if
       end do
