@@ -27,10 +27,17 @@
       type(sph_comm_tbl), allocatable :: comm_rlm_mul(:)
       type(sph_comm_tbl), allocatable :: comm_rtm_mul(:)
 !
+      integer(kind = kint) :: ierr
+!
 !
       call read_control_4_gen_shell_grids
       call s_set_control_4_gen_shell_grids                              &
-     &   (sph_const%sph_params, sph_const%sph_rtp, sph_const%sph_rj)
+     &   (sph_const%sph_params, sph_const%sph_rtp, sph_const%sph_rj,    &
+     &    ierr)
+      if(ierr .gt. 0) then
+        write(*,'(a)') e_message
+        stop
+      end if
 !
       call set_global_sph_resolution                                    &
      &   (sph_const%sph_params%l_truncation,                            &

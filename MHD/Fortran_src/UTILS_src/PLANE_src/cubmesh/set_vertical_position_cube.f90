@@ -34,7 +34,7 @@
       allocate ( zz(nz_all) )
       zz = 0.0d0
 !
-      if (iradi .eq. igrid_euqidistance) then
+      if (iradi .eq. igrid_equidistance) then
        do k = 1, nz_all
          zz(k) = zmin + zsize * dble(k-1) / dble(nz_all-1)
        end do
@@ -54,7 +54,7 @@
        allocate ( zz_edge(nz_all-1) )
        zz_edge = 0.0d0
 !
-       if (iradi .eq. igrid_euqidistance) then
+       if (iradi .eq. igrid_equidistance) then
         do k = 1, nz_all-1
          zz_edge(k) = ( zz(k) + zz(k+1) ) / 2.0d0
         end do

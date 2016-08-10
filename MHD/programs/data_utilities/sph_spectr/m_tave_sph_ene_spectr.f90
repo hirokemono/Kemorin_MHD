@@ -257,7 +257,7 @@
       integer(kind = kint) :: kr, lth
 !
 !
-      write(*,*) 'ncomp', ncomp
+!      write(*,*) 'ncomp', ncomp
       do kr = 1, nri
         write(id_tave_rms,1000) ied_true, time_sph,                     &
      &         kr_sph(kr), r_sph(kr), izero, spec(1:ncomp,kr)

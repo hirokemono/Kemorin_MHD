@@ -82,7 +82,7 @@
 !
       if      (cmp_no_case(horizontal_grid_ctl%charavalue,              &
      &                     label_equi     )) then
-        iflag_grid = igrid_euqidistance
+        iflag_grid = igrid_equidistance
       else if (cmp_no_case(horizontal_grid_ctl%charavalue,              &
      &                     label_half_Cbyv)) then
         iflag_grid = igrid_half_Chebyshev

@@ -91,7 +91,7 @@
      &                     label_half_Cbyv)) then
         iradi = igrid_half_Chebyshev
       else
-        iradi = igrid_euqidistance
+        iradi = igrid_equidistance
       end if
 !
 !

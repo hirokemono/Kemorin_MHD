@@ -15,6 +15,7 @@
 !
       use m_precision
       use m_constants
+      use m_machine_parameter
       use calypso_mpi
 !
       use m_work_time
@@ -60,7 +61,9 @@
       call start_eleps_time(1)
       call read_control_4_gen_shell_grids
       call s_set_control_4_gen_shell_grids                              &
-     &   (sph_const%sph_params, sph_const%sph_rtp, sph_const%sph_rj)
+     &   (sph_const%sph_params, sph_const%sph_rtp, sph_const%sph_rj,    &
+     &    ierr_MPI)
+      if(ierr_MPI .gt. 0) call calypso_mpi_abort(ierr_MPI, e_message)
 !
       call set_global_sph_resolution                                    &
      &   (sph_const%sph_params%l_truncation,                            &

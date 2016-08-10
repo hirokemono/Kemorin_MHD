@@ -11,6 +11,9 @@ begin spherical_shell_ctl
   end data_files_def
 !
   begin num_domain_ctl
+    num_radial_domain_ctl         2
+    num_horizontal_domain_ctl     2
+!
     array  num_domain_sph_grid   2
       num_domain_sph_grid    radial       2   end
       num_domain_sph_grid   meridional    2   end
@@ -64,6 +67,19 @@ begin spherical_shell_ctl
       boundaries_ctl   ICB         2
       boundaries_ctl   CMB         4
     end array boundaries_ctl
+!
+    num_radial_grouping_ctl        10
+    num_meridional_grouping_ctl    10
+!
+    array radial_grouping_ctl        2
+      radial_grouping_ctl          1   8
+      radial_grouping_ctl          8  15
+    end array radial_grouping_ctl
+!
+    array meridional_grouping_ctl        2
+      meridional_grouping_ctl          1   6
+      meridional_grouping_ctl          6  13
+    end array meridional_grouping_ctl
 !
   end num_grid_sph
 end spherical_shell_ctl
