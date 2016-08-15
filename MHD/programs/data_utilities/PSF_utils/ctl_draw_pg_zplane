@@ -41,7 +41,7 @@ begin drawing_pgplot_ctl
   begin time_step_ctl
     i_step_init_ctl       660
     i_step_number_ctl     662
-    i_step_psf_ctl        2
+    i_step_sectioning_ctl   2
 !
     dt_ctl              5.0e-5
     time_init_ctl       0.0e-8

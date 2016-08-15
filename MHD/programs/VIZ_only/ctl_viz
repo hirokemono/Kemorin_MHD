@@ -12,13 +12,13 @@ begin visualizer
   end data_files_def
 !
   begin time_step_ctl
-    i_step_init_ctl       0
-    i_step_number_ctl     2000
+    i_step_init_ctl           0
+    i_step_number_ctl      2000
 !
-    i_step_psf_ctl        400
-    i_step_iso_ctl        400
-    i_step_pvr_ctl        400
-    i_step_fline_ctl      400
+    i_step_sectioning_ctl   400
+    i_step_iso_ctl          400
+    i_step_pvr_ctl          400
+    i_step_fline_ctl        400
   end time_step_ctl
 !
   begin visual_control

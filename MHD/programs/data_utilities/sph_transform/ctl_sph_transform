@@ -41,7 +41,7 @@ begin spherical_transform
       i_step_rst_ctl           1
       i_step_field_ctl       800
 !
-      i_step_psf_ctl        1
+      i_step_sectioning_ctl    1
       i_step_pvr_ctl        2000
     end time_step_ctl
   end model

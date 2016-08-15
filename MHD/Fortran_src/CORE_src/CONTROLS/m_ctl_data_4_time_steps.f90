@@ -120,7 +120,7 @@
 !>                Increment step for volume integrated data output
 !>@n@param      i_step_rst_ctl
 !>                Increment step for restart data output
-!>@n@param      i_step_psf_ctl
+!>@n@param      i_step_sectioning_ctl
 !>                Increment step for surface rendering data output
 !>@n@param      i_step_pvr_ctl
 !>                Increment step for volume rendering data output

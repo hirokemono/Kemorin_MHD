@@ -13,9 +13,9 @@ begin element_grping_data_ctl
   end grouping_plot_ctl
 !
   begin time_step_ctl
-    i_step_init_ctl         701
-    i_step_number_ctl       708
-    i_step_psf_ctl            2
-    dt_ctl                1.0d0
+    i_step_init_ctl           701
+    i_step_number_ctl         708
+    i_step_sectioning_ctl       2
+    dt_ctl                  1.0d0
   end time_step_ctl
 end element_grping_data_ctl
