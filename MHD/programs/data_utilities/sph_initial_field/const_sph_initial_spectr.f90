@@ -57,11 +57,13 @@
       implicit none
 !
       private :: find_local_sph_mode_address
-      private :: local_sph_data_address
       private :: set_initial_velocity
       private :: set_initial_temperature
       private :: set_initial_composition
       private :: set_initial_magne_sph
+      private :: set_initial_heat_source_sph
+      private :: set_initial_light_source_sph
+      private :: local_sph_data_address
       private :: r_CMB, r_ICB, nlayer_CMB, nlayer_ICB
       private :: inod_rj_center, nidx_rj
 !
@@ -144,7 +146,7 @@
       integer ( kind = kint) :: inod, jj, k
 !      real (kind = kreal) :: rr
       real (kind = kreal) :: pi, xr, shell
-      real(kind = kreal), parameter :: A_light = 0.1d0
+!      real(kind = kreal), parameter :: A_light = 0.1d0
 !
       pi = four * atan(one)
       shell = r_CMB() - r_ICB()
@@ -166,17 +168,17 @@
 !        end do
 !      end if
 !
-      jj =  find_local_sph_mode_address(2, 1)
+!      jj =  find_local_sph_mode_address(2, 1)
 !
-      if (jj .gt. 0) then
-        do k = nlayer_ICB(), nlayer_CMB()
-          inod = local_sph_data_address(k,jj)
-          xr = two * radius_1d_rj_r(k)                                  &
-    &         - one * (r_CMB() + r_ICB()) / shell
-          d_rj(inod,itor%i_velo) = (one-three*xr**2+three*xr**4-xr**6)  &
-    &                            * A_light * three / (sqrt(two*pi))
-        end do
-      end if
+!      if (jj .gt. 0) then
+!        do k = nlayer_ICB(), nlayer_CMB()
+!          inod = local_sph_data_address(k,jj)
+!          xr = two * radius_1d_rj_r(k)                                 &
+!    &         - one * (r_CMB() + r_ICB()) / shell
+!          d_rj(inod,itor%i_velo) = (one-three*xr**2+three*xr**4-xr**6) &
+!    &                            * A_light * three / (sqrt(two*pi))
+!        end do
+!      end if
 !
       end subroutine set_initial_velocity
 !

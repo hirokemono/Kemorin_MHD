@@ -19,11 +19,11 @@
 !!      subroutine r_interpolate_sph_fld_from_IO                        &
 !!     &         (fld_IO, sph_rj, ipol, rj_fld)
 !!      subroutine set_poloidal_b_by_gauss_coefs                        &
-!!     &         (sph_rj, rj_fld, ipol, d_gauss)
+!!     &         (sph_rj, ipol, d_gauss, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
-!!        type(phys_data), intent(in) :: rj_fld
 !!        type(phys_address), intent(in) :: ipol
 !!        type(global_gauss_points), intent(in) :: d_gauss
+!!        type(phys_data), intent(inout) :: rj_fld
 !
       module r_interpolate_sph_data
 !
@@ -290,15 +290,15 @@
 !  -------------------------------------------------------------------
 !
       subroutine set_poloidal_b_by_gauss_coefs                          &
-     &         (sph_rj, rj_fld, ipol, d_gauss)
+     &         (sph_rj, ipol, d_gauss, rj_fld)
 !
       use t_global_gauss_coefs
       use extend_potential_field
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(phys_data), intent(in) :: rj_fld
       type(phys_address), intent(in) :: ipol
       type(global_gauss_points), intent(in) :: d_gauss
+      type(phys_data), intent(inout) :: rj_fld
 !
 !
       write(*,*) ' ipol%i_magne', ipol%i_magne, kr_outside, kr_inside

@@ -122,7 +122,7 @@
         if (iflag_debug.gt.0) write(*,*)                                &
      &                        'set_poloidal_b_by_gauss_coefs'
         call set_poloidal_b_by_gauss_coefs                              &
-     &     (sph_mesh%sph%sph_rj, rj_fld, ipol, d_gauss_trans)
+     &     (sph_mesh%sph%sph_rj, ipol, d_gauss_trans, rj_fld)
         call dealloc_gauss_global_coefs(d_gauss_trans)
 !
 !        call check_all_field_data(my_rank, rj_fld)

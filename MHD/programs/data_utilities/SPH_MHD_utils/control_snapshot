@@ -1,4 +1,4 @@
-begin MHD_control
+    begin MHD_control
 !!!!! Define for files !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
 !  num_subdomain_ctl: number of subdomains

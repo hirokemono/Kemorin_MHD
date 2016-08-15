@@ -106,8 +106,8 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'set_radius_rot_reft_dat_4_sph'
       call set_radius_rot_reft_dat_4_sph(depth_high_t, depth_low_t,     &
-     &    high_temp, low_temp, sph%sph_rj, sph_grps%radial_rj_grp,      &
-     &    ipol, sph%sph_params, rj_fld)
+     &    high_temp, low_temp, sph_grps%radial_rj_grp,                  &
+     &    ipol, sph%sph_params, sph%sph_rj, rj_fld)
 !
 !*  ----------  rotation of earth  ---------------
       if (iflag_debug .ge. iflag_routine_msg)                           &
@@ -129,20 +129,20 @@
 !  -------------------------------------------------------------------
 !
       subroutine set_radius_rot_reft_dat_4_sph                          &
-     &         (r_hot, r_cold, temp_hot, temp_cold, sph_rj,             &
-     &          radial_rj_grp, ipol, sph_params, rj_fld)
+     &         (r_hot, r_cold, temp_hot, temp_cold,                     &
+     &          radial_rj_grp, ipol, sph_params, sph_rj, rj_fld)
 !
       use set_radius_func_noequi
       use set_radius_4_sph_dynamo
       use set_reference_temp_sph
 !
-      type(sph_rj_grid), intent(in) :: sph_rj
       type(group_data), intent(in) :: radial_rj_grp
       type(phys_address), intent(in) :: ipol
 !
       real(kind = kreal), intent(in) :: r_hot, r_cold
       real(kind = kreal), intent(in) :: temp_hot, temp_cold
 !
+      type(sph_rj_grid), intent(inout) :: sph_rj
       type(sph_shell_parameters), intent(inout) :: sph_params
       type(phys_data), intent(inout) :: rj_fld
 !
