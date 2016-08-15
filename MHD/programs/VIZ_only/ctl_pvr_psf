@@ -3,8 +3,8 @@
 !     example of control for Kemo's surface rendering
 !
 begin surface_rendering
-  psf_file_head    'psf'
-  psf_output_type  ucd
+  psf_file_prefix    'psf'
+  psf_output_type     ucd
 !
   begin output_field_define
     num_result_comp   2

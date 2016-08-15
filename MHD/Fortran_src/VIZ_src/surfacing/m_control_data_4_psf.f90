@@ -21,8 +21,8 @@
 !!!! example of control for Kemo's surface rendering
 !
 !  begin cross_sectioning
-!    psf_file_head    'psf'
-!    psf_output_type   ucd
+!    psf_file_prefix    'psf'
+!    psf_output_type     ucd
 !  
 !    begin surface_define
 !      section_method    equation
@@ -177,9 +177,10 @@
       character(len=kchara) :: hd_section_ctl = 'cross_sectioning'
 !
 !     2nd level for surface_rendering
-      character(len=kchara) :: hd_psf_file_head = 'psf_file_head'
-      character(len=kchara) :: hd_psf_out_type =  'psf_output_type'
-      character(len=kchara) :: hd_surface_define = 'surface_define'
+      character(len=kchara) :: hd_psf_file_prefix = 'psf_file_prefix'
+      character(len=kchara) :: hd_psf_file_head =   'psf_file_head'
+      character(len=kchara) :: hd_psf_out_type =    'psf_output_type'
+      character(len=kchara) :: hd_surface_define =  'surface_define'
       character(len=kchara) :: hd_output_field = 'output_field_define'
 !
 !     3rd level for surface_define
@@ -204,7 +205,7 @@
       character(len=kchara) :: hd_psf_result_field = 'output_field'
 !
 !
-      private :: hd_psf_file_head
+      private :: hd_psf_file_head, hd_psf_file_prefix
       private :: hd_psf_out_type, hd_surface_define, hd_output_field
       private :: hd_section_method
       private :: hd_radius, hd_plot_area
@@ -302,10 +303,12 @@
         call  read_psf_output_ctl(psf)
 !
 !
+        call read_character_ctl_item(hd_psf_file_prefix,                &
+     &      psf%i_psf_file_head, psf%psf_file_head_ctl)
         call read_character_ctl_item(hd_psf_file_head,                  &
-     &        psf%i_psf_file_head, psf%psf_file_head_ctl)
+     &      psf%i_psf_file_head, psf%psf_file_head_ctl)
         call read_character_ctl_item(hd_psf_out_type,                   &
-     &        psf%i_psf_out_type, psf%psf_output_type_ctl)
+     &      psf%i_psf_out_type, psf%psf_output_type_ctl)
       end do
 !
       end subroutine read_psf_control_data
