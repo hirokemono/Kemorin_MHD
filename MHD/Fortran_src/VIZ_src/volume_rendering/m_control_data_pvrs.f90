@@ -84,6 +84,7 @@
 !
       use m_control_data_sections
       use m_control_data_flines
+      use m_control_data_4_psf
 !
       use skip_comment_f
 !
@@ -96,7 +97,9 @@
         call find_control_end_flag(hd_viz_control, i_viz_control)
         if(i_viz_control .eq. 1) exit
 !
-        call find_control_array_flag(hd_psfs_ctl, num_psf_ctl)
+        call find_control_array_flag(hd_psf_ctl, num_psf_ctl)
+        if(num_psf_ctl .gt. 0) call read_files_4_psf_ctl
+        call find_control_array_flag(hd_section_ctl, num_psf_ctl)
         if(num_psf_ctl .gt. 0) call read_files_4_psf_ctl
 !
         call find_control_array_flag(hd_isos_ctl, num_iso_ctl)

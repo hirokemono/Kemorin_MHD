@@ -2,7 +2,7 @@
 !
 !     example of control for Kemo's surface rendering
 !
-begin surface_rendering
+begin cross_section_ctl
   section_file_prefix    'psf'
   psf_output_type         ucd
 !
@@ -51,7 +51,7 @@ begin surface_rendering
     end
 !
   end
-end
+end cross_section_ctl
 !
 !
 !    psf_output_type:

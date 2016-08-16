@@ -103,7 +103,7 @@
 !
         integer (kind=kint) :: i_vr_fline_ctl = 0
 !
-!     2nd level for surface_rendering
+!     2nd level for field line
 !
         integer (kind=kint) :: i_field_line_field = 0
         integer (kind=kint) :: i_coloring_field =   0
@@ -125,7 +125,7 @@
 !
       character(len=kchara) :: hd_vr_fline_ctl = 'field_line'
 !
-!     2nd level for surface_rendering
+!     2nd level for field line
 !
       character(len=kchara) :: hd_fline_file_head = 'fline_file_head'
       character(len=kchara) :: hd_fline_output_type                     &

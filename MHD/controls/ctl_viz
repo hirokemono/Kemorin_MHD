@@ -20,9 +20,9 @@ begin visualizer
   end
 !
   begin visual_control
-    array surface_rendering  1
-      file   surface_rendering   'ctl_psf_eq'
-    end array surface_rendering
+    array cross_section_ctl  1
+      file   cross_section_ctl   'ctl_psf_eq'
+    end array cross_section_ctl
 !
     array isosurf_rendering  2
       file   isosurf_rendering   'ctl_iso_p_n1e4'
