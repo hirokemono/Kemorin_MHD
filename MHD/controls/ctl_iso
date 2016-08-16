@@ -2,7 +2,7 @@
 !
 !     example of control for Kemo's surface rendering
 !
-begin isosurf_rendering
+begin isosurface_ctl
   iso_file_head    'psf'
   iso_output_type  ucd
 !
@@ -28,7 +28,7 @@ begin isosurf_rendering
 !    end array
   end
 !
-end
+end isosurface_ctl
 !
 !    iso_output_type:
 !           ucd, OpenDX

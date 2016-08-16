@@ -92,7 +92,7 @@ begin spherical_transform
       file  cross_section_ctl   ctl_psf_z1.0
     end array cross_section_ctl
 !
-    array isosurf_rendering  0
+    array isosurface_ctl     0
 !
     array  volume_rendering  0
   end

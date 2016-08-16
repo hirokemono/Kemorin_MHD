@@ -85,6 +85,7 @@
       use m_control_data_sections
       use m_control_data_flines
       use m_control_data_4_psf
+      use m_control_data_4_iso
 !
       use skip_comment_f
 !
@@ -102,7 +103,9 @@
         call find_control_array_flag(hd_section_ctl, num_psf_ctl)
         if(num_psf_ctl .gt. 0) call read_files_4_psf_ctl
 !
-        call find_control_array_flag(hd_isos_ctl, num_iso_ctl)
+        call find_control_array_flag(hd_iso_ctl, num_iso_ctl)
+        if(num_iso_ctl .gt. 0) call read_files_4_iso_ctl
+        call find_control_array_flag(hd_isosurf_ctl, num_iso_ctl)
         if(num_iso_ctl .gt. 0) call read_files_4_iso_ctl
 !
         call find_control_array_flag(hd_pvr_ctl, num_pvr_ctl)

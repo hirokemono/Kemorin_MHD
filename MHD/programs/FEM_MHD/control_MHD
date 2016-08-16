@@ -954,9 +954,9 @@ begin MHD_control
       file  cross_section_ctl   ctl_psf_z1.0
     end array cross_section_ctl
 !
-    array isosurf_rendering  1
-       file  isosurf_rendering   ctl_iso_temp
-    end array isosurf_rendering
+    array isosurface_ctl  1
+       file  isosurface_ctl   ctl_iso_temp
+    end array isosurface_ctl
 !
     array  volume_rendering  0
   end  visual_control

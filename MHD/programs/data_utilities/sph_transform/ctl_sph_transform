@@ -67,7 +67,7 @@ begin spherical_transform
       file  surface_rendering   ctl_psf_z1.0
     end array surface_rendering
 !
-    array isosurf_rendering  0
+    array isosurface_ctl     0
 !
     array  volume_rendering  0
   end visual_control

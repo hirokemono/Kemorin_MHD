@@ -26,10 +26,10 @@ begin visualizer
       file   cross_section_ctl   'ctl_psf_eq'
     end array cross_section_ctl
 !
-    array isosurf_rendering  2
-      file   isosurf_rendering   'ctl_iso_p_n1e4'
-      file   isosurf_rendering   'ctl_iso_p_p1e4'
-    end array isosurf_rendering
+    array isosurface_ctl     2
+      file   isosurface_ctl   'ctl_iso_p_n1e4'
+      file   isosurface_ctl   'ctl_iso_p_p1e4'
+    end array isosurface_ctl
 !
     array  volume_rendering  1
       file  volume_rendering  'ctl_pvr_temp'
