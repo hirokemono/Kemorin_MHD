@@ -21,8 +21,8 @@
 !!!! example of control for Kemo's surface rendering
 !
 !  begin cross_sectioning
-!    psf_file_prefix    'psf'
-!    psf_output_type     ucd
+!    section_file_prefix    'psf'
+!    psf_output_type         ucd
 !  
 !    begin surface_define
 !      section_method    equation
@@ -177,7 +177,8 @@
       character(len=kchara) :: hd_section_ctl = 'cross_sectioning'
 !
 !     2nd level for surface_rendering
-      character(len=kchara) :: hd_psf_file_prefix = 'psf_file_prefix'
+      character(len=kchara) :: hd_psf_file_prefix                       &
+     &                        = 'section_file_prefix'
       character(len=kchara) :: hd_psf_file_head =   'psf_file_head'
       character(len=kchara) :: hd_psf_out_type =    'psf_output_type'
       character(len=kchara) :: hd_surface_define =  'surface_define'

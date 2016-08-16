@@ -3,8 +3,8 @@
 !     example of control for Kemo's surface rendering
 !
 begin surface_rendering
-  psf_file_prefix    'psf'
-  psf_output_type     ucd
+  section_file_prefix    'psf'
+  psf_output_type         ucd
 !
   begin surface_define
     section_method    equation
