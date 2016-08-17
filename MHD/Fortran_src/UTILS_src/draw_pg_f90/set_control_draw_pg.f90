@@ -93,7 +93,7 @@
 !
 !
       if(i_psf_data_ctl .gt. 0) then
-        pg_psf_file_prefix = psf_file_head_ctl
+        pg_psf_file_prefix = psf_file_head_ctl%charavalue
       else
         write(*,*) 'set file header for psf data'
         stop

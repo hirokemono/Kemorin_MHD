@@ -118,14 +118,14 @@
 !
       do igrp = 1, femmesh_FUTIL%group%ele_grp%num_grp
         fname_psf_ctl(igrp) = 'NO_FILE'
-        psf_ctl_struct(igrp)%i_psf_file_head = 1
+        psf_ctl_struct(igrp)%psf_file_head_ctl%iflag = 1
         call add_int_suffix(igrp, grouping_mesh_head,                   &
-     &      psf_ctl_struct(igrp)%psf_file_head_ctl)
+     &      psf_ctl_struct(igrp)%psf_file_head_ctl%charavalue)
 !
-        psf_ctl_struct(igrp)%i_psf_out_type = 1
-        psf_ctl_struct(igrp)%psf_output_type_ctl = 'VTD'
+        psf_ctl_struct(igrp)%psf_output_type_ctl%iflag = 1
+        psf_ctl_struct(igrp)%psf_output_type_ctl%charavalue = 'VTD'
 !
-        psf_ctl_struct(igrp)%section_method_ctl = 'equation'
+        psf_ctl_struct(igrp)%section_method_ctl%charavalue = cflag_eq
 !
         psf_ctl_struct(igrp)%psf_coefs_ctl%num = 1
         call alloc_control_array_c_r(psf_ctl_struct(igrp)%psf_coefs_ctl)

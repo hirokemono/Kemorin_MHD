@@ -48,7 +48,7 @@
 !
 !
       character(len=kchara) :: psf_data_fmt_ctl =   'ucd'
-      character(len=kchara) :: psf_file_head_ctl
+      type(read_character_item), save :: psf_file_head_ctl
       character(len=kchara) :: map_grid_file_ctl
 !
 !>      Structure for list of field
@@ -367,7 +367,7 @@
         call read_character_ctl_item(hd_psf_data_fmt_ctl,               &
      &          i_psf_data_fmt_ctl, psf_data_fmt_ctl)
         call read_character_ctl_item(hd_psf_data_ctl,                   &
-     &          i_psf_data_ctl, psf_file_head_ctl)
+     &          i_psf_data_ctl, psf_file_head_ctl%charavalue)
         call read_character_ctl_item(hd_map_grid_file,                  &
      &          i_map_grid_file, map_grid_file_ctl)
       end do

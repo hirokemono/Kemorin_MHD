@@ -3,8 +3,8 @@
 !     example of control for Kemo's surface rendering
 !
 begin isosurface_ctl
-  iso_file_head    'psf'
-  iso_output_type  ucd
+  isosurface_file_prefix    'psf'
+  iso_output_type            ucd
 !
   begin isosurf_define
     isosurf_field        pressure
@@ -19,14 +19,14 @@ begin isosurface_ctl
     end plot_area_ctl
   end isosurf_define
 !
-  begin isosurf_result_define
+  begin field_on_isosurf
     result_type      constant
     result_value     0.7
 !    array output_field   2
 !      output_field    velocity         vector   end
 !      output_field    magnetic_field   radial   end
 !    end array output_field
-  end isosurf_result_define
+  end field_on_isosurf
 !
 end isosurface_ctl
 !
