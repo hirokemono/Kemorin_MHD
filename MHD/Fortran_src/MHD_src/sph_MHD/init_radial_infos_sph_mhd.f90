@@ -60,6 +60,7 @@
       subroutine init_r_infos_sph_mhd_evo(sph_grps, ipol,               &
      &          sph, omega_sph, ref_temp, r_2nd, rj_fld, sph_bc_T)
 !
+      use calypso_mpi
       use const_fdm_coefs
       use material_property
 !
@@ -74,12 +75,15 @@
       type(sph_boundary_type), intent(inout) :: sph_bc_T
 !
 !
+      write(*,*) 'init_r_infos_sph_mhd', my_rank
       call init_r_infos_sph_mhd                                         &
      &  (sph_grps, ipol, sph, omega_sph, ref_temp, rj_fld, sph_bc_T)
 !
+      write(*,*) 'const_2nd_fdm_matrices', my_rank
       if (iflag_debug.gt.0) write(*,*) 'const_2nd_fdm_matrices'
       call const_2nd_fdm_matrices(sph%sph_params, sph%sph_rj, r_2nd)
 !
+      write(*,*) 'set_material_property', my_rank
       if(iflag_debug.gt.0) write(*,*)' set_material_property'
       call set_material_property
 !
