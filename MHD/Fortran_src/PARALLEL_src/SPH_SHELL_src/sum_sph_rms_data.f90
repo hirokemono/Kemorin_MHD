@@ -194,12 +194,14 @@
       integer(kind = kint) :: num
 !
 !
+!$omp parallel workshare
       rms_sph_l_local = zero
       rms_sph_m_local = zero
       rms_sph_lm_local = zero
       rms_sph_vl_local = zero
       rms_sph_vm_local = zero
       rms_sph_vlm_local = zero
+!$omp end parallel workshare
 !
       do j_fld = 1, num_rms_rj
         i_fld = ifield_rms_rj(j_fld)
