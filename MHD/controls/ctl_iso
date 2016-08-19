@@ -11,10 +11,10 @@ begin isosurface_ctl
     isosurf_component      scalar
     isosurf_value            4000.0
 !
-    array section_area_ctl   2
-      section_area_ctl   inner_core_ele   end
-      section_area_ctl   outer_core_ele   end
-    end array section_area_ctl
+    array isosurf_area_ctl   2
+      isosurf_area_ctl   inner_core_ele   end
+      isosurf_area_ctl   outer_core_ele   end
+    end array isosurf_area_ctl
   end
 !
   begin field_on_isosurf
