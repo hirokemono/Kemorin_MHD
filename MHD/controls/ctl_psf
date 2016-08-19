@@ -22,12 +22,9 @@ begin cross_section_ctl
       coefs_ctl  const  1.0
     end array
 !
-    begin plot_area_ctl
-      array chosen_ele_grp_ctl 1
-        chosen_ele_grp_ctl   outer_core_ele   end
-      end array
-    end
-!
+    array section_area_ctl 1
+      section_area_ctl   outer_core_ele   end
+    end array section_area_ctl
   end
 !  begin surface_define
 !    section_method    group

@@ -11,12 +11,10 @@ begin isosurface_ctl
     isosurf_component      scalar
     isosurf_value            4000.0
 !
-    begin plot_area_ctl
-      array chosen_ele_grp_ctl   2
-        chosen_ele_grp_ctl   inner_core_ele   end
-        chosen_ele_grp_ctl   outer_core_ele   end
-      end array
-    end
+    array section_area_ctl   2
+      section_area_ctl   inner_core_ele   end
+      section_area_ctl   outer_core_ele   end
+    end array section_area_ctl
   end
 !
   begin field_on_isosurf

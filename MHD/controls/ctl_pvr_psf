@@ -12,11 +12,9 @@ begin cross_section_ctl
       output_field    magnetic_field   radial   end
   end
 !
-  begin plot_area_ctl
-    array chosen_ele_grp_ctl 1
-      chosen_ele_grp_ctl   outer_core_ele   end
-    end array
-  end
+  array section_area_ctl 1
+    section_area_ctl   outer_core_ele   end
+  end array section_area_ctl
 !
   begin view_transform_ctl
     begin modelview_matrix_ctl
