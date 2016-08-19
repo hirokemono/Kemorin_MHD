@@ -91,6 +91,8 @@
      &   (mesh%node, group%surf_grp, group%infty_grp, mesh%ele,         &
      &    jac_3d_l, jac_3d_q)
 !
+      call calypso_mpi_barrier
+!
       end subroutine FEM_initialize_w_viz
 !
 !-----------------------------------------------------------------------

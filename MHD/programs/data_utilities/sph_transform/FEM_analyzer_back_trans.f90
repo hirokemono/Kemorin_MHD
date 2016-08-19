@@ -97,6 +97,8 @@
       call output_grd_file(femmesh_STR%mesh%node, femmesh_STR%mesh%ele, &
      &    femmesh_STR%mesh%nod_comm, field_STR, ucd, m_ucd)
 !
+      call calypso_mpi_barrier
+!
       end subroutine FEM_initialize_back_trans
 !
 !-----------------------------------------------------------------------
