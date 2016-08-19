@@ -10,9 +10,9 @@
 !!
 !!@verbatim
 !!      subroutine init_r_infos_sph_mhd_evo(sph_grps, ipol,             &
-!!     &          sph, omega_sph, ref_temp, r_2nd, rj_fld, sph_bc_T)
+!!     &          sph, omega_sph, ref_temp, r_2nd, rj_fld)
 !!      subroutine init_r_infos_sph_mhd(sph_grps, ipol, sph,            &
-!!     &          omega_sph, ref_temp, rj_fld, sph_bc_T)
+!!     &          omega_sph, ref_temp, rj_fld)
 !!        type(sph_group_data), intent(in) :: sph_grps
 !!        type(phys_address), intent(in) :: ipol
 !!        type(sph_grids), intent(inout) :: sph
@@ -20,7 +20,6 @@
 !!        type(reference_temperature), intent(inout) :: ref_temp
 !!        type(fdm_matrices), intent(inout) :: r_2nd
 !!        type(phys_data), intent(inout) :: rj_fld
-!!        type(sph_boundary_type), intent(inout) :: sph_bc_T
 !!@endverbatim
 !!
 !!@n @param r_hot        radius at highest temperature point
@@ -32,6 +31,7 @@
       module init_radial_infos_sph_mhd
 !
       use m_precision
+      use calypso_mpi
 !
       use m_constants
       use m_machine_parameter
@@ -45,11 +45,10 @@
       use t_phys_address
       use t_phys_data
       use t_fdm_coefs
-      use t_boundary_params_sph_MHD
 !
       implicit none
 !
-      private :: set_radius_rot_reft_dat_4_sph
+      private :: set_radius_rot_reft_dat_4_sph, init_reference_temps
 !
 !  -------------------------------------------------------------------
 !
@@ -58,7 +57,7 @@
 !  -------------------------------------------------------------------
 !
       subroutine init_r_infos_sph_mhd_evo(sph_grps, ipol,               &
-     &          sph, omega_sph, ref_temp, r_2nd, rj_fld, sph_bc_T)
+     &          sph, omega_sph, ref_temp, r_2nd, rj_fld)
 !
       use calypso_mpi
       use const_fdm_coefs
@@ -72,18 +71,14 @@
       type(reference_temperature), intent(inout) :: ref_temp
       type(fdm_matrices), intent(inout) :: r_2nd
       type(phys_data), intent(inout) :: rj_fld
-      type(sph_boundary_type), intent(inout) :: sph_bc_T
 !
 !
-      write(*,*) 'init_r_infos_sph_mhd', my_rank
       call init_r_infos_sph_mhd                                         &
-     &  (sph_grps, ipol, sph, omega_sph, ref_temp, rj_fld, sph_bc_T)
+     &  (sph_grps, ipol, sph, omega_sph, ref_temp, rj_fld)
 !
-      write(*,*) 'const_2nd_fdm_matrices', my_rank
       if (iflag_debug.gt.0) write(*,*) 'const_2nd_fdm_matrices'
       call const_2nd_fdm_matrices(sph%sph_params, sph%sph_rj, r_2nd)
 !
-      write(*,*) 'set_material_property', my_rank
       if(iflag_debug.gt.0) write(*,*)' set_material_property'
       call set_material_property
 !
@@ -92,9 +87,10 @@
 !  -------------------------------------------------------------------
 !
       subroutine init_r_infos_sph_mhd(sph_grps, ipol, sph,              &
-     &          omega_sph, ref_temp, rj_fld, sph_bc_T)
+     &          omega_sph, ref_temp, rj_fld)
 !
       use m_physical_property
+      use m_boundary_params_sph_MHD
 !
       use set_bc_sph_mhd
 !
@@ -105,7 +101,6 @@
       type(sph_rotation), intent(inout) :: omega_sph
       type(reference_temperature), intent(inout) :: ref_temp
       type(phys_data), intent(inout) :: rj_fld
-      type(sph_boundary_type), intent(inout) :: sph_bc_T
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'set_radius_rot_reft_dat_4_sph'
@@ -124,8 +119,9 @@
       call s_set_bc_sph_mhd                                             &
      &   (sph%sph_params, sph%sph_rj, sph_grps%radial_rj_grp,           &
      &    CTR_nod_grp_name, CTR_sf_grp_name)
-      call init_reference_tempss                                        &
-     &   (sph%sph_params, sph%sph_rj, ref_temp, sph_bc_T)
+!
+      call init_reference_temps                                         &
+     &   (sph%sph_params, sph%sph_rj, ref_temp)
 !
       end subroutine init_r_infos_sph_mhd
 !
@@ -185,10 +181,10 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine init_reference_tempss                                  &
-     &         (sph_params, sph_rj, ref_temp, sph_bc_T)
+      subroutine init_reference_temps                                   &
+     &         (sph_params, sph_rj, ref_temp)
 !
-      use t_boundary_params_sph_MHD
+      use m_boundary_params_sph_MHD
       use m_machine_parameter
       use set_reference_sph_mhd
 !
@@ -196,20 +192,22 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
 !
       type(reference_temperature), intent(inout) :: ref_temp
-      type(sph_boundary_type), intent(inout) :: sph_bc_T
 !
 !      Set reference temperature and adjust boundary conditions
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_ref_temp_sph_mhd'
       call alloc_reft_rj_data(sph_rj%nidx_rj(1), ref_temp)
+!
       call set_ref_temp_sph_mhd(sph_rj%nidx_rj,                         &
      &    sph_params%radius_ICB, sph_params%radius_CMB,                 &
-     &    sph_rj%ar_1d_rj, sph_bc_T, ref_temp%t_rj)
+     &    sph_rj%ar_1d_rj, sph_bc_T%kr_in, sph_bc_T%kr_out,             &
+     &    ref_temp%t_rj)
+!
       call adjust_sph_temp_bc_by_reftemp                                &
      &   (sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj(2),                 &
      &    ref_temp%t_rj, sph_bc_T)
 !
-      end subroutine init_reference_tempss
+      end subroutine init_reference_temps
 !
 ! -----------------------------------------------------------------------
 !

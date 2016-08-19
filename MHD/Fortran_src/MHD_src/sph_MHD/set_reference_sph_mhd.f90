@@ -12,7 +12,7 @@
 !!     &          n_point, ntot_phys_rj, d_rj)
 !!
 !!      subroutine set_ref_temp_sph_mhd(nidx_rj, r_ICB, r_CMB, ar_1d_rj,&
-!!     &          sph_bc_T, reftemp_rj)
+!!     &          kr_ICB, kr_CMB, reftemp_rj)
 !!      subroutine adjust_sph_temp_bc_by_reftemp                        &
 !!     &         (idx_rj_degree_zero, nri, reftemp_rj, sph_bc_T)
 !!
@@ -94,14 +94,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_ref_temp_sph_mhd(nidx_rj, r_ICB, r_CMB, ar_1d_rj,  &
-     &          sph_bc_T, reftemp_rj)
-!
-      use t_boundary_params_sph_MHD
+     &          kr_ICB, kr_CMB, reftemp_rj)
 !
       integer(kind = kint), intent(in) :: nidx_rj(2)
+      integer(kind = kint), intent(in) :: kr_ICB, kr_CMB
       real(kind = kreal), intent(in) :: r_ICB, r_CMB
       real(kind=kreal), intent(in) :: ar_1d_rj(nidx_rj(1),3)
-      type(sph_boundary_type), intent(in) :: sph_bc_T
 !
       real(kind=kreal), intent(inout) :: reftemp_rj(nidx_rj(1),0:1)
 !
@@ -110,11 +108,11 @@
 ! set reference temperature (for spherical shell)
 !
       if (iflag_4_ref_temp .eq. id_sphere_ref_temp) then
-        do k = 1, sph_bc_T%kr_in-1
+        do k = 1, kr_ICB-1
           reftemp_rj(k,0) = high_temp
           reftemp_rj(k,1) = zero
         end do
-        do k = sph_bc_T%kr_in, sph_bc_T%kr_out
+        do k = kr_ICB, kr_CMB
           reftemp_rj(k,0) = (depth_high_t*depth_low_t*ar_1d_rj(k,1)     &
      &                   * (high_temp - low_temp)                       &
      &                    - depth_high_t*high_temp                      &
@@ -124,7 +122,7 @@
      &                   * (high_temp - low_temp)                       &
      &                     / (depth_low_t - depth_high_t)
         end do
-        do k = sph_bc_T%kr_out+1, nidx_rj(1)
+        do k = kr_CMB+1, nidx_rj(1)
           reftemp_rj(k,0) = low_temp
           reftemp_rj(k,1) = zero
         end do
