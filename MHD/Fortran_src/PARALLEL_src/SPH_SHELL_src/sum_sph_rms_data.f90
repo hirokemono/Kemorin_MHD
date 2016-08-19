@@ -171,7 +171,7 @@
      &           :: item_mode_sum_lm(sph_rj%nidx_rj(2))
 !
       real(kind = kreal), intent(inout)                                 &
-     &          :: rms_sph_rj(0:nri_rms,sph_rj%nidx_rj(2),3)
+     &          :: rms_sph_rj(0:sph_rj%nidx_rj(1),sph_rj%nidx_rj(2),3)
       real(kind = kreal), intent(inout)                                 &
      &          :: rms_sph_vol_j(sph_rj%nidx_rj(2),3)
 !
@@ -195,11 +195,11 @@
 !
 !
 !$omp parallel workshare
-      rms_sph_l_local = zero
-      rms_sph_m_local = zero
-      rms_sph_lm_local = zero
-      rms_sph_vl_local = zero
-      rms_sph_vm_local = zero
+      rms_sph_l_local =   zero
+      rms_sph_m_local =   zero
+      rms_sph_lm_local =  zero
+      rms_sph_vl_local =  zero
+      rms_sph_vm_local =  zero
       rms_sph_vlm_local = zero
 !$omp end parallel workshare
 !
@@ -228,13 +228,13 @@
      &      rms_sph_vol_j, rms_sph_vlm_local(0,jcomp_st))
 !
         if(nri_rms .le. 0) cycle
-        call sum_sph_rms_by_degree(l_truncation, sph_rj%nidx_rj(2),     &
+        call sum_sph_rms_by_degree(l_truncation, sph_rj%nidx_rj,        &
      &      nri_rms, kr_for_rms, istack_mode_sum_l,  item_mode_sum_l,   &
      &      ncomp_rj, rms_sph_rj, rms_sph_l_local(1,0,jcomp_st))
-        call sum_sph_rms_by_degree(l_truncation, sph_rj%nidx_rj(2),     &
+        call sum_sph_rms_by_degree(l_truncation, sph_rj%nidx_rj,        &
      &      nri_rms, kr_for_rms, istack_mode_sum_m,  item_mode_sum_m,   &
      &      ncomp_rj, rms_sph_rj, rms_sph_m_local(1,0,jcomp_st))
-        call sum_sph_rms_by_degree(l_truncation, sph_rj%nidx_rj(2),     &
+        call sum_sph_rms_by_degree(l_truncation, sph_rj%nidx_rj,        &
      &      nri_rms, kr_for_rms, istack_mode_sum_lm, item_mode_sum_lm,  &
      &      ncomp_rj, rms_sph_rj, rms_sph_lm_local(1,0,jcomp_st))
       end do
@@ -280,17 +280,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sum_sph_rms_by_degree(ltr, nidx_j, nri_rms,            &
+      subroutine sum_sph_rms_by_degree(ltr, nidx_rj, nri_rms,           &
      &          kr_for_rms, istack_sum, item_mode_4_sum, ncomp,         &
      &          rms_sph_rj, rms_sph_lc)
 !
-      integer(kind = kint), intent(in) :: ltr, nri_rms, nidx_j
+      integer(kind = kint), intent(in) :: ltr, nri_rms
+      integer(kind = kint), intent(in) :: nidx_rj(2)
       integer(kind = kint), intent(in) :: kr_for_rms(nri_rms)
       integer(kind = kint), intent(in) :: ncomp
 !
       integer(kind = kint), intent(in) :: istack_sum(-1:ltr)
-      integer(kind = kint), intent(in) :: item_mode_4_sum(nidx_j)
-      real(kind = kreal), intent(in) :: rms_sph_rj(0:nri_rms,nidx_j,3)
+      integer(kind = kint), intent(in) :: item_mode_4_sum(nidx_rj(2))
+      real(kind = kreal), intent(in)                                    &
+     &                   :: rms_sph_rj(0:nidx_rj(1),nidx_rj(2),3)
 !
       real(kind = kreal), intent(inout)                                 &
      &                   :: rms_sph_lc(nri_rms,0:ltr,ncomp)
