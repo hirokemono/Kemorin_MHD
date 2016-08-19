@@ -46,7 +46,7 @@
 !
       implicit none
 !
-      private :: check_temperature, check_NaN_temperature
+      private :: check_scalar_coefs, check_NaN_temperature
 !
 ! -----------------------------------------------------------------------
 !
@@ -93,15 +93,46 @@
       subroutine solve_pressure_by_div_v(sph_rj, band_p_poisson,        &
      &          is_press, n_point, ntot_phys_rj, d_rj)
 !
+      use check_sph_radial_mat
+!
       type(sph_rj_grid), intent(in) :: sph_rj
       type(band_matrices_type), intent(in) :: band_p_poisson
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       integer(kind = kint), intent(in) :: is_press
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
+      integer(kind = kint) :: j
+      integer(kind = kint), parameter :: id_offset = 100
+      integer(kind = kint), parameter :: id_file = 50 + id_offset
+!
+!
+      j = find_local_sph_address(sph_rj, 0, 0)
+      if(i_debug*j .gt. 0) then
+        open(id_file,file='ave_press_test.txt')
+        write(id_file,*) 'Matrix for average pressure'
+        call check_single_radial_3band_mat                              &
+     &     (id_offset, sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,        &
+     &      band_p_poisson%mat(1:band_p_poisson%n_band,                 &
+     &                         1:band_p_poisson%n_vect,j))
+        write(id_file,*) 'LU decomposition for average pressure'
+        call check_single_radial_5band_mat                              &
+     &     (id_offset, sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,        &
+     &      band_p_poisson%lu(1:band_p_poisson%n_band_lu,               &
+     &                        1:band_p_poisson%n_vect,j))
+        write(id_file,*) 'RHS for average pressure'
+        call check_scalar_coefs(id_file, 0, 0, sph_rj,                  &
+     &      is_press, n_point, ntot_phys_rj, d_rj)
+      end if
 !
       call lubksb_3band_mul_t(np_smp, sph_rj%istack_rj_j_smp,           &
      &    band_p_poisson, d_rj(1,is_press))
+!
+      if(i_debug*j .gt. 0) then
+        write(id_file,*) 'Solution of average pressure'
+        call check_scalar_coefs(id_file, 0, 0, sph_rj,                  &
+     &      is_press, n_point, ntot_phys_rj, d_rj)
+        close(id_file)
+      end if
 !
       end subroutine solve_pressure_by_div_v
 !
@@ -170,9 +201,9 @@
       call lubksb_3band_mul_t(np_smp, sph_rj%istack_rj_j_smp,           &
      &    band_s_evo, d_rj(1,is_field))
 !
-!       write(*,*) 'solution'
-!       call check_temperature                                          &
-!     &    (30,-23, sph_rj, is_field, ntot_phys_rj, d_rj)
+!       write(6,*) 'solution'
+!       call check_scalar_coefs                                         &
+!     &    (6, 30,-23, sph_rj, is_field, ntot_phys_rj, d_rj)
 !       write(*,*) 'check_NaN_temperature'
 !       call check_NaN_temperature                                      &
 !     &    (is_field, sph_rj, n_point, ntot_phys_rj, d_rj)
@@ -195,10 +226,11 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_temperature                                      &
-     &          (l, m, sph_rj, is_field, n_point, ntot_phys_rj, d_rj)
+      subroutine check_scalar_coefs(id_file, l, m, sph_rj,              &
+     &          is_field, n_point, ntot_phys_rj, d_rj)
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: l, m, is_field
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
@@ -212,13 +244,13 @@
       j = find_local_sph_address(sph_rj, l4, m4)
       if(j .eq. 0) return
 !
-      write(*,*) 'field ID, l, m: ', is_field, l, m
+      write(id_file,*) 'field ID, l, m: ', is_field, l, m
       do k = 1, sph_rj%nidx_rj(1)
         inod = j + (k-1) * sph_rj%nidx_rj(2)
-        write(*,*) k, d_rj(inod,is_field)
+        write(id_file,*) k, d_rj(inod,is_field)
       end do
 !
-      end subroutine check_temperature
+      end subroutine check_scalar_coefs
 !
 ! -----------------------------------------------------------------------
 !
