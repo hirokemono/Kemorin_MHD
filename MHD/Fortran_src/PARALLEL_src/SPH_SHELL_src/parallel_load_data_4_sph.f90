@@ -40,7 +40,7 @@
 !
       implicit none
 !
-      private :: set_reverse_tables_4_SPH
+      private :: set_index_flags_4_SPH
       private :: count_interval_4_each_dir, self_comm_flag
       private :: set_fem_center_mode_4_SPH, load_FEM_mesh_4_SPH
 !
@@ -166,6 +166,7 @@
       use m_machine_parameter
 !
       use load_data_for_sph_IO
+      use set_from_recv_buf_rev
 !
       type(sph_grids), intent(inout) :: sph
       type(sph_comm_tables), intent(inout) :: comms_sph
@@ -179,25 +180,37 @@
      &    sph%sph_params%l_truncation, sph%sph_rtp, comms_sph%comm_rtp, &
      &    sph_grps%bc_rtp_grp, sph_grps%radial_rtp_grp,                 &
      &    sph_grps%theta_rtp_grp, sph_grps%zonal_rtp_grp, ierr)
+      call set_reverse_import_table(sph%sph_rtp%nnod_rtp,               &
+     &    comms_sph%comm_rtp%ntot_item_sr, comms_sph%comm_rtp%item_sr,  &
+     &    comms_sph%comm_rtp%irev_sr)
 !
       if (iflag_debug.gt.0) write(*,*) 'input_modes_rj_sph_trans'
       call input_modes_rj_sph_trans(my_rank,                            &
      &    sph%sph_params%l_truncation, sph%sph_rj, comms_sph%comm_rj,   &
      &    sph_grps%radial_rj_grp, sph_grps%sphere_rj_grp, ierr)
+      call set_reverse_import_table(sph%sph_rj%nnod_rj,                 &
+     &    comms_sph%comm_rj%ntot_item_sr, comms_sph%comm_rj%item_sr,    &
+     &    comms_sph%comm_rj%irev_sr)
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'input_geom_rtm_sph_trans'
       call input_geom_rtm_sph_trans                                     &
      &   (my_rank, sph%sph_params%l_truncation,                         &
      &    sph%sph_rtm, comms_sph%comm_rtm, ierr)
+      call set_reverse_import_table(sph%sph_rtm%nnod_rtm,               &
+     &    comms_sph%comm_rtm%ntot_item_sr, comms_sph%comm_rtm%item_sr,  &
+     &    comms_sph%comm_rtm%irev_sr)
 !
       if (iflag_debug.gt.0) write(*,*) 'input_modes_rlm_sph_trans'
       call input_modes_rlm_sph_trans                                    &
      &   (my_rank, sph%sph_params%l_truncation,                         &
      &    sph%sph_rlm, comms_sph%comm_rlm, ierr)
+      call set_reverse_import_table(sph%sph_rlm%nnod_rlm,               &
+     &    comms_sph%comm_rlm%ntot_item_sr, comms_sph%comm_rlm%item_sr,  &
+     &    comms_sph%comm_rlm%irev_sr)
 !
-      if (iflag_debug.gt.0) write(*,*) 'set_reverse_tables_4_SPH'
-      call set_reverse_tables_4_SPH(sph%sph_params,                     &
+      if (iflag_debug.gt.0) write(*,*) 'set_index_flags_4_SPH'
+      call set_index_flags_4_SPH(sph%sph_params,                        &
      &    sph%sph_rtp, sph%sph_rtm, sph%sph_rlm, sph%sph_rj,            &
      &    comms_sph%comm_rtp, comms_sph%comm_rtm,                       &
      &    comms_sph%comm_rlm, comms_sph%comm_rj)
@@ -206,7 +219,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_reverse_tables_4_SPH                               &
+      subroutine set_index_flags_4_SPH                                  &
      &         (sph_param, sph_rtp, sph_rtm, sph_rlm, sph_rj,           &
      &          comm_rtp, comm_rtm, comm_rlm, comm_rj)
 !
@@ -268,7 +281,7 @@
      &    CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM, ierr_MPI)
       if(sph_rj%iflag_rj_center .gt. 0) sph_rj%iflag_rj_center = 1
 !
-      end subroutine set_reverse_tables_4_SPH
+      end subroutine set_index_flags_4_SPH
 !
 ! -----------------------------------------------------------------------
 !
@@ -344,6 +357,8 @@
       if (iflag_debug.gt.0) write(*,*) 'input_modes_rj_sph_trans'
       call input_modes_rj_sph_trans(my_rank, sph_param%l_truncation,    &
      &    sph_rj, comm_rj, radial_rj_grp, sphere_rj_grp, ierr)
+      call set_reverse_import_table(sph_rj%nnod_rj,                     &
+     &    comm_rj%ntot_item_sr, comm_rj%item_sr, comm_rj%irev_sr)
 !
 !      if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message_Rsmp)
       comm_rj%iflag_self                                                &

@@ -56,7 +56,7 @@
 !!@endverbatim
 !
       module load_data_for_sph_IO
-!f
+!
       use m_precision
 !
       use m_node_id_spherical_IO
@@ -86,7 +86,6 @@
       use copy_sph_node_4_IO
       use set_group_types_4_IO
       use count_num_sph_smp
-      use set_from_recv_buf_rev
 !
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(inout) :: l_truncation
@@ -116,8 +115,6 @@
       call deallocate_grp_type(zonal_rtp_grp_IO)
 !
       call count_num_rtp_smp(sph_rtp, ierr)
-      call set_reverse_import_table(sph_rtp%nnod_rtp,                   &
-     &    comm_rtp%ntot_item_sr, comm_rtp%item_sr, comm_rtp%irev_sr)
 !
       end subroutine input_geom_rtp_sph_trans
 !
@@ -130,7 +127,6 @@
       use copy_sph_node_4_IO
       use set_group_types_4_IO
       use count_num_sph_smp
-      use set_from_recv_buf_rev
 !
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(inout) :: l_truncation
@@ -153,8 +149,6 @@
       call deallocate_grp_type(sphere_rj_grp_IO)
 !
       call count_num_rj_smp(sph_rj, ierr)
-      call set_reverse_import_table(sph_rj%nnod_rj,                     &
-     &    comm_rj%ntot_item_sr,  comm_rj%item_sr,  comm_rj%irev_sr)
 !
       end subroutine input_modes_rj_sph_trans
 !
@@ -166,7 +160,6 @@
       use copy_sph_comm_table_4_IO
       use copy_sph_node_4_IO
       use count_num_sph_smp
-      use set_from_recv_buf_rev
 !
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(inout) :: l_truncation
@@ -181,8 +174,6 @@
       call copy_comm_sph_from_IO(sph_rtm%nnod_rtm, comm_rtm)
 !
       call count_num_rtm_smp(sph_rtm, ierr)
-      call set_reverse_import_table(sph_rtm%nnod_rtm,                   &
-     &    comm_rtm%ntot_item_sr, comm_rtm%item_sr, comm_rtm%irev_sr)
 !
       end subroutine input_geom_rtm_sph_trans
 !
@@ -194,7 +185,6 @@
       use copy_sph_comm_table_4_IO
       use copy_sph_node_4_IO
       use count_num_sph_smp
-      use set_from_recv_buf_rev
 !
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(inout) :: l_truncation
@@ -209,8 +199,6 @@
       call copy_comm_sph_from_IO(sph_rlm%nnod_rlm, comm_rlm)
 !
       call count_num_rlm_smp(sph_rlm, ierr)
-      call set_reverse_import_table(sph_rlm%nnod_rlm,                   &
-     &    comm_rlm%ntot_item_sr, comm_rlm%item_sr, comm_rlm%irev_sr)
 !
       end subroutine input_modes_rlm_sph_trans
 !
