@@ -60,12 +60,12 @@ begin spherical_transform
 !
 !
   begin visual_control
-    array surface_rendering  4
-      file  surface_rendering   ctl_psf_cmb
-      file  surface_rendering   ctl_psf_z0 
-      file  surface_rendering   ctl_psf_z0.3
-      file  surface_rendering   ctl_psf_z1.0
-    end array surface_rendering
+    array cross_section_ctl  4
+      file  cross_section_ctl   ctl_psf_cmb
+      file  cross_section_ctl   ctl_psf_z0 
+      file  cross_section_ctl   ctl_psf_z0.3
+      file  cross_section_ctl   ctl_psf_z1.0
+    end array cross_section_ctl
 !
     array isosurface_ctl     0
 !

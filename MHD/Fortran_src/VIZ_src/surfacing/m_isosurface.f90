@@ -146,8 +146,6 @@
       type(communication_table), intent(in) :: edge_comm
       type(phys_data), intent(in) :: nod_fld
 !
-      integer(kind = kint) :: i_iso
-!
 !
       if (num_iso.le.0 .or. istep_iso.le.0) return
 !
@@ -178,10 +176,6 @@
 !
       call dealloc_psf_field_data(num_iso, iso_mesh)
       call dealloc_psf_node_and_patch(num_iso, iso_list, iso_mesh)
-!
-      do i_iso = 1, num_iso
-        call dealloc_inod_psf(iso_list(i_iso))
-      end do
 !
       end subroutine ISOSURF_visualize
 !

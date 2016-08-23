@@ -148,11 +148,6 @@
      &    iedge_4_ele, num_surf, surf_istack,                           &
      &    psf_search, psf_list, psf_mesh)
 !
-      do i_psf = 1, num_psf
-        call allocate_ele_connect_type(psf_mesh(i_psf)%patch)
-        call const_global_numele_list(psf_mesh(i_psf)%patch)
-      end do
-!
       if (iflag_debug.eq.1)  write(*,*) 'set_psf_patches'
       call set_psf_patches(num_psf, numele, numedge, nnod_4_ele, ie,    &
      &    iedge_4_ele, num_surf, num_surf_bc, surf_istack, surf_item,   &
@@ -194,14 +189,6 @@
       type(psf_local_data), intent(inout) :: iso_mesh(num_iso)
 !
 !
-      integer(kind = kint) :: i_iso
-!
-!
-      do i_iso = 1, num_iso
-        if (iflag_debug.eq.1) write(*,*) 'alloc_nnod_psf'
-        call alloc_nnod_psf(np_smp, numedge, iso_list(i_iso))
-      end do
-!
       call count_nodes_4_iso(num_iso, numedge,                          &
      &    nnod_4_edge, ie_edge, interior_edge,                          &
      &    iso_search, iso_list, iso_mesh)
@@ -214,10 +201,6 @@
       call count_iso_patches                                            &
      &   (num_iso, numnod, numele, numedge, nnod_4_ele,                 &
      &    ie, iedge_4_ele, iso_search, iso_list, iso_mesh)
-!
-      do i_iso = 1, num_iso
-        call allocate_ele_connect_type(iso_mesh(i_iso)%patch)
-      end do
 !
       call set_iso_patches(num_iso, numele, numedge, iedge_4_ele,       &
      &    iso_search, iso_list, iso_mesh)

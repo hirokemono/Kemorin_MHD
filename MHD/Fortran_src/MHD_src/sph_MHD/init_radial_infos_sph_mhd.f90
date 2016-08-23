@@ -195,14 +195,16 @@
 !
 !      Set reference temperature and adjust boundary conditions
 !
-      if(iflag_debug .gt. 0) write(*,*) 'set_ref_temp_sph_mhd'
+      if(iflag_debug .gt. 0) write(*,*) 'alloc_reft_rj_data'
       call alloc_reft_rj_data(sph_rj%nidx_rj(1), ref_temp)
 !
+      if(iflag_debug .gt. 0) write(*,*) 'set_ref_temp_sph_mhd'
       call set_ref_temp_sph_mhd(sph_rj%nidx_rj,                         &
      &    sph_params%radius_ICB, sph_params%radius_CMB,                 &
      &    sph_rj%ar_1d_rj, sph_bc_T%kr_in, sph_bc_T%kr_out,             &
      &    ref_temp%t_rj)
 !
+      if(iflag_debug .gt. 0) write(*,*) 'adjust_sph_temp_bc_by_reftemp'
       call adjust_sph_temp_bc_by_reftemp                                &
      &   (sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj(2),                 &
      &    ref_temp%t_rj, sph_bc_T)
