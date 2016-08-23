@@ -56,15 +56,15 @@
 !
       coef_p = - coef_press
 !
-      write(*,*) 'alloc_ctr_band_mat'
+!      write(*,*) 'alloc_ctr_band_mat'
       call alloc_ctr_band_mat(ithree, sph_rj, band_p00_poisson)
 !
-      write(*,*) 'copy_to_band3_mat_w_center'
+!      write(*,*) 'copy_to_band3_mat_w_center'
       call copy_to_band3_mat_w_center(sph_rj%nidx_rj(1), zero,          &
       &   p_poisson_mat(1,1,sph_rj%idx_rj_degree_zero),                 &
       &   band_p00_poisson%mat)
 !
-      write(*,*) 'add_scalar_poisson_mat_fill_ctr'
+!      write(*,*) 'add_scalar_poisson_mat_fill_ctr'
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
         call add_scalar_poisson_mat_fill_ctr(sph_rj%nidx_rj(1),         &
      &      sph_bc_U%r_ICB, fdm2_fix_dr_center, fdm2_fix_fld_ctr1,      &
@@ -74,7 +74,7 @@
      &     (sph_rj%nidx_rj(1), band_p00_poisson%mat)
       end if
 !
-      write(*,*) 'ludcmp_3band_ctr'
+!      write(*,*) 'ludcmp_3band_ctr'
       call ludcmp_3band_ctr(band_p00_poisson)
 !
       if(i_debug .ne. iflag_full_msg) return

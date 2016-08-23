@@ -204,9 +204,8 @@
      &    sph_rj%ar_1d_rj, sph_bc_T%kr_in, sph_bc_T%kr_out,             &
      &    ref_temp%t_rj)
 !
-      if(iflag_debug .gt. 0) write(*,*) 'adjust_sph_temp_bc_by_reftemp'
       call adjust_sph_temp_bc_by_reftemp                                &
-     &   (sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj(2),                 &
+     &   (sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj(1),                 &
      &    ref_temp%t_rj, sph_bc_T)
 !
       end subroutine init_reference_temps
