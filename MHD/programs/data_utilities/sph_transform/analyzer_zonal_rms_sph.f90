@@ -38,8 +38,22 @@
 !
 !     --------------------- 
 !
-      num_elapsed = 30
+      num_elapsed = 68
       call allocate_elapsed_times
+!
+      elapse_labels(12) = 'Visualizatio time         '
+!
+      elapse_labels(60) = 'Sectioning initialization.    '
+      elapse_labels(61) = 'Isosurfaceing initialization.    '
+      elapse_labels(62) = 'Volume rendering initialization.    '
+      elapse_labels(63) = 'fieldline initialization.    '
+!
+      elapse_labels(65) = 'Sectioning.    '
+      elapse_labels(66) = 'Isosurfaceing.    '
+      elapse_labels(67) = 'Volume rendering.    '
+      elapse_labels(68) = 'fieldline.    '
+!
+      elapse_labels(num_elapsed) = 'Communication time        '
 !
 !     --------------------- 
 !
@@ -119,7 +133,9 @@
 !
       call FEM_finalize_sph_trans(ucd_SPH_TRNS, m_ucd_SPH_TRNS)
 !
-        end subroutine analyze
+      call output_elapsed_times
+!
+      end subroutine analyze
 !
 ! ----------------------------------------------------------------------
 !

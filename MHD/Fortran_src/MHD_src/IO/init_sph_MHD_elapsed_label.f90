@@ -35,7 +35,7 @@
       use m_work_time
 !
 !
-      num_elapsed = 54
+      num_elapsed = 68
       call allocate_elapsed_times
 !
       elapse_labels(1) = 'Total time                 '
@@ -51,7 +51,7 @@
       elapse_labels( 9) = 'Obtain field to output    '
       elapse_labels(10) = 'output_sph_restart_control'
       elapse_labels(11) = 'output_rms_sph_mhd_control'
-      elapse_labels(12) = 'PSF_time                  '
+      elapse_labels(12) = 'Visualizatio time         '
 !
       elapse_labels(13) = 'Coriolis term             '
       elapse_labels(14) = 'sph backward transform    '
@@ -99,6 +99,16 @@
       elapse_labels(51) = 'copy_mhd_spectr_to_send.   '
       elapse_labels(52) = 'copy_mhd_field_from_trans.    '
       elapse_labels(53) = 'copy_mhd_spectr_from_recv.    '
+!
+      elapse_labels(60) = 'Sectioning initialization.    '
+      elapse_labels(61) = 'Isosurfaceing initialization.    '
+      elapse_labels(62) = 'Volume rendering initialization.    '
+      elapse_labels(63) = 'fieldline initialization.    '
+!
+      elapse_labels(65) = 'Sectioning.    '
+      elapse_labels(66) = 'Isosurfaceing.    '
+      elapse_labels(67) = 'Volume rendering.    '
+      elapse_labels(68) = 'fieldline.    '
 !
       elapse_labels(num_elapsed) = 'Communication time        '
 !

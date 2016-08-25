@@ -87,7 +87,9 @@
 !
       call FEM_finalize_sph_trans(ucd_SPH_TRNS, m_ucd_SPH_TRNS)
 !
-        end subroutine analyze_zm_trans
+      call output_elapsed_times
+!
+      end subroutine analyze_zm_trans
 !
 ! ----------------------------------------------------------------------
 !
