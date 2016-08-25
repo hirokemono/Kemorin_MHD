@@ -36,7 +36,7 @@
       private :: set_rj_spectr_grp
       private :: set_no_rtp_node_grp
       private :: set_no_rtp_meridian_grp, set_no_rtp_zonal_grp
-      private :: count_sph_radial_group
+      private :: count_sph_radial_group, add_sph_SGS_radial_group
 !
 ! -----------------------------------------------------------------------
 !
@@ -58,8 +58,8 @@
 !
 !      write(*,*) 'set_rtp_radial_grp'
       call set_rtp_radial_grp(sph_param, sph_rtp, radial_rtp_grp)
-!      write(*,*) 'set_no_rtp_meridian_grp'
-      call set_no_rtp_meridian_grp(theta_rtp_grp)
+!      write(*,*) 'set_rtp_meridional_grp'
+      call set_rtp_meridional_grp(sph_rtp, theta_rtp_grp)
 !      write(*,*) 'set_no_rtp_zonal_grp'
       call set_no_rtp_zonal_grp(zonal_rtp_grp)
 !
@@ -104,8 +104,9 @@
 !
       call count_sph_radial_group(radial_rtp_grp%num_grp,               &
      &    sph_param, sph_rtp%nidx_global_rtp(1))
-!
+      call add_sph_SGS_radial_group(radial_rtp_grp%num_grp)
       call allocate_grp_type_num(radial_rtp_grp)
+!
       call set_stack_rtp_radial_grp                                     &
      &   (sph_param, sph_rtp, radial_rtp_grp)
 !
@@ -113,6 +114,29 @@
       call set_item_rtp_radial_grp(sph_param, sph_rtp, radial_rtp_grp)
 !
       end subroutine set_rtp_radial_grp
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_rtp_meridional_grp(sph_rtp, theta_rtp_grp)
+!
+      use m_sph_1d_global_index
+      use set_stack_4_sph_groups
+      use set_item_4_sph_groups
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+!
+      type(group_data), intent(inout) :: theta_rtp_grp
+!
+!
+      theta_rtp_grp%num_grp =  med_layer_grp%nlayer
+      call allocate_grp_type_num(theta_rtp_grp)
+!
+      call set_stack_rtp_meridional_grp(sph_rtp, theta_rtp_grp)
+!
+      call allocate_grp_type_item(theta_rtp_grp)
+      call set_item_rtp_meridional_grp(sph_rtp, theta_rtp_grp)
+!
+      end subroutine set_rtp_meridional_grp
 !
 ! -----------------------------------------------------------------------
 !
@@ -217,12 +241,25 @@
       integer(kind = kint), intent(inout) :: num_grp
 !
 !
-      num_grp =  3 + numlayer_sph_bc
+      num_grp =  3 + added_radial_grp%nlayer
       if(sph_param%nlayer_2_center .gt. 0) num_grp =  num_grp + 2
       if(nidx_global_r .gt. sph_param%nlayer_CMB) num_grp =  num_grp+1
       if(sph_param%nlayer_mid_OC .gt. 0) num_grp =  num_grp + 1
 !
       end subroutine count_sph_radial_group
+!
+! -----------------------------------------------------------------------
+!
+      subroutine add_sph_SGS_radial_group(num_grp)
+!
+      use m_sph_1d_global_index
+!
+      integer(kind = kint), intent(inout) :: num_grp
+!
+!
+      num_grp = num_grp + r_layer_grp%nlayer
+!
+      end subroutine add_sph_SGS_radial_group
 !
 ! -----------------------------------------------------------------------
 !

@@ -68,18 +68,18 @@ begin spherical_shell_ctl
       boundaries_ctl   CMB         4
     end array boundaries_ctl
 !
-    num_radial_grouping_ctl        10
-    num_meridional_grouping_ctl    10
+    num_radial_layering_ctl        10
+    num_meridional_layering_ctl    10
 !
-    array radial_grouping_ctl        2
-      radial_grouping_ctl          1   8
-      radial_grouping_ctl          8  15
-    end array radial_grouping_ctl
+    array radial_layering_ctl        2
+      radial_layering_ctl          1   8
+      radial_layering_ctl          8  15
+    end array radial_layering_ctl
 !
-    array meridional_grouping_ctl        2
-      meridional_grouping_ctl          1   6
-      meridional_grouping_ctl          6  13
-    end array meridional_grouping_ctl
+    array meridional_layering_ctl        2
+      meridional_layering_ctl          1   6
+      meridional_layering_ctl          6  13
+    end array meridional_layering_ctl
 !
   end num_grid_sph
 end spherical_shell_ctl

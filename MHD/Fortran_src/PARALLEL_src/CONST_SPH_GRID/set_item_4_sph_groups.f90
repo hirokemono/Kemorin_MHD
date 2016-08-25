@@ -1,20 +1,27 @@
-!set_item_4_sph_groups.f90
-!      module set_item_4_sph_groups
+!>@file   set_item_4_sph_groups.f90
+!!@brief  module set_item_4_sph_groups
+!!
+!!@author H. Matsui
+!!@date Programmed in July, 2007
 !
-!     Written by H. Matsui on July, 2007
-!
+!>@brief  Make group informations for spherical shell model
+!!
+!!
+!!@verbatim
 !!      subroutine set_item_rtp_radial_grp                              &
 !!     &         (sph_params, sph_rtp, radial_rtp_grp)
+!!      subroutine set_item_rj_radial_grp                               &
+!!     &         (sph_params, sph_rj, radial_rj_grp)
+!!      subroutine set_item_rtp_meridional_grp(sph_rtp, theta_rtp_grp)
+!!      subroutine set_item_rj_spectr_grp(sph_rj, sphere_rj_grp)
 !!        type(sph_shell_parameters) :: sph_params
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(group_data), intent(inout) :: radial_rtp_grp
-!!      subroutine set_item_rj_radial_grp                               &
-!!     &         (sph_params, sph_rj, radial_rj_grp)
-!!      subroutine set_item_rj_spectr_grp(sph_rj, sphere_rj_grp)
-!!        type(sph_shell_parameters) :: sph_params
+!!        type(group_data), intent(inout) :: theta_rtp_grp
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(group_data), intent(inout) :: radial_rj_grp
 !!        type(group_data), intent(inout) :: sphere_rj_grp
+!!@endverbatim
 !
       module set_item_4_sph_groups
 !
@@ -30,7 +37,7 @@
 !
       implicit none
 !
-      private :: set_item_sph_grp_by_list, set_item_sph_grp_by_rng
+      private :: set_item_sph_grp_by_list, set_item_sph_grp_direct
 !
 ! -----------------------------------------------------------------------
 !
@@ -91,9 +98,16 @@
      &    radial_rtp_grp%num_item, radial_rtp_grp%item_grp)
 !
 !
-      do inum = 1, numlayer_sph_bc
+      do inum = 1, r_layer_grp%nlayer
         call set_item_sph_grp_by_list(icou,                             &
-     &      kr_sph_boundary(inum), kr_sph_boundary(inum),               &
+     &      r_layer_grp%istart(inum), r_layer_grp%iend(inum),           &
+     &      sph_rtp%nidx_rtp(1), sph_rtp%idx_gl_1d_rtp_r,               &
+     &      radial_rtp_grp%num_item, radial_rtp_grp%item_grp)
+      end do
+!
+      do inum = 1, added_radial_grp%nlayer
+        call set_item_sph_grp_by_list(icou,                             &
+     &      added_radial_grp%istart(inum), added_radial_grp%iend(inum), &
      &      sph_rtp%nidx_rtp(1), sph_rtp%idx_gl_1d_rtp_r,               &
      &      radial_rtp_grp%num_item, radial_rtp_grp%item_grp)
       end do
@@ -115,55 +129,77 @@
 !
 !
       icou = 0
-      call set_item_sph_grp_by_rng                                      &
+      call set_item_sph_grp_direct                                      &
      &   (icou, sph_params%nlayer_ICB, sph_params%nlayer_ICB,           &
      &    sph_rj%ist_rj(1), sph_rj%ied_rj(1),                           &
      &    radial_rj_grp%num_item, radial_rj_grp%item_grp)
 !
-      call set_item_sph_grp_by_rng                                      &
+      call set_item_sph_grp_direct                                      &
      &   (icou, sph_params%nlayer_CMB, sph_params%nlayer_CMB,           &
      &    sph_rj%ist_rj(1), sph_rj%ied_rj(1),                           &
      &    radial_rj_grp%num_item, radial_rj_grp%item_grp)
 !
-      call set_item_sph_grp_by_rng(icou,                                &
+      call set_item_sph_grp_direct(icou,                                &
      &    sph_params%nlayer_2_center, sph_params%nlayer_2_center,       &
      &    sph_rj%ist_rj(1), sph_rj%ied_rj(1),                           &
      &    radial_rj_grp%num_item, radial_rj_grp%item_grp)
 !
       if (sph_rj%nidx_global_rj(1) .gt. sph_params%nlayer_CMB) then
-        call set_item_sph_grp_by_rng(icou, sph_rj%nidx_global_rj(1),    &
+        call set_item_sph_grp_direct(icou, sph_rj%nidx_global_rj(1),    &
      &      sph_rj%nidx_global_rj(1), sph_rj%ist_rj(1),                 &
      &      sph_rj%ied_rj(1), radial_rj_grp%num_item,                   &
      &      radial_rj_grp%item_grp)
       end if
 !
       if (sph_params%nlayer_mid_OC .gt. 0) then
-        call set_item_sph_grp_by_rng(icou,                              &
+        call set_item_sph_grp_direct(icou,                              &
      &      sph_params%nlayer_mid_OC, sph_params%nlayer_mid_OC,         &
      &      sph_rj%ist_rj(1), sph_rj%ied_rj(1),                         &
      &      radial_rj_grp%num_item, radial_rj_grp%item_grp)
       end if
 !
       nlayer_ed = sph_params%nlayer_ICB-1
-      call set_item_sph_grp_by_rng                                      &
+      call set_item_sph_grp_direct                                      &
      &   (icou, sph_params%nlayer_2_center, nlayer_ed,                  &
      &    sph_rj%ist_rj(1), sph_rj%ied_rj(1),                           &
      &    radial_rj_grp%num_item, radial_rj_grp%item_grp)
 !
-      call set_item_sph_grp_by_rng                                      &
+      call set_item_sph_grp_direct                                      &
      &   (icou, sph_params%nlayer_ICB, sph_params%nlayer_CMB,           &
      &    sph_rj%ist_rj(1), sph_rj%ied_rj(1),                           &
      &    radial_rj_grp%num_item, radial_rj_grp%item_grp)
 !
-      do inum = 1, numlayer_sph_bc
-        call set_item_sph_grp_by_rng(icou,                              &
-     &      kr_sph_boundary(inum), kr_sph_boundary(inum),               &
+      do inum = 1, added_radial_grp%nlayer
+        call set_item_sph_grp_direct(icou,                              &
+     &      added_radial_grp%istart(inum), added_radial_grp%iend(inum), &
      &      sph_rj%ist_rj(1), sph_rj%ied_rj(1),                         &
      &      radial_rj_grp%num_item, radial_rj_grp%item_grp)
       end do
 !
       end subroutine set_item_rj_radial_grp
 !
+! -----------------------------------------------------------------------
+!
+      subroutine set_item_rtp_meridional_grp(sph_rtp, theta_rtp_grp)
+!
+      use m_sph_1d_global_index
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(group_data), intent(inout) :: theta_rtp_grp
+!
+      integer(kind = kint) :: inum, icou
+!
+      icou = 0
+      do inum = 1, med_layer_grp%nlayer
+        call set_item_sph_grp_direct                                    &
+     &     (icou, med_layer_grp%istart(inum), med_layer_grp%iend(inum), &
+     &      sph_rtp%ist_rtp(2), sph_rtp%ied_rtp(2),                     &
+     &      theta_rtp_grp%num_item, theta_rtp_grp%item_grp)
+      end do
+!
+      end subroutine set_item_rtp_meridional_grp
+!
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine set_item_rj_spectr_grp(sph_rj, sphere_rj_grp)
@@ -174,19 +210,19 @@
       integer(kind = kint) :: icou
 !
       icou = 0
-      call set_item_sph_grp_by_rng(icou, izero, izero,                  &
+      call set_item_sph_grp_direct(icou, izero, izero,                  &
      &    sph_rj%ist_rj(2), sph_rj%ied_rj(2),                           &
      &    sphere_rj_grp%num_item, sphere_rj_grp%item_grp)
 !
-      call set_item_sph_grp_by_rng(icou, ione, ione,                    &
+      call set_item_sph_grp_direct(icou, ione, ione,                    &
      &    sph_rj%ist_rj(2), sph_rj%ied_rj(2),                           &
      &    sphere_rj_grp%num_item, sphere_rj_grp%item_grp)
 !
-      call set_item_sph_grp_by_rng(icou, itwo, itwo,                    &
+      call set_item_sph_grp_direct(icou, itwo, itwo,                    &
      &    sph_rj%ist_rj(2), sph_rj%ied_rj(2),                           &
      &    sphere_rj_grp%num_item, sphere_rj_grp%item_grp)
 !
-      call set_item_sph_grp_by_rng(icou, ithree, ithree,                &
+      call set_item_sph_grp_direct(icou, ithree, ithree,                &
      &    sph_rj%ist_rj(2), sph_rj%ied_rj(2),                           &
      &    sphere_rj_grp%num_item, sphere_rj_grp%item_grp)
 !
@@ -222,7 +258,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_item_sph_grp_by_rng(icou, nlayer_st, nlayer_ed,    &
+      subroutine set_item_sph_grp_direct(icou, nlayer_st, nlayer_ed,    &
      &          ist_domain, ied_domain, ntot_grp, item_grp)
 !
       integer(kind = kint), intent(in) :: nlayer_st, nlayer_ed
@@ -244,7 +280,7 @@
         end do
       end if
 !
-      end subroutine set_item_sph_grp_by_rng
+      end subroutine set_item_sph_grp_direct
 !
 ! ----------------------------------------------------------------------
 !

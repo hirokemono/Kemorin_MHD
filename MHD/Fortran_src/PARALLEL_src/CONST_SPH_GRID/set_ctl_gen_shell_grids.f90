@@ -25,6 +25,10 @@
 !
       type(field_IO_params), save, private :: sph_file_param
 !
+      character(len=kchara), parameter :: cflag_SGS_r = 'SGS_r'
+      character(len=kchara), parameter :: cflag_SGS_t = 'SGS_theta'
+      private :: cflag_SGS_r, cflag_SGS_t
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -111,30 +115,27 @@
 !      end if
 !
 !   Set radial group
-      if(radial_grp_ctl%icou .gt. 0) then
-        numlayer_sph_bc = radial_grp_ctl%num
-      else
-        numlayer_sph_bc = 0
-      end if
-      call allocate_sph_radial_group
+      if(radial_grp_ctl%icou .le. 0) added_radial_grp%nlayer = 0
+      call alloc_layering_group(radial_grp_ctl%num, added_radial_grp)
 !
       icou = 0
-      do i = 1, numlayer_sph_bc
+      do i = 1, added_radial_grp%nlayer
         if     (cmp_no_case(radial_grp_ctl%c_tbl(i),                    &
      &                      ICB_nod_grp_name)) then
-          numlayer_sph_bc = numlayer_sph_bc - 1
+          added_radial_grp%nlayer = added_radial_grp%nlayer - 1
         else if(cmp_no_case(radial_grp_ctl%c_tbl(i),                    &
      &                      CMB_nod_grp_name)) then
-          numlayer_sph_bc = numlayer_sph_bc - 1
+          added_radial_grp%nlayer = added_radial_grp%nlayer - 1
         else if(cmp_no_case(radial_grp_ctl%c_tbl(i),                    &
      &                      CTR_nod_grp_name)) then
-          numlayer_sph_bc = numlayer_sph_bc - 1
+          added_radial_grp%nlayer = added_radial_grp%nlayer - 1
         else if(cmp_no_case(radial_grp_ctl%c_tbl(i), 'Mid_Depth')) then
-          numlayer_sph_bc = numlayer_sph_bc - 1
+          added_radial_grp%nlayer = added_radial_grp%nlayer - 1
         else
           icou = icou + 1
-          kr_sph_boundary(icou) =  radial_grp_ctl%ivec(i)
-          sph_bondary_name(icou) = radial_grp_ctl%c_tbl(i)
+          added_radial_grp%istart(icou) =  radial_grp_ctl%ivec(i)
+          added_radial_grp%iend(icou) =    radial_grp_ctl%ivec(i)
+          added_radial_grp%name(icou) =    radial_grp_ctl%c_tbl(i)
         end if
       end do
 !
@@ -227,6 +228,31 @@
       if (ierr .gt. 0) return
 !
 !
+!   Set layering parameter for SGS models
+      if(radial_layer_list_ctl%num .gt. 0) then
+        call set_group_by_layering_list                                 &
+     &    (cflag_SGS_r, radial_layer_list_ctl, r_layer_grp)
+      else if(num_radial_layer_ctl%iflag .gt. 0) then
+        call set_group_by_equidivide                                    &
+     &    (cflag_SGS_r, sph_params%nlayer_ICB, sph_params%nlayer_CMB,   &
+     &      num_radial_layer_ctl, r_layer_grp)
+      else
+        call alloc_layering_group(izero, r_layer_grp)
+      end if
+!
+      if(med_layer_list_ctl%num .gt. 0) then
+        call set_group_by_layering_list                                 &
+     &    (cflag_SGS_t, med_layer_list_ctl, med_layer_grp)
+      else if(num_med_layer_ctl%iflag .gt. 0) then
+        call set_group_by_equidivide                                    &
+     &    (cflag_SGS_t, ione, sph_rtp%nidx_global_rtp(2),               &
+     &      num_med_layer_ctl, med_layer_grp)
+      else
+        call alloc_layering_group(izero, med_layer_grp)
+      end if
+!
+!
+!  Check
       if    (sph_params%iflag_shell_mode .eq. iflag_MESH_w_pole         &
      &  .or. sph_params%iflag_shell_mode .eq. iflag_MESH_w_center) then
         if(mod(sph_rtp%nidx_global_rtp(3),2) .ne. 0) then
@@ -246,10 +272,10 @@
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'icou, kr_sph_boundary, sph_bondary_name',           &
-     &             numlayer_sph_bc
-        do icou = 1, numlayer_sph_bc
-          write(*,*) icou, kr_sph_boundary(icou),                       &
-     &               trim(sph_bondary_name(icou))
+     &             added_radial_grp%nlayer
+        do icou = 1, added_radial_grp%nlayer
+          write(*,*) icou, added_radial_grp%istart(icou),               &
+     &               trim(added_radial_grp%name(icou))
         end do
       end if
 !

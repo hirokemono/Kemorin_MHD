@@ -57,6 +57,20 @@
 !!      boundaries_ctl  ICB         2
 !!      boundaries_ctl  CMB         4
 !!    end array  boundaries_ctl
+!!
+!!
+!!    num_radial_layering_ctl        10
+!!    num_meridional_layering_ctl    10
+!!
+!!    array radial_layering_ctl        2
+!!      radial_layering_ctl          1   8
+!!      radial_layering_ctl          8  15
+!!    end array radial_layering_ctl
+!!
+!!    array meridional_layering_ctl        2
+!!      meridional_layering_ctl          1   6
+!!      meridional_layering_ctl          6  13
+!!    end array meridional_layering_ctl
 !!  end num_grid_sph
 !!
 !! =======================================================
@@ -117,6 +131,17 @@
       type(read_real_item), save :: ICB_to_CMB_ratio_ctl
 !
 !
+!    Parametes for SGS model
+!>      Number of radial layering for outer core
+      type(read_integer_item), save :: num_radial_layer_ctl
+!>      Number of moridional layering for outer core
+      type(read_integer_item), save :: num_med_layer_ctl
+!
+!>      Number of radial layering for outer core
+      type(ctl_array_i2), save :: radial_layer_list_ctl
+!>      Number of moridional layering for outer core
+      type(ctl_array_i2), save :: med_layer_list_ctl
+!
 !   labels of data field
 !
       character(len=kchara), parameter                                  &
@@ -162,7 +187,14 @@
       character(len=kchara), parameter                                  &
      &      ::  hd_bc_sph = 'boundaries_ctl'
 !
-!   3rd level for boundary define
+      character(len=kchara), parameter                                  &
+     &      ::  hd_num_radial_grp = 'num_radial_layering_ctl'
+      character(len=kchara), parameter                                  &
+     &      ::  hd_num_med_grp =    'num_meridional_layering_ctl'
+      character(len=kchara), parameter                                  &
+     &      ::  hd_list_radial_grp = 'radial_layering_ctl'
+      character(len=kchara), parameter                                  &
+     &      ::  hd_list_med_grp = 'meridional_layering_ctl'
 !
       private :: hd_sph_def, hd_shell_def, i_shell_def
       private :: hd_numlayer_shell, hd_sph_c_type, hd_phi_symmetry
@@ -223,6 +255,16 @@
 !
         call read_real_ctl_type(hd_shell_size, fluid_core_size_ctl)
         call read_real_ctl_type(hd_shell_ratio, ICB_to_CMB_ratio_ctl)
+!
+        call read_integer_ctl_type                                      &
+     &     (hd_num_radial_grp, num_radial_layer_ctl)
+        call read_integer_ctl_type                                      &
+     &     (hd_num_med_grp, num_med_layer_ctl)
+!
+        call read_control_array_i2                                      &
+     &     (hd_list_radial_grp, radial_layer_list_ctl)
+        call read_control_array_i2                                      &
+     &     (hd_list_med_grp, med_layer_list_ctl)
       end do
 !
       end subroutine read_ctl_4_shell_define

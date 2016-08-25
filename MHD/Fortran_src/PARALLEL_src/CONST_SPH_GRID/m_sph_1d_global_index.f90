@@ -13,9 +13,6 @@
 !!      subroutine deallocate_sph_1d_global_stack
 !!      subroutine deallocate_sph_1d_global_idx
 !!
-!!      subroutine allocate_sph_radial_group
-!!      subroutine deallocate_sph_radial_group
-!!
 !!      subroutine check_spheric_global_stack(ip_rank)
 !!@endverbatim
 !
@@ -23,8 +20,10 @@
       module m_sph_1d_global_index
 !
       use m_precision
+      use t_control_1D_layering
 !
       implicit none
+!
 !
 !>      Global radial address for f(r,t,p)
       integer(kind = kint), allocatable :: istack_idx_local_rtp_r(:)
@@ -93,12 +92,13 @@
       integer(kind = kint), allocatable :: idx_global_rj_j(:,:)
 !
 !
-!>      Number of radial group from control
-      integer(kind = kint) :: numlayer_sph_bc
-!>      global radial address for each group
-      integer(kind = kint), allocatable :: kr_sph_boundary(:)
-!>      name of radial group
-      character(len = kchara), allocatable :: sph_bondary_name(:)
+!>      Structure of additional radial group
+      type(layering_group_list), save :: added_radial_grp
+!
+!>      Structure of radial group for SGS model
+      type(layering_group_list), save :: r_layer_grp
+!>      Structure of meridional group for SGS model
+      type(layering_group_list), save :: med_layer_grp
 !
 ! -----------------------------------------------------------------------
 !
@@ -249,27 +249,6 @@
       deallocate( idx_global_rj_r, idx_global_rj_j)
 !
       end subroutine deallocate_sph_1d_global_idx
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine allocate_sph_radial_group
-!
-!
-      allocate( kr_sph_boundary(numlayer_sph_bc))
-      allocate( sph_bondary_name(numlayer_sph_bc))
-      if(numlayer_sph_bc .gt. 0) kr_sph_boundary = 0
-!
-      end subroutine allocate_sph_radial_group
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_sph_radial_group
-!
-!
-      deallocate( kr_sph_boundary, sph_bondary_name)
-!
-      end subroutine deallocate_sph_radial_group
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
