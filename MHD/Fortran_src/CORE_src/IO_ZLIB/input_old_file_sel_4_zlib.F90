@@ -80,17 +80,14 @@
       call add_int_suffix(my_rank, fname_tmp, file_name)
 !
 !
-      if(fld_IO%iflag_file_fmt .eq. id_binary_file_fmt) then
-        call read_rst_file_b(my_rank, file_name, fld_IO)
-!
 #ifdef ZLIB_IO
-      else if(fld_IO%iflag_file_fmt .eq. id_gzip_txt_file_fmt) then
+      if(fld_IO%iflag_file_fmt .eq. id_gzip_txt_file_fmt) then
         call read_gz_rst_file(my_rank, file_name, fld_IO)
+        return
+      end if
 #endif
 !
-      else
-        call read_rst_file(my_rank, file_name, fld_IO)
-      end if
+      call read_rst_file(my_rank, file_name, fld_IO)
 !
 !
       end subroutine sel_read_rst_file
@@ -115,17 +112,14 @@
       end if
       call add_int_suffix(my_rank, fname_tmp, file_name)
 !
-      if(fld_IO%iflag_file_fmt .eq. id_binary_file_fmt) then
-        call read_rst_data_comps_b(my_rank, file_name, fld_IO)
-!
 #ifdef ZLIB_IO
-      else if(fld_IO%iflag_file_fmt .eq. id_gzip_txt_file_fmt) then
+      if(fld_IO%iflag_file_fmt .eq. id_gzip_txt_file_fmt) then
         call read_gz_rst_comps(my_rank, file_name, fld_IO)
+        return
+      end if
 #endif
 !
-      else
-        call read_rst_data_comps(my_rank, file_name, fld_IO)
-      end if
+      call read_rst_data_comps(my_rank, file_name, fld_IO)
 !
       end subroutine sel_read_rst_comps
 !

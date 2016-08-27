@@ -8,19 +8,21 @@
 !!
 !!@verbatim
 !!      subroutine write_step_data_b(id_rank)
-!!      subroutine write_field_data_b(id_rank, nnod, num_field,         &
-!!     &          ntot_comp, ncomp_field, field_name, d_nod)
+!!      subroutine write_field_data_b(nnod, num_field, ntot_comp,       &
+!!     &          ncomp_field, field_name, d_nod)
 !!
 !!      subroutine read_step_data_b(my_rank, istack_merged, num_field)
 !!      subroutine read_field_data_b                                    &
-!!     &         (nnod, num_field, ncomp, field_name, vect)
+!!     &         (nnod, num_field, ntot_comp, field_name, vect)
 !!
 !!      subroutine write_endian_flag
 !!      subroutine write_fld_inthead_b(int_dat)
 !!      subroutine write_fld_realhead_b(real_dat)
 !!      subroutine write_fld_mul_i8head_b(num, int_gl_dat)
 !!      subroutine write_fld_mul_inthead_b(num, int_dat)
+!!      subroutine write_fld_intstack_b(num, istack)
 !!      subroutine write_fld_mul_charhead_b(num, chara_dat)
+!!      subroutine write_fld_realarray_b(num, real_dat)
 !!      subroutine write_fld_realarray2_b(n1, n2, real_dat)
 !!
 !!      subroutine read_endian_flag(my_rank)
@@ -28,7 +30,9 @@
 !!      subroutine read_fld_realhead_b(real_dat)
 !!      subroutine read_fld_mul_i8head_b(num, int_gl_dat)
 !!      subroutine read_fld_mul_inthead_b(num, int_dat)
+!!      subroutine read_fld_intstack_b(num, istack, ntot)
 !!      subroutine read_fld_mul_charhead_b(num, chara_dat)
+!!      subroutine read_fld_realarray_b(num, real_dat)
 !!      subroutine read_fld_realarray2_b(n1, n2, real_dat)
 !!@endverbatim
 !
@@ -66,22 +70,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_field_data_b(id_rank, nnod, num_field,           &
-     &          ntot_comp, ncomp_field, field_name, d_nod)
+      subroutine write_field_data_b(nnod, num_field, ntot_comp,         &
+     &          ncomp_field, field_name, d_nod)
 !
       use m_phys_constants
 !
-!
-      integer(kind=kint), intent(in) :: id_rank, nnod
-      integer(kind=kint), intent(in) :: num_field, ntot_comp
+      integer(kind=kint), intent(in) :: nnod, num_field, ntot_comp
       integer(kind=kint), intent(in) :: ncomp_field(num_field)
       character(len=kchara), intent(in) :: field_name(num_field)
       real(kind = kreal), intent(in) :: d_nod(nnod,ntot_comp)
 !
       integer(kind = kint_gl) :: istack_merged(1)
 !
-!
-      call write_step_data_b(id_rank)
 !
       istack_merged(1) = nnod
       call write_fld_mul_i8head_b(ione, istack_merged)
@@ -121,16 +121,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_field_data_b                                      &
-     &         (nnod, num_field, ncomp, field_name, vect)
+     &         (nnod, num_field, ntot_comp, field_name, vect)
 !
       integer(kind=kint), intent(in) :: nnod
-      integer(kind=kint), intent(in) :: num_field, ncomp
+      integer(kind=kint), intent(in) :: num_field, ntot_comp
       character(len=kchara), intent(inout) :: field_name(num_field)
-      real(kind = kreal), intent(inout) :: vect(nnod,ncomp)
+      real(kind = kreal), intent(inout) :: vect(nnod,ntot_comp)
 !
 !
       call read_fld_mul_charhead_b(num_field, field_name)
-      call read_fld_realarray2_b(nnod, ncomp, vect)
+      call read_fld_realarray2_b(nnod, ntot_comp, vect)
 !
       end subroutine read_field_data_b
 !
@@ -183,6 +183,7 @@
       integer(kind = kint) :: ierr, ilength
 !
 !
+      if(num .le. 0) return
       ilength = num *  kint_gl
       call rawwrite_f(ilength, int_gl_dat(1), ierr)
 !
@@ -198,10 +199,25 @@
       integer(kind = kint) :: ierr, ilength
 !
 !
+      if(num .le. 0) return
       ilength = num *  kint
       call rawwrite_f(ilength, int_dat(1), ierr)
 !
       end subroutine write_fld_mul_inthead_b
+!
+! -----------------------------------------------------------------------
+!
+      subroutine write_fld_intstack_b(num, istack)
+!
+      integer(kind = kint), intent(in) :: num
+      integer(kind = kint), intent(in) :: istack(0:num)
+!
+      integer(kind = kint) :: ilength, ierr
+!
+!
+      call write_fld_mul_inthead_b(num, istack(1))
+!
+      end subroutine write_fld_intstack_b
 !
 ! -----------------------------------------------------------------------
 !
@@ -213,10 +229,27 @@
       integer(kind = kint) :: ierr, ilength
 !
 !
+      if(num .le. 0) return
       ilength = num *  kchara
       call rawwrite_f(ilength, chara_dat(1), ierr)
 !
       end subroutine write_fld_mul_charhead_b
+!
+! -----------------------------------------------------------------------
+!
+      subroutine write_fld_realarray_b(num, real_dat)
+!
+      integer(kind = kint), intent(in) :: num
+      real(kind = kreal), intent(in) :: real_dat(num)
+!
+      integer(kind = kint) :: ilength, ierr
+!
+!
+      if(num .le. 0) return
+      ilength =  num * kreal
+      call rawwrite_f(iflag_endian, ilength, real_dat, ierr)
+!
+      end subroutine write_fld_realarray_b
 !
 ! -----------------------------------------------------------------------
 !
@@ -228,6 +261,7 @@
       integer(kind = kint) :: ierr, ilength
 !
 !
+      if(n1*n2 .le. 0) return
       ilength = n1 * n2 * kreal
       call rawwrite_f(ilength, real_dat(1,1), ierr)
 !
@@ -296,6 +330,7 @@
       integer(kind = kint) :: ilength, ierr
 !
 !
+      if(num .le. 0) return
       ilength = num * kint_gl
       call rawread_f(iflag_endian, ilength, int_gl_dat(1), ierr)
 !
@@ -311,10 +346,28 @@
       integer(kind = kint) :: ilength, ierr
 !
 !
+      if(num .le. 0) return
       ilength = num * kint
       call rawread_f(iflag_endian, ilength, int_dat(1), ierr)
 !
       end subroutine read_fld_mul_inthead_b
+!
+! -----------------------------------------------------------------------
+!
+      subroutine read_fld_intstack_b(num, istack, ntot)
+!
+      integer(kind = kint), intent(in) :: num
+      integer(kind = kint), intent(inout) :: ntot
+      integer(kind = kint), intent(inout) :: istack(0:num)
+!
+      integer(kind = kint) :: ilength, ierr
+!
+!
+      istack(0) = 0
+      call read_fld_mul_inthead_b(num, istack(1))
+      ntot = istack(num)
+!
+      end subroutine read_fld_intstack_b
 !
 ! -----------------------------------------------------------------------
 !
@@ -326,10 +379,27 @@
       integer(kind = kint) :: ilength, ierr
 !
 !
+      if(num .le. 0) return
       ilength = num * kchara
       call rawread_f(iflag_endian, ilength, chara_dat, ierr)
 !
       end subroutine read_fld_mul_charhead_b
+!
+! -----------------------------------------------------------------------
+!
+      subroutine read_fld_realarray_b(num, real_dat)
+!
+      integer(kind = kint), intent(in) :: num
+      real(kind = kreal), intent(inout) :: real_dat(num)
+!
+      integer(kind = kint) :: ilength, ierr
+!
+!
+      if(num .le. 0) return
+      ilength =  num * kreal
+      call rawread_f(iflag_endian, ilength, real_dat, ierr)
+!
+      end subroutine read_fld_realarray_b
 !
 ! -----------------------------------------------------------------------
 !
@@ -341,6 +411,7 @@
       integer(kind = kint) :: ilength, ierr
 !
 !
+      if(n1*n2 .le. 0) return
       ilength =  n1 * n2 * kreal
       call rawread_f(iflag_endian, ilength, real_dat, ierr)
 !

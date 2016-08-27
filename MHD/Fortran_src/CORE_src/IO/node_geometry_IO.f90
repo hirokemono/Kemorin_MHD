@@ -11,12 +11,9 @@
 !!      subroutine write_geometry_info(id_file)
 !!      subroutine write_scalar_in_element(id_file)
 !!      subroutine write_vector_in_element(id_file)
-!!      subroutine write_geometry_info_b(id_file)
 !!
 !!      subroutine read_number_of_node(id_file)
 !!      subroutine read_geometry_info(id_file)
-!!      subroutine read_number_of_node_b(id_file)
-!!      subroutine read_geometry_info_b(id_file)
 !!@endverbatim
 !
       module node_geometry_IO
@@ -88,25 +85,6 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine write_geometry_info_b(id_file)
-!
-      integer (kind = kint), intent(in) :: id_file
-      integer (kind = kint) :: i
-!
-!
-      write(id_file) numnod_dummy, internal_node_dummy
-!
-      do i=1, numnod_dummy
-        write(id_file)  globalnodid_dummy(i), xx_dummy(i,1:3)
-      end do
-!
-      call deallocate_node_data_dummy
-!
-      end subroutine write_geometry_info_b
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
       subroutine read_number_of_node(id_file)
 !
       use skip_comment_f
@@ -134,34 +112,6 @@
       end do
 !
       end subroutine read_geometry_info
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-       subroutine read_number_of_node_b(id_file)
-!
-       integer (kind = kint), intent(in) :: id_file
-!
-       read(id_file) numnod_dummy, internal_node_dummy
-!      write(*,*) numnod_dummy, internal_node_dummy
-!
-       end subroutine read_number_of_node_b
-!
-!------------------------------------------------------------------
-!
-       subroutine read_geometry_info_b(id_file)
-!
-       integer (kind = kint), intent(in) :: id_file
-       integer (kind = kint) :: i, k
-!
-!
-       call allocate_node_data_dummy
-!
-       do i=1, numnod_dummy
-        read(id_file)  globalnodid_dummy(i), (xx_dummy(i,k),k=1,3)
-       end do
-!
-       end subroutine read_geometry_info_b
 !
 !------------------------------------------------------------------
 !

@@ -137,7 +137,7 @@
         else
           open (filter_coef_code, file = mesh_file_name,                &
      &      form = 'unformatted')
-          call read_filter_geometry_b(filter_coef_code)
+          call read_filter_geometry_b(my_rank2)
         end if
 !
 !        write(*,*) 'copy_filter_comm_tbl_from_IO'

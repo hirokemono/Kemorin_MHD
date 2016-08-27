@@ -19,7 +19,6 @@
       use m_precision
 !
       use domain_data_IO
-      use comm_stack_item_IO
       use node_geometry_IO
 !
       implicit  none
@@ -52,21 +51,24 @@
 !
 !------------------------------------------------------------------
 !
-       subroutine read_filter_geometry_b(id_file)
+      subroutine read_filter_geometry_b(my_rank)
 !
-      integer(kind = kint), intent(in) :: id_file
+      use domain_data_IO_b
+      use mesh_data_IO_b
+!
+      integer(kind = kint), intent(in) :: my_rank
 !
 !
-        call read_domain_info_b(id_file)
-        call read_number_of_node_b(id_file)
-        call read_geometry_info_b(id_file)
+      call read_domain_info_b(my_rank)
+      call read_number_of_node_b
+      call read_geometry_info_b
 !
 ! ----  import & export 
 !
-        call read_import_data_b(id_file)
-        call read_export_data_b(id_file)
+      call read_import_data_b
+      call read_export_data_b
 !
-       end subroutine read_filter_geometry_b
+      end subroutine read_filter_geometry_b
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
@@ -97,15 +99,18 @@
 !
       subroutine write_filter_geometry_b(id_file)
 !
+      use mesh_data_IO_b
+      use domain_data_IO_b
+!
       integer(kind = kint), intent(in) :: id_file
 !
 !
-      call write_domain_info_b(id_file)
+      call write_domain_info_b
 !
-      call write_geometry_info_b(id_file)
+      call write_geometry_info_b
 !
-      call write_import_data_b(id_file)
-      call write_export_data_b(id_file)
+      call write_import_data_b
+      call write_export_data_b
 !
       end subroutine write_filter_geometry_b
 !

@@ -52,8 +52,9 @@
 !
       call open_wt_rawfile(file_name, ierr)
 !
-      call write_field_data_b(my_rank,                                  &
-     &    fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
+      call write_step_data_b(my_rank)
+      call write_field_data_b                                           &
+     &   (fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
      &    fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO)
 !
       call close_rawfile

@@ -53,7 +53,7 @@
       else if(ifile_type .eq. 1) then
         write(*,*) 'binary coefficients file name: ', trim(file_name)
         open(id_org_filter_coef, file=file_name, form='unformatted')
-        call read_filter_geometry_b(id_org_filter_coef)
+        call read_filter_geometry_b(my_rank)
 !
         inter_nod_3dfilter = internal_node_dummy
         call read_filter_coef_4_newdomain_b(id_org_filter_coef)

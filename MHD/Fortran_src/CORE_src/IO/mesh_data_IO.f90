@@ -9,10 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine write_geometry_data
-!!      subroutine write_geometry_data_b
-!!
 !!      subroutine read_geometry_data
-!!      subroutine read_geometry_data_b
 !!
 !!      subroutine output_node_sph_geometry
 !!      subroutine output_node_cyl_geometry
@@ -24,7 +21,6 @@
 !
       use m_read_mesh_data
       use domain_data_IO
-      use comm_stack_item_IO
       use node_geometry_IO
       use element_connect_IO
 !
@@ -71,21 +67,6 @@
       end subroutine write_geometry_data
 !
 !------------------------------------------------------------------
-!
-      subroutine write_geometry_data_b
-!
-!
-      call write_domain_info_b(input_file_code)
-!
-      call write_geometry_info_b(input_file_code)
-      call write_element_info_b(input_file_code)
-!
-      call write_import_data_b(input_file_code)
-      call write_export_data_b(input_file_code)
-!
-      end subroutine write_geometry_data_b
-!
-!------------------------------------------------------------------
 !------------------------------------------------------------------
 !
        subroutine read_geometry_data
@@ -113,27 +94,6 @@
         call read_export_data(input_file_code)
 !
        end subroutine read_geometry_data
-!
-!------------------------------------------------------------------
-!
-       subroutine read_geometry_data_b
-!
-!
-        call read_domain_info_b(input_file_code)
-        call read_number_of_node_b(input_file_code)
-        call read_geometry_info_b(input_file_code)
-!
-!  ----  read element data -------
-!
-        call read_number_of_element_b(input_file_code)
-        call read_element_info_b(input_file_code)
-!
-! ----  import & export 
-!
-        call read_import_data_b(input_file_code)
-        call read_export_data_b(input_file_code)
-!
-       end subroutine read_geometry_data_b
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------

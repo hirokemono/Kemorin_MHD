@@ -1,8 +1,3 @@
-!
-!      module spherical_model_IO
-!
-!     Written by H. Matsui on July, 2007
-!
 !>@file  spherical_model_IO.f90
 !!       module spherical_model_IO
 !!
@@ -19,15 +14,6 @@
 !!      subroutine write_rank_4_sph(id_file)
 !!      subroutine write_gl_resolution_sph(id_file)
 !!      subroutine write_gl_nodes_sph(id_file)
-!!
-!!
-!!      subroutine read_rank_4_sph_b(id_file)
-!!      subroutine read_gl_resolution_sph_b(id_file)
-!!      subroutine read_gl_nodes_sph_b(id_file)
-!!
-!!      subroutine write_rank_4_sph_b(id_file)
-!!      subroutine write_gl_resolution_sph_b(id_file)
-!!      subroutine write_gl_nodes_sph_b(id_file)
 !!@endverbatim
 !
       module spherical_model_IO
@@ -145,85 +131,6 @@
       call deallocate_nod_id_sph_IO
 !
       end subroutine write_gl_nodes_sph
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine read_rank_4_sph_b(id_file)
-!
-      integer(kind = kint), intent(in) :: id_file
-!
-      read(id_file) sph_rank_IO(1:ndir_sph_IO)
-!
-      end subroutine read_rank_4_sph_b
-!
-! -----------------------------------------------------------------------
-!
-      subroutine read_gl_resolution_sph_b(id_file)
-!
-      integer(kind = kint), intent(in) :: id_file
-!
-      read(id_file) nidx_gl_sph_IO(1:ndir_sph_IO)
-      read(id_file) ltr_gl_IO
-!
-      end subroutine read_gl_resolution_sph_b
-!
-! -----------------------------------------------------------------------
-!
-      subroutine read_gl_nodes_sph_b(id_file)
-!
-      integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint) :: i
-!
-!
-      read(id_file) nnod_sph_IO
-      call allocate_nod_id_sph_IO
-!
-      read(id_file) inod_gl_sph_IO(1:nnod_sph_IO)
-      do i = 1, ndir_sph_IO
-        read(id_file) idx_gl_sph_IO(1:nnod_sph_IO,i)
-      end do
-!
-      end subroutine read_gl_nodes_sph_b
-!
-! -----------------------------------------------------------------------
-!
-      subroutine write_rank_4_sph_b(id_file)
-!
-      integer(kind = kint), intent(in) :: id_file
-!
-      write(id_file) sph_rank_IO(1:ndir_sph_IO)
-!
-      end subroutine write_rank_4_sph_b
-!
-! -----------------------------------------------------------------------
-!
-      subroutine write_gl_resolution_sph_b(id_file)
-!
-      integer(kind = kint), intent(in) :: id_file
-!
-      write(id_file) nidx_gl_sph_IO(1:ndir_sph_IO)
-      write(id_file) ltr_gl_IO
-!
-      end subroutine write_gl_resolution_sph_b
-!
-! -----------------------------------------------------------------------
-!
-      subroutine write_gl_nodes_sph_b(id_file)
-!
-      integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint) :: i
-!
-!
-      write(id_file) nnod_sph_IO
-      write(id_file) inod_gl_sph_IO(1:nnod_sph_IO)
-      do i = 1, ndir_sph_IO
-        write(id_file) idx_gl_sph_IO(1:nnod_sph_IO,i)
-      end do
-!
-      call deallocate_nod_id_sph_IO
-!
-      end subroutine write_gl_nodes_sph_b
 !
 ! -----------------------------------------------------------------------
 !

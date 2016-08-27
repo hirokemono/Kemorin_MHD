@@ -13,9 +13,6 @@
 !!
 !!      subroutine write_step_data(id_file, my_rank)
 !!      subroutine read_step_data(id_file)
-!!
-!!      subroutine write_step_data_bin(id_file, my_rank)
-!!      subroutine read_step_data_bin(id_file, id_rank, ierr)
 !!@endverbatim
 !!
 !!@n @param  my_rank   Process ID
@@ -138,55 +135,6 @@
   10  continue
 !
       end subroutine read_step_data
-!
-! -------------------------------------------------------------------
-! -------------------------------------------------------------------
-!
-      subroutine write_step_data_bin(id_file, my_rank)
-!
-      use m_machine_parameter
-!
-      integer(kind = kint), intent(in) :: id_file, my_rank
-!
-!
-      write(id_file)  i_UNIX
-      write(id_file)  my_rank
-      write(id_file)  i_time_step_IO
-      write(id_file)  time_IO, delta_t_IO
-!
-      end subroutine write_step_data_bin
-!
-! -------------------------------------------------------------------
-!
-      subroutine read_step_data_bin(id_file, id_rank, ierr)
-!
-      use m_machine_parameter
-!
-      integer(kind = kint), intent(in) :: id_file, id_rank
-      integer(kind = kint), intent(inout) :: ierr
-!
-      integer(kind = kint) :: itmp1, itmp2
-!
-!
-      ierr =     0
-!
-      read(id_file) itmp1
-      if(itmp1 .ne. i_UNIX) then
-        ierr = -100
-        return
-      end if
-!
-      read(id_file) itmp2
-      if(itmp2 .ne. id_rank) then
-        ierr =     1
-        return
-      end if
-!
-      read(id_file) i_time_step_IO
-      read(id_file) time_IO, delta_t_IO
-!
-!
-      end subroutine read_step_data_bin
 !
 ! -------------------------------------------------------------------
 !

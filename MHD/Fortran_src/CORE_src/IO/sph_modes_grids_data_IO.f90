@@ -24,7 +24,6 @@
 !
       use domain_data_IO
       use spherical_model_IO
-      use comm_stack_item_IO
       use sph_global_1d_idx_IO
 !
       implicit none

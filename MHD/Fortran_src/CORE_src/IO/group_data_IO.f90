@@ -36,7 +36,7 @@
 !
       subroutine read_group_stack(id_file, ngrp, ntot, istack)
 !
-      use stack_array_IO
+      use field_data_IO
 !
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: ngrp

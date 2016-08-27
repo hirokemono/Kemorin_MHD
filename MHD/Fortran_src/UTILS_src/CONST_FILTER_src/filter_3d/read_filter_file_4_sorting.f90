@@ -47,7 +47,7 @@
         call read_filter_geometry(filter_coef_code)
       else if( ifile_type .eq. 1) then
         open(filter_coef_code, file=file_name, form='unformatted')
-        call read_filter_geometry_b(filter_coef_code)
+        call read_filter_geometry_b(my_rank)
       end if
 !
       call copy_comm_tbl_type_from_IO(filtering%comm)
@@ -100,7 +100,7 @@
       else if( ifile_type .eq. 1) then
         open(filter_coef_code, file=file_name, form='unformatted')
 !
-        call read_filter_geometry_b(filter_coef_code)
+        call read_filter_geometry_b(my_rank)
 !
         call read_filter_neib_4_sort_b(filter_coef_code)
         call read_filter_coef_4_sort_b                                  &

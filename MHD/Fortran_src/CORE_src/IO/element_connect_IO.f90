@@ -10,12 +10,9 @@
 !!      subroutine write_element_info(id_file)
 !!      subroutine write_surface_4_element(id_file)
 !!      subroutine write_edge_4_element(id_file)
-!!      subroutine write_element_info_b(id_file)
 !!
 !!      subroutine read_number_of_element(id_file)
 !!      subroutine read_element_info(id_file)
-!!      subroutine read_number_of_element_b(id_file)
-!!      subroutine read_element_info_b(id_file)
 !!@endverbatim
 !!
 !!@param  id_file  File ID
@@ -93,26 +90,6 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine write_element_info_b(id_file)
-!
-      integer (kind = kint), intent(in) :: id_file
-      integer (kind = kint) :: i
-!
-!
-      write(id_file) numele_dummy
-!
-      write(id_file) i_ele_dummy(1:numele_dummy)
-!
-      write(id_file) globalelmid_dummy(1:numele_dummy)
-      write(id_file) (ie_dummy(i,1:nodelm_dummy(i)),i=1,numele_dummy)
-!
-      call deallocate_ele_info_dummy
-!
-      end subroutine write_element_info_b
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
       subroutine read_number_of_element(id_file)
 !
       use skip_comment_f
@@ -155,45 +132,6 @@
        end do
 !
        end subroutine read_element_info
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-       subroutine read_number_of_element_b(id_file)
-!
-      integer (kind = kint), intent(in) :: id_file
-!
-       read(id_file) numele_dummy
-!       write(*,*) numele_dummy
-!
-      end subroutine read_number_of_element_b
-!
-!------------------------------------------------------------------
-!
-       subroutine read_element_info_b(id_file)
-!
-       use set_nnod_4_ele_by_type
-!
-       integer (kind = kint), intent(in) :: id_file
-       integer (kind = kint) :: i
-!
-!
-       call allocate_ele_info_dummy
-!
-       read(id_file) (i_ele_dummy(i),i=1,numele_dummy)
-!
-       nnod_4_ele_dummy = 0
-       do i = 1, numele_dummy
-         call s_set_nnod_4_ele_by_type(i_ele_dummy(i), nodelm_dummy(i))
-         nnod_4_ele_dummy = max(nnod_4_ele_dummy,nodelm_dummy(i))
-       end do
-!
-       call allocate_connect_dummy
-!
-       read(id_file) globalelmid_dummy(1:numele_dummy)
-       read(id_file) (ie_dummy(i,1:nodelm_dummy(i)),i=1,numele_dummy)
-!
-       end subroutine read_element_info_b
 !
 !------------------------------------------------------------------
 !

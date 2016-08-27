@@ -247,7 +247,7 @@
         call read_filter_geometry(org_filter_coef_code)
       else
         open(org_filter_coef_code, file=file_name, form='unformatted')
-        call read_filter_geometry_b(org_filter_coef_code)
+        call read_filter_geometry_b(my_rank)
       end if
 !
       call deallocate_node_data_dummy
@@ -321,7 +321,7 @@
         call read_filter_geometry(org_filter_coef_code)
       else
         open(org_filter_coef_code, file=file_name, form='unformatted')
-        call read_filter_geometry_b(org_filter_coef_code)
+        call read_filter_geometry_b(my_rank)
       end if
 !
       call deallocate_node_data_dummy

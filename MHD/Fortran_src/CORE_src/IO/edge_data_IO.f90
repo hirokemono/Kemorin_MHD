@@ -33,7 +33,6 @@
 !
       use m_fem_mesh_labels
       use domain_data_IO
-      use comm_stack_item_IO
       use element_connect_IO
 !
 !

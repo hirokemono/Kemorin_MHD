@@ -28,6 +28,9 @@
 !
       implicit  none
 !
+      private :: write_element_refine_data_b
+      private :: read_element_refine_data_b
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -41,6 +44,7 @@
       type(interpolate_table_org), intent(inout) :: IO_itp_org
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
+      integer (kind = kint) :: ierr
       integer(kind = kint) :: nrank_ref
 !
 !
@@ -50,18 +54,9 @@
       if (ifile_type .eq. 1) then
         write(*,*) 'binary element refine information: ',               &
      &            trim(refine_info_fname)
-        open (id_refine_table,file=refine_info_fname,                   &
-     &      form='unformatted')
-!
-        call read_interpolate_table_dest_b                              &
-     &     (id_refine_table, IO_itp_dest)
-        call read_interpolate_domain_org_b                              &
-     &     (id_refine_table, nrank_ref, IO_itp_org)
-        call read_interpolate_table_org_b(id_refine_table, IO_itp_org)
-        call read_interpolate_coefs_org_b(id_refine_table, IO_itp_org)
-!
-        call read_element_refine_data_b(id_refine_table)
-        close(id_refine_table)
+        call open_rd_rawfile(refine_info_fname, ierr)
+        call read_element_refine_data_b(IO_itp_org, IO_itp_dest)
+        call close_rawfile
 !
 !
       else
@@ -91,6 +86,8 @@
       type(interpolate_table_org), intent(inout) :: IO_itp_org
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
+      integer (kind = kint) :: ierr
+!
 !
       call add_int_suffix(my_rank, refine_info_fhead,                   &
      &    refine_info_fname)
@@ -98,17 +95,10 @@
       if (ifile_type .eq. 1) then
         write(*,*) 'binary element refine information: ',               &
      &            trim(refine_info_fname)
-        open (id_refine_table,file=refine_info_fname,                   &
-     &      form='unformatted')
-!
-        call write_interpolate_table_dest_b                             &
-     &     (id_refine_table, my_rank, IO_itp_dest)
-        call write_interpolate_table_org_b                              &
-     &     (id_refine_table, my_rank, IO_itp_org)
-        call write_interpolate_coefs_org_b(id_refine_table, IO_itp_org)
-!
-        call write_element_refine_data_b(id_refine_table)
-        close(id_refine_table)
+        call open_wt_rawfile(refine_info_fname, ierr)
+        call write_element_refine_data_b                                &
+     &     (my_rank, IO_itp_org, IO_itp_dest)
+        call close_rawfile
 !
       else
         write(*,*) 'element refine information: ',                      &
@@ -134,6 +124,66 @@
       call dealloc_itp_num_dest(IO_itp_dest)
 !
       end subroutine write_element_refine_file
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine write_element_refine_data_b                            &
+     &         (my_rank, IO_itp_org, IO_itp_dest)
+!
+      use field_data_IO_b
+!
+      integer(kind = kint), intent(in) :: my_rank
+      type(interpolate_table_org), intent(in) :: IO_itp_org
+      type(interpolate_table_dest), intent(in) :: IO_itp_dest
+!
+!
+      call write_interpolate_table_dest_b(my_rank, IO_itp_dest)
+      call write_interpolate_table_org_b(my_rank, IO_itp_org)
+      call write_interpolate_coefs_org_b(IO_itp_org)
+!
+      call write_fld_inthead_b(max_refine_level_IO)
+      call write_fld_inthead_b(nele_ref_IO)
+      call write_fld_inthead_b(nele_org_IO)
+!
+      call write_fld_mul_inthead_b(nele_ref_IO, iele_global_new_IO)
+      call write_fld_mul_inthead_b(nele_ref_IO, ilevel_refine_IO)
+      call write_fld_mul_inthead_b(nele_ref_IO, iflag_refine_ele_IO)
+      call write_fld_mul_inthead_b(nele_ref_IO, iele_global_org_IO)
+      call write_fld_mul_inthead_b(nele_ref_IO, icou_global_org_IO)
+!
+      end subroutine write_element_refine_data_b
+!
+! ----------------------------------------------------------------------
+!
+      subroutine read_element_refine_data_b(IO_itp_org, IO_itp_dest)
+!
+      use field_data_IO_b
+!
+      type(interpolate_table_org), intent(inout) :: IO_itp_org
+      type(interpolate_table_dest), intent(inout) :: IO_itp_dest
+!
+      integer(kind = kint) :: nrank_ref
+!
+!
+      call read_interpolate_table_dest_b(IO_itp_dest)
+      call read_interpolate_domain_org_b(nrank_ref, IO_itp_org)
+      call read_interpolate_table_org_b(IO_itp_org)
+      call read_interpolate_coefs_org_b(IO_itp_org)
+!
+      call read_fld_inthead_b(max_refine_level_IO)
+      call read_fld_inthead_b(nele_ref_IO)
+      call read_fld_inthead_b(nele_org_IO)
+!
+      call allocate_element_refine_IO
+!
+      call read_fld_mul_inthead_b(nele_ref_IO, iele_global_new_IO)
+      call read_fld_mul_inthead_b(nele_ref_IO, ilevel_refine_IO)
+      call read_fld_mul_inthead_b(nele_ref_IO, iflag_refine_ele_IO)
+      call read_fld_mul_inthead_b(nele_ref_IO, iele_global_org_IO)
+      call read_fld_mul_inthead_b(nele_ref_IO, icou_global_org_IO)
+!
+      end subroutine read_element_refine_data_b
 !
 ! ----------------------------------------------------------------------
 !

@@ -12,8 +12,6 @@
 !!
 !!      subroutine write_element_refine_data(id_file)
 !!      subroutine read_element_refine_data(id_file)
-!!      subroutine write_element_refine_data_b(id_file)
-!!      subroutine read_element_refine_data_b(id_file)
 !!@endverbatim
 !
       module m_element_refinement_IO
@@ -127,45 +125,6 @@
       end do
 !
       end subroutine read_element_refine_data
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine write_element_refine_data_b(id_file)
-!
-      integer(kind = kint), intent(in) :: id_file
-!
-!
-      write(id_refine_table) max_refine_level_IO
-      write(id_refine_table) nele_ref_IO, nele_org_IO
-!
-      write(id_refine_table) iele_global_new_IO(1:nele_ref_IO)
-      write(id_refine_table) ilevel_refine_IO(1:nele_ref_IO)
-      write(id_refine_table) iflag_refine_ele_IO(1:nele_ref_IO)
-      write(id_refine_table) iele_global_org_IO(1:nele_ref_IO)
-      write(id_refine_table) icou_global_org_IO(1:nele_ref_IO)
-!
-      end subroutine write_element_refine_data_b
-!
-! ----------------------------------------------------------------------
-!
-      subroutine read_element_refine_data_b(id_file)
-!
-      integer(kind = kint), intent(in) :: id_file
-!
-!
-      read(id_refine_table) max_refine_level_IO
-      read(id_refine_table) nele_ref_IO, nele_org_IO
-!
-      call allocate_element_refine_IO
-!
-      read(id_refine_table) iele_global_new_IO(1:nele_ref_IO)
-      read(id_refine_table) ilevel_refine_IO(1:nele_ref_IO)
-      read(id_refine_table) iflag_refine_ele_IO(1:nele_ref_IO)
-      read(id_refine_table) iele_global_org_IO(1:nele_ref_IO)
-      read(id_refine_table) icou_global_org_IO(1:nele_ref_IO)
-!
-      end subroutine read_element_refine_data_b
 !
 ! ----------------------------------------------------------------------
 !

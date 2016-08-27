@@ -158,7 +158,7 @@
 !
       open(filter_coef_code, file=file_name,                            &
      &      form='unformatted', status= 'old')
-      call read_filter_geometry_b(filter_coef_code)
+      call read_filter_geometry_b(my_rank)
       call read_3d_filter_stack_b(filter_coef_code, IO_filters)
       call read_3d_filter_weights_coef_b(filter_coef_code, IO_filters)
       close (filter_coef_code)
@@ -211,7 +211,7 @@
 !
       open(filter_coef_code, file=file_name,                            &
      &      form='unformatted', status= 'old')
-      call read_filter_geometry_b(filter_coef_code)
+      call read_filter_geometry_b(my_rank)
       close (filter_coef_code)
 !
       end subroutine read_filter_geometry_file_b
