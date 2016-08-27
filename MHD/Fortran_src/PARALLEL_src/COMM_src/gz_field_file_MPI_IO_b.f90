@@ -30,12 +30,11 @@
       use m_constants
 !
       use calypso_mpi
+      use m_machine_parameter
       use m_calypso_mpi_IO
       use t_field_data_IO
 !
       implicit none
-!
-      integer(kind = kint), private :: iflag_endian_swap
 !
       private :: gz_write_field_data_mpi_b
       private :: gz_read_step_data_mpi_b, gz_read_field_header_mpi_b
@@ -299,11 +298,11 @@
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
       integer(kind=kint) :: iread(1)
-      integer(kind=kint) :: id_read, ie_read
+      integer(kind=kint) :: id_read
 !
 !
+      call gz_read_endian_flag_mpi(id_fld, ioff_gl)
       call gz_read_fld_mul_inthead_mpi_b(id_fld, ioff_gl, ione, iread)
-      ie_read = iread(1)
 !
       call gz_read_fld_mul_inthead_mpi_b(id_fld, ioff_gl, ione, iread)
       id_read = iread(1)
@@ -313,13 +312,6 @@
 !
       call gz_read_fld_realhead_mpi_b(id_fld, ioff_gl, time_IO)
       call gz_read_fld_realhead_mpi_b(id_fld, ioff_gl, delta_t_IO)
-!
-      iflag_endian_swap = 0
-      if(i_UNIX .ne. ie_read) then
-        if(my_rank .eq. 0) write(*,*)                                   &
-     &                            'binary data have opposite endian!'
-        iflag_endian_swap = 1
-      end if
 !
       end subroutine gz_read_step_data_mpi_b
 !

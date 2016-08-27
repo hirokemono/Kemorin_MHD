@@ -78,7 +78,7 @@
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &    'Read binary restart file: ', trim(file_name)
       open (id_phys_file, file = file_name, form='unformatted')
-      call read_step_data_b(id_phys_file, my_rank, ierr)
+      call read_step_data_bin(id_phys_file, my_rank, ierr)
 !
       read(id_phys_file) fld_IO%num_field_IO
       call read_field_data_b(id_phys_file,                              &
@@ -141,7 +141,7 @@
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &    'Read binary restart file: ', trim(file_name)
       open (id_phys_file, file = file_name, form='unformatted')
-      call read_step_data_b(id_phys_file, my_rank, ierr)
+      call read_step_data_bin(id_phys_file, my_rank, ierr)
 !
       read(id_phys_file) fld_IO%num_field_IO
       call alloc_phys_name_IO(fld_IO)

@@ -54,11 +54,15 @@
 !!                put ".flb" at the end
 !!      subroutine add_fst_extension(file_header, file_name)
 !!                put ".fst" at the end
+!!      subroutine add_fsb_extension(file_header, file_name)
+!!                put ".fsb"
 !!      subroutine add_elaps_postfix(file_header, file_name)
 !!                put ".elps" at the end
 !!
 !!      subroutine add_gzip_extension(file_header, file_name)
 !!                put ".gz" and null character at the end
+!!      subroutine add_null_character(file_header, file_name)
+!!                put null character at the end
 !!
 !!      subroutine add_ksm_extension(file_header, file_name)
 !!                put ".ksm" at the end
@@ -378,6 +382,18 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine add_fsb_extension(file_header, file_name)
+!
+      character(len=kchara), intent(in) :: file_header
+      character(len=kchara), intent(inout) :: file_name
+!
+      write(file_name,1011) trim(file_header)
+ 1011 format (a,".fsb")
+!
+end subroutine add_fsb_extension
+!
+!-----------------------------------------------------------------------
+!
       subroutine add_elaps_postfix(file_header, file_name)
 !
       character(len=kchara), intent(in) :: file_header
@@ -399,6 +415,18 @@
  1011 format (a,a3,a1)
 !
       end subroutine add_gzip_extension
+!
+!-----------------------------------------------------------------------
+!
+      subroutine add_null_character(file_header, file_name)
+!
+      character(len=kchara), intent(in) :: file_header
+      character(len=kchara), intent(inout) :: file_name
+!
+      write(file_name,1011) trim(file_header), char(0)
+      1011 format (a,a1)
+!
+      end subroutine add_null_character
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

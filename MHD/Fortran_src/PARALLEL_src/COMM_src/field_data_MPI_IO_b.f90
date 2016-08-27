@@ -44,12 +44,11 @@
       use m_constants
 !
       use calypso_mpi
+      use m_machine_parameter
       use m_calypso_mpi_IO
       use t_field_data_IO
 !
       implicit none
-!
-      integer(kind = kint), private :: iflag_endian_swap
 !
 !  ---------------------------------------------------------------------
 !
@@ -69,9 +68,7 @@
       real(kind = kreal) ::   rtmp_IO(1)
 !
 !
-      itmp_IO(1) = i_UNIX
-      call calypso_mpi_seek_write_head_i                                &
-     &    (id_fld, ioff_gl, ione, itmp_IO)
+      call calypso_mpi_seek_write_endian(id_fld, ioff_gl)
       itmp_IO(1) = nprocs_in
       call calypso_mpi_seek_write_head_i                                &
      &    (id_fld, ioff_gl, ione, itmp_IO)
@@ -180,20 +177,22 @@
       integer, intent(in) ::  id_fld
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: iread, iread_e
       integer(kind = kint) :: itmp_IO(1)
       real(kind = kreal) ::   rtmp_IO(1)
 !
 !
       if(my_rank .eq. 0) then
         ioffset = ioff_gl
-        call calypso_mpi_seek_read_int(id_fld, ioffset, ione, itmp_IO)
-        iread_e = itmp_IO(1)
-        ioffset = ioffset + kint
+        call calypso_mpi_seek_read_endian(id_fld, ioffset)
+      end if
 !
+      if(my_rank .eq. 0) then
         call calypso_mpi_seek_read_int(id_fld, ioffset, ione, itmp_IO)
-        iread = itmp_IO(1)
         ioffset = ioffset + kint
+        if(nprocs_in .ne. itmp_IO(1)) then
+          call calypso_mpi_abort                                        &
+     &       (ierr_fld, 'Set correct field data file')
+        end if
 !
         call calypso_mpi_seek_read_int(id_fld, ioffset, ione, itmp_IO)
         i_time_step_IO = itmp_IO(1)
@@ -206,21 +205,7 @@
         call calypso_mpi_seek_read_real(id_fld, ioffset, ione, rtmp_IO)
         delta_t_IO = rtmp_IO(1)
         ioffset = ioffset + kreal
-!
-        if(nprocs_in .ne. iread) then
-          call calypso_mpi_abort                                        &
-     &       (ierr_fld, 'Set correct field data file')
-        end if
-!
-        iflag_endian_swap = 0
-        if(i_UNIX .ne. iread_e) then
-          write(*,*) 'binary data have opposite endian!'
-          iflag_endian_swap = 1
-        end if
       end if
-!
-      call MPI_BCAST(iflag_endian_swap, ione, CALYPSO_INTEGER, izero,   &
-     &    CALYPSO_COMM, ierr_MPI)
 !
       call sync_field_time_mpi
       ioff_gl = ioff_gl + 3*kint + 2*kreal

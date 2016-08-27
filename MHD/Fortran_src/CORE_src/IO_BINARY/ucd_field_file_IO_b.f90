@@ -62,7 +62,7 @@
       open(id_binary_fld, file = file_name, form = 'unformatted')
 !
       nnod4 = int(ucd%nnod)
-      call write_step_data_b(id_binary_fld, my_rank)
+      call write_step_data_bin(id_binary_fld, my_rank)
       call write_field_data_b(id_binary_fld,                            &
      &          nnod4, ucd%num_field, ucd%ntot_comp,                    &
      &          ucd%num_comp, ucd%phys_name, ucd%d_ucd)
@@ -93,7 +93,7 @@
 !
       open(id_binary_fld, file = file_name, form = 'unformatted')
 !
-      call read_step_data_b(id_binary_fld, my_rank, ierr)
+      call read_step_data_bin(id_binary_fld, my_rank, ierr)
 !
       read(id_binary_fld) nnod4, ucd%num_field
       read(id_binary_fld) ucd%num_comp(1:ucd%num_field)
@@ -128,7 +128,7 @@
 !
       open(id_binary_fld, file = file_name, form = 'unformatted')
 !
-      call read_step_data_b(id_binary_fld, my_rank, ierr)
+      call read_step_data_bin(id_binary_fld, my_rank, ierr)
 !
       read(id_binary_fld) nnod4, ucd%num_field
       ucd%nnod = nnod4
@@ -168,7 +168,7 @@
 !
       open(id_binary_fld, file = file_name, form = 'unformatted')
 !
-      call read_step_data_b(id_binary_fld, my_rank, ierr)
+      call read_step_data_bin(id_binary_fld, my_rank, ierr)
       read(id_binary_fld) nnod4, ucd%num_field
       ucd%nnod = nnod4
 !

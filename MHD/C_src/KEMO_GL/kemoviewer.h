@@ -14,6 +14,14 @@
 #endif
 
 #ifdef FC_NAME_LOWER_USCORE
+#define open_wt_rawfile           open_wt_rawfile_
+#define open_ad_rawfile           open_ad_rawfile_
+#define open_rd_rawfile           open_rd_rawfile_
+#define close_rawfile             close_rawfile_
+#define rawread_f                 rawread_f_
+#define rawwrite_f                rawwrite_f_
+#define rawseek_go_fwd_f          rawseek_go_fwd_f_
+
 #define open_wt_gzfile            open_wt_gzfile_
 #define open_ad_gzfile            open_ad_gzfile_
 #define open_rd_gzfile            open_rd_gzfile_
@@ -50,6 +58,14 @@
 #define kemo_fftw_execute_dft_c2r    kemo_fftw_execute_dft_c2r_
 
 #elif FC_NAME_UPPER
+#define open_wt_rawfile           OPEN_WT_RAWFILE
+#define open_ad_rawfile           OPEN_AD_RAWFILE
+#define open_rd_rawfile           OPEN_RD_RAWFILE
+#define close_rawfile             CLOSE_RAWFILE
+#define rawread_f                 RAWREAD_F
+#define rawwrite_f                RAWWRITE_F
+#define rawseek_go_fwd_f          RAWSEEK_GO_FWD_F
+
 #define open_wt_gzfile            OPEN_WT_GZFILE
 #define open_ad_gzfile            OPEN_AD_GZFILE
 #define open_rd_gzfile            OPEN_RD_GZFILE
@@ -86,6 +102,14 @@
 #define kemo_fftw_execute_dft_c2r    KEMO_FFTW_EXECUTE_DFT_C2R
 
 #elif FC_NAME_UPPER_STDCALL
+#define open_wt_rawfile           OPEN_WT_RAWFILE
+#define open_ad_rawfile           OPEN_AD_RAWFILE
+#define open_rd_rawfile           OPEN_RD_RAWFILE
+#define close_rawfile             CLOSE_RAWFILE
+#define rawread_f                 RAWREAD_F
+#define rawwrite_f                RAWWRITE_F
+#define rawseek_go_fwd_f          RAWSEEK_GO_FWD_F
+
 #define open_wt_gzfile            OPEN_WT_GZFILE
 #define open_ad_gzfile            OPEN_AD_GZFILE
 #define open_rd_gzfile            OPEN_RD_GZFILE
@@ -122,6 +146,14 @@
 #define kemo_fftw_execute_dft_c2r    KEMO_FFTW_EXECUTE_DFT_C2R
 
 #else
+#define open_wt_rawfile           open_wt_rawfile
+#define open_ad_rawfile           open_ad_rawfile
+#define open_rd_rawfile           open_rd_rawfile
+#define close_rawfile             close_rawfile
+#define rawread_f                 rawread_f
+#define rawwrite_f                rawwrite_f
+#define rawseek_go_fwd_f          rawseek_go_fwd_f
+
 #define open_wt_gzfile            open_wt_gzfile
 #define open_ad_gzfile            open_ad_gzfile
 #define open_rd_gzfile            open_rd_gzfile
@@ -306,6 +338,8 @@
 #define IFLAG_SURF_UCD_GZ   111
 #define IFLAG_SURF_VTD_GZ   120
 #define IFLAG_SURF_VTK_GZ   121
+
+#define IFLAG_SWAP  1
 
 #define EPSILON  1.e-9
 

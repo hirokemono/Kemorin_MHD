@@ -37,6 +37,7 @@
 !
       use m_precision
       use m_constants
+      use m_machine_parameter
       use m_calypso_mpi_IO
 !
       use calypso_mpi
@@ -269,6 +270,56 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
+      subroutine gz_read_endian_flag_mpi(id_fld, ioff_gl)
+!
+      use m_error_IDs
+!
+      integer, intent(in) ::  id_fld
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+!
+!
+      integer(kind = kint) :: int_dat(1)
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
+!
+      character(len=1), allocatable :: gzip_buf(:)
+!
+!
+      if(my_rank .eq. 0) then
+        ioffset = ioff_gl
+        ilength = kint
+        ilen_gz = int(real(ilength) *1.01) + 24
+        allocate(gzip_buf(ilen_gz))
+        call calypso_mpi_seek_read_chara                                &
+     &         (id_fld, ioffset, ilen_gz, gzip_buf(1))
+!
+        call gzip_infleat_once                                          &
+     &     (ilen_gz, gzip_buf(1), ilength, int_dat, ilen_gzipped)
+        deallocate(gzip_buf)
+!
+        if(int_dat(1) .eq. i_UNIX) then
+          write(*,*) 'binary data have correct endian!'
+          iflag_endian = iendian_KEEP
+        else if(int_dat(1) .eq. i_XINU) then
+          write(*,*) 'binary data have opposite endian!'
+          iflag_endian = iendian_FLIP
+        else
+          iflag_endian = -1
+          call calypso_MPI_abort                                        &
+     &       (ierr_fld,'Binary Data is someting wrong!')
+        end if
+      end if
+!
+      call MPI_BCAST(iflag_endian, ione, CALYPSO_INTEGER, izero,        &
+     &    CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(ilen_gzipped, ione, CALYPSO_INTEGER, izero,        &
+     &    CALYPSO_COMM, ierr_MPI)
+      ioff_gl = ioff_gl + ilen_gzipped
+!
+      end subroutine gz_read_endian_flag_mpi
+!
+! -----------------------------------------------------------------------
+!
       subroutine gz_read_fld_mul_inthead_mpi_b                          &
      &         (id_fld, ioff_gl, num, int_dat)
 !
@@ -283,6 +334,7 @@
       integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
 !
       character(len=1), allocatable :: gzip_buf(:)
+      integer(kind = kint_gl) :: l8_byte
 !
 !
       if(my_rank .eq. 0) then
@@ -296,6 +348,11 @@
         call gzip_infleat_once                                          &
      &     (ilen_gz, gzip_buf(1), ilength, int_dat, ilen_gzipped)
         deallocate(gzip_buf)
+!
+        if(iflag_endian .eq. iendian_FLIP) then
+          l8_byte = ilength
+          call byte_swap_f(l8_byte, int_dat(1))
+        end if
       end if
 !
       call MPI_BCAST(int_dat, num, CALYPSO_INTEGER, izero,              &
@@ -319,6 +376,7 @@
       integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
 !
       character(len=1), allocatable :: gzip_buf(:)
+      integer(kind = kint_gl) :: l8_byte
 !
 !
       if(my_rank .eq. 0) then
@@ -332,6 +390,11 @@
         call gzip_infleat_once                                          &
      &     (ilen_gz, gzip_buf(1), ilength, real_dat, ilen_gzipped)
         deallocate(gzip_buf)
+!
+        if(iflag_endian .eq. iendian_FLIP) then
+          l8_byte = ilength
+          call byte_swap_f(l8_byte, real_dat)
+        end if
       end if
 !
       call MPI_BCAST(real_dat, ione, CALYPSO_REAL, izero,               &
@@ -357,6 +420,7 @@
       integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
 !
       character(len=1), allocatable :: gzip_buf(:)
+      integer(kind = kint_gl) :: l8_byte
 !
 !
       if(my_rank .eq. 0) then
@@ -370,6 +434,11 @@
         call gzip_infleat_once                                          &
      &     (ilen_gz, gzip_buf(1), ilength, int_dat, ilen_gzipped)
         deallocate(gzip_buf)
+!
+        if(iflag_endian .eq. iendian_FLIP) then
+          l8_byte = ilength
+          call byte_swap_f(l8_byte, int_dat(1))
+        end if
       end if
 !
       call MPI_BCAST(int_dat, num, CALYPSO_GLOBAL_INT, izero,           &
@@ -395,6 +464,7 @@
       integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
 !
       character(len=1), allocatable :: gzip_buf(:)
+      integer(kind = kint_gl) :: l8_byte
 !
 !
       ilength = num * kchara
@@ -408,6 +478,11 @@
         call gzip_infleat_once                                          &
      &     (ilen_gz, gzip_buf(1), ilength, chara_dat, ilen_gzipped)
         deallocate(gzip_buf)
+!
+        if(iflag_endian .eq. iendian_FLIP) then
+          l8_byte = ilength
+          call byte_swap_f(l8_byte, chara_dat(1))
+        end if
       end if
 !
       call MPI_BCAST(chara_dat, ilength, CALYPSO_CHARACTER, izero,      &
@@ -436,6 +511,7 @@
       character(len=1), allocatable :: gzip_buf(:)
 !
       integer(kind = kint_gl) :: istack_buffer(0:nprocs_in)
+      integer(kind = kint_gl) :: l8_byte
 !
 !
       istack_buffer(0) = 0
@@ -455,6 +531,11 @@
      &   (ilen_gz, gzip_buf(1), ilength, real_dat, ilen_gzipped)
       deallocate(gzip_buf)
       ioff_gl = ioff_gl + ilen_gz
+!
+      if(iflag_endian .eq. iendian_FLIP) then
+        l8_byte = ilength
+        call byte_swap_f(l8_byte, real_dat(1,1))
+      end if
 !
       end subroutine gz_read_fld_realarray2_mpi_b
 !

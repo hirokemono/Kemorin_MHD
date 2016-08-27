@@ -14,6 +14,7 @@
 !!      subroutine calypso_mpi_read_file_open(file_name, id_mpi_file)
 !!      subroutine calypso_close_mpi_file(id_mpi_file)
 !!
+!!      subroutine calypso_mpi_seek_write_endian(id_mpi_file, ioff_gl)
 !!      subroutine calypso_mpi_seek_write_chara                         &
 !!     &         (id_mpi_file, ioffset, ilength, textbuf)
 !!      subroutine calypso_mpi_seek_wrt_mul_chara                       &
@@ -37,6 +38,7 @@
 !!      subroutine calypso_gz_mpi_seek_write(id_mpi_file,               &
 !!     &          ioff_gl, ilen_gzipped, gzip_buf)
 !!
+!!      subroutine calypso_mpi_seek_read_endian(id_mpi_file, ioffset)
 !!      subroutine calypso_mpi_seek_read_lenchara                       &
 !!     &         (id_mpi_file, ioffset, ilength, charabuf)
 !!      subroutine calypso_mpi_seek_read_chara                          &
@@ -56,6 +58,7 @@
 !
       use m_precision
       use m_constants
+      use m_machine_parameter
       use calypso_mpi
 !
       implicit none
@@ -280,6 +283,27 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine calypso_mpi_seek_write_endian(id_mpi_file, ioff_gl)
+!
+      integer, intent(in) ::  id_mpi_file
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+!
+      integer(kind = kint) :: int_vector(1)
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+!
+!
+      if(my_rank .eq. 0) then
+        int_vector(1) = i_UNIX
+        ioffset = ioff_gl
+        call calypso_mpi_seek_write_int                                 &
+     &         (id_mpi_file, ioffset, ione, int_vector)
+      end if
+      ioff_gl = ioff_gl + kint
+!
+      end subroutine calypso_mpi_seek_write_endian
+!
+!  ---------------------------------------------------------------------
+!
       subroutine calypso_mpi_seek_write_head_i                          &
      &         (id_mpi_file, ioff_gl, ilength, int_vector)
 !
@@ -360,6 +384,43 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
+      subroutine calypso_mpi_seek_read_endian(id_mpi_file, ioffset)
+!
+      use m_error_IDs
+!
+      integer, intent(in) ::  id_mpi_file
+      integer(kind = MPI_OFFSET_KIND), intent(inout) :: ioffset
+!
+      integer(kind = kint) :: int_vector(1)
+!
+!
+      if(my_rank .eq. 0) then
+        call MPI_FILE_SEEK                                              &
+     &     (id_mpi_file, ioffset, MPI_SEEK_SET, ierr_MPI)
+        call MPI_FILE_READ(id_mpi_file, int_vector, ione,               &
+     &      CALYPSO_INTEGER, sta1_IO, ierr_MPI)
+        ioffset = ioffset + kint
+!
+        if(int_vector(1) .eq. i_UNIX) then
+          write(*,*) 'binary data have correct endian!'
+          iflag_endian = iendian_KEEP
+        else if(int_vector(1) .eq. i_XINU) then
+          write(*,*) 'binary data have opposite endian!'
+          iflag_endian = iendian_FLIP
+        else
+          iflag_endian = -1
+          call calypso_MPI_abort                                        &
+     &     (ierr_fld,'Binary Data is someting wrong!')
+        end if
+      end if
+!
+      call MPI_BCAST(iflag_endian, ione, CALYPSO_INTEGER, izero,        &
+     &    CALYPSO_COMM, ierr_MPI)
+
+      end subroutine calypso_mpi_seek_read_endian
+!
+!  ---------------------------------------------------------------------
+!
       subroutine calypso_mpi_seek_read_lenchara                         &
      &         (id_mpi_file, ioffset, ilength, charabuf)
 !
@@ -386,11 +447,18 @@
       integer(kind = kint), intent(in) :: ilength
       character(len=1), intent(inout) :: c1buf(ilength)
 !
+      integer(kind = kint_gl) :: l8_byte
+!
 !
       call MPI_FILE_SEEK(id_mpi_file, ioffset, MPI_SEEK_SET, ierr_MPI)
       call MPI_FILE_READ(id_mpi_file, c1buf(1), ilength,                &
      &      CALYPSO_CHARACTER, sta1_IO, ierr_MPI)
       ioffset = ioffset + ilength
+!
+      if(iflag_endian .eq. i_XINU) then
+        l8_byte = ilength * kint
+        call byte_swap_f(l8_byte, c1buf(1))
+      end if
 !
       end subroutine calypso_mpi_seek_read_chara
 !
@@ -404,10 +472,17 @@
       integer(kind = MPI_OFFSET_KIND), intent(inout) :: ioffset
       real(kind = kreal), intent(inout) :: vector(ilength)
 !
+      integer(kind = kint_gl) :: l8_byte
+!
 !
       call MPI_FILE_SEEK(id_mpi_file, ioffset, MPI_SEEK_SET, ierr_MPI)
       call MPI_FILE_READ(id_mpi_file, vector, ilength,                  &
      &    CALYPSO_REAL, sta1_IO, ierr_MPI)
+!
+      if(iflag_endian .eq. i_XINU) then
+        l8_byte = ilength * kreal
+        call byte_swap_f(l8_byte, vector(1))
+      end if
 !
       end subroutine calypso_mpi_seek_read_real
 !
@@ -421,10 +496,17 @@
       integer(kind = MPI_OFFSET_KIND), intent(inout) :: ioffset
       integer(kind = kint), intent(inout) :: int_vector(ilength)
 !
+      integer(kind = kint_gl) :: l8_byte
+!
 !
       call MPI_FILE_SEEK(id_mpi_file, ioffset, MPI_SEEK_SET, ierr_MPI)
       call MPI_FILE_READ(id_mpi_file, int_vector, ilength,              &
      &    CALYPSO_INTEGER, sta1_IO, ierr_MPI)
+!
+      if(iflag_endian .eq. i_XINU) then
+        l8_byte = ilength * kint
+        call byte_swap_f(l8_byte, int_vector(1))
+      end if
 !
       end subroutine calypso_mpi_seek_read_int
 !
@@ -438,10 +520,17 @@
       integer(kind = MPI_OFFSET_KIND), intent(inout) :: ioffset
       integer(kind = kint_gl), intent(inout) :: i8_vector(ilength)
 !
+      integer(kind = kint_gl) :: l8_byte
+!
 !
       call MPI_FILE_SEEK(id_mpi_file, ioffset, MPI_SEEK_SET, ierr_MPI)
       call MPI_FILE_READ(id_mpi_file, i8_vector, ilength,              &
      &    CALYPSO_GLOBAL_INT, sta1_IO, ierr_MPI)
+!
+      if(iflag_endian .eq. i_XINU) then
+        l8_byte = ilength * kint_gl
+        call byte_swap_f(l8_byte, i8_vector(1))
+      end if
 !
       end subroutine calypso_mpi_seek_read_int8
 !
