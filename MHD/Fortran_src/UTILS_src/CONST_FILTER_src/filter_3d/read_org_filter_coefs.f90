@@ -14,7 +14,6 @@
       use m_ctl_param_newdom_filter
       use set_parallel_file_name
       use filter_IO_for_newdomain
-      use filter_geometry_IO
 !
       implicit none
 !
@@ -31,6 +30,8 @@
       use m_filter_coefs
       use m_read_mesh_data
       use m_comm_data_IO
+      use filter_coefs_file_IO
+      use filter_coefs_file_IO_b
 !
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(in) :: ifile_type

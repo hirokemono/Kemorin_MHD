@@ -49,6 +49,7 @@
       subroutine sel_read_sort_filter_coef_file(my_rank, IO_filters)
 !
       use filter_coefs_file_IO
+      use filter_coefs_file_IO_b
       use gz_filter_coefs_file_IO
 !
       integer(kind = kint), intent(in) :: my_rank
@@ -59,20 +60,21 @@
 !
       call add_int_suffix(my_rank, filter_file_head, file_name)
 !
+!
+#ifdef ZLIB_IO
       if (ifmt_filter_file .eq. id_binary_file_fmt) then
         call read_sorted_filter_coef_file_b                             &
      &     (file_name, my_rank, IO_filters)
-!
-#ifdef ZLIB_IO
+        return
       else if(ifmt_filter_file .eq. id_gzip_txt_file_fmt) then
         call read_sort_filter_coef_file_gz                              &
      &     (file_name, my_rank, IO_filters)
+        return
+      end if
 #endif
 !
-      else
         call read_sorted_filter_coef_file                               &
      &     (file_name, my_rank, IO_filters)
-      end if
 !
       end subroutine sel_read_sort_filter_coef_file
 !
@@ -81,6 +83,7 @@
       subroutine sel_write_sort_filter_coef_file(my_rank, IO_filters)
 !
       use filter_coefs_file_IO
+      use filter_coefs_file_IO_b
       use gz_filter_coefs_file_IO
 !
       integer(kind = kint), intent(in) :: my_rank
@@ -91,11 +94,14 @@
 !
       call add_int_suffix(my_rank, filter_file_head, file_name)
 !
-      if (ifmt_filter_file .eq. id_binary_file_fmt) then
+!
+      if (ifmt_filter_file .eq. id_ascii_file_fmt) then
+        call write_sorted_filter_coef_file                              &
+     &     (file_name, my_rank, IO_filters)
+#ifdef ZLIB_IO
+      else if (ifmt_filter_file .eq. id_binary_file_fmt) then
         call write_sorted_filter_coef_file_b                            &
      &     (file_name, my_rank, IO_filters)
-!
-#ifdef ZLIB_IO
       else if(ifmt_filter_file .eq. id_gzip_txt_file_fmt) then
         call write_sort_filter_coef_file_gz                             &
      &     (file_name, my_rank, IO_filters)
@@ -119,6 +125,7 @@
       subroutine sel_read_filter_geometry_file(my_rank)
 !
       use filter_coefs_file_IO
+      use filter_coefs_file_IO_b
       use gz_filter_coefs_file_IO
 !
       integer(kind = kint), intent(in) :: my_rank
@@ -128,17 +135,18 @@
 !
       call add_int_suffix(my_rank, filter_file_head, file_name)
 !
-      if (ifmt_filter_file .eq. id_binary_file_fmt) then
-        call read_filter_geometry_file_b(file_name, my_rank)
 !
 #ifdef ZLIB_IO
+      if (ifmt_filter_file .eq. id_binary_file_fmt) then
+        call read_filter_geometry_file_b(file_name, my_rank)
+        return
       else if(ifmt_filter_file .eq. id_gzip_txt_file_fmt) then
         call read_filter_geometry_file_gz(file_name, my_rank)
+        return
+      end if
 #endif
 !
-      else
-        call read_filter_geometry_file(file_name, my_rank)
-      end if
+      call read_filter_geometry_file(file_name, my_rank)
 !
       end subroutine sel_read_filter_geometry_file
 !
@@ -147,6 +155,7 @@
       subroutine sel_write_filter_geometry_file(my_rank)
 !
       use filter_coefs_file_IO
+      use filter_coefs_file_IO_b
       use gz_filter_coefs_file_IO
 !
       integer(kind = kint), intent(in) :: my_rank
@@ -156,17 +165,17 @@
 !
       call add_int_suffix(my_rank, filter_file_head, file_name)
 !
+#ifdef ZLIB_IO
       if (ifmt_filter_file .eq. id_binary_file_fmt) then
         call write_filter_geometry_file_b(file_name, my_rank)
-!
-#ifdef ZLIB_IO
+        return
       else if(ifmt_filter_file .eq. id_gzip_txt_file_fmt) then
         call write_filter_geometry_file_gz(file_name, my_rank)
+        return
+      end if
 #endif
 !
-      else
-        call write_filter_geometry_file(file_name, my_rank)
-      end if
+      call write_filter_geometry_file(file_name, my_rank)
 !
       end subroutine sel_write_filter_geometry_file
 !

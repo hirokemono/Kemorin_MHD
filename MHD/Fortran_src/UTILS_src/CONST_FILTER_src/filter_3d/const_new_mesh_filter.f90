@@ -50,7 +50,8 @@
       use m_internal_4_partitioner
       use m_partitioner_comm_table
       use set_parallel_file_name
-      use filter_geometry_IO
+      use filter_coefs_file_IO
+      use filter_coefs_file_IO_b
       use work_comm_table_IO
       use set_filter_geometry_4_IO
       use set_filters_4_new_domains
@@ -98,25 +99,12 @@
      &    mesh_file_name)
 !
       if (iflag_mesh_file_fmt .eq. id_binary_file_fmt) then
-!
-        write(*,*) 'binary mesh file: ', mesh_file_name
-        open (filter_coef_code, file = mesh_file_name,                  &
-     &    form = 'unformatted')
-!          write(*,*) 'write_filter_geometry_b'
-        call write_filter_geometry_b(filter_coef_code)
-!
+        call write_filter_geometry_file_b(mesh_file_name, my_rank2)
       else
-!
-        write(*,*) 'ascii mesh file: ', trim(mesh_file_name)
-        open (filter_coef_code, file = mesh_file_name,                  &
-     &    form = 'formatted')
-!          write(*,*) 'write_filter_geometry'
-        call write_filter_geometry(filter_coef_code)
-!
+        call write_filter_geometry_file(mesh_file_name, my_rank2)
       end if
 !
       write(*,*) 'write filter file end'
-      close(filter_coef_code)
 !
       end subroutine const_mesh_each_filter_domain
 !

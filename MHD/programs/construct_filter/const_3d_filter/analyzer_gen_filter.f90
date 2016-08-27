@@ -175,12 +175,12 @@
       use cal_element_size
       use set_parallel_file_name
       use filter_moment_IO_select
-      use filter_coef_IO
       use construct_filters
       use copy_mesh_structures
       use set_comm_table_4_IO
       use set_filter_geometry_4_IO
-      use filter_geometry_IO
+      use filter_coefs_file_IO
+      use filter_coefs_file_IO_b
       use check_num_fail_nod_commute
       use nod_phys_send_recv
 !
@@ -227,7 +227,7 @@
 !
         if (ifmt_3d_filter .eq. id_binary_file_fmt) then
           open(filter_coef_code, file=file_name, form='unformatted')
-          call write_filter_geometry_b(filter_coef_code)
+          call write_filter_geometry_b
         else
           open(filter_coef_code, file=file_name, form='formatted')
           call write_filter_geometry(filter_coef_code)

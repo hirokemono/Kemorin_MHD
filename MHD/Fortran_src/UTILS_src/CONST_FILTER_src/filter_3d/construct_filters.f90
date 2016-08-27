@@ -153,7 +153,7 @@
       use cal_1st_diff_deltax_4_nod
       use cal_filter_func_node
       use cal_diff_elesize_on_ele
-      use filter_geometry_IO
+      use filter_coefs_file_IO
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -208,10 +208,13 @@
       subroutine correct_commutative_filter(node, ele, jac_3d_q,        &
      &          tbl_crs, rhs_mat, FEM_elen, dxidxs, FEM_moments)
 !
+      use m_read_mesh_data
+      use m_comm_data_IO
       use m_filter_file_names
       use set_parallel_file_name
       use correct_wrong_filters
-      use filter_geometry_IO
+      use filter_coefs_file_IO
+      use filter_coefs_file_IO_b
 !
       type(CRS_matrix_connect), intent(inout) :: tbl_crs
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
@@ -282,12 +285,15 @@
      &         (nod_comm, node, ele, jac_3d_q, rhs_tbl, tbl_crs,        &
      &          rhs_mat, FEM_elen, dxidxs, FEM_moments)
 !
+      use m_comm_data_IO
+      use m_read_mesh_data
       use m_filter_file_names
       use m_filter_coefs
       use m_field_file_format
       use set_parallel_file_name
       use correct_wrong_filters
-      use filter_geometry_IO
+      use filter_coefs_file_IO
+      use filter_coefs_file_IO_b
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
