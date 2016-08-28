@@ -130,42 +130,6 @@
        end do
 !
 !
-       if ( iflag_data_f .eq. 1) then
-!
-        write(l_out) elmgrptot
-        write(l_out) (index(i),i=1,elmgrptot)
-!
-        write(l_out) 'layer_start'
-        write(l_out) (iele_group_id(i),i=1, index(1))
-!
-        write(l_out) 'layer_end'
-        write(l_out) (iele_group_id(i),i=index(1)+1, index(2))
-!
-        write(l_out) 'conductive_fluid'
-        write(l_out) (iele_group_id(i),i=index(2)+1, index(3))
-!
-        do k = 1, (nz_all-1)
-          if      (k.lt.10) then
-            write(group_name,1001) k
-          else if (k.lt.100) then
-            write(group_name,1002) k
-          else if (k.lt.1000) then
-            write(group_name,1003) k
-          else if (k.lt.10000) then
-            write(group_name,1004) k
-          else if (k.lt.100000) then
-            write(group_name,1005) k
-          else if (k.lt.1000000) then
-            write(group_name,1006) k
-          end if
-!
-          write(l_out) trim(group_name)
-          write(l_out) iele_group_id(index(2+k)+1:index(3+k))
-!
-        end do
-!
-       else
-!
          write(l_out,'(a)', advance='NO') hd_fem_elegrp()
          write(l_out,'(10i16)') elmgrptot
          write(l_out,'(10i16)') (index(i),i=1,elmgrptot)
@@ -201,8 +165,6 @@
           write(l_out,'(6i16)')                                         &
      &            (iele_group_id(i),i=index(2+k)+1, index(3+k))
         end do
-!
-      end if
 !
  1001 format('fluid_layer_',i1)
  1002 format('fluid_layer_',i2)

@@ -5,7 +5,6 @@
 !     modified by H. Matsui on Aug., 2007
 !
 !      subroutine write_line_filter_data_a(file_code, numnod)
-!      subroutine write_line_filter_data_b(file_code, numnod)
 !
       module write_line_filter_data
 !
@@ -24,7 +23,7 @@
       subroutine write_line_filter_data_a(file_code, numnod)
 !
       integer (kind = kint) :: file_code, numnod
-      integer (kind = kint) :: nd, i, ifil
+      integer (kind = kint) :: nd, i
 !
 !
        write(file_code,'(a)')                                           &
@@ -72,42 +71,6 @@
 !
 !
       end subroutine write_line_filter_data_a
-!
-! ----------------------------------------------------------------------
-!
-      subroutine write_line_filter_data_b(file_code, numnod)
-!
-      integer (kind = kint) :: file_code, numnod
-!
-      integer (kind = kint) :: nd, i, ifil
-!
-!
-!       write(file_code)                                                    &
-!     &        '! num_depth, max. number of node for filtering cube: '
-       write(file_code) ndepth_l, num_filter_l
-!       write(file_code)                                                     &
-!     &        '! num_depth, max. and min. number of node for filtering: '
-        write(file_code) (nmax_l_filter(nd),nd=1,3)
-        write(file_code) (nmin_l_filter(nd),nd=1,3)
-!
-!       write(file_code) '! total number of filtering data '
-       write(file_code) (num_l_filter(nd),nd=1,3)
-!
-!       write(file_code) '! orderind ID for filtering'
-         write(file_code)  ((inod_l_filter(i,nd),i=1,numnod), nd=1,3)
-!
-!       write(file_code) '! stack for filtering for each direction'
-         write(file_code)  ((istack_l_filter(i,nd),i=1,numnod), nd=1,3)
-!
-!       write(file_code) '!  node ID for filtering
-          write(file_code)                                              &
-     &       ((item_l_filter(i,nd),i=1,ntot_l_filter), nd=1,3)
-!       write(file_code) '!  filter coefficients'
-          write(file_code)                                              &
-     &               ((coef_l_filter(i,nd),i=1,ntot_l_filter),nd=1,3)
-!
-!
-      end subroutine write_line_filter_data_b
 !
 ! ----------------------------------------------------------------------
 !

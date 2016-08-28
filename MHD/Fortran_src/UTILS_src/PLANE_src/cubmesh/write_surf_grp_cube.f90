@@ -5,7 +5,6 @@
 !     modified by H. Matsui on Aug., 2007
 !
 !       subroutine write_surface_group(kpe)
-!       subroutine write_surface_group_b(kpe)
 !
       module write_surf_grp_cube
 !
@@ -84,66 +83,6 @@
 !
 !
       end subroutine write_surface_group
-!
-! ----------------------------------------------------------------------
-!
-       subroutine write_surface_group_b(kpe)
-!
-       integer(kind = kint) :: kpe
-!
-       integer(kind = kint) :: ibd
-       integer(kind = kint) :: i, j, istart
-!
-       integer(kind=kint ), parameter ::  isix = 6, ifive = 5
-!
-!
-            write(l_out) sufgrptot
-            write(l_out) (index(i),i=1,sufgrptot)
-!
-!
-            do ibd = 1, neib
-!
-!                                                 .. zmin_surf
-              if (ibd .eq. 1) then
-                write(l_out)  'zmin_surf'
-              else if (ibd.gt.1 .and. ibd.lt.10) then
-                write(l_out)  'zmin_',ibd
-              else if (ibd.ge.10 .and. ibd.lt.100) then
-                write(l_out)  'zmin_',ibd
-              end if
-!
-              if (kpe == 1) then 
-                istart = (nx-1)*(ny-1)*(ibd-1)
-                write(l_out)                                            &
-     &               ( ( (i+(j-1)*(nx-1)+istart), i=1,nx-1 ),j=1,ny-1)
-                write(l_out) (( ifive, i=1, nx-1 ),j=1,ny-1)
-              else
-                write(l_out)
-                write(l_out)
-              endif
-!                                                 .. zmax_surf
-              if (ibd .eq. 1) then
-                write(l_out)  'zmax_surf'
-              else if (ibd.gt.1 .and. ibd.lt.10) then
-                write(l_out)  'zmax_',ibd
-              else if (ibd.ge.10 .and. ibd.lt.100) then
-                write(l_out)  'zmax_',ibd
-              end if
-!
-              if (kpe == ndz) then 
-                istart = (nx-1)*(ny-1)*(nz-ibd-1)
-                write(l_out)                                            &
-     &             ( ( (i+(j-1)*(nx-1)+istart),i=1,nx-1 ),j=1,ny-1)
-                write(l_out) (( isix, i=1, nx-1 ),j=1,ny-1)
-              else
-                write(l_out)
-                write(l_out)
-              end if
-!
-            end do
-!
-!
-      end subroutine write_surface_group_b
 !
 ! ----------------------------------------------------------------------
 !

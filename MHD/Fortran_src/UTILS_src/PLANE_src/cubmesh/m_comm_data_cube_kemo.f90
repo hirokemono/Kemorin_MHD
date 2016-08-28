@@ -172,23 +172,6 @@
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine write_pe_data_b(pe_id)
-!
-       use m_cube_files_data
-!
-       integer(kind = kint) :: pe_id
-       integer(kind = kint) :: i
-!
-
-            write(l_out)  pe_id-1
-            write(l_out)  neibpetot_new
-            write(l_out) (neibpe_new(i)-1,i=1,neibpetot_new)
-!
-!
-       end subroutine write_pe_data_b
-!
-! ----------------------------------------------------------------------
-!
        subroutine write_communication_data
 !
        use m_fem_mesh_labels
@@ -214,28 +197,6 @@
        end subroutine write_communication_data
 !
 ! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-       subroutine write_communication_data_b
-!
-!
-       use m_cube_files_data
-!
-       integer(kind = kint) :: i
-!
-!
-!      Write import data
-!
-            write(l_out) (stack_import_new(i)  ,i=1,neibpetot_new)
-            write(l_out) (item_import_new(i)   ,i=1, num_import)
-!
-!      Write export data
-!
-            write(l_out) (stack_export_new(i)  ,i=1,neibpetot_new)
-            write(l_out) (item_export_new(i)  , i=1, num_export)
-!
-       end subroutine write_communication_data_b
-!
 ! ----------------------------------------------------------------------
 !
        subroutine write_org_communication_data(pe_id)

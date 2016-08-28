@@ -55,8 +55,6 @@
 !
       subroutine neighboring_node(pe_id, kpe, FEM_elen)
 !
-      use set_parallel_file_name
-!
       type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
       integer(kind = kint) :: kpe, pe_id
@@ -106,20 +104,8 @@
        end if
 !        call check_neib_node_z
 !
-       if ( iflag_data_f .eq. 1) then
-         call add_int_suffix(pe1, filter_file_header, nb_name)
-         write(*,*) 'output binary file: ', nb_name
-         open (nb_out, file=nb_name, form='unformatted')
-         call write_neighboring_nod_line_b                              &
-     &       (FEM_elen%filter_conf%nf_type, FEM_elen)
-       else
-         call add_int_suffix(pe1, filter_file_header, nb_name)
-         write(*,*) 'output ascii file: ', trim(nb_name)
-         open (nb_out, file=nb_name)
-         call write_neighboring_nod_line                                &
-     &       (FEM_elen%filter_conf%nf_type, FEM_elen)
-       end if
-       close(nb_out)
+       call write_neighboring_nod_line                                  &
+     &    (pe1, FEM_elen%filter_conf%nf_type, FEM_elen)
 !
        write(*,*) 'deallocate_filters_nod'
        call deallocate_filters_nod

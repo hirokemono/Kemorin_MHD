@@ -55,15 +55,13 @@
 !
 ! ..... write 4.group information
 !
-       if ( iflag_data_f .ne. 1) then
-         write(l_out,'(a)', advance='NO') hd_fem_nodgrp()
-       end if
+       write(l_out,'(a)', advance='NO') hd_fem_nodgrp()
 ! 
 ! ***** write boundary condition (x,y,z=0 plane sym., x-force)
 !
-            elmgrptot = 3 + (nz_all-1)
-            nodgrptot = 3
-            sufgrptot = 2*neib
+       elmgrptot = 3 + (nz_all-1)
+       nodgrptot = 3
+       sufgrptot = 2*neib
 !
        end subroutine write_labels_4_group
 !

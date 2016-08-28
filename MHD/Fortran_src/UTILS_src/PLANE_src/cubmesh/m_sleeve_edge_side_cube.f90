@@ -71,15 +71,11 @@
            z = zz_edge(koff+k)
           end if
 
-          if ( iflag_data_f .eq. 1) then
-           write(l_out) node_id_gl, x, y, z
-          else
            write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z
-          end if 
 !
-         enddo
-        enddo
-       enddo
+         end do
+        end do
+       end do
 !
        end subroutine set_sleeve_edge_xmin
 !
@@ -137,15 +133,11 @@
            z = zz_edge(koff+k)
           end if
 
-          if ( iflag_data_f .eq. 1) then
-           write(l_out) node_id_gl, x, y, z
-          else
            write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z
-          end if 
 !
-         enddo
-        enddo
-       enddo
+         end do
+        end do
+       end do
 !
        end subroutine set_sleeve_edge_xmax
 !
@@ -201,15 +193,11 @@
            z = zz_edge(koff+k)
           end if
 
-          if ( iflag_data_f .eq. 1) then
-           write(l_out) node_id_gl, x, y, z
-          else
            write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z
-          end if 
 !
-         enddo
-        enddo
-       enddo
+         end do
+        end do
+       end do
 !
        end subroutine set_sleeve_edge_ymin
 !
@@ -267,15 +255,11 @@
            z = zz_edge(koff+k)
           end if
 
-          if ( iflag_data_f .eq. 1) then
-           write(l_out) node_id_gl, x, y, z
-          else
            write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z
-          end if 
 !
-         enddo
-        enddo
-       enddo
+         end do
+        end do
+       end do
 !
        end subroutine set_sleeve_edge_ymax
 !

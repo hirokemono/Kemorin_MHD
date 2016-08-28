@@ -24,9 +24,6 @@
 !
       character(len=kchara) :: filter_edge_header = 'filter_edge_l'
 !
-      integer (kind = kint) :: iflag_data_f = 0
-!
-!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -56,31 +53,6 @@
      &          ndx   ,',',ndy   ,',',ndz   ,')'
 !
        end subroutine open_mesh_file
-!
-! ----------------------------------------------------------------------
-!
-      subroutine open_mesh_file_b(my_rank)
-!
-      use m_size_of_cube
-      use set_parallel_file_name
-!
-      integer(kind = kint), intent(in) :: my_rank
-      character(len=kchara) ::  fname_tmp
-!
-! ***** open output file
-!
-       call add_int_suffix(my_rank, mesh_file_header, fname_tmp)
-       call add_gfm_extension(fname_tmp, fname)
-       open (l_out, file=fname, form='unformatted' )
-!
-! ..... write 0. header lines
-!
-!             write(l_out)                                              &
-!     &         '! mesh data for unit cube model, n_all=(',             &
-!     &          nx_all,',',ny_all,',',nz_all,'), nd=(',                &
-!     &          ndx   ,',',ndy   ,',',ndz   ,')'
-!
-       end subroutine open_mesh_file_b
 !
 ! ----------------------------------------------------------------------
 !

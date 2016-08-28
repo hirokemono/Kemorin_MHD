@@ -36,17 +36,13 @@
 !
 ! ..... write 2.mesh information (nodes and elements in partition)
 !
-            if ( iflag_data_f .eq. 1) then
-             write(l_out)  nodtot,intnodtot
-            else
-             write(l_out,'( a )') '!'
-             write(l_out,'( a )')                                       &
+            write(l_out,'( a )') '!'
+            write(l_out,'( a )')                                        &
      &        '! 2.mesh information (nodes and elements in partition)'
-             write(l_out,'( a )')                                       &
+            write(l_out,'( a )')                                        &
      &        '! 2.1 node'
 
-             write(l_out,'(10i16)')  nodtot,intnodtot
-            end if
+            write(l_out,'(10i16)')  nodtot,intnodtot
 !
 ! ***** set coordinate off set (starting corner for pe node)
 ! ***** set nodal position off set (i,j,k starting position -1)

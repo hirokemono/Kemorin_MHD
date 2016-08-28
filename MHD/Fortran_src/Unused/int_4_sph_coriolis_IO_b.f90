@@ -27,30 +27,34 @@
 !
       write(*,'(a,a)') 'Write tri-integration data file: ',             &
      &                trim(sph_cor_file_name)
-      open(id_sph_cor,file=sph_cor_file_name, form='unformatted')
+      call open_wt_rawfile(sph_cor_file_name, ierr)
+      call write_endian_flag
 !
-      write(id_sph_cor)  ltr_cor_IO
+      call write_fld_inthead_b(ltr_cor_IO)
 !
-      j1 = 2
-      do j2 = 1, 2
-        write(id_sph_cor) jgl_kcor_IO(1:jmax_cor_IO,j2,j1)
-        write(id_sph_cor) gk_cor_IO(1:jmax_cor_IO,j2,j1)
-      end do
-      write(id_sph_cor) jgl_lcor_IO(1:jmax_cor_IO,1,j1)
-      write(id_sph_cor) el_cor_IO(1:jmax_cor_IO,1,j1)
+      call write_fld_mul_inthead_b                                      &
+     &  ((jmax_cor_IO*itwo), jgl_kcor_IO(1,1,2))
+      call write_fld_realarray2_b                                       &
+     &   (jmax_cor_IO, itwo, gk_cor_IO(1,1,2))
+!
+      call write_fld_mul_inthead_b                                      &
+     &   (jmax_cor_IO, jgl_lcor_IO(1,1,2))
+      call write_fld_realarray2_b                                       &
+     &   (jmax_cor_IO, ione, el_cor_IO(1,1,2))
 !*
 !
       do j1 = 1, 3, 2
-        do j2 = 1, 4
-          write(id_sph_cor) jgl_kcor_IO(1:jmax_cor_IO,j2,j1)
-          write(id_sph_cor) gk_cor_IO(1:jmax_cor_IO,j2,j1)
-        end do
-        do j2 = 1, 2
-          write(id_sph_cor) jgl_lcor_IO(1:jmax_cor_IO,j2,j1)
-          write(id_sph_cor) el_cor_IO(1:jmax_cor_IO,j2,j1)
-        end do
+        call write_fld_mul_inthead_b                                    &
+     &    ((jmax_cor_IO*ifour), jgl_kcor_IO(1,1,j1))
+        call write_fld_realarray2_b                                     &
+     &     (jmax_cor_IO, ifour, gk_cor_IO(1,1,j1))
+!
+        call write_fld_mul_inthead_b                                    &
+     &    ((jmax_cor_IO*itwo), jgl_lcor_IO(1,1,j1))
+        call write_fld_realarray2_b                                     &
+     &     (jmax_cor_IO, itwo, el_cor_IO(1,1,j1))
       end do
-      close(id_sph_cor)
+      call close_rawfile
 !
       call deallocate_int_sph_cor_IO
 !
@@ -69,31 +73,35 @@
 !
       write(*,*) 'read integrals for coriolis: ',                       &
      &           trim(sph_cor_file_name)
-      open(id_sph_cor,file=sph_cor_file_name, form='unformatted')
+      call open_rd_rawfile(sph_cor_file_name, ierr)
+      call read_endian_flag
 !
-      read(id_sph_cor) ltr_cor_IO
+      call read_fld_inthead_b(ltr_cor_IO)
       call allocate_int_sph_cor_IO
 !
-      j1 = 2
-      do j2 = 1, 2
-        read(id_sph_cor) jgl_kcor_IO(1:jmax_cor_IO,j2,j1)
-        read(id_sph_cor) gk_cor_IO(1:jmax_cor_IO,j2,j1)
-      end do
-      read(id_sph_cor) jgl_lcor_IO(1:jmax_cor_IO,1,j1)
-      read(id_sph_cor) el_cor_IO(1:jmax_cor_IO,1,j1)
+      call read_fld_mul_inthead_b                                       &
+     &  ((jmax_cor_IO*itwo), jgl_kcor_IO(1,1,2))
+      call read_fld_realarray2_b                                        &
+     &   (jmax_cor_IO, itwo, gk_cor_IO(1,1,2))
+!
+      call read_fld_mul_inthead_b                                       &
+     &   (jmax_cor_IO, jgl_lcor_IO(1,1,2))
+      call read_fld_realarray2_b                                        &
+     &   (jmax_cor_IO, ione, el_cor_IO(1,1,2))
 !*
 !
       do j1 = 1, 3, 2
-        do j2 = 1, 4
-          read(id_sph_cor) jgl_kcor_IO(1:jmax_cor_IO,j2,j1)
-          read(id_sph_cor) gk_cor_IO(1:jmax_cor_IO,j2,j1)
-        end do
-        do j2 = 1, 2
-          read(id_sph_cor) jgl_lcor_IO(1:jmax_cor_IO,j2,j1)
-          read(id_sph_cor) el_cor_IO(1:jmax_cor_IO,j2,j1)
-        end do
+        call read_fld_mul_inthead_b                                     &
+     &    ((jmax_cor_IO*ifour), jgl_kcor_IO(1,1,j1))
+        call read_fld_realarray2_b                                      &
+     &     (jmax_cor_IO, ifour, gk_cor_IO(1,1,j1))
+!
+        call read_fld_mul_inthead_b                                     &
+     &    ((jmax_cor_IO*itwo), jgl_lcor_IO(1,1,j1))
+        call read_fld_realarray2_b                                      &
+     &     (jmax_cor_IO, itwo, el_cor_IO(1,1,j1))
       end do
-      close(id_sph_cor)
+      call close_rawfile
 !
       end subroutine read_int_4_sph_coriolis_b
 !
