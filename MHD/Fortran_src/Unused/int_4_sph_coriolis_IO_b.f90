@@ -21,15 +21,14 @@
       subroutine write_int_4_sph_coriolis_b
 !
       use m_int_4_sph_coriolis_IO
+      use binary_IO
 !
       integer(kind = kint) :: j1, j2
 !
 !
       write(*,'(a,a)') 'Write tri-integration data file: ',             &
      &                trim(sph_cor_file_name)
-      call open_wt_rawfile(sph_cor_file_name, ierr)
-      call write_endian_flag
-!
+      call open_write_binary_file(sph_cor_file_name)
       call write_fld_inthead_b(ltr_cor_IO)
 !
       call write_fld_mul_inthead_b                                      &
@@ -54,7 +53,7 @@
         call write_fld_realarray2_b                                     &
      &     (jmax_cor_IO, itwo, el_cor_IO(1,1,j1))
       end do
-      call close_rawfile
+      call close_binary_file
 !
       call deallocate_int_sph_cor_IO
 !
@@ -66,6 +65,7 @@
       subroutine read_int_4_sph_coriolis_b
 !
       use m_int_4_sph_coriolis_IO
+      use binary_IO
       use skip_comment_f
 !
       integer(kind = kint) :: j1, j2
@@ -73,8 +73,7 @@
 !
       write(*,*) 'read integrals for coriolis: ',                       &
      &           trim(sph_cor_file_name)
-      call open_rd_rawfile(sph_cor_file_name, ierr)
-      call read_endian_flag
+      call open_read_binary_file(sph_cor_file_name, my_rank)
 !
       call read_fld_inthead_b(ltr_cor_IO)
       call allocate_int_sph_cor_IO
@@ -101,7 +100,7 @@
         call read_fld_realarray2_b                                      &
      &     (jmax_cor_IO, itwo, el_cor_IO(1,1,j1))
       end do
-      call close_rawfile
+      call close_binary_file
 !
       end subroutine read_int_4_sph_coriolis_b
 !

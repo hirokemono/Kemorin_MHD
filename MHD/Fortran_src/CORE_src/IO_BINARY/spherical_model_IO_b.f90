@@ -21,7 +21,7 @@
       use m_precision
 !
       use m_node_id_spherical_IO
-      use field_data_IO_b
+      use binary_IO
 !
       implicit none
 !

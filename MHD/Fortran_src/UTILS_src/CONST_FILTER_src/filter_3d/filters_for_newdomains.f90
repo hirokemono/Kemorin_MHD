@@ -99,6 +99,7 @@
       use set_filter_geometry_4_IO
       use filter_coefs_file_IO_b
       use set_comm_table_4_IO
+      use binary_IO
 !
       use t_geometry_data
 !
@@ -112,6 +113,7 @@
       type(element_data), intent(inout) :: new_ele
 !
       integer(kind = kint) :: ip2
+      integer(kind = kint):: ierr
 !
 !
         ip2 = my_rank2 + 1
@@ -135,10 +137,11 @@
      &      form = 'formatted')
 !          write(*,*) 'read_filter_geometry'
           call read_filter_geometry(filter_coef_code)
+          close(filter_coef_code)
         else
-          open (filter_coef_code, file = mesh_file_name,                &
-     &      form = 'unformatted')
-          call read_filter_geometry_b(my_rank2)
+          call open_read_binary_file(mesh_file_name, my_rank2)
+          call read_filter_geometry_b
+          call close_binary_file
         end if
 !
 !        write(*,*) 'copy_filter_comm_tbl_from_IO'
@@ -168,10 +171,9 @@
         call allocate_nod_ele_near_1nod                                 &
      &     (new_node%numnod, new_ele%numele)
 !
-        call write_new_whole_filter_coef
-        call write_new_fluid_filter_coef
+        call write_new_whole_filter_coef(mesh_file_name)
+        call write_new_fluid_filter_coef(mesh_file_name)
 !
-        close(filter_coef_code)
 !
         call deallocate_nod_ele_near_1nod
         call deallocate_whole_filter_coefs

@@ -12,7 +12,7 @@
 !!      subroutine write_geometry_info_b
 !!      subroutine write_element_info_b
 !!
-!!      subroutine read_geometry_data_b(my_rank)
+!!      subroutine read_geometry_data_b
 !!      subroutine read_number_of_node_b
 !!      subroutine read_geometry_info_b
 !!      subroutine read_number_of_element_b
@@ -55,7 +55,7 @@
 !
       subroutine write_geometry_info_b
 !
-      use field_data_IO_b
+      use binary_IO
 !
 !
       call write_fld_inthead_b(numnod_dummy)
@@ -73,7 +73,7 @@
 !
       subroutine write_element_info_b
 !
-      use field_data_IO_b
+      use binary_IO
 !
       integer (kind = kint) :: i
       integer (kind = kint), allocatable :: ie_tmp(:)
@@ -98,13 +98,12 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine read_geometry_data_b(my_rank)
+      subroutine read_geometry_data_b
 !
       use domain_data_IO_b
 !
-      integer(kind = kint), intent(in) :: my_rank
 !
-      call read_domain_info_b(my_rank)
+      call read_domain_info_b
       call read_number_of_node_b
       call read_geometry_info_b
 !
@@ -125,7 +124,7 @@
 !
       subroutine read_number_of_node_b
 !
-      use field_data_IO_b
+      use binary_IO
 !
 !
       call read_fld_inthead_b(numnod_dummy)
@@ -137,7 +136,7 @@
 !
       subroutine read_geometry_info_b
 !
-      use field_data_IO_b
+      use binary_IO
 !
 !
       call allocate_node_data_dummy
@@ -152,7 +151,7 @@
 !
       subroutine read_number_of_element_b
 !
-      use field_data_IO_b
+      use binary_IO
 !
       call read_fld_inthead_b(numele_dummy)
 !
@@ -162,7 +161,7 @@
 !
       subroutine read_element_info_b
 !
-      use field_data_IO_b
+      use binary_IO
       use set_nnod_4_ele_by_type
 !
       integer (kind = kint) :: i

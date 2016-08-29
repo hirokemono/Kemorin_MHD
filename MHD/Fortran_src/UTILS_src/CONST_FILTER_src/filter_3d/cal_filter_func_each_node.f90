@@ -3,12 +3,11 @@
 !
 !     Written by H. Matsui on Apr., 2008
 !
-!!      subroutine const_filter_func_nod_by_nod                         &
-!!     &        (inod, node, ele, ele_4_nod, neib_nod, jac_3d, FEM_elen,&
-!!     &         ierr)
+!!      subroutine const_filter_func_nod_by_nod(file_name, inod,        &
+!!     &         node, ele, ele_4_nod, neib_nod, jac_3d, FEM_elen, ierr)
 !!      subroutine const_fluid_filter_nod_by_nod                        &
-!!     &        (inod, node, ele, ele_4_nod, neib_nod, jac_3d, FEM_elen,&
-!!     &         ierr)
+!!     &         (file_name, inod, node, ele, ele_4_nod, neib_nod,      &
+!!     &          jac_3d, FEM_elen, ierr)
 !!        type(node_data),           intent(in) :: node
 !!        type(element_data),        intent(in) :: ele
 !!        type(jacobians_3d), intent(in) :: jac_3d
@@ -50,12 +49,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_filter_func_nod_by_nod                           &
-     &         (inod, node, ele, ele_4_nod, neib_nod, jac_3d, FEM_elen, &
-     &          ierr)
+      subroutine const_filter_func_nod_by_nod(file_name, inod,          &
+     &         node, ele, ele_4_nod, neib_nod, jac_3d, FEM_elen, ierr)
 !
       use cal_1d_moments_4_fliter
 !
+      character(len = kchara), intent(in) :: file_name
       type(node_data),    intent(in) :: node
       type(element_data), intent(in) :: ele
       type(jacobians_3d), intent(in) :: jac_3d
@@ -195,16 +194,17 @@
           end if
         end if
 !
-        call write_each_filter_stack_coef(inod)
+        call write_each_filter_stack_coef(file_name, inod)
 !
       end subroutine const_filter_func_nod_by_nod
 !
 ! -----------------------------------------------------------------------
 !
       subroutine const_fluid_filter_nod_by_nod                          &
-     &         (inod, node, ele, ele_4_nod, neib_nod, jac_3d, FEM_elen, &
-     &          ierr)
+     &         (file_name, inod, node, ele, ele_4_nod, neib_nod,        &
+     &          jac_3d, FEM_elen, ierr)
 !
+      character(len = kchara), intent(in) :: file_name
       type(node_data),    intent(in) :: node
       type(element_data), intent(in) :: ele
       type(jacobians_3d), intent(in) :: jac_3d
@@ -228,7 +228,7 @@
 !    no filtering
 !
         if (nnod_near_1nod_weight .eq. 0) then
-          call write_each_no_filter_coef(inod)
+          call write_each_no_filter_coef(file_name, inod)
         else
 !
           do i = 1, maximum_neighbour
@@ -242,7 +242,7 @@
           if (nnod_near_1nod_weight .eq. nnod_near_nod_weight(inod))    &
      &      then
             i_exp_level_1nod_weight = maximum_neighbour
-            call write_each_same_filter_coef(inod)
+            call write_each_same_filter_coef(file_name, inod)
           else
 !
 !    construct filter for fluid area
@@ -348,7 +348,7 @@
               end if
             end if
 !
-            call write_each_filter_stack_coef(inod)
+            call write_each_filter_stack_coef(file_name, inod)
 !
           end if
         end if

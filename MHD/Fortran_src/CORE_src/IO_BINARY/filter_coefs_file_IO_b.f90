@@ -16,7 +16,7 @@
 !!      subroutine read_filter_geometry_file_b(file_name, my_rank)
 !!      subroutine write_filter_geometry_file_b(file_name, my_rank)
 !!
-!!      subroutine read_filter_geometry_b(my_rank)
+!!      subroutine read_filter_geometry_b
 !!      subroutine write_filter_geometry_b
 !!@endverbatim
 !
@@ -27,8 +27,9 @@
 !
       use m_file_format_switch
       use t_filter_coefficients
+      use binary_IO
 !
-        implicit none
+      implicit none
 !
       private :: read_3d_filter_stack_b, write_3d_filter_stack_b
       private :: read_3d_filter_weights_coef_b
@@ -49,18 +50,16 @@
       character(len=kchara), intent(in) :: file_name
       type(filter_coefficients_type), intent(inout) :: IO_filters
 !
-      integer(kind = kint) :: ierr
-!
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) then
         write(*,*) 'Read binary filter file: ', trim(file_name)
       end if
 !
-      call open_rd_rawfile(file_name, ierr)
-      call read_filter_geometry_b(my_rank)
+      call open_read_binary_file(file_name, my_rank)
+      call read_filter_geometry_b
       call read_3d_filter_stack_b(IO_filters)
       call read_3d_filter_weights_coef_b(IO_filters)
-      call close_rawfile
+      call close_binary_file
 !
       end subroutine read_sorted_filter_coef_file_b
 !
@@ -75,19 +74,17 @@
       character(len=kchara), intent(in) :: file_name
       type(filter_coefficients_type), intent(in) :: IO_filters
 !
-      integer(kind = kint) :: ierr
-!
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) then
         write(*,*) 'Write binary filter file: ', trim(file_name)
       end if
 !
-      call open_wt_rawfile(file_name, ierr)
+      call open_write_binary_file(file_name)
       call write_filter_geometry_b
       call write_3d_filter_stack_b(IO_filters)
       call write_3d_filter_weights_coef_b(IO_filters)
 !
-      call close_rawfile
+      call close_binary_file
 !
       end subroutine write_sorted_filter_coef_file_b
 !
@@ -101,16 +98,14 @@
       integer(kind = kint), intent(in) :: my_rank
       character(len=kchara), intent(in) :: file_name
 !
-      integer(kind = kint) :: ierr
-!
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) then
         write(*,*) 'Read binary filter file: ', trim(file_name)
       end if
 !
-      call open_rd_rawfile(file_name, ierr)
-      call read_filter_geometry_b(my_rank)
-      call close_rawfile
+      call open_read_binary_file(file_name, my_rank)
+      call read_filter_geometry_b
+      call close_binary_file
 !
       end subroutine read_filter_geometry_file_b
 !
@@ -123,16 +118,14 @@
       integer(kind = kint), intent(in) :: my_rank
       character(len=kchara), intent(in) :: file_name
 !
-      integer(kind = kint) :: ierr
-!
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) then
         write(*,*) 'Write binary filter file: ', trim(file_name)
       end if
 !
-      call open_wt_rawfile(file_name, ierr)
+      call open_write_binary_file(file_name)
       call write_filter_geometry_b
-      call close_rawfile
+      call close_binary_file
 !
       end subroutine write_filter_geometry_file_b
 !
@@ -142,7 +135,7 @@
       subroutine read_3d_filter_stack_b(IO_filters)
 !
       use cal_minmax_and_stacks
-      use field_data_IO_b
+      use binary_IO
 !
       type(filter_coefficients_type), intent(inout) :: IO_filters
 !
@@ -173,15 +166,13 @@
 !  ---------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine read_filter_geometry_b(my_rank)
+      subroutine read_filter_geometry_b
 !
       use domain_data_IO_b
       use mesh_data_IO_b
 !
-      integer(kind = kint), intent(in) :: my_rank
 !
-!
-      call read_domain_info_b(my_rank)
+      call read_domain_info_b
       call read_number_of_node_b
       call read_geometry_info_b
 !
@@ -196,7 +187,7 @@
 !
       subroutine read_3d_filter_weights_coef_b(IO_filters)
 !
-      use field_data_IO_b
+      use binary_IO
 !
       type(filter_coefficients_type), intent(inout) :: IO_filters
 !
@@ -235,7 +226,7 @@
 !
       subroutine write_3d_filter_stack_b(IO_filters)
 !
-      use field_data_IO_b
+      use binary_IO
 !
       type(filter_coefficients_type), intent(in) :: IO_filters
 !
@@ -257,7 +248,7 @@
 !
       subroutine write_3d_filter_weights_coef_b(IO_filters)
 !
-      use field_data_IO_b
+      use binary_IO
 !
       type(filter_coefficients_type), intent(in) :: IO_filters
 !

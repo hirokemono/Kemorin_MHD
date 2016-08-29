@@ -32,10 +32,13 @@
       use m_comm_data_IO
       use filter_coefs_file_IO
       use filter_coefs_file_IO_b
+      use binary_IO
 !
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(in) :: ifile_type
       integer(kind = kint), intent(in) :: numnod, numele
+!
+      integer(kind = kint):: ierr
       character(len=kchara) :: file_name
 !
 !
@@ -50,17 +53,16 @@
 !
         inter_nod_3dfilter = internal_node_dummy
         call read_filter_coef_4_newdomain(id_org_filter_coef)
-!
+        close(id_org_filter_coef)
       else if(ifile_type .eq. 1) then
         write(*,*) 'binary coefficients file name: ', trim(file_name)
-        open(id_org_filter_coef, file=file_name, form='unformatted')
-        call read_filter_geometry_b(my_rank)
+        call open_read_binary_file(file_name, my_rank)
+        call read_filter_geometry_b
 !
         inter_nod_3dfilter = internal_node_dummy
-        call read_filter_coef_4_newdomain_b(id_org_filter_coef)
-!
+        call read_filter_coef_4_newdomain_b
+        call close_binary_file
       end if
-      close(id_org_filter_coef)
 !
       call deallocate_nod_ele_near_1nod
 !

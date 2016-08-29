@@ -7,7 +7,7 @@
 !>@brief  Routine for doimain data IO
 !!
 !!@verbatim
-!!      subroutine read_domain_info_b(my_rank)
+!!      subroutine read_domain_info_b
 !!      subroutine read_import_data_b
 !!      subroutine read_export_data_b
 !!
@@ -32,14 +32,11 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_domain_info_b(my_rank)
+      subroutine read_domain_info_b
 !
-      use field_data_IO_b
-!
-      integer(kind = kint), intent(in) :: my_rank
+      use binary_IO
 !
 !
-      call read_endian_flag(my_rank)
       call read_fld_inthead_b(my_rank_IO)
       call read_fld_inthead_b(num_neib_domain_IO)
 !
@@ -57,7 +54,7 @@
 !
       subroutine read_import_data_b
 !
-      use field_data_IO_b
+      use binary_IO
 !
 !
       call allocate_import_stack_IO
@@ -79,7 +76,7 @@
 !
       subroutine read_export_data_b
 !
-      use field_data_IO_b
+      use binary_IO
 !
 !
       call allocate_export_stack_IO
@@ -102,10 +99,9 @@
 !
       subroutine write_domain_info_b
 !
-      use field_data_IO_b
+      use binary_IO
 !
 !
-      call write_endian_flag
       call write_fld_inthead_b(my_rank_IO)
       call write_fld_inthead_b(num_neib_domain_IO)
 !
@@ -123,7 +119,7 @@
 !
       subroutine write_import_data_b
 !
-      use field_data_IO_b
+      use binary_IO
 !
 !
       call write_fld_intstack_b(num_neib_domain_IO, istack_import_IO)
@@ -137,7 +133,7 @@
 !
       subroutine write_export_data_b
 !
-      use field_data_IO_b
+      use binary_IO
 !
 !
       call write_fld_intstack_b(num_neib_domain_IO, istack_export_IO)

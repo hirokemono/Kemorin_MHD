@@ -40,11 +40,12 @@
       subroutine read_element_refine_file                               &
     &          (my_rank, ifile_type, IO_itp_org, IO_itp_dest)
 !
+      use binary_IO
+!
       integer(kind = kint), intent(in) :: my_rank, ifile_type
       type(interpolate_table_org), intent(inout) :: IO_itp_org
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
-      integer (kind = kint) :: ierr
       integer(kind = kint) :: nrank_ref
 !
 !
@@ -54,9 +55,9 @@
       if (ifile_type .eq. 1) then
         write(*,*) 'binary element refine information: ',               &
      &            trim(refine_info_fname)
-        call open_rd_rawfile(refine_info_fname, ierr)
+        call open_read_binary_file(refine_info_fname, my_rank)
         call read_element_refine_data_b(IO_itp_org, IO_itp_dest)
-        call close_rawfile
+        call close_binary_file
 !
 !
       else
@@ -86,8 +87,6 @@
       type(interpolate_table_org), intent(inout) :: IO_itp_org
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
-      integer (kind = kint) :: ierr
-!
 !
       call add_int_suffix(my_rank, refine_info_fhead,                   &
      &    refine_info_fname)
@@ -95,10 +94,10 @@
       if (ifile_type .eq. 1) then
         write(*,*) 'binary element refine information: ',               &
      &            trim(refine_info_fname)
-        call open_wt_rawfile(refine_info_fname, ierr)
+        call open_write_binary_file(refine_info_fname)
         call write_element_refine_data_b                                &
      &     (my_rank, IO_itp_org, IO_itp_dest)
-        call close_rawfile
+        call close_binary_file
 !
       else
         write(*,*) 'element refine information: ',                      &
@@ -131,7 +130,7 @@
       subroutine write_element_refine_data_b                            &
      &         (my_rank, IO_itp_org, IO_itp_dest)
 !
-      use field_data_IO_b
+      use binary_IO
 !
       integer(kind = kint), intent(in) :: my_rank
       type(interpolate_table_org), intent(in) :: IO_itp_org
@@ -158,7 +157,7 @@
 !
       subroutine read_element_refine_data_b(IO_itp_org, IO_itp_dest)
 !
-      use field_data_IO_b
+      use binary_IO
 !
       type(interpolate_table_org), intent(inout) :: IO_itp_org
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest

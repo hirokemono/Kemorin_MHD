@@ -28,7 +28,7 @@
 !
       use m_precision
       use m_constants
-      use field_data_IO_b
+      use binary_IO
 !
       implicit none
 !

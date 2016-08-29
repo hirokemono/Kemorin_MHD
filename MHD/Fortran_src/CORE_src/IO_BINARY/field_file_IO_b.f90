@@ -26,6 +26,7 @@
       use m_time_data_IO
       use t_field_data_IO
       use field_data_IO_b
+      use binary_IO
 !
       implicit none
 !
@@ -44,20 +45,18 @@
 !
       type(field_IO), intent(in) :: fld_IO
 !
-      integer(kind = kint) :: ierr
-!
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Write binary data file: ', trim(file_name)
 !
-      call open_wt_rawfile(file_name, ierr)
+      call open_write_binary_file(file_name)
 !
       call write_step_data_b(my_rank)
       call write_field_data_b                                           &
      &   (fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
      &    fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO)
 !
-      call close_rawfile
+      call close_binary_file
 !
       end subroutine write_step_field_file_b
 !
@@ -71,17 +70,14 @@
 !
       type(field_IO), intent(inout) :: fld_IO
 !
-      integer(kind = kint) :: ierr
       integer(kind = kint_gl) :: istack_merged(1)
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read binary data file: ', trim(file_name)
 !
-      call open_rd_rawfile(file_name, ierr)
-!
-      call read_step_data_b                                             &
-     &   (my_rank, istack_merged, fld_IO%num_field_IO)
+      call open_read_binary_file(file_name, my_rank)
+      call read_step_data_b(istack_merged, fld_IO%num_field_IO)
 !
       call read_fld_mul_inthead_b                                       &
      &   (fld_IO%num_field_IO, fld_IO%num_comp_IO)
@@ -89,7 +85,7 @@
       call read_field_data_b(fld_IO%nnod_IO, fld_IO%num_field_IO,       &
      &    fld_IO%ntot_comp_IO, fld_IO%fld_name, fld_IO%d_IO)
 !
-      call close_rawfile
+      call close_binary_file
 !
       end subroutine read_step_field_file_b
 !
@@ -103,21 +99,19 @@
 !
       type(field_IO), intent(inout) :: fld_IO
 !
-      integer(kind = kint) :: ierr
-!
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read binary data file: ', trim(file_name)
 !
-      call open_rd_rawfile(file_name, ierr)
-      call read_and_allocate_step_b(my_rank, fld_IO)
+      call open_read_binary_file(file_name, my_rank)
+      call read_and_allocate_step_b(fld_IO)
 !
       call alloc_phys_data_IO(fld_IO)
 !
       call read_field_data_b(fld_IO%nnod_IO, fld_IO%num_field_IO,       &
      &    fld_IO%ntot_comp_IO, fld_IO%fld_name, fld_IO%d_IO)
 !
-      call close_rawfile
+      call close_binary_file
 !
       end subroutine read_and_allocate_step_field_b
 !
@@ -131,31 +125,27 @@
 !
       type(field_IO), intent(inout) :: fld_IO
 !
-      integer(kind = kint) :: ierr
-!
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read binary data file: ', trim(file_name)
 !
-      call open_rd_rawfile(file_name, ierr)
-      call read_and_allocate_step_b(my_rank, fld_IO)
-      call close_rawfile
+      call open_read_binary_file(file_name, my_rank)
+      call read_and_allocate_step_b(fld_IO)
+      call close_binary_file
 !
       end subroutine read_and_allocate_step_head_b
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_and_allocate_step_b(my_rank, fld_IO)
+      subroutine read_and_allocate_step_b(fld_IO)
 !
-      integer(kind = kint), intent(in) :: my_rank
       type(field_IO), intent(inout) :: fld_IO
 !
       integer(kind = kint_gl) :: istack_merged(1)
 !
 !
-      call read_step_data_b                                             &
-     &   (my_rank, istack_merged, fld_IO%num_field_IO)
+      call read_step_data_b(istack_merged, fld_IO%num_field_IO)
       fld_IO%nnod_IO = int(istack_merged(1))
 !
       call alloc_phys_name_IO(fld_IO)

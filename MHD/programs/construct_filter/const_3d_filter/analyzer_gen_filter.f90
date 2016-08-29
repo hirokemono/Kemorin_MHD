@@ -223,26 +223,18 @@
         call copy_filtering_geometry_to_IO
         call copy_comm_tbl_type_to_IO(my_rank, filtering_gen%comm)
 !
-        call add_int_suffix(my_rank, filter_coef_head, file_name)
-!
-        if (ifmt_3d_filter .eq. id_binary_file_fmt) then
-          open(filter_coef_code, file=file_name, form='unformatted')
-          call write_filter_geometry_b
-        else
-          open(filter_coef_code, file=file_name, form='formatted')
-          call write_filter_geometry(filter_coef_code)
-        end if
+        filter_file_head = filter_coef_head
+        call sel_write_filter_geometry_file(my_rank)
 !
         num_failed_whole = 0
         num_failed_fluid = 0
 !
-        call select_const_filter                                        &
-    &      (mesh_filter%nod_comm, mesh_filter%node, mesh_filter%ele,    &
+        call select_const_filter(file_name,                             &
+    &       mesh_filter%nod_comm, mesh_filter%node, mesh_filter%ele,    &
     &       jac_3d_q, rhs_tbl_f, tbl_crs_f, rhs_mat_f, FEM_elen_f,      &
     &       dxidxs1, FEM_momenet1)
         call dealloc_jacobians_node(filter_dxi1)
 !
-        close(filter_coef_code)
 !
         call s_check_num_fail_nod_commute
 !

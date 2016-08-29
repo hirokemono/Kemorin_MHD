@@ -17,6 +17,7 @@
       use m_machine_parameter
 !
       use m_read_mesh_data
+      use binary_IO
 !
       implicit none
 !
@@ -35,15 +36,13 @@
 !
       integer(kind = kint), intent(in) :: my_rank
 !
-      integer(kind = kint) :: ierr
-!
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read binary mesh file: ', trim(mesh_file_name)
 !
-      call open_rd_rawfile(mesh_file_name, ierr)
+      call open_read_binary_file(mesh_file_name, my_rank)
 !
-      call read_geometry_data_b(my_rank)
+      call read_geometry_data_b
 !
 !   read node group
       call read_group_data_b(bc_grp_IO)
@@ -52,7 +51,7 @@
 !  read surface group
       call read_surf_grp_data_b(surf_grp_IO)
 !
-      call close_rawfile
+      call close_binary_file
 !
       end subroutine read_mesh_file_b
 !
@@ -64,15 +63,13 @@
 !
       integer(kind = kint), intent(in) :: my_rank
 !
-      integer(kind = kint) :: ierr
-!
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read binary mesh file: ', trim(mesh_file_name)
 !
-      call open_rd_rawfile(mesh_file_name, ierr)
-      call read_geometry_data_b(my_rank)
-      call close_rawfile
+      call open_read_binary_file(mesh_file_name, my_rank)
+      call read_geometry_data_b
+      call close_binary_file
 !
       end subroutine read_mesh_geometry_b
 !
@@ -85,16 +82,14 @@
 !
       integer(kind = kint), intent(in) :: my_rank
 !
-      integer(kind = kint) :: ierr
-!
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read binary mesh file: ', trim(mesh_file_name)
 !
-      call open_rd_rawfile(mesh_file_name, ierr)
-      call read_domain_info_b(my_rank)
+      call open_read_binary_file(mesh_file_name, my_rank)
+      call read_domain_info_b
       call read_number_of_node_b
-      call close_rawfile
+      call close_binary_file
 !
       end subroutine read_node_size_b
 !
@@ -107,20 +102,18 @@
 !
       integer(kind = kint), intent(in) :: my_rank
 !
-      integer(kind = kint) :: ierr
-!
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read binary mesh file: ', trim(mesh_file_name)
 !
-      call open_rd_rawfile(mesh_file_name, ierr)
+      call open_read_binary_file(mesh_file_name, my_rank)
 !
-      call read_domain_info_b(my_rank)
+      call read_domain_info_b
       call read_number_of_node_b
       call read_geometry_info_b
 !
       call read_number_of_element_b
-      call close_rawfile
+      call close_binary_file
 !
       end subroutine read_geometry_size_b
 !
@@ -136,13 +129,11 @@
 !
       integer(kind = kint), intent(in) :: my_rank
 !
-      integer(kind = kint) :: ierr
-!
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Write binary mesh file: ', trim(mesh_file_name)
 !
-      call open_wt_rawfile(mesh_file_name, ierr)
+      call open_write_binary_file(mesh_file_name)
       call write_geometry_data_b
 !
 !   write node group
@@ -152,7 +143,7 @@
 !  write surface group
       call write_surf_grp_data_b(surf_grp_IO)
 !
-      call close_rawfile
+      call close_binary_file
 !
       end subroutine write_mesh_file_b
 !

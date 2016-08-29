@@ -31,6 +31,7 @@
       use t_interpolate_coefs_dest
 !
       use itp_table_data_IO_b
+      use binary_IO
 !
       implicit none
 !
@@ -48,16 +49,14 @@
       type(interpolate_table_org), intent(inout) :: IO_itp_org
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
-      integer (kind = kint) :: ierr
 !
-!
-      call open_wt_rawfile(file_name, ierr)
+      call open_write_binary_file(file_name)
       call write_interpolate_table_dest_b(my_rank, IO_itp_dest)
 !
       call write_interpolate_table_org_b(my_rank, IO_itp_org)
       call write_interpolate_coefs_org_b(IO_itp_org)
 !
-      call close_rawfile
+      call close_binary_file
 !
       if (IO_itp_org%num_dest_domain .gt. 0) then
         call dealloc_itp_table_org(IO_itp_org)
@@ -86,7 +85,7 @@
       integer(kind = kint) :: n_rank_file
 !
 !
-      call open_rd_rawfile(file_name, ierr)
+      call open_read_binary_file(file_name, my_rank)
       call read_interpolate_domain_dest_b(n_rank_file, IO_itp_dest)
       call read_interpolate_table_dest_b(IO_itp_dest)
 !
@@ -94,7 +93,7 @@
       call read_interpolate_table_org_b(IO_itp_org)
       call read_interpolate_coefs_org_b(IO_itp_org)
 !
-      call close_rawfile
+      call close_binary_file
 !
       ierr = 0
       if (n_rank_file .ne. my_rank) ierr = n_rank_file
@@ -113,13 +112,11 @@
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !
-      integer (kind = kint) :: ierr
 !
-!
-      call open_wt_rawfile(file_name, ierr)
+      call open_write_binary_file(file_name)
       call write_interpolate_table_dest_b(my_rank, IO_itp_dest)
       call write_interpolate_coefs_dest_b(IO_itp_dest, IO_itp_c_dest)
-      call close_rawfile
+      call close_binary_file
 !
       if (IO_itp_dest%num_org_domain .gt. 0) then
         call dealloc_itp_coef_dest(IO_itp_c_dest)
@@ -145,11 +142,11 @@
       integer(kind = kint) :: n_rank_file
 !
 !
-      call open_rd_rawfile(file_name, ierr)
+      call open_read_binary_file(file_name, my_rank)
       call read_interpolate_domain_dest_b(n_rank_file, IO_itp_dest)
       call read_interpolate_table_dest_b(IO_itp_dest)
       call read_interpolate_coefs_dest_b(IO_itp_dest, IO_itp_c_dest)
-      call close_rawfile
+      call close_binary_file
 !
       ierr = 0
       if (n_rank_file .ne. my_rank) ierr = ierr_file
@@ -170,10 +167,10 @@
       integer(kind = kint) :: n_rank_file
 !
 !
-      call open_rd_rawfile(file_name, ierr)
+      call open_read_binary_file(file_name, my_rank)
       call read_interpolate_domain_dest_b(n_rank_file, IO_itp_dest)
       call read_interpolate_table_dest_b(IO_itp_dest)
-      call close_rawfile
+      call close_binary_file
 !
       ierr = 0
       if (n_rank_file .ne. my_rank) ierr = ierr_file
@@ -194,9 +191,9 @@
       integer(kind = kint) :: n_rank_file
 !
 !
-      call open_rd_rawfile(file_name, ierr)
+      call open_read_binary_file(file_name, my_rank)
       call read_interpolate_domain_dest_b(n_rank_file, IO_itp_dest)
-      call close_rawfile
+      call close_binary_file
 !
       ierr = 0
       if (n_rank_file .ne. my_rank) ierr = ierr_file

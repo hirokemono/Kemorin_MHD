@@ -28,6 +28,7 @@
 !
       integer(kind = kint), parameter :: id_org_filter_coef = 23
       integer(kind = kint), parameter :: id_org_filter_elen = 25
+      integer(kind = kint), parameter :: id_new_filter_coef = 33
 !
 !  ---------------------------------------------------------------------
 !
