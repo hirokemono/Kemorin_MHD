@@ -22,13 +22,16 @@
 !
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
+      use t_field_data_IO
 !
       implicit none
 !
 !>       Structure of grid and spectr data for spherical spectr method
       type(sph_grids), save :: sph_const
+!>      Structure of file name and formats
+      type(field_IO_params), save :: sph_file_prm_const
 !
-      private :: sph_const
+      private :: sph_const, sph_file_prm_const
 !
 ! ----------------------------------------------------------------------
 !
@@ -53,7 +56,8 @@
 !
       call start_eleps_time(1)
       call read_control_4_gen_shell_grids
-      call s_set_control_4_gen_shell_grids(sph_const, ierr_MPI)
+      call s_set_control_4_gen_shell_grids                              &
+     &   (sph_const, sph_file_prm_const, ierr_MPI)
       if(ierr_MPI .gt. 0) call calypso_mpi_abort(ierr_MPI, e_message)
 !
       end subroutine init_gen_sph_grids

@@ -35,6 +35,7 @@
       use m_machine_parameter
       use calypso_mpi
 !
+      use t_spheric_parameter
       use t_mesh_data
       use t_phys_data
       use t_spheric_mesh
@@ -44,6 +45,8 @@
       implicit none
 !
       private :: set_control_4_SPH_to_FEM
+!
+      type(sph_grids), private :: sph_gen
 !
 ! ----------------------------------------------------------------------
 !
@@ -57,9 +60,14 @@
 !
       use m_control_parameter
       use m_sph_boundary_input_data
+      use m_spheric_global_ranks
+      use m_error_IDs
+!
       use sph_mhd_rst_IO_control
       use set_control_sph_mhd
       use parallel_load_data_4_sph
+      use parallel_gen_sph_grids
+      use sph_file_IO_select
 !
       type(sph_grids), intent(inout) :: sph
       type(sph_comm_tables), intent(inout) :: comms_sph
@@ -72,12 +80,33 @@
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
 !
+      integer(kind = kint) :: iflag_lc, iflag_gl
+!
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
       call set_control_4_SPH_MHD                                        &
-     &   (rj_fld, sph_file_param, sph_fst_IO, pwr)
+     &   (sph_gen, rj_fld, sph_file_param, sph_fst_IO, pwr)
       call set_control_4_SPH_to_FEM(sph%sph_params, rj_fld)
 !
+!
+      iflag_lc = 0
+      if     (check_exsist_rtp_file(my_rank) .ne. 0                     &
+     &  .or. check_exsist_rtm_file(my_rank) .ne. 0                      &
+     &  .or. check_exsist_rlm_file(my_rank) .ne. 0                      &
+     &  .or. check_exsist_rj_file(my_rank) .ne.  0) iflag_lc = 1
+      call MPI_allREDUCE(iflag_lc, iflag_gl, ione, CALYPSO_INTEGER,     &
+     &    MPI_SUM, CALYPSO_COMM, ierr_MPI)
+!
+      if(iflag_gl.eq.0) then
+        if (my_rank.eq.0) write(*,*) 'spherical harmonics table exists'
+      else if(iflag_make_SPH .eq. 0) then
+        call calypso_mpi_abort(ierr_file,                               &
+     &     'Set parameters for spherical shell')
+      else
+        if (my_rank.eq.0) write(*,*) 'Make spherical harmonics table'
+        call para_gen_sph_grids(sph_gen)
+        call deallocate_gen_mesh_params
+      end if
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_mesh'
       call load_para_SPH_and_FEM_mesh                                   &
@@ -112,7 +141,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
       call set_control_4_SPH_MHD                                        &
-     &   (rj_fld, sph_file_param, sph_fst_IO, pwr)
+     &   (sph_gen, rj_fld, sph_file_param, sph_fst_IO, pwr)
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
       call load_para_sph_mesh(sph, comms_sph, sph_grps)
@@ -146,7 +175,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
       call set_control_4_SPH_MHD                                        &
-     &   (rj_fld, sph_file_param, sph_fst_IO, pwr)
+     &   (sph_gen, rj_fld, sph_file_param, sph_fst_IO, pwr)
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
       call load_para_sph_mesh(sph, comms_sph, sph_grps)
@@ -175,7 +204,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
       call set_control_4_SPH_MHD                                        &
-     &   (rj_fld, sph_file_param, sph_fst_IO, pwr)
+     &   (sph_gen, rj_fld, sph_file_param, sph_fst_IO, pwr)
       call set_control_4_SPH_to_FEM(sph%sph_params, rj_fld)
       call set_ctl_params_dynamobench
 !

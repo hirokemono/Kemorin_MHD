@@ -27,6 +27,9 @@
       implicit none
 !
 !>      number of subdomains
+      integer(kind = kint) :: iflag_make_SPH
+!
+!>      number of subdomains
       integer(kind = kint) :: ndomain_sph
 !
 !>      number of 1d subdomains for @f$ f(r,\theta,\phi) @f$

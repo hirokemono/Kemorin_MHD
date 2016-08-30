@@ -50,6 +50,8 @@
 !
       subroutine read_control_4_sph_MHD_noviz
 !
+      use m_read_ctl_gen_sph_shell
+!
 !
       ctl_file_code = control_file_code
       open ( ctl_file_code, file = MHD_ctl_name, status='old' )
@@ -59,11 +61,15 @@
 !
       close(ctl_file_code)
 !
+      if(ifile_sph_shell .gt. 0) call read_control_4_gen_shell_grids
+!
       end subroutine read_control_4_sph_MHD_noviz
 !
 ! ----------------------------------------------------------------------
 !
       subroutine read_control_4_sph_snap_noviz
+!
+      use m_read_ctl_gen_sph_shell
 !
 !
       ctl_file_code = control_file_code
@@ -73,6 +79,8 @@
       call read_sph_mhd_ctl_noviz
 !
       close(ctl_file_code)
+!
+      if(ifile_sph_shell .gt. 0) call read_control_4_gen_shell_grids
 !
       end subroutine read_control_4_sph_snap_noviz
 !
@@ -86,6 +94,7 @@
       use m_ctl_data_node_monitor
       use m_ctl_data_4_pickup_sph
       use m_ctl_data_4_org_data
+      use m_read_ctl_gen_sph_shell
       use read_ctl_data_sph_MHD
 !
 !
@@ -100,6 +109,8 @@
 !
         call read_ctl_data_4_platform
         call read_ctl_data_4_org_data
+!
+        call read_control_data_4_shell_in_MHD
 !
         call read_sph_mhd_model
         call read_sph_mhd_control

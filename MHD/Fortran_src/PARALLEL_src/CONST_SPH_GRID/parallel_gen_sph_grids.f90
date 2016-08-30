@@ -8,6 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine para_gen_sph_grids(sph)
+!!      subroutine deallocate_gen_mesh_params
 !!        type(sph_grids), intent(inout) :: sph
 !!@endverbatim
 !
@@ -105,5 +106,25 @@
       end subroutine para_gen_sph_grids
 !
 ! ----------------------------------------------------------------------
+!
+      subroutine deallocate_gen_mesh_params
+!
+      use m_spheric_global_ranks
+      use m_sph_global_parameter
+      use m_sph_1d_global_index
+!
+!
+      call deallocate_sph_ranks
+      call deallocate_sph_1d_domain_id
+!
+      call deallocate_sph_gl_bc_param
+      call deallocate_sph_gl_parameter
+!
+      call deallocate_sph_1d_global_idx
+      call deallocate_sph_1d_global_stack
+!
+      end subroutine deallocate_gen_mesh_params
+!
+! -----------------------------------------------------------------------
 !
       end module parallel_gen_sph_grids

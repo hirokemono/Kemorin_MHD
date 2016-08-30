@@ -7,11 +7,11 @@
 !>@brief  Set control data for domain decomposition for spherical transform
 !!
 !!@verbatim
-!!      subroutine s_set_control_4_gen_shell_grids(sph, ierr)
+!!      subroutine s_set_control_4_gen_shell_grids                      &
+!!     &         (sph, sph_file_param, ierr)
 !!      subroutine set_control_4_shell_grids(nprocs_check, sph, ierr)
-!!        type(sph_shell_parameters), intent(inout) :: sph_params
-!!        type(sph_rtp_grid), intent(inout) :: sph_rtp
-!!        type(sph_rj_grid), intent(inout) :: sph_rj
+!!        type(field_IO_params), intent(inout) :: sph_file_param
+!!        type(sph_grids), intent(inout) :: sph
 !!@endverbatim
 !
       module set_ctl_gen_shell_grids
@@ -22,8 +22,6 @@
       use t_field_data_IO
 !
       implicit  none
-!
-      type(field_IO_params), save, private :: sph_file_param
 !
       character(len=kchara), parameter :: cflag_SGS_r = 'SGS_r'
       character(len=kchara), parameter :: cflag_SGS_t = 'SGS_theta'
@@ -38,15 +36,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_control_4_gen_shell_grids(sph, ierr)
+      subroutine s_set_control_4_gen_shell_grids                        &
+     &         (sph, sph_file_param, ierr)
 !
       type(sph_grids), intent(inout) :: sph
+      type(field_IO_params), intent(inout) :: sph_file_param
       integer(kind = kint), intent(inout) :: ierr
 !
       integer(kind = kint) :: nprocs_check
 !
 !
-      call set_control_4_shell_filess(nprocs_check)
+      call set_control_4_shell_filess(nprocs_check, sph_file_param)
 !
       call set_control_4_shell_grids(nprocs_check, sph, ierr)
 !
@@ -55,7 +55,8 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_control_4_shell_filess(nprocs_check)
+      subroutine set_control_4_shell_filess                             &
+     &         (nprocs_check, sph_file_param)
 !
       use m_ctl_data_4_platforms
       use set_control_platform_data
@@ -63,6 +64,7 @@
       use skip_comment_f
 !
       integer(kind = kint), intent(inout) :: nprocs_check
+      type(field_IO_params), intent(inout) :: sph_file_param
 !
 !
       nprocs_check = 1
@@ -71,10 +73,15 @@
       call set_control_mesh_def
       call set_control_sph_mesh(sph_file_param)
 !
-      iflag_excluding_FEM_mesh = 0
-      if(excluding_FEM_mesh_ctl%iflag .gt. 0                            &
-     &    .and. yes_flag(excluding_FEM_mesh_ctl%charavalue)) then
-        iflag_excluding_FEM_mesh = 1
+      iflag_excluding_FEM_mesh = 1
+      if(excluding_FEM_mesh_ctl%iflag .gt. 0) then
+        if(yes_flag(FEM_mesh_output_switch%charavalue)) then
+          iflag_excluding_FEM_mesh = 0
+        end if
+      else if(excluding_FEM_mesh_ctl%iflag .gt. 0) then
+        if(no_flag(excluding_FEM_mesh_ctl%charavalue)) then
+          iflag_excluding_FEM_mesh = 0
+        end if
       end if
 !
       end subroutine set_control_4_shell_filess

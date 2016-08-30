@@ -6,8 +6,8 @@
 !>@brief Load spherical harmonics indexing data on multiple processes
 !!
 !!@verbatim
-!!      subroutine load_para_SPH_and_FEM_mesh                           &
-!!     &         (sph, comms_sph, sph_grps, mesh, group, ele_mesh)
+!!      subroutine load_para_SPH_and_FEM_mesh(sph, comms_sph, sph_grps, &
+!!     &         mesh, group, ele_mesh)
 !!      subroutine load_para_SPH_rj_mesh(sph, comms_sph, sph_grps)
 !!      subroutine load_para_sph_mesh(sph, bc_rtp_grp, sph_grps)
 !!        type(sph_grids), intent(inout) :: sph
@@ -50,8 +50,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine load_para_SPH_and_FEM_mesh                             &
-     &         (sph, comms_sph, sph_grps, mesh, group, ele_mesh)
+      subroutine load_para_SPH_and_FEM_mesh(sph, comms_sph, sph_grps,   &
+     &         mesh, group, ele_mesh)
 !
       use t_mesh_data
 !
@@ -65,6 +65,7 @@
 !
 !
       call load_para_sph_mesh(sph, comms_sph, sph_grps)
+!
       call load_FEM_mesh_4_SPH                                          &
      &   (sph%sph_params, sph%sph_rtp, sph%sph_rj,                      &
      &    sph_grps%radial_rtp_grp, sph_grps%radial_rj_grp,              &
