@@ -46,6 +46,7 @@
       use set_FEM_mesh_4_sph
       use const_1d_ele_connect_4_sph
       use set_sph_groups
+      use gen_sph_grids_modes
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -69,8 +70,8 @@
       nidx_local_fem(1:3) = sph_rtp%nidx_rtp(1:3)
       nidx_local_fem(3) =   sph_params%m_folding * nidx_local_fem(3)
 !
-      call s_const_FEM_mesh_for_sph                                     &
-     &   (my_rank, sph_rtp%nidx_rtp, sph_rj%radius_1d_rj_r,             &
+      call s_const_FEM_mesh_for_sph(iflag_output_mesh,                  &
+     &    my_rank, sph_rtp%nidx_rtp, sph_rj%radius_1d_rj_r,             &
      &    sph_params, radial_rj_grp, mesh, group)
 !
       call deallocate_nnod_nele_sph_mesh

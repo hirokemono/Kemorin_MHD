@@ -24,6 +24,7 @@
       use m_time_data_IO
       use t_field_data_IO
       use gz_field_data_IO_b
+      use skip_gz_comment
 !
       implicit none
 !
@@ -44,13 +45,13 @@
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Write gzipped binary data file: ', trim(gzip_name)
 !
-      call open_wt_gzfile(gzip_name)
+      call open_wt_gzfile_f(gzip_name)
 !
       call gz_write_field_data_b(my_rank,                               &
      &    fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
      &    fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO)
 !
-      call close_gzfile()
+      call close_gzfile_f
 !
       end subroutine gz_write_step_fld_file_b
 !
@@ -69,7 +70,7 @@
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read gzipped binary data file: ', trim(gzip_name)
 !
-      call open_rd_gzfile(gzip_name)
+      call open_rd_gzfile_f(gzip_name)
       call gz_read_step_data_b                                          &
      &   (my_rank, istack_merged, fld_IO%num_field_IO)
 !
@@ -80,7 +81,7 @@
      &   (fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
      &    fld_IO%fld_name, fld_IO%d_IO)
 !
-      call close_gzfile()
+      call close_gzfile_f
 !
       end subroutine gz_read_step_field_file_b
 !
@@ -99,7 +100,7 @@
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read gzipped binary data file: ', trim(gzip_name)
 !
-      call open_rd_gzfile(gzip_name)
+      call open_rd_gzfile_f(gzip_name)
       call gz_read_step_data_b                                          &
      &   (my_rank, istack_merged, fld_IO%num_field_IO)
 !
@@ -114,7 +115,7 @@
      &   (fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
      &    fld_IO%fld_name, fld_IO%d_IO)
 !
-      call close_gzfile()
+      call close_gzfile_f
 !
       end subroutine gz_rd_alloc_st_fld_file_b
 !
@@ -133,7 +134,7 @@
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read gzipped binary data file: ', trim(gzip_name)
 !
-      call open_rd_gzfile(gzip_name)
+      call open_rd_gzfile_f(gzip_name)
       call gz_read_step_data_b                                          &
      &   (my_rank, istack_merged, fld_IO%num_field_IO)
 !
@@ -141,7 +142,7 @@
       call gz_read_fld_mul_inthead_b                                    &
      &   (fld_IO%num_field_IO, fld_IO%num_comp_IO)
 !
-      call close_gzfile()
+      call close_gzfile_f
 !
       call cal_istack_phys_comp_IO(fld_IO)
 !

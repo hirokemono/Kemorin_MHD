@@ -104,7 +104,7 @@
 !
 !  ========= Construct subdomain information for viewer ==============
 !
-      if(iflag_excluding_FEM_mesh .eq. 0) then
+      if(iflag_output_mesh .gt. 0) then
         call choose_surface_mesh                                        &
      &     (sph_file_head, ele_pick, surf_pick, edge_pick)
       end if

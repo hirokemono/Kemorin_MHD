@@ -57,6 +57,7 @@
         call read_fld_mul_inthead_b                                     &
      &     (group_IO%num_item, group_IO%item_grp)
       else
+        group_IO%num_item = 0
         call allocate_grp_type_item(group_IO)
       end if
 !

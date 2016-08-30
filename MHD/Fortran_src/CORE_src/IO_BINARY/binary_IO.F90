@@ -56,11 +56,15 @@
 !
       subroutine open_write_binary_file(file_name)
 !
+      use set_parallel_file_name
+!
       character(len=kchara), intent(in) :: file_name
+      character(len=kchara) :: file_name_w_null
 !
 !
 #ifdef ZLIB_IO
-      call open_wt_rawfile(file_name, ierr_IO)
+      call add_null_character(file_name, file_name_w_null)
+      call open_wt_rawfile(file_name_w_null, ierr_IO)
 #else
       open(id_binary, file = file_name, form='unformatted')
 #endif
@@ -73,11 +77,15 @@
 !
       subroutine open_append_binary_file(file_name)
 !
+      use set_parallel_file_name
+!
       character(len=kchara), intent(in) :: file_name
+      character(len=kchara) :: file_name_w_null
 !
 !
 #ifdef ZLIB_IO
-      call open_ad_rawfile(file_name, ierr_IO)
+      call add_null_character(file_name, file_name_w_null)
+      call open_ad_rawfile(file_name_w_null, ierr_IO)
 #else
       open(id_binary, file = file_name, form='unformatted',             &
      &      position='append')
@@ -89,12 +97,16 @@
 !
       subroutine open_read_binary_file(file_name, my_rank)
 !
-      character(len=kchara), intent(in) :: file_name
+      use set_parallel_file_name
+!
       integer(kind=kint), intent(in) :: my_rank
+      character(len=kchara), intent(in) :: file_name
+      character(len=kchara) :: file_name_w_null
 !
 !
 #ifdef ZLIB_IO
-      call open_rd_rawfile(file_name, ierr_IO)
+      call add_null_character(file_name, file_name_w_null)
+      call open_rd_rawfile(file_name_w_null, ierr_IO)
 #else
       open(id_binary, file = file_name, form='unformatted')
 #endif
@@ -191,8 +203,8 @@
       integer(kind = kint) :: ilength
 !
 !
-#ifdef ZLIB_IO
       if(num .le. 0) return
+#ifdef ZLIB_IO
       ilength = num *  kint_gl
       call rawwrite_f(ilength, int_gl_dat(1), ierr_IO)
 #else
@@ -211,8 +223,8 @@
       integer(kind = kint) :: ilength
 !
 !
-#ifdef ZLIB_IO
       if(num .le. 0) return
+#ifdef ZLIB_IO
       ilength = num *  kint
       call rawwrite_f(ilength, int_dat(1), ierr_IO)
 #else
@@ -243,8 +255,8 @@
       integer(kind = kint) :: ilength
 !
 !
-#ifdef ZLIB_IO
       if(num .le. 0) return
+#ifdef ZLIB_IO
       ilength = num *  kchara
       call rawwrite_f(ilength, chara_dat(1), ierr_IO)
 #else
@@ -263,10 +275,10 @@
       integer(kind = kint) :: ilength
 !
 !
-#ifdef ZLIB_IO
       if(num .le. 0) return
+#ifdef ZLIB_IO
       ilength =  num * kreal
-      call rawwrite_f(iflag_endian, ilength, real_dat, ierr_IO)
+      call rawwrite_f(ilength, real_dat(1), ierr_IO)
 #else
       write(id_binary)  real_dat(1:num)
 #endif
@@ -363,8 +375,8 @@
       integer(kind = kint) :: ilength
 !
 !
-#ifdef ZLIB_IO
       if(num .le. 0) return
+#ifdef ZLIB_IO
       ilength = num * kint_gl
       call rawread_f(iflag_endian, ilength, int_gl_dat(1), ierr_IO)
 #else
@@ -383,8 +395,8 @@
       integer(kind = kint) :: ilength
 !
 !
-#ifdef ZLIB_IO
       if(num .le. 0) return
+#ifdef ZLIB_IO
       ilength = num * kint
       call rawread_f(iflag_endian, ilength, int_dat(1), ierr_IO)
 #else
@@ -418,10 +430,10 @@
       integer(kind = kint) :: ilength
 !
 !
-#ifdef ZLIB_IO
       if(num .le. 0) return
+#ifdef ZLIB_IO
       ilength = num * kchara
-      call rawread_f(iflag_endian, ilength, chara_dat, ierr_IO)
+      call rawread_f(iflag_endian, ilength, chara_dat(1), ierr_IO)
 #else
       read(id_binary)  chara_dat(1:num)
 #endif
@@ -438,10 +450,10 @@
       integer(kind = kint) :: ilength
 !
 !
-#ifdef ZLIB_IO
       if(num .le. 0) return
+#ifdef ZLIB_IO
       ilength =  num * kreal
-      call rawread_f(iflag_endian, ilength, real_dat, ierr_IO)
+      call rawread_f(iflag_endian, ilength, real_dat(1), ierr_IO)
 #else
       read(id_binary)  real_dat(1:num)
 #endif
@@ -461,7 +473,7 @@
 #ifdef ZLIB_IO
       if(n1*n2 .le. 0) return
       ilength =  n1 * n2 * kreal
-      call rawread_f(iflag_endian, ilength, real_dat, ierr_IO)
+      call rawread_f(iflag_endian, ilength, real_dat(1,1), ierr_IO)
 #else
       read(id_binary)  real_dat(1:n1,1:n2)
 #endif

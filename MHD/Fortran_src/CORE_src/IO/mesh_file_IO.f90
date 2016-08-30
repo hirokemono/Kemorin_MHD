@@ -7,8 +7,6 @@
 !> @brief ASCII mesh file IO
 !!
 !!@verbatim
-!!      subroutine set_mesh_fname(my_rank)
-!!
 !!      subroutine read_mesh_file(my_rank)
 !!      subroutine read_mesh_geometry(my_rank)
 !!
@@ -23,9 +21,7 @@
       use m_precision
       use m_machine_parameter
 !
-      use m_file_format_switch
       use m_read_mesh_data
-      use set_parallel_file_name
 !
       implicit none
 !
@@ -34,24 +30,6 @@
       contains
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine set_mesh_fname(my_rank)
-!
-      integer(kind = kint), intent(in) :: my_rank
-      character(len=kchara) :: fname_tmp
-!
-!
-      if(iflag_mesh_file_ext.gt.0) then
-        call add_int_suffix(my_rank, mesh_file_head, fname_tmp)
-        call add_gfm_extension(fname_tmp, mesh_file_name)
-      else
-        call add_int_suffix(my_rank, mesh_file_head, mesh_file_name)
-      end if
-!
-      end subroutine set_mesh_fname
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
 !
       subroutine read_mesh_file(my_rank)
 !

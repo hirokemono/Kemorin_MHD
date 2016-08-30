@@ -14,8 +14,6 @@
 !!      subroutine read_geometry_size_gz(my_rank)
 !!
 !!      subroutine write_mesh_file_gz(my_rank)
-!!
-!!      integer(kind = kint) function check_mesh_file_gz(my_rank)
 !!@endverbatim
 !!
       module gz_mesh_file_IO
@@ -25,6 +23,7 @@
 !
       use m_read_mesh_data
       use set_parallel_file_name
+      use skip_gz_comment
       use gz_mesh_data_IO
 !
       implicit none
@@ -41,15 +40,12 @@
       use gz_sph_rj_groups_IO
 !
       integer(kind = kint), intent(in) :: my_rank
-      character(len=kchara) :: gzip_name
 !
-!
-      call add_gzip_extension(mesh_file_name, gzip_name)
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &   'Read gzipped mesh file: ', trim(gzip_name)
+     &   'Read gzipped mesh file: ', trim(mesh_file_name)
 !
-      call open_rd_gzfile(gzip_name)
+      call open_rd_gzfile_f(mesh_file_name)
 !
       call read_geometry_data_gz
 !
@@ -60,7 +56,7 @@
 !  read surface group
       call read_surf_grp_data_gz(surf_grp_IO)
 !
-      call close_gzfile
+      call close_gzfile_f
 !
       end subroutine read_mesh_gz
 !
@@ -69,19 +65,16 @@
       subroutine read_mesh_geometry_gz(my_rank)
 !
       integer(kind = kint), intent(in) :: my_rank
-      character(len=kchara) :: gzip_name
 !
-!
-      call add_gzip_extension(mesh_file_name, gzip_name)
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &   'Read gzipped mesh file: ', trim(gzip_name)
+     &   'Read gzipped mesh file: ', trim(mesh_file_name)
 !
-      call open_rd_gzfile(gzip_name)
+      call open_rd_gzfile_f(mesh_file_name)
 !
       call read_geometry_data_gz
 !
-      call close_gzfile
+      call close_gzfile_f
 !
       end subroutine read_mesh_geometry_gz
 !
@@ -90,18 +83,15 @@
        subroutine read_node_size_gz(my_rank)
 !
       integer(kind = kint), intent(in) :: my_rank
-      character(len=kchara) :: gzip_name
 !
-!
-      call add_gzip_extension(mesh_file_name, gzip_name)
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &    'Read gzipped mesh file: ', trim(gzip_name)
+     &    'Read gzipped mesh file: ', trim(mesh_file_name)
 !
-      call open_rd_gzfile(gzip_name)
+      call open_rd_gzfile_f(mesh_file_name)
 !
       call read_num_node_gz
-      call close_gzfile
+      call close_gzfile_f
 !
       end subroutine read_node_size_gz
 !
@@ -110,18 +100,15 @@
        subroutine read_geometry_size_gz(my_rank)
 !
       integer(kind = kint), intent(in) :: my_rank
-      character(len=kchara) :: gzip_name
 !
-!
-      call add_gzip_extension(mesh_file_name, gzip_name)
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &   'Read gzipped mesh file: ', trim(gzip_name)
+     &   'Read gzipped mesh file: ', trim(mesh_file_name)
 !
-      call open_rd_gzfile(gzip_name)
+      call open_rd_gzfile_f(mesh_file_name)
 !
       call read_num_node_ele_gz
-      call close_gzfile
+      call close_gzfile_f
 !
       end subroutine read_geometry_size_gz
 !
@@ -135,15 +122,12 @@
       use gz_sph_rj_groups_IO
 !
       integer(kind = kint), intent(in) :: my_rank
-      character(len=kchara) :: gzip_name
 !
-!
-      call add_gzip_extension(mesh_file_name, gzip_name)
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &   'Write gzipped mesh file: ', trim(gzip_name)
+     &   'Write gzipped mesh file: ', trim(mesh_file_name)
 !
-      call open_wt_gzfile(gzip_name)
+      call open_wt_gzfile_f(mesh_file_name)
 !
       call write_geometry_data_gz
 !
@@ -162,25 +146,9 @@
       call gz_write_textbuf_no_lf
       call write_surf_grp_data_gz(surf_grp_IO)
 !
-      call close_gzfile
+      call close_gzfile_f
 !
       end subroutine write_mesh_file_gz
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      integer(kind = kint) function check_mesh_file_gz(my_rank)
-!
-      use delete_data_files
-!
-      integer(kind = kint), intent(in) :: my_rank
-      character(len=kchara) :: gzip_name
-!
-!
-      call add_gzip_extension(mesh_file_name, gzip_name)
-      check_mesh_file_gz = check_file_exist(gzip_name)
-!
-      end function check_mesh_file_gz
 !
 !  ---------------------------------------------------------------------
 !

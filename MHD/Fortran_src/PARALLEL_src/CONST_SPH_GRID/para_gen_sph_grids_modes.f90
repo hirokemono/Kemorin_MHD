@@ -256,7 +256,7 @@
       type(group_data) :: radial_rj_grp_lc
 !
 !
-      if(iflag_excluding_FEM_mesh .gt. 0) return
+      if(iflag_output_mesh .eq. 0) return
 !
       call allocate_gauss_points(sph_rtp%nidx_global_rtp(2))
       call allocate_gauss_colatitude

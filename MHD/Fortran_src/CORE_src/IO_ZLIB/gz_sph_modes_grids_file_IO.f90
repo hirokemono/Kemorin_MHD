@@ -29,6 +29,7 @@
       use m_node_id_spherical_IO
       use set_parallel_file_name
       use gz_sph_modes_grids_data_IO
+      use skip_gz_comment
 !
       implicit none
 !
@@ -42,19 +43,16 @@
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank
-      character(len=kchara) :: gzip_name
 !
 !
       ndir_sph_IO =  3
 !
-      call add_gzip_extension(file_name, gzip_name)
-!
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &    'Read gzipped grid file: ', trim(gzip_name)
+     &    'Read gzipped grid file: ', trim(file_name)
 !
-      call open_rd_gzfile(gzip_name)
+      call open_rd_gzfile_f(file_name)
       call read_geom_rtp_data_gz
-      call close_gzfile
+      call close_gzfile_f
 !
       end subroutine read_geom_rtp_file_gz
 !
@@ -64,19 +62,16 @@
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank
-      character(len=kchara) :: gzip_name
 !
 !
       ndir_sph_IO =  2
 !
-      call add_gzip_extension(file_name, gzip_name)
-!
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &    'Read gzipped spectr modes file: ', trim(gzip_name)
+     &    'Read gzipped spectr modes file: ', trim(file_name)
 !
-      call open_rd_gzfile(gzip_name)
+      call open_rd_gzfile_f(file_name)
       call read_spectr_modes_rj_data_gz
-      call close_gzfile
+      call close_gzfile_f
 !
       end subroutine read_spectr_modes_rj_file_gz
 !
@@ -86,19 +81,16 @@
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank
-      character(len=kchara) :: gzip_name
 !
 !
       ndir_sph_IO =  3
 !
-      call add_gzip_extension(file_name, gzip_name)
-!
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &    'Read gzipped grid file: ', trim(gzip_name)
+     &    'Read gzipped grid file: ', trim(file_name)
 !
-      call open_rd_gzfile(gzip_name)
+      call open_rd_gzfile_f(file_name)
       call read_geom_rtm_data_gz
-      call close_gzfile
+      call close_gzfile_f
 !
       end subroutine read_geom_rtm_file_gz
 !
@@ -108,19 +100,16 @@
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank
-      character(len=kchara) :: gzip_name
 !
 !
       ndir_sph_IO =  2
 !
-      call add_gzip_extension(file_name, gzip_name)
-!
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &    'Read gzipped spectr modes file: ', trim(gzip_name)
+     &    'Read gzipped spectr modes file: ', trim(file_name)
 !
-      call open_rd_gzfile(gzip_name)
+      call open_rd_gzfile_f(file_name)
       call read_spectr_modes_rlm_data_gz
-      call close_gzfile
+      call close_gzfile_f
 !
       end subroutine read_modes_rlm_file_gz
 !
@@ -131,17 +120,14 @@
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank
-      character(len=kchara) :: gzip_name
 !
-!
-      call add_gzip_extension(file_name, gzip_name)
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &    'Write gzipped grid file: ', trim(gzip_name)
+     &    'Write gzipped grid file: ', trim(file_name)
 !
-      call open_wt_gzfile(gzip_name)
+      call open_wt_gzfile_f(file_name)
       call write_geom_rtp_data_gz
-      call close_gzfile
+      call close_gzfile_f
 !
       end subroutine write_geom_rtp_file_gz
 !
@@ -151,17 +137,14 @@
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank
-      character(len=kchara) :: gzip_name
 !
-!
-      call add_gzip_extension(file_name, gzip_name)
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &    'Write gzipped spectr modes file: ', trim(gzip_name)
+     &    'Write gzipped spectr modes file: ', trim(file_name)
 !
-      call open_wt_gzfile(gzip_name)
+      call open_wt_gzfile_f(file_name)
       call write_spectr_modes_rj_data_gz
-      call close_gzfile
+      call close_gzfile_f
 !
       end subroutine write_spectr_modes_rj_file_gz
 !
@@ -171,17 +154,14 @@
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank
-      character(len=kchara) :: gzip_name
 !
-!
-      call add_gzip_extension(file_name, gzip_name)
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &    'Write gzipped grid file: ', trim(gzip_name)
+     &    'Write gzipped grid file: ', trim(file_name)
 !
-      call open_wt_gzfile(gzip_name)
+      call open_wt_gzfile_f(file_name)
       call write_geom_rtm_data_gz
-      call close_gzfile
+      call close_gzfile_f
 !
       end subroutine write_geom_rtm_file_gz
 !
@@ -191,17 +171,14 @@
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank
-      character(len=kchara) :: gzip_name
 !
-!
-      call add_gzip_extension(file_name, gzip_name)
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &    'Write gzipped spectr modes file: ', trim(gzip_name)
+     &    'Write gzipped spectr modes file: ', trim(file_name)
 !
-      call open_wt_gzfile(gzip_name)
+      call open_wt_gzfile_f(file_name)
       call write_modes_rlm_data_gz
-      call close_gzfile
+      call close_gzfile_f
 !
       end subroutine write_modes_rlm_file_gz
 !

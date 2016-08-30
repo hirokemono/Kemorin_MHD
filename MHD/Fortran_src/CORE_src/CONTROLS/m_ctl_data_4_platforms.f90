@@ -45,7 +45,6 @@
 !!      itp_file_fmt_ctl            'ascii'
 !!      coriolis_file_fmt_ctl       'ascii'
 !!
-!!      mesh_extension_flags_ctl    'ON'
 !!      memory_conservation_ctl     'YES'
 !!      FEM_mesh_output_switch      'NO'
 !!    end data_files_def
@@ -134,7 +133,6 @@
       type(read_character_item), save :: debug_flag_ctl
 !
       type(read_character_item), save :: memory_conservation_ctl
-      type(read_character_item), save :: mesh_extension_ctl
       type(read_character_item), save :: FEM_mesh_output_switch
 !
 !     Label for the entry
@@ -199,8 +197,6 @@
       character(len=kchara), parameter                                  &
      &       :: hd_mem_conserve =   'memory_conservation_ctl'
       character(len=kchara), parameter                                  &
-     &       :: hd_mesh_extension = 'mesh_extension_flags_ctl'
-      character(len=kchara), parameter                                  &
      &       :: hd_FEM_mesh_output = 'FEM_mesh_output_switch'
 !
 !       Deprecated
@@ -219,7 +215,7 @@
       private :: hd_mesh_file_fmt, hd_rst_files_fmt
       private :: hd_udt_files_fmt, hd_sph_files_fmt
       private :: hd_debug_flag_ctl, hd_mem_conserve
-      private :: hd_coriolis_tri_int_name, hd_mesh_extension
+      private :: hd_coriolis_tri_int_name
       private :: hd_itp_sph_to_fem, hd_itp_fem_to_sph
       private :: hd_itp_files_fmt, hd_coriolis_file_fmt
       private :: hd_spect_files_fmt, hd_FEM_mesh_output
@@ -288,7 +284,6 @@
         call read_chara_ctl_type(hd_debug_flag_ctl, debug_flag_ctl)
         call read_chara_ctl_type(hd_mem_conserve,                       &
      &      memory_conservation_ctl)
-        call read_chara_ctl_type(hd_mesh_extension, mesh_extension_ctl)
         call read_chara_ctl_type(hd_FEM_mesh_output,                    &
      &      FEM_mesh_output_switch)
 !

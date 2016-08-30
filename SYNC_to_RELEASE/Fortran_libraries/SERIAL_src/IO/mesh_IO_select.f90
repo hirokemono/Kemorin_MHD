@@ -28,10 +28,29 @@
 !
       implicit none
 !
+      private :: set_mesh_fname
+!
 !  ---------------------------------------------------------------------
 !
       contains
 !
+!  ---------------------------------------------------------------------
+!
+      subroutine set_mesh_fname(my_rank)
+!
+      use m_file_format_switch
+      use set_mesh_file_names
+!
+      integer(kind = kint), intent(in) :: my_rank
+      character(len=kchara) :: fname_tmp
+!
+!
+      call set_mesh_file_name(mesh_file_head, id_ascii_file_fmt,        &
+     &    my_rank, mesh_file_name)
+!
+      end subroutine set_mesh_fname
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine sel_read_mesh(my_rank)

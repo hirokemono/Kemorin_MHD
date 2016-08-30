@@ -47,7 +47,7 @@
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &    'Read gzipped restart file: ', trim(gzip_name)
 !
-      call open_rd_gzfile(gzip_name)
+      call open_rd_gzfile_f(gzip_name)
 !
       call read_gz_step_data(id_rank)
       call skip_gz_comment_int(fld_IO%num_field_IO)
@@ -55,7 +55,7 @@
      &   (fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
      &    fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO)
 !
-      call close_gzfile
+      call close_gzfile_f
 !
       end subroutine read_gz_rst_file
 !
@@ -76,7 +76,7 @@
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Read gzipped restart file: ', trim(gzip_name)
 !
-      call open_rd_gzfile(gzip_name)
+      call open_rd_gzfile_f(gzip_name)
 !
       call read_gz_step_data(id_rank)
       call skip_gz_comment_int(fld_IO%num_field_IO)
@@ -84,7 +84,7 @@
       call alloc_phys_name_IO(fld_IO)
       call read_gz_rst_field_comps(fld_IO)
 !
-      call close_gzfile
+      call close_gzfile_f
 !
       call cal_istack_phys_comp_IO(fld_IO)
 !

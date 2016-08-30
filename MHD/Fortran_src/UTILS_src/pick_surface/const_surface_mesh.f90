@@ -52,7 +52,9 @@
       subroutine find_mesh_format_4_viewer
 !
       use m_file_format_switch
+      use set_mesh_file_names
       use set_parallel_file_name
+      use mesh_IO_select
       use mesh_file_IO
 !
       character(len=kchara) :: fname, fname_tmp
@@ -61,9 +63,8 @@
 !
 !  Detect file format
       iflag = 0
-      call add_int_suffix(izero, mesh_file_head, fname)
-      call add_gfm_extension(fname, fname_tmp)
-      call add_gzip_extension(fname_tmp, fname)
+      call set_mesh_file_name(mesh_file_head, id_gzip_txt_file_fmt,     &
+     &   izero, fname)
       open(15,file = fname, status='old', action='read', err=98)
       close(15)
       iflag = 1
@@ -71,33 +72,53 @@
    98 continue
 !
       if(iflag .eq. 0) then
-        call add_int_suffix(izero, mesh_file_head, fname_tmp)
-        call add_gzip_extension(fname_tmp, fname)
+        call set_mesh_file_name(mesh_file_head, id_ascii_file_fmt,      &
+     &      izero, fname)
         open(15,file = fname, status='old', action='read', err=97)
         close(15)
         iflag = 1
-        iflag_mesh_file_fmt = id_gzip_txt_file_fmt
+        iflag_mesh_file_fmt = id_ascii_file_fmt
       end if
    97 continue
 !
       if(iflag .eq. 0) then
-        call add_int_suffix(izero, mesh_file_head, fname_tmp)
-        call add_gfm_extension(fname_tmp, fname)
+        call set_mesh_file_name(mesh_file_head, id_binary_file_fmt,     &
+     &      izero, fname)
         open(15,file = fname, status='old', action='read', err=96)
         close(15)
         iflag = 1
-        iflag_mesh_file_fmt = id_ascii_file_fmt
+        iflag_mesh_file_fmt = id_binary_file_fmt
       end if
    96 continue
 !
       if(iflag .eq. 0) then
-        call add_int_suffix(izero, mesh_file_head, fname)
+        call set_mesh_file_name(mesh_file_head, id_gzip_bin_file_fmt,   &
+     &      izero, fname)
         open(15,file = fname, status='old', action='read', err=95)
+        close(15)
+        iflag = 1
+        iflag_mesh_file_fmt = id_gzip_bin_file_fmt
+      end if
+   95 continue
+!
+      if(iflag .eq. 0) then
+        call add_int_suffix(izero, mesh_file_head, fname_tmp)
+        call add_gzip_extension(fname_tmp, fname)
+        open(15,file = fname, status='old', action='read', err=94)
+        close(15)
+        iflag = 1
+        iflag_mesh_file_fmt = id_gzip_txt_file_fmt
+      end if
+   94 continue
+!
+      if(iflag .eq. 0) then
+        call add_int_suffix(izero, mesh_file_head, fname)
+        open(15,file = fname, status='old', action='read', err=93)
         close(15)
         iflag = 1
         iflag_mesh_file_fmt = id_ascii_file_fmt
       end if
-   95 continue
+   93 continue
 !
       if(iflag .eq. 0) stop 'I cannot find mesh file!!'
 !
@@ -105,12 +126,8 @@
 !
       num_pe = 0
       do
-        call set_mesh_fname(num_pe)
-        if(iflag_mesh_file_fmt .eq. id_gzip_txt_file_fmt) then
-          call add_gzip_extension(mesh_file_name, fname)
-        else
-          fname = mesh_file_name
-        end if
+        call set_mesh_file_name(mesh_file_head, iflag_mesh_file_fmt,    &
+     &      num_pe, fname)
 !
         write(*,*) 'mesh file name: ', trim(fname)
         open(15,file = fname, status='old', action='read', err=99)

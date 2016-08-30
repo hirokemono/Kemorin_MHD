@@ -13,6 +13,7 @@
 !!      subroutine set_control_mesh_def
 !!      subroutine set_control_sph_mesh(sph_file_param)
 !!        type(field_IO_params), intent(inout) :: sph_file_param
+!!      subroutine set_FEM_mesh_switch_4_SPH(iflag_access_FEM)
 !!      subroutine set_control_restart_file_def(fld_IO)
 !!@endverbatim
 !!
@@ -91,13 +92,6 @@
       use skip_comment_f
 !
 !
-      if(mesh_extension_ctl%iflag .gt. 0) then
-        if     (cmp_no_case(mesh_extension_ctl%charavalue,'Off')        &
-     &     .or. cmp_no_case(mesh_extension_ctl%charavalue,'0') ) then
-          iflag_mesh_file_ext = 0
-        end if
-      end if
-!
       if (mesh_file_prefix%iflag .gt. 0) then
         mesh_file_head = mesh_file_prefix%charavalue
       else
@@ -132,7 +126,6 @@
       if(sph_file_prefix%iflag .gt. 0) then
         sph_file_head =  sph_file_prefix%charavalue
         mesh_file_head = sph_file_prefix%charavalue
-        iflag_mesh_file_ext = 1
         iflag_mesh_file_fmt = iflag_sph_file_fmt
       end if
 !
@@ -142,6 +135,28 @@
       end if
 !
       end subroutine set_control_sph_mesh
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_FEM_mesh_switch_4_SPH(iflag_access_FEM)
+!
+      use skip_comment_f
+!
+      integer(kind = kint), intent(inout) :: iflag_access_FEM
+!
+!
+      iflag_access_FEM = 0
+      if(FEM_mesh_output_switch%iflag .gt. 0) then
+        if(yes_flag(FEM_mesh_output_switch%charavalue)) then
+          iflag_access_FEM = 1
+        end if
+      else if(excluding_FEM_mesh_ctl%iflag .gt. 0) then
+        if(no_flag(excluding_FEM_mesh_ctl%charavalue)) then
+          iflag_access_FEM = 1
+        end if
+      end if
+!
+      end subroutine set_FEM_mesh_switch_4_SPH
 !
 ! ----------------------------------------------------------------------
 !

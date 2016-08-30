@@ -117,7 +117,7 @@
         call add_gzip_extension(fname_tmp, file_name)
       else if(mod(itype_file,iten) .eq. id_binary_file_fmt) then
         call add_flb_extension(file_name, fname_tmp)
-        call add_null_character(fname_tmp, file_name)
+        file_name = fname_tmp
       else
         call add_fld_extension(file_name, fname_tmp)
         file_name = fname_tmp
@@ -159,7 +159,7 @@
         call add_gzip_extension(fname_tmp, file_name)
       else if(mod(itype_file,iten) .eq. id_binary_file_fmt) then
         call add_fsb_extension(file_name, fname_tmp)
-        call add_null_character(fname_tmp, file_name)
+        file_name = fname_tmp
       else
         call add_fst_extension(file_name, fname_tmp)
         file_name = fname_tmp

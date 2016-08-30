@@ -55,7 +55,7 @@
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &      'Write gzipped step data file: ', trim(gzip_name)
 !
-      call open_wt_gzfile(gzip_name)
+      call open_wt_gzfile_f(gzip_name)
 !
       nnod4 = int(ucd%nnod)
       call write_gz_step_data(my_rank)
@@ -63,7 +63,7 @@
      &         (nnod4, ucd%num_field, ucd%ntot_comp,                    &
      &          ucd%num_comp, ucd%phys_name, ucd%d_ucd)
 !
-      call close_gzfile
+      call close_gzfile_f
 !
       end subroutine write_ucd_2_gz_fld_file
 !
@@ -85,7 +85,7 @@
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &      'Read gzipped data file: ', trim(gzip_name)
 !
-      call open_rd_gzfile(gzip_name)
+      call open_rd_gzfile_f(gzip_name)
 !
       call read_gz_step_data(id_rank)
       call skip_gz_comment_int2(nnod4, ucd%num_field)
@@ -96,7 +96,7 @@
      &         (nnod4, ucd%num_field, ucd%ntot_comp,                    &
      &          ucd%num_comp, ucd%phys_name, ucd%d_ucd)
 !
-      call close_gzfile
+      call close_gzfile_f
 !
       end subroutine read_ucd_2_gz_fld_file
 !
@@ -117,7 +117,7 @@
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &      'Read gzipped data file: ', trim(gzip_name)
 !
-      call open_rd_gzfile(gzip_name)
+      call open_rd_gzfile_f(gzip_name)
 !
       call read_gz_step_data(id_rank)
       call skip_gz_comment_int2(nnod4, ucd%num_field)
@@ -134,7 +134,7 @@
      &         (nnod4, ucd%num_field, ucd%ntot_comp,                    &
      &          ucd%num_comp, ucd%phys_name, ucd%d_ucd)
 !
-      call close_gzfile
+      call close_gzfile_f
 !
       end subroutine read_alloc_ucd_2_gz_fld_file
 !

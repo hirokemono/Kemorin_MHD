@@ -107,6 +107,7 @@
         call para_gen_sph_grids(sph_gen)
         call deallocate_gen_mesh_params
       end if
+      call calypso_mpi_barrier
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_mesh'
       call load_para_SPH_and_FEM_mesh                                   &

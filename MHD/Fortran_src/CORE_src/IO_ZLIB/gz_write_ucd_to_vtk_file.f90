@@ -60,7 +60,7 @@
       call add_gzip_extension(file_name, gzip_name)
 !
       write(*,*) 'Write gzipped parallel VTK file: ', trim(gzip_name)
-      call open_wt_gzfile(gzip_name)
+      call open_wt_gzfile_f(gzip_name)
 !
       write(textbuf,'(a,a1)') '<File version="pvtk-1.0"', char(0)
       call gz_write_textbuf_w_lf
@@ -80,7 +80,7 @@
       write(textbuf,'(a,a1)') '</File>', char(0)
       call gz_write_textbuf_w_lf
 !
-      call close_gzfile
+      call close_gzfile_f
 !
       end subroutine write_gz_parallel_vtk_file
 !

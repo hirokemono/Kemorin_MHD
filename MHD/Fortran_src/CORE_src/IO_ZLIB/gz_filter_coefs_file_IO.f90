@@ -52,11 +52,11 @@
         write(*,*) 'Read gzipped filter files: ', trim(gzip_name)
       end if
 !
-      call open_rd_gzfile(gzip_name)
+      call open_rd_gzfile_f(gzip_name)
       call read_filter_geometry_gz
       call read_3d_filter_stack_gz(IO_filters)
       call read_3d_filter_weights_coef_gz(IO_filters)
-      call close_gzfile
+      call close_gzfile_f
 !
       end subroutine read_sort_filter_coef_file_gz
 !
@@ -85,13 +85,13 @@
         write(*,*) 'Write gzipped filter files: ', trim(gzip_name)
       end if
 !
-      call open_wt_gzfile(gzip_name)
+      call open_wt_gzfile_f(gzip_name)
 !
       call write_filter_geometry_gz
       call write_3d_filter_stack_gz(IO_filters)
       call write_3d_filter_weights_coef_gz(IO_filters)
 !
-      call close_gzfile
+      call close_gzfile_f
 !
       end subroutine write_sort_filter_coef_file_gz
 !
@@ -117,9 +117,9 @@
         write(*,*) 'Read gzipped filter files: ', trim(gzip_name)
       end if
 !
-      call open_rd_gzfile(gzip_name)
+      call open_rd_gzfile_f(gzip_name)
       call read_filter_geometry_gz
-      call close_gzfile
+      call close_gzfile_f
 !
       end subroutine read_filter_geometry_file_gz
 !
@@ -144,9 +144,9 @@
         write(*,*) 'Write gzipped filter files: ', trim(gzip_name)
       end if
 !
-      call open_wt_gzfile(gzip_name)
+      call open_wt_gzfile_f(gzip_name)
       call write_filter_geometry_gz
-      call close_gzfile
+      call close_gzfile_f
 !
       end subroutine write_filter_geometry_file_gz
 !

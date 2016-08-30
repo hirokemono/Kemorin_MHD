@@ -60,7 +60,7 @@
 !!                put ".elps" at the end
 !!
 !!      subroutine add_gzip_extension(file_header, file_name)
-!!                put ".gz" and null character at the end
+!!                put ".gz"
 !!      subroutine add_null_character(file_header, file_name)
 !!                put null character at the end
 !!
@@ -69,6 +69,9 @@
 !!
 !!      subroutine add_gfm_extension(file_header, file_name)
 !!                put ".gfm" at the end
+!!      subroutine add_gfb_extension(file_header, file_name)
+!!                put ".gfb" at the end
+!!
 !!
 !!      subroutine add_rtp_extension(file_header, file_name)
 !!                put ".rtp" at the end
@@ -78,6 +81,15 @@
 !!                put ".rlm" at the end
 !!      subroutine add_rj_extension(file_header, file_name)
 !!                put ".rj" at the end
+!!
+!!      subroutine add_btp_extension(file_header, file_name)
+!!                put ".btp" at the end
+!!      subroutine add_btm_extension(file_header, file_name)
+!!                put ".btm" at the end
+!!      subroutine add_blm_extension(file_header, file_name)
+!!                put ".blm" at the end
+!!      subroutine add_brj_extension(file_header, file_name)
+!!                put ".brj" at the end
 !!
 !!      subroutine add_index_after_name(int_id, chara_head, chara_name)
 !!      subroutine int_to_str(int_val, int_string)
@@ -411,8 +423,8 @@ end subroutine add_fsb_extension
       character(len=kchara), intent(in) :: file_header
       character(len=kchara), intent(inout) :: file_name
 !
-       write(file_name,1011) trim(file_header), ".gz", char(0)
- 1011 format (a,a3,a1)
+       write(file_name,1011) trim(file_header), ".gz"
+ 1011 format (a,a3)
 !
       end subroutine add_gzip_extension
 !
@@ -443,6 +455,7 @@ end subroutine add_fsb_extension
       end subroutine add_ksm_extension
 !
 !-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
 !
       subroutine add_gfm_extension(file_header, file_name)
 !
@@ -454,6 +467,19 @@ end subroutine add_fsb_extension
  1011 format (a,".gfm")
 !
       end subroutine add_gfm_extension
+!
+!-----------------------------------------------------------------------
+!
+      subroutine add_gfb_extension(file_header, file_name)
+!
+      character(len=kchara), intent(in) :: file_header
+      character(len=kchara), intent(inout) :: file_name
+!
+       write(file_name,1011) trim(file_header)
+       file_name = trim(file_name)
+ 1011 format (a,".gfb")
+!
+      end subroutine add_gfb_extension
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -507,6 +533,59 @@ end subroutine add_fsb_extension
  1011 format (a,".rj")
 !
       end subroutine add_rj_extension
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine add_btp_extension(file_header, file_name)
+!
+      character(len=kchara), intent(in) :: file_header
+      character(len=kchara), intent(inout) :: file_name
+!
+       write(file_name,1011) trim(file_header)
+       file_name = trim(file_name)
+ 1011 format (a,".btp")
+!
+      end subroutine add_btp_extension
+!
+!-----------------------------------------------------------------------
+!
+      subroutine add_btm_extension(file_header, file_name)
+!
+      character(len=kchara), intent(in) :: file_header
+      character(len=kchara), intent(inout) :: file_name
+!
+       write(file_name,1011) trim(file_header)
+       file_name = trim(file_name)
+ 1011 format (a,".btm")
+!
+      end subroutine add_btm_extension
+!
+!-----------------------------------------------------------------------
+!
+      subroutine add_blm_extension(file_header, file_name)
+!
+      character(len=kchara), intent(in) :: file_header
+      character(len=kchara), intent(inout) :: file_name
+!
+       write(file_name,1011) trim(file_header)
+       file_name = trim(file_name)
+ 1011 format (a,".blm")
+!
+      end subroutine add_blm_extension
+!
+!-----------------------------------------------------------------------
+!
+      subroutine add_brj_extension(file_header, file_name)
+!
+      character(len=kchara), intent(in) :: file_header
+      character(len=kchara), intent(inout) :: file_name
+!
+       write(file_name,1011) trim(file_header)
+       file_name = trim(file_name)
+ 1011 format (a,".brj")
+!
+      end subroutine add_brj_extension
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

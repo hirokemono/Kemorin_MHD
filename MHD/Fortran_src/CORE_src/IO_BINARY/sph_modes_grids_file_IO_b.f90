@@ -71,13 +71,16 @@
 !      write(*,*) '! global radial ID and grid ID'
       call read_gl_nodes_sph_b
 !
-!      write(*,*) '! communication table between spectr data'
+      write(50+my_rank,*) '! communication table for rtp'
       call read_import_data_b
 !
-!      write(*,*) '! Group data'
+!      write(*,*) '! Group data bc_rtp_grp_IO'
       call read_group_data_b(bc_rtp_grp_IO)
+!      write(*,*) '! Group data radial_rtp_grp_IO'
       call read_group_data_b(radial_rtp_grp_IO)
+!      write(*,*) '! Group data theta_rtp_grp_IO'
       call read_group_data_b(theta_rtp_grp_IO)
+!      write(*,*) '! Group data zonal_rtp_grp_IO'
       call read_group_data_b(zonal_rtp_grp_IO)
 !
       call close_binary_file
@@ -115,7 +118,7 @@
 !      write(*,*) '! global radial ID and spectr ID'
       call read_gl_nodes_sph_b
 !
-!      write(*,*) '! communication table between spectr data'
+      write(50+my_rank,*) '! communication table for rj'
       call read_import_data_b
 !
 !      write(*,*) '! Group data'
@@ -146,6 +149,7 @@
       call read_rtp_gl_1d_table_b
       call read_gl_nodes_sph_b
 !
+      write(50+my_rank,*) '! communication table for rtm'
       call read_import_data_b
 !
       call close_binary_file
@@ -172,6 +176,7 @@
       call read_rj_gl_1d_table_b
       call read_gl_nodes_sph_b
 !
+      write(50+my_rank,*) '! communication table for rj'
       call read_import_data_b
 !
       call close_binary_file

@@ -16,6 +16,11 @@
 !!      subroutine sel_write_spectr_modes_rj_file(my_rank)
 !!      subroutine sel_write_geom_rtm_file(my_rank)
 !!      subroutine sel_write_modes_rlm_file(my_rank)
+!!
+!!      integer(kind = kint) function check_exsist_rtp_file(my_rank)
+!!      integer(kind = kint) function check_exsist_rj_file(my_rank)
+!!      integer(kind = kint) function check_exsist_rtm_file(my_rank)
+!!      integer(kind = kint) function check_exsist_rlm_file(my_rank)
 !!@endverbatim
 !!
 !!@param my_rank    Process ID
@@ -27,6 +32,7 @@
 !
       use m_file_format_switch
       use set_parallel_file_name
+      use set_mesh_file_names
 !
       implicit none
 !
@@ -49,8 +55,8 @@
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      call add_int_suffix(my_rank, sph_file_head, fname_tmp)
-      call add_rtp_extension(fname_tmp, sph_file_name)
+      call set_sph_rtp_file_name(sph_file_head, id_ascii_file_fmt,      &
+     &    my_rank, sph_file_name)
 !
 !
 !      if (iflag_sph_file_fmt .eq. id_binary_file_fmt) then
@@ -79,8 +85,8 @@
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      call add_int_suffix(my_rank, sph_file_head, fname_tmp)
-      call add_rj_extension(fname_tmp, sph_file_name)
+      call set_sph_rj_file_name(sph_file_head, id_ascii_file_fmt,       &
+     &    my_rank, sph_file_name)
 !
 !      if (iflag_sph_file_fmt .eq. id_binary_file_fmt) then
 !        call read_spectr_modes_rj_file_b(my_rank, sph_file_name)
@@ -108,8 +114,8 @@
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      call add_int_suffix(my_rank, sph_file_head, fname_tmp)
-      call add_rtm_extension(fname_tmp, sph_file_name)
+      call set_sph_rtm_file_name(sph_file_head, id_ascii_file_fmt,      &
+     &    my_rank, sph_file_name)
 !
 !      if (iflag_sph_file_fmt .eq. id_binary_file_fmt) then
 !        call read_geom_rtm_file_b(my_rank, sph_file_name)
@@ -137,8 +143,8 @@
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      call add_int_suffix(my_rank, sph_file_head, fname_tmp)
-      call add_rlm_extension(fname_tmp, sph_file_name)
+      call set_sph_rlm_file_name(sph_file_head, id_ascii_file_fmt,      &
+     &    my_rank, sph_file_name)
 !
 !      if (iflag_sph_file_fmt .eq. id_binary_file_fmt) then
 !        call read_modes_rlm_file_b(my_rank, sph_file_name)
@@ -167,8 +173,8 @@
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      call add_int_suffix(my_rank, sph_file_head, fname_tmp)
-      call add_rtp_extension(fname_tmp, sph_file_name)
+      call set_sph_rtp_file_name(sph_file_head, id_ascii_file_fmt,      &
+     &    my_rank, sph_file_name)
 !
 !      if (iflag_sph_file_fmt .eq. id_binary_file_fmt) then
 !        call write_geom_rtp_file_b(my_rank, sph_file_name)
@@ -196,8 +202,8 @@
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      call add_int_suffix(my_rank, sph_file_head, fname_tmp)
-      call add_rj_extension(fname_tmp, sph_file_name)
+      call set_sph_rj_file_name(sph_file_head, id_ascii_file_fmt,       &
+     &    my_rank, sph_file_name)
 !
 !      if (iflag_sph_file_fmt .eq. id_binary_file_fmt) then
 !        call write_spectr_modes_rj_file_b(my_rank, sph_file_name)
@@ -225,8 +231,8 @@
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      call add_int_suffix(my_rank, sph_file_head, fname_tmp)
-      call add_rtm_extension(fname_tmp, sph_file_name)
+      call set_sph_rtm_file_name(sph_file_head, id_ascii_file_fmt,      &
+     &    my_rank, sph_file_name)
 !
 !      if (iflag_sph_file_fmt .eq. id_binary_file_fmt) then
 !        call write_geom_rtm_file_b(my_rank, sph_file_name)
@@ -254,8 +260,8 @@
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      call add_int_suffix(my_rank, sph_file_head, fname_tmp)
-      call add_rlm_extension(fname_tmp, sph_file_name)
+      call set_sph_rlm_file_name(sph_file_head, id_ascii_file_fmt,      &
+     &    my_rank, sph_file_name)
 !
 !      if (iflag_sph_file_fmt .eq. id_binary_file_fmt) then
 !        call write_modes_rlm_file_b(my_rank, sph_file_name)
@@ -270,6 +276,67 @@
 !      end if
 !
       end subroutine sel_write_modes_rlm_file
+!
+!------------------------------------------------------------------
+!------------------------------------------------------------------
+!
+      integer(kind = kint) function check_exsist_rtp_file(my_rank)
+!
+      use delete_data_files
+!
+      integer(kind = kint), intent(in) :: my_rank
+!
+!
+      call set_sph_rtp_file_name(sph_file_head, id_ascii_file_fmt,      &
+     &    my_rank, sph_file_name)
+      check_exsist_rtp_file = check_file_exist(sph_file_name)
+!
+      end function check_exsist_rtp_file
+!
+!------------------------------------------------------------------
+!
+      integer(kind = kint) function check_exsist_rj_file(my_rank)
+!
+      use delete_data_files
+!
+      integer(kind = kint), intent(in) :: my_rank
+!
+!
+      call set_sph_rj_file_name(sph_file_head, id_ascii_file_fmt,       &
+     &    my_rank, sph_file_name)
+      check_exsist_rj_file = check_file_exist(sph_file_name)
+!
+      end function check_exsist_rj_file
+!
+!------------------------------------------------------------------
+!
+      integer(kind = kint) function check_exsist_rtm_file(my_rank)
+!
+      use delete_data_files
+!
+      integer(kind = kint), intent(in) :: my_rank
+!
+!
+      call set_sph_rtm_file_name(sph_file_head, id_ascii_file_fmt,      &
+     &    my_rank, sph_file_name)
+      check_exsist_rtm_file = check_file_exist(sph_file_name)
+!
+      end function check_exsist_rtm_file
+!
+!------------------------------------------------------------------
+!
+      integer(kind = kint) function check_exsist_rlm_file(my_rank)
+!
+      use delete_data_files
+!
+      integer(kind = kint), intent(in) :: my_rank
+!
+!
+      call set_sph_rlm_file_name(sph_file_head, id_ascii_file_fmt,      &
+     &    my_rank, sph_file_name)
+      check_exsist_rlm_file = check_file_exist(sph_file_name)
+!
+      end function check_exsist_rlm_file
 !
 !------------------------------------------------------------------
 !

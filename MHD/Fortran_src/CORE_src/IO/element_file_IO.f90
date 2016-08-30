@@ -33,25 +33,6 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_element_fname(my_rank)
-!
-      integer(kind = kint), intent(in) :: my_rank
-      character(len=kchara) :: fname_tmp
-!
-!
-      if(iflag_mesh_file_ext.gt.0) then
-        call add_int_suffix(my_rank, mesh_ele_file_head, fname_tmp)
-        call add_gfm_extension(fname_tmp, mesh_file_name)
-      else
-        call add_int_suffix(my_rank, mesh_ele_file_head,                &
-     &      mesh_file_name)
-      end if
-!
-      end subroutine set_element_fname
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
       subroutine output_element_file(my_rank)
 !
       integer(kind = kint), intent(in) :: my_rank

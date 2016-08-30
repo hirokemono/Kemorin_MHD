@@ -61,7 +61,6 @@
       use m_ctl_data_4_platforms
       use set_control_platform_data
       use gen_sph_grids_modes
-      use skip_comment_f
 !
       integer(kind = kint), intent(inout) :: nprocs_check
       type(field_IO_params), intent(inout) :: sph_file_param
@@ -71,18 +70,8 @@
       if(ndomain_ctl%iflag .gt. 0) nprocs_check = ndomain_ctl%intvalue
       call turn_off_debug_flag_by_ctl(izero)
       call set_control_mesh_def
+      call set_FEM_mesh_switch_4_SPH(iflag_output_mesh)
       call set_control_sph_mesh(sph_file_param)
-!
-      iflag_excluding_FEM_mesh = 1
-      if(excluding_FEM_mesh_ctl%iflag .gt. 0) then
-        if(yes_flag(FEM_mesh_output_switch%charavalue)) then
-          iflag_excluding_FEM_mesh = 0
-        end if
-      else if(excluding_FEM_mesh_ctl%iflag .gt. 0) then
-        if(no_flag(excluding_FEM_mesh_ctl%charavalue)) then
-          iflag_excluding_FEM_mesh = 0
-        end if
-      end if
 !
       end subroutine set_control_4_shell_filess
 !

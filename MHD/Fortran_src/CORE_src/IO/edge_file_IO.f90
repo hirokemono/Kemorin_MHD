@@ -23,6 +23,8 @@
 !
       implicit none
 !
+      private :: set_edge_fname
+!
 !------------------------------------------------------------------
 !
        contains
@@ -31,17 +33,15 @@
 !
       subroutine set_edge_fname(my_rank)
 !
+      use m_file_format_switch
+      use set_mesh_file_names
+!
       integer(kind = kint), intent(in) :: my_rank
       character(len=kchara) :: fname_tmp
 !
 !
-      if(iflag_mesh_file_ext .gt. 0) then
-        call add_int_suffix(my_rank, mesh_edge_file_head, fname_tmp)
-        call add_gfm_extension(fname_tmp, mesh_file_name)
-      else
-        call add_int_suffix(my_rank, mesh_edge_file_head,               &
-     &      mesh_file_name)
-      end if
+      call set_mesh_file_name(mesh_edge_file_head, id_ascii_file_fmt,   &
+     &    my_rank, mesh_file_name)
 !
       end subroutine set_edge_fname
 !

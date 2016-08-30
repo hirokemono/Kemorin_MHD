@@ -30,10 +30,29 @@
 !
       implicit none
 !
+      private :: set_mesh_fname
+!
 !  ---------------------------------------------------------------------
 !
       contains
 !
+!  ---------------------------------------------------------------------
+!
+      subroutine set_mesh_fname(my_rank)
+!
+      use m_file_format_switch
+      use set_mesh_file_names
+!
+      integer(kind = kint), intent(in) :: my_rank
+      character(len=kchara) :: fname_tmp
+!
+!
+      call set_mesh_file_name(mesh_file_head, iflag_mesh_file_fmt,      &
+     &    my_rank, mesh_file_name)
+!
+      end subroutine set_mesh_fname
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine sel_read_mesh(my_rank)
@@ -162,17 +181,7 @@
 !
       call set_mesh_fname(my_rank)
 !
-      if (iflag_mesh_file_fmt .eq. id_binary_file_fmt) then
-        check_exist_mesh = check_file_exist(mesh_file_name)
-!
-#ifdef ZLIB_IO
-      else if(iflag_mesh_file_fmt .eq. id_gzip_txt_file_fmt) then
-        check_exist_mesh = check_mesh_file_gz(my_rank)
-#endif
-!
-      else
-        check_exist_mesh = check_file_exist(mesh_file_name)
-      end if
+      check_exist_mesh = check_file_exist(mesh_file_name)
 !
       return
       end function check_exist_mesh

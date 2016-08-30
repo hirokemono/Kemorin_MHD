@@ -12,8 +12,6 @@
 !> @brief surface mesh file IO
 !!
 !!@verbatim
-!!      subroutine set_surface_fname(my_rank)
-!!
 !!      subroutine output_surface_file
 !!      subroutine output_surface_sph_file
 !!      subroutine output_surface_cyl_file
@@ -26,7 +24,6 @@
       use m_precision
 !
       use m_read_mesh_data
-      use set_parallel_file_name
       use surface_data_IO
 !
       implicit none
@@ -35,25 +32,6 @@
 !
        contains
 !
-!------------------------------------------------------------------
-!
-      subroutine set_surface_fname(my_rank)
-!
-      integer(kind = kint), intent(in) :: my_rank
-      character(len=kchara) :: fname_tmp
-!
-!
-      if(iflag_mesh_file_ext.gt.0) then
-        call add_int_suffix(my_rank, mesh_surf_file_head, fname_tmp)
-        call add_gfm_extension(fname_tmp, mesh_file_name)
-      else
-        call add_int_suffix(my_rank, mesh_surf_file_head,               &
-     &      mesh_file_name)
-      end if
-!
-      end subroutine set_surface_fname
-!
-!------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine output_surface_file

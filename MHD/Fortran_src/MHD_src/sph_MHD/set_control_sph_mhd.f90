@@ -45,6 +45,7 @@
       use t_rms_4_sph_spectr
       use t_field_data_IO
 !
+      use gen_sph_grids_modes
       use set_control_platform_data
       use set_ctl_parallel_platform
       use set_control_4_model
@@ -79,6 +80,7 @@
       call check_control_num_domains
       call set_control_smp_def(my_rank)
       call set_control_mesh_def
+      call set_FEM_mesh_switch_4_SPH(iflag_output_mesh)
       call set_control_sph_mesh(sph_file_param)
       call set_control_restart_file_def(sph_fst_IO)
       call set_control_MHD_field_file

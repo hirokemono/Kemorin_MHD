@@ -104,6 +104,7 @@
       use load_mesh_data
       use copy_mesh_structures
       use const_FEM_mesh_sph_mhd
+      use gen_sph_grids_modes
       use mesh_IO_select
 !
       type(sph_shell_parameters), intent(inout) :: sph_param
@@ -153,9 +154,9 @@
 !     &   (my_rank, group%surf_grp, group_s%surf_grp)
 !
       call set_mesh_data_from_type(mesh_s, group_s,                     &
-     &    mesh%nod_comm, mesh%node, mesh%ele,                           &
-     &    ele_mesh%surf, ele_mesh%edge,                                 &
-     &    group%nod_grp, group%ele_grp, group%surf_grp)
+     &      mesh%nod_comm, mesh%node, mesh%ele,                         &
+     &      ele_mesh%surf, ele_mesh%edge,                               &
+     &      group%nod_grp, group%ele_grp, group%surf_grp)
 !
       end subroutine load_FEM_mesh_4_SPH
 !

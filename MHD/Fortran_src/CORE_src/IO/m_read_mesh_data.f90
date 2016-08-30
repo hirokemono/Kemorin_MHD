@@ -51,7 +51,6 @@
 !
 !
       integer(kind = kint)  :: iflag_mesh_file_fmt = 0
-      integer(kind = kint)  :: iflag_mesh_file_ext = 1
 !
       character(len=kchara), parameter:: def_mesh_file_head = 'mesh/in'
       character(len=kchara), parameter                                  &

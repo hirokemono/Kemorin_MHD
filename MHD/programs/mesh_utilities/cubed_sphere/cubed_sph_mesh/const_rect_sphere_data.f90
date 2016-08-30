@@ -37,7 +37,7 @@
       integer(kind = kint) :: inod_start, iele_start, id_flag_quad
 !
 !
-      call set_mesh_file_names
+      call set_linear_mesh_file_names
 !
       write(*,*) 'write_header_4_mesh'
       call write_header_4_mesh(id_l_mesh, id_l_connect, id_l_group,     &
