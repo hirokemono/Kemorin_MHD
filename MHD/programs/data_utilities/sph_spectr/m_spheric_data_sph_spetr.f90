@@ -6,14 +6,6 @@
 !!
 !!@brief  indexing table of speherical harmonics transform
 !!
-!!@verbatim
-!!      subroutine allocate_spheric_parameter
-!!      subroutine deallocate_spheric_parameter
-!!      subroutine deallocate_sph_param_smp
-!!
-!!      subroutine check_global_spheric_parameter
-!!@endverbatim
-!!
 !
       module m_spheric_data_sph_spetr
 !

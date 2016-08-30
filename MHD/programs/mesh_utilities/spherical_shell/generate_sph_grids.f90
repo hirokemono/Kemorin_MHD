@@ -41,13 +41,13 @@
 !
 !
       call read_control_4_gen_shell_grids
-      call s_set_control_4_gen_shell_grids                              &
-     &   (sph_const%sph_params, sph_const%sph_rtp, sph_const%sph_rj,    &
-     &    ierr)
+      call s_set_control_4_gen_shell_grids(sph_const, ierr)
       if(ierr .gt. 0) then
         write(*,'(a)') e_message
         stop
       end if
+!
+!  =========  Set global resolutions ===================================
 !
       call set_global_sph_resolution                                    &
      &   (sph_const%sph_params%l_truncation,                            &

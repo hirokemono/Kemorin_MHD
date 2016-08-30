@@ -15,7 +15,7 @@
 !!      subroutine deallocate_sph_ranks
 !!      subroutine deallocate_sph_1d_domain_id
 !!
-!!      subroutine check_sph_domains(nprocs, ierr, e_message)
+!!      subroutine check_sph_domains(nprocs_check, ierr, e_message)
 !!      subroutine check_sph_ranks(my_rank)
 !!      subroutine check_sph_1d_domain_id
 !!@endverbatim
@@ -125,11 +125,11 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_sph_domains(nprocs, ierr, e_message)
+      subroutine check_sph_domains(nprocs_check, ierr, e_message)
 !
       use m_error_IDs
 !
-      integer(kind = kint), intent(in) :: nprocs
+      integer(kind = kint), intent(in) :: nprocs_check
       integer(kind = kint), intent(inout) :: ierr
       character(len = kchara), intent(inout) :: e_message
       integer(kind = kint) :: np
@@ -137,7 +137,7 @@
 !
       ierr = 0
       ndomain_sph = ndomain_rj(1)*ndomain_rj(2)
-      if (ndomain_sph .ne. nprocs) then
+      if (ndomain_sph .ne. nprocs_check) then
         write(e_message,'(a)') 'check num of domain spectr file(r,j)'
         ierr = ierr_mesh
         return

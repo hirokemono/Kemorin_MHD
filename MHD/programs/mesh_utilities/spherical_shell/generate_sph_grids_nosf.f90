@@ -31,9 +31,7 @@
 !
 !
       call read_control_4_gen_shell_grids
-      call s_set_control_4_gen_shell_grids                              &
-     &   (sph_const%sph_params, sph_const%sph_rtp, sph_const%sph_rj,    &
-     &    ierr)
+      call s_set_control_4_gen_shell_grids(sph_const, ierr)
       if(ierr .gt. 0) then
         write(*,'(a)') e_message
         stop
@@ -44,6 +42,8 @@
      &    sph_const%sph_params%m_folding,                               &
      &    sph_const%sph_rtp, sph_const%sph_rtm,                         &
      &    sph_const%sph_rlm, sph_const%sph_rj)
+!
+!  =========  Set global resolutions ===================================
 !
       call check_global_spheric_parameter                               &
      &   (sph_const%sph_params, sph_const%sph_rtp)

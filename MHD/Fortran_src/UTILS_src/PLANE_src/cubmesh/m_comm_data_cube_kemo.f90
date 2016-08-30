@@ -164,8 +164,8 @@
 
        write(pe_id,'(a)', advance='NO') hd_fem_para()
 
-       write(l_out,'(10i16)')  pe_id-1
-       write(l_out,'(10i16)')  neibpetot_new
+       write(l_out,'(i16)')  pe_id-1
+       write(l_out,'(i16)')  neibpetot_new
        write(l_out,'(10i16)') (neibpe_new(i)-1,i=1,neibpetot_new)
 !
        end subroutine write_pe_data

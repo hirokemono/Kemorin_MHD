@@ -8,7 +8,8 @@
 !!        for spherical transform
 !!
 !!@verbatim
-!!      subroutine set_subdomains_4_sph_shell(nprocs, ierr, e_message)
+!!      subroutine set_subdomains_4_sph_shell                           &
+!!     &         (nprocs_check, ierr, e_message)
 !!@endverbatim
 !
       module set_control_sph_subdomains
@@ -44,11 +45,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_subdomains_4_sph_shell(nprocs, ierr, e_message)
+      subroutine set_subdomains_4_sph_shell                             &
+     &         (nprocs_check, ierr, e_message)
 !
       use m_error_IDs
 !
-      integer(kind = kint), intent(in) :: nprocs
+      integer(kind = kint), intent(in) :: nprocs_check
       integer(kind = kint), intent(inout) :: ierr
       character(len = kchara), intent(inout) :: e_message
 !
@@ -80,7 +82,7 @@
         call deallocate_ndomain_rj_ctl
       end if
 !
-      call check_sph_domains(nprocs, ierr, e_message)
+      call check_sph_domains(nprocs_check, ierr, e_message)
 !
       end subroutine set_subdomains_4_sph_shell
 !
