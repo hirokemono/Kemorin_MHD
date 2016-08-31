@@ -39,7 +39,7 @@
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &   'Read binary mesh file: ', trim(mesh_file_name)
+     &   'Read gzipped binary mesh file: ', trim(mesh_file_name)
 !
       call open_rd_gzfile_b(mesh_file_name, my_rank)
 !
@@ -66,7 +66,7 @@
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &   'Read binary mesh file: ', trim(mesh_file_name)
+     &   'Read gzipped binary mesh file: ', trim(mesh_file_name)
 !
       call open_rd_gzfile_b(mesh_file_name, my_rank)
       call gz_read_geometry_data_b
@@ -85,7 +85,7 @@
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &   'Read binary mesh file: ', trim(mesh_file_name)
+     &   'Read gzipped binary mesh file: ', trim(mesh_file_name)
 !
       call open_rd_gzfile_b(mesh_file_name, my_rank)
       call gz_read_domain_info_b
@@ -105,7 +105,7 @@
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &   'Read binary mesh file: ', trim(mesh_file_name)
+     &   'Read gzipped binary mesh file: ', trim(mesh_file_name)
 !
       call open_rd_gzfile_b(mesh_file_name, my_rank)
 !
@@ -132,7 +132,7 @@
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &   'Write binary mesh file: ', trim(mesh_file_name)
+     &   'Write gzipped binary mesh file: ', trim(mesh_file_name)
 !
       call open_wt_gzfile_b(mesh_file_name)
       call gz_write_geometry_data_b

@@ -184,7 +184,7 @@
 !
 !
       ilength =  num * kreal
-      call gzwrite_f(iflag_endian, ilength, real_dat(1), ierr)
+      call gzwrite_f(ilength, real_dat(1), ierr)
 !
       end subroutine gz_write_fld_realarray_b
 !

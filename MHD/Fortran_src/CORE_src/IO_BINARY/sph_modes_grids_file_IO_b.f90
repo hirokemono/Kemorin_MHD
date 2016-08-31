@@ -29,7 +29,6 @@
       use m_node_id_spherical_IO
       use domain_data_IO_b
       use spherical_model_IO_b
-      use sph_global_1d_idx_IO
       use sph_global_1d_idx_IO_b
       use binary_IO
 !
@@ -71,7 +70,7 @@
 !      write(*,*) '! global radial ID and grid ID'
       call read_gl_nodes_sph_b
 !
-      write(50+my_rank,*) '! communication table for rtp'
+!      write(50+my_rank,*) '! communication table for rtp'
       call read_import_data_b
 !
 !      write(*,*) '! Group data bc_rtp_grp_IO'
