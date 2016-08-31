@@ -23,6 +23,7 @@
       use m_precision
 !
       use m_comm_data_IO
+      use binary_IO
 !
       implicit none
 !
@@ -33,8 +34,6 @@
 !------------------------------------------------------------------
 !
       subroutine read_domain_info_b
-!
-      use binary_IO
 !
 !
       call read_fld_inthead_b(my_rank_IO)
@@ -51,8 +50,6 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_import_data_b
-!
-      use binary_IO
 !
 !
       call allocate_import_stack_IO
@@ -75,8 +72,6 @@
 !
       subroutine read_export_data_b
 !
-      use binary_IO
-!
 !
       call allocate_export_stack_IO
       if (num_neib_domain_IO .gt. 0) then
@@ -97,8 +92,6 @@
 !
       subroutine write_domain_info_b
 !
-      use binary_IO
-!
 !
       call write_fld_inthead_b(my_rank_IO)
       call write_fld_inthead_b(num_neib_domain_IO)
@@ -115,8 +108,6 @@
 !
       subroutine write_import_data_b
 !
-      use binary_IO
-!
 !
       call write_fld_intstack_b(num_neib_domain_IO, istack_import_IO)
       call write_fld_mul_inthead_b(ntot_import_IO, item_import_IO)
@@ -128,8 +119,6 @@
 ! -----------------------------------------------------------------------
 !
       subroutine write_export_data_b
-!
-      use binary_IO
 !
 !
       call write_fld_intstack_b(num_neib_domain_IO, istack_export_IO)

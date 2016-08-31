@@ -27,6 +27,7 @@
       use mesh_file_IO
       use mesh_file_IO_b
       use gz_mesh_file_IO
+      use gz_mesh_file_IO_b
 !
       implicit none
 !
@@ -66,6 +67,8 @@
         call read_mesh_file_b(my_rank)
 !
 #ifdef ZLIB_IO
+      else if(iflag_mesh_file_fmt .eq. id_gzip_bin_file_fmt) then
+        call gz_read_mesh_file_b(my_rank)
       else if(iflag_mesh_file_fmt .eq. id_gzip_txt_file_fmt) then
         call read_mesh_gz(my_rank)
 #endif
@@ -89,6 +92,8 @@
         call read_mesh_geometry_b(my_rank)
 !
 #ifdef ZLIB_IO
+      else if(iflag_mesh_file_fmt .eq. id_gzip_bin_file_fmt) then
+        call gz_read_mesh_geometry_b(my_rank)
       else if(iflag_mesh_file_fmt .eq. id_gzip_txt_file_fmt) then
         call read_mesh_geometry_gz(my_rank)
 #endif
@@ -112,6 +117,8 @@
         call read_node_size_b(my_rank)
 !
 #ifdef ZLIB_IO
+      else if(iflag_mesh_file_fmt .eq. id_gzip_bin_file_fmt) then
+        call gz_read_node_size_b(my_rank)
       else if(iflag_mesh_file_fmt .eq. id_gzip_txt_file_fmt) then
         call read_node_size_gz(my_rank)
 #endif
@@ -135,6 +142,8 @@
         call read_geometry_size_b(my_rank)
 !
 #ifdef ZLIB_IO
+      else if(iflag_mesh_file_fmt .eq. id_gzip_bin_file_fmt) then
+        call gz_read_geometry_size_b(my_rank)
       else if(iflag_mesh_file_fmt .eq. id_gzip_txt_file_fmt) then
         call read_geometry_size_gz(my_rank)
 #endif
@@ -159,6 +168,8 @@
         call write_mesh_file_b(my_rank)
 !
 #ifdef ZLIB_IO
+      else if(iflag_mesh_file_fmt .eq. id_gzip_bin_file_fmt) then
+        call gz_write_mesh_file_b(my_rank)
       else if(iflag_mesh_file_fmt .eq. id_gzip_txt_file_fmt) then
         call write_mesh_file_gz(my_rank)
 #endif

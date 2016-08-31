@@ -84,7 +84,7 @@
       type(ctl_array_i2), intent(inout) :: layer_list_ctl
       type(layering_group_list), intent(inout) :: layering
 !
-      integer(kind = kint) :: i, j, jcou
+      integer(kind = kint) :: i
 !
 !
       call alloc_layering_group(layer_list_ctl%num, layering)
@@ -113,7 +113,7 @@
       type(read_integer_item), intent(in) :: num_layer_ctl
       type(layering_group_list), intent(inout) :: layering
 !
-      integer(kind = kint) :: i, j, jcou, max_tmp
+      integer(kind = kint) :: i, max_tmp
       integer(kind = kint), allocatable :: istack_tmp(:)
 !
 !

@@ -24,6 +24,7 @@
       use m_time_data_IO
       use t_field_data_IO
       use gz_field_data_IO_b
+      use gz_binary_IO
       use skip_gz_comment
 !
       implicit none

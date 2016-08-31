@@ -418,7 +418,7 @@
       end do
       ioff_gl = ioff_gl + ilength * istack_merged(nprocs_in)
 !
-      end subroutine read_fld_vecotr_mpi 
+      end subroutine read_fld_vecotr_mpi
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
