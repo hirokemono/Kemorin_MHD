@@ -44,9 +44,6 @@
       call gz_read_fld_mul_inthead_b                                    &
      &   (num_neib_domain_IO, id_neib_domain_IO)
 !
-      write(*,*) 'num_neib_domain_IO', num_neib_domain_IO
-      write(*,*) 'id_neib_domain_IO', id_neib_domain_IO
-!
       end subroutine gz_read_domain_info_b
 !
 ! -----------------------------------------------------------------------

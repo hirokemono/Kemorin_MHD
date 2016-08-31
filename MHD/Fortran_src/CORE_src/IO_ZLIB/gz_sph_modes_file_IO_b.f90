@@ -149,7 +149,7 @@
       call gz_read_rtp_gl_1d_table_b
       call gz_read_gl_nodes_sph_b
 !
-      write(50+my_rank,*) '! communication table for rtm'
+!      write(50+my_rank,*) '! communication table for rtm'
       call gz_read_import_data_b
 !
       call close_gzfile_f
@@ -176,7 +176,7 @@
       call gz_read_rj_gl_1d_table_b
       call gz_read_gl_nodes_sph_b
 !
-      write(50+my_rank,*) '! communication table for rj'
+!      write(50+my_rank,*) '! communication table for rj'
       call gz_read_import_data_b
 !
       call close_gzfile_f
