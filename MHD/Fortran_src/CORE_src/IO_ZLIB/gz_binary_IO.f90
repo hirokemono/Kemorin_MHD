@@ -13,7 +13,7 @@
 !!      subroutine gz_write_endian_flag
 !!      subroutine gz_write_one_integer_b(int_dat)
 !!      subroutine gz_write_one_real_b(real_dat)
-!!      subroutine gz_write_mul_int8_b(num, int_gl_dat)
+!!      subroutine gz_write_mul_int8_b(num, int8_dat)
 !!      subroutine gz_write_mul_integer_b(num, int_dat)
 !!      subroutine gz_write_integer_stack_b(num, istack)
 !!      subroutine gz_write_mul_character_b(num, chara_dat)
@@ -23,7 +23,7 @@
 !!      subroutine gz_read_endian_flag(my_rank)
 !!      subroutine gz_read_one_integer_b(int_dat)
 !!      subroutine gz_read_one_real_b(real_dat)
-!!      subroutine gz_read_mul_int8_b(num, int_gl_dat)
+!!      subroutine gz_read_mul_int8_b(num, int8_dat)
 !!      subroutine gz_read_mul_integer_b(num, int_dat)
 !!      subroutine gz_read_integer_stack_b(num, istack, ntot)
 !!      subroutine gz_read_mul_character_b(num, chara_dat)
@@ -118,16 +118,16 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_write_mul_int8_b(num, int_gl_dat)
+      subroutine gz_write_mul_int8_b(num, int8_dat)
 !
       integer(kind = kint), intent(in) :: num
-      integer(kind = kint_gl), intent(in) :: int_gl_dat(num)
+      integer(kind = kint_gl), intent(in) :: int8_dat(num)
 !
       integer(kind = kint) :: ierr, ilength
 !
 !
       ilength = num *  kint_gl
-      call gzwrite_f(ilength, int_gl_dat, ierr)
+      call gzwrite_f(ilength, int8_dat, ierr)
 !
       end subroutine gz_write_mul_int8_b
 !
@@ -257,16 +257,16 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_mul_int8_b(num, int_gl_dat)
+      subroutine gz_read_mul_int8_b(num, int8_dat)
 !
       integer(kind = kint), intent(in) :: num
-      integer(kind = kint_gl), intent(inout) :: int_gl_dat(num)
+      integer(kind = kint_gl), intent(inout) :: int8_dat(num)
 !
       integer(kind = kint) :: ilength, ierr
 !
 !
       ilength = num * kint_gl
-      call gzread_f(iflag_endian, ilength, int_gl_dat(1), ierr)
+      call gzread_f(iflag_endian, ilength, int8_dat(1), ierr)
 !
       end subroutine gz_read_mul_int8_b
 !

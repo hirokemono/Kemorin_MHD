@@ -140,7 +140,7 @@
      &         (file_name, nprocs_in, nloop, fld_IO)
 !
       use gz_field_file_MPI_IO_b
-      use gz_field_data_MPI_IO_b
+      use gz_MPI_binary_head_IO
 !
       character(len=kchara), intent(in) :: file_name
 !
@@ -165,7 +165,7 @@
      &      fld_IO(1)%num_field_IO, fld_IO(1)%num_comp_IO,              &
      &      fld_IO(1)%istack_numnod_IO)
 !
-      call gz_write_fld_mul_charhead_mpi_b(id_fld, ioff_gl,             &
+      call gz_mpi_write_mul_charahead_b(id_fld, ioff_gl,                &
      &   fld_IO(1)%num_field_IO, fld_IO(1)%fld_name)
       call gz_write_asmbl_fld_mpi_b(id_fld, nprocs_in,                  &
      &    ioff_gl, nloop, fld_IO, gz_bufs)
@@ -268,7 +268,7 @@
       use field_data_IO
       use m_calypso_mpi_IO
       use gz_field_file_MPI_IO_b
-      use gz_field_data_MPI_IO_b
+      use gz_MPI_binary_head_IO
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind = kint), intent(in) :: nprocs_in
@@ -322,7 +322,7 @@
       end do
 !
 !       Write data size
-      call gz_write_fld_mul_i8head_mpi_b                                &
+      call gz_mpi_write_mul_int8head_b                                  &
      &   (id_mpi_file, ioff_gl, nprocs_in, istack_gz_pe(1))
 !
 !       Write to file
