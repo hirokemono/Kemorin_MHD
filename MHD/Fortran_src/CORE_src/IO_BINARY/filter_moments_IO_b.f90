@@ -81,9 +81,9 @@
       integer (kind=kint), intent(inout) :: nnod, nele, nf_type
 !
 !
-      call read_fld_inthead_b(nnod)
-      call read_fld_inthead_b(nele)
-      call read_fld_inthead_b(nf_type)
+      call read_one_integer_b(nnod)
+      call read_one_integer_b(nele)
+      call read_one_integer_b(nf_type)
 !
       end subroutine read_filter_elen_head_b
 !
@@ -94,9 +94,9 @@
       integer (kind=kint), intent(in) :: nnod, nele, nf_type
 !
 !
-      call write_fld_inthead_b(nnod)
-      call write_fld_inthead_b(nele)
-      call write_fld_inthead_b(nf_type)
+      call write_one_integer_b(nnod)
+      call write_one_integer_b(nele)
+      call write_one_integer_b(nf_type)
 !
       end subroutine write_filter_elen_head_b
 !
@@ -109,10 +109,10 @@
       integer (kind=kint), intent(inout) ::  n_filter, nf_type
 !
 !
-      call read_fld_inthead_b(nnod)
-      call read_fld_inthead_b(nele)
-      call read_fld_inthead_b(n_filter)
-      call read_fld_inthead_b(nf_type)
+      call read_one_integer_b(nnod)
+      call read_one_integer_b(nele)
+      call read_one_integer_b(n_filter)
+      call read_one_integer_b(nf_type)
 !
       end subroutine read_filter_moms_head_b
 !
@@ -124,10 +124,10 @@
       integer (kind=kint), intent(in) :: nnod, nele, n_filter, nf_type
 !
 !
-      call write_fld_inthead_b(nnod)
-      call write_fld_inthead_b(nele)
-      call write_fld_inthead_b(n_filter)
-      call write_fld_inthead_b(nf_type)
+      call write_one_integer_b(nnod)
+      call write_one_integer_b(nele)
+      call write_one_integer_b(n_filter)
+      call write_one_integer_b(nf_type)
 !
       end subroutine write_filter_moms_head_b
 !

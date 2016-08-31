@@ -57,8 +57,8 @@
       type(interpolate_table_org), intent(in) :: IO_itp_org
 !
 !
-      call write_fld_inthead_b(my_rank)
-      call write_fld_inthead_b(IO_itp_org%num_dest_domain)
+      call write_one_integer_b(my_rank)
+      call write_one_integer_b(IO_itp_org%num_dest_domain)
 !
       if (IO_itp_org%num_dest_domain .le. 0) return
       call write_mul_integer_b                                          &
@@ -107,8 +107,8 @@
       type(interpolate_table_org), intent(inout) :: IO_itp_org
 !
 !
-      call read_fld_inthead_b(n_rank)
-      call read_fld_inthead_b(IO_itp_org%num_dest_domain)
+      call read_one_integer_b(n_rank)
+      call read_one_integer_b(IO_itp_org%num_dest_domain)
 !
       if (IO_itp_org%num_dest_domain .le. 0) return
       call alloc_itp_num_org(np_smp, IO_itp_org)
@@ -173,8 +173,8 @@
       type(interpolate_table_dest), intent(in) :: IO_itp_dest
 !
 !
-      call write_fld_inthead_b(my_rank)
-      call write_fld_inthead_b(IO_itp_dest%num_org_domain)
+      call write_one_integer_b(my_rank)
+      call write_one_integer_b(IO_itp_dest%num_org_domain)
 !
       if (IO_itp_dest%num_org_domain .le. 0) return
       call write_mul_integer_b                                          &
@@ -230,8 +230,8 @@
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
 !
-      call read_fld_inthead_b(n_rank)
-      call read_fld_inthead_b(IO_itp_dest%num_org_domain)
+      call read_one_integer_b(n_rank)
+      call read_one_integer_b(IO_itp_dest%num_org_domain)
 !
       if (IO_itp_dest%num_org_domain .le. 0) return
       call alloc_itp_num_dest(IO_itp_dest)

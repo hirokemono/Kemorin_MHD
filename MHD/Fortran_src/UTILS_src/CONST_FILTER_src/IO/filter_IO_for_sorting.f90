@@ -180,8 +180,8 @@
       call allocate_fluid_filter_stack(inter_nod_3dfilter)
 !
       do inod = 1, inter_nod_3dfilter
-        call read_fld_inthead_b(nnod_near_nod_w_filter(inod))
-        call read_fld_inthead_b(i_exp_level_whole_nod(inod))
+        call read_one_integer_b(nnod_near_nod_w_filter(inod))
+        call read_one_integer_b(i_exp_level_whole_nod(inod))
 !
         ioffset = nnod_near_nod_w_filter(inod) * (kint + 2*kreal)
         call seek_forward_binary_file(ioffset)
@@ -190,8 +190,8 @@
       end do
 !
       do inod = 1, inter_nod_3dfilter
-        call read_fld_inthead_b(nnod_near_nod_f_filter(inod))
-        call read_fld_inthead_b(i_exp_level_fluid_nod(inod))
+        call read_one_integer_b(nnod_near_nod_f_filter(inod))
+        call read_one_integer_b(i_exp_level_fluid_nod(inod))
 !
         ioffset = nnod_near_nod_f_filter(inod) * (kint + 2*kreal)
         call seek_forward_binary_file(ioffset)
@@ -234,8 +234,8 @@
       subroutine write_filter_coef_4_each_b
 !
 !
-      call write_fld_inthead_b(nnod_near_1nod_weight)
-      call write_fld_inthead_b(i_exp_level_1nod_weight)
+      call write_one_integer_b(nnod_near_1nod_weight)
+      call write_one_integer_b(i_exp_level_1nod_weight)
 !
       call write_mul_integer_b                                          &
      &   (nnod_near_1nod_weight, inod_near_1nod_weight)
@@ -249,8 +249,8 @@
       subroutine read_filter_coef_4_each_b
 !
 !
-      call read_fld_inthead_b(nnod_near_1nod_weight)
-      call read_fld_inthead_b(i_exp_level_1nod_weight)
+      call read_one_integer_b(nnod_near_1nod_weight)
+      call read_one_integer_b(i_exp_level_1nod_weight)
 !
       call read_mul_integer_b                                           &
      &   (nnod_near_1nod_weight, inod_near_1nod_weight)

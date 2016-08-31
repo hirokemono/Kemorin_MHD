@@ -36,8 +36,8 @@
       subroutine gz_read_domain_info_b
 !
 !
-      call gz_read_fld_inthead_b(my_rank_IO)
-      call gz_read_fld_inthead_b(num_neib_domain_IO)
+      call gz_read_one_integer_b(my_rank_IO)
+      call gz_read_one_integer_b(num_neib_domain_IO)
 !
       call allocate_neib_domain_IO
 !
@@ -92,8 +92,8 @@
       subroutine gz_write_domain_info_b
 !
 !
-      call gz_write_fld_inthead_b(my_rank_IO)
-      call gz_write_fld_inthead_b(num_neib_domain_IO)
+      call gz_write_one_integer_b(my_rank_IO)
+      call gz_write_one_integer_b(num_neib_domain_IO)
 !
       call gz_write_mul_integer_b                                       &
      &   (num_neib_domain_IO, id_neib_domain_IO)

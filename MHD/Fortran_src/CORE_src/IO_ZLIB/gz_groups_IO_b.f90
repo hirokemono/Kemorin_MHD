@@ -38,7 +38,7 @@
       type(group_data), intent(inout) :: group_IO
 !
 !
-      call gz_read_fld_inthead_b(group_IO%num_grp)
+      call gz_read_one_integer_b(group_IO%num_grp)
       call allocate_grp_type_num(group_IO)
 !
       if (group_IO%num_grp .gt. 0) then
@@ -67,7 +67,7 @@
       integer(kind = kint) :: nitem
 !
 !
-      call gz_read_fld_inthead_b(surf_grp_IO%num_grp)
+      call gz_read_one_integer_b(surf_grp_IO%num_grp)
       call allocate_sf_grp_type_num(surf_grp_IO)
 !
       if (surf_grp_IO%num_grp .gt. 0) then
@@ -94,7 +94,7 @@
       type(group_data), intent(inout) :: group_IO
 !
 !
-      call gz_write_fld_inthead_b(group_IO%num_grp)
+      call gz_write_one_integer_b(group_IO%num_grp)
       call gz_write_integer_stack_b                                     &
      &  (group_IO%num_grp, group_IO%istack_grp)
       call gz_write_mul_character_b                                     &
@@ -115,7 +115,7 @@
       integer(kind = kint) :: nitem
 !
 !
-      call gz_write_fld_inthead_b(surf_grp_IO%num_grp)
+      call gz_write_one_integer_b(surf_grp_IO%num_grp)
       call gz_write_integer_stack_b                                     &
      &   (surf_grp_IO%num_grp, surf_grp_IO%istack_grp)
       call gz_write_mul_character_b                                     &

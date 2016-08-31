@@ -140,7 +140,7 @@
       type(filter_coefficients_type), intent(inout) :: IO_filters
 !
 !
-      call read_fld_inthead_b(IO_filters%ngrp_node)
+      call read_one_integer_b(IO_filters%ngrp_node)
       call alloc_num_filtering_comb(ione, IO_filters)
 !
       call read_integer_stack_b(IO_filters%ngrp_node,                   &
@@ -230,7 +230,7 @@
       type(filter_coefficients_type), intent(in) :: IO_filters
 !
 !
-      call write_fld_inthead_b(IO_filters%ngrp_node)
+      call write_one_integer_b(IO_filters%ngrp_node)
       call write_integer_stack_b                                        &
      &   (IO_filters%ngrp_node, IO_filters%istack_node)
       call write_mul_character_b                                        &

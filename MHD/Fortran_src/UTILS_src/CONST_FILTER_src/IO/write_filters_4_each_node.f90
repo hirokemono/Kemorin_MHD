@@ -68,8 +68,8 @@
         close(org_filter_coef_code)
       else if (ifmt_3d_filter .eq. iflag_bin) then
         call open_append_binary_file(file_name)
-        call write_fld_inthead_b(nnod_near_1nod_weight)
-        call write_fld_inthead_b(izero)
+        call write_one_integer_b(nnod_near_1nod_weight)
+        call write_one_integer_b(izero)
         call close_binary_file
       end if
 !
@@ -94,8 +94,8 @@
         close(org_filter_coef_code)
       else if (ifmt_3d_filter .eq. iflag_bin) then
         call open_append_binary_file(file_name)
-        call write_fld_inthead_b(-nnod_near_1nod_weight)
-        call write_fld_inthead_b(i_exp_level_1nod_weight)
+        call write_one_integer_b(-nnod_near_1nod_weight)
+        call write_one_integer_b(i_exp_level_1nod_weight)
         call close_binary_file
       end if
 !

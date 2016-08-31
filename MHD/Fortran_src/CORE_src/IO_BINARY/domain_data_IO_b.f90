@@ -36,8 +36,8 @@
       subroutine read_domain_info_b
 !
 !
-      call read_fld_inthead_b(my_rank_IO)
-      call read_fld_inthead_b(num_neib_domain_IO)
+      call read_one_integer_b(my_rank_IO)
+      call read_one_integer_b(num_neib_domain_IO)
 !
       call allocate_neib_domain_IO
 !
@@ -92,8 +92,8 @@
       subroutine write_domain_info_b
 !
 !
-      call write_fld_inthead_b(my_rank_IO)
-      call write_fld_inthead_b(num_neib_domain_IO)
+      call write_one_integer_b(my_rank_IO)
+      call write_one_integer_b(num_neib_domain_IO)
 !
       call write_mul_integer_b(num_neib_domain_IO, id_neib_domain_IO)
 !

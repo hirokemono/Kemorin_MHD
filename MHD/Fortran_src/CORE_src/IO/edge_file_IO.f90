@@ -23,29 +23,10 @@
 !
       implicit none
 !
-      private :: set_edge_fname
-!
 !------------------------------------------------------------------
 !
        contains
 !
-!------------------------------------------------------------------
-!
-      subroutine set_edge_fname(my_rank)
-!
-      use m_file_format_switch
-      use set_mesh_file_names
-!
-      integer(kind = kint), intent(in) :: my_rank
-      character(len=kchara) :: fname_tmp
-!
-!
-      call set_mesh_file_name(mesh_edge_file_head, id_ascii_file_fmt,   &
-     &    my_rank, mesh_file_name)
-!
-      end subroutine set_edge_fname
-!
-!------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine output_edge_geometries

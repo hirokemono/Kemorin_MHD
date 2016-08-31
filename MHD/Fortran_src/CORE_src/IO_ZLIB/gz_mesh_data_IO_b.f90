@@ -58,10 +58,10 @@
       use gz_binary_IO
 !
 !
-      call gz_write_fld_inthead_b(numnod_dummy)
-      call gz_write_fld_inthead_b(internal_node_dummy)
+      call gz_write_one_integer_b(numnod_dummy)
+      call gz_write_one_integer_b(internal_node_dummy)
 !
-      call gz_write_fld_mul_i8head_b(numnod_dummy, globalnodid_dummy)
+      call gz_write_mul_int8_b(numnod_dummy, globalnodid_dummy)
       call gz_write_2d_vector_b(numnod_dummy, ithree, xx_dummy)
 !
       call deallocate_node_data_dummy
@@ -78,10 +78,10 @@
       integer (kind = kint), allocatable :: ie_tmp(:)
 !
 !
-      call gz_write_fld_inthead_b(numele_dummy)
+      call gz_write_one_integer_b(numele_dummy)
 !
       call gz_write_mul_integer_b(numele_dummy, i_ele_dummy)
-      call gz_write_fld_mul_i8head_b(numele_dummy, globalelmid_dummy)
+      call gz_write_mul_int8_b(numele_dummy, globalelmid_dummy)
 !
       allocate(ie_tmp(nnod_4_ele_dummy))
       do i = 1, numele_dummy
@@ -126,8 +126,8 @@
       use gz_binary_IO
 !
 !
-      call gz_read_fld_inthead_b(numnod_dummy)
-      call gz_read_fld_inthead_b(internal_node_dummy)
+      call gz_read_one_integer_b(numnod_dummy)
+      call gz_read_one_integer_b(internal_node_dummy)
 !
       end subroutine gz_read_number_of_node_b
 !
@@ -140,7 +140,7 @@
 !
       call allocate_node_data_dummy
 !
-      call gz_read_fld_mul_i8head_b(numnod_dummy, globalnodid_dummy)
+      call gz_read_mul_int8_b(numnod_dummy, globalnodid_dummy)
       call gz_read_2d_vector_b(numnod_dummy, ithree, xx_dummy)
 !
       end subroutine gz_read_geometry_info_b
@@ -151,7 +151,7 @@
 !
       use gz_binary_IO
 !
-      call gz_read_fld_inthead_b(numele_dummy)
+      call gz_read_one_integer_b(numele_dummy)
 !
       end subroutine gz_read_number_of_element_b
 !
@@ -177,7 +177,7 @@
 !
       call allocate_connect_dummy
 !
-      call gz_read_fld_mul_i8head_b(numele_dummy, globalelmid_dummy)
+      call gz_read_mul_int8_b(numele_dummy, globalelmid_dummy)
 !
       allocate(ie_tmp(nnod_4_ele_dummy))
       do i = 1, numele_dummy

@@ -44,7 +44,7 @@
 !
 !
       call gz_read_mul_integer_b(ndir_sph_IO, nidx_gl_sph_IO)
-      call gz_read_fld_inthead_b(ltr_gl_IO)
+      call gz_read_one_integer_b(ltr_gl_IO)
 !
       end subroutine gz_read_gl_resolution_sph_b
 !
@@ -55,10 +55,10 @@
       integer(kind = kint) :: nvect
 !
 !
-      call gz_read_fld_inthead_b(nnod_sph_IO)
+      call gz_read_one_integer_b(nnod_sph_IO)
       call allocate_nod_id_sph_IO
 !
-      call gz_read_fld_mul_i8head_b(nnod_sph_IO, inod_gl_sph_IO)
+      call gz_read_mul_int8_b(nnod_sph_IO, inod_gl_sph_IO)
       nvect = nnod_sph_IO * ndir_sph_IO
       call gz_read_mul_integer_b(nvect, idx_gl_sph_IO)
 !
@@ -79,7 +79,7 @@
 !
 !
       call gz_write_mul_integer_b(ndir_sph_IO, nidx_gl_sph_IO)
-      call gz_write_fld_inthead_b(ltr_gl_IO)
+      call gz_write_one_integer_b(ltr_gl_IO)
 !
       end subroutine gz_write_gl_resolution_sph_b
 !
@@ -90,8 +90,8 @@
       integer(kind = kint) ::  nvect
 !
 !
-      call gz_write_fld_inthead_b(nnod_sph_IO)
-      call gz_write_fld_mul_i8head_b(nnod_sph_IO, inod_gl_sph_IO)
+      call gz_write_one_integer_b(nnod_sph_IO)
+      call gz_write_mul_int8_b(nnod_sph_IO, inod_gl_sph_IO)
       nvect = nnod_sph_IO * ndir_sph_IO
       call gz_write_mul_integer_b(nvect, idx_gl_sph_IO)
 !

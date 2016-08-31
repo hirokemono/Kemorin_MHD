@@ -11,9 +11,9 @@
 !!      subroutine open_rd_gzfile_b(gzip_name, my_rank)
 !!
 !!      subroutine gz_write_endian_flag
-!!      subroutine gz_write_fld_inthead_b(int_dat)
-!!      subroutine gz_write_fld_realhead_b(real_dat)
-!!      subroutine gz_write_fld_mul_i8head_b(num, int_gl_dat)
+!!      subroutine gz_write_one_integer_b(int_dat)
+!!      subroutine gz_write_one_real_b(real_dat)
+!!      subroutine gz_write_mul_int8_b(num, int_gl_dat)
 !!      subroutine gz_write_mul_integer_b(num, int_dat)
 !!      subroutine gz_write_integer_stack_b(num, istack)
 !!      subroutine gz_write_mul_character_b(num, chara_dat)
@@ -21,9 +21,9 @@
 !!      subroutine gz_write_2d_vector_b(n1, n2, real_dat)
 !!
 !!      subroutine gz_read_endian_flag(my_rank)
-!!      subroutine gz_read_fld_inthead_b(int_dat)
-!!      subroutine gz_read_fld_realhead_b(real_dat)
-!!      subroutine gz_read_fld_mul_i8head_b(num, int_gl_dat)
+!!      subroutine gz_read_one_integer_b(int_dat)
+!!      subroutine gz_read_one_real_b(real_dat)
+!!      subroutine gz_read_mul_int8_b(num, int_gl_dat)
 !!      subroutine gz_read_mul_integer_b(num, int_dat)
 !!      subroutine gz_read_integer_stack_b(num, istack, ntot)
 !!      subroutine gz_read_mul_character_b(num, chara_dat)
@@ -91,7 +91,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_write_fld_inthead_b(int_dat)
+      subroutine gz_write_one_integer_b(int_dat)
 !
       integer(kind = kint), intent(in) :: int_dat
 !
@@ -100,11 +100,11 @@
 !
       call gzwrite_f(kint, int_dat, ierr)
 !
-      end subroutine gz_write_fld_inthead_b
+      end subroutine gz_write_one_integer_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_write_fld_realhead_b(real_dat)
+      subroutine gz_write_one_real_b(real_dat)
 !
       real(kind = kreal), intent(in) :: real_dat
 !
@@ -113,12 +113,12 @@
 !
       call gzwrite_f(kreal, real_dat, ierr)
 !
-      end subroutine gz_write_fld_realhead_b
+      end subroutine gz_write_one_real_b
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_write_fld_mul_i8head_b(num, int_gl_dat)
+      subroutine gz_write_mul_int8_b(num, int_gl_dat)
 !
       integer(kind = kint), intent(in) :: num
       integer(kind = kint_gl), intent(in) :: int_gl_dat(num)
@@ -129,7 +129,7 @@
       ilength = num *  kint_gl
       call gzwrite_f(ilength, int_gl_dat, ierr)
 !
-      end subroutine gz_write_fld_mul_i8head_b
+      end subroutine gz_write_mul_int8_b
 !
 ! -----------------------------------------------------------------------
 !
@@ -230,7 +230,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_fld_inthead_b(int_dat)
+      subroutine gz_read_one_integer_b(int_dat)
 !
       integer(kind = kint), intent(inout) :: int_dat
 !
@@ -239,11 +239,11 @@
 !
       call gzread_f(iflag_endian, kint, int_dat, ierr)
 !
-      end subroutine gz_read_fld_inthead_b
+      end subroutine gz_read_one_integer_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_fld_realhead_b(real_dat)
+      subroutine gz_read_one_real_b(real_dat)
 !
       real(kind = kreal), intent(inout) :: real_dat
 !
@@ -252,12 +252,12 @@
 !
       call gzread_f(iflag_endian, kreal, real_dat, ierr)
 !
-      end subroutine gz_read_fld_realhead_b
+      end subroutine gz_read_one_real_b
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_fld_mul_i8head_b(num, int_gl_dat)
+      subroutine gz_read_mul_int8_b(num, int_gl_dat)
 !
       integer(kind = kint), intent(in) :: num
       integer(kind = kint_gl), intent(inout) :: int_gl_dat(num)
@@ -268,7 +268,7 @@
       ilength = num * kint_gl
       call gzread_f(iflag_endian, ilength, int_gl_dat(1), ierr)
 !
-      end subroutine gz_read_fld_mul_i8head_b
+      end subroutine gz_read_mul_int8_b
 !
 ! -----------------------------------------------------------------------
 !

@@ -29,7 +29,7 @@
       write(*,'(a,a)') 'Write tri-integration data file: ',             &
      &                trim(sph_cor_file_name)
       call open_write_binary_file(sph_cor_file_name)
-      call write_fld_inthead_b(ltr_cor_IO)
+      call write_one_integer_b(ltr_cor_IO)
 !
       call write_mul_integer_b                                          &
      &  ((jmax_cor_IO*itwo), jgl_kcor_IO(1,1,2))
@@ -71,7 +71,7 @@
      &           trim(sph_cor_file_name)
       call open_read_binary_file(sph_cor_file_name, my_rank)
 !
-      call read_fld_inthead_b(ltr_cor_IO)
+      call read_one_integer_b(ltr_cor_IO)
       call allocate_int_sph_cor_IO
 !
       call read_mul_integer_b                                           &

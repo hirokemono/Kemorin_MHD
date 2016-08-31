@@ -141,9 +141,9 @@
       call write_interpolate_table_org_b(my_rank, IO_itp_org)
       call write_interpolate_coefs_org_b(IO_itp_org)
 !
-      call write_fld_inthead_b(max_refine_level_IO)
-      call write_fld_inthead_b(nele_ref_IO)
-      call write_fld_inthead_b(nele_org_IO)
+      call write_one_integer_b(max_refine_level_IO)
+      call write_one_integer_b(nele_ref_IO)
+      call write_one_integer_b(nele_org_IO)
 !
       call write_mul_integer_b(nele_ref_IO, iele_global_new_IO)
       call write_mul_integer_b(nele_ref_IO, ilevel_refine_IO)
@@ -170,9 +170,9 @@
       call read_interpolate_table_org_b(IO_itp_org)
       call read_interpolate_coefs_org_b(IO_itp_org)
 !
-      call read_fld_inthead_b(max_refine_level_IO)
-      call read_fld_inthead_b(nele_ref_IO)
-      call read_fld_inthead_b(nele_org_IO)
+      call read_one_integer_b(max_refine_level_IO)
+      call read_one_integer_b(nele_ref_IO)
+      call read_one_integer_b(nele_org_IO)
 !
       call allocate_element_refine_IO
 !
