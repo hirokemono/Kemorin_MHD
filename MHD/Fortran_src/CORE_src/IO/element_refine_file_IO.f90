@@ -145,11 +145,11 @@
       call write_fld_inthead_b(nele_ref_IO)
       call write_fld_inthead_b(nele_org_IO)
 !
-      call write_fld_mul_inthead_b(nele_ref_IO, iele_global_new_IO)
-      call write_fld_mul_inthead_b(nele_ref_IO, ilevel_refine_IO)
-      call write_fld_mul_inthead_b(nele_ref_IO, iflag_refine_ele_IO)
-      call write_fld_mul_inthead_b(nele_ref_IO, iele_global_org_IO)
-      call write_fld_mul_inthead_b(nele_ref_IO, icou_global_org_IO)
+      call write_mul_integer_b(nele_ref_IO, iele_global_new_IO)
+      call write_mul_integer_b(nele_ref_IO, ilevel_refine_IO)
+      call write_mul_integer_b(nele_ref_IO, iflag_refine_ele_IO)
+      call write_mul_integer_b(nele_ref_IO, iele_global_org_IO)
+      call write_mul_integer_b(nele_ref_IO, icou_global_org_IO)
 !
       end subroutine write_element_refine_data_b
 !
@@ -176,11 +176,11 @@
 !
       call allocate_element_refine_IO
 !
-      call read_fld_mul_inthead_b(nele_ref_IO, iele_global_new_IO)
-      call read_fld_mul_inthead_b(nele_ref_IO, ilevel_refine_IO)
-      call read_fld_mul_inthead_b(nele_ref_IO, iflag_refine_ele_IO)
-      call read_fld_mul_inthead_b(nele_ref_IO, iele_global_org_IO)
-      call read_fld_mul_inthead_b(nele_ref_IO, icou_global_org_IO)
+      call read_mul_integer_b(nele_ref_IO, iele_global_new_IO)
+      call read_mul_integer_b(nele_ref_IO, ilevel_refine_IO)
+      call read_mul_integer_b(nele_ref_IO, iflag_refine_ele_IO)
+      call read_mul_integer_b(nele_ref_IO, iele_global_org_IO)
+      call read_mul_integer_b(nele_ref_IO, icou_global_org_IO)
 !
       end subroutine read_element_refine_data_b
 !

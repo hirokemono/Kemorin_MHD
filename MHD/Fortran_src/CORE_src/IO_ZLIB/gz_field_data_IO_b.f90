@@ -70,10 +70,10 @@
       istack_merged(1) = nnod
       call gz_write_fld_mul_i8head_b(ione, istack_merged)
       call gz_write_fld_inthead_b(num_field)
-      call gz_write_fld_mul_inthead_b(num_field, ncomp_field)
+      call gz_write_mul_integer_b(num_field, ncomp_field)
 !
-      call gz_write_fld_mul_charhead_b(num_field, field_name)
-      call gz_write_fld_realarray2_b(nnod, ntot_comp, d_nod)
+      call gz_write_mul_character_b(num_field, field_name)
+      call gz_write_2d_vector_b(nnod, ntot_comp, d_nod)
 !
       end subroutine gz_write_field_data_b
 !
@@ -113,8 +113,8 @@
       real(kind = kreal), intent(inout) :: vect(nnod,ncomp)
 !
 !
-      call gz_read_fld_mul_charhead_b(num_field, field_name)
-      call gz_read_fld_realarray2_b(nnod, ncomp, vect)
+      call gz_read_mul_character_b(num_field, field_name)
+      call gz_read_2d_vector_b(nnod, ncomp, vect)
 !
       end subroutine gz_read_field_data_b
 !

@@ -79,7 +79,7 @@
       call open_read_binary_file(file_name, my_rank)
       call read_step_data_b(istack_merged, fld_IO%num_field_IO)
 !
-      call read_fld_mul_inthead_b                                       &
+      call read_mul_integer_b                                           &
      &   (fld_IO%num_field_IO, fld_IO%num_comp_IO)
 !
       call read_field_data_b(fld_IO%nnod_IO, fld_IO%num_field_IO,       &
@@ -150,7 +150,7 @@
 !
       call alloc_phys_name_IO(fld_IO)
 !
-      call read_fld_mul_inthead_b                                       &
+      call read_mul_integer_b                                           &
      &   (fld_IO%num_field_IO, fld_IO%num_comp_IO)
 !
       call cal_istack_phys_comp_IO(fld_IO)

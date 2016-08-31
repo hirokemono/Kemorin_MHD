@@ -237,10 +237,10 @@
       call write_fld_inthead_b(nnod_near_1nod_weight)
       call write_fld_inthead_b(i_exp_level_1nod_weight)
 !
-      call write_fld_mul_inthead_b                                      &
+      call write_mul_integer_b                                          &
      &   (nnod_near_1nod_weight, inod_near_1nod_weight)
-      call write_fld_realarray_b(nnod_near_1nod_weight, filter_1nod)
-      call write_fld_realarray_b(nnod_near_1nod_weight, weight_1nod)
+      call write_1d_vector_b(nnod_near_1nod_weight, filter_1nod)
+      call write_1d_vector_b(nnod_near_1nod_weight, weight_1nod)
 !
       end subroutine write_filter_coef_4_each_b
 !
@@ -252,10 +252,10 @@
       call read_fld_inthead_b(nnod_near_1nod_weight)
       call read_fld_inthead_b(i_exp_level_1nod_weight)
 !
-      call read_fld_mul_inthead_b                                       &
+      call read_mul_integer_b                                           &
      &   (nnod_near_1nod_weight, inod_near_1nod_weight)
-      call read_fld_realarray_b(nnod_near_1nod_weight, filter_1nod)
-      call read_fld_realarray_b(nnod_near_1nod_weight, weight_1nod)
+      call read_1d_vector_b(nnod_near_1nod_weight, filter_1nod)
+      call read_1d_vector_b(nnod_near_1nod_weight, weight_1nod)
 !
       end subroutine read_filter_coef_4_each_b
 !

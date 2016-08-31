@@ -50,9 +50,9 @@
       real(kind=kreal), intent(inout) :: xmom_1d_org(nf_type,0:2)
 !
 !
-      call read_fld_mul_charhead_b(nf_type, filter_type)
-      call read_fld_realarray_b(nf_type, f_width)
-      call read_fld_realarray2_b(nf_type, ithree, xmom_1d_org(1,0))
+      call read_mul_character_b(nf_type, filter_type)
+      call read_1d_vector_b(nf_type, f_width)
+      call read_2d_vector_b(nf_type, ithree, xmom_1d_org(1,0))
 !
       end subroutine read_ref_filter_param_b
 !
@@ -67,9 +67,9 @@
       real(kind=kreal), intent(in) :: xmom_1d_org(nf_type,0:2)
 !
 !
-      call write_fld_mul_charhead_b(nf_type, filter_type)
-      call write_fld_realarray_b(nf_type, f_width)
-      call write_fld_realarray2_b(nf_type, ithree, xmom_1d_org(1,0))
+      call write_mul_character_b(nf_type, filter_type)
+      call write_1d_vector_b(nf_type, f_width)
+      call write_2d_vector_b(nf_type, ithree, xmom_1d_org(1,0))
 !
       end subroutine write_ref_filter_param_b
 !
@@ -140,9 +140,9 @@
       real(kind = kreal), intent(inout) :: el1(num), el2(num), el3(num)
 !
 !
-      call read_fld_realarray_b(num, el1)
-      call read_fld_realarray_b(num, el2)
-      call read_fld_realarray_b(num, el3)
+      call read_1d_vector_b(num, el1)
+      call read_1d_vector_b(num, el2)
+      call read_1d_vector_b(num, el3)
 !
       end subroutine read_elength_b
 !
@@ -155,9 +155,9 @@
       real(kind = kreal), intent(inout) :: el3(num,3)
 !
 !
-      call read_fld_realarray2_b(num, ithree, el1)
-      call read_fld_realarray2_b(num, ithree, el2)
-      call read_fld_realarray2_b(num, ithree, el3)
+      call read_2d_vector_b(num, ithree, el1)
+      call read_2d_vector_b(num, ithree, el2)
+      call read_2d_vector_b(num, ithree, el3)
 !
       end subroutine read_mom_coefs_dx_b
 !
@@ -170,9 +170,9 @@
       real(kind = kreal), intent(in) :: el1(num), el2(num), el3(num)
 !
 !
-      call write_fld_realarray_b(num, el1)
-      call write_fld_realarray_b(num, el2)
-      call write_fld_realarray_b(num, el3)
+      call write_1d_vector_b(num, el1)
+      call write_1d_vector_b(num, el2)
+      call write_1d_vector_b(num, el3)
 !
       end subroutine write_elength_b
 !
@@ -185,9 +185,9 @@
       real(kind = kreal), intent(in) :: el3(num,3)
 !
 !
-      call write_fld_realarray2_b(num, ithree, el1)
-      call write_fld_realarray2_b(num, ithree, el2)
-      call write_fld_realarray2_b(num, ithree, el3)
+      call write_2d_vector_b(num, ithree, el1)
+      call write_2d_vector_b(num, ithree, el2)
+      call write_2d_vector_b(num, ithree, el3)
 !
       end subroutine write_mom_coefs_dx_b
 !

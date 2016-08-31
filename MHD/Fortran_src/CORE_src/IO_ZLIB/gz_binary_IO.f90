@@ -14,21 +14,21 @@
 !!      subroutine gz_write_fld_inthead_b(int_dat)
 !!      subroutine gz_write_fld_realhead_b(real_dat)
 !!      subroutine gz_write_fld_mul_i8head_b(num, int_gl_dat)
-!!      subroutine gz_write_fld_mul_inthead_b(num, int_dat)
-!!      subroutine gz_write_fld_intstack_b(num, istack)
-!!      subroutine gz_write_fld_mul_charhead_b(num, chara_dat)
-!!      subroutine gz_write_fld_realarray_b(n1, n2, real_dat)
-!!      subroutine gz_write_fld_realarray2_b(n1, n2, real_dat)
+!!      subroutine gz_write_mul_integer_b(num, int_dat)
+!!      subroutine gz_write_integer_stack_b(num, istack)
+!!      subroutine gz_write_mul_character_b(num, chara_dat)
+!!      subroutine gz_write_1d_vector_b(num, real_dat)
+!!      subroutine gz_write_2d_vector_b(n1, n2, real_dat)
 !!
 !!      subroutine gz_read_endian_flag(my_rank)
 !!      subroutine gz_read_fld_inthead_b(int_dat)
 !!      subroutine gz_read_fld_realhead_b(real_dat)
 !!      subroutine gz_read_fld_mul_i8head_b(num, int_gl_dat)
-!!      subroutine gz_read_fld_mul_inthead_b(num, int_dat)
-!!      subroutine gz_read_fld_intstack_b(num, istack, ntot)
-!!      subroutine gz_read_fld_mul_charhead_b(num, chara_dat)
-!!      subroutine gz_read_fld_realarray_b(num, real_dat)
-!!      subroutine gz_read_fld_realarray2_b(n1, n2, real_dat)
+!!      subroutine gz_read_mul_integer_b(num, int_dat)
+!!      subroutine gz_read_integer_stack_b(num, istack, ntot)
+!!      subroutine gz_read_mul_character_b(num, chara_dat)
+!!      subroutine gz_read_1d_vector_b(num, real_dat)
+!!      subroutine gz_read_2d_vector_b(n1, n2, real_dat)
 !!@endverbatim
 !
       module gz_binary_IO
@@ -133,7 +133,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_write_fld_mul_inthead_b(num, int_dat)
+      subroutine gz_write_mul_integer_b(num, int_dat)
 !
       integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(in) :: int_dat(num)
@@ -144,23 +144,23 @@
       ilength = num *  kint
       call gzwrite_f(ilength, int_dat(1), ierr)
 !
-      end subroutine gz_write_fld_mul_inthead_b
+      end subroutine gz_write_mul_integer_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_write_fld_intstack_b(num, istack)
+      subroutine gz_write_integer_stack_b(num, istack)
 !
       integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(in) :: istack(0:num)
 !
 !
-      call gz_write_fld_mul_inthead_b(num, istack(1))
+      call gz_write_mul_integer_b(num, istack(1))
 !
-      end subroutine gz_write_fld_intstack_b
+      end subroutine gz_write_integer_stack_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_write_fld_mul_charhead_b(num, chara_dat)
+      subroutine gz_write_mul_character_b(num, chara_dat)
 !
       integer(kind = kint), intent(in) :: num
       character(len=kchara), intent(in) :: chara_dat(num)
@@ -171,11 +171,11 @@
       ilength = num *  kchara
       call gzwrite_f(ilength, chara_dat(1), ierr)
 !
-      end subroutine gz_write_fld_mul_charhead_b
+      end subroutine gz_write_mul_character_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_write_fld_realarray_b(num, real_dat)
+      subroutine gz_write_1d_vector_b(num, real_dat)
 !
       integer(kind = kint), intent(in) :: num
       real(kind = kreal), intent(inout) :: real_dat(num)
@@ -186,11 +186,11 @@
       ilength =  num * kreal
       call gzwrite_f(ilength, real_dat(1), ierr)
 !
-      end subroutine gz_write_fld_realarray_b
+      end subroutine gz_write_1d_vector_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_write_fld_realarray2_b(n1, n2, real_dat)
+      subroutine gz_write_2d_vector_b(n1, n2, real_dat)
 !
       integer(kind = kint), intent(in) :: n1, n2
       real(kind = kreal), intent(in) :: real_dat(n1,n2)
@@ -201,7 +201,7 @@
       ilength = n1 * n2 * kreal
       call gzwrite_f(ilength, real_dat(1,1), ierr)
 !
-      end subroutine gz_write_fld_realarray2_b
+      end subroutine gz_write_2d_vector_b
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -272,7 +272,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_fld_mul_inthead_b(num, int_dat)
+      subroutine gz_read_mul_integer_b(num, int_dat)
 !
       integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(inout) :: int_dat(num)
@@ -283,11 +283,11 @@
       ilength = num * kint
       call gzread_f(iflag_endian, ilength, int_dat(1), ierr)
 !
-      end subroutine gz_read_fld_mul_inthead_b
+      end subroutine gz_read_mul_integer_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_fld_intstack_b(num, istack, ntot)
+      subroutine gz_read_integer_stack_b(num, istack, ntot)
 !
       integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(inout) :: ntot
@@ -295,14 +295,14 @@
 !
 !
       istack(0) = 0
-      call gz_read_fld_mul_inthead_b(num, istack(1))
+      call gz_read_mul_integer_b(num, istack(1))
       ntot = istack(num)
 !
-      end subroutine gz_read_fld_intstack_b
+      end subroutine gz_read_integer_stack_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_fld_mul_charhead_b(num, chara_dat)
+      subroutine gz_read_mul_character_b(num, chara_dat)
 !
       integer(kind = kint), intent(in) :: num
       character(len=kchara), intent(inout) :: chara_dat(num)
@@ -313,11 +313,11 @@
       ilength = num * kchara
       call gzread_f(iflag_endian, ilength, chara_dat(1), ierr)
 !
-      end subroutine gz_read_fld_mul_charhead_b
+      end subroutine gz_read_mul_character_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_fld_realarray_b(num, real_dat)
+      subroutine gz_read_1d_vector_b(num, real_dat)
 !
       integer(kind = kint), intent(in) :: num
       real(kind = kreal), intent(inout) :: real_dat(num)
@@ -328,11 +328,11 @@
       ilength =  num * kreal
       call gzread_f(iflag_endian, ilength, real_dat(1), ierr)
 !
-      end subroutine gz_read_fld_realarray_b
+      end subroutine gz_read_1d_vector_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_fld_realarray2_b(n1, n2, real_dat)
+      subroutine gz_read_2d_vector_b(n1, n2, real_dat)
 !
       integer(kind = kint), intent(in) :: n1, n2
       real(kind = kreal), intent(inout) :: real_dat(n1,n2)
@@ -343,7 +343,7 @@
       ilength =  n1 * n2 * kreal
       call gzread_f(iflag_endian, ilength, real_dat(1,1), ierr)
 !
-      end subroutine gz_read_fld_realarray2_b
+      end subroutine gz_read_2d_vector_b
 !
 ! -----------------------------------------------------------------------
 !

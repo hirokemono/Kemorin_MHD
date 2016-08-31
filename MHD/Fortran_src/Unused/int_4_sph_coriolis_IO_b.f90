@@ -31,27 +31,23 @@
       call open_write_binary_file(sph_cor_file_name)
       call write_fld_inthead_b(ltr_cor_IO)
 !
-      call write_fld_mul_inthead_b                                      &
+      call write_mul_integer_b                                          &
      &  ((jmax_cor_IO*itwo), jgl_kcor_IO(1,1,2))
-      call write_fld_realarray2_b                                       &
-     &   (jmax_cor_IO, itwo, gk_cor_IO(1,1,2))
+      call write_2d_vector_b(jmax_cor_IO, itwo, gk_cor_IO(1,1,2))
 !
-      call write_fld_mul_inthead_b                                      &
+      call write_mul_integer_b                                          &
      &   (jmax_cor_IO, jgl_lcor_IO(1,1,2))
-      call write_fld_realarray2_b                                       &
-     &   (jmax_cor_IO, ione, el_cor_IO(1,1,2))
+      call write_2d_vector_b(jmax_cor_IO, ione, el_cor_IO(1,1,2))
 !*
 !
       do j1 = 1, 3, 2
-        call write_fld_mul_inthead_b                                    &
+        call write_mul_integer_b                                        &
      &    ((jmax_cor_IO*ifour), jgl_kcor_IO(1,1,j1))
-        call write_fld_realarray2_b                                     &
-     &     (jmax_cor_IO, ifour, gk_cor_IO(1,1,j1))
+        call write_2d_vector_b(jmax_cor_IO, ifour, gk_cor_IO(1,1,j1))
 !
-        call write_fld_mul_inthead_b                                    &
+        call write_mul_integer_b                                        &
      &    ((jmax_cor_IO*itwo), jgl_lcor_IO(1,1,j1))
-        call write_fld_realarray2_b                                     &
-     &     (jmax_cor_IO, itwo, el_cor_IO(1,1,j1))
+        call write_2d_vector_b(jmax_cor_IO, itwo, el_cor_IO(1,1,j1))
       end do
       call close_binary_file
 !
@@ -78,27 +74,23 @@
       call read_fld_inthead_b(ltr_cor_IO)
       call allocate_int_sph_cor_IO
 !
-      call read_fld_mul_inthead_b                                       &
+      call read_mul_integer_b                                           &
      &  ((jmax_cor_IO*itwo), jgl_kcor_IO(1,1,2))
-      call read_fld_realarray2_b                                        &
-     &   (jmax_cor_IO, itwo, gk_cor_IO(1,1,2))
+      call read_2d_vector_b(jmax_cor_IO, itwo, gk_cor_IO(1,1,2))
 !
-      call read_fld_mul_inthead_b                                       &
+      call read_mul_integer_b                                           &
      &   (jmax_cor_IO, jgl_lcor_IO(1,1,2))
-      call read_fld_realarray2_b                                        &
-     &   (jmax_cor_IO, ione, el_cor_IO(1,1,2))
+      call read_2d_vector_b(jmax_cor_IO, ione, el_cor_IO(1,1,2))
 !*
 !
       do j1 = 1, 3, 2
-        call read_fld_mul_inthead_b                                     &
+        call read_mul_integer_b                                         &
      &    ((jmax_cor_IO*ifour), jgl_kcor_IO(1,1,j1))
-        call read_fld_realarray2_b                                      &
-     &     (jmax_cor_IO, ifour, gk_cor_IO(1,1,j1))
+        call read_2d_vector_b(jmax_cor_IO, ifour, gk_cor_IO(1,1,j1))
 !
-        call read_fld_mul_inthead_b                                     &
+        call read_mul_integer_b                                         &
      &    ((jmax_cor_IO*itwo), jgl_lcor_IO(1,1,j1))
-        call read_fld_realarray2_b                                      &
-     &     (jmax_cor_IO, itwo, el_cor_IO(1,1,j1))
+        call read_2d_vector_b(jmax_cor_IO, itwo, el_cor_IO(1,1,j1))
       end do
       call close_binary_file
 !

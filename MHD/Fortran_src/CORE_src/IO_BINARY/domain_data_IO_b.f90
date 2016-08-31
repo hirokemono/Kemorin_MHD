@@ -41,8 +41,7 @@
 !
       call allocate_neib_domain_IO
 !
-      call read_fld_mul_inthead_b                                       &
-     &   (num_neib_domain_IO, id_neib_domain_IO)
+      call read_mul_integer_b(num_neib_domain_IO, id_neib_domain_IO)
 !
       end subroutine read_domain_info_b
 !
@@ -55,11 +54,11 @@
       call allocate_import_stack_IO
       if (num_neib_domain_IO .gt. 0) then
 !
-        call read_fld_intstack_b(num_neib_domain_IO,                    &
+        call read_integer_stack_b(num_neib_domain_IO,                   &
      &      istack_import_IO, ntot_import_IO)
 !
         call allocate_import_item_IO
-        call read_fld_mul_inthead_b(ntot_import_IO, item_import_IO)
+        call read_mul_integer_b(ntot_import_IO, item_import_IO)
 !
       else
         ntot_import_IO = 0
@@ -75,11 +74,11 @@
 !
       call allocate_export_stack_IO
       if (num_neib_domain_IO .gt. 0) then
-        call read_fld_intstack_b(num_neib_domain_IO,                    &
+        call read_integer_stack_b(num_neib_domain_IO,                   &
      &      istack_export_IO, ntot_export_IO)
 !
         call allocate_export_item_IO
-        call read_fld_mul_inthead_b(ntot_export_IO, item_export_IO)
+        call read_mul_integer_b(ntot_export_IO, item_export_IO)
       else
         ntot_export_IO = 0
         call allocate_export_item_IO
@@ -96,8 +95,7 @@
       call write_fld_inthead_b(my_rank_IO)
       call write_fld_inthead_b(num_neib_domain_IO)
 !
-      call write_fld_mul_inthead_b                                      &
-     &   (num_neib_domain_IO, id_neib_domain_IO)
+      call write_mul_integer_b(num_neib_domain_IO, id_neib_domain_IO)
 !
       call deallocate_neib_domain_IO
 !
@@ -109,8 +107,8 @@
       subroutine write_import_data_b
 !
 !
-      call write_fld_intstack_b(num_neib_domain_IO, istack_import_IO)
-      call write_fld_mul_inthead_b(ntot_import_IO, item_import_IO)
+      call write_integer_stack_b(num_neib_domain_IO, istack_import_IO)
+      call write_mul_integer_b(ntot_import_IO, item_import_IO)
 !
       call deallocate_import_item_IO
 !
@@ -121,8 +119,8 @@
       subroutine write_export_data_b
 !
 !
-      call write_fld_intstack_b(num_neib_domain_IO, istack_export_IO)
-      call write_fld_mul_inthead_b(ntot_export_IO, item_export_IO)
+      call write_integer_stack_b(num_neib_domain_IO, istack_export_IO)
+      call write_mul_integer_b(ntot_export_IO, item_export_IO)
 !
       call deallocate_export_item_IO
 !

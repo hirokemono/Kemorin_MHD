@@ -91,7 +91,7 @@
       ucd%nnod = istack_merged(1)
       nnod4 = int(istack_merged(1))
 !
-      call read_fld_mul_inthead_b(ucd%num_field, ucd%num_comp)
+      call read_mul_integer_b(ucd%num_field, ucd%num_comp)
       call read_field_data_b(nnod4, ucd%num_field, ucd%ntot_comp,       &
      &    ucd%phys_name, ucd%d_ucd)
       call close_binary_file
@@ -123,7 +123,7 @@
 !
       call allocate_ucd_phys_name(ucd)
 !
-      call read_fld_mul_inthead_b(ucd%num_field, ucd%num_comp)
+      call read_mul_integer_b(ucd%num_field, ucd%num_comp)
       call cal_istack_ucd_component(ucd)
       call allocate_ucd_phys_data(ucd)
 !
@@ -156,7 +156,7 @@
 !
       call allocate_ucd_phys_name(ucd)
 !
-      call read_fld_mul_inthead_b(ucd%num_field, ucd%num_comp)
+      call read_mul_integer_b(ucd%num_field, ucd%num_comp)
       call close_binary_file
 !
       call cal_istack_ucd_component(ucd)

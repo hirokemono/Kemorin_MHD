@@ -42,14 +42,14 @@
       call allocate_grp_type_num(group_IO)
 !
       if (group_IO%num_grp .gt. 0) then
-        call gz_read_fld_intstack_b(group_IO%num_grp,                   &
+        call gz_read_integer_stack_b(group_IO%num_grp,                  &
      &      group_IO%istack_grp, group_IO%num_item)
-        call gz_read_fld_mul_charhead_b                                 &
+        call gz_read_mul_character_b                                    &
      &     (group_IO%num_grp, group_IO%grp_name)
 !
         call allocate_grp_type_item(group_IO)
 !
-        call gz_read_fld_mul_inthead_b                                  &
+        call gz_read_mul_integer_b                                      &
      &     (group_IO%num_item, group_IO%item_grp)
       else
         group_IO%num_item = 0
@@ -71,15 +71,15 @@
       call allocate_sf_grp_type_num(surf_grp_IO)
 !
       if (surf_grp_IO%num_grp .gt. 0) then
-        call gz_read_fld_intstack_b(surf_grp_IO%num_grp,                &
+        call gz_read_integer_stack_b(surf_grp_IO%num_grp,               &
      &      surf_grp_IO%istack_grp, surf_grp_IO%num_item)
-        call gz_read_fld_mul_charhead_b                                 &
+        call gz_read_mul_character_b                                    &
      &     (surf_grp_IO%num_grp, surf_grp_IO%grp_name)
 !
         call allocate_sf_grp_type_item(surf_grp_IO)
 !
         nitem = 2 * surf_grp_IO%num_item
-        call gz_read_fld_mul_inthead_b(nitem, surf_grp_IO%item_sf_grp)
+        call gz_read_mul_integer_b(nitem, surf_grp_IO%item_sf_grp)
       else
         call allocate_sf_grp_type_item(surf_grp_IO)
       end if
@@ -95,11 +95,11 @@
 !
 !
       call gz_write_fld_inthead_b(group_IO%num_grp)
-      call gz_write_fld_intstack_b                                      &
+      call gz_write_integer_stack_b                                     &
      &  (group_IO%num_grp, group_IO%istack_grp)
-      call gz_write_fld_mul_charhead_b                                  &
+      call gz_write_mul_character_b                                     &
      &   (group_IO%num_grp, group_IO%grp_name)
-      call gz_write_fld_mul_inthead_b                                   &
+      call gz_write_mul_integer_b                                       &
      &   (group_IO%num_item, group_IO%item_grp)
 !
       call deallocate_grp_type(group_IO)
@@ -116,13 +116,13 @@
 !
 !
       call gz_write_fld_inthead_b(surf_grp_IO%num_grp)
-      call gz_write_fld_intstack_b                                      &
+      call gz_write_integer_stack_b                                     &
      &   (surf_grp_IO%num_grp, surf_grp_IO%istack_grp)
-      call gz_write_fld_mul_charhead_b                                  &
+      call gz_write_mul_character_b                                     &
      &   (surf_grp_IO%num_grp, surf_grp_IO%grp_name)
 !
       nitem = 2 * surf_grp_IO%num_item
-      call gz_write_fld_mul_inthead_b(nitem, surf_grp_IO%item_sf_grp)
+      call gz_write_mul_integer_b(nitem, surf_grp_IO%item_sf_grp)
 !
       call deallocate_sf_grp_type(surf_grp_IO)
 !
