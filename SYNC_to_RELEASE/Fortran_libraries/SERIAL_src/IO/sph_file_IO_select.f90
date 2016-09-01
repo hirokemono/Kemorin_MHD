@@ -1,5 +1,5 @@
-!>@file   sph_modes_grids_file_IO.f90
-!!@brief  module sph_modes_grids_file_IO
+!>@file   sph_file_IO_select.f90
+!!@brief  module sph_file_IO_select
 !!
 !!@author H. Matsui
 !!@date Programmed in July, 2007
@@ -64,7 +64,7 @@
 !
 !#ifdef ZLIB_IO
 !      else if(iflag_sph_file_fmt .eq. id_gzip_txt_file_fmt) then
-!        call read_geom_rtp_file_gz(my_rank, sph_file_name)
+!        call gz_read_geom_rtp_file(my_rank, sph_file_name)
 !#endif
 !
 !      else
@@ -93,7 +93,7 @@
 !
 !#ifdef ZLIB_IO
 !      else if(iflag_sph_file_fmt .eq. id_gzip_txt_file_fmt) then
-!        call read_spectr_modes_rj_file_gz(my_rank, sph_file_name)
+!        call gz_read_spectr_modes_rj_file(my_rank, sph_file_name)
 !#endif
 !
 !      else
@@ -122,7 +122,7 @@
 !
 !#ifdef ZLIB_IO
 !      else if(iflag_sph_file_fmt .eq. id_gzip_txt_file_fmt) then
-!        call read_geom_rtm_file_gz(my_rank, sph_file_name)
+!        call gz_read_geom_rtm_file(my_rank, sph_file_name)
 !#endif
 !
 !      else
@@ -151,7 +151,7 @@
 !
 !#ifdef ZLIB_IO
 !      else if(iflag_sph_file_fmt .eq. id_gzip_txt_file_fmt) then
-!        call read_modes_rlm_file_gz(my_rank, sph_file_name)
+!        call gz_read_modes_rlm_file(my_rank, sph_file_name)
 !#endif
 !
 !      else
@@ -181,7 +181,7 @@
 !
 !#ifdef ZLIB_IO
 !      else if(iflag_sph_file_fmt .eq. id_gzip_txt_file_fmt) then
-!        call write_geom_rtp_file_gz(my_rank, sph_file_name)
+!        call gz_write_geom_rtp_file(my_rank, sph_file_name)
 !#endif
 !
 !      else
@@ -210,7 +210,7 @@
 !
 !#ifdef ZLIB_IO
 !      else if(iflag_sph_file_fmt .eq. id_gzip_txt_file_fmt) then
-!        call write_spectr_modes_rj_file_gz(my_rank, sph_file_name)
+!        call gz_write_spectr_modes_rj_file(my_rank, sph_file_name)
 !#endif
 !
 !      else
@@ -239,7 +239,7 @@
 !
 !#ifdef ZLIB_IO
 !      else if(iflag_sph_file_fmt .eq. id_gzip_txt_file_fmt) then
-!        call write_geom_rtm_file_gz(my_rank, sph_file_name)
+!        call gz_write_geom_rtm_file(my_rank, sph_file_name)
 !#endif
 !
 !      else
@@ -268,7 +268,7 @@
 !
 !#ifdef ZLIB_IO
 !      else if(iflag_sph_file_fmt .eq. id_gzip_txt_file_fmt) then
-!        call write_modes_rlm_file_gz(my_rank, sph_file_name)
+!        call gz_write_modes_rlm_file(my_rank, sph_file_name)
 !#endif
 !
 !      else

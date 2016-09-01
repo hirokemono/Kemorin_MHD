@@ -99,8 +99,8 @@
       end if
 !
 !   set data format
-!
-      call choose_file_format(mesh_file_fmt_ctl, iflag_mesh_file_fmt)
+      call choose_para_file_format                                      &
+     &   (mesh_file_fmt_ctl, iflag_mesh_file_fmt)
 !
       end subroutine set_control_mesh_def
 !
@@ -117,8 +117,9 @@
 !
 !   set data format
 !
-      call choose_file_format(sph_file_fmt_ctl, iflag_sph_file_fmt)
-      call choose_file_format                                           &
+      call choose_para_file_format                                      &
+     &  (sph_file_fmt_ctl, iflag_sph_file_fmt)
+      call choose_para_file_format                                      &
      &   (spectr_file_fmt_ctl, sph_file_param%iflag_format)
 !
 !   set file header at once

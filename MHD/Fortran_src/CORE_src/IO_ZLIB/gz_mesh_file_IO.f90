@@ -7,13 +7,13 @@
 !>@brief  Mesh file IO for gxipped format
 !!
 !!@verbatim
-!!      subroutine read_mesh_gz(my_rank)
-!!      subroutine read_mesh_geometry_gz(my_rank)
+!!      subroutine gz_read_mesh(my_rank)
+!!      subroutine gz_read_mesh_geometry(my_rank)
 !!
-!!      subroutine read_node_size_gz(my_rank)
-!!      subroutine read_geometry_size_gz(my_rank)
+!!      subroutine gz_read_node_size(my_rank)
+!!      subroutine gz_read_geometry_size(my_rank)
 !!
-!!      subroutine write_mesh_file_gz(my_rank)
+!!      subroutine gz_write_mesh_file(my_rank)
 !!@endverbatim
 !!
       module gz_mesh_file_IO
@@ -34,7 +34,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_mesh_gz(my_rank)
+      subroutine gz_read_mesh(my_rank)
 !
       use m_read_boundary_data
       use gz_sph_rj_groups_IO
@@ -58,11 +58,11 @@
 !
       call close_gzfile_f
 !
-      end subroutine read_mesh_gz
+      end subroutine gz_read_mesh
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_mesh_geometry_gz(my_rank)
+      subroutine gz_read_mesh_geometry(my_rank)
 !
       integer(kind = kint), intent(in) :: my_rank
 !
@@ -76,11 +76,11 @@
 !
       call close_gzfile_f
 !
-      end subroutine read_mesh_geometry_gz
+      end subroutine gz_read_mesh_geometry
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine read_node_size_gz(my_rank)
+       subroutine gz_read_node_size(my_rank)
 !
       integer(kind = kint), intent(in) :: my_rank
 !
@@ -93,11 +93,11 @@
       call read_num_node_gz
       call close_gzfile_f
 !
-      end subroutine read_node_size_gz
+      end subroutine gz_read_node_size
 !
 !------------------------------------------------------------------
 !
-       subroutine read_geometry_size_gz(my_rank)
+       subroutine gz_read_geometry_size(my_rank)
 !
       integer(kind = kint), intent(in) :: my_rank
 !
@@ -110,12 +110,12 @@
       call read_num_node_ele_gz
       call close_gzfile_f
 !
-      end subroutine read_geometry_size_gz
+      end subroutine gz_read_geometry_size
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine write_mesh_file_gz(my_rank)
+      subroutine gz_write_mesh_file(my_rank)
 !
       use m_read_boundary_data
       use m_fem_mesh_labels
@@ -148,7 +148,7 @@
 !
       call close_gzfile_f
 !
-      end subroutine write_mesh_file_gz
+      end subroutine gz_write_mesh_file
 !
 !  ---------------------------------------------------------------------
 !
