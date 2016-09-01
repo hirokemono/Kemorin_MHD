@@ -15,7 +15,7 @@
 !!      subroutine sync_field_names_mpi(num_field, field_name)
 !!
 !!      subroutine write_fld_vecotr_mpi(id_fld, nprocs_in, id_rank,     &
-!!     &          ioff_gl, field_name, nnod, ncomp, vect, istack_merged)
+!!     &          ioff_gl, field_name, nnod, ncomp, vector, istack_merged)
 !!
 !!      subroutine read_field_time_mpi(id_fld, nprocs_in, ioff_gl)
 !!      subroutine read_field_header_mpi(id_fld, nprocs_in, id_rank,    &
@@ -23,14 +23,11 @@
 !!      subroutine read_field_num_mpi                                   &
 !!     &         (id_fld, ioff_gl, num_field, ncomp_field)
 !!
-!!      subroutine write_field_vecotr_mpi(id_fld, ioff_gl,              &
-!!     &          nnod, ncomp, vect, istack_merged_intnod)
-!!
 !!      subroutine read_field_name_mpi(id_fld, ioff_gl, field_name)
 !!      subroutine read_fld_vecotr_mpi(id_fld, nprocs_in, id_rank,      &
-!!     &          ioff_gl, nnod, ncomp, vect, istack_merged)
-!!      subroutine skip_fld_vecotr_mpi(nprocs_in, ioff_gl, ncomp,       &
-!!     &          istack_merged)
+!!     &          ioff_gl, nnod, ncomp, vector, istack_merged)
+!!      subroutine skip_fld_vecotr_mpi(nprocs_in, id_rank, ioff_gl,     &
+!!     &          ncomp, istack_merged)
 !!
 !!   Data format for the merged ascii field data
 !!     1.   Number of process
@@ -126,17 +123,33 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
+      subroutine write_field_name_mpi(id_fld, ioff_gl, field_name)
+!
+      use field_data_IO
+!
+      integer, intent(in) ::  id_fld
+!
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+      character(len=kchara), intent(in) :: field_name
+!
+!
+      call calypso_mpi_seek_write_head_c                                &
+     &     (id_fld, ioff_gl, each_field_name_buffer(field_name))
+!
+      end subroutine write_field_name_mpi
+!
+! -----------------------------------------------------------------------
+!
       subroutine write_fld_vecotr_mpi(id_fld, nprocs_in, id_rank,       &
-     &          ioff_gl, field_name, nnod, ncomp, vect, istack_merged)
+     &          ioff_gl, nnod, ncomp, vector, istack_merged)
 !
       use field_data_IO
 !
       integer(kind = kint), intent(in) :: nnod, id_rank, nprocs_in
       integer(kind = kint), intent(in) :: ncomp
       integer(kind = kint_gl), intent(inout) :: ioff_gl
-      character(len=kchara), intent(in) :: field_name
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
-      real(kind = kreal), intent(in) :: vect(nnod,ncomp)
+      real(kind = kreal), intent(in) :: vector(nnod,ncomp)
 !
       integer, intent(in) ::  id_fld
 !
@@ -151,14 +164,12 @@
       ilength = len_each_field_data_buf(ncomp)
       istack_buffer(0:nprocs_in) = ilength * istack_merged(0:nprocs_in)
 !
-      call calypso_mpi_seek_write_head_c                                &
-     &     (id_fld, ioff_gl, each_field_name_buffer(field_name))
       call calypso_mpi_seek_write_head_c(id_fld, ioff_gl,               &
      &    buffer_istack_nod_buffer(nprocs_in, istack_buffer))
 !
       ioffset = ioff_gl + ilength * istack_merged(id_rank)
       do inod = 1, nnod
-        v1(1:ncomp) = vect(inod,1:ncomp)
+        v1(1:ncomp) = vector(inod,1:ncomp)
         call calypso_mpi_seek_write_chara(id_fld, ioffset, ilength,     &
      &      each_field_data_buffer(ncomp, v1))
       end do
@@ -323,53 +334,8 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine write_field_vecotr_mpi(id_fld, ioff_gl,                &
-     &          nnod, ncomp, vect, istack_merged_intnod)
-!
-      integer(kind = kint_gl), intent(inout) :: ioff_gl
-      integer(kind = kint_gl), intent(in)                               &
-     &         :: istack_merged_intnod(0:nprocs)
-      integer(kind = kint), intent(in) :: nnod, ncomp
-      real(kind = kreal), intent(in) :: vect(nnod,ncomp)
-!
-      integer, intent(in) ::  id_fld
-!
-      character(len=ncomp*25+1), allocatable, target :: textbuf_n(:)
-      character(len=ncomp*25+1), pointer :: charatmp
-      character(len=kchara) :: fmt_txt
-!
-      integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: ilength
-      integer(kind = kint_gl) :: i, num
-!
-!
-      ilength = ncomp*25 + 1
-      num = istack_merged_intnod(my_rank+1)                             &
-     &     - istack_merged_intnod(my_rank)
-      ioffset = ioff_gl + ilength * istack_merged_intnod(my_rank)
-      ioff_gl = ioff_gl + ilength * istack_merged_intnod(nprocs)
-!
-      if(num .le. 0) return
-      write(fmt_txt,'(a1,i5,a16)') '(', ncomp, '(1pE25.15e3),a1)'
-!
-      allocate(textbuf_n(num))
-!
-      do i = 1, num
-        charatmp => textbuf_n(i)
-        write(charatmp,'(1p3E23.12e3,a1)') vect(i,1:ncomp), char(10)
-      end do
-      call calypso_mpi_seek_wrt_mul_chara(id_fld, ioffset, ilength,     &
-     &    num, textbuf_n)
-!
-      nullify(charatmp)
-      deallocate(textbuf_n)
-!
-      end subroutine write_field_vecotr_mpi
-!
-! -----------------------------------------------------------------------
-!
       subroutine read_fld_vecotr_mpi(id_fld, nprocs_in, id_rank,        &
-     &          ioff_gl, nnod, ncomp, vect, istack_merged)
+     &          ioff_gl, nnod, ncomp, vector, istack_merged)
 !
       use field_data_IO
 !
@@ -377,7 +343,7 @@
       integer(kind = kint), intent(in) :: nprocs_in, id_rank, nnod
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
       integer(kind = kint), intent(in) :: ncomp
-      real(kind = kreal), intent(inout) :: vect(nnod,ncomp)
+      real(kind = kreal), intent(inout) :: vector(nnod,ncomp)
 !
       integer, intent(in) ::  id_fld
 !
@@ -401,7 +367,7 @@
         call calypso_mpi_seek_read_lenchara                             &
      &    (id_fld, ioffset, ilength, textbuf_d)
         call read_each_field_data_buffer(textbuf_d, ncomp, v1)
-        vect(inod,1:ncomp) = v1(1:ncomp)
+        vector(inod,1:ncomp) = v1(1:ncomp)
       end do
       ioff_gl = ioff_gl + ilength * istack_merged(nprocs_in)
 !
@@ -410,23 +376,22 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine skip_fld_vecotr_mpi(nprocs_in, ioff_gl, ncomp,         &
-     &          istack_merged)
+      subroutine skip_fld_vecotr_mpi(nprocs_in, id_rank, ioff_gl,       &
+     &          ncomp, istack_merged)
 !
       use field_data_IO
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
-      integer(kind = kint), intent(in) :: nprocs_in
+      integer(kind = kint), intent(in) :: nprocs_in, id_rank
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
       integer(kind = kint), intent(in) :: ncomp
 !
-      real(kind = kreal) :: v1(ncomp)
-      integer(kind = kint) :: ilength
 !
-!
-      v1(1:ncomp) = 0.0d0
-      ilength = len_each_field_data_buf(ncomp)
-      ioff_gl = ioff_gl + ilength * istack_merged(nprocs_in)
+      if(id_rank .ge. nprocs_in) return
+!   Skip buffer size
+      ioff_gl = ioff_gl                                                 &
+     &       + len(buffer_istack_nod_buffer(nprocs_in, istack_merged))
+      ioff_gl = ioff_gl + (ncomp*25+1) * istack_merged(nprocs_in)
 !
       end subroutine skip_fld_vecotr_mpi
 !
