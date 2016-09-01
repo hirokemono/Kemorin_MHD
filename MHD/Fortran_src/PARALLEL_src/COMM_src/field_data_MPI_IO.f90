@@ -79,19 +79,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sync_field_header_mpi(nprocs_in, id_rank,              &
-     &           nnod, num_field, istack_merged)
+     &           nnod, istack_merged)
 !
       integer(kind=kint), intent(in) :: nprocs_in, id_rank
-      integer(kind=kint), intent(inout) :: num_field, nnod
+      integer(kind=kint), intent(inout) ::  nnod
       integer(kind = kint_gl), intent(inout)                            &
      &                         :: istack_merged(0:nprocs_in)
 !
-!
-      call MPI_BCAST(istack_merged, (nprocs_in+1), CALYPSO_GLOBAL_INT,  &
-     &    izero, CALYPSO_COMM, ierr_MPI)
-!
-      call MPI_BCAST(num_field, ione, CALYPSO_INTEGER, izero,           &
-     &    CALYPSO_COMM, ierr_MPI)
 !
       if(id_rank .ge. nprocs_in) then
         nnod = 0
@@ -100,19 +94,6 @@
       end if
 !
       end subroutine sync_field_header_mpi
-!
-! -----------------------------------------------------------------------
-!
-      subroutine sync_field_comp_mpi(num_field, ncomp_field)
-!
-      integer(kind=kint), intent(in) :: num_field
-      integer(kind=kint), intent(inout) :: ncomp_field(num_field)
-!
-!
-      call MPI_BCAST(ncomp_field, num_field, CALYPSO_INTEGER, izero,    &
-     &      CALYPSO_COMM, ierr_MPI)
-!
-      end subroutine sync_field_comp_mpi
 !
 ! -----------------------------------------------------------------------
 !
@@ -264,8 +245,13 @@
       end if
       ioff_gl = ioff_gl + ilength
 !
+      call MPI_BCAST(istack_merged, (nprocs_in+1), CALYPSO_GLOBAL_INT,  &
+     &    izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(num_field, ione, CALYPSO_INTEGER, izero,           &
+     &    CALYPSO_COMM, ierr_MPI)
+!
       call sync_field_header_mpi(nprocs_in, id_rank, nnod,              &
-     &    num_field, istack_merged)
+     &    istack_merged)
 !
       end subroutine read_field_header_mpi
 !
@@ -298,7 +284,8 @@
       end if
       ioff_gl = ioff_gl + ilength
 !
-      call sync_field_comp_mpi(num_field, ncomp_field)
+      call MPI_BCAST(ncomp_field, num_field, CALYPSO_INTEGER, izero,    &
+     &      CALYPSO_COMM, ierr_MPI)
 !
       end subroutine read_field_num_mpi
 !

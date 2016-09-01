@@ -8,24 +8,28 @@
 !!
 !!@verbatim
 !!      subroutine gz_mpi_write_mul_inthead_b                           &
-!!     &         (id_fld, ioff_gl, num, int_dat)
+!!     &         (id_file, ioff_gl, num, int_dat)
 !!        Substittion of gz_write_mul_integer_b
 !!      subroutine gz_mpi_write_mul_int8head_b                          &
-!!     &         (id_fld, ioff_gl, num, int8_dat)
+!!     &         (id_file, ioff_gl, num, int8_dat)
 !!        Substittion of gz_write_mul_int8_b
 !!      subroutine gz_mpi_write_mul_charahead_b                         &
-!!     &         (id_fld, ioff_gl, num, chara_dat)
+!!     &         (id_file, ioff_gl, num, chara_dat)
 !!       Substittion of gz_write_mul_character_b
+!!      subroutine gz_mpi_write_mul_realhead_b                          &
+!!     &         (id_file, ioff_gl, num, real_dat)
 !!
 !!      subroutine gz_mpi_read_mul_inthead_b                            &
-!!     &         (id_fld, ioff_gl, num, int_dat)
+!!     &         (id_file, ioff_gl, num, int_dat)
 !!        Substittion of gz_read_mul_integer_b
 !!      subroutine gz_mpi_read_mul_int8head_b                           &
-!!     &         (id_fld, ioff_gl, num, int_dat)
+!!     &         (id_file, ioff_gl, num, int_dat)
 !!        Substittion of gz_read_mul_int8_b
 !!      subroutine gz_mpi_read_mul_charahead_b                          &
-!!     &         (id_fld, ioff_gl, num, chara_dat)
+!!     &         (id_file, ioff_gl, num, chara_dat)
 !!        Substittion of gz_read_mul_character_b
+!!      subroutine gz_mpi_read_mul_realhead_b                           &
+!!     &         (id_file, ioff_gl, num, real_dat)
 !!@endverbatim
 !
       module gz_MPI_binary_head_IO
@@ -48,13 +52,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_mpi_write_mul_inthead_b                             &
-     &         (id_fld, ioff_gl, num, int_dat)
+     &         (id_file, ioff_gl, num, int_dat)
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(in) :: int_dat(num)
 !
-      integer, intent(in) ::  id_fld
+      integer, intent(in) ::  id_file
 !
       integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
       integer(kind = MPI_OFFSET_KIND) :: ioffset
@@ -70,7 +74,7 @@
 !
         ioffset = ioff_gl
         call calypso_mpi_seek_write_chara                               &
-     &     (id_fld, ioffset, ilen_gzipped, gzip_buf(1))
+     &     (id_file, ioffset, ilen_gzipped, gzip_buf(1))
         deallocate(gzip_buf)
       end if
       call MPI_BCAST(ilen_gzipped, ione, CALYPSO_INTEGER, izero,        &
@@ -82,13 +86,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_mpi_write_mul_int8head_b                            &
-     &         (id_fld, ioff_gl, num, int8_dat)
+     &         (id_file, ioff_gl, num, int8_dat)
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind = kint), intent(in) :: num
       integer(kind = kint_gl), intent(in) :: int8_dat(num)
 !
-      integer, intent(in) ::  id_fld
+      integer, intent(in) ::  id_file
 !
       integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
       integer(kind = MPI_OFFSET_KIND) :: ioffset
@@ -104,7 +108,7 @@
 !
         ioffset = ioff_gl
         call calypso_mpi_seek_write_chara                               &
-     &     (id_fld, ioffset, ilen_gzipped, gzip_buf(1))
+     &     (id_file, ioffset, ilen_gzipped, gzip_buf(1))
         deallocate(gzip_buf)
       end if
       call MPI_BCAST(ilen_gzipped, ione, CALYPSO_INTEGER, izero,        &
@@ -116,13 +120,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_mpi_write_mul_charahead_b                           &
-     &         (id_fld, ioff_gl, num, chara_dat)
+     &         (id_file, ioff_gl, num, chara_dat)
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind = kint), intent(in) :: num
       character(len=kchara), intent(in) :: chara_dat(num)
 !
-      integer, intent(in) ::  id_fld
+      integer, intent(in) ::  id_file
 !
       integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
       integer(kind = MPI_OFFSET_KIND) :: ioffset
@@ -138,7 +142,7 @@
 !
         ioffset = ioff_gl
         call calypso_mpi_seek_write_chara                               &
-     &     (id_fld, ioffset, ilen_gzipped, gzip_buf(1))
+     &     (id_file, ioffset, ilen_gzipped, gzip_buf(1))
         deallocate(gzip_buf)
       end if
       call MPI_BCAST(ilen_gzipped, ione, CALYPSO_INTEGER, izero,        &
@@ -148,12 +152,46 @@
       end subroutine gz_mpi_write_mul_charahead_b
 !
 ! -----------------------------------------------------------------------
+!
+      subroutine gz_mpi_write_mul_realhead_b                            &
+     &         (id_file, ioff_gl, num, real_dat)
+!
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+      integer(kind = kint), intent(in) :: num
+      real(kind = kreal), intent(inout) :: real_dat(num)
+!
+      integer, intent(in) ::  id_file
+!
+      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+!
+!
+      if(my_rank .eq. 0) then
+        ilength = num * kreal
+        ilen_gz = int(real(ilength) *1.01) + 24
+        allocate(gzip_buf(ilen_gz))
+        call gzip_defleat_once                                          &
+     &     (ilength, real_dat(1), ilen_gz, ilen_gzipped, gzip_buf(1))
+        ilength = ilen_gzipped
+!
+        ioffset = ioff_gl
+        call calypso_mpi_seek_write_chara                               &
+     &     (id_file, ioffset, ilen_gzipped, gzip_buf(1))
+        deallocate(gzip_buf)
+      end if
+      call MPI_BCAST(ilen_gzipped, ione, CALYPSO_INTEGER, izero,        &
+     &    CALYPSO_COMM, ierr_MPI)
+      ioff_gl = ioff_gl + ilen_gzipped
+!
+      end subroutine gz_mpi_write_mul_realhead_b
+!
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine gz_mpi_read_mul_inthead_b                              &
-     &         (id_fld, ioff_gl, num, int_dat)
+     &         (id_file, ioff_gl, num, int_dat)
 !
-      integer, intent(in) ::  id_fld
+      integer, intent(in) ::  id_file
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
       integer(kind = kint), intent(in) :: num
@@ -172,7 +210,7 @@
         ilen_gz = int(real(ilength) *1.01) + 24
         allocate(gzip_buf(ilen_gz))
         call calypso_mpi_seek_read_chara                                &
-     &         (id_fld, ioffset, ilen_gz, gzip_buf(1))
+     &         (id_file, ioffset, ilen_gz, gzip_buf(1))
 !
         call gzip_infleat_once                                          &
      &     (ilen_gz, gzip_buf(1), ilength, int_dat, ilen_gzipped)
@@ -195,9 +233,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_mpi_read_mul_int8head_b                             &
-     &         (id_fld, ioff_gl, num, int8_dat)
+     &         (id_file, ioff_gl, num, int8_dat)
 !
-      integer, intent(in) ::  id_fld
+      integer, intent(in) ::  id_file
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
       integer(kind=kint), intent(in) :: num
@@ -215,7 +253,7 @@
         ilen_gz = int(real(ilength) *1.01) + 24
         allocate(gzip_buf(ilen_gz))
         call calypso_mpi_seek_read_chara                                &
-     &     (id_fld, ioffset, ilen_gz, gzip_buf(1))
+     &     (id_file, ioffset, ilen_gz, gzip_buf(1))
 !
         call gzip_infleat_once                                          &
      &     (ilen_gz, gzip_buf(1), ilength, int8_dat(1), ilen_gzipped)
@@ -238,9 +276,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_mpi_read_mul_charahead_b                            &
-     &         (id_fld, ioff_gl, num, chara_dat)
+     &         (id_file, ioff_gl, num, chara_dat)
 !
-      integer, intent(in) ::  id_fld
+      integer, intent(in) ::  id_file
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
       integer(kind=kint), intent(in) :: num
@@ -258,7 +296,7 @@
         ilen_gz = int(real(ilength) *1.01) + 24
         allocate(gzip_buf(ilen_gz))
         call calypso_mpi_seek_read_chara                                &
-     &     (id_fld, ioffset, ilen_gz, gzip_buf(1))
+     &     (id_file, ioffset, ilen_gz, gzip_buf(1))
 !
         call gzip_infleat_once                                          &
      &     (ilen_gz, gzip_buf(1), ilength, chara_dat(1), ilen_gzipped)
@@ -277,6 +315,49 @@
       ioff_gl = ioff_gl + ilen_gzipped
 !
       end subroutine gz_mpi_read_mul_charahead_b
+!
+! -----------------------------------------------------------------------
+!
+      subroutine gz_mpi_read_mul_realhead_b                             &
+     &         (id_file, ioff_gl, num, real_dat)
+!
+      integer, intent(in) ::  id_file
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+!
+      integer(kind=kint), intent(in) :: num
+      real(kind = kreal), intent(inout) :: real_dat(num)
+!
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
+!
+      integer(kind = kint_gl) :: l8_byte
+!
+!
+      if(my_rank .eq. 0) then
+        ioffset = ioff_gl
+        ilength = num * kreal
+        ilen_gz = int(real(ilength) *1.01) + 24
+        allocate(gzip_buf(ilen_gz))
+        call calypso_mpi_seek_read_chara                                &
+     &     (id_file, ioffset, ilen_gz, gzip_buf(1))
+!
+        call gzip_infleat_once                                          &
+     &     (ilen_gz, gzip_buf(1), ilength, real_dat(1), ilen_gzipped)
+        deallocate(gzip_buf)
+!
+        if(iflag_endian .eq. iendian_FLIP) then
+          l8_byte = ilength
+          call byte_swap_f(l8_byte, real_dat(1))
+        end if
+      end if
+!
+      call MPI_BCAST(real_dat, num, CALYPSO_REAL, izero,                &
+     &    CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(ilen_gzipped, ione, CALYPSO_INTEGER, izero,        &
+     &    CALYPSO_COMM, ierr_MPI)
+      ioff_gl = ioff_gl + ilen_gzipped
+!
+      end subroutine gz_mpi_read_mul_realhead_b
 !
 ! -----------------------------------------------------------------------
 !

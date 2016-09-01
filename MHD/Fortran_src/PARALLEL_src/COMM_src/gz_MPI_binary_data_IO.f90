@@ -8,35 +8,35 @@
 !!
 !!@verbatim
 !!      subroutine gz_mpi_write_integer_stack_b                         &
-!!     &         (id_fld, ioff_gl, num, istack)
+!!     &         (id_file, ioff_gl, num, istack)
 !!        Substitution of gz_write_integer_stack_b
 !!      subroutine gz_mpi_write_int_vector_b                            &
-!!     &         (id_fld, ioff_gl, num, int_dat)
+!!     &         (id_file, ioff_gl, num, int_dat)
 !!        Substitutio of gz_write_mul_integer_b
 !!      subroutine gz_mpi_write_int8_vector_b                           &
-!!     &         (id_fld, ioff_gl, num, int8_dat)
+!!     &         (id_file, ioff_gl, num, int8_dat)
 !!        Substitutio of gz_write_mul_int8_b
 !!      subroutine gz_mpi_write_1d_vector_b                             &
-!!     &         (id_fld, ioff_gl, num, real_dat)
+!!     &         (id_file, ioff_gl, num, real_dat)
 !!        Substitutio of gz_write_1d_vector_b
 !!      subroutine gz_mpi_write_2d_vector_b                             &
-!!     &         (id_fld, ioff_gl, n1, n2, real_dat)
+!!     &         (id_file, ioff_gl, n1, n2, real_dat)
 !!        Substitutio of gz_write_2d_vector_b
 !!
-!!      subroutine gz_mpi_read_integer_stack_b(id_fld,                  &
+!!      subroutine gz_mpi_read_integer_stack_b(id_file,                 &
 !!     &          nprocs_in, id_rank, ioff_gl, num, istack, ntot)
 !!        Substittion of  gz_read_integer_stack_b
 !!      subroutine gz_mpi_read_int_vector_b                             &
-!!     &         (id_fld, nprocs_in, id_rank, ioff_gl, num, int_dat)
+!!     &         (id_file, nprocs_in, id_rank, ioff_gl, num, int_dat)
 !!        Substitutio of gz_read_mul_integer_b
 !!      subroutine gz_mpi_read_int8_vector_b                            &
-!!     &         (id_fld, nprocs_in, id_rank, ioff_gl, num, int8_dat)
+!!     &         (id_file, nprocs_in, id_rank, ioff_gl, num, int8_dat)
 !!        Substitutio of gz_read_mul_int8_b
 !!      subroutine gz_mpi_read_1d_vector_b                              &
-!!     &         (id_fld, nprocs_in, id_rank, ioff_gl, num, real_dat)
+!!     &         (id_file, nprocs_in, id_rank, ioff_gl, num, real_dat)
 !!        Substitutio of gz_read_1d_vector_b
-!!      subroutine gz_mpi_read_2d_vector_b                              &
-!!     &         (id_fld, nprocs_in, id_rank, ioff_gl, n1, n2, real_dat)
+!!      subroutine gz_mpi_read_2d_vector_b(id_file,                     &
+!!     &          nprocs_in, id_rank, ioff_gl, n1, n2, real_dat)
 !!        Substitutio of gz_read_2d_vector_b
 !!@endverbatim
 !
@@ -62,28 +62,28 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_mpi_write_integer_stack_b                           &
-     &         (id_fld, ioff_gl, num, istack)
+     &         (id_file, ioff_gl, num, istack)
 !
-      integer, intent(in) ::  id_fld
+      integer, intent(in) ::  id_file
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(in) :: istack(0:num)
 !
 !
-      call gz_mpi_write_int_vector_b(id_fld, ioff_gl, num, istack(1))
+      call gz_mpi_write_int_vector_b(id_file, ioff_gl, num, istack(1))
 !
       end subroutine gz_mpi_write_integer_stack_b
 !
 ! -----------------------------------------------------------------------
 !
       subroutine gz_mpi_write_int_vector_b                              &
-     &         (id_fld, ioff_gl, num, int_dat)
+     &         (id_file, ioff_gl, num, int_dat)
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(in) :: int_dat(num)
 !
-      integer, intent(in) ::  id_fld
+      integer, intent(in) ::  id_file
 !
       integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength, ip
       integer(kind = kint) :: ilen_gzipped_gl(nprocs)
@@ -107,12 +107,12 @@
       end do
 !
       call gz_mpi_write_mul_int8head_b                                  &
-     &   (id_fld, ioff_gl, nprocs, istack_buffer(1))
+     &   (id_file, ioff_gl, nprocs, istack_buffer(1))
 !
       if(ilen_gzipped .gt. 0) then
         ioffset = ioff_gl + istack_buffer(my_rank)
         call calypso_mpi_seek_write_chara                               &
-     &    (id_fld, ioffset, ilen_gzipped, gzip_buf(1))
+     &    (id_file, ioffset, ilen_gzipped, gzip_buf(1))
       end if
 !
       deallocate(gzip_buf)
@@ -123,13 +123,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_mpi_write_int8_vector_b                             &
-     &         (id_fld, ioff_gl, num, int8_dat)
+     &         (id_file, ioff_gl, num, int8_dat)
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind = kint), intent(in) :: num
       integer(kind = kint_gl), intent(in) :: int8_dat(num)
 !
-      integer, intent(in) ::  id_fld
+      integer, intent(in) ::  id_file
 !
       integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength, ip
       integer(kind = kint) :: ilen_gzipped_gl(nprocs)
@@ -153,12 +153,12 @@
       end do
 !
       call gz_mpi_write_mul_int8head_b                                  &
-     &   (id_fld, ioff_gl, nprocs, istack_buffer(1))
+     &   (id_file, ioff_gl, nprocs, istack_buffer(1))
 !
       if(ilen_gzipped .gt. 0) then
         ioffset = ioff_gl + istack_buffer(my_rank)
         call calypso_mpi_seek_write_chara                               &
-     &    (id_fld, ioffset, ilen_gzipped, gzip_buf(1))
+     &    (id_file, ioffset, ilen_gzipped, gzip_buf(1))
       end if
 !
       deallocate(gzip_buf)
@@ -169,13 +169,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_mpi_write_1d_vector_b                               &
-     &         (id_fld, ioff_gl, num, real_dat)
+     &         (id_file, ioff_gl, num, real_dat)
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind = kint), intent(in) :: num
       real(kind = kreal), intent(in) :: real_dat(num)
 !
-      integer, intent(in) ::  id_fld
+      integer, intent(in) ::  id_file
 !
       integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength, ip
       integer(kind = kint) :: ilen_gzipped_gl(nprocs)
@@ -199,12 +199,12 @@
       end do
 !
       call gz_mpi_write_mul_int8head_b                                  &
-     &   (id_fld, ioff_gl, nprocs, istack_buffer(1))
+     &   (id_file, ioff_gl, nprocs, istack_buffer(1))
 !
       if(ilen_gzipped .gt. 0) then
         ioffset = ioff_gl + istack_buffer(my_rank)
         call calypso_mpi_seek_write_chara                               &
-     &    (id_fld, ioffset, ilen_gzipped, gzip_buf(1))
+     &    (id_file, ioffset, ilen_gzipped, gzip_buf(1))
       end if
 !
       deallocate(gzip_buf)
@@ -215,30 +215,30 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_mpi_write_2d_vector_b                               &
-     &         (id_fld, ioff_gl, n1, n2, real_dat)
+     &         (id_file, ioff_gl, n1, n2, real_dat)
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind = kint), intent(in) :: n1, n2
       real(kind = kreal), intent(in) :: real_dat(n1,n2)
 !
-      integer, intent(in) ::  id_fld
+      integer, intent(in) ::  id_file
 !
       integer(kind = kint) :: num
 !
 !
       num = n1 * n2
       call gz_mpi_write_1d_vector_b                                     &
-     &   (id_fld, ioff_gl, num, real_dat(1,1))
+     &   (id_file, ioff_gl, num, real_dat(1,1))
 !
       end subroutine gz_mpi_write_2d_vector_b
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_mpi_read_integer_stack_b(id_fld,                    &
+      subroutine gz_mpi_read_integer_stack_b(id_file,                   &
      &          nprocs_in, id_rank, ioff_gl, num, istack, ntot)
 !
-      integer, intent(in) ::  id_fld
+      integer, intent(in) ::  id_file
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
       integer(kind=kint), intent(in) :: id_rank, nprocs_in
@@ -249,7 +249,7 @@
 !
       istack(0) = 0
       call gz_mpi_read_int_vector_b                                     &
-     &   (id_fld, nprocs_in, id_rank, ioff_gl, num, istack(1))
+     &   (id_file, nprocs_in, id_rank, ioff_gl, num, istack(1))
       ntot = istack(num)
 !
       end subroutine gz_mpi_read_integer_stack_b
@@ -257,9 +257,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_mpi_read_int_vector_b                               &
-     &         (id_fld, nprocs_in, id_rank, ioff_gl, num, int_dat)
+     &         (id_file, nprocs_in, id_rank, ioff_gl, num, int_dat)
 !
-      integer, intent(in) ::  id_fld
+      integer, intent(in) ::  id_file
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
       integer(kind=kint), intent(in) :: id_rank, nprocs_in
@@ -275,7 +275,7 @@
 !
       istack_buffer(0) = 0
       call gz_mpi_read_mul_int8head_b                                   &
-     &   (id_fld, ioff_gl, nprocs_in, istack_buffer(1))
+     &   (id_file, ioff_gl, nprocs_in, istack_buffer(1))
 !
       if(id_rank .ge. nprocs_in) return
 !
@@ -284,7 +284,7 @@
       ilen_gz = int(istack_buffer(id_rank+1) - istack_buffer(id_rank))
       allocate(gzip_buf(ilen_gz))
       call calypso_mpi_seek_read_chara                                  &
-     &         (id_fld, ioffset, ilen_gz, gzip_buf(1))
+     &         (id_file, ioffset, ilen_gz, gzip_buf(1))
 !
       call gzip_infleat_once                                            &
      &   (ilen_gz, gzip_buf(1), ilength, int_dat(1), ilen_gzipped)
@@ -301,9 +301,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_mpi_read_int8_vector_b                              &
-     &         (id_fld, nprocs_in, id_rank, ioff_gl, num, int8_dat)
+     &         (id_file, nprocs_in, id_rank, ioff_gl, num, int8_dat)
 !
-      integer, intent(in) ::  id_fld
+      integer, intent(in) ::  id_file
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
       integer(kind=kint), intent(in) :: id_rank, nprocs_in
@@ -319,7 +319,7 @@
 !
       istack_buffer(0) = 0
       call gz_mpi_read_mul_int8head_b                                   &
-     &   (id_fld, ioff_gl, nprocs_in, istack_buffer(1))
+     &   (id_file, ioff_gl, nprocs_in, istack_buffer(1))
 !
       if(id_rank .ge. nprocs_in) return
 !
@@ -328,7 +328,7 @@
       ilen_gz = int(istack_buffer(id_rank+1) - istack_buffer(id_rank))
       allocate(gzip_buf(ilen_gz))
       call calypso_mpi_seek_read_chara                                  &
-     &         (id_fld, ioffset, ilen_gz, gzip_buf(1))
+     &         (id_file, ioffset, ilen_gz, gzip_buf(1))
 !
       call gzip_infleat_once                                            &
      &   (ilen_gz, gzip_buf(1), ilength, int8_dat(1), ilen_gzipped)
@@ -345,9 +345,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_mpi_read_1d_vector_b                                &
-     &         (id_fld, nprocs_in, id_rank, ioff_gl, num, real_dat)
+     &         (id_file, nprocs_in, id_rank, ioff_gl, num, real_dat)
 !
-      integer, intent(in) ::  id_fld
+      integer, intent(in) ::  id_file
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
       integer(kind=kint), intent(in) :: id_rank, nprocs_in
@@ -363,7 +363,7 @@
 !
       istack_buffer(0) = 0
       call gz_mpi_read_mul_int8head_b                                   &
-     &   (id_fld, ioff_gl, nprocs_in, istack_buffer(1))
+     &   (id_file, ioff_gl, nprocs_in, istack_buffer(1))
 !
       if(id_rank .ge. nprocs_in) return
 !
@@ -372,7 +372,7 @@
       ilen_gz = int(istack_buffer(id_rank+1) - istack_buffer(id_rank))
       allocate(gzip_buf(ilen_gz))
       call calypso_mpi_seek_read_chara                                  &
-     &         (id_fld, ioffset, ilen_gz, gzip_buf(1))
+     &         (id_file, ioffset, ilen_gz, gzip_buf(1))
 !
       call gzip_infleat_once                                            &
      &   (ilen_gz, gzip_buf(1), ilength, real_dat(1), ilen_gzipped)
@@ -388,10 +388,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_mpi_read_2d_vector_b                                &
-     &         (id_fld, nprocs_in, id_rank, ioff_gl, n1, n2, real_dat)
+      subroutine gz_mpi_read_2d_vector_b(id_file,                       &
+     &          nprocs_in, id_rank, ioff_gl, n1, n2, real_dat)
 !
-      integer, intent(in) ::  id_fld
+      integer, intent(in) ::  id_file
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
       integer(kind=kint), intent(in) :: id_rank, nprocs_in
@@ -403,7 +403,7 @@
 !
       num = n1 * n2
       call gz_mpi_read_1d_vector_b                                      &
-     &   (id_fld, nprocs_in, id_rank, ioff_gl, num, real_dat(1,1))
+     &   (id_file, nprocs_in, id_rank, ioff_gl, num, real_dat(1,1))
 !
       end subroutine gz_mpi_read_2d_vector_b
 !
