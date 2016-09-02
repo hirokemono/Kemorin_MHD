@@ -88,7 +88,7 @@
 !
 !
       n_vect0 = smat%n_vect + 1
-      call ludcmp_3band(smat%n_vect, smat%mat,smat%i_pivot, ierr_MP,    &
+      call ludcmp_3band(n_vect0, smat%mat,smat%i_pivot, ierr_MP,        &
      &    smat%lu, smat%det)
 !
       end subroutine ludcmp_3band_ctr
@@ -104,7 +104,7 @@
 !
 !
       n_vect0 = smat%n_vect + 1
-      call ludcmp_band(smat%n_vect, ifive, smat%mat, smat%lu,           &
+      call ludcmp_band(n_vect0, ifive, smat%mat, smat%lu,               &
      &    smat%i_pivot, smat%det)
 !
       end subroutine ludcmp_5band_ctr
@@ -120,7 +120,7 @@
 !
 !
       n_vect0 = smat%n_vect + 1
-      call ludcmp_band(smat%n_vect, iseven, smat%mat, smat%lu,          &
+      call ludcmp_band(n_vect0, iseven, smat%mat, smat%lu,              &
      &    smat%i_pivot, smat%det)
 !
       end subroutine ludcmp_7band_ctr
@@ -134,13 +134,13 @@
 !
       type(band_matrix_type), intent(in) :: smat
 !
-      real(kind = kreal), intent(inout) :: x(smat%n_vect)
+      real(kind = kreal), intent(inout) :: x(0:smat%n_vect)
 !
       integer(kind = kint) :: n_vect0
 !
 !
       n_vect0 = smat%n_vect + 1
-      call lubksb_3band(smat%n_vect, smat%lu, smat%i_pivot, x)
+      call lubksb_3band(n_vect0, smat%lu, smat%i_pivot, x)
 !
       end subroutine lubksb_3band_ctr
 !
@@ -152,13 +152,13 @@
 !
       type(band_matrix_type), intent(in) :: smat
 !
-      real(kind = kreal), intent(inout) :: x(smat%n_vect)
+      real(kind = kreal), intent(inout) :: x(0:smat%n_vect)
 !
       integer(kind = kint) :: n_vect0
 !
 !
       n_vect0 = smat%n_vect + 1
-      call lubksb_5band(smat%n_vect, smat%lu, smat%i_pivot, x)
+      call lubksb_5band(n_vect0, smat%lu, smat%i_pivot, x)
 !
       end subroutine lubksb_5band_ctr
 !
@@ -170,13 +170,13 @@
 !
       type(band_matrix_type), intent(in) :: smat
 !
-      real(kind = kreal), intent(inout) :: x(smat%n_vect)
+      real(kind = kreal), intent(inout) :: x(0:smat%n_vect)
 !
       integer(kind = kint) :: n_vect0
 !
 !
       n_vect0 = smat%n_vect + 1
-      call lubksb_7band(smat%n_vect, smat%lu, smat%i_pivot, x)
+      call lubksb_7band(n_vect0, smat%lu, smat%i_pivot, x)
 !
       end subroutine lubksb_7band_ctr
 !
