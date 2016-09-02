@@ -96,8 +96,8 @@
 !
       if((i_sph_shell+ifile_sph_shell) .gt. 0) return
       if(right_file_flag(hd_sph_shell) .gt. 0) then
-        call read_file_names_from_ctl_line(ione, ifile_sph_shell,       &
-     &      control_file_name)
+        call read_file_name_from_ctl_line                               &
+     &     (ifile_sph_shell, control_file_name)
       end if
 !
       if(right_begin_flag(hd_sph_shell) .eq. 0) return
