@@ -7,6 +7,15 @@
 !> @brief Output merged binary field file using MPI-IO
 !!
 !!@verbatim
+!!      subroutine open_write_mpi_file_b                                &
+!!     &         (file_name, nprocs_in, id_file, ioff_gl)
+!!      subroutine open_read_mpi_file_b(file_name, id_file, ioff_gl)
+!!
+!!      subroutine mpi_write_one_inthead_b(id_file, ioff_gl, int_dat)
+!!      subroutine mpi_write_one_realhead_b(id_file, ioff_gl, real_dat)
+!!      subroutine mpi_write_one_integer_b(id_file,                     &
+!!     &          nprocs_in, id_rank, ioff_gl, int_dat)
+!!
 !!      subroutine mpi_write_mul_inthead_b                              &
 !!     &         (id_file, ioff_gl, num, int_dat)
 !!        Substittion of gz_write_mul_integer_b
@@ -19,13 +28,18 @@
 !!      subroutine mpi_write_mul_realhead_b                             &
 !!     &         (id_file, ioff_gl, num, real_dat)
 !!
+!!      subroutine mpi_read_one_inthead_b(id_file, ioff_gl, int_dat)
+!!      subroutine mpi_read_one_realhead_b(id_file, ioff_gl, real_dat)
+!!      subroutine mpi_read_one_integer_b(id_file,                      &
+!!     &          nprocs_in, id_rank, ioff_gl, int_dat)
+!!
 !!      subroutine mpi_read_mul_inthead_b                               &
 !!     &         (id_file, ioff_gl, num, int_dat)
 !!        Substittion of gz_read_mul_integer_b
 !!      subroutine mpi_read_mul_int8head_b                              &
 !!     &         (id_file, ioff_gl, num, int_dat)
 !!        Substittion of gz_read_mul_int8_b
-!!      subroutine gz_mpi_read_mul_charahead_b                          &
+!!      subroutine mpi_read_mul_charahead_b                             &
 !!     &         (id_file, ioff_gl, num, chara_dat)
 !!        Substittion of gz_read_mul_character_b
 !!      subroutine mpi_read_mul_realhead_b                              &
@@ -49,7 +63,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine open_write_mpi_file_b                               &
+      subroutine open_write_mpi_file_b                                  &
      &         (file_name, nprocs_in, id_file, ioff_gl)
 !
       character(len=kchara), intent(in) :: file_name
@@ -116,6 +130,33 @@
      &    (id_file, ioff_gl, ione, rtmp_IO)
 !
       end subroutine mpi_write_one_realhead_b
+!
+! -----------------------------------------------------------------------
+!
+      subroutine mpi_write_one_integer_b(id_file,                       &
+     &          nprocs_in, id_rank, ioff_gl, int_dat)
+!
+      integer, intent(in) ::  id_file
+!
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+!
+      integer(kind = kint), intent(in) :: int_dat
+!
+      integer(kind = kint_gl) :: istack_merged(0:nprocs_in)
+      integer(kind = kint) :: iemp_IO(1)
+      integer(kind = kint) :: i
+!
+!
+      do i = 0, nprocs_in
+        istack_merged(i) = i
+      end do
+      iemp_IO(1) = int_dat
+!
+      call mpi_write_int_vector_b(id_file, nprocs_in, id_rank,          &
+     &    ioff_gl, ione, iemp_IO, istack_merged)
+!
+      end subroutine mpi_write_one_integer_b
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -241,6 +282,32 @@
       real_dat = rtmp_IO(1)
 !
       end subroutine mpi_read_one_realhead_b
+!
+! -----------------------------------------------------------------------
+!
+      subroutine mpi_read_one_integer_b(id_file,                        &
+     &          nprocs_in, id_rank, ioff_gl, int_dat)
+!
+      integer, intent(in) ::  id_file
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+!
+      integer(kind = kint), intent(inout) :: int_dat
+!
+      integer(kind = kint_gl) :: istack_merged(0:nprocs_in)
+      integer(kind = kint) :: iemp_IO(1)
+      integer(kind = kint) :: i
+!
+!
+      do i = 0, nprocs_in
+        istack_merged(i) = i
+      end do
+!
+      call mpi_read_int_vector_b(id_file, nprocs_in, id_rank,           &
+     &    ioff_gl, ione, iemp_IO(1), istack_merged)
+      int_dat = iemp_IO(1)
+!
+      end subroutine mpi_read_one_integer_b
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

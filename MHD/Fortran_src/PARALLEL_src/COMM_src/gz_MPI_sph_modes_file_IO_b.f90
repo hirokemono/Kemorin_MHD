@@ -7,18 +7,27 @@
 !>@brief ASCII spectr data IO routines
 !!
 !!@verbatim
-!!      subroutine gz_mpi_read_geom_rtp_file_b(my_rank, file_name)
-!!      subroutine gz_mpi_read_spectr_rj_file_b(my_rank, file_name)
-!!      subroutine gz_mpi_read_geom_rtm_file_b(my_rank, file_name)
-!!      subroutine gz_mpi_read_modes_rlm_file_b(my_rank, file_name)
+!!      subroutine gz_mpi_read_geom_rtp_file_b                          &
+!!     &         (id_rank, nprocs_in, file_name)
+!!      subroutine gz_mpi_read_spectr_rj_file_b                         &
+!!     &         (id_rank, nprocs_in, file_name)
+!!      subroutine gz_mpi_read_geom_rtm_file_b                          &
+!!     &         (id_rank, nprocs_in, file_name)
+!!      subroutine gz_mpi_read_modes_rlm_file_b                         &
+!!     &         (id_rank, nprocs_in, file_name)
 !!
-!!      subroutine gz_mpi_write_geom_rtp_file_b(my_rank, file_name)
-!!      subroutine gz_mpi_write_spectr_rj_file_b(my_rank, file_name)
-!!      subroutine gz_mpi_write_geom_rtm_file_b(my_rank, file_name)
-!!      subroutine gz_mpi_write_modes_rlm_file_b(my_rank, file_name)
+!!      subroutine gz_mpi_write_geom_rtp_file_b                         &
+!!     &         (id_rank, nprocs_in, file_name)
+!!      subroutine gz_mpi_write_spectr_rj_file_b                        &
+!!     &         (id_rank, nprocs_in, file_name)
+!!      subroutine gz_mpi_write_geom_rtm_file_b                         &
+!!     &         (id_rank, nprocs_in, file_name)
+!!      subroutine gz_mpi_write_modes_rlm_file_b                        &
+!!     &         (id_rank, nprocs_in, file_name)
 !!@endverbatim
 !!
-!!@param my_rank    Process ID
+!!@param nprocs_in  Number of subdomain
+!!@param id_rank    Domain ID
 !!@param file_name  file name for IO (.gz is appended in this module)
 !
       module gz_MPI_sph_modes_file_IO_b
@@ -27,7 +36,10 @@
       use m_machine_parameter
 !
       use m_node_id_spherical_IO
-      use sph_modes_grids_data_IO
+      use gz_MPI_domain_data_IO_b
+      use gz_MPI_spherical_model_IO_b
+      use gz_MPI_sph_gl_1d_idx_IO_b
+      use gz_MPI_binary_datum_IO
 !
       implicit none
 !
@@ -37,139 +49,289 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_mpi_read_geom_rtp_file_b(my_rank, file_name)
+      subroutine gz_mpi_read_geom_rtp_file_b                            &
+     &         (id_rank, nprocs_in, file_name)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+!
+      integer :: id_file
+      integer(kind = kint_gl) :: ioff_gl
 !
 !
       ndir_sph_IO =  3
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &     'Read ascii grid file: ', trim(file_name)
-      open (mesh_file_id,file = file_name, form = 'formatted')
-      call read_geom_rtp_data(mesh_file_id)
-      close(mesh_file_id)
+     &      'Read gzipped merged binary grid file: ', trim(file_name)
+      call open_read_gz_mpi_file_b(file_name, id_file, ioff_gl)
+!
+      call gz_mpi_read_domain_info_b                                    &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, nprocs_read)
+      call gz_mpi_read_gl_reso_sph_b                                    &
+     &   (id_file, nprocs_in, id_rank, ioff_gl)
+      call gz_mpi_read_rank_4_sph_b                                     &
+     &   (id_file, nprocs_in, id_rank, ioff_gl)
+      call gz_mpi_read_rtp_gl_1d_table_b                                &
+     &   (id_file, nprocs_in, id_rank, ioff_gl)
+!
+      call gz_mpi_read_gl_nodes_sph_b                                   &
+     &   (id_file, nprocs_in, id_rank, ioff_gl)
+      call gz_mpi_read_import_data_b                                    &
+     &   (id_file, nprocs_in, id_rank, ioff_gl)
+!
+      call gz_mpi_read_group_data_b                                     &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, bc_rtp_grp_IO)
+      call gz_mpi_read_group_data_b                                     &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, radial_rtp_grp_IO)
+      call gz_mpi_read_group_data_b                                     &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, theta_rtp_grp_IO)
+      call gz_mpi_read_group_data_b                                     &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, zonal_rtp_grp_IO)
+!
+      call calypso_close_mpi_file(id_file)
 !
       end subroutine gz_mpi_read_geom_rtp_file_b
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_mpi_read_spectr_rj_file_b(my_rank, file_name)
+      subroutine gz_mpi_read_spectr_rj_file_b                           &
+     &         (id_rank, nprocs_in, file_name)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+!
+      integer :: id_file
+      integer(kind = kint_gl) :: ioff_gl
 !
 !
       ndir_sph_IO =  2
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &     'Read ascii spectr modes file: ', trim(file_name)
-      open (mesh_file_id,file = file_name, form = 'formatted')
-      call read_spectr_modes_rj_data(mesh_file_id)
-      close(mesh_file_id)
+     &      'Read gzipped merged binary spectr modes file: ',           &
+     &       trim(file_name)
+      call open_read_gz_mpi_file_b(file_name, id_file, ioff_gl)
+!
+      call gz_mpi_read_domain_info_b                                    &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, nprocs_read)
+      call gz_mpi_read_gl_reso_sph_b                                    &
+     &   (id_file, nprocs_in, id_rank, ioff_gl)
+      call gz_mpi_read_rank_4_sph_b                                     &
+     &   (id_file, nprocs_in, id_rank, ioff_gl)
+      call gz_mpi_read_rj_gl_1d_table_b                                 &
+     &   (id_file, nprocs_in, id_rank, ioff_gl)
+!
+      call gz_mpi_read_gl_nodes_sph_b                                   &
+     &   (id_file, nprocs_in, id_rank, ioff_gl)
+      call gz_mpi_read_import_data_b                                    &
+     &   (id_file, nprocs_in, id_rank, ioff_gl)
+!
+      call gz_mpi_read_group_data_b                                     &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, radial_rj_grp_IO)
+      call gz_mpi_read_group_data_b                                     &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, sphere_rj_grp_IO)
+!
+      call calypso_close_mpi_file(id_file)
 !
       end subroutine gz_mpi_read_spectr_rj_file_b
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_mpi_read_geom_rtm_file_b(my_rank, file_name)
+      subroutine gz_mpi_read_geom_rtm_file_b                            &
+     &         (id_rank, nprocs_in, file_name)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+!
+      integer :: id_file
+      integer(kind = kint_gl) :: ioff_gl
 !
 !
       ndir_sph_IO =  3
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &     'Read ascii grid file: ', trim(file_name)
-      open (mesh_file_id,file = file_name, form = 'formatted')
-      call read_geom_rtm_data(mesh_file_id)
-      close(mesh_file_id)
+     &      'Read gzipped merged binary grid file: ', trim(file_name)
+      call open_read_gz_mpi_file_b(file_name, id_file, ioff_gl)
+!
+      call gz_mpi_read_domain_info_b                                    &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, nprocs_read)
+      call gz_mpi_read_gl_reso_sph_b                                    &
+     &   (id_file, nprocs_in, id_rank, ioff_gl)
+      call gz_mpi_read_rank_4_sph_b                                     &
+     &   (id_file, nprocs_in, id_rank, ioff_gl)
+      call gz_mpi_read_rtp_gl_1d_table_b                                &
+     &   (id_file, nprocs_in, id_rank, ioff_gl)
+      call gz_mpi_read_gl_nodes_sph_b                                   &
+     &   (id_file, nprocs_in, id_rank, ioff_gl)
+!
+      call gz_mpi_read_import_data_b                                    &
+     &   (id_file, nprocs_in, id_rank, ioff_gl)
+!
+      call calypso_close_mpi_file(id_file)
 !
       end subroutine gz_mpi_read_geom_rtm_file_b
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_mpi_read_modes_rlm_file_b(my_rank, file_name)
+      subroutine gz_mpi_read_modes_rlm_file_b                           &
+     &         (id_rank, nprocs_in, file_name)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+!
+      integer :: id_file
+      integer(kind = kint_gl) :: ioff_gl
 !
 !
       ndir_sph_IO =  2
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &     'Read ascii spectr modes file: ', trim(file_name)
-      open (mesh_file_id,file = file_name, form = 'formatted')
-      call read_spectr_modes_rlm_data(mesh_file_id)
+     &      'Read merged gzipped binary spectr modes file: ',           &
+     &       trim(file_name)
+      call open_read_gz_mpi_file_b(file_name, id_file, ioff_gl)
 !
-      close(mesh_file_id)
+      call gz_mpi_read_domain_info_b                                    &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, nprocs_read)
+      call gz_mpi_read_gl_reso_sph_b                                    &
+     &   (id_file, nprocs_in, id_rank, ioff_gl)
+      call gz_mpi_read_rank_4_sph_b                                     &
+     &   (id_file, nprocs_in, id_rank, ioff_gl)
+      call gz_mpi_read_rj_gl_1d_table_b                                 &
+     &   (id_file, nprocs_in, id_rank, ioff_gl)
+!
+      call gz_mpi_read_gl_nodes_sph_b                                   &
+     &   (id_file, nprocs_in, id_rank, ioff_gl)
+      call gz_mpi_read_import_data_b                                    &
+     &   (id_file, nprocs_in, id_rank, ioff_gl)
+!
+      call calypso_close_mpi_file(id_file)
 !
       end subroutine gz_mpi_read_modes_rlm_file_b
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine gz_mpi_write_geom_rtp_file_b(my_rank, file_name)
+      subroutine gz_mpi_write_geom_rtp_file_b                          &
+     &         (id_rank, nprocs_in, file_name)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+!
+      integer :: id_file
+      integer(kind = kint_gl) :: ioff_gl
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &     'Write ascii grid file: ', trim(file_name)
-      open (mesh_file_id,file = file_name, form = 'formatted')
-      call write_geom_rtp_data(mesh_file_id)
-      close(mesh_file_id)
+     &      'Write merged gzipped binary grid file: ', trim(file_name)
+      call open_write_gz_mpi_file_b                                     &
+     &   (file_name, nprocs_in, id_file, ioff_gl)
+!
+      call gz_mpi_write_domain_info_b(id_file, ioff_gl, nprocs_in)
+      call gz_mpi_write_gl_reso_sph_b(id_file, ioff_gl)
+      call gz_mpi_write_rank_4_sph_b(id_file, ioff_gl)
+      call gz_mpi_write_rtp_gl_1d_table_b(id_file, ioff_gl)
+!
+      call gz_mpi_write_gl_nodes_sph_b(id_file, ioff_gl)
+      call gz_mpi_write_import_data_b(id_file, ioff_gl)
+!
+      call gz_mpi_write_grp_data_b(id_file, ioff_gl, bc_rtp_grp_IO)
+      call gz_mpi_write_grp_data_b(id_file, ioff_gl, radial_rtp_grp_IO)
+      call gz_mpi_write_grp_data_b(id_file, ioff_gl, theta_rtp_grp_IO)
+      call gz_mpi_write_grp_data_b(id_file, ioff_gl, zonal_rtp_grp_IO)
+!
+      call calypso_close_mpi_file(id_file)
 !
       end subroutine gz_mpi_write_geom_rtp_file_b
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_mpi_write_spectr_rj_file_b(my_rank, file_name)
+      subroutine gz_mpi_write_spectr_rj_file_b                          &
+     &         (id_rank, nprocs_in, file_name)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+!
+      integer :: id_file
+      integer(kind = kint_gl) :: ioff_gl
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &     'Write ascii spectr modes file: ', trim(file_name)
-      open (mesh_file_id,file = file_name, form = 'formatted')
-      call write_spectr_modes_rj_data(mesh_file_id)
-      close(mesh_file_id)
+     &      'gzipped merged binary spectr modes file: ',                &
+     &       trim(file_name)
+      call open_write_gz_mpi_file_b                                     &
+     &   (file_name, nprocs_in, id_file, ioff_gl)
+!
+      call gz_mpi_write_domain_info_b(id_file, ioff_gl, nprocs_in)
+      call gz_mpi_write_gl_reso_sph_b(id_file, ioff_gl)
+      call gz_mpi_write_rank_4_sph_b(id_file, ioff_gl)
+!
+      call gz_mpi_write_rj_gl_1d_table_b(id_file, ioff_gl)
+      call gz_mpi_write_gl_nodes_sph_b(id_file, ioff_gl)
+!
+      call gz_mpi_write_import_data_b(id_file, ioff_gl)
+!
+      call gz_mpi_write_grp_data_b(id_file, ioff_gl, radial_rj_grp_IO)
+      call gz_mpi_write_grp_data_b(id_file, ioff_gl, sphere_rj_grp_IO)
+!
+      call calypso_close_mpi_file(id_file)
 !
       end subroutine gz_mpi_write_spectr_rj_file_b
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_mpi_write_geom_rtm_file_b(my_rank, file_name)
+      subroutine gz_mpi_write_geom_rtm_file_b                           &
+     &         (id_rank, nprocs_in, file_name)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+!
+      integer :: id_file
+      integer(kind = kint_gl) :: ioff_gl
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &     'Write ascii grid file: ', trim(file_name)
-      open (mesh_file_id,file = file_name, form = 'formatted')
-      call write_geom_rtm_data(mesh_file_id)
-      close(mesh_file_id)
+     &      'Write gzipped merged binary grid file: ', trim(file_name)
+      call open_write_gz_mpi_file_b                                     &
+     &   (file_name, nprocs_in, id_file, ioff_gl)
+!
+      call gz_mpi_write_domain_info_b(id_file, ioff_gl, nprocs_in)
+      call gz_mpi_write_gl_reso_sph_b(id_file, ioff_gl)
+      call gz_mpi_write_rank_4_sph_b(id_file, ioff_gl)
+      call gz_mpi_write_rtp_gl_1d_table_b(id_file, ioff_gl)
+      call gz_mpi_write_gl_nodes_sph_b(id_file, ioff_gl)
+!
+      call gz_mpi_write_import_data_b(id_file, ioff_gl)
+!
+      call calypso_close_mpi_file(id_file)
 !
       end subroutine gz_mpi_write_geom_rtm_file_b
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_mpi_write_modes_rlm_file_b(my_rank, file_name)
+      subroutine gz_mpi_write_modes_rlm_file_b                          &
+     &         (id_rank, nprocs_in, file_name)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+!
+      integer :: id_file
+      integer(kind = kint_gl) :: ioff_gl
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &     'Write ascii spectr modes file: ', trim(file_name)
-      open (mesh_file_id,file = file_name, form = 'formatted')
-      call write_modes_rlm_data(mesh_file_id)
-      close(mesh_file_id)
+     &     'Write gzipped merged binary spectr modes file: ',           &
+     &      trim(file_name)
+      call open_write_gz_mpi_file_b                                     &
+     &   (file_name, nprocs_in, id_file, ioff_gl)
+!
+      call gz_mpi_write_domain_info_b(id_file, ioff_gl, nprocs_in)
+      call gz_mpi_write_gl_reso_sph_b(id_file, ioff_gl)
+      call gz_mpi_write_rank_4_sph_b(id_file, ioff_gl)
+      call gz_mpi_write_rj_gl_1d_table_b(id_file, ioff_gl)
+      call gz_mpi_write_gl_nodes_sph_b(id_file, ioff_gl)
+!
+      call gz_mpi_write_import_data_b(id_file, ioff_gl)
+!
+      call calypso_close_mpi_file(id_file)
 !
       end subroutine gz_mpi_write_modes_rlm_file_b
 !

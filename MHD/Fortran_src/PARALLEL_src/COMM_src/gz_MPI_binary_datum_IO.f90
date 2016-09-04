@@ -18,6 +18,8 @@
 !!      subroutine gz_mpi_write_one_realhead_b                          &
 !!     &         (id_file, ioff_gl, real_dat)
 !!        Substitution of gz_write_one_real_b
+!!      subroutine gz_mpi_write_one_integer_b(id_file, ioff_gl, int_dat)
+!!        Substitution of gz_write_one_integer_b
 !!
 !!      subroutine gz_mpi_read_endian_flag(id_file, ioff_gl)
 !!        Substitution of gz_read_endian_flag
@@ -26,6 +28,9 @@
 !!      subroutine gz_mpi_read_one_realhead_b                           &
 !!     &         (id_file, ioff_gl, real_dat)
 !!        Substitution of gz_read_one_real_b
+!!      subroutine gz_mpi_read_one_integer_b(id_file,                   &
+!!     &          nprocs_in, id_rank, ioff_gl, int_dat)
+!!        Substitution of gz_read_one_integer_b
 !!@endverbatim
 !
       module gz_MPI_binary_datum_IO
@@ -121,6 +126,22 @@
       end subroutine gz_mpi_write_one_realhead_b
 !
 ! -----------------------------------------------------------------------
+!
+      subroutine gz_mpi_write_one_integer_b(id_file, ioff_gl, int_dat)
+!
+      integer, intent(in) ::  id_file
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+      integer(kind = kint), intent(in) :: int_dat
+!
+      integer(kind = kint) :: itmp_IO(1)
+!
+!
+      itmp_IO(1) = int_dat
+      call gz_mpi_write_one_integer_b(id_file, ioff_gl, ione, itmp_IO)
+!
+      end subroutine gz_mpi_write_one_integer_b
+!
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine gz_mpi_read_endian_flag(id_file, ioff_gl)
@@ -202,6 +223,26 @@
       real_dat = rtmp_IO(1)
 !
       end subroutine gz_mpi_read_one_realhead_b
+!
+! -----------------------------------------------------------------------
+!
+      subroutine gz_mpi_read_one_integer_b(id_file,                   &
+     &          nprocs_in, id_rank, ioff_gl, int_dat)
+!
+      integer, intent(in) ::  id_file
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+!
+      integer(kind=kint), intent(in) :: id_rank, nprocs_in
+      integer(kind = kint), intent(inout) :: int_dat
+!
+      real(kind = kreal) ::   itmp_IO(1)
+!
+!
+      call gz_mpi_read_int_vector_b                                     &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, ione, itmp_IO(1))
+      int_dat = itmp_IO(1)
+!
+      end subroutine gz_mpi_read_one_integer_b
 !
 ! -----------------------------------------------------------------------
 !

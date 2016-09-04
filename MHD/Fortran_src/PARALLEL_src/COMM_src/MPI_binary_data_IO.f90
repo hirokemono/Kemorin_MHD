@@ -13,17 +13,17 @@
 !!        Substitution of gz_write_integer_stack_b
 !!      subroutine mpi_write_int_vector_b(id_file, nprocs_in, id_rank,  &
 !!     &          ioff_gl, num, int_dat, istack_merged)
-!!        Substitutio of gz_write_mul_integer_b
+!!        Substitution of gz_write_mul_integer_b
 !!      subroutine mpi_write_int8_vector_b(id_file, nprocs_in, id_rank, &
 !!     &          ioff_gl, num, int8_dat, istack_merged)
-!!        Substitutio of gz_write_mul_int8_b
+!!        Substitution of gz_write_mul_int8_b
 !!
 !!      subroutine mpi_write_1d_vector_b(id_file, nprocs_in, id_rank,   &
 !!     &          ioff_gl, num, real_dat, istack_merged)
-!!        Substitutio of gz_write_1d_vector_b
+!!        Substitution of gz_write_1d_vector_b
 !!      subroutine mpi_write_2d_vector_b(id_file, nprocs_in, id_rank,   &
 !!     &          ioff_gl, n1, n2, real_dat, istack_merged)
-!!        Substitutio of gz_write_2d_vector_b
+!!        Substitution of gz_write_2d_vector_b
 !!
 !!      subroutine mpi_read_integer_stack_b(id_file,                    &
 !!     &          nprocs_in, id_rank, ioff_gl, num, istack, ntot,       &
@@ -31,16 +31,17 @@
 !!        Substittion of  gz_read_integer_stack_b
 !!      subroutine mpi_read_int_vector_b(id_file, nprocs_in, id_rank,   &
 !!     &          ioff_gl, num, int_dat, istack_merged)
-!!        Substitutio of gz_read_mul_integer_b
+!!        Substitution of gz_read_mul_integer_b
 !!      subroutine mpi_read_int8_vector_b(id_file, nprocs_in, id_rank,  &
 !!     &          ioff_gl, num, int8_dat, istack_merged)
-!!        Substitutio of gz_read_mul_int8_b
+!!        Substitution of gz_read_mul_int8_b
+!!
 !!      subroutine mpi_read_1d_vector_b(id_file, nprocs_in, id_rank,    &
 !!     &          ioff_gl, num, real_dat, istack_merged)
-!!        Substitutio of gz_read_1d_vector_b
+!!        Substitution of gz_read_1d_vector_b
 !!      subroutine mpi_read_2d_vector_b(id_file, nprocs_in, id_rank,    &
 !!     &          ioff_gl, n1, n2, real_dat, istack_merged)
-!!        Substitutio of gz_read_2d_vector_b
+!!        Substitution of gz_read_2d_vector_b
 !!@endverbatim
 !
       module MPI_binary_data_IO

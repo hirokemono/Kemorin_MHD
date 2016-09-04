@@ -67,10 +67,7 @@
         call read_geom_rtp_file_b(my_rank, sph_file_name)
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_binary_file_fmt) then
-        call read_geom_rtp_file_mpi_b(my_rank, sph_file_name)
-        call set_mesh_file_name(sph_file_head, id_binary_file_fmt,      &
-     &      my_rank, sph_file_name)
-        call read_geom_rtp_file_b(my_rank, sph_file_name)
+        call mpi_read_geom_rtp_file_b(my_rank, nprocs, sph_file_name)
       else if(iflag_sph_file_fmt .eq. iflag_single) then
         call read_geom_rtp_file_mpi(my_rank, sph_file_name)
         call set_mesh_file_name(sph_file_head, iflag_ascii,             &
@@ -80,10 +77,8 @@
 #ifdef ZLIB_IO
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_gzip_bin_file_fmt) then
-        call gz_mpi_read_geom_rtp_file_b(my_rank, sph_file_name)
-        call set_mesh_file_name(sph_file_head, id_gzip_bin_file_fmt,    &
-     &      my_rank, sph_file_name)
-        call gz_read_geom_rtp_file_b(my_rank, sph_file_name)
+        call gz_mpi_read_geom_rtp_file_b                                &
+     &     (my_rank, nprocs, sph_file_name)
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_gzip_txt_file_fmt) then
         call gz_mpi_read_geom_rtp_file(my_rank, sph_file_name)
@@ -116,10 +111,7 @@
         call read_spectr_modes_rj_file_b(my_rank, sph_file_name)
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_binary_file_fmt) then
-        call read_spectr_rj_file_mpi_b(my_rank, sph_file_name)
-        call set_mesh_file_name(sph_file_head, id_binary_file_fmt,      &
-     &      my_rank, sph_file_name)
-        call read_spectr_modes_rj_file_b(my_rank, sph_file_name)
+        call mpi_read_spectr_rj_file_b(my_rank, nprocs, sph_file_name)
       else if(iflag_sph_file_fmt .eq. iflag_single) then
         call read_spectr_rj_file_mpi(my_rank, sph_file_name)
         call set_mesh_file_name(sph_file_head, iflag_ascii,             &
@@ -129,10 +121,8 @@
 #ifdef ZLIB_IO
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_gzip_bin_file_fmt) then
-        call gz_mpi_read_spectr_rj_file_b(my_rank, sph_file_name)
-        call set_mesh_file_name(sph_file_head, id_gzip_bin_file_fmt,    &
-     &      my_rank, sph_file_name)
-        call gz_read_spectr_modes_rj_file_b(my_rank, sph_file_name)
+        call gz_mpi_read_spectr_rj_file_b                               &
+     &     (my_rank, nprocs, sph_file_name)
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_gzip_txt_file_fmt) then
         call gz_mpi_read_spectr_rj_file(my_rank, sph_file_name)
@@ -165,10 +155,7 @@
         call read_geom_rtm_file_b(my_rank, sph_file_name)
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_binary_file_fmt) then
-        call read_geom_rtm_file_mpi_b(my_rank, sph_file_name)
-        call set_mesh_file_name(sph_file_head, id_binary_file_fmt,      &
-     &      my_rank, sph_file_name)
-        call read_geom_rtm_file_b(my_rank, sph_file_name)
+        call mpi_read_geom_rtm_file_b(my_rank, nprocs, sph_file_name)
       else if(iflag_sph_file_fmt .eq. iflag_single) then
         call read_geom_rtm_file_mpi(my_rank, sph_file_name)
         call set_mesh_file_name(sph_file_head, iflag_ascii,             &
@@ -178,10 +165,8 @@
 #ifdef ZLIB_IO
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_gzip_bin_file_fmt) then
-        call gz_mpi_read_geom_rtm_file_b(my_rank, sph_file_name)
-        call set_mesh_file_name(sph_file_head, id_gzip_bin_file_fmt,    &
-     &      my_rank, sph_file_name)
-        call gz_read_geom_rtm_file_b(my_rank, sph_file_name)
+        call gz_mpi_read_geom_rtm_file_b                                &
+     &     (my_rank, nprocs, sph_file_name)
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_gzip_txt_file_fmt) then
         call gz_mpi_read_geom_rtm_file(my_rank, sph_file_name)
@@ -214,10 +199,7 @@
         call read_modes_rlm_file_b(my_rank, sph_file_name)
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_binary_file_fmt) then
-        call read_modes_rlm_file_mpi_b(my_rank, sph_file_name)
-        call set_mesh_file_name(sph_file_head, id_binary_file_fmt,      &
-     &      my_rank, sph_file_name)
-        call read_modes_rlm_file_b(my_rank, sph_file_name)
+        call mpi_read_modes_rlm_file_b(my_rank, nprocs, sph_file_name)
       else if(iflag_sph_file_fmt .eq. iflag_single) then
         call read_modes_rlm_file_mpi(my_rank, sph_file_name)
         call set_mesh_file_name(sph_file_head, iflag_ascii,             &
@@ -227,10 +209,8 @@
 #ifdef ZLIB_IO
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_gzip_bin_file_fmt) then
-        call gz_mpi_read_modes_rlm_file_b(my_rank, sph_file_name)
-        call set_mesh_file_name(sph_file_head, id_gzip_bin_file_fmt,    &
-     &      my_rank, sph_file_name)
-        call gz_read_modes_rlm_file_b(my_rank, sph_file_name)
+        call gz_mpi_read_modes_rlm_file_b                               &
+     &     (my_rank, nprocs, sph_file_name)
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_gzip_txt_file_fmt) then
         call gz_mpi_read_modes_rlm_file(my_rank, sph_file_name)
@@ -264,10 +244,7 @@
         call write_geom_rtp_file_b(my_rank, sph_file_name)
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_binary_file_fmt) then
-        call write_geom_rtp_file_mpi_b(my_rank, sph_file_name)
-        call set_mesh_file_name(sph_file_head, id_binary_file_fmt,      &
-     &      my_rank, sph_file_name)
-        call write_geom_rtp_file_b(my_rank, sph_file_name)
+        call mpi_write_geom_rtp_file_b(my_rank, nprocs, sph_file_name)
       else if(iflag_sph_file_fmt .eq. iflag_single) then
         call write_geom_rtp_file_mpi(my_rank, sph_file_name)
         call set_mesh_file_name(sph_file_head, iflag_ascii,             &
@@ -277,10 +254,8 @@
 #ifdef ZLIB_IO
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_gzip_bin_file_fmt) then
-        call gz_mpi_write_geom_rtp_file_b(my_rank, sph_file_name)
-        call set_mesh_file_name(sph_file_head, id_gzip_bin_file_fmt,    &
-     &      my_rank, sph_file_name)
-        call gz_write_geom_rtp_file_b(my_rank, sph_file_name)
+        call gz_mpi_write_geom_rtp_file_b                               &
+     &     (my_rank, nprocs, sph_file_name)
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_gzip_txt_file_fmt) then
         call gz_mpi_write_geom_rtp_file(my_rank, sph_file_name)
@@ -313,10 +288,7 @@
         call write_spectr_modes_rj_file_b(my_rank, sph_file_name)
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_binary_file_fmt) then
-        call write_spectr_rj_file_mpi_b(my_rank, sph_file_name)
-        call set_mesh_file_name(sph_file_head, id_binary_file_fmt,      &
-     &      my_rank, sph_file_name)
-        call write_spectr_modes_rj_file_b(my_rank, sph_file_name)
+        call mpi_write_spectr_rj_file_b(my_rank, nprocs, sph_file_name)
       else if(iflag_sph_file_fmt .eq. iflag_single) then
         call write_spectr_rj_file_mpi(my_rank, sph_file_name)
         call set_mesh_file_name(sph_file_head, iflag_ascii,             &
@@ -326,10 +298,8 @@
 #ifdef ZLIB_IO
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_gzip_bin_file_fmt) then
-        call gz_mpi_write_spectr_rj_file_b(my_rank, sph_file_name)
-        call set_mesh_file_name(sph_file_head, id_gzip_bin_file_fmt,    &
-     &      my_rank, sph_file_name)
-        call gz_write_spectr_modes_rj_file_b(my_rank, sph_file_name)
+        call gz_mpi_write_spectr_rj_file_b                              &
+     &     (my_rank, nprocs, sph_file_name)
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_gzip_txt_file_fmt) then
         call gz_mpi_write_spectr_rj_file(my_rank, sph_file_name)
@@ -362,10 +332,7 @@
         call write_geom_rtm_file_b(my_rank, sph_file_name)
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_binary_file_fmt) then
-        call write_geom_rtm_file_mpi_b(my_rank, sph_file_name)
-        call set_mesh_file_name(sph_file_head, id_binary_file_fmt,      &
-     &      my_rank, sph_file_name)
-        call write_geom_rtm_file_b(my_rank, sph_file_name)
+        call mpi_write_geom_rtm_file_b(my_rank, nprocs, sph_file_name)
       else if(iflag_sph_file_fmt .eq. iflag_single) then
         call write_geom_rtm_file_mpi(my_rank, sph_file_name)
         call set_mesh_file_name(sph_file_head, iflag_ascii,             &
@@ -375,10 +342,8 @@
 #ifdef ZLIB_IO
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_gzip_bin_file_fmt) then
-        call gz_mpi_write_geom_rtm_file_b(my_rank, sph_file_name)
-        call set_mesh_file_name(sph_file_head, id_gzip_bin_file_fmt,    &
-     &      my_rank, sph_file_name)
-        call gz_write_geom_rtm_file_b(my_rank, sph_file_name)
+        call gz_mpi_write_geom_rtm_file_b                               &
+     &     (my_rank, nprocs, sph_file_name)
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_gzip_txt_file_fmt) then
         call gz_mpi_write_geom_rtm_file(my_rank, sph_file_name)
@@ -411,10 +376,7 @@
         call write_modes_rlm_file_b(my_rank, sph_file_name)
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_binary_file_fmt) then
-        call write_modes_rlm_file_mpi_b(my_rank, sph_file_name)
-        call set_mesh_file_name(sph_file_head, id_binary_file_fmt,      &
-     &      my_rank, sph_file_name)
-        call write_modes_rlm_file_b(my_rank, sph_file_name)
+        call mpi_write_modes_rlm_file_b(my_rank, nprocs, sph_file_name)
       else if(iflag_sph_file_fmt .eq. iflag_single) then
         call write_modes_rlm_file_mpi(my_rank, sph_file_name)
         call set_mesh_file_name(sph_file_head, iflag_ascii,             &
@@ -424,10 +386,8 @@
 #ifdef ZLIB_IO
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_gzip_bin_file_fmt) then
-        call gz_mpi_write_modes_rlm_file_b(my_rank, sph_file_name)
-        call set_mesh_file_name(sph_file_head, id_gzip_bin_file_fmt,    &
-     &      my_rank, sph_file_name)
-        call gz_write_modes_rlm_file_b(my_rank, sph_file_name)
+        call gz_mpi_write_modes_rlm_file_b                              &
+     &     (my_rank, nprocs, sph_file_name)
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_gzip_txt_file_fmt) then
         call gz_mpi_write_modes_rlm_file(my_rank, sph_file_name)

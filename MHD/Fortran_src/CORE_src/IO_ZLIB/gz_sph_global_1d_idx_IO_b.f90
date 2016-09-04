@@ -1,13 +1,18 @@
-!gz_sph_global_1d_idx_IO_b.f90
-!      module gz_sph_global_1d_idx_IO_b
+!>@file   gz_sph_global_1d_idx_IO_b.f90
+!!@brief  module gz_sph_global_1d_idx_IO_b
+!!
+!!@author H.Matsui
+!!@date      Programmed in Aug., 2016
 !
-!     Written by H. Matsui on July, 2007
-!
-!      subroutine gz_read_rtp_gl_1d_table_b
-!      subroutine gz_read_rj_gl_1d_table_b
-!
-!      subroutine gz_write_rtp_gl_1d_table_b
-!      subroutine gz_write_rj_gl_1d_table_b
+!>@brief  Mesh file IO for gxipped format
+!!
+!!@verbatim
+!!      subroutine gz_read_rtp_gl_1d_table_b
+!!      subroutine gz_read_rj_gl_1d_table_b
+!!
+!!      subroutine gz_write_rtp_gl_1d_table_b
+!!      subroutine gz_write_rj_gl_1d_table_b
+!!@endverbatim
 !
       module gz_sph_global_1d_idx_IO_b
 !

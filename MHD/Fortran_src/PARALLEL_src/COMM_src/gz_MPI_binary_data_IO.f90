@@ -79,11 +79,10 @@
       subroutine gz_mpi_write_int_vector_b                              &
      &         (id_file, ioff_gl, num, int_dat)
 !
+      integer, intent(in) ::  id_file
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(in) :: int_dat(num)
-!
-      integer, intent(in) ::  id_file
 !
       integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength, ip
       integer(kind = kint) :: ilen_gzipped_gl(nprocs)
@@ -125,11 +124,10 @@
       subroutine gz_mpi_write_int8_vector_b                             &
      &         (id_file, ioff_gl, num, int8_dat)
 !
+      integer, intent(in) ::  id_file
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind = kint), intent(in) :: num
       integer(kind = kint_gl), intent(in) :: int8_dat(num)
-!
-      integer, intent(in) ::  id_file
 !
       integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength, ip
       integer(kind = kint) :: ilen_gzipped_gl(nprocs)
@@ -171,11 +169,10 @@
       subroutine gz_mpi_write_1d_vector_b                               &
      &         (id_file, ioff_gl, num, real_dat)
 !
+      integer, intent(in) ::  id_file
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind = kint), intent(in) :: num
       real(kind = kreal), intent(in) :: real_dat(num)
-!
-      integer, intent(in) ::  id_file
 !
       integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength, ip
       integer(kind = kint) :: ilen_gzipped_gl(nprocs)
@@ -217,11 +214,11 @@
       subroutine gz_mpi_write_2d_vector_b                               &
      &         (id_file, ioff_gl, n1, n2, real_dat)
 !
+      integer, intent(in) ::  id_file
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind = kint), intent(in) :: n1, n2
-      real(kind = kreal), intent(in) :: real_dat(n1,n2)
 !
-      integer, intent(in) ::  id_file
+      real(kind = kreal), intent(in) :: real_dat(n1,n2)
 !
       integer(kind = kint) :: num
 !
