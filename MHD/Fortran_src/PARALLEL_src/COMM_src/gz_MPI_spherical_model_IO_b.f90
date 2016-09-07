@@ -9,8 +9,7 @@
 !!@verbatim
 !!      subroutine gz_mpi_read_rank_4_sph_b                             &
 !!     &         (id_file, nprocs_in, id_rank, ioff_gl)
-!!      subroutine gz_mpi_read_gl_reso_sph_b                            &
-!!     &         (id_file, nprocs_in, id_rank, ioff_gl)
+!!      subroutine gz_mpi_read_gl_reso_sph_b(id_file, ioff_gl)
 !!      subroutine gz_mpi_read_gl_nodes_sph_b                           &
 !!     &         (id_file, nprocs_in, id_rank, ioff_gl)
 !!
@@ -53,13 +52,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_mpi_read_gl_reso_sph_b                              &
-     &         (id_file, nprocs_in, id_rank, ioff_gl)
+      subroutine gz_mpi_read_gl_reso_sph_b(id_file, ioff_gl)
 !
       integer, intent(in) ::  id_file
       integer(kind = kint_gl), intent(inout) :: ioff_gl
-!
-      integer(kind=kint), intent(in) :: id_rank, nprocs_in
 !
 !
       call gz_mpi_read_mul_inthead_b                                    &
@@ -78,13 +74,11 @@
 !
       integer(kind=kint), intent(in) :: id_rank, nprocs_in
 !
-      integer(kind = kint) :: nvect
-      integer(kind = kint) ::  int_IO(1)
+      integer(kind=kint) :: nvect
 !
 !
-      call gz_mpi_read_int8_vector_b                                    &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, ione, int_IO)
-      nnod_sph_IO = int_IO(1)
+      call gz_mpi_read_one_integer_b                                    &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, nnod_sph_IO)
 !
       call allocate_nod_id_sph_IO
 !
@@ -133,13 +127,9 @@
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
       integer(kind = kint) ::  nvect
-      integer(kind = kint) ::  int_IO(1)
 !
 !
-      int_IO(1) = nnod_sph_IO
-      call gz_mpi_write_int8_vector_b(id_file, ioff_gl, ione, int_IO)
-!
-      call gz_write_one_integer_b(nnod_sph_IO)
+      call gz_mpi_write_one_integer_b(id_file, ioff_gl, nnod_sph_IO)
       call gz_mpi_write_int8_vector_b                                   &
      &   (id_file, ioff_gl, nnod_sph_IO, inod_gl_sph_IO)
       nvect = nnod_sph_IO * ndir_sph_IO

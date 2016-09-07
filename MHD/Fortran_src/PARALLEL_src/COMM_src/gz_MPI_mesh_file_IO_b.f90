@@ -48,20 +48,20 @@
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read gzipped binary merged mesh file: ', trim(mesh_file_name)
 !
-      call open_read_gz_mpi_file_b(mesh_file_name, ioff_gl)
+      call open_read_gz_mpi_file_b(mesh_file_name, id_file, ioff_gl)
 !
       call gz_mpi_read_geometry_data_b                                  &
      &   (id_file, nprocs_in, id_rank, ioff_gl)
 !
 !   read node group
       call gz_mpi_read_group_data_b                                     &
-     &   (id_file, nprocs_in, id_rank, bc_grp_IO)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, bc_grp_IO)
 !  read element group
       call gz_mpi_read_group_data_b                                     &
-     &   (id_file, nprocs_in, id_rank, mat_grp_IO)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, mat_grp_IO)
 !  read surface group
       call gz_mpi_read_surf_grp_data_b                                  &
-     &    (id_file, nprocs_in, id_rank, surf_grp_IO)
+     &    (id_file, nprocs_in, id_rank, ioff_gl, surf_grp_IO)
 !
       call calypso_close_mpi_file(id_file)
 !
@@ -106,7 +106,7 @@
      &   'Read gzipped binary merged mesh file: ', trim(mesh_file_name)
 !
       call open_read_gz_mpi_file_b(mesh_file_name, id_file, ioff_gl)
-      call gz_mpi_read_domain_info_b
+      call gz_mpi_read_domain_info_b                                    &
      &   (id_file, nprocs_in, id_rank, ioff_gl)
       call gz_mpi_read_number_of_node_b                                 &
      &   (id_file, nprocs_in, id_rank, ioff_gl)
@@ -132,7 +132,7 @@
 !
       call open_read_gz_mpi_file_b(mesh_file_name, ioff_gl)
 !
-      call gz_mpi_read_domain_info_b
+      call gz_mpi_read_domain_info_b                                    &
      &   (id_file, nprocs_in, id_rank, ioff_gl)
       call gz_mpi_read_number_of_node_b                                 &
      &   (id_file, nprocs_in, id_rank, ioff_gl)

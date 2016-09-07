@@ -217,7 +217,7 @@
         ioffset = ioff_gl
         ilen_gz = int(real(ilength) *1.01) + 24
         allocate(gzip_buf(ilen_gz))
-        call calypso_mpi_seek_read_chara                                &
+        call calypso_mpi_seek_read_gz                                   &
      &         (id_fld, ioffset, ilen_gz, gzip_buf(1))
 !
         call gzip_infleat_once                                          &
@@ -253,7 +253,7 @@
         ioffset = ioff_gl
         ilen_gz = int(real(kchara) *1.01) + 24
         allocate(gzip_buf(ilen_gz))
-        call calypso_mpi_seek_read_chara                                &
+        call calypso_mpi_seek_read_gz                                   &
      &     (id_fld, ioffset, ilen_gz, gzip_buf(1))
 !
         call gzip_infleat_once                                          &
@@ -325,7 +325,7 @@
       allocate(gzip_buf(ilen_gz))
 !
       ioffset = ioff_gl + istack_buf(id_rank)
-      call calypso_mpi_seek_read_chara                                  &
+      call calypso_mpi_seek_read_gz                                     &
      &         (id_fld, ioffset, ilen_gz, gzip_buf(1))
       ioff_gl = ioff_gl + istack_buf(nprocs_in)
 !

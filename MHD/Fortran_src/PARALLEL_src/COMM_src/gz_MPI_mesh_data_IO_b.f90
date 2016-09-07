@@ -51,7 +51,7 @@
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
 !
-      call gz_mpi_write_domain_info_b(id_file, ioff_gl, nprocs_in)
+      call gz_mpi_write_domain_info_b(id_file, nprocs_in, ioff_gl)
 !
       call gz_mpi_write_geometry_info_b(id_file, ioff_gl)
       call gz_mpi_write_element_info_b(id_file, ioff_gl)
@@ -204,8 +204,6 @@
       integer(kind=kint), intent(in) :: id_rank, nprocs_in
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
-      integer (kind = kint) :: itmp_IO(1)
-!
 !
       call gz_mpi_read_one_integer_b                                    &
      &   (id_file, nprocs_in, id_rank, ioff_gl, numele_dummy)
@@ -224,12 +222,12 @@
       integer(kind=kint), intent(in) :: id_rank, nprocs_in
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
-      integer (kind = kint) :: num
+      integer (kind = kint) :: num, i
 !
 !
       call allocate_ele_info_dummy
       call gz_mpi_read_int_vector_b                                     &
-     &    id_file, nprocs_in, id_rank, ioff_gl,                         &
+     &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
      &    numele_dummy, i_ele_dummy)
 !
       nnod_4_ele_dummy = 0
@@ -246,7 +244,7 @@
 !
       num = numele_dummy * nnod_4_ele_dummy
       call gz_mpi_read_int_vector_b                                     &
-     &    id_file, nprocs_in, id_rank, ioff_gl, num, ie_dummy(1,1))
+     &   (id_file, nprocs_in, id_rank, ioff_gl, num, ie_dummy(1,1))
 !
       end subroutine gz_mpi_read_element_info_b
 !

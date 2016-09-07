@@ -1,0 +1,217 @@
+!>@file   mesh_MPI_IO_select.f90
+!!@brief  module mesh_MPI_IO_select
+!!
+!!@author H.Matsui
+!!@date     Programmed by H.Matsui in Apr., 2006
+!
+!>@brief  Choose mesh file to read
+!!
+!!@verbatim
+!!      subroutine sel_mpi_read_mesh(id_rank)
+!!      subroutine sel_mpi_read_mesh_geometry(nprocs_in, id_rank)
+!!
+!!      subroutine sel_mpi_read_node_size(nprocs_in, id_rank)
+!!      subroutine sel_mpi_read_geometry_size(nprocs_in, id_rank)
+!!
+!!      subroutine sel_mpi_write_mesh_file(nprocs_in, id_rank)
+!!@endverbatim
+!
+      module mesh_MPI_IO_select
+!
+      use m_precision
+!
+      use m_read_mesh_data
+      use m_file_format_switch
+!
+      use mesh_IO_select
+!
+      use MPI_mesh_file_IO
+      use MPI_mesh_file_IO_b
+      use gz_MPI_mesh_file_IO
+      use gz_MPI_mesh_file_IO_b
+!
+      implicit none
+!
+!  ---------------------------------------------------------------------
+!
+      contains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine sel_mpi_read_mesh(nprocs_in, id_rank)
+!
+      integer(kind= kint), intent(in) :: nprocs_in, id_rank
+!
+!
+      call set_mesh_fname(id_rank)
+!
+      if(iflag_mesh_file_fmt .eq. iflag_single+id_binary_file_fmt) then
+        call mpi_read_mesh_file_b(nprocs_in, id_rank)
+      else if(iflag_mesh_file_fmt .eq. iflag_single) then
+        call read_mesh_file_mpi(id_rank)
+        call set_mesh_file_name(mesh_file_head, id_ascii_file_fmt,      &
+     &      id_rank, mesh_file_name)
+        call read_mesh_file(id_rank)
+!
+#ifdef ZLIB_IO
+      else if(iflag_mesh_file_fmt                                       &
+     &        .eq. iflag_single+id_gzip_bin_file_fmt) then
+        call gz_mpi_read_mesh_file_b(nprocs_in, id_rank)
+      else if(iflag_mesh_file_fmt                                       &
+     &        .eq. iflag_single+id_gzip_txt_file_fmt) then
+        call gz_mpi_read_mesh(id_rank)
+        call set_mesh_file_name(mesh_file_head, id_gzip_txt_file_fmt,   &
+     &      id_rank, mesh_file_name)
+        call gz_read_mesh(id_rank)
+#endif
+!
+      else
+        call sel_read_mesh(id_rank)
+      end if 
+!
+      end subroutine sel_mpi_read_mesh
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine sel_mpi_read_mesh_geometry(nprocs_in, id_rank)
+!
+      integer(kind= kint), intent(in) :: nprocs_in, id_rank
+!
+!
+      call set_mesh_fname(id_rank)
+!
+      if(iflag_mesh_file_fmt .eq. iflag_single+id_binary_file_fmt) then
+        call mpi_read_mesh_geometry_b(nprocs_in, id_rank)
+      else if(iflag_mesh_file_fmt .eq. iflag_single) then
+        call read_mesh_geometry_mpi(id_rank)
+        call set_mesh_file_name(mesh_file_head, id_ascii_file_fmt,      &
+     &      id_rank, mesh_file_name)
+        call read_mesh_geometry(id_rank)
+!
+#ifdef ZLIB_IO
+      else if(iflag_mesh_file_fmt                                       &
+     &        .eq. iflag_single+id_gzip_bin_file_fmt) then
+        call gz_mpi_read_mesh_geometry_b(nprocs_in, id_rank)
+      else if(iflag_mesh_file_fmt                                       &
+     &        .eq. iflag_single+id_gzip_txt_file_fmt) then
+        call gz_mpi_read_mesh_geometry(id_rank)
+        call set_mesh_file_name(mesh_file_head, id_gzip_txt_file_fmt,   &
+     &      id_rank, mesh_file_name)
+        call gz_read_mesh_geometry(id_rank)
+#endif
+!
+      else
+        call sel_read_mesh_geometry(id_rank)
+      end if 
+!
+      end subroutine sel_mpi_read_mesh_geometry
+!
+!  ---------------------------------------------------------------------
+!
+       subroutine sel_mpi_read_node_size(nprocs_in, id_rank)
+!
+      integer(kind= kint), intent(in) :: nprocs_in, id_rank
+!
+!
+      call set_mesh_fname(id_rank)
+!
+      if(iflag_mesh_file_fmt .eq. iflag_single+id_binary_file_fmt) then
+        call mpi_read_node_size_b(nprocs_in, id_rank)
+      else if(iflag_mesh_file_fmt .eq. iflag_single) then
+        call read_node_size_mpi(id_rank)
+        call set_mesh_file_name(mesh_file_head, id_ascii_file_fmt,      &
+     &      id_rank, mesh_file_name)
+        call read_node_size(id_rank)
+!
+#ifdef ZLIB_IO
+      else if(iflag_mesh_file_fmt                                       &
+     &        .eq. iflag_single+id_gzip_bin_file_fmt) then
+        call gz_mpi_read_node_size_b(nprocs_in, id_rank)
+      else if(iflag_mesh_file_fmt                                       &
+     &        .eq. iflag_single+id_gzip_txt_file_fmt) then
+        call gz_mpi_read_node_size(id_rank)
+        call set_mesh_file_name(mesh_file_head, id_gzip_txt_file_fmt,   &
+     &      id_rank, mesh_file_name)
+        call gz_read_node_size(id_rank)
+#endif
+!
+      else
+        call sel_read_node_size(id_rank)
+      end if 
+!
+      end subroutine sel_mpi_read_node_size
+!
+!------------------------------------------------------------------
+!
+       subroutine sel_mpi_read_geometry_size(nprocs_in, id_rank)
+!
+      integer(kind= kint), intent(in) :: nprocs_in, id_rank
+!
+!
+      call set_mesh_fname(id_rank)
+!
+      if(iflag_mesh_file_fmt .eq. iflag_single+id_binary_file_fmt) then
+        call mpi_read_geometry_size_b(nprocs_in, id_rank)
+      else if(iflag_mesh_file_fmt .eq. iflag_single) then
+        call read_geometry_size_mpi(id_rank)
+        call set_mesh_file_name(mesh_file_head, id_ascii_file_fmt,      &
+     &      id_rank, mesh_file_name)
+        call read_geometry_size(id_rank)
+!
+#ifdef ZLIB_IO
+      else if(iflag_mesh_file_fmt                                       &
+     &        .eq. iflag_single+id_gzip_bin_file_fmt) then
+        call gz_mpi_read_geometry_size_b(nprocs_in, id_rank)
+      else if(iflag_mesh_file_fmt                                       &
+     &        .eq. iflag_single+id_gzip_txt_file_fmt) then
+        call gz_mpi_read_geometry_size(id_rank)
+        call set_mesh_file_name(mesh_file_head, id_gzip_txt_file_fmt,   &
+     &      id_rank, mesh_file_name)
+        call gz_read_geometry_size(id_rank)
+#endif
+!
+      else
+        call sel_read_geometry_size(id_rank)
+      end if 
+!
+      end subroutine sel_mpi_read_geometry_size
+!
+!------------------------------------------------------------------
+!------------------------------------------------------------------
+!
+      subroutine sel_mpi_write_mesh_file(nprocs_in, id_rank)
+!
+      integer(kind= kint), intent(in) :: nprocs_in, id_rank
+!
+!
+      call set_mesh_fname(id_rank)
+!
+      if(iflag_mesh_file_fmt .eq. iflag_single+id_binary_file_fmt) then
+        call mpi_write_mesh_file_b(nprocs_in, id_rank)
+      else if(iflag_mesh_file_fmt .eq. iflag_single) then
+        call write_mesh_file_mpi(id_rank)
+        call set_mesh_file_name(mesh_file_head, id_ascii_file_fmt,      &
+     &      id_rank, mesh_file_name)
+        call write_mesh_file(id_rank)
+!
+#ifdef ZLIB_IO
+      else if(iflag_mesh_file_fmt                                       &
+     &        .eq. iflag_single+id_gzip_bin_file_fmt) then
+        call gz_mpi_write_mesh_file_b(nprocs_in, id_rank)
+      else if(iflag_mesh_file_fmt                                       &
+     &        .eq. iflag_single+id_gzip_txt_file_fmt) then
+        call gz_mpi_write_mesh_file(id_rank)
+        call set_mesh_file_name(mesh_file_head, id_gzip_txt_file_fmt,   &
+     &      id_rank, mesh_file_name)
+        call gz_write_mesh_file(id_rank)
+#endif
+!
+      else
+        call sel_write_mesh_file(id_rank)
+      end if
+!
+      end subroutine sel_mpi_write_mesh_file
+!
+!  ---------------------------------------------------------------------
+!
+      end module mesh_MPI_IO_select

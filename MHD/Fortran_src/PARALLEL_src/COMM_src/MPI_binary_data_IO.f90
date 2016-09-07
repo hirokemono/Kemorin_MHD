@@ -53,7 +53,6 @@
       use calypso_mpi
 !
       use m_calypso_mpi_IO
-      use MPI_binary_head_IO
 !
       implicit none
 !

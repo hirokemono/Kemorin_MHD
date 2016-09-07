@@ -41,6 +41,7 @@
 !
       use calypso_mpi
       use m_calypso_mpi_IO
+      use gz_MPI_binary_data_IO
       use gz_MPI_binary_head_IO
 !
       implicit none
@@ -137,7 +138,7 @@
 !
 !
       itmp_IO(1) = int_dat
-      call gz_mpi_write_one_integer_b(id_file, ioff_gl, ione, itmp_IO)
+      call gz_mpi_write_int_vector_b(id_file, ioff_gl, ione, itmp_IO)
 !
       end subroutine gz_mpi_write_one_integer_b
 !
@@ -162,7 +163,7 @@
         ilength = kint
         ilen_gz = int(real(ilength) *1.01) + 24
         allocate(gzip_buf(ilen_gz))
-        call calypso_mpi_seek_read_chara                                &
+        call calypso_mpi_seek_read_gz                                   &
      &         (id_file, ioffset, ilen_gz, gzip_buf(1))
 !
         call gzip_infleat_once                                          &
@@ -235,7 +236,7 @@
       integer(kind=kint), intent(in) :: id_rank, nprocs_in
       integer(kind = kint), intent(inout) :: int_dat
 !
-      real(kind = kreal) ::   itmp_IO(1)
+      integer(kind = kint) ::   itmp_IO(1)
 !
 !
       call gz_mpi_read_int_vector_b                                     &

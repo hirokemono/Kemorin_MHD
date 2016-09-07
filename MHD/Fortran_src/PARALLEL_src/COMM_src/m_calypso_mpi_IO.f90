@@ -44,6 +44,9 @@
 !!      subroutine calypso_mpi_seek_read_int8                           &
 !!     &         (id_mpi_file, ioffset, ilength, i8_vector)
 !!
+!!      subroutine calypso_mpi_seek_read_gz                             &
+!!     &         (id_mpi_file, ioffset, ilength, c1buf)
+!!
 !!    calypso_gz_mpi_seek_write only work correctly when number of 
 !!   subdomain is equal to number of threads
 !!@endverbatim
@@ -98,7 +101,7 @@
 !
       call init_mpi_IO_status
       call MPI_FILE_OPEN(CALYPSO_COMM, file_name,                       &
-     &    MPI_MODE_WRONLY+MPI_MODE_APPEND+MPI_MODE_CREATE,              &
+     &    MPI_MODE_RDWR+MPI_MODE_APPEND+MPI_MODE_CREATE,                &
      &    MPI_INFO_NULL, id_mpi_file, ierr_MPI)
 !
      if(nprocs_in .le. nprocs) then
@@ -463,6 +466,25 @@
       end if
 !
       end subroutine calypso_mpi_seek_read_int8
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine calypso_mpi_seek_read_gz                               &
+     &         (id_mpi_file, ioffset, ilength, c1buf)
+!
+      integer, intent(in) ::  id_mpi_file
+      integer(kind = MPI_OFFSET_KIND), intent(inout) :: ioffset
+      integer(kind = kint), intent(in) :: ilength
+      character(len=1), intent(inout) :: c1buf(ilength)
+!
+!
+      call MPI_FILE_SEEK(id_mpi_file, ioffset, MPI_SEEK_SET, ierr_MPI)
+      call MPI_FILE_READ(id_mpi_file, c1buf(1), ilength,                &
+     &      CALYPSO_CHARACTER, sta1_IO, ierr_MPI)
+      ioffset = ioffset + ilength
+!
+      end subroutine calypso_mpi_seek_read_gz
 !
 !  ---------------------------------------------------------------------
 !

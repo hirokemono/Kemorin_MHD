@@ -10,7 +10,7 @@
 !!      subroutine gz_mpi_read_group_data_b                             &
 !!     &         (id_file, nprocs_in, id_rank, ioff_gl, group_IO)
 !!      subroutine gz_mpi_read_surf_grp_data_b                          &
-!!     &         (id_file, nprocs_in, id_rank, ioff_gl,surf_grp_IO)
+!!     &         (id_file, nprocs_in, id_rank, ioff_gl, surf_grp_IO)
 !!
 !!      subroutine gz_mpi_write_grp_data_b(id_file, ioff_gl, group_IO)
 !!      subroutine gz_mpi_write_surf_grp_data_b                         &
@@ -53,10 +53,11 @@
       call allocate_grp_type_num(group_IO)
 !
       if (group_IO%num_grp .gt. 0) then
-        call gz_mpi_read_integer_stack_b(nprocs_in, id_rank, ioff_gl,   &
-     &      group_IO%num_grp, group_IO%istack_grp, group_IO%num_item)
         call gz_mpi_read_mul_charahead_b                                &
      &     (id_file, ioff_gl, group_IO%num_grp, group_IO%grp_name)
+        call gz_mpi_read_integer_stack_b                                &
+     &     (id_file, nprocs_in, id_rank, ioff_gl,                       &
+     &      group_IO%num_grp, group_IO%istack_grp, group_IO%num_item)
 !
         call allocate_grp_type_item(group_IO)
 !
@@ -73,7 +74,7 @@
 !------------------------------------------------------------------
 !
       subroutine gz_mpi_read_surf_grp_data_b                            &
-     &         (id_file, nprocs_in, id_rank, ioff_gl,surf_grp_IO)
+     &         (id_file, nprocs_in, id_rank, ioff_gl, surf_grp_IO)
 !
       integer, intent(in) ::  id_file
       integer(kind=kint), intent(in) :: id_rank, nprocs_in
@@ -89,11 +90,12 @@
       call allocate_sf_grp_type_num(surf_grp_IO)
 !
       if (surf_grp_IO%num_grp .gt. 0) then
-        call gz_mpi_read_integer_stack_b(nprocs_in, id_rank, ioff_gl,   &
-     &      surf_grp_IO%num_grp, surf_grp_IO%istack_grp,                &
-     &      surf_grp_IO%num_item)
         call gz_mpi_read_mul_charahead_b(id_file, ioff_gl,              &
      &      surf_grp_IO%num_grp, surf_grp_IO%grp_name)
+        call gz_mpi_read_integer_stack_b                                &
+     &     (id_file, nprocs_in, id_rank, ioff_gl,                       &
+     &      surf_grp_IO%num_grp, surf_grp_IO%istack_grp,                &
+     &      surf_grp_IO%num_item)
 !
         call allocate_sf_grp_type_item(surf_grp_IO)
 !
@@ -120,10 +122,10 @@
 !
       call gz_mpi_write_one_inthead_b                                   &
      &   (id_file, ioff_gl, group_IO%num_grp)
-      call gz_mpi_write_integer_stack_b                                 &
-     &   (id_file, ioff_gl, group_IO%num_grp, group_IO%istack_grp)
       call gz_mpi_write_mul_charahead_b                                 &
      &   (id_file, ioff_gl, group_IO%num_grp, group_IO%grp_name)
+      call gz_mpi_write_integer_stack_b                                 &
+     &   (id_file, ioff_gl, group_IO%num_grp, group_IO%istack_grp)
       call gz_mpi_write_int_vector_b                                    &
      &   (id_file, ioff_gl, group_IO%num_item, group_IO%item_grp)
 !
@@ -146,10 +148,10 @@
 !
       call gz_mpi_write_one_inthead_b                                   &
      &   (id_file, ioff_gl, surf_grp_IO%num_grp)
-      call gz_mpi_write_integer_stack_b(id_file, ioff_gl,               &
-     &    surf_grp_IO%num_grp, surf_grp_IO%istack_grp)
       call gz_mpi_write_mul_charahead_b                                 &
      &   (id_file, ioff_gl, surf_grp_IO%num_grp, surf_grp_IO%grp_name)
+      call gz_mpi_write_integer_stack_b(id_file, ioff_gl,               &
+     &    surf_grp_IO%num_grp, surf_grp_IO%istack_grp)
 !
       nitem = 2 * surf_grp_IO%num_item
       call gz_mpi_write_int_vector_b                                    &

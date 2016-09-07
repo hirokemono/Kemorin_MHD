@@ -8,14 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine gz_mpi_read_domain_info_b                            &
-!!     &         (id_file, nprocs_in, id_rank, ioff_gl, nprocs_read)
+!!     &         (id_file, nprocs_in, id_rank, ioff_gl)
 !!      subroutine gz_mpi_read_import_data_b                            &
 !!     &         (id_file, nprocs_in, id_rank, ioff_gl)
 !!      subroutine gz_mpi_read_export_data_b                            &
 !!     &         (id_file, nprocs_in, id_rank, ioff_gl)
 !!
 !!      subroutine gz_mpi_write_domain_info_b                           &
-!!     &         (id_file, ioff_gl, nprocs_in)
+!!     &         (id_file, nprocs_in, ioff_gl)
 !!      subroutine gz_mpi_write_import_data_b(id_file, ioff_gl)
 !!      subroutine gz_mpi_write_export_data_b(id_file, ioff_gl)
 !!@endverbatim
@@ -39,8 +39,10 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_mpi_read_domain_info_b
+      subroutine gz_mpi_read_domain_info_b                              &
      &         (id_file, nprocs_in, id_rank, ioff_gl)
+!
+      use m_error_IDs
 !
       integer, intent(in) ::  id_file
       integer(kind=kint), intent(in) :: id_rank, nprocs_in
@@ -124,7 +126,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_mpi_write_domain_info_b                             &
-     &         (id_file, ioff_gl, nprocs_in)
+     &         (id_file, nprocs_in, ioff_gl)
 !
       integer, intent(in) ::  id_file
       integer(kind=kint), intent(in) :: nprocs_in

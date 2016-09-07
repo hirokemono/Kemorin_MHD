@@ -54,6 +54,7 @@
 !
       use calypso_mpi
       use m_calypso_mpi_IO
+      use MPI_binary_data_IO
 !
       implicit none
 !
@@ -374,9 +375,7 @@
       character(len=kchara), intent(inout) :: chara_dat(num)
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
-!
-      integer(kind = kint_gl) :: l8_byte
+      integer(kind = kint) :: ilength
 !
 !
       ilength = num * kchara

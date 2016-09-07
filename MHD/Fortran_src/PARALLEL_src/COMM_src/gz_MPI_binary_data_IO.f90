@@ -280,7 +280,7 @@
       ilength = num * kint
       ilen_gz = int(istack_buffer(id_rank+1) - istack_buffer(id_rank))
       allocate(gzip_buf(ilen_gz))
-      call calypso_mpi_seek_read_chara                                  &
+      call calypso_mpi_seek_read_gz                                     &
      &         (id_file, ioffset, ilen_gz, gzip_buf(1))
 !
       call gzip_infleat_once                                            &
@@ -324,7 +324,7 @@
       ilength = num * kint_gl
       ilen_gz = int(istack_buffer(id_rank+1) - istack_buffer(id_rank))
       allocate(gzip_buf(ilen_gz))
-      call calypso_mpi_seek_read_chara                                  &
+      call calypso_mpi_seek_read_gz                                     &
      &         (id_file, ioffset, ilen_gz, gzip_buf(1))
 !
       call gzip_infleat_once                                            &
@@ -368,7 +368,7 @@
       ilength = num * kreal
       ilen_gz = int(istack_buffer(id_rank+1) - istack_buffer(id_rank))
       allocate(gzip_buf(ilen_gz))
-      call calypso_mpi_seek_read_chara                                  &
+      call calypso_mpi_seek_read_gz                                     &
      &         (id_file, ioffset, ilen_gz, gzip_buf(1))
 !
       call gzip_infleat_once                                            &
