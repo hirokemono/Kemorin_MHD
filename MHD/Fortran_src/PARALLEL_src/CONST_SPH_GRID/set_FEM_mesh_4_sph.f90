@@ -36,7 +36,6 @@
       use t_group_data
       use m_spheric_global_ranks
       use m_read_boundary_data
-      use m_node_id_spherical_IO
       use m_sph_mesh_1d_connect
 !
       use coordinate_converter
@@ -44,7 +43,6 @@
       use set_comm_table_4_IO
       use set_node_data_4_IO
       use set_element_data_4_IO
-      use mesh_IO_select
 !
       integer(kind = kint), intent(in) :: iflag_output_mesh
       integer(kind = kint), intent(in) :: nidx_rtp(3)
@@ -93,11 +91,6 @@
       call copy_ele_connect_to_IO(mesh%ele)
       call set_grp_data_to_IO                                           &
      &   (group%nod_grp, group%ele_grp, group%surf_grp)
-!
-      mesh_file_head = sph_file_head
-      call sel_write_mesh_file(ip_rank)
-      write(*,'(a,i6,a)')                                               &
-     &          'FEM mesh for domain', ip_rank, ' is done.'
 !
       end subroutine s_const_FEM_mesh_for_sph
 !

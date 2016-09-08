@@ -139,8 +139,8 @@
       type(group_data), intent(in) :: radial_rj_grp
       type(sph_rtp_grid), intent(inout) :: sph_rtp
 !
-      type(mesh_geometry) :: mesh
-      type(mesh_groups) ::  group
+      type(mesh_data) :: femmesh
+!
 !
 !
       call copy_gl_2_local_rtp_param(ip_rank, sph_rtp)
@@ -149,12 +149,8 @@
 !
       call s_const_FEM_mesh_for_sph                                     &
      &   (iflag_output_mesh, ip_rank, sph_rtp%nidx_rtp, radius_1d_gl,   &
-     &    sph_params, radial_rj_grp, mesh, group)
-!
-      call dealloc_groups_data(group)
-      call deallocate_ele_connect_type(mesh%ele)
-      call deallocate_node_geometry_type(mesh%node)
-      call deallocate_type_comm_tbl(mesh%nod_comm)
+     &    sph_params, radial_rj_grp, femmesh%mesh, femmesh%group)
+      call dealloc_mesh_data_type(femmesh)
 !
       end subroutine const_fem_mesh_for_sph
 !

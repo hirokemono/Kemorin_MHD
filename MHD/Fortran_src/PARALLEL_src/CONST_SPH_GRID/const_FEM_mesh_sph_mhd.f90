@@ -43,10 +43,12 @@
       use calypso_mpi
       use m_gauss_points
       use m_spheric_global_ranks
+      use m_node_id_spherical_IO
       use set_FEM_mesh_4_sph
       use const_1d_ele_connect_4_sph
       use set_sph_groups
       use gen_sph_grids_modes
+      use mesh_IO_select
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -73,6 +75,11 @@
       call s_const_FEM_mesh_for_sph(iflag_output_mesh,                  &
      &    my_rank, sph_rtp%nidx_rtp, sph_rj%radius_1d_rj_r,             &
      &    sph_params, radial_rj_grp, mesh, group)
+!
+      mesh_file_head = sph_file_head
+      call sel_write_mesh_file(my_rank)
+      write(*,'(a,i6,a)')                                               &
+     &          'FEM mesh for domain', my_rank, ' is done.'
 !
       call deallocate_nnod_nele_sph_mesh
       call deallocate_gauss_points

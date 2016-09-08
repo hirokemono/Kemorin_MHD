@@ -124,6 +124,7 @@
      &        'output_modes_rlm_sph_trans', ip_rank
         call output_modes_rlm_sph_trans                                 &
      &     (ip_rank, l_truncation, sph_rlm, comm_rlm_lc)
+        call sel_write_modes_rlm_file(ip_rank)
 !
         write(*,'(a,i6,a)') 'Spherical transform table for domain',     &
      &          ip_rank, ' is done.'
@@ -164,7 +165,8 @@
      &        'output_geom_rtm_sph_trans', ip_rank
         call output_geom_rtm_sph_trans                                  &
      &     (ip_rank, l_truncation, sph_rtm, comm_rtm_lc)
- 
+      call sel_write_geom_rtm_file(ip_rank)
+
         write(*,'(a,i6,a)') 'Legendre transform table rtm',             &
      &          ip_rank, ' is done.'
       end do
@@ -198,6 +200,10 @@
      &            ip_rank,  ' on ', my_rank
         call const_sph_rj_modes(ip_rank, ndomain_sph,                   &
      &      comm_rlm_mul, sph_params, sph_rj, sph_rlm)
+!
+        call sel_write_spectr_modes_rj_file(ip_rank)
+        write(*,'(a,i6,a)') 'Spherical modes for domain',               &
+     &          ip_rank, ' is done.'
       end do
       call deallocate_rj_1d_local_idx
 !
@@ -229,6 +235,10 @@
      &            ip_rank,  ' on ', my_rank
         call const_sph_rtp_grids(ip_rank, ndomain_sph, comm_rtm_mul,    &
      &      sph_params, sph_rtp, sph_rtm)
+!
+        call sel_write_geom_rtp_file(ip_rank)
+        write(*,'(a,i6,a)') 'Spherical grids for domain',               &
+     &          ip_rank, ' is done.'
       end do
       call deallocate_rtp_1d_local_idx
 !
@@ -241,10 +251,13 @@
 !
       use m_gauss_points
       use m_sph_mesh_1d_connect
+      use m_read_mesh_data
+      use m_node_id_spherical_IO
       use const_1d_ele_connect_4_sph
       use set_local_index_table_sph
       use set_sph_groups
       use gen_sph_grids_modes
+      use mesh_IO_select
 !
       integer(kind = kint), intent(in) :: ndomain_sph
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -276,6 +289,11 @@
 !
         call const_fem_mesh_for_sph                                     &
      &     (ip_rank, sph_params, radial_rj_grp_lc, sph_rtp)
+!
+        mesh_file_head = sph_file_head
+        call sel_write_mesh_file(ip_rank)
+        write(*,'(a,i6,a)')                                             &
+     &          'FEM mesh for domain', ip_rank, ' is done.'
       end do
 !
       call deallocate_grp_type(radial_rj_grp_lc)

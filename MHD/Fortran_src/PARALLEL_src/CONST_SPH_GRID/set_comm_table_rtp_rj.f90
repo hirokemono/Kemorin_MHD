@@ -131,9 +131,6 @@
       call output_modes_rj_sph_trans(ip_rank, sph_params%l_truncation,  &
      &    sph_rj, comm_rj_lc, radial_rj_grp_lc, sphere_rj_grp_lc)
 !
-      write(*,'(a,i6,a)') 'Spherical modes for domain',                 &
-     &          ip_rank, ' is done.'
-!
       end subroutine const_sph_rj_modes
 !
 ! ----------------------------------------------------------------------
@@ -196,9 +193,6 @@
       call output_geom_rtp_sph_trans(ip_rank, sph_params%l_truncation,  &
      &    sph_rtp, comm_rtp_lc, bc_rtp_grp_lc,                          &
      &    radial_rtp_grp_lc, theta_rtp_grp_lc, zonal_rtp_grp_lc)
-!
-      write(*,'(a,i6,a)') 'Spherical grids for domain',                 &
-     &          ip_rank, ' is done.'
 !
       end subroutine const_sph_rtp_grids
 !

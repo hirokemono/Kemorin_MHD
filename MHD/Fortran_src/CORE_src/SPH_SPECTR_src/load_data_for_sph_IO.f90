@@ -7,7 +7,7 @@
 !!
 !!@verbatim
 !!      subroutine input_geom_rtp_sph_trans                             &
-!!     &         (my_rank, l_truncation, sph_rtp, comm_rtp, bc_rtp_grp, &
+!!     &         (l_truncation, sph_rtp, comm_rtp, bc_rtp_grp,          &
 !!     &          radial_rtp_grp, theta_rtp_grp, zonal_rtp_grp)
 !!        type(sph_rtp_grid), intent(inout) :: sph_rtp
 !!        type(sph_comm_tbl), intent(inout) :: comm_rtp
@@ -15,18 +15,18 @@
 !!        type(group_data), intent(inout) :: radial_rtp_grp
 !!        type(group_data), intent(inout) :: theta_rtp_grp
 !!        type(group_data), intent(inout) :: zonal_rtp_grp
-!!      subroutine input_modes_rj_sph_trans(my_rank, l_truncation,      &
+!!      subroutine input_modes_rj_sph_trans(l_truncation,               &
 !!     &          sph_rj, comm_rj, radial_rj_grp, sphere_rj_grp)
 !!        type(sph_rj_grid),  intent(inout) :: sph_rj
 !!        type(sph_comm_tbl), intent(inout) :: comm_rj
 !!        type(group_data), intent(inout) :: radial_rj_grp
 !!        type(group_data), intent(inout) :: sphere_rj_grp
 !!      subroutine input_geom_rtm_sph_trans                             &
-!!     &         (my_rank, l_truncation, sph_rtm, comm_rtm)
+!!     &         (l_truncation, sph_rtm, comm_rtm)
 !!        type(sph_rtm_grid), intent(inout) :: sph_rtm
 !!        type(sph_comm_tbl), intent(inout) :: comm_rtm
 !!      subroutine input_modes_rlm_sph_trans                            &
-!!     &         (my_rank, l_truncation, sph_rlm, comm_rlm)
+!!     &         (l_truncation, sph_rlm, comm_rlm)
 !!        type(sph_rlm_grid), intent(inout) :: sph_rlm
 !!        type(sph_comm_tbl), intent(inout) :: comm_rlm
 !!
@@ -61,7 +61,6 @@
 !
       use m_node_id_spherical_IO
       use m_group_data_sph_specr_IO
-      use sph_file_IO_select
 !
       use t_spheric_rtp_data
       use t_spheric_rtm_data
@@ -79,7 +78,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine input_geom_rtp_sph_trans                               &
-     &         (my_rank, l_truncation, sph_rtp, comm_rtp, bc_rtp_grp,   &
+     &         (l_truncation, sph_rtp, comm_rtp, bc_rtp_grp,            &
      &          radial_rtp_grp, theta_rtp_grp, zonal_rtp_grp, ierr)
 !
       use copy_sph_comm_table_4_IO
@@ -87,7 +86,6 @@
       use set_group_types_4_IO
       use count_num_sph_smp
 !
-      integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(inout) :: l_truncation
       integer(kind = kint), intent(inout) :: ierr
       type(sph_rtp_grid), intent(inout) :: sph_rtp
@@ -98,8 +96,6 @@
       type(group_data), intent(inout) :: theta_rtp_grp
       type(group_data), intent(inout) :: zonal_rtp_grp
 !
-!
-      call sel_read_geom_rtp_file(my_rank)
 !
       call copy_sph_node_4_rtp_from_IO(l_truncation, sph_rtp)
       call copy_comm_sph_from_IO(sph_rtp%nnod_rtp, comm_rtp)
@@ -120,7 +116,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine input_modes_rj_sph_trans(my_rank, l_truncation,        &
+      subroutine input_modes_rj_sph_trans(l_truncation,                 &
      &          sph_rj, comm_rj, radial_rj_grp, sphere_rj_grp, ierr)
 !
       use copy_sph_comm_table_4_IO
@@ -128,7 +124,6 @@
       use set_group_types_4_IO
       use count_num_sph_smp
 !
-      integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(inout) :: l_truncation
       integer(kind = kint), intent(inout) :: ierr
       type(sph_rj_grid),  intent(inout) :: sph_rj
@@ -136,8 +131,6 @@
       type(group_data), intent(inout) :: radial_rj_grp
       type(group_data), intent(inout) :: sphere_rj_grp
 !
-!
-      call sel_read_spectr_modes_rj_file(my_rank)
 !
       call copy_sph_node_4_rj_from_IO(l_truncation, sph_rj)
       call copy_comm_sph_from_IO(sph_rj%nnod_rj, comm_rj)
@@ -155,20 +148,17 @@
 ! -----------------------------------------------------------------------
 !
       subroutine input_geom_rtm_sph_trans                               &
-     &         (my_rank, l_truncation, sph_rtm, comm_rtm, ierr)
+     &         (l_truncation, sph_rtm, comm_rtm, ierr)
 !
       use copy_sph_comm_table_4_IO
       use copy_sph_node_4_IO
       use count_num_sph_smp
 !
-      integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(inout) :: l_truncation
       integer(kind = kint), intent(inout) :: ierr
       type(sph_rtm_grid), intent(inout) :: sph_rtm
       type(sph_comm_tbl), intent(inout) :: comm_rtm
 !
-!
-      call sel_read_geom_rtm_file(my_rank)
 !
       call copy_sph_node_4_rtm_from_IO(l_truncation, sph_rtm)
       call copy_comm_sph_from_IO(sph_rtm%nnod_rtm, comm_rtm)
@@ -180,20 +170,17 @@
 ! -----------------------------------------------------------------------
 !
       subroutine input_modes_rlm_sph_trans                              &
-     &         (my_rank, l_truncation, sph_rlm, comm_rlm, ierr)
+     &         (l_truncation, sph_rlm, comm_rlm, ierr)
 !
       use copy_sph_comm_table_4_IO
       use copy_sph_node_4_IO
       use count_num_sph_smp
 !
-      integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(inout) :: l_truncation
       integer(kind = kint), intent(inout) :: ierr
       type(sph_rlm_grid), intent(inout) :: sph_rlm
       type(sph_comm_tbl), intent(inout) :: comm_rlm
 !
-!
-      call sel_read_modes_rlm_file(my_rank)
 !
       call copy_sph_node_4_rlm_from_IO(l_truncation, sph_rlm)
       call copy_comm_sph_from_IO(sph_rlm%nnod_rlm, comm_rlm)
@@ -237,8 +224,6 @@
       call deallocate_grp_type(theta_rtp_grp)
       call deallocate_grp_type(zonal_rtp_grp)
 !
-      call sel_write_geom_rtp_file(my_rank)
-!
       end subroutine output_geom_rtp_sph_trans
 !
 ! -----------------------------------------------------------------------
@@ -268,8 +253,6 @@
       call deallocate_grp_type(radial_rj_grp)
       call deallocate_grp_type(sphere_rj_grp)
 !
-      call sel_write_spectr_modes_rj_file(my_rank)
-!
       end subroutine output_modes_rj_sph_trans
 !
 ! -----------------------------------------------------------------------
@@ -289,8 +272,6 @@
       call copy_sph_node_4_rtm_to_IO(l_truncation, sph_rtm)
       call copy_comm_sph_to_IO(my_rank, comm_rtm)
 !
-      call sel_write_geom_rtm_file(my_rank)
-!
       end subroutine output_geom_rtm_sph_trans
 !
 ! -----------------------------------------------------------------------
@@ -309,8 +290,6 @@
 !
       call copy_sph_node_4_rlm_to_IO(l_truncation, sph_rlm)
       call copy_comm_sph_to_IO(my_rank, comm_rlm)
-!
-      call sel_write_modes_rlm_file(my_rank)
 !
       end subroutine output_modes_rlm_sph_trans
 !
