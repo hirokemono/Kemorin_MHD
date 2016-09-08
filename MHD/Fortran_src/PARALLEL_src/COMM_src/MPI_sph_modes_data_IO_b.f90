@@ -40,6 +40,7 @@
       use MPI_spherical_model_IO_b
       use MPI_sph_gl_1d_idx_IO_b
       use MPI_binary_head_IO
+      use MPI_groups_IO_b
 !
       implicit none
 !

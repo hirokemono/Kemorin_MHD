@@ -63,7 +63,7 @@
 !
       use m_ctl_data_test_mesh
       use set_control_test_mesh
-      use load_mesh_data
+      use mpi_load_mesh_data
       use const_jacobians_3d
       use const_element_comm_tables
 !
@@ -91,8 +91,8 @@
 !
 !  --  read geometry
 !
-      if (iflag_debug.gt.0) write(*,*) 'input_mesh'
-      call input_mesh(my_rank, mesh, group,                             &
+      if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
+      call mpi_input_mesh(mesh, group,                                  &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'

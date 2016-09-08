@@ -3,9 +3,8 @@
 !
 !     Written by H. Matsui on March, 2013
 !
-!!      subroutine s_const_FEM_mesh_for_sph                             &
-!!     &         (iflag_output_mesh, ip_rank, nidx_rtp, r_global,       &
-!!     &          sph_params, radial_rj_grp, mesh, group)
+!!      subroutine s_const_FEM_mesh_for_sph(ip_rank, nidx_rtp, r_global,&
+!!     &          sph_params, sph_rtp, radial_rj_grp, mesh, group)
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::  group
 !
@@ -25,9 +24,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_const_FEM_mesh_for_sph                               &
-     &         (iflag_output_mesh, ip_rank, nidx_rtp, r_global,         &
-     &          sph_params, radial_rj_grp, mesh, group)
+      subroutine s_const_FEM_mesh_for_sph(ip_rank, nidx_rtp, r_global,  &
+     &          sph_params, sph_rtp, radial_rj_grp, mesh, group)
 !
       use t_spheric_parameter
       use t_mesh_data
@@ -40,16 +38,13 @@
 !
       use coordinate_converter
       use ordering_sph_mesh_to_rtp
-      use set_comm_table_4_IO
-      use set_node_data_4_IO
-      use set_element_data_4_IO
 !
-      integer(kind = kint), intent(in) :: iflag_output_mesh
       integer(kind = kint), intent(in) :: nidx_rtp(3)
       integer(kind = kint), intent(in) :: ip_rank
       real(kind= kreal), intent(in) :: r_global(nidx_global_fem(1))
 !
       type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rtp_grid), intent(in) :: sph_rtp
       type(group_data), intent(in) :: radial_rj_grp
 !
       type(mesh_geometry), intent(inout) :: mesh
@@ -57,6 +52,9 @@
 !
       integer(kind = kint) :: ip_r, ip_t
 !
+!
+      nidx_local_fem(1:3) = sph_rtp%nidx_rtp(1:3)
+      nidx_local_fem(3) =   sph_params%m_folding * nidx_local_fem(3)
 !
       ip_r = iglobal_rank_rtp(1,ip_rank) + 1
       ip_t = iglobal_rank_rtp(2,ip_rank) + 1
@@ -83,14 +81,6 @@
      &    mesh%node%xx(1:mesh%node%numnod,1),                           &
      &    mesh%node%xx(1:mesh%node%numnod,2),                           &
      &    mesh%node%xx(1:mesh%node%numnod,3))
-!
-! Output mesh data
-      if(iflag_output_mesh .eq. 0) return
-      call copy_comm_tbl_type_to_IO(ip_rank, mesh%nod_comm)
-      call copy_node_geometry_to_IO(mesh%node)
-      call copy_ele_connect_to_IO(mesh%ele)
-      call set_grp_data_to_IO                                           &
-     &   (group%nod_grp, group%ele_grp, group%surf_grp)
 !
       end subroutine s_const_FEM_mesh_for_sph
 !

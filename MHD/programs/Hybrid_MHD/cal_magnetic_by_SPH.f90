@@ -5,6 +5,8 @@
       use t_phys_data
       use t_work_4_sph_trans
 !
+      use calypso_mpi
+!
       type(mesh_data) :: mesh_fem
       type(phys_data) ::        fem_fld
 !
@@ -31,7 +33,7 @@
       use m_addresses_trans_hbd_MHD
       use interpolate_by_module
       use const_element_comm_tables
-      use load_mesh_data
+      use mpi_load_mesh_data
 !
       type(phys_address), intent(in) :: ipol, idpdr, itor
       type(sph_comm_tables), intent(in) :: comms_sph
@@ -63,8 +65,8 @@
 !
 !     ---------------------
 !
-      if (iflag_debug.gt.0) write(*,*) 'input_mesh'
-      call input_mesh(my_rank, mesh_sph%mesh, mesh_sph%group,           &
+      if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
+      call mpi_input_mesh(mesh_sph%mesh, mesh_sph%group,                &
      &    ele_mesh_sph%surf%nnod_4_surf, ele_mesh_sph%edge%nnod_4_edge)
       call const_mesh_infos                                             &
      &   (my_rank, mesh_sph%mesh, mesh_sph%group, ele_mesh_sph)

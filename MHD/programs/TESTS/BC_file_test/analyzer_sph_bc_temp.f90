@@ -34,7 +34,7 @@
 !
       use m_ctl_data_test_bc_temp
       use m_ctl_params_test_bc_temp
-      use load_mesh_data
+      use mpi_load_mesh_data
       use const_mesh_information
 !
 !
@@ -49,7 +49,7 @@
 !  --  read geometry
 !
       if (iflag_debug.gt.0) write(*,*) 'input_mesh'
-      call input_mesh(my_rank, femmesh%mesh, femmesh%group,             &
+      call mpi_input_mesh(femmesh%mesh, femmesh%group,                  &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'

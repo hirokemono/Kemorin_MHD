@@ -69,9 +69,7 @@
 !
         call allocate_grp_type_item(group_IO)
 !
-        call alloc_istack_merge(id_rank, nprocs_in, IO_param)
         call set_istack_4_parallell_data(group_IO%num_item, IO_param)
-!
         call mpi_read_int_vector_b                                      &
      &     (id_file, nprocs_in, id_rank, ioff_gl,                       &
      &      group_IO%num_item, group_IO%item_grp,                       &
@@ -144,22 +142,27 @@
 !
       call mpi_write_one_inthead_b                                      &
      &   (id_file, ioff_gl, group_IO%num_grp)
-      call mpi_write_mul_charahead_b                                    &
-     &   (id_file, ioff_gl, group_IO%num_grp, group_IO%grp_name)
 !
-      call alloc_istack_merge(id_rank, nprocs_in, IO_param)
-      call set_istack_4_parallell_data(group_IO%num_grp, IO_param)
+      if (group_IO%num_grp .gt. 0) then
+        call mpi_write_mul_charahead_b                                  &
+     &     (id_file, ioff_gl, group_IO%num_grp, group_IO%grp_name)
 !
-      call mpi_write_integer_stack_b                                    &
-     &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    group_IO%num_grp, group_IO%istack_grp,                        &
-     &    IO_param%istack_merged)
+        call alloc_istack_merge(id_rank, nprocs_in, IO_param)
+        call set_istack_4_parallell_data(group_IO%num_grp, IO_param)
 !
-      call set_istack_4_parallell_data(group_IO%num_item, IO_param)
+        call mpi_write_integer_stack_b                                  &
+     &     (id_file, nprocs_in, id_rank, ioff_gl,                       &
+     &      group_IO%num_grp, group_IO%istack_grp,                      &
+     &      IO_param%istack_merged)
 !
-      call mpi_write_int_vector_b(id_file, nprocs_in, id_rank, ioff_gl, &
-     &    group_IO%num_item, group_IO%item_grp, IO_param%istack_merged)
-      call dealloc_istack_merge(IO_param)
+        call set_istack_4_parallell_data(group_IO%num_item, IO_param)
+!
+        call mpi_write_int_vector_b                                     &
+     &     (id_file, nprocs_in, id_rank, ioff_gl,                       &
+     &      group_IO%num_item, group_IO%item_grp,                       &
+     &      IO_param%istack_merged)
+        call dealloc_istack_merge(IO_param)
+      end if
 !
       call deallocate_grp_type(group_IO)
 !
@@ -181,23 +184,27 @@
 !
       call mpi_write_one_inthead_b                                      &
      &   (id_file, ioff_gl, surf_grp_IO%num_grp)
-      call mpi_write_mul_charahead_b                                    &
-     &   (id_file, ioff_gl, surf_grp_IO%num_grp, surf_grp_IO%grp_name)
 !
-      call alloc_istack_merge(id_rank, nprocs_in, IO_param)
-      call set_istack_4_parallell_data(surf_grp_IO%num_grp, IO_param)
+      if (surf_grp_IO%num_grp .gt. 0) then
+        call mpi_write_mul_charahead_b(id_file, ioff_gl,                &
+     &      surf_grp_IO%num_grp, surf_grp_IO%grp_name)
 !
-      call mpi_write_integer_stack_b                                    &
-     &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    surf_grp_IO%num_grp, surf_grp_IO%istack_grp,                  &
-     &    IO_param%istack_merged)
+        call alloc_istack_merge(id_rank, nprocs_in, IO_param)
+        call set_istack_4_parallell_data(surf_grp_IO%num_grp, IO_param)
 !
-      nitem = 2 * surf_grp_IO%num_item
-      call set_istack_4_parallell_data(nitem, IO_param)
+        call mpi_write_integer_stack_b                                  &
+     &     (id_file, nprocs_in, id_rank, ioff_gl,                       &
+     &      surf_grp_IO%num_grp, surf_grp_IO%istack_grp,                &
+     &      IO_param%istack_merged)
 !
-      call mpi_write_int_vector_b(id_file, nprocs_in, id_rank, ioff_gl, &
-     &    nitem, surf_grp_IO%item_sf_grp, IO_param%istack_merged)
-      call dealloc_istack_merge(IO_param)
+        nitem = 2 * surf_grp_IO%num_item
+        call set_istack_4_parallell_data(nitem, IO_param)
+!
+        call mpi_write_int_vector_b                                     &
+     &     (id_file, nprocs_in, id_rank, ioff_gl,                       &
+     &      nitem, surf_grp_IO%item_sf_grp, IO_param%istack_merged)
+        call dealloc_istack_merge(IO_param)
+      end if
 !
       call deallocate_sf_grp_type(surf_grp_IO)
 !

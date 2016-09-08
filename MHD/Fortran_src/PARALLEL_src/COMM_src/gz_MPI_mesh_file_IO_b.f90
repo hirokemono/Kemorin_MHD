@@ -36,6 +36,7 @@
 !
       use m_machine_parameter
       use m_read_boundary_data
+      use gz_MPI_binary_datum_IO
       use gz_MPI_mesh_data_IO_b
       use gz_MPI_groups_IO_b
 !
@@ -71,6 +72,7 @@
 !
       subroutine gz_mpi_read_mesh_geometry_b(nprocs_in, id_rank)
 !
+      use gz_MPI_binary_datum_IO
       use gz_MPI_mesh_data_IO_b
 !
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
@@ -91,10 +93,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine gz_mpi_read_node_size_b(nprocs_in, id_rank)
+      subroutine gz_mpi_read_node_size_b(nprocs_in, id_rank)
 !
-       use gz_domain_data_IO_b
-       use gz_MPI_mesh_data_IO_b
+      use gz_MPI_binary_datum_IO
+      use gz_MPI_domain_data_IO_b
+      use gz_MPI_mesh_data_IO_b
 !
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
 !
@@ -116,10 +119,11 @@
 !
 !------------------------------------------------------------------
 !
-       subroutine gz_mpi_read_geometry_size_b(nprocs_in, id_rank)
+      subroutine gz_mpi_read_geometry_size_b(nprocs_in, id_rank)
 !
-       use gz_domain_data_IO_b
-       use gz_MPI_mesh_data_IO_b
+      use gz_MPI_binary_datum_IO
+      use gz_MPI_domain_data_IO_b
+      use gz_MPI_mesh_data_IO_b
 !
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
 !
@@ -130,7 +134,7 @@
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read gzipped binary merged mesh file: ', trim(mesh_file_name)
 !
-      call open_read_gz_mpi_file_b(mesh_file_name, ioff_gl)
+      call open_read_gz_mpi_file_b(mesh_file_name, id_file, ioff_gl)
 !
       call gz_mpi_read_domain_info_b                                    &
      &   (id_file, nprocs_in, id_rank, ioff_gl)
@@ -152,6 +156,7 @@
 !
       use m_machine_parameter
       use m_read_boundary_data
+      use gz_MPI_binary_datum_IO
       use gz_MPI_mesh_data_IO_b
       use gz_MPI_groups_IO_b
 !

@@ -31,7 +31,7 @@
       use input_control_udt_diff
       use nod_phys_send_recv
       use count_whole_num_element
-      use load_mesh_data
+      use mpi_load_mesh_data
       use const_mesh_information
       use const_element_comm_tables
 !
@@ -45,8 +45,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_grp_patch'
       call s_input_control_grp_patch(ucd_FUTIL)
-      if (iflag_debug.eq.1) write(*,*) 'input_mesh'
-      call input_mesh(my_rank, femmesh_FUTIL%mesh, femmesh_FUTIL%group, &
+      if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh'
+      call mpi_input_mesh(femmesh_FUTIL%mesh, femmesh_FUTIL%group,      &
      &    elemesh_FUTIL%surf%nnod_4_surf,                               &
      &    elemesh_FUTIL%edge%nnod_4_edge)
 !

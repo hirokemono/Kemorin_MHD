@@ -88,6 +88,7 @@
         mesh_file_head = local_file_header
         call output_mesh                                                &
      &     (irank_subdomain, para_fem%mesh, para_fem%group)
+        call dealloc_mesh_infos(para_fem%mesh, para_fem%group)
       end do
 !
 !C===

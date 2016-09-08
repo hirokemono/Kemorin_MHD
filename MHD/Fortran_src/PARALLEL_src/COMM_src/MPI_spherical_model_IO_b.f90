@@ -158,8 +158,6 @@
       call mpi_write_one_integer_b                                      &
      &   (id_file, nprocs_in, id_rank, ioff_gl, nnod_sph_IO)
 !
-      call write_one_integer_b(nnod_sph_IO)
-!
       call alloc_istack_merge(id_rank, nprocs_in, IO_param)
       call set_istack_4_parallell_data(nnod_sph_IO, IO_param)
       call mpi_write_int8_vector_b                                      &

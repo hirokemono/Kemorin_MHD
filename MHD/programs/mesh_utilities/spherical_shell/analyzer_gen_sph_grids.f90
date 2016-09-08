@@ -69,6 +69,7 @@
       use m_spheric_global_ranks
       use parallel_gen_sph_grids
       use para_gen_sph_grids_modes
+      use mpi_gen_sph_grids_modes
 !
 !  ========= Generate spherical harmonics table ========================
 !
@@ -76,9 +77,14 @@
       call para_gen_sph_grids(sph_const)
 !
       call start_eleps_time(4)
-      if(iflag_debug .gt. 0) write(*,*) 'para_gen_fem_mesh_for_sph'
-      call para_gen_fem_mesh_for_sph(ndomain_sph,                       &
-     &    sph_const%sph_params, sph_const%sph_rj, sph_const%sph_rtp)
+      if(ndomain_sph .eq. nprocs) then
+        call mpi_gen_fem_mesh_for_sph                                   &
+     &     (sph_const%sph_params, sph_const%sph_rj, sph_const%sph_rtp)
+      else
+        if(iflag_debug .gt. 0) write(*,*) 'para_gen_fem_mesh_for_sph'
+        call para_gen_fem_mesh_for_sph(ndomain_sph,                     &
+     &      sph_const%sph_params, sph_const%sph_rj, sph_const%sph_rtp)
+      end if
       call end_eleps_time(4)
       call end_eleps_time(1)
 !

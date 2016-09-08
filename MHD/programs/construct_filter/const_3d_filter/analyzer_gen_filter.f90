@@ -78,7 +78,7 @@
       use sum_normal_4_surf_group
       use const_jacobians_3d
       use set_ctl_gen_filter
-      use load_mesh_data
+      use mpi_load_mesh_data
 !
 !
       use calypso_mpi
@@ -99,8 +99,7 @@
 !  --  read geometry
 !
       if (iflag_debug.eq.1) write(*,*) 'input_mesh'
-      call input_mesh                                                   &
-     &   (my_rank, mesh_filter, group_filter,                           &
+      call mpi_input_mesh(mesh_filter, group_filter,                    &
      &    ele_filter%surf%nnod_4_surf, ele_filter%edge%nnod_4_edge)
 !
 !     --------------------- 

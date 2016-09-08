@@ -40,7 +40,7 @@
       use mesh_send_recv_test
       use collect_diff_4_comm_test
       use nod_phys_send_recv
-      use load_mesh_data
+      use mpi_load_mesh_data
 !
 !
       if(my_rank .eq. 0)  write(*,*) 'check commnication tables'
@@ -87,8 +87,8 @@
 !
 !  --  read geometry
 !
-      if (iflag_debug.eq.1) write(*,*) 'input_mesh'
-      call input_mesh(my_rank, test_fem%mesh, test_fem%group,           &
+      if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh'
+      call mpi_input_mesh(test_fem%mesh, test_fem%group,                &
      &    test_ele_mesh%surf%nnod_4_surf,                               &
      &    test_ele_mesh%edge%nnod_4_edge)
 !

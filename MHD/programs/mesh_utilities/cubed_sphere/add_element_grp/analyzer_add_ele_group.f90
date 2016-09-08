@@ -34,7 +34,7 @@
       use m_add_ele_grp_parameter
       use m_read_mesh_data
       use m_work_4_add_egrp_sph
-      use load_mesh_data
+      use mpi_load_mesh_data
       use const_mesh_information
 !
       use set_control_add_2d_egrp
@@ -49,8 +49,8 @@
 !  read global mesh
 !
       mesh_file_head = original_mesh_head
-      call input_mesh                                                   &
-     &   (my_rank, mesh_add, group_add, nnod_4_surf, nnod_4_edge)
+      call mpi_input_mesh                                               &
+     &   (mesh_add, group_add, nnod_4_surf, nnod_4_edge)
       call const_nod_ele_infos(my_rank, mesh_add, group_add)
 !
       call alloc_r_ele_cubed_sph(mesh_add%ele%numele)
@@ -68,7 +68,8 @@
 !
        if (iflag_debug.eq.1) write(*,*) 'output_mesh_1st'
       mesh_file_head = modified_mesh_head
-      call output_mesh(my_rank, mesh_add, group_add)
+      call mpi_output_mesh(mesh_add, group_add)
+      call dealloc_mesh_infos(mesh_add, group_add)
 !
       call dealloc_r_ele_cubed_sph
 !

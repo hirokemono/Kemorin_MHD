@@ -93,7 +93,7 @@
 !
        subroutine mpi_read_node_size_b(nprocs_in, id_rank)
 !
-       use domain_data_IO_b
+       use MPI_domain_data_IO_b
        use MPI_mesh_data_IO_b
 !
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
@@ -118,7 +118,7 @@
 !
        subroutine mpi_read_geometry_size_b(nprocs_in, id_rank)
 !
-       use domain_data_IO_b
+       use MPI_domain_data_IO_b
        use MPI_mesh_data_IO_b
 !
       integer(kind = kint), intent(in) :: nprocs_in, id_rank

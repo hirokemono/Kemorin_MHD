@@ -37,7 +37,7 @@
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
       use t_spheric_mesh
-      use sph_file_IO_select
+      use sph_file_MPI_IO_select
       use set_loaded_data_4_sph
 !
       implicit none
@@ -101,7 +101,7 @@
       use t_group_data
 !
       use m_spheric_constants
-      use load_mesh_data
+      use mpi_load_mesh_data
       use copy_mesh_structures
       use const_FEM_mesh_sph_mhd
       use gen_sph_grids_modes
@@ -117,15 +117,13 @@
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
 !
-!
-      type(mesh_geometry) :: mesh_s
-      type(mesh_groups) ::  group_s
+      type(mesh_data) :: femmesh_s
 !
 !
 !  --  load FEM mesh data
       if(check_exist_mesh(my_rank) .eq. 0) then
-        if (iflag_debug.gt.0) write(*,*) 'input_mesh'
-        call input_mesh(my_rank, mesh, group,                           &
+        if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
+        call mpi_input_mesh(mesh, group,                                &
      &      ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
         call allocate_ele_geometry_type(mesh%ele)
         call set_fem_center_mode_4_SPH                                  &
@@ -145,15 +143,12 @@
       if (iflag_debug.gt.0) write(*,*) 'const_FEM_mesh_4_sph_mhd'
       call const_FEM_mesh_4_sph_mhd                                     &
      &   (sph_param, sph_rtp, sph_rj, radial_rtp_grp,                   &
-     &    radial_rj_grp, mesh_s, group_s)
+     &    radial_rj_grp, femmesh_s%mesh, femmesh_s%group)
 !      call compare_mesh_type                                           &
-!     &   (my_rank, mesh%nod_comm, mesh%node, mesh%ele, mesh_s)
-!      call compare_group_types(my_rank, group%nod_grp, group_s%nod_grp)
-!      call compare_group_types(my_rank, group%ele_grp, group_s%ele_grp)
-!      call compare_surface_grp_types                                   &
-!     &   (my_rank, group%surf_grp, group_s%surf_grp)
+!     &   (my_rank, mesh%nod_comm, mesh%node, mesh%ele, femmesh_s%mesh)
+!      call compare_mesh_groups(group%nod_grp, femmesh_s%group)
 !
-      call set_mesh_data_from_type(mesh_s, group_s,                     &
+      call set_mesh_data_from_type(femmesh_s%mesh, femmesh_s%group,     &
      &      mesh%nod_comm, mesh%node, mesh%ele,                         &
      &      ele_mesh%surf, ele_mesh%edge,                               &
      &      group%nod_grp, group%ele_grp, group%surf_grp)
@@ -178,7 +173,7 @@
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'input_geom_rtp_sph_trans'
-      call sel_read_geom_rtp_file(my_rank)
+      call sel_mpi_read_geom_rtp_file
       call input_geom_rtp_sph_trans                                     &
      &   (sph%sph_params%l_truncation, sph%sph_rtp, comms_sph%comm_rtp, &
      &    sph_grps%bc_rtp_grp, sph_grps%radial_rtp_grp,                 &
@@ -188,7 +183,7 @@
      &    comms_sph%comm_rtp%irev_sr)
 !
       if (iflag_debug.gt.0) write(*,*) 'input_modes_rj_sph_trans'
-      call sel_read_spectr_modes_rj_file(my_rank)
+      call sel_mpi_read_spectr_rj_file
       call input_modes_rj_sph_trans                                     &
      &   (sph%sph_params%l_truncation, sph%sph_rj, comms_sph%comm_rj,   &
      &    sph_grps%radial_rj_grp, sph_grps%sphere_rj_grp, ierr)
@@ -198,7 +193,7 @@
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'input_geom_rtm_sph_trans'
-      call sel_read_geom_rtm_file(my_rank)
+      call sel_mpi_read_geom_rtm_file
       call input_geom_rtm_sph_trans(sph%sph_params%l_truncation,        &
      &    sph%sph_rtm, comms_sph%comm_rtm, ierr)
       call set_reverse_import_table(sph%sph_rtm%nnod_rtm,               &
@@ -206,7 +201,7 @@
      &    comms_sph%comm_rtm%irev_sr)
 !
       if (iflag_debug.gt.0) write(*,*) 'input_modes_rlm_sph_trans'
-      call sel_read_modes_rlm_file(my_rank)
+      call sel_mpi_read_modes_rlm_file
       call input_modes_rlm_sph_trans(sph%sph_params%l_truncation,       &
      &    sph%sph_rlm, comms_sph%comm_rlm, ierr)
       call set_reverse_import_table(sph%sph_rlm%nnod_rlm,               &
@@ -244,7 +239,7 @@
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'input_modes_rj_sph_trans'
-      call sel_read_spectr_modes_rj_file(my_rank)
+      call sel_mpi_read_spectr_rj_file
       call input_modes_rj_sph_trans(sph_param%l_truncation,             &
      &    sph_rj, comm_rj, radial_rj_grp, sphere_rj_grp, ierr)
       call set_reverse_import_table(sph_rj%nnod_rj,                     &

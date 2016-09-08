@@ -41,6 +41,7 @@
       use gz_MPI_spherical_model_IO_b
       use gz_MPI_sph_gl_1d_idx_IO_b
       use gz_MPI_binary_datum_IO
+      use gz_MPI_groups_IO_b
 !
       implicit none
 !

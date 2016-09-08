@@ -13,6 +13,10 @@
 !!      subroutine output_mesh(my_rank, mesh, group)
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
+!!
+!!      subroutine set_mesh                                             &
+!!     &         (mesh, group, nnod_4_surf, nnod_4_edge)
+!!      subroutine set_mesh_geometry_data(mesh)
 !!@endverbatim
 !
       module load_mesh_data
@@ -28,8 +32,6 @@
       use t_group_data
 !
       implicit none
-!
-      private :: set_mesh_geometry_data
 !
 ! -----------------------------------------------------------------------
 !
@@ -52,13 +54,7 @@
 !
 !
       call sel_read_mesh(my_rank)
-!
-      call set_mesh_geometry_data(mesh)
-      call set_grp_data_from_IO                                        &
-     &   (group%nod_grp, group%ele_grp, group%surf_grp)
-!
-      call set_3D_nnod_4_sfed_by_ele                                   &
-     &   (mesh%ele%nnod_4_ele, nnod_4_surf, nnod_4_edge)
+      call set_mesh(mesh, group, nnod_4_surf, nnod_4_edge)
 !
       end subroutine input_mesh
 !
@@ -107,13 +103,32 @@
 !       save mesh information
       call sel_write_mesh_file(my_rank)
 !
-      call dealloc_mesh_infos(mesh%nod_comm, mesh%node, mesh%ele,       &
-     &    group%nod_grp, group%ele_grp, group%surf_grp)
-!
       end subroutine output_mesh
 !
 ! -----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
+!
+      subroutine set_mesh(mesh, group, nnod_4_surf, nnod_4_edge)
+!
+      use m_read_boundary_data
+      use mesh_IO_select
+      use set_nnod_4_ele_by_type
+!
+      type(mesh_geometry), intent(inout) :: mesh
+      type(mesh_groups), intent(inout) ::   group
+      integer(kind = kint), intent(inout) :: nnod_4_surf, nnod_4_edge
+!
+!
+      call set_mesh_geometry_data(mesh)
+      call set_grp_data_from_IO                                        &
+     &   (group%nod_grp, group%ele_grp, group%surf_grp)
+!
+      call set_3D_nnod_4_sfed_by_ele                                   &
+     &   (mesh%ele%nnod_4_ele, nnod_4_surf, nnod_4_edge)
+!
+      end subroutine set_mesh
+!
+! -----------------------------------------------------------------------
 !
       subroutine set_mesh_geometry_data(mesh)
 !

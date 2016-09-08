@@ -67,6 +67,7 @@
       subroutine gz_mpi_write_geometry_info_b(id_file, ioff_gl)
 !
       use gz_MPI_binary_data_IO
+      use gz_MPI_binary_datum_IO
 !
       integer, intent(in) ::  id_file
       integer(kind = kint_gl), intent(inout) :: ioff_gl
@@ -90,6 +91,7 @@
       subroutine gz_mpi_write_element_info_b(id_file, ioff_gl)
 !
       use gz_MPI_binary_data_IO
+      use gz_MPI_binary_datum_IO
 !
       integer, intent(in) ::  id_file
       integer(kind = kint_gl), intent(inout) :: ioff_gl
@@ -157,6 +159,7 @@
      &         (id_file, nprocs_in, id_rank, ioff_gl)
 !
       use gz_MPI_binary_data_IO
+      use gz_MPI_binary_datum_IO
 !
       integer, intent(in) ::  id_file
       integer(kind=kint), intent(in) :: id_rank, nprocs_in
@@ -199,6 +202,7 @@
      &         (id_file, nprocs_in, id_rank, ioff_gl)
 !
       use gz_MPI_binary_data_IO
+      use gz_MPI_binary_datum_IO
 !
       integer, intent(in) ::  id_file
       integer(kind=kint), intent(in) :: id_rank, nprocs_in

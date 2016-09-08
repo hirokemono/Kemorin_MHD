@@ -286,7 +286,7 @@
       call gzip_infleat_once                                            &
      &   (ilen_gz, gzip_buf(1), ilength, int_dat(1), ilen_gzipped)
       deallocate(gzip_buf)
-      ioff_gl = ioff_gl + ilen_gz
+      ioff_gl = ioff_gl + istack_buffer(nprocs_in)
 !
       if(iflag_endian .eq. iendian_FLIP) then
         l8_byte = ilength
@@ -330,7 +330,7 @@
       call gzip_infleat_once                                            &
      &   (ilen_gz, gzip_buf(1), ilength, int8_dat(1), ilen_gzipped)
       deallocate(gzip_buf)
-      ioff_gl = ioff_gl + ilen_gz
+      ioff_gl = ioff_gl + istack_buffer(nprocs_in)
 !
       if(iflag_endian .eq. iendian_FLIP) then
         l8_byte = ilength
@@ -374,7 +374,7 @@
       call gzip_infleat_once                                            &
      &   (ilen_gz, gzip_buf(1), ilength, real_dat(1), ilen_gzipped)
       deallocate(gzip_buf)
-      ioff_gl = ioff_gl + ilen_gz
+      ioff_gl = ioff_gl + istack_buffer(nprocs_in)
 !
       if(iflag_endian .eq. iendian_FLIP) then
         l8_byte = ilength
