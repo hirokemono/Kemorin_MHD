@@ -57,7 +57,7 @@
 !
         call allocate_import_item_IO
         call read_send_recv_item_gz                                     &
-     &     (comm_IO%ntot_import, item_import_IO)
+     &     (comm_IO%ntot_import, comm_IO%item_import)
       else
         comm_IO%ntot_import = 0
         call allocate_import_item_IO
@@ -115,7 +115,7 @@
       subroutine write_import_data_gz
 !
       call write_send_recv_data_gz(comm_IO%num_neib,                    &
-     &    comm_IO%ntot_import, istack_import_IO, item_import_IO)
+     &    comm_IO%ntot_import, istack_import_IO, comm_IO%item_import)
 !
       call deallocate_import_item_IO
 !

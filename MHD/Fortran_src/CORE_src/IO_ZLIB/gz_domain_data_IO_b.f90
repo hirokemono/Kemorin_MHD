@@ -58,7 +58,8 @@
      &      istack_import_IO, comm_IO%ntot_import)
 !
         call allocate_import_item_IO
-        call gz_read_mul_integer_b(comm_IO%ntot_import, item_import_IO)
+        call gz_read_mul_integer_b                                      &
+     &     (comm_IO%ntot_import, comm_IO%item_import)
 !
       else
         comm_IO%ntot_import = 0
@@ -111,7 +112,8 @@
 !
       call gz_write_integer_stack_b                                     &
      &   (comm_IO%num_neib, istack_import_IO)
-      call gz_write_mul_integer_b(comm_IO%ntot_import, item_import_IO)
+      call gz_write_mul_integer_b                                       &
+     &   (comm_IO%ntot_import, comm_IO%item_import)
 !
       call deallocate_import_item_IO
 !

@@ -45,7 +45,7 @@
       integer(kind = kint), allocatable :: istack_export_IO(:)
 !
 !      integer(kind = kint) :: ntot_import_IO
-      integer(kind = kint), allocatable :: item_import_IO(:)
+!      integer(kind = kint), allocatable :: item_import_IO(:)
 !
 !      integer(kind = kint) :: ntot_export_IO
 !      integer(kind = kint), allocatable :: item_export_IO(:)
@@ -117,8 +117,8 @@
 !
       subroutine allocate_import_item_IO
 !
-      allocate(item_import_IO(comm_IO%ntot_import))
-      if (comm_IO%ntot_import.gt.0) item_import_IO = 0
+      allocate(comm_IO%item_import(comm_IO%ntot_import))
+      if (comm_IO%ntot_import.gt.0) comm_IO%item_import = 0
 !
       end subroutine allocate_import_item_IO
 !
@@ -144,7 +144,7 @@
 !
       subroutine deallocate_import_item_IO
 !
-      deallocate(item_import_IO)
+      deallocate(comm_IO%item_import)
       deallocate(istack_import_IO)
 !
       end subroutine deallocate_import_item_IO

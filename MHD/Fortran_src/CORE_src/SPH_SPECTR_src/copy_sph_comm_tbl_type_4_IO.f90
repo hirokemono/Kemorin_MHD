@@ -49,7 +49,7 @@
      &      = istack_import_IO(0:comm%nneib_domain)
 !
       comm%item_sr(1:comm%ntot_item_sr)                                 &
-     &      = item_import_IO(1:comm%ntot_item_sr)
+     &      = comm_IO%item_import(1:comm%ntot_item_sr)
 !
       call deallocate_import_item_IO
       call deallocate_neib_domain_IO
