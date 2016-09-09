@@ -114,7 +114,7 @@
         call allocate_export_item_IO
         call gz_mpi_read_int_vector_b                                   &
      &     (id_file, nprocs_in, id_rank, ioff_gl,                       &
-     &      comm_IO%ntot_export, item_export_IO)
+     &      comm_IO%ntot_export, comm_IO%item_export)
       else
         comm_IO%ntot_export = 0
         call allocate_export_item_IO
@@ -173,7 +173,7 @@
       call gz_mpi_write_integer_stack_b                                 &
      &   (id_file, ioff_gl, comm_IO%num_neib, istack_export_IO)
       call gz_mpi_write_int_vector_b                                    &
-     &   (id_file, ioff_gl, comm_IO%ntot_export, item_export_IO)
+     &   (id_file, ioff_gl, comm_IO%ntot_export, comm_IO%item_export)
 !
       call deallocate_export_item_IO
 !

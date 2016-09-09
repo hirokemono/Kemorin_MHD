@@ -79,7 +79,7 @@
 !
         call allocate_export_item_IO
         call read_send_recv_item_gz                                     &
-     &     (comm_IO%ntot_export, item_export_IO)
+     &     (comm_IO%ntot_export, comm_IO%item_export)
       else
         comm_IO%ntot_export = 0
         call allocate_export_item_IO
@@ -127,7 +127,7 @@
 !
 !
       call write_send_recv_data_gz(comm_IO%num_neib,                    &
-     &    comm_IO%ntot_export, istack_export_IO, item_export_IO)
+     &    comm_IO%ntot_export, istack_export_IO, comm_IO%item_export)
 !
       call deallocate_export_item_IO
 !

@@ -78,7 +78,8 @@
      &      istack_export_IO, comm_IO%ntot_export)
 !
         call allocate_export_item_IO
-        call gz_read_mul_integer_b(comm_IO%ntot_export, item_export_IO)
+        call gz_read_mul_integer_b                                      &
+     &     (comm_IO%ntot_export, comm_IO%item_export)
       else
         comm_IO%ntot_export = 0
         call allocate_export_item_IO
@@ -123,11 +124,13 @@
 !
       call gz_write_integer_stack_b                                     &
      &  (comm_IO%num_neib, istack_export_IO)
-      call gz_write_mul_integer_b(comm_IO%ntot_export, item_export_IO)
+      call gz_write_mul_integer_b                                       &
+     &   (comm_IO%ntot_export, comm_IO%item_export)
 !
       call deallocate_export_item_IO
 !
       end subroutine gz_write_export_data_b
 !
-! -----------------------------------------------------------------------!
+! -----------------------------------------------------------------------
+!
       end module gz_domain_data_IO_b

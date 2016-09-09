@@ -35,7 +35,7 @@
 !
 !> data structure for communication table IO
       type(communication_table), save :: comm_IO
-!comm_IO%item_export
+!comm_IO%item_import
 !
       integer(kind = kint) :: my_rank_IO
 !
@@ -48,7 +48,7 @@
       integer(kind = kint), allocatable :: item_import_IO(:)
 !
 !      integer(kind = kint) :: ntot_export_IO
-      integer(kind = kint), allocatable :: item_export_IO(:)
+!      integer(kind = kint), allocatable :: item_export_IO(:)
 !
 !
 !------------------------------------------------------------------
@@ -126,8 +126,8 @@
 !
       subroutine allocate_export_item_IO
 !
-      allocate(item_export_IO(comm_IO%ntot_export))
-      if (comm_IO%ntot_export.gt.0)  item_export_IO = 0
+      allocate(comm_IO%item_export(comm_IO%ntot_export))
+      if (comm_IO%ntot_export.gt.0)  comm_IO%item_export = 0
 !
       end subroutine allocate_export_item_IO
 !
@@ -153,7 +153,7 @@
 !
       subroutine deallocate_export_item_IO
 !
-      deallocate(item_export_IO)
+      deallocate(comm_IO%item_export)
       deallocate(istack_export_IO)
 !
       end subroutine deallocate_export_item_IO

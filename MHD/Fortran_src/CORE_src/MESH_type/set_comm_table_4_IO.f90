@@ -52,7 +52,7 @@
       call copy_communication_item                                      &
      &    (comm_tbls%ntot_import, comm_tbls%ntot_export,                &
      &    comm_tbls%item_import, comm_tbls%item_export,                 &
-     &    item_import_IO, item_export_IO)
+     &    item_import_IO, comm_IO%item_export)
 !
       call deallocate_comm_item_IO
 !
@@ -80,7 +80,7 @@
 !
       call copy_communication_item                                      &
      &   (comm_IO%ntot_import, comm_IO%ntot_export,                     &
-     &    item_import_IO, item_export_IO,                               &
+     &    item_import_IO, comm_IO%item_export,                          &
      &    comm_tbls%item_import, comm_tbls%item_export)
 !
       end subroutine copy_comm_tbl_type_to_IO
