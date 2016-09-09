@@ -38,12 +38,12 @@
       ele_IO%numele =        surf%numsurf
       ele_IO%nnod_4_ele =    surf%nnod_4_surf
 !
-      nsf_4_ele_IO =    nele
-      nsurf_in_ele_IO = nsurf_4_ele
+      sfed_IO%nsf_4_ele =    nele
+      sfed_IO%nsurf_in_ele = nsurf_4_ele
 !
       call allocate_ele_connect_type(ele_IO)
 !
-      call allocate_surface_connect_IO
+      call alloc_surface_connect_IO(sfed_IO)
 !
       if      (surf%nnod_4_surf .eq. num_linear_sf) then
         ele_IO%elmtyp(1:surf%numsurf) = 221
@@ -64,7 +64,7 @@
 !$omp end workshare
 !
 !$omp workshare
-      isf_4_ele_IO(1:nele,1:nsurf_4_ele)                                &
+      sfed_IO%isf_for_ele(1:nele,1:nsurf_4_ele)                         &
      &        = surf%isf_4_ele(1:nele,1:nsurf_4_ele)
 !$omp end workshare
 !
@@ -82,8 +82,8 @@
       nod_IO%internal_node = surf%internal_surf
 !
       call alloc_node_geometry_base(nod_IO)
-      call allocate_ele_vector_IO
-      call allocate_ele_scalar_IO
+      call alloc_ele_vector_IO(nod_IO, sfed_IO)
+      call alloc_ele_scalar_IO(nod_IO, sfed_IO)
 !
 !
 !omp parallel do
@@ -93,10 +93,10 @@
         nod_IO%xx(isurf,2) =        surf%x_surf(isurf,2)
         nod_IO%xx(isurf,3) =        surf%x_surf(isurf,3)
 !
-        ele_scalar_IO(isurf) =     surf%area_surf(isurf)
-        ele_vector_IO(isurf,1) =   surf%vnorm_surf(isurf,1)
-        ele_vector_IO(isurf,2) =   surf%vnorm_surf(isurf,2)
-        ele_vector_IO(isurf,3) =   surf%vnorm_surf(isurf,3)
+        sfed_IO%ele_scalar(isurf) =     surf%area_surf(isurf)
+        sfed_IO%ele_vector(isurf,1) =   surf%vnorm_surf(isurf,1)
+        sfed_IO%ele_vector(isurf,2) =   surf%vnorm_surf(isurf,2)
+        sfed_IO%ele_vector(isurf,3) =   surf%vnorm_surf(isurf,3)
       end do
 !omp end parallel do
 !
@@ -114,8 +114,8 @@
       nod_IO%internal_node = surf%internal_surf
 !
       call alloc_node_geometry_base(nod_IO)
-      call allocate_ele_vector_IO
-      call allocate_ele_scalar_IO
+      call alloc_ele_vector_IO(nod_IO, sfed_IO)
+      call alloc_ele_scalar_IO(nod_IO, sfed_IO)
 !
 !omp parallel do
       do isurf = 1, surf%numsurf
@@ -124,10 +124,10 @@
         nod_IO%xx(isurf,2) = surf%theta_surf(isurf)
         nod_IO%xx(isurf,3) = surf%phi_surf(isurf)
 !
-        ele_scalar_IO(isurf) =   surf%area_surf(isurf)
-        ele_vector_IO(isurf,1) = surf%vnorm_surf_sph(isurf,1)
-        ele_vector_IO(isurf,2) = surf%vnorm_surf_sph(isurf,2)
-        ele_vector_IO(isurf,3) = surf%vnorm_surf_sph(isurf,3)
+        sfed_IO%ele_scalar(isurf) =   surf%area_surf(isurf)
+        sfed_IO%ele_vector(isurf,1) = surf%vnorm_surf_sph(isurf,1)
+        sfed_IO%ele_vector(isurf,2) = surf%vnorm_surf_sph(isurf,2)
+        sfed_IO%ele_vector(isurf,3) = surf%vnorm_surf_sph(isurf,3)
       end do
 !omp end parallel do
 !
@@ -145,8 +145,8 @@
       nod_IO%internal_node = surf%internal_surf
 !
       call alloc_node_geometry_base(nod_IO)
-      call allocate_ele_vector_IO
-      call allocate_ele_scalar_IO
+      call alloc_ele_vector_IO(nod_IO, sfed_IO)
+      call alloc_ele_scalar_IO(nod_IO, sfed_IO)
 !
 !omp parallel do
       do isurf = 1, surf%numsurf
@@ -154,10 +154,10 @@
         nod_IO%xx(isurf,1) = surf%s_surf(isurf)
         nod_IO%xx(isurf,2) = surf%phi_surf(isurf)
         nod_IO%xx(isurf,3) = surf%x_surf(isurf,3)
-        ele_scalar_IO(isurf) =   surf%area_surf(isurf)
-        ele_vector_IO(isurf,1) = surf%vnorm_surf_cyl(isurf,1)
-        ele_vector_IO(isurf,2) = surf%vnorm_surf_cyl(isurf,2)
-        ele_vector_IO(isurf,3) = surf%vnorm_surf_cyl(isurf,3)
+        sfed_IO%ele_scalar(isurf) =   surf%area_surf(isurf)
+        sfed_IO%ele_vector(isurf,1) = surf%vnorm_surf_cyl(isurf,1)
+        sfed_IO%ele_vector(isurf,2) = surf%vnorm_surf_cyl(isurf,2)
+        sfed_IO%ele_vector(isurf,3) = surf%vnorm_surf_cyl(isurf,3)
       end do
 !omp end parallel do
 !
@@ -189,10 +189,10 @@
 !
 !$omp workshare
       surf%isf_4_ele(1:nele,1:nsurf_4_ele)                              &
-     &        = isf_4_ele_IO(1:nele,1:nsurf_4_ele)
+     &        = sfed_IO%isf_for_ele(1:nele,1:nsurf_4_ele)
 !$omp end workshare
 !
-      call deallocate_surface_connect_IO
+      call dealloc_surface_connect_IO(sfed_IO)
       call deallocate_ele_connect_type(ele_IO)
 !
       end subroutine copy_surf_connect_from_IO

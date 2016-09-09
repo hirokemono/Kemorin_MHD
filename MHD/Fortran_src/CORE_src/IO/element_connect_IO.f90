@@ -60,13 +60,14 @@
       integer (kind = kint), intent(in) :: id_file
       integer(kind = kint) :: i
 !
-      write(id_file,'(2i16)') nsf_4_ele_IO, nsurf_in_ele_IO
+      write(id_file,'(2i16)') sfed_IO%nsf_4_ele, sfed_IO%nsurf_in_ele
 !
-      do i = 1, nsf_4_ele_IO
-        write(id_file,'(10i16)') i, isf_4_ele_IO(i,1:nsurf_in_ele_IO)
+      do i = 1, sfed_IO%nsf_4_ele
+        write(id_file,'(10i16)')                                        &
+     &        i, sfed_IO%isf_for_ele(i,1:sfed_IO%nsurf_in_ele)
       end do
 !
-      call deallocate_surface_connect_IO
+      call dealloc_surface_connect_IO(sfed_IO)
 !
       end subroutine write_surface_4_element
 !
@@ -77,13 +78,14 @@
       integer (kind = kint), intent(in) :: id_file
       integer(kind = kint) :: i
 !
-      write(id_file,'(2i16)') ned_4_ele_IO, nedge_in_ele_IO
+      write(id_file,'(2i16)') sfed_IO%ned_4_ele, sfed_IO%nedge_in_ele
 !
-      do i = 1, ned_4_ele_IO
-        write(id_file,'(15i16)') i, iedge_4_ele_IO(i,1:nedge_in_ele_IO)
+      do i = 1, sfed_IO%ned_4_ele
+        write(id_file,'(15i16)')                                        &
+     &         i, sfed_IO%iedge_for_ele(i,1:sfed_IO%nedge_in_ele)
       end do
 !
-      call deallocate_edge_connect_IO
+      call dealloc_edge_connect_IO(sfed_IO)
 !
       end subroutine write_edge_4_element
 !

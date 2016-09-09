@@ -115,7 +115,7 @@
       nod_IO%internal_node = ele%internal_ele
 !
       call alloc_node_geometry_base(nod_IO)
-      call allocate_ele_scalar_IO
+      call alloc_ele_scalar_IO(nod_IO, sfed_IO)
 !
 !$omp parallel do
       do iele = 1, ele%numele
@@ -123,7 +123,7 @@
         nod_IO%xx(iele,1) = ele%x_ele(iele,1)
         nod_IO%xx(iele,2) = ele%x_ele(iele,2)
         nod_IO%xx(iele,3) = ele%x_ele(iele,3)
-        ele_scalar_IO(iele) = ele%volume_ele(iele)
+        sfed_IO%ele_scalar(iele) = ele%volume_ele(iele)
       end do
 !$omp end parallel do
 !
@@ -141,7 +141,7 @@
       nod_IO%internal_node = ele%internal_ele
 !
       call alloc_node_geometry_base(nod_IO)
-      call allocate_ele_scalar_IO
+      call alloc_ele_scalar_IO(nod_IO, sfed_IO)
 !
 !$omp parallel do
       do iele = 1, ele%numele
@@ -150,7 +150,7 @@
         nod_IO%xx(iele,1) =    ele%r_ele(iele)
         nod_IO%xx(iele,2) =    ele%theta_ele(iele)
         nod_IO%xx(iele,3) =    ele%phi_ele(iele)
-        ele_scalar_IO(iele) = ele%volume_ele(iele)
+        sfed_IO%ele_scalar(iele) = ele%volume_ele(iele)
       end do
 !$omp end parallel do
 !
@@ -168,7 +168,7 @@
       nod_IO%internal_node = ele%internal_ele
 !
       call alloc_node_geometry_base(nod_IO)
-      call allocate_ele_scalar_IO
+      call alloc_ele_scalar_IO(nod_IO, sfed_IO)
 !
 !$omp parallel do
       do iele = 1, ele%numele
@@ -177,7 +177,7 @@
         nod_IO%xx(iele,1) =    ele%s_ele(iele)
         nod_IO%xx(iele,2) =    ele%phi_ele(iele)
         nod_IO%xx(iele,3) =    ele%x_ele(iele,3)
-        ele_scalar_IO(iele) = ele%volume_ele(iele)
+        sfed_IO%ele_scalar(iele) = ele%volume_ele(iele)
       end do
 !$omp end parallel do
 !

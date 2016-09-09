@@ -43,17 +43,17 @@
 !
       ele_IO%numele = nele
 !
-      nsf_4_ele_IO =    nsurf
-      nsurf_in_ele_IO = nedge_4_surf
+      sfed_IO%nsf_4_ele =    nsurf
+      sfed_IO%nsurf_in_ele = nedge_4_surf
 !
-      ned_4_ele_IO = nele
+      sfed_IO%ned_4_ele = nele
 !
       ele_IO%numele =     edge%numedge
       ele_IO%nnod_4_ele = edge%nnod_4_edge
 !
       call allocate_ele_connect_type(ele_IO)
-      call allocate_surface_connect_IO
-      call allocate_edge_connect_IO
+      call alloc_surface_connect_IO(sfed_IO)
+      call alloc_edge_connect_IO(sfed_IO)
 !
       if      (edge%nnod_4_edge .eq. num_linear_edge) then
         ele_IO%elmtyp(1:edge%numedge) = 111
@@ -72,14 +72,14 @@
 !
 !omp parallel do
       do isurf = 1, nsurf
-        isf_4_ele_IO(isurf,1:nedge_4_surf)                              &
+        sfed_IO%isf_for_ele(isurf,1:nedge_4_surf)                       &
      &        = edge%iedge_4_sf(isurf,1:nedge_4_surf)
       end do
 !omp end parallel do
 !
 !omp parallel do
       do iele = 1, nele
-        iedge_4_ele_IO(iele,1:nedge_4_ele)                              &
+        sfed_IO%iedge_for_ele(iele,1:nedge_4_ele)                       &
      &        = edge%iedge_4_ele(iele,1:nedge_4_ele)
       end do
 !omp end parallel do
@@ -98,8 +98,8 @@
       nod_IO%internal_node = edge%internal_edge
 !
       call alloc_node_geometry_base(nod_IO)
-      call allocate_ele_vector_IO
-      call allocate_ele_scalar_IO
+      call alloc_ele_vector_IO(nod_IO, sfed_IO)
+      call alloc_ele_scalar_IO(nod_IO, sfed_IO)
 !
 !omp parallel do
       do iedge = 1, edge%numedge
@@ -107,10 +107,10 @@
         nod_IO%xx(iedge,1) =        edge%x_edge(iedge,1)
         nod_IO%xx(iedge,2) =        edge%x_edge(iedge,2)
         nod_IO%xx(iedge,3) =        edge%x_edge(iedge,3)
-        ele_scalar_IO(iedge) =     edge%edge_length(iedge)
-        ele_vector_IO(iedge,1) =   edge%edge_vect(iedge,1)
-        ele_vector_IO(iedge,2) =   edge%edge_vect(iedge,2)
-        ele_vector_IO(iedge,3) =   edge%edge_vect(iedge,3)
+        sfed_IO%ele_scalar(iedge) = edge%edge_length(iedge)
+        sfed_IO%ele_vector(iedge,1) =   edge%edge_vect(iedge,1)
+        sfed_IO%ele_vector(iedge,2) =   edge%edge_vect(iedge,2)
+        sfed_IO%ele_vector(iedge,3) =   edge%edge_vect(iedge,3)
       end do
 !omp end parallel do
 !
@@ -128,8 +128,8 @@
       nod_IO%internal_node = edge%internal_edge
 !
       call alloc_node_geometry_base(nod_IO)
-      call allocate_ele_vector_IO
-      call allocate_ele_scalar_IO
+      call alloc_ele_vector_IO(nod_IO, sfed_IO)
+      call alloc_ele_scalar_IO(nod_IO, sfed_IO)
 !
 !omp parallel do
       do iedge = 1, edge%numedge
@@ -137,10 +137,10 @@
         nod_IO%xx(iedge,1) =        edge%r_edge(iedge)
         nod_IO%xx(iedge,2) =        edge%theta_edge(iedge)
         nod_IO%xx(iedge,3) =        edge%phi_edge(iedge)
-        ele_scalar_IO(iedge) =     edge%edge_length(iedge)
-        ele_vector_IO(iedge,1) =   edge%edge_vect_sph(iedge,1)
-        ele_vector_IO(iedge,2) =   edge%edge_vect_sph(iedge,2)
-        ele_vector_IO(iedge,3) =   edge%edge_vect_sph(iedge,3)
+        sfed_IO%ele_scalar(iedge) = edge%edge_length(iedge)
+        sfed_IO%ele_vector(iedge,1) =   edge%edge_vect_sph(iedge,1)
+        sfed_IO%ele_vector(iedge,2) =   edge%edge_vect_sph(iedge,2)
+        sfed_IO%ele_vector(iedge,3) =   edge%edge_vect_sph(iedge,3)
       end do
 !omp end parallel do
 !
@@ -158,8 +158,8 @@
       nod_IO%internal_node = edge%internal_edge
 !
       call alloc_node_geometry_base(nod_IO)
-      call allocate_ele_vector_IO
-      call allocate_ele_scalar_IO
+      call alloc_ele_vector_IO(nod_IO, sfed_IO)
+      call alloc_ele_scalar_IO(nod_IO, sfed_IO)
 !
 !omp parallel do
       do iedge = 1, edge%numedge
@@ -167,10 +167,10 @@
         nod_IO%xx(iedge,1) =        edge%s_edge(iedge)
         nod_IO%xx(iedge,2) =        edge%phi_edge(iedge)
         nod_IO%xx(iedge,3) =        edge%x_edge(iedge,3)
-        ele_scalar_IO(iedge) =     edge%edge_length(iedge)
-        ele_vector_IO(iedge,1) =   edge%edge_vect_cyl(iedge,1)
-        ele_vector_IO(iedge,2) =   edge%edge_vect_cyl(iedge,2)
-        ele_vector_IO(iedge,3) =   edge%edge_vect_cyl(iedge,3)
+        sfed_IO%ele_scalar(iedge) = edge%edge_length(iedge)
+        sfed_IO%ele_vector(iedge,1) =   edge%edge_vect_cyl(iedge,1)
+        sfed_IO%ele_vector(iedge,2) =   edge%edge_vect_cyl(iedge,2)
+        sfed_IO%ele_vector(iedge,3) =   edge%edge_vect_cyl(iedge,3)
       end do
 !omp end parallel do
 !
@@ -201,17 +201,17 @@
 !
       do isurf = 1, nsurf
         edge%iedge_4_sf(isurf,1:nedge_4_surf)                           &
-     &        = isf_4_ele_IO(isurf,1:nedge_4_surf)
+     &        = sfed_IO%isf_for_ele(isurf,1:nedge_4_surf)
       end do
 !
       do iele = 1, nele
         edge%iedge_4_ele(iele,1:nedge_4_ele)                            &
-     &        = iedge_4_ele_IO(iele,1:nedge_4_ele)
+     &        = sfed_IO%iedge_for_ele(iele,1:nedge_4_ele)
       end do
 !
-      call deallocate_surface_connect_IO
+      call dealloc_surface_connect_IO(sfed_IO)
       call deallocate_ele_connect_type(ele_IO)
-      call deallocate_edge_connect_IO
+      call dealloc_edge_connect_IO(sfed_IO)
 !
       end subroutine copy_edge_connect_from_IO
 !
