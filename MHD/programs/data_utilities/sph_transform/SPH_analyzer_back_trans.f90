@@ -69,8 +69,8 @@
 !
       if(rj_org_param%iflag_IO .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'input_old_rj_sph_trans'
-        call input_old_rj_sph_trans(my_rank,                            &
-     &     sph_mesh%sph%sph_params%l_truncation, sph_mesh%sph%sph_rj)
+        call input_old_rj_sph_trans                                     &
+     &     (sph_mesh%sph%sph_params%l_truncation, sph_mesh%sph%sph_rj)
         call set_sph_magne_address(rj_fld, ipol)
       end if
 !

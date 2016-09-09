@@ -52,7 +52,6 @@
 !
       use m_node_id_spherical_IO
       use m_group_data_sph_specr_IO
-      use sph_file_IO_select
       use copy_sph_node_4_IO
       use copy_sph_comm_tbl_type_4_IO
       use set_group_types_4_IO
@@ -63,10 +62,8 @@
       type(sph_group_data), intent(inout) ::  sph_grps
 !
 !
-      call sel_read_spectr_modes_rj_file(my_rank)
-!
       call copy_sph_node_4_rj_from_IO                                   &
-     &    (sph%sph_params%l_truncation, sph%sph_rj)
+     &   (sph%sph_params%l_truncation, sph%sph_rj)
       call copy_comm_sph_type_from_IO                                   &
      &   (my_rank, sph%sph_rj%nnod_rj, sph_comms%comm_rj)
 !

@@ -77,16 +77,16 @@
       integer(kind = kint) :: ip_rank, ip
 !
 !
-      do ip = 1, ndomain_sph
-        ip_rank = ip - 1
-        if(mod(ip_rank,nprocs) .ne. my_rank) cycle
+      do ip = 0, (ndomain_sph-1) / nprocs
+        ip_rank = my_rank + ip * nprocs
+        if(ip_rank .ge. ndomain_sph) cycle
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &             'start rlm table generation for',                    &
      &            ip_rank, 'on ', my_rank, nprocs
         call const_sph_rlm_modes(ip_rank, sph_rlm, comm_rlm_lc)
         if(iflag_debug .gt. 0) write(*,*) 'copy_sph_comm_neib'
-        call copy_sph_comm_neib(comm_rlm_lc, comm_rlm_mul(ip))
+        call copy_sph_comm_neib(comm_rlm_lc, comm_rlm_mul(ip_rank+1))
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &        'output_modes_rlm_sph_trans', ip_rank
@@ -119,15 +119,15 @@
       integer(kind = kint) :: ip_rank, ip
 !
 !
-      do ip = 1, ndomain_sph
-        ip_rank = ip - 1
-        if(mod(ip_rank,nprocs) .ne. my_rank) cycle
+      do ip = 0, (ndomain_sph-1) / nprocs
+        ip_rank = my_rank + ip * nprocs
+        if(ip_rank .ge. ndomain_sph) cycle
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &             'start rtm table generation for',                    &
      &            ip_rank, 'on ', my_rank, nprocs
         call const_sph_rtm_grids(ip_rank, sph_rtm, comm_rtm_lc)
-        call copy_sph_comm_neib(comm_rtm_lc, comm_rtm_mul(ip))
+        call copy_sph_comm_neib(comm_rtm_lc, comm_rtm_mul(ip_rank+1))
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &        'output_geom_rtm_sph_trans', ip_rank
@@ -156,12 +156,13 @@
       type(sph_rlm_grid), intent(inout) :: sph_rlm
       type(sph_rj_grid), intent(inout) :: sph_rj
 !
-      integer(kind = kint) :: ip_rank
+      integer(kind = kint) :: ip_rank, ip
 !
 !
       call allocate_rj_1d_local_idx(sph_rj)
-      do ip_rank = 0, ndomain_sph-1
-        if(mod(ip_rank,nprocs) .ne. my_rank) cycle
+      do ip = 0, (ndomain_sph-1) / nprocs
+        ip_rank = my_rank + ip * nprocs
+        if(ip_rank .ge. ndomain_sph) cycle
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &             'Construct spherical modes for domain ',             &
@@ -192,12 +193,13 @@
       type(sph_rtp_grid), intent(inout) :: sph_rtp
       type(sph_rtm_grid), intent(inout) :: sph_rtm
 !
-      integer(kind = kint) :: ip_rank
+      integer(kind = kint) :: ip_rank, ip
 !
 !
       call allocate_rtp_1d_local_idx(sph_rtp)
-      do ip_rank = 0, ndomain_sph-1
-        if(mod(ip_rank,nprocs) .ne. my_rank) cycle
+      do ip = 0, (ndomain_sph-1) / nprocs
+        ip_rank = my_rank + ip * nprocs
+        if(ip_rank .ge. ndomain_sph) cycle
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &             'Construct spherical grids for domain ',             &
@@ -237,7 +239,7 @@
 !
       type(sph_rtp_grid), intent(inout) :: sph_rtp
 !
-      integer(kind = kint) :: ip_rank
+      integer(kind = kint) :: ip_rank, ip
       type(mesh_data) :: femmesh
       type(group_data) :: radial_rj_grp_lc
 !
@@ -253,8 +255,9 @@
      &   (sph_params%iflag_shell_mode, sph_params%m_folding, sph_rtp)
       call set_rj_radial_grp(sph_params, sph_rj, radial_rj_grp_lc)
 !
-      do ip_rank = 0, ndomain_sph-1
-        if(mod(ip_rank,nprocs) .ne. my_rank) cycle
+      do ip = 0, (ndomain_sph-1) / nprocs
+        ip_rank = my_rank + ip * nprocs
+        if(ip_rank .ge. ndomain_sph) cycle
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &             'Construct FEM mesh for domain ', ip_rank,           &

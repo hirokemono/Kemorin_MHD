@@ -274,9 +274,10 @@
       call gz_mpi_read_mul_int8head_b                                   &
      &   (id_file, ioff_gl, nprocs_in, istack_buffer(1))
 !
-      if(id_rank .ge. nprocs_in) return
-!
       ioffset = ioff_gl + istack_buffer(id_rank)
+      ioff_gl = ioff_gl + istack_buffer(nprocs_in)
+!
+      if(id_rank .ge. nprocs_in) return
       ilength = num * kint
       ilen_gz = int(istack_buffer(id_rank+1) - istack_buffer(id_rank))
       allocate(gzip_buf(ilen_gz))
@@ -286,7 +287,6 @@
       call gzip_infleat_once                                            &
      &   (ilen_gz, gzip_buf(1), ilength, int_dat(1), ilen_gzipped)
       deallocate(gzip_buf)
-      ioff_gl = ioff_gl + istack_buffer(nprocs_in)
 !
       if(iflag_endian .eq. iendian_FLIP) then
         l8_byte = ilength
@@ -318,9 +318,10 @@
       call gz_mpi_read_mul_int8head_b                                   &
      &   (id_file, ioff_gl, nprocs_in, istack_buffer(1))
 !
-      if(id_rank .ge. nprocs_in) return
-!
       ioffset = ioff_gl + istack_buffer(id_rank)
+      ioff_gl = ioff_gl + istack_buffer(nprocs_in)
+!
+      if(id_rank .ge. nprocs_in) return
       ilength = num * kint_gl
       ilen_gz = int(istack_buffer(id_rank+1) - istack_buffer(id_rank))
       allocate(gzip_buf(ilen_gz))
@@ -330,7 +331,6 @@
       call gzip_infleat_once                                            &
      &   (ilen_gz, gzip_buf(1), ilength, int8_dat(1), ilen_gzipped)
       deallocate(gzip_buf)
-      ioff_gl = ioff_gl + istack_buffer(nprocs_in)
 !
       if(iflag_endian .eq. iendian_FLIP) then
         l8_byte = ilength
@@ -362,11 +362,13 @@
       call gz_mpi_read_mul_int8head_b                                   &
      &   (id_file, ioff_gl, nprocs_in, istack_buffer(1))
 !
-      if(id_rank .ge. nprocs_in) return
-!
       ioffset = ioff_gl + istack_buffer(id_rank)
+      ioff_gl = ioff_gl + istack_buffer(nprocs_in)
+!
+      if(id_rank .ge. nprocs_in) return
       ilength = num * kreal
       ilen_gz = int(istack_buffer(id_rank+1) - istack_buffer(id_rank))
+!
       allocate(gzip_buf(ilen_gz))
       call calypso_mpi_seek_read_gz                                     &
      &         (id_file, ioffset, ilen_gz, gzip_buf(1))
@@ -374,7 +376,6 @@
       call gzip_infleat_once                                            &
      &   (ilen_gz, gzip_buf(1), ilength, real_dat(1), ilen_gzipped)
       deallocate(gzip_buf)
-      ioff_gl = ioff_gl + istack_buffer(nprocs_in)
 !
       if(iflag_endian .eq. iendian_FLIP) then
         l8_byte = ilength

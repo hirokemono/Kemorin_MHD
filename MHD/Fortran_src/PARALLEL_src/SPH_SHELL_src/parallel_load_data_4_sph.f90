@@ -173,7 +173,7 @@
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'input_geom_rtp_sph_trans'
-      call sel_mpi_read_geom_rtp_file
+      call sel_mpi_read_geom_rtp_file(nprocs, my_rank)
       call input_geom_rtp_sph_trans                                     &
      &   (sph%sph_params%l_truncation, sph%sph_rtp, comms_sph%comm_rtp, &
      &    sph_grps%bc_rtp_grp, sph_grps%radial_rtp_grp,                 &
@@ -183,7 +183,7 @@
      &    comms_sph%comm_rtp%irev_sr)
 !
       if (iflag_debug.gt.0) write(*,*) 'input_modes_rj_sph_trans'
-      call sel_mpi_read_spectr_rj_file
+      call sel_mpi_read_spectr_rj_file(nprocs, my_rank)
       call input_modes_rj_sph_trans                                     &
      &   (sph%sph_params%l_truncation, sph%sph_rj, comms_sph%comm_rj,   &
      &    sph_grps%radial_rj_grp, sph_grps%sphere_rj_grp, ierr)
@@ -193,7 +193,7 @@
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'input_geom_rtm_sph_trans'
-      call sel_mpi_read_geom_rtm_file
+      call sel_mpi_read_geom_rtm_file(nprocs, my_rank)
       call input_geom_rtm_sph_trans(sph%sph_params%l_truncation,        &
      &    sph%sph_rtm, comms_sph%comm_rtm, ierr)
       call set_reverse_import_table(sph%sph_rtm%nnod_rtm,               &
@@ -201,7 +201,7 @@
      &    comms_sph%comm_rtm%irev_sr)
 !
       if (iflag_debug.gt.0) write(*,*) 'input_modes_rlm_sph_trans'
-      call sel_mpi_read_modes_rlm_file
+      call sel_mpi_read_modes_rlm_file(nprocs, my_rank)
       call input_modes_rlm_sph_trans(sph%sph_params%l_truncation,       &
      &    sph%sph_rlm, comms_sph%comm_rlm, ierr)
       call set_reverse_import_table(sph%sph_rlm%nnod_rlm,               &
@@ -239,7 +239,7 @@
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'input_modes_rj_sph_trans'
-      call sel_mpi_read_spectr_rj_file
+      call sel_mpi_read_spectr_rj_file(nprocs, my_rank)
       call input_modes_rj_sph_trans(sph_param%l_truncation,             &
      &    sph_rj, comm_rj, radial_rj_grp, sphere_rj_grp, ierr)
       call set_reverse_import_table(sph_rj%nnod_rj,                     &

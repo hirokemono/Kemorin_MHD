@@ -7,9 +7,12 @@
 !>@brief routines for parallel spectr data assemble
 !!
 !!@verbatim
-!!      subroutine share_sph_rj_data(np_sph_org, org_sph_mesh)
+!!      subroutine share_org_sph_rj_data(np_sph_org, org_sph_mesh)
 !!      subroutine share_spectr_field_names(np_sph_org, np_sph_new,     &
 !!     &          new_sph_mesh, org_sph_phys, new_sph_phys)
+!!
+!!      subroutine load_new_spectr_rj_data(np_sph_org, np_sph_new,      &
+!!     &          org_sph_mesh, new_sph_mesh, j_table)
 !!
 !!      subroutine share_r_interpolation_tbl(np_sph_new, new_sph_mesh,  &
 !!     &          r_itp, nlayer_ICB_org, nlayer_CMB_org,                &
@@ -39,27 +42,30 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine share_sph_rj_data(np_sph_org, org_sph_mesh)
+      subroutine share_org_sph_rj_data(np_sph_org, org_sph_mesh)
 !
       use m_node_id_spherical_IO
 !
       use t_spheric_rj_data
 !
       use new_SPH_restart
+      use sph_file_MPI_IO_select
 !
       integer(kind = kint), intent(in) :: np_sph_org
       type(sph_mesh_data), intent(inout) :: org_sph_mesh(np_sph_org)
 !
-      integer(kind = kint) :: ip, irank_org
+      integer(kind = kint) :: ip, iproc, irank_org
 !
 !
-      do ip = 1, np_sph_org
-        irank_org = ip - 1
-        if(mod(irank_org,nprocs) .ne. my_rank) cycle
+      do ip = 0, (np_sph_org-1) / nprocs
+        irank_org = my_rank + ip * nprocs
+        iproc = irank_org + 1
+        call sel_mpi_read_spectr_rj_file(np_sph_org, irank_org)
 !
+        if(irank_org .ge. np_sph_org) cycle
         call set_local_rj_mesh_4_merge(irank_org,                       &
-     &      org_sph_mesh(ip)%sph, org_sph_mesh(ip)%sph_comms,           &
-     &      org_sph_mesh(ip)%sph_grps)
+     &      org_sph_mesh(iproc)%sph, org_sph_mesh(iproc)%sph_comms,     &
+     &      org_sph_mesh(iproc)%sph_grps)
       end do
 !
 !
@@ -113,7 +119,7 @@
      &      CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
       end do
 !
-      end subroutine share_sph_rj_data
+      end subroutine share_org_sph_rj_data
 !
 ! -----------------------------------------------------------------------
 !
@@ -197,6 +203,47 @@
       end do
 !
       end subroutine share_spectr_field_names
+!
+! -----------------------------------------------------------------------
+!
+      subroutine load_new_spectr_rj_data(np_sph_org, np_sph_new,        &
+     &          org_sph_mesh, new_sph_mesh, j_table)
+!
+      use parallel_assemble_sph
+      use new_SPH_restart
+      use sph_file_MPI_IO_select
+!
+      integer(kind = kint), intent(in) :: np_sph_org, np_sph_new
+      type(sph_mesh_data), intent(in) :: org_sph_mesh(np_sph_org)
+      type(sph_mesh_data), intent(inout) :: new_sph_mesh(np_sph_new)
+      type(rj_assemble_tbl), intent(inout)                              &
+     &                             :: j_table(np_sph_org,np_sph_new)
+!
+      integer(kind = kint) :: iproc, jp, jproc, jrank_new
+!
+!
+      do jp = 0, (np_sph_new-1) / nprocs
+        jrank_new = my_rank + jp * nprocs
+        jproc = jrank_new + 1
+!
+        call sel_mpi_read_spectr_rj_file(np_sph_new, jrank_new)
+!
+        if(jrank_new .ge. np_sph_new) cycle
+        call set_local_rj_mesh_4_merge(jrank_new,                       &
+     &      new_sph_mesh(jproc)%sph, new_sph_mesh(jproc)%sph_comms,     &
+     &      new_sph_mesh(jproc)%sph_grps)
+        if(mod(jrank_new,nprocs) .ne. my_rank) cycle
+!
+!     Construct mode transfer table
+        do iproc = 1, np_sph_org
+          call alloc_each_mode_tbl_4_assemble                           &
+     &      (org_sph_mesh(iproc)%sph, j_table(iproc,jproc))
+          call set_mode_table_4_assemble(org_sph_mesh(iproc)%sph,       &
+     &        new_sph_mesh(jproc)%sph, j_table(iproc,jproc))
+        end do
+      end do
+!
+      end subroutine load_new_spectr_rj_data
 !
 ! -----------------------------------------------------------------------
 !

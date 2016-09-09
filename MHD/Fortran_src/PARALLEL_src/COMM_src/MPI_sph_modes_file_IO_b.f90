@@ -8,22 +8,22 @@
 !!
 !!@verbatim
 !!      subroutine mpi_read_geom_rtp_file_b                             &
-!!     &         (id_rank, nprocs_in, file_name)
+!!     &         (file_name, nprocs_in, id_rank)
 !!      subroutine mpi_read_spectr_rj_file_b                            &
-!!     &         (id_rank, nprocs_in, file_name)
+!!     &         (file_name, nprocs_in, id_rank)
 !!      subroutine mpi_read_geom_rtm_file_b                             &
-!!     &         (id_rank, nprocs_in, file_name)
+!!     &         (file_name, nprocs_in, id_rank)
 !!      subroutine mpi_read_modes_rlm_file_b                            &
-!!     &         (id_rank, nprocs_in, file_name)
+!!     &         (file_name, nprocs_in, id_rank)
 !!
 !!      subroutine mpi_write_geom_rtp_file_b                            &
-!!     &         (id_rank, nprocs_in, file_name)
+!!     &         (file_name, nprocs_in, id_rank)
 !!      subroutine mpi_write_spectr_rj_file_b                           &
-!!     &         (id_rank, nprocs_in, file_name)
+!!     &         (file_name, nprocs_in, id_rank)
 !!      subroutine mpi_write_geom_rtm_file_b                            &
-!!     &         (id_rank, nprocs_in, file_name)
+!!     &         (file_name, nprocs_in, id_rank)
 !!      subroutine mpi_write_modes_rlm_file_b                           &
-!!     &         (id_rank, nprocs_in, file_name)
+!!     &         (file_name, nprocs_in, id_rank)
 !!@endverbatim
 !!
 !!@param nprocs_in  Number of subdomain
@@ -47,7 +47,7 @@
 !------------------------------------------------------------------
 !
       subroutine mpi_read_geom_rtp_file_b                               &
-     &         (id_rank, nprocs_in, file_name)
+     &         (file_name, nprocs_in, id_rank)
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
@@ -72,7 +72,7 @@
 !------------------------------------------------------------------
 !
       subroutine mpi_read_spectr_rj_file_b                              &
-     &         (id_rank, nprocs_in, file_name)
+     &         (file_name, nprocs_in, id_rank)
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
@@ -98,7 +98,7 @@
 !------------------------------------------------------------------
 !
       subroutine mpi_read_geom_rtm_file_b                               &
-     &         (id_rank, nprocs_in, file_name)
+     &         (file_name, nprocs_in, id_rank)
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
@@ -123,7 +123,7 @@
 !------------------------------------------------------------------
 !
       subroutine mpi_read_modes_rlm_file_b                              &
-     &         (id_rank, nprocs_in, file_name)
+     &         (file_name, nprocs_in, id_rank)
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
@@ -150,7 +150,7 @@
 !------------------------------------------------------------------
 !
       subroutine mpi_write_geom_rtp_file_b                             &
-     &         (id_rank, nprocs_in, file_name)
+     &         (file_name, nprocs_in, id_rank)
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
@@ -174,7 +174,7 @@
 !------------------------------------------------------------------
 !
       subroutine mpi_write_spectr_rj_file_b                             &
-     &         (id_rank, nprocs_in, file_name)
+     &         (file_name, nprocs_in, id_rank)
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
@@ -199,7 +199,7 @@
 !------------------------------------------------------------------
 !
       subroutine mpi_write_geom_rtm_file_b                              &
-     &         (id_rank, nprocs_in, file_name)
+     &         (file_name, nprocs_in, id_rank)
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
@@ -223,7 +223,7 @@
 !------------------------------------------------------------------
 !
       subroutine mpi_write_modes_rlm_file_b                             &
-     &         (id_rank, nprocs_in, file_name)
+     &         (file_name, nprocs_in, id_rank)
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: nprocs_in, id_rank

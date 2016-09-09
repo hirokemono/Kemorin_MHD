@@ -108,9 +108,11 @@
       ioff_gl = ioff_gl + kint_gl * nprocs_in
 !
       ioffset = ioff_gl + kint * istack_merged(id_rank)
+      ioff_gl = ioff_gl + kint * istack_merged(nprocs_in)
+!
+      if(id_rank .ge. nprocs_in) return
       call calypso_mpi_seek_write_int                                   &
      &    (id_file, ioffset, num, int_dat(1))
-      ioff_gl = ioff_gl + kint * istack_merged(nprocs_in)
 !
       end subroutine mpi_write_int_vector_b
 !
@@ -141,9 +143,11 @@
       ioff_gl = ioff_gl + kint_gl * nprocs_in
 !
       ioffset = ioff_gl + kint_gl * istack_merged(id_rank)
+      ioff_gl = ioff_gl + kint_gl * istack_merged(nprocs_in)
+!
+      if(id_rank .ge. nprocs_in) return
       call calypso_mpi_seek_write_int8                                  &
      &    (id_file, ioffset, num, int8_dat(1))
-      ioff_gl = ioff_gl + kint_gl * istack_merged(nprocs_in)
 !
       end subroutine mpi_write_int8_vector_b
 !
@@ -174,9 +178,11 @@
       ioff_gl = ioff_gl + kint_gl * nprocs_in
 !
       ioffset = ioff_gl + kreal * istack_merged(id_rank)
+      ioff_gl = ioff_gl + kreal * istack_merged(nprocs_in)
+!
+      if(id_rank .ge. nprocs_in) return
       call calypso_mpi_seek_write_real                                  &
      &    (id_file, ioffset, num, real_dat(1))
-      ioff_gl = ioff_gl + kreal * istack_merged(nprocs_in)
 !
       end subroutine mpi_write_1d_vector_b
 !
@@ -248,13 +254,14 @@
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
-      if(id_rank .ge. nprocs_in) return
       ioff_gl = ioff_gl + kint_gl * nprocs_in
 !
       ioffset = ioff_gl + kint * istack_merged(id_rank)
+      ioff_gl = ioff_gl + kint * istack_merged(nprocs_in)
+!
+      if(id_rank .ge. nprocs_in) return
       call calypso_mpi_seek_read_int                                    &
      &   (id_file, ioffset, num, int_dat(1))
-      ioff_gl = ioff_gl + kint * istack_merged(nprocs_in)
 !
       end subroutine mpi_read_int_vector_b
 !
@@ -278,13 +285,14 @@
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
-      if(id_rank .ge. nprocs_in) return
       ioff_gl = ioff_gl + kint_gl * nprocs_in
 !
       ioffset = ioff_gl + kint_gl * istack_merged(id_rank)
+      ioff_gl = ioff_gl + kint_gl * istack_merged(nprocs_in)
+!
+      if(id_rank .ge. nprocs_in) return
       call calypso_mpi_seek_read_int8                                   &
      &   (id_file, ioffset, num, int8_dat(1))
-      ioff_gl = ioff_gl + kint_gl * istack_merged(nprocs_in)
 !
       end subroutine mpi_read_int8_vector_b
 !
@@ -308,13 +316,14 @@
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
-      if(id_rank .ge. nprocs_in) return
       ioff_gl = ioff_gl + kint_gl * nprocs_in
 !
       ioffset = ioff_gl + kreal * istack_merged(id_rank)
+      ioff_gl = ioff_gl + kreal * istack_merged(nprocs_in)
+!
+      if(id_rank .ge. nprocs_in) return
       call calypso_mpi_seek_read_real                                   &
      &   (id_file, ioffset, num, real_dat(1))
-      ioff_gl = ioff_gl + kreal * istack_merged(nprocs_in)
 !
       end subroutine mpi_read_1d_vector_b
 !

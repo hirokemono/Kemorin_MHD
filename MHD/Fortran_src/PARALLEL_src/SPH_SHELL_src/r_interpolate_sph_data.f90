@@ -12,7 +12,7 @@
 !!      subroutine set_sph_magne_address(rj_fld, ipol)
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(phys_address), intent(inout) :: ipol
-!!      subroutine input_old_rj_sph_trans(my_rank, l_truncation, sph_rj)
+!!      subroutine input_old_rj_sph_trans(l_truncation, sph_rj)
 !!
 !!      subroutine r_interpolate_sph_rst_from_IO                        &
 !!     &         (fld_IO, sph_rj, ipol, rj_fld)
@@ -154,21 +154,20 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine input_old_rj_sph_trans(my_rank, l_truncation, sph_rj)
+      subroutine input_old_rj_sph_trans(l_truncation, sph_rj)
 !
       use m_node_id_spherical_IO
       use m_control_params_2nd_files
-      use sph_file_IO_select
+      use sph_file_MPI_IO_select
       use radial_interpolation
 !
-      integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(inout) :: l_truncation
       type(sph_rj_grid), intent(inout) ::  sph_rj
 !
 !
       call set_sph_mesh_file_fmt_prefix                                 &
      &   (rj_org_param%iflag_format, rj_org_param%file_prefix)
-      call sel_read_spectr_modes_rj_file(my_rank)
+      call sel_mpi_read_spectr_rj_file(nprocs, my_rank)
       call copy_original_sph_rj_from_IO(l_truncation, sph_rj)
 !
       call const_radial_itp_table(nri_org, r_org,                       &

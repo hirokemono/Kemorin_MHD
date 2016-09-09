@@ -85,28 +85,14 @@
 !
       iflag_sph_file_fmt = ifmt_org_sph_file
       sph_file_head = org_sph_head
-      call share_sph_rj_data(np_sph_org, org_sph_mesh)
+      call share_org_sph_rj_data(np_sph_org, org_sph_mesh)
 !
 !  set new spectr data
 !
       iflag_sph_file_fmt = ifmt_new_sph_file
       sph_file_head = new_sph_head
-      do jp = 1, np_sph_new
-        irank_new = jp - 1
-        if(mod(irank_new,nprocs) .ne. my_rank) cycle
-!
-        call set_local_rj_mesh_4_merge(irank_new,                       &
-     &      new_sph_mesh(jp)%sph, new_sph_mesh(jp)%sph_comms,           &
-     &      new_sph_mesh(jp)%sph_grps)
-!
-!     Construct mode transfer table
-        do ip = 1, np_sph_org
-          call alloc_each_mode_tbl_4_assemble                           &
-     &      (org_sph_mesh(ip)%sph, j_table(ip,jp))
-          call set_mode_table_4_assemble(org_sph_mesh(ip)%sph,          &
-     &        new_sph_mesh(jp)%sph, j_table(ip,jp))
-        end do
-      end do
+      call load_new_spectr_rj_data(np_sph_org, np_sph_new,              &
+     &          org_sph_mesh, new_sph_mesh, j_table)
 !
 !     Share number of nodes for new mesh
 !
@@ -118,6 +104,7 @@
       allocate(istsack_nnod_list(0:np_sph_new))
       nnod_list_lc(1:np_sph_new) = 0
       nnod_list(1:np_sph_new) = 0
+!
       do jp = 1, np_sph_new
         irank_new = jp - 1
         if(mod(irank_new,nprocs) .ne. my_rank) cycle
@@ -135,7 +122,7 @@
         new_fst_IO(jloop)%istack_numnod_IO => istsack_nnod_list
       end do
 !
-!     construct interpolation table
+!     construct radial interpolation table
 !
       if(my_rank .eq. 0) then
         call set_sph_boundary_4_merge(org_sph_mesh(1)%sph_grps,         &

@@ -36,6 +36,7 @@
       use field_IO_select
       use r_interpolate_marged_sph
       use copy_time_steps_4_restart
+      use sph_file_MPI_IO_select
 !
       implicit none
 !
@@ -80,6 +81,8 @@
       sph_file_head = org_sph_head
       do ip = 1, np_sph_org
         irank_org = ip - 1
+        call sel_mpi_read_spectr_rj_file(np_sph_org, irank_org)
+!
         call set_local_rj_mesh_4_merge(irank_org,                       &
      &      org_sph_mesh(ip)%sph, org_sph_mesh(ip)%sph_comms,           &
      &      org_sph_mesh(ip)%sph_grps)
@@ -93,6 +96,8 @@
       sph_file_head = new_sph_head
       do jp = 1, np_sph_new
         irank_new = jp - 1
+        call sel_mpi_read_spectr_rj_file(np_sph_new, irank_new)
+!
         call set_local_rj_mesh_4_merge(irank_new,                       &
      &      new_sph_mesh(jp)%sph, new_sph_mesh(jp)%sph_comms,           &
      &      new_sph_mesh(jp)%sph_grps)
