@@ -1,20 +1,28 @@
+!>@file   gz_domain_data_IO.f90
+!!@brief  module gz_domain_data_IO
+!!
+!!@author H. Matsui
+!!@date Programmed in July, 2007
 !
-!      module gz_domain_data_IO
-!
-!     Written by H. Matsui on July, 2007
-!
-!      subroutine read_domain_info_gz
-!      subroutine read_import_data_gz
-!      subroutine read_export_data_gz
-!      subroutine write_domain_info_gz
-!      subroutine write_import_data_gz
-!      subroutine write_export_data_gz
+!>@brief  Routine for doimain data IO using zlib
+!!
+!!@verbatim
+!!      subroutine read_domain_info_gz(my_rank_IO, comm_IO)
+!!      subroutine read_import_data_gz(comm_IO)
+!!      subroutine read_export_data_gz(comm_IO)
+!!        type(communication_table), intent(inout) :: comm_IO
+!!
+!!      subroutine write_domain_info_gz(my_rank_IO, comm_IO)
+!!      subroutine write_import_data_gz(comm_IO)
+!!      subroutine write_export_data_gz(comm_IO)
+!!        type(communication_table), intent(inout) :: comm_IO
+!!@endverbatim
 !
       module gz_domain_data_IO
 !
       use m_precision
 !
-      use m_comm_data_IO
+      use t_comm_table
       use skip_gz_comment
 !
       implicit none
@@ -27,7 +35,10 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_domain_info_gz
+      subroutine read_domain_info_gz(my_rank_IO, comm_IO)
+!
+      integer(kind = kint), intent(inout) :: my_rank_IO
+      type(communication_table), intent(inout) :: comm_IO
 !
 !
       call skip_gz_comment_int(my_rank_IO)
@@ -45,7 +56,9 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_import_data_gz
+      subroutine read_import_data_gz(comm_IO)
+!
+      type(communication_table), intent(inout) :: comm_IO
 !
 !
       call allocate_type_import_num(comm_IO)
@@ -67,7 +80,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_export_data_gz
+      subroutine read_export_data_gz(comm_IO)
+!
+      type(communication_table), intent(inout) :: comm_IO
 !
 !
       call allocate_type_export_num(comm_IO)
@@ -90,7 +105,10 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine write_domain_info_gz
+      subroutine write_domain_info_gz(my_rank_IO, comm_IO)
+!
+      integer(kind = kint), intent(in) :: my_rank_IO
+      type(communication_table), intent(inout) :: comm_IO
 !
 !
       write(textbuf,'(i16,a1)') my_rank_IO, char(0)
@@ -112,7 +130,10 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_import_data_gz
+      subroutine write_import_data_gz(comm_IO)
+!
+      type(communication_table), intent(inout) :: comm_IO
+!
 !
       call write_send_recv_data_gz                                      &
      &   (comm_IO%num_neib, comm_IO%ntot_import,                        &
@@ -124,7 +145,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_export_data_gz
+      subroutine write_export_data_gz(comm_IO)
+!
+      type(communication_table), intent(inout) :: comm_IO
 !
 !
       call write_send_recv_data_gz                                      &

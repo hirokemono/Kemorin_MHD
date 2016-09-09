@@ -23,6 +23,7 @@
       use m_precision
       use m_constants
 !
+      use m_comm_data_IO
       use m_read_mesh_data
 !
       implicit  none
@@ -40,13 +41,13 @@
       use gz_domain_data_IO_b
 !
 !
-      call gz_write_domain_info_b
+      call gz_write_domain_info_b(my_rank_IO, comm_IO)
 !
       call gz_write_geometry_info_b
       call gz_write_element_info_b
 !
-      call gz_write_import_data_b
-      call gz_write_export_data_b
+      call gz_write_import_data_b(comm_IO)
+      call gz_write_export_data_b(comm_IO)
 !
       end subroutine gz_write_geometry_data_b
 !
@@ -102,7 +103,7 @@
       use gz_domain_data_IO_b
 !
 !
-      call gz_read_domain_info_b
+      call gz_read_domain_info_b(my_rank_IO, comm_IO)
       call gz_read_number_of_node_b
       call gz_read_geometry_info_b
 !
@@ -113,8 +114,8 @@
 !
 ! ----  import & export 
 !
-      call gz_read_import_data_b
-      call gz_read_export_data_b
+      call gz_read_import_data_b(comm_IO)
+      call gz_read_export_data_b(comm_IO)
 !
       end subroutine gz_read_geometry_data_b
 !
