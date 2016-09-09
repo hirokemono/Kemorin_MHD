@@ -48,7 +48,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine mpi_write_geometry_data                              &
+      subroutine mpi_write_geometry_data                                &
      &         (id_file, nprocs_in, id_rank, ioff_gl)
 !
 !      use MPI_domain_data_IO
@@ -59,27 +59,27 @@
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
 !
-      call calypso_mpi_seek_write_head_c                              &
+      call calypso_mpi_seek_write_head_c                                &
      &   (id_file, ioff_gl, hd_fem_para())
-!      call mpi_write_domain_info                                     &
+!      call mpi_write_domain_info                                       &
 !     &   (id_file, nprocs_in, id_rank, ioff_gl)
 !
-      call calypso_mpi_seek_write_head_c                              &
+      call calypso_mpi_seek_write_head_c                                &
      &   (id_file, ioff_gl, hd_fem_node())
-!      call mpi_write_geometry_info                                    &
+!      call mpi_write_geometry_info                                     &
 !     &   (id_file, nprocs_in, id_rank, ioff_gl)
-      call calypso_mpi_seek_write_head_c                              &
+      call calypso_mpi_seek_write_head_c                                &
      &   (id_file, ioff_gl, hd_fem_elem())
-!      call mpi_write_element_info                                     &
+!      call mpi_write_element_info                                      &
 !     &   (id_file, nprocs_in, id_rank, ioff_gl)
 !
-      call calypso_mpi_seek_write_head_c                              &
+      call calypso_mpi_seek_write_head_c                                &
      &   (id_file, ioff_gl, hd_fem_import())
-!      call mpi_write_import_data                                      &
+!      call mpi_write_import_data                                       &
 !     &   (id_file, nprocs_in, id_rank, ioff_gl)
-      call calypso_mpi_seek_write_head_c                              &
+      call calypso_mpi_seek_write_head_c                                &
      &   (id_file, ioff_gl, hd_fem_export())
-!      call mpi_write_export_data                                      &
+!      call mpi_write_export_data                                       &
 !     &   (id_file, nprocs_in, id_rank, ioff_gl)
 !
       end subroutine mpi_write_geometry_data
@@ -87,7 +87,7 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine mpi_write_geometry_info                              &
+      subroutine mpi_write_geometry_info                                &
      &         (id_file, nprocs_in, id_rank, ioff_gl)
 !
       use MPI_binary_data_IO
@@ -97,18 +97,18 @@
       integer(kind=kint), intent(in) :: id_rank, nprocs_in
 !
 !
-      call mpi_write_one_integer                                      &
+      call mpi_write_one_integer                                        &
      &   (id_file, nprocs_in, id_rank, ioff_gl, numnod_dummy)
-      call mpi_write_one_integer                                      &
+      call mpi_write_one_integer                                        &
      &   (id_file, nprocs_in, id_rank, ioff_gl, internal_node_dummy)
 !
       call alloc_istack_merge(id_rank, nprocs_in, IO_param)
       call set_istack_4_parallell_data(numnod_dummy, IO_param)
 !
-      call mpi_write_int8_vector                                      &
+      call mpi_write_int8_vector                                        &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
      &    numnod_dummy, globalnodid_dummy, IO_param%istack_merged)
-      call mpi_write_2d_vector(id_file, nprocs_in, id_rank, ioff_gl,  &
+      call mpi_write_2d_vector(id_file, nprocs_in, id_rank, ioff_gl,    &
      &    numnod_dummy, ithree, xx_dummy, IO_param%istack_merged)
       call dealloc_istack_merge(IO_param)
 !
@@ -118,7 +118,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine mpi_write_element_info                               &
+      subroutine mpi_write_element_info                                 &
      &         (id_file, nprocs_in, id_rank, ioff_gl)
 !
       use MPI_binary_data_IO
@@ -131,20 +131,20 @@
       integer (kind = kint) :: num
 !
 !
-      call mpi_write_one_integer                                      &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, numele_dummy)
+      call mpi_write_one_integer                                        &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, ele_IO%numele)
 !
       call alloc_istack_merge(id_rank, nprocs_in, IO_param)
-      call set_istack_4_parallell_data(numele_dummy, IO_param)
-      call mpi_write_int_vector(id_file, nprocs_in, id_rank, ioff_gl, &
-     &    numele_dummy, i_ele_dummy, IO_param%istack_merged)
-      call mpi_write_int8_vector                                      &
+      call set_istack_4_parallell_data(ele_IO%numele, IO_param)
+      call mpi_write_int_vector(id_file, nprocs_in, id_rank, ioff_gl,   &
+     &    ele_IO%numele, i_ele_dummy, IO_param%istack_merged)
+      call mpi_write_int8_vector                                        &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    numele_dummy, globalelmid_dummy, IO_param%istack_merged)
+     &    ele_IO%numele, globalelmid_dummy, IO_param%istack_merged)
 !
-      num = numele_dummy * nnod_4_ele_dummy
+      num = ele_IO%numele * nnod_4_ele_dummy
       call mul_istack_4_parallell_vect(nnod_4_ele_dummy, IO_param)
-      call mpi_write_int_vector(id_file, nprocs_in, id_rank, ioff_gl, &
+      call mpi_write_int_vector(id_file, nprocs_in, id_rank, ioff_gl,   &
      &    num, ie_dummy(1,1), IO_param%istack_merged)
       call dealloc_istack_merge(IO_param)
 !
@@ -155,7 +155,7 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine mpi_read_geometry_data                               &
+      subroutine mpi_read_geometry_data                                 &
      &         (id_file, nprocs_in, id_rank, ioff_gl)
 !
       use m_error_IDs
@@ -166,26 +166,26 @@
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
 !
-      call mpi_read_domain_info                                       &
+      call mpi_read_domain_info                                         &
      &   (id_file, nprocs_in, id_rank, ioff_gl)
 !
-      call mpi_read_number_of_node                                    &
+      call mpi_read_number_of_node                                      &
      &   (id_file, nprocs_in, id_rank, ioff_gl)
-      call mpi_read_geometry_info                                     &
+      call mpi_read_geometry_info                                       &
      &   (id_file, nprocs_in, id_rank, ioff_gl)
 !
 !  ----  read element data -------
 !
-      call mpi_read_number_of_element                                 &
+      call mpi_read_number_of_element                                   &
      &   (id_file, nprocs_in, id_rank, ioff_gl)
-      call mpi_read_element_info                                      &
+      call mpi_read_element_info                                        &
      &   (id_file, nprocs_in, id_rank, ioff_gl)
 !
 ! ----  import & export 
 !
-      call mpi_read_import_data                                       &
+      call mpi_read_import_data                                         &
      &   (id_file, nprocs_in, id_rank, ioff_gl)
-      call mpi_read_export_data                                       &
+      call mpi_read_export_data                                         &
      &   (id_file, nprocs_in, id_rank, ioff_gl)
 !
       end subroutine mpi_read_geometry_data
@@ -193,7 +193,7 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine mpi_read_number_of_node                              &
+      subroutine mpi_read_number_of_node                                &
      &         (id_file, nprocs_in, id_rank, ioff_gl)
 !
       use MPI_binary_data_IO
@@ -203,16 +203,16 @@
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
 !
-      call mpi_read_one_integer                                       &
+      call mpi_read_one_integer                                         &
      &   (id_file, nprocs_in, id_rank, ioff_gl, numnod_dummy)
-      call mpi_read_one_integer                                       &
+      call mpi_read_one_integer                                         &
      &   (id_file, nprocs_in, id_rank, ioff_gl, internal_node_dummy)
 !
       end subroutine mpi_read_number_of_node
 !
 !------------------------------------------------------------------
 !
-      subroutine mpi_read_geometry_info                               &
+      subroutine mpi_read_geometry_info                                 &
      &         (id_file, nprocs_in, id_rank, ioff_gl)
 !
       use mpi_binary_data_IO
@@ -227,10 +227,10 @@
       call alloc_istack_merge(id_rank, nprocs_in, IO_param)
       call set_istack_4_parallell_data(numnod_dummy, IO_param)
 !
-      call mpi_read_int8_vector                                       &
+      call mpi_read_int8_vector                                         &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
      &    numnod_dummy, globalnodid_dummy, IO_param%istack_merged)
-      call mpi_read_2d_vector                                         &
+      call mpi_read_2d_vector                                           &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
      &    numnod_dummy, ithree, xx_dummy, IO_param%istack_merged)
       call dealloc_istack_merge(IO_param)
@@ -239,7 +239,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine mpi_read_number_of_element                           &
+      subroutine mpi_read_number_of_element                             &
      &         (id_file, nprocs_in, id_rank, ioff_gl)
 !
       use mpi_binary_data_IO
@@ -249,14 +249,14 @@
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
 !
-      call mpi_read_one_integer                                       &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, numele_dummy)
+      call mpi_read_one_integer                                         &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, ele_IO%numele)
 !
       end subroutine mpi_read_number_of_element
 !
 !------------------------------------------------------------------
 !
-      subroutine mpi_read_element_info                                &
+      subroutine mpi_read_element_info                                  &
      &         (id_file, nprocs_in, id_rank, ioff_gl)
 !
       use mpi_binary_data_IO
@@ -272,26 +272,26 @@
       call allocate_ele_info_dummy
 !
       call alloc_istack_merge(id_rank, nprocs_in, IO_param)
-      call set_istack_4_parallell_data(numele_dummy, IO_param)
-      call mpi_read_int_vector                                        &
+      call set_istack_4_parallell_data(ele_IO%numele, IO_param)
+      call mpi_read_int_vector                                          &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    numele_dummy, i_ele_dummy, IO_param%istack_merged)
+     &    ele_IO%numele, i_ele_dummy, IO_param%istack_merged)
 !
       nnod_4_ele_dummy = 0
-      do i = 1, numele_dummy
+      do i = 1, ele_IO%numele
         call s_set_nnod_4_ele_by_type(i_ele_dummy(i), nodelm_dummy(i))
         nnod_4_ele_dummy = max(nnod_4_ele_dummy,nodelm_dummy(i))
       end do
 !
       call allocate_connect_dummy
 !
-      call mpi_read_int8_vector                                       &
+      call mpi_read_int8_vector                                         &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    numele_dummy, globalelmid_dummy, IO_param%istack_merged)
+     &    ele_IO%numele, globalelmid_dummy, IO_param%istack_merged)
 !
-      num = numele_dummy * nnod_4_ele_dummy
+      num = ele_IO%numele * nnod_4_ele_dummy
       call mul_istack_4_parallell_vect(nnod_4_ele_dummy, IO_param)
-      call mpi_read_int_vector                                        &
+      call mpi_read_int_vector                                          &
      &   (id_file, nprocs_in, id_rank, ioff_gl, num, ie_dummy(1,1),     &
      &    IO_param%istack_merged)
       call dealloc_istack_merge(IO_param)

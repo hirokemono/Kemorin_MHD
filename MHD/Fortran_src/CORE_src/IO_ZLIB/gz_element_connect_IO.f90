@@ -31,11 +31,11 @@
       integer (kind = kint) :: i
 !
 !
-      write(textbuf,'(i16,a1)') numele_dummy, char(0)
+      write(textbuf,'(i16,a1)') ele_IO%numele, char(0)
       call gz_write_textbuf_w_lf
-      call write_gz_multi_int_10i8(numele_dummy, i_ele_dummy)
+      call write_gz_multi_int_10i8(ele_IO%numele, i_ele_dummy)
 !
-      do i=1, numele_dummy
+      do i=1, ele_IO%numele
         write(fmt_txt,'(a5,i3,a7)') '(i16,', nodelm_dummy(i), 'i16,a1)'
         write(textbuf,fmt_txt) globalelmid_dummy(i),                    &
      &         ie_dummy(i,1:nodelm_dummy(i)), char(0)
@@ -52,8 +52,8 @@
       subroutine read_number_of_element_gz
 !
 !
-      call skip_gz_comment_int(numele_dummy)
-!       write(*,*) numele_dummy
+      call skip_gz_comment_int(ele_IO%numele)
+!       write(*,*) ele_IO%numele
 !
       end subroutine read_number_of_element_gz
 !
@@ -67,17 +67,17 @@
 !
 !
        call allocate_ele_info_dummy
-       call read_gz_multi_int(numele_dummy, i_ele_dummy)
+       call read_gz_multi_int(ele_IO%numele, i_ele_dummy)
 !
        nnod_4_ele_dummy = 0
-       do i = 1, numele_dummy
+       do i = 1, ele_IO%numele
          call s_set_nnod_4_ele_by_type(i_ele_dummy(i), nodelm_dummy(i))
          nnod_4_ele_dummy = max(nnod_4_ele_dummy,nodelm_dummy(i))
        end do
 !
        call allocate_connect_dummy
 !
-       do i=1, numele_dummy
+       do i=1, ele_IO%numele
         call get_one_line_from_gz_f
         read(textbuf,*) globalelmid_dummy(i),                           &
      &                 ie_dummy(i,1:nodelm_dummy(i))

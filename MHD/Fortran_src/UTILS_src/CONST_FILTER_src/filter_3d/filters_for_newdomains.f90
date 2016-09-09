@@ -125,7 +125,7 @@
 !
         new_node%internal_node = internal_node_dummy
         new_node%numnod = numnod_dummy
-        new_ele%numele =  numele_dummy
+        new_ele%numele =  ele_IO%numele
 !
 !
         call add_int_suffix(my_rank2, new_filter_coef_head,             &

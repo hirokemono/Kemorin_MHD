@@ -41,14 +41,14 @@
       integer(kind = kint) :: iele, isurf, iedge
 !
 !
-      numele_dummy = nele
+      ele_IO%numele = nele
 !
       nsf_4_ele_IO =    nsurf
       nsurf_in_ele_IO = nedge_4_surf
 !
       ned_4_ele_IO = nele
 !
-      numele_dummy =     edge%numedge
+      ele_IO%numele =     edge%numedge
       nnod_4_ele_dummy = edge%nnod_4_edge
 !
       call allocate_ele_info_dummy
@@ -189,7 +189,7 @@
 !
       integer(kind = kint) :: iele, isurf, iedge
 !
-      edge%numedge = numele_dummy
+      edge%numedge = ele_IO%numele
 !
       call allocate_edge_connect_type(edge, nsurf)
       call allocate_edge_4_ele_type(edge, nele)

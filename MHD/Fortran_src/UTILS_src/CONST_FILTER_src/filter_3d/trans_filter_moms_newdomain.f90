@@ -114,7 +114,7 @@
       mesh_file_head = org_mesh_head
 !
       max_gl_ele_newdomain = globalelmid_dummy(1)
-      do iele = 2, numele_dummy
+      do iele = 2, ele_IO%numele
         max_gl_ele_newdomain                                            &
      &         = max(max_gl_ele_newdomain,globalelmid_dummy(iele))
       end do
@@ -144,7 +144,7 @@
         call deallocate_node_data_dummy
         call deallocate_neib_domain_IO
 !
-        max_gl_ele_newdomain = max_gl_ele_newdomain + numele_dummy
+        max_gl_ele_newdomain = max_gl_ele_newdomain + ele_IO%numele
       end do
 !
       end subroutine count_nele_newdomain_single

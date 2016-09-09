@@ -23,8 +23,15 @@
       module m_read_mesh_data
 !
       use m_precision
+      use t_geometry_data
 !
       implicit  none
+!
+!>  structure for node data IO (position)
+      type(node_data), save ::    nod_IO
+!>  structure for element data IO (connectivity)
+      type(element_data), save :: ele_IO
+!ele_IO%numele
 !
       integer(kind=kint) :: numnod_dummy
       integer(kind=kint) :: internal_node_dummy
@@ -34,7 +41,7 @@
       real(kind=kreal),   allocatable :: ele_vector_IO(:,:)
       real(kind=kreal),   allocatable :: ele_scalar_IO(:)
 !
-      integer(kind=kint) :: numele_dummy
+!      integer(kind=kint) :: numele_dummy
       integer (kind = kint) :: nnod_4_ele_dummy = 8
       integer(kind=kint_gl), allocatable:: globalelmid_dummy(:)
       integer(kind=kint), allocatable   :: i_ele_dummy(:)
@@ -94,10 +101,10 @@
 !
       subroutine allocate_ele_info_dummy
 !
-       allocate(i_ele_dummy(numele_dummy))
-       allocate(nodelm_dummy(numele_dummy))
-       allocate(globalelmid_dummy(numele_dummy))
-       if ( numele_dummy .gt. 0) then
+       allocate(i_ele_dummy(ele_IO%numele))
+       allocate(nodelm_dummy(ele_IO%numele))
+       allocate(globalelmid_dummy(ele_IO%numele))
+       if ( ele_IO%numele .gt. 0) then
         i_ele_dummy=0
         nodelm_dummy = 0
         globalelmid_dummy=0
@@ -109,8 +116,8 @@
 !
       subroutine allocate_connect_dummy
 !
-       allocate(ie_dummy(numele_dummy,nnod_4_ele_dummy) )
-       if ( numele_dummy .gt. 0) then
+       allocate(ie_dummy(ele_IO%numele,nnod_4_ele_dummy) )
+       if ( ele_IO%numele .gt. 0) then
         ie_dummy = 0
        end if
 !

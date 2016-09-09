@@ -78,13 +78,13 @@
       integer (kind = kint), allocatable :: ie_tmp(:)
 !
 !
-      call gz_write_one_integer_b(numele_dummy)
+      call gz_write_one_integer_b(ele_IO%numele)
 !
-      call gz_write_mul_integer_b(numele_dummy, i_ele_dummy)
-      call gz_write_mul_int8_b(numele_dummy, globalelmid_dummy)
+      call gz_write_mul_integer_b(ele_IO%numele, i_ele_dummy)
+      call gz_write_mul_int8_b(ele_IO%numele, globalelmid_dummy)
 !
       allocate(ie_tmp(nnod_4_ele_dummy))
-      do i = 1, numele_dummy
+      do i = 1, ele_IO%numele
         ie_tmp(1:nodelm_dummy(i)) = ie_dummy(i,1:nodelm_dummy(i))
         call gz_write_mul_integer_b(nodelm_dummy(i), ie_tmp)
       end do
@@ -151,7 +151,7 @@
 !
       use gz_binary_IO
 !
-      call gz_read_one_integer_b(numele_dummy)
+      call gz_read_one_integer_b(ele_IO%numele)
 !
       end subroutine gz_read_number_of_element_b
 !
@@ -167,20 +167,20 @@
 !
 !
       call allocate_ele_info_dummy
-      call gz_read_mul_integer_b(numele_dummy, i_ele_dummy)
+      call gz_read_mul_integer_b(ele_IO%numele, i_ele_dummy)
 !
       nnod_4_ele_dummy = 0
-      do i = 1, numele_dummy
+      do i = 1, ele_IO%numele
         call s_set_nnod_4_ele_by_type(i_ele_dummy(i), nodelm_dummy(i))
         nnod_4_ele_dummy = max(nnod_4_ele_dummy,nodelm_dummy(i))
       end do
 !
       call allocate_connect_dummy
 !
-      call gz_read_mul_int8_b(numele_dummy, globalelmid_dummy)
+      call gz_read_mul_int8_b(ele_IO%numele, globalelmid_dummy)
 !
       allocate(ie_tmp(nnod_4_ele_dummy))
-      do i = 1, numele_dummy
+      do i = 1, ele_IO%numele
         call gz_read_mul_integer_b(nodelm_dummy(i), ie_tmp)
         ie_dummy(i,1:nodelm_dummy(i)) = ie_tmp(1:nodelm_dummy(i))
       end do

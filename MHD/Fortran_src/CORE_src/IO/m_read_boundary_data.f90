@@ -85,9 +85,9 @@
       integer(kind = kint), intent(in) :: nprocs
 !
 !
-      deallocate(istack_bc_item_IO(0:nprocs))
-      deallocate(istack_mat_item_IO(0:nprocs))
-      deallocate(istack_surf_item_IO(0:nprocs))
+      allocate(istack_bc_item_IO(0:nprocs))
+      allocate(istack_mat_item_IO(0:nprocs))
+      allocate(istack_surf_item_IO(0:nprocs))
       istack_bc_item_IO =   0
       istack_mat_item_IO =  0
       istack_surf_item_IO = 0

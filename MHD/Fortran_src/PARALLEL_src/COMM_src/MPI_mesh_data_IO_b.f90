@@ -121,17 +121,17 @@
 !
 !
       call mpi_write_one_integer_b                                      &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, numele_dummy)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, ele_IO%numele)
 !
       call alloc_istack_merge(id_rank, nprocs_in, IO_param)
-      call set_istack_4_parallell_data(numele_dummy, IO_param)
+      call set_istack_4_parallell_data(ele_IO%numele, IO_param)
       call mpi_write_int_vector_b(id_file, nprocs_in, id_rank, ioff_gl, &
-     &    numele_dummy, i_ele_dummy, IO_param%istack_merged)
+     &    ele_IO%numele, i_ele_dummy, IO_param%istack_merged)
       call mpi_write_int8_vector_b                                      &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    numele_dummy, globalelmid_dummy, IO_param%istack_merged)
+     &    ele_IO%numele, globalelmid_dummy, IO_param%istack_merged)
 !
-      num = numele_dummy * nnod_4_ele_dummy
+      num = ele_IO%numele * nnod_4_ele_dummy
       call mul_istack_4_parallell_vect(nnod_4_ele_dummy, IO_param)
       call mpi_write_int_vector_b(id_file, nprocs_in, id_rank, ioff_gl, &
      &    num, ie_dummy(1,1), IO_param%istack_merged)
@@ -239,7 +239,7 @@
 !
 !
       call mpi_read_one_integer_b                                       &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, numele_dummy)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, ele_IO%numele)
 !
       end subroutine mpi_read_number_of_element_b
 !
@@ -261,13 +261,13 @@
       call allocate_ele_info_dummy
 !
       call alloc_istack_merge(id_rank, nprocs_in, IO_param)
-      call set_istack_4_parallell_data(numele_dummy, IO_param)
+      call set_istack_4_parallell_data(ele_IO%numele, IO_param)
       call mpi_read_int_vector_b                                        &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    numele_dummy, i_ele_dummy, IO_param%istack_merged)
+     &    ele_IO%numele, i_ele_dummy, IO_param%istack_merged)
 !
       nnod_4_ele_dummy = 0
-      do i = 1, numele_dummy
+      do i = 1, ele_IO%numele
         call s_set_nnod_4_ele_by_type(i_ele_dummy(i), nodelm_dummy(i))
         nnod_4_ele_dummy = max(nnod_4_ele_dummy,nodelm_dummy(i))
       end do
@@ -276,9 +276,9 @@
 !
       call mpi_read_int8_vector_b                                       &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    numele_dummy, globalelmid_dummy, IO_param%istack_merged)
+     &    ele_IO%numele, globalelmid_dummy, IO_param%istack_merged)
 !
-      num = numele_dummy * nnod_4_ele_dummy
+      num = ele_IO%numele * nnod_4_ele_dummy
       call mul_istack_4_parallell_vect(nnod_4_ele_dummy, IO_param)
       call mpi_read_int_vector_b                                        &
      &   (id_file, nprocs_in, id_rank, ioff_gl, num, ie_dummy(1,1),     &

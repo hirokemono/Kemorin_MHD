@@ -51,7 +51,7 @@
         call copy_node_geometry_from_IO(node)
         call deallocate_neib_domain_IO
 !
-        numele = numele_dummy
+        numele = ele_IO%numele
 !
 !     read filtering information
 !
@@ -89,7 +89,7 @@
         call copy_node_geometry_from_IO(node)
         call deallocate_neib_domain_IO
 !
-        numele = numele_dummy
+        numele = ele_IO%numele
 !
 !     read filtering information
 !

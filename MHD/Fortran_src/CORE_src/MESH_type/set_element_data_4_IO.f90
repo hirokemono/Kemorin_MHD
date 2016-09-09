@@ -31,7 +31,7 @@
       integer(kind = kint) :: iele, k1
 !
 !
-      numele_dummy =     ele%numele
+      ele_IO%numele =     ele%numele
       nnod_4_ele_dummy = ele%nnod_4_ele
 !
       call allocate_ele_info_dummy
@@ -68,12 +68,12 @@
       integer(kind = kint) :: iele, k1
 !
 !
-      if (numele_dummy .eq. 0) then
+      if (ele_IO%numele .eq. 0) then
         call deallocate_ele_info_dummy
         return
       end if
 !
-      ele%numele = numele_dummy
+      ele%numele = ele_IO%numele
       ele%first_ele_type = i_ele_dummy(1)
 !
       call set_nnod_4_ele_by_eletype                                    &

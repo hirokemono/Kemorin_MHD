@@ -35,7 +35,7 @@
       type(surface_data), intent(in) :: surf
 !
 !
-      numele_dummy =        surf%numsurf
+      ele_IO%numele =        surf%numsurf
       nnod_4_ele_dummy =    surf%nnod_4_surf
 !
       nsf_4_ele_IO =    nele
@@ -175,7 +175,7 @@
       type(surface_data), intent(inout) :: surf
 !
 !
-      surf%numsurf = numele_dummy
+      surf%numsurf = ele_IO%numele
 !
       call allocate_surface_connect_type(surf, nele)
 !

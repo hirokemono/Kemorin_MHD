@@ -99,14 +99,14 @@
       integer (kind = kint) :: num
 !
 !
-      call gz_mpi_write_one_integer_b(id_file, ioff_gl, numele_dummy)
+      call gz_mpi_write_one_integer_b(id_file, ioff_gl, ele_IO%numele)
 !
       call gz_mpi_write_int_vector_b                                    &
-     &  (id_file, ioff_gl, numele_dummy, i_ele_dummy)
+     &  (id_file, ioff_gl, ele_IO%numele, i_ele_dummy)
       call gz_mpi_write_int8_vector_b                                   &
-     &  (id_file, ioff_gl, numele_dummy, globalelmid_dummy)
+     &  (id_file, ioff_gl, ele_IO%numele, globalelmid_dummy)
 !
-      num = numele_dummy * nnod_4_ele_dummy
+      num = ele_IO%numele * nnod_4_ele_dummy
       call gz_mpi_write_int_vector_b                                    &
      &  (id_file, ioff_gl, num, ie_dummy(1,1))
 !
@@ -210,7 +210,7 @@
 !
 !
       call gz_mpi_read_one_integer_b                                    &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, numele_dummy)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, ele_IO%numele)
 !
       end subroutine gz_mpi_read_number_of_element_b
 !
@@ -232,10 +232,10 @@
       call allocate_ele_info_dummy
       call gz_mpi_read_int_vector_b                                     &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    numele_dummy, i_ele_dummy)
+     &    ele_IO%numele, i_ele_dummy)
 !
       nnod_4_ele_dummy = 0
-      do i = 1, numele_dummy
+      do i = 1, ele_IO%numele
         call s_set_nnod_4_ele_by_type(i_ele_dummy(i), nodelm_dummy(i))
         nnod_4_ele_dummy = max(nnod_4_ele_dummy,nodelm_dummy(i))
       end do
@@ -244,9 +244,9 @@
 !
       call gz_mpi_read_int8_vector_b                                    &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    numele_dummy, globalelmid_dummy)
+     &    ele_IO%numele, globalelmid_dummy)
 !
-      num = numele_dummy * nnod_4_ele_dummy
+      num = ele_IO%numele * nnod_4_ele_dummy
       call gz_mpi_read_int_vector_b                                     &
      &   (id_file, nprocs_in, id_rank, ioff_gl, num, ie_dummy(1,1))
 !

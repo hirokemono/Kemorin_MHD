@@ -41,10 +41,10 @@
       integer (kind = kint) :: i
 !
 !
-      write(id_file,'(i16)') numele_dummy
-      write(id_file,'(10i16)') i_ele_dummy(1:numele_dummy)
+      write(id_file,'(i16)') ele_IO%numele
+      write(id_file,'(10i16)') i_ele_dummy(1:ele_IO%numele)
 !
-      do i=1, numele_dummy
+      do i=1, ele_IO%numele
         write(id_file,'(28i16)') globalelmid_dummy(i),                  &
      &    ie_dummy(i,1:nodelm_dummy(i))
       end do
@@ -98,8 +98,8 @@
 !
       call skip_comment(character_4_read,id_file)
 !
-      read(character_4_read,*) numele_dummy
-!       write(*,*) numele_dummy
+      read(character_4_read,*) ele_IO%numele
+!       write(*,*) ele_IO%numele
 !
       end subroutine read_number_of_element
 !
@@ -115,17 +115,17 @@
 !
        call allocate_ele_info_dummy
 !
-       read(id_file,*) (i_ele_dummy(i),i=1,numele_dummy)
+       read(id_file,*) (i_ele_dummy(i),i=1,ele_IO%numele)
 !
        nnod_4_ele_dummy = 0
-       do i = 1, numele_dummy
+       do i = 1, ele_IO%numele
          call s_set_nnod_4_ele_by_type(i_ele_dummy(i), nodelm_dummy(i))
          nnod_4_ele_dummy = max(nnod_4_ele_dummy,nodelm_dummy(i))
        end do
 !
        call allocate_connect_dummy
 !
-       do i=1, numele_dummy
+       do i=1, ele_IO%numele
 !
         read(id_file,*) globalelmid_dummy(i),                           &
      &                  ie_dummy(i,1:nodelm_dummy(i))
