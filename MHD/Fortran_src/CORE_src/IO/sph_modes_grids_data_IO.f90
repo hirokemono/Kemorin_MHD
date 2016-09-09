@@ -22,6 +22,7 @@
 !
       use m_precision
 !
+      use m_comm_data_IO
       use domain_data_IO
       use spherical_model_IO
       use sph_global_1d_idx_IO
@@ -42,7 +43,7 @@
       integer(kind = kint), intent(in) :: mesh_file_id
 !
 !      write(*,*) '! domain and communication'
-      call read_domain_info(mesh_file_id)
+      call read_domain_info(mesh_file_id, my_rank_IO, comm_IO)
 !
 !      write(*,*) '! truncation level for spherical harmonics'
       call read_gl_resolution_sph(mesh_file_id)
@@ -56,7 +57,7 @@
       call read_gl_nodes_sph(mesh_file_id)
 !
 !      write(*,*) '! communication table between spectr data'
-      call read_import_data(mesh_file_id)
+      call read_import_data(mesh_file_id, comm_IO)
 !
 !      write(*,*) '! Group data'
       call read_group_data(mesh_file_id, bc_rtp_grp_IO)
@@ -77,7 +78,7 @@
 !
 !
 !      write(*,*) '! domain and communication'
-      call read_domain_info(mesh_file_id)
+      call read_domain_info(mesh_file_id, my_rank_IO, comm_IO)
 !
 !      write(*,*) '! truncation level for spherical harmonics'
       call read_gl_resolution_sph(mesh_file_id)
@@ -91,7 +92,7 @@
       call read_gl_nodes_sph(mesh_file_id)
 !
 !      write(*,*) '! communication table between spectr data'
-      call read_import_data(mesh_file_id)
+      call read_import_data(mesh_file_id, comm_IO)
 !
 !      write(*,*) '! Group data'
       call read_group_data(mesh_file_id, radial_rj_grp_IO)
@@ -105,13 +106,13 @@
 !
       integer(kind = kint), intent(in) :: mesh_file_id
 !
-      call read_domain_info(mesh_file_id)
+      call read_domain_info(mesh_file_id, my_rank_IO, comm_IO)
       call read_gl_resolution_sph(mesh_file_id)
       call read_rank_4_sph(mesh_file_id)
       call read_rtp_gl_1d_table(mesh_file_id)
       call read_gl_nodes_sph(mesh_file_id)
 !
-      call read_import_data(mesh_file_id)
+      call read_import_data(mesh_file_id, comm_IO)
 !
       end subroutine read_geom_rtm_data
 !
@@ -121,13 +122,13 @@
 !
       integer(kind = kint), intent(in) :: mesh_file_id
 !
-      call read_domain_info(mesh_file_id)
+      call read_domain_info(mesh_file_id, my_rank_IO, comm_IO)
       call read_gl_resolution_sph(mesh_file_id)
       call read_rank_4_sph(mesh_file_id)
       call read_rj_gl_1d_table(mesh_file_id)
       call read_gl_nodes_sph(mesh_file_id)
 !
-      call read_import_data(mesh_file_id)
+      call read_import_data(mesh_file_id, comm_IO)
 !
       end subroutine read_spectr_modes_rlm_data
 !
@@ -143,7 +144,7 @@
       integer(kind = kint), intent(in) :: id_mesh
 !
       write(id_mesh,'(a)', advance='NO') hd_sph_para()
-      call write_domain_info(id_mesh)
+      call write_domain_info(id_mesh, my_rank_IO, comm_IO)
 !
 !      write(*,*) '! truncation level for spherical harmonics'
       call write_gl_resolution_sph(id_mesh)
@@ -157,7 +158,7 @@
       call write_gl_nodes_sph(id_mesh)
 !
       write(id_mesh,'(a)', advance='NO') hd_rtp_comm()
-      call write_import_data(id_mesh)
+      call write_import_data(id_mesh, comm_IO)
 !
 !      write(*,*) '! Group data'
 !
@@ -193,7 +194,7 @@
 !
 !
       write(id_mesh,'(a)', advance='NO') hd_sph_para()
-      call write_domain_info(id_mesh)
+      call write_domain_info(id_mesh, my_rank_IO, comm_IO)
 !
 !      write(*,*) '! truncation level for spherical harmonics'
       call write_gl_resolution_sph(id_mesh)
@@ -207,7 +208,7 @@
       call write_gl_nodes_sph(id_mesh)
 !
       write(id_mesh,'(a)', advance='NO') hd_rj_comm()
-      call write_import_data(id_mesh)
+      call write_import_data(id_mesh, comm_IO)
 !
 !      write(*,*) '! Group data'
       write(id_mesh,'(a)', advance='NO') hd_grphd()
@@ -227,7 +228,7 @@
       integer(kind = kint), intent(in) :: id_mesh
 !
       write(id_mesh,'(a)', advance='NO') hd_sph_para()
-      call write_domain_info(id_mesh)
+      call write_domain_info(id_mesh, my_rank_IO, comm_IO)
 !      write(*,*) '! truncation level for spherical harmonics'
       call write_gl_resolution_sph(id_mesh)
 !      write(*,*) '! segment ID for each direction'
@@ -240,7 +241,7 @@
       call write_gl_nodes_sph(id_mesh)
 !
       write(id_mesh,'(a)', advance='NO') hd_rtp_comm()
-      call write_import_data(id_mesh)
+      call write_import_data(id_mesh, comm_IO)
 !
       end subroutine write_geom_rtm_data
 !
@@ -253,7 +254,7 @@
       integer(kind = kint), intent(in) :: id_mesh
 !
       write(id_mesh,'(a)', advance='NO') hd_sph_para()
-      call write_domain_info(id_mesh)
+      call write_domain_info(id_mesh, my_rank_IO, comm_IO)
 !      write(id_mesh,*) '! truncation level for spherical harmonics'
       call write_gl_resolution_sph(id_mesh)
 !      write(id_mesh,*) '! segment ID for each direction'
@@ -266,7 +267,7 @@
       call write_gl_nodes_sph(id_mesh)
 !
       write(id_mesh,'(a)', advance='NO') hd_rj_comm()
-      call write_import_data(id_mesh)
+      call write_import_data(id_mesh, comm_IO)
 !
       end subroutine write_modes_rlm_data
 !

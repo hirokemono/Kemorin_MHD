@@ -21,6 +21,7 @@
       use m_precision
       use m_machine_parameter
 !
+      use m_comm_data_IO
       use m_read_mesh_data
 !
       implicit none
@@ -92,7 +93,7 @@
      &   'Read ascii mesh file: ', trim(mesh_file_name)
 !
       open(input_file_code, file = mesh_file_name, form = 'formatted')
-      call read_domain_info(input_file_code)
+      call read_domain_info(input_file_code, my_rank_IO, comm_IO)
       call read_number_of_node(input_file_code)
       close(input_file_code)
 !
@@ -115,7 +116,7 @@
 !
       open(input_file_code, file = mesh_file_name, form = 'formatted')
 !
-      call read_domain_info(input_file_code)
+      call read_domain_info(input_file_code, my_rank_IO, comm_IO)
       call read_number_of_node(input_file_code)
       call read_geometry_info(input_file_code)
 !

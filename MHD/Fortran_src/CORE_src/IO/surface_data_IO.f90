@@ -29,6 +29,7 @@
       subroutine write_surface_connection
 !
       use m_fem_mesh_labels
+      use m_comm_data_IO
       use m_read_mesh_data
       use domain_data_IO
       use element_connect_IO
@@ -40,7 +41,7 @@
       write(input_file_code,'(a)') '!' 
       write(input_file_code,'(a)', advance='NO') hd_fem_para()
 !
-      call write_domain_info(input_file_code)
+      call write_domain_info(input_file_code, my_rank_IO, comm_IO)
 !
       write(input_file_code,'(a)') '!'
       write(input_file_code,'(a)') '!  2  surface connectivity'
@@ -65,13 +66,13 @@
       write(input_file_code,'(a)') '! 3.1 surface ID for import '
       write(input_file_code,'(a)') '!'
 !
-      call write_import_data(input_file_code)
+      call write_import_data(input_file_code, comm_IO)
 !
       write(input_file_code,'(a)') '!'
       write(input_file_code,'(a)') '! 3.2 surface ID for export '
       write(input_file_code,'(a)') '!'
 !
-      call write_export_data(input_file_code)
+      call write_export_data(input_file_code, comm_IO)
 !
       end subroutine write_surface_connection
 !
