@@ -72,7 +72,7 @@
       call sel_read_mesh(my_rank)
       call set_mesh_geometry_data(mesh)
 !
-      call deallocate_boundary_arrays
+      call deallocate_mesh_groups_IO
 !
       end subroutine input_mesh_geometry
 !

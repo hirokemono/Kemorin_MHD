@@ -185,7 +185,7 @@
       call sel_read_mesh(my_rank_2nd)
       mesh_file_head = org_mesh_head
 !
-      call deallocate_boundary_arrays
+      call deallocate_mesh_groups_IO
       call deallocate_node_data_dummy
       call deallocate_comm_item_IO
 !
@@ -309,7 +309,7 @@
         mesh_file_head = target_mesh_head
         call sel_read_mesh(my_rank_org)
 !
-        call deallocate_boundary_arrays
+        call deallocate_mesh_groups_IO
         call deallocate_node_data_dummy
         call deallocate_comm_item_IO
 !

@@ -66,7 +66,7 @@
       call sel_mpi_read_mesh
       call set_mesh_geometry_data(mesh)
 !
-      call deallocate_boundary_arrays
+      call deallocate_para_mesh_groups_IO
 !
       end subroutine mpi_input_mesh_geometry
 !
@@ -94,6 +94,8 @@
 !
 !       save mesh information
       call sel_mpi_write_mesh_file
+!
+      call deallocate_mesh_groups_IO
 !
       end subroutine mpi_output_mesh
 !

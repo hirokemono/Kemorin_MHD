@@ -52,9 +52,6 @@
         close(id_work_file)
       end if
 !
-      call deallocate_type_import(new_comm)
-      call deallocate_type_neib_id(new_comm)
-!
       end subroutine save_node_import_4_part
 !
 !   --------------------------------------------------------------------
@@ -87,8 +84,6 @@
         call write_node_export_to_work(id_work_file, new_comm)
         close(id_work_file)
       end if
-!
-      call deallocate_type_comm_tbl(new_comm)
 !
       end subroutine save_node_export_4_part
 !

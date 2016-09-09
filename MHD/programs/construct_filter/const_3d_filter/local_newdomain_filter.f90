@@ -59,10 +59,8 @@
 !
 !    construct communication table
 !
-        call gen_node_import_tables                                     &
-     &     (nprocs_2nd, work_file_header, newmesh%nod_comm)
-        call gen_node_export_tables                                     &
-     &      (nprocs_2nd, work_file_header, newmesh%nod_comm)
+        call gen_node_import_tables(nprocs_2nd, work_file_header)
+        call gen_node_export_tables(nprocs_2nd, work_file_header)
       end if
 !
       call bcast_num_filter_part_table(nprocs_2nd)
@@ -108,10 +106,8 @@
 !
 !     construct communication table
 !
-      call gen_node_import_tables                                       &
-    &     (nprocs_2nd, work_file_header, newmesh%nod_comm)
-      call gen_node_export_tables                                       &
-    &     (nprocs_2nd, work_file_header, newmesh%nod_comm)
+      call gen_node_import_tables(nprocs_2nd, work_file_header)
+      call gen_node_export_tables(nprocs_2nd, work_file_header)
 !
       call allocate_internod_4_part
 !

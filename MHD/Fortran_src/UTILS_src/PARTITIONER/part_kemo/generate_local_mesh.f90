@@ -4,7 +4,7 @@
 !      Written by H. Matsui on Aug., 2007
 !
 !!      subroutine PROC_LOCAL_MESH(node_org, ele_org, edge_org,         &
-!!     &          ele_grp, new_fem, included_ele)
+!!     &          ele_grp, included_ele)
 !
       module generate_local_mesh
 !
@@ -20,7 +20,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine PROC_LOCAL_MESH(node_org, ele_org, edge_org,           &
-     &          group_org, new_fem, included_ele)
+     &          group_org, included_ele)
 !
       use t_mesh_data
       use t_near_mesh_id_4_node
@@ -42,7 +42,6 @@
       type(element_data), intent(in) :: ele_org
       type(mesh_groups), intent(in) :: group_org
       type(edge_data), intent(in) :: edge_org
-      type(mesh_data), intent(inout) :: new_fem
       type(near_mesh), intent(inout) :: included_ele
 !
       character(len=kchara), parameter :: work_file_header = 'work'
@@ -75,19 +74,17 @@
 !C +---------------------------------------+
 !C===
 !
-      call gen_node_import_tables                                       &
-     &    (num_domain, work_file_header, new_fem%mesh%nod_comm)
+      call gen_node_import_tables(num_domain, work_file_header)
 !C
 !C +-------------------------------+
 !C | update FILE : EXPORT pointers |
 !C +-------------------------------+
 !C===
-      call gen_node_export_tables                                       &
-     &    (num_domain, work_file_header, new_fem%mesh%nod_comm)
+      call gen_node_export_tables(num_domain, work_file_header)
 !C
 !C-- distributed Local DATA
       call local_fem_mesh(izero, ione, work_file_header,                &
-     &    node_org, ele_org, group_org, new_fem)
+     &    node_org, ele_org, group_org)
 !
       end subroutine PROC_LOCAL_MESH
 !
