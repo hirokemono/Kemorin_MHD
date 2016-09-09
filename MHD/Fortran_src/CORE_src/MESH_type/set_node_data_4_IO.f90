@@ -32,7 +32,7 @@
 !
 !
       nod_IO%numnod =        node%numnod
-      internal_node_dummy = node%internal_node
+      nod_IO%internal_node = node%internal_node
 !
       call allocate_node_data_dummy
 !
@@ -56,7 +56,7 @@
 !
 !
       nod_IO%numnod =        node%numnod
-      internal_node_dummy = node%internal_node
+      nod_IO%internal_node = node%internal_node
 !
       call allocate_node_data_dummy
 !
@@ -81,7 +81,7 @@
 !
 !
       nod_IO%numnod =        node%numnod
-      internal_node_dummy = node%internal_node
+      nod_IO%internal_node = node%internal_node
 !
       call allocate_node_data_dummy
 !
@@ -107,7 +107,7 @@
 !
 !
       node%numnod =        nod_IO%numnod
-      node%internal_node = internal_node_dummy
+      node%internal_node = nod_IO%internal_node
 !
       call allocate_node_geometry_base(node)
 !

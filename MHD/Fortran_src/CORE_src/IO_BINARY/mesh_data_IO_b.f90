@@ -59,7 +59,7 @@
 !
 !
       call write_one_integer_b(nod_IO%numnod)
-      call write_one_integer_b(internal_node_dummy)
+      call write_one_integer_b(nod_IO%internal_node)
 !
       call write_mul_int8_b(nod_IO%numnod, globalnodid_dummy)
       call write_2d_vector_b(nod_IO%numnod, ithree, xx_dummy)
@@ -127,7 +127,7 @@
 !
 !
       call read_one_integer_b(nod_IO%numnod)
-      call read_one_integer_b(internal_node_dummy)
+      call read_one_integer_b(nod_IO%internal_node)
 !
       end subroutine read_number_of_node_b
 !

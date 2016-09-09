@@ -100,7 +100,7 @@
       call mpi_write_one_integer                                        &
      &   (id_file, nprocs_in, id_rank, ioff_gl, nod_IO%numnod)
       call mpi_write_one_integer                                        &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, internal_node_dummy)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, nod_IO%internal_node)
 !
       call alloc_istack_merge(id_rank, nprocs_in, IO_param)
       call set_istack_4_parallell_data(nod_IO%numnod, IO_param)
@@ -206,7 +206,7 @@
       call mpi_read_one_integer                                         &
      &   (id_file, nprocs_in, id_rank, ioff_gl, nod_IO%numnod)
       call mpi_read_one_integer                                         &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, internal_node_dummy)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, nod_IO%internal_node)
 !
       end subroutine mpi_read_number_of_node
 !

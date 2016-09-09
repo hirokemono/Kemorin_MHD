@@ -28,7 +28,7 @@
       integer (kind = kint) :: i
 !
 !
-      write(textbuf,'(2i16,a1)') nod_IO%numnod, internal_node_dummy,    &
+      write(textbuf,'(2i16,a1)') nod_IO%numnod, nod_IO%internal_node,   &
      &      char(0)
       call gz_write_textbuf_w_lf
 !
@@ -49,7 +49,7 @@
 !
 !
       call skip_gz_comment_int(nod_IO%numnod)
-      read(textbuf,*) nod_IO%numnod, internal_node_dummy
+      read(textbuf,*) nod_IO%numnod, nod_IO%internal_node
 !
       end subroutine read_number_of_node_gz
 !

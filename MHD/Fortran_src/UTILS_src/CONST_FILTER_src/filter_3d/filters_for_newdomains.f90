@@ -123,7 +123,7 @@
         call deallocate_node_data_dummy
         call deallocate_neib_domain_IO
 !
-        new_node%internal_node = internal_node_dummy
+        new_node%internal_node = nod_IO%internal_node
         new_node%numnod = nod_IO%numnod
         new_ele%numele =  ele_IO%numele
 !

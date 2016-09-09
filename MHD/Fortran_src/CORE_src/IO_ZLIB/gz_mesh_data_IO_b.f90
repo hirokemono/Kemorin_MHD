@@ -59,7 +59,7 @@
 !
 !
       call gz_write_one_integer_b(nod_IO%numnod)
-      call gz_write_one_integer_b(internal_node_dummy)
+      call gz_write_one_integer_b(nod_IO%internal_node)
 !
       call gz_write_mul_int8_b(nod_IO%numnod, globalnodid_dummy)
       call gz_write_2d_vector_b(nod_IO%numnod, ithree, xx_dummy)
@@ -127,7 +127,7 @@
 !
 !
       call gz_read_one_integer_b(nod_IO%numnod)
-      call gz_read_one_integer_b(internal_node_dummy)
+      call gz_read_one_integer_b(nod_IO%internal_node)
 !
       end subroutine gz_read_number_of_node_b
 !

@@ -79,7 +79,7 @@
 !
 !
       nod_IO%numnod =        surf%numsurf
-      internal_node_dummy = surf%internal_surf
+      nod_IO%internal_node = surf%internal_surf
 !
       call allocate_node_data_dummy
       call allocate_ele_vector_IO
@@ -111,7 +111,7 @@
 !
 !
       nod_IO%numnod =        surf%numsurf
-      internal_node_dummy = surf%internal_surf
+      nod_IO%internal_node = surf%internal_surf
 !
       call allocate_node_data_dummy
       call allocate_ele_vector_IO
@@ -142,7 +142,7 @@
 !
 !
       nod_IO%numnod =        surf%numsurf
-      internal_node_dummy = surf%internal_surf
+      nod_IO%internal_node = surf%internal_surf
 !
       call allocate_node_data_dummy
       call allocate_ele_vector_IO

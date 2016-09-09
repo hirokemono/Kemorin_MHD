@@ -75,7 +75,7 @@
 !
       call gz_mpi_write_one_integer_b(id_file, ioff_gl, nod_IO%numnod)
       call gz_mpi_write_one_integer_b                                   &
-     &   (id_file, ioff_gl, internal_node_dummy)
+     &   (id_file, ioff_gl, nod_IO%internal_node)
 !
       call gz_mpi_write_int8_vector_b                                   &
      &   (id_file, ioff_gl, nod_IO%numnod, globalnodid_dummy)
@@ -169,7 +169,7 @@
       call gz_mpi_read_one_integer_b                                    &
      &   (id_file, nprocs_in, id_rank, ioff_gl, nod_IO%numnod)
       call gz_mpi_read_one_integer_b                                    &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, internal_node_dummy)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, nod_IO%internal_node)
 !
       end subroutine gz_mpi_read_number_of_node_b
 !

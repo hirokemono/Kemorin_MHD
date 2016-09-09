@@ -29,26 +29,19 @@
 !
 !>  structure for node data IO (position)
       type(node_data), save ::    nod_IO
-!nod_IO%numnod
+!nod_IO%internal_node
 !
 !>  structure for element data IO (connectivity)
       type(element_data), save :: ele_IO
 !
 !      integer(kind=kint) :: numnod_dummy
-      integer(kind=kint) :: internal_node_dummy
+!      integer(kind=kint) :: internal_node_dummy
       integer(kind=kint_gl), allocatable :: globalnodid_dummy(:)
       real(kind=kreal),   allocatable :: xx_dummy(:,:)
 ! 
       real(kind=kreal),   allocatable :: ele_vector_IO(:,:)
       real(kind=kreal),   allocatable :: ele_scalar_IO(:)
 !
-!      integer(kind=kint) :: numele_dummy
-!      integer (kind = kint) :: nnod_4_ele_dummy = 8
-!      integer(kind=kint_gl), allocatable:: globalelmid_dummy(:)
-!      integer(kind=kint), allocatable   :: i_ele_dummy(:)
-!      integer(kind=kint), allocatable   :: nodelm_dummy(:)
-!      integer(kind=kint), allocatable :: ie_dummy(:,:)
-! 
       integer(kind = kint) :: nsf_4_ele_IO
       integer(kind = kint) :: nsurf_in_ele_IO = 6
       integer(kind = kint), allocatable  :: isf_4_ele_IO(:,:)

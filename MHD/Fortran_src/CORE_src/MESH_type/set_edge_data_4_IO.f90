@@ -95,7 +95,7 @@
 !
 !
       nod_IO%numnod =        edge%numedge
-      internal_node_dummy = edge%internal_edge
+      nod_IO%internal_node = edge%internal_edge
 !
       call allocate_node_data_dummy
       call allocate_ele_vector_IO
@@ -125,7 +125,7 @@
 !
 !
       nod_IO%numnod =        edge%numedge
-      internal_node_dummy = edge%internal_edge
+      nod_IO%internal_node = edge%internal_edge
 !
       call allocate_node_data_dummy
       call allocate_ele_vector_IO
@@ -155,7 +155,7 @@
 !
 !
       nod_IO%numnod =        edge%numedge
-      internal_node_dummy = edge%internal_edge
+      nod_IO%internal_node = edge%internal_edge
 !
       call allocate_node_data_dummy
       call allocate_ele_vector_IO
