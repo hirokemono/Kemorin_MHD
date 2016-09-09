@@ -129,7 +129,7 @@
      &    ele_IO%numele, i_ele_dummy, IO_param%istack_merged)
       call mpi_write_int8_vector_b                                      &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    ele_IO%numele, globalelmid_dummy, IO_param%istack_merged)
+     &    ele_IO%numele, ele_IO%iele_global, IO_param%istack_merged)
 !
       num = ele_IO%numele * ele_IO%nnod_4_ele
       call mul_istack_4_parallell_vect(ele_IO%nnod_4_ele, IO_param)
@@ -276,7 +276,7 @@
 !
       call mpi_read_int8_vector_b                                       &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    ele_IO%numele, globalelmid_dummy, IO_param%istack_merged)
+     &    ele_IO%numele, ele_IO%iele_global, IO_param%istack_merged)
 !
       num = ele_IO%numele * ele_IO%nnod_4_ele
       call mul_istack_4_parallell_vect(ele_IO%nnod_4_ele, IO_param)

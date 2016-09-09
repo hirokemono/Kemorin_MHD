@@ -48,7 +48,7 @@
 !
 !$omp do
       do iele = 1, ele%numele
-        globalelmid_dummy(iele) = ele%iele_global(iele)
+        ele_IO%iele_global(iele) = ele%iele_global(iele)
         i_ele_dummy(iele) =       ele%elmtyp(iele)
         nodelm_dummy(iele) =      ele%nodelm(iele)
       end do
@@ -92,7 +92,7 @@
 !
 !$omp do
       do iele = 1, ele%numele
-        ele%iele_global(iele) = globalelmid_dummy(iele)
+        ele%iele_global(iele) = ele_IO%iele_global(iele)
         ele%elmtyp(iele) =      i_ele_dummy(iele)
         ele%nodelm(iele) =      nodelm_dummy(iele)
       end do

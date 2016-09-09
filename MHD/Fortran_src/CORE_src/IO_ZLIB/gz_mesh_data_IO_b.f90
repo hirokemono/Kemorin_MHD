@@ -81,7 +81,7 @@
       call gz_write_one_integer_b(ele_IO%numele)
 !
       call gz_write_mul_integer_b(ele_IO%numele, i_ele_dummy)
-      call gz_write_mul_int8_b(ele_IO%numele, globalelmid_dummy)
+      call gz_write_mul_int8_b(ele_IO%numele, ele_IO%iele_global)
 !
       allocate(ie_tmp(ele_IO%nnod_4_ele))
       do i = 1, ele_IO%numele
@@ -177,7 +177,7 @@
 !
       call allocate_connect_dummy
 !
-      call gz_read_mul_int8_b(ele_IO%numele, globalelmid_dummy)
+      call gz_read_mul_int8_b(ele_IO%numele, ele_IO%iele_global)
 !
       allocate(ie_tmp(ele_IO%nnod_4_ele))
       do i = 1, ele_IO%numele

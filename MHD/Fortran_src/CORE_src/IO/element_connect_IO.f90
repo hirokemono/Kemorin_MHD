@@ -45,7 +45,7 @@
       write(id_file,'(10i16)') i_ele_dummy(1:ele_IO%numele)
 !
       do i=1, ele_IO%numele
-        write(id_file,'(28i16)') globalelmid_dummy(i),                  &
+        write(id_file,'(28i16)') ele_IO%iele_global(i),                 &
      &    ie_dummy(i,1:nodelm_dummy(i))
       end do
 !
@@ -127,7 +127,7 @@
 !
        do i=1, ele_IO%numele
 !
-        read(id_file,*) globalelmid_dummy(i),                           &
+        read(id_file,*) ele_IO%iele_global(i),                          &
      &                  ie_dummy(i,1:nodelm_dummy(i))
        end do
 !

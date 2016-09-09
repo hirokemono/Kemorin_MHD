@@ -104,7 +104,7 @@
       call gz_mpi_write_int_vector_b                                    &
      &  (id_file, ioff_gl, ele_IO%numele, i_ele_dummy)
       call gz_mpi_write_int8_vector_b                                   &
-     &  (id_file, ioff_gl, ele_IO%numele, globalelmid_dummy)
+     &  (id_file, ioff_gl, ele_IO%numele, ele_IO%iele_global)
 !
       num = ele_IO%numele * ele_IO%nnod_4_ele
       call gz_mpi_write_int_vector_b                                    &
@@ -244,7 +244,7 @@
 !
       call gz_mpi_read_int8_vector_b                                    &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    ele_IO%numele, globalelmid_dummy)
+     &    ele_IO%numele, ele_IO%iele_global)
 !
       num = ele_IO%numele * ele_IO%nnod_4_ele
       call gz_mpi_read_int_vector_b                                     &

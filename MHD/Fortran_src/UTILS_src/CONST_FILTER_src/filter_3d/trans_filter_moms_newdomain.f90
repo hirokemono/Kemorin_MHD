@@ -113,10 +113,10 @@
 !
       mesh_file_head = org_mesh_head
 !
-      max_gl_ele_newdomain = globalelmid_dummy(1)
+      max_gl_ele_newdomain = ele_IO%iele_global(1)
       do iele = 2, ele_IO%numele
         max_gl_ele_newdomain                                            &
-     &         = max(max_gl_ele_newdomain,globalelmid_dummy(iele))
+     &         = max(max_gl_ele_newdomain,ele_IO%iele_global(iele))
       end do
 !
       call deallocate_mesh_arrays

@@ -64,7 +64,7 @@
 !
 !omp parallel do
       do iedge = 1, edge%numedge
-        globalelmid_dummy(iedge) = edge%iedge_global(iedge)
+        ele_IO%iele_global(iedge) = edge%iedge_global(iedge)
         nodelm_dummy(iedge) =      edge%nnod_4_edge
         ie_dummy(iedge,1:edge%nnod_4_edge)                              &
      &        = edge%ie_edge(iedge,1:edge%nnod_4_edge)
@@ -195,7 +195,7 @@
       call allocate_edge_4_ele_type(edge, nele)
 !
       do iedge = 1, edge%numedge
-        edge%iedge_global(iedge) = globalelmid_dummy(iedge)
+        edge%iedge_global(iedge) = ele_IO%iele_global(iedge)
         edge%ie_edge(iedge,1:edge%nnod_4_edge)                          &
      &        = ie_dummy(iedge,1:edge%nnod_4_edge)
       end do

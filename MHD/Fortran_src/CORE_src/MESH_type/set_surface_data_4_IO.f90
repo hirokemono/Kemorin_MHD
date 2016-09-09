@@ -56,7 +56,7 @@
 !
 !$omp workshare
       nodelm_dummy(1:surf%numsurf) = surf%nnod_4_surf
-      globalelmid_dummy(1:surf%numsurf)                                 &
+      ele_IO%iele_global(1:surf%numsurf)                                &
      &        = surf%isurf_global(1:surf%numsurf)
 !$omp end workshare
 !$omp workshare
@@ -181,7 +181,7 @@
 !
 !$omp workshare
       surf%isurf_global(1:surf%numsurf)                                 &
-     &        = globalelmid_dummy(1:surf%numsurf)
+     &        = ele_IO%iele_global(1:surf%numsurf)
 !$omp end workshare
 !$omp workshare
       surf%ie_surf(1:surf%numsurf,1:surf%nnod_4_surf)                   &

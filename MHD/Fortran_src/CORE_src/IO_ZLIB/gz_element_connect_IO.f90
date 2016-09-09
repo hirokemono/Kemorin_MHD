@@ -37,7 +37,7 @@
 !
       do i=1, ele_IO%numele
         write(fmt_txt,'(a5,i3,a7)') '(i16,', nodelm_dummy(i), 'i16,a1)'
-        write(textbuf,fmt_txt) globalelmid_dummy(i),                    &
+        write(textbuf,fmt_txt) ele_IO%iele_global(i),                   &
      &         ie_dummy(i,1:nodelm_dummy(i)), char(0)
         call gz_write_textbuf_w_lf
       end do
@@ -79,7 +79,7 @@
 !
        do i=1, ele_IO%numele
         call get_one_line_from_gz_f
-        read(textbuf,*) globalelmid_dummy(i),                           &
+        read(textbuf,*) ele_IO%iele_global(i),                          &
      &                 ie_dummy(i,1:nodelm_dummy(i))
        end do
 !
