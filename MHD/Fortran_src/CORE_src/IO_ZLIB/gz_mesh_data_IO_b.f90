@@ -85,8 +85,8 @@
 !
       allocate(ie_tmp(ele_IO%nnod_4_ele))
       do i = 1, ele_IO%numele
-        ie_tmp(1:nodelm_dummy(i)) = ie_dummy(i,1:nodelm_dummy(i))
-        call gz_write_mul_integer_b(nodelm_dummy(i), ie_tmp)
+        ie_tmp(1:ele_IO%nodelm(i)) = ie_dummy(i,1:ele_IO%nodelm(i))
+        call gz_write_mul_integer_b(ele_IO%nodelm(i), ie_tmp)
       end do
       deallocate(ie_tmp)
 !
@@ -171,8 +171,8 @@
 !
       ele_IO%nnod_4_ele = 0
       do i = 1, ele_IO%numele
-        call s_set_nnod_4_ele_by_type(i_ele_dummy(i), nodelm_dummy(i))
-        ele_IO%nnod_4_ele = max(ele_IO%nnod_4_ele,nodelm_dummy(i))
+        call s_set_nnod_4_ele_by_type(i_ele_dummy(i), ele_IO%nodelm(i))
+        ele_IO%nnod_4_ele = max(ele_IO%nnod_4_ele,ele_IO%nodelm(i))
       end do
 !
       call allocate_connect_dummy
@@ -181,8 +181,8 @@
 !
       allocate(ie_tmp(ele_IO%nnod_4_ele))
       do i = 1, ele_IO%numele
-        call gz_read_mul_integer_b(nodelm_dummy(i), ie_tmp)
-        ie_dummy(i,1:nodelm_dummy(i)) = ie_tmp(1:nodelm_dummy(i))
+        call gz_read_mul_integer_b(ele_IO%nodelm(i), ie_tmp)
+        ie_dummy(i,1:ele_IO%nodelm(i)) = ie_tmp(1:ele_IO%nodelm(i))
       end do
       deallocate(ie_tmp)
 !

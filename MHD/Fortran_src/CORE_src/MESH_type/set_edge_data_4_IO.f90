@@ -65,7 +65,7 @@
 !omp parallel do
       do iedge = 1, edge%numedge
         ele_IO%iele_global(iedge) = edge%iedge_global(iedge)
-        nodelm_dummy(iedge) =      edge%nnod_4_edge
+        ele_IO%nodelm(iedge) =      edge%nnod_4_edge
         ie_dummy(iedge,1:edge%nnod_4_edge)                              &
      &        = edge%ie_edge(iedge,1:edge%nnod_4_edge)
       end do

@@ -46,7 +46,7 @@
 !
       do i=1, ele_IO%numele
         write(id_file,'(28i16)') ele_IO%iele_global(i),                 &
-     &    ie_dummy(i,1:nodelm_dummy(i))
+     &    ie_dummy(i,1:ele_IO%nodelm(i))
       end do
 !
       call deallocate_ele_info_dummy
@@ -119,8 +119,9 @@
 !
        ele_IO%nnod_4_ele = 0
        do i = 1, ele_IO%numele
-         call s_set_nnod_4_ele_by_type(i_ele_dummy(i), nodelm_dummy(i))
-         ele_IO%nnod_4_ele = max(ele_IO%nnod_4_ele,nodelm_dummy(i))
+         call s_set_nnod_4_ele_by_type                                  &
+     &      (i_ele_dummy(i), ele_IO%nodelm(i))
+         ele_IO%nnod_4_ele = max(ele_IO%nnod_4_ele,ele_IO%nodelm(i))
        end do
 !
        call allocate_connect_dummy
@@ -128,7 +129,7 @@
        do i=1, ele_IO%numele
 !
         read(id_file,*) ele_IO%iele_global(i),                          &
-     &                  ie_dummy(i,1:nodelm_dummy(i))
+     &                  ie_dummy(i,1:ele_IO%nodelm(i))
        end do
 !
        end subroutine read_element_info

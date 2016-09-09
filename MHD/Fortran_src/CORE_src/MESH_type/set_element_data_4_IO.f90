@@ -50,7 +50,7 @@
       do iele = 1, ele%numele
         ele_IO%iele_global(iele) = ele%iele_global(iele)
         i_ele_dummy(iele) =       ele%elmtyp(iele)
-        nodelm_dummy(iele) =      ele%nodelm(iele)
+        ele_IO%nodelm(iele) =      ele%nodelm(iele)
       end do
 !$omp end do
 !$omp end parallel
@@ -94,7 +94,7 @@
       do iele = 1, ele%numele
         ele%iele_global(iele) = ele_IO%iele_global(iele)
         ele%elmtyp(iele) =      i_ele_dummy(iele)
-        ele%nodelm(iele) =      nodelm_dummy(iele)
+        ele%nodelm(iele) =      ele_IO%nodelm(iele)
       end do
 !$omp end do
 !$omp end parallel

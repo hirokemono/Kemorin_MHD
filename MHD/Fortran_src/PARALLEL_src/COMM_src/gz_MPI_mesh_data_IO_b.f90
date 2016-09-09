@@ -236,8 +236,8 @@
 !
       ele_IO%nnod_4_ele = 0
       do i = 1, ele_IO%numele
-        call s_set_nnod_4_ele_by_type(i_ele_dummy(i), nodelm_dummy(i))
-        ele_IO%nnod_4_ele = max(ele_IO%nnod_4_ele,nodelm_dummy(i))
+        call s_set_nnod_4_ele_by_type(i_ele_dummy(i), ele_IO%nodelm(i))
+        ele_IO%nnod_4_ele = max(ele_IO%nnod_4_ele,ele_IO%nodelm(i))
       end do
 !
       call allocate_connect_dummy

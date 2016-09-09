@@ -55,7 +55,7 @@
       end if
 !
 !$omp workshare
-      nodelm_dummy(1:surf%numsurf) = surf%nnod_4_surf
+      ele_IO%nodelm(1:surf%numsurf) = surf%nnod_4_surf
       ele_IO%iele_global(1:surf%numsurf)                                &
      &        = surf%isurf_global(1:surf%numsurf)
 !$omp end workshare

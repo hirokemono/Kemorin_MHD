@@ -36,9 +36,10 @@
       call write_gz_multi_int_10i8(ele_IO%numele, i_ele_dummy)
 !
       do i=1, ele_IO%numele
-        write(fmt_txt,'(a5,i3,a7)') '(i16,', nodelm_dummy(i), 'i16,a1)'
+        write(fmt_txt,'(a5,i3,a7)')                                     &
+     &         '(i16,', ele_IO%nodelm(i), 'i16,a1)'
         write(textbuf,fmt_txt) ele_IO%iele_global(i),                   &
-     &         ie_dummy(i,1:nodelm_dummy(i)), char(0)
+     &         ie_dummy(i,1:ele_IO%nodelm(i)), char(0)
         call gz_write_textbuf_w_lf
       end do
 !
@@ -71,8 +72,9 @@
 !
        ele_IO%nnod_4_ele = 0
        do i = 1, ele_IO%numele
-         call s_set_nnod_4_ele_by_type(i_ele_dummy(i), nodelm_dummy(i))
-         ele_IO%nnod_4_ele = max(ele_IO%nnod_4_ele,nodelm_dummy(i))
+         call s_set_nnod_4_ele_by_type                                  &
+     &      (i_ele_dummy(i), ele_IO%nodelm(i))
+         ele_IO%nnod_4_ele = max(ele_IO%nnod_4_ele,ele_IO%nodelm(i))
        end do
 !
        call allocate_connect_dummy
@@ -80,7 +82,7 @@
        do i=1, ele_IO%numele
         call get_one_line_from_gz_f
         read(textbuf,*) ele_IO%iele_global(i),                          &
-     &                 ie_dummy(i,1:nodelm_dummy(i))
+     &                 ie_dummy(i,1:ele_IO%nodelm(i))
        end do
 !
        end subroutine read_element_info_gz
