@@ -172,7 +172,7 @@
      &      form = 'formatted')
 !
       comm_IO%num_neib = 0
-      call allocate_neib_domain_IO
+      call allocate_type_neib_id(comm_IO)
 !
       call copy_node_sph_to_IO(mesh%node)
 !
@@ -186,7 +186,7 @@
      &      form = 'formatted')
 !
       comm_IO%num_neib = 0
-      call allocate_neib_domain_IO
+      call allocate_type_neib_id(comm_IO)
       call copy_node_cyl_to_IO(mesh%node)
 !
       call output_node_cyl_geometry

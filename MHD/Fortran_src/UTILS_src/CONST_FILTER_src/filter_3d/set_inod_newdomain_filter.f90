@@ -49,7 +49,7 @@
         call sel_read_geometry_size(my_rank2)
         call copy_node_geometry_from_IO(new_node)
 !
-        call deallocate_neib_domain_IO
+        call deallocate_type_neib_id(comm_IO)
 !
         call marking_used_node_4_filtering                              &
      &     (ip2, ifmt_3d_filter, org_node, org_ele%numele)

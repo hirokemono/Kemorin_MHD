@@ -35,8 +35,8 @@
 !
 !
       comm_IO%num_neib = izero
-      call allocate_neib_comm_stack_IO
-      call allocate_comm_item_IO
+      call allocate_type_comm_tbl_num(comm_IO)
+      call allocate_type_comm_tbl_item(comm_IO)
       call copy_node_geometry_to_IO(merged%node)
       call copy_ele_connect_to_IO(merged%ele)
 !

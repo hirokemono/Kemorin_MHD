@@ -120,7 +120,7 @@
         call sel_read_geometry_size(id_rank)
         call copy_node_geometry_from_IO(node_plane)
 !
-        call deallocate_neib_domain_IO
+        call deallocate_type_neib_id(comm_IO)
 !
 !     allocate added restart data
 !

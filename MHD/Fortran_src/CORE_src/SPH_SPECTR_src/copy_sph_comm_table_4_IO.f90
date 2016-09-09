@@ -61,8 +61,8 @@
       comm_sph%item_sr(1:comm_sph%ntot_item_sr)                         &
      &      = comm_IO%item_import(1:comm_sph%ntot_item_sr)
 !
-      call deallocate_import_item_IO
-      call deallocate_neib_domain_IO
+      call deallocate_type_import(comm_IO)
+      call deallocate_type_neib_id(comm_IO)
 !
       end subroutine copy_comm_sph_from_IO
 !
@@ -78,9 +78,9 @@
       comm_IO%num_neib =    comm_sph%nneib_domain
       comm_IO%ntot_import = comm_sph%ntot_item_sr
 !
-      call allocate_neib_domain_IO
-      call allocate_import_stack_IO
-      call allocate_import_item_IO
+      call allocate_type_neib_id(comm_IO)
+      call allocate_type_import_num(comm_IO)
+      call allocate_type_import_item(comm_IO)
 !
       comm_IO%id_neib(1:comm_sph%nneib_domain)                          &
      &      = comm_sph%id_domain(1:comm_sph%nneib_domain)

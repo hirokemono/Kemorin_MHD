@@ -35,7 +35,7 @@
       call get_one_line_from_gz_f
       read(textbuf,*) comm_IO%num_neib
 !
-      call allocate_neib_domain_IO
+      call allocate_type_neib_id(comm_IO)
 !
       if (comm_IO%num_neib .gt. 0) then
         call read_gz_multi_int(comm_IO%num_neib, comm_IO%id_neib)
@@ -48,19 +48,19 @@
       subroutine read_import_data_gz
 !
 !
-      call allocate_import_stack_IO
+      call allocate_type_import_num(comm_IO)
 !
       comm_IO%istack_import(0) = 0
       if (comm_IO%num_neib .gt. 0) then
         call read_gz_integer_stack(comm_IO%num_neib,                    &
      &      comm_IO%istack_import, comm_IO%ntot_import)
 !
-        call allocate_import_item_IO
+        call allocate_type_import_item(comm_IO)
         call read_send_recv_item_gz                                     &
      &     (comm_IO%ntot_import, comm_IO%item_import)
       else
         comm_IO%ntot_import = 0
-        call allocate_import_item_IO
+        call allocate_type_import_item(comm_IO)
       end if
 !
       end subroutine read_import_data_gz
@@ -70,19 +70,19 @@
       subroutine read_export_data_gz
 !
 !
-      call allocate_export_stack_IO
+      call allocate_type_export_num(comm_IO)
 !
       comm_IO%istack_export(0) = 0
       if (comm_IO%num_neib .gt. 0) then
         call read_gz_integer_stack(comm_IO%num_neib,                    &
      &      comm_IO%istack_export, comm_IO%ntot_export)
 !
-        call allocate_export_item_IO
+        call allocate_type_export_item(comm_IO)
         call read_send_recv_item_gz                                     &
      &     (comm_IO%ntot_export, comm_IO%item_export)
       else
         comm_IO%ntot_export = 0
-        call allocate_export_item_IO
+        call allocate_type_export_item(comm_IO)
       end if
 !
       end subroutine read_export_data_gz
@@ -106,7 +106,7 @@
         call gz_write_textbuf_w_lf
       end if
 !
-      call deallocate_neib_domain_IO
+      call deallocate_type_neib_id(comm_IO)
 !
       end subroutine write_domain_info_gz
 !
@@ -118,7 +118,7 @@
      &   (comm_IO%num_neib, comm_IO%ntot_import,                        &
      &    comm_IO%istack_import, comm_IO%item_import)
 !
-      call deallocate_import_item_IO
+      call deallocate_type_import(comm_IO)
 !
       end subroutine write_import_data_gz
 !
@@ -131,7 +131,7 @@
      &   (comm_IO%num_neib, comm_IO%ntot_export,                        &
      &    comm_IO%istack_export, comm_IO%item_export)
 !
-      call deallocate_export_item_IO
+      call deallocate_type_export(comm_IO)
 !
       end subroutine write_export_data_gz
 !

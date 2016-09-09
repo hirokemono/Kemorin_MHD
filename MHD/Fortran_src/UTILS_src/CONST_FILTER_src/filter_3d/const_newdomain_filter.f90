@@ -49,7 +49,7 @@
         mesh_file_head = mesh_file_head
         call sel_read_geometry_size(my_rank)
         call copy_node_geometry_from_IO(node)
-        call deallocate_neib_domain_IO
+        call deallocate_type_neib_id(comm_IO)
 !
         numele = ele_IO%numele
 !
@@ -87,7 +87,7 @@
 !
         call sel_read_geometry_size(my_rank)
         call copy_node_geometry_from_IO(node)
-        call deallocate_neib_domain_IO
+        call deallocate_type_neib_id(comm_IO)
 !
         numele = ele_IO%numele
 !

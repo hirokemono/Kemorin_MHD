@@ -121,7 +121,7 @@
         mesh_file_head = target_mesh_head
         call sel_read_geometry_size(my_rank2)
         call dealloc_node_geometry_base(nod_IO)
-        call deallocate_neib_domain_IO
+        call deallocate_type_neib_id(comm_IO)
 !
         new_node%internal_node = nod_IO%internal_node
         new_node%numnod = nod_IO%numnod

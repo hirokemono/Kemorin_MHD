@@ -62,7 +62,7 @@
 !
         call allocate_sph_node_geometry(subdomains_2(ip)%node)
 !
-        call deallocate_comm_item_IO
+        call deallocate_type_comm_tbl(comm_IO)
       end do
 !
       end subroutine set_2nd_mesh_for_single

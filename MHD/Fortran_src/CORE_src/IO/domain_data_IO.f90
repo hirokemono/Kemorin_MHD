@@ -49,7 +49,7 @@
 !
        read(id_file,*) comm_IO%num_neib
 !
-       call allocate_neib_domain_IO
+       call allocate_type_neib_id(comm_IO)
 !
        if (comm_IO%num_neib .gt. 0) then
          read(id_file,*) comm_IO%id_neib(1:comm_IO%num_neib)
@@ -64,19 +64,19 @@
 !
       integer(kind = kint), intent(in) :: id_file
 !
-      call allocate_import_stack_IO
+      call allocate_type_import_num(comm_IO)
 !
       if (comm_IO%num_neib .gt. 0) then
 !
         call read_arrays_for_stacks(id_file, comm_IO%num_neib,          &
      &      izero, comm_IO%ntot_import, comm_IO%istack_import)
 !
-        call allocate_import_item_IO
+        call allocate_type_import_item(comm_IO)
         call read_send_recv_item(id_file, comm_IO%ntot_import,          &
      &      comm_IO%item_import)
       else
         comm_IO%ntot_import = 0
-        call allocate_import_item_IO
+        call allocate_type_import_item(comm_IO)
       end if
 !
       end subroutine read_import_data
@@ -87,18 +87,18 @@
 !
       integer(kind = kint), intent(in) :: id_file
 !
-      call allocate_export_stack_IO
+      call allocate_type_export_num(comm_IO)
 !
       if (comm_IO%num_neib .gt. 0) then
 !
         call read_arrays_for_stacks(id_file, comm_IO%num_neib,          &
      &      izero, comm_IO%ntot_export, comm_IO%istack_export)
-        call allocate_export_item_IO
+        call allocate_type_export_item(comm_IO)
         call read_send_recv_item(id_file, comm_IO%ntot_export,          &
      &      comm_IO%item_export)
       else
         comm_IO%ntot_export = 0
-        call allocate_export_item_IO
+        call allocate_type_export_item(comm_IO)
       end if
 !
       end subroutine read_export_data
@@ -127,7 +127,7 @@
         write(id_file,'(a)') ''
       end if
 !
-      call deallocate_neib_domain_IO
+      call deallocate_type_neib_id(comm_IO)
 !
       end subroutine write_domain_info
 !
@@ -142,7 +142,7 @@
      &   (id_file, comm_IO%num_neib, comm_IO%ntot_import,               &
      &    comm_IO%istack_import, comm_IO%item_import)
 !
-      call deallocate_import_item_IO
+      call deallocate_type_import(comm_IO)
 !
       end subroutine write_import_data
 !
@@ -156,7 +156,7 @@
      &   (id_file, comm_IO%num_neib, comm_IO%ntot_export,               &
      &    comm_IO%istack_export, comm_IO%item_export)
 !
-      call deallocate_export_item_IO
+      call deallocate_type_export(comm_IO)
 !
       end subroutine write_export_data
 !

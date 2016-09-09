@@ -51,8 +51,8 @@
       comm%item_sr(1:comm%ntot_item_sr)                                 &
      &      = comm_IO%item_import(1:comm%ntot_item_sr)
 !
-      call deallocate_import_item_IO
-      call deallocate_neib_domain_IO
+      call deallocate_type_import(comm_IO)
+      call deallocate_type_neib_id(comm_IO)
 !
       call set_reverse_sph_comm_tbl_t(numnod, comm)
 !

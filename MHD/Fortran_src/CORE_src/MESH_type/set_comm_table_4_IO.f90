@@ -55,7 +55,7 @@
      &    comm_tbls%item_import, comm_tbls%item_export,                 &
      &    comm_IO%item_import, comm_IO%item_export)
 !
-      call deallocate_comm_item_IO
+      call deallocate_type_comm_tbl(comm_IO)
 !
       end subroutine copy_comm_tbl_type_from_IO
 !
@@ -70,7 +70,7 @@
       my_rank_IO = my_rank
       comm_IO%num_neib = comm_tbls%num_neib
 !
-      call allocate_neib_comm_stack_IO
+      call allocate_type_comm_tbl_num(comm_IO)
 !
       call copy_num_communication                                       &
      &   (comm_IO%num_neib, comm_IO%id_neib,                            &
@@ -78,7 +78,7 @@
      &    comm_IO%ntot_import, comm_IO%ntot_export, comm_tbls%id_neib,  &
      &    comm_tbls%istack_import, comm_tbls%istack_export)
 !
-      call allocate_comm_item_IO
+      call allocate_type_comm_tbl_item(comm_IO)
 !
       call copy_communication_item                                      &
      &   (comm_IO%ntot_import, comm_IO%ntot_export,                     &

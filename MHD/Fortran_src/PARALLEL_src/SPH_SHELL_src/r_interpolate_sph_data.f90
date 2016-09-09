@@ -362,8 +362,8 @@
       call deallocate_idx_sph_1d2_IO
 !
 !
-      call deallocate_import_item_IO
-      call deallocate_neib_domain_IO
+      call deallocate_type_import(comm_IO)
+      call deallocate_type_neib_id(comm_IO)
 !
       call deallocate_grp_type(radial_rj_grp_IO)
       call deallocate_grp_type(sphere_rj_grp_IO)

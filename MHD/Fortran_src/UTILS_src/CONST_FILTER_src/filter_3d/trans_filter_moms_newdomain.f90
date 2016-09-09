@@ -121,7 +121,7 @@
 !
       call deallocate_ele_connect_type(ele_IO)
       call dealloc_node_geometry_base(nod_IO)
-      call deallocate_comm_item_IO
+      call deallocate_type_comm_tbl(comm_IO)
 !
       end subroutine count_nele_newdomain_para
 !
@@ -143,7 +143,7 @@
         iflag_mesh_file_fmt = id_ascii_file_fmt
         call sel_read_geometry_size(my_rank_2nd)
         call dealloc_node_geometry_base(nod_IO)
-        call deallocate_neib_domain_IO
+        call deallocate_type_neib_id(comm_IO)
 !
         max_gl_ele_newdomain = max_gl_ele_newdomain + ele_IO%numele
       end do
@@ -188,7 +188,7 @@
 !
       call deallocate_mesh_groups_IO
       call dealloc_node_geometry_base(nod_IO)
-      call deallocate_comm_item_IO
+      call deallocate_type_comm_tbl(comm_IO)
 !
       newmesh%node%numnod = nod_IO%numnod
       newmesh%node%internal_node = nod_IO%internal_node
@@ -312,7 +312,7 @@
 !
         call deallocate_mesh_groups_IO
         call dealloc_node_geometry_base(nod_IO)
-        call deallocate_comm_item_IO
+        call deallocate_type_comm_tbl(comm_IO)
 !
         call copy_ele_connect_from_IO(org_ele)
         call set_3D_nnod_4_sfed_by_ele(org_ele%nnod_4_ele,              &
