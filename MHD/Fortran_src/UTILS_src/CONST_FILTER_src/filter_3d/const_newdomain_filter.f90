@@ -65,7 +65,7 @@
         call deallocate_whole_filter_coefs
         call deallocate_fluid_filter_coefs
 !
-        call deallocate_node_geometry_base(node)
+        call dealloc_node_geometry_base(node)
       end do
 !
       end subroutine marking_used_node_4_filtering
@@ -103,7 +103,7 @@
         call deallocate_whole_filter_coefs
         call deallocate_fluid_filter_coefs
 !
-        call deallocate_node_geometry_base(node)
+        call dealloc_node_geometry_base(node)
       end do
 !
       end subroutine trans_filter_4_new_domains

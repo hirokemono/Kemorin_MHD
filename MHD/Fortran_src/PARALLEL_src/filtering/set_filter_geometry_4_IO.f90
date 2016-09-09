@@ -26,13 +26,13 @@
 !
       nod_IO%numnod =        nnod_filtering
       nod_IO%internal_node = inter_nod_3dfilter
-      call allocate_node_data_dummy
+      call alloc_node_geometry_base(nod_IO)
 !
       nod_IO%inod_global(1:nnod_filtering)                              &
      &      = id_globalnod_filtering(1:nnod_filtering)
-      xx_dummy(1:nnod_filtering,1) = xx_filtering(1:nnod_filtering,1)
-      xx_dummy(1:nnod_filtering,2) = xx_filtering(1:nnod_filtering,2)
-      xx_dummy(1:nnod_filtering,3) = xx_filtering(1:nnod_filtering,3)
+      nod_IO%xx(1:nnod_filtering,1) = xx_filtering(1:nnod_filtering,1)
+      nod_IO%xx(1:nnod_filtering,2) = xx_filtering(1:nnod_filtering,2)
+      nod_IO%xx(1:nnod_filtering,3) = xx_filtering(1:nnod_filtering,3)
 !
       end subroutine copy_filtering_geometry_to_IO
 !
@@ -48,11 +48,11 @@
 !
       id_globalnod_filtering(1:nnod_filtering)                          &
      &      = nod_IO%inod_global(1:nnod_filtering)
-      xx_filtering(1:nnod_filtering,1) = xx_dummy(1:nnod_filtering,1)
-      xx_filtering(1:nnod_filtering,2) = xx_dummy(1:nnod_filtering,2)
-      xx_filtering(1:nnod_filtering,3) = xx_dummy(1:nnod_filtering,3)
+      xx_filtering(1:nnod_filtering,1) = nod_IO%xx(1:nnod_filtering,1)
+      xx_filtering(1:nnod_filtering,2) = nod_IO%xx(1:nnod_filtering,2)
+      xx_filtering(1:nnod_filtering,3) = nod_IO%xx(1:nnod_filtering,3)
 !
-      call deallocate_node_data_dummy
+      call dealloc_node_geometry_base(nod_IO)
 !
       end subroutine copy_filtering_geometry_from_IO
 !

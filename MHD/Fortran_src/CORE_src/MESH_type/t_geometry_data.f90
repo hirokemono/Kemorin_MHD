@@ -11,7 +11,7 @@
 !!      subroutine alloc_numnod_stack(nprocs, node)
 !!      subroutine alloc_numele_stack(nprocs, ele)
 !!      subroutine allocate_node_geometry_type(node)
-!!      subroutine allocate_node_geometry_base(node)
+!!      subroutine alloc_node_geometry_base(node)
 !!      subroutine allocate_sph_node_geometry(node)
 !!
 !!      subroutine allocate_ele_connect_type(ele)
@@ -26,7 +26,7 @@
 !!      subroutine dealloc_numnod_stack(node)
 !!      subroutine dealloc_numele_stack(ele)
 !!      subroutine deallocate_node_geometry_type(node)
-!!      subroutine deallocate_node_geometry_base(node)
+!!      subroutine dealloc_node_geometry_base(node)
 !!      subroutine deallocate_sph_node_geometry(node)
 !!
 !!      subroutine deallocate_ele_connect_type(ele)
@@ -206,14 +206,14 @@
 !
       type(node_data), intent(inout) :: node
 !
-      call allocate_node_geometry_base(node)
+      call alloc_node_geometry_base(node)
       call allocate_sph_node_geometry(node)
 !
       end subroutine allocate_node_geometry_type
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_node_geometry_base(node)
+      subroutine alloc_node_geometry_base(node)
 !
       type(node_data), intent(inout) :: node
 !
@@ -225,7 +225,7 @@
         node%xx = 0.0d00
       end if
 !
-      end subroutine allocate_node_geometry_base
+      end subroutine alloc_node_geometry_base
 !
 !  ---------------------------------------------------------------------
 !
@@ -399,19 +399,19 @@
       type(node_data), intent(inout) :: node
 !
       call deallocate_sph_node_geometry(node)
-      call deallocate_node_geometry_base(node)
+      call dealloc_node_geometry_base(node)
 !
       end subroutine deallocate_node_geometry_type
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine deallocate_node_geometry_base(node)
+      subroutine dealloc_node_geometry_base(node)
 !
       type(node_data), intent(inout) :: node
 !
       deallocate(node%inod_global, node%xx)
 !
-      end subroutine deallocate_node_geometry_base
+      end subroutine dealloc_node_geometry_base
 !
 !  ---------------------------------------------------------------------
 !

@@ -34,11 +34,11 @@
 !
       do i=1, nod_IO%numnod
         write(textbuf,'(i16,1p3E25.15e3,a1)')  nod_IO%inod_global(i),   &
-     &        xx_dummy(i,1:3), char(0)
+     &        nod_IO%xx(i,1:3), char(0)
         call gz_write_textbuf_w_lf
       end do
 !
-      call deallocate_node_data_dummy
+      call dealloc_node_geometry_base(nod_IO)
 !
       end subroutine write_geometry_info_gz
 !
@@ -60,11 +60,11 @@
       integer (kind = kint) :: i, k
 !
 !
-      call allocate_node_data_dummy
+      call alloc_node_geometry_base(nod_IO)
 !
       do i=1, nod_IO%numnod
         call get_one_line_from_gz_f
-        read(textbuf,*)  nod_IO%inod_global(i), (xx_dummy(i,k),k=1,3)
+        read(textbuf,*)  nod_IO%inod_global(i), (nod_IO%xx(i,k),k=1,3)
       end do
 !
       end subroutine read_geometry_info_gz

@@ -80,9 +80,9 @@
       call gz_mpi_write_int8_vector_b                                   &
      &   (id_file, ioff_gl, nod_IO%numnod, nod_IO%inod_global)
       call gz_mpi_write_2d_vector_b                                     &
-     &   (id_file, ioff_gl, nod_IO%numnod, ithree, xx_dummy)
+     &   (id_file, ioff_gl, nod_IO%numnod, ithree, nod_IO%xx)
 !
-      call deallocate_node_data_dummy
+      call dealloc_node_geometry_base(nod_IO)
 !
       end subroutine gz_mpi_write_geometry_info_b
 !
@@ -185,14 +185,14 @@
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
 !
-      call allocate_node_data_dummy
+      call alloc_node_geometry_base(nod_IO)
 !
       call gz_mpi_read_int8_vector_b                                    &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
      &    nod_IO%numnod, nod_IO%inod_global)
       call gz_mpi_read_2d_vector_b                                      &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    nod_IO%numnod, ithree, xx_dummy)
+     &    nod_IO%numnod, ithree, nod_IO%xx)
 !
       end subroutine gz_mpi_read_geometry_info_b
 !

@@ -103,7 +103,7 @@
         id_glnode_org(inod_g) = inod_g
       end do
 !
-      call deallocate_node_data_dummy
+      call dealloc_node_geometry_base(nod_IO)
       call deallocate_neib_domain_IO
 !
       end subroutine set_domain_grp_each_domain

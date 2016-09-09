@@ -81,7 +81,7 @@
       nod_IO%numnod =        surf%numsurf
       nod_IO%internal_node = surf%internal_surf
 !
-      call allocate_node_data_dummy
+      call alloc_node_geometry_base(nod_IO)
       call allocate_ele_vector_IO
       call allocate_ele_scalar_IO
 !
@@ -89,9 +89,9 @@
 !omp parallel do
       do isurf = 1, surf%numsurf
         nod_IO%inod_global(isurf) = surf%isurf_global(isurf)
-        xx_dummy(isurf,1) =        surf%x_surf(isurf,1)
-        xx_dummy(isurf,2) =        surf%x_surf(isurf,2)
-        xx_dummy(isurf,3) =        surf%x_surf(isurf,3)
+        nod_IO%xx(isurf,1) =        surf%x_surf(isurf,1)
+        nod_IO%xx(isurf,2) =        surf%x_surf(isurf,2)
+        nod_IO%xx(isurf,3) =        surf%x_surf(isurf,3)
 !
         ele_scalar_IO(isurf) =     surf%area_surf(isurf)
         ele_vector_IO(isurf,1) =   surf%vnorm_surf(isurf,1)
@@ -113,16 +113,16 @@
       nod_IO%numnod =        surf%numsurf
       nod_IO%internal_node = surf%internal_surf
 !
-      call allocate_node_data_dummy
+      call alloc_node_geometry_base(nod_IO)
       call allocate_ele_vector_IO
       call allocate_ele_scalar_IO
 !
 !omp parallel do
       do isurf = 1, surf%numsurf
         nod_IO%inod_global(isurf) = surf%isurf_global(isurf)
-        xx_dummy(isurf,1) = surf%r_surf(isurf)
-        xx_dummy(isurf,2) = surf%theta_surf(isurf)
-        xx_dummy(isurf,3) = surf%phi_surf(isurf)
+        nod_IO%xx(isurf,1) = surf%r_surf(isurf)
+        nod_IO%xx(isurf,2) = surf%theta_surf(isurf)
+        nod_IO%xx(isurf,3) = surf%phi_surf(isurf)
 !
         ele_scalar_IO(isurf) =   surf%area_surf(isurf)
         ele_vector_IO(isurf,1) = surf%vnorm_surf_sph(isurf,1)
@@ -144,16 +144,16 @@
       nod_IO%numnod =        surf%numsurf
       nod_IO%internal_node = surf%internal_surf
 !
-      call allocate_node_data_dummy
+      call alloc_node_geometry_base(nod_IO)
       call allocate_ele_vector_IO
       call allocate_ele_scalar_IO
 !
 !omp parallel do
       do isurf = 1, surf%numsurf
         nod_IO%inod_global(isurf) = surf%isurf_global(isurf)
-        xx_dummy(isurf,1) = surf%s_surf(isurf)
-        xx_dummy(isurf,2) = surf%phi_surf(isurf)
-        xx_dummy(isurf,3) = surf%x_surf(isurf,3)
+        nod_IO%xx(isurf,1) = surf%s_surf(isurf)
+        nod_IO%xx(isurf,2) = surf%phi_surf(isurf)
+        nod_IO%xx(isurf,3) = surf%x_surf(isurf,3)
         ele_scalar_IO(isurf) =   surf%area_surf(isurf)
         ele_vector_IO(isurf,1) = surf%vnorm_surf_cyl(isurf,1)
         ele_vector_IO(isurf,2) = surf%vnorm_surf_cyl(isurf,2)

@@ -56,7 +56,7 @@
 !
         call set_num_globalnod_4_newdomain(ip2, new_node)
 !
-        call deallocate_node_geometry_base(new_node)
+        call dealloc_node_geometry_base(new_node)
       end do
 !
       end subroutine set_inod_4_newdomain_filter

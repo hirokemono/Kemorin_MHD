@@ -119,7 +119,8 @@
      &         = max(max_gl_ele_newdomain,ele_IO%iele_global(iele))
       end do
 !
-      call deallocate_mesh_arrays
+      call deallocate_ele_connect_type(ele_IO)
+      call dealloc_node_geometry_base(nod_IO)
       call deallocate_comm_item_IO
 !
       end subroutine count_nele_newdomain_para
@@ -141,7 +142,7 @@
         mesh_file_head = target_mesh_head
         iflag_mesh_file_fmt = id_ascii_file_fmt
         call sel_read_geometry_size(my_rank_2nd)
-        call deallocate_node_data_dummy
+        call dealloc_node_geometry_base(nod_IO)
         call deallocate_neib_domain_IO
 !
         max_gl_ele_newdomain = max_gl_ele_newdomain + ele_IO%numele
@@ -186,7 +187,7 @@
       mesh_file_head = org_mesh_head
 !
       call deallocate_mesh_groups_IO
-      call deallocate_node_data_dummy
+      call dealloc_node_geometry_base(nod_IO)
       call deallocate_comm_item_IO
 !
       newmesh%node%numnod = nod_IO%numnod
@@ -310,7 +311,7 @@
         call sel_read_mesh(my_rank_org)
 !
         call deallocate_mesh_groups_IO
-        call deallocate_node_data_dummy
+        call dealloc_node_geometry_base(nod_IO)
         call deallocate_comm_item_IO
 !
         call copy_ele_connect_from_IO(org_ele)

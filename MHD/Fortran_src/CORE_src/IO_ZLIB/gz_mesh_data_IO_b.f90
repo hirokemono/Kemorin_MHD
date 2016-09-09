@@ -62,9 +62,9 @@
       call gz_write_one_integer_b(nod_IO%internal_node)
 !
       call gz_write_mul_int8_b(nod_IO%numnod, nod_IO%inod_global)
-      call gz_write_2d_vector_b(nod_IO%numnod, ithree, xx_dummy)
+      call gz_write_2d_vector_b(nod_IO%numnod, ithree, nod_IO%xx)
 !
-      call deallocate_node_data_dummy
+      call dealloc_node_geometry_base(nod_IO)
 !
       end subroutine gz_write_geometry_info_b
 !
@@ -138,10 +138,10 @@
       use gz_binary_IO
 !
 !
-      call allocate_node_data_dummy
+      call alloc_node_geometry_base(nod_IO)
 !
       call gz_read_mul_int8_b(nod_IO%numnod, nod_IO%inod_global)
-      call gz_read_2d_vector_b(nod_IO%numnod, ithree, xx_dummy)
+      call gz_read_2d_vector_b(nod_IO%numnod, ithree, nod_IO%xx)
 !
       end subroutine gz_read_geometry_info_b
 !

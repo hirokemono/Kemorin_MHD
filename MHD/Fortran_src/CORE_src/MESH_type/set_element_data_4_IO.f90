@@ -114,15 +114,15 @@
       nod_IO%numnod =        ele%numele
       nod_IO%internal_node = ele%internal_ele
 !
-      call allocate_node_data_dummy
+      call alloc_node_geometry_base(nod_IO)
       call allocate_ele_scalar_IO
 !
 !$omp parallel do
       do iele = 1, ele%numele
         nod_IO%inod_global(iele) = ele%iele_global(iele)
-        xx_dummy(iele,1) = ele%x_ele(iele,1)
-        xx_dummy(iele,2) = ele%x_ele(iele,2)
-        xx_dummy(iele,3) = ele%x_ele(iele,3)
+        nod_IO%xx(iele,1) = ele%x_ele(iele,1)
+        nod_IO%xx(iele,2) = ele%x_ele(iele,2)
+        nod_IO%xx(iele,3) = ele%x_ele(iele,3)
         ele_scalar_IO(iele) = ele%volume_ele(iele)
       end do
 !$omp end parallel do
@@ -140,16 +140,16 @@
       nod_IO%numnod =        ele%numele
       nod_IO%internal_node = ele%internal_ele
 !
-      call allocate_node_data_dummy
+      call alloc_node_geometry_base(nod_IO)
       call allocate_ele_scalar_IO
 !
 !$omp parallel do
       do iele = 1, ele%numele
         nod_IO%inod_global(iele) = ele%iele_global(iele)
 !
-        xx_dummy(iele,1) =    ele%r_ele(iele)
-        xx_dummy(iele,2) =    ele%theta_ele(iele)
-        xx_dummy(iele,3) =    ele%phi_ele(iele)
+        nod_IO%xx(iele,1) =    ele%r_ele(iele)
+        nod_IO%xx(iele,2) =    ele%theta_ele(iele)
+        nod_IO%xx(iele,3) =    ele%phi_ele(iele)
         ele_scalar_IO(iele) = ele%volume_ele(iele)
       end do
 !$omp end parallel do
@@ -167,16 +167,16 @@
       nod_IO%numnod =        ele%numele
       nod_IO%internal_node = ele%internal_ele
 !
-      call allocate_node_data_dummy
+      call alloc_node_geometry_base(nod_IO)
       call allocate_ele_scalar_IO
 !
 !$omp parallel do
       do iele = 1, ele%numele
         nod_IO%inod_global(iele) = ele%iele_global(iele)
 !
-        xx_dummy(iele,1) =    ele%s_ele(iele)
-        xx_dummy(iele,2) =    ele%phi_ele(iele)
-        xx_dummy(iele,3) =    ele%x_ele(iele,3)
+        nod_IO%xx(iele,1) =    ele%s_ele(iele)
+        nod_IO%xx(iele,2) =    ele%phi_ele(iele)
+        nod_IO%xx(iele,3) =    ele%x_ele(iele,3)
         ele_scalar_IO(iele) = ele%volume_ele(iele)
       end do
 !$omp end parallel do

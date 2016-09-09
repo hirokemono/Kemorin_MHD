@@ -66,7 +66,7 @@
 !
       call deallocate_nod_ele_near_1nod
 !
-      call deallocate_node_data_dummy
+      call dealloc_node_geometry_base(nod_IO)
       call deallocate_comm_item_IO
 !
       end subroutine read_original_filter_coefs

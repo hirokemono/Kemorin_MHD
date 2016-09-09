@@ -7,13 +7,11 @@
 !>@brief Data arry for mesh_data_IO
 !!
 !!@verbatim
-!!      subroutine allocate_node_data_dummy
 !!      subroutine allocate_ele_info_dummy
 !!      subroutine allocate_connect_dummy
 !!
 !!      subroutine deallocate_mesh_arrays
 !!
-!!      subroutine deallocate_node_data_dummy
 !!      subroutine deallocate_ele_info_dummy
 !!
 !!      subroutine allocate_ele_scalar_IO
@@ -29,16 +27,11 @@
 !
 !>  structure for node data IO (position)
       type(node_data), save ::    nod_IO
-!nod_IO%inod_global
 !
 !>  structure for element data IO (connectivity)
       type(element_data), save :: ele_IO
 !
-!      integer(kind=kint) :: numnod_dummy
-!      integer(kind=kint) :: internal_node_dummy
-!      integer(kind=kint_gl), allocatable :: globalnodid_dummy(:)
-      real(kind=kreal),   allocatable :: xx_dummy(:,:)
-! 
+!
       real(kind=kreal),   allocatable :: ele_vector_IO(:,:)
       real(kind=kreal),   allocatable :: ele_scalar_IO(:)
 !
@@ -78,39 +71,6 @@
 !
        contains
 !
-!------------------------------------------------------------------
-!
-      subroutine allocate_node_data_dummy
-!
-       allocate(xx_dummy(nod_IO%numnod,3))
-       allocate(nod_IO%inod_global(nod_IO%numnod))
-       if ( nod_IO%numnod .gt. 0) then
-        xx_dummy=0.0d00
-        nod_IO%inod_global=0
-       end if
-!
-      end subroutine allocate_node_data_dummy
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine deallocate_node_data_dummy
-!
-       deallocate(xx_dummy)
-       deallocate(nod_IO%inod_global)
-!
-      end subroutine deallocate_node_data_dummy
-!
-!------------------------------------------------------------------
-!
-      subroutine deallocate_mesh_arrays
-!
-       call deallocate_ele_connect_type(ele_IO)
-       call deallocate_node_data_dummy
-!
-      end subroutine deallocate_mesh_arrays
-!
-!------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine allocate_surface_connect_IO

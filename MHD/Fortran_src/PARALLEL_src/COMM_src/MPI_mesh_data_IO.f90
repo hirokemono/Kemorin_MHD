@@ -109,10 +109,10 @@
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
      &    nod_IO%numnod, nod_IO%inod_global, IO_param%istack_merged)
       call mpi_write_2d_vector(id_file, nprocs_in, id_rank, ioff_gl,    &
-     &    nod_IO%numnod, ithree, xx_dummy, IO_param%istack_merged)
+     &    nod_IO%numnod, ithree, nod_IO%xx, IO_param%istack_merged)
       call dealloc_istack_merge(IO_param)
 !
-      call deallocate_node_data_dummy
+      call dealloc_node_geometry_base(nod_IO)
 !
       end subroutine mpi_write_geometry_info
 !
@@ -222,7 +222,7 @@
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
 !
-      call allocate_node_data_dummy
+      call alloc_node_geometry_base(nod_IO)
 !
       call alloc_istack_merge(id_rank, nprocs_in, IO_param)
       call set_istack_4_parallell_data(nod_IO%numnod, IO_param)
@@ -232,7 +232,7 @@
      &    nod_IO%numnod, nod_IO%inod_global, IO_param%istack_merged)
       call mpi_read_2d_vector                                           &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    nod_IO%numnod, ithree, xx_dummy, IO_param%istack_merged)
+     &    nod_IO%numnod, ithree, nod_IO%xx, IO_param%istack_merged)
       call dealloc_istack_merge(IO_param)
 !
       end subroutine mpi_read_geometry_info

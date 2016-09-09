@@ -97,16 +97,16 @@
       nod_IO%numnod =        edge%numedge
       nod_IO%internal_node = edge%internal_edge
 !
-      call allocate_node_data_dummy
+      call alloc_node_geometry_base(nod_IO)
       call allocate_ele_vector_IO
       call allocate_ele_scalar_IO
 !
 !omp parallel do
       do iedge = 1, edge%numedge
         nod_IO%inod_global(iedge) = edge%iedge_global(iedge)
-        xx_dummy(iedge,1) =        edge%x_edge(iedge,1)
-        xx_dummy(iedge,2) =        edge%x_edge(iedge,2)
-        xx_dummy(iedge,3) =        edge%x_edge(iedge,3)
+        nod_IO%xx(iedge,1) =        edge%x_edge(iedge,1)
+        nod_IO%xx(iedge,2) =        edge%x_edge(iedge,2)
+        nod_IO%xx(iedge,3) =        edge%x_edge(iedge,3)
         ele_scalar_IO(iedge) =     edge%edge_length(iedge)
         ele_vector_IO(iedge,1) =   edge%edge_vect(iedge,1)
         ele_vector_IO(iedge,2) =   edge%edge_vect(iedge,2)
@@ -127,16 +127,16 @@
       nod_IO%numnod =        edge%numedge
       nod_IO%internal_node = edge%internal_edge
 !
-      call allocate_node_data_dummy
+      call alloc_node_geometry_base(nod_IO)
       call allocate_ele_vector_IO
       call allocate_ele_scalar_IO
 !
 !omp parallel do
       do iedge = 1, edge%numedge
         nod_IO%inod_global(iedge) = edge%iedge_global(iedge)
-        xx_dummy(iedge,1) =        edge%r_edge(iedge)
-        xx_dummy(iedge,2) =        edge%theta_edge(iedge)
-        xx_dummy(iedge,3) =        edge%phi_edge(iedge)
+        nod_IO%xx(iedge,1) =        edge%r_edge(iedge)
+        nod_IO%xx(iedge,2) =        edge%theta_edge(iedge)
+        nod_IO%xx(iedge,3) =        edge%phi_edge(iedge)
         ele_scalar_IO(iedge) =     edge%edge_length(iedge)
         ele_vector_IO(iedge,1) =   edge%edge_vect_sph(iedge,1)
         ele_vector_IO(iedge,2) =   edge%edge_vect_sph(iedge,2)
@@ -157,16 +157,16 @@
       nod_IO%numnod =        edge%numedge
       nod_IO%internal_node = edge%internal_edge
 !
-      call allocate_node_data_dummy
+      call alloc_node_geometry_base(nod_IO)
       call allocate_ele_vector_IO
       call allocate_ele_scalar_IO
 !
 !omp parallel do
       do iedge = 1, edge%numedge
         nod_IO%inod_global(iedge) = edge%iedge_global(iedge)
-        xx_dummy(iedge,1) =        edge%s_edge(iedge)
-        xx_dummy(iedge,2) =        edge%phi_edge(iedge)
-        xx_dummy(iedge,3) =        edge%x_edge(iedge,3)
+        nod_IO%xx(iedge,1) =        edge%s_edge(iedge)
+        nod_IO%xx(iedge,2) =        edge%phi_edge(iedge)
+        nod_IO%xx(iedge,3) =        edge%x_edge(iedge,3)
         ele_scalar_IO(iedge) =     edge%edge_length(iedge)
         ele_vector_IO(iedge,1) =   edge%edge_vect_cyl(iedge,1)
         ele_vector_IO(iedge,2) =   edge%edge_vect_cyl(iedge,2)

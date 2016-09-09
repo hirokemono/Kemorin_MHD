@@ -148,7 +148,7 @@
         call dealloc_phys_data_IO(plane_fst_IO)
 !
         call dealloc_phys_data_type(merged_fld)
-        call deallocate_node_geometry_base(node_plane)
+        call dealloc_node_geometry_base(node_plane)
       end do
 !
       stop

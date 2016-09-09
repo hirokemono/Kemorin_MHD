@@ -62,9 +62,9 @@
       call write_one_integer_b(nod_IO%internal_node)
 !
       call write_mul_int8_b(nod_IO%numnod, nod_IO%inod_global)
-      call write_2d_vector_b(nod_IO%numnod, ithree, xx_dummy)
+      call write_2d_vector_b(nod_IO%numnod, ithree, nod_IO%xx)
 !
-      call deallocate_node_data_dummy
+      call dealloc_node_geometry_base(nod_IO)
 !
       end subroutine write_geometry_info_b
 !
@@ -138,10 +138,10 @@
       use binary_IO
 !
 !
-      call allocate_node_data_dummy
+      call alloc_node_geometry_base(nod_IO)
 !
       call read_mul_int8_b(nod_IO%numnod, nod_IO%inod_global)
-      call read_2d_vector_b(nod_IO%numnod, ithree, xx_dummy)
+      call read_2d_vector_b(nod_IO%numnod, ithree, nod_IO%xx)
 !
       end subroutine read_geometry_info_b
 !
