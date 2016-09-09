@@ -80,7 +80,7 @@
 !
       call write_one_integer_b(ele_IO%numele)
 !
-      call write_mul_integer_b(ele_IO%numele, i_ele_dummy)
+      call write_mul_integer_b(ele_IO%numele, ele_IO%elmtyp)
       call write_mul_int8_b(ele_IO%numele, ele_IO%iele_global)
 !
       allocate(ie_tmp(ele_IO%nnod_4_ele))
@@ -167,11 +167,12 @@
 !
 !
       call allocate_ele_info_dummy
-      call read_mul_integer_b(ele_IO%numele, i_ele_dummy)
+      call read_mul_integer_b(ele_IO%numele, ele_IO%elmtyp)
 !
       ele_IO%nnod_4_ele = 0
       do i = 1, ele_IO%numele
-        call s_set_nnod_4_ele_by_type(i_ele_dummy(i), ele_IO%nodelm(i))
+        call s_set_nnod_4_ele_by_type                                   &
+     &     (ele_IO%elmtyp(i), ele_IO%nodelm(i))
         ele_IO%nnod_4_ele = max(ele_IO%nnod_4_ele,ele_IO%nodelm(i))
       end do
 !

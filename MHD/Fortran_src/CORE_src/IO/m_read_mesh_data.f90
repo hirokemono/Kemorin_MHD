@@ -31,7 +31,7 @@
       type(node_data), save ::    nod_IO
 !>  structure for element data IO (connectivity)
       type(element_data), save :: ele_IO
-!ele_IO%nodelm
+!ele_IO%elmtyp
 !
       integer(kind=kint) :: numnod_dummy
       integer(kind=kint) :: internal_node_dummy
@@ -44,7 +44,7 @@
 !      integer(kind=kint) :: numele_dummy
 !      integer (kind = kint) :: nnod_4_ele_dummy = 8
 !      integer(kind=kint_gl), allocatable:: globalelmid_dummy(:)
-      integer(kind=kint), allocatable   :: i_ele_dummy(:)
+!      integer(kind=kint), allocatable   :: i_ele_dummy(:)
 !      integer(kind=kint), allocatable   :: nodelm_dummy(:)
       integer(kind=kint), allocatable :: ie_dummy(:,:)
 ! 
@@ -101,11 +101,11 @@
 !
       subroutine allocate_ele_info_dummy
 !
-       allocate(i_ele_dummy(ele_IO%numele))
+       allocate(ele_IO%elmtyp(ele_IO%numele))
        allocate(ele_IO%nodelm(ele_IO%numele))
        allocate(ele_IO%iele_global(ele_IO%numele))
        if ( ele_IO%numele .gt. 0) then
-        i_ele_dummy=0
+        ele_IO%elmtyp=0
         ele_IO%nodelm = 0
         ele_IO%iele_global=0
        end if
@@ -137,7 +137,7 @@
 !
       subroutine deallocate_ele_info_dummy
 !
-      deallocate(i_ele_dummy)
+      deallocate(ele_IO%elmtyp)
       deallocate(ele_IO%nodelm)
       deallocate(ele_IO%iele_global)
       deallocate(ie_dummy)

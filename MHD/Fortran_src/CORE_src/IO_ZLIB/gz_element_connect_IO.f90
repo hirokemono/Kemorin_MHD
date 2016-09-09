@@ -33,7 +33,7 @@
 !
       write(textbuf,'(i16,a1)') ele_IO%numele, char(0)
       call gz_write_textbuf_w_lf
-      call write_gz_multi_int_10i8(ele_IO%numele, i_ele_dummy)
+      call write_gz_multi_int_10i8(ele_IO%numele, ele_IO%elmtyp)
 !
       do i=1, ele_IO%numele
         write(fmt_txt,'(a5,i3,a7)')                                     &
@@ -68,12 +68,12 @@
 !
 !
        call allocate_ele_info_dummy
-       call read_gz_multi_int(ele_IO%numele, i_ele_dummy)
+       call read_gz_multi_int(ele_IO%numele, ele_IO%elmtyp)
 !
        ele_IO%nnod_4_ele = 0
        do i = 1, ele_IO%numele
          call s_set_nnod_4_ele_by_type                                  &
-     &      (i_ele_dummy(i), ele_IO%nodelm(i))
+     &      (ele_IO%elmtyp(i), ele_IO%nodelm(i))
          ele_IO%nnod_4_ele = max(ele_IO%nnod_4_ele,ele_IO%nodelm(i))
        end do
 !

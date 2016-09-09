@@ -45,7 +45,8 @@
 !
       ele_IO%numele = merge_tbl%nele_merged
       do i = 1, merge_tbl%nele_merged
-        call s_set_nnod_4_ele_by_type(i_ele_dummy(i), ele_IO%nodelm(i))
+        call s_set_nnod_4_ele_by_type                                   &
+     &     (ele_IO%elmtyp(i), ele_IO%nodelm(i))
       end do
 !
       call set_grp_data_to_IO                                           &

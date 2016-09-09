@@ -47,11 +47,11 @@
       call allocate_surface_connect_IO
 !
       if      (surf%nnod_4_surf .eq. num_linear_sf) then
-        i_ele_dummy(1:surf%numsurf) = 221
+        ele_IO%elmtyp(1:surf%numsurf) = 221
       else if (surf%nnod_4_surf .eq. num_quad_sf) then
-        i_ele_dummy(1:surf%numsurf) = 222
+        ele_IO%elmtyp(1:surf%numsurf) = 222
       else if (surf%nnod_4_surf .eq. num_lag_sf) then
-        i_ele_dummy(1:surf%numsurf) = 223
+        ele_IO%elmtyp(1:surf%numsurf) = 223
       end if
 !
 !$omp workshare

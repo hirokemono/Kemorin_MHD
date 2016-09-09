@@ -49,7 +49,7 @@
 !$omp do
       do iele = 1, ele%numele
         ele_IO%iele_global(iele) = ele%iele_global(iele)
-        i_ele_dummy(iele) =       ele%elmtyp(iele)
+        ele_IO%elmtyp(iele) =      ele%elmtyp(iele)
         ele_IO%nodelm(iele) =      ele%nodelm(iele)
       end do
 !$omp end do
@@ -74,7 +74,7 @@
       end if
 !
       ele%numele = ele_IO%numele
-      ele%first_ele_type = i_ele_dummy(1)
+      ele%first_ele_type = ele_IO%elmtyp(1)
 !
       call set_nnod_4_ele_by_eletype                                    &
      &   (ele%first_ele_type, ele%nnod_4_ele)
@@ -93,7 +93,7 @@
 !$omp do
       do iele = 1, ele%numele
         ele%iele_global(iele) = ele_IO%iele_global(iele)
-        ele%elmtyp(iele) =      i_ele_dummy(iele)
+        ele%elmtyp(iele) =      ele_IO%elmtyp(iele)
         ele%nodelm(iele) =      ele_IO%nodelm(iele)
       end do
 !$omp end do

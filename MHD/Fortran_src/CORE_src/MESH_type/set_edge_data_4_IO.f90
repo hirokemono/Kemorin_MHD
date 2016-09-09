@@ -57,9 +57,9 @@
       call allocate_edge_connect_IO
 !
       if      (edge%nnod_4_edge .eq. num_linear_edge) then
-        i_ele_dummy(1:edge%numedge) = 111
+        ele_IO%elmtyp(1:edge%numedge) = 111
       else if (edge%nnod_4_edge .eq. num_quad_edge) then
-        i_ele_dummy(1:edge%numedge) = 112
+        ele_IO%elmtyp(1:edge%numedge) = 112
       end if
 !
 !omp parallel do

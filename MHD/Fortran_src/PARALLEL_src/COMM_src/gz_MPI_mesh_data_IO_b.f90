@@ -102,7 +102,7 @@
       call gz_mpi_write_one_integer_b(id_file, ioff_gl, ele_IO%numele)
 !
       call gz_mpi_write_int_vector_b                                    &
-     &  (id_file, ioff_gl, ele_IO%numele, i_ele_dummy)
+     &  (id_file, ioff_gl, ele_IO%numele, ele_IO%elmtyp)
       call gz_mpi_write_int8_vector_b                                   &
      &  (id_file, ioff_gl, ele_IO%numele, ele_IO%iele_global)
 !
@@ -232,11 +232,12 @@
       call allocate_ele_info_dummy
       call gz_mpi_read_int_vector_b                                     &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    ele_IO%numele, i_ele_dummy)
+     &    ele_IO%numele, ele_IO%elmtyp)
 !
       ele_IO%nnod_4_ele = 0
       do i = 1, ele_IO%numele
-        call s_set_nnod_4_ele_by_type(i_ele_dummy(i), ele_IO%nodelm(i))
+        call s_set_nnod_4_ele_by_type                                   &
+     &     (ele_IO%elmtyp(i), ele_IO%nodelm(i))
         ele_IO%nnod_4_ele = max(ele_IO%nnod_4_ele,ele_IO%nodelm(i))
       end do
 !

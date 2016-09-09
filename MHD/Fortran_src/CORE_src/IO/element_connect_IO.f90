@@ -42,7 +42,7 @@
 !
 !
       write(id_file,'(i16)') ele_IO%numele
-      write(id_file,'(10i16)') i_ele_dummy(1:ele_IO%numele)
+      write(id_file,'(10i16)') ele_IO%elmtyp(1:ele_IO%numele)
 !
       do i=1, ele_IO%numele
         write(id_file,'(28i16)') ele_IO%iele_global(i),                 &
@@ -115,12 +115,12 @@
 !
        call allocate_ele_info_dummy
 !
-       read(id_file,*) (i_ele_dummy(i),i=1,ele_IO%numele)
+       read(id_file,*) (ele_IO%elmtyp(i),i=1,ele_IO%numele)
 !
        ele_IO%nnod_4_ele = 0
        do i = 1, ele_IO%numele
          call s_set_nnod_4_ele_by_type                                  &
-     &      (i_ele_dummy(i), ele_IO%nodelm(i))
+     &      (ele_IO%elmtyp(i), ele_IO%nodelm(i))
          ele_IO%nnod_4_ele = max(ele_IO%nnod_4_ele,ele_IO%nodelm(i))
        end do
 !

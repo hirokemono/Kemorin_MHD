@@ -137,7 +137,7 @@
       call alloc_istack_merge(id_rank, nprocs_in, IO_param)
       call set_istack_4_parallell_data(ele_IO%numele, IO_param)
       call mpi_write_int_vector(id_file, nprocs_in, id_rank, ioff_gl,   &
-     &    ele_IO%numele, i_ele_dummy, IO_param%istack_merged)
+     &    ele_IO%numele, ele_IO%elmtyp, IO_param%istack_merged)
       call mpi_write_int8_vector                                        &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
      &    ele_IO%numele, ele_IO%iele_global, IO_param%istack_merged)
@@ -275,11 +275,12 @@
       call set_istack_4_parallell_data(ele_IO%numele, IO_param)
       call mpi_read_int_vector                                          &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    ele_IO%numele, i_ele_dummy, IO_param%istack_merged)
+     &    ele_IO%numele, ele_IO%elmtyp, IO_param%istack_merged)
 !
       ele_IO%nnod_4_ele = 0
       do i = 1, ele_IO%numele
-        call s_set_nnod_4_ele_by_type(i_ele_dummy(i), ele_IO%nodelm(i))
+        call s_set_nnod_4_ele_by_type                                   &
+     &     (ele_IO%elmtyp(i), ele_IO%nodelm(i))
         ele_IO%nnod_4_ele = max(ele_IO%nnod_4_ele,ele_IO%nodelm(i))
       end do
 !
