@@ -39,11 +39,11 @@
         write(fmt_txt,'(a5,i3,a7)')                                     &
      &         '(i16,', ele_IO%nodelm(i), 'i16,a1)'
         write(textbuf,fmt_txt) ele_IO%iele_global(i),                   &
-     &         ie_dummy(i,1:ele_IO%nodelm(i)), char(0)
+     &         ele_IO%ie(i,1:ele_IO%nodelm(i)), char(0)
         call gz_write_textbuf_w_lf
       end do
 !
-      call deallocate_ele_info_dummy
+      call deallocate_ele_connect_type(ele_IO)
 !
       end subroutine write_element_info_gz
 !
@@ -67,7 +67,7 @@
        integer (kind = kint) :: i
 !
 !
-       call allocate_ele_info_dummy
+       call alloc_element_types(ele_IO)
        call read_gz_multi_int(ele_IO%numele, ele_IO%elmtyp)
 !
        ele_IO%nnod_4_ele = 0
@@ -77,12 +77,12 @@
          ele_IO%nnod_4_ele = max(ele_IO%nnod_4_ele,ele_IO%nodelm(i))
        end do
 !
-       call allocate_connect_dummy
+       call alloc_ele_connectivity(ele_IO)
 !
        do i=1, ele_IO%numele
         call get_one_line_from_gz_f
         read(textbuf,*) ele_IO%iele_global(i),                          &
-     &                 ie_dummy(i,1:ele_IO%nodelm(i))
+     &                 ele_IO%ie(i,1:ele_IO%nodelm(i))
        end do
 !
        end subroutine read_element_info_gz

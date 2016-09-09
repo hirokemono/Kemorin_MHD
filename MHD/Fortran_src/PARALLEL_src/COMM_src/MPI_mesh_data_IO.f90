@@ -145,10 +145,10 @@
       num = ele_IO%numele * ele_IO%nnod_4_ele
       call mul_istack_4_parallell_vect(ele_IO%nnod_4_ele, IO_param)
       call mpi_write_int_vector(id_file, nprocs_in, id_rank, ioff_gl,   &
-     &    num, ie_dummy(1,1), IO_param%istack_merged)
+     &    num, ele_IO%ie, IO_param%istack_merged)
       call dealloc_istack_merge(IO_param)
 !
-      call deallocate_ele_info_dummy
+      call deallocate_ele_connect_type(ele_IO)
 !
       end subroutine mpi_write_element_info
 !
@@ -269,7 +269,7 @@
       integer (kind = kint) :: num, i
 !
 !
-      call allocate_ele_info_dummy
+      call alloc_element_types(ele_IO)
 !
       call alloc_istack_merge(id_rank, nprocs_in, IO_param)
       call set_istack_4_parallell_data(ele_IO%numele, IO_param)
@@ -284,7 +284,7 @@
         ele_IO%nnod_4_ele = max(ele_IO%nnod_4_ele,ele_IO%nodelm(i))
       end do
 !
-      call allocate_connect_dummy
+      call alloc_ele_connectivity(ele_IO)
 !
       call mpi_read_int8_vector                                         &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
@@ -293,7 +293,7 @@
       num = ele_IO%numele * ele_IO%nnod_4_ele
       call mul_istack_4_parallell_vect(ele_IO%nnod_4_ele, IO_param)
       call mpi_read_int_vector                                          &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, num, ie_dummy(1,1),     &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, num, ele_IO%ie,         &
      &    IO_param%istack_merged)
       call dealloc_istack_merge(IO_param)
 !

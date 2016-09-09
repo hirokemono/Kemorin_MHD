@@ -51,8 +51,7 @@
       ele_IO%numele =     edge%numedge
       ele_IO%nnod_4_ele = edge%nnod_4_edge
 !
-      call allocate_ele_info_dummy
-      call allocate_connect_dummy
+      call allocate_ele_connect_type(ele_IO)
       call allocate_surface_connect_IO
       call allocate_edge_connect_IO
 !
@@ -66,7 +65,7 @@
       do iedge = 1, edge%numedge
         ele_IO%iele_global(iedge) = edge%iedge_global(iedge)
         ele_IO%nodelm(iedge) =      edge%nnod_4_edge
-        ie_dummy(iedge,1:edge%nnod_4_edge)                              &
+        ele_IO%ie(iedge,1:edge%nnod_4_edge)                             &
      &        = edge%ie_edge(iedge,1:edge%nnod_4_edge)
       end do
 !omp end parallel do
@@ -197,7 +196,7 @@
       do iedge = 1, edge%numedge
         edge%iedge_global(iedge) = ele_IO%iele_global(iedge)
         edge%ie_edge(iedge,1:edge%nnod_4_edge)                          &
-     &        = ie_dummy(iedge,1:edge%nnod_4_edge)
+     &        = ele_IO%ie(iedge,1:edge%nnod_4_edge)
       end do
 !
       do isurf = 1, nsurf
@@ -211,7 +210,7 @@
       end do
 !
       call deallocate_surface_connect_IO
-      call deallocate_ele_info_dummy
+      call deallocate_ele_connect_type(ele_IO)
       call deallocate_edge_connect_IO
 !
       end subroutine copy_edge_connect_from_IO

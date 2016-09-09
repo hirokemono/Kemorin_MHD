@@ -108,9 +108,9 @@
 !
       num = ele_IO%numele * ele_IO%nnod_4_ele
       call gz_mpi_write_int_vector_b                                    &
-     &  (id_file, ioff_gl, num, ie_dummy(1,1))
+     &  (id_file, ioff_gl, num, ele_IO%ie)
 !
-      call deallocate_ele_info_dummy
+      call deallocate_ele_connect_type(ele_IO)
 !
       end subroutine gz_mpi_write_element_info_b
 !
@@ -229,7 +229,7 @@
       integer (kind = kint) :: num, i
 !
 !
-      call allocate_ele_info_dummy
+      call alloc_element_types(ele_IO)
       call gz_mpi_read_int_vector_b                                     &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
      &    ele_IO%numele, ele_IO%elmtyp)
@@ -241,7 +241,7 @@
         ele_IO%nnod_4_ele = max(ele_IO%nnod_4_ele,ele_IO%nodelm(i))
       end do
 !
-      call allocate_connect_dummy
+      call alloc_ele_connectivity(ele_IO)
 !
       call gz_mpi_read_int8_vector_b                                    &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
@@ -249,7 +249,7 @@
 !
       num = ele_IO%numele * ele_IO%nnod_4_ele
       call gz_mpi_read_int_vector_b                                     &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, num, ie_dummy(1,1))
+     &   (id_file, nprocs_in, id_rank, ioff_gl, num, ele_IO%ie)
 !
       end subroutine gz_mpi_read_element_info_b
 !

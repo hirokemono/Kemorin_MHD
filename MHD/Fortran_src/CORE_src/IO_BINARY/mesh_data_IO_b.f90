@@ -85,12 +85,12 @@
 !
       allocate(ie_tmp(ele_IO%nnod_4_ele))
       do i = 1, ele_IO%numele
-        ie_tmp(1:ele_IO%nodelm(i)) = ie_dummy(i,1:ele_IO%nodelm(i))
+        ie_tmp(1:ele_IO%nodelm(i)) = ele_IO%ie(i,1:ele_IO%nodelm(i))
         call write_mul_integer_b(ele_IO%nodelm(i), ie_tmp)
       end do
       deallocate(ie_tmp)
 !
-      call deallocate_ele_info_dummy
+      call deallocate_ele_connect_type(ele_IO)
 !
       end subroutine write_element_info_b
 !
@@ -166,7 +166,7 @@
       integer (kind = kint), allocatable :: ie_tmp(:)
 !
 !
-      call allocate_ele_info_dummy
+      call alloc_element_types(ele_IO)
       call read_mul_integer_b(ele_IO%numele, ele_IO%elmtyp)
 !
       ele_IO%nnod_4_ele = 0
@@ -176,14 +176,14 @@
         ele_IO%nnod_4_ele = max(ele_IO%nnod_4_ele,ele_IO%nodelm(i))
       end do
 !
-      call allocate_connect_dummy
+      call alloc_ele_connectivity(ele_IO)
 !
       call read_mul_int8_b(ele_IO%numele, ele_IO%iele_global)
 !
       allocate(ie_tmp(ele_IO%nnod_4_ele))
       do i = 1, ele_IO%numele
         call read_mul_integer_b(ele_IO%nodelm(i), ie_tmp)
-        ie_dummy(i,1:ele_IO%nodelm(i)) = ie_tmp(1:ele_IO%nodelm(i))
+        ele_IO%ie(i,1:ele_IO%nodelm(i)) = ie_tmp(1:ele_IO%nodelm(i))
       end do
       deallocate(ie_tmp)
 !

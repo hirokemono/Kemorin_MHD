@@ -46,10 +46,10 @@
 !
       do i=1, ele_IO%numele
         write(id_file,'(28i16)') ele_IO%iele_global(i),                 &
-     &    ie_dummy(i,1:ele_IO%nodelm(i))
+     &    ele_IO%ie(i,1:ele_IO%nodelm(i))
       end do
 !
-      call deallocate_ele_info_dummy
+      call deallocate_ele_connect_type(ele_IO)
 !
       end subroutine write_element_info
 !
@@ -113,7 +113,7 @@
        integer (kind = kint) :: i
 !
 !
-       call allocate_ele_info_dummy
+       call alloc_element_types(ele_IO)
 !
        read(id_file,*) (ele_IO%elmtyp(i),i=1,ele_IO%numele)
 !
@@ -124,12 +124,12 @@
          ele_IO%nnod_4_ele = max(ele_IO%nnod_4_ele,ele_IO%nodelm(i))
        end do
 !
-       call allocate_connect_dummy
+       call alloc_ele_connectivity(ele_IO)
 !
        do i=1, ele_IO%numele
 !
         read(id_file,*) ele_IO%iele_global(i),                          &
-     &                  ie_dummy(i,1:ele_IO%nodelm(i))
+     &                  ele_IO%ie(i,1:ele_IO%nodelm(i))
        end do
 !
        end subroutine read_element_info

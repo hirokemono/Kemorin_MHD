@@ -29,9 +29,10 @@
 !
 !>  structure for node data IO (position)
       type(node_data), save ::    nod_IO
+!nod_IO%numnod
+!
 !>  structure for element data IO (connectivity)
       type(element_data), save :: ele_IO
-!ele_IO%elmtyp
 !
       integer(kind=kint) :: numnod_dummy
       integer(kind=kint) :: internal_node_dummy
@@ -46,7 +47,7 @@
 !      integer(kind=kint_gl), allocatable:: globalelmid_dummy(:)
 !      integer(kind=kint), allocatable   :: i_ele_dummy(:)
 !      integer(kind=kint), allocatable   :: nodelm_dummy(:)
-      integer(kind=kint), allocatable :: ie_dummy(:,:)
+!      integer(kind=kint), allocatable :: ie_dummy(:,:)
 ! 
       integer(kind = kint) :: nsf_4_ele_IO
       integer(kind = kint) :: nsurf_in_ele_IO = 6
@@ -98,32 +99,6 @@
       end subroutine allocate_node_data_dummy
 !
 !------------------------------------------------------------------
-!
-      subroutine allocate_ele_info_dummy
-!
-       allocate(ele_IO%elmtyp(ele_IO%numele))
-       allocate(ele_IO%nodelm(ele_IO%numele))
-       allocate(ele_IO%iele_global(ele_IO%numele))
-       if ( ele_IO%numele .gt. 0) then
-        ele_IO%elmtyp=0
-        ele_IO%nodelm = 0
-        ele_IO%iele_global=0
-       end if
-!
-      end subroutine allocate_ele_info_dummy
-!
-!------------------------------------------------------------------
-!
-      subroutine allocate_connect_dummy
-!
-       allocate(ie_dummy(ele_IO%numele,ele_IO%nnod_4_ele) )
-       if ( ele_IO%numele .gt. 0) then
-        ie_dummy = 0
-       end if
-!
-      end subroutine allocate_connect_dummy
-!
-!------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine deallocate_node_data_dummy
@@ -135,20 +110,9 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine deallocate_ele_info_dummy
-!
-      deallocate(ele_IO%elmtyp)
-      deallocate(ele_IO%nodelm)
-      deallocate(ele_IO%iele_global)
-      deallocate(ie_dummy)
-!
-      end subroutine deallocate_ele_info_dummy
-!
-!------------------------------------------------------------------
-!
       subroutine deallocate_mesh_arrays
 !
-       call deallocate_ele_info_dummy
+       call deallocate_ele_connect_type(ele_IO)
        call deallocate_node_data_dummy
 !
       end subroutine deallocate_mesh_arrays

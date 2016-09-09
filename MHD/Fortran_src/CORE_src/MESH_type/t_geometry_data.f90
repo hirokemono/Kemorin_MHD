@@ -13,22 +13,28 @@
 !!      subroutine allocate_node_geometry_type(node)
 !!      subroutine allocate_node_geometry_base(node)
 !!      subroutine allocate_sph_node_geometry(node)
+!!
 !!      subroutine allocate_ele_connect_type(ele)
+!!      subroutine alloc_element_types(ele)
+!!      subroutine alloc_ele_connectivity(ele)
 !!      subroutine allocate_overlaped_ele_type(ele)
 !!      subroutine allocate_ele_geometry_type(ele)
 !!      subroutine allocate_node_param_smp_type(node)
 !!      subroutine allocate_ele_param_smp_type(ele)
+!!        type(element_data), intent(inout) :: ele
 !!
 !!      subroutine dealloc_numnod_stack(node)
 !!      subroutine dealloc_numele_stack(ele)
 !!      subroutine deallocate_node_geometry_type(node)
 !!      subroutine deallocate_node_geometry_base(node)
 !!      subroutine deallocate_sph_node_geometry(node)
+!!
 !!      subroutine deallocate_ele_connect_type(ele)
 !!      subroutine deallocate_overlaped_ele_type(ele)
 !!      subroutine deallocate_ele_geometry_type(ele)
 !!      subroutine deallocate_node_param_smp_type(node)
 !!      subroutine deallocate_ele_param_smp_type(ele)
+!!        type(element_data), intent(inout) :: ele
 !!
 !!      subroutine link_new_numnod_stack(nod_org, node)
 !!      subroutine link_new_numele_stack(ele_org, ele)
@@ -251,19 +257,40 @@
 !
       type(element_data), intent(inout) :: ele
 !
+      call alloc_element_types(ele)
+      call alloc_ele_connectivity(ele)
+!
+      end subroutine allocate_ele_connect_type
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_element_types(ele)
+!
+      type(element_data), intent(inout) :: ele
+!
       allocate(ele%iele_global(ele%numele))
       allocate(ele%elmtyp(ele%numele))
       allocate(ele%nodelm(ele%numele))
-      allocate(ele%ie(ele%numele,ele%nnod_4_ele))
 !
       if (ele%numele .gt. 0) then
         ele%iele_global = 0
         ele%elmtyp =      0
         ele%nodelm =      0
-        ele%ie =          0
       end if
 !
-      end subroutine allocate_ele_connect_type
+      end subroutine alloc_element_types
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_ele_connectivity(ele)
+!
+      type(element_data), intent(inout) :: ele
+!
+      allocate(ele%ie(ele%numele,ele%nnod_4_ele))
+!
+      if (ele%numele .gt. 0) ele%ie = 0
+!
+      end subroutine alloc_ele_connectivity
 !
 !  ---------------------------------------------------------------------
 !

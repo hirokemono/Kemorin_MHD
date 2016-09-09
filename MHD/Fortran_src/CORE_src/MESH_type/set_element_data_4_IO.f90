@@ -34,14 +34,13 @@
       ele_IO%numele =     ele%numele
       ele_IO%nnod_4_ele = ele%nnod_4_ele
 !
-      call allocate_ele_info_dummy
-      call allocate_connect_dummy
+      call allocate_ele_connect_type(ele_IO)
 !
 !$omp parallel private(k1)
       do k1 = 1, ele%nnod_4_ele
 !$omp do
         do iele = 1, ele%numele
-          ie_dummy(iele,k1) = ele%ie(iele,k1)
+          ele_IO%ie(iele,k1) = ele%ie(iele,k1)
         end do
 !$omp end do nowait
       end do
@@ -69,7 +68,7 @@
 !
 !
       if (ele_IO%numele .eq. 0) then
-        call deallocate_ele_info_dummy
+        call deallocate_ele_connect_type(ele_IO)
         return
       end if
 !
@@ -85,7 +84,7 @@
       do k1 = 1, ele%nnod_4_ele
 !$omp do
         do iele = 1, ele%numele
-          ele%ie(iele,k1) = ie_dummy(iele,k1)
+          ele%ie(iele,k1) = ele_IO%ie(iele,k1)
         end do
 !$omp end do nowait
       end do
@@ -99,7 +98,7 @@
 !$omp end do
 !$omp end parallel
 !
-      call deallocate_ele_info_dummy
+      call deallocate_ele_connect_type(ele_IO)
 !
       end subroutine copy_ele_connect_from_IO
 !
