@@ -109,14 +109,14 @@
       if (comm_IO%num_neib .gt. 0) then
         call gz_mpi_read_integer_stack_b                                &
      &     (id_file, nprocs_in, id_rank, ioff_gl,                       &
-     &      comm_IO%num_neib, istack_export_IO, ntot_export_IO)
+     &      comm_IO%num_neib, istack_export_IO, comm_IO%ntot_export)
 !
         call allocate_export_item_IO
         call gz_mpi_read_int_vector_b                                   &
      &     (id_file, nprocs_in, id_rank, ioff_gl,                       &
-     &      ntot_export_IO, item_export_IO)
+     &      comm_IO%ntot_export, item_export_IO)
       else
-        ntot_export_IO = 0
+        comm_IO%ntot_export = 0
         call allocate_export_item_IO
       end if
 !
@@ -173,7 +173,7 @@
       call gz_mpi_write_integer_stack_b                                 &
      &   (id_file, ioff_gl, comm_IO%num_neib, istack_export_IO)
       call gz_mpi_write_int_vector_b                                    &
-     &   (id_file, ioff_gl, ntot_export_IO, item_export_IO)
+     &   (id_file, ioff_gl, comm_IO%ntot_export, item_export_IO)
 !
       call deallocate_export_item_IO
 !

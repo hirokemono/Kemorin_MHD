@@ -75,12 +75,12 @@
       call allocate_export_stack_IO
       if (comm_IO%num_neib .gt. 0) then
         call read_integer_stack_b(comm_IO%num_neib,                     &
-     &      istack_export_IO, ntot_export_IO)
+     &      istack_export_IO, comm_IO%ntot_export)
 !
         call allocate_export_item_IO
-        call read_mul_integer_b(ntot_export_IO, item_export_IO)
+        call read_mul_integer_b(comm_IO%ntot_export, item_export_IO)
       else
-        ntot_export_IO = 0
+        comm_IO%ntot_export = 0
         call allocate_export_item_IO
       end if
 !
@@ -120,7 +120,7 @@
 !
 !
       call write_integer_stack_b(comm_IO%num_neib, istack_export_IO)
-      call write_mul_integer_b(ntot_export_IO, item_export_IO)
+      call write_mul_integer_b(comm_IO%ntot_export, item_export_IO)
 !
       call deallocate_export_item_IO
 !
