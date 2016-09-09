@@ -33,7 +33,7 @@
       call gz_write_textbuf_w_lf
 !
       do i=1, nod_IO%numnod
-        write(textbuf,'(i16,1p3E25.15e3,a1)')  globalnodid_dummy(i),    &
+        write(textbuf,'(i16,1p3E25.15e3,a1)')  nod_IO%inod_global(i),   &
      &        xx_dummy(i,1:3), char(0)
         call gz_write_textbuf_w_lf
       end do
@@ -64,7 +64,7 @@
 !
       do i=1, nod_IO%numnod
         call get_one_line_from_gz_f
-        read(textbuf,*)  globalnodid_dummy(i), (xx_dummy(i,k),k=1,3)
+        read(textbuf,*)  nod_IO%inod_global(i), (xx_dummy(i,k),k=1,3)
       end do
 !
       end subroutine read_geometry_info_gz

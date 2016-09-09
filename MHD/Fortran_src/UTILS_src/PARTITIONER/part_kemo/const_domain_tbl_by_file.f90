@@ -98,7 +98,7 @@
       call sel_read_geometry_size(my_rank2)
 !
       do inod = 1, nod_IO%internal_node
-        inod_g = globalnodid_dummy(inod)
+        inod_g = nod_IO%inod_global(inod)
         IGROUP_nod(inod_g) = ip2
         id_glnode_org(inod_g) = inod_g
       end do

@@ -38,7 +38,7 @@
 !
 !$omp parallel do
       do inod = 1, node%numnod
-        globalnodid_dummy(inod) = node%inod_global(inod)
+        nod_IO%inod_global(inod) = node%inod_global(inod)
         xx_dummy(inod,1) = node%xx(inod,1)
         xx_dummy(inod,2) = node%xx(inod,2)
         xx_dummy(inod,3) = node%xx(inod,3)
@@ -62,7 +62,7 @@
 !
 !$omp parallel do
       do inod = 1, node%numnod
-        globalnodid_dummy(inod) = node%inod_global(inod)
+        nod_IO%inod_global(inod) = node%inod_global(inod)
         xx_dummy(inod,1) = node%rr(inod)
         xx_dummy(inod,2) = node%theta(inod)
         xx_dummy(inod,3) = node%phi(inod)
@@ -87,7 +87,7 @@
 !
 !$omp parallel do
       do inod = 1, node%numnod
-        globalnodid_dummy(inod) = node%inod_global(inod)
+        nod_IO%inod_global(inod) = node%inod_global(inod)
         xx_dummy(inod,1) = node%ss(inod)
         xx_dummy(inod,2) = node%phi(inod)
         xx_dummy(inod,3) = node%xx(inod,3)
@@ -113,7 +113,7 @@
 !
 !$omp parallel do
       do inod = 1, node%numnod
-        node%inod_global(inod) = globalnodid_dummy(inod)
+        node%inod_global(inod) = nod_IO%inod_global(inod)
         node%xx(inod,1) = xx_dummy(inod,1)
         node%xx(inod,2) = xx_dummy(inod,2)
         node%xx(inod,3) = xx_dummy(inod,3)

@@ -78,7 +78,7 @@
      &   (id_file, ioff_gl, nod_IO%internal_node)
 !
       call gz_mpi_write_int8_vector_b                                   &
-     &   (id_file, ioff_gl, nod_IO%numnod, globalnodid_dummy)
+     &   (id_file, ioff_gl, nod_IO%numnod, nod_IO%inod_global)
       call gz_mpi_write_2d_vector_b                                     &
      &   (id_file, ioff_gl, nod_IO%numnod, ithree, xx_dummy)
 !
@@ -189,7 +189,7 @@
 !
       call gz_mpi_read_int8_vector_b                                    &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    nod_IO%numnod, globalnodid_dummy)
+     &    nod_IO%numnod, nod_IO%inod_global)
       call gz_mpi_read_2d_vector_b                                      &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
      &    nod_IO%numnod, ithree, xx_dummy)

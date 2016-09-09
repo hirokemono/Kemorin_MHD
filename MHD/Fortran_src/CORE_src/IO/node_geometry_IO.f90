@@ -76,7 +76,7 @@
       write(id_file,'(2i16)') nod_IO%numnod, nod_IO%internal_node
 !
       do i=1, nod_IO%numnod
-        write(id_file,'(i16,1p3E25.15e3)')  globalnodid_dummy(i),       &
+        write(id_file,'(i16,1p3E25.15e3)')  nod_IO%inod_global(i),      &
      &        xx_dummy(i,1:3)
       end do
 !
@@ -142,7 +142,7 @@
       call allocate_node_data_dummy
 !
       do i=1, nod_IO%numnod
-        read(id_file,*)  globalnodid_dummy(i), (xx_dummy(i,k),k=1,3)
+        read(id_file,*)  nod_IO%inod_global(i), (xx_dummy(i,k),k=1,3)
       end do
 !
       end subroutine read_geometry_info

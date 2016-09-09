@@ -28,7 +28,7 @@
       nod_IO%internal_node = inter_nod_3dfilter
       call allocate_node_data_dummy
 !
-      globalnodid_dummy(1:nnod_filtering)                               &
+      nod_IO%inod_global(1:nnod_filtering)                              &
      &      = id_globalnod_filtering(1:nnod_filtering)
       xx_dummy(1:nnod_filtering,1) = xx_filtering(1:nnod_filtering,1)
       xx_dummy(1:nnod_filtering,2) = xx_filtering(1:nnod_filtering,2)
@@ -47,7 +47,7 @@
       call allocate_globalnod_filter
 !
       id_globalnod_filtering(1:nnod_filtering)                          &
-     &      = globalnodid_dummy(1:nnod_filtering)
+     &      = nod_IO%inod_global(1:nnod_filtering)
       xx_filtering(1:nnod_filtering,1) = xx_dummy(1:nnod_filtering,1)
       xx_filtering(1:nnod_filtering,2) = xx_dummy(1:nnod_filtering,2)
       xx_filtering(1:nnod_filtering,3) = xx_dummy(1:nnod_filtering,3)

@@ -103,7 +103,7 @@
 !
 !omp parallel do
       do iedge = 1, edge%numedge
-        globalnodid_dummy(iedge) = edge%iedge_global(iedge)
+        nod_IO%inod_global(iedge) = edge%iedge_global(iedge)
         xx_dummy(iedge,1) =        edge%x_edge(iedge,1)
         xx_dummy(iedge,2) =        edge%x_edge(iedge,2)
         xx_dummy(iedge,3) =        edge%x_edge(iedge,3)
@@ -133,7 +133,7 @@
 !
 !omp parallel do
       do iedge = 1, edge%numedge
-        globalnodid_dummy(iedge) = edge%iedge_global(iedge)
+        nod_IO%inod_global(iedge) = edge%iedge_global(iedge)
         xx_dummy(iedge,1) =        edge%r_edge(iedge)
         xx_dummy(iedge,2) =        edge%theta_edge(iedge)
         xx_dummy(iedge,3) =        edge%phi_edge(iedge)
@@ -163,7 +163,7 @@
 !
 !omp parallel do
       do iedge = 1, edge%numedge
-        globalnodid_dummy(iedge) = edge%iedge_global(iedge)
+        nod_IO%inod_global(iedge) = edge%iedge_global(iedge)
         xx_dummy(iedge,1) =        edge%s_edge(iedge)
         xx_dummy(iedge,2) =        edge%phi_edge(iedge)
         xx_dummy(iedge,3) =        edge%x_edge(iedge,3)

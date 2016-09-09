@@ -88,7 +88,7 @@
 !
 !omp parallel do
       do isurf = 1, surf%numsurf
-        globalnodid_dummy(isurf) = surf%isurf_global(isurf)
+        nod_IO%inod_global(isurf) = surf%isurf_global(isurf)
         xx_dummy(isurf,1) =        surf%x_surf(isurf,1)
         xx_dummy(isurf,2) =        surf%x_surf(isurf,2)
         xx_dummy(isurf,3) =        surf%x_surf(isurf,3)
@@ -119,7 +119,7 @@
 !
 !omp parallel do
       do isurf = 1, surf%numsurf
-        globalnodid_dummy(isurf) = surf%isurf_global(isurf)
+        nod_IO%inod_global(isurf) = surf%isurf_global(isurf)
         xx_dummy(isurf,1) = surf%r_surf(isurf)
         xx_dummy(isurf,2) = surf%theta_surf(isurf)
         xx_dummy(isurf,3) = surf%phi_surf(isurf)
@@ -150,7 +150,7 @@
 !
 !omp parallel do
       do isurf = 1, surf%numsurf
-        globalnodid_dummy(isurf) = surf%isurf_global(isurf)
+        nod_IO%inod_global(isurf) = surf%isurf_global(isurf)
         xx_dummy(isurf,1) = surf%s_surf(isurf)
         xx_dummy(isurf,2) = surf%phi_surf(isurf)
         xx_dummy(isurf,3) = surf%x_surf(isurf,3)
