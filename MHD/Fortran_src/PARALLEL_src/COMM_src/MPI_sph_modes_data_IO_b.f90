@@ -34,6 +34,7 @@
       use m_precision
       use m_machine_parameter
 !
+      use m_comm_data_IO
       use m_node_id_spherical_IO
       use m_group_data_sph_specr_IO
       use MPI_domain_data_IO_b
@@ -61,7 +62,7 @@
       ndir_sph_IO =  3
 !
       call mpi_read_domain_info_b                                       &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
       call mpi_read_gl_reso_sph_b                                       &
      &   (id_file, nprocs_in, id_rank, ioff_gl)
       call mpi_read_rank_4_sph_b                                        &
@@ -72,7 +73,7 @@
       call mpi_read_gl_nodes_sph_b                                      &
      &   (id_file, nprocs_in, id_rank, ioff_gl)
       call mpi_read_import_data_b                                       &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
 !
       call mpi_read_group_data_b                                        &
      &   (id_file, nprocs_in, id_rank, ioff_gl, bc_rtp_grp_IO)
@@ -98,7 +99,7 @@
       ndir_sph_IO =  2
 !
       call mpi_read_domain_info_b                                       &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
       call mpi_read_gl_reso_sph_b                                       &
      &   (id_file, nprocs_in, id_rank, ioff_gl)
       call mpi_read_rank_4_sph_b                                        &
@@ -109,7 +110,7 @@
       call mpi_read_gl_nodes_sph_b                                      &
      &   (id_file, nprocs_in, id_rank, ioff_gl)
       call mpi_read_import_data_b                                       &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
 !
       call mpi_read_group_data_b                                        &
      &   (id_file, nprocs_in, id_rank, ioff_gl, radial_rj_grp_IO)
@@ -131,7 +132,7 @@
       ndir_sph_IO =  3
 !
       call mpi_read_domain_info_b                                       &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
       call mpi_read_gl_reso_sph_b                                       &
      &   (id_file, nprocs_in, id_rank, ioff_gl)
       call mpi_read_rank_4_sph_b                                        &
@@ -142,7 +143,7 @@
      &   (id_file, nprocs_in, id_rank, ioff_gl)
 !
       call mpi_read_import_data_b                                       &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
 !
       end subroutine mpi_read_geom_rtm_data_b
 !
@@ -159,7 +160,7 @@
       ndir_sph_IO =  2
 !
       call mpi_read_domain_info_b                                       &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
       call mpi_read_gl_reso_sph_b                                       &
      &   (id_file, nprocs_in, id_rank, ioff_gl)
       call mpi_read_rank_4_sph_b                                        &
@@ -170,7 +171,7 @@
       call mpi_read_gl_nodes_sph_b                                      &
      &   (id_file, nprocs_in, id_rank, ioff_gl)
       call mpi_read_import_data_b                                       &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
 !
       end subroutine mpi_read_modes_rlm_data_b
 !
@@ -186,7 +187,7 @@
 !
 !
       call mpi_write_domain_info_b                                      &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
       call mpi_write_gl_reso_sph_b(id_file, ioff_gl)
       call mpi_write_rank_4_sph_b(id_file, nprocs_in, id_rank, ioff_gl)
       call mpi_write_rtp_gl_1d_table_b                                  &
@@ -195,7 +196,7 @@
       call mpi_write_gl_nodes_sph_b                                     &
      &   (id_file, nprocs_in, id_rank, ioff_gl)
       call mpi_write_import_data_b                                      &
-     &   (id_file, nprocs_in, id_rank, ioff_gl) 
+     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO) 
 !
       call mpi_write_grp_data_b                                         &
      &   (id_file, nprocs_in, id_rank, ioff_gl, bc_rtp_grp_IO)
@@ -219,7 +220,7 @@
 !
 !
       call mpi_write_domain_info_b                                      &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
       call mpi_write_gl_reso_sph_b(id_file, ioff_gl)
       call mpi_write_rank_4_sph_b(id_file, nprocs_in, id_rank, ioff_gl)
 !
@@ -229,7 +230,7 @@
      &   (id_file, nprocs_in, id_rank, ioff_gl)
 !
       call mpi_write_import_data_b                                      &
-     &   (id_file, nprocs_in, id_rank, ioff_gl) 
+     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
 !
       call mpi_write_grp_data_b                                         &
      &   (id_file, nprocs_in, id_rank, ioff_gl, radial_rj_grp_IO)
@@ -249,7 +250,7 @@
 !
 !
       call mpi_write_domain_info_b                                      &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
       call mpi_write_gl_reso_sph_b(id_file, ioff_gl)
       call mpi_write_rank_4_sph_b(id_file, nprocs_in, id_rank, ioff_gl)
       call mpi_write_rtp_gl_1d_table_b                                  &
@@ -258,7 +259,7 @@
      &   (id_file, nprocs_in, id_rank, ioff_gl)
 !
       call mpi_write_import_data_b                                      &
-     &   (id_file, nprocs_in, id_rank, ioff_gl) 
+     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
 !
       end subroutine mpi_write_geom_rtm_data_b
 !
@@ -273,7 +274,7 @@
 !
 !
       call mpi_write_domain_info_b                                      &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
       call mpi_write_gl_reso_sph_b(id_file, ioff_gl)
       call mpi_write_rank_4_sph_b(id_file, nprocs_in, id_rank, ioff_gl)
       call mpi_write_rj_gl_1d_table_b                                   &
@@ -282,7 +283,7 @@
      &   (id_file, nprocs_in, id_rank, ioff_gl)
 !
       call mpi_write_import_data_b                                      &
-     &   (id_file, nprocs_in, id_rank, ioff_gl) 
+     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
 !
       end subroutine mpi_write_modes_rlm_data_b
 !

@@ -28,6 +28,7 @@
       use m_precision
       use m_constants
 !
+      use m_comm_data_IO
       use m_read_mesh_data
 !
       implicit  none
@@ -51,13 +52,14 @@
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
 !
-      call gz_mpi_write_domain_info_b(id_file, nprocs_in, ioff_gl)
+      call gz_mpi_write_domain_info_b                                   &
+     &   (id_file, nprocs_in, ioff_gl, comm_IO)
 !
       call gz_mpi_write_geometry_info_b(id_file, ioff_gl)
       call gz_mpi_write_element_info_b(id_file, ioff_gl)
 !
-      call gz_mpi_write_import_data_b(id_file, ioff_gl)
-      call gz_mpi_write_export_data_b(id_file, ioff_gl)
+      call gz_mpi_write_import_data_b(id_file, ioff_gl, comm_IO)
+      call gz_mpi_write_export_data_b(id_file, ioff_gl, comm_IO)
 !
       end subroutine gz_mpi_write_geometry_data_b
 !
@@ -129,7 +131,7 @@
 !
 !
       call gz_mpi_read_domain_info_b                                    &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
 !
       call gz_mpi_read_number_of_node_b                                 &
      &   (id_file, nprocs_in, id_rank, ioff_gl)
@@ -146,9 +148,9 @@
 ! ----  import & export 
 !
       call gz_mpi_read_import_data_b                                    &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
       call gz_mpi_read_export_data_b                                    &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
 !
       end subroutine gz_mpi_read_geometry_data_b
 !

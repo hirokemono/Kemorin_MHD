@@ -21,6 +21,7 @@
       use m_precision
       use m_machine_parameter
 !
+      use m_comm_data_IO
       use m_read_mesh_data
       use m_calypso_mpi_IO
 !
@@ -107,7 +108,7 @@
 !
       call open_read_mpi_file_b(mesh_file_name, id_file, ioff_gl)
       call mpi_read_domain_info_b                                       &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
       call mpi_read_number_of_node_b                                    &
      &   (id_file, nprocs_in, id_rank, ioff_gl)
       call calypso_close_mpi_file(id_file)
@@ -133,7 +134,7 @@
       call open_read_mpi_file_b(mesh_file_name, id_file, ioff_gl)
 !
       call mpi_read_domain_info_b                                       &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
       call mpi_read_number_of_node_b                                    &
      &   (id_file, nprocs_in, id_rank, ioff_gl)
       call mpi_read_geometry_info_b                                     &

@@ -29,6 +29,7 @@
       use m_precision
       use m_constants
 !
+      use m_comm_data_IO
       use m_read_mesh_data
       use t_calypso_mpi_IO_param
 !
@@ -59,7 +60,7 @@
 !
 !
       call mpi_write_domain_info_b                                      &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
 !
       call mpi_write_geometry_info_b                                    &
      &   (id_file, nprocs_in, id_rank, ioff_gl)
@@ -67,9 +68,9 @@
      &   (id_file, nprocs_in, id_rank, ioff_gl)
 !
       call mpi_write_import_data_b                                      &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
       call mpi_write_export_data_b                                      &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
 !
       end subroutine mpi_write_geometry_data_b
 !
@@ -156,7 +157,7 @@
 !
 !
       call mpi_read_domain_info_b                                       &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
 !
       call mpi_read_number_of_node_b                                    &
      &   (id_file, nprocs_in, id_rank, ioff_gl)
@@ -173,9 +174,9 @@
 ! ----  import & export 
 !
       call mpi_read_import_data_b                                       &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
       call mpi_read_export_data_b                                       &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
 !
       end subroutine mpi_read_geometry_data_b
 !
