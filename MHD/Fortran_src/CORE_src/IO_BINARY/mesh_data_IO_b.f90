@@ -23,6 +23,7 @@
       use m_precision
       use m_constants
 !
+      use m_comm_data_IO
       use m_read_mesh_data
 !
       implicit  none
@@ -40,13 +41,13 @@
       use domain_data_IO_b
 !
 !
-      call write_domain_info_b
+      call write_domain_info_b(my_rank_IO, comm_IO)
 !
       call write_geometry_info_b
       call write_element_info_b
 !
-      call write_import_data_b
-      call write_export_data_b
+      call write_import_data_b(comm_IO)
+      call write_export_data_b(comm_IO)
 !
       end subroutine write_geometry_data_b
 !
@@ -102,7 +103,7 @@
       use domain_data_IO_b
 !
 !
-      call read_domain_info_b
+      call read_domain_info_b(my_rank_IO, comm_IO)
       call read_number_of_node_b
       call read_geometry_info_b
 !
@@ -113,8 +114,8 @@
 !
 ! ----  import & export 
 !
-      call read_import_data_b
-      call read_export_data_b
+      call read_import_data_b(comm_IO)
+      call read_export_data_b(comm_IO)
 !
       end subroutine read_geometry_data_b
 !

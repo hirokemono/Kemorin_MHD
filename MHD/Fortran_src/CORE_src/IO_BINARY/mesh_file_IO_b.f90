@@ -87,7 +87,7 @@
      &   'Read binary mesh file: ', trim(mesh_file_name)
 !
       call open_read_binary_file(mesh_file_name, my_rank)
-      call read_domain_info_b
+      call read_domain_info_b(my_rank_IO, comm_IO)
       call read_number_of_node_b
       call close_binary_file
 !
@@ -108,7 +108,7 @@
 !
       call open_read_binary_file(mesh_file_name, my_rank)
 !
-      call read_domain_info_b
+      call read_domain_info_b(my_rank_IO, comm_IO)
       call read_number_of_node_b
       call read_geometry_info_b
 !

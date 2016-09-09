@@ -7,13 +7,15 @@
 !>@brief  Routine for doimain data IO
 !!
 !!@verbatim
-!!      subroutine read_domain_info_b
-!!      subroutine read_import_data_b
-!!      subroutine read_export_data_b
+!!      subroutine read_domain_info_b(my_rank_IO, comm_IO)
+!!      subroutine read_import_data_b(comm_IO)
+!!      subroutine read_export_data_b(comm_IO)
+!!        type(communication_table), intent(inout) :: comm_IO
 !!
-!!      subroutine write_domain_info_b
-!!      subroutine write_import_data_b
-!!      subroutine write_export_data_b
+!!      subroutine write_domain_info_b(my_rank_IO, comm_IO)
+!!      subroutine write_import_data_b(comm_IO)
+!!      subroutine write_export_data_b(comm_IO)
+!!        type(communication_table), intent(inout) :: comm_IO
 !!@endverbatim
 !!
 !@param id_file file ID
@@ -22,7 +24,7 @@
 !
       use m_precision
 !
-      use m_comm_data_IO
+      use t_comm_table
       use binary_IO
 !
       implicit none
@@ -33,7 +35,10 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_domain_info_b
+      subroutine read_domain_info_b(my_rank_IO, comm_IO)
+!
+      integer(kind = kint), intent(inout) :: my_rank_IO
+      type(communication_table), intent(inout) :: comm_IO
 !
 !
       call read_one_integer_b(my_rank_IO)
@@ -48,7 +53,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_import_data_b
+      subroutine read_import_data_b(comm_IO)
+!
+      type(communication_table), intent(inout) :: comm_IO
 !
 !
       call allocate_type_import_num(comm_IO)
@@ -69,7 +76,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_export_data_b
+      subroutine read_export_data_b(comm_IO)
+!
+      type(communication_table), intent(inout) :: comm_IO
 !
 !
       call allocate_type_export_num(comm_IO)
@@ -90,7 +99,10 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine write_domain_info_b
+      subroutine write_domain_info_b(my_rank_IO, comm_IO)
+!
+      integer(kind = kint), intent(in) :: my_rank_IO
+      type(communication_table), intent(inout) :: comm_IO
 !
 !
       call write_one_integer_b(my_rank_IO)
@@ -105,7 +117,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine write_import_data_b
+      subroutine write_import_data_b(comm_IO)
+!
+      type(communication_table), intent(inout) :: comm_IO
 !
 !
       call write_integer_stack_b                                        &
@@ -119,7 +133,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_export_data_b
+      subroutine write_export_data_b(comm_IO)
+!
+      type(communication_table), intent(inout) :: comm_IO
 !
 !
       call write_integer_stack_b                                        &

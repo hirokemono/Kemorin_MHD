@@ -13,6 +13,7 @@
 !!     &         (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
 !!      subroutine mpi_read_export_data_b                               &
 !!     &         (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
+!!        type(communication_table), intent(inout) :: comm_IO
 !!
 !!      subroutine mpi_write_domain_info_b                              &
 !!     &         (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
@@ -20,6 +21,7 @@
 !!     &         (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
 !!      subroutine mpi_write_export_data_b                              &
 !!     &         (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
+!!        type(communication_table), intent(inout) :: comm_IO
 !!@endverbatim
 !!
 !@param id_file file ID
