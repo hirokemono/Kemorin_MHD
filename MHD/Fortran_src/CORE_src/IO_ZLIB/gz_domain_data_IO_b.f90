@@ -55,7 +55,7 @@
       if (comm_IO%num_neib .gt. 0) then
 !
         call gz_read_integer_stack_b(comm_IO%num_neib,                  &
-     &      istack_import_IO, comm_IO%ntot_import)
+     &      comm_IO%istack_import, comm_IO%ntot_import)
 !
         call allocate_import_item_IO
         call gz_read_mul_integer_b                                      &
@@ -111,7 +111,7 @@
 !
 !
       call gz_write_integer_stack_b                                     &
-     &   (comm_IO%num_neib, istack_import_IO)
+     &   (comm_IO%num_neib, comm_IO%istack_import)
       call gz_write_mul_integer_b                                       &
      &   (comm_IO%ntot_import, comm_IO%item_import)
 !

@@ -69,7 +69,7 @@
       if (comm_IO%num_neib .gt. 0) then
 !
         call read_arrays_for_stacks(id_file, comm_IO%num_neib,          &
-     &      izero, comm_IO%ntot_import, istack_import_IO)
+     &      izero, comm_IO%ntot_import, comm_IO%istack_import)
 !
         call allocate_import_item_IO
         call read_send_recv_item(id_file, comm_IO%ntot_import,          &
@@ -138,8 +138,9 @@
 !
       integer(kind = kint), intent(in) :: id_file
 !
-      call write_send_recv_data(id_file, comm_IO%num_neib,              &
-     &    comm_IO%ntot_import, istack_import_IO, comm_IO%item_import)
+      call write_send_recv_data                                         &
+     &   (id_file, comm_IO%num_neib, comm_IO%ntot_import,               &
+     &    comm_IO%istack_import, comm_IO%item_import)
 !
       call deallocate_import_item_IO
 !

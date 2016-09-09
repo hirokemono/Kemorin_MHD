@@ -56,7 +56,7 @@
       comm_sph%id_domain(1:comm_sph%nneib_domain)                       &
      &      = comm_IO%id_neib(1:comm_sph%nneib_domain)
       comm_sph%istack_sr(0:comm_sph%nneib_domain)                       &
-     &      = istack_import_IO(0:comm_sph%nneib_domain)
+     &      = comm_IO%istack_import(0:comm_sph%nneib_domain)
 !
       comm_sph%item_sr(1:comm_sph%ntot_item_sr)                         &
      &      = comm_IO%item_import(1:comm_sph%ntot_item_sr)
@@ -84,7 +84,7 @@
 !
       comm_IO%id_neib(1:comm_sph%nneib_domain)                          &
      &      = comm_sph%id_domain(1:comm_sph%nneib_domain)
-      istack_import_IO(0:comm_sph%nneib_domain)                         &
+      comm_IO%istack_import(0:comm_sph%nneib_domain)                    &
      &      = comm_sph%istack_sr(0:comm_sph%nneib_domain)
 !
       comm_IO%item_import(1:comm_sph%ntot_item_sr)                      &

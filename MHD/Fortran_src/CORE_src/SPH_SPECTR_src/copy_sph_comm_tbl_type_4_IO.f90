@@ -46,7 +46,7 @@
       comm%id_domain(1:comm%nneib_domain)                               &
      &      = comm_IO%id_neib(1:comm%nneib_domain)
       comm%istack_sr(0:comm%nneib_domain)                               &
-     &      = istack_import_IO(0:comm%nneib_domain)
+     &      = comm_IO%istack_import(0:comm%nneib_domain)
 !
       comm%item_sr(1:comm%ntot_item_sr)                                 &
      &      = comm_IO%item_import(1:comm%ntot_item_sr)

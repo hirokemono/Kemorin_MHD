@@ -82,7 +82,8 @@
       if (comm_IO%num_neib .gt. 0) then
         call gz_mpi_read_integer_stack_b                                &
      &     (id_file, nprocs_in, id_rank, ioff_gl,                       &
-     &      comm_IO%num_neib, istack_import_IO, comm_IO%ntot_import)
+     &      comm_IO%num_neib, comm_IO%istack_import,                    &
+     &      comm_IO%ntot_import)
 !
         call allocate_import_item_IO
         call gz_mpi_read_int_vector_b                                   &
@@ -155,7 +156,7 @@
 !
 !
       call gz_mpi_write_integer_stack_b                                 &
-     &   (id_file, ioff_gl, comm_IO%num_neib, istack_import_IO)
+     &   (id_file, ioff_gl, comm_IO%num_neib, comm_IO%istack_import)
       call gz_mpi_write_int_vector_b                                    &
      &   (id_file, ioff_gl, comm_IO%ntot_import, comm_IO%item_import)
 !
