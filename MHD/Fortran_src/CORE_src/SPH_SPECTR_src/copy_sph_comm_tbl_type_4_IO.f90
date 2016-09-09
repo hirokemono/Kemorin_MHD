@@ -37,7 +37,7 @@
       type(sph_comm_tbl), intent(inout) :: comm
 !
 !
-      comm%nneib_domain = num_neib_domain_IO
+      comm%nneib_domain = comm_IO%num_neib
       comm%ntot_item_sr = ntot_import_IO
 !
       call alloc_type_sph_comm_stack(comm)

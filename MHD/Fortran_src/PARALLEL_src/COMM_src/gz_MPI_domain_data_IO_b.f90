@@ -57,13 +57,13 @@
       end if
 !
       call gz_mpi_read_one_integer_b                                    &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, num_neib_domain_IO)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO%num_neib)
 !
       call allocate_neib_domain_IO
 !
       call gz_mpi_read_int_vector_b                                     &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    num_neib_domain_IO, id_neib_domain_IO)
+     &    comm_IO%num_neib, id_neib_domain_IO)
 !
       end subroutine gz_mpi_read_domain_info_b
 !
@@ -79,10 +79,10 @@
 !
 !
       call allocate_import_stack_IO
-      if (num_neib_domain_IO .gt. 0) then
+      if (comm_IO%num_neib .gt. 0) then
         call gz_mpi_read_integer_stack_b                                &
      &     (id_file, nprocs_in, id_rank, ioff_gl,                       &
-     &      num_neib_domain_IO, istack_import_IO, ntot_import_IO)
+     &      comm_IO%num_neib, istack_import_IO, ntot_import_IO)
 !
         call allocate_import_item_IO
         call gz_mpi_read_int_vector_b                                   &
@@ -106,10 +106,10 @@
 !
 !
       call allocate_export_stack_IO
-      if (num_neib_domain_IO .gt. 0) then
+      if (comm_IO%num_neib .gt. 0) then
         call gz_mpi_read_integer_stack_b                                &
      &     (id_file, nprocs_in, id_rank, ioff_gl,                       &
-     &      num_neib_domain_IO, istack_export_IO, ntot_export_IO)
+     &      comm_IO%num_neib, istack_export_IO, ntot_export_IO)
 !
         call allocate_export_item_IO
         call gz_mpi_read_int_vector_b                                   &
@@ -135,10 +135,10 @@
 !
       call gz_mpi_write_one_inthead_b(id_file, ioff_gl, nprocs_in)
       call gz_mpi_write_one_integer_b                                   &
-     &   (id_file, ioff_gl, num_neib_domain_IO)
+     &   (id_file, ioff_gl, comm_IO%num_neib)
 !
       call gz_mpi_write_int_vector_b                                    &
-     &   (id_file, ioff_gl, num_neib_domain_IO, id_neib_domain_IO)
+     &   (id_file, ioff_gl, comm_IO%num_neib, id_neib_domain_IO)
 !
       call deallocate_neib_domain_IO
 !
@@ -154,7 +154,7 @@
 !
 !
       call gz_mpi_write_integer_stack_b                                 &
-     &   (id_file, ioff_gl, num_neib_domain_IO, istack_import_IO)
+     &   (id_file, ioff_gl, comm_IO%num_neib, istack_import_IO)
       call gz_mpi_write_int_vector_b                                    &
      &   (id_file, ioff_gl, ntot_import_IO, item_import_IO)
 !
@@ -171,7 +171,7 @@
 !
 !
       call gz_mpi_write_integer_stack_b                                 &
-     &   (id_file, ioff_gl, num_neib_domain_IO, istack_export_IO)
+     &   (id_file, ioff_gl, comm_IO%num_neib, istack_export_IO)
       call gz_mpi_write_int_vector_b                                    &
      &   (id_file, ioff_gl, ntot_export_IO, item_export_IO)
 !

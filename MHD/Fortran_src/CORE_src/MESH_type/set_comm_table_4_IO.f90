@@ -34,7 +34,7 @@
       type(communication_table), intent(inout) :: comm_tbls
 !
 !
-      comm_tbls%num_neib = num_neib_domain_IO
+      comm_tbls%num_neib = comm_IO%num_neib
 !
       call allocate_type_comm_tbl_num(comm_tbls)
 !
@@ -67,11 +67,11 @@
 !
 !
       my_rank_IO = my_rank
-      num_neib_domain_IO = comm_tbls%num_neib
+      comm_IO%num_neib = comm_tbls%num_neib
 !
       call allocate_neib_comm_stack_IO
 !
-      call copy_num_communication(num_neib_domain_IO,                   &
+      call copy_num_communication(comm_IO%num_neib,                     &
      &    id_neib_domain_IO, istack_import_IO, istack_export_IO,        &
      &    ntot_import_IO, ntot_export_IO, comm_tbls%id_neib,            &
      &    comm_tbls%istack_import, comm_tbls%istack_export)

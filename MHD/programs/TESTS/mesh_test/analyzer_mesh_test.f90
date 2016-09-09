@@ -163,7 +163,7 @@
 !      spherical and cylindrical coordinate
 !  ---------------------------------------------
 !
-      num_neib_domain_IO = 0
+      comm_IO%num_neib = 0
       my_rank_IO = my_rank
 !
       call add_int_suffix(my_rank, mesh_sph_file_head, mesh_file_name)
@@ -171,7 +171,7 @@
       open (input_file_code, file = mesh_file_name,                     &
      &      form = 'formatted')
 !
-      num_neib_domain_IO = 0
+      comm_IO%num_neib = 0
       call allocate_neib_domain_IO
 !
       call copy_node_sph_to_IO(mesh%node)
@@ -185,7 +185,7 @@
       open (input_file_code, file = mesh_file_name,                     &
      &      form = 'formatted')
 !
-      num_neib_domain_IO = 0
+      comm_IO%num_neib = 0
       call allocate_neib_domain_IO
       call copy_node_cyl_to_IO(mesh%node)
 !

@@ -29,12 +29,17 @@
       module m_comm_data_IO
 !
       use m_precision
+      use t_comm_table
 !
       implicit none
 !
+!> data structure for communication table IO
+      type(communication_table), save :: comm_IO
+!comm_IO%num_neib
+!
       integer(kind = kint) :: my_rank_IO
 !
-      integer(kind = kint) :: num_neib_domain_IO
+!      integer(kind = kint) :: num_neib_domain_IO
       integer(kind = kint), allocatable :: id_neib_domain_IO(:)
       integer(kind = kint), allocatable :: istack_import_IO(:)
       integer(kind = kint), allocatable :: istack_export_IO(:)
@@ -42,12 +47,10 @@
       integer(kind = kint) :: nwork_import_IO
       integer(kind = kint) :: ntot_import_IO
       integer(kind = kint), allocatable :: item_import_IO(:)
-      integer(kind = kint), allocatable :: iwork_import_IO(:,:)
 !
       integer(kind = kint) :: nwork_export_IO
       integer(kind = kint) :: ntot_export_IO
       integer(kind = kint), allocatable :: item_export_IO(:)
-      integer(kind = kint), allocatable :: iwork_export_IO(:,:)
 !
 !
 !------------------------------------------------------------------
@@ -88,9 +91,9 @@
 !
       subroutine allocate_neib_domain_IO
 !
-      allocate(id_neib_domain_IO(num_neib_domain_IO))
+      allocate(id_neib_domain_IO(comm_IO%num_neib))
 !
-      if (num_neib_domain_IO .gt. 0) id_neib_domain_IO = 0
+      if (comm_IO%num_neib .gt. 0) id_neib_domain_IO = 0
 !
       end subroutine allocate_neib_domain_IO
 !
@@ -98,7 +101,7 @@
 !
       subroutine allocate_import_stack_IO
 !
-      allocate(istack_import_IO(0:num_neib_domain_IO))
+      allocate(istack_import_IO(0:comm_IO%num_neib))
       istack_import_IO = 0
 !
       end subroutine allocate_import_stack_IO
@@ -107,7 +110,7 @@
 !
       subroutine allocate_export_stack_IO
 !
-      allocate(istack_export_IO(0:num_neib_domain_IO))
+      allocate(istack_export_IO(0:comm_IO%num_neib))
       istack_export_IO = 0
 !
       end subroutine allocate_export_stack_IO
@@ -129,24 +132,6 @@
       if (ntot_export_IO.gt.0)  item_export_IO = 0
 !
       end subroutine allocate_export_item_IO
-!
-!------------------------------------------------------------------
-!
-      subroutine allocate_import_work_IO
-!
-      allocate(iwork_import_IO(ntot_import_IO,nwork_import_IO))
-      if (ntot_import_IO.gt.0) iwork_import_IO = 0
-!
-      end subroutine allocate_import_work_IO
-!
-!------------------------------------------------------------------
-!
-      subroutine allocate_export_work_IO
-!
-      allocate(iwork_export_IO(ntot_export_IO,nwork_export_IO))
-      if (ntot_export_IO.gt.0) iwork_export_IO = 0
-!
-      end subroutine allocate_export_work_IO
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
@@ -174,23 +159,6 @@
       deallocate(istack_export_IO)
 !
       end subroutine deallocate_export_item_IO
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine deallocate_import_work_IO
-!
-      deallocate(iwork_import_IO)
-!
-      end subroutine deallocate_import_work_IO
-!
-!------------------------------------------------------------------
-!
-      subroutine deallocate_export_work_IO
-!
-      deallocate(iwork_export_IO)
-!
-      end subroutine deallocate_export_work_IO
 !
 !------------------------------------------------------------------
 !

@@ -47,12 +47,12 @@
        call skip_comment(character_4_read,id_file)
        read(character_4_read,*) my_rank_IO
 !
-       read(id_file,*) num_neib_domain_IO
+       read(id_file,*) comm_IO%num_neib
 !
        call allocate_neib_domain_IO
 !
-       if (num_neib_domain_IO .gt. 0) then
-         read(id_file,*) id_neib_domain_IO(1:num_neib_domain_IO)
+       if (comm_IO%num_neib .gt. 0) then
+         read(id_file,*) id_neib_domain_IO(1:comm_IO%num_neib)
        end if
 !
        end subroutine read_domain_info
@@ -66,9 +66,9 @@
 !
       call allocate_import_stack_IO
 !
-      if (num_neib_domain_IO .gt. 0) then
+      if (comm_IO%num_neib .gt. 0) then
 !
-        call read_arrays_for_stacks(id_file, num_neib_domain_IO,        &
+        call read_arrays_for_stacks(id_file, comm_IO%num_neib,          &
      &      izero, ntot_import_IO, istack_import_IO)
 !
         call allocate_import_item_IO
@@ -89,9 +89,9 @@
 !
       call allocate_export_stack_IO
 !
-      if (num_neib_domain_IO .gt. 0) then
+      if (comm_IO%num_neib .gt. 0) then
 !
-        call read_arrays_for_stacks(id_file, num_neib_domain_IO,        &
+        call read_arrays_for_stacks(id_file, comm_IO%num_neib,          &
      &      izero, ntot_export_IO, istack_export_IO)
         call allocate_export_item_IO
         call read_send_recv_item(id_file, ntot_export_IO,               &
@@ -119,10 +119,10 @@
 !      write(id_file,'(a)') '! '
 !
       write(id_file,'(i16)') my_rank_IO
-      write(id_file,'(i16)') num_neib_domain_IO
+      write(id_file,'(i16)') comm_IO%num_neib
 !
-      if (num_neib_domain_IO .gt. 0) then
-        write(id_file,'(8i16)') id_neib_domain_IO(1:num_neib_domain_IO)
+      if (comm_IO%num_neib .gt. 0) then
+        write(id_file,'(8i16)') id_neib_domain_IO(1:comm_IO%num_neib)
       else
         write(id_file,'(a)') ''
       end if
@@ -138,7 +138,7 @@
 !
       integer(kind = kint), intent(in) :: id_file
 !
-      call write_send_recv_data(id_file, num_neib_domain_IO,            &
+      call write_send_recv_data(id_file, comm_IO%num_neib,              &
      &    ntot_import_IO, istack_import_IO, item_import_IO)
 !
       call deallocate_import_item_IO
@@ -151,7 +151,7 @@
 !
       integer(kind = kint), intent(in) :: id_file
 !
-      call write_send_recv_data(id_file, num_neib_domain_IO,            &
+      call write_send_recv_data(id_file, comm_IO%num_neib,              &
      &    ntot_export_IO, istack_export_IO, item_export_IO)
 !
       call deallocate_export_item_IO

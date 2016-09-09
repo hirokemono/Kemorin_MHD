@@ -37,11 +37,11 @@
 !
 !
       call gz_read_one_integer_b(my_rank_IO)
-      call gz_read_one_integer_b(num_neib_domain_IO)
+      call gz_read_one_integer_b(comm_IO%num_neib)
 !
       call allocate_neib_domain_IO
 !
-      call gz_read_mul_integer_b(num_neib_domain_IO, id_neib_domain_IO)
+      call gz_read_mul_integer_b(comm_IO%num_neib, id_neib_domain_IO)
 !
       end subroutine gz_read_domain_info_b
 !
@@ -52,9 +52,9 @@
 !
 !
       call allocate_import_stack_IO
-      if (num_neib_domain_IO .gt. 0) then
+      if (comm_IO%num_neib .gt. 0) then
 !
-        call gz_read_integer_stack_b(num_neib_domain_IO,                &
+        call gz_read_integer_stack_b(comm_IO%num_neib,                  &
      &      istack_import_IO, ntot_import_IO)
 !
         call allocate_import_item_IO
@@ -73,8 +73,8 @@
 !
 !
       call allocate_export_stack_IO
-      if (num_neib_domain_IO .gt. 0) then
-        call gz_read_integer_stack_b(num_neib_domain_IO,                &
+      if (comm_IO%num_neib .gt. 0) then
+        call gz_read_integer_stack_b(comm_IO%num_neib,                  &
      &      istack_export_IO, ntot_export_IO)
 !
         call allocate_export_item_IO
@@ -93,10 +93,10 @@
 !
 !
       call gz_write_one_integer_b(my_rank_IO)
-      call gz_write_one_integer_b(num_neib_domain_IO)
+      call gz_write_one_integer_b(comm_IO%num_neib)
 !
       call gz_write_mul_integer_b                                       &
-     &   (num_neib_domain_IO, id_neib_domain_IO)
+     &   (comm_IO%num_neib, id_neib_domain_IO)
 !
       call deallocate_neib_domain_IO
 !
@@ -109,7 +109,7 @@
 !
 !
       call gz_write_integer_stack_b                                     &
-     &   (num_neib_domain_IO, istack_import_IO)
+     &   (comm_IO%num_neib, istack_import_IO)
       call gz_write_mul_integer_b(ntot_import_IO, item_import_IO)
 !
       call deallocate_import_item_IO
@@ -122,7 +122,7 @@
 !
 !
       call gz_write_integer_stack_b                                     &
-     &  (num_neib_domain_IO, istack_export_IO)
+     &  (comm_IO%num_neib, istack_export_IO)
       call gz_write_mul_integer_b(ntot_export_IO, item_export_IO)
 !
       call deallocate_export_item_IO

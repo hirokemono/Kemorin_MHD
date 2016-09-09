@@ -33,12 +33,12 @@
       call skip_gz_comment_int(my_rank_IO)
 !
       call get_one_line_from_gz_f
-      read(textbuf,*) num_neib_domain_IO
+      read(textbuf,*) comm_IO%num_neib
 !
       call allocate_neib_domain_IO
 !
-      if (num_neib_domain_IO .gt. 0) then
-        call read_gz_multi_int(num_neib_domain_IO, id_neib_domain_IO)
+      if (comm_IO%num_neib .gt. 0) then
+        call read_gz_multi_int(comm_IO%num_neib, id_neib_domain_IO)
       end if
 !
       end subroutine read_domain_info_gz
@@ -51,9 +51,9 @@
       call allocate_import_stack_IO
 !
       istack_import_IO(0) = 0
-      if (num_neib_domain_IO .gt. 0) then
-        call read_gz_multi_int(num_neib_domain_IO, istack_import_IO(1))
-        ntot_import_IO = istack_import_IO(num_neib_domain_IO)
+      if (comm_IO%num_neib .gt. 0) then
+        call read_gz_multi_int(comm_IO%num_neib, istack_import_IO(1))
+        ntot_import_IO = istack_import_IO(comm_IO%num_neib)
 !
         call allocate_import_item_IO
         call read_send_recv_item_gz(ntot_import_IO, item_import_IO)
@@ -72,9 +72,9 @@
       call allocate_export_stack_IO
 !
       istack_export_IO(0) = 0
-      if (num_neib_domain_IO .gt. 0) then
-        call read_gz_multi_int(num_neib_domain_IO, istack_export_IO(1))
-        ntot_export_IO = istack_export_IO(num_neib_domain_IO)
+      if (comm_IO%num_neib .gt. 0) then
+        call read_gz_multi_int(comm_IO%num_neib, istack_export_IO(1))
+        ntot_export_IO = istack_export_IO(comm_IO%num_neib)
 !
         call allocate_export_item_IO
         call read_send_recv_item_gz(ntot_export_IO, item_export_IO)
@@ -93,11 +93,11 @@
 !
       write(textbuf,'(i16,a1)') my_rank_IO, char(0)
       call gz_write_textbuf_w_lf
-      write(textbuf,'(i16,a1)') num_neib_domain_IO, char(0)
+      write(textbuf,'(i16,a1)') comm_IO%num_neib, char(0)
       call gz_write_textbuf_w_lf
 !
-      if (num_neib_domain_IO .gt. 0) then
-        call write_gz_multi_int_8i10(num_neib_domain_IO,           &
+      if (comm_IO%num_neib .gt. 0) then
+        call write_gz_multi_int_8i10(comm_IO%num_neib,                  &
      &      id_neib_domain_IO)
       else
         write(textbuf,'(a1)') char(0)
@@ -112,7 +112,7 @@
 !
       subroutine write_import_data_gz
 !
-      call write_send_recv_data_gz(num_neib_domain_IO,                  &
+      call write_send_recv_data_gz(comm_IO%num_neib,                    &
      &    ntot_import_IO, istack_import_IO, item_import_IO)
 !
       call deallocate_import_item_IO
@@ -124,7 +124,7 @@
       subroutine write_export_data_gz
 !
 !
-      call write_send_recv_data_gz(num_neib_domain_IO,                  &
+      call write_send_recv_data_gz(comm_IO%num_neib,                    &
      &    ntot_export_IO, istack_export_IO, item_export_IO)
 !
       call deallocate_export_item_IO

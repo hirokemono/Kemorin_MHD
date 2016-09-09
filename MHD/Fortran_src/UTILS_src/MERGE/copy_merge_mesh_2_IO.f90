@@ -34,7 +34,7 @@
       integer (kind = kint) :: i
 !
 !
-      num_neib_domain_IO = izero
+      comm_IO%num_neib = izero
       call allocate_neib_comm_stack_IO
       call allocate_comm_item_IO
       call copy_node_geometry_to_IO(merged%node)
