@@ -3,7 +3,6 @@
 !
 !     Written by H. Matsui on July, 2007
 !
-!      subroutine read_group_stack_gz(ngrp, ntot, istack)
 !      subroutine read_group_item_gz(ngrp, ntot, istack, name, item)
 !      subroutine read_surface_group_item_gz(ngrp, ntot,                &
 !     &          istack, name, item_sf)
@@ -24,21 +23,6 @@
 ! -----------------------------------------------------------------------
 !
       contains
-!
-! -----------------------------------------------------------------------
-!
-      subroutine read_group_stack_gz(ngrp, ntot, istack)
-!
-      integer(kind = kint), intent(in) :: ngrp
-      integer(kind = kint), intent(inout) :: ntot
-      integer(kind = kint), intent(inout) :: istack(0:ngrp)
-!
-!
-      istack(0) = izero
-      if (ngrp .gt. 0) call read_gz_multi_int(ngrp, istack(1))
-      ntot = istack(ngrp)
-!
-      end subroutine read_group_stack_gz
 !
 ! -----------------------------------------------------------------------
 !

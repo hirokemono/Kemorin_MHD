@@ -21,6 +21,7 @@
 !!      subroutine skip_gz_comment_chara_lint(chara_input, int8_input)
 !!
 !!      subroutine read_gz_multi_real(num, real_input)
+!!      subroutine read_gz_integer_stack(num, istack, ntot)
 !!      subroutine read_gz_multi_int(num, int_input)
 !!      subroutine read_gz_surf_group(is1, ntot, istack, item_sf)
 !!      subroutine read_gz_multi_int8(num, int8_input)
@@ -282,6 +283,23 @@
       end if
 !
       end subroutine read_gz_multi_real
+!
+!------------------------------------------------------------------
+!
+      subroutine read_gz_integer_stack(num, istack, ntot)
+!
+      integer(kind = kint), intent(in) :: num
+      integer(kind = kint), intent(inout) :: istack(0:num)
+      integer(kind = kint), intent(inout) :: ntot
+!
+      integer(kind = kint) :: ist
+!
+!
+      istack(0) = 0
+      call read_gz_multi_int(num, istack)
+      ntot = istack(num)
+!
+      end subroutine read_gz_integer_stack
 !
 !------------------------------------------------------------------
 !

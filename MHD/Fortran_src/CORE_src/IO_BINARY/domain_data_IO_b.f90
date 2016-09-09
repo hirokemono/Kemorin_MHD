@@ -75,7 +75,7 @@
       call allocate_export_stack_IO
       if (comm_IO%num_neib .gt. 0) then
         call read_integer_stack_b(comm_IO%num_neib,                     &
-     &      istack_export_IO, comm_IO%ntot_export)
+     &      comm_IO%istack_export, comm_IO%ntot_export)
 !
         call allocate_export_item_IO
         call read_mul_integer_b                                         &
@@ -121,7 +121,8 @@
       subroutine write_export_data_b
 !
 !
-      call write_integer_stack_b(comm_IO%num_neib, istack_export_IO)
+      call write_integer_stack_b                                        &
+     &   (comm_IO%num_neib, comm_IO%istack_export)
       call write_mul_integer_b                                          &
      &   (comm_IO%ntot_export, comm_IO%item_export)
 !

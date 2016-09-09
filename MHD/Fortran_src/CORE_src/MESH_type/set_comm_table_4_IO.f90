@@ -42,7 +42,7 @@
      &    (comm_tbls%num_neib, comm_tbls%id_neib,                       &
      &    comm_tbls%istack_import, comm_tbls%istack_export,             &
      &    comm_tbls%ntot_import, comm_tbls%ntot_export,                 &
-     &    comm_IO%id_neib, istack_import_IO, istack_export_IO)
+     &    comm_IO%id_neib, istack_import_IO, comm_IO%istack_export)
       call copy_num_import_export(comm_tbls%num_neib,                   &
      &    comm_tbls%num_import, comm_tbls%num_export,                   &
      &    comm_tbls%istack_import, comm_tbls%istack_export)
@@ -72,7 +72,7 @@
       call allocate_neib_comm_stack_IO
 !
       call copy_num_communication(comm_IO%num_neib,                     &
-     &    comm_IO%id_neib, istack_import_IO, istack_export_IO,          &
+     &    comm_IO%id_neib, istack_import_IO, comm_IO%istack_export,     &
      &    comm_IO%ntot_import, comm_IO%ntot_export, comm_tbls%id_neib,  &
      &    comm_tbls%istack_import, comm_tbls%istack_export)
 !

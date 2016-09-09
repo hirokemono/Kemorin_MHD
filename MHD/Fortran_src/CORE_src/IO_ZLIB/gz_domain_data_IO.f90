@@ -52,8 +52,8 @@
 !
       istack_import_IO(0) = 0
       if (comm_IO%num_neib .gt. 0) then
-        call read_gz_multi_int(comm_IO%num_neib, istack_import_IO(1))
-        comm_IO%ntot_import = istack_import_IO(comm_IO%num_neib)
+        call read_gz_integer_stack(comm_IO%num_neib,                    &
+     &      istack_import_IO, comm_IO%ntot_import)
 !
         call allocate_import_item_IO
         call read_send_recv_item_gz                                     &
@@ -72,10 +72,10 @@
 !
       call allocate_export_stack_IO
 !
-      istack_export_IO(0) = 0
+      comm_IO%istack_export(0) = 0
       if (comm_IO%num_neib .gt. 0) then
-        call read_gz_multi_int(comm_IO%num_neib, istack_export_IO(1))
-        comm_IO%ntot_export = istack_export_IO(comm_IO%num_neib)
+        call read_gz_integer_stack(comm_IO%num_neib,                    &
+     &      comm_IO%istack_export, comm_IO%ntot_export)
 !
         call allocate_export_item_IO
         call read_send_recv_item_gz                                     &
@@ -126,8 +126,9 @@
       subroutine write_export_data_gz
 !
 !
-      call write_send_recv_data_gz(comm_IO%num_neib,                    &
-     &    comm_IO%ntot_export, istack_export_IO, comm_IO%item_export)
+      call write_send_recv_data_gz                                      &
+     &   (comm_IO%num_neib, comm_IO%ntot_export,                        &
+     &    comm_IO%istack_export, comm_IO%item_export)
 !
       call deallocate_export_item_IO
 !
