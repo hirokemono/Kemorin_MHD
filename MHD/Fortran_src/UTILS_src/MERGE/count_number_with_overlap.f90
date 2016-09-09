@@ -66,7 +66,7 @@
      &     (sub_nod_grp(ip), sub_ele_grp(ip), sub_surf_grp(ip))
       end do
 !
-      nnod_4_ele = nnod_4_ele_dummy
+      nnod_4_ele = ele_IO%nnod_4_ele
 !
       end subroutine count_numbers_4_mesh_merge
 !

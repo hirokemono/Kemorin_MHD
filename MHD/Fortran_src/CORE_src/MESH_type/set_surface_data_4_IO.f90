@@ -36,7 +36,7 @@
 !
 !
       ele_IO%numele =        surf%numsurf
-      nnod_4_ele_dummy =    surf%nnod_4_surf
+      ele_IO%nnod_4_ele =    surf%nnod_4_surf
 !
       nsf_4_ele_IO =    nele
       nsurf_in_ele_IO = nsurf_4_ele

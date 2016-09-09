@@ -32,7 +32,7 @@
 !
 !
       ele_IO%numele =     ele%numele
-      nnod_4_ele_dummy = ele%nnod_4_ele
+      ele_IO%nnod_4_ele = ele%nnod_4_ele
 !
       call allocate_ele_info_dummy
       call allocate_connect_dummy

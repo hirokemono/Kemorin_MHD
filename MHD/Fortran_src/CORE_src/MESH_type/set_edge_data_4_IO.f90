@@ -49,7 +49,7 @@
       ned_4_ele_IO = nele
 !
       ele_IO%numele =     edge%numedge
-      nnod_4_ele_dummy = edge%nnod_4_edge
+      ele_IO%nnod_4_ele = edge%nnod_4_edge
 !
       call allocate_ele_info_dummy
       call allocate_connect_dummy
