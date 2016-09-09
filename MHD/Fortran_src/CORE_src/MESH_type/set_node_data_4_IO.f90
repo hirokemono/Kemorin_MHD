@@ -31,7 +31,7 @@
       type(node_data), intent(in) :: node
 !
 !
-      numnod_dummy =        node%numnod
+      nod_IO%numnod =        node%numnod
       internal_node_dummy = node%internal_node
 !
       call allocate_node_data_dummy
@@ -55,7 +55,7 @@
       type(node_data), intent(inout) :: node
 !
 !
-      numnod_dummy =        node%numnod
+      nod_IO%numnod =        node%numnod
       internal_node_dummy = node%internal_node
 !
       call allocate_node_data_dummy
@@ -80,7 +80,7 @@
       type(node_data), intent(inout) :: node
 !
 !
-      numnod_dummy =        node%numnod
+      nod_IO%numnod =        node%numnod
       internal_node_dummy = node%internal_node
 !
       call allocate_node_data_dummy
@@ -106,7 +106,7 @@
       type(node_data), intent(inout) :: node
 !
 !
-      node%numnod =        numnod_dummy
+      node%numnod =        nod_IO%numnod
       node%internal_node = internal_node_dummy
 !
       call allocate_node_geometry_base(node)

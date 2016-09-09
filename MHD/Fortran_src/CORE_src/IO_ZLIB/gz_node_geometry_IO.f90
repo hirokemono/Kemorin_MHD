@@ -28,11 +28,11 @@
       integer (kind = kint) :: i
 !
 !
-      write(textbuf,'(2i16,a1)') numnod_dummy, internal_node_dummy,     &
+      write(textbuf,'(2i16,a1)') nod_IO%numnod, internal_node_dummy,    &
      &      char(0)
       call gz_write_textbuf_w_lf
 !
-      do i=1, numnod_dummy
+      do i=1, nod_IO%numnod
         write(textbuf,'(i16,1p3E25.15e3,a1)')  globalnodid_dummy(i),    &
      &        xx_dummy(i,1:3), char(0)
         call gz_write_textbuf_w_lf
@@ -48,8 +48,8 @@
       subroutine read_number_of_node_gz
 !
 !
-      call skip_gz_comment_int(numnod_dummy)
-      read(textbuf,*) numnod_dummy, internal_node_dummy
+      call skip_gz_comment_int(nod_IO%numnod)
+      read(textbuf,*) nod_IO%numnod, internal_node_dummy
 !
       end subroutine read_number_of_node_gz
 !
@@ -62,7 +62,7 @@
 !
       call allocate_node_data_dummy
 !
-      do i=1, numnod_dummy
+      do i=1, nod_IO%numnod
         call get_one_line_from_gz_f
         read(textbuf,*)  globalnodid_dummy(i), (xx_dummy(i,k),k=1,3)
       end do

@@ -111,7 +111,7 @@
       integer(kind = kint) :: iele
 !
 !
-      numnod_dummy =        ele%numele
+      nod_IO%numnod =        ele%numele
       internal_node_dummy = ele%internal_ele
 !
       call allocate_node_data_dummy
@@ -137,7 +137,7 @@
       integer(kind = kint) :: iele
 !
 !
-      numnod_dummy =        ele%numele
+      nod_IO%numnod =        ele%numele
       internal_node_dummy = ele%internal_ele
 !
       call allocate_node_data_dummy
@@ -164,7 +164,7 @@
       integer(kind = kint) :: iele
 !
 !
-      numnod_dummy =        ele%numele
+      nod_IO%numnod =        ele%numele
       internal_node_dummy = ele%internal_ele
 !
       call allocate_node_data_dummy

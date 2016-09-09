@@ -87,18 +87,18 @@
 !
 !
       call mpi_write_one_integer_b                                      &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, numnod_dummy)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, nod_IO%numnod)
       call mpi_write_one_integer_b                                      &
      &   (id_file, nprocs_in, id_rank, ioff_gl, internal_node_dummy)
 !
       call alloc_istack_merge(id_rank, nprocs_in, IO_param)
-      call set_istack_4_parallell_data(numnod_dummy, IO_param)
+      call set_istack_4_parallell_data(nod_IO%numnod, IO_param)
 !
       call mpi_write_int8_vector_b                                      &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    numnod_dummy, globalnodid_dummy, IO_param%istack_merged)
+     &    nod_IO%numnod, globalnodid_dummy, IO_param%istack_merged)
       call mpi_write_2d_vector_b(id_file, nprocs_in, id_rank, ioff_gl,  &
-     &    numnod_dummy, ithree, xx_dummy, IO_param%istack_merged)
+     &    nod_IO%numnod, ithree, xx_dummy, IO_param%istack_merged)
       call dealloc_istack_merge(IO_param)
 !
       call deallocate_node_data_dummy
@@ -193,7 +193,7 @@
 !
 !
       call mpi_read_one_integer_b                                       &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, numnod_dummy)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, nod_IO%numnod)
       call mpi_read_one_integer_b                                       &
      &   (id_file, nprocs_in, id_rank, ioff_gl, internal_node_dummy)
 !
@@ -214,14 +214,14 @@
       call allocate_node_data_dummy
 !
       call alloc_istack_merge(id_rank, nprocs_in, IO_param)
-      call set_istack_4_parallell_data(numnod_dummy, IO_param)
+      call set_istack_4_parallell_data(nod_IO%numnod, IO_param)
 !
       call mpi_read_int8_vector_b                                       &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    numnod_dummy, globalnodid_dummy, IO_param%istack_merged)
+     &    nod_IO%numnod, globalnodid_dummy, IO_param%istack_merged)
       call mpi_read_2d_vector_b                                         &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    numnod_dummy, ithree, xx_dummy, IO_param%istack_merged)
+     &    nod_IO%numnod, ithree, xx_dummy, IO_param%istack_merged)
       call dealloc_istack_merge(IO_param)
 !
       end subroutine mpi_read_geometry_info_b

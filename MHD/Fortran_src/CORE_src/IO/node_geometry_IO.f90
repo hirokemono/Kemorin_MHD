@@ -73,9 +73,9 @@
       integer (kind = kint) :: i
 !
 !
-      write(id_file,'(2i16)') numnod_dummy, internal_node_dummy
+      write(id_file,'(2i16)') nod_IO%numnod, internal_node_dummy
 !
-      do i=1, numnod_dummy
+      do i=1, nod_IO%numnod
         write(id_file,'(i16,1p3E25.15e3)')  globalnodid_dummy(i),       &
      &        xx_dummy(i,1:3)
       end do
@@ -91,8 +91,8 @@
       integer (kind = kint), intent(in) :: id_file
       integer(kind = kint) :: i
 !
-      write(id_file,'(2i16)') numnod_dummy, internal_node_dummy
-      do i = 1, numnod_dummy
+      write(id_file,'(2i16)') nod_IO%numnod, internal_node_dummy
+      do i = 1, nod_IO%numnod
         write(id_file,'(i16, 1p3e23.15)') i, ele_scalar_IO(i)
       end do
 !
@@ -107,8 +107,8 @@
       integer (kind = kint), intent(in) :: id_file
       integer(kind = kint) :: i
 !
-      write(id_file,'(2i16)') numnod_dummy, internal_node_dummy
-      do i = 1, numnod_dummy
+      write(id_file,'(2i16)') nod_IO%numnod, internal_node_dummy
+      do i = 1, nod_IO%numnod
         write(id_file,'(i16,1p3e23.15)') i, ele_vector_IO(i,1:3)
       end do
 !
@@ -126,8 +126,8 @@
 !
 !
       call skip_comment(character_4_read,id_file)
-      read(character_4_read,*) numnod_dummy, internal_node_dummy
-!      write(*,*) numnod_dummy, internal_node_dummy
+      read(character_4_read,*) nod_IO%numnod, internal_node_dummy
+!      write(*,*) nod_IO%numnod, internal_node_dummy
 !
       end subroutine read_number_of_node
 !
@@ -141,7 +141,7 @@
 !
       call allocate_node_data_dummy
 !
-      do i=1, numnod_dummy
+      do i=1, nod_IO%numnod
         read(id_file,*)  globalnodid_dummy(i), (xx_dummy(i,k),k=1,3)
       end do
 !

@@ -34,7 +34,7 @@
 !>  structure for element data IO (connectivity)
       type(element_data), save :: ele_IO
 !
-      integer(kind=kint) :: numnod_dummy
+!      integer(kind=kint) :: numnod_dummy
       integer(kind=kint) :: internal_node_dummy
       integer(kind=kint_gl), allocatable :: globalnodid_dummy(:)
       real(kind=kreal),   allocatable :: xx_dummy(:,:)
@@ -89,9 +89,9 @@
 !
       subroutine allocate_node_data_dummy
 !
-       allocate(xx_dummy(numnod_dummy,3))
-       allocate(globalnodid_dummy(numnod_dummy))
-       if ( numnod_dummy .gt. 0) then
+       allocate(xx_dummy(nod_IO%numnod,3))
+       allocate(globalnodid_dummy(nod_IO%numnod))
+       if ( nod_IO%numnod .gt. 0) then
         xx_dummy=0.0d00
         globalnodid_dummy=0
        end if
@@ -158,7 +158,7 @@
 !
       subroutine allocate_ele_vector_IO
 !
-      allocate( ele_vector_IO(numnod_dummy,3) )
+      allocate( ele_vector_IO(nod_IO%numnod,3) )
       ele_vector_IO = 0.0d0
 !
       end subroutine allocate_ele_vector_IO
@@ -176,7 +176,7 @@
 !
       subroutine allocate_ele_scalar_IO
 !
-      allocate( ele_scalar_IO(numnod_dummy) )
+      allocate( ele_scalar_IO(nod_IO%numnod) )
       ele_scalar_IO = 0.0d0
 !
       end subroutine allocate_ele_scalar_IO

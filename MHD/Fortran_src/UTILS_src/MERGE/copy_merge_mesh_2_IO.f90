@@ -40,7 +40,7 @@
       call copy_node_geometry_to_IO(merged%node)
       call copy_ele_connect_to_IO(merged%ele)
 !
-      numnod_dummy =        merge_tbl%nnod_merged
+      nod_IO%numnod =        merge_tbl%nnod_merged
       internal_node_dummy = merge_tbl%nnod_merged
 !
       ele_IO%numele = merge_tbl%nele_merged

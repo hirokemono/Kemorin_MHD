@@ -189,7 +189,7 @@
       call deallocate_node_data_dummy
       call deallocate_comm_item_IO
 !
-      newmesh%node%numnod = numnod_dummy
+      newmesh%node%numnod = nod_IO%numnod
       newmesh%node%internal_node = internal_node_dummy
       call copy_ele_connect_from_IO(newmesh%ele)
       call set_3D_nnod_4_sfed_by_ele(newmesh%ele%nnod_4_ele,            &

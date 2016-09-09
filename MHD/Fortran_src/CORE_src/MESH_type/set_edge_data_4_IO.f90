@@ -94,7 +94,7 @@
       integer(kind = kint) :: iedge
 !
 !
-      numnod_dummy =        edge%numedge
+      nod_IO%numnod =        edge%numedge
       internal_node_dummy = edge%internal_edge
 !
       call allocate_node_data_dummy
@@ -124,7 +124,7 @@
       integer(kind = kint) :: iedge
 !
 !
-      numnod_dummy =        edge%numedge
+      nod_IO%numnod =        edge%numedge
       internal_node_dummy = edge%internal_edge
 !
       call allocate_node_data_dummy
@@ -154,7 +154,7 @@
       integer(kind = kint) :: iedge
 !
 !
-      numnod_dummy =        edge%numedge
+      nod_IO%numnod =        edge%numedge
       internal_node_dummy = edge%internal_edge
 !
       call allocate_node_data_dummy

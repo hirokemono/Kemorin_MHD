@@ -24,7 +24,7 @@
       subroutine copy_filtering_geometry_to_IO
 !
 !
-      numnod_dummy = nnod_filtering
+      nod_IO%numnod =       nnod_filtering
       internal_node_dummy = inter_nod_3dfilter
       call allocate_node_data_dummy
 !
@@ -42,7 +42,7 @@
       subroutine copy_filtering_geometry_from_IO
 !
 !
-      nnod_filtering = numnod_dummy
+      nnod_filtering = nod_IO%numnod
       inter_nod_3dfilter = internal_node_dummy
       call allocate_globalnod_filter
 !

@@ -78,7 +78,7 @@
       integer(kind = kint) :: isurf
 !
 !
-      numnod_dummy =        surf%numsurf
+      nod_IO%numnod =        surf%numsurf
       internal_node_dummy = surf%internal_surf
 !
       call allocate_node_data_dummy
@@ -110,7 +110,7 @@
       integer(kind = kint) :: isurf
 !
 !
-      numnod_dummy =        surf%numsurf
+      nod_IO%numnod =        surf%numsurf
       internal_node_dummy = surf%internal_surf
 !
       call allocate_node_data_dummy
@@ -141,7 +141,7 @@
       integer(kind = kint) :: isurf
 !
 !
-      numnod_dummy =        surf%numsurf
+      nod_IO%numnod =        surf%numsurf
       internal_node_dummy = surf%internal_surf
 !
       call allocate_node_data_dummy
