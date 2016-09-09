@@ -38,7 +38,7 @@
 !
 !
       comm%nneib_domain = comm_IO%num_neib
-      comm%ntot_item_sr = ntot_import_IO
+      comm%ntot_item_sr = comm_IO%ntot_import
 !
       call alloc_type_sph_comm_stack(comm)
       call alloc_type_sph_comm_item(numnod, comm)

@@ -93,18 +93,19 @@
         call set_istack_4_parallell_data(comm_IO%num_neib, IO_param)
         call mpi_read_integer_stack_b                                   &
      &     (id_file, nprocs_in, id_rank, ioff_gl,                       &
-     &      comm_IO%num_neib, istack_import_IO, ntot_import_IO,         &
+     &      comm_IO%num_neib, istack_import_IO, comm_IO%ntot_import,    &
      &      IO_param%istack_merged)
 !
         call allocate_import_item_IO
 !
-        call set_istack_4_parallell_data(ntot_import_IO, IO_param)
+        call set_istack_4_parallell_data(comm_IO%ntot_import, IO_param)
         call mpi_read_int_vector_b                                      &
      &     (id_file, nprocs_in, id_rank, ioff_gl,                       &
-     &      ntot_import_IO, item_import_IO, IO_param%istack_merged)
+     &      comm_IO%ntot_import, item_import_IO,                        &
+     &      IO_param%istack_merged)
         call dealloc_istack_merge(IO_param)
       else
-        ntot_import_IO = 0
+        comm_IO%ntot_import = 0
         call allocate_import_item_IO
       end if
 !
@@ -186,9 +187,9 @@
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
      &    comm_IO%num_neib, istack_import_IO, IO_param%istack_merged)
 !
-      call set_istack_4_parallell_data(ntot_import_IO, IO_param)
+      call set_istack_4_parallell_data(comm_IO%ntot_import, IO_param)
       call mpi_write_int_vector_b(id_file, nprocs_in, id_rank, ioff_gl, &
-     &    ntot_import_IO, item_import_IO, IO_param%istack_merged)
+     &    comm_IO%ntot_import, item_import_IO, IO_param%istack_merged)
       call dealloc_istack_merge(IO_param)
 !
       call deallocate_import_item_IO

@@ -48,7 +48,7 @@
 !
 !
       comm_sph%nneib_domain = comm_IO%num_neib
-      comm_sph%ntot_item_sr = ntot_import_IO
+      comm_sph%ntot_item_sr = comm_IO%ntot_import
 !
       call alloc_type_sph_comm_stack(comm_sph)
       call alloc_type_sph_comm_item(numnod, comm_sph)
@@ -75,8 +75,8 @@
 !
 !
       my_rank_IO = my_rank
-      comm_IO%num_neib = comm_sph%nneib_domain
-      ntot_import_IO =     comm_sph%ntot_item_sr
+      comm_IO%num_neib =    comm_sph%nneib_domain
+      comm_IO%ntot_import = comm_sph%ntot_item_sr
 !
       call allocate_neib_domain_IO
       call allocate_import_stack_IO

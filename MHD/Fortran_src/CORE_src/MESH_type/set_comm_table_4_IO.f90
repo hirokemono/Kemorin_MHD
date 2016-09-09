@@ -73,12 +73,12 @@
 !
       call copy_num_communication(comm_IO%num_neib,                     &
      &    comm_IO%id_neib, istack_import_IO, istack_export_IO,          &
-     &    ntot_import_IO, ntot_export_IO, comm_tbls%id_neib,            &
+     &    comm_IO%ntot_import, ntot_export_IO, comm_tbls%id_neib,       &
      &    comm_tbls%istack_import, comm_tbls%istack_export)
 !
       call allocate_comm_item_IO
 !
-      call copy_communication_item(ntot_import_IO, ntot_export_IO,      &
+      call copy_communication_item(comm_IO%ntot_import, ntot_export_IO, &
      &    item_import_IO, item_export_IO,                               &
      &    comm_tbls%item_import, comm_tbls%item_export)
 !
