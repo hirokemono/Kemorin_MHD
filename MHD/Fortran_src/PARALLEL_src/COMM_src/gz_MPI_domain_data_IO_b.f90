@@ -63,7 +63,7 @@
 !
       call gz_mpi_read_int_vector_b                                     &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    comm_IO%num_neib, id_neib_domain_IO)
+     &    comm_IO%num_neib, comm_IO%id_neib)
 !
       end subroutine gz_mpi_read_domain_info_b
 !
@@ -138,7 +138,7 @@
      &   (id_file, ioff_gl, comm_IO%num_neib)
 !
       call gz_mpi_write_int_vector_b                                    &
-     &   (id_file, ioff_gl, comm_IO%num_neib, id_neib_domain_IO)
+     &   (id_file, ioff_gl, comm_IO%num_neib, comm_IO%id_neib)
 !
       call deallocate_neib_domain_IO
 !

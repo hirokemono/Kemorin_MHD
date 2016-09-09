@@ -41,7 +41,7 @@
 !
       call allocate_neib_domain_IO
 !
-      call read_mul_integer_b(comm_IO%num_neib, id_neib_domain_IO)
+      call read_mul_integer_b(comm_IO%num_neib, comm_IO%id_neib)
 !
       end subroutine read_domain_info_b
 !
@@ -95,7 +95,7 @@
       call write_one_integer_b(my_rank_IO)
       call write_one_integer_b(comm_IO%num_neib)
 !
-      call write_mul_integer_b(comm_IO%num_neib, id_neib_domain_IO)
+      call write_mul_integer_b(comm_IO%num_neib, comm_IO%id_neib)
 !
       call deallocate_neib_domain_IO
 !

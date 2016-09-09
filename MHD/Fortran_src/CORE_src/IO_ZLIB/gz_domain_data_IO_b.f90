@@ -41,7 +41,7 @@
 !
       call allocate_neib_domain_IO
 !
-      call gz_read_mul_integer_b(comm_IO%num_neib, id_neib_domain_IO)
+      call gz_read_mul_integer_b(comm_IO%num_neib, comm_IO%id_neib)
 !
       end subroutine gz_read_domain_info_b
 !
@@ -96,7 +96,7 @@
       call gz_write_one_integer_b(comm_IO%num_neib)
 !
       call gz_write_mul_integer_b                                       &
-     &   (comm_IO%num_neib, id_neib_domain_IO)
+     &   (comm_IO%num_neib, comm_IO%id_neib)
 !
       call deallocate_neib_domain_IO
 !

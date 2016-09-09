@@ -38,7 +38,7 @@
       call allocate_neib_domain_IO
 !
       if (comm_IO%num_neib .gt. 0) then
-        call read_gz_multi_int(comm_IO%num_neib, id_neib_domain_IO)
+        call read_gz_multi_int(comm_IO%num_neib, comm_IO%id_neib)
       end if
 !
       end subroutine read_domain_info_gz
@@ -98,7 +98,7 @@
 !
       if (comm_IO%num_neib .gt. 0) then
         call write_gz_multi_int_8i10(comm_IO%num_neib,                  &
-     &      id_neib_domain_IO)
+     &      comm_IO%id_neib)
       else
         write(textbuf,'(a1)') char(0)
         call gz_write_textbuf_w_lf

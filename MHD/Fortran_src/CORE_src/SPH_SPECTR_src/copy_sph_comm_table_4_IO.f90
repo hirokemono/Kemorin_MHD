@@ -54,7 +54,7 @@
       call alloc_type_sph_comm_item(numnod, comm_sph)
 !
       comm_sph%id_domain(1:comm_sph%nneib_domain)                       &
-     &      = id_neib_domain_IO(1:comm_sph%nneib_domain)
+     &      = comm_IO%id_neib(1:comm_sph%nneib_domain)
       comm_sph%istack_sr(0:comm_sph%nneib_domain)                       &
      &      = istack_import_IO(0:comm_sph%nneib_domain)
 !
@@ -82,7 +82,7 @@
       call allocate_import_stack_IO
       call allocate_import_item_IO
 !
-      id_neib_domain_IO(1:comm_sph%nneib_domain)                        &
+      comm_IO%id_neib(1:comm_sph%nneib_domain)                          &
      &      = comm_sph%id_domain(1:comm_sph%nneib_domain)
       istack_import_IO(0:comm_sph%nneib_domain)                         &
      &      = comm_sph%istack_sr(0:comm_sph%nneib_domain)

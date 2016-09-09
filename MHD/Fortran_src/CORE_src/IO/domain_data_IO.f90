@@ -52,7 +52,7 @@
        call allocate_neib_domain_IO
 !
        if (comm_IO%num_neib .gt. 0) then
-         read(id_file,*) id_neib_domain_IO(1:comm_IO%num_neib)
+         read(id_file,*) comm_IO%id_neib(1:comm_IO%num_neib)
        end if
 !
        end subroutine read_domain_info
@@ -122,7 +122,7 @@
       write(id_file,'(i16)') comm_IO%num_neib
 !
       if (comm_IO%num_neib .gt. 0) then
-        write(id_file,'(8i16)') id_neib_domain_IO(1:comm_IO%num_neib)
+        write(id_file,'(8i16)') comm_IO%id_neib(1:comm_IO%num_neib)
       else
         write(id_file,'(a)') ''
       end if

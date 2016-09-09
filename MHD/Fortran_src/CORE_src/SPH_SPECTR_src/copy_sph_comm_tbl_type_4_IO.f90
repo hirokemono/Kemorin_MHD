@@ -44,7 +44,7 @@
       call alloc_type_sph_comm_item(numnod, comm)
 !
       comm%id_domain(1:comm%nneib_domain)                               &
-     &      = id_neib_domain_IO(1:comm%nneib_domain)
+     &      = comm_IO%id_neib(1:comm%nneib_domain)
       comm%istack_sr(0:comm%nneib_domain)                               &
      &      = istack_import_IO(0:comm%nneib_domain)
 !
