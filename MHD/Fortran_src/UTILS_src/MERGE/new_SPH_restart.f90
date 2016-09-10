@@ -63,7 +63,7 @@
 !
 !
       call copy_sph_node_4_rj_from_IO                                   &
-     &   (sph%sph_params%l_truncation, sph%sph_rj)
+     &   (sph_IO1, sph%sph_rj, sph%sph_params%l_truncation)
       call copy_comm_sph_type_from_IO                                   &
      &   (my_rank, sph%sph_rj%nnod_rj, sph_comms%comm_rj)
 !

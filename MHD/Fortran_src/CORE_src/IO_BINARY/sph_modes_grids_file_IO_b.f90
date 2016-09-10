@@ -61,15 +61,15 @@
       call read_domain_info_b(my_rank_IO, comm_IO)
 !
 !      write(*,*) '! truncation level for spherical harmonics'
-      call read_gl_resolution_sph_b
+      call read_gl_resolution_sph_b(sph_IO1)
 !      write(*,*) '! segment ID for each direction'
-      call read_rank_4_sph_b
+      call read_rank_4_sph_b(sph_IO1)
 !
 !      write(*,*) '! global ID for each direction'
-      call read_rtp_gl_1d_table_b
+      call read_rtp_gl_1d_table_b(sph_IO1)
 !
 !      write(*,*) '! global radial ID and grid ID'
-      call read_gl_nodes_sph_b
+      call read_gl_nodes_sph_b(sph_IO1)
 !
 !      write(50+my_rank,*) '! communication table for rtp'
       call read_import_data_b(comm_IO)
@@ -108,15 +108,15 @@
       call read_domain_info_b(my_rank_IO, comm_IO)
 !
 !      write(*,*) '! truncation level for spherical harmonics'
-      call read_gl_resolution_sph_b
+      call read_gl_resolution_sph_b(sph_IO1)
 !      write(*,*) '! segment ID for each direction'
-      call read_rank_4_sph_b
+      call read_rank_4_sph_b(sph_IO1)
 !
 !      write(*,*) '! global ID for each direction'
-      call read_rj_gl_1d_table_b
+      call read_rj_gl_1d_table_b(sph_IO1)
 !
 !      write(*,*) '! global radial ID and spectr ID'
-      call read_gl_nodes_sph_b
+      call read_gl_nodes_sph_b(sph_IO1)
 !
 !      write(50+my_rank,*) '! communication table for rj'
       call read_import_data_b(comm_IO)
@@ -144,10 +144,10 @@
       call open_read_binary_file(file_name, my_rank)
 !
       call read_domain_info_b(my_rank_IO, comm_IO)
-      call read_gl_resolution_sph_b
-      call read_rank_4_sph_b
-      call read_rtp_gl_1d_table_b
-      call read_gl_nodes_sph_b
+      call read_gl_resolution_sph_b(sph_IO1)
+      call read_rank_4_sph_b(sph_IO1)
+      call read_rtp_gl_1d_table_b(sph_IO1)
+      call read_gl_nodes_sph_b(sph_IO1)
 !
 !      write(50+my_rank,*) '! communication table for rtm'
       call read_import_data_b(comm_IO)
@@ -171,10 +171,10 @@
       call open_read_binary_file(file_name, my_rank)
 !
       call read_domain_info_b(my_rank_IO, comm_IO)
-      call read_gl_resolution_sph_b
-      call read_rank_4_sph_b
-      call read_rj_gl_1d_table_b
-      call read_gl_nodes_sph_b
+      call read_gl_resolution_sph_b(sph_IO1)
+      call read_rank_4_sph_b(sph_IO1)
+      call read_rj_gl_1d_table_b(sph_IO1)
+      call read_gl_nodes_sph_b(sph_IO1)
 !
 !      write(50+my_rank,*) '! communication table for rj'
       call read_import_data_b(comm_IO)
@@ -203,15 +203,15 @@
       call write_domain_info_b(my_rank_IO, comm_IO)
 !
 !      write(*,*) '! truncation level for spherical harmonics'
-      call write_gl_resolution_sph_b
+      call write_gl_resolution_sph_b(sph_IO1)
 !      write(*,*) '! segment ID for each direction'
-      call write_rank_4_sph_b
+      call write_rank_4_sph_b(sph_IO1)
 !
 !      write(*,*) '! global ID for each direction'
-      call write_rtp_gl_1d_table_b
+      call write_rtp_gl_1d_table_b(sph_IO1)
 !
 !      write(*,*) '! global radial ID and grid ID'
-      call write_gl_nodes_sph_b
+      call write_gl_nodes_sph_b(sph_IO1)
 !
 !      write(*,*) '! communication table between spectr data'
       call write_import_data_b(comm_IO)
@@ -245,15 +245,15 @@
       call write_domain_info_b(my_rank_IO, comm_IO)
 !
 !      write(*,*) '! truncation level for spherical harmonics'
-      call write_gl_resolution_sph_b
+      call write_gl_resolution_sph_b(sph_IO1)
 !      write(*,*) '! segment ID for each direction'
-      call write_rank_4_sph_b
+      call write_rank_4_sph_b(sph_IO1)
 !
 !      write(*,*) '! global ID for each direction'
-      call write_rj_gl_1d_table_b
+      call write_rj_gl_1d_table_b(sph_IO1)
 !
 !      write(*,*) '! global radial ID and spectr ID'
-      call write_gl_nodes_sph_b
+      call write_gl_nodes_sph_b(sph_IO1)
 !
 !      write(*,*) '! communication table between spectr data'
       call write_import_data_b(comm_IO)
@@ -279,10 +279,10 @@
       call open_write_binary_file(file_name)
 !
       call write_domain_info_b(my_rank_IO, comm_IO)
-      call write_gl_resolution_sph_b
-      call write_rank_4_sph_b
-      call write_rtp_gl_1d_table_b
-      call write_gl_nodes_sph_b
+      call write_gl_resolution_sph_b(sph_IO1)
+      call write_rank_4_sph_b(sph_IO1)
+      call write_rtp_gl_1d_table_b(sph_IO1)
+      call write_gl_nodes_sph_b(sph_IO1)
 !
       call write_import_data_b(comm_IO)
 !
@@ -303,10 +303,10 @@
       call open_write_binary_file(file_name)
 !
       call write_domain_info_b(my_rank_IO, comm_IO)
-      call write_gl_resolution_sph_b
-      call write_rank_4_sph_b
-      call write_rj_gl_1d_table_b
-      call write_gl_nodes_sph_b
+      call write_gl_resolution_sph_b(sph_IO1)
+      call write_rank_4_sph_b(sph_IO1)
+      call write_rj_gl_1d_table_b(sph_IO1)
+      call write_gl_nodes_sph_b(sph_IO1)
 !
       call write_import_data_b(comm_IO)
 !

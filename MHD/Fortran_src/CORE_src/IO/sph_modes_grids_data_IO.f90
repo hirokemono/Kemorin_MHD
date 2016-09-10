@@ -23,6 +23,7 @@
       use m_precision
 !
       use m_comm_data_IO
+      use m_node_id_spherical_IO
       use domain_data_IO
       use spherical_model_IO
       use sph_global_1d_idx_IO
@@ -46,15 +47,15 @@
       call read_domain_info(mesh_file_id, my_rank_IO, comm_IO)
 !
 !      write(*,*) '! truncation level for spherical harmonics'
-      call read_gl_resolution_sph(mesh_file_id)
+      call read_gl_resolution_sph(mesh_file_id, sph_IO1)
 !      write(*,*) '! segment ID for each direction'
-      call read_rank_4_sph(mesh_file_id)
+      call read_rank_4_sph(mesh_file_id, sph_IO1)
 !
 !      write(*,*) '! global ID for each direction'
-      call read_rtp_gl_1d_table(mesh_file_id)
+      call read_rtp_gl_1d_table(mesh_file_id, sph_IO1)
 !
 !      write(*,*) '! global radial ID and grid ID'
-      call read_gl_nodes_sph(mesh_file_id)
+      call read_gl_nodes_sph(mesh_file_id, sph_IO1)
 !
 !      write(*,*) '! communication table between spectr data'
       call read_import_data(mesh_file_id, comm_IO)
@@ -81,15 +82,15 @@
       call read_domain_info(mesh_file_id, my_rank_IO, comm_IO)
 !
 !      write(*,*) '! truncation level for spherical harmonics'
-      call read_gl_resolution_sph(mesh_file_id)
+      call read_gl_resolution_sph(mesh_file_id, sph_IO1)
 !      write(*,*) '! segment ID for each direction'
-      call read_rank_4_sph(mesh_file_id)
+      call read_rank_4_sph(mesh_file_id, sph_IO1)
 !
 !      write(*,*) '! global ID for each direction'
-      call read_rj_gl_1d_table(mesh_file_id)
+      call read_rj_gl_1d_table(mesh_file_id, sph_IO1)
 !
 !      write(*,*) '! global radial ID and spectr ID'
-      call read_gl_nodes_sph(mesh_file_id)
+      call read_gl_nodes_sph(mesh_file_id, sph_IO1)
 !
 !      write(*,*) '! communication table between spectr data'
       call read_import_data(mesh_file_id, comm_IO)
@@ -107,10 +108,10 @@
       integer(kind = kint), intent(in) :: mesh_file_id
 !
       call read_domain_info(mesh_file_id, my_rank_IO, comm_IO)
-      call read_gl_resolution_sph(mesh_file_id)
-      call read_rank_4_sph(mesh_file_id)
-      call read_rtp_gl_1d_table(mesh_file_id)
-      call read_gl_nodes_sph(mesh_file_id)
+      call read_gl_resolution_sph(mesh_file_id, sph_IO1)
+      call read_rank_4_sph(mesh_file_id, sph_IO1)
+      call read_rtp_gl_1d_table(mesh_file_id, sph_IO1)
+      call read_gl_nodes_sph(mesh_file_id, sph_IO1)
 !
       call read_import_data(mesh_file_id, comm_IO)
 !
@@ -123,10 +124,10 @@
       integer(kind = kint), intent(in) :: mesh_file_id
 !
       call read_domain_info(mesh_file_id, my_rank_IO, comm_IO)
-      call read_gl_resolution_sph(mesh_file_id)
-      call read_rank_4_sph(mesh_file_id)
-      call read_rj_gl_1d_table(mesh_file_id)
-      call read_gl_nodes_sph(mesh_file_id)
+      call read_gl_resolution_sph(mesh_file_id, sph_IO1)
+      call read_rank_4_sph(mesh_file_id, sph_IO1)
+      call read_rj_gl_1d_table(mesh_file_id, sph_IO1)
+      call read_gl_nodes_sph(mesh_file_id, sph_IO1)
 !
       call read_import_data(mesh_file_id, comm_IO)
 !
@@ -147,15 +148,15 @@
       call write_domain_info(id_mesh, my_rank_IO, comm_IO)
 !
 !      write(*,*) '! truncation level for spherical harmonics'
-      call write_gl_resolution_sph(id_mesh)
+      call write_gl_resolution_sph(id_mesh, sph_IO1)
 !      write(*,*) '! segment ID for each direction'
-      call write_rank_4_sph(id_mesh)
+      call write_rank_4_sph(id_mesh, sph_IO1)
 !
 !      write(*,*) '! global ID for each direction'
-      call write_rtp_gl_1d_table(id_mesh)
+      call write_rtp_gl_1d_table(id_mesh, sph_IO1)
 !
       write(id_mesh,'(a)', advance='NO') hd_rtp_glbl()
-      call write_gl_nodes_sph(id_mesh)
+      call write_gl_nodes_sph(id_mesh, sph_IO1)
 !
       write(id_mesh,'(a)', advance='NO') hd_rtp_comm()
       call write_import_data(id_mesh, comm_IO)
@@ -197,15 +198,15 @@
       call write_domain_info(id_mesh, my_rank_IO, comm_IO)
 !
 !      write(*,*) '! truncation level for spherical harmonics'
-      call write_gl_resolution_sph(id_mesh)
+      call write_gl_resolution_sph(id_mesh, sph_IO1)
 !      write(*,*) '! segment ID for each direction'
-      call write_rank_4_sph(id_mesh)
+      call write_rank_4_sph(id_mesh, sph_IO1)
 !
 !      write(*,*) '! global ID for each direction'
-      call write_rj_gl_1d_table(id_mesh)
+      call write_rj_gl_1d_table(id_mesh, sph_IO1)
 !
       write(id_mesh,'(a)', advance='NO') hd_rj_glbl()
-      call write_gl_nodes_sph(id_mesh)
+      call write_gl_nodes_sph(id_mesh, sph_IO1)
 !
       write(id_mesh,'(a)', advance='NO') hd_rj_comm()
       call write_import_data(id_mesh, comm_IO)
@@ -230,15 +231,15 @@
       write(id_mesh,'(a)', advance='NO') hd_sph_para()
       call write_domain_info(id_mesh, my_rank_IO, comm_IO)
 !      write(*,*) '! truncation level for spherical harmonics'
-      call write_gl_resolution_sph(id_mesh)
+      call write_gl_resolution_sph(id_mesh, sph_IO1)
 !      write(*,*) '! segment ID for each direction'
-      call write_rank_4_sph(id_mesh)
+      call write_rank_4_sph(id_mesh, sph_IO1)
 !
 !      write(*,*) '! global ID for each direction'
-      call write_rtp_gl_1d_table(id_mesh)
+      call write_rtp_gl_1d_table(id_mesh, sph_IO1)
 !
       write(id_mesh,'(a)', advance='NO') hd_rtp_glbl()
-      call write_gl_nodes_sph(id_mesh)
+      call write_gl_nodes_sph(id_mesh, sph_IO1)
 !
       write(id_mesh,'(a)', advance='NO') hd_rtp_comm()
       call write_import_data(id_mesh, comm_IO)
@@ -256,15 +257,15 @@
       write(id_mesh,'(a)', advance='NO') hd_sph_para()
       call write_domain_info(id_mesh, my_rank_IO, comm_IO)
 !      write(id_mesh,*) '! truncation level for spherical harmonics'
-      call write_gl_resolution_sph(id_mesh)
+      call write_gl_resolution_sph(id_mesh, sph_IO1)
 !      write(id_mesh,*) '! segment ID for each direction'
-      call write_rank_4_sph(id_mesh)
+      call write_rank_4_sph(id_mesh, sph_IO1)
 !
 !      write(*,*) '! global ID for each direction'
-      call write_rj_gl_1d_table(id_mesh)
+      call write_rj_gl_1d_table(id_mesh, sph_IO1)
 !
       write(id_mesh,'(a)', advance='NO') hd_rlm_glbl()
-      call write_gl_nodes_sph(id_mesh)
+      call write_gl_nodes_sph(id_mesh, sph_IO1)
 !
       write(id_mesh,'(a)', advance='NO') hd_rj_comm()
       call write_import_data(id_mesh, comm_IO)

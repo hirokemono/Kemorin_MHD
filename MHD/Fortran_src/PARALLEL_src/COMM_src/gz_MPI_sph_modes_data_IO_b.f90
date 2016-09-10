@@ -64,14 +64,14 @@
 !
       call gz_mpi_read_domain_info_b                                    &
      &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
-      call gz_mpi_read_gl_reso_sph_b(id_file, ioff_gl)
+      call gz_mpi_read_gl_reso_sph_b(id_file, ioff_gl, sph_IO1)
       call gz_mpi_read_rank_4_sph_b                                     &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, sph_IO1)
       call gz_mpi_read_rtp_gl_1d_table_b                                &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, sph_IO1)
 !
       call gz_mpi_read_gl_nodes_sph_b                                   &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, sph_IO1)
       call gz_mpi_read_import_data_b                                    &
      &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
 !
@@ -100,14 +100,14 @@
 !
       call gz_mpi_read_domain_info_b                                    &
      &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
-      call gz_mpi_read_gl_reso_sph_b(id_file, ioff_gl)
+      call gz_mpi_read_gl_reso_sph_b(id_file, ioff_gl, sph_IO1)
       call gz_mpi_read_rank_4_sph_b                                     &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, sph_IO1)
       call gz_mpi_read_rj_gl_1d_table_b                                 &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, sph_IO1)
 !
       call gz_mpi_read_gl_nodes_sph_b                                   &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, sph_IO1)
       call gz_mpi_read_import_data_b                                    &
      &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
 !
@@ -132,14 +132,14 @@
 !
       call gz_mpi_read_domain_info_b                                    &
      &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
-      call gz_mpi_read_gl_reso_sph_b(id_file, ioff_gl)
+      call gz_mpi_read_gl_reso_sph_b(id_file, ioff_gl, sph_IO1)
       call gz_mpi_read_rank_4_sph_b                                     &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, sph_IO1)
       call gz_mpi_read_rtp_gl_1d_table_b                                &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
-      call gz_mpi_read_gl_nodes_sph_b                                   &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, sph_IO1)
 !
+      call gz_mpi_read_gl_nodes_sph_b                                   &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, sph_IO1)
       call gz_mpi_read_import_data_b                                    &
      &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
 !
@@ -159,14 +159,14 @@
 !
       call gz_mpi_read_domain_info_b                                    &
      &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
-      call gz_mpi_read_gl_reso_sph_b(id_file, ioff_gl)
+      call gz_mpi_read_gl_reso_sph_b(id_file, ioff_gl, sph_IO1)
       call gz_mpi_read_rank_4_sph_b                                     &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, sph_IO1)
       call gz_mpi_read_rj_gl_1d_table_b                                 &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, sph_IO1)
 !
       call gz_mpi_read_gl_nodes_sph_b                                   &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, sph_IO1)
       call gz_mpi_read_import_data_b                                    &
      &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
 !
@@ -185,11 +185,12 @@
 !
       call gz_mpi_write_domain_info_b                                   &
      &   (id_file, nprocs_in, ioff_gl, comm_IO)
-      call gz_mpi_write_gl_reso_sph_b(id_file, ioff_gl)
-      call gz_mpi_write_rank_4_sph_b(id_file, ioff_gl)
-      call gz_mpi_write_rtp_gl_1d_table_b(id_file, ioff_gl)
+      call gz_mpi_write_gl_reso_sph_b(id_file, ioff_gl, sph_IO1)
+      call gz_mpi_write_rank_4_sph_b(id_file, ioff_gl, sph_IO1)
 !
-      call gz_mpi_write_gl_nodes_sph_b(id_file, ioff_gl)
+      call gz_mpi_write_rtp_gl_1d_table_b(id_file, ioff_gl, sph_IO1)
+!
+      call gz_mpi_write_gl_nodes_sph_b(id_file, ioff_gl, sph_IO1)
       call gz_mpi_write_import_data_b(id_file, ioff_gl, comm_IO)
 !
       call gz_mpi_write_grp_data_b(id_file, ioff_gl, bc_rtp_grp_IO)
@@ -211,11 +212,11 @@
 !
       call gz_mpi_write_domain_info_b                                   &
      &   (id_file, nprocs_in, ioff_gl, comm_IO)
-      call gz_mpi_write_gl_reso_sph_b(id_file, ioff_gl)
-      call gz_mpi_write_rank_4_sph_b(id_file, ioff_gl)
+      call gz_mpi_write_gl_reso_sph_b(id_file, ioff_gl, sph_IO1)
+      call gz_mpi_write_rank_4_sph_b(id_file, ioff_gl, sph_IO1)
 !
-      call gz_mpi_write_rj_gl_1d_table_b(id_file, ioff_gl)
-      call gz_mpi_write_gl_nodes_sph_b(id_file, ioff_gl)
+      call gz_mpi_write_rj_gl_1d_table_b(id_file, ioff_gl, sph_IO1)
+      call gz_mpi_write_gl_nodes_sph_b(id_file, ioff_gl, sph_IO1)
 !
       call gz_mpi_write_import_data_b(id_file, ioff_gl, comm_IO)
 !
@@ -236,10 +237,11 @@
 !
       call gz_mpi_write_domain_info_b                                   &
      &   (id_file, nprocs_in, ioff_gl, comm_IO)
-      call gz_mpi_write_gl_reso_sph_b(id_file, ioff_gl)
-      call gz_mpi_write_rank_4_sph_b(id_file, ioff_gl)
-      call gz_mpi_write_rtp_gl_1d_table_b(id_file, ioff_gl)
-      call gz_mpi_write_gl_nodes_sph_b(id_file, ioff_gl)
+      call gz_mpi_write_gl_reso_sph_b(id_file, ioff_gl, sph_IO1)
+      call gz_mpi_write_rank_4_sph_b(id_file, ioff_gl, sph_IO1)
+!
+      call gz_mpi_write_rtp_gl_1d_table_b(id_file, ioff_gl, sph_IO1)
+      call gz_mpi_write_gl_nodes_sph_b(id_file, ioff_gl, sph_IO1)
 !
       call gz_mpi_write_import_data_b(id_file, ioff_gl, comm_IO)
 !
@@ -257,10 +259,11 @@
 !
       call gz_mpi_write_domain_info_b                                   &
      &   (id_file, nprocs_in, ioff_gl, comm_IO)
-      call gz_mpi_write_gl_reso_sph_b(id_file, ioff_gl)
-      call gz_mpi_write_rank_4_sph_b(id_file, ioff_gl)
-      call gz_mpi_write_rj_gl_1d_table_b(id_file, ioff_gl)
-      call gz_mpi_write_gl_nodes_sph_b(id_file, ioff_gl)
+      call gz_mpi_write_gl_reso_sph_b(id_file, ioff_gl, sph_IO1)
+      call gz_mpi_write_rank_4_sph_b(id_file, ioff_gl, sph_IO1)
+!
+      call gz_mpi_write_rj_gl_1d_table_b(id_file, ioff_gl, sph_IO1)
+      call gz_mpi_write_gl_nodes_sph_b(id_file, ioff_gl, sph_IO1)
 !
       call gz_mpi_write_import_data_b(id_file, ioff_gl, comm_IO)
 !

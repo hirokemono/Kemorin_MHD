@@ -97,7 +97,7 @@
       type(group_data), intent(inout) :: zonal_rtp_grp
 !
 !
-      call copy_sph_node_4_rtp_from_IO(l_truncation, sph_rtp)
+      call copy_sph_node_4_rtp_from_IO(sph_IO1, sph_rtp, l_truncation)
       call copy_comm_sph_from_IO(sph_rtp%nnod_rtp, comm_rtp)
 !
       call set_gruop_stracture(bc_rtp_grp_IO, bc_rtp_grp)
@@ -132,7 +132,7 @@
       type(group_data), intent(inout) :: sphere_rj_grp
 !
 !
-      call copy_sph_node_4_rj_from_IO(l_truncation, sph_rj)
+      call copy_sph_node_4_rj_from_IO(sph_IO1, sph_rj, l_truncation)
       call copy_comm_sph_from_IO(sph_rj%nnod_rj, comm_rj)
 !
       call set_gruop_stracture(radial_rj_grp_IO, radial_rj_grp)
@@ -160,7 +160,7 @@
       type(sph_comm_tbl), intent(inout) :: comm_rtm
 !
 !
-      call copy_sph_node_4_rtm_from_IO(l_truncation, sph_rtm)
+      call copy_sph_node_4_rtm_from_IO(sph_IO1, sph_rtm, l_truncation)
       call copy_comm_sph_from_IO(sph_rtm%nnod_rtm, comm_rtm)
 !
       call count_num_rtm_smp(sph_rtm, ierr)
@@ -182,7 +182,7 @@
       type(sph_comm_tbl), intent(inout) :: comm_rlm
 !
 !
-      call copy_sph_node_4_rlm_from_IO(l_truncation, sph_rlm)
+      call copy_sph_node_4_rlm_from_IO(sph_IO1, sph_rlm, l_truncation)
       call copy_comm_sph_from_IO(sph_rlm%nnod_rlm, comm_rlm)
 !
       call count_num_rlm_smp(sph_rlm, ierr)
@@ -211,7 +211,7 @@
       type(group_data), intent(inout) :: zonal_rtp_grp
 !
 !
-      call copy_sph_node_4_rtp_to_IO(l_truncation, sph_rtp)
+      call copy_sph_node_4_rtp_to_IO(l_truncation, sph_rtp, sph_IO1)
       call copy_comm_sph_to_IO(my_rank, comm_rtp)
 !
       call set_gruop_stracture(bc_rtp_grp, bc_rtp_grp_IO)
@@ -244,7 +244,7 @@
       type(group_data), intent(inout) :: sphere_rj_grp
 !
 !
-      call copy_sph_node_4_rj_to_IO(l_truncation, sph_rj)
+      call copy_sph_node_4_rj_to_IO(l_truncation, sph_rj, sph_IO1)
       call copy_comm_sph_to_IO(my_rank, comm_rj)
 !
       call set_gruop_stracture(radial_rj_grp, radial_rj_grp_IO)
@@ -269,7 +269,7 @@
       type(sph_comm_tbl), intent(inout) :: comm_rtm
 !
 !
-      call copy_sph_node_4_rtm_to_IO(l_truncation, sph_rtm)
+      call copy_sph_node_4_rtm_to_IO(l_truncation, sph_rtm, sph_IO1)
       call copy_comm_sph_to_IO(my_rank, comm_rtm)
 !
       end subroutine output_geom_rtm_sph_trans
@@ -288,7 +288,7 @@
       type(sph_comm_tbl), intent(inout) :: comm_rlm
 !
 !
-      call copy_sph_node_4_rlm_to_IO(l_truncation, sph_rlm)
+      call copy_sph_node_4_rlm_to_IO(l_truncation, sph_rlm, sph_IO1)
       call copy_comm_sph_to_IO(my_rank, comm_rlm)
 !
       end subroutine output_modes_rlm_sph_trans

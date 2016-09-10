@@ -40,15 +40,15 @@
       call read_domain_info_gz(my_rank_IO, comm_IO)
 !
 !      write(*,*) '! truncation level for spherical harmonics'
-      call read_gl_resolution_sph_gz
+      call read_gl_resolution_sph_gz(sph_IO1)
 !      write(*,*) '! segment ID for each direction'
-      call read_rank_4_sph_gz
+      call read_rank_4_sph_gz(sph_IO1)
 !
 !      write(*,*) '! global ID for each direction'
-      call read_rtp_gl_1d_table_gz
+      call read_rtp_gl_1d_table_gz(sph_IO1)
 !
 !      write(*,*) '! global radial ID and grid ID'
-      call read_gl_nodes_sph_gz
+      call read_gl_nodes_sph_gz(sph_IO1)
 !
 !      write(*,*) '! communication table between spectr data'
       call read_import_data_gz(comm_IO)
@@ -77,15 +77,15 @@
       call read_domain_info_gz(my_rank_IO, comm_IO)
 !
 !      write(*,*) '! truncation level for spherical harmonics'
-      call read_gl_resolution_sph_gz
+      call read_gl_resolution_sph_gz(sph_IO1)
 !      write(*,*) '! segment ID for each direction'
-      call read_rank_4_sph_gz
+      call read_rank_4_sph_gz(sph_IO1)
 !
 !      write(*,*) '! global ID for each direction'
-      call read_rj_gl_1d_table_gz
+      call read_rj_gl_1d_table_gz(sph_IO1)
 !
 !      write(*,*) '! global radial ID and spectr ID'
-      call read_gl_nodes_sph_gz
+      call read_gl_nodes_sph_gz(sph_IO1)
 !
 !      write(*,*) '! communication table between spectr data'
       call read_import_data_gz(comm_IO)
@@ -104,10 +104,10 @@
 !
 !
       call read_domain_info_gz(my_rank_IO, comm_IO)
-      call read_gl_resolution_sph_gz
-      call read_rank_4_sph_gz
-      call read_rtp_gl_1d_table_gz
-      call read_gl_nodes_sph_gz
+      call read_gl_resolution_sph_gz(sph_IO1)
+      call read_rank_4_sph_gz(sph_IO1)
+      call read_rtp_gl_1d_table_gz(sph_IO1)
+      call read_gl_nodes_sph_gz(sph_IO1)
 !
       call read_import_data_gz(comm_IO)
 !
@@ -120,10 +120,10 @@
       use m_comm_data_IO
 !
       call read_domain_info_gz(my_rank_IO, comm_IO)
-      call read_gl_resolution_sph_gz
-      call read_rank_4_sph_gz
-      call read_rj_gl_1d_table_gz
-      call read_gl_nodes_sph_gz
+      call read_gl_resolution_sph_gz(sph_IO1)
+      call read_rank_4_sph_gz(sph_IO1)
+      call read_rj_gl_1d_table_gz(sph_IO1)
+      call read_gl_nodes_sph_gz(sph_IO1)
 !
       call read_import_data_gz(comm_IO)
 !
@@ -146,16 +146,16 @@
 !
 !
 !      write(*,*) '! truncation level for spherical harmonics'
-      call write_gl_resolution_sph_gz
+      call write_gl_resolution_sph_gz(sph_IO1)
 !      write(*,*) '! segment ID for each direction'
-      call write_rank_4_sph_gz
+      call write_rank_4_sph_gz(sph_IO1)
 !
 !      write(*,*) '! global ID for each direction'
-      call write_rtp_gl_1d_table_gz
+      call write_rtp_gl_1d_table_gz(sph_IO1)
 !
       textbuf = hd_rtp_glbl() // char(0)
       call gz_write_textbuf_no_lf
-      call write_gl_nodes_sph_gz
+      call write_gl_nodes_sph_gz(sph_IO1)
 !
       textbuf = hd_rtp_comm() // char(0)
       call gz_write_textbuf_no_lf
@@ -200,16 +200,16 @@
       call write_domain_info_gz(my_rank_IO, comm_IO)
 !
 !      write(*,*) '! truncation level for spherical harmonics'
-      call write_gl_resolution_sph_gz
+      call write_gl_resolution_sph_gz(sph_IO1)
 !      write(*,*) '! segment ID for each direction'
-      call write_rank_4_sph_gz
+      call write_rank_4_sph_gz(sph_IO1)
 !
 !      write(*,*) '! global ID for each direction'
-      call write_rj_gl_1d_table_gz
+      call write_rj_gl_1d_table_gz(sph_IO1)
 !
       textbuf = hd_rj_comm() // char(0)
       call gz_write_textbuf_no_lf
-      call write_gl_nodes_sph_gz
+      call write_gl_nodes_sph_gz(sph_IO1)
 !
       textbuf = hd_rtp_comm() // char(0)
       call gz_write_textbuf_no_lf
@@ -242,16 +242,16 @@
       call write_domain_info_gz(my_rank_IO, comm_IO)
 !
 !      write(*,*) '! truncation level for spherical harmonics'
-      call write_gl_resolution_sph_gz
+      call write_gl_resolution_sph_gz(sph_IO1)
 !      write(*,*) '! segment ID for each direction'
-      call write_rank_4_sph_gz
+      call write_rank_4_sph_gz(sph_IO1)
 !
 !      write(*,*) '! global ID for each direction'
-      call write_rtp_gl_1d_table_gz
+      call write_rtp_gl_1d_table_gz(sph_IO1)
 !
       textbuf = hd_rtp_glbl() // char(0)
       call gz_write_textbuf_no_lf
-      call write_gl_nodes_sph_gz
+      call write_gl_nodes_sph_gz(sph_IO1)
 !
       textbuf = hd_rtp_comm() // char(0)
       call gz_write_textbuf_no_lf
@@ -272,16 +272,16 @@
       call write_domain_info_gz(my_rank_IO, comm_IO)
 !
 !      write(*,*) '! truncation level for spherical harmonics'
-      call write_gl_resolution_sph_gz
+      call write_gl_resolution_sph_gz(sph_IO1)
 !      write(*,*) '! segment ID for each direction'
-      call write_rank_4_sph_gz
+      call write_rank_4_sph_gz(sph_IO1)
 !
 !      write(*,*) '! global ID for each direction'
-      call write_rj_gl_1d_table_gz
+      call write_rj_gl_1d_table_gz(sph_IO1)
 !
       textbuf = hd_rlm_glbl() // char(0)
       call gz_write_textbuf_no_lf
-      call write_gl_nodes_sph_gz
+      call write_gl_nodes_sph_gz(sph_IO1)
 !
       textbuf = hd_rj_comm() // char(0)
       call gz_write_textbuf_no_lf

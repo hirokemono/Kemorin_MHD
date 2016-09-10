@@ -1,15 +1,22 @@
-!gz_spherical_model_IO.f90
-!      module gz_spherical_model_IO
+!>@file  gz_spherical_model_IO.f90
+!!       module gz_spherical_model_IO
+!!
+!!@author H. Matsui
+!!@date        programmed by H.Matsui in July, 2007
 !
-!     Written by H. Matsui on July, 2007
-!
-!      subroutine read_rank_4_sph
-!      subroutine read_gl_resolution_sph_gz
-!      subroutine read_gl_nodes_sph_gz
-!
-!      subroutine write_rank_4_sph_gz
-!      subroutine write_gl_resolution_sph_gz
-!      subroutine write_gl_nodes_sph_gz
+!> @brief  Data IO routines for spectrum data
+!!
+!!@verbatim
+!!      subroutine read_rank_4_sph(sph_IO)
+!!      subroutine read_gl_resolution_sph_gz(sph_IO)
+!!      subroutine read_gl_nodes_sph_gz(sph_IO)
+!!        type(sph_IO_data), intent(inout) :: sph_IO
+!!
+!!      subroutine write_rank_4_sph_gz(sph_IO)
+!!      subroutine write_gl_resolution_sph_gz(sph_IO)
+!!      subroutine write_gl_nodes_sph_gz(sph_IO)
+!!        type(sph_IO_data), intent(inout) :: sph_IO
+!!@endverbatim
 !
       module gz_spherical_model_IO
 !
@@ -20,51 +27,53 @@
 !
       implicit none
 !
-      character(len=255) :: character_4_read = ''
-      private :: character_4_read
-!
-!
 ! -----------------------------------------------------------------------
 !
       contains
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_rank_4_sph_gz
+      subroutine read_rank_4_sph_gz(sph_IO)
+!
+      type(sph_IO_data), intent(inout) :: sph_IO
 !
 !
-      call skip_gz_comment_int( sph_IO1%sph_rank(1) )
-      read(textbuf,*) sph_IO1%sph_rank(1:sph_IO1%numdir_sph)
+      call skip_gz_comment_int( sph_IO%sph_rank(1) )
+      read(textbuf,*) sph_IO%sph_rank(1:sph_IO%numdir_sph)
 !
       end subroutine read_rank_4_sph_gz
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_gl_resolution_sph_gz
+      subroutine read_gl_resolution_sph_gz(sph_IO)
+!
+      type(sph_IO_data), intent(inout) :: sph_IO
 !
 !
-      call skip_gz_comment_int( sph_IO1%nidx_gl_sph(1) )
-      read(textbuf,*) sph_IO1%nidx_gl_sph(1:sph_IO1%numdir_sph)
+      call skip_gz_comment_int( sph_IO%nidx_gl_sph(1) )
+      read(textbuf,*) sph_IO%nidx_gl_sph(1:sph_IO%numdir_sph)
 !
-      call skip_gz_comment_int( sph_IO1%ltr_gl )
+      call skip_gz_comment_int( sph_IO%ltr_gl )
 !
       end subroutine read_gl_resolution_sph_gz
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_gl_nodes_sph_gz
+      subroutine read_gl_nodes_sph_gz(sph_IO)
+!
+      type(sph_IO_data), intent(inout) :: sph_IO
 !
       integer(kind = kint) :: i
 !
 !
-      call skip_gz_comment_int( sph_IO1%numnod_sph )
+      call skip_gz_comment_int( sph_IO%numnod_sph )
 !
-      call alloc_nod_id_sph_IO(sph_IO1)
+      call alloc_nod_id_sph_IO(sph_IO)
 !
-      do i = 1, sph_IO1%numnod_sph
+      do i = 1, sph_IO%numnod_sph
         call get_one_line_from_gz_f
-        read(textbuf,*) sph_IO1%inod_gl_sph(i),                         &
-     &                  sph_IO1%idx_gl_sph(i,1:sph_IO1%numdir_sph)
+        read(textbuf,*) sph_IO%inod_gl_sph(i),                          &
+     &                  sph_IO%idx_gl_sph(i,1:sph_IO%numdir_sph)
       end do
 !
       end subroutine read_gl_nodes_sph_gz
@@ -72,9 +81,11 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine write_rank_4_sph_gz
+      subroutine write_rank_4_sph_gz(sph_IO)
 !
       use m_sph_modes_grid_labels
+!
+      type(sph_IO_data), intent(in) :: sph_IO
 !
       character(len=kchara) :: fmt_txt
 !
@@ -83,18 +94,20 @@
       call gz_write_textbuf_no_lf
 !
       write(fmt_txt,'(a1,i2,a9)')                                       &
-     &                '(', sph_IO1%numdir_sph, '(i16),a1)'
+     &                '(', sph_IO%numdir_sph, '(i16),a1)'
       write(textbuf,fmt_txt)                                            &
-     &             sph_IO1%sph_rank(1:sph_IO1%numdir_sph), char(0)
+     &             sph_IO%sph_rank(1:sph_IO%numdir_sph), char(0)
       call gz_write_textbuf_w_lf
 !
       end subroutine write_rank_4_sph_gz
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_gl_resolution_sph_gz
+      subroutine write_gl_resolution_sph_gz(sph_IO)
 !
       use m_sph_modes_grid_labels
+!
+      type(sph_IO_data), intent(in) :: sph_IO
 !
       character(len=kchara) :: fmt_txt
 !
@@ -103,36 +116,38 @@
       call gz_write_textbuf_no_lf
 !
       write(fmt_txt,'(a1,i2,a9)')                                       &
-     &                '(', sph_IO1%numdir_sph, '(i16),a1)'
+     &                '(', sph_IO%numdir_sph, '(i16),a1)'
       write(textbuf,fmt_txt)                                            &
-     &             sph_IO1%nidx_gl_sph(1:sph_IO1%numdir_sph), char(0)
+     &             sph_IO%nidx_gl_sph(1:sph_IO%numdir_sph), char(0)
       call gz_write_textbuf_w_lf
 !
-      write(textbuf,'(i16,a1)') sph_IO1%ltr_gl, char(0)
+      write(textbuf,'(i16,a1)') sph_IO%ltr_gl, char(0)
       call gz_write_textbuf_w_lf
 !
       end subroutine write_gl_resolution_sph_gz
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_gl_nodes_sph_gz
+      subroutine write_gl_nodes_sph_gz(sph_IO)
+!
+      type(sph_IO_data), intent(inout) :: sph_IO
 !
       integer(kind = kint) :: i
       character(len=kchara) :: fmt_txt
 !
 !
-      write(textbuf,'(i16,a1)') sph_IO1%numnod_sph, char(0)
+      write(textbuf,'(i16,a1)') sph_IO%numnod_sph, char(0)
       call gz_write_textbuf_w_lf
 !
       write(fmt_txt,'(a5,i2,a9)')                                       &
-     &                '(i16,', sph_IO1%numdir_sph, '(i16),a1)'
-      do i = 1, sph_IO1%numnod_sph
-        write(textbuf,fmt_txt) sph_IO1%inod_gl_sph(i),                  &
-     &      sph_IO1%idx_gl_sph(i,1:sph_IO1%numdir_sph), char(0)
+     &                '(i16,', sph_IO%numdir_sph, '(i16),a1)'
+      do i = 1, sph_IO%numnod_sph
+        write(textbuf,fmt_txt) sph_IO%inod_gl_sph(i),                  &
+     &      sph_IO%idx_gl_sph(i,1:sph_IO%numdir_sph), char(0)
         call gz_write_textbuf_w_lf
       end do
 !
-      call dealloc_nod_id_sph_IO(sph_IO1)
+      call dealloc_nod_id_sph_IO(sph_IO)
 !
       end subroutine write_gl_nodes_sph_gz
 !
