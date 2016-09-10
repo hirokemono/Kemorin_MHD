@@ -49,9 +49,9 @@
         mesh_file_head = mesh_file_head
         call sel_read_geometry_size(my_rank)
         call copy_node_geometry_from_IO(node)
-        call deallocate_neib_domain_IO
+        call deallocate_type_neib_id(comm_IO)
 !
-        numele = numele_dummy
+        numele = ele_IO%numele
 !
 !     read filtering information
 !
@@ -65,7 +65,7 @@
         call deallocate_whole_filter_coefs
         call deallocate_fluid_filter_coefs
 !
-        call deallocate_node_geometry_base(node)
+        call dealloc_node_geometry_base(node)
       end do
 !
       end subroutine marking_used_node_4_filtering
@@ -87,9 +87,9 @@
 !
         call sel_read_geometry_size(my_rank)
         call copy_node_geometry_from_IO(node)
-        call deallocate_neib_domain_IO
+        call deallocate_type_neib_id(comm_IO)
 !
-        numele = numele_dummy
+        numele = ele_IO%numele
 !
 !     read filtering information
 !
@@ -103,7 +103,7 @@
         call deallocate_whole_filter_coefs
         call deallocate_fluid_filter_coefs
 !
-        call deallocate_node_geometry_base(node)
+        call dealloc_node_geometry_base(node)
       end do
 !
       end subroutine trans_filter_4_new_domains

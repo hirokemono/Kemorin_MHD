@@ -31,17 +31,17 @@
       type(node_data), intent(in) :: node
 !
 !
-      numnod_dummy =        node%numnod
-      internal_node_dummy = node%internal_node
+      nod_IO%numnod =        node%numnod
+      nod_IO%internal_node = node%internal_node
 !
-      call allocate_node_data_dummy
+      call alloc_node_geometry_base(nod_IO)
 !
 !$omp parallel do
       do inod = 1, node%numnod
-        globalnodid_dummy(inod) = node%inod_global(inod)
-        xx_dummy(inod,1) = node%xx(inod,1)
-        xx_dummy(inod,2) = node%xx(inod,2)
-        xx_dummy(inod,3) = node%xx(inod,3)
+        nod_IO%inod_global(inod) = node%inod_global(inod)
+        nod_IO%xx(inod,1) = node%xx(inod,1)
+        nod_IO%xx(inod,2) = node%xx(inod,2)
+        nod_IO%xx(inod,3) = node%xx(inod,3)
       end do
 !$omp end parallel do
 !
@@ -55,17 +55,17 @@
       type(node_data), intent(inout) :: node
 !
 !
-      numnod_dummy =        node%numnod
-      internal_node_dummy = node%internal_node
+      nod_IO%numnod =        node%numnod
+      nod_IO%internal_node = node%internal_node
 !
-      call allocate_node_data_dummy
+      call alloc_node_geometry_base(nod_IO)
 !
 !$omp parallel do
       do inod = 1, node%numnod
-        globalnodid_dummy(inod) = node%inod_global(inod)
-        xx_dummy(inod,1) = node%rr(inod)
-        xx_dummy(inod,2) = node%theta(inod)
-        xx_dummy(inod,3) = node%phi(inod)
+        nod_IO%inod_global(inod) = node%inod_global(inod)
+        nod_IO%xx(inod,1) = node%rr(inod)
+        nod_IO%xx(inod,2) = node%theta(inod)
+        nod_IO%xx(inod,3) = node%phi(inod)
       end do
 !$omp end parallel do
 !
@@ -80,17 +80,17 @@
       type(node_data), intent(inout) :: node
 !
 !
-      numnod_dummy =        node%numnod
-      internal_node_dummy = node%internal_node
+      nod_IO%numnod =        node%numnod
+      nod_IO%internal_node = node%internal_node
 !
-      call allocate_node_data_dummy
+      call alloc_node_geometry_base(nod_IO)
 !
 !$omp parallel do
       do inod = 1, node%numnod
-        globalnodid_dummy(inod) = node%inod_global(inod)
-        xx_dummy(inod,1) = node%ss(inod)
-        xx_dummy(inod,2) = node%phi(inod)
-        xx_dummy(inod,3) = node%xx(inod,3)
+        nod_IO%inod_global(inod) = node%inod_global(inod)
+        nod_IO%xx(inod,1) = node%ss(inod)
+        nod_IO%xx(inod,2) = node%phi(inod)
+        nod_IO%xx(inod,3) = node%xx(inod,3)
       end do
 !$omp end parallel do
 !
@@ -106,21 +106,21 @@
       type(node_data), intent(inout) :: node
 !
 !
-      node%numnod =        numnod_dummy
-      node%internal_node = internal_node_dummy
+      node%numnod =        nod_IO%numnod
+      node%internal_node = nod_IO%internal_node
 !
-      call allocate_node_geometry_base(node)
+      call alloc_node_geometry_base(node)
 !
 !$omp parallel do
       do inod = 1, node%numnod
-        node%inod_global(inod) = globalnodid_dummy(inod)
-        node%xx(inod,1) = xx_dummy(inod,1)
-        node%xx(inod,2) = xx_dummy(inod,2)
-        node%xx(inod,3) = xx_dummy(inod,3)
+        node%inod_global(inod) = nod_IO%inod_global(inod)
+        node%xx(inod,1) = nod_IO%xx(inod,1)
+        node%xx(inod,2) = nod_IO%xx(inod,2)
+        node%xx(inod,3) = nod_IO%xx(inod,3)
       end do
 !$omp end parallel do
 !
-      call deallocate_node_data_dummy
+      call dealloc_node_geometry_base(nod_IO)
 !
       end subroutine copy_node_geometry_from_IO
 !

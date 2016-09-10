@@ -21,36 +21,35 @@
       subroutine write_int_4_sph_coriolis_b
 !
       use m_int_4_sph_coriolis_IO
+      use binary_IO
 !
       integer(kind = kint) :: j1, j2
 !
 !
       write(*,'(a,a)') 'Write tri-integration data file: ',             &
      &                trim(sph_cor_file_name)
-      open(id_sph_cor,file=sph_cor_file_name, form='unformatted')
+      call open_write_binary_file(sph_cor_file_name)
+      call write_one_integer_b(ltr_cor_IO)
 !
-      write(id_sph_cor)  ltr_cor_IO
+      call write_mul_integer_b                                          &
+     &  ((jmax_cor_IO*itwo), jgl_kcor_IO(1,1,2))
+      call write_2d_vector_b(jmax_cor_IO, itwo, gk_cor_IO(1,1,2))
 !
-      j1 = 2
-      do j2 = 1, 2
-        write(id_sph_cor) jgl_kcor_IO(1:jmax_cor_IO,j2,j1)
-        write(id_sph_cor) gk_cor_IO(1:jmax_cor_IO,j2,j1)
-      end do
-      write(id_sph_cor) jgl_lcor_IO(1:jmax_cor_IO,1,j1)
-      write(id_sph_cor) el_cor_IO(1:jmax_cor_IO,1,j1)
+      call write_mul_integer_b                                          &
+     &   (jmax_cor_IO, jgl_lcor_IO(1,1,2))
+      call write_2d_vector_b(jmax_cor_IO, ione, el_cor_IO(1,1,2))
 !*
 !
       do j1 = 1, 3, 2
-        do j2 = 1, 4
-          write(id_sph_cor) jgl_kcor_IO(1:jmax_cor_IO,j2,j1)
-          write(id_sph_cor) gk_cor_IO(1:jmax_cor_IO,j2,j1)
-        end do
-        do j2 = 1, 2
-          write(id_sph_cor) jgl_lcor_IO(1:jmax_cor_IO,j2,j1)
-          write(id_sph_cor) el_cor_IO(1:jmax_cor_IO,j2,j1)
-        end do
+        call write_mul_integer_b                                        &
+     &    ((jmax_cor_IO*ifour), jgl_kcor_IO(1,1,j1))
+        call write_2d_vector_b(jmax_cor_IO, ifour, gk_cor_IO(1,1,j1))
+!
+        call write_mul_integer_b                                        &
+     &    ((jmax_cor_IO*itwo), jgl_lcor_IO(1,1,j1))
+        call write_2d_vector_b(jmax_cor_IO, itwo, el_cor_IO(1,1,j1))
       end do
-      close(id_sph_cor)
+      call close_binary_file
 !
       call deallocate_int_sph_cor_IO
 !
@@ -62,6 +61,7 @@
       subroutine read_int_4_sph_coriolis_b
 !
       use m_int_4_sph_coriolis_IO
+      use binary_IO
       use skip_comment_f
 !
       integer(kind = kint) :: j1, j2
@@ -69,31 +69,30 @@
 !
       write(*,*) 'read integrals for coriolis: ',                       &
      &           trim(sph_cor_file_name)
-      open(id_sph_cor,file=sph_cor_file_name, form='unformatted')
+      call open_read_binary_file(sph_cor_file_name, my_rank)
 !
-      read(id_sph_cor) ltr_cor_IO
+      call read_one_integer_b(ltr_cor_IO)
       call allocate_int_sph_cor_IO
 !
-      j1 = 2
-      do j2 = 1, 2
-        read(id_sph_cor) jgl_kcor_IO(1:jmax_cor_IO,j2,j1)
-        read(id_sph_cor) gk_cor_IO(1:jmax_cor_IO,j2,j1)
-      end do
-      read(id_sph_cor) jgl_lcor_IO(1:jmax_cor_IO,1,j1)
-      read(id_sph_cor) el_cor_IO(1:jmax_cor_IO,1,j1)
+      call read_mul_integer_b                                           &
+     &  ((jmax_cor_IO*itwo), jgl_kcor_IO(1,1,2))
+      call read_2d_vector_b(jmax_cor_IO, itwo, gk_cor_IO(1,1,2))
+!
+      call read_mul_integer_b                                           &
+     &   (jmax_cor_IO, jgl_lcor_IO(1,1,2))
+      call read_2d_vector_b(jmax_cor_IO, ione, el_cor_IO(1,1,2))
 !*
 !
       do j1 = 1, 3, 2
-        do j2 = 1, 4
-          read(id_sph_cor) jgl_kcor_IO(1:jmax_cor_IO,j2,j1)
-          read(id_sph_cor) gk_cor_IO(1:jmax_cor_IO,j2,j1)
-        end do
-        do j2 = 1, 2
-          read(id_sph_cor) jgl_lcor_IO(1:jmax_cor_IO,j2,j1)
-          read(id_sph_cor) el_cor_IO(1:jmax_cor_IO,j2,j1)
-        end do
+        call read_mul_integer_b                                         &
+     &    ((jmax_cor_IO*ifour), jgl_kcor_IO(1,1,j1))
+        call read_2d_vector_b(jmax_cor_IO, ifour, gk_cor_IO(1,1,j1))
+!
+        call read_mul_integer_b                                         &
+     &    ((jmax_cor_IO*itwo), jgl_lcor_IO(1,1,j1))
+        call read_2d_vector_b(jmax_cor_IO, itwo, el_cor_IO(1,1,j1))
       end do
-      close(id_sph_cor)
+      call close_binary_file
 !
       end subroutine read_int_4_sph_coriolis_b
 !

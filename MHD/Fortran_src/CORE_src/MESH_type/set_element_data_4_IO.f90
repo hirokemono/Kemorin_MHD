@@ -31,26 +31,25 @@
       integer(kind = kint) :: iele, k1
 !
 !
-      numele_dummy =     ele%numele
-      nnod_4_ele_dummy = ele%nnod_4_ele
+      ele_IO%numele =     ele%numele
+      ele_IO%nnod_4_ele = ele%nnod_4_ele
 !
-      call allocate_ele_info_dummy
-      call allocate_connect_dummy
+      call allocate_ele_connect_type(ele_IO)
 !
 !$omp parallel private(k1)
       do k1 = 1, ele%nnod_4_ele
 !$omp do
         do iele = 1, ele%numele
-          ie_dummy(iele,k1) = ele%ie(iele,k1)
+          ele_IO%ie(iele,k1) = ele%ie(iele,k1)
         end do
 !$omp end do nowait
       end do
 !
 !$omp do
       do iele = 1, ele%numele
-        globalelmid_dummy(iele) = ele%iele_global(iele)
-        i_ele_dummy(iele) =       ele%elmtyp(iele)
-        nodelm_dummy(iele) =      ele%nodelm(iele)
+        ele_IO%iele_global(iele) = ele%iele_global(iele)
+        ele_IO%elmtyp(iele) =      ele%elmtyp(iele)
+        ele_IO%nodelm(iele) =      ele%nodelm(iele)
       end do
 !$omp end do
 !$omp end parallel
@@ -68,13 +67,13 @@
       integer(kind = kint) :: iele, k1
 !
 !
-      if (numele_dummy .eq. 0) then
-        call deallocate_ele_info_dummy
+      if (ele_IO%numele .eq. 0) then
+        call deallocate_ele_connect_type(ele_IO)
         return
       end if
 !
-      ele%numele = numele_dummy
-      ele%first_ele_type = i_ele_dummy(1)
+      ele%numele = ele_IO%numele
+      ele%first_ele_type = ele_IO%elmtyp(1)
 !
       call set_nnod_4_ele_by_eletype                                    &
      &   (ele%first_ele_type, ele%nnod_4_ele)
@@ -85,21 +84,21 @@
       do k1 = 1, ele%nnod_4_ele
 !$omp do
         do iele = 1, ele%numele
-          ele%ie(iele,k1) = ie_dummy(iele,k1)
+          ele%ie(iele,k1) = ele_IO%ie(iele,k1)
         end do
 !$omp end do nowait
       end do
 !
 !$omp do
       do iele = 1, ele%numele
-        ele%iele_global(iele) = globalelmid_dummy(iele)
-        ele%elmtyp(iele) =      i_ele_dummy(iele)
-        ele%nodelm(iele) =      nodelm_dummy(iele)
+        ele%iele_global(iele) = ele_IO%iele_global(iele)
+        ele%elmtyp(iele) =      ele_IO%elmtyp(iele)
+        ele%nodelm(iele) =      ele_IO%nodelm(iele)
       end do
 !$omp end do
 !$omp end parallel
 !
-      call deallocate_ele_info_dummy
+      call deallocate_ele_connect_type(ele_IO)
 !
       end subroutine copy_ele_connect_from_IO
 !
@@ -112,19 +111,19 @@
       integer(kind = kint) :: iele
 !
 !
-      numnod_dummy =        ele%numele
-      internal_node_dummy = ele%internal_ele
+      nod_IO%numnod =        ele%numele
+      nod_IO%internal_node = ele%internal_ele
 !
-      call allocate_node_data_dummy
-      call allocate_ele_scalar_IO
+      call alloc_node_geometry_base(nod_IO)
+      call alloc_ele_scalar_IO(nod_IO, sfed_IO)
 !
 !$omp parallel do
       do iele = 1, ele%numele
-        globalnodid_dummy(iele) = ele%iele_global(iele)
-        xx_dummy(iele,1) = ele%x_ele(iele,1)
-        xx_dummy(iele,2) = ele%x_ele(iele,2)
-        xx_dummy(iele,3) = ele%x_ele(iele,3)
-        ele_scalar_IO(iele) = ele%volume_ele(iele)
+        nod_IO%inod_global(iele) = ele%iele_global(iele)
+        nod_IO%xx(iele,1) = ele%x_ele(iele,1)
+        nod_IO%xx(iele,2) = ele%x_ele(iele,2)
+        nod_IO%xx(iele,3) = ele%x_ele(iele,3)
+        sfed_IO%ele_scalar(iele) = ele%volume_ele(iele)
       end do
 !$omp end parallel do
 !
@@ -138,20 +137,20 @@
       integer(kind = kint) :: iele
 !
 !
-      numnod_dummy =        ele%numele
-      internal_node_dummy = ele%internal_ele
+      nod_IO%numnod =        ele%numele
+      nod_IO%internal_node = ele%internal_ele
 !
-      call allocate_node_data_dummy
-      call allocate_ele_scalar_IO
+      call alloc_node_geometry_base(nod_IO)
+      call alloc_ele_scalar_IO(nod_IO, sfed_IO)
 !
 !$omp parallel do
       do iele = 1, ele%numele
-        globalnodid_dummy(iele) = ele%iele_global(iele)
+        nod_IO%inod_global(iele) = ele%iele_global(iele)
 !
-        xx_dummy(iele,1) =    ele%r_ele(iele)
-        xx_dummy(iele,2) =    ele%theta_ele(iele)
-        xx_dummy(iele,3) =    ele%phi_ele(iele)
-        ele_scalar_IO(iele) = ele%volume_ele(iele)
+        nod_IO%xx(iele,1) =    ele%r_ele(iele)
+        nod_IO%xx(iele,2) =    ele%theta_ele(iele)
+        nod_IO%xx(iele,3) =    ele%phi_ele(iele)
+        sfed_IO%ele_scalar(iele) = ele%volume_ele(iele)
       end do
 !$omp end parallel do
 !
@@ -165,20 +164,20 @@
       integer(kind = kint) :: iele
 !
 !
-      numnod_dummy =        ele%numele
-      internal_node_dummy = ele%internal_ele
+      nod_IO%numnod =        ele%numele
+      nod_IO%internal_node = ele%internal_ele
 !
-      call allocate_node_data_dummy
-      call allocate_ele_scalar_IO
+      call alloc_node_geometry_base(nod_IO)
+      call alloc_ele_scalar_IO(nod_IO, sfed_IO)
 !
 !$omp parallel do
       do iele = 1, ele%numele
-        globalnodid_dummy(iele) = ele%iele_global(iele)
+        nod_IO%inod_global(iele) = ele%iele_global(iele)
 !
-        xx_dummy(iele,1) =    ele%s_ele(iele)
-        xx_dummy(iele,2) =    ele%phi_ele(iele)
-        xx_dummy(iele,3) =    ele%x_ele(iele,3)
-        ele_scalar_IO(iele) = ele%volume_ele(iele)
+        nod_IO%xx(iele,1) =    ele%s_ele(iele)
+        nod_IO%xx(iele,2) =    ele%phi_ele(iele)
+        nod_IO%xx(iele,3) =    ele%x_ele(iele,3)
+        sfed_IO%ele_scalar(iele) = ele%volume_ele(iele)
       end do
 !$omp end parallel do
 !

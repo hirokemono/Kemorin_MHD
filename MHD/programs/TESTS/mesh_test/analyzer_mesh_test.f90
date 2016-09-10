@@ -63,7 +63,7 @@
 !
       use m_ctl_data_test_mesh
       use set_control_test_mesh
-      use load_mesh_data
+      use mpi_load_mesh_data
       use const_jacobians_3d
       use const_element_comm_tables
 !
@@ -91,8 +91,8 @@
 !
 !  --  read geometry
 !
-      if (iflag_debug.gt.0) write(*,*) 'input_mesh'
-      call input_mesh(my_rank, mesh, group,                             &
+      if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
+      call mpi_input_mesh(mesh, group,                                  &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
@@ -163,7 +163,7 @@
 !      spherical and cylindrical coordinate
 !  ---------------------------------------------
 !
-      num_neib_domain_IO = 0
+      comm_IO%num_neib = 0
       my_rank_IO = my_rank
 !
       call add_int_suffix(my_rank, mesh_sph_file_head, mesh_file_name)
@@ -171,8 +171,8 @@
       open (input_file_code, file = mesh_file_name,                     &
      &      form = 'formatted')
 !
-      num_neib_domain_IO = 0
-      call allocate_neib_domain_IO
+      comm_IO%num_neib = 0
+      call allocate_type_neib_id(comm_IO)
 !
       call copy_node_sph_to_IO(mesh%node)
 !
@@ -185,8 +185,8 @@
       open (input_file_code, file = mesh_file_name,                     &
      &      form = 'formatted')
 !
-      num_neib_domain_IO = 0
-      call allocate_neib_domain_IO
+      comm_IO%num_neib = 0
+      call allocate_type_neib_id(comm_IO)
       call copy_node_cyl_to_IO(mesh%node)
 !
       call output_node_cyl_geometry

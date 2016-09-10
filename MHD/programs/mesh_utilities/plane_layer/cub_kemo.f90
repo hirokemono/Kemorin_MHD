@@ -213,11 +213,7 @@
              write(penum,'(i4   )')  pe1
              penum_left = adjustl(penum)
 !
-             if ( iflag_data_f .eq. 1) then
-              call open_mesh_file_b(pe1)
-             else
-              call open_mesh_file(pe1)
-             end if 
+             call open_mesh_file(pe1)
 !
 ! ***** set and write basic local model parameters
 !                                       .. pe nod per 1 line
@@ -237,20 +233,16 @@
             call set_neighboring_pes_peri(pe_id, ipe, jpe)
 !
 !
-             call sort_neighboring_pes
+            call sort_neighboring_pes
 !
 ! ..... write 1.parallel information (pe_id start from 0, not 1)
 !
-             if ( iflag_data_f .eq. 1) then
-              call write_pe_data_b(pe_id)
-             else
-              call write_pe_data(pe_id)
-             end if 
+            call write_pe_data(pe_id)
 !
 ! ..... write 2.mesh information (nodes and elements in partition)
 !
 
-           call set_node(ipe, jpe, kpe)
+            call set_node(ipe, jpe, kpe)
 !
 ! ..... write 2.2 element (connection)
 !
@@ -268,11 +260,7 @@
 !
             call sort_communication_table
 !
-             if ( iflag_data_f .eq. 1) then
-              call write_communication_data_b
-             else
-              call write_communication_data
-             end if 
+            call write_communication_data
 !
 !
 ! ..... write 4.group information
@@ -282,12 +270,7 @@
 !                                        .. count node group and stack
 !
             call count_node_group(elm_type, ipe, jpe, kpe)
-!
-            if ( iflag_data_f .eq. 1) then
-             call write_node_group_b(ipe, jpe, kpe)
-            else
-             call write_node_group(ipe, jpe, kpe)
-            end if 
+            call write_node_group(ipe, jpe, kpe)
 !
 !    output element group
 !
@@ -302,12 +285,7 @@
 !
 !                                     .. count element group and stack
             call count_surface_group(kpe)
-!
-            if ( iflag_data_f .eq. 1) then
-             call write_surface_group_b(kpe)
-            else
-             call write_surface_group(kpe)
-            end if 
+            call write_surface_group(kpe)
 !
 !   construct filtering information
 !

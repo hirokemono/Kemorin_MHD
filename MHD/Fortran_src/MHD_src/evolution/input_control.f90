@@ -53,7 +53,7 @@
       use m_iccg_parameter
       use m_flags_4_solvers
       use set_control_FEM_MHD
-      use load_mesh_data
+      use mpi_load_mesh_data
       use input_MG_data
       use skip_comment_f
 !
@@ -74,7 +74,7 @@
       call set_control_4_FEM_MHD
 !
 !  --  load FEM mesh data
-      call input_mesh(my_rank, mesh, group,                             &
+      call mpi_input_mesh(mesh, group,                                  &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
       call input_meshes_4_MHD                                           &
@@ -98,7 +98,7 @@
 !
       use m_ctl_data_fem_MHD
       use set_control_FEM_MHD
-      use load_mesh_data
+      use mpi_load_mesh_data
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
@@ -116,7 +116,7 @@
       call set_control_4_FEM_MHD
 !
 !  --  load FEM mesh data
-      call input_mesh(my_rank, mesh, group,                             &
+      call mpi_input_mesh(mesh, group,                                  &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
       call input_meshes_4_MHD                                           &

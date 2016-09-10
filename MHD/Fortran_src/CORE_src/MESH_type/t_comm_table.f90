@@ -157,10 +157,8 @@
 !
       type(communication_table), intent(inout) :: comm_tbl
 !
-      comm_tbl%ntot_import                                              &
-     &      = comm_tbl%istack_import(comm_tbl%num_neib)
-      allocate(comm_tbl%item_import(comm_tbl%ntot_import))
 !
+      allocate(comm_tbl%item_import(comm_tbl%ntot_import))
       if (comm_tbl%ntot_import .gt. 0) comm_tbl%item_import = 0
 !
       end subroutine allocate_type_import_item
@@ -171,10 +169,8 @@
 !
       type(communication_table), intent(inout) :: comm_tbl
 !
-      comm_tbl%ntot_export                                              &
-     &      = comm_tbl%istack_export(comm_tbl%num_neib)
-      allocate(comm_tbl%item_export(comm_tbl%ntot_export))
 !
+      allocate(comm_tbl%item_export(comm_tbl%ntot_export))
       if (comm_tbl%ntot_export .gt. 0) comm_tbl%item_export = 0
 !
       end subroutine allocate_type_export_item

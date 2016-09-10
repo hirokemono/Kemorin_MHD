@@ -63,7 +63,7 @@
       use m_t_step_parameter
       use m_array_for_send_recv
       use m_read_mesh_data
-      use load_mesh_data
+      use mpi_load_mesh_data
       use nod_phys_send_recv
       use const_mesh_information
       use set_parallel_file_name
@@ -76,8 +76,7 @@
 !   --------------------------------
 !
 !       load mesh informations
-      if (iflag_debug.gt.0) write(*,*) 'input_mesh', mesh_file_head
-      call input_mesh(my_rank, femmesh_VIZ%mesh, femmesh_VIZ%group,     &
+      call mpi_input_mesh(femmesh_VIZ%mesh, femmesh_VIZ%group,          &
      &    elemesh_VIZ%surf%nnod_4_surf, elemesh_VIZ%edge%nnod_4_edge)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'

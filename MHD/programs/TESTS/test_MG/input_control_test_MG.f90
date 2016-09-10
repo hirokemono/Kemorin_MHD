@@ -33,7 +33,7 @@
         use m_ctl_data_test_MG
         use m_geometry_param_MG
         use set_control_test_MG
-        use load_mesh_data
+        use mpi_load_mesh_data
         use set_MG_mesh_data
 !
       type(mesh_geometry), intent(inout) :: mesh
@@ -54,7 +54,7 @@
 !
       iflag_mesh_file_fmt = ifile_type
       if (iflag_debug.eq.1) write(*,*) 'input_mesh'
-      call input_mesh(my_rank, mesh, group,                             &
+      call mpi_input_mesh(mesh, group,                                  &
      &    surf%nnod_4_surf, edge%nnod_4_edge)
 !
 !  --  read geometry data for MG

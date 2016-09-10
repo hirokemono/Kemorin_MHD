@@ -4,10 +4,10 @@
 !     Written by H. Matsui on Nov., 2008
 !
 !!      subroutine set_simple_filter_nod_by_nod                         &
-!!     &         (node, ele, jac_3d, FEM_elen, dx_nod,                  &
+!!     &         (file_name, node, ele, jac_3d, FEM_elen, dx_nod,       &
 !!     &          inod, ele_4_nod, neib_nod)
 !!      subroutine set_simple_fl_filter_nod_by_nod                      &
-!!     &         (node, ele, jac_3d, FEM_elen, dx_nod,                  &
+!!     &         (file_name, node, ele, jac_3d, FEM_elen, dx_nod,       &
 !!     &          inod, ele_4_nod, neib_nod, mom_nod)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -39,7 +39,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_simple_filter_nod_by_nod                           &
-     &         (node, ele, jac_3d, FEM_elen, dx_nod,                    &
+     &         (file_name, node, ele, jac_3d, FEM_elen, dx_nod,         &
      &          inod, ele_4_nod, neib_nod)
 !
       use m_ctl_params_4_gen_filter
@@ -54,6 +54,7 @@
       use delete_small_weighting
       use write_filters_4_each_node
 !
+      character(len = kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: inod
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -121,14 +122,14 @@
       call normalize_each_filter_weight
 !
       call s_delete_small_weighting(node%numnod)
-      call write_each_filter_stack_coef(inod)
+      call write_each_filter_stack_coef(file_name, inod)
 !
       end subroutine set_simple_filter_nod_by_nod
 !
 ! -----------------------------------------------------------------------
 !
       subroutine set_simple_fl_filter_nod_by_nod                        &
-     &         (node, ele, jac_3d, FEM_elen, dx_nod,                    &
+     &         (file_name, node, ele, jac_3d, FEM_elen, dx_nod,         &
      &          inod, ele_4_nod, neib_nod, mom_nod)
 !
       use m_ctl_params_4_gen_filter
@@ -144,6 +145,7 @@
       use delete_small_weighting
       use write_filters_4_each_node
 !
+      character(len = kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: inod
 !
       type(node_data), intent(in) :: node
@@ -165,7 +167,7 @@
 !    no filtering
 !
       if (nnod_near_1nod_weight .eq. 0) then
-        call write_each_no_filter_coef(inod)
+        call write_each_no_filter_coef(file_name, inod)
       else
 !
 !   set filter area for tophat filter
@@ -190,7 +192,7 @@
 !
         if (nnod_near_1nod_weight .eq. nnod_near_nod_weight(inod))      &
      &     then
-          call write_each_same_filter_coef(inod)
+          call write_each_same_filter_coef(file_name, inod)
           call copy_moments_each_point                                  &
      &       (inod, mom_nod(1)%moms, inod, mom_nod(2)%moms)
 !
@@ -225,7 +227,7 @@
           call normalize_each_filter_weight
 !
           call s_delete_small_weighting(node%numnod)
-          call write_each_filter_stack_coef(inod)
+          call write_each_filter_stack_coef(file_name, inod)
         end if
       end if
 !

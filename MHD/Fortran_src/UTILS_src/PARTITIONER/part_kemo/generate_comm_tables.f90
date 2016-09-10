@@ -3,8 +3,8 @@
 !
 !     Written by H. Matsui on Sep., 2007
 !
-!      subroutine gen_node_import_tables(nprocs, work_f_head, new_comm)
-!      subroutine gen_node_export_tables(nprocs, work_f_head, new_comm)
+!      subroutine gen_node_import_tables(nprocs, work_f_head)
+!      subroutine gen_node_export_tables(nprocs, work_f_head)
 !
       module generate_comm_tables
 !
@@ -22,7 +22,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine gen_node_import_tables(nprocs, work_f_head, new_comm)
+      subroutine gen_node_import_tables(nprocs, work_f_head)
 !
       use t_comm_table
       use m_partitioner_comm_table
@@ -34,7 +34,8 @@
 !
       integer(kind = kint), intent(in) :: nprocs
       character(len=kchara), intent(in) :: work_f_head
-      type(communication_table), intent(inout) :: new_comm
+!
+      type(communication_table) :: new_comm
       integer(kind = kint) :: ip, my_rank
 !
 !
@@ -60,6 +61,8 @@
         call const_nod_import_table_4_part(ip, new_comm)
         call save_node_import_4_part(ip, work_f_head, new_comm)
 !
+        call deallocate_type_import(new_comm)
+        call deallocate_type_neib_id(new_comm)
       end do
 !
       call deallocate_wk_neib_domain
@@ -68,7 +71,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine gen_node_export_tables(nprocs, work_f_head, new_comm)
+      subroutine gen_node_export_tables(nprocs, work_f_head)
 !
       use t_comm_table
       use m_partitioner_comm_table
@@ -80,8 +83,8 @@
 !
       integer(kind = kint), intent(in) :: nprocs
       character(len=kchara), intent(in) :: work_f_head
-      type(communication_table), intent(inout) :: new_comm
 !
+      type(communication_table) :: new_comm
       integer(kind = kint) :: ip, my_rank
 !
 !C
@@ -121,6 +124,7 @@
         call set_nod_export_item_4_part(ip, work_f_head, new_comm)
 !
         call save_node_export_4_part(ip, work_f_head, new_comm)
+        call deallocate_type_comm_tbl(new_comm)
       end do
 !
       end subroutine gen_node_export_tables

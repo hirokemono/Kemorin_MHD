@@ -4,7 +4,7 @@
 !      Written by H. Matsui on Sep., 2007
 !
 !!      subroutine local_fem_mesh(my_rank, nprocs, work_f_head,         &
-!!     &          node_org, ele_org, group_org, para_fem)
+!!     &          node_org, ele_org, group_org)
 !
       module local_mesh_by_part
 !
@@ -20,7 +20,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine local_fem_mesh(my_rank, nprocs, work_f_head,           &
-     &          node_org, ele_org, group_org, para_fem)
+     &          node_org, ele_org, group_org)
 !
       use t_mesh_data
       use t_geometry_data
@@ -47,13 +47,15 @@
       type(element_data), intent(in) :: ele_org
       type(mesh_groups), intent(in) :: group_org
 !
-      type(mesh_data), intent(inout) :: para_fem
+      type(mesh_data), allocatable :: para_fem(:)
 !
       integer(kind=kint) :: ip, i
       integer(kind=kint) :: irank_subdomain
 
 !C
 !C-- init.
+!
+      allocate(para_fem(num_domain))
 !
       do ip= 1, num_domain
         irank_subdomain = ip-1
@@ -65,32 +67,41 @@
 !C +--------------------------+
 !C===
         call load_node_comm_tbl_4_part                                  &
-     &     (ip, work_f_head, para_fem%mesh%nod_comm)
+     &     (ip, work_f_head, para_fem(ip)%mesh%nod_comm)
 !C
 !C +-----------------+
 !C | LOCAL NUMBERING |
 !C +-----------------+
 !C===
-        do i = 1, para_fem%mesh%nod_comm%num_neib
-          para_fem%mesh%nod_comm%id_neib(i)                             &
-     &        = para_fem%mesh%nod_comm%id_neib(i) - 1
+        do i = 1, para_fem(ip)%mesh%nod_comm%num_neib
+          para_fem(ip)%mesh%nod_comm%id_neib(i)                         &
+     &        = para_fem(ip)%mesh%nod_comm%id_neib(i) - 1
         end do
 
-        call s_const_local_meshes(ip, node_org, ele_org, para_fem%mesh)
-        call set_local_connectivity_4_ele(ele_org, para_fem%mesh%ele)
-        call s_const_local_groups(group_org, para_fem%group)
+        call s_const_local_meshes                                       &
+     &     (ip, node_org, ele_org, para_fem(ip)%mesh)
+        call set_local_connectivity_4_ele                               &
+     &     (ele_org, para_fem(ip)%mesh%ele)
+        call s_const_local_groups(group_org, para_fem(ip)%group)
+      end do
 !C
 !C +-------------------------+
 !C | write FINAL LOCAL files |
 !C +-------------------------+
 !C===
+      do ip= 1, num_domain
+        irank_subdomain = ip-1
+        if(mod(irank_subdomain,nprocs) .ne. my_rank) cycle
+!
         iflag_mesh_file_fmt = iflag_para_mesh_file_fmt
         mesh_file_head = local_file_header
         call output_mesh                                                &
-     &     (irank_subdomain, para_fem%mesh, para_fem%group)
+     &     (irank_subdomain, para_fem(ip)%mesh, para_fem(ip)%group)
+        call dealloc_mesh_infos(para_fem(ip)%mesh, para_fem(ip)%group)
       end do
 !
 !C===
+      deallocate(para_fem)
       call deallocate_local_ne_id_tbl
 !
       if(iflag_memory_conserve .ne. 0) then

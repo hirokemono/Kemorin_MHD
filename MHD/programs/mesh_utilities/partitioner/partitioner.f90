@@ -32,7 +32,6 @@
       type(mesh_groups), save :: org_group
       type(element_geometry), save :: org_ele_mesh
 !
-      type(mesh_data), save :: partitioned_fem
       type(near_mesh), save :: included_ele
 !
       integer(kind = kint), parameter :: my_rank = izero
@@ -63,7 +62,7 @@
 !C-- create subdomain mesh
       call PROC_LOCAL_MESH                                              &
      &   (org_mesh%node, org_mesh%ele, org_ele_mesh%edge, org_group,    &
-     &    partitioned_fem, included_ele)
+     &    included_ele)
 !C
 !C-- Finalize
       write(*,*) 'dealloc_nod_ele_infos'

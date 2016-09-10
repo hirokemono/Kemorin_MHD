@@ -34,7 +34,7 @@
       type(communication_table), intent(inout) :: comm_tbls
 !
 !
-      comm_tbls%num_neib = num_neib_domain_IO
+      comm_tbls%num_neib = comm_IO%num_neib
 !
       call allocate_type_comm_tbl_num(comm_tbls)
 !
@@ -42,7 +42,8 @@
      &    (comm_tbls%num_neib, comm_tbls%id_neib,                       &
      &    comm_tbls%istack_import, comm_tbls%istack_export,             &
      &    comm_tbls%ntot_import, comm_tbls%ntot_export,                 &
-     &    id_neib_domain_IO, istack_import_IO, istack_export_IO)
+     &    comm_IO%id_neib, comm_IO%istack_import,                       &
+     &    comm_IO%istack_export)
       call copy_num_import_export(comm_tbls%num_neib,                   &
      &    comm_tbls%num_import, comm_tbls%num_export,                   &
      &    comm_tbls%istack_import, comm_tbls%istack_export)
@@ -52,9 +53,9 @@
       call copy_communication_item                                      &
      &    (comm_tbls%ntot_import, comm_tbls%ntot_export,                &
      &    comm_tbls%item_import, comm_tbls%item_export,                 &
-     &    item_import_IO, item_export_IO)
+     &    comm_IO%item_import, comm_IO%item_export)
 !
-      call deallocate_comm_item_IO
+      call deallocate_type_comm_tbl(comm_IO)
 !
       end subroutine copy_comm_tbl_type_from_IO
 !
@@ -67,19 +68,21 @@
 !
 !
       my_rank_IO = my_rank
-      num_neib_domain_IO = comm_tbls%num_neib
+      comm_IO%num_neib = comm_tbls%num_neib
 !
-      call allocate_neib_comm_stack_IO
+      call allocate_type_comm_tbl_num(comm_IO)
 !
-      call copy_num_communication(num_neib_domain_IO,                   &
-     &    id_neib_domain_IO, istack_import_IO, istack_export_IO,        &
-     &    ntot_import_IO, ntot_export_IO, comm_tbls%id_neib,            &
+      call copy_num_communication                                       &
+     &   (comm_IO%num_neib, comm_IO%id_neib,                            &
+     &    comm_IO%istack_import, comm_IO%istack_export,                 &
+     &    comm_IO%ntot_import, comm_IO%ntot_export, comm_tbls%id_neib,  &
      &    comm_tbls%istack_import, comm_tbls%istack_export)
 !
-      call allocate_comm_item_IO
+      call allocate_type_comm_tbl_item(comm_IO)
 !
-      call copy_communication_item(ntot_import_IO, ntot_export_IO,      &
-     &    item_import_IO, item_export_IO,                               &
+      call copy_communication_item                                      &
+     &   (comm_IO%ntot_import, comm_IO%ntot_export,                     &
+     &    comm_IO%item_import, comm_IO%item_export,                     &
      &    comm_tbls%item_import, comm_tbls%item_export)
 !
       end subroutine copy_comm_tbl_type_to_IO

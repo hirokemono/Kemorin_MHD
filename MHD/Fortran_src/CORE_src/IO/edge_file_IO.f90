@@ -17,6 +17,7 @@
 !
       use m_precision
 !
+      use m_comm_data_IO
       use m_read_mesh_data
       use set_parallel_file_name
       use edge_data_IO
@@ -29,31 +30,13 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_edge_fname(my_rank)
-!
-      integer(kind = kint), intent(in) :: my_rank
-      character(len=kchara) :: fname_tmp
-!
-!
-      if(iflag_mesh_file_ext .gt. 0) then
-        call add_int_suffix(my_rank, mesh_edge_file_head, fname_tmp)
-        call add_gfm_extension(fname_tmp, mesh_file_name)
-      else
-        call add_int_suffix(my_rank, mesh_edge_file_head,               &
-     &      mesh_file_name)
-      end if
-!
-      end subroutine set_edge_fname
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
       subroutine output_edge_geometries
 !
 !
       open (input_file_code, file = mesh_file_name, form = 'formatted')
-      call write_edge_connection
-      call write_edge_geometry
+      call write_edge_connection                                        &
+     &  (input_file_code, my_rank_IO, comm_IO, nod_IO, ele_IO, sfed_IO)
+      call write_edge_geometry(input_file_code, nod_IO, sfed_IO)
       close (input_file_code)
 !
       end subroutine output_edge_geometries
@@ -65,8 +48,9 @@
 !
 !
       open (input_file_code, file = mesh_file_name, form = 'formatted')
-      call write_edge_connection
-      call write_edge_geometry_sph
+      call write_edge_connection                                        &
+     &  (input_file_code, my_rank_IO, comm_IO, nod_IO, ele_IO, sfed_IO)
+      call write_edge_geometry_sph(input_file_code, nod_IO, sfed_IO)
       close (input_file_code)
 !
       end subroutine output_edge_geometries_sph
@@ -77,8 +61,9 @@
 !
 !
       open (input_file_code, file = mesh_file_name, form = 'formatted')
-      call write_edge_connection
-      call write_edge_geometry_cyl
+      call write_edge_connection                                        &
+     &  (input_file_code, my_rank_IO, comm_IO, nod_IO, ele_IO, sfed_IO)
+      call write_edge_geometry_cyl(input_file_code, nod_IO, sfed_IO)
       close (input_file_code)
 !
       end subroutine output_edge_geometries_cyl

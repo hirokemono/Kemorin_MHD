@@ -38,7 +38,6 @@
       subroutine sel_read_alloc_field_file(my_rank, istep_fld, fld_IO)
 !
       use field_file_IO
-      use field_file_IO_b
       use set_field_file_names
 !
       integer(kind=kint), intent(in) :: my_rank, istep_fld
@@ -49,17 +48,14 @@
       call set_FEM_fld_file_name(fld_IO%file_prefix,                    &
      &    fld_IO%iflag_file_fmt, my_rank, istep_fld, file_name)
 !
-      if (fld_IO%iflag_file_fmt .eq. id_binary_file_fmt) then
-        call read_and_allocate_field_file_b(file_name, my_rank, fld_IO)
-!
 #ifdef ZLIB_IO
-      else if(fld_IO%iflag_file_fmt .eq. id_gzip_txt_file_fmt) then
+      if(fld_IO%iflag_file_fmt .eq. id_gzip_txt_file_fmt) then
         call read_alloc_gz_field_file(file_name, my_rank, fld_IO)
+        return
+      end if
 #endif
 !
-      else
-        call read_and_allocate_field_file(file_name, my_rank, fld_IO)
-      end if
+      call read_and_allocate_field_file(file_name, my_rank, fld_IO)
 !
       end subroutine sel_read_alloc_field_file
 !
@@ -84,17 +80,14 @@
       call add_int_suffix(my_rank, fname_tmp, file_name)
 !
 !
-      if(fld_IO%iflag_file_fmt .eq. id_binary_file_fmt) then
-        call read_rst_file_b(my_rank, file_name, fld_IO)
-!
 #ifdef ZLIB_IO
-      else if(fld_IO%iflag_file_fmt .eq. id_gzip_txt_file_fmt) then
+      if(fld_IO%iflag_file_fmt .eq. id_gzip_txt_file_fmt) then
         call read_gz_rst_file(my_rank, file_name, fld_IO)
+        return
+      end if
 #endif
 !
-      else
-        call read_rst_file(my_rank, file_name, fld_IO)
-      end if
+      call read_rst_file(my_rank, file_name, fld_IO)
 !
 !
       end subroutine sel_read_rst_file
@@ -119,17 +112,14 @@
       end if
       call add_int_suffix(my_rank, fname_tmp, file_name)
 !
-      if(fld_IO%iflag_file_fmt .eq. id_binary_file_fmt) then
-        call read_rst_data_comps_b(my_rank, file_name, fld_IO)
-!
 #ifdef ZLIB_IO
-      else if(fld_IO%iflag_file_fmt .eq. id_gzip_txt_file_fmt) then
+      if(fld_IO%iflag_file_fmt .eq. id_gzip_txt_file_fmt) then
         call read_gz_rst_comps(my_rank, file_name, fld_IO)
+        return
+      end if
 #endif
 !
-      else
-        call read_rst_data_comps(my_rank, file_name, fld_IO)
-      end if
+      call read_rst_data_comps(my_rank, file_name, fld_IO)
 !
       end subroutine sel_read_rst_comps
 !

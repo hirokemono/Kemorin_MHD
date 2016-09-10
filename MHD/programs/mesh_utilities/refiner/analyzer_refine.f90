@@ -236,6 +236,7 @@
       mesh_file_head = refined_mesh_head
       write(*,'(2a)') 'mesh file header: ', trim(refined_mesh_head)
       call output_mesh(izero, refined_fem%mesh, refined_fem%group)
+      call dealloc_mesh_infos(refined_fem%mesh, refined_fem%group)
 !
       end subroutine analyze_refine
 !

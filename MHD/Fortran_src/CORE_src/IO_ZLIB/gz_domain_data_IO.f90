@@ -1,20 +1,28 @@
+!>@file   gz_domain_data_IO.f90
+!!@brief  module gz_domain_data_IO
+!!
+!!@author H. Matsui
+!!@date Programmed in July, 2007
 !
-!      module gz_domain_data_IO
-!
-!     Written by H. Matsui on July, 2007
-!
-!      subroutine read_domain_info_gz
-!      subroutine read_import_data_gz
-!      subroutine read_export_data_gz
-!      subroutine write_domain_info_gz
-!      subroutine write_import_data_gz
-!      subroutine write_export_data_gz
+!>@brief  Routine for doimain data IO using zlib
+!!
+!!@verbatim
+!!      subroutine read_domain_info_gz(my_rank_IO, comm_IO)
+!!      subroutine read_import_data_gz(comm_IO)
+!!      subroutine read_export_data_gz(comm_IO)
+!!        type(communication_table), intent(inout) :: comm_IO
+!!
+!!      subroutine write_domain_info_gz(my_rank_IO, comm_IO)
+!!      subroutine write_import_data_gz(comm_IO)
+!!      subroutine write_export_data_gz(comm_IO)
+!!        type(communication_table), intent(inout) :: comm_IO
+!!@endverbatim
 !
       module gz_domain_data_IO
 !
       use m_precision
 !
-      use m_comm_data_IO
+      use t_comm_table
       use skip_gz_comment
 !
       implicit none
@@ -27,60 +35,69 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_domain_info_gz
+      subroutine read_domain_info_gz(my_rank_IO, comm_IO)
+!
+      integer(kind = kint), intent(inout) :: my_rank_IO
+      type(communication_table), intent(inout) :: comm_IO
 !
 !
       call skip_gz_comment_int(my_rank_IO)
 !
       call get_one_line_from_gz_f
-      read(textbuf,*) num_neib_domain_IO
+      read(textbuf,*) comm_IO%num_neib
 !
-      call allocate_neib_domain_IO
+      call allocate_type_neib_id(comm_IO)
 !
-      if (num_neib_domain_IO .gt. 0) then
-        call read_gz_multi_int(num_neib_domain_IO, id_neib_domain_IO)
+      if (comm_IO%num_neib .gt. 0) then
+        call read_gz_multi_int(comm_IO%num_neib, comm_IO%id_neib)
       end if
 !
       end subroutine read_domain_info_gz
 !
 !------------------------------------------------------------------
 !
-      subroutine read_import_data_gz
+      subroutine read_import_data_gz(comm_IO)
+!
+      type(communication_table), intent(inout) :: comm_IO
 !
 !
-      call allocate_import_stack_IO
+      call allocate_type_import_num(comm_IO)
 !
-      istack_import_IO(0) = 0
-      if (num_neib_domain_IO .gt. 0) then
-        call read_gz_multi_int(num_neib_domain_IO, istack_import_IO(1))
-        ntot_import_IO = istack_import_IO(num_neib_domain_IO)
+      comm_IO%istack_import(0) = 0
+      if (comm_IO%num_neib .gt. 0) then
+        call read_gz_integer_stack(comm_IO%num_neib,                    &
+     &      comm_IO%istack_import, comm_IO%ntot_import)
 !
-        call allocate_import_item_IO
-        call read_send_recv_item_gz(ntot_import_IO, item_import_IO)
+        call allocate_type_import_item(comm_IO)
+        call read_send_recv_item_gz                                     &
+     &     (comm_IO%ntot_import, comm_IO%item_import)
       else
-        ntot_import_IO = 0
-        call allocate_import_item_IO
+        comm_IO%ntot_import = 0
+        call allocate_type_import_item(comm_IO)
       end if
 !
       end subroutine read_import_data_gz
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_export_data_gz
+      subroutine read_export_data_gz(comm_IO)
+!
+      type(communication_table), intent(inout) :: comm_IO
 !
 !
-      call allocate_export_stack_IO
+      call allocate_type_export_num(comm_IO)
 !
-      istack_export_IO(0) = 0
-      if (num_neib_domain_IO .gt. 0) then
-        call read_gz_multi_int(num_neib_domain_IO, istack_export_IO(1))
-        ntot_export_IO = istack_export_IO(num_neib_domain_IO)
+      comm_IO%istack_export(0) = 0
+      if (comm_IO%num_neib .gt. 0) then
+        call read_gz_integer_stack(comm_IO%num_neib,                    &
+     &      comm_IO%istack_export, comm_IO%ntot_export)
 !
-        call allocate_export_item_IO
-        call read_send_recv_item_gz(ntot_export_IO, item_export_IO)
+        call allocate_type_export_item(comm_IO)
+        call read_send_recv_item_gz                                     &
+     &     (comm_IO%ntot_export, comm_IO%item_export)
       else
-        ntot_export_IO = 0
-        call allocate_export_item_IO
+        comm_IO%ntot_export = 0
+        call allocate_type_export_item(comm_IO)
       end if
 !
       end subroutine read_export_data_gz
@@ -88,46 +105,56 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine write_domain_info_gz
+      subroutine write_domain_info_gz(my_rank_IO, comm_IO)
+!
+      integer(kind = kint), intent(in) :: my_rank_IO
+      type(communication_table), intent(inout) :: comm_IO
 !
 !
       write(textbuf,'(i16,a1)') my_rank_IO, char(0)
       call gz_write_textbuf_w_lf
-      write(textbuf,'(i16,a1)') num_neib_domain_IO, char(0)
+      write(textbuf,'(i16,a1)') comm_IO%num_neib, char(0)
       call gz_write_textbuf_w_lf
 !
-      if (num_neib_domain_IO .gt. 0) then
-        call write_gz_multi_int_8i10(num_neib_domain_IO,           &
-     &      id_neib_domain_IO)
+      if (comm_IO%num_neib .gt. 0) then
+        call write_gz_multi_int_8i10(comm_IO%num_neib,                  &
+     &      comm_IO%id_neib)
       else
         write(textbuf,'(a1)') char(0)
         call gz_write_textbuf_w_lf
       end if
 !
-      call deallocate_neib_domain_IO
+      call deallocate_type_neib_id(comm_IO)
 !
       end subroutine write_domain_info_gz
 !
 !------------------------------------------------------------------
 !
-      subroutine write_import_data_gz
+      subroutine write_import_data_gz(comm_IO)
 !
-      call write_send_recv_data_gz(num_neib_domain_IO,                  &
-     &    ntot_import_IO, istack_import_IO, item_import_IO)
+      type(communication_table), intent(inout) :: comm_IO
 !
-      call deallocate_import_item_IO
+!
+      call write_send_recv_data_gz                                      &
+     &   (comm_IO%num_neib, comm_IO%ntot_import,                        &
+     &    comm_IO%istack_import, comm_IO%item_import)
+!
+      call deallocate_type_import(comm_IO)
 !
       end subroutine write_import_data_gz
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_export_data_gz
+      subroutine write_export_data_gz(comm_IO)
+!
+      type(communication_table), intent(inout) :: comm_IO
 !
 !
-      call write_send_recv_data_gz(num_neib_domain_IO,                  &
-     &    ntot_export_IO, istack_export_IO, item_export_IO)
+      call write_send_recv_data_gz                                      &
+     &   (comm_IO%num_neib, comm_IO%ntot_export,                        &
+     &    comm_IO%istack_export, comm_IO%item_export)
 !
-      call deallocate_export_item_IO
+      call deallocate_type_export(comm_IO)
 !
       end subroutine write_export_data_gz
 !

@@ -3,9 +3,9 @@
 !
 !     Written by H. Matsui on Mar., 2008
 !
-!      subroutine write_each_filter_stack_coef(inod)
-!      subroutine write_each_no_filter_coef(inod)
-!      subroutine write_each_same_filter_coef(inod)
+!      subroutine write_each_filter_stack_coef(file_name, inod)
+!      subroutine write_each_no_filter_coef(file_name, inod)
+!      subroutine write_each_same_filter_coef(file_name, inod)
 !
 !      subroutine read_each_filter_stack_coef(id_file)
 !
@@ -18,11 +18,9 @@
       use m_filter_coefs
       use m_filter_file_names
       use m_field_file_format
+      use binary_IO
 !
       implicit none
-!
-      character(len=255) :: character_4_read = ''
-      private :: character_4_read
 !
 ! -----------------------------------------------------------------------
 !
@@ -30,54 +28,75 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_each_filter_stack_coef(inod)
+      subroutine write_each_filter_stack_coef(file_name, inod)
 !
       use filter_IO_for_sorting
 !
+      character(len = kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: inod
 !
+!
       if (ifmt_3d_filter .eq. iflag_ascii) then
+        open(org_filter_coef_code, file=file_name,                      &
+     &       form='formatted', position='append')
         write(filter_coef_code,'(4i12)')  inod, nnod_near_1nod_weight,  &
      &                  i_exp_level_1nod_weight
+        close(org_filter_coef_code)
         call write_filter_coef_4_each(filter_coef_code)
 !
       else if (ifmt_3d_filter .eq. iflag_bin) then
-!
-        write(filter_coef_code) nnod_near_1nod_weight,                  &
-     &           i_exp_level_1nod_weight
-        call write_filter_coef_4_each_b(filter_coef_code)
-!
+        call open_append_binary_file(file_name)
+        call write_filter_coef_4_each_b
+        call close_binary_file
       end if
 !
       end subroutine write_each_filter_stack_coef
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_each_no_filter_coef(inod)
+      subroutine write_each_no_filter_coef(file_name, inod)
 !
+      character(len = kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: inod
 !
 !
       if (ifmt_3d_filter .eq. iflag_ascii) then
-        write(filter_coef_code,'(4i12)') inod,                          &
-     &            nnod_near_1nod_weight, izero
+        open(org_filter_coef_code, file=file_name,                      &
+     &       form='formatted', position='append')
+        write(org_filter_coef_code,'(4i12)')                            &
+     &           inod, nnod_near_1nod_weight, izero
+        close(org_filter_coef_code)
       else if (ifmt_3d_filter .eq. iflag_bin) then
-        write(filter_coef_code) nnod_near_1nod_weight
+        call open_append_binary_file(file_name)
+        call write_one_integer_b(nnod_near_1nod_weight)
+        call write_one_integer_b(izero)
+        call close_binary_file
       end if
 !
       end subroutine write_each_no_filter_coef
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_each_same_filter_coef(inod)
+      subroutine write_each_same_filter_coef(file_name, inod)
 !
+      use filter_coefs_file_IO
+!
+      character(len = kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: inod
 !
+!
       if (ifmt_3d_filter .eq. iflag_ascii) then
-        write(filter_coef_code,'(4i12)') inod,                          &
+        open(org_filter_coef_code, file=file_name,                      &
+     &       form='formatted', position='append')
+        call read_filter_geometry(org_filter_coef_code)
+        write(org_filter_coef_code,'(4i12)') inod,                      &
      &          (-nnod_near_1nod_weight), i_exp_level_1nod_weight
+        close(org_filter_coef_code)
       else if (ifmt_3d_filter .eq. iflag_bin) then
-        write(filter_coef_code) (-nnod_near_1nod_weight)
+        call open_append_binary_file(file_name)
+        call write_one_integer_b(-nnod_near_1nod_weight)
+        call write_one_integer_b(i_exp_level_1nod_weight)
+        call close_binary_file
       end if
 !
       end subroutine write_each_same_filter_coef
@@ -91,23 +110,11 @@
       use filter_IO_for_sorting
 !
       integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint) :: inod
 !
       if (ifmt_3d_filter .eq. iflag_ascii) then
-!
-        call skip_comment(character_4_read, id_file)
-        read(character_4_read,*)  inod, nnod_near_1nod_weight,          &
-     &                                  i_exp_level_1nod_weight
-!
         call read_filter_coef_4_each(id_file)
-!
       else if (ifmt_3d_filter .eq. iflag_bin) then
-!
-        read(id_file) nnod_near_1nod_weight, i_exp_level_1nod_weight
-        if (nnod_near_1nod_weight.gt. 0) then
-          call read_filter_coef_4_each_b(id_file)
-        end if
-!
+        call read_filter_coef_4_each_b
       end if
 !
       end subroutine read_each_filter_stack_coef

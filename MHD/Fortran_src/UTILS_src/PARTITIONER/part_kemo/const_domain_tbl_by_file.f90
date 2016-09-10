@@ -60,9 +60,9 @@
         mesh_file_head = mesh_head
         call sel_read_node_size(my_rank2)
 !
-        nnod_s_domin = nnod_s_domin + internal_node_dummy
+        nnod_s_domin = nnod_s_domin + nod_IO%internal_node
 !
-        call deallocate_neib_domain_IO
+        call deallocate_type_neib_id(comm_IO)
       end do
 !
       end subroutine count_nnod_whole_domain
@@ -97,14 +97,14 @@
       mesh_file_head = mesh_head
       call sel_read_geometry_size(my_rank2)
 !
-      do inod = 1, internal_node_dummy
-        inod_g = globalnodid_dummy(inod)
+      do inod = 1, nod_IO%internal_node
+        inod_g = nod_IO%inod_global(inod)
         IGROUP_nod(inod_g) = ip2
         id_glnode_org(inod_g) = inod_g
       end do
 !
-      call deallocate_node_data_dummy
-      call deallocate_neib_domain_IO
+      call dealloc_node_geometry_base(nod_IO)
+      call deallocate_type_neib_id(comm_IO)
 !
       end subroutine set_domain_grp_each_domain
 !

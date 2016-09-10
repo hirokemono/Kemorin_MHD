@@ -52,16 +52,10 @@
          y = yoff + (j-1)*ysize/(ny_all)
          z = zz(koff+k)
 
-         if ( iflag_data_f .eq. 1) then
-          write(l_out) node_id_gl, x, y, z
-         else
-          write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z
-         end if 
-
-!
-        enddo
-       enddo
-      enddo
+         write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z
+        end do
+       end do
+      end do
 !
       end subroutine set_sleeve_node_xmin
 !
@@ -96,16 +90,10 @@
          y = yoff + (j-1)*ysize/(ny_all)
          z = zz(koff+k)
 
-         if ( iflag_data_f .eq. 1) then
-          write(l_out) node_id_gl, x, y, z
-         else
-          write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z
-         end if 
-
-!
-        enddo
-       enddo
-      enddo
+         write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z
+        end do
+       end do
+      end do
 !
       end subroutine set_sleeve_node_xmax
 !
@@ -139,16 +127,10 @@
          y = ymin + (j-1)*ysize/(ny_all)
          z = zz(koff+k)
 
-         if ( iflag_data_f .eq. 1) then
-          write(l_out) node_id_gl, x, y, z
-         else
-          write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z
-         end if 
-
-!
-        enddo
-       enddo
-      enddo
+         write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z
+        end do
+       end do
+      end do
 !
       end subroutine set_sleeve_node_ymin
 !
@@ -183,16 +165,10 @@
          y = ymax + (j+ndepth-1)*ysize/(ny_all)
          z = zz(koff+k)
 
-         if ( iflag_data_f .eq. 1) then
-          write(l_out) node_id_gl, x, y, z
-         else
-          write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z
-         end if 
-
-!
-        enddo
-       enddo
-      enddo
+         write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z
+        end do
+       end do
+      end do
 !
       end subroutine set_sleeve_node_ymax
 !

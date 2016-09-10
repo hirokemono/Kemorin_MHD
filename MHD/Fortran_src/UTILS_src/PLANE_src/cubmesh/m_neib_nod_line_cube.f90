@@ -1,8 +1,6 @@
 !
 !      module m_neib_nod_line_cube
 !
-      module m_neib_nod_line_cube
-!
 !     written by H. Matsui
 !
 !  ----------------------------------------------------------------------
@@ -21,8 +19,9 @@
 !      subroutine allocate_neighboring_nod_line
 !      subroutine deallocate_neighboring_nod_line
 !      subroutine write_neighboring_nod_line(nf_type, FEM_elen))
-!      subroutine write_neighboring_nod_line_b(nf_type, FEM_elen))
 !        type(gradient_model_data_type), intent(inout) :: FEM_elen
+!
+      module m_neib_nod_line_cube
 !
       use m_precision
 !
@@ -101,13 +100,14 @@
 !
 !  ----------------------------------------------------------------------
 !
-      subroutine write_neighboring_nod_line(nf_type, FEM_elen)
+      subroutine write_neighboring_nod_line(pe1, nf_type, FEM_elen)
 !
       use t_filter_elength
       use filter_mom_type_data_IO
+      use set_parallel_file_name
       use write_line_filter_data
 !
-      integer(kind = kint), intent(in) :: nf_type
+      integer(kind = kint), intent(in) :: pe1, nf_type
       type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
       integer(kind = kint) :: i
@@ -126,6 +126,11 @@
 !
        call allocate_l_filtering_data(nodtot)
        call order_fiilter_nod_line
+!
+!
+       call add_int_suffix(pe1, filter_file_header, nb_name)
+       write(*,*) 'output ascii file: ', trim(nb_name)
+       open (nb_out, file=nb_name)
 !
        call write_filter_elen_data_type(nb_out, FEM_elen)
 !
@@ -152,6 +157,7 @@
           write(nb_out,*) '! distance in z-direction'
           write(nb_out,'(10i16)')                                       &
      &               (inod_f_dist_l(i,3),i = 1, num_l_filter(3))
+       close(nb_out)
 !
 !
        call deallocate_neighboring_nod_line
@@ -161,49 +167,6 @@
 !
 !  ----------------------------------------------------------------------
 !
-      subroutine write_neighboring_nod_line_b(nf_type, FEM_elen)
-!
-      use t_filter_elength
-      use filter_mom_type_data_IO_b
-      use write_line_filter_data
-!
-       integer(kind = kint), intent(in) :: nf_type
-      type(gradient_model_data_type), intent(inout) :: FEM_elen
-!
-!
-       i_st2 =  max(i_st-ndepth,1)
-       i_end2 = min(i_end+ndepth,nx)
-       j_st2 =  max(j_st-ndepth,1)
-       j_end2 = min(j_end+ndepth,ny)
-       k_st2 =  max(k_st-ndepth,1)
-       k_end2 = min(k_end+ndepth,nz)
-!
-       call allocate_neighboring_nod_line
-!
-       call set_fiilter_nod_line(nf_type)
-!
-       call allocate_l_filtering_data(nodtot)
-       call order_fiilter_nod_line
-!
-       call write_filter_elen_data_type_b(nb_out, FEM_elen)
-!
-       ndepth_l = ndepth
-       num_filter_l = ndep_1
-!
-       call write_line_filter_data_b(nb_out, nodtot)
-
-!
-!       write(nb_out) '!   distance '
-          write(nb_out) inod_f_dist_l
-          write(nb_out) inod_f_dist_l
-          write(nb_out) inod_f_dist_l
-!
-       call deallocate_neighboring_nod_line
-       call deallocate_l_filtering_data
-!
-       end subroutine write_neighboring_nod_line_b
-!
-!  ----------------------------------------------------------------------!
        subroutine set_fiilter_nod_line(nf_type)
 !
        integer(kind = kint), intent(in) :: nf_type

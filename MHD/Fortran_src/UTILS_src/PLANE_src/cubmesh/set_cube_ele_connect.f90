@@ -42,14 +42,9 @@
 !
 ! ..... write 2.2 element (connection)
 !
-      if ( iflag_data_f .eq. 1) then
-        write(l_out)   elmtot
-        write(l_out)  (elm_type,i=1,elmtot)
-      else
-        write(l_out,'(a)', advance='NO') hd_fem_elem()
-        write(l_out,'(10i16)')   elmtot
-        write(l_out,'(10i16)')  (elm_type,i=1,elmtot)
-      end if
+      write(l_out,'(a)', advance='NO') hd_fem_elem()
+      write(l_out,'(10i16)')   elmtot
+      write(l_out,'(10i16)')  (elm_type,i=1,elmtot)
 
       element_id = 0
 
@@ -69,13 +64,8 @@
          i7 = node_id_lc( i+1, j+1, k+1 )
          i8 = node_id_lc( i  , j+1, k+1 )
 
-         if ( iflag_data_f .eq. 1) then
-           write(l_out)  element_id_gl,                                 &
-     &    i1, i2, i3, i4, i5, i6, i7, i8
-         else
-           write(l_out,'(9i16)')  element_id_gl,                        &
-     &    i1, i2, i3, i4, i5, i6, i7, i8
-         end if
+         write(l_out,'(9i16)')  element_id_gl,                          &
+     &                          i1, i2, i3, i4, i5, i6, i7, i8
 !
         enddo
        enddo
@@ -103,14 +93,9 @@
 !
 ! ..... write 2.2 element (connection)
 !
-      if ( iflag_data_f .eq. 1) then
-        write(l_out)   elmtot
-        write(l_out)  (elm_type,i=1,elmtot)
-      else
-        write(l_out,'( a )') '! 2.2 element (connection)'
-        write(l_out,'(10i16)')   elmtot
-        write(l_out,'(10i16)')  (elm_type,i=1,elmtot)
-      end if
+      write(l_out,'( a )') '! 2.2 element (connection)'
+      write(l_out,'(10i16)')   elmtot
+      write(l_out,'(10i16)')  (elm_type,i=1,elmtot)
 
       element_id = 0
 
@@ -146,16 +131,9 @@
          i19 = edge_id_lc( i+1, j+1, k  , 3 )
          i20 = edge_id_lc( i  , j+1, k  , 3 )
 
-         if ( iflag_data_f .eq. 1) then
-           write(l_out)  element_id_gl,                                 &
-     &     i1 , i2 , i3 , i4 , i5 , i6 , i7 , i8 , i9 , i10,            &
-     &     i11, i12, i13, i14, i15, i16, i17, i18, i19, i20
-         else
-           write(l_out,'(21i16)')  element_id_gl,                       &
-     &     i1 , i2 , i3 , i4 , i5 , i6 , i7 , i8 , i9 , i10,            &
-     &     i11, i12, i13, i14, i15, i16, i17, i18, i19, i20
-         end if
-!
+         write(l_out,'(21i16)')  element_id_gl,                         &
+     &               i1 , i2 , i3 , i4 , i5 , i6 , i7 , i8 , i9 , i10,  &
+     &               i11, i12, i13, i14, i15, i16, i17, i18, i19, i20
         end do
        end do
       end do

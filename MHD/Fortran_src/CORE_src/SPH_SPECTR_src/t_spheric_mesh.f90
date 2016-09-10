@@ -17,7 +17,7 @@
       implicit none
 !
 !
-!> Structure for grid and comm table for spherical transform
+!> Structure of group data for spherical transform
       type sph_group_data
 !>         node group for grid space
         type(group_data) :: bc_rtp_grp

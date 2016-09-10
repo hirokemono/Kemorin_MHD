@@ -1,19 +1,24 @@
-!gz_element_connect_IO.f90
-!      module gz_element_connect_IO
+!> @file  gz_element_connect_IO.f90
+!!      module gz_element_connect_IO
+!!
+!! @author  H. Matsui
+!! @date Written in Oct., 2006
 !
-!     Written by H. Matsui on Oct., 2006
-!
-!
-!      subroutine write_element_info_gz
-!
-!      subroutine read_number_of_element_gz
-!      subroutine read_element_info_gz
+!> @brief Element data IO using zlib
+!!
+!!@verbatim
+!!      subroutine write_element_info_gz(ele_IO)
+!!
+!!      subroutine read_number_of_element_gz(ele_IO)
+!!      subroutine read_element_info_gz(ele_IO)
+!!        type(element_data), intent(inout) :: ele_IO
+!!@endverbatim
 !
       module gz_element_connect_IO
 !
       use m_precision
 !
-      use m_read_mesh_data
+      use t_geometry_data
       use skip_gz_comment
 !
       implicit none
@@ -26,64 +31,72 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_element_info_gz
+      subroutine write_element_info_gz(ele_IO)
+!
+      type(element_data), intent(inout) :: ele_IO
 !
       integer (kind = kint) :: i
 !
 !
-      write(textbuf,'(i16,a1)') numele_dummy, char(0)
+      write(textbuf,'(i16,a1)') ele_IO%numele, char(0)
       call gz_write_textbuf_w_lf
-      call write_gz_multi_int_10i8(numele_dummy, i_ele_dummy)
+      call write_gz_multi_int_10i8(ele_IO%numele, ele_IO%elmtyp)
 !
-      do i=1, numele_dummy
-        write(fmt_txt,'(a5,i3,a7)') '(i16,', nodelm_dummy(i), 'i16,a1)'
-        write(textbuf,fmt_txt) globalelmid_dummy(i),                    &
-     &         ie_dummy(i,1:nodelm_dummy(i)), char(0)
+      do i=1, ele_IO%numele
+        write(fmt_txt,'(a5,i3,a7)')                                     &
+     &         '(i16,', ele_IO%nodelm(i), 'i16,a1)'
+        write(textbuf,fmt_txt) ele_IO%iele_global(i),                   &
+     &         ele_IO%ie(i,1:ele_IO%nodelm(i)), char(0)
         call gz_write_textbuf_w_lf
       end do
 !
-      call deallocate_ele_info_dummy
+      call deallocate_ele_connect_type(ele_IO)
 !
       end subroutine write_element_info_gz
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine read_number_of_element_gz
+      subroutine read_number_of_element_gz(ele_IO)
+!
+      type(element_data), intent(inout) :: ele_IO
 !
 !
-      call skip_gz_comment_int(numele_dummy)
-!       write(*,*) numele_dummy
+      call skip_gz_comment_int(ele_IO%numele)
+!       write(*,*) ele_IO%numele
 !
       end subroutine read_number_of_element_gz
 !
 !------------------------------------------------------------------
 !
-       subroutine read_element_info_gz
+      subroutine read_element_info_gz(ele_IO)
 !
-       use set_nnod_4_ele_by_type
+      use set_nnod_4_ele_by_type
 !
-       integer (kind = kint) :: i
+      type(element_data), intent(inout) :: ele_IO
+!
+      integer (kind = kint) :: i
 !
 !
-       call allocate_ele_info_dummy
-       call read_gz_multi_int(numele_dummy, i_ele_dummy)
+       call alloc_element_types(ele_IO)
+       call read_gz_multi_int(ele_IO%numele, ele_IO%elmtyp)
 !
-       nnod_4_ele_dummy = 0
-       do i = 1, numele_dummy
-         call s_set_nnod_4_ele_by_type(i_ele_dummy(i), nodelm_dummy(i))
-         nnod_4_ele_dummy = max(nnod_4_ele_dummy,nodelm_dummy(i))
+       ele_IO%nnod_4_ele = 0
+       do i = 1, ele_IO%numele
+         call s_set_nnod_4_ele_by_type                                  &
+     &      (ele_IO%elmtyp(i), ele_IO%nodelm(i))
+         ele_IO%nnod_4_ele = max(ele_IO%nnod_4_ele,ele_IO%nodelm(i))
        end do
 !
-       call allocate_connect_dummy
+       call alloc_ele_connectivity(ele_IO)
 !
-       do i=1, numele_dummy
+       do i=1, ele_IO%numele
         call get_one_line_from_gz_f
-        read(textbuf,*) globalelmid_dummy(i),                           &
-     &                 ie_dummy(i,1:nodelm_dummy(i))
+        read(textbuf,*) ele_IO%iele_global(i),                          &
+     &                 ele_IO%ie(i,1:ele_IO%nodelm(i))
        end do
 !
-       end subroutine read_element_info_gz
+      end subroutine read_element_info_gz
 !
 !------------------------------------------------------------------
 !

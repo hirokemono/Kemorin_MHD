@@ -11,7 +11,6 @@
 !
 !
       character(len = kchara) :: org_filter_3d_head
-      character(len = kchara) :: org_filter_coef_head
       character(len = kchara) :: org_filter_elen_head
       character(len = kchara) :: org_filter_moms_head
 !

@@ -78,7 +78,7 @@
       use sum_normal_4_surf_group
       use const_jacobians_3d
       use set_ctl_gen_filter
-      use load_mesh_data
+      use mpi_load_mesh_data
 !
 !
       use calypso_mpi
@@ -99,8 +99,7 @@
 !  --  read geometry
 !
       if (iflag_debug.eq.1) write(*,*) 'input_mesh'
-      call input_mesh                                                   &
-     &   (my_rank, mesh_filter, group_filter,                           &
+      call mpi_input_mesh(mesh_filter, group_filter,                    &
      &    ele_filter%surf%nnod_4_surf, ele_filter%edge%nnod_4_edge)
 !
 !     --------------------- 
@@ -175,12 +174,12 @@
       use cal_element_size
       use set_parallel_file_name
       use filter_moment_IO_select
-      use filter_coef_IO
       use construct_filters
       use copy_mesh_structures
       use set_comm_table_4_IO
       use set_filter_geometry_4_IO
-      use filter_geometry_IO
+      use filter_coefs_file_IO
+      use filter_coefs_file_IO_b
       use check_num_fail_nod_commute
       use nod_phys_send_recv
 !
@@ -223,26 +222,18 @@
         call copy_filtering_geometry_to_IO
         call copy_comm_tbl_type_to_IO(my_rank, filtering_gen%comm)
 !
-        call add_int_suffix(my_rank, filter_coef_head, file_name)
-!
-        if (ifmt_3d_filter .eq. id_binary_file_fmt) then
-          open(filter_coef_code, file=file_name, form='unformatted')
-          call write_filter_geometry_b(filter_coef_code)
-        else
-          open(filter_coef_code, file=file_name, form='formatted')
-          call write_filter_geometry(filter_coef_code)
-        end if
+        filter_file_head = filter_coef_head
+        call sel_write_filter_geometry_file(my_rank)
 !
         num_failed_whole = 0
         num_failed_fluid = 0
 !
-        call select_const_filter                                        &
-    &      (mesh_filter%nod_comm, mesh_filter%node, mesh_filter%ele,    &
+        call select_const_filter(file_name,                             &
+    &       mesh_filter%nod_comm, mesh_filter%node, mesh_filter%ele,    &
     &       jac_3d_q, rhs_tbl_f, tbl_crs_f, rhs_mat_f, FEM_elen_f,      &
     &       dxidxs1, FEM_momenet1)
         call dealloc_jacobians_node(filter_dxi1)
 !
-        close(filter_coef_code)
 !
         call s_check_num_fail_nod_commute
 !

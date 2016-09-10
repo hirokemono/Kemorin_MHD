@@ -11,6 +11,7 @@
       use m_precision
       use m_machine_parameter
       use set_parallel_file_name
+      use skip_gz_comment
 !
       implicit none
 !
@@ -31,7 +32,7 @@
 !
       call add_gzip_extension(sph_cor_file_name, gzip_name)
       write(*,*) 'Write gzipped integration file: ', trim(gzip_name)
-      call open_wt_gzfile(gzip_name)
+      call open_wt_gzfile_f(gzip_name)
 !
       write(textbuf,'(a,a1)') '# ----- rotate.dat -----', char(0)
       call gz_write_textbuf_w_lf
@@ -80,7 +81,7 @@
           end do
         end do
       end do
-      call close_gzfile
+      call close_gzfile_f
 !
       call deallocate_int_sph_cor_IO
 !
@@ -102,7 +103,7 @@
 !
       if(iflag_debug.gt.0) write(*,*)                                   &
      &              'Read gzipped integration file: ', trim(gzip_name)
-      call open_rd_gzfile(gzip_name)
+      call open_rd_gzfile_f(gzip_name)
 !
       call skip_gz_comment_int(ltr_cor_IO)
       call allocate_int_sph_cor_IO
@@ -164,7 +165,7 @@
         end do
       end do
 !
-      call close_gzfile
+      call close_gzfile_f
 !
       end subroutine read_int_4_sph_coriolis_gz
 !

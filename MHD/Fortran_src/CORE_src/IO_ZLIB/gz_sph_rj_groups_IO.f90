@@ -34,8 +34,8 @@
       call allocate_grp_type_num(rj_grp_IO)
 !
       if (rj_grp_IO%num_grp .gt. 0) then
-        call read_group_stack_gz(rj_grp_IO%num_grp,                     &
-     &      rj_grp_IO%num_item, rj_grp_IO%istack_grp)
+        call read_gz_integer_stack(rj_grp_IO%num_grp,                   &
+     &      rj_grp_IO%istack_grp, rj_grp_IO%num_item)
 !
         call allocate_grp_type_item(rj_grp_IO)
         call read_group_item_gz(rj_grp_IO%num_grp,                      &
@@ -59,8 +59,8 @@
       call allocate_sf_grp_type_num(surf_grp_IO)
 !
       if (surf_grp_IO%num_grp .gt. 0) then
-        call read_group_stack_gz(surf_grp_IO%num_grp,                   &
-     &      surf_grp_IO%num_item, surf_grp_IO%istack_grp)
+        call read_gz_integer_stack(surf_grp_IO%num_grp,                 &
+     &      surf_grp_IO%istack_grp, surf_grp_IO%num_item)
 !
         call allocate_sf_grp_type_item(surf_grp_IO)
         call read_surface_group_item_gz(surf_grp_IO%num_grp,            &

@@ -3,6 +3,11 @@
 !
 !     Written by H. Matsui on July, 2007
 !
+!!      subroutine open_wt_gzfile_f(gzip_name)
+!!      subroutine open_qd_gzfile_f(gzip_name)
+!!      subroutine open_rd_gzfile_f(gzip_name)
+!!      subroutine close_gzfile_f
+!!
 !!      subroutine gz_write_textbuf_no_lf
 !!      subroutine gz_write_textbuf_w_lf
 !!
@@ -16,6 +21,7 @@
 !!      subroutine skip_gz_comment_chara_lint(chara_input, int8_input)
 !!
 !!      subroutine read_gz_multi_real(num, real_input)
+!!      subroutine read_gz_integer_stack(num, istack, ntot)
 !!      subroutine read_gz_multi_int(num, int_input)
 !!      subroutine read_gz_surf_group(is1, ntot, istack, item_sf)
 !!      subroutine read_gz_multi_int8(num, int8_input)
@@ -46,6 +52,60 @@
 !
        contains
 !
+!------------------------------------------------------------------
+!
+      subroutine open_wt_gzfile_f(gzip_name)
+!
+      use set_parallel_file_name
+!
+      character(len=kchara), intent(in) :: gzip_name
+      character(len=kchara) :: file_name
+!
+!
+      call add_null_character(gzip_name, file_name)
+      call open_wt_gzfile(file_name)
+!
+      end subroutine open_wt_gzfile_f
+!
+!------------------------------------------------------------------
+!
+      subroutine open_ad_gzfile_f(gzip_name)
+!
+      use set_parallel_file_name
+!
+      character(len=kchara), intent(in) :: gzip_name
+      character(len=kchara) :: file_name
+!
+!
+      call add_null_character(gzip_name, file_name)
+      call open_ad_gzfile(file_name)
+!
+      end subroutine open_ad_gzfile_f
+!
+!------------------------------------------------------------------
+!
+      subroutine open_rd_gzfile_f(gzip_name)
+!
+      use set_parallel_file_name
+!
+      character(len=kchara), intent(in) :: gzip_name
+      character(len=kchara) :: file_name
+!
+!
+      call add_null_character(gzip_name, file_name)
+      call open_rd_gzfile(file_name)
+!
+      end subroutine open_rd_gzfile_f
+!
+!------------------------------------------------------------------
+!
+      subroutine close_gzfile_f
+!
+      call close_gzfile
+!
+      end subroutine close_gzfile_f
+!
+!------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine gz_write_textbuf_no_lf
@@ -223,6 +283,23 @@
       end if
 !
       end subroutine read_gz_multi_real
+!
+!------------------------------------------------------------------
+!
+      subroutine read_gz_integer_stack(num, istack, ntot)
+!
+      integer(kind = kint), intent(in) :: num
+      integer(kind = kint), intent(inout) :: istack(0:num)
+      integer(kind = kint), intent(inout) :: ntot
+!
+      integer(kind = kint) :: ist
+!
+!
+      istack(0) = 0
+      call read_gz_multi_int(num, istack)
+      ntot = istack(num)
+!
+      end subroutine read_gz_integer_stack
 !
 !------------------------------------------------------------------
 !

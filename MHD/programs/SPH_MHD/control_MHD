@@ -35,6 +35,57 @@ begin MHD_control
     field_file_fmt_ctl          'ascii'
   end data_files_def
 !
+!
+!!!!! Define of resolution and domain decomposition!!!!!!!!!
+!
+!    See 'spherical_shell_ctl' in detail'
+!
+!      num_radial_domain_ctl:       # of subdomains in radius
+!      num_horizontal_domain_ctl:   # of subdomains in horizontal
+!
+!      sph_grid_type_ctl:  FEM grid type
+!      radial_grid_type_ctl:  Type of raidal grid
+!      truncation_level_ctl:  Truncation for spherical harmonics
+!      ngrid_meridonal_ctl:   Number of meridianal grids
+!      ngrid_zonal_ctl:       Number of zonal grids
+!      num_fluid_grid_ctl:    Number of raidal grid in fluid shell
+!
+!      fluid_core_size_ctl:   Size of fluid shell
+!      ICB_to_CMB_ratio_ctl:  Aspect ratio of inner and outer boundary
+!      Min_radius_ctl         Minimum radius of the domain
+!      Max_radius_ctl         Maximum radius of the domain
+!
+!      num_radial_layering_ctl:       Nnumber of groups in fluid shell
+!      num_meridional_layering_ctl:   Nnumber of groups in meridional direction
+!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!  file  spherical_shell_ctl  'ctl_shell'
+  begin spherical_shell_ctl
+    begin num_domain_ctl
+      num_radial_domain_ctl         2
+      num_horizontal_domain_ctl     4
+    end num_domain_ctl
+!
+    begin num_grid_sph
+      sph_grid_type_ctl       With_center
+!
+      truncation_level_ctl     31
+!
+      ngrid_meridonal_ctl      48
+      ngrid_zonal_ctl          96
+!
+      radial_grid_type_ctl   Chebyshev
+      num_fluid_grid_ctl     64
+      fluid_core_size_ctl   1.0
+      ICB_to_CMB_ratio_ctl  0.35
+      Min_radius_ctl        0.0
+      Max_radius_ctl        2.0
+!
+      num_radial_layering_ctl        4
+      num_meridional_layering_ctl    3
+    end num_grid_sph
+  end spherical_shell_ctl
+!
   begin model
 !!!!!  physical values!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! available valuables 

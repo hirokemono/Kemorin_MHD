@@ -7,29 +7,29 @@
 !!      subroutine alloc_zero_crs_smp_mat(np_smp, crs_smp)
 !!      subroutine alloc_crs_smp_mat(crs_smp)
 !!      subroutine dealloc_crs_smp_mat(crs_smp)
-!
-!      subroutine link_alloc_type_djo11_mat(comm_table, djo_tbl,        &
-!     &          solver)
-!      subroutine link_alloc_type_djo33_mat(comm_table, djo_tbl,        &
-!     &          solver)
-!      subroutine link_alloc_type_djoNN_mat(NB, comm_table, djo_tbl,    &
-!     &          solver)
-!      subroutine link_alloc_type_zero_mat(comm_table, djds_table,      &
-!     &          solver)
-!
-!      subroutine alloc_type_djo_num(np_smp, djo_tbl)
-!      subroutine alloc_type_djo_table(djo_tbl)
-!      subroutine alooc_djo_zero_connect_type(np_smp, djo_tbl)
-!
-!      subroutine alloc_type_djo11_mat(djo_tbl, mat11)
-!      subroutine alloc_type_djo33_mat(djo_tbl, mat33)
-!      subroutine alloc_type_djoNN_mat(NB, djo_tbl, matNN)
-!      subroutine alloc_type_djo_zero_mat(djo_tbl, mat)
-!
-!      subroutine dealloc_type_connect_4_djo(djo_tbl)
-!      subroutine dealloc_type_djo_mat(mat)
-!
-!      subroutine link_djo_connect_structs(djo_org, djo_tbl)
+!!
+!!      subroutine link_alloc_type_djo11_mat(comm_table, djo_tbl,        &
+!!     &          solver)
+!!      subroutine link_alloc_type_djo33_mat(comm_table, djo_tbl,        &
+!!     &          solver)
+!!      subroutine link_alloc_type_djoNN_mat(NB, comm_table, djo_tbl,    &
+!!     &          solver)
+!!      subroutine link_alloc_type_zero_mat(comm_table, djds_table,      &
+!!     &          solver)
+!!
+!!      subroutine alloc_type_djo_num(np_smp, djo_tbl)
+!!      subroutine alloc_type_djo_table(djo_tbl)
+!!      subroutine alooc_djo_zero_connect_type(np_smp, djo_tbl)
+!!
+!!      subroutine alloc_type_djo11_mat(djo_tbl, mat11)
+!!      subroutine alloc_type_djo33_mat(djo_tbl, mat33)
+!!      subroutine alloc_type_djoNN_mat(NB, djo_tbl, matNN)
+!!      subroutine alloc_type_djo_zero_mat(djo_tbl, mat)
+!!
+!!      subroutine dealloc_type_connect_4_djo(djo_tbl)
+!!      subroutine dealloc_type_djo_mat(mat)
+!!
+!!      subroutine link_djo_connect_structs(djo_org, djo_tbl)
 !
       module t_solver_ordered_crs
 !

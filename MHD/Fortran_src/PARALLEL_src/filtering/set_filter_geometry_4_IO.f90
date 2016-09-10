@@ -24,15 +24,15 @@
       subroutine copy_filtering_geometry_to_IO
 !
 !
-      numnod_dummy = nnod_filtering
-      internal_node_dummy = inter_nod_3dfilter
-      call allocate_node_data_dummy
+      nod_IO%numnod =        nnod_filtering
+      nod_IO%internal_node = inter_nod_3dfilter
+      call alloc_node_geometry_base(nod_IO)
 !
-      globalnodid_dummy(1:nnod_filtering)                               &
+      nod_IO%inod_global(1:nnod_filtering)                              &
      &      = id_globalnod_filtering(1:nnod_filtering)
-      xx_dummy(1:nnod_filtering,1) = xx_filtering(1:nnod_filtering,1)
-      xx_dummy(1:nnod_filtering,2) = xx_filtering(1:nnod_filtering,2)
-      xx_dummy(1:nnod_filtering,3) = xx_filtering(1:nnod_filtering,3)
+      nod_IO%xx(1:nnod_filtering,1) = xx_filtering(1:nnod_filtering,1)
+      nod_IO%xx(1:nnod_filtering,2) = xx_filtering(1:nnod_filtering,2)
+      nod_IO%xx(1:nnod_filtering,3) = xx_filtering(1:nnod_filtering,3)
 !
       end subroutine copy_filtering_geometry_to_IO
 !
@@ -42,17 +42,17 @@
       subroutine copy_filtering_geometry_from_IO
 !
 !
-      nnod_filtering = numnod_dummy
-      inter_nod_3dfilter = internal_node_dummy
+      nnod_filtering = nod_IO%numnod
+      inter_nod_3dfilter = nod_IO%internal_node
       call allocate_globalnod_filter
 !
       id_globalnod_filtering(1:nnod_filtering)                          &
-     &      = globalnodid_dummy(1:nnod_filtering)
-      xx_filtering(1:nnod_filtering,1) = xx_dummy(1:nnod_filtering,1)
-      xx_filtering(1:nnod_filtering,2) = xx_dummy(1:nnod_filtering,2)
-      xx_filtering(1:nnod_filtering,3) = xx_dummy(1:nnod_filtering,3)
+     &      = nod_IO%inod_global(1:nnod_filtering)
+      xx_filtering(1:nnod_filtering,1) = nod_IO%xx(1:nnod_filtering,1)
+      xx_filtering(1:nnod_filtering,2) = nod_IO%xx(1:nnod_filtering,2)
+      xx_filtering(1:nnod_filtering,3) = nod_IO%xx(1:nnod_filtering,3)
 !
-      call deallocate_node_data_dummy
+      call dealloc_node_geometry_base(nod_IO)
 !
       end subroutine copy_filtering_geometry_from_IO
 !

@@ -1,6 +1,10 @@
 !
 !      module cubed_sph_file_names
 !
+!      subroutine set_linear_mesh_file_names
+!      subroutine set_quad_mesh_file_names
+!      subroutine set_coarse_mesh_names(ic_level)
+!
       module cubed_sph_file_names
 !
       use m_precision
@@ -43,17 +47,13 @@
       private :: fn_q_mesh, fn_q_connect, fn_q_group, fn_transfer
       private :: izero
 !
-!      subroutine set_mesh_file_names
-!      subroutine set_quad_mesh_file_names
-!      subroutine set_coarse_mesh_names(ic_level)
-!
 !   --------------------------------------------------------------------
 !
       contains
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_mesh_file_names
+      subroutine set_linear_mesh_file_names
 !
       call add_int_suffix(izero, fh_l_mesh,    fn_l_mesh)
       call add_int_suffix(izero, fh_l_connect, fn_l_connect)
@@ -63,7 +63,7 @@
       open (id_l_connect,file=fn_l_connect)
       open (id_l_group,file=fn_l_group)
 !
-      end subroutine set_mesh_file_names
+      end subroutine set_linear_mesh_file_names
 !
 !   --------------------------------------------------------------------
 !

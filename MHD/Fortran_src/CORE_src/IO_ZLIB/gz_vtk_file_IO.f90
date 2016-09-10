@@ -22,6 +22,7 @@
       use m_constants
 !
       use gz_vtk_data_IO
+      use skip_gz_comment
 !
       implicit none
 !
@@ -52,12 +53,12 @@
       real(kind = kreal), intent(in) :: d_nod(nnod,ntot_comp)
 !
 !
-      call open_wt_gzfile(gzip_name)
+      call open_wt_gzfile_f(gzip_name)
       call write_gz_vtk_mesh(nnod, nele, nnod_ele, xx, ie)
       call write_gz_vtk_data(nnod, num_field, ntot_comp, ncomp_field,   &
      &    field_name, d_nod)
 !
-      call close_gzfile
+      call close_gzfile_f
 !
       end subroutine write_gz_vtk_file
 !
@@ -77,10 +78,10 @@
       real(kind = kreal), intent(in) :: d_nod(nnod,ntot_comp)
 !
 !
-      call open_wt_gzfile(gzip_name)
+      call open_wt_gzfile_f(gzip_name)
       call write_gz_vtk_data(nnod, num_field, ntot_comp, ncomp_field,   &
      &    field_name, d_nod)
-      call close_gzfile
+      call close_gzfile_f
 !
       end subroutine write_gz_vtk_phys
 !
@@ -99,9 +100,9 @@
       real(kind = kreal), intent(in) :: xx(nnod,3)
 !
 !
-      call open_wt_gzfile(gzip_name)
+      call open_wt_gzfile_f(gzip_name)
       call write_gz_vtk_mesh(nnod, nele, nnod_ele, xx, ie)
-      call close_gzfile
+      call close_gzfile_f
 !
       end subroutine write_gz_vtk_grid
 !

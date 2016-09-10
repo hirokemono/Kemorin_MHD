@@ -113,14 +113,15 @@
 !
       mesh_file_head = org_mesh_head
 !
-      max_gl_ele_newdomain = globalelmid_dummy(1)
-      do iele = 2, numele_dummy
+      max_gl_ele_newdomain = ele_IO%iele_global(1)
+      do iele = 2, ele_IO%numele
         max_gl_ele_newdomain                                            &
-     &         = max(max_gl_ele_newdomain,globalelmid_dummy(iele))
+     &         = max(max_gl_ele_newdomain,ele_IO%iele_global(iele))
       end do
 !
-      call deallocate_mesh_arrays
-      call deallocate_comm_item_IO
+      call deallocate_ele_connect_type(ele_IO)
+      call dealloc_node_geometry_base(nod_IO)
+      call deallocate_type_comm_tbl(comm_IO)
 !
       end subroutine count_nele_newdomain_para
 !
@@ -141,10 +142,10 @@
         mesh_file_head = target_mesh_head
         iflag_mesh_file_fmt = id_ascii_file_fmt
         call sel_read_geometry_size(my_rank_2nd)
-        call deallocate_node_data_dummy
-        call deallocate_neib_domain_IO
+        call dealloc_node_geometry_base(nod_IO)
+        call deallocate_type_neib_id(comm_IO)
 !
-        max_gl_ele_newdomain = max_gl_ele_newdomain + numele_dummy
+        max_gl_ele_newdomain = max_gl_ele_newdomain + ele_IO%numele
       end do
 !
       end subroutine count_nele_newdomain_single
@@ -185,12 +186,12 @@
       call sel_read_mesh(my_rank_2nd)
       mesh_file_head = org_mesh_head
 !
-      call deallocate_boundary_arrays
-      call deallocate_node_data_dummy
-      call deallocate_comm_item_IO
+      call deallocate_mesh_groups_IO
+      call dealloc_node_geometry_base(nod_IO)
+      call deallocate_type_comm_tbl(comm_IO)
 !
-      newmesh%node%numnod = numnod_dummy
-      newmesh%node%internal_node = internal_node_dummy
+      newmesh%node%numnod = nod_IO%numnod
+      newmesh%node%internal_node = nod_IO%internal_node
       call copy_ele_connect_from_IO(newmesh%ele)
       call set_3D_nnod_4_sfed_by_ele(newmesh%ele%nnod_4_ele,            &
      &                               new_ele_mesh%surf%nnod_4_surf,     &
@@ -309,9 +310,9 @@
         mesh_file_head = target_mesh_head
         call sel_read_mesh(my_rank_org)
 !
-        call deallocate_boundary_arrays
-        call deallocate_node_data_dummy
-        call deallocate_comm_item_IO
+        call deallocate_mesh_groups_IO
+        call dealloc_node_geometry_base(nod_IO)
+        call deallocate_type_comm_tbl(comm_IO)
 !
         call copy_ele_connect_from_IO(org_ele)
         call set_3D_nnod_4_sfed_by_ele(org_ele%nnod_4_ele,              &

@@ -1,9 +1,14 @@
 !filter_IO_for_newdomain
 !      module filter_IO_for_newdomain
 !
-      module filter_IO_for_newdomain
-!
 !     Written by H. Matsui on May, 2008
+!
+!      subroutine write_new_whole_filter_coef(file_name)
+!      subroutine write_new_fluid_filter_coef(file_name)
+!      subroutine read_filter_coef_4_newdomain(id_file)
+!      subroutine read_filter_coef_4_newdomain_b
+!
+      module filter_IO_for_newdomain
 !
       use m_precision
 !
@@ -15,12 +20,10 @@
 !
       implicit none
 !
-      character(len=255) :: character_4_read = ''
       integer(kind = kint), allocatable :: inod_near_nod_tmp(:)
       real(kind = kreal), allocatable :: filter_func_tmp(:)
       real(kind = kreal), allocatable :: filter_weight_tmp(:)
 !
-      private :: character_4_read
       private :: inod_near_nod_tmp
       private :: filter_func_tmp, filter_weight_tmp
 !
@@ -29,33 +32,30 @@
       private :: set_f_filter_item_4_newdomain
       private :: allocate_filter_coef_tmp, deallocate_filter_coef_tmp
 !
-!      subroutine write_new_whole_filter_coef
-!      subroutine write_new_fluid_filter_coef
-!      subroutine read_filter_coef_4_newdomain(id_file)
-!      subroutine read_filter_coef_4_newdomain_b(id_file)
-!
 !  ---------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine write_new_whole_filter_coef
+      subroutine write_new_whole_filter_coef(file_name)
 !
+      character(len = kchara), intent(in) :: file_name
       integer(kind = kint) :: inod
 !
 !
       do inod = 1, inter_nod_3dfilter
         call set_w_filter_item_4_IO(inod)
-        call write_each_filter_stack_coef(inod)
+        call write_each_filter_stack_coef(file_name, inod)
       end do
 !
       end subroutine write_new_whole_filter_coef
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine write_new_fluid_filter_coef
+      subroutine write_new_fluid_filter_coef(file_name)
 !
+      character(len = kchara), intent(in) :: file_name
       integer(kind = kint) :: inod
 !
 !
@@ -63,11 +63,11 @@
         call set_f_filter_item_4_IO(inod)
         if (nnod_near_1nod_weight .lt. 0) then
           nnod_near_1nod_weight = -nnod_near_1nod_weight
-          call write_each_same_filter_coef(inod)
+          call write_each_same_filter_coef(file_name, inod)
         else if (nnod_near_1nod_weight .eq. 0) then
-          call write_each_no_filter_coef(inod)
+          call write_each_no_filter_coef(file_name, inod)
         else
-          call write_each_filter_stack_coef(inod)
+          call write_each_filter_stack_coef(file_name, inod)
         end if
       end do
 !
@@ -81,7 +81,7 @@
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint) :: inod, itmp
+      integer(kind = kint) :: inod
 !
 !
       ntot_nod_near_w_filter = 0
@@ -89,10 +89,6 @@
       call allocate_whole_filter_stack(inter_nod_3dfilter)
 !
       do inod = 1, inter_nod_3dfilter
-        call skip_comment(character_4_read,id_file)
-        read(character_4_read,*) itmp,                                  &
-     &                nnod_near_1nod_weight, i_exp_level_1nod_weight
-!
         call read_filter_coef_4_each(id_file)
         call set_w_filter_item_4_newdomain(inod)
       end do
@@ -102,22 +98,16 @@
       call allocate_fluid_filter_coefs
 !
       do inod = 1, inter_nod_3dfilter
-        call skip_comment(character_4_read,id_file)
-        read(character_4_read,*) itmp,                                  &
-     &                nnod_near_1nod_weight, i_exp_level_1nod_weight
-!
         call read_filter_coef_4_each(id_file)
         call set_f_filter_item_4_newdomain(inod)
-!
       end do
 !
       end subroutine read_filter_coef_4_newdomain
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_filter_coef_4_newdomain_b(id_file)
+      subroutine read_filter_coef_4_newdomain_b
 !
-      integer(kind = kint), intent(in) :: id_file
       integer(kind = kint) :: inod
 !
 !
@@ -125,8 +115,7 @@
       call allocate_whole_filter_coefs
 !
       do inod = 1, inter_nod_3dfilter
-        read(id_file) nnod_near_1nod_weight, i_exp_level_1nod_weight
-        call read_filter_coef_4_each_b(id_file)
+        call read_filter_coef_4_each_b
         call set_w_filter_item_4_newdomain(inod)
       end do
 !
@@ -135,8 +124,7 @@
       call allocate_fluid_filter_coefs
 !
       do inod = 1, inter_nod_3dfilter
-        read(id_file) nnod_near_1nod_weight, i_exp_level_1nod_weight
-        call read_filter_coef_4_each_b(id_file)
+        call read_filter_coef_4_each_b
         call set_f_filter_item_4_newdomain(inod)
       end do
 !

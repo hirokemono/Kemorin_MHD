@@ -131,14 +131,14 @@
 !  ---------------------------------------------
 !
       my_rank_IO = my_rank
-      num_neib_domain_IO = 0
+      comm_IO%num_neib = 0
 !
       call add_int_suffix(my_rank, mesh_sph_file_head, mesh_file_name)
       write(*,*) 'ascii mesh file: ', trim(mesh_file_name)
       open (input_file_code, file = mesh_file_name,                     &
      &      form = 'formatted')
 !
-      num_neib_domain_IO = 0
+      comm_IO%num_neib = 0
       call copy_node_sph_to_IO(mesh%node)
 !
       call output_node_sph_geometry
@@ -150,7 +150,7 @@
       open (input_file_code, file = mesh_file_name,                     &
      &      form = 'formatted')
 !
-      num_neib_domain_IO = 0
+      comm_IO%num_neib = 0
       call copy_node_cyl_to_IO(mesh%node)
 !
       call output_node_cyl_geometry

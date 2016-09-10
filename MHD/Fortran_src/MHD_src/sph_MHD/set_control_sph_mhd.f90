@@ -8,7 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine set_control_4_SPH_MHD                                &
-!!     &         (rj_fld, sph_file_param, sph_fst_IO, pwr)
+!!     &         (sph_gen, rj_fld, sph_file_param, sph_fst_IO, pwr)
+!!        type(sph_grids), intent(inout) :: sph_gen
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(field_IO_params), intent(inout) :: sph_file_param
 !!        type(field_IO), intent(inout) :: sph_fst_IO
@@ -31,16 +32,20 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_control_4_SPH_MHD                                  &
-     &         (rj_fld, sph_file_param, sph_fst_IO, pwr)
+     &         (sph_gen, rj_fld, sph_file_param, sph_fst_IO, pwr)
 !
       use m_control_params_2nd_files
+      use m_spheric_global_ranks
       use m_ucd_data
+      use m_read_ctl_gen_sph_shell
       use sph_mhd_rms_IO
 !
+      use t_spheric_parameter
       use t_phys_data
       use t_rms_4_sph_spectr
       use t_field_data_IO
 !
+      use gen_sph_grids_modes
       use set_control_platform_data
       use set_ctl_parallel_platform
       use set_control_4_model
@@ -55,14 +60,18 @@
       use set_control_4_magne
       use set_control_4_composition
       use set_control_4_pickup_sph
+      use set_ctl_gen_shell_grids
       use check_read_bc_file
 !
       use check_dependency_for_MHD
 !
+      type(sph_grids), intent(inout) :: sph_gen
       type(phys_data), intent(inout) :: rj_fld
       type(field_IO_params), intent(inout) :: sph_file_param
       type(field_IO), intent(inout) :: sph_fst_IO
       type(sph_mean_squares), intent(inout) :: pwr
+!
+      integer(kind = kint) :: ierr
 !
 !
 !   set parameters for data files
@@ -71,6 +80,7 @@
       call check_control_num_domains
       call set_control_smp_def(my_rank)
       call set_control_mesh_def
+      call set_FEM_mesh_switch_4_SPH(iflag_output_mesh)
       call set_control_sph_mesh(sph_file_param)
       call set_control_restart_file_def(sph_fst_IO)
       call set_control_MHD_field_file
@@ -79,6 +89,14 @@
       call set_control_org_udt_file_def
 !
       call s_set_control_4_model
+!
+!   set spherical shell parameters
+!
+      iflag_make_SPH = i_sph_shell
+      if(iflag_make_SPH .gt. 0) then
+        if (iflag_debug.gt.0) write(*,*) 'set_control_4_shell_grids'
+        call set_control_4_shell_grids(nprocs, sph_gen, ierr)
+      end if
 !
 !   set forces
 !

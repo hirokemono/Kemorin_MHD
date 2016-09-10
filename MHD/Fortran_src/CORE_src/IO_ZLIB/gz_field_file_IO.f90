@@ -47,14 +47,14 @@
         write(*,*) 'Write gzipped field file: ', trim(gzip_name)
       end if
 !
-      call open_wt_gzfile(gzip_name)
+      call open_wt_gzfile_f(gzip_name)
 !
       call write_gz_step_data(my_rank)
       call write_gz_field_data                                          &
      &   (fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
      &    fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO)
 !
-      call close_gzfile
+      call close_gzfile_f
 !
       end subroutine write_gz_step_field_file
 !
@@ -71,7 +71,7 @@
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read gzipped data file: ', trim(gzip_name)
 !
-      call open_rd_gzfile(gzip_name)
+      call open_rd_gzfile_f(gzip_name)
 !
       call skip_gz_comment_int2(fld_IO%nnod_IO, fld_IO%num_field_IO)
       call alloc_phys_name_IO(fld_IO)
@@ -85,7 +85,7 @@
      &   (fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
      &    fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO)
 !
-      call close_gzfile
+      call close_gzfile_f
 !
       end subroutine read_alloc_gz_field_file
 !
@@ -105,7 +105,7 @@
         write(*,*) 'Read gzipped field file: ', trim(gzip_name)
       end if
 !
-      call open_rd_gzfile(gzip_name)
+      call open_rd_gzfile_f(gzip_name)
 !
       call read_gz_step_data(id_rank)
       call skip_gz_comment_int2(fld_IO%nnod_IO, fld_IO%num_field_IO)
@@ -114,7 +114,7 @@
      &   (fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
      &    fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO)
 !
-      call close_gzfile
+      call close_gzfile_f
 !
       end subroutine read_gz_step_field_file
 !
@@ -134,7 +134,7 @@
         write(*,*) 'Read gzipped field file: ', trim(gzip_name)
       end if
 !
-      call open_rd_gzfile(gzip_name)
+      call open_rd_gzfile_f(gzip_name)
 !
       call read_gz_step_data(id_rank)
       call skip_gz_comment_int2(fld_IO%nnod_IO, fld_IO%num_field_IO)
@@ -149,7 +149,7 @@
      &   (fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
      &    fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO)
 !
-      call close_gzfile
+      call close_gzfile_f
 !
       end subroutine read_alloc_gz_step_field_file
 !
@@ -169,7 +169,7 @@
         write(*,*) 'Read gzipped field file: ', trim(gzip_name)
       end if
 !
-      call open_rd_gzfile(gzip_name)
+      call open_rd_gzfile_f(gzip_name)
 !
       call read_gz_step_data(id_rank)
       call skip_gz_comment_int2(fld_IO%nnod_IO, fld_IO%num_field_IO)
@@ -177,7 +177,7 @@
       call alloc_phys_name_IO(fld_IO)
       call read_gz_multi_int(fld_IO%num_field_IO, fld_IO%num_comp_IO)
 !
-      call close_gzfile
+      call close_gzfile_f
 !
       call cal_istack_phys_comp_IO(fld_IO)
 !

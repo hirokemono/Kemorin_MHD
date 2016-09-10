@@ -32,6 +32,7 @@
 !
       use set_parallel_file_name
       use gz_itp_table_data_IO
+      use skip_gz_comment
 !
       implicit none
 !
@@ -54,14 +55,14 @@
 !
 !
       call add_gzip_extension(file_name, gzip_name)
-      call open_wt_gzfile(gzip_name)
+      call open_wt_gzfile_f(gzip_name)
 !
       call write_gz_itp_table_dest(my_rank, IO_itp_dest)
 !
       call write_gz_itp_table_org(my_rank, IO_itp_org)
       call write_gz_itp_coefs_org(IO_itp_org)
 !
-      call close_gzfile
+      call close_gzfile_f
 !
       if (IO_itp_org%num_dest_domain .gt. 0) then
         call dealloc_itp_table_org(IO_itp_org)
@@ -91,7 +92,7 @@
 !
 !
       call add_gzip_extension(file_name, gzip_name)
-      call open_rd_gzfile(gzip_name)
+      call open_rd_gzfile_f(gzip_name)
 !
 !        write(*,*) 'read_gz_itp_domain_dest', trim(file_name)
       call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest)
@@ -104,7 +105,7 @@
       call read_gz_itp_table_org(IO_itp_org)
       call read_gz_itp_coefs_org(IO_itp_org)
 !
-      call close_gzfile
+      call close_gzfile_f
 !
       ierr = 0
       if (n_rank_file .ne. my_rank) ierr = n_rank_file
@@ -125,11 +126,11 @@
 !
 !
       call add_gzip_extension(file_name, gzip_name)
-      call open_wt_gzfile(gzip_name)
+      call open_wt_gzfile_f(gzip_name)
 !
       call write_gz_itp_table_dest(my_rank, IO_itp_dest)
       call write_gz_itp_coefs_dest(IO_itp_dest, IO_itp_c_dest)
-      call close_gzfile
+      call close_gzfile_f
 !
       if (IO_itp_dest%num_org_domain .gt. 0) then
         call dealloc_itp_coef_dest(IO_itp_c_dest)
@@ -156,12 +157,12 @@
 !
 !
       call add_gzip_extension(file_name, gzip_name)
-      call open_rd_gzfile(gzip_name)
+      call open_rd_gzfile_f(gzip_name)
 !
       call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest)
       call read_gz_itp_table_dest(IO_itp_dest)
       call read_gz_itp_coefs_dest(IO_itp_dest, IO_itp_c_dest)
-      call close_gzfile
+      call close_gzfile_f
 !
       ierr = 0
       if (n_rank_file .ne. my_rank) ierr = ierr_file
@@ -183,11 +184,11 @@
 !
 !
       call add_gzip_extension(file_name, gzip_name)
-      call open_rd_gzfile(gzip_name)
+      call open_rd_gzfile_f(gzip_name)
 !
       call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest)
       call read_gz_itp_table_dest(IO_itp_dest)
-      call close_gzfile
+      call close_gzfile_f
 !
       ierr = 0
       if (n_rank_file .ne. my_rank) ierr = ierr_file
@@ -209,10 +210,10 @@
 !
 !
       call add_gzip_extension(file_name, gzip_name)
-      call open_rd_gzfile(gzip_name)
+      call open_rd_gzfile_f(gzip_name)
 !
       call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest)
-      call close_gzfile
+      call close_gzfile_f
 !
       ierr = 0
       if (n_rank_file .ne. my_rank) ierr = ierr_file

@@ -277,10 +277,10 @@
      &       .eq. iflag_single+id_binary_file_fmt) then
         call write_step_field_file_mpi_b                                &
      &     (file_name, nprocs_in, id_rank, fld_IO)
-      else if(fld_IO%iflag_file_fmt .eq. id_binary_file_fmt) then
-        call write_step_field_file_b(file_name, id_rank, fld_IO)
 !
 #ifdef ZLIB_IO
+      else if(fld_IO%iflag_file_fmt .eq. id_binary_file_fmt) then
+        call write_step_field_file_b(file_name, id_rank, fld_IO)
       else if(fld_IO%iflag_file_fmt                                     &
      &       .eq. iflag_single+id_gzip_bin_file_fmt) then
         call gz_write_step_fld_file_mpi_b                               &
@@ -328,10 +328,10 @@
      &       .eq. iflag_single+id_binary_file_fmt) then
         call read_step_field_file_mpi_b                                 &
      &     (file_name, nprocs_in, id_rank, fld_IO)
-      else if (fld_IO%iflag_file_fmt .eq. id_binary_file_fmt) then
-        call read_step_field_file_b(file_name, id_rank, fld_IO)
 !
 #ifdef ZLIB_IO
+      else if (fld_IO%iflag_file_fmt .eq. id_binary_file_fmt) then
+        call read_step_field_file_b(file_name, id_rank, fld_IO)
       else if(fld_IO%iflag_file_fmt                                     &
      &       .eq. iflag_single+id_gzip_bin_file_fmt) then
         call gz_read_step_field_file_mpi_b                              &
@@ -374,10 +374,10 @@
      &       .eq. iflag_single+id_binary_file_fmt) then
         call read_alloc_stp_fld_file_mpi_b                              &
      &     (file_name, nprocs_in, id_rank, fld_IO)
-      else if (fld_IO%iflag_file_fmt .eq. id_binary_file_fmt) then
-        call read_and_allocate_step_field_b(file_name, id_rank, fld_IO)
 !
 #ifdef ZLIB_IO
+      else if (fld_IO%iflag_file_fmt .eq. id_binary_file_fmt) then
+        call read_and_allocate_step_field_b(file_name, id_rank, fld_IO)
       else if(fld_IO%iflag_file_fmt                                     &
      &       .eq. iflag_single+id_gzip_bin_file_fmt) then
         call gz_rd_alloc_st_fld_file_mpi_b                              &
@@ -420,10 +420,10 @@
      &       .eq. iflag_single+id_binary_file_fmt) then
         call read_alloc_stp_fld_head_mpi_b                              &
      &     (file_name, nprocs_in, id_rank, fld_IO)
-      else if (fld_IO%iflag_file_fmt .eq. id_binary_file_fmt) then
-        call read_and_allocate_step_head_b(file_name, id_rank, fld_IO)
 !
 #ifdef ZLIB_IO
+      else if (fld_IO%iflag_file_fmt .eq. id_binary_file_fmt) then
+        call read_and_allocate_step_head_b(file_name, id_rank, fld_IO)
       else if(fld_IO%iflag_file_fmt                                     &
      &       .eq. iflag_single+id_gzip_bin_file_fmt) then
         call gz_rd_alloc_st_fld_head_mpi_b                              &

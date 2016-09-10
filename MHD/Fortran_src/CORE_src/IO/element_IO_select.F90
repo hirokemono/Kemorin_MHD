@@ -22,10 +22,28 @@
 !
       implicit none
 !
+      private :: set_element_fname
+!
 !------------------------------------------------------------------
 !
        contains
 !
+!------------------------------------------------------------------
+!
+      subroutine set_element_fname(my_rank)
+!
+      use m_file_format_switch
+      use set_mesh_file_names
+!
+      integer(kind = kint), intent(in) :: my_rank
+!
+!
+      call set_mesh_file_name(mesh_ele_file_head, id_ascii_file_fmt,    &
+     &    my_rank, mesh_file_name)
+!
+      end subroutine set_element_fname
+!
+!------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine sel_output_element_file(my_rank)

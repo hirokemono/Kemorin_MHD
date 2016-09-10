@@ -4,16 +4,16 @@
 !     Written by H. Matsui on Mar., 2008
 !
 !      subroutine read_filter_neib_4_sort(id_file)
-!      subroutine read_filter_neib_4_sort_b(id_file)
 !
 !      subroutine read_filter_coef_4_sort(id_file)
-!      subroutine read_filter_coef_4_sort_b(id_file, filter)
 !
 !      subroutine write_filter_coef_4_each(id_file)
-!      subroutine write_filter_coef_4_each_b(id_file)
-!
 !      subroutine read_filter_coef_4_each(id_file)
-!      subroutine read_filter_coef_4_each_b(id_file)
+!
+!      subroutine read_filter_neib_4_sort_b
+!      subroutine read_filter_coef_4_sort_b(filter)
+!      subroutine write_filter_coef_4_each_b
+!      subroutine read_filter_coef_4_each_b
 !
       module filter_IO_for_sorting
 !
@@ -22,6 +22,7 @@
       use m_nod_filter_comm_table
       use m_filter_coefs
       use m_filter_func_4_sorting
+      use binary_IO
 !
       implicit none
 !
@@ -76,51 +77,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_filter_neib_4_sort_b(id_file)
-!
-      integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint) :: inod, itmp, jnod
-!
-!
-      nmax_nod_near_all_w = 0
-      nmax_ele_near_all_w = 0
-      call allocate_filter_num_sort_IO
-      call allocate_whole_filter_stack(inter_nod_3dfilter)
-      call allocate_fluid_filter_stack(inter_nod_3dfilter)
-!
-      do inod = 1, inter_nod_3dfilter
-        read(id_file) itmp, nnod_near_nod_w_filter(inod),               &
-     &                          i_exp_level_whole_nod(inod)
-        nmax_nod_near_all_w                                             &
-     &        = max(nmax_nod_near_all_w,nnod_near_nod_w_filter(inod))
-        read(id_file) (itmp,jnod=1,nnod_near_nod_w_filter(inod))
-      end do
-!
-      do inod = 1, inter_nod_3dfilter
-        read(id_file) itmp, nnod_near_nod_f_filter(inod),               &
-     &                          i_exp_level_fluid_nod(inod)
-        nmax_nod_near_all_w                                             &
-     &        = max(nmax_nod_near_all_w,nnod_near_nod_f_filter(inod))
-        read(id_file) (itmp,jnod=1,nnod_near_nod_f_filter(inod))
-      end do
-!
-      end subroutine read_filter_neib_4_sort_b
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
       subroutine read_filter_coef_4_sort(id_file)
 !
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint) :: inod, icou, itmp
+      integer(kind = kint) :: inod, icou
 !
 !
       do inod = 1, inter_nod_3dfilter
-        call skip_comment(character_4_read,id_file)
-        read(character_4_read,*) itmp, nnod_near_1nod_weight, itmp
-!
         call read_filter_coef_4_each(id_file)
 !
         icou = itbl_near_nod_whole(inod)
@@ -128,9 +93,6 @@
       end do
 !
         do inod = 1, inter_nod_3dfilter
-          call skip_comment(character_4_read,id_file)
-          read(character_4_read,*) itmp, nnod_near_1nod_weight, itmp
-!
           call read_filter_coef_4_each(id_file)
 !
           icou = itbl_near_nod_fluid(inod)
@@ -140,39 +102,6 @@
 !
       end subroutine read_filter_coef_4_sort
 !
-!  ---------------------------------------------------------------------
-!
-      subroutine read_filter_coef_4_sort_b(id_file, filter)
-!
-      use t_filter_coefficients
-!
-      integer(kind = kint), intent(in) :: id_file
-      type(filter_coefficients_type), intent(in) :: filter
-      integer(kind = kint) :: inod, icou
-!
-!
-      do inod = 1, inter_nod_3dfilter
-        read(id_file) nnod_near_1nod_weight, i_exp_level_1nod_weight
-        call read_filter_coef_4_each_b(id_file)
-!
-        icou = itbl_near_nod_whole(inod)
-        call set_filtering_item_4_sorting(icou)
-!
-      end do
-!
-      do inod = 1, inter_nod_3dfilter
-        read(id_file) nnod_near_1nod_weight, i_exp_level_1nod_weight
-        if (icou .le. filter%ntot_nod) then
-          call read_filter_coef_4_each_b(id_file)
-!
-          icou = itbl_near_nod_fluid(inod)
-          call set_filtering_item_4_sorting(icou)
-        end if
-      end do
-!
-      end subroutine read_filter_coef_4_sort_b
-!
-!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine set_filtering_item_4_sorting(icou)
@@ -211,26 +140,20 @@
       end subroutine write_filter_coef_4_each
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine write_filter_coef_4_each_b(id_file)
-!
-      integer(kind = kint), intent(in) :: id_file
-!
-      if (nnod_near_1nod_weight .gt. 0) then
-        write(id_file) inod_near_1nod_weight(1:nnod_near_1nod_weight)
-        write(id_file) filter_1nod(1:nnod_near_1nod_weight)
-        write(id_file) weight_1nod(1:nnod_near_1nod_weight)
-      end if
-!
-      end subroutine write_filter_coef_4_each_b
-!
-!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine read_filter_coef_4_each(id_file)
 !
+      use skip_comment_f
+!
       integer(kind = kint), intent(in) :: id_file
+!
       integer(kind = kint) :: inum, itmp
+      character(len=255) :: character_4_read = ''
+!
+      call skip_comment(character_4_read, id_file)
+      read(character_4_read,*)  itmp, nnod_near_1nod_weight,            &
+     &                                  i_exp_level_1nod_weight
 !
       if (nnod_near_1nod_weight.gt. 0) then
         do inum = 1, nnod_near_1nod_weight
@@ -243,16 +166,96 @@
       end subroutine read_filter_coef_4_each
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
-      subroutine read_filter_coef_4_each_b(id_file)
+      subroutine read_filter_neib_4_sort_b
 !
-      integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint) :: inod, ioffset
 !
-      if (nnod_near_1nod_weight.gt. 0) then
-        read(id_file) inod_near_1nod_weight(1:nnod_near_1nod_weight)
-        read(id_file) filter_1nod(1:nnod_near_1nod_weight)
-        read(id_file) weight_1nod(1:nnod_near_1nod_weight)
-      end if
+!
+      nmax_nod_near_all_w = 0
+      nmax_ele_near_all_w = 0
+      call allocate_filter_num_sort_IO
+      call allocate_whole_filter_stack(inter_nod_3dfilter)
+      call allocate_fluid_filter_stack(inter_nod_3dfilter)
+!
+      do inod = 1, inter_nod_3dfilter
+        call read_one_integer_b(nnod_near_nod_w_filter(inod))
+        call read_one_integer_b(i_exp_level_whole_nod(inod))
+!
+        ioffset = nnod_near_nod_w_filter(inod) * (kint + 2*kreal)
+        call seek_forward_binary_file(ioffset)
+        nmax_nod_near_all_w                                             &
+     &        = max(nmax_nod_near_all_w,nnod_near_nod_w_filter(inod))
+      end do
+!
+      do inod = 1, inter_nod_3dfilter
+        call read_one_integer_b(nnod_near_nod_f_filter(inod))
+        call read_one_integer_b(i_exp_level_fluid_nod(inod))
+!
+        ioffset = nnod_near_nod_f_filter(inod) * (kint + 2*kreal)
+        call seek_forward_binary_file(ioffset)
+        nmax_nod_near_all_w                                             &
+     &        = max(nmax_nod_near_all_w,nnod_near_nod_f_filter(inod))
+      end do
+!
+      end subroutine read_filter_neib_4_sort_b
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine read_filter_coef_4_sort_b(filter)
+!
+      use t_filter_coefficients
+!
+      type(filter_coefficients_type), intent(in) :: filter
+      integer(kind = kint) :: inod, icou
+!
+!
+      do inod = 1, inter_nod_3dfilter
+        call read_filter_coef_4_each_b
+!
+        icou = itbl_near_nod_whole(inod)
+        call set_filtering_item_4_sorting(icou)
+      end do
+!
+      do inod = 1, inter_nod_3dfilter
+        if (icou .le. filter%ntot_nod) then
+          call read_filter_coef_4_each_b
+!
+          icou = itbl_near_nod_fluid(inod)
+          call set_filtering_item_4_sorting(icou)
+        end if
+      end do
+!
+      end subroutine read_filter_coef_4_sort_b
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine write_filter_coef_4_each_b
+!
+!
+      call write_one_integer_b(nnod_near_1nod_weight)
+      call write_one_integer_b(i_exp_level_1nod_weight)
+!
+      call write_mul_integer_b                                          &
+     &   (nnod_near_1nod_weight, inod_near_1nod_weight)
+      call write_1d_vector_b(nnod_near_1nod_weight, filter_1nod)
+      call write_1d_vector_b(nnod_near_1nod_weight, weight_1nod)
+!
+      end subroutine write_filter_coef_4_each_b
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine read_filter_coef_4_each_b
+!
+!
+      call read_one_integer_b(nnod_near_1nod_weight)
+      call read_one_integer_b(i_exp_level_1nod_weight)
+!
+      call read_mul_integer_b                                           &
+     &   (nnod_near_1nod_weight, inod_near_1nod_weight)
+      call read_1d_vector_b(nnod_near_1nod_weight, filter_1nod)
+      call read_1d_vector_b(nnod_near_1nod_weight, weight_1nod)
 !
       end subroutine read_filter_coef_4_each_b
 !

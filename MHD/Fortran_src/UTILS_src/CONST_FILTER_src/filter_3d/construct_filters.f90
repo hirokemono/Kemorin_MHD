@@ -3,8 +3,8 @@
 !
 !     Written by H. Matsui on Mar., 2008
 !
-!!      subroutine select_const_filter(nod_comm, node, ele, jac_3d_q,   &
-!!     &          rhs_tbl, tbl_crs, rhs_mat, FEM_elen,                  &
+!!      subroutine select_const_filter(file_name, nod_comm, node, ele,  &
+!!     &          jac_3d_q, rhs_tbl, tbl_crs, rhs_mat, FEM_elen,        &
 !!     &          dxidxs, FEM_moments)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -39,6 +39,7 @@
       use cal_element_size
       use cal_filter_moms_ele_by_elen
       use expand_filter_area_4_1node
+      use binary_IO
 !
       implicit none
 !
@@ -53,11 +54,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine select_const_filter(nod_comm, node, ele, jac_3d_q,     &
-     &          rhs_tbl, tbl_crs, rhs_mat, FEM_elen,                    &
+      subroutine select_const_filter(file_name, nod_comm, node, ele,    &
+     &          jac_3d_q, rhs_tbl, tbl_crs, rhs_mat, FEM_elen,          &
      &          dxidxs, FEM_moments)
 !
 !
+      character(len=kchara), intent(in) :: file_name
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -72,8 +74,8 @@
 !
       if (iflag_tgt_filter_type .eq. 1)  then
         if (iflag_debug.eq.1) write(*,*) 'const_commutative_filter'
-        call const_commutative_filter(node, ele, jac_3d_q,              &
-     &      tbl_crs, rhs_mat, FEM_elen, FEM_moments)
+        call const_commutative_filter(file_name, node, ele,             &
+     &      jac_3d_q, tbl_crs, rhs_mat, FEM_elen, FEM_moments)
 !
       else if (iflag_tgt_filter_type .eq. -1) then
         if (iflag_debug.eq.1) write(*,*) 'correct_commutative_filter'
@@ -90,8 +92,9 @@
       else if (iflag_tgt_filter_type.ge.2                               &
      &     .and. iflag_tgt_filter_type.le.4) then
         if (iflag_debug.eq.1) write(*,*) 'const_simple_filter'
-        call const_simple_filter(nod_comm, node, ele, jac_3d_q,         &
-     &      rhs_tbl, tbl_crs, rhs_mat, FEM_elen, dxidxs, FEM_moments)
+        call const_simple_filter(file_name, nod_comm, node, ele,        &
+     &      jac_3d_q, rhs_tbl, tbl_crs, rhs_mat, FEM_elen,              &
+     &      dxidxs, FEM_moments)
       end if
 !
       end subroutine select_const_filter
@@ -100,11 +103,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine const_commutative_filter                               &
-     &         (node, ele, jac_3d_q, tbl_crs, rhs_mat,                  &
+     &         (file_name, node, ele, jac_3d_q, tbl_crs, rhs_mat,       &
      &          FEM_elen, FEM_moments)
 !
       use cal_filter_func_node
 !
+      character(len=kchara), intent(in) :: file_name
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(CRS_matrix_connect), intent(inout) :: tbl_crs
@@ -132,11 +136,12 @@
 !  ---------------------------------------------------
 !
       if(iflag_debug.eq.1)  write(*,*) 'const_commute_filter_coefs'
-      call const_commute_filter_coefs                                   &
-     &   (node, ele, jac_3d_q, FEM_elen, FEM_moments%mom_nod(1))
+      call const_commute_filter_coefs(file_name, node, ele,             &
+     &    jac_3d_q, FEM_elen, FEM_moments%mom_nod(1))
 !
       if(iflag_debug.eq.1)  write(*,*)'const_fluid_filter_coefs'
-      call const_fluid_filter_coefs(node, ele, jac_3d_q, FEM_elen)
+      call const_fluid_filter_coefs                                     &
+     &   (file_name, node, ele, jac_3d_q, FEM_elen)
 !
       call finalize_4_cal_fileters
 !
@@ -146,15 +151,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine const_simple_filter                                    &
-     &         (nod_comm, node, ele, jac_3d_q, rhs_tbl, tbl_crs,        &
-     &          rhs_mat, FEM_elen, dxidxs, FEM_moments)
+      subroutine const_simple_filter(file_name, nod_comm, node, ele,    &
+     &          jac_3d_q, rhs_tbl, tbl_crs, rhs_mat, FEM_elen,          &
+     &          dxidxs, FEM_moments)
 !
       use cal_1st_diff_deltax_4_nod
       use cal_filter_func_node
       use cal_diff_elesize_on_ele
-      use filter_geometry_IO
+      use filter_coefs_file_IO
 !
+      character(len=kchara), intent(in) :: file_name
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -180,7 +186,7 @@
 !  ---------------------------------------------------
 !
       if(iflag_debug.eq.1) write(*,*) 'set_simple_filter'
-      call set_simple_filter(node, ele, jac_3d_q, FEM_elen,             &
+      call set_simple_filter(file_name, node, ele, jac_3d_q, FEM_elen,  &
      &      dxidxs, FEM_moments%mom_nod(1))
 !
       if(iflag_debug.eq.1)  write(*,*) 's_const_filter_mom_ele 1'
@@ -192,8 +198,8 @@
       call cal_fmoms_ele_by_elen(FEM_elen, FEM_moments%mom_ele(1))
 !
       if(iflag_debug.eq.1)  write(*,*) 'set_simple_fluid_filter'
-      call set_simple_fluid_filter(node, ele, jac_3d_q, FEM_elen,       &
-     &      dxidxs, FEM_moments%mom_nod)
+      call set_simple_fluid_filter(file_name, node, ele,                &
+     &    jac_3d_q, FEM_elen, dxidxs, FEM_moments%mom_nod)
 !
       call cal_fmoms_ele_by_elen(FEM_elen, FEM_moments%mom_ele(2))
       if (itype_mass_matrix .eq. 1) then
@@ -208,10 +214,14 @@
       subroutine correct_commutative_filter(node, ele, jac_3d_q,        &
      &          tbl_crs, rhs_mat, FEM_elen, dxidxs, FEM_moments)
 !
+      use m_ctl_param_newdom_filter
+      use m_read_mesh_data
+      use m_comm_data_IO
       use m_filter_file_names
       use set_parallel_file_name
       use correct_wrong_filters
-      use filter_geometry_IO
+      use filter_coefs_file_IO
+      use filter_coefs_file_IO_b
 !
       type(CRS_matrix_connect), intent(inout) :: tbl_crs
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
@@ -222,7 +232,8 @@
       type(gradient_model_data_type), intent(in) :: FEM_elen
       type(dxidx_data_type), intent(inout) :: dxidxs
       type(gradient_filter_mom_type), intent(inout) :: FEM_moments
-      character(len=kchara) :: file_name
+!
+      character(len=kchara) :: file_name, fixed_file_name
 !
 !
       if(iflag_debug.eq.1)  write(*,*)'cal_fmoms_ele_by_elen'
@@ -242,16 +253,32 @@
 !
       call add_int_suffix(my_rank, org_filter_coef_head,                &
      &        file_name)
+      call add_int_suffix(my_rank, new_filter_coef_head,                &
+     &        fixed_file_name)
+!
       if (ifmt_3d_filter .eq. iflag_ascii) then
         open(org_filter_coef_code, file=file_name, form='formatted')
         call read_filter_geometry(org_filter_coef_code)
+!
+        open(id_new_filter_coef, file=fixed_file_name,                  &
+     &       form='formatted')
+        call write_filter_geometry(id_new_filter_coef)
+        close(id_new_filter_coef)
       else
-        open(org_filter_coef_code, file=file_name, form='unformatted')
-        call read_filter_geometry_b(org_filter_coef_code)
+        call open_read_binary_file(file_name, my_rank)
+        call read_filter_geometry_b
+        call close_binary_file
+!
+        call open_write_binary_file(fixed_file_name)
+        call write_filter_geometry_b
+        call close_binary_file
+!
+        call open_read_binary_file(file_name, my_rank)
+        call read_filter_geometry_b
+        call dealloc_node_geometry_base(nod_IO)
+        call deallocate_type_comm_tbl(comm_IO)
       end if
 !
-      call deallocate_node_data_dummy
-      call deallocate_comm_item_IO
 !
 !  ---------------------------------------------------
 !     correct filter function
@@ -260,19 +287,26 @@
       call allocate_correct_filter_flag(node%numnod, ele%numele)
 !
       if(iflag_debug.eq.1)  write(*,*) 's_correct_wrong_filters'
-      call s_correct_wrong_filters(node, ele, jac_3d_q, FEM_elen,      &
-     &    org_filter_coef_code, dxidxs, FEM_moments%mom_nod(1))
+      call s_correct_wrong_filters                                      &
+     &   (org_filter_coef_code, fixed_file_name, node, ele,             &
+     &    jac_3d_q, FEM_elen, dxidxs, FEM_moments%mom_nod(1))
 !
       if(iflag_debug.eq.1)  write(*,*)'correct_wrong_fluid_filters'
-      call correct_wrong_fluid_filters(node, ele, jac_3d_q, FEM_elen,  &
-     &    org_filter_coef_code, dxidxs, FEM_moments%mom_nod)
+      call correct_wrong_fluid_filters                                  &
+     &   (org_filter_coef_code, fixed_file_name, node, ele, jac_3d_q,   &
+     &    FEM_elen, dxidxs, FEM_moments%mom_nod)
+!
+      if (ifmt_3d_filter .eq. iflag_ascii) then
+        close(org_filter_coef_code)
+      else
+        call close_binary_file
+      end if
 !
       call deallocate_correct_filter_flag
 !
       call deallocate_coef_4_filter_moms
       call finalize_4_cal_fileters
 !
-      close(org_filter_coef_code)
 !
       end subroutine correct_commutative_filter
 !
@@ -282,12 +316,16 @@
      &         (nod_comm, node, ele, jac_3d_q, rhs_tbl, tbl_crs,        &
      &          rhs_mat, FEM_elen, dxidxs, FEM_moments)
 !
+      use m_ctl_param_newdom_filter
+      use m_comm_data_IO
+      use m_read_mesh_data
       use m_filter_file_names
       use m_filter_coefs
       use m_field_file_format
       use set_parallel_file_name
       use correct_wrong_filters
-      use filter_geometry_IO
+      use filter_coefs_file_IO
+      use filter_coefs_file_IO_b
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -300,7 +338,8 @@
       type(gradient_model_data_type), intent(in) :: FEM_elen
       type(dxidx_data_type), intent(inout) :: dxidxs
       type(gradient_filter_mom_type), intent(inout) :: FEM_moments
-      character(len=kchara) :: file_name
+!
+      character(len=kchara) :: file_name, fixed_file_name
 !
 !
           if(iflag_debug.eq.1) write(*,*) 'alloc_filter_moms_nod_type'
@@ -316,16 +355,31 @@
 !
       write(*,*) 'org_filter_coef_head', org_filter_coef_head
       call add_int_suffix(my_rank, org_filter_coef_head, file_name)
+      call add_int_suffix(my_rank, new_filter_coef_head,                &
+     &    fixed_file_name)
+!
       if (ifmt_3d_filter .eq. iflag_ascii) then
         open(org_filter_coef_code, file=file_name, form='formatted')
         call read_filter_geometry(org_filter_coef_code)
-      else
-        open(org_filter_coef_code, file=file_name, form='unformatted')
-        call read_filter_geometry_b(org_filter_coef_code)
-      end if
 !
-      call deallocate_node_data_dummy
-      call deallocate_comm_item_IO
+        open(id_new_filter_coef, file=fixed_file_name,                  &
+     &       form='formatted')
+        call write_filter_geometry(id_new_filter_coef)
+        close(id_new_filter_coef)
+      else
+        call open_read_binary_file(file_name, my_rank)
+        call read_filter_geometry_b
+        call close_binary_file
+!
+        call open_write_binary_file(fixed_file_name)
+        call write_filter_geometry_b
+        call close_binary_file
+!
+        call open_read_binary_file(file_name, my_rank)
+        call read_filter_geometry_b
+        call dealloc_node_geometry_base(nod_IO)
+        call deallocate_type_comm_tbl(comm_IO)
+      end if
 !
 !  ---------------------------------------------------
 !     correct filter function
@@ -334,8 +388,9 @@
       call allocate_correct_filter_flag(node%numnod, ele%numele)
 !
       if(iflag_debug.eq.1)  write(*,*) 's_correct_wrong_filters'
-      call s_correct_wrong_filters(node, ele, jac_3d_q, FEM_elen,       &
-     &    org_filter_coef_code, dxidxs, FEM_moments%mom_nod(1))
+      call s_correct_wrong_filters                                      &
+     &   (org_filter_coef_code, fixed_file_name, node, ele,             &
+     &     jac_3d_q, FEM_elen, dxidxs, FEM_moments%mom_nod(1))
 !
       if(iflag_debug.eq.1)  write(*,*) 's_const_filter_mom_ele 1'
       call s_const_filter_mom_ele                                       &
@@ -351,15 +406,20 @@
 !
       if(iflag_debug.eq.1)  write(*,*)'correct_wrong_fluid_filters'
       call correct_wrong_fluid_filters                                  &
-     &   (node, ele, jac_3d_q, FEM_elen,                                &
-     &    org_filter_coef_code, dxidxs, FEM_moments%mom_nod)
+     &   (org_filter_coef_code, fixed_file_name, node, ele,             &
+     &    jac_3d_q, FEM_elen, dxidxs, FEM_moments%mom_nod)
+!
+      if (ifmt_3d_filter .eq. iflag_ascii) then
+        close(org_filter_coef_code)
+      else
+        call close_binary_file
+      end if
 !
       call deallocate_correct_filter_flag
 !
       call deallocate_coef_4_filter_moms
       call finalize_4_cal_fileters
 !
-      close(org_filter_coef_code)
 !
       end subroutine correct_by_simple_filter
 !

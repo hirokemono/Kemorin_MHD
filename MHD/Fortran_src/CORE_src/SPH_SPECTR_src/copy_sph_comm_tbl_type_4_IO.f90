@@ -37,22 +37,22 @@
       type(sph_comm_tbl), intent(inout) :: comm
 !
 !
-      comm%nneib_domain = num_neib_domain_IO
-      comm%ntot_item_sr = ntot_import_IO
+      comm%nneib_domain = comm_IO%num_neib
+      comm%ntot_item_sr = comm_IO%ntot_import
 !
       call alloc_type_sph_comm_stack(comm)
       call alloc_type_sph_comm_item(numnod, comm)
 !
       comm%id_domain(1:comm%nneib_domain)                               &
-     &      = id_neib_domain_IO(1:comm%nneib_domain)
+     &      = comm_IO%id_neib(1:comm%nneib_domain)
       comm%istack_sr(0:comm%nneib_domain)                               &
-     &      = istack_import_IO(0:comm%nneib_domain)
+     &      = comm_IO%istack_import(0:comm%nneib_domain)
 !
       comm%item_sr(1:comm%ntot_item_sr)                                 &
-     &      = item_import_IO(1:comm%ntot_item_sr)
+     &      = comm_IO%item_import(1:comm%ntot_item_sr)
 !
-      call deallocate_import_item_IO
-      call deallocate_neib_domain_IO
+      call deallocate_type_import(comm_IO)
+      call deallocate_type_neib_id(comm_IO)
 !
       call set_reverse_sph_comm_tbl_t(numnod, comm)
 !

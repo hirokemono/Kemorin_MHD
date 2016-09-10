@@ -14,12 +14,6 @@
 !!      subroutine const_sph_rtm_grids(ip_rank, sph_rtm, comm_rtm)
 !!        type(sph_rtm_grid), intent(inout) :: sph_rtm
 !!        type(sph_comm_tbl), intent(inout) :: comm_rtm
-!!
-!!      subroutine const_fem_mesh_for_sph                               &
-!!     &         (ip_rank, sph_params, radial_rj_grp, sph_rtp)
-!!        type(sph_shell_parameters), intent(in) :: sph_params
-!!        type(group_data), intent(in) :: radial_rj_grp
-!!        type(sph_rtp_grid), intent(inout) :: sph_rtp
 !!@endverbatim
 !
       module gen_sph_grids_modes
@@ -30,7 +24,7 @@
       implicit none
 !
 !>      Integer flag to excluding FEM mesh
-      integer(kind = kint) :: iflag_excluding_FEM_mesh = 0
+      integer(kind = kint) :: iflag_output_mesh = 0
 !
       private :: const_comm_table_4_rlm, const_comm_table_4_rtm
 !
@@ -113,66 +107,6 @@
       call const_comm_table_4_rtm(ip_rank, sph_rtm, comm_rtm)
 !
       end subroutine const_sph_rtm_grids
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine const_fem_mesh_for_sph                                 &
-     &         (ip_rank, sph_params, radial_rj_grp, sph_rtp)
-!
-      use t_spheric_parameter
-      use t_mesh_data
-      use t_comm_table
-      use t_geometry_data
-!
-      use m_node_id_spherical_IO
-      use m_read_mesh_data
-      use m_read_boundary_data
-      use m_gauss_points
-      use m_sph_mesh_1d_connect
-!
-      use set_local_sphere_by_global
-      use set_FEM_mesh_4_sph
-      use set_comm_table_4_IO
-      use set_node_data_4_IO
-      use set_element_data_4_IO
-      use mesh_IO_select
-!
-      integer(kind = kint), intent(in) :: ip_rank
-      type(sph_shell_parameters), intent(in) :: sph_params
-      type(group_data), intent(in) :: radial_rj_grp
-      type(sph_rtp_grid), intent(inout) :: sph_rtp
-!
-      type(mesh_geometry) :: mesh
-      type(mesh_groups) ::  group
-!
-!
-      call copy_gl_2_local_rtp_param(ip_rank, sph_rtp)
-      nidx_local_fem(1:3) = sph_rtp%nidx_rtp(1:3)
-      nidx_local_fem(3) =   sph_params%m_folding * nidx_local_fem(3)
-!
-      call s_const_FEM_mesh_for_sph                                     &
-     &   (ip_rank, sph_rtp%nidx_rtp, radius_1d_gl,                      &
-     &    sph_params, radial_rj_grp, mesh, group)
-!
-      call copy_comm_tbl_type_to_IO(ip_rank, mesh%nod_comm)
-      call copy_node_geometry_to_IO(mesh%node)
-      call copy_ele_connect_to_IO(mesh%ele)
-      call set_grp_data_to_IO                                           &
-     &   (group%nod_grp, group%ele_grp, group%surf_grp)
-!
-      call dealloc_groups_data(group)
-      call deallocate_ele_connect_type(mesh%ele)
-      call deallocate_node_geometry_type(mesh%node)
-      call deallocate_type_comm_tbl(mesh%nod_comm)
-!
-      mesh_file_head = sph_file_head
-      call sel_write_mesh_file(ip_rank)
-!
-      write(*,'(a,i6,a)')                                               &
-     &          'FEM mesh for domain', ip_rank, ' is done.'
-!
-      end subroutine const_fem_mesh_for_sph
 !
 ! ----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

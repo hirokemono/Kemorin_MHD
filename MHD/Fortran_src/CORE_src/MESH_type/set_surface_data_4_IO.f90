@@ -35,37 +35,36 @@
       type(surface_data), intent(in) :: surf
 !
 !
-      numele_dummy =        surf%numsurf
-      nnod_4_ele_dummy =    surf%nnod_4_surf
+      ele_IO%numele =        surf%numsurf
+      ele_IO%nnod_4_ele =    surf%nnod_4_surf
 !
-      nsf_4_ele_IO =    nele
-      nsurf_in_ele_IO = nsurf_4_ele
+      sfed_IO%nsf_4_ele =    nele
+      sfed_IO%nsurf_in_ele = nsurf_4_ele
 !
-      call allocate_ele_info_dummy
-      call allocate_connect_dummy
+      call allocate_ele_connect_type(ele_IO)
 !
-      call allocate_surface_connect_IO
+      call alloc_surface_connect_IO(sfed_IO)
 !
       if      (surf%nnod_4_surf .eq. num_linear_sf) then
-        i_ele_dummy(1:surf%numsurf) = 221
+        ele_IO%elmtyp(1:surf%numsurf) = 221
       else if (surf%nnod_4_surf .eq. num_quad_sf) then
-        i_ele_dummy(1:surf%numsurf) = 222
+        ele_IO%elmtyp(1:surf%numsurf) = 222
       else if (surf%nnod_4_surf .eq. num_lag_sf) then
-        i_ele_dummy(1:surf%numsurf) = 223
+        ele_IO%elmtyp(1:surf%numsurf) = 223
       end if
 !
 !$omp workshare
-      nodelm_dummy(1:surf%numsurf) = surf%nnod_4_surf
-      globalelmid_dummy(1:surf%numsurf)                                 &
+      ele_IO%nodelm(1:surf%numsurf) = surf%nnod_4_surf
+      ele_IO%iele_global(1:surf%numsurf)                                &
      &        = surf%isurf_global(1:surf%numsurf)
 !$omp end workshare
 !$omp workshare
-      ie_dummy(1:surf%numsurf,1:surf%nnod_4_surf)                       &
+      ele_IO%ie(1:surf%numsurf,1:surf%nnod_4_surf)                      &
      &        = surf%ie_surf(1:surf%numsurf,1:surf%nnod_4_surf)
 !$omp end workshare
 !
 !$omp workshare
-      isf_4_ele_IO(1:nele,1:nsurf_4_ele)                                &
+      sfed_IO%isf_for_ele(1:nele,1:nsurf_4_ele)                         &
      &        = surf%isf_4_ele(1:nele,1:nsurf_4_ele)
 !$omp end workshare
 !
@@ -79,25 +78,25 @@
       integer(kind = kint) :: isurf
 !
 !
-      numnod_dummy =        surf%numsurf
-      internal_node_dummy = surf%internal_surf
+      nod_IO%numnod =        surf%numsurf
+      nod_IO%internal_node = surf%internal_surf
 !
-      call allocate_node_data_dummy
-      call allocate_ele_vector_IO
-      call allocate_ele_scalar_IO
+      call alloc_node_geometry_base(nod_IO)
+      call alloc_ele_vector_IO(nod_IO, sfed_IO)
+      call alloc_ele_scalar_IO(nod_IO, sfed_IO)
 !
 !
 !omp parallel do
       do isurf = 1, surf%numsurf
-        globalnodid_dummy(isurf) = surf%isurf_global(isurf)
-        xx_dummy(isurf,1) =        surf%x_surf(isurf,1)
-        xx_dummy(isurf,2) =        surf%x_surf(isurf,2)
-        xx_dummy(isurf,3) =        surf%x_surf(isurf,3)
+        nod_IO%inod_global(isurf) = surf%isurf_global(isurf)
+        nod_IO%xx(isurf,1) =        surf%x_surf(isurf,1)
+        nod_IO%xx(isurf,2) =        surf%x_surf(isurf,2)
+        nod_IO%xx(isurf,3) =        surf%x_surf(isurf,3)
 !
-        ele_scalar_IO(isurf) =     surf%area_surf(isurf)
-        ele_vector_IO(isurf,1) =   surf%vnorm_surf(isurf,1)
-        ele_vector_IO(isurf,2) =   surf%vnorm_surf(isurf,2)
-        ele_vector_IO(isurf,3) =   surf%vnorm_surf(isurf,3)
+        sfed_IO%ele_scalar(isurf) =     surf%area_surf(isurf)
+        sfed_IO%ele_vector(isurf,1) =   surf%vnorm_surf(isurf,1)
+        sfed_IO%ele_vector(isurf,2) =   surf%vnorm_surf(isurf,2)
+        sfed_IO%ele_vector(isurf,3) =   surf%vnorm_surf(isurf,3)
       end do
 !omp end parallel do
 !
@@ -111,24 +110,24 @@
       integer(kind = kint) :: isurf
 !
 !
-      numnod_dummy =        surf%numsurf
-      internal_node_dummy = surf%internal_surf
+      nod_IO%numnod =        surf%numsurf
+      nod_IO%internal_node = surf%internal_surf
 !
-      call allocate_node_data_dummy
-      call allocate_ele_vector_IO
-      call allocate_ele_scalar_IO
+      call alloc_node_geometry_base(nod_IO)
+      call alloc_ele_vector_IO(nod_IO, sfed_IO)
+      call alloc_ele_scalar_IO(nod_IO, sfed_IO)
 !
 !omp parallel do
       do isurf = 1, surf%numsurf
-        globalnodid_dummy(isurf) = surf%isurf_global(isurf)
-        xx_dummy(isurf,1) = surf%r_surf(isurf)
-        xx_dummy(isurf,2) = surf%theta_surf(isurf)
-        xx_dummy(isurf,3) = surf%phi_surf(isurf)
+        nod_IO%inod_global(isurf) = surf%isurf_global(isurf)
+        nod_IO%xx(isurf,1) = surf%r_surf(isurf)
+        nod_IO%xx(isurf,2) = surf%theta_surf(isurf)
+        nod_IO%xx(isurf,3) = surf%phi_surf(isurf)
 !
-        ele_scalar_IO(isurf) =   surf%area_surf(isurf)
-        ele_vector_IO(isurf,1) = surf%vnorm_surf_sph(isurf,1)
-        ele_vector_IO(isurf,2) = surf%vnorm_surf_sph(isurf,2)
-        ele_vector_IO(isurf,3) = surf%vnorm_surf_sph(isurf,3)
+        sfed_IO%ele_scalar(isurf) =   surf%area_surf(isurf)
+        sfed_IO%ele_vector(isurf,1) = surf%vnorm_surf_sph(isurf,1)
+        sfed_IO%ele_vector(isurf,2) = surf%vnorm_surf_sph(isurf,2)
+        sfed_IO%ele_vector(isurf,3) = surf%vnorm_surf_sph(isurf,3)
       end do
 !omp end parallel do
 !
@@ -142,23 +141,23 @@
       integer(kind = kint) :: isurf
 !
 !
-      numnod_dummy =        surf%numsurf
-      internal_node_dummy = surf%internal_surf
+      nod_IO%numnod =        surf%numsurf
+      nod_IO%internal_node = surf%internal_surf
 !
-      call allocate_node_data_dummy
-      call allocate_ele_vector_IO
-      call allocate_ele_scalar_IO
+      call alloc_node_geometry_base(nod_IO)
+      call alloc_ele_vector_IO(nod_IO, sfed_IO)
+      call alloc_ele_scalar_IO(nod_IO, sfed_IO)
 !
 !omp parallel do
       do isurf = 1, surf%numsurf
-        globalnodid_dummy(isurf) = surf%isurf_global(isurf)
-        xx_dummy(isurf,1) = surf%s_surf(isurf)
-        xx_dummy(isurf,2) = surf%phi_surf(isurf)
-        xx_dummy(isurf,3) = surf%x_surf(isurf,3)
-        ele_scalar_IO(isurf) =   surf%area_surf(isurf)
-        ele_vector_IO(isurf,1) = surf%vnorm_surf_cyl(isurf,1)
-        ele_vector_IO(isurf,2) = surf%vnorm_surf_cyl(isurf,2)
-        ele_vector_IO(isurf,3) = surf%vnorm_surf_cyl(isurf,3)
+        nod_IO%inod_global(isurf) = surf%isurf_global(isurf)
+        nod_IO%xx(isurf,1) = surf%s_surf(isurf)
+        nod_IO%xx(isurf,2) = surf%phi_surf(isurf)
+        nod_IO%xx(isurf,3) = surf%x_surf(isurf,3)
+        sfed_IO%ele_scalar(isurf) =   surf%area_surf(isurf)
+        sfed_IO%ele_vector(isurf,1) = surf%vnorm_surf_cyl(isurf,1)
+        sfed_IO%ele_vector(isurf,2) = surf%vnorm_surf_cyl(isurf,2)
+        sfed_IO%ele_vector(isurf,3) = surf%vnorm_surf_cyl(isurf,3)
       end do
 !omp end parallel do
 !
@@ -175,26 +174,26 @@
       type(surface_data), intent(inout) :: surf
 !
 !
-      surf%numsurf = numele_dummy
+      surf%numsurf = ele_IO%numele
 !
       call allocate_surface_connect_type(surf, nele)
 !
 !$omp workshare
       surf%isurf_global(1:surf%numsurf)                                 &
-     &        = globalelmid_dummy(1:surf%numsurf)
+     &        = ele_IO%iele_global(1:surf%numsurf)
 !$omp end workshare
 !$omp workshare
       surf%ie_surf(1:surf%numsurf,1:surf%nnod_4_surf)                   &
-     &        = ie_dummy(1:surf%numsurf,1:surf%nnod_4_surf)
+     &        = ele_IO%ie(1:surf%numsurf,1:surf%nnod_4_surf)
 !$omp end workshare
 !
 !$omp workshare
       surf%isf_4_ele(1:nele,1:nsurf_4_ele)                              &
-     &        = isf_4_ele_IO(1:nele,1:nsurf_4_ele)
+     &        = sfed_IO%isf_for_ele(1:nele,1:nsurf_4_ele)
 !$omp end workshare
 !
-      call deallocate_surface_connect_IO
-      call deallocate_ele_info_dummy
+      call dealloc_surface_connect_IO(sfed_IO)
+      call deallocate_ele_connect_type(ele_IO)
 !
       end subroutine copy_surf_connect_from_IO
 !

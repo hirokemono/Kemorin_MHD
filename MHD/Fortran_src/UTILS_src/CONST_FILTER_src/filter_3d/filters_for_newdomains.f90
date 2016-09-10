@@ -94,10 +94,12 @@
       use copy_filters_4_sorting
       use const_newdomain_filter
       use set_parallel_file_name
-      use filter_geometry_IO
+      use filter_coefs_file_IO
       use filter_IO_for_newdomain
       use set_filter_geometry_4_IO
+      use filter_coefs_file_IO_b
       use set_comm_table_4_IO
+      use binary_IO
 !
       use t_geometry_data
 !
@@ -111,18 +113,19 @@
       type(element_data), intent(inout) :: new_ele
 !
       integer(kind = kint) :: ip2
+      integer(kind = kint):: ierr
 !
 !
         ip2 = my_rank2 + 1
 !
         mesh_file_head = target_mesh_head
         call sel_read_geometry_size(my_rank2)
-        call deallocate_node_data_dummy
-        call deallocate_neib_domain_IO
+        call dealloc_node_geometry_base(nod_IO)
+        call deallocate_type_neib_id(comm_IO)
 !
-        new_node%internal_node = internal_node_dummy
-        new_node%numnod = numnod_dummy
-        new_ele%numele =  numele_dummy
+        new_node%internal_node = nod_IO%internal_node
+        new_node%numnod = nod_IO%numnod
+        new_ele%numele =  ele_IO%numele
 !
 !
         call add_int_suffix(my_rank2, new_filter_coef_head,             &
@@ -134,10 +137,11 @@
      &      form = 'formatted')
 !          write(*,*) 'read_filter_geometry'
           call read_filter_geometry(filter_coef_code)
+          close(filter_coef_code)
         else
-          open (filter_coef_code, file = mesh_file_name,                &
-     &      form = 'unformatted')
-          call read_filter_geometry_b(filter_coef_code)
+          call open_read_binary_file(mesh_file_name, my_rank2)
+          call read_filter_geometry_b
+          call close_binary_file
         end if
 !
 !        write(*,*) 'copy_filter_comm_tbl_from_IO'
@@ -167,10 +171,9 @@
         call allocate_nod_ele_near_1nod                                 &
      &     (new_node%numnod, new_ele%numele)
 !
-        call write_new_whole_filter_coef
-        call write_new_fluid_filter_coef
+        call write_new_whole_filter_coef(mesh_file_name)
+        call write_new_fluid_filter_coef(mesh_file_name)
 !
-        close(filter_coef_code)
 !
         call deallocate_nod_ele_near_1nod
         call deallocate_whole_filter_coefs

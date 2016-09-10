@@ -91,13 +91,7 @@
        call set_neib_edge_line(ithree, i_st, i_end, j_st, j_end,        &
      &       kedge_st, kedge_end)
 !
-
-      if ( iflag_data_f .eq. 1) then
-       call write_neib_edge_line_b(my_rank)
-      else
        call write_neib_edge_line(my_rank)
-      end if
-!
 !
        call deallocate_neighbour_edge_line
 !
@@ -198,56 +192,4 @@
 !
 !  ----------------------------------------------------------------------
 !
-       subroutine write_neib_edge_line_b(my_rank)
-!
-       integer(kind = kint), intent(in) :: my_rank
-       integer (kind = kint) :: ist, ied, iedge, i
-!
-!
-            call add_int_suffix(my_rank, filter_edge_header, fname)
-            open (nb_out, file=nb_name, form='unformatted')
-!
-!            write(nb_out) '! num_edge:  '
-            write(nb_out) edgetot
-            write(nb_out) edgetot, edgetot, edgetot
-!            write(nb_out) '! num_depth: '
-            write(nb_out) ndep_1
-!
-!       write(nb_out,'(a16)') '!  xi direction'
-       do iedge = 1, edgetot
-        ist = ndep_1*(iedge- 1) + 1
-        ied = ndep_1*iedge
-!
-          write(nb_out) (iedge_f_d_x(i),  i = ist, ied)
-          write(nb_out) (iedge_neib_x(i), i = ist, ied)
-!
-       end do
-!
-!       write(nb_out,'(a16)') '!  eta direction'
-       do iedge = 1, edgetot
-        ist = ndep_1*(iedge- 1) + 1
-        ied = ndep_1*iedge
-!
-          write(nb_out,'(10i16)') (iedge_f_d_y(i),  i = ist, ied)
-          write(nb_out,'(10i16)') (iedge_neib_y(i), i = ist, ied)
-!
-       end do
-!
-!       write(nb_out,'(a16)') '!   zi direction'
-       do iedge = 1, edgetot
-        ist = ndep_1*(iedge- 1) + 1
-        ied = ndep_1*iedge
-!
-          write(nb_out) (iedge_f_d_z(i),  i = ist, ied)
-          write(nb_out) (iedge_neib_z(i), i = ist, ied)
-!
-       end do
-!
-        close(nb_out)
-!
-       end subroutine write_neib_edge_line_b
-!
-!  ----------------------------------------------------------------------
-!
        end module m_neib_edge_line_cube
-

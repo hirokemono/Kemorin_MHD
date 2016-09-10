@@ -92,6 +92,7 @@
         id_org(i) = i
       end do
 !
+      id_start = 0
       do i = nnod_near_1nod_weight, 1, -1
         if (filter_1nod(i) .ne. 0.0d0) then
           id_start = i+1
@@ -134,6 +135,7 @@
       real(kind = kreal) :: ratio, zero_moment
 !
 !
+      new_number = 0
       do i = 1, nnod_near_1nod_weight
         if (filter_1nod(i) .eq. 0.0d0) then
           ratio = abs( weight_1nod(i) / weight_1nod(1) )

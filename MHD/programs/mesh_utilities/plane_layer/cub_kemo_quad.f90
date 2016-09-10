@@ -204,11 +204,7 @@
              write(penum,'(i4   )')  pe_id-1
              penum_left = adjustl(penum)
 !
-             if ( iflag_data_f .eq. 1) then
-              call open_mesh_file_b(pe1)
-             else
-              call open_mesh_file(pe1)
-             end if 
+             call open_mesh_file(pe1)
 !
 ! ***** set and write basic local model parameters
 !                                       .. pe nod per 1 line
@@ -266,11 +262,7 @@
 !
 !
             write(*,*) 'write_communication_data', ipe, jpe, kpe
-             if ( iflag_data_f .eq. 1) then
-              call write_communication_data_b
-             else
-              call write_communication_data
-             end if 
+            call write_communication_data
 !
 !
 ! ..... write 4.group information
@@ -281,12 +273,7 @@
 !
 !                                        .. count node group and stack
             call count_node_group(elm_type, ipe, jpe, kpe)
-!
-            if ( iflag_data_f .eq. 1) then
-             call write_node_group_quad_b(ipe, jpe, kpe)
-            else
-             call write_node_group_quad(ipe, jpe, kpe)
-            end if 
+            call write_node_group_quad(ipe, jpe, kpe)
 !
 !    output element group
 !
@@ -300,13 +287,7 @@
 !
 !                                     .. count element group and stack
             call count_surface_group(kpe)
-
-!
-            if ( iflag_data_f .eq. 1) then
-             call write_surface_group_b(kpe)
-            else
-             call write_surface_group(kpe)
-            end if 
+            call write_surface_group(kpe)
 !                                       ... to next pe 
 !   construct filtering information
 !

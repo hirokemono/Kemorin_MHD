@@ -17,6 +17,7 @@
       use t_phys_address
       use t_ucd_data
       use t_jacobian_3d
+      use calypso_mpi
 !
       implicit none
 !
@@ -55,14 +56,15 @@
 !
       use m_read_mesh_data
       use m_array_for_send_recv
-      use load_mesh_data
+      use mpi_load_mesh_data
       use nod_phys_send_recv
       use const_mesh_information
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'input_mesh'
-      call input_mesh(my_rank, femmesh_FUTIL%mesh, femmesh_FUTIL%group,  &
-     &   elemesh_FUTIL%surf%nnod_4_surf, elemesh_FUTIL%edge%nnod_4_edge)
+      if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh'
+      call mpi_input_mesh(femmesh_FUTIL%mesh, femmesh_FUTIL%group,      &
+     &    elemesh_FUTIL%surf%nnod_4_surf,                               &
+     &    elemesh_FUTIL%edge%nnod_4_edge)
 !
 !     --------------------- 
 !

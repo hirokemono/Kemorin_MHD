@@ -51,7 +51,7 @@
 !
 !       set spectr grids
 !
-      if (iflag_debug.gt.0) write(*,*) 'load_para_rj_mesh'
+      if (iflag_debug.gt.0) write(*,*) 'load_para_SPH_rj_mesh'
       call load_para_SPH_rj_mesh(sph_mesh_spec%sph,                     &
      &    sph_mesh_spec%sph_comms, sph_mesh_spec%sph_grps)
 !

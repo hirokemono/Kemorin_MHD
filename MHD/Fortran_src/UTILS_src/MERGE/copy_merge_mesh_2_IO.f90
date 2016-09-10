@@ -34,18 +34,19 @@
       integer (kind = kint) :: i
 !
 !
-      num_neib_domain_IO = izero
-      call allocate_neib_comm_stack_IO
-      call allocate_comm_item_IO
+      comm_IO%num_neib = izero
+      call allocate_type_comm_tbl_num(comm_IO)
+      call allocate_type_comm_tbl_item(comm_IO)
       call copy_node_geometry_to_IO(merged%node)
       call copy_ele_connect_to_IO(merged%ele)
 !
-      numnod_dummy =        merge_tbl%nnod_merged
-      internal_node_dummy = merge_tbl%nnod_merged
+      nod_IO%numnod =        merge_tbl%nnod_merged
+      nod_IO%internal_node = merge_tbl%nnod_merged
 !
-      numele_dummy = merge_tbl%nele_merged
+      ele_IO%numele = merge_tbl%nele_merged
       do i = 1, merge_tbl%nele_merged
-        call s_set_nnod_4_ele_by_type(i_ele_dummy(i), nodelm_dummy(i))
+        call s_set_nnod_4_ele_by_type                                   &
+     &     (ele_IO%elmtyp(i), ele_IO%nodelm(i))
       end do
 !
       call set_grp_data_to_IO                                           &

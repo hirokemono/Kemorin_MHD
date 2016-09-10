@@ -19,8 +19,6 @@
 !
       subroutine s_write_merged_mesh
 !
-      use m_precision
-!
       use m_constants
       use m_control_param_merge
       use m_comm_data_IO

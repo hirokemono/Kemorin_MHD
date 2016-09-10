@@ -208,7 +208,7 @@
       call read_field_num_mpi                                           &
      &   (id_fld, ioff_gl, fld_IO%num_field_IO, fld_IO%num_comp_IO)
 !
-      call read_field_names_mpi(id_fld, nprocs_in, ioff_gl,             &
+      call read_field_names_mpi(id_fld, nprocs_in, id_rank, ioff_gl,    &
      &      fld_IO%num_field_IO, fld_IO%num_comp_IO, fld_IO%fld_name,   &
      &      fld_IO%istack_numnod_IO)
 !
@@ -257,9 +257,9 @@
 !
       icou = 1
       do j = 1, num_field
+        call write_field_name_mpi(id_fld, ioff_gl, field_name(j))
         call write_fld_vecotr_mpi(id_fld, nprocs_in, id_rank, ioff_gl,  &
-     &      field_name(j), nnod, ncomp_field(j), d_nod(1,icou),         &
-     &      istack_merged)
+     &      nnod, ncomp_field(j), d_nod(1,icou), istack_merged)
         icou = icou + ncomp_field(j)
       end do
 !
@@ -301,14 +301,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_field_names_mpi(id_fld, nprocs_in, ioff_gl,       &
-     &          num_field, ncomp_field, field_name, istack_merged)
+      subroutine read_field_names_mpi(id_fld, nprocs_in, id_rank,       &
+     &          ioff_gl, num_field, ncomp_field, field_name,            &
+     &          istack_merged)
 !
       use m_phys_constants
       use field_data_IO
       use field_data_MPI_IO
 !
-      integer(kind=kint), intent(in) :: nprocs_in
+      integer(kind=kint), intent(in) :: nprocs_in, id_rank
       integer(kind=kint), intent(in) :: num_field
       integer(kind=kint), intent(in) :: ncomp_field(num_field)
       integer(kind = kint_gl), intent(inout) :: ioff_gl
@@ -322,7 +323,7 @@
 !
       do j = 1, num_field
         call read_field_name_mpi(id_fld, ioff_gl, field_name(j))
-        call skip_fld_vecotr_mpi(nprocs_in, ioff_gl,                    &
+        call skip_fld_vecotr_mpi(nprocs_in, id_rank, ioff_gl,           &
      &      ncomp_field(j), istack_merged)
       end do
 !

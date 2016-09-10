@@ -54,7 +54,7 @@
       use set_serach_data_4_dest
       use set_2nd_geometry_4_table
       use const_jacobians_3d
-      use load_mesh_data
+      use mpi_load_mesh_data
 !
 !
       if (my_rank.eq.0) then
@@ -71,8 +71,8 @@
 !
       mesh_file_head = dest_mesh_head
       iflag_mesh_file_fmt = ifmt_itp_mesh_file
-      if (iflag_debug.eq.1) write(*,*) 'input_mesh'
-      call input_mesh(my_rank, org_femmesh%mesh, org_femmesh%group,     &
+      if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh'
+      call mpi_input_mesh(org_femmesh%mesh, org_femmesh%group,          &
      &    org_ele_mesh%surf%nnod_4_surf, org_ele_mesh%edge%nnod_4_edge)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
