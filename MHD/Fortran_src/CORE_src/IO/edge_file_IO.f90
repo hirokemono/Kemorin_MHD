@@ -17,6 +17,7 @@
 !
       use m_precision
 !
+      use m_comm_data_IO
       use m_read_mesh_data
       use set_parallel_file_name
       use edge_data_IO
@@ -33,8 +34,9 @@
 !
 !
       open (input_file_code, file = mesh_file_name, form = 'formatted')
-      call write_edge_connection
-      call write_edge_geometry
+      call write_edge_connection                                        &
+     &  (input_file_code, my_rank_IO, comm_IO, nod_IO, ele_IO, sfed_IO)
+      call write_edge_geometry(input_file_code, nod_IO, sfed_IO)
       close (input_file_code)
 !
       end subroutine output_edge_geometries
@@ -46,8 +48,9 @@
 !
 !
       open (input_file_code, file = mesh_file_name, form = 'formatted')
-      call write_edge_connection
-      call write_edge_geometry_sph
+      call write_edge_connection                                        &
+     &  (input_file_code, my_rank_IO, comm_IO, nod_IO, ele_IO, sfed_IO)
+      call write_edge_geometry_sph(input_file_code, nod_IO, sfed_IO)
       close (input_file_code)
 !
       end subroutine output_edge_geometries_sph
@@ -58,8 +61,9 @@
 !
 !
       open (input_file_code, file = mesh_file_name, form = 'formatted')
-      call write_edge_connection
-      call write_edge_geometry_cyl
+      call write_edge_connection                                        &
+     &  (input_file_code, my_rank_IO, comm_IO, nod_IO, ele_IO, sfed_IO)
+      call write_edge_geometry_cyl(input_file_code, nod_IO, sfed_IO)
       close (input_file_code)
 !
       end subroutine output_edge_geometries_cyl

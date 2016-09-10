@@ -134,6 +134,7 @@
       subroutine read_filter_geometry(id_file)
 !
       use m_comm_data_IO
+      use m_read_mesh_data
       use domain_data_IO
       use node_geometry_IO
 !
@@ -142,9 +143,9 @@
 !        write(*,*) 'read_domain_info'
         call read_domain_info(id_file, my_rank_IO, comm_IO)
 !        write(*,*) 'read_number_of_node'
-        call read_number_of_node(id_file)
+        call read_number_of_node(id_file, nod_IO)
 !        write(*,*) 'read_geometry_info'
-        call read_geometry_info(id_file)
+        call read_geometry_info(id_file, nod_IO)
 !
 ! ----  import & export 
 !
@@ -232,6 +233,7 @@
       subroutine write_filter_geometry(id_file)
 !
       use m_comm_data_IO
+      use m_read_mesh_data
       use m_fem_mesh_labels
       use domain_data_IO
       use node_geometry_IO
@@ -244,7 +246,7 @@
       call write_domain_info(id_file, my_rank_IO, comm_IO)
 !
       write(id_file,'(a)', advance='NO') hd_fem_node()
-      call write_geometry_info(id_file)
+      call write_geometry_info(id_file, nod_IO)
 !
 !
       write(id_file,'(a)', advance='NO') hd_fem_import()

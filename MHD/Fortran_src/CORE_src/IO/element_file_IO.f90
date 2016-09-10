@@ -21,6 +21,7 @@
       use m_precision
       use m_machine_parameter
 !
+      use m_comm_data_IO
       use m_read_mesh_data
       use set_parallel_file_name
       use element_data_IO
@@ -42,8 +43,9 @@
      &  'Write ascii element comm file: ', trim(mesh_file_name)
 !
       open(input_file_code, file = mesh_file_name, form = 'formatted')
-      call write_element_comm_table
-      call write_element_geometry
+      call write_element_comm_table                                     &
+     &   (input_file_code, my_rank_IO, comm_IO)
+      call write_element_geometry(input_file_code, nod_IO, sfed_IO)
       close(input_file_code)
 !
       end subroutine output_element_file
@@ -59,8 +61,9 @@
      &  'Write ascii element comm file: ', trim(mesh_file_name)
 !
       open(input_file_code, file = mesh_file_name, form = 'formatted')
-      call write_element_comm_table
-      call write_element_geometry_sph
+      call write_element_comm_table                                     &
+     &   (input_file_code, my_rank_IO, comm_IO)
+      call write_element_geometry_sph(input_file_code, nod_IO, sfed_IO)
       close(input_file_code)
 !
       end subroutine output_element_sph_file
@@ -76,8 +79,9 @@
      &  'Write ascii element comm file: ', trim(mesh_file_name)
 !
       open(input_file_code, file = mesh_file_name, form = 'formatted')
-      call write_element_comm_table
-      call write_element_geometry_cyl
+      call write_element_comm_table                                     &
+     &   (input_file_code, my_rank_IO, comm_IO)
+      call write_element_geometry_cyl(input_file_code, nod_IO, sfed_IO)
       close(input_file_code)
 !
       end subroutine output_element_cyl_file

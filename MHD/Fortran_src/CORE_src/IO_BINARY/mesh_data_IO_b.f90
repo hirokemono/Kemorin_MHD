@@ -9,13 +9,12 @@
 !!
 !!@verbatim
 !!      subroutine write_geometry_data_b
-!!      subroutine write_geometry_info_b
-!!      subroutine write_element_info_b
+!!      subroutine write_geometry_info_b(nod_IO)
 !!
 !!      subroutine read_geometry_data_b
-!!      subroutine read_number_of_node_b
-!!      subroutine read_geometry_info_b
-!!      subroutine read_number_of_element_b
+!!      subroutine read_number_of_node_b(nod_IO)
+!!      subroutine read_geometry_info_b(nod_IO)
+!!      subroutine read_number_of_element_b(ele_IO)
 !!@endverbatim
 !
       module mesh_data_IO_b
@@ -23,8 +22,8 @@
       use m_precision
       use m_constants
 !
-      use m_comm_data_IO
-      use m_read_mesh_data
+      use t_comm_table
+      use t_geometry_data
 !
       implicit  none
 !
@@ -38,13 +37,15 @@
 !
       subroutine write_geometry_data_b
 !
+      use m_comm_data_IO
+      use m_read_mesh_data
       use domain_data_IO_b
 !
 !
       call write_domain_info_b(my_rank_IO, comm_IO)
 !
-      call write_geometry_info_b
-      call write_element_info_b
+      call write_geometry_info_b(nod_IO)
+      call write_element_info_b(ele_IO)
 !
       call write_import_data_b(comm_IO)
       call write_export_data_b(comm_IO)
@@ -54,9 +55,11 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine write_geometry_info_b
+      subroutine write_geometry_info_b(nod_IO)
 !
       use binary_IO
+!
+      type(node_data), intent(inout) :: nod_IO
 !
 !
       call write_one_integer_b(nod_IO%numnod)
@@ -71,9 +74,11 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_element_info_b
+      subroutine write_element_info_b(ele_IO)
 !
       use binary_IO
+!
+      type(element_data), intent(inout) :: ele_IO
 !
       integer (kind = kint) :: i
       integer (kind = kint), allocatable :: ie_tmp(:)
@@ -100,17 +105,19 @@
 !
       subroutine read_geometry_data_b
 !
+      use m_comm_data_IO
+      use m_read_mesh_data
       use domain_data_IO_b
 !
 !
       call read_domain_info_b(my_rank_IO, comm_IO)
-      call read_number_of_node_b
-      call read_geometry_info_b
+      call read_number_of_node_b(nod_IO)
+      call read_geometry_info_b(nod_IO)
 !
 !  ----  read element data -------
 !
-      call read_number_of_element_b
-      call read_element_info_b
+      call read_number_of_element_b(ele_IO)
+      call read_element_info_b(ele_IO)
 !
 ! ----  import & export 
 !
@@ -122,9 +129,11 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine read_number_of_node_b
+      subroutine read_number_of_node_b(nod_IO)
 !
       use binary_IO
+!
+      type(node_data), intent(inout) :: nod_IO
 !
 !
       call read_one_integer_b(nod_IO%numnod)
@@ -134,9 +143,11 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_geometry_info_b
+      subroutine read_geometry_info_b(nod_IO)
 !
       use binary_IO
+!
+      type(node_data), intent(inout) :: nod_IO
 !
 !
       call alloc_node_geometry_base(nod_IO)
@@ -148,9 +159,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_number_of_element_b
+      subroutine read_number_of_element_b(ele_IO)
 !
       use binary_IO
+!
+      type(element_data), intent(inout) :: ele_IO
+!
 !
       call read_one_integer_b(ele_IO%numele)
 !
@@ -158,10 +172,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_element_info_b
+      subroutine read_element_info_b(ele_IO)
 !
       use binary_IO
       use set_nnod_4_ele_by_type
+!
+      type(element_data), intent(inout) :: ele_IO
 !
       integer (kind = kint) :: i
       integer (kind = kint), allocatable :: ie_tmp(:)

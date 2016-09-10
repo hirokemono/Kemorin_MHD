@@ -11,19 +11,22 @@
 !!      function each_node_data_buffer(inod_gl, xx)
 !!      subroutine read_each_node_data_buffer(textbuf, inod_gl, vect)
 !!
-!!      subroutine write_geometry_info(id_file)
-!!      subroutine write_scalar_in_element(id_file)
-!!      subroutine write_vector_in_element(id_file)
+!!      subroutine write_geometry_info(id_file, nod_IO)
+!!      subroutine write_scalar_in_element(id_file, nod_IO, sfed_IO)
+!!      subroutine write_vector_in_element(id_file, nod_IO, sfed_IO)
 !!
-!!      subroutine read_number_of_node(id_file)
-!!      subroutine read_geometry_info(id_file)
+!!      subroutine read_number_of_node(id_file, nod_IO)
+!!      subroutine read_geometry_info(id_file, nod_IO)
+!!        type(node_data), intent(inout) :: nod_IO
+!!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !!@endverbatim
 !
       module node_geometry_IO
 !
       use m_precision
 !
-      use m_read_mesh_data
+      use t_geometry_data
+      use t_read_mesh_data
 !
       implicit none
 !
@@ -32,6 +35,8 @@
 !
       character(len=255) :: character_4_read
       private :: character_4_read
+!
+      private :: each_node_data_buffer
 !
 !------------------------------------------------------------------
 !
@@ -67,9 +72,11 @@
 ! -------------------------------------------------------------------
 ! -------------------------------------------------------------------
 !
-      subroutine write_geometry_info(id_file)
+      subroutine write_geometry_info(id_file, nod_IO)
 !
       integer (kind = kint), intent(in) :: id_file
+      type(node_data), intent(inout) :: nod_IO
+!
       integer (kind = kint) :: i
 !
 !
@@ -86,9 +93,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_scalar_in_element(id_file)
+      subroutine write_scalar_in_element(id_file, nod_IO, sfed_IO)
 !
       integer (kind = kint), intent(in) :: id_file
+      type(node_data), intent(inout) :: nod_IO
+      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!
       integer(kind = kint) :: i
 !
       write(id_file,'(2i16)') nod_IO%numnod, nod_IO%internal_node
@@ -102,9 +112,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_vector_in_element(id_file)
+      subroutine write_vector_in_element(id_file, nod_IO, sfed_IO)
 !
       integer (kind = kint), intent(in) :: id_file
+      type(node_data), intent(inout) :: nod_IO
+      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!
       integer(kind = kint) :: i
 !
       write(id_file,'(2i16)') nod_IO%numnod, nod_IO%internal_node
@@ -119,10 +132,12 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine read_number_of_node(id_file)
+      subroutine read_number_of_node(id_file, nod_IO)
 !
       use skip_comment_f
+!
       integer (kind = kint), intent(in) :: id_file
+      type(node_data), intent(inout) :: nod_IO
 !
 !
       call skip_comment(character_4_read,id_file)
@@ -133,9 +148,11 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_geometry_info(id_file)
+      subroutine read_geometry_info(id_file, nod_IO)
 !
       integer (kind = kint), intent(in) :: id_file
+      type(node_data), intent(inout) :: nod_IO
+!
       integer (kind = kint) :: i, k
 !
 !

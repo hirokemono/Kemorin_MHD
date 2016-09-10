@@ -51,11 +51,11 @@
       call write_domain_info(input_file_code, my_rank_IO, comm_IO)
 !
       write(input_file_code,'(a)', advance='NO') hd_fem_node()
-      call write_geometry_info(input_file_code)
+      call write_geometry_info(input_file_code, nod_IO)
 !
 !
       write(input_file_code,'(a)', advance='NO') hd_fem_elem()
-      call write_element_info(input_file_code)
+      call write_element_info(input_file_code, ele_IO)
 !
 !
       write(input_file_code,'(a)', advance='NO') hd_fem_import()
@@ -76,16 +76,16 @@
 !        write(*,*) 'read_domain_info'
         call read_domain_info(input_file_code, my_rank_IO, comm_IO)
 !        write(*,*) 'read_number_of_node'
-        call read_number_of_node(input_file_code)
+        call read_number_of_node(input_file_code, nod_IO)
 !        write(*,*) 'read_geometry_info'
-        call read_geometry_info(input_file_code)
+        call read_geometry_info(input_file_code, nod_IO)
 !
 !  ----  read element data -------
 !
 !        write(*,*) 'read_number_of_element'
-        call read_number_of_element(input_file_code)
+        call read_number_of_element(input_file_code, ele_IO)
 !        write(*,*) 'read_element_info'
-        call read_element_info(input_file_code)
+        call read_element_info(input_file_code, ele_IO)
 !
 ! ----  import & export 
 !
@@ -109,7 +109,7 @@
       call write_domain_info(input_file_code, my_rank_IO, comm_IO)
 !
       write(input_file_code,'(a)', advance='NO') hd_fem_node_sph()
-      call write_geometry_info(input_file_code)
+      call write_geometry_info(input_file_code, nod_IO)
 !
       end subroutine output_node_sph_geometry
 !
@@ -127,7 +127,7 @@
       call write_domain_info(input_file_code, my_rank_IO, comm_IO)
 !
       write(input_file_code,'(a)', advance='NO') hd_fem_node_cyl()
-      call write_geometry_info(input_file_code)
+      call write_geometry_info(input_file_code, nod_IO)
 !
       end subroutine output_node_cyl_geometry
 !

@@ -7,12 +7,14 @@
 !>@brief Data IO routines for element connectivity
 !!
 !!@verbatim
-!!      subroutine write_element_info(id_file)
-!!      subroutine write_surface_4_element(id_file)
-!!      subroutine write_edge_4_element(id_file)
+!!      subroutine write_element_info(id_file, ele_IO)
+!!      subroutine write_surface_4_element(id_file, sfed_IO)
+!!      subroutine write_edge_4_element(id_file, sfed_IO)
 !!
-!!      subroutine read_number_of_element(id_file)
-!!      subroutine read_element_info(id_file)
+!!      subroutine read_number_of_element(id_file, ele_IO)
+!!      subroutine read_element_info(id_file, ele_IO)
+!!        type(element_data), intent(inout) :: ele_IO
+!!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !!@endverbatim
 !!
 !!@param  id_file  File ID
@@ -20,8 +22,8 @@
       module element_connect_IO
 !
       use m_precision
-!
-      use m_read_mesh_data
+      use t_geometry_data
+      use t_read_mesh_data
 !
       implicit none
 !
@@ -35,9 +37,11 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_element_info(id_file)
+      subroutine write_element_info(id_file, ele_IO)
 !
       integer (kind = kint), intent(in) :: id_file
+      type(element_data), intent(inout) :: ele_IO
+!
       integer (kind = kint) :: i
 !
 !
@@ -55,9 +59,11 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_surface_4_element(id_file)
+      subroutine write_surface_4_element(id_file, sfed_IO)
 !
       integer (kind = kint), intent(in) :: id_file
+      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!
       integer(kind = kint) :: i
 !
       write(id_file,'(2i16)') sfed_IO%nsf_4_ele, sfed_IO%nsurf_in_ele
@@ -73,9 +79,11 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_edge_4_element(id_file)
+      subroutine write_edge_4_element(id_file, sfed_IO)
 !
       integer (kind = kint), intent(in) :: id_file
+      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!
       integer(kind = kint) :: i
 !
       write(id_file,'(2i16)') sfed_IO%ned_4_ele, sfed_IO%nedge_in_ele
@@ -92,27 +100,30 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine read_number_of_element(id_file)
+      subroutine read_number_of_element(id_file, ele_IO)
 !
       use skip_comment_f
 !
       integer (kind = kint), intent(in) :: id_file
+      type(element_data), intent(inout) :: ele_IO
+!
 !
       call skip_comment(character_4_read,id_file)
 !
       read(character_4_read,*) ele_IO%numele
-!       write(*,*) ele_IO%numele
 !
       end subroutine read_number_of_element
 !
 !------------------------------------------------------------------
 !
-       subroutine read_element_info(id_file)
+      subroutine read_element_info(id_file, ele_IO)
 !
-       use set_nnod_4_ele_by_type
+      use set_nnod_4_ele_by_type
 !
-       integer (kind = kint), intent(in) :: id_file
-       integer (kind = kint) :: i
+      integer (kind = kint), intent(in) :: id_file
+      type(element_data), intent(inout) :: ele_IO
+!
+      integer (kind = kint) :: i
 !
 !
        call alloc_element_types(ele_IO)

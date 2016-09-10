@@ -16,6 +16,7 @@
       use m_precision
       use m_machine_parameter
 !
+      use m_comm_data_IO
       use m_read_mesh_data
       use binary_IO
 !
@@ -88,7 +89,7 @@
 !
       call open_read_binary_file(mesh_file_name, my_rank)
       call read_domain_info_b(my_rank_IO, comm_IO)
-      call read_number_of_node_b
+      call read_number_of_node_b(nod_IO)
       call close_binary_file
 !
       end subroutine read_node_size_b
@@ -109,10 +110,10 @@
       call open_read_binary_file(mesh_file_name, my_rank)
 !
       call read_domain_info_b(my_rank_IO, comm_IO)
-      call read_number_of_node_b
-      call read_geometry_info_b
+      call read_number_of_node_b(nod_IO)
+      call read_geometry_info_b(nod_IO)
 !
-      call read_number_of_element_b
+      call read_number_of_element_b(ele_IO)
       call close_binary_file
 !
       end subroutine read_geometry_size_b

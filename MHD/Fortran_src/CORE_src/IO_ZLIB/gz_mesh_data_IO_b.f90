@@ -9,13 +9,13 @@
 !!
 !!@verbatim
 !!      subroutine gz_write_geometry_data_b
-!!      subroutine gz_write_geometry_info_b
-!!      subroutine gz_write_element_info_b
-!!
 !!      subroutine gz_read_geometry_data_b
-!!      subroutine gz_read_number_of_node_b
-!!      subroutine gz_read_geometry_info_b
-!!      subroutine gz_read_number_of_element_b
+!!
+!!      subroutine gz_read_number_of_node_b(nod_IO)
+!!      subroutine gz_read_geometry_info_b(nod_IO)
+!!      subroutine gz_read_number_of_element_b(ele_IO)
+!!        type(node_data), intent(inout) :: nod_IO
+!!        type(element_data), intent(inout) :: ele_IO
 !!@endverbatim
 !
       module gz_mesh_data_IO_b
@@ -23,11 +23,12 @@
       use m_precision
       use m_constants
 !
-      use m_comm_data_IO
-      use m_read_mesh_data
+      use t_comm_table
+      use t_geometry_data
 !
       implicit  none
 !
+      private :: gz_write_geometry_info_b
       private :: gz_write_element_info_b, gz_read_element_info_b
 !
 !------------------------------------------------------------------
@@ -38,13 +39,15 @@
 !
       subroutine gz_write_geometry_data_b
 !
+      use m_read_mesh_data
+      use m_comm_data_IO
       use gz_domain_data_IO_b
 !
 !
       call gz_write_domain_info_b(my_rank_IO, comm_IO)
 !
-      call gz_write_geometry_info_b
-      call gz_write_element_info_b
+      call gz_write_geometry_info_b(nod_IO)
+      call gz_write_element_info_b(ele_IO)
 !
       call gz_write_import_data_b(comm_IO)
       call gz_write_export_data_b(comm_IO)
@@ -54,9 +57,11 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine gz_write_geometry_info_b
+      subroutine gz_write_geometry_info_b(nod_IO)
 !
       use gz_binary_IO
+!
+      type(node_data), intent(inout) :: nod_IO
 !
 !
       call gz_write_one_integer_b(nod_IO%numnod)
@@ -71,9 +76,11 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_write_element_info_b
+      subroutine gz_write_element_info_b(ele_IO)
 !
       use gz_binary_IO
+!
+      type(element_data), intent(inout) :: ele_IO
 !
       integer (kind = kint) :: i
       integer (kind = kint), allocatable :: ie_tmp(:)
@@ -100,17 +107,19 @@
 !
       subroutine gz_read_geometry_data_b
 !
+      use m_read_mesh_data
+      use m_comm_data_IO
       use gz_domain_data_IO_b
 !
 !
       call gz_read_domain_info_b(my_rank_IO, comm_IO)
-      call gz_read_number_of_node_b
-      call gz_read_geometry_info_b
+      call gz_read_number_of_node_b(nod_IO)
+      call gz_read_geometry_info_b(nod_IO)
 !
 !  ----  read element data -------
 !
-      call gz_read_number_of_element_b
-      call gz_read_element_info_b
+      call gz_read_number_of_element_b(ele_IO)
+      call gz_read_element_info_b(ele_IO)
 !
 ! ----  import & export 
 !
@@ -122,9 +131,11 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine gz_read_number_of_node_b
+      subroutine gz_read_number_of_node_b(nod_IO)
 !
       use gz_binary_IO
+!
+      type(node_data), intent(inout) :: nod_IO
 !
 !
       call gz_read_one_integer_b(nod_IO%numnod)
@@ -134,9 +145,11 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_read_geometry_info_b
+      subroutine gz_read_geometry_info_b(nod_IO)
 !
       use gz_binary_IO
+!
+      type(node_data), intent(inout) :: nod_IO
 !
 !
       call alloc_node_geometry_base(nod_IO)
@@ -148,9 +161,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_read_number_of_element_b
+      subroutine gz_read_number_of_element_b(ele_IO)
 !
       use gz_binary_IO
+!
+      type(element_data), intent(inout) :: ele_IO
+!
 !
       call gz_read_one_integer_b(ele_IO%numele)
 !
@@ -158,10 +174,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_read_element_info_b
+      subroutine gz_read_element_info_b(ele_IO)
 !
       use gz_binary_IO
       use set_nnod_4_ele_by_type
+!
+      type(element_data), intent(inout) :: ele_IO
 !
       integer (kind = kint) :: i
       integer (kind = kint), allocatable :: ie_tmp(:)

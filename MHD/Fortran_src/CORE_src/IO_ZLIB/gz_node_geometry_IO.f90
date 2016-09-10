@@ -1,18 +1,24 @@
+!> @file  gz_node_geometry_IO.f90
+!!      module gz_node_geometry_IO
+!!
+!! @author  H. Matsui
+!! @date Written in Aug., 2006
 !
-!      module gz_node_geometry_IO
-!
-!     Written by H. Matsui on Aug., 2006
-!
-!      subroutine write_geometry_info_gz
-!
-!      subroutine read_number_of_node_gz
-!      subroutine read_geometry_info_gz
+!> @brief Node data IO using zlib
+!!
+!!@verbatim
+!!      subroutine write_geometry_info_gz(nod_IO)
+!!
+!!      subroutine read_number_of_node_gz(nod_IO)
+!!      subroutine read_geometry_info_gz(nod_IO)
+!!        type(node_data), intent(inout) :: nod_IO
+!!@endverbatim
 !
       module gz_node_geometry_IO
 !
       use m_precision
 !
-      use m_read_mesh_data
+      use t_geometry_data
       use skip_gz_comment
 !
       implicit none
@@ -23,7 +29,9 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_geometry_info_gz
+      subroutine write_geometry_info_gz(nod_IO)
+!
+      type(node_data), intent(inout) :: nod_IO
 !
       integer (kind = kint) :: i
 !
@@ -45,7 +53,9 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine read_number_of_node_gz
+      subroutine read_number_of_node_gz(nod_IO)
+!
+      type(node_data), intent(inout) :: nod_IO
 !
 !
       call skip_gz_comment_int(nod_IO%numnod)
@@ -55,7 +65,9 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_geometry_info_gz
+      subroutine read_geometry_info_gz(nod_IO)
+!
+      type(node_data), intent(inout) :: nod_IO
 !
       integer (kind = kint) :: i, k
 !

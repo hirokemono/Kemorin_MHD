@@ -36,7 +36,6 @@
       use set_mesh_file_names
 !
       integer(kind = kint), intent(in) :: my_rank
-      character(len=kchara) :: fname_tmp
 !
 !
       call set_mesh_file_name(mesh_ele_file_head, id_ascii_file_fmt,    &
