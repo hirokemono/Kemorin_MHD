@@ -146,6 +146,7 @@
       subroutine para_gen_sph_rj_modes(ndomain_sph, comm_rlm_mul,       &
      &          sph_params, sph_rlm, sph_rj)
 !
+      use m_group_data_sph_specr_IO
       use set_local_index_table_sph
       use set_comm_table_rtp_rj
       use sph_file_IO_select
@@ -168,7 +169,7 @@
      &             'Construct spherical modes for domain ',             &
      &            ip_rank,  ' on ', my_rank
         call const_sph_rj_modes(ip_rank, ndomain_sph,                   &
-     &      comm_rlm_mul, sph_params, sph_rj, sph_rlm)
+     &      comm_rlm_mul, sph_params, sph_rj, sph_rlm, sph_grp_IO)
 !
         call sel_write_spectr_modes_rj_file(ip_rank)
         write(*,'(a,i6,a,i6)') 'Spherical modes for domain',            &
@@ -183,6 +184,7 @@
       subroutine para_gen_sph_rtp_grids(ndomain_sph, comm_rtm_mul,      &
      &          sph_params, sph_rtp, sph_rtm)
 !
+      use m_group_data_sph_specr_IO
       use set_local_index_table_sph
       use set_comm_table_rtp_rj
       use sph_file_IO_select
@@ -205,7 +207,7 @@
      &             'Construct spherical grids for domain ',             &
      &            ip_rank,  ' on ', my_rank
         call const_sph_rtp_grids(ip_rank, ndomain_sph, comm_rtm_mul,    &
-     &      sph_params, sph_rtp, sph_rtm)
+     &      sph_params, sph_rtp, sph_rtm, sph_grp_IO)
 !
         call sel_write_geom_rtp_file(ip_rank)
         write(*,'(a,i6,a,i6)') 'Spherical grids for domain',            &

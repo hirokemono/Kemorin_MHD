@@ -130,6 +130,7 @@
       subroutine mpi_gen_sph_rj_modes                                   &
      &         (comm_rlm_mul, sph_params, sph_rlm, sph_rj)
 !
+      use m_group_data_sph_specr_IO
       use set_local_index_table_sph
       use set_comm_table_rtp_rj
       use sph_file_MPI_IO_select
@@ -145,7 +146,7 @@
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &             'Construct spherical modes for domain ', my_rank
       call const_sph_rj_modes(my_rank, nprocs,                          &
-     &    comm_rlm_mul, sph_params, sph_rj, sph_rlm)
+     &    comm_rlm_mul, sph_params, sph_rj, sph_rlm, sph_grp_IO)
 !
       call sel_mpi_write_spectr_rj_file
       write(*,'(a,i6,a)') 'Spherical modes for domain',                 &
@@ -159,6 +160,7 @@
       subroutine mpi_gen_sph_rtp_grids                                  &
      &         (comm_rtm_mul, sph_params, sph_rtp, sph_rtm)
 !
+      use m_group_data_sph_specr_IO
       use set_local_index_table_sph
       use set_comm_table_rtp_rj
       use sph_file_MPI_IO_select
@@ -173,7 +175,7 @@
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &             'Construct spherical grids for domain ',  my_rank
       call const_sph_rtp_grids(my_rank, nprocs, comm_rtm_mul,           &
-     &    sph_params, sph_rtp, sph_rtm)
+     &    sph_params, sph_rtp, sph_rtm, sph_grp_IO)
 !
       call sel_mpi_write_geom_rtp_file
       write(*,'(a,i6,a)') 'Spherical grids for domain',                 &
