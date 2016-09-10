@@ -328,8 +328,8 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
 !
 !
-      if(sph_rj%irank_sph_rj(1).ne.sph_rank_IO(1)                       &
-     &       .or. sph_rj%irank_sph_rj(2).ne.sph_rank_IO(2)) then
+      if(sph_rj%irank_sph_rj(1).ne.sph_IO1%sph_rank(1)                  &
+     &       .or. sph_rj%irank_sph_rj(2).ne.sph_IO1%sph_rank(2)) then
         call calypso_MPI_abort(ierr_sph,'rj rank ID is wrong')
       end if
 !

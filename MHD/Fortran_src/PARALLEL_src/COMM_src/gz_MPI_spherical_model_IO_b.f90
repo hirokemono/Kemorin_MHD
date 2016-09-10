@@ -46,7 +46,7 @@
 !
       call gz_mpi_read_int_vector_b                                     &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    ndir_sph_IO, sph_rank_IO)
+     &    ndir_sph_IO, sph_IO1%sph_rank)
 !
       end subroutine gz_mpi_read_rank_4_sph_b
 !
@@ -101,7 +101,7 @@
 !
 !
       call gz_mpi_write_int_vector_b                                    &
-     &   (id_file, ioff_gl, ndir_sph_IO, sph_rank_IO)
+     &   (id_file, ioff_gl, ndir_sph_IO, sph_IO1%sph_rank)
 !
       end subroutine gz_mpi_write_rank_4_sph_b
 !

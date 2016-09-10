@@ -33,8 +33,8 @@
       subroutine read_rank_4_sph_gz
 !
 !
-      call skip_gz_comment_int( sph_rank_IO(1) )
-      read(textbuf,*) sph_rank_IO(1:ndir_sph_IO)
+      call skip_gz_comment_int( sph_IO1%sph_rank(1) )
+      read(textbuf,*) sph_IO1%sph_rank(1:ndir_sph_IO)
 !
       end subroutine read_rank_4_sph_gz
 !
@@ -84,7 +84,7 @@
 !
       write(fmt_txt,'(a1,i2,a9)')                                       &
      &                '(', ndir_sph_IO, '(i16),a1)'
-      write(textbuf,fmt_txt) sph_rank_IO(1:ndir_sph_IO), char(0)
+      write(textbuf,fmt_txt) sph_IO1%sph_rank(1:ndir_sph_IO), char(0)
       call gz_write_textbuf_w_lf
 !
       end subroutine write_rank_4_sph_gz

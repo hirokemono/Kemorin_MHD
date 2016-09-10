@@ -54,7 +54,7 @@
 !
       call mpi_read_int_vector_b                                        &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    ndir_sph_IO, sph_rank_IO, IO_param%istack_merged)
+     &    ndir_sph_IO, sph_IO1%sph_rank, IO_param%istack_merged)
       call dealloc_istack_merge(IO_param)
 !
       end subroutine mpi_read_rank_4_sph_b
@@ -124,7 +124,7 @@
       call set_istack_4_fixed_num(ndir_sph_IO, IO_param)
 !
       call mpi_write_int_vector_b(id_file, nprocs_in, id_rank, ioff_gl, &
-     &    ndir_sph_IO, sph_rank_IO, IO_param%istack_merged)
+     &    ndir_sph_IO, sph_IO1%sph_rank, IO_param%istack_merged)
       call dealloc_istack_merge(IO_param)
 !
       end subroutine mpi_write_rank_4_sph_b

@@ -40,7 +40,7 @@
       integer(kind = kint), intent(in) :: id_file
 !
       call skip_comment(character_4_read,id_file)
-      read(character_4_read,*) sph_rank_IO(1:ndir_sph_IO)
+      read(character_4_read,*) sph_IO1%sph_rank(1:ndir_sph_IO)
 !
       end subroutine read_rank_4_sph
 !
@@ -95,7 +95,7 @@
 !
 !
       write(id_file,'(a)', advance='NO') hd_segment()
-      write(id_file,'(10i16)') sph_rank_IO(1:ndir_sph_IO)
+      write(id_file,'(10i16)') sph_IO1%sph_rank(1:ndir_sph_IO)
 !
       end subroutine write_rank_4_sph
 !

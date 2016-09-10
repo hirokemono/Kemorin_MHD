@@ -23,11 +23,16 @@
       module m_node_id_spherical_IO
 !
       use m_precision
+      use t_node_id_spherical_IO
 !
       implicit none
 !
 !
-      integer(kind = kint) :: sph_rank_IO(3)
+!>      Structure for spherical harmonics table IO
+      type(sph_IO_data), save :: sph_IO1
+!sph_IO1%sph_rank
+!
+!      integer(kind = kint) :: sph_rank_IO(3)
 !
       integer(kind = kint) :: nidx_gl_sph_IO(1:3)
       integer(kind = kint) :: ltr_gl_IO

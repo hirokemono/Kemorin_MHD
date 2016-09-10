@@ -34,7 +34,7 @@
       subroutine read_rank_4_sph_b
 !
 !
-      call read_mul_integer_b(ndir_sph_IO, sph_rank_IO)
+      call read_mul_integer_b(ndir_sph_IO, sph_IO1%sph_rank)
 !
       end subroutine read_rank_4_sph_b
 !
@@ -69,7 +69,7 @@
       subroutine write_rank_4_sph_b
 !
 !
-      call write_mul_integer_b(ndir_sph_IO, sph_rank_IO)
+      call write_mul_integer_b(ndir_sph_IO, sph_IO1%sph_rank)
 !
       end subroutine write_rank_4_sph_b
 !
