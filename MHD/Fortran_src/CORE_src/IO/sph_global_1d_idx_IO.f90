@@ -48,7 +48,7 @@
       call allocate_idx_sph_1d1_IO
 !
       do i = 1, sph_IO1%nidx_sph(1)
-        read(id_file,*) idx_gl_1_IO(i), r_gl_1_IO(i)
+        read(id_file,*) sph_IO1%idx_gl_1(i), r_gl_1_IO(i)
       end do
 !
       call skip_comment(character_4_read,id_file)
@@ -90,7 +90,7 @@
       call allocate_idx_sph_1d1_IO
 !
       do i = 1, sph_IO1%nidx_sph(1)
-        read(id_file,*) idx_gl_1_IO(i), r_gl_1_IO(i)
+        read(id_file,*) sph_IO1%idx_gl_1(i), r_gl_1_IO(i)
       end do
 !
       call skip_comment(character_4_read,id_file)
@@ -118,7 +118,8 @@
       write(id_file,'(3i16)') sph_IO1%nidx_sph(1),                      &
      &                        sph_IO1%ist_sph(1), sph_IO1%ied_sph(1)
       do i = 1, sph_IO1%nidx_sph(1)
-        write(id_file,'(i16,1pE25.15e3)') idx_gl_1_IO(i), r_gl_1_IO(i)
+        write(id_file,'(i16,1pE25.15e3)')                               &
+     &                        sph_IO1%idx_gl_1(i), r_gl_1_IO(i)
       end do
 !
       write(id_file,'(a)', advance='NO') hd_tgrid()
@@ -157,7 +158,8 @@
       write(id_file,'(3i16)') sph_IO1%nidx_sph(1),                      &
      &                        sph_IO1%ist_sph(1), sph_IO1%ied_sph(1)
       do i = 1, sph_IO1%nidx_sph(1)
-        write(id_file,'(i16,1pE25.15e3)') idx_gl_1_IO(i), r_gl_1_IO(i)
+        write(id_file,'(i16,1pE25.15e3)')                               &
+     &                        sph_IO1%idx_gl_1(i), r_gl_1_IO(i)
       end do
 !
       write(id_file,'(a)', advance='NO') hd_jmode()

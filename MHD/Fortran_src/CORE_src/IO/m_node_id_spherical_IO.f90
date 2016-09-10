@@ -30,7 +30,7 @@
 !
 !>      Structure for spherical harmonics table IO
       type(sph_IO_data), save :: sph_IO1
-!sph_IO1%ncomp_table_1d
+!sph_IO1%idx_gl_1
 !
 !      integer(kind = kint) :: sph_rank_IO(3)
 !
@@ -47,7 +47,7 @@
 !      integer(kind = kint) :: ist_sph_IO(3)
 !      integer(kind = kint) :: ied_sph_IO(3)
 !      integer(kind = kint) :: ncomp_itbl_1d_IO(3)
-      integer(kind = kint), allocatable :: idx_gl_1_IO(:)
+!      integer(kind = kint), allocatable :: idx_gl_1_IO(:)
       integer(kind = kint), allocatable :: idx_gl_2_IO(:,:)
       integer(kind = kint), allocatable :: idx_gl_3_IO(:,:)
 !
@@ -80,9 +80,9 @@
 !
       subroutine allocate_idx_sph_1d1_IO
 !
-      allocate( idx_gl_1_IO(sph_IO1%nidx_sph(1)) )
+      allocate( sph_IO1%idx_gl_1(sph_IO1%nidx_sph(1)) )
       allocate( r_gl_1_IO(sph_IO1%nidx_sph(1)) )
-      idx_gl_1_IO =  0
+      sph_IO1%idx_gl_1 =  0
       r_gl_1_IO = 0.0d0
 !
       end subroutine allocate_idx_sph_1d1_IO
@@ -119,7 +119,7 @@
 !
       subroutine deallocate_idx_sph_1d1_IO
 !
-      deallocate( idx_gl_1_IO )
+      deallocate( sph_IO1%idx_gl_1 )
       deallocate( r_gl_1_IO )
 !
       end subroutine deallocate_idx_sph_1d1_IO

@@ -79,7 +79,7 @@
       rtp%radius_1d_rtp_r(1:rtp%nidx_rtp(1))                            &
      &       =   r_gl_1_IO(1:rtp%nidx_rtp(1))
       rtp%idx_gl_1d_rtp_r(1:rtp%nidx_rtp(1))                            &
-     &       =   idx_gl_1_IO(1:rtp%nidx_rtp(1))
+     &       =   sph_IO1%idx_gl_1(1:rtp%nidx_rtp(1))
       rtp%idx_gl_1d_rtp_t(1:rtp%nidx_rtp(2))                            &
      &       =   idx_gl_2_IO(1:rtp%nidx_rtp(2),1)
       rtp%idx_gl_1d_rtp_p(1:rtp%nidx_rtp(3),1)                          &
@@ -125,7 +125,7 @@
       rtm%radius_1d_rtm_r(1:rtm%nidx_rtm(1))                            &
      &      =   r_gl_1_IO(1:rtm%nidx_rtm(1))
       rtm%idx_gl_1d_rtm_r(1:rtm%nidx_rtm(1))                            &
-     &      =   idx_gl_1_IO(1:rtm%nidx_rtm(1))
+     &      =   sph_IO1%idx_gl_1(1:rtm%nidx_rtm(1))
       rtm%idx_gl_1d_rtm_t(1:rtm%nidx_rtm(2))                            &
      &      =   idx_gl_2_IO(1:rtm%nidx_rtm(2),1)
       rtm%idx_gl_1d_rtm_m(1:rtm%nidx_rtm(3),1)                          &
@@ -171,7 +171,7 @@
       rlm%radius_1d_rlm_r(1:rlm%nidx_rlm(1))                            &
      &       =   r_gl_1_IO(1:rlm%nidx_rlm(1))
       rlm%idx_gl_1d_rlm_r(1:rlm%nidx_rlm(1))                            &
-     &       =   idx_gl_1_IO(1:rlm%nidx_rlm(1))
+     &       =   sph_IO1%idx_gl_1(1:rlm%nidx_rlm(1))
       rlm%idx_gl_1d_rlm_j(1:rlm%nidx_rlm(2),1)                          &
      &       = idx_gl_2_IO(1:rlm%nidx_rlm(2),1)
       rlm%idx_gl_1d_rlm_j(1:rlm%nidx_rlm(2),2)                          &
@@ -217,7 +217,8 @@
       rj%a_r_1d_rj_r(1:rj%nidx_rj(1))                                   &
      &       = one / rj%radius_1d_rj_r(1:rj%nidx_rj(1))
 !
-      rj%idx_gl_1d_rj_r(1:rj%nidx_rj(1)) = idx_gl_1_IO(1:rj%nidx_rj(1))
+      rj%idx_gl_1d_rj_r(1:rj%nidx_rj(1))                                &
+     &       = sph_IO1%idx_gl_1(1:rj%nidx_rj(1))
       rj%idx_gl_1d_rj_j(1:rj%nidx_rj(2),1)                              &
      &       = idx_gl_2_IO(1:rj%nidx_rj(2),1)
       rj%idx_gl_1d_rj_j(1:rj%nidx_rj(2),2)                              &
@@ -284,7 +285,7 @@
 !
       r_gl_1_IO(1:rtp%nidx_rtp(1))                                      &
      &        =     rtp%radius_1d_rtp_r(1:rtp%nidx_rtp(1))
-      idx_gl_1_IO(1:rtp%nidx_rtp(1))                                    &
+      sph_IO1%idx_gl_1(1:rtp%nidx_rtp(1))                               &
      &        =   rtp%idx_gl_1d_rtp_r(1:rtp%nidx_rtp(1))
       idx_gl_2_IO(1:rtp%nidx_rtp(2),1)                                  &
      &        = rtp%idx_gl_1d_rtp_t(1:rtp%nidx_rtp(2))
@@ -343,7 +344,7 @@
 !
       r_gl_1_IO(1:rtm%nidx_rtm(1))                                      &
      &      =     rtm%radius_1d_rtm_r(1:rtm%nidx_rtm(1))
-      idx_gl_1_IO(1:rtm%nidx_rtm(1))                                    &
+      sph_IO1%idx_gl_1(1:rtm%nidx_rtm(1))                               &
      &       =   rtm%idx_gl_1d_rtm_r(1:rtm%nidx_rtm(1))
       idx_gl_2_IO(1:rtm%nidx_rtm(2),1)                                  &
      &       = rtm%idx_gl_1d_rtm_t(1:rtm%nidx_rtm(2))
@@ -399,7 +400,7 @@
 !
       r_gl_1_IO(1:rlm%nidx_rlm(1))                                      &
      &       =     rlm%radius_1d_rlm_r(1:rlm%nidx_rlm(1))
-      idx_gl_1_IO(1:rlm%nidx_rlm(1))                                    &
+      sph_IO1%idx_gl_1(1:rlm%nidx_rlm(1))                               &
      &       =   rlm%idx_gl_1d_rlm_r(1:rlm%nidx_rlm(1))
       idx_gl_2_IO(1:rlm%nidx_rlm(2),1)                                  &
      &       = rlm%idx_gl_1d_rlm_j(1:rlm%nidx_rlm(2),1)
@@ -459,7 +460,8 @@
       end if
 !
       r_gl_1_IO(1:rj%nidx_rj(1)) =   rj%radius_1d_rj_r(1:rj%nidx_rj(1))
-      idx_gl_1_IO(1:rj%nidx_rj(1)) = rj%idx_gl_1d_rj_r(1:rj%nidx_rj(1))
+      sph_IO1%idx_gl_1(1:rj%nidx_rj(1))                                 &
+     &       = rj%idx_gl_1d_rj_r(1:rj%nidx_rj(1))
       idx_gl_2_IO(1:rj%nidx_rj(2),1)                                    &
      &       = rj%idx_gl_1d_rj_j(1:rj%nidx_rj(2),1)
       idx_gl_2_IO(1:rj%nidx_rj(2),2)                                    &
