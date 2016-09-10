@@ -337,7 +337,7 @@
         call calypso_MPI_abort                                          &
      &     (ierr_sph,'number of local mode is wrong')
       end if
-      if(l_truncation .ne. ltr_gl_IO) then
+      if(l_truncation .ne. sph_IO1%ltr_gl) then
         call calypso_MPI_abort(ierr_sph,'truncation is wrong')
       end if
 !

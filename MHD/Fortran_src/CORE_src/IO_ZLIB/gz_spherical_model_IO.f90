@@ -46,7 +46,7 @@
       call skip_gz_comment_int( sph_IO1%nidx_gl_sph(1) )
       read(textbuf,*) sph_IO1%nidx_gl_sph(1:ndir_sph_IO)
 !
-      call skip_gz_comment_int( ltr_gl_IO )
+      call skip_gz_comment_int( sph_IO1%ltr_gl )
 !
       end subroutine read_gl_resolution_sph_gz
 !
@@ -106,7 +106,7 @@
       write(textbuf,fmt_txt) sph_IO1%nidx_gl_sph(1:ndir_sph_IO), char(0)
       call gz_write_textbuf_w_lf
 !
-      write(textbuf,'(i16,a1)') ltr_gl_IO, char(0)
+      write(textbuf,'(i16,a1)') sph_IO1%ltr_gl, char(0)
       call gz_write_textbuf_w_lf
 !
       end subroutine write_gl_resolution_sph_gz

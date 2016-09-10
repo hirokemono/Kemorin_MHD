@@ -44,7 +44,7 @@
 !
 !
       call gz_read_mul_integer_b(ndir_sph_IO, sph_IO1%nidx_gl_sph)
-      call gz_read_one_integer_b(ltr_gl_IO)
+      call gz_read_one_integer_b(sph_IO1%ltr_gl)
 !
       end subroutine gz_read_gl_resolution_sph_b
 !
@@ -79,7 +79,7 @@
 !
 !
       call gz_write_mul_integer_b(ndir_sph_IO, sph_IO1%nidx_gl_sph)
-      call gz_write_one_integer_b(ltr_gl_IO)
+      call gz_write_one_integer_b(sph_IO1%ltr_gl)
 !
       end subroutine gz_write_gl_resolution_sph_b
 !
