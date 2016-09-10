@@ -34,7 +34,7 @@
       subroutine gz_read_rank_4_sph_b
 !
 !
-      call gz_read_mul_integer_b(ndir_sph_IO, sph_IO1%sph_rank)
+      call gz_read_mul_integer_b(sph_IO1%numdir_sph, sph_IO1%sph_rank)
 !
       end subroutine gz_read_rank_4_sph_b
 !
@@ -43,7 +43,7 @@
       subroutine gz_read_gl_resolution_sph_b
 !
 !
-      call gz_read_mul_integer_b(ndir_sph_IO, sph_IO1%nidx_gl_sph)
+      call gz_read_mul_integer_b(sph_IO1%numdir_sph, sph_IO1%nidx_gl_sph)
       call gz_read_one_integer_b(sph_IO1%ltr_gl)
 !
       end subroutine gz_read_gl_resolution_sph_b
@@ -59,7 +59,7 @@
       call allocate_nod_id_sph_IO
 !
       call gz_read_mul_int8_b(nnod_sph_IO, inod_gl_sph_IO)
-      nvect = nnod_sph_IO * ndir_sph_IO
+      nvect = nnod_sph_IO * sph_IO1%numdir_sph
       call gz_read_mul_integer_b(nvect, idx_gl_sph_IO)
 !
       end subroutine gz_read_gl_nodes_sph_b
@@ -69,7 +69,7 @@
       subroutine gz_write_rank_4_sph_b
 !
 !
-      call gz_write_mul_integer_b(ndir_sph_IO, sph_IO1%sph_rank)
+      call gz_write_mul_integer_b(sph_IO1%numdir_sph, sph_IO1%sph_rank)
 !
       end subroutine gz_write_rank_4_sph_b
 !
@@ -78,7 +78,8 @@
       subroutine gz_write_gl_resolution_sph_b
 !
 !
-      call gz_write_mul_integer_b(ndir_sph_IO, sph_IO1%nidx_gl_sph)
+      call gz_write_mul_integer_b                                       &
+     &   (sph_IO1%numdir_sph, sph_IO1%nidx_gl_sph)
       call gz_write_one_integer_b(sph_IO1%ltr_gl)
 !
       end subroutine gz_write_gl_resolution_sph_b
@@ -92,7 +93,7 @@
 !
       call gz_write_one_integer_b(nnod_sph_IO)
       call gz_write_mul_int8_b(nnod_sph_IO, inod_gl_sph_IO)
-      nvect = nnod_sph_IO * ndir_sph_IO
+      nvect = nnod_sph_IO * sph_IO1%numdir_sph
       call gz_write_mul_integer_b(nvect, idx_gl_sph_IO)
 !
       call deallocate_nod_id_sph_IO

@@ -50,11 +50,11 @@
 !
 !
       call alloc_istack_merge(id_rank, nprocs_in, IO_param)
-      call set_istack_4_fixed_num(ndir_sph_IO, IO_param)
+      call set_istack_4_fixed_num(sph_IO1%numdir_sph, IO_param)
 !
       call mpi_read_int_vector_b                                        &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    ndir_sph_IO, sph_IO1%sph_rank, IO_param%istack_merged)
+     &    sph_IO1%numdir_sph, sph_IO1%sph_rank, IO_param%istack_merged)
       call dealloc_istack_merge(IO_param)
 !
       end subroutine mpi_read_rank_4_sph_b
@@ -71,7 +71,7 @@
 !
 !
       call mpi_read_mul_inthead_b                                       &
-     &   (id_file, ioff_gl, ndir_sph_IO, sph_IO1%nidx_gl_sph)
+     &   (id_file, ioff_gl, sph_IO1%numdir_sph, sph_IO1%nidx_gl_sph)
       call mpi_read_one_inthead_b(id_file, ioff_gl, sph_IO1%ltr_gl)
 !
       end subroutine mpi_read_gl_reso_sph_b
@@ -100,8 +100,8 @@
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
      &    nnod_sph_IO, inod_gl_sph_IO, IO_param%istack_merged)
 !
-      nvect = nnod_sph_IO * ndir_sph_IO
-      call mul_istack_4_parallell_vect(ndir_sph_IO, IO_param)
+      nvect = nnod_sph_IO * sph_IO1%numdir_sph
+      call mul_istack_4_parallell_vect(sph_IO1%numdir_sph, IO_param)
       call mpi_read_int_vector_b                                        &
      &   (id_file, nprocs_in, id_rank, ioff_gl, nvect, idx_gl_sph_IO,   &
      &    IO_param%istack_merged)
@@ -121,10 +121,10 @@
 !
 !
       call alloc_istack_merge(id_rank, nprocs_in, IO_param)
-      call set_istack_4_fixed_num(ndir_sph_IO, IO_param)
+      call set_istack_4_fixed_num(sph_IO1%numdir_sph, IO_param)
 !
       call mpi_write_int_vector_b(id_file, nprocs_in, id_rank, ioff_gl, &
-     &    ndir_sph_IO, sph_IO1%sph_rank, IO_param%istack_merged)
+     &    sph_IO1%numdir_sph, sph_IO1%sph_rank, IO_param%istack_merged)
       call dealloc_istack_merge(IO_param)
 !
       end subroutine mpi_write_rank_4_sph_b
@@ -138,7 +138,7 @@
 !
 !
       call mpi_write_mul_inthead_b                                      &
-     &   (id_file, ioff_gl, ndir_sph_IO, sph_IO1%nidx_gl_sph)
+     &   (id_file, ioff_gl, sph_IO1%numdir_sph, sph_IO1%nidx_gl_sph)
       call mpi_write_one_inthead_b(id_file, ioff_gl, sph_IO1%ltr_gl)
 !
       end subroutine mpi_write_gl_reso_sph_b
@@ -164,8 +164,8 @@
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
      &    nnod_sph_IO, inod_gl_sph_IO, IO_param%istack_merged)
 !
-      nvect = nnod_sph_IO * ndir_sph_IO
-      call mul_istack_4_parallell_vect(ndir_sph_IO, IO_param)
+      nvect = nnod_sph_IO * sph_IO1%numdir_sph
+      call mul_istack_4_parallell_vect(sph_IO1%numdir_sph, IO_param)
       call mpi_write_int_vector_b(id_file, nprocs_in, id_rank, ioff_gl, &
      &    nvect, idx_gl_sph_IO, IO_param%istack_merged)
       call dealloc_istack_merge(IO_param)

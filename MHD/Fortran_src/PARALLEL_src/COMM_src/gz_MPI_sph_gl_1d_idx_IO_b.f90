@@ -41,20 +41,20 @@
       integer(kind = kint) :: nvect
 !
 !
-      ndir_sph_IO = 3
+      sph_IO1%numdir_sph = 3
       ncomp_itbl_1d_IO(1) = 1
       ncomp_itbl_1d_IO(2) = 1
       ncomp_itbl_1d_IO(3) = 2
 !
       call gz_mpi_read_int_vector_b                                     &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    ndir_sph_IO, nidx_sph_IO)
+     &    sph_IO1%numdir_sph, nidx_sph_IO)
       call gz_mpi_read_int_vector_b                                     &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    ndir_sph_IO, ist_sph_IO)
+     &    sph_IO1%numdir_sph, ist_sph_IO)
       call gz_mpi_read_int_vector_b                                     &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    ndir_sph_IO, ied_sph_IO)
+     &    sph_IO1%numdir_sph, ied_sph_IO)
 !
       call allocate_idx_sph_1d1_IO
       call allocate_idx_sph_1d2_IO
@@ -89,19 +89,19 @@
       integer(kind = kint) :: nvect
 !
 !
-      ndir_sph_IO = 2
+      sph_IO1%numdir_sph = 2
       ncomp_itbl_1d_IO(1) = 1
       ncomp_itbl_1d_IO(2) = 3
 !
       call gz_mpi_read_int_vector_b                                     &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    ndir_sph_IO, nidx_sph_IO)
+     &    sph_IO1%numdir_sph, nidx_sph_IO)
       call gz_mpi_read_int_vector_b                                     &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    ndir_sph_IO, ist_sph_IO)
+     &    sph_IO1%numdir_sph, ist_sph_IO)
       call gz_mpi_read_int_vector_b                                     &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    ndir_sph_IO, ied_sph_IO)
+     &    sph_IO1%numdir_sph, ied_sph_IO)
 !
       call allocate_idx_sph_1d1_IO
       call allocate_idx_sph_1d2_IO
@@ -131,11 +131,11 @@
 !
 !
       call gz_mpi_write_int_vector_b                                    &
-     &   (id_file, ioff_gl, ndir_sph_IO, nidx_sph_IO)
+     &   (id_file, ioff_gl, sph_IO1%numdir_sph, nidx_sph_IO)
       call gz_mpi_write_int_vector_b                                    &
-     &   (id_file, ioff_gl, ndir_sph_IO, ist_sph_IO)
+     &   (id_file, ioff_gl, sph_IO1%numdir_sph, ist_sph_IO)
       call gz_mpi_write_int_vector_b                                    &
-     &   (id_file, ioff_gl, ndir_sph_IO, ied_sph_IO)
+     &   (id_file, ioff_gl, sph_IO1%numdir_sph, ied_sph_IO)
 !
       call gz_mpi_write_int_vector_b                                    &
      &   (id_file, ioff_gl, nidx_sph_IO(1), idx_gl_1_IO)
@@ -167,11 +167,11 @@
 !
 !
       call gz_mpi_write_int_vector_b                                    &
-     &   (id_file, ioff_gl, ndir_sph_IO, nidx_sph_IO)
+     &   (id_file, ioff_gl, sph_IO1%numdir_sph, nidx_sph_IO)
       call gz_mpi_write_int_vector_b                                    &
-     &   (id_file, ioff_gl, ndir_sph_IO, ist_sph_IO)
+     &   (id_file, ioff_gl, sph_IO1%numdir_sph, ist_sph_IO)
       call gz_mpi_write_int_vector_b                                    &
-     &   (id_file, ioff_gl, ndir_sph_IO, ied_sph_IO)
+     &   (id_file, ioff_gl, sph_IO1%numdir_sph, ied_sph_IO)
 !
       call gz_mpi_write_int_vector_b                                    &
      &   (id_file, ioff_gl, nidx_sph_IO(1), idx_gl_1_IO)

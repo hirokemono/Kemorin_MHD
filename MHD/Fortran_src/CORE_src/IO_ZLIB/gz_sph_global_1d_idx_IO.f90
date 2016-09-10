@@ -29,7 +29,7 @@
       integer(kind = kint) :: i
 !
 !
-      ndir_sph_IO = 3
+      sph_IO1%numdir_sph = 3
       ncomp_itbl_1d_IO(1) = 1
       ncomp_itbl_1d_IO(2) = 1
       ncomp_itbl_1d_IO(3) = 2
@@ -70,7 +70,7 @@
       integer(kind = kint) :: i
 !
 !
-      ndir_sph_IO = 2
+      sph_IO1%numdir_sph = 2
       ncomp_itbl_1d_IO(1) = 1
       ncomp_itbl_1d_IO(2) = 3
 !

@@ -40,7 +40,7 @@
       integer(kind = kint), intent(in) :: id_file
 !
       call skip_comment(character_4_read,id_file)
-      read(character_4_read,*) sph_IO1%sph_rank(1:ndir_sph_IO)
+      read(character_4_read,*) sph_IO1%sph_rank(1:sph_IO1%numdir_sph)
 !
       end subroutine read_rank_4_sph
 !
@@ -53,7 +53,7 @@
       integer(kind = kint), intent(in) :: id_file
 !
       call skip_comment(character_4_read,id_file)
-      read(character_4_read,*) sph_IO1%nidx_gl_sph(1:ndir_sph_IO)
+      read(character_4_read,*) sph_IO1%nidx_gl_sph(1:sph_IO1%numdir_sph)
       call skip_comment(character_4_read,id_file)
       read(character_4_read,*) sph_IO1%ltr_gl
 !
@@ -76,10 +76,10 @@
 !
       call skip_comment(character_4_read,id_file)
       read(character_4_read,*)                                          &
-     &           inod_gl_sph_IO(1), idx_gl_sph_IO(1,1:ndir_sph_IO)
+     &        inod_gl_sph_IO(1), idx_gl_sph_IO(1,1:sph_IO1%numdir_sph)
       do i = 2, nnod_sph_IO
         read(id_file,*)                                                 &
-     &           inod_gl_sph_IO(i), idx_gl_sph_IO(i,1:ndir_sph_IO)
+     &        inod_gl_sph_IO(i), idx_gl_sph_IO(i,1:sph_IO1%numdir_sph)
       end do
 !
       end subroutine read_gl_nodes_sph
@@ -95,7 +95,7 @@
 !
 !
       write(id_file,'(a)', advance='NO') hd_segment()
-      write(id_file,'(10i16)') sph_IO1%sph_rank(1:ndir_sph_IO)
+      write(id_file,'(10i16)') sph_IO1%sph_rank(1:sph_IO1%numdir_sph)
 !
       end subroutine write_rank_4_sph
 !
@@ -109,7 +109,7 @@
 !
 !
       write(id_file,'(a)', advance='NO') hd_trunc()
-      write(id_file,'(3i16)') sph_IO1%nidx_gl_sph(1:ndir_sph_IO)
+      write(id_file,'(3i16)') sph_IO1%nidx_gl_sph(1:sph_IO1%numdir_sph)
       write(id_file,'(i16)') sph_IO1%ltr_gl
 !
       end subroutine write_gl_resolution_sph
@@ -125,7 +125,7 @@
       write(id_file,'(i16)') nnod_sph_IO
       do i = 1, nnod_sph_IO
         write(id_file,'(20i16)')                                        &
-     &              inod_gl_sph_IO(i), idx_gl_sph_IO(i,1:ndir_sph_IO)
+     &         inod_gl_sph_IO(i), idx_gl_sph_IO(i,1:sph_IO1%numdir_sph)
       end do
 !
       call deallocate_nod_id_sph_IO

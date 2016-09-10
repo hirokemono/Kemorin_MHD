@@ -52,7 +52,7 @@
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      ndir_sph_IO =  3
+      sph_IO1%numdir_sph =  3
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &      'Read gzipped binary grid file: ', trim(file_name)
@@ -99,7 +99,7 @@
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      ndir_sph_IO =  2
+      sph_IO1%numdir_sph =  2
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &      'Read gzipped binary spectr modes file: ', trim(file_name)
@@ -138,7 +138,7 @@
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      ndir_sph_IO =  3
+      sph_IO1%numdir_sph =  3
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &      'Read gzipped binary grid file: ', trim(file_name)
@@ -165,7 +165,7 @@
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      ndir_sph_IO =  2
+      sph_IO1%numdir_sph =  2
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &      'Read gzipped binary spectr modes file: ', trim(file_name)

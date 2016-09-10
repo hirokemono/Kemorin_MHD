@@ -60,7 +60,7 @@
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
 !
-      ndir_sph_IO =  3
+      sph_IO1%numdir_sph =  3
 !
       call gz_mpi_read_domain_info_b                                    &
      &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
@@ -96,7 +96,7 @@
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
 !
-      ndir_sph_IO =  2
+      sph_IO1%numdir_sph =  2
 !
       call gz_mpi_read_domain_info_b                                    &
      &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
@@ -128,7 +128,7 @@
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
 !
-      ndir_sph_IO =  3
+      sph_IO1%numdir_sph =  3
 !
       call gz_mpi_read_domain_info_b                                    &
      &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
@@ -155,7 +155,7 @@
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
 !
-      ndir_sph_IO =  2
+      sph_IO1%numdir_sph =  2
 !
       call gz_mpi_read_domain_info_b                                    &
      &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
