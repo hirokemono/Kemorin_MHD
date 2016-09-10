@@ -64,9 +64,9 @@
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
      &    sph_IO1%numdir_sph, sph_IO1%ied_sph, IO_param%istack_merged)
 !
-      call allocate_idx_sph_1d1_IO
-      call allocate_idx_sph_1d2_IO
-      call allocate_idx_sph_1d3_IO
+      call alloc_idx_sph_1d1_IO(sph_IO1)
+      call alloc_idx_sph_1d2_IO(sph_IO1)
+      call alloc_idx_sph_1d3_IO(sph_IO1)
 !
       call set_istack_4_parallell_data(sph_IO1%nidx_sph(1), IO_param)
 !
@@ -123,8 +123,8 @@
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
      &    sph_IO1%numdir_sph, sph_IO1%ied_sph, IO_param%istack_merged)
 !
-      call allocate_idx_sph_1d1_IO
-      call allocate_idx_sph_1d2_IO
+      call alloc_idx_sph_1d1_IO(sph_IO1)
+      call alloc_idx_sph_1d2_IO(sph_IO1)
 !
       call set_istack_4_parallell_data(sph_IO1%nidx_sph(1), IO_param)
       call mpi_read_int_vector_b                                        &
@@ -184,9 +184,9 @@
      &    nvect, sph_IO1%idx_gl_3, IO_param%istack_merged)
       call dealloc_istack_merge(IO_param)
 !
-      call deallocate_idx_sph_1d1_IO
-      call deallocate_idx_sph_1d2_IO
-      call deallocate_idx_sph_1d3_IO
+      call dealloc_idx_sph_1d1_IO(sph_IO1)
+      call dealloc_idx_sph_1d2_IO(sph_IO1)
+      call dealloc_idx_sph_1d3_IO(sph_IO1)
 !
       end subroutine mpi_write_rtp_gl_1d_table_b
 !
@@ -224,8 +224,8 @@
      &    nvect, sph_IO1%idx_gl_2, IO_param%istack_merged)
       call dealloc_istack_merge(IO_param)
 !
-      call deallocate_idx_sph_1d1_IO
-      call deallocate_idx_sph_1d2_IO
+      call dealloc_idx_sph_1d1_IO(sph_IO1)
+      call dealloc_idx_sph_1d2_IO(sph_IO1)
 !
       end subroutine mpi_write_rj_gl_1d_table_b
 !

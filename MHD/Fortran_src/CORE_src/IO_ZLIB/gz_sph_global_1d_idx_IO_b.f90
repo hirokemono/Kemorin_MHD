@@ -42,9 +42,9 @@
       call gz_read_mul_integer_b(sph_IO1%numdir_sph, sph_IO1%ist_sph)
       call gz_read_mul_integer_b(sph_IO1%numdir_sph, sph_IO1%ied_sph)
 !
-      call allocate_idx_sph_1d1_IO
-      call allocate_idx_sph_1d2_IO
-      call allocate_idx_sph_1d3_IO
+      call alloc_idx_sph_1d1_IO(sph_IO1)
+      call alloc_idx_sph_1d2_IO(sph_IO1)
+      call alloc_idx_sph_1d3_IO(sph_IO1)
 !
       call gz_read_mul_integer_b(sph_IO1%nidx_sph(1), sph_IO1%idx_gl_1)
       call gz_read_1d_vector_b(sph_IO1%nidx_sph(1), sph_IO1%r_gl_1)
@@ -72,8 +72,8 @@
       call gz_read_mul_integer_b(sph_IO1%numdir_sph, sph_IO1%ist_sph)
       call gz_read_mul_integer_b(sph_IO1%numdir_sph, sph_IO1%ied_sph)
 !
-      call allocate_idx_sph_1d1_IO
-      call allocate_idx_sph_1d2_IO
+      call alloc_idx_sph_1d1_IO(sph_IO1)
+      call alloc_idx_sph_1d2_IO(sph_IO1)
 !
       call gz_read_mul_integer_b(sph_IO1%nidx_sph(1), sph_IO1%idx_gl_1)
       call gz_read_1d_vector_b(sph_IO1%nidx_sph(1), sph_IO1%r_gl_1)
@@ -104,9 +104,9 @@
       nvect = sph_IO1%nidx_sph(3) * sph_IO1%ncomp_table_1d(3)
       call gz_write_mul_integer_b(nvect, sph_IO1%idx_gl_3)
 !
-      call deallocate_idx_sph_1d1_IO
-      call deallocate_idx_sph_1d2_IO
-      call deallocate_idx_sph_1d3_IO
+      call dealloc_idx_sph_1d1_IO(sph_IO1)
+      call dealloc_idx_sph_1d2_IO(sph_IO1)
+      call dealloc_idx_sph_1d3_IO(sph_IO1)
 !
       end subroutine gz_write_rtp_gl_1d_table_b
 !
@@ -127,8 +127,8 @@
       nvect = sph_IO1%nidx_sph(2) * sph_IO1%ncomp_table_1d(2)
       call gz_write_mul_integer_b(nvect, sph_IO1%idx_gl_2)
 !
-      call deallocate_idx_sph_1d1_IO
-      call deallocate_idx_sph_1d2_IO
+      call dealloc_idx_sph_1d1_IO(sph_IO1)
+      call dealloc_idx_sph_1d2_IO(sph_IO1)
 !
       end subroutine gz_write_rj_gl_1d_table_b
 !

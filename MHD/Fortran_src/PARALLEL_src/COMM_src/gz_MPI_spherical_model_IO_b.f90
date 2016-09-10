@@ -80,7 +80,7 @@
       call gz_mpi_read_one_integer_b                                    &
      &   (id_file, nprocs_in, id_rank, ioff_gl, sph_IO1%numnod_sph)
 !
-      call allocate_nod_id_sph_IO
+      call alloc_nod_id_sph_IO(sph_IO1)
 !
       call gz_mpi_read_int8_vector_b                                    &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
@@ -138,7 +138,7 @@
       call gz_mpi_write_int_vector_b                                    &
      &   (id_file, ioff_gl, nvect, sph_IO1%idx_gl_sph)
 !
-      call deallocate_nod_id_sph_IO
+      call dealloc_nod_id_sph_IO(sph_IO1)
 !
       end subroutine gz_mpi_write_gl_nodes_sph_b
 !

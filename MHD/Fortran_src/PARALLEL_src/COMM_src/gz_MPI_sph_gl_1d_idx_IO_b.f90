@@ -56,9 +56,9 @@
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
      &    sph_IO1%numdir_sph, sph_IO1%ied_sph)
 !
-      call allocate_idx_sph_1d1_IO
-      call allocate_idx_sph_1d2_IO
-      call allocate_idx_sph_1d3_IO
+      call alloc_idx_sph_1d1_IO(sph_IO1)
+      call alloc_idx_sph_1d2_IO(sph_IO1)
+      call alloc_idx_sph_1d3_IO(sph_IO1)
 !
       call gz_mpi_read_int_vector_b                                     &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
@@ -103,8 +103,8 @@
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
      &    sph_IO1%numdir_sph, sph_IO1%ied_sph)
 !
-      call allocate_idx_sph_1d1_IO
-      call allocate_idx_sph_1d2_IO
+      call alloc_idx_sph_1d1_IO(sph_IO1)
+      call alloc_idx_sph_1d2_IO(sph_IO1)
 !
       call gz_mpi_read_int_vector_b                                     &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
@@ -150,9 +150,9 @@
       call gz_mpi_write_int_vector_b                                    &
      &   (id_file, ioff_gl, nvect, sph_IO1%idx_gl_3)
 !
-      call deallocate_idx_sph_1d1_IO
-      call deallocate_idx_sph_1d2_IO
-      call deallocate_idx_sph_1d3_IO
+      call dealloc_idx_sph_1d1_IO(sph_IO1)
+      call dealloc_idx_sph_1d2_IO(sph_IO1)
+      call dealloc_idx_sph_1d3_IO(sph_IO1)
 !
       end subroutine gz_mpi_write_rtp_gl_1d_table_b
 !
@@ -182,8 +182,8 @@
       call gz_mpi_write_int_vector_b                                    &
      &   (id_file, ioff_gl, nvect, sph_IO1%idx_gl_2)
 !
-      call deallocate_idx_sph_1d1_IO
-      call deallocate_idx_sph_1d2_IO
+      call dealloc_idx_sph_1d1_IO(sph_IO1)
+      call dealloc_idx_sph_1d2_IO(sph_IO1)
 !
       end subroutine gz_mpi_write_rj_gl_1d_table_b
 !

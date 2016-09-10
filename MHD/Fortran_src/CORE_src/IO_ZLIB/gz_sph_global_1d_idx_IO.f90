@@ -37,7 +37,7 @@
       call skip_gz_comment_int( sph_IO1%nidx_sph(1) )
       read(textbuf,*) sph_IO1%nidx_sph(1),                              &
      &                sph_IO1%ist_sph(1), sph_IO1%ied_sph(1)
-      call allocate_idx_sph_1d1_IO
+      call alloc_idx_sph_1d1_IO(sph_IO1)
 !
       do i = 1, sph_IO1%nidx_sph(1)
         call get_one_line_from_gz_f
@@ -47,7 +47,7 @@
       call skip_gz_comment_int( sph_IO1%nidx_sph(2) )
       read(textbuf,*) sph_IO1%nidx_sph(2),                              &
      &                sph_IO1%ist_sph(2), sph_IO1%ied_sph(2)
-      call allocate_idx_sph_1d2_IO
+      call alloc_idx_sph_1d2_IO(sph_IO1)
 !
       do i = 1, sph_IO1%nidx_sph(2)
         call get_one_line_from_gz_f
@@ -57,7 +57,7 @@
       call skip_gz_comment_int( sph_IO1%nidx_sph(3) )
       read(textbuf,*) sph_IO1%nidx_sph(3),                              &
      &                sph_IO1%ist_sph(3), sph_IO1%ied_sph(3)
-      call allocate_idx_sph_1d3_IO
+      call alloc_idx_sph_1d3_IO(sph_IO1)
 !
       do i = 1, sph_IO1%nidx_sph(3)
         call get_one_line_from_gz_f
@@ -80,7 +80,7 @@
       call skip_gz_comment_int( sph_IO1%nidx_sph(1) )
       read(textbuf,*) sph_IO1%nidx_sph(1),                              &
      &                sph_IO1%ist_sph(1), sph_IO1%ied_sph(1)
-      call allocate_idx_sph_1d1_IO
+      call alloc_idx_sph_1d1_IO(sph_IO1)
 !
       do i = 1, sph_IO1%nidx_sph(1)
         call get_one_line_from_gz_f
@@ -90,7 +90,7 @@
       call skip_gz_comment_int( sph_IO1%nidx_sph(2) )
       read(textbuf,*) sph_IO1%nidx_sph(2),                              &
      &                sph_IO1%ist_sph(2), sph_IO1%ied_sph(2)
-      call allocate_idx_sph_1d2_IO
+      call alloc_idx_sph_1d2_IO(sph_IO1)
 !
       do i = 1, sph_IO1%nidx_sph(2)
         call get_one_line_from_gz_f
@@ -154,9 +154,9 @@
         call gz_write_textbuf_w_lf
       end do
 !
-      call deallocate_idx_sph_1d1_IO
-      call deallocate_idx_sph_1d2_IO
-      call deallocate_idx_sph_1d3_IO
+      call dealloc_idx_sph_1d1_IO(sph_IO1)
+      call dealloc_idx_sph_1d2_IO(sph_IO1)
+      call dealloc_idx_sph_1d3_IO(sph_IO1)
 !
       end subroutine write_rtp_gl_1d_table_gz
 !
@@ -198,8 +198,8 @@
         call gz_write_textbuf_w_lf
       end do
 !
-      call deallocate_idx_sph_1d1_IO
-      call deallocate_idx_sph_1d2_IO
+      call dealloc_idx_sph_1d1_IO(sph_IO1)
+      call dealloc_idx_sph_1d2_IO(sph_IO1)
 !
       end subroutine write_rj_gl_1d_table_gz
 !

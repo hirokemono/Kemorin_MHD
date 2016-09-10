@@ -56,7 +56,7 @@
 !
 !
       call gz_read_one_integer_b(sph_IO1%numnod_sph)
-      call allocate_nod_id_sph_IO
+      call alloc_nod_id_sph_IO(sph_IO1)
 !
       call gz_read_mul_int8_b(sph_IO1%numnod_sph, sph_IO1%inod_gl_sph)
       nvect = sph_IO1%numnod_sph * sph_IO1%numdir_sph
@@ -96,7 +96,7 @@
       nvect = sph_IO1%numnod_sph * sph_IO1%numdir_sph
       call gz_write_mul_integer_b(nvect, sph_IO1%idx_gl_sph)
 !
-      call deallocate_nod_id_sph_IO
+      call dealloc_nod_id_sph_IO(sph_IO1)
 !
       end subroutine gz_write_gl_nodes_sph_b
 !

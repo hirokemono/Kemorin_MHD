@@ -45,7 +45,7 @@
       call skip_comment(character_4_read,id_file)
       read(character_4_read,*) sph_IO1%nidx_sph(1),                     &
      &                         sph_IO1%ist_sph(1), sph_IO1%ied_sph(1)
-      call allocate_idx_sph_1d1_IO
+      call alloc_idx_sph_1d1_IO(sph_IO1)
 !
       do i = 1, sph_IO1%nidx_sph(1)
         read(id_file,*) sph_IO1%idx_gl_1(i), sph_IO1%r_gl_1(i)
@@ -54,7 +54,7 @@
       call skip_comment(character_4_read,id_file)
       read(character_4_read,*) sph_IO1%nidx_sph(2),                     &
      &                         sph_IO1%ist_sph(2), sph_IO1%ied_sph(2)
-      call allocate_idx_sph_1d2_IO
+      call alloc_idx_sph_1d2_IO(sph_IO1)
 !
       do i = 1, sph_IO1%nidx_sph(2)
         read(id_file,*) sph_IO1%idx_gl_2(i,1:sph_IO1%ncomp_table_1d(2))
@@ -63,7 +63,7 @@
       call skip_comment(character_4_read,id_file)
       read(character_4_read,*) sph_IO1%nidx_sph(3),                     &
      &                         sph_IO1%ist_sph(3), sph_IO1%ied_sph(3)
-      call allocate_idx_sph_1d3_IO
+      call alloc_idx_sph_1d3_IO(sph_IO1)
 !
       do i = 1, sph_IO1%nidx_sph(3)
         read(id_file,*) sph_IO1%idx_gl_3(i,1:sph_IO1%ncomp_table_1d(3))
@@ -87,7 +87,7 @@
       call skip_comment(character_4_read,id_file)
       read(character_4_read,*) sph_IO1%nidx_sph(1),                     &
      &                         sph_IO1%ist_sph(1), sph_IO1%ied_sph(1)
-      call allocate_idx_sph_1d1_IO
+      call alloc_idx_sph_1d1_IO(sph_IO1)
 !
       do i = 1, sph_IO1%nidx_sph(1)
         read(id_file,*) sph_IO1%idx_gl_1(i), sph_IO1%r_gl_1(i)
@@ -96,7 +96,7 @@
       call skip_comment(character_4_read,id_file)
       read(character_4_read,*) sph_IO1%nidx_sph(2),                     &
      &                         sph_IO1%ist_sph(2), sph_IO1%ied_sph(2)
-      call allocate_idx_sph_1d2_IO
+      call alloc_idx_sph_1d2_IO(sph_IO1)
 !
       do i = 1, sph_IO1%nidx_sph(2)
         read(id_file,*) sph_IO1%idx_gl_2(i,1:sph_IO1%ncomp_table_1d(2))
@@ -138,9 +138,9 @@
      &         sph_IO1%idx_gl_3(i,1:sph_IO1%ncomp_table_1d(3))
       end do
 !
-      call deallocate_idx_sph_1d1_IO
-      call deallocate_idx_sph_1d2_IO
-      call deallocate_idx_sph_1d3_IO
+      call dealloc_idx_sph_1d1_IO(sph_IO1)
+      call dealloc_idx_sph_1d2_IO(sph_IO1)
+      call dealloc_idx_sph_1d3_IO(sph_IO1)
 !
       end subroutine write_rtp_gl_1d_table
 !
@@ -170,8 +170,8 @@
      &          sph_IO1%idx_gl_2(i,1:sph_IO1%ncomp_table_1d(2))
       end do
 !
-      call deallocate_idx_sph_1d1_IO
-      call deallocate_idx_sph_1d2_IO
+      call dealloc_idx_sph_1d1_IO(sph_IO1)
+      call dealloc_idx_sph_1d2_IO(sph_IO1)
 !
       end subroutine write_rj_gl_1d_table
 !

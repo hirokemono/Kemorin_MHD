@@ -59,7 +59,7 @@
 !
       call skip_gz_comment_int( sph_IO1%numnod_sph )
 !
-      call allocate_nod_id_sph_IO
+      call alloc_nod_id_sph_IO(sph_IO1)
 !
       do i = 1, sph_IO1%numnod_sph
         call get_one_line_from_gz_f
@@ -132,7 +132,7 @@
         call gz_write_textbuf_w_lf
       end do
 !
-      call deallocate_nod_id_sph_IO
+      call dealloc_nod_id_sph_IO(sph_IO1)
 !
       end subroutine write_gl_nodes_sph_gz
 !

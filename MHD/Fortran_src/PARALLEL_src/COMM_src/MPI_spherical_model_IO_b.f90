@@ -92,7 +92,7 @@
       call mpi_read_one_integer_b                                       &
      &   (id_file, nprocs_in, id_rank, ioff_gl, sph_IO1%numnod_sph)
 !
-      call allocate_nod_id_sph_IO
+      call alloc_nod_id_sph_IO(sph_IO1)
 !
       call alloc_istack_merge(id_rank, nprocs_in, IO_param)
       call set_istack_4_parallell_data(sph_IO1%numnod_sph, IO_param)
@@ -172,7 +172,7 @@
      &    nvect, sph_IO1%idx_gl_sph, IO_param%istack_merged)
       call dealloc_istack_merge(IO_param)
 !
-      call deallocate_nod_id_sph_IO
+      call dealloc_nod_id_sph_IO(sph_IO1)
 !
       end subroutine mpi_write_gl_nodes_sph_b
 !

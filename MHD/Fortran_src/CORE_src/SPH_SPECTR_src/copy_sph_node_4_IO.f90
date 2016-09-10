@@ -95,10 +95,10 @@
      &       = sph_IO1%idx_gl_3(1:rtp%nidx_rtp(3),2)
 !$omp end parallel workshare
 !
-      call deallocate_nod_id_sph_IO
-      call deallocate_idx_sph_1d1_IO
-      call deallocate_idx_sph_1d2_IO
-      call deallocate_idx_sph_1d3_IO
+      call dealloc_nod_id_sph_IO(sph_IO1)
+      call dealloc_idx_sph_1d1_IO(sph_IO1)
+      call dealloc_idx_sph_1d2_IO(sph_IO1)
+      call dealloc_idx_sph_1d3_IO(sph_IO1)
 !
       end subroutine copy_sph_node_4_rtp_from_IO
 !
@@ -149,10 +149,10 @@
      &      = sph_IO1%idx_gl_3(1:rtm%nidx_rtm(3),2)
 !$omp end parallel workshare
 !
-      call deallocate_nod_id_sph_IO
-      call deallocate_idx_sph_1d1_IO
-      call deallocate_idx_sph_1d2_IO
-      call deallocate_idx_sph_1d3_IO
+      call dealloc_nod_id_sph_IO(sph_IO1)
+      call dealloc_idx_sph_1d1_IO(sph_IO1)
+      call dealloc_idx_sph_1d2_IO(sph_IO1)
+      call dealloc_idx_sph_1d3_IO(sph_IO1)
 !
       end subroutine copy_sph_node_4_rtm_from_IO
 !
@@ -200,9 +200,9 @@
      &       = sph_IO1%idx_gl_2(1:rlm%nidx_rlm(2),3)
 !$omp end parallel workshare
 !
-      call deallocate_nod_id_sph_IO
-      call deallocate_idx_sph_1d1_IO
-      call deallocate_idx_sph_1d2_IO
+      call dealloc_nod_id_sph_IO(sph_IO1)
+      call dealloc_idx_sph_1d1_IO(sph_IO1)
+      call dealloc_idx_sph_1d2_IO(sph_IO1)
 !
       end subroutine copy_sph_node_4_rlm_from_IO
 !
@@ -253,9 +253,9 @@
      &      = sph_IO1%idx_gl_2(1:rj%nidx_rj(2),3)
 !$omp end parallel workshare
 !
-      call deallocate_nod_id_sph_IO
-      call deallocate_idx_sph_1d1_IO
-      call deallocate_idx_sph_1d2_IO
+      call dealloc_nod_id_sph_IO(sph_IO1)
+      call dealloc_idx_sph_1d1_IO(sph_IO1)
+      call dealloc_idx_sph_1d2_IO(sph_IO1)
 !
       end subroutine copy_sph_node_4_rj_from_IO
 !
@@ -287,10 +287,10 @@
       sph_IO1%ist_sph(1:ithree) =  rtp%ist_rtp(1:ithree)
       sph_IO1%ied_sph(1:ithree) =  rtp%ied_rtp(1:ithree)
 !
-      call allocate_nod_id_sph_IO
-      call allocate_idx_sph_1d1_IO
-      call allocate_idx_sph_1d2_IO
-      call allocate_idx_sph_1d3_IO
+      call alloc_nod_id_sph_IO(sph_IO1)
+      call alloc_idx_sph_1d1_IO(sph_IO1)
+      call alloc_idx_sph_1d2_IO(sph_IO1)
+      call alloc_idx_sph_1d3_IO(sph_IO1)
 !
 !$omp parallel do private(i,nr_8,nrt8)
       do i = 1, rtp%nnod_rtp
@@ -359,10 +359,10 @@
       sph_IO1%ist_sph(1:ithree) =  rtm%ist_rtm(1:ithree)
       sph_IO1%ied_sph(1:ithree) =  rtm%ied_rtm(1:ithree)
 !
-      call allocate_nod_id_sph_IO
-      call allocate_idx_sph_1d1_IO
-      call allocate_idx_sph_1d2_IO
-      call allocate_idx_sph_1d3_IO
+      call alloc_nod_id_sph_IO(sph_IO1)
+      call alloc_idx_sph_1d1_IO(sph_IO1)
+      call alloc_idx_sph_1d2_IO(sph_IO1)
+      call alloc_idx_sph_1d3_IO(sph_IO1)
 !
 !$omp parallel do private(i,nr_8,nrt8)
       do i = 1, rtm%nnod_rtm
@@ -427,9 +427,9 @@
       sph_IO1%ist_sph(1:itwo) =  rlm%ist_rlm(1:itwo)
       sph_IO1%ied_sph(1:itwo) =  rlm%ied_rlm(1:itwo)
 !
-      call allocate_nod_id_sph_IO
-      call allocate_idx_sph_1d1_IO
-      call allocate_idx_sph_1d2_IO
+      call alloc_nod_id_sph_IO(sph_IO1)
+      call alloc_idx_sph_1d1_IO(sph_IO1)
+      call alloc_idx_sph_1d2_IO(sph_IO1)
 !
 !$omp parallel do private(i,nr_8)
       do i = 1, rlm%nnod_rlm
@@ -487,9 +487,9 @@
       sph_IO1%ist_sph(1:itwo) =  rj%ist_rj(1:itwo)
       sph_IO1%ied_sph(1:itwo) =  rj%ied_rj(1:itwo)
 !
-      call allocate_nod_id_sph_IO
-      call allocate_idx_sph_1d1_IO
-      call allocate_idx_sph_1d2_IO
+      call alloc_nod_id_sph_IO(sph_IO1)
+      call alloc_idx_sph_1d1_IO(sph_IO1)
+      call alloc_idx_sph_1d2_IO(sph_IO1)
 !
 !$omp parallel do private(i,nr_8)
       do i = 1, rj%nnod_rj

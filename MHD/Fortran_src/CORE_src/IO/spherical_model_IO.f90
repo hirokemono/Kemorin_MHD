@@ -72,7 +72,7 @@
       call skip_comment(character_4_read,id_file)
       read(character_4_read,*) sph_IO1%numnod_sph
 !
-      call allocate_nod_id_sph_IO
+      call alloc_nod_id_sph_IO(sph_IO1)
 !
       call skip_comment(character_4_read,id_file)
       read(character_4_read,*) sph_IO1%inod_gl_sph(1),                  &
@@ -128,7 +128,7 @@
      &                sph_IO1%idx_gl_sph(i,1:sph_IO1%numdir_sph)
       end do
 !
-      call deallocate_nod_id_sph_IO
+      call dealloc_nod_id_sph_IO(sph_IO1)
 !
       end subroutine write_gl_nodes_sph
 !

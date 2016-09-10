@@ -357,9 +357,9 @@
 !
       r_org(1:n_rj_org) = sph_IO1%r_gl_1(1:n_rj_org)
 !
-      call deallocate_nod_id_sph_IO
-      call deallocate_idx_sph_1d1_IO
-      call deallocate_idx_sph_1d2_IO
+      call dealloc_nod_id_sph_IO(sph_IO1)
+      call dealloc_idx_sph_1d1_IO(sph_IO1)
+      call dealloc_idx_sph_1d2_IO(sph_IO1)
 !
 !
       call deallocate_type_import(comm_IO)
