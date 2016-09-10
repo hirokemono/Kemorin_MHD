@@ -34,29 +34,29 @@
       ncomp_itbl_1d_IO(2) = 1
       ncomp_itbl_1d_IO(3) = 2
 !
-      call skip_gz_comment_int( nidx_sph_IO(1) )
-      read(textbuf,*)  nidx_sph_IO(1), ist_sph_IO(1), ied_sph_IO(1)
+      call skip_gz_comment_int( sph_IO1%nidx_sph(1) )
+      read(textbuf,*) sph_IO1%nidx_sph(1), ist_sph_IO(1), ied_sph_IO(1)
       call allocate_idx_sph_1d1_IO
 !
-      do i = 1, nidx_sph_IO(1)
+      do i = 1, sph_IO1%nidx_sph(1)
         call get_one_line_from_gz_f
         read(textbuf,*) idx_gl_1_IO(i), r_gl_1_IO(i)
       end do
 !
-      call skip_gz_comment_int( nidx_sph_IO(2) )
-      read(textbuf,*) nidx_sph_IO(2), ist_sph_IO(2), ied_sph_IO(2)
+      call skip_gz_comment_int( sph_IO1%nidx_sph(2) )
+      read(textbuf,*) sph_IO1%nidx_sph(2), ist_sph_IO(2), ied_sph_IO(2)
       call allocate_idx_sph_1d2_IO
 !
-      do i = 1, nidx_sph_IO(2)
+      do i = 1, sph_IO1%nidx_sph(2)
         call get_one_line_from_gz_f
         read(textbuf,*) idx_gl_2_IO(i,1:ncomp_itbl_1d_IO(2))
       end do
 !
-      call skip_gz_comment_int( nidx_sph_IO(3) )
-      read(textbuf,*) nidx_sph_IO(3), ist_sph_IO(3), ied_sph_IO(3)
+      call skip_gz_comment_int( sph_IO1%nidx_sph(3) )
+      read(textbuf,*) sph_IO1%nidx_sph(3), ist_sph_IO(3), ied_sph_IO(3)
       call allocate_idx_sph_1d3_IO
 !
-      do i = 1, nidx_sph_IO(3)
+      do i = 1, sph_IO1%nidx_sph(3)
         call get_one_line_from_gz_f
         read(textbuf,*) idx_gl_3_IO(i,1:ncomp_itbl_1d_IO(3))
       end do
@@ -74,27 +74,29 @@
       ncomp_itbl_1d_IO(1) = 1
       ncomp_itbl_1d_IO(2) = 3
 !
-      call skip_gz_comment_int( nidx_sph_IO(1) )
-      read(textbuf,*) nidx_sph_IO(1), ist_sph_IO(1), ied_sph_IO(1)
+      call skip_gz_comment_int( sph_IO1%nidx_sph(1) )
+      read(textbuf,*) sph_IO1%nidx_sph(1), ist_sph_IO(1), ied_sph_IO(1)
       call allocate_idx_sph_1d1_IO
 !
-      do i = 1, nidx_sph_IO(1)
+      do i = 1, sph_IO1%nidx_sph(1)
         call get_one_line_from_gz_f
         read(textbuf,*) idx_gl_1_IO(i), r_gl_1_IO(i)
       end do
 !
-      call skip_gz_comment_int( nidx_sph_IO(2) )
-      read(textbuf,*) nidx_sph_IO(2), ist_sph_IO(2), ied_sph_IO(2)
+      call skip_gz_comment_int( sph_IO1%nidx_sph(2) )
+      read(textbuf,*) sph_IO1%nidx_sph(2), ist_sph_IO(2), ied_sph_IO(2)
       call allocate_idx_sph_1d2_IO
 !
-      do i = 1, nidx_sph_IO(2)
+      do i = 1, sph_IO1%nidx_sph(2)
         call get_one_line_from_gz_f
         read(textbuf,*) idx_gl_2_IO(i,1:ncomp_itbl_1d_IO(2))
       end do
 !
       end subroutine read_rj_gl_1d_table_gz
 !
-! -----------------------------------------------------------------------! -----------------------------------------------------------------------!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
       subroutine write_rtp_gl_1d_table_gz
 !
       use m_sph_modes_grid_labels
@@ -106,11 +108,11 @@
       textbuf = hd_rgrid() // char(0)
       call gz_write_textbuf_no_lf
 !
-      write(textbuf,'(3i16,a1)') nidx_sph_IO(1),                        &
+      write(textbuf,'(3i16,a1)') sph_IO1%nidx_sph(1),                   &
      &                        ist_sph_IO(1), ied_sph_IO(1), char(0)
       call gz_write_textbuf_w_lf
 !
-      do i = 1, nidx_sph_IO(1)
+      do i = 1, sph_IO1%nidx_sph(1)
         write(textbuf,'(i16,1pE25.15e3,a1)')                            &
      &                        idx_gl_1_IO(i), r_gl_1_IO(i), char(0)
         call gz_write_textbuf_w_lf
@@ -120,13 +122,13 @@
       textbuf = hd_tgrid() // char(0)
       call gz_write_textbuf_no_lf
 !
-      write(textbuf,'(3i16,a1)') nidx_sph_IO(2),                        &
+      write(textbuf,'(3i16,a1)') sph_IO1%nidx_sph(2),                   &
      &                        ist_sph_IO(2), ied_sph_IO(2), char(0)
       call gz_write_textbuf_w_lf
 !
       write(fmt_txt,'(a1,i3,a9)')                                       &
      &                '(', ncomp_itbl_1d_IO(2), '(i16),a1)'
-      do i = 1, nidx_sph_IO(2)
+      do i = 1, sph_IO1%nidx_sph(2)
         write(textbuf,fmt_txt)                                          &
      &        idx_gl_2_IO(i,1:ncomp_itbl_1d_IO(2)), char(0)
         call gz_write_textbuf_w_lf
@@ -135,13 +137,13 @@
       textbuf = hd_pgrid() // char(0)
       call gz_write_textbuf_no_lf
 !
-      write(textbuf,'(3i16,a1)') nidx_sph_IO(3),                        &
+      write(textbuf,'(3i16,a1)') sph_IO1%nidx_sph(3),                   &
      &                        ist_sph_IO(3), ied_sph_IO(3), char(0)
       call gz_write_textbuf_w_lf
 !
       write(fmt_txt,'(a1,i3,a9)')                                       &
      &                '(', ncomp_itbl_1d_IO(3), '(i16),a1)'
-      do i = 1, nidx_sph_IO(3)
+      do i = 1, sph_IO1%nidx_sph(3)
         write(textbuf,fmt_txt)                                          &
      &               idx_gl_3_IO(i,1:ncomp_itbl_1d_IO(3)), char(0)
         call gz_write_textbuf_w_lf
@@ -166,11 +168,11 @@
       textbuf = hd_rgrid() // char(0)
       call gz_write_textbuf_no_lf
 !
-      write(textbuf,'(3i16,a1)') nidx_sph_IO(1),                        &
+      write(textbuf,'(3i16,a1)') sph_IO1%nidx_sph(1),                   &
      &                        ist_sph_IO(1), ied_sph_IO(1), char(0)
       call gz_write_textbuf_w_lf
 !
-      do i = 1, nidx_sph_IO(1)
+      do i = 1, sph_IO1%nidx_sph(1)
         write(textbuf,'(i16,1pE25.15e3,a1)')                            &
      &                        idx_gl_1_IO(i), r_gl_1_IO(i), char(0)
         call gz_write_textbuf_w_lf
@@ -179,13 +181,13 @@
       textbuf = hd_jmode() // char(0)
       call gz_write_textbuf_no_lf
 !
-      write(textbuf,'(3i16,a1)') nidx_sph_IO(2),                        &
+      write(textbuf,'(3i16,a1)') sph_IO1%nidx_sph(2),                   &
      &                        ist_sph_IO(2), ied_sph_IO(2), char(0)
       call gz_write_textbuf_w_lf
 !
       write(fmt_txt,'(a1,i3,a9)')                                       &
      &                '(', ncomp_itbl_1d_IO(2), '(i16),a1)'
-      do i = 1, nidx_sph_IO(2)
+      do i = 1, sph_IO1%nidx_sph(2)
         write(textbuf,fmt_txt)                                          &
      &          idx_gl_2_IO(i,1:ncomp_itbl_1d_IO(2)), char(0)
         call gz_write_textbuf_w_lf

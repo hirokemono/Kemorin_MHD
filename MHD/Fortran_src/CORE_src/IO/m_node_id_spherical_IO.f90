@@ -30,7 +30,7 @@
 !
 !>      Structure for spherical harmonics table IO
       type(sph_IO_data), save :: sph_IO1
-!sph_IO1%idx_gl_sph
+!sph_IO1%nidx_sph
 !
 !      integer(kind = kint) :: sph_rank_IO(3)
 !
@@ -43,7 +43,7 @@
 !      integer(kind = kint_gl), allocatable :: inod_gl_sph_IO(:)
 !      integer(kind = kint), allocatable :: idx_gl_sph_IO(:,:)
 !
-      integer(kind = kint) :: nidx_sph_IO(3)
+!      integer(kind = kint) :: nidx_sph_IO(3)
       integer(kind = kint) :: ist_sph_IO(3)
       integer(kind = kint) :: ied_sph_IO(3)
       integer(kind = kint) :: ncomp_itbl_1d_IO(3)
@@ -80,8 +80,8 @@
 !
       subroutine allocate_idx_sph_1d1_IO
 !
-      allocate( idx_gl_1_IO(nidx_sph_IO(1)) )
-      allocate( r_gl_1_IO(nidx_sph_IO(1)) )
+      allocate( idx_gl_1_IO(sph_IO1%nidx_sph(1)) )
+      allocate( r_gl_1_IO(sph_IO1%nidx_sph(1)) )
       idx_gl_1_IO =  0
       r_gl_1_IO = 0.0d0
 !
@@ -91,7 +91,7 @@
 !
       subroutine allocate_idx_sph_1d2_IO
 !
-      allocate( idx_gl_2_IO(nidx_sph_IO(2),ncomp_itbl_1d_IO(2)) )
+      allocate( idx_gl_2_IO(sph_IO1%nidx_sph(2),ncomp_itbl_1d_IO(2)) )
       idx_gl_2_IO =  0
 !
       end subroutine allocate_idx_sph_1d2_IO
@@ -100,7 +100,7 @@
 !
       subroutine allocate_idx_sph_1d3_IO
 !
-      allocate( idx_gl_3_IO(nidx_sph_IO(3),ncomp_itbl_1d_IO(3)) )
+      allocate( idx_gl_3_IO(sph_IO1%nidx_sph(3),ncomp_itbl_1d_IO(3)) )
       idx_gl_3_IO =  0
 !
       end subroutine allocate_idx_sph_1d3_IO

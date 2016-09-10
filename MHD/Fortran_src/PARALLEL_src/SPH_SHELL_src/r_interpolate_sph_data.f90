@@ -351,7 +351,7 @@
       end if
 !
       n_rj_org = sph_IO1%numnod_sph
-      nri_org =  nidx_sph_IO(1)
+      nri_org =  sph_IO1%nidx_sph(1)
 !
       call allocate_original_sph_data
 !

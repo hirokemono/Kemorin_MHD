@@ -64,7 +64,7 @@
       l_truncation =                  sph_IO1%ltr_gl
 !
       rtp%nnod_rtp =           sph_IO1%numnod_sph
-      rtp%nidx_rtp(1:ithree) = nidx_sph_IO(1:ithree)
+      rtp%nidx_rtp(1:ithree) = sph_IO1%nidx_sph(1:ithree)
       rtp%ist_rtp(1:ithree) =  ist_sph_IO(1:ithree)
       rtp%ied_rtp(1:ithree) =  ied_sph_IO(1:ithree)
 !
@@ -110,7 +110,7 @@
       l_truncation =                  sph_IO1%ltr_gl
 !
       rtm%nnod_rtm =           sph_IO1%numnod_sph
-      rtm%nidx_rtm(1:ithree) = nidx_sph_IO(1:ithree)
+      rtm%nidx_rtm(1:ithree) = sph_IO1%nidx_sph(1:ithree)
       rtm%ist_rtm(1:ithree) =  ist_sph_IO(1:ithree)
       rtm%ied_rtm(1:ithree) =  ied_sph_IO(1:ithree)
 !
@@ -156,7 +156,7 @@
       l_truncation =                sph_IO1%ltr_gl
 !
       rlm%nnod_rlm =         sph_IO1%numnod_sph
-      rlm%nidx_rlm(1:itwo) = nidx_sph_IO(1:itwo)
+      rlm%nidx_rlm(1:itwo) = sph_IO1%nidx_sph(1:itwo)
       rlm%ist_rlm(1:itwo) =  ist_sph_IO(1:itwo)
       rlm%ied_rlm(1:itwo) =  ied_sph_IO(1:itwo)
 !
@@ -201,7 +201,7 @@
       l_truncation =              sph_IO1%ltr_gl
 !
       rj%nnod_rj =         sph_IO1%numnod_sph
-      rj%nidx_rj(1:itwo) = nidx_sph_IO(1:itwo)
+      rj%nidx_rj(1:itwo) = sph_IO1%nidx_sph(1:itwo)
       rj%ist_rj(1:itwo) =  ist_sph_IO(1:itwo)
       rj%ied_rj(1:itwo) =  ied_sph_IO(1:itwo)
 !
@@ -255,7 +255,7 @@
       sph_IO1%ltr_gl =                l_truncation
 !
       sph_IO1%numnod_sph =    rtp%nnod_rtp
-      nidx_sph_IO(1:ithree) = rtp%nidx_rtp(1:ithree)
+      sph_IO1%nidx_sph(1:ithree) = rtp%nidx_rtp(1:ithree)
       ist_sph_IO(1:ithree) =  rtp%ist_rtp(1:ithree)
       ied_sph_IO(1:ithree) =  rtp%ied_rtp(1:ithree)
 !
@@ -319,7 +319,7 @@
       sph_IO1%ltr_gl =                l_truncation
 !
       sph_IO1%numnod_sph =    rtm%nnod_rtm
-      nidx_sph_IO(1:ithree) = rtm%nidx_rtm(1:ithree)
+      sph_IO1%nidx_sph(1:ithree) = rtm%nidx_rtm(1:ithree)
       ist_sph_IO(1:ithree) =  rtm%ist_rtm(1:ithree)
       ied_sph_IO(1:ithree) =  rtm%ied_rtm(1:ithree)
 !
@@ -379,7 +379,7 @@
       sph_IO1%ltr_gl =              l_truncation
 !
       sph_IO1%numnod_sph =  rlm%nnod_rlm
-      nidx_sph_IO(1:itwo) = rlm%nidx_rlm(1:itwo)
+      sph_IO1%nidx_sph(1:itwo) = rlm%nidx_rlm(1:itwo)
       ist_sph_IO(1:itwo) =  rlm%ist_rlm(1:itwo)
       ied_sph_IO(1:itwo) =  rlm%ied_rlm(1:itwo)
 !
@@ -434,7 +434,7 @@
       sph_IO1%ltr_gl =              l_truncation
 !
       sph_IO1%numnod_sph =  rj%nnod_rj
-      nidx_sph_IO(1:itwo) = rj%nidx_rj(1:itwo)
+      sph_IO1%nidx_sph(1:itwo) = rj%nidx_rj(1:itwo)
       ist_sph_IO(1:itwo) =  rj%ist_rj(1:itwo)
       ied_sph_IO(1:itwo) =  rj%ied_rj(1:itwo)
 !
