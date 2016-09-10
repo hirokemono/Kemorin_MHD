@@ -38,9 +38,9 @@
       integer(kind = kint) :: i
 !
       sph_IO1%numdir_sph = 3
-      ncomp_itbl_1d_IO(1) = 1
-      ncomp_itbl_1d_IO(2) = 1
-      ncomp_itbl_1d_IO(3) = 2
+      sph_IO1%ncomp_table_1d(1) = 1
+      sph_IO1%ncomp_table_1d(2) = 1
+      sph_IO1%ncomp_table_1d(3) = 2
 !
       call skip_comment(character_4_read,id_file)
       read(character_4_read,*) sph_IO1%nidx_sph(1),                     &
@@ -57,7 +57,7 @@
       call allocate_idx_sph_1d2_IO
 !
       do i = 1, sph_IO1%nidx_sph(2)
-        read(id_file,*) idx_gl_2_IO(i,1:ncomp_itbl_1d_IO(2))
+        read(id_file,*) idx_gl_2_IO(i,1:sph_IO1%ncomp_table_1d(2))
       end do
 !
       call skip_comment(character_4_read,id_file)
@@ -66,7 +66,7 @@
       call allocate_idx_sph_1d3_IO
 !
       do i = 1, sph_IO1%nidx_sph(3)
-        read(id_file,*) idx_gl_3_IO(i,1:ncomp_itbl_1d_IO(3))
+        read(id_file,*) idx_gl_3_IO(i,1:sph_IO1%ncomp_table_1d(3))
       end do
 !
       end subroutine read_rtp_gl_1d_table
@@ -81,8 +81,8 @@
       integer(kind = kint) :: i
 !
       sph_IO1%numdir_sph = 2
-      ncomp_itbl_1d_IO(1) = 1
-      ncomp_itbl_1d_IO(2) = 3
+      sph_IO1%ncomp_table_1d(1) = 1
+      sph_IO1%ncomp_table_1d(2) = 3
 !
       call skip_comment(character_4_read,id_file)
       read(character_4_read,*) sph_IO1%nidx_sph(1),                     &
@@ -99,7 +99,7 @@
       call allocate_idx_sph_1d2_IO
 !
       do i = 1, sph_IO1%nidx_sph(2)
-        read(id_file,*) idx_gl_2_IO(i,1:ncomp_itbl_1d_IO(2))
+        read(id_file,*) idx_gl_2_IO(i,1:sph_IO1%ncomp_table_1d(2))
       end do
 !
       end subroutine read_rj_gl_1d_table
@@ -125,14 +125,16 @@
       write(id_file,'(3i16)') sph_IO1%nidx_sph(2),                      &
      &                        sph_IO1%ist_sph(2), sph_IO1%ied_sph(2)
       do i = 1, sph_IO1%nidx_sph(2)
-        write(id_file,'(8i16)') idx_gl_2_IO(i,1:ncomp_itbl_1d_IO(2))
+        write(id_file,'(8i16)')                                         &
+     &         idx_gl_2_IO(i,1:sph_IO1%ncomp_table_1d(2))
       end do
 !
       write(id_file,'(a)', advance='NO') hd_pgrid()
       write(id_file,'(3i16)') sph_IO1%nidx_sph(3),                      &
      &                        sph_IO1%ist_sph(3), sph_IO1%ied_sph(3)
       do i = 1, sph_IO1%nidx_sph(3)
-        write(id_file,'(8i16)') idx_gl_3_IO(i,1:ncomp_itbl_1d_IO(3))
+        write(id_file,'(8i16)')                                         &
+     &         idx_gl_3_IO(i,1:sph_IO1%ncomp_table_1d(3))
       end do
 !
       call deallocate_idx_sph_1d1_IO
@@ -162,7 +164,8 @@
       write(id_file,'(3i16)') sph_IO1%nidx_sph(2),                      &
      &                        sph_IO1%ist_sph(2), sph_IO1%ied_sph(2)
       do i = 1, sph_IO1%nidx_sph(2)
-        write(id_file,'(8i16)') idx_gl_2_IO(i,1:ncomp_itbl_1d_IO(2))
+        write(id_file,'(8i16)')                                         &
+     &          idx_gl_2_IO(i,1:sph_IO1%ncomp_table_1d(2))
       end do
 !
       call deallocate_idx_sph_1d1_IO

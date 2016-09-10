@@ -247,9 +247,9 @@
       sph_IO1%numdir_sph =         ithree
       sph_IO1%sph_rank(1:ithree) = rtp%irank_sph_rtp(1:ithree)
 !
-      ncomp_itbl_1d_IO(1) = ione
-      ncomp_itbl_1d_IO(2) = ione
-      ncomp_itbl_1d_IO(3) = itwo
+      sph_IO1%ncomp_table_1d(1) = ione
+      sph_IO1%ncomp_table_1d(2) = ione
+      sph_IO1%ncomp_table_1d(3) = itwo
 !
       sph_IO1%nidx_gl_sph(1:ithree) = rtp%nidx_global_rtp(1:ithree)
       sph_IO1%ltr_gl =                l_truncation
@@ -311,9 +311,9 @@
       sph_IO1%numdir_sph =         ithree
       sph_IO1%sph_rank(1:ithree) = rtm%irank_sph_rtm(1:ithree)
 !
-      ncomp_itbl_1d_IO(1) = ione
-      ncomp_itbl_1d_IO(2) = ione
-      ncomp_itbl_1d_IO(3) = itwo
+      sph_IO1%ncomp_table_1d(1) = ione
+      sph_IO1%ncomp_table_1d(2) = ione
+      sph_IO1%ncomp_table_1d(3) = itwo
 !
       sph_IO1%nidx_gl_sph(1:ithree) = rtm%nidx_global_rtm(1:ithree)
       sph_IO1%ltr_gl =                l_truncation
@@ -372,8 +372,8 @@
       sph_IO1%numdir_sph =       itwo
       sph_IO1%sph_rank(1:itwo) = rlm%irank_sph_rlm(1:itwo)
 !
-      ncomp_itbl_1d_IO(1) = ione
-      ncomp_itbl_1d_IO(2) = ithree
+      sph_IO1%ncomp_table_1d(1) = ione
+      sph_IO1%ncomp_table_1d(2) = ithree
 !
       sph_IO1%nidx_gl_sph(1:itwo) = rlm%nidx_global_rlm(1:itwo)
       sph_IO1%ltr_gl =              l_truncation
@@ -427,8 +427,8 @@
       sph_IO1%numdir_sph =       itwo
       sph_IO1%sph_rank(1:itwo) = rj%irank_sph_rj(1:itwo)
 !
-      ncomp_itbl_1d_IO(1) = ione
-      ncomp_itbl_1d_IO(2) = ithree
+      sph_IO1%ncomp_table_1d(1) = ione
+      sph_IO1%ncomp_table_1d(2) = ithree
 !
       sph_IO1%nidx_gl_sph(1:itwo) = rj%nidx_global_rj(1:itwo)
       sph_IO1%ltr_gl =              l_truncation
