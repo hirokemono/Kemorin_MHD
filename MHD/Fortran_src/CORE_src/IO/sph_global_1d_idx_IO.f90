@@ -57,7 +57,7 @@
       call allocate_idx_sph_1d2_IO
 !
       do i = 1, sph_IO1%nidx_sph(2)
-        read(id_file,*) idx_gl_2_IO(i,1:sph_IO1%ncomp_table_1d(2))
+        read(id_file,*) sph_IO1%idx_gl_2(i,1:sph_IO1%ncomp_table_1d(2))
       end do
 !
       call skip_comment(character_4_read,id_file)
@@ -99,7 +99,7 @@
       call allocate_idx_sph_1d2_IO
 !
       do i = 1, sph_IO1%nidx_sph(2)
-        read(id_file,*) idx_gl_2_IO(i,1:sph_IO1%ncomp_table_1d(2))
+        read(id_file,*) sph_IO1%idx_gl_2(i,1:sph_IO1%ncomp_table_1d(2))
       end do
 !
       end subroutine read_rj_gl_1d_table
@@ -127,7 +127,7 @@
      &                        sph_IO1%ist_sph(2), sph_IO1%ied_sph(2)
       do i = 1, sph_IO1%nidx_sph(2)
         write(id_file,'(8i16)')                                         &
-     &         idx_gl_2_IO(i,1:sph_IO1%ncomp_table_1d(2))
+     &         sph_IO1%idx_gl_2(i,1:sph_IO1%ncomp_table_1d(2))
       end do
 !
       write(id_file,'(a)', advance='NO') hd_pgrid()
@@ -167,7 +167,7 @@
      &                        sph_IO1%ist_sph(2), sph_IO1%ied_sph(2)
       do i = 1, sph_IO1%nidx_sph(2)
         write(id_file,'(8i16)')                                         &
-     &          idx_gl_2_IO(i,1:sph_IO1%ncomp_table_1d(2))
+     &          sph_IO1%idx_gl_2(i,1:sph_IO1%ncomp_table_1d(2))
       end do
 !
       call deallocate_idx_sph_1d1_IO

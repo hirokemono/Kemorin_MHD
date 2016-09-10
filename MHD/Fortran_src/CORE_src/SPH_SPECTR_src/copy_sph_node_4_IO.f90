@@ -76,16 +76,18 @@
      &       = sph_IO1%idx_gl_sph(1:rtp%nnod_rtp,i)
       end do
 !
+!$omp parallel workshare
       rtp%radius_1d_rtp_r(1:rtp%nidx_rtp(1))                            &
      &       =   r_gl_1_IO(1:rtp%nidx_rtp(1))
       rtp%idx_gl_1d_rtp_r(1:rtp%nidx_rtp(1))                            &
      &       =   sph_IO1%idx_gl_1(1:rtp%nidx_rtp(1))
       rtp%idx_gl_1d_rtp_t(1:rtp%nidx_rtp(2))                            &
-     &       =   idx_gl_2_IO(1:rtp%nidx_rtp(2),1)
+     &       =   sph_IO1%idx_gl_2(1:rtp%nidx_rtp(2),1)
       rtp%idx_gl_1d_rtp_p(1:rtp%nidx_rtp(3),1)                          &
      &       = idx_gl_3_IO(1:rtp%nidx_rtp(3),1)
       rtp%idx_gl_1d_rtp_p(1:rtp%nidx_rtp(3),2)                          &
      &       = idx_gl_3_IO(1:rtp%nidx_rtp(3),2)
+!$omp end parallel workshare
 !
       call deallocate_nod_id_sph_IO
       call deallocate_idx_sph_1d1_IO
@@ -122,16 +124,18 @@
      &      = sph_IO1%idx_gl_sph(1:rtm%nnod_rtm,i)
       end do
 !
+!$omp parallel workshare
       rtm%radius_1d_rtm_r(1:rtm%nidx_rtm(1))                            &
      &      =   r_gl_1_IO(1:rtm%nidx_rtm(1))
       rtm%idx_gl_1d_rtm_r(1:rtm%nidx_rtm(1))                            &
      &      =   sph_IO1%idx_gl_1(1:rtm%nidx_rtm(1))
       rtm%idx_gl_1d_rtm_t(1:rtm%nidx_rtm(2))                            &
-     &      =   idx_gl_2_IO(1:rtm%nidx_rtm(2),1)
+     &      =   sph_IO1%idx_gl_2(1:rtm%nidx_rtm(2),1)
       rtm%idx_gl_1d_rtm_m(1:rtm%nidx_rtm(3),1)                          &
      &      = idx_gl_3_IO(1:rtm%nidx_rtm(3),1)
       rtm%idx_gl_1d_rtm_m(1:rtm%nidx_rtm(3),2)                          &
      &      = idx_gl_3_IO(1:rtm%nidx_rtm(3),2)
+!$omp end parallel workshare
 !
       call deallocate_nod_id_sph_IO
       call deallocate_idx_sph_1d1_IO
@@ -168,16 +172,18 @@
      &      = sph_IO1%idx_gl_sph(1:rlm%nnod_rlm,i)
       end do
 !
+!$omp parallel workshare
       rlm%radius_1d_rlm_r(1:rlm%nidx_rlm(1))                            &
      &       =   r_gl_1_IO(1:rlm%nidx_rlm(1))
       rlm%idx_gl_1d_rlm_r(1:rlm%nidx_rlm(1))                            &
      &       =   sph_IO1%idx_gl_1(1:rlm%nidx_rlm(1))
       rlm%idx_gl_1d_rlm_j(1:rlm%nidx_rlm(2),1)                          &
-     &       = idx_gl_2_IO(1:rlm%nidx_rlm(2),1)
+     &       = sph_IO1%idx_gl_2(1:rlm%nidx_rlm(2),1)
       rlm%idx_gl_1d_rlm_j(1:rlm%nidx_rlm(2),2)                          &
-     &       = idx_gl_2_IO(1:rlm%nidx_rlm(2),2)
+     &       = sph_IO1%idx_gl_2(1:rlm%nidx_rlm(2),2)
       rlm%idx_gl_1d_rlm_j(1:rlm%nidx_rlm(2),3)                          &
-     &       = idx_gl_2_IO(1:rlm%nidx_rlm(2),3)
+     &       = sph_IO1%idx_gl_2(1:rlm%nidx_rlm(2),3)
+!$omp end parallel workshare
 !
       call deallocate_nod_id_sph_IO
       call deallocate_idx_sph_1d1_IO
@@ -217,14 +223,16 @@
       rj%a_r_1d_rj_r(1:rj%nidx_rj(1))                                   &
      &       = one / rj%radius_1d_rj_r(1:rj%nidx_rj(1))
 !
+!$omp parallel workshare
       rj%idx_gl_1d_rj_r(1:rj%nidx_rj(1))                                &
      &       = sph_IO1%idx_gl_1(1:rj%nidx_rj(1))
       rj%idx_gl_1d_rj_j(1:rj%nidx_rj(2),1)                              &
-     &       = idx_gl_2_IO(1:rj%nidx_rj(2),1)
+     &       = sph_IO1%idx_gl_2(1:rj%nidx_rj(2),1)
       rj%idx_gl_1d_rj_j(1:rj%nidx_rj(2),2)                              &
-     &       = idx_gl_2_IO(1:rj%nidx_rj(2),2)
+     &       = sph_IO1%idx_gl_2(1:rj%nidx_rj(2),2)
       rj%idx_gl_1d_rj_j(1:rj%nidx_rj(2),3)                              &
-     &      = idx_gl_2_IO(1:rj%nidx_rj(2),3)
+     &      = sph_IO1%idx_gl_2(1:rj%nidx_rj(2),3)
+!$omp end parallel workshare
 !
       call deallocate_nod_id_sph_IO
       call deallocate_idx_sph_1d1_IO
@@ -283,16 +291,18 @@
      &        = rtp%idx_global_rtp(1:rtp%nnod_rtp,i)
       end do
 !
+!$omp parallel workshare
       r_gl_1_IO(1:rtp%nidx_rtp(1))                                      &
      &        =     rtp%radius_1d_rtp_r(1:rtp%nidx_rtp(1))
       sph_IO1%idx_gl_1(1:rtp%nidx_rtp(1))                               &
      &        =   rtp%idx_gl_1d_rtp_r(1:rtp%nidx_rtp(1))
-      idx_gl_2_IO(1:rtp%nidx_rtp(2),1)                                  &
+      sph_IO1%idx_gl_2(1:rtp%nidx_rtp(2),1)                             &
      &        = rtp%idx_gl_1d_rtp_t(1:rtp%nidx_rtp(2))
       idx_gl_3_IO(1:rtp%nidx_rtp(3),1)                                  &
      &        = rtp%idx_gl_1d_rtp_p(1:rtp%nidx_rtp(3),1)
       idx_gl_3_IO(1:rtp%nidx_rtp(3),2)                                  &
      &        = rtp%idx_gl_1d_rtp_p(1:rtp%nidx_rtp(3),2)
+!$omp end parallel workshare
 !
       call dealloc_type_sph_1d_index_rtp(rtp)
       call dealloc_type_spheric_param_rtp(rtp)
@@ -342,16 +352,18 @@
       end do
 !$omp end parallel do
 !
+!$omp parallel workshare
       r_gl_1_IO(1:rtm%nidx_rtm(1))                                      &
      &      =     rtm%radius_1d_rtm_r(1:rtm%nidx_rtm(1))
       sph_IO1%idx_gl_1(1:rtm%nidx_rtm(1))                               &
      &       =   rtm%idx_gl_1d_rtm_r(1:rtm%nidx_rtm(1))
-      idx_gl_2_IO(1:rtm%nidx_rtm(2),1)                                  &
+      sph_IO1%idx_gl_2(1:rtm%nidx_rtm(2),1)                             &
      &       = rtm%idx_gl_1d_rtm_t(1:rtm%nidx_rtm(2))
       idx_gl_3_IO(1:rtm%nidx_rtm(3),1)                                  &
      &       = rtm%idx_gl_1d_rtm_m(1:rtm%nidx_rtm(3),1)
       idx_gl_3_IO(1:rtm%nidx_rtm(3),2)                                  &
      &       = rtm%idx_gl_1d_rtm_m(1:rtm%nidx_rtm(3),2)
+!$omp end parallel workshare
 !
       call dealloc_type_sph_1d_index_rtm(rtm)
       call dealloc_type_spheric_param_rtm(rtm)
@@ -398,16 +410,18 @@
       end do
 !$omp end parallel do
 !
+!$omp parallel workshare
       r_gl_1_IO(1:rlm%nidx_rlm(1))                                      &
      &       =     rlm%radius_1d_rlm_r(1:rlm%nidx_rlm(1))
       sph_IO1%idx_gl_1(1:rlm%nidx_rlm(1))                               &
      &       =   rlm%idx_gl_1d_rlm_r(1:rlm%nidx_rlm(1))
-      idx_gl_2_IO(1:rlm%nidx_rlm(2),1)                                  &
+      sph_IO1%idx_gl_2(1:rlm%nidx_rlm(2),1)                             &
      &       = rlm%idx_gl_1d_rlm_j(1:rlm%nidx_rlm(2),1)
-      idx_gl_2_IO(1:rlm%nidx_rlm(2),2)                                  &
+      sph_IO1%idx_gl_2(1:rlm%nidx_rlm(2),2)                             &
      &      = rlm%idx_gl_1d_rlm_j(1:rlm%nidx_rlm(2),2)
-      idx_gl_2_IO(1:rlm%nidx_rlm(2),3)                                  &
+      sph_IO1%idx_gl_2(1:rlm%nidx_rlm(2),3)                             &
      &       = rlm%idx_gl_1d_rlm_j(1:rlm%nidx_rlm(2),3)
+!$omp end parallel workshare
 !
       call dealloc_type_sph_1d_index_rlm(rlm)
       call dealloc_type_spheric_param_rlm(rlm)
@@ -459,15 +473,17 @@
      &       = rj%nidx_global_rj(1) * nr_8 + 1
       end if
 !
+!$omp parallel workshare
       r_gl_1_IO(1:rj%nidx_rj(1)) =   rj%radius_1d_rj_r(1:rj%nidx_rj(1))
       sph_IO1%idx_gl_1(1:rj%nidx_rj(1))                                 &
      &       = rj%idx_gl_1d_rj_r(1:rj%nidx_rj(1))
-      idx_gl_2_IO(1:rj%nidx_rj(2),1)                                    &
+      sph_IO1%idx_gl_2(1:rj%nidx_rj(2),1)                               &
      &       = rj%idx_gl_1d_rj_j(1:rj%nidx_rj(2),1)
-      idx_gl_2_IO(1:rj%nidx_rj(2),2)                                    &
+      sph_IO1%idx_gl_2(1:rj%nidx_rj(2),2)                               &
      &      = rj%idx_gl_1d_rj_j(1:rj%nidx_rj(2),2)
-      idx_gl_2_IO(1:rj%nidx_rj(2),3)                                    &
+      sph_IO1%idx_gl_2(1:rj%nidx_rj(2),3)                               &
      &      = rj%idx_gl_1d_rj_j(1:rj%nidx_rj(2),3)
+!$omp end parallel workshare
 !
       call dealloc_type_sph_1d_index_rj(rj)
       call dealloc_spheric_param_rj(rj)
