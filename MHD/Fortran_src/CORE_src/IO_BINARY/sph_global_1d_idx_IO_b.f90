@@ -35,7 +35,7 @@
 !
       call read_mul_integer_b(sph_IO1%numdir_sph, sph_IO1%nidx_sph)
       call read_mul_integer_b(sph_IO1%numdir_sph, sph_IO1%ist_sph)
-      call read_mul_integer_b(sph_IO1%numdir_sph, ied_sph_IO)
+      call read_mul_integer_b(sph_IO1%numdir_sph, sph_IO1%ied_sph)
 !
       call allocate_idx_sph_1d1_IO
       call allocate_idx_sph_1d2_IO
@@ -65,7 +65,7 @@
 !
       call read_mul_integer_b(sph_IO1%numdir_sph, sph_IO1%nidx_sph)
       call read_mul_integer_b(sph_IO1%numdir_sph, sph_IO1%ist_sph)
-      call read_mul_integer_b(sph_IO1%numdir_sph, ied_sph_IO)
+      call read_mul_integer_b(sph_IO1%numdir_sph, sph_IO1%ied_sph)
 !
       call allocate_idx_sph_1d1_IO
       call allocate_idx_sph_1d2_IO
@@ -88,7 +88,7 @@
 !
       call write_mul_integer_b(sph_IO1%numdir_sph, sph_IO1%nidx_sph)
       call write_mul_integer_b(sph_IO1%numdir_sph, sph_IO1%ist_sph)
-      call write_mul_integer_b(sph_IO1%numdir_sph, ied_sph_IO)
+      call write_mul_integer_b(sph_IO1%numdir_sph, sph_IO1%ied_sph)
 !
       call write_mul_integer_b(sph_IO1%nidx_sph(1), idx_gl_1_IO)
       call write_1d_vector_b(sph_IO1%nidx_sph(1), r_gl_1_IO)
@@ -114,7 +114,7 @@
 !
       call write_mul_integer_b(sph_IO1%numdir_sph, sph_IO1%nidx_sph)
       call write_mul_integer_b(sph_IO1%numdir_sph, sph_IO1%ist_sph)
-      call write_mul_integer_b(sph_IO1%numdir_sph, ied_sph_IO)
+      call write_mul_integer_b(sph_IO1%numdir_sph, sph_IO1%ied_sph)
 !
       call write_mul_integer_b(sph_IO1%nidx_sph(1), idx_gl_1_IO)
       call write_1d_vector_b(sph_IO1%nidx_sph(1), r_gl_1_IO)

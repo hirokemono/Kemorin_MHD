@@ -40,7 +40,7 @@
 !
       call gz_read_mul_integer_b(sph_IO1%numdir_sph, sph_IO1%nidx_sph)
       call gz_read_mul_integer_b(sph_IO1%numdir_sph, sph_IO1%ist_sph)
-      call gz_read_mul_integer_b(sph_IO1%numdir_sph, ied_sph_IO)
+      call gz_read_mul_integer_b(sph_IO1%numdir_sph, sph_IO1%ied_sph)
 !
       call allocate_idx_sph_1d1_IO
       call allocate_idx_sph_1d2_IO
@@ -70,7 +70,7 @@
 !
       call gz_read_mul_integer_b(sph_IO1%numdir_sph, sph_IO1%nidx_sph)
       call gz_read_mul_integer_b(sph_IO1%numdir_sph, sph_IO1%ist_sph)
-      call gz_read_mul_integer_b(sph_IO1%numdir_sph, ied_sph_IO)
+      call gz_read_mul_integer_b(sph_IO1%numdir_sph, sph_IO1%ied_sph)
 !
       call allocate_idx_sph_1d1_IO
       call allocate_idx_sph_1d2_IO
@@ -93,7 +93,7 @@
 !
       call gz_write_mul_integer_b(sph_IO1%numdir_sph, sph_IO1%nidx_sph)
       call gz_write_mul_integer_b(sph_IO1%numdir_sph, sph_IO1%ist_sph)
-      call gz_write_mul_integer_b(sph_IO1%numdir_sph, ied_sph_IO)
+      call gz_write_mul_integer_b(sph_IO1%numdir_sph, sph_IO1%ied_sph)
 !
       call gz_write_mul_integer_b(sph_IO1%nidx_sph(1), idx_gl_1_IO)
       call gz_write_1d_vector_b(sph_IO1%nidx_sph(1), r_gl_1_IO)
@@ -119,7 +119,7 @@
 !
       call gz_write_mul_integer_b(sph_IO1%numdir_sph, sph_IO1%nidx_sph)
       call gz_write_mul_integer_b(sph_IO1%numdir_sph, sph_IO1%ist_sph)
-      call gz_write_mul_integer_b(sph_IO1%numdir_sph, ied_sph_IO)
+      call gz_write_mul_integer_b(sph_IO1%numdir_sph, sph_IO1%ied_sph)
 !
       call gz_write_mul_integer_b(sph_IO1%nidx_sph(1), idx_gl_1_IO)
       call gz_write_1d_vector_b(sph_IO1%nidx_sph(1), r_gl_1_IO)

@@ -30,7 +30,7 @@
 !
 !>      Structure for spherical harmonics table IO
       type(sph_IO_data), save :: sph_IO1
-!sph_IO1%ist_sph
+!sph_IO1%ied_sph
 !
 !      integer(kind = kint) :: sph_rank_IO(3)
 !
@@ -45,7 +45,7 @@
 !
 !      integer(kind = kint) :: nidx_sph_IO(3)
 !      integer(kind = kint) :: ist_sph_IO(3)
-      integer(kind = kint) :: ied_sph_IO(3)
+!      integer(kind = kint) :: ied_sph_IO(3)
       integer(kind = kint) :: ncomp_itbl_1d_IO(3)
       integer(kind = kint), allocatable :: idx_gl_1_IO(:)
       integer(kind = kint), allocatable :: idx_gl_2_IO(:,:)
