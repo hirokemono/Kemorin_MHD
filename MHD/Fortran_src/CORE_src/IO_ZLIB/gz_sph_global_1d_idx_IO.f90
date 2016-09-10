@@ -41,7 +41,7 @@
 !
       do i = 1, sph_IO1%nidx_sph(1)
         call get_one_line_from_gz_f
-        read(textbuf,*) sph_IO1%idx_gl_1(i), r_gl_1_IO(i)
+        read(textbuf,*) sph_IO1%idx_gl_1(i), sph_IO1%r_gl_1(i)
       end do
 !
       call skip_gz_comment_int( sph_IO1%nidx_sph(2) )
@@ -84,7 +84,7 @@
 !
       do i = 1, sph_IO1%nidx_sph(1)
         call get_one_line_from_gz_f
-        read(textbuf,*) sph_IO1%idx_gl_1(i), r_gl_1_IO(i)
+        read(textbuf,*) sph_IO1%idx_gl_1(i), sph_IO1%r_gl_1(i)
       end do
 !
       call skip_gz_comment_int( sph_IO1%nidx_sph(2) )
@@ -119,7 +119,7 @@
 !
       do i = 1, sph_IO1%nidx_sph(1)
         write(textbuf,'(i16,1pE25.15e3,a1)')                            &
-     &       sph_IO1%idx_gl_1(i), r_gl_1_IO(i), char(0)
+     &       sph_IO1%idx_gl_1(i), sph_IO1%r_gl_1(i), char(0)
         call gz_write_textbuf_w_lf
       end do
 !
@@ -179,7 +179,7 @@
 !
       do i = 1, sph_IO1%nidx_sph(1)
         write(textbuf,'(i16,1pE25.15e3,a1)')                            &
-     &       sph_IO1%idx_gl_1(i), r_gl_1_IO(i), char(0)
+     &       sph_IO1%idx_gl_1(i), sph_IO1%r_gl_1(i), char(0)
         call gz_write_textbuf_w_lf
       end do
 !

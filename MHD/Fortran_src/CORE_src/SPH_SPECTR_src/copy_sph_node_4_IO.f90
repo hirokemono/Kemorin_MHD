@@ -78,11 +78,17 @@
 !
 !$omp parallel workshare
       rtp%radius_1d_rtp_r(1:rtp%nidx_rtp(1))                            &
-     &       =   r_gl_1_IO(1:rtp%nidx_rtp(1))
+     &       =   sph_IO1%r_gl_1(1:rtp%nidx_rtp(1))
       rtp%idx_gl_1d_rtp_r(1:rtp%nidx_rtp(1))                            &
      &       =   sph_IO1%idx_gl_1(1:rtp%nidx_rtp(1))
+!$omp end parallel workshare
+!
+!$omp parallel workshare
       rtp%idx_gl_1d_rtp_t(1:rtp%nidx_rtp(2))                            &
      &       =   sph_IO1%idx_gl_2(1:rtp%nidx_rtp(2),1)
+!$omp end parallel workshare
+!
+!$omp parallel workshare
       rtp%idx_gl_1d_rtp_p(1:rtp%nidx_rtp(3),1)                          &
      &       = sph_IO1%idx_gl_3(1:rtp%nidx_rtp(3),1)
       rtp%idx_gl_1d_rtp_p(1:rtp%nidx_rtp(3),2)                          &
@@ -126,11 +132,17 @@
 !
 !$omp parallel workshare
       rtm%radius_1d_rtm_r(1:rtm%nidx_rtm(1))                            &
-     &      =   r_gl_1_IO(1:rtm%nidx_rtm(1))
+     &      =   sph_IO1%r_gl_1(1:rtm%nidx_rtm(1))
       rtm%idx_gl_1d_rtm_r(1:rtm%nidx_rtm(1))                            &
      &      =   sph_IO1%idx_gl_1(1:rtm%nidx_rtm(1))
+!$omp end parallel workshare
+!
+!$omp parallel workshare
       rtm%idx_gl_1d_rtm_t(1:rtm%nidx_rtm(2))                            &
      &      =   sph_IO1%idx_gl_2(1:rtm%nidx_rtm(2),1)
+!$omp end parallel workshare
+!
+!$omp parallel workshare
       rtm%idx_gl_1d_rtm_m(1:rtm%nidx_rtm(3),1)                          &
      &      = sph_IO1%idx_gl_3(1:rtm%nidx_rtm(3),1)
       rtm%idx_gl_1d_rtm_m(1:rtm%nidx_rtm(3),2)                          &
@@ -174,9 +186,12 @@
 !
 !$omp parallel workshare
       rlm%radius_1d_rlm_r(1:rlm%nidx_rlm(1))                            &
-     &       =   r_gl_1_IO(1:rlm%nidx_rlm(1))
+     &       =   sph_IO1%r_gl_1(1:rlm%nidx_rlm(1))
       rlm%idx_gl_1d_rlm_r(1:rlm%nidx_rlm(1))                            &
      &       =   sph_IO1%idx_gl_1(1:rlm%nidx_rlm(1))
+!$omp end parallel workshare
+!
+!$omp parallel workshare
       rlm%idx_gl_1d_rlm_j(1:rlm%nidx_rlm(2),1)                          &
      &       = sph_IO1%idx_gl_2(1:rlm%nidx_rlm(2),1)
       rlm%idx_gl_1d_rlm_j(1:rlm%nidx_rlm(2),2)                          &
@@ -219,13 +234,17 @@
      &       = sph_IO1%idx_gl_sph(1:rj%nnod_rj,i)
       end do
 !
-      rj%radius_1d_rj_r(1:rj%nidx_rj(1)) = r_gl_1_IO(1:rj%nidx_rj(1))
+!$omp parallel workshare
+      rj%radius_1d_rj_r(1:rj%nidx_rj(1))                                &
+     &       = sph_IO1%r_gl_1(1:rj%nidx_rj(1))
       rj%a_r_1d_rj_r(1:rj%nidx_rj(1))                                   &
      &       = one / rj%radius_1d_rj_r(1:rj%nidx_rj(1))
 !
-!$omp parallel workshare
       rj%idx_gl_1d_rj_r(1:rj%nidx_rj(1))                                &
      &       = sph_IO1%idx_gl_1(1:rj%nidx_rj(1))
+!$omp end parallel workshare
+!
+!$omp parallel workshare
       rj%idx_gl_1d_rj_j(1:rj%nidx_rj(2),1)                              &
      &       = sph_IO1%idx_gl_2(1:rj%nidx_rj(2),1)
       rj%idx_gl_1d_rj_j(1:rj%nidx_rj(2),2)                              &
@@ -292,12 +311,18 @@
       end do
 !
 !$omp parallel workshare
-      r_gl_1_IO(1:rtp%nidx_rtp(1))                                      &
+      sph_IO1%r_gl_1(1:rtp%nidx_rtp(1))                                 &
      &        =     rtp%radius_1d_rtp_r(1:rtp%nidx_rtp(1))
       sph_IO1%idx_gl_1(1:rtp%nidx_rtp(1))                               &
      &        =   rtp%idx_gl_1d_rtp_r(1:rtp%nidx_rtp(1))
+!$omp end parallel workshare
+!
+!$omp parallel workshare
       sph_IO1%idx_gl_2(1:rtp%nidx_rtp(2),1)                             &
      &        = rtp%idx_gl_1d_rtp_t(1:rtp%nidx_rtp(2))
+!$omp end parallel workshare
+!
+!$omp parallel workshare
       sph_IO1%idx_gl_3(1:rtp%nidx_rtp(3),1)                             &
      &        = rtp%idx_gl_1d_rtp_p(1:rtp%nidx_rtp(3),1)
       sph_IO1%idx_gl_3(1:rtp%nidx_rtp(3),2)                             &
@@ -353,12 +378,18 @@
 !$omp end parallel do
 !
 !$omp parallel workshare
-      r_gl_1_IO(1:rtm%nidx_rtm(1))                                      &
+      sph_IO1%r_gl_1(1:rtm%nidx_rtm(1))                                 &
      &      =     rtm%radius_1d_rtm_r(1:rtm%nidx_rtm(1))
       sph_IO1%idx_gl_1(1:rtm%nidx_rtm(1))                               &
      &       =   rtm%idx_gl_1d_rtm_r(1:rtm%nidx_rtm(1))
+!$omp end parallel workshare
+!
+!$omp parallel workshare
       sph_IO1%idx_gl_2(1:rtm%nidx_rtm(2),1)                             &
      &       = rtm%idx_gl_1d_rtm_t(1:rtm%nidx_rtm(2))
+!$omp end parallel workshare
+!
+!$omp parallel workshare
       sph_IO1%idx_gl_3(1:rtm%nidx_rtm(3),1)                             &
      &       = rtm%idx_gl_1d_rtm_m(1:rtm%nidx_rtm(3),1)
       sph_IO1%idx_gl_3(1:rtm%nidx_rtm(3),2)                             &
@@ -411,10 +442,13 @@
 !$omp end parallel do
 !
 !$omp parallel workshare
-      r_gl_1_IO(1:rlm%nidx_rlm(1))                                      &
+      sph_IO1%r_gl_1(1:rlm%nidx_rlm(1))                                 &
      &       =     rlm%radius_1d_rlm_r(1:rlm%nidx_rlm(1))
       sph_IO1%idx_gl_1(1:rlm%nidx_rlm(1))                               &
      &       =   rlm%idx_gl_1d_rlm_r(1:rlm%nidx_rlm(1))
+!$omp end parallel workshare
+!
+!$omp parallel workshare
       sph_IO1%idx_gl_2(1:rlm%nidx_rlm(2),1)                             &
      &       = rlm%idx_gl_1d_rlm_j(1:rlm%nidx_rlm(2),1)
       sph_IO1%idx_gl_2(1:rlm%nidx_rlm(2),2)                             &
@@ -474,9 +508,13 @@
       end if
 !
 !$omp parallel workshare
-      r_gl_1_IO(1:rj%nidx_rj(1)) =   rj%radius_1d_rj_r(1:rj%nidx_rj(1))
+      sph_IO1%r_gl_1(1:rj%nidx_rj(1))                                   &
+     &       = rj%radius_1d_rj_r(1:rj%nidx_rj(1))
       sph_IO1%idx_gl_1(1:rj%nidx_rj(1))                                 &
      &       = rj%idx_gl_1d_rj_r(1:rj%nidx_rj(1))
+!$omp end parallel workshare
+!
+!$omp parallel workshare
       sph_IO1%idx_gl_2(1:rj%nidx_rj(2),1)                               &
      &       = rj%idx_gl_1d_rj_j(1:rj%nidx_rj(2),1)
       sph_IO1%idx_gl_2(1:rj%nidx_rj(2),2)                               &

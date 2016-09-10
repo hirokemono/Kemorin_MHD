@@ -75,7 +75,7 @@
      &    sph_IO1%nidx_sph(1), sph_IO1%idx_gl_1, IO_param%istack_merged)
       call mpi_read_1d_vector_b                                         &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    sph_IO1%nidx_sph(1), r_gl_1_IO, IO_param%istack_merged)
+     &    sph_IO1%nidx_sph(1), sph_IO1%r_gl_1, IO_param%istack_merged)
 !
       nvect = sph_IO1%nidx_sph(2) * sph_IO1%ncomp_table_1d(2)
       call set_istack_4_parallell_data(nvect, IO_param)
@@ -132,7 +132,7 @@
      &    sph_IO1%nidx_sph(1), sph_IO1%idx_gl_1, IO_param%istack_merged)
       call mpi_read_1d_vector_b                                         &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    sph_IO1%nidx_sph(1), r_gl_1_IO, IO_param%istack_merged)
+     &    sph_IO1%nidx_sph(1), sph_IO1%r_gl_1, IO_param%istack_merged)
 !
       nvect = sph_IO1%nidx_sph(2) * sph_IO1%ncomp_table_1d(2)
       call set_istack_4_parallell_data(nvect, IO_param)
@@ -171,7 +171,7 @@
       call mpi_write_int_vector_b(id_file, nprocs_in, id_rank, ioff_gl, &
      &    sph_IO1%nidx_sph(1), sph_IO1%idx_gl_1, IO_param%istack_merged)
       call mpi_write_1d_vector_b(id_file, nprocs_in, id_rank, ioff_gl,  &
-     &    sph_IO1%nidx_sph(1), r_gl_1_IO, IO_param%istack_merged)
+     &    sph_IO1%nidx_sph(1), sph_IO1%r_gl_1, IO_param%istack_merged)
 !
       nvect = sph_IO1%nidx_sph(2) * sph_IO1%ncomp_table_1d(2)
       call set_istack_4_parallell_data(nvect, IO_param)
@@ -216,7 +216,7 @@
       call mpi_write_int_vector_b(id_file, nprocs_in, id_rank, ioff_gl, &
      &    sph_IO1%nidx_sph(1), sph_IO1%idx_gl_1, IO_param%istack_merged)
       call mpi_write_1d_vector_b(id_file, nprocs_in, id_rank, ioff_gl,  &
-     &    sph_IO1%nidx_sph(1), r_gl_1_IO, IO_param%istack_merged)
+     &    sph_IO1%nidx_sph(1), sph_IO1%r_gl_1, IO_param%istack_merged)
 !
       nvect = sph_IO1%nidx_sph(2) * sph_IO1%ncomp_table_1d(2)
       call set_istack_4_parallell_data(nvect, IO_param)
