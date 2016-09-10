@@ -60,7 +60,7 @@
 !
       rtp%irank_sph_rtp(1:ithree) = sph_IO1%sph_rank(1:ithree)
 !
-      rtp%nidx_global_rtp(1:ithree) = nidx_gl_sph_IO(1:ithree)
+      rtp%nidx_global_rtp(1:ithree) = sph_IO1%nidx_gl_sph(1:ithree)
       l_truncation =              ltr_gl_IO
 !
       rtp%nnod_rtp =      nnod_sph_IO
@@ -104,9 +104,9 @@
       type(sph_rtm_grid), intent(inout) :: rtm
       integer(kind = kint) :: i
 !
-      rtm%irank_sph_rtm(1:ithree) =    sph_IO1%sph_rank(1:ithree)
+      rtm%irank_sph_rtm(1:ithree) =   sph_IO1%sph_rank(1:ithree)
 !
-      rtm%nidx_global_rtm(1:ithree) = nidx_gl_sph_IO(1:ithree)
+      rtm%nidx_global_rtm(1:ithree) = sph_IO1%nidx_gl_sph(1:ithree)
       l_truncation =              ltr_gl_IO
 !
       rtm%nnod_rtm = nnod_sph_IO
@@ -150,9 +150,9 @@
       type(sph_rlm_grid), intent(inout) :: rlm
       integer(kind = kint) :: i
 !
-      rlm%irank_sph_rlm(1:itwo) =    sph_IO1%sph_rank(1:itwo)
+      rlm%irank_sph_rlm(1:itwo) =   sph_IO1%sph_rank(1:itwo)
 !
-      rlm%nidx_global_rlm(1:itwo) = nidx_gl_sph_IO(1:itwo)
+      rlm%nidx_global_rlm(1:itwo) = sph_IO1%nidx_gl_sph(1:itwo)
       l_truncation =              ltr_gl_IO
 !
       rlm%nnod_rlm = nnod_sph_IO
@@ -195,9 +195,9 @@
       type(sph_rj_grid), intent(inout) :: rj
       integer(kind = kint) :: i
 !
-      rj%irank_sph_rj(1:itwo) =     sph_IO1%sph_rank(1:itwo)
+      rj%irank_sph_rj(1:itwo) =   sph_IO1%sph_rank(1:itwo)
 !
-      rj%nidx_global_rj(1:itwo) = nidx_gl_sph_IO(1:itwo)
+      rj%nidx_global_rj(1:itwo) = sph_IO1%nidx_gl_sph(1:itwo)
       l_truncation =            ltr_gl_IO
 !
       rj%nnod_rj = nnod_sph_IO
@@ -251,7 +251,7 @@
       ncomp_itbl_1d_IO(2) = ione
       ncomp_itbl_1d_IO(3) = itwo
 !
-      nidx_gl_sph_IO(1:ithree) = rtp%nidx_global_rtp(1:ithree)
+      sph_IO1%nidx_gl_sph(1:ithree) = rtp%nidx_global_rtp(1:ithree)
       ltr_gl_IO =                l_truncation
 !
       nnod_sph_IO = rtp%nnod_rtp
@@ -315,7 +315,7 @@
       ncomp_itbl_1d_IO(2) = ione
       ncomp_itbl_1d_IO(3) = itwo
 !
-      nidx_gl_sph_IO(1:ithree) = rtm%nidx_global_rtm(1:ithree)
+      sph_IO1%nidx_gl_sph(1:ithree) = rtm%nidx_global_rtm(1:ithree)
       ltr_gl_IO =                l_truncation
 !
       nnod_sph_IO = rtm%nnod_rtm
@@ -375,7 +375,7 @@
       ncomp_itbl_1d_IO(1) = ione
       ncomp_itbl_1d_IO(2) = ithree
 !
-      nidx_gl_sph_IO(1:itwo) = rlm%nidx_global_rlm(1:itwo)
+      sph_IO1%nidx_gl_sph(1:itwo) = rlm%nidx_global_rlm(1:itwo)
       ltr_gl_IO =              l_truncation
 !
       nnod_sph_IO = rlm%nnod_rlm
@@ -430,7 +430,7 @@
       ncomp_itbl_1d_IO(1) = ione
       ncomp_itbl_1d_IO(2) = ithree
 !
-      nidx_gl_sph_IO(1:itwo) = rj%nidx_global_rj(1:itwo)
+      sph_IO1%nidx_gl_sph(1:itwo) = rj%nidx_global_rj(1:itwo)
       ltr_gl_IO =              l_truncation
 !
       nnod_sph_IO = rj%nnod_rj

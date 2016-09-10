@@ -333,7 +333,7 @@
         call calypso_MPI_abort(ierr_sph,'rj rank ID is wrong')
       end if
 !
-      if(sph_rj%nidx_global_rj(2) .ne. nidx_gl_sph_IO(2)) then
+      if(sph_rj%nidx_global_rj(2) .ne. sph_IO1%nidx_gl_sph(2)) then
         call calypso_MPI_abort                                          &
      &     (ierr_sph,'number of local mode is wrong')
       end if

@@ -59,7 +59,7 @@
 !
 !
       call gz_mpi_read_mul_inthead_b                                    &
-     &   (id_file, ioff_gl, ndir_sph_IO, nidx_gl_sph_IO)
+     &   (id_file, ioff_gl, ndir_sph_IO, sph_IO1%nidx_gl_sph)
       call gz_mpi_read_one_inthead_b(id_file, ioff_gl, ltr_gl_IO)
 !
       end subroutine gz_mpi_read_gl_reso_sph_b
@@ -114,7 +114,7 @@
 !
 !
       call gz_mpi_write_mul_inthead_b                                   &
-     &   (id_file, ioff_gl, ndir_sph_IO, nidx_gl_sph_IO)
+     &   (id_file, ioff_gl, ndir_sph_IO, sph_IO1%nidx_gl_sph)
       call gz_mpi_write_one_inthead_b(id_file, ioff_gl, ltr_gl_IO)
 !
       end subroutine gz_mpi_write_gl_reso_sph_b

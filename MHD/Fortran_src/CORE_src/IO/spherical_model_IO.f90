@@ -53,7 +53,7 @@
       integer(kind = kint), intent(in) :: id_file
 !
       call skip_comment(character_4_read,id_file)
-      read(character_4_read,*) nidx_gl_sph_IO(1:ndir_sph_IO)
+      read(character_4_read,*) sph_IO1%nidx_gl_sph(1:ndir_sph_IO)
       call skip_comment(character_4_read,id_file)
       read(character_4_read,*) ltr_gl_IO
 !
@@ -109,7 +109,7 @@
 !
 !
       write(id_file,'(a)', advance='NO') hd_trunc()
-      write(id_file,'(3i16)') nidx_gl_sph_IO(1:ndir_sph_IO)
+      write(id_file,'(3i16)') sph_IO1%nidx_gl_sph(1:ndir_sph_IO)
       write(id_file,'(i16)') ltr_gl_IO
 !
       end subroutine write_gl_resolution_sph

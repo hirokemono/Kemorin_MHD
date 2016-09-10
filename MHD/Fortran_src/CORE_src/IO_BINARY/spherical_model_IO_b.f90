@@ -43,7 +43,7 @@
       subroutine read_gl_resolution_sph_b
 !
 !
-      call read_mul_integer_b(ndir_sph_IO, nidx_gl_sph_IO)
+      call read_mul_integer_b(ndir_sph_IO, sph_IO1%nidx_gl_sph)
       call read_one_integer_b(ltr_gl_IO)
 !
       end subroutine read_gl_resolution_sph_b
@@ -78,7 +78,7 @@
       subroutine write_gl_resolution_sph_b
 !
 !
-      call write_mul_integer_b(ndir_sph_IO, nidx_gl_sph_IO)
+      call write_mul_integer_b(ndir_sph_IO, sph_IO1%nidx_gl_sph)
       call write_one_integer_b(ltr_gl_IO)
 !
       end subroutine write_gl_resolution_sph_b
