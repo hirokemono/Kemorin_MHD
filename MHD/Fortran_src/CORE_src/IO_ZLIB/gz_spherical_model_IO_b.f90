@@ -55,11 +55,11 @@
       integer(kind = kint) :: nvect
 !
 !
-      call gz_read_one_integer_b(nnod_sph_IO)
+      call gz_read_one_integer_b(sph_IO1%numnod_sph)
       call allocate_nod_id_sph_IO
 !
-      call gz_read_mul_int8_b(nnod_sph_IO, inod_gl_sph_IO)
-      nvect = nnod_sph_IO * sph_IO1%numdir_sph
+      call gz_read_mul_int8_b(sph_IO1%numnod_sph, inod_gl_sph_IO)
+      nvect = sph_IO1%numnod_sph * sph_IO1%numdir_sph
       call gz_read_mul_integer_b(nvect, idx_gl_sph_IO)
 !
       end subroutine gz_read_gl_nodes_sph_b
@@ -91,9 +91,9 @@
       integer(kind = kint) ::  nvect
 !
 !
-      call gz_write_one_integer_b(nnod_sph_IO)
-      call gz_write_mul_int8_b(nnod_sph_IO, inod_gl_sph_IO)
-      nvect = nnod_sph_IO * sph_IO1%numdir_sph
+      call gz_write_one_integer_b(sph_IO1%numnod_sph)
+      call gz_write_mul_int8_b(sph_IO1%numnod_sph, inod_gl_sph_IO)
+      nvect = sph_IO1%numnod_sph * sph_IO1%numdir_sph
       call gz_write_mul_integer_b(nvect, idx_gl_sph_IO)
 !
       call deallocate_nod_id_sph_IO

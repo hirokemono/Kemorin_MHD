@@ -55,11 +55,11 @@
       integer(kind = kint) :: nvect
 !
 !
-      call read_one_integer_b(nnod_sph_IO)
+      call read_one_integer_b(sph_IO1%numnod_sph)
       call allocate_nod_id_sph_IO
 !
-      call read_mul_int8_b(nnod_sph_IO, inod_gl_sph_IO)
-      nvect = nnod_sph_IO * sph_IO1%numdir_sph
+      call read_mul_int8_b(sph_IO1%numnod_sph, inod_gl_sph_IO)
+      nvect = sph_IO1%numnod_sph * sph_IO1%numdir_sph
       call read_mul_integer_b(nvect, idx_gl_sph_IO)
 !
       end subroutine read_gl_nodes_sph_b
@@ -90,9 +90,9 @@
       integer(kind = kint) ::  nvect
 !
 !
-      call write_one_integer_b(nnod_sph_IO)
-      call write_mul_int8_b(nnod_sph_IO, inod_gl_sph_IO)
-      nvect = nnod_sph_IO * sph_IO1%numdir_sph
+      call write_one_integer_b(sph_IO1%numnod_sph)
+      call write_mul_int8_b(sph_IO1%numnod_sph, inod_gl_sph_IO)
+      nvect = sph_IO1%numnod_sph * sph_IO1%numdir_sph
       call write_mul_integer_b(nvect, idx_gl_sph_IO)
 !
       call deallocate_nod_id_sph_IO

@@ -350,7 +350,7 @@
      &     (ierr_sph,'end point of harminics is wrong')
       end if
 !
-      n_rj_org = nnod_sph_IO
+      n_rj_org = sph_IO1%numnod_sph
       nri_org =  nidx_sph_IO(1)
 !
       call allocate_original_sph_data

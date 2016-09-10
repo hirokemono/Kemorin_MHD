@@ -57,11 +57,11 @@
       integer(kind = kint) :: i
 !
 !
-      call skip_gz_comment_int( nnod_sph_IO )
+      call skip_gz_comment_int( sph_IO1%numnod_sph )
 !
       call allocate_nod_id_sph_IO
 !
-      do i = 1, nnod_sph_IO
+      do i = 1, sph_IO1%numnod_sph
         call get_one_line_from_gz_f
         read(textbuf,*)                                                 &
      &       inod_gl_sph_IO(i), idx_gl_sph_IO(i,1:sph_IO1%numdir_sph)
@@ -121,12 +121,12 @@
       character(len=kchara) :: fmt_txt
 !
 !
-      write(textbuf,'(i16,a1)') nnod_sph_IO, char(0)
+      write(textbuf,'(i16,a1)') sph_IO1%numnod_sph, char(0)
       call gz_write_textbuf_w_lf
 !
       write(fmt_txt,'(a5,i2,a9)')                                       &
      &                '(i16,', sph_IO1%numdir_sph, '(i16),a1)'
-      do i = 1, nnod_sph_IO
+      do i = 1, sph_IO1%numnod_sph
         write(textbuf,fmt_txt) inod_gl_sph_IO(i),                       &
      &      idx_gl_sph_IO(i,1:sph_IO1%numdir_sph), char(0)
         call gz_write_textbuf_w_lf

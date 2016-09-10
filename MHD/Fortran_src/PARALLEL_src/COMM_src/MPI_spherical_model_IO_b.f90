@@ -90,17 +90,17 @@
 !
 !
       call mpi_read_one_integer_b                                       &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, nnod_sph_IO)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, sph_IO1%numnod_sph)
 !
       call allocate_nod_id_sph_IO
 !
       call alloc_istack_merge(id_rank, nprocs_in, IO_param)
-      call set_istack_4_parallell_data(nnod_sph_IO, IO_param)
+      call set_istack_4_parallell_data(sph_IO1%numnod_sph, IO_param)
       call mpi_read_int8_vector_b                                       &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    nnod_sph_IO, inod_gl_sph_IO, IO_param%istack_merged)
+     &    sph_IO1%numnod_sph, inod_gl_sph_IO, IO_param%istack_merged)
 !
-      nvect = nnod_sph_IO * sph_IO1%numdir_sph
+      nvect = sph_IO1%numnod_sph * sph_IO1%numdir_sph
       call mul_istack_4_parallell_vect(sph_IO1%numdir_sph, IO_param)
       call mpi_read_int_vector_b                                        &
      &   (id_file, nprocs_in, id_rank, ioff_gl, nvect, idx_gl_sph_IO,   &
@@ -156,15 +156,15 @@
 !
 !
       call mpi_write_one_integer_b                                      &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, nnod_sph_IO)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, sph_IO1%numnod_sph)
 !
       call alloc_istack_merge(id_rank, nprocs_in, IO_param)
-      call set_istack_4_parallell_data(nnod_sph_IO, IO_param)
+      call set_istack_4_parallell_data(sph_IO1%numnod_sph, IO_param)
       call mpi_write_int8_vector_b                                      &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    nnod_sph_IO, inod_gl_sph_IO, IO_param%istack_merged)
+     &    sph_IO1%numnod_sph, inod_gl_sph_IO, IO_param%istack_merged)
 !
-      nvect = nnod_sph_IO * sph_IO1%numdir_sph
+      nvect = sph_IO1%numnod_sph * sph_IO1%numdir_sph
       call mul_istack_4_parallell_vect(sph_IO1%numdir_sph, IO_param)
       call mpi_write_int_vector_b(id_file, nprocs_in, id_rank, ioff_gl, &
      &    nvect, idx_gl_sph_IO, IO_param%istack_merged)
