@@ -48,7 +48,7 @@
       call read_mul_integer_b(nvect, sph_IO1%idx_gl_2)
 !
       nvect = sph_IO1%nidx_sph(3) * sph_IO1%ncomp_table_1d(3)
-      call read_mul_integer_b(nvect, idx_gl_3_IO)
+      call read_mul_integer_b(nvect, sph_IO1%idx_gl_3)
 !
       end subroutine read_rtp_gl_1d_table_b
 !
@@ -97,7 +97,7 @@
       call write_mul_integer_b(nvect, sph_IO1%idx_gl_2)
 !
       nvect = sph_IO1%nidx_sph(3) * sph_IO1%ncomp_table_1d(3)
-      call write_mul_integer_b(nvect, idx_gl_3_IO)
+      call write_mul_integer_b(nvect, sph_IO1%idx_gl_3)
 !
       call deallocate_idx_sph_1d1_IO
       call deallocate_idx_sph_1d2_IO

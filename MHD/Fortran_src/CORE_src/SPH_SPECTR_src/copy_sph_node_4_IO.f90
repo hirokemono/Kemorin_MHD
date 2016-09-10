@@ -84,9 +84,9 @@
       rtp%idx_gl_1d_rtp_t(1:rtp%nidx_rtp(2))                            &
      &       =   sph_IO1%idx_gl_2(1:rtp%nidx_rtp(2),1)
       rtp%idx_gl_1d_rtp_p(1:rtp%nidx_rtp(3),1)                          &
-     &       = idx_gl_3_IO(1:rtp%nidx_rtp(3),1)
+     &       = sph_IO1%idx_gl_3(1:rtp%nidx_rtp(3),1)
       rtp%idx_gl_1d_rtp_p(1:rtp%nidx_rtp(3),2)                          &
-     &       = idx_gl_3_IO(1:rtp%nidx_rtp(3),2)
+     &       = sph_IO1%idx_gl_3(1:rtp%nidx_rtp(3),2)
 !$omp end parallel workshare
 !
       call deallocate_nod_id_sph_IO
@@ -132,9 +132,9 @@
       rtm%idx_gl_1d_rtm_t(1:rtm%nidx_rtm(2))                            &
      &      =   sph_IO1%idx_gl_2(1:rtm%nidx_rtm(2),1)
       rtm%idx_gl_1d_rtm_m(1:rtm%nidx_rtm(3),1)                          &
-     &      = idx_gl_3_IO(1:rtm%nidx_rtm(3),1)
+     &      = sph_IO1%idx_gl_3(1:rtm%nidx_rtm(3),1)
       rtm%idx_gl_1d_rtm_m(1:rtm%nidx_rtm(3),2)                          &
-     &      = idx_gl_3_IO(1:rtm%nidx_rtm(3),2)
+     &      = sph_IO1%idx_gl_3(1:rtm%nidx_rtm(3),2)
 !$omp end parallel workshare
 !
       call deallocate_nod_id_sph_IO
@@ -298,9 +298,9 @@
      &        =   rtp%idx_gl_1d_rtp_r(1:rtp%nidx_rtp(1))
       sph_IO1%idx_gl_2(1:rtp%nidx_rtp(2),1)                             &
      &        = rtp%idx_gl_1d_rtp_t(1:rtp%nidx_rtp(2))
-      idx_gl_3_IO(1:rtp%nidx_rtp(3),1)                                  &
+      sph_IO1%idx_gl_3(1:rtp%nidx_rtp(3),1)                             &
      &        = rtp%idx_gl_1d_rtp_p(1:rtp%nidx_rtp(3),1)
-      idx_gl_3_IO(1:rtp%nidx_rtp(3),2)                                  &
+      sph_IO1%idx_gl_3(1:rtp%nidx_rtp(3),2)                             &
      &        = rtp%idx_gl_1d_rtp_p(1:rtp%nidx_rtp(3),2)
 !$omp end parallel workshare
 !
@@ -359,9 +359,9 @@
      &       =   rtm%idx_gl_1d_rtm_r(1:rtm%nidx_rtm(1))
       sph_IO1%idx_gl_2(1:rtm%nidx_rtm(2),1)                             &
      &       = rtm%idx_gl_1d_rtm_t(1:rtm%nidx_rtm(2))
-      idx_gl_3_IO(1:rtm%nidx_rtm(3),1)                                  &
+      sph_IO1%idx_gl_3(1:rtm%nidx_rtm(3),1)                             &
      &       = rtm%idx_gl_1d_rtm_m(1:rtm%nidx_rtm(3),1)
-      idx_gl_3_IO(1:rtm%nidx_rtm(3),2)                                  &
+      sph_IO1%idx_gl_3(1:rtm%nidx_rtm(3),2)                             &
      &       = rtm%idx_gl_1d_rtm_m(1:rtm%nidx_rtm(3),2)
 !$omp end parallel workshare
 !

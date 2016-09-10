@@ -61,7 +61,7 @@
 !
       do i = 1, sph_IO1%nidx_sph(3)
         call get_one_line_from_gz_f
-        read(textbuf,*) idx_gl_3_IO(i,1:sph_IO1%ncomp_table_1d(3))
+        read(textbuf,*) sph_IO1%idx_gl_3(i,1:sph_IO1%ncomp_table_1d(3))
       end do
 !
       end subroutine read_rtp_gl_1d_table_gz
@@ -150,7 +150,7 @@
      &                '(', sph_IO1%ncomp_table_1d(3), '(i16),a1)'
       do i = 1, sph_IO1%nidx_sph(3)
         write(textbuf,fmt_txt)                                          &
-     &       idx_gl_3_IO(i,1:sph_IO1%ncomp_table_1d(3)), char(0)
+     &       sph_IO1%idx_gl_3(i,1:sph_IO1%ncomp_table_1d(3)), char(0)
         call gz_write_textbuf_w_lf
       end do
 !

@@ -66,7 +66,7 @@
       call allocate_idx_sph_1d3_IO
 !
       do i = 1, sph_IO1%nidx_sph(3)
-        read(id_file,*) idx_gl_3_IO(i,1:sph_IO1%ncomp_table_1d(3))
+        read(id_file,*) sph_IO1%idx_gl_3(i,1:sph_IO1%ncomp_table_1d(3))
       end do
 !
       end subroutine read_rtp_gl_1d_table
@@ -135,7 +135,7 @@
      &                        sph_IO1%ist_sph(3), sph_IO1%ied_sph(3)
       do i = 1, sph_IO1%nidx_sph(3)
         write(id_file,'(8i16)')                                         &
-     &         idx_gl_3_IO(i,1:sph_IO1%ncomp_table_1d(3))
+     &         sph_IO1%idx_gl_3(i,1:sph_IO1%ncomp_table_1d(3))
       end do
 !
       call deallocate_idx_sph_1d1_IO
