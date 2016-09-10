@@ -271,9 +271,9 @@
         idx_gl_sph_IO(i,1) = rtp%idx_global_rtp(i,1)
         idx_gl_sph_IO(i,2) = rtp%idx_global_rtp(i,2)
         idx_gl_sph_IO(i,3) = rtp%idx_global_rtp(i,3)
-        inod_gl_sph_IO(i) = rtp%idx_global_rtp(i,1)                    &
-     &                   + (rtp%idx_global_rtp(i,2) - 1) * nr_8        &
-     &                   + (rtp%idx_global_rtp(i,3) - 1) * nrt8
+        sph_IO1%inod_gl_sph(i) = rtp%idx_global_rtp(i,1)                &
+     &                        + (rtp%idx_global_rtp(i,2) - 1) * nr_8    &
+     &                        + (rtp%idx_global_rtp(i,3) - 1) * nrt8
       end do
 !$omp end parallel do
 !
@@ -335,9 +335,9 @@
         idx_gl_sph_IO(i,1) = rtm%idx_global_rtm(i,1)
         idx_gl_sph_IO(i,2) = rtm%idx_global_rtm(i,2)
         idx_gl_sph_IO(i,3) = rtm%idx_global_rtm(i,3)
-        inod_gl_sph_IO(i) = rtm%idx_global_rtm(i,1)                     &
-     &                   + (rtm%idx_global_rtm(i,2) - 1) * nr_8         &
-     &                   +  rtm%idx_global_rtm(i,3) * nrt8
+        sph_IO1%inod_gl_sph(i) = rtm%idx_global_rtm(i,1)                &
+     &                        + (rtm%idx_global_rtm(i,2) - 1) * nr_8    &
+     &                        +  rtm%idx_global_rtm(i,3) * nrt8
       end do
 !$omp end parallel do
 !
@@ -392,8 +392,8 @@
         nr_8 = rlm%nidx_global_rlm(1)
         idx_gl_sph_IO(i,1) = rlm%idx_global_rlm(i,1)
         idx_gl_sph_IO(i,2) = rlm%idx_global_rlm(i,2)
-        inod_gl_sph_IO(i) =  rlm%idx_global_rlm(i,1)                    &
-     &                     + rlm%idx_global_rlm(i,2) * nr_8
+        sph_IO1%inod_gl_sph(i) =  rlm%idx_global_rlm(i,1)               &
+     &                          + rlm%idx_global_rlm(i,2) * nr_8
       end do
 !$omp end parallel do
 !
@@ -447,14 +447,15 @@
         nr_8 = rj%nidx_global_rj(1)
         idx_gl_sph_IO(i,1) = rj%idx_global_rj(i,1)
         idx_gl_sph_IO(i,2) = rj%idx_global_rj(i,2)
-        inod_gl_sph_IO(i) =  rj%idx_global_rj(i,1)                      &
-     &                     + rj%idx_global_rj(i,2) * nr_8
+        sph_IO1%inod_gl_sph(i) =  rj%idx_global_rj(i,1)                 &
+     &                          + rj%idx_global_rj(i,2) * nr_8
       end do
 !$omp end parallel do
 !
-      if(inod_gl_sph_IO(rj%nnod_rj) .eq. izero) then
+      if(sph_IO1%inod_gl_sph(rj%nnod_rj) .eq. izero) then
         nr_8 = (rj%nidx_global_rj(2) + 1)
-        inod_gl_sph_IO(rj%nnod_rj) = rj%nidx_global_rj(1) * nr_8 + 1
+        sph_IO1%inod_gl_sph(rj%nnod_rj)                                 &
+     &       = rj%nidx_global_rj(1) * nr_8 + 1
       end if
 !
       r_gl_1_IO(1:rj%nidx_rj(1)) =   rj%radius_1d_rj_r(1:rj%nidx_rj(1))

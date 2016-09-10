@@ -84,7 +84,7 @@
 !
       call gz_mpi_read_int8_vector_b                                    &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    sph_IO1%numnod_sph, inod_gl_sph_IO)
+     &    sph_IO1%numnod_sph, sph_IO1%inod_gl_sph)
       nvect = sph_IO1%numnod_sph * sph_IO1%numdir_sph
       call gz_mpi_read_int_vector_b                                     &
      &   (id_file, nprocs_in, id_rank, ioff_gl, nvect, idx_gl_sph_IO)
@@ -132,7 +132,7 @@
       call gz_mpi_write_one_integer_b                                   &
      &   (id_file, ioff_gl, sph_IO1%numnod_sph)
       call gz_mpi_write_int8_vector_b                                   &
-     &   (id_file, ioff_gl, sph_IO1%numnod_sph, inod_gl_sph_IO)
+     &   (id_file, ioff_gl, sph_IO1%numnod_sph, sph_IO1%inod_gl_sph)
       nvect = sph_IO1%numnod_sph * sph_IO1%numdir_sph
       call gz_mpi_write_int_vector_b                                    &
      &   (id_file, ioff_gl, nvect, idx_gl_sph_IO)

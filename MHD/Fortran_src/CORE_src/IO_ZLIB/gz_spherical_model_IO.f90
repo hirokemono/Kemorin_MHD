@@ -63,8 +63,8 @@
 !
       do i = 1, sph_IO1%numnod_sph
         call get_one_line_from_gz_f
-        read(textbuf,*)                                                 &
-     &       inod_gl_sph_IO(i), idx_gl_sph_IO(i,1:sph_IO1%numdir_sph)
+        read(textbuf,*) sph_IO1%inod_gl_sph(i),                         &
+     &                  idx_gl_sph_IO(i,1:sph_IO1%numdir_sph)
       end do
 !
       end subroutine read_gl_nodes_sph_gz
@@ -127,7 +127,7 @@
       write(fmt_txt,'(a5,i2,a9)')                                       &
      &                '(i16,', sph_IO1%numdir_sph, '(i16),a1)'
       do i = 1, sph_IO1%numnod_sph
-        write(textbuf,fmt_txt) inod_gl_sph_IO(i),                       &
+        write(textbuf,fmt_txt) sph_IO1%inod_gl_sph(i),                  &
      &      idx_gl_sph_IO(i,1:sph_IO1%numdir_sph), char(0)
         call gz_write_textbuf_w_lf
       end do

@@ -75,11 +75,11 @@
       call allocate_nod_id_sph_IO
 !
       call skip_comment(character_4_read,id_file)
-      read(character_4_read,*)                                          &
-     &        inod_gl_sph_IO(1), idx_gl_sph_IO(1,1:sph_IO1%numdir_sph)
+      read(character_4_read,*) sph_IO1%inod_gl_sph(1),                  &
+     &                         idx_gl_sph_IO(1,1:sph_IO1%numdir_sph)
       do i = 2, sph_IO1%numnod_sph
-        read(id_file,*)                                                 &
-     &        inod_gl_sph_IO(i), idx_gl_sph_IO(i,1:sph_IO1%numdir_sph)
+        read(id_file,*) sph_IO1%inod_gl_sph(i),                         &
+     &                  idx_gl_sph_IO(i,1:sph_IO1%numdir_sph)
       end do
 !
       end subroutine read_gl_nodes_sph
@@ -124,8 +124,8 @@
 !
       write(id_file,'(i16)') sph_IO1%numnod_sph
       do i = 1, sph_IO1%numnod_sph
-        write(id_file,'(20i16)')                                        &
-     &         inod_gl_sph_IO(i), idx_gl_sph_IO(i,1:sph_IO1%numdir_sph)
+        write(id_file,'(20i16)') sph_IO1%inod_gl_sph(i),                &
+     &                           idx_gl_sph_IO(i,1:sph_IO1%numdir_sph)
       end do
 !
       call deallocate_nod_id_sph_IO

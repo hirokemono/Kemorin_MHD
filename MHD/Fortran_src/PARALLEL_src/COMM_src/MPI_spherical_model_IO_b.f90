@@ -98,7 +98,8 @@
       call set_istack_4_parallell_data(sph_IO1%numnod_sph, IO_param)
       call mpi_read_int8_vector_b                                       &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    sph_IO1%numnod_sph, inod_gl_sph_IO, IO_param%istack_merged)
+     &    sph_IO1%numnod_sph, sph_IO1%inod_gl_sph,                      &
+     &    IO_param%istack_merged)
 !
       nvect = sph_IO1%numnod_sph * sph_IO1%numdir_sph
       call mul_istack_4_parallell_vect(sph_IO1%numdir_sph, IO_param)
@@ -162,7 +163,8 @@
       call set_istack_4_parallell_data(sph_IO1%numnod_sph, IO_param)
       call mpi_write_int8_vector_b                                      &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    sph_IO1%numnod_sph, inod_gl_sph_IO, IO_param%istack_merged)
+     &    sph_IO1%numnod_sph, sph_IO1%inod_gl_sph,                      &
+     &    IO_param%istack_merged)
 !
       nvect = sph_IO1%numnod_sph * sph_IO1%numdir_sph
       call mul_istack_4_parallell_vect(sph_IO1%numdir_sph, IO_param)
