@@ -59,7 +59,7 @@
       sph_IO1%numdir_sph =  3
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &      'Read gzipped merged binary grid file: ', trim(file_name)
+     &      'Read merged binary grid file: ', trim(file_name)
       call open_read_mpi_file_b(file_name, id_file, ioff_gl)
 !
       call mpi_read_geom_rtp_data_b                                     &
@@ -84,8 +84,7 @@
       sph_IO1%numdir_sph =  2
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &      'Read gzipped merged binary spectr modes file: ',           &
-     &       trim(file_name)
+     &      'Read merged binary spectr modes file: ', trim(file_name)
       call open_read_mpi_file_b(file_name, id_file, ioff_gl)
 !
       call mpi_read_spectr_rj_data_b                                    &
@@ -110,7 +109,7 @@
       sph_IO1%numdir_sph =  3
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &      'Read gzipped merged binary grid file: ', trim(file_name)
+     &      'Read merged binary grid file: ', trim(file_name)
       call open_read_mpi_file_b(file_name, id_file, ioff_gl)
 !
       call mpi_read_geom_rtm_data_b                                     &
@@ -135,8 +134,7 @@
       sph_IO1%numdir_sph =  2
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &      'Read merged gzipped binary spectr modes file: ',           &
-     &       trim(file_name)
+     &      'Read merged binary spectr modes file: ', trim(file_name)
       call open_read_mpi_file_b(file_name, id_file, ioff_gl)
 !
       call mpi_read_modes_rlm_data_b                                    &
@@ -160,7 +158,7 @@
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &      'Write merged gzipped binary grid file: ', trim(file_name)
+     &      'Write merged binary grid file: ', trim(file_name)
       call open_write_mpi_file_b                                        &
      &   (file_name, nprocs_in, id_file, ioff_gl)
 !
@@ -184,8 +182,7 @@
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &      'gzipped merged binary spectr modes file: ',                &
-     &       trim(file_name)
+     &      'merged binary spectr modes file: ', trim(file_name)
       call open_write_mpi_file_b                                        &
      &   (file_name, nprocs_in, id_file, ioff_gl)
 !
@@ -209,7 +206,7 @@
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &      'Write gzipped merged binary grid file: ', trim(file_name)
+     &      'Write merged binary grid file: ', trim(file_name)
       call open_write_mpi_file_b                                        &
      &   (file_name, nprocs_in, id_file, ioff_gl)
 !
@@ -233,8 +230,7 @@
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &     'Write gzipped merged binary spectr modes file: ',           &
-     &      trim(file_name)
+     &     'Write merged binary spectr modes file: ', trim(file_name)
       call open_write_mpi_file_b                                        &
      &   (file_name, nprocs_in, id_file, ioff_gl)
 !
