@@ -61,10 +61,10 @@
       call read_import_data(mesh_file_id, comm_IO)
 !
 !      write(*,*) '! Group data'
-      call read_group_data(mesh_file_id, bc_rtp_grp_IO)
-      call read_group_data(mesh_file_id, radial_rtp_grp_IO)
-      call read_group_data(mesh_file_id, theta_rtp_grp_IO)
-      call read_group_data(mesh_file_id, zonal_rtp_grp_IO)
+      call read_group_data(mesh_file_id, sph_grp_IO%bc_rtp_grp)
+      call read_group_data(mesh_file_id, sph_grp_IO%radial_rtp_grp)
+      call read_group_data(mesh_file_id, sph_grp_IO%theta_rtp_grp)
+      call read_group_data(mesh_file_id, sph_grp_IO%zonal_rtp_grp)
 !
       end subroutine read_geom_rtp_data
 !
@@ -96,8 +96,8 @@
       call read_import_data(mesh_file_id, comm_IO)
 !
 !      write(*,*) '! Group data'
-      call read_group_data(mesh_file_id, radial_rj_grp_IO)
-      call read_group_data(mesh_file_id, sphere_rj_grp_IO)
+      call read_group_data(mesh_file_id, sph_grp_IO%radial_rj_grp)
+      call read_group_data(mesh_file_id, sph_grp_IO%sphere_rj_grp)
 !
       end subroutine read_spectr_modes_rj_data
 !
@@ -166,16 +166,16 @@
       write(id_mesh,'(a)', advance='NO') hd_grphd()
 !
       write(id_mesh,'(a)', advance='NO') hd_ngrphd()
-      call write_grp_data(id_mesh, bc_rtp_grp_IO)
+      call write_grp_data(id_mesh, sph_grp_IO%bc_rtp_grp)
 !
       write(id_mesh,'(a)', advance='NO') hd_rgrphd()
-      call write_grp_data(id_mesh, radial_rtp_grp_IO)
+      call write_grp_data(id_mesh, sph_grp_IO%radial_rtp_grp)
 !
       write(id_mesh,'(a)', advance='NO') hd_tgrphd()
-      call write_grp_data(id_mesh, theta_rtp_grp_IO)
+      call write_grp_data(id_mesh, sph_grp_IO%theta_rtp_grp)
 !
       write(id_mesh,'(a)', advance='NO') hd_pgrphd()
-      call write_grp_data(id_mesh, zonal_rtp_grp_IO)
+      call write_grp_data(id_mesh, sph_grp_IO%zonal_rtp_grp)
 !
 !      write(*,*) 'finish!!'
 !
@@ -214,9 +214,9 @@
 !      write(*,*) '! Group data'
       write(id_mesh,'(a)', advance='NO') hd_grphd()
       write(id_mesh,'(a)', advance='NO') hd_kgrphd()
-      call write_grp_data(id_mesh, radial_rj_grp_IO)
+      call write_grp_data(id_mesh, sph_grp_IO%radial_rj_grp)
       write(id_mesh,'(a)', advance='NO') hd_jgrphd()
-      call write_grp_data(id_mesh, sphere_rj_grp_IO)
+      call write_grp_data(id_mesh, sph_grp_IO%sphere_rj_grp)
 !
       end subroutine write_spectr_modes_rj_data
 !

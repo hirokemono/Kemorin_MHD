@@ -75,13 +75,13 @@
       call read_import_data_b(comm_IO)
 !
 !      write(*,*) '! Group data bc_rtp_grp_IO'
-      call read_group_data_b(bc_rtp_grp_IO)
+      call read_group_data_b(sph_grp_IO%bc_rtp_grp)
 !      write(*,*) '! Group data radial_rtp_grp_IO'
-      call read_group_data_b(radial_rtp_grp_IO)
+      call read_group_data_b(sph_grp_IO%radial_rtp_grp)
 !      write(*,*) '! Group data theta_rtp_grp_IO'
-      call read_group_data_b(theta_rtp_grp_IO)
+      call read_group_data_b(sph_grp_IO%theta_rtp_grp)
 !      write(*,*) '! Group data zonal_rtp_grp_IO'
-      call read_group_data_b(zonal_rtp_grp_IO)
+      call read_group_data_b(sph_grp_IO%zonal_rtp_grp)
 !
       call close_binary_file
 !
@@ -122,8 +122,8 @@
       call read_import_data_b(comm_IO)
 !
 !      write(*,*) '! Group data'
-      call read_group_data_b(radial_rj_grp_IO)
-      call read_group_data_b(sphere_rj_grp_IO)
+      call read_group_data_b(sph_grp_IO%radial_rj_grp)
+      call read_group_data_b(sph_grp_IO%sphere_rj_grp)
 !
       call close_binary_file
 !
@@ -217,10 +217,10 @@
       call write_import_data_b(comm_IO)
 !
 !      write(*,*) '! Group data'
-      call write_grp_data_b(bc_rtp_grp_IO)
-      call write_grp_data_b(radial_rtp_grp_IO)
-      call write_grp_data_b(theta_rtp_grp_IO)
-      call write_grp_data_b(zonal_rtp_grp_IO)
+      call write_grp_data_b(sph_grp_IO%bc_rtp_grp)
+      call write_grp_data_b(sph_grp_IO%radial_rtp_grp)
+      call write_grp_data_b(sph_grp_IO%theta_rtp_grp)
+      call write_grp_data_b(sph_grp_IO%zonal_rtp_grp)
 !
       call close_binary_file
 !
@@ -259,8 +259,8 @@
       call write_import_data_b(comm_IO)
 !
 !      write(*,*) '! Group data'
-      call write_grp_data_b(radial_rj_grp_IO)
-      call write_grp_data_b(sphere_rj_grp_IO)
+      call write_grp_data_b(sph_grp_IO%radial_rj_grp)
+      call write_grp_data_b(sph_grp_IO%sphere_rj_grp)
 !
       call close_binary_file
 !

@@ -76,13 +76,16 @@
      &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
 !
       call mpi_read_group_data_b                                        &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, bc_rtp_grp_IO)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, sph_grp_IO%bc_rtp_grp)
       call mpi_read_group_data_b                                        &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, radial_rtp_grp_IO)
+     &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
+     &    sph_grp_IO%radial_rtp_grp)
       call mpi_read_group_data_b                                        &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, theta_rtp_grp_IO)
+     &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
+     &    sph_grp_IO%theta_rtp_grp)
       call mpi_read_group_data_b                                        &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, zonal_rtp_grp_IO)
+     &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
+     &    sph_grp_IO%zonal_rtp_grp)
 !
       end subroutine mpi_read_geom_rtp_data_b
 !
@@ -113,9 +116,11 @@
      &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
 !
       call mpi_read_group_data_b                                        &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, radial_rj_grp_IO)
+     &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
+     &    sph_grp_IO%radial_rj_grp)
       call mpi_read_group_data_b                                        &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, sphere_rj_grp_IO)
+     &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
+     &    sph_grp_IO%sphere_rj_grp)
 !
       end subroutine mpi_read_spectr_rj_data_b
 !
@@ -200,13 +205,16 @@
      &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO) 
 !
       call mpi_write_grp_data_b                                         &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, bc_rtp_grp_IO)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, sph_grp_IO%bc_rtp_grp)
       call mpi_write_grp_data_b                                         &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, radial_rtp_grp_IO)
+     &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
+     &    sph_grp_IO%radial_rtp_grp)
       call mpi_write_grp_data_b                                         &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, theta_rtp_grp_IO)
+     &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
+     &    sph_grp_IO%theta_rtp_grp)
       call mpi_write_grp_data_b                                         &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, zonal_rtp_grp_IO)
+     &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
+     &    sph_grp_IO%zonal_rtp_grp)
 !
       end subroutine mpi_write_geom_rtp_data_b
 !
@@ -235,9 +243,11 @@
      &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
 !
       call mpi_write_grp_data_b                                         &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, radial_rj_grp_IO)
+     &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
+     &    sph_grp_IO%radial_rj_grp)
       call mpi_write_grp_data_b                                         &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, sphere_rj_grp_IO)
+     &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
+     &    sph_grp_IO%sphere_rj_grp)
 !
       end subroutine mpi_write_spectr_rj_data_b
 !

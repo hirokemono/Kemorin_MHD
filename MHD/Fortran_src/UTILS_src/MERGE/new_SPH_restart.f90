@@ -68,12 +68,12 @@
      &   (my_rank, sph%sph_rj%nnod_rj, sph_comms%comm_rj)
 !
       call set_gruop_stracture                                          &
-     &   (radial_rj_grp_IO, sph_grps%radial_rj_grp)
+     &   (sph_grp_IO%radial_rj_grp, sph_grps%radial_rj_grp)
       call set_gruop_stracture                                          &
-     &   (sphere_rj_grp_IO, sph_grps%sphere_rj_grp)
+     &   (sph_grp_IO%sphere_rj_grp, sph_grps%sphere_rj_grp)
 !
-      call deallocate_grp_type(radial_rj_grp_IO)
-      call deallocate_grp_type(sphere_rj_grp_IO)
+      call deallocate_grp_type(sph_grp_IO%radial_rj_grp)
+      call deallocate_grp_type(sph_grp_IO%sphere_rj_grp)
 !
       end subroutine set_local_rj_mesh_4_merge
 !

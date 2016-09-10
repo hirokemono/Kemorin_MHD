@@ -100,15 +100,16 @@
       call copy_sph_node_4_rtp_from_IO(sph_IO1, sph_rtp, l_truncation)
       call copy_comm_sph_from_IO(sph_rtp%nnod_rtp, comm_rtp)
 !
-      call set_gruop_stracture(bc_rtp_grp_IO, bc_rtp_grp)
-      call set_gruop_stracture(radial_rtp_grp_IO, radial_rtp_grp)
-      call set_gruop_stracture(theta_rtp_grp_IO, theta_rtp_grp)
-      call set_gruop_stracture(zonal_rtp_grp_IO, zonal_rtp_grp)
+      call set_gruop_stracture(sph_grp_IO%bc_rtp_grp, bc_rtp_grp)
+      call set_gruop_stracture                                          &
+     &   (sph_grp_IO%radial_rtp_grp, radial_rtp_grp)
+      call set_gruop_stracture(sph_grp_IO%theta_rtp_grp, theta_rtp_grp)
+      call set_gruop_stracture(sph_grp_IO%zonal_rtp_grp, zonal_rtp_grp)
 !
-      call deallocate_grp_type(bc_rtp_grp_IO)
-      call deallocate_grp_type(radial_rtp_grp_IO)
-      call deallocate_grp_type(theta_rtp_grp_IO)
-      call deallocate_grp_type(zonal_rtp_grp_IO)
+      call deallocate_grp_type(sph_grp_IO%bc_rtp_grp)
+      call deallocate_grp_type(sph_grp_IO%radial_rtp_grp)
+      call deallocate_grp_type(sph_grp_IO%theta_rtp_grp)
+      call deallocate_grp_type(sph_grp_IO%zonal_rtp_grp)
 !
       call count_num_rtp_smp(sph_rtp, ierr)
 !
@@ -135,11 +136,11 @@
       call copy_sph_node_4_rj_from_IO(sph_IO1, sph_rj, l_truncation)
       call copy_comm_sph_from_IO(sph_rj%nnod_rj, comm_rj)
 !
-      call set_gruop_stracture(radial_rj_grp_IO, radial_rj_grp)
-      call set_gruop_stracture(sphere_rj_grp_IO, sphere_rj_grp)
+      call set_gruop_stracture(sph_grp_IO%radial_rj_grp, radial_rj_grp)
+      call set_gruop_stracture(sph_grp_IO%sphere_rj_grp, sphere_rj_grp)
 !
-      call deallocate_grp_type(radial_rj_grp_IO)
-      call deallocate_grp_type(sphere_rj_grp_IO)
+      call deallocate_grp_type(sph_grp_IO%radial_rj_grp)
+      call deallocate_grp_type(sph_grp_IO%sphere_rj_grp)
 !
       call count_num_rj_smp(sph_rj, ierr)
 !
@@ -214,10 +215,11 @@
       call copy_sph_node_4_rtp_to_IO(l_truncation, sph_rtp, sph_IO1)
       call copy_comm_sph_to_IO(my_rank, comm_rtp)
 !
-      call set_gruop_stracture(bc_rtp_grp, bc_rtp_grp_IO)
-      call set_gruop_stracture(radial_rtp_grp, radial_rtp_grp_IO)
-      call set_gruop_stracture(theta_rtp_grp, theta_rtp_grp_IO)
-      call set_gruop_stracture(zonal_rtp_grp, zonal_rtp_grp_IO)
+      call set_gruop_stracture(bc_rtp_grp, sph_grp_IO%bc_rtp_grp)
+      call set_gruop_stracture                                          &
+     &   (radial_rtp_grp, sph_grp_IO%radial_rtp_grp)
+      call set_gruop_stracture(theta_rtp_grp, sph_grp_IO%theta_rtp_grp)
+      call set_gruop_stracture(zonal_rtp_grp, sph_grp_IO%zonal_rtp_grp)
 !
       call deallocate_grp_type(bc_rtp_grp)
       call deallocate_grp_type(radial_rtp_grp)
@@ -247,8 +249,8 @@
       call copy_sph_node_4_rj_to_IO(l_truncation, sph_rj, sph_IO1)
       call copy_comm_sph_to_IO(my_rank, comm_rj)
 !
-      call set_gruop_stracture(radial_rj_grp, radial_rj_grp_IO)
-      call set_gruop_stracture(sphere_rj_grp, sphere_rj_grp_IO)
+      call set_gruop_stracture(radial_rj_grp, sph_grp_IO%radial_rj_grp)
+      call set_gruop_stracture(sphere_rj_grp, sph_grp_IO%sphere_rj_grp)
 !
       call deallocate_grp_type(radial_rj_grp)
       call deallocate_grp_type(sphere_rj_grp)

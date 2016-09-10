@@ -54,13 +54,13 @@
       call read_import_data_gz(comm_IO)
 !
 !      write(*,*) 'read_rtp_node_grp_data_gz'
-      call read_group_data_gz(bc_rtp_grp_IO)
+      call read_group_data_gz(sph_grp_IO%bc_rtp_grp)
 !      write(*,*) 'read_rtp_radial_grp_data_gz'
-      call read_group_data_gz(radial_rtp_grp_IO)
+      call read_group_data_gz(sph_grp_IO%radial_rtp_grp)
 !      write(*,*) 'read_rtp_theta_grp_data_gz'
-      call read_group_data_gz(theta_rtp_grp_IO)
+      call read_group_data_gz(sph_grp_IO%theta_rtp_grp)
 !      write(*,*) 'read_rtp_zonal_grp_data_gz'
-      call read_group_data_gz(zonal_rtp_grp_IO)
+      call read_group_data_gz(sph_grp_IO%zonal_rtp_grp)
 !
       end subroutine read_geom_rtp_data_gz
 !
@@ -91,8 +91,8 @@
       call read_import_data_gz(comm_IO)
 !
 !      write(*,*) '! Group data'
-      call read_group_data_gz(radial_rj_grp_IO)
-      call read_group_data_gz(sphere_rj_grp_IO)
+      call read_group_data_gz(sph_grp_IO%radial_rj_grp)
+      call read_group_data_gz(sph_grp_IO%sphere_rj_grp)
 !
       end subroutine read_spectr_modes_rj_data_gz
 !
@@ -166,19 +166,19 @@
 !
       textbuf = hd_ngrphd() // char(0)
       call gz_write_textbuf_no_lf
-      call write_grp_data_gz(bc_rtp_grp_IO)
+      call write_grp_data_gz(sph_grp_IO%bc_rtp_grp)
 !
       textbuf = hd_rgrphd() // char(0)
       call gz_write_textbuf_no_lf
-      call write_grp_data_gz(radial_rtp_grp_IO)
+      call write_grp_data_gz(sph_grp_IO%radial_rtp_grp)
 !
       textbuf = hd_tgrphd() // char(0)
       call gz_write_textbuf_no_lf
-      call write_grp_data_gz(theta_rtp_grp_IO)
+      call write_grp_data_gz(sph_grp_IO%theta_rtp_grp)
 !
       textbuf = hd_pgrphd() // char(0)
       call gz_write_textbuf_no_lf
-      call write_grp_data_gz(zonal_rtp_grp_IO)
+      call write_grp_data_gz(sph_grp_IO%zonal_rtp_grp)
 !
 !      write(*,*) 'finish!!'
 !
@@ -221,11 +221,11 @@
 !
       textbuf = hd_kgrphd() // char(0)
       call gz_write_textbuf_no_lf
-      call write_grp_data_gz(radial_rj_grp_IO)
+      call write_grp_data_gz(sph_grp_IO%radial_rj_grp)
 !
       textbuf = hd_jgrphd() // char(0)
       call gz_write_textbuf_no_lf
-      call write_grp_data_gz(sphere_rj_grp_IO)
+      call write_grp_data_gz(sph_grp_IO%sphere_rj_grp)
 !
       end subroutine write_spectr_modes_rj_data_gz
 !
