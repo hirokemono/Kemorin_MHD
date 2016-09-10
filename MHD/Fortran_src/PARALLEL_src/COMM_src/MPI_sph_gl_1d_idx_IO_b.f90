@@ -59,7 +59,7 @@
      &    sph_IO1%numdir_sph, sph_IO1%nidx_sph, IO_param%istack_merged)
       call mpi_read_int_vector_b                                        &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    sph_IO1%numdir_sph, ist_sph_IO, IO_param%istack_merged)
+     &    sph_IO1%numdir_sph, sph_IO1%ist_sph, IO_param%istack_merged)
       call mpi_read_int_vector_b                                        &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
      &    sph_IO1%numdir_sph, ied_sph_IO, IO_param%istack_merged)
@@ -118,7 +118,7 @@
      &    sph_IO1%numdir_sph, sph_IO1%nidx_sph, IO_param%istack_merged)
       call mpi_read_int_vector_b                                        &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    sph_IO1%numdir_sph, ist_sph_IO, IO_param%istack_merged)
+     &    sph_IO1%numdir_sph, sph_IO1%ist_sph, IO_param%istack_merged)
       call mpi_read_int_vector_b                                        &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
      &    sph_IO1%numdir_sph, ied_sph_IO, IO_param%istack_merged)
@@ -163,7 +163,7 @@
       call mpi_write_int_vector_b(id_file, nprocs_in, id_rank, ioff_gl, &
      &    sph_IO1%numdir_sph, sph_IO1%nidx_sph, IO_param%istack_merged)
       call mpi_write_int_vector_b(id_file, nprocs_in, id_rank, ioff_gl, &
-     &    sph_IO1%numdir_sph, ist_sph_IO, IO_param%istack_merged)
+     &    sph_IO1%numdir_sph, sph_IO1%ist_sph, IO_param%istack_merged)
       call mpi_write_int_vector_b(id_file, nprocs_in, id_rank, ioff_gl, &
      &    sph_IO1%numdir_sph, ied_sph_IO, IO_param%istack_merged)
 !
@@ -208,7 +208,7 @@
       call mpi_write_int_vector_b(id_file, nprocs_in, id_rank, ioff_gl, &
      &    sph_IO1%numdir_sph, sph_IO1%nidx_sph, IO_param%istack_merged)
       call mpi_write_int_vector_b(id_file, nprocs_in, id_rank, ioff_gl, &
-     &    sph_IO1%numdir_sph, ist_sph_IO, IO_param%istack_merged)
+     &    sph_IO1%numdir_sph, sph_IO1%ist_sph, IO_param%istack_merged)
       call mpi_write_int_vector_b(id_file, nprocs_in, id_rank, ioff_gl, &
      &    sph_IO1%numdir_sph, ied_sph_IO, IO_param%istack_merged)
 !

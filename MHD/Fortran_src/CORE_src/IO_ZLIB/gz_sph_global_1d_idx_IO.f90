@@ -35,7 +35,8 @@
       ncomp_itbl_1d_IO(3) = 2
 !
       call skip_gz_comment_int( sph_IO1%nidx_sph(1) )
-      read(textbuf,*) sph_IO1%nidx_sph(1), ist_sph_IO(1), ied_sph_IO(1)
+      read(textbuf,*) sph_IO1%nidx_sph(1),                              &
+     &                sph_IO1%ist_sph(1), ied_sph_IO(1)
       call allocate_idx_sph_1d1_IO
 !
       do i = 1, sph_IO1%nidx_sph(1)
@@ -44,7 +45,8 @@
       end do
 !
       call skip_gz_comment_int( sph_IO1%nidx_sph(2) )
-      read(textbuf,*) sph_IO1%nidx_sph(2), ist_sph_IO(2), ied_sph_IO(2)
+      read(textbuf,*) sph_IO1%nidx_sph(2),                              &
+     &                sph_IO1%ist_sph(2), ied_sph_IO(2)
       call allocate_idx_sph_1d2_IO
 !
       do i = 1, sph_IO1%nidx_sph(2)
@@ -53,7 +55,8 @@
       end do
 !
       call skip_gz_comment_int( sph_IO1%nidx_sph(3) )
-      read(textbuf,*) sph_IO1%nidx_sph(3), ist_sph_IO(3), ied_sph_IO(3)
+      read(textbuf,*) sph_IO1%nidx_sph(3),                              &
+     &                sph_IO1%ist_sph(3), ied_sph_IO(3)
       call allocate_idx_sph_1d3_IO
 !
       do i = 1, sph_IO1%nidx_sph(3)
@@ -75,7 +78,8 @@
       ncomp_itbl_1d_IO(2) = 3
 !
       call skip_gz_comment_int( sph_IO1%nidx_sph(1) )
-      read(textbuf,*) sph_IO1%nidx_sph(1), ist_sph_IO(1), ied_sph_IO(1)
+      read(textbuf,*) sph_IO1%nidx_sph(1),                              &
+     &                sph_IO1%ist_sph(1), ied_sph_IO(1)
       call allocate_idx_sph_1d1_IO
 !
       do i = 1, sph_IO1%nidx_sph(1)
@@ -84,7 +88,8 @@
       end do
 !
       call skip_gz_comment_int( sph_IO1%nidx_sph(2) )
-      read(textbuf,*) sph_IO1%nidx_sph(2), ist_sph_IO(2), ied_sph_IO(2)
+      read(textbuf,*) sph_IO1%nidx_sph(2),                              &
+     &                sph_IO1%ist_sph(2), ied_sph_IO(2)
       call allocate_idx_sph_1d2_IO
 !
       do i = 1, sph_IO1%nidx_sph(2)
@@ -109,7 +114,7 @@
       call gz_write_textbuf_no_lf
 !
       write(textbuf,'(3i16,a1)') sph_IO1%nidx_sph(1),                   &
-     &                        ist_sph_IO(1), ied_sph_IO(1), char(0)
+     &                        sph_IO1%ist_sph(1), ied_sph_IO(1), char(0)
       call gz_write_textbuf_w_lf
 !
       do i = 1, sph_IO1%nidx_sph(1)
@@ -123,7 +128,7 @@
       call gz_write_textbuf_no_lf
 !
       write(textbuf,'(3i16,a1)') sph_IO1%nidx_sph(2),                   &
-     &                        ist_sph_IO(2), ied_sph_IO(2), char(0)
+     &                        sph_IO1%ist_sph(2), ied_sph_IO(2), char(0)
       call gz_write_textbuf_w_lf
 !
       write(fmt_txt,'(a1,i3,a9)')                                       &
@@ -138,7 +143,7 @@
       call gz_write_textbuf_no_lf
 !
       write(textbuf,'(3i16,a1)') sph_IO1%nidx_sph(3),                   &
-     &                        ist_sph_IO(3), ied_sph_IO(3), char(0)
+     &                        sph_IO1%ist_sph(3), ied_sph_IO(3), char(0)
       call gz_write_textbuf_w_lf
 !
       write(fmt_txt,'(a1,i3,a9)')                                       &
@@ -169,7 +174,7 @@
       call gz_write_textbuf_no_lf
 !
       write(textbuf,'(3i16,a1)') sph_IO1%nidx_sph(1),                   &
-     &                        ist_sph_IO(1), ied_sph_IO(1), char(0)
+     &                        sph_IO1%ist_sph(1), ied_sph_IO(1), char(0)
       call gz_write_textbuf_w_lf
 !
       do i = 1, sph_IO1%nidx_sph(1)
@@ -182,7 +187,7 @@
       call gz_write_textbuf_no_lf
 !
       write(textbuf,'(3i16,a1)') sph_IO1%nidx_sph(2),                   &
-     &                        ist_sph_IO(2), ied_sph_IO(2), char(0)
+     &                        sph_IO1%ist_sph(2), ied_sph_IO(2), char(0)
       call gz_write_textbuf_w_lf
 !
       write(fmt_txt,'(a1,i3,a9)')                                       &
