@@ -60,7 +60,7 @@
 !
       call read_mul_int8_b(sph_IO1%numnod_sph, sph_IO1%inod_gl_sph)
       nvect = sph_IO1%numnod_sph * sph_IO1%numdir_sph
-      call read_mul_integer_b(nvect, idx_gl_sph_IO)
+      call read_mul_integer_b(nvect, sph_IO1%idx_gl_sph)
 !
       end subroutine read_gl_nodes_sph_b
 !
@@ -93,7 +93,7 @@
       call write_one_integer_b(sph_IO1%numnod_sph)
       call write_mul_int8_b(sph_IO1%numnod_sph, sph_IO1%inod_gl_sph)
       nvect = sph_IO1%numnod_sph * sph_IO1%numdir_sph
-      call write_mul_integer_b(nvect, idx_gl_sph_IO)
+      call write_mul_integer_b(nvect, sph_IO1%idx_gl_sph)
 !
       call deallocate_nod_id_sph_IO
 !
