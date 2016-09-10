@@ -7,13 +7,15 @@
 !>@brief  Routine for gzipped binary doimain data IO
 !!
 !!@verbatim
-!!      subroutine gz_read_domain_info_b
-!!      subroutine gz_read_import_data_b
-!!      subroutine gz_read_export_data_b
+!!      subroutine gz_read_domain_info_b(my_rank_IO, comm_IO)
+!!      subroutine gz_read_import_data_b(comm_IO)
+!!      subroutine gz_read_export_data_b(comm_IO)
+!!        type(communication_table), intent(inout) :: comm_IO
 !!
-!!      subroutine gz_write_domain_info_b
-!!      subroutine gz_write_import_data_b
-!!      subroutine gz_write_export_data_b
+!!      subroutine gz_write_domain_info_b(my_rank_IO, comm_IO)
+!!      subroutine gz_write_import_data_b(comm_IO)
+!!      subroutine gz_write_export_data_b(comm_IO)
+!!        type(communication_table), intent(inout) :: comm_IO
 !!@endverbatim
 !!
 !@param id_file file ID
@@ -22,7 +24,7 @@
 !
       use m_precision
 !
-      use m_comm_data_IO
+      use t_comm_table
       use gz_binary_IO
 !
       implicit none
@@ -33,7 +35,10 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_read_domain_info_b
+      subroutine gz_read_domain_info_b(my_rank_IO, comm_IO)
+!
+      integer(kind = kint), intent(inout) :: my_rank_IO
+      type(communication_table), intent(inout) :: comm_IO
 !
 !
       call gz_read_one_integer_b(my_rank_IO)
@@ -48,7 +53,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_import_data_b
+      subroutine gz_read_import_data_b(comm_IO)
+!
+      type(communication_table), intent(inout) :: comm_IO
 !
 !
       call allocate_type_import_num(comm_IO)
@@ -70,7 +77,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_export_data_b
+      subroutine gz_read_export_data_b(comm_IO)
+!
+      type(communication_table), intent(inout) :: comm_IO
 !
 !
       call allocate_type_export_num(comm_IO)
@@ -91,7 +100,10 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_write_domain_info_b
+      subroutine gz_write_domain_info_b(my_rank_IO, comm_IO)
+!
+      integer(kind = kint), intent(in) :: my_rank_IO
+      type(communication_table), intent(inout) :: comm_IO
 !
 !
       call gz_write_one_integer_b(my_rank_IO)
@@ -107,7 +119,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_write_import_data_b
+      subroutine gz_write_import_data_b(comm_IO)
+!
+      type(communication_table), intent(inout) :: comm_IO
 !
 !
       call gz_write_integer_stack_b                                     &
@@ -121,7 +135,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_write_export_data_b
+      subroutine gz_write_export_data_b(comm_IO)
+!
+      type(communication_table), intent(inout) :: comm_IO
 !
 !
       call gz_write_integer_stack_b                                     &

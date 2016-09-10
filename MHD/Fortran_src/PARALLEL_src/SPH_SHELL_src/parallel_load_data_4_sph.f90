@@ -17,16 +17,15 @@
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(element_geometry), intent(inout) :: ele_mesh
 !!
-!!      subroutine load_para_rj_mesh(sph_param, sph_rj, comm_rj,        &
-!!     &          radial_rj_grp, sphere_rj_grp)
+!!      subroutine load_para_rj_mesh                                    &
+!!     &         (sph_param, sph_rj, comm_rj, sph_grps)
 !!         type(sph_shell_parameters), intent(inout) :: sph_param
 !!         type(sph_rtp_grid), intent(inout) :: sph_rtp
 !!         type(sph_rtm_grid), intent(inout) :: sph_rtm
 !!         type(sph_rlm_grid), intent(inout) :: sph_rlm
 !!         type(sph_rj_grid), intent(inout) :: sph_rj
 !!         type(sph_comm_tbl), intent(inout) :: comm_rj
-!!         type(group_data), intent(inout) :: radial_rj_grp
-!!         type(group_data), intent(inout) :: sphere_rj_grp
+!!         type(sph_group_data), intent(inout) ::  sph_grps
 !!@endverbatim
 !
       module parallel_load_data_4_sph
@@ -83,8 +82,7 @@
 !
 !
       call load_para_rj_mesh                                            &
-     &   (sph%sph_params, sph%sph_rj, comms_sph%comm_rj,                &
-     &    sph_grps%radial_rj_grp, sph_grps%sphere_rj_grp)
+     &   (sph%sph_params, sph%sph_rj, comms_sph%comm_rj, sph_grps)
 !
       end subroutine load_para_SPH_rj_mesh
 !
@@ -174,10 +172,9 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'input_geom_rtp_sph_trans'
       call sel_mpi_read_geom_rtp_file(nprocs, my_rank)
-      call input_geom_rtp_sph_trans                                     &
-     &   (sph%sph_params%l_truncation, sph%sph_rtp, comms_sph%comm_rtp, &
-     &    sph_grps%bc_rtp_grp, sph_grps%radial_rtp_grp,                 &
-     &    sph_grps%theta_rtp_grp, sph_grps%zonal_rtp_grp, ierr)
+      call input_geom_rtp_sph_trans(sph_grp_IO,                         &
+     &    sph%sph_rtp, comms_sph%comm_rtp,                              &
+     &    sph_grps, sph%sph_params%l_truncation, ierr)
       call set_reverse_import_table(sph%sph_rtp%nnod_rtp,               &
      &    comms_sph%comm_rtp%ntot_item_sr, comms_sph%comm_rtp%item_sr,  &
      &    comms_sph%comm_rtp%irev_sr)
@@ -185,8 +182,8 @@
       if (iflag_debug.gt.0) write(*,*) 'input_modes_rj_sph_trans'
       call sel_mpi_read_spectr_rj_file(nprocs, my_rank)
       call input_modes_rj_sph_trans                                     &
-     &   (sph%sph_params%l_truncation, sph%sph_rj, comms_sph%comm_rj,   &
-     &    sph_grps%radial_rj_grp, sph_grps%sphere_rj_grp, ierr)
+     &   (sph_grp_IO, sph%sph_rj, comms_sph%comm_rj,                    &
+     &    sph_grps, sph%sph_params%l_truncation, ierr)
       call set_reverse_import_table(sph%sph_rj%nnod_rj,                 &
      &    comms_sph%comm_rj%ntot_item_sr, comms_sph%comm_rj%item_sr,    &
      &    comms_sph%comm_rj%irev_sr)
@@ -218,8 +215,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine load_para_rj_mesh(sph_param, sph_rj, comm_rj,          &
-     &          radial_rj_grp, sphere_rj_grp)
+      subroutine load_para_rj_mesh                                      &
+     &         (sph_param, sph_rj, comm_rj, sph_grps)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -232,16 +229,15 @@
       type(sph_shell_parameters), intent(inout) :: sph_param
       type(sph_rj_grid), intent(inout) :: sph_rj
       type(sph_comm_tbl), intent(inout) :: comm_rj
-      type(group_data), intent(inout) :: radial_rj_grp
-      type(group_data), intent(inout) :: sphere_rj_grp
+      type(sph_group_data), intent(inout) ::  sph_grps
 !
       integer(kind = kint) :: ierr
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'input_modes_rj_sph_trans'
       call sel_mpi_read_spectr_rj_file(nprocs, my_rank)
-      call input_modes_rj_sph_trans(sph_param%l_truncation,             &
-     &    sph_rj, comm_rj, radial_rj_grp, sphere_rj_grp, ierr)
+      call input_modes_rj_sph_trans(sph_grp_IO,                         &
+     &    sph_rj, comm_rj, sph_grps, sph_param%l_truncation, ierr)
       call set_reverse_import_table(sph_rj%nnod_rj,                     &
      &    comm_rj%ntot_item_sr, comm_rj%item_sr, comm_rj%irev_sr)
 !

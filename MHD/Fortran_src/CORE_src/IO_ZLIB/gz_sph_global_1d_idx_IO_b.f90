@@ -7,18 +7,19 @@
 !>@brief  Mesh file IO for gxipped format
 !!
 !!@verbatim
-!!      subroutine gz_read_rtp_gl_1d_table_b
-!!      subroutine gz_read_rj_gl_1d_table_b
+!!      subroutine gz_read_rtp_gl_1d_table_b(sph_IO)
+!!      subroutine gz_read_rj_gl_1d_table_b(sph_IO)
 !!
-!!      subroutine gz_write_rtp_gl_1d_table_b
-!!      subroutine gz_write_rj_gl_1d_table_b
+!!      subroutine gz_write_rtp_gl_1d_table_b(sph_IO)
+!!      subroutine gz_write_rj_gl_1d_table_b(sph_IO)
+!!        type(sph_IO_data), intent(inout) :: sph_IO
 !!@endverbatim
 !
       module gz_sph_global_1d_idx_IO_b
 !
       use m_precision
 !
-      use m_node_id_spherical_IO
+      use t_node_id_spherical_IO
       use gz_binary_IO
 !
       implicit none
@@ -28,107 +29,115 @@
       contains
 !
 ! -----------------------------------------------------------------------!
-      subroutine gz_read_rtp_gl_1d_table_b
+      subroutine gz_read_rtp_gl_1d_table_b(sph_IO)
+!
+      type(sph_IO_data), intent(inout) :: sph_IO
 !
       integer(kind = kint) :: nvect
 !
 !
-      ndir_sph_IO = 3
-      ncomp_itbl_1d_IO(1) = 1
-      ncomp_itbl_1d_IO(2) = 1
-      ncomp_itbl_1d_IO(3) = 2
+      sph_IO%numdir_sph = 3
+      sph_IO%ncomp_table_1d(1) = 1
+      sph_IO%ncomp_table_1d(2) = 1
+      sph_IO%ncomp_table_1d(3) = 2
 !
-      call gz_read_mul_integer_b(ndir_sph_IO, nidx_sph_IO)
-      call gz_read_mul_integer_b(ndir_sph_IO, ist_sph_IO)
-      call gz_read_mul_integer_b(ndir_sph_IO, ied_sph_IO)
+      call gz_read_mul_integer_b(sph_IO%numdir_sph, sph_IO%nidx_sph)
+      call gz_read_mul_integer_b(sph_IO%numdir_sph, sph_IO%ist_sph)
+      call gz_read_mul_integer_b(sph_IO%numdir_sph, sph_IO%ied_sph)
 !
-      call allocate_idx_sph_1d1_IO
-      call allocate_idx_sph_1d2_IO
-      call allocate_idx_sph_1d3_IO
+      call alloc_idx_sph_1d1_IO(sph_IO)
+      call alloc_idx_sph_1d2_IO(sph_IO)
+      call alloc_idx_sph_1d3_IO(sph_IO)
 !
-      call gz_read_mul_integer_b(nidx_sph_IO(1), idx_gl_1_IO)
-      call gz_read_1d_vector_b(nidx_sph_IO(1), r_gl_1_IO)
+      call gz_read_mul_integer_b(sph_IO%nidx_sph(1), sph_IO%idx_gl_1)
+      call gz_read_1d_vector_b(sph_IO%nidx_sph(1), sph_IO%r_gl_1)
 !
-      nvect = nidx_sph_IO(2) * ncomp_itbl_1d_IO(2)
-      call gz_read_mul_integer_b(nvect, idx_gl_2_IO)
+      nvect = sph_IO%nidx_sph(2) * sph_IO%ncomp_table_1d(2)
+      call gz_read_mul_integer_b(nvect, sph_IO%idx_gl_2)
 !
-      nvect = nidx_sph_IO(3) * ncomp_itbl_1d_IO(3)
-      call gz_read_mul_integer_b(nvect, idx_gl_3_IO)
+      nvect = sph_IO%nidx_sph(3) * sph_IO%ncomp_table_1d(3)
+      call gz_read_mul_integer_b(nvect, sph_IO%idx_gl_3)
 !
       end subroutine gz_read_rtp_gl_1d_table_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_rj_gl_1d_table_b
+      subroutine gz_read_rj_gl_1d_table_b(sph_IO)
+!
+      type(sph_IO_data), intent(inout) :: sph_IO
 !
       integer(kind = kint) :: nvect
 !
 !
-      ndir_sph_IO = 2
-      ncomp_itbl_1d_IO(1) = 1
-      ncomp_itbl_1d_IO(2) = 3
+      sph_IO%numdir_sph = 2
+      sph_IO%ncomp_table_1d(1) = 1
+      sph_IO%ncomp_table_1d(2) = 3
 !
-      call gz_read_mul_integer_b(ndir_sph_IO, nidx_sph_IO)
-      call gz_read_mul_integer_b(ndir_sph_IO, ist_sph_IO)
-      call gz_read_mul_integer_b(ndir_sph_IO, ied_sph_IO)
+      call gz_read_mul_integer_b(sph_IO%numdir_sph, sph_IO%nidx_sph)
+      call gz_read_mul_integer_b(sph_IO%numdir_sph, sph_IO%ist_sph)
+      call gz_read_mul_integer_b(sph_IO%numdir_sph, sph_IO%ied_sph)
 !
-      call allocate_idx_sph_1d1_IO
-      call allocate_idx_sph_1d2_IO
+      call alloc_idx_sph_1d1_IO(sph_IO)
+      call alloc_idx_sph_1d2_IO(sph_IO)
 !
-      call gz_read_mul_integer_b(nidx_sph_IO(1), idx_gl_1_IO)
-      call gz_read_1d_vector_b(nidx_sph_IO(1), r_gl_1_IO)
+      call gz_read_mul_integer_b(sph_IO%nidx_sph(1), sph_IO%idx_gl_1)
+      call gz_read_1d_vector_b(sph_IO%nidx_sph(1), sph_IO%r_gl_1)
 !
-      nvect = nidx_sph_IO(2) * ncomp_itbl_1d_IO(2)
-      call gz_read_mul_integer_b(nvect, idx_gl_2_IO)
+      nvect = sph_IO%nidx_sph(2) * sph_IO%ncomp_table_1d(2)
+      call gz_read_mul_integer_b(nvect, sph_IO%idx_gl_2)
 !
       end subroutine gz_read_rj_gl_1d_table_b
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_write_rtp_gl_1d_table_b
+      subroutine gz_write_rtp_gl_1d_table_b(sph_IO)
+!
+      type(sph_IO_data), intent(inout) :: sph_IO
 !
       integer(kind = kint) :: nvect
 !
 !
-      call gz_write_mul_integer_b(ndir_sph_IO, nidx_sph_IO)
-      call gz_write_mul_integer_b(ndir_sph_IO, ist_sph_IO)
-      call gz_write_mul_integer_b(ndir_sph_IO, ied_sph_IO)
+      call gz_write_mul_integer_b(sph_IO%numdir_sph, sph_IO%nidx_sph)
+      call gz_write_mul_integer_b(sph_IO%numdir_sph, sph_IO%ist_sph)
+      call gz_write_mul_integer_b(sph_IO%numdir_sph, sph_IO%ied_sph)
 !
-      call gz_write_mul_integer_b(nidx_sph_IO(1), idx_gl_1_IO)
-      call gz_write_1d_vector_b(nidx_sph_IO(1), r_gl_1_IO)
+      call gz_write_mul_integer_b(sph_IO%nidx_sph(1), sph_IO%idx_gl_1)
+      call gz_write_1d_vector_b(sph_IO%nidx_sph(1), sph_IO%r_gl_1)
 !
-      nvect = nidx_sph_IO(2) * ncomp_itbl_1d_IO(2)
-      call gz_write_mul_integer_b(nvect, idx_gl_2_IO)
+      nvect = sph_IO%nidx_sph(2) * sph_IO%ncomp_table_1d(2)
+      call gz_write_mul_integer_b(nvect, sph_IO%idx_gl_2)
 !
-      nvect = nidx_sph_IO(3) * ncomp_itbl_1d_IO(3)
-      call gz_write_mul_integer_b(nvect, idx_gl_3_IO)
+      nvect = sph_IO%nidx_sph(3) * sph_IO%ncomp_table_1d(3)
+      call gz_write_mul_integer_b(nvect, sph_IO%idx_gl_3)
 !
-      call deallocate_idx_sph_1d1_IO
-      call deallocate_idx_sph_1d2_IO
-      call deallocate_idx_sph_1d3_IO
+      call dealloc_idx_sph_1d1_IO(sph_IO)
+      call dealloc_idx_sph_1d2_IO(sph_IO)
+      call dealloc_idx_sph_1d3_IO(sph_IO)
 !
       end subroutine gz_write_rtp_gl_1d_table_b
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine gz_write_rj_gl_1d_table_b
+      subroutine gz_write_rj_gl_1d_table_b(sph_IO)
+!
+      type(sph_IO_data), intent(inout) :: sph_IO
 !
       integer(kind = kint) :: nvect
 !
 !
-      call gz_write_mul_integer_b(ndir_sph_IO, nidx_sph_IO)
-      call gz_write_mul_integer_b(ndir_sph_IO, ist_sph_IO)
-      call gz_write_mul_integer_b(ndir_sph_IO, ied_sph_IO)
+      call gz_write_mul_integer_b(sph_IO%numdir_sph, sph_IO%nidx_sph)
+      call gz_write_mul_integer_b(sph_IO%numdir_sph, sph_IO%ist_sph)
+      call gz_write_mul_integer_b(sph_IO%numdir_sph, sph_IO%ied_sph)
 !
-      call gz_write_mul_integer_b(nidx_sph_IO(1), idx_gl_1_IO)
-      call gz_write_1d_vector_b(nidx_sph_IO(1), r_gl_1_IO)
+      call gz_write_mul_integer_b(sph_IO%nidx_sph(1), sph_IO%idx_gl_1)
+      call gz_write_1d_vector_b(sph_IO%nidx_sph(1), sph_IO%r_gl_1)
 !
-      nvect = nidx_sph_IO(2) * ncomp_itbl_1d_IO(2)
-      call gz_write_mul_integer_b(nvect, idx_gl_2_IO)
+      nvect = sph_IO%nidx_sph(2) * sph_IO%ncomp_table_1d(2)
+      call gz_write_mul_integer_b(nvect, sph_IO%idx_gl_2)
 !
-      call deallocate_idx_sph_1d1_IO
-      call deallocate_idx_sph_1d2_IO
+      call dealloc_idx_sph_1d1_IO(sph_IO)
+      call dealloc_idx_sph_1d2_IO(sph_IO)
 !
       end subroutine gz_write_rj_gl_1d_table_b
 !

@@ -8,16 +8,18 @@
 !!
 !!@verbatim
 !!      subroutine gz_mpi_read_domain_info_b                            &
-!!     &         (id_file, nprocs_in, id_rank, ioff_gl)
+!!     &         (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
 !!      subroutine gz_mpi_read_import_data_b                            &
-!!     &         (id_file, nprocs_in, id_rank, ioff_gl)
+!!     &         (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
 !!      subroutine gz_mpi_read_export_data_b                            &
-!!     &         (id_file, nprocs_in, id_rank, ioff_gl)
+!!     &         (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
+!!        type(communication_table), intent(inout) :: comm_IO
 !!
 !!      subroutine gz_mpi_write_domain_info_b                           &
-!!     &         (id_file, nprocs_in, ioff_gl)
-!!      subroutine gz_mpi_write_import_data_b(id_file, ioff_gl)
-!!      subroutine gz_mpi_write_export_data_b(id_file, ioff_gl)
+!!     &         (id_file, nprocs_in, ioff_gl, comm_IO)
+!!      subroutine gz_mpi_write_import_data_b(id_file, ioff_gl, comm_IO)
+!!      subroutine gz_mpi_write_export_data_b(id_file, ioff_gl, comm_IO)
+!!        type(communication_table), intent(inout) :: comm_IO
 !!@endverbatim
 !!
 !@param id_file file ID
@@ -27,7 +29,7 @@
       use m_precision
       use m_constants
 !
-      use m_comm_data_IO
+      use t_comm_table
       use gz_MPI_binary_datum_IO
       use gz_MPI_binary_data_IO
 !
@@ -40,13 +42,14 @@
 !------------------------------------------------------------------
 !
       subroutine gz_mpi_read_domain_info_b                              &
-     &         (id_file, nprocs_in, id_rank, ioff_gl)
+     &         (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
 !
       use m_error_IDs
 !
       integer, intent(in) ::  id_file
       integer(kind=kint), intent(in) :: id_rank, nprocs_in
       integer(kind = kint_gl), intent(inout) :: ioff_gl
+      type(communication_table), intent(inout) :: comm_IO
 !
       integer(kind = kint) :: nprocs_read
 !
@@ -71,11 +74,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_mpi_read_import_data_b                              &
-     &         (id_file, nprocs_in, id_rank, ioff_gl)
+     &         (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
 !
       integer, intent(in) ::  id_file
       integer(kind=kint), intent(in) :: id_rank, nprocs_in
       integer(kind = kint_gl), intent(inout) :: ioff_gl
+      type(communication_table), intent(inout) :: comm_IO
 !
 !
       call allocate_type_import_num(comm_IO)
@@ -99,11 +103,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_mpi_read_export_data_b                              &
-     &         (id_file, nprocs_in, id_rank, ioff_gl)
+     &         (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
 !
       integer, intent(in) ::  id_file
       integer(kind=kint), intent(in) :: id_rank, nprocs_in
       integer(kind = kint_gl), intent(inout) :: ioff_gl
+      type(communication_table), intent(inout) :: comm_IO
 !
 !
       call allocate_type_export_num(comm_IO)
@@ -128,11 +133,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_mpi_write_domain_info_b                             &
-     &         (id_file, nprocs_in, ioff_gl)
+     &         (id_file, nprocs_in, ioff_gl, comm_IO)
 !
       integer, intent(in) ::  id_file
       integer(kind=kint), intent(in) :: nprocs_in
       integer(kind = kint_gl), intent(inout) :: ioff_gl
+      type(communication_table), intent(inout) :: comm_IO
 !
 !
       call gz_mpi_write_one_inthead_b(id_file, ioff_gl, nprocs_in)
@@ -149,10 +155,11 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_mpi_write_import_data_b(id_file, ioff_gl)
+      subroutine gz_mpi_write_import_data_b(id_file, ioff_gl, comm_IO)
 !
       integer, intent(in) ::  id_file
       integer(kind = kint_gl), intent(inout) :: ioff_gl
+      type(communication_table), intent(inout) :: comm_IO
 !
 !
       call gz_mpi_write_integer_stack_b                                 &
@@ -166,10 +173,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_mpi_write_export_data_b(id_file, ioff_gl)
+      subroutine gz_mpi_write_export_data_b(id_file, ioff_gl, comm_IO)
 !
       integer, intent(in) ::  id_file
       integer(kind = kint_gl), intent(inout) :: ioff_gl
+      type(communication_table), intent(inout) :: comm_IO
 !
 !
       call gz_mpi_write_integer_stack_b                                 &

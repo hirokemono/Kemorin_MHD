@@ -131,26 +131,28 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-       subroutine read_filter_geometry(id_file)
+      subroutine read_filter_geometry(id_file)
 !
+      use m_comm_data_IO
+      use m_read_mesh_data
       use domain_data_IO
       use node_geometry_IO
 !
       integer(kind = kint), intent(in) :: id_file
 !
 !        write(*,*) 'read_domain_info'
-        call read_domain_info(id_file)
+        call read_domain_info(id_file, my_rank_IO, comm_IO)
 !        write(*,*) 'read_number_of_node'
-        call read_number_of_node(id_file)
+        call read_number_of_node(id_file, nod_IO)
 !        write(*,*) 'read_geometry_info'
-        call read_geometry_info(id_file)
+        call read_geometry_info(id_file, nod_IO)
 !
 ! ----  import & export 
 !
 !        write(*,*) 'read_import_data'
-       call read_import_data(id_file)
+       call read_import_data(id_file, comm_IO)
 !        write(*,*) 'read_export_data'
-       call read_export_data(id_file)
+       call read_export_data(id_file, comm_IO)
 !
        end subroutine read_filter_geometry
 !
@@ -230,6 +232,8 @@
 !
       subroutine write_filter_geometry(id_file)
 !
+      use m_comm_data_IO
+      use m_read_mesh_data
       use m_fem_mesh_labels
       use domain_data_IO
       use node_geometry_IO
@@ -239,17 +243,17 @@
 !
 !
       write(id_file,'(a)', advance='NO') hd_fem_para()
-      call write_domain_info(id_file)
+      call write_domain_info(id_file, my_rank_IO, comm_IO)
 !
       write(id_file,'(a)', advance='NO') hd_fem_node()
-      call write_geometry_info(id_file)
+      call write_geometry_info(id_file, nod_IO)
 !
 !
       write(id_file,'(a)', advance='NO') hd_fem_import()
-      call write_import_data(id_file)
+      call write_import_data(id_file, comm_IO)
 !
       write(id_file,'(a)', advance='NO') hd_fem_export()
-      call write_export_data(id_file)
+      call write_export_data(id_file, comm_IO)
 !
       end subroutine write_filter_geometry
 !

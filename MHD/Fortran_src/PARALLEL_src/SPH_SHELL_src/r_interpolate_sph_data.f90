@@ -328,45 +328,45 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
 !
 !
-      if(sph_rj%irank_sph_rj(1).ne.sph_rank_IO(1)                       &
-     &       .or. sph_rj%irank_sph_rj(2).ne.sph_rank_IO(2)) then
+      if(sph_rj%irank_sph_rj(1).ne.sph_IO1%sph_rank(1)                  &
+     &       .or. sph_rj%irank_sph_rj(2).ne.sph_IO1%sph_rank(2)) then
         call calypso_MPI_abort(ierr_sph,'rj rank ID is wrong')
       end if
 !
-      if(sph_rj%nidx_global_rj(2) .ne. nidx_gl_sph_IO(2)) then
+      if(sph_rj%nidx_global_rj(2) .ne. sph_IO1%nidx_gl_sph(2)) then
         call calypso_MPI_abort                                          &
      &     (ierr_sph,'number of local mode is wrong')
       end if
-      if(l_truncation .ne. ltr_gl_IO) then
+      if(l_truncation .ne. sph_IO1%ltr_gl) then
         call calypso_MPI_abort(ierr_sph,'truncation is wrong')
       end if
 !
-      if(sph_rj%ist_rj(2).ne.ist_sph_IO(2)) then
+      if(sph_rj%ist_rj(2).ne.sph_IO1%ist_sph(2)) then
         call calypso_MPI_abort                                          &
      &      (ierr_sph,'start point of harminics is wrong')
       end if
-      if(sph_rj%ied_rj(2) .ne. ied_sph_IO(2)) then
+      if(sph_rj%ied_rj(2) .ne. sph_IO1%ied_sph(2)) then
         call calypso_MPI_abort                                          &
      &     (ierr_sph,'end point of harminics is wrong')
       end if
 !
-      n_rj_org = nnod_sph_IO
-      nri_org =  nidx_sph_IO(1)
+      n_rj_org = sph_IO1%numnod_sph
+      nri_org =  sph_IO1%nidx_sph(1)
 !
       call allocate_original_sph_data
 !
-      r_org(1:n_rj_org) =   r_gl_1_IO(1:n_rj_org)
+      r_org(1:n_rj_org) = sph_IO1%r_gl_1(1:n_rj_org)
 !
-      call deallocate_nod_id_sph_IO
-      call deallocate_idx_sph_1d1_IO
-      call deallocate_idx_sph_1d2_IO
+      call dealloc_nod_id_sph_IO(sph_IO1)
+      call dealloc_idx_sph_1d1_IO(sph_IO1)
+      call dealloc_idx_sph_1d2_IO(sph_IO1)
 !
 !
       call deallocate_type_import(comm_IO)
       call deallocate_type_neib_id(comm_IO)
 !
-      call deallocate_grp_type(radial_rj_grp_IO)
-      call deallocate_grp_type(sphere_rj_grp_IO)
+      call deallocate_grp_type(sph_grp_IO%radial_rj_grp)
+      call deallocate_grp_type(sph_grp_IO%sphere_rj_grp)
 !
       end subroutine copy_original_sph_rj_from_IO
 !

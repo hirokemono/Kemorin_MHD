@@ -16,6 +16,7 @@
       use m_precision
       use m_machine_parameter
 !
+      use m_comm_data_IO
       use m_read_mesh_data
       use gz_binary_IO
       use skip_gz_comment
@@ -88,8 +89,8 @@
      &   'Read gzipped binary mesh file: ', trim(mesh_file_name)
 !
       call open_rd_gzfile_b(mesh_file_name, my_rank)
-      call gz_read_domain_info_b
-      call gz_read_number_of_node_b
+      call gz_read_domain_info_b(my_rank_IO, comm_IO)
+      call gz_read_number_of_node_b(nod_IO)
       call close_gzfile_f
 !
       end subroutine gz_read_node_size_b
@@ -109,11 +110,11 @@
 !
       call open_rd_gzfile_b(mesh_file_name, my_rank)
 !
-      call gz_read_domain_info_b
-      call gz_read_number_of_node_b
-      call gz_read_geometry_info_b
+      call gz_read_domain_info_b(my_rank_IO, comm_IO)
+      call gz_read_number_of_node_b(nod_IO)
+      call gz_read_geometry_info_b(nod_IO)
 !
-      call gz_read_number_of_element_b
+      call gz_read_number_of_element_b(ele_IO)
       call close_gzfile_f
 !
       end subroutine gz_read_geometry_size_b

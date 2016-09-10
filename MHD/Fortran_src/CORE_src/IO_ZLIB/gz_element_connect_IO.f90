@@ -1,19 +1,24 @@
-!gz_element_connect_IO.f90
-!      module gz_element_connect_IO
+!> @file  gz_element_connect_IO.f90
+!!      module gz_element_connect_IO
+!!
+!! @author  H. Matsui
+!! @date Written in Oct., 2006
 !
-!     Written by H. Matsui on Oct., 2006
-!
-!
-!      subroutine write_element_info_gz
-!
-!      subroutine read_number_of_element_gz
-!      subroutine read_element_info_gz
+!> @brief Element data IO using zlib
+!!
+!!@verbatim
+!!      subroutine write_element_info_gz(ele_IO)
+!!
+!!      subroutine read_number_of_element_gz(ele_IO)
+!!      subroutine read_element_info_gz(ele_IO)
+!!        type(element_data), intent(inout) :: ele_IO
+!!@endverbatim
 !
       module gz_element_connect_IO
 !
       use m_precision
 !
-      use m_read_mesh_data
+      use t_geometry_data
       use skip_gz_comment
 !
       implicit none
@@ -26,7 +31,9 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_element_info_gz
+      subroutine write_element_info_gz(ele_IO)
+!
+      type(element_data), intent(inout) :: ele_IO
 !
       integer (kind = kint) :: i
 !
@@ -50,7 +57,9 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine read_number_of_element_gz
+      subroutine read_number_of_element_gz(ele_IO)
+!
+      type(element_data), intent(inout) :: ele_IO
 !
 !
       call skip_gz_comment_int(ele_IO%numele)
@@ -60,11 +69,13 @@
 !
 !------------------------------------------------------------------
 !
-       subroutine read_element_info_gz
+      subroutine read_element_info_gz(ele_IO)
 !
-       use set_nnod_4_ele_by_type
+      use set_nnod_4_ele_by_type
 !
-       integer (kind = kint) :: i
+      type(element_data), intent(inout) :: ele_IO
+!
+      integer (kind = kint) :: i
 !
 !
        call alloc_element_types(ele_IO)
@@ -85,7 +96,7 @@
      &                 ele_IO%ie(i,1:ele_IO%nodelm(i))
        end do
 !
-       end subroutine read_element_info_gz
+      end subroutine read_element_info_gz
 !
 !------------------------------------------------------------------
 !

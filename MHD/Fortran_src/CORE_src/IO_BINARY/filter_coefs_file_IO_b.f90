@@ -168,18 +168,20 @@
 !
       subroutine read_filter_geometry_b
 !
+      use m_comm_data_IO
+      use m_read_mesh_data
       use domain_data_IO_b
       use mesh_data_IO_b
 !
 !
-      call read_domain_info_b
-      call read_number_of_node_b
-      call read_geometry_info_b
+      call read_domain_info_b(my_rank_IO, comm_IO)
+      call read_number_of_node_b(nod_IO)
+      call read_geometry_info_b(nod_IO)
 !
 ! ----  import & export 
 !
-      call read_import_data_b
-      call read_export_data_b
+      call read_import_data_b(comm_IO)
+      call read_export_data_b(comm_IO)
 !
       end subroutine read_filter_geometry_b
 !
@@ -208,16 +210,18 @@
 !
       subroutine write_filter_geometry_b
 !
+      use m_comm_data_IO
+      use m_read_mesh_data
       use mesh_data_IO_b
       use domain_data_IO_b
 !
 !
-      call write_domain_info_b
+      call write_domain_info_b(my_rank_IO, comm_IO)
 !
-      call write_geometry_info_b
+      call write_geometry_info_b(nod_IO)
 !
-      call write_import_data_b
-      call write_export_data_b
+      call write_import_data_b(comm_IO)
+      call write_export_data_b(comm_IO)
 !
       end subroutine write_filter_geometry_b
 !

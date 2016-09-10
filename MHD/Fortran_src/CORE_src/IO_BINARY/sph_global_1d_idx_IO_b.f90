@@ -1,19 +1,25 @@
-!sph_global_1d_idx_IO_b.f90
-!      module sph_global_1d_idx_IO_b
+!>@file  sph_global_1d_idx_IO_b.f90
+!!       module sph_global_1d_idx_IO_b
+!!
+!!@author H. Matsui
+!!@date        programmed by H.Matsui in July, 2007
 !
-!     Written by H. Matsui on July, 2007
-!
-!      subroutine read_rtp_gl_1d_table_b
-!      subroutine read_rj_gl_1d_table_b
-!
-!      subroutine write_rtp_gl_1d_table_b
-!      subroutine write_rj_gl_1d_table_b
+!> @brief  Data IO routines for spectrum data
+!!
+!!@verbatim
+!!      subroutine read_rtp_gl_1d_table_b(sph_IO)
+!!      subroutine read_rj_gl_1d_table_b(sph_IO)
+!!
+!!      subroutine write_rtp_gl_1d_table_b(sph_IO)
+!!      subroutine write_rj_gl_1d_table_b(sph_IO)
+!!        type(sph_IO_data), intent(inout) :: sph_IO
+!!@endverbatim
 !
       module sph_global_1d_idx_IO_b
 !
       use m_precision
 !
-      use m_node_id_spherical_IO
+      use t_node_id_spherical_IO
       use binary_IO
 !
       implicit none
@@ -23,107 +29,115 @@
       contains
 !
 ! -----------------------------------------------------------------------!
-      subroutine read_rtp_gl_1d_table_b
+      subroutine read_rtp_gl_1d_table_b(sph_IO)
 !
       integer(kind = kint) :: nvect
 !
+      type(sph_IO_data), intent(inout) :: sph_IO
 !
-      ndir_sph_IO = 3
-      ncomp_itbl_1d_IO(1) = 1
-      ncomp_itbl_1d_IO(2) = 1
-      ncomp_itbl_1d_IO(3) = 2
 !
-      call read_mul_integer_b(ndir_sph_IO, nidx_sph_IO)
-      call read_mul_integer_b(ndir_sph_IO, ist_sph_IO)
-      call read_mul_integer_b(ndir_sph_IO, ied_sph_IO)
+      sph_IO%numdir_sph = 3
+      sph_IO%ncomp_table_1d(1) = 1
+      sph_IO%ncomp_table_1d(2) = 1
+      sph_IO%ncomp_table_1d(3) = 2
 !
-      call allocate_idx_sph_1d1_IO
-      call allocate_idx_sph_1d2_IO
-      call allocate_idx_sph_1d3_IO
+      call read_mul_integer_b(sph_IO%numdir_sph, sph_IO%nidx_sph)
+      call read_mul_integer_b(sph_IO%numdir_sph, sph_IO%ist_sph)
+      call read_mul_integer_b(sph_IO%numdir_sph, sph_IO%ied_sph)
 !
-      call read_mul_integer_b(nidx_sph_IO(1), idx_gl_1_IO)
-      call read_1d_vector_b(nidx_sph_IO(1), r_gl_1_IO)
+      call alloc_idx_sph_1d1_IO(sph_IO)
+      call alloc_idx_sph_1d2_IO(sph_IO)
+      call alloc_idx_sph_1d3_IO(sph_IO)
 !
-      nvect = nidx_sph_IO(2) * ncomp_itbl_1d_IO(2)
-      call read_mul_integer_b(nvect, idx_gl_2_IO)
+      call read_mul_integer_b(sph_IO%nidx_sph(1), sph_IO%idx_gl_1)
+      call read_1d_vector_b(sph_IO%nidx_sph(1), sph_IO%r_gl_1)
 !
-      nvect = nidx_sph_IO(3) * ncomp_itbl_1d_IO(3)
-      call read_mul_integer_b(nvect, idx_gl_3_IO)
+      nvect = sph_IO%nidx_sph(2) * sph_IO%ncomp_table_1d(2)
+      call read_mul_integer_b(nvect, sph_IO%idx_gl_2)
+!
+      nvect = sph_IO%nidx_sph(3) * sph_IO%ncomp_table_1d(3)
+      call read_mul_integer_b(nvect, sph_IO%idx_gl_3)
 !
       end subroutine read_rtp_gl_1d_table_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_rj_gl_1d_table_b
+      subroutine read_rj_gl_1d_table_b(sph_IO)
+!
+      type(sph_IO_data), intent(inout) :: sph_IO
 !
       integer(kind = kint) :: nvect
 !
 !
-      ndir_sph_IO = 2
-      ncomp_itbl_1d_IO(1) = 1
-      ncomp_itbl_1d_IO(2) = 3
+      sph_IO%numdir_sph = 2
+      sph_IO%ncomp_table_1d(1) = 1
+      sph_IO%ncomp_table_1d(2) = 3
 !
-      call read_mul_integer_b(ndir_sph_IO, nidx_sph_IO)
-      call read_mul_integer_b(ndir_sph_IO, ist_sph_IO)
-      call read_mul_integer_b(ndir_sph_IO, ied_sph_IO)
+      call read_mul_integer_b(sph_IO%numdir_sph, sph_IO%nidx_sph)
+      call read_mul_integer_b(sph_IO%numdir_sph, sph_IO%ist_sph)
+      call read_mul_integer_b(sph_IO%numdir_sph, sph_IO%ied_sph)
 !
-      call allocate_idx_sph_1d1_IO
-      call allocate_idx_sph_1d2_IO
+      call alloc_idx_sph_1d1_IO(sph_IO)
+      call alloc_idx_sph_1d2_IO(sph_IO)
 !
-      call read_mul_integer_b(nidx_sph_IO(1), idx_gl_1_IO)
-      call read_1d_vector_b(nidx_sph_IO(1), r_gl_1_IO)
+      call read_mul_integer_b(sph_IO%nidx_sph(1), sph_IO%idx_gl_1)
+      call read_1d_vector_b(sph_IO%nidx_sph(1), sph_IO%r_gl_1)
 !
-      nvect = nidx_sph_IO(2) * ncomp_itbl_1d_IO(2)
-      call read_mul_integer_b(nvect, idx_gl_2_IO)
+      nvect = sph_IO%nidx_sph(2) * sph_IO%ncomp_table_1d(2)
+      call read_mul_integer_b(nvect, sph_IO%idx_gl_2)
 !
       end subroutine read_rj_gl_1d_table_b
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine write_rtp_gl_1d_table_b
+      subroutine write_rtp_gl_1d_table_b(sph_IO)
+!
+      type(sph_IO_data), intent(inout) :: sph_IO
 !
       integer(kind = kint) :: nvect
 !
 !
-      call write_mul_integer_b(ndir_sph_IO, nidx_sph_IO)
-      call write_mul_integer_b(ndir_sph_IO, ist_sph_IO)
-      call write_mul_integer_b(ndir_sph_IO, ied_sph_IO)
+      call write_mul_integer_b(sph_IO%numdir_sph, sph_IO%nidx_sph)
+      call write_mul_integer_b(sph_IO%numdir_sph, sph_IO%ist_sph)
+      call write_mul_integer_b(sph_IO%numdir_sph, sph_IO%ied_sph)
 !
-      call write_mul_integer_b(nidx_sph_IO(1), idx_gl_1_IO)
-      call write_1d_vector_b(nidx_sph_IO(1), r_gl_1_IO)
+      call write_mul_integer_b(sph_IO%nidx_sph(1), sph_IO%idx_gl_1)
+      call write_1d_vector_b(sph_IO%nidx_sph(1), sph_IO%r_gl_1)
 !
-      nvect = nidx_sph_IO(2) * ncomp_itbl_1d_IO(2)
-      call write_mul_integer_b(nvect, idx_gl_2_IO)
+      nvect = sph_IO%nidx_sph(2) * sph_IO%ncomp_table_1d(2)
+      call write_mul_integer_b(nvect, sph_IO%idx_gl_2)
 !
-      nvect = nidx_sph_IO(3) * ncomp_itbl_1d_IO(3)
-      call write_mul_integer_b(nvect, idx_gl_3_IO)
+      nvect = sph_IO%nidx_sph(3) * sph_IO%ncomp_table_1d(3)
+      call write_mul_integer_b(nvect, sph_IO%idx_gl_3)
 !
-      call deallocate_idx_sph_1d1_IO
-      call deallocate_idx_sph_1d2_IO
-      call deallocate_idx_sph_1d3_IO
+      call dealloc_idx_sph_1d1_IO(sph_IO)
+      call dealloc_idx_sph_1d2_IO(sph_IO)
+      call dealloc_idx_sph_1d3_IO(sph_IO)
 !
       end subroutine write_rtp_gl_1d_table_b
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine write_rj_gl_1d_table_b
+      subroutine write_rj_gl_1d_table_b(sph_IO)
+!
+      type(sph_IO_data), intent(inout) :: sph_IO
 !
       integer(kind = kint) :: nvect
 !
 !
-      call write_mul_integer_b(ndir_sph_IO, nidx_sph_IO)
-      call write_mul_integer_b(ndir_sph_IO, ist_sph_IO)
-      call write_mul_integer_b(ndir_sph_IO, ied_sph_IO)
+      call write_mul_integer_b(sph_IO%numdir_sph, sph_IO%nidx_sph)
+      call write_mul_integer_b(sph_IO%numdir_sph, sph_IO%ist_sph)
+      call write_mul_integer_b(sph_IO%numdir_sph, sph_IO%ied_sph)
 !
-      call write_mul_integer_b(nidx_sph_IO(1), idx_gl_1_IO)
-      call write_1d_vector_b(nidx_sph_IO(1), r_gl_1_IO)
+      call write_mul_integer_b(sph_IO%nidx_sph(1), sph_IO%idx_gl_1)
+      call write_1d_vector_b(sph_IO%nidx_sph(1), sph_IO%r_gl_1)
 !
-      nvect = nidx_sph_IO(2) * ncomp_itbl_1d_IO(2)
-      call write_mul_integer_b(nvect, idx_gl_2_IO)
+      nvect = sph_IO%nidx_sph(2) * sph_IO%ncomp_table_1d(2)
+      call write_mul_integer_b(nvect, sph_IO%idx_gl_2)
 !
-      call deallocate_idx_sph_1d1_IO
-      call deallocate_idx_sph_1d2_IO
+      call dealloc_idx_sph_1d1_IO(sph_IO)
+      call dealloc_idx_sph_1d2_IO(sph_IO)
 !
       end subroutine write_rj_gl_1d_table_b
 !

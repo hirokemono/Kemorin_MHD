@@ -7,13 +7,15 @@
 !>@brief  Routine for doimain data IO
 !!
 !!@verbatim
-!!      subroutine read_domain_info(id_file)
-!!      subroutine read_import_data(id_file)
+!!      subroutine read_domain_info(id_file, my_rank_IO, comm_IO)
+!!      subroutine read_import_data(id_file, comm_IO)
 !!      subroutine read_export_data(id_file)
+!!        type(communication_table), intent(inout) :: comm_IO
 !!
-!!      subroutine write_domain_info(id_file)
-!!      subroutine write_import_data(id_file)
-!!      subroutine write_export_data(id_file)
+!!      subroutine write_domain_info(id_file, my_rank_IO, comm_IO)
+!!      subroutine write_import_data(id_file, comm_IO)
+!!      subroutine write_export_data(id_file, comm_IO)
+!!        type(communication_table), intent(inout) :: comm_IO
 !!@endverbatim
 !!
 !@param id_file file ID
@@ -23,7 +25,7 @@
       use m_precision
       use m_constants
 !
-      use m_comm_data_IO
+      use t_comm_table
       use field_data_IO
       use comm_table_IO
 !
@@ -35,11 +37,13 @@
 !
 !------------------------------------------------------------------
 !
-       subroutine read_domain_info(id_file)
+      subroutine read_domain_info(id_file, my_rank_IO, comm_IO)
 !
-       use skip_comment_f
+      use skip_comment_f
 !
-       integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(inout) :: my_rank_IO
+      type(communication_table), intent(inout) :: comm_IO
 !
       character(len=255) :: character_4_read = ''
 !
@@ -55,14 +59,16 @@
          read(id_file,*) comm_IO%id_neib(1:comm_IO%num_neib)
        end if
 !
-       end subroutine read_domain_info
+      end subroutine read_domain_info
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_import_data(id_file)
+      subroutine read_import_data(id_file, comm_IO)
 !
       integer(kind = kint), intent(in) :: id_file
+      type(communication_table), intent(inout) :: comm_IO
+!
 !
       call allocate_type_import_num(comm_IO)
 !
@@ -83,9 +89,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_export_data(id_file)
+      subroutine read_export_data(id_file, comm_IO)
 !
       integer(kind = kint), intent(in) :: id_file
+      type(communication_table), intent(inout) :: comm_IO
+!
 !
       call allocate_type_export_num(comm_IO)
 !
@@ -106,9 +114,11 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine write_domain_info(id_file)
+      subroutine write_domain_info(id_file, my_rank_IO, comm_IO)
 !
-       integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(in) :: my_rank_IO
+      type(communication_table), intent(inout) :: comm_IO
 !
 !
 !      write(id_file,'(a)') '! '
@@ -134,9 +144,11 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine write_import_data(id_file)
+      subroutine write_import_data(id_file, comm_IO)
 !
       integer(kind = kint), intent(in) :: id_file
+      type(communication_table), intent(inout) :: comm_IO
+!
 !
       call write_send_recv_data                                         &
      &   (id_file, comm_IO%num_neib, comm_IO%ntot_import,               &
@@ -148,9 +160,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_export_data(id_file)
+      subroutine write_export_data(id_file, comm_IO)
 !
       integer(kind = kint), intent(in) :: id_file
+      type(communication_table), intent(inout) :: comm_IO
+!
 !
       call write_send_recv_data                                         &
      &   (id_file, comm_IO%num_neib, comm_IO%ntot_export,               &

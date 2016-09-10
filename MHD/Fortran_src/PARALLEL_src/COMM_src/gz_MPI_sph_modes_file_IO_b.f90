@@ -57,7 +57,7 @@
       integer(kind = kint_gl) :: ioff_gl
 !
 !
-      ndir_sph_IO =  3
+      sph_IO1%numdir_sph =  3
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &      'Read gzipped merged binary grid file: ', trim(file_name)
@@ -82,7 +82,7 @@
       integer(kind = kint_gl) :: ioff_gl
 !
 !
-      ndir_sph_IO =  2
+      sph_IO1%numdir_sph =  2
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &      'Read gzipped merged binary spectr modes file: ',           &
@@ -108,7 +108,7 @@
       integer(kind = kint_gl) :: ioff_gl
 !
 !
-      ndir_sph_IO =  3
+      sph_IO1%numdir_sph =  3
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &      'Read gzipped merged binary grid file: ', trim(file_name)
@@ -133,7 +133,7 @@
       integer(kind = kint_gl) :: ioff_gl
 !
 !
-      ndir_sph_IO =  2
+      sph_IO1%numdir_sph =  2
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &      'Read merged gzipped binary spectr modes file: ',           &
