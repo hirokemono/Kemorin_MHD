@@ -8,10 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine read_group_datamesh_file_id, rj_grp_IO)
-!!      subroutine read_surf_grp_data(mesh_file_id, surf_grp_IO)
+!!      subroutine read_surf_grp_data(id_file, surf_grp_IO)
 !!
-!!      subroutine write_grp_data(mesh_file_id, rj_grp_IO)
-!!      subroutine write_surf_grp_data(mesh_file_id, surf_grp_IO)
+!!      subroutine write_grp_data(id_file, rj_grp_IO)
+!!      subroutine write_surf_grp_data(id_file, surf_grp_IO)
 !!        type(group_data), intent(inout) :: rj_grp_IO
 !!        type(surface_group_data), intent(inout) :: surf_grp_IO
 !!@endverbatim
@@ -37,25 +37,25 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_group_data(mesh_file_id, rj_grp_IO)
+      subroutine read_group_data(id_file, rj_grp_IO)
 !
       use t_group_data
 !
-      integer(kind = kint), intent(in) :: mesh_file_id
+      integer(kind = kint), intent(in) :: id_file
       type(group_data), intent(inout) :: rj_grp_IO
 !
 !
-      call skip_comment(character_4_read, mesh_file_id)
+      call skip_comment(character_4_read, id_file)
       read(character_4_read,*) rj_grp_IO%num_grp
 !
       call allocate_grp_type_num(rj_grp_IO)
 !
       if (rj_grp_IO%num_grp .gt. 0) then
-        call read_group_stack(mesh_file_id, rj_grp_IO%num_grp,          &
+        call read_group_stack(id_file, rj_grp_IO%num_grp,               &
      &      rj_grp_IO%num_item, rj_grp_IO%istack_grp)
 !
         call allocate_grp_type_item(rj_grp_IO)
-        call read_group_item(mesh_file_id, rj_grp_IO%num_grp,           &
+        call read_group_item(id_file, rj_grp_IO%num_grp,                &
      &      rj_grp_IO%num_item, rj_grp_IO%istack_grp,                   &
      &      rj_grp_IO%grp_name, rj_grp_IO%item_grp)
 !
@@ -68,25 +68,25 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_surf_grp_data(mesh_file_id, surf_grp_IO)
+      subroutine read_surf_grp_data(id_file, surf_grp_IO)
 !
       use t_group_data
 !
-      integer(kind = kint), intent(in) :: mesh_file_id
+      integer(kind = kint), intent(in) :: id_file
       type(surface_group_data), intent(inout) :: surf_grp_IO
 !
 !
-      call skip_comment(character_4_read, mesh_file_id)
+      call skip_comment(character_4_read, id_file)
       read(character_4_read,*) surf_grp_IO%num_grp
 !
       call allocate_sf_grp_type_num(surf_grp_IO)
 !
       if (surf_grp_IO%num_grp .gt. 0) then
-        call read_group_stack(mesh_file_id, surf_grp_IO%num_grp,        &
+        call read_group_stack(id_file, surf_grp_IO%num_grp,             &
      &      surf_grp_IO%num_item, surf_grp_IO%istack_grp)
 !
         call allocate_sf_grp_type_item(surf_grp_IO)
-        call read_surface_group_item(mesh_file_id, surf_grp_IO%num_grp, &
+        call read_surface_group_item(id_file, surf_grp_IO%num_grp,      &
      &      surf_grp_IO%num_item, surf_grp_IO%istack_grp,               &
      &      surf_grp_IO%grp_name, surf_grp_IO%item_sf_grp)
 !
@@ -99,16 +99,16 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine write_grp_data(mesh_file_id, rj_grp_IO)
+      subroutine write_grp_data(id_file, rj_grp_IO)
 !
       use m_sph_modes_grid_labels
       use t_group_data
 !
-      integer(kind = kint), intent(in) :: mesh_file_id
+      integer(kind = kint), intent(in) :: id_file
       type(group_data), intent(inout) :: rj_grp_IO
 !
 !
-      call write_group_data(mesh_file_id, rj_grp_IO%num_grp,            &
+      call write_group_data(id_file, rj_grp_IO%num_grp,                 &
      &    rj_grp_IO%num_item, rj_grp_IO%istack_grp,                     &
      &    rj_grp_IO%grp_name, rj_grp_IO%item_grp)
 !
@@ -118,16 +118,16 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_surf_grp_data(mesh_file_id, surf_grp_IO)
+      subroutine write_surf_grp_data(id_file, surf_grp_IO)
 !
       use m_sph_modes_grid_labels
       use t_group_data
 !
-      integer(kind = kint), intent(in) :: mesh_file_id
+      integer(kind = kint), intent(in) :: id_file
       type(surface_group_data), intent(inout) :: surf_grp_IO
 !
 !
-      call write_surf_group_data(mesh_file_id, surf_grp_IO%num_grp,     &
+      call write_surf_group_data(id_file, surf_grp_IO%num_grp,          &
      &    surf_grp_IO%num_item, surf_grp_IO%istack_grp,                 &
      &    surf_grp_IO%grp_name, surf_grp_IO%item_sf_grp)
 !

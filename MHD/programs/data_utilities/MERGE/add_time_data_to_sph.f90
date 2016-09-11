@@ -78,32 +78,14 @@
 !  set original spectr data
 !
       iflag_sph_file_fmt = ifmt_org_sph_file
-      sph_file_head = org_sph_head
-      do ip = 1, np_sph_org
-        irank_org = ip - 1
-        call sel_mpi_read_spectr_rj_file(np_sph_org, irank_org)
-!
-        call set_local_rj_mesh_4_merge(irank_org,                       &
-     &      org_sph_mesh(ip)%sph, org_sph_mesh(ip)%sph_comms,           &
-     &      org_sph_mesh(ip)%sph_grps)
-        call set_sph_boundary_4_merge(org_sph_mesh(ip)%sph_grps,        &
-     &      nlayer_ICB_org, nlayer_CMB_org)
-      end do
+      call set_local_rj_mesh_4_merge                                    &
+     &   (org_sph_head, np_sph_org, org_sph_mesh)
 !
 !  set new spectr data
 !
       iflag_sph_file_fmt = ifmt_new_sph_file
-      sph_file_head = new_sph_head
-      do jp = 1, np_sph_new
-        irank_new = jp - 1
-        call sel_mpi_read_spectr_rj_file(np_sph_new, irank_new)
-!
-        call set_local_rj_mesh_4_merge(irank_new,                       &
-     &      new_sph_mesh(jp)%sph, new_sph_mesh(jp)%sph_comms,           &
-     &      new_sph_mesh(jp)%sph_grps)
-        call set_sph_boundary_4_merge(new_sph_mesh(jp)%sph_grps,        &
-     &      nlayer_ICB_new, nlayer_CMB_new)
-      end do
+      call set_local_rj_mesh_4_merge                                    &
+     &   (new_sph_head, np_sph_new, new_sph_mesh)
 !
 !     Construct mode transfer table
 !
@@ -138,8 +120,7 @@
 !
       call load_field_name_assemble_sph                                 &
      &   (org_sph_fst_head, ifmt_org_sph_fst, istep_start,              &
-     &    np_sph_org, new_sph_mesh(1)%sph,                              &
-     &    org_sph_phys(1), new_sph_phys(1))
+     &    np_sph_org, org_sph_phys(1), new_sph_phys(1))
 !
       do jp = 2, np_sph_new
         new_sph_phys(jp)%num_phys =  new_sph_phys(1)%num_phys

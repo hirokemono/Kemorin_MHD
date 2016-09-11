@@ -9,7 +9,7 @@
 !!      subroutine set_index_flags_4_SPH                                &
 !!     &         (sph_param, sph_rtp, sph_rtm, sph_rlm, sph_rj,         &
 !!     &          comm_rtp, comm_rtm, comm_rlm, comm_rj)
-!!      subroutine set_index_flags_4_rj(sph_param, sph_rj, comm_rj)
+!!      subroutine set_index_flags_4_rj(sph_rj, comm_rj)
 !!        type(sph_shell_parameters), intent(inout) :: sph_param
 !!        type(sph_rtp_grid), intent(inout) :: sph_rtp
 !!        type(sph_rtm_grid), intent(inout) :: sph_rtm
@@ -111,7 +111,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_index_flags_4_rj(sph_param, sph_rj, comm_rj)
+      subroutine set_index_flags_4_rj(sph_rj, comm_rj)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -120,9 +120,7 @@
       use set_special_sph_lm_flags
       use set_from_recv_buf_rev
 !
-      type(sph_shell_parameters), intent(inout) :: sph_param
       type(sph_rj_grid), intent(inout) :: sph_rj
-!
       type(sph_comm_tbl), intent(inout) :: comm_rj
 !
 !

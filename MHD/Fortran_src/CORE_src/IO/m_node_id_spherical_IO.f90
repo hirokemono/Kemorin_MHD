@@ -13,13 +13,10 @@
       module m_node_id_spherical_IO
 !
       use m_precision
-      use t_node_id_spherical_IO
+      use t_spheric_mesh
 !
       implicit none
 !
-!
-!>      Structure for spherical harmonics table IO
-      type(sph_IO_data), save :: sph_IO1
 !
       integer(kind = kint), parameter :: mesh_file_id = 14
 !

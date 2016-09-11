@@ -13,6 +13,8 @@
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
       use t_group_data
+      use t_node_id_spherical_IO
+      use t_comm_table
 !
       implicit none
 !
@@ -35,6 +37,7 @@
       end type sph_group_data
 !
 !
+!> Structure of spherical transform mesh information
       type sph_mesh_data
 !>         spherical harmonics indexing data
         type(sph_grids) ::       sph
@@ -44,5 +47,18 @@
         type(sph_group_data) ::  sph_grps
       end type sph_mesh_data
 !
+!
+!> Structure of spherical transform mesh IO
+      type sph_file_data_type
+        integer(kind = kint) :: my_rank_IO
+!
+!>        Structure for spherical harmonics table IO
+        type(sph_IO_data) :: sph_IO
+!>        data structure for communication table IO
+        type(communication_table) :: comm_IO
+!
+!>        Structure of group data for spherical transform
+        type(sph_group_data) :: sph_grp_IO
+      end type sph_file_data_type
 !
       end module t_spheric_mesh

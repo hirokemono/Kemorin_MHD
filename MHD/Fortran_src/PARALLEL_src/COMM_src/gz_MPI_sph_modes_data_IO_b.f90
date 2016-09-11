@@ -47,9 +47,6 @@
       use t_comm_table
       use t_node_id_spherical_IO
       use t_spheric_mesh
-      use m_comm_data_IO
-      use m_node_id_spherical_IO
-      use m_group_data_sph_specr_IO
       use gz_MPI_domain_data_IO_b
       use gz_MPI_spherical_model_IO_b
       use gz_MPI_sph_gl_1d_idx_IO_b

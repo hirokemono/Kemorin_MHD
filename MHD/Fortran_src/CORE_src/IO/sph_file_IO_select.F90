@@ -7,15 +7,17 @@
 !>@brief  Spectr data IO selector
 !!
 !!@verbatim
-!!      subroutine sel_read_geom_rtp_file(my_rank)
-!!      subroutine sel_read_spectr_modes_rj_file(my_rank)
-!!      subroutine sel_read_geom_rtm_file(my_rank)
-!!      subroutine sel_read_modes_rlm_file(my_rank)
+!!      subroutine sel_read_geom_rtp_file(my_rank, sph_file)
+!!      subroutine sel_read_spectr_modes_rj_file(my_rank, sph_file)
+!!      subroutine sel_read_geom_rtm_file(my_rank, sph_file)
+!!      subroutine sel_read_modes_rlm_file(my_rank, sph_file)
+!!        type(sph_file_data_type), intent(inout) :: sph_file
 !!
-!!      subroutine sel_write_geom_rtp_file(my_rank)
-!!      subroutine sel_write_spectr_modes_rj_file(my_rank)
-!!      subroutine sel_write_geom_rtm_file(my_rank)
-!!      subroutine sel_write_modes_rlm_file(my_rank)
+!!      subroutine sel_write_geom_rtp_file(my_rank, sph_file)
+!!      subroutine sel_write_spectr_modes_rj_file(my_rank, sph_file)
+!!      subroutine sel_write_geom_rtm_file(my_rank, sph_file)
+!!      subroutine sel_write_modes_rlm_file(my_rank, sph_file)
+!!        type(sph_file_data_type), intent(inout) :: sph_file
 !!
 !!      integer(kind = kint) function check_exsist_rtp_file(my_rank)
 !!      integer(kind = kint) function check_exsist_rj_file(my_rank)
@@ -31,7 +33,7 @@
       use m_precision
 !
       use m_file_format_switch
-      use m_node_id_spherical_IO
+      use t_spheric_mesh
       use set_parallel_file_name
       use set_mesh_file_names
 !
@@ -50,104 +52,115 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine sel_read_geom_rtp_file(my_rank)
+      subroutine sel_read_geom_rtp_file(my_rank, sph_file)
 !
       integer(kind = kint), intent(in) :: my_rank
+      type(sph_file_data_type), intent(inout) :: sph_file
 !
 !
       call set_sph_rtp_file_name(sph_file_head, iflag_sph_file_fmt,     &
      &    my_rank, sph_file_name)
 !
       if (iflag_sph_file_fmt .eq. id_binary_file_fmt) then
-        call read_geom_rtp_file_b(my_rank, sph_file_name)
+        call read_geom_rtp_file_b(sph_file_name, my_rank, sph_file)
 !
 #ifdef ZLIB_IO
       else if(iflag_sph_file_fmt .eq. id_gzip_bin_file_fmt) then
-        call gz_read_geom_rtp_file_b(my_rank, sph_file_name)
+        call gz_read_geom_rtp_file_b(sph_file_name, my_rank, sph_file)
       else if(iflag_sph_file_fmt .eq. id_gzip_txt_file_fmt) then
-        call gz_read_geom_rtp_file(my_rank, sph_file_name)
+        call gz_read_geom_rtp_file(sph_file_name, my_rank, sph_file)
 #endif
 !
       else
-        call read_geom_rtp_file(my_rank, sph_file_name)
+        call read_geom_rtp_file                                         &
+     &     (sph_file_name, mesh_file_id, my_rank, sph_file)
       end if
 !
       end subroutine sel_read_geom_rtp_file
 !
 !------------------------------------------------------------------
 !
-      subroutine sel_read_spectr_modes_rj_file(my_rank)
+      subroutine sel_read_spectr_modes_rj_file(my_rank, sph_file)
 !
       integer(kind = kint), intent(in) :: my_rank
+      type(sph_file_data_type), intent(inout) :: sph_file
 !
 !
       call set_sph_rj_file_name(sph_file_head, iflag_sph_file_fmt,      &
      &    my_rank, sph_file_name)
 !
       if (iflag_sph_file_fmt .eq. id_binary_file_fmt) then
-        call read_spectr_modes_rj_file_b(my_rank, sph_file_name)
+        call read_spectr_modes_rj_file_b                                &
+     &     (sph_file_name, my_rank, sph_file)
 !
 #ifdef ZLIB_IO
       else if(iflag_sph_file_fmt .eq. id_gzip_bin_file_fmt) then
-        call gz_read_spectr_modes_rj_file_b(my_rank, sph_file_name)
+        call gz_read_spectr_modes_rj_file_b                             &
+     &     (sph_file_name, my_rank, sph_file)
       else if(iflag_sph_file_fmt .eq. id_gzip_txt_file_fmt) then
-        call gz_read_spectr_modes_rj_file(my_rank, sph_file_name)
+        call gz_read_spectr_modes_rj_file                               &
+     &     (sph_file_name, my_rank, sph_file)
 #endif
 !
       else
-        call read_spectr_modes_rj_file(my_rank, sph_file_name)
+        call read_spectr_modes_rj_file                                  &
+     &     (sph_file_name, mesh_file_id, my_rank, sph_file)
       end if
 !
       end subroutine sel_read_spectr_modes_rj_file
 !
 !------------------------------------------------------------------
 !
-      subroutine sel_read_geom_rtm_file(my_rank)
+      subroutine sel_read_geom_rtm_file(my_rank, sph_file)
 !
       integer(kind = kint), intent(in) :: my_rank
+      type(sph_file_data_type), intent(inout) :: sph_file
 !
 !
       call set_sph_rtm_file_name(sph_file_head, iflag_sph_file_fmt,     &
      &    my_rank, sph_file_name)
 !
       if (iflag_sph_file_fmt .eq. id_binary_file_fmt) then
-        call read_geom_rtm_file_b(my_rank, sph_file_name)
+        call read_geom_rtm_file_b(sph_file_name, my_rank, sph_file)
 !
 #ifdef ZLIB_IO
       else if(iflag_sph_file_fmt .eq. id_gzip_bin_file_fmt) then
-        call gz_read_geom_rtm_file_b(my_rank, sph_file_name)
+        call gz_read_geom_rtm_file_b(sph_file_name, my_rank, sph_file)
       else if(iflag_sph_file_fmt .eq. id_gzip_txt_file_fmt) then
-        call gz_read_geom_rtm_file(my_rank, sph_file_name)
+        call gz_read_geom_rtm_file(sph_file_name, my_rank, sph_file)
 #endif
 !
       else
-        call read_geom_rtm_file(my_rank, sph_file_name)
+        call read_geom_rtm_file                                         &
+     &     (sph_file_name, mesh_file_id, my_rank, sph_file)
       end if
 !
       end subroutine sel_read_geom_rtm_file
 !
 !------------------------------------------------------------------
 !
-      subroutine sel_read_modes_rlm_file(my_rank)
+      subroutine sel_read_modes_rlm_file(my_rank, sph_file)
 !
       integer(kind = kint), intent(in) :: my_rank
+      type(sph_file_data_type), intent(inout) :: sph_file
 !
 !
       call set_sph_rlm_file_name(sph_file_head, iflag_sph_file_fmt,     &
      &    my_rank, sph_file_name)
 !
       if (iflag_sph_file_fmt .eq. id_binary_file_fmt) then
-        call read_modes_rlm_file_b(my_rank, sph_file_name)
+        call read_modes_rlm_file_b(sph_file_name, my_rank, sph_file)
 !
 #ifdef ZLIB_IO
       else if(iflag_sph_file_fmt .eq. id_gzip_bin_file_fmt) then
-        call gz_read_modes_rlm_file_b(my_rank, sph_file_name)
+        call gz_read_modes_rlm_file_b(sph_file_name, my_rank, sph_file)
       else if(iflag_sph_file_fmt .eq. id_gzip_txt_file_fmt) then
-        call gz_read_modes_rlm_file(my_rank, sph_file_name)
+        call gz_read_modes_rlm_file(sph_file_name, my_rank, sph_file)
 #endif
 !
       else
-        call read_modes_rlm_file(my_rank, sph_file_name)
+        call read_modes_rlm_file                                        &
+     &     (sph_file_name, mesh_file_id, my_rank, sph_file)
       end if
 !
       end subroutine sel_read_modes_rlm_file
@@ -155,104 +168,116 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine sel_write_geom_rtp_file(my_rank)
+      subroutine sel_write_geom_rtp_file(my_rank, sph_file)
 !
       integer(kind = kint), intent(in) :: my_rank
+      type(sph_file_data_type), intent(inout) :: sph_file
 !
 !
       call set_sph_rtp_file_name(sph_file_head, iflag_sph_file_fmt,     &
      &    my_rank, sph_file_name)
 !
       if (iflag_sph_file_fmt .eq. id_binary_file_fmt) then
-        call write_geom_rtp_file_b(my_rank, sph_file_name)
+        call write_geom_rtp_file_b(sph_file_name, my_rank, sph_file)
 !
 #ifdef ZLIB_IO
       else if(iflag_sph_file_fmt .eq. id_gzip_bin_file_fmt) then
-        call gz_write_geom_rtp_file_b(my_rank, sph_file_name)
+        call gz_write_geom_rtp_file_b(sph_file_name, my_rank, sph_file)
       else if(iflag_sph_file_fmt .eq. id_gzip_txt_file_fmt) then
-        call gz_write_geom_rtp_file(my_rank, sph_file_name)
+        call gz_write_geom_rtp_file(sph_file_name, my_rank, sph_file)
 #endif
 !
       else
-        call write_geom_rtp_file(my_rank, sph_file_name)
+        call write_geom_rtp_file                                        &
+     &     (sph_file_name, mesh_file_id, my_rank, sph_file)
       end if
 !
       end subroutine sel_write_geom_rtp_file
 !
 !------------------------------------------------------------------
 !
-      subroutine sel_write_spectr_modes_rj_file(my_rank)
+      subroutine sel_write_spectr_modes_rj_file(my_rank, sph_file)
 !
       integer(kind = kint), intent(in) :: my_rank
+      type(sph_file_data_type), intent(inout) :: sph_file
 !
 !
       call set_sph_rj_file_name(sph_file_head, iflag_sph_file_fmt,      &
      &    my_rank, sph_file_name)
 !
       if (iflag_sph_file_fmt .eq. id_binary_file_fmt) then
-        call write_spectr_modes_rj_file_b(my_rank, sph_file_name)
+        call write_spectr_modes_rj_file_b                               &
+     &     (sph_file_name, my_rank, sph_file)
 !
 #ifdef ZLIB_IO
       else if(iflag_sph_file_fmt .eq. id_gzip_bin_file_fmt) then
-        call gz_write_spectr_modes_rj_file_b(my_rank, sph_file_name)
+        call gz_write_spectr_modes_rj_file_b                            &
+     &     (sph_file_name, my_rank, sph_file)
       else if(iflag_sph_file_fmt .eq. id_gzip_txt_file_fmt) then
-        call gz_write_spectr_modes_rj_file(my_rank, sph_file_name)
+        call gz_write_spectr_modes_rj_file                              &
+     &     (sph_file_name, my_rank, sph_file)
 #endif
 !
       else
-        call write_spectr_modes_rj_file(my_rank, sph_file_name)
+        call write_spectr_modes_rj_file                                 &
+     &     (sph_file_name, mesh_file_id, my_rank, sph_file)
       end if
 !
       end subroutine sel_write_spectr_modes_rj_file
 !
 !------------------------------------------------------------------
 !
-      subroutine sel_write_geom_rtm_file(my_rank)
+      subroutine sel_write_geom_rtm_file(my_rank, sph_file)
 !
       integer(kind = kint), intent(in) :: my_rank
+      type(sph_file_data_type), intent(inout) :: sph_file
 !
 !
       call set_sph_rtm_file_name(sph_file_head, iflag_sph_file_fmt,     &
      &    my_rank, sph_file_name)
 !
       if (iflag_sph_file_fmt .eq. id_binary_file_fmt) then
-        call write_geom_rtm_file_b(my_rank, sph_file_name)
+        call write_geom_rtm_file_b(sph_file_name, my_rank, sph_file)
 !
 #ifdef ZLIB_IO
       else if(iflag_sph_file_fmt .eq. id_gzip_bin_file_fmt) then
-        call gz_write_geom_rtm_file_b(my_rank, sph_file_name)
+        call gz_write_geom_rtm_file_b(sph_file_name, my_rank, sph_file)
       else if(iflag_sph_file_fmt .eq. id_gzip_txt_file_fmt) then
-        call gz_write_geom_rtm_file(my_rank, sph_file_name)
+        call gz_write_geom_rtm_file(sph_file_name, my_rank, sph_file)
 #endif
 !
       else
-        call write_geom_rtm_file(my_rank, sph_file_name)
+        call write_geom_rtm_file                                        &
+     &     (sph_file_name, mesh_file_id, my_rank, sph_file)
       end if
 !
       end subroutine sel_write_geom_rtm_file
 !
 !------------------------------------------------------------------
 !
-      subroutine sel_write_modes_rlm_file(my_rank)
+      subroutine sel_write_modes_rlm_file(my_rank, sph_file)
 !
       integer(kind = kint), intent(in) :: my_rank
+      type(sph_file_data_type), intent(inout) :: sph_file
 !
 !
       call set_sph_rlm_file_name(sph_file_head, iflag_sph_file_fmt,     &
      &    my_rank, sph_file_name)
 !
       if (iflag_sph_file_fmt .eq. id_binary_file_fmt) then
-        call write_modes_rlm_file_b(my_rank, sph_file_name)
+        call write_modes_rlm_file_b(sph_file_name, my_rank, sph_file)
 !
 #ifdef ZLIB_IO
       else if(iflag_sph_file_fmt .eq. id_gzip_bin_file_fmt) then
-        call gz_write_modes_rlm_file_b(my_rank, sph_file_name)
+        call gz_write_modes_rlm_file_b                                  &
+     &     (sph_file_name, my_rank, sph_file)
       else if(iflag_sph_file_fmt .eq. id_gzip_txt_file_fmt) then
-        call gz_write_modes_rlm_file(my_rank, sph_file_name)
+        call gz_write_modes_rlm_file(sph_file_name, my_rank, sph_file)
 #endif
 !
       else
-        call write_modes_rlm_file(my_rank, sph_file_name)
+        call write_modes_rlm_file                                       &
+     &     (sph_file_name, mesh_file_id, my_rank, sph_file)
       end if
 !
       end subroutine sel_write_modes_rlm_file

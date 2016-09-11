@@ -7,15 +7,25 @@
 !>@brief ASCII spectr data IO routines
 !!
 !!@verbatim
-!!      subroutine read_geom_rtp_file(my_rank, file_name)
-!!      subroutine read_spectr_modes_rj_file(my_rank, file_name)
-!!      subroutine read_geom_rtm_file(my_rank, file_name)
-!!      subroutine read_modes_rlm_file(my_rank, file_name)
+!!      subroutine read_geom_rtp_file                                   &
+!!     &         (file_name, id_file, my_rank, sph_file)
+!!      subroutine read_spectr_modes_rj_file                            &
+!!     &         (file_name, my_rank, sph_file)
+!!      subroutine read_geom_rtm_file                                   &
+!!     &         (file_name, id_file, my_rank, sph_file)
+!!      subroutine read_modes_rlm_file                                  &
+!!     &         (file_name, id_file, my_rank, sph_file)
+!!        type(sph_file_data_type), intent(inout) :: sph_file
 !!
-!!      subroutine write_geom_rtp_file(my_rank, file_name)
-!!      subroutine write_spectr_modes_rj_file(my_rank, file_name)
-!!      subroutine write_geom_rtm_file(my_rank, file_name)
-!!      subroutine write_modes_rlm_file(my_rank, file_name)
+!!      subroutine write_geom_rtp_file                                  &
+!!     &         (file_name, id_file, my_rank, sph_file)
+!!      subroutine write_spectr_modes_rj_file                           &
+!!     &         (file_name, my_rank, sph_file)
+!!      subroutine write_geom_rtm_file                                  &
+!!     &         (file_name, id_file, my_rank, sph_file)
+!!      subroutine write_modes_rlm_file                                 &
+!!     &         (file_name, id_file, my_rank, sph_file)
+!!        type(sph_file_data_type), intent(inout) :: sph_file
 !!@endverbatim
 !!
 !!@param my_rank    Process ID
@@ -26,12 +36,11 @@
       use m_precision
       use m_machine_parameter
 !
-      use m_comm_data_IO
-      use m_node_id_spherical_IO
-      use m_group_data_sph_specr_IO
+      use t_spheric_mesh
       use sph_modes_grids_data_IO
 !
       implicit none
+!
 !
 !------------------------------------------------------------------
 !
@@ -39,139 +48,167 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_geom_rtp_file(my_rank, file_name)
+      subroutine read_geom_rtp_file                                     &
+     &         (file_name, id_file, my_rank, sph_file)
 !
       character(len=kchara), intent(in) :: file_name
+      integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: my_rank
+      type(sph_file_data_type), intent(inout) :: sph_file
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Read ascii grid file: ', trim(file_name)
-      open (mesh_file_id,file = file_name, form = 'formatted')
+      open (id_file,file = file_name, form = 'formatted')
       call read_geom_rtp_data                                           &
-     &   (mesh_file_id, my_rank_IO, comm_IO, sph_IO1, sph_grp_IO)
-      close(mesh_file_id)
+     &   (id_file, sph_file%my_rank_IO, sph_file%comm_IO,               &
+     &    sph_file%sph_IO, sph_file%sph_grp_IO)
+      close(id_file)
 !
       end subroutine read_geom_rtp_file
 !
 !------------------------------------------------------------------
 !
-      subroutine read_spectr_modes_rj_file(my_rank, file_name)
+      subroutine read_spectr_modes_rj_file                              &
+     &         (file_name, id_file, my_rank, sph_file)
 !
       character(len=kchara), intent(in) :: file_name
+      integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: my_rank
+      type(sph_file_data_type), intent(inout) :: sph_file
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Read ascii spectr modes file: ', trim(file_name)
-      open (mesh_file_id,file = file_name, form = 'formatted')
+      open (id_file,file = file_name, form = 'formatted')
       call read_spectr_modes_rj_data                                    &
-     &   (mesh_file_id, my_rank_IO, comm_IO, sph_IO1, sph_grp_IO)
-      close(mesh_file_id)
+     &   (id_file, sph_file%my_rank_IO, sph_file%comm_IO,               &
+     &    sph_file%sph_IO, sph_file%sph_grp_IO)
+      close(id_file)
 !
       end subroutine read_spectr_modes_rj_file
 !
 !------------------------------------------------------------------
 !
-      subroutine read_geom_rtm_file(my_rank, file_name)
+      subroutine read_geom_rtm_file                                     &
+     &         (file_name, id_file, my_rank, sph_file)
 !
       character(len=kchara), intent(in) :: file_name
+      integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: my_rank
+      type(sph_file_data_type), intent(inout) :: sph_file
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Read ascii grid file: ', trim(file_name)
-      open (mesh_file_id,file = file_name, form = 'formatted')
-      call read_geom_rtm_data                                           &
-     &   (mesh_file_id, my_rank_IO, comm_IO, sph_IO1)
-      close(mesh_file_id)
+      open (id_file,file = file_name, form = 'formatted')
+      call read_geom_rtm_data(id_file,                                  &
+     &    sph_file%my_rank_IO, sph_file%comm_IO, sph_file%sph_IO)
+      close(id_file)
 !
       end subroutine read_geom_rtm_file
 !
 !------------------------------------------------------------------
 !
-      subroutine read_modes_rlm_file(my_rank, file_name)
+      subroutine read_modes_rlm_file                                    &
+     &         (file_name, id_file, my_rank, sph_file)
 !
       character(len=kchara), intent(in) :: file_name
+      integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: my_rank
+      type(sph_file_data_type), intent(inout) :: sph_file
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Read ascii spectr modes file: ', trim(file_name)
-      open (mesh_file_id,file = file_name, form = 'formatted')
-      call read_spectr_modes_rlm_data                                   &
-     &   (mesh_file_id, my_rank_IO, comm_IO, sph_IO1)
+      open (id_file,file = file_name, form = 'formatted')
+      call read_spectr_modes_rlm_data(id_file,                          &
+     &    sph_file%my_rank_IO, sph_file%comm_IO, sph_file%sph_IO)
 !
-      close(mesh_file_id)
+      close(id_file)
 !
       end subroutine read_modes_rlm_file
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine write_geom_rtp_file(my_rank, file_name)
+      subroutine write_geom_rtp_file                                    &
+     &         (file_name, id_file, my_rank, sph_file)
 !
       character(len=kchara), intent(in) :: file_name
+      integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: my_rank
+      type(sph_file_data_type), intent(inout) :: sph_file
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Write ascii grid file: ', trim(file_name)
-      open (mesh_file_id,file = file_name, form = 'formatted')
+      open (id_file,file = file_name, form = 'formatted')
       call write_geom_rtp_data                                          &
-     &   (mesh_file_id, my_rank_IO, comm_IO, sph_IO1, sph_grp_IO)
-      close(mesh_file_id)
+     &   (id_file, sph_file%my_rank_IO, sph_file%comm_IO,               &
+     &    sph_file%sph_IO, sph_file%sph_grp_IO)
+      close(id_file)
 !
       end subroutine write_geom_rtp_file
 !
 !------------------------------------------------------------------
 !
-      subroutine write_spectr_modes_rj_file(my_rank, file_name)
+      subroutine write_spectr_modes_rj_file                             &
+     &         (file_name, id_file, my_rank, sph_file)
 !
       character(len=kchara), intent(in) :: file_name
+      integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: my_rank
+      type(sph_file_data_type), intent(inout) :: sph_file
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Write ascii spectr modes file: ', trim(file_name)
-      open (mesh_file_id,file = file_name, form = 'formatted')
+      open (id_file,file = file_name, form = 'formatted')
       call write_spectr_modes_rj_data                                   &
-     &   (mesh_file_id, my_rank_IO, comm_IO, sph_IO1, sph_grp_IO)
-      close(mesh_file_id)
+     &   (id_file, sph_file%my_rank_IO, sph_file%comm_IO,               &
+     &    sph_file%sph_IO, sph_file%sph_grp_IO)
+      close(id_file)
 !
       end subroutine write_spectr_modes_rj_file
 !
 !------------------------------------------------------------------
 !
-      subroutine write_geom_rtm_file(my_rank, file_name)
+      subroutine write_geom_rtm_file                                    &
+     &         (file_name, id_file, my_rank, sph_file)
 !
       character(len=kchara), intent(in) :: file_name
+      integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: my_rank
+      type(sph_file_data_type), intent(inout) :: sph_file
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Write ascii grid file: ', trim(file_name)
-      open (mesh_file_id,file = file_name, form = 'formatted')
-      call write_geom_rtm_data                                          &
-     &   (mesh_file_id, my_rank_IO, comm_IO, sph_IO1)
-      close(mesh_file_id)
+      open (id_file,file = file_name, form = 'formatted')
+      call write_geom_rtm_data(id_file,                                 &
+     &    sph_file%my_rank_IO, sph_file%comm_IO, sph_file%sph_IO)
+      close(id_file)
 !
       end subroutine write_geom_rtm_file
 !
 !------------------------------------------------------------------
 !
-      subroutine write_modes_rlm_file(my_rank, file_name)
+      subroutine write_modes_rlm_file                                   &
+     &         (file_name, id_file, my_rank, sph_file)
 !
       character(len=kchara), intent(in) :: file_name
+      integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: my_rank
+      type(sph_file_data_type), intent(inout) :: sph_file
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Write ascii spectr modes file: ', trim(file_name)
-      open (mesh_file_id,file = file_name, form = 'formatted')
-      call write_modes_rlm_data                                         &
-     &   (mesh_file_id, my_rank_IO, comm_IO, sph_IO1)
-      close(mesh_file_id)
+      open (id_file,file = file_name, form = 'formatted')
+      call write_modes_rlm_data(id_file,                                &
+     &    sph_file%my_rank_IO, sph_file%comm_IO, sph_file%sph_IO)
+      close(id_file)
 !
       end subroutine write_modes_rlm_file
 !

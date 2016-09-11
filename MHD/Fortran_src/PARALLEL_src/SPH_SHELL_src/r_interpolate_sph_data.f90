@@ -156,22 +156,22 @@
 !
       subroutine input_old_rj_sph_trans(l_truncation, sph_rj)
 !
-      use m_comm_data_IO
-      use m_node_id_spherical_IO
-      use m_group_data_sph_specr_IO
       use m_control_params_2nd_files
+      use t_spheric_mesh
       use sph_file_MPI_IO_select
       use radial_interpolation
 !
       integer(kind = kint), intent(inout) :: l_truncation
       type(sph_rj_grid), intent(inout) ::  sph_rj
 !
+      type(sph_file_data_type) :: sph_file
+!
 !
       call set_sph_mesh_file_fmt_prefix                                 &
      &   (rj_org_param%iflag_format, rj_org_param%file_prefix)
-      call sel_mpi_read_spectr_rj_file(nprocs, my_rank)
-      call copy_original_sph_rj_from_IO                                 &
-     &   (l_truncation, sph_rj, comm_IO, sph_IO1, sph_grp_IO)
+      call sel_mpi_read_spectr_rj_file(nprocs, my_rank, sph_file)
+      call copy_original_sph_rj_from_IO(l_truncation, sph_rj,           &
+     &   sph_file%comm_IO, sph_file%sph_IO, sph_file%sph_grp_IO)
 !
       call const_radial_itp_table(nri_org, r_org,                       &
      &    sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                     &

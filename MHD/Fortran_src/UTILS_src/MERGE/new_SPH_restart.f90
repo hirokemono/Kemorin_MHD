@@ -22,7 +22,7 @@
 !!        integer(kind = kint), intent(inout) :: nlayer_ICB, nlayer_CMB
 !!      subroutine load_field_name_assemble_sph                         &
 !!     &         (org_sph_fst_head, ifmt_org_sph_fst, istep_start,      &
-!!     &          np_sph_org, new_sph, org_phys, new_phys)
+!!     &          np_sph_org, org_phys, new_phys)
 !!      subroutine load_org_sph_data(org_sph_fst_head, ifmt_org_sph_fst,&
 !!     &          ip, istep, np_sph_org, org_sph, org_phys)
 !!      subroutine const_assembled_sph_data                             &
@@ -32,6 +32,7 @@
       module new_SPH_restart
 !
       use m_precision
+      use calypso_mpi
       use t_spheric_mesh
       use t_sph_spectr_data
       use t_field_data_IO
@@ -48,32 +49,32 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_local_rj_mesh_4_merge                              &
-     &         (my_rank, sph, sph_comms, sph_grps)
+     &         (file_prefix, nprocs_in, sph_mesh)
 !
       use m_node_id_spherical_IO
-      use m_group_data_sph_specr_IO
-      use copy_sph_node_4_IO
-      use copy_sph_comm_tbl_type_4_IO
-      use set_group_types_4_IO
+      use sph_file_MPI_IO_select
+      use load_data_for_sph_IO
 !
-      integer(kind = kint), intent(in) :: my_rank
-      type(sph_grids), intent(inout) ::       sph
-      type(sph_comm_tables), intent(inout) :: sph_comms
-      type(sph_group_data), intent(inout) ::  sph_grps
+      character(len=kchara), intent(in) :: file_prefix
+      integer(kind = kint), intent(in) ::  nprocs_in
+      type(sph_mesh_data), intent(inout) :: sph_mesh(nprocs_in)
+!
+      type(sph_file_data_type) :: sph_file
+      integer(kind = kint) :: id_rank
+      integer(kind = kint) :: iloop, ip, ierr
 !
 !
-      call copy_sph_node_4_rj_from_IO                                   &
-     &   (sph_IO1, sph%sph_rj, sph%sph_params%l_truncation)
-      call copy_comm_sph_type_from_IO                                   &
-     &   (my_rank, sph%sph_rj%nnod_rj, sph_comms%comm_rj)
+      sph_file_head = file_prefix
+      do iloop = 0, (nprocs_in-1) / nprocs
+        id_rank = my_rank + iloop * nprocs
+        ip = id_rank + 1
+        call sel_mpi_read_spectr_rj_file(nprocs_in, id_rank, sph_file)
 !
-      call set_gruop_stracture                                          &
-     &   (sph_grp_IO%radial_rj_grp, sph_grps%radial_rj_grp)
-      call set_gruop_stracture                                          &
-     &   (sph_grp_IO%sphere_rj_grp, sph_grps%sphere_rj_grp)
-!
-      call deallocate_grp_type(sph_grp_IO%radial_rj_grp)
-      call deallocate_grp_type(sph_grp_IO%sphere_rj_grp)
+        if(id_rank .ge. nprocs_in) cycle
+        call input_modes_rj_sph_trans(sph_file,                         &
+     &     sph_mesh(ip)%sph%sph_rj, sph_mesh(ip)%sph_comms%comm_rj,     &
+     &     sph_mesh(ip)%sph_grps, sph_mesh(ip)%sph%sph_params, ierr)
+      end do
 !
       end subroutine set_local_rj_mesh_4_merge
 !
@@ -107,7 +108,7 @@
 !
       subroutine load_field_name_assemble_sph                           &
      &         (org_sph_fst_head, ifmt_org_sph_fst, istep_start,        &
-     &          np_sph_org, new_sph, org_phys, new_phys)
+     &          np_sph_org, org_phys, new_phys)
 !
       use calypso_mpi
       use t_spheric_parameter
@@ -119,7 +120,6 @@
       integer(kind=kint ), intent(in) :: ifmt_org_sph_fst
 !
       integer(kind = kint),  intent(in) :: istep_start, np_sph_org
-      type(sph_grids), intent(in) :: new_sph
 !
       type(phys_data), intent(inout) :: org_phys(np_sph_org)
       type(phys_data), intent(inout) :: new_phys

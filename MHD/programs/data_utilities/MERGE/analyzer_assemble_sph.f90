@@ -84,15 +84,15 @@
 !  set original spectr data
 !
       iflag_sph_file_fmt = ifmt_org_sph_file
-      sph_file_head = org_sph_head
-      call share_org_sph_rj_data(np_sph_org, org_sph_mesh)
+      call share_org_sph_rj_data                                        &
+     &   (org_sph_head, np_sph_org, org_sph_mesh)
 !
 !  set new spectr data
 !
       iflag_sph_file_fmt = ifmt_new_sph_file
-      sph_file_head = new_sph_head
-      call load_new_spectr_rj_data(np_sph_org, np_sph_new,              &
-     &          org_sph_mesh, new_sph_mesh, j_table)
+      call load_new_spectr_rj_data                                      &
+     &   (new_sph_head, np_sph_org, np_sph_new,                         &
+     &    org_sph_mesh, new_sph_mesh, j_table)
 !
 !     Share number of nodes for new mesh
 !
@@ -147,7 +147,7 @@
 !      write(*,*) 'load_field_name_assemble_sph'
       call load_field_name_assemble_sph(org_sph_fst_head,               &
      &      ifmt_org_sph_fst, istep_start, np_sph_org,                  &
-     &      new_sph_mesh(1)%sph, org_sph_phys(1), new_sph_phys(1))
+     &      org_sph_phys(1), new_sph_phys(1))
 !
 !      write(*,*) 'share_spectr_field_names'
       call share_spectr_field_names(np_sph_org, np_sph_new,             &

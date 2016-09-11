@@ -9,21 +9,19 @@
 !!
 !!@verbatim
 !!      subroutine const_sph_rj_modes(ip_rank, ndomain_sph,             &
-!!     &         comm_rlm_mul, sph_params, sph_rj, sph_rlm,             &
-!!     &         sph_grps_IO)
+!!     &         comm_rlm_mul, sph_params, sph_rj, sph_rlm, sph_file)
 !!         type(sph_shell_parameters), intent(in) :: sph_params
 !!         type(sph_comm_tbl), intent(in) :: comm_rlm_mul(ndomain_sph)
 !!         type(sph_rj_grid), intent(inout) :: sph_rj
 !!         type(sph_rlm_grid), intent(inout) :: sph_rlm
-!!         type(sph_group_data), intent(inout) :: sph_grps_IO
+!!        type(sph_file_data_type), intent(inout) :: sph_file
 !!      subroutine const_sph_rtp_grids(ip_rank, ndomain_sph,            &
-!!     &          comm_rtm_mul, sph_params, sph_rtp, sph_rtm,           &
-!!     &          sph_grps_IO)
+!!     &          comm_rtm_mul, sph_params, sph_rtp, sph_rtm, sph_file)
 !!         type(sph_shell_parameters), intent(in) :: sph_params
 !!         type(sph_comm_tbl), intent(in) :: comm_rtm_mul(ndomain_sph)
 !!         type(sph_rtp_grid), intent(inout) :: sph_rtp
 !!         type(sph_rtm_grid), intent(inout) :: sph_rtm
-!!         type(sph_group_data), intent(inout) :: sph_grps_IO
+!!        type(sph_file_data_type), intent(inout) :: sph_file
 !!@endverbatim
 !
       module set_comm_table_rtp_rj
@@ -82,8 +80,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine const_sph_rj_modes(ip_rank, ndomain_sph,               &
-     &         comm_rlm_mul, sph_params, sph_rj, sph_rlm,               &
-     &         sph_grps_IO)
+     &         comm_rlm_mul, sph_params, sph_rj, sph_rlm, sph_file)
 !
       use load_data_for_sph_IO
       use set_sph_groups
@@ -99,7 +96,7 @@
 !
       type(sph_rj_grid), intent(inout) :: sph_rj
       type(sph_rlm_grid), intent(inout) :: sph_rlm
-      type(sph_group_data), intent(inout) :: sph_grps_IO
+      type(sph_file_data_type), intent(inout) :: sph_file
 !
       type(sph_comm_tbl) :: comm_rj_lc
 !
@@ -132,21 +129,20 @@
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                  'set_sph_rj_groups', ip_rank
-      call set_sph_rj_groups(sph_params, sph_rj,                       &
+      call set_sph_rj_groups(sph_params, sph_rj,                        &
      &    sph_grp_lc%radial_rj_grp, sph_grp_lc%sphere_rj_grp)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                 'output_modes_rj_sph_trans', ip_rank
-      call output_modes_rj_sph_trans(ip_rank, sph_params%l_truncation,  &
-     &    sph_rj, comm_rj_lc, sph_grp_lc, sph_grps_IO)
+      call output_modes_rj_sph_trans(ip_rank, sph_params,               &
+     &    sph_rj, comm_rj_lc, sph_grp_lc, sph_file)
 !
       end subroutine const_sph_rj_modes
 !
 ! ----------------------------------------------------------------------
 !
       subroutine const_sph_rtp_grids(ip_rank, ndomain_sph,              &
-     &          comm_rtm_mul, sph_params, sph_rtp, sph_rtm,             &
-     &          sph_grps_IO)
+     &          comm_rtm_mul, sph_params, sph_rtp, sph_rtm, sph_file)
 !
       use load_data_for_sph_IO
       use set_sph_groups
@@ -163,7 +159,7 @@
 !
       type(sph_rtp_grid), intent(inout) :: sph_rtp
       type(sph_rtm_grid), intent(inout) :: sph_rtm
-      type(sph_group_data), intent(inout) :: sph_grps_IO
+      type(sph_file_data_type), intent(inout) :: sph_file
 !
       type(sph_comm_tbl) :: comm_rtp_lc
 !
@@ -199,8 +195,8 @@
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                 'output_geom_rtp_sph_trans', ip_rank
-      call output_geom_rtp_sph_trans(ip_rank, sph_params%l_truncation,  &
-     &    sph_rtp, comm_rtp_lc, sph_grp_lc, sph_grps_IO)
+      call output_geom_rtp_sph_trans(ip_rank, sph_params,               &
+     &    sph_rtp, comm_rtp_lc, sph_grp_lc, sph_file)
 !
       end subroutine const_sph_rtp_grids
 !

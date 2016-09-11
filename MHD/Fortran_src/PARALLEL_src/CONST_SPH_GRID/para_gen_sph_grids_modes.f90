@@ -9,12 +9,14 @@
 !!
 !!
 !!@verbatim
-!!      subroutine para_gen_sph_rlm_grids(ndomain_sph, l_truncation,    &
+!!      subroutine para_gen_sph_rlm_grids(ndomain_sph, sph_params,      &
 !!     &          sph_rlm, comm_rlm_mul)
+!!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rlm_grid), intent(inout) :: sph_rlm
 !!        type(sph_comm_tbl), intent(inout) :: comm_rlm_mul(ndomain_sph)
-!!      subroutine para_gen_sph_rtm_grids(ndomain_sph, l_truncation,    &
+!!      subroutine para_gen_sph_rtm_grids(ndomain_sph, sph_params,      &
 !!     &          sph_rtm, comm_rtm_mul)
+!!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rtm_grid), intent(inout) :: sph_rtm
 !!        type(sph_comm_tbl), intent(inout) :: comm_rtm_mul(ndomain_sph)
 !!
@@ -22,7 +24,7 @@
 !!     &          sph_params, sph_rlm, sph_rj)
 !!        type(sph_comm_tbl), intent(in) :: comm_rlm_mul(ndomain_sph)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
-!!       type(sph_rlm_grid), intent(inout) :: sph_rlm
+!!        type(sph_rlm_grid), intent(inout) :: sph_rlm
 !!        type(sph_rj_grid), intent(inout) :: sph_rj
 !!      subroutine para_gen_sph_rtp_grids(ndomain_sph, comm_rtm_mul,    &
 !!     &          sph_params, sph_rtp, sph_rtm)
@@ -49,10 +51,13 @@
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
       use t_group_data
+      use t_spheric_mesh
 !
       use set_local_sphere_by_global
 !
       implicit none
+!
+      type(sph_file_data_type), save, private :: sph_file_p
 !
 ! -----------------------------------------------------------------------
 !
@@ -60,7 +65,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine para_gen_sph_rlm_grids(ndomain_sph, l_truncation,      &
+      subroutine para_gen_sph_rlm_grids(ndomain_sph, sph_params,        &
      &          sph_rlm, comm_rlm_mul)
 !
       use set_comm_table_rtp_rj
@@ -69,7 +74,7 @@
       use sph_file_IO_select
 !
       integer(kind = kint), intent(in) :: ndomain_sph
-      integer(kind = kint), intent(in) :: l_truncation
+      type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rlm_grid), intent(inout) :: sph_rlm
       type(sph_comm_tbl), intent(inout) :: comm_rlm_mul(ndomain_sph)
 !
@@ -91,9 +96,9 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &        'output_modes_rlm_sph_trans', ip_rank
         call output_modes_rlm_sph_trans                                 &
-     &     (ip_rank, l_truncation, sph_rlm, comm_rlm_lc)
-        call sel_write_modes_rlm_file(ip_rank)
+     &     (ip_rank, sph_params, sph_rlm, comm_rlm_lc, sph_file_p)
 !
+        call sel_write_modes_rlm_file(ip_rank, sph_file_p)
         write(*,'(a,i6,a,i6)') 'Spherical transform table for domain',  &
      &          ip_rank, ' is done on process ', my_rank
       end do
@@ -102,7 +107,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine para_gen_sph_rtm_grids(ndomain_sph, l_truncation,      &
+      subroutine para_gen_sph_rtm_grids(ndomain_sph, sph_params,        &
      &          sph_rtm, comm_rtm_mul)
 !
       use set_comm_table_rtp_rj
@@ -111,7 +116,7 @@
       use sph_file_IO_select
 !
       integer(kind = kint), intent(in) :: ndomain_sph
-      integer(kind = kint), intent(in) :: l_truncation
+      type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rtm_grid), intent(inout) :: sph_rtm
       type(sph_comm_tbl), intent(inout) :: comm_rtm_mul(ndomain_sph)
 !
@@ -132,9 +137,9 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &        'output_geom_rtm_sph_trans', ip_rank
         call output_geom_rtm_sph_trans                                  &
-     &     (ip_rank, l_truncation, sph_rtm, comm_rtm_lc)
+     &     (ip_rank, sph_params, sph_rtm, comm_rtm_lc, sph_file_p)
 !
-        call sel_write_geom_rtm_file(ip_rank)
+        call sel_write_geom_rtm_file(ip_rank, sph_file_p)
         write(*,'(a,i6,a,i6)') 'Legendre transform table rtm',          &
      &          ip_rank, ' is done on process ', my_rank
       end do
@@ -146,7 +151,6 @@
       subroutine para_gen_sph_rj_modes(ndomain_sph, comm_rlm_mul,       &
      &          sph_params, sph_rlm, sph_rj)
 !
-      use m_group_data_sph_specr_IO
       use set_local_index_table_sph
       use set_comm_table_rtp_rj
       use sph_file_IO_select
@@ -169,9 +173,9 @@
      &             'Construct spherical modes for domain ',             &
      &            ip_rank,  ' on ', my_rank
         call const_sph_rj_modes(ip_rank, ndomain_sph,                   &
-     &      comm_rlm_mul, sph_params, sph_rj, sph_rlm, sph_grp_IO)
+     &      comm_rlm_mul, sph_params, sph_rj, sph_rlm, sph_file_p)
 !
-        call sel_write_spectr_modes_rj_file(ip_rank)
+        call sel_write_spectr_modes_rj_file(ip_rank, sph_file_p)
         write(*,'(a,i6,a,i6)') 'Spherical modes for domain',            &
      &          ip_rank, ' is done on process ', my_rank
       end do
@@ -184,7 +188,6 @@
       subroutine para_gen_sph_rtp_grids(ndomain_sph, comm_rtm_mul,      &
      &          sph_params, sph_rtp, sph_rtm)
 !
-      use m_group_data_sph_specr_IO
       use set_local_index_table_sph
       use set_comm_table_rtp_rj
       use sph_file_IO_select
@@ -207,9 +210,9 @@
      &             'Construct spherical grids for domain ',             &
      &            ip_rank,  ' on ', my_rank
         call const_sph_rtp_grids(ip_rank, ndomain_sph, comm_rtm_mul,    &
-     &      sph_params, sph_rtp, sph_rtm, sph_grp_IO)
+     &      sph_params, sph_rtp, sph_rtm, sph_file_p)
 !
-        call sel_write_geom_rtp_file(ip_rank)
+        call sel_write_geom_rtp_file(ip_rank, sph_file_p)
         write(*,'(a,i6,a,i6)') 'Spherical grids for domain',            &
      &          ip_rank, ' is done on process ', my_rank
       end do

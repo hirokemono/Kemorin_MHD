@@ -18,8 +18,8 @@
 !!        type(element_geometry), intent(inout) :: ele_mesh
 !!
 !!      subroutine load_para_rj_mesh                                    &
-!!     &         (sph_param, sph_rj, comm_rj, sph_grps)
-!!         type(sph_shell_parameters), intent(inout) :: sph_param
+!!     &         (sph_params, sph_rj, comm_rj, sph_grps)
+!!         type(sph_shell_parameters), intent(inout) :: sph_params
 !!         type(sph_rtp_grid), intent(inout) :: sph_rtp
 !!         type(sph_rtm_grid), intent(inout) :: sph_rtm
 !!         type(sph_rlm_grid), intent(inout) :: sph_rlm
@@ -42,6 +42,8 @@
       implicit none
 !
       private :: load_FEM_mesh_4_SPH
+!
+      type(sph_file_data_type), save, private :: sph_file_l
 !
 ! -----------------------------------------------------------------------
 !
@@ -89,7 +91,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine load_FEM_mesh_4_SPH(sph_param, sph_rtp, sph_rj,        &
+      subroutine load_FEM_mesh_4_SPH(sph_params, sph_rtp, sph_rj,       &
      &          radial_rtp_grp, radial_rj_grp, mesh, group, ele_mesh)
 !
       use calypso_mpi
@@ -105,7 +107,7 @@
       use gen_sph_grids_modes
       use mesh_IO_select
 !
-      type(sph_shell_parameters), intent(inout) :: sph_param
+      type(sph_shell_parameters), intent(inout) :: sph_params
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_rj_grid), intent(in) :: sph_rj
       type(group_data), intent(in) :: radial_rtp_grp
@@ -125,22 +127,22 @@
      &      ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
         call allocate_ele_geometry_type(mesh%ele)
         call set_fem_center_mode_4_SPH                                  &
-     &     (mesh%node%internal_node, sph_rtp, sph_param)
+     &     (mesh%node%internal_node, sph_rtp, sph_params)
         return
       end if
 !
 !  --  Construct FEM mesh
-      if(sph_param%iflag_shell_mode .eq. iflag_no_FEMMESH) then
+      if(sph_params%iflag_shell_mode .eq. iflag_no_FEMMESH) then
         if(sph_rj%iflag_rj_center .gt. 0) then
-          sph_param%iflag_shell_mode =  iflag_MESH_w_center
+          sph_params%iflag_shell_mode =  iflag_MESH_w_center
         else
-          sph_param%iflag_shell_mode = iflag_MESH_same
+          sph_params%iflag_shell_mode = iflag_MESH_same
         end if
       end if
 !
       if (iflag_debug.gt.0) write(*,*) 'const_FEM_mesh_4_sph_mhd'
       call const_FEM_mesh_4_sph_mhd                                     &
-     &   (sph_param, sph_rtp, sph_rj, radial_rtp_grp,                   &
+     &   (sph_params, sph_rtp, sph_rj, radial_rtp_grp,                  &
      &    radial_rj_grp, femmesh_s%mesh, femmesh_s%group)
 !      call compare_mesh_type                                           &
 !     &   (my_rank, mesh%nod_comm, mesh%node, mesh%ele, femmesh_s%mesh)
@@ -171,36 +173,34 @@
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'input_geom_rtp_sph_trans'
-      call sel_mpi_read_geom_rtp_file(nprocs, my_rank)
-      call input_geom_rtp_sph_trans(sph_grp_IO,                         &
-     &    sph%sph_rtp, comms_sph%comm_rtp,                              &
-     &    sph_grps, sph%sph_params%l_truncation, ierr)
+      call sel_mpi_read_geom_rtp_file(nprocs, my_rank, sph_file_l)
+      call input_geom_rtp_sph_trans(sph_file_l, sph%sph_rtp,            &
+     &    comms_sph%comm_rtp, sph_grps, sph%sph_params, ierr)
       call set_reverse_import_table(sph%sph_rtp%nnod_rtp,               &
      &    comms_sph%comm_rtp%ntot_item_sr, comms_sph%comm_rtp%item_sr,  &
      &    comms_sph%comm_rtp%irev_sr)
 !
       if (iflag_debug.gt.0) write(*,*) 'input_modes_rj_sph_trans'
-      call sel_mpi_read_spectr_rj_file(nprocs, my_rank)
-      call input_modes_rj_sph_trans                                     &
-     &   (sph_grp_IO, sph%sph_rj, comms_sph%comm_rj,                    &
-     &    sph_grps, sph%sph_params%l_truncation, ierr)
+      call sel_mpi_read_spectr_rj_file(nprocs, my_rank, sph_file_l)
+      call input_modes_rj_sph_trans(sph_file_l, sph%sph_rj,             &
+     &    comms_sph%comm_rj, sph_grps, sph%sph_params, ierr)
       call set_reverse_import_table(sph%sph_rj%nnod_rj,                 &
      &    comms_sph%comm_rj%ntot_item_sr, comms_sph%comm_rj%item_sr,    &
      &    comms_sph%comm_rj%irev_sr)
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'input_geom_rtm_sph_trans'
-      call sel_mpi_read_geom_rtm_file(nprocs, my_rank)
-      call input_geom_rtm_sph_trans(sph%sph_params%l_truncation,        &
-     &    sph%sph_rtm, comms_sph%comm_rtm, ierr)
+      call sel_mpi_read_geom_rtm_file(nprocs, my_rank, sph_file_l)
+      call input_geom_rtm_sph_trans(sph_file_l,                         &
+     &    sph%sph_rtm, comms_sph%comm_rtm, sph%sph_params, ierr)
       call set_reverse_import_table(sph%sph_rtm%nnod_rtm,               &
      &    comms_sph%comm_rtm%ntot_item_sr, comms_sph%comm_rtm%item_sr,  &
      &    comms_sph%comm_rtm%irev_sr)
 !
       if (iflag_debug.gt.0) write(*,*) 'input_modes_rlm_sph_trans'
-      call sel_mpi_read_modes_rlm_file(nprocs, my_rank)
-      call input_modes_rlm_sph_trans(sph%sph_params%l_truncation,       &
-     &    sph%sph_rlm, comms_sph%comm_rlm, ierr)
+      call sel_mpi_read_modes_rlm_file(nprocs, my_rank, sph_file_l)
+      call input_modes_rlm_sph_trans(sph_file_l,                        &
+     &    sph%sph_rlm, comms_sph%comm_rlm, sph%sph_params, ierr)
       call set_reverse_import_table(sph%sph_rlm%nnod_rlm,               &
      &    comms_sph%comm_rlm%ntot_item_sr, comms_sph%comm_rlm%item_sr,  &
      &    comms_sph%comm_rlm%irev_sr)
@@ -216,7 +216,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine load_para_rj_mesh                                      &
-     &         (sph_param, sph_rj, comm_rj, sph_grps)
+     &         (sph_params, sph_rj, comm_rj, sph_grps)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -226,7 +226,7 @@
 !
       use set_from_recv_buf_rev
 !
-      type(sph_shell_parameters), intent(inout) :: sph_param
+      type(sph_shell_parameters), intent(inout) :: sph_params
       type(sph_rj_grid), intent(inout) :: sph_rj
       type(sph_comm_tbl), intent(inout) :: comm_rj
       type(sph_group_data), intent(inout) ::  sph_grps
@@ -235,13 +235,13 @@
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'input_modes_rj_sph_trans'
-      call sel_mpi_read_spectr_rj_file(nprocs, my_rank)
-      call input_modes_rj_sph_trans(sph_grp_IO,                         &
-     &    sph_rj, comm_rj, sph_grps, sph_param%l_truncation, ierr)
+      call sel_mpi_read_spectr_rj_file(nprocs, my_rank, sph_file_l)
+      call input_modes_rj_sph_trans(sph_file_l,                         &
+     &    sph_rj, comm_rj, sph_grps, sph_params, ierr)
       call set_reverse_import_table(sph_rj%nnod_rj,                     &
      &    comm_rj%ntot_item_sr, comm_rj%item_sr, comm_rj%irev_sr)
 !
-      call set_index_flags_4_rj(sph_param, sph_rj, comm_rj)
+      call set_index_flags_4_rj(sph_rj, comm_rj)
 !
       end subroutine load_para_rj_mesh
 !

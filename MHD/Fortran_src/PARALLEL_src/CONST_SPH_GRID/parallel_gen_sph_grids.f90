@@ -83,12 +83,11 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rlm_grids'
         call mpi_gen_sph_rlm_grids                                      &
-     &     (sph%sph_params%l_truncation, sph%sph_rlm, comm_rlm_mul)
+     &     (sph%sph_params, sph%sph_rlm, comm_rlm_mul)
       if(ndomain_sph .eq. nprocs) then
       else
         call para_gen_sph_rlm_grids                                     &
-     &     (ndomain_sph, sph%sph_params%l_truncation,                   &
-     &      sph%sph_rlm, comm_rlm_mul)
+     &     (ndomain_sph, sph%sph_params, sph%sph_rlm, comm_rlm_mul)
       end if
       call bcast_comm_stacks_sph(ndomain_sph, comm_rlm_mul)
       call end_eleps_time(2)
@@ -112,11 +111,10 @@
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rtm_grids'
       if(ndomain_sph .eq. nprocs) then
         call mpi_gen_sph_rtm_grids                                      &
-     &     (sph%sph_params%l_truncation, sph%sph_rtm, comm_rtm_mul)
+     &     (sph%sph_params, sph%sph_rtm, comm_rtm_mul)
       else
         call para_gen_sph_rtm_grids                                     &
-     &     (ndomain_sph, sph%sph_params%l_truncation,                   &
-     &      sph%sph_rtm, comm_rtm_mul)
+     &     (ndomain_sph, sph%sph_params, sph%sph_rtm, comm_rtm_mul)
       end if
       call bcast_comm_stacks_sph(ndomain_sph, comm_rtm_mul)
       call end_eleps_time(2)
