@@ -26,7 +26,9 @@
       use m_precision
       use m_machine_parameter
 !
+      use m_comm_data_IO
       use m_node_id_spherical_IO
+      use m_group_data_sph_specr_IO
       use sph_modes_grids_data_IO
 !
       implicit none
@@ -46,7 +48,8 @@
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Read gzipped merged ascii grid file: ', trim(file_name)
       open (mesh_file_id,file = file_name, form = 'formatted')
-      call read_geom_rtp_data(mesh_file_id)
+      call read_geom_rtp_data                                           &
+     &   (mesh_file_id, my_rank_IO, comm_IO, sph_IO1, sph_grp_IO)
       close(mesh_file_id)
 !
       end subroutine gz_mpi_read_geom_rtp_file
@@ -63,7 +66,8 @@
      &     'Read gzipped merged ascii spectr modes file: ',             &
      &      trim(file_name)
       open (mesh_file_id,file = file_name, form = 'formatted')
-      call read_spectr_modes_rj_data(mesh_file_id)
+      call read_spectr_modes_rj_data                                    &
+     &    (mesh_file_id, my_rank_IO, comm_IO, sph_IO1, sph_grp_IO)
       close(mesh_file_id)
 !
       end subroutine gz_mpi_read_spectr_rj_file
@@ -79,7 +83,8 @@
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Read gzipped merged ascii grid file: ', trim(file_name)
       open (mesh_file_id,file = file_name, form = 'formatted')
-      call read_geom_rtm_data(mesh_file_id)
+      call read_geom_rtm_data                                           &
+     &   (mesh_file_id, my_rank_IO, comm_IO, sph_IO1)
       close(mesh_file_id)
 !
       end subroutine gz_mpi_read_geom_rtm_file
@@ -96,7 +101,8 @@
      &     'Read gzipped merged ascii spectr modes file: ',             &
      &      trim(file_name)
       open (mesh_file_id,file = file_name, form = 'formatted')
-      call read_spectr_modes_rlm_data(mesh_file_id)
+      call read_spectr_modes_rlm_data                                   &
+     &   (mesh_file_id, my_rank_IO, comm_IO, sph_IO1)
 !
       close(mesh_file_id)
 !
@@ -114,7 +120,8 @@
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Write gzipped merged ascii grid file: ', trim(file_name)
       open (mesh_file_id,file = file_name, form = 'formatted')
-      call write_geom_rtp_data(mesh_file_id)
+      call write_geom_rtp_data                                          &
+     &   (mesh_file_id, my_rank_IO, comm_IO, sph_IO1, sph_grp_IO)
       close(mesh_file_id)
 !
       end subroutine gz_mpi_write_geom_rtp_file
@@ -131,7 +138,8 @@
      &     'Write gzipped merged ascii spectr modes file: ',            &
      &      trim(file_name)
       open (mesh_file_id,file = file_name, form = 'formatted')
-      call write_spectr_modes_rj_data(mesh_file_id)
+      call write_spectr_modes_rj_data                                   &
+     &   (mesh_file_id, my_rank_IO, comm_IO, sph_IO1, sph_grp_IO)
       close(mesh_file_id)
 !
       end subroutine gz_mpi_write_spectr_rj_file
@@ -147,7 +155,8 @@
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Write gzipped merged ascii grid file: ', trim(file_name)
       open (mesh_file_id,file = file_name, form = 'formatted')
-      call write_geom_rtm_data(mesh_file_id)
+      call write_geom_rtm_data                                          &
+     &   (mesh_file_id, my_rank_IO, comm_IO, sph_IO1)
       close(mesh_file_id)
 !
       end subroutine gz_mpi_write_geom_rtm_file
@@ -164,7 +173,8 @@
      &     'Write gzipped merged ascii spectr modes file: ',            &
      &      trim(file_name)
       open (mesh_file_id,file = file_name, form = 'formatted')
-      call write_modes_rlm_data(mesh_file_id)
+      call write_modes_rlm_data                                         &
+     &   (mesh_file_id, my_rank_IO, comm_IO, sph_IO1)
       close(mesh_file_id)
 !
       end subroutine gz_mpi_write_modes_rlm_file

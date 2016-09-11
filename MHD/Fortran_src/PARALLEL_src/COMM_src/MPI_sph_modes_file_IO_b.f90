@@ -35,7 +35,9 @@
       use m_precision
       use m_machine_parameter
 !
+      use m_comm_data_IO
       use m_node_id_spherical_IO
+      use m_group_data_sph_specr_IO
       use MPI_sph_modes_data_IO_b
 !
       implicit none
@@ -61,7 +63,8 @@
       call open_read_mpi_file_b(file_name, id_file, ioff_gl)
 !
       call mpi_read_geom_rtp_data_b                                     &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
+     &    comm_IO, sph_IO1, sph_grp_IO)
 !
       call calypso_close_mpi_file(id_file)
 !
@@ -84,7 +87,8 @@
       call open_read_mpi_file_b(file_name, id_file, ioff_gl)
 !
       call mpi_read_spectr_rj_data_b                                    &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
+     &    comm_IO, sph_IO1, sph_grp_IO)
 !
       call calypso_close_mpi_file(id_file)
 !
@@ -107,7 +111,7 @@
       call open_read_mpi_file_b(file_name, id_file, ioff_gl)
 !
       call mpi_read_geom_rtm_data_b                                     &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO, sph_IO1)
 !
       call calypso_close_mpi_file(id_file)
 !
@@ -130,7 +134,7 @@
       call open_read_mpi_file_b(file_name, id_file, ioff_gl)
 !
       call mpi_read_modes_rlm_data_b                                    &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO, sph_IO1)
 !
       call calypso_close_mpi_file(id_file)
 !
@@ -155,7 +159,8 @@
      &   (file_name, nprocs_in, id_file, ioff_gl)
 !
       call mpi_write_geom_rtp_data_b                                    &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
+     &    comm_IO, sph_IO1, sph_grp_IO)
 !
       call calypso_close_mpi_file(id_file)
 !
@@ -179,7 +184,8 @@
      &   (file_name, nprocs_in, id_file, ioff_gl)
 !
       call mpi_write_spectr_rj_data_b                                   &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
+     &    comm_IO, sph_IO1, sph_grp_IO)
 !
       call calypso_close_mpi_file(id_file)
 !
@@ -203,7 +209,7 @@
      &   (file_name, nprocs_in, id_file, ioff_gl)
 !
       call mpi_write_geom_rtm_data_b                                    &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO, sph_IO1)
 !
       call calypso_close_mpi_file(id_file)
 !
@@ -227,7 +233,7 @@
      &   (file_name, nprocs_in, id_file, ioff_gl)
 !
       call mpi_write_modes_rlm_data_b                                   &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO, sph_IO1)
 !
       call calypso_close_mpi_file(id_file)
 !
