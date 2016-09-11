@@ -80,6 +80,7 @@
      &         (filter_head, ifmt_filter, filtering)
 !
       use m_control_parameter
+      use m_comm_data_IO
 !
       use filter_moment_IO_select
       use set_filter_geometry_4_IO
@@ -95,11 +96,13 @@
       filter_file_head = filter_head
       call sel_read_sort_filter_coef_file(my_rank, IO_filters)
 !
-      call copy_comm_tbl_type_from_IO(filtering%comm)
+      call copy_comm_tbl_type(comm_IO, filtering%comm)
       call copy_filtering_geometry_from_IO
 !
       call copy_3d_filter_stacks(IO_filters, filtering%filter)
       call copy_3d_filter_weights(IO_filters, filtering%filter)
+!
+      call deallocate_type_comm_tbl(comm_IO)
       call dealloc_3d_filter_function(IO_filters)
 !
       call deallocate_globalnod_filter

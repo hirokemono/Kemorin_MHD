@@ -7,8 +7,7 @@
 !> @brief Copy node communication table between IO buffer
 !!
 !!@verbatim
-!!      subroutine copy_comm_tbl_type_from_IO(comm_tbls)
-!!      subroutine copy_comm_tbl_type_to_IO(my_rank, comm_tbls)
+!!      subroutine copy_comm_tbl_type(comm_org, comm_new)
 !!        integer(kind = kint), intent(in) :: my_rank
 !!        type(communication_table), intent(in) :: comm_tbls
 !!@endverbatim
@@ -18,7 +17,6 @@
       use m_precision
 !
       use t_comm_table
-      use m_comm_data_IO
       use copy_communication_table
 !
       implicit  none
@@ -29,63 +27,30 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_comm_tbl_type_from_IO(comm_tbls)
+      subroutine copy_comm_tbl_type(comm_org, comm_new)
 !
-      type(communication_table), intent(inout) :: comm_tbls
-!
-!
-      comm_tbls%num_neib = comm_IO%num_neib
-!
-      call allocate_type_comm_tbl_num(comm_tbls)
-!
-      call copy_num_communication                                       &
-     &    (comm_tbls%num_neib, comm_tbls%id_neib,                       &
-     &    comm_tbls%istack_import, comm_tbls%istack_export,             &
-     &    comm_tbls%ntot_import, comm_tbls%ntot_export,                 &
-     &    comm_IO%id_neib, comm_IO%istack_import,                       &
-     &    comm_IO%istack_export)
-      call copy_num_import_export(comm_tbls%num_neib,                   &
-     &    comm_tbls%num_import, comm_tbls%num_export,                   &
-     &    comm_tbls%istack_import, comm_tbls%istack_export)
-!
-      call allocate_type_comm_tbl_item(comm_tbls)
-!
-      call copy_communication_item                                      &
-     &    (comm_tbls%ntot_import, comm_tbls%ntot_export,                &
-     &    comm_tbls%item_import, comm_tbls%item_export,                 &
-     &    comm_IO%item_import, comm_IO%item_export)
-!
-      call deallocate_type_comm_tbl(comm_IO)
-!
-      end subroutine copy_comm_tbl_type_from_IO
-!
-!-----------------------------------------------------------------------
-!
-      subroutine copy_comm_tbl_type_to_IO(my_rank, comm_tbls)
-!
-      integer(kind = kint), intent(in) :: my_rank
-      type(communication_table), intent(in) :: comm_tbls
+      type(communication_table), intent(in) :: comm_org
+      type(communication_table), intent(inout) :: comm_new
 !
 !
-      my_rank_IO = my_rank
-      comm_IO%num_neib = comm_tbls%num_neib
+      comm_new%num_neib = comm_org%num_neib
 !
-      call allocate_type_comm_tbl_num(comm_IO)
+      call allocate_type_comm_tbl_num(comm_new)
 !
       call copy_num_communication                                       &
-     &   (comm_IO%num_neib, comm_IO%id_neib,                            &
-     &    comm_IO%istack_import, comm_IO%istack_export,                 &
-     &    comm_IO%ntot_import, comm_IO%ntot_export, comm_tbls%id_neib,  &
-     &    comm_tbls%istack_import, comm_tbls%istack_export)
+     &   (comm_new%num_neib, comm_new%id_neib,                          &
+     &    comm_new%istack_import, comm_new%istack_export,               &
+     &    comm_new%ntot_import, comm_new%ntot_export, comm_org%id_neib, &
+     &    comm_org%istack_import, comm_org%istack_export)
 !
-      call allocate_type_comm_tbl_item(comm_IO)
+      call allocate_type_comm_tbl_item(comm_new)
 !
       call copy_communication_item                                      &
-     &   (comm_IO%ntot_import, comm_IO%ntot_export,                     &
-     &    comm_IO%item_import, comm_IO%item_export,                     &
-     &    comm_tbls%item_import, comm_tbls%item_export)
+     &   (comm_new%ntot_import, comm_new%ntot_export,                   &
+     &    comm_new%item_import, comm_new%item_export,                   &
+     &    comm_org%item_import, comm_org%item_export)
 !
-      end subroutine copy_comm_tbl_type_to_IO
+      end subroutine copy_comm_tbl_type
 !
 !-----------------------------------------------------------------------
 !

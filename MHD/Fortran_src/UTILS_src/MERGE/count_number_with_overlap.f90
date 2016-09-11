@@ -55,9 +55,11 @@
 !
         call sel_read_mesh(my_rank)
 !
-        call copy_comm_tbl_type_from_IO(subdomain(ip)%nod_comm)
+        call copy_comm_tbl_type(comm_IO, subdomain(ip)%nod_comm)
         call copy_node_geometry_from_IO(subdomain(ip)%node)
         call copy_ele_connect_from_IO(subdomain(ip)%ele)
+!
+        call deallocate_type_comm_tbl(comm_IO)
 !
         call allocate_sph_node_geometry(subdomain(ip)%node)
 !

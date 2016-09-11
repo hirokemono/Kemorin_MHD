@@ -156,7 +156,9 @@
 !
       subroutine input_old_rj_sph_trans(l_truncation, sph_rj)
 !
+      use m_comm_data_IO
       use m_node_id_spherical_IO
+      use m_group_data_sph_specr_IO
       use m_control_params_2nd_files
       use sph_file_MPI_IO_select
       use radial_interpolation
@@ -168,7 +170,8 @@
       call set_sph_mesh_file_fmt_prefix                                 &
      &   (rj_org_param%iflag_format, rj_org_param%file_prefix)
       call sel_mpi_read_spectr_rj_file(nprocs, my_rank)
-      call copy_original_sph_rj_from_IO(l_truncation, sph_rj)
+      call copy_original_sph_rj_from_IO                                 &
+     &   (l_truncation, sph_rj, comm_IO, sph_IO1, sph_grp_IO)
 !
       call const_radial_itp_table(nri_org, r_org,                       &
      &    sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                     &
@@ -317,56 +320,61 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_original_sph_rj_from_IO(l_truncation, sph_rj)
+      subroutine copy_original_sph_rj_from_IO(l_truncation, sph_rj,     &
+     &          comm_IO, sph_IO, sph_grps_IO)
 !
       use m_error_IDs
-      use m_node_id_spherical_IO
-      use m_comm_data_IO
-      use m_group_data_sph_specr_IO
+      use t_node_id_spherical_IO
+      use t_comm_table
+      use t_spheric_mesh
 !
       integer(kind = kint), intent(in) :: l_truncation
       type(sph_rj_grid), intent(in) ::  sph_rj
 !
+      type(communication_table), intent(inout) :: comm_IO
+      type(sph_IO_data), intent(inout) :: sph_IO
+      type(sph_group_data), intent(inout) :: sph_grps_IO
 !
-      if(sph_rj%irank_sph_rj(1).ne.sph_IO1%sph_rank(1)                  &
-     &       .or. sph_rj%irank_sph_rj(2).ne.sph_IO1%sph_rank(2)) then
+!
+      if(sph_rj%irank_sph_rj(1).ne.sph_IO%sph_rank(1)                   &
+     &       .or. sph_rj%irank_sph_rj(2).ne.sph_IO%sph_rank(2)) then
         call calypso_MPI_abort(ierr_sph,'rj rank ID is wrong')
       end if
 !
-      if(sph_rj%nidx_global_rj(2) .ne. sph_IO1%nidx_gl_sph(2)) then
+      if(sph_rj%nidx_global_rj(2) .ne. sph_IO%nidx_gl_sph(2)) then
         call calypso_MPI_abort                                          &
      &     (ierr_sph,'number of local mode is wrong')
       end if
-      if(l_truncation .ne. sph_IO1%ltr_gl) then
+      if(l_truncation .ne. sph_IO%ltr_gl) then
         call calypso_MPI_abort(ierr_sph,'truncation is wrong')
       end if
 !
-      if(sph_rj%ist_rj(2).ne.sph_IO1%ist_sph(2)) then
+      if(sph_rj%ist_rj(2).ne.sph_IO%ist_sph(2)) then
         call calypso_MPI_abort                                          &
      &      (ierr_sph,'start point of harminics is wrong')
       end if
-      if(sph_rj%ied_rj(2) .ne. sph_IO1%ied_sph(2)) then
+      if(sph_rj%ied_rj(2) .ne. sph_IO%ied_sph(2)) then
         call calypso_MPI_abort                                          &
      &     (ierr_sph,'end point of harminics is wrong')
       end if
 !
-      n_rj_org = sph_IO1%numnod_sph
-      nri_org =  sph_IO1%nidx_sph(1)
+      n_rj_org = sph_IO%numnod_sph
+      nri_org =  sph_IO%nidx_sph(1)
 !
       call allocate_original_sph_data
 !
-      r_org(1:n_rj_org) = sph_IO1%r_gl_1(1:n_rj_org)
+      r_org(1:n_rj_org) = sph_IO%r_gl_1(1:n_rj_org)
 !
-      call dealloc_nod_id_sph_IO(sph_IO1)
-      call dealloc_idx_sph_1d1_IO(sph_IO1)
-      call dealloc_idx_sph_1d2_IO(sph_IO1)
+      call dealloc_nod_id_sph_IO(sph_IO)
+      call dealloc_idx_sph_1d1_IO(sph_IO)
+      call dealloc_idx_sph_1d2_IO(sph_IO)
 !
 !
       call deallocate_type_import(comm_IO)
       call deallocate_type_neib_id(comm_IO)
 !
-      call deallocate_grp_type(sph_grp_IO%radial_rj_grp)
-      call deallocate_grp_type(sph_grp_IO%sphere_rj_grp)
+      call deallocate_grp_type(sph_grps_IO%radial_rj_grp)
+      call deallocate_grp_type(sph_grps_IO%sphere_rj_grp)
 !
       end subroutine copy_original_sph_rj_from_IO
 !

@@ -58,6 +58,7 @@
       use m_filter_coefs
       use m_nod_filter_comm_table
       use m_filter_func_4_sorting
+      use m_comm_data_IO
 !
       use t_filter_coefficients
 !
@@ -110,7 +111,8 @@
 !       output filter moment
 !  ---------------------------------------------------
 !
-        call copy_comm_tbl_type_to_IO(my_rank, filtering_gen%comm)
+        my_rank_IO = my_rank
+        call copy_comm_tbl_type(filtering_gen%comm, comm_IO)
         call copy_filtering_geometry_to_IO
 !
         call copy_3d_filter_stacks(filtering_gen%filter, IO_filters)

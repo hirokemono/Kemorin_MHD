@@ -197,8 +197,9 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_ele_geometry_to_IO'
+      my_rank_IO = my_rank
+      call copy_comm_tbl_type(ele_mesh%ele_comm, comm_IO)
       mesh_ele_file_head = mesh_ele_def_head
-      call copy_comm_tbl_type_to_IO(my_rank, ele_mesh%ele_comm)
       call copy_ele_geometry_to_IO(mesh%ele)
       call sel_output_element_file(my_rank)
 !
@@ -207,8 +208,9 @@
 !  -------------------------------
 !
       mesh_surf_file_head = mesh_def_surf_head
+      my_rank_IO = my_rank
+      call copy_comm_tbl_type(ele_mesh%surf_comm, comm_IO)
       if (iflag_debug.gt.0) write(*,*) 'copy_surf_geometry_to_IO'
-      call copy_comm_tbl_type_to_IO(my_rank, ele_mesh%surf_comm)
       call copy_surf_connect_to_IO(ele_mesh%surf, mesh%ele%numele)
       call copy_surf_geometry_to_IO(ele_mesh%surf)
 !
@@ -220,8 +222,9 @@
 !  -------------------------------
 !
       mesh_edge_file_head = mesh_def_edge_head
+      my_rank_IO = my_rank
+      call copy_comm_tbl_type(ele_mesh%edge_comm, comm_IO)
       if (iflag_debug.gt.0) write(*,*) 'copy_edge_geometry_to_IO'
-      call copy_comm_tbl_type_to_IO(my_rank, ele_mesh%edge_comm)
       call copy_edge_connect_to_IO                                      &
      &   (ele_mesh%edge, mesh%ele%numele, ele_mesh%surf%numsurf)
       call copy_edge_geometry_to_IO(ele_mesh%edge)

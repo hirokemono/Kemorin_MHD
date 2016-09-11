@@ -25,6 +25,7 @@
       use t_filtering_data
       use m_machine_parameter
       use m_ctl_data_filter_comm_test
+      use m_comm_data_IO
       use m_nod_filter_comm_table
       use m_filter_file_names
 !
@@ -50,8 +51,9 @@
       call read_filter_geometry_file(file_name, my_rank)
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_filter_comm_tbl_from_IO'
-      call copy_comm_tbl_type_from_IO(filtering%comm)
       call copy_filtering_geometry_from_IO
+      call copy_comm_tbl_type(comm_IO, filtering%comm)
+      call deallocate_type_comm_tbl(comm_IO)
 !
       call alloc_nod_data_4_filter(nnod_filtering, wk_filter)
 !

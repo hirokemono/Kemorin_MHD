@@ -30,6 +30,7 @@
       use m_filter_file_names
       use m_filter_coefs
       use m_filter_func_4_sorting
+      use m_comm_data_IO
       use set_comm_table_4_IO
       use filter_IO_for_sorting
       use set_parallel_file_name
@@ -50,8 +51,9 @@
         open(filter_coef_code, file=file_name, form='formatted')
         call read_filter_geometry(filter_coef_code)
 !
-        call copy_comm_tbl_type_from_IO(filtering%comm)
+        call copy_comm_tbl_type(comm_IO, filtering%comm)
         call copy_filtering_geometry_from_IO
+        call deallocate_type_comm_tbl(comm_IO)
 !
         write(*,*) 'read_filter_neib_4_sort', inter_nod_3dfilter
         call read_filter_neib_4_sort(filter_coef_code)
@@ -60,8 +62,9 @@
         call open_read_binary_file(file_name, my_rank)
         call read_filter_geometry_b
 !
-        call copy_comm_tbl_type_from_IO(filtering%comm)
+        call copy_comm_tbl_type(comm_IO, filtering%comm)
         call copy_filtering_geometry_from_IO
+        call deallocate_type_comm_tbl(comm_IO)
 !
         call read_filter_neib_4_sort_b
         call close_binary_file

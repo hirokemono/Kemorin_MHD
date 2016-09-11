@@ -81,6 +81,7 @@
 !
       subroutine output_mesh(my_rank, mesh, group)
 !
+      use m_comm_data_IO
       use m_read_boundary_data
       use mesh_IO_select
       use set_comm_table_4_IO
@@ -93,7 +94,8 @@
       type(mesh_groups), intent(inout) ::   group
 !
 !
-      call copy_comm_tbl_type_to_IO(my_rank, mesh%nod_comm)
+      my_rank_IO = my_rank
+      call copy_comm_tbl_type(mesh%nod_comm, comm_IO)
       call copy_node_geometry_to_IO(mesh%node)
       call copy_ele_connect_to_IO(mesh%ele)
 !
@@ -132,6 +134,7 @@
 !
       subroutine set_mesh_geometry_data(mesh)
 !
+      use m_comm_data_IO
       use set_comm_table_4_IO
       use set_node_data_4_IO
       use set_element_data_4_IO
@@ -139,7 +142,8 @@
       type(mesh_geometry), intent(inout) :: mesh
 !
 !
-      call copy_comm_tbl_type_from_IO(mesh%nod_comm)
+      call copy_comm_tbl_type(comm_IO, mesh%nod_comm)
+      call deallocate_type_comm_tbl(comm_IO)
 !
       call copy_node_geometry_from_IO(mesh%node)
       call copy_ele_connect_from_IO(mesh%ele)

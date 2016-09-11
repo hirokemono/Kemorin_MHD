@@ -49,6 +49,7 @@
       use m_file_format_switch
       use m_internal_4_partitioner
       use m_partitioner_comm_table
+      use m_comm_data_IO
       use set_parallel_file_name
       use filter_coefs_file_IO
       use filter_coefs_file_IO_b
@@ -87,8 +88,9 @@
 !          write(*,*) 'set_newdomain_filtering_nod'
       call set_newdomain_filtering_nod(ip2)
 !
-!          write(*,*) 'copy_comm_tbl_type_to_IO(my_rank, new_comm)'
-      call copy_comm_tbl_type_to_IO(my_rank, new_comm)
+!          write(*,*) 'copy_comm_tbl_type(my_rank, new_comm)'
+      my_rank_IO = my_rank
+      call copy_comm_tbl_type(new_comm, comm_IO)
       call deallocate_type_comm_tbl(new_comm)
 !
 !          write(*,*) 'copy_filtering_geometry_to_IO'

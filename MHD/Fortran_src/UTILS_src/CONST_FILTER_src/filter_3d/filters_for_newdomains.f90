@@ -145,7 +145,8 @@
         end if
 !
 !        write(*,*) 'copy_filter_comm_tbl_from_IO'
-        call copy_comm_tbl_type_from_IO(filtering%comm)
+        call copy_comm_tbl_type(comm_IO, filtering%comm)
+        call deallocate_type_comm_tbl(comm_IO)
 !        write(*,*) 'copy_filtering_geometry_from_IO'
         call copy_filtering_geometry_from_IO
 !

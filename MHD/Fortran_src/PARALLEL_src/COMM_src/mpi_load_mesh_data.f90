@@ -75,6 +75,7 @@
 !
       subroutine mpi_output_mesh(mesh, group)
 !
+      use m_comm_data_IO
       use m_read_boundary_data
       use mesh_MPI_IO_select
       use set_comm_table_4_IO
@@ -85,7 +86,8 @@
       type(mesh_groups), intent(inout) ::   group
 !
 !
-      call copy_comm_tbl_type_to_IO(my_rank, mesh%nod_comm)
+      my_rank_IO = my_rank
+      call copy_comm_tbl_type(mesh%nod_comm, comm_IO)
       call copy_node_geometry_to_IO(mesh%node)
       call copy_ele_connect_to_IO(mesh%ele)
 !

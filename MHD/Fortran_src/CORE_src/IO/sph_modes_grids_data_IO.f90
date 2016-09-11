@@ -43,6 +43,9 @@
 !
       integer(kind = kint), intent(in) :: mesh_file_id
 !
+!
+      sph_IO1%numdir_sph =  3
+!
 !      write(*,*) '! domain and communication'
       call read_domain_info(mesh_file_id, my_rank_IO, comm_IO)
 !
@@ -78,6 +81,8 @@
       integer(kind = kint), intent(in) :: mesh_file_id
 !
 !
+      sph_IO1%numdir_sph =  2
+!
 !      write(*,*) '! domain and communication'
       call read_domain_info(mesh_file_id, my_rank_IO, comm_IO)
 !
@@ -107,6 +112,9 @@
 !
       integer(kind = kint), intent(in) :: mesh_file_id
 !
+!
+      sph_IO1%numdir_sph =  3
+!
       call read_domain_info(mesh_file_id, my_rank_IO, comm_IO)
       call read_gl_resolution_sph(mesh_file_id, sph_IO1)
       call read_rank_4_sph(mesh_file_id, sph_IO1)
@@ -122,6 +130,9 @@
       subroutine read_spectr_modes_rlm_data(mesh_file_id)
 !
       integer(kind = kint), intent(in) :: mesh_file_id
+!
+!
+      sph_IO1%numdir_sph =  2
 !
       call read_domain_info(mesh_file_id, my_rank_IO, comm_IO)
       call read_gl_resolution_sph(mesh_file_id, sph_IO1)

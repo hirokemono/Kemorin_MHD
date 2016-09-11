@@ -43,8 +43,6 @@
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      sph_IO1%numdir_sph =  3
-!
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Read ascii grid file: ', trim(file_name)
       open (mesh_file_id,file = file_name, form = 'formatted')
@@ -60,8 +58,6 @@
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank
 !
-!
-      sph_IO1%numdir_sph =  2
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Read ascii spectr modes file: ', trim(file_name)
@@ -79,8 +75,6 @@
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      sph_IO1%numdir_sph =  3
-!
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Read ascii grid file: ', trim(file_name)
       open (mesh_file_id,file = file_name, form = 'formatted')
@@ -96,8 +90,6 @@
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank
 !
-!
-      sph_IO1%numdir_sph =  2
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Read ascii spectr modes file: ', trim(file_name)

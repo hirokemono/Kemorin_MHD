@@ -54,6 +54,7 @@
 !
       use m_precision
 !
+      use m_comm_data_IO
       use m_node_id_spherical_IO
 !
       use t_spheric_mesh
@@ -90,7 +91,7 @@
 !
 !
       call copy_sph_node_4_rtp_from_IO(sph_IO1, sph_rtp, l_truncation)
-      call copy_comm_sph_from_IO(sph_rtp%nnod_rtp, comm_rtp)
+      call copy_comm_sph_from_IO(sph_rtp%nnod_rtp, comm_IO, comm_rtp)
 !
       call set_gruop_stracture                                          &
      &   (sph_grps_IO%bc_rtp_grp, sph_grps%bc_rtp_grp)
@@ -130,7 +131,7 @@
 !
 !
       call copy_sph_node_4_rj_from_IO(sph_IO1, sph_rj, l_truncation)
-      call copy_comm_sph_from_IO(sph_rj%nnod_rj, comm_rj)
+      call copy_comm_sph_from_IO(sph_rj%nnod_rj, comm_IO, comm_rj)
 !
       call set_gruop_stracture                                          &
      &   (sph_grps_IO%radial_rj_grp, sph_grps%radial_rj_grp)
@@ -160,7 +161,7 @@
 !
 !
       call copy_sph_node_4_rtm_from_IO(sph_IO1, sph_rtm, l_truncation)
-      call copy_comm_sph_from_IO(sph_rtm%nnod_rtm, comm_rtm)
+      call copy_comm_sph_from_IO(sph_rtm%nnod_rtm, comm_IO, comm_rtm)
 !
       call count_num_rtm_smp(sph_rtm, ierr)
 !
@@ -182,7 +183,7 @@
 !
 !
       call copy_sph_node_4_rlm_from_IO(sph_IO1, sph_rlm, l_truncation)
-      call copy_comm_sph_from_IO(sph_rlm%nnod_rlm, comm_rlm)
+      call copy_comm_sph_from_IO(sph_rlm%nnod_rlm, comm_IO, comm_rlm)
 !
       call count_num_rlm_smp(sph_rlm, ierr)
 !
@@ -208,8 +209,9 @@
       type(sph_group_data), intent(inout) :: sph_grps_IO
 !
 !
+      my_rank_IO = my_rank
       call copy_sph_node_4_rtp_to_IO(l_truncation, sph_rtp, sph_IO1)
-      call copy_comm_sph_to_IO(my_rank, comm_rtp)
+      call copy_comm_sph_to_comm_tbl(comm_rtp, comm_IO)
 !
       call set_gruop_stracture                                          &
      &   (sph_grps%bc_rtp_grp, sph_grps_IO%bc_rtp_grp)
@@ -245,8 +247,9 @@
       type(sph_group_data), intent(inout) :: sph_grps_IO
 !
 !
+      my_rank_IO = my_rank
       call copy_sph_node_4_rj_to_IO(l_truncation, sph_rj, sph_IO1)
-      call copy_comm_sph_to_IO(my_rank, comm_rj)
+      call copy_comm_sph_to_comm_tbl(comm_rj, comm_IO)
 !
       call set_gruop_stracture                                          &
      &   (sph_grps%radial_rj_grp, sph_grps_IO%radial_rj_grp)
@@ -272,8 +275,9 @@
       type(sph_comm_tbl), intent(inout) :: comm_rtm
 !
 !
+      my_rank_IO = my_rank
       call copy_sph_node_4_rtm_to_IO(l_truncation, sph_rtm, sph_IO1)
-      call copy_comm_sph_to_IO(my_rank, comm_rtm)
+      call copy_comm_sph_to_comm_tbl(comm_rtm, comm_IO)
 !
       end subroutine output_geom_rtm_sph_trans
 !
@@ -291,8 +295,9 @@
       type(sph_comm_tbl), intent(inout) :: comm_rlm
 !
 !
+      my_rank_IO = my_rank
       call copy_sph_node_4_rlm_to_IO(l_truncation, sph_rlm, sph_IO1)
-      call copy_comm_sph_to_IO(my_rank, comm_rlm)
+      call copy_comm_sph_to_comm_tbl(comm_rlm, comm_IO)
 !
       end subroutine output_modes_rlm_sph_trans
 !

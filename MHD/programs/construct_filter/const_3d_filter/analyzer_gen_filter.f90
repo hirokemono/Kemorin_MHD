@@ -220,7 +220,9 @@
         call copy_comm_tbl_types                                        &
      &     (mesh_filter%nod_comm, filtering_gen%comm)
         call copy_filtering_geometry_to_IO
-        call copy_comm_tbl_type_to_IO(my_rank, filtering_gen%comm)
+!
+        my_rank_IO = my_rank
+        call copy_comm_tbl_type(filtering_gen%comm, comm_IO)
 !
         filter_file_head = filter_coef_head
         call sel_write_filter_geometry_file(my_rank)
