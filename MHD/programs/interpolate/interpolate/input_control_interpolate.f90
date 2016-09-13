@@ -69,7 +69,11 @@
         iflag_mesh_file_fmt = ifmt_org_mesh_file
         call input_mesh(my_rank, org_femmesh%mesh, org_femmesh%group,   &
      &     org_ele_mesh%surf%nnod_4_surf,                               &
-     &     org_ele_mesh%edge%nnod_4_edge)
+     &     org_ele_mesh%edge%nnod_4_edge, ierr)
+!
+        if(ierr .gt. 0) then
+          call calypso_mpi_abort(ierr, 'Mesh data is wrong!!')
+        end if
 !
         if (iflag_debug.eq.1) write(*,*) 'set_nod_and_ele_infos'
         call set_nod_and_ele_infos                                      &
@@ -84,8 +88,16 @@
         iflag_mesh_file_fmt = ifmt_itp_mesh_file
         call input_mesh(my_rank, new_femmesh%mesh, new_femmesh%group,   &
      &      new_ele_mesh%surf%nnod_4_surf,                              &
-     &      new_ele_mesh%edge%nnod_4_edge)
+     &      new_ele_mesh%edge%nnod_4_edge, ierr)
+        if(ierr .gt. 0) then
+          call calypso_mpi_abort(ierr, 'Target mesh data is wrong!!')
+        end if
+!
         call allocate_overlaped_ele_type(new_femmesh%mesh%ele)
+      end if
+!
+      if(ierr .gt. 0) then
+        call calypso_mpi_abort(ierr, 'Mesh data is wrong!!')
       end if
 !
 !  --  read interpolate table

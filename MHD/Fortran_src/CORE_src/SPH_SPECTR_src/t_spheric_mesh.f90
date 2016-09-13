@@ -50,8 +50,6 @@
 !
 !> Structure of spherical transform mesh IO
       type sph_file_data_type
-        integer(kind = kint) :: my_rank_IO
-!
 !>        Structure for spherical harmonics table IO
         type(sph_IO_data) :: sph_IO
 !>        data structure for communication table IO

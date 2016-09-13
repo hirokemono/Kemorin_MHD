@@ -8,11 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine read_geom_rtp_data_b                                 &
-!!     &         (my_rank_IO, comm_IO, sph_IO, sph_grps_IO)
+!!     &         (my_rank_IO, comm_IO, sph_IO, sph_grps_IO, ierr)
 !!      subroutine read_spectr_modes_rj_data_b                          &
-!!     &         (my_rank_IO, comm_IO, sph_IO, sph_grps_IO)
-!!      subroutine read_geom_rtm_data_b(my_rank_IO, comm_IO, sph_IO)
-!!      subroutine read_modes_rlm_data_b(my_rank_IO, comm_IO, sph_IO)
+!!     &         (my_rank_IO, comm_IO, sph_IO, sph_grps_IO, ierr)
+!!      subroutine read_geom_rtm_data_b                                 &
+!!     &         (my_rank_IO, comm_IO, sph_IO, ierr)
+!!      subroutine read_modes_rlm_data_b                                &
+!!     &         (my_rank_IO, comm_IO, sph_IO, ierr)
 !!
 !!      subroutine write_geom_rtp_data_b                                &
 !!     &        (my_rank_IO, comm_IO, sph_IO, sph_grps_IO)
@@ -51,20 +53,21 @@
 !------------------------------------------------------------------
 !
       subroutine read_geom_rtp_data_b                                   &
-     &         (my_rank_IO, comm_IO, sph_IO, sph_grps_IO)
+     &         (my_rank_IO, comm_IO, sph_IO, sph_grps_IO, ierr)
 !
       use groups_IO_b
 !
-      integer(kind = kint), intent(inout) :: my_rank_IO
+      integer(kind = kint), intent(in) :: my_rank_IO
       type(communication_table), intent(inout) :: comm_IO
       type(sph_IO_data), intent(inout) :: sph_IO
       type(sph_group_data), intent(inout) :: sph_grps_IO
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
       sph_IO%numdir_sph =  3
 !
 !      write(*,*) '! domain and communication'
-      call read_domain_info_b(my_rank_IO, comm_IO)
+      call read_domain_info_b(my_rank_IO, comm_IO, ierr)
 !
 !      write(*,*) '! truncation level for spherical harmonics'
       call read_gl_resolution_sph_b(sph_IO)
@@ -94,20 +97,21 @@
 !------------------------------------------------------------------
 !
       subroutine read_spectr_modes_rj_data_b                            &
-     &         (my_rank_IO, comm_IO, sph_IO, sph_grps_IO)
+     &         (my_rank_IO, comm_IO, sph_IO, sph_grps_IO, ierr)
 !
       use groups_IO_b
 !
-      integer(kind = kint), intent(inout) :: my_rank_IO
+      integer(kind = kint), intent(in) :: my_rank_IO
       type(communication_table), intent(inout) :: comm_IO
       type(sph_IO_data), intent(inout) :: sph_IO
       type(sph_group_data), intent(inout) :: sph_grps_IO
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
       sph_IO%numdir_sph =  2
 !
 !      write(*,*) '! domain and communication'
-      call read_domain_info_b(my_rank_IO, comm_IO)
+      call read_domain_info_b(my_rank_IO, comm_IO, ierr)
 !
 !      write(*,*) '! truncation level for spherical harmonics'
       call read_gl_resolution_sph_b(sph_IO)
@@ -131,16 +135,18 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_geom_rtm_data_b(my_rank_IO, comm_IO, sph_IO)
+      subroutine read_geom_rtm_data_b                                   &
+     &         (my_rank_IO, comm_IO, sph_IO, ierr)
 !
-      integer(kind = kint), intent(inout) :: my_rank_IO
+      integer(kind = kint), intent(in) :: my_rank_IO
       type(communication_table), intent(inout) :: comm_IO
       type(sph_IO_data), intent(inout) :: sph_IO
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
       sph_IO%numdir_sph =  3
 !
-      call read_domain_info_b(my_rank_IO, comm_IO)
+      call read_domain_info_b(my_rank_IO, comm_IO, ierr)
       call read_gl_resolution_sph_b(sph_IO)
       call read_rank_4_sph_b(sph_IO)
       call read_rtp_gl_1d_table_b(sph_IO)
@@ -152,16 +158,18 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_modes_rlm_data_b(my_rank_IO, comm_IO, sph_IO)
+      subroutine read_modes_rlm_data_b                                  &
+     &         (my_rank_IO, comm_IO, sph_IO, ierr)
 !
-      integer(kind = kint), intent(inout) :: my_rank_IO
+      integer(kind = kint), intent(in) :: my_rank_IO
       type(communication_table), intent(inout) :: comm_IO
       type(sph_IO_data), intent(inout) :: sph_IO
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
       sph_IO%numdir_sph =  2
 !
-      call read_domain_info_b(my_rank_IO, comm_IO)
+      call read_domain_info_b(my_rank_IO, comm_IO, ierr)
       call read_gl_resolution_sph_b(sph_IO)
       call read_rank_4_sph_b(sph_IO)
       call read_rj_gl_1d_table_b(sph_IO)

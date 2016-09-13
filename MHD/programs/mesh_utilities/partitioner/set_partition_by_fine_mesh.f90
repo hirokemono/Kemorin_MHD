@@ -41,12 +41,14 @@
       use itp_table_IO_select_4_zlib
 !
       type(interpolate_table)  :: itp_table
+      integer(kind = kint) :: ierr
 !
 !     read finer mesh
 !
       iflag_mesh_file_fmt = iflag_para_mesh_file_fmt
       mesh_file_head = finer_mesh_file_head
-      call input_mesh_geometry(izero, finermesh)
+      call input_mesh_geometry(izero, finermesh, ierr)
+      if(ierr .gt. 0) stop 'finer mesh is wrong!!'
 !
 !     read interpolate table
 !

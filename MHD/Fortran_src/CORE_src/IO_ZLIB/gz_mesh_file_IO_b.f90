@@ -3,21 +3,35 @@
 !
 !      Written by H. Matsui on Apr., 2006
 !
-!      subroutine gz_read_mesh_file_b(my_rank)
-!      subroutine gz_read_mesh_geometry_b(my_rank)
+!>@file   gz_mesh_file_IO_b.f90
+!!@brief  module gz_mesh_file_IO_b
+!!
+!!@author H. Matsui
+!!@date Programmed in Sep., 2006
 !
-!      subroutine gz_read_node_size_b(my_rank)
-!      subroutine gz_read_geometry_size_b(my_rank)
-!
-!      subroutine gz_write_mesh_file_b(my_rank)
+!>@brief gzipped binary mesh file IO routines
+!!
+!!@verbatim
+!!      subroutine gz_read_mesh_file_b(my_rank_IO, fem_IO, ierr)
+!!        type(mesh_data), intent(inout) :: fem_IO
+!!
+!!      subroutine gz_read_mesh_geometry_b(my_rank_IO, mesh_IO, ierr)
+!!      subroutine gz_read_node_size_b(my_rank_IO, mesh_IO, ierr)
+!!      subroutine gz_read_geometry_size_b(my_rank_IO, mesh_IO, ierr)
+!!        type(mesh_geometry), intent(inout) :: mesh_IO
+!!
+!!      subroutine gz_write_mesh_file_b(my_rank_IO, fem_IO)
+!!        type(mesh_data), intent(inout) :: fem_IO
+!!@endverbatim
 !
       module gz_mesh_file_IO_b
 !
       use m_precision
       use m_machine_parameter
 !
-      use m_comm_data_IO
       use m_read_mesh_data
+      use t_mesh_data
+      use gz_mesh_data_IO_b
       use gz_binary_IO
       use skip_gz_comment
 !
@@ -29,92 +43,78 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine gz_read_mesh_file_b(my_rank)
+      subroutine gz_read_mesh_file_b(my_rank_IO, fem_IO, ierr)
 !
-      use m_machine_parameter
-      use m_read_boundary_data
-      use gz_mesh_data_IO_b
-      use gz_groups_IO_b
+      integer(kind = kint), intent(in) :: my_rank_IO
 !
-      integer(kind = kint), intent(in) :: my_rank
+      type(mesh_data), intent(inout) :: fem_IO
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &   'Read gzipped binary mesh file: ', trim(mesh_file_name)
 !
-      call open_rd_gzfile_b(mesh_file_name, my_rank)
+      call open_rd_gzfile_b(mesh_file_name, my_rank_IO)
 !
-      call gz_read_geometry_data_b
-!
-!   read node group
-      call gz_read_group_data_b(bc_grp_IO)
-!  read element group
-      call gz_read_group_data_b(mat_grp_IO)
-!  read surface group
-      call gz_read_surf_grp_data_b(surf_grp_IO)
-!
+      call gz_read_geometry_data_b(my_rank_IO, fem_IO%mesh, ierr)
+      call gz_read_mesh_groups_b(fem_IO%group)
       call close_gzfile_f
 !
       end subroutine gz_read_mesh_file_b
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine gz_read_mesh_geometry_b(my_rank)
+      subroutine gz_read_mesh_geometry_b(my_rank_IO, mesh_IO, ierr)
 !
-      use gz_mesh_data_IO_b
+      integer(kind = kint), intent(in) :: my_rank_IO
 !
-      integer(kind = kint), intent(in) :: my_rank
+      type(mesh_geometry), intent(inout) :: mesh_IO
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &   'Read gzipped binary mesh file: ', trim(mesh_file_name)
 !
-      call open_rd_gzfile_b(mesh_file_name, my_rank)
-      call gz_read_geometry_data_b
+      call open_rd_gzfile_b(mesh_file_name, my_rank_IO)
+      call gz_read_geometry_data_b(my_rank_IO, mesh_IO, ierr)
       call close_gzfile_f
 !
       end subroutine gz_read_mesh_geometry_b
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine gz_read_node_size_b(my_rank)
+       subroutine gz_read_node_size_b(my_rank_IO, mesh_IO, ierr)
 !
-       use gz_domain_data_IO_b
-       use gz_mesh_data_IO_b
+      integer(kind = kint), intent(in) :: my_rank_IO
 !
-      integer(kind = kint), intent(in) :: my_rank
+      type(mesh_geometry), intent(inout) :: mesh_IO
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &   'Read gzipped binary mesh file: ', trim(mesh_file_name)
 !
-      call open_rd_gzfile_b(mesh_file_name, my_rank)
-      call gz_read_domain_info_b(my_rank_IO, comm_IO)
-      call gz_read_number_of_node_b(nod_IO)
+      call open_rd_gzfile_b(mesh_file_name, my_rank_IO)
+      call gz_read_num_node_b(my_rank_IO, mesh_IO, ierr)
       call close_gzfile_f
 !
       end subroutine gz_read_node_size_b
 !
 !------------------------------------------------------------------
 !
-       subroutine gz_read_geometry_size_b(my_rank)
+       subroutine gz_read_geometry_size_b(my_rank_IO, mesh_IO, ierr)
 !
-       use gz_domain_data_IO_b
-       use gz_mesh_data_IO_b
+      integer(kind = kint), intent(in) :: my_rank_IO
 !
-      integer(kind = kint), intent(in) :: my_rank
+      type(mesh_geometry), intent(inout) :: mesh_IO
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &   'Read gzipped binary mesh file: ', trim(mesh_file_name)
 !
-      call open_rd_gzfile_b(mesh_file_name, my_rank)
-!
-      call gz_read_domain_info_b(my_rank_IO, comm_IO)
-      call gz_read_number_of_node_b(nod_IO)
-      call gz_read_geometry_info_b(nod_IO)
-!
-      call gz_read_number_of_element_b(ele_IO)
+      call open_rd_gzfile_b(mesh_file_name, my_rank_IO)
+      call gz_read_num_node_ele_b(my_rank_IO, mesh_IO, ierr)
       call close_gzfile_f
 !
       end subroutine gz_read_geometry_size_b
@@ -122,29 +122,18 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine gz_write_mesh_file_b(my_rank)
+      subroutine gz_write_mesh_file_b(my_rank_IO, fem_IO)
 !
-      use m_machine_parameter
-      use m_read_boundary_data
-      use gz_mesh_data_IO_b
-      use gz_groups_IO_b
-!
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: my_rank_IO
+      type(mesh_data), intent(inout) :: fem_IO
 !
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &   'Write gzipped binary mesh file: ', trim(mesh_file_name)
 !
       call open_wt_gzfile_b(mesh_file_name)
-      call gz_write_geometry_data_b
-!
-!   write node group
-      call gz_write_grp_data_b(bc_grp_IO)
-!  write element group
-      call gz_write_grp_data_b(mat_grp_IO)
-!  write surface group
-      call gz_write_surf_grp_data_b(surf_grp_IO)
-!
+      call gz_write_geometry_data_b(my_rank_IO, fem_IO%mesh)
+      call gz_write_mesh_groups_b(fem_IO%group)
       call close_gzfile_f
 !
       end subroutine gz_write_mesh_file_b

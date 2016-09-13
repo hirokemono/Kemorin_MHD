@@ -61,6 +61,8 @@
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
       type(sph_file_data_type), intent(inout) :: sph_file
 !
+      integer(kind = kint) :: ierr
+!
 !
       call set_sph_rtp_file_name(sph_file_head, iflag_sph_file_fmt,     &
      &    id_rank, sph_file_name)
@@ -73,7 +75,7 @@
         call set_mesh_file_name(sph_file_head, id_ascii_file_fmt,       &
      &      id_rank, sph_file_name)
         call read_geom_rtp_file                                         &
-     &     (sph_file_name, mesh_file_id, id_rank, sph_file)
+     &     (sph_file_name, mesh_file_id, id_rank, sph_file, ierr)
 !
 #ifdef ZLIB_IO
       else if(iflag_sph_file_fmt                                        &
@@ -87,13 +89,17 @@
         call set_mesh_file_name(sph_file_head, id_ascii_file_fmt,       &
      &      id_rank, sph_file_name)
         call read_geom_rtp_file                                         &
-     &     (sph_file_name, mesh_file_id, id_rank, sph_file)
+     &     (sph_file_name, mesh_file_id, id_rank, sph_file, ierr)
 #endif
 !
       else
         if(id_rank .lt. nprocs_in) then
-          call sel_read_geom_rtp_file(id_rank, sph_file)
+          call sel_read_geom_rtp_file(id_rank, sph_file, ierr)
         end if
+      end if
+!
+      if(ierr .gt. 0) then
+        call calypso_mpi_abort(ierr, 'Spectr RTP data is wrong!!')
       end if
 !
       end subroutine sel_mpi_read_geom_rtp_file
@@ -105,6 +111,8 @@
 !
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
       type(sph_file_data_type), intent(inout) :: sph_file
+!
+      integer(kind = kint) :: ierr
 !
 !
       call set_sph_rj_file_name(sph_file_head, iflag_sph_file_fmt,      &
@@ -118,7 +126,7 @@
         call set_mesh_file_name(sph_file_head, id_ascii_file_fmt,       &
      &      id_rank, sph_file_name)
         call read_spectr_modes_rj_file                                  &
-     &     (sph_file_name, mesh_file_id, id_rank, sph_file)
+     &     (sph_file_name, mesh_file_id, id_rank, sph_file, ierr)
 !
 #ifdef ZLIB_IO
       else if(iflag_sph_file_fmt                                        &
@@ -132,13 +140,17 @@
         call set_mesh_file_name(sph_file_head, id_ascii_file_fmt,       &
      &      id_rank, sph_file_name)
         call read_spectr_modes_rj_file                                  &
-     &     (sph_file_name, mesh_file_id, id_rank, sph_file)
+     &     (sph_file_name, mesh_file_id, id_rank, sph_file, ierr)
 #endif
 !
       else
         if(id_rank .lt. nprocs_in) then
-          call sel_read_spectr_modes_rj_file(id_rank, sph_file)
+          call sel_read_spectr_rj_file(id_rank, sph_file, ierr)
         end if
+      end if
+!
+      if(ierr .gt. 0) then
+        call calypso_mpi_abort(ierr, 'Spectr RJ data is wrong!!')
       end if
 !
       end subroutine sel_mpi_read_spectr_rj_file
@@ -150,6 +162,8 @@
 !
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
       type(sph_file_data_type), intent(inout) :: sph_file
+!
+      integer(kind = kint) :: ierr
 !
 !
       call set_sph_rtm_file_name(sph_file_head, iflag_sph_file_fmt,     &
@@ -163,7 +177,7 @@
         call set_mesh_file_name(sph_file_head, id_ascii_file_fmt,       &
      &      id_rank, sph_file_name)
         call read_geom_rtm_file                                         &
-     &     (sph_file_name, mesh_file_id, id_rank, sph_file)
+     &     (sph_file_name, mesh_file_id, id_rank, sph_file, ierr)
 !
 #ifdef ZLIB_IO
       else if(iflag_sph_file_fmt                                        &
@@ -177,13 +191,17 @@
         call set_mesh_file_name(sph_file_head, id_ascii_file_fmt,       &
      &      id_rank, sph_file_name)
         call read_geom_rtm_file                                         &
-     &     (sph_file_name, mesh_file_id, id_rank, sph_file)
+     &     (sph_file_name, mesh_file_id, id_rank, sph_file, ierr)
 #endif
 !
       else
         if(id_rank .lt. nprocs_in) then
-          call sel_read_geom_rtm_file(id_rank, sph_file)
+          call sel_read_geom_rtm_file(id_rank, sph_file, ierr)
         end if
+      end if
+!
+      if(ierr .gt. 0) then
+        call calypso_mpi_abort(ierr, 'Spectr RTM data is wrong!!')
       end if
 !
       end subroutine sel_mpi_read_geom_rtm_file
@@ -195,6 +213,8 @@
 !
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
       type(sph_file_data_type), intent(inout) :: sph_file
+!
+      integer(kind = kint) :: ierr
 !
 !
       call set_sph_rlm_file_name(sph_file_head, iflag_sph_file_fmt,     &
@@ -208,7 +228,7 @@
         call set_mesh_file_name(sph_file_head, id_ascii_file_fmt,       &
      &      id_rank, sph_file_name)
         call read_modes_rlm_file                                        &
-     &     (sph_file_name, mesh_file_id, id_rank, sph_file)
+     &     (sph_file_name, mesh_file_id, id_rank, sph_file, ierr)
 !
 #ifdef ZLIB_IO
       else if(iflag_sph_file_fmt                                        &
@@ -222,13 +242,17 @@
         call set_mesh_file_name(sph_file_head, id_ascii_file_fmt,       &
      &      id_rank, sph_file_name)
         call read_modes_rlm_file                                        &
-     &     (sph_file_name, mesh_file_id, id_rank, sph_file)
+     &     (sph_file_name, mesh_file_id, id_rank, sph_file, ierr)
 #endif
 !
       else
         if(id_rank .lt. nprocs_in) then
-          call sel_read_modes_rlm_file(id_rank, sph_file)
+          call sel_read_modes_rlm_file(id_rank, sph_file, ierr)
         end if
+      end if
+!
+      if(ierr .gt. 0) then
+        call calypso_mpi_abort(ierr, 'Spectr RLM data is wrong!!')
       end if
 !
       end subroutine sel_mpi_read_modes_rlm_file

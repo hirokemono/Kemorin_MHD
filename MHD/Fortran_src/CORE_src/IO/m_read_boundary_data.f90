@@ -19,18 +19,10 @@
       module m_read_boundary_data
 !
       use m_precision
+      use t_mesh_data
       use t_group_data
 !
       implicit  none
-!
-!>      Structure for node group IO
-      type(group_data), save :: bc_grp_IO
-!
-!>      Structure for element group IO
-      type(group_data), save :: mat_grp_IO
-!
-!>      Structure for surface group IO
-      type(surface_group_data), save :: surf_grp_IO
 !
 !>      Stack list for number of node group item over domains
       integer(kind = kint), allocatable :: istack_bc_item_IO(:)
@@ -43,41 +35,6 @@
 !
       contains
 !
-! ----------------------------------------------------------------------
-!
-      subroutine set_grp_data_from_IO(nod_grp, ele_grp, surf_grp)
-!
-      use set_group_types_4_IO
-!
-      type(group_data), intent(inout) :: nod_grp, ele_grp
-      type(surface_group_data), intent(inout) :: surf_grp
-!
-!
-      call set_gruop_stracture(bc_grp_IO, nod_grp)
-      call set_gruop_stracture(mat_grp_IO, ele_grp)
-      call set_surf_grp_stracture(surf_grp_IO, surf_grp)
-!
-      call deallocate_mesh_groups_IO
-!
-      end subroutine set_grp_data_from_IO
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_grp_data_to_IO(nod_grp, ele_grp, surf_grp)
-!
-      use set_group_types_4_IO
-!
-      type(group_data), intent(inout) :: nod_grp, ele_grp
-      type(surface_group_data), intent(inout) :: surf_grp
-!
-!
-      call set_gruop_stracture(nod_grp, bc_grp_IO)
-      call set_gruop_stracture(ele_grp, mat_grp_IO)
-      call set_surf_grp_stracture(surf_grp, surf_grp_IO)
-!
-      end subroutine set_grp_data_to_IO
-!
-!-----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine allocate_para_mesh_groups_IO(nprocs)
@@ -96,17 +53,6 @@
 !
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-!
-      subroutine deallocate_mesh_groups_IO
-!
-!
-      call deallocate_grp_type(bc_grp_IO)
-      call deallocate_grp_type(mat_grp_IO)
-      call deallocate_sf_grp_type(surf_grp_IO)
-!
-      end subroutine deallocate_mesh_groups_IO
-!
-! ----------------------------------------------------------------------
 !
       subroutine deallocate_para_mesh_groups_IO
 !

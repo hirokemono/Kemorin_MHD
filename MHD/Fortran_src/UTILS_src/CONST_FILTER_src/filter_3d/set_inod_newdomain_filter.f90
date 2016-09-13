@@ -3,15 +3,17 @@
 !
 !     Written by H. Matsui on May., 2008
 !
-!      subroutine set_inod_4_newdomain_filter                           &
-!     &         (org_node, org_ele, new_node)
+!!      subroutine set_inod_4_newdomain_filter                          &
+!!     &         (org_node, org_ele, new_node, ierr)
+!!        type(node_data),    intent(inout) :: org_node
+!!        type(element_data), intent(inout) :: org_ele
+!!        type(node_data), intent(inout) :: new_node
 !
       module set_inod_newdomain_filter
 !
       use m_precision
 !
       use m_2nd_pallalel_vector
-      use m_comm_data_IO
       use m_internal_4_partitioner
       use set_parallel_file_name
       use mesh_IO_select
@@ -27,29 +29,34 @@
 !   --------------------------------------------------------------------
 !
       subroutine set_inod_4_newdomain_filter                            &
-     &         (org_node, org_ele, new_node)
+     &         (org_node, org_ele, new_node, ierr)
 !
-      use t_geometry_data
+      use t_mesh_data
 !
       use m_internal_4_partitioner
       use m_filter_file_names
       use m_field_file_format
-      use set_node_data_4_IO
+      use copy_mesh_structures
 !
       type(node_data),    intent(inout) :: org_node
       type(element_data), intent(inout) :: org_ele
       type(node_data), intent(inout) :: new_node
+      integer(kind = kint), intent(inout) :: ierr
 !
+      type(mesh_geometry) :: mesh_IO_f
       integer(kind = kint) :: ip2, my_rank2
 !
       do ip2 = 1, nprocs_2nd
         my_rank2 = ip2 - 1
 !
         mesh_file_head = target_mesh_head
-        call sel_read_geometry_size(my_rank2)
-        call copy_node_geometry_from_IO(new_node)
+        call sel_read_geometry_size(my_rank2, mesh_IO_f, ierr)
+        if(ierr .gt. 0) return
 !
-        call deallocate_type_neib_id(comm_IO)
+        call copy_node_geometry_types(mesh_IO_f%node, new_node)
+!
+        call dealloc_node_geometry_base(mesh_IO_f%node)
+        call deallocate_type_neib_id(mesh_IO_f%nod_comm)
 !
         call marking_used_node_4_filtering                              &
      &     (ip2, ifmt_3d_filter, org_node, org_ele%numele)

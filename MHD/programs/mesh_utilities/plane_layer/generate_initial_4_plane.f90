@@ -26,26 +26,26 @@
       use m_cube_position
       use m_setting_4_ini
       use m_geometry_data_4_merge
-      use m_read_mesh_data
-      use m_comm_data_IO
       use m_ctl_data_4_cub_kemo
       use m_time_data_IO
       use set_ctl_data_plane_mesh
       use set_parallel_file_name
       use mesh_IO_select
-      use set_node_data_4_IO
       use field_IO_select
       use set_field_to_restart
+      use copy_mesh_structures
 !
+      use t_mesh_data
       use t_geometry_data
       use t_field_data_IO
 !
       implicit none
 !
-      integer(kind=kint) :: ip, id_rank, inod
+      integer(kind=kint) :: ip, id_rank, ierr, inod
       integer(kind=kint) :: np, jst, jed
       type(node_data) :: node_plane
       type(field_IO) :: plane_fst_IO
+      type(mesh_geometry) :: mesh_IO_p
 !
       character(len=kchara), parameter                                  &
      &      :: org_rst_f_header = 'restart/rst'
@@ -80,10 +80,13 @@
 !
         iflag_mesh_file_fmt = izero
         mesh_file_head = 'mesh/in'
-        call sel_read_geometry_size(id_rank)
-        call copy_node_geometry_from_IO(node_plane)
+        call sel_read_geometry_size(id_rank, mesh_IO_p, ierr)
+        if(ierr .gt. 0) stop 'Mesh is wrong!!'
 !
-        call deallocate_type_neib_id(comm_IO)
+        call copy_node_geometry_types(mesh_IO_p%node, node_plane)
+!
+        call dealloc_node_geometry_base(mesh_IO_p%node)
+        call deallocate_type_neib_id(mesh_IO_p%nod_comm)
 !
         call alloc_phys_data_type(merged%node%numnod, merged_fld)
 !

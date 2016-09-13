@@ -32,10 +32,8 @@
       use m_control_parameter
       use m_ctl_parameter_Multigrid
       use m_read_mesh_data
-      use load_mesh_data
-      use element_IO_select
-      use surface_IO_select
-      use edge_IO_select
+      use mpi_load_mesh_data
+      use element_file_IO
 !
       integer(kind = kint) :: i_level
 !
@@ -45,8 +43,8 @@
         if(my_rank .lt. MG_mpi(i_level)%nprocs ) then
 !
           mesh_file_head = MG_mesh_file_head(i_level)
-          call input_mesh                                               &
-     &       (my_rank, MG_mesh(i_level)%mesh, MG_mesh(i_level)%group,   &
+          call mpi_input_mesh                                           &
+     &       (MG_mesh(i_level)%mesh, MG_mesh(i_level)%group,            &
      &        MG_ele_mesh(i_level)%surf%nnod_4_surf,                    &
      &        MG_ele_mesh(i_level)%edge%nnod_4_edge)
         else
@@ -71,7 +69,7 @@
 !
       type(MG_itp_table), intent(inout) :: MG_itp(num_MG_level)
 !
-      integer(kind = kint) :: i_level, ierr
+      integer(kind = kint) :: i_level
 !
 !
       do i_level = 1, num_MG_level

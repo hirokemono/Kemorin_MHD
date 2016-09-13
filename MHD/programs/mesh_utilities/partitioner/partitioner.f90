@@ -35,6 +35,7 @@
       type(near_mesh), save :: included_ele
 !
       integer(kind = kint), parameter :: my_rank = izero
+      integer(kind = kint) :: ierr
 !
 !  read control file
 !
@@ -46,7 +47,9 @@
       iflag_mesh_file_fmt = ifmt_single_mesh_fmt
       mesh_file_head = global_mesh_head
       call input_mesh(my_rank, org_mesh, org_group,                     &
-     &    org_ele_mesh%surf%nnod_4_surf, org_ele_mesh%edge%nnod_4_edge)
+     &    org_ele_mesh%surf%nnod_4_surf, org_ele_mesh%edge%nnod_4_edge, &
+     &    ierr)
+      if(ierr .gt. 0) stop 'Global mesh is wrong!'
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
       call const_mesh_infos(my_rank, org_mesh, org_group, org_ele_mesh)

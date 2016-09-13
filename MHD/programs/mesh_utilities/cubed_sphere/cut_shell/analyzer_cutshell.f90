@@ -36,6 +36,8 @@
       use cal_mesh_position
       use const_cutshell_mesh
 !
+      integer(kind = kint) :: ierr
+!
 !
       call read_control_data_4_cutshell
       call s_set_control_4_cutshell
@@ -44,7 +46,8 @@
 !
       mesh_file_head = original_mesh_head
       call input_mesh(my_rank, original_fem%mesh, original_fem%group,   &
-     &    nnod_4_surf, nnod_4_edge)
+     &    nnod_4_surf, nnod_4_edge, ierr)
+      if(ierr .ne. 0) stop 'Mesh data is wrong!'
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_local_element_info'

@@ -14,6 +14,8 @@
 !!     &         (org_mesh, tgt_comm, tgt_node, tgt_ele)
 !!
 !!      subroutine copy_node_geometry_types(org_node, new_node)
+!!      subroutine copy_node_sph_to_xx(org_node, new_node)
+!!      subroutine copy_node_cyl_to_xx(org_node, new_node)
 !!        type(node_data), intent(in) :: org_node
 !!        type(node_data), intent(in) :: new_node
 !!      subroutine copy_element_connect_types(org_ele, new_ele)
@@ -109,6 +111,7 @@
       call copy_comm_tbl_types(org_mesh%nod_comm, tgt_comm)
 !
       call copy_node_geometry_types(org_mesh%node, tgt_node)
+      call allocate_sph_node_geometry(tgt_node)
       call copy_element_connect_types(org_mesh%ele, tgt_ele)
 !
       end subroutine copy_mesh_geometry_from_type
@@ -129,7 +132,7 @@
       new_node%numnod =        org_node%numnod
       new_node%internal_node = org_node%internal_node
 !
-      call allocate_node_geometry_type(new_node)
+      call alloc_node_geometry_base(new_node)
 !
 !$omp parallel do
       do inod = 1, new_node%numnod
@@ -142,6 +145,63 @@
 !
       end subroutine copy_node_geometry_types
 !
+!------------------------------------------------------------------
+!
+      subroutine copy_node_sph_to_xx(org_node, new_node)
+!
+      use t_geometry_data
+!
+      type(node_data), intent(in) :: org_node
+      type(node_data), intent(inout) :: new_node
+      integer(kind = kint) :: inod
+!
+!
+      new_node%numnod =        org_node%numnod
+      new_node%internal_node = org_node%internal_node
+!
+      call alloc_node_geometry_base(new_node)
+!
+!$omp parallel do
+      do inod = 1, org_node%numnod
+        new_node%inod_global(inod) = org_node%inod_global(inod)
+        new_node%xx(inod,1) = org_node%rr(inod)
+        new_node%xx(inod,2) = org_node%theta(inod)
+        new_node%xx(inod,3) = org_node%phi(inod)
+      end do
+!$omp end parallel do
+!
+!
+      end subroutine copy_node_sph_to_xx
+!
+!------------------------------------------------------------------
+!
+      subroutine copy_node_cyl_to_xx(org_node, new_node)
+!
+      use t_geometry_data
+!
+      type(node_data), intent(in) :: org_node
+      type(node_data), intent(inout) :: new_node
+      integer(kind = kint) :: inod
+!
+!
+      new_node%numnod =        org_node%numnod
+      new_node%internal_node = org_node%internal_node
+!
+      call alloc_node_geometry_base(new_node)
+!
+!$omp parallel do
+      do inod = 1, org_node%numnod
+        new_node%inod_global(inod) = org_node%inod_global(inod)
+        new_node%xx(inod,1) = org_node%ss(inod)
+        new_node%xx(inod,2) = org_node%phi(inod)
+        new_node%xx(inod,3) = org_node%xx(inod,3)
+      end do
+!$omp end parallel do
+!
+!
+      end subroutine copy_node_cyl_to_xx
+!
+!------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine copy_element_connect_types(org_ele, new_ele)

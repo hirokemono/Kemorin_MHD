@@ -11,6 +11,7 @@
 !
       use m_constants
       use m_geometry_data_4_merge
+      use t_mesh_data
 !
       implicit none
 !
@@ -37,38 +38,32 @@
 !
       subroutine count_numbers_4_mesh_merge(nnod_4_ele)
 !
-       use m_comm_data_IO
-       use m_read_boundary_data
        use mesh_IO_select
        use set_read_geometry_2_merge
        use set_read_boundary_2_merge
        use set_comm_table_4_IO
        use set_element_data_4_IO
-       use set_node_data_4_IO
+       use copy_mesh_structures
+       use load_mesh_data
 !
        integer (kind = kint), intent(inout) :: nnod_4_ele
-       integer (kind = kint) :: ip, my_rank
+       integer (kind = kint) :: ip, my_rank, ierr
+!
+       type(mesh_data) :: fem_IO_o
 !
 !
       do ip =1, num_pe
         my_rank = ip - 1
+        call sel_read_mesh(my_rank, fem_IO_o, ierr)
+        if(ierr .gt. 0) stop 'Error in Mesh data'
 !
-        call sel_read_mesh(my_rank)
-!
-        call copy_comm_tbl_type(comm_IO, subdomain(ip)%nod_comm)
-        call copy_node_geometry_from_IO(subdomain(ip)%node)
-        call copy_ele_connect_from_IO(subdomain(ip)%ele)
-!
-        call deallocate_type_comm_tbl(comm_IO)
-!
-        call allocate_sph_node_geometry(subdomain(ip)%node)
-!
-!  set node group
-        call set_grp_data_from_IO                                       &
-     &     (sub_nod_grp(ip), sub_ele_grp(ip), sub_surf_grp(ip))
+        call set_mesh_geometry_data(fem_IO_o%mesh, subdomain(ip))
+        call set_grp_data_from_IO(fem_IO_o%group,                       &
+     &      sub_nod_grp(ip), sub_ele_grp(ip), sub_surf_grp(ip))
+        call dealloc_groups_data(fem_IO_o%group)
       end do
 !
-      nnod_4_ele = ele_IO%nnod_4_ele
+      nnod_4_ele = fem_IO_o%mesh%ele%nnod_4_ele
 !
       end subroutine count_numbers_4_mesh_merge
 !

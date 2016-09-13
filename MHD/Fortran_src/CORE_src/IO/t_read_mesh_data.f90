@@ -25,6 +25,7 @@
       module t_read_mesh_data
 !
       use m_precision
+      use t_comm_table
       use t_geometry_data
 !
       implicit  none
@@ -43,6 +44,16 @@
         integer(kind = kint), pointer  :: iedge_for_ele(:,:)
       end type surf_edge_IO_data
 !
+      type surf_edge_IO_file
+!>        data structure for communication table IO
+        type(communication_table) :: comm
+!>        structure for node data IO (position)
+        type(node_data) ::    node
+!>        structure for element data IO (connectivity)
+        type(element_data) :: ele
+!>        structure for edge andsurface data IO
+        type(surf_edge_IO_data) :: sfed
+      end type surf_edge_IO_file
 !
 !------------------------------------------------------------------
 !

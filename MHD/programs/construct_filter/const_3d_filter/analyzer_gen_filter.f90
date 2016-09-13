@@ -25,6 +25,7 @@
       use t_filter_dxdxi
       use t_filter_moments
       use t_filtering_data
+      use t_filter_file_data
 !
       implicit none
 !
@@ -98,7 +99,7 @@
 !
 !  --  read geometry
 !
-      if (iflag_debug.eq.1) write(*,*) 'input_mesh'
+      if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh'
       call mpi_input_mesh(mesh_filter, group_filter,                    &
      &    ele_filter%surf%nnod_4_surf, ele_filter%edge%nnod_4_edge)
 !
@@ -167,7 +168,6 @@
       use m_crs_matrix_4_filter
       use m_filter_coefs
       use m_nod_filter_comm_table
-      use m_comm_data_IO
       use m_filter_file_names
       use m_file_format_switch
 !
@@ -178,6 +178,7 @@
       use copy_mesh_structures
       use set_comm_table_4_IO
       use set_filter_geometry_4_IO
+      use filter_moment_IO_select
       use filter_coefs_file_IO
       use filter_coefs_file_IO_b
       use check_num_fail_nod_commute
@@ -186,6 +187,7 @@
       use cal_filter_func_node
 !
       character(len=kchara) :: file_name
+      type(filter_file_data) :: filter_IO
 !
 !  ---------------------------------------------------
 !       set element size for each node
@@ -219,13 +221,12 @@
         call copy_node_data_to_filter(mesh_filter%node)
         call copy_comm_tbl_types                                        &
      &     (mesh_filter%nod_comm, filtering_gen%comm)
-        call copy_filtering_geometry_to_IO
 !
-        my_rank_IO = my_rank
-        call copy_comm_tbl_type(filtering_gen%comm, comm_IO)
+        call copy_filtering_geometry_to_IO(filter_IO%node)
+        call copy_comm_tbl_type(filtering_gen%comm, filter_IO%nod_comm)
 !
         filter_file_head = filter_coef_head
-        call sel_write_filter_geometry_file(my_rank)
+        call sel_write_filter_geometry_file(my_rank, filter_IO)
 !
         num_failed_whole = 0
         num_failed_fluid = 0

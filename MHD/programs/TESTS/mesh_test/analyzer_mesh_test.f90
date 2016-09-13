@@ -40,22 +40,18 @@
       use m_array_for_send_recv
 !
       use const_mesh_information
-      use set_node_data_4_IO
+      use copy_mesh_structures
       use set_element_data_4_IO
       use set_surface_data_4_IO
       use set_edge_data_4_IO
-      use element_IO_select
-      use surface_IO_select
-      use edge_IO_select
+      use element_file_IO
       use check_jacobians
       use int_volume_of_domain
       use set_surf_grp_vectors
       use check_surface_groups
       use set_normal_vectors
       use set_edge_vectors
-      use m_read_mesh_data
-      use m_comm_data_IO
-      use mesh_data_IO
+      use mesh_file_IO
       use nod_phys_send_recv
       use sum_normal_4_surf_group
       use set_parallel_file_name
@@ -67,12 +63,17 @@
       use const_jacobians_3d
       use const_element_comm_tables
 !
+      use t_mesh_data
+      use t_read_mesh_data
       use t_jacobian_3d
 !
 !>     Stracture for Jacobians for linear element
       type(jacobians_3d), save :: jac_3d_l
 !>     Stracture for Jacobians for quad element
       type(jacobians_3d), save :: jac_3d_q
+!
+      type(mesh_geometry) :: mesh_IO
+      type(surf_edge_IO_file) :: ele_mesh_IO
 !
 !     --------------------- 
 !
@@ -163,74 +164,60 @@
 !      spherical and cylindrical coordinate
 !  ---------------------------------------------
 !
-      comm_IO%num_neib = 0
-      my_rank_IO = my_rank
+      mesh_IO%nod_comm%num_neib = 0
+      call allocate_type_neib_id(mesh_IO%nod_comm)
+      call copy_node_sph_to_xx(mesh%node, mesh_IO%node)
 !
       call add_int_suffix(my_rank, mesh_sph_file_head, mesh_file_name)
-      write(*,*) 'ascii mesh file: ', trim(mesh_file_name)
-      open (input_file_code, file = mesh_file_name,                     &
-     &      form = 'formatted')
+      call write_node_position_sph(my_rank, mesh_IO)
 !
-      comm_IO%num_neib = 0
-      call allocate_type_neib_id(comm_IO)
+      mesh_IO%nod_comm%num_neib = 0
+      call allocate_type_neib_id(mesh_IO%nod_comm)
+      call copy_node_cyl_to_xx(mesh%node, mesh_IO%node)
 !
-      call copy_node_sph_to_IO(mesh%node)
-!
-      call output_node_sph_geometry
-      close(input_file_code)
-!
-!
-      call add_int_suffix(my_rank, mesh_cyl_file_head, mesh_file_name)
-      write(*,*) 'ascii mesh file: ', trim(mesh_file_name)
-      open (input_file_code, file = mesh_file_name,                     &
-     &      form = 'formatted')
-!
-      comm_IO%num_neib = 0
-      call allocate_type_neib_id(comm_IO)
-      call copy_node_cyl_to_IO(mesh%node)
-!
-      call output_node_cyl_geometry
-      close(input_file_code)
+      call write_node_position_cyl(my_rank, mesh_IO)
 !
 !  -------------------------------
 !     output element data
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_ele_geometry_to_IO'
-      my_rank_IO = my_rank
-      call copy_comm_tbl_type(ele_mesh%ele_comm, comm_IO)
+      call copy_comm_tbl_type(ele_mesh%ele_comm, ele_mesh_IO%comm)
       mesh_ele_file_head = mesh_ele_def_head
-      call copy_ele_geometry_to_IO(mesh%ele)
-      call sel_output_element_file(my_rank)
+      call copy_ele_geometry_to_IO                                      &
+     &   (mesh%ele, ele_mesh_IO%node, ele_mesh_IO%sfed)
+      call output_element_file(my_rank, ele_mesh_IO)
 !
 !  -------------------------------
 !     output surface data
 !  -------------------------------
 !
       mesh_surf_file_head = mesh_def_surf_head
-      my_rank_IO = my_rank
-      call copy_comm_tbl_type(ele_mesh%surf_comm, comm_IO)
+      call copy_comm_tbl_type(ele_mesh%surf_comm, ele_mesh_IO%comm)
       if (iflag_debug.gt.0) write(*,*) 'copy_surf_geometry_to_IO'
-      call copy_surf_connect_to_IO(ele_mesh%surf, mesh%ele%numele)
-      call copy_surf_geometry_to_IO(ele_mesh%surf)
+      call copy_surf_connect_to_IO(ele_mesh%surf, mesh%ele%numele,      &
+     &    ele_mesh_IO%ele, ele_mesh_IO%sfed)
+      call copy_surf_geometry_to_IO(ele_mesh%surf,                      &
+     &    ele_mesh_IO%node, ele_mesh_IO%sfed)
 !
-      if (iflag_debug.gt.0) write(*,*) 'sel_output_surface_file'
-      call sel_output_surface_file(my_rank)
+      if (iflag_debug.gt.0) write(*,*) 'output_surface_file'
+      call output_surface_file(my_rank, ele_mesh_IO)
 !
 !  -------------------------------
 !     output edge data
 !  -------------------------------
 !
       mesh_edge_file_head = mesh_def_edge_head
-      my_rank_IO = my_rank
-      call copy_comm_tbl_type(ele_mesh%edge_comm, comm_IO)
+      call copy_comm_tbl_type(ele_mesh%edge_comm, ele_mesh_IO%comm)
       if (iflag_debug.gt.0) write(*,*) 'copy_edge_geometry_to_IO'
       call copy_edge_connect_to_IO                                      &
-     &   (ele_mesh%edge, mesh%ele%numele, ele_mesh%surf%numsurf)
-      call copy_edge_geometry_to_IO(ele_mesh%edge)
+     &   (ele_mesh%edge, mesh%ele%numele, ele_mesh%surf%numsurf,        &
+     &    ele_mesh_IO%ele, ele_mesh_IO%sfed)
+      call copy_edge_geometry_to_IO(ele_mesh%edge,                      &
+     &    ele_mesh_IO%node, ele_mesh_IO%sfed)
 !
-      if (iflag_debug.gt.0) write(*,*) 'sel_output_edge_geometries'
-      call sel_output_edge_geometries(my_rank)
+      if (iflag_debug.gt.0) write(*,*) 'output_edge_geometries'
+      call output_edge_geometries(my_rank, ele_mesh_IO)
 !
       end subroutine initialize_mesh_test
 !

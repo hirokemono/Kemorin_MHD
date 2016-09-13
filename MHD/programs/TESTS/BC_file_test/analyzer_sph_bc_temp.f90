@@ -48,7 +48,7 @@
 !
 !  --  read geometry
 !
-      if (iflag_debug.gt.0) write(*,*) 'input_mesh'
+      if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
       call mpi_input_mesh(femmesh%mesh, femmesh%group,                  &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !

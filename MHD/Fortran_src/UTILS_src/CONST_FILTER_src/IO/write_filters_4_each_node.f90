@@ -79,6 +79,7 @@
 !
       subroutine write_each_same_filter_coef(file_name, inod)
 !
+      use mesh_data_IO
       use filter_coefs_file_IO
 !
       character(len = kchara), intent(in) :: file_name
@@ -88,7 +89,6 @@
       if (ifmt_3d_filter .eq. iflag_ascii) then
         open(org_filter_coef_code, file=file_name,                      &
      &       form='formatted', position='append')
-        call read_filter_geometry(org_filter_coef_code)
         write(org_filter_coef_code,'(4i12)') inod,                      &
      &          (-nnod_near_1nod_weight), i_exp_level_1nod_weight
         close(org_filter_coef_code)

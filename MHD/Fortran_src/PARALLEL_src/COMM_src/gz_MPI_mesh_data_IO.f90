@@ -1,33 +1,33 @@
-!>@file   gz_MPI_mesh_data_IO_b.f90
-!!@brief  module gz_MPI_mesh_data_IO_b
+!>@file   gz_MPI_mesh_data_IO.f90
+!!@brief  module gz_MPI_mesh_data_IO
 !!
 !!@author H. Matsui
 !!@date Programmed by H.Matsui and H.Okuda in July 2000
 !!@n     Modified by H. Matsui on Sep., 2006
 !
-!>@brief  Routines for gzipped binary mesh data IO
+!>@brief  Routines for gzipped mesh data IO using MPI-IO
 !!
 !!@verbatim
-!!      subroutine gz_mpi_write_geometry_data_b                         &
+!!      subroutine gz_mpi_write_geometry_data                           &
 !!     &         (id_file, nprocs_in, ioff_gl, mesh_IO)
-!!      subroutine gz_mpi_write_mesh_groups_b                           &
+!!      subroutine gz_mpi_write_mesh_groups                             &
 !!     &         (id_file, nprocs_in, id_rank, ioff_gl, mesh_group_IO)
 !!        type(mesh_geometry), intent(inout) :: mesh_IO
 !!        type(mesh_groups), intent(inout) ::   mesh_group_IO
 !!
-!!      subroutine gz_mpi_read_geometry_data_b                          &
+!!      subroutine gz_mpi_read_geometry_data                            &
 !!     &         (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO)
-!!      subroutine gz_mpi_read_mesh_groups_b                            &
+!!      subroutine gz_mpi_read_mesh_groups                              &
 !!     &         (id_file, nprocs_in, id_rank, ioff_gl, mesh_group_IO)
-!!      subroutine gz_mpi_read_num_node_ele_b                           &
+!!      subroutine gz_mpi_read_num_node_ele                             &
 !!     &         (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO)
-!!      subroutine gz_mpi_read_num_node_b                               &
+!!      subroutine gz_mpi_read_num_node                                 &
 !!     &         (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO)
 !!        type(mesh_geometry), intent(inout) :: mesh_IO
 !!        type(mesh_groups), intent(inout) ::   mesh_group_IO
 !!@endverbatim
 !
-      module gz_MPI_mesh_data_IO_b
+      module gz_MPI_mesh_data_IO
 !
       use m_precision
       use m_constants
@@ -35,15 +35,16 @@
       use t_mesh_data
       use t_comm_table
       use t_geometry_data
+      use gz_MPI_mesh_data_IO_b
 !
       implicit  none
 !
-!      private :: gz_mpi_write_geometry_info_b
-!      private :: gz_mpi_write_element_info_b
-!      private :: gz_mpi_read_number_of_node_b
-!      private :: gz_mpi_read_geometry_info_b
-!      private :: gz_mpi_read_number_of_element_b
-!      private :: gz_mpi_read_element_info_b
+      private :: gz_mpi_write_geometry_info
+      private :: gz_mpi_write_element_info
+      private :: gz_mpi_read_number_of_node
+      private :: gz_mpi_read_geometry_info
+      private :: gz_mpi_read_number_of_element
+      private :: gz_mpi_read_element_info
 !
 !------------------------------------------------------------------
 !
@@ -51,7 +52,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_mpi_write_geometry_data_b                           &
+      subroutine gz_mpi_write_geometry_data                             &
      &         (id_file, nprocs_in, ioff_gl, mesh_IO)
 !
       use gz_MPI_domain_data_IO_b
@@ -74,11 +75,11 @@
       call gz_mpi_write_export_data_b                                   &
      &   (id_file, ioff_gl, mesh_IO%nod_comm)
 !
-      end subroutine gz_mpi_write_geometry_data_b
+      end subroutine gz_mpi_write_geometry_data
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_mpi_write_mesh_groups_b                             &
+      subroutine gz_mpi_write_mesh_groups                               &
      &         (id_file, nprocs_in, id_rank, ioff_gl, mesh_group_IO)
 !
       use gz_MPI_groups_IO_b
@@ -99,12 +100,12 @@
       call gz_mpi_write_surf_grp_data_b                                 &
      &   (id_file, ioff_gl, mesh_group_IO%surf_grp)
 !
-      end subroutine gz_mpi_write_mesh_groups_b
+      end subroutine gz_mpi_write_mesh_groups
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine gz_mpi_read_geometry_data_b                            &
+      subroutine gz_mpi_read_geometry_data                              &
      &         (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO)
 !
       use m_error_IDs
@@ -139,11 +140,11 @@
       call gz_mpi_read_export_data_b                                    &
      &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%nod_comm)
 !
-      end subroutine gz_mpi_read_geometry_data_b
+      end subroutine gz_mpi_read_geometry_data
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_mpi_read_mesh_groups_b                              &
+      subroutine gz_mpi_read_mesh_groups                                &
      &         (id_file, nprocs_in, id_rank, ioff_gl, mesh_group_IO)
 !
       use gz_MPI_groups_IO_b
@@ -165,11 +166,11 @@
       call gz_mpi_read_surf_grp_data_b                                  &
      &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_group_IO%surf_grp)
 !
-      end subroutine gz_mpi_read_mesh_groups_b
+      end subroutine gz_mpi_read_mesh_groups
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_mpi_read_num_node_ele_b                             &
+      subroutine gz_mpi_read_num_node_ele                               &
      &         (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO)
 !
       use m_error_IDs
@@ -195,11 +196,11 @@
       call gz_mpi_read_number_of_element_b                              &
      &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%ele)
 !
-      end subroutine gz_mpi_read_num_node_ele_b
+      end subroutine gz_mpi_read_num_node_ele
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_mpi_read_num_node_b                                 &
+      subroutine gz_mpi_read_num_node                                   &
      &         (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO)
 !
       use m_error_IDs
@@ -218,12 +219,12 @@
       call gz_mpi_read_number_of_node_b                                 &
      &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%node)
 !
-      end subroutine gz_mpi_read_num_node_b
+      end subroutine gz_mpi_read_num_node
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine gz_mpi_write_geometry_info_b(id_file, ioff_gl, nod_IO)
+      subroutine gz_mpi_write_geometry_info(id_file, ioff_gl, nod_IO)
 !
       use gz_MPI_binary_data_IO
       use gz_MPI_binary_datum_IO
@@ -245,11 +246,11 @@
 !
       call dealloc_node_geometry_base(nod_IO)
 !
-      end subroutine gz_mpi_write_geometry_info_b
+      end subroutine gz_mpi_write_geometry_info
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_mpi_write_element_info_b(id_file, ioff_gl, ele_IO)
+      subroutine gz_mpi_write_element_info(id_file, ioff_gl, ele_IO)
 !
       use gz_MPI_binary_data_IO
       use gz_MPI_binary_datum_IO
@@ -275,12 +276,12 @@
 !
       call deallocate_ele_connect_type(ele_IO)
 !
-      end subroutine gz_mpi_write_element_info_b
+      end subroutine gz_mpi_write_element_info
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine gz_mpi_read_number_of_node_b                           &
+      subroutine gz_mpi_read_number_of_node                             &
      &         (id_file, nprocs_in, id_rank, ioff_gl, nod_IO)
 !
       use gz_MPI_binary_data_IO
@@ -298,11 +299,11 @@
       call gz_mpi_read_one_integer_b                                    &
      &   (id_file, nprocs_in, id_rank, ioff_gl, nod_IO%internal_node)
 !
-      end subroutine gz_mpi_read_number_of_node_b
+      end subroutine gz_mpi_read_number_of_node
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_mpi_read_geometry_info_b                            &
+      subroutine gz_mpi_read_geometry_info                              &
      &         (id_file, nprocs_in, id_rank, ioff_gl, nod_IO)
 !
       use gz_MPI_binary_data_IO
@@ -323,11 +324,11 @@
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
      &    nod_IO%numnod, ithree, nod_IO%xx)
 !
-      end subroutine gz_mpi_read_geometry_info_b
+      end subroutine gz_mpi_read_geometry_info
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_mpi_read_number_of_element_b                        &
+      subroutine gz_mpi_read_number_of_element                          &
      &         (id_file, nprocs_in, id_rank, ioff_gl, ele_IO)
 !
       use gz_MPI_binary_data_IO
@@ -343,11 +344,11 @@
       call gz_mpi_read_one_integer_b                                    &
      &   (id_file, nprocs_in, id_rank, ioff_gl, ele_IO%numele)
 !
-      end subroutine gz_mpi_read_number_of_element_b
+      end subroutine gz_mpi_read_number_of_element
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_mpi_read_element_info_b                             &
+      subroutine gz_mpi_read_element_info                               &
      &         (id_file, nprocs_in, id_rank, ioff_gl, ele_IO)
 !
       use gz_MPI_binary_data_IO
@@ -384,8 +385,8 @@
       call gz_mpi_read_int_vector_b                                     &
      &   (id_file, nprocs_in, id_rank, ioff_gl, num, ele_IO%ie)
 !
-      end subroutine gz_mpi_read_element_info_b
+      end subroutine gz_mpi_read_element_info
 !
 !------------------------------------------------------------------
 !
-      end module gz_MPI_mesh_data_IO_b
+      end module gz_MPI_mesh_data_IO

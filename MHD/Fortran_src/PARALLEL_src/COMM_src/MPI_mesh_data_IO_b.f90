@@ -9,19 +9,22 @@
 !!
 !!@verbatim
 !!      subroutine mpi_write_geometry_data_b                            &
-!!     &         (id_file, nprocs_in, id_rank, ioff_gl)
-!!      subroutine mpi_write_geometry_info_b(id_file, ioff_gl)
-!!      subroutine mpi_write_element_info_b                             &
-!!     &         (id_file, nprocs_in, id_rank, ioff_gl)
+!!     &         (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO)
+!!      subroutine mpi_write_mesh_groups_b                              &
+!!     &         (id_file, nprocs_in, id_rank, ioff_gl, mesh_group_IO)
+!!        type(mesh_geometry), intent(inout) :: mesh_IO
+!!        type(mesh_groups), intent(inout) ::   mesh_group_IO
 !!
 !!      subroutine mpi_read_geometry_data_b                             &
-!!     &         (id_file, nprocs_in, id_rank, ioff_gl)
-!!      subroutine mpi_read_number_of_node_b                            &
-!!     &         (id_file, nprocs_in, id_rank, ioff_gl)
-!!      subroutine mpi_read_geometry_info_b                             &
-!!     &         (id_file, nprocs_in, id_rank, ioff_gl)
-!!      subroutine mpi_read_number_of_element_b                         &
-!!     &         (id_file, nprocs_in, id_rank, ioff_gl)
+!!     &         (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO)
+!!      subroutine mpi_read_mesh_groups_b                               &
+!!     &         (id_file, nprocs_in, id_rank, ioff_gl, mesh_group_IO)
+!!      subroutine mpi_read_num_node_ele_b                              &
+!!     &         (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO)
+!!      subroutine mpi_read_num_node_ele                                &
+!!     &         (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO)
+!!        type(mesh_geometry), intent(inout) :: mesh_IO
+!!        type(mesh_groups), intent(inout) ::   mesh_group_IO
 !!@endverbatim
 !
       module MPI_mesh_data_IO_b
@@ -29,19 +32,21 @@
       use m_precision
       use m_constants
 !
-      use m_comm_data_IO
-      use m_read_mesh_data
       use t_calypso_mpi_IO_param
+      use t_mesh_data
+      use t_comm_table
+      use t_geometry_data
 !
       use MPI_binary_data_IO
       use MPI_binary_head_IO
 !
       implicit  none
 !
-      private :: mpi_write_element_info_b
-      private :: mpi_read_element_info_b
-!
       type(calypso_MPI_IO_params), private :: IO_param
+!
+      private :: mpi_write_geometry_info_b, mpi_write_element_info_b
+      private :: mpi_read_number_of_node_b, mpi_read_geometry_info_b
+      private :: mpi_read_number_of_element_b, mpi_read_element_info_b
 !
 !------------------------------------------------------------------
 !
@@ -50,7 +55,7 @@
 !------------------------------------------------------------------
 !
       subroutine mpi_write_geometry_data_b                              &
-     &         (id_file, nprocs_in, id_rank, ioff_gl)
+     &         (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO)
 !
       use MPI_domain_data_IO_b
 !
@@ -58,33 +63,182 @@
       integer(kind=kint), intent(in) :: nprocs_in, id_rank
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
+      type(mesh_geometry), intent(inout) :: mesh_IO
+!
 !
       call mpi_write_domain_info_b                                      &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%nod_comm)
 !
       call mpi_write_geometry_info_b                                    &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%node)
       call mpi_write_element_info_b                                     &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%ele)
 !
       call mpi_write_import_data_b                                      &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%nod_comm)
       call mpi_write_export_data_b                                      &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
+     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%nod_comm)
 !
       end subroutine mpi_write_geometry_data_b
+!
+!------------------------------------------------------------------
+!
+      subroutine mpi_write_mesh_groups_b                                &
+     &         (id_file, nprocs_in, id_rank, ioff_gl, mesh_group_IO)
+!
+      use MPI_groups_IO_b
+!
+      integer, intent(in) ::  id_file
+      integer(kind=kint), intent(in) :: nprocs_in, id_rank
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+!
+      type(mesh_groups), intent(inout) ::   mesh_group_IO
+!
+!   write node group
+      call mpi_write_grp_data_b                                         &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_group_IO%nod_grp)
+!  write element group
+      call mpi_write_grp_data_b                                         &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_group_IO%ele_grp)
+!  write surface group
+      call mpi_write_surf_grp_data_b                                    &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_group_IO%surf_grp)
+!
+!
+      end subroutine mpi_write_mesh_groups_b
+!
+!------------------------------------------------------------------
+!------------------------------------------------------------------
+!
+      subroutine mpi_read_geometry_data_b                               &
+     &         (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO)
+!
+      use m_error_IDs
+      use MPI_domain_data_IO_b
+!
+      integer, intent(in) ::  id_file
+      integer(kind=kint), intent(in) :: id_rank, nprocs_in
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+!
+      type(mesh_geometry), intent(inout) :: mesh_IO
+!
+!
+      call mpi_read_domain_info_b                                       &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%nod_comm)
+!
+      call mpi_read_number_of_node_b                                    &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%node)
+      call mpi_read_geometry_info_b                                     &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%node)
+!
+!  ----  read element data -------
+!
+      call mpi_read_number_of_element_b                                 &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%ele)
+      call mpi_read_element_info_b                                      &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%ele)
+!
+! ----  import & export 
+!
+      call mpi_read_import_data_b                                       &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%nod_comm)
+      call mpi_read_export_data_b                                       &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%nod_comm)
+!
+      end subroutine mpi_read_geometry_data_b
+!
+!------------------------------------------------------------------
+!
+      subroutine mpi_read_mesh_groups_b                                 &
+     &         (id_file, nprocs_in, id_rank, ioff_gl, mesh_group_IO)
+!
+      use MPI_groups_IO_b
+!
+      integer, intent(in) ::  id_file
+      integer(kind=kint), intent(in) :: nprocs_in, id_rank
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+!
+      type(mesh_groups), intent(inout) ::   mesh_group_IO
+!
+!
+!   read node group
+      call mpi_read_group_data_b                                        &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_group_IO%nod_grp)
+!  read element group
+      call mpi_read_group_data_b                                        &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_group_IO%ele_grp)
+!  read surface group
+      call mpi_read_surf_grp_data_b                                     &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_group_IO%surf_grp)
+!
+      end subroutine mpi_read_mesh_groups_b
+!
+!------------------------------------------------------------------
+!
+      subroutine mpi_read_num_node_ele_b                                &
+     &         (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO)
+!
+      use m_error_IDs
+      use MPI_domain_data_IO_b
+!
+      integer, intent(in) ::  id_file
+      integer(kind=kint), intent(in) :: id_rank, nprocs_in
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+!
+      type(mesh_geometry), intent(inout) :: mesh_IO
+!
+!
+      call mpi_read_domain_info_b                                       &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%nod_comm)
+!
+      call mpi_read_number_of_node_b                                    &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%node)
+      call mpi_read_geometry_info_b                                     &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%node)
+!
+!  ----  read element data -------
+!
+      call mpi_read_number_of_element_b                                 &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%ele)
+!
+      end subroutine mpi_read_num_node_ele_b
+!
+!------------------------------------------------------------------
+!
+      subroutine mpi_read_num_node_ele                                  &
+     &         (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO)
+!
+      use m_error_IDs
+      use MPI_domain_data_IO_b
+!
+      integer, intent(in) ::  id_file
+      integer(kind=kint), intent(in) :: id_rank, nprocs_in
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+!
+      type(mesh_geometry), intent(inout) :: mesh_IO
+!
+!
+      call mpi_read_domain_info_b                                       &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%nod_comm)
+!
+      call mpi_read_number_of_node_b                                    &
+     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%node)
+!
+      end subroutine mpi_read_num_node_ele
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine mpi_write_geometry_info_b                              &
-     &         (id_file, nprocs_in, id_rank, ioff_gl)
+     &         (id_file, nprocs_in, id_rank, ioff_gl, nod_IO)
 !
       use MPI_binary_data_IO
 !
       integer, intent(in) ::  id_file
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind=kint), intent(in) :: id_rank, nprocs_in
+!
+      type(node_data), intent(inout) :: nod_IO
 !
 !
       call mpi_write_one_integer_b                                      &
@@ -107,16 +261,18 @@
       end subroutine mpi_write_geometry_info_b
 !
 !------------------------------------------------------------------
+!------------------------------------------------------------------
 !
       subroutine mpi_write_element_info_b                               &
-     &         (id_file, nprocs_in, id_rank, ioff_gl)
+     &         (id_file, nprocs_in, id_rank, ioff_gl, ele_IO)
 !
       use MPI_binary_data_IO
 !
       integer, intent(in) ::  id_file
+      integer(kind=kint), intent(in) :: id_rank, nprocs_in
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
-      integer(kind=kint), intent(in) :: id_rank, nprocs_in
+      type(element_data), intent(inout) :: ele_IO
 !
       integer (kind = kint) :: num
 !
@@ -145,52 +301,16 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine mpi_read_geometry_data_b                               &
-     &         (id_file, nprocs_in, id_rank, ioff_gl)
-!
-      use m_error_IDs
-      use MPI_domain_data_IO_b
-!
-      integer, intent(in) ::  id_file
-      integer(kind=kint), intent(in) :: id_rank, nprocs_in
-      integer(kind = kint_gl), intent(inout) :: ioff_gl
-!
-!
-      call mpi_read_domain_info_b                                       &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
-!
-      call mpi_read_number_of_node_b                                    &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
-      call mpi_read_geometry_info_b                                     &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
-!
-!  ----  read element data -------
-!
-      call mpi_read_number_of_element_b                                 &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
-      call mpi_read_element_info_b                                      &
-     &   (id_file, nprocs_in, id_rank, ioff_gl)
-!
-! ----  import & export 
-!
-      call mpi_read_import_data_b                                       &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
-      call mpi_read_export_data_b                                       &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, comm_IO)
-!
-      end subroutine mpi_read_geometry_data_b
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
       subroutine mpi_read_number_of_node_b                              &
-     &         (id_file, nprocs_in, id_rank, ioff_gl)
+     &         (id_file, nprocs_in, id_rank, ioff_gl, nod_IO)
 !
       use MPI_binary_data_IO
 !
       integer, intent(in) ::  id_file
       integer(kind=kint), intent(in) :: id_rank, nprocs_in
       integer(kind = kint_gl), intent(inout) :: ioff_gl
+!
+      type(node_data), intent(inout) :: nod_IO
 !
 !
       call mpi_read_one_integer_b                                       &
@@ -203,13 +323,15 @@
 !------------------------------------------------------------------
 !
       subroutine mpi_read_geometry_info_b                               &
-     &         (id_file, nprocs_in, id_rank, ioff_gl)
+     &         (id_file, nprocs_in, id_rank, ioff_gl, nod_IO)
 !
       use mpi_binary_data_IO
 !
       integer, intent(in) ::  id_file
       integer(kind=kint), intent(in) :: id_rank, nprocs_in
       integer(kind = kint_gl), intent(inout) :: ioff_gl
+!
+      type(node_data), intent(inout) :: nod_IO
 !
 !
       call alloc_node_geometry_base(nod_IO)
@@ -230,13 +352,15 @@
 !------------------------------------------------------------------
 !
       subroutine mpi_read_number_of_element_b                           &
-     &         (id_file, nprocs_in, id_rank, ioff_gl)
+     &         (id_file, nprocs_in, id_rank, ioff_gl, ele_IO)
 !
       use mpi_binary_data_IO
 !
       integer, intent(in) ::  id_file
       integer(kind=kint), intent(in) :: id_rank, nprocs_in
       integer(kind = kint_gl), intent(inout) :: ioff_gl
+!
+      type(element_data), intent(inout) :: ele_IO
 !
 !
       call mpi_read_one_integer_b                                       &
@@ -247,7 +371,7 @@
 !------------------------------------------------------------------
 !
       subroutine mpi_read_element_info_b                                &
-     &         (id_file, nprocs_in, id_rank, ioff_gl)
+     &         (id_file, nprocs_in, id_rank, ioff_gl, ele_IO)
 !
       use mpi_binary_data_IO
       use set_nnod_4_ele_by_type
@@ -255,6 +379,8 @@
       integer, intent(in) ::  id_file
       integer(kind=kint), intent(in) :: id_rank, nprocs_in
       integer(kind = kint_gl), intent(inout) :: ioff_gl
+!
+      type(element_data), intent(inout) :: ele_IO
 !
       integer (kind = kint) :: num, i
 !

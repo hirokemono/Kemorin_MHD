@@ -7,7 +7,7 @@
 !>@brief  Routine for gzipped binary doimain data IO
 !!
 !!@verbatim
-!!      subroutine gz_read_domain_info_b(my_rank_IO, comm_IO)
+!!      subroutine gz_read_domain_info_b(my_rank_IO, comm_IO, ierr)
 !!      subroutine gz_read_import_data_b(comm_IO)
 !!      subroutine gz_read_export_data_b(comm_IO)
 !!        type(communication_table), intent(inout) :: comm_IO
@@ -35,14 +35,26 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_read_domain_info_b(my_rank_IO, comm_IO)
+      subroutine gz_read_domain_info_b(my_rank_IO, comm_IO, ierr)
 !
-      integer(kind = kint), intent(inout) :: my_rank_IO
+      use m_error_IDs
+!
+      integer(kind = kint), intent(in) :: my_rank_IO
+!
       type(communication_table), intent(inout) :: comm_IO
+      integer(kind = kint), intent(inout) :: ierr
+!
+      integer(kind = kint) :: irank_read
 !
 !
-      call gz_read_one_integer_b(my_rank_IO)
+      call gz_read_one_integer_b(irank_read)
+      ierr = 0
+      if(irank_read .ne. my_rank_IO) then
+        ierr = ierr_mesh
+        return
+      end if
       call gz_read_one_integer_b(comm_IO%num_neib)
+!
 !
       call allocate_type_neib_id(comm_IO)
 !

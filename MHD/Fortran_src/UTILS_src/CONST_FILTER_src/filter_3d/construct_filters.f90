@@ -215,13 +215,13 @@
      &          tbl_crs, rhs_mat, FEM_elen, dxidxs, FEM_moments)
 !
       use m_ctl_param_newdom_filter
-      use m_read_mesh_data
-      use m_comm_data_IO
       use m_filter_file_names
       use set_parallel_file_name
       use correct_wrong_filters
       use filter_coefs_file_IO
       use filter_coefs_file_IO_b
+      use mesh_data_IO
+      use mesh_data_IO_b
 !
       type(CRS_matrix_connect), intent(inout) :: tbl_crs
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
@@ -233,7 +233,10 @@
       type(dxidx_data_type), intent(inout) :: dxidxs
       type(gradient_filter_mom_type), intent(inout) :: FEM_moments
 !
+      type(communication_table) :: comm_IO
+      type(node_data) ::           nod_IO
       character(len=kchara) :: file_name, fixed_file_name
+      integer(kind = kint) :: ierr
 !
 !
       if(iflag_debug.eq.1)  write(*,*)'cal_fmoms_ele_by_elen'
@@ -258,23 +261,36 @@
 !
       if (ifmt_3d_filter .eq. iflag_ascii) then
         open(org_filter_coef_code, file=file_name, form='formatted')
-        call read_filter_geometry(org_filter_coef_code)
+        call read_filter_geometry                                       &
+     &     (org_filter_coef_code, my_rank, comm_IO, nod_IO, ierr)
+        if(ierr .gt. 0) then
+          call calypso_mpi_abort(ierr, 'Filter data is wrong!!')
+        end if
 !
         open(id_new_filter_coef, file=fixed_file_name,                  &
      &       form='formatted')
-        call write_filter_geometry(id_new_filter_coef)
+        call write_filter_geometry                                      &
+     &     (id_new_filter_coef, my_rank, comm_IO, nod_IO)
         close(id_new_filter_coef)
       else
         call open_read_binary_file(file_name, my_rank)
-        call read_filter_geometry_b
+        call read_filter_geometry_b(my_rank, comm_IO, nod_IO, ierr)
+        if(ierr .gt. 0) then
+          call calypso_mpi_abort(ierr, 'Filter data is wrong!!')
+        end if
+!
         call close_binary_file
 !
         call open_write_binary_file(fixed_file_name)
-        call write_filter_geometry_b
+        call write_filter_geometry_b(my_rank, comm_IO, nod_IO)
         call close_binary_file
 !
         call open_read_binary_file(file_name, my_rank)
-        call read_filter_geometry_b
+        call read_filter_geometry_b(my_rank, comm_IO, nod_IO, ierr)
+        if(ierr .gt. 0) then
+          call calypso_mpi_abort(ierr, 'Filter data is wrong!!')
+        end if
+!
         call dealloc_node_geometry_base(nod_IO)
         call deallocate_type_comm_tbl(comm_IO)
       end if
@@ -317,8 +333,6 @@
      &          rhs_mat, FEM_elen, dxidxs, FEM_moments)
 !
       use m_ctl_param_newdom_filter
-      use m_comm_data_IO
-      use m_read_mesh_data
       use m_filter_file_names
       use m_filter_coefs
       use m_field_file_format
@@ -326,6 +340,8 @@
       use correct_wrong_filters
       use filter_coefs_file_IO
       use filter_coefs_file_IO_b
+      use mesh_data_IO
+      use mesh_data_IO_b
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -339,7 +355,10 @@
       type(dxidx_data_type), intent(inout) :: dxidxs
       type(gradient_filter_mom_type), intent(inout) :: FEM_moments
 !
+      type(communication_table) :: comm_IO
+      type(node_data) ::           nod_IO
       character(len=kchara) :: file_name, fixed_file_name
+integer(kind = kint) :: ierr
 !
 !
           if(iflag_debug.eq.1) write(*,*) 'alloc_filter_moms_nod_type'
@@ -360,23 +379,35 @@
 !
       if (ifmt_3d_filter .eq. iflag_ascii) then
         open(org_filter_coef_code, file=file_name, form='formatted')
-        call read_filter_geometry(org_filter_coef_code)
+        call read_filter_geometry                                       &
+     &     (org_filter_coef_code, my_rank, comm_IO, nod_IO, ierr)
+        if(ierr .gt. 0) then
+          call calypso_mpi_abort(ierr, 'Filter data is wrong!!')
+        end if
 !
         open(id_new_filter_coef, file=fixed_file_name,                  &
      &       form='formatted')
-        call write_filter_geometry(id_new_filter_coef)
+        call write_filter_geometry                                      &
+     &     (id_new_filter_coef, my_rank, comm_IO, nod_IO)
         close(id_new_filter_coef)
       else
         call open_read_binary_file(file_name, my_rank)
-        call read_filter_geometry_b
+        call read_filter_geometry_b(my_rank, comm_IO, nod_IO, ierr)
         call close_binary_file
+        if(ierr .gt. 0) then
+          call calypso_mpi_abort(ierr, 'Filter data is wrong!!')
+        end if
 !
         call open_write_binary_file(fixed_file_name)
-        call write_filter_geometry_b
+        call write_filter_geometry_b(my_rank, comm_IO, nod_IO)
         call close_binary_file
 !
         call open_read_binary_file(file_name, my_rank)
-        call read_filter_geometry_b
+        call read_filter_geometry_b(my_rank, comm_IO, nod_IO, ierr)
+        if(ierr .gt. 0) then
+          call calypso_mpi_abort(ierr, 'Filter data is wrong!!')
+        end if
+!
         call dealloc_node_geometry_base(nod_IO)
         call deallocate_type_comm_tbl(comm_IO)
       end if

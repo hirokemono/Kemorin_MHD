@@ -8,16 +8,16 @@
 !!
 !!@verbatim
 !!      subroutine read_sorted_filter_coef_file_b                       &
-!!     &         (file_name, my_rank, IO_filters)
+!!     &         (file_name, my_rank_IO, filter_IO, ierr)
 !!      subroutine write_sorted_filter_coef_file_b                      &
-!!     &         (file_name, my_rank, IO_filters)
-!!        type(filter_coefficients_type), intent(in) :: IO_filters
+!!     &         (file_name, my_rank_IO, filter_IO)
+!!        type(filter_file_data), intent(inout) :: filter_IO
 !!
-!!      subroutine read_filter_geometry_file_b(file_name, my_rank)
-!!      subroutine write_filter_geometry_file_b(file_name, my_rank)
-!!
-!!      subroutine read_filter_geometry_b
-!!      subroutine write_filter_geometry_b
+!!      subroutine read_filter_geometry_file_b                          &
+!!     &         (file_name, my_rank_IO, filter_IO, ierr)
+!!      subroutine write_filter_geometry_file_b                         &
+!!     &         (file_name, my_rank_IO, filter_IO)
+!!        type(filter_file_data), intent(inout) :: filter_IO
 !!@endverbatim
 !
       module filter_coefs_file_IO_b
@@ -26,6 +26,7 @@
       use m_machine_parameter
 !
       use m_file_format_switch
+      use t_filter_file_data
       use t_filter_coefficients
       use binary_IO
 !
@@ -42,23 +43,27 @@
 !------------------------------------------------------------------
 !
       subroutine read_sorted_filter_coef_file_b                         &
-     &         (file_name, my_rank, IO_filters)
+     &         (file_name, my_rank_IO, filter_IO, ierr)
 !
       use m_filter_file_names
+      use mesh_data_IO_b
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: my_rank_IO
       character(len=kchara), intent(in) :: file_name
-      type(filter_coefficients_type), intent(inout) :: IO_filters
+!
+      type(filter_file_data), intent(inout) :: filter_IO
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) then
+      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) then
         write(*,*) 'Read binary filter file: ', trim(file_name)
       end if
 !
-      call open_read_binary_file(file_name, my_rank)
-      call read_filter_geometry_b
-      call read_3d_filter_stack_b(IO_filters)
-      call read_3d_filter_weights_coef_b(IO_filters)
+      call open_read_binary_file(file_name, my_rank_IO)
+      call read_filter_geometry_b                                       &
+     &   (my_rank_IO, filter_IO%nod_comm, filter_IO%node, ierr)
+      call read_3d_filter_stack_b(filter_IO%filters)
+      call read_3d_filter_weights_coef_b(filter_IO%filters)
       call close_binary_file
 !
       end subroutine read_sorted_filter_coef_file_b
@@ -66,23 +71,25 @@
 !------------------------------------------------------------------
 !
       subroutine write_sorted_filter_coef_file_b                        &
-     &         (file_name, my_rank, IO_filters)
+     &         (file_name, my_rank_IO, filter_IO)
 !
       use m_filter_file_names
+      use mesh_data_IO_b
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: my_rank_IO
       character(len=kchara), intent(in) :: file_name
-      type(filter_coefficients_type), intent(in) :: IO_filters
+      type(filter_file_data), intent(inout) :: filter_IO
 !
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) then
+      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) then
         write(*,*) 'Write binary filter file: ', trim(file_name)
       end if
 !
       call open_write_binary_file(file_name)
-      call write_filter_geometry_b
-      call write_3d_filter_stack_b(IO_filters)
-      call write_3d_filter_weights_coef_b(IO_filters)
+      call write_filter_geometry_b                                      &
+     &   (my_rank_IO, filter_IO%nod_comm, filter_IO%node)
+      call write_3d_filter_stack_b(filter_IO%filters)
+      call write_3d_filter_weights_coef_b(filter_IO%filters)
 !
       call close_binary_file
 !
@@ -91,40 +98,51 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine read_filter_geometry_file_b(file_name, my_rank)
+      subroutine read_filter_geometry_file_b                            &
+     &         (file_name, my_rank_IO, filter_IO, ierr)
 !
       use m_filter_file_names
+      use mesh_data_IO_b
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: my_rank_IO
       character(len=kchara), intent(in) :: file_name
 !
+      type(filter_file_data), intent(inout) :: filter_IO
+      integer(kind = kint), intent(inout) :: ierr
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) then
+!
+      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) then
         write(*,*) 'Read binary filter file: ', trim(file_name)
       end if
 !
-      call open_read_binary_file(file_name, my_rank)
-      call read_filter_geometry_b
+      call open_read_binary_file(file_name, my_rank_IO)
+      call read_filter_geometry_b                                       &
+     &   (my_rank_IO, filter_IO%nod_comm, filter_IO%node, ierr)
       call close_binary_file
 !
       end subroutine read_filter_geometry_file_b
 !
 !------------------------------------------------------------------
 !
-      subroutine write_filter_geometry_file_b(file_name, my_rank)
+      subroutine write_filter_geometry_file_b                           &
+     &         (file_name, my_rank_IO, filter_IO)
 !
       use m_filter_file_names
+      use mesh_data_IO_b
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: my_rank_IO
       character(len=kchara), intent(in) :: file_name
 !
+      type(filter_file_data), intent(inout) :: filter_IO
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) then
+!
+      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) then
         write(*,*) 'Write binary filter file: ', trim(file_name)
       end if
 !
       call open_write_binary_file(file_name)
-      call write_filter_geometry_b
+      call write_filter_geometry_b                                      &
+     &   (my_rank_IO, filter_IO%nod_comm, filter_IO%node)
       call close_binary_file
 !
       end subroutine write_filter_geometry_file_b
@@ -166,27 +184,6 @@
 !  ---------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine read_filter_geometry_b
-!
-      use m_comm_data_IO
-      use m_read_mesh_data
-      use domain_data_IO_b
-      use mesh_data_IO_b
-!
-!
-      call read_domain_info_b(my_rank_IO, comm_IO)
-      call read_number_of_node_b(nod_IO)
-      call read_geometry_info_b(nod_IO)
-!
-! ----  import & export 
-!
-      call read_import_data_b(comm_IO)
-      call read_export_data_b(comm_IO)
-!
-      end subroutine read_filter_geometry_b
-!
-!------------------------------------------------------------------
-!
       subroutine read_3d_filter_weights_coef_b(IO_filters)
 !
       use binary_IO
@@ -206,25 +203,6 @@
       end subroutine read_3d_filter_weights_coef_b
 !
 !  ---------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine write_filter_geometry_b
-!
-      use m_comm_data_IO
-      use m_read_mesh_data
-      use mesh_data_IO_b
-      use domain_data_IO_b
-!
-!
-      call write_domain_info_b(my_rank_IO, comm_IO)
-!
-      call write_geometry_info_b(nod_IO)
-!
-      call write_import_data_b(comm_IO)
-      call write_export_data_b(comm_IO)
-!
-      end subroutine write_filter_geometry_b
-!
 !------------------------------------------------------------------
 !
       subroutine write_3d_filter_stack_b(IO_filters)

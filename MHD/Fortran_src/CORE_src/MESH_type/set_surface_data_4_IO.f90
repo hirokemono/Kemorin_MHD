@@ -1,23 +1,37 @@
-!set_surface_data_4_IO.f90
-!      module set_surface_data_4_IO
-!
-!     Written by H. Matsui on Dec., 2008
-!
-!!      subroutine copy_surf_connect_to_IO(surf, nele)
-!!      subroutine copy_surf_geometry_to_IO(surf)
-!!      subroutine copy_surf_geometry_to_IO_sph(surf)
-!!      subroutine copy_surf_geometry_to_IO_cyl(surf)
+!>@file   set_surface_data_4_IO.f90
+!!@brief  module set_surface_data_4_IO
 !!
-!!      subroutine copy_surf_connect_from_IO(surf, nele)
-!!        integer(kind = kint), intent(in) :: nele
+!!@author H. Matsui
+!!@date    programmed by H.Matsui in Dec., 2008
+!
+!>@brief Surface data transfer for IO
+!!
+!!@verbatim
+!!      subroutine copy_surf_connect_to_IO(surf, nele, ele_IO, sfed_IO)
+!!      subroutine copy_surf_geometry_to_IO(surf, nod_IO, sfed_IO)
+!!      subroutine copy_surf_geometry_to_IO_sph(surf, nod_IO, sfed_IO)
+!!      subroutine copy_surf_geometry_to_IO_cyl(surf, nod_IO, sfed_IO)
 !!        type(surface_data), intent(inout) :: surf
+!!        type(node_data), intent(inout) :: nod_IO
+!!        type(element_data), intent(inout) :: ele_IO
+!!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!!
+!!      subroutine copy_surf_connect_from_IO                            &
+!!     &         (ele_IO, sfed_IO, surf, nele)
+!!        integer(kind = kint), intent(in) :: nele
+!!        type(element_data), intent(inout) :: ele_IO
+!!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!!        type(surface_data), intent(inout) :: surf
+!!@endverbatim
 !
       module set_surface_data_4_IO
 !
       use m_precision
 !
       use t_surface_data
-      use m_read_mesh_data
+      use t_comm_table
+      use t_geometry_data
+      use t_read_mesh_data
 !
       implicit none
 !
@@ -27,12 +41,15 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_surf_connect_to_IO(surf, nele)
+      subroutine copy_surf_connect_to_IO(surf, nele, ele_IO, sfed_IO)
 !
       use m_geometry_constants
 !
       integer(kind = kint), intent(in) :: nele
       type(surface_data), intent(in) :: surf
+!
+      type(element_data), intent(inout) :: ele_IO
+      type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
 !
       ele_IO%numele =        surf%numsurf
@@ -72,9 +89,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_surf_geometry_to_IO(surf)
+      subroutine copy_surf_geometry_to_IO(surf, nod_IO, sfed_IO)
 !
       type(surface_data), intent(inout) :: surf
+      type(node_data), intent(inout) :: nod_IO
+      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!
       integer(kind = kint) :: isurf
 !
 !
@@ -104,9 +124,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_surf_geometry_to_IO_sph(surf)
+      subroutine copy_surf_geometry_to_IO_sph(surf, nod_IO, sfed_IO)
 !
       type(surface_data), intent(inout) :: surf
+      type(node_data), intent(inout) :: nod_IO
+      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!
       integer(kind = kint) :: isurf
 !
 !
@@ -135,9 +158,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_surf_geometry_to_IO_cyl(surf)
+      subroutine copy_surf_geometry_to_IO_cyl(surf, nod_IO, sfed_IO)
 !
       type(surface_data), intent(inout) :: surf
+      type(node_data), intent(inout) :: nod_IO
+      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!
       integer(kind = kint) :: isurf
 !
 !
@@ -166,11 +192,14 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine copy_surf_connect_from_IO(surf, nele)
+      subroutine copy_surf_connect_from_IO                              &
+     &         (ele_IO, sfed_IO, surf, nele)
 !
       use m_geometry_constants
 !
       integer(kind = kint), intent(in) :: nele
+      type(element_data), intent(inout) :: ele_IO
+      type(surf_edge_IO_data), intent(inout) :: sfed_IO
       type(surface_data), intent(inout) :: surf
 !
 !

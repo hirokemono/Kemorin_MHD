@@ -37,7 +37,6 @@
 !
       subroutine mpi_input_mesh(mesh, group, nnod_4_surf, nnod_4_edge)
 !
-      use m_read_boundary_data
       use mesh_MPI_IO_select
       use set_nnod_4_ele_by_type
       use load_mesh_data
@@ -46,9 +45,11 @@
       type(mesh_groups), intent(inout) ::   group
       integer(kind = kint), intent(inout) :: nnod_4_surf, nnod_4_edge
 !
+      type(mesh_data) :: fem_IO_m
 !
-      call sel_mpi_read_mesh
-      call set_mesh(mesh, group, nnod_4_surf, nnod_4_edge)
+!
+      call sel_mpi_read_mesh(fem_IO_m)
+      call set_mesh(fem_IO_m, mesh, group, nnod_4_surf, nnod_4_edge)
 !
       end subroutine mpi_input_mesh
 !
@@ -56,17 +57,16 @@
 !
       subroutine mpi_input_mesh_geometry(mesh)
 !
-      use m_read_boundary_data
       use mesh_MPI_IO_select
       use load_mesh_data
 !
       type(mesh_geometry), intent(inout) :: mesh
 !
+      type(mesh_geometry) :: mesh_IO_m
 !
-      call sel_mpi_read_mesh
-      call set_mesh_geometry_data(mesh)
 !
-      call deallocate_para_mesh_groups_IO
+      call sel_mpi_read_mesh_geometry(mesh_IO_m)
+      call set_mesh_geometry_data(mesh_IO_m, mesh)
 !
       end subroutine mpi_input_mesh_geometry
 !
@@ -75,29 +75,27 @@
 !
       subroutine mpi_output_mesh(mesh, group)
 !
-      use m_comm_data_IO
-      use m_read_boundary_data
       use mesh_MPI_IO_select
       use set_comm_table_4_IO
       use set_element_data_4_IO
-      use set_node_data_4_IO
+      use copy_mesh_structures
+      use load_mesh_data
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
 !
+      type(mesh_data) :: fem_IO_m
 !
-      my_rank_IO = my_rank
-      call copy_comm_tbl_type(mesh%nod_comm, comm_IO)
-      call copy_node_geometry_to_IO(mesh%node)
-      call copy_ele_connect_to_IO(mesh%ele)
+!
+      call copy_comm_tbl_type(mesh%nod_comm, fem_IO_m%mesh%nod_comm)
+      call copy_node_geometry_types(mesh%node, fem_IO_m%mesh%node)
+      call copy_ele_connect_to_IO(mesh%ele, fem_IO_m%mesh%ele)
 !
       call set_grp_data_to_IO                                           &
-     &   (group%nod_grp, group%ele_grp, group%surf_grp)
+     &   (group%nod_grp, group%ele_grp, group%surf_grp, fem_IO_m%group)
 !
 !       save mesh information
-      call sel_mpi_write_mesh_file
-!
-      call deallocate_mesh_groups_IO
+      call sel_mpi_write_mesh_file(fem_IO_m)
 !
       end subroutine mpi_output_mesh
 !

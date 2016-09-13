@@ -12,19 +12,8 @@
       module m_read_mesh_data
 !
       use m_precision
-      use t_geometry_data
-      use t_read_mesh_data
 !
       implicit  none
-!
-!>  structure for node data IO (position)
-      type(node_data), save ::    nod_IO
-!
-!>  structure for element data IO (connectivity)
-      type(element_data), save :: ele_IO
-!
-!>  structure for edge andsurface data IO
-      type(surf_edge_IO_data), save :: sfed_IO
 !
       integer(kind = kint)  :: iflag_mesh_file_fmt = 0
 !
@@ -46,7 +35,7 @@
 !
 !
 !   mesh file name
-      integer(kind=kint ) ::  input_file_code = 14
+      integer(kind = kint), parameter ::  input_file_code = 14
 !   i/o code for ucd data output file
 !
       end module m_read_mesh_data

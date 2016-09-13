@@ -49,10 +49,11 @@
       use m_file_format_switch
       use m_internal_4_partitioner
       use m_partitioner_comm_table
-      use m_comm_data_IO
+      use t_filter_file_data
       use set_parallel_file_name
       use filter_coefs_file_IO
       use filter_coefs_file_IO_b
+      use filter_moment_IO_select
       use work_comm_table_IO
       use set_filter_geometry_4_IO
       use set_filters_4_new_domains
@@ -60,10 +61,13 @@
       use set_comm_table_4_IO
 !
       use t_comm_table
+      use t_filter_file_data
 !
       character(len=kchara), intent(in) :: work_f_head
       integer(kind = kint), intent(in) :: my_rank2
       type(communication_table), intent(inout) :: new_comm
+!
+      type (filter_file_data), save :: filter_IO
       integer(kind = kint) :: ip2
 !
 !
@@ -89,22 +93,15 @@
       call set_newdomain_filtering_nod(ip2)
 !
 !          write(*,*) 'copy_comm_tbl_type(my_rank, new_comm)'
-      my_rank_IO = my_rank
-      call copy_comm_tbl_type(new_comm, comm_IO)
+      call copy_comm_tbl_type(new_comm, filter_IO%nod_comm)
       call deallocate_type_comm_tbl(new_comm)
 !
 !          write(*,*) 'copy_filtering_geometry_to_IO'
-      call copy_filtering_geometry_to_IO
+      call copy_filtering_geometry_to_IO(filter_IO%node)
       call deallocate_globalnod_filter
 !
-      call add_int_suffix(my_rank2, new_filter_coef_head,               &
-     &    mesh_file_name)
-!
-      if (iflag_mesh_file_fmt .eq. id_binary_file_fmt) then
-        call write_filter_geometry_file_b(mesh_file_name, my_rank2)
-      else
-        call write_filter_geometry_file(mesh_file_name, my_rank2)
-      end if
+      filter_file_head = new_filter_coef_head
+      call sel_write_filter_geometry_file(my_rank2, filter_IO)
 !
       write(*,*) 'write filter file end'
 !

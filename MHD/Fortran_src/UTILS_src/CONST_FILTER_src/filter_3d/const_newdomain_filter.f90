@@ -14,14 +14,12 @@
 !
       use calypso_mpi
       use t_geometry_data
-      use m_read_mesh_data
       use m_filter_func_4_sorting
       use m_filter_coefs
-      use m_comm_data_IO
       use set_parallel_file_name
       use mesh_IO_select
       use read_org_filter_coefs
-      use set_node_data_4_IO
+      use copy_mesh_structures
       use set_filters_4_new_domains
 !
       implicit none
@@ -38,7 +36,9 @@
       integer(kind = kint), intent(in) :: ip2, ifile_type
       integer(kind = kint), intent(inout) :: numele
       type(node_data), intent(inout) :: node
-      integer(kind = kint) :: ip, my_rank
+!
+      type(mesh_geometry) :: mesh_IO_f
+      integer(kind = kint) :: ip, my_rank, ierr
 !
 !
       call clear_imark_whole_nod
@@ -47,11 +47,17 @@
         my_rank = ip - 1
 !
         mesh_file_head = mesh_file_head
-        call sel_read_geometry_size(my_rank)
-        call copy_node_geometry_from_IO(node)
-        call deallocate_type_neib_id(comm_IO)
+        call sel_read_geometry_size(my_rank, mesh_IO_f, ierr)
+        if(ierr .gt. 0) then
+          call calypso_mpi_abort(ierr, 'Mesh data is wrong!!')
+        end if
 !
-        numele = ele_IO%numele
+!
+        call copy_node_geometry_types(mesh_IO_f%node, node)
+        numele = mesh_IO_f%ele%numele
+!
+        call dealloc_node_geometry_base(mesh_IO_f%node)
+        call deallocate_type_neib_id(mesh_IO_f%nod_comm)
 !
 !     read filtering information
 !
@@ -78,18 +84,26 @@
       integer(kind = kint), intent(in) :: ip2, ifile_type
       integer(kind = kint), intent(inout) :: numele
       type(node_data), intent(inout) :: node
-      integer(kind = kint) :: ip, my_rank, icou_st
+!
+      type(mesh_geometry) :: mesh_IO_f
+      integer(kind = kint) :: ip, my_rank, ierr, icou_st
 !
 !
       icou_st = 0
       do ip = 1, nprocs
         my_rank = ip - 1
 !
-        call sel_read_geometry_size(my_rank)
-        call copy_node_geometry_from_IO(node)
-        call deallocate_type_neib_id(comm_IO)
+        call sel_read_geometry_size(my_rank, mesh_IO_f, ierr)
+        if(ierr .gt. 0) then
+          call calypso_mpi_abort(ierr, 'Mesh data is wrong!!')
+        end if
 !
-        numele = ele_IO%numele
+!
+        call copy_node_geometry_types(mesh_IO_f%node, node)
+        numele = mesh_IO_f%ele%numele
+!
+        call dealloc_node_geometry_base(mesh_IO_f%node)
+        call deallocate_type_neib_id(mesh_IO_f%nod_comm)
 !
 !     read filtering information
 !

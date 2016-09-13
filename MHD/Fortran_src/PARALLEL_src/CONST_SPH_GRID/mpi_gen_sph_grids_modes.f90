@@ -88,7 +88,7 @@
       call copy_sph_comm_neib(comm_rlm_lc, comm_rlm_mul(ip))
 !
       call output_modes_rlm_sph_trans                                   &
-     &     (my_rank, sph_params, sph_rlm, comm_rlm_lc, sph_file_m)
+     &   (sph_params, sph_rlm, comm_rlm_lc, sph_file_m)
 !
       call sel_mpi_write_modes_rlm_file(nprocs, my_rank, sph_file_m)
       write(*,'(a,i6,a)') 'Spherical transform table for domain',       &
@@ -122,7 +122,7 @@
       call copy_sph_comm_neib(comm_rtm_lc, comm_rtm_mul(ip))
 !
       call output_geom_rtm_sph_trans                                    &
-     &     (my_rank, sph_params, sph_rtm, comm_rtm_lc, sph_file_m)
+     &   (sph_params, sph_rtm, comm_rtm_lc, sph_file_m)
 !
       call sel_mpi_write_geom_rtm_file(nprocs, my_rank, sph_file_m)
       write(*,'(a,i6,a)') 'Legendre transform table rtm',               &

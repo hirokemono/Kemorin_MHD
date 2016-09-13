@@ -7,7 +7,7 @@
 !>@brief  Routine for doimain data IO using zlib
 !!
 !!@verbatim
-!!      subroutine read_domain_info_gz(my_rank_IO, comm_IO)
+!!      subroutine read_domain_info_gz(my_rank_IO, comm_IO, ierr)
 !!      subroutine read_import_data_gz(comm_IO)
 !!      subroutine read_export_data_gz(comm_IO)
 !!        type(communication_table), intent(inout) :: comm_IO
@@ -35,13 +35,25 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_domain_info_gz(my_rank_IO, comm_IO)
+      subroutine read_domain_info_gz(my_rank_IO, comm_IO, ierr)
 !
-      integer(kind = kint), intent(inout) :: my_rank_IO
+      use m_error_IDs
+!
+      integer(kind = kint), intent(in) :: my_rank_IO
+!
       type(communication_table), intent(inout) :: comm_IO
+      integer(kind = kint), intent(inout) :: ierr
+!
+      integer(kind = kint) :: irank_read
 !
 !
-      call skip_gz_comment_int(my_rank_IO)
+      call skip_gz_comment_int(irank_read)
+!
+      ierr = 0
+      if(irank_read .ne. my_rank_IO) then
+        ierr = ierr_mesh
+        return
+      end if
 !
       call get_one_line_from_gz_f
       read(textbuf,*) comm_IO%num_neib

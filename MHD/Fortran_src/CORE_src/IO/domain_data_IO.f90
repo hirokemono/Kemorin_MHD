@@ -7,7 +7,7 @@
 !>@brief  Routine for doimain data IO
 !!
 !!@verbatim
-!!      subroutine read_domain_info(id_file, my_rank_IO, comm_IO)
+!!      subroutine read_domain_info(id_file, my_rank_IO, comm_IO, ierr)
 !!      subroutine read_import_data(id_file, comm_IO)
 !!      subroutine read_export_data(id_file)
 !!        type(communication_table), intent(inout) :: comm_IO
@@ -37,27 +37,36 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_domain_info(id_file, my_rank_IO, comm_IO)
+      subroutine read_domain_info(id_file, my_rank_IO, comm_IO, ierr)
 !
+      use m_error_IDs
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint), intent(inout) :: my_rank_IO
+      integer(kind = kint), intent(in) :: my_rank_IO
       type(communication_table), intent(inout) :: comm_IO
+      integer(kind = kint), intent(inout) :: ierr
 !
+      integer(kind = kint) :: irank_read
       character(len=255) :: character_4_read = ''
 !
 !
-       call skip_comment(character_4_read,id_file)
-       read(character_4_read,*) my_rank_IO
+      call skip_comment(character_4_read,id_file)
+      read(character_4_read,*) irank_read
 !
-       read(id_file,*) comm_IO%num_neib
+      ierr = 0
+      if(irank_read .ne. my_rank_IO) then
+        ierr = ierr_mesh
+        return
+      end if
 !
-       call allocate_type_neib_id(comm_IO)
+      read(id_file,*) comm_IO%num_neib
 !
-       if (comm_IO%num_neib .gt. 0) then
-         read(id_file,*) comm_IO%id_neib(1:comm_IO%num_neib)
-       end if
+      call allocate_type_neib_id(comm_IO)
+!
+      if (comm_IO%num_neib .gt. 0) then
+        read(id_file,*) comm_IO%id_neib(1:comm_IO%num_neib)
+      end if
 !
       end subroutine read_domain_info
 !

@@ -134,9 +134,6 @@
       use m_control_parameter
       use m_read_mesh_data
 !
-      use element_IO_select
-      use surface_IO_select
-      use edge_IO_select
       use set_3d_filtering_group_id
       use read_filtering_data
       use set_surface_data_4_IO

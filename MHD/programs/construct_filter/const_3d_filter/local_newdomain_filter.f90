@@ -43,6 +43,8 @@
       type(element_data), intent(inout) :: org_ele
       type(mesh_geometry), intent(inout) :: newmesh
 !
+      integer(kind = kint) :: ierr
+!
 !
       call allocate_num_internod_4_part(nprocs_2nd)
       call allocate_imark_whole_nod(nnod_s_domin)
@@ -55,7 +57,10 @@
 !
         write(*,*) 'set_inod_4_newdomain_filter'
         call set_inod_4_newdomain_filter                                &
-     &     (org_node, org_ele, newmesh%node)
+     &     (org_node, org_ele, newmesh%node, ierr)
+        if(ierr .gt. 0) then
+          call calypso_mpi_abort(ierr, 'Fileter is wrong!!')
+        end if
 !
 !    construct communication table
 !
@@ -94,6 +99,8 @@
       type(element_data), intent(inout) :: org_ele
       type(mesh_geometry), intent(inout) :: newmesh
 !
+      integer(kind = kint) :: ierr
+!
 !
       call allocate_num_internod_4_part(nprocs_2nd)
       call allocate_imark_whole_nod(nnod_s_domin)
@@ -102,7 +109,11 @@
       call allocate_inod_4_subdomain
 !
 !      write(*,*) 'set_inod_4_newdomain_filter'
-      call set_inod_4_newdomain_filter(org_node, org_ele, newmesh%node)
+      call set_inod_4_newdomain_filter                                  &
+     &   (org_node, org_ele, newmesh%node, ierr)
+      if(ierr .gt. 0) then
+        call calypso_mpi_abort(ierr, 'Fileter is wrong!!')
+      end if
 !
 !     construct communication table
 !

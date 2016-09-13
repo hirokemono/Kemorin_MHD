@@ -28,10 +28,13 @@
 !
       use m_filter_file_names
       use m_filter_coefs
-      use m_read_mesh_data
-      use m_comm_data_IO
+      use t_comm_table
+      use t_geometry_data
+!
       use filter_coefs_file_IO
       use filter_coefs_file_IO_b
+      use mesh_data_IO
+      use mesh_data_IO_b
       use binary_IO
 !
       integer(kind = kint), intent(in) :: my_rank
@@ -41,6 +44,9 @@
       integer(kind = kint):: ierr
       character(len=kchara) :: file_name
 !
+      type(communication_table) :: comm_IO
+      type(node_data) :: nod_IO
+!
 !
       call allocate_nod_ele_near_1nod(numnod, numele)
 !
@@ -49,7 +55,8 @@
       if (ifile_type .eq. 0) then
         write(*,*) 'ascii coefficients file name: ', trim(file_name)
         open(id_org_filter_coef, file=file_name, form='formatted')
-        call read_filter_geometry(id_org_filter_coef)
+        call read_filter_geometry                                       &
+     &     (id_org_filter_coef, my_rank, comm_IO, nod_IO, ierr)
 !
         inter_nod_3dfilter = nod_IO%internal_node
         call read_filter_coef_4_newdomain(id_org_filter_coef)
@@ -57,7 +64,7 @@
       else if(ifile_type .eq. 1) then
         write(*,*) 'binary coefficients file name: ', trim(file_name)
         call open_read_binary_file(file_name, my_rank)
-        call read_filter_geometry_b
+        call read_filter_geometry_b(my_rank, comm_IO, nod_IO, ierr)
 !
         inter_nod_3dfilter = nod_IO%internal_node
         call read_filter_coef_4_newdomain_b

@@ -41,9 +41,15 @@
       type(element_data), intent(inout) :: org_ele
       type(mesh_geometry), intent(inout) :: newmesh
 !
+      integer(kind = kint) :: ierr
+!
 !
       call filters_4_each_newdomain(my_rank, filtering,                 &
-     &    org_node, org_ele, newmesh%node, newmesh%ele)
+     &    org_node, org_ele, newmesh%node, newmesh%ele, ierr)
+      if(ierr .gt. 0) then
+        call calypso_mpi_abort(ierr, 'Mesh or filter data is wrong!!')
+      end if
+!
       call deallocate_local_nese_id_tbl
 !
       end subroutine filters_4_newdomains_para
@@ -61,13 +67,14 @@
       type(element_data), intent(inout) :: org_ele
       type(mesh_geometry), intent(inout) :: newmesh
 !
-      integer(kind = kint) :: ip2, my_rank_2nd
+      integer(kind = kint) :: ip2, my_rank_2nd, ierr
 !
 !
       do ip2 = 1, nprocs_2nd
         my_rank_2nd = ip2 - 1
         call filters_4_each_newdomain(my_rank_2nd, filtering,           &
-     &      org_node, org_ele, newmesh%node, newmesh%ele)
+     &      org_node, org_ele, newmesh%node, newmesh%ele, ierr)
+        if(ierr .gt. 0) stop 'Mesh or filter data is wrong!!'
       end do
 !
       call deallocate_local_nese_id_tbl
@@ -78,7 +85,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine filters_4_each_newdomain(my_rank2, filtering,          &
-     &          org_node, org_ele, new_node, new_ele)
+     &          org_node, org_ele, new_node, new_ele, ierr)
 !
       use m_ctl_param_newdom_filter
       use m_2nd_pallalel_vector
@@ -88,20 +95,22 @@
       use m_filter_file_names
       use m_filter_coefs
       use m_field_file_format
-      use m_read_mesh_data
-      use m_comm_data_IO
       use mesh_IO_select
       use copy_filters_4_sorting
       use const_newdomain_filter
       use set_parallel_file_name
-      use filter_coefs_file_IO
       use filter_IO_for_newdomain
       use set_filter_geometry_4_IO
+      use filter_moment_IO_select
+      use filter_coefs_file_IO
       use filter_coefs_file_IO_b
+      use mesh_data_IO
+      use mesh_data_IO_b
       use set_comm_table_4_IO
       use binary_IO
 !
-      use t_geometry_data
+      use t_mesh_data
+      use t_filter_file_data
 !
       integer(kind = kint), intent(in) :: my_rank2
 !
@@ -111,44 +120,40 @@
 !
       type(node_data), intent(inout) :: new_node
       type(element_data), intent(inout) :: new_ele
+      integer(kind = kint), intent(inout) :: ierr
 !
+      type(mesh_geometry) :: mesh_IO_f
+      type(filter_file_data) :: filter_IO
       integer(kind = kint) :: ip2
-      integer(kind = kint):: ierr
 !
 !
         ip2 = my_rank2 + 1
 !
         mesh_file_head = target_mesh_head
-        call sel_read_geometry_size(my_rank2)
-        call dealloc_node_geometry_base(nod_IO)
-        call deallocate_type_neib_id(comm_IO)
+        call sel_read_geometry_size(my_rank2, mesh_IO_f, ierr)
+        if(ierr .gt. 0) return
 !
-        new_node%internal_node = nod_IO%internal_node
-        new_node%numnod = nod_IO%numnod
-        new_ele%numele =  ele_IO%numele
+        new_node%internal_node = mesh_IO_f%node%internal_node
+        new_node%numnod = mesh_IO_f%node%numnod
+        new_ele%numele =  mesh_IO_f%ele%numele
 !
+        call dealloc_node_geometry_base(mesh_IO_f%node)
+        call deallocate_type_neib_id(mesh_IO_f%nod_comm)
 !
         call add_int_suffix(my_rank2, new_filter_coef_head,             &
      &      mesh_file_name)
 !
-        if (ifmt_3d_filter .eq. iflag_ascii) then
-!          write(*,*) 'ascii mesh file: ', trim(mesh_file_name)
-          open (filter_coef_code, file = mesh_file_name,                &
-     &      form = 'formatted')
-!          write(*,*) 'read_filter_geometry'
-          call read_filter_geometry(filter_coef_code)
-          close(filter_coef_code)
-        else
-          call open_read_binary_file(mesh_file_name, my_rank2)
-          call read_filter_geometry_b
-          call close_binary_file
-        end if
+        ifmt_filter_file = ifmt_3d_filter
+        filter_file_head = new_filter_coef_head
+        call sel_read_filter_geometry_file(my_rank2, filter_IO, ierr)
+        if(ierr .gt. 0) return
 !
 !        write(*,*) 'copy_filter_comm_tbl_from_IO'
-        call copy_comm_tbl_type(comm_IO, filtering%comm)
-        call deallocate_type_comm_tbl(comm_IO)
-!        write(*,*) 'copy_filtering_geometry_from_IO'
-        call copy_filtering_geometry_from_IO
+        call copy_comm_tbl_type(filter_IO%nod_comm, filtering%comm)
+        call copy_filtering_geometry_from_IO(filter_IO%node)
+!
+        call dealloc_node_geometry_base(filter_IO%node)
+        call deallocate_type_comm_tbl(filter_IO%nod_comm)
 !
 !        write(*,*) 'set_global_nodid_4_newfilter'
         call set_global_nodid_4_newfilter

@@ -5,8 +5,7 @@
 !
 !!      subroutine cal_filtered_scalar                                  &
 !!     &         (flt_comm, nod_comm, node, filter, filter_smp,         &
-!!     &          nnod_flt, num_filter_grp, id_filter_grp,              &
-!!     &          i_filter, i_scalar, x_flt, nod_fld)
+!!     &          nnod_flt, i_filter, i_scalar, x_flt, nod_fld)
 !!      subroutine cal_filtered_vector                                  &
 !!     &         (flt_comm, nod_comm, node, filter, filter_smp,         &
 !!     &          nnod_flt, num_filter_grp, id_filter_grp,              &
@@ -41,8 +40,7 @@
 !
       subroutine cal_filtered_scalar                                    &
      &         (flt_comm, nod_comm, node, filter, filter_smp,           &
-     &          nnod_flt, num_filter_grp, id_filter_grp,                &
-     &          i_filter, i_scalar, x_flt, nod_fld)
+     &          nnod_flt, i_filter, i_scalar, x_flt, nod_fld)
 !
       use cal_3d_filter_phys
       use cal_3d_filter_phys_smp
@@ -54,9 +52,7 @@
       type(node_data), intent(in) :: node
       type(filter_coefficients_type), intent(in) :: filter, filter_smp
 !
-      integer(kind = kint), intent(in) :: num_filter_grp
-      integer(kind = kint), intent(in) :: id_filter_grp(num_filter_grp)
-      integer (kind=kint), intent(in) :: nnod_flt, i_filter, i_scalar
+      integer(kind = kint), intent(in) :: nnod_flt, i_filter, i_scalar
 !
       real(kind = kreal), intent(inout) :: x_flt(nnod_flt)
       type(phys_data), intent(inout) :: nod_fld

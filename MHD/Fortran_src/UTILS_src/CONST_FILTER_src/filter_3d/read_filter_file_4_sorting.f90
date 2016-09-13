@@ -10,7 +10,10 @@
       module read_filter_file_4_sorting
 !
       use m_precision
+!
       use t_filtering_data
+      use t_comm_table
+      use t_geometry_data
 !
       implicit none
 !
@@ -30,13 +33,14 @@
       use m_filter_file_names
       use m_filter_coefs
       use m_filter_func_4_sorting
-      use m_comm_data_IO
       use set_comm_table_4_IO
       use filter_IO_for_sorting
       use set_parallel_file_name
       use filter_coefs_file_IO
       use filter_coefs_file_IO_b
       use set_filter_geometry_4_IO
+      use mesh_data_IO
+      use mesh_data_IO_b
       use binary_IO
 !
       integer(kind = kint), intent(in) :: ifile_type, my_rank
@@ -44,15 +48,20 @@
 !
       integer(kind = kint) :: ierr
       character(len=kchara) :: file_name
+      type(communication_table) :: comm_IO
+      type(node_data) :: nod_IO
 !
 !
       call add_int_suffix(my_rank, filter_coef_head, file_name)
       if ( ifile_type .eq. 0) then
         open(filter_coef_code, file=file_name, form='formatted')
-        call read_filter_geometry(filter_coef_code)
+        call read_filter_geometry                                       &
+     &     (filter_coef_code, my_rank, comm_IO, nod_IO, ierr)
 !
         call copy_comm_tbl_type(comm_IO, filtering%comm)
-        call copy_filtering_geometry_from_IO
+        call copy_filtering_geometry_from_IO(nod_IO)
+!
+        call dealloc_node_geometry_base(nod_IO)
         call deallocate_type_comm_tbl(comm_IO)
 !
         write(*,*) 'read_filter_neib_4_sort', inter_nod_3dfilter
@@ -60,10 +69,12 @@
         close(filter_coef_code)
       else if( ifile_type .eq. 1) then
         call open_read_binary_file(file_name, my_rank)
-        call read_filter_geometry_b
+        call read_filter_geometry_b(my_rank, comm_IO, nod_IO, ierr)
 !
         call copy_comm_tbl_type(comm_IO, filtering%comm)
-        call copy_filtering_geometry_from_IO
+        call copy_filtering_geometry_from_IO(nod_IO)
+!
+        call dealloc_node_geometry_base(nod_IO)
         call deallocate_type_comm_tbl(comm_IO)
 !
         call read_filter_neib_4_sort_b
@@ -102,13 +113,14 @@
       if ( ifile_type .eq. 0) then
         open(filter_coef_code, file=file_name, form='formatted')
 !
-        call read_filter_geometry(filter_coef_code)
+        call read_filter_geometry                                       &
+     &     (filter_coef_code, my_rank, comm_IO, nod_IO, ierr)
         write(*,*) 'read_filter_coef_4_sort'
         call read_filter_coef_4_sort(filter_coef_code)
         close(filter_coef_code)
       else if( ifile_type .eq. 1) then
         call open_read_binary_file(file_name, my_rank)
-        call read_filter_geometry_b
+        call read_filter_geometry_b(my_rank, comm_IO, nod_IO, ierr)
         call read_filter_neib_4_sort_b
         call read_filter_coef_4_sort_b(filtering%filter)
         call close_binary_file

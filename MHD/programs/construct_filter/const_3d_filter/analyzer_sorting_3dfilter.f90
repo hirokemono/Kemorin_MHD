@@ -58,8 +58,8 @@
       use m_filter_coefs
       use m_nod_filter_comm_table
       use m_filter_func_4_sorting
-      use m_comm_data_IO
 !
+      use t_filter_file_data
       use t_filter_coefficients
 !
       use load_mesh_data
@@ -69,8 +69,8 @@
       use set_filter_geometry_4_IO
       use set_comm_table_4_IO
 !
-      integer(kind=kint ) :: ip
-      type (filter_coefficients_type), save :: IO_filters
+      integer(kind=kint ) :: ip, ierr
+      type (filter_file_data), save :: filter_IO
 !
 !
 !  ---------------------------------------------------
@@ -83,7 +83,10 @@
 !  --  read geometry
 !
         if (iflag_debug.eq.1) write(*,*) 'input_mesh_geometry'
-        call input_mesh_geometry(my_rank, mesh_filter)
+        call input_mesh_geometry(my_rank, mesh_filter, ierr)
+        if(ierr .gt. 0) then
+          call calypso_mpi_abort(ierr, 'Error in mesh data')
+        end if
 !
         call deallocate_node_geometry_type(mesh_filter%node)
         call deallocate_type_comm_tbl(mesh_filter%nod_comm)
@@ -111,20 +114,20 @@
 !       output filter moment
 !  ---------------------------------------------------
 !
-        my_rank_IO = my_rank
-        call copy_comm_tbl_type(filtering_gen%comm, comm_IO)
-        call copy_filtering_geometry_to_IO
+        call copy_comm_tbl_type(filtering_gen%comm, filter_IO%nod_comm)
+        call copy_filtering_geometry_to_IO(filter_IO%node)
 !
-        call copy_3d_filter_stacks(filtering_gen%filter, IO_filters)
+        call copy_3d_filter_stacks                                      &
+     &     (filtering_gen%filter, filter_IO%filters)
         call copy_3d_filter_weight_func                                 &
-     &     (filtering_gen%filter, IO_filters)
+     &     (filtering_gen%filter, filter_IO%filters)
 !
         call deallocate_globalnod_filter
         call deallocate_type_comm_tbl(filtering_gen%comm)
 !
         ifmt_filter_file = ifmt_3d_filter
         filter_file_head = filter_3d_head
-        call sel_write_sort_filter_coef_file(my_rank, IO_filters)
+        call sel_write_sort_filter_coef_file(my_rank, filter_IO)
 !
 !  ---------------------------------------------------
 !       output filter moment

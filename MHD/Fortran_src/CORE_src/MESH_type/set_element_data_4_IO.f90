@@ -3,19 +3,27 @@
 !
 !     Written by H. Matsui on Dec., 2008
 !
-!      subroutine copy_ele_connect_to_IO(ele)
-!      subroutine copy_ele_connect_from_IO(ele)
-!
-!      subroutine copy_ele_geometry_to_IO(ele)
-!      subroutine copy_ele_sph_geom_to_IO(ele)
-!      subroutine copy_ele_cyl_geom_to_IO(ele)
+!!      subroutine copy_ele_connect_to_IO(ele, ele_IO)
+!!        type(element_data), intent(in) :: ele
+!!        type(element_data), intent(inout) :: ele_IO
+!!      subroutine copy_ele_connect_from_IO(ele_IO, ele)
+!!        type(element_data), intent(inout) :: ele_IO
+!!        type(element_data), intent(in) :: ele
+!!
+!!      subroutine copy_ele_geometry_to_IO(ele, nod_IO, sfed_IO)
+!!      subroutine copy_ele_sph_geom_to_IO(ele, nod_IO, sfed_IO)
+!!      subroutine copy_ele_cyl_geom_to_IO(ele, nod_IO, sfed_IO)
+!!        type(element_data), intent(in) :: ele
+!!        type(node_data), intent(inout) :: nod_IO
+!!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!!@endverbatim
 !
       module set_element_data_4_IO
 !
       use m_precision
 !
       use t_geometry_data
-      use m_read_mesh_data
+      use t_read_mesh_data
 !
       implicit none
 !
@@ -25,9 +33,10 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_ele_connect_to_IO(ele)
+      subroutine copy_ele_connect_to_IO(ele, ele_IO)
 !
       type(element_data), intent(in) :: ele
+      type(element_data), intent(inout) :: ele_IO
       integer(kind = kint) :: iele, k1
 !
 !
@@ -58,12 +67,14 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_ele_connect_from_IO(ele)
+      subroutine copy_ele_connect_from_IO(ele_IO, ele)
 !
       use m_geometry_constants
       use set_nnod_4_ele_by_type
 !
+      type(element_data), intent(inout) :: ele_IO
       type(element_data), intent(inout) :: ele
+!
       integer(kind = kint) :: iele, k1
 !
 !
@@ -72,8 +83,8 @@
         return
       end if
 !
+      ele_IO%first_ele_type = ele_IO%elmtyp(1)
       ele%numele = ele_IO%numele
-      ele%first_ele_type = ele_IO%elmtyp(1)
 !
       call set_nnod_4_ele_by_eletype                                    &
      &   (ele%first_ele_type, ele%nnod_4_ele)
@@ -98,16 +109,17 @@
 !$omp end do
 !$omp end parallel
 !
-      call deallocate_ele_connect_type(ele_IO)
-!
       end subroutine copy_ele_connect_from_IO
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine copy_ele_geometry_to_IO(ele)
+      subroutine copy_ele_geometry_to_IO(ele, nod_IO, sfed_IO)
 !
       type(element_data), intent(inout) :: ele
+      type(node_data), intent(inout) :: nod_IO
+      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!
       integer(kind = kint) :: iele
 !
 !
@@ -131,9 +143,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_ele_sph_geom_to_IO(ele)
+      subroutine copy_ele_sph_geom_to_IO(ele, nod_IO, sfed_IO)
 !
-      type(element_data), intent(inout) :: ele
+      type(element_data), intent(in) :: ele
+      type(node_data), intent(inout) :: nod_IO
+      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!
       integer(kind = kint) :: iele
 !
 !
@@ -158,9 +173,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_ele_cyl_geom_to_IO(ele)
+      subroutine copy_ele_cyl_geom_to_IO(ele, nod_IO, sfed_IO)
 !
-      type(element_data), intent(inout) :: ele
+      type(element_data), intent(in) :: ele
+      type(node_data), intent(inout) :: nod_IO
+      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!
       integer(kind = kint) :: iele
 !
 !

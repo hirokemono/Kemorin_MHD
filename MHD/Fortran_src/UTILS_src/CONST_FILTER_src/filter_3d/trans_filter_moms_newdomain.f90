@@ -19,8 +19,6 @@
       use m_constants
       use m_machine_parameter
       use m_ctl_param_newdom_filter
-      use m_comm_data_IO
-      use m_read_mesh_data
       use m_read_boundary_data
       use mesh_IO_select
       use set_parallel_file_name
@@ -55,12 +53,21 @@
       type(mesh_geometry), intent(inout) :: newmesh
       type(element_geometry), intent(inout) :: new_ele_mesh
 !
+      integer(kind = kint) :: ierr
 !
-      call count_nele_newdomain_para(my_rank)
+!
+      call count_nele_newdomain_para(my_rank, ierr)
+      if(ierr .gt. 0) then
+        call calypso_mpi_abort(ierr, 'Mesh for conversion is wrong!!')
+      end if
+!
       call allocate_iele_local_newfilter
 !
       call trans_filter_moms_each_domain                                &
-     &   (my_rank, orgmesh, org_ele_mesh, newmesh, new_ele_mesh)
+     &   (my_rank, orgmesh, org_ele_mesh, newmesh, new_ele_mesh, ierr)
+      if(ierr .gt. 0) then
+        call calypso_mpi_abort(ierr, 'Original mesh is wrong!!')
+      end if
 !
       call deallocate_iele_local_newfilter
 !
@@ -80,7 +87,7 @@
       type(mesh_geometry), intent(inout) :: newmesh
       type(element_geometry), intent(inout) :: new_ele_mesh
 !
-      integer(kind = kint) :: ip2, my_rank_2nd
+      integer(kind = kint) :: ip2, my_rank_2nd, ierr
 !
 !
       call count_nele_newdomain_single
@@ -90,7 +97,9 @@
       do ip2 = 1, nprocs_2nd
         my_rank_2nd = ip2 - 1
         call trans_filter_moms_each_domain                              &
-     &     (my_rank, orgmesh, org_ele_mesh, newmesh, new_ele_mesh)
+     &     (my_rank, orgmesh, org_ele_mesh,                             &
+     &      newmesh, new_ele_mesh, ierr)
+        if(ierr .gt. 0) stop  'Original mesh is wrong!!'
       end do
 !
       call deallocate_iele_local_newfilter
@@ -100,28 +109,33 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine count_nele_newdomain_para(my_rank_2nd)
+      subroutine count_nele_newdomain_para(my_rank_2nd, ierr)
 !
       use set_filter_moms_2_new_mesh
 !
       integer(kind = kint), intent(in) :: my_rank_2nd
+      integer(kind = kint), intent(inout) :: ierr
+!
+      type(mesh_geometry) :: mesh_IO_f
+!
       integer(kind = kint) :: iele
 !
 !
       mesh_file_head = target_mesh_head
-      call sel_read_mesh_geometry(my_rank_2nd)
+      call sel_read_mesh_geometry(my_rank_2nd, mesh_IO_f, ierr)
+      if(ierr .gt. 0) return
 !
       mesh_file_head = org_mesh_head
 !
-      max_gl_ele_newdomain = ele_IO%iele_global(1)
-      do iele = 2, ele_IO%numele
+      max_gl_ele_newdomain = mesh_IO_f%ele%iele_global(1)
+      do iele = 2, mesh_IO_f%ele%numele
         max_gl_ele_newdomain                                            &
-     &         = max(max_gl_ele_newdomain,ele_IO%iele_global(iele))
+     &      = max(max_gl_ele_newdomain,mesh_IO_f%ele%iele_global(iele))
       end do
 !
-      call deallocate_ele_connect_type(ele_IO)
-      call dealloc_node_geometry_base(nod_IO)
-      call deallocate_type_comm_tbl(comm_IO)
+      call deallocate_ele_connect_type(mesh_IO_f%ele)
+      call dealloc_node_geometry_base(mesh_IO_f%node)
+      call deallocate_type_comm_tbl(mesh_IO_f%nod_comm)
 !
       end subroutine count_nele_newdomain_para
 !
@@ -132,7 +146,8 @@
       use m_2nd_pallalel_vector
       use set_filter_moms_2_new_mesh
 !
-      integer(kind = kint) :: ip2, my_rank_2nd
+      type(mesh_geometry) :: mesh_IO_f
+      integer(kind = kint) :: ip2, my_rank_2nd, ierr
 !
 !
       max_gl_ele_newdomain = 0
@@ -141,11 +156,14 @@
 !
         mesh_file_head = target_mesh_head
         iflag_mesh_file_fmt = id_ascii_file_fmt
-        call sel_read_geometry_size(my_rank_2nd)
-        call dealloc_node_geometry_base(nod_IO)
-        call deallocate_type_neib_id(comm_IO)
+        call sel_read_geometry_size(my_rank_2nd, mesh_IO_f, ierr)
+        if(ierr .gt. 0) stop 'new mesh data is wrong'
 !
-        max_gl_ele_newdomain = max_gl_ele_newdomain + ele_IO%numele
+        max_gl_ele_newdomain = max_gl_ele_newdomain                     &
+     &                        + mesh_IO_f%ele%numele
+!
+        call dealloc_node_geometry_base(mesh_IO_f%node)
+        call deallocate_type_neib_id(mesh_IO_f%nod_comm)
       end do
 !
       end subroutine count_nele_newdomain_single
@@ -153,7 +171,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine trans_filter_moms_each_domain(my_rank_2nd,             &
-     &          orgmesh, org_ele_mesh, newmesh, new_ele_mesh)
+     &          orgmesh, org_ele_mesh, newmesh, new_ele_mesh, ierr)
 !
       use calypso_mpi
       use m_filter_file_names
@@ -172,30 +190,33 @@
       type(element_geometry), intent(inout) :: org_ele_mesh
       type(mesh_geometry), intent(inout) :: newmesh
       type(element_geometry), intent(inout) :: new_ele_mesh
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
       type(gradient_model_data_type), save :: FEM_elen_t
       type(gradient_filter_mom_type), save :: FEM_momenet1
 !
+      type(mesh_geometry) :: mesh_IO_f
       type(elen_ele_diffs_type) :: elen2_ele
       type(ele_mom_diffs_type), allocatable, save :: moment2_ele(:)
 !
 !
       iflag_mesh_file_fmt = id_ascii_file_fmt
       mesh_file_head = target_mesh_head
-      call sel_read_mesh(my_rank_2nd)
+      call sel_read_mesh_geometry(my_rank_2nd, mesh_IO_f, ierr)
       mesh_file_head = org_mesh_head
+      if(ierr .gt. 0) return
 !
-      call deallocate_mesh_groups_IO
-      call dealloc_node_geometry_base(nod_IO)
-      call deallocate_type_comm_tbl(comm_IO)
-!
-      newmesh%node%numnod = nod_IO%numnod
-      newmesh%node%internal_node = nod_IO%internal_node
-      call copy_ele_connect_from_IO(newmesh%ele)
+      newmesh%node%numnod = mesh_IO_f%node%numnod
+      newmesh%node%internal_node = mesh_IO_f%node%internal_node
+      call copy_ele_connect_from_IO(mesh_IO_f%ele, newmesh%ele)
       call set_3D_nnod_4_sfed_by_ele(newmesh%ele%nnod_4_ele,            &
      &                               new_ele_mesh%surf%nnod_4_surf,     &
      &                               new_ele_mesh%edge%nnod_4_edge)
+!
+      call deallocate_ele_connect_type(mesh_IO_f%ele)
+      call dealloc_node_geometry_base(mesh_IO_f%node)
+      call deallocate_type_comm_tbl(mesh_IO_f%nod_comm)
 !
 !    construct new filter table
 !
@@ -300,6 +321,7 @@
       type(ele_mom_diffs_type), intent(inout)                           &
      &               :: mom2_ele(mom1%num_filter_moms)
 !
+      type(mesh_geometry) :: mesh_IO_f
       integer(kind = kint) :: ip, my_rank_org, ierr
 !
 !
@@ -308,13 +330,14 @@
 !
         iflag_mesh_file_fmt = id_ascii_file_fmt
         mesh_file_head = target_mesh_head
-        call sel_read_mesh(my_rank_org)
+        call sel_read_mesh_geometry(my_rank_org, mesh_IO_f, ierr)
 !
-        call deallocate_mesh_groups_IO
-        call dealloc_node_geometry_base(nod_IO)
-        call deallocate_type_comm_tbl(comm_IO)
+        call copy_ele_connect_from_IO(mesh_IO_f%ele, org_ele)
 !
-        call copy_ele_connect_from_IO(org_ele)
+        call deallocate_ele_connect_type(mesh_IO_f%ele)
+        call dealloc_node_geometry_base(mesh_IO_f%node)
+        call deallocate_type_comm_tbl(mesh_IO_f%nod_comm)
+!
         call set_3D_nnod_4_sfed_by_ele(org_ele%nnod_4_ele,              &
      &     org_surf%nnod_4_surf, org_edge%nnod_4_edge)
 !

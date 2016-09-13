@@ -3,15 +3,17 @@
 !
 !     Written by H. Matsui on Apr., 2008
 !
-!      subroutine copy_filtering_geometry_to_IO
-!      subroutine copy_filtering_geometry_from_IO
+!!      subroutine copy_filtering_geometry_to_IO(nod_IO)
+!!        type(node_data), intent(inout) ::    nod_IO
+!!      subroutine copy_filtering_geometry_from_IO(nod_IO
+!!      type(node_data), intent(in) ::    nod_IO
 !
       module set_filter_geometry_4_IO
 !
       use m_precision
 !
       use m_nod_filter_comm_table
-      use m_read_mesh_data
+      use t_geometry_data
 !
       implicit none
 !
@@ -21,7 +23,9 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_filtering_geometry_to_IO
+      subroutine copy_filtering_geometry_to_IO(nod_IO)
+!
+      type(node_data), intent(inout) ::    nod_IO
 !
 !
       nod_IO%numnod =        nnod_filtering
@@ -39,7 +43,9 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine copy_filtering_geometry_from_IO
+      subroutine copy_filtering_geometry_from_IO(nod_IO)
+!
+      type(node_data), intent(in) ::    nod_IO
 !
 !
       nnod_filtering = nod_IO%numnod
@@ -51,8 +57,6 @@
       xx_filtering(1:nnod_filtering,1) = nod_IO%xx(1:nnod_filtering,1)
       xx_filtering(1:nnod_filtering,2) = nod_IO%xx(1:nnod_filtering,2)
       xx_filtering(1:nnod_filtering,3) = nod_IO%xx(1:nnod_filtering,3)
-!
-      call dealloc_node_geometry_base(nod_IO)
 !
       end subroutine copy_filtering_geometry_from_IO
 !

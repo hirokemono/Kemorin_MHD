@@ -96,7 +96,7 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &        'output_modes_rlm_sph_trans', ip_rank
         call output_modes_rlm_sph_trans                                 &
-     &     (ip_rank, sph_params, sph_rlm, comm_rlm_lc, sph_file_p)
+     &     (sph_params, sph_rlm, comm_rlm_lc, sph_file_p)
 !
         call sel_write_modes_rlm_file(ip_rank, sph_file_p)
         write(*,'(a,i6,a,i6)') 'Spherical transform table for domain',  &
@@ -137,7 +137,7 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &        'output_geom_rtm_sph_trans', ip_rank
         call output_geom_rtm_sph_trans                                  &
-     &     (ip_rank, sph_params, sph_rtm, comm_rtm_lc, sph_file_p)
+     &     (sph_params, sph_rtm, comm_rtm_lc, sph_file_p)
 !
         call sel_write_geom_rtm_file(ip_rank, sph_file_p)
         write(*,'(a,i6,a,i6)') 'Legendre transform table rtm',          &

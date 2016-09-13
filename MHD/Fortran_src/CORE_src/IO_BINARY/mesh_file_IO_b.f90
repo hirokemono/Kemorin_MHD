@@ -1,24 +1,33 @@
-!mesh_file_IO_b.f90
-!      module mesh_file_IO_b
+!>@file   mesh_file_IO_b.f90
+!!@brief  module mesh_file_IO_b
+!!
+!!@author H.Matsui
+!!@date     Programmed by H.Matsui in Apr., 2006
 !
-!      Written by H. Matsui on Apr., 2006
-!
-!      subroutine read_mesh_file_b(my_rank)
-!      subroutine read_mesh_geometry_b(my_rank)
-!
-!      subroutine read_node_size_b(my_rank)
-!      subroutine read_geometry_size_b(my_rank)
-!
-!      subroutine write_mesh_file_b(my_rank)
+!>@brief  Mesh file IO for binary format
+!!
+!!@verbatim
+!!      subroutine read_mesh_file_b(my_rank_IO, fem_IO, ierr)
+!!        type(mesh_data), intent(inout) :: fem_IO
+!!
+!!      subroutine read_mesh_geometry_b(my_rank_IO, mesh_IO, ierr)
+!!      subroutine read_node_size_b(my_rank_IO, mesh_IO, ierr)
+!!      subroutine read_geometry_size_b(my_rank_IO, mesh_IO, ierr)
+!!        type(mesh_geometry), intent(inout) :: mesh_IO
+!!
+!!      subroutine write_mesh_file_b(my_rank_IO, fem_IO)
+!!        type(mesh_data), intent(inout) :: fem_IO
+!!@endverbatim
 !
       module mesh_file_IO_b
 !
       use m_precision
       use m_machine_parameter
 !
-      use m_comm_data_IO
       use m_read_mesh_data
+      use t_mesh_data
       use binary_IO
+      use mesh_data_IO_b
 !
       implicit none
 !
@@ -28,29 +37,21 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_mesh_file_b(my_rank)
+      subroutine read_mesh_file_b(my_rank_IO, fem_IO, ierr)
 !
-      use m_machine_parameter
-      use m_read_boundary_data
-      use mesh_data_IO_b
-      use groups_IO_b
+      integer(kind = kint), intent(in) :: my_rank_IO
 !
-      integer(kind = kint), intent(in) :: my_rank
+      type(mesh_data), intent(inout) :: fem_IO
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &   'Read binary mesh file: ', trim(mesh_file_name)
 !
-      call open_read_binary_file(mesh_file_name, my_rank)
+      call open_read_binary_file(mesh_file_name, my_rank_IO)
 !
-      call read_geometry_data_b
-!
-!   read node group
-      call read_group_data_b(bc_grp_IO)
-!  read element group
-      call read_group_data_b(mat_grp_IO)
-!  read surface group
-      call read_surf_grp_data_b(surf_grp_IO)
+      call read_geometry_data_b(my_rank_IO, fem_IO%mesh, ierr)
+      call read_mesh_groups_b(fem_IO%group)
 !
       call close_binary_file
 !
@@ -58,62 +59,57 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_mesh_geometry_b(my_rank)
+      subroutine read_mesh_geometry_b(my_rank_IO, mesh_IO, ierr)
 !
-      use mesh_data_IO_b
+      integer(kind = kint), intent(in) :: my_rank_IO
 !
-      integer(kind = kint), intent(in) :: my_rank
+      type(mesh_geometry), intent(inout) :: mesh_IO
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &   'Read binary mesh file: ', trim(mesh_file_name)
 !
-      call open_read_binary_file(mesh_file_name, my_rank)
-      call read_geometry_data_b
+      call open_read_binary_file(mesh_file_name, my_rank_IO)
+      call read_geometry_data_b(my_rank_IO, mesh_IO, ierr)
       call close_binary_file
 !
       end subroutine read_mesh_geometry_b
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine read_node_size_b(my_rank)
+       subroutine read_node_size_b(my_rank_IO, mesh_IO, ierr)
 !
-       use domain_data_IO_b
-       use mesh_data_IO_b
+      integer(kind = kint), intent(in) :: my_rank_IO
 !
-      integer(kind = kint), intent(in) :: my_rank
+      type(mesh_geometry), intent(inout) :: mesh_IO
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &   'Read binary mesh file: ', trim(mesh_file_name)
 !
-      call open_read_binary_file(mesh_file_name, my_rank)
-      call read_domain_info_b(my_rank_IO, comm_IO)
-      call read_number_of_node_b(nod_IO)
+      call open_read_binary_file(mesh_file_name, my_rank_IO)
+      call read_num_node_b(my_rank_IO, mesh_IO, ierr)
       call close_binary_file
 !
       end subroutine read_node_size_b
 !
 !------------------------------------------------------------------
 !
-       subroutine read_geometry_size_b(my_rank)
+       subroutine read_geometry_size_b(my_rank_IO, mesh_IO, ierr)
 !
-       use domain_data_IO_b
-       use mesh_data_IO_b
+      integer(kind = kint), intent(in) :: my_rank_IO
 !
-      integer(kind = kint), intent(in) :: my_rank
+      type(mesh_geometry), intent(inout) :: mesh_IO
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &   'Read binary mesh file: ', trim(mesh_file_name)
 !
-      call open_read_binary_file(mesh_file_name, my_rank)
-!
-      call read_domain_info_b(my_rank_IO, comm_IO)
-      call read_number_of_node_b(nod_IO)
-      call read_geometry_info_b(nod_IO)
-!
-      call read_number_of_element_b(ele_IO)
+      call open_read_binary_file(mesh_file_name, my_rank_IO)
+      call read_num_node_ele_b(my_rank_IO, mesh_IO, ierr)
       call close_binary_file
 !
       end subroutine read_geometry_size_b
@@ -121,29 +117,18 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine write_mesh_file_b(my_rank)
+      subroutine write_mesh_file_b(my_rank_IO, fem_IO)
 !
-      use m_machine_parameter
-      use m_read_boundary_data
-      use mesh_data_IO_b
-      use groups_IO_b
-!
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: my_rank_IO
+      type(mesh_data), intent(inout) :: fem_IO
 !
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &   'Write binary mesh file: ', trim(mesh_file_name)
 !
       call open_write_binary_file(mesh_file_name)
-      call write_geometry_data_b
-!
-!   write node group
-      call write_grp_data_b(bc_grp_IO)
-!  write element group
-      call write_grp_data_b(mat_grp_IO)
-!  write surface group
-      call write_surf_grp_data_b(surf_grp_IO)
-!
+      call write_geometry_data_b(my_rank_IO, fem_IO%mesh)
+      call write_mesh_groups_b(fem_IO%group)
       call close_binary_file
 !
       end subroutine write_mesh_file_b

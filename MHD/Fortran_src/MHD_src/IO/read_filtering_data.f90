@@ -19,13 +19,12 @@
       use m_precision
       use m_machine_parameter
       use calypso_mpi
+      use t_comm_table
+      use t_geometry_data
       use t_filtering_data
 !
       implicit none
 !
-      type (filter_coefficients_type), save :: IO_filters
-!
-      private :: IO_filters
       private :: read_3d_filtering_data
       private :: read_3d_filter_moments, read_line_filtering_data
 !
@@ -80,7 +79,7 @@
      &         (filter_head, ifmt_filter, filtering)
 !
       use m_control_parameter
-      use m_comm_data_IO
+      use t_filter_file_data
 !
       use filter_moment_IO_select
       use set_filter_geometry_4_IO
@@ -91,19 +90,27 @@
       integer(kind = kint) , intent(in) :: ifmt_filter
       type(filtering_data_type), intent(inout) :: filtering
 !
+      type(filter_file_data) :: filter_IO_t
+      integer(kind = kint) :: ierr
+!
 !
       ifmt_filter_file = ifmt_filter
       filter_file_head = filter_head
-      call sel_read_sort_filter_coef_file(my_rank, IO_filters)
+      call sel_read_sort_filter_coef_file(my_rank, filter_IO_t, ierr)
+      if(ierr .gt. 0) then
+        call calypso_mpi_abort(ierr, 'Mesh data is wrong!!')
+      end if
 !
-      call copy_comm_tbl_type(comm_IO, filtering%comm)
-      call copy_filtering_geometry_from_IO
 !
-      call copy_3d_filter_stacks(IO_filters, filtering%filter)
-      call copy_3d_filter_weights(IO_filters, filtering%filter)
+      call copy_comm_tbl_type(filter_IO_t%nod_comm, filtering%comm)
+      call copy_filtering_geometry_from_IO(filter_IO_t%node)
 !
-      call deallocate_type_comm_tbl(comm_IO)
-      call dealloc_3d_filter_function(IO_filters)
+      call copy_3d_filter_stacks(filter_IO_t%filters, filtering%filter)
+      call copy_3d_filter_weights(filter_IO_t%filters, filtering%filter)
+!
+      call dealloc_node_geometry_base(filter_IO_t%node)
+      call deallocate_type_comm_tbl(filter_IO_t%nod_comm)
+      call dealloc_3d_filter_function(filter_IO_t%filters)
 !
       call deallocate_globalnod_filter
 !

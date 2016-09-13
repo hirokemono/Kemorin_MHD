@@ -8,12 +8,21 @@
 !>@brief Copy edge data between IO buffer
 !!
 !!@verbatim
-!!      subroutine copy_edge_connect_to_IO(edge, nele, nsurf)
-!!      subroutine copy_edge_geometry_to_IO(edge)
-!!      subroutine copy_edge_geometry_to_IO_sph(edge)
-!!      subroutine copy_edge_geometry_to_IO_cyl(edge)
+!!      subroutine copy_edge_connect_to_IO                              &
+!!     &         (edge, nele, nsurf, ele_IO, sfed_IO)
+!!      subroutine copy_edge_geometry_to_IO(edge, nod_IO, sfed_IO)
+!!      subroutine copy_edge_geometry_to_IO_sph(edge, nod_IO, sfed_IO)
+!!      subroutine copy_edge_geometry_to_IO_cyl(edge, nod_IO, sfed_IO)
+!!        type(edge_data), intent(inout) :: edge
+!!        type(node_data), intent(inout) :: nod_IO
+!!        type(element_data), intent(inout) :: ele_IO
+!!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !!
-!!      subroutine copy_edge_connect_from_IO(edge, nele, nsurf)
+!!      subroutine copy_edge_connect_from_IO                            &
+!!     &          (ele_IO, sfed_IO, edge, nele, nsurf)
+!!      type(element_data), intent(inout) :: ele_IO
+!!      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!!      type(edge_data), intent(inout) :: edge
 !!@endverbatim
 !
       module set_edge_data_4_IO
@@ -21,7 +30,9 @@
       use m_precision
 !
       use t_edge_data
-      use m_read_mesh_data
+      use t_comm_table
+      use t_geometry_data
+      use t_read_mesh_data
 !
       implicit none
 !
@@ -31,12 +42,15 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_edge_connect_to_IO(edge, nele, nsurf)
+      subroutine copy_edge_connect_to_IO                                &
+     &         (edge, nele, nsurf, ele_IO, sfed_IO)
 !
       use m_geometry_constants
 !
       integer(kind = kint), intent(in) :: nele, nsurf
       type(edge_data), intent(in) :: edge
+      type(element_data), intent(inout) :: ele_IO
+      type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
       integer(kind = kint) :: iele, isurf, iedge
 !
@@ -88,9 +102,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_edge_geometry_to_IO(edge)
+      subroutine copy_edge_geometry_to_IO(edge, nod_IO, sfed_IO)
 !
       type(edge_data), intent(inout) :: edge
+      type(node_data), intent(inout) :: nod_IO
+      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!
       integer(kind = kint) :: iedge
 !
 !
@@ -118,9 +135,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_edge_geometry_to_IO_sph(edge)
+      subroutine copy_edge_geometry_to_IO_sph(edge, nod_IO, sfed_IO)
 !
       type(edge_data), intent(inout) :: edge
+      type(node_data), intent(inout) :: nod_IO
+      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!
       integer(kind = kint) :: iedge
 !
 !
@@ -148,9 +168,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_edge_geometry_to_IO_cyl(edge)
+      subroutine copy_edge_geometry_to_IO_cyl(edge, nod_IO, sfed_IO)
 !
       type(edge_data), intent(inout) :: edge
+      type(node_data), intent(inout) :: nod_IO
+      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!
       integer(kind = kint) :: iedge
 !
 !
@@ -179,11 +202,14 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine copy_edge_connect_from_IO(edge, nele, nsurf)
+      subroutine copy_edge_connect_from_IO                              &
+     &          (ele_IO, sfed_IO, edge, nele, nsurf)
 !
       use m_geometry_constants
 !
       integer(kind = kint), intent(in) :: nele, nsurf
+      type(element_data), intent(inout) :: ele_IO
+      type(surf_edge_IO_data), intent(inout) :: sfed_IO
       type(edge_data), intent(inout) :: edge
 !
       integer(kind = kint) :: iele, isurf, iedge

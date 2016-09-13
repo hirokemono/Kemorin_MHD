@@ -60,7 +60,9 @@
       iflag_mesh_file_fmt = ifile_type
       mesh_file_head = original_mesh_head
       call input_mesh(my_rank, org_mesh, org_group,                     &
-     &    org_ele_mesh%surf%nnod_4_surf, org_ele_mesh%edge%nnod_4_edge)
+     &    org_ele_mesh%surf%nnod_4_surf, org_ele_mesh%edge%nnod_4_edge, &
+     &    ierr)
+      if(ierr .gt. 0) stop 'Original mesh is wrong!!'
 !
       if(iflag_read_old_refine_file .gt. 0) then
         call read_refinement_table(org_mesh%ele%numele)
