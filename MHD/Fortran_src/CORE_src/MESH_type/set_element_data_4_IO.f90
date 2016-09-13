@@ -83,7 +83,7 @@
         return
       end if
 !
-      ele_IO%first_ele_type = ele_IO%elmtyp(1)
+      ele%first_ele_type = ele_IO%elmtyp(1)
       ele%numele = ele_IO%numele
 !
       call set_nnod_4_ele_by_eletype                                    &

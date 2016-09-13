@@ -152,10 +152,13 @@
 !
 !
 !   read node group
+!      write(*,*) 'read_group_data node'
       call read_group_data(id_file, mesh_group_IO%nod_grp)
 !  read element group
+!      write(*,*) 'read_group_data ele'
       call read_group_data(id_file, mesh_group_IO%ele_grp)
 !  read surface group
+!      write(*,*) 'read_surf_grp_data surf'
       call read_surf_grp_data(id_file, mesh_group_IO%surf_grp)
 !
       end subroutine read_mesh_groups
