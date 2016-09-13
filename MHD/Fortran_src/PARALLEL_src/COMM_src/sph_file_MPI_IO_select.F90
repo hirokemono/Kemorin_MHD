@@ -61,7 +61,7 @@
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
       type(sph_file_data_type), intent(inout) :: sph_file
 !
-      integer(kind = kint) :: ierr
+      integer(kind = kint) :: ierr = 0
 !
 !
       call set_sph_rtp_file_name(sph_file_head, iflag_sph_file_fmt,     &
@@ -112,7 +112,7 @@
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
       type(sph_file_data_type), intent(inout) :: sph_file
 !
-      integer(kind = kint) :: ierr
+      integer(kind = kint) ::  ierr = 0
 !
 !
       call set_sph_rj_file_name(sph_file_head, iflag_sph_file_fmt,      &
@@ -163,7 +163,7 @@
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
       type(sph_file_data_type), intent(inout) :: sph_file
 !
-      integer(kind = kint) :: ierr
+      integer(kind = kint) ::  ierr = 0
 !
 !
       call set_sph_rtm_file_name(sph_file_head, iflag_sph_file_fmt,     &
@@ -214,7 +214,7 @@
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
       type(sph_file_data_type), intent(inout) :: sph_file
 !
-      integer(kind = kint) :: ierr
+      integer(kind = kint) ::  ierr = 0
 !
 !
       call set_sph_rlm_file_name(sph_file_head, iflag_sph_file_fmt,     &
