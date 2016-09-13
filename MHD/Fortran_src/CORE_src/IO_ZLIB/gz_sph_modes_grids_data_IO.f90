@@ -265,11 +265,11 @@
 !      write(*,*) '! global ID for each direction'
       call write_rj_gl_1d_table_gz(sph_IO)
 !
-      textbuf = hd_rj_comm() // char(0)
+      textbuf = hd_rj_glbl() // char(0)
       call gz_write_textbuf_no_lf
       call write_gl_nodes_sph_gz(sph_IO)
 !
-      textbuf = hd_rtp_comm() // char(0)
+      textbuf = hd_rj_comm() // char(0)
       call gz_write_textbuf_no_lf
       call write_import_data_gz(comm_IO)
 !

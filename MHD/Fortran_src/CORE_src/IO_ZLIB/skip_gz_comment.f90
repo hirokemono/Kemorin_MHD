@@ -292,11 +292,9 @@
       integer(kind = kint), intent(inout) :: istack(0:num)
       integer(kind = kint), intent(inout) :: ntot
 !
-      integer(kind = kint) :: ist
-!
 !
       istack(0) = 0
-      call read_gz_multi_int(num, istack)
+      call read_gz_multi_int(num, istack(1))
       ntot = istack(num)
 !
       end subroutine read_gz_integer_stack

@@ -90,7 +90,7 @@
       character(len=kchara) :: fmt_txt
 !
 !
-      textbuf = hd_rtp_glbl() // char(0)
+      textbuf = hd_segment() // char(0)
       call gz_write_textbuf_no_lf
 !
       write(fmt_txt,'(a1,i2,a9)')                                       &
