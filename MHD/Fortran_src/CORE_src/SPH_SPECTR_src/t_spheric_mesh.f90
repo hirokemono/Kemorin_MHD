@@ -47,16 +47,4 @@
         type(sph_group_data) ::  sph_grps
       end type sph_mesh_data
 !
-!
-!> Structure of spherical transform mesh IO
-      type sph_file_data_type
-!>        Structure for spherical harmonics table IO
-        type(sph_IO_data) :: sph_IO
-!>        data structure for communication table IO
-        type(communication_table) :: comm_IO
-!
-!>        Structure of group data for spherical transform
-        type(sph_group_data) :: sph_grp_IO
-      end type sph_file_data_type
-!
       end module t_spheric_mesh

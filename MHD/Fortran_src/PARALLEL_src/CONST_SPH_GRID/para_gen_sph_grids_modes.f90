@@ -52,6 +52,7 @@
       use t_sph_trans_comm_tbl
       use t_group_data
       use t_spheric_mesh
+      use t_spheric_data_IO
 !
       use set_local_sphere_by_global
 !

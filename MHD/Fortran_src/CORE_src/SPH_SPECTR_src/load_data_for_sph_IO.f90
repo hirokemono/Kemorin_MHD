@@ -72,6 +72,7 @@
       use t_spheric_rj_data
       use t_sph_trans_comm_tbl
       use t_group_data
+      use t_spheric_data_IO
 !
       implicit none
 !

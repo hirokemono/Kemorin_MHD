@@ -36,7 +36,7 @@
       use m_precision
       use m_machine_parameter
 !
-      use t_spheric_mesh
+      use t_spheric_data_IO
       use gz_sph_modes_data_IO_b
       use skip_gz_comment
 !

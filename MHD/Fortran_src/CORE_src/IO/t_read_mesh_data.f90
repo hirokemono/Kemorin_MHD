@@ -7,19 +7,12 @@
 !>@brief Data arry for mesh_data_IO
 !!
 !!@verbatim
-!!      subroutine alloc_surface_connect_IO(sfed_IO)
-!!      subroutine alloc_edge_connect_IO(sfed_IO)
-!!
-!!      subroutine dealloc_surface_connect_IO(sfed_IO)
-!!      subroutine dealloc_edge_connect_IO(sfed_IO)
-!!
-!!      subroutine alloc_ele_vector_IO(nod_IO, sfed_IO)
-!!      subroutine dealloc_ele_vector_IO(sfed_IO)
-!!
-!!      subroutine alloc_ele_scalar_IO(nod_IO, sfed_IO)
-!!      subroutine dealloc_ele_scalar_IO(sfed_IO)
-!!        type(node_data), intent(in) :: nod_IO
-!!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!!      subroutine alloc_multi_mesh_data_IO(nloop, mesh_IO)
+!!      subroutine alloc_multi_mesh_group_IO(mesh_IO, mesh_grp_IO)
+!!      subroutine dealloc_multi_mesh_data_IO(mesh_IO)
+!!      subroutine dealloc_multi_mesh_group_IO(mesh_grp_IO)
+!!        type(mul_mesh_geometry), intent(inout) :: mesh_IO
+!!        type(mul_mesh_data), intent(inout) :: mesh_grp_IO
 !!@endverbatim
 !
       module t_read_mesh_data
@@ -27,23 +20,12 @@
       use m_precision
       use t_comm_table
       use t_geometry_data
+      use t_group_data
+      use t_surf_edge_IO
 !
       implicit  none
 !
 !>
-      type surf_edge_IO_data
-        real(kind=kreal),   pointer :: ele_vector(:,:)
-        real(kind=kreal),   pointer :: ele_scalar(:)
-!
-        integer(kind = kint) :: nsf_4_ele
-        integer(kind = kint) :: nsurf_in_ele = 6
-        integer(kind = kint), pointer  :: isf_for_ele(:,:)
-!
-        integer(kind = kint) :: ned_4_ele
-        integer(kind = kint) :: nedge_in_ele
-        integer(kind = kint), pointer  :: iedge_for_ele(:,:)
-      end type surf_edge_IO_data
-!
       type surf_edge_IO_file
 !>        data structure for communication table IO
         type(communication_table) :: comm
@@ -55,114 +37,95 @@
         type(surf_edge_IO_data) :: sfed
       end type surf_edge_IO_file
 !
+!
+!>     Structure for grid data
+!>        (position, connectivity, and communication)
+      type mul_mesh_geometry
+!>      Number of subdomains in each process
+        integer(kind = kint) :: nloop_IO
+!
+!>     Structure for node communication
+        type(communication_table), pointer :: nod_comm(:)
+!>     Structure for node position
+        type(node_data), pointer ::           node(:)
+!>     Structure for element position and connectivity
+        type(element_data), pointer ::        ele(:)
+      end type mul_mesh_geometry
+!
+!>     Structure for group data (node, element, surface, and infinity)
+      type mul_mesh_groups
+!>     Structure for node group
+        type (group_data), pointer ::          nod_grp(:)
+!>     Structure for element group
+        type (group_data), pointer ::          ele_grp(:)
+!>     Structure for surface group
+        type (surface_group_data), pointer :: surf_grp(:)
+      end type mul_mesh_groups
+!
+!>     Structure for mesh data
+!>        (position, connectivity, group, and communication)
+      type mul_mesh_data
+!>     Structure for grid data
+        type(mul_mesh_geometry) :: mesh
+!>     Structure for group data
+        type(mul_mesh_groups) ::   group
+      end type mul_mesh_data
+!
 !------------------------------------------------------------------
 !
        contains
 !
 !------------------------------------------------------------------
 !
-      subroutine alloc_surface_connect_IO(sfed_IO)
+      subroutine alloc_multi_mesh_data_IO(nloop, mesh_IO)
 !
-      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+      integer(kind = kint), intent(in) :: nloop
+      type(mul_mesh_geometry), intent(inout) :: mesh_IO
 !
-      integer(kind = kint) :: num1, num2
+      mesh_IO%nloop_IO = nloop
+      allocate(mesh_IO%nod_comm(mesh_IO%nloop_IO))
+      allocate(mesh_IO%node(mesh_IO%nloop_IO))
+      allocate(mesh_IO%ele(mesh_IO%nloop_IO))
 !
-!
-      num1 = sfed_IO%nsf_4_ele
-      num2 = sfed_IO%nsurf_in_ele
-      allocate( sfed_IO%isf_for_ele(num1,num2) )
-      sfed_IO%isf_for_ele = 0
-!
-      end subroutine alloc_surface_connect_IO
+      end subroutine alloc_multi_mesh_data_IO
 !
 !------------------------------------------------------------------
 !
-      subroutine alloc_edge_connect_IO(sfed_IO)
+      subroutine alloc_multi_mesh_group_IO(mesh_IO, mesh_grp_IO)
 !
-      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+      type(mul_mesh_geometry), intent(in) :: mesh_IO
+      type(mul_mesh_groups), intent(inout) :: mesh_grp_IO
 !
-      integer(kind = kint) :: num1, num2
+      allocate(mesh_grp_IO%nod_grp(mesh_IO%nloop_IO))
+      allocate(mesh_grp_IO%ele_grp(mesh_IO%nloop_IO))
+      allocate(mesh_grp_IO%surf_grp(mesh_IO%nloop_IO))
 !
-!
-      num1 = sfed_IO%ned_4_ele
-      num2 = sfed_IO%nedge_in_ele
-      allocate(sfed_IO%iedge_for_ele(num1,num2) )
-      sfed_IO%iedge_for_ele = 0
-!
-      end subroutine alloc_edge_connect_IO
+      end subroutine alloc_multi_mesh_group_IO
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine dealloc_surface_connect_IO(sfed_IO)
+      subroutine dealloc_multi_mesh_data_IO(mesh_IO)
 !
-      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+      type(mul_mesh_geometry), intent(inout) :: mesh_IO
 !
+      deallocate(mesh_IO%nod_comm)
+      deallocate(mesh_IO%node)
+      deallocate(mesh_IO%ele)
 !
-      deallocate( sfed_IO%isf_for_ele )
-!
-      end subroutine dealloc_surface_connect_IO
-!
-!------------------------------------------------------------------
-!
-      subroutine dealloc_edge_connect_IO(sfed_IO)
-!
-      type(surf_edge_IO_data), intent(inout) :: sfed_IO
-!
-!
-      deallocate( sfed_IO%iedge_for_ele )
-!
-      end subroutine dealloc_edge_connect_IO
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine alloc_ele_vector_IO(nod_IO, sfed_IO)
-!
-      type(node_data), intent(in) :: nod_IO
-      type(surf_edge_IO_data), intent(inout) :: sfed_IO
-!
-!
-      allocate( sfed_IO%ele_vector(nod_IO%numnod,3) )
-      sfed_IO%ele_vector = 0.0d0
-!
-      end subroutine alloc_ele_vector_IO
+      end subroutine dealloc_multi_mesh_data_IO
 !
 !------------------------------------------------------------------
 !
-      subroutine dealloc_ele_vector_IO(sfed_IO)
+      subroutine dealloc_multi_mesh_group_IO(mesh_grp_IO)
 !
-      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+      type(mul_mesh_groups), intent(inout) :: mesh_grp_IO
 !
+      deallocate(mesh_grp_IO%nod_grp)
+      deallocate(mesh_grp_IO%ele_grp)
+      deallocate(mesh_grp_IO%surf_grp)
 !
-      deallocate( sfed_IO%ele_vector )
-!
-      end subroutine dealloc_ele_vector_IO
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine alloc_ele_scalar_IO(nod_IO, sfed_IO)
-!
-      type(node_data), intent(in) :: nod_IO
-      type(surf_edge_IO_data), intent(inout) :: sfed_IO
-!
-!
-      allocate( sfed_IO%ele_scalar(nod_IO%numnod) )
-      sfed_IO%ele_scalar = 0.0d0
-!
-      end subroutine alloc_ele_scalar_IO
-!
-!------------------------------------------------------------------
-!
-      subroutine dealloc_ele_scalar_IO(sfed_IO)
-!
-      type(surf_edge_IO_data), intent(inout) :: sfed_IO
-!
-!
-      deallocate( sfed_IO%ele_scalar )
-!
-      end subroutine dealloc_ele_scalar_IO
+      end subroutine dealloc_multi_mesh_group_IO
 !
 !------------------------------------------------------------------
 !

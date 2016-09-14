@@ -36,7 +36,7 @@
       use m_precision
       use m_machine_parameter
 !
-      use t_spheric_mesh
+      use t_spheric_data_IO
       use sph_modes_grids_data_IO
 !
       implicit none

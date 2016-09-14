@@ -23,21 +23,39 @@
 !
 !>      Structure for real array for MPI-IO
       type realarray_IO
+        integer(kind = kint) :: num
         real(kind = kreal), pointer :: r_IO(:)
       end type realarray_IO
 !
+!>      Structure for 2D vectr array for MPI-IO
+      type vectarray_IO
+        integer(kind = kint) :: n1
+        integer(kind = kint) :: n2
+        real(kind = kreal), pointer :: v_IO(:,:)
+      end type vectarray_IO
+!
 !>      Structure for integer array for MPI-IO
       type intarray_IO
+        integer(kind = kint) :: num
         integer(kind = kint), pointer :: i_IO(:)
       end type intarray_IO
 !
+!>      Structure for integer vector array for MPI-IO
+      type ivecarray_IO
+        integer(kind = kint) :: n1
+        integer(kind = kint) :: n2
+        integer(kind = kint), pointer :: iv_IO(:,:)
+      end type ivecarray_IO
+!
 !>      Structure for 8-byte integer array for MPI-IO
       type int8array_IO
+        integer(kind = kint) :: num
         integer(kind = kint_gl), pointer :: i8_IO(:)
       end type int8array_IO
 !
 !>      Structure for 8-byte integer array for MPI-IO
       type charaarray_IO
+        integer(kind = kint) :: num
         character(len = 1), pointer :: c_IO(:)
       end type charaarray_IO
 !
@@ -65,7 +83,11 @@
 !>        Structure for real array for MPI-IO
         type(realarray_IO), pointer ::  r_array(:)
 !>        Structure for real array for MPI-IO
+        type(vectarray_IO), pointer ::  v_array(:)
+!>        Structure for real array for MPI-IO
         type(intarray_IO), pointer ::   i_array(:)
+!>        Structure for real array for MPI-IO
+        type(ivecarray_IO), pointer ::  iv_array(:)
 !>        Structure for real array for MPI-IO
         type(int8array_IO), pointer ::  i8_array(:)
 !>        Structure for real array for MPI-IO
@@ -95,7 +117,9 @@
      &                                   my_rank, IO_param%nloop
 !
       allocate(IO_param%r_array(IO_param%nloop))
+      allocate(IO_param%v_array(IO_param%nloop))
       allocate(IO_param%i_array(IO_param%nloop))
+      allocate(IO_param%iv_array(IO_param%nloop))
       allocate(IO_param%i8_array(IO_param%nloop))
       allocate(IO_param%c_array(IO_param%nloop))
 !
@@ -120,7 +144,8 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
 !
-      deallocate(IO_param%r_array, IO_param%c_array)
+      deallocate(IO_param%r_array, IO_param%v_array)
+      deallocate(IO_param%c_array, IO_param%iv_array)
       deallocate(IO_param%i_array, IO_param%i8_array)
       deallocate(IO_param%istack_merged)
       deallocate(IO_param%num_lc, IO_param%num_gl)

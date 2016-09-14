@@ -33,6 +33,7 @@
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
       use t_group_data
+      use t_spheric_data_IO
 !
       implicit none
 !

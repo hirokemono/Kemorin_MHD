@@ -23,6 +23,7 @@
 !
       use m_precision
       use t_geometry_data
+      use t_surf_edge_IO
       use t_read_mesh_data
 !
       implicit none

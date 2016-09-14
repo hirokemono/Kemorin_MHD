@@ -7,6 +7,10 @@
 !> @brief Structure for field data IO
 !!
 !!@verbatim
+!!      subroutine alloc_multi_field_data_IO(nloop, mul_f)
+!!      subroutine dealloc_multi_field_data_IO(mul_f)
+!!        type(multi_field_IO), intent(inout) :: mul_f
+!!
 !!      subroutine alloc_phys_name_IO(fld_IO)
 !!      subroutine alloc_phys_data_IO(fld_IO)
 !!      subroutine alloc_merged_field_stack(nprocs, fld_IO)
@@ -60,6 +64,16 @@
         integer(kind = kint_gl), pointer :: istack_numnod_IO(:)
       end type field_IO
 !
+!
+!>      Structure for field data IO for multiple domains
+      type multi_field_IO
+!>        Number of subdomains in each process
+        integer(kind = kint) :: nloop_IO
+!>        Structure for field data IO
+        type(field_IO), pointer :: fld_IO(:)
+      end type multi_field_IO
+!
+!
 !>      Structure for field data IO paramters
       type field_IO_params
 !>        Output flag for spherical harmonics coefficients data
@@ -74,6 +88,29 @@
 !
       contains
 !
+! -------------------------------------------------------------------
+!
+      subroutine alloc_multi_field_data_IO(nloop, mul_f)
+!
+      integer(kind = kint), intent(in) :: nloop
+      type(multi_field_IO), intent(inout) :: mul_f
+!
+      mul_f%nloop_IO = nloop
+      allocate(mul_f%fld_IO(mul_f%nloop_IO))
+!
+      end subroutine alloc_multi_field_data_IO
+!
+! -------------------------------------------------------------------
+!
+      subroutine dealloc_multi_field_data_IO(mul_f)
+!
+      type(multi_field_IO), intent(inout) :: mul_f
+!
+      deallocate(mul_f%fld_IO)
+!
+      end subroutine dealloc_multi_field_data_IO
+!
+! -------------------------------------------------------------------
 ! -------------------------------------------------------------------
 !
       subroutine alloc_phys_name_IO(fld_IO)

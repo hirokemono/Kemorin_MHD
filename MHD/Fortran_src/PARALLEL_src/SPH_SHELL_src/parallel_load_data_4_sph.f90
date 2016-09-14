@@ -36,6 +36,7 @@
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
       use t_spheric_mesh
+      use t_spheric_data_IO
       use sph_file_MPI_IO_select
       use set_loaded_data_4_sph
 !

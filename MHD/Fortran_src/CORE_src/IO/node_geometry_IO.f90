@@ -8,8 +8,8 @@
 !>@brief  routines for ASCII data IO for mesh geometry
 !!
 !!@verbatim
-!!      function each_node_data_buffer(inod_gl, xx)
-!!      subroutine read_each_node_data_buffer(textbuf, inod_gl, vect)
+!!      function write_each_node_buffer(inod, nod_IO)
+!!      subroutine read_each_node_buffer(textbuf, inod, nod_IO)
 !!
 !!      subroutine write_geometry_info(id_file, nod_IO)
 !!      subroutine write_scalar_in_element(id_file, nod_IO, sfed_IO)
@@ -27,16 +27,17 @@
 !
       use t_geometry_data
       use t_read_mesh_data
+      use t_surf_edge_IO
 !
       implicit none
 !
       integer(kind = kint), parameter                                   &
-     &             :: len_each_node_data_buf = 16 + 3*25 + 1
+     &             :: len_each_node_buffer = 16 + 3*25 + 1
 !
       character(len=255) :: character_4_read
       private :: character_4_read
 !
-      private :: each_node_data_buffer
+      private :: write_each_node_buffer
 !
 !------------------------------------------------------------------
 !
@@ -44,30 +45,31 @@
 !
 !------------------------------------------------------------------
 !
-      function each_node_data_buffer(inod_gl, xx)
+      function write_each_node_buffer(inod, nod_IO)
 !
-      integer(kind = kint_gl), intent(inout) :: inod_gl
-      real(kind = kreal), intent(in) :: xx(3)
+      integer (kind = kint), intent(in) :: inod
+      type(node_data), intent(in) :: nod_IO
 !
-      character(len_each_node_data_buf) :: each_node_data_buffer
+      character(len=len_each_node_buffer) :: write_each_node_buffer
 !
 !
-      write(each_node_data_buffer,'(i16,1p3E25.15e3,a1)')               &
-     &      inod_gl, xx(1:3), char(10)
+      write(write_each_node_buffer,'(i16,1p3E25.15e3,a1)')              &
+     &         nod_IO%inod_global(inod), nod_IO%xx(inod,1:3), char(10)
 !
-      end function each_node_data_buffer
+      end function write_each_node_buffer
 !
 ! -------------------------------------------------------------------
 !
-      subroutine read_each_node_data_buffer(textbuf, inod_gl, vect)
+      subroutine read_each_node_buffer(textbuf, inod, nod_IO)
 !
-      character(len=len_each_node_data_buf), intent(in) :: textbuf
-      integer(kind = kint_gl), intent(inout) :: inod_gl
-      real(kind = kreal), intent(inout) :: vect(3)
+      integer (kind = kint), intent(in) :: inod
+      character(len=len_each_node_buffer), intent(in) :: textbuf
+      type(node_data), intent(inout) :: nod_IO
 !
-      read(textbuf,*) inod_gl, vect(1:3)
 !
-      end subroutine read_each_node_data_buffer
+      read(textbuf,*) nod_IO%inod_global(inod), nod_IO%xx(inod,1:3)
+!
+      end subroutine read_each_node_buffer
 !
 ! -------------------------------------------------------------------
 ! -------------------------------------------------------------------

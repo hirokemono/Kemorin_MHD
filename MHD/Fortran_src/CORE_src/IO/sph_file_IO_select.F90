@@ -33,7 +33,7 @@
       use m_precision
 !
       use m_file_format_switch
-      use t_spheric_mesh
+      use t_spheric_data_IO
       use set_parallel_file_name
       use set_mesh_file_names
 !

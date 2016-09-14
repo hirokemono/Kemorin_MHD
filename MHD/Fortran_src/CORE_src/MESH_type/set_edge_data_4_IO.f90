@@ -32,6 +32,7 @@
       use t_edge_data
       use t_comm_table
       use t_geometry_data
+      use t_surf_edge_IO
       use t_read_mesh_data
 !
       implicit none

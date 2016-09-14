@@ -158,6 +158,7 @@
 !
       use m_control_params_2nd_files
       use t_spheric_mesh
+      use t_spheric_data_IO
       use sph_file_MPI_IO_select
       use radial_interpolation
 !

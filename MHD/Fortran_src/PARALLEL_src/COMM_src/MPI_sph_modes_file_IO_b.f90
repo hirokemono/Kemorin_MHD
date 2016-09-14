@@ -37,7 +37,7 @@
       use m_precision
       use m_machine_parameter
 !
-      use t_spheric_mesh
+      use t_spheric_data_IO
       use t_calypso_mpi_IO_param
       use MPI_sph_modes_data_IO_b
 !
