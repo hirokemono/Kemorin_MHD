@@ -35,12 +35,12 @@
 !
       implicit  none
 !
-      private :: gz_mpi_write_geometry_info
-      private :: gz_mpi_write_element_info
-      private :: gz_mpi_read_number_of_node
-      private :: gz_mpi_read_geometry_info
-      private :: gz_mpi_read_number_of_element
-      private :: gz_mpi_read_element_info
+!      private :: gz_mpi_write_geometry_info
+!      private :: gz_mpi_write_element_info
+!      private :: gz_mpi_read_number_of_node
+!      private :: gz_mpi_read_geometry_info
+!      private :: gz_mpi_read_number_of_element
+!      private :: gz_mpi_read_element_info
 !
 !------------------------------------------------------------------
 !

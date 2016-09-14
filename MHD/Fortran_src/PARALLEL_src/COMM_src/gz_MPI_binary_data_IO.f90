@@ -71,7 +71,6 @@
       integer(kind = kint), intent(in) :: int_dat(num)
 !
       integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength, ip
-      integer(kind = kint) :: ilen_gzipped_gl(nprocs)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
@@ -81,15 +80,7 @@
       call gzip_defleat_once(ilength, int_dat(1), ilen_gz,              &
      &   ilen_gzipped, IO_param%c_array(1)%c_IO(1))
 !
-      call MPI_Allgather(ilen_gzipped, ione, CALYPSO_INTEGER,           &
-     &    ilen_gzipped_gl, ione, CALYPSO_INTEGER, CALYPSO_COMM,         &
-     &    ierr_MPI)
-!
-      IO_param%istack_merged(0) = 0
-      do ip = 1, nprocs
-        IO_param%istack_merged(ip) = IO_param%istack_merged(ip-1)       &
-     &                              + ilen_gzipped_gl(ip)
-      end do
+      call set_istack_over_subdomains(ilen_gzipped, IO_param)
 !
       call gz_mpi_write_i8stack_head_b                                  &
      &   (IO_param, nprocs, IO_param%istack_merged)
@@ -115,7 +106,6 @@
       integer(kind = kint_gl), intent(in) :: int8_dat(num)
 !
       integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength, ip
-      integer(kind = kint) :: ilen_gzipped_gl(nprocs)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
@@ -125,15 +115,7 @@
       call gzip_defleat_once(ilength, int8_dat(1), ilen_gz,             &
      &    ilen_gzipped, IO_param%c_array(1)%c_IO(1))
 !
-      call MPI_Allgather(ilen_gzipped, ione, CALYPSO_INTEGER,           &
-     &    ilen_gzipped_gl, ione, CALYPSO_INTEGER, CALYPSO_COMM,         &
-     &    ierr_MPI)
-!
-      IO_param%istack_merged(0) = 0
-      do ip = 1, nprocs
-        IO_param%istack_merged(ip) = IO_param%istack_merged(ip-1)       &
-     &                              + ilen_gzipped_gl(ip)
-      end do
+      call set_istack_over_subdomains(ilen_gzipped, IO_param)
 !
       call gz_mpi_write_i8stack_head_b                                  &
      &   (IO_param, nprocs, IO_param%istack_merged)
@@ -159,7 +141,6 @@
       real(kind = kreal), intent(in) :: real_dat(num)
 !
       integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength, ip
-      integer(kind = kint) :: ilen_gzipped_gl(nprocs)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
@@ -169,15 +150,7 @@
       call gzip_defleat_once(ilength, real_dat(1), ilen_gz,             &
      &    ilen_gzipped, IO_param%c_array(1)%c_IO(1))
 !
-      call MPI_Allgather(ilen_gzipped, ione, CALYPSO_INTEGER,           &
-     &    ilen_gzipped_gl, ione, CALYPSO_INTEGER, CALYPSO_COMM,         &
-     &    ierr_MPI)
-!
-      IO_param%istack_merged(0) = 0
-      do ip = 1, nprocs
-        IO_param%istack_merged(ip) = IO_param%istack_merged(ip-1)       &
-     &                              + ilen_gzipped_gl(ip)
-      end do
+      call set_istack_over_subdomains(ilen_gzipped, IO_param)
 !
       call gz_mpi_write_i8stack_head_b                                  &
      &   (IO_param, nprocs, IO_param%istack_merged)

@@ -57,6 +57,10 @@
 !
 !>        Stack of data lengh in each domain
         integer(kind = kint_gl), pointer :: istack_merged(:)
+!>        Local number of data
+        integer(kind = kint), pointer :: num_lc(:)
+!>        global number of data
+        integer(kind = kint), pointer :: num_gl(:)
 !
 !>        Structure for real array for MPI-IO
         type(realarray_IO), pointer ::  r_array(:)
@@ -90,13 +94,22 @@
       if(i_debug .gt. 0) write(*,*) 'IO_param%nloop',                   &
      &                                   my_rank, IO_param%nloop
 !
-      allocate(IO_param%istack_merged(0:IO_param%nprocs_in))
       allocate(IO_param%r_array(IO_param%nloop))
       allocate(IO_param%i_array(IO_param%nloop))
       allocate(IO_param%i8_array(IO_param%nloop))
       allocate(IO_param%c_array(IO_param%nloop))
 !
+      allocate(IO_param%num_lc(IO_param%nprocs_in))
+      allocate(IO_param%num_gl(IO_param%nprocs_in))
+      allocate(IO_param%istack_merged(0:IO_param%nprocs_in))
+!
       IO_param%istack_merged = 0
+      if(IO_param%nprocs_in .gt. 0) then
+!$omp parallel workshare
+        IO_param%num_lc = 0
+        IO_param%num_gl = 0
+!$omp end parallel workshare
+      end if
 !
       end subroutine alloc_istack_merge
 !
@@ -110,6 +123,7 @@
       deallocate(IO_param%r_array, IO_param%c_array)
       deallocate(IO_param%i_array, IO_param%i8_array)
       deallocate(IO_param%istack_merged)
+      deallocate(IO_param%num_lc, IO_param%num_gl)
 !
       end subroutine dealloc_istack_merge
 !
@@ -167,6 +181,38 @@
       end do
 !
       end subroutine set_istack_4_parallell_data
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_istack_over_subdomains(num_local, IO_param)
+!
+      integer(kind = kint), intent(in) :: num_local
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+!
+      integer(kind = kint) :: iloop, ip
+!
+!
+!$omp parallel workshare
+      IO_param%num_lc(1:IO_param%nprocs_in) = 0
+      IO_param%num_gl(1:IO_param%nprocs_in) = 0
+!$omp end parallel workshare
+!
+      do iloop = 1, IO_param%nloop
+        ip = 1 + my_rank + (iloop - 1) * nprocs
+        IO_param%num_lc(ip) = num_local
+      end do
+!
+      call MPI_allREDUCE                                                &
+     &   (IO_param%num_lc, IO_param%num_gl, IO_param%nprocs_in,         &
+     &    CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+!
+      IO_param%istack_merged(0) = 0
+      do ip = 1, IO_param%nprocs_in
+        IO_param%istack_merged(ip) = IO_param%istack_merged(ip-1)       &
+     &                              + IO_param%num_gl(ip)
+      end do
+!
+      end subroutine set_istack_over_subdomains
 !
 !  ---------------------------------------------------------------------
 !
