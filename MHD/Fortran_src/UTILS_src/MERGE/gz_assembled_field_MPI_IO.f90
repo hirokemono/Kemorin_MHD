@@ -10,7 +10,7 @@
 !!      subroutine gz_write_step_asbl_fld_mpi                           &
 !!     &         (file_name, nprocs_in, nloop, fld_IO)
 !!      subroutine gz_write_step_asbl_fld_mpi_b                         &
-!!     &         (file_name, nprocs_in, nloop, fld_IO)
+!!     &         (file_name, nprocs_in, id_rank, nloop, fld_IO)
 !!
 !!   Data format for the merged ascii field data
 !!     1.   Number of process
@@ -43,6 +43,7 @@
       use calypso_mpi
 !
       use t_field_data_IO
+      use t_calypso_mpi_IO_param
       use m_calypso_mpi_IO
 !
       implicit none
@@ -137,40 +138,40 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_write_step_asbl_fld_mpi_b                           &
-     &         (file_name, nprocs_in, nloop, fld_IO)
+     &         (file_name, nprocs_in, id_rank, nloop, fld_IO)
 !
       use gz_field_file_MPI_IO_b
       use gz_MPI_binary_head_IO
+      use gz_MPI_binary_datum_IO
+      use MPI_binary_head_IO
 !
       character(len=kchara), intent(in) :: file_name
 !
-      integer(kind = kint), intent(in) :: nprocs_in
+      integer(kind = kint), intent(in) :: nprocs_in, id_rank
 !
       integer(kind = kint), intent(in) :: nloop
       type(field_IO), intent(in) :: fld_IO(nloop)
 !
-      integer ::  id_fld
-      integer(kind = kint_gl) :: ioff_gl
+      type(calypso_MPI_IO_params) :: IO_param
 !
 !
       call alloc_assemble_gz_buffer(nloop)
 !
       if(my_rank .eq. 0) write(*,*)                                     &
      &     'Write compressed binary data by MPI-IO: ', trim(file_name)
-      call calypso_mpi_write_file_open(file_name, nprocs_in, id_fld)
+      call open_write_gz_mpi_file_b                                     &
+     &   (file_name, nprocs_in, id_rank, IO_param)
 !
-!
-      ioff_gl = 0
-      call gz_write_field_head_mpi_b(id_fld, nprocs_in, ioff_gl,        &
+      call gz_write_field_head_mpi_b(IO_param,                          &
      &      fld_IO(1)%num_field_IO, fld_IO(1)%num_comp_IO,              &
      &      fld_IO(1)%istack_numnod_IO)
 !
-      call gz_mpi_write_mul_charahead_b(id_fld, ioff_gl,                &
-     &   fld_IO(1)%num_field_IO, fld_IO(1)%fld_name)
-      call gz_write_asmbl_fld_mpi_b(id_fld, nprocs_in,                  &
-     &    ioff_gl, nloop, fld_IO, gz_bufs)
+      call gz_mpi_write_mul_charahead_b                                 &
+     &   (IO_param, fld_IO(1)%num_field_IO, fld_IO(1)%fld_name)
+      call gz_write_asmbl_fld_mpi_b                                     &
+     &   (IO_param, nloop, fld_IO, gz_bufs)
 !
-      call calypso_close_mpi_file(id_fld)
+      call close_mpi_file_b(IO_param)
       call dealloc_assemble_gz_buffer
 !
       end subroutine gz_write_step_asbl_fld_mpi_b
@@ -262,33 +263,30 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_write_asmbl_fld_mpi_b(id_mpi_file, nprocs_in,       &
-     &          ioff_gl, nloop, fld_IO, gz_bufs)
+      subroutine gz_write_asmbl_fld_mpi_b                               &
+     &         (IO_param, nloop, fld_IO, gz_bufs)
 !
       use field_data_IO
       use m_calypso_mpi_IO
       use gz_field_file_MPI_IO_b
       use gz_MPI_binary_head_IO
 !
-      integer(kind = kint_gl), intent(inout) :: ioff_gl
-      integer(kind = kint), intent(in) :: nprocs_in
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
       integer(kind = kint), intent(in) :: nloop
       type(field_IO), intent(in) :: fld_IO(nloop)
       type(mul_zlib_buffers), intent(inout) :: gz_bufs(nloop)
 !
-      integer, intent(in) ::  id_mpi_file
-!
-      integer(kind = kint_gl) :: istack_gz_pe(0:nprocs_in)
-      integer(kind = kint) :: len_gz_pe(nprocs_in)
-      integer(kind = kint) :: len_gz_lc(nprocs_in)
+      integer(kind = kint_gl) :: istack_gz_pe(0:IO_param%nprocs_in)
+      integer(kind = kint) :: len_gz_pe(IO_param%nprocs_in)
+      integer(kind = kint) :: len_gz_lc(IO_param%nprocs_in)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
       integer(kind = kint) :: id_rank
       integer(kind = kint) :: iloop, ip, ilength
 !
 !
-      len_gz_lc(1:nprocs_in) = 0
+      len_gz_lc(1:IO_param%nprocs_in) = 0
 !
 !        deflate data
       do iloop = 1, nloop
@@ -296,7 +294,7 @@
  !
         ilength = fld_IO(iloop)%ntot_comp_IO * fld_IO(iloop)%nnod_IO    &
      &            * kreal
-        if(id_rank .lt. nprocs_in) then
+        if(id_rank .lt. IO_param%nprocs_in) then
           gz_bufs(iloop)%ilen_gz                                        &
      &       = int(real(ilength) * 1.01) + 24
           allocate(gz_bufs(iloop)%buffer(gz_bufs(iloop)%ilen_gz))
@@ -313,29 +311,30 @@
       end do
 !
 !        Count data size
-      len_gz_pe(1:nprocs_in) = 0
-      call MPI_allREDUCE(len_gz_lc, len_gz_pe, nprocs_in,               &
+      len_gz_pe(1:IO_param%nprocs_in) = 0
+      call MPI_allREDUCE(len_gz_lc, len_gz_pe, IO_param%nprocs_in,      &
      &    CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM, ierr_MPI)
       istack_gz_pe(0) = 0
-      do ip = 1, nprocs_in
+      do ip = 1, IO_param%nprocs_in
         istack_gz_pe(ip) = istack_gz_pe(ip-1) + len_gz_pe(ip)
       end do
 !
 !       Write data size
-      call gz_mpi_write_mul_int8head_b                                  &
-     &   (id_mpi_file, ioff_gl, nprocs_in, istack_gz_pe(1))
+      call gz_mpi_write_i8stack_head_b                                  &
+     &   (IO_param, IO_param%nprocs_in, istack_gz_pe)
 !
 !       Write to file
       do iloop = 1, nloop
         id_rank = my_rank + (iloop-1) * nprocs
-        if(id_rank .lt. nprocs_in) then
-          ioffset = int(ioff_gl) + istack_gz_pe(id_rank)
-          call calypso_mpi_seek_write_chara (id_mpi_file, ioffset,      &
+        if(id_rank .lt. IO_param%nprocs_in) then
+          ioffset = int(IO_param%ioff_gl) + istack_gz_pe(id_rank)
+          call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,  &
      &       gz_bufs(iloop)%len_gzipped, gz_bufs(iloop)%buffer(1))
         end if
         deallocate(gz_bufs(iloop)%buffer)
       end do
-      ioff_gl = ioff_gl + istack_gz_pe(nprocs_in)
+      IO_param%ioff_gl = IO_param%ioff_gl                               &
+     &                  + istack_gz_pe(IO_param%nprocs_in)
 !
       end subroutine gz_write_asmbl_fld_mpi_b
 !

@@ -282,7 +282,7 @@
 !      else if(fld_IO%iflag_file_fmt                                    &
 !     &       .eq. iflag_single+id_gzip_bin_file_fmt) then
 !        call gz_write_step_fld_file_mpi_b                              &
-!     &     (file_name, nprocs_in, fld_IO)
+!     &     (file_name, nprocs_in, id_rank, fld_IO)
 !      else if(fld_IO%iflag_file_fmt                                    &
 !     &       .eq. iflag_single+id_gzip_txt_file_fmt) then
 !        if(nprocs .eq. nprocs_in) then

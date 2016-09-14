@@ -8,28 +8,26 @@
 !!
 !!@verbatim
 !!      subroutine open_write_gz_mpi_file_b                             &
-!!     &         (file_name, nprocs_in, id_file, ioff_gl)
+!!     &         (file_name, nprocs_in, my_rank_IO, IO_param)
 !!        Substitution of open_wt_gzfile_b
-!!      subroutine open_read_gz_mpi_file_b(file_name, id_file, ioff_gl)
+!!      subroutine open_read_gz_mpi_file_b                              &
+!!     &         (file_name, nprocs_in, my_rank_IO, IO_param)
 !!        Substitution of open_rd_gzfile_b
 !!
-!!      subroutine gz_mpi_write_one_inthead_b(id_file, ioff_gl, int_dat)
+!!      subroutine gz_mpi_write_one_inthead_b(IO_param, int_dat)
 !!        Substitution of gz_write_one_integer_b
-!!      subroutine gz_mpi_write_one_realhead_b                          &
-!!     &         (id_file, ioff_gl, real_dat)
+!!      subroutine gz_mpi_write_one_realhead_b(IO_param, real_dat)
 !!        Substitution of gz_write_one_real_b
-!!      subroutine gz_mpi_write_one_integer_b(id_file, ioff_gl, int_dat)
+!!      subroutine gz_mpi_write_one_integer_b(IO_param, int_dat)
 !!        Substitution of gz_write_one_integer_b
 !!
-!!      subroutine gz_mpi_read_endian_flag(id_file, ioff_gl)
+!!      subroutine gz_mpi_read_endian_flag(IO_param)
 !!        Substitution of gz_read_endian_flag
-!!      subroutine gz_mpi_read_one_inthead_b(id_file, ioff_gl, int_dat)
+!!      subroutine gz_mpi_read_one_inthead_b(IO_param, int_dat)
 !!        Substitution of gz_read_one_integer_b
-!!      subroutine gz_mpi_read_one_realhead_b                           &
-!!     &         (id_file, ioff_gl, real_dat)
+!!      subroutine gz_mpi_read_one_realhead_b(IO_param, real_dat)
 !!        Substitution of gz_read_one_real_b
-!!      subroutine gz_mpi_read_one_integer_b(id_file,                   &
-!!     &          nprocs_in, id_rank, ioff_gl, int_dat)
+!!      subroutine gz_mpi_read_one_integer_b(IO_param, int_dat)
 !!        Substitution of gz_read_one_integer_b
 !!@endverbatim
 !
@@ -41,6 +39,7 @@
 !
       use calypso_mpi
       use m_calypso_mpi_IO
+      use t_calypso_mpi_IO_param
       use gz_MPI_binary_data_IO
       use gz_MPI_binary_head_IO
 !
@@ -57,100 +56,95 @@
 ! -----------------------------------------------------------------------
 !
       subroutine open_write_gz_mpi_file_b                               &
-     &         (file_name, nprocs_in, id_file, ioff_gl)
+     &         (file_name, nprocs_in, my_rank_IO, IO_param)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: nprocs_in
+      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
 !
-      integer, intent(inout) ::  id_file
-      integer(kind = kint_gl), intent(inout) :: ioff_gl
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
 !
+      call alloc_istack_merge(my_rank_IO, nprocs_in, IO_param)
       call calypso_mpi_write_file_open                                  &
-     &   (file_name, nprocs_in, id_file)
+     &   (file_name, IO_param%nprocs_in, IO_param%id_file)
 !
-      ioff_gl = izero
-      call gz_mpi_write_one_inthead_b(id_file, ioff_gl, i_UNIX)
+      IO_param%ioff_gl = izero
+      call gz_mpi_write_one_inthead_b(IO_param, i_UNIX)
 !
       end subroutine open_write_gz_mpi_file_b
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine open_read_gz_mpi_file_b(file_name, id_file, ioff_gl)
+      subroutine open_read_gz_mpi_file_b                                &
+     &         (file_name, nprocs_in, my_rank_IO, IO_param)
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(inout) ::  id_file
-      integer(kind = kint_gl), intent(inout) :: ioff_gl
+      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
 !
-      call calypso_mpi_read_file_open(file_name, id_file)
+      call alloc_istack_merge(my_rank_IO, nprocs_in, IO_param)
+      call calypso_mpi_read_file_open(file_name, IO_param%id_file)
 !
-      ioff_gl = izero
-      call gz_mpi_read_endian_flag(id_file, ioff_gl)
+      IO_param%ioff_gl = izero
+      call gz_mpi_read_endian_flag(IO_param)
 !
       end subroutine open_read_gz_mpi_file_b
 !
 !  ---------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_mpi_write_one_inthead_b(id_file, ioff_gl, int_dat)
+      subroutine gz_mpi_write_one_inthead_b(IO_param, int_dat)
 !
-      integer, intent(in) ::  id_file
-      integer(kind = kint_gl), intent(inout) :: ioff_gl
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
       integer(kind = kint), intent(in) :: int_dat
 !
       integer(kind = kint) :: itmp_IO(1)
 !
 !
       itmp_IO(1) = int_dat
-      call gz_mpi_write_mul_inthead_b                                   &
-     &   (id_file, ioff_gl, ione, itmp_IO)
+      call gz_mpi_write_mul_inthead_b(IO_param, ione, itmp_IO)
 !
       end subroutine gz_mpi_write_one_inthead_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_mpi_write_one_realhead_b                            &
-     &         (id_file, ioff_gl, real_dat)
+      subroutine gz_mpi_write_one_realhead_b(IO_param, real_dat)
 !
-      integer, intent(in) ::  id_file
-      integer(kind = kint_gl), intent(inout) :: ioff_gl
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
       real(kind = kreal), intent(in) :: real_dat
 !
       real(kind = kreal) :: rtmp_IO(1)
 !
 !
       rtmp_IO(1) = real_dat
-      call gz_mpi_write_mul_realhead_b                                  &
-     &    (id_file, ioff_gl, ione, rtmp_IO)
+      call gz_mpi_write_mul_realhead_b(IO_param, ione, rtmp_IO)
 !
       end subroutine gz_mpi_write_one_realhead_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_mpi_write_one_integer_b(id_file, ioff_gl, int_dat)
+      subroutine gz_mpi_write_one_integer_b(IO_param, int_dat)
 !
-      integer, intent(in) ::  id_file
-      integer(kind = kint_gl), intent(inout) :: ioff_gl
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
       integer(kind = kint), intent(in) :: int_dat
 !
       integer(kind = kint) :: itmp_IO(1)
 !
 !
       itmp_IO(1) = int_dat
-      call gz_mpi_write_int_vector_b(id_file, ioff_gl, ione, itmp_IO)
+      call gz_mpi_write_int_vector_b(IO_param, ione, itmp_IO)
 !
       end subroutine gz_mpi_write_one_integer_b
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_mpi_read_endian_flag(id_file, ioff_gl)
+      subroutine gz_mpi_read_endian_flag(IO_param)
 !
       use m_error_IDs
 !
-      integer, intent(in) ::  id_file
-      integer(kind = kint_gl), intent(inout) :: ioff_gl
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
       integer(kind = kint) :: int_dat(1)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
@@ -159,12 +153,12 @@
 !
 !
       if(my_rank .eq. 0) then
-        ioffset = ioff_gl
+        ioffset = IO_param%ioff_gl
         ilength = kint
         ilen_gz = int(real(ilength) *1.01) + 24
         allocate(gzip_buf(ilen_gz))
         call calypso_mpi_seek_read_gz                                   &
-     &         (id_file, ioffset, ilen_gz, gzip_buf(1))
+     &     (IO_param%id_file, ioffset, ilen_gz, gzip_buf(1))
 !
         call gzip_infleat_once                                          &
      &     (ilen_gz, gzip_buf(1), ilength, int_dat, ilen_gzipped)
@@ -187,60 +181,52 @@
      &    CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(ilen_gzipped, ione, CALYPSO_INTEGER, izero,        &
      &    CALYPSO_COMM, ierr_MPI)
-      ioff_gl = ioff_gl + ilen_gzipped
+      IO_param%ioff_gl = IO_param%ioff_gl + ilen_gzipped
 !
       end subroutine gz_mpi_read_endian_flag
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_mpi_read_one_inthead_b(id_file, ioff_gl, int_dat)
+      subroutine gz_mpi_read_one_inthead_b(IO_param, int_dat)
 !
-      integer, intent(in) ::  id_file
-      integer(kind = kint_gl), intent(inout) :: ioff_gl
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
       integer(kind = kint), intent(inout) :: int_dat
 !
       integer(kind = kint) :: itmp_IO(1)
 !
 !
-      call gz_mpi_read_mul_inthead_b(id_file, ioff_gl, ione, itmp_IO)
+      call gz_mpi_read_mul_inthead_b(IO_param, ione, itmp_IO)
       int_dat = itmp_IO(1)
 !
       end subroutine gz_mpi_read_one_inthead_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_mpi_read_one_realhead_b                             &
-     &         (id_file, ioff_gl, real_dat)
+      subroutine gz_mpi_read_one_realhead_b(IO_param, real_dat)
 !
-      integer, intent(in) ::  id_file
-      integer(kind = kint_gl), intent(inout) :: ioff_gl
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
       real(kind = kreal), intent(inout) :: real_dat
 !
       real(kind = kreal) ::   rtmp_IO(1)
 !
 !
-      call gz_mpi_read_mul_realhead_b                                   &
-     &   (id_file, ioff_gl, ione, rtmp_IO)
+      call gz_mpi_read_mul_realhead_b(IO_param, ione, rtmp_IO)
       real_dat = rtmp_IO(1)
 !
       end subroutine gz_mpi_read_one_realhead_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_mpi_read_one_integer_b(id_file,                   &
-     &          nprocs_in, id_rank, ioff_gl, int_dat)
+      subroutine gz_mpi_read_one_integer_b(IO_param, int_dat)
 !
-      integer, intent(in) ::  id_file
-      integer(kind = kint_gl), intent(inout) :: ioff_gl
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
-      integer(kind=kint), intent(in) :: id_rank, nprocs_in
       integer(kind = kint), intent(inout) :: int_dat
 !
       integer(kind = kint) ::   itmp_IO(1)
 !
 !
-      call gz_mpi_read_int_vector_b                                     &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, ione, itmp_IO(1))
+      call gz_mpi_read_int_vector_b(IO_param, ione, itmp_IO(1))
       int_dat = itmp_IO(1)
 !
       end subroutine gz_mpi_read_one_integer_b

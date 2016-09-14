@@ -77,8 +77,7 @@
      &    fld_IO%istack_numnod_IO)
       end if
 !
-      call dealloc_istack_merge(IO_param)
-      call calypso_close_mpi_file(IO_param%id_file)
+      call close_mpi_file_b(IO_param)
 !
       end subroutine write_step_field_file_mpi_b
 !
@@ -117,8 +116,7 @@
 !
       call dealloc_merged_field_stack(fld_IO)
 !
-      call dealloc_istack_merge(IO_param)
-      call calypso_close_mpi_file(IO_param%id_file)
+      call close_mpi_file_b(IO_param)
 !
       end subroutine read_step_field_file_mpi_b
 !
@@ -159,8 +157,7 @@
       call mpi_read_2d_vector_b                                         &
      &   (IO_param, fld_IO%nnod_IO, fld_IO%ntot_comp_IO, fld_IO%d_IO)
 !
-      call dealloc_istack_merge(IO_param)
-      call calypso_close_mpi_file(IO_param%id_file)
+      call close_mpi_file_b(IO_param)
 !
       call dealloc_merged_field_stack(fld_IO)
       if(id_rank .ge. nprocs_in) then
@@ -197,8 +194,7 @@
       call mpi_read_mul_charahead_b                                     &
      &   (IO_param, fld_IO%num_field_IO, fld_IO%fld_name)
 !
-      call dealloc_istack_merge(IO_param)
-      call calypso_close_mpi_file(IO_param%id_file)
+      call close_mpi_file_b(IO_param)
 !
       call cal_istack_phys_comp_IO(fld_IO)
       call dealloc_merged_field_stack(fld_IO)

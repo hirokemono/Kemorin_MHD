@@ -23,18 +23,23 @@
 !
 !>      Structure for real array for MPI-IO
       type realarray_IO
-        real(kind = kreal), pointer :: real_IO(:)
+        real(kind = kreal), pointer :: r_IO(:)
       end type realarray_IO
 !
 !>      Structure for integer array for MPI-IO
       type intarray_IO
-        integer(kind = kint), pointer :: int_IO(:)
+        integer(kind = kint), pointer :: i_IO(:)
       end type intarray_IO
 !
 !>      Structure for 8-byte integer array for MPI-IO
       type int8array_IO
-        integer(kind = kint_gl), pointer :: int8_IO(:)
+        integer(kind = kint_gl), pointer :: i8_IO(:)
       end type int8array_IO
+!
+!>      Structure for 8-byte integer array for MPI-IO
+      type charaarray_IO
+        character(len = 1), pointer :: c_IO(:)
+      end type charaarray_IO
 !
 !>      Structure for parameters of MPI-IO
       type calypso_MPI_IO_params
@@ -54,11 +59,13 @@
         integer(kind = kint_gl), pointer :: istack_merged(:)
 !
 !>        Structure for real array for MPI-IO
-        type(realarray_IO), pointer :: r_array(:)
+        type(realarray_IO), pointer ::  r_array(:)
 !>        Structure for real array for MPI-IO
-        type(intarray_IO), pointer :: i_array(:)
+        type(intarray_IO), pointer ::   i_array(:)
 !>        Structure for real array for MPI-IO
-        type(int8array_IO), pointer :: i8_array(:)
+        type(int8array_IO), pointer ::  i8_array(:)
+!>        Structure for real array for MPI-IO
+        type(charaarray_IO), pointer :: c_array(:)
       end type calypso_MPI_IO_params
 !
 !  ---------------------------------------------------------------------
@@ -87,6 +94,7 @@
       allocate(IO_param%r_array(IO_param%nloop))
       allocate(IO_param%i_array(IO_param%nloop))
       allocate(IO_param%i8_array(IO_param%nloop))
+      allocate(IO_param%c_array(IO_param%nloop))
 !
       IO_param%istack_merged = 0
 !
@@ -99,7 +107,7 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
 !
-      deallocate(IO_param%r_array)
+      deallocate(IO_param%r_array, IO_param%c_array)
       deallocate(IO_param%i_array, IO_param%i8_array)
       deallocate(IO_param%istack_merged)
 !

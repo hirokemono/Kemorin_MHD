@@ -82,7 +82,7 @@
 !        if(fld_IO(1)%iflag_file_fmt                                    &
 !     &       .eq. iflag_single+id_gzip_bin_file_fmt) then
 !          call gz_write_step_asbl_fld_mpi_b                            &
-!     &         (file_name, nprocs_in, nloop, fld_IO)
+!     &         (file_name, nprocs_in, id_rank, nloop, fld_IO)
 !          return
 !        else if(fld_IO(1)%iflag_file_fmt                               &
 !     &       .eq. iflag_single+id_gzip_txt_file_fmt) then

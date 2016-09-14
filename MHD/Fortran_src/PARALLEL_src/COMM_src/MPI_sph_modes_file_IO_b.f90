@@ -63,12 +63,9 @@
      &      'Read merged binary grid file: ', trim(file_name)
       call open_read_mpi_file_b                                         &
      &   (file_name, nprocs_in, my_rank_IO, IO_param)
-!
       call mpi_read_geom_rtp_data_b(IO_param, sph_file%comm_IO,         &
      &    sph_file%sph_IO, sph_file%sph_grp_IO)
-      call dealloc_istack_merge(IO_param)
-!
-      call calypso_close_mpi_file(IO_param%id_file)
+      call close_mpi_file_b(IO_param)
 !
       end subroutine mpi_read_geom_rtp_file_b
 !
@@ -89,9 +86,7 @@
 !
       call mpi_read_spectr_rj_data_b(IO_param, sph_file%comm_IO,        &
      &    sph_file%sph_IO, sph_file%sph_grp_IO)
-      call dealloc_istack_merge(IO_param)
-!
-      call calypso_close_mpi_file(IO_param%id_file)
+      call close_mpi_file_b(IO_param)
 !
       end subroutine mpi_read_spectr_rj_file_b
 !
@@ -112,9 +107,7 @@
 !
       call mpi_read_geom_rtm_data_b                                     &
      &   (IO_param, sph_file%comm_IO, sph_file%sph_IO)
-      call dealloc_istack_merge(IO_param)
-!
-      call calypso_close_mpi_file(IO_param%id_file)
+      call close_mpi_file_b(IO_param)
 !
       end subroutine mpi_read_geom_rtm_file_b
 !
@@ -135,9 +128,7 @@
 !
       call mpi_read_modes_rlm_data_b                                    &
      &   (IO_param, sph_file%comm_IO, sph_file%sph_IO)
-      call dealloc_istack_merge(IO_param)
-!
-      call calypso_close_mpi_file(IO_param%id_file)
+      call close_mpi_file_b(IO_param)
 !
       end subroutine mpi_read_modes_rlm_file_b
 !
@@ -159,9 +150,7 @@
 !
       call mpi_write_geom_rtp_data_b(IO_param, sph_file%comm_IO,        &
      &    sph_file%sph_IO, sph_file%sph_grp_IO)
-      call dealloc_istack_merge(IO_param)
-!
-      call calypso_close_mpi_file(IO_param%id_file)
+      call close_mpi_file_b(IO_param)
 !
       end subroutine mpi_write_geom_rtp_file_b
 !
@@ -182,9 +171,7 @@
 !
       call mpi_write_spectr_rj_data_b(IO_param, sph_file%comm_IO,      &
      &    sph_file%sph_IO, sph_file%sph_grp_IO)
-      call dealloc_istack_merge(IO_param)
-!
-      call calypso_close_mpi_file(IO_param%id_file)
+      call close_mpi_file_b(IO_param)
 !
       end subroutine mpi_write_spectr_rj_file_b
 !
@@ -205,9 +192,7 @@
 !
       call mpi_write_geom_rtm_data_b                                    &
      &   (IO_param, sph_file%comm_IO, sph_file%sph_IO)
-      call dealloc_istack_merge(IO_param)
-!
-      call calypso_close_mpi_file(IO_param%id_file)
+      call close_mpi_file_b(IO_param)
 !
       end subroutine mpi_write_geom_rtm_file_b
 !
@@ -228,9 +213,7 @@
 !
       call mpi_write_modes_rlm_data_b                                   &
      &   (IO_param, sph_file%comm_IO, sph_file%sph_IO)
-      call dealloc_istack_merge(IO_param)
-!
-      call calypso_close_mpi_file(IO_param%id_file)
+      call close_mpi_file_b(IO_param)
 !
       end subroutine mpi_write_modes_rlm_file_b
 !

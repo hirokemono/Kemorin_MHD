@@ -11,6 +11,7 @@
 !!     &         (file_name, nprocs_in, my_rank_IO, IO_param)
 !!      subroutine open_read_mpi_file_b                                 &
 !!     &         (file_name, nprocs_in, my_rank_IO, IO_param)
+!!      subroutine close_mpi_file_b(IO_param)
 !!
 !!      subroutine mpi_write_one_inthead_b(IO_param, int_dat)
 !!      subroutine mpi_write_one_realhead_b(IO_param, real_dat)
@@ -94,6 +95,18 @@
      &   (IO_param%id_file, IO_param%ioff_gl)
 !
       end subroutine open_read_mpi_file_b
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine close_mpi_file_b(IO_param)
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+!
+!
+      call calypso_close_mpi_file(IO_param%id_file)
+      call dealloc_istack_merge(IO_param)
+!
+      end subroutine close_mpi_file_b
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
