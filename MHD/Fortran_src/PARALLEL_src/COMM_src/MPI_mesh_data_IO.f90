@@ -56,10 +56,11 @@
       type(mesh_geometry), intent(inout) :: mesh_IO
 !
 !
+      call alloc_istack_merge(id_rank, nprocs_in, IO_param)
       call calypso_mpi_seek_write_head_c                                &
      &   (id_file, ioff_gl, hd_fem_para())
-!      call mpi_write_domain_info                                       &
-!     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%nod_comm)
+!      call mpi_write_domain_info(IO_param, mesh_IO%nod_comm)
+      call dealloc_istack_merge(IO_param)
 !
       call calypso_mpi_seek_write_head_c                                &
      &   (id_file, ioff_gl, hd_fem_node())
@@ -72,12 +73,12 @@
 !
       call calypso_mpi_seek_write_head_c                                &
      &   (id_file, ioff_gl, hd_fem_import())
-!      call mpi_write_import_data                                       &
-!     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%nod_comm)
+      call alloc_istack_merge(id_rank, nprocs_in, IO_param)
+!      call mpi_write_import_data(IO_param, mesh_IO%nod_comm)
       call calypso_mpi_seek_write_head_c                                &
      &   (id_file, ioff_gl, hd_fem_export())
-!      call mpi_write_export_data                                       &
-!     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%nod_comm)
+!      call mpi_write_export_data(IO_param, mesh_IO%nod_comm)
+      call dealloc_istack_merge(IO_param)
 !
       end subroutine mpi_write_geometry_data
 !
@@ -97,8 +98,9 @@
       type(mesh_geometry), intent(inout) :: mesh_IO
 !
 !
-      call mpi_read_domain_info                                         &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%nod_comm)
+      call alloc_istack_merge(id_rank, nprocs_in, IO_param)
+      call mpi_read_domain_info(IO_param, mesh_IO%nod_comm)
+      call dealloc_istack_merge(IO_param)
 !
       call mpi_read_number_of_node                                      &
      &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%node)
@@ -114,10 +116,10 @@
 !
 ! ----  import & export 
 !
-      call mpi_read_import_data                                         &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%nod_comm)
-      call mpi_read_export_data                                         &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%nod_comm)
+      call alloc_istack_merge(id_rank, nprocs_in, IO_param)
+      call mpi_read_import_data(IO_param, mesh_IO%nod_comm)
+      call mpi_read_export_data(IO_param, mesh_IO%nod_comm)
+      call dealloc_istack_merge(IO_param)
 !
       end subroutine mpi_read_geometry_data
 !

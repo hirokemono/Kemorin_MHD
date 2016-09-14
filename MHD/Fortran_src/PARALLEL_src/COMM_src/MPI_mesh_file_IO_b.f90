@@ -28,8 +28,11 @@
       use m_read_mesh_data
       use m_calypso_mpi_IO
       use t_mesh_data
+      use t_calypso_mpi_IO_param
 !
       implicit none
+!
+      type(calypso_MPI_IO_params), private, save :: IO_param
 !
 !  ---------------------------------------------------------------------
 !
@@ -46,21 +49,18 @@
 !
       type(mesh_data), intent(inout) :: fem_IO
 !
-      integer :: id_file
-      integer(kind = kint_gl) :: ioff_gl
-!
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read gzipped binary merged mesh file: ', trim(mesh_file_name)
 !
-      call open_read_mpi_file_b(mesh_file_name, id_file, ioff_gl)
+      call open_read_mpi_file_b                                         &
+     &   (mesh_file_name, nprocs_in, my_rank_IO, IO_param)
 !
-      call mpi_read_geometry_data_b                                     &
-     &   (id_file, nprocs_in, my_rank_IO, ioff_gl, fem_IO%mesh)
-      call mpi_read_mesh_groups_b                                       &
-     &   (id_file, nprocs_in, my_rank_IO, ioff_gl, fem_IO%group)
+      call mpi_read_geometry_data_b(IO_param, fem_IO%mesh)
+      call mpi_read_mesh_groups_b(IO_param, fem_IO%group)
+      call dealloc_istack_merge(IO_param)
 !
-      call calypso_close_mpi_file(id_file)
+      call calypso_close_mpi_file(IO_param%id_file)
 !
       end subroutine mpi_read_mesh_file_b
 !
@@ -74,17 +74,15 @@
       integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
       type(mesh_geometry), intent(inout) :: mesh_IO
 !
-      integer :: id_file
-      integer(kind = kint_gl) :: ioff_gl
-!
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read gzipped binary merged mesh file: ', trim(mesh_file_name)
 !
-      call open_read_mpi_file_b(mesh_file_name, id_file, ioff_gl)
-      call mpi_read_geometry_data_b                                     &
-     &   (id_file, nprocs_in, my_rank_IO, ioff_gl, mesh_IO)
-      call calypso_close_mpi_file(id_file)
+      call open_read_mpi_file_b                                         &
+     &   (mesh_file_name, nprocs_in, my_rank_IO, IO_param)
+      call mpi_read_geometry_data_b(IO_param, mesh_IO)
+      call dealloc_istack_merge(IO_param)
+      call calypso_close_mpi_file(IO_param%id_file)
 !
       end subroutine mpi_read_mesh_geometry_b
 !
@@ -98,17 +96,15 @@
       integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
       type(mesh_geometry), intent(inout) :: mesh_IO
 !
-      integer :: id_file
-      integer(kind = kint_gl) :: ioff_gl
-!
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read gzipped binary merged mesh file: ', trim(mesh_file_name)
 !
-      call open_read_mpi_file_b(mesh_file_name, id_file, ioff_gl)
-      call mpi_read_num_node_ele                                        &
-     &   (id_file, nprocs_in, my_rank_IO, ioff_gl, mesh_IO)
-      call calypso_close_mpi_file(id_file)
+      call open_read_mpi_file_b                                         &
+     &   (mesh_file_name, nprocs_in, my_rank_IO, IO_param)
+      call mpi_read_num_node_ele(IO_param, mesh_IO)
+      call dealloc_istack_merge(IO_param)
+      call calypso_close_mpi_file(IO_param%id_file)
 !
       end subroutine mpi_read_node_size_b
 !
@@ -123,17 +119,15 @@
       integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
       type(mesh_geometry), intent(inout) :: mesh_IO
 !
-      integer :: id_file
-      integer(kind = kint_gl) :: ioff_gl
-!
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read gzipped binary merged mesh file: ', trim(mesh_file_name)
 !
-      call open_read_mpi_file_b(mesh_file_name, id_file, ioff_gl)
-      call mpi_read_num_node_ele_b                                      &
-     &   (id_file, nprocs_in, my_rank_IO, ioff_gl, mesh_IO)
-      call calypso_close_mpi_file(id_file)
+      call open_read_mpi_file_b                                         &
+     &   (mesh_file_name, nprocs_in, my_rank_IO, IO_param)
+      call mpi_read_num_node_ele_b(IO_param, mesh_IO)
+      call dealloc_istack_merge(IO_param)
+      call calypso_close_mpi_file(IO_param%id_file)
 !
       end subroutine mpi_read_geometry_size_b
 !
@@ -149,21 +143,17 @@
       integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
       type(mesh_data), intent(inout) :: fem_IO
 !
-      integer :: id_file
-      integer(kind = kint_gl) :: ioff_gl
-!
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &  'Write gzipped binary merged mesh file: ', trim(mesh_file_name)
 !
       call open_write_mpi_file_b                                        &
-     &   (mesh_file_name, nprocs_in, id_file, ioff_gl)
-      call mpi_write_geometry_data_b                                    &
-     &   (id_file, nprocs_in, my_rank_IO, ioff_gl, fem_IO%mesh)
-      call mpi_write_mesh_groups_b                                      &
-     &   (id_file, nprocs_in, my_rank_IO, ioff_gl, fem_IO%group)
+     &   (mesh_file_name, nprocs_in, my_rank_IO, IO_param)
+      call mpi_write_geometry_data_b(IO_param, fem_IO%mesh)
+      call mpi_write_mesh_groups_b(IO_param, fem_IO%group)
+      call dealloc_istack_merge(IO_param)
 !
-      call calypso_close_mpi_file(id_file)
+      call calypso_close_mpi_file(IO_param%id_file)
 !
       end subroutine mpi_write_mesh_file_b
 !
