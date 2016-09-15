@@ -67,7 +67,10 @@
       do i = 1, nloop
         ip = 1 + rank_in_multi_domain(i)
         i_array(i)%num =   comm_IO(i)%num_neib
-        i_array(i)%i_IO => comm_IO(i)%istack_import
+        if(comm_IO(i)%num_neib .gt. 0) then
+          i_array(i)%i_IO(1:comm_IO(i)%num_neib)                        &
+     &         => comm_IO(i)%istack_import(1:comm_IO(i)%num_neib)
+        end if
       end do
 !
       end subroutine link_import_stack_4_mpi_IO
@@ -88,8 +91,11 @@
       do i = 1, nloop
         ip = 1 + rank_in_multi_domain(i)
         i_array(i)%num =   comm_IO(i)%num_neib
-        i_array(i)%i_IO => comm_IO(i)%istack_export
-      end do
+        if(comm_IO(i)%num_neib .gt. 0) then
+          i_array(i)%i_IO(1:comm_IO(i)%num_neib)                        &
+     &     => comm_IO(i)%istack_export(1:comm_IO(i)%num_neib)
+        end if
+      end do 
 !
       end subroutine link_export_stack_4_mpi_IO
 !

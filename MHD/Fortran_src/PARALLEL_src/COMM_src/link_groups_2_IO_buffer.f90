@@ -47,7 +47,10 @@
       do i = 1, nloop
         ip = 1 + rank_in_multi_domain(i)
         i_array(i)%num =   group_IO(i)%num_grp
-        i_array(i)%i_IO => group_IO(i)%istack_grp
+        if(group_IO(i)%num_grp .gt. 0) then
+          i_array(i)%i_IO(1:group_IO(i)%num_grp)                        &
+     &          => group_IO(i)%istack_grp(1:group_IO(i)%num_grp)
+        end if
       end do
 !
       end subroutine link_group_stack_4_mpi_IO
@@ -86,7 +89,10 @@
       do i = 1, nloop
         ip = 1 + rank_in_multi_domain(i)
         i_array(i)%num =   surf_grp_IO(i)%num_grp
-        i_array(i)%i_IO => surf_grp_IO(i)%istack_grp
+        if(surf_grp_IO(i)%num_grp .gt. 0) then
+          i_array(i)%i_IO(1:surf_grp_IO(i)%num_grp)                     &
+     &      => surf_grp_IO(i)%istack_grp(1:surf_grp_IO(i)%num_grp)
+        end if
       end do
 !
       end subroutine link_sf_group_stack_4_mpi_IO
