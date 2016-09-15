@@ -37,11 +37,10 @@
       type(field_IO), intent(in) :: fld_IO(nloop)
       type(vectarray_IO), intent(inout) :: v_array(nloop)
 !
-      integer(kind = kint) :: i, ip
+      integer(kind = kint) :: i
 !
 !
       do i = 1, nloop
-        ip = 1 + rank_in_multi_domain(i)
         v_array(i)%n1 =    fld_IO(i)%nnod_IO
         v_array(i)%n2 =    fld_IO(i)%ntot_comp_IO
         v_array(i)%v_IO => fld_IO(i)%d_IO

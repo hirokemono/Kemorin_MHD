@@ -178,6 +178,23 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine dealloc_integer_buffers(nloop, i_array)
+!
+      integer(kind = kint), intent(in) :: nloop
+      type(intarray_IO),  intent(inout) :: i_array(nloop)
+!
+      integer(kind = kint) :: iloop
+!
+!
+      do iloop = 1, nloop
+        deallocate(i_array(iloop)%I_IO)
+      end do
+!
+      end subroutine dealloc_integer_buffers
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
       subroutine unlink_integer8_buffers(nloop, i8_array)
 !
       integer(kind = kint), intent(in) :: nloop

@@ -14,11 +14,11 @@
 !!      subroutine gz_mpi_write_2d_vector_mul(IO_param)
 !!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !!
-!!      subroutine gz_mpi_read_int8_vector_b(IO_param)
-!!      subroutine gz_mpi_read_int2d_vector_b(IO_param)
-!!      subroutine gz_mpi_read_int_vector_b(IO_param)
-!!      subroutine gz_mpi_read_1d_vector_b(IO_param)
-!!      subroutine gz_mpi_read_2d_vector_b(IO_param)
+!!      subroutine gz_mpi_read_int8_vector_mul(IO_param)
+!!      subroutine gz_mpi_read_int_vector_mul(IO_param)
+!!      subroutine gz_mpi_read_int2d_vector_mul(IO_param)
+!!      subroutine gz_mpi_read_1d_vector_mul(IO_param)
+!!      subroutine gz_mpi_read_2d_vector_mul(IO_param)
 !!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !!@endverbatim
 !
@@ -147,7 +147,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_mpi_read_int8_vector_b(IO_param)
+      subroutine gz_mpi_read_int8_vector_mul(IO_param)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
@@ -161,11 +161,11 @@
       call infleat_int8_vector_mul                                      &
      &   (IO_param%nloop, IO_param%c_array, IO_param%i8_array)
 !
-      end subroutine gz_mpi_read_int8_vector_b
+      end subroutine gz_mpi_read_int8_vector_mul
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_mpi_read_int2d_vector_b(IO_param)
+      subroutine gz_mpi_read_int_vector_mul(IO_param)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
@@ -179,11 +179,11 @@
       call infleat_int_vector_mul                                       &
      &   (IO_param%nloop, IO_param%c_array, IO_param%i_array)
 !
-      end subroutine gz_mpi_read_int2d_vector_b
+      end subroutine gz_mpi_read_int_vector_mul
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_mpi_read_int_vector_b(IO_param)
+      subroutine gz_mpi_read_int2d_vector_mul(IO_param)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
@@ -197,11 +197,11 @@
       call infleat_int2d_vector_mul                                     &
      &   (IO_param%nloop, IO_param%c_array, IO_param%iv_array)
 !
-      end subroutine gz_mpi_read_int_vector_b
+      end subroutine gz_mpi_read_int2d_vector_mul
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_mpi_read_1d_vector_b(IO_param)
+      subroutine gz_mpi_read_1d_vector_mul(IO_param)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
@@ -215,11 +215,11 @@
       call infleat_1d_vector_mul                                        &
      &   (IO_param%nloop, IO_param%c_array, IO_param%r_array)
 !
-      end subroutine gz_mpi_read_1d_vector_b
+      end subroutine gz_mpi_read_1d_vector_mul
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_mpi_read_2d_vector_b(IO_param)
+      subroutine gz_mpi_read_2d_vector_mul(IO_param)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
@@ -233,7 +233,7 @@
       call infleat_2d_vector_mul                                        &
      &   (IO_param%nloop, IO_param%c_array, IO_param%v_array)
 !
-      end subroutine gz_mpi_read_2d_vector_b
+      end subroutine gz_mpi_read_2d_vector_mul
 !
 ! -----------------------------------------------------------------------
 !

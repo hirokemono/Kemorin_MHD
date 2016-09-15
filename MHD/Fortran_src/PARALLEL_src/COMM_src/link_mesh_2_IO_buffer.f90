@@ -45,11 +45,10 @@
       type(int8array_IO), intent(inout) :: i8_array(nloop)
       type(vectarray_IO), intent(inout) :: v_array(nloop)
 !
-      integer(kind = kint) :: i, ip
+      integer(kind = kint) :: i
 !
 !
       do i = 1, nloop
-        ip = 1 + rank_in_multi_domain(i)
         i8_array(i)%num =    nod_IO(i)%numnod
         i8_array(i)%i8_IO => nod_IO(i)%inod_global
 !
@@ -72,11 +71,10 @@
       type(intarray_IO),  intent(inout) :: i_array(nloop)
       type(ivecarray_IO), intent(inout) :: iv_array(nloop)
 !
-      integer(kind = kint) :: i, ip
+      integer(kind = kint) :: i
 !
 !
       do i = 1, nloop
-        ip = 1 + rank_in_multi_domain(i)
         i8_array(i)%num =    ele_IO(i)%numele
         i8_array(i)%i8_IO => ele_IO(i)%iele_global
 !

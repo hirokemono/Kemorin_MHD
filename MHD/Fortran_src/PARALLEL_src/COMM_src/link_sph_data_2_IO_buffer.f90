@@ -45,11 +45,10 @@
       type(sph_IO_data), intent(in) :: sph_IO(nloop)
       type(intarray_IO), intent(inout) :: i_array(nloop)
 !
-      integer(kind = kint) :: i, ip
+      integer(kind = kint) :: i
 !
 !
       do i = 1, nloop
-        ip = 1 + rank_in_multi_domain(i)
         i_array(i)%num =   sph_IO(i)%numdir_sph
         i_array(i)%i_IO => sph_IO(i)%nidx_sph
       end do
@@ -64,11 +63,10 @@
       type(sph_IO_data), intent(in) :: sph_IO(nloop)
       type(intarray_IO), intent(inout) :: i_array(nloop)
 !
-      integer(kind = kint) :: i, ip
+      integer(kind = kint) :: i
 !
 !
       do i = 1, nloop
-        ip = 1 + rank_in_multi_domain(i)
         i_array(i)%num =   sph_IO(i)%numdir_sph
         i_array(i)%i_IO => sph_IO(i)%ist_sph
       end do
@@ -83,11 +81,10 @@
       type(sph_IO_data), intent(in) :: sph_IO(nloop)
       type(intarray_IO), intent(inout) :: i_array(nloop)
 !
-      integer(kind = kint) :: i, ip
+      integer(kind = kint) :: i
 !
 !
       do i = 1, nloop
-        ip = 1 + rank_in_multi_domain(i)
         i_array(i)%num =   sph_IO(i)%numdir_sph
         i_array(i)%i_IO => sph_IO(i)%ied_sph
       end do
@@ -104,11 +101,10 @@
       type(intarray_IO), intent(inout) :: i_array(nloop)
       type(realarray_IO), intent(inout) :: r_array(nloop)
 !
-      integer(kind = kint) :: i, ip
+      integer(kind = kint) :: i
 !
 !
       do i = 1, nloop
-        ip = 1 + rank_in_multi_domain(i)
         i_array(i)%num =   sph_IO(i)%nidx_sph(1)
         i_array(i)%i_IO => sph_IO(i)%idx_gl_1
 !
@@ -126,11 +122,10 @@
       type(sph_IO_data), intent(inout) :: sph_IO(nloop)
       type(ivecarray_IO), intent(inout) :: iv_array(nloop)
 !
-      integer(kind = kint) :: i, ip
+      integer(kind = kint) :: i
 !
 !
       do i = 1, nloop
-        ip = 1 + rank_in_multi_domain(i)
         iv_array(i)%n1 =     sph_IO(i)%nidx_sph(2)
         iv_array(i)%n2 =     sph_IO(i)%ncomp_table_1d(2)
         iv_array(i)%iv_IO => sph_IO(i)%idx_gl_2
@@ -146,11 +141,10 @@
       type(sph_IO_data), intent(inout) :: sph_IO(nloop)
       type(ivecarray_IO), intent(inout) :: iv_array(nloop)
 !
-      integer(kind = kint) :: i, ip
+      integer(kind = kint) :: i
 !
 !
       do i = 1, nloop
-        ip = 1 + rank_in_multi_domain(i)
         iv_array(i)%n1 =     sph_IO(i)%nidx_sph(3)
         iv_array(i)%n2 =     sph_IO(i)%ncomp_table_1d(3)
         iv_array(i)%iv_IO => sph_IO(i)%idx_gl_3
@@ -169,11 +163,10 @@
       type(int8array_IO), intent(inout) :: i8_array(nloop)
       type(ivecarray_IO), intent(inout) :: iv_array(nloop)
 !
-      integer(kind = kint) :: i, ip
+      integer(kind = kint) :: i
 !
 !
       do i = 1, nloop
-        ip = 1 + rank_in_multi_domain(i)
         i8_array(i)%num =    sph_IO(i)%numnod_sph
         i8_array(i)%i8_IO => sph_IO(i)%inod_gl_sph
 !

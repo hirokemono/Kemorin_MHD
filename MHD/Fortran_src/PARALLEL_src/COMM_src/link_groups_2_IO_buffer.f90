@@ -41,11 +41,10 @@
       type(group_data), intent(in) :: group_IO(nloop)
       type(intarray_IO), intent(inout) :: i_array(nloop)
 !
-      integer(kind = kint) :: i, ip
+      integer(kind = kint) :: i
 !
 !
       do i = 1, nloop
-        ip = 1 + rank_in_multi_domain(i)
         i_array(i)%num =   group_IO(i)%num_grp
         if(group_IO(i)%num_grp .gt. 0) then
           i_array(i)%i_IO(1:group_IO(i)%num_grp)                        &
@@ -63,11 +62,10 @@
       type(group_data), intent(in) :: group_IO(nloop)
       type(intarray_IO), intent(inout) :: i_array(nloop)
 !
-      integer(kind = kint) :: i, ip
+      integer(kind = kint) :: i
 !
 !
       do i = 1, nloop
-        ip = 1 + rank_in_multi_domain(i)
         i_array(i)%num =   group_IO(i)%num_item
         i_array(i)%i_IO => group_IO(i)%item_grp
       end do
@@ -83,11 +81,10 @@
       type(surface_group_data), intent(in) :: surf_grp_IO(nloop)
       type(intarray_IO), intent(inout) :: i_array(nloop)
 !
-      integer(kind = kint) :: i, ip
+      integer(kind = kint) :: i
 !
 !
       do i = 1, nloop
-        ip = 1 + rank_in_multi_domain(i)
         i_array(i)%num =   surf_grp_IO(i)%num_grp
         if(surf_grp_IO(i)%num_grp .gt. 0) then
           i_array(i)%i_IO(1:surf_grp_IO(i)%num_grp)                     &
@@ -106,11 +103,10 @@
       type(surface_group_data), intent(in) :: surf_grp_IO(nloop)
       type(ivecarray_IO), intent(inout) :: iv_array(nloop)
 !
-      integer(kind = kint) :: i, ip
+      integer(kind = kint) :: i
 !
 !
       do i = 1, nloop
-        ip = 1 + rank_in_multi_domain(i)
         iv_array(i)%n1 =    2
         iv_array(i)%n2 =     surf_grp_IO(i)%num_item
         iv_array(i)%iv_IO => surf_grp_IO(i)%item_sf_grp
