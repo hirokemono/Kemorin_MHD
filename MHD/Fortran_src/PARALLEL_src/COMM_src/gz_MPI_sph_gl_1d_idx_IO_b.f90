@@ -45,6 +45,8 @@
       sph_IO%ncomp_table_1d(2) = 1
       sph_IO%ncomp_table_1d(3) = 2
 !
+      call alloc_num_idx_sph_IO(sph_IO)
+!
       call gz_mpi_read_int_vector_b                                     &
      &   (IO_param, sph_IO%numdir_sph, sph_IO%nidx_sph)
       call gz_mpi_read_int_vector_b                                     &
@@ -84,6 +86,8 @@
       sph_IO%numdir_sph = 2
       sph_IO%ncomp_table_1d(1) = 1
       sph_IO%ncomp_table_1d(2) = 3
+!
+      call alloc_num_idx_sph_IO(sph_IO)
 !
       call gz_mpi_read_int_vector_b                                     &
      &   (IO_param, sph_IO%numdir_sph, sph_IO%nidx_sph)
@@ -137,6 +141,7 @@
       call gz_mpi_write_int_vector_b                                    &
      &   (IO_param, nvect, sph_IO%idx_gl_3)
 !
+      call dealloc_num_idx_sph_IO(sph_IO)
       call dealloc_idx_sph_1d1_IO(sph_IO)
       call dealloc_idx_sph_1d2_IO(sph_IO)
       call dealloc_idx_sph_1d3_IO(sph_IO)
@@ -169,6 +174,7 @@
       call gz_mpi_write_int_vector_b                                    &
      &   (IO_param, nvect, sph_IO%idx_gl_2)
 !
+      call dealloc_num_idx_sph_IO(sph_IO)
       call dealloc_idx_sph_1d1_IO(sph_IO)
       call dealloc_idx_sph_1d2_IO(sph_IO)
 !

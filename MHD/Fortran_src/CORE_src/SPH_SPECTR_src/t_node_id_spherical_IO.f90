@@ -7,11 +7,13 @@
 !> @brief Array for speherical harmonics indexing IO
 !!
 !!@verbatim
+!!      subroutine alloc_num_idx_sph_IO(sph_IO)
 !!      subroutine alloc_nod_id_sph_IO(sph_IO)
 !!      subroutine alloc_idx_sph_1d1_IO(sph_IO)
 !!      subroutine alloc_idx_sph_1d2_IO(sph_IO)
 !!      subroutine alloc_idx_sph_1d3_IO(sph_IO)
 !!
+!!      subroutine dealloc_num_idx_sph_IO(sph_IO)
 !!      subroutine dealloc_nod_id_sph_IO(sph_IO)
 !!      subroutine dealloc_idx_sph_1d1_IO(sph_IO)
 !!      subroutine dealloc_idx_sph_1d2_IO(sph_IO)
@@ -48,11 +50,11 @@
         integer(kind = kint), pointer :: idx_gl_sph(:,:)
 !
 !>        Number of local compoennts in each direction
-        integer(kind = kint) :: nidx_sph(3)
+        integer(kind = kint), pointer :: nidx_sph(:)
 !>        Start global address
-        integer(kind = kint) :: ist_sph(3)
+        integer(kind = kint), pointer :: ist_sph(:)
 !>        End global address
-        integer(kind = kint) :: ied_sph(3)
+        integer(kind = kint), pointer :: ied_sph(:)
 !>        Number of components for global address
         integer(kind = kint) :: ncomp_table_1d(3)
 !
@@ -70,6 +72,23 @@
 ! -----------------------------------------------------------------------
 !
       contains
+!
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_num_idx_sph_IO(sph_IO)
+!
+      type(sph_IO_data), intent(inout) :: sph_IO
+!
+!
+      allocate(sph_IO%nidx_sph(sph_IO%numdir_sph))
+      allocate(sph_IO%ist_sph(sph_IO%numdir_sph))
+      allocate(sph_IO%ied_sph(sph_IO%numdir_sph))
+!
+      sph_IO%nidx_sph = 0
+      sph_IO%ist_sph = 0
+      sph_IO%ied_sph =  0
+!
+      end subroutine alloc_num_idx_sph_IO
 !
 ! -----------------------------------------------------------------------
 !
@@ -136,6 +155,19 @@
       end subroutine alloc_idx_sph_1d3_IO
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_num_idx_sph_IO(sph_IO)
+!
+      type(sph_IO_data), intent(inout) :: sph_IO
+!
+!
+      deallocate( sph_IO%nidx_sph )
+      deallocate( sph_IO%ist_sph )
+      deallocate( sph_IO%ied_sph )
+!
+      end subroutine dealloc_num_idx_sph_IO
+!
 ! -----------------------------------------------------------------------
 !
       subroutine dealloc_nod_id_sph_IO(sph_IO)

@@ -49,6 +49,8 @@
 !
       call set_istack_4_fixed_num(sph_IO%numdir_sph, IO_param)
 !
+      call alloc_num_idx_sph_IO(sph_IO)
+!
       call mpi_read_int_vector_b                                        &
      &   (IO_param, sph_IO%numdir_sph, sph_IO%nidx_sph)
       call mpi_read_int_vector_b                                        &
@@ -96,6 +98,8 @@
       sph_IO%ncomp_table_1d(2) = 3
 !
       call set_istack_4_fixed_num(sph_IO%numdir_sph, IO_param)
+!
+      call alloc_num_idx_sph_IO(sph_IO)
 !
       call mpi_read_int_vector_b                                        &
      &   (IO_param, sph_IO%numdir_sph, sph_IO%nidx_sph)
@@ -157,6 +161,7 @@
       call mpi_write_int_vector_b                                       &
      &   (IO_param, nvect, sph_IO%idx_gl_3)
 !
+      call dealloc_num_idx_sph_IO(sph_IO)
       call dealloc_idx_sph_1d1_IO(sph_IO)
       call dealloc_idx_sph_1d2_IO(sph_IO)
       call dealloc_idx_sph_1d3_IO(sph_IO)
@@ -193,6 +198,7 @@
       call mpi_write_int_vector_b                                       &
      &   (IO_param, nvect, sph_IO%idx_gl_2)
 !
+      call dealloc_num_idx_sph_IO(sph_IO)
       call dealloc_idx_sph_1d1_IO(sph_IO)
       call dealloc_idx_sph_1d2_IO(sph_IO)
 !

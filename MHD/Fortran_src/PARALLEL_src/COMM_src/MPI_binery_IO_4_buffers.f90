@@ -76,12 +76,13 @@
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: iloop
+      integer(kind = kint) :: iloop, id_rank
 !
 !
       do iloop = 1, nloop
+        id_rank = rank_in_multi_domain(iloop)
         if(c_array(iloop)%num .gt. 0) then
-          ioffset = ioff_gl + istack_merged(my_rank)
+          ioffset = ioff_gl + istack_merged(id_rank)
           call calypso_mpi_seek_write_chara(id_file, ioffset,           &
      &        c_array(iloop)%num, c_array(iloop)%c_IO(1))
         end if
@@ -108,7 +109,7 @@
 !
 !
       do iloop = 1, nloop
-        id_rank = my_rank + (iloop - 1) * nprocs
+        id_rank = rank_in_multi_domain(iloop)
         ioffset = ioff_gl + istack_merged(id_rank)
         call calypso_mpi_seek_write_int8(id_file, ioffset,              &
      &      i8_array(iloop)%num, i8_array(iloop)%i8_IO)
@@ -134,7 +135,7 @@
 !
 !
       do iloop = 1, nloop
-        id_rank = my_rank + (iloop - 1) * nprocs
+        id_rank = rank_in_multi_domain(iloop)
         ioffset = ioff_gl + istack_merged(id_rank)
         call calypso_mpi_seek_write_int                                 &
      &    (id_file, ioffset, i_array(iloop)%num, i_array(iloop)%i_IO)
@@ -160,7 +161,7 @@
 !
 !
       do iloop = 1, nloop
-        id_rank = my_rank + (iloop - 1) * nprocs
+        id_rank = rank_in_multi_domain(iloop)
         ioffset = ioff_gl + istack_merged(id_rank)
         n_2d = iv_array(iloop)%n1 * iv_array(iloop)%n2
         call calypso_mpi_seek_write_int                                 &
@@ -187,7 +188,7 @@
 !
 !
       do iloop = 1, nloop
-        id_rank = my_rank + (iloop - 1) * nprocs
+        id_rank = rank_in_multi_domain(iloop)
         ioffset = ioff_gl + istack_merged(id_rank)
         call calypso_mpi_seek_write_real                                &
      &    (id_file, ioffset, r_array(iloop)%num, r_array(iloop)%r_IO)
@@ -213,7 +214,7 @@
 !
 !
       do iloop = 1, nloop
-        id_rank = my_rank + (iloop - 1) * nprocs
+        id_rank = rank_in_multi_domain(iloop)
         ioffset = ioff_gl + istack_merged(id_rank)
         n_2d = v_array(iloop)%n1 * v_array(iloop)%n2
         call calypso_mpi_seek_write_real                                &
@@ -243,7 +244,7 @@
 !
 !
       do iloop = 1, nloop
-        id_rank = my_rank + (iloop - 1) * nprocs
+        id_rank = rank_in_multi_domain(iloop)
 !
         ioffset = ioff_gl + istack_merged(id_rank)
         c_array(iloop)%num = int(istack_merged(id_rank+1)               &
@@ -275,7 +276,7 @@
 !
 !
       do iloop = 1, nloop
-        id_rank = my_rank + (iloop - 1) * nprocs
+        id_rank = rank_in_multi_domain(iloop)
         ioffset = ioff_gl + kint_gl * istack_merged(id_rank)
         call calypso_mpi_seek_read_int8(id_file, ioffset,               &
      &      i8_array(iloop)%num, i8_array(iloop)%i8_IO)
@@ -301,7 +302,7 @@
 !
 !
       do iloop = 1, nloop
-        id_rank = my_rank + (iloop - 1) * nprocs
+        id_rank = rank_in_multi_domain(iloop)
         ioffset = ioff_gl + kint * istack_merged(id_rank)
         call calypso_mpi_seek_read_int                                  &
      &     (id_file, ioffset, i_array(iloop)%num, i_array(iloop)%i_IO)
@@ -327,7 +328,7 @@
 !
 !
       do iloop = 1, nloop
-        id_rank = my_rank + (iloop - 1) * nprocs
+        id_rank = rank_in_multi_domain(iloop)
         ioffset = ioff_gl + kint * istack_merged(id_rank)
         n_2d = iv_array(iloop)%n1 * iv_array(iloop)%n2
         call calypso_mpi_seek_read_int                                  &
@@ -354,7 +355,7 @@
 !
 !
       do iloop = 1, nloop
-        id_rank = my_rank + (iloop - 1) * nprocs
+        id_rank = rank_in_multi_domain(iloop)
         ioffset = ioff_gl + kreal * istack_merged(id_rank)
         call calypso_mpi_seek_read_real                                 &
      &     (id_file, ioffset, r_array(iloop)%num, r_array(iloop)%r_IO)
@@ -380,7 +381,7 @@
 !
 !
       do iloop = 1, nloop
-        id_rank = my_rank + (iloop - 1) * nprocs
+        id_rank = rank_in_multi_domain(iloop)
         ioffset = ioff_gl + kreal * istack_merged(id_rank)
         n_2d = v_array(iloop)%n1 * v_array(iloop)%n2
         call calypso_mpi_seek_read_real                                 &

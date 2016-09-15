@@ -76,8 +76,10 @@
         new_sph_head = new_sph_mode_prefix%charavalue
       end if
 !
-      call choose_file_format(sph_file_fmt_ctl, ifmt_org_sph_file)
-      call choose_file_format(new_sph_file_fmt_ctl, ifmt_new_sph_file)
+      call choose_para_file_format                                      &
+     &   (sph_file_fmt_ctl, ifmt_org_sph_file)
+      call choose_para_file_format                                      &
+     &   (new_sph_file_fmt_ctl, ifmt_new_sph_file)
 !
 !
       if (restart_file_prefix%iflag .gt. 0) then

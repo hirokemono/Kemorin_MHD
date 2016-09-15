@@ -1,5 +1,5 @@
-!>@file  mpi_IO_for_bufferes.f90
-!!       module mpi_IO_for_bufferes
+!>@file  MPI_IO_array_bufferes_b.f90
+!!       module MPI_IO_array_bufferes_b
 !!
 !!@author H. Matsui
 !!@date   Programmed in Aug., 2016
@@ -22,7 +22,7 @@
 !!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !!@endverbatim
 !
-      module mpi_IO_for_bufferes
+      module MPI_IO_array_bufferes_b
 !
       use m_precision
       use m_constants
@@ -218,4 +218,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module mpi_IO_for_bufferes
+      end module MPI_IO_array_bufferes_b

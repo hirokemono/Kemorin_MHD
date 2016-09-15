@@ -46,6 +46,8 @@
       sph_IO%ncomp_table_1d(2) = 1
       sph_IO%ncomp_table_1d(3) = 2
 !
+      call alloc_num_idx_sph_IO(sph_IO)
+!
       call skip_comment(character_4_read,id_file)
       read(character_4_read,*) sph_IO%nidx_sph(1),                      &
      &                         sph_IO%ist_sph(1), sph_IO%ied_sph(1)
@@ -90,6 +92,8 @@
       sph_IO%numdir_sph = 2
       sph_IO%ncomp_table_1d(1) = 1
       sph_IO%ncomp_table_1d(2) = 3
+!
+      call alloc_num_idx_sph_IO(sph_IO)
 !
       call skip_comment(character_4_read,id_file)
       read(character_4_read,*) sph_IO%nidx_sph(1),                      &
@@ -148,6 +152,7 @@
      &         sph_IO%idx_gl_3(i,1:sph_IO%ncomp_table_1d(3))
       end do
 !
+      call dealloc_num_idx_sph_IO(sph_IO)
       call dealloc_idx_sph_1d1_IO(sph_IO)
       call dealloc_idx_sph_1d2_IO(sph_IO)
       call dealloc_idx_sph_1d3_IO(sph_IO)
@@ -182,6 +187,7 @@
      &          sph_IO%idx_gl_2(i,1:sph_IO%ncomp_table_1d(2))
       end do
 !
+      call dealloc_num_idx_sph_IO(sph_IO)
       call dealloc_idx_sph_1d1_IO(sph_IO)
       call dealloc_idx_sph_1d2_IO(sph_IO)
 !

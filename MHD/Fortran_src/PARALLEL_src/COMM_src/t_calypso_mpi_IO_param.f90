@@ -160,7 +160,6 @@
       end subroutine dealloc_istack_merge
 !
 !  ---------------------------------------------------------------------
-!
 !  ---------------------------------------------------------------------
 !
       subroutine dealloc_character_buffers(nloop, c_array)
@@ -176,6 +175,113 @@
       end do
 !
       end subroutine dealloc_character_buffers
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine unlink_integer8_buffers(nloop, i8_array)
+!
+      integer(kind = kint), intent(in) :: nloop
+      type(int8array_IO), intent(inout) ::  i8_array(nloop)
+!
+      integer(kind = kint) :: iloop
+!
+!
+      do iloop = 1, nloop
+        nullify(i8_array(iloop)%i8_IO)
+      end do
+!
+      end subroutine unlink_integer8_buffers
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine unlink_integer_buffers(nloop, i_array)
+!
+      integer(kind = kint), intent(in) :: nloop
+      type(intarray_IO), intent(inout) ::  i_array(nloop)
+!
+      integer(kind = kint) :: iloop
+!
+!
+      do iloop = 1, nloop
+        nullify(i_array(iloop)%i_IO)
+      end do
+!
+      end subroutine unlink_integer_buffers
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine unlink_int_2d_buffers(nloop, iv_array)
+!
+      integer(kind = kint), intent(in) :: nloop
+      type(ivecarray_IO), intent(inout) ::  iv_array(nloop)
+!
+      integer(kind = kint) :: iloop
+!
+!
+      do iloop = 1, nloop
+        nullify(iv_array(iloop)%iv_IO)
+      end do
+!
+      end subroutine unlink_int_2d_buffers
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine unlink_real_buffers(nloop, r_array)
+!
+      integer(kind = kint), intent(in) :: nloop
+      type(realarray_IO), intent(inout) ::  r_array(nloop)
+!
+      integer(kind = kint) :: iloop
+!
+!
+      do iloop = 1, nloop
+        nullify(r_array(iloop)%r_IO)
+      end do
+!
+      end subroutine unlink_real_buffers
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine unlink_vector_buffers(nloop, v_array)
+!
+      integer(kind = kint), intent(in) :: nloop
+      type(vectarray_IO), intent(inout) ::  v_array(nloop)
+!
+      integer(kind = kint) :: iloop
+!
+!
+      do iloop = 1, nloop
+        nullify(v_array(iloop)%v_IO)
+      end do
+!
+      end subroutine unlink_vector_buffers
+!
+!  ---------------------------------------------------------------------
+!
+      integer(kind = kint) function rank_in_multi_domain(iloop)
+!
+      integer(kind = kint), intent(in) :: iloop
+!
+      rank_in_multi_domain = my_rank + (iloop - 1) * nprocs
+!
+      end function rank_in_multi_domain
+!
+!  ---------------------------------------------------------------------
+!
+      integer(kind = kint) function num_loop_4_multi_domain(nprocs_in)
+!
+      integer(kind = kint), intent(in) :: nprocs_in
+      integer(kind = kint) :: id_rank, nloop
+!
+      nloop = (nprocs_in - 1) / nprocs
+      id_rank = rank_in_multi_domain(nloop+1)
+      if(id_rank .lt. nprocs_in) nloop = nloop + 1
+!
+      num_loop_4_multi_domain = nloop
+!
+      end function num_loop_4_multi_domain
+!
+!  ---------------------------------------------------------------------
 !
 !  ---------------------------------------------------------------------
 !

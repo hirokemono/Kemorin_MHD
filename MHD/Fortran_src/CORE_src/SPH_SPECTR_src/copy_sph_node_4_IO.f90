@@ -106,6 +106,7 @@
 !$omp end parallel workshare
 !
       call dealloc_nod_id_sph_IO(sph_IO)
+      call dealloc_num_idx_sph_IO(sph_IO)
       call dealloc_idx_sph_1d1_IO(sph_IO)
       call dealloc_idx_sph_1d2_IO(sph_IO)
       call dealloc_idx_sph_1d3_IO(sph_IO)
@@ -162,6 +163,7 @@
 !$omp end parallel workshare
 !
       call dealloc_nod_id_sph_IO(sph_IO)
+      call dealloc_num_idx_sph_IO(sph_IO)
       call dealloc_idx_sph_1d1_IO(sph_IO)
       call dealloc_idx_sph_1d2_IO(sph_IO)
       call dealloc_idx_sph_1d3_IO(sph_IO)
@@ -215,6 +217,7 @@
 !$omp end parallel workshare
 !
       call dealloc_nod_id_sph_IO(sph_IO)
+      call dealloc_num_idx_sph_IO(sph_IO)
       call dealloc_idx_sph_1d1_IO(sph_IO)
       call dealloc_idx_sph_1d2_IO(sph_IO)
 !
@@ -270,6 +273,7 @@
 !$omp end parallel workshare
 !
       call dealloc_nod_id_sph_IO(sph_IO)
+      call dealloc_num_idx_sph_IO(sph_IO)
       call dealloc_idx_sph_1d1_IO(sph_IO)
       call dealloc_idx_sph_1d2_IO(sph_IO)
 !
@@ -301,6 +305,9 @@
       sph_IO%ltr_gl =                l_truncation
 !
       sph_IO%numnod_sph =         rtp%nnod_rtp
+!
+      call alloc_num_idx_sph_IO(sph_IO)
+!
       sph_IO%nidx_sph(1:ithree) = rtp%nidx_rtp(1:ithree)
       sph_IO%ist_sph(1:ithree) =  rtp%ist_rtp(1:ithree)
       sph_IO%ied_sph(1:ithree) =  rtp%ied_rtp(1:ithree)
@@ -375,6 +382,9 @@
       sph_IO%ltr_gl =                l_truncation
 !
       sph_IO%numnod_sph =         rtm%nnod_rtm
+!
+      call alloc_num_idx_sph_IO(sph_IO)
+!
       sph_IO%nidx_sph(1:ithree) = rtm%nidx_rtm(1:ithree)
       sph_IO%ist_sph(1:ithree) =  rtm%ist_rtm(1:ithree)
       sph_IO%ied_sph(1:ithree) =  rtm%ied_rtm(1:ithree)
@@ -445,6 +455,9 @@
       sph_IO%ltr_gl =              l_truncation
 !
       sph_IO%numnod_sph =       rlm%nnod_rlm
+!
+      call alloc_num_idx_sph_IO(sph_IO)
+!
       sph_IO%nidx_sph(1:itwo) = rlm%nidx_rlm(1:itwo)
       sph_IO%ist_sph(1:itwo) =  rlm%ist_rlm(1:itwo)
       sph_IO%ied_sph(1:itwo) =  rlm%ied_rlm(1:itwo)
@@ -507,6 +520,9 @@
       sph_IO%ltr_gl =              l_truncation
 !
       sph_IO%numnod_sph =       rj%nnod_rj
+!
+      call alloc_num_idx_sph_IO(sph_IO)
+!
       sph_IO%nidx_sph(1:itwo) = rj%nidx_rj(1:itwo)
       sph_IO%ist_sph(1:itwo) =  rj%ist_rj(1:itwo)
       sph_IO%ied_sph(1:itwo) =  rj%ied_rj(1:itwo)
