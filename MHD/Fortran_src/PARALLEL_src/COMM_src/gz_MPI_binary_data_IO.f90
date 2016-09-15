@@ -45,6 +45,8 @@
 !
       implicit none
 !
+      character(len=1), allocatable, private :: gzip_buf(:)
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -76,11 +78,11 @@
 !
       ilength =  num * kint
       ilen_gz = int(real(ilength) *1.01) + 24
-      allocate(IO_param%c_array(1)%c_IO(ilen_gz))
+      allocate(gzip_buf(ilen_gz))
       call gzip_defleat_once(ilength, int_dat(1), ilen_gz,              &
-     &   ilen_gzipped, IO_param%c_array(1)%c_IO(1))
+     &   ilen_gzipped, gzip_buf(1))
 !
-      call set_istack_over_subdomains(ilen_gzipped, IO_param)
+      call set_istack_4_parallell_data(ilen_gzipped, IO_param)
 !
       call gz_mpi_write_i8stack_head_b                                  &
      &   (IO_param, nprocs, IO_param%istack_merged)
@@ -88,10 +90,10 @@
       if(ilen_gzipped .gt. 0) then
         ioffset = IO_param%ioff_gl + IO_param%istack_merged(my_rank)
         call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,    &
-     &      ilen_gzipped, IO_param%c_array(1)%c_IO(1))
+     &      ilen_gzipped, gzip_buf(1))
       end if
 !
-      deallocate(IO_param%c_array(1)%c_IO)
+      deallocate(gzip_buf)
       IO_param%ioff_gl = IO_param%ioff_gl                               &
      &                  + IO_param%istack_merged(nprocs)
 !
@@ -111,11 +113,11 @@
 !
       ilength =  num * kint_gl
       ilen_gz = int(real(ilength) *1.01) + 24
-      allocate(IO_param%c_array(1)%c_IO(ilen_gz))
+      allocate(gzip_buf(ilen_gz))
       call gzip_defleat_once(ilength, int8_dat(1), ilen_gz,             &
-     &    ilen_gzipped, IO_param%c_array(1)%c_IO(1))
+     &    ilen_gzipped, gzip_buf(1))
 !
-      call set_istack_over_subdomains(ilen_gzipped, IO_param)
+      call set_istack_4_parallell_data(ilen_gzipped, IO_param)
 !
       call gz_mpi_write_i8stack_head_b                                  &
      &   (IO_param, nprocs, IO_param%istack_merged)
@@ -123,10 +125,10 @@
       if(ilen_gzipped .gt. 0) then
         ioffset = IO_param%ioff_gl + IO_param%istack_merged(my_rank)
         call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,    &
-     &      ilen_gzipped, IO_param%c_array(1)%c_IO(1))
+     &      ilen_gzipped, gzip_buf(1))
       end if
 !
-      deallocate(IO_param%c_array(1)%c_IO)
+      deallocate(gzip_buf)
       IO_param%ioff_gl = IO_param%ioff_gl                               &
      &                  + IO_param%istack_merged(nprocs)
 !
@@ -146,11 +148,11 @@
 !
       ilength =  num * kreal
       ilen_gz = int(real(ilength) *1.01) + 24
-      allocate(IO_param%c_array(1)%c_IO(ilen_gz))
+      allocate(gzip_buf(ilen_gz))
       call gzip_defleat_once(ilength, real_dat(1), ilen_gz,             &
-     &    ilen_gzipped, IO_param%c_array(1)%c_IO(1))
+     &    ilen_gzipped, gzip_buf(1))
 !
-      call set_istack_over_subdomains(ilen_gzipped, IO_param)
+      call set_istack_4_parallell_data(ilen_gzipped, IO_param)
 !
       call gz_mpi_write_i8stack_head_b                                  &
      &   (IO_param, nprocs, IO_param%istack_merged)
@@ -158,10 +160,10 @@
       if(ilen_gzipped .gt. 0) then
         ioffset = IO_param%ioff_gl + IO_param%istack_merged(my_rank)
         call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,    &
-     &      ilen_gzipped, IO_param%c_array(1)%c_IO(1))
+     &      ilen_gzipped, gzip_buf(1))
       end if
 !
-      deallocate(IO_param%c_array(1)%c_IO)
+      deallocate(gzip_buf)
       IO_param%ioff_gl = IO_param%ioff_gl                               &
      &                  + IO_param%istack_merged(nprocs)
 !
@@ -230,13 +232,13 @@
       ilength = num * kint
       ilen_gz = int(IO_param%istack_merged(IO_param%id_rank+1)          &
      &            - IO_param%istack_merged(IO_param%id_rank))
-      allocate(IO_param%c_array(1)%c_IO(ilen_gz))
+      allocate(gzip_buf(ilen_gz))
       call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset,          &
-     &    ilen_gz, IO_param%c_array(1)%c_IO(1))
+     &    ilen_gz, gzip_buf(1))
 !
-      call gzip_infleat_once(ilen_gz, IO_param%c_array(1)%c_IO(1),      &
+      call gzip_infleat_once(ilen_gz, gzip_buf(1),                      &
      &    ilength, int_dat(1), ilen_gzipped)
-      deallocate(IO_param%c_array(1)%c_IO)
+      deallocate(gzip_buf)
 !
       if(iflag_endian .eq. iendian_FLIP) then
         l8_byte = ilength
@@ -272,13 +274,13 @@
       ilength = num * kint_gl
       ilen_gz = int(IO_param%istack_merged(IO_param%id_rank+1)          &
      &            - IO_param%istack_merged(IO_param%id_rank))
-      allocate(IO_param%c_array(1)%c_IO(ilen_gz))
+      allocate(gzip_buf(ilen_gz))
       call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset,          &
-     &   ilen_gz, IO_param%c_array(1)%c_IO(1))
+     &   ilen_gz, gzip_buf(1))
 !
-      call gzip_infleat_once(ilen_gz, IO_param%c_array(1)%c_IO(1),      &
+      call gzip_infleat_once(ilen_gz, gzip_buf(1),                      &
      &    ilength, int8_dat(1), ilen_gzipped)
-      deallocate(IO_param%c_array(1)%c_IO)
+      deallocate(gzip_buf)
 !
       if(iflag_endian .eq. iendian_FLIP) then
         l8_byte = ilength
@@ -315,13 +317,13 @@
       ilen_gz = int(IO_param%istack_merged(IO_param%id_rank+1)          &
      &            - IO_param%istack_merged(IO_param%id_rank))
 !
-      allocate(IO_param%c_array(1)%c_IO(ilen_gz))
+      allocate(gzip_buf(ilen_gz))
       call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset,          &
-     &    ilen_gz, IO_param%c_array(1)%c_IO(1))
+     &    ilen_gz, gzip_buf(1))
 !
-      call gzip_infleat_once(ilen_gz, IO_param%c_array(1)%c_IO(1),      &
+      call gzip_infleat_once(ilen_gz, gzip_buf(1),                      &
      &   ilength, real_dat(1), ilen_gzipped)
-      deallocate(IO_param%c_array(1)%c_IO)
+      deallocate(gzip_buf)
 !
       if(iflag_endian .eq. iendian_FLIP) then
         l8_byte = ilength

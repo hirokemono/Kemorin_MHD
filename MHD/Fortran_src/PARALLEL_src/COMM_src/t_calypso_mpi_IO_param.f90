@@ -9,6 +9,13 @@
 !!@verbatim
 !!      subroutine alloc_istack_merge(id_rank_IO, nprocs_IO, IO_param)
 !!      subroutine dealloc_istack_merge(IO_param)
+!!
+!!      subroutine mpi_write_chara_array_mul(id_file, nprocs_in, nloop, &
+!!     &          ioff_gl, istack_merged, c_array)
+!!      subroutine mpi_read_chara_array_mul(id_file, nprocs_in, nloop,  &
+!!     &          ioff_gl, istack_merged, c_array)
+!!      subroutine set_istack_by_chara_length                           &
+!!     &         (nprocs_in, nloop, c_array, istack_merged)
 !!@endverbatim
 !
       module t_calypso_mpi_IO_param
@@ -153,6 +160,23 @@
       end subroutine dealloc_istack_merge
 !
 !  ---------------------------------------------------------------------
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_character_buffers(nloop, c_array)
+!
+      integer(kind = kint), intent(in) :: nloop
+      type(charaarray_IO), intent(inout) ::  c_array(nloop)
+!
+      integer(kind = kint) :: iloop
+!
+!
+      do iloop = 1, nloop
+        deallocate(c_array(iloop)%c_IO)
+      end do
+!
+      end subroutine dealloc_character_buffers
+!
 !  ---------------------------------------------------------------------
 !
       subroutine copy_istack_4_parallell_data(istack8, IO_param)
@@ -209,32 +233,35 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_istack_over_subdomains(num_local, IO_param)
+      subroutine set_istack_over_subdomains                             &
+     &         (nprocs_in, nloop, num_local, istack_merged)
 !
-      integer(kind = kint), intent(in) :: num_local
-      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      integer(kind = kint), intent(in) :: nloop, nprocs_in
+      integer(kind = kint), intent(in) :: num_local(nloop)
+      integer(kind = kint_gl), intent(inout)                            &
+     &                         :: istack_merged(0:nprocs_in)
 !
+      integer(kind = kint) :: num_lc(0:nprocs_in)
+      integer(kind = kint) :: num_gl(0:nprocs_in)
       integer(kind = kint) :: iloop, ip
 !
 !
 !$omp parallel workshare
-      IO_param%num_lc(1:IO_param%nprocs_in) = 0
-      IO_param%num_gl(1:IO_param%nprocs_in) = 0
+      num_lc(1:nprocs_in) = 0
+      num_gl(1:nprocs_in) = 0
 !$omp end parallel workshare
 !
-      do iloop = 1, IO_param%nloop
+      do iloop = 1, nloop
         ip = 1 + my_rank + (iloop - 1) * nprocs
-        IO_param%num_lc(ip) = num_local
+        num_lc(ip) = num_local(iloop)
       end do
 !
-      call MPI_allREDUCE                                                &
-     &   (IO_param%num_lc, IO_param%num_gl, IO_param%nprocs_in,         &
+      call MPI_allREDUCE(num_lc, num_gl, nprocs_in,                     &
      &    CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
-      IO_param%istack_merged(0) = 0
-      do ip = 1, IO_param%nprocs_in
-        IO_param%istack_merged(ip) = IO_param%istack_merged(ip-1)       &
-     &                              + IO_param%num_gl(ip)
+      istack_merged(0) = 0
+      do ip = 1, nprocs_in
+        istack_merged(ip) = istack_merged(ip-1) + num_gl(ip)
       end do
 !
       end subroutine set_istack_over_subdomains
@@ -254,6 +281,123 @@
       end do
 !
       end subroutine set_istack_4_fixed_num
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine set_istack_by_chara_length                             &
+     &         (nprocs_in, nloop, c_array, istack_merged)
+!
+      integer(kind = kint), intent(in) :: nloop, nprocs_in
+      type(charaarray_IO), intent(inout) ::  c_array(nloop)
+      integer(kind = kint_gl), intent(inout)                            &
+     &                         :: istack_merged(0:nprocs_in)
+!
+      integer(kind = kint) :: num_local(nloop)
+!
+!
+      num_local(1:nloop) = c_array(1:nloop)%num
+      call set_istack_over_subdomains                                   &
+     &   (nprocs_in, nloop, num_local, istack_merged)
+!
+      end subroutine set_istack_by_chara_length
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_istack_by_i8_buffer                                &
+     &         (nprocs_in, nloop, i8_array, istack_merged)
+!
+      integer(kind = kint), intent(in) :: nloop, nprocs_in
+      type(int8array_IO), intent(inout) ::  i8_array(nloop)
+      integer(kind = kint_gl), intent(inout)                            &
+     &                         :: istack_merged(0:nprocs_in)
+!
+      integer(kind = kint) :: num_local(nloop)
+!
+!
+      num_local(1:nloop) = i8_array(1:nloop)%num * kint_gl
+      call set_istack_over_subdomains                                   &
+     &   (nprocs_in, nloop, num_local, istack_merged)
+!
+      end subroutine set_istack_by_i8_buffer
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_istack_by_int_buffer                               &
+     &         (nprocs_in, nloop, i_array, istack_merged)
+!
+      integer(kind = kint), intent(in) :: nloop, nprocs_in
+      type(intarray_IO), intent(inout) ::  i_array(nloop)
+      integer(kind = kint_gl), intent(inout)                            &
+     &                         :: istack_merged(0:nprocs_in)
+!
+      integer(kind = kint) :: num_local(nloop)
+!
+!
+      num_local(1:nloop) = i_array(1:nloop)%num * kint
+      call set_istack_over_subdomains                                   &
+     &   (nprocs_in, nloop, num_local, istack_merged)
+!
+      end subroutine set_istack_by_int_buffer
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_istack_by_int2d_buffer                             &
+     &         (nprocs_in, nloop, iv_array, istack_merged)
+!
+      integer(kind = kint), intent(in) :: nloop, nprocs_in
+      type(ivecarray_IO), intent(inout) ::  iv_array(nloop)
+      integer(kind = kint_gl), intent(inout)                            &
+     &                         :: istack_merged(0:nprocs_in)
+!
+      integer(kind = kint) :: num_local(nloop)
+!
+!
+      num_local(1:nloop) = iv_array(1:nloop)%n1                         &
+     &                    * iv_array(1:nloop)%n2 *kint
+      call set_istack_over_subdomains                                   &
+     &   (nprocs_in, nloop, num_local, istack_merged)
+!
+      end subroutine set_istack_by_int2d_buffer
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_istack_by_real_buffer                              &
+     &         (nprocs_in, nloop, r_array, istack_merged)
+!
+      integer(kind = kint), intent(in) :: nloop, nprocs_in
+      type(realarray_IO), intent(inout) ::  r_array(nloop)
+      integer(kind = kint_gl), intent(inout)                            &
+     &                         :: istack_merged(0:nprocs_in)
+!
+      integer(kind = kint) :: num_local(nloop)
+!
+!
+      num_local(1:nloop) = r_array(1:nloop)%num * kreal
+      call set_istack_over_subdomains                                   &
+     &   (nprocs_in, nloop, num_local, istack_merged)
+!
+      end subroutine set_istack_by_real_buffer
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_istack_by_vector_buffer                            &
+     &         (nprocs_in, nloop, v_array, istack_merged)
+!
+      integer(kind = kint), intent(in) :: nloop, nprocs_in
+      type(vectarray_IO), intent(inout) ::  v_array(nloop)
+      integer(kind = kint_gl), intent(inout)                            &
+     &                         :: istack_merged(0:nprocs_in)
+!
+      integer(kind = kint) :: num_local(nloop)
+!
+!
+      num_local(1:nloop) = v_array(1:nloop)%n1                          &
+     &                    * v_array(1:nloop)%n2 * kreal
+      call set_istack_over_subdomains                                   &
+     &   (nprocs_in, nloop, num_local, istack_merged)
+!
+      end subroutine set_istack_by_vector_buffer
 !
 !  ---------------------------------------------------------------------
 !
