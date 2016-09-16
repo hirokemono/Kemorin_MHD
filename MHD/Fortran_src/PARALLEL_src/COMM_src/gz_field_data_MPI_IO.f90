@@ -19,8 +19,7 @@
 !!      subroutine gz_read_fld_1word_mpi(id_fld, ioff_gl, field_name)
 !!      subroutine gz_read_each_field_mpi(id_fld, nprocs_in, id_rank,   &
 !!     &          ioff_gl, nnod, ndir, vector)
-!!      subroutine gz_skip_each_field_mpi                               &
-!!     &         (id_fld, nprocs_in, id_rank, ioff_gl)
+!!      subroutine gz_skip_each_field_mpi(id_fld, nprocs_in, ioff_gl)
 !!@endverbatim
 !
       module gz_field_data_MPI_IO
@@ -286,16 +285,19 @@
      &    izero, CALYPSO_COMM, ierr_MPI)
 !
 !
-      if(id_rank .ge. nprocs_in) return
+      if(id_rank .ge. nprocs_in) then
+        ioff_gl = ioff_gl + istack_buf(nprocs_in)
+        return
+      end if
 !
       ilen_gz = int(istack_buf(id_rank+1) - istack_buf(id_rank))
       ilength = len(textbuf_d)
       allocate(gzip_buf(ilen_gz))
 !
       ioffset = ioff_gl + istack_buf(id_rank)
+      ioff_gl = ioff_gl + istack_buf(nprocs_in)
       call calypso_mpi_seek_read_gz                                     &
      &         (id_fld, ioffset, ilen_gz, gzip_buf(1))
-      ioff_gl = ioff_gl + istack_buf(nprocs_in)
 !
       if(nnod .eq. 1) then
         call gzip_infleat_once                                          &
@@ -324,14 +326,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_skip_each_field_mpi                                 &
-     &         (id_fld, nprocs_in, id_rank, ioff_gl)
+      subroutine gz_skip_each_field_mpi(id_fld, nprocs_in, ioff_gl)
 !
       use field_data_IO
 !
       integer, intent(in) ::  id_fld
       integer(kind = kint_gl), intent(inout) :: ioff_gl
-      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+      integer(kind = kint), intent(in) :: nprocs_in
 !
       integer(kind = kint) :: ilength
 !
@@ -346,8 +347,6 @@
      &   (id_fld, ioff_gl, ilength, textbuf_c)
       call read_bufer_istack_nod_buffer                                 &
      &   (textbuf_c, nprocs_in, istack_buf)
-!
-      if(id_rank .ge. nprocs_in) return
 !
       ioff_gl = ioff_gl + istack_buf(nprocs_in)
 !

@@ -454,8 +454,7 @@
 !
       do j = 1, num_field
         call gz_read_fld_1word_mpi(id_fld, ioff_gl, field_name(j))
-        call gz_skip_each_field_mpi(id_fld, nprocs_in, id_rank,        &
-     &      ioff_gl)
+        call gz_skip_each_field_mpi(id_fld, nprocs_in, ioff_gl)
       end do
 !
       call sync_field_names_mpi(num_field, field_name)
