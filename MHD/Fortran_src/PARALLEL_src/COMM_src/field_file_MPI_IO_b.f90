@@ -109,8 +109,6 @@
       call mpi_read_mul_charahead_b                                     &
      &   (IO_param, fld_IO%num_field_IO, fld_IO%fld_name)
 !
-      call copy_istack_4_parallell_data                                 &
-     &   (fld_IO%istack_numnod_IO, IO_param)
       call mpi_read_2d_vector_b                                         &
      &   (IO_param, fld_IO%nnod_IO, fld_IO%ntot_comp_IO, fld_IO%d_IO)
 !
@@ -152,8 +150,6 @@
       call mpi_read_mul_charahead_b                                     &
      &   (IO_param, fld_IO%num_field_IO, fld_IO%fld_name)
 !
-      call copy_istack_4_parallell_data                                 &
-     &   (fld_IO%istack_numnod_IO, IO_param)
       call mpi_read_2d_vector_b                                         &
      &   (IO_param, fld_IO%nnod_IO, fld_IO%ntot_comp_IO, fld_IO%d_IO)
 !
@@ -230,8 +226,8 @@
       call mpi_write_one_realhead_b(IO_param_l, time_IO)
       call mpi_write_one_realhead_b(IO_param_l, delta_t_IO)
 !
-      call mpi_write_mul_int8head_b                                     &
-     &   (IO_param_l, IO_param_l%nprocs_in, istack_merged(1))
+      call mpi_write_i8stack_head_b                                     &
+     &   (IO_param_l, IO_param_l%nprocs_in, istack_merged)
 !
       call mpi_write_one_inthead_b(IO_param_l, num_field)
       call mpi_write_mul_inthead_b(IO_param_l, num_field, ncomp_field)
@@ -266,8 +262,8 @@
 !
       call alloc_merged_field_stack(IO_param_l%nprocs_in, fld_IO)
 !
-      call mpi_read_mul_int8head_b(IO_param_l, IO_param_l%nprocs_in,    &
-     &    fld_IO%istack_numnod_IO(1:IO_param_l%nprocs_in))
+      call mpi_read_i8stack_head_b(IO_param_l, IO_param_l%nprocs_in,    &
+     &    fld_IO%istack_numnod_IO)
       call sync_field_header_mpi                                        &
      &   (IO_param_l%nprocs_in, IO_param_l%id_rank,                     &
      &    fld_IO%nnod_IO, fld_IO%istack_numnod_IO)

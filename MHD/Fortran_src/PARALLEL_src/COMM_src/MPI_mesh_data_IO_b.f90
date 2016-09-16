@@ -252,8 +252,6 @@
 !
       call alloc_node_geometry_base(nod_IO)
 !
-      call set_istack_4_parallell_data(nod_IO%numnod, IO_param)
-!
       call mpi_read_int8_vector_b                                       &
      &   (IO_param, nod_IO%numnod, nod_IO%inod_global)
       call mpi_read_2d_vector_b                                         &
@@ -291,7 +289,6 @@
 !
       call alloc_element_types(ele_IO)
 !
-      call set_istack_4_parallell_data(ele_IO%numele, IO_param)
       call mpi_read_int_vector_b                                        &
      &   (IO_param, ele_IO%numele, ele_IO%elmtyp)
 !
@@ -308,7 +305,6 @@
      &   (IO_param, ele_IO%numele, ele_IO%iele_global)
 !
       num = ele_IO%numele * ele_IO%nnod_4_ele
-      call mul_istack_4_parallell_vect(ele_IO%nnod_4_ele, IO_param)
       call mpi_read_int_vector_b(IO_param, num, ele_IO%ie)
 !
       end subroutine mpi_read_element_info_b

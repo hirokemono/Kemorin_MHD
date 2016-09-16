@@ -55,8 +55,6 @@
 !
       call allocate_type_neib_id(comm_IO)
 !
-      call set_istack_4_parallell_data(comm_IO%num_neib, IO_param)
-!
       call mpi_read_int_vector_b                                        &
      &   (IO_param, comm_IO%num_neib, comm_IO%id_neib)
 !
@@ -72,20 +70,14 @@
 !
 !
       call allocate_type_import_num(comm_IO)
-      if (comm_IO%num_neib .gt. 0) then
-        call set_istack_4_parallell_data(comm_IO%num_neib, IO_param)
-        call mpi_read_integer_stack_b(IO_param, comm_IO%num_neib,       &
-     &      comm_IO%istack_import, comm_IO%ntot_import)
 !
-        call allocate_type_import_item(comm_IO)
+      call mpi_read_integer_stack_b(IO_param, comm_IO%num_neib,         &
+     &    comm_IO%istack_import, comm_IO%ntot_import)
 !
-        call set_istack_4_parallell_data(comm_IO%ntot_import, IO_param)
-        call mpi_read_int_vector_b                                      &
+      call allocate_type_import_item(comm_IO)
+!
+      call mpi_read_int_vector_b                                        &
      &     (IO_param, comm_IO%ntot_import, comm_IO%item_import)
-      else
-        comm_IO%ntot_import = 0
-        call allocate_type_import_item(comm_IO)
-      end if
 !
       end subroutine mpi_read_import_data_b
 !
@@ -98,20 +90,14 @@
 !
 !
       call allocate_type_export_num(comm_IO)
-      if (comm_IO%num_neib .gt. 0) then
-        call set_istack_4_parallell_data(comm_IO%num_neib, IO_param)
-        call mpi_read_integer_stack_b(IO_param, comm_IO%num_neib,       &
+!
+      call mpi_read_integer_stack_b(IO_param, comm_IO%num_neib,         &
      &      comm_IO%istack_export, comm_IO%ntot_export)
 !
-        call allocate_type_export_item(comm_IO)
+      call allocate_type_export_item(comm_IO)
 !
-        call set_istack_4_parallell_data(comm_IO%ntot_export, IO_param)
-        call mpi_read_int_vector_b                                      &
+      call mpi_read_int_vector_b                                        &
      &     (IO_param, comm_IO%ntot_export, comm_IO%item_export)
-      else
-        comm_IO%ntot_export = 0
-        call allocate_type_export_item(comm_IO)
-      end if
 !
       end subroutine mpi_read_export_data_b
 !

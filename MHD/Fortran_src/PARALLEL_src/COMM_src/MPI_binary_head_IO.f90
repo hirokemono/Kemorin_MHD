@@ -19,6 +19,7 @@
 !!
 !!      subroutine mpi_write_mul_inthead_b(IO_param, num, int_dat)
 !!        Substitution of gz_write_mul_integer_b
+!!      subroutine mpi_write_i8stack_head_b(IO_param, num, i8stack)
 !!      subroutine mpi_write_mul_int8head_b(IO_param, num, int8_dat)
 !!        Substitution of gz_write_mul_int8_b
 !!      subroutine mpi_write_mul_charahead_b(IO_param, num, chara_dat)
@@ -27,10 +28,10 @@
 !! 
 !!      subroutine mpi_read_one_inthead_b(IO_param, int_dat)
 !!      subroutine mpi_read_one_realhead_b(IO_param, real_dat)
-!!      subroutine mpi_read_one_integer_b(IO_param, int_dat)
 !!
 !!      subroutine mpi_read_mul_inthead_b(IO_param, num, int_dat)
 !!        Substitution of gz_read_mul_integer_b
+!!      subroutine mpi_read_i8stack_head_b(IO_param, num, i8stack)
 !!      subroutine mpi_read_mul_int8head_b(IO_param, num, int8_dat)
 !!        Substitution of gz_read_mul_int8_b
 !!      subroutine mpi_read_mul_charahead_b(IO_param, num, chara_dat)
@@ -49,7 +50,6 @@
       use calypso_mpi
       use m_calypso_mpi_IO
       use t_calypso_mpi_IO_param
-      use MPI_binary_data_IO
 !
       implicit none
 !
@@ -140,22 +140,6 @@
       end subroutine mpi_write_one_realhead_b
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine mpi_write_one_integer_b(IO_param, int_dat)
-!
-      type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind = kint), intent(in) :: int_dat
-!
-      integer(kind = kint) :: itmp_IO(1)
-!
-!
-      itmp_IO(1) = int_dat
-      call set_istack_4_fixed_num(ione, IO_param)
-      call mpi_write_int_vector_b(IO_param, ione, itmp_IO)
-!
-      end subroutine mpi_write_one_integer_b
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine mpi_write_mul_inthead_b(IO_param, num, int_dat)
@@ -177,6 +161,19 @@
       end subroutine mpi_write_mul_inthead_b
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine mpi_write_i8stack_head_b(IO_param, num, i8stack)
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: i8stack(0:num)
+!
+!
+      call mpi_write_mul_int8head_b(IO_param, num, i8stack(1))
+!
+      end subroutine mpi_write_i8stack_head_b
+!
+! -----------------------------------------------------------------------
 !
       subroutine mpi_write_mul_int8head_b(IO_param, num, int8_dat)
 !
@@ -271,22 +268,6 @@
       end subroutine mpi_read_one_realhead_b
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine mpi_read_one_integer_b(IO_param, int_dat)
-!
-      type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind = kint), intent(inout) :: int_dat
-!
-      integer(kind = kint) :: itmp_IO(1)
-!
-!
-      call set_istack_4_fixed_num(ione, IO_param)
-      call mpi_read_int_vector_b(IO_param, ione, itmp_IO(1))
-      int_dat = itmp_IO(1)
-!
-      end subroutine mpi_read_one_integer_b
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine mpi_read_mul_inthead_b(IO_param, num, int_dat)
@@ -310,6 +291,20 @@
      &    CALYPSO_COMM, ierr_MPI)
 !
       end subroutine mpi_read_mul_inthead_b
+!
+! -----------------------------------------------------------------------
+!
+      subroutine mpi_read_i8stack_head_b(IO_param, num, i8stack)
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      integer(kind=kint), intent(in) :: num
+      integer(kind = kint_gl), intent(inout) :: i8stack(0:num)
+!
+!
+      i8stack(0) = 0
+      call mpi_read_mul_int8head_b(IO_param, num, i8stack(1))
+!
+      end subroutine mpi_read_i8stack_head_b
 !
 ! -----------------------------------------------------------------------
 !

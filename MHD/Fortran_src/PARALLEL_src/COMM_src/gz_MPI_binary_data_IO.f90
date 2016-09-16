@@ -228,21 +228,25 @@
       IO_param%ioff_gl = IO_param%ioff_gl                               &
      &         + IO_param%istack_merged(IO_param%nprocs_in)
 !
-      if(IO_param%id_rank .ge. IO_param%nprocs_in) return
-      ilength = num * kint
-      ilen_gz = int(IO_param%istack_merged(IO_param%id_rank+1)          &
+      if(num .le. 0) return
+      if(IO_param%id_rank .ge. IO_param%nprocs_in) then
+        int_dat(1:num) = 0
+      else
+        ilength = num * kint
+        ilen_gz = int(IO_param%istack_merged(IO_param%id_rank+1)        &
      &            - IO_param%istack_merged(IO_param%id_rank))
-      allocate(gzip_buf(ilen_gz))
-      call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset,          &
-     &    ilen_gz, gzip_buf(1))
+        allocate(gzip_buf(ilen_gz))
+        call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset,        &
+     &      ilen_gz, gzip_buf(1))
 !
-      call gzip_infleat_once(ilen_gz, gzip_buf(1),                      &
-     &    ilength, int_dat(1), ilen_gzipped)
-      deallocate(gzip_buf)
+        call gzip_infleat_once(ilen_gz, gzip_buf(1),                    &
+     &      ilength, int_dat(1), ilen_gzipped)
+        deallocate(gzip_buf)
 !
-      if(iflag_endian .eq. iendian_FLIP) then
-        l8_byte = ilength
-        call byte_swap_f(l8_byte, int_dat(1))
+        if(iflag_endian .eq. iendian_FLIP) then
+          l8_byte = ilength
+          call byte_swap_f(l8_byte, int_dat(1))
+        end if
       end if
 !
       end subroutine gz_mpi_read_int_vector_b
@@ -270,21 +274,25 @@
       IO_param%ioff_gl = IO_param%ioff_gl                               &
      &         + IO_param%istack_merged(IO_param%nprocs_in)
 !
-      if(IO_param%id_rank .ge. IO_param%nprocs_in) return
-      ilength = num * kint_gl
-      ilen_gz = int(IO_param%istack_merged(IO_param%id_rank+1)          &
+      if(num .le. 0) return
+      if(IO_param%id_rank .ge. IO_param%nprocs_in) then
+        int8_dat(1:num) = 0
+      else
+        ilength = num * kint_gl
+        ilen_gz = int(IO_param%istack_merged(IO_param%id_rank+1)        &
      &            - IO_param%istack_merged(IO_param%id_rank))
-      allocate(gzip_buf(ilen_gz))
-      call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset,          &
-     &   ilen_gz, gzip_buf(1))
+        allocate(gzip_buf(ilen_gz))
+        call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset,        &
+     &     ilen_gz, gzip_buf(1))
 !
-      call gzip_infleat_once(ilen_gz, gzip_buf(1),                      &
-     &    ilength, int8_dat(1), ilen_gzipped)
-      deallocate(gzip_buf)
+        call gzip_infleat_once(ilen_gz, gzip_buf(1),                    &
+     &      ilength, int8_dat(1), ilen_gzipped)
+        deallocate(gzip_buf)
 !
-      if(iflag_endian .eq. iendian_FLIP) then
-        l8_byte = ilength
-        call byte_swap_f(l8_byte, int8_dat(1))
+        if(iflag_endian .eq. iendian_FLIP) then
+          l8_byte = ilength
+          call byte_swap_f(l8_byte, int8_dat(1))
+        end if
       end if
 !
       end subroutine gz_mpi_read_int8_vector_b
@@ -312,22 +320,26 @@
       IO_param%ioff_gl = IO_param%ioff_gl                               &
      &                  + IO_param%istack_merged(IO_param%nprocs_in)
 !
-      if(IO_param%id_rank .ge. IO_param%nprocs_in) return
-      ilength = num * kreal
-      ilen_gz = int(IO_param%istack_merged(IO_param%id_rank+1)          &
+      if(num .le. 0) return
+      if(IO_param%id_rank .ge. IO_param%nprocs_in) then
+        real_dat(1:num) = 0.0d0
+      else
+        ilength = num * kreal
+        ilen_gz = int(IO_param%istack_merged(IO_param%id_rank+1)        &
      &            - IO_param%istack_merged(IO_param%id_rank))
 !
-      allocate(gzip_buf(ilen_gz))
-      call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset,          &
-     &    ilen_gz, gzip_buf(1))
+        allocate(gzip_buf(ilen_gz))
+        call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset,        &
+     &      ilen_gz, gzip_buf(1))
 !
-      call gzip_infleat_once(ilen_gz, gzip_buf(1),                      &
-     &   ilength, real_dat(1), ilen_gzipped)
-      deallocate(gzip_buf)
+        call gzip_infleat_once(ilen_gz, gzip_buf(1),                    &
+     &     ilength, real_dat(1), ilen_gzipped)
+        deallocate(gzip_buf)
 !
-      if(iflag_endian .eq. iendian_FLIP) then
-        l8_byte = ilength
-        call byte_swap_f(l8_byte, real_dat(1))
+        if(iflag_endian .eq. iendian_FLIP) then
+          l8_byte = ilength
+          call byte_swap_f(l8_byte, real_dat(1))
+        end if
       end if
 !
       end subroutine gz_mpi_read_1d_vector_b

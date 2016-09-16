@@ -263,8 +263,11 @@
      &    CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(nlayer_CMB_new, ione, CALYPSO_INTEGER, izero,      &
      &    CALYPSO_COMM, ierr_MPI)
-      write(*,*) 'nlayer_ICB_org: ', nlayer_ICB_org, nlayer_CMB_org
-      write(*,*) 'nlayer_ICB_new: ', nlayer_ICB_new, nlayer_CMB_new
+!
+      if(my_rank .eq. 0) then
+        write(*,*) 'nlayer_ICB_org: ', nlayer_ICB_org, nlayer_CMB_org
+        write(*,*) 'nlayer_ICB_new: ', nlayer_ICB_new, nlayer_CMB_new
+      end if
 !
       call MPI_Bcast(r_itp%iflag_same_rgrid, ione, CALYPSO_INTEGER,     &
      &    izero, CALYPSO_COMM, ierr_MPI)

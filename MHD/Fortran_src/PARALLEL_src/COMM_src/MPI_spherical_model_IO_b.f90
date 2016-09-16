@@ -41,8 +41,6 @@
       type(sph_IO_data), intent(inout) :: sph_IO
 !
 !
-      call set_istack_4_fixed_num(sph_IO%numdir_sph, IO_param)
-!
       call mpi_read_int_vector_b                                        &
      &   (IO_param, sph_IO%numdir_sph, sph_IO%sph_rank)
 !
@@ -76,12 +74,10 @@
 !
       call alloc_nod_id_sph_IO(sph_IO)
 !
-      call set_istack_4_parallell_data(sph_IO%numnod_sph, IO_param)
       call mpi_read_int8_vector_b                                       &
      &   (IO_param, sph_IO%numnod_sph, sph_IO%inod_gl_sph)
 !
       nvect = sph_IO%numnod_sph * sph_IO%numdir_sph
-      call mul_istack_4_parallell_vect(sph_IO%numdir_sph, IO_param)
       call mpi_read_int_vector_b(IO_param, nvect, sph_IO%idx_gl_sph)
 !
       end subroutine mpi_read_gl_nodes_sph_b
