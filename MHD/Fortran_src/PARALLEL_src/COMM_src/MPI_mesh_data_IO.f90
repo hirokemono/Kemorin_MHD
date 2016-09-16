@@ -129,8 +129,6 @@
       subroutine mpi_write_geometry_info                                &
      &         (id_file, nprocs_in, id_rank, ioff_gl, nod_IO)
 !
-      use MPI_binary_data_IO
-!
       integer, intent(in) ::  id_file
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind=kint), intent(in) :: id_rank, nprocs_in
@@ -161,8 +159,6 @@
 !
       subroutine mpi_write_element_info                                 &
      &         (id_file, nprocs_in, id_rank, ioff_gl, ele_IO)
-!
-      use MPI_binary_data_IO
 !
       integer, intent(in) ::  id_file
       integer(kind=kint), intent(in) :: id_rank, nprocs_in
@@ -200,8 +196,6 @@
       subroutine mpi_read_number_of_node                                &
      &         (id_file, nprocs_in, id_rank, ioff_gl, nod_IO)
 !
-      use MPI_binary_data_IO
-!
       integer, intent(in) ::  id_file
       integer(kind=kint), intent(in) :: id_rank, nprocs_in
       integer(kind = kint_gl), intent(inout) :: ioff_gl
@@ -220,8 +214,6 @@
 !
       subroutine mpi_read_geometry_info                                 &
      &         (id_file, nprocs_in, id_rank, ioff_gl, nod_IO)
-!
-      use mpi_binary_data_IO
 !
       integer, intent(in) ::  id_file
       integer(kind=kint), intent(in) :: id_rank, nprocs_in
@@ -250,8 +242,6 @@
       subroutine mpi_read_number_of_element                             &
      &         (id_file, nprocs_in, id_rank, ioff_gl, ele_IO)
 !
-      use mpi_binary_data_IO
-!
       integer, intent(in) ::  id_file
       integer(kind=kint), intent(in) :: id_rank, nprocs_in
       integer(kind = kint_gl), intent(inout) :: ioff_gl
@@ -269,7 +259,6 @@
       subroutine mpi_read_element_info                                  &
      &         (id_file, nprocs_in, id_rank, ioff_gl, ele_IO)
 !
-      use mpi_binary_data_IO
       use set_nnod_4_ele_by_type
 !
       integer, intent(in) ::  id_file

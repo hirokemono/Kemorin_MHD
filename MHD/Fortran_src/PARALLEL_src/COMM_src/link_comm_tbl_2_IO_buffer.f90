@@ -90,7 +90,7 @@
       do i = 1, nloop
         i_array(i)%num =   comm_IO(i)%num_neib
         if(comm_IO(i)%num_neib .gt. 0) then
-          i_array(i)%i_IO(1:comm_IO(i)%num_neib)                        &
+          i_array(i)%i_IO                                               &
      &         => comm_IO(i)%istack_import(1:comm_IO(i)%num_neib)
         end if
       end do
@@ -113,7 +113,7 @@
       do i = 1, nloop
         i_array(i)%num =   comm_IO(i)%num_neib
         if(comm_IO(i)%num_neib .gt. 0) then
-          i_array(i)%i_IO(1:comm_IO(i)%num_neib)                        &
+          i_array(i)%i_IO                                               &
      &     => comm_IO(i)%istack_export(1:comm_IO(i)%num_neib)
         end if
       end do 

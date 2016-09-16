@@ -175,8 +175,6 @@
 !
       subroutine mpi_write_geometry_info_b(IO_param, nod_IO)
 !
-      use MPI_binary_data_IO
-!
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(node_data), intent(inout) :: nod_IO
 !
@@ -199,8 +197,6 @@
 !------------------------------------------------------------------
 !
       subroutine mpi_write_element_info_b(IO_param, ele_IO)
-!
-      use MPI_binary_data_IO
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(element_data), intent(inout) :: ele_IO
@@ -229,8 +225,6 @@
 !
       subroutine mpi_read_number_of_node_b(IO_param, nod_IO)
 !
-      use MPI_binary_data_IO
-!
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(node_data), intent(inout) :: nod_IO
 !
@@ -243,8 +237,6 @@
 !------------------------------------------------------------------
 !
       subroutine mpi_read_geometry_info_b(IO_param, nod_IO)
-!
-      use mpi_binary_data_IO
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(node_data), intent(inout) :: nod_IO
@@ -263,8 +255,6 @@
 !
       subroutine mpi_read_number_of_element_b(IO_param, ele_IO)
 !
-      use mpi_binary_data_IO
-!
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(element_data), intent(inout) :: ele_IO
 !
@@ -278,7 +268,6 @@
 !
       subroutine mpi_read_element_info_b(IO_param, ele_IO)
 !
-      use mpi_binary_data_IO
       use set_nnod_4_ele_by_type
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param

@@ -8,11 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine byte_swap_f(l8_byte, array)
+!!         l8_byte :: byte length of array (defined by 8-byte integer)
+!!         array ::   array to be transfered (call by using pointer!)
 !!      subroutine binary_read_and_swap_f                               &
 !!     &         (iflag_endian, id_file, l8_byte, array)
 !!      subroutine binary_write_f(id_file, l8_byte, array)
-!!         l8_byte :: byte length of array (defined by 8-byte integer)
-!!         array ::   array to be transfered (call by using pointer!)
 !!@endverbatim
 !
       subroutine byte_swap_f(l8_byte, array)
@@ -40,34 +40,156 @@
       end subroutine byte_swap_f
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
 !
-      subroutine binary_read_and_swap_f                                 &
-     &         (iflag_endian, id_file, l8_byte, array)
+      subroutine integer_from_charabuffer(num, buffer, int_dat)
 !
       use m_precision
 !
-      integer(kind = kint), intent(in) :: id_file, iflag_endian
-      integer(kind = kint_gl), intent(in) :: l8_byte
-      character(len=1), intent(inout) :: array(l8_byte)
+      integer(kind = kint_gl), intent(in) :: num
+      character(len = 1), intent(in) :: buffer(kint*num)
+      integer(kind = kint), intent(inout) :: int_dat(num)
+!
+      integer(kind = kint_gl) :: i
+      integer(kind = kint) :: itmp
+      character(len = 1) :: ctmp(kint)
+      equivalence(itmp,ctmp)
 !
 !
-      read(id_file)  array(1:l8_byte)
+!!$omp parallel do private(i,itmp,ctmp)
+      do i = 1, num
+        ctmp(1:kint) = buffer(kint*i-kint+1:kint*k)
+        int_dat(i) = itmp
+      end do
+!!$omp end parallel do
 !
-      if(iflag_endian .gt. 0) call byte_swap_f(l8_byte, array)
-!
-      end subroutine binary_read_and_swap_f
+      end subroutine integer_from_charabuffer
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine binary_write_f(id_file, l8_byte, array)
+      subroutine int8_from_charabuffer(num, buffer, int8_dat)
 !
       use m_precision
 !
-      integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint_gl), intent(in) :: l8_byte
-      character(len=1), intent(inout) :: array(l8_byte)
+      integer(kind = kint_gl), intent(in) :: num
+      character(len = 1), intent(in) :: buffer(kint_gl*num)
+      integer(kind = kint_gl), intent(inout) :: int8_dat(num)
+!
+      integer(kind = kint_gl) :: i
+      integer(kind = kint_gl) :: itmp8
+      character(len = 1) :: ctmp(kint_gl)
+      equivalence(itmp8,ctmp)
 !
 !
-      write(id_file)  array(1:l8_byte)
+!!$omp parallel do private(i,itmp8,ctmp)
+      do i = 1, num
+        ctmp(1:kint_gl) = buffer(kint_gl*i-kint_gl+1:kint_gl*k)
+        int8_dat(i) = itmp8
+      end do
+!!$omp end parallel do
 !
-      end subroutine binary_write_f
+      end subroutine int8_from_charabuffer
+!
+! -----------------------------------------------------------------------
+!
+      subroutine real_from_charabuffer(num, buffer, real_dat)
+!
+      use m_precision
+!
+      integer(kind = kint_gl), intent(in) :: num
+      character(len = 1), intent(in) :: buffer(kreal*num)
+      real(kind = kreal), intent(inout) :: real_dat(num)
+!
+      integer(kind = kint_gl) :: i
+      real(kind = kreal) :: rtmp
+      character(len = 1) :: ctmp(kreal)
+      equivalence(rtmp,ctmp)
+!
+!
+!!$omp parallel do private(i,rtmp,ctmp)
+      do i = 1, num
+        ctmp(1:kreal) = buffer(kreal*i-kreal+1:kreal*k)
+        real_dat(i) = rtmp
+      end do
+!!$omp end parallel do
+!
+      end subroutine real_from_charabuffer
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine integer_to_charabuffer(num, int_dat, buffer)
+!
+      use m_precision
+!
+      integer(kind = kint_gl), intent(in) :: num
+      integer(kind = kint), intent(in) :: int_dat(num)
+      character(len = 1), intent(inout) :: buffer(kint*num)
+!
+      integer(kind = kint_gl) :: i
+      integer(kind = kint) :: itmp
+      character(len = 1) :: ctmp(kint)
+      equivalence(itmp,ctmp)
+!
+!
+!!$omp parallel do private(i,itmp,ctmp)
+      do i = 1, num
+        itmp = int_dat(i)
+        buffer(kint*i-kint+1:kint*k) = ctmp(1:kint)
+      end do
+!!$omp end parallel do
+!
+      end subroutine integer_to_charabuffer
+!
+! -----------------------------------------------------------------------
+!
+      subroutine int8_to_charabuffer(num, int8_dat, buffer)
+!
+      use m_precision
+!
+      integer(kind = kint_gl), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: int8_dat(num)
+      character(len = 1), intent(inout) :: buffer(kint_gl*num)
+!
+      integer(kind = kint_gl) :: i
+      integer(kind = kint_gl) :: itmp8
+      character(len = 1) :: ctmp(kint_gl)
+      equivalence(itmp8,ctmp)
+!
+!
+!!$omp parallel do private(i,itmp8,ctmp)
+      do i = 1, num
+        itmp8 = int8_dat(i)
+        buffer(kint_gl*i-kint_gl+1:kint_gl*k) = ctmp(1:kint_gl)
+      end do
+!!$omp end parallel do
+!
+      end subroutine int8_to_charabuffer
+!
+! -----------------------------------------------------------------------
+!
+      subroutine real_to_charabuffer(num, real_dat, buffer)
+!
+      use m_precision
+!
+      integer(kind = kint_gl), intent(in) :: num
+      real(kind = kreal), intent(in) :: real_dat(num)
+      character(len = 1), intent(inout) :: buffer(kreal*num)
+!
+      integer(kind = kint_gl) :: i
+      real(kind = kreal) :: rtmp
+      character(len = 1) :: ctmp(kreal)
+      equivalence(rtmp,ctmp)
+!
+!
+!!$omp parallel do private(i,rtmp,ctmp)
+      do i = 1, num
+        rtmp = real_dat(i)
+        buffer(kreal*i-kreal+1:kreal*k) = ctmp(1:kreal)
+      end do
+!!$omp end parallel do
+!
+      end subroutine real_to_charabuffer
+!
+! -----------------------------------------------------------------------
+!

@@ -47,7 +47,7 @@
       do i = 1, nloop
         i_array(i)%num =   group_IO(i)%num_grp
         if(group_IO(i)%num_grp .gt. 0) then
-          i_array(i)%i_IO(1:group_IO(i)%num_grp)                        &
+          i_array(i)%i_IO                                               &
      &          => group_IO(i)%istack_grp(1:group_IO(i)%num_grp)
         end if
       end do
@@ -87,7 +87,7 @@
       do i = 1, nloop
         i_array(i)%num =   surf_grp_IO(i)%num_grp
         if(surf_grp_IO(i)%num_grp .gt. 0) then
-          i_array(i)%i_IO(1:surf_grp_IO(i)%num_grp)                     &
+          i_array(i)%i_IO                                               &
      &      => surf_grp_IO(i)%istack_grp(1:surf_grp_IO(i)%num_grp)
         end if
       end do
