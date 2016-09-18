@@ -8,23 +8,23 @@
 !!
 !!@verbatim
 !!      subroutine mpi_read_geom_rtp_file                               &
-!!     &         (file_name, my_rank_IO, sph_file)
+!!     &         (file_name, nprocs_in, my_rank_IO, sph_file)
 !!      subroutine mpi_read_spectr_rj_file                              &
-!!     &         (file_name, my_rank_IO, sph_file)
+!!     &         (file_name, nprocs_in, my_rank_IO, sph_file)
 !!      subroutine mpi_read_geom_rtm_file                               &
-!!     &         (file_name, my_rank_IO, sph_file)
+!!     &         (file_name, nprocs_in, my_rank_IO, sph_file)
 !!      subroutine mpi_read_modes_rlm_file                              &
-!!     &         (file_name, my_rank_IO, sph_file)
+!!     &         (file_name, nprocs_in, my_rank_IO, sph_file)
 !!        type(sph_file_data_type), intent(inout) :: sph_file
 !!
 !!      subroutine mpi_write_geom_rtp_file                              &
-!!     &         (file_name, my_rank_IO, sph_file)
+!!     &         (file_name, nprocs_in, my_rank_IO, sph_file)
 !!      subroutine mpi_write_spectr_rj_file                             &
-!!     &         (file_name, my_rank_IO, sph_file)
+!!     &         (file_name, nprocs_in, my_rank_IO, sph_file)
 !!      subroutine mpi_write_geom_rtm_file                              &
-!!     &         (file_name, my_rank_IO, sph_file)
+!!     &         (file_name, nprocs_in, my_rank_IO, sph_file)
 !!      subroutine mpi_write_modes_rlm_file                             &
-!!     &         (file_name, my_rank_IO, sph_file)
+!!     &         (file_name, nprocs_in, my_rank_IO, sph_file)
 !!        type(sph_file_data_type), intent(inout) :: sph_file
 !!@endverbatim
 !!
@@ -37,9 +37,12 @@
       use m_machine_parameter
 !
       use t_spheric_data_IO
-      use sph_modes_grids_data_IO
+      use MPI_sph_modes_data_IO
+      use MPI_ascii_data_IO
 !
       implicit none
+!
+      type(calypso_MPI_IO_params), save, private :: IO_param
 !
 !------------------------------------------------------------------
 !
@@ -48,93 +51,88 @@
 !------------------------------------------------------------------
 !
       subroutine mpi_read_geom_rtp_file                                 &
-     &         (file_name, my_rank_IO, sph_file)
+     &         (file_name, nprocs_in, my_rank_IO, sph_file)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
       type(sph_file_data_type), intent(inout) :: sph_file
-!
-      integer :: id_file = 14
-      integer(kind = kint_gl) :: ioff_gl
-      integer(kind = kint) :: ierr
 !
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &     'Read merged ascii grid file: ', trim(file_name)
-      open (id_file,file = file_name, form = 'formatted')
-      call read_geom_rtp_data(id_file, my_rank_IO,                      &
-     &    sph_file%comm_IO, sph_file%sph_IO, sph_file%sph_grp_IO, ierr)
-      close(id_file)
+      call open_read_mpi_file                                           &
+     &   (file_name, nprocs_in, my_rank_IO, IO_param)
+!
+      call mpi_read_geom_rtp_data(IO_param,                             &
+     &    sph_file%comm_IO, sph_file%sph_IO, sph_file%sph_grp_IO)
+!
+      call close_mpi_file(IO_param)
 !
       end subroutine mpi_read_geom_rtp_file
 !
 !------------------------------------------------------------------
 !
       subroutine mpi_read_spectr_rj_file                                &
-     &         (file_name, my_rank_IO, sph_file)
+     &         (file_name, nprocs_in, my_rank_IO, sph_file)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
       type(sph_file_data_type), intent(inout) :: sph_file
 !
-      integer :: id_file = 14
-      integer(kind = kint_gl) :: ioff_gl
-      integer(kind = kint) :: ierr
-
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &     'Read merged ascii spectr modes file: ', trim(file_name)
-      open (id_file,file = file_name, form = 'formatted')
-      call read_spectr_modes_rj_data(id_file, my_rank_IO,               &
-     &    sph_file%comm_IO, sph_file%sph_IO, sph_file%sph_grp_IO, ierr)
-      close(id_file)
+      call open_read_mpi_file                                           &
+     &   (file_name, nprocs_in, my_rank_IO, IO_param)
+!
+      call mpi_read_spectr_rj_data(IO_param,                            &
+     &    sph_file%comm_IO, sph_file%sph_IO, sph_file%sph_grp_IO)
+!
+      call close_mpi_file(IO_param)
 !
       end subroutine mpi_read_spectr_rj_file
 !
 !------------------------------------------------------------------
 !
       subroutine mpi_read_geom_rtm_file                                 &
-     &         (file_name, my_rank_IO, sph_file)
+     &         (file_name, nprocs_in, my_rank_IO, sph_file)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
       type(sph_file_data_type), intent(inout) :: sph_file
-!
-      integer :: id_file = 14
-      integer(kind = kint_gl) :: ioff_gl
-      integer(kind = kint) :: ierr
 !
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &     'Read merged ascii grid file: ', trim(file_name)
-      open (id_file,file = file_name, form = 'formatted')
-      call read_geom_rtm_data (id_file, my_rank_IO,                     &
-     &    sph_file%comm_IO, sph_file%sph_IO, ierr)
-      close(id_file)
+      call open_read_mpi_file                                           &
+     &   (file_name, nprocs_in, my_rank_IO, IO_param)
+!
+      call mpi_read_geom_rtm_data(IO_param,                             &
+     &    sph_file%comm_IO, sph_file%sph_IO)
+!
+      call close_mpi_file(IO_param)
 !
       end subroutine mpi_read_geom_rtm_file
 !
 !------------------------------------------------------------------
 !
       subroutine mpi_read_modes_rlm_file                                &
-     &         (file_name, my_rank_IO, sph_file)
+     &         (file_name, nprocs_in, my_rank_IO, sph_file)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
       type(sph_file_data_type), intent(inout) :: sph_file
-!
-      integer :: id_file = 14
-      integer(kind = kint_gl) :: ioff_gl
-      integer(kind = kint) :: ierr
 !
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &     'Read merged ascii spectr modes file: ', trim(file_name)
-      open (id_file,file = file_name, form = 'formatted')
-      call read_spectr_modes_rlm_data(id_file, my_rank_IO,              &
-     &    sph_file%comm_IO, sph_file%sph_IO, ierr)
+      call open_read_mpi_file                                           &
+     &   (file_name, nprocs_in, my_rank_IO, IO_param)
 !
-      close(id_file)
+      call mpi_read_modes_rlm_data(IO_param,                            &
+     &    sph_file%comm_IO, sph_file%sph_IO)
+!
+      call close_mpi_file(IO_param)
 !
       end subroutine mpi_read_modes_rlm_file
 !
@@ -142,88 +140,88 @@
 !------------------------------------------------------------------
 !
       subroutine mpi_write_geom_rtp_file                                &
-     &         (file_name, my_rank_IO, sph_file)
+     &         (file_name, nprocs_in, my_rank_IO, sph_file)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
       type(sph_file_data_type), intent(inout) :: sph_file
-!
-      integer :: id_file = 14
-      integer(kind = kint_gl) :: ioff_gl
 !
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &     'Write merged ascii grid file: ', trim(file_name)
-      open (id_file,file = file_name, form = 'formatted')
-      call write_geom_rtp_data(id_file, my_rank_IO,                     &
+      call open_write_mpi_file                                          &
+     &   (file_name, nprocs_in, my_rank_IO, IO_param)
+!
+      call mpi_write_geom_rtp_data(IO_param,                            &
      &    sph_file%comm_IO, sph_file%sph_IO, sph_file%sph_grp_IO)
-      close(id_file)
+!
+      call close_mpi_file(IO_param)
 !
       end subroutine mpi_write_geom_rtp_file
 !
 !------------------------------------------------------------------
 !
       subroutine mpi_write_spectr_rj_file                               &
-     &         (file_name, my_rank_IO, sph_file)
+     &         (file_name, nprocs_in, my_rank_IO, sph_file)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
       type(sph_file_data_type), intent(inout) :: sph_file
-!
-      integer :: id_file = 14
-      integer(kind = kint_gl) :: ioff_gl
 !
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &     'Write merged ascii spectr modes file: ', trim(file_name)
-      open (id_file,file = file_name, form = 'formatted')
-      call write_spectr_modes_rj_data(id_file, my_rank_IO,              &
+      call open_write_mpi_file                                          &
+     &   (file_name, nprocs_in, my_rank_IO, IO_param)
+!
+      call mpi_write_spectr_rj_data(IO_param,                           &
      &    sph_file%comm_IO, sph_file%sph_IO, sph_file%sph_grp_IO)
-      close(id_file)
+!
+      call close_mpi_file(IO_param)
 !
       end subroutine mpi_write_spectr_rj_file
 !
 !------------------------------------------------------------------
 !
       subroutine mpi_write_geom_rtm_file                                &
-     &         (file_name, my_rank_IO, sph_file)
+     &         (file_name, nprocs_in, my_rank_IO, sph_file)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
       type(sph_file_data_type), intent(inout) :: sph_file
-!
-      integer :: id_file = 14
-      integer(kind = kint_gl) :: ioff_gl
 !
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &     'Write merged ascii grid file: ', trim(file_name)
-      open (id_file,file = file_name, form = 'formatted')
-      call write_geom_rtm_data(id_file, my_rank_IO,                     &
+      call open_write_mpi_file                                          &
+     &   (file_name, nprocs_in, my_rank_IO, IO_param)
+!
+      call mpi_write_geom_rtm_data(IO_param,                            &
      &    sph_file%comm_IO, sph_file%sph_IO)
-      close(id_file)
+!
+      call close_mpi_file(IO_param)
 !
       end subroutine mpi_write_geom_rtm_file
 !
 !------------------------------------------------------------------
 !
       subroutine mpi_write_modes_rlm_file                               &
-     &         (file_name, my_rank_IO, sph_file)
+     &         (file_name, nprocs_in, my_rank_IO, sph_file)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
       type(sph_file_data_type), intent(inout) :: sph_file
-!
-      integer :: id_file = 14
-      integer(kind = kint_gl) :: ioff_gl
 !
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &     'Write merged ascii spectr modes file: ', trim(file_name)
-      open (id_file,file = file_name, form = 'formatted')
-      call write_modes_rlm_data(id_file, my_rank_IO,                    &
+      call open_write_mpi_file                                          &
+     &   (file_name, nprocs_in, my_rank_IO, IO_param)
+!
+      call mpi_write_modes_rlm_data(IO_param,                          &
+!
      &   sph_file%comm_IO, sph_file%sph_IO)
-      close(id_file)
+      call close_mpi_file(IO_param)
 !
       end subroutine mpi_write_modes_rlm_file
 !

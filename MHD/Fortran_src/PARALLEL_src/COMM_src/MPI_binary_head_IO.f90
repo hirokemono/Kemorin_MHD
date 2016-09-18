@@ -11,7 +11,6 @@
 !!     &         (file_name, nprocs_in, my_rank_IO, IO_param)
 !!      subroutine open_read_mpi_file_b                                 &
 !!     &         (file_name, nprocs_in, my_rank_IO, IO_param)
-!!      subroutine close_mpi_file_b(IO_param)
 !!
 !!      subroutine mpi_write_one_inthead_b(IO_param, int_dat)
 !!      subroutine mpi_write_one_realhead_b(IO_param, real_dat)
@@ -50,6 +49,7 @@
       use calypso_mpi
       use m_calypso_mpi_IO
       use t_calypso_mpi_IO_param
+      use MPI_ascii_data_IO
 !
       implicit none
 !
@@ -67,11 +67,8 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
 !
-      call alloc_istack_merge(my_rank_IO, nprocs_in, IO_param)
-      call calypso_mpi_write_file_open                                  &
-     &   (file_name, IO_param%nprocs_in, IO_param%id_file)
-!
-      IO_param%ioff_gl = izero
+      call open_write_mpi_file                                          &
+     &   (file_name, nprocs_in, my_rank_IO, IO_param)
       call calypso_mpi_seek_write_endian                                &
      &   (IO_param%id_file, IO_param%ioff_gl)
 !
@@ -87,26 +84,12 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
 !
-      call alloc_istack_merge(my_rank_IO, nprocs_in, IO_param)
-      call calypso_mpi_read_file_open(file_name, IO_param%id_file)
-!
-      IO_param%ioff_gl = izero
+      call open_read_mpi_file                                          &
+     &   (file_name, nprocs_in, my_rank_IO, IO_param)
       call calypso_mpi_seek_read_endian                                 &
      &   (IO_param%id_file, IO_param%ioff_gl)
 !
       end subroutine open_read_mpi_file_b
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine close_mpi_file_b(IO_param)
-!
-      type(calypso_MPI_IO_params), intent(inout) :: IO_param
-!
-!
-      call calypso_close_mpi_file(IO_param%id_file)
-      call dealloc_istack_merge(IO_param)
-!
-      end subroutine close_mpi_file_b
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

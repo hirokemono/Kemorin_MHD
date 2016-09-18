@@ -29,6 +29,7 @@
       use m_calypso_mpi_IO
       use t_mesh_data
       use t_calypso_mpi_IO_param
+      use MPI_ascii_data_IO
 !
       implicit none
 !
@@ -59,7 +60,7 @@
       call mpi_read_geometry_data_b(IO_param, fem_IO%mesh)
       call mpi_read_mesh_groups_b(IO_param, fem_IO%group)
 !
-      call close_mpi_file_b(IO_param)
+      call close_mpi_file(IO_param)
 !
       end subroutine mpi_read_mesh_file_b
 !
@@ -80,7 +81,7 @@
       call open_read_mpi_file_b                                         &
      &   (mesh_file_name, nprocs_in, my_rank_IO, IO_param)
       call mpi_read_geometry_data_b(IO_param, mesh_IO)
-      call close_mpi_file_b(IO_param)
+      call close_mpi_file(IO_param)
 !
       end subroutine mpi_read_mesh_geometry_b
 !
@@ -101,7 +102,7 @@
       call open_read_mpi_file_b                                         &
      &   (mesh_file_name, nprocs_in, my_rank_IO, IO_param)
       call mpi_read_num_node_ele(IO_param, mesh_IO)
-      call close_mpi_file_b(IO_param)
+      call close_mpi_file(IO_param)
 !
       end subroutine mpi_read_node_size_b
 !
@@ -123,7 +124,7 @@
       call open_read_mpi_file_b                                         &
      &   (mesh_file_name, nprocs_in, my_rank_IO, IO_param)
       call mpi_read_num_node_ele_b(IO_param, mesh_IO)
-      call close_mpi_file_b(IO_param)
+      call close_mpi_file(IO_param)
 !
       end subroutine mpi_read_geometry_size_b
 !
@@ -147,7 +148,7 @@
      &   (mesh_file_name, nprocs_in, my_rank_IO, IO_param)
       call mpi_write_geometry_data_b(IO_param, fem_IO%mesh)
       call mpi_write_mesh_groups_b(IO_param, fem_IO%group)
-      call close_mpi_file_b(IO_param)
+      call close_mpi_file(IO_param)
 !
       end subroutine mpi_write_mesh_file_b
 !

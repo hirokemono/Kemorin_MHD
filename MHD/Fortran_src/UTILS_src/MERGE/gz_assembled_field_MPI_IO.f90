@@ -144,6 +144,7 @@
       use gz_MPI_binary_head_IO
       use gz_MPI_binary_datum_IO
       use MPI_binary_head_IO
+      use MPI_ascii_data_IO
 !
       character(len=kchara), intent(in) :: file_name
 !
@@ -171,7 +172,7 @@
       call gz_write_asmbl_fld_mpi_b                                     &
      &   (IO_param, nloop, fld_IO, gz_bufs)
 !
-      call close_mpi_file_b(IO_param)
+      call close_mpi_file(IO_param)
       call dealloc_assemble_gz_buffer
 !
       end subroutine gz_write_step_asbl_fld_mpi_b

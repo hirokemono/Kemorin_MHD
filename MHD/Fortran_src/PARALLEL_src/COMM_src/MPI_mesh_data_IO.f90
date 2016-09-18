@@ -56,7 +56,6 @@
       type(mesh_geometry), intent(inout) :: mesh_IO
 !
 !
-      call alloc_istack_merge(id_rank, nprocs_in, IO_param)
       call calypso_mpi_seek_write_head_c                                &
      &   (id_file, ioff_gl, hd_fem_para())
 !      call mpi_write_domain_info(IO_param, mesh_IO%nod_comm)
@@ -73,12 +72,10 @@
 !
       call calypso_mpi_seek_write_head_c                                &
      &   (id_file, ioff_gl, hd_fem_import())
-      call alloc_istack_merge(id_rank, nprocs_in, IO_param)
 !      call mpi_write_import_data(IO_param, mesh_IO%nod_comm)
       call calypso_mpi_seek_write_head_c                                &
      &   (id_file, ioff_gl, hd_fem_export())
 !      call mpi_write_export_data(IO_param, mesh_IO%nod_comm)
-      call dealloc_istack_merge(IO_param)
 !
       end subroutine mpi_write_geometry_data
 !
@@ -98,9 +95,7 @@
       type(mesh_geometry), intent(inout) :: mesh_IO
 !
 !
-      call alloc_istack_merge(id_rank, nprocs_in, IO_param)
       call mpi_read_domain_info(IO_param, mesh_IO%nod_comm)
-      call dealloc_istack_merge(IO_param)
 !
       call mpi_read_number_of_node                                      &
      &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%node)
@@ -116,10 +111,8 @@
 !
 ! ----  import & export 
 !
-      call alloc_istack_merge(id_rank, nprocs_in, IO_param)
       call mpi_read_import_data(IO_param, mesh_IO%nod_comm)
       call mpi_read_export_data(IO_param, mesh_IO%nod_comm)
-      call dealloc_istack_merge(IO_param)
 !
       end subroutine mpi_read_geometry_data
 !
@@ -141,7 +134,6 @@
       call mpi_write_one_integer                                        &
      &   (id_file, nprocs_in, id_rank, ioff_gl, nod_IO%internal_node)
 !
-      call alloc_istack_merge(id_rank, nprocs_in, IO_param)
       call set_istack_4_parallell_data(nod_IO%numnod, IO_param)
 !
       call mpi_write_int8_vector                                        &
@@ -149,7 +141,6 @@
      &    nod_IO%numnod, nod_IO%inod_global, IO_param%istack_merged)
       call mpi_write_2d_vector(id_file, nprocs_in, id_rank, ioff_gl,    &
      &    nod_IO%numnod, ithree, nod_IO%xx, IO_param%istack_merged)
-      call dealloc_istack_merge(IO_param)
 !
       call dealloc_node_geometry_base(nod_IO)
 !
@@ -172,7 +163,6 @@
       call mpi_write_one_integer                                        &
      &   (id_file, nprocs_in, id_rank, ioff_gl, ele_IO%numele)
 !
-      call alloc_istack_merge(id_rank, nprocs_in, IO_param)
       call set_istack_4_parallell_data(ele_IO%numele, IO_param)
       call mpi_write_int_vector(id_file, nprocs_in, id_rank, ioff_gl,   &
      &    ele_IO%numele, ele_IO%elmtyp, IO_param%istack_merged)
@@ -184,7 +174,6 @@
       call mul_istack_4_parallell_vect(ele_IO%nnod_4_ele, IO_param)
       call mpi_write_int_vector(id_file, nprocs_in, id_rank, ioff_gl,   &
      &    num, ele_IO%ie, IO_param%istack_merged)
-      call dealloc_istack_merge(IO_param)
 !
       call deallocate_ele_connect_type(ele_IO)
 !
@@ -224,7 +213,6 @@
 !
       call alloc_node_geometry_base(nod_IO)
 !
-      call alloc_istack_merge(id_rank, nprocs_in, IO_param)
       call set_istack_4_parallell_data(nod_IO%numnod, IO_param)
 !
       call mpi_read_int8_vector                                         &
@@ -233,7 +221,6 @@
       call mpi_read_2d_vector                                           &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
      &    nod_IO%numnod, ithree, nod_IO%xx, IO_param%istack_merged)
-      call dealloc_istack_merge(IO_param)
 !
       end subroutine mpi_read_geometry_info
 !
@@ -272,7 +259,6 @@
 !
       call alloc_element_types(ele_IO)
 !
-      call alloc_istack_merge(id_rank, nprocs_in, IO_param)
       call set_istack_4_parallell_data(ele_IO%numele, IO_param)
       call mpi_read_int_vector                                          &
      &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
@@ -296,7 +282,6 @@
       call mpi_read_int_vector                                          &
      &   (id_file, nprocs_in, id_rank, ioff_gl, num, ele_IO%ie,         &
      &    IO_param%istack_merged)
-      call dealloc_istack_merge(IO_param)
 !
       end subroutine mpi_read_element_info
 !

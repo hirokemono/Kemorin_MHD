@@ -40,6 +40,7 @@
       use t_spheric_data_IO
       use t_calypso_mpi_IO_param
       use MPI_sph_modes_data_IO_b
+      use MPI_ascii_data_IO
 !
       implicit none
 !
@@ -65,7 +66,7 @@
      &   (file_name, nprocs_in, my_rank_IO, IO_param)
       call mpi_read_geom_rtp_data_b(IO_param, sph_file%comm_IO,         &
      &    sph_file%sph_IO, sph_file%sph_grp_IO)
-      call close_mpi_file_b(IO_param)
+      call close_mpi_file(IO_param)
 !
       end subroutine mpi_read_geom_rtp_file_b
 !
@@ -86,7 +87,7 @@
 !
       call mpi_read_spectr_rj_data_b(IO_param, sph_file%comm_IO,        &
      &    sph_file%sph_IO, sph_file%sph_grp_IO)
-      call close_mpi_file_b(IO_param)
+      call close_mpi_file(IO_param)
 !
       end subroutine mpi_read_spectr_rj_file_b
 !
@@ -107,7 +108,7 @@
 !
       call mpi_read_geom_rtm_data_b                                     &
      &   (IO_param, sph_file%comm_IO, sph_file%sph_IO)
-      call close_mpi_file_b(IO_param)
+      call close_mpi_file(IO_param)
 !
       end subroutine mpi_read_geom_rtm_file_b
 !
@@ -128,7 +129,7 @@
 !
       call mpi_read_modes_rlm_data_b                                    &
      &   (IO_param, sph_file%comm_IO, sph_file%sph_IO)
-      call close_mpi_file_b(IO_param)
+      call close_mpi_file(IO_param)
 !
       end subroutine mpi_read_modes_rlm_file_b
 !
@@ -150,7 +151,7 @@
 !
       call mpi_write_geom_rtp_data_b(IO_param, sph_file%comm_IO,        &
      &    sph_file%sph_IO, sph_file%sph_grp_IO)
-      call close_mpi_file_b(IO_param)
+      call close_mpi_file(IO_param)
 !
       end subroutine mpi_write_geom_rtp_file_b
 !
@@ -171,7 +172,7 @@
 !
       call mpi_write_spectr_rj_data_b(IO_param, sph_file%comm_IO,      &
      &    sph_file%sph_IO, sph_file%sph_grp_IO)
-      call close_mpi_file_b(IO_param)
+      call close_mpi_file(IO_param)
 !
       end subroutine mpi_write_spectr_rj_file_b
 !
@@ -192,7 +193,7 @@
 !
       call mpi_write_geom_rtm_data_b                                    &
      &   (IO_param, sph_file%comm_IO, sph_file%sph_IO)
-      call close_mpi_file_b(IO_param)
+      call close_mpi_file(IO_param)
 !
       end subroutine mpi_write_geom_rtm_file_b
 !
@@ -213,7 +214,7 @@
 !
       call mpi_write_modes_rlm_data_b                                   &
      &   (IO_param, sph_file%comm_IO, sph_file%sph_IO)
-      call close_mpi_file_b(IO_param)
+      call close_mpi_file(IO_param)
 !
       end subroutine mpi_write_modes_rlm_file_b
 !

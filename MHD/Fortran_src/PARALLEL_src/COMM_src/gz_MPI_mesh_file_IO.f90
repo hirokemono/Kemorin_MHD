@@ -35,8 +35,8 @@
       use gz_mesh_data_IO
       use gz_MPI_mesh_data_IO
       use gz_MPI_binary_datum_IO
-      use MPI_binary_head_IO
       use gz_MPI_mesh_data_IO_b
+      use MPI_ascii_data_IO
 !
       implicit none
 !
@@ -64,7 +64,7 @@
       call gz_mpi_read_geometry_data(IO_param, fem_IO%mesh)
       call gz_mpi_read_mesh_groups(IO_param, fem_IO%group)
 !
-      call close_mpi_file_b(IO_param)
+      call close_mpi_file(IO_param)
 !
       end subroutine gz_mpi_read_mesh
 !
@@ -83,7 +83,7 @@
       call open_read_gz_mpi_file_b                                      &
      &   (mesh_file_name, nprocs_in, my_rank_IO, IO_param)
       call gz_mpi_read_geometry_data(IO_param, mesh_IO)
-      call close_mpi_file_b(IO_param)
+      call close_mpi_file(IO_param)
 !
       end subroutine gz_mpi_read_mesh_geometry
 !
@@ -102,7 +102,7 @@
       call open_read_gz_mpi_file_b                                      &
      &   (mesh_file_name, nprocs_in, my_rank_IO, IO_param)
       call gz_mpi_read_num_node(IO_param, mesh_IO)
-      call close_mpi_file_b(IO_param)
+      call close_mpi_file(IO_param)
 !
       end subroutine gz_mpi_read_node_size
 !
@@ -121,7 +121,7 @@
       call open_read_gz_mpi_file_b                                      &
      &   (mesh_file_name, nprocs_in, my_rank_IO, IO_param)
       call gz_mpi_read_num_node_ele(IO_param, mesh_IO)
-      call close_mpi_file_b(IO_param)
+      call close_mpi_file(IO_param)
 !
       end subroutine gz_mpi_read_geometry_size
 !
@@ -142,7 +142,7 @@
       call gz_mpi_write_geometry_data(IO_param, fem_IO%mesh)
       call gz_mpi_write_mesh_groups(IO_param, fem_IO%group)
 !
-      call close_mpi_file_b(IO_param)
+      call close_mpi_file(IO_param)
 !
       end subroutine gz_mpi_write_mesh_file
 !

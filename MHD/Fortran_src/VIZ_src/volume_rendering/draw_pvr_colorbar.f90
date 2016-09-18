@@ -155,10 +155,10 @@
      &     value, opa_current)
         opa_current = opa_current / color_param%pvr_max_opacity
 !
-      call value_to_rgb                                                 &
-     &   (color_param%id_pvr_color(2), color_param%id_pvr_color(1),     &
-     &    color_param%num_pvr_datamap_pnt,                              &
-     &    color_param%pvr_datamap_param, value, color)
+        call value_to_rgb                                               &
+     &     (color_param%id_pvr_color(2), color_param%id_pvr_color(1),   &
+     &      color_param%num_pvr_datamap_pnt,                            &
+     &      color_param%pvr_datamap_param, value, color)
 !
         do i = ist, ist+BAR_WIDTH/2-1
           k = j*npix_img(1) + i + 1

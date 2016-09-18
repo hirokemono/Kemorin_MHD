@@ -34,6 +34,7 @@
       use t_mesh_data
       use t_calypso_mpi_IO_param
       use gz_MPI_mesh_data_IO_b
+      use MPI_ascii_data_IO
 !
       implicit none
 !
@@ -67,7 +68,7 @@
       call gz_mpi_read_geometry_data_b(IO_param, fem_IO%mesh)
       call gz_mpi_read_mesh_groups_b(IO_param, fem_IO%group)
 !
-      call close_mpi_file_b(IO_param)
+      call close_mpi_file(IO_param)
 !
       end subroutine gz_mpi_read_mesh_file_b
 !
@@ -90,7 +91,7 @@
       call open_read_gz_mpi_file_b                                      &
      &   (mesh_file_name, nprocs_in, my_rank_IO, IO_param)
       call gz_mpi_read_geometry_data_b(IO_param, mesh_IO)
-      call close_mpi_file_b(IO_param)
+      call close_mpi_file(IO_param)
 !
       end subroutine gz_mpi_read_mesh_geometry_b
 !
@@ -114,7 +115,7 @@
       call open_read_gz_mpi_file_b                                      &
      &   (mesh_file_name, nprocs_in, my_rank_IO, IO_param)
       call gz_mpi_read_num_node_b(IO_param, mesh_IO)
-      call close_mpi_file_b(IO_param)
+      call close_mpi_file(IO_param)
 !
       end subroutine gz_mpi_read_node_size_b
 !
@@ -138,7 +139,7 @@
       call open_read_gz_mpi_file_b                                      &
      &   (mesh_file_name, nprocs_in, my_rank_IO, IO_param)
       call gz_mpi_read_num_node_ele_b(IO_param, mesh_IO)
-      call close_mpi_file_b(IO_param)
+      call close_mpi_file(IO_param)
 !
       end subroutine gz_mpi_read_geometry_size_b
 !
@@ -165,7 +166,7 @@
       call gz_mpi_write_geometry_data_b(IO_param, fem_IO%mesh)
       call gz_mpi_write_mesh_groups_b(IO_param, fem_IO%group)
 !
-      call close_mpi_file_b(IO_param)
+      call close_mpi_file(IO_param)
 !
       end subroutine gz_mpi_write_mesh_file_b
 !

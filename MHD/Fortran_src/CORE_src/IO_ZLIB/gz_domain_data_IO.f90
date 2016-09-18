@@ -119,6 +119,8 @@
 !
       subroutine write_domain_info_gz(my_rank_IO, comm_IO)
 !
+      use m_sph_modes_grid_labels
+!
       integer(kind = kint), intent(in) :: my_rank_IO
       type(communication_table), intent(inout) :: comm_IO
 !

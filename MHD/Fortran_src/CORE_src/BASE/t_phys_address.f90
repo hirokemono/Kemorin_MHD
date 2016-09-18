@@ -399,13 +399,26 @@
 !
 !>        start address for filtered velocity by wider filter
         integer (kind=kint) :: i_wide_fil_velo  =  izero
-!>        start address for filtered temperature by wider filter
-        integer (kind=kint) :: i_wide_fil_temp  =  izero
 !>        start address for filtered magnetic field by wider filter
         integer (kind=kint) :: i_wide_fil_magne =  izero
 !>        start address for filtered magnetic vector potential
 !!        by wider filter
-        integer (kind=kint) :: i_wide_fil_vecp =   izero
+        integer (kind=kint) :: i_wide_fil_vecp =     izero
+!>        start address for filtered current density by wider filter
+        integer (kind=kint) :: i_wide_fil_current =  izero
+!
+!>        start address for filtered temperature by wider filter
+        integer (kind=kint) :: i_wide_fil_temp  =  izero
+!>        start address for filtered grad. of temperature
+!!        by wider filter
+        integer (kind=kint) :: i_wide_fil_grad_t  =  izero
+!
+!>        start address for filtered composition by wider filter
+        integer (kind=kint) :: i_wide_fil_comp  =  izero
+!>        start address for filtered grad. of composition
+!!        by wider filter
+        integer (kind=kint) :: i_wide_fil_grad_c  =  izero
+!
 !
 !  divergence of momentum equations
 !

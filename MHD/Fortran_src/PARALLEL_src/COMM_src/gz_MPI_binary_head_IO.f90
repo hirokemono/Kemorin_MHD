@@ -12,6 +12,7 @@
 !!      subroutine gz_mpi_write_i8stack_head_b(IO_param, num, i8stack)
 !!      subroutine gz_mpi_write_mul_int8head_b(IO_param, num, int8_dat)
 !!        Substittion of gz_write_mul_int8_b
+!!      subroutine gz_mpi_write_charahead(IO_param, ilength, chara_dat)
 !!      subroutine gz_mpi_write_mul_charahead_b(IO_param, num, chara_dat)
 !!       Substittion of gz_write_mul_character_b
 !!      subroutine gz_mpi_write_mul_realhead_b(IO_param, num, real_dat)
@@ -138,7 +139,6 @@
         allocate(gzip_buf(ilen_gz))
         call gzip_defleat_once(ilength, chara_dat(1), ilen_gz,          &
      &     ilen_gzipped, gzip_buf(1))
-        ilength = ilen_gzipped
 !
         ioffset = IO_param%ioff_gl
         call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,    &
@@ -288,8 +288,6 @@
       integer(kind = MPI_OFFSET_KIND) :: ioffset
       integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
 !
-      integer(kind = kint_gl) :: l8_byte
-!
 !
       ilength = num * kchara
       if(my_rank .eq. 0) then
@@ -302,11 +300,6 @@
         call gzip_infleat_once(ilen_gz, gzip_buf(1),                    &
      &      ilength, chara_dat(1), ilen_gzipped)
         deallocate(gzip_buf)
-!
-        if(iflag_endian .eq. iendian_FLIP) then
-          l8_byte = ilength
-          call byte_swap_f(l8_byte, chara_dat(1))
-        end if
       end if
 !
       call MPI_BCAST(chara_dat, ilength, CALYPSO_CHARACTER, izero,      &

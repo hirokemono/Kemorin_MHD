@@ -58,6 +58,7 @@
      &         (file_name, nprocs_in, id_rank, fld_IO)
 !
       use MPI_binary_head_IO
+      use MPI_ascii_data_IO
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
@@ -77,7 +78,7 @@
      &    fld_IO%istack_numnod_IO)
       end if
 !
-      call close_mpi_file_b(IO_param)
+      call close_mpi_file(IO_param)
 !
       end subroutine write_step_field_file_mpi_b
 !
@@ -88,6 +89,7 @@
 !
       use MPI_binary_data_IO
       use MPI_binary_head_IO
+      use MPI_ascii_data_IO
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind=kint), intent(in) :: id_rank
@@ -114,7 +116,7 @@
 !
       call dealloc_merged_field_stack(fld_IO)
 !
-      call close_mpi_file_b(IO_param)
+      call close_mpi_file(IO_param)
 !
       end subroutine read_step_field_file_mpi_b
 !
@@ -125,6 +127,7 @@
 !
       use MPI_binary_data_IO
       use MPI_binary_head_IO
+      use MPI_ascii_data_IO
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind=kint), intent(in) :: id_rank
@@ -153,7 +156,7 @@
       call mpi_read_2d_vector_b                                         &
      &   (IO_param, fld_IO%nnod_IO, fld_IO%ntot_comp_IO, fld_IO%d_IO)
 !
-      call close_mpi_file_b(IO_param)
+      call close_mpi_file(IO_param)
 !
       call dealloc_merged_field_stack(fld_IO)
       if(id_rank .ge. nprocs_in) then
@@ -169,6 +172,7 @@
      &         (file_name, nprocs_in, id_rank, fld_IO)
 !
       use MPI_binary_head_IO
+      use MPI_ascii_data_IO
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind=kint), intent(in) :: id_rank
@@ -190,7 +194,7 @@
       call mpi_read_mul_charahead_b                                     &
      &   (IO_param, fld_IO%num_field_IO, fld_IO%fld_name)
 !
-      call close_mpi_file_b(IO_param)
+      call close_mpi_file(IO_param)
 !
       call cal_istack_phys_comp_IO(fld_IO)
       call dealloc_merged_field_stack(fld_IO)

@@ -623,10 +623,23 @@
 !>        Field label for filtered magnetic field by wider filter
       character(len=kchara), parameter                                  &
      &             :: fhd_w_filter_magne = 'wide_filter_magne'
+!>        Field label for filtered current density by wider filter
+      character(len=kchara), parameter                                  &
+     &             :: fhd_w_filter_current = 'wide_filter_magne'
 !
 !>        Field label for filtered temperature by wider filter
       character(len=kchara), parameter                                  &
-     &             :: fhd_w_filter_temp = 'wide_filter_temp'
+     &      :: fhd_w_filter_temp =      'wide_filter_temp'
+!>        Field label for filtered grad. of temperature by wider filter
+      character(len=kchara), parameter                                  &
+     &      :: fhd_w_filter_grad_temp = 'wide_filter_grad_temp'
+!
+!>        Field label for filtered compostiion by wider filter
+      character(len=kchara), parameter                                  &
+     &      :: fhd_w_filter_comp =    'wide_filter_composition'
+!>        Field label for filtered grad. of composition by wider filter
+      character(len=kchara), parameter                                  &
+     &      :: fhd_w_filter_grad_comp = 'wide_filter_grad_composition'
 !
 !  divergence of momentum equations
 !

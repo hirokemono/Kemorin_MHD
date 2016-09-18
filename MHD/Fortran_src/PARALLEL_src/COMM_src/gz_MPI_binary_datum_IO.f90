@@ -42,6 +42,7 @@
       use t_calypso_mpi_IO_param
       use gz_MPI_binary_data_IO
       use gz_MPI_binary_head_IO
+      use MPI_ascii_data_IO
 !
       implicit none
 !
@@ -64,11 +65,8 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
 !
-      call alloc_istack_merge(my_rank_IO, nprocs_in, IO_param)
-      call calypso_mpi_write_file_open                                  &
-     &   (file_name, IO_param%nprocs_in, IO_param%id_file)
-!
-      IO_param%ioff_gl = izero
+      call open_write_mpi_file                                          &
+     &   (file_name, nprocs_in, my_rank_IO, IO_param)
       call gz_mpi_write_one_inthead_b(IO_param, i_UNIX)
 !
       end subroutine open_write_gz_mpi_file_b
@@ -83,10 +81,8 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
 !
-      call alloc_istack_merge(my_rank_IO, nprocs_in, IO_param)
-      call calypso_mpi_read_file_open(file_name, IO_param%id_file)
-!
-      IO_param%ioff_gl = izero
+      call open_read_mpi_file                                          &
+     &   (file_name, nprocs_in, my_rank_IO, IO_param)
       call gz_mpi_read_endian_flag(IO_param)
 !
       end subroutine open_read_gz_mpi_file_b
@@ -184,6 +180,38 @@
       IO_param%ioff_gl = IO_param%ioff_gl + ilen_gzipped
 !
       end subroutine gz_mpi_read_endian_flag
+!
+! -----------------------------------------------------------------------
+!
+      subroutine gz_mpi_read_charahead(IO_param, ilength, chara_dat)
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      integer(kind=kint), intent(in) :: ilength
+      character(len=1), intent(inout) :: chara_dat(ilength)
+!
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint) :: ilen_gz, ilen_gzipped
+!
+!
+      if(my_rank .eq. 0) then
+        ioffset = IO_param%ioff_gl
+        ilen_gz = int(real(ilength) *1.01) + 24
+        allocate(gzip_buf(ilen_gz))
+        call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset,        &
+     &      ilen_gz, gzip_buf(1))
+!
+        call gzip_infleat_once(ilen_gz, gzip_buf(1),                    &
+     &      ilength, chara_dat(1), ilen_gzipped)
+        deallocate(gzip_buf)
+      end if
+!
+      call MPI_BCAST(chara_dat, ilength, CALYPSO_CHARACTER, izero,      &
+     &    CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(ilen_gzipped, ione, CALYPSO_INTEGER, izero,        &
+     &    CALYPSO_COMM, ierr_MPI)
+      IO_param%ioff_gl = IO_param%ioff_gl + ilen_gzipped
+!
+      end subroutine gz_mpi_read_charahead
 !
 ! -----------------------------------------------------------------------
 !

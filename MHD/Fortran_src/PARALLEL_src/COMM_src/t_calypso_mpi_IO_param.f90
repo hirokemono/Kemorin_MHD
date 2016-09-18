@@ -300,8 +300,6 @@
 !
 !  ---------------------------------------------------------------------
 !
-!  ---------------------------------------------------------------------
-!
       subroutine copy_istack_4_parallell_data(istack8, IO_param)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
@@ -330,6 +328,24 @@
 !$omp end parallel workshare
 !
       end subroutine mul_istack_4_parallell_vect
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_numbers_2_head_node(num_local, IO_param)
+!
+      integer(kind = kint), intent(in) :: num_local
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+!
+      integer(kind = kint) :: num_global(nprocs)
+      integer(kind = kint) :: ip
+!
+!
+      call MPI_Allgather(num_local, ione, CALYPSO_INTEGER,              &
+     &    num_global, ione, CALYPSO_INTEGER, CALYPSO_COMM,              &
+     &    ierr_MPI)
+      IO_param%istack_merged(1:nprocs) = num_global(1:nprocs)
+!
+      end subroutine set_numbers_2_head_node
 !
 !  ---------------------------------------------------------------------
 !

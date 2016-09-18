@@ -57,7 +57,6 @@
 !
       textbuf = hd_fem_para() // char(0)
       call gz_write_textbuf_no_lf
-!
       call write_domain_info_gz(my_rank_IO, mesh_IO%nod_comm)
 !
 !
@@ -126,7 +125,6 @@
 !
       textbuf = hd_fem_para() // char(0)
       call gz_write_textbuf_no_lf
-!
       call write_domain_info_gz(my_rank_IO, comm_IO)
 !
 !
