@@ -44,6 +44,7 @@
       use t_calypso_mpi_IO_param
       use gz_MPI_ascii_data_IO
       use gz_MPI_domain_data_IO
+      use gz_MPI_groups_IO
 !      use MPI_spherical_model_IO_b
 !      use MPI_sph_gl_1d_idx_IO_b
 !      use MPI_binary_head_IO
@@ -83,16 +84,16 @@
 !
       call gz_mpi_skip_header(IO_param, len(hd_grphd()))
       call gz_mpi_skip_header(IO_param, len(hd_ngrphd()))
-!      call mpi_read_group_data_b(IO_param, sph_grps_IO%bc_rtp_grp)
+      call gz_mpi_read_group_data(IO_param, sph_grps_IO%bc_rtp_grp)
 !
       call gz_mpi_skip_header(IO_param, len(hd_rgrphd()))
-!      call mpi_read_group_data_b(IO_param, sph_grps_IO%radial_rtp_grp)
+      call gz_mpi_read_group_data(IO_param, sph_grps_IO%radial_rtp_grp)
 !
       call gz_mpi_skip_header(IO_param, len(hd_tgrphd()))
-!      call mpi_read_group_data_b(IO_param, sph_grps_IO%theta_rtp_grp)
+      call gz_mpi_read_group_data(IO_param, sph_grps_IO%theta_rtp_grp)
 !
       call gz_mpi_skip_header(IO_param, len(hd_pgrphd()))
-!      call mpi_read_group_data_b(IO_param, sph_grps_IO%zonal_rtp_grp)
+      call gz_mpi_read_group_data(IO_param, sph_grps_IO%zonal_rtp_grp)
 !
       end subroutine gz_mpi_read_geom_rtp_data
 !
@@ -124,10 +125,10 @@
 !
       call gz_mpi_skip_header(IO_param, len(hd_grphd()))
       call gz_mpi_skip_header(IO_param, len(hd_kgrphd()))
-!      call mpi_read_group_data_b(IO_param, sph_grps_IO%radial_rj_grp)
+      call gz_mpi_read_group_data(IO_param, sph_grps_IO%radial_rj_grp)
 !
       call gz_mpi_skip_header(IO_param, len(hd_jgrphd()))
-!      call mpi_read_group_data_b(IO_param, sph_grps_IO%sphere_rj_grp)
+      call gz_mpi_read_group_data(IO_param, sph_grps_IO%sphere_rj_grp)
 !
       end subroutine gz_mpi_read_spectr_rj_data
 !
@@ -219,19 +220,19 @@
      &   (IO_param, len(hd_grphd()), hd_grphd())
       call gz_mpi_write_charahead                                       &
      &   (IO_param, len(hd_ngrphd()), hd_ngrphd())
-!      call mpi_write_grp_data_b(IO_param, sph_grps_IO%bc_rtp_grp)
+      call gz_mpi_write_grp_data(IO_param, sph_grps_IO%bc_rtp_grp)
 !
       call gz_mpi_write_charahead                                       &
      &   (IO_param, len(hd_rgrphd()), hd_rgrphd())
-!      call mpi_write_grp_data_b(IO_param, sph_grps_IO%radial_rtp_grp)
+      call gz_mpi_write_grp_data(IO_param, sph_grps_IO%radial_rtp_grp)
 !
       call gz_mpi_write_charahead                                       &
      &   (IO_param, len(hd_tgrphd()), hd_tgrphd())
-!      call mpi_write_grp_data_b(IO_param, sph_grps_IO%theta_rtp_grp)
+      call gz_mpi_write_grp_data(IO_param, sph_grps_IO%theta_rtp_grp)
 !
       call gz_mpi_write_charahead                                       &
      &   (IO_param, len(hd_pgrphd()), hd_pgrphd())
-!      call mpi_write_grp_data_b(IO_param, sph_grps_IO%zonal_rtp_grp)
+      call gz_mpi_write_grp_data(IO_param, sph_grps_IO%zonal_rtp_grp)
 !
       end subroutine gz_mpi_write_geom_rtp_data
 !
@@ -268,11 +269,11 @@
      &   (IO_param, len(hd_grphd()), hd_grphd())
       call gz_mpi_write_charahead                                       &
      &   (IO_param, len(hd_kgrphd()), hd_kgrphd())
-!      call mpi_write_grp_data_b(IO_param, sph_grps_IO%radial_rj_grp)
+      call gz_mpi_write_grp_data(IO_param, sph_grps_IO%radial_rj_grp)
 !
       call gz_mpi_write_charahead                                       &
      &   (IO_param, len(hd_jgrphd()), hd_jgrphd())
-!      call mpi_write_grp_data_b(IO_param, sph_grps_IO%sphere_rj_grp)
+      call gz_mpi_write_grp_data(IO_param, sph_grps_IO%sphere_rj_grp)
 !
       end subroutine gz_mpi_write_spectr_rj_data
 !

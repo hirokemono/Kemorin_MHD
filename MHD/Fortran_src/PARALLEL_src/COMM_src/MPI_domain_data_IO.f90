@@ -87,7 +87,7 @@
       call allocate_type_import_item(comm_IO)
 !
       call mpi_read_comm_table                                          &
-     &   (IO_param, comm_IO%ntot_import, comm_IO%item_import)
+     &   (IO_param, ione, comm_IO%ntot_import, comm_IO%item_import)
 !
       end subroutine mpi_read_import_data
 !
@@ -102,7 +102,6 @@
 !
 !
       call mpi_read_num_int(IO_param, num_tmp)
-!
       call allocate_type_export_num(comm_IO)
 !
       call mpi_read_int_stack(IO_param,                                 &
@@ -112,7 +111,7 @@
       call allocate_type_export_item(comm_IO)
 !
       call mpi_read_comm_table                                          &
-     &     (IO_param, comm_IO%ntot_export, comm_IO%item_export)
+     &     (IO_param, ione, comm_IO%ntot_export, comm_IO%item_export)
 !
       end subroutine mpi_read_export_data
 !
@@ -148,7 +147,7 @@
      &   (IO_param, comm_IO%num_neib, comm_IO%istack_import)
 !
       call mpi_write_comm_table                                         &
-     &   (IO_param, comm_IO%ntot_import, comm_IO%item_import)
+     &   (IO_param, ione, comm_IO%ntot_import, comm_IO%item_import)
 !
       call deallocate_type_import(comm_IO)
 !
@@ -166,7 +165,7 @@
      &   (IO_param, comm_IO%ntot_export, comm_IO%istack_export)
 !
       call mpi_write_comm_table                                         &
-     &   (IO_param, comm_IO%ntot_export, comm_IO%item_export)
+     &   (IO_param, ione, comm_IO%ntot_export, comm_IO%item_export)
 !
       call deallocate_type_export(comm_IO)
 !
@@ -181,7 +180,8 @@
       integer(kind=kint), intent(in) :: istack(0:num)
 !
 !
-      call mpi_write_int_vector(IO_param, num, istack(1))
+      if(num .gt. 0) call mpi_write_int_vector                          &
+     &                  (IO_param, num, istack(1))
 !
       end subroutine mpi_write_int_stack
 !
@@ -221,13 +221,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine mpi_write_comm_table(IO_param, num, int_dat)
+      subroutine mpi_write_comm_table(IO_param, ncolumn, num, int_dat)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: num
+      integer(kind=kint), intent(in) :: num, ncolumn
       integer(kind=kint), intent(in) :: int_dat(num)
 !
-      integer(kind = kint) :: ilength, i, ist, ied
+      integer(kind = kint) :: i, ilength, nrest, lst, led
       character(len = num*len_integer_textline) :: textbuf
 !
 !
@@ -237,24 +237,43 @@
      &    int_stack8_textline(IO_param%nprocs_in,                       &
      &    IO_param%istack_merged))
 !
-      do i = 1, IO_param%nprocs_in
-        IO_param%istack_merged(i) = IO_param%istack_merged(i-1)         &
-     &         + len_integer_textline + IO_param%istack_merged(i)
-      end do
+      if(num .le. 0) then
+        ilength = ione
+      else if(num .le. ncolumn) then
+        ilength = len_multi_int_textline(num)
+        textbuf(1:ilength) =  multi_int_textline(num, int_dat(1))
+      else if(num .gt. 0) then
+        ilength = len_multi_int_textline(ncolumn)
+        lst = 0
+        led = lst + ilength
+        textbuf(lst+1:led) =  multi_int_textline(ncolumn, int_dat(1))
+        do i = 1, (num-1)/ncolumn - 1
+          ilength = len_multi_int_textline(ncolumn)
+          lst = led
+          led = lst + ilength
+          textbuf(lst+1:led)                                            &
+     &            =  multi_int_textline(ncolumn, int_dat(ncolumn*i+1))
+        end do
+        nrest = mod((num-1),ncolumn) + 1
+        ilength = len_multi_int_textline(nrest)
+        lst = led
+        led = lst + ilength
+        textbuf(lst+1:led)                                              &
+     &            =  multi_int_textline(nrest, int_dat(num-nrest+1))
+        ilength = led
+      end if
 !
+      call set_istack_4_parallell_data(ilength, IO_param)
       call mpi_write_charahead(IO_param,                                &
      &    len_multi_int_textline(IO_param%nprocs_in),                   &
      &    int_stack8_textline(IO_param%nprocs_in,                       &
      &                        IO_param%istack_merged))
 !
-      do i = 1, num
-        ist = len_integer_textline * (i-1) + 1
-        ied = len_integer_textline *  i
-        textbuf(ist:ied) = integer_textline(int_dat(i))
-      end do
-!
-      call set_istack_4_parallell_data(len(textbuf), IO_param)
-      call mpi_write_characters(IO_param, len(textbuf), textbuf)
+      if(num .le. 0) then
+        call mpi_write_characters(IO_param, ione, char(10))
+      else
+        call mpi_write_characters(IO_param, ilength, textbuf)
+      end if
 !
       end subroutine mpi_write_comm_table
 !
@@ -281,14 +300,14 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       integer(kind=kint), intent(inout) :: num
 !
-      integer(kind = kint) :: ilength, i
+      integer(kind = kint) :: ilength
 !
 !
       ilength = len_multi_int_textline(IO_param%nprocs_in)
       call read_int8_stack_textline                                     &
          (mpi_read_charahead(IO_param, ilength),                        &
      &    IO_param%nprocs_in, IO_param%istack_merged)
-      num = IO_param%istack_merged(IO_param%id_rank+1)
+      num = int(IO_param%istack_merged(IO_param%id_rank+1))
 !
       end subroutine mpi_read_num_int
 !
@@ -321,32 +340,70 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine mpi_read_comm_table(IO_param, num, int_dat)
+      subroutine mpi_read_comm_table(IO_param, ncolumn, num, int_dat)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: num
+      integer(kind=kint), intent(in) :: num, ncolumn
       integer(kind=kint), intent(inout) :: int_dat(num)
 !
-      integer(kind = kint) :: ilength, i, ist, ied
-      character(len = num*len_integer_textline) :: textbuf
+      integer(kind = kint) :: i, ilength, nrest, n_item, lst, led, loop
+      character(len = num*len_integer_textline) :: gzip_buf
+      character(len = ncolumn*len_integer_textline) :: textbuf
 !
 !
-      call mpi_skip_read                                               &
+      call mpi_skip_read                                                &
      &   (IO_param, len_multi_int_textline(IO_param%nprocs_in))
 !
       IO_param%istack_merged(0) = 0
       do i = 1, IO_param%nprocs_in
+        n_item = IO_param%istack_merged(i)
+        if(n_item .le. 0) then
+          ilength = ione
+        else if(n_item .le. ncolumn) then
+          ilength = len_multi_int_textline(n_item)
+        else if(n_item .gt. 0) then
+          nrest = mod((n_item-1),ncolumn) + 1
+          loop = (n_item-1)/ncolumn
+          ilength = len_multi_int_textline(nrest)                       &
+     &             + len_multi_int_textline(ncolumn) * loop
+        end if
         IO_param%istack_merged(i) = IO_param%istack_merged(i-1)         &
-     &         + len_integer_textline + IO_param%istack_merged(i)
+     &                             + ilength
       end do
+      ilength = IO_param%istack_merged(IO_param%id_rank+1)              &
+     &         -  IO_param%istack_merged(IO_param%id_rank)
 !
-      textbuf = mpi_read_characters(IO_param, len(textbuf))
+      gzip_buf = mpi_read_characters(IO_param, ilength)
 !
-      do i = 1, num
-        ist = len_integer_textline * (i-1) + 1
-        ied = len_integer_textline *  i
-        call read_integer_textline(textbuf(ist:ied), int_dat(i))
-      end do
+      if(num .le. 0) then
+        ilength = ione
+      else if(num .le. ncolumn) then
+        ilength = len_multi_int_textline(num)
+ !       textbuf(1:ilength) = gzip_buf(1:ilength) 
+        call read_multi_int_textline(gzip_buf, num, int_dat(1))
+      else if(num .gt. 0) then
+        ilength = len_multi_int_textline(ncolumn)
+        lst = 0
+        led = lst + ilength
+ !       textbuf(1:ilength) = gzip_buf(lst+1:led) 
+        call read_multi_int_textline                                    &
+     &    (gzip_buf(lst+1:led) , ncolumn, int_dat(1))
+        do i = 1, (num-1)/ncolumn - 1
+          ilength = len_multi_int_textline(ncolumn)
+          lst = led
+          led = lst + ilength
+ !         textbuf(1:ilength) = gzip_buf(lst+1:led) 
+          call read_multi_int_textline                                  &
+     &       (gzip_buf(lst+1:led) , ncolumn, int_dat(ncolumn*i+1))
+        end do
+        nrest = mod((num-1),ncolumn) + 1
+        ilength = len_multi_int_textline(nrest)
+        lst = led
+        led = lst + ilength
+!        textbuf(1:ilength) = gzip_buf(lst+1:led)
+        call read_multi_int_textline                                    &
+     &     (gzip_buf(lst+1:led), nrest, int_dat(num-nrest+1))
+      end if
 !
       end subroutine mpi_read_comm_table
 !
