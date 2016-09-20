@@ -256,14 +256,13 @@
 !
       integer(kind = kint), intent(in) ::    num
       integer(kind = kint_gl), intent(in) :: int8_gl
-      integer(kind = kint), intent(in) ::    real_dat(num)
+      real(kind = kreal), intent(in) ::    real_dat(num)
 !
       character(len=kchara) :: fmt_txt
 !
 !
       if(num .gt. 0) then
         write(fmt_txt,'(a5,i1,a16)') '(i16,', num, '(1pE25.15e3),a1)'
-        write(fmt_txt,'(a1,i7,a9)') '(', (num+1), '(i16),a1)'
         write(int8_and_vector_textline,fmt_txt)                         &
      &                        int8_gl, real_dat(1:num), char(10)
       else
@@ -425,7 +424,7 @@
       integer(kind = kint), intent(in) :: num
       character(len=num*25+17), intent(in) :: textbuf
       integer(kind = kint_gl), intent(inout) :: int8_gl
-      integer(kind = kint), intent(inout) ::    real_dat(num)
+      real(kind = kreal), intent(inout) ::    real_dat(num)
 !
       character(len=num*25+16) ::    tmp1
 !
