@@ -10,6 +10,7 @@
 !!@verbatim
 !!      integer(kind = kint) function len_one_word_textline(word)
 !!      integer(kind = kint) function len_multi_int_textline(num)
+!!      integer(kind = kint) function len_multi_6digit_line(num)
 !!      integer(kind = kint) function len_vector_textline(num)
 !!      integer(kind = kint) function len_int8_and_mul_int_textline(num)
 !!      integer(kind = kint) function len_int8_and_vector_textline(num)
@@ -23,6 +24,8 @@
 !!      character(len=num*16+1) function int_stack8_textline(num, istack)
 !!      character(len=num*16+1) function multi_int8_textline            &
 !!     &                               (num, int8_dat)
+!!    character(len=num*6+1) function mul_6digit_int_line               &
+!!     &                               (num, int_dat)
 !!      character(len=num*25+1) function vector_textline(num, real_dat)
 !!      character(len=num*16+17) function int8_and_mul_int_textline     &
 !!     &                                (int8_gl, num, int_dat)
@@ -37,6 +40,7 @@
 !!      subroutine read_multi_int_textline(textbuf, num, int_dat)
 !!      subroutine read_int8_stack_textline(textbuf, num, istack)
 !!      subroutine read_multi_int8_textline(textbuf, num, int8_dat)
+!!      subroutine read_mul_6digit_int_line(textbuf, num, int_dat)
 !!      subroutine read_vector_textline(textbuf, num, real_dat)
 !!      subroutine read_int8_and_mul_int_textline                       &
 !!     &         (textbuf, int8_gl, num, int_dat)
@@ -55,6 +59,8 @@
       integer(kind = kint), parameter :: len_real_nolf = 25
       integer(kind = kint), parameter :: len_int_txt = 16 + 1
       integer(kind = kint), parameter :: len_integer_nolf = 16
+      integer(kind = kint), parameter :: len_6digit_txt = 6 + 1
+      integer(kind = kint), parameter :: len_6digit_nolf = 6
 !
 ! -------------------------------------------------------------------
 !
@@ -81,6 +87,17 @@
       len_multi_int_textline = num*16+1
 !
       end function len_multi_int_textline
+!
+! -------------------------------------------------------------------
+!
+      integer(kind = kint) function len_multi_6digit_line(num)
+!
+      integer(kind = kint), intent(in) ::    num
+!
+!
+      len_multi_6digit_line = num*6+1
+!
+      end function len_multi_6digit_line
 !
 ! -------------------------------------------------------------------
 !
@@ -213,6 +230,26 @@
       end if
 !
       end function multi_int8_textline
+!
+! -------------------------------------------------------------------
+!
+      character(len=num*6+1) function mul_6digit_int_line               &
+     &                               (num, int_dat)
+!
+      integer(kind = kint), intent(in) ::    num
+      integer(kind = kint), intent(in) ::    int_dat(num)
+!
+      character(len=kchara) :: fmt_txt
+!
+!
+      if(num .gt. 0) then
+        write(fmt_txt,'(a1,i7,a8)') '(', num, '(i6),a1)'
+        write(mul_6digit_int_line,fmt_txt)  int_dat(1:num), char(10)
+      else
+        mul_6digit_int_line(1:1) = char(10)
+      end if
+!
+      end function mul_6digit_int_line
 !
 ! -------------------------------------------------------------------
 !
@@ -380,6 +417,22 @@
       read(tmp1,*) int8_dat(1:num)
 !
       end subroutine read_multi_int8_textline
+!
+! -------------------------------------------------------------------
+!
+      subroutine read_mul_6digit_int_line(textbuf, num, int_dat)
+!
+      integer(kind = kint), intent(in) :: num
+      character(len=num*6+1), intent(in) :: textbuf
+      integer(kind = kint), intent(inout) :: int_dat(num)
+!
+      character(len=num*16) ::    tmp1
+!
+      if(num .le. 0) return
+      tmp1 = textbuf(1:num*6)
+      read(tmp1,*) int_dat(1:num)
+!
+      end subroutine read_mul_6digit_int_line
 !
 ! -------------------------------------------------------------------
 !

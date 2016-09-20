@@ -65,7 +65,6 @@
       sph_IO%idx_gl_1(1:sph_IO%nidx_sph(1))                             &
      &       = int(idx_gl_tmp(1:sph_IO%nidx_sph(1)))
       deallocate(idx_gl_tmp)
-      write(*,*) 'sph_IO%nidx_sph(1)', sph_IO%nidx_sph(1)
 !
 !
       call gz_mpi_skip_header(IO_param, len(hd_tgrid()))
@@ -77,7 +76,6 @@
 !
       call gz_mpi_read_1d_gl_address(IO_param,                          &
      &   sph_IO%nidx_sph(2), sph_IO%ncomp_table_1d(2), sph_IO%idx_gl_2)
-      write(*,*) 'sph_IO%nidx_sph(2)', sph_IO%nidx_sph(2)
 !
 !
       call gz_mpi_skip_header(IO_param, len(hd_pgrid()))
@@ -89,7 +87,6 @@
 !
       call gz_mpi_read_1d_gl_address(IO_param,                          &
      &   sph_IO%nidx_sph(3), sph_IO%ncomp_table_1d(3), sph_IO%idx_gl_3)
-      write(*,*) 'sph_IO%nidx_sph(3)', sph_IO%nidx_sph(3)
 !
       end subroutine gz_mpi_read_rtp_gl_1d_table
 !
@@ -132,7 +129,6 @@
 !
       call gz_mpi_read_1d_gl_address(IO_param,                          &
      &   sph_IO%nidx_sph(2), sph_IO%ncomp_table_1d(2), sph_IO%idx_gl_2)
-      write(*,*) 'sph_IO%nidx_sph(2)', sph_IO%nidx_sph(2)
 !
 !
       end subroutine gz_mpi_read_rj_gl_1d_table

@@ -196,15 +196,17 @@
       integer(kind=kint), intent(in) :: ntot, ist, num, ncolumn
       integer(kind=kint), intent(inout) :: int_dat(2,ntot)
 !
-      integer(kind = kint) :: int_tmp(num)
+      integer(kind = kint) :: int_tmp(num), num_tmp
 !
 !
+      call gz_mpi_read_num_int(IO_param, num_tmp)
       call gz_mpi_read_comm_table(IO_param, ncolumn, num, int_tmp)
 !$omp parallel workshare
       int_dat(1,ist+1:ist+num) = int_tmp(1:num)
 !$omp end parallel workshare
 !
 !
+      call gz_mpi_read_num_int(IO_param, num_tmp)
       call gz_mpi_read_comm_table(IO_param, ncolumn, num, int_tmp)
 !$omp parallel workshare
       int_dat(2,ist+1:ist+num) = int_tmp(1:num)
@@ -221,7 +223,7 @@
       integer(kind=kint), intent(in) :: ntot, ist, num, ncolumn
       integer(kind=kint), intent(in) :: int_dat(2,ntot)
 !
-      integer(kind = kint) :: int_tmp(ncolumn)
+      integer(kind = kint) :: int_tmp(num)
 !
 !
 !$omp parallel workshare

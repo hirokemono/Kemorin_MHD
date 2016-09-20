@@ -32,10 +32,7 @@
       use m_read_mesh_data
       use t_mesh_data
       use t_calypso_mpi_IO_param
-      use gz_mesh_data_IO
       use gz_MPI_mesh_data_IO
-      use gz_MPI_binary_datum_IO
-      use gz_MPI_mesh_data_IO_b
       use MPI_ascii_data_IO
 !
       implicit none
@@ -58,7 +55,7 @@
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &   'Read gzipped merged mesh file: ', trim(mesh_file_name)
 !
-      call open_read_gz_mpi_file_b                                      &
+      call open_read_mpi_file                                           &
      &   (mesh_file_name, nprocs_in, my_rank_IO, IO_param)
 !
       call gz_mpi_read_geometry_data(IO_param, fem_IO%mesh)
@@ -80,7 +77,7 @@
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &   'Read gzipped merged mesh file: ', trim(mesh_file_name)
 !
-      call open_read_gz_mpi_file_b                                      &
+      call open_read_mpi_file                                           &
      &   (mesh_file_name, nprocs_in, my_rank_IO, IO_param)
       call gz_mpi_read_geometry_data(IO_param, mesh_IO)
       call close_mpi_file(IO_param)
@@ -99,7 +96,7 @@
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &   'Read gzipped merged mesh file: ', trim(mesh_file_name)
 !
-      call open_read_gz_mpi_file_b                                      &
+      call open_read_mpi_file                                           &
      &   (mesh_file_name, nprocs_in, my_rank_IO, IO_param)
       call gz_mpi_read_num_node(IO_param, mesh_IO)
       call close_mpi_file(IO_param)
@@ -118,7 +115,7 @@
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &   'Read gzipped merged mesh file: ', trim(mesh_file_name)
 !
-      call open_read_gz_mpi_file_b                                      &
+      call open_read_mpi_file                                           &
      &   (mesh_file_name, nprocs_in, my_rank_IO, IO_param)
       call gz_mpi_read_num_node_ele(IO_param, mesh_IO)
       call close_mpi_file(IO_param)
@@ -137,7 +134,7 @@
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &  'Write gzipped merged mesh file: ', trim(mesh_file_name)
 !
-      call open_write_gz_mpi_file_b                                     &
+      call open_write_mpi_file                                          &
      &   (mesh_file_name, nprocs_in, my_rank_IO, IO_param)
       call gz_mpi_write_geometry_data(IO_param, fem_IO%mesh)
       call gz_mpi_write_mesh_groups(IO_param, fem_IO%group)

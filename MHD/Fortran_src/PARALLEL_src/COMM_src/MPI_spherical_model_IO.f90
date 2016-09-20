@@ -88,7 +88,6 @@
       call mpi_read_ele_connect                                         &
      &   (IO_param, sph_IO%numnod_sph, sph_IO%numdir_sph,               &
      &    sph_IO%inod_gl_sph, sph_IO%idx_gl_sph)
-      write(*,*) my_rank, 'sph_IO%idx_gl_sph', sph_IO%idx_gl_sph(sph_IO%numnod_sph,:)
 !
       end subroutine mpi_read_gl_nodes_sph
 !

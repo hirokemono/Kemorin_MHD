@@ -158,7 +158,7 @@
 !
 !
       call gz_mpi_write_int_stack                                       &
-     &   (IO_param, comm_IO%ntot_export, comm_IO%istack_export)
+     &   (IO_param, comm_IO%num_neib, comm_IO%istack_export)
 !
       call gz_mpi_write_comm_table                                      &
      &   (IO_param, ione, comm_IO%ntot_export, comm_IO%item_export)
@@ -203,71 +203,6 @@
       end subroutine gz_mpi_write_int_vector
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine gz_mpi_write_comm_table                                &
-     &         (IO_param, ncolumn, num, int_dat)
-!
-      type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: num, ncolumn
-      integer(kind=kint), intent(in) :: int_dat(num)
-!
-      integer(kind = kint) :: i, nrest
-      integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: ilen_gz, ilen_gzipped
-!
-      character(len=1), allocatable :: gzip_buf(:)
-!
-!
-      call set_numbers_2_head_node(num, IO_param)
-      call gz_mpi_write_charahead(IO_param,                             &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
-!
-      ilen_gz = int(real(num*len_int_txt) *1.01) + 24
-      allocate(gzip_buf(ilen_gz))
-!
-      if(num .le. 0) then
-        call gzip_defleat_once(ione, char(10),                          &
-     &      ilen_gz, ilen_gzipped, gzip_buf(1))
-      else if(num .le. ncolumn) then
-        call gzip_defleat_once(len_multi_int_textline(num),             &
-     &      multi_int_textline(num, int_dat(1)),                        &
-     &      ilen_gz, ilen_gzipped, gzip_buf(1))
-      else if(num .gt. 0) then
-        call gzip_defleat_begin(len_multi_int_textline(ncolumn),        &
-     &      multi_int_textline(ncolumn, int_dat(1)),                    &
-     &      ilen_gz, ilen_gzipped, gzip_buf(1))
-        do i = 1, (num-1)/ncolumn - 1
-          call gzip_defleat_cont(len_multi_int_textline(ncolumn),       &
-     &        multi_int_textline(ncolumn, int_dat(ncolumn*i+1)),        &
-     &        ilen_gz, ilen_gzipped)
-        end do
-        nrest = mod((num-1),ncolumn) + 1
-        call gzip_defleat_last(len_multi_int_textline(nrest),           &
-     &      multi_int_textline(nrest, int_dat(num-nrest+1)),            &
-     &      ilen_gz, ilen_gzipped)
-      end if
-!
-      call set_istack_4_parallell_data(ilen_gzipped, IO_param)
-      call gz_mpi_write_charahead(IO_param,                             &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &                        IO_param%istack_merged))
-!
-      if(ilen_gzipped .gt. 0) then
-        ioffset = IO_param%ioff_gl                                      &
-     &           + IO_param%istack_merged(IO_param%id_rank)
-        call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,    &
-     &     ilen_gzipped, gzip_buf(1))
-      end if
-!
-      deallocate(gzip_buf)
-      IO_param%ioff_gl = IO_param%ioff_gl                               &
-     &                  + IO_param%istack_merged(IO_param%nprocs_in)
-!
-      end subroutine gz_mpi_write_comm_table
-!
 ! -----------------------------------------------------------------------
 !
       subroutine gz_mpi_read_int_stack(IO_param, num, istack, ntot)
@@ -321,6 +256,7 @@
 !
       end subroutine gz_mpi_read_int_vector
 !
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine gz_mpi_read_comm_table                                 &
@@ -390,6 +326,72 @@
       deallocate(gzip_buf, textbuf)
 !
       end subroutine gz_mpi_read_comm_table
+!
+! -----------------------------------------------------------------------
+!
+      subroutine gz_mpi_write_comm_table                                &
+     &         (IO_param, ncolumn, num, int_dat)
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      integer(kind=kint), intent(in) :: num, ncolumn
+      integer(kind=kint), intent(in) :: int_dat(num)
+!
+      integer(kind = kint) :: i, nrest
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint) :: ilen_gz, ilen_gzipped
+!
+      character(len=1), allocatable :: gzip_buf(:)
+!
+!
+      call set_numbers_2_head_node(num, IO_param)
+      call gz_mpi_write_charahead(IO_param,                             &
+     &    len_multi_int_textline(IO_param%nprocs_in),                   &
+     &    int_stack8_textline(IO_param%nprocs_in,                       &
+     &    IO_param%istack_merged))
+!
+      ilen_gz = int(real(num*len_int_txt) *1.01) + 24
+      allocate(gzip_buf(ilen_gz))
+!
+      if(num .le. 0) then
+        call gzip_defleat_once(ione, char(10),                          &
+     &      ilen_gz, ilen_gzipped, gzip_buf(1))
+      else if(num .le. ncolumn) then
+        call gzip_defleat_once(len_multi_int_textline(num),             &
+     &      multi_int_textline(num, int_dat(1)),                        &
+     &      ilen_gz, ilen_gzipped, gzip_buf(1))
+      else if(num .gt. 0) then
+        call gzip_defleat_begin(len_multi_int_textline(ncolumn),        &
+     &      multi_int_textline(ncolumn, int_dat(1)),                    &
+     &      ilen_gz, ilen_gzipped, gzip_buf(1))
+        do i = 1, (num-1)/ncolumn - 1
+          call gzip_defleat_cont(len_multi_int_textline(ncolumn),       &
+     &        multi_int_textline(ncolumn, int_dat(ncolumn*i+1)),        &
+     &        ilen_gz, ilen_gzipped)
+        end do
+        nrest = mod((num-1),ncolumn) + 1
+        call gzip_defleat_last(len_multi_int_textline(nrest),           &
+     &      multi_int_textline(nrest, int_dat(num-nrest+1)),            &
+     &      ilen_gz, ilen_gzipped)
+      end if
+!
+      call set_istack_4_parallell_data(ilen_gzipped, IO_param)
+      call gz_mpi_write_charahead(IO_param,                             &
+     &    len_multi_int_textline(IO_param%nprocs_in),                   &
+     &    int_stack8_textline(IO_param%nprocs_in,                       &
+     &                        IO_param%istack_merged))
+!
+      if(ilen_gzipped .gt. 0) then
+        ioffset = IO_param%ioff_gl                                      &
+     &           + IO_param%istack_merged(IO_param%id_rank)
+        call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,    &
+     &     ilen_gzipped, gzip_buf(1))
+      end if
+!
+      deallocate(gzip_buf)
+      IO_param%ioff_gl = IO_param%ioff_gl                               &
+     &                  + IO_param%istack_merged(IO_param%nprocs_in)
+!
+      end subroutine gz_mpi_write_comm_table
 !
 ! -----------------------------------------------------------------------
 !
