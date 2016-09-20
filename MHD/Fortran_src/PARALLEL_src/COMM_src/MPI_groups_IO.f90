@@ -211,7 +211,7 @@
       integer(kind=kint), intent(in) :: ntot, ist, num, ncolumn
       integer(kind=kint), intent(in) :: int_dat(2,ntot)
 !
-      integer(kind = kint) :: int_tmp(ncolumn)
+      integer(kind = kint) :: int_tmp(num)
 !
 !
 !$omp parallel workshare

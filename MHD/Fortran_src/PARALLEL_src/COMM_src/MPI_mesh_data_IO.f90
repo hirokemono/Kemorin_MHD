@@ -8,10 +8,15 @@
 !>@brief  Routines for gzipped binary mesh data IO
 !!
 !!@verbatim
-!!      subroutine mpi_write_geometry_data                            &
-!!     &         (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO)
-!!      subroutine mpi_read_geometry_data                             &
-!!     &         (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO)
+!!      subroutine mpi_write_geometry_data(IO_param, mesh_IO)
+!!      subroutine mpi_write_mesh_groups(IO_param, mesh_group_IO)
+!!        type(mesh_geometry), intent(inout) :: mesh_IO
+!!        type(mesh_groups), intent(inout) ::   mesh_group_IO
+!!
+!!      subroutine mpi_read_geometry_data(IO_param, mesh_IO)
+!!      subroutine mpi_read_mesh_groups(IO_param, mesh_group_IO)
+!!      subroutine mpi_read_num_node_ele(IO_param, mesh_IO)
+!!      subroutine mpi_read_num_node(IO_param, mesh_IO)
 !!        type(mesh_geometry), intent(inout) :: mesh_IO
 !!        type(mesh_groups), intent(inout) ::   mesh_group_IO
 !!@endverbatim
@@ -21,21 +26,23 @@
       use m_precision
       use m_constants
 !
-      use t_calypso_mpi_IO_param
       use t_mesh_data
       use t_comm_table
       use t_geometry_data
+      use t_calypso_mpi_IO_param
+      use m_fem_mesh_labels
 !
-      use MPI_binary_data_IO
-      use MPI_binary_head_IO
+      use MPI_ascii_data_IO
+      use MPI_domain_data_IO
+      use MPI_sph_gl_1d_idx_IO
+      use MPI_spherical_model_IO
 !
       implicit  none
 !
-      private :: mpi_write_geometry_info, mpi_write_element_info
-      private :: mpi_read_number_of_node, mpi_read_geometry_info
-      private :: mpi_read_number_of_element, mpi_read_element_info
-!
-      type(calypso_MPI_IO_params), private :: IO_param
+!      private :: mpi_write_geometry_info
+!      private :: mpi_write_element_info
+!      private :: gz_mpi_read_number_of_node
+!      private :: mpi_read_element_info
 !
 !------------------------------------------------------------------
 !
@@ -43,104 +50,164 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine mpi_write_geometry_data                                &
-     &         (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO)
+      subroutine mpi_write_geometry_data(IO_param, mesh_IO)
 !
-!      use MPI_domain_data_IO
-      use m_fem_mesh_labels
-!
-      integer, intent(in) ::  id_file
-      integer(kind=kint), intent(in) :: nprocs_in, id_rank
-      integer(kind = kint_gl), intent(inout) :: ioff_gl
-!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(mesh_geometry), intent(inout) :: mesh_IO
 !
 !
-      call calypso_mpi_seek_write_head_c                                &
-     &   (id_file, ioff_gl, hd_fem_para())
-!      call mpi_write_domain_info(IO_param, mesh_IO%nod_comm)
-      call dealloc_istack_merge(IO_param)
+      call mpi_write_charahead                                          &
+     &   (IO_param, len(hd_fem_para()), hd_fem_para())
+      call mpi_write_domain_info(IO_param, mesh_IO%nod_comm)
 !
-      call calypso_mpi_seek_write_head_c                                &
-     &   (id_file, ioff_gl, hd_fem_node())
-!      call mpi_write_geometry_info                                     &
-!     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%node)
-      call calypso_mpi_seek_write_head_c                                &
-     &   (id_file, ioff_gl, hd_fem_elem())
-!      call mpi_write_element_info                                      &
-!     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%ele)
+      call mpi_write_charahead                                          &
+     &   (IO_param, len(hd_fem_node()), hd_fem_node())
+      call mpi_write_geometry_info(IO_param, mesh_IO%node)
 !
-      call calypso_mpi_seek_write_head_c                                &
-     &   (id_file, ioff_gl, hd_fem_import())
-!      call mpi_write_import_data(IO_param, mesh_IO%nod_comm)
-      call calypso_mpi_seek_write_head_c                                &
-     &   (id_file, ioff_gl, hd_fem_export())
-!      call mpi_write_export_data(IO_param, mesh_IO%nod_comm)
+      call mpi_write_charahead                                          &
+     &   (IO_param, len(hd_fem_elem()), hd_fem_elem())
+      call mpi_write_element_info(IO_param, mesh_IO%ele)
+!
+      call mpi_write_charahead                                          &
+     &   (IO_param, len(hd_fem_import()), hd_fem_import())
+      call mpi_write_import_data(IO_param, mesh_IO%nod_comm)
+!
+      call mpi_write_charahead                                          &
+     &   (IO_param, len(hd_fem_export()), hd_fem_export())
+      call mpi_write_export_data(IO_param, mesh_IO%nod_comm)
 !
       end subroutine mpi_write_geometry_data
 !
 !------------------------------------------------------------------
+!
+      subroutine mpi_write_mesh_groups(IO_param, mesh_group_IO)
+!
+      use MPI_groups_IO
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      type(mesh_groups), intent(inout) ::   mesh_group_IO
+!
+!   write node group
+      call mpi_write_charahead                                          &
+     &   (IO_param, len(hd_fem_nodgrp()), hd_fem_nodgrp())
+      call mpi_write_grp_data                                           &
+     &   (IO_param, mesh_group_IO%nod_grp)
+!  write element group
+      call mpi_write_charahead                                          &
+     &   (IO_param, len(hd_fem_elegrp()), hd_fem_elegrp())
+      call mpi_write_grp_data                                           &
+     &   (IO_param, mesh_group_IO%ele_grp)
+!  write surface group
+      call mpi_write_charahead                                          &
+     &   (IO_param, len(hd_fem_sfgrp()), hd_fem_sfgrp())
+      call mpi_write_surf_grp_data                                      &
+     &   (IO_param, mesh_group_IO%surf_grp)
+!
+      end subroutine mpi_write_mesh_groups
+!
+!------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine mpi_read_geometry_data                                 &
-     &         (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO)
+      subroutine mpi_read_geometry_data(IO_param, mesh_IO)
 !
-      use m_error_IDs
-      use MPI_domain_data_IO
-!
-      integer, intent(in) ::  id_file
-      integer(kind=kint), intent(in) :: id_rank, nprocs_in
-      integer(kind = kint_gl), intent(inout) :: ioff_gl
-!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(mesh_geometry), intent(inout) :: mesh_IO
 !
 !
-      call mpi_read_domain_info(IO_param, mesh_IO%nod_comm)
+      call mpi_read_num_node_ele(IO_param, mesh_IO)
+      call mpi_read_element_info(IO_param, mesh_IO%ele)
 !
-      call mpi_read_number_of_node                                      &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%node)
-      call mpi_read_geometry_info                                       &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%node)
+! ----  import & export
 !
-!  ----  read element data -------
-!
-      call mpi_read_number_of_element                                   &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%ele)
-      call mpi_read_element_info                                        &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, mesh_IO%ele)
-!
-! ----  import & export 
-!
+      call mpi_skip_read(IO_param, len(hd_fem_import()))
       call mpi_read_import_data(IO_param, mesh_IO%nod_comm)
+!
+      call mpi_skip_read(IO_param, len(hd_fem_export()))
       call mpi_read_export_data(IO_param, mesh_IO%nod_comm)
 !
       end subroutine mpi_read_geometry_data
 !
 !------------------------------------------------------------------
+!
+      subroutine mpi_read_mesh_groups(IO_param, mesh_group_IO)
+!
+      use MPI_groups_IO
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      type(mesh_groups), intent(inout) ::   mesh_group_IO
+!
+!
+!   read node group
+      call mpi_skip_read(IO_param, len(hd_fem_nodgrp()))
+      call mpi_read_group_data                                          &
+     &   (IO_param, mesh_group_IO%nod_grp)
+!  read element group
+      call mpi_skip_read(IO_param, len(hd_fem_elegrp()))
+      call mpi_read_group_data                                          &
+     &   (IO_param, mesh_group_IO%ele_grp)
+!  read surface group
+      call mpi_skip_read(IO_param, len(hd_fem_sfgrp()))
+      call mpi_read_surf_grp_data                                       &
+     &   (IO_param, mesh_group_IO%surf_grp)
+!
+      end subroutine mpi_read_mesh_groups
+!
 !------------------------------------------------------------------
 !
-      subroutine mpi_write_geometry_info                                &
-     &         (id_file, nprocs_in, id_rank, ioff_gl, nod_IO)
+      subroutine mpi_read_num_node_ele(IO_param, mesh_IO)
 !
-      integer, intent(in) ::  id_file
-      integer(kind = kint_gl), intent(inout) :: ioff_gl
-      integer(kind=kint), intent(in) :: id_rank, nprocs_in
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      type(mesh_geometry), intent(inout) :: mesh_IO
 !
+!
+      call mpi_read_num_node(IO_param, mesh_IO)
+!
+      call alloc_node_geometry_base(mesh_IO%node)
+      call mpi_read_node_position(IO_param,                             &
+     &    mesh_IO%node%numnod, ithree, mesh_IO%node%inod_global,        &
+     &    mesh_IO%node%xx)
+!
+!  ----  read element data -------
+!
+      call mpi_skip_read(IO_param, len(hd_fem_elem()))
+      call mpi_read_num_int(IO_param, mesh_IO%ele%numele)
+!
+      end subroutine mpi_read_num_node_ele
+!
+!------------------------------------------------------------------
+!
+      subroutine mpi_read_num_node(IO_param, mesh_IO)
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      type(mesh_geometry), intent(inout) :: mesh_IO
+!
+!
+      call mpi_skip_read(IO_param, len(hd_fem_para()))
+      call mpi_read_domain_info(IO_param, mesh_IO%nod_comm)
+!
+      call mpi_skip_read(IO_param, len(hd_fem_node()))
+      call mpi_read_num_int(IO_param, mesh_IO%node%internal_node)
+      call mpi_read_num_int(IO_param, mesh_IO%node%numnod)
+!
+      end subroutine mpi_read_num_node
+!
+!------------------------------------------------------------------
+!------------------------------------------------------------------
+!
+      subroutine mpi_write_geometry_info(IO_param, nod_IO)
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(node_data), intent(inout) :: nod_IO
 !
 !
-      call mpi_write_one_integer                                        &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, nod_IO%numnod)
-      call mpi_write_one_integer                                        &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, nod_IO%internal_node)
+      call set_numbers_2_head_node(nod_IO%internal_node, IO_param)
+      call mpi_write_charahead(IO_param,                                &
+     &    len_multi_int_textline(IO_param%nprocs_in),                   &
+     &    int_stack8_textline(IO_param%nprocs_in,                       &
+     &    IO_param%istack_merged))
 !
-      call set_istack_4_parallell_data(nod_IO%numnod, IO_param)
-!
-      call mpi_write_int8_vector                                        &
-     &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    nod_IO%numnod, nod_IO%inod_global, IO_param%istack_merged)
-      call mpi_write_2d_vector(id_file, nprocs_in, id_rank, ioff_gl,    &
-     &    nod_IO%numnod, ithree, nod_IO%xx, IO_param%istack_merged)
+      call mpi_write_node_position(IO_param,                            &
+     &   nod_IO%numnod, ithree, nod_IO%inod_global, nod_IO%xx)
 !
       call dealloc_node_geometry_base(nod_IO)
 !
@@ -148,32 +215,20 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine mpi_write_element_info                                 &
-     &         (id_file, nprocs_in, id_rank, ioff_gl, ele_IO)
+      subroutine mpi_write_element_info(IO_param, ele_IO)
 !
-      integer, intent(in) ::  id_file
-      integer(kind=kint), intent(in) :: id_rank, nprocs_in
-      integer(kind = kint_gl), intent(inout) :: ioff_gl
-!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(element_data), intent(inout) :: ele_IO
 !
       integer (kind = kint) :: num
 !
 !
-      call mpi_write_one_integer                                        &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, ele_IO%numele)
+      call mpi_write_element_type                                       &
+     &   (IO_param, iten, ele_IO%numele, ele_IO%elmtyp)
 !
-      call set_istack_4_parallell_data(ele_IO%numele, IO_param)
-      call mpi_write_int_vector(id_file, nprocs_in, id_rank, ioff_gl,   &
-     &    ele_IO%numele, ele_IO%elmtyp, IO_param%istack_merged)
-      call mpi_write_int8_vector                                        &
-     &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    ele_IO%numele, ele_IO%iele_global, IO_param%istack_merged)
-!
-      num = ele_IO%numele * ele_IO%nnod_4_ele
-      call mul_istack_4_parallell_vect(ele_IO%nnod_4_ele, IO_param)
-      call mpi_write_int_vector(id_file, nprocs_in, id_rank, ioff_gl,   &
-     &    num, ele_IO%ie, IO_param%istack_merged)
+      call mpi_write_ele_connect                                        &
+     &   (IO_param, ele_IO%numele, ele_IO%nnod_4_ele,                   &
+     &    ele_IO%iele_global, ele_IO%ie)
 !
       call deallocate_ele_connect_type(ele_IO)
 !
@@ -182,87 +237,20 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine mpi_read_number_of_node                                &
-     &         (id_file, nprocs_in, id_rank, ioff_gl, nod_IO)
-!
-      integer, intent(in) ::  id_file
-      integer(kind=kint), intent(in) :: id_rank, nprocs_in
-      integer(kind = kint_gl), intent(inout) :: ioff_gl
-!
-      type(node_data), intent(inout) :: nod_IO
-!
-!
-      call mpi_read_one_integer                                         &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, nod_IO%numnod)
-      call mpi_read_one_integer                                         &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, nod_IO%internal_node)
-!
-      end subroutine mpi_read_number_of_node
-!
-!------------------------------------------------------------------
-!
-      subroutine mpi_read_geometry_info                                 &
-     &         (id_file, nprocs_in, id_rank, ioff_gl, nod_IO)
-!
-      integer, intent(in) ::  id_file
-      integer(kind=kint), intent(in) :: id_rank, nprocs_in
-      integer(kind = kint_gl), intent(inout) :: ioff_gl
-!
-      type(node_data), intent(inout) :: nod_IO
-!
-!
-      call alloc_node_geometry_base(nod_IO)
-!
-      call set_istack_4_parallell_data(nod_IO%numnod, IO_param)
-!
-      call mpi_read_int8_vector                                         &
-     &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    nod_IO%numnod, nod_IO%inod_global, IO_param%istack_merged)
-      call mpi_read_2d_vector                                           &
-     &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    nod_IO%numnod, ithree, nod_IO%xx, IO_param%istack_merged)
-!
-      end subroutine mpi_read_geometry_info
-!
-!------------------------------------------------------------------
-!
-      subroutine mpi_read_number_of_element                             &
-     &         (id_file, nprocs_in, id_rank, ioff_gl, ele_IO)
-!
-      integer, intent(in) ::  id_file
-      integer(kind=kint), intent(in) :: id_rank, nprocs_in
-      integer(kind = kint_gl), intent(inout) :: ioff_gl
-!
-      type(element_data), intent(inout) :: ele_IO
-!
-!
-      call mpi_read_one_integer                                         &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, ele_IO%numele)
-!
-      end subroutine mpi_read_number_of_element
-!
-!------------------------------------------------------------------
-!
-      subroutine mpi_read_element_info                                  &
-     &         (id_file, nprocs_in, id_rank, ioff_gl, ele_IO)
+      subroutine mpi_read_element_info(IO_param, ele_IO)
 !
       use set_nnod_4_ele_by_type
 !
-      integer, intent(in) ::  id_file
-      integer(kind=kint), intent(in) :: id_rank, nprocs_in
-      integer(kind = kint_gl), intent(inout) :: ioff_gl
-!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(element_data), intent(inout) :: ele_IO
 !
-      integer (kind = kint) :: num, i
+      integer (kind = kint) :: num, i, num_tmp
 !
 !
       call alloc_element_types(ele_IO)
-!
-      call set_istack_4_parallell_data(ele_IO%numele, IO_param)
-      call mpi_read_int_vector                                          &
-     &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    ele_IO%numele, ele_IO%elmtyp, IO_param%istack_merged)
+      call mpi_read_element_type                                        &
+     &   (IO_param, iten, ele_IO%numele, ele_IO%elmtyp)
+      call calypso_mpi_barrier
 !
       ele_IO%nnod_4_ele = 0
       do i = 1, ele_IO%numele
@@ -271,20 +259,132 @@
         ele_IO%nnod_4_ele = max(ele_IO%nnod_4_ele,ele_IO%nodelm(i))
       end do
 !
+      call mpi_read_num_int(IO_param, num_tmp)
       call alloc_ele_connectivity(ele_IO)
 !
-      call mpi_read_int8_vector                                         &
-     &   (id_file, nprocs_in, id_rank, ioff_gl,                         &
-     &    ele_IO%numele, ele_IO%iele_global, IO_param%istack_merged)
-!
-      num = ele_IO%numele * ele_IO%nnod_4_ele
-      call mul_istack_4_parallell_vect(ele_IO%nnod_4_ele, IO_param)
-      call mpi_read_int_vector                                          &
-     &   (id_file, nprocs_in, id_rank, ioff_gl, num, ele_IO%ie,         &
-     &    IO_param%istack_merged)
+      call mpi_read_ele_connect                                         &
+     &   (IO_param, ele_IO%numele, ele_IO%nnod_4_ele,                   &
+     &    ele_IO%iele_global, ele_IO%ie)
 !
       end subroutine mpi_read_element_info
 !
-!------------------------------------------------------------------
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine mpi_read_element_type                                  &
+     &         (IO_param, ncolumn, num, int_dat)
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      integer(kind=kint), intent(in) :: num, ncolumn
+      integer(kind=kint), intent(inout) :: int_dat(num)
+!
+      integer(kind = kint) :: i, nrest, n_item, lst, led, loop
+      character(len = num*len_int_txt) :: textbuf
+!
+!
+      call mpi_skip_read                                                &
+     &   (IO_param, len_multi_int_textline(IO_param%nprocs_in))
+!
+      IO_param%istack_merged(0) = 0
+      do i = 1, IO_param%nprocs_in
+        n_item = IO_param%istack_merged(i)
+        if(n_item .le. 0) then
+          led = ione
+        else if(n_item .le. ncolumn) then
+          led = len_multi_6digit_line(n_item)
+        else if(n_item .gt. 0) then
+          nrest = mod((n_item-1),ncolumn) + 1
+          loop = (n_item-1)/ncolumn
+          led = len_multi_6digit_line(nrest)                            &
+     &         + len_multi_6digit_line(ncolumn) * loop
+        end if
+        IO_param%istack_merged(i) = IO_param%istack_merged(i-1) + led
+      end do
+      led = IO_param%istack_merged(IO_param%id_rank+1)                  &
+     &         -  IO_param%istack_merged(IO_param%id_rank)
+!
+      textbuf = mpi_read_characters(IO_param, led)
+!
+      if(num .le. 0) then
+        led = ione
+      else if(num .le. ncolumn) then
+        led = len_multi_6digit_line(num)
+        call read_mul_6digit_int_line(textbuf, num, int_dat(1))
+      else if(num .gt. 0) then
+        lst = 0
+        led = lst + len_multi_6digit_line(ncolumn)
+        call read_mul_6digit_int_line                                   &
+     &    (textbuf(lst+1:led) , ncolumn, int_dat(1))
+        do i = 1, (num-1)/ncolumn - 1
+          lst = led
+          led = lst + len_multi_6digit_line(ncolumn)
+          call read_mul_6digit_int_line                                 &
+     &       (textbuf(lst+1:led) , ncolumn, int_dat(ncolumn*i+1))
+        end do
+        nrest = mod((num-1),ncolumn) + 1
+        lst = led
+        led = lst + len_multi_6digit_line(nrest)
+        call read_mul_6digit_int_line                                   &
+     &     (textbuf(lst+1:led), nrest, int_dat(num-nrest+1))
+      end if
+!
+      end subroutine mpi_read_element_type
+!
+! -----------------------------------------------------------------------
+!
+      subroutine mpi_write_element_type                                 &
+     &         (IO_param, ncolumn, num, int_dat)
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      integer(kind=kint), intent(in) :: num, ncolumn
+      integer(kind=kint), intent(in) :: int_dat(num)
+!
+      integer(kind = kint) :: i, nrest, lst, led
+      character(len = num*len_int_txt) :: textbuf
+!
+!
+      call set_numbers_2_head_node(num, IO_param)
+      call mpi_write_charahead(IO_param,                                &
+     &    len_multi_int_textline(IO_param%nprocs_in),                   &
+     &    int_stack8_textline(IO_param%nprocs_in,                       &
+     &    IO_param%istack_merged))
+!
+      if(num .le. 0) then
+        led = ione
+      else if(num .le. ncolumn) then
+        led = len_multi_6digit_line(num)
+        textbuf(1:led) =  mul_6digit_int_line(num, int_dat(1))
+      else if(num .gt. 0) then
+        lst = 0
+        led = lst + len_multi_6digit_line(ncolumn)
+        textbuf(lst+1:led) =  mul_6digit_int_line(ncolumn, int_dat(1))
+        do i = 1, (num-1)/ncolumn - 1
+          lst = led
+          led = lst + len_multi_6digit_line(ncolumn)
+          textbuf(lst+1:led)                                            &
+     &            =  mul_6digit_int_line(ncolumn, int_dat(ncolumn*i+1))
+        end do
+        nrest = mod((num-1),ncolumn) + 1
+        lst = led
+        led = lst + len_multi_6digit_line(nrest)
+        textbuf(lst+1:led)                                              &
+     &            =  mul_6digit_int_line(nrest, int_dat(num-nrest+1))
+      end if
+!
+      call set_istack_4_parallell_data(led, IO_param)
+      call mpi_write_charahead(IO_param,                                &
+     &    len_multi_int_textline(IO_param%nprocs_in),                   &
+     &    int_stack8_textline(IO_param%nprocs_in,                       &
+     &                        IO_param%istack_merged))
+!
+      if(num .le. 0) then
+        call mpi_write_characters(IO_param, ione, char(10))
+      else
+        call mpi_write_characters(IO_param, led, textbuf)
+      end if
+!
+      end subroutine mpi_write_element_type
+!
+! -----------------------------------------------------------------------
 !
       end module MPI_mesh_data_IO

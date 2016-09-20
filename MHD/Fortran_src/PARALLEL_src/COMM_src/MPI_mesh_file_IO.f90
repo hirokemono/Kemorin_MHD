@@ -28,8 +28,13 @@
 !
       use m_read_mesh_data
       use t_mesh_data
+      use t_calypso_mpi_IO_param
+      use MPI_ascii_data_IO
+      use MPI_mesh_data_IO
 !
       implicit none
+!
+      type(calypso_MPI_IO_params), save, private :: IO_param
 !
 !  ---------------------------------------------------------------------
 !
@@ -52,12 +57,12 @@
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &   'Read ascii mesh file: ', trim(mesh_file_name)
 !
-      open(input_file_code, file = mesh_file_name, form = 'formatted')
+      call open_read_mpi_file                                           &
+     &   (mesh_file_name, nprocs_in, my_rank_IO, IO_param)
 !
-      call read_geometry_data                                           &
-     &   (input_file_code, my_rank_IO, fem_IO%mesh, ierr)
-      call read_mesh_groups(input_file_code, fem_IO%group)
-      close(input_file_code)
+      call mpi_read_geometry_data(IO_param, fem_IO%mesh)
+      call mpi_read_mesh_groups(IO_param, fem_IO%group)
+      call close_mpi_file(IO_param)
 !
       end subroutine mpi_read_mesh_file
 !
@@ -71,15 +76,14 @@
       integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
       type(mesh_geometry), intent(inout) :: mesh_IO
 !
-      integer(kind = kint) :: ierr
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &   'Read ascii mesh file: ', trim(mesh_file_name)
 !
-      open(input_file_code, file = mesh_file_name, form = 'formatted')
-      call read_geometry_data                                           &
-     &   (input_file_code, my_rank_IO, mesh_IO, ierr)
-      close(input_file_code)
+      call open_read_mpi_file                                           &
+     &   (mesh_file_name, nprocs_in, my_rank_IO, IO_param)
+      call mpi_read_geometry_data(IO_param, mesh_IO)
+      call close_mpi_file(IO_param)
 !
 !
       end subroutine mpi_read_mesh_geometry
@@ -95,15 +99,14 @@
       integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
       type(mesh_geometry), intent(inout) :: mesh_IO
 !
-      integer(kind = kint) :: ierr
-!
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &   'Read ascii mesh file: ', trim(mesh_file_name)
 !
-      open(input_file_code, file = mesh_file_name, form = 'formatted')
-      call read_num_node(input_file_code, my_rank_IO, mesh_IO, ierr)
-      close(input_file_code)
+      call open_read_mpi_file                                           &
+     &   (mesh_file_name, nprocs_in, my_rank_IO, IO_param)
+      call mpi_read_num_node(IO_param, mesh_IO)
+      call close_mpi_file(IO_param)
 !
 !
       end subroutine mpi_read_node_size
@@ -118,16 +121,14 @@
       integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
       type(mesh_geometry), intent(inout) :: mesh_IO
 !
-      integer(kind = kint) :: ierr
-!
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &   'Read ascii mesh file: ', trim(mesh_file_name)
 !
-      open(input_file_code, file = mesh_file_name, form = 'formatted')
-      call read_num_node_ele                                            &
-     &   (input_file_code, my_rank_IO, mesh_IO, ierr)
-      close(input_file_code)
+      call open_read_mpi_file                                           &
+     &   (mesh_file_name, nprocs_in, my_rank_IO, IO_param)
+      call mpi_read_num_node_ele(IO_param, mesh_IO)
+      call close_mpi_file(IO_param)
 !
       end subroutine mpi_read_geometry_size
 !
@@ -148,12 +149,13 @@
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &   'Write ascii mesh file: ', trim(mesh_file_name)
 !
-      open(input_file_code, file = mesh_file_name, form = 'formatted')
+      call open_write_mpi_file                                          &
+     &   (mesh_file_name, nprocs_in, my_rank_IO, IO_param)
 !
-      call write_geometry_data(input_file_code, my_rank_IO, fem_IO%mesh)
-      call write_mesh_groups(input_file_code, fem_IO%group)
+      call mpi_write_geometry_data(IO_param, fem_IO%mesh)
+      call mpi_write_mesh_groups(IO_param, fem_IO%group)
 !
-      close(input_file_code)
+      call close_mpi_file(IO_param)
 !
       end subroutine mpi_write_mesh_file
 !

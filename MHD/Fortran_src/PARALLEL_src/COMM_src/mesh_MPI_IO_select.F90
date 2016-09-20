@@ -56,9 +56,6 @@
         call mpi_read_mesh_file_b(nprocs, my_rank, fem_IO)
       else if(iflag_mesh_file_fmt .eq. iflag_single) then
         call mpi_read_mesh_file(nprocs, my_rank, fem_IO)
-        call set_mesh_file_name(mesh_file_head, id_ascii_file_fmt,      &
-     &      my_rank, mesh_file_name)
-        call read_mesh_file(my_rank, fem_IO, ierr)
 !
 #ifdef ZLIB_IO
       else if(iflag_mesh_file_fmt                                       &
@@ -94,9 +91,6 @@
         call mpi_read_mesh_geometry_b(nprocs, my_rank, mesh_IO)
       else if(iflag_mesh_file_fmt .eq. iflag_single) then
         call mpi_read_mesh_geometry(nprocs, my_rank, mesh_IO)
-        call set_mesh_file_name(mesh_file_head, id_ascii_file_fmt,      &
-     &      my_rank, mesh_file_name)
-        call read_mesh_geometry(my_rank, mesh_IO, ierr)
 !
 #ifdef ZLIB_IO
       else if(iflag_mesh_file_fmt                                       &
@@ -133,9 +127,6 @@
         call mpi_read_node_size_b(nprocs, my_rank, mesh_IO)
       else if(iflag_mesh_file_fmt .eq. iflag_single) then
         call mpi_read_node_size(nprocs, my_rank, mesh_IO)
-        call set_mesh_file_name(mesh_file_head, id_ascii_file_fmt,      &
-     &      my_rank, mesh_file_name)
-        call read_node_size(my_rank, mesh_IO, ierr)
 !
 #ifdef ZLIB_IO
       else if(iflag_mesh_file_fmt                                       &
@@ -171,9 +162,6 @@
         call mpi_read_geometry_size_b(nprocs, my_rank, mesh_IO)
       else if(iflag_mesh_file_fmt .eq. iflag_single) then
         call mpi_read_geometry_size(nprocs, my_rank, mesh_IO)
-        call set_mesh_file_name(mesh_file_head, id_ascii_file_fmt,      &
-     &      my_rank, mesh_file_name)
-        call read_geometry_size(my_rank, mesh_IO, ierr)
 !
 #ifdef ZLIB_IO
       else if(iflag_mesh_file_fmt                                       &
@@ -209,9 +197,6 @@
         call mpi_write_mesh_file_b(nprocs, my_rank, fem_IO)
       else if(iflag_mesh_file_fmt .eq. iflag_single) then
         call mpi_write_mesh_file(nprocs, my_rank, fem_IO)
-        call set_mesh_file_name(mesh_file_head, id_ascii_file_fmt,      &
-     &      my_rank, mesh_file_name)
-        call write_mesh_file(my_rank, fem_IO)
 !
 #ifdef ZLIB_IO
       else if(iflag_mesh_file_fmt                                       &
