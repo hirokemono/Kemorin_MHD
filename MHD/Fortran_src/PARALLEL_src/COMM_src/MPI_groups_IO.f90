@@ -73,7 +73,6 @@
         end do
 !
       end if
-      call calypso_mpi_barrier
 !
       end subroutine mpi_read_group_data
 !
