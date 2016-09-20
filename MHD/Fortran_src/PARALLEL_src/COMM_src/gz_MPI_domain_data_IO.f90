@@ -49,8 +49,7 @@
 !
 !
       call read_integer_textline                                        &
-     &   (gz_mpi_read_charahead(IO_param, len_integer_textline),        &
-     &    nprocs_read)
+     &   (gz_mpi_read_charahead(IO_param, len_int_txt), nprocs_read)
       if(nprocs_read .ne. IO_param%nprocs_in) then
         call calypso_mpi_abort(ierr_file, '#. of subdmain is wrong')
       end if
@@ -83,7 +82,7 @@
       call gz_mpi_read_num_int(IO_param, comm_IO%ntot_import)
       call allocate_type_import_item(comm_IO)
 !
-      call gz_mpi_read_nod_grp_item                                     &
+      call gz_mpi_read_comm_table                                       &
      &   (IO_param, ione, comm_IO%ntot_import, comm_IO%item_import)
 !
       end subroutine gz_mpi_read_import_data
@@ -107,7 +106,7 @@
       call gz_mpi_read_num_int(IO_param, comm_IO%ntot_import)
       call allocate_type_export_item(comm_IO)
 !
-      call gz_mpi_read_nod_grp_item                                     &
+      call gz_mpi_read_comm_table                                       &
      &     (IO_param, ione, comm_IO%ntot_export, comm_IO%item_export)
 !
       end subroutine gz_mpi_read_export_data
@@ -121,7 +120,7 @@
       type(communication_table), intent(inout) :: comm_IO
 !
 !
-      call gz_mpi_write_charahead(IO_param, len_integer_textline,       &
+      call gz_mpi_write_charahead(IO_param, len_int_txt,                &
      &    integer_textline(IO_param%nprocs_in))
 !
       call gz_mpi_write_int_vector                                      &
@@ -143,7 +142,7 @@
       call gz_mpi_write_int_stack                                       &
      &   (IO_param, comm_IO%num_neib, comm_IO%istack_import)
 !
-      call gz_mpi_write_nod_grp_item                                    &
+      call gz_mpi_write_comm_table                                      &
      &   (IO_param, ione, comm_IO%ntot_import, comm_IO%item_import)
 !
       call deallocate_type_import(comm_IO)
@@ -161,7 +160,7 @@
       call gz_mpi_write_int_stack                                       &
      &   (IO_param, comm_IO%ntot_export, comm_IO%istack_export)
 !
-      call gz_mpi_write_nod_grp_item                                    &
+      call gz_mpi_write_comm_table                                      &
      &   (IO_param, ione, comm_IO%ntot_export, comm_IO%item_export)
 !
       call deallocate_type_export(comm_IO)
@@ -205,7 +204,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_mpi_write_nod_grp_item                              &
+      subroutine gz_mpi_write_comm_table                                &
      &         (IO_param, ncolumn, num, int_dat)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
@@ -225,7 +224,7 @@
      &    int_stack8_textline(IO_param%nprocs_in,                       &
      &    IO_param%istack_merged))
 !
-      ilen_gz = int(real(num*len_integer_textline) *1.01) + 24
+      ilen_gz = int(real(num*len_int_txt) *1.01) + 24
       allocate(gzip_buf(ilen_gz))
 !
       if(num .le. 0) then
@@ -267,7 +266,7 @@
       IO_param%ioff_gl = IO_param%ioff_gl                               &
      &                  + IO_param%istack_merged(IO_param%nprocs_in)
 !
-      end subroutine gz_mpi_write_nod_grp_item
+      end subroutine gz_mpi_write_comm_table
 !
 ! -----------------------------------------------------------------------
 !
@@ -324,7 +323,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_mpi_read_nod_grp_item                               &
+      subroutine gz_mpi_read_comm_table                                 &
      &         (IO_param, ncolumn, num, int_dat)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
@@ -390,7 +389,7 @@
 !
       deallocate(gzip_buf, textbuf)
 !
-      end subroutine gz_mpi_read_nod_grp_item
+      end subroutine gz_mpi_read_comm_table
 !
 ! -----------------------------------------------------------------------
 !

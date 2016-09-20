@@ -49,10 +49,8 @@
 !
       call gz_mpi_skip_header(IO_param, len(hd_segment()))
       call gz_mpi_read_num_int(IO_param, num_tmp)
-      call gz_mpi_read_nod_grp_item(IO_param,                           &
+      call gz_mpi_read_comm_table(IO_param,                             &
      &    sph_IO%numdir_sph, sph_IO%numdir_sph, sph_IO%sph_rank)
-      write(*,*) 'num_tmp', num_tmp
-      write(*,*) 'sph_IO%sph_rank', sph_IO%sph_rank
 !
       end subroutine gz_mpi_read_rank_4_sph
 !
@@ -68,14 +66,11 @@
 !
       call gz_mpi_skip_header(IO_param, len(hd_trunc()))
       call read_integer_textline                                        &
-     &   (gz_mpi_read_charahead(IO_param, len_integer_textline),        &
-     &    sph_IO%ltr_gl)
+     &   (gz_mpi_read_charahead(IO_param, len_int_txt), sph_IO%ltr_gl)
 !
       call gz_mpi_read_num_int(IO_param, num_tmp)
-      call gz_mpi_read_nod_grp_item(IO_param,                           &
+      call gz_mpi_read_comm_table(IO_param,                             &
      &    sph_IO%numdir_sph, sph_IO%numdir_sph, sph_IO%nidx_gl_sph)
-      write(*,*) 'sph_IO%ltr_gl', sph_IO%ltr_gl
-      write(*,*) 'sph_IO%nidx_gl_sph', sph_IO%nidx_gl_sph
 !
       end subroutine gz_mpi_read_gl_reso_sph
 !
@@ -107,7 +102,7 @@
 !
       call gz_mpi_write_charahead                                       &
      &   (IO_param, len(hd_segment()), hd_segment())
-      call gz_mpi_write_nod_grp_item(IO_param,                          &
+      call gz_mpi_write_comm_table(IO_param,                            &
      &    sph_IO%numdir_sph, sph_IO%numdir_sph, sph_IO%sph_rank)
 !
       end subroutine gz_mpi_write_rank_4_sph
@@ -122,9 +117,9 @@
 !
       call gz_mpi_write_charahead                                       &
      &   (IO_param, len(hd_trunc()), hd_trunc())
-      call gz_mpi_write_charahead(IO_param, len_integer_textline,       &
+      call gz_mpi_write_charahead(IO_param, len_int_txt,                &
      &    integer_textline(sph_IO%ltr_gl))
-      call gz_mpi_write_nod_grp_item(IO_param,                          &
+      call gz_mpi_write_comm_table(IO_param,                            &
      &    sph_IO%numdir_sph, sph_IO%numdir_sph, sph_IO%nidx_gl_sph)
 !
       end subroutine gz_mpi_write_gl_reso_sph

@@ -44,6 +44,8 @@
       use t_calypso_mpi_IO_param
       use MPI_ascii_data_IO
       use MPI_domain_data_IO
+      use MPI_sph_gl_1d_idx_IO
+      use MPI_spherical_model_IO
       use MPI_groups_IO
 !
       implicit none
@@ -69,12 +71,12 @@
       call mpi_skip_read(IO_param, len(hd_sph_para()))
       call mpi_read_domain_info(IO_param, comm_IO)
 !
-!      call mpi_read_gl_reso_sph_b(IO_param, sph_IO)
-!      call mpi_read_rank_4_sph_b(IO_param, sph_IO)
-!      call mpi_read_rtp_gl_1d_table_b(IO_param, sph_IO)
+      call mpi_read_gl_reso_sph(IO_param, sph_IO)
+      call mpi_read_rank_4_sph(IO_param, sph_IO)
+      call mpi_read_rtp_gl_1d_table(IO_param, sph_IO)
 !
       call mpi_skip_read(IO_param, len(hd_rtp_glbl()))
-!      call mpi_read_gl_nodes_sph_b(IO_param, sph_IO)
+      call mpi_read_gl_nodes_sph(IO_param, sph_IO)
 !
       call mpi_skip_read(IO_param, len(hd_rtp_comm()))
       call mpi_read_import_data(IO_param, comm_IO)
@@ -91,6 +93,7 @@
 !
       call mpi_skip_read(IO_param, len(hd_pgrphd()))
       call mpi_read_group_data(IO_param, sph_grps_IO%zonal_rtp_grp)
+      call calypso_mpi_barrier
 !
       end subroutine mpi_read_geom_rtp_data
 !
@@ -110,12 +113,12 @@
 !
       call mpi_skip_read(IO_param, len(hd_sph_para()))
       call mpi_read_domain_info(IO_param, comm_IO)
-!      call mpi_read_gl_reso_sph_b(IO_param, sph_IO)
-!      call mpi_read_rank_4_sph_b(IO_param, sph_IO)
-!      call mpi_read_rj_gl_1d_table_b(IO_param, sph_IO)
+      call mpi_read_gl_reso_sph(IO_param, sph_IO)
+      call mpi_read_rank_4_sph(IO_param, sph_IO)
+      call mpi_read_rj_gl_1d_table(IO_param, sph_IO)
 !
       call mpi_skip_read(IO_param, len(hd_rj_glbl()))
-!      call mpi_read_gl_nodes_sph_b(IO_param, sph_IO)
+      call mpi_read_gl_nodes_sph(IO_param, sph_IO)
 !
       call mpi_skip_read(IO_param, len(hd_rj_comm()))
       call mpi_read_import_data(IO_param, comm_IO)
@@ -144,12 +147,12 @@
 !
       call mpi_skip_read(IO_param, len(hd_sph_para()))
       call mpi_read_domain_info(IO_param, comm_IO)
-!      call mpi_read_gl_reso_sph_b(IO_param, sph_IO)
-!      call mpi_read_rank_4_sph_b(IO_param, sph_IO)
-!      call mpi_read_rtp_gl_1d_table_b(IO_param, sph_IO)
+      call mpi_read_gl_reso_sph(IO_param, sph_IO)
+      call mpi_read_rank_4_sph(IO_param, sph_IO)
+      call mpi_read_rtp_gl_1d_table(IO_param, sph_IO)
 !
       call mpi_skip_read(IO_param, len(hd_rtp_glbl()))
-!      call mpi_read_gl_nodes_sph_b(IO_param, sph_IO)
+      call mpi_read_gl_nodes_sph(IO_param, sph_IO)
 !
       call mpi_skip_read(IO_param, len(hd_rtp_comm()))
       call mpi_read_import_data(IO_param, comm_IO)
@@ -171,12 +174,12 @@
 !
       call mpi_skip_read(IO_param, len(hd_sph_para()))
       call mpi_read_domain_info(IO_param, comm_IO)
-!      call mpi_read_gl_reso_sph_b(IO_param, sph_IO)
-!      call mpi_read_rank_4_sph_b(IO_param, sph_IO)
-!      call mpi_read_rj_gl_1d_table_b(IO_param, sph_IO)
+      call mpi_read_gl_reso_sph(IO_param, sph_IO)
+      call mpi_read_rank_4_sph(IO_param, sph_IO)
+      call mpi_read_rj_gl_1d_table(IO_param, sph_IO)
 !
       call mpi_skip_read(IO_param, len(hd_rlm_glbl()))
-!      call mpi_read_gl_nodes_sph_b(IO_param, sph_IO)
+      call mpi_read_gl_nodes_sph(IO_param, sph_IO)
 !
       call mpi_skip_read(IO_param, len(hd_rj_comm()))
       call mpi_read_import_data(IO_param, comm_IO)
@@ -200,14 +203,14 @@
      &   (IO_param, len(hd_sph_para()), hd_sph_para())
       call mpi_write_domain_info(IO_param, comm_IO)
 !
-!      call mpi_write_gl_reso_sph_b(IO_param, sph_IO)
-!      call mpi_write_rank_4_sph_b(IO_param, sph_IO)
+      call mpi_write_gl_reso_sph(IO_param, sph_IO)
+      call mpi_write_rank_4_sph(IO_param, sph_IO)
 !
-!      call mpi_write_rtp_gl_1d_table_b(IO_param, sph_IO)
+      call mpi_write_rtp_gl_1d_table(IO_param, sph_IO)
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_rtp_glbl()), hd_rtp_glbl())
-!      call mpi_write_gl_nodes_sph_b(IO_param, sph_IO)
+      call mpi_write_gl_nodes_sph(IO_param, sph_IO)
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_rtp_comm()), hd_rtp_comm())
@@ -249,14 +252,14 @@
      &   (IO_param, len(hd_sph_para()), hd_sph_para())
       call mpi_write_domain_info(IO_param, comm_IO)
 !
-!      call mpi_write_gl_reso_sph_b(IO_param, sph_IO)
-!      call mpi_write_rank_4_sph_b(IO_param, sph_IO)
+      call mpi_write_gl_reso_sph(IO_param, sph_IO)
+      call mpi_write_rank_4_sph(IO_param, sph_IO)
 !
-!      call mpi_write_rj_gl_1d_table_b(IO_param, sph_IO)
+      call mpi_write_rj_gl_1d_table(IO_param, sph_IO)
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_rj_glbl()), hd_rj_glbl())
-!      call mpi_write_gl_nodes_sph_b(IO_param, sph_IO)
+      call mpi_write_gl_nodes_sph(IO_param, sph_IO)
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_rj_comm()), hd_rj_comm())
@@ -289,14 +292,14 @@
      &   (IO_param, len(hd_sph_para()), hd_sph_para())
       call mpi_write_domain_info(IO_param, comm_IO)
 !
-!      call mpi_write_gl_reso_sph_b(IO_param, sph_IO)
-!      call mpi_write_rank_4_sph_b(IO_param, sph_IO)
+      call mpi_write_gl_reso_sph(IO_param, sph_IO)
+      call mpi_write_rank_4_sph(IO_param, sph_IO)
 !
-!      call mpi_write_rtp_gl_1d_table_b(IO_param, sph_IO)
+      call mpi_write_rtp_gl_1d_table(IO_param, sph_IO)
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_rtp_glbl()), hd_rtp_glbl())
-!      call mpi_write_gl_nodes_sph_b(IO_param, sph_IO)
+      call mpi_write_gl_nodes_sph(IO_param, sph_IO)
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_rtp_comm()), hd_rtp_comm())
@@ -318,14 +321,14 @@
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_sph_para()), hd_sph_para())
       call mpi_write_domain_info(IO_param, comm_IO)
-!      call mpi_write_gl_reso_sph_b(IO_param, sph_IO)
-!      call mpi_write_rank_4_sph_b(IO_param, sph_IO)
+      call mpi_write_gl_reso_sph(IO_param, sph_IO)
+      call mpi_write_rank_4_sph(IO_param, sph_IO)
 !
-!      call mpi_write_rj_gl_1d_table_b(IO_param, sph_IO)
+      call mpi_write_rj_gl_1d_table(IO_param, sph_IO)
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_rlm_glbl()), hd_rlm_glbl())
-!      call mpi_write_gl_nodes_sph_b(IO_param, sph_IO)
+      call mpi_write_gl_nodes_sph(IO_param, sph_IO)
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_rj_comm()), hd_rj_comm())

@@ -51,8 +51,7 @@
 !
 !
       call read_integer_textline                                        &
-     &   (mpi_read_charahead(IO_param, len_integer_textline),           &
-     &    nprocs_read)
+     &   (mpi_read_charahead(IO_param, len_int_txt), nprocs_read)
       if(nprocs_read .ne. IO_param%nprocs_in) then
         call calypso_mpi_abort(ierr_file, '#. of subdmain is wrong')
       end if
@@ -124,7 +123,7 @@
       type(communication_table), intent(inout) :: comm_IO
 !
 !
-      call mpi_write_charahead(IO_param, len_integer_textline,          &
+      call mpi_write_charahead(IO_param, len_int_txt,                   &
      &    integer_textline(IO_param%nprocs_in))
 !
       call mpi_write_int_vector                                         &
@@ -228,7 +227,7 @@
       integer(kind=kint), intent(in) :: int_dat(num)
 !
       integer(kind = kint) :: i, ilength, nrest, lst, led
-      character(len = num*len_integer_textline) :: textbuf
+      character(len = num*len_int_txt) :: textbuf
 !
 !
       call set_numbers_2_head_node(num, IO_param)
@@ -347,8 +346,7 @@
       integer(kind=kint), intent(inout) :: int_dat(num)
 !
       integer(kind = kint) :: i, ilength, nrest, n_item, lst, led, loop
-      character(len = num*len_integer_textline) :: gzip_buf
-      character(len = ncolumn*len_integer_textline) :: textbuf
+      character(len = num*len_int_txt) :: textbuf
 !
 !
       call mpi_skip_read                                                &
@@ -373,36 +371,32 @@
       ilength = IO_param%istack_merged(IO_param%id_rank+1)              &
      &         -  IO_param%istack_merged(IO_param%id_rank)
 !
-      gzip_buf = mpi_read_characters(IO_param, ilength)
+      textbuf = mpi_read_characters(IO_param, ilength)
 !
       if(num .le. 0) then
         ilength = ione
       else if(num .le. ncolumn) then
         ilength = len_multi_int_textline(num)
- !       textbuf(1:ilength) = gzip_buf(1:ilength) 
-        call read_multi_int_textline(gzip_buf, num, int_dat(1))
+        call read_multi_int_textline(textbuf, num, int_dat(1))
       else if(num .gt. 0) then
         ilength = len_multi_int_textline(ncolumn)
         lst = 0
         led = lst + ilength
- !       textbuf(1:ilength) = gzip_buf(lst+1:led) 
         call read_multi_int_textline                                    &
-     &    (gzip_buf(lst+1:led) , ncolumn, int_dat(1))
+     &    (textbuf(lst+1:led) , ncolumn, int_dat(1))
         do i = 1, (num-1)/ncolumn - 1
           ilength = len_multi_int_textline(ncolumn)
           lst = led
           led = lst + ilength
- !         textbuf(1:ilength) = gzip_buf(lst+1:led) 
           call read_multi_int_textline                                  &
-     &       (gzip_buf(lst+1:led) , ncolumn, int_dat(ncolumn*i+1))
+     &       (textbuf(lst+1:led) , ncolumn, int_dat(ncolumn*i+1))
         end do
         nrest = mod((num-1),ncolumn) + 1
         ilength = len_multi_int_textline(nrest)
         lst = led
         led = lst + ilength
-!        textbuf(1:ilength) = gzip_buf(lst+1:led)
         call read_multi_int_textline                                    &
-     &     (gzip_buf(lst+1:led), nrest, int_dat(num-nrest+1))
+     &     (textbuf(lst+1:led), nrest, int_dat(num-nrest+1))
       end if
 !
       end subroutine mpi_read_comm_table

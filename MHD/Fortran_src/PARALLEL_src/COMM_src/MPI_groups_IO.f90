@@ -45,8 +45,7 @@
 !
 !
       call read_integer_textline                                        &
-     &   (mpi_read_charahead(IO_param, len_integer_textline),           &
-     &    group_IO%num_grp)
+     &   (mpi_read_charahead(IO_param, len_int_txt), group_IO%num_grp)
       call allocate_grp_type_num(group_IO)
 !
       if(group_IO%num_grp .le. 0) then
@@ -66,7 +65,6 @@
           ist = group_IO%istack_grp(i-1) + 1
           ied = group_IO%istack_grp(i)
           num = group_IO%istack_grp(i) - group_IO%istack_grp(i-1)
-          write(*,*) 'group_IO%grp_name', my_rank, i, group_IO%grp_name(i)
           call mpi_read_num_int(IO_param, num_tmp)
           call mpi_read_comm_table                                      &
      &       (IO_param, ieight, num, group_IO%item_grp(ist:ied))
@@ -89,7 +87,7 @@
 !
 !
       call read_integer_textline                                        &
-     &   (mpi_read_charahead(IO_param, len_integer_textline),           &
+     &   (mpi_read_charahead(IO_param, len_int_txt),                    &
      &    surf_grp_IO%num_grp)
       call allocate_sf_grp_type_num(surf_grp_IO)
 !
@@ -128,7 +126,7 @@
       integer(kind = kint) :: i, ist, ied, num
 !
 !
-      call mpi_write_charahead(IO_param, len_integer_textline,          &
+      call mpi_write_charahead(IO_param, len_int_txt,                   &
      &    integer_textline(group_IO%num_grp))
       call mpi_write_int_stack                                          &
      &   (IO_param, group_IO%num_grp, group_IO%istack_grp)
@@ -158,7 +156,7 @@
       integer(kind = kint) :: i, num
 !
 !
-      call mpi_write_charahead(IO_param, len_integer_textline,          &
+      call mpi_write_charahead(IO_param, len_int_txt,                   &
      &    integer_textline(surf_grp_IO%num_grp))
       call mpi_write_int_stack                                          &
      &   (IO_param, surf_grp_IO%num_grp, surf_grp_IO%istack_grp)

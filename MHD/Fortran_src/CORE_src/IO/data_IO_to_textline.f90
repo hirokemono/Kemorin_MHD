@@ -51,7 +51,9 @@
 !
       implicit none
 !
-      integer(kind = kint), parameter :: len_integer_textline = 16 + 1
+      integer(kind = kint), parameter :: len_real_text = 25 + 1
+      integer(kind = kint), parameter :: len_real_nolf = 25
+      integer(kind = kint), parameter :: len_int_txt = 16 + 1
       integer(kind = kint), parameter :: len_integer_nolf = 16
 !
 ! -------------------------------------------------------------------
