@@ -337,6 +337,7 @@
 !
       integer(kind = kint) :: i, nrest, lst, led
       character(len = num*len_int_txt) :: textbuf
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
       call mpi_write_num_of_data(IO_param, num)

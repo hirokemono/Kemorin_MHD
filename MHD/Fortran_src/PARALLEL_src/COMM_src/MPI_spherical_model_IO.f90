@@ -205,29 +205,19 @@
       integer(kind=kint_gl), intent(in) :: id_global(nele)
       integer(kind=kint), intent(in) :: ie(nele,nnod_4_ele)
 !
-      integer(kind = kint) :: i, led
+      integer(kind = kint) :: i, led, ilength
       integer(kind = kint) :: ie_tmp(nnod_4_ele)
-      integer(kind = kint) :: ilen_line
-!
-      character(len = ((nnod_4_ele+1)*len_integer_nolf+1)),             &
-     &                                allocatable :: textbuf(:)
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
       call mpi_write_num_of_data(IO_param, nele)
 !
-      ilen_line = len_int8_and_mul_int_textline(nnod_4_ele)
-      allocate(textbuf(nele))
+      ilength = len_int8_and_mul_int_textline(nnod_4_ele)
 !
       if(nele .le. 0) then
         led = ione
       else
-        led = 0
-        do i = 1, nele
-          led = led + ilen_line
-          ie_tmp(1:nnod_4_ele) = ie(i,1:nnod_4_ele)
-          textbuf(i) = int8_and_mul_int_textline                        &
-     &                       (id_global(i), nnod_4_ele, ie_tmp)
-        end do
+        led = ilength * nele
       end if
 !
       call mpi_write_stack_over_domain(IO_param, led)
@@ -235,9 +225,19 @@
       if(nele .le. 0) then
         call mpi_write_characters(IO_param, ione, char(10))
       else
-        call mpi_write_characters(IO_param, led, textbuf(1))
+        ioffset = IO_param%ioff_gl                                      &
+     &         + IO_param%istack_merged(IO_param%id_rank)
+        IO_param%ioff_gl = IO_param%ioff_gl                             &
+     &         + IO_param%istack_merged(IO_param%nprocs_in)
+        do i = 1, nele
+          ie_tmp(1:nnod_4_ele) = ie(i,1:nnod_4_ele)
+          call calypso_mpi_seek_write_chara                             &
+     &       (IO_param%id_file, ioffset, ilength,                       &
+     &        int8_and_mul_int_textline(id_global(i),                   &
+     &                                  nnod_4_ele, ie_tmp))
+        end do
       end if
-      deallocate(textbuf)
+      call calypso_mpi_barrier
 !
       end subroutine mpi_write_ele_connect
 !

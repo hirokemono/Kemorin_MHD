@@ -341,36 +341,32 @@
       integer(kind=kint_gl), intent(in) :: id_global(nnod)
       real(kind=kreal), intent(in) :: xx(nnod, numdir)
 !
-      integer(kind = kint) :: i, led
+      integer(kind = kint) :: i, led, ilength
       real(kind = kreal) :: xx_tmp(numdir)
-      integer(kind = kint) :: ilen_line
-!
-      character(len = numdir*len_real_nolf+len_int_txt),                &
-     &                      allocatable :: textbuf(:)
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
       call mpi_write_num_of_data(IO_param, nnod)
 !
+      ilength = len_int8_and_vector_textline(numdir)
       led = nnod * len_int8_and_vector_textline(numdir)
-      allocate(textbuf(nnod))
-!
-      if(nnod .le. 0) then
-      else if(nnod .gt. 0) then
-        do i = 1, nnod
-          xx_tmp(1:numdir) = xx(i,1:numdir)
-          textbuf(i) = int8_and_vector_textline                         &
-     &              (id_global(i), numdir, xx_tmp)
-        end do
-      end if
-!
       call mpi_write_stack_over_domain(IO_param, led)
 !
       if(nnod .le. 0) then
         call mpi_write_characters(IO_param, ione, char(10))
       else
-        call mpi_write_characters(IO_param, led, textbuf(1))
+        ioffset = IO_param%ioff_gl                                      &
+     &         + IO_param%istack_merged(IO_param%id_rank)
+        IO_param%ioff_gl = IO_param%ioff_gl                             &
+     &         + IO_param%istack_merged(IO_param%nprocs_in)
+        do i = 1, nnod
+          xx_tmp(1:numdir) = xx(i,1:numdir)
+          call calypso_mpi_seek_write_chara                             &
+     &       (IO_param%id_file, ioffset, ilength,                       &
+     &        int8_and_vector_textline(id_global(i), numdir, xx_tmp))
+        end do
       end if
-      deallocate(textbuf)
+      call calypso_mpi_barrier
 !
       end subroutine mpi_write_node_position
 !
@@ -383,24 +379,17 @@
       integer(kind=kint), intent(in) :: nnod, numdir
       integer(kind=kint), intent(in) :: idx(nnod, numdir)
 !
-      integer(kind = kint) :: i, led
+      integer(kind = kint) :: i, led, ilength
       integer(kind = kint) :: idx_tmp(numdir)
-!
-      character(len = numdir*len_integer_nolf+1),                       &
-     &                      allocatable :: textbuf(:)
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
       call mpi_write_num_of_data(IO_param, nnod)
 !
-      allocate(textbuf(nnod))
-!
+      ilength = len_multi_int_textline(numdir)
       if(nnod .le. 0) then
         led = ione
       else if(nnod .gt. 0) then
-        do i = 1, nnod
-          idx_tmp(1:numdir) = idx(i,1:numdir)
-          textbuf(i) = multi_int_textline(numdir, idx_tmp)
-        end do
         led = nnod * len_multi_int_textline(numdir)
       end if
 !
@@ -409,9 +398,18 @@
       if(nnod .le. 0) then
         call mpi_write_characters(IO_param, ione, char(10))
       else
-        call mpi_write_characters(IO_param, led, textbuf)
+        ioffset = IO_param%ioff_gl                                      &
+     &         + IO_param%istack_merged(IO_param%id_rank)
+        IO_param%ioff_gl = IO_param%ioff_gl                             &
+     &         + IO_param%istack_merged(IO_param%nprocs_in)
+        do i = 1, nnod
+          idx_tmp(1:numdir) = idx(i,1:numdir)
+          call calypso_mpi_seek_write_chara                             &
+     &       (IO_param%id_file, ioffset, ilength,                       &
+     &        multi_int_textline(numdir, idx_tmp))
+        end do
       end if
-      deallocate(textbuf)
+      call calypso_mpi_barrier
 !
       end subroutine mpi_write_1d_gl_address
 !

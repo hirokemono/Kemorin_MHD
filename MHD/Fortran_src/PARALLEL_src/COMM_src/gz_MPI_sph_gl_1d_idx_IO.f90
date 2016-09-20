@@ -241,8 +241,7 @@
       integer(kind = MPI_OFFSET_KIND) :: ioffset
       integer(kind = kint) :: ilen_line, ilen_gz, ilen_gzipped
 !
-      character(len=1), allocatable :: gzip_buf(:)
-      character(len=1), allocatable :: textbuf(:)
+      character(len=1), allocatable :: gzip_buf(:), textbuf(:)
 !
 !
       call read_int8_stack_textline                                     &
@@ -315,8 +314,7 @@
       integer(kind = MPI_OFFSET_KIND) :: ioffset
       integer(kind = kint) :: ilen_line, ilen_gz, ilen_gzipped
 !
-      character(len=1), allocatable :: gzip_buf(:)
-      character(len=1), allocatable :: textbuf(:)
+      character(len=1), allocatable :: gzip_buf(:), textbuf(:)
 !
 !
       call read_int8_stack_textline                                     &
