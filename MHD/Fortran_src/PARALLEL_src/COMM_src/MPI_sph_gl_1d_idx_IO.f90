@@ -52,9 +52,9 @@
       call alloc_num_idx_sph_IO(sph_IO)
 !
       call mpi_skip_read(IO_param, len(hd_rgrid()))
-      call mpi_read_num_int(IO_param, sph_IO%ist_sph(1))
-      call mpi_read_num_int(IO_param, sph_IO%ied_sph(1))
-      call mpi_read_num_int(IO_param, sph_IO%nidx_sph(1))
+      call mpi_read_num_of_data(IO_param, sph_IO%ist_sph(1))
+      call mpi_read_num_of_data(IO_param, sph_IO%ied_sph(1))
+      call mpi_read_num_of_data(IO_param, sph_IO%nidx_sph(1))
 !
       call alloc_idx_sph_1d1_IO(sph_IO)
 !
@@ -68,9 +68,9 @@
 !
 !
       call mpi_skip_read(IO_param, len(hd_tgrid()))
-      call mpi_read_num_int(IO_param, sph_IO%ist_sph(2))
-      call mpi_read_num_int(IO_param, sph_IO%ied_sph(2))
-      call mpi_read_num_int(IO_param, sph_IO%nidx_sph(2))
+      call mpi_read_num_of_data(IO_param, sph_IO%ist_sph(2))
+      call mpi_read_num_of_data(IO_param, sph_IO%ied_sph(2))
+      call mpi_read_num_of_data(IO_param, sph_IO%nidx_sph(2))
 !
       call alloc_idx_sph_1d2_IO(sph_IO)
 !
@@ -79,9 +79,9 @@
 !
 !
       call mpi_skip_read(IO_param, len(hd_pgrid()))
-      call mpi_read_num_int(IO_param, sph_IO%ist_sph(3))
-      call mpi_read_num_int(IO_param, sph_IO%ied_sph(3))
-      call mpi_read_num_int(IO_param, sph_IO%nidx_sph(3))
+      call mpi_read_num_of_data(IO_param, sph_IO%ist_sph(3))
+      call mpi_read_num_of_data(IO_param, sph_IO%ied_sph(3))
+      call mpi_read_num_of_data(IO_param, sph_IO%nidx_sph(3))
 !
       call alloc_idx_sph_1d3_IO(sph_IO)
 !
@@ -105,9 +105,9 @@
       call alloc_num_idx_sph_IO(sph_IO)
 !
       call mpi_skip_read(IO_param, len(hd_rgrid()))
-      call mpi_read_num_int(IO_param, sph_IO%ist_sph(1))
-      call mpi_read_num_int(IO_param, sph_IO%ied_sph(1))
-      call mpi_read_num_int(IO_param, sph_IO%nidx_sph(1))
+      call mpi_read_num_of_data(IO_param, sph_IO%ist_sph(1))
+      call mpi_read_num_of_data(IO_param, sph_IO%ied_sph(1))
+      call mpi_read_num_of_data(IO_param, sph_IO%nidx_sph(1))
 !
       call alloc_idx_sph_1d1_IO(sph_IO)
 !
@@ -121,9 +121,9 @@
 !
 !
       call mpi_skip_read(IO_param, len(hd_jmode()))
-      call mpi_read_num_int(IO_param, sph_IO%ist_sph(2))
-      call mpi_read_num_int(IO_param, sph_IO%ied_sph(2))
-      call mpi_read_num_int(IO_param, sph_IO%nidx_sph(2))
+      call mpi_read_num_of_data(IO_param, sph_IO%ist_sph(2))
+      call mpi_read_num_of_data(IO_param, sph_IO%ied_sph(2))
+      call mpi_read_num_of_data(IO_param, sph_IO%nidx_sph(2))
 !
       call alloc_idx_sph_1d2_IO(sph_IO)
 !
@@ -145,17 +145,8 @@
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_rgrid()), hd_rgrid())
 !
-      call set_numbers_2_head_node(sph_IO%ist_sph(1), IO_param)
-      call mpi_write_charahead(IO_param,                                &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
-!
-      call set_numbers_2_head_node(sph_IO%ied_sph(1), IO_param)
-      call mpi_write_charahead(IO_param,                                &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
+      call mpi_write_num_of_data(IO_param, sph_IO%ist_sph(1))
+      call mpi_write_num_of_data(IO_param, sph_IO%ied_sph(1))
 !
       allocate(idx_gl_tmp(sph_IO%nidx_sph(1)))
       idx_gl_tmp(1:sph_IO%nidx_sph(1))                                  &
@@ -168,17 +159,8 @@
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_tgrid()), hd_tgrid())
 !
-      call set_numbers_2_head_node(sph_IO%ist_sph(2), IO_param)
-      call mpi_write_charahead(IO_param,                                &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
-!
-      call set_numbers_2_head_node(sph_IO%ied_sph(2), IO_param)
-      call mpi_write_charahead(IO_param,                                &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
+      call mpi_write_num_of_data(IO_param, sph_IO%ist_sph(2))
+      call mpi_write_num_of_data(IO_param, sph_IO%ied_sph(2))
 !
       call mpi_write_1d_gl_address(IO_param,                            &
      &    sph_IO%nidx_sph(2), sph_IO%ncomp_table_1d(2),                 &
@@ -188,17 +170,8 @@
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_pgrid()), hd_pgrid())
 !
-      call set_numbers_2_head_node(sph_IO%ist_sph(3), IO_param)
-      call mpi_write_charahead(IO_param,                                &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
-!
-      call set_numbers_2_head_node(sph_IO%ied_sph(3), IO_param)
-      call mpi_write_charahead(IO_param,                                &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
+      call mpi_write_num_of_data(IO_param, sph_IO%ist_sph(3))
+      call mpi_write_num_of_data(IO_param, sph_IO%ied_sph(3))
 !
       call mpi_write_1d_gl_address(IO_param,                            &
      &    sph_IO%nidx_sph(3), sph_IO%ncomp_table_1d(3),                 &
@@ -223,17 +196,8 @@
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_rgrid()), hd_rgrid())
 !
-      call set_numbers_2_head_node(sph_IO%ist_sph(1), IO_param)
-      call mpi_write_charahead(IO_param,                                &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
-!
-      call set_numbers_2_head_node(sph_IO%ied_sph(1), IO_param)
-      call mpi_write_charahead(IO_param,                                &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
+      call mpi_write_num_of_data(IO_param, sph_IO%ist_sph(1))
+      call mpi_write_num_of_data(IO_param, sph_IO%ied_sph(1))
 !
       allocate(idx_gl_tmp(sph_IO%nidx_sph(1)))
       idx_gl_tmp(1:sph_IO%nidx_sph(1))                                  &
@@ -247,17 +211,8 @@
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_jmode()), hd_jmode())
 !
-      call set_numbers_2_head_node(sph_IO%ist_sph(2), IO_param)
-      call mpi_write_charahead(IO_param,                                &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
-!
-      call set_numbers_2_head_node(sph_IO%ied_sph(2), IO_param)
-      call mpi_write_charahead(IO_param,                                &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
+      call mpi_write_num_of_data(IO_param, sph_IO%ist_sph(2))
+      call mpi_write_num_of_data(IO_param, sph_IO%ied_sph(2))
 !
       call mpi_write_1d_gl_address(IO_param,                            &
      &    sph_IO%nidx_sph(2), sph_IO%ncomp_table_1d(2),                 &
@@ -282,8 +237,7 @@
 !
       real(kind = kreal) :: xx_tmp(numdir)
 !
-      integer(kind = kint) :: i
-      integer(kind = kint) :: ilength, n_item
+      integer(kind = kint) :: i, led, n_item
 !
       character(len = numdir*len_real_nolf+len_int_txt),                &
      &                      allocatable :: textbuf(:)
@@ -297,22 +251,22 @@
       do i = 1, IO_param%nprocs_in
         n_item = int(IO_param%istack_merged(i))
         if(n_item .le. 0) then
-          ilength = ione
+          led = ione
         else if(n_item .gt. 0) then
-          ilength = len_int8_and_vector_textline(numdir) * n_item
+          led = len_int8_and_vector_textline(numdir) * n_item
         end if
         IO_param%istack_merged(i) = IO_param%istack_merged(i-1)         &
-     &                             + ilength
+     &                             + led
       end do
-      ilength = int(IO_param%istack_merged(IO_param%id_rank+1)          &
+      led = int(IO_param%istack_merged(IO_param%id_rank+1)              &
      &          - IO_param%istack_merged(IO_param%id_rank))
 !
       allocate(textbuf(nnod))
 !
       if(nnod .eq. 0) then
-        call mpi_sub_read_characters(IO_param, ilength, tmpchara)
+        call mpi_sub_read_characters(IO_param, led, tmpchara)
       else
-        call mpi_sub_read_characters(IO_param, ilength, textbuf(1))
+        call mpi_sub_read_characters(IO_param, led, textbuf(1))
       end if
 !
       do i = 1, nnod
@@ -335,8 +289,7 @@
 !
       integer(kind = kint) :: idx_tmp(numdir)
 
-      integer(kind = kint) :: i
-      integer(kind = kint) :: ilength, n_item
+      integer(kind = kint) :: i, led, n_item
 !
       character(len = numdir*len_integer_nolf+1),                       &
      &                      allocatable :: textbuf(:)
@@ -350,23 +303,23 @@
       do i = 1, IO_param%nprocs_in
         n_item = int(IO_param%istack_merged(i))
         if(n_item .le. 0) then
-          ilength = ione
+          led = ione
         else if(n_item .gt. 0) then
-          ilength = len_multi_int_textline(numdir) * n_item
+          led = len_multi_int_textline(numdir) * n_item
         end if
         IO_param%istack_merged(i) = IO_param%istack_merged(i-1)         &
-     &                             + ilength
+     &                             + led
       end do
-      ilength = int(IO_param%istack_merged(IO_param%id_rank+1)          &
+      led = int(IO_param%istack_merged(IO_param%id_rank+1)              &
      &          - IO_param%istack_merged(IO_param%id_rank))
 !
-      ilength = nnod * len_multi_int_textline(numdir)
+      led = nnod * len_multi_int_textline(numdir)
       allocate(textbuf(nnod))
 !
       if(nnod .eq. 0) then
-        call mpi_sub_read_characters(IO_param, ilength, tmpchara)
+        call mpi_sub_read_characters(IO_param, led, tmpchara)
       else
-        call mpi_sub_read_characters(IO_param, ilength, textbuf(1))
+        call mpi_sub_read_characters(IO_param, led, textbuf(1))
       end if
 !
       do i = 1, nnod
@@ -388,21 +341,17 @@
       integer(kind=kint_gl), intent(in) :: id_global(nnod)
       real(kind=kreal), intent(in) :: xx(nnod, numdir)
 !
-      integer(kind = kint) :: i, lst, led
+      integer(kind = kint) :: i, led
       real(kind = kreal) :: xx_tmp(numdir)
-      integer(kind = kint) :: ilen_line, ilength
+      integer(kind = kint) :: ilen_line
 !
       character(len = numdir*len_real_nolf+len_int_txt),                &
      &                      allocatable :: textbuf(:)
 !
 !
-      call set_numbers_2_head_node(nnod, IO_param)
-      call mpi_write_charahead(IO_param,                                &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
+      call mpi_write_num_of_data(IO_param, nnod)
 !
-      ilength = nnod * len_int8_and_vector_textline(numdir)
+      led = nnod * len_int8_and_vector_textline(numdir)
       allocate(textbuf(nnod))
 !
       if(nnod .le. 0) then
@@ -414,16 +363,12 @@
         end do
       end if
 !
-      call set_istack_4_parallell_data(ilength, IO_param)
-      call mpi_write_charahead(IO_param,                                &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &                        IO_param%istack_merged))
+      call mpi_write_stack_over_domain(IO_param, led)
 !
       if(nnod .le. 0) then
         call mpi_write_characters(IO_param, ione, char(10))
       else
-        call mpi_write_characters(IO_param, ilength, textbuf(1))
+        call mpi_write_characters(IO_param, led, textbuf(1))
       end if
       deallocate(textbuf)
 !
@@ -438,42 +383,33 @@
       integer(kind=kint), intent(in) :: nnod, numdir
       integer(kind=kint), intent(in) :: idx(nnod, numdir)
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, led
       integer(kind = kint) :: idx_tmp(numdir)
-      integer(kind = kint) :: ilength
 !
       character(len = numdir*len_integer_nolf+1),                       &
      &                      allocatable :: textbuf(:)
 !
 !
-      call set_numbers_2_head_node(nnod, IO_param)
-      call mpi_write_charahead(IO_param,                                &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
+      call mpi_write_num_of_data(IO_param, nnod)
 !
       allocate(textbuf(nnod))
 !
       if(nnod .le. 0) then
-        ilength = ione
+        led = ione
       else if(nnod .gt. 0) then
         do i = 1, nnod
           idx_tmp(1:numdir) = idx(i,1:numdir)
           textbuf(i) = multi_int_textline(numdir, idx_tmp)
         end do
-        ilength = nnod * len_multi_int_textline(numdir)
+        led = nnod * len_multi_int_textline(numdir)
       end if
 !
-      call set_istack_4_parallell_data(ilength, IO_param)
-      call mpi_write_charahead(IO_param,                                &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &                        IO_param%istack_merged))
+      call mpi_write_stack_over_domain(IO_param, led)
 !
       if(nnod .le. 0) then
         call mpi_write_characters(IO_param, ione, char(10))
       else
-        call mpi_write_characters(IO_param, ilength, textbuf)
+        call mpi_write_characters(IO_param, led, textbuf)
       end if
       deallocate(textbuf)
 !

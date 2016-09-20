@@ -30,6 +30,8 @@
 !
       implicit none
 !
+      private :: mpi_read_surf_grp_item, mpi_write_surf_grp_item
+!
 !------------------------------------------------------------------
 !
       contains
@@ -53,7 +55,7 @@
         group_IO%num_item = 0
         call allocate_grp_type_item(group_IO)
       else
-        call mpi_read_num_int(IO_param, num_tmp)
+        call mpi_read_num_of_data(IO_param, num_tmp)
         call mpi_read_int_stack(IO_param, group_IO%num_grp,             &
      &      group_IO%istack_grp, group_IO%num_item)
 !
@@ -65,7 +67,7 @@
           ist = group_IO%istack_grp(i-1) + 1
           ied = group_IO%istack_grp(i)
           num = group_IO%istack_grp(i) - group_IO%istack_grp(i-1)
-          call mpi_read_num_int(IO_param, num_tmp)
+          call mpi_read_num_of_data(IO_param, num_tmp)
           call mpi_read_comm_table                                      &
      &       (IO_param, ieight, num, group_IO%item_grp(ist:ied))
         end do
@@ -96,7 +98,7 @@
         surf_grp_IO%num_item = 0
         call allocate_sf_grp_type_item(surf_grp_IO)
       else
-        call mpi_read_num_int(IO_param, num_tmp)
+        call mpi_read_num_of_data(IO_param, num_tmp)
         call mpi_read_int_stack(IO_param, surf_grp_IO%num_grp,          &
      &      surf_grp_IO%istack_grp, surf_grp_IO%num_item)
 !
@@ -187,14 +189,14 @@
       integer(kind = kint) :: int_tmp(num), num_tmp
 !
 !
-      call mpi_read_num_int(IO_param, num_tmp)
+      call mpi_read_num_of_data(IO_param, num_tmp)
       call mpi_read_comm_table(IO_param, ncolumn, num, int_tmp)
 !$omp parallel workshare
       int_dat(1,ist+1:ist+num) = int_tmp(1:num)
 !$omp end parallel workshare
 !
 !
-      call mpi_read_num_int(IO_param, num_tmp)
+      call mpi_read_num_of_data(IO_param, num_tmp)
       call mpi_read_comm_table(IO_param, ncolumn, num, int_tmp)
 !$omp parallel workshare
       int_dat(2,ist+1:ist+num) = int_tmp(1:num)

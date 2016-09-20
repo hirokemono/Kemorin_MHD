@@ -18,6 +18,12 @@
 !!      subroutine mpi_write_export_data(IO_param, comm_IO)
 !!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !!        type(communication_table), intent(inout) :: comm_IO
+!!
+!!      subroutine mpi_read_int_stack(IO_param, num, istack, ntot)
+!!      subroutine mpi_read_comm_table(IO_param, ncolumn, num, int_dat)
+!!      subroutine mpi_write_int_stack(IO_param, num, istack)
+!!      subroutine mpi_write_comm_table(IO_param, ncolumn, num, int_dat)
+!!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !!@endverbatim
 !
       module MPI_domain_data_IO
@@ -34,6 +40,8 @@
 !
       implicit none
 !
+      private :: mpi_write_int_vector, mpi_read_int_vector
+!
 !------------------------------------------------------------------
 !
        contains
@@ -47,7 +55,7 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(communication_table), intent(inout) :: comm_IO
 !
-      integer(kind = kint) :: nprocs_read, ilength
+      integer(kind = kint) :: nprocs_read
 !
 !
       call read_integer_textline                                        &
@@ -56,7 +64,7 @@
         call calypso_mpi_abort(ierr_file, '#. of subdmain is wrong')
       end if
 !
-      call mpi_read_num_int(IO_param, comm_IO%num_neib)
+      call mpi_read_num_of_data(IO_param, comm_IO%num_neib)
 !
       call allocate_type_neib_id(comm_IO)
 !
@@ -76,13 +84,13 @@
       integer(kind = kint) :: num_tmp
 !
 !
-      call mpi_read_num_int(IO_param, num_tmp)
+      call mpi_read_num_of_data(IO_param, num_tmp)
       call allocate_type_import_num(comm_IO)
 !
       call mpi_read_int_stack(IO_param,                                 &
      &    comm_IO%num_neib, comm_IO%istack_import, comm_IO%ntot_import)
 !
-      call mpi_read_num_int(IO_param, comm_IO%ntot_import)
+      call mpi_read_num_of_data(IO_param, comm_IO%ntot_import)
       call allocate_type_import_item(comm_IO)
 !
       call mpi_read_comm_table                                          &
@@ -100,13 +108,13 @@
       integer(kind = kint) :: num_tmp
 !
 !
-      call mpi_read_num_int(IO_param, num_tmp)
+      call mpi_read_num_of_data(IO_param, num_tmp)
       call allocate_type_export_num(comm_IO)
 !
       call mpi_read_int_stack(IO_param,                                 &
      &    comm_IO%num_neib, comm_IO%istack_export, comm_IO%ntot_export)
 !
-      call mpi_read_num_int(IO_param, comm_IO%ntot_export)
+      call mpi_read_num_of_data(IO_param, comm_IO%ntot_export)
       call allocate_type_export_item(comm_IO)
 !
       call mpi_read_comm_table                                          &
@@ -195,12 +203,10 @@
       integer(kind = kint) :: ilength, i
 !
 !
-      call set_numbers_2_head_node(num, IO_param)
-      call mpi_write_charahead(IO_param,                                &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
+      call mpi_write_num_of_data(IO_param, num)
 !
+      ilength = len_multi_int_textline(num)
+      IO_param%istack_merged(0) = 0
       do i = 1, IO_param%nprocs_in
         IO_param%istack_merged(i) = IO_param%istack_merged(i-1)         &
      &         + len_multi_int_textline(int(IO_param%istack_merged(i)))
@@ -211,8 +217,6 @@
      &    int_stack8_textline(IO_param%nprocs_in,                       &
      &                        IO_param%istack_merged))
 !
-      ilength = len_multi_int_textline(num)
-      call set_istack_4_parallell_data(ilength, IO_param)
       call mpi_write_characters(IO_param, ilength,                      &
      &   multi_int_textline(num, int_dat))
 !
@@ -237,24 +241,6 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine mpi_read_num_int(IO_param, num)
-!
-      type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(inout) :: num
-!
-      integer(kind = kint) :: ilength
-!
-!
-      ilength = len_multi_int_textline(IO_param%nprocs_in)
-      call read_int8_stack_textline                                     &
-         (mpi_read_charahead(IO_param, ilength),                        &
-     &    IO_param%nprocs_in, IO_param%istack_merged)
-      num = int(IO_param%istack_merged(IO_param%id_rank+1))
-!
-      end subroutine mpi_read_num_int
-!
-! -----------------------------------------------------------------------
-!
       subroutine mpi_read_int_vector(IO_param, num, int_dat)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
@@ -275,8 +261,7 @@
 !
       ilength = len_multi_int_textline(num)
       call read_multi_int_textline                                      &
-     &   (mpi_read_characters(IO_param, ilength),                       &
-     &    num, int_dat)
+     &   (mpi_read_characters(IO_param, ilength), num, int_dat)
 !
       end subroutine mpi_read_int_vector
 !
@@ -298,7 +283,7 @@
 !
       IO_param%istack_merged(0) = 0
       do i = 1, IO_param%nprocs_in
-        n_item = IO_param%istack_merged(i)
+        n_item = int(IO_param%istack_merged(i))
         if(n_item .le. 0) then
           led = ione
         else if(n_item .le. ncolumn) then
@@ -309,11 +294,10 @@
           led = len_multi_int_textline(nrest)                           &
      &         + len_multi_int_textline(ncolumn) * loop
         end if
-        IO_param%istack_merged(i) = IO_param%istack_merged(i-1)         &
-     &                             + led
+        IO_param%istack_merged(i) = IO_param%istack_merged(i-1) + led
       end do
-      led = IO_param%istack_merged(IO_param%id_rank+1)                  &
-     &         -  IO_param%istack_merged(IO_param%id_rank)
+      led = int(IO_param%istack_merged(IO_param%id_rank+1)              &
+     &         -  IO_param%istack_merged(IO_param%id_rank))
 !
       textbuf = mpi_read_characters(IO_param, led)
 !
@@ -354,11 +338,7 @@
       character(len = num*len_int_txt) :: textbuf
 !
 !
-      call set_numbers_2_head_node(num, IO_param)
-      call mpi_write_charahead(IO_param,                                &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
+      call mpi_write_num_of_data(IO_param, num)
 !
       if(num .le. 0) then
         led = ione
@@ -382,11 +362,7 @@
      &            =  multi_int_textline(nrest, int_dat(num-nrest+1))
       end if
 !
-      call set_istack_4_parallell_data(led, IO_param)
-      call mpi_write_charahead(IO_param,                                &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &                        IO_param%istack_merged))
+      call mpi_write_stack_over_domain(IO_param, led)
 !
       if(num .le. 0) then
         call mpi_write_characters(IO_param, ione, char(10))

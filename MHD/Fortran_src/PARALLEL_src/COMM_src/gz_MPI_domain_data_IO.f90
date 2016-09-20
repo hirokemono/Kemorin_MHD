@@ -18,6 +18,14 @@
 !!      subroutine gz_mpi_write_export_data(IO_param, comm_IO)
 !!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !!        type(communication_table), intent(inout) :: comm_IO
+!!
+!!      subroutine gz_mpi_read_int_stack(IO_param, num, istack, ntot)
+!!      subroutine gz_mpi_read_comm_table                               &
+!!     &         (IO_param, ncolumn, num, int_dat)
+!!      subroutine gz_mpi_write_int_stack(IO_param, num, istack)
+!!      subroutine gz_mpi_write_comm_table                              &
+!!     &         (IO_param, ncolumn, num, int_dat)
+!!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !!@endverbatim
 !
       module gz_MPI_domain_data_IO
@@ -31,6 +39,8 @@
       use data_IO_to_textline
 !
       implicit none
+!
+      private :: gz_mpi_write_int_vector, gz_mpi_read_int_vector
 !
 !------------------------------------------------------------------
 !
@@ -54,7 +64,7 @@
         call calypso_mpi_abort(ierr_file, '#. of subdmain is wrong')
       end if
 !
-      call gz_mpi_read_num_int(IO_param, comm_IO%num_neib)
+      call gz_mpi_read_num_of_data(IO_param, comm_IO%num_neib)
       call allocate_type_neib_id(comm_IO)
 !
       call gz_mpi_read_int_vector                                       &
@@ -73,13 +83,13 @@
       integer(kind = kint) :: num_tmp
 !
 !
-      call gz_mpi_read_num_int(IO_param, num_tmp)
+      call gz_mpi_read_num_of_data(IO_param, num_tmp)
       call allocate_type_import_num(comm_IO)
 !
       call gz_mpi_read_int_stack(IO_param,                              &
      &    comm_IO%num_neib, comm_IO%istack_import, comm_IO%ntot_import)
 !
-      call gz_mpi_read_num_int(IO_param, comm_IO%ntot_import)
+      call gz_mpi_read_num_of_data(IO_param, comm_IO%ntot_import)
       call allocate_type_import_item(comm_IO)
 !
       call gz_mpi_read_comm_table                                       &
@@ -97,13 +107,13 @@
       integer(kind = kint) :: num_tmp
 !
 !
-      call gz_mpi_read_num_int(IO_param, num_tmp)
+      call gz_mpi_read_num_of_data(IO_param, num_tmp)
       call allocate_type_export_num(comm_IO)
 !
       call gz_mpi_read_int_stack(IO_param,                              &
      &    comm_IO%num_neib, comm_IO%istack_export, comm_IO%ntot_export)
 !
-      call gz_mpi_read_num_int(IO_param, comm_IO%ntot_import)
+      call gz_mpi_read_num_of_data(IO_param, comm_IO%ntot_import)
       call allocate_type_export_item(comm_IO)
 !
       call gz_mpi_read_comm_table                                       &
@@ -190,12 +200,7 @@
       integer(kind=kint), intent(in) :: int_dat(num)
 !
 !
-      call set_numbers_2_head_node(num, IO_param)
-      call gz_mpi_write_charahead(IO_param,                             &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
-!
+      call gz_mpi_write_num_of_data(IO_param, num)
       call gz_mpi_write_characters                                      &
      &   (IO_param, len_multi_int_textline(num),                        &
      &    multi_int_textline(num, int_dat))
@@ -219,24 +224,6 @@
       ntot = istack(num)
 !
       end subroutine gz_mpi_read_int_stack
-!
-! -----------------------------------------------------------------------
-!
-      subroutine gz_mpi_read_num_int(IO_param, num)
-!
-      type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(inout) :: num
-!
-      integer(kind = kint) :: ilength
-!
-!
-      ilength = len_multi_int_textline(IO_param%nprocs_in)
-      call read_int8_stack_textline                                     &
-         (gz_mpi_read_charahead(IO_param, ilength),                     &
-     &    IO_param%nprocs_in, IO_param%istack_merged)
-      num = int(IO_param%istack_merged(IO_param%id_rank+1))
-!
-      end subroutine gz_mpi_read_num_int
 !
 ! -----------------------------------------------------------------------
 !
@@ -343,11 +330,7 @@
       character(len=1), allocatable :: gzip_buf(:)
 !
 !
-      call set_numbers_2_head_node(num, IO_param)
-      call gz_mpi_write_charahead(IO_param,                             &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
+      call gz_mpi_write_num_of_data(IO_param, num)
 !
       ilen_gz = int(real(num*len_int_txt) *1.01) + 24
       allocate(gzip_buf(ilen_gz))
@@ -374,11 +357,7 @@
      &      ilen_gz, ilen_gzipped)
       end if
 !
-      call set_istack_4_parallell_data(ilen_gzipped, IO_param)
-      call gz_mpi_write_charahead(IO_param,                             &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &                        IO_param%istack_merged))
+      call gz_mpi_write_stack_over_domain(IO_param, ilen_gzipped)
 !
       if(ilen_gzipped .gt. 0) then
         ioffset = IO_param%ioff_gl                                      &

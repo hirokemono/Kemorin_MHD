@@ -170,7 +170,7 @@
 !  ----  read element data -------
 !
       call mpi_skip_read(IO_param, len(hd_fem_elem()))
-      call mpi_read_num_int(IO_param, mesh_IO%ele%numele)
+      call mpi_read_num_of_data(IO_param, mesh_IO%ele%numele)
 !
       end subroutine mpi_read_num_node_ele
 !
@@ -186,8 +186,8 @@
       call mpi_read_domain_info(IO_param, mesh_IO%nod_comm)
 !
       call mpi_skip_read(IO_param, len(hd_fem_node()))
-      call mpi_read_num_int(IO_param, mesh_IO%node%internal_node)
-      call mpi_read_num_int(IO_param, mesh_IO%node%numnod)
+      call mpi_read_num_of_data(IO_param, mesh_IO%node%internal_node)
+      call mpi_read_num_of_data(IO_param, mesh_IO%node%numnod)
 !
       end subroutine mpi_read_num_node
 !
@@ -200,11 +200,7 @@
       type(node_data), intent(inout) :: nod_IO
 !
 !
-      call set_numbers_2_head_node(nod_IO%internal_node, IO_param)
-      call mpi_write_charahead(IO_param,                                &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
+      call mpi_write_num_of_data(IO_param, nod_IO%internal_node)
 !
       call mpi_write_node_position(IO_param,                            &
      &   nod_IO%numnod, ithree, nod_IO%inod_global, nod_IO%xx)
@@ -259,7 +255,7 @@
         ele_IO%nnod_4_ele = max(ele_IO%nnod_4_ele,ele_IO%nodelm(i))
       end do
 !
-      call mpi_read_num_int(IO_param, num_tmp)
+      call mpi_read_num_of_data(IO_param, num_tmp)
       call alloc_ele_connectivity(ele_IO)
 !
       call mpi_read_ele_connect                                         &
@@ -343,11 +339,7 @@
       character(len = num*len_int_txt) :: textbuf
 !
 !
-      call set_numbers_2_head_node(num, IO_param)
-      call mpi_write_charahead(IO_param,                                &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
+      call mpi_write_num_of_data(IO_param, num)
 !
       if(num .le. 0) then
         led = ione
@@ -371,11 +363,7 @@
      &            =  mul_6digit_int_line(nrest, int_dat(num-nrest+1))
       end if
 !
-      call set_istack_4_parallell_data(led, IO_param)
-      call mpi_write_charahead(IO_param,                                &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &                        IO_param%istack_merged))
+      call mpi_write_stack_over_domain(IO_param, led)
 !
       if(num .le. 0) then
         call mpi_write_characters(IO_param, ione, char(10))

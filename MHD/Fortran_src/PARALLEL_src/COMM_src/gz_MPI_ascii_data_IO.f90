@@ -8,6 +8,16 @@
 !!
 !!@verbatim
 !!      subroutine gz_mpi_write_charahead(IO_param, ilength, chara_dat)
+!!      subroutine gz_mpi_write_num_of_data(IO_param, num)
+!!      subroutine gz_mpi_write_stack_over_domain(IO_param, ilength)
+!!      subroutine gz_mpi_write_characters(IO_param, ilength, chara_dat)
+!!
+!!      subroutine gz_mpi_read_num_of_data(IO_param, num)
+!!      function gz_mpi_read_charahead(IO_param, ilength)
+!!        character(len=ilength) :: gz_mpi_read_charahead
+!!      function gz_mpi_read_characters(IO_param, ilength)
+!!        character(len=ilength) :: gz_mpi_read_characters
+!!
 !!      subroutine gz_mpi_skip_header(IO_param, ilength)
 !!@endverbatim
 !
@@ -20,6 +30,7 @@
       use calypso_mpi
       use m_calypso_mpi_IO
       use t_calypso_mpi_IO_param
+      use data_IO_to_textline
 !
       implicit none
 !
@@ -60,6 +71,38 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine gz_mpi_write_num_of_data(IO_param, num)
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      integer(kind=kint), intent(in) :: num
+!
+!
+      call set_numbers_2_head_node(num, IO_param)
+      call gz_mpi_write_charahead(IO_param,                             &
+     &    len_multi_int_textline(IO_param%nprocs_in),                   &
+     &    int_stack8_textline(IO_param%nprocs_in,                       &
+     &                        IO_param%istack_merged))
+!
+      end subroutine gz_mpi_write_num_of_data
+!
+! -----------------------------------------------------------------------
+!
+      subroutine gz_mpi_write_stack_over_domain(IO_param, ilength)
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      integer(kind=kint), intent(in) :: ilength
+!
+!
+      call set_istack_4_parallell_data(ilength, IO_param)
+      call gz_mpi_write_charahead(IO_param,                             &
+     &    len_multi_int_textline(IO_param%nprocs_in),                   &
+     &    int_stack8_textline(IO_param%nprocs_in,                       &
+     &                        IO_param%istack_merged))
+!
+      end subroutine gz_mpi_write_stack_over_domain
+!
+! -----------------------------------------------------------------------
+!
       subroutine gz_mpi_write_characters(IO_param, ilength, chara_dat)
 !
       use data_IO_to_textline
@@ -78,11 +121,8 @@
       allocate(gzip_buf(ilen_gz))
       call gzip_defleat_once(ilength, chara_dat, ilen_gz,               &
      &    ilen_gzipped, gzip_buf(1))
-      call set_istack_4_parallell_data(ilen_gzipped, IO_param)
-      call gz_mpi_write_charahead(IO_param,                             &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &                        IO_param%istack_merged))
+!
+      call gz_mpi_write_stack_over_domain(IO_param, ilen_gzipped)
 !
       if(ilen_gzipped .gt. 0) then
         ioffset = IO_param%ioff_gl + IO_param%istack_merged(my_rank)
@@ -95,6 +135,25 @@
      &                  + IO_param%istack_merged(IO_param%nprocs_in)
 !
       end subroutine gz_mpi_write_characters
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine gz_mpi_read_num_of_data(IO_param, num)
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      integer(kind=kint), intent(inout) :: num
+!
+      integer(kind = kint) :: ilength
+!
+!
+      ilength = len_multi_int_textline(IO_param%nprocs_in)
+      call read_int8_stack_textline                                     &
+         (gz_mpi_read_charahead(IO_param, ilength),                     &
+     &    IO_param%nprocs_in, IO_param%istack_merged)
+      num = int(IO_param%istack_merged(IO_param%id_rank+1))
+!
+      end subroutine gz_mpi_read_num_of_data
 !
 ! -----------------------------------------------------------------------
 !

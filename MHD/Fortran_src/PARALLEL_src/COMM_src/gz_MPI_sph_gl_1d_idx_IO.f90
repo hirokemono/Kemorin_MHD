@@ -52,9 +52,9 @@
       call alloc_num_idx_sph_IO(sph_IO)
 !
       call gz_mpi_skip_header(IO_param, len(hd_rgrid()))
-      call gz_mpi_read_num_int(IO_param, sph_IO%ist_sph(1))
-      call gz_mpi_read_num_int(IO_param, sph_IO%ied_sph(1))
-      call gz_mpi_read_num_int(IO_param, sph_IO%nidx_sph(1))
+      call gz_mpi_read_num_of_data(IO_param, sph_IO%ist_sph(1))
+      call gz_mpi_read_num_of_data(IO_param, sph_IO%ied_sph(1))
+      call gz_mpi_read_num_of_data(IO_param, sph_IO%nidx_sph(1))
 !
       call alloc_idx_sph_1d1_IO(sph_IO)
 !
@@ -68,9 +68,9 @@
 !
 !
       call gz_mpi_skip_header(IO_param, len(hd_tgrid()))
-      call gz_mpi_read_num_int(IO_param, sph_IO%ist_sph(2))
-      call gz_mpi_read_num_int(IO_param, sph_IO%ied_sph(2))
-      call gz_mpi_read_num_int(IO_param, sph_IO%nidx_sph(2))
+      call gz_mpi_read_num_of_data(IO_param, sph_IO%ist_sph(2))
+      call gz_mpi_read_num_of_data(IO_param, sph_IO%ied_sph(2))
+      call gz_mpi_read_num_of_data(IO_param, sph_IO%nidx_sph(2))
 !
       call alloc_idx_sph_1d2_IO(sph_IO)
 !
@@ -79,9 +79,9 @@
 !
 !
       call gz_mpi_skip_header(IO_param, len(hd_pgrid()))
-      call gz_mpi_read_num_int(IO_param, sph_IO%ist_sph(3))
-      call gz_mpi_read_num_int(IO_param, sph_IO%ied_sph(3))
-      call gz_mpi_read_num_int(IO_param, sph_IO%nidx_sph(3))
+      call gz_mpi_read_num_of_data(IO_param, sph_IO%ist_sph(3))
+      call gz_mpi_read_num_of_data(IO_param, sph_IO%ied_sph(3))
+      call gz_mpi_read_num_of_data(IO_param, sph_IO%nidx_sph(3))
 !
       call alloc_idx_sph_1d3_IO(sph_IO)
 !
@@ -105,9 +105,9 @@
       call alloc_num_idx_sph_IO(sph_IO)
 !
       call gz_mpi_skip_header(IO_param, len(hd_rgrid()))
-      call gz_mpi_read_num_int(IO_param, sph_IO%ist_sph(1))
-      call gz_mpi_read_num_int(IO_param, sph_IO%ied_sph(1))
-      call gz_mpi_read_num_int(IO_param, sph_IO%nidx_sph(1))
+      call gz_mpi_read_num_of_data(IO_param, sph_IO%ist_sph(1))
+      call gz_mpi_read_num_of_data(IO_param, sph_IO%ied_sph(1))
+      call gz_mpi_read_num_of_data(IO_param, sph_IO%nidx_sph(1))
 !
       call alloc_idx_sph_1d1_IO(sph_IO)
 !
@@ -121,9 +121,9 @@
 !
 !
       call gz_mpi_skip_header(IO_param, len(hd_jmode()))
-      call gz_mpi_read_num_int(IO_param, sph_IO%ist_sph(2))
-      call gz_mpi_read_num_int(IO_param, sph_IO%ied_sph(2))
-      call gz_mpi_read_num_int(IO_param, sph_IO%nidx_sph(2))
+      call gz_mpi_read_num_of_data(IO_param, sph_IO%ist_sph(2))
+      call gz_mpi_read_num_of_data(IO_param, sph_IO%ied_sph(2))
+      call gz_mpi_read_num_of_data(IO_param, sph_IO%nidx_sph(2))
 !
       call alloc_idx_sph_1d2_IO(sph_IO)
 !
@@ -145,17 +145,8 @@
       call gz_mpi_write_charahead                                       &
      &   (IO_param, len(hd_rgrid()), hd_rgrid())
 !
-      call set_numbers_2_head_node(sph_IO%ist_sph(1), IO_param)
-      call gz_mpi_write_charahead(IO_param,                             &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
-!
-      call set_numbers_2_head_node(sph_IO%ied_sph(1), IO_param)
-      call gz_mpi_write_charahead(IO_param,                             &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
+      call gz_mpi_write_num_of_data(IO_param, sph_IO%ist_sph(1))
+      call gz_mpi_write_num_of_data(IO_param, sph_IO%ied_sph(1))
 !
       allocate(idx_gl_tmp(sph_IO%nidx_sph(1)))
       idx_gl_tmp(1:sph_IO%nidx_sph(1))                                  &
@@ -168,17 +159,8 @@
       call gz_mpi_write_charahead                                       &
      &   (IO_param, len(hd_tgrid()), hd_tgrid())
 !
-      call set_numbers_2_head_node(sph_IO%ist_sph(2), IO_param)
-      call gz_mpi_write_charahead(IO_param,                             &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
-!
-      call set_numbers_2_head_node(sph_IO%ied_sph(2), IO_param)
-      call gz_mpi_write_charahead(IO_param,                             &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
+      call gz_mpi_write_num_of_data(IO_param, sph_IO%ist_sph(2))
+      call gz_mpi_write_num_of_data(IO_param, sph_IO%ied_sph(2))
 !
       call gz_mpi_write_1d_gl_address(IO_param,                         &
      &    sph_IO%nidx_sph(2), sph_IO%ncomp_table_1d(2),                 &
@@ -188,17 +170,8 @@
       call gz_mpi_write_charahead                                       &
      &   (IO_param, len(hd_pgrid()), hd_pgrid())
 !
-      call set_numbers_2_head_node(sph_IO%ist_sph(3), IO_param)
-      call gz_mpi_write_charahead(IO_param,                             &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
-!
-      call set_numbers_2_head_node(sph_IO%ied_sph(3), IO_param)
-      call gz_mpi_write_charahead(IO_param,                             &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
+      call gz_mpi_write_num_of_data(IO_param, sph_IO%ist_sph(3))
+      call gz_mpi_write_num_of_data(IO_param, sph_IO%ied_sph(3))
 !
       call gz_mpi_write_1d_gl_address(IO_param,                         &
      &    sph_IO%nidx_sph(3), sph_IO%ncomp_table_1d(3),                 &
@@ -223,17 +196,8 @@
       call gz_mpi_write_charahead                                       &
      &   (IO_param, len(hd_rgrid()), hd_rgrid())
 !
-      call set_numbers_2_head_node(sph_IO%ist_sph(1), IO_param)
-      call gz_mpi_write_charahead(IO_param,                             &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
-!
-      call set_numbers_2_head_node(sph_IO%ied_sph(1), IO_param)
-      call gz_mpi_write_charahead(IO_param,                             &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
+      call gz_mpi_write_num_of_data(IO_param, sph_IO%ist_sph(1))
+      call gz_mpi_write_num_of_data(IO_param, sph_IO%ied_sph(1))
 !
       allocate(idx_gl_tmp(sph_IO%nidx_sph(1)))
       idx_gl_tmp(1:sph_IO%nidx_sph(1))                                  &
@@ -247,17 +211,8 @@
       call gz_mpi_write_charahead                                       &
      &   (IO_param, len(hd_jmode()), hd_jmode())
 !
-      call set_numbers_2_head_node(sph_IO%ist_sph(2), IO_param)
-      call gz_mpi_write_charahead(IO_param,                             &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
-!
-      call set_numbers_2_head_node(sph_IO%ied_sph(2), IO_param)
-      call gz_mpi_write_charahead(IO_param,                             &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
+      call gz_mpi_write_num_of_data(IO_param, sph_IO%ist_sph(2))
+      call gz_mpi_write_num_of_data(IO_param, sph_IO%ied_sph(2))
 !
       call gz_mpi_write_1d_gl_address(IO_param,                         &
      &    sph_IO%nidx_sph(2), sph_IO%ncomp_table_1d(2),                 &
@@ -434,11 +389,7 @@
       character(len=1), allocatable :: gzip_buf(:)
 !
 !
-      call set_numbers_2_head_node(nnod, IO_param)
-      call gz_mpi_write_charahead(IO_param,                             &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
+      call gz_mpi_write_num_of_data(IO_param, nnod)
 !
       ilen_line = len_int8_and_vector_textline(numdir)
       ilen_gz = int(real(nnod*ilen_line *1.01)) + 24
@@ -470,11 +421,7 @@
      &      ilen_gz, ilen_gzipped)
       end if
 !
-      call set_istack_4_parallell_data(ilen_gzipped, IO_param)
-      call gz_mpi_write_charahead(IO_param,                             &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &                        IO_param%istack_merged))
+      call gz_mpi_write_stack_over_domain(IO_param, ilen_gzipped)
 !
       if(ilen_gzipped .gt. 0) then
         ioffset = IO_param%ioff_gl                                      &
@@ -506,11 +453,7 @@
       character(len=1), allocatable :: gzip_buf(:)
 !
 !
-      call set_numbers_2_head_node(nnod, IO_param)
-      call gz_mpi_write_charahead(IO_param,                             &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
+      call gz_mpi_write_num_of_data(IO_param, nnod)
 !
       ilen_line = len_multi_int_textline(numdir)
       ilen_gz = int(real(nnod*ilen_line *1.01)) + 24
@@ -540,11 +483,7 @@
      &      ilen_gz, ilen_gzipped)
       end if
 !
-      call set_istack_4_parallell_data(ilen_gzipped, IO_param)
-      call gz_mpi_write_charahead(IO_param,                             &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &                        IO_param%istack_merged))
+      call gz_mpi_write_stack_over_domain(IO_param, ilen_gzipped)
 !
       if(ilen_gzipped .gt. 0) then
         ioffset = IO_param%ioff_gl                                      &

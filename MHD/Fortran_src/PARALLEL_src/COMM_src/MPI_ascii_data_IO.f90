@@ -18,7 +18,11 @@
 !!      subroutine close_mpi_file(IO_param)
 !!
 !!      subroutine mpi_write_charahead(IO_param, ilength, chara_dat)
+!!      subroutine mpi_write_num_of_data(IO_param, num)
+!!      subroutine mpi_write_stack_over_domain(IO_param, num)
 !!      subroutine mpi_write_characters(IO_param, ilength, chara_dat)
+!!
+!!      subroutine mpi_read_num_of_data(IO_param, num)
 !!      function  mpi_read_charahead(IO_param, ilength)
 !!        character(len=ilength) :: mpi_read_charahead
 !!      function mpi_read_characters(IO_param, ilength)
@@ -35,6 +39,7 @@
       use calypso_mpi
       use m_calypso_mpi_IO
       use t_calypso_mpi_IO_param
+      use data_IO_to_textline
 !
       implicit none
 !
@@ -130,6 +135,38 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine mpi_write_num_of_data(IO_param, num)
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      integer(kind=kint), intent(in) :: num
+!
+!
+      call set_numbers_2_head_node(num, IO_param)
+      call mpi_write_charahead(IO_param,                                &
+     &    len_multi_int_textline(IO_param%nprocs_in),                   &
+     &    int_stack8_textline(IO_param%nprocs_in,                       &
+     &                        IO_param%istack_merged))
+!
+      end subroutine mpi_write_num_of_data
+!
+! -----------------------------------------------------------------------
+!
+      subroutine mpi_write_stack_over_domain(IO_param, num)
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      integer(kind=kint), intent(in) :: num
+!
+!
+      call set_istack_4_parallell_data(num, IO_param)
+      call mpi_write_charahead(IO_param,                                &
+     &    len_multi_int_textline(IO_param%nprocs_in),                   &
+     &    int_stack8_textline(IO_param%nprocs_in,                       &
+     &                        IO_param%istack_merged))
+!
+      end subroutine mpi_write_stack_over_domain
+!
+! -----------------------------------------------------------------------
+!
       subroutine mpi_write_characters(IO_param, ilength, chara_dat)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
@@ -153,6 +190,24 @@
       end subroutine mpi_write_characters
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine mpi_read_num_of_data(IO_param, num)
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      integer(kind=kint), intent(inout) :: num
+!
+      integer(kind = kint) :: ilength
+!
+!
+      ilength = len_multi_int_textline(IO_param%nprocs_in)
+      call read_int8_stack_textline                                     &
+         (mpi_read_charahead(IO_param, ilength),                        &
+     &    IO_param%nprocs_in, IO_param%istack_merged)
+      num = int(IO_param%istack_merged(IO_param%id_rank+1))
+!
+      end subroutine mpi_read_num_of_data
+!
 ! -----------------------------------------------------------------------
 !
       function  mpi_read_charahead(IO_param, ilength)

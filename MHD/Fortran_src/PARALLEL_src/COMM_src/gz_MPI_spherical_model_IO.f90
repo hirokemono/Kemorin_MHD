@@ -48,7 +48,7 @@
 !
 !
       call gz_mpi_skip_header(IO_param, len(hd_segment()))
-      call gz_mpi_read_num_int(IO_param, num_tmp)
+      call gz_mpi_read_num_of_data(IO_param, num_tmp)
       call gz_mpi_read_comm_table(IO_param,                             &
      &    sph_IO%numdir_sph, sph_IO%numdir_sph, sph_IO%sph_rank)
 !
@@ -68,7 +68,7 @@
       call read_integer_textline                                        &
      &   (gz_mpi_read_charahead(IO_param, len_int_txt), sph_IO%ltr_gl)
 !
-      call gz_mpi_read_num_int(IO_param, num_tmp)
+      call gz_mpi_read_num_of_data(IO_param, num_tmp)
       call gz_mpi_read_comm_table(IO_param,                             &
      &    sph_IO%numdir_sph, sph_IO%numdir_sph, sph_IO%nidx_gl_sph)
 !
@@ -82,7 +82,7 @@
       type(sph_IO_data), intent(inout) :: sph_IO
 !
 !
-      call gz_mpi_read_num_int(IO_param, sph_IO%numnod_sph)
+      call gz_mpi_read_num_of_data(IO_param, sph_IO%numnod_sph)
 !
       call alloc_nod_id_sph_IO(sph_IO)
       call gz_mpi_read_ele_connect                                      &
@@ -236,11 +236,7 @@
       character(len=1), allocatable :: gzip_buf(:)
 !
 !
-      call set_numbers_2_head_node(nele, IO_param)
-      call gz_mpi_write_charahead(IO_param,                             &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
+      call gz_mpi_write_num_of_data(IO_param, nele)
 !
       ilen_line = len_int8_and_mul_int_textline(nnod_4_ele)
       ilen_gz = int(real(nele*ilen_line *1.01)) + 24
@@ -272,11 +268,7 @@
      &      ilen_gz, ilen_gzipped)
       end if
 !
-      call set_istack_4_parallell_data(ilen_gzipped, IO_param)
-      call gz_mpi_write_charahead(IO_param,                             &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &                        IO_param%istack_merged))
+      call gz_mpi_write_stack_over_domain(IO_param, ilen_gzipped)
 !
       if(ilen_gzipped .gt. 0) then
         ioffset = IO_param%ioff_gl                                      &

@@ -171,7 +171,7 @@
 !  ----  read element data -------
 !
       call gz_mpi_skip_header(IO_param, len(hd_fem_elem()))
-      call gz_mpi_read_num_int(IO_param, mesh_IO%ele%numele)
+      call gz_mpi_read_num_of_data(IO_param, mesh_IO%ele%numele)
 !
       end subroutine gz_mpi_read_num_node_ele
 !
@@ -187,8 +187,9 @@
       call gz_mpi_read_domain_info(IO_param, mesh_IO%nod_comm)
 !
       call gz_mpi_skip_header(IO_param, len(hd_fem_node()))
-      call gz_mpi_read_num_int(IO_param, mesh_IO%node%internal_node)
-      call gz_mpi_read_num_int(IO_param, mesh_IO%node%numnod)
+      call gz_mpi_read_num_of_data                                      &
+     &   (IO_param, mesh_IO%node%internal_node)
+      call gz_mpi_read_num_of_data(IO_param, mesh_IO%node%numnod)
 !
       end subroutine gz_mpi_read_num_node
 !
@@ -201,7 +202,7 @@
       type(node_data), intent(inout) :: nod_IO
 !
 !
-      call set_numbers_2_head_node(nod_IO%internal_node, IO_param)
+      call gz_mpi_write_num_of_data(IO_param, nod_IO%internal_node)
       call gz_mpi_write_charahead(IO_param,                             &
      &    len_multi_int_textline(IO_param%nprocs_in),                   &
      &    int_stack8_textline(IO_param%nprocs_in,                       &
@@ -259,7 +260,7 @@
         ele_IO%nnod_4_ele = max(ele_IO%nnod_4_ele,ele_IO%nodelm(i))
       end do
 !
-      call gz_mpi_read_num_int(IO_param, num_tmp)
+      call gz_mpi_read_num_of_data(IO_param, num_tmp)
       call alloc_ele_connectivity(ele_IO)
 !
       call gz_mpi_read_ele_connect                                      &
@@ -355,11 +356,7 @@
       character(len=1), allocatable :: gzip_buf(:)
 !
 !
-      call set_numbers_2_head_node(num, IO_param)
-      call gz_mpi_write_charahead(IO_param,                             &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &    IO_param%istack_merged))
+      call gz_mpi_write_num_of_data(IO_param, num)
 !
       ilen_gz = int(real(num*len_6digit_txt) *1.01) + 24
       allocate(gzip_buf(ilen_gz))
@@ -386,11 +383,7 @@
      &      ilen_gz, ilen_gzipped)
       end if
 !
-      call set_istack_4_parallell_data(ilen_gzipped, IO_param)
-      call gz_mpi_write_charahead(IO_param,                             &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
-     &                        IO_param%istack_merged))
+      call gz_mpi_write_stack_over_domain(IO_param, ilen_gzipped)
 !
       if(ilen_gzipped .gt. 0) then
         ioffset = IO_param%ioff_gl                                      &
