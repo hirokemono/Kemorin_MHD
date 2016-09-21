@@ -71,6 +71,8 @@
       call s_const_1d_ele_connect_4_sph                                 &
      &   (sph_params%iflag_shell_mode, sph_params%m_folding, sph_rtp)
 !
+!      write(*,*) 's_const_FEM_mesh_for_sph',                           &
+!     &          sph_params%iflag_shell_mode, iflag_MESH_w_center
       call s_const_FEM_mesh_for_sph                                     &
      &   (my_rank, sph_rtp%nidx_rtp, sph_rj%radius_1d_rj_r,             &
      &    sph_params, sph_rtp, radial_rj_grp, mesh, group)

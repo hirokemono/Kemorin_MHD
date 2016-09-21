@@ -41,7 +41,7 @@
       integer(kind = kint), allocatable :: nnod_sr_tmp(:)
 !
       type(sph_group_data), save :: sph_grp_lc
-!sph_grp_lc%bc_rtp_grp
+!
 !
       private :: id_domain_tmp, nnod_sr_tmp, sph_grp_lc
 !
