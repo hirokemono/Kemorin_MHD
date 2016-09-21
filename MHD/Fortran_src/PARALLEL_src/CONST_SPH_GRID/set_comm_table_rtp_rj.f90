@@ -106,7 +106,7 @@
      &                'copy_gl_2_local_rj_param', ip_rank
       call copy_gl_2_local_rj_param(ip_rank, sph_rj)
 !
-      call add_center_mode_rj(sph_rj)
+      call add_center_mode_rj(ip_rank, sph_rj)
 !      nnod_rj = sph_rj%nnod_rj
 !      nidx_rj(1:2) = sph_rj%nidx_rj(1:2)
 !
