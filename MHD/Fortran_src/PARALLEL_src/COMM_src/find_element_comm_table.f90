@@ -162,8 +162,8 @@
             end do
 !
           end do
-          write(*,*) 'loop jnum end'
         end do
+          write(*,*) 'loop ip end', ip
       end do
 !
       end subroutine  set_element_import_item
