@@ -35,7 +35,7 @@
         real(kind=kreal),   pointer :: ele_scalar(:)
 !
         integer(kind = kint) :: nsf_4_ele
-        integer(kind = kint) :: nsurf_in_ele = 6
+        integer(kind = kint) :: nsurf_in_ele
         integer(kind = kint), pointer  :: isf_for_ele(:,:)
 !
         integer(kind = kint) :: ned_4_ele
@@ -53,12 +53,12 @@
 !
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
-      integer(kind = kint) :: num1, num2
+      integer(kind = kint) :: num1
 !
 !
+      sfed_IO%nsurf_in_ele = 6
       num1 = sfed_IO%nsf_4_ele
-      num2 = sfed_IO%nsurf_in_ele
-      allocate( sfed_IO%isf_for_ele(num1,num2) )
+      allocate( sfed_IO%isf_for_ele(num1,6) )
       sfed_IO%isf_for_ele = 0
 !
       end subroutine alloc_surface_connect_IO
@@ -69,12 +69,12 @@
 !
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
-      integer(kind = kint) :: num1, num2
+      integer(kind = kint) :: num1
 !
 !
+      sfed_IO%nedge_in_ele = 12
       num1 = sfed_IO%ned_4_ele
-      num2 = sfed_IO%nedge_in_ele
-      allocate(sfed_IO%iedge_for_ele(num1,num2) )
+      allocate(sfed_IO%iedge_for_ele(num1,12) )
       sfed_IO%iedge_for_ele = 0
 !
       end subroutine alloc_edge_connect_IO
