@@ -72,6 +72,7 @@
       integer(kind = kint) :: ist, ied, inum, inod
 !
       num_import_e = 0
+      istack_import_e(0) = 0
       do ip = 1, num_neib
         id_neib_e(ip) = id_neib(ip)
         ist = istack_import(ip-1) + 1
@@ -165,6 +166,51 @@
       end do
 !
       end subroutine  set_element_import_item
+!
+!-----------------------------------------------------------------------
+!
+      subroutine count_element_import_num_e(numnod, iele_stack_ht_node,   &
+     &          num_neib, id_neib, istack_import, item_import,          &
+     &          num_neib_e, id_neib_e, num_import_e, istack_import_e,   &
+     &          ntot_import_e)
+!
+      integer(kind = kint), intent(in) :: numnod
+      integer(kind = kint), intent(in) :: iele_stack_ht_node(0:numnod)
+!
+      integer(kind = kint), intent(in) :: num_neib
+      integer(kind = kint), intent(in) :: id_neib(num_neib)
+      integer(kind = kint), intent(in) :: istack_import(0:num_neib)
+      integer(kind = kint), intent(in)                                  &
+     &              :: item_import(istack_import(num_neib))
+!
+      integer(kind = kint), intent(in) :: num_neib_e
+      integer(kind = kint), intent(inout) :: id_neib_e(num_neib_e)
+      integer(kind = kint), intent(inout) :: ntot_import_e
+      integer(kind = kint), intent(inout) :: num_import_e(num_neib_e)
+      integer(kind = kint), intent(inout)                               &
+     &              :: istack_import_e(0:num_neib_e)
+!
+      integer(kind = kint) :: ip
+      integer(kind = kint) :: ist, ied, inum, inod
+!
+      num_import_e = 0
+      istack_import_e(0) = 0
+      do ip = 1, num_neib
+        id_neib_e(ip) = id_neib(ip)
+        ist = istack_import(ip-1) + 1
+        ied = istack_import(ip)
+        do inum = ist, ied
+          inod = item_import(inum)
+          num_import_e(ip) = num_import_e(ip)                           &
+     &                      + iele_stack_ht_node(inod  )                &
+     &                      - iele_stack_ht_node(inod-1)
+        end do
+        istack_import_e(ip) = istack_import_e(ip-1) + num_import_e(ip)
+      end do
+      ntot_import_e = istack_import_e(num_neib)
+      write(*,*) 'ntot_import_e', ntot_import_e, my_rank
+!
+      end subroutine count_element_import_num_e
 !
 !-----------------------------------------------------------------------
 !

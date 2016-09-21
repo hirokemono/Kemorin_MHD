@@ -30,35 +30,34 @@
 !
       implicit none
 !
-!>      global node ID for element import table
-      integer(kind = kint_gl), allocatable :: inod_import_e(:)
-!>      global node ID for element export table
-      integer(kind = kint_gl), allocatable :: inod_export_e(:)
-!>      local node ID for element export table
-      integer(kind = kint), allocatable :: inod_import_l(:)
-!>      local node ID for element export table
-      integer(kind = kint), allocatable :: inod_export_l(:)
+      type work_4_ele_comm_table
+!>        global node ID for element import table
+        integer(kind = kint_gl), pointer :: inod_import_e(:)
+!>        global node ID for element export table
+        integer(kind = kint_gl), pointer :: inod_export_e(:)
+!>        local node ID for element export table
+        integer(kind = kint), pointer :: inod_import_l(:)
+!>        local node ID for element export table
+        integer(kind = kint), pointer :: inod_export_l(:)
 !
-!>      local node ID for import table
-      integer(kind = kint), allocatable :: item_local(:)
-!>      local node ID for import table
-      integer(kind = kint), allocatable :: inod_local(:)
+!>        local node ID for import table
+        integer(kind = kint), pointer :: item_local(:)
+!>        local node ID for import table
+        integer(kind = kint), pointer :: inod_local(:)
 !
-!>      element position for element import table
-      real(kind = kreal), allocatable :: xe_import(:)
-!>      element position for element import table
-      real(kind = kreal), allocatable :: xe_export(:)
+!>        element position for element import table
+        real(kind = kreal), pointer :: xe_import(:)
+!>        element position for element import table
+        real(kind = kreal), pointer :: xe_export(:)
+      end type work_4_ele_comm_table
 !
 !>      small number
       real(kind = kreal) :: tiny = 1.0d-11
 !
-      private :: inod_import_e, inod_import_l, xe_import
-      private :: inod_export_e, inod_export_l, xe_export
-      private :: item_local, inod_local
-!
-      private :: allocate_element_rev_imports
-      private :: allocate_element_rev_exports
-      private :: deallocate_element_rev_list
+      private :: alloc_element_rev_imports
+      private :: alloc_element_rev_exports
+      private :: dealloc_element_rev_imports
+      private :: dealloc_element_rev_exports
 !
 !-----------------------------------------------------------------------
 !
@@ -87,21 +86,27 @@
 !
       type(communication_table), intent(inout) :: e_comm
 !
+      type(work_4_ele_comm_table) :: wk_comm
+!
 !
       e_comm%num_neib = nod_comm%num_neib
       call allocate_type_neib_id(e_comm)
       call allocate_type_import_num(e_comm)
 !
-      write(*,*) 'count_element_import_num', my_rank
-      call count_element_import_num(node%numnod, host%istack_4_node,    &
+      write(*,*) 'count_element_import_num_e', my_rank
+      call count_element_import_num_e(node%numnod, host%istack_4_node,    &
      &    nod_comm%num_neib, nod_comm%id_neib,                          &
      &    nod_comm%istack_import, nod_comm%item_import,                 &
      &    e_comm%num_neib, e_comm%id_neib, e_comm%num_import,           &
      &    e_comm%istack_import, e_comm%ntot_import)
-      call calypso_mpi_barrier
 !
-      call allocate_element_rev_imports                                 &
-     &   (node%numnod, nod_comm%ntot_export, e_comm%ntot_import)
+      call alloc_element_rev_imports(node%numnod,                       &
+     &    nod_comm%ntot_export, e_comm%ntot_import, wk_comm)
+!
+      call calypso_mpi_barrier
+      call dealloc_element_rev_imports(wk_comm)
+      return
+!
       call allocate_type_import_item(e_comm)
 !
       write(*,*) 'local_node_id_reverse_SR', my_rank
@@ -109,18 +114,19 @@
      &   (node%numnod, nod_comm%num_neib, nod_comm%id_neib,             &
      &    nod_comm%istack_import, nod_comm%item_import,                 &
      &    nod_comm%istack_export, nod_comm%item_export,                 &
-     &    item_local, inod_local)
+     &    wk_comm%item_local, wk_comm%inod_local)
       call calypso_mpi_barrier
+!
 !
       write(*,*) 'set_element_import_item_e', my_rank
       call set_element_import_item_e(node%numnod, node%internal_node,     &
      &    numele, nnod_4_ele, ie, node%inod_global, x_ele,              &
-     &    host%istack_4_node, host%iele_4_node, inod_local,             &
+     &    host%istack_4_node, host%iele_4_node, wk_comm%inod_local,     &
      &    nod_comm%num_neib, nod_comm%istack_import,                    &
      &    nod_comm%item_import, e_comm%num_neib, e_comm%istack_import,  &
-     &    e_comm%item_import, inod_import_e, inod_import_l, xe_import)
+     &    e_comm%item_import, wk_comm%inod_import_e,                    &
+     &    wk_comm%inod_import_l, wk_comm%xe_import)
       call calypso_mpi_barrier
-      return
 !
       call allocate_type_export_num(e_comm)
 !
@@ -130,14 +136,15 @@
      &    e_comm%ntot_export)
       call calypso_mpi_barrier
 !
-      call allocate_element_rev_exports(e_comm%ntot_export)
+      call alloc_element_rev_exports(e_comm%ntot_export, wk_comm)
       call allocate_type_export_item(e_comm)
 !
       write(*,*) 'element_position_reverse_SR', my_rank
       call element_position_reverse_SR(e_comm%num_neib, e_comm%id_neib, &
      &    e_comm%istack_import, e_comm%istack_export,                   &
-     &    inod_import_e, inod_import_l, xe_import,                      &
-     &    inod_export_e, inod_export_l, xe_export)
+     &    wk_comm%inod_import_e, wk_comm%inod_import_l,                 &
+     &    wk_comm%xe_import, wk_comm%inod_export_e,                     &
+     &    wk_comm%inod_export_l, wk_comm%xe_export)
       call calypso_mpi_barrier
 !
       write(*,*) 'set_element_export_item', my_rank
@@ -147,10 +154,12 @@
      &    nod_comm%istack_import, nod_comm%item_import,                 &
      &    nod_comm%istack_export, nod_comm%item_export,                 &
      &    e_comm%num_neib, e_comm%istack_export,                        &
-     &    inod_export_e, inod_export_l, xe_export, e_comm%item_export)
+     &    wk_comm%inod_export_e, wk_comm%inod_export_l,                 &
+     &    wk_comm%xe_export, e_comm%item_export)
       call calypso_mpi_barrier
 !
-      call deallocate_element_rev_list
+      call dealloc_element_rev_exports(wk_comm)
+      call dealloc_element_rev_imports(wk_comm)
 !
 !      write(*,*) 'check_element_position', my_rank
 !      call check_element_position(txt, numele, x_ele, e_comm)
@@ -181,6 +190,8 @@
 !
       type(communication_table), intent(inout) :: e_comm
 !
+      type(work_4_ele_comm_table) :: wk_comm
+!
 !
       e_comm%num_neib = nod_comm%num_neib
       call allocate_type_neib_id(e_comm)
@@ -194,8 +205,8 @@
      &    e_comm%istack_import, e_comm%ntot_import)
       call calypso_mpi_barrier
 !
-      call allocate_element_rev_imports                                 &
-     &   (node%numnod, nod_comm%ntot_export, e_comm%ntot_import)
+      call alloc_element_rev_imports(node%numnod,                       &
+     &    nod_comm%ntot_export, e_comm%ntot_import, wk_comm)
       call allocate_type_import_item(e_comm)
 !
       write(*,*) 'local_node_id_reverse_SR', my_rank
@@ -203,16 +214,17 @@
      &   (node%numnod, nod_comm%num_neib, nod_comm%id_neib,             &
      &    nod_comm%istack_import, nod_comm%item_import,                 &
      &    nod_comm%istack_export, nod_comm%item_export,                 &
-     &    item_local, inod_local)
+     &    wk_comm%item_local, wk_comm%inod_local)
       call calypso_mpi_barrier
 !
       write(*,*) 'set_element_import_item', my_rank
       call set_element_import_item(node%numnod, node%internal_node,     &
      &    numele, nnod_4_ele, ie, node%inod_global, x_ele,              &
-     &    host%istack_4_node, host%iele_4_node, inod_local,             &
+     &    host%istack_4_node, host%iele_4_node, wk_comm%inod_local,     &
      &    nod_comm%num_neib, nod_comm%istack_import,                    &
      &    nod_comm%item_import, e_comm%num_neib, e_comm%istack_import,  &
-     &    e_comm%item_import, inod_import_e, inod_import_l, xe_import)
+     &    e_comm%item_import, wk_comm%inod_import_e,                    &
+     &    wk_comm%inod_import_l, wk_comm%xe_import)
       call calypso_mpi_barrier
 !
       call allocate_type_export_num(e_comm)
@@ -223,14 +235,15 @@
      &    e_comm%ntot_export)
       call calypso_mpi_barrier
 !
-      call allocate_element_rev_exports(e_comm%ntot_export)
+      call alloc_element_rev_exports(e_comm%ntot_export, wk_comm)
       call allocate_type_export_item(e_comm)
 !
       write(*,*) 'element_position_reverse_SR', my_rank
       call element_position_reverse_SR(e_comm%num_neib, e_comm%id_neib, &
      &    e_comm%istack_import, e_comm%istack_export,                   &
-     &    inod_import_e, inod_import_l, xe_import,                      &
-     &    inod_export_e, inod_export_l, xe_export)
+     &    wk_comm%inod_import_e, wk_comm%inod_import_l,                 &
+     &    wk_comm%xe_import, wk_comm%inod_export_e,                     &
+     &    wk_comm%inod_export_l, wk_comm%xe_export)
       call calypso_mpi_barrier
 !
       write(*,*) 'set_element_export_item', my_rank
@@ -240,10 +253,12 @@
      &    nod_comm%istack_import, nod_comm%item_import,                 &
      &    nod_comm%istack_export, nod_comm%item_export,                 &
      &    e_comm%num_neib, e_comm%istack_export,                        &
-     &    inod_export_e, inod_export_l, xe_export, e_comm%item_export)
+     &    wk_comm%inod_export_e, wk_comm%inod_export_l,                 &
+     &    wk_comm%xe_export, e_comm%item_export)
       call calypso_mpi_barrier
 !
-      call deallocate_element_rev_list
+      call dealloc_element_rev_exports(wk_comm)
+      call dealloc_element_rev_imports(wk_comm)
 !
       write(*,*) 'check_element_position', my_rank
       call check_element_position(txt, numele, x_ele, e_comm)
@@ -254,53 +269,67 @@
 !-----------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine allocate_element_rev_imports                           &
-     &         (numnod, ntot_export, ntot_import_e)
+      subroutine alloc_element_rev_imports                              &
+     &         (numnod, ntot_export, ntot_import_e, wk_comm)
 !
       integer(kind = kint), intent(in) :: numnod, ntot_export
       integer(kind = kint), intent(in) :: ntot_import_e
+      type(work_4_ele_comm_table), intent(inout) :: wk_comm
 !
 !
-      allocate(inod_local(numnod))
-      allocate(item_local(ntot_export))
+      allocate(wk_comm%inod_local(numnod))
+      allocate(wk_comm%item_local(ntot_export))
 !
-      allocate(inod_import_e(ntot_import_e))
-      allocate(inod_import_l(ntot_import_e))
-      allocate(xe_import(3*ntot_import_e))
+      allocate(wk_comm%inod_import_e(ntot_import_e))
+      allocate(wk_comm%inod_import_l(ntot_import_e))
+      allocate(wk_comm%xe_import(3*ntot_import_e))
 !
-      if(numnod .gt. 0) inod_local = 0
-      if(ntot_export .gt. 0) item_local = 0
-      if(ntot_import_e .gt. 0) inod_import_e = 0
-      if(ntot_import_e .gt. 0) xe_import = 0.0d0
+      if(numnod .gt. 0) wk_comm%inod_local = 0
+      if(ntot_export .gt. 0) wk_comm%item_local = 0
+      if(ntot_import_e .gt. 0) wk_comm%inod_import_e = 0
+      if(ntot_import_e .gt. 0) wk_comm%xe_import = 0.0d0
 !
-      end subroutine allocate_element_rev_imports
+      end subroutine alloc_element_rev_imports
 !
 !------------------------------------------------------------------
 !
-      subroutine allocate_element_rev_exports(ntot_export_e)
+      subroutine alloc_element_rev_exports(ntot_export_e, wk_comm)
 !
       integer(kind = kint), intent(in) :: ntot_export_e
+      type(work_4_ele_comm_table), intent(inout) :: wk_comm
 !
 !
-      allocate(inod_export_e(ntot_export_e))
-      allocate(inod_export_l(ntot_export_e))
-      allocate(xe_export(3*ntot_export_e))
-      if(ntot_export_e .gt. 0) inod_export_e = 0
-      if(ntot_export_e .gt. 0) inod_export_l = 0
-      if(ntot_export_e .gt. 0) xe_export = 0.0d0
+      allocate(wk_comm%inod_export_e(ntot_export_e))
+      allocate(wk_comm%inod_export_l(ntot_export_e))
+      allocate(wk_comm%xe_export(3*ntot_export_e))
+      if(ntot_export_e .gt. 0) wk_comm%inod_export_e = 0
+      if(ntot_export_e .gt. 0) wk_comm%inod_export_l = 0
+      if(ntot_export_e .gt. 0) wk_comm%xe_export = 0.0d0
 !
-      end subroutine allocate_element_rev_exports
+      end subroutine alloc_element_rev_exports
 !
 !------------------------------------------------------------------
 !
-      subroutine deallocate_element_rev_list
+      subroutine dealloc_element_rev_imports(wk_comm)
 !
+      type(work_4_ele_comm_table), intent(inout) :: wk_comm
 !
-      deallocate(inod_import_e, inod_import_l, xe_import)
-      deallocate(inod_export_e, inod_export_l, xe_export)
-      deallocate(item_local, inod_local)
+      deallocate(wk_comm%inod_import_e, wk_comm%inod_import_l)
+      deallocate(wk_comm%xe_import)
+      deallocate(wk_comm%item_local, wk_comm%inod_local)
 !
-      end subroutine deallocate_element_rev_list
+      end subroutine dealloc_element_rev_imports
+!
+!-----------------------------------------------------------------------
+!
+      subroutine dealloc_element_rev_exports(wk_comm)
+!
+      type(work_4_ele_comm_table), intent(inout) :: wk_comm
+!
+      deallocate(wk_comm%inod_export_e, wk_comm%inod_export_l)
+      deallocate(wk_comm%xe_export)
+!
+      end subroutine dealloc_element_rev_exports
 !
 !-----------------------------------------------------------------------
 !
