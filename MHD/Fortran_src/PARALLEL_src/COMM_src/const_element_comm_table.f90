@@ -92,49 +92,54 @@
       call allocate_type_neib_id(e_comm)
       call allocate_type_import_num(e_comm)
 !
-!      write(*,*) 'count_element_import_num', my_rank
+      write(*,*) 'count_element_import_num', my_rank
       call count_element_import_num(node%numnod, host%istack_4_node,    &
      &    nod_comm%num_neib, nod_comm%id_neib,                          &
      &    nod_comm%istack_import, nod_comm%item_import,                 &
      &    e_comm%num_neib, e_comm%id_neib, e_comm%num_import,           &
      &    e_comm%istack_import, e_comm%ntot_import)
+      call calypso_mpi_barrier
 !
       call allocate_element_rev_imports                                 &
      &   (node%numnod, nod_comm%ntot_export, e_comm%ntot_import)
       call allocate_type_import_item(e_comm)
 !
-!      write(*,*) 'local_node_id_reverse_SR', my_rank
+      write(*,*) 'local_node_id_reverse_SR', my_rank
       call local_node_id_reverse_SR                                     &
      &   (node%numnod, nod_comm%num_neib, nod_comm%id_neib,             &
      &    nod_comm%istack_import, nod_comm%item_import,                 &
      &    nod_comm%istack_export, nod_comm%item_export,                 &
      &    item_local, inod_local)
+      call calypso_mpi_barrier
 !
-!      write(*,*) 'set_element_import_item', my_rank
+      write(*,*) 'set_element_import_item', my_rank
       call set_element_import_item(node%numnod, node%internal_node,     &
      &    numele, nnod_4_ele, ie, node%inod_global, x_ele,              &
      &    host%istack_4_node, host%iele_4_node, inod_local,             &
      &    nod_comm%num_neib, nod_comm%istack_import,                    &
      &    nod_comm%item_import, e_comm%num_neib, e_comm%istack_import,  &
      &    e_comm%item_import, inod_import_e, inod_import_l, xe_import)
+      call calypso_mpi_barrier
 !
       call allocate_type_export_num(e_comm)
 !
-!      write(*,*) 'element_num_reverse_SR', my_rank
+      write(*,*) 'element_num_reverse_SR', my_rank
       call element_num_reverse_SR(e_comm%num_neib, e_comm%id_neib,      &
      &    e_comm%num_import, e_comm%num_export, e_comm%istack_export,   &
      &    e_comm%ntot_export)
+      call calypso_mpi_barrier
 !
       call allocate_element_rev_exports(e_comm%ntot_export)
       call allocate_type_export_item(e_comm)
 !
-!      write(*,*) 'element_position_reverse_SR', my_rank
+      write(*,*) 'element_position_reverse_SR', my_rank
       call element_position_reverse_SR(e_comm%num_neib, e_comm%id_neib, &
      &    e_comm%istack_import, e_comm%istack_export,                   &
      &    inod_import_e, inod_import_l, xe_import,                      &
      &    inod_export_e, inod_export_l, xe_export)
+      call calypso_mpi_barrier
 !
-!      write(*,*) 'set_element_export_item', my_rank
+      write(*,*) 'set_element_export_item', my_rank
       call set_element_export_item(txt, node%numnod, numele,            &
      &    node%inod_global, internal_flag, x_ele, neib_e%istack_4_node, &
      &    neib_e%iele_4_node, nod_comm%num_neib,                        &
@@ -142,11 +147,13 @@
      &    nod_comm%istack_export, nod_comm%item_export,                 &
      &    e_comm%num_neib, e_comm%istack_export,                        &
      &    inod_export_e, inod_export_l, xe_export, e_comm%item_export)
+      call calypso_mpi_barrier
 !
       call deallocate_element_rev_list
 !
-!      write(*,*) 'check_element_position', my_rank
+      write(*,*) 'check_element_position', my_rank
       call check_element_position(txt, numele, x_ele, e_comm)
+      call calypso_mpi_barrier
 !
       end subroutine const_comm_table_by_connenct
 !
