@@ -129,6 +129,9 @@
       type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
 !
 !
+      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
+     &  'Write ascii surface mesh file: ', trim(mesh_surf_file_head)
+!
       call set_mesh_file_name(mesh_surf_file_head, id_ascii_file_fmt,   &
      &    my_rank_IO, file_name)
 !
@@ -198,6 +201,9 @@
       integer(kind = kint), intent(in) :: my_rank_IO
       type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
 !
+!
+      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
+     &  'Write ascii edge mesh file: ', trim(mesh_edge_file_head)
 !
       call set_mesh_file_name(mesh_edge_file_head, id_ascii_file_fmt,   &
      &    my_rank_IO, file_name)

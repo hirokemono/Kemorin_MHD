@@ -24,8 +24,12 @@
       use m_file_format_switch
       use m_read_mesh_data
       use m_ctl_data_4_platforms
+      use set_control_platform_data
+      use set_ctl_parallel_platform
 !
 !
+      call turn_off_debug_flag_by_ctl(my_rank)
+      call check_control_num_domains
       if (mesh_file_prefix%iflag .gt. 0) then
         mesh_file_head = mesh_file_prefix%charavalue
       else

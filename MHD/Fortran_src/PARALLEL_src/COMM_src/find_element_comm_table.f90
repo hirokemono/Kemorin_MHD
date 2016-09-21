@@ -72,6 +72,7 @@
       integer(kind = kint) :: ist, ied, inum, inod
 !
       num_import_e = 0
+      istack_import_e(0) = 0
       do ip = 1, num_neib
         id_neib_e(ip) = id_neib(ip)
         ist = istack_import(ip-1) + 1
@@ -160,7 +161,7 @@
               end if
             end do
 !
-         end do
+          end do
         end do
       end do
 !
