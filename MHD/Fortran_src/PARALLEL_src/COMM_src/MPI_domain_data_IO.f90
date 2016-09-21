@@ -274,8 +274,8 @@
       integer(kind=kint), intent(in) :: num, ncolumn
       integer(kind=kint), intent(inout) :: int_dat(num)
 !
-      integer(kind = kint) :: i, nrest, n_item, lst, led, loop
-      character(len = num*len_int_txt) :: textbuf
+      integer(kind = kint) :: i, nrest, n_item, ilength, led, loop
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
       call mpi_skip_read                                                &
@@ -286,8 +286,6 @@
         n_item = int(IO_param%istack_merged(i))
         if(n_item .le. 0) then
           led = ione
-        else if(n_item .le. ncolumn) then
-          led = len_multi_int_textline(n_item)
         else if(n_item .gt. 0) then
           nrest = mod((n_item-1),ncolumn) + 1
           loop = (n_item-1)/ncolumn
@@ -296,33 +294,30 @@
         end if
         IO_param%istack_merged(i) = IO_param%istack_merged(i-1) + led
       end do
-      led = int(IO_param%istack_merged(IO_param%id_rank+1)              &
-     &         -  IO_param%istack_merged(IO_param%id_rank))
-!
-      textbuf = mpi_read_characters(IO_param, led)
 !
       if(num .le. 0) then
         led = ione
-      else if(num .le. ncolumn) then
-        led = len_multi_int_textline(num)
-        call read_multi_int_textline(textbuf, num, int_dat(1))
       else if(num .gt. 0) then
-        lst = 0
-        led = lst + len_multi_int_textline(ncolumn)
-        call read_multi_int_textline                                    &
-     &    (textbuf(lst+1:led) , ncolumn, int_dat(1))
-        do i = 1, (num-1)/ncolumn - 1
-          lst = led
-          led = lst + len_multi_int_textline(ncolumn)
+        ioffset = IO_param%ioff_gl                                      &
+     &           + IO_param%istack_merged(IO_param%id_rank)
+!
+        do i = 0, (num-1)/ncolumn - 1
+          ilength = len_multi_int_textline(ncolumn)
           call read_multi_int_textline                                  &
-     &       (textbuf(lst+1:led) , ncolumn, int_dat(ncolumn*i+1))
+     &       (calypso_mpi_seek_read_chara(IO_param%id_file,             &
+     &                                    ioffset, ilength),            &
+     &        ncolumn, int_dat(ncolumn*i+1))
         end do
         nrest = mod((num-1),ncolumn) + 1
-        lst = led
-        led = lst + len_multi_int_textline(nrest)
+        ilength = len_multi_int_textline(nrest)
         call read_multi_int_textline                                    &
-     &     (textbuf(lst+1:led), nrest, int_dat(num-nrest+1))
+     &     (calypso_mpi_seek_read_chara(IO_param%id_file,               &
+     &                                  ioffset, ilength),              &
+     &      nrest, int_dat(num-nrest+1))
       end if
+      IO_param%ioff_gl = IO_param%ioff_gl                               &
+     &         + IO_param%istack_merged(IO_param%nprocs_in)
+      call calypso_mpi_barrier
 !
       end subroutine mpi_read_comm_table
 !

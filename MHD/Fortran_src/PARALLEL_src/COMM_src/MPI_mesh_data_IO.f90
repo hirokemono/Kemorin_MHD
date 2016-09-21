@@ -39,10 +39,9 @@
 !
       implicit  none
 !
-!      private :: mpi_write_geometry_info
-!      private :: mpi_write_element_info
-!      private :: gz_mpi_read_number_of_node
-!      private :: mpi_read_element_info
+      private :: mpi_write_geometry_info
+      private :: mpi_write_element_info, mpi_read_element_info
+      private :: mpi_read_element_type, mpi_write_element_type
 !
 !------------------------------------------------------------------
 !
@@ -150,14 +149,20 @@
       call mpi_skip_read(IO_param, len(hd_fem_nodgrp()))
       call mpi_read_group_data                                          &
      &   (IO_param, mesh_group_IO%nod_grp)
+      call calypso_mpi_barrier
+      write(*,*) 'nod_grp end'
 !  read element group
       call mpi_skip_read(IO_param, len(hd_fem_elegrp()))
       call mpi_read_group_data                                          &
      &   (IO_param, mesh_group_IO%ele_grp)
+      call calypso_mpi_barrier
+      write(*,*) 'ele_grp end'
 !  read surface group
       call mpi_skip_read(IO_param, len(hd_fem_sfgrp()))
       call mpi_read_surf_grp_data                                       &
      &   (IO_param, mesh_group_IO%surf_grp)
+      call calypso_mpi_barrier
+      write(*,*) 'surf_grp end'
 !
       end subroutine mpi_read_mesh_groups
 !
@@ -264,7 +269,6 @@
       call mpi_read_element_type                                        &
      &   (IO_param, iten, ele_IO%numele, ele_IO%elmtyp)
       call calypso_mpi_barrier
-      write(*,*) 'mpi_read_element_type end'
 !
       ele_IO%nnod_4_ele = 0
       do i = 1, ele_IO%numele
@@ -280,7 +284,6 @@
      &   (IO_param, ele_IO%numele, ele_IO%nnod_4_ele,                   &
      &    ele_IO%iele_global, ele_IO%ie)
       call calypso_mpi_barrier
-      write(*,*) 'mpi_read_ele_connect end'
 !
       end subroutine mpi_read_element_info
 !
@@ -324,8 +327,6 @@
       else if(num .gt. 0) then
         ioffset = IO_param%ioff_gl                                      &
      &           + IO_param%istack_merged(IO_param%id_rank)
-        IO_param%ioff_gl = IO_param%ioff_gl                             &
-     &         + IO_param%istack_merged(IO_param%nprocs_in)
 !
         do i = 0, (num-1)/ncolumn - 1
           ilength = len_multi_6digit_line(ncolumn)
@@ -341,6 +342,8 @@
      &                                  ioffset, ilength),              &
      &      nrest, int_dat(num-nrest+1))
       end if
+      IO_param%ioff_gl = IO_param%ioff_gl                               &
+     &                  + IO_param%istack_merged(IO_param%nprocs_in)
 !
       end subroutine mpi_read_element_type
 !

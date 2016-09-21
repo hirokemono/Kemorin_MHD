@@ -257,30 +257,6 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine mpi_sub_read_characters(IO_param, ilength, texts)
-!
-      type(calypso_MPI_IO_params), intent(inout) :: IO_param
-!
-      integer(kind = kint), intent(in) :: ilength
-      character(len=ilength), intent(inout) :: texts
-!
-      integer(kind = MPI_OFFSET_KIND) :: ioffset
-!
-!
-      if(ilength .le. 0) return
-      if(IO_param%id_rank .lt. IO_param%nprocs_in) then
-        ioffset = IO_param%ioff_gl                                      &
-     &           + IO_param%istack_merged(IO_param%id_rank)
-        call calypso_mpi_seek_read_gz                                   &
-     &     (IO_param%id_file, ioffset, ilength, texts)
-      end if
-      IO_param%ioff_gl = IO_param%ioff_gl                               &
-     &         + IO_param%istack_merged(IO_param%nprocs_in)
-!
-      end subroutine mpi_sub_read_characters
-!
-! -----------------------------------------------------------------------
-!
       subroutine mpi_skip_read(IO_param, ilength)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param

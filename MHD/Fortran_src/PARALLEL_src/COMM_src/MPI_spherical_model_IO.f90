@@ -152,13 +152,8 @@
       integer(kind=kint), intent(inout) :: ie(nele, nnod_4_ele)
 !
       integer(kind = kint) :: ie_tmp(nnod_4_ele)
-      integer(kind = kint) :: i
-!
-      integer(kind = kint) :: ilength, n_item
-!
-      character(len = ((nnod_4_ele+1)*len_integer_nolf+1)),             &
-     &                                allocatable :: textbuf(:)
-      character(len = 1) :: tmpchara
+      integer(kind = kint) :: i, ilength, n_item
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
       call mpi_skip_read                                                &
@@ -175,23 +170,24 @@
         IO_param%istack_merged(i) = IO_param%istack_merged(i-1)         &
      &                             + ilength
       end do
-      ilength = int(IO_param%istack_merged(IO_param%id_rank+1)          &
-     &          - IO_param%istack_merged(IO_param%id_rank))
 !
-      allocate(textbuf(nele))
-
       if(nele .eq. 0) then
-        call mpi_sub_read_characters(IO_param, ilength, tmpchara)
-      else
-        call mpi_sub_read_characters(IO_param, ilength, textbuf(1))
-      end if
+        ilength = ione
+      else if(nele .gt. 0) then
+        ioffset = IO_param%ioff_gl                                      &
+     &           + IO_param%istack_merged(IO_param%id_rank)
 !
-      do i = 1, nele
-        call read_int8_and_mul_int_textline                           &
-     &     (textbuf(i) ,id_global(i), nnod_4_ele, ie_tmp)
-        ie(i,1:nnod_4_ele) = ie_tmp(1:nnod_4_ele)
-      end do
-      deallocate(textbuf)
+        ilength = len_int8_and_mul_int_textline(nnod_4_ele)
+        do i = 1, nele
+          call read_int8_and_mul_int_textline                           &
+     &       (calypso_mpi_seek_read_chara(IO_param%id_file,             &
+     &                                    ioffset, ilength),            &
+     &        id_global(i), nnod_4_ele, ie_tmp)
+          ie(i,1:nnod_4_ele) = ie_tmp(1:nnod_4_ele)
+        end do
+      end if
+      IO_param%ioff_gl = IO_param%ioff_gl                               &
+     &         + IO_param%istack_merged(IO_param%nprocs_in)
 !
       end subroutine mpi_read_ele_connect
 !

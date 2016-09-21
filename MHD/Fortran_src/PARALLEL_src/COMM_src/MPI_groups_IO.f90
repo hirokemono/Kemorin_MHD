@@ -83,7 +83,6 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(surface_group_data), intent(inout) :: surf_grp_IO
 !
-      integer(kind = kint) :: nitem
       integer(kind = kint) :: i, num, num_tmp
 !
 !

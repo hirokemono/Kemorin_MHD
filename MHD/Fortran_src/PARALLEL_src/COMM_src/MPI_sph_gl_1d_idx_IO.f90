@@ -237,11 +237,8 @@
 !
       real(kind = kreal) :: xx_tmp(numdir)
 !
-      integer(kind = kint) :: i, led, n_item
-!
-      character(len = numdir*len_real_nolf+len_int_txt),                &
-     &                      allocatable :: textbuf(:)
-      character(len = 1) :: tmpchara
+      integer(kind = kint) :: i, led, n_item, ilength
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
       call mpi_skip_read                                                &
@@ -258,23 +255,24 @@
         IO_param%istack_merged(i) = IO_param%istack_merged(i-1)         &
      &                             + led
       end do
-      led = int(IO_param%istack_merged(IO_param%id_rank+1)              &
-     &          - IO_param%istack_merged(IO_param%id_rank))
-!
-      allocate(textbuf(nnod))
 !
       if(nnod .eq. 0) then
-        call mpi_sub_read_characters(IO_param, led, tmpchara)
+        led = ione
       else
-        call mpi_sub_read_characters(IO_param, led, textbuf(1))
-      end if
+        ioffset = IO_param%ioff_gl                                      &
+     &           + IO_param%istack_merged(IO_param%id_rank)
 !
-      do i = 1, nnod
-        call read_int8_and_vector_textline                              &
-     &     (textbuf(i) ,id_global(i), numdir, xx_tmp)
-        xx(i,1:numdir) = xx_tmp(1:numdir)
-      end do
-      deallocate(textbuf)
+        ilength = len_int8_and_vector_textline(numdir)
+        do i = 1, nnod
+          call read_int8_and_vector_textline                            &
+     &       (calypso_mpi_seek_read_chara(IO_param%id_file,             &
+     &                                    ioffset, ilength),            &
+     &        id_global(i), numdir, xx_tmp)
+          xx(i,1:numdir) = xx_tmp(1:numdir)
+        end do
+      end if
+      IO_param%ioff_gl = IO_param%ioff_gl                               &
+     &         + IO_param%istack_merged(IO_param%nprocs_in)
 !
       end subroutine mpi_read_node_position
 !
@@ -289,11 +287,8 @@
 !
       integer(kind = kint) :: idx_tmp(numdir)
 
-      integer(kind = kint) :: i, led, n_item
-!
-      character(len = numdir*len_integer_nolf+1),                       &
-     &                      allocatable :: textbuf(:)
-      character(len = 1) :: tmpchara
+      integer(kind = kint) :: i, led, ilength, n_item
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
       call mpi_skip_read                                                &
@@ -310,23 +305,24 @@
         IO_param%istack_merged(i) = IO_param%istack_merged(i-1)         &
      &                             + led
       end do
-      led = int(IO_param%istack_merged(IO_param%id_rank+1)              &
-     &          - IO_param%istack_merged(IO_param%id_rank))
-!
-      led = nnod * len_multi_int_textline(numdir)
-      allocate(textbuf(nnod))
 !
       if(nnod .eq. 0) then
-        call mpi_sub_read_characters(IO_param, led, tmpchara)
+        led = ione
       else
-        call mpi_sub_read_characters(IO_param, led, textbuf(1))
-      end if
+        ioffset = IO_param%ioff_gl                                      &
+     &           + IO_param%istack_merged(IO_param%id_rank)
 !
-      do i = 1, nnod
-        call read_multi_int_textline(textbuf(i), numdir, idx_tmp)
-        idx(i,1:numdir) = idx_tmp(1:numdir)
-      end do
-      deallocate(textbuf)
+        ilength = len_multi_int_textline(numdir)
+        do i = 1, nnod
+          call read_multi_int_textline                                  &
+     &       (calypso_mpi_seek_read_chara(IO_param%id_file,             &
+     &                                    ioffset, ilength),            &
+     &        numdir, idx_tmp)
+          idx(i,1:numdir) = idx_tmp(1:numdir)
+        end do
+      end if
+      IO_param%ioff_gl = IO_param%ioff_gl                               &
+     &         + IO_param%istack_merged(IO_param%nprocs_in)
 !
       end subroutine mpi_read_1d_gl_address
 !
