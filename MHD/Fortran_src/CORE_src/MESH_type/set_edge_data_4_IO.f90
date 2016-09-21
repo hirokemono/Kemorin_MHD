@@ -58,17 +58,12 @@
 !
       ele_IO%numele = nele
 !
-      sfed_IO%nsf_4_ele =    nsurf
-      sfed_IO%nsurf_in_ele = nedge_4_surf
-!
-      sfed_IO%ned_4_ele = nele
-!
       ele_IO%numele =     edge%numedge
       ele_IO%nnod_4_ele = edge%nnod_4_edge
 !
       call allocate_ele_connect_type(ele_IO)
-      call alloc_surface_connect_IO(sfed_IO)
-      call alloc_edge_connect_IO(sfed_IO)
+      call alloc_surface_connect_IO(nsurf, nedge_4_surf, sfed_IO)
+      call alloc_edge_connect_IO(nele, nedge_4_ele, sfed_IO)
 !
       if      (edge%nnod_4_edge .eq. num_linear_edge) then
         ele_IO%elmtyp(1:edge%numedge) = 111

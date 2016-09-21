@@ -7,8 +7,9 @@
 !>@brief Data arry for mesh_data_IO
 !!
 !!@verbatim
-!!      subroutine alloc_surface_connect_IO(sfed_IO)
-!!      subroutine alloc_edge_connect_IO(sfed_IO)
+!!      subroutine alloc_surface_connect_IO                             &
+!!     &         (numele, num_of_surf, sfed_IO)
+!!      subroutine alloc_edge_connect_IO(numele, num_of_edge, sfed_IO)
 !!
 !!      subroutine dealloc_surface_connect_IO(sfed_IO)
 !!      subroutine dealloc_edge_connect_IO(sfed_IO)
@@ -49,32 +50,31 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine alloc_surface_connect_IO(sfed_IO)
+      subroutine alloc_surface_connect_IO                               &
+     &         (numele, num_of_surf, sfed_IO)
 !
+      integer(kind = kint), intent(in) :: numele, num_of_surf
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
-      integer(kind = kint) :: num1
 !
-!
-      sfed_IO%nsurf_in_ele = 6
-      num1 = sfed_IO%nsf_4_ele
-      allocate( sfed_IO%isf_for_ele(num1,6) )
+      sfed_IO%nsf_4_ele = numele
+      sfed_IO%nsurf_in_ele = num_of_surf
+      allocate( sfed_IO%isf_for_ele(numele,num_of_surf) )
       sfed_IO%isf_for_ele = 0
 !
       end subroutine alloc_surface_connect_IO
 !
 !------------------------------------------------------------------
 !
-      subroutine alloc_edge_connect_IO(sfed_IO)
+      subroutine alloc_edge_connect_IO(numele, num_of_edge, sfed_IO)
 !
+      integer(kind = kint), intent(in) :: numele, num_of_edge
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
-      integer(kind = kint) :: num1
 !
-!
-      sfed_IO%nedge_in_ele = 12
-      num1 = sfed_IO%ned_4_ele
-      allocate(sfed_IO%iedge_for_ele(num1,12) )
+      sfed_IO%ned_4_ele = numele
+      sfed_IO%nedge_in_ele = num_of_edge
+      allocate(sfed_IO%iedge_for_ele(numele,num_of_edge) )
       sfed_IO%iedge_for_ele = 0
 !
       end subroutine alloc_edge_connect_IO

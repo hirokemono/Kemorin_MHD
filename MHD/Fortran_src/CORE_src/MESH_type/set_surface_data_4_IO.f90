@@ -56,12 +56,8 @@
       ele_IO%numele =        surf%numsurf
       ele_IO%nnod_4_ele =    surf%nnod_4_surf
 !
-      sfed_IO%nsf_4_ele =    nele
-      sfed_IO%nsurf_in_ele = nsurf_4_ele
-!
       call allocate_ele_connect_type(ele_IO)
-!
-      call alloc_surface_connect_IO(sfed_IO)
+      call alloc_surface_connect_IO(nele, nsurf_4_ele, sfed_IO)
 !
       if      (surf%nnod_4_surf .eq. num_linear_sf) then
         ele_IO%elmtyp(1:surf%numsurf) = 221
