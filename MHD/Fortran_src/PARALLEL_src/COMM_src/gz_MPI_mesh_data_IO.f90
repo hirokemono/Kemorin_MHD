@@ -115,24 +115,16 @@
 !
 !
       call gz_mpi_read_num_node_ele(IO_param, mesh_IO)
-      call calypso_mpi_barrier
-      write(*,*) 'gz_mpi_read_num_node_ele end'
 !
       call gz_mpi_read_element_info(IO_param, mesh_IO%ele)
-      call calypso_mpi_barrier
-      write(*,*) 'gz_mpi_read_element_info end'
 !
 ! ----  import & export
 !
       call gz_mpi_skip_header(IO_param, len(hd_fem_import()))
       call gz_mpi_read_import_data(IO_param, mesh_IO%nod_comm)
-      call calypso_mpi_barrier
-      write(*,*) 'gz_mpi_read_import_data end'
 !
       call gz_mpi_skip_header(IO_param, len(hd_fem_export()))
       call gz_mpi_read_export_data(IO_param, mesh_IO%nod_comm)
-      call calypso_mpi_barrier
-      write(*,*) 'gz_mpi_read_export_data end'
 !
       end subroutine gz_mpi_read_geometry_data
 !
@@ -150,20 +142,14 @@
       call gz_mpi_skip_header(IO_param, len(hd_fem_nodgrp()))
       call gz_mpi_read_group_data                                       &
      &   (IO_param, mesh_group_IO%nod_grp)
-      call calypso_mpi_barrier
-      write(*,*) 'nod_grp end'
 !  read element group
       call gz_mpi_skip_header(IO_param, len(hd_fem_elegrp()))
       call gz_mpi_read_group_data                                       &
      &   (IO_param, mesh_group_IO%ele_grp)
-      call calypso_mpi_barrier
-      write(*,*) 'ele_grp end'
 !  read surface group
       call gz_mpi_skip_header(IO_param, len(hd_fem_sfgrp()))
       call gz_mpi_read_surf_grp_data                                    &
      &   (IO_param, mesh_group_IO%surf_grp)
-      call calypso_mpi_barrier
-      write(*,*) 'surf_grp end'
 !
       end subroutine gz_mpi_read_mesh_groups
 !
@@ -181,15 +167,11 @@
       call gz_mpi_read_node_position(IO_param,                          &
      &    mesh_IO%node%numnod, ithree, mesh_IO%node%inod_global,        &
      &    mesh_IO%node%xx)
-      call calypso_mpi_barrier
-      write(*,*) 'gz_mpi_read_node_position end'
 !
 !  ----  read element data -------
 !
       call gz_mpi_skip_header(IO_param, len(hd_fem_elem()))
       call gz_mpi_read_num_of_data(IO_param, mesh_IO%ele%numele)
-      call calypso_mpi_barrier
-      write(*,*) 'gz_mpi_read_num_of_data end'
 !
       end subroutine gz_mpi_read_num_node_ele
 !
@@ -203,17 +185,11 @@
 !
       call gz_mpi_skip_header(IO_param, len(hd_fem_para()))
       call gz_mpi_read_domain_info(IO_param, mesh_IO%nod_comm)
-      call calypso_mpi_barrier
-      write(*,*) 'gz_mpi_read_domain_info end'
 !
       call gz_mpi_skip_header(IO_param, len(hd_fem_node()))
       call gz_mpi_read_num_of_data                                      &
      &   (IO_param, mesh_IO%node%internal_node)
-      call calypso_mpi_barrier
-      write(*,*) 'mesh_IO%node%internal_node end', mesh_IO%node%internal_node
       call gz_mpi_read_num_of_data(IO_param, mesh_IO%node%numnod)
-      call calypso_mpi_barrier
-      write(*,*) 'mesh_IO%node%numnod end', mesh_IO%node%numnod
 !
       end subroutine gz_mpi_read_num_node
 !
@@ -241,8 +217,6 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(element_data), intent(inout) :: ele_IO
 !
-      integer (kind = kint) :: num
-!
 !
       call gz_mpi_write_element_type                                    &
      &   (IO_param, iten, ele_IO%numele, ele_IO%elmtyp)
@@ -265,7 +239,7 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(element_data), intent(inout) :: ele_IO
 !
-      integer (kind = kint) :: num, i, num_tmp
+      integer (kind = kint) :: i, num_tmp
 !
 !
       call alloc_element_types(ele_IO)
