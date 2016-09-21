@@ -56,7 +56,7 @@
       type(element_geometry), intent(inout) :: ele_mesh
 !
 !
-      if(iflag_debug.gt.0) write(*,*)' const_ele_comm_tbl'
+      if(iflag_debug.gt.0) write(*,*)' const_global_numnod_list'
       call const_global_numnod_list(mesh%node)
 !
       if(iflag_debug.gt.0) write(*,*)' const_ele_comm_tbl'
@@ -64,15 +64,18 @@
      &    blng_tbl, ele_mesh%ele_comm)
       call const_global_element_id(mesh%ele, ele_mesh%ele_comm)
 !
+      if(iflag_debug.gt.0) write(*,*)' const_edge_comm_table'
+      write(*,*)' const_edge_comm_table', my_rank
+      call const_edge_comm_table(mesh%node, mesh%nod_comm,              &
+     &    ele_mesh%edge, blng_tbl, ele_mesh%edge_comm)
+      if(iflag_debug.gt.0) write(*,*)' const_global_edge_id'
+      call const_global_edge_id(ele_mesh%edge, ele_mesh%edge_comm)
+!
       if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'
+      write(*,*)' const_surf_comm_table', my_rank
       call const_surf_comm_table(mesh%node, mesh%nod_comm,              &
      &    ele_mesh%surf, blng_tbl, ele_mesh%surf_comm)
       call const_global_surface_id(ele_mesh%surf, ele_mesh%surf_comm)
-!
-      if(iflag_debug.gt.0) write(*,*)' const_edge_comm_table'
-      call const_edge_comm_table(mesh%node, mesh%nod_comm,              &
-     &    ele_mesh%edge, blng_tbl, ele_mesh%edge_comm)
-      call const_global_edge_id(ele_mesh%edge, ele_mesh%edge_comm)
 !
       end subroutine const_element_comm_tbls
 !
@@ -184,15 +187,26 @@
 !
 !
       call alloc_numedge_stack(nprocs, edge)
+      call calypso_mpi_barrier
 !
+      if(iflag_debug.gt.0) write(*,*)                                   &
+     &          ' count_number_of_node_stack in edge'
       call count_number_of_node_stack                                   &
      &  (edge%numedge, edge%istack_numedge)
+      call calypso_mpi_barrier
+!
+      if(iflag_debug.gt.0) write(*,*)                                   &
+     &          ' count_number_of_node_stack in edge'
       call count_number_of_node_stack                                   &
      &  (edge%internal_edge, edge%istack_interedge)
+      call calypso_mpi_barrier
 !
+      if(iflag_debug.gt.0) write(*,*)                                   &
+     &          ' set_global_ele_id in edge'
       call set_global_ele_id                                            &
      &   (txt, edge%numedge, edge%istack_interedge,                     &
      &    edge%interior_edge, ed_comm, edge%iedge_global)
+      call calypso_mpi_barrier
 !
       end subroutine const_global_edge_id
 !
@@ -271,14 +285,24 @@
       character(len=kchara), parameter :: txt = 'edge'
 !
 !
+      if(iflag_debug.gt.0) write(*,*) ' set_edge_id_4_node in edge'
       call set_edge_id_4_node(node, edge, belongs%blng_edge)
+      call calypso_mpi_barrier
+!
+      if(iflag_debug.gt.0) write(*,*)                                   &
+     &          ' belonged_edge_id_4_node in edge'
       call belonged_edge_id_4_node(node, edge, belongs%host_edge)
+      call calypso_mpi_barrier
+!
+      if(iflag_debug.gt.0) write(*,*)                                   &
+     &          ' const_comm_table_by_connenct in edge'
       call const_comm_table_by_connenct                                 &
      &    (txt, edge%numedge, edge%nnod_4_edge, edge%ie_edge,           &
      &    edge%interior_edge, edge%x_edge, node, nod_comm,              &
      &    belongs%blng_edge, belongs%host_edge, edge_comm)
       call dealloc_iele_belonged(belongs%host_edge)
       call dealloc_iele_belonged(belongs%blng_edge)
+      call calypso_mpi_barrier
 !
       end subroutine const_edge_comm_table
 !
