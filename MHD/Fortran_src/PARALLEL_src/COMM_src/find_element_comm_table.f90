@@ -140,6 +140,7 @@
           num = iele_stack_ht_node(inod  ) - jst
           do jnum = 1, num
             icou = icou + 1
+            if(icou .gt. istack_import_e(num_neib_e)) write(*,*) 'Wrong!!', jnum
             jele = iele_ht_node(jst+jnum)
             item_import_e(icou) = jele
 !
@@ -160,7 +161,8 @@
               end if
             end do
 !
-         end do
+          end do
+          write(*,*) 'loop jnum end'
         end do
       end do
 !
