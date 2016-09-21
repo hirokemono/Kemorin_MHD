@@ -140,7 +140,6 @@
           num = iele_stack_ht_node(inod  ) - jst
           do jnum = 1, num
             icou = icou + 1
-            if(icou .gt. istack_import_e(num_neib_e)) write(*,*) 'Wrong!!', jnum
             jele = iele_ht_node(jst+jnum)
             item_import_e(icou) = jele
 !
@@ -163,10 +162,100 @@
 !
           end do
         end do
-          write(*,*) 'loop ip end', ip
       end do
 !
       end subroutine  set_element_import_item
+!
+!-----------------------------------------------------------------------
+!
+      subroutine set_element_import_item_e                              &
+     &         (numnod, internal_node, numele, nnod_4_ele, ie,          &
+     &          inod_global, x_ele, iele_stack_ht_node, iele_ht_node,   &
+     &          inod_local, num_neib, istack_import, item_import,       &
+     &          num_neib_e, istack_import_e, item_import_e,             &
+     &          inod_import_e, inod_import_l, xe_import)
+!
+      integer(kind = kint), intent(in) :: numnod, internal_node
+      integer(kind = kint), intent(in) :: numele, nnod_4_ele
+      integer(kind = kint), intent(in) :: ie(numele, nnod_4_ele)
+      integer(kind = kint_gl), intent(in) :: inod_global(numnod)
+      real(kind = kreal), intent(in)  :: x_ele(numele,3)
+      integer(kind = kint), intent(in) :: iele_stack_ht_node(0:numnod)
+      integer(kind = kint), intent(in)                                  &
+     &        :: iele_ht_node(iele_stack_ht_node(numnod))
+      integer(kind = kint), intent(in) :: inod_local(numnod)
+!
+      integer(kind = kint), intent(in) :: num_neib
+      integer(kind = kint), intent(in) :: istack_import(0:num_neib)
+      integer(kind = kint), intent(in)                                  &
+     &              :: item_import(istack_import(num_neib))
+!
+      integer(kind = kint), intent(in) :: num_neib_e
+      integer(kind = kint), intent(in) :: istack_import_e(0:num_neib_e)
+!
+      integer(kind = kint), intent(inout)                               &
+     &        :: item_import_e(istack_import_e(num_neib_e))
+      integer(kind = kint_gl), intent(inout)                            &
+     &        :: inod_import_e(istack_import_e(num_neib_e))
+      integer(kind = kint), intent(inout)                               &
+     &        :: inod_import_l(istack_import_e(num_neib_e))
+      real(kind = kreal), intent(inout)                                 &
+     &        :: xe_import(3*istack_import_e(num_neib_e))
+!
+      integer(kind = kint) :: ip, icou
+      integer(kind = kint) :: ist, ied, inum, inod
+      integer(kind = kint) :: jst, num, jnum, jele
+      integer(kind = kint) :: k1, jnod, minimum, nele
+!
+!
+      do ip = 1, numnod
+        ist = iele_stack_ht_node(ip-1) + 1
+        ied = iele_stack_ht_node(ip)
+        do inum = ist, ied
+           if(iele_ht_node(inum) .le. 0 .or. iele_ht_node(inum) .gt. numele) write(*,*)   &
+     &        'Wrong iele_ht_node at ', inum, ip, iele_ht_node(inum)
+        end do
+      end do
+      call calypso_mpi_barrier
+      write(*,*) 'element list checked'
+!
+      do ip = 1, num_neib
+        ist = istack_import(ip-1) + 1
+        ied = istack_import(ip)
+        icou = istack_import_e(ip-1)
+        do inum = ist, ied
+          inod = item_import(inum)
+          jst = iele_stack_ht_node(inod-1)
+          num = iele_stack_ht_node(inod  ) - jst
+          do jnum = 1, num
+            icou = icou + 1
+            jele = iele_ht_node(jst+jnum)
+            item_import_e(icou) = jele
+!
+            inod_import_e(icou) = inod_global(inod)
+            inod_import_l(icou) = 0
+            xe_import(3*icou-2) = x_ele(jele,1)
+            xe_import(3*icou-1) = x_ele(jele,2)
+            xe_import(3*icou  ) = x_ele(jele,3)
+!
+            minimum = num
+            do k1 = 1, nnod_4_ele
+              jnod = ie(jele,k1)
+              if(jnod .gt. internal_node) cycle
+              nele = iele_ht_node(jnod) - iele_ht_node(jnod-1)
+              if(nele .lt. minimum) then
+                minimum = nele
+                inod_import_l(icou) = inod_local(jnod)
+              end if
+            end do
+!
+          end do
+        end do
+      end do
+      call calypso_mpi_barrier
+      write(*,*) 'last iclu', istack_import_e(num_neib_e), icou
+!
+      end subroutine  set_element_import_item_e
 !
 !-----------------------------------------------------------------------
 !
