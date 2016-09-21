@@ -35,8 +35,9 @@
 !!      subroutine calypso_mpi_seek_read_endian(id_mpi_file, ioff_gl)
 !!      subroutine calypso_mpi_seek_read_lenchara                       &
 !!     &         (id_mpi_file, ioffset, ilength, charabuf)
-!!      subroutine calypso_mpi_seek_read_chara                          &
-!!     &         (id_mpi_file, ioffset, ilength, c1buf)
+!!      function calypso_mpi_seek_read_chara                            &
+!!     &       (id_mpi_file, ioffset, ilength)
+!!        character(len=ilength) :: calypso_mpi_seek_read_chara
 !!      subroutine calypso_mpi_seek_read_real                           &
 !!     &         (id_mpi_file, ioffset, ilength, vector)
 !!      subroutine calypso_mpi_seek_read_int                            &
@@ -372,28 +373,21 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine calypso_mpi_seek_read_chara                            &
-     &         (id_mpi_file, ioffset, ilength, c1buf)
+      function calypso_mpi_seek_read_chara                              &
+     &       (id_mpi_file, ioffset, ilength)
 !
       integer, intent(in) ::  id_mpi_file
       integer(kind = MPI_OFFSET_KIND), intent(inout) :: ioffset
       integer(kind = kint), intent(in) :: ilength
-      character(len=1), intent(inout) :: c1buf(ilength)
-!
-      integer(kind = kint_gl) :: l8_byte
+      character(len=ilength) :: calypso_mpi_seek_read_chara
 !
 !
       call MPI_FILE_SEEK(id_mpi_file, ioffset, MPI_SEEK_SET, ierr_MPI)
-      call MPI_FILE_READ(id_mpi_file, c1buf(1), ilength,                &
-     &      CALYPSO_CHARACTER, sta1_IO, ierr_MPI)
+      call MPI_FILE_READ(id_mpi_file, calypso_mpi_seek_read_chara,      &
+     &    ilength, CALYPSO_CHARACTER, sta1_IO, ierr_MPI)
       ioffset = ioffset + ilength
 !
-      if(iflag_endian .eq. i_XINU) then
-        l8_byte = ilength * kint
-        call byte_swap_f(l8_byte, c1buf(1))
-      end if
-!
-      end subroutine calypso_mpi_seek_read_chara
+      end function calypso_mpi_seek_read_chara
 !
 !  ---------------------------------------------------------------------
 !

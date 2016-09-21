@@ -335,8 +335,7 @@
       integer(kind=kint), intent(in) :: num, ncolumn
       integer(kind=kint), intent(in) :: int_dat(num)
 !
-      integer(kind = kint) :: i, nrest, lst, led
-      character(len = num*len_int_txt) :: textbuf
+      integer(kind = kint) :: i, nrest, loop, led
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
@@ -344,32 +343,32 @@
 !
       if(num .le. 0) then
         led = ione
-      else if(num .le. ncolumn) then
-        led = len_multi_6digit_line(num)
-        textbuf(1:led) =  mul_6digit_int_line(num, int_dat(1))
       else if(num .gt. 0) then
-        lst = 0
-        led = lst + len_multi_6digit_line(ncolumn)
-        textbuf(lst+1:led) =  mul_6digit_int_line(ncolumn, int_dat(1))
-        do i = 1, (num-1)/ncolumn - 1
-          lst = led
-          led = lst + len_multi_6digit_line(ncolumn)
-          textbuf(lst+1:led)                                            &
-     &            =  mul_6digit_int_line(ncolumn, int_dat(ncolumn*i+1))
-        end do
         nrest = mod((num-1),ncolumn) + 1
-        lst = led
-        led = lst + len_multi_6digit_line(nrest)
-        textbuf(lst+1:led)                                              &
-     &            =  mul_6digit_int_line(nrest, int_dat(num-nrest+1))
+        loop = (num-1)/ncolumn
+        led = len_multi_6digit_line(ncolumn) * loop                     &
+     &       + len_multi_6digit_line(nrest)
       end if
 !
       call mpi_write_stack_over_domain(IO_param, led)
 !
       if(num .le. 0) then
         call mpi_write_characters(IO_param, ione, char(10))
-      else
-        call mpi_write_characters(IO_param, led, textbuf)
+      else if(num .gt. 0) then
+        ioffset = IO_param%ioff_gl                                      &
+     &         + IO_param%istack_merged(IO_param%id_rank)
+        IO_param%ioff_gl = IO_param%ioff_gl                             &
+     &         + IO_param%istack_merged(IO_param%nprocs_in)
+!
+        do i = 0, (num-1)/ncolumn - 1
+          call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,  &
+     &        len_multi_6digit_line(ncolumn),                           &
+     &        mul_6digit_int_line(ncolumn, int_dat(ncolumn*i+1)))
+        end do
+        nrest = mod((num-1),ncolumn) + 1
+        call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,    &
+     &      len_multi_6digit_line(nrest),                               &
+     &      mul_6digit_int_line(nrest, int_dat(num-nrest+1)))
       end if
 !
       end subroutine mpi_write_element_type

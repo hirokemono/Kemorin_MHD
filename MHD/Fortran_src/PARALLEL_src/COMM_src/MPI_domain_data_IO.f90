@@ -334,41 +334,42 @@
       integer(kind=kint), intent(in) :: num, ncolumn
       integer(kind=kint), intent(in) :: int_dat(num)
 !
-      integer(kind = kint) :: i, nrest, lst, led
-      character(len = num*len_int_txt) :: textbuf
+      integer(kind = kint) :: i, nrest, loop, led
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
       call mpi_write_num_of_data(IO_param, num)
 !
       if(num .le. 0) then
         led = ione
-      else if(num .le. ncolumn) then
-        led = len_multi_int_textline(num)
-        textbuf(1:led) =  multi_int_textline(num, int_dat(1))
       else if(num .gt. 0) then
-        lst = 0
-        led = lst + len_multi_int_textline(ncolumn)
-        textbuf(lst+1:led) =  multi_int_textline(ncolumn, int_dat(1))
-        do i = 1, (num-1)/ncolumn - 1
-          lst = led
-          led = lst + len_multi_int_textline(ncolumn)
-          textbuf(lst+1:led)                                            &
-     &            =  multi_int_textline(ncolumn, int_dat(ncolumn*i+1))
-        end do
         nrest = mod((num-1),ncolumn) + 1
-        lst = led
-        led = lst + len_multi_int_textline(nrest)
-        textbuf(lst+1:led)                                              &
-     &            =  multi_int_textline(nrest, int_dat(num-nrest+1))
+        loop = (num-1)/ncolumn
+        led = len_multi_int_textline(ncolumn) * loop                    &
+     &       + len_multi_int_textline(nrest)
       end if
 !
       call mpi_write_stack_over_domain(IO_param, led)
 !
       if(num .le. 0) then
         call mpi_write_characters(IO_param, ione, char(10))
-      else
-        call mpi_write_characters(IO_param, led, textbuf)
+      else if(num .gt. 0) then
+        ioffset = IO_param%ioff_gl                                      &
+     &         + IO_param%istack_merged(IO_param%id_rank)
+        IO_param%ioff_gl = IO_param%ioff_gl                             &
+     &         + IO_param%istack_merged(IO_param%nprocs_in)
+!
+        do i = 0, (num-1)/ncolumn - 1
+          call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,  &
+     &        len_multi_int_textline(ncolumn),                          &
+     &        multi_int_textline(ncolumn, int_dat(ncolumn*i+1)))
+        end do
+        nrest = mod((num-1),ncolumn) + 1
+        call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,    &
+     &      len_multi_int_textline(nrest),                              &
+     &      multi_int_textline(nrest, int_dat(num-nrest+1)))
       end if
+      call calypso_mpi_barrier
 !
       end subroutine mpi_write_comm_table
 !

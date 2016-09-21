@@ -329,7 +329,7 @@
       ilength = num * kchara
       if(my_rank .eq. 0) then
         ioffset = IO_param%ioff_gl
-        call calypso_mpi_seek_read_chara                                &
+        call calypso_mpi_seek_read_gz                                   &
      &     (IO_param%id_file, ioffset, ilength, chara_dat(1))
       end if
       IO_param%ioff_gl = IO_param%ioff_gl + ilength
