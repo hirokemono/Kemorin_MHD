@@ -64,18 +64,18 @@
      &    blng_tbl, ele_mesh%ele_comm)
       call const_global_element_id(mesh%ele, ele_mesh%ele_comm)
 !
+      if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'
+      write(*,*)' const_surf_comm_table', my_rank
+      call const_surf_comm_table(mesh%node, mesh%nod_comm,              &
+     &    ele_mesh%surf, blng_tbl, ele_mesh%surf_comm)
+      call const_global_surface_id(ele_mesh%surf, ele_mesh%surf_comm)
+!
       if(iflag_debug.gt.0) write(*,*)' const_edge_comm_table'
       write(*,*)' const_edge_comm_table', my_rank
       call const_edge_comm_table(mesh%node, mesh%nod_comm,              &
      &    ele_mesh%edge, blng_tbl, ele_mesh%edge_comm)
       if(iflag_debug.gt.0) write(*,*)' const_global_edge_id'
       call const_global_edge_id(ele_mesh%edge, ele_mesh%edge_comm)
-!
-      if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'
-      write(*,*)' const_surf_comm_table', my_rank
-      call const_surf_comm_table(mesh%node, mesh%nod_comm,              &
-     &    ele_mesh%surf, blng_tbl, ele_mesh%surf_comm)
-      call const_global_surface_id(ele_mesh%surf, ele_mesh%surf_comm)
 !
       end subroutine const_element_comm_tbls
 !
