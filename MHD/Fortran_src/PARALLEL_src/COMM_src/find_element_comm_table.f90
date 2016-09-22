@@ -154,7 +154,8 @@
             do k1 = 1, nnod_4_ele
               jnod = ie(jele,k1)
               if(jnod .gt. internal_node) cycle
-              nele = iele_ht_node(jnod) - iele_ht_node(jnod-1)
+              nele = iele_stack_ht_node(jnod)                           &
+     &              - iele_stack_ht_node(jnod-1)
               if(nele .lt. minimum) then
                 minimum = nele
                 inod_import_l(icou) = inod_local(jnod)
