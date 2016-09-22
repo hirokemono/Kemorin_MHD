@@ -100,7 +100,7 @@
         ist = istack_import(ip-1)
         num = (istack_import(ip  ) - istack_import(ip-1))
         call MPI_ISEND(item_import(ist+1), num,                         &
-     &                 CALYPSO_INTEGER,id_neib(ip), 0,                  &
+     &                 CALYPSO_INTEGER, id_neib(ip), 0,                 &
      &                 CALYPSO_COMM, req1(ip), ierr_MPI)
       end do
 !
@@ -108,7 +108,7 @@
         ist = istack_export(ip-1)
         num = (istack_export(ip  ) - istack_export(ip-1))
         call MPI_IRECV(item_local(ist+1), num,                          &
-     &                 CALYPSO_GLOBAL_INT, id_neib(ip), 0,              &
+     &                 CALYPSO_INTEGER, id_neib(ip), 0,                 &
      &                 CALYPSO_COMM, req2(ip), ierr_MPI)
       end do
       call MPI_WAITALL(num_neib, req2(1), sta2(1,1), ierr_MPI)
