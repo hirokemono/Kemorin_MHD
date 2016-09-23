@@ -349,14 +349,16 @@
 !
       call mpi_write_stack_over_domain(IO_param, led)
 !
-      if(num .le. 0) then
-        call mpi_write_characters(IO_param, ione, char(10))
-      else if(num .gt. 0) then
-        ioffset = IO_param%ioff_gl                                      &
+      ioffset = IO_param%ioff_gl                                        &
      &         + IO_param%istack_merged(IO_param%id_rank)
-        IO_param%ioff_gl = IO_param%ioff_gl                             &
+      IO_param%ioff_gl = IO_param%ioff_gl                               &
      &         + IO_param%istack_merged(IO_param%nprocs_in)
 !
+      if(IO_param%id_rank .ge. IO_param%nprocs_in) return
+      if(num .le. 0) then
+        call calypso_mpi_seek_write_chara                               &
+     &     (IO_param%id_file, ioffset, ione, char(10))
+      else if(num .gt. 0) then
         do i = 0, (num-1)/ncolumn - 1
           call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,  &
      &        len_multi_6digit_line(ncolumn),                           &

@@ -218,13 +218,16 @@
 !
       call mpi_write_stack_over_domain(IO_param, led)
 !
-      if(nele .le. 0) then
-        call mpi_write_characters(IO_param, ione, char(10))
-      else
-        ioffset = IO_param%ioff_gl                                      &
+      ioffset = IO_param%ioff_gl                                        &
      &         + IO_param%istack_merged(IO_param%id_rank)
-        IO_param%ioff_gl = IO_param%ioff_gl                             &
+      IO_param%ioff_gl = IO_param%ioff_gl                               &
      &         + IO_param%istack_merged(IO_param%nprocs_in)
+!
+      if(IO_param%id_rank .ge. IO_param%nprocs_in) return
+      if(nele .le. 0) then
+        call calypso_mpi_seek_write_chara                               &
+     &     (IO_param%id_file, ioffset, ione, char(10))
+      else
         do i = 1, nele
           ie_tmp(1:nnod_4_ele) = ie(i,1:nnod_4_ele)
           call calypso_mpi_seek_write_chara                             &
@@ -233,7 +236,6 @@
      &                                  nnod_4_ele, ie_tmp))
         end do
       end if
-      call calypso_mpi_barrier
 !
       end subroutine mpi_write_ele_connect
 !

@@ -20,7 +20,6 @@
 !!      subroutine mpi_write_charahead(IO_param, ilength, chara_dat)
 !!      subroutine mpi_write_num_of_data(IO_param, num)
 !!      subroutine mpi_write_stack_over_domain(IO_param, num)
-!!      subroutine mpi_write_characters(IO_param, ilength, chara_dat)
 !!
 !!      subroutine mpi_read_num_of_data(IO_param, num)
 !!      function  mpi_read_charahead(IO_param, ilength)
@@ -164,30 +163,6 @@
      &                        IO_param%istack_merged))
 !
       end subroutine mpi_write_stack_over_domain
-!
-! -----------------------------------------------------------------------
-!
-      subroutine mpi_write_characters(IO_param, ilength, chara_dat)
-!
-      type(calypso_MPI_IO_params), intent(inout) :: IO_param
-!
-      integer(kind = kint), intent(in) :: ilength
-      character(len=1), intent(in) :: chara_dat(ilength)
-!
-      integer(kind = MPI_OFFSET_KIND) :: ioffset
-!
-!
-      if(ilength .le. 0) return
-      if(IO_param%id_rank .lt. IO_param%nprocs_in) then
-        ioffset = IO_param%ioff_gl                                      &
-     &         + IO_param%istack_merged(IO_param%id_rank)
-        call calypso_mpi_seek_write_chara                               &
-     &     (IO_param%id_file, ioffset, ilength, chara_dat(1))
-      end if
-      IO_param%ioff_gl = IO_param%ioff_gl                               &
-     &         + IO_param%istack_merged(IO_param%nprocs_in)
-!
-      end subroutine mpi_write_characters
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

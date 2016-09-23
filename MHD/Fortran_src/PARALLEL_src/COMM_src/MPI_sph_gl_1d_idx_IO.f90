@@ -348,13 +348,16 @@
       led = nnod * len_int8_and_vector_textline(numdir)
       call mpi_write_stack_over_domain(IO_param, led)
 !
-      if(nnod .le. 0) then
-        call mpi_write_characters(IO_param, ione, char(10))
-      else
-        ioffset = IO_param%ioff_gl                                      &
+      ioffset = IO_param%ioff_gl                                        &
      &         + IO_param%istack_merged(IO_param%id_rank)
-        IO_param%ioff_gl = IO_param%ioff_gl                             &
+      IO_param%ioff_gl = IO_param%ioff_gl                               &
      &         + IO_param%istack_merged(IO_param%nprocs_in)
+!
+      if(IO_param%id_rank .ge. IO_param%nprocs_in) return
+      if(nnod .le. 0) then
+        call calypso_mpi_seek_write_chara                               &
+     &     (IO_param%id_file, ioffset, ione, char(10))
+      else
         do i = 1, nnod
           xx_tmp(1:numdir) = xx(i,1:numdir)
           call calypso_mpi_seek_write_chara                             &
@@ -391,13 +394,15 @@
 !
       call mpi_write_stack_over_domain(IO_param, led)
 !
-      if(nnod .le. 0) then
-        call mpi_write_characters(IO_param, ione, char(10))
-      else
-        ioffset = IO_param%ioff_gl                                      &
+      ioffset = IO_param%ioff_gl                                        &
      &         + IO_param%istack_merged(IO_param%id_rank)
-        IO_param%ioff_gl = IO_param%ioff_gl                             &
+      IO_param%ioff_gl = IO_param%ioff_gl                               &
      &         + IO_param%istack_merged(IO_param%nprocs_in)
+!
+      if(nnod .le. 0) then
+        call calypso_mpi_seek_write_chara                               &
+     &     (IO_param%id_file, ioffset, ione, char(10))
+      else
         do i = 1, nnod
           idx_tmp(1:numdir) = idx(i,1:numdir)
           call calypso_mpi_seek_write_chara                             &
