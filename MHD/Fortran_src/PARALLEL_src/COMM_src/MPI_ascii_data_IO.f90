@@ -119,7 +119,7 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
       integer(kind = kint), intent(in) :: ilength
-      character(len=1), intent(in) :: chara_dat(ilength)
+      character(len=ilength), intent(in) :: chara_dat
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
@@ -127,7 +127,7 @@
       if(my_rank .eq. 0) then
         ioffset = IO_param%ioff_gl
         call calypso_mpi_seek_write_chara                               &
-     &     (IO_param%id_file, ioffset, ilength, chara_dat(1))
+     &     (IO_param%id_file, ioffset, ilength, chara_dat)
       end if
       IO_param%ioff_gl = IO_param%ioff_gl + ilength
 !
@@ -221,8 +221,8 @@
 !
       if(my_rank .eq. 0) then
         ioffset = IO_param%ioff_gl
-        call calypso_mpi_seek_read_gz(IO_param%id_file,                 &
-     &      ioffset, ilength, mpi_read_charahead)
+        mpi_read_charahead = calypso_mpi_seek_read_chara                &
+     &                     (IO_param%id_file, ioffset, ilength)
       end if
 !
       IO_param%ioff_gl = IO_param%ioff_gl + ilength
@@ -247,8 +247,8 @@
       if(IO_param%id_rank .lt. IO_param%nprocs_in) then
         ioffset = IO_param%ioff_gl                                      &
      &           + IO_param%istack_merged(IO_param%id_rank)
-        call calypso_mpi_seek_read_gz                                   &
-     &     (IO_param%id_file, ioffset, ilength, mpi_read_characters)
+        mpi_read_characters = calypso_mpi_seek_read_chara               &
+     &                     (IO_param%id_file, ioffset, ilength)
       end if
       IO_param%ioff_gl = IO_param%ioff_gl                               &
      &         + IO_param%istack_merged(IO_param%nprocs_in)
