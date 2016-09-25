@@ -22,6 +22,8 @@
 !
       implicit  none
 !
+      private :: set_control_pvr_movie
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -127,10 +129,9 @@
       type(pvr_colormap_parameter), intent(inout) :: color_param
       type(pvr_colorbar_parameter), intent(inout) :: cbar_param
 !
-      integer(kind = kint) :: i, icheck_ncomp(1), ist
+      integer(kind = kint) :: icheck_ncomp(1)
       integer(kind = kint) :: ifld_tmp(1), icomp_tmp(1), ncomp_tmp(1)
       character(len = kchara) :: fldname_tmp(1)
-      character(len = kchara) :: tmpchara
 !
 !
       call set_components_4_viz                                         &
@@ -171,9 +172,39 @@
 !         field_pvr%iflag_enhanse = IFLAG_NONE
 !      end if
 !
-      if      (pvr%num_frames_ctl%iflag .gt.    0                       &
-     &   .and. pvr%rotation_axis_ctl%iflag .gt. 0) then
-        tmpchara = pvr%rotation_axis_ctl%charavalue
+      call set_control_pvr_movie(pvr%movie, view_param)
+!
+!    set colormap setting
+      call set_control_pvr_lighting(pvr%color, color_param)
+      call set_control_pvr_colormap(pvr%color, color_param)
+!
+!    set colorbar setting
+      call set_control_pvr_colorbar(pvr%colorbar, cbar_param)
+!
+!   set transfer matrix
+!
+      call s_set_pvr_modelview_matrix(pvr%mat, view_param)
+!
+      end subroutine set_control_pvr
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_control_pvr_movie(movie, view_param)
+!
+      use t_control_data_pvr_misc
+      use t_control_params_4_pvr
+      use t_geometries_in_pvr_screen
+      use skip_comment_f
+!
+      type(pvr_movie_ctl), intent(in) :: movie
+      type(pvr_view_parameter), intent(inout) :: view_param
+!
+      character(len = kchara) :: tmpchara
+!
+!
+      if      (movie%num_frames_ctl%iflag .gt.    0                     &
+     &   .and. movie%rotation_axis_ctl%iflag .gt. 0) then
+        tmpchara = movie%rotation_axis_ctl%charavalue
         if     (cmp_no_case(tmpchara, 'x')) then
           view_param%iprm_pvr_rot(1) = 1
           view_param%iflag_rotate_snap = 1
@@ -188,7 +219,7 @@
           view_param%iflag_rotate_snap = 0
         end if
 !
-        view_param%iprm_pvr_rot(2) = pvr%num_frames_ctl%intvalue
+        view_param%iprm_pvr_rot(2) = movie%num_frames_ctl%intvalue
       else
         view_param%iflag_rotate_snap = 0
         view_param%iprm_pvr_rot(1) = 0
@@ -204,68 +235,7 @@
         view_param%iend_rot =   view_param%iprm_pvr_rot(2)
       end if
 !
-!    set colormap setting
-!
-      call set_control_pvr_lighting(pvr%color, color_param)
-      call set_control_pvr_colormap(pvr%color, color_param)
-!
-!    set colorbar setting
-!
-      cbar_param%iflag_pvr_colorbar = 0
-      if( pvr%colorbar_switch_ctl%iflag .gt. 0) then
-        tmpchara = pvr%colorbar_switch_ctl%charavalue
-        if   (cmp_no_case(tmpchara, 'on')                               &
-     &   .or. cmp_no_case(tmpchara, 'data')                             &
-     &   .or. cmp_no_case(tmpchara, 'equi_data')) then
-          cbar_param%iflag_pvr_colorbar = 1
-        end if
-      end if
-!
-      if (cbar_param%iflag_pvr_colorbar .gt. 0) then
-        if( pvr%colorbar_scale_ctl%iflag .gt. 0) then
-          tmpchara = pvr%colorbar_scale_ctl%charavalue
-          if  (cmp_no_case(tmpchara, 'on')) then
-            cbar_param%iflag_pvr_cbar_nums = 1
-!
-            if (pvr%font_size_ctl%iflag .gt. 0) then
-              cbar_param%iscale_font = pvr%font_size_ctl%intvalue
-            else
-              cbar_param%iscale_font = 1
-            end if
-!
-            if (pvr%ngrid_cbar_ctl%iflag .gt. 0) then
-              cbar_param%ntick_pvr_colorbar                             &
-     &                      = pvr%ngrid_cbar_ctl%intvalue + 2
-            else
-              cbar_param%ntick_pvr_colorbar = 3
-            end if
-!
-            if (pvr%zeromarker_flag_ctl%iflag .gt. 0) then
-              tmpchara = pvr%zeromarker_flag_ctl%charavalue
-              if  (cmp_no_case(tmpchara, 'on')) then
-                cbar_param%iflag_pvr_zero_mark = 1
-              else
-                cbar_param%iflag_pvr_zero_mark = 0
-              end if
-            else
-              cbar_param%iflag_pvr_zero_mark = 0
-            end if
-!
-          end if
-        end if
-!
-        if( pvr%cbar_range_ctl%iflag .gt. 0) then
-          cbar_param%cbar_range(1:2)                                    &
-     &                = pvr%cbar_range_ctl%realvalue(1:2)
-        end if
-!
-      end if
-!
-!   set transfer matrix
-!
-      call s_set_pvr_modelview_matrix(pvr%mat, view_param)
-!
-      end subroutine set_control_pvr
+      end subroutine set_control_pvr_movie
 !
 !  ---------------------------------------------------------------------
 !
