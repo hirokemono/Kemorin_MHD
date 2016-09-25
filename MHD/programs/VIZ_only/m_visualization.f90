@@ -8,7 +8,6 @@
 !!
 !!@verbatim
 !!      subroutine mesh_setup_4_VIZ
-!!      subroutine jacobian_4_VIZ
 !!      subroutine element_normals_4_VIZ
 !!@endverbatim
 !
@@ -103,24 +102,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine jacobian_4_VIZ
-!
-      use m_fem_gauss_int_coefs
-      use int_volume_of_domain
-!
-!
-      if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_volume'
-      call max_int_point_by_etype(femmesh_VIZ%mesh%ele%nnod_4_ele)
-      call const_jacobian_and_volume(femmesh_VIZ%mesh%node,             &
-     &    femmesh_VIZ%group%surf_grp, femmesh_VIZ%group%infty_grp,      &
-     &    femmesh_VIZ%mesh%ele, jac_VIZ_l, jac_VIZ_q)
-!
-      end subroutine jacobian_4_VIZ
-!
-! ----------------------------------------------------------------------
-!
       subroutine element_normals_4_VIZ
 !
+      use m_fem_gauss_int_coefs
+!
+      use int_volume_of_domain
       use set_ele_id_4_node_type
       use set_normal_vectors
       use set_surf_grp_vectors
@@ -133,23 +119,10 @@
       call set_ele_id_4_node                                            &
      &   (femmesh_VIZ%mesh%node, femmesh_VIZ%mesh%ele, ele_4_nod_VIZ)
 !
-      call jacobian_4_VIZ
-!
-!     --------------------- Surface jacobian for fieldline
-!
-      if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
-      call const_normal_vector                                          &
-     &   (femmesh_VIZ%mesh%node, elemesh_VIZ%surf)
-!
-      if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
-      call pick_normal_of_surf_group                                    &
-     &   (elemesh_VIZ%surf, femmesh_VIZ%group%surf_grp,                 &
-     &    femmesh_VIZ%group%tbls_surf_grp,                              &
-     &    femmesh_VIZ%group%surf_grp_geom)
-!
-      if (iflag_debug.eq.1)  write(*,*) 's_sum_normal_4_surf_group'
-      call s_sum_normal_4_surf_group(femmesh_VIZ%mesh%ele,              &
-     &    femmesh_VIZ%group%surf_grp, femmesh_VIZ%group%surf_grp_geom)
+      if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_volume'
+      call max_int_point_by_etype(femmesh_VIZ%mesh%ele%nnod_4_ele)
+      call const_jacobian_volume_normals(femmesh_VIZ%mesh,              &
+     &    elemesh_VIZ%surf, femmesh_VIZ%group, jac_VIZ_l, jac_VIZ_q)
 !
       end subroutine element_normals_4_VIZ
 !

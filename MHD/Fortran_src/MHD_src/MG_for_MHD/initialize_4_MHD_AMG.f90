@@ -55,7 +55,7 @@
       use set_djds_connectivity_type
       use set_djds_connect_type_MHD
       use set_normal_vectors
-      use int_surface_param_type
+      use int_surface_params_MHD
       use set_surface_id_MHD
       use int_type_mass_matrices
       use set_MHD_idx_4_mat_type
@@ -259,7 +259,7 @@
      &         'int_normal_4_all_surface', i_level
         call int_normal_4_all_surface(MG_ele_mesh(i_level)%surf,        &
      &      MG_jacobians(i_level)%jac_2d)
-        call s_int_surface_param_type(MG_mesh(i_level)%mesh,            &
+        call int_surface_parameters(MG_mesh(i_level)%mesh,              &
      &      MG_ele_mesh(i_level)%surf, MG_mesh(i_level)%group,          &
      &      MG_FEM_mat(i_level)%surf_wk)
       end do

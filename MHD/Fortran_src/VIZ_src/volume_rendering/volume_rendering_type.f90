@@ -42,7 +42,7 @@
 !
 !
       call PVR_initialize(fem%mesh%node, fem%mesh%ele,                  &
-     &    ele_mesh_psf%surf, fem%group%ele_grp, fld_nod)
+     &    ele_mesh_psf%surf, fem%group, fld_nod)
       call calypso_MPI_barrier
 !
       end subroutine init_visualize_pvr_type
@@ -64,7 +64,7 @@
 !
 !
       call PVR_visualize(istep_pvr, fem%mesh%node, fem%mesh%ele,        &
-     &    ele_mesh_psf%surf, jac_3d, fld_nod)
+     &    ele_mesh_psf%surf, fem%group, jac_3d, fld_nod)
 !
       end subroutine visualize_pvr_type
 !

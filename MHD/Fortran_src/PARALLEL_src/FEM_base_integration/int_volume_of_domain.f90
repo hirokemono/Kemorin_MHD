@@ -1,28 +1,38 @@
-!
-!     module int_volume_of_domain
-!
-!        programmed by H.Matsui and H.Okuda
-!                                    on July 2000 (ver 1.1)
-!        Modified by H. Matsui on Aug., 2006
-!        Modified by H. Matsui on June, 2007
-!
-!      subroutine const_jacobian_and_volume(node, sf_grp,               &
-!     &         infinity_list, ele, jac_3d_l, jac_3d_q)
-!      subroutine const_jacobian_and_vol_layer(node, sf_grp,            &
-!     &          infinity_list, ele, jac_3d_l, jac_3d_q, layer_tbl)
-!        type(node_data), intent(in) :: node
-!        type(surface_group_data), intent(in) :: sf_grp
-!        type(scalar_surf_BC_list), intent(in) :: infinity_list
-!        type(element_data), intent(inout) :: ele
-!        type(jacobians_3d), intent(inout) :: jac_3d_l, jac_3d_q
-!        type(layering_tbl), intent(inout) :: layer_tbl
-!      subroutine s_int_volume_of_domain(ele, jac_3d)
+!>@file  int_volume_of_domain.f90
+!!       module int_volume_of_domain
+!!
+!!@author H. Matsui
+!!@date   Programmed in May, 2015
+!!@date  programmed by H.Matsui and H.Okuda
+!!@n                                    in July 2000 (ver 1.1)
+!!@n        Modified by H. Matsui in Aug., 2006
+!!@n        Modified by H. Matsui in June, 2007
+!!@n        Modified by H. Matsui in Sep., 2016
+!!@n
+!> @brief Construct jacobians and volume integrations
+!!
+!!@verbatim
+!!      subroutine const_jacobian_volume_normals                        &
+!!     &        (mesh, surf, group, jac_3d_l, jac_3d_q)
+!!      subroutine const_jacobian_and_volume(node, sf_grp,              &
+!!     &         infinity_list, ele, jac_3d_l, jac_3d_q)
+!!      subroutine const_jacobian_and_vol_layer(node, sf_grp,           &
+!!     &          infinity_list, ele, jac_3d_l, jac_3d_q, layer_tbl)
+!!        type(node_data), intent(in) :: node
+!!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(scalar_surf_BC_list), intent(in) :: infinity_list
+!!        type(element_data), intent(inout) :: ele
+!!        type(jacobians_3d), intent(inout) :: jac_3d_l, jac_3d_q
+!!        type(layering_tbl), intent(inout) :: layer_tbl
+!!      subroutine s_int_volume_of_domain(ele, jac_3d)
+!!@endverbatim
 !
       module int_volume_of_domain
 !
       use m_precision
       use m_constants
 !
+      use t_mesh_data
       use t_geometry_data
       use t_group_data
       use t_surface_boundary
@@ -35,6 +45,47 @@
       contains
 !
 !-----------------------------------------------------------------------
+!
+      subroutine const_jacobian_volume_normals                          &
+     &        (mesh, surf, group, jac_3d_l, jac_3d_q)
+!
+      use set_normal_vectors
+      use set_surf_grp_vectors
+      use sum_normal_4_surf_group
+      use set_connects_4_surf_group
+!
+      type(mesh_geometry), intent(inout) :: mesh
+      type(surface_data), intent(inout) :: surf
+      type(mesh_groups), intent(inout) :: group
+      type(jacobians_3d), intent(inout) :: jac_3d_l, jac_3d_q
+!
+!
+      if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_volume'
+      call const_jacobian_and_volume                                    &
+     &   (mesh%node, group%surf_grp, group%infty_grp,                   &
+     &    mesh%ele, jac_3d_l, jac_3d_q)
+!
+!     --------------------- Surface jacobian for fieldline
+!
+      if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
+      call const_normal_vector(mesh%node, surf)
+!
+      if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
+      call pick_normal_of_surf_group(surf, group%surf_grp,              &
+     &    group%tbls_surf_grp, group%surf_grp_geom)
+!
+      if (iflag_debug.eq.1)  write(*,*) 's_sum_normal_4_surf_group'
+      call s_sum_normal_4_surf_group(mesh%ele,                          &
+     &    group%surf_grp, group%surf_grp_geom)
+!
+      if (iflag_debug.eq.1)  write(*,*) 'cal_surf_norm_node'
+      call cal_surf_normal_at_nod(mesh%node, mesh%ele, surf,            &
+     &    group%surf_grp, group%surf_grp_geom, group%surf_nod_grp)
+!
+      end subroutine const_jacobian_volume_normals
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
 !
       subroutine const_jacobian_and_volume(node, sf_grp,                &
      &         infinity_list, ele, jac_3d_l, jac_3d_q)

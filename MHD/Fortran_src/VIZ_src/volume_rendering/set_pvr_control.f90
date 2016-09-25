@@ -4,9 +4,9 @@
 !     Written by H. Matsui on May., 2006
 !
 !!      subroutine s_set_pvr_control                                    &
-!!     &       (num_pvr, num_mat, mat_name, num_nod_phys, phys_nod_name,&
-!!     &        file_params, fld_params, view_params, color_params,     &
-!!     &        cbar_params)
+!!     &       (num_pvr, ele_grp, surf_grp, num_nod_phys, phys_nod_name,&
+!!     &        file_params, fld_params, view_params,                   &
+!!     &        field_pvr, color_params, cbar_params)
 !
       module set_pvr_control
 !
@@ -29,16 +29,18 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_set_pvr_control                                      &
-     &       (num_pvr, num_mat, mat_name, num_nod_phys, phys_nod_name,  &
-     &        file_params, fld_params, view_params, color_params,       &
-     &        cbar_params)
+     &       (num_pvr, ele_grp, surf_grp, num_nod_phys, phys_nod_name,  &
+     &        file_params, fld_params, view_params,                     &
+     &        field_pvr, color_params, cbar_params)
 !
+      use t_group_data
       use t_control_params_4_pvr
+      use t_geometries_in_pvr_screen
       use set_control_each_pvr
       use set_field_comp_for_viz
 !
-      integer(kind = kint), intent(in) :: num_mat
-      character(len=kchara), intent(in) :: mat_name(num_mat)
+      type(group_data), intent(in) :: ele_grp
+      type(surface_group_data), intent(in) :: surf_grp
 !
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
@@ -47,6 +49,7 @@
       type(pvr_output_parameter), intent(inout) :: file_params(num_pvr)
       type(pvr_field_parameter), intent(inout) :: fld_params(num_pvr)
       type(pvr_view_parameter), intent(inout) :: view_params(num_pvr)
+      type(pvr_projected_field), intent(inout) :: field_pvr(num_pvr)
       type(pvr_colormap_parameter), intent(inout)                       &
      &                  :: color_params(num_pvr)
       type(pvr_colorbar_parameter), intent(inout)                       &
@@ -71,14 +74,14 @@
      &      num_nod_phys, phys_nod_name, file_params(i_pvr))
 !
         if(iflag_debug .gt. 0) write(*,*) 'set_control_pvr', i_pvr
-        call set_control_pvr(pvr_ctl_struct(i_pvr), num_mat,            &
-     &      mat_name, num_nod_phys, phys_nod_name,                      &
-     &      fld_params(i_pvr), view_params(i_pvr),                      &
+        call set_control_pvr(pvr_ctl_struct(i_pvr),                     &
+     &      ele_grp, surf_grp, num_nod_phys, phys_nod_name,             &
+     &      fld_params(i_pvr), view_params(i_pvr), field_pvr(i_pvr),    &
      &      color_params(i_pvr), cbar_params(i_pvr))
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                       'deallocate_cont_dat_pvr', i_pvr
         call deallocate_cont_dat_pvr(pvr_ctl_struct(i_pvr))
-     end do
+      end do
 !
       call deallocate_pvr_file_header_ctl
 !

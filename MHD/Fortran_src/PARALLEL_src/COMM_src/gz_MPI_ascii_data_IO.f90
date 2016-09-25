@@ -44,7 +44,7 @@
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       integer(kind = kint), intent(in) :: ilength
-      character(len=1), intent(in) :: chara_dat(ilength)
+      character(len=ilength), intent(in) :: chara_dat
 !
       integer(kind = kint) :: ilen_gz, ilen_gzipped
       integer(kind = MPI_OFFSET_KIND) :: ioffset
@@ -55,7 +55,7 @@
       if(my_rank .eq. 0) then
         ilen_gz = int(real(ilength) *1.01) + 24
         allocate(gzip_buf(ilen_gz))
-        call gzip_defleat_once(ilength, chara_dat(1), ilen_gz,          &
+        call gzip_defleat_once(ilength, chara_dat, ilen_gz,             &
      &      ilen_gzipped, gzip_buf(1))
 !
         ioffset = IO_param%ioff_gl

@@ -138,12 +138,17 @@
       character(len=kchara) :: tmpchara, img_head
 !
       if(my_rank .ne. 0) return
-      if(i_rot .gt. 0) then
+!
+      if(istep_pvr .ge. 0) then
         call add_int_suffix(istep_pvr, file_param%pvr_prefix, tmpchara)
+      else
+        tmpchara = file_param%pvr_prefix
+      end if
+!
+      if(i_rot .gt. 0) then
         call add_int_suffix(i_rot, tmpchara, img_head)
       else
-        call add_int_suffix(istep_pvr, file_param%pvr_prefix,           &
-     &      img_head)
+        img_head = tmpchara
       end if
 !
       if(file_param%id_pvr_transparent .eq. 1) then

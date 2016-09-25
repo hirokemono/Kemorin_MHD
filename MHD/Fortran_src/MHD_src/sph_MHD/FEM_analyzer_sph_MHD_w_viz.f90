@@ -56,6 +56,7 @@
       use set_ele_id_4_node_type
       use FEM_analyzer_sph_MHD
       use int_volume_of_domain
+      use set_normal_vectors
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
@@ -87,11 +88,8 @@
 !
       if (iflag_debug.eq.1) write(*,*)  'maximum_integration_points'
       call maximum_integration_points(ione)
-      call const_jacobian_and_volume                                    &
-     &   (mesh%node, group%surf_grp, group%infty_grp, mesh%ele,         &
-     &    jac_3d_l, jac_3d_q)
-!
-      call calypso_mpi_barrier
+      call const_jacobian_volume_normals                                &
+     &   (mesh, ele_mesh%surf, group, jac_3d_l, jac_3d_q)
 !
       end subroutine FEM_initialize_w_viz
 !

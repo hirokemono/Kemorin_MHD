@@ -1,5 +1,5 @@
-!>@file  t_surf_grp_4_pvr_domain.f90
-!!       module t_surf_grp_4_pvr_domain
+!>@file  t_control_params_4_pvr.f90
+!!       module t_control_params_4_pvr
 !!
 !!@author H. Matsui
 !!@date   Programmed in May. 2006
@@ -25,6 +25,8 @@
         integer(kind = kint) :: id_pvr_file_type
 !>    Transparent image flag
         integer(kind = kint) :: id_pvr_transparent = 0
+!>    Monitoring mode flag
+        integer(kind = kint) :: iflag_monitoring = 0
       end type pvr_output_parameter
 !
 !>  Structure for field parameter for PVR
@@ -236,6 +238,7 @@
 !
       end subroutine dealloc_pvr_element_group
 !
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine alloc_pvr_color_parameteres(color)

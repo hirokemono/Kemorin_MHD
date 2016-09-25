@@ -34,7 +34,7 @@
 !
 !     --------------------- init for PVR
 !
-      call jacobian_4_VIZ
+      call element_normals_4_VIZ
 !
 !     ---------------------
 !

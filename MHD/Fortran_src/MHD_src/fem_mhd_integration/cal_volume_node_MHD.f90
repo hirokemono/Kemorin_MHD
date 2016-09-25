@@ -99,8 +99,6 @@
          call s_cal_layered_volumes(ele, layer_tbl)
        end if
 !
-!
-!
 !       call s_int_volume_insulate_core(ele, inner_core)
 !
       call deallocate_volume_4_smp

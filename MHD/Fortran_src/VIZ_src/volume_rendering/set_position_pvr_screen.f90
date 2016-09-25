@@ -9,6 +9,8 @@
 !!
 !!      subroutine cal_position_pvr_modelview                           &
 !!     &         (model_mat, numnod, xx, x_nod_model)
+!!      subroutine chenge_direction_pvr_modelview                       &
+!!     &         (model_mat, numnod, xx, x_nod_model)
 !!      subroutine overwte_position_pvr_screen(model_mat, project_mat)
 !!      subroutine overwte_pvr_domain_on_screen(model_mat, project_mat, &
 !!     &          num_pvr_surf, xx_pvr_domain)
@@ -109,6 +111,39 @@
 !$omp end parallel do
 !
       end subroutine cal_position_pvr_modelview
+!
+! -----------------------------------------------------------------------
+!
+      subroutine chenge_direction_pvr_modelview                         &
+     &         (model_mat, numnod, xx, x_nod_model)
+!
+      real(kind = kreal), intent(in) :: model_mat(4,4)
+!
+      integer(kind = kint), intent(in) :: numnod
+      real(kind = kreal), intent(in) :: xx(numnod,3)
+      real(kind = kreal), intent(inout) :: x_nod_model(numnod,4)
+!
+      integer(kind = kint) :: inod
+!
+!
+!$omp parallel do private(inod)
+      do inod = 1, numnod
+          x_nod_model(inod,1) =  model_mat(1,1) * xx(inod,1)            &
+     &                         + model_mat(1,2) * xx(inod,2)            &
+     &                         + model_mat(1,3) * xx(inod,3)
+          x_nod_model(inod,2)  = model_mat(2,1) * xx(inod,1)            &
+     &                         + model_mat(2,2) * xx(inod,2)            &
+     &                         + model_mat(2,3) * xx(inod,3)
+          x_nod_model(inod,3) =  model_mat(3,1) * xx(inod,1)            &
+     &                         + model_mat(3,2) * xx(inod,2)            &
+     &                         + model_mat(3,3) * xx(inod,3)
+          x_nod_model(inod,4) =  model_mat(4,1) * xx(inod,1)            &
+     &                         + model_mat(4,2) * xx(inod,2)            &
+     &                         + model_mat(4,3) * xx(inod,3)
+      end do
+!$omp end parallel do
+!
+      end subroutine chenge_direction_pvr_modelview
 !
 ! -----------------------------------------------------------------------
 !

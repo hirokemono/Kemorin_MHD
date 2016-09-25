@@ -123,16 +123,13 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_volume'
       call max_int_point_by_etype(mesh%ele%nnod_4_ele)
+      call const_jacobian_volume_normals                                &
       call const_jacobian_and_volume                                    &
-     &   (mesh%node, group%surf_grp, group%infty_grp, mesh%ele,         &
-     &    jac_3d_l, jac_3d_q)
+     &   (mesh, ele_mesh%surf, group, jac_3d_l, jac_3d_q)
 !
 !      call check_jacobians_trilinear(my_rank, mesh%ele, jac_3d_l)
 !
 !  -------------------------------
-!
-      if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
-      call const_normal_vector(mesh%node, ele_mesh%surf)
 !
       if (iflag_debug.gt.0) write(*,*) 's_cal_normal_vector_spherical'
       call s_cal_normal_vector_spherical(ele_mesh%surf)
@@ -148,16 +145,6 @@
       call s_cal_edge_vector_spherical(ele_mesh%edge)
       if (iflag_debug.gt.0) write(*,*) 's_cal_edge_vector_cylindrical'
       call s_cal_edge_vector_cylindrical(ele_mesh%edge)
-!
-!  -------------------------------
-!
-      if (iflag_debug.gt.0)  write(*,*) 'pick_normal_of_surf_group'
-      call pick_normal_of_surf_group(ele_mesh%surf,                     &
-     &   group%surf_grp, group%tbls_surf_grp, group%surf_grp_geom)
-!
-      if (iflag_debug.gt.0)  write(*,*) 's_sum_normal_4_surf_group'
-      call s_sum_normal_4_surf_group                                    &
-     &   (mesh%ele, group%surf_grp, group%surf_grp_geom)
 !
 !  ---------------------------------------------
 !     output node data

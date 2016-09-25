@@ -50,6 +50,8 @@
 !
       if(nnod_4_ele.eq.num_t_quad  .or. nnod_4_ele.eq.num_t_lag) then
         call maximum_integration_points(ithree)
+      else if(nnod_4_ele .eq. ione) then
+        call maximum_integration_points(ione)
       else
         call maximum_integration_points(itwo)
       end if

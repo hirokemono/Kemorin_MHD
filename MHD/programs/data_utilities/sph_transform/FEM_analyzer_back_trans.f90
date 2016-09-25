@@ -65,25 +65,8 @@
 !
         if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_volume'
         call max_int_point_by_etype(femmesh_STR%mesh%ele%nnod_4_ele)
-        call const_jacobian_and_volume(femmesh_STR%mesh%node,           &
-     &      femmesh_STR%group%surf_grp, femmesh_STR%group%infty_grp,    &
-     &      femmesh_STR%mesh%ele, jac_STR_l, jac_STR_q)
-!
-!     --------------------- Surface jacobian for fieldline
-!
-        if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
-        call const_normal_vector                                        &
-     &     (femmesh_STR%mesh%node, elemesh_STR%surf)
-!
-        if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
-        call pick_normal_of_surf_group                                  &
-     &     (elemesh_STR%surf, femmesh_STR%group%surf_grp,               &
-     &      femmesh_STR%group%tbls_surf_grp,                            &
-     &      femmesh_STR%group%surf_grp_geom)
-!
-        if (iflag_debug.eq.1)  write(*,*) 's_sum_normal_4_surf_group'
-        call s_sum_normal_4_surf_group(femmesh_STR%mesh%ele,            &
-     &    femmesh_STR%group%surf_grp, femmesh_STR%group%surf_grp_geom)
+        call const_jacobian_volume_normals(femmesh_STR%mesh,            &
+     &      elemesh_STR%surf, femmesh_STR%group, jac_STR_l, jac_STR_q)
       end if
 !
 !  -------------------------------

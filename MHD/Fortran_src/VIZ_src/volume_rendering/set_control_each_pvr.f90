@@ -5,9 +5,9 @@
 !
 !!      subroutine set_pvr_file_control                                 &
 !!     &         (pvr, num_nod_phys, phys_nod_name, file_param)
-!!      subroutine set_control_pvr(pvr, num_mat, mat_name,              &
+!!      subroutine set_control_pvr(pvr, ele_grp, surf_grp,              &
 !!     &          num_nod_phys, phys_nod_name, fld_param, view_param,   &
-!!     &          color_param, cbar_param)
+!!     &          field_pvr, color_param, cbar_param)
 !
       module set_control_each_pvr
 !
@@ -76,6 +76,11 @@
         file_param%id_pvr_transparent = 0
       end if
 !
+!      file_param%iflag_monitoring = 0
+!      if(yes_flag(pvr%monitoring_ctl%charavalue)) then
+!        file_param%iflag_monitoring = 1
+!      end if
+!
       call check_field_4_viz(num_nod_phys, phys_nod_name,               &
      &    ione, pvr%pvr_field_ctl, num_field, num_phys_viz)
       if(num_field .eq. 0) then
@@ -94,19 +99,22 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_control_pvr(pvr, num_mat, mat_name,                &
+      subroutine set_control_pvr(pvr, ele_grp, surf_grp,                &
      &          num_nod_phys, phys_nod_name, fld_param, view_param,     &
-     &          color_param, cbar_param)
+     &          field_pvr, color_param, cbar_param)
 !
+      use t_group_data
       use t_control_params_4_pvr
+      use t_geometries_in_pvr_screen
       use set_pvr_modelview_matrix
       use set_area_4_viz
       use set_color_4_pvr
       use set_rgba_4_each_pixel
+      use pvr_surface_enhancement
       use skip_comment_f
 !
-      integer(kind = kint), intent(in) :: num_mat
-      character(len=kchara), intent(in) :: mat_name(num_mat)
+      type(group_data), intent(in) :: ele_grp
+      type(surface_group_data), intent(in) :: surf_grp
 !
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
@@ -114,6 +122,7 @@
       type(pvr_ctl), intent(inout) :: pvr
       type(pvr_field_parameter), intent(inout) :: fld_param
       type(pvr_view_parameter), intent(inout) :: view_param
+      type(pvr_projected_field), intent(inout) :: field_pvr
       type(pvr_colormap_parameter), intent(inout) :: color_param
       type(pvr_colorbar_parameter), intent(inout) :: cbar_param
 !
@@ -136,7 +145,7 @@
      &     call calypso_MPI_abort(ierr_PVR, 'set scalar for rendering')
 !
 !
-      call count_area_4_viz(num_mat, mat_name,                          &
+      call count_area_4_viz(ele_grp%num_grp, ele_grp%grp_name,          &
      &    pvr%pvr_area_ctl%num, pvr%pvr_area_ctl%c_tbl,                 &
      &    fld_param%nele_grp_area_pvr)
 !
@@ -146,9 +155,21 @@
         call alloc_pvr_element_group(fld_param)
       end if
 !
-      call s_set_area_4_viz(num_mat, mat_name,                          &
+!
+      call s_set_area_4_viz(ele_grp%num_grp, ele_grp%grp_name,          &
      &    pvr%pvr_area_ctl%num, pvr%pvr_area_ctl%c_tbl,                 &
      &    fld_param%nele_grp_area_pvr, fld_param%id_ele_grp_area_pvr)
+!
+!
+!      if (pvr%surf_enhanse_ctl%num .gt. 0) then
+!        call set_pvr_bc_enhanse_flag(surf_grp,                          &
+!     &      pvr%surf_enhanse_ctl%num, pvr%surf_enhanse_ctl%c1_tbl,      &
+!     &      pvr%surf_enhanse_ctl%c2_tbl, field_pvr%iflag_enhanse)
+!        call dealloc_control_array_c2(pvr%surf_enhanse_ctl)
+!      else
+!         field_pvr%iflag_enhanse = IFLAG_NONE
+!      end if
+!
 !
       if(pvr%ambient_coef_ctl%iflag .gt. 0) then
         color_param%pvr_lighting_real(1)                                &
@@ -157,9 +178,6 @@
         color_param%pvr_lighting_real(1) = 0.5
       end if
 !
-!
-!
-
       if(pvr%diffuse_coef_ctl%iflag .gt. 0) then
         color_param%pvr_lighting_real(2)                                &
      &      = pvr%diffuse_coef_ctl%realvalue

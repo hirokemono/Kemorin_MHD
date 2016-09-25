@@ -221,9 +221,7 @@
       call const_normal_vector(mesh%node, ele_mesh%surf)
 !
       if (iflag_debug.eq.1) write(*,*)' int_surface_parameters'
-      call int_surface_parameters(mesh%node, mesh%ele, ele_mesh%surf,   &
-     &    group%surf_grp, group%tbls_surf_grp, group%surf_grp_geom,     &
-     &    group%surf_nod_grp, surf1_wk)
+      call int_surface_parameters(mesh, ele_mesh%surf, group, surf1_wk)
 !
 !     --------------------- 
 !

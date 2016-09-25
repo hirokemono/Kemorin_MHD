@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine allocate_nod_data_4_pvr                              &
-!!     &         (num_pvr, numnod, numele, field_pvr)
+!!     &       (num_pvr, numnod, numele, numsurf, num_sf_grp, field_pvr)
 !!      subroutine allocate_pixel_position_pvr(pixel_xy)
 !!
 !!      subroutine deallocate_projected_data_pvr                        &
@@ -37,6 +37,13 @@
 !
 !>    flag for rendering element
         integer(kind = kint), pointer :: iflag_used_ele(:)
+!
+!>    integer flag for surface boundaries
+        integer(kind = kint), pointer :: iflag_enhanse(:)
+!>    Opacity value for surface boundaries
+        real(kind = kreal), pointer :: arccos_norm(:)
+!>    Opacity value for surface boundaries
+        real(kind = kreal), pointer :: arccos_sf(:)
       end type pvr_projected_field
 !
 !>  Structure for pixel position
@@ -52,7 +59,8 @@
       end type pvr_pixel_position_type
 !
       private :: alloc_nod_data_4_pvr, alloc_iflag_pvr_used_ele
-      private :: dealloc_data_4_pvr
+      private :: dealloc_data_4_pvr,  dealloc_iflag_pvr_boundaries
+
 !
 ! -----------------------------------------------------------------------
 !
@@ -94,6 +102,25 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine alloc_iflag_pvr_boundaries                             &
+     &         (nnod, nsurf, num_sf_grp, fld_pvr)
+!
+      integer(kind = kint), intent(in) :: nnod, nsurf, num_sf_grp
+      type(pvr_projected_field), intent(inout) :: fld_pvr
+!
+!
+      allocate(fld_pvr%arccos_norm(nnod))
+      allocate(fld_pvr%arccos_sf(nsurf))
+      allocate(fld_pvr%iflag_enhanse(num_sf_grp))
+!
+      if(nnod .gt. 0)       fld_pvr%arccos_norm = 0.0d0
+      if(nsurf .gt. 0)      fld_pvr%arccos_sf = 0.0d0
+      if(num_sf_grp .gt. 0) fld_pvr%iflag_enhanse = 0
+!
+      end subroutine alloc_iflag_pvr_boundaries
+!
+! -----------------------------------------------------------------------
+!
       subroutine dealloc_data_4_pvr(fld_pvr)
 !
       type(pvr_projected_field), intent(inout) :: fld_pvr
@@ -106,12 +133,26 @@
       end subroutine dealloc_data_4_pvr
 !
 ! -----------------------------------------------------------------------
+!
+      subroutine dealloc_iflag_pvr_boundaries(fld_pvr)
+!
+      type(pvr_projected_field), intent(inout) :: fld_pvr
+!
+!
+      deallocate(fld_pvr%iflag_enhanse)
+      deallocate(fld_pvr%arccos_sf, fld_pvr%arccos_norm)
+!
+      end subroutine dealloc_iflag_pvr_boundaries
+!
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine allocate_nod_data_4_pvr                                &
-     &         (num_pvr, numnod, numele, field_pvr)
+     &       (num_pvr, numnod, numele, numsurf, num_sf_grp, field_pvr)
 !
-      integer(kind = kint), intent(in) :: num_pvr, numnod, numele
+      integer(kind = kint), intent(in) :: num_pvr
+      integer(kind = kint), intent(in) :: numnod, numele, numsurf
+      integer(kind = kint), intent(in) :: num_sf_grp
       type(pvr_projected_field), intent(inout) :: field_pvr(num_pvr)
 !
       integer(kind = kint) :: i
@@ -121,6 +162,8 @@
         call alloc_nod_data_4_pvr                                       &
      &     (numnod, numele, field_pvr(i))
         call alloc_iflag_pvr_used_ele(numele, field_pvr(i))
+        call alloc_iflag_pvr_boundaries                                 &
+     &     (numnod, numsurf, num_sf_grp, field_pvr(i))
       end do
 !
       end subroutine allocate_nod_data_4_pvr
@@ -153,6 +196,7 @@
 !
       do i = 1, num_pvr
         call dealloc_data_4_pvr(field_pvr(i))
+        call dealloc_iflag_pvr_boundaries(field_pvr(i))
       end do
 !
       end subroutine deallocate_projected_data_pvr

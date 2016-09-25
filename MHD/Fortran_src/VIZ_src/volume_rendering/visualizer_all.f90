@@ -73,7 +73,7 @@
 !
       call start_eleps_time(62)
       call PVR_initialize                                               &
-     &   (mesh%node, mesh%ele, ele_mesh%surf, group%ele_grp, nod_fld)
+     &   (mesh%node, mesh%ele, ele_mesh%surf, group, nod_fld)
       call calypso_MPI_barrier
       call end_eleps_time(62)
 !
@@ -118,7 +118,7 @@
 !
       call start_eleps_time(67)
       call PVR_visualize(istep_pvr, mesh%node, mesh%ele,                &
-     &    ele_mesh%surf, jac_3d, nod_fld)
+     &    ele_mesh%surf, group, jac_3d, nod_fld)
       call end_eleps_time(67)
 !
       call start_eleps_time(68)

@@ -40,7 +40,7 @@
 !
 !  VIZ Initialization
       call PVR_initialize(femmesh_VIZ%mesh%node, femmesh_VIZ%mesh%ele,  &
-     &    elemesh_VIZ%surf, femmesh_VIZ%group%ele_grp, field_VIZ)
+     &    elemesh_VIZ%surf, femmesh_VIZ%group, field_VIZ)
       call calypso_MPI_barrier
 !
       end subroutine initialization
@@ -60,7 +60,7 @@
 !  Rendering
         call PVR_visualize                                              &
      &     (istep_pvr, femmesh_VIZ%mesh%node, femmesh_VIZ%mesh%ele,     &
-     &      elemesh_VIZ%surf, jac_VIZ_q, field_VIZ)
+     &      elemesh_VIZ%surf, femmesh_VIZ%group, jac_VIZ_q, field_VIZ)
       end do
 !
       end subroutine analyze

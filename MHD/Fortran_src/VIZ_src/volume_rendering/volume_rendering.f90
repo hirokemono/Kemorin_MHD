@@ -3,13 +3,13 @@
 !
 !      Written by H. Matsui on July, 2006
 !
-!!      subroutine PVR_initialize(node, ele, surf, ele_grp, nod_fld)
-!!
+!!      subroutine PVR_initialize(node, ele, surf, group, nod_fld)
 !!      subroutine PVR_visualize                                        &
-!!     &         (istep_pvr, node, ele, surf, jac_3d, nod_fld)
+!!     &         (istep_pvr, node, ele, surf, group, jac_3d, nod_fld)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
+!!        type(mesh_groups), intent(in) :: group
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !
@@ -25,6 +25,7 @@
       use m_machine_parameter
       use m_geometry_constants
 !
+      use t_mesh_data
       use t_geometry_data
       use t_surface_data
       use t_group_data
@@ -88,7 +89,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine PVR_initialize(node, ele, surf, ele_grp, nod_fld)
+      subroutine PVR_initialize(node, ele, surf, group, nod_fld)
 !
       use m_control_data_pvrs
       use set_pvr_control
@@ -98,7 +99,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
-      type(group_data), intent(in) :: ele_grp
+      type(mesh_groups), intent(in) :: group
       type(phys_data), intent(in) :: nod_fld
 !
       integer(kind = kint) :: i_pvr
@@ -111,18 +112,18 @@
      &         num_pvr
       call allocate_components_4_pvr
 !
-      call s_set_pvr_control                                            &
-     &   (num_pvr, ele_grp%num_grp, ele_grp%grp_name,                   &
+      call allocate_nod_data_4_pvr(num_pvr, node%numnod,                &
+     &    ele%numele, surf%numsurf, group%surf_grp%num_grp, field_pvr)
+      if(iflag_debug .gt. 0) write(*,*) 's_set_pvr_control', num_pvr
+      call s_set_pvr_control(num_pvr, group%ele_grp, group%surf_grp,    &
      &    nod_fld%num_phys, nod_fld%phys_name, file_params, fld_params, &
-     &    view_params, color_params, cbar_params)
+     &    view_params, field_pvr, color_params, cbar_params)
+      call calypso_mpi_barrier
 !
-      call allocate_nod_data_4_pvr                                      &
-     &   (num_pvr, node%numnod, ele%numele, field_pvr)
       call s_find_pvr_surf_domain                                       &
      &   (num_pvr, ele%numele, surf%numsurf, ele%interior_ele,          &
      &    surf%isf_4_ele, surf%iele_4_surf,                             &
-     &    ele_grp%num_grp, ele_grp%num_item, ele_grp%istack_grp,        &
-     &    ele_grp%item_grp, fld_params, pvr_bound, field_pvr)
+     &    group%ele_grp, fld_params, pvr_bound, field_pvr)
 !
       do i_pvr = 1, num_pvr
         call cal_mesh_outline_pvr                                       &
@@ -142,9 +143,8 @@
           if(iflag_debug .gt. 0) write(*,*) 'cal_pvr_modelview_matrix'
           call cal_pvr_modelview_matrix(izero, outlines(i_pvr),         &
      &        view_params(i_pvr), color_params(i_pvr))
-          call transfer_to_screen                                       &
-     &       (node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,  &
-     &        node%xx, surf%ie_surf, surf%isf_4_ele,                    &
+          call transfer_to_screen(node, ele, surf,                      &
+     &        group%surf_grp, group%surf_grp_geom, group%surf_nod_grp,  &
      &        field_pvr(i_pvr), view_params(i_pvr), pvr_bound(i_pvr),   &
      &        pixel_xy(i_pvr), pvr_start(i_pvr))
         end if
@@ -161,7 +161,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine PVR_visualize                                          &
-     &         (istep_pvr, node, ele, surf, jac_3d, nod_fld)
+     &         (istep_pvr, node, ele, surf, group, jac_3d, nod_fld)
 !
       use cal_pvr_modelview_mat
 !
@@ -170,6 +170,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
+      type(mesh_groups), intent(in) :: group
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_3d), intent(in) :: jac_3d
 !
@@ -199,17 +200,13 @@
           if(view_params(i_pvr)%iflag_rotate_snap .gt. 0) then
             call cal_pvr_modelview_matrix(i_rot, outlines(i_pvr),       &
      &          view_params(i_pvr), color_params(i_pvr))
-            call transfer_to_screen(node%numnod, ele%numele,            &
-     &          surf%numsurf, surf%nnod_4_surf,                         &
-     &          node%xx, surf%ie_surf, surf%isf_4_ele,                  &
+            call transfer_to_screen(node, ele, surf, group%surf_grp,    &
+     &          group%surf_grp_geom, group%surf_nod_grp,                &
      &          field_pvr(i_pvr), view_params(i_pvr), pvr_bound(i_pvr), &
      &          pixel_xy(i_pvr), pvr_start(i_pvr))
           end if
 !
-          call rendering_image                                          &
-     &      (i_rot, istep_pvr, node%numnod, ele%numele,                 &
-     &       surf%numsurf, surf%nnod_4_surf, ele%interior_ele, node%xx, &
-     &       surf%ie_surf, surf%isf_4_ele, surf%iele_4_surf,            &
+          call rendering_image(i_rot, istep_pvr, node, ele, surf,       &
      &       file_params(i_pvr), color_params(i_pvr),                   &
      &       cbar_params(i_pvr), view_params(i_pvr), field_pvr(i_pvr),  &
      &       pixel_xy(i_pvr), pvr_bound(i_pvr), pvr_start(i_pvr),       &

@@ -8,11 +8,19 @@
 !!
 !!@verbatim
 !!      subroutine transfer_to_screen                                   &
-!!     &         (numele, numsurf, nnod_4_surf, ie_surf, isf_4_ele,     &
-!!     &          proj, field_pvr, view_param, pvr_bound)
-!!      subroutine rendering_image                                      &
-!!     &       (i_rot, istep_pvr, numnod, numele, numsurf, nnod_4_surf, &
-!!     &       interior_ele, xx, ie_surf, isf_4_ele, iele_4_surf,       &
+!!     &        (node, ele, surf, surf_grp, surf_grp_v, surf_nod_grp,   &
+!!     &         field_pvr, view_param, pvr_bound,  pixel_xy, pvr_start)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(in) :: surf
+!!        type(surface_group_data), intent(in) :: surf_grp
+!!        type (surface_node_grp_data), intent(in)  :: surf_nod_grp
+!!        type(pvr_view_parameter), intent(inout) :: view_param
+!!        type(pvr_projected_field), intent(inout) :: field_pvr
+!!        type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
+!!        type(pvr_pixel_position_type), intent(inout) :: pixel_xy
+!!        type(pvr_ray_start_type), intent(inout) :: pvr_start
+!!      subroutine rendering_image(i_rot, istep_pvr, node, ele, surf,   &
 !!     &       file_param, color_param, cbar_param, view_param,         &
 !!     &       field_pvr, pixel_xy, pvr_bound, pvr_start, pvr_img)
 !!@endverbatim
@@ -35,24 +43,30 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine transfer_to_screen(numnod, numele, numsurf,            &
-     &          nnod_4_surf, xx, ie_surf, isf_4_ele,                    &
-     &          field_pvr, view_param, pvr_bound, pixel_xy, pvr_start)
+      subroutine transfer_to_screen                                     &
+     &        (node, ele, surf, surf_grp, surf_grp_v, surf_nod_grp,     &
+     &         field_pvr, view_param, pvr_bound,  pixel_xy, pvr_start)
 !
       use m_geometry_constants
+      use t_geometry_data
+      use t_surface_data
+      use t_group_data
+      use t_surface_group_geometry
+      use t_surface_group_connect
       use t_control_params_4_pvr
       use t_surf_grp_4_pvr_domain
       use t_geometries_in_pvr_screen
       use t_pvr_ray_startpoints
       use set_position_pvr_screen
       use find_pvr_surf_domain
+      use pvr_surface_enhancement
 !
-      integer(kind = kint), intent(in) :: numnod, numele, numsurf
-      integer(kind = kint), intent(in) :: nnod_4_surf
-      integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
-      integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
-      real(kind = kreal), intent(in) :: xx(numnod,3)
-!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(surface_group_data), intent(in) :: surf_grp
+      type(surface_group_geometry), intent(in) :: surf_grp_v
+      type (surface_node_grp_data), intent(in)  :: surf_nod_grp
 !
       type(pvr_view_parameter), intent(inout) :: view_param
       type(pvr_projected_field), intent(inout) :: field_pvr
@@ -62,37 +76,49 @@
 !
 !
       call cal_position_pvr_modelview(view_param%modelview_mat,         &
-     &    numnod, xx, field_pvr%x_nod_model)
-      call norm_on_model_pvr_domains(numnod, numele, numsurf,           &
-     &    nnod_4_surf, ie_surf, isf_4_ele, field_pvr%x_nod_model,       &
+     &    node%numnod, node%xx, field_pvr%x_nod_model)
+!
+      call norm_on_model_pvr_domains                                    &
+     &   (node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,      &
+     &    surf%ie_surf, surf%isf_4_ele, field_pvr%x_nod_model,          &
      &    pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,              &
      &    pvr_bound%screen_norm)
 !
 !
       call overwte_position_pvr_screen(view_param%projection_mat,       &
-     &    numnod, field_pvr%x_nod_model)
+     &    node%numnod, field_pvr%x_nod_model)
 !
       call set_pvr_domain_surface_data(view_param%n_pvr_pixel,          &
-     &    numnod, numele, numsurf, nnod_4_surf, ie_surf, isf_4_ele,     &
-     &    field_pvr%x_nod_model, pvr_bound)
+     &    node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,      &
+     &    surf%ie_surf, surf%isf_4_ele, field_pvr%x_nod_model,          &
+     &    pvr_bound)
 !
       if(iflag_debug .gt. 0) write(*,*) 's_set_pvr_ray_start_point'
-      call s_set_pvr_ray_start_point(numnod, numele, numsurf,           &
-     &        nnod_4_surf, ie_surf, isf_4_ele,  pvr_bound,              &
-     &        field_pvr, pixel_xy, pvr_start)
+      call s_set_pvr_ray_start_point                                    &
+     &   (node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,      &
+     &    surf%ie_surf, surf%isf_4_ele,  pvr_bound,                     &
+     &    field_pvr, pixel_xy, pvr_start)
 !      call check_pvr_ray_startpoints(my_rank, pvr_start)
+!
+      call set_opacity_for_boundaries                                   &
+     &   (surf_grp, surf_grp_v, surf_nod_grp, view_param,               &
+     &    field_pvr%iflag_enhanse, node%numnod, ele%numele,             &
+     &    surf%numsurf, surf%isf_4_ele,                                 &
+     &    field_pvr%arccos_sf, field_pvr%arccos_norm)
 !
       end subroutine transfer_to_screen
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_image                                        &
-     &       (i_rot, istep_pvr, numnod, numele, numsurf, nnod_4_surf,   &
-     &       interior_ele, xx, ie_surf, isf_4_ele, iele_4_surf,         &
+      subroutine rendering_image(i_rot, istep_pvr, node, ele, surf,     &
      &       file_param, color_param, cbar_param, view_param,           &
      &       field_pvr, pixel_xy, pvr_bound, pvr_start, pvr_img)
 !
       use m_geometry_constants
+      use m_geometry_constants
+      use t_geometry_data
+      use t_surface_data
+      use t_group_data
       use t_control_params_4_pvr
       use t_surf_grp_4_pvr_domain
       use t_pvr_ray_startpoints
@@ -101,13 +127,9 @@
       use composite_pvr_images
 !
       integer(kind = kint), intent(in) :: i_rot, istep_pvr
-      integer(kind = kint), intent(in) :: numnod, numele, numsurf
-      integer(kind = kint), intent(in) :: nnod_4_surf
-      integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
-      integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
-      integer(kind = kint), intent(in) :: iele_4_surf(numsurf,2,2)
-      integer(kind = kint), intent(in) :: interior_ele(numele)
-      real(kind = kreal), intent(in)  :: xx(numnod,3)
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
 !
       type(pvr_output_parameter), intent(in) :: file_param
       type(pvr_colormap_parameter), intent(in) :: color_param
@@ -123,11 +145,12 @@
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'ray_trace_local'
-      call ray_trace_local(numnod, numele, numsurf, nnod_4_surf,        &
-     &       ie_surf, isf_4_ele, iele_4_surf, interior_ele, xx,         &
-     &       view_param%viewpoint_vec, field_pvr%x_nod_model,           &
-     &       field_pvr, color_param, pixel_xy, pvr_bound,               &
-     &       pvr_start, pvr_img)
+      call ray_trace_local(node%numnod, ele%numele,                     &
+     &    surf%numsurf, surf%nnod_4_surf, surf%ie_surf, surf%isf_4_ele, &
+     &    surf%iele_4_surf, ele%interior_ele, node%xx, surf%vnorm_surf, &
+     &    view_param%viewpoint_vec, field_pvr%x_nod_model,              &
+     &    field_pvr, color_param, pixel_xy, pvr_bound,                  &
+     &    pvr_start, pvr_img)
 !
 !      call sel_write_pvr_local_img(file_param, pvr_img)
 !
@@ -138,6 +161,10 @@
       if(iflag_debug .gt. 0) write(*,*) 'sel_write_pvr_image_file'
       call sel_write_pvr_image_file                                     &
      &   (file_param, i_rot, istep_pvr, pvr_img)
+!
+      if(file_param%iflag_monitoring .eq. 0) return
+      call sel_write_pvr_image_file                                     &
+     &   (file_param, izero, iminus, pvr_img)
 !
       end subroutine rendering_image
 !
@@ -194,9 +221,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine ray_trace_local(numnod, numele, numsurf, nnod_4_surf,  &
-     &    ie_surf, isf_4_ele, iele_4_surf, interior_ele, xx,            &
-     &    viewpoint_vec, x_nod_screen, field_pvr, color_param,          &
-     &    pixel_xy, pvr_bound, pvr_start, pvr_img)
+     &    ie_surf, isf_4_ele, iele_4_surf, interior_ele,                &
+     &    xx, vnorm_surf, viewpoint_vec, x_nod_screen, field_pvr,       &
+     &    color_param, pixel_xy, pvr_bound, pvr_start, pvr_img)
 !
       use t_control_params_4_pvr
       use t_surf_grp_4_pvr_domain
@@ -214,6 +241,7 @@
       integer(kind = kint), intent(in) :: iele_4_surf(numsurf,2,2)
       integer(kind = kint), intent(in) :: interior_ele(numele)
       real(kind = kreal), intent(in) :: xx(numnod,3)
+      real(kind = kreal), intent(in) :: vnorm_surf(numsurf,3)
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
 !
       real(kind = kreal), intent(in) :: x_nod_screen(numnod,4)
@@ -244,9 +272,10 @@
       if(iflag_debug .gt. 0) write(*,*) 's_ray_trace_4_each_image'
       call s_ray_trace_4_each_image                                     &
      &   (numnod, numele, numsurf, nnod_4_surf, ie_surf,                &
-     &    isf_4_ele, iele_4_surf, interior_ele, xx,                     &
+     &    isf_4_ele, iele_4_surf, interior_ele, xx, vnorm_surf,         &
      &    field_pvr%iflag_used_ele, x_nod_screen, field_pvr%d_pvr,      &
-     &    field_pvr%grad_ele, viewpoint_vec, color_param, ray_vec,      &
+     &    field_pvr%grad_ele, viewpoint_vec,                            &
+     &    field_pvr%arccos_sf, color_param, ray_vec,                    &
      &    pvr_start%num_pvr_ray, pvr_start%icount_pvr_trace,            &
      &    pvr_start%isf_pvr_ray_start, pvr_start%xi_pvr_start,          &
      &    pvr_start%xx_pvr_start, pvr_start%xx_pvr_ray_start,           &
