@@ -137,6 +137,7 @@
       subroutine read_control_colormap(i_pvr)
 !
       use calypso_mpi
+      use t_ctl_data_pvr_colormap
 !
       integer(kind = kint), intent(in) :: i_pvr
 !
@@ -151,7 +152,7 @@
 !
       open(pvr_ctl_file_code,                                           &
      &     file=pvr_ctl_struct(i_pvr)%color_file_ctl,  status='old')
-      call read_control_data_colormap(pvr_ctl_struct(i_pvr))
+      call read_control_data_colormap(pvr_ctl_struct(i_pvr)%color)
       close(pvr_ctl_file_code)
 !
       end subroutine read_control_colormap

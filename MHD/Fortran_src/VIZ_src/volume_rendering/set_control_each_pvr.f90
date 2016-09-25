@@ -111,6 +111,7 @@
       use set_color_4_pvr
       use set_rgba_4_each_pixel
       use pvr_surface_enhancement
+      use set_control_pvr_color
       use skip_comment_f
 !
       type(group_data), intent(in) :: ele_grp
@@ -170,54 +171,6 @@
 !         field_pvr%iflag_enhanse = IFLAG_NONE
 !      end if
 !
-!
-      if(pvr%ambient_coef_ctl%iflag .gt. 0) then
-        color_param%pvr_lighting_real(1)                                &
-     &      = pvr%ambient_coef_ctl%realvalue
-      else
-        color_param%pvr_lighting_real(1) = 0.5
-      end if
-!
-      if(pvr%diffuse_coef_ctl%iflag .gt. 0) then
-        color_param%pvr_lighting_real(2)                                &
-     &      = pvr%diffuse_coef_ctl%realvalue
-      else
-        color_param%pvr_lighting_real(2) = 5.0
-      end if
-!
-      if(pvr%specular_coef_ctl%iflag .gt. 0) then
-        color_param%pvr_lighting_real(3)                                &
-     &      = pvr%specular_coef_ctl%realvalue
-      else
-        color_param%pvr_lighting_real(3) = 1.0
-      end if
-!
-!
-      if(pvr%light_position_ctl%num .gt. 0) then
-        color_param%num_pvr_lights = pvr%light_position_ctl%num
-      else
-        color_param%num_pvr_lights = 1
-      end if
-!
-      call alloc_light_posi_in_view(color_param)
-!
-      if(pvr%light_position_ctl%num .gt. 0) then
-        do i = 1, color_param%num_pvr_lights
-          color_param%xyz_pvr_lights(1,i)                               &
-     &          = pvr%light_position_ctl%vec1(i)
-          color_param%xyz_pvr_lights(2,i)                               &
-     &          = pvr%light_position_ctl%vec2(i)
-          color_param%xyz_pvr_lights(3,i)                               &
-     &          = pvr%light_position_ctl%vec3(i)
-        end do
-        color_param%iflag_pvr_lights = 1
-      else
-        color_param%xyz_pvr_lights(1,1) = one
-        color_param%xyz_pvr_lights(2,1) = one
-        color_param%xyz_pvr_lights(3,1) = one
-      end if
-!
-!
       if      (pvr%num_frames_ctl%iflag .gt.    0                       &
      &   .and. pvr%rotation_axis_ctl%iflag .gt. 0) then
         tmpchara = pvr%rotation_axis_ctl%charavalue
@@ -253,132 +206,8 @@
 !
 !    set colormap setting
 !
-      color_param%id_pvr_color(1) = iflag_rainbow
-      if( pvr%colormap_ctl%iflag .gt. 0) then
-        tmpchara = pvr%colormap_ctl%charavalue
-        if     (cmp_no_case(tmpchara, hd_rainbow)) then
-          color_param%id_pvr_color(1) = iflag_rainbow
-        else if(cmp_no_case(tmpchara, hd_readblue)) then
-          color_param%id_pvr_color(1) = iflag_readblue
-        else if(cmp_no_case(tmpchara, hd_grayscale)) then
-          color_param%id_pvr_color(1) = iflag_grayscale
-        end if
-      end if
-!
-      color_param%id_pvr_color(2) = iflag_automatic
-      color_param%num_pvr_datamap_pnt = 2
-      if( pvr%data_mapping_ctl%iflag .gt. 0) then
-        tmpchara = pvr%data_mapping_ctl%charavalue
-        if      (cmp_no_case(tmpchara, hd_nonlinear)                    &
-     &      .or. cmp_no_case(tmpchara, hd_colorlist)) then
-          if(pvr%colortbl_ctl%num .gt. 0) then
-            color_param%id_pvr_color(2) = iflag_colorlist
-            color_param%num_pvr_datamap_pnt = pvr%colortbl_ctl%num
-          end if
-        else if (cmp_no_case(tmpchara, hd_linear)                       &
-     &      .or. cmp_no_case(tmpchara, hd_minmax)) then
-          if(      pvr%range_min_ctl%iflag .gt. 0                       &
-     &       .and. pvr%range_max_ctl%iflag .gt. 0) then
-            color_param%id_pvr_color(2) = iflag_minmax
-          end if
-        end if
-      end if
-!
-!
-      call alloc_pvr_color_parameteres(color_param)
-!
-      if (color_param%id_pvr_color(2) .eq. iflag_minmax) then
-        color_param%pvr_datamap_param(1,1)                              &
-     &        = pvr%range_min_ctl%realvalue
-        color_param%pvr_datamap_param(1,2)                              &
-     &        = pvr%range_max_ctl%realvalue
-        color_param%pvr_datamap_param(2,1) = zero
-        color_param%pvr_datamap_param(2,2) = one
-!
-      else if(color_param%id_pvr_color(2) .eq. iflag_colorlist) then
-        do i = 1, color_param%num_pvr_datamap_pnt
-          color_param%pvr_datamap_param(1,i) = pvr%colortbl_ctl%vec1(i)
-          color_param%pvr_datamap_param(2,i) = pvr%colortbl_ctl%vec2(i)
-        end do
-!
-      else
-        color_param%pvr_datamap_param(1,1) = zero
-        color_param%pvr_datamap_param(1,2) = zero
-        color_param%pvr_datamap_param(2,1) = zero
-        color_param%pvr_datamap_param(2,2) = one
-      end if
-!
-!
-!
-      color_param%id_pvr_color(3) = iflag_anbient
-      color_param%num_opacity_pnt = 0
-      if( pvr%opacity_style_ctl%iflag .gt. 0) then
-        tmpchara = pvr%opacity_style_ctl%charavalue
-!        if     (cmp_no_case(tmpchara, hd_intensity) then
-!          color_param%id_pvr_color(3) = iflag_intense
-!        end if
-        if     (cmp_no_case(tmpchara, hd_pointdelta)) then
-          if( pvr%step_opacity_ctl%num .gt. 0) then
-            color_param%id_pvr_color(3) = iflag_pointdelta
-            color_param%num_opacity_pnt = pvr%step_opacity_ctl%num
-          end if
-!
-        else if(cmp_no_case(tmpchara, hd_pointrange)) then
-          if( pvr%step_opacity_ctl%num .gt. 0) then
-            color_param%id_pvr_color(3) = iflag_pointrange
-            color_param%num_opacity_pnt = pvr%step_opacity_ctl%num
-          end if
-!
-        else if(cmp_no_case(tmpchara, hd_pointlinear)) then
-          if( pvr%linear_opacity_ctl%num .gt. 0) then
-            color_param%id_pvr_color(3) = iflag_pointlinear
-            color_param%num_opacity_pnt = pvr%linear_opacity_ctl%num
-          end if
-        end if
-      end if
-!
-      call alloc_pvr_opacity_list(color_param)
-!
-      if    (color_param%id_pvr_color(3) .eq. iflag_pointdelta          &
-     &  .or. color_param%id_pvr_color(3) .eq. iflag_pointrange) then
-        do i = 1, color_param%num_opacity_pnt
-          color_param%pvr_opacity_param(1,i)                            &
-     &                  = pvr%step_opacity_ctl%vec1(i)
-          color_param%pvr_opacity_param(2,i)                            &
-     &                  = pvr%step_opacity_ctl%vec2(i)
-          color_param%pvr_opacity_param(3,i)                            &
-     &                  = pvr%step_opacity_ctl%vec3(i)
-          color_param%pvr_max_opacity                                   &
-     &       = max(color_param%pvr_max_opacity,                         &
-     &             color_param%pvr_opacity_param(3,i))
-        end do
-!
-      else if(color_param%id_pvr_color(3) .eq. iflag_pointlinear) then
-        do i = 1, color_param%num_opacity_pnt
-          color_param%pvr_opacity_param(1,i)                            &
-     &                  = pvr%linear_opacity_ctl%vec1(i)
-          color_param%pvr_opacity_param(2,i)                            &
-     &                   = pvr%linear_opacity_ctl%vec1(i)
-          color_param%pvr_opacity_param(3,i)                            &
-     &                   = pvr%linear_opacity_ctl%vec2(i)
-          color_param%pvr_max_opacity                                   &
-     &       = max(color_param%pvr_max_opacity,                         &
-     &             color_param%pvr_opacity_param(3,i))
-        end do
-      end if
-!
-      ist = color_param%num_opacity_pnt + 1
-      color_param%pvr_opacity_param(1,ist) = zero
-      color_param%pvr_opacity_param(2,ist) = one
-      if( pvr%fix_opacity_ctl%iflag .gt. 0) then
-        color_param%pvr_opacity_param(3,ist)                            &
-     &       = pvr%fix_opacity_ctl%realvalue
-      else
-        color_param%pvr_opacity_param(3,ist) = 0.001
-      end if
-      color_param%pvr_max_opacity                                       &
-     &       = max(color_param%pvr_max_opacity,                         &
-     &             color_param%pvr_opacity_param(3,ist))
+      call set_control_pvr_lighting(pvr%color, color_param)
+      call set_control_pvr_colormap(pvr%color, color_param)
 !
 !    set colorbar setting
 !

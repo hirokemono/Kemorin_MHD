@@ -252,7 +252,7 @@
             grad_tgt(3) =   1.0
             call color_plane_with_light                                &
      &         (viewpoint_vec, xx_tgt, c_tgt(1), grad_tgt,             &
-     &          0.9d0, color_param, rgba_ray)
+     &          0.3d0, color_param, rgba_ray)
           end if
 !
 !          if((c_org(1)-0.8)*(c_tgt(1)-0.8) .le. zero) then
