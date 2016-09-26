@@ -169,7 +169,6 @@
       call allocate_ucd_phys_name(ucd_med)
       call allocate_ucd_phys_data(ucd_med)
 !
-      write(*,*) 'tako', nfld, ntot_comp
       ucd_med%num_comp(1:nfld) =  ncomp(1:nfld)
       ucd_med%phys_name(1:nfld) = fld_name(1:nfld)
 !

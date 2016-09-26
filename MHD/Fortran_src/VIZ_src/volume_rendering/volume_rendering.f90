@@ -209,8 +209,7 @@
           call rendering_image(i_rot, istep_pvr, node, ele, surf,       &
      &       file_params(i_pvr), color_params(i_pvr),                   &
      &       cbar_params(i_pvr), view_params(i_pvr), field_pvr(i_pvr),  &
-     &       pixel_xy(i_pvr), pvr_bound(i_pvr), pvr_start(i_pvr),       &
-     &       pvr_img(i_pvr))
+     &       pvr_start(i_pvr), pvr_img(i_pvr))
 !
           if(view_params(i_pvr)%iflag_rotate_snap .gt. 0) then
             call deallocate_pvr_ray_start(pvr_start(i_pvr))
