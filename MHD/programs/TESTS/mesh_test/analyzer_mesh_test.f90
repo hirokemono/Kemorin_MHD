@@ -124,7 +124,6 @@
       if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_volume'
       call max_int_point_by_etype(mesh%ele%nnod_4_ele)
       call const_jacobian_volume_normals                                &
-      call const_jacobian_and_volume                                    &
      &   (mesh, ele_mesh%surf, group, jac_3d_l, jac_3d_q)
 !
 !      call check_jacobians_trilinear(my_rank, mesh%ele, jac_3d_l)
