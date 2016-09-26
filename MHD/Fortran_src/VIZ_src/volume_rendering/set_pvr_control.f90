@@ -11,6 +11,7 @@
       module set_pvr_control
 !
       use m_precision
+      use calypso_mpi
 !
       use m_control_data_pvrs
       use m_control_data_4_pvr
@@ -81,6 +82,7 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                       'deallocate_cont_dat_pvr', i_pvr
         call deallocate_cont_dat_pvr(pvr_ctl_struct(i_pvr))
+        call calypso_mpi_barrier
       end do
 !
       call deallocate_pvr_file_header_ctl

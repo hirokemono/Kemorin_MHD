@@ -44,7 +44,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine transfer_to_screen                                     &
-     &        (node, ele, surf, surf_grp, surf_grp_v, surf_nod_grp,     &
+     &        (node, ele, surf, surf_grp, surf_grp_v,                   &
      &         field_pvr, view_param, pvr_bound,  pixel_xy, pvr_start)
 !
       use m_geometry_constants
@@ -52,7 +52,6 @@
       use t_surface_data
       use t_group_data
       use t_surface_group_geometry
-      use t_surface_group_connect
       use t_control_params_4_pvr
       use t_surf_grp_4_pvr_domain
       use t_geometries_in_pvr_screen
@@ -66,7 +65,6 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: surf_grp
       type(surface_group_geometry), intent(in) :: surf_grp_v
-      type (surface_node_grp_data), intent(in)  :: surf_nod_grp
 !
       type(pvr_view_parameter), intent(inout) :: view_param
       type(pvr_projected_field), intent(inout) :: field_pvr
@@ -101,10 +99,10 @@
 !      call check_pvr_ray_startpoints(my_rank, pvr_start)
 !
       call set_opacity_for_boundaries                                   &
-     &   (surf_grp, surf_grp_v, surf_nod_grp, view_param,               &
-     &    field_pvr%iflag_enhanse, node%numnod, ele%numele,             &
-     &    surf%numsurf, surf%isf_4_ele,                                 &
-     &    field_pvr%arccos_sf, field_pvr%arccos_norm)
+     &   (surf_grp, surf_grp_v, view_param,                             &
+     &    field_pvr%iflag_enhanse, field_pvr%enhansed_opacity,          &
+     &    ele%numele, surf%numsurf, surf%isf_4_ele,                     &
+     &    field_pvr%arccos_sf)
 !
       end subroutine transfer_to_screen
 !

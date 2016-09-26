@@ -236,8 +236,6 @@
      &      ie_surf, isurf_end, xi, xx, xx_tgt)
         call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
      &      ie_surf, isurf_end, xi, color_nod, c_tgt(1))
-!        call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,    &
-!     &      ie_surf, isurf_end, xi, arccos_norm, arccos_nod(1))
 !
         if(interior_ele(iele) .gt. 0) then
           if(arccos_sf(isurf_end) .gt. SMALL) then

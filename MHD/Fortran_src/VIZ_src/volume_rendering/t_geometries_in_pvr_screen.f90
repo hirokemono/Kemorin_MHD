@@ -41,7 +41,7 @@
 !>    integer flag for surface boundaries
         integer(kind = kint), pointer :: iflag_enhanse(:)
 !>    Opacity value for surface boundaries
-        real(kind = kreal), pointer :: arccos_norm(:)
+        real(kind = kreal), pointer :: enhansed_opacity(:)
 !>    Opacity value for surface boundaries
         real(kind = kreal), pointer :: arccos_sf(:)
       end type pvr_projected_field
@@ -103,19 +103,19 @@
 ! -----------------------------------------------------------------------
 !
       subroutine alloc_iflag_pvr_boundaries                             &
-     &         (nnod, nsurf, num_sf_grp, fld_pvr)
+     &         (nsurf, num_sf_grp, fld_pvr)
 !
-      integer(kind = kint), intent(in) :: nnod, nsurf, num_sf_grp
+      integer(kind = kint), intent(in) :: nsurf, num_sf_grp
       type(pvr_projected_field), intent(inout) :: fld_pvr
 !
 !
-      allocate(fld_pvr%arccos_norm(nnod))
       allocate(fld_pvr%arccos_sf(nsurf))
       allocate(fld_pvr%iflag_enhanse(num_sf_grp))
+      allocate(fld_pvr%enhansed_opacity(num_sf_grp))
 !
-      if(nnod .gt. 0)       fld_pvr%arccos_norm = 0.0d0
       if(nsurf .gt. 0)      fld_pvr%arccos_sf = 0.0d0
       if(num_sf_grp .gt. 0) fld_pvr%iflag_enhanse = 0
+      if(num_sf_grp .gt. 0) fld_pvr%enhansed_opacity = 0
 !
       end subroutine alloc_iflag_pvr_boundaries
 !
@@ -139,8 +139,8 @@
       type(pvr_projected_field), intent(inout) :: fld_pvr
 !
 !
-      deallocate(fld_pvr%iflag_enhanse)
-      deallocate(fld_pvr%arccos_sf, fld_pvr%arccos_norm)
+      deallocate(fld_pvr%iflag_enhanse, fld_pvr%enhansed_opacity)
+      deallocate(fld_pvr%arccos_sf)
 !
       end subroutine dealloc_iflag_pvr_boundaries
 !
@@ -163,7 +163,7 @@
      &     (numnod, numele, field_pvr(i))
         call alloc_iflag_pvr_used_ele(numele, field_pvr(i))
         call alloc_iflag_pvr_boundaries                                 &
-     &     (numnod, numsurf, num_sf_grp, field_pvr(i))
+     &     (numsurf, num_sf_grp, field_pvr(i))
       end do
 !
       end subroutine allocate_nod_data_4_pvr

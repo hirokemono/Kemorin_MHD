@@ -78,10 +78,10 @@
         file_param%id_pvr_transparent = 0
       end if
 !
-!      file_param%iflag_monitoring = 0
-!      if(yes_flag(pvr%monitoring_ctl%charavalue)) then
-!        file_param%iflag_monitoring = 1
-!      end if
+      file_param%iflag_monitoring = 0
+      if(yes_flag(pvr%monitoring_ctl%charavalue)) then
+        file_param%iflag_monitoring = 1
+      end if
 !
       call check_field_4_viz(num_nod_phys, phys_nod_name,               &
      &    ione, pvr%pvr_field_ctl, num_field, num_phys_viz)
@@ -163,14 +163,14 @@
      &    fld_param%nele_grp_area_pvr, fld_param%id_ele_grp_area_pvr)
 !
 !
-!      if (pvr%surf_enhanse_ctl%num .gt. 0) then
-!        call set_pvr_bc_enhanse_flag(surf_grp,                          &
-!     &      pvr%surf_enhanse_ctl%num, pvr%surf_enhanse_ctl%c1_tbl,      &
-!     &      pvr%surf_enhanse_ctl%c2_tbl, field_pvr%iflag_enhanse)
-!        call dealloc_control_array_c2(pvr%surf_enhanse_ctl)
-!      else
-!         field_pvr%iflag_enhanse = IFLAG_NONE
-!      end if
+      if (pvr%surf_enhanse_ctl%num .gt. 0) then
+        call set_pvr_bc_enhanse_flag(surf_grp,                          &
+     &      pvr%surf_enhanse_ctl%num, pvr%surf_enhanse_ctl%c1_tbl,      &
+     &      pvr%surf_enhanse_ctl%c2_tbl, pvr%surf_enhanse_ctl%vect,     &
+     &      field_pvr%iflag_enhanse, field_pvr%enhansed_opacity)
+      else
+         field_pvr%iflag_enhanse = IFLAG_NONE
+      end if
 !
       call set_control_pvr_movie(pvr%movie, view_param)
 !

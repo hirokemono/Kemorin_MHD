@@ -143,8 +143,8 @@
           if(iflag_debug .gt. 0) write(*,*) 'cal_pvr_modelview_matrix'
           call cal_pvr_modelview_matrix(izero, outlines(i_pvr),         &
      &        view_params(i_pvr), color_params(i_pvr))
-          call transfer_to_screen(node, ele, surf,                      &
-     &        group%surf_grp, group%surf_grp_geom, group%surf_nod_grp,  &
+          call transfer_to_screen                                       &
+     &       (node, ele, surf, group%surf_grp, group%surf_grp_geom,     &
      &        field_pvr(i_pvr), view_params(i_pvr), pvr_bound(i_pvr),   &
      &        pixel_xy(i_pvr), pvr_start(i_pvr))
         end if
@@ -200,8 +200,8 @@
           if(view_params(i_pvr)%iflag_rotate_snap .gt. 0) then
             call cal_pvr_modelview_matrix(i_rot, outlines(i_pvr),       &
      &          view_params(i_pvr), color_params(i_pvr))
-            call transfer_to_screen(node, ele, surf, group%surf_grp,    &
-     &          group%surf_grp_geom, group%surf_nod_grp,                &
+            call transfer_to_screen                                     &
+     &         (node, ele, surf, group%surf_grp, group%surf_grp_geom,   &
      &          field_pvr(i_pvr), view_params(i_pvr), pvr_bound(i_pvr), &
      &          pixel_xy(i_pvr), pvr_start(i_pvr))
           end if

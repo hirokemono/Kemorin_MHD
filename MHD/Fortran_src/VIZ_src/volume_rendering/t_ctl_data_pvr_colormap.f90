@@ -172,19 +172,28 @@
       type(pvr_colormap_ctl), intent(inout) :: color
 !
 !
-      if(associated(color%step_opacity_ctl%vec1)) then
+      if(color%step_opacity_ctl%num .gt. 0) then
         call dealloc_control_array_r3(color%step_opacity_ctl)
       end if
-      if(associated(color%linear_opacity_ctl%vec1)) then
+      if(color%linear_opacity_ctl%num .gt. 0) then
         call dealloc_control_array_r2(color%linear_opacity_ctl)
       end if
-      if(associated(color%light_position_ctl%vec1)) then
+      if(color%light_position_ctl%num .gt. 0) then
         call dealloc_control_array_r3(color%light_position_ctl)
       end if
 !
-      if(associated(color%colortbl_ctl%vec1)) then
+      if(color%colortbl_ctl%num .gt. 0) then
         call dealloc_control_array_r2(color%colortbl_ctl)
       end if
+!
+      color%colortbl_ctl%num =       0
+      color%colortbl_ctl%icou = 0
+      color%step_opacity_ctl%num =   0
+      color%step_opacity_ctl%icou =    0
+      color%linear_opacity_ctl%num = 0
+      color%linear_opacity_ctl%icou =  0
+      color%light_position_ctl%num = 0
+      color%light_position_ctl%icou = 0
 !
       end subroutine dealloc_pvr_color_crl
 !
@@ -281,10 +290,6 @@
       type(pvr_colormap_ctl), intent(inout) :: color
 !
 !
-      color%light_position_ctl%num = 0
-      color%colortbl_ctl%num =       0
-      color%step_opacity_ctl%num =   0
-      color%linear_opacity_ctl%num = 0
 !
       color%ambient_coef_ctl%iflag =  0
       color%diffuse_coef_ctl%iflag =  0
@@ -296,11 +301,6 @@
       color%range_max_ctl%iflag =       0
       color%opacity_style_ctl%iflag =   0
       color%fix_opacity_ctl%iflag =     0
-!
-      color%colortbl_ctl%icou = 0
-      color%step_opacity_ctl%icou =    0
-      color%linear_opacity_ctl%icou =  0
-      color%light_position_ctl%icou = 0
 !
       color%i_pvr_lighting = 0
       color%i_pvr_colordef = 0
