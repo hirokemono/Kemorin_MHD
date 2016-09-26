@@ -130,6 +130,8 @@
       if(pvr_sect_ctl%fname_sect_ctl .eq. 'NO_FILE') return
 !
       ctl_file_code = psf_ctl_file_code
+      if(my_rank .eq. 0) write(*,*) 'Read ',                            &
+     &   trim(pvr_sect_ctl%fname_sect_ctl), ' for surface definition'
       open(ctl_file_code, file=pvr_sect_ctl%fname_sect_ctl,             &
      &     status='old')
 !
@@ -166,11 +168,9 @@
           call read_file_name_from_ctl_line(i_psf_ctl1,                 &
      &        pvr_sect_ctl%fname_sect_ctl)
         else if(right_begin_flag(hd_surface_define) .gt. 0) then
-          write(*,*) 'get surface'
           i_psf_ctl1 = i_psf_ctl1 + 1
           pvr_sect_ctl%fname_sect_ctl = 'NO_FILE'
           call read_section_def_control(pvr_sect_ctl%psf)
-          write(*,*) 'get surface end'
         end if
 !
         call read_real_ctl_type                                         &

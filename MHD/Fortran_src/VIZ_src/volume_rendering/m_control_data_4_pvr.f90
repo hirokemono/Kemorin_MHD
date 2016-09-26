@@ -271,7 +271,6 @@
       type(pvr_ctl), intent(inout) :: pvr
 !
 !
-      write(*,*) 'inside read_pvr_sections_ctl', pvr%num_pvr_sect_ctl
       if (pvr%i_pvr_sect .gt. 0) return
       allocate(pvr%pvr_sect_ctl(pvr%num_pvr_sect_ctl))
 !
@@ -283,7 +282,6 @@
 !
         if(right_begin_flag(hd_pvr_sections) .gt. 0) then
           pvr%i_pvr_sect = pvr%i_pvr_sect + 1
-          write(*,*) 'go to read_pvr_section_ctl', pvr%i_pvr_sect
           call read_pvr_section_ctl(pvr%pvr_sect_ctl(pvr%i_pvr_sect))
         end if
       end do

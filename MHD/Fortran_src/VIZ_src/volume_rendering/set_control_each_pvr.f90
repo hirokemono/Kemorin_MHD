@@ -130,7 +130,7 @@
       type(pvr_colormap_parameter), intent(inout) :: color_param
       type(pvr_colorbar_parameter), intent(inout) :: cbar_param
 !
-      integer(kind = kint) :: id_section_method, ierr, i, j
+      integer(kind = kint) :: id_section_method, ierr, i
       integer(kind = kint) :: icheck_ncomp(1)
       integer(kind = kint) :: ifld_tmp(1), icomp_tmp(1), ncomp_tmp(1)
       character(len = kchara) :: fldname_tmp(1)
@@ -184,6 +184,8 @@
           call s_set_coefs_of_sections                                  &
      &       (pvr%pvr_sect_ctl(i)%psf, id_section_method,               &
      &        field_pvr%coefs(1:10,i), ierr)
+          if(ierr .gt. 0) call calypso_mpi_abort                        &
+     &         (ierr, 'Set section parameters for PVR')
 !
           if(pvr%pvr_sect_ctl(i)%opacity_ctl%iflag .gt. 0) then
             field_pvr%sect_opacity(i)                                   &

@@ -14,7 +14,53 @@ begin volume_rendering   (BMP or PNG)
     array chosen_ele_grp_ctl  1
       chosen_ele_grp_ctl   outer_core   end
     end array chosen_ele_grp_ctl
+!
+    array surface_enhanse_ctl  2
+      surface_enhanse_ctl   ICB   reverse_surface   0.7
+      surface_enhanse_ctl   CMB   forward_surface   0.4
+    end array surface_enhanse_ctl
   end  plot_area_ctl
+!
+!
+  array section_ctl   2
+    begin section_ctl
+      opacity_ctl       0.5
+      file surface_define    ctl_psf_z0
+    end section_ctl
+!
+    begin section_ctl
+      opacity_ctl       0.8
+      begin surface_define
+        section_method    equation
+!
+        array coefs_ctl  10
+          coefs_ctl  x2     0.0
+          coefs_ctl  y2     0.0
+          coefs_ctl  z2     0.0
+          coefs_ctl  xy     0.0
+          coefs_ctl  yz     0.0
+          coefs_ctl  zx     0.0
+          coefs_ctl  x      0.0
+          coefs_ctl  y      0.0
+          coefs_ctl  z      1.0
+          coefs_ctl  const  0.2
+        end array coefs_ctl
+      end surface_define
+    end section_ctl
+  end array section_ctl
+!
+  array isosurface_ctl   2
+    begin isosurface_ctl
+      opacity_ctl       0.5
+      isosurf_value     0.2
+      surface_direction    increase
+    end isosurface_ctl
+    begin isosurface_ctl
+      opacity_ctl       0.2
+      isosurf_value     0.6
+      surface_direction    decrease
+    end isosurface_ctl
+  end array isosurface_ctl
 !
 !
   begin view_transform_ctl
