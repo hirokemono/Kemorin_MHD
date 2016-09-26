@@ -178,6 +178,13 @@
       if(field_pvr%num_sections .gt. 0) then
         call alloc_pvr_sections(field_pvr)
 !
+        do i = 1, field_pvr%num_sections
+          field_pvr%coefs(1:10,i) = zero
+          field_pvr%coefs(9,i) = one
+          field_pvr%coefs(10,i) = -0.3
+!
+          field_pvr%sect_opacity(i) = 0.6
+        end do
       end if
 !
       field_pvr%num_isosurf = pvr%num_pvr_iso_ctl

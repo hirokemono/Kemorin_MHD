@@ -3,12 +3,15 @@
 !
 !        programmed by H.Matsui on May. 2006
 !
-!!    subroutine s_set_coefs_of_sections                                &
+!!      subroutine s_set_coefs_of_sections                              &
 !!     &         (psf, id_section_method, const_psf, ierr)
+!!      real(kind = kreal) function side_of_plane(const_psf, xx)
+!!      subroutine cal_normal_of_plane(const_psf, xx, normal)
 !
       module set_coefs_of_sections
 !
       use m_precision
+      use m_constants
 !
       implicit  none
 !
@@ -88,6 +91,55 @@
       end if
 !
       end subroutine s_set_coefs_of_sections
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      real(kind = kreal) function side_of_plane(const_psf, xx)
+!
+      real(kind = kreal), intent(in) :: xx(3)
+      real(kind = kreal), intent(in) :: const_psf(10)
+!
+!
+      side_of_plane =  const_psf( 1) * (xx(1)*xx(1))                    &
+     &               + const_psf( 2) * (xx(2)*xx(2))                    &
+     &               + const_psf( 3) * (xx(3)*xx(3))                    &
+     &               + const_psf( 4) * (xx(1)*xx(2))                    &
+     &               + const_psf( 5) * (xx(2)*xx(3))                    &
+     &               + const_psf( 6) * (xx(3)*xx(1))                    &
+     &               + const_psf( 7) *  xx(1)                           &
+     &               + const_psf( 8) *  xx(2)                           &
+     &               + const_psf( 9) *  xx(3)                           &
+     &               + const_psf(10)
+!
+      end function side_of_plane
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine cal_normal_of_plane(const_psf, xx, normal)
+!
+      real(kind = kreal), intent(in) :: xx(3)
+      real(kind = kreal), intent(in) :: const_psf(10)
+!
+      real(kind = kreal), intent(inout) :: normal(3)
+!
+!
+      normal(1) =      const_psf( 1) *  xx(1) * two                     &
+     &               + const_psf( 4) *  xx(2)                           &
+     &               + const_psf( 6) *  xx(3)                           &
+     &               + const_psf( 7) *  xx(1)
+!
+      normal(2) =      const_psf( 2) *  xx(2) * two                     &
+     &               + const_psf( 4) *  xx(1)                           &
+     &               + const_psf( 5) *  xx(3)                           &
+     &               + const_psf( 8) *  xx(2)
+!
+      normal(3) =      const_psf( 3) *  xx(3) * two                     &
+     &               + const_psf( 5) *  xx(2)                           &
+     &               + const_psf( 6) *  xx(1)                           &
+     &               + const_psf( 9) *  xx(3)
+!
+      end subroutine cal_normal_of_plane
 !
 !  ---------------------------------------------------------------------
 !

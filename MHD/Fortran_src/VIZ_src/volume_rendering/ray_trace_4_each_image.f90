@@ -150,6 +150,7 @@
       use t_control_params_4_pvr
       use cal_field_on_surf_viz
       use cal_fline_in_cube
+      use set_coefs_of_sections
 !
       integer(kind = kint), intent(in) :: numnod, numele, numsurf
       integer(kind = kint), intent(in) :: nnod_4_surf
@@ -161,11 +162,6 @@
       real(kind = kreal), intent(in) :: vnorm_surf(numsurf,3)
 !
       real(kind = kreal), intent(in) :: x_nod_screen(numnod,4)
-!
-!      integer(kind = kint), intent(in) :: num_isosurf
-!      integer(kind = kint), intent(in) :: itype_isosurf(num_isosurf)
-!      real(kind = kreal), intent(in) :: iso_value(num_isosurf)
-!      real(kind = kreal), intent(in) :: iso_opacity(num_isosurf)
 !
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
       real(kind = kreal), intent(in) :: ray_vec(3)
@@ -181,9 +177,9 @@
 !
       integer(kind = kint), parameter :: iflag_back = 0
       integer(kind = kint) :: isf_tgt, isurf_end, iele, isf_org
-      integer(kind = kint) :: i_iso
+      integer(kind = kint) :: i_iso, i_psf
       real(kind = kreal) :: screen_tgt(3), c_tgt(1), c_org(1)
-      real(kind = kreal) :: grad_tgt(3), xx_tgt(3), rflag
+      real(kind = kreal) :: grad_tgt(3), xx_tgt(3), rflag, rflag2
 !
 !
       if(isurf_org(1) .eq. 0) return
@@ -240,13 +236,18 @@
      &          field_pvr%arccos_sf(isurf_end),  color_param, rgba_ray)
           end if
 !
-          if(xx_st(3)*xx_tgt(3) .le. zero) then
-            grad_tgt(1:2) = 0.0
-            grad_tgt(3) =   1.0
-            call color_plane_with_light                                 &
-     &         (viewpoint_vec, xx_tgt, c_tgt(1), grad_tgt,              &
-     &          0.3d0, color_param, rgba_ray)
-          end if
+          do i_psf = 1, field_pvr%num_sections
+            rflag =  side_of_plane(field_pvr%coefs(1:10,i_psf), xx_st)  &
+     &             * side_of_plane(field_pvr%coefs(1:10,i_psf), xx_tgt)
+            rflag2 = side_of_plane(field_pvr%coefs(1:10,i_psf), xx_tgt)
+            if(rflag2 .eq. zero .or. rflag .lt. zero) then
+              call cal_normal_of_plane                                  &
+     &           (field_pvr%coefs(1:10,i_psf), xx_tgt, grad_tgt)
+              call color_plane_with_light                               &
+     &           (viewpoint_vec, xx_tgt, c_tgt(1), grad_tgt,            &
+     &            field_pvr%sect_opacity(i_psf), color_param, rgba_ray)
+            end if
+          end do
 !
           do i_iso = 1, field_pvr%num_isosurf
             rflag =  (c_org(1) - field_pvr%iso_value(i_iso))            &
