@@ -40,6 +40,11 @@
       implicit  none
 !
 !
+      type pvr_isosurf_ctl
+        type(read_character_item) :: isosurf_type_ctl
+        type(read_real_item) :: isosurf_value_ctl
+        type(read_real_item) :: opacity_ctl
+      end type pvr_isosurf_ctl
 !
       type pvr_colorbar_ctl
         type(read_character_item) :: colorbar_switch_ctl
@@ -64,8 +69,15 @@
 !
 !     2nd level for volume_rendering
 !
+      character(len=kchara) :: hd_pvr_isosurf = 'isosurface_ctl'
       character(len=kchara) :: hd_pvr_colorbar =  'colorbar_ctl'
       character(len=kchara) :: hd_pvr_rotation =  'image_rotation_ctl'
+!
+!     3rd level for isosurface
+!
+      character(len=kchara) :: hd_isosurf_value = 'isosurf_value'
+      character(len=kchara) :: hd_iso_opacity =   'opacity_ctl'
+      character(len=kchara) :: hd_iso_direction = 'surface_direction'
 !
 !     3rd level for colorbar
 !
@@ -91,6 +103,31 @@
 !  ---------------------------------------------------------------------
 !
       contains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine read_pvr_isosurface_ctl(pvr_iso_ctl)
+!
+      type(pvr_isosurf_ctl), intent(inout) :: pvr_iso_ctl
+      integer(kind = kint) :: i_flag
+!
+!
+      i_flag = 0
+      do
+        call load_ctl_label_and_line
+!
+        call find_control_end_flag(hd_pvr_isosurf, i_flag)
+        if(i_flag .gt. 0) exit
+!
+        call read_chara_ctl_type(hd_iso_direction,                      &
+     &      pvr_iso_ctl%isosurf_type_ctl)
+        call read_real_ctl_type                                         &
+     &     (hd_isosurf_value, pvr_iso_ctl%isosurf_value_ctl )
+        call read_real_ctl_type                                         &
+     &     (hd_iso_opacity, pvr_iso_ctl%opacity_ctl)
+      end do
+!
+      end subroutine read_pvr_isosurface_ctl
 !
 !  ---------------------------------------------------------------------
 !
