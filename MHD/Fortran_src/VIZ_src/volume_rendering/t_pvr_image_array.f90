@@ -60,7 +60,7 @@
         real(kind = kreal), pointer :: rgba_real_part(:,:)
 !
 !>    Order of image data with respect to distance
-        integer(kind = kint), pointer :: ip_farther(:)
+        integer(kind = kint), pointer :: ip_closer(:)
 !>    average of depth of image
         real(kind = kreal), pointer :: ave_depth_gl(:)
       end type pvr_image_type
@@ -127,9 +127,9 @@
       allocate(pvr_img%rgba_real_part(4,pvr_img%npixel_local))
 !
       allocate(pvr_img%ave_depth_gl(nprocs))
-      allocate(pvr_img%ip_farther(nprocs))
+      allocate(pvr_img%ip_closer(nprocs))
       pvr_img%ave_depth_gl = 0.0d0
-      pvr_img%ip_farther = -1
+      pvr_img%ip_closer = -1
 !
       end subroutine alloc_pvr_image_array_type
 !
@@ -144,7 +144,7 @@
       deallocate(pvr_img%rgba_left_gl, pvr_img%rgba_right_gl)
       deallocate(pvr_img%rgba_real_gl)
 !
-      deallocate(pvr_img%ave_depth_gl, pvr_img%ip_farther)
+      deallocate(pvr_img%ave_depth_gl, pvr_img%ip_closer)
       deallocate(pvr_img%rgba_real_part, pvr_img%rgba_part)
       deallocate(pvr_img%istack_image)
       deallocate(pvr_img%rgba_lc, pvr_img%rgb_chara_lc)

@@ -62,7 +62,8 @@
       end type pvr_ray_start_type
 !
 !>  Direction of Ray in screen coordinate
-      real(kind = kreal), parameter :: ray_vec(3) = (/zero, zero, one/)
+      real(kind = kreal), parameter                                     &
+     &                   :: ray_vec(3) = (/zero, zero, -one/)
 !
       private :: deallocate_num_pvr_ray_start
 !

@@ -91,7 +91,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'distribute_average_depth'
       call distribute_average_depth                                     &
      &   (pvr_img%num_pixel_xy, pvr_img%iflag_mapped, pvr_img%depth_lc, &
-     &    pvr_img%ip_farther, pvr_img%ave_depth_gl)
+     &    pvr_img%ip_closer, pvr_img%ave_depth_gl)
 !
 ! Distribute image
       if(iflag_debug .gt. 0) write(*,*) 'distribute_segmented_images'
@@ -102,7 +102,7 @@
 !  Alpha blending
       if(iflag_debug .gt. 0) write(*,*) 'blend_image_from_subdomains'
       call blend_image_from_subdomains                                  &
-     &   (pvr_img%ip_farther, pvr_img%npixel_local,                     &
+     &   (pvr_img%ip_closer, pvr_img%npixel_local,                      &
      &    pvr_img%rgba_part, pvr_img%rgba_real_part)
 !
 !  Collect image to rank 0
@@ -198,12 +198,12 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine blend_image_from_subdomains(ip_farther, npixel_local,  &
+      subroutine blend_image_from_subdomains(ip_closer, npixel_local,   &
      &          rgba_part, rgba_real_part)
 !
       use set_rgba_4_each_pixel
 !
-      integer(kind = kint), intent(in) :: ip_farther(nprocs)
+      integer(kind = kint), intent(in) :: ip_closer(nprocs)
       integer(kind = kint), intent(in) :: npixel_local
       real(kind = kreal), intent(inout)                                 &
      &             :: rgba_part(4,npixel_local,nprocs)
@@ -219,8 +219,8 @@
 !
 !$omp parallel do private(ipix,inum,ip)
       do ipix = 1, npixel_local
-        do inum = 1, nprocs
-          ip = ip_farther(inum)
+        do inum = nprocs, 1, -1
+          ip = ip_closer(inum)
           call composite_alpha_blending(rgba_part(1,ipix,ip),           &
      &        rgba_real_part(1,ipix))
         end do
@@ -232,7 +232,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine distribute_average_depth(num_pixel_xy,                 &
-     &          iflag_mapped, depth_lc, ip_farther, ave_depth_gl)
+     &          iflag_mapped, depth_lc, ip_closer, ave_depth_gl)
 !
       use quicksort
 !
@@ -240,7 +240,7 @@
       integer(kind = kint), intent(in) :: iflag_mapped(num_pixel_xy)
       real(kind = kreal), intent(in) :: depth_lc(num_pixel_xy)
 !
-      integer(kind = kint), intent(inout) :: ip_farther(nprocs)
+      integer(kind = kint), intent(inout) :: ip_closer(nprocs)
       real(kind = kreal), intent(inout) :: ave_depth_gl(nprocs)
 !
       real(kind = kreal) :: ave_depth_lc, covered_area
@@ -261,11 +261,11 @@
      &                   CALYPSO_COMM, ierr_MPI)
 !
       do ip = 1, nprocs
-        ip_farther(ip) = ip
+        ip_closer(ip) = ip
       end do
 !
       call quicksort_real_w_index(nprocs, ave_depth_gl, ione, nprocs,   &
-     &    ip_farther)
+     &    ip_closer)
 !
       end subroutine distribute_average_depth
 !

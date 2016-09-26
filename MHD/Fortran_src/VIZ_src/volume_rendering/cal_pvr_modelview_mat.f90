@@ -115,6 +115,7 @@
       type(pvr_view_parameter), intent(inout) :: view_param
 !
       real(kind = kreal) :: rev_lookat(3)
+      real(kind = kreal) :: rev_eye(3)
 !
 !
 !
@@ -146,16 +147,15 @@
       view_param%iflag_modelview_mat = 1
 !
 !
+      rev_eye(1:3) = - view_param%viewpt_in_viewer_pvr(1:3)
       if (view_param%iflag_viewpt_in_view .eq. 0) then
         call cal_mat44_vec3_on_node(ione, ione, ione_stack,             &
-     &    view_param%modelview_mat, view_param%viewpoint_vec,           &
-     &    view_param%viewpt_in_viewer_pvr)
+     &    view_param%modelview_mat, view_param%viewpoint_vec, rev_eye)
         call Kemo_Translate(view_param%modelview_mat,                   &
-     &      view_param%viewpt_in_viewer_pvr)
+     &      rev_eye)
         view_param%iflag_viewpt_in_view = 1
       else
-        call Kemo_Translate(view_param%modelview_mat,                   &
-     &      view_param%viewpt_in_viewer_pvr)
+        call Kemo_Translate(view_param%modelview_mat, rev_eye)
       end if
 !
       if (iflag_debug .gt. 0) then
@@ -199,7 +199,6 @@
       end if
 !
 !
-      write(*,*) 'tako 2'
       if (view_param%iflag_rotate_snap .gt. 0) then
         call Kemo_Unit(view_param%modelview_mat)
 !
