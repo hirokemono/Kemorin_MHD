@@ -46,6 +46,13 @@
 !>    Opacity value for surface boundaries
         real(kind = kreal), pointer :: arccos_sf(:)
 !
+!>    Number of sections
+        integer(kind = kint) :: num_sections
+!>    fiale value for isosurfaces
+        real(kind = kreal), pointer :: coefs(:,:)
+!>    Opacity value for isosurfaces
+        real(kind = kreal), pointer :: sect_opacity(:)
+!
 !>    Number of isosurfaces
         integer(kind = kint) :: num_isosurf
 !>    Number of isosurfaces
@@ -71,7 +78,7 @@
       private :: alloc_nod_data_4_pvr, alloc_iflag_pvr_used_ele
       private :: alloc_iflag_pvr_boundaries
       private :: dealloc_data_4_pvr,  dealloc_iflag_pvr_boundaries
-      private :: dealloc_pvr_isosurfaces
+      private :: dealloc_pvr_sections, dealloc_pvr_isosurfaces
 !
 ! -----------------------------------------------------------------------
 !
@@ -132,6 +139,21 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine alloc_pvr_sections(fld_pvr)
+!
+      type(pvr_projected_field), intent(inout) :: fld_pvr
+!
+!
+      allocate(fld_pvr%coefs(10,fld_pvr%num_sections))
+      allocate(fld_pvr%sect_opacity(fld_pvr%num_sections))
+!
+      if(fld_pvr%num_sections .gt. 0) fld_pvr%coefs =        0.0d0
+      if(fld_pvr%num_sections .gt. 0) fld_pvr%sect_opacity = 0.0d0
+!
+      end subroutine alloc_pvr_sections
+!
+! -----------------------------------------------------------------------
+!
       subroutine alloc_pvr_isosurfaces(fld_pvr)
 !
       type(pvr_projected_field), intent(inout) :: fld_pvr
@@ -172,6 +194,17 @@
       deallocate(fld_pvr%arccos_sf)
 !
       end subroutine dealloc_iflag_pvr_boundaries
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_pvr_sections(fld_pvr)
+!
+      type(pvr_projected_field), intent(inout) :: fld_pvr
+!
+!
+      deallocate(fld_pvr%itype_isosurf, fld_pvr%iso_value)
+!
+      end subroutine dealloc_pvr_sections
 !
 ! -----------------------------------------------------------------------
 !
@@ -238,6 +271,7 @@
       do i = 1, num_pvr
         call dealloc_data_4_pvr(field_pvr(i))
         call dealloc_iflag_pvr_boundaries(field_pvr(i))
+        call dealloc_pvr_sections(field_pvr(i))
         call dealloc_pvr_isosurfaces(field_pvr(i))
       end do
 !

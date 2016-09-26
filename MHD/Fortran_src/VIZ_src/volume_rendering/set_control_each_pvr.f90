@@ -174,6 +174,12 @@
       end if
 !
 !
+      field_pvr%num_sections = 1
+      if(field_pvr%num_sections .gt. 0) then
+        call alloc_pvr_sections(field_pvr)
+!
+      end if
+!
       field_pvr%num_isosurf = pvr%num_pvr_iso_ctl
       if(field_pvr%num_isosurf .gt. 0) then
         call alloc_pvr_isosurfaces(field_pvr)
