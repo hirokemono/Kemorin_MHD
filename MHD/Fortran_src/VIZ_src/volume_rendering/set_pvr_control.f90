@@ -37,6 +37,7 @@
       use t_group_data
       use t_control_params_4_pvr
       use t_geometries_in_pvr_screen
+      use t_control_data_pvr_misc
       use set_control_each_pvr
       use set_field_comp_for_viz
 !
@@ -56,7 +57,7 @@
       type(pvr_colorbar_parameter), intent(inout)                       &
      &                  :: cbar_params(num_pvr)
 !
-      integer(kind = kint) :: i_pvr
+      integer(kind = kint) :: i_pvr, i_psf
 !
 !
       ctl_file_code = pvr_ctl_file_code
@@ -67,6 +68,11 @@
         call read_control_pvr(i_pvr)
         call read_control_modelview(i_pvr)
         call read_control_colormap(i_pvr)
+!
+        do i_psf = 1, pvr_ctl_struct(i_pvr)%num_pvr_sect_ctl
+          call read_control_pvr_section_def                             &
+     &       (pvr_ctl_struct(i_pvr)%pvr_sect_ctl(i_psf))
+        end do
       end do
 !
       do i_pvr = 1, num_pvr

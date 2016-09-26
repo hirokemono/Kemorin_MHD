@@ -236,14 +236,13 @@
      &                  :: hd_plot_grp = 'chosen_ele_grp_ctl'
 !
       private :: hd_psf_file_head, hd_psf_file_prefix
-      private :: hd_psf_out_type, hd_surface_define, hd_output_field
+      private :: hd_psf_out_type, hd_output_field
       private :: hd_section_method, hd_psf_area
       private :: hd_radius, hd_plot_area
       private :: hd_group_name, hd_center_ctl, hd_axis_ctl
       private :: hd_coefs_ctl, hd_plot_grp, hd_psf_result_field
 !
-      private :: read_psf_output_ctl
-      private :: read_psf_plot_area_ctl, read_section_def_control
+      private :: read_psf_output_ctl, read_psf_plot_area_ctl
 !
 !  ---------------------------------------------------------------------
 !
@@ -340,8 +339,13 @@
         call find_control_end_flag(hd_section_ctl, psf%i_psf_ctl)
         if(psf%i_psf_ctl .gt. 0) exit
 !
-        call  read_section_def_control(psf)
-        call  read_psf_output_ctl(psf)
+        if(right_begin_flag(hd_surface_define) .gt. 0) then
+          call  read_section_def_control(psf)
+        end if
+!
+        if(right_begin_flag(hd_output_field) .gt. 0) then
+          call  read_psf_output_ctl(psf)
+        end if
 !
 !
         call read_chara_ctl_type(hd_psf_file_prefix,                    &
@@ -361,8 +365,7 @@
       type(psf_ctl), intent(inout) :: psf
 !
 !
-      if(right_begin_flag(hd_surface_define) .eq. 0) return
-      if (psf%i_surface_define.gt.0) return
+      if(psf%i_surface_define.gt.0) return
 !
       do
         call load_ctl_label_and_line
@@ -399,7 +402,6 @@
       type(psf_ctl), intent(inout) :: psf
 !
 !
-      if(right_begin_flag(hd_output_field) .eq. 0) return
       if (psf%i_output_field .gt. 0) return
       do
         call load_ctl_label_and_line

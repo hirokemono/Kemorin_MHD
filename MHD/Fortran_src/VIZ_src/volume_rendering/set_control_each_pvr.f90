@@ -113,6 +113,7 @@
       use set_color_4_pvr
       use set_rgba_4_each_pixel
       use pvr_surface_enhancement
+      use set_coefs_of_sections
       use set_control_pvr_color
       use skip_comment_f
 !
@@ -129,7 +130,8 @@
       type(pvr_colormap_parameter), intent(inout) :: color_param
       type(pvr_colorbar_parameter), intent(inout) :: cbar_param
 !
-      integer(kind = kint) :: icheck_ncomp(1), i
+      integer(kind = kint) :: id_section_method, ierr, i, j
+      integer(kind = kint) :: icheck_ncomp(1)
       integer(kind = kint) :: ifld_tmp(1), icomp_tmp(1), ncomp_tmp(1)
       character(len = kchara) :: fldname_tmp(1)
       character(len = kchara) :: tmpchara
@@ -174,18 +176,22 @@
       end if
 !
 !
-      field_pvr%num_sections = 1
+      field_pvr%num_sections = pvr%num_pvr_sect_ctl
       if(field_pvr%num_sections .gt. 0) then
         call alloc_pvr_sections(field_pvr)
 !
         do i = 1, field_pvr%num_sections
-          field_pvr%coefs(1:10,i) = zero
-          field_pvr%coefs(9,i) = one
-          field_pvr%coefs(10,i) = -0.3
+          call s_set_coefs_of_sections                                  &
+     &       (pvr%pvr_sect_ctl(i)%psf, id_section_method,               &
+     &        field_pvr%coefs(1:10,i), ierr)
 !
-          field_pvr%sect_opacity(i) = 0.6
+          if(pvr%pvr_sect_ctl(i)%opacity_ctl%iflag .gt. 0) then
+            field_pvr%sect_opacity(i)                                   &
+     &        = pvr%pvr_sect_ctl(i)%opacity_ctl%realvalue
+          end if
         end do
       end if
+!
 !
       field_pvr%num_isosurf = pvr%num_pvr_iso_ctl
       if(field_pvr%num_isosurf .gt. 0) then
@@ -211,9 +217,6 @@
             end if
           end if
         end do
-        write(*,*) 'iso_value',   field_pvr%iso_value
-        write(*,*) 'iso_opacity', field_pvr%iso_opacity
-        write(*,*) 'itype_isosurf', field_pvr%itype_isosurf
       end if
 !
       call set_control_pvr_movie(pvr%movie, view_param)

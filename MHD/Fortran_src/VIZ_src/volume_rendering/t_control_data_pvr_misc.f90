@@ -3,6 +3,9 @@
 !
 !        programmed by H.Matsui on May. 2006
 !
+!!      subroutine read_control_pvr_section_def(pvr_sect_ctl)
+!!      subroutine read_pvr_section_ctl(pvr_sect_ctl)
+!!      subroutine read_pvr_isosurface_ctl(pvr_iso_ctl)
 !!      subroutine read_pvr_colorbar_ctl(colorbar)
 !!      subroutine read_pvr_rotation_ctl(movie)
 !!      subroutine reset_pvr_misc_control_flags(colorbar, movie)
@@ -33,6 +36,7 @@
 !
       use m_machine_parameter
       use m_read_control_elements
+      use m_control_data_4_psf
       use t_control_elements
       use t_read_control_arrays
       use skip_comment_f
@@ -40,11 +44,18 @@
       implicit  none
 !
 !
+      type pvr_sections_ctl
+        character(len = kchara) :: fname_sect_ctl
+        type(psf_ctl) :: psf
+        type(read_real_item) :: opacity_ctl
+      end type pvr_sections_ctl
+!
       type pvr_isosurf_ctl
         type(read_character_item) :: isosurf_type_ctl
         type(read_real_item) :: isosurf_value_ctl
         type(read_real_item) :: opacity_ctl
       end type pvr_isosurf_ctl
+!
 !
       type pvr_colorbar_ctl
         type(read_character_item) :: colorbar_switch_ctl
@@ -59,6 +70,7 @@
         integer (kind=kint) :: i_pvr_colorbar = 0
       end type pvr_colorbar_ctl
 !
+!
       type pvr_movie_ctl
         type(read_character_item) :: rotation_axis_ctl
         type(read_integer_item) ::   num_frames_ctl
@@ -69,14 +81,15 @@
 !
 !     2nd level for volume_rendering
 !
-      character(len=kchara) :: hd_pvr_isosurf = 'isosurface_ctl'
+      character(len=kchara) :: hd_pvr_sections = 'section_ctl'
+      character(len=kchara) :: hd_pvr_isosurf =  'isosurface_ctl'
       character(len=kchara) :: hd_pvr_colorbar =  'colorbar_ctl'
       character(len=kchara) :: hd_pvr_rotation =  'image_rotation_ctl'
 !
 !     3rd level for isosurface
 !
       character(len=kchara) :: hd_isosurf_value = 'isosurf_value'
-      character(len=kchara) :: hd_iso_opacity =   'opacity_ctl'
+      character(len=kchara) :: hd_pvr_opacity =   'opacity_ctl'
       character(len=kchara) :: hd_iso_direction = 'surface_direction'
 !
 !     3rd level for colorbar
@@ -94,8 +107,8 @@
       character(len=kchara) :: hd_movie_rot_axis =  'rotation_axis_ctl'
       character(len=kchara) :: hd_movie_rot_frame = 'num_frames_ctl'
 !
-      private :: hd_pvr_colorbar, hd_pvr_rotation
-      private :: hd_colorbar_switch
+      private :: hd_pvr_colorbar, hd_pvr_rotation, hd_isosurf_value
+      private :: hd_colorbar_switch, hd_pvr_opacity, hd_iso_direction
       private :: hd_pvr_numgrid_cbar, hd_zeromarker_flag
       private :: hd_colorbar_scale, hd_pvr_font_size, hd_cbar_range
       private :: hd_movie_rot_axis, hd_movie_rot_frame
@@ -103,6 +116,68 @@
 !  ---------------------------------------------------------------------
 !
       contains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine read_control_pvr_section_def(pvr_sect_ctl)
+!
+      use m_read_control_elements
+!
+      type(pvr_sections_ctl), intent(inout) :: pvr_sect_ctl
+      integer(kind = kint), parameter :: psf_ctl_file_code = 11
+!
+!
+      if(pvr_sect_ctl%fname_sect_ctl .eq. 'NO_FILE') return
+!
+      ctl_file_code = psf_ctl_file_code
+      open(ctl_file_code, file=pvr_sect_ctl%fname_sect_ctl,             &
+     &     status='old')
+!
+      do
+        call load_ctl_label_and_line
+        if(right_begin_flag(hd_surface_define) .gt. 0) then
+          call read_section_def_control(pvr_sect_ctl%psf)
+          exit
+        end if
+      end do
+!
+      close(ctl_file_code)
+!
+      end subroutine read_control_pvr_section_def
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine read_pvr_section_ctl(pvr_sect_ctl)
+!
+      type(pvr_sections_ctl), intent(inout) :: pvr_sect_ctl
+      integer(kind = kint) :: i_flag, i_psf_ctl1
+!
+!
+      i_psf_ctl1 = 0
+      i_flag = 0
+      pvr_sect_ctl%psf%i_surface_define = 0
+      do
+        call load_ctl_label_and_line
+!
+        call find_control_end_flag(hd_pvr_sections, i_flag)
+        if(i_flag .gt. 0) exit
+!
+        if(right_file_flag(hd_surface_define) .gt. 0) then
+          call read_file_name_from_ctl_line(i_psf_ctl1,                 &
+     &        pvr_sect_ctl%fname_sect_ctl)
+        else if(right_begin_flag(hd_surface_define) .gt. 0) then
+          write(*,*) 'get surface'
+          i_psf_ctl1 = i_psf_ctl1 + 1
+          pvr_sect_ctl%fname_sect_ctl = 'NO_FILE'
+          call read_section_def_control(pvr_sect_ctl%psf)
+          write(*,*) 'get surface end'
+        end if
+!
+        call read_real_ctl_type                                         &
+     &     (hd_pvr_opacity, pvr_sect_ctl%opacity_ctl)
+      end do
+!
+      end subroutine read_pvr_section_ctl
 !
 !  ---------------------------------------------------------------------
 !
@@ -124,7 +199,7 @@
         call read_real_ctl_type                                         &
      &     (hd_isosurf_value, pvr_iso_ctl%isosurf_value_ctl )
         call read_real_ctl_type                                         &
-     &     (hd_iso_opacity, pvr_iso_ctl%opacity_ctl)
+     &     (hd_pvr_opacity, pvr_iso_ctl%opacity_ctl)
       end do
 !
       end subroutine read_pvr_isosurface_ctl

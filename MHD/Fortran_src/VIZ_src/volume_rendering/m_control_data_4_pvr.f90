@@ -100,6 +100,9 @@
         character(len=kchara) :: pvr_field_ctl(1)
         character(len=kchara) :: pvr_comp_ctl(1)
 !
+        integer(kind = kint) :: num_pvr_sect_ctl = 0
+        type(pvr_sections_ctl), pointer :: pvr_sect_ctl(:)
+!
         integer(kind = kint) :: num_pvr_iso_ctl = 0
         type(pvr_isosurf_ctl), pointer :: pvr_iso_ctl(:)
 !
@@ -114,6 +117,7 @@
         integer (kind=kint) :: i_output_field_def =    0
         integer (kind=kint) :: i_output_comp_def =     0
         integer (kind=kint) :: i_plot_area =           0
+        integer (kind=kint) :: i_pvr_sect =            0
         integer (kind=kint) :: i_pvr_iso =             0
       end type pvr_ctl
 !
@@ -149,6 +153,7 @@
       private :: hd_plot_area, hd_output_comp_def, hd_plot_grp
       private :: hd_sf_enhanse, hd_pvr_colordef
 !
+      private :: read_pvr_sections_ctl, read_pvr_isosurfs_ctl
       private :: read_plot_area_ctl
 !
 !  ---------------------------------------------------------------------
@@ -175,6 +180,10 @@
       pvr%pvr_area_ctl%icou = 0
       pvr%surf_enhanse_ctl%num =  0
       pvr%surf_enhanse_ctl%icou = 0
+!
+      if(pvr%num_pvr_sect_ctl .gt. 0) deallocate(pvr%pvr_sect_ctl)
+      pvr%num_pvr_sect_ctl = 0
+      pvr%i_pvr_sect = 0
 !
       if(pvr%num_pvr_iso_ctl .gt. 0) deallocate(pvr%pvr_iso_ctl)
       pvr%num_pvr_iso_ctl = 0
@@ -229,6 +238,10 @@
         end if
 !
         call find_control_array_flag                                    &
+     &     (hd_pvr_sections, pvr%num_pvr_sect_ctl)
+        if(pvr%num_pvr_sect_ctl .gt. 0) call read_pvr_sections_ctl(pvr)
+!
+        call find_control_array_flag                                    &
      &     (hd_pvr_isosurf, pvr%num_pvr_iso_ctl)
         if(pvr%num_pvr_iso_ctl .gt. 0) call read_pvr_isosurfs_ctl(pvr)
 !
@@ -253,12 +266,37 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
+      subroutine read_pvr_sections_ctl(pvr)
+!
+      type(pvr_ctl), intent(inout) :: pvr
+!
+!
+      write(*,*) 'inside read_pvr_sections_ctl', pvr%num_pvr_sect_ctl
+      if (pvr%i_pvr_sect .gt. 0) return
+      allocate(pvr%pvr_sect_ctl(pvr%num_pvr_sect_ctl))
+!
+      do
+        call load_ctl_label_and_line
+        call find_control_end_array_flag                                &
+     &     (hd_pvr_sections, pvr%num_pvr_sect_ctl, pvr%i_pvr_sect)
+        if(pvr%i_pvr_sect .ge. pvr%num_pvr_sect_ctl) exit
+!
+        if(right_begin_flag(hd_pvr_sections) .gt. 0) then
+          pvr%i_pvr_sect = pvr%i_pvr_sect + 1
+          write(*,*) 'go to read_pvr_section_ctl', pvr%i_pvr_sect
+          call read_pvr_section_ctl(pvr%pvr_sect_ctl(pvr%i_pvr_sect))
+        end if
+      end do
+!
+      end subroutine read_pvr_sections_ctl
+!
+!  ---------------------------------------------------------------------
+!
       subroutine read_pvr_isosurfs_ctl(pvr)
 !
       type(pvr_ctl), intent(inout) :: pvr
 !
 !
-      write(*,*) 'inside read_pvr_isosurfs_ctl', pvr%num_pvr_iso_ctl
       if (pvr%i_pvr_iso .gt. 0) return
       allocate(pvr%pvr_iso_ctl(pvr%num_pvr_iso_ctl))
 !
@@ -270,7 +308,6 @@
 !
         if(right_begin_flag(hd_pvr_isosurf) .gt. 0) then
           pvr%i_pvr_iso = pvr%i_pvr_iso + 1
-          write(*,*) 'go to read_pvr_isosurface_ctl', pvr%i_pvr_iso
           call read_pvr_isosurface_ctl(pvr%pvr_iso_ctl(pvr%i_pvr_iso))
         end if
       end do
