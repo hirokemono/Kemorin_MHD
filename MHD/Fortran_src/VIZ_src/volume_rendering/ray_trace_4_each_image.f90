@@ -251,7 +251,8 @@
           do i_iso = 1, field_pvr%num_isosurf
             rflag =  (c_org(1) - field_pvr%iso_value(i_iso))            &
      &             * (c_tgt(1) - field_pvr%iso_value(i_iso))
-            if(rflag .le. zero) then
+            if((c_tgt(1) - field_pvr%iso_value(i_iso)) .eq. zero        &
+     &        .or. rflag .lt. zero) then
               grad_tgt(1:3) = field_pvr%grad_ele(iele,1:3)              &
      &                       * field_pvr%itype_isosurf(i_iso)
               call color_plane_with_light                               &
