@@ -94,6 +94,7 @@
       use set_parallel_file_name
       use t_read_control_arrays
       use set_psf_case_table
+      use set_coefs_of_sections
 !
       integer(kind = kint) :: igrp
       integer(kind = kint),  parameter :: id_gname = 11
