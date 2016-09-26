@@ -65,11 +65,11 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: surf_grp
       type(surface_group_geometry), intent(in) :: surf_grp_v
+      type(pvr_pixel_position_type), intent(in) :: pixel_xy
 !
       type(pvr_view_parameter), intent(inout) :: view_param
       type(pvr_projected_field), intent(inout) :: field_pvr
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
-      type(pvr_pixel_position_type), intent(inout) :: pixel_xy
       type(pvr_ray_start_type), intent(inout) :: pvr_start
 !
 !
@@ -97,7 +97,6 @@
      &    surf%ie_surf, surf%isf_4_ele, node%xx,                        &
      &    view_param%viewpoint_vec, pvr_bound, field_pvr, pixel_xy,     &
      &    pvr_start)
-!      call check_pvr_ray_startpoints(my_rank, pvr_start)
 !
       call set_opacity_for_boundaries                                   &
      &   (surf_grp, surf_grp_v, view_param,                             &
@@ -106,6 +105,71 @@
      &    field_pvr%arccos_sf)
 !
       end subroutine transfer_to_screen
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_subimages(node, ele, surf,     &
+     &       file_param, color_param, cbar_param, view_param,           &
+     &       field_pvr, pvr_start, pvr_img)
+!
+      use t_geometry_data
+      use t_surface_data
+      use t_group_data
+      use t_control_params_4_pvr
+      use t_surf_grp_4_pvr_domain
+      use t_pvr_ray_startpoints
+      use t_pvr_image_array
+      use t_geometries_in_pvr_screen
+      use ray_trace_4_each_image
+      use composite_pvr_images
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+!
+      type(pvr_output_parameter), intent(in) :: file_param
+      type(pvr_colormap_parameter), intent(in) :: color_param
+      type(pvr_colorbar_parameter), intent(in) :: cbar_param
+!
+      type(pvr_view_parameter), intent(in) :: view_param
+      type(pvr_projected_field), intent(in) :: field_pvr
+!
+      type(pvr_ray_start_type), intent(inout) :: pvr_start
+      type(pvr_image_type), intent(inout) :: pvr_img
+!
+      integer :: i
+!
+!
+      if(iflag_debug .gt. 0) write(*,*) 'cont_overlap_in_each_domain'
+      call cont_overlap_in_each_domain(pvr_start%num_pvr_ray,           &
+     &    pvr_start%id_pixel_start,  pvr_img%num_pixel_xy,              &
+     &    pvr_img%iflag_mapped, pvr_img%num_overlap)
+!
+      call alloc_pvr_local_subimage(pvr_img)
+      call share_num_images_to_compose(pvr_img%num_overlap,             &
+     &    pvr_img%istack_images, pvr_img%ntot_overlap)
+!
+      call alloc_pvr_subimage_array(pvr_img)
+!
+      call cal_average_image_depth(pvr_start%num_pvr_ray,               &
+     &    pvr_start%id_pixel_start, pvr_start%xx_pvr_ray_start,         &
+     &    pvr_img%num_overlap, pvr_img%num_pixel_xy,                    &
+     &    pvr_img%iflag_mapped, pvr_img%depth_lc)
+!
+      call share_subimage_depth                                         &
+     &   (pvr_img%num_overlap, pvr_img%num_pixel_xy,                    &
+     &    pvr_img%iflag_mapped, pvr_img%depth_lc,                       &
+     &    pvr_img%istack_images, pvr_img%ntot_overlap,                  &
+     &    pvr_img%ave_depth_lc, pvr_img%ave_depth_gl,                   &
+     &    pvr_img%ip_closer)
+!
+!      if(my_rank .eq. 0) then
+!        do i = 1, pvr_img%ntot_overlap
+!          write(*,*) pvr_img%ip_closer(i), pvr_img%ave_depth_gl(i)
+!        end do
+!      end if
+!
+      end subroutine set_subimages
 !
 !  ---------------------------------------------------------------------
 !
@@ -186,8 +250,8 @@
 !
       type(pvr_bounds_surf_ctl), intent(in) :: pvr_bound
       type(pvr_projected_field), intent(in) :: field_pvr
+      type(pvr_pixel_position_type), intent(in) :: pixel_xy
       type(pvr_ray_start_type), intent(inout) :: pvr_start
-      type(pvr_pixel_position_type), intent(inout) :: pixel_xy
 !
 !
       call allocate_num_pvr_ray_start                                   &
@@ -279,7 +343,7 @@
       call blend_overlapped_area(pvr_start%num_pvr_ray,                 &
      &    pvr_start%id_pixel_start, pvr_start%xx_pvr_ray_start,         &
      &    pvr_start%rgba_ray, pvr_img%num_pixel_xy,                     &
-     &    pvr_img%iflag_mapped, pvr_img%rgba_lc, pvr_img%depth_lc)
+     &    pvr_img%iflag_mapped, pvr_img%old_rgba_lc, pvr_img%old_depth_lc)
 !
       end subroutine ray_trace_local
 !

@@ -4,6 +4,13 @@
 !
 !      Written by H. Matsui on Aug., 2011
 !
+!!      subroutine cont_overlap_in_each_domain                          &
+!!     &         (num_pvr_ray, id_pixel_start,                          &
+!!     &          num_pixel_xy, iflag_mapped, num_overlap)
+!!      subroutine cal_average_image_depth(num_pvr_ray,                 &
+!!     &         id_pixel_start, xx_pvr_ray_start, num_overlap,         &
+!!     &         num_pixel_xy, iflag_mapped, depth_lc)
+!!
 !!      subroutine s_ray_trace_4_each_image                             &
 !!     &         (numnod, numele, numsurf, nnod_4_surf,                 &
 !!     &          ie_surf, isf_4_ele, iele_4_surf, interior_ele,        &
@@ -35,6 +42,68 @@
 !  ---------------------------------------------------------------------
 !
       contains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine cont_overlap_in_each_domain                            &
+     &         (num_pvr_ray, id_pixel_start,                            &
+     &          num_pixel_xy, iflag_mapped, num_overlap)
+!
+      integer(kind = kint), intent(in) :: num_pvr_ray
+      integer(kind = kint), intent(in) :: id_pixel_start(num_pvr_ray)
+!
+      integer(kind = kint), intent(in) :: num_pixel_xy
+      integer(kind = kint), intent(inout) :: iflag_mapped(num_pixel_xy)
+      integer(kind = kint), intent(inout) :: num_overlap
+!
+      integer(kind = kint) :: inum, ipix
+!
+!
+!$omp parallel workshare
+      iflag_mapped = 0
+!$omp end parallel workshare
+      do inum = 1, num_pvr_ray
+        ipix = id_pixel_start(inum)
+        iflag_mapped(ipix) = iflag_mapped(ipix) + 1
+      end do
+      num_overlap = maxval(iflag_mapped,1)
+!
+      end subroutine cont_overlap_in_each_domain
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine cal_average_image_depth(num_pvr_ray,                   &
+     &         id_pixel_start, xx_pvr_ray_start, num_overlap,           &
+     &         num_pixel_xy, iflag_mapped, depth_lc)
+!
+      integer(kind = kint), intent(in) :: num_pvr_ray
+      integer(kind = kint), intent(in) :: id_pixel_start(num_pvr_ray)
+      real(kind = kreal), intent(in)                                    &
+     &                    ::  xx_pvr_ray_start(3,num_pvr_ray)
+!
+      integer(kind = kint), intent(in) :: num_overlap, num_pixel_xy
+      integer(kind = kint), intent(inout) :: iflag_mapped(num_pixel_xy)
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: depth_lc(num_pixel_xy,num_overlap)
+!
+      integer(kind = kint) :: inum, ipix, icou
+!
+!
+!$omp parallel workshare
+      iflag_mapped(1:num_pixel_xy) = 0
+!$omp end parallel workshare
+!$omp parallel workshare
+      depth_lc(1:num_pixel_xy,1:num_overlap) = 0.0d0
+!$omp end parallel workshare
+!
+      do inum = 1, num_pvr_ray
+        ipix = id_pixel_start(inum)
+        iflag_mapped(ipix) = iflag_mapped(ipix) + 1
+        icou = iflag_mapped(ipix)
+        depth_lc(ipix,icou) =  xx_pvr_ray_start(3,inum)
+      end do
+!
+      end subroutine cal_average_image_depth
 !
 !  ---------------------------------------------------------------------
 !

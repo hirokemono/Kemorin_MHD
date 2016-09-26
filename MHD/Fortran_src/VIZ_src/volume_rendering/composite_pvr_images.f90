@@ -6,9 +6,14 @@
 !      subroutine allocate_pvr_image_array
 !      subroutine deallocate_pvr_image_array
 !
-!!      subroutine blend_image_over_domains(color_param, cbar_param,    &
-!!     &          istack_image, n_pvr_pixel, num_pixel_xy, iflag_mapped,&
-!!     &          depth_lc, rgba_lc, rgba_real_gl)
+!!      subroutine share_num_images_to_compose                          &
+!!     &         (num_overlap, istack_images, ntot_overlap)
+!!      subroutine share_subimage_depth(num_overlap, num_pixel_xy,      &
+!!     &          iflag_mapped, depth_lc, istack_images, ntot_overlap,  &
+!!     &          ave_depth_lc, ave_depth_gl, ip_closer)
+!!
+!!      subroutine blend_image_over_domains                             &
+!!     &          (color_param, cbar_param, pvr_img)
 !!      subroutine cvt_double_rgba_to_char_rgb(num_pixel, rgba, crgb)
 !!      subroutine cvt_double_rgba_to_char_rgba(num_pixel, rgba, crgba)
 !!      subroutine sel_write_pvr_image_file                             &
@@ -70,6 +75,115 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
+      subroutine share_num_images_to_compose                            &
+     &         (num_overlap, istack_images, ntot_overlap)
+!
+      integer(kind = kint), intent(in) :: num_overlap
+      integer(kind = kint), intent(inout) :: ntot_overlap
+      integer(kind = kint), intent(inout) :: istack_images(0:nprocs)
+!
+      integer(kind = kint) :: ip
+!
+!
+      call MPI_Allgather(num_overlap, ione, CALYPSO_INTEGER,            &
+     &                   istack_images(1), ione, CALYPSO_INTEGER,       &
+     &                   CALYPSO_COMM, ierr_MPI)
+      istack_images(0) = 0
+      do ip = 1, nprocs
+        istack_images(ip) =  istack_images(ip-1) + istack_images(ip)
+      end do
+      ntot_overlap = istack_images(nprocs)
+!
+      end subroutine share_num_images_to_compose
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine share_subimage_depth(num_overlap, num_pixel_xy,        &
+     &          iflag_mapped, depth_lc, istack_images, ntot_overlap,    &
+     &          ave_depth_lc, ave_depth_gl, ip_closer)
+!
+      use quicksort
+!
+      integer(kind = kint), intent(in) :: ntot_overlap
+      integer(kind = kint), intent(in) :: num_overlap, num_pixel_xy
+      integer(kind = kint), intent(in) :: istack_images(0:nprocs)
+      integer(kind = kint), intent(in) :: iflag_mapped(num_pixel_xy)
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: depth_lc(num_pixel_xy,num_overlap)
+!
+      real(kind = kreal), intent(inout) :: ave_depth_lc(ntot_overlap)
+      real(kind = kreal), intent(inout) :: ave_depth_gl(ntot_overlap)
+      integer(kind = kint), intent(inout) :: ip_closer(ntot_overlap)
+!
+      integer(kind = kint) :: inum, ipix, icou
+      real(kind = kreal) :: sum_depth, covered_area
+!
+!
+!$omp parallel do
+      do inum = 1, ntot_overlap
+        ip_closer(inum) = inum
+      end do
+!$omp end parallel do
+!
+!$omp parallel workshare
+      ave_depth_lc(1:ntot_overlap) = 0.0d0
+      ave_depth_gl(1:ntot_overlap) = 0.0d0
+!$omp end parallel workshare
+!
+!$omp parallel do private(inum,icou,ipix,covered_area,sum_depth)
+      do inum = 1, num_overlap
+        covered_area = 0.0d0
+        sum_depth =    0.0d0
+        do ipix = 1, num_pixel_xy
+          if(iflag_mapped(ipix) .le. inum) then
+            covered_area = covered_area + 1.0d0
+            sum_depth = sum_depth + depth_lc(ipix,inum)
+          end if
+        end do
+        icou = inum + istack_images(my_rank)
+        ave_depth_lc(icou) = sum_depth / covered_area
+      end do
+!$omp end parallel do
+!
+      call MPI_allREDUCE(ave_depth_lc, ave_depth_gl, ntot_overlap,      &
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+!
+!      if(my_rank .eq. 0) then
+!        do inum = 1, ntot_overlap
+!          write(*,*) inum,  ave_depth_gl(inum)
+!        end do
+!      end if
+!
+      call quicksort_real_w_index(ntot_overlap, ave_depth_gl,           &
+     &    ione, ntot_overlap, ip_closer)
+!
+      end subroutine share_subimage_depth
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine share_image_depth_to_compose                           &
+     &         (num_overlap, istack_images, ntot_overlap)
+!
+      integer(kind = kint), intent(in) :: num_overlap
+      integer(kind = kint), intent(inout) :: ntot_overlap
+      integer(kind = kint), intent(inout) :: istack_images(0:nprocs)
+!
+      integer(kind = kint) :: ip
+!
+!
+      call MPI_Allgather(num_overlap, ione, CALYPSO_INTEGER,            &
+     &                   istack_images(1), ione, CALYPSO_INTEGER,       &
+     &                   CALYPSO_COMM, ierr_MPI)
+      istack_images(0) = 0
+      do ip = 1, nprocs
+        istack_images(ip) =  istack_images(ip-1) + istack_images(ip)
+      end do
+      ntot_overlap = istack_images(nprocs)
+!
+      end subroutine share_image_depth_to_compose
+!
+!  ---------------------------------------------------------------------
+!
       subroutine blend_image_over_domains                               &
      &          (color_param, cbar_param, pvr_img)
 !
@@ -90,20 +204,20 @@
 ! -- Set Average depth for each subdomain
       if(iflag_debug .gt. 0) write(*,*) 'distribute_average_depth'
       call distribute_average_depth                                     &
-     &   (pvr_img%num_pixel_xy, pvr_img%iflag_mapped, pvr_img%depth_lc, &
-     &    pvr_img%ip_closer, pvr_img%ave_depth_gl)
+     &   (pvr_img%num_pixel_xy, pvr_img%iflag_mapped, pvr_img%old_depth_lc, &
+     &    pvr_img%ip_closer_old, pvr_img%old_ave_depth_gl)
 !
 ! Distribute image
       if(iflag_debug .gt. 0) write(*,*) 'distribute_segmented_images'
       call distribute_segmented_images                                  &
-     &   (pvr_img%num_pixel_xy, pvr_img%rgba_lc,                        &
-     &    pvr_img%istack_image, pvr_img%npixel_local, pvr_img%rgba_part)
+     &   (pvr_img%num_pixel_xy, pvr_img%old_rgba_lc,                    &
+     &    pvr_img%istack_image, pvr_img%npixel_local, pvr_img%old_rgba_part)
 !
 !  Alpha blending
       if(iflag_debug .gt. 0) write(*,*) 'blend_image_from_subdomains'
       call blend_image_from_subdomains                                  &
-     &   (pvr_img%ip_closer, pvr_img%npixel_local,                      &
-     &    pvr_img%rgba_part, pvr_img%rgba_real_part)
+     &   (pvr_img%ip_closer_old, pvr_img%npixel_local,                      &
+     &    pvr_img%old_rgba_part, pvr_img%rgba_real_part)
 !
 !  Collect image to rank 0
       if(iflag_debug .gt. 0) write(*,*) 'collect_segmented_images'
@@ -187,7 +301,7 @@
       call add_int_suffix(my_rank, file_param%pvr_prefix, img_head)
 !
       call cvt_double_rgba_to_char_rgb(pvr_img%num_pixel_xy,            &
-     &    pvr_img%rgba_lc, pvr_img%rgb_chara_lc)
+     &    pvr_img%old_rgba_lc, pvr_img%rgb_chara_lc)
 !
       call sel_output_image_file(file_param%id_pvr_file_type,           &
      &    img_head, pvr_img%num_pixels(1), pvr_img%num_pixels(2),       &
@@ -243,20 +357,20 @@
       integer(kind = kint), intent(inout) :: ip_closer(nprocs)
       real(kind = kreal), intent(inout) :: ave_depth_gl(nprocs)
 !
-      real(kind = kreal) :: ave_depth_lc, covered_area
+      real(kind = kreal) :: old_ave_depth_lc, covered_area
       integer(kind = kint) :: ip, ipix
 !
-      ave_depth_lc = 0.0d0
+      old_ave_depth_lc = 0.0d0
       covered_area = 0.0d0
       do ipix = 1, num_pixel_xy
         covered_area = covered_area + dble(iflag_mapped(ipix))
         if(iflag_mapped(ipix) .gt. 0) then
-          ave_depth_lc = ave_depth_lc + depth_lc(ipix)
+          old_ave_depth_lc = old_ave_depth_lc + depth_lc(ipix)
         end if
       end do
-      ave_depth_lc = ave_depth_lc / covered_area
+      old_ave_depth_lc = old_ave_depth_lc / covered_area
 !
-      call MPI_Allgather(ave_depth_lc, ione, CALYPSO_REAL,              &
+      call MPI_Allgather(old_ave_depth_lc, ione, CALYPSO_REAL,          &
      &                   ave_depth_gl, ione, CALYPSO_REAL,              &
      &                   CALYPSO_COMM, ierr_MPI)
 !

@@ -45,24 +45,45 @@
         character(len = 1), pointer :: rgba_chara_gl(:,:)
 !
 !>    Local real image data
-        real(kind = kreal), pointer :: rgba_lc(:,:)
+        real(kind = kreal), pointer :: old_rgba_lc(:,:)
 !>    RGB byte image data
         character(len = 1), pointer :: rgb_chara_lc(:,:)
 !
 !>    Interger flag if image is exist
         integer(kind = kint), pointer :: iflag_mapped(:)
 !>    Local depth of image
-        real(kind = kreal), pointer :: depth_lc(:)
+        real(kind = kreal), pointer :: old_depth_lc(:)
 !
 !>    Segmented real image data to be blended
-        real(kind = kreal), pointer :: rgba_part(:,:,:)
+        real(kind = kreal), pointer :: old_rgba_part(:,:,:)
 !>    Segmented real image data after blended
         real(kind = kreal), pointer :: rgba_real_part(:,:)
 !
 !>    Order of image data with respect to distance
-        integer(kind = kint), pointer :: ip_closer(:)
+        integer(kind = kint), pointer :: ip_closer_old(:)
 !>    average of depth of image
+        real(kind = kreal), pointer :: old_ave_depth_gl(:)
+!
+!>    Number of overlapped domain (requered number of image)
+        integer(kind = kint) :: num_overlap
+!>    Number of overlapped domain (requered number of image)
+        integer(kind = kint) :: ntot_overlap
+!>    Number of overlapped domain (requered number of image)
+        integer(kind = kint), pointer :: istack_images(:)
+!
+!>    Local real image data excluding overlap
+        real(kind = kreal), pointer :: rgba_lc(:,:,:)
+!>    Local depth of image excluding overlap
+        real(kind = kreal), pointer :: depth_lc(:,:)
+!
+!>    Order of image data with respect to distance
+        integer(kind = kint), pointer :: ip_closer(:)
+!>    Average local depth of image excluding overlap
+        real(kind = kreal), pointer :: ave_depth_lc(:)
+!>    Average local depth of image excluding overlap
         real(kind = kreal), pointer :: ave_depth_gl(:)
+!>    Segmented real image data to be blended
+        real(kind = kreal), pointer :: rgba_part(:,:,:)
       end type pvr_image_type
 !
 !  ---------------------------------------------------------------------
@@ -107,14 +128,14 @@
       pvr_img%rgba_left_gl =  0.0d0
       pvr_img%rgba_right_gl = 0.0d0
 !
-      allocate(pvr_img%rgba_lc(4,pvr_img%num_pixel_xy))
+      allocate(pvr_img%old_rgba_lc(4,pvr_img%num_pixel_xy))
       allocate(pvr_img%rgb_chara_lc(3,pvr_img%num_pixel_xy))
-      pvr_img%rgba_lc = 0.0d0
+      pvr_img%old_rgba_lc = 0.0d0
 !
       allocate(pvr_img%iflag_mapped(pvr_img%num_pixel_xy))
-      allocate(pvr_img%depth_lc(pvr_img%num_pixel_xy))
+      allocate(pvr_img%old_depth_lc(pvr_img%num_pixel_xy))
       pvr_img%iflag_mapped = 0
-      pvr_img%depth_lc = 0.0d0
+      pvr_img%old_depth_lc = 0.0d0
 !
       allocate(pvr_img%istack_image(0:nprocs))
 !
@@ -123,15 +144,60 @@
       pvr_img%npixel_local = pvr_img%istack_image(my_rank+1)            &
      &                      - pvr_img%istack_image(my_rank)
 !
-      allocate(pvr_img%rgba_part(4,pvr_img%npixel_local,nprocs))
+      allocate(pvr_img%old_rgba_part(4,pvr_img%npixel_local,nprocs))
       allocate(pvr_img%rgba_real_part(4,pvr_img%npixel_local))
 !
-      allocate(pvr_img%ave_depth_gl(nprocs))
-      allocate(pvr_img%ip_closer(nprocs))
-      pvr_img%ave_depth_gl = 0.0d0
-      pvr_img%ip_closer = -1
+      allocate(pvr_img%old_ave_depth_gl(nprocs))
+      allocate(pvr_img%ip_closer_old(nprocs))
+      pvr_img%old_ave_depth_gl = 0.0d0
+      pvr_img%ip_closer_old = -1
 !
       end subroutine alloc_pvr_image_array_type
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_pvr_local_subimage(pvr_img)
+!
+      type(pvr_image_type), intent(inout) :: pvr_img
+!
+      integer(kind = kint) :: npix, nolp
+!
+!
+      allocate(pvr_img%istack_images(0:nprocs))
+      pvr_img%istack_images = 0
+!
+      npix = pvr_img%num_pixel_xy
+      nolp = pvr_img%num_overlap
+      allocate(pvr_img%rgba_lc(4,npix,nolp))
+      allocate(pvr_img%depth_lc(npix,nolp))
+      pvr_img%rgba_lc =   0.0d0
+      pvr_img%depth_lc =  0.0d0
+!
+      end subroutine alloc_pvr_local_subimage
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_pvr_subimage_array(pvr_img)
+!
+      type(pvr_image_type), intent(inout) :: pvr_img
+!
+      integer(kind = kint) :: npix, nolp
+!
+!
+      npix = pvr_img%npixel_local
+      nolp = pvr_img%ntot_overlap
+!
+      allocate(pvr_img%ip_closer(nolp))
+      allocate(pvr_img%ave_depth_lc(nolp))
+      allocate(pvr_img%ave_depth_gl(nolp))
+      allocate(pvr_img%rgba_part(4,npix,nolp))
+!
+      pvr_img%ip_closer =    -1
+      pvr_img%ave_depth_lc = 0.0d0
+      pvr_img%ave_depth_gl = 0.0d0
+      pvr_img%rgba_part =  0.0d0
+!
+      end subroutine alloc_pvr_subimage_array
 !
 !  ---------------------------------------------------------------------
 !
@@ -144,13 +210,27 @@
       deallocate(pvr_img%rgba_left_gl, pvr_img%rgba_right_gl)
       deallocate(pvr_img%rgba_real_gl)
 !
-      deallocate(pvr_img%ave_depth_gl, pvr_img%ip_closer)
-      deallocate(pvr_img%rgba_real_part, pvr_img%rgba_part)
+      deallocate(pvr_img%old_ave_depth_gl, pvr_img%ip_closer_old)
+      deallocate(pvr_img%rgba_real_part, pvr_img%old_rgba_part)
       deallocate(pvr_img%istack_image)
-      deallocate(pvr_img%rgba_lc, pvr_img%rgb_chara_lc)
-      deallocate(pvr_img%depth_lc, pvr_img%iflag_mapped)
+      deallocate(pvr_img%old_rgba_lc, pvr_img%rgb_chara_lc)
+      deallocate(pvr_img%old_depth_lc, pvr_img%iflag_mapped)
 !
       end subroutine dealloc_pvr_image_array_type
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_pvr_local_subimage(pvr_img)
+!
+      type(pvr_image_type), intent(inout) :: pvr_img
+!
+!
+      deallocate(pvr_img%rgba_part, pvr_img%ip_closer)
+      deallocate(pvr_img%ave_depth_gl, pvr_img%ave_depth_lc)
+      deallocate(pvr_img%depth_lc, pvr_img%rgba_lc)
+      deallocate(pvr_img%istack_images)
+!
+      end subroutine dealloc_pvr_local_subimage
 !
 !  ---------------------------------------------------------------------
 !
