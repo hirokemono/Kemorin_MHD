@@ -10,13 +10,17 @@
 !!      subroutine cal_field_4_each_pvr(node, ele, jac_3d,              &
 !!     &          n_point, num_nod_phys, num_tot_nod_phys,              &
 !!     &          istack_nod_component, d_nod, fld_params, field_pvr)
-!!      subroutine set_pixel_on_pvr_screen(n_pvr_pixel, pixel_xy)
+!!      subroutine set_pixel_on_pvr_screen(view, pixel_xy)
+!!        type(pvr_view_parameter), intent(in) :: view
+!!        type(pvr_pixel_position_type), intent(inout) :: pixel_xy
 !!@endverbatim
 !
       module field_data_4_pvr
 !
       use m_precision
       use m_constants
+!
+      use t_control_params_4_pvr
 !
       implicit  none
 !
@@ -32,7 +36,6 @@
 !
       use t_geometry_data
       use t_jacobian_3d
-      use t_control_params_4_pvr
       use t_geometries_in_pvr_screen
       use cal_gradient_on_element
       use convert_components_4_viz
@@ -72,20 +75,21 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_pixel_on_pvr_screen(n_pvr_pixel, pixel_xy)
+      subroutine set_pixel_on_pvr_screen(view, pixel_xy)
 !
       use t_geometries_in_pvr_screen
       use set_projection_matrix
 !
-      integer(kind = kint), intent(in) :: n_pvr_pixel(2)
+      type(pvr_view_parameter), intent(in) :: view
       type(pvr_pixel_position_type), intent(inout) :: pixel_xy
 !
 !
-      pixel_xy%num_pixel_x = n_pvr_pixel(1)
-      pixel_xy%num_pixel_y = n_pvr_pixel(2)
+      pixel_xy%num_pixel_x = view%n_pvr_pixel(1)
+      pixel_xy%num_pixel_y = view%n_pvr_pixel(2)
       call allocate_pixel_position_pvr(pixel_xy)
 !
-      call set_pixel_points_on_project(n_pvr_pixel(1), n_pvr_pixel(2),  &
+      call set_pixel_points_on_project                                  &
+     &   (view%n_pvr_pixel(1), view%n_pvr_pixel(2),                     &
           pixel_xy%pixel_point_x, pixel_xy%pixel_point_y)
 !
       end subroutine set_pixel_on_pvr_screen

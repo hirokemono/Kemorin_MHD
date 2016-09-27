@@ -4,7 +4,9 @@
 !        programmed by H.Matsui on May. 2009
 !
 !!      subroutine check_pvr_parameters(outline, view_param, color_param)
-!!      subroutine set_default_pvr_data_params(d_minmax_pvr, color_param)
+!!      subroutine set_default_pvr_data_params(outline, color_param)
+!!        type(pvr_domain_outline), intent(in) :: outline
+!!        type(pvr_colormap_parameter), intent(inout) :: color_param
 !
       module set_default_pvr_params
 !
@@ -27,7 +29,6 @@
 !
       subroutine check_pvr_parameters(outline, view_param, color_param)
 !
-      use t_control_params_4_pvr
       use t_surf_grp_4_pvr_domain
 !
       type(pvr_domain_outline), intent(in) :: outline
@@ -104,8 +105,6 @@
       subroutine set_default_light_pvr                                  &
      &         (center_g, xx_minmax_g, color_param)
 !
-      use t_control_params_4_pvr
-!
       real(kind = kreal), intent(in) :: xx_minmax_g(2,3)
       real(kind = kreal), intent(in) :: center_g(3)
       type(pvr_colormap_parameter), intent(inout) :: color_param
@@ -125,18 +124,18 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_default_pvr_data_params(d_minmax_pvr, color_param)
+      subroutine set_default_pvr_data_params(outline, color_param)
 !
-      use t_control_params_4_pvr
+      use t_surf_grp_4_pvr_domain
       use set_color_4_pvr
 !
-      real(kind = kreal), intent(in) :: d_minmax_pvr(2)
+      type(pvr_domain_outline), intent(in) :: outline
       type(pvr_colormap_parameter), intent(inout) :: color_param
 !
 !
       if(color_param%id_pvr_color(2) .eq. iflag_automatic) then
-        color_param%pvr_datamap_param(1,1) = d_minmax_pvr(1)
-        color_param%pvr_datamap_param(1,2) = d_minmax_pvr(2)
+        color_param%pvr_datamap_param(1,1) = outline%d_minmax_pvr(1)
+        color_param%pvr_datamap_param(1,2) = outline%d_minmax_pvr(2)
         color_param%pvr_datamap_param(2,1) = zero
         color_param%pvr_datamap_param(2,2) = one
       end if

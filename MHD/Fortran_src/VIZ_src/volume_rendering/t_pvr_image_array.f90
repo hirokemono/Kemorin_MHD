@@ -7,7 +7,9 @@
 !> @brief Structures for PVR Image data
 !!
 !!@verbatim
-!!      subroutine alloc_pvr_image_array_type(n_pvr_pixel, pvr_img)
+!!      subroutine alloc_pvr_image_array_type(view, pvr_img)
+!!        type(pvr_view_parameter), intent(in) :: view
+!!        type(pvr_image_type), intent(inout) :: pvr_img
 !!      subroutine dealloc_pvr_image_array_type(pvr_img)
 !!@endverbatim
 !
@@ -101,14 +103,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_pvr_image_array_type(n_pvr_pixel, pvr_img)
+      subroutine alloc_pvr_image_array_type(view, pvr_img)
 !
-      integer(kind = kint), intent(in) :: n_pvr_pixel(2)
+      use t_control_params_4_pvr
+!
+      type(pvr_view_parameter), intent(in) :: view
       type(pvr_image_type), intent(inout) :: pvr_img
 !
 !
-      pvr_img%num_pixels(1:2) = n_pvr_pixel(1:2)
-      pvr_img%num_pixel_xy = n_pvr_pixel(1)*n_pvr_pixel(2)
+      pvr_img%num_pixels(1:2) = view%n_pvr_pixel(1:2)
+      pvr_img%num_pixel_xy = view%n_pvr_pixel(1)*view%n_pvr_pixel(2)
 !
 !
       if(my_rank .eq. 0) then

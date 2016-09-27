@@ -50,26 +50,12 @@
 !
       integer(kind = kint) :: num_pvr = 0
 !
-!>  Structure for field parameter for PVR
-!    file_params(i_pvr)%
-      type(pvr_output_parameter), allocatable, save :: file_params(:)
-!
-!>  Structure for field parameter for PVR
-      type(pvr_field_parameter), allocatable, save :: fld_params(:)
-!
-!>  Structure for PVR colormap
-      type(pvr_colorbar_parameter), allocatable, save :: cbar_params(:)
-!
-!
-      type(pvr_domain_outline), allocatable, save :: outlines(:)
-!
-      type(pvr_pixel_position_type), allocatable, save :: pixel_xy(:)
-!
+!>      Structure of PVR control parameters
+      type(PVR_control_params), allocatable, save :: pvr_param(:)
+!>      Structure of PVR image generation
       type(PVR_image_generator), allocatable, save :: pvr_data(:)
 !
-      private :: file_params, fld_params
-      private :: cbar_params
-      private :: outlines, pixel_xy
+      private :: pvr_param, pvr_data
 !
 !  ---------------------------------------------------------------------
 !
@@ -117,10 +103,10 @@
 !
         call set_each_pvr_control(group%ele_grp, group%surf_grp,        &
      &      nod_fld%num_phys, nod_fld%phys_name,                        &
-     &      pvr_ctl_struct(i_pvr), file_params(i_pvr),                  &
-     &      fld_params(i_pvr), pvr_data(i_pvr)%view,                    &
+     &      pvr_ctl_struct(i_pvr), pvr_param(i_pvr)%file,               &
+     &      pvr_param(i_pvr)%field_def, pvr_data(i_pvr)%view,           &
      &      pvr_data(i_pvr)%field, pvr_data(i_pvr)%color,               &
-     &      cbar_params(i_pvr))
+     &      pvr_param(i_pvr)%colorbar)
 !
         call deallocate_cont_dat_pvr(pvr_ctl_struct(i_pvr))
         call calypso_mpi_barrier
@@ -131,23 +117,23 @@
       call allocate_imark_4_surface(surf%numsurf)
       do i_pvr = 1, num_pvr
         call find_each_pvr_surf_domain(ele, surf, group%ele_grp,        &
-     &      fld_params(i_pvr), pvr_data(i_pvr)%bound,                   &
+     &      pvr_param(i_pvr)%field_def, pvr_data(i_pvr)%bound,          &
      &      pvr_data(i_pvr)%field)
       end do
       call deallocate_imark_4_surface
 !
       do i_pvr = 1, num_pvr
         call cal_mesh_outline_pvr                                       &
-     &     (node%numnod, node%xx, outlines(i_pvr))
-        call check_pvr_parameters(outlines(i_pvr),                      &
+     &     (node%numnod, node%xx, pvr_param(i_pvr)%outline)
+        call check_pvr_parameters(pvr_param(i_pvr)%outline,             &
      &      pvr_data(i_pvr)%view, pvr_data(i_pvr)%color)
 !
         if(iflag_debug .gt. 0) write(*,*) 'set_pixel_on_pvr_screen'
         call set_pixel_on_pvr_screen                                    &
-     &     (pvr_data(i_pvr)%view%n_pvr_pixel, pixel_xy(i_pvr))
+     &    (pvr_data(i_pvr)%view, pvr_param(i_pvr)%pixel)
 !
         call alloc_pvr_image_array_type                                 &
-     &     (pvr_data(i_pvr)%view%n_pvr_pixel, pvr_data(i_pvr)%image)
+     &     (pvr_data(i_pvr)%view, pvr_data(i_pvr)%image)
 !
         if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_matrix'
         call set_pvr_projection_matrix(i_pvr, pvr_data(i_pvr)%view)
@@ -156,7 +142,7 @@
         if(pvr_data(i_pvr)%view%iflag_rotate_snap .eq. 0) then
           if(iflag_debug .gt. 0) write(*,*) 'set_fixed_view_and_image'
           call set_fixed_view_and_image(node, ele, surf, group,         &
-     &        outlines(i_pvr),  pixel_xy(i_pvr), pvr_data(i_pvr))
+     &        pvr_param(i_pvr), pvr_data(i_pvr))
         end if
       end do
 !
@@ -191,23 +177,21 @@
         call cal_field_4_each_pvr(node, ele, jac_3d,                    &
      &      nod_fld%n_point, nod_fld%num_phys, nod_fld%ntot_phys,       &
      &      nod_fld%istack_component, nod_fld%d_fld,                    &
-     &      fld_params(i_pvr), pvr_data(i_pvr)%field)
+     &      pvr_param(i_pvr)%field_def, pvr_data(i_pvr)%field)
       end do
 !
       do i_pvr = 1, num_pvr
         if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
         call set_default_pvr_data_params                                &
-     &     (outlines(i_pvr)%d_minmax_pvr, pvr_data(i_pvr)%color)
+     &     (pvr_param(i_pvr)%outline, pvr_data(i_pvr)%color)
 !
         if(pvr_data(i_pvr)%view%iflag_rotate_snap .gt. 0) then
           call rendering_with_rotation                                  &
-     &      (istep_pvr, node, ele, surf, group,                         &
-     &       file_params(i_pvr), outlines(i_pvr), cbar_params(i_pvr),   &
-     &       pixel_xy(i_pvr), pvr_data(i_pvr))
+     &       (istep_pvr, node, ele, surf, group,                        &
+     &        pvr_param(i_pvr), pvr_data(i_pvr))
         else
           call rendering_with_fixed_view(istep_pvr, node, ele, surf,    &
-     &      file_params(i_pvr), cbar_params(i_pvr), pixel_xy(i_pvr),    &
-     &      pvr_data(i_pvr))
+     &        pvr_param(i_pvr), pvr_data(i_pvr))
         end if
       end do
 !
@@ -221,16 +205,12 @@
       integer(kind = kint) :: i_pvr
 !
 !
-      allocate(file_params(num_pvr))
-      allocate(fld_params(num_pvr))
-      allocate(cbar_params(num_pvr))
+      allocate(pvr_param(num_pvr))
       allocate(pvr_data(num_pvr))
       do i_pvr = 1, num_pvr
         call reset_pvr_view_parameteres(pvr_data(i_pvr)%view)
       end do
 !
-      allocate(pixel_xy(num_pvr))
-      allocate(outlines(num_pvr))
 !
       end subroutine allocate_components_4_pvr
 !
@@ -242,11 +222,10 @@
 !
 !
       do i_pvr = 1, num_pvr
-        call dealloc_pvr_element_group(fld_params(i_pvr))
+        call dealloc_pvr_element_group(pvr_param(i_pvr)%field_def)
         call dealloc_pvr_color_parameteres(pvr_data(i_pvr)%color)
       end do
-      deallocate(file_params, fld_params)
-      deallocate(pvr_data)
+      deallocate(pvr_param, pvr_data)
 !
       end subroutine deallocate_pvr_data
 !
