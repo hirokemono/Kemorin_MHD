@@ -103,10 +103,19 @@
 !
       call cal_pvr_modelview_matrix                                     &
      &   (izero, pvr_param%outline, pvr_data%view, pvr_data%color)
+!
       call transfer_to_screen                                           &
      &   (node, ele, surf, group%surf_grp, group%surf_grp_geom,         &
      &   pvr_data%field, pvr_data%view, pvr_data%bound,                 &
      &   pvr_param%pixel, pvr_data%start_pt)
+!
+      call set_subimages(pvr_data%start_pt, pvr_data%image)
+!
+      pvr_data%start_pt_saved%num_pvr_ray                               &
+     &               = pvr_data%start_pt%num_pvr_ray
+      call allocate_item_pvr_ray_start(pvr_data%start_pt_saved)
+      call copy_item_pvr_ray_start                                      &
+     &   (pvr_data%start_pt, pvr_data%start_pt_saved)
 !
       end subroutine set_fixed_view_and_image
 !
@@ -132,12 +141,15 @@
       integer(kind = kint), parameter :: i_rot = -1
 !
 !
+      call copy_item_pvr_ray_start                                      &
+     &   (pvr_data%start_pt_saved, pvr_data%start_pt)
+!
       call rendering_image(i_rot, istep_pvr, node, ele, surf,           &
      &    pvr_param%file, pvr_data%color, pvr_param%colorbar,           &
-     &    pvr_data%view, pvr_data%bound, pvr_data%field,                &
-     &    pvr_param%pixel, pvr_data%start_pt, pvr_data%image)
+     &    pvr_data%view, pvr_data%field, pvr_data%start_pt,             &
+     &    pvr_data%image)
 !
-      call dealloc_pvr_local_subimage(pvr_data%image)
+!      call dealloc_pvr_local_subimage(pvr_data%image)
 !
       end subroutine rendering_with_fixed_view
 !
@@ -174,11 +186,12 @@
      &     (node, ele, surf, group%surf_grp, group%surf_grp_geom,       &
      &      pvr_data%field, pvr_data%view, pvr_data%bound,              &
      &      pvr_param%pixel, pvr_data%start_pt)
+        call set_subimages(pvr_data%start_pt, pvr_data%image)
 !
         call rendering_image(i_rot, istep_pvr, node, ele, surf,         &
      &      pvr_param%file, pvr_data%color, pvr_param%colorbar,         &
-     &      pvr_data%view, pvr_data%bound, pvr_data%field,              &
-     &      pvr_param%pixel, pvr_data%start_pt, pvr_data%image)
+     &      pvr_data%view, pvr_data%field, pvr_data%start_pt,           &
+     &      pvr_data%image)
 !
         call dealloc_pvr_local_subimage(pvr_data%image)
         call deallocate_pvr_ray_start(pvr_data%start_pt)
@@ -240,9 +253,7 @@
      &    field_pvr%arccos_sf)
 !
       if(iflag_debug .gt. 0) write(*,*) 's_set_pvr_ray_start_point'
-      call s_set_pvr_ray_start_point                                    &
-     &   (node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,      &
-     &    surf%ie_surf, surf%isf_4_ele, node%xx,                        &
+      call s_set_pvr_ray_start_point(node, ele, surf,                   &
      &    view_param%viewpoint_vec, pvr_bound, field_pvr, pixel_xy,     &
      &    pvr_start)
 !
@@ -251,8 +262,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine rendering_image(i_rot, istep_pvr, node, ele, surf,     &
-     &       file_param, color_param, cbar_param, view_param,           &
-     &       pvr_bound, field_pvr, pixel_xy, pvr_start, pvr_img)
+     &          file_param, color_param, cbar_param, view_param,        &
+     &          field_pvr, pvr_start, pvr_img)
 !
       use m_geometry_constants
       use t_geometry_data
@@ -271,33 +282,13 @@
       type(pvr_colorbar_parameter), intent(in) :: cbar_param
 !
       type(pvr_view_parameter), intent(in) :: view_param
-      type(pvr_bounds_surf_ctl), intent(in) :: pvr_bound
       type(pvr_projected_field), intent(in) :: field_pvr
-      type(pvr_pixel_position_type), intent(in) :: pixel_xy
 !
       type(pvr_ray_start_type), intent(inout) :: pvr_start
       type(pvr_image_type), intent(inout) :: pvr_img
 !
 !      integer(kind = kint) :: i, j, k, ipix
 !
-!
-      if(iflag_debug .gt. 0) write(*,*) 'set_each_pvr_ray_start'
-      call set_each_pvr_ray_start                                       &
-     &   (node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,      &
-     &    node%xx, surf%ie_surf, surf%isf_4_ele, field_pvr%x_nod_model, &
-     &    pixel_xy%num_pixel_x, pixel_xy%num_pixel_y,                   &
-     &    pixel_xy%pixel_point_x, pixel_xy%pixel_point_y,               &
-     &    pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,              &
-     &    pvr_bound%screen_norm, view_param%viewpoint_vec, ray_vec,     &
-     &    pvr_start%ntot_tmp_pvr_ray, pvr_start%istack_tmp_pvr_ray_st,  &
-     &    pvr_start%ipix_start_tmp, pvr_start%iflag_start_tmp,          &
-     &    pvr_start%xi_start_tmp, pvr_start%istack_pvr_ray_sf,          &
-     &    pvr_start%num_pvr_ray, pvr_start%id_pixel_start,              &
-     &    pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,      &
-     &    pvr_start%xi_pvr_start, pvr_start%xx_pvr_start,               &
-     &    pvr_start%xx_pvr_ray_start, pvr_start%pvr_ray_dir)
-!
-      call set_subimages(pvr_start, pvr_img)
 !
       if(iflag_debug .gt. 0) write(*,*) 'ray_trace_local'
       call ray_trace_local(node, ele, surf, view_param%viewpoint_vec,   &
@@ -330,19 +321,20 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_pvr_ray_start_point(numnod, numele, numsurf,     &
-     &          nnod_4_surf, ie_surf, isf_4_ele, xx, viewpoint_vec,     &
-     &          pvr_bound, field_pvr, pixel_xy, pvr_start)
+      subroutine s_set_pvr_ray_start_point                              &
+     &         (node, ele, surf, viewpoint_vec, pvr_bound,              &
+     &          field_pvr, pixel_xy, pvr_start)
 !
+      use m_geometry_constants
+      use t_geometry_data
+      use t_surface_data
       use set_pvr_ray_start_point
       use cal_field_on_surf_viz
 !
-      integer(kind = kint), intent(in) :: numnod, numele, numsurf
-      integer(kind = kint), intent(in) :: nnod_4_surf
-      integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
-      integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
-      real(kind = kreal), intent(in) :: xx(numnod,3)
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
 !
       type(pvr_bounds_surf_ctl), intent(in) :: pvr_bound
       type(pvr_projected_field), intent(in) :: field_pvr
@@ -360,8 +352,9 @@
 !
       call allocate_tmp_pvr_ray_start(pvr_start)
 !
-      call count_each_pvr_ray_start(numnod, numele, numsurf,            &
-     &    nnod_4_surf, ie_surf, isf_4_ele, field_pvr%x_nod_model,       &
+      call count_each_pvr_ray_start                                     &
+     &   (node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,      &
+     &    surf%ie_surf, surf%isf_4_ele, field_pvr%x_nod_model,          &
      &    pixel_xy%num_pixel_x, pixel_xy%num_pixel_y,                   &
      &    pixel_xy%pixel_point_x, pixel_xy%pixel_point_y,               &
      &    pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,              &
@@ -374,6 +367,22 @@
 !
       call allocate_item_pvr_ray_start(pvr_start)
       call allocate_item_pvr_ray_pixels(pvr_start)
+!
+      if(iflag_debug .gt. 0) write(*,*) 'set_each_pvr_ray_start'
+      call set_each_pvr_ray_start                                       &
+     &   (node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,      &
+     &    node%xx, surf%ie_surf, surf%isf_4_ele, field_pvr%x_nod_model, &
+     &    pixel_xy%num_pixel_x, pixel_xy%num_pixel_y,                   &
+     &    pixel_xy%pixel_point_x, pixel_xy%pixel_point_y,               &
+     &    pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,              &
+     &    pvr_bound%screen_norm, viewpoint_vec, ray_vec,                &
+     &    pvr_start%ntot_tmp_pvr_ray, pvr_start%istack_tmp_pvr_ray_st,  &
+     &    pvr_start%ipix_start_tmp, pvr_start%iflag_start_tmp,          &
+     &    pvr_start%xi_start_tmp, pvr_start%istack_pvr_ray_sf,          &
+     &    pvr_start%num_pvr_ray, pvr_start%id_pixel_start,              &
+     &    pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,      &
+     &    pvr_start%xi_pvr_start, pvr_start%xx_pvr_start,               &
+     &    pvr_start%xx_pvr_ray_start, pvr_start%pvr_ray_dir)
 !
       end subroutine s_set_pvr_ray_start_point
 !
