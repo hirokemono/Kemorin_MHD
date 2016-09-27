@@ -244,6 +244,7 @@
      &    pvr_start%xi_start_tmp)
 !
       call allocate_item_pvr_ray_start(pvr_start)
+      call allocate_item_pvr_ray_pixels(pvr_start)
 !
       end subroutine s_set_pvr_ray_start_point
 !
