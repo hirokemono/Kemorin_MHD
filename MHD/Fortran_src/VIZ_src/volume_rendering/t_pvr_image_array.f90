@@ -69,7 +69,7 @@
 !>    Number of overlapped domain (requered number of image)
         integer(kind = kint) :: ntot_overlap
 !>    Number of overlapped domain (requered number of image)
-        integer(kind = kint), pointer :: istack_images(:)
+        integer(kind = kint), pointer :: istack_overlap(:)
 !
 !>    Local real image data excluding overlap
         real(kind = kreal), pointer :: rgba_lc(:,:,:)
@@ -163,8 +163,8 @@
       integer(kind = kint) :: npix, nolp
 !
 !
-      allocate(pvr_img%istack_images(0:nprocs))
-      pvr_img%istack_images = 0
+      allocate(pvr_img%istack_overlap(0:nprocs))
+      pvr_img%istack_overlap = 0
 !
       npix = pvr_img%num_pixel_xy
       nolp = pvr_img%num_overlap
@@ -228,7 +228,7 @@
       deallocate(pvr_img%rgba_part, pvr_img%ip_closer)
       deallocate(pvr_img%ave_depth_gl, pvr_img%ave_depth_lc)
       deallocate(pvr_img%depth_lc, pvr_img%rgba_lc)
-      deallocate(pvr_img%istack_images)
+      deallocate(pvr_img%istack_overlap)
 !
       end subroutine dealloc_pvr_local_subimage
 !

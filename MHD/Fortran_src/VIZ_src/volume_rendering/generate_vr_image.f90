@@ -147,7 +147,7 @@
 !
       call alloc_pvr_local_subimage(pvr_img)
       call share_num_images_to_compose(pvr_img%num_overlap,             &
-     &    pvr_img%istack_images, pvr_img%ntot_overlap)
+     &    pvr_img%istack_overlap, pvr_img%ntot_overlap)
 !
       call alloc_pvr_subimage_array(pvr_img)
 !
@@ -159,7 +159,7 @@
       call share_subimage_depth                                         &
      &   (pvr_img%num_overlap, pvr_img%num_pixel_xy,                    &
      &    pvr_img%iflag_mapped, pvr_img%depth_lc,                       &
-     &    pvr_img%istack_images, pvr_img%ntot_overlap,                  &
+     &    pvr_img%istack_overlap, pvr_img%ntot_overlap,                 &
      &    pvr_img%ave_depth_lc, pvr_img%ave_depth_gl,                   &
      &    pvr_img%ip_closer)
 !

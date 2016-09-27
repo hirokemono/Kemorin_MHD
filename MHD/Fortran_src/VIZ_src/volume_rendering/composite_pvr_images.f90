@@ -7,9 +7,9 @@
 !      subroutine deallocate_pvr_image_array
 !
 !!      subroutine share_num_images_to_compose                          &
-!!     &         (num_overlap, istack_images, ntot_overlap)
+!!     &         (num_overlap, istack_overlap, ntot_overlap)
 !!      subroutine share_subimage_depth(num_overlap, num_pixel_xy,      &
-!!     &          iflag_mapped, depth_lc, istack_images, ntot_overlap,  &
+!!     &          iflag_mapped, depth_lc, istack_overlap, ntot_overlap, &
 !!     &          ave_depth_lc, ave_depth_gl, ip_closer)
 !!
 !!      subroutine blend_image_over_domains                             &
@@ -76,37 +76,37 @@
 !  ---------------------------------------------------------------------
 !
       subroutine share_num_images_to_compose                            &
-     &         (num_overlap, istack_images, ntot_overlap)
+     &         (num_overlap, istack_overlap, ntot_overlap)
 !
       integer(kind = kint), intent(in) :: num_overlap
       integer(kind = kint), intent(inout) :: ntot_overlap
-      integer(kind = kint), intent(inout) :: istack_images(0:nprocs)
+      integer(kind = kint), intent(inout) :: istack_overlap(0:nprocs)
 !
       integer(kind = kint) :: ip
 !
 !
       call MPI_Allgather(num_overlap, ione, CALYPSO_INTEGER,            &
-     &                   istack_images(1), ione, CALYPSO_INTEGER,       &
+     &                   istack_overlap(1), ione, CALYPSO_INTEGER,      &
      &                   CALYPSO_COMM, ierr_MPI)
-      istack_images(0) = 0
+      istack_overlap(0) = 0
       do ip = 1, nprocs
-        istack_images(ip) =  istack_images(ip-1) + istack_images(ip)
+        istack_overlap(ip) =  istack_overlap(ip-1) + istack_overlap(ip)
       end do
-      ntot_overlap = istack_images(nprocs)
+      ntot_overlap = istack_overlap(nprocs)
 !
       end subroutine share_num_images_to_compose
 !
 !  ---------------------------------------------------------------------
 !
       subroutine share_subimage_depth(num_overlap, num_pixel_xy,        &
-     &          iflag_mapped, depth_lc, istack_images, ntot_overlap,    &
+     &          iflag_mapped, depth_lc, istack_overlap, ntot_overlap,   &
      &          ave_depth_lc, ave_depth_gl, ip_closer)
 !
       use quicksort
 !
       integer(kind = kint), intent(in) :: ntot_overlap
       integer(kind = kint), intent(in) :: num_overlap, num_pixel_xy
-      integer(kind = kint), intent(in) :: istack_images(0:nprocs)
+      integer(kind = kint), intent(in) :: istack_overlap(0:nprocs)
       integer(kind = kint), intent(in) :: iflag_mapped(num_pixel_xy)
       real(kind = kreal), intent(inout)                                 &
      &                   :: depth_lc(num_pixel_xy,num_overlap)
@@ -140,7 +140,7 @@
             sum_depth = sum_depth + depth_lc(ipix,inum)
           end if
         end do
-        icou = inum + istack_images(my_rank)
+        icou = inum + istack_overlap(my_rank)
         ave_depth_lc(icou) = sum_depth / covered_area
       end do
 !$omp end parallel do
