@@ -83,6 +83,8 @@
 !>    Average local depth of image excluding overlap
         real(kind = kreal), pointer :: ave_depth_gl(:)
 !>    Segmented real image data to be blended
+        real(kind = kreal), pointer :: depth_part(:,:)
+!>    Segmented real image data to be blended
         real(kind = kreal), pointer :: rgba_part(:,:,:)
       end type pvr_image_type
 !
@@ -190,11 +192,13 @@
       allocate(pvr_img%ip_closer(nolp))
       allocate(pvr_img%ave_depth_lc(nolp))
       allocate(pvr_img%ave_depth_gl(nolp))
-      allocate(pvr_img%rgba_part(4,npix,nolp))
+      allocate(pvr_img%depth_part(nolp,npix))
+      allocate(pvr_img%rgba_part(4,nolp,npix))
 !
       pvr_img%ip_closer =    -1
       pvr_img%ave_depth_lc = 0.0d0
       pvr_img%ave_depth_gl = 0.0d0
+      pvr_img%depth_part = 0.0d0
       pvr_img%rgba_part =  0.0d0
 !
       end subroutine alloc_pvr_subimage_array
@@ -225,6 +229,7 @@
       type(pvr_image_type), intent(inout) :: pvr_img
 !
 !
+      deallocate(pvr_img%depth_part)
       deallocate(pvr_img%rgba_part, pvr_img%ip_closer)
       deallocate(pvr_img%ave_depth_gl, pvr_img%ave_depth_lc)
       deallocate(pvr_img%depth_lc, pvr_img%rgba_lc)
