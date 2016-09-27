@@ -17,11 +17,15 @@
 !
       use calypso_mpi
       use m_constants
+      use PVR_image_transfer
 !
       implicit  none
 !
 !>  Structure for PVR images
       type pvr_image_type
+!
+        type(PVR_MPI_FLAGS) :: COMM
+!
 !>    Number of pixels
         integer(kind = kint) :: num_pixel_xy
 !>    Number of pixels in each direction
@@ -99,12 +103,8 @@
 !
       subroutine alloc_pvr_image_array_type(n_pvr_pixel, pvr_img)
 !
-      use cal_minmax_and_stacks
-!
       integer(kind = kint), intent(in) :: n_pvr_pixel(2)
       type(pvr_image_type), intent(inout) :: pvr_img
-!
-      integer(kind = kint) :: max_smp
 !
 !
       pvr_img%num_pixels(1:2) = n_pvr_pixel(1:2)
@@ -141,6 +141,8 @@
       allocate(pvr_img%iflag_mapped(pvr_img%num_pixel_xy))
       pvr_img%iflag_img_pe = 0
       pvr_img%iflag_mapped = 0
+!
+      call alloc_pvr_image_comm_status(pvr_img%COMM)
 !
       end subroutine alloc_pvr_image_array_type
 !
@@ -215,6 +217,8 @@
 !
       type(pvr_image_type), intent(inout) :: pvr_img
 !
+!
+      call dealloc_pvr_image_comm_status(pvr_img%COMM)
 !
       deallocate(pvr_img%rgb_chara_gl, pvr_img%rgba_chara_gl)
       deallocate(pvr_img%rgba_left_gl, pvr_img%rgba_right_gl)

@@ -309,6 +309,7 @@
       use t_geometries_in_pvr_screen
       use ray_trace_4_each_image
       use composite_pvr_images
+      use PVR_image_transfer
 !
       type(pvr_ray_start_type), intent(inout) :: pvr_start
       type(pvr_image_type), intent(inout) :: pvr_img
@@ -342,14 +343,13 @@
      &    pvr_img%npixel_img, pvr_img%iflag_img_pe,                     &
      &    pvr_img%iflag_mapped, pvr_img%iflag_img_lc, pvr_img%depth_lc)
 !
-      call alloc_pvr_image_comm_status
       if(iflag_debug .gt. 0) write(*,*) 'distribute_pixel_depth'
       call distribute_pixel_depth                                       &
      &   (pvr_img%num_overlap, pvr_img%istack_overlap,                  &
      &    pvr_img%ntot_overlap, pvr_img%npixel_img,                     &
      &    pvr_img%istack_pixel, pvr_img%npixel_img_local,               &
-     &    pvr_img%depth_lc, pvr_img%depth_recv, pvr_img%depth_part)
-      call dealloc_pvr_image_comm_status
+     &    pvr_img%depth_lc, pvr_img%depth_recv, pvr_img%depth_part,     &
+     &    pvr_img%COMM)
 !
       if(iflag_debug .gt. 0) write(*,*) 'sort_subimage_pixel_depth'
       call sort_subimage_pixel_depth                                    &
