@@ -168,7 +168,7 @@
 !
       npix = pvr_img%num_pixel_xy
       nolp = pvr_img%num_overlap
-      allocate(pvr_img%rgba_lc(4,npix,nolp))
+      allocate(pvr_img%rgba_lc(4,nolp,npix))
       allocate(pvr_img%depth_lc(npix,nolp))
       pvr_img%rgba_lc =   0.0d0
       pvr_img%depth_lc =  0.0d0

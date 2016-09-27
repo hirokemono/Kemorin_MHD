@@ -204,6 +204,8 @@
       type(pvr_ray_start_type), intent(inout) :: pvr_start
       type(pvr_image_type), intent(inout) :: pvr_img
 !
+      integer(kind = kint) :: i, j
+!
 !
       if(iflag_debug .gt. 0) write(*,*) 'ray_trace_local'
       call ray_trace_local(node%numnod, ele%numele,                     &
@@ -212,7 +214,13 @@
      &    view_param%viewpoint_vec, field_pvr%x_nod_model,              &
      &    field_pvr, color_param, pvr_start, pvr_img)
 !
-!      call sel_write_pvr_local_img(file_param, pvr_img)
+      do i = 1, pvr_img%num_overlap
+        j = pvr_img%istack_overlap(my_rank) + i
+        pvr_img%old_rgba_lc(1:4,1:pvr_img%num_pixel_xy)                 &
+     &      = pvr_img%rgba_lc(1:4,i,1:pvr_img%num_pixel_xy)
+        call sel_write_pvr_local_img                                    &
+     &     (file_param, pvr_img%ip_closer(j), pvr_img)
+      end do
 !
       if(iflag_debug .gt. 0) write(*,*) 'blend_image_over_domains'
       call blend_image_over_domains                                     &
@@ -338,6 +346,12 @@
      &    pvr_start%isf_pvr_ray_start, pvr_start%xi_pvr_start,          &
      &    pvr_start%xx_pvr_start, pvr_start%xx_pvr_ray_start,           &
      &    pvr_start%rgba_ray)
+!
+      if(iflag_debug .gt. 0) write(*,*) 'copy_segmented_image'
+      call copy_segmented_image(pvr_start%num_pvr_ray,                  &
+     &    pvr_start%id_pixel_start, pvr_start%rgba_ray,                 &
+     &    pvr_img%num_overlap, pvr_img%num_pixel_xy,                    &
+     &    pvr_img%iflag_mapped, pvr_img%rgba_lc)
 !
       if(iflag_debug .gt. 0) write(*,*) 'blend_overlapped_area'
       call blend_overlapped_area(pvr_start%num_pvr_ray,                 &

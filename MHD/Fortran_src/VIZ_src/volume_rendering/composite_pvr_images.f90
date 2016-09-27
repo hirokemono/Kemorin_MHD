@@ -18,7 +18,7 @@
 !!      subroutine cvt_double_rgba_to_char_rgba(num_pixel, rgba, crgba)
 !!      subroutine sel_write_pvr_image_file                             &
 !!     &         (file_param, i_rot, istep_pvr, pvr_img)
-!!      subroutine sel_write_pvr_local_img(file_param, pvr_img)
+!!      subroutine sel_write_pvr_local_img(file_param, index, pvr_img)
 !
       module composite_pvr_images
 !
@@ -283,7 +283,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine sel_write_pvr_local_img(file_param, pvr_img)
+      subroutine sel_write_pvr_local_img(file_param, index, pvr_img)
 !
       use t_pvr_image_array
       use t_control_params_4_pvr
@@ -292,13 +292,14 @@
       use convert_real_rgb_2_bite
 !
       type(pvr_output_parameter), intent(in) :: file_param
+      integer(kind = kint), intent(in) :: index
 !
       type(pvr_image_type), intent(inout) :: pvr_img
 !
       character(len=kchara) :: img_head
 !
 !
-      call add_int_suffix(my_rank, file_param%pvr_prefix, img_head)
+      call add_int_suffix(index, file_param%pvr_prefix, img_head)
 !
       call cvt_double_rgba_to_char_rgb(pvr_img%num_pixel_xy,            &
      &    pvr_img%old_rgba_lc, pvr_img%rgb_chara_lc)
