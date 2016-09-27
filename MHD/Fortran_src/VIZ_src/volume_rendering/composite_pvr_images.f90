@@ -8,11 +8,13 @@
 !
 !!      subroutine share_num_images_to_compose                          &
 !!     &         (num_overlap, istack_overlap, ntot_overlap)
-!!      subroutine share_subimage_depth(num_overlap, num_pixel_xy,      &
-!!     &          iflag_mapped, depth_lc, istack_overlap, ntot_overlap, &
-!!     &          ave_depth_lc, ave_depth_gl, ip_closer)
+!!      subroutine count_pixel_with_image(num_pixel_xy,                 &
+!!     &          npixel_img, npixel_img_local, istack_pixel,           &
+!!     &          ipixel_small, iflag_img_pe, iflag_mapped)
+!!      subroutine sort_subimage_pixel_depth(ntot_overlap,              &
+!!     &          npixel_img_local, depth_part, ip_closer)
 !!
-!!      subroutine blend_image_over_domains                             &
+!!      subroutine old_blend_image_over_domains                         &
 !!     &          (color_param, cbar_param, pvr_img)
 !!      subroutine cvt_double_rgba_to_char_rgb(num_pixel, rgba, crgb)
 !!      subroutine cvt_double_rgba_to_char_rgba(num_pixel, rgba, crgba)
@@ -41,9 +43,6 @@
       integer, save, allocatable :: req2(:  )
 !
       private :: sta1, sta2, req1, req2
-!
-      private :: blend_image_from_subdomains, distribute_average_depth
-      private :: distribute_segmented_images, collect_segmented_images
 !
 !  ---------------------------------------------------------------------
 !
@@ -75,6 +74,33 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
+      subroutine count_pixel_with_image(num_pixel_xy, npixel_img,       &
+     &          iflag_img_pe, iflag_mapped)
+!
+      use cal_minmax_and_stacks
+!
+      integer(kind = kint), intent(in) :: num_pixel_xy
+!
+      integer(kind = kint), intent(inout) :: npixel_img
+      integer(kind = kint), intent(inout) :: iflag_img_pe(num_pixel_xy)
+      integer(kind = kint), intent(inout) :: iflag_mapped(num_pixel_xy)
+!
+      integer(kind = kint) :: ipix, icou, max_smp
+!
+!
+      call MPI_allREDUCE(iflag_img_pe, iflag_mapped, num_pixel_xy,      &
+     &    CALYPSO_INTEGER, MPI_MAX, CALYPSO_COMM, ierr_MPI)
+!
+      npixel_img = 0
+      do ipix = 1, num_pixel_xy
+        iflag_img_pe(ipix) = iflag_mapped(ipix)
+        npixel_img = npixel_img + iflag_img_pe(ipix)
+      end do
+!
+      end subroutine count_pixel_with_image
+!
+!  ---------------------------------------------------------------------
+!
       subroutine share_num_images_to_compose                            &
      &         (num_overlap, istack_overlap, ntot_overlap)
 !
@@ -98,67 +124,139 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine share_subimage_depth(num_overlap, num_pixel_xy,        &
-     &          iflag_mapped, depth_lc, istack_overlap, ntot_overlap,   &
-     &          ave_depth_lc, ave_depth_gl, ip_closer)
+      subroutine count_pixel_for_composit(num_pixel_xy,                 &
+     &          npixel_img, npixel_img_local, istack_pixel,             &
+     &          ipixel_small, iflag_img_pe)
+!
+      use cal_minmax_and_stacks
+!
+      integer(kind = kint), intent(in) :: num_pixel_xy, npixel_img
+!
+      integer(kind = kint), intent(inout) :: npixel_img_local
+      integer(kind = kint), intent(inout) :: istack_pixel(0:nprocs)
+      integer(kind = kint), intent(inout) :: ipixel_small(npixel_img)
+      integer(kind = kint), intent(inout) :: iflag_img_pe(num_pixel_xy)
+!
+      integer(kind = kint) :: ipix, icou, max_smp
+!
+!
+      call count_number_4_smp(nprocs, ione, npixel_img,                 &
+     &    istack_pixel, max_smp)
+      npixel_img_local = istack_pixel(my_rank+1)                        &
+     &                  - istack_pixel(my_rank)
+!
+      icou = 0
+      do ipix = 1, num_pixel_xy
+        if(iflag_img_pe(ipix) .gt. 0) then
+          icou = icou + 1
+          ipixel_small(icou) =  ipix
+          iflag_img_pe(ipix) =  icou
+        end if
+      end do
+!
+      end subroutine count_pixel_for_composit
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine sort_subimage_pixel_depth(ntot_overlap,                &
+     &          npixel_img_local, depth_part, ip_closer)
 !
       use quicksort
 !
       integer(kind = kint), intent(in) :: ntot_overlap
-      integer(kind = kint), intent(in) :: num_overlap, num_pixel_xy
-      integer(kind = kint), intent(in) :: istack_overlap(0:nprocs)
-      integer(kind = kint), intent(in) :: iflag_mapped(num_pixel_xy)
+      integer(kind = kint), intent(in) :: npixel_img_local
+!
       real(kind = kreal), intent(inout)                                 &
-     &                   :: depth_lc(num_pixel_xy,num_overlap)
+     &             :: depth_part(ntot_overlap,npixel_img_local)
+      integer(kind = kint), intent(inout)                               &
+     &             :: ip_closer(ntot_overlap,npixel_img_local)
 !
-      real(kind = kreal), intent(inout) :: ave_depth_lc(ntot_overlap)
-      real(kind = kreal), intent(inout) :: ave_depth_gl(ntot_overlap)
-      integer(kind = kint), intent(inout) :: ip_closer(ntot_overlap)
-!
-      integer(kind = kint) :: inum, ipix, icou
-      real(kind = kreal) :: sum_depth, covered_area
+      integer(kind = kint) :: inum, ipix, iflag
+      integer(kind = kint) :: ip_tmp(ntot_overlap)
+      real(kind = kreal) :: depth_tmp(ntot_overlap)
 !
 !
-!$omp parallel do
-      do inum = 1, ntot_overlap
-        ip_closer(inum) = inum
-      end do
-!$omp end parallel do
-!
-!$omp parallel workshare
-      ave_depth_lc(1:ntot_overlap) = 0.0d0
-      ave_depth_gl(1:ntot_overlap) = 0.0d0
-!$omp end parallel workshare
-!
-!$omp parallel do private(inum,icou,ipix,covered_area,sum_depth)
-      do inum = 1, num_overlap
-        covered_area = 0.0d0
-        sum_depth =    0.0d0
-        do ipix = 1, num_pixel_xy
-          if(iflag_mapped(ipix) .le. inum) then
-            covered_area = covered_area + 1.0d0
-            sum_depth = sum_depth + depth_lc(ipix,inum)
+!!$omp parallel do private(ipix,inum,ip_tmp,depth_tmp)
+      do ipix = 1, npixel_img_local
+        iflag = 0
+        do inum = 1, ntot_overlap
+          depth_tmp(inum) = depth_part(inum,ipix)
+          if(depth_tmp(inum) .gt. -100.0) then
+            iflag = 1
+            ip_tmp(inum) = inum
+          else
+            ip_tmp(inum) = 0
           end if
         end do
-        icou = inum + istack_overlap(my_rank)
-        ave_depth_lc(icou) = sum_depth / covered_area
+!
+        if(iflag .gt. 0) then
+          call quicksort_real_w_index(ntot_overlap, depth_tmp,          &
+     &        ione, ntot_overlap, ip_tmp)
+        end if
+!
+        do inum = 1, ntot_overlap
+          ip_closer(inum,ipix) = ip_tmp(inum)
+        end do
+      end do
+!!$omp end parallel do
+!
+      end subroutine sort_subimage_pixel_depth
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine blend_image_over_domains                               &
+     &          (color_param, cbar_param, pvr_img)
+!
+      use t_control_params_4_pvr
+      use t_pvr_image_array
+      use set_rgba_4_each_pixel
+      use draw_pvr_colorbar
+!
+      type(pvr_colormap_parameter), intent(in) :: color_param
+      type(pvr_colorbar_parameter), intent(in) :: cbar_param
+      type(pvr_image_type), intent(inout) :: pvr_img
+!
+!>       MPI rank for image output
+      integer(kind = kint), parameter :: irank_tgt = 0
+      integer(kind = kint) :: ip, ipix, inum
+!
+!
+      call alloc_pvr_image_comm_status
+!
+      call distribute_segmented_images                                  &
+     &   (pvr_img%num_overlap, pvr_img%istack_overlap,                  &
+     &    pvr_img%ntot_overlap, pvr_img%npixel_img,                     &
+     &    pvr_img%istack_pixel, pvr_img%npixel_img_local,               &
+     &    pvr_img%rgba_lc, pvr_img%rgba_recv, pvr_img%rgba_part)
+!
+!$omp parallel do private(ipix,inum,ip)
+      do ipix = 1, pvr_img%npixel_img_local
+        pvr_img%rgba_whole(1:4,ipix) = 0.0d0
+        do inum = pvr_img%ntot_overlap, 1, -1
+          ip = pvr_img%ip_closer(inum,ipix)
+!          if(ip .eq. 0) exit
+!
+          call composite_alpha_blending(pvr_img%rgba_part(1:4,ip,ipix), &
+     &        pvr_img%rgba_whole(1:4,ipix))
+        end do
       end do
 !$omp end parallel do
 !
-      call MPI_allREDUCE(ave_depth_lc, ave_depth_gl, ntot_overlap,      &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call collect_segmented_images                                     &
+     &   (irank_tgt, pvr_img%npixel_img_local, pvr_img%istack_pixel,    &
+     &    pvr_img%npixel_img, pvr_img%num_pixel_xy,                     &
+     &    pvr_img%ipixel_small, pvr_img%rgba_whole,                     &
+     &    pvr_img%rgba_rank0, pvr_img%rgba_real_gl)
+      call dealloc_pvr_image_comm_status
 !
-!      if(my_rank .eq. 0) then
-!        do inum = 1, ntot_overlap
-!          write(*,*) inum,  ave_depth_gl(inum)
-!        end do
-!      end if
+      if(my_rank .eq. irank_tgt) then
+        call set_pvr_colorbar(pvr_img%num_pixel_xy, pvr_img%num_pixels, &
+     &      color_param, cbar_param, pvr_img%rgba_real_gl)
+      end if
 !
-      call quicksort_real_w_index(ntot_overlap, ave_depth_gl,           &
-     &    ione, ntot_overlap, ip_closer)
+      end subroutine blend_image_over_domains
 !
-      end subroutine share_subimage_depth
-!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine share_image_depth_to_compose                           &
@@ -181,57 +279,6 @@
       ntot_overlap = istack_images(nprocs)
 !
       end subroutine share_image_depth_to_compose
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine blend_image_over_domains                               &
-     &          (color_param, cbar_param, pvr_img)
-!
-      use t_control_params_4_pvr
-      use t_pvr_image_array
-      use draw_pvr_colorbar
-!
-      type(pvr_colormap_parameter), intent(in) :: color_param
-      type(pvr_colorbar_parameter), intent(in) :: cbar_param
-      type(pvr_image_type), intent(inout) :: pvr_img
-!
-!>       MPI rank for image outp
-      integer(kind = kint), parameter :: irank_tgt = 0
-!
-!
-      call alloc_pvr_image_comm_status
-!
-! -- Set Average depth for each subdomain
-      if(iflag_debug .gt. 0) write(*,*) 'distribute_average_depth'
-      call distribute_average_depth                                     &
-     &   (pvr_img%num_pixel_xy, pvr_img%iflag_mapped, pvr_img%old_depth_lc, &
-     &    pvr_img%ip_closer_old, pvr_img%old_ave_depth_gl)
-!
-! Distribute image
-      if(iflag_debug .gt. 0) write(*,*) 'distribute_segmented_images'
-      call distribute_segmented_images                                  &
-     &   (pvr_img%num_pixel_xy, pvr_img%old_rgba_lc,                    &
-     &    pvr_img%istack_image, pvr_img%npixel_local, pvr_img%old_rgba_part)
-!
-!  Alpha blending
-      if(iflag_debug .gt. 0) write(*,*) 'blend_image_from_subdomains'
-      call blend_image_from_subdomains                                  &
-     &   (pvr_img%ip_closer_old, pvr_img%npixel_local,                      &
-     &    pvr_img%old_rgba_part, pvr_img%rgba_real_part)
-!
-!  Collect image to rank 0
-      if(iflag_debug .gt. 0) write(*,*) 'collect_segmented_images'
-      call collect_segmented_images                                     &
-     &   (irank_tgt, pvr_img%npixel_local, pvr_img%istack_image,        &
-     &    pvr_img%num_pixel_xy, pvr_img%rgba_real_part,                 &
-     &    pvr_img%rgba_real_gl)
-!
-      if(my_rank .eq. irank_tgt) then
-        call set_pvr_colorbar(pvr_img%num_pixel_xy, pvr_img%num_pixels, &
-     &      color_param, cbar_param, pvr_img%rgba_real_gl)
-      end if
-!
-      end subroutine blend_image_over_domains
 !
 !  ---------------------------------------------------------------------
 !
@@ -313,129 +360,152 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine blend_image_from_subdomains(ip_closer, npixel_local,   &
-     &          rgba_part, rgba_real_part)
+      subroutine distribute_pixel_depth                                 &
+     &         (num_overlap, istack_overlap, ntot_overlap,              &
+     &          npixel_img, istack_pixel, npixel_img_local,             &
+     &          depth_lc, depth_recv, depth_part)
 !
-      use set_rgba_4_each_pixel
+      integer(kind = kint), intent(in) :: num_overlap, npixel_img
+      real(kind = kreal), intent(in)                                    &
+     &                    :: depth_lc(num_overlap,npixel_img)
 !
-      integer(kind = kint), intent(in) :: ip_closer(nprocs)
-      integer(kind = kint), intent(in) :: npixel_local
-      real(kind = kreal), intent(inout)                                 &
-     &             :: rgba_part(4,npixel_local,nprocs)
-      real(kind = kreal), intent(inout)                                 &
-     &             :: rgba_real_part(4,npixel_local)
+      integer(kind = kint), intent(in) :: istack_pixel(0:nprocs)
+      integer(kind = kint), intent(in) :: npixel_img_local
 !
-      integer(kind = kint) :: ip, inum, ipix
-!
-!
-!$omp workshare
-      rgba_real_part(1:4,1:npixel_local) = zero
-!$omp end workshare
-!
-!$omp parallel do private(ipix,inum,ip)
-      do ipix = 1, npixel_local
-        do inum = nprocs, 1, -1
-          ip = ip_closer(inum)
-          call composite_alpha_blending(rgba_part(1,ipix,ip),           &
-     &        rgba_real_part(1,ipix))
-        end do
-      end do
-!$omp end parallel do
-!
-      end subroutine blend_image_from_subdomains
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine distribute_average_depth(num_pixel_xy,                 &
-     &          iflag_mapped, depth_lc, ip_closer, ave_depth_gl)
-!
-      use quicksort
-!
-      integer(kind = kint), intent(in) :: num_pixel_xy
-      integer(kind = kint), intent(in) :: iflag_mapped(num_pixel_xy)
-      real(kind = kreal), intent(in) :: depth_lc(num_pixel_xy)
-!
-      integer(kind = kint), intent(inout) :: ip_closer(nprocs)
-      real(kind = kreal), intent(inout) :: ave_depth_gl(nprocs)
-!
-      real(kind = kreal) :: old_ave_depth_lc, covered_area
-      integer(kind = kint) :: ip, ipix
-!
-      old_ave_depth_lc = 0.0d0
-      covered_area = 0.0d0
-      do ipix = 1, num_pixel_xy
-        covered_area = covered_area + dble(iflag_mapped(ipix))
-        if(iflag_mapped(ipix) .gt. 0) then
-          old_ave_depth_lc = old_ave_depth_lc + depth_lc(ipix)
-        end if
-      end do
-      old_ave_depth_lc = old_ave_depth_lc / covered_area
-!
-      call MPI_Allgather(old_ave_depth_lc, ione, CALYPSO_REAL,          &
-     &                   ave_depth_gl, ione, CALYPSO_REAL,              &
-     &                   CALYPSO_COMM, ierr_MPI)
-!
-      do ip = 1, nprocs
-        ip_closer(ip) = ip
-      end do
-!
-      call quicksort_real_w_index(nprocs, ave_depth_gl, ione, nprocs,   &
-     &    ip_closer)
-!
-      end subroutine distribute_average_depth
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine distribute_segmented_images(num_pixel_xy, rgba_lc,     &
-     &          istack_image, npixel_local, rgba_part)
-!
-      integer(kind = kint), intent(in) :: num_pixel_xy
-      real(kind = kreal), intent(in) :: rgba_lc(4,num_pixel_xy)
-!
-      integer(kind = kint), intent(in) :: istack_image(0:nprocs)
-      integer(kind = kint), intent(in) :: npixel_local
+      integer(kind = kint), intent(in) :: istack_overlap(0:nprocs)
+      integer(kind = kint), intent(in) :: ntot_overlap
 !
       real(kind = kreal), intent(inout)                                 &
-     &             :: rgba_part(4,npixel_local,nprocs)
+     &             :: depth_recv(ntot_overlap*npixel_img_local)
+      real(kind = kreal), intent(inout)                                 &
+     &             :: depth_part(ntot_overlap,npixel_img_local)
 !
-      integer(kind = kint) :: num, i_rank, ist, i
+      integer(kind = kint) :: num, i_rank, ist, i, ipix, icou, jst
       integer(kind = kint) :: nneib_send, nneib_recv
 !
 !
 !$omp workshare
-      rgba_part(1:4,1:npixel_local,1:nprocs) = zero
+      depth_recv(1:ntot_overlap*npixel_img_local) = -1000.0d0
 !$omp end workshare
+!$omp workshare
+      depth_part(1:ntot_overlap,1:npixel_img_local) = -1000.0d0
+!$omp end workshare
+!
+      call calypso_mpi_barrier
 !
       nneib_send = 0
       do i_rank = 0, nprocs-1
-        if(i_rank .eq. my_rank) cycle
           nneib_send = nneib_send + 1
-          ist =          istack_image(i_rank)
-          num = ifour * (istack_image(i_rank+1) - istack_image(i_rank))
-          call MPI_ISEND(rgba_lc(1,ist+1), num, CALYPSO_REAL,           &
+          ist =  istack_pixel(i_rank)
+          num = (istack_pixel(i_rank+1) - istack_pixel(i_rank))         &
+     &          * num_overlap
+          call MPI_ISEND(depth_lc(1,ist+1), num, CALYPSO_REAL,          &
      &        i_rank, 0, CALYPSO_COMM, req1(nneib_send), ierr_MPI)
       end do
 !
       nneib_recv = 0
       do i_rank = 0, nprocs-1
-        if(i_rank .eq. my_rank) cycle
           nneib_recv = nneib_recv + 1
-          num = ifour * npixel_local
-          call MPI_IRECV(rgba_part(1,1,i_rank+1), num, CALYPSO_REAL,    &
+          jst = istack_overlap(i_rank) * npixel_img_local
+          num =  npixel_img_local                                       &
+     &         * (istack_overlap(i_rank+1) - istack_overlap(i_rank))
+          call MPI_IRECV(depth_recv(jst+1), num, CALYPSO_REAL,          &
      &        i_rank, 0, CALYPSO_COMM, req2(nneib_recv), ierr_MPI)
       end do
 !
       call MPI_WAITALL (nneib_recv, req2, sta2, ierr_MPI)
       call MPI_WAITALL (nneib_send, req1, sta1, ierr_MPI)
 !
-      num = npixel_local
-      ist = istack_image(my_rank)
-!$omp parallel do
-      do i = 1, num
-        rgba_part(1,i,my_rank+1) = rgba_lc(1,ist+i)
-        rgba_part(2,i,my_rank+1) = rgba_lc(2,ist+i)
-        rgba_part(3,i,my_rank+1) = rgba_lc(3,ist+i)
-        rgba_part(4,i,my_rank+1) = rgba_lc(4,ist+i)
+!
+!$omp parallel do private(ipix,i_rank,ist,num,icou,jst)
+      do ipix = 1, npixel_img_local
+        do i_rank = 0, nprocs-1
+          ist = istack_overlap(i_rank)
+          num = istack_overlap(i_rank+1) - istack_overlap(i_rank)
+          jst = ist * npixel_img_local + (ipix-1) * num
+          do icou = 1, num
+            depth_part(ist+icou,ipix) = depth_recv(jst+icou)
+          end do
+        end do
+      end do
+!$omp end parallel do
+!
+      end subroutine distribute_pixel_depth
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine distribute_segmented_images                            &
+     &         (num_overlap, istack_overlap, ntot_overlap,              &
+     &          npixel_img, istack_pixel, npixel_img_local,             &
+     &          rgba_lc, rgba_recv, rgba_part)
+!
+      integer(kind = kint), intent(in) :: num_overlap, npixel_img
+      real(kind = kreal), intent(in)                                    &
+     &                    :: rgba_lc(4,num_overlap,npixel_img)
+!
+      integer(kind = kint), intent(in) :: istack_pixel(0:nprocs)
+      integer(kind = kint), intent(in) :: npixel_img_local
+!
+      integer(kind = kint), intent(in) :: istack_overlap(0:nprocs)
+      integer(kind = kint), intent(in) :: ntot_overlap
+!
+      real(kind = kreal), intent(inout)                                 &
+     &             :: rgba_recv(4,ntot_overlap*npixel_img_local)
+      real(kind = kreal), intent(inout)                                 &
+     &             :: rgba_part(4,ntot_overlap,npixel_img_local)
+!
+      integer(kind = kint) :: num, i_rank, ist, i, ipix, icou, jst
+      integer(kind = kint) :: nneib_send, nneib_recv
+!
+!
+!$omp workshare
+      rgba_recv(1:4,ntot_overlap*npixel_img_local) = zero
+!$omp end workshare
+!$omp workshare
+      rgba_part(1:4,1:ntot_overlap,1:npixel_img_local) = zero
+!$omp end workshare
+!
+      call calypso_mpi_barrier
+!
+      nneib_send = 0
+      do i_rank = 0, nprocs-1
+!        if(i_rank .eq. my_rank) cycle
+          nneib_send = nneib_send + 1
+          ist =  istack_pixel(i_rank)
+          num = (istack_pixel(i_rank+1) - istack_pixel(i_rank))         &
+     &          * ifour * num_overlap
+          call MPI_ISEND(rgba_lc(1,1,ist+1), num, CALYPSO_REAL,         &
+     &        i_rank, 0, CALYPSO_COMM, req1(nneib_send), ierr_MPI)
+      end do
+!
+      nneib_recv = 0
+      do i_rank = 0, nprocs-1
+!        if(i_rank .eq. my_rank) cycle
+          nneib_recv = nneib_recv + 1
+          jst = istack_overlap(i_rank) * npixel_img_local
+          num = ifour * npixel_img_local                                &
+     &         * (istack_overlap(i_rank+1) - istack_overlap(i_rank))
+          call MPI_IRECV(rgba_recv(1,jst+1), num, CALYPSO_REAL,         &
+     &        i_rank, 0, CALYPSO_COMM, req2(nneib_recv), ierr_MPI)
+      end do
+!
+      call MPI_WAITALL (nneib_recv, req2, sta2, ierr_MPI)
+      call MPI_WAITALL (nneib_send, req1, sta1, ierr_MPI)
+!
+!
+!$omp parallel do private(ipix,i_rank,ist,num,icou,jst)
+      do ipix = 1, npixel_img_local
+        do i_rank = 0, nprocs-1
+          ist = istack_overlap(i_rank)
+          num = istack_overlap(i_rank+1) - istack_overlap(i_rank)
+          jst = ist * npixel_img_local + (ipix-1) * num
+          do icou = 1, num
+            rgba_part(1,ist+icou,ipix) = rgba_recv(1,jst+icou)
+            rgba_part(2,ist+icou,ipix) = rgba_recv(2,jst+icou)
+            rgba_part(3,ist+icou,ipix) = rgba_recv(3,jst+icou)
+            rgba_part(4,ist+icou,ipix) = rgba_recv(4,jst+icou)
+          end do
+        end do
       end do
 !$omp end parallel do
 !
@@ -444,27 +514,31 @@
 !  ---------------------------------------------------------------------
 !
       subroutine collect_segmented_images                               &
-     &         (irank_tgt, npixel_local, istack_image,                  &
-     &          num_pixel_xy, rgba_real_part, rgba_real_gl)
+     &         (irank_tgt, npixel_img_local, istack_pixel,              &
+     &          npixel_img, num_pixel_xy, ipixel_small, rgba_whole,     &
+     &          rgba_rank0, rgba_real_gl)
 !
       integer(kind = kint), intent(in) :: irank_tgt
-      integer(kind = kint), intent(in) :: istack_image(0:nprocs)
-      integer(kind = kint), intent(in) :: npixel_local
-      real(kind = kreal), intent(in) :: rgba_real_part(4,npixel_local)
-      integer(kind = kint), intent(in) :: num_pixel_xy
+      integer(kind = kint), intent(in) :: istack_pixel(0:nprocs)
+      integer(kind = kint), intent(in) :: npixel_img_local
+      real(kind = kreal), intent(in) :: rgba_whole(4,npixel_img_local)
 !
+      integer(kind = kint), intent(in) :: npixel_img, num_pixel_xy
+      integer(kind = kint), intent(inout) :: ipixel_small(npixel_img)
+!
+      real(kind = kreal), intent(inout) :: rgba_rank0(4,npixel_img)
       real(kind = kreal), intent(inout) :: rgba_real_gl(4,num_pixel_xy)
 !
-      integer(kind = kint) :: num, i_rank, ist, i
+      integer(kind = kint) :: num, i_rank, ist, i, ipix
       integer(kind = kint) :: nneib_send, nneib_recv
 !
 !
       nneib_send = 0
       nneib_recv = 0
-      num = ifour * npixel_local
+      num = ifour * npixel_img_local
       if(my_rank .ne. irank_tgt) then
         nneib_send = 1
-        call MPI_ISEND(rgba_real_part(1,1), num, CALYPSO_REAL,          &
+        call MPI_ISEND(rgba_whole(1,1), num, CALYPSO_REAL,              &
      &      irank_tgt, 0, CALYPSO_COMM, req1(1), ierr_MPI)
       end if
 !
@@ -473,9 +547,9 @@
           if(i_rank .eq. irank_tgt) cycle
 !
           nneib_recv = nneib_recv + 1
-          ist =          istack_image(i_rank)
-          num = ifour * (istack_image(i_rank+1) - istack_image(i_rank))
-          call MPI_IRECV(rgba_real_gl(1,ist+1), num, CALYPSO_REAL,      &
+          ist =          istack_pixel(i_rank)
+          num = ifour * (istack_pixel(i_rank+1) - istack_pixel(i_rank))
+          call MPI_IRECV(rgba_rank0(1,ist+1), num, CALYPSO_REAL,        &
      &        i_rank, 0, CALYPSO_COMM, req2(nneib_recv), ierr_MPI)
         end do
       end if
@@ -483,14 +557,25 @@
       call MPI_WAITALL(nneib_recv, req2(1), sta2, ierr_MPI)
 !
       if(my_rank .eq. irank_tgt) then
-        ist = istack_image(irank_tgt)
-        num = istack_image(irank_tgt+1) - ist
+        ist = istack_pixel(irank_tgt)
+        num = istack_pixel(irank_tgt+1) - ist
 !$omp parallel do
         do i = 1, num
-          rgba_real_gl(1,ist+i) = rgba_real_part(1,i)
-          rgba_real_gl(2,ist+i) = rgba_real_part(2,i)
-          rgba_real_gl(3,ist+i) = rgba_real_part(3,i)
-          rgba_real_gl(4,ist+i) = rgba_real_part(4,i)
+          rgba_rank0(1,ist+i) = rgba_whole(1,i)
+          rgba_rank0(2,ist+i) = rgba_whole(2,i)
+          rgba_rank0(3,ist+i) = rgba_whole(3,i)
+          rgba_rank0(4,ist+i) = rgba_whole(4,i)
+        end do
+!$omp end parallel do
+!
+        rgba_real_gl(1:4,1:num_pixel_xy) = 0.0d0
+!$omp parallel do private(i,ipix)
+        do i = 1, npixel_img
+          ipix = ipixel_small(i)
+          rgba_real_gl(1,ipix) = rgba_rank0(1,i)
+          rgba_real_gl(2,ipix) = rgba_rank0(2,i)
+          rgba_real_gl(3,ipix) = rgba_rank0(3,i)
+          rgba_real_gl(4,ipix) = rgba_rank0(4,i)
         end do
 !$omp end parallel do
       end if

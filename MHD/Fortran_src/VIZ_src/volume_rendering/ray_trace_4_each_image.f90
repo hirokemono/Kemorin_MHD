@@ -7,9 +7,10 @@
 !!      subroutine cont_overlap_in_each_domain                          &
 !!     &         (num_pvr_ray, id_pixel_start,                          &
 !!     &          num_pixel_xy, iflag_mapped, num_overlap)
-!!      subroutine cal_average_image_depth(num_pvr_ray,                 &
+!!      subroutine cal_image_pixel_depth(num_pvr_ray,                   &
 !!     &         id_pixel_start, xx_pvr_ray_start, num_overlap,         &
-!!     &         num_pixel_xy, iflag_mapped, depth_lc)
+!!     &         num_pixel_xy, iflag_mapped, iflag_img_pe, iflag_img_lc,&
+!!     &         depth_lc)
 !!      subroutine copy_segmented_image                                 &
 !!     &        (num_pvr_ray, id_pixel_start, rgba_ray,                 &
 !!     &         num_overlap, num_pixel_xy, iflag_mapped, rgba_lc)
@@ -50,13 +51,14 @@
 !
       subroutine cont_overlap_in_each_domain                            &
      &         (num_pvr_ray, id_pixel_start,                            &
-     &          num_pixel_xy, iflag_mapped, num_overlap)
+     &          num_pixel_xy, iflag_img_pe, iflag_mapped, num_overlap)
 !
       integer(kind = kint), intent(in) :: num_pvr_ray
       integer(kind = kint), intent(in) :: id_pixel_start(num_pvr_ray)
 !
       integer(kind = kint), intent(in) :: num_pixel_xy
       integer(kind = kint), intent(inout) :: iflag_mapped(num_pixel_xy)
+      integer(kind = kint), intent(inout) :: iflag_img_pe(num_pixel_xy)
       integer(kind = kint), intent(inout) :: num_overlap
 !
       integer(kind = kint) :: inum, ipix
@@ -64,10 +66,12 @@
 !
 !$omp parallel workshare
       iflag_mapped = 0
+      iflag_img_pe = 0
 !$omp end parallel workshare
       do inum = 1, num_pvr_ray
         ipix = id_pixel_start(inum)
         iflag_mapped(ipix) = iflag_mapped(ipix) + 1
+        iflag_img_pe(ipix) = 1
       end do
       num_overlap = maxval(iflag_mapped,1)
 !
@@ -75,9 +79,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_average_image_depth(num_pvr_ray,                   &
+      subroutine cal_image_pixel_depth(num_pvr_ray,                     &
      &         id_pixel_start, xx_pvr_ray_start, num_overlap,           &
-     &         num_pixel_xy, iflag_mapped, depth_lc)
+     &         num_pixel_xy, npixel_img, iflag_img_pe, iflag_mapped,    &
+     &         iflag_img_lc, depth_lc)
 !
       integer(kind = kint), intent(in) :: num_pvr_ray
       integer(kind = kint), intent(in) :: id_pixel_start(num_pvr_ray)
@@ -85,68 +90,75 @@
      &                    ::  xx_pvr_ray_start(3,num_pvr_ray)
 !
       integer(kind = kint), intent(in) :: num_overlap, num_pixel_xy
+      integer(kind = kint), intent(in) :: npixel_img
+      integer(kind = kint), intent(in) :: iflag_img_pe(num_pixel_xy)
       integer(kind = kint), intent(inout) :: iflag_mapped(num_pixel_xy)
+      integer(kind = kint), intent(inout)                               &
+     &                   :: iflag_img_lc(num_overlap,npixel_img)
       real(kind = kreal), intent(inout)                                 &
-     &                   :: depth_lc(num_pixel_xy,num_overlap)
+     &                   :: depth_lc(num_overlap,npixel_img)
 !
-      integer(kind = kint) :: inum, ipix, icou
+      integer(kind = kint) :: inum, ipix, icou, inod
 !
 !
 !$omp parallel workshare
       iflag_mapped(1:num_pixel_xy) = 0
 !$omp end parallel workshare
 !$omp parallel workshare
-      depth_lc(1:num_pixel_xy,1:num_overlap) = 0.0d0
+      iflag_img_lc(1:num_overlap,1:npixel_img) = 0
+      depth_lc(1:num_overlap,1:npixel_img) = -1000.0
 !$omp end parallel workshare
 !
-!$omp parallel do private(inum,ipix,icou)
       do inum = 1, num_pvr_ray
         ipix = id_pixel_start(inum)
+        inod = iflag_img_pe(ipix)
         iflag_mapped(ipix) = iflag_mapped(ipix) + 1
         icou = iflag_mapped(ipix)
-        depth_lc(ipix,icou) =  xx_pvr_ray_start(3,inum)
+        iflag_img_lc(icou,inod) = 1
+        depth_lc(icou,inod) =  xx_pvr_ray_start(3,inum)
       end do
-!$omp end parallel do
 !
-      end subroutine cal_average_image_depth
+      end subroutine cal_image_pixel_depth
 !
 !  ---------------------------------------------------------------------
 !
       subroutine copy_segmented_image                                   &
      &        (num_pvr_ray, id_pixel_start, rgba_ray,                   &
-     &         num_overlap, num_pixel_xy, iflag_mapped, rgba_lc)
+     &         num_overlap, num_pixel_xy, npixel_img,                   &
+     &         iflag_img_pe, iflag_mapped, rgba_lc)
 !
       integer(kind = kint), intent(in) :: num_pvr_ray
       integer(kind = kint), intent(in) :: id_pixel_start(num_pvr_ray)
       real(kind = kreal), intent(in) ::  rgba_ray(4,num_pvr_ray)
 !
       integer(kind = kint), intent(in) :: num_overlap, num_pixel_xy
+      integer(kind = kint), intent(in) :: npixel_img
+      integer(kind = kint), intent(in) :: iflag_img_pe(num_pixel_xy)
       integer(kind = kint), intent(inout) :: iflag_mapped(num_pixel_xy)
       real(kind = kreal), intent(inout)                                 &
-     &                    :: rgba_lc(4,num_overlap,num_pixel_xy)
+     &                    :: rgba_lc(4,num_overlap,npixel_img)
 !
-      integer(kind = kint) :: inum, ipix, icou
+      integer(kind = kint) :: inum, ipix, icou, inod
 !
 !
 !$omp parallel workshare
       iflag_mapped(1:num_pixel_xy) = 0
 !$omp end parallel workshare
 !$omp parallel workshare
-      rgba_lc(1:4,1:num_overlap,1:num_pixel_xy) = 0.0d0
+      rgba_lc(1:4,1:num_overlap,1:npixel_img) = 0.0d0
 !$omp end parallel workshare
 !
-!$omp parallel do private(inum,ipix,icou)
       do inum = 1, num_pvr_ray
         ipix = id_pixel_start(inum)
+        inod = iflag_img_pe(ipix)
         iflag_mapped(ipix) = iflag_mapped(ipix) + 1
         icou = iflag_mapped(ipix)
 !
-        rgba_lc(1,icou,ipix) = rgba_ray(1,inum)
-        rgba_lc(2,icou,ipix) = rgba_ray(2,inum)
-        rgba_lc(3,icou,ipix) = rgba_ray(3,inum)
-        rgba_lc(4,icou,ipix) = rgba_ray(4,inum)
+        rgba_lc(1,icou,inod) = rgba_ray(1,inum)
+        rgba_lc(2,icou,inod) = rgba_ray(2,inum)
+        rgba_lc(3,icou,inod) = rgba_ray(3,inum)
+        rgba_lc(4,icou,inod) = rgba_ray(4,inum)
       end do
-!$omp end parallel do
 !
       end subroutine copy_segmented_image
 !

@@ -108,7 +108,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_subimages(node, ele, surf,     &
+      subroutine set_subimages(node, ele, surf,                         &
      &       file_param, color_param, cbar_param, view_param,           &
      &       field_pvr, pvr_start, pvr_img)
 !
@@ -137,37 +137,48 @@
       type(pvr_ray_start_type), intent(inout) :: pvr_start
       type(pvr_image_type), intent(inout) :: pvr_img
 !
-      integer :: i
-!
 !
       if(iflag_debug .gt. 0) write(*,*) 'cont_overlap_in_each_domain'
       call cont_overlap_in_each_domain(pvr_start%num_pvr_ray,           &
      &    pvr_start%id_pixel_start,  pvr_img%num_pixel_xy,              &
-     &    pvr_img%iflag_mapped, pvr_img%num_overlap)
+     &    pvr_img%iflag_img_pe, pvr_img%iflag_mapped,                   &
+     &    pvr_img%num_overlap)
+!
+      call count_pixel_with_image                                       &
+     &   (pvr_img%num_pixel_xy, pvr_img%npixel_img,                     &
+     &    pvr_img%iflag_img_pe, pvr_img%iflag_mapped)
 !
       call alloc_pvr_local_subimage(pvr_img)
+!
       call share_num_images_to_compose(pvr_img%num_overlap,             &
      &    pvr_img%istack_overlap, pvr_img%ntot_overlap)
 !
+      call count_pixel_for_composit(pvr_img%num_pixel_xy,               &
+     &    pvr_img%npixel_img, pvr_img%npixel_img_local,                 &
+     &    pvr_img%istack_pixel, pvr_img%ipixel_small,                   &
+     &    pvr_img%iflag_img_pe)
+!
       call alloc_pvr_subimage_array(pvr_img)
 !
-      call cal_average_image_depth(pvr_start%num_pvr_ray,               &
+      call cal_image_pixel_depth(pvr_start%num_pvr_ray,                 &
      &    pvr_start%id_pixel_start, pvr_start%xx_pvr_ray_start,         &
      &    pvr_img%num_overlap, pvr_img%num_pixel_xy,                    &
-     &    pvr_img%iflag_mapped, pvr_img%depth_lc)
+     &    pvr_img%npixel_img, pvr_img%iflag_img_pe,                     &
+     &    pvr_img%iflag_mapped, pvr_img%iflag_img_lc, pvr_img%depth_lc)
 !
-      call share_subimage_depth                                         &
-     &   (pvr_img%num_overlap, pvr_img%num_pixel_xy,                    &
-     &    pvr_img%iflag_mapped, pvr_img%depth_lc,                       &
-     &    pvr_img%istack_overlap, pvr_img%ntot_overlap,                 &
-     &    pvr_img%ave_depth_lc, pvr_img%ave_depth_gl,                   &
-     &    pvr_img%ip_closer)
+      call alloc_pvr_image_comm_status
+      if(iflag_debug .gt. 0) write(*,*) 'distribute_pixel_depth'
+      call distribute_pixel_depth                                       &
+     &   (pvr_img%num_overlap, pvr_img%istack_overlap,                  &
+     &    pvr_img%ntot_overlap, pvr_img%npixel_img,                     &
+     &    pvr_img%istack_pixel, pvr_img%npixel_img_local,               &
+     &    pvr_img%depth_lc, pvr_img%depth_recv, pvr_img%depth_part)
+      call dealloc_pvr_image_comm_status
 !
-!      if(my_rank .eq. 0) then
-!        do i = 1, pvr_img%ntot_overlap
-!          write(*,*) pvr_img%ip_closer(i), pvr_img%ave_depth_gl(i)
-!        end do
-!      end if
+      if(iflag_debug .gt. 0) write(*,*) 'sort_subimage_pixel_depth'
+      call sort_subimage_pixel_depth                                    &
+     &   (pvr_img%ntot_overlap, pvr_img%npixel_img_local,               &
+     &    pvr_img%depth_part, pvr_img%ip_closer)
 !
       end subroutine set_subimages
 !
@@ -204,7 +215,7 @@
       type(pvr_ray_start_type), intent(inout) :: pvr_start
       type(pvr_image_type), intent(inout) :: pvr_img
 !
-      integer(kind = kint) :: i, j
+      integer(kind = kint) :: i, j, k, ipix
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'ray_trace_local'
@@ -214,13 +225,14 @@
      &    view_param%viewpoint_vec, field_pvr%x_nod_model,              &
      &    field_pvr, color_param, pvr_start, pvr_img)
 !
-      do i = 1, pvr_img%num_overlap
-        j = pvr_img%istack_overlap(my_rank) + i
-        pvr_img%old_rgba_lc(1:4,1:pvr_img%num_pixel_xy)                 &
-     &      = pvr_img%rgba_lc(1:4,i,1:pvr_img%num_pixel_xy)
-        call sel_write_pvr_local_img                                    &
-     &     (file_param, pvr_img%ip_closer(j), pvr_img)
-      end do
+!      do i = 1, pvr_img%num_overlap
+!        j = pvr_img%istack_overlap(my_rank) + i
+!        do k = 1, pvr_img%npixel_img
+!          ipix = pvr_img%ipixel_small(k)
+!          pvr_img%old_rgba_lc(1:4,ipix) = pvr_img%rgba_lc(1:4,j,k)
+!        end do
+!        call sel_write_pvr_local_img(file_param, j, pvr_img)
+!      end do
 !
       if(iflag_debug .gt. 0) write(*,*) 'blend_image_over_domains'
       call blend_image_over_domains                                     &
@@ -351,13 +363,8 @@
       call copy_segmented_image(pvr_start%num_pvr_ray,                  &
      &    pvr_start%id_pixel_start, pvr_start%rgba_ray,                 &
      &    pvr_img%num_overlap, pvr_img%num_pixel_xy,                    &
+     &    pvr_img%npixel_img, pvr_img%iflag_img_pe,                     &
      &    pvr_img%iflag_mapped, pvr_img%rgba_lc)
-!
-      if(iflag_debug .gt. 0) write(*,*) 'blend_overlapped_area'
-      call blend_overlapped_area(pvr_start%num_pvr_ray,                 &
-     &    pvr_start%id_pixel_start, pvr_start%xx_pvr_ray_start,         &
-     &    pvr_start%rgba_ray, pvr_img%num_pixel_xy,                     &
-     &    pvr_img%iflag_mapped, pvr_img%old_rgba_lc, pvr_img%old_depth_lc)
 !
       end subroutine ray_trace_local
 !

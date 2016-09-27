@@ -135,6 +135,9 @@
         call set_pixel_on_pvr_screen                                    &
      &     (view_params(i_pvr)%n_pvr_pixel, pixel_xy(i_pvr))
 !
+        call alloc_pvr_image_array_type                                 &
+     &     (view_params(i_pvr)%n_pvr_pixel, pvr_img(i_pvr))
+!
         if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_matrix'
         call set_pvr_projection_matrix(i_pvr, view_params(i_pvr))
 !        call set_pvr_orthogonal_params(i_pvr, view_params(i_pvr))
@@ -147,12 +150,7 @@
      &       (node, ele, surf, group%surf_grp, group%surf_grp_geom,     &
      &        field_pvr(i_pvr), view_params(i_pvr), pvr_bound(i_pvr),   &
      &        pixel_xy(i_pvr), pvr_start(i_pvr))
-        end if
 !
-        call alloc_pvr_image_array_type                                 &
-     &     (view_params(i_pvr)%n_pvr_pixel, pvr_img(i_pvr))
-!
-        if(view_params(i_pvr)%iflag_rotate_snap .eq. 0) then
           call set_subimages(node, ele, surf,       &
      &       file_params(i_pvr), color_params(i_pvr),                   &
      &       cbar_params(i_pvr), view_params(i_pvr), field_pvr(i_pvr),  &
