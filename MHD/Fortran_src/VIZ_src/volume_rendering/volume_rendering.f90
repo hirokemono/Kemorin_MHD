@@ -143,13 +143,11 @@
 !        call set_pvr_orthogonal_params(i_pvr, view_params(i_pvr))
 !
         if(view_params(i_pvr)%iflag_rotate_snap .eq. 0) then
-          if(iflag_debug .gt. 0) write(*,*) 'cal_pvr_modelview_matrix'
-          call cal_pvr_modelview_matrix(izero, outlines(i_pvr),         &
-     &        view_params(i_pvr), color_params(i_pvr))
-          call transfer_to_screen                                       &
-     &       (node, ele, surf, group%surf_grp, group%surf_grp_geom,     &
-     &        field_pvr(i_pvr), view_params(i_pvr), pvr_bound(i_pvr),   &
-     &        pixel_xy(i_pvr), pvr_start(i_pvr))
+          if(iflag_debug .gt. 0) write(*,*) 'set_fixed_view_and_image'
+          call set_fixed_view_and_image(node, ele, surf, group,         &
+     &        outlines(i_pvr),  pixel_xy(i_pvr), view_params(i_pvr),    &
+     &        color_params(i_pvr), field_pvr(i_pvr), pvr_bound(i_pvr),  &
+     &        pvr_start(i_pvr))
         end if
       end do
 !
@@ -175,7 +173,6 @@
       type(jacobians_3d), intent(in) :: jac_3d
 !
       integer(kind = kint) :: i_pvr
-      integer(kind = kint) :: i_rot, ist_rot, ied_rot
 !
 !
       if(num_pvr.le.0 .or. istep_pvr.le.0) return
@@ -195,27 +192,14 @@
      &     (outlines(i_pvr)%d_minmax_pvr, color_params(i_pvr))
 !
         if(view_params(i_pvr)%iflag_rotate_snap .gt. 0) then
-          ist_rot = view_params(i_pvr)%istart_rot
-          ied_rot = view_params(i_pvr)%iend_rot
-          do i_rot = ist_rot, ied_rot
-            call cal_pvr_modelview_matrix(i_rot, outlines(i_pvr),       &
-     &          view_params(i_pvr), color_params(i_pvr))
-            call transfer_to_screen                                     &
-     &         (node, ele, surf, group%surf_grp, group%surf_grp_geom,   &
-     &          field_pvr(i_pvr), view_params(i_pvr), pvr_bound(i_pvr), &
-     &          pixel_xy(i_pvr), pvr_start(i_pvr))
-!
-            call rendering_image(i_rot, istep_pvr, node, ele, surf,     &
-     &         file_params(i_pvr), color_params(i_pvr),                 &
-     &         cbar_params(i_pvr), view_params(i_pvr),                  &
-     &         pvr_bound(i_pvr), field_pvr(i_pvr), pixel_xy(i_pvr),     &
-     &         pvr_start(i_pvr), pvr_img(i_pvr))
-!
-            call deallocate_pvr_ray_start(pvr_start(i_pvr))
-          end do
+          call rendering_with_rotation                                  &
+     &      (istep_pvr, node, ele, surf, group,                         &
+     &       file_params(i_pvr), outlines(i_pvr), cbar_params(i_pvr),   &
+     &       pixel_xy(i_pvr), view_params(i_pvr), color_params(i_pvr),  &
+     &       field_pvr(i_pvr), pvr_bound(i_pvr),                        &
+     &       pvr_start(i_pvr), pvr_img(i_pvr))
         else
-          i_rot = -1
-          call rendering_image(i_rot, istep_pvr, node, ele, surf,       &
+          call rendering_with_fixed_view(istep_pvr, node, ele, surf,    &
      &       file_params(i_pvr), color_params(i_pvr),                   &
      &       cbar_params(i_pvr), view_params(i_pvr),                    &
      &       pvr_bound(i_pvr), field_pvr(i_pvr), pixel_xy(i_pvr),       &
