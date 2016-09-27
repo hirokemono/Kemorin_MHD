@@ -140,7 +140,7 @@
         pvr_img%rgba_whole(1:4,ipix) = 0.0d0
         do inum = pvr_img%ntot_overlap, 1, -1
           ip = pvr_img%ip_closer(inum,ipix)
-!          if(ip .eq. 0) exit
+          if(ip .le. 0) exit
 !
           call composite_alpha_blending(pvr_img%rgba_part(1:4,ip,ipix), &
      &        pvr_img%rgba_whole(1:4,ipix))
@@ -212,7 +212,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine sel_write_pvr_local_img(file_param, index, pvr_img)
+      subroutine sel_write_pvr_local_img                                &
+     &         (file_param, index, istep_pvr, pvr_img)
 !
       use t_pvr_image_array
       use t_control_params_4_pvr
@@ -221,14 +222,19 @@
       use convert_real_rgb_2_bite
 !
       type(pvr_output_parameter), intent(in) :: file_param
-      integer(kind = kint), intent(in) :: index
+      integer(kind = kint), intent(in) :: index, istep_pvr
 !
       type(pvr_image_type), intent(inout) :: pvr_img
 !
-      character(len=kchara) :: img_head
+      character(len=kchara) :: tmpchara, img_head
 !
 !
-      call add_int_suffix(index, file_param%pvr_prefix, img_head)
+      if(istep_pvr .ge. 0) then
+        call add_int_suffix(istep_pvr, file_param%pvr_prefix, tmpchara)
+      else
+        tmpchara = file_param%pvr_prefix
+      end if
+      call add_int_suffix(index, tmpchara, img_head)
 !
       call cvt_double_rgba_to_char_rgb(pvr_img%num_pixel_xy,            &
      &    pvr_img%old_rgba_lc, pvr_img%rgb_chara_lc)

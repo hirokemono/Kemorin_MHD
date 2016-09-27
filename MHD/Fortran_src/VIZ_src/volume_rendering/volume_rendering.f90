@@ -194,28 +194,33 @@
         call set_default_pvr_data_params                                &
      &     (outlines(i_pvr)%d_minmax_pvr, color_params(i_pvr))
 !
-        ist_rot = view_params(i_pvr)%istart_rot
-        ied_rot = view_params(i_pvr)%iend_rot
-        do i_rot = ist_rot, ied_rot
-          if(view_params(i_pvr)%iflag_rotate_snap .gt. 0) then
+        if(view_params(i_pvr)%iflag_rotate_snap .gt. 0) then
+          ist_rot = view_params(i_pvr)%istart_rot
+          ied_rot = view_params(i_pvr)%iend_rot
+          do i_rot = ist_rot, ied_rot
             call cal_pvr_modelview_matrix(i_rot, outlines(i_pvr),       &
      &          view_params(i_pvr), color_params(i_pvr))
             call transfer_to_screen                                     &
      &         (node, ele, surf, group%surf_grp, group%surf_grp_geom,   &
      &          field_pvr(i_pvr), view_params(i_pvr), pvr_bound(i_pvr), &
      &          pixel_xy(i_pvr), pvr_start(i_pvr))
-          end if
 !
+            call rendering_image(i_rot, istep_pvr, node, ele, surf,     &
+     &         file_params(i_pvr), color_params(i_pvr),                 &
+     &         cbar_params(i_pvr), view_params(i_pvr),                  &
+     &         pvr_bound(i_pvr), field_pvr(i_pvr), pixel_xy(i_pvr),     &
+     &         pvr_start(i_pvr), pvr_img(i_pvr))
+!
+            call deallocate_pvr_ray_start(pvr_start(i_pvr))
+          end do
+        else
+          i_rot = -1
           call rendering_image(i_rot, istep_pvr, node, ele, surf,       &
      &       file_params(i_pvr), color_params(i_pvr),                   &
      &       cbar_params(i_pvr), view_params(i_pvr),                    &
      &       pvr_bound(i_pvr), field_pvr(i_pvr), pixel_xy(i_pvr),       &
      &       pvr_start(i_pvr), pvr_img(i_pvr))
-!
-          if(view_params(i_pvr)%iflag_rotate_snap .gt. 0) then
-            call deallocate_pvr_ray_start(pvr_start(i_pvr))
-          end if
-        end do
+        end if
       end do
 !
       end subroutine PVR_visualize

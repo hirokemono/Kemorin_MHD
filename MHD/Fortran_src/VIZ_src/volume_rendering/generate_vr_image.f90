@@ -43,6 +43,9 @@
 !
 !  ---------------------------------------------------------------------
 !
+!
+!  ---------------------------------------------------------------------
+!
       subroutine transfer_to_screen                                     &
      &        (node, ele, surf, surf_grp, surf_grp_v,                   &
      &         field_pvr, view_param, pvr_bound,  pixel_xy, pvr_start)
@@ -113,7 +116,6 @@
      &       pvr_bound, field_pvr, pixel_xy, pvr_start, pvr_img)
 !
       use m_geometry_constants
-      use m_geometry_constants
       use t_geometry_data
       use t_surface_data
       use t_group_data
@@ -164,10 +166,7 @@
       call set_subimages(pvr_start, pvr_img)
 !
       if(iflag_debug .gt. 0) write(*,*) 'ray_trace_local'
-      call ray_trace_local(node%numnod, ele%numele,                     &
-     &    surf%numsurf, surf%nnod_4_surf, surf%ie_surf, surf%isf_4_ele, &
-     &    surf%iele_4_surf, ele%interior_ele, node%xx, surf%vnorm_surf, &
-     &    view_param%viewpoint_vec, field_pvr%x_nod_model,              &
+      call ray_trace_local(node, ele, surf, view_param%viewpoint_vec,   &
      &    field_pvr, color_param, pvr_start, pvr_img)
 !
 !      do i = 1, pvr_img%num_overlap
@@ -176,7 +175,7 @@
 !          ipix = pvr_img%ipixel_small(k)
 !          pvr_img%old_rgba_lc(1:4,ipix) = pvr_img%rgba_lc(1:4,j,k)
 !        end do
-!        call sel_write_pvr_local_img(file_param, j, pvr_img)
+!        call sel_write_pvr_local_img(file_param, j, istep_pvr, pvr_img)
 !      end do
 !
       if(iflag_debug .gt. 0) write(*,*) 'blend_image_over_domains'
@@ -187,9 +186,10 @@
       call sel_write_pvr_image_file                                     &
      &   (file_param, i_rot, istep_pvr, pvr_img)
 !
-      if(file_param%iflag_monitoring .eq. 0) return
-      call sel_write_pvr_image_file                                     &
-     &   (file_param, izero, iminus, pvr_img)
+      if(file_param%iflag_monitoring .gt. 0) then
+        call sel_write_pvr_image_file                                   &
+     &     (file_param, izero, iminus, pvr_img)
+      end if
 !
       call dealloc_pvr_local_subimage(pvr_img)
 !
@@ -250,11 +250,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine ray_trace_local(numnod, numele, numsurf, nnod_4_surf,  &
-     &          ie_surf, isf_4_ele, iele_4_surf, interior_ele,          &
-     &          xx, vnorm_surf, viewpoint_vec, x_nod_screen,            &
+      subroutine ray_trace_local(node, ele, surf, viewpoint_vec,        &
      &          field_pvr, color_param, pvr_start, pvr_img)
 !
+      use m_geometry_constants
+      use t_geometry_data
+      use t_surface_data
       use t_control_params_4_pvr
       use t_surf_grp_4_pvr_domain
       use t_pvr_image_array
@@ -264,17 +265,11 @@
       use composite_pvr_images
       use set_pvr_ray_start_point
 !
-      integer(kind = kint), intent(in) :: numnod, numele, numsurf
-      integer(kind = kint), intent(in) :: nnod_4_surf
-      integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
-      integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
-      integer(kind = kint), intent(in) :: iele_4_surf(numsurf,2,2)
-      integer(kind = kint), intent(in) :: interior_ele(numele)
-      real(kind = kreal), intent(in) :: xx(numnod,3)
-      real(kind = kreal), intent(in) :: vnorm_surf(numsurf,3)
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
 !
-      real(kind = kreal), intent(in) :: x_nod_screen(numnod,4)
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
       type(pvr_projected_field), intent(in) :: field_pvr
 !
       type(pvr_colormap_parameter), intent(in) :: color_param
@@ -284,9 +279,11 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 's_ray_trace_4_each_image'
       call s_ray_trace_4_each_image                                     &
-     &   (numnod, numele, numsurf, nnod_4_surf, ie_surf,                &
-     &    isf_4_ele, iele_4_surf, interior_ele, xx, vnorm_surf,         &
-     &    x_nod_screen, viewpoint_vec, field_pvr, color_param, ray_vec, &
+     &   (node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,      &
+     &    surf%ie_surf, surf%isf_4_ele, surf%iele_4_surf,               &
+     &    ele%interior_ele, node%xx, surf%vnorm_surf,                   &
+     &    field_pvr%x_nod_model, viewpoint_vec,                         &
+     &    field_pvr, color_param, ray_vec,                              &
      &    pvr_start%num_pvr_ray, pvr_start%icount_pvr_trace,            &
      &    pvr_start%isf_pvr_ray_start, pvr_start%xi_pvr_start,          &
      &    pvr_start%xx_pvr_start, pvr_start%xx_pvr_ray_start,           &
