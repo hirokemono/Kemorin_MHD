@@ -3,9 +3,9 @@
 !
 !     Written by H. Matsui on May., 2006
 !
-!!      subroutine s_set_pvr_control                                    &
-!!     &       (num_pvr, ele_grp, surf_grp, num_nod_phys, phys_nod_name,&
-!!     &        file_params, fld_params, view_params,                   &
+!!      subroutine set_each_pvr_control                                 &
+!!     &       (ele_grp, surf_grp, num_nod_phys, phys_nod_name,         &
+!!     &        pvr_control, file_params, fld_params, view_params,      &
 !!     &        field_pvr, color_params, cbar_params)
 !
       module set_pvr_control
@@ -20,8 +20,6 @@
 !
       integer(kind = kint), parameter :: pvr_ctl_file_code = 11
 !
-      private :: pvr_ctl_file_code
-      private :: read_control_pvr
 !
 !  ---------------------------------------------------------------------
 !
@@ -29,15 +27,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_pvr_control                                      &
-     &       (num_pvr, ele_grp, surf_grp, num_nod_phys, phys_nod_name,  &
-     &        file_params, fld_params, view_params,                     &
+      subroutine set_each_pvr_control                                   &
+     &       (ele_grp, surf_grp, num_nod_phys, phys_nod_name,           &
+     &        pvr_control, file_params, fld_params, view_params,        &
      &        field_pvr, color_params, cbar_params)
 !
       use t_group_data
       use t_control_params_4_pvr
       use t_geometries_in_pvr_screen
       use t_control_data_pvr_misc
+      use m_control_data_4_pvr
       use set_control_each_pvr
       use set_field_comp_for_viz
 !
@@ -47,53 +46,35 @@
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
 !
-      integer(kind = kint), intent(in) :: num_pvr
-      type(pvr_output_parameter), intent(inout) :: file_params(num_pvr)
-      type(pvr_field_parameter), intent(inout) :: fld_params(num_pvr)
-      type(pvr_view_parameter), intent(inout) :: view_params(num_pvr)
-      type(pvr_projected_field), intent(inout) :: field_pvr(num_pvr)
-      type(pvr_colormap_parameter), intent(inout)                       &
-     &                  :: color_params(num_pvr)
-      type(pvr_colorbar_parameter), intent(inout)                       &
-     &                  :: cbar_params(num_pvr)
+      type(pvr_ctl), intent(inout) :: pvr_control
+      type(pvr_output_parameter), intent(inout) :: file_params
+      type(pvr_field_parameter), intent(inout) :: fld_params
+      type(pvr_view_parameter), intent(inout) :: view_params
+      type(pvr_projected_field), intent(inout) :: field_pvr
+      type(pvr_colormap_parameter), intent(inout) :: color_params
+      type(pvr_colorbar_parameter), intent(inout) :: cbar_params
 !
-      integer(kind = kint) :: i_pvr, i_psf
+      integer(kind = kint) :: i_psf
 !
 !
-      ctl_file_code = pvr_ctl_file_code
-!
-      call allocate_pvr_ctl_struct
-!
-      do i_pvr = 1, num_pvr
-        call read_control_pvr(i_pvr)
-        call read_control_modelview(i_pvr)
-        call read_control_colormap(i_pvr)
-!
-        do i_psf = 1, pvr_ctl_struct(i_pvr)%num_pvr_sect_ctl
-          call read_control_pvr_section_def                             &
-     &       (pvr_ctl_struct(i_pvr)%pvr_sect_ctl(i_psf))
-        end do
+      do i_psf = 1, pvr_control%num_pvr_sect_ctl
+        call read_control_pvr_section_def                               &
+     &     (pvr_control%pvr_sect_ctl(i_psf))
       end do
 !
-      do i_pvr = 1, num_pvr
-        if(iflag_debug .gt. 0) write(*,*) 'PVR parameters for', i_pvr
-        call set_pvr_file_control(pvr_ctl_struct(i_pvr),                &
-     &      num_nod_phys, phys_nod_name, file_params(i_pvr))
+      if(iflag_debug .gt. 0) write(*,*) 'PVR parameters for'
+      call set_pvr_file_control(pvr_control,                            &
+     &    num_nod_phys, phys_nod_name, file_params)
 !
-        if(iflag_debug .gt. 0) write(*,*) 'set_control_pvr', i_pvr
-        call set_control_pvr(pvr_ctl_struct(i_pvr),                     &
-     &      ele_grp, surf_grp, num_nod_phys, phys_nod_name,             &
-     &      fld_params(i_pvr), view_params(i_pvr), field_pvr(i_pvr),    &
-     &      color_params(i_pvr), cbar_params(i_pvr))
-        if(iflag_debug .gt. 0) write(*,*)                               &
-     &                       'deallocate_cont_dat_pvr', i_pvr
-        call deallocate_cont_dat_pvr(pvr_ctl_struct(i_pvr))
-        call calypso_mpi_barrier
-      end do
+      if(iflag_debug .gt. 0) write(*,*) 'set_control_pvr'
+      call set_control_pvr                                              &
+     &   (pvr_control, ele_grp, surf_grp, num_nod_phys,                 &
+     &    phys_nod_name, fld_params, view_params, field_pvr,            &
+     &    color_params, cbar_params)
+      if(iflag_debug .gt. 0) write(*,*)                                 &
+     &                       'deallocate_cont_dat_pvr'
 !
-      call deallocate_pvr_file_header_ctl
-!
-      end subroutine s_set_pvr_control
+      end subroutine set_each_pvr_control
 !
 !   --------------------------------------------------------------------
 !

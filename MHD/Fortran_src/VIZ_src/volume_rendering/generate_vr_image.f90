@@ -33,6 +33,12 @@
 !
       use calypso_mpi
 !
+      use t_control_params_4_pvr
+      use t_geometries_in_pvr_screen
+      use t_surf_grp_4_pvr_domain
+      use t_pvr_ray_startpoints
+      use t_pvr_image_array
+!
       implicit  none
 !
 !
@@ -70,11 +76,6 @@
       use t_geometry_data
       use t_surface_data
       use t_group_data
-      use t_control_params_4_pvr
-      use t_surf_grp_4_pvr_domain
-      use t_pvr_ray_startpoints
-      use t_pvr_image_array
-      use t_geometries_in_pvr_screen
       use cal_pvr_modelview_mat
 !
       type(node_data), intent(in) :: node
@@ -105,11 +106,6 @@
       use t_geometry_data
       use t_surface_data
       use t_group_data
-      use t_control_params_4_pvr
-      use t_surf_grp_4_pvr_domain
-      use t_pvr_ray_startpoints
-      use t_pvr_image_array
-      use t_geometries_in_pvr_screen
       use composite_pvr_images
       use set_pvr_ray_start_point
 !
@@ -146,11 +142,6 @@
       use t_geometry_data
       use t_surface_data
       use t_group_data
-      use t_control_params_4_pvr
-      use t_surf_grp_4_pvr_domain
-      use t_pvr_ray_startpoints
-      use t_pvr_image_array
-      use t_geometries_in_pvr_screen
       use cal_pvr_modelview_mat
 !
       integer(kind = kint), intent(in) :: istep_pvr
@@ -203,10 +194,6 @@
       use t_surface_data
       use t_group_data
       use t_surface_group_geometry
-      use t_control_params_4_pvr
-      use t_surf_grp_4_pvr_domain
-      use t_geometries_in_pvr_screen
-      use t_pvr_ray_startpoints
       use set_position_pvr_screen
       use find_pvr_surf_domain
       use pvr_surface_enhancement
@@ -267,11 +254,6 @@
       use t_geometry_data
       use t_surface_data
       use t_group_data
-      use t_control_params_4_pvr
-      use t_surf_grp_4_pvr_domain
-      use t_pvr_ray_startpoints
-      use t_pvr_image_array
-      use t_geometries_in_pvr_screen
       use composite_pvr_images
       use set_pvr_ray_start_point
 !
@@ -348,9 +330,6 @@
      &          nnod_4_surf, ie_surf, isf_4_ele, xx, viewpoint_vec,     &
      &          pvr_bound, field_pvr, pixel_xy, pvr_start)
 !
-      use t_surf_grp_4_pvr_domain
-      use t_pvr_ray_startpoints
-      use t_geometries_in_pvr_screen
       use set_pvr_ray_start_point
       use cal_field_on_surf_viz
 !
@@ -402,11 +381,6 @@
       use m_geometry_constants
       use t_geometry_data
       use t_surface_data
-      use t_control_params_4_pvr
-      use t_surf_grp_4_pvr_domain
-      use t_pvr_image_array
-      use t_pvr_ray_startpoints
-      use t_geometries_in_pvr_screen
       use ray_trace_4_each_image
       use composite_pvr_images
       use set_pvr_ray_start_point
@@ -448,9 +422,6 @@
 !
       subroutine set_subimages(pvr_start, pvr_img)
 !
-      use t_pvr_ray_startpoints
-      use t_pvr_image_array
-      use t_geometries_in_pvr_screen
       use ray_trace_4_each_image
       use composite_pvr_images
       use PVR_image_transfer

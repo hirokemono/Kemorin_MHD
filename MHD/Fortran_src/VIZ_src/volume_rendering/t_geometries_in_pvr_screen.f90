@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine allocate_nod_data_4_pvr                              &
-!!     &       (num_pvr, numnod, numele, numsurf, num_sf_grp, field_pvr)
+!!     &         (numnod, numele, numsurf, num_sf_grp, field_pvr)
 !!      subroutine allocate_pixel_position_pvr(pixel_xy)
 !!      subroutine alloc_pvr_isosurfaces(fld_pvr)
 !!
@@ -222,23 +222,18 @@
 ! -----------------------------------------------------------------------
 !
       subroutine allocate_nod_data_4_pvr                                &
-     &       (num_pvr, numnod, numele, numsurf, num_sf_grp, field_pvr)
+     &         (numnod, numele, numsurf, num_sf_grp, field_pvr)
 !
-      integer(kind = kint), intent(in) :: num_pvr
       integer(kind = kint), intent(in) :: numnod, numele, numsurf
       integer(kind = kint), intent(in) :: num_sf_grp
-      type(pvr_projected_field), intent(inout) :: field_pvr(num_pvr)
-!
-      integer(kind = kint) :: i
+      type(pvr_projected_field), intent(inout) :: field_pvr
 !
 !
-      do i = 1, num_pvr
         call alloc_nod_data_4_pvr                                       &
-     &     (numnod, numele, field_pvr(i))
-        call alloc_iflag_pvr_used_ele(numele, field_pvr(i))
+     &     (numnod, numele, field_pvr)
+        call alloc_iflag_pvr_used_ele(numele, field_pvr)
         call alloc_iflag_pvr_boundaries                                 &
-     &     (numsurf, num_sf_grp, field_pvr(i))
-      end do
+     &     (numsurf, num_sf_grp, field_pvr)
 !
       end subroutine allocate_nod_data_4_pvr
 !
