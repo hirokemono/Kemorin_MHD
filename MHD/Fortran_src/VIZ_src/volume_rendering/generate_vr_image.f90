@@ -35,6 +35,26 @@
 !
       implicit  none
 !
+!
+!>      Structure of PVR image generation
+      type PVR_image_generator
+!>        Viewer coordinate information
+        type(pvr_view_parameter) :: view
+!>        color paramter for volume rendering
+        type(pvr_colormap_parameter) :: color
+!>        Field data for volume rendering
+        type(pvr_projected_field) :: field
+!>        Domain boundary information
+        type(pvr_bounds_surf_ctl) :: bound
+!>        Start point structure for volume rendering
+        type(pvr_ray_start_type) :: start_pt
+!>        Stored start point structure for volume rendering
+        type(pvr_ray_start_type) :: start_pt_saved
+!
+!>        Pixel data structure for volume rendering
+        type(pvr_image_type) :: image
+      end type PVR_image_generator
+!
       private :: s_set_pvr_ray_start_point, ray_trace_local
 !
 !  ---------------------------------------------------------------------
@@ -44,8 +64,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_fixed_view_and_image(node, ele, surf, group,       &
-     &          outline, pixel_xy, view_param, color_param,             &
-     &          field_pvr, pvr_bound, pvr_start)
+     &          outline, pixel_xy, pvr_data)
 !
       use t_mesh_data
       use t_geometry_data
@@ -66,26 +85,22 @@
       type(pvr_domain_outline), intent(in) :: outline
       type(pvr_pixel_position_type), intent(in) :: pixel_xy
 !
-      type(pvr_view_parameter), intent(inout) :: view_param
-      type(pvr_colormap_parameter), intent(inout) :: color_param
-      type(pvr_projected_field), intent(inout) :: field_pvr
-      type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
-      type(pvr_ray_start_type), intent(inout) :: pvr_start
+      type(PVR_image_generator), intent(inout) :: pvr_data
 !
 !
       call cal_pvr_modelview_matrix                                     &
-     &   (izero, outline, view_param, color_param)
+     &   (izero, outline, pvr_data%view, pvr_data%color)
       call transfer_to_screen                                           &
      &   (node, ele, surf, group%surf_grp, group%surf_grp_geom,         &
-     &   field_pvr, view_param, pvr_bound, pixel_xy, pvr_start)
+     &   pvr_data%field, pvr_data%view, pvr_data%bound, pixel_xy,       &
+     &   pvr_data%start_pt)
 !
       end subroutine set_fixed_view_and_image
 !
 !  ---------------------------------------------------------------------
 !
       subroutine rendering_with_fixed_view(istep_pvr, node, ele, surf,  &
-     &       file_param, color_param, cbar_param, view_param,           &
-     &       pvr_bound, field_pvr, pixel_xy, pvr_start, pvr_img)
+     &       file_param, cbar_param, pixel_xy, pvr_data)
 !
       use t_geometry_data
       use t_surface_data
@@ -104,25 +119,20 @@
       type(surface_data), intent(in) :: surf
 !
       type(pvr_output_parameter), intent(in) :: file_param
-      type(pvr_colormap_parameter), intent(in) :: color_param
       type(pvr_colorbar_parameter), intent(in) :: cbar_param
-!
-      type(pvr_view_parameter), intent(in) :: view_param
-      type(pvr_bounds_surf_ctl), intent(in) :: pvr_bound
-      type(pvr_projected_field), intent(in) :: field_pvr
       type(pvr_pixel_position_type), intent(in) :: pixel_xy
 !
-      type(pvr_ray_start_type), intent(inout) :: pvr_start
-      type(pvr_image_type), intent(inout) :: pvr_img
+      type(PVR_image_generator), intent(inout) :: pvr_data
 !
       integer(kind = kint), parameter :: i_rot = -1
 !
 !
       call rendering_image(i_rot, istep_pvr, node, ele, surf,           &
-     &       file_param, color_param, cbar_param, view_param,           &
-     &       pvr_bound, field_pvr, pixel_xy, pvr_start, pvr_img)
+     &    file_param, pvr_data%color, cbar_param, pvr_data%view,        &
+     &    pvr_data%bound, pvr_data%field, pixel_xy,                     &
+     &    pvr_data%start_pt, pvr_data%image)
 !
-      call dealloc_pvr_local_subimage(pvr_img)
+      call dealloc_pvr_local_subimage(pvr_data%image)
 !
       end subroutine rendering_with_fixed_view
 !
@@ -130,9 +140,7 @@
 !
       subroutine rendering_with_rotation                                &
      &         (istep_pvr, node, ele, surf, group,                      &
-     &          file_param, outline, cbar_param, pixel_xy,              &
-     &          view_param, color_param, field_pvr, pvr_bound,          &
-     &          pvr_start, pvr_img)
+     &          file_param, outline, cbar_param, pixel_xy, pvr_data)
 !
       use t_mesh_data
       use t_geometry_data
@@ -157,35 +165,33 @@
       type(pvr_colorbar_parameter), intent(in) :: cbar_param
       type(pvr_pixel_position_type), intent(in) :: pixel_xy
 !
-      type(pvr_view_parameter), intent(inout) :: view_param
-      type(pvr_colormap_parameter), intent(inout) :: color_param
-      type(pvr_projected_field), intent(inout) :: field_pvr
-      type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
-      type(pvr_ray_start_type), intent(inout) :: pvr_start
-      type(pvr_image_type), intent(inout) :: pvr_img
+      type(PVR_image_generator), intent(inout) :: pvr_data
 !
 !
       integer(kind = kint) :: i_rot, ist_rot, ied_rot
 !
-      ist_rot = view_param%istart_rot
-      ied_rot = view_param%iend_rot
+      ist_rot = pvr_data%view%istart_rot
+      ied_rot = pvr_data%view%iend_rot
       do i_rot = ist_rot, ied_rot
         call cal_pvr_modelview_matrix                                   &
-     &     (i_rot, outline, view_param, color_param)
+     &     (i_rot, outline, pvr_data%view, pvr_data%color)
         call transfer_to_screen                                         &
      &     (node, ele, surf, group%surf_grp, group%surf_grp_geom,       &
-     &     field_pvr, view_param, pvr_bound, pixel_xy, pvr_start)
+     &      pvr_data%field, pvr_data%view, pvr_data%bound, pixel_xy,    &
+     &      pvr_data%start_pt)
 !
         call rendering_image(i_rot, istep_pvr, node, ele, surf,         &
-     &      file_param, color_param, cbar_param, view_param,            &
-     &      pvr_bound, field_pvr, pixel_xy, pvr_start, pvr_img)
+     &      file_param, pvr_data%color, cbar_param, pvr_data%view,      &
+     &      pvr_data%bound, pvr_data%field, pixel_xy,                   &
+     &      pvr_data%start_pt, pvr_data%image)
 !
-        call dealloc_pvr_local_subimage(pvr_img)
-        call deallocate_pvr_ray_start(pvr_start)
+        call dealloc_pvr_local_subimage(pvr_data%image)
+        call deallocate_pvr_ray_start(pvr_data%start_pt)
       end do
 !
       end subroutine rendering_with_rotation
 !
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine transfer_to_screen                                     &

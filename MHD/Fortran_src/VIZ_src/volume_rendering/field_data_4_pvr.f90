@@ -29,8 +29,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_field_4_pvr(num_pvr, numnod, numele, nnod_4_ele,   &
-     &         inod_smp_stack, iele_smp_stack, xx, radius,              &
-     &         a_radius, s_cylinder, a_s_cylinder, ie, a_vol_ele,       &
+     &          iele_smp_stack, xx,              &
+     &         a_radius, ie, a_vol_ele,       &
      &         ntot_int_3d, dnx, xjac, num_nod_phys, num_tot_nod_phys,  &
      &         istack_nod_component, d_nod, fld_params, field_pvr)
 !
@@ -39,15 +39,10 @@
       use cal_gradient_on_element
       use convert_components_4_viz
 !
+      type(node_data), intent(in) :: node
       integer(kind = kint), intent(in) :: num_pvr
       integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
-      integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
-      real(kind = kreal), intent(in) :: xx(numnod,3)
-      real(kind = kreal), intent(in) :: radius(numnod)
-      real(kind = kreal), intent(in) :: a_radius(numnod)
-      real(kind = kreal), intent(in) :: s_cylinder(numnod)
-      real(kind = kreal), intent(in) :: a_s_cylinder(numnod)
       integer (kind = kint), intent(in) :: ie(numele,nnod_4_ele)
       real(kind = kreal), intent(in) :: a_vol_ele(numele)
 !
@@ -74,8 +69,8 @@
         i_field = fld_params(i_pvr)%id_pvr_output
         ist_fld = istack_nod_component(i_field-1)
         num_comp = istack_nod_component(i_field) - ist_fld
-        call convert_comps_4_viz(numnod, inod_smp_stack, xx, radius,    &
-     &      a_radius, s_cylinder, a_s_cylinder, ione,  num_comp,        &
+        call convert_comps_4_viz(numnod, node%istack_nod_smp, node%xx, node%rr,    &
+     &      node%a_r, node%ss, node%a_s, ione,  num_comp,        &
      &      fld_params(i_pvr)%icomp_pvr_output, d_nod(1,ist_fld+1),     &
      &      field_pvr(i_pvr)%d_pvr)
 !

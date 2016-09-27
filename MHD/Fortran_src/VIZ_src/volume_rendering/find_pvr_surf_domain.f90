@@ -3,9 +3,8 @@
 !
 !        programmed by H.Matsui on Aug., 2011
 !
-!!      subroutine s_find_pvr_surf_domain(num_pvr, numele, numsurf,     &
-!!     &          interior_ele, isf_4_ele, iele_4_surf,                 &
-!!     &          ele_grp, fld_params, pvr_bound, field_pvr)
+!!      subroutine find_each_pvr_surf_domain(ele, surf, ele_grp,        &
+!!     &          fld_params, pvr_bound, field_pvr)
 !!      subroutine set_pvr_domain_surface_data                          &
 !!     &       (n_pvr_pixel, numnod, numele, numsurf, nnod_4_surf,      &
 !!     &        ie_surf, isf_4_ele, x_nod_screen, pvr_bound)
@@ -33,10 +32,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_find_pvr_surf_domain(num_pvr, numele, numsurf,       &
-     &          interior_ele, isf_4_ele, iele_4_surf,                   &
-     &          ele_grp, fld_params, pvr_bound, field_pvr)
+      subroutine find_each_pvr_surf_domain(ele, surf, ele_grp,          &
+     &          fld_params, pvr_bound, field_pvr)
 !
+      use t_geometry_data
+      use t_surface_data
       use t_control_params_4_pvr
       use t_surf_grp_4_pvr_domain
       use t_geometries_in_pvr_screen
@@ -45,49 +45,37 @@
       use set_iflag_for_used_ele
       use pvr_surface_enhancement
 !
-      integer(kind = kint), intent(in) :: numele, numsurf
-      integer(kind = kint), intent(in) :: interior_ele(numele)
-      integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
-      integer(kind = kint), intent(in) :: iele_4_surf(numsurf,2,2)
-!
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
       type(group_data), intent(in) :: ele_grp
 !
-      integer(kind = kint), intent(in) :: num_pvr
-      type(pvr_field_parameter), intent(in) :: fld_params(num_pvr)
-      type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound(num_pvr)
-      type(pvr_projected_field), intent(inout) :: field_pvr(num_pvr)
-!
-      integer(kind = kint) :: i_pvr
+      type(pvr_field_parameter), intent(in) :: fld_params
+      type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
+      type(pvr_projected_field), intent(inout) :: field_pvr
 !
 !
-      call allocate_imark_4_surface(numsurf)
+      call s_set_iflag_for_used_ele(ele%numele, ele%interior_ele,      &
+     &    ele_grp%num_grp, ele_grp%num_item,                           &
+     &    ele_grp%istack_grp, ele_grp%item_grp,                        &
+     &    fld_params%nele_grp_area_pvr,                                &
+     &    fld_params%id_ele_grp_area_pvr, field_pvr%iflag_used_ele)
 !
-      do i_pvr = 1, num_pvr
-        call s_set_iflag_for_used_ele(numele, interior_ele,             &
-     &      ele_grp%num_grp, ele_grp%num_item,                          &
-     &      ele_grp%istack_grp, ele_grp%item_grp,                       &
-     &      fld_params(i_pvr)%nele_grp_area_pvr,                        &
-     &      fld_params(i_pvr)%id_ele_grp_area_pvr,                      &
-     &      field_pvr(i_pvr)%iflag_used_ele)
+      call mark_selected_domain_bd                                     &
+     &   (ele%numele, surf%numsurf, surf%isf_4_ele,                    &
+     &    field_pvr%iflag_used_ele)
+      call count_selected_domain_bd                                    &
+     &   (surf%numsurf, pvr_bound%num_pvr_surf)
 !
-        call mark_selected_domain_bd(numele, numsurf, isf_4_ele,        &
-     &      field_pvr(i_pvr)%iflag_used_ele)
-        call count_selected_domain_bd(numsurf,                          &
-     &      pvr_bound(i_pvr)%num_pvr_surf)
+      call alloc_pvr_surf_domain_item(pvr_bound)
 !
-        call alloc_pvr_surf_domain_item(pvr_bound(i_pvr))
+      call mark_selected_domain_bd                                     &
+     &   (ele%numele, surf%numsurf, surf%isf_4_ele,                    &
+     &    field_pvr%iflag_used_ele)
+      call s_find_selected_domain_bd(ele%numele, surf%numsurf,         &
+     &    surf%iele_4_surf, field_pvr%iflag_used_ele,                  &
+     &    pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf)
 !
-        call mark_selected_domain_bd(numele, numsurf, isf_4_ele,        &
-     &      field_pvr(i_pvr)%iflag_used_ele)
-        call s_find_selected_domain_bd(numele, numsurf, iele_4_surf,    &
-     &      field_pvr(i_pvr)%iflag_used_ele,                            &
-     &      pvr_bound(i_pvr)%num_pvr_surf,                              &
-     &      pvr_bound(i_pvr)%item_pvr_surf)
-      end do
-!
-      call deallocate_imark_4_surface
-!
-      end subroutine s_find_pvr_surf_domain
+      end subroutine find_each_pvr_surf_domain
 !
 ! -----------------------------------------------------------------------
 !

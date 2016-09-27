@@ -66,8 +66,6 @@
       type(pvr_colorbar_parameter), allocatable, save :: cbar_params(:)
 !
 !
-      type(pvr_bounds_surf_ctl), allocatable, save :: pvr_bound(:)
-!
       type(pvr_domain_outline), allocatable, save :: outlines(:)
 !
 !>    Data for rendering
@@ -75,13 +73,11 @@
 !
       type(pvr_pixel_position_type), allocatable, save :: pixel_xy(:)
 !
-      type(pvr_ray_start_type), allocatable, save :: pvr_start(:)
-      type(pvr_image_type), allocatable, save :: pvr_img(:)
+      type(PVR_image_generator), allocatable, save :: pvr_data(:)
 !
       private :: file_params, fld_params, view_params
       private :: color_params, cbar_params
-      private :: pvr_bound, outlines, field_pvr, pixel_xy
-      private :: pvr_start, pvr_img
+      private :: outlines, field_pvr, pixel_xy
 !
 !  ---------------------------------------------------------------------
 !
@@ -120,10 +116,12 @@
      &    view_params, field_pvr, color_params, cbar_params)
       call calypso_mpi_barrier
 !
-      call s_find_pvr_surf_domain                                       &
-     &   (num_pvr, ele%numele, surf%numsurf, ele%interior_ele,          &
-     &    surf%isf_4_ele, surf%iele_4_surf,                             &
-     &    group%ele_grp, fld_params, pvr_bound, field_pvr)
+      call allocate_imark_4_surface(numsurf)
+      do i_pvr = 1, num_pvr
+        call find_each_pvr_surf_domain(ele, surf, group%ele_grp,        &
+     &      fld_params(num_pvr), pvr_data(i_pvr)%bound, field_pvr(i_pvr))
+      end do
+      call deallocate_imark_4_surface
 !
       do i_pvr = 1, num_pvr
         call cal_mesh_outline_pvr                                       &
@@ -136,7 +134,7 @@
      &     (view_params(i_pvr)%n_pvr_pixel, pixel_xy(i_pvr))
 !
         call alloc_pvr_image_array_type                                 &
-     &     (view_params(i_pvr)%n_pvr_pixel, pvr_img(i_pvr))
+     &     (view_params(i_pvr)%n_pvr_pixel, pvr_data(i_pvr)%image)
 !
         if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_matrix'
         call set_pvr_projection_matrix(i_pvr, view_params(i_pvr))
@@ -146,8 +144,7 @@
           if(iflag_debug .gt. 0) write(*,*) 'set_fixed_view_and_image'
           call set_fixed_view_and_image(node, ele, surf, group,         &
      &        outlines(i_pvr),  pixel_xy(i_pvr), view_params(i_pvr),    &
-     &        color_params(i_pvr), field_pvr(i_pvr), pvr_bound(i_pvr),  &
-     &        pvr_start(i_pvr))
+     &        color_params(i_pvr), field_pvr(i_pvr), pvr_data(i_pvr))
         end if
       end do
 !
@@ -180,8 +177,8 @@
       if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
       call cal_field_4_pvr                                              &
      &  (num_pvr, node%numnod, ele%numele, ele%nnod_4_ele,              &
-     &   node%istack_nod_smp, ele%istack_ele_smp, node%xx, node%rr,     &
-     &   node%a_r, node%ss, node%a_s, ele%ie, ele%a_vol_ele,            &
+     &   node%istack_nod_smp, ele%istack_ele_smp,   &
+     &   ele%ie, ele%a_vol_ele,            &
      &   jac_3d%ntot_int, jac_3d%dnx, jac_3d%xjac,                      &
      &   nod_fld%num_phys, nod_fld%ntot_phys, nod_fld%istack_component, &
      &   nod_fld%d_fld, fld_params, field_pvr)
@@ -196,14 +193,12 @@
      &      (istep_pvr, node, ele, surf, group,                         &
      &       file_params(i_pvr), outlines(i_pvr), cbar_params(i_pvr),   &
      &       pixel_xy(i_pvr), view_params(i_pvr), color_params(i_pvr),  &
-     &       field_pvr(i_pvr), pvr_bound(i_pvr),                        &
-     &       pvr_start(i_pvr), pvr_img(i_pvr))
+     &       field_pvr(i_pvr), pvr_data(i_pvr))
         else
           call rendering_with_fixed_view(istep_pvr, node, ele, surf,    &
      &       file_params(i_pvr), color_params(i_pvr),                   &
      &       cbar_params(i_pvr), view_params(i_pvr),                    &
-     &       pvr_bound(i_pvr), field_pvr(i_pvr), pixel_xy(i_pvr),       &
-     &       pvr_start(i_pvr), pvr_img(i_pvr))
+     &       field_pvr(i_pvr), pixel_xy(i_pvr), pvr_data(i_pvr))
         end if
       end do
 !
@@ -226,12 +221,10 @@
         call reset_pvr_view_parameteres(view_params(i_pvr))
       end do
 !
-      allocate(pvr_bound(num_pvr))
       allocate(pixel_xy(num_pvr))
       allocate(outlines(num_pvr))
       allocate(field_pvr(num_pvr))
-      allocate(pvr_start(num_pvr))
-      allocate(pvr_img(num_pvr))
+      allocate(pvr_data(num_pvr))
 !
       end subroutine allocate_components_4_pvr
 !
