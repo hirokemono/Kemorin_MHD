@@ -32,6 +32,7 @@
       use t_phys_data
       use t_jacobian_3d
 !
+      use t_rendering_vr_image
       use t_control_params_4_pvr
       use t_surf_grp_4_pvr_domain
       use t_pvr_ray_startpoints
@@ -137,7 +138,15 @@
 !
         if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_matrix'
         call set_pvr_projection_matrix(i_pvr, pvr_data(i_pvr)%view)
+!
+        if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_left'
+        call set_pvr_projection_left_mat(i_pvr, pvr_data(i_pvr)%view)
+        if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_right'
+        call set_pvr_projection_right_mat(i_pvr, pvr_data(i_pvr)%view)
 !        call set_pvr_orthogonal_params(i_pvr, pvr_data(i_pvr)%view)
+!
+        call alloc_projected_position                                   &
+     &     (node%numnod, pvr_data(i_pvr)%start_pt)
 !
         if(pvr_data(i_pvr)%view%iflag_rotate_snap .eq. 0) then
           if(iflag_debug .gt. 0) write(*,*) 'set_fixed_view_and_image'

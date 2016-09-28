@@ -4,26 +4,12 @@
 !
 !      Written by H. Matsui on Aug., 2011
 !
-!!      subroutine cont_overlap_in_each_domain                          &
-!!     &         (num_pvr_ray, id_pixel_start,                          &
-!!     &          num_pixel_xy, iflag_mapped, num_overlap)
-!!      subroutine cal_image_pixel_depth(num_pvr_ray,                   &
-!!     &         id_pixel_start, xx_pvr_ray_start, num_overlap,         &
-!!     &         num_pixel_xy, iflag_mapped, iflag_img_pe, iflag_img_lc,&
-!!     &         depth_lc)
-!!      subroutine copy_segmented_image                                 &
-!!     &        (num_pvr_ray, id_pixel_start, rgba_ray,                 &
-!!     &         num_overlap, num_pixel_xy, iflag_mapped, rgba_lc)
 !!
 !!      subroutine s_ray_trace_4_each_image                             &
-!!     &         (numnod, numele, numsurf, nnod_4_surf,                 &
-!!     &          ie_surf, isf_4_ele, iele_4_surf, interior_ele,        &
-!!     &          xx, vnorm_surf, iflag_pvr_used_ele,                   &
-!!     &          x_nod_screen, d_nod_pvr, grad_ele_pvr,                &
-!!     &          viewpoint_vec, arccos_sf, color_param,                &
-!!     &          ray_vec, num_pvr_ray, icount_pvr_trace,               &
-!!     &          isf_pvr_ray_start, xi_pvr_start, xx_pvr_start,        &
-!!     &          xx_pvr_ray_start, rgba_ray)
+!!     &         (node, ele, surf, x_nod_model, viewpoint_vec,          &
+!!     &          field_pvr, color_param, ray_vec, num_pvr_ray,         &
+!!     &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,    &
+!!     &          xx_pvr_start, xx_pvr_ray_start, rgba_ray)
 !!      subroutine blend_overlapped_area(num_pvr_ray,                   &
 !!     &         id_pixel_start, xx_pvr_ray_start, rgba_ray,            &
 !!     &         num_pixel_xy, iflag_mapped, rgba_lc, depth_lc)
@@ -49,147 +35,25 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cont_overlap_in_each_domain                            &
-     &         (num_pvr_ray, id_pixel_start,                            &
-     &          num_pixel_xy, iflag_img_pe, iflag_mapped, num_overlap)
-!
-      integer(kind = kint), intent(in) :: num_pvr_ray
-      integer(kind = kint), intent(in) :: id_pixel_start(num_pvr_ray)
-!
-      integer(kind = kint), intent(in) :: num_pixel_xy
-      integer(kind = kint), intent(inout) :: iflag_mapped(num_pixel_xy)
-      integer(kind = kint), intent(inout) :: iflag_img_pe(num_pixel_xy)
-      integer(kind = kint), intent(inout) :: num_overlap
-!
-      integer(kind = kint) :: inum, ipix
-!
-!
-!$omp parallel workshare
-      iflag_mapped = 0
-      iflag_img_pe = 0
-!$omp end parallel workshare
-      do inum = 1, num_pvr_ray
-        ipix = id_pixel_start(inum)
-        iflag_mapped(ipix) = iflag_mapped(ipix) + 1
-        iflag_img_pe(ipix) = 1
-      end do
-      num_overlap = maxval(iflag_mapped,1)
-!
-      end subroutine cont_overlap_in_each_domain
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine cal_image_pixel_depth(num_pvr_ray,                     &
-     &         id_pixel_start, xx_pvr_ray_start, num_overlap,           &
-     &         num_pixel_xy, npixel_img, iflag_img_pe, iflag_mapped,    &
-     &         iflag_img_lc, depth_lc)
-!
-      integer(kind = kint), intent(in) :: num_pvr_ray
-      integer(kind = kint), intent(in) :: id_pixel_start(num_pvr_ray)
-      real(kind = kreal), intent(in)                                    &
-     &                    ::  xx_pvr_ray_start(3,num_pvr_ray)
-!
-      integer(kind = kint), intent(in) :: num_overlap, num_pixel_xy
-      integer(kind = kint), intent(in) :: npixel_img
-      integer(kind = kint), intent(in) :: iflag_img_pe(num_pixel_xy)
-      integer(kind = kint), intent(inout) :: iflag_mapped(num_pixel_xy)
-      integer(kind = kint), intent(inout)                               &
-     &                   :: iflag_img_lc(num_overlap,npixel_img)
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: depth_lc(num_overlap,npixel_img)
-!
-      integer(kind = kint) :: inum, ipix, icou, inod
-!
-!
-!$omp parallel workshare
-      iflag_mapped(1:num_pixel_xy) = 0
-!$omp end parallel workshare
-!$omp parallel workshare
-      iflag_img_lc(1:num_overlap,1:npixel_img) = 0
-      depth_lc(1:num_overlap,1:npixel_img) = -1000.0
-!$omp end parallel workshare
-!
-      do inum = 1, num_pvr_ray
-        ipix = id_pixel_start(inum)
-        inod = iflag_img_pe(ipix)
-        iflag_mapped(ipix) = iflag_mapped(ipix) + 1
-        icou = iflag_mapped(ipix)
-        iflag_img_lc(icou,inod) = 1
-        depth_lc(icou,inod) =  xx_pvr_ray_start(3,inum)
-      end do
-!
-      end subroutine cal_image_pixel_depth
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine copy_segmented_image                                   &
-     &        (num_pvr_ray, id_pixel_start, rgba_ray,                   &
-     &         num_overlap, num_pixel_xy, npixel_img,                   &
-     &         iflag_img_pe, iflag_mapped, rgba_lc)
-!
-      integer(kind = kint), intent(in) :: num_pvr_ray
-      integer(kind = kint), intent(in) :: id_pixel_start(num_pvr_ray)
-      real(kind = kreal), intent(in) ::  rgba_ray(4,num_pvr_ray)
-!
-      integer(kind = kint), intent(in) :: num_overlap, num_pixel_xy
-      integer(kind = kint), intent(in) :: npixel_img
-      integer(kind = kint), intent(in) :: iflag_img_pe(num_pixel_xy)
-      integer(kind = kint), intent(inout) :: iflag_mapped(num_pixel_xy)
-      real(kind = kreal), intent(inout)                                 &
-     &                    :: rgba_lc(4,num_overlap,npixel_img)
-!
-      integer(kind = kint) :: inum, ipix, icou, inod
-!
-!
-!$omp parallel workshare
-      iflag_mapped(1:num_pixel_xy) = 0
-!$omp end parallel workshare
-!$omp parallel workshare
-      rgba_lc(1:4,1:num_overlap,1:npixel_img) = 0.0d0
-!$omp end parallel workshare
-!
-      do inum = 1, num_pvr_ray
-        ipix = id_pixel_start(inum)
-        inod = iflag_img_pe(ipix)
-        iflag_mapped(ipix) = iflag_mapped(ipix) + 1
-        icou = iflag_mapped(ipix)
-!
-        rgba_lc(1,icou,inod) = rgba_ray(1,inum)
-        rgba_lc(2,icou,inod) = rgba_ray(2,inum)
-        rgba_lc(3,icou,inod) = rgba_ray(3,inum)
-        rgba_lc(4,icou,inod) = rgba_ray(4,inum)
-      end do
-!
-      end subroutine copy_segmented_image
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
       subroutine s_ray_trace_4_each_image                               &
-     &         (numnod, numele, numsurf, nnod_4_surf,                   &
-     &          ie_surf, isf_4_ele, iele_4_surf, interior_ele,          &
-     &          xx, vnorm_surf,  x_nod_screen, viewpoint_vec,           &
+     &         (node, ele, surf, x_nod_model, viewpoint_vec,            &
      &          field_pvr, color_param, ray_vec, num_pvr_ray,           &
      &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,      &
      &          xx_pvr_start, xx_pvr_ray_start, rgba_ray)
 !
+      use t_geometry_data
+      use t_surface_data
       use t_geometries_in_pvr_screen
       use t_control_params_4_pvr
 !
-      integer(kind = kint), intent(in) :: numnod, numele, numsurf
-      integer(kind = kint), intent(in) :: nnod_4_surf
-      integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
-      integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
-      integer(kind = kint), intent(in) :: iele_4_surf(numsurf,2,2)
-      integer(kind = kint), intent(in) :: interior_ele(numele)
-      real(kind = kreal), intent(in) :: xx(numnod,3)
-      real(kind = kreal), intent(in) :: vnorm_surf(numsurf,3)
-!
-      real(kind = kreal), intent(in) :: x_nod_screen(numnod,4)
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
 !
       type(pvr_projected_field), intent(in) :: field_pvr
       type(pvr_colormap_parameter), intent(in) :: color_param
 !
+      real(kind = kreal), intent(in) :: x_nod_model(node%numnod,4)
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
       real(kind = kreal), intent(in) :: ray_vec(3)
       integer(kind = kint), intent(in) :: num_pvr_ray
@@ -212,8 +76,9 @@
       do inum = 1, num_pvr_ray
         rgba_tmp(1:4) = zero
           call ray_trace_each_pixel                                     &
-     &      (numnod, numele, numsurf, nnod_4_surf, ie_surf, isf_4_ele,  &
-     &       iele_4_surf, interior_ele, xx, vnorm_surf, x_nod_screen,   &
+     &      (node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,   &
+     &       surf%ie_surf, surf%isf_4_ele, surf%iele_4_surf,            &
+     &       ele%interior_ele, node%xx, surf%vnorm_surf, x_nod_model,   &
      &       viewpoint_vec, field_pvr, color_param, ray_vec,            &
      &       isf_pvr_ray_start(1,inum), xx_pvr_ray_start(1,inum),       &
      &       xx_pvr_start(1,inum), xi_pvr_start(1,inum),                &
@@ -269,7 +134,7 @@
       subroutine ray_trace_each_pixel                                   &
      &       (numnod, numele, numsurf,  nnod_4_surf, ie_surf,           &
      &        isf_4_ele, iele_4_surf, interior_ele, xx, vnorm_surf,     &
-     &        x_nod_screen, viewpoint_vec, field_pvr, color_param,      &
+     &        x_nod_model, viewpoint_vec, field_pvr, color_param,       &
      &        ray_vec, isurf_org, screen_st, xx_st, xi, rgba_ray,       &
      &        icount_line, iflag_comm)
 !
@@ -288,8 +153,7 @@
       real(kind = kreal), intent(in) :: xx(numnod,3)
       real(kind = kreal), intent(in) :: vnorm_surf(numsurf,3)
 !
-      real(kind = kreal), intent(in) :: x_nod_screen(numnod,4)
-!
+      real(kind = kreal), intent(in) :: x_nod_model(numnod,4)
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
       real(kind = kreal), intent(in) :: ray_vec(3)
 !
@@ -329,9 +193,10 @@
 !
 !   extend to surface of element
 !
-        call find_line_end_in_1ele(iflag_back, numnod, numele,          &
-     &     numsurf, nnod_4_surf, isf_4_ele, ie_surf, x_nod_screen(1,1), &
-     &     iele, isf_org, ray_vec, screen_st, isf_tgt, screen_tgt, xi)
+        call find_line_end_in_1ele                                      &
+     &     (iflag_back, numnod, numele, numsurf, nnod_4_surf,           &
+     &      isf_4_ele, ie_surf, x_nod_model, iele, isf_org,             &
+     &     ray_vec, screen_st, isf_tgt, screen_tgt, xi)
 !
         if(isf_tgt .eq. 0) then
           iflag_comm = -1

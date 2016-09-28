@@ -1,18 +1,33 @@
+!>@file  composite_pvr_images.f90
+!!       module composite_pvr_images
+!!
+!!@author H. Matsui
+!!@date   Programmed in Aug., 2011
 !
-!      module composite_pvr_images
-!
-!       Programmed by H. Matsui
-!
+!> @brief Structures for position in the projection coordinate 
+!!
+!!@verbatim
+!!      subroutine cont_overlap_in_each_domain                          &
+!!     &         (num_pvr_ray, id_pixel_start,                          &
+!!     &          num_pixel_xy, iflag_img_pe, iflag_mapped, num_overlap)
+!!      subroutine count_pixel_for_composit(num_pixel_xy,               &
+!!     &          npixel_img, npixel_img_local, istack_pixel,           &
+!!     &          ipixel_small, iflag_img_pe)
+!!
+!!      subroutine cal_image_pixel_depth(num_pvr_ray,                   &
+!!     &         id_pixel_start, xx_pvr_ray_start, num_overlap,         &
+!!     &         num_pixel_xy, iflag_mapped, iflag_img_pe, iflag_img_lc,&
+!!     &         depth_lc)
+!!      subroutine copy_segmented_image                                 &
+!!     &        (num_pvr_ray, id_pixel_start, rgba_ray,                 &
+!!     &         num_overlap, num_pixel_xy, iflag_mapped, rgba_lc)
+!!
 !!      subroutine sort_subimage_pixel_depth(ntot_overlap,              &
 !!     &          npixel_img_local, depth_part, ip_closer)
-!!
-!!      subroutine old_blend_image_over_domains                         &
-!!     &          (color_param, cbar_param, pvr_img)
-!!      subroutine cvt_double_rgba_to_char_rgb(num_pixel, rgba, crgb)
-!!      subroutine cvt_double_rgba_to_char_rgba(num_pixel, rgba, crgba)
-!!      subroutine sel_write_pvr_image_file                             &
-!!     &         (file_param, i_rot, istep_pvr, pvr_img)
-!!      subroutine sel_write_pvr_local_img(file_param, index, pvr_img)
+!!      subroutine blend_image_over_segments                            &
+!!     &         (ntot_overlap, npixel_img_local, ip_closer,            &
+!!     &          rgba_part, rgba_whole)
+!!@endverbatim
 !
       module composite_pvr_images
 !
@@ -27,6 +42,36 @@
 !  ---------------------------------------------------------------------
 !
       contains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine cont_overlap_in_each_domain                            &
+     &         (num_pvr_ray, id_pixel_start,                            &
+     &          num_pixel_xy, iflag_img_pe, iflag_mapped, num_overlap)
+!
+      integer(kind = kint), intent(in) :: num_pvr_ray
+      integer(kind = kint), intent(in) :: id_pixel_start(num_pvr_ray)
+!
+      integer(kind = kint), intent(in) :: num_pixel_xy
+      integer(kind = kint), intent(inout) :: iflag_mapped(num_pixel_xy)
+      integer(kind = kint), intent(inout) :: iflag_img_pe(num_pixel_xy)
+      integer(kind = kint), intent(inout) :: num_overlap
+!
+      integer(kind = kint) :: inum, ipix
+!
+!
+!$omp parallel workshare
+      iflag_mapped = 0
+      iflag_img_pe = 0
+!$omp end parallel workshare
+      do inum = 1, num_pvr_ray
+        ipix = id_pixel_start(inum)
+        iflag_mapped(ipix) = iflag_mapped(ipix) + 1
+        iflag_img_pe(ipix) = 1
+      end do
+      num_overlap = maxval(iflag_mapped,1)
+!
+      end subroutine cont_overlap_in_each_domain
 !
 !  ---------------------------------------------------------------------
 !
@@ -62,6 +107,92 @@
 !
       end subroutine count_pixel_for_composit
 !
+!  ---------------------------------------------------------------------
+!
+      subroutine cal_image_pixel_depth(num_pvr_ray,                     &
+     &         id_pixel_start, xx_pvr_ray_start, num_overlap,           &
+     &         num_pixel_xy, npixel_img, iflag_img_pe, iflag_mapped,    &
+     &         iflag_img_lc, depth_lc)
+!
+      integer(kind = kint), intent(in) :: num_pvr_ray
+      integer(kind = kint), intent(in) :: id_pixel_start(num_pvr_ray)
+      real(kind = kreal), intent(in)                                    &
+     &                    ::  xx_pvr_ray_start(3,num_pvr_ray)
+!
+      integer(kind = kint), intent(in) :: num_overlap, num_pixel_xy
+      integer(kind = kint), intent(in) :: npixel_img
+      integer(kind = kint), intent(in) :: iflag_img_pe(num_pixel_xy)
+      integer(kind = kint), intent(inout) :: iflag_mapped(num_pixel_xy)
+      integer(kind = kint), intent(inout)                               &
+     &                   :: iflag_img_lc(num_overlap,npixel_img)
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: depth_lc(num_overlap,npixel_img)
+!
+      integer(kind = kint) :: inum, ipix, icou, inod
+!
+!
+!$omp parallel workshare
+      iflag_mapped(1:num_pixel_xy) = 0
+!$omp end parallel workshare
+!$omp parallel workshare
+      iflag_img_lc(1:num_overlap,1:npixel_img) = 0
+      depth_lc(1:num_overlap,1:npixel_img) = -1000.0
+!$omp end parallel workshare
+!
+      do inum = 1, num_pvr_ray
+        ipix = id_pixel_start(inum)
+        inod = iflag_img_pe(ipix)
+        iflag_mapped(ipix) = iflag_mapped(ipix) + 1
+        icou = iflag_mapped(ipix)
+        iflag_img_lc(icou,inod) = 1
+        depth_lc(icou,inod) =  xx_pvr_ray_start(3,inum)
+      end do
+!
+      end subroutine cal_image_pixel_depth
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_segmented_image                                   &
+     &        (num_pvr_ray, id_pixel_start, rgba_ray,                   &
+     &         num_overlap, num_pixel_xy, npixel_img,                   &
+     &         iflag_img_pe, iflag_mapped, rgba_lc)
+!
+      integer(kind = kint), intent(in) :: num_pvr_ray
+      integer(kind = kint), intent(in) :: id_pixel_start(num_pvr_ray)
+      real(kind = kreal), intent(in) ::  rgba_ray(4,num_pvr_ray)
+!
+      integer(kind = kint), intent(in) :: num_overlap, num_pixel_xy
+      integer(kind = kint), intent(in) :: npixel_img
+      integer(kind = kint), intent(in) :: iflag_img_pe(num_pixel_xy)
+      integer(kind = kint), intent(inout) :: iflag_mapped(num_pixel_xy)
+      real(kind = kreal), intent(inout)                                 &
+     &                    :: rgba_lc(4,num_overlap,npixel_img)
+!
+      integer(kind = kint) :: inum, ipix, icou, inod
+!
+!
+!$omp parallel workshare
+      iflag_mapped(1:num_pixel_xy) = 0
+!$omp end parallel workshare
+!$omp parallel workshare
+      rgba_lc(1:4,1:num_overlap,1:npixel_img) = 0.0d0
+!$omp end parallel workshare
+!
+      do inum = 1, num_pvr_ray
+        ipix = id_pixel_start(inum)
+        inod = iflag_img_pe(ipix)
+        iflag_mapped(ipix) = iflag_mapped(ipix) + 1
+        icou = iflag_mapped(ipix)
+!
+        rgba_lc(1,icou,inod) = rgba_ray(1,inum)
+        rgba_lc(2,icou,inod) = rgba_ray(2,inum)
+        rgba_lc(3,icou,inod) = rgba_ray(3,inum)
+        rgba_lc(4,icou,inod) = rgba_ray(4,inum)
+      end do
+!
+      end subroutine copy_segmented_image
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine sort_subimage_pixel_depth(ntot_overlap,                &
@@ -110,140 +241,39 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine blend_image_over_domains                               &
-     &          (color_param, cbar_param, pvr_img)
+      subroutine blend_image_over_segments                              &
+     &         (ntot_overlap, npixel_img_local, ip_closer,              &
+     &          rgba_part, rgba_whole)
 !
-      use t_control_params_4_pvr
-      use t_pvr_image_array
       use set_rgba_4_each_pixel
-      use draw_pvr_colorbar
-      use PVR_image_transfer
 !
-      type(pvr_colormap_parameter), intent(in) :: color_param
-      type(pvr_colorbar_parameter), intent(in) :: cbar_param
-      type(pvr_image_type), intent(inout) :: pvr_img
+      integer(kind = kint), intent(in) :: ntot_overlap
+      integer(kind = kint), intent(in) :: npixel_img_local
 !
-!>       MPI rank for image output
-      integer(kind = kint), parameter :: irank_tgt = 0
+      integer(kind = kint), intent(in)                                  &
+     &             :: ip_closer(ntot_overlap,npixel_img_local)
+      real(kind = kreal), intent(in)                                    &
+     &             :: rgba_part(4,ntot_overlap,npixel_img_local)
+      real(kind = kreal), intent(inout)                                 &
+     &             :: rgba_whole(4,npixel_img_local)
+!
       integer(kind = kint) :: ip, ipix, inum
 !
 !
-      call distribute_segmented_images                                  &
-     &   (pvr_img%num_overlap, pvr_img%istack_overlap,                  &
-     &    pvr_img%ntot_overlap, pvr_img%npixel_img,                     &
-     &    pvr_img%istack_pixel, pvr_img%npixel_img_local,               &
-     &    pvr_img%rgba_lc, pvr_img%rgba_recv, pvr_img%rgba_part,        &
-     &    pvr_img%COMM)
-!
 !$omp parallel do private(ipix,inum,ip)
-      do ipix = 1, pvr_img%npixel_img_local
-        pvr_img%rgba_whole(1:4,ipix) = 0.0d0
-        do inum = pvr_img%ntot_overlap, 1, -1
-          ip = pvr_img%ip_closer(inum,ipix)
+      do ipix = 1, npixel_img_local
+        rgba_whole(1:4,ipix) = 0.0d0
+        do inum = ntot_overlap, 1, -1
+          ip = ip_closer(inum,ipix)
           if(ip .le. 0) exit
 !
-          call composite_alpha_blending(pvr_img%rgba_part(1:4,ip,ipix), &
-     &        pvr_img%rgba_whole(1:4,ipix))
+          call composite_alpha_blending(rgba_part(1:4,ip,ipix),         &
+     &        rgba_whole(1:4,ipix))
         end do
       end do
 !$omp end parallel do
 !
-      call collect_segmented_images                                     &
-     &   (irank_tgt, pvr_img%npixel_img_local, pvr_img%istack_pixel,    &
-     &    pvr_img%npixel_img, pvr_img%num_pixel_xy,                     &
-     &    pvr_img%ipixel_small, pvr_img%rgba_whole,                     &
-     &    pvr_img%rgba_rank0, pvr_img%rgba_real_gl, pvr_img%COMM)
-!
-      if(my_rank .eq. irank_tgt) then
-        call set_pvr_colorbar(pvr_img%num_pixel_xy, pvr_img%num_pixels, &
-     &      color_param, cbar_param, pvr_img%rgba_real_gl)
-      end if
-!
-      end subroutine blend_image_over_domains
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine sel_write_pvr_image_file                               &
-     &         (file_param, i_rot, istep_pvr, pvr_img)
-!
-      use t_pvr_image_array
-      use t_control_params_4_pvr
-      use output_image_sel_4_png
-      use set_parallel_file_name
-      use convert_real_rgb_2_bite
-!
-      type(pvr_output_parameter), intent(in) :: file_param
-      integer(kind = kint), intent(in) :: i_rot, istep_pvr
-!
-      type(pvr_image_type), intent(inout) :: pvr_img
-!
-      character(len=kchara) :: tmpchara, img_head
-!
-      if(my_rank .ne. 0) return
-!
-      if(istep_pvr .ge. 0) then
-        call add_int_suffix(istep_pvr, file_param%pvr_prefix, tmpchara)
-      else
-        tmpchara = file_param%pvr_prefix
-      end if
-!
-      if(i_rot .gt. 0) then
-        call add_int_suffix(i_rot, tmpchara, img_head)
-      else
-        img_head = tmpchara
-      end if
-!
-      if(file_param%id_pvr_transparent .eq. 1) then
-          call cvt_double_rgba_to_char_rgba(pvr_img%num_pixel_xy,       &
-     &        pvr_img%rgba_real_gl,  pvr_img%rgba_chara_gl)
-          call sel_rgba_image_file(file_param%id_pvr_file_type,         &
-     &        img_head, pvr_img%num_pixels(1), pvr_img%num_pixels(2),   &
-     &        pvr_img%rgba_chara_gl)
-      else
-          call cvt_double_rgba_to_char_rgb(pvr_img%num_pixel_xy,        &
-     &        pvr_img%rgba_real_gl,  pvr_img%rgb_chara_gl)
-          call sel_output_image_file(file_param%id_pvr_file_type,       &
-     &        img_head, pvr_img%num_pixels(1), pvr_img%num_pixels(2),   &
-     &        pvr_img%rgb_chara_gl)
-      end if
-!
-      end subroutine sel_write_pvr_image_file
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine sel_write_pvr_local_img                                &
-     &         (file_param, index, istep_pvr, pvr_img)
-!
-      use t_pvr_image_array
-      use t_control_params_4_pvr
-      use output_image_sel_4_png
-      use set_parallel_file_name
-      use convert_real_rgb_2_bite
-!
-      type(pvr_output_parameter), intent(in) :: file_param
-      integer(kind = kint), intent(in) :: index, istep_pvr
-!
-      type(pvr_image_type), intent(inout) :: pvr_img
-!
-      character(len=kchara) :: tmpchara, img_head
-!
-!
-      if(istep_pvr .ge. 0) then
-        call add_int_suffix(istep_pvr, file_param%pvr_prefix, tmpchara)
-      else
-        tmpchara = file_param%pvr_prefix
-      end if
-      call add_int_suffix(index, tmpchara, img_head)
-!
-      call cvt_double_rgba_to_char_rgb(pvr_img%num_pixel_xy,            &
-     &    pvr_img%old_rgba_lc, pvr_img%rgb_chara_lc)
-!
-      call sel_output_image_file(file_param%id_pvr_file_type,           &
-     &    img_head, pvr_img%num_pixels(1), pvr_img%num_pixels(2),       &
-     &    pvr_img%rgb_chara_lc)
-!
-      end subroutine sel_write_pvr_local_img
+      end subroutine blend_image_over_segments
 !
 !  ---------------------------------------------------------------------
 !

@@ -118,6 +118,8 @@
         real(kind = kreal) :: projection_left(4,4)
 !>    Perspective projection matrix for right eye
         real(kind = kreal) :: projection_right(4,4)
+!>    Original projection matrix for backup
+        real(kind = kreal) :: projection_saved(4,4)
 !
 !>    Focal length for streo view
         real(kind = kreal) :: focalLength = one

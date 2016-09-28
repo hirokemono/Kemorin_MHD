@@ -10,7 +10,8 @@
 !!      subroutine allocate_nod_data_4_pvr                              &
 !!     &         (numnod, numele, numsurf, num_sf_grp, field_pvr)
 !!      subroutine allocate_pixel_position_pvr(pixel_xy)
-!!      subroutine alloc_pvr_isosurfaces(fld_pvr)
+!!      subroutine alloc_pvr_isosurfaces(fld)
+!!      subroutine dealloc_data_4_pvr(fld)
 !!
 !!      subroutine deallocate_projected_data_pvr                        &
 !!      &        (num_pvr, proj, field_pvr)
@@ -28,9 +29,6 @@
 !
 !>  Structure for field data on projected coordinate
       type pvr_projected_field
-!>    Position in modelview coordinate and screen coordinate
-!!@n    (Overwritten)
-        real(kind = kreal), pointer :: x_nod_model(:,:)
 !>    Data for rendering
         real(kind = kreal), pointer :: d_pvr(:)
 !>    Gradient for rendering
@@ -77,7 +75,7 @@
 !
       private :: alloc_nod_data_4_pvr, alloc_iflag_pvr_used_ele
       private :: alloc_iflag_pvr_boundaries
-      private :: dealloc_data_4_pvr,  dealloc_iflag_pvr_boundaries
+      private :: dealloc_iflag_pvr_boundaries
       private :: dealloc_pvr_sections, dealloc_pvr_isosurfaces
 !
 ! -----------------------------------------------------------------------
@@ -86,135 +84,129 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_nod_data_4_pvr(nnod, nele, fld_pvr)
+      subroutine alloc_nod_data_4_pvr(nnod, nele, fld)
 !
       integer(kind = kint), intent(in) :: nnod, nele
-      type(pvr_projected_field), intent(inout) :: fld_pvr
+      type(pvr_projected_field), intent(inout) :: fld
 !
 !
-      allocate(fld_pvr%x_nod_model(nnod,4))
+      allocate(fld%d_pvr(nnod))
+      allocate(fld%grad_ele(nele,3))
 !
-      allocate(fld_pvr%d_pvr(nnod))
-      allocate(fld_pvr%grad_ele(nele,3))
-!
-      if(nnod .gt. 0) then
-        fld_pvr%x_nod_model =  0.0d0
-        fld_pvr%d_pvr =        0.0d0
-      end if
-      if(nele .gt. 0) fld_pvr%grad_ele = 0.0d0
+      if(nnod .gt. 0) fld%d_pvr =    0.0d0
+      if(nele .gt. 0) fld%grad_ele = 0.0d0
 !
       end subroutine alloc_nod_data_4_pvr
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_iflag_pvr_used_ele(nele, fld_pvr)
+      subroutine alloc_iflag_pvr_used_ele(nele, fld)
 !
       integer(kind = kint), intent(in) :: nele
-      type(pvr_projected_field), intent(inout) :: fld_pvr
+      type(pvr_projected_field), intent(inout) :: fld
 !
 !
-      allocate(fld_pvr%iflag_used_ele(nele))
-      if(nele .gt. 0) fld_pvr%iflag_used_ele = 0
+      allocate(fld%iflag_used_ele(nele))
+      if(nele .gt. 0) fld%iflag_used_ele = 0
 !
       end subroutine alloc_iflag_pvr_used_ele
 !
 ! -----------------------------------------------------------------------
 !
       subroutine alloc_iflag_pvr_boundaries                             &
-     &         (nsurf, num_sf_grp, fld_pvr)
+     &         (nsurf, num_sf_grp, fld)
 !
       integer(kind = kint), intent(in) :: nsurf, num_sf_grp
-      type(pvr_projected_field), intent(inout) :: fld_pvr
+      type(pvr_projected_field), intent(inout) :: fld
 !
 !
-      allocate(fld_pvr%arccos_sf(nsurf))
-      allocate(fld_pvr%iflag_enhanse(num_sf_grp))
-      allocate(fld_pvr%enhansed_opacity(num_sf_grp))
+      allocate(fld%arccos_sf(nsurf))
+      allocate(fld%iflag_enhanse(num_sf_grp))
+      allocate(fld%enhansed_opacity(num_sf_grp))
 !
-      if(nsurf .gt. 0)      fld_pvr%arccos_sf = 0.0d0
-      if(num_sf_grp .gt. 0) fld_pvr%iflag_enhanse = 0
-      if(num_sf_grp .gt. 0) fld_pvr%enhansed_opacity = 0
+      if(nsurf .gt. 0)      fld%arccos_sf = 0.0d0
+      if(num_sf_grp .gt. 0) fld%iflag_enhanse = 0
+      if(num_sf_grp .gt. 0) fld%enhansed_opacity = 0
 !
       end subroutine alloc_iflag_pvr_boundaries
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_pvr_sections(fld_pvr)
+      subroutine alloc_pvr_sections(fld)
 !
-      type(pvr_projected_field), intent(inout) :: fld_pvr
+      type(pvr_projected_field), intent(inout) :: fld
 !
 !
-      allocate(fld_pvr%coefs(10,fld_pvr%num_sections))
-      allocate(fld_pvr%sect_opacity(fld_pvr%num_sections))
+      allocate(fld%coefs(10,fld%num_sections))
+      allocate(fld%sect_opacity(fld%num_sections))
 !
-      if(fld_pvr%num_sections .gt. 0) fld_pvr%coefs =        0.0d0
-      if(fld_pvr%num_sections .gt. 0) fld_pvr%sect_opacity = 0.0d0
+      if(fld%num_sections .gt. 0) fld%coefs =        0.0d0
+      if(fld%num_sections .gt. 0) fld%sect_opacity = 0.0d0
 !
       end subroutine alloc_pvr_sections
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_pvr_isosurfaces(fld_pvr)
+      subroutine alloc_pvr_isosurfaces(fld)
 !
-      type(pvr_projected_field), intent(inout) :: fld_pvr
+      type(pvr_projected_field), intent(inout) :: fld
 !
 !
-      allocate(fld_pvr%itype_isosurf(fld_pvr%num_isosurf))
-      allocate(fld_pvr%iso_value(fld_pvr%num_isosurf))
-      allocate(fld_pvr%iso_opacity(fld_pvr%num_isosurf))
+      allocate(fld%itype_isosurf(fld%num_isosurf))
+      allocate(fld%iso_value(fld%num_isosurf))
+      allocate(fld%iso_opacity(fld%num_isosurf))
 !
-      if(fld_pvr%num_isosurf .gt. 0) fld_pvr%itype_isosurf = 0
-      if(fld_pvr%num_isosurf .gt. 0) fld_pvr%iso_value = 0.0d0
-      if(fld_pvr%num_isosurf .gt. 0) fld_pvr%iso_opacity = 0.0d0
+      if(fld%num_isosurf .gt. 0) fld%itype_isosurf = 0
+      if(fld%num_isosurf .gt. 0) fld%iso_value = 0.0d0
+      if(fld%num_isosurf .gt. 0) fld%iso_opacity = 0.0d0
 !
       end subroutine alloc_pvr_isosurfaces
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine dealloc_data_4_pvr(fld_pvr)
+      subroutine dealloc_data_4_pvr(fld)
 !
-      type(pvr_projected_field), intent(inout) :: fld_pvr
+      type(pvr_projected_field), intent(inout) :: fld
 !
 !
-      deallocate(fld_pvr%iflag_used_ele)
-      deallocate(fld_pvr%d_pvr, fld_pvr%grad_ele)
-      deallocate(fld_pvr%x_nod_model)
+      deallocate(fld%iflag_used_ele)
+      deallocate(fld%d_pvr, fld%grad_ele)
 !
       end subroutine dealloc_data_4_pvr
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine dealloc_iflag_pvr_boundaries(fld_pvr)
+      subroutine dealloc_iflag_pvr_boundaries(fld)
 !
-      type(pvr_projected_field), intent(inout) :: fld_pvr
+      type(pvr_projected_field), intent(inout) :: fld
 !
 !
-      deallocate(fld_pvr%iflag_enhanse, fld_pvr%enhansed_opacity)
-      deallocate(fld_pvr%arccos_sf)
+      deallocate(fld%iflag_enhanse, fld%enhansed_opacity)
+      deallocate(fld%arccos_sf)
 !
       end subroutine dealloc_iflag_pvr_boundaries
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine dealloc_pvr_sections(fld_pvr)
+      subroutine dealloc_pvr_sections(fld)
 !
-      type(pvr_projected_field), intent(inout) :: fld_pvr
+      type(pvr_projected_field), intent(inout) :: fld
 !
 !
-      deallocate(fld_pvr%itype_isosurf, fld_pvr%iso_value)
+      deallocate(fld%itype_isosurf, fld%iso_value)
 !
       end subroutine dealloc_pvr_sections
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine dealloc_pvr_isosurfaces(fld_pvr)
+      subroutine dealloc_pvr_isosurfaces(fld)
 !
-      type(pvr_projected_field), intent(inout) :: fld_pvr
+      type(pvr_projected_field), intent(inout) :: fld
 !
 !
-      deallocate(fld_pvr%itype_isosurf)
-      deallocate(fld_pvr%iso_value, fld_pvr%iso_opacity)
+      deallocate(fld%itype_isosurf)
+      deallocate(fld%iso_value, fld%iso_opacity)
 !
       end subroutine dealloc_pvr_isosurfaces
 !
@@ -253,25 +245,6 @@
       end subroutine allocate_pixel_position_pvr
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_projected_data_pvr(num_pvr, field_pvr)
-!
-      integer(kind = kint), intent(in) :: num_pvr
-      type(pvr_projected_field), intent(inout) :: field_pvr(num_pvr)
-!
-      integer(kind = kint) :: i
-!
-!
-      do i = 1, num_pvr
-        call dealloc_data_4_pvr(field_pvr(i))
-        call dealloc_iflag_pvr_boundaries(field_pvr(i))
-        call dealloc_pvr_sections(field_pvr(i))
-        call dealloc_pvr_isosurfaces(field_pvr(i))
-      end do
-!
-      end subroutine deallocate_projected_data_pvr
-!
 ! -----------------------------------------------------------------------
 !
       subroutine deallocate_pixel_position_pvr(pixel_xy)

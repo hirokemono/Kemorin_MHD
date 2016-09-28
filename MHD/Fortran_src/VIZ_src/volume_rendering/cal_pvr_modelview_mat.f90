@@ -68,7 +68,7 @@
         do i = 1, color_param%num_pvr_lights
           call cal_mat44_vec3_on_node                                   &
      &       (ione, ione, ione_stack(0), view_param%modelview_mat,      &
-     &       color_param%xyz_pvr_lights(1:16,i), vec_tmp(1))
+     &        color_param%xyz_pvr_lights(1:3,i), vec_tmp(1))
           color_param%view_pvr_lights(1:3,i) = vec_tmp(1:3)
         end do
 !

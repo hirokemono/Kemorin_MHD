@@ -8,21 +8,26 @@
 !!
 !!@verbatim
 !!      subroutine transfer_to_screen                                   &
-!!     &        (node, ele, surf, surf_grp, surf_grp_v, surf_nod_grp,   &
+!!     &        (node, ele, surf, surf_grp, surf_grp_v,                 &
 !!     &         field_pvr, view_param, pvr_bound,  pixel_xy, pvr_start)
+!!      subroutine rendering_image(i_rot, istep_pvr, node, ele, surf,   &
+!!     &          file_param, color_param, cbar_param, view_param,      &
+!!     &          field_pvr, pvr_start, pvr_img)
+!!      subroutine set_subimages(pvr_start, pvr_img)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: surf_grp
 !!        type (surface_node_grp_data), intent(in)  :: surf_nod_grp
+!!        type(pvr_output_parameter), intent(in) :: file_param
+!!        type(pvr_colormap_parameter), intent(in) :: color_param
+!!        type(pvr_colorbar_parameter), intent(in) :: cbar_param
 !!        type(pvr_view_parameter), intent(inout) :: view_param
 !!        type(pvr_projected_field), intent(inout) :: field_pvr
 !!        type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
 !!        type(pvr_pixel_position_type), intent(inout) :: pixel_xy
 !!        type(pvr_ray_start_type), intent(inout) :: pvr_start
-!!      subroutine rendering_image(i_rot, istep_pvr, node, ele, surf,   &
-!!     &       file_param, color_param, cbar_param, view_param,         &
-!!     &       field_pvr, pixel_xy, pvr_start, pvr_img)
+!!        type(pvr_image_type), intent(inout) :: pvr_img
 !!@endverbatim
 !
       module generate_vr_image
@@ -41,165 +46,12 @@
 !
       implicit  none
 !
-!>      Structure of PVR control parameters
-      type PVR_control_params
-!>        Parameters for output files
-        type(pvr_output_parameter) :: file
-!>        Parameters for image pixels
-        type(pvr_pixel_position_type) :: pixel
-!>        Structure for field parameter for PVR
-        type(pvr_field_parameter) :: field_def
-!>        Structure for rough serch of subdomains
-        type(pvr_domain_outline) :: outline
-!>        Structure for PVR colormap
-        type(pvr_colorbar_parameter):: colorbar
-      end type PVR_control_params
-!
-!
-!>      Structure of PVR image generation
-      type PVR_image_generator
-!>        Viewer coordinate information
-        type(pvr_view_parameter) :: view
-!>        color paramter for volume rendering
-        type(pvr_colormap_parameter) :: color
-!>        Field data for volume rendering
-        type(pvr_projected_field) :: field
-!>        Domain boundary information
-        type(pvr_bounds_surf_ctl) :: bound
-!>        Start point structure for volume rendering
-        type(pvr_ray_start_type) :: start_pt
-!>        Stored start point structure for volume rendering
-        type(pvr_ray_start_type) :: start_pt_saved
-!
-!>        Pixel data structure for volume rendering
-        type(pvr_image_type) :: image
-      end type PVR_image_generator
-!
-      private :: s_set_pvr_ray_start_point, ray_trace_local
+      private :: s_set_pvr_ray_start_point
 !
 !  ---------------------------------------------------------------------
 !
       contains
 !
-!  ---------------------------------------------------------------------
-!
-      subroutine set_fixed_view_and_image(node, ele, surf, group,       &
-     &          pvr_param, pvr_data)
-!
-      use t_mesh_data
-      use t_geometry_data
-      use t_surface_data
-      use t_group_data
-      use cal_pvr_modelview_mat
-!
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(surface_data), intent(in) :: surf
-      type(mesh_groups), intent(in) :: group
-      type(PVR_control_params), intent(in) :: pvr_param
-!
-      type(PVR_image_generator), intent(inout) :: pvr_data
-!
-!
-      call cal_pvr_modelview_matrix                                     &
-     &   (izero, pvr_param%outline, pvr_data%view, pvr_data%color)
-!
-      call transfer_to_screen                                           &
-     &   (node, ele, surf, group%surf_grp, group%surf_grp_geom,         &
-     &   pvr_data%field, pvr_data%view, pvr_data%bound,                 &
-     &   pvr_param%pixel, pvr_data%start_pt)
-!
-      call set_subimages(pvr_data%start_pt, pvr_data%image)
-!
-      pvr_data%start_pt_saved%num_pvr_ray                               &
-     &               = pvr_data%start_pt%num_pvr_ray
-      call allocate_item_pvr_ray_start(pvr_data%start_pt_saved)
-      call copy_item_pvr_ray_start                                      &
-     &   (pvr_data%start_pt, pvr_data%start_pt_saved)
-!
-      end subroutine set_fixed_view_and_image
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine rendering_with_fixed_view(istep_pvr, node, ele, surf,  &
-     &          pvr_param, pvr_data)
-!
-      use t_geometry_data
-      use t_surface_data
-      use t_group_data
-      use composite_pvr_images
-      use set_pvr_ray_start_point
-!
-      integer(kind = kint), intent(in) :: istep_pvr
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(surface_data), intent(in) :: surf
-      type(PVR_control_params), intent(in) :: pvr_param
-!
-      type(PVR_image_generator), intent(inout) :: pvr_data
-!
-      integer(kind = kint), parameter :: i_rot = -1
-!
-!
-      call copy_item_pvr_ray_start                                      &
-     &   (pvr_data%start_pt_saved, pvr_data%start_pt)
-!
-      call rendering_image(i_rot, istep_pvr, node, ele, surf,           &
-     &    pvr_param%file, pvr_data%color, pvr_param%colorbar,           &
-     &    pvr_data%view, pvr_data%field, pvr_data%start_pt,             &
-     &    pvr_data%image)
-!
-!      call dealloc_pvr_local_subimage(pvr_data%image)
-!
-      end subroutine rendering_with_fixed_view
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine rendering_with_rotation(istep_pvr, node, ele, surf,    &
-     &          group, pvr_param, pvr_data)
-!
-      use t_mesh_data
-      use t_geometry_data
-      use t_surface_data
-      use t_group_data
-      use cal_pvr_modelview_mat
-!
-      integer(kind = kint), intent(in) :: istep_pvr
-!
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(surface_data), intent(in) :: surf
-      type(mesh_groups), intent(in) :: group
-      type(PVR_control_params), intent(in) :: pvr_param
-!
-      type(PVR_image_generator), intent(inout) :: pvr_data
-!
-!
-      integer(kind = kint) :: i_rot, ist_rot, ied_rot
-!
-      ist_rot = pvr_data%view%istart_rot
-      ied_rot = pvr_data%view%iend_rot
-      do i_rot = ist_rot, ied_rot
-        call cal_pvr_modelview_matrix                                   &
-     &     (i_rot, pvr_param%outline, pvr_data%view, pvr_data%color)
-        call transfer_to_screen                                         &
-     &     (node, ele, surf, group%surf_grp, group%surf_grp_geom,       &
-     &      pvr_data%field, pvr_data%view, pvr_data%bound,              &
-     &      pvr_param%pixel, pvr_data%start_pt)
-        call set_subimages(pvr_data%start_pt, pvr_data%image)
-!
-        call rendering_image(i_rot, istep_pvr, node, ele, surf,         &
-     &      pvr_param%file, pvr_data%color, pvr_param%colorbar,         &
-     &      pvr_data%view, pvr_data%field, pvr_data%start_pt,           &
-     &      pvr_data%image)
-!
-        call dealloc_pvr_local_subimage(pvr_data%image)
-        call deallocate_pvr_ray_start(pvr_data%start_pt)
-      end do
-!
-      end subroutine rendering_with_rotation
-!
-!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine transfer_to_screen                                     &
@@ -229,21 +81,21 @@
 !
 !
       call cal_position_pvr_modelview(view_param%modelview_mat,         &
-     &    node%numnod, node%xx, field_pvr%x_nod_model)
+     &    node%numnod, node%xx, pvr_start%x_nod_model)
 !
       call norm_on_model_pvr_domains                                    &
      &   (node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,      &
-     &    surf%ie_surf, surf%isf_4_ele, field_pvr%x_nod_model,          &
+     &    surf%ie_surf, surf%isf_4_ele, pvr_start%x_nod_model,          &
      &    pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,              &
      &    pvr_bound%screen_norm)
 !
 !
       call overwte_position_pvr_screen(view_param%projection_mat,       &
-     &    node%numnod, field_pvr%x_nod_model)
+     &    node%numnod, pvr_start%x_nod_model)
 !
       call set_pvr_domain_surface_data(view_param%n_pvr_pixel,          &
      &    node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,      &
-     &    surf%ie_surf, surf%isf_4_ele, field_pvr%x_nod_model,          &
+     &    surf%ie_surf, surf%isf_4_ele, pvr_start%x_nod_model,          &
      &    pvr_bound)
 !
       call set_opacity_for_boundaries                                   &
@@ -271,6 +123,7 @@
       use t_group_data
       use composite_pvr_images
       use set_pvr_ray_start_point
+      use write_PVR_image
 !
       integer(kind = kint), intent(in) :: i_rot, istep_pvr
       type(node_data), intent(in) :: node
@@ -287,25 +140,11 @@
       type(pvr_ray_start_type), intent(inout) :: pvr_start
       type(pvr_image_type), intent(inout) :: pvr_img
 !
-!      integer(kind = kint) :: i, j, k, ipix
 !
-!
-      if(iflag_debug .gt. 0) write(*,*) 'ray_trace_local'
-      call ray_trace_local(node, ele, surf, view_param%viewpoint_vec,   &
-     &    field_pvr, color_param, pvr_start, pvr_img)
-!
-!      do i = 1, pvr_img%num_overlap
-!        j = pvr_img%istack_overlap(my_rank) + i
-!        do k = 1, pvr_img%npixel_img
-!          ipix = pvr_img%ipixel_small(k)
-!          pvr_img%old_rgba_lc(1:4,ipix) = pvr_img%rgba_lc(1:4,j,k)
-!        end do
-!        call sel_write_pvr_local_img(file_param, j, istep_pvr, pvr_img)
-!      end do
-!
-      if(iflag_debug .gt. 0) write(*,*) 'blend_image_over_domains'
-      call blend_image_over_domains                                     &
-     &   (color_param, cbar_param, pvr_img)
+      if(iflag_debug .gt. 0) write(*,*) 'const_image_over_domains'
+      call const_image_over_domains(node, ele, surf,                    &
+     &    pvr_start%x_nod_model, view_param%viewpoint_vec,              &
+     &    field_pvr, color_param, cbar_param, pvr_start, pvr_img)
 !
       if(iflag_debug .gt. 0) write(*,*) 'sel_write_pvr_image_file'
       call sel_write_pvr_image_file                                     &
@@ -354,7 +193,7 @@
 !
       call count_each_pvr_ray_start                                     &
      &   (node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,      &
-     &    surf%ie_surf, surf%isf_4_ele, field_pvr%x_nod_model,          &
+     &    surf%ie_surf, surf%isf_4_ele, pvr_start%x_nod_model,          &
      &    pixel_xy%num_pixel_x, pixel_xy%num_pixel_y,                   &
      &    pixel_xy%pixel_point_x, pixel_xy%pixel_point_y,               &
      &    pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,              &
@@ -371,7 +210,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'set_each_pvr_ray_start'
       call set_each_pvr_ray_start                                       &
      &   (node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,      &
-     &    node%xx, surf%ie_surf, surf%isf_4_ele, field_pvr%x_nod_model, &
+     &    node%xx, surf%ie_surf, surf%isf_4_ele, pvr_start%x_nod_model, &
      &    pixel_xy%num_pixel_x, pixel_xy%num_pixel_y,                   &
      &    pixel_xy%pixel_point_x, pixel_xy%pixel_point_y,               &
      &    pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,              &
@@ -385,51 +224,6 @@
      &    pvr_start%xx_pvr_ray_start, pvr_start%pvr_ray_dir)
 !
       end subroutine s_set_pvr_ray_start_point
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine ray_trace_local(node, ele, surf, viewpoint_vec,        &
-     &          field_pvr, color_param, pvr_start, pvr_img)
-!
-      use m_geometry_constants
-      use t_geometry_data
-      use t_surface_data
-      use ray_trace_4_each_image
-      use composite_pvr_images
-      use set_pvr_ray_start_point
-!
-      real(kind = kreal), intent(in) :: viewpoint_vec(3)
-!
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(surface_data), intent(in) :: surf
-      type(pvr_projected_field), intent(in) :: field_pvr
-!
-      type(pvr_colormap_parameter), intent(in) :: color_param
-      type(pvr_ray_start_type), intent(inout) :: pvr_start
-      type(pvr_image_type), intent(inout) :: pvr_img
-!
-!
-      if(iflag_debug .gt. 0) write(*,*) 's_ray_trace_4_each_image'
-      call s_ray_trace_4_each_image                                     &
-     &   (node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,      &
-     &    surf%ie_surf, surf%isf_4_ele, surf%iele_4_surf,               &
-     &    ele%interior_ele, node%xx, surf%vnorm_surf,                   &
-     &    field_pvr%x_nod_model, viewpoint_vec,                         &
-     &    field_pvr, color_param, ray_vec,                              &
-     &    pvr_start%num_pvr_ray, pvr_start%icount_pvr_trace,            &
-     &    pvr_start%isf_pvr_ray_start, pvr_start%xi_pvr_start,          &
-     &    pvr_start%xx_pvr_start, pvr_start%xx_pvr_ray_start,           &
-     &    pvr_start%rgba_ray)
-!
-      if(iflag_debug .gt. 0) write(*,*) 'copy_segmented_image'
-      call copy_segmented_image(pvr_start%num_pvr_ray,                  &
-     &    pvr_start%id_pixel_start, pvr_start%rgba_ray,                 &
-     &    pvr_img%num_overlap, pvr_img%num_pixel_xy,                    &
-     &    pvr_img%npixel_img, pvr_img%iflag_img_pe,                     &
-     &    pvr_img%iflag_mapped, pvr_img%rgba_lc)
-!
-      end subroutine ray_trace_local
 !
 !  ---------------------------------------------------------------------
 !
