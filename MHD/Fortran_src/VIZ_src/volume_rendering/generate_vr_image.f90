@@ -8,8 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine transfer_to_screen                                   &
-!!     &        (node, ele, surf, surf_grp, surf_grp_v,                 &
-!!     &         field_pvr, view_param, pvr_bound,  pixel_xy, pvr_start)
+!!     &        (isel_projection, node, ele, surf, surf_grp, surf_grp_v,&
+!!     &         field_pvr, view_param, pvr_bound,  pixel_xy,           &
+!!     &         pvr_screen, pvr_start)
 !!      subroutine rendering_image(i_rot, istep_pvr, node, ele, surf,   &
 !!     &          file_param, color_param, cbar_param, view_param,      &
 !!     &          field_pvr, pvr_start, pvr_img)
@@ -22,8 +23,8 @@
 !!        type(pvr_output_parameter), intent(in) :: file_param
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
 !!        type(pvr_colorbar_parameter), intent(in) :: cbar_param
+!!        type(pvr_projected_field), intent(in) :: field_pvr
 !!        type(pvr_view_parameter), intent(inout) :: view_param
-!!        type(pvr_projected_field), intent(inout) :: field_pvr
 !!        type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
 !!        type(pvr_pixel_position_type), intent(inout) :: pixel_xy
 !!        type(pvr_ray_start_type), intent(inout) :: pvr_start
@@ -55,8 +56,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine transfer_to_screen                                     &
-     &        (node, ele, surf, surf_grp, surf_grp_v,                   &
-     &         field_pvr, view_param, pvr_bound,  pixel_xy, pvr_start)
+     &        (isel_projection, node, ele, surf, surf_grp, surf_grp_v,  &
+     &         field_pvr, view_param, pvr_bound,  pixel_xy,             &
+     &         pvr_screen, pvr_start)
 !
       use m_geometry_constants
       use t_geometry_data
@@ -67,47 +69,58 @@
       use find_pvr_surf_domain
       use pvr_surface_enhancement
 !
+      integer(kind = kint) :: isel_projection
+!
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: surf_grp
       type(surface_group_geometry), intent(in) :: surf_grp_v
       type(pvr_pixel_position_type), intent(in) :: pixel_xy
+      type(pvr_view_parameter), intent(in) :: view_param
+      type(pvr_projected_field), intent(in) :: field_pvr
 !
-      type(pvr_view_parameter), intent(inout) :: view_param
-      type(pvr_projected_field), intent(inout) :: field_pvr
+      type(pvr_projected_data), intent(inout) :: pvr_screen
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
       type(pvr_ray_start_type), intent(inout) :: pvr_start
 !
-!
-      call cal_position_pvr_modelview(view_param%modelview_mat,         &
-     &    node%numnod, node%xx, pvr_start%x_nod_model)
-!
-      call norm_on_model_pvr_domains                                    &
-     &   (node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,      &
-     &    surf%ie_surf, surf%isf_4_ele, pvr_start%x_nod_model,          &
-     &    pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,              &
-     &    pvr_bound%screen_norm)
-!
-!
-      call overwte_position_pvr_screen(view_param%projection_mat,       &
-     &    node%numnod, pvr_start%x_nod_model)
-!
-      call set_pvr_domain_surface_data(view_param%n_pvr_pixel,          &
-     &    node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,      &
-     &    surf%ie_surf, surf%isf_4_ele, pvr_start%x_nod_model,          &
-     &    pvr_bound)
 !
       call set_opacity_for_boundaries                                   &
      &   (surf_grp, surf_grp_v, view_param,                             &
      &    field_pvr%iflag_enhanse, field_pvr%enhansed_opacity,          &
      &    ele%numele, surf%numsurf, surf%isf_4_ele,                     &
-     &    field_pvr%arccos_sf)
+     &    pvr_screen%arccos_sf)
+!
+!
+      call cal_position_pvr_modelview(view_param%modelview_mat,         &
+     &    node%numnod, node%xx, pvr_screen%x_nod_model)
+!
+      call norm_on_model_pvr_domains                                    &
+     &   (node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,      &
+     &    surf%ie_surf, surf%isf_4_ele, pvr_screen%x_nod_model,         &
+     &    pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,              &
+     &    pvr_bound%screen_norm)
+!
+!
+      if(isel_projection .eq. IFLAG_LEFT) then
+        call overwte_position_pvr_screen(view_param%projection_left,    &
+     &      node%numnod, pvr_screen%x_nod_model)
+      else if(isel_projection .eq. IFLAG_RIGHT) then
+        call overwte_position_pvr_screen(view_param%projection_right,   &
+     &      node%numnod, pvr_screen%x_nod_model)
+      else
+        call overwte_position_pvr_screen(view_param%projection_mat,     &
+     &      node%numnod, pvr_screen%x_nod_model)
+      end if
+!
+      call set_pvr_domain_surface_data(view_param%n_pvr_pixel,          &
+     &    node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,      &
+     &    surf%ie_surf, surf%isf_4_ele, pvr_screen%x_nod_model,         &
+     &    pvr_bound)
 !
       if(iflag_debug .gt. 0) write(*,*) 's_set_pvr_ray_start_point'
       call s_set_pvr_ray_start_point(node, ele, surf,                   &
-     &    view_param%viewpoint_vec, pvr_bound, field_pvr, pixel_xy,     &
-     &    pvr_start)
+     &    pvr_bound, pixel_xy, pvr_screen, pvr_start)
 !
       end subroutine transfer_to_screen
 !
@@ -115,7 +128,7 @@
 !
       subroutine rendering_image(i_rot, istep_pvr, node, ele, surf,     &
      &          file_param, color_param, cbar_param, view_param,        &
-     &          field_pvr, pvr_start, pvr_img)
+     &          field_pvr, pvr_screen, pvr_start, pvr_img)
 !
       use m_geometry_constants
       use t_geometry_data
@@ -136,14 +149,14 @@
 !
       type(pvr_view_parameter), intent(in) :: view_param
       type(pvr_projected_field), intent(in) :: field_pvr
+      type(pvr_projected_data), intent(in) :: pvr_screen
 !
       type(pvr_ray_start_type), intent(inout) :: pvr_start
       type(pvr_image_type), intent(inout) :: pvr_img
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'const_image_over_domains'
-      call const_image_over_domains(node, ele, surf,                    &
-     &    pvr_start%x_nod_model, view_param%viewpoint_vec,              &
+      call const_image_over_domains(node, ele, surf, pvr_screen,        &
      &    field_pvr, color_param, cbar_param, pvr_start, pvr_img)
 !
       if(iflag_debug .gt. 0) write(*,*) 'sel_write_pvr_image_file'
@@ -160,9 +173,8 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_pvr_ray_start_point                              &
-     &         (node, ele, surf, viewpoint_vec, pvr_bound,              &
-     &          field_pvr, pixel_xy, pvr_start)
+      subroutine s_set_pvr_ray_start_point(node, ele, surf, pvr_bound,  &
+     &          pixel_xy, pvr_screen, pvr_start)
 !
       use m_geometry_constants
       use t_geometry_data
@@ -170,14 +182,14 @@
       use set_pvr_ray_start_point
       use cal_field_on_surf_viz
 !
-      real(kind = kreal), intent(in) :: viewpoint_vec(3)
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
 !
       type(pvr_bounds_surf_ctl), intent(in) :: pvr_bound
-      type(pvr_projected_field), intent(in) :: field_pvr
       type(pvr_pixel_position_type), intent(in) :: pixel_xy
+      type(pvr_projected_data), intent(in) :: pvr_screen
+!
       type(pvr_ray_start_type), intent(inout) :: pvr_start
 !
 !
@@ -193,7 +205,7 @@
 !
       call count_each_pvr_ray_start                                     &
      &   (node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,      &
-     &    surf%ie_surf, surf%isf_4_ele, pvr_start%x_nod_model,          &
+     &    surf%ie_surf, surf%isf_4_ele, pvr_screen%x_nod_model,         &
      &    pixel_xy%num_pixel_x, pixel_xy%num_pixel_y,                   &
      &    pixel_xy%pixel_point_x, pixel_xy%pixel_point_y,               &
      &    pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,              &
@@ -209,19 +221,19 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_each_pvr_ray_start'
       call set_each_pvr_ray_start                                       &
-     &   (node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,      &
-     &    node%xx, surf%ie_surf, surf%isf_4_ele, pvr_start%x_nod_model, &
-     &    pixel_xy%num_pixel_x, pixel_xy%num_pixel_y,                   &
-     &    pixel_xy%pixel_point_x, pixel_xy%pixel_point_y,               &
-     &    pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,              &
-     &    pvr_bound%screen_norm, viewpoint_vec, ray_vec,                &
-     &    pvr_start%ntot_tmp_pvr_ray, pvr_start%istack_tmp_pvr_ray_st,  &
-     &    pvr_start%ipix_start_tmp, pvr_start%iflag_start_tmp,          &
-     &    pvr_start%xi_start_tmp, pvr_start%istack_pvr_ray_sf,          &
-     &    pvr_start%num_pvr_ray, pvr_start%id_pixel_start,              &
-     &    pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,      &
-     &    pvr_start%xi_pvr_start, pvr_start%xx_pvr_start,               &
-     &    pvr_start%xx_pvr_ray_start, pvr_start%pvr_ray_dir)
+     &  (node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,       &
+     &   node%xx, surf%ie_surf, surf%isf_4_ele, pvr_screen%x_nod_model, &
+     &   pixel_xy%num_pixel_x, pixel_xy%num_pixel_y,                    &
+     &   pixel_xy%pixel_point_x, pixel_xy%pixel_point_y,                &
+     &   pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,               &
+     &   pvr_bound%screen_norm, pvr_screen%viewpoint_vec, ray_vec,      &
+     &   pvr_start%ntot_tmp_pvr_ray, pvr_start%istack_tmp_pvr_ray_st,   &
+     &   pvr_start%ipix_start_tmp, pvr_start%iflag_start_tmp,           &
+     &   pvr_start%xi_start_tmp, pvr_start%istack_pvr_ray_sf,           &
+     &   pvr_start%num_pvr_ray, pvr_start%id_pixel_start,               &
+     &   pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,       &
+     &   pvr_start%xi_pvr_start, pvr_start%xx_pvr_start,                &
+     &   pvr_start%xx_pvr_ray_start, pvr_start%pvr_ray_dir)
 !
       end subroutine s_set_pvr_ray_start_point
 !

@@ -108,7 +108,6 @@
       use t_group_data
       use t_control_params_4_pvr
       use t_geometries_in_pvr_screen
-      use set_pvr_modelview_matrix
       use set_area_4_viz
       use set_color_4_pvr
       use set_rgba_4_each_pixel
@@ -229,10 +228,6 @@
 !
 !    set colorbar setting
       call set_control_pvr_colorbar(pvr%colorbar, cbar_param)
-!
-!   set transfer matrix
-!
-      call s_set_pvr_modelview_matrix(pvr%mat, view_param)
 !
       end subroutine set_control_pvr
 !

@@ -7,7 +7,11 @@
 !> @brief Evaluate model view matirx
 !!
 !!@verbatim
-!!      subroutine s_set_pvr_modelview_matrix(mat, view_param)
+!!      subroutine s_set_pvr_modelview_matrix                           &
+!!     &         (mat, view_param, pvr_screen)
+!!        type(modeview_ctl), intent(inout) :: mat
+!!        type(pvr_view_parameter), intent(inout) :: view_param
+!!        type(pvr_projected_data), intent(inout) :: pvr_screen
 !!@endverbatim
 !
       module set_pvr_modelview_matrix
@@ -18,6 +22,7 @@
       use m_error_IDs
       use m_ctl_data_4_view_transfer
       use t_control_params_4_pvr
+      use t_geometries_in_pvr_screen
 !
       implicit none
 !
@@ -34,10 +39,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_pvr_modelview_matrix(mat, view_param)
+      subroutine s_set_pvr_modelview_matrix                             &
+     &         (mat, view_param, pvr_screen)
 !
       type(modeview_ctl), intent(inout) :: mat
       type(pvr_view_parameter), intent(inout) :: view_param
+      type(pvr_projected_data), intent(inout) :: pvr_screen
 !
 !
       call copy_pvr_image_size(mat, view_param)
@@ -47,7 +54,7 @@
         call copy_pvr_modelview_matrix(mat, view_param)
         call dealloc_control_array_c2_r(mat%modelview_mat_ctl)
       else
-        call set_viewpoint_vector_ctl(mat, view_param)
+        call set_viewpoint_vector_ctl(mat, view_param, pvr_screen)
         call dealloc_control_array_c_r(mat%lookpoint_ctl)
         call dealloc_control_array_c_r(mat%viewpoint_ctl)
         call dealloc_control_array_c_r(mat%up_dir_ctl)
@@ -191,12 +198,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_viewpoint_vector_ctl(mat, view_param)
+      subroutine set_viewpoint_vector_ctl(mat, view_param, pvr_screen)
 !
       use calypso_mpi
 !
       type(modeview_ctl), intent(in) :: mat
       type(pvr_view_parameter), intent(inout) :: view_param
+      type(pvr_projected_data), intent(inout) :: pvr_screen
 !
       integer(kind = kint) :: i, nd
 !
@@ -229,10 +237,10 @@
       do i = 1, mat%viewpoint_ctl%num
         nd = set_3direction_flag(mat%viewpoint_ctl%c_tbl(i))
         if(nd .eq. 0) cycle
-        view_param%viewpoint_vec(nd) = mat%viewpoint_ctl%vect(i)
+        pvr_screen%viewpoint_vec(nd) = mat%viewpoint_ctl%vect(i)
       end do
       if(mat%viewpoint_ctl%num .ge. 3) then
-        view_param%iflag_viewpoint = 1
+        pvr_screen%iflag_viewpoint = 1
       end if
 !
       do i = 1, mat%up_dir_ctl%num
@@ -247,8 +255,8 @@
       if (iflag_debug .gt. 0) then
         write(*,*) 'iflag_lookpoint_vec', view_param%iflag_lookpoint
         write(*,*) 'lookat_vec', view_param%lookat_vec(1:3)
-        write(*,*) 'iflag_viewpoint_vec', view_param%iflag_viewpoint
-        write(*,*) 'viewpoint_vec', view_param%viewpoint_vec(1:3)
+        write(*,*) 'iflag_viewpoint_vec', pvr_screen%iflag_viewpoint
+        write(*,*) 'viewpoint_vec', pvr_screen%viewpoint_vec(1:3)
         write(*,*) 'iflag_updir_vec', view_param%iflag_updir
         write(*,*) 'up_direction_vec',                                  &
      &            view_param%up_direction_vec(1:3)

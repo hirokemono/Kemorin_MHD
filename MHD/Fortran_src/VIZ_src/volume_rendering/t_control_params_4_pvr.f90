@@ -17,6 +17,11 @@
 !
       implicit  none
 !
+!
+      integer(kind = kint), parameter :: IFLAG_NORMAL = 0
+      integer(kind = kint), parameter :: IFLAG_LEFT =  -1
+      integer(kind = kint), parameter :: IFLAG_RIGHT =  1
+!
 !>  Structure for field parameter for PVR
       type pvr_output_parameter
 !>    File prefix for image file
@@ -101,11 +106,6 @@
         integer(kind = kint) :: iflag_lookpoint = 0
 !>    Position to look at
         real(kind = kreal) :: lookat_vec(3) = (/zero,zero,zero/)
-!
-!>    Defined flag for viewpoint
-        integer(kind = kint) :: iflag_viewpoint = 0
-!>    Position of viewpoint
-        real(kind = kreal) :: viewpoint_vec(3) = (/zero,zero,zero/)
 !
 !>    Defined flag for up-direction
         integer(kind = kint) :: iflag_updir = 0

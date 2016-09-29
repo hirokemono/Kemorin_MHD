@@ -7,9 +7,6 @@
 !> @brief Structures for start points for ray tracing
 !!
 !!@verbatim
-!!      subroutine alloc_projected_position(nnod, pvr_start)
-!!      subroutine dealloc_projected_position(pvr_start)
-!!
 !!      subroutine allocate_num_pvr_ray_start(num_pvr_surf, pvr_start)
 !!      subroutine allocate_item_pvr_ray_start(pvr_start)
 !!      subroutine allocate_item_pvr_ray_pixels(pvr_start)
@@ -27,15 +24,8 @@
 !
       implicit  none
 !
-!
 !>  Structure for start points of ray tracing
       type pvr_ray_start_type
-!>    Total number of node in screen coordinate
-        integer(kind = kint) :: numnod_ray = 0
-!>    Position in modelview coordinate and screen coordinate
-!!@n    (Overwritten)
-        real(kind = kreal), pointer :: x_nod_model(:,:)
-!
 !>    Total number of ray tracing
         integer(kind = kint) :: ntot_pvr_ray = 0
 !
@@ -85,32 +75,6 @@
       contains
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine alloc_projected_position(nnod, pvr_start)
-!
-      integer(kind = kint), intent(in) :: nnod
-      type(pvr_ray_start_type), intent(inout) :: pvr_start
-!
-!
-      pvr_start%numnod_ray = nnod
-      allocate(pvr_start%x_nod_model(pvr_start%numnod_ray,4))
-      if(pvr_start%numnod_ray .gt. 0) pvr_start%x_nod_model =  0.0d0
-!
-      end subroutine alloc_projected_position
-!
-! -----------------------------------------------------------------------
-!
-      subroutine dealloc_projected_position(pvr_start)
-!
-      type(pvr_ray_start_type), intent(inout) :: pvr_start
-!
-!
-      deallocate(pvr_start%x_nod_model)
-!
-      end subroutine dealloc_projected_position
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
 !
       subroutine allocate_num_pvr_ray_start(num_pvr_surf, pvr_start)
 !

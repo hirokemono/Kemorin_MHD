@@ -8,8 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine const_image_over_domains(node, ele, surf,            &
-!!     &          x_nod_model, viewpoint_vec, field_pvr, color_param,   &
-!!     &          cbar_param, pvr_start, pvr_img)
+!!     &          pvr_screen, field_pvr, color_param, cbar_param,       &
+!!     &          pvr_start, pvr_img)
 !!
 !!      subroutine sel_write_pvr_image_file                             &
 !!     &         (file_param, i_rot, istep_pvr, pvr_img)
@@ -35,8 +35,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine const_image_over_domains(node, ele, surf,              &
-     &          x_nod_model, viewpoint_vec, field_pvr, color_param,     &
-     &          cbar_param, pvr_start, pvr_img)
+     &          pvr_screen, field_pvr, color_param, cbar_param,         &
+     &          pvr_start, pvr_img)
 !
       use m_geometry_constants
       use t_geometry_data
@@ -58,9 +58,7 @@
       type(pvr_projected_field), intent(in) :: field_pvr
       type(pvr_colormap_parameter), intent(in) :: color_param
       type(pvr_colorbar_parameter), intent(in) :: cbar_param
-!
-      real(kind = kreal), intent(in) :: x_nod_model(node%numnod,4)
-      real(kind = kreal), intent(in) :: viewpoint_vec(3)
+      type(pvr_projected_data), intent(in) :: pvr_screen
 !
       type(pvr_ray_start_type), intent(inout) :: pvr_start
       type(pvr_image_type), intent(inout) :: pvr_img
@@ -73,7 +71,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 's_ray_trace_4_each_image'
       call s_ray_trace_4_each_image(node, ele, surf,                    &
-     &    x_nod_model, viewpoint_vec, field_pvr, color_param, ray_vec,  &
+     &    pvr_screen, field_pvr, color_param, ray_vec,                  &
      &    pvr_start%num_pvr_ray, pvr_start%icount_pvr_trace,            &
      &    pvr_start%isf_pvr_ray_start, pvr_start%xi_pvr_start,          &
      &    pvr_start%xx_pvr_start, pvr_start%xx_pvr_ray_start,           &

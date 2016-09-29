@@ -30,7 +30,7 @@
       subroutine set_each_pvr_control                                   &
      &       (ele_grp, surf_grp, num_nod_phys, phys_nod_name,           &
      &        pvr_control, file_params, fld_params, view_params,        &
-     &        field_pvr, color_params, cbar_params)
+     &        field_pvr, pvr_screen, color_params, cbar_params)
 !
       use t_group_data
       use t_control_params_4_pvr
@@ -39,6 +39,7 @@
       use m_control_data_4_pvr
       use set_control_each_pvr
       use set_field_comp_for_viz
+      use set_pvr_modelview_matrix
 !
       type(group_data), intent(in) :: ele_grp
       type(surface_group_data), intent(in) :: surf_grp
@@ -50,6 +51,7 @@
       type(pvr_output_parameter), intent(inout) :: file_params
       type(pvr_field_parameter), intent(inout) :: fld_params
       type(pvr_view_parameter), intent(inout) :: view_params
+      type(pvr_projected_data), intent(inout) :: pvr_screen
       type(pvr_projected_field), intent(inout) :: field_pvr
       type(pvr_colormap_parameter), intent(inout) :: color_params
       type(pvr_colorbar_parameter), intent(inout) :: cbar_params
@@ -71,8 +73,11 @@
      &   (pvr_control, ele_grp, surf_grp, num_nod_phys,                 &
      &    phys_nod_name, fld_params, view_params, field_pvr,            &
      &    color_params, cbar_params)
-      if(iflag_debug .gt. 0) write(*,*)                                 &
-     &                       'deallocate_cont_dat_pvr'
+!
+!   set transfer matrix
+!
+      call s_set_pvr_modelview_matrix                                   &
+     &   (pvr_control%mat, view_params, pvr_screen)
 !
       end subroutine set_each_pvr_control
 !

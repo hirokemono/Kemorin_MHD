@@ -90,8 +90,7 @@
 !
       do i_pvr = 1, num_pvr
         call allocate_nod_data_4_pvr(node%numnod, ele%numele,           &
-     &      surf%numsurf, group%surf_grp%num_grp,                       &
-     &      pvr_data(i_pvr)%field)
+     &      group%surf_grp%num_grp, pvr_param(i_pvr)%field)
       end do
 !
       ctl_file_code = pvr_ctl_file_code
@@ -106,8 +105,8 @@
      &      nod_fld%num_phys, nod_fld%phys_name,                        &
      &      pvr_ctl_struct(i_pvr), pvr_param(i_pvr)%file,               &
      &      pvr_param(i_pvr)%field_def, pvr_data(i_pvr)%view,           &
-     &      pvr_data(i_pvr)%field, pvr_data(i_pvr)%color,               &
-     &      pvr_param(i_pvr)%colorbar)
+     &      pvr_param(i_pvr)%field, pvr_data(i_pvr)%screen,             &
+     &      pvr_data(i_pvr)%color, pvr_param(i_pvr)%colorbar)
 !
         call deallocate_cont_dat_pvr(pvr_ctl_struct(i_pvr))
         call calypso_mpi_barrier
@@ -119,7 +118,7 @@
       do i_pvr = 1, num_pvr
         call find_each_pvr_surf_domain(ele, surf, group%ele_grp,        &
      &      pvr_param(i_pvr)%field_def, pvr_data(i_pvr)%bound,          &
-     &      pvr_data(i_pvr)%field)
+     &      pvr_param(i_pvr)%field)
       end do
       call deallocate_imark_4_surface
 !
@@ -127,7 +126,8 @@
         call cal_mesh_outline_pvr                                       &
      &     (node%numnod, node%xx, pvr_param(i_pvr)%outline)
         call check_pvr_parameters(pvr_param(i_pvr)%outline,             &
-     &      pvr_data(i_pvr)%view, pvr_data(i_pvr)%color)
+     &      pvr_data(i_pvr)%view, pvr_data(i_pvr)%color,                &
+     &      pvr_data(i_pvr)%screen)
 !
         if(iflag_debug .gt. 0) write(*,*) 'set_pixel_on_pvr_screen'
         call set_pixel_on_pvr_screen                                    &
@@ -146,7 +146,7 @@
 !        call set_pvr_orthogonal_params(i_pvr, pvr_data(i_pvr)%view)
 !
         call alloc_projected_position                                   &
-     &     (node%numnod, pvr_data(i_pvr)%start_pt)
+     &     (node%numnod, surf%numsurf, pvr_data(i_pvr)%screen)
 !
         if(pvr_data(i_pvr)%view%iflag_rotate_snap .eq. 0) then
           if(iflag_debug .gt. 0) write(*,*) 'set_fixed_view_and_image'
@@ -186,7 +186,7 @@
         call cal_field_4_each_pvr(node, ele, jac_3d,                    &
      &      nod_fld%n_point, nod_fld%num_phys, nod_fld%ntot_phys,       &
      &      nod_fld%istack_component, nod_fld%d_fld,                    &
-     &      pvr_param(i_pvr)%field_def, pvr_data(i_pvr)%field)
+     &      pvr_param(i_pvr)%field_def, pvr_param(i_pvr)%field)
       end do
 !
       do i_pvr = 1, num_pvr

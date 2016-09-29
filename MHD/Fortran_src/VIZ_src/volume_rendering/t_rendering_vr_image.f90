@@ -52,6 +52,8 @@
         type(pvr_field_parameter) :: field_def
 !>        Structure for rough serch of subdomains
         type(pvr_domain_outline) :: outline
+!>        Field data for volume rendering
+        type(pvr_projected_field) :: field
 !>        Structure for PVR colormap
         type(pvr_colorbar_parameter):: colorbar
       end type PVR_control_params
@@ -63,10 +65,10 @@
         type(pvr_view_parameter) :: view
 !>        color paramter for volume rendering
         type(pvr_colormap_parameter) :: color
-!>        Field data for volume rendering
-        type(pvr_projected_field) :: field
 !>        Domain boundary information
         type(pvr_bounds_surf_ctl) :: bound
+!>        Data on screen oordinate
+        type(pvr_projected_data) :: screen
 !>        Start point structure for volume rendering
         type(pvr_ray_start_type) :: start_pt
 !>        Stored start point structure for volume rendering
@@ -97,12 +99,13 @@
 !
 !
       call cal_pvr_modelview_matrix                                     &
-     &   (izero, pvr_param%outline, pvr_data%view, pvr_data%color)
+     &   (izero, pvr_param%outline, pvr_data%view, pvr_data%color,      &
+     &    pvr_data%screen)
 !
-      call transfer_to_screen                                           &
-     &   (node, ele, surf, group%surf_grp, group%surf_grp_geom,         &
-     &   pvr_data%field, pvr_data%view, pvr_data%bound,                 &
-     &   pvr_param%pixel, pvr_data%start_pt)
+      call transfer_to_screen(IFLAG_NORMAL,                             &
+     &    node, ele, surf, group%surf_grp, group%surf_grp_geom,         &
+     &    pvr_param%field, pvr_data%view, pvr_data%bound,               &
+     &    pvr_param%pixel, pvr_data%screen, pvr_data%start_pt)
 !
       call set_subimages(pvr_data%start_pt, pvr_data%image)
 !
@@ -138,8 +141,8 @@
 !
       call rendering_image(i_rot, istep_pvr, node, ele, surf,           &
      &    pvr_param%file, pvr_data%color, pvr_param%colorbar,           &
-     &    pvr_data%view, pvr_data%field, pvr_data%start_pt,             &
-     &    pvr_data%image)
+     &    pvr_data%view, pvr_param%field, pvr_data%screen,              &
+     &    pvr_data%start_pt,pvr_data%image)
 !
 !      call dealloc_pvr_local_subimage(pvr_data%image)
 !
@@ -170,17 +173,18 @@
       ied_rot = pvr_data%view%iend_rot
       do i_rot = ist_rot, ied_rot
         call cal_pvr_modelview_matrix                                   &
-     &     (i_rot, pvr_param%outline, pvr_data%view, pvr_data%color)
-        call transfer_to_screen                                         &
-     &     (node, ele, surf, group%surf_grp, group%surf_grp_geom,       &
-     &      pvr_data%field, pvr_data%view, pvr_data%bound,              &
-     &      pvr_param%pixel, pvr_data%start_pt)
+     &     (i_rot, pvr_param%outline, pvr_data%view, pvr_data%color,    &
+     &      pvr_data%screen)
+        call transfer_to_screen(IFLAG_NORMAL,                           &
+     &      node, ele, surf, group%surf_grp, group%surf_grp_geom,       &
+     &      pvr_param%field, pvr_data%view, pvr_data%bound,             &
+     &      pvr_param%pixel, pvr_data%screen, pvr_data%start_pt)
         call set_subimages(pvr_data%start_pt, pvr_data%image)
 !
         call rendering_image(i_rot, istep_pvr, node, ele, surf,         &
      &      pvr_param%file, pvr_data%color, pvr_param%colorbar,         &
-     &      pvr_data%view, pvr_data%field, pvr_data%start_pt,           &
-     &      pvr_data%image)
+     &      pvr_data%view, pvr_param%field, pvr_data%screen,            &
+     &      pvr_data%start_pt, pvr_data%image)
 !
         call dealloc_pvr_local_subimage(pvr_data%image)
         call deallocate_pvr_ray_start(pvr_data%start_pt)
