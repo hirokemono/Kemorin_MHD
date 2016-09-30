@@ -176,13 +176,12 @@
       call deallocate_pvr_ray_start(pvr_data%start_pt_1)
       call deallocate_pvr_ray_start(pvr_data%start_pt_2)
 !
-      call dealloc_pvr_local_subimage(pvr_data%image_1)
+      call dealloc_pvr_local_subimage(pvr_data%image)
       call dealloc_pvr_local_subimage(pvr_data%image_2)
 !
-      call dealloc_pvr_local_subimage(pvr_data%image)
       call deallocate_pvr_ray_start(pvr_data%start_pt)
 !
-      subroutine flash_data_4_streo_render
+      end subroutine flash_data_4_streo_render
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
