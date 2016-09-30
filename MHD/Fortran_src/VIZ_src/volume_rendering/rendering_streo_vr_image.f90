@@ -166,7 +166,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine flash_data_4_streo_render
+      subroutine flash_data_4_streo_render(pvr_data)
 !
       type(PVR_image_generator), intent(inout) :: pvr_data
 !
