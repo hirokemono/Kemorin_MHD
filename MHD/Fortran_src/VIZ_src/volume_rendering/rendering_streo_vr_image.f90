@@ -7,10 +7,8 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine set_streo_view_and_image(node, ele, surf, group,     &
-!!     &          pvr_param, pvr_data)
 !!      subroutine streo_rendering_fixed_view(istep_pvr,                &
-!!     &          node, ele, surf, pvr_param, pvr_data)
+!!     &          node, ele, surf, group, pvr_param, pvr_data)
 !!      subroutine streo_rendering_with_rotation(istep_pvr,             &
 !!     &          node, ele, surf, group, pvr_param, pvr_data)
 !!        type(node_data), intent(in) :: node
@@ -49,11 +47,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_streo_view_and_image(node, ele, surf, group,       &
-     &          pvr_param, pvr_data)
+      subroutine streo_rendering_fixed_view(istep_pvr,                  &
+     &          node, ele, surf, group, pvr_param, pvr_data)
 !
       use cal_pvr_modelview_mat
+      use composite_pvr_images
+      use set_pvr_ray_start_point
+      use write_PVR_image
 !
+      integer(kind = kint), intent(in) :: istep_pvr
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
@@ -67,74 +69,10 @@
      &   (izero, pvr_param%outline, pvr_data%view, pvr_data%color,      &
      &    pvr_data%screen)
 !
-!
 !   Left eye
 !
-      call transfer_to_screen(IFLAG_LEFT,                               &
-     &    node, ele, surf, group%surf_grp, group%surf_grp_geom,         &
-     &    pvr_param%field, pvr_data%view, pvr_param%pixel,              &
-     &    pvr_data%bound, pvr_data%screen, pvr_data%start_pt)
-!
-      call set_subimages(pvr_data%rgb%num_pixel_xy,                     &
-     &    pvr_data%start_pt, pvr_data%image)
-!
-      call allocate_item_pvr_ray_start                                  &
-     &   (pvr_data%start_pt%num_pvr_ray, pvr_data%start_pt_1)
-      call copy_item_pvr_ray_start                                      &
-     &   (pvr_data%start_pt, pvr_data%start_pt_1)
-!
-      call alloc_projected_position                                     &
-     &   (pvr_data%screen%nnod_screen, pvr_data%screen%nsurf_screen,    &
-     &    pvr_data%screen_1)
-      call copy_projected_position(pvr_data%screen, pvr_data%screen_1)
-!
-!   Right eye
-!
-      call transfer_to_screen(IFLAG_RIGHT,                              &
-     &    node, ele, surf, group%surf_grp, group%surf_grp_geom,         &
-     &    pvr_param%field, pvr_data%view, pvr_param%pixel,              &
-     &    pvr_data%bound, pvr_data%screen, pvr_data%start_pt)
-!
-      call set_subimages(pvr_data%rgb%num_pixel_xy,                     &
-     &    pvr_data%start_pt, pvr_data%image_2)
-!
-      call allocate_item_pvr_ray_start                                  &
-     &   (pvr_data%start_pt%num_pvr_ray, pvr_data%start_pt_2)
-      call copy_item_pvr_ray_start                                      &
-     &   (pvr_data%start_pt, pvr_data%start_pt_2)
-!
-      call alloc_projected_position                                     &
-     &   (pvr_data%screen%nnod_screen, pvr_data%screen%nsurf_screen,    &
-     &    pvr_data%screen_2)
-      call copy_projected_position(pvr_data%screen, pvr_data%screen_2)
-!
-      end subroutine set_streo_view_and_image
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine streo_rendering_fixed_view(istep_pvr,                  &
-     &          node, ele, surf, pvr_param, pvr_data)
-!
-      use composite_pvr_images
-      use set_pvr_ray_start_point
-      use write_PVR_image
-!
-      integer(kind = kint), intent(in) :: istep_pvr
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(surface_data), intent(in) :: surf
-      type(PVR_control_params), intent(in) :: pvr_param
-!
-      type(PVR_image_generator), intent(inout) :: pvr_data
-!
-!
-      call copy_item_pvr_ray_start                                      &
-     &   (pvr_data%start_pt_1, pvr_data%start_pt)
-!
-      call rendering_image(node, ele, surf,                             &
-     &    pvr_data%color, pvr_param%colorbar, pvr_param%field,          &
-     &    pvr_data%screen_1, pvr_data%start_pt,                         &
-     &    pvr_data%image, pvr_data%rgb)
+      call rendering_at_once(IFLAG_LEFT, node, ele, surf, group,        &
+     &    pvr_param, pvr_data)
 !
       if(pvr_param%file%iflag_anaglyph .gt. 0) then
         call store_left_eye_image(pvr_data%rgb)
@@ -143,14 +81,13 @@
      &     iminus, istep_pvr, IFLAG_LEFT, pvr_data%rgb)
       end if
 !
+      call dealloc_pvr_local_subimage(pvr_data%image)
+      call deallocate_pvr_ray_start(pvr_data%start_pt)
 !
-      call copy_item_pvr_ray_start                                      &
-     &   (pvr_data%start_pt_2, pvr_data%start_pt)
+!   Right eye
 !
-      call rendering_image(node, ele, surf,                             &
-     &    pvr_data%color, pvr_param%colorbar, pvr_param%field,          &
-     &    pvr_data%screen_2, pvr_data%start_pt,                         &
-     &    pvr_data%image_2, pvr_data%rgb)
+      call rendering_at_once(IFLAG_RIGHT, node, ele, surf, group,       &
+     &    pvr_param, pvr_data)
 !
       if(pvr_param%file%iflag_anaglyph .gt. 0) then
         call add_left_eye_image(pvr_data%rgb)
@@ -162,26 +99,10 @@
      &      iminus, istep_pvr, IFLAG_RIGHT, pvr_data%rgb)
       end if
 !
-      end subroutine streo_rendering_fixed_view
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine flash_data_4_streo_render(pvr_data)
-!
-      type(PVR_image_generator), intent(inout) :: pvr_data
-!
-      call dealloc_projected_position(pvr_data%screen_1)
-      call dealloc_projected_position(pvr_data%screen_2)
-!
-      call deallocate_pvr_ray_start(pvr_data%start_pt_1)
-      call deallocate_pvr_ray_start(pvr_data%start_pt_2)
-!
       call dealloc_pvr_local_subimage(pvr_data%image)
-      call dealloc_pvr_local_subimage(pvr_data%image_2)
-!
       call deallocate_pvr_ray_start(pvr_data%start_pt)
 !
-      end subroutine flash_data_4_streo_render
+      end subroutine streo_rendering_fixed_view
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -213,17 +134,8 @@
      &      pvr_data%screen)
 !
 !    Left eye
-        call transfer_to_screen(IFLAG_LEFT,                             &
-     &      node, ele, surf, group%surf_grp, group%surf_grp_geom,       &
-     &      pvr_param%field, pvr_data%view, pvr_param%pixel,            &
-     &      pvr_data%bound, pvr_data%screen, pvr_data%start_pt)
-        call set_subimages(pvr_data%rgb%num_pixel_xy,                   &
-     &      pvr_data%start_pt, pvr_data%image)
-!
-!
-        call rendering_image(node, ele, surf, pvr_data%color,           &
-     &      pvr_param%colorbar, pvr_param%field, pvr_data%screen,       &
-     &      pvr_data%start_pt, pvr_data%image, pvr_data%rgb)
+        call rendering_at_once(IFLAG_LEFT, node, ele, surf, group,      &
+     &      pvr_param, pvr_data)
 !
         if(pvr_param%file%iflag_anaglyph .gt. 0) then
           call store_left_eye_image(pvr_data%rgb)
@@ -236,16 +148,8 @@
         call deallocate_pvr_ray_start(pvr_data%start_pt)
 !
 !    Right eye
-        call transfer_to_screen(IFLAG_RIGHT,                            &
-     &      node, ele, surf, group%surf_grp, group%surf_grp_geom,       &
-     &      pvr_param%field, pvr_data%view, pvr_param%pixel,            &
-     &      pvr_data%bound, pvr_data%screen, pvr_data%start_pt)
-        call set_subimages(pvr_data%rgb%num_pixel_xy,                   &
-     &      pvr_data%start_pt, pvr_data%image)
-!
-        call rendering_image(node, ele, surf, pvr_data%color,           &
-     &      pvr_param%colorbar, pvr_param%field, pvr_data%screen,       &
-     &      pvr_data%start_pt, pvr_data%image, pvr_data%rgb)
+        call rendering_at_once(IFLAG_RIGHT, node, ele, surf, group,     &
+     &      pvr_param, pvr_data)
 !
         if(pvr_param%file%iflag_anaglyph .gt. 0) then
           call add_left_eye_image(pvr_data%rgb)

@@ -150,9 +150,11 @@
      &     (node%numnod, surf%numsurf, pvr_data(i_pvr)%screen)
 !
         if(pvr_data(i_pvr)%view%iflag_rotate_snap .eq. 0) then
-          if(iflag_debug .gt. 0) write(*,*) 'set_fixed_view_and_image'
-          call set_fixed_view_and_image(node, ele, surf, group,         &
-     &        pvr_param(i_pvr), pvr_data(i_pvr))
+          if(pvr_data(i_pvr)%view%iflag_stereo_pvr .eq. 0) then
+            if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
+            call set_fixed_view_and_image(node, ele, surf, group,       &
+     &          pvr_param(i_pvr), pvr_data(i_pvr))
+          end if
         end if
       end do
 !
@@ -208,7 +210,7 @@
         else
           if(pvr_data(i_pvr)%view%iflag_stereo_pvr .gt. 0) then
             call streo_rendering_fixed_view(istep_pvr, node, ele, surf, &
-     &          pvr_param(i_pvr), pvr_data(i_pvr))
+     &          group, pvr_param(i_pvr), pvr_data(i_pvr))
           else
             call rendering_with_fixed_view(istep_pvr, node, ele, surf,  &
      &          pvr_param(i_pvr), pvr_data(i_pvr))

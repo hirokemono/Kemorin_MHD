@@ -97,6 +97,49 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine rendering_with_rotation(istep_pvr, node, ele, surf,    &
+     &          group, pvr_param, pvr_data)
+!
+      use cal_pvr_modelview_mat
+      use composite_pvr_images
+      use write_PVR_image
+!
+      integer(kind = kint), intent(in) :: istep_pvr
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(mesh_groups), intent(in) :: group
+      type(PVR_control_params), intent(in) :: pvr_param
+!
+      type(PVR_image_generator), intent(inout) :: pvr_data
+!
+!
+      integer(kind = kint) :: i_rot, ist_rot, ied_rot
+!
+      ist_rot = pvr_data%view%istart_rot
+      ied_rot = pvr_data%view%iend_rot
+      do i_rot = ist_rot, ied_rot
+        call cal_pvr_modelview_matrix                                   &
+     &     (i_rot, pvr_param%outline, pvr_data%view, pvr_data%color,    &
+     &      pvr_data%screen)
+!
+        call rendering_at_once(IFLAG_NORMAL, node, ele, surf, group,    &
+     &      pvr_param, pvr_data)
+!
+        if(iflag_debug .gt. 0) write(*,*) 'sel_write_pvr_image_file'
+        call sel_write_pvr_image_file                                   &
+     &   (pvr_param%file, i_rot, istep_pvr, IFLAG_NORMAL, pvr_data%rgb)
+!
+        call dealloc_pvr_local_subimage(pvr_data%image)
+        call deallocate_pvr_ray_start(pvr_data%start_pt)
+      end do
+!
+      end subroutine rendering_with_rotation
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
       subroutine set_fixed_view_and_image(node, ele, surf, group,       &
      &          pvr_param, pvr_data)
 !
@@ -137,7 +180,6 @@
 !
       use composite_pvr_images
       use set_pvr_ray_start_point
-      use composite_pvr_images
       use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
@@ -172,15 +214,14 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_with_rotation(istep_pvr, node, ele, surf,    &
-     &          group, pvr_param, pvr_data)
+      subroutine rendering_at_once(isel_projection,                     &
+     &           node, ele, surf, group, pvr_param, pvr_data)
 !
       use cal_pvr_modelview_mat
       use composite_pvr_images
       use write_PVR_image
 !
-      integer(kind = kint), intent(in) :: istep_pvr
-!
+      integer(kind = kint) :: isel_projection
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
@@ -190,37 +231,20 @@
       type(PVR_image_generator), intent(inout) :: pvr_data
 !
 !
-      integer(kind = kint) :: i_rot, ist_rot, ied_rot
-!
-      ist_rot = pvr_data%view%istart_rot
-      ied_rot = pvr_data%view%iend_rot
-      do i_rot = ist_rot, ied_rot
-        call cal_pvr_modelview_matrix                                   &
-     &     (i_rot, pvr_param%outline, pvr_data%view, pvr_data%color,    &
-     &      pvr_data%screen)
-!
-        call transfer_to_screen(IFLAG_NORMAL,                           &
+      call transfer_to_screen(isel_projection,                          &
      &      node, ele, surf, group%surf_grp, group%surf_grp_geom,       &
      &      pvr_param%field, pvr_data%view, pvr_param%pixel,            &
      &      pvr_data%bound, pvr_data%screen, pvr_data%start_pt)
-        call set_subimages(pvr_data%rgb%num_pixel_xy,                   &
+      call set_subimages(pvr_data%rgb%num_pixel_xy,                     &
      &      pvr_data%start_pt, pvr_data%image)
 !
-        if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
-        call rendering_image                                            &
+      if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
+      call rendering_image                                              &
      &     (node, ele, surf, pvr_data%color, pvr_param%colorbar,        &
      &      pvr_param%field, pvr_data%screen, pvr_data%start_pt,        &
      &      pvr_data%image, pvr_data%rgb)
 !
-        if(iflag_debug .gt. 0) write(*,*) 'sel_write_pvr_image_file'
-        call sel_write_pvr_image_file                                   &
-     &   (pvr_param%file, i_rot, istep_pvr, IFLAG_NORMAL, pvr_data%rgb)
-!
-        call dealloc_pvr_local_subimage(pvr_data%image)
-        call deallocate_pvr_ray_start(pvr_data%start_pt)
-      end do
-!
-      end subroutine rendering_with_rotation
+      end subroutine rendering_at_once
 !
 !  ---------------------------------------------------------------------
 !

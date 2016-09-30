@@ -144,8 +144,8 @@
 !
 !
       pvr_screen%viewpoint_vec(:) = pvr_scr_org%viewpoint_vec(:)
-      pvr_screen%x_nod_model(:,:) =  pvr_scr_org%x_nod_model(:,:)
-      pvr_screen%arccos_sf(:) =      pvr_scr_org%arccos_sf(:)
+!      pvr_screen%x_nod_model(:,:) =  pvr_scr_org%x_nod_model(:,:)
+!      pvr_screen%arccos_sf(:) =      pvr_scr_org%arccos_sf(:)
 !
       end subroutine copy_projected_position
 !
