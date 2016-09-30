@@ -11,6 +11,7 @@
 !!      subroutine allocate_item_pvr_ray_start(num_ray, pvr_start)
 !!      subroutine allocate_item_pvr_ray_pixels(pvr_start)
 !!      subroutine deallocate_pvr_ray_start(pvr_start)
+!!      subroutine deallocate_item_pvr_ray_start(pvr_start)
 !!
 !!      subroutine copy_item_pvr_ray_start(pvr_st_org, pvr_start)
 !!
@@ -156,6 +157,7 @@
       type(pvr_ray_start_type), intent(inout) :: pvr_start
 !
 !
+      call deallocate_item_pvr_ray_pixels(pvr_start)
       call deallocate_item_pvr_ray_start(pvr_start)
       call deallocate_tmp_pvr_ray_start(pvr_start)
       call deallocate_num_pvr_ray_start(pvr_start)
@@ -198,9 +200,20 @@
       deallocate(pvr_start%isf_pvr_ray_start)
       deallocate(pvr_start%xx_pvr_ray_start)
       deallocate(pvr_start%xx_pvr_start, pvr_start%xi_pvr_start)
-      deallocate(pvr_start%pvr_ray_dir, pvr_start%rgba_ray)
+      deallocate(pvr_start%pvr_ray_dir)
 !
       end subroutine deallocate_item_pvr_ray_start
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine deallocate_item_pvr_ray_pixels(pvr_start)
+!
+      type(pvr_ray_start_type), intent(inout) :: pvr_start
+!
+!
+      deallocate(pvr_start%rgba_ray)
+!
+      end subroutine deallocate_item_pvr_ray_pixels
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

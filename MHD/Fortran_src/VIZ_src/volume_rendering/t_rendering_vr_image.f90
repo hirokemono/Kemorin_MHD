@@ -224,7 +224,7 @@
 !
       call dealloc_pvr_local_subimage(pvr_data%image)
       call deallocate_pvr_ray_start(pvr_data%start_pt)
-      call deallocate_pvr_ray_start(pvr_data%start_pt_1)
+      call deallocate_item_pvr_ray_start(pvr_data%start_pt_1)
 !
       end subroutine flush_rendering_4_fixed_view
 !
