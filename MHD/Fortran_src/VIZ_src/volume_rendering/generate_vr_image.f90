@@ -55,7 +55,7 @@
 !
       subroutine transfer_to_screen                                     &
      &        (isel_projection, node, ele, surf, surf_grp, surf_grp_v,  &
-     &         field_pvr, view_param, pvr_bound,  pixel_xy,             &
+     &         field_pvr, view_param, pixel_xy, pvr_bound,              &
      &         pvr_screen, pvr_start)
 !
       use m_geometry_constants

@@ -117,8 +117,8 @@
 !
       call transfer_to_screen(IFLAG_NORMAL,                             &
      &    node, ele, surf, group%surf_grp, group%surf_grp_geom,         &
-     &    pvr_param%field, pvr_data%view, pvr_data%bound,               &
-     &    pvr_param%pixel, pvr_data%screen, pvr_data%start_pt)
+     &    pvr_param%field, pvr_data%view, pvr_param%pixel,              &
+     &    pvr_data%bound, pvr_data%screen, pvr_data%start_pt)
 !
       call set_subimages(pvr_data%rgb%num_pixel_xy,                     &
      &    pvr_data%start_pt, pvr_data%image)
@@ -201,8 +201,8 @@
 !
         call transfer_to_screen(IFLAG_NORMAL,                           &
      &      node, ele, surf, group%surf_grp, group%surf_grp_geom,       &
-     &      pvr_param%field, pvr_data%view, pvr_data%bound,             &
-     &      pvr_param%pixel, pvr_data%screen, pvr_data%start_pt)
+     &      pvr_param%field, pvr_data%view, pvr_param%pixel,            &
+     &      pvr_data%bound, pvr_data%screen, pvr_data%start_pt)
         call set_subimages(pvr_data%rgb%num_pixel_xy,                   &
      &      pvr_data%start_pt, pvr_data%image)
 !
