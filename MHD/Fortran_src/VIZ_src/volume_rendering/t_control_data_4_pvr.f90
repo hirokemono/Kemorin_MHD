@@ -106,10 +106,10 @@
         character(len=kchara) :: pvr_comp_ctl(1)
 !
         integer(kind = kint) :: num_pvr_sect_ctl = 0
-        type(pvr_sections_ctl), pointer :: pvr_sect_ctl(:)
+        type(pvr_sections_ctl), allocatable :: pvr_sect_ctl(:)
 !
         integer(kind = kint) :: num_pvr_iso_ctl = 0
-        type(pvr_isosurf_ctl), pointer :: pvr_iso_ctl(:)
+        type(pvr_isosurf_ctl), allocatable :: pvr_iso_ctl(:)
 !
 !     Top level
 !

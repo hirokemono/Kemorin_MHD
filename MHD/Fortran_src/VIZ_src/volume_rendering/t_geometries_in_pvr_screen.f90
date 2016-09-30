@@ -13,8 +13,12 @@
 !!
 !!      subroutine allocate_nod_data_4_pvr                              &
 !!     &         (numnod, numele, num_sf_grp, field_pvr)
-!!      subroutine allocate_pixel_position_pvr(pixel_xy)
+!!      subroutine dealloc_nod_data_4_pvr(fld)
+!!
+!!      subroutine g(fld)
 !!      subroutine alloc_pvr_isosurfaces(fld)
+!!
+!!      subroutine allocate_pixel_position_pvr(n_pvr_pixel, pixel_xy)
 !!      subroutine dealloc_data_4_pvr(fld)
 !!
 !!      subroutine deallocate_projected_data_pvr                        &
@@ -98,8 +102,6 @@
 !
       private :: alloc_nod_data_4_pvr, alloc_iflag_pvr_used_ele
       private :: alloc_iflag_pvr_boundaries
-      private :: dealloc_iflag_pvr_boundaries
-      private :: dealloc_pvr_sections, dealloc_pvr_isosurfaces
 !
 ! -----------------------------------------------------------------------
 !
@@ -152,6 +154,39 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
+      subroutine allocate_nod_data_4_pvr                                &
+     &         (numnod, numele, num_sf_grp, field_pvr)
+!
+      integer(kind = kint), intent(in) :: numnod, numele
+      integer(kind = kint), intent(in) :: num_sf_grp
+      type(pvr_projected_field), intent(inout) :: field_pvr
+!
+!
+        call alloc_nod_data_4_pvr                                       &
+     &     (numnod, numele, field_pvr)
+        call alloc_iflag_pvr_used_ele(numele, field_pvr)
+        call alloc_iflag_pvr_boundaries                                 &
+     &     (num_sf_grp, field_pvr)
+!
+      end subroutine allocate_nod_data_4_pvr
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_nod_data_4_pvr(field_pvr)
+!
+      type(pvr_projected_field), intent(inout) :: field_pvr
+!
+!
+      deallocate(field_pvr%iflag_enhanse, field_pvr%enhansed_opacity)
+      deallocate(field_pvr%iflag_used_ele)
+      deallocate(field_pvr%d_pvr, field_pvr%grad_ele)
+!
+      end subroutine dealloc_nod_data_4_pvr
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
       subroutine alloc_nod_data_4_pvr(nnod, nele, fld)
 !
       integer(kind = kint), intent(in) :: nnod, nele
@@ -196,6 +231,7 @@
       end subroutine alloc_iflag_pvr_boundaries
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
 !
       subroutine alloc_pvr_sections(fld)
 !
@@ -230,29 +266,6 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine dealloc_data_4_pvr(fld)
-!
-      type(pvr_projected_field), intent(inout) :: fld
-!
-!
-      deallocate(fld%iflag_used_ele)
-      deallocate(fld%d_pvr, fld%grad_ele)
-!
-      end subroutine dealloc_data_4_pvr
-!
-! -----------------------------------------------------------------------
-!
-      subroutine dealloc_iflag_pvr_boundaries(fld)
-!
-      type(pvr_projected_field), intent(inout) :: fld
-!
-!
-      deallocate(fld%iflag_enhanse, fld%enhansed_opacity)
-!
-      end subroutine dealloc_iflag_pvr_boundaries
-!
-! -----------------------------------------------------------------------
-!
       subroutine dealloc_pvr_sections(fld)
 !
       type(pvr_projected_field), intent(inout) :: fld
@@ -277,32 +290,17 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_nod_data_4_pvr                                &
-     &         (numnod, numele, num_sf_grp, field_pvr)
+      subroutine allocate_pixel_position_pvr(n_pvr_pixel, pixel_xy)
 !
-      integer(kind = kint), intent(in) :: numnod, numele
-      integer(kind = kint), intent(in) :: num_sf_grp
-      type(pvr_projected_field), intent(inout) :: field_pvr
-!
-!
-        call alloc_nod_data_4_pvr                                       &
-     &     (numnod, numele, field_pvr)
-        call alloc_iflag_pvr_used_ele(numele, field_pvr)
-        call alloc_iflag_pvr_boundaries                                 &
-     &     (num_sf_grp, field_pvr)
-!
-      end subroutine allocate_nod_data_4_pvr
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine allocate_pixel_position_pvr(pixel_xy)
-!
+      integer(kind = kint), intent(in) :: n_pvr_pixel(2)
       type(pvr_pixel_position_type), intent(inout) :: pixel_xy
 !
 !
+      pixel_xy%num_pixel_x = n_pvr_pixel(1)
+      pixel_xy%num_pixel_y = n_pvr_pixel(2)
       allocate(pixel_xy%pixel_point_x(pixel_xy%num_pixel_x))
       allocate(pixel_xy%pixel_point_y(pixel_xy%num_pixel_y))
+!
       pixel_xy%pixel_point_x =  0.0d0
       pixel_xy%pixel_point_y =  0.0d0
 !

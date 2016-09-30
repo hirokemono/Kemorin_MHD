@@ -7,6 +7,8 @@
 !!     &       (ele_grp, surf_grp, num_nod_phys, phys_nod_name,         &
 !!     &        pvr_control, file_params, fld_params, view_params,      &
 !!     &        field_pvr, color_params, cbar_params)
+!!       subroutine flush_each_pvr_control                              &
+!!      &         (color_params, fld_params, field_pvr)
 !
       module set_pvr_control
 !
@@ -80,6 +82,33 @@
 !
       end subroutine set_each_pvr_control
 !
+!   --------------------------------------------------------------------
+!
+       subroutine flush_each_pvr_control                                &
+      &         (color_params, fld_params, field_pvr)
+!
+      use t_control_params_4_pvr
+      use t_geometries_in_pvr_screen
+!
+      type(pvr_colormap_parameter), intent(inout) :: color_params
+      type(pvr_field_parameter), intent(inout) :: fld_params
+      type(pvr_projected_field), intent(inout) :: field_pvr
+!
+!
+      if(field_pvr%num_sections .gt. 0) then
+        call dealloc_pvr_sections(field_pvr)
+      end if
+!
+      if(field_pvr%num_isosurf .gt. 0) then
+        call dealloc_pvr_isosurfaces(field_pvr)
+      end if
+!
+      call dealloc_pvr_element_group(fld_params)
+      call dealloc_pvr_color_parameteres(color_params)
+!
+      end subroutine flush_each_pvr_control
+!
+!  ---------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine read_control_pvr(i_pvr)

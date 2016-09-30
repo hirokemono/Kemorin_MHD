@@ -7,12 +7,16 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
+!!      subroutine rendering_with_rotation(istep_pvr, node, ele, surf,  &
+!!     &          group, pvr_param, pvr_data)
 !!      subroutine set_fixed_view_and_image(node, ele, surf, group,     &
 !!     &          pvr_param, pvr_data)
 !!      subroutine rendering_with_fixed_view(istep_pvr, node, ele, surf,&
 !!     &          pvr_param, pvr_data)
-!!      subroutine rendering_with_rotation(istep_pvr, node, ele, surf,  &
-!!     &          group, pvr_param, pvr_data)
+!!      subroutine flush_rendering_4_fixed_view(pvr_data)
+!!
+!!      subroutine rendering_at_once(isel_projection,                   &
+!!     &           node, ele, surf, group, pvr_param, pvr_data)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -210,6 +214,19 @@
       end if
 !
       end subroutine rendering_with_fixed_view
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine flush_rendering_4_fixed_view(pvr_data)
+!
+!
+      type(PVR_image_generator), intent(inout) :: pvr_data
+!
+      call dealloc_pvr_local_subimage(pvr_data%image)
+      call deallocate_pvr_ray_start(pvr_data%start_pt)
+      call deallocate_pvr_ray_start(pvr_data%start_pt_1)
+!
+      end subroutine flush_rendering_4_fixed_view
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

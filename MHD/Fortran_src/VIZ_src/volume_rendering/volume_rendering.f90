@@ -131,11 +131,8 @@
      &      pvr_data(i_pvr)%screen)
 !
         if(iflag_debug .gt. 0) write(*,*) 'set_pixel_on_pvr_screen'
-        call set_pixel_on_pvr_screen                                    &
-     &    (pvr_data(i_pvr)%view, pvr_param(i_pvr)%pixel)
-!
-        call alloc_pvr_image_array_type                                 &
-     &     (pvr_data(i_pvr)%view, pvr_data(i_pvr)%rgb)
+        call set_pixel_on_pvr_screen(pvr_data(i_pvr)%view,              &
+     &      pvr_param(i_pvr)%pixel, pvr_data(i_pvr)%rgb)
 !
         if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_matrix'
         call set_pvr_projection_matrix(i_pvr, pvr_data(i_pvr)%view)
@@ -234,19 +231,31 @@
         call reset_pvr_view_parameteres(pvr_data(i_pvr)%view)
       end do
 !
-!
       end subroutine allocate_components_4_pvr
 !
 !  ---------------------------------------------------------------------
 !
       subroutine deallocate_pvr_data
 !
+      use set_pvr_control
+!
       integer(kind = kint) :: i_pvr
 !
 !
       do i_pvr = 1, num_pvr
-        call dealloc_pvr_element_group(pvr_param(i_pvr)%field_def)
-        call dealloc_pvr_color_parameteres(pvr_data(i_pvr)%color)
+        if(pvr_data(i_pvr)%view%iflag_rotate_snap .eq. 0                &
+     &    .and. pvr_data(i_pvr)%view%iflag_stereo_pvr .eq. 0) then
+            call flush_rendering_4_fixed_view(pvr_data(i_pvr))
+        end if
+        call flush_pixel_on_pvr_screen                                  &
+     &     (pvr_param(i_pvr)%pixel, pvr_data(i_pvr)%rgb)
+!
+        call dealloc_projected_position(pvr_data(i_pvr)%screen)
+!
+        call dealloc_pvr_surf_domain_item(pvr_data(i_pvr)%bound)
+        call dealloc_nod_data_4_pvr(pvr_param(i_pvr)%field)
+        call flush_each_pvr_control(pvr_data(i_pvr)%color,              &
+     &      pvr_param(i_pvr)%field_def, pvr_param(i_pvr)%field)
       end do
       deallocate(pvr_param, pvr_data)
 !

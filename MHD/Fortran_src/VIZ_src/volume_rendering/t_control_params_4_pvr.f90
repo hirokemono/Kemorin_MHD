@@ -8,6 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine reset_pvr_view_parameteres(view_param)
+!!      subroutine alloc_pvr_element_group(fld_prm)
+!!      subroutine dealloc_pvr_element_group(fld_prm)
+!!
+!!      subroutine alloc_pvr_color_parameteres(color)
+!!      subroutine alloc_pvr_opacity_list(color)
+!!      subroutine alloc_light_posi_in_view(color)
+!!      subroutine dealloc_pvr_color_parameteres(color)
 !!@endverbatim
 !
       module t_control_params_4_pvr

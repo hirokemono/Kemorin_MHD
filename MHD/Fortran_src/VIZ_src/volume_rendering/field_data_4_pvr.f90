@@ -10,9 +10,11 @@
 !!      subroutine cal_field_4_each_pvr(node, ele, jac_3d,              &
 !!     &          n_point, num_nod_phys, num_tot_nod_phys,              &
 !!     &          istack_nod_component, d_nod, fld_params, field_pvr)
-!!      subroutine set_pixel_on_pvr_screen(view, pixel_xy)
+!!      subroutine set_pixel_on_pvr_screen(view, pixel_xy, pvr_rgb)
+!!      subroutine flush_pixel_on_pvr_screen(pixel_xy, pvr_rgb)
 !!        type(pvr_view_parameter), intent(in) :: view
 !!        type(pvr_pixel_position_type), intent(inout) :: pixel_xy
+!!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!@endverbatim
 !
       module field_data_4_pvr
@@ -75,24 +77,42 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_pixel_on_pvr_screen(view, pixel_xy)
+      subroutine set_pixel_on_pvr_screen(view, pixel_xy, pvr_rgb)
 !
       use t_geometries_in_pvr_screen
+      use t_pvr_image_array
       use set_projection_matrix
 !
       type(pvr_view_parameter), intent(in) :: view
       type(pvr_pixel_position_type), intent(inout) :: pixel_xy
+      type(pvr_image_type), intent(inout) :: pvr_rgb
 !
 !
-      pixel_xy%num_pixel_x = view%n_pvr_pixel(1)
-      pixel_xy%num_pixel_y = view%n_pvr_pixel(2)
-      call allocate_pixel_position_pvr(pixel_xy)
+      call allocate_pixel_position_pvr(view%n_pvr_pixel, pixel_xy)
+      call alloc_pvr_image_array_type(view%n_pvr_pixel,pvr_rgb)
 !
       call set_pixel_points_on_project                                  &
      &   (view%n_pvr_pixel(1), view%n_pvr_pixel(2),                     &
           pixel_xy%pixel_point_x, pixel_xy%pixel_point_y)
 !
       end subroutine set_pixel_on_pvr_screen
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine flush_pixel_on_pvr_screen(pixel_xy, pvr_rgb)
+!
+      use t_geometries_in_pvr_screen
+      use t_pvr_image_array
+!
+      type(pvr_pixel_position_type), intent(inout) :: pixel_xy
+      type(pvr_image_type), intent(inout) :: pvr_rgb
+!
+!
+      call deallocate_pixel_position_pvr(pixel_xy)
+      call dealloc_pvr_image_array_type(pvr_rgb)
+!
+      end subroutine flush_pixel_on_pvr_screen
 !
 !  ---------------------------------------------------------------------
 !

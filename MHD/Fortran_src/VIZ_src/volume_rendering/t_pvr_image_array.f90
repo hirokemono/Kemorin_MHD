@@ -7,11 +7,18 @@
 !> @brief Structures for PVR Image data
 !!
 !!@verbatim
-!!      subroutine alloc_pvr_image_array_type(view, pvr_rgb)
-!!        type(pvr_view_parameter), intent(in) :: view
-!!        type(pvr_segmented_img), intent(inout) :: pvr_img
-!!      subroutine dealloc_pvr_image_array_type(pvr_img)
+!!      subroutine alloc_pvr_image_array_type(n_pvr_pixel, pvr_rgb)
+!!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!      subroutine alloc_pvr_subimage_flags(num_pixel_xy, pvr_img)
+!!      subroutine alloc_pvr_local_subimage(pvr_img)
+!!      subroutine alloc_pvr_subimage_array(pvr_img)
+!!
+!!      subroutine dealloc_pvr_image_array_type(pvr_rgb)
+!!      subroutine dealloc_pvr_local_subimage(pvr_img)
+!!        type(pvr_segmented_img), intent(inout) :: pvr_img
+!!
+!!      subroutine store_left_eye_image(pvr_rgb)
+!!      subroutine add_left_eye_image(pvr_rgb)
 !!@endverbatim
 !
       module t_pvr_image_array
@@ -107,16 +114,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_pvr_image_array_type(view, pvr_rgb)
+      subroutine alloc_pvr_image_array_type(n_pvr_pixel, pvr_rgb)
 !
       use t_control_params_4_pvr
 !
-      type(pvr_view_parameter), intent(in) :: view
+      integer(kind = kint), intent(in) :: n_pvr_pixel(2)
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
 !
-      pvr_rgb%num_pixels(1:2) = view%n_pvr_pixel(1:2)
-      pvr_rgb%num_pixel_xy = view%n_pvr_pixel(1)*view%n_pvr_pixel(2)
+      pvr_rgb%num_pixels(1:2) = n_pvr_pixel(1:2)
+      pvr_rgb%num_pixel_xy = n_pvr_pixel(1) * n_pvr_pixel(2)
 !
 !
       if(my_rank .eq. 0) then
