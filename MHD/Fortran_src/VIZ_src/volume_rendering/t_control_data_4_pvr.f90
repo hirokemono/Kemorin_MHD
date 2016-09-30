@@ -62,7 +62,7 @@
 !
       use m_machine_parameter
       use m_read_control_elements
-      use m_ctl_data_4_view_transfer
+      use t_ctl_data_4_view_transfer
       use t_control_elements
       use t_read_control_arrays
       use t_ctl_data_pvr_colormap
