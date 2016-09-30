@@ -1,11 +1,5 @@
-!m_ctl_data_4_view_transfer.f90
-!      module m_ctl_data_4_view_transfer
-!
-!        programmed by H.Matsui on May. 2006
-!
-!
-!>@file   m_ctl_data_4_view_transfer.f90
-!!@brief  module m_ctl_data_4_view_transfer
+!>@file   t_ctl_data_4_view_transfer.f90
+!!@brief  module t_ctl_data_4_view_transfer
 !!
 !!@author  H. Matsui
 !!@date Programmed in May. 2006
@@ -100,7 +94,7 @@
 !!@endverbatim
 !!
 !
-      module m_ctl_data_4_view_transfer
+      module t_ctl_data_4_view_transfer
 !
       use m_precision
 !
@@ -440,4 +434,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module m_ctl_data_4_view_transfer
+      end module t_ctl_data_4_view_transfer

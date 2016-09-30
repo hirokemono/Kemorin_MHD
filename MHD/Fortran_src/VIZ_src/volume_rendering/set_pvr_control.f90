@@ -14,7 +14,7 @@
       use calypso_mpi
 !
       use m_control_data_pvrs
-      use m_control_data_4_pvr
+      use t_control_data_4_pvr
 !
       implicit none
 !
@@ -36,7 +36,6 @@
       use t_control_params_4_pvr
       use t_geometries_in_pvr_screen
       use t_control_data_pvr_misc
-      use m_control_data_4_pvr
       use set_control_each_pvr
       use set_field_comp_for_viz
       use set_pvr_modelview_matrix
@@ -106,7 +105,7 @@
       subroutine read_control_modelview(i_pvr)
 !
       use calypso_mpi
-      use m_ctl_data_4_view_transfer
+      use t_ctl_data_4_view_transfer
 !
       integer(kind = kint), intent(in) :: i_pvr
 !

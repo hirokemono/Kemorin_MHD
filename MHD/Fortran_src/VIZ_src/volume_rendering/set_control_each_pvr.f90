@@ -15,7 +15,7 @@
 !
       use m_constants
       use m_error_IDs
-      use m_control_data_4_pvr
+      use t_control_data_4_pvr
       use calypso_mpi
 !
       use set_field_comp_for_viz

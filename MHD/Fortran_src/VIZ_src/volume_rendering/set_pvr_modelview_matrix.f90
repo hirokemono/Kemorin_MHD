@@ -20,7 +20,7 @@
 !
       use m_constants
       use m_error_IDs
-      use m_ctl_data_4_view_transfer
+      use t_ctl_data_4_view_transfer
       use t_control_params_4_pvr
       use t_geometries_in_pvr_screen
 !

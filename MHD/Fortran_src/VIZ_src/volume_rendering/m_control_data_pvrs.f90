@@ -21,7 +21,7 @@
 !
       use m_machine_parameter
       use calypso_mpi
-      use m_control_data_4_pvr
+      use t_control_data_4_pvr
 !
       implicit  none
 !

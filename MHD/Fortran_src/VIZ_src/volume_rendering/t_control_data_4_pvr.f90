@@ -1,5 +1,5 @@
-!m_control_data_4_pvr.f90
-!      module m_control_data_4_pvr
+!t_control_data_4_pvr.f90
+!      module t_control_data_4_pvr
 !
 !        programmed by H.Matsui on May. 2006
 !
@@ -18,6 +18,9 @@
 !!  pvr_output_type      PNG
 !!  monitoring_mode      YES
 !!  image_tranceparency  tranceparent
+!!
+!!  streo_imaging        YES
+!!  anaglyph_image       YES
 !!!
 !!  output_field    temperature    end
 !!  output component     scalar
@@ -52,7 +55,7 @@
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
-      module m_control_data_4_pvr
+      module t_control_data_4_pvr
 !
       use m_precision
       use calypso_mpi
@@ -88,8 +91,10 @@
         type(read_character_item) :: file_head_ctl
         type(read_character_item) :: file_fmt_ctl
         type(read_character_item) :: monitoring_ctl
-!
         type(read_character_item) :: transparent_ctl
+!
+        type(read_character_item) :: streo_ctl
+        type(read_character_item) :: anaglyph_ctl
 !
 !>      Structure for element group list for PVR
 !!@n      group_4_monitor_ctl%c_tbl: Name of element group for PVR
@@ -132,6 +137,10 @@
       character(len=kchara) :: hd_pvr_out_type =      'pvr_output_type'
       character(len=kchara) :: hd_pvr_monitor =   'monitoring_mode'
       character(len=kchara) :: hd_pvr_rgba_type = 'image_tranceparency'
+!
+      character(len=kchara) :: hd_pvr_streo =    'streo_imaging'
+      character(len=kchara) :: hd_pvr_anaglyph = 'anaglyph_image'
+!
       character(len=kchara) :: hd_output_field_def = 'output_field'
       character(len=kchara) :: hd_output_comp_def =  'output_component'
 !
@@ -149,6 +158,7 @@
 !     3rd level for rotation
 !
       private :: hd_pvr_file_head, hd_pvr_out_type, hd_pvr_rgba_type
+      private :: hd_pvr_streo, hd_pvr_anaglyph
       private :: hd_output_field_def, hd_pvr_monitor
       private :: hd_plot_area, hd_output_comp_def, hd_plot_grp
       private :: hd_sf_enhanse, hd_pvr_colordef
@@ -255,6 +265,10 @@
         call read_chara_ctl_type(hd_pvr_out_type, pvr%file_fmt_ctl )
         call read_chara_ctl_type(hd_pvr_monitor, pvr%monitoring_ctl)
         call read_chara_ctl_type(hd_pvr_rgba_type, pvr%transparent_ctl)
+!
+        call read_chara_ctl_type(hd_pvr_streo, pvr%streo_ctl)
+        call read_chara_ctl_type(hd_pvr_anaglyph, pvr%anaglyph_ctl)
+!
         call read_character_ctl_item(hd_output_field_def,               &
      &          pvr%i_output_field_def, pvr%pvr_field_ctl(1) )
         call read_character_ctl_item(hd_output_comp_def,                &
@@ -359,4 +373,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module m_control_data_4_pvr
+      end module t_control_data_4_pvr
