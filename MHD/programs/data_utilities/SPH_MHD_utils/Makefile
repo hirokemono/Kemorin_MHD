@@ -8,6 +8,7 @@ TARGET_SPH_SNAP =         sph_snapshot
 TARGET_SPH_PSF_SNAP =     sph_snapshot_psf
 TARGET_SPH_ZM_SNAP =      sph_zm_snapshot
 TARGET_SPH_ZRMS_SNAP =    sph_zonal_rms_snapshot
+TARGET_SPH_SNAP_BADBOY =  sph_snapshot_badboy
 
 TARGET_SPH_SP_SNAP =    sph_special_snap
 TARGET_MODIFY_SPH_INI = sph_modify_restart
@@ -69,6 +70,12 @@ analyzer_sph_zonal_rms_snap.o \
 SPH_analyzer_snap.o \
 SPH_analyzer_zrms_snap.o
 
+MOD_SPH_SNAP_BADBOY =  \
+main_sph_snap_badboy.o \
+analyzer_sph_snap.o \
+analyzer_sph_snap_badboy.o \
+SPH_analyzer_snap.o
+
 
 MOD_SPH_SP_SNAP_MAIN = \
 main_sph_special_snap.o \
@@ -125,6 +132,7 @@ target_list:
 	@echo 'TARGET_SPH_D_BENCH =    $$(BUILDDIR)/$(TARGET_SPH_D_BENCH)'   >> $(MAKENAME)
 	@echo 'TARGET_SPH_PICK_CIRC =  $$(BUILDDIR)/$(TARGET_SPH_PICK_CIRC)' >> $(MAKENAME)
 	@echo 'TARGET_SPH_SNAP_NOVIZ = $$(BUILDDIR)/$(TARGET_SPH_SNAP_NOVIZ)'>> $(MAKENAME)
+	@echo 'TARGET_SPH_SNAP_BADBOY = $$(BUILDDIR)/$(TARGET_SPH_SNAP_BADBOY)' >> $(MAKENAME)
 	@echo 'TARGET_SPH_ZM_SNAP_NOVIZ = $$(BUILDDIR)/$(TARGET_SPH_ZM_SNAP_NOVIZ)' >> $(MAKENAME)
 	@echo 'TARGET_TAVE_PICK_CIRCLE =  $$(BUILDDIR)/$(TARGET_TAVE_PICK_CIRCLE)' >> $(MAKENAME)
 	@echo >> $(MAKENAME)
@@ -141,6 +149,7 @@ target_task:
 	 '$$(TARGET_SPH_PICK_CIRC)'  \
 	 '$$(TARGET_SPH_SNAP_NOVIZ)' \
 	 '$$(TARGET_SPH_ZM_SNAP_NOVIZ)' \
+	 '$$(TARGET_SPH_SNAP_BADBOY)'   \
 	 '$$(TARGET_TAVE_PICK_CIRCLE)'  >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_SPH_SNAP):  $$(MOD_SPH_SNAP_MAIN)  $$(LIB_FILES_SPH_UTILS)' \
@@ -203,6 +212,12 @@ target_task:
 	'-L. $$(LIBS_SPH_UTILS)  $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	
+	@echo '$$(TARGET_SPH_SNAP_BADBOY):  $$(MOD_SPH_SNAP_BADBOY)  $$(LIB_FILES_SPH_UTILS)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPH_SNAP_BADBOY)' '$$(MOD_SPH_SNAP_BADBOY)' \
+	'-L. $$(LIBS_SPH_UTILS)  $$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	
 	@echo '$$(TARGET_TAVE_PICK_CIRCLE):  $$(MOD_T_AVE_PICK_CIRCLE)  $$(LIB_FILES_SPH_UTILS)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_TAVE_PICK_CIRCLE)' '$$(MOD_T_AVE_PICK_CIRCLE)' \
@@ -233,6 +248,8 @@ mod_list:
 	@echo  $(MOD_SPH_ZRMS_SNAP_MAIN) >> $(MAKENAME)
 	@echo  MOD_SPH_ZM_SNAP_NOVIZ_MAIN=  \\ >> $(MAKENAME)
 	@echo  $(MOD_SPH_ZM_SNAP_NOVIZ_MAIN) >> $(MAKENAME)
+	@echo  MOD_SPH_SNAP_BADBOY=  \\ >> $(MAKENAME)
+	@echo  $(MOD_SPH_SNAP_BADBOY) >> $(MAKENAME)
 	@echo  MOD_SPH_D_BENCH_MAIN=  \\ >> $(MAKENAME)
 	@echo  $(MOD_SPH_D_BENCH_MAIN) >> $(MAKENAME)
 	@echo  MOD_SPH_PICK_CIRC=  \\ >> $(MAKENAME)

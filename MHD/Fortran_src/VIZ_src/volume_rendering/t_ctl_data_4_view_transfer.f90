@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine read_view_transfer_ctl(mat)
-!!      subroutine reset_view_transfer_ctl(mat)
+!!      subroutine dealloc_view_transfer_ctl(mat)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  Input example
 !
@@ -390,7 +390,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine reset_view_transfer_ctl(mat)
+      subroutine dealloc_view_transfer_ctl(mat)
 !
       type(modeview_ctl), intent(inout) :: mat
 !
@@ -445,7 +445,7 @@
       mat%i_image_size =  0
       mat%i_stereo_view = 0
 !
-      end subroutine reset_view_transfer_ctl
+      end subroutine dealloc_view_transfer_ctl
 !
 !  ---------------------------------------------------------------------
 !

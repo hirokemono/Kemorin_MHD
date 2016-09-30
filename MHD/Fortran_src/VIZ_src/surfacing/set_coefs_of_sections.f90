@@ -54,36 +54,26 @@
         call set_coefs_4_psf(psf%psf_coefs_ctl%num,                     &
      &      psf%psf_coefs_ctl%c_tbl,  psf%psf_coefs_ctl%vect,           &
      &      const_psf(1) )
-        call deallocate_psf_coefs_ctl(psf)
 !
       else if(cmp_no_case(tmpchara, cflag_pln)) then
         id_section_method = 2
         call set_coefs_4_plane(psf, const_psf(1))
-        call deallocate_psf_center_ctl(psf)
-        call deallocate_psf_normal_ctl(psf)
 !
       else if(cmp_no_case(tmpchara, cflag_sph)) then
         id_section_method = 2
         call set_coefs_4_sphere(psf, const_psf(1))
-        call deallocate_psf_center_ctl(psf)
 !
       else if(cmp_no_case(tmpchara, cflag_elp)) then
         id_section_method = 3
         call set_coefs_4_ellipsode(psf, const_psf(1) )
-        call deallocate_psf_axis_ctl(psf)
-        call deallocate_psf_center_ctl(psf)
 !
       else if(cmp_no_case(tmpchara, cflag_hyp)) then
         id_section_method = 4
         call set_coefs_4_hyperboloide(psf, const_psf(1) )
-        call deallocate_psf_axis_ctl(psf)
-        call deallocate_psf_center_ctl(psf)
 !
       else if(cmp_no_case(tmpchara, cflag_prb)) then
         id_section_method = 5
         call set_coefs_4_parabolic(psf, const_psf(1) )
-        call deallocate_psf_axis_ctl(psf)
-        call deallocate_psf_center_ctl(psf)
       else
         ierr = ierr_VIZ
         write(e_message,'(a)') 'Set cross section mode'

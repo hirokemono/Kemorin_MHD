@@ -8,10 +8,6 @@
 !!
 !!@verbatim
 !!      subroutine deallocate_cont_dat_4_psf(psf)
-!!      subroutine deallocate_psf_coefs_ctl(psf)
-!!      subroutine deallocate_psf_center_ctl(psf)
-!!      subroutine deallocate_psf_normal_ctl(psf)
-!!      subroutine deallocate_psf_axis_ctl(psf)
 !!        type(psf_ctl), intent(inout) :: psf
 !!
 !!      subroutine read_control_data_4_psf(psf)
@@ -145,13 +141,13 @@
         type(ctl_array_cr) :: psf_coefs_ctl
 !
 !>      Structure for definition of normal vector of plnae sruface
-!!@n      psf_axis_ctl%c_tbl: direction of axis
-!!@n      psf_axis_ctl%vect:  position
+!!@n      psf_normal_ctl%c_tbl: direction of axis
+!!@n      psf_normal_ctl%vect:  position
         type(ctl_array_cr) :: psf_normal_ctl
 !
 !>      Structure for definition of center
-!!@n      psf_axis_ctl%c_tbl: direction of axis
-!!@n      psf_axis_ctl%vect:  position
+!!@n      psf_center_ctl%c_tbl: direction of center
+!!@n      psf_center_ctl%vect:  position
         type(ctl_array_cr) :: psf_center_ctl
 !
 !>      Structure for definition of elipsoid
@@ -263,50 +259,23 @@
       psf%psf_area_ctl%num =  0
       psf%psf_area_ctl%icou = 0
 !
-      end subroutine deallocate_cont_dat_4_psf
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine deallocate_psf_coefs_ctl(psf)
-!
-      type(psf_ctl), intent(inout) :: psf
-!
-!
       call dealloc_control_array_c_r(psf%psf_coefs_ctl)
-!
-      end subroutine deallocate_psf_coefs_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine deallocate_psf_center_ctl(psf)
-!
-      type(psf_ctl), intent(inout) :: psf
-!
-!
-      call dealloc_control_array_c_r(psf%psf_center_ctl)
-!
-      end subroutine deallocate_psf_center_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine deallocate_psf_normal_ctl(psf)
-!
-      type(psf_ctl), intent(inout) :: psf
-!
+      psf%psf_coefs_ctl%num =  0
+      psf%psf_coefs_ctl%icou = 0
 !
       call dealloc_control_array_c_r(psf%psf_normal_ctl)
+      psf%psf_normal_ctl%num =  0
+      psf%psf_normal_ctl%icou = 0
 !
-      end subroutine deallocate_psf_normal_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine deallocate_psf_axis_ctl(psf)
-!
-      type(psf_ctl), intent(inout) :: psf
+      call dealloc_control_array_c_r(psf%psf_center_ctl)
+      psf%psf_center_ctl%num =  0
+      psf%psf_center_ctl%icou = 0
 !
       call dealloc_control_array_c_r(psf%psf_axis_ctl)
+      psf%psf_axis_ctl%num =  0
+      psf%psf_axis_ctl%icou = 0
 !
-      end subroutine deallocate_psf_axis_ctl
+      end subroutine deallocate_cont_dat_4_psf
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

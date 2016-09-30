@@ -3,6 +3,7 @@
 !
 !      Written by H. Matsui on July, 2006
 !
+!!      integer(kind = kint), function check_PVR_update
 !!      subroutine PVR_initialize(node, ele, surf, group, nod_fld)
 !!      subroutine PVR_visualize                                        &
 !!     &         (istep_pvr, node, ele, surf, group, jac_3d, nod_fld)
@@ -50,6 +51,13 @@
 !
       implicit  none
 !
+!
+      integer(kind = kint), parameter :: IFLAG_THROUGH = 1
+      integer(kind = kint), parameter :: IFLAG_UPDATE =  0
+      integer(kind = kint), parameter :: IFLAG_TERMINATE = -1
+!
+      character(len=kchara) :: cflag_update
+!
       integer(kind = kint) :: num_pvr = 0
 !
 !>      Structure of PVR control parameters
@@ -62,6 +70,34 @@
 !  ---------------------------------------------------------------------
 !
       contains
+!
+!  ---------------------------------------------------------------------
+!
+      integer(kind = kint) function check_PVR_update()
+!
+      use m_control_data_pvrs
+      use set_pvr_control
+      use skip_comment_f
+!
+      character(len = kchara) :: tmpchara
+!
+!
+      call calypso_mpi_barrier
+      call read_control_pvr_update(ione)
+!
+      check_PVR_update = IFLAG_THROUGH
+      if(pvr_ctl_struct(1)%updated_ctl%iflag .gt. 0) then
+        tmpchara = pvr_ctl_struct(1)%updated_ctl%charavalue
+        if(cmp_no_case(tmpchara, 'end')) then
+          check_PVR_update = IFLAG_TERMINATE
+        else if(cflag_update .ne. tmpchara) then
+          check_PVR_update = IFLAG_UPDATE
+          cflag_update = tmpchara
+        end if
+      end if
+      call reset_pvr_update_flags(pvr_ctl_struct(1))
+!
+      end function check_PVR_update
 !
 !  ---------------------------------------------------------------------
 !
@@ -87,12 +123,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'allocate_components_4_pvr',    &
      &         num_pvr
-      call allocate_components_4_pvr
-!
-      do i_pvr = 1, num_pvr
-        call allocate_nod_data_4_pvr(node%numnod, ele%numele,           &
-     &      group%surf_grp%num_grp, pvr_param(i_pvr)%field)
-      end do
+      call allocate_components_4_pvr(node, ele, group)
 !
       ctl_file_code = pvr_ctl_file_code
       call allocate_pvr_ctl_struct
@@ -109,10 +140,14 @@
      &      pvr_param(i_pvr)%field, pvr_data(i_pvr)%screen,             &
      &      pvr_data(i_pvr)%color, pvr_param(i_pvr)%colorbar)
 !
+        if(pvr_ctl_struct(1)%updated_ctl%iflag .gt. 0                   &
+     &     .and. i_pvr .eq. 1) then
+          cflag_update = pvr_ctl_struct(1)%updated_ctl%charavalue
+        end if
+!
         call deallocate_cont_dat_pvr(pvr_ctl_struct(i_pvr))
         call calypso_mpi_barrier
       end do
-      call deallocate_pvr_file_header_ctl
 !
 !
       call allocate_imark_4_surface(surf%numsurf)
@@ -220,7 +255,11 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_components_4_pvr
+      subroutine allocate_components_4_pvr(node, ele, group)
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(mesh_groups), intent(in) :: group
 !
       integer(kind = kint) :: i_pvr
 !
@@ -229,6 +268,8 @@
       allocate(pvr_data(num_pvr))
       do i_pvr = 1, num_pvr
         call reset_pvr_view_parameteres(pvr_data(i_pvr)%view)
+        call allocate_nod_data_4_pvr(node%numnod, ele%numele,           &
+     &      group%surf_grp%num_grp, pvr_param(i_pvr)%field)
       end do
 !
       end subroutine allocate_components_4_pvr

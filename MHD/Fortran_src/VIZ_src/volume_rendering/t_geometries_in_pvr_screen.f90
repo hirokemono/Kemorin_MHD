@@ -271,7 +271,7 @@
       type(pvr_projected_field), intent(inout) :: fld
 !
 !
-      deallocate(fld%itype_isosurf, fld%iso_value)
+      deallocate(fld%coefs, fld%sect_opacity)
 !
       end subroutine dealloc_pvr_sections
 !

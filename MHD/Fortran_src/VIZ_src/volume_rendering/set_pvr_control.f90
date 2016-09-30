@@ -7,6 +7,7 @@
 !!     &       (ele_grp, surf_grp, num_nod_phys, phys_nod_name,         &
 !!     &        pvr_control, file_params, fld_params, view_params,      &
 !!     &        field_pvr, color_params, cbar_params)
+!!      subroutine read_control_pvr_update(i_pvr)
 !!       subroutine flush_each_pvr_control                              &
 !!      &         (color_params, fld_params, field_pvr)
 !
@@ -119,7 +120,6 @@
 !
       if(fname_pvr_ctl(i_pvr) .eq. 'NO_FILE') return
 !
-      call reset_pvr_control_flags(pvr_ctl_struct(i_pvr))
       if(my_rank .eq. 0) write(*,*) 'PVR control:', i_pvr,':  ',        &
      &                      trim( fname_pvr_ctl(i_pvr) )
 !
@@ -128,6 +128,25 @@
       close(pvr_ctl_file_code)
 !
       end subroutine read_control_pvr
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine read_control_pvr_update(i_pvr)
+!
+      use calypso_mpi
+!
+      integer(kind = kint), intent(in) :: i_pvr
+!
+      if(fname_pvr_ctl(i_pvr) .eq. 'NO_FILE') return
+!
+!
+      open(pvr_ctl_file_code, file=fname_pvr_ctl(i_pvr), status='old')
+      call load_ctl_label_and_line
+      call read_pvr_update_flag(pvr_ctl_struct(i_pvr))
+!
+      close(pvr_ctl_file_code)
+!
+      end subroutine read_control_pvr_update
 !
 !  ---------------------------------------------------------------------
 !

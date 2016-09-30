@@ -5,15 +5,17 @@
 !
 !      subroutine deallocate_cont_dat_pvr(pvr)
 !
-!      subroutine read_control_data_pvr(pvr)
-!      subroutine read_control_data_colormap(pvr)
-!      subroutine read_vr_psf_ctl(pvr)
-!      subroutine reset_pvr_control_flags
-!
+!!      subroutine read_control_data_pvr(pvr)
+!!      subroutine reset_pvr_update_flags(pvr)
+!!      subroutine read_control_data_colormap(pvr)
+!!      subroutine read_vr_psf_ctl(pvr)
+!!      subroutine read_pvr_update_flag(pvr)
+!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!     example of control for Kemo's volume rendering
 !!
 !!begin volume_rendering   (BMP or PNG)
+!!  updated_sign         go
 !!  pvr_file_head        pvr_temp
 !!  pvr_output_type      PNG
 !!  monitoring_mode      YES
@@ -88,6 +90,8 @@
 !>    Structure for image rotation
         type(pvr_movie_ctl) :: movie
 !
+        type(read_character_item) :: updated_ctl
+!
         type(read_character_item) :: file_head_ctl
         type(read_character_item) :: file_fmt_ctl
         type(read_character_item) :: monitoring_ctl
@@ -133,8 +137,9 @@
 !
 !     2nd level for volume_rendering
 !
-      character(len=kchara) :: hd_pvr_file_head =     'pvr_file_head'
-      character(len=kchara) :: hd_pvr_out_type =      'pvr_output_type'
+      character(len=kchara) :: hd_pvr_updated =     'updated_sign'
+      character(len=kchara) :: hd_pvr_file_head =   'pvr_file_head'
+      character(len=kchara) :: hd_pvr_out_type =    'pvr_output_type'
       character(len=kchara) :: hd_pvr_monitor =   'monitoring_mode'
       character(len=kchara) :: hd_pvr_rgba_type = 'image_tranceparency'
 !
@@ -158,7 +163,7 @@
 !     3rd level for rotation
 !
       private :: hd_pvr_file_head, hd_pvr_out_type, hd_pvr_rgba_type
-      private :: hd_pvr_streo, hd_pvr_anaglyph
+      private :: hd_pvr_streo, hd_pvr_anaglyph, hd_pvr_updated
       private :: hd_output_field_def, hd_pvr_monitor
       private :: hd_plot_area, hd_output_comp_def, hd_plot_grp
       private :: hd_sf_enhanse, hd_pvr_colordef
@@ -172,11 +177,28 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine deallocate_cont_dat_pvr(pvr)
+      subroutine read_control_data_pvr(pvr)
 !
       type(pvr_ctl), intent(inout) :: pvr
 !
 !
+      call load_ctl_label_and_line
+      call read_vr_psf_ctl(pvr)
+!
+      end subroutine read_control_data_pvr
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine deallocate_cont_dat_pvr(pvr)
+!
+      type(pvr_ctl), intent(inout) :: pvr
+      integer(kind = kint) :: i
+!
+!
+      call reset_pvr_colormap_flags(pvr%color)
+      call reset_pvr_misc_control_flags(pvr%colorbar, pvr%movie)
+!
+      call dealloc_view_transfer_ctl(pvr%mat)
       call dealloc_pvr_color_crl(pvr%color)
 !
       if(pvr%pvr_area_ctl%num .gt. 0) then
@@ -191,7 +213,12 @@
       pvr%surf_enhanse_ctl%num =  0
       pvr%surf_enhanse_ctl%icou = 0
 !
-      if(pvr%num_pvr_sect_ctl .gt. 0) deallocate(pvr%pvr_sect_ctl)
+      if(pvr%num_pvr_sect_ctl .gt. 0) then
+        do i = 1, pvr%num_pvr_sect_ctl
+          call deallocate_cont_dat_4_psf(pvr%pvr_sect_ctl(i)%psf)
+        end do
+        deallocate(pvr%pvr_sect_ctl)
+      end if
       pvr%num_pvr_sect_ctl = 0
       pvr%i_pvr_sect = 0
 !
@@ -199,20 +226,28 @@
       pvr%num_pvr_iso_ctl = 0
       pvr%i_pvr_iso = 0
 !
+      pvr%updated_ctl%iflag =     0
+      pvr%file_head_ctl%iflag =   0
+      pvr%file_fmt_ctl%iflag =    0
+      pvr%transparent_ctl%iflag = 0
+      pvr%i_output_field_def =    0
+      pvr%i_output_comp_def =     0
+!
+      pvr%i_pvr_ctl = 0
+      pvr%i_plot_area =   0
+!
       end subroutine deallocate_cont_dat_pvr
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
 !
-      subroutine read_control_data_pvr(pvr)
+      subroutine reset_pvr_update_flags(pvr)
 !
       type(pvr_ctl), intent(inout) :: pvr
 !
+      pvr%i_pvr_ctl = 0
+      pvr%updated_ctl%iflag =     0
 !
-      call load_ctl_label_and_line
-      call read_vr_psf_ctl(pvr)
-!
-      end subroutine read_control_data_pvr
+      end subroutine reset_pvr_update_flags
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -261,6 +296,7 @@
         call read_pvr_rotation_ctl(pvr%movie)
 !
 !
+        call read_chara_ctl_type(hd_pvr_updated, pvr%updated_ctl)
         call read_chara_ctl_type(hd_pvr_file_head, pvr%file_head_ctl)
         call read_chara_ctl_type(hd_pvr_out_type, pvr%file_fmt_ctl )
         call read_chara_ctl_type(hd_pvr_monitor, pvr%monitoring_ctl)
@@ -276,6 +312,26 @@
       end do
 !
       end subroutine read_vr_psf_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine read_pvr_update_flag(pvr)
+!
+      type(pvr_ctl), intent(inout) :: pvr
+!
+!
+      if(right_begin_flag(hd_vr_psf_ctl) .eq. 0) return
+      if (pvr%i_pvr_ctl.gt.0) return
+      do
+        call load_ctl_label_and_line
+!
+        call find_control_end_flag(hd_vr_psf_ctl, pvr%i_pvr_ctl)
+        if(pvr%i_pvr_ctl .gt. 0) exit
+!
+        call read_chara_ctl_type(hd_pvr_updated, pvr%updated_ctl)
+      end do
+!
+      end subroutine read_pvr_update_flag
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -348,28 +404,6 @@
       call calypso_mpi_barrier
 !
       end subroutine read_plot_area_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine reset_pvr_control_flags(pvr)
-!
-      type(pvr_ctl), intent(inout) :: pvr
-!
-!
-      pvr%file_head_ctl%iflag =   0
-      pvr%file_fmt_ctl%iflag =    0
-      pvr%transparent_ctl%iflag = 0
-      pvr%i_output_field_def =    0
-      pvr%i_output_comp_def =     0
-!
-      pvr%i_pvr_ctl = 0
-      pvr%i_plot_area =   0
-!
-      call reset_pvr_colormap_flags(pvr%color)
-      call reset_view_transfer_ctl(pvr%mat)
-      call reset_pvr_misc_control_flags(pvr%colorbar, pvr%movie)
-!
-      end subroutine reset_pvr_control_flags
 !
 !  ---------------------------------------------------------------------
 !

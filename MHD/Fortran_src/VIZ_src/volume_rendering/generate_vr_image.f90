@@ -204,31 +204,26 @@
 !
 !
       call alloc_pvr_subimage_flags(num_pixel_xy, pvr_img)
-      call calypso_mpi_barrier
 !
       if(iflag_debug .gt. 0) write(*,*) 'cont_overlap_in_each_domain'
       call cont_overlap_in_each_domain(pvr_start%num_pvr_ray,           &
      &    pvr_start%id_pixel_start,  pvr_img%num_pixel_xy,              &
      &    pvr_img%iflag_img_pe, pvr_img%iflag_mapped,                   &
      &    pvr_img%num_overlap)
-      call calypso_mpi_barrier
 !
       call count_pixel_with_image                                       &
      &   (pvr_img%num_pixel_xy, pvr_img%npixel_img,                     &
      &    pvr_img%iflag_img_pe, pvr_img%iflag_mapped)
-      call calypso_mpi_barrier
 !
       call alloc_pvr_local_subimage(pvr_img)
 !
       call share_num_images_to_compose(pvr_img%num_overlap,             &
      &    pvr_img%istack_overlap, pvr_img%ntot_overlap)
-      call calypso_mpi_barrier
 !
       call count_pixel_for_composit(pvr_img%num_pixel_xy,               &
      &    pvr_img%npixel_img, pvr_img%npixel_img_local,                 &
      &    pvr_img%istack_pixel, pvr_img%ipixel_small,                   &
      &    pvr_img%iflag_img_pe)
-      call calypso_mpi_barrier
 !
       call alloc_pvr_subimage_array(pvr_img)
 !
@@ -237,7 +232,6 @@
      &    pvr_img%num_overlap, pvr_img%num_pixel_xy,                    &
      &    pvr_img%npixel_img, pvr_img%iflag_img_pe,                     &
      &    pvr_img%iflag_mapped, pvr_img%iflag_img_lc, pvr_img%depth_lc)
-      call calypso_mpi_barrier
 !
       if(iflag_debug .gt. 0) write(*,*) 'distribute_pixel_depth'
       call distribute_pixel_depth                                       &
@@ -246,13 +240,11 @@
      &    pvr_img%istack_pixel, pvr_img%npixel_img_local,               &
      &    pvr_img%depth_lc, pvr_img%depth_recv, pvr_img%depth_part,     &
      &    pvr_img%COMM)
-      call calypso_mpi_barrier
 !
       if(iflag_debug .gt. 0) write(*,*) 'sort_subimage_pixel_depth'
       call sort_subimage_pixel_depth                                    &
      &   (pvr_img%ntot_overlap, pvr_img%npixel_img_local,               &
      &    pvr_img%depth_part, pvr_img%ip_closer)
-      call calypso_mpi_barrier
 !
       end subroutine set_subimages
 !
