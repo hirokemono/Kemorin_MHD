@@ -53,6 +53,8 @@
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
       type(pvr_projected_field), intent(inout) :: field_pvr
 !
+      integer(kind = kint) :: num_pvr_sf_local
+!
 !
       call s_set_iflag_for_used_ele(ele%numele, ele%interior_ele,      &
      &    ele_grp%num_grp, ele_grp%num_item,                           &
@@ -63,10 +65,9 @@
       call mark_selected_domain_bd                                     &
      &   (ele%numele, surf%numsurf, surf%isf_4_ele,                    &
      &    field_pvr%iflag_used_ele)
-      call count_selected_domain_bd                                    &
-     &   (surf%numsurf, pvr_bound%num_pvr_surf)
+      call count_selected_domain_bd(surf%numsurf, num_pvr_sf_local)
 !
-      call alloc_pvr_surf_domain_item(pvr_bound)
+      call alloc_pvr_surf_domain_item(num_pvr_sf_local, pvr_bound)
 !
       call mark_selected_domain_bd                                     &
      &   (ele%numele, surf%numsurf, surf%isf_4_ele,                    &

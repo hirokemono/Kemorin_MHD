@@ -7,8 +7,9 @@
 !> @brief Structures for surface group data for volume rendering
 !!
 !!@verbatim
-!!      subroutine alloc_pvr_surf_domain_item(pvr_bound)
+!!      subroutine alloc_pvr_surf_domain_item(num_surf_in, pvr_bound)
 !!      subroutine dealloc_pvr_surf_domain_item(pvr_bound)
+!!      subroutine copy_pvr_surf_domain_item(pvr_bd_org, pvr_bound)
 !!@endverbatim
 !
       module t_surf_grp_4_pvr_domain
@@ -65,10 +66,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_pvr_surf_domain_item(pvr_bound)
+      subroutine alloc_pvr_surf_domain_item(num_surf_in, pvr_bound)
 !
+      integer(kind = kint), intent(in) :: num_surf_in
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
 !
+!
+      pvr_bound%num_pvr_surf = num_surf_in
 !
       allocate(pvr_bound%item_pvr_surf(2,pvr_bound%num_pvr_surf))
       allocate(pvr_bound%screen_norm(3,pvr_bound%num_pvr_surf))
@@ -85,6 +89,7 @@
       pvr_bound%item_pvr_surf = 0
       pvr_bound%screen_norm = 0.0d0
       pvr_bound%screen_posi = 0.0d0
+      pvr_bound%screen_w =    0.0d0
 !
       pvr_bound%screen_xrng = 0.0d0
       pvr_bound%screen_yrng = 0.0d0
@@ -109,6 +114,30 @@
       deallocate(pvr_bound%isurf_xrng,  pvr_bound%jsurf_yrng)
 !
       end subroutine dealloc_pvr_surf_domain_item
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine copy_pvr_surf_domain_item(pvr_bd_org, pvr_bound)
+!
+      type(pvr_bounds_surf_ctl), intent(in) :: pvr_bd_org
+      type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
+!
+!
+!$omp parallel workshare
+      pvr_bound%item_pvr_surf(:,:) = pvr_bd_org%item_pvr_surf(:,:)
+      pvr_bound%screen_norm(:,:) = pvr_bd_org%screen_norm(:,:)
+      pvr_bound%screen_posi(:,:) = pvr_bd_org%screen_posi(:,:)
+      pvr_bound%screen_w(:) =    pvr_bd_org%screen_w(:)
+!
+      pvr_bound%screen_xrng(:,:) = pvr_bd_org%screen_xrng(:,:)
+      pvr_bound%screen_yrng(:,:) = pvr_bd_org%screen_yrng(:,:)
+      pvr_bound%screen_zrng(:,:) = pvr_bd_org%screen_zrng(:,:)
+      pvr_bound%isurf_xrng(:,:) = pvr_bd_org%isurf_xrng(:,:)
+      pvr_bound%jsurf_yrng(:,:) = pvr_bd_org%jsurf_yrng(:,:)
+!$omp end parallel workshare
+!
+      end subroutine copy_pvr_surf_domain_item
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
