@@ -194,9 +194,11 @@
 !
       type(pvr_ray_start_type), intent(inout) :: pvr_start
 !
+      integer(kind = kint) :: num_ray_local
+!
 !
       call allocate_num_pvr_ray_start                                   &
-     &     (pvr_bound%num_pvr_surf, pvr_start)
+     &   (pvr_bound%num_pvr_surf, pvr_start)
 !
       call count_temporal_pvr_ray_start                                 &
      &   (pvr_bound%num_pvr_surf, pvr_bound%screen_norm,                &
@@ -212,13 +214,12 @@
      &    pixel_xy%pixel_point_x, pixel_xy%pixel_point_y,               &
      &    pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,              &
      &    pvr_bound%screen_norm, pvr_bound%isurf_xrng,                  &
-     &    pvr_bound%jsurf_yrng, ray_vec,                                &
-     &    pvr_start%num_pvr_ray, pvr_start%istack_pvr_ray_sf,           &
-     &    pvr_start%ntot_tmp_pvr_ray, pvr_start%istack_tmp_pvr_ray_st,  &
-     &    pvr_start%ipix_start_tmp, pvr_start%iflag_start_tmp,          &
-     &    pvr_start%xi_start_tmp)
+     &    pvr_bound%jsurf_yrng, ray_vec, num_ray_local,                 &
+     &    pvr_start%istack_pvr_ray_sf, pvr_start%ntot_tmp_pvr_ray,      &
+     &    pvr_start%istack_tmp_pvr_ray_st, pvr_start%ipix_start_tmp,    &
+     &    pvr_start%iflag_start_tmp, pvr_start%xi_start_tmp)
 !
-      call allocate_item_pvr_ray_start(pvr_start)
+      call allocate_item_pvr_ray_start(num_ray_local, pvr_start)
       call allocate_item_pvr_ray_pixels(pvr_start)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_each_pvr_ray_start'

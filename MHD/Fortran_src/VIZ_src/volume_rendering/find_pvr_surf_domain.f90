@@ -118,24 +118,6 @@
       end subroutine set_pvr_domain_surface_data
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine deallocate_pvr_surf_domain(num_pvr, pvr_bound)
-!
-      use t_surf_grp_4_pvr_domain
-!
-      integer(kind=kint), intent(in) :: num_pvr
-      type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound(num_pvr)
-!
-      integer(kind = kint) :: i_pvr
-!
-!
-      do i_pvr = 1, num_pvr
-        call dealloc_pvr_surf_domain_item(pvr_bound(i_pvr))
-      end do
-!
-      end subroutine deallocate_pvr_surf_domain
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine norm_on_model_pvr_domains(numnod, numele, numsurf,     &

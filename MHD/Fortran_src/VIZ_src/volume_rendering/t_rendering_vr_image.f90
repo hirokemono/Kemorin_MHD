@@ -112,9 +112,8 @@
       call set_subimages(pvr_data%rgb%num_pixel_xy,                     &
      &    pvr_data%start_pt, pvr_data%image)
 !
-      pvr_data%start_pt_saved%num_pvr_ray                               &
-     &               = pvr_data%start_pt%num_pvr_ray
-      call allocate_item_pvr_ray_start(pvr_data%start_pt_saved)
+      call allocate_item_pvr_ray_start                                  &
+     &   (pvr_data%start_pt%num_pvr_ray, pvr_data%start_pt_saved)
       call copy_item_pvr_ray_start                                      &
      &   (pvr_data%start_pt, pvr_data%start_pt_saved)
 !

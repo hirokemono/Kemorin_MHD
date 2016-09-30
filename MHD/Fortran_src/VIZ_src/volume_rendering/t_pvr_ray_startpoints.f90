@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine allocate_num_pvr_ray_start(num_pvr_surf, pvr_start)
-!!      subroutine allocate_item_pvr_ray_start(pvr_start)
+!!      subroutine allocate_item_pvr_ray_start(num_ray, pvr_start)
 !!      subroutine allocate_item_pvr_ray_pixels(pvr_start)
 !!      subroutine deallocate_pvr_ray_start(pvr_start)
 !!
@@ -92,11 +92,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_item_pvr_ray_start(pvr_start)
+      subroutine allocate_item_pvr_ray_start(num_ray, pvr_start)
 !
+      integer(kind = kint), intent(in) :: num_ray
       type(pvr_ray_start_type), intent(inout) :: pvr_start
 !
 !
+      pvr_start%num_pvr_ray  = num_ray
       allocate(pvr_start%id_pixel_start(pvr_start%num_pvr_ray)     )
       allocate(pvr_start%icount_pvr_trace(pvr_start%num_pvr_ray)   )
       allocate(pvr_start%isf_pvr_ray_start(3,pvr_start%num_pvr_ray))
