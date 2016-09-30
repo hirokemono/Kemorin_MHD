@@ -13,8 +13,8 @@
 !!     &         pvr_screen, pvr_start)
 !!      subroutine rendering_image(i_rot, istep_pvr, node, ele, surf,   &
 !!     &          file_param, color_param, cbar_param, view_param,      &
-!!     &          field_pvr, pvr_start, pvr_img)
-!!      subroutine set_subimages(pvr_start, pvr_img)
+!!     &          field_pvr, pvr_start, pvr_img, pvr_rgb)
+!!      subroutine set_subimages(num_pixel_xy, pvr_start, pvr_img)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -28,7 +28,8 @@
 !!        type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
 !!        type(pvr_pixel_position_type), intent(inout) :: pixel_xy
 !!        type(pvr_ray_start_type), intent(inout) :: pvr_start
-!!        type(pvr_image_type), intent(inout) :: pvr_img
+!!        type(pvr_segmented_img), intent(inout) :: pvr_img
+!!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!@endverbatim
 !
       module generate_vr_image
@@ -126,9 +127,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_image(i_rot, istep_pvr, node, ele, surf,     &
+      subroutine wrp_rendering_image(i_rot, istep_pvr, node, ele, surf,     &
      &          file_param, color_param, cbar_param, view_param,        &
-     &          field_pvr, pvr_screen, pvr_start, pvr_img)
+     &          field_pvr, pvr_screen, pvr_start, pvr_img, pvr_rgb)
 !
       use m_geometry_constants
       use t_geometry_data
@@ -152,23 +153,24 @@
       type(pvr_projected_data), intent(in) :: pvr_screen
 !
       type(pvr_ray_start_type), intent(inout) :: pvr_start
-      type(pvr_image_type), intent(inout) :: pvr_img
+      type(pvr_segmented_img), intent(inout) :: pvr_img
+      type(pvr_image_type), intent(inout) :: pvr_rgb
 !
 !
-      if(iflag_debug .gt. 0) write(*,*) 'const_image_over_domains'
-      call const_image_over_domains(node, ele, surf, pvr_screen,        &
-     &    field_pvr, color_param, cbar_param, pvr_start, pvr_img)
+      if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
+      call rendering_image(node, ele, surf, color_param,                &
+     &    cbar_param, field_pvr, pvr_screen, pvr_start, pvr_img, pvr_rgb)
 !
       if(iflag_debug .gt. 0) write(*,*) 'sel_write_pvr_image_file'
       call sel_write_pvr_image_file                                     &
-     &   (file_param, i_rot, istep_pvr, pvr_img)
+     &   (file_param, i_rot, istep_pvr, IFLAG_NORMAL, pvr_rgb)
 !
       if(file_param%iflag_monitoring .gt. 0) then
         call sel_write_pvr_image_file                                   &
-     &     (file_param, izero, iminus, pvr_img)
+     &     (file_param, izero, iminus, IFLAG_NORMAL, pvr_rgb)
       end if
 !
-      end subroutine rendering_image
+      end subroutine wrp_rendering_image
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -239,35 +241,43 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_subimages(pvr_start, pvr_img)
+      subroutine set_subimages(num_pixel_xy, pvr_start, pvr_img)
 !
       use ray_trace_4_each_image
       use composite_pvr_images
       use PVR_image_transfer
 !
+      integer(kind = kint), intent(in) :: num_pixel_xy
       type(pvr_ray_start_type), intent(inout) :: pvr_start
-      type(pvr_image_type), intent(inout) :: pvr_img
+      type(pvr_segmented_img), intent(inout) :: pvr_img
 !
+!
+      call alloc_pvr_subimage_flags(num_pixel_xy, pvr_img)
+      call calypso_mpi_barrier
 !
       if(iflag_debug .gt. 0) write(*,*) 'cont_overlap_in_each_domain'
       call cont_overlap_in_each_domain(pvr_start%num_pvr_ray,           &
      &    pvr_start%id_pixel_start,  pvr_img%num_pixel_xy,              &
      &    pvr_img%iflag_img_pe, pvr_img%iflag_mapped,                   &
      &    pvr_img%num_overlap)
+      call calypso_mpi_barrier
 !
       call count_pixel_with_image                                       &
      &   (pvr_img%num_pixel_xy, pvr_img%npixel_img,                     &
      &    pvr_img%iflag_img_pe, pvr_img%iflag_mapped)
+      call calypso_mpi_barrier
 !
       call alloc_pvr_local_subimage(pvr_img)
 !
       call share_num_images_to_compose(pvr_img%num_overlap,             &
      &    pvr_img%istack_overlap, pvr_img%ntot_overlap)
+      call calypso_mpi_barrier
 !
       call count_pixel_for_composit(pvr_img%num_pixel_xy,               &
      &    pvr_img%npixel_img, pvr_img%npixel_img_local,                 &
      &    pvr_img%istack_pixel, pvr_img%ipixel_small,                   &
      &    pvr_img%iflag_img_pe)
+      call calypso_mpi_barrier
 !
       call alloc_pvr_subimage_array(pvr_img)
 !
@@ -276,6 +286,7 @@
      &    pvr_img%num_overlap, pvr_img%num_pixel_xy,                    &
      &    pvr_img%npixel_img, pvr_img%iflag_img_pe,                     &
      &    pvr_img%iflag_mapped, pvr_img%iflag_img_lc, pvr_img%depth_lc)
+      call calypso_mpi_barrier
 !
       if(iflag_debug .gt. 0) write(*,*) 'distribute_pixel_depth'
       call distribute_pixel_depth                                       &
@@ -284,11 +295,13 @@
      &    pvr_img%istack_pixel, pvr_img%npixel_img_local,               &
      &    pvr_img%depth_lc, pvr_img%depth_recv, pvr_img%depth_part,     &
      &    pvr_img%COMM)
+      call calypso_mpi_barrier
 !
       if(iflag_debug .gt. 0) write(*,*) 'sort_subimage_pixel_depth'
       call sort_subimage_pixel_depth                                    &
      &   (pvr_img%ntot_overlap, pvr_img%npixel_img_local,               &
      &    pvr_img%depth_part, pvr_img%ip_closer)
+      call calypso_mpi_barrier
 !
       end subroutine set_subimages
 !

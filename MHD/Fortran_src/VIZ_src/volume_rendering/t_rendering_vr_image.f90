@@ -75,7 +75,9 @@
         type(pvr_ray_start_type) :: start_pt_saved
 !
 !>        Pixel data structure for volume rendering
-        type(pvr_image_type) :: image
+        type(pvr_segmented_img) :: image
+!>        Pixel data structure for volume rendering
+        type(pvr_image_type) :: rgb
       end type PVR_image_generator
 !
 !  ---------------------------------------------------------------------
@@ -107,7 +109,8 @@
      &    pvr_param%field, pvr_data%view, pvr_data%bound,               &
      &    pvr_param%pixel, pvr_data%screen, pvr_data%start_pt)
 !
-      call set_subimages(pvr_data%start_pt, pvr_data%image)
+      call set_subimages(pvr_data%rgb%num_pixel_xy,                     &
+     &    pvr_data%start_pt, pvr_data%image)
 !
       pvr_data%start_pt_saved%num_pvr_ray                               &
      &               = pvr_data%start_pt%num_pvr_ray
@@ -139,10 +142,10 @@
       call copy_item_pvr_ray_start                                      &
      &   (pvr_data%start_pt_saved, pvr_data%start_pt)
 !
-      call rendering_image(i_rot, istep_pvr, node, ele, surf,           &
+      call wrp_rendering_image(i_rot, istep_pvr, node, ele, surf,           &
      &    pvr_param%file, pvr_data%color, pvr_param%colorbar,           &
      &    pvr_data%view, pvr_param%field, pvr_data%screen,              &
-     &    pvr_data%start_pt,pvr_data%image)
+     &    pvr_data%start_pt, pvr_data%image, pvr_data%rgb)
 !
 !      call dealloc_pvr_local_subimage(pvr_data%image)
 !
@@ -179,12 +182,13 @@
      &      node, ele, surf, group%surf_grp, group%surf_grp_geom,       &
      &      pvr_param%field, pvr_data%view, pvr_data%bound,             &
      &      pvr_param%pixel, pvr_data%screen, pvr_data%start_pt)
-        call set_subimages(pvr_data%start_pt, pvr_data%image)
+        call set_subimages(pvr_data%rgb%num_pixel_xy,                   &
+     &      pvr_data%start_pt, pvr_data%image)
 !
-        call rendering_image(i_rot, istep_pvr, node, ele, surf,         &
+        call wrp_rendering_image(i_rot, istep_pvr, node, ele, surf,     &
      &      pvr_param%file, pvr_data%color, pvr_param%colorbar,         &
      &      pvr_data%view, pvr_param%field, pvr_data%screen,            &
-     &      pvr_data%start_pt, pvr_data%image)
+     &      pvr_data%start_pt, pvr_data%image, pvr_data%rgb)
 !
         call dealloc_pvr_local_subimage(pvr_data%image)
         call deallocate_pvr_ray_start(pvr_data%start_pt)

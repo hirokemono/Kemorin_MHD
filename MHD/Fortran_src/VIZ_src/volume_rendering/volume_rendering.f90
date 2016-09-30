@@ -134,7 +134,7 @@
      &    (pvr_data(i_pvr)%view, pvr_param(i_pvr)%pixel)
 !
         call alloc_pvr_image_array_type                                 &
-     &     (pvr_data(i_pvr)%view, pvr_data(i_pvr)%image)
+     &     (pvr_data(i_pvr)%view, pvr_data(i_pvr)%rgb)
 !
         if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_matrix'
         call set_pvr_projection_matrix(i_pvr, pvr_data(i_pvr)%view)
