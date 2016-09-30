@@ -9,6 +9,7 @@
 !!@verbatim
 !!      subroutine alloc_projected_position(nnod, nsurf, pvr_screen)
 !!      subroutine dealloc_projected_position(pvr_screen)
+!!      subroutine copy_projected_position(pvr_scr_org, pvr_screen)
 !!
 !!      subroutine allocate_nod_data_4_pvr                              &
 !!     &         (numnod, numele, num_sf_grp, field_pvr)
@@ -133,6 +134,20 @@
       deallocate(pvr_screen%x_nod_model)
 !
       end subroutine dealloc_projected_position
+!
+! -----------------------------------------------------------------------
+!
+      subroutine copy_projected_position(pvr_scr_org, pvr_screen)
+!
+      type(pvr_projected_data), intent(in) :: pvr_scr_org
+      type(pvr_projected_data), intent(inout) :: pvr_screen
+!
+!
+      pvr_screen%viewpoint_vec(:) = pvr_scr_org%viewpoint_vec(:)
+      pvr_screen%x_nod_model(:,:) =  pvr_scr_org%x_nod_model(:,:)
+      pvr_screen%arccos_sf(:) =      pvr_scr_org%arccos_sf(:)
+!
+      end subroutine copy_projected_position
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

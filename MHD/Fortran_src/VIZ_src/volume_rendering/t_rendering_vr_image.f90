@@ -71,13 +71,24 @@
         type(pvr_projected_data) :: screen
 !>        Start point structure for volume rendering
         type(pvr_ray_start_type) :: start_pt
-!>        Stored start point structure for volume rendering
-        type(pvr_ray_start_type) :: start_pt_saved
+!
+!>        Pixel data structure for volume rendering
+        type(pvr_image_type) :: rgb
 !
 !>        Pixel data structure for volume rendering
         type(pvr_segmented_img) :: image
 !>        Pixel data structure for volume rendering
-        type(pvr_image_type) :: rgb
+        type(pvr_segmented_img) :: image_2
+!
+!>        Stored start point structure for volume rendering
+        type(pvr_ray_start_type) :: start_pt_1
+!>        Stored start point structure for volume rendering
+        type(pvr_ray_start_type) :: start_pt_2
+!
+!>        Data on screen oordinate
+        type(pvr_projected_data) :: screen_1
+!>        Data on screen oordinate
+        type(pvr_projected_data) :: screen_2
       end type PVR_image_generator
 !
 !  ---------------------------------------------------------------------
@@ -113,9 +124,9 @@
      &    pvr_data%start_pt, pvr_data%image)
 !
       call allocate_item_pvr_ray_start                                  &
-     &   (pvr_data%start_pt%num_pvr_ray, pvr_data%start_pt_saved)
+     &   (pvr_data%start_pt%num_pvr_ray, pvr_data%start_pt_1)
       call copy_item_pvr_ray_start                                      &
-     &   (pvr_data%start_pt, pvr_data%start_pt_saved)
+     &   (pvr_data%start_pt, pvr_data%start_pt_1)
 !
       end subroutine set_fixed_view_and_image
 !
@@ -139,7 +150,7 @@
 !
 !
       call copy_item_pvr_ray_start                                      &
-     &   (pvr_data%start_pt_saved, pvr_data%start_pt)
+     &   (pvr_data%start_pt_1, pvr_data%start_pt)
 !
       call wrp_rendering_image(i_rot, istep_pvr, node, ele, surf,           &
      &    pvr_param%file, pvr_data%color, pvr_param%colorbar,           &
@@ -177,6 +188,7 @@
         call cal_pvr_modelview_matrix                                   &
      &     (i_rot, pvr_param%outline, pvr_data%view, pvr_data%color,    &
      &      pvr_data%screen)
+!
         call transfer_to_screen(IFLAG_NORMAL,                           &
      &      node, ele, surf, group%surf_grp, group%surf_grp_geom,       &
      &      pvr_param%field, pvr_data%view, pvr_data%bound,             &

@@ -208,7 +208,7 @@
       subroutine copy_item_pvr_ray_start(pvr_st_org, pvr_start)
 !
       type(pvr_ray_start_type), intent(in) :: pvr_st_org
-      type(pvr_ray_start_type), intent(in) :: pvr_start
+      type(pvr_ray_start_type), intent(inout) :: pvr_start
 !
 !
 !$omp parallel workshare
