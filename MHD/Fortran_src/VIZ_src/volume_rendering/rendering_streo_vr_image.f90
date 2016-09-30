@@ -73,10 +73,15 @@
       call transfer_to_screen(IFLAG_LEFT,                               &
      &    node, ele, surf, group%surf_grp, group%surf_grp_geom,         &
      &    pvr_param%field, pvr_data%view, pvr_param%pixel,              &
-     &    pvr_data%bound, pvr_data%screen, pvr_data%start_pt_1)
+     &    pvr_data%bound, pvr_data%screen, pvr_data%start_pt)
 !
       call set_subimages(pvr_data%rgb%num_pixel_xy,                     &
-     &    pvr_data%start_pt_1, pvr_data%image)
+     &    pvr_data%start_pt, pvr_data%image)
+!
+      call allocate_item_pvr_ray_start                                  &
+     &   (pvr_data%start_pt%num_pvr_ray, pvr_data%start_pt_1)
+      call copy_item_pvr_ray_start                                      &
+     &   (pvr_data%start_pt, pvr_data%start_pt_1)
 !
       call alloc_projected_position                                     &
      &   (pvr_data%screen%nnod_screen, pvr_data%screen%nsurf_screen,    &
@@ -88,10 +93,15 @@
       call transfer_to_screen(IFLAG_RIGHT,                              &
      &    node, ele, surf, group%surf_grp, group%surf_grp_geom,         &
      &    pvr_param%field, pvr_data%view, pvr_param%pixel,              &
-     &    pvr_data%bound, pvr_data%screen, pvr_data%start_pt_2)
+     &    pvr_data%bound, pvr_data%screen, pvr_data%start_pt)
 !
       call set_subimages(pvr_data%rgb%num_pixel_xy,                     &
-     &    pvr_data%start_pt_2, pvr_data%image_2)
+     &    pvr_data%start_pt, pvr_data%image_2)
+!
+      call allocate_item_pvr_ray_start                                  &
+     &   (pvr_data%start_pt%num_pvr_ray, pvr_data%start_pt_2)
+      call copy_item_pvr_ray_start                                      &
+     &   (pvr_data%start_pt, pvr_data%start_pt_2)
 !
       call alloc_projected_position                                     &
      &   (pvr_data%screen%nnod_screen, pvr_data%screen%nsurf_screen,    &
@@ -118,8 +128,6 @@
       type(PVR_image_generator), intent(inout) :: pvr_data
 !
 !
-      call allocate_item_pvr_ray_start                                  &
-     &   (pvr_data%start_pt_1%num_pvr_ray, pvr_data%start_pt)
       call copy_item_pvr_ray_start                                      &
      &   (pvr_data%start_pt_1, pvr_data%start_pt)
 !
@@ -134,11 +142,8 @@
         call sel_write_pvr_image_file(pvr_param%file,                   &
      &     iminus, istep_pvr, IFLAG_LEFT, pvr_data%rgb)
       end if
-      call deallocate_item_pvr_ray_start(pvr_data%start_pt)
 !
 !
-      call allocate_item_pvr_ray_start                                  &
-     &   (pvr_data%start_pt_2%num_pvr_ray, pvr_data%start_pt)
       call copy_item_pvr_ray_start                                      &
      &   (pvr_data%start_pt_2, pvr_data%start_pt)
 !
@@ -156,10 +161,28 @@
         call sel_write_pvr_image_file(pvr_param%file,                   &
      &      iminus, istep_pvr, IFLAG_RIGHT, pvr_data%rgb)
       end if
-      call deallocate_item_pvr_ray_start(pvr_data%start_pt)
-!
 !
       end subroutine streo_rendering_fixed_view
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine flash_data_4_streo_render
+!
+      type(PVR_image_generator), intent(inout) :: pvr_data
+!
+      call dealloc_projected_position(pvr_data%screen_1)
+      call dealloc_projected_position(pvr_data%screen_2)
+!
+      call deallocate_pvr_ray_start(pvr_data%start_pt_1)
+      call deallocate_pvr_ray_start(pvr_data%start_pt_2)
+!
+      call dealloc_pvr_local_subimage(pvr_data%image_1)
+      call dealloc_pvr_local_subimage(pvr_data%image_2)
+!
+      call dealloc_pvr_local_subimage(pvr_data%image)
+      call deallocate_pvr_ray_start(pvr_data%start_pt)
+!
+      subroutine flash_data_4_streo_render
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

@@ -46,6 +46,7 @@
       use set_pvr_ray_start_point
       use mesh_outline_4_pvr
       use generate_vr_image
+      use rendering_streo_vr_image
 !
       implicit  none
 !
@@ -195,12 +196,23 @@
      &     (pvr_param(i_pvr)%outline, pvr_data(i_pvr)%color)
 !
         if(pvr_data(i_pvr)%view%iflag_rotate_snap .gt. 0) then
-          call rendering_with_rotation                                  &
-     &       (istep_pvr, node, ele, surf, group,                        &
-     &        pvr_param(i_pvr), pvr_data(i_pvr))
+          if(pvr_data(i_pvr)%view%iflag_stereo_pvr .gt. 0) then
+            call streo_rendering_with_rotation                          &
+     &         (istep_pvr, node, ele, surf, group,                      &
+     &          pvr_param(i_pvr), pvr_data(i_pvr))
+          else
+            call rendering_with_rotation                                &
+     &         (istep_pvr, node, ele, surf, group,                      &
+     &          pvr_param(i_pvr), pvr_data(i_pvr))
+          end if
         else
-          call rendering_with_fixed_view(istep_pvr, node, ele, surf,    &
-     &        pvr_param(i_pvr), pvr_data(i_pvr))
+          if(pvr_data(i_pvr)%view%iflag_stereo_pvr .gt. 0) then
+            call streo_rendering_fixed_view(istep_pvr, node, ele, surf, &
+     &          pvr_param(i_pvr), pvr_data(i_pvr))
+          else
+            call rendering_with_fixed_view(istep_pvr, node, ele, surf,  &
+     &          pvr_param(i_pvr), pvr_data(i_pvr))
+          end if
         end if
       end do
 !
