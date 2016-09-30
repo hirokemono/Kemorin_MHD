@@ -18,6 +18,7 @@
 !
       use m_precision
 !
+      use calypso_mpi
       use m_constants
       use m_error_IDs
       use t_ctl_data_4_view_transfer
@@ -52,18 +53,13 @@
 !
       if (mat%modelview_mat_ctl%num .gt. 0) then
         call copy_pvr_modelview_matrix(mat, view_param)
-        call dealloc_control_array_c2_r(mat%modelview_mat_ctl)
       else
         call set_viewpoint_vector_ctl(mat, view_param, pvr_screen)
-        call dealloc_control_array_c_r(mat%lookpoint_ctl)
-        call dealloc_control_array_c_r(mat%viewpoint_ctl)
-        call dealloc_control_array_c_r(mat%up_dir_ctl)
       end if
 !
       if(mat%view_rotation_deg_ctl%iflag .gt. 0                         &
      &    .and. mat%view_rot_vec_ctl%num .ge. 3) then
         call set_view_rotation_vect_ctl(mat, view_param)
-        call dealloc_control_array_c_r(mat%view_rot_vec_ctl)
       end if
 !
       if(mat%scale_factor_ctl%iflag .gt. 0) then
@@ -72,12 +68,10 @@
         view_param%iflag_scale_fact = 1
       else if(mat%scale_vector_ctl%num .ge. 3) then
         call set_view_scale_factor_ctl(mat, view_param)
-        call dealloc_control_array_c_r(mat%scale_vector_ctl)
       end if
 !
       if(mat%viewpt_in_viewer_ctl%num .ge. 3) then
         call set_viewpnt_in_viewer_ctl(mat, view_param)
-        call dealloc_control_array_c_r(mat%viewpt_in_viewer_ctl)
       end if
 !
       end subroutine s_set_pvr_modelview_matrix
@@ -159,8 +153,14 @@
         view_param%eye_separation = 1.0d-1
       end if
 !
-      view_param%iflag_stereo_pvr                                       &
+      if(view_param%iflag_stereo_pvr .gt. 0) then
+        view_param%iflag_stereo_pvr                                     &
      &      = mat%focalpoint_ctl%iflag * mat%eye_separation_ctl%iflag
+        if(view_param%iflag_stereo_pvr.eq.0 .and. my_rank.eq.0) then
+          write(*,*) 'Streo view paramters are missing.'
+          write(*,*) 'Turn off streo view.'
+        end if
+      end if
 !
       end subroutine copy_pvr_perspective_matrix
 !
@@ -168,7 +168,6 @@
 !
       subroutine copy_pvr_modelview_matrix(mat, view_param)
 !
-      use calypso_mpi
       use skip_comment_f
 !
       type(modeview_ctl), intent(in) :: mat
@@ -199,8 +198,6 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_viewpoint_vector_ctl(mat, view_param, pvr_screen)
-!
-      use calypso_mpi
 !
       type(modeview_ctl), intent(in) :: mat
       type(pvr_view_parameter), intent(inout) :: view_param
@@ -268,8 +265,6 @@
 !
       subroutine set_view_rotation_vect_ctl(mat, view_param)
 !
-      use calypso_mpi
-!
       type(modeview_ctl), intent(in) :: mat
       type(pvr_view_parameter), intent(inout) :: view_param
 !
@@ -310,8 +305,6 @@
 !
       subroutine set_view_scale_factor_ctl(mat, view_param)
 !
-      use calypso_mpi
-!
       type(modeview_ctl), intent(in) :: mat
       type(pvr_view_parameter), intent(inout) :: view_param
       integer(kind = kint) :: i, nd
@@ -338,7 +331,6 @@
 !
       subroutine set_viewpnt_in_viewer_ctl(mat, view_param)
 !
-      use calypso_mpi
       use skip_comment_f
 !
       type(modeview_ctl), intent(in) :: mat

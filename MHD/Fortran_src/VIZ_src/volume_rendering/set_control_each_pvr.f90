@@ -83,6 +83,11 @@
         file_param%iflag_monitoring = 1
       end if
 !
+      file_param%iflag_anaglyph = 0
+      if(yes_flag(pvr%anaglyph_ctl%charavalue)) then
+        file_param%iflag_anaglyph = 1
+      end if
+!
       call check_field_4_viz(num_nod_phys, phys_nod_name,               &
      &    ione, pvr%pvr_field_ctl, num_field, num_phys_viz)
       if(num_field .eq. 0) then
@@ -135,6 +140,11 @@
       character(len = kchara) :: fldname_tmp(1)
       character(len = kchara) :: tmpchara
 !
+!
+      view_param%iflag_stereo_pvr = 0
+      if(yes_flag(pvr%streo_ctl%charavalue)) then
+        view_param%iflag_stereo_pvr = 1
+      end if
 !
       call set_components_4_viz                                         &
      &   (num_nod_phys, phys_nod_name, ione, pvr%pvr_field_ctl,         &

@@ -91,6 +91,11 @@
 !!      subroutine add_brj_extension(file_header, file_name)
 !!                put ".brj" at the end
 !!
+!!      subroutine add_left_label(file_header, file_name)
+!!                put "_left" at the end
+!!      subroutine add_right_label(file_header, file_name)
+!!                put "_right" at the end
+!!
 !!      subroutine add_index_after_name(int_id, chara_head, chara_name)
 !!      subroutine int_to_str(int_val, int_string)
 !!      subroutine lint_to_str(lint_val, int_string)
@@ -586,6 +591,32 @@ end subroutine add_fsb_extension
  1011 format (a,".brj")
 !
       end subroutine add_brj_extension
+!
+!-----------------------------------------------------------------------
+!
+      subroutine add_left_label(file_header, file_name)
+!
+      character(len=kchara), intent(in) :: file_header
+      character(len=kchara), intent(inout) :: file_name
+!
+       write(file_name,1011) trim(file_header)
+       file_name = trim(file_name)
+ 1011 format (a,"_left")
+!
+      end subroutine add_left_label
+!
+!-----------------------------------------------------------------------
+!
+      subroutine add_right_label(file_header, file_name)
+!
+      character(len=kchara), intent(in) :: file_header
+      character(len=kchara), intent(inout) :: file_name
+!
+       write(file_name,1011) trim(file_header)
+       file_name = trim(file_name)
+ 1011 format (a,"_right")
+!
+      end subroutine add_right_label
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

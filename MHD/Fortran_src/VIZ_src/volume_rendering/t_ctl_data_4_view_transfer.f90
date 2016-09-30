@@ -88,6 +88,12 @@
 !!      perspective_near_ctl       0.5
 !!      perspective_far_ctl     1000.0
 !!    end projection_matrix_ctl
+!!
+!!    begin streo_view_parameter_ctl
+!!      focal_point_ctl           40.0
+!!      eye_separation_ctl        0.5
+!!    end streo_view_parameter_ctl
+!!
 !!  end view_transform_ctl
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -391,13 +397,30 @@
 !
       mat%i_view_transform = 0
 !
+      call dealloc_control_array_c2_r(mat%modelview_mat_ctl)
       mat%modelview_mat_ctl%num =    0
-      mat%lookpoint_ctl%num =        0
-      mat%viewpoint_ctl%num =        0
-      mat%up_dir_ctl%num =           0
+      mat%modelview_mat_ctl%icou =   0
+!
+      call dealloc_control_array_c_r(mat%lookpoint_ctl)
+      call dealloc_control_array_c_r(mat%viewpoint_ctl)
+      call dealloc_control_array_c_r(mat%up_dir_ctl)
+      mat%lookpoint_ctl%num =   0
+      mat%viewpoint_ctl%num =   0
+      mat%up_dir_ctl%num =      0
+      mat%lookpoint_ctl%icou =  0
+      mat%viewpoint_ctl%icou =  0
+      mat%up_dir_ctl%icou =     0
+!
+      call dealloc_control_array_c_r(mat%view_rot_vec_ctl)
+      call dealloc_control_array_c_r(mat%scale_vector_ctl)
+      call dealloc_control_array_c_r(mat%viewpt_in_viewer_ctl)
       mat%view_rot_vec_ctl%num =     0
       mat%scale_vector_ctl%num =     0
       mat%viewpt_in_viewer_ctl%num = 0
+      mat%view_rot_vec_ctl%icou =     0
+      mat%scale_vector_ctl%icou =     0
+      mat%viewpt_in_viewer_ctl%icou = 0
+!
 !
       mat%perspective_angle_ctl%realvalue =    0.0d0
       mat%perspective_xy_ratio_ctl%realvalue = 0.0d0
@@ -413,16 +436,8 @@
       mat%scale_factor_ctl%realvalue =           1.0d0
 !
 !
-      mat%modelview_mat_ctl%icou =   0
       mat%i_project_mat = 0
 !
-      mat%lookpoint_ctl%icou =  0
-      mat%viewpoint_ctl%icou =  0
-      mat%up_dir_ctl%icou =     0
-!
-      mat%view_rot_vec_ctl%icou =     0
-      mat%scale_vector_ctl%icou =     0
-      mat%viewpt_in_viewer_ctl%icou = 0
 !
       mat%view_rotation_deg_ctl%iflag = 0
       mat%scale_factor_ctl%iflag = 0

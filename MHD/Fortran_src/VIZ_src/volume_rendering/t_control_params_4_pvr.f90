@@ -32,6 +32,8 @@
         integer(kind = kint) :: id_pvr_transparent = 0
 !>    Monitoring mode flag
         integer(kind = kint) :: iflag_monitoring = 0
+!>    Flag to make an anaglyph
+        integer(kind = kint) :: iflag_anaglyph = 0
       end type pvr_output_parameter
 !
 !>  Structure for field parameter for PVR
