@@ -137,6 +137,8 @@
 !
       use composite_pvr_images
       use set_pvr_ray_start_point
+      use composite_pvr_images
+      use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
       type(node_data), intent(in) :: node
@@ -146,18 +148,24 @@
 !
       type(PVR_image_generator), intent(inout) :: pvr_data
 !
-      integer(kind = kint), parameter :: i_rot = -1
-!
 !
       call copy_item_pvr_ray_start                                      &
      &   (pvr_data%start_pt_1, pvr_data%start_pt)
 !
-      call wrp_rendering_image(i_rot, istep_pvr, node, ele, surf,           &
-     &    pvr_param%file, pvr_data%color, pvr_param%colorbar,           &
-     &    pvr_data%view, pvr_param%field, pvr_data%screen,              &
-     &    pvr_data%start_pt, pvr_data%image, pvr_data%rgb)
+      if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
+      call rendering_image                                              &
+     &   (node, ele, surf, pvr_data%color, pvr_param%colorbar,          &
+     &    pvr_param%field, pvr_data%screen, pvr_data%start_pt,          &
+     &    pvr_data%image, pvr_data%rgb)
 !
-!      call dealloc_pvr_local_subimage(pvr_data%image)
+      if(iflag_debug .gt. 0) write(*,*) 'sel_write_pvr_image_file'
+      call sel_write_pvr_image_file                                     &
+     &   (pvr_param%file, iminus, istep_pvr, IFLAG_NORMAL, pvr_data%rgb)
+!
+      if(pvr_param%file%iflag_monitoring .gt. 0) then
+        call sel_write_pvr_image_file                                   &
+     &   (pvr_param%file, iminus, iminus, IFLAG_NORMAL, pvr_data%rgb)
+      end if
 !
       end subroutine rendering_with_fixed_view
 !
@@ -168,6 +176,8 @@
      &          group, pvr_param, pvr_data)
 !
       use cal_pvr_modelview_mat
+      use composite_pvr_images
+      use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
 !
@@ -196,10 +206,15 @@
         call set_subimages(pvr_data%rgb%num_pixel_xy,                   &
      &      pvr_data%start_pt, pvr_data%image)
 !
-        call wrp_rendering_image(i_rot, istep_pvr, node, ele, surf,     &
-     &      pvr_param%file, pvr_data%color, pvr_param%colorbar,         &
-     &      pvr_data%view, pvr_param%field, pvr_data%screen,            &
-     &      pvr_data%start_pt, pvr_data%image, pvr_data%rgb)
+        if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
+        call rendering_image                                            &
+     &     (node, ele, surf, pvr_data%color, pvr_param%colorbar,        &
+     &      pvr_param%field, pvr_data%screen, pvr_data%start_pt,        &
+     &      pvr_data%image, pvr_data%rgb)
+!
+        if(iflag_debug .gt. 0) write(*,*) 'sel_write_pvr_image_file'
+        call sel_write_pvr_image_file                                   &
+     &   (pvr_param%file, i_rot, istep_pvr, IFLAG_NORMAL, pvr_data%rgb)
 !
         call dealloc_pvr_local_subimage(pvr_data%image)
         call deallocate_pvr_ray_start(pvr_data%start_pt)

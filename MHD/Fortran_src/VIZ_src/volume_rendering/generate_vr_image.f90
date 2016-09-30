@@ -11,9 +11,6 @@
 !!     &        (isel_projection, node, ele, surf, surf_grp, surf_grp_v,&
 !!     &         field_pvr, view_param, pvr_bound,  pixel_xy,           &
 !!     &         pvr_screen, pvr_start)
-!!      subroutine rendering_image(i_rot, istep_pvr, node, ele, surf,   &
-!!     &          file_param, color_param, cbar_param, view_param,      &
-!!     &          field_pvr, pvr_start, pvr_img, pvr_rgb)
 !!      subroutine set_subimages(num_pixel_xy, pvr_start, pvr_img)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -124,53 +121,6 @@
      &    pvr_bound, pixel_xy, pvr_screen, pvr_start)
 !
       end subroutine transfer_to_screen
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine wrp_rendering_image(i_rot, istep_pvr, node, ele, surf,     &
-     &          file_param, color_param, cbar_param, view_param,        &
-     &          field_pvr, pvr_screen, pvr_start, pvr_img, pvr_rgb)
-!
-      use m_geometry_constants
-      use t_geometry_data
-      use t_surface_data
-      use t_group_data
-      use composite_pvr_images
-      use set_pvr_ray_start_point
-      use write_PVR_image
-!
-      integer(kind = kint), intent(in) :: i_rot, istep_pvr
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(surface_data), intent(in) :: surf
-!
-      type(pvr_output_parameter), intent(in) :: file_param
-      type(pvr_colormap_parameter), intent(in) :: color_param
-      type(pvr_colorbar_parameter), intent(in) :: cbar_param
-!
-      type(pvr_view_parameter), intent(in) :: view_param
-      type(pvr_projected_field), intent(in) :: field_pvr
-      type(pvr_projected_data), intent(in) :: pvr_screen
-!
-      type(pvr_ray_start_type), intent(inout) :: pvr_start
-      type(pvr_segmented_img), intent(inout) :: pvr_img
-      type(pvr_image_type), intent(inout) :: pvr_rgb
-!
-!
-      if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
-      call rendering_image(node, ele, surf, color_param,                &
-     &    cbar_param, field_pvr, pvr_screen, pvr_start, pvr_img, pvr_rgb)
-!
-      if(iflag_debug .gt. 0) write(*,*) 'sel_write_pvr_image_file'
-      call sel_write_pvr_image_file                                     &
-     &   (file_param, i_rot, istep_pvr, IFLAG_NORMAL, pvr_rgb)
-!
-      if(file_param%iflag_monitoring .gt. 0) then
-        call sel_write_pvr_image_file                                   &
-     &     (file_param, izero, iminus, IFLAG_NORMAL, pvr_rgb)
-      end if
-!
-      end subroutine wrp_rendering_image
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
