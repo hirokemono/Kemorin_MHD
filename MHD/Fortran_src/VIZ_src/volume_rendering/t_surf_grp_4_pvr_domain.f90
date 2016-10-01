@@ -38,25 +38,25 @@
 !>        Number of Surface address for surface group
         integer(kind = kint) :: num_pvr_surf
 !>        Surface address for surface group
-        integer(kind = kint), pointer :: item_pvr_surf(:,:)
+        integer(kind = kint), allocatable :: item_pvr_surf(:,:)
 !
 !>       Average position in screen coordinate
-        real(kind = kreal), pointer :: screen_posi(:,:)
+        real(kind = kreal), allocatable :: screen_posi(:,:)
 !>       Average normal vector in screen coordinate
-        real(kind = kreal), pointer :: screen_norm(:,:)
+        real(kind = kreal), allocatable :: screen_norm(:,:)
 !>       Average w in screen coordinate
-        real(kind = kreal), pointer :: screen_w(:)
+        real(kind = kreal), allocatable :: screen_w(:)
 !
 !>    Start and end position in horizontal screen
-        real(kind = kreal), pointer :: screen_xrng(:,:)
+        real(kind = kreal), allocatable :: screen_xrng(:,:)
 !>    Start and end position in horizontal screen
-        real(kind = kreal), pointer :: screen_yrng(:,:)
+        real(kind = kreal), allocatable :: screen_yrng(:,:)
 !>    Start and end depth in horizontal screen
-        real(kind = kreal), pointer :: screen_zrng(:,:)
+        real(kind = kreal), allocatable :: screen_zrng(:,:)
 !>    Start and end pixel in horizontal screen
-        integer(kind = kint), pointer :: isurf_xrng(:,:)
+        integer(kind = kint), allocatable :: isurf_xrng(:,:)
 !>    Start and end pixel in vetical screen
-        integer(kind = kint), pointer :: jsurf_yrng(:,:)
+        integer(kind = kint), allocatable :: jsurf_yrng(:,:)
       end type pvr_bounds_surf_ctl
 !
 !

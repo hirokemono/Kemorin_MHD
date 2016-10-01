@@ -47,45 +47,45 @@
         integer(kind = kint) :: nnod_screen = 0
 !>    Position in modelview coordinate and screen coordinate
 !!@n    (Overwritten)
-        real(kind = kreal), pointer :: x_nod_model(:,:)
+        real(kind = kreal), allocatable :: x_nod_model(:,:)
 !
 !>    Total number of surface in screen coordinate
         integer(kind = kint) :: nsurf_screen = 0
 !>    Opacity value for surface boundaries
-        real(kind = kreal), pointer :: arccos_sf(:)
+        real(kind = kreal), allocatable :: arccos_sf(:)
       end type pvr_projected_data
 !
 !
 !>  Structure for field data on projected coordinate
       type pvr_projected_field
 !>    Data for rendering
-        real(kind = kreal), pointer :: d_pvr(:)
+        real(kind = kreal), allocatable :: d_pvr(:)
 !>    Gradient for rendering
-        real(kind = kreal), pointer :: grad_ele(:,:)
+        real(kind = kreal), allocatable :: grad_ele(:,:)
 !
 !>    flag for rendering element
-        integer(kind = kint), pointer :: iflag_used_ele(:)
+        integer(kind = kint), allocatable :: iflag_used_ele(:)
 !
 !>    integer flag for surface boundaries
-        integer(kind = kint), pointer :: iflag_enhanse(:)
+        integer(kind = kint), allocatable :: iflag_enhanse(:)
 !>    Opacity value for surface boundaries
-        real(kind = kreal), pointer :: enhansed_opacity(:)
+        real(kind = kreal), allocatable :: enhansed_opacity(:)
 !
 !>    Number of sections
         integer(kind = kint) :: num_sections
 !>    fiale value for isosurfaces
-        real(kind = kreal), pointer :: coefs(:,:)
+        real(kind = kreal), allocatable :: coefs(:,:)
 !>    Opacity value for isosurfaces
-        real(kind = kreal), pointer :: sect_opacity(:)
+        real(kind = kreal), allocatable :: sect_opacity(:)
 !
 !>    Number of isosurfaces
         integer(kind = kint) :: num_isosurf
 !>    Number of isosurfaces
-        integer(kind = kint), pointer :: itype_isosurf(:)
+        integer(kind = kint), allocatable :: itype_isosurf(:)
 !>    fiale value for isosurfaces
-        real(kind = kreal), pointer :: iso_value(:)
+        real(kind = kreal), allocatable :: iso_value(:)
 !>    Opacity value for isosurfaces
-        real(kind = kreal), pointer :: iso_opacity(:)
+        real(kind = kreal), allocatable :: iso_opacity(:)
       end type pvr_projected_field
 !
 !>  Structure for pixel position
@@ -95,9 +95,9 @@
 !>    Number of vertical pixels
         integer(kind = kint) :: num_pixel_y
 !>    Position of horizontal pixels
-        real(kind = kreal), pointer :: pixel_point_x(:)
+        real(kind = kreal), allocatable :: pixel_point_x(:)
 !>    Position of vertical pixels
-        real(kind = kreal), pointer :: pixel_point_y(:)
+        real(kind = kreal), allocatable :: pixel_point_y(:)
       end type pvr_pixel_position_type
 !
       private :: alloc_nod_data_4_pvr, alloc_iflag_pvr_used_ele

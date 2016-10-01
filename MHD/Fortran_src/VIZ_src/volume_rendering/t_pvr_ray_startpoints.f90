@@ -33,36 +33,36 @@
 !>    Number of ray tracing
         integer(kind = kint) :: ntot_tmp_pvr_ray
 !>    temporal number of pixels to start ray tracing
-        integer(kind = kint), pointer :: istack_tmp_pvr_ray_st(:)
+        integer(kind = kint), allocatable :: istack_tmp_pvr_ray_st(:)
 !>    temporal number of pixels to start ray tracing
-        integer(kind = kint), pointer :: ipix_start_tmp(:,:)
+        integer(kind = kint), allocatable :: ipix_start_tmp(:,:)
 !>    temporal number of pixels to start ray tracing
-        integer(kind = kint), pointer :: iflag_start_tmp(:)
+        integer(kind = kint), allocatable :: iflag_start_tmp(:)
 !>    start point of ray traing in surface coordinate
-        real(kind = kreal), pointer ::  xi_start_tmp(:,:)
+        real(kind = kreal), allocatable ::  xi_start_tmp(:,:)
 !
 !
 !>    Number of ray tracing
         integer(kind = kint) :: num_pvr_ray
 !>    stack of number of pixels to start ray tracing
-        integer(kind = kint), pointer :: istack_pvr_ray_sf(:)
+        integer(kind = kint), allocatable :: istack_pvr_ray_sf(:)
 !
 !>    ray trace counter
-        integer(kind= kint), pointer :: icount_pvr_trace(:)
+        integer(kind= kint), allocatable :: icount_pvr_trace(:)
 !>    pixel ID for ray tracing
-        integer(kind= kint), pointer :: id_pixel_start(:)
+        integer(kind= kint), allocatable :: id_pixel_start(:)
 !>    Start surface ID for ray tracing
-        integer(kind= kint), pointer :: isf_pvr_ray_start(:,:)
+        integer(kind= kint), allocatable :: isf_pvr_ray_start(:,:)
 !>    start point of ray traing in surface coordinate
-        real(kind = kreal), pointer ::  xi_pvr_start(:,:)
+        real(kind = kreal), allocatable ::  xi_pvr_start(:,:)
 !>    start point of ray traing
-        real(kind = kreal), pointer ::  xx_pvr_ray_start(:,:)
+        real(kind = kreal), allocatable ::  xx_pvr_ray_start(:,:)
 !>    start point for each trace
-        real(kind = kreal), pointer ::  xx_pvr_start(:,:)
+        real(kind = kreal), allocatable ::  xx_pvr_start(:,:)
 !>    Direction og ray tracing
-        real(kind = kreal), pointer ::  pvr_ray_dir(:,:)
+        real(kind = kreal), allocatable ::  pvr_ray_dir(:,:)
 !>    Color data for tracing
-        real(kind = kreal), pointer ::  rgba_ray(:,:)
+        real(kind = kreal), allocatable ::  rgba_ray(:,:)
       end type pvr_ray_start_type
 !
 !>  Direction of Ray in screen coordinate

@@ -38,22 +38,22 @@
         integer(kind = kint) :: num_pixels(2)
 !
 !>    Global real image data
-        real(kind = kreal), pointer :: rgba_real_gl(:,:)
+        real(kind = kreal), allocatable :: rgba_real_gl(:,:)
 !
 !>    RGB byte image data
-        character(len = 1), pointer :: rgb_chara_gl(:,:)
+        character(len = 1), allocatable :: rgb_chara_gl(:,:)
 !>    RGBA byte image data
-        character(len = 1), pointer :: rgba_chara_gl(:,:)
+        character(len = 1), allocatable :: rgba_chara_gl(:,:)
 !
 !>    Local real image data
-        real(kind = kreal), pointer :: rgba_real_lc(:,:)
+        real(kind = kreal), allocatable :: rgba_real_lc(:,:)
 !>    RGB byte image data
-        character(len = 1), pointer :: rgb_chara_lc(:,:)
+        character(len = 1), allocatable :: rgb_chara_lc(:,:)
 !
 !>    Global real image data for left eye
-        real(kind = kreal), pointer :: rgba_left_gl(:,:)
+        real(kind = kreal), allocatable :: rgba_left_gl(:,:)
 !>    Global real image data for right eye
-        real(kind = kreal), pointer :: rgba_right_gl(:,:)
+        real(kind = kreal), allocatable :: rgba_right_gl(:,:)
       end type pvr_image_type
 !
 !>  Structure for PVR images
@@ -63,9 +63,9 @@
 !>    Number of pixels
         integer(kind = kint) :: num_pixel_xy
 !>    Order of image data with respect to distance
-        integer(kind = kint), pointer :: iflag_img_pe(:)
+        integer(kind = kint), allocatable :: iflag_img_pe(:)
 !>    Interger flag if image is exist
-        integer(kind = kint), pointer :: iflag_mapped(:)
+        integer(kind = kint), allocatable :: iflag_mapped(:)
 !
 !
 !>    Number of overlapped domain (requered number of image)
@@ -73,39 +73,39 @@
 !>    Number of overlapped domain (requered number of image)
         integer(kind = kint) :: ntot_overlap
 !>    Number of overlapped domain (requered number of image)
-        integer(kind = kint), pointer :: istack_overlap(:)
+        integer(kind = kint), allocatable :: istack_overlap(:)
 !
 !
 !>    Order of image data with respect to distance
-        integer(kind = kint), pointer :: ip_closer(:,:)
+        integer(kind = kint), allocatable :: ip_closer(:,:)
 !>    Segmented real image data to be blended
-        real(kind = kreal), pointer :: depth_part(:,:)
+        real(kind = kreal), allocatable :: depth_part(:,:)
 !>    Segmented real image data to be blended
-        real(kind = kreal), pointer :: rgba_part(:,:,:)
+        real(kind = kreal), allocatable :: rgba_part(:,:,:)
 !>    Segmented real image data to be blended
-        real(kind = kreal), pointer :: rgba_whole(:,:)
+        real(kind = kreal), allocatable :: rgba_whole(:,:)
 !
 !>    Segmented real image data to be blended
-        real(kind = kreal), pointer :: depth_recv(:)
+        real(kind = kreal), allocatable :: depth_recv(:)
 !>    Segmented real image data to be blended
-        real(kind = kreal), pointer :: rgba_recv(:,:)
+        real(kind = kreal), allocatable :: rgba_recv(:,:)
 !
 !>    Number of pixels with image
         integer(kind = kint) :: npixel_img
 !>    Number of distoributed pixels with image
         integer(kind = kint) :: npixel_img_local
 !>    Stack of distoributed pixels with image
-        integer(kind = kint), pointer :: istack_pixel(:)
+        integer(kind = kint), allocatable :: istack_pixel(:)
 !>    list of position of pixel for reduced data
-        integer(kind = kint), pointer :: ipixel_small(:)
+        integer(kind = kint), allocatable :: ipixel_small(:)
 !>    Order of image data with respect to distance
-        integer(kind = kint), pointer :: iflag_img_lc(:,:)
+        integer(kind = kint), allocatable :: iflag_img_lc(:,:)
 !>    Local depth of image excluding overlap
-        real(kind = kreal), pointer :: depth_lc(:,:)
+        real(kind = kreal), allocatable :: depth_lc(:,:)
 !>    Local real image data excluding overlap
-        real(kind = kreal), pointer :: rgba_lc(:,:,:)
+        real(kind = kreal), allocatable :: rgba_lc(:,:,:)
 !>    Segmented real image data to be blended
-        real(kind = kreal), pointer :: rgba_rank0(:,:)
+        real(kind = kreal), allocatable :: rgba_rank0(:,:)
       end type pvr_segmented_img
 !
 !  ---------------------------------------------------------------------

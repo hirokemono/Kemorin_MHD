@@ -57,7 +57,7 @@
 !>     Number of Element group for volume rendering
         integer(kind = kint) :: nele_grp_area_pvr = 0
 !>     Element group list for volume rendering
-        integer(kind = kint), pointer :: id_ele_grp_area_pvr(:)
+        integer(kind = kint), allocatable :: id_ele_grp_area_pvr(:)
       end type pvr_field_parameter
 !
 !
@@ -161,7 +161,7 @@
 !>    Data and corresponding color value
 !!@n        Field data:  pvr_datamap_param(1,:)
 !!@n        Color data:  pvr_datamap_param(2,:)
-        real(kind = kreal), pointer :: pvr_datamap_param(:,:)
+        real(kind = kreal), allocatable :: pvr_datamap_param(:,:)
 !
 !>    Number of data points to define color
         integer(kind = kint) :: num_opacity_pnt = 0
@@ -172,7 +172,7 @@
 !!@n        pvr_opacity_dat_high(:) = pvr_opacity_param(2,:)
 !!@n        pvr_opacity_opacity(:) =  pvr_opacity_param(3,:)
 !!@n        ambient_opacity:  pvr_opacity_param(3,(num_opacity_pnt(:)+1))
-        real(kind = kreal), pointer :: pvr_opacity_param(:,:)
+        real(kind = kreal), allocatable :: pvr_opacity_param(:,:)
 !
 !>    Defined flag for lights
         integer(kind = kint) :: iflag_pvr_lights = 0
@@ -183,9 +183,9 @@
 !!@n        specular_coef(:) = pvr_lighting_real(3,:)
         real(kind = kreal) :: pvr_lighting_real(3) = (/zero,zero,zero/)
 !>    Position of lights
-        real(kind = kreal), pointer :: xyz_pvr_lights(:,:)
+        real(kind = kreal), allocatable :: xyz_pvr_lights(:,:)
 !>    Position of lights in viewer coordinates
-        real(kind = kreal), pointer :: view_pvr_lights(:,:)
+        real(kind = kreal), allocatable :: view_pvr_lights(:,:)
       end type pvr_colormap_parameter
 !
 !>  Structure for PVR colorbar parameters
