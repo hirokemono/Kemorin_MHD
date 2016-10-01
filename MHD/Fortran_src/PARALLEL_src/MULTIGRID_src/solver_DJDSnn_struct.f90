@@ -76,11 +76,12 @@
      &     djds_tbl%NLmaxHYP, djds_tbl%NUmaxHYP, djds_tbl%IVECT,        &
      &     djds_tbl%NEWtoOLD, djds_tbl%OLDtoNEW_DJDS_L,                 &
      &     djds_tbl%OLDtoNEW_DJDS_U, djds_tbl%NEWtoOLD_DJDS_U,          &
-     &     djds_tbl%LtoU, matNN%D, B(1), X(1),                          &
+     &     djds_tbl%LtoU, matNN%aiccg(1), B(1), X(1),                   &
      &     djds_tbl%indexDJDS_L, djds_tbl%indexDJDS_U,                  &
      &     djds_tbl%itemDJDS_L, djds_tbl%itemDJDS_U,                    &
-     &     matNN%AL, matNN%AU,  matNN%ALUG_L, matNN%ALUG_U,             &
-     &     eps, itr, ierr, comm_tbl%num_neib, comm_tbl%id_neib,         &
+     &     matNN%aiccg(matNN%istart_l), matNN%aiccg(matNN%istart_u),    &
+     &     matNN%ALUG_L, matNN%ALUG_U, eps, itr, ierr,                  &
+     &     comm_tbl%num_neib, comm_tbl%id_neib,                         &
      &     comm_tbl%istack_import, comm_tbl%item_import,                &
      &     comm_tbl%istack_export, djds_tbl%NOD_EXPORT_NEW,             &
      &     METHOD, PRECOND, itr_res)
@@ -118,11 +119,12 @@
      &     djds_tbl%NLmaxHYP, djds_tbl%NUmaxHYP, djds_tbl%IVECT,        &
      &     djds_tbl%NEWtoOLD, djds_tbl%OLDtoNEW_DJDS_L,                 &
      &     djds_tbl%OLDtoNEW_DJDS_U, djds_tbl%NEWtoOLD_DJDS_U,          &
-     &     djds_tbl%LtoU, matNN%D, B(1), X(1),                          &
+     &     djds_tbl%LtoU, matNN%aiccg(1), B(1), X(1),                   &
      &     djds_tbl%indexDJDS_L, djds_tbl%indexDJDS_U,                  &
      &     djds_tbl%itemDJDS_L, djds_tbl%itemDJDS_U,                    &
-     &     matNN%AL, matNN%AU,  matNN%ALUG_L, matNN%ALUG_U,             &
-     &     eps, itr, ierr, comm_tbl%num_neib, comm_tbl%id_neib,         &
+     &     matNN%aiccg(matNN%istart_l), matNN%aiccg(matNN%istart_u),    &
+     &     matNN%ALUG_L, matNN%ALUG_U, eps, itr, ierr,                  &
+     &     comm_tbl%num_neib, comm_tbl%id_neib,                         &
      &     comm_tbl%istack_import, comm_tbl%item_import,                &
      &     comm_tbl%istack_export, djds_tbl%NOD_EXPORT_NEW,             &
      &     METHOD, PRECOND, itr_res)
@@ -150,7 +152,8 @@
      &    (matNN%internal_diag, matNN%num_diag, NB, PEsmpTOT,           &
      &     djds_tbl%STACKmcG,                                           &
      &     djds_tbl%OLDtoNEW_DJDS_L, djds_tbl%OLDtoNEW_DJDS_U,          &
-     &     matNN%D, matNN%ALUG_L, matNN%ALUG_U, PRECOND, sigma_diag)
+     &     matNN%aiccg(1), matNN%ALUG_L, matNN%ALUG_U,                  &
+     &     PRECOND, sigma_diag)
 !
       end subroutine precond_DJDSnn_struct
 !

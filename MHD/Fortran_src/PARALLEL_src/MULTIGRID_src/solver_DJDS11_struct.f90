@@ -93,8 +93,9 @@
 !     &     djds_tbl%OLDtoNEW_DJDS_U, djds_tbl%NEWtoOLD_DJDS_U,         &
 !     &     djds_tbl%LtoU,                                              &
 !     &     djds_tbl%indexDJDS_L, djds_tbl%indexDJDS_U,                 &
-!     &     djds_tbl%itemDJDS_L, djds_tbl%itemDJDS_U,                   &
-!     &     mat11%D, mat11%AL, mat11%AU, my_rank)
+!     &     djds_tbl%itemDJDS_L, djds_tbl%itemDJDS_U, mat11%aiccg(1),   &
+!     &     mat11%aiccg(mat11%istart_l), mat11%aiccg(mat11%istart_u),   &
+!     &     my_rank)
 !
 !       call deallocate_check_djds_array
 !
@@ -106,11 +107,12 @@
      &     djds_tbl%NLmaxHYP, djds_tbl%NUmaxHYP, djds_tbl%IVECT,        &
      &     djds_tbl%NEWtoOLD, djds_tbl%OLDtoNEW_DJDS_L,                 &
      &     djds_tbl%OLDtoNEW_DJDS_U, djds_tbl%NEWtoOLD_DJDS_U,          &
-     &     djds_tbl%LtoU, mat11%D, B(1), X(1),                          &
+     &     djds_tbl%LtoU, mat11%aiccg(1), B(1), X(1),                   &
      &     djds_tbl%indexDJDS_L, djds_tbl%indexDJDS_U,                  &
      &     djds_tbl%itemDJDS_L, djds_tbl%itemDJDS_U,                    &
-     &     mat11%AL, mat11%AU,  mat11%ALUG_L, mat11%ALUG_U,             &
-     &     eps, itr, ierr, comm_tbl%num_neib, comm_tbl%id_neib,         &
+     &     mat11%aiccg(mat11%istart_l), mat11%aiccg(mat11%istart_u),    &
+     &     mat11%ALUG_L, mat11%ALUG_U, eps, itr, ierr,                  &
+     &     comm_tbl%num_neib, comm_tbl%id_neib,                         &
      &     comm_tbl%istack_import, comm_tbl%item_import,                &
      &     comm_tbl%istack_export, djds_tbl%NOD_EXPORT_NEW,             &
      &     METHOD, PRECOND, itr_res)
@@ -148,11 +150,12 @@
      &     djds_tbl%NLmaxHYP, djds_tbl%NUmaxHYP, djds_tbl%IVECT,        &
      &     djds_tbl%NEWtoOLD, djds_tbl%OLDtoNEW_DJDS_L,                 &
      &     djds_tbl%OLDtoNEW_DJDS_U, djds_tbl%NEWtoOLD_DJDS_U,          &
-     &     djds_tbl%LtoU, mat11%D, B(1), X(1),                          &
+     &     djds_tbl%LtoU, mat11%aiccg(1), B(1), X(1),                   &
      &     djds_tbl%indexDJDS_L, djds_tbl%indexDJDS_U,                  &
      &     djds_tbl%itemDJDS_L, djds_tbl%itemDJDS_U,                    &
-     &     mat11%AL, mat11%AU,  mat11%ALUG_L, mat11%ALUG_U,             &
-     &     eps, itr, ierr, comm_tbl%num_neib, comm_tbl%id_neib,         &
+     &     mat11%aiccg(mat11%istart_l), mat11%aiccg(mat11%istart_u),    &
+     &     mat11%ALUG_L, mat11%ALUG_U, eps, itr, ierr,                  &
+     &     comm_tbl%num_neib, comm_tbl%id_neib,                         &
      &     comm_tbl%istack_import, comm_tbl%item_import,                &
      &     comm_tbl%istack_export, djds_tbl%NOD_EXPORT_NEW,             &
      &     METHOD, PRECOND, itr_res)
@@ -182,9 +185,10 @@
      &     djds_tbl%STACKmcG, djds_tbl%STACKmc,                         &
      &     djds_tbl%NLmaxHYP,  djds_tbl%IVECT,                          &
      &     djds_tbl%OLDtoNEW_DJDS_L, djds_tbl%OLDtoNEW_DJDS_U,          &
-     &     djds_tbl%LtoU, mat11%D,                                      &
+     &     djds_tbl%LtoU, mat11%aiccg(1),                               &
      &     djds_tbl%indexDJDS_l, djds_tbl%itemDJDS_L,                   &
-     &     mat11%AL, mat11%ALUG_L, mat11%ALUG_U, PRECOND, sigma_diag)
+     &     mat11%aiccg(mat11%istart_l), mat11%ALUG_L, mat11%ALUG_U,     &
+     &     PRECOND, sigma_diag)
 !
       end subroutine precond_DJDS11_struct
 !

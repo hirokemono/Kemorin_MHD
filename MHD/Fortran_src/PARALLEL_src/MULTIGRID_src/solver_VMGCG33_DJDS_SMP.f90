@@ -201,12 +201,7 @@
       integer(kind=kint ), intent(inout) :: ITR, IER
 !
 !
-      integer(kind=kint ) :: N
       integer(kind=kint ) :: NEIBPETOT
-
-      real(kind=kreal), pointer :: D(:)
-      real(kind=kreal), pointer :: AL(:)
-      real(kind=kreal), pointer :: AU(:)
 
       integer(kind=kint ), pointer :: NEIBPE(:)
       integer(kind=kint ), pointer :: STACK_IMPORT(:)
@@ -227,12 +222,6 @@
       STACK_IMPORT => MG_comm(0)%istack_import
       STACK_EXPORT => MG_comm(0)%istack_export
       NOD_IMPORT =>   MG_comm(0)%item_import
-!
-      N =  mat33(0)%internal_diag
-      D => mat33(0)%D
-      AL => mat33(0)%AL
-      AU => mat33(0)%AU
-!
 !
       MAXIT= ITR
       TOL  = EPS
@@ -276,8 +265,9 @@
      &     djds_tbl(0)%OLDtoNEW_DJDS_L,djds_tbl(0)%OLDtoNEW_DJDS_U,     &
      &     djds_tbl(0)%NEWtoOLD_DJDS_U, djds_tbl(0)%LtoU,               &
      &     djds_tbl(0)%indexDJDS_L, djds_tbl(0)%indexDJDS_U,            &
-     &     djds_tbl(0)%itemDJDS_L, djds_tbl(0)%itemDJDS_U, D, AL, AU,   &
-     &     W(1,R), B, X, W(1,iWK))
+     &     djds_tbl(0)%itemDJDS_L, djds_tbl(0)%itemDJDS_U,              &
+     &     mat33(0)%aiccg(1), mat33(0)%aiccg(mat33%istart_l),           &
+     &     mat33(0)%aiccg(mat33%istart_u), W(1,R), B, X, W(1,iWK))
 !
 !C
 !C +---------------+
@@ -369,8 +359,9 @@
      &    djds_tbl(0)%OLDtoNEW_DJDS_L, djds_tbl(0)%OLDtoNEW_DJDS_U,     &
      &    djds_tbl(0)%NEWtoOLD_DJDS_U, djds_tbl(0)%LtoU,                &
      &    djds_tbl(0)%indexDJDS_L, djds_tbl(0)%indexDJDS_U,             &
-     &    djds_tbl(0)%itemDJDS_L, djds_tbl(0)%itemDJDS_U, D, AL, AU,    &
-     &    W(1,Q), W(1,P), W(1,iWK))
+     &    djds_tbl(0)%itemDJDS_L, djds_tbl(0)%itemDJDS_U,               &
+     &    mat33(0)%aiccg(1), mat33(0)%aiccg(mat33%istart_l),            &
+     &    mat33(0)%aiccg(mat33%istart_u), W(1,Q), W(1,P), W(1,iWK))
 !
 !C===
 !C +---------------------+

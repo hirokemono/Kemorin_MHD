@@ -10,13 +10,13 @@
 !!      subroutine write_djds_mat11_comp                                &
 !!     &         ( id_file, N, NP, NLmax, NUmax, itotal_l, itotal_u,    &
 !!     &           npLX1, npUX1, NHYP, PEsmpTOT, NEWtoOLD,              &
-!!     &           D, indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U, &
-!!     &           AL, AU, ALUG_L, ALUG_U)
+!!     &           indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,    &
+!!     &           DMAT11_IO)
 !!      subroutine write_djds_mat33_comp                                &
 !!     &         ( id_file, N, NP, NLmax, NUmax, itotal_l, itotal_u,    &
 !!     &           npLX1, npUX1, NHYP, PEsmpTOT, NEWtoOLD,              &
-!!     &           D, indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U, &
-!!     &           AL, AU, ALUG_L, ALUG_U)
+!!     &           indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,    &
+!!     &           DMAT33_IO)
 !!      subroutine write_djds_mat_connects                              &
 !!     &         ( id_file, NP, NHYP, PEsmpTOT, STACKmcG, STACKmc,      &
 !!     &           NLmaxHYP, NUmaxHYP, IVECT, OLDtoNEW_DJDS_L,          &
@@ -29,6 +29,7 @@
       use m_precision
 !
       use m_machine_parameter
+      use t_solver_djds
 !
       implicit none
 !
@@ -41,8 +42,8 @@
       subroutine write_djds_mat11_comp                                  &
      &         ( id_file, N, NP, NLmax, NUmax, itotal_l, itotal_u,      &
      &           npLX1, npUX1, NHYP, PEsmpTOT, NEWtoOLD,                &
-     &           D, indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,   &
-     &           AL, AU, ALUG_L, ALUG_U)
+     &           indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,      &
+     &           DMAT11_IO)
 !
       integer(kind=kint ), intent(in) :: id_file
 !
@@ -59,14 +60,10 @@
      &                    :: indexDJDS_U(0:NUmax*NHYP*PEsmpTOT)
       integer(kind=kint), intent(in) :: itemDJDS_L(itotal_l)
       integer(kind=kint), intent(in) :: itemDJDS_U(itotal_u)
-
-      real(kind=kreal), intent(in) :: D(NP )
-      real(kind=kreal), intent(in) :: AL(itotal_l)
-      real(kind=kreal), intent(in) :: AU(itotal_u)
-
-      real(kind=kreal), intent(in) :: ALUG_L(N), ALUG_U(N)
 !
-      integer(kind = kint) :: i
+      type(DJDS_MATRIX), intent(in) :: DMAT11_IO
+!
+      integer(kind = kint) :: i, j
 !
 !
       write(id_file,'(a)') '! i, indexDJDS_L(i)'
@@ -82,27 +79,33 @@
       end do
 !
       write(id_file,'(a)') '! i, NEWtoOLD(i), D(i)'
-      write(id_file,'(i16)') NP
+      write(id_file,'(2i16)') NP, DMAT11_IO%num_non0
       do i = 1, NP
-        write(id_file,'(2i16,1pE25.15e3)') i, NEWtoOLD(i), D(i)
+        write(id_file,'(2i16,1pE25.15e3)') i, NEWtoOLD(i),              &
+     &                DMAT11_IO%aiccg(i)
       end do
 !
       write(id_file,'(a)') '! i, itemDJDS_L(i), AL(i)'
       write(id_file,'(i16)') itotal_l
       do i = 1, itotal_l
-        write(id_file,'(2i16,1pE25.15e3)') i, itemDJDS_L(i), AL(i)
+        j = i + DMAT11_IO%istart_l - 1
+        write(id_file,'(2i16,1pE25.15e3)') i, itemDJDS_L(i),            &
+     &                DMAT11_IO%aiccg(j)
       end do
 !
       write(id_file,'(a)') '! i, itemDJDS_U(i), AU(i)'
       write(id_file,'(i16)') itotal_u
       do i = 1, itotal_u
-        write(id_file,'(2i16,1pE25.15e3)') i, itemDJDS_U(i), AU(i)
+        j = i + DMAT11_IO%istart_u - 1
+        write(id_file,'(2i16,1pE25.15e3)') i, itemDJDS_U(i),            &
+     &                DMAT11_IO%aiccg(j)
       end do
 !
       write(id_file,'(a)') '! i, ALUG_L(i), ALUG_U(i)'
       write(id_file,'(i16)') N
       do i = 1, N
-        write(id_file,'(i16,1p2E25.15e3)') i, ALUG_L(i), ALUG_U(i)
+        write(id_file,'(i16,1p2E25.15e3)')                              &
+     &              i, DMAT11_IO%ALUG_L(i), DMAT11_IO%ALUG_U(i)
       end do
 !
       end subroutine write_djds_mat11_comp
@@ -112,8 +115,8 @@
       subroutine write_djds_mat33_comp                                  &
      &         ( id_file, N, NP, NLmax, NUmax, itotal_l, itotal_u,      &
      &           npLX1, npUX1, NHYP, PEsmpTOT, NEWtoOLD,                &
-     &           D, indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,   &
-     &           AL, AU, ALUG_L, ALUG_U)
+     &           indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,      &
+     &           DMAT33_IO)
 !
 !
       integer(kind=kint ), intent(in) :: id_file
@@ -131,14 +134,10 @@
      &                    :: indexDJDS_U(0:NUmax*NHYP*PEsmpTOT)
       integer(kind=kint), intent(in) :: itemDJDS_L(itotal_l)
       integer(kind=kint), intent(in) :: itemDJDS_U(itotal_u)
-
-      real(kind=kreal), intent(in) :: D(9*NP )
-      real(kind=kreal), intent(in) :: AL(9*itotal_l)
-      real(kind=kreal), intent(in) :: AU(9*itotal_u)
-
-      real(kind=kreal), intent(in) :: ALUG_L(9*N), ALUG_U(9*N)
 !
-      integer(kind = kint) :: i
+      type(DJDS_MATRIX), intent(in) :: DMAT33_IO
+!
+      integer(kind = kint) :: i, j
 !
 !
       write(id_file,'(a)') '! i, indexDJDS_L(i)'
@@ -154,30 +153,33 @@
       end do
 !
       write(id_file,'(a)') '! i, NEWtoOLD(i), D(i)'
-      write(id_file,'(i16)') NP
+      write(id_file,'(2i16)') NP, DMAT33_IO%num_non0
       do i = 1, NP
-        write(id_file,'(2i16,1p9E25.15e3)') i, NEWtoOLD(i), D(9:i-8:9*i)
+        write(id_file,'(2i16,1p9E25.15e3)') i, NEWtoOLD(i),             &
+     &        DMAT33_IO%aiccg(9:i-8:9*i)
       end do
 !
       write(id_file,'(a)') '! i, itemDJDS_L(i), AL(i)'
       write(id_file,'(i16)') itotal_l
       do i = 1, itotal_l
+        j = 9*(i-1) + DMAT33_IO%istart_l - 1
         write(id_file,'(2i16,1p9E25.15e3)') i, itemDJDS_L(i),           &
-     &       AL(9:i-8:9*i)
+     &       DMAT33_IO%aiccg(j+1:j+9)
       end do
 !
       write(id_file,'(a)') '! i, itemDJDS_U(i), AU(i)'
       write(id_file,'(i16)') itotal_u
       do i = 1, itotal_u
+        j = 9*(i-1) + DMAT33_IO%istart_u - 1
         write(id_file,'(2i16,1p9E25.15e3)') i, itemDJDS_U(i),           &
-     &       AU(9:i-8:9*i)
+     &       DMAT33_IO%aiccg(j+1:j+9)
       end do
 !
       write(id_file,'(a)') '! i, ALUG_L(i), ALUG_U(i)'
       write(id_file,'(i16)') N
       do i = 1, N
-        write(id_file,'(i16,1p18E25.15e3)') i, ALUG_L(9:i-8:9*i),       &
-     &                                      ALUG_U(9:i-8:9*i)
+        write(id_file,'(i16,1p18E25.15e3)')                             &
+     &     i, DMAT33_IO%ALUG_L(9:i-8:9*i), DMAT33_IO%ALUG_U(9:i-8:9*i)
       end do
 !
       end subroutine write_djds_mat33_comp

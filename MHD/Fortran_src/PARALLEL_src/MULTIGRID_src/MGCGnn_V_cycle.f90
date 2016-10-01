@@ -229,9 +229,9 @@
      &       djds_tbl%OLDtoNEW_DJDS_L, djds_tbl%OLDtoNEW_DJDS_U,        &
      &       djds_tbl%NEWtoOLD_DJDS_U, djds_tbl%LtoU,                   &
      &       djds_tbl%indexDJDS_L, djds_tbl%indexDJDS_U,                &
-     &       djds_tbl%itemDJDS_L, djds_tbl%itemDJDS_U,                  &
-     &       matNN%D, matNN%AL, matNN%AU, W(1,ZQ),                      &
-     &       MG_vect%b_vec, MG_vect%x_vec, W(1,iWK))
+     &       djds_tbl%itemDJDS_L, djds_tbl%itemDJDS_U, matNN%aiccg(1),  &
+     &       matNN%aiccg(matNN%istart_l), matNN%aiccg(matNN%istart_u),  &
+     &       W(1,ZQ), MG_vect%b_vec, MG_vect%x_vec, W(1,iWK))
 !
       call back_2_original_order_bxn(matNN%num_diag, NB,                &
      &    djds_tbl%NEWtoOLD, MG_vect%b_vec, MG_vect%x_vec, W(1,iWK))

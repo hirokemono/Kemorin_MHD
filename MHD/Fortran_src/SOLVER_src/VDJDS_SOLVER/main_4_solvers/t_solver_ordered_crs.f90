@@ -20,8 +20,6 @@
 !!      subroutine dealloc_type_connect_4_djo(djo_tbl)
 !!      subroutine dealloc_type_djo_mat(mat)
 !!
-!!      subroutine link_djo_connect_structs(djo_org, djo_tbl)
-!
       module t_solver_ordered_crs
 !
       use m_precision
@@ -33,14 +31,14 @@
       type CRS_SMP_CONNECT_MATRIX
         integer(kind=kint ) ::  NC
         integer(kind=kint ) ::  NCM
-        integer(kind=kint ), pointer :: INOD_DJO(:)
-        integer(kind=kint ), pointer :: INM(:)
-        integer(kind=kint ), pointer :: IAM(:)
+        integer(kind=kint ), allocatable :: INOD_DJO(:)
+        integer(kind=kint ), allocatable :: INM(:)
+        integer(kind=kint ), allocatable :: IAM(:)
 !
         integer(kind=kint ) ::  NUM_NCOMP
-        integer(kind=kint ), pointer :: NUM_SUM(:)
-        integer(kind=kint ), pointer :: IEND_SUM(:)
-        integer(kind=kint ), pointer :: IEND_SUM_smp(:)
+        integer(kind=kint ), allocatable :: NUM_SUM(:)
+        integer(kind=kint ), allocatable :: IEND_SUM(:)
+        integer(kind=kint ), allocatable :: IEND_SUM_smp(:)
 !
         real   (kind=kreal), pointer ::  AM(:)
       end type CRS_SMP_CONNECT_MATRIX
@@ -48,14 +46,14 @@
       type DJORS_CONNECT
         integer(kind=kint ) ::  NC
         integer(kind=kint ) ::  NCM
-        integer(kind=kint ), pointer :: INOD_DJO(:)
-        integer(kind=kint ), pointer :: INM(:)
-        integer(kind=kint ), pointer :: IAM(:)
+        integer(kind=kint ), allocatable :: INOD_DJO(:)
+        integer(kind=kint ), allocatable :: INM(:)
+        integer(kind=kint ), allocatable :: IAM(:)
 !
         integer(kind=kint ) ::  NUM_NCOMP
-        integer(kind=kint ), pointer :: NUM_SUM(:)
-        integer(kind=kint ), pointer :: IEND_SUM(:)
-        integer(kind=kint ), pointer :: IEND_SUM_smp(:)
+        integer(kind=kint ), allocatable :: NUM_SUM(:)
+        integer(kind=kint ), allocatable :: IEND_SUM(:)
+        integer(kind=kint ), allocatable :: IEND_SUM_smp(:)
       end type DJORS_CONNECT
 !
       type DJORS_MATRIX
@@ -293,66 +291,15 @@
       end subroutine dealloc_type_connect_4_djo
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
 !
       subroutine dealloc_type_djo_mat(mat)
 !
       type(DJORS_MATRIX), intent(inout) :: mat
 !
 !
-      nullify(mat%AM)
       deallocate(mat%aiccg)
 !
       end subroutine dealloc_type_djo_mat
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine link_djo_connect_structs(djo_org, djo_tbl)
-!
-      type(DJORS_CONNECT), intent(in) ::    djo_org
-      type(DJORS_CONNECT), intent(inout) :: djo_tbl
-!
-!
-      djo_tbl%NC =       djo_org%NC
-      djo_tbl%NCM =      djo_org%NCM
-      djo_tbl%NUM_NCOMP = djo_org%NUM_NCOMP
-!
-      djo_tbl%INOD_DJO => djo_org%INOD_DJO
-      djo_tbl%INM =>      djo_org%INM
-      djo_tbl%IAM =>      djo_org%IAM
-      djo_tbl%NUM_SUM =>  djo_org%NUM_SUM
-      djo_tbl%IEND_SUM => djo_org%IEND_SUM
-      djo_tbl%IEND_SUM_smp => djo_org%IEND_SUM_smp
-!
-      end subroutine link_djo_connect_structs
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine link_djo_matrix_structs(mat_org, mat)
-!
-      type(DJORS_MATRIX), intent(inout) :: mat
-      type(DJORS_MATRIX), intent(inout) :: mat_org
-!
-      mat%AM => mat_org%AM
-!
-      end subroutine link_djo_matrix_structs
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine unlink_djo_connect_structs(djo_tbl)
-!
-      type(DJORS_CONNECT), intent(inout) :: djo_tbl
-!
-!
-      djo_tbl%NC =       0
-      djo_tbl%NCM =      0
-      djo_tbl%NUM_NCOMP = 0
-!
-      nullify( djo_tbl%INOD_DJO )
-      nullify( djo_tbl%INM, djo_tbl%IAM )
-      nullify( djo_tbl%IEND_SUM )
-!
-      end subroutine unlink_djo_connect_structs
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

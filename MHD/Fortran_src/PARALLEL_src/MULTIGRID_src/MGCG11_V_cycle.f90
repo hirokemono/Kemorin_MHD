@@ -257,9 +257,9 @@
      &       djds_tbl%OLDtoNEW_DJDS_L, djds_tbl%OLDtoNEW_DJDS_U,        &
      &       djds_tbl%NEWtoOLD_DJDS_U, djds_tbl%LtoU,                   &
      &       djds_tbl%indexDJDS_L, djds_tbl%indexDJDS_U,                &
-     &       djds_tbl%itemDJDS_L, djds_tbl%itemDJDS_U,                  &
-     &       mat11%D, mat11%AL,  mat11%AU, W(1,ZQ),                     &
-     &       MG_vect%b_vec, MG_vect%x_vec, W(1,iWK))
+     &       djds_tbl%itemDJDS_L, djds_tbl%itemDJDS_U, mat11%aiccg(1),  &
+     &       mat11%aiccg(mat11%istart_l), mat11%aiccg(mat11%istart_u),  &
+     &       W(1,ZQ), MG_vect%b_vec, MG_vect%x_vec, W(1,iWK))
 !
       call back_2_original_order_bx1(mat11%num_diag, djds_tbl%NEWtoOLD, &
      &    MG_vect%b_vec, MG_vect%x_vec, W(1,iWK))

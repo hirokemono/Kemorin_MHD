@@ -94,13 +94,7 @@
         integer(kind=kint ) ::  NB
 !
 !>   coefficients of matrix
-        real(kind=kreal), pointer :: aiccg(:)
-!>   diagonal component of matrix
-        real(kind=kreal), pointer :: D(:)
-!>   lower off-diagonal of matrix
-        real(kind=kreal), pointer :: AL(:)
-!>   upper off-diagonal of matrix
-        real(kind=kreal), pointer :: AU(:)
+        real(kind=kreal), allocatable :: aiccg(:)
 !
 !>   number of diagonal component
         integer (kind = kint) :: num_diag
@@ -286,10 +280,6 @@
        if(internal_node .gt. 0)  mat11%ALUG_U = 0.0d0
        if(internal_node .gt. 0)  mat11%ALUG_L = 0.0d0
 !
-       mat11%D =>  mat11%aiccg(mat11%istart_diag:mat11%istart_l-1)
-       mat11%AL => mat11%aiccg(mat11%istart_l:mat11%istart_u-1)
-       mat11%AU => mat11%aiccg(mat11%istart_u:mat11%num_non0)
-!
        end subroutine alloc_type_djds11_mat
 !
 ! ------------------------------------------
@@ -319,10 +309,6 @@
        if(mat33%num_non0 .gt. 0) mat33%aiccg = 0.0d0
        if(internal_node .gt. 0)  mat33%ALUG_U = 0.0d0
        if(internal_node .gt. 0)  mat33%ALUG_L = 0.0d0
-!
-       mat33%D =>  mat33%aiccg(mat33%istart_diag:mat33%istart_l-1)
-       mat33%AL => mat33%aiccg(mat33%istart_l:mat33%istart_u-1)
-       mat33%AU => mat33%aiccg(mat33%istart_u:mat33%num_non0)
 !
        end subroutine alloc_type_djds33_mat
 !
@@ -356,10 +342,6 @@
        if(internal_node .gt. 0)  matNN%ALUG_L = 0.0d0
        if(internal_node .gt. 0)  matNN%ALUG_U = 0.0d0
 !
-       matNN%D =>  matNN%aiccg(matNN%istart_diag:matNN%istart_l-1)
-       matNN%AL => matNN%aiccg(matNN%istart_l:matNN%istart_u-1)
-       matNN%AU => matNN%aiccg(matNN%istart_u:matNN%num_non0)
-!
        end subroutine alloc_type_djdsNN_mat
 !
 ! ------------------------------------------
@@ -382,10 +364,6 @@
        allocate(mat%ALUG_U(izero)  )
        allocate(mat%ALUG_L(izero)  )
        mat%aiccg(izero) = 0.0d0
-!
-       mat%D =>  mat%aiccg(izero:izero)
-       mat%AU => mat%aiccg(izero:izero)
-       mat%AL => mat%aiccg(izero:izero)
 !
        end subroutine alloc_type_zero_mat
 !
@@ -473,8 +451,6 @@
 !
        type(DJDS_MATRIX), intent(inout) :: mat
 !
-!
-       nullify(mat%D, mat%AL, mat%AU)
 !
        deallocate(mat%aiccg)
        deallocate(mat%ALUG_U)
