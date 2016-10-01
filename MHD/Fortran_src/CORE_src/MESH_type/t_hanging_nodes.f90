@@ -30,10 +30,10 @@
         integer( kind=kint )  ::  nnod_ed
 !>       number of hangning node on edge
 !
-        integer(kind=kint), pointer  ::  inod_sf(:,:)
+        integer(kind=kint), allocatable  ::  inod_sf(:,:)
 !>       local hanging node ID for surface (inum,j)
 !>           (j=1: hanging node, j=2-5:pearents nodes)
-        integer(kind=kint), pointer  ::  inod_ed(:,:)
+        integer(kind=kint), allocatable  ::  inod_ed(:,:)
 !>       local hanging node ID for surface (inum,j)
 !>           (j=1: hanging node, j=2-3:pearents nodes)
 !
@@ -42,17 +42,17 @@
         integer( kind=kint )  ::  nsurf_2
 !>       number of hangning surface into two surface
 !
-        integer(kind=kint), pointer  ::  isurf_4(:,:)
+        integer(kind=kint), allocatable  ::  isurf_4(:,:)
 !>       local hanging node ID for surface (inum,j)
 !>           (j=1: hanging node, j=2-5:pearents nodes)
-        integer(kind=kint), pointer  ::  isurf_2(:,:)
+        integer(kind=kint), allocatable  ::  isurf_2(:,:)
 !>       local hanging node ID for surface (inum,j)
 !>           (j=1: hanging node, j=2-3:pearents nodes)
 !
 !
         integer( kind=kint )  ::  nedge_2
 !>       number of hangning edge
-        integer(kind=kint), pointer  ::  iedge_2(:,:)
+        integer(kind=kint), allocatable  ::  iedge_2(:,:)
 !>       local hanging node ID for surface (inum,j)
 !>           (j=1: coarser edge, j=2-3:finer edge)
       end type hanging_data

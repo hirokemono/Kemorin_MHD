@@ -35,7 +35,8 @@
         integer(kind = kint) :: minlayer_4_smp
 !
 !>      starting address for each layer for SMP
-        integer (kind = kint), pointer :: istack_item_layer_d_smp(:)
+        integer (kind = kint), allocatable                              &
+     &                 :: istack_item_layer_d_smp(:)
 !>      minimum number of each layer for SMP
         integer(kind = kint) :: min_item_layer_d_smp
 !>      maximum number of each layer for SMP
@@ -44,9 +45,9 @@
 !   volumes of layering area
 !
 !>      volumes for each layer
-        real(kind = kreal), pointer :: volumes_layer(:)
+        real(kind = kreal), allocatable :: volumes_layer(:)
 !>       1 / volumes_layer
-        real(kind = kreal), pointer :: a_vol_layer(:)
+        real(kind = kreal), allocatable :: a_vol_layer(:)
 !
 !>      volumes for all layer
         real(kind = kreal) :: vol_total_layer(1)

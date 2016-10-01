@@ -60,7 +60,7 @@
 !!        reftemp_rj(kr,0) ... T_0
 !!        reftemp_rj(kr,1) ... d T_0 / dr
 !!@endverbatim
-        real (kind=kreal), pointer :: reftemp_rj(:,:)
+        real (kind=kreal), allocatable :: reftemp_rj(:,:)
       end type sph_phys_data
 !
 ! -------------------------------------------------------------------

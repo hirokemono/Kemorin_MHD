@@ -31,35 +31,35 @@
 !>   Structure of geometry data for surface group
       type surface_group_geometry
 !>   position of surface group items
-        real(kind=kreal),   pointer :: x_sf_grp(:,:)
+        real(kind=kreal),   allocatable :: x_sf_grp(:,:)
 !
 !>   radius of surface group items
-        real(kind=kreal),   pointer :: r_sf_grp(:)
+        real(kind=kreal),   allocatable :: r_sf_grp(:)
 !>   colatitude of surface group items
-        real(kind=kreal),   pointer :: theta_sf_grp(:)
+        real(kind=kreal),   allocatable :: theta_sf_grp(:)
 !>   longitude of surface group items
-        real(kind=kreal),   pointer :: phi_sf_grp(:)
+        real(kind=kreal),   allocatable :: phi_sf_grp(:)
 !>   cylindrical radius of surface group items
-        real(kind=kreal),   pointer :: s_sf_grp(:)
+        real(kind=kreal),   allocatable :: s_sf_grp(:)
 !>   1 / r_sf_grp
-        real(kind=kreal),   pointer :: ar_sf_grp(:)
+        real(kind=kreal),   allocatable :: ar_sf_grp(:)
 !>   1 / s_sf_grp
-        real(kind=kreal),   pointer :: as_sf_grp(:)
+        real(kind=kreal),   allocatable :: as_sf_grp(:)
 !
 !
 !>   normal vector of surface group items
-        real(kind=kreal),   pointer :: vnorm_sf_grp(:,:)
+        real(kind=kreal),   allocatable :: vnorm_sf_grp(:,:)
 !>   normal vector of surface group items (spherical coordinate)
-        real(kind=kreal),   pointer :: vnorm_sf_grp_sph(:,:)
+        real(kind=kreal),   allocatable :: vnorm_sf_grp_sph(:,:)
 !>   normal vector of surface group items (cylindrical coordinate)
-        real(kind=kreal),   pointer :: vnorm_sf_grp_cyl(:,:)
+        real(kind=kreal),   allocatable :: vnorm_sf_grp_cyl(:,:)
 !>   area of surface group items
-        real(kind=kreal),   pointer :: area_sf_grp(:)
+        real(kind=kreal),   allocatable :: area_sf_grp(:)
 !>   1 / area_sf_grp
-        real(kind=kreal),   pointer :: a_area_sf_grp(:)
+        real(kind=kreal),   allocatable :: a_area_sf_grp(:)
 !
 !>   total area of each surface group
-        real(kind=kreal),   pointer :: tot_area_sf_grp(:)
+        real(kind=kreal),   allocatable :: tot_area_sf_grp(:)
       end type surface_group_geometry
 !
 ! -----------------------------------------------------------------------

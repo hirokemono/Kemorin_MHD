@@ -19,8 +19,8 @@
       implicit none
 !
       type work_4_interoplation
-        real(kind = kreal), pointer :: x_inter_org(:)
-        integer(kind = kint), pointer :: i_inter_org(:)
+        real(kind = kreal), allocatable :: x_inter_org(:)
+        integer(kind = kint), allocatable :: i_inter_org(:)
       end type work_4_interoplation
 !
 ! ----------------------------------------------------------------------
@@ -39,7 +39,7 @@
       type(work_4_interoplation), intent(inout) ::  itp_WK
 !
 !
-      if(associated(itp_WK%x_inter_org)) then
+      if(allocated(itp_WK%x_inter_org)) then
         if (itp_org%ntot_table_org.ne.0                                 &
      &     .and. size(itp_WK%x_inter_org) .lt. (numdir*nsize_itp)) then
           call dealloc_work_4_itp_field(itp_WK)
@@ -88,7 +88,7 @@
       type(work_4_interoplation), intent(inout) ::  itp_WK
 !
 !
-      if(associated(itp_WK%i_inter_org)) then
+      if(allocated(itp_WK%i_inter_org)) then
         if (itp_org%ntot_table_org.ne.0                                 &
      &     .and. size(itp_WK%i_inter_org) .lt. nsize_itp) then
           call dealloc_work_4_itp_int(itp_WK)

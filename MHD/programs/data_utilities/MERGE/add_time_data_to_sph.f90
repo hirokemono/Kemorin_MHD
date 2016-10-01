@@ -52,7 +52,7 @@
       type(rj_assemble_tbl), allocatable, save :: j_table_s(:,:)
 !
       integer(kind = kint_gl), allocatable, target                      &
-     &                        :: istsack_nnod_list(:)
+     &                        :: istack_nnod_list(:)
 !
       integer(kind = kint) :: nlayer_ICB_org, nlayer_CMB_org
       integer(kind = kint) :: nlayer_ICB_new, nlayer_CMB_new
@@ -99,13 +99,13 @@
         end do
       end do
 !
-      allocate(istsack_nnod_list(0:np_sph_new))
-      istsack_nnod_list(0) = 0
+      allocate(istack_nnod_list(0:np_sph_new))
+      istack_nnod_list(0) = 0
       do jp = 1, np_sph_new
-        istsack_nnod_list(jp) = istsack_nnod_list(jp-1)                 &
+        istack_nnod_list(jp) = istack_nnod_list(jp-1)                   &
      &                       + new_sph_mesh(jp)%sph%sph_rj%nnod_rj
       end do
-      new_fst_IO%istack_numnod_IO => istsack_nnod_list
+      new_fst_IO%istack_numnod_IO => istack_nnod_list
 !
 !     Share number of nodes for new mesh
 !

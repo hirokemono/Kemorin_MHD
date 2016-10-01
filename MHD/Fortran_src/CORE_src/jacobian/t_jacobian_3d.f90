@@ -118,20 +118,20 @@
 !>   Total number of integration points
         integer(kind = kint) :: ntot_int
 !>   Shape function at integration points
-        real (kind=kreal), pointer :: an(:,:)
+        real (kind=kreal), allocatable :: an(:,:)
 !>   Spatial differnce of Shape function  at integration points
-        real (kind=kreal), pointer :: dnx(:,:,:,:)
+        real (kind=kreal), allocatable :: dnx(:,:,:,:)
 !
 !>   Shape function for infinite element at integration points
-        real (kind=kreal), pointer :: an_infty(:,:,:)
+        real (kind=kreal), allocatable :: an_infty(:,:,:)
 !
 !>   Jacobian at integration points
-        real (kind=kreal), pointer :: xjac(:,:)
+        real (kind=kreal), allocatable :: xjac(:,:)
 !>   1 / Jacbian
-        real (kind=kreal), pointer :: axjac(:,:)
+        real (kind=kreal), allocatable :: axjac(:,:)
 !
 !>   dxi / dx
-        real(kind=kreal),   pointer :: dxidx_3d(:,:,:,:)
+        real(kind=kreal),   allocatable :: dxidx_3d(:,:,:,:)
       end type jacobians_3d
 !
 !  ---------------------------------------------------------------------

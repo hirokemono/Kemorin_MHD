@@ -31,15 +31,15 @@
         integer(kind = kint) :: ntot_int
 !
 !>    Shape function
-        real (kind=kreal), pointer :: an_edge(:,:)
+        real (kind=kreal), allocatable :: an_edge(:,:)
 ! 
 !>    Difference of shape function
-        real (kind=kreal), pointer :: xeg_edge(:,:,:)
+        real (kind=kreal), allocatable :: xeg_edge(:,:,:)
 !
 !>    Jacobian
-        real (kind=kreal), pointer :: xj_edge(:,:)
+        real (kind=kreal), allocatable :: xj_edge(:,:)
 !>    1 / Jacobian
-        real (kind=kreal), pointer :: axj_edge(:,:)
+        real (kind=kreal), allocatable :: axj_edge(:,:)
       end type jacobians_1d
 !
 !  ---------------------------------------------------------------------

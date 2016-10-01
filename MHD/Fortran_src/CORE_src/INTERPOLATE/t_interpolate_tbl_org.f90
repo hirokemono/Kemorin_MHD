@@ -33,27 +33,27 @@
 !>   flag if target nodes have same prosess
         integer(kind = kint) :: iflag_self_itp_send
 !>   subdomain rank to send interpolated data
-        integer(kind = kint), pointer :: id_dest_domain(:)
+        integer(kind = kint), allocatable :: id_dest_domain(:)
 !>   end address to send interpolated data
-        integer(kind = kint), pointer :: istack_nod_tbl_org(:)
+        integer(kind = kint), allocatable :: istack_nod_tbl_org(:)
 !>   end address for interplation modes
-        integer(kind = kint), pointer :: istack_itp_type_org(:)
+        integer(kind = kint), allocatable :: istack_itp_type_org(:)
 !
 !>   total number of node to interpolate in original subdomain
         integer(kind = kint) :: ntot_table_org
 !>   export table for interpolation
-        integer(kind = kint), pointer :: inod_itp_send(:)
+        integer(kind = kint), allocatable :: inod_itp_send(:)
 !>   global node ID for target domain
-        integer(kind = kint), pointer :: inod_gl_dest_4_org(:)
+        integer(kind = kint), allocatable :: inod_gl_dest_4_org(:)
 !>   local element ID to make interpolation
-        integer(kind = kint), pointer :: iele_org_4_org(:)
+        integer(kind = kint), allocatable :: iele_org_4_org(:)
 !>   interpolation type ID
-        integer(kind = kint), pointer :: itype_inter_org(:)
+        integer(kind = kint), allocatable :: itype_inter_org(:)
 !>   Coordinate of target node in element coordinate
-        real(kind = kreal), pointer :: coef_inter_org(:,:)
+        real(kind = kreal), allocatable :: coef_inter_org(:,:)
 !
 !>   end address of table to interpolation at original elements
-        integer(kind = kint), pointer :: istack_tbl_type_org_smp(:)
+        integer(kind = kint), allocatable :: istack_tbl_type_org_smp(:)
 !>   maximum number of interpolation at original elements
         integer(kind = kint) :: imax_tbl_wtype_org_smp
 !

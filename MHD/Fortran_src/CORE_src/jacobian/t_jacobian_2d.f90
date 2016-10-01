@@ -32,15 +32,15 @@
 !>     Number of Gauss points
         integer(kind=kint) :: ntot_int
 !>    Shape function
-        real (kind=kreal), pointer :: an_sf(:,:)
+        real (kind=kreal), allocatable :: an_sf(:,:)
 ! 
 !>    Difference of shape function
-        real (kind=kreal), pointer :: xsf_sf(:,:,:)
+        real (kind=kreal), allocatable :: xsf_sf(:,:,:)
 !
 !>    Jacobian
-        real (kind=kreal), pointer :: xj_sf(:,:)
+        real (kind=kreal), allocatable :: xj_sf(:,:)
 !>    1 / Jacobian
-        real (kind=kreal), pointer :: axj_sf(:,:)
+        real (kind=kreal), allocatable :: axj_sf(:,:)
       end type jacobians_2d
 !
 !-----------------------------------------------------------------------

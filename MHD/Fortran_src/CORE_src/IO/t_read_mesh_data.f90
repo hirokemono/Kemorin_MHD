@@ -45,21 +45,21 @@
         integer(kind = kint) :: nloop_IO
 !
 !>     Structure for node communication
-        type(communication_table), pointer :: nod_comm(:)
+        type(communication_table), allocatable :: nod_comm(:)
 !>     Structure for node position
-        type(node_data), pointer ::           node(:)
+        type(node_data), allocatable ::           node(:)
 !>     Structure for element position and connectivity
-        type(element_data), pointer ::        ele(:)
+        type(element_data), allocatable ::        ele(:)
       end type mul_mesh_geometry
 !
 !>     Structure for group data (node, element, surface, and infinity)
       type mul_mesh_groups
 !>     Structure for node group
-        type (group_data), pointer ::          nod_grp(:)
+        type (group_data), allocatable ::          nod_grp(:)
 !>     Structure for element group
-        type (group_data), pointer ::          ele_grp(:)
+        type (group_data), allocatable ::          ele_grp(:)
 !>     Structure for surface group
-        type (surface_group_data), pointer :: surf_grp(:)
+        type (surface_group_data), allocatable :: surf_grp(:)
       end type mul_mesh_groups
 !
 !>     Structure for mesh data

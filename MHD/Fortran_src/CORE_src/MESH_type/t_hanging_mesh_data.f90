@@ -29,16 +29,16 @@
 !>     Structure for hanging nodes and edges
       type hangining_list
 !>        flag list for hanging nodes
-        integer(kind = kint), pointer :: iflag_hang(:,:)
+        integer(kind = kint), allocatable :: iflag_hang(:,:)
 !
 !>        number of hanginig on surface
         integer(kind = kint) :: n_sf
 !>        number of hanginig on edge
         integer(kind = kint) :: n_ed
 !>        local id of hanginig on surface
-        integer(kind = kint), pointer :: id_sf(:,:)
+        integer(kind = kint), allocatable :: id_sf(:,:)
 !>        local id of hanginig on edge
-        integer(kind = kint), pointer :: id_ed(:,:)
+        integer(kind = kint), allocatable :: id_ed(:,:)
       end type hangining_list
 !
 !>     Structure for hanging nodes on mesh

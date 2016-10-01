@@ -40,7 +40,7 @@
       integer(kind = kint), allocatable :: nnod_list_lc(:)
       integer(kind = kint), allocatable :: nnod_list(:)
       integer(kind = kint_gl), allocatable, target                      &
-     &                        :: istsack_nnod_list(:)
+     &                        :: istack_nnod_list(:)
 !
 !
       type(sph_radial_itp_data), save :: r_itp
@@ -101,7 +101,7 @@
 !
       allocate(nnod_list_lc(np_sph_new))
       allocate(nnod_list(np_sph_new))
-      allocate(istsack_nnod_list(0:np_sph_new))
+      allocate(istack_nnod_list(0:np_sph_new))
       nnod_list_lc(1:np_sph_new) = 0
       nnod_list(1:np_sph_new) = 0
 !
@@ -114,12 +114,12 @@
       call MPI_allREDUCE(nnod_list_lc, nnod_list, np_sph_new,           &
      &    CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
-      istsack_nnod_list(0) = 0
+      istack_nnod_list(0) = 0
       do jp = 1, np_sph_new
-        istsack_nnod_list(jp) = istsack_nnod_list(jp-1) + nnod_list(jp)
+        istack_nnod_list(jp) = istack_nnod_list(jp-1) + nnod_list(jp)
       end do
       do jloop = 1, nloop_new
-        new_fst_IO(jloop)%istack_numnod_IO => istsack_nnod_list
+        new_fst_IO(jloop)%istack_numnod_IO => istack_nnod_list
       end do
 !
 !     construct radial interpolation table

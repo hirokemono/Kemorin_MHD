@@ -22,9 +22,9 @@
       type merged_stacks
         integer(kind=kint )  :: num_subdomain
 !      number of node, element, internal node for each domain
-        integer(kind=kint ), pointer :: istack_nod(:)
-        integer(kind=kint ), pointer :: istack_ele(:)
-        integer(kind=kint ), pointer :: istack_inter(:)
+        integer(kind=kint ), allocatable :: istack_nod(:)
+        integer(kind=kint ), allocatable :: istack_ele(:)
+        integer(kind=kint ), allocatable :: istack_inter(:)
 !      number of node, element, internal node stack
         integer(kind=kint ) :: nnod_max
 !
@@ -36,11 +36,11 @@
         integer(kind=kint ) :: inter_nod_m
         integer(kind=kint ) :: inter_ele_m
 !
-        integer(kind=kint ), pointer :: inod_local(:)
-        integer(kind=kint ), pointer :: idomain_nod(:)
+        integer(kind=kint ), allocatable :: inod_local(:)
+        integer(kind=kint ), allocatable :: idomain_nod(:)
 !
-        integer(kind=kint ), pointer :: iele_local(:)
-        integer(kind=kint ), pointer :: idomain_ele(:)
+        integer(kind=kint ), allocatable :: iele_local(:)
+        integer(kind=kint ), allocatable :: idomain_ele(:)
       end type merged_stacks
 !
 !------------------------------------------------------------------

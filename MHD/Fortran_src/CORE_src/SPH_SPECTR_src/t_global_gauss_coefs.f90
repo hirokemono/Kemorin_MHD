@@ -28,8 +28,8 @@
       type global_gauss_points
         integer(kind = kint) :: ltr_w
         integer(kind = kint) :: jmax_w
-        integer(kind = kint), pointer :: index_w(:,:)
-        real(kind = kreal), pointer :: w_gauss(:)
+        integer(kind = kint), allocatable :: index_w(:,:)
+        real(kind = kreal), allocatable :: w_gauss(:)
         real(kind = kreal) :: r_gauss
 !
         character(len = kchara) :: fhead_gauss

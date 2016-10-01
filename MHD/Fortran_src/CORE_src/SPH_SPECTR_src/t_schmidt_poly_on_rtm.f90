@@ -37,33 +37,33 @@
 !
 !>      Structures for Legendre polynomials for spherical transform
       type legendre_4_sph_trans
-        real(kind = kreal), pointer :: g_point_rtm(:)
-        real(kind = kreal), pointer :: g_colat_rtm(:)
-        real(kind = kreal), pointer :: weight_rtm(:)
+        real(kind = kreal), allocatable :: g_point_rtm(:)
+        real(kind = kreal), allocatable :: g_colat_rtm(:)
+        real(kind = kreal), allocatable :: weight_rtm(:)
 !
 !>      @f$ 1 / \sin \theta @f$  for Legendre transform
-        real(kind = kreal), pointer :: asin_t_rtm(:)
+        real(kind = kreal), allocatable :: asin_t_rtm(:)
 !
 !>        @$f P_{l}{m} @$f at gouss points
-        real(kind = kreal), pointer :: P_rtm(:,:)
+        real(kind = kreal), allocatable :: P_rtm(:,:)
 !>        @$f dP_{l}{m}/d\theta @$f at gouss points
-        real(kind = kreal), pointer :: dPdt_rtm(:,:)
+        real(kind = kreal), allocatable :: dPdt_rtm(:,:)
 !
 !>        @$f P_{l}{m} @$f at poles
-        real(kind = kreal), pointer :: P_pole_rtm(:,:)
+        real(kind = kreal), allocatable :: P_pole_rtm(:,:)
 !>        @$f dP_{l}{m}/d\theta @$f at poles
-        real(kind = kreal), pointer :: dPdt_pole_rtm(:,:)
+        real(kind = kreal), allocatable :: dPdt_pole_rtm(:,:)
 !
 !>        Normalization constants for spherical harmonics in (r,l,m)
-        real(kind = kreal), pointer:: g_sph_rlm(:,:)
+        real(kind = kreal), allocatable:: g_sph_rlm(:,:)
 !>        Normalization constants for spherical harmonics in (r,j)
-        real(kind = kreal), pointer:: g_sph_rj(:,:)
+        real(kind = kreal), allocatable:: g_sph_rj(:,:)
 !
 !
 !>        @$f P_{l}{m} @$f with A(j,theta)
-        real(kind = kreal), pointer :: P_jl(:,:)
+        real(kind = kreal), allocatable :: P_jl(:,:)
 !>        @$f dP_{l}{m}/d\theta @$f with A(j,theta)
-        real(kind = kreal), pointer :: dPdt_jl(:,:)
+        real(kind = kreal), allocatable :: dPdt_jl(:,:)
       end type legendre_4_sph_trans
 !
 ! -----------------------------------------------------------------------

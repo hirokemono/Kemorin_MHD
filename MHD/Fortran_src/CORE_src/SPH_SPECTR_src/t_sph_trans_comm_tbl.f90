@@ -45,13 +45,13 @@
 !>        integer flag for transfering data within same process
         integer(kind = kint) :: iflag_self
 !>        process IDs to communicate
-        integer(kind = kint), pointer :: id_domain(:)
+        integer(kind = kint), allocatable :: id_domain(:)
 !>        end point for communication to each process
-        integer(kind = kint), pointer :: istack_sr(:)
+        integer(kind = kint), allocatable :: istack_sr(:)
 !>        local data id to communicate
-        integer(kind = kint), pointer :: item_sr(:)
+        integer(kind = kint), allocatable :: item_sr(:)
 !>        communication table id for local point
-        integer(kind = kint), pointer :: irev_sr(:)
+        integer(kind = kint), allocatable :: irev_sr(:)
       end type sph_comm_tbl
 !
 !>  Structure for communication table for spherical transform

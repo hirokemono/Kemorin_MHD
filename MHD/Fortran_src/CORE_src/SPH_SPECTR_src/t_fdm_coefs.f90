@@ -55,7 +55,7 @@
         integer(kind = kint) :: iflag_odd
 !>        Coefficients to evaluate radial derivative
 !!        from nodal field by FDM
-        real(kind = kreal), pointer :: dmat(:,:)
+        real(kind = kreal), allocatable :: dmat(:,:)
       end type fdm_matrix
 !
 !>        Structure of FDM matrices
@@ -63,11 +63,11 @@
 !>        Coefficients to evaluate first radial derivative
         integer(kind = kint) :: n_order
 !>        Structure of FDM matrix
-        type(fdm_matrix), pointer :: fdm(:)
+        type(fdm_matrix), allocatable :: fdm(:)
 !
 !>      Work matrix to construct radial derivatives 
 !!      from nodal field by FDM
-        real(kind = kreal), pointer :: wk_mat(:,:,:)
+        real(kind = kreal), allocatable :: wk_mat(:,:,:)
       end type fdm_matrices
 !
       private :: alloc_fdm_matrix, dealloc_fdm_matrix

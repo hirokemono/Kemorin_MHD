@@ -2,8 +2,8 @@ Module ACDC_Legendre_Poly
       ! NOTE - need to convert everything here except for the last step to quad precision eventually
 
       ! This module contains all code necessary to generate and store the Legendre polynomials,
-      ! their colocation points, and their associated integration weights.
-      ! The polynomials computed are actually the renormalized associated legendre polynomials -
+      ! their colocation points, and their allocated integration weights.
+      ! The polynomials computed are actually the renormalized allocated legendre polynomials -
       !  - meaning that they carry the spherical harmonic normalization.
       Real*8, Allocatable :: coloc(:), gl_weights(:)
       Integer :: n_theta 
@@ -13,11 +13,11 @@ Module ACDC_Legendre_Poly
       Logical :: parity = .true.
       Real*8 ::      Pi  = 3.1415926535897932384626433832795028841972d+0
       Type, Public :: even_odd_sep
-            Real*8, pointer :: even(:)
-            Real*8, pointer :: odd(:)
+            Real*8, allocatable :: even(:)
+            Real*8, allocatable :: odd(:)
       End Type even_odd_sep
       Type, Public :: p_lm_array 
-            Real*8, pointer :: data(:,:)
+            Real*8, allocatable :: data(:,:)
       End Type p_lm_array
 
       Type(p_lm_array), Allocatable :: p_lm(:), p_lm_odd(:), p_lm_even(:), p_lm_eo(:) 
@@ -46,7 +46,7 @@ Subroutine DeAllocate_Plms(depar)
       Logical, Optional, Intent(In) :: depar
       If (allocated(p_lm)) Then
             Do i = 1, n_m
-                  If (associated(p_lm(i)%data)) Then
+                  If (allocated(p_lm(i)%data)) Then
                         DeAllocate(p_lm(i)%data)
                   Endif
             Enddo
@@ -67,7 +67,7 @@ Subroutine DeAllocate_Parity_Plms()
       Integer :: i,m
       If (allocated(p_lm_odd)) Then
             Do i = 1, n_m
-                  If (associated(p_lm_odd(i)%data)) Then
+                  If (allocated(p_lm_odd(i)%data)) Then
                         DeAllocate(p_lm_odd(i)%data)
                   Endif
             Enddo
@@ -75,7 +75,7 @@ Subroutine DeAllocate_Parity_Plms()
       Endif
       If (allocated(p_lm_even)) Then
             Do i = 1, n_m
-                  If (associated(p_lm_even(i)%data)) Then
+                  If (allocated(p_lm_even(i)%data)) Then
                         DeAllocate(p_lm_even(i)%data)
                   Endif
             Enddo
@@ -85,8 +85,8 @@ Subroutine DeAllocate_Parity_Plms()
       If (allocated(n_l_odd)) DeAllocate(n_l_odd)
       If (allocated(lvals)) Then
             Do m = 1, n_m
-                  If (associated(lvals(m)%even)) DeAllocate(lvals(m)%even)
-                  If (associated(lvals(m)%odd)) DeAllocate(lvals(m)%odd)
+                  If (allocated(lvals(m)%even)) DeAllocate(lvals(m)%even)
+                  If (allocated(lvals(m)%odd)) DeAllocate(lvals(m)%odd)
             Enddo
             DeAllocate(lvals)
       Endif
