@@ -535,17 +535,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine link_node_on_edge(edge_org, edge)
-!
-      type(edge_data), intent(in) :: edge_org
-      type(edge_data), intent(inout) :: edge
-!
-!
-      edge%node_on_edge =>    edge_org%node_on_edge
-      edge%node_on_edge_sf => edge_org%node_on_edge_sf
-!
-      end subroutine link_node_on_edge
-!
-!  ---------------------------------------------------------------------
-!
       end module t_edge_data
