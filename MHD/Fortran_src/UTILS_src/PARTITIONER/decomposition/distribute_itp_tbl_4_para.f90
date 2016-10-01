@@ -30,7 +30,7 @@
 !> Structure of interpolation table for target grid
       type itp_stack_dest_wk_para
 !>   end address to receive interpolated data including interpolate type
-        integer(kind = kint), pointer :: istack_tbl_wt_dest(:)
+        integer(kind = kint), allocatable :: istack_tbl_wt_dest(:)
       end type itp_stack_dest_wk_para
 !
       private :: alloc_itp_stack_dest_wk_para

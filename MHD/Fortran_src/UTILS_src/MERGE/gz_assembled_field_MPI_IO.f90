@@ -55,7 +55,7 @@
 !>  Data size for compressed data
         integer(kind = kint) :: len_gzipped
 !>  Data buffer for zlib IO
-        character(len = 1), pointer :: buffer(:)
+        character(len = 1), allocatable :: buffer(:)
       end type mul_zlib_buffers
 !
       type(mul_zlib_buffers), allocatable, save :: gz_bufs(:)

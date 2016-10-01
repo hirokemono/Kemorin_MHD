@@ -34,11 +34,11 @@
 !>      Number of radial grids for new spectr data
         integer(kind = kint) :: nri_old2new =  0
 !>      Inner radial grid ID for interpolation
-        integer(kind = kint), pointer :: k_old2new_in(:)
+        integer(kind = kint), allocatable :: k_old2new_in(:)
 !>      Outer radial grid ID for interpolation
-        integer(kind = kint), pointer :: k_old2new_out(:)
+        integer(kind = kint), allocatable :: k_old2new_out(:)
 !>      Coefficient for Inner grid data for interpolation
-        real(kind = kreal), pointer :: coef_old2new_in(:)
+        real(kind = kreal), allocatable :: coef_old2new_in(:)
 !
 !>      Innermost new radial ID within the original domain
         integer(kind = kint) :: kr_inner_domain =  0

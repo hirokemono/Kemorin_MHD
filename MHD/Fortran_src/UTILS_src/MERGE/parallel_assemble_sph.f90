@@ -33,7 +33,7 @@
       implicit none
 !
       type rj_assemble_tbl
-        integer(kind = kint), pointer :: j_org_to_new(:)
+        integer(kind = kint), allocatable :: j_org_to_new(:)
         integer(kind = kint) :: icenter
       end type rj_assemble_tbl
 !

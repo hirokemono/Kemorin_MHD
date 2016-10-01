@@ -24,17 +24,17 @@
 !
         real(kind = kreal) :: xdomain_min(3)
         real(kind = kreal) :: xdomain_max(3)
-        real(kind = kreal), pointer :: x_block(:)
-        real(kind = kreal), pointer :: y_block(:)
-        real(kind = kreal), pointer :: z_block(:)
+        real(kind = kreal), allocatable :: x_block(:)
+        real(kind = kreal), allocatable :: y_block(:)
+        real(kind = kreal), allocatable :: z_block(:)
 !
         type(group_data) :: ele_list_by_ctr
         type(group_data) :: ele_list_by_rng
 !
-        integer(kind = kint), pointer :: iblock_tgt_node(:,:)
+        integer(kind = kint), allocatable :: iblock_tgt_node(:,:)
 !
-        real(kind = kreal), pointer :: xele_min(:,:)
-        real(kind = kreal), pointer :: xele_max(:,:)
+        real(kind = kreal), allocatable :: xele_min(:,:)
+        real(kind = kreal), allocatable :: xele_max(:,:)
       end type block_4_interpolate
 !
 !

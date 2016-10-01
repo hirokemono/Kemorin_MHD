@@ -45,13 +45,13 @@
 !>         status flag for sending
         integer(kind = kint) :: nprocs_PVR
 !>         status flag for sending
-        integer, pointer :: sta1(:,:)
+        integer, allocatable :: sta1(:,:)
 !>         status flag for recieving
-        integer, pointer :: sta2(:,:)
+        integer, allocatable :: sta2(:,:)
 !>         status flag for sending
-        integer, pointer :: req1(:  )
+        integer, allocatable :: req1(:  )
 !>         status flag for recieving
-        integer, pointer :: req2(:  )
+        integer, allocatable :: req2(:  )
       end type PVR_MPI_FLAGS
 !
 !  ---------------------------------------------------------------------

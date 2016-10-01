@@ -18,7 +18,7 @@
 !
       type gauss_legendre_data
 !>      Legendre polynomials with no normalization
-        real(kind = kreal), pointer :: P_org(:,:)
+        real(kind = kreal), allocatable :: P_org(:,:)
       end type gauss_legendre_data
 !
       real(kind = kreal), allocatable :: dint_p(:)

@@ -31,7 +31,7 @@
 !> Structure for istack_itp_wtype_dest
       type istack_dest_type
 !>   end address to receive interpolated data including interpolate type
-        integer(kind = kint), pointer :: istack_itp_wtype_dest(:)
+        integer(kind = kint), allocatable :: istack_itp_wtype_dest(:)
       end type istack_dest_type
 !
 !
