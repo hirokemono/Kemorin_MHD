@@ -53,26 +53,26 @@
 !
 !
       type lumped_mass_matrices
-        real (kind=kreal), pointer  ::  ml(:)
-        real (kind=kreal), pointer  ::  ml_o(:)
+        real (kind=kreal), allocatable  ::  ml(:)
+        real (kind=kreal), allocatable  ::  ml_o(:)
       end type lumped_mass_matrices
 !
       type finite_ele_mat_node
-        real (kind=kreal), pointer  :: ff(:,:)
-        real (kind=kreal), pointer  :: ff_smp(:,:,:)
+        real (kind=kreal), allocatable  :: ff(:,:)
+        real (kind=kreal), allocatable  :: ff_smp(:,:,:)
       end type finite_ele_mat_node
 !
 !
       type work_finite_element_mat
-        real (kind=kreal), pointer  ::  sk6(:,:,:)
+        real (kind=kreal), allocatable  ::  sk6(:,:,:)
 !
-        real(kind=kreal), pointer  ::  scalar_1(:)
-        real(kind=kreal), pointer  ::  vector_1(:,:)
-        real(kind=kreal), pointer  ::  tensor_1(:,:)
+        real(kind=kreal), allocatable  ::  scalar_1(:)
+        real(kind=kreal), allocatable  ::  vector_1(:,:)
+        real(kind=kreal), allocatable  ::  tensor_1(:,:)
 !
-        real(kind=kreal), pointer  ::  vxe(:,:)
+        real(kind=kreal), allocatable  ::  vxe(:,:)
 !
-        real(kind=kreal), pointer  ::  me_diag(:)
+        real(kind=kreal), allocatable  ::  me_diag(:)
       end type work_finite_element_mat
 !
 !   ---------------------------------------------------------------------

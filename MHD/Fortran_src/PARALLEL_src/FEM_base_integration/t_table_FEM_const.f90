@@ -44,27 +44,27 @@
         integer (kind=kint) :: num_sort_smp
 !
 !>    node order by number of elements on each node 4 SMP
-        integer(kind=kint), pointer :: node_sort_list_smp(:,:)
+        integer(kind=kint), allocatable :: node_sort_list_smp(:,:)
 !
 !>    Minimum number of summuation for each node
         integer (kind=kint) :: nmin_sort_smp
 !>    Maximum number of summuation for each node
         integer (kind=kint) :: nmax_sort_smp
 !>    Number of summuation for each node
-        integer(kind=kint), pointer :: nnod_sort_smp(:)
+        integer(kind=kint), allocatable :: nnod_sort_smp(:)
 !>    stack by number of elements on each node
-        integer(kind=kint), pointer :: nod_stack_smp(:)
+        integer(kind=kint), allocatable :: nod_stack_smp(:)
 !
 !
 !>    element ID in the node ID and summation count 4 SMP
-        integer(kind=kint), pointer :: iele_sort_smp(:)
+        integer(kind=kint), allocatable :: iele_sort_smp(:)
 !>    pocessor ID in the node ID and summation count 4 SMP
-        integer(kind=kint), pointer :: iconn_sort_smp(:)
+        integer(kind=kint), allocatable :: iconn_sort_smp(:)
       end type tables_4_FEM_assembles
 !
       type table_mat_const
         integer (kind=kint) :: nnod_1ele
-        integer (kind=kint), pointer :: idx_4_mat(:,:)
+        integer (kind=kint), allocatable :: idx_4_mat(:,:)
       end type table_mat_const
 !
 !-----------------------------------------------------------------------

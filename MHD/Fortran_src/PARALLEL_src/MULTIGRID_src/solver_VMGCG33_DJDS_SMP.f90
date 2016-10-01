@@ -53,7 +53,7 @@
       implicit none
 !
       type MGCG33_work
-        real(kind = kreal), pointer :: W2(:,:)
+        real(kind = kreal), allocatable :: W2(:,:)
       end type MGCG33_work
 !
       type(MGCG33_work), allocatable :: wk_MGCG33(:)

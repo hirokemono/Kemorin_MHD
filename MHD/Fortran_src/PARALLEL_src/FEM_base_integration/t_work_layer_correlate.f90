@@ -24,28 +24,28 @@
         integer(kind = kint) :: nlayer
         integer(kind = kint) :: ncomp_sgl
         integer(kind = kint) :: ncomp_dble
-        real(kind = kreal), pointer :: ave_l(:,:)
-        real(kind = kreal), pointer :: rms_l(:,:)
-        real(kind = kreal), pointer :: sig_l(:,:)
-        real(kind = kreal), pointer :: cov_l(:,:)
-        real(kind = kreal), pointer :: ave_w(:)
-        real(kind = kreal), pointer :: rms_w(:)
-        real(kind = kreal), pointer :: sig_w(:)
-        real(kind = kreal), pointer :: cov_w(:)
+        real(kind = kreal), allocatable :: ave_l(:,:)
+        real(kind = kreal), allocatable :: rms_l(:,:)
+        real(kind = kreal), allocatable :: sig_l(:,:)
+        real(kind = kreal), allocatable :: cov_l(:,:)
+        real(kind = kreal), allocatable :: ave_w(:)
+        real(kind = kreal), allocatable :: rms_w(:)
+        real(kind = kreal), allocatable :: sig_w(:)
+        real(kind = kreal), allocatable :: cov_w(:)
 !
-        real(kind = kreal), pointer :: ave_les(:,:)
-        real(kind = kreal), pointer :: rms_les(:,:)
-        real(kind = kreal), pointer :: sig_les(:,:)
-        real(kind = kreal), pointer :: cov_les(:,:)
-        real(kind = kreal), pointer :: ave_wg(:)
-        real(kind = kreal), pointer :: rms_wg(:)
-        real(kind = kreal), pointer :: sig_wg(:)
-        real(kind = kreal), pointer :: cov_wg(:)
+        real(kind = kreal), allocatable :: ave_les(:,:)
+        real(kind = kreal), allocatable :: rms_les(:,:)
+        real(kind = kreal), allocatable :: sig_les(:,:)
+        real(kind = kreal), allocatable :: cov_les(:,:)
+        real(kind = kreal), allocatable :: ave_wg(:)
+        real(kind = kreal), allocatable :: rms_wg(:)
+        real(kind = kreal), allocatable :: sig_wg(:)
+        real(kind = kreal), allocatable :: cov_wg(:)
 !
-        real(kind = kreal), pointer :: ave_l_smp(:,:)
-        real(kind = kreal), pointer :: rms_l_smp(:,:)
-        real(kind = kreal), pointer :: sig_l_smp(:,:)
-        real(kind = kreal), pointer :: cor_l_smp(:,:)
+        real(kind = kreal), allocatable :: ave_l_smp(:,:)
+        real(kind = kreal), allocatable :: rms_l_smp(:,:)
+        real(kind = kreal), allocatable :: sig_l_smp(:,:)
+        real(kind = kreal), allocatable :: cor_l_smp(:,:)
       end type dynamis_correlation_data
 !
 ! ----------------------------------------------------------------------

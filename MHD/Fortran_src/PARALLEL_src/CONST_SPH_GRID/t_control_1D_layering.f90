@@ -29,11 +29,11 @@
 !>        Number of groups
         integer(kind = kint) :: nlayer
 !>        global start address
-        integer(kind = kint), pointer :: istart(:)
+        integer(kind = kint), allocatable :: istart(:)
 !>        global end address
-        integer(kind = kint), pointer :: iend(:)
+        integer(kind = kint), allocatable :: iend(:)
 !>        name of group
-        character(len = kchara), pointer :: name(:)
+        character(len = kchara), allocatable :: name(:)
       end type layering_group_list
 !
 ! -----------------------------------------------------------------------

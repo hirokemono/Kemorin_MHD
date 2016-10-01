@@ -21,27 +21,27 @@
 !
 !>      Structure of work area for mean square data
       type sph_mean_square_work
-        real(kind = kreal), pointer :: shl_rj(:,:,:)
-        real(kind = kreal), pointer :: volume_j(:,:)
+        real(kind = kreal), allocatable :: shl_rj(:,:,:)
+        real(kind = kreal), allocatable :: volume_j(:,:)
 !
-        integer(kind = kint), pointer :: num_mode_sum_l(:)
-        integer(kind = kint), pointer :: num_mode_sum_m(:)
-        integer(kind = kint), pointer :: num_mode_sum_lm(:)
-        integer(kind = kint), pointer :: istack_mode_sum_l(:)
-        integer(kind = kint), pointer :: istack_mode_sum_m(:)
-        integer(kind = kint), pointer :: istack_mode_sum_lm(:)
+        integer(kind = kint), allocatable :: num_mode_sum_l(:)
+        integer(kind = kint), allocatable :: num_mode_sum_m(:)
+        integer(kind = kint), allocatable :: num_mode_sum_lm(:)
+        integer(kind = kint), allocatable :: istack_mode_sum_l(:)
+        integer(kind = kint), allocatable :: istack_mode_sum_m(:)
+        integer(kind = kint), allocatable :: istack_mode_sum_lm(:)
 !
-        integer(kind = kint), pointer :: item_mode_sum_l(:)
-        integer(kind = kint), pointer :: item_mode_sum_m(:)
-        integer(kind = kint), pointer :: item_mode_sum_lm(:)
+        integer(kind = kint), allocatable :: item_mode_sum_l(:)
+        integer(kind = kint), allocatable :: item_mode_sum_m(:)
+        integer(kind = kint), allocatable :: item_mode_sum_lm(:)
 !
-        real(kind = kreal), pointer :: shl_l_local(:,:,:)
-        real(kind = kreal), pointer :: shl_m_local(:,:,:)
-        real(kind = kreal), pointer :: shl_lm_local(:,:,:)
+        real(kind = kreal), allocatable :: shl_l_local(:,:,:)
+        real(kind = kreal), allocatable :: shl_m_local(:,:,:)
+        real(kind = kreal), allocatable :: shl_lm_local(:,:,:)
 !
-        real(kind = kreal), pointer :: vol_l_local(:,:)
-        real(kind = kreal), pointer :: vol_m_local(:,:)
-        real(kind = kreal), pointer :: vol_lm_local(:,:)
+        real(kind = kreal), allocatable :: vol_l_local(:,:)
+        real(kind = kreal), allocatable :: vol_m_local(:,:)
+        real(kind = kreal), allocatable :: vol_lm_local(:,:)
       end type sph_mean_square_work
 !
 ! -----------------------------------------------------------------------

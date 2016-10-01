@@ -89,16 +89,16 @@
 !>      Structure to use SNGLE FFTW
       type work_for_sgl_FFTW
 !>        plan ID for backward transform
-        integer(kind = fftw_plan), pointer :: plan_bwd(:)
+        integer(kind = fftw_plan), allocatable :: plan_bwd(:)
 !>        plan ID for forward transform
-        integer(kind = fftw_plan), pointer :: plan_fwd(:)
+        integer(kind = fftw_plan), allocatable :: plan_fwd(:)
 !
 !>        normalization parameter for FFTW (= 1 / Nfft)
         real(kind = kreal) :: aNfft
 !>        real data for multiple Fourier transform
-        real(kind = kreal), pointer :: X(:,:)
+        real(kind = kreal), allocatable :: X(:,:)
 !>        spectrum data for multiple Fourier transform
-        complex(kind = fftw_complex), pointer :: C(:,:)
+        complex(kind = fftw_complex), allocatable :: C(:,:)
       end type work_for_sgl_FFTW
 !
       private :: alloc_FFTW_plan
@@ -173,7 +173,7 @@
       type(work_for_sgl_FFTW), intent(inout) :: FFTW_t
 !
 !
-      if(ASSOCIATED(FFTW_t%X) .eqv. .false.) then
+      if(allocated(FFTW_t%X) .eqv. .false.) then
         call init_sph_single_FFTW_t(nidx_rtp, FFTW_t)
         return
       end if

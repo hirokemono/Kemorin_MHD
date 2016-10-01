@@ -32,23 +32,23 @@
 !
       type work_4_ele_comm_table
 !>        global node ID for element import table
-        integer(kind = kint_gl), pointer :: inod_import_e(:)
+        integer(kind = kint_gl), allocatable :: inod_import_e(:)
 !>        global node ID for element export table
-        integer(kind = kint_gl), pointer :: inod_export_e(:)
+        integer(kind = kint_gl), allocatable :: inod_export_e(:)
 !>        local node ID for element export table
-        integer(kind = kint), pointer :: inod_import_l(:)
+        integer(kind = kint), allocatable :: inod_import_l(:)
 !>        local node ID for element export table
-        integer(kind = kint), pointer :: inod_export_l(:)
+        integer(kind = kint), allocatable :: inod_export_l(:)
 !
 !>        local node ID for import table
-        integer(kind = kint), pointer :: item_local(:)
+        integer(kind = kint), allocatable :: item_local(:)
 !>        local node ID for import table
-        integer(kind = kint), pointer :: inod_local(:)
+        integer(kind = kint), allocatable :: inod_local(:)
 !
 !>        element position for element import table
-        real(kind = kreal), pointer :: xe_import(:)
+        real(kind = kreal), allocatable :: xe_import(:)
 !>        element position for element import table
-        real(kind = kreal), pointer :: xe_export(:)
+        real(kind = kreal), allocatable :: xe_export(:)
       end type work_4_ele_comm_table
 !
 !>      small number

@@ -31,39 +31,39 @@
 !>      Structure for real array for MPI-IO
       type realarray_IO
         integer(kind = kint) :: num
-        real(kind = kreal), pointer :: r_IO(:)
+        real(kind = kreal), allocatable :: r_IO(:)
       end type realarray_IO
 !
 !>      Structure for 2D vectr array for MPI-IO
       type vectarray_IO
         integer(kind = kint) :: n1
         integer(kind = kint) :: n2
-        real(kind = kreal), pointer :: v_IO(:,:)
+        real(kind = kreal), allocatable :: v_IO(:,:)
       end type vectarray_IO
 !
 !>      Structure for integer array for MPI-IO
       type intarray_IO
         integer(kind = kint) :: num
-        integer(kind = kint), pointer :: i_IO(:)
+        integer(kind = kint), allocatable :: i_IO(:)
       end type intarray_IO
 !
 !>      Structure for integer vector array for MPI-IO
       type ivecarray_IO
         integer(kind = kint) :: n1
         integer(kind = kint) :: n2
-        integer(kind = kint), pointer :: iv_IO(:,:)
+        integer(kind = kint), allocatable :: iv_IO(:,:)
       end type ivecarray_IO
 !
 !>      Structure for 8-byte integer array for MPI-IO
       type int8array_IO
         integer(kind = kint) :: num
-        integer(kind = kint_gl), pointer :: i8_IO(:)
+        integer(kind = kint_gl), allocatable :: i8_IO(:)
       end type int8array_IO
 !
 !>      Structure for 8-byte integer array for MPI-IO
       type charaarray_IO
         integer(kind = kint) :: num
-        character(len = 1), pointer :: c_IO(:)
+        character(len = 1), allocatable :: c_IO(:)
       end type charaarray_IO
 !
 !>      Structure for parameters of MPI-IO
@@ -81,24 +81,24 @@
         integer(kind = kint_gl) :: ioff_gl
 !
 !>        Stack of data lengh in each domain
-        integer(kind = kint_gl), pointer :: istack_merged(:)
+        integer(kind = kint_gl), allocatable :: istack_merged(:)
 !>        Local number of data
-        integer(kind = kint), pointer :: num_lc(:)
+        integer(kind = kint), allocatable :: num_lc(:)
 !>        global number of data
-        integer(kind = kint), pointer :: num_gl(:)
+        integer(kind = kint), allocatable :: num_gl(:)
 !
 !>        Structure for real array for MPI-IO
-        type(realarray_IO), pointer ::  r_array(:)
+        type(realarray_IO), allocatable ::  r_array(:)
 !>        Structure for real array for MPI-IO
-        type(vectarray_IO), pointer ::  v_array(:)
+        type(vectarray_IO), allocatable ::  v_array(:)
 !>        Structure for real array for MPI-IO
-        type(intarray_IO), pointer ::   i_array(:)
+        type(intarray_IO), allocatable ::   i_array(:)
 !>        Structure for real array for MPI-IO
-        type(ivecarray_IO), pointer ::  iv_array(:)
+        type(ivecarray_IO), allocatable ::  iv_array(:)
 !>        Structure for real array for MPI-IO
-        type(int8array_IO), pointer ::  i8_array(:)
+        type(int8array_IO), allocatable ::  i8_array(:)
 !>        Structure for real array for MPI-IO
-        type(charaarray_IO), pointer :: c_array(:)
+        type(charaarray_IO), allocatable :: c_array(:)
       end type calypso_MPI_IO_params
 !
 !  ---------------------------------------------------------------------
@@ -195,86 +195,6 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine unlink_integer8_buffers(nloop, i8_array)
-!
-      integer(kind = kint), intent(in) :: nloop
-      type(int8array_IO), intent(inout) ::  i8_array(nloop)
-!
-      integer(kind = kint) :: iloop
-!
-!
-      do iloop = 1, nloop
-        nullify(i8_array(iloop)%i8_IO)
-      end do
-!
-      end subroutine unlink_integer8_buffers
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine unlink_integer_buffers(nloop, i_array)
-!
-      integer(kind = kint), intent(in) :: nloop
-      type(intarray_IO), intent(inout) ::  i_array(nloop)
-!
-      integer(kind = kint) :: iloop
-!
-!
-      do iloop = 1, nloop
-        nullify(i_array(iloop)%i_IO)
-      end do
-!
-      end subroutine unlink_integer_buffers
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine unlink_int_2d_buffers(nloop, iv_array)
-!
-      integer(kind = kint), intent(in) :: nloop
-      type(ivecarray_IO), intent(inout) ::  iv_array(nloop)
-!
-      integer(kind = kint) :: iloop
-!
-!
-      do iloop = 1, nloop
-        nullify(iv_array(iloop)%iv_IO)
-      end do
-!
-      end subroutine unlink_int_2d_buffers
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine unlink_real_buffers(nloop, r_array)
-!
-      integer(kind = kint), intent(in) :: nloop
-      type(realarray_IO), intent(inout) ::  r_array(nloop)
-!
-      integer(kind = kint) :: iloop
-!
-!
-      do iloop = 1, nloop
-        nullify(r_array(iloop)%r_IO)
-      end do
-!
-      end subroutine unlink_real_buffers
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine unlink_vector_buffers(nloop, v_array)
-!
-      integer(kind = kint), intent(in) :: nloop
-      type(vectarray_IO), intent(inout) ::  v_array(nloop)
-!
-      integer(kind = kint) :: iloop
-!
-!
-      do iloop = 1, nloop
-        nullify(v_array(iloop)%v_IO)
-      end do
-!
-      end subroutine unlink_vector_buffers
-!
-!  ---------------------------------------------------------------------
-!
       integer(kind = kint) function rank_in_multi_domain(iloop)
 !
       integer(kind = kint), intent(in) :: iloop
@@ -337,7 +257,6 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
       integer(kind = kint) :: num_global(nprocs)
-      integer(kind = kint) :: ip
 !
 !
       call MPI_Allgather(num_local, ione, CALYPSO_INTEGER,              &

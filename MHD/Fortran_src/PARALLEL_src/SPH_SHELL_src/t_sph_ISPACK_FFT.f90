@@ -80,9 +80,9 @@
 !>      Structure for each thread
       type work_each_ispack
 !>        Data for multiple Fourier transform
-        real(kind = 8), pointer :: X(:)
+        real(kind = 8), allocatable :: X(:)
 !>        Work area for ISPACK
-        real(kind = 8), pointer :: WK(:)
+        real(kind = 8), allocatable :: WK(:)
       end type work_each_ispack
 !
 !>      Structure to use ISPACK
@@ -92,7 +92,7 @@
 !>        Maximum nuber of components for each SMP process
         integer(kind = kint) :: Mmax_smp
 !>        Work constants for ISPACK
-        real(kind = 8), pointer :: T(:)
+        real(kind = 8), allocatable :: T(:)
 !>        Work area for ISPACK
         integer(kind = 4) :: IT(5)
       end type work_for_ispack
@@ -154,7 +154,7 @@
 !
       if((2*nidx_rtp(3)) .ne. size(ispack_t%T)) then
 !
-        if(ASSOCIATED(ispack_t%T) .eqv. .false.) then
+        if(allocated(ispack_t%T) .eqv. .false.) then
           call alloc_const_4_ispack(nidx_rtp(3), ispack_t)
         else if( (2*nidx_rtp(3)) .gt. size(ispack_t%T) ) then
           call dealloc_const_4_ispack(ispack_t)

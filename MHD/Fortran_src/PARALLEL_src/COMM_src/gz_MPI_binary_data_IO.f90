@@ -72,7 +72,7 @@
       integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(in) :: int_dat(num)
 !
-      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength, ip
+      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
@@ -107,7 +107,7 @@
       integer(kind = kint), intent(in) :: num
       integer(kind = kint_gl), intent(in) :: int8_dat(num)
 !
-      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength, ip
+      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
@@ -142,7 +142,7 @@
       integer(kind = kint), intent(in) :: num
       real(kind = kreal), intent(in) :: real_dat(num)
 !
-      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength, ip
+      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !

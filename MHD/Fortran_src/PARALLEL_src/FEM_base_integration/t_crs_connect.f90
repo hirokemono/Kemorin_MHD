@@ -46,14 +46,14 @@
         integer(kind = kint) :: ntot_l
         integer(kind = kint) :: ntot_u
 !
-        integer(kind = kint), pointer :: nitem_l(:)
-        integer(kind = kint), pointer :: nitem_u(:)
+        integer(kind = kint), allocatable :: nitem_l(:)
+        integer(kind = kint), allocatable :: nitem_u(:)
 !
-        integer(kind = kint), pointer :: istack_l(:)
-        integer(kind = kint), pointer :: istack_u(:)
+        integer(kind = kint), allocatable :: istack_l(:)
+        integer(kind = kint), allocatable :: istack_u(:)
 !
-        integer(kind = kint), pointer :: item_l(:)
-        integer(kind = kint), pointer :: item_u(:)
+        integer(kind = kint), allocatable :: item_l(:)
+        integer(kind = kint), allocatable :: item_u(:)
 !
         integer(kind = kint) :: max_l, min_l
         integer(kind = kint) :: max_u, min_u
@@ -66,11 +66,11 @@
         integer(kind = kint) :: max_2l
         integer(kind = kint) :: max_2u
 !
-        integer(kind = kint), pointer :: nitem_2l(:)
-        integer(kind = kint), pointer :: nitem_2u(:)
+        integer(kind = kint), allocatable :: nitem_2l(:)
+        integer(kind = kint), allocatable :: nitem_2u(:)
 !
-        integer(kind = kint), pointer :: item_2l(:,:)
-        integer(kind = kint), pointer :: item_2u(:,:)
+        integer(kind = kint), allocatable :: item_2l(:,:)
+        integer(kind = kint), allocatable :: item_2u(:,:)
       end type RS2d_matrix_connect
 !
 !-----------------------------------------------------------------------

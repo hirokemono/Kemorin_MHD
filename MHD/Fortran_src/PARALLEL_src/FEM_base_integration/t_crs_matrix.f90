@@ -29,8 +29,8 @@
 !>  upper right component
         real(kind=kreal), pointer ::  AU_crs(:)
 
-        real(kind=kreal), pointer ::  B_crs(:)
-        real(kind=kreal), pointer ::  X_crs(:)
+        real(kind=kreal), allocatable ::  B_crs(:)
+        real(kind=kreal), allocatable ::  X_crs(:)
 !
 !>   pointer for diagonal component
         integer (kind = kint) :: ist_d

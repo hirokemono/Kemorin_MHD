@@ -18,11 +18,11 @@
 !
       type work_surface_element_mat
         integer(kind = kint) :: ntot_item
-        real(kind=kreal), pointer :: scalar_sf(:)
-        real(kind=kreal), pointer :: vect_sf(:,:)
+        real(kind=kreal), allocatable :: scalar_sf(:)
+        real(kind=kreal), allocatable :: vect_sf(:,:)
 !
-        real(kind=kreal), pointer :: xe_sf(:,:,:)
-        real(kind=kreal), pointer :: dxe_sf(:,:,:)
+        real(kind=kreal), allocatable :: xe_sf(:,:,:)
+        real(kind=kreal), allocatable :: dxe_sf(:,:,:)
       end type work_surface_element_mat
 !
 ! -----------------------------------------------------------------------

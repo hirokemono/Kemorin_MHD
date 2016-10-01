@@ -40,11 +40,11 @@
 !
 !>      Structure for vectors for solver
       type vectors_4_solver
-        real(kind=kreal), pointer :: x_vec(:)
-        real(kind=kreal), pointer :: b_vec(:)
+        real(kind=kreal), allocatable :: x_vec(:)
+        real(kind=kreal), allocatable :: b_vec(:)
         integer(kind = kint) :: isize_solver_vect
 ! 
-        integer(kind=kint), pointer :: ix_vec(:)
+        integer(kind=kint), allocatable :: ix_vec(:)
       end type vectors_4_solver
 ! 
 ! ----------------------------------------------------------------------

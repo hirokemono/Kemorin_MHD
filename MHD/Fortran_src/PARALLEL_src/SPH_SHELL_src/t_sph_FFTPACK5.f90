@@ -80,21 +80,21 @@
 !>      Structure for each FFTPACK
       type work_each_fftpack
 !>        Data for multiple Fourier transform
-        real(kind = 8), pointer :: X(:)
+        real(kind = 8), allocatable :: X(:)
 !>        Work area for FFTPACK
-        real(kind = 8), pointer :: WK(:)
+        real(kind = 8), allocatable :: WK(:)
       end type work_each_fftpack
 !
 !>      Structure to use ISPACK
       type work_for_fftpack
 !>      Structure for each thread
-        type(work_each_fftpack), pointer :: smp(:)
+        type(work_each_fftpack), allocatable :: smp(:)
 !>        Maximum nuber of components for each SMP process
         integer(kind = kint) :: Mmax_smp
 !>        Size of work constant for FFTPACK
         integer(kind = kint) :: NSV
 !>        Work constatnts for FFTPACK
-        real(kind = 8), pointer :: WSV(:)
+        real(kind = 8), allocatable :: WSV(:)
 !>        flag for length of Fourier transform
         integer(kind = kint) :: iflag_fft_len =  -1
       end type work_for_fftpack
@@ -167,7 +167,7 @@
         call RFFTMI(nidx_rtp(3), fftpack_t%WSV, fftpack_t%NSV, ierr)
       end if
 !
-      if(ASSOCIATED(fftpack_t%smp(1)%WK) .eqv. .false.) then
+      if(allocated(fftpack_t%smp(1)%WK) .eqv. .false.) then
         call alloc_work_4_FFTPACK(nidx_rtp(3), fftpack_t)
       else if( (fftpack_t%Mmax_smp*nidx_rtp(3))                         &
      &      .gt. size(fftpack_t%smp(1)%WK,1)  ) then
