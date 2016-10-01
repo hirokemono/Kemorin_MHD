@@ -56,9 +56,9 @@
 !>        Number of radial points for radial parameter
         integer(kind = kint) :: nri_param
 !>        Radial ID for radial parameter
-        integer(kind = kint), pointer :: kr_param(:)
+        integer(kind = kint), allocatable :: kr_param(:)
 !>        boundary condition spectrum  r_param(r_ID,component)
-        real(kind = kreal), pointer ::   r_param(:,:)
+        real(kind = kreal), allocatable ::   r_param(:,:)
       end type each_radial_parameter
 !
 !>        Number of radial parameter

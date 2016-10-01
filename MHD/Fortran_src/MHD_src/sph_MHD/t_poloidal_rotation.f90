@@ -62,7 +62,7 @@
 !!        omega(kr,1) ... d Omaga_z / dr
 !!        omega(kr,2) ... d^2 Omaga_z / dr^2
 !!@endverbatim
-          real(kind = kreal), pointer :: ws_rlm(:,:)
+          real(kind = kreal), allocatable :: ws_rlm(:,:)
 !
 !>        rotation spectr in @f$ f(r,j) @f$
 !!@verbatim
@@ -76,7 +76,7 @@
 !!        omega(kr,1,3) ... d Omaga_y / dr
 !!        omega(kr,2,3) ... d^2 Omaga_y / dr^2
 !!@endverbatim
-          real(kind = kreal), pointer :: ws_rj(:,:,:)
+          real(kind = kreal), allocatable :: ws_rj(:,:,:)
       end type sph_rotation
 !
 !

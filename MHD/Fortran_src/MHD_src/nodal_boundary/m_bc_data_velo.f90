@@ -46,6 +46,7 @@
       use t_phys_address
       use t_boundary_field_IO
 !
+      use t_bc_data_MHD
       use set_nodal_bc_id_data
       use set_surface_id_MHD
       use set_surface_values
@@ -62,8 +63,10 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*)' set_bc_id_data'
-      call set_bc_id_data(IO_bc, mesh%node, mesh%ele, group%nod_grp,    &
-     &    MHD_mesh, iphys, nod_fld, nod1_bcs)
+      call set_bc_id_data(IO_bc, mesh, group, MHD_mesh, nod1_bcs)
+!
+      if (iflag_debug.eq.1) write(*,*)' set_bc_fields'
+      call set_bc_fields(mesh, iphys, nod_fld, nod1_bcs)
 !
       call set_bc_surface_data                                          &
      &   (IO_bc, mesh%node, mesh%ele, ele_mesh%surf,                    &

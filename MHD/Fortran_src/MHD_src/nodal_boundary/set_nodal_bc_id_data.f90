@@ -5,16 +5,13 @@
 !                                    on July 2000 (ver 1.1)
 !        modified by H.Matsui on Aug., 2007
 !
-!!      subroutine set_bc_id_data(IO_bc, node, ele, nod_grp, MHD_mesh,  &
-!!     &          iphys, nod_fld, nod_bcs)
+!!      subroutine set_bc_fields(mesh, iphys, nod_fld, nod_bcs)
 !!      subroutine set_boundary_velo(node, i_velo, nod_fld)
 !!      subroutine set_boundary_velo_4_rhs(node, Vnod_bcs, f_l, f_nl)
 !!      subroutine delete_field_by_fixed_v_bc(Vnod_bcs, i_field, nod_fld)
-!!        type(IO_boundary), intent(in) :: IO_bc
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(mesh_groups), intent(in) ::   group
 !!        type(node_data), intent(in) :: node
-!!        type(element_data), intent(in) :: ele
-!!        type(group_data), intent(in) :: nod_grp
-!!        type(mesh_data_MHD), intent(in) :: MHD_mesh
 !!        type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -27,6 +24,7 @@
       use m_precision
       use m_constants
 !
+      use t_mesh_data
       use t_geometry_data_MHD
       use t_geometry_data
       use t_group_data
@@ -43,8 +41,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_bc_id_data(IO_bc, node, ele, nod_grp, MHD_mesh,    &
-     &          iphys, nod_fld, nod_bcs)
+      subroutine set_bc_fields(mesh, iphys, nod_fld, nod_bcs)
 !
       use m_machine_parameter
       use m_control_parameter
@@ -56,66 +53,24 @@
       use set_nodal_boundary
       use set_boundary_scalars
 !
-      type(IO_boundary), intent(in) :: IO_bc
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(group_data), intent(in) :: nod_grp
-      type(mesh_data_MHD), intent(in) :: MHD_mesh
+      type(mesh_geometry), intent(in) :: mesh
 !
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(inout) :: nod_fld
       type(nodal_boundarty_conditions), intent(inout) :: nod_bcs
 !
 !
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
-        if ( iflag_debug .eq.1) write(*,*)  'set boundary id 4 v'
-        call set_bc_velo_id(IO_bc, node, ele,                           &
-     &      MHD_mesh%fluid, nod_grp, nod_bcs%Vnod_bcs)
-        if ( iflag_debug .eq.1) write(*,*)  'set boundary id 4 P'
-        call set_bc_press_id(IO_bc, node, ele,                          &
-     &      MHD_mesh%fluid, nod_grp, nod_bcs%Vnod_bcs)
-      end if
-!
-      if (iflag_t_evo_4_temp .gt. id_no_evolution) then
-        call set_bc_temp_id(IO_bc, node, ele, MHD_mesh%fluid, nod_grp,  &
-     &      nod_bcs%Tnod_bcs)
-      end if
-!
-      if (iflag_t_evo_4_composit .gt. id_no_evolution) then
-        call set_bc_temp_id(IO_bc, node, ele, MHD_mesh%fluid,           &
-     &      nod_grp, nod_bcs%Cnod_bcs)
-      end if
-!
-      if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
-     &  .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-        if (iflag_debug.eq.1) write(*,*)  'set boundary ID 4 magne'
-        call set_bc_magne_id                                            &
-     &     (IO_bc, node, ele, nod_grp, nod_bcs%Bnod_bcs)
-        if (iflag_debug.eq.1)  write(*,*) 'set boundary ID 4 magne_p'
-        call set_bc_m_potential_id(IO_bc, node, ele, MHD_mesh%conduct,  &
-     &      MHD_mesh%insulate, nod_grp, nod_bcs%Bnod_bcs)
-        if (iflag_debug.eq.1)  write(*,*) 'set boundary ID 4 current'
-        call set_bc_current_id                                          &
-     &     (IO_bc, node, ele, nod_grp, nod_bcs%Bnod_bcs)
-      end if
-!
-      if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-        if (iflag_debug .eq.1) write(*,*) 'set boundary ID 4 vect_p'
-        call set_bc_vect_p_id                                           &
-     &      (IO_bc,node, ele, nod_grp, nod_bcs%Bnod_bcs)
-      end if
-!
-!
 !
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         if ( iflag_debug .eq.1) write(*,*)  'set boundary values 4 v'
         call set_boundary_velo                                          &
-     &     (node, nod_bcs%Vnod_bcs, iphys%i_velo, nod_fld)
+     &     (mesh%node, nod_bcs%Vnod_bcs, iphys%i_velo, nod_fld)
       end if
 !
       if (iflag_t_evo_4_temp .gt. id_no_evolution) then
         if (iflag_4_ref_temp .ne. id_no_ref_temp) then
-          call set_fixed_bc_4_par_temp(node%numnod, nod_fld%ntot_phys,  &
+          call set_fixed_bc_4_par_temp                                  &
+     &       (mesh%node%numnod, nod_fld%ntot_phys,                      &
      &        iphys%i_ref_t, nod_fld%d_fld, nod_bcs%Tnod_bcs%nod_bc_s)
         end if
 !
@@ -147,7 +102,7 @@
      &     (nod_bcs%Bnod_bcs%nod_bc_a, iphys%i_vecp, nod_fld)
       end if
 !
-      end subroutine set_bc_id_data
+      end subroutine set_bc_fields
 !
 !-----------------------------------------------------------------------
 !  ---------------------------------------------------------------------

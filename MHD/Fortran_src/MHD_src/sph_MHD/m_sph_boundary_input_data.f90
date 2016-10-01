@@ -67,15 +67,15 @@
 !>        spherical harmonics modes of boundary condition data
 !!          bc_input(1:num_bc_mode): degree l
 !!          bc_input(2:num_bc_mode): order  m
-        integer(kind = kint), pointer :: imode_gl(:,:)
+        integer(kind = kint), allocatable :: imode_gl(:,:)
 !>        boundary condition spectrum  bc_input(mode,component)
-        real(kind = kreal), pointer ::   bc_input(:,:)
+        real(kind = kreal), allocatable ::   bc_input(:,:)
       end type each_boundary_spectr
 !
 !>        Name of boundary conditions to set
       integer(kind = kint), save :: num_bc_field_ctl
 !>        Structures for boundary conditions
-      type(each_boundary_spectr), allocatable, save :: bc_ctls(:)
+      type(each_boundary_spectr), pointer, save :: bc_ctls(:)
 !
       private :: id_boundary_file
       private :: num_bc_field_ctl, bc_ctls

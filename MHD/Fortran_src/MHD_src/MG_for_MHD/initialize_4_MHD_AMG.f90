@@ -267,7 +267,7 @@
 !     --------------------- 
 !
       do i_level = 1, num_MG_level
-        call s_set_bc_id_type_data                                      &
+        call set_bc_id_data                                             &
      &     (IO_MG_bc(i_level), MG_mesh(i_level)%mesh,                   &
      &      MG_mesh(i_level)%group, MG_MHD_mesh(i_level),               &
      &      MG_node_bc(i_level))

@@ -52,9 +52,9 @@
         type(phys_address) :: f_trns
 !
 !>        field data to evaluate nonliear terms in grid space
-        real(kind = kreal), pointer :: fld_rtp(:,:)
+        real(kind = kreal), allocatable :: fld_rtp(:,:)
 !>        Nonliear terms data in grid space
-        real(kind = kreal), pointer :: frc_rtp(:,:)
+        real(kind = kreal), allocatable :: frc_rtp(:,:)
       end type address_4_sph_trans
 !
 !-----------------------------------------------------------------------

@@ -75,28 +75,28 @@
 !  check
 !
       if (iflag_debug .gt. 0) then
-       if ( associated(ak_MHD%ak_d_velo) ) then
+       if ( allocated(ak_MHD%ak_d_velo) ) then
         write(*,*)' coefficient for viscosity:         ',               &
       &            ak_MHD%ak_d_velo(1)
        end if
-       if ( associated(ak_MHD%ak_d_temp) ) then
+       if ( allocated(ak_MHD%ak_d_temp) ) then
         write(*,*)' coefficient for thermal diffusion: ',               &
       &            ak_MHD%ak_d_temp(1)
        end if
-       if ( associated(ak_MHD%ak_d_magne) ) then
+       if ( allocated(ak_MHD%ak_d_magne) ) then
         write(*,*)' coefficient for magnetic diffusion:',               &
       &            ak_MHD%ak_d_magne(1)
        end if
-       if ( associated(ak_MHD%ak_d_composit) ) then
+       if ( allocated(ak_MHD%ak_d_composit) ) then
         write(*,*)' coefficient for chemical diffusion:',               &
       &            ak_MHD%ak_d_composit(1)
        end if
 !
-       if ( associated(ak_MHD%ak_buo) ) then
+       if ( allocated(ak_MHD%ak_buo) ) then
         write(*,*)' coefficient for gravity:          ',                &
       &            ak_MHD%ak_buo(1)
        end if
-       if ( associated(ak_MHD%ak_comp_buo) ) then
+       if ( allocated(ak_MHD%ak_comp_buo) ) then
         write(*,*)' coefficient for compositional buoyancy: ',          &
      &             ak_MHD%ak_comp_buo(1)
        end if

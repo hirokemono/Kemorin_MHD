@@ -43,16 +43,16 @@
         integer( kind=kint )  ::  iele_end_fld
 !
 !     node table for field
-        integer(kind=kint), pointer :: inod_fld(:)
+        integer(kind=kint), allocatable :: inod_fld(:)
 !     element table for field
-        integer(kind=kint), pointer :: iele_fld(:)
+        integer(kind=kint), allocatable :: iele_fld(:)
 !
 !     stack element for smp
-        integer( kind=kint ), pointer :: istack_ele_fld_smp(:)
+        integer(kind=kint), allocatable :: istack_ele_fld_smp(:)
 !     stack node for smp
-        integer( kind=kint ), pointer :: istack_nod_fld_smp(:)
+        integer(kind=kint), allocatable :: istack_nod_fld_smp(:)
 !     stack internal node for smp
-        integer( kind=kint ), pointer :: istack_inter_fld_smp(:)
+        integer(kind=kint), allocatable :: istack_inter_fld_smp(:)
 !
         real(kind=kreal) :: volume
 !>     Area Volume
@@ -101,9 +101,9 @@
         type(field_geometry_data) :: inner_core
 !
 !>       global element id (where i:element id)
-        integer(kind=kint_gl), pointer :: iele_global_org(:)
+        integer(kind=kint_gl), allocatable :: iele_global_org(:)
 !>     original element connectivity  (where i:nodal order j:element id)
-        integer(kind=kint), pointer :: ie_org(:,:)
+        integer(kind=kint), allocatable :: ie_org(:,:)
       end type mesh_data_MHD
 !
       private :: allocate_geometry_field_smp

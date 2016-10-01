@@ -35,84 +35,84 @@
 !
       type scaler_fixed_nod_bc_type
         character(len=kchara) :: scalar_bc_name
-        integer (kind=kint), pointer :: ibc(:)
-        integer (kind=kint), pointer :: ibc2(:)
+        integer (kind=kint), allocatable :: ibc(:)
+        integer (kind=kint), allocatable :: ibc2(:)
 !
         integer (kind=kint) :: num_bc_nod
-        integer (kind=kint), pointer :: ibc_id(:)
-        real (kind=kreal),   pointer :: bc_apt(:)
+        integer (kind=kint), allocatable :: ibc_id(:)
+        real (kind=kreal),   allocatable :: bc_apt(:)
 !
         integer (kind=kint) :: num_idx_ibc
-        integer (kind=kint), pointer :: ele_bc_id(:)
-        integer (kind=kint), pointer :: nod_bc_id(:)
+        integer (kind=kint), allocatable :: ele_bc_id(:)
+        integer (kind=kint), allocatable :: nod_bc_id(:)
 !
         integer (kind=kint) :: num_idx_ibc2
-        integer (kind=kint), pointer :: ele_bc2_id(:)
-        integer (kind=kint), pointer :: nod_bc2_id(:)
+        integer (kind=kint), allocatable :: ele_bc2_id(:)
+        integer (kind=kint), allocatable :: nod_bc2_id(:)
 !
         integer (kind=kint) :: ibc_end
-        integer (kind=kint), pointer :: ibc_shape(:)
-        integer (kind=kint), pointer :: ibc_stack(:)
-        integer (kind=kint), pointer :: ibc_stack_smp(:)
+        integer (kind=kint), allocatable :: ibc_shape(:)
+        integer (kind=kint), allocatable :: ibc_stack(:)
+        integer (kind=kint), allocatable :: ibc_stack_smp(:)
       end type scaler_fixed_nod_bc_type
 !
 !
       type vect_fixed_nod_bc_type
         character(len=kchara) :: vect_bc_name(3)
-        integer (kind=kint), pointer :: ibc(:,:)
-        integer (kind=kint), pointer :: ibc2(:,:)
+        integer (kind=kint), allocatable :: ibc(:,:)
+        integer (kind=kint), allocatable :: ibc2(:,:)
 !
         integer (kind=kint) :: nmax_bc
         integer (kind=kint) :: num_bc_nod(3)
-        integer (kind=kint), pointer :: ibc_id(:,:)
-        real (kind=kreal),   pointer :: bc_apt(:,:)
+        integer (kind=kint), allocatable :: ibc_id(:,:)
+        real (kind=kreal),   allocatable :: bc_apt(:,:)
 !
         integer (kind=kint) :: nmax_idx_ibc
         integer (kind=kint) :: num_idx_ibc(3)
-        integer (kind=kint), pointer :: ele_bc_id(:,:)
-        integer (kind=kint), pointer :: nod_bc_id(:,:)
+        integer (kind=kint), allocatable :: ele_bc_id(:,:)
+        integer (kind=kint), allocatable :: nod_bc_id(:,:)
 !
         integer (kind=kint) :: nmax_idx_ibc2
         integer (kind=kint) :: num_idx_ibc2(3)
-        integer (kind=kint), pointer :: ele_bc2_id(:,:)
-        integer (kind=kint), pointer :: nod_bc2_id(:,:)
+        integer (kind=kint), allocatable :: ele_bc2_id(:,:)
+        integer (kind=kint), allocatable :: nod_bc2_id(:,:)
 !
         integer (kind=kint) :: ibc_end(3)
-        integer (kind=kint), pointer :: ibc_shape(:,:)
-        integer (kind=kint), pointer :: ibc_stack(:,:)
-        integer (kind=kint), pointer :: ibc_stack_smp(:,:)
+        integer (kind=kint), allocatable :: ibc_shape(:,:)
+        integer (kind=kint), allocatable :: ibc_stack(:,:)
+        integer (kind=kint), allocatable :: ibc_stack_smp(:,:)
       end type vect_fixed_nod_bc_type
 !
       type scaler_rotaion_nod_bc_type
-        integer (kind=kint), pointer :: ibc(:)
-        integer (kind=kint), pointer :: ibc2(:)
+        integer (kind=kint), allocatable :: ibc(:)
+        integer (kind=kint), allocatable :: ibc2(:)
 !
         integer (kind=kint) :: num_bc_nod
-        integer (kind=kint), pointer :: ibc_id(:)
-        real (kind=kreal),   pointer :: bc_rot_apt(:,:)
+        integer (kind=kint), allocatable :: ibc_id(:)
+        real (kind=kreal),   allocatable :: bc_rot_apt(:,:)
 !
         integer (kind=kint) :: num_idx_ibc
-        integer (kind=kint), pointer :: ele_bc_id(:)
-        integer (kind=kint), pointer :: nod_bc_id(:)
+        integer (kind=kint), allocatable :: ele_bc_id(:)
+        integer (kind=kint), allocatable :: nod_bc_id(:)
 !
         integer (kind=kint) :: num_idx_ibc2
-        integer (kind=kint), pointer :: ele_bc2_id(:)
-        integer (kind=kint), pointer :: nod_bc2_id(:)
+        integer (kind=kint), allocatable :: ele_bc2_id(:)
+        integer (kind=kint), allocatable :: nod_bc2_id(:)
 !
         integer (kind=kint) :: ibc_end
-        integer (kind=kint), pointer :: ibc_shape(:)
-        integer (kind=kint), pointer :: ibc_stack(:)
-        integer (kind=kint), pointer :: ibc_stack_smp(:)
+        integer (kind=kint), allocatable :: ibc_shape(:)
+        integer (kind=kint), allocatable :: ibc_stack(:)
+        integer (kind=kint), allocatable :: ibc_stack_smp(:)
       end type scaler_rotaion_nod_bc_type
 !
       type scaler_current_nod_bc_type
-        integer (kind=kint), pointer :: ibc(:,:)
-        integer (kind=kint), pointer :: ibc2(:,:)
+        integer (kind=kint), allocatable :: ibc(:,:)
+        integer (kind=kint), allocatable :: ibc2(:,:)
 !
         integer (kind=kint) :: nmax_bc
         integer (kind=kint) :: num_bc_nod(3)
-        integer (kind=kint), pointer :: ibc_id(:,:)
-!        real (kind=kreal),   pointer :: bc_apt(:,:)
+        integer (kind=kint), allocatable :: ibc_id(:,:)
+!        real (kind=kreal),   allocatable :: bc_apt(:,:)
       end type scaler_current_nod_bc_type
 !
 !  ---------------------------------------------------------------------

@@ -29,27 +29,27 @@
       type flexible_steppind_data
         integer(kind = kint) :: num_fld
         integer(kind = kint) :: ntot_comp
-        integer(kind = kint), pointer :: num_comp(:)
-        integer(kind = kint), pointer :: istack_comp(:)
-        character(len=kchara), pointer :: fld_name(:)
-        real(kind=kreal), pointer :: d_ratio(:)
+        integer(kind = kint), allocatable :: num_comp(:)
+        integer(kind = kint), allocatable :: istack_comp(:)
+        character(len=kchara), allocatable :: fld_name(:)
+        real(kind=kreal), allocatable :: d_ratio(:)
 !
-        real(kind=kreal), pointer :: d_ratio_min_smp(:,:)
-        real(kind=kreal), pointer :: d_ratio_max_smp(:,:)
-        real(kind=kreal), pointer :: d_ratio_min_l(:)
-        real(kind=kreal), pointer :: d_ratio_max_l(:)
-        real(kind=kreal), pointer :: d_ratio_min(:)
-        real(kind=kreal), pointer :: d_ratio_max(:)
+        real(kind=kreal), allocatable :: d_ratio_min_smp(:,:)
+        real(kind=kreal), allocatable :: d_ratio_max_smp(:,:)
+        real(kind=kreal), allocatable :: d_ratio_min_l(:)
+        real(kind=kreal), allocatable :: d_ratio_max_l(:)
+        real(kind=kreal), allocatable :: d_ratio_min(:)
+        real(kind=kreal), allocatable :: d_ratio_max(:)
 !
-        real(kind=kreal), pointer :: rms_dt_local(:)
-        real(kind=kreal), pointer :: ave_dt_local(:)
-        real(kind=kreal), pointer :: rms_dt_global(:)
-        real(kind=kreal), pointer :: ave_dt_global(:)
-        real(kind=kreal), pointer :: rms_dt_pre1(:)
-        real(kind=kreal), pointer :: rms_dt_pre2(:)
+        real(kind=kreal), allocatable :: rms_dt_local(:)
+        real(kind=kreal), allocatable :: ave_dt_local(:)
+        real(kind=kreal), allocatable :: rms_dt_global(:)
+        real(kind=kreal), allocatable :: ave_dt_global(:)
+        real(kind=kreal), allocatable :: rms_dt_pre1(:)
+        real(kind=kreal), allocatable :: rms_dt_pre2(:)
 !
-        integer(kind = kint), pointer :: inod_min_dratio(:)
-        integer(kind = kint), pointer :: inod_max_dratio(:)
+        integer(kind = kint), allocatable :: inod_min_dratio(:)
+        integer(kind = kint), allocatable :: inod_max_dratio(:)
 !
         real(kind=kreal) ::  d_ratio_allmax
         real(kind=kreal) ::  d_ratio_allmin

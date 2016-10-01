@@ -38,27 +38,27 @@
 !
       type coefs_4_MHD_type
 !>       coeffeicient for viscous diffusion for each element
-        real  (kind=kreal), pointer :: ak_d_velo(:)
+        real  (kind=kreal), allocatable :: ak_d_velo(:)
 !>       coeffeicient for thermal diffusion for each element
-        real  (kind=kreal), pointer :: ak_d_temp(:)
+        real  (kind=kreal), allocatable :: ak_d_temp(:)
 !>       coeffeicient for magnetic diffusion for each element
-        real  (kind=kreal), pointer :: ak_d_magne(:)
+        real  (kind=kreal), allocatable :: ak_d_magne(:)
 !>       coeffeicient for chemical diffusion for each element
-        real  (kind=kreal), pointer :: ak_d_composit(:)
+        real  (kind=kreal), allocatable :: ak_d_composit(:)
 !
 !>       coeffeicient for thermal buoyancy for each element
-        real  (kind=kreal), pointer :: ak_buo(:)
+        real  (kind=kreal), allocatable :: ak_buo(:)
 !>       coeffeicient for compositional buoyancy for each element
-        real  (kind=kreal), pointer :: ak_comp_buo(:)
+        real  (kind=kreal), allocatable :: ak_comp_buo(:)
       end type coefs_4_MHD_type
 !
       type MHD_coefficients_type
         integer(kind = kint) :: num_field
         integer(kind = kint) :: ntot_comp
-        integer(kind = kint), pointer  :: iflag_field(:)
-        integer(kind = kint), pointer  :: num_comps(:)
-        integer(kind = kint), pointer  :: istack_comps(:)
-        real(kind = kreal), pointer :: ak(:,:)
+        integer(kind = kint), allocatable  :: iflag_field(:)
+        integer(kind = kint), allocatable  :: num_comps(:)
+        integer(kind = kint), allocatable  :: istack_comps(:)
+        real(kind = kreal), allocatable :: ak(:,:)
       end type MHD_coefficients_type
 !
       type SGS_terms_address

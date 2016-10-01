@@ -4,8 +4,7 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine s_set_bc_id_type_data                                &
-!!     &         (IO_bc, mesh, group, MHD_mesh, nodal_bc)
+!!      subroutine set_bc_id_data(IO_bc, mesh, group, MHD_mesh, nodal_bc)
 !!        type(IO_boundary),          intent(in) :: IO_bc
 !!        type(mesh_geometry),       intent(in) :: mesh
 !!        type(mesh_groups),         intent(in) :: group
@@ -40,8 +39,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_bc_id_type_data                                  &
-     &         (IO_bc, mesh, group, MHD_mesh, nodal_bc)
+      subroutine set_bc_id_data(IO_bc, mesh, group, MHD_mesh, nodal_bc)
 !
       use m_control_parameter
       use m_bc_data_list
@@ -100,7 +98,7 @@
      &      group%nod_grp, nodal_bc%Bnod_bcs)
       end if
 !
-      end subroutine s_set_bc_id_type_data
+      end subroutine set_bc_id_data
 !
 !-----------------------------------------------------------------------
 !

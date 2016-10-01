@@ -17,8 +17,8 @@
       implicit none
 !
       type reference_field_MHD
-        real  (kind=kreal), pointer :: ref_temp(:)
-        real  (kind=kreal), pointer :: ext_magne(:,:)
+        real(kind = kreal), allocatable :: ref_temp(:)
+        real(kind = kreal), allocatable :: ext_magne(:,:)
       end type reference_field_MHD
 !
 ! ----------------------------------------------------------------------

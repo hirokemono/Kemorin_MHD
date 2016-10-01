@@ -45,31 +45,31 @@
         type(lumped_mass_matrices) :: mlump_ins
 !
 !>        Nodal work area for multi-pass
-        real (kind=kreal), pointer  ::  ff_m_smp(:,:,:)
+        real (kind=kreal), allocatable  ::  ff_m_smp(:,:,:)
 !>        Nodal work area for multi-pass
-        real (kind=kreal), pointer  ::  ff_t_smp(:,:,:)
+        real (kind=kreal), allocatable  ::  ff_t_smp(:,:,:)
 !
 !>        assembled position in each element
-        real (kind=kreal), pointer ::  xx_e(:,:)
+        real (kind=kreal), allocatable ::  xx_e(:,:)
 !>        assembled radius in each element
-        real (kind=kreal), pointer ::  rr_e(:)
+        real (kind=kreal), allocatable ::  rr_e(:)
 !
 !>        assembled velocity in each element
-        real (kind=kreal), pointer ::  velo_1(:,:)
+        real (kind=kreal), allocatable ::  velo_1(:,:)
 !>        assembled magnetic field in each element
-        real (kind=kreal), pointer ::  magne_1(:,:)
+        real (kind=kreal), allocatable ::  magne_1(:,:)
 !>        assembled vector potential in each element
-        real (kind=kreal), pointer ::  vecp_1(:,:)
+        real (kind=kreal), allocatable ::  vecp_1(:,:)
 !
 !>        assembled SGS vector in each element
-        real (kind=kreal), pointer  :: sgs_v1(:,:)
+        real (kind=kreal), allocatable  :: sgs_v1(:,:)
 !>        assembled SGS tensor in each element
-        real (kind=kreal), pointer  :: sgs_t1(:,:)
+        real (kind=kreal), allocatable  :: sgs_t1(:,:)
 !
 !>        Number of components for work dvx in each element
         integer(kind=kint) :: n_dvx
 !>        Work of diffence of field in each element
-        real (kind=kreal), pointer :: dvx(:,:)
+        real (kind=kreal), allocatable :: dvx(:,:)
       end type work_MHD_fe_mat
 !
 !   ---------------------------------------------------------------------

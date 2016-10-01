@@ -28,9 +28,9 @@
 !>        Number of parameters
         integer(kind=kint) :: num
 !>        List of dimensionless number's name
-        character(len=kchara), pointer :: name(:)
+        character(len=kchara), allocatable :: name(:)
 !>        List of values
-        real (kind = kreal), pointer :: value(:)
+        real (kind = kreal), allocatable :: value(:)
       end type list_of_dimless
 !
 !
@@ -39,9 +39,9 @@
 !>        Number of parameters
         integer(kind=kint) :: num
 !>        List of parameter name
-        character(len=kchara), pointer :: name(:)
+        character(len=kchara), allocatable :: name(:)
 !>        List of power
-        real (kind = kreal), pointer :: power(:)
+        real (kind = kreal), allocatable :: power(:)
       end type powers_4_coefficients
 !
 !

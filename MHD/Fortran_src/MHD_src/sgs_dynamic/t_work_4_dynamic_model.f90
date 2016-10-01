@@ -20,15 +20,15 @@
       type dynamis_least_suare_data
         integer(kind = kint) :: nlayer
 !
-        real(kind=kreal), pointer :: slocal(:,:)
-        real(kind=kreal), pointer :: slsq(:,:)
+        real(kind=kreal), allocatable :: slocal(:,:)
+        real(kind=kreal), allocatable :: slsq(:,:)
 !
-        real(kind=kreal), pointer :: wlocal(:)
-        real(kind=kreal), pointer :: wlsq(:)
+        real(kind=kreal), allocatable :: wlocal(:)
+        real(kind=kreal), allocatable :: wlsq(:)
 !
-        real(kind=kreal), pointer :: dnorm(:)
+        real(kind=kreal), allocatable :: dnorm(:)
 !
-        real(kind = kreal), pointer :: slocal_smp(:,:)
+        real(kind = kreal), allocatable :: slocal_smp(:,:)
       end type dynamis_least_suare_data
 !
 ! ----------------------------------------------------------------------

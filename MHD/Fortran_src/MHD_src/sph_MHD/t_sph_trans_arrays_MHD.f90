@@ -33,17 +33,17 @@
         type(address_4_sph_trans) :: trns_tmp
 !
 !>      Nonoliear terms data using simulation
-        real(kind = kreal), pointer :: frm_rtp(:,:)
+        real(kind = kreal), allocatable :: frm_rtp(:,:)
 !
 !>      field data to evaluate nonliear terms at pole
-        real(kind = kreal), pointer :: fls_pl(:,:)
+        real(kind = kreal), allocatable :: fls_pl(:,:)
 !>        local field data to evaluate nonliear terms at pole
-        real(kind = kreal), pointer :: flc_pl(:,:)
+        real(kind = kreal), allocatable :: flc_pl(:,:)
 !
 !>        field data to evaluate nonliear terms at pole
-        real(kind = kreal), pointer :: frs_pl(:,:)
+        real(kind = kreal), allocatable :: frs_pl(:,:)
 !>        field data to evaluate nonliear terms at pole
-        real(kind = kreal), pointer :: frm_pl(:,:)
+        real(kind = kreal), allocatable :: frm_pl(:,:)
       end type works_4_sph_trans_MHD
 !
 !-----------------------------------------------------------------------

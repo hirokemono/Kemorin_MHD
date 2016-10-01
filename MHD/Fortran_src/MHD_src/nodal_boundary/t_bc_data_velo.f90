@@ -93,10 +93,6 @@
       call alloc_scalar_nod_bc_type(node%numnod, Vnod_bcs%nod_bc_vsp)
       call alloc_rotate_nod_bc_type(node%numnod, Vnod_bcs%nod_bc_rot)
 !
-      if (iflag_debug .eq.1)  write(*,*) 'allocate boundary 4 P'
-      call alloc_scalar_nod_bc_type(node%numnod, Vnod_bcs%nod_bc_p)
-      call alloc_scalar_nod_bc_type(node%numnod, Vnod_bcs%sgs_bc_p)
-!
       Vnod_bcs%nod_bc_v%vect_bc_name(1) = 'velocity_x'
       Vnod_bcs%nod_bc_v%vect_bc_name(2) = 'velocity_y'
       Vnod_bcs%nod_bc_v%vect_bc_name(3) = 'velocity_z'

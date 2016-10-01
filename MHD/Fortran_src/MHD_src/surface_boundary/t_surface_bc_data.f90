@@ -36,15 +36,15 @@
 !
       type scaler_surf_bc_data_type
         integer (kind=kint) :: ngrp_sf_dat
-        integer (kind=kint), pointer :: id_grp_sf_dat(:)
+        integer (kind=kint), allocatable :: id_grp_sf_dat(:)
       end type scaler_surf_bc_data_type
 !
       type scaler_surf_flux_bc_type
         integer (kind=kint) :: ngrp_sf_fix_fx
-        integer (kind=kint), pointer :: id_grp_sf_fix_fx(:)
+        integer (kind=kint), allocatable :: id_grp_sf_fix_fx(:)
         integer (kind=kint) :: nitem_sf_fix_fx
-        integer (kind=kint), pointer :: ist_ele_sf_fix_fx(:)
-        real(kind = kreal), pointer :: sf_apt_fix_fx(:)
+        integer (kind=kint), allocatable :: ist_ele_sf_fix_fx(:)
+        real(kind = kreal), allocatable :: sf_apt_fix_fx(:)
       end type scaler_surf_flux_bc_type
 !
 !
