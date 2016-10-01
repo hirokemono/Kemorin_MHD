@@ -138,11 +138,10 @@
      &      fluid%iele_start_fld, fluid%iele_end_fld,                   &
      &      DJDS_comm_fl, solver_C, MHD1_matrices%MG_DJDS_lin_fl(0))
       else
-        call link_djds_connect_structs                                  &
-     &     (MHD1_matrices%MG_DJDS_table(0),                             &
-     &      MHD1_matrices%MG_DJDS_linear(0))
-        call link_djds_connect_structs(MHD1_matrices%MG_DJDS_fluid(0),  &
-     &      MHD1_matrices%MG_DJDS_lin_fl(0))
+        MHD1_matrices%MG_DJDS_linear(0:0)                               &
+     &      => MHD1_matrices%MG_DJDS_table(0:0)
+        MHD1_matrices%MG_DJDS_lin_fl(0:0)                               &
+     &      => MHD1_matrices%MG_DJDS_fluid(0:0)
       end if
 !
       call copy_comm_tbl_types                                          &

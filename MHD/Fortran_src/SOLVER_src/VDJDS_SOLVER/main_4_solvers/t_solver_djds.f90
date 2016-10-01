@@ -8,15 +8,6 @@
 !>@brief  Structer for DJDS matrix solver
 !!
 !!@verbatim
-!!      subroutine link_alloc_type_djds11_mat(numnod, internal_node,    &
-!!     &          comm_table, djds_table, solver)
-!!      subroutine link_alloc_type_djds33_mat(numnod, internal_node,    &
-!!     &          comm_table, djds_table, solver)
-!!      subroutine link_alloc_type_djdsNN_mat(numnod, internal_node, NB,&
-!!     &          comm_table, djds_table, solver)
-!!      subroutine link_alloc_type_zero_mat(comm_table, djds_table,     &
-!!     &          solver)
-!!
 !!       subroutine alloc_type_4_RCM(numnod, djds_tbl)
 !!       subroutine alloc_type_number_4_djds(djds_tbl)
 !!       subroutine alloc_type_lists_4_DJDS(np_smp, numnod, djds_tbl)
@@ -45,11 +36,6 @@
 !!     &           djds_tbl)
 !!      subroutine check_djds_matrix_components                         &
 !!     &         (my_rank, djds_tbl, djds_mat)
-!!
-!!      subroutine link_djds_connect_structs(djds_org, djds_tbl)
-!!      subroutine link_djds_matrix_structs(mat_org, mat)
-!!      subroutine unlink_djds_connect_structs(djds_tbl)
-!!      subroutine unlink_djds_matrix_structs(mat)
 !!@endverbatim
 !
       module t_solver_djds
@@ -69,30 +55,30 @@
         integer(kind=kint) :: itotal_u
 !
         integer(kind=kint) :: NHYP
-        integer(kind=kint), pointer :: IVECT(:)
+        integer(kind=kint), allocatable :: IVECT(:)
 !
-        integer(kind=kint), pointer :: OLDtoNEW(:)
-        integer(kind=kint), pointer :: NEWtoOLD(:)
+        integer(kind=kint), allocatable :: OLDtoNEW(:)
+        integer(kind=kint), allocatable :: NEWtoOLD(:)
 !
-        integer(kind=kint), pointer :: NEWtoOLD_DJDS_L(:)
-        integer(kind=kint), pointer :: NEWtoOLD_DJDS_U(:)
-        integer(kind=kint), pointer :: OLDtoNEW_DJDS_L(:)
-        integer(kind=kint), pointer :: OLDtoNEW_DJDS_U(:)
-        integer(kind=kint), pointer :: LtoU(:)
+        integer(kind=kint), allocatable :: NEWtoOLD_DJDS_L(:)
+        integer(kind=kint), allocatable :: NEWtoOLD_DJDS_U(:)
+        integer(kind=kint), allocatable :: OLDtoNEW_DJDS_L(:)
+        integer(kind=kint), allocatable :: OLDtoNEW_DJDS_U(:)
+        integer(kind=kint), allocatable :: LtoU(:)
 !
-        integer(kind=kint), pointer :: indexDJDS_L(:)
-        integer(kind=kint), pointer :: indexDJDS_U(:)
-        integer(kind=kint), pointer :: itemDJDS_L(:)
-        integer(kind=kint), pointer :: itemDJDS_U(:)
-        integer(kind=kint), pointer :: NLmaxHYP(:)
-        integer(kind=kint), pointer :: NUmaxHYP(:)
+        integer(kind=kint), allocatable :: indexDJDS_L(:)
+        integer(kind=kint), allocatable :: indexDJDS_U(:)
+        integer(kind=kint), allocatable :: itemDJDS_L(:)
+        integer(kind=kint), allocatable :: itemDJDS_U(:)
+        integer(kind=kint), allocatable :: NLmaxHYP(:)
+        integer(kind=kint), allocatable :: NUmaxHYP(:)
 !
-        integer(kind=kint), pointer :: STACKmcG(:)
-        integer(kind=kint), pointer :: STACKmc(:)
-        integer(kind=kint), pointer :: COLORon(:)
-        integer(kind=kint), pointer :: PEon(:)
+        integer(kind=kint), allocatable :: STACKmcG(:)
+        integer(kind=kint), allocatable :: STACKmc(:)
+        integer(kind=kint), allocatable :: COLORon(:)
+        integer(kind=kint), allocatable :: PEon(:)
 !
-        integer(kind = kint), pointer :: NOD_EXPORT_NEW(:)
+        integer(kind = kint), allocatable :: NOD_EXPORT_NEW(:)
 !
 !  ---  constants
 !
@@ -130,8 +116,8 @@
 !>   total number of component
         integer (kind = kint) :: num_non0
 !
-        real(kind=kreal), pointer :: ALUG_L(:)
-        real(kind=kreal), pointer :: ALUG_U(:)
+        real(kind=kreal), allocatable :: ALUG_L(:)
+        real(kind=kreal), allocatable :: ALUG_U(:)
       end type DJDS_MATRIX
 !
       type DJDS_SOLVER_ARRAYS
@@ -144,77 +130,6 @@
 !
       contains
 !
-! ------------------------------------------
-!
-      subroutine link_alloc_type_djds11_mat(numnod, internal_node,      &
-     &          comm_table, djds_table, solver)
-!
-      integer(kind = kint), intent(in) :: numnod, internal_node
-      type(communication_table), intent(in) :: comm_table
-      type(DJDS_ordering_table), intent(in) :: djds_table
-      type(DJDS_SOLVER_ARRAYS), intent(inout) :: solver
-!
-!
-      call link_comm_tbl_types(comm_table, solver%djds_comm)
-      call link_djds_connect_structs(djds_table, solver%djds_tbl)
-      call alloc_type_djds11_mat(numnod, internal_node,                 &
-     &    solver%djds_tbl, solver%djds_mat)
-!
-      end subroutine link_alloc_type_djds11_mat
-!
-! ------------------------------------------
-!
-      subroutine link_alloc_type_djds33_mat(numnod, internal_node,      &
-     &          comm_table, djds_table, solver)
-!
-      integer(kind = kint), intent(in) :: numnod, internal_node
-      type(communication_table), intent(in) :: comm_table
-      type(DJDS_ordering_table), intent(in) :: djds_table
-      type(DJDS_SOLVER_ARRAYS), intent(inout) :: solver
-!
-!
-      call link_comm_tbl_types(comm_table, solver%djds_comm)
-      call link_djds_connect_structs(djds_table, solver%djds_tbl)
-      call alloc_type_djds33_mat(numnod, internal_node,                 &
-     &    solver%djds_tbl, solver%djds_mat)
-!
-      end subroutine link_alloc_type_djds33_mat
-!
-! ------------------------------------------
-!
-      subroutine link_alloc_type_djdsNN_mat(numnod, internal_node, NB,  &
-     &          comm_table, djds_table, solver)
-!
-      integer(kind = kint), intent(in) :: numnod, internal_node, NB
-      type(communication_table), intent(in) :: comm_table
-      type(DJDS_ordering_table), intent(in) :: djds_table
-      type(DJDS_SOLVER_ARRAYS), intent(inout) :: solver
-!
-!
-      call link_comm_tbl_types(comm_table, solver%djds_comm)
-      call link_djds_connect_structs(djds_table, solver%djds_tbl)
-      call alloc_type_djdsNN_mat(numnod, internal_node, NB,             &
-     &    solver%djds_tbl, solver%djds_mat)
-!
-      end subroutine link_alloc_type_djdsNN_mat
-!
-! ------------------------------------------
-!
-      subroutine link_alloc_type_zero_mat(comm_table, djds_table,       &
-     &          solver)
-!
-      type(communication_table), intent(in) :: comm_table
-      type(DJDS_ordering_table), intent(in) :: djds_table
-      type(DJDS_SOLVER_ARRAYS), intent(inout) :: solver
-!
-!
-      call link_comm_tbl_types(comm_table, solver%djds_comm)
-      call link_djds_connect_structs(djds_table, solver%djds_tbl)
-      call alloc_type_zero_mat(solver%djds_mat)
-!
-      end subroutine link_alloc_type_zero_mat
-!
-! ------------------------------------------
 ! ------------------------------------------
 !
        subroutine alloc_type_4_RCM(numnod, djds_tbl)
@@ -566,113 +481,6 @@
        deallocate(mat%ALUG_L)
 !
        end subroutine dealloc_type_djds_mat
-!
-! ------------------------------------------
-!
-      subroutine link_djds_connect_structs(djds_org, djds_tbl)
-!
-      type(DJDS_ordering_table), intent(in) ::    djds_org
-      type(DJDS_ordering_table), intent(inout) :: djds_tbl
-!
-!
-      djds_tbl%itotal_l = djds_org%itotal_l
-      djds_tbl%itotal_u = djds_org%itotal_u
-      djds_tbl%NHYP =     djds_org%NHYP
-      djds_tbl%NLmax =    djds_org%NLmax
-      djds_tbl%NUmax =    djds_org%NUmax
-      djds_tbl%npLX1 =    djds_org%npLX1
-      djds_tbl%npUX1 =    djds_org%npUX1
-!
-      djds_tbl%IVECT =>           djds_org%IVECT
-      djds_tbl%NEWtoOLD =>        djds_org%NEWtoOLD
-      djds_tbl%OLDtoNEW =>        djds_org%OLDtoNEW
-      djds_tbl%NEWtoOLD_DJDS_U => djds_org%NEWtoOLD_DJDS_U
-      djds_tbl%OLDtoNEW_DJDS_L => djds_org%OLDtoNEW_DJDS_L
-      djds_tbl%OLDtoNEW_DJDS_U => djds_org%OLDtoNEW_DJDS_U
-      djds_tbl%LtoU =>            djds_org%LtoU
-      djds_tbl%indexDJDS_L =>     djds_org%indexDJDS_L
-      djds_tbl%indexDJDS_U =>     djds_org%indexDJDS_U
-      djds_tbl%itemDJDS_L =>      djds_org%itemDJDS_L
-      djds_tbl%itemDJDS_U =>      djds_org%itemDJDS_U
-      djds_tbl%NLmaxHYP =>        djds_org%NLmaxHYP
-      djds_tbl%NUmaxHYP =>        djds_org%NUmaxHYP
-      djds_tbl%STACKmcG =>        djds_org%STACKmcG
-      djds_tbl%STACKmc =>         djds_org%STACKmc
-!
-      djds_tbl%NOD_EXPORT_NEW =>  djds_org%NOD_EXPORT_NEW
-!
-      end subroutine link_djds_connect_structs
-!
-! ------------------------------------------
-!
-      subroutine link_djds_matrix_structs(mat_org, mat)
-!
-      type(DJDS_MATRIX), intent(inout) :: mat
-      type(DJDS_MATRIX), intent(inout) :: mat_org
-!
-!
-      mat%num_diag =      mat_org%num_diag
-      mat%internal_diag = mat_org%internal_diag
-      mat%istart_diag =   mat_org%istart_diag
-      mat%istart_l =      mat_org%istart_l
-      mat%istart_u =      mat_org%istart_u
-      mat%num_non0 =      mat_org%num_non0
-!
-      mat%aiccg =>  mat_org%aiccg
-      mat%D =>      mat_org%D
-      mat%AL =>     mat_org%AL
-      mat%AU =>     mat_org%AU
-      mat%ALUG_L => mat_org%ALUG_L
-      mat%ALUG_U => mat_org%ALUG_U
-!
-      end subroutine link_djds_matrix_structs
-!
-! ------------------------------------------
-!
-      subroutine unlink_djds_connect_structs(djds_tbl)
-!
-      type(DJDS_ordering_table), intent(inout) :: djds_tbl
-!
-!
-      djds_tbl%itotal_l = 0
-      djds_tbl%itotal_u = 0
-      djds_tbl%NHYP =     0
-      djds_tbl%NLmax =    0
-      djds_tbl%NUmax =    0
-      djds_tbl%npLX1 =    0
-      djds_tbl%npUX1 =    0
-!
-      nullify( djds_tbl%IVECT )
-      nullify( djds_tbl%NEWtoOLD, djds_tbl%OLDtoNEW)
-      nullify( djds_tbl%NEWtoOLD_DJDS_U, djds_tbl%LtoU )
-      nullify( djds_tbl%OLDtoNEW_DJDS_L, djds_tbl%OLDtoNEW_DJDS_U)
-      nullify( djds_tbl%indexDJDS_L, djds_tbl%itemDJDS_L )
-      nullify( djds_tbl%indexDJDS_U, djds_tbl%itemDJDS_U )
-      nullify( djds_tbl%NLmaxHYP, djds_tbl%NUmaxHYP )
-      nullify( djds_tbl%STACKmcG, djds_tbl%STACKmc )
-!
-      nullify( djds_tbl%NOD_EXPORT_NEW )
-!
-      end subroutine unlink_djds_connect_structs
-!
-! ------------------------------------------
-!
-      subroutine unlink_djds_matrix_structs(mat)
-!
-      type(DJDS_MATRIX), intent(inout) :: mat
-!
-!
-      mat%num_diag =      0
-      mat%internal_diag = 0
-      mat%istart_diag =   0
-      mat%istart_l =      0
-      mat%istart_u =      0
-      mat%num_non0 =      0
-!
-      nullify(mat%aiccg, mat%D, mat%AL, mat%AU)
-      nullify(mat%ALUG_L, mat%ALUG_U)
-!
-      end subroutine unlink_djds_matrix_structs
 !
 ! ------------------------------------------
 ! ------------------------------------------

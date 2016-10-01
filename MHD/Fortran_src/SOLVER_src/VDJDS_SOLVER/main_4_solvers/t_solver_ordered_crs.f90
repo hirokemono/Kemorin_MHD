@@ -8,15 +8,6 @@
 !!      subroutine alloc_crs_smp_mat(crs_smp)
 !!      subroutine dealloc_crs_smp_mat(crs_smp)
 !!
-!!      subroutine link_alloc_type_djo11_mat(comm_table, djo_tbl,        &
-!!     &          solver)
-!!      subroutine link_alloc_type_djo33_mat(comm_table, djo_tbl,        &
-!!     &          solver)
-!!      subroutine link_alloc_type_djoNN_mat(NB, comm_table, djo_tbl,    &
-!!     &          solver)
-!!      subroutine link_alloc_type_zero_mat(comm_table, djds_table,      &
-!!     &          solver)
-!!
 !!      subroutine alloc_type_djo_num(np_smp, djo_tbl)
 !!      subroutine alloc_type_djo_table(djo_tbl)
 !!      subroutine alooc_djo_zero_connect_type(np_smp, djo_tbl)
@@ -158,72 +149,6 @@
       end subroutine dealloc_crs_smp_mat
 !
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine link_alloc_type_djo11_mat(comm_table, djo_tbl,         &
-     &          solver)
-!
-      type(communication_table), intent(in) :: comm_table
-      type(DJORS_CONNECT), intent(in) :: djo_tbl
-      type(DJORS_SOLVER_ARRAYS), intent(inout) :: solver
-!
-!
-      call link_comm_tbl_types(comm_table, solver%djo_comm)
-      call link_djo_connect_structs(djo_tbl, solver%djo_tbl)
-      call alloc_type_djo11_mat(solver%djo_tbl, solver%djo_mat)
-!
-      end subroutine link_alloc_type_djo11_mat
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine link_alloc_type_djo33_mat(comm_table, djo_tbl,         &
-     &          solver)
-!
-      type(communication_table), intent(in) :: comm_table
-      type(DJORS_CONNECT), intent(in) :: djo_tbl
-      type(DJORS_SOLVER_ARRAYS), intent(inout) :: solver
-!
-!
-      call link_comm_tbl_types(comm_table, solver%djo_comm)
-      call link_djo_connect_structs(djo_tbl, solver%djo_tbl)
-      call alloc_type_djo33_mat(solver%djo_tbl, solver%djo_mat)
-!
-      end subroutine link_alloc_type_djo33_mat
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine link_alloc_type_djoNN_mat(NB, comm_table, djo_tbl,     &
-     &          solver)
-!
-      integer(kind = kint), intent(in) :: NB
-      type(communication_table), intent(in) :: comm_table
-      type(DJORS_CONNECT), intent(in) :: djo_tbl
-      type(DJORS_SOLVER_ARRAYS), intent(inout) :: solver
-!
-!
-      call link_comm_tbl_types(comm_table, solver%djo_comm)
-      call link_djo_connect_structs(djo_tbl, solver%djo_tbl)
-      call alloc_type_djoNN_mat(NB, solver%djo_tbl, solver%djo_mat)
-!
-      end subroutine link_alloc_type_djoNN_mat
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine link_alloc_type_zero_mat(comm_table, djo_table,        &
-     &          solver)
-!
-      type(communication_table), intent(in) :: comm_table
-      type(DJORS_CONNECT), intent(in) :: djo_table
-      type(DJORS_SOLVER_ARRAYS), intent(inout) :: solver
-!
-!
-      call link_comm_tbl_types(comm_table, solver%djo_comm)
-      call link_djo_connect_structs(djo_table, solver%djo_tbl)
-      call alloc_type_djo_zero_mat(solver%djo_tbl, solver%djo_mat)
-!
-      end subroutine link_alloc_type_zero_mat
-!
-!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine alloc_type_djo_num(np_smp, djo_tbl)

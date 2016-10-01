@@ -90,13 +90,10 @@
         if(my_rank .lt. MG_mpi(i_level)%nprocs) then
           if( MG_mesh(i_level)%mesh%ele%nnod_4_ele                      &
      &      .eq. num_t_linear) then
-            call link_djds_connect_structs                              &
-     &         (MHD_matrices%MG_DJDS_table(i_level),                    &
-     &          MHD_matrices%MG_DJDS_linear(i_level))
-!
-            call link_djds_connect_structs                              &
-     &         (MHD_matrices%MG_DJDS_fluid(i_level),                    &
-     &          MHD_matrices%MG_DJDS_lin_fl(i_level))
+            MHD_matrices%MG_DJDS_linear(i_level:i_level)                &
+     &        => MHD_matrices%MG_DJDS_table(i_level:i_level)
+            MHD_matrices%MG_DJDS_lin_fl(i_level:i_level)                &
+     &        => MHD_matrices%MG_DJDS_fluid(i_level:i_level)
           else
             call set_djds_layer_connect_type(num_t_linear,              &
      &         ione, MG_mesh(i_level)%mesh%ele%numele,                  &
