@@ -183,7 +183,7 @@
      &       djds_tbl_fl, mat_light)
       end if
 !
-      if ( iflag_t_evo_4_magne .ge. id_no_evolution) then
+      if ( iflag_t_evo_4_magne .gt. id_no_evolution) then
         call alloc_type_djds11_mat(node%numnod, node%internal_node,     &
      &       djds_tbl_l, mat_magp)
 !
@@ -194,7 +194,7 @@
       end if
 !
 !
-      if ( iflag_t_evo_4_vect_p .ge. id_no_evolution) then
+      if ( iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         call alloc_type_djds11_mat(node%numnod, node%internal_node,     &
      &      djds_tbl_l, mat_magp)
 !
