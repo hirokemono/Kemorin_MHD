@@ -106,31 +106,31 @@
 !
 !
       type filter_mom_type
-        real(kind=kreal),   pointer :: f_0(:)
+        real(kind=kreal),   allocatable :: f_0(:)
 !
-        real(kind=kreal),   pointer :: f_x(:)
-        real(kind=kreal),   pointer :: f_y(:)
-        real(kind=kreal),   pointer :: f_z(:)
-        real(kind=kreal),   pointer :: f_x2(:)
-        real(kind=kreal),   pointer :: f_y2(:)
-        real(kind=kreal),   pointer :: f_z2(:)
-        real(kind=kreal),   pointer :: f_xy(:)
-        real(kind=kreal),   pointer :: f_yz(:)
-        real(kind=kreal),   pointer :: f_zx(:)
+        real(kind=kreal),   allocatable :: f_x(:)
+        real(kind=kreal),   allocatable :: f_y(:)
+        real(kind=kreal),   allocatable :: f_z(:)
+        real(kind=kreal),   allocatable :: f_x2(:)
+        real(kind=kreal),   allocatable :: f_y2(:)
+        real(kind=kreal),   allocatable :: f_z2(:)
+        real(kind=kreal),   allocatable :: f_xy(:)
+        real(kind=kreal),   allocatable :: f_yz(:)
+        real(kind=kreal),   allocatable :: f_zx(:)
       end type filter_mom_type
 !
       type filter_mom_diffs_type
-        real(kind=kreal),   pointer :: df_0(:,:)
+        real(kind=kreal),   allocatable :: df_0(:,:)
 !
-        real(kind=kreal),   pointer :: df_x(:,:)
-        real(kind=kreal),   pointer :: df_y(:,:)
-        real(kind=kreal),   pointer :: df_z(:,:)
-        real(kind=kreal),   pointer :: df_x2(:,:)
-        real(kind=kreal),   pointer :: df_y2(:,:)
-        real(kind=kreal),   pointer :: df_z2(:,:)
-        real(kind=kreal),   pointer :: df_xy(:,:)
-        real(kind=kreal),   pointer :: df_yz(:,:)
-        real(kind=kreal),   pointer :: df_zx(:,:)
+        real(kind=kreal),   allocatable :: df_x(:,:)
+        real(kind=kreal),   allocatable :: df_y(:,:)
+        real(kind=kreal),   allocatable :: df_z(:,:)
+        real(kind=kreal),   allocatable :: df_x2(:,:)
+        real(kind=kreal),   allocatable :: df_y2(:,:)
+        real(kind=kreal),   allocatable :: df_z2(:,:)
+        real(kind=kreal),   allocatable :: df_xy(:,:)
+        real(kind=kreal),   allocatable :: df_yz(:,:)
+        real(kind=kreal),   allocatable :: df_zx(:,:)
       end type filter_mom_diffs_type
 !
       type nod_mom_diffs_type

@@ -32,16 +32,16 @@
 !>   flag if original nodes have same prosess
         integer(kind = kint) :: iflag_self_itp_recv
 !>   subdomain rank to receive interpolated data
-        integer(kind = kint), pointer :: id_org_domain(:)
+        integer(kind = kint), allocatable :: id_org_domain(:)
 !>   end address to receive interpolated data
-        integer(kind = kint), pointer :: istack_nod_tbl_dest(:)
+        integer(kind = kint), allocatable :: istack_nod_tbl_dest(:)
 !
 !>   total number of interpolated node in target subdomain
         integer(kind = kint) :: ntot_table_dest
 !>   local node ID to set interpolated data (import)
-        integer(kind = kint), pointer :: inod_dest_4_dest(:)
+        integer(kind = kint), allocatable :: inod_dest_4_dest(:)
 !>   Reverse ID to set interpolated data (import)
-        integer(kind = kint), pointer :: irev_dest_4_dest(:)
+        integer(kind = kint), allocatable :: irev_dest_4_dest(:)
       end type interpolate_table_dest
 !
 !-----------------------------------------------------------------------

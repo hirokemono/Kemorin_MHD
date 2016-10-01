@@ -56,28 +56,28 @@
         integer(kind = kint) :: ied_rlm(2)
 !
 !>        SMP stack for spectr data @f$ f(r,l,m) @f$
-      integer(kind = kint), pointer :: istack_inod_rlm_smp(:)
+      integer(kind = kint), allocatable :: istack_inod_rlm_smp(:)
 !
 !>        SMP stacks for indexing @f$ r@f$
-      integer(kind = kint), pointer :: istack_rlm_kr_smp(:)
+      integer(kind = kint), allocatable :: istack_rlm_kr_smp(:)
 !>        SMP stacks for indexing @f$ j @f$
-      integer(kind = kint), pointer :: istack_rlm_j_smp(:)
+      integer(kind = kint), allocatable :: istack_rlm_j_smp(:)
 !
 !>        global address for each direction @f$ f(r,l,m) @f$
-        integer(kind = kint), pointer :: idx_global_rlm(:,:)
+        integer(kind = kint), allocatable :: idx_global_rlm(:,:)
 !
 !>        radial global address for @f$ f(r,l,m) @f$
-        integer(kind = kint), pointer :: idx_gl_1d_rlm_r(:)
+        integer(kind = kint), allocatable :: idx_gl_1d_rlm_r(:)
 !>        spherical harmonics mode for  @f$ f(r,l,m) @f$
 !!@n        idx_gl_1d_rj_j(j,1): global ID for spherical harmonics
 !!@n        idx_gl_1d_rj_j(j,2): spherical hermonincs degree
 !!@n        idx_gl_1d_rj_j(j,3): spherical hermonincs order
-        integer(kind = kint), pointer :: idx_gl_1d_rlm_j(:,:)
+        integer(kind = kint), allocatable :: idx_gl_1d_rlm_j(:,:)
 !
 !>        1d radius data for @f$ f(r,l,m) @f$
-        real(kind = kreal), pointer :: radius_1d_rlm_r(:)
+        real(kind = kreal), allocatable :: radius_1d_rlm_r(:)
 !>        1 / radius_1d_rlm_r
-        real(kind = kreal), pointer :: a_r_1d_rlm_r(:)
+        real(kind = kreal), allocatable :: a_r_1d_rlm_r(:)
       end type sph_rlm_grid
 !
 ! -----------------------------------------------------------------------

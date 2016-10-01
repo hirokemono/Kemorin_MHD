@@ -84,37 +84,37 @@
         integer(kind = kint) :: ied_rj(2)
 !
 !>        SMP stack for spectr data @f$ f(r,j) @f$
-      integer(kind = kint), pointer :: istack_inod_rj_smp(:)
+      integer(kind = kint), allocatable :: istack_inod_rj_smp(:)
 !
 !>        SMP stacks for indexing @f$ (r,j) @f$
-      integer(kind = kint), pointer :: istack_rj_kr_smp(:)
+      integer(kind = kint), allocatable :: istack_rj_kr_smp(:)
 !>        SMP stacks for indexing @f$ (r,j) @f$
-      integer(kind = kint), pointer :: istack_rj_j_smp(:)
+      integer(kind = kint), allocatable :: istack_rj_j_smp(:)
 !
 !>        global address for each direction @f$ f(r,j) @f$
-        integer(kind = kint), pointer :: idx_global_rj(:,:)
+        integer(kind = kint), allocatable :: idx_global_rj(:,:)
 !
 !>        radial global address @f$ f(r,j) @f$
-        integer(kind = kint), pointer :: idx_gl_1d_rj_r(:)
+        integer(kind = kint), allocatable :: idx_gl_1d_rj_r(:)
 !>        spherical harmonics mode for  @f$ f(r,j) @f$
 !!@n        idx_gl_1d_rj_j(j,1): global ID for spherical harmonics
 !!@n        idx_gl_1d_rj_j(j,2): spherical hermonincs degree
 !!@n        idx_gl_1d_rj_j(j,3): spherical hermonincs order
-        integer(kind = kint), pointer :: idx_gl_1d_rj_j(:,:)
+        integer(kind = kint), allocatable :: idx_gl_1d_rj_j(:,:)
 !
 !>        1d radius data for @f$ f(r,j) @f$
-        real(kind = kreal), pointer :: radius_1d_rj_r(:)
+        real(kind = kreal), allocatable :: radius_1d_rj_r(:)
 !>        1d @f$1 / r @f$ for @f$ f(r,j) @f$
-        real(kind = kreal), pointer :: a_r_1d_rj_r(:)
+        real(kind = kreal), allocatable :: a_r_1d_rj_r(:)
 !
 !>        1d @f$1 / r @f$ for @f$ f(r,j) @f$
 !!@n@see  set_radius_func_cheby or set_radius_func_cheby
-        real(kind = kreal), pointer :: ar_1d_rj(:,:)
+        real(kind = kreal), allocatable :: ar_1d_rj(:,:)
 !
 !>        1d radius between grids for @f$ f(r,j) @f$
-        real(kind = kreal), pointer :: r_ele_rj(:)
+        real(kind = kreal), allocatable :: r_ele_rj(:)
 !>        1d @f$1 / r @f$ between grids for @f$ f(r,j) @f$
-        real(kind = kreal), pointer :: ar_ele_rj(:,:)
+        real(kind = kreal), allocatable :: ar_ele_rj(:,:)
       end type sph_rj_grid
 !
 ! -----------------------------------------------------------------------

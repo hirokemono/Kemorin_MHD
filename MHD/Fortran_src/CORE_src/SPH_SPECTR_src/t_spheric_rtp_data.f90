@@ -63,45 +63,45 @@
         integer(kind = kint) :: ied_rtp(3)
 !
 !>        SMP stack for spectr data @f$ f(r,t,p) @f$
-      integer(kind = kint), pointer :: istack_inod_rtp_smp(:)
+      integer(kind = kint), allocatable :: istack_inod_rtp_smp(:)
 !
 !>        SMP stacks for indexing @f$ r@f$
-      integer(kind = kint), pointer :: istack_rtp_kr_smp(:)
+      integer(kind = kint), allocatable :: istack_rtp_kr_smp(:)
 !>        SMP stacks for indexing @f$ t @f$
-      integer(kind = kint), pointer :: istack_rtp_lt_smp(:)
+      integer(kind = kint), allocatable :: istack_rtp_lt_smp(:)
 !>        SMP stacks for indexing @f$ p @f$
-      integer(kind = kint), pointer :: istack_rtp_mp_smp(:)
+      integer(kind = kint), allocatable :: istack_rtp_mp_smp(:)
 !
 !>        SMP stacks for indexing @f$ r, t@f$
-      integer(kind = kint), pointer :: istack_rtp_rt_smp(:)
+      integer(kind = kint), allocatable :: istack_rtp_rt_smp(:)
 !
 !>        SMP stacks for pole indexing
-      integer(kind = kint), pointer :: istack_npole_smp(:)
+      integer(kind = kint), allocatable :: istack_npole_smp(:)
 !
 !>        Maximum SMP number for spectr data @f$ f(r,t,p) @f$
       integer(kind = kint)  ::  maxirt_rtp_smp =  0
 !
 !>        global address for each direction @f$ f(r,\theta,\phi) @f$
-        integer(kind = kint), pointer :: idx_global_rtp(:,:)
+        integer(kind = kint), allocatable :: idx_global_rtp(:,:)
 !
 !>        radial global address for @f$ f(r,\theta,\phi) @f$
-        integer(kind = kint), pointer :: idx_gl_1d_rtp_r(:)
+        integer(kind = kint), allocatable :: idx_gl_1d_rtp_r(:)
 !>        meridional global address for @f$ f(r,\theta,\phi) @f$
-        integer(kind = kint), pointer :: idx_gl_1d_rtp_t(:)
+        integer(kind = kint), allocatable :: idx_gl_1d_rtp_t(:)
 !>        zonal global address for @f$ f(r,\theta,\phi) @f$
-        integer(kind = kint), pointer :: idx_gl_1d_rtp_p(:,:)
+        integer(kind = kint), allocatable :: idx_gl_1d_rtp_p(:,:)
 !
 !>        1d radius data for @f$ f(r,\theta,\phi) @f$
-        real(kind = kreal), pointer :: radius_1d_rtp_r(:)
+        real(kind = kreal), allocatable :: radius_1d_rtp_r(:)
 !>        1 / radius_1d_rtp_r
-        real(kind = kreal), pointer :: a_r_1d_rtp_r(:)
+        real(kind = kreal), allocatable :: a_r_1d_rtp_r(:)
 !
 !>      @f$ \sin \theta @f$ in sapherical grid (one-dimentional)
-        real(kind = kreal), pointer :: sin_theta_1d_rtp(:)
+        real(kind = kreal), allocatable :: sin_theta_1d_rtp(:)
 !>      @f$ \cos \theta @f$ in sapherical grid (one-dimentional)
-        real(kind = kreal), pointer :: cos_theta_1d_rtp(:)
+        real(kind = kreal), allocatable :: cos_theta_1d_rtp(:)
 !>      @f$ \cot \theta @f$ in sapherical grid (one-dimentional)
-        real(kind = kreal), pointer :: cot_theta_1d_rtp(:)
+        real(kind = kreal), allocatable :: cot_theta_1d_rtp(:)
       end type sph_rtp_grid
 !
 ! -----------------------------------------------------------------------

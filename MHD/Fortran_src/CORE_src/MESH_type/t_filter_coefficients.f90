@@ -41,28 +41,28 @@
 !
       type filter_coefficients_type
         integer(kind = kint) :: ngrp_node
-        character(len=kchara), pointer :: group_name(:)
-        integer(kind = kint), pointer :: num_node(:)
-        integer(kind = kint), pointer :: istack_node(:)
+        character(len=kchara), allocatable :: group_name(:)
+        integer(kind = kint), allocatable :: num_node(:)
+        integer(kind = kint), allocatable :: istack_node(:)
 !
         integer(kind = kint) :: ntot_nod
-        integer(kind = kint), pointer :: inod_filter(:)
-        integer(kind = kint), pointer :: nnod_near(:)
-        integer(kind = kint), pointer :: istack_near_nod(:)
+        integer(kind = kint), allocatable :: inod_filter(:)
+        integer(kind = kint), allocatable :: nnod_near(:)
+        integer(kind = kint), allocatable :: istack_near_nod(:)
 !
         integer(kind = kint) :: ntot_near_nod
-        integer(kind = kint), pointer :: inod_near(:)
-        real(kind = kreal), pointer :: func(:)
-        real(kind = kreal), pointer :: weight(:)
+        integer(kind = kint), allocatable :: inod_near(:)
+        real(kind = kreal), allocatable :: func(:)
+        real(kind = kreal), allocatable :: weight(:)
 !
 !
-        integer(kind = kint), pointer :: min_nsum(:)
-        integer(kind = kint), pointer :: max_nsum(:)
-        integer(kind = kint), pointer :: istack_nsum(:)
+        integer(kind = kint), allocatable :: min_nsum(:)
+        integer(kind = kint), allocatable :: max_nsum(:)
+        integer(kind = kint), allocatable :: istack_nsum(:)
 !
         integer(kind = kint) :: ntot_nsum
-        integer(kind = kint), pointer :: ist_nsum(:)
-        integer(kind = kint), pointer :: ied_nsum(:)
+        integer(kind = kint), allocatable :: ist_nsum(:)
+        integer(kind = kint), allocatable :: ied_nsum(:)
       end type filter_coefficients_type
 !
 !

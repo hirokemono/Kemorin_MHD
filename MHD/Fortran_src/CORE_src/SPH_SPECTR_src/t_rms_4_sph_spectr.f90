@@ -40,59 +40,59 @@
         integer (kind=kint) :: ntot_comp_sq
 !
 !>        Field ID for mean square
-        integer (kind=kint), pointer :: id_field(:)
+        integer (kind=kint), allocatable :: id_field(:)
 !>        Number of each component for mean square
-        integer (kind=kint), pointer :: num_comp_sq(:)
+        integer (kind=kint), allocatable :: num_comp_sq(:)
 !>        End ID of each field for mean square
-        integer (kind=kint), pointer :: istack_comp_sq(:)
+        integer (kind=kint), allocatable :: istack_comp_sq(:)
 !>        Field name for mean square
-        character (len=kchara), pointer :: pwr_name(:)
+        character (len=kchara), allocatable :: pwr_name(:)
 !
 !
 !>        Number of radial points for mean square
         integer(kind=kint) :: nri_rms = 0
 !
 !>        Radial ID from layered mean square
-        integer(kind=kint), pointer :: kr_4_rms(:)
+        integer(kind=kint), allocatable :: kr_4_rms(:)
 !>        Radius from layered mean square
-        real(kind = kreal), pointer :: r_4_rms(:)
+        real(kind = kreal), allocatable :: r_4_rms(:)
 !
 !>        Mean square spectrum for degree on spheres
-        real(kind = kreal), pointer :: shl_l(:,:,:)
+        real(kind = kreal), allocatable :: shl_l(:,:,:)
 !>      Mean square spectrum for order on spheres
-        real(kind = kreal), pointer :: shl_m(:,:,:)
+        real(kind = kreal), allocatable :: shl_m(:,:,:)
 !>        Mean square spectrum for l-m on spheres
-        real(kind = kreal), pointer :: shl_lm(:,:,:)
+        real(kind = kreal), allocatable :: shl_lm(:,:,:)
 !
 !>         Mean square on spheres
-        real(kind = kreal), pointer :: shl_sq(:,:)
+        real(kind = kreal), allocatable :: shl_sq(:,:)
 !>         Mean square of axis-symmetric component on spheres
-        real(kind = kreal), pointer :: shl_m0(:,:)
+        real(kind = kreal), allocatable :: shl_m0(:,:)
 !>        Ratio of axis-symmetric componbent to total mean square
-        real(kind = kreal), pointer :: ratio_shl_m0(:,:)
+        real(kind = kreal), allocatable :: ratio_shl_m0(:,:)
 !
 !
 !>        Volume mean square spectrum for degree
-        real(kind = kreal), pointer :: vol_l(:,:)
+        real(kind = kreal), allocatable :: vol_l(:,:)
 !>        Volume mean square spectrum for order
-        real(kind = kreal), pointer :: vol_m(:,:)
+        real(kind = kreal), allocatable :: vol_m(:,:)
 !>        Volume mean square spectrum for l-m
-        real(kind = kreal), pointer :: vol_lm(:,:)
+        real(kind = kreal), allocatable :: vol_lm(:,:)
 !
 !>        Volume mean square
-        real(kind = kreal), pointer :: vol_sq(:)
+        real(kind = kreal), allocatable :: vol_sq(:)
 !>        Volume mean square of axis-symmetric component
-        real(kind = kreal), pointer :: vol_m0(:)
+        real(kind = kreal), allocatable :: vol_m0(:)
 !>        Ratio of axis-symmetric componbent to total mean square
-        real(kind = kreal), pointer :: ratio_vol_m0(:)
+        real(kind = kreal), allocatable :: ratio_vol_m0(:)
 !
 !
 !>        Number of radial point for average
         integer(kind = kint) :: nri_ave
 !>        Average over single sphere
-        real(kind = kreal), pointer :: shl_ave(:,:)
+        real(kind = kreal), allocatable :: shl_ave(:,:)
 !>        Volume average
-        real(kind = kreal), pointer :: vol_ave(:)
+        real(kind = kreal), allocatable :: vol_ave(:)
       end type sph_mean_squares
 !
 ! -----------------------------------------------------------------------

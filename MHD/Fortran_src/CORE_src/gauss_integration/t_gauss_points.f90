@@ -41,19 +41,19 @@
 !>        Number of Gauss points
         integer(kind=kint) :: n_point = 400
 !>        Position of Gauss points (@$f-1<x<1@$f)
-        real(kind = kreal), pointer :: point(:)
+        real(kind = kreal), allocatable :: point(:)
 !>        Coefficients of Gauss integration
-        real(kind = kreal), pointer :: weight(:)
+        real(kind = kreal), allocatable :: weight(:)
 !
 !>        Position of Gauss-Legendre colatitude
-        real(kind = kreal), pointer :: colat(:)
+        real(kind = kreal), allocatable :: colat(:)
 !>        Position of Gauss-Legendre colatitude in degree
-        real(kind = kreal), pointer :: colat_deg(:)
+        real(kind = kreal), allocatable :: colat_deg(:)
 !
 !>        longitude of spherical grid
-        real(kind = kreal), pointer :: azimuth(:)
+        real(kind = kreal), allocatable :: azimuth(:)
 !>        longitude of spherical grid in degree
-        real(kind = kreal), pointer :: azim_deg(:)
+        real(kind = kreal), allocatable :: azim_deg(:)
       end type gauss_points
 !
       type gauss_integrations

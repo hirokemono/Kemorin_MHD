@@ -64,35 +64,35 @@
         integer(kind = kint) :: ied_rtm(3)
 !
 !>        SMP stack for spectr data @f$ f(r,t,m) @f$
-        integer(kind = kint), pointer :: istack_inod_rtm_smp(:)
+        integer(kind = kint), allocatable :: istack_inod_rtm_smp(:)
 !
 !>        SMP stacks for indexing @f$ r@f$
-        integer(kind = kint), pointer :: istack_rtm_kr_smp(:)
+        integer(kind = kint), allocatable :: istack_rtm_kr_smp(:)
 !>        SMP stacks for indexing @f$ t @f$
-        integer(kind = kint), pointer :: istack_rtm_lt_smp(:)
+        integer(kind = kint), allocatable :: istack_rtm_lt_smp(:)
 !>        SMP stacks for indexing @f$ m @f$
-        integer(kind = kint), pointer :: istack_rtm_m_smp(:)
+        integer(kind = kint), allocatable :: istack_rtm_m_smp(:)
 !
 !>        SMP stacks for indexing @f$ r, t@f$
-        integer(kind = kint), pointer :: istack_rtm_rt_smp(:)
+        integer(kind = kint), allocatable :: istack_rtm_rt_smp(:)
 !
 !>        Maximum SMP number for indexing @f$ r, t, m@f$
         integer(kind = kint)  ::  maxidx_rtm_smp(3) = (/0,0,0/)
 !
 !>        global address for each direction @f$ f(r,\theta,m) @f$
-        integer(kind = kint), pointer :: idx_global_rtm(:,:)
+        integer(kind = kint), allocatable :: idx_global_rtm(:,:)
 !
 !>        radial global address for @f$ f(r,\theta,m) @f$
-        integer(kind = kint), pointer :: idx_gl_1d_rtm_r(:)
+        integer(kind = kint), allocatable :: idx_gl_1d_rtm_r(:)
 !>        meridional global address for @f$ f(r,\theta,m) @f$
-        integer(kind = kint), pointer :: idx_gl_1d_rtm_t(:)
+        integer(kind = kint), allocatable :: idx_gl_1d_rtm_t(:)
 !>        Zonal wave number for @f$ f(r,\theta,m) @f$
-        integer(kind = kint), pointer :: idx_gl_1d_rtm_m(:,:)
+        integer(kind = kint), allocatable :: idx_gl_1d_rtm_m(:,:)
 !
 !>        1d radius data for @f$ f(r,\theta,m) @f$
-        real(kind = kreal), pointer :: radius_1d_rtm_r(:)
+        real(kind = kreal), allocatable :: radius_1d_rtm_r(:)
 !>        1 / radius_1d_rtm_r
-        real(kind = kreal), pointer :: a_r_1d_rtm_r(:)
+        real(kind = kreal), allocatable :: a_r_1d_rtm_r(:)
       end type sph_rtm_grid
 !
 ! -----------------------------------------------------------------------

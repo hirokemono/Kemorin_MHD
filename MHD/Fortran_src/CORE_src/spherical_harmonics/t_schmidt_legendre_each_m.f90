@@ -29,17 +29,17 @@
         integer(kind = kint) :: nth_m = 10
 !
 !>        Schmidt quasi-normalized Legendre polynomials
-        real(kind = kreal), pointer :: p_m(:)
+        real(kind = kreal), allocatable :: p_m(:)
 !>        Schmidt quasi-normalized Legendre polynomials
-        real(kind = kreal), pointer :: pmp1(:)
+        real(kind = kreal), allocatable :: pmp1(:)
 !>        Schmidt quasi-normalized Legendre polynomials
-        real(kind = kreal), pointer :: pmn1(:)
+        real(kind = kreal), allocatable :: pmn1(:)
 !
 !>        diffrence of Schmidt quasi-normalized Legendre polynomials
-        real(kind = kreal), pointer :: dp_m(:)
+        real(kind = kreal), allocatable :: dp_m(:)
 !
 !>        work area
-        real(kind = kreal), pointer :: df_m(:)
+        real(kind = kreal), allocatable :: df_m(:)
       end type legendre_polynomials_each_m
 !
 ! -----------------------------------------------------------------------

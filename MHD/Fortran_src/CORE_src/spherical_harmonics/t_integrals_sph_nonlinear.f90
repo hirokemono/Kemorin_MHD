@@ -122,22 +122,22 @@
 !>        Number of Elsasser integrals
         integer(kind = kint) :: ntot_ei_nl_lm3
 !>        Number of Adams-Gaunt integrals for each mode
-        integer(kind = kint), pointer :: num_gi_nl_lm3(:,:)
+        integer(kind = kint), allocatable :: num_gi_nl_lm3(:,:)
 !>        Stack of Adams-Gaunt integrals for each mode
-        integer(kind = kint), pointer :: istack_gi_nl_lm3(:,:)
+        integer(kind = kint), allocatable :: istack_gi_nl_lm3(:,:)
 !>        Maximum number of Adams-Gaunt integrals
         integer(kind = kint) :: max_j12_gi
 !>        Maximum number of Elsasser integrals
         integer(kind = kint) :: max_j12_ei
 !
 !>        Mode IDs of Adams-Gaunt integrals
-        integer(kind = kint), pointer :: lm_gi_nl2(:,:,:)
+        integer(kind = kint), allocatable :: lm_gi_nl2(:,:,:)
 !>        Mode IDs of Elsasser integrals
-        integer(kind = kint), pointer :: lm_ei_nl2(:,:,:)
+        integer(kind = kint), allocatable :: lm_ei_nl2(:,:,:)
 !>        Adams-Gaunt integrals
-        real(kind = kreal), pointer ::  gi_nl2(:,:)
+        real(kind = kreal), allocatable ::  gi_nl2(:,:)
 !>        Elsasser integrals
-        real(kind = kreal), pointer ::  ei_nl2(:,:)
+        real(kind = kreal), allocatable ::  ei_nl2(:,:)
       end type adams_gaunt_integrals
 !
 !  ---------------------------------------------------------------------

@@ -38,29 +38,29 @@
         integer(kind = kint) :: ltr_g
         integer(kind = kint) :: jmax_g
 !
-        real(kind = kreal), pointer :: istack_nth_g_smp(:)
-        real(kind = kreal), pointer :: istack_ltr_g_smp(:)
-        real(kind = kreal), pointer :: istack_jmax_g_smp(:)
+        real(kind = kreal), allocatable :: istack_nth_g_smp(:)
+        real(kind = kreal), allocatable :: istack_ltr_g_smp(:)
+        real(kind = kreal), allocatable :: istack_jmax_g_smp(:)
 !
 !>      Colatitude of of Gauss integration points (Rad)
-        real(kind = kreal), pointer :: g_point_med(:)
+        real(kind = kreal), allocatable :: g_point_med(:)
 !>      Colatitude of of Gauss integration points (Deg)
-        real(kind = kreal), pointer :: g_colat_med(:)
+        real(kind = kreal), allocatable :: g_colat_med(:)
 !>      Weighting of Gauss integration
-        real(kind = kreal), pointer :: weight_med(:)
+        real(kind = kreal), allocatable :: weight_med(:)
 !
 !>      Legendre polynomials with Schmidt normalization
-        real(kind = kreal), pointer :: P_smdt(:,:)
+        real(kind = kreal), allocatable :: P_smdt(:,:)
 !>      derivative of Legendre polynomials with Schmidt normalization
-        real(kind = kreal), pointer :: dPdt_smdt(:,:)
+        real(kind = kreal), allocatable :: dPdt_smdt(:,:)
 !
 !>      Legendre polynomials with fully normalization
-        real(kind = kreal), pointer :: P_full(:,:)
+        real(kind = kreal), allocatable :: P_full(:,:)
 !>      derivative of Legendre polynomials with fully normalization
-        real(kind = kreal), pointer :: dPdt_full(:,:)
+        real(kind = kreal), allocatable :: dPdt_full(:,:)
 !
 !>      Legendre polynomials with no normalization
-        real(kind = kreal), pointer :: P_org(:,:)
+        real(kind = kreal), allocatable :: P_org(:,:)
       end type gauss_legendre_data
 !
 ! -----------------------------------------------------------------------

@@ -32,16 +32,16 @@
 !
 !>
       type surf_edge_IO_data
-        real(kind=kreal),   pointer :: ele_vector(:,:)
-        real(kind=kreal),   pointer :: ele_scalar(:)
+        real(kind=kreal),   allocatable :: ele_vector(:,:)
+        real(kind=kreal),   allocatable :: ele_scalar(:)
 !
         integer(kind = kint) :: nsf_4_ele
         integer(kind = kint) :: nsurf_in_ele
-        integer(kind = kint), pointer  :: isf_for_ele(:,:)
+        integer(kind = kint), allocatable  :: isf_for_ele(:,:)
 !
         integer(kind = kint) :: ned_4_ele
         integer(kind = kint) :: nedge_in_ele
-        integer(kind = kint), pointer  :: iedge_for_ele(:,:)
+        integer(kind = kint), allocatable  :: iedge_for_ele(:,:)
       end type surf_edge_IO_data
 !
 !------------------------------------------------------------------

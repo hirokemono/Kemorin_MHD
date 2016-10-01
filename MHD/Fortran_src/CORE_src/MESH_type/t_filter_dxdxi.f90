@@ -83,21 +83,21 @@
 !>        Structure for d/dxi
       type dxdxi_diff_type
 !>        delivative in \xi-diretion
-        real(kind=kreal), pointer :: df_dxi(:)
+        real(kind=kreal), allocatable :: df_dxi(:)
 !>        delivative in \eta-diretion
-        real(kind=kreal), pointer :: df_dei(:)
+        real(kind=kreal), allocatable :: df_dei(:)
 !>        delivative in \zeta-diretion
-        real(kind=kreal), pointer :: df_dzi(:)
+        real(kind=kreal), allocatable :: df_dzi(:)
       end  type dxdxi_diff_type
 !
 !>        Structure for d/dx
       type dxidx_diff_type
 !>        delivative in x-diretion
-        real(kind=kreal), pointer :: df_dx(:)
+        real(kind=kreal), allocatable :: df_dx(:)
 !>        delivative in y-diretion
-        real(kind=kreal), pointer :: df_dy(:)
+        real(kind=kreal), allocatable :: df_dy(:)
 !>        delivative in z-diretion
-        real(kind=kreal), pointer :: df_dz(:)
+        real(kind=kreal), allocatable :: df_dz(:)
       end  type dxidx_diff_type
 !
 !

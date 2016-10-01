@@ -40,15 +40,15 @@
 !>        Number of modes of monitoring spectrum to be evaluated
         integer(kind = kint) :: num_modes = 0
 !>        Degree and Order ID of  monitoring spectrum to be evaluated
-        integer(kind = kint), pointer :: idx_pick_mode(:,:)
+        integer(kind = kint), allocatable :: idx_pick_mode(:,:)
 !>        Number of degrees of  monitoring spectrum to be evaluated
         integer(kind = kint) :: num_degree = 0
 !>        Degree ID of  monitoring spectrum to be evaluated
-        integer(kind = kint), pointer :: idx_pick_l(:)
+        integer(kind = kint), allocatable :: idx_pick_l(:)
 !>        Number of orders of  monitoring spectrum to be evaluated
         integer(kind = kint) :: num_order = 0
 !>        Order ID of  monitoring spectrum to be evaluated
-        integer(kind = kint), pointer :: idx_pick_m(:)
+        integer(kind = kint), allocatable :: idx_pick_m(:)
       end type pickup_mode_list
 !
 !
@@ -60,16 +60,16 @@
 !>        Number of radial layer for monitoring spectrum
         integer(kind = kint) :: num_layer = 0
 !>        Radial ID for monitoring spectrum
-        integer(kind = kint), pointer :: id_radius(:)
+        integer(kind = kint), allocatable :: id_radius(:)
 !>        Radius for monitoring spectrum
-        real(kind = kreal), pointer :: radius_gl(:)
+        real(kind = kreal), allocatable :: radius_gl(:)
 !
 !>        Number of modes of  monitoring spectrum to be evaluated
         integer(kind = kint) :: num_sph_mode =  0
 !>        Global spherical harmonics ID to evaluate  monitoring spectrum
-        integer(kind = kint), pointer :: idx_gl(:,:)
+        integer(kind = kint), allocatable :: idx_gl(:,:)
 !>        Local spherical harmonics ID to evaluate  monitoring spectrum
-        integer(kind = kint), pointer :: idx_lc(:)
+        integer(kind = kint), allocatable :: idx_lc(:)
 !
 !>        Number of fields for monitoring output
 !!         @f$ f(r,\theta,\phi) @f$
@@ -77,22 +77,22 @@
 !>        Total number of component for monitoring spectrum
         integer(kind = kint) :: ntot_comp_rj =  0
 !>        Number of component for monitoring spectrum
-        integer (kind=kint), pointer :: istack_comp_rj(:)
+        integer (kind=kint), allocatable :: istack_comp_rj(:)
 !>        Field  address for monitoring of @f$ f(r,j) @f$
-        integer (kind=kint), pointer :: ifield_monitor_rj(:)
+        integer (kind=kint), allocatable :: ifield_monitor_rj(:)
 !>        monitoring spectrum
-        real(kind = kreal), pointer :: d_rj_gl(:,:)
+        real(kind = kreal), allocatable :: d_rj_gl(:,:)
 !>        Localy evaluated  monitoring spectrum
-        real(kind = kreal), pointer :: d_rj_lc(:,:)
+        real(kind = kreal), allocatable :: d_rj_lc(:,:)
 !>        Name of  monitoring spectrum
-        character(len=kchara), pointer :: spectr_name(:)
+        character(len=kchara), allocatable :: spectr_name(:)
 !
 !>      Scale factor for vector at l=m=0
-        real(kind = kreal), pointer :: scale_for_zelo(:)
+        real(kind = kreal), allocatable :: scale_for_zelo(:)
 !
 !>      Number of modes of Gauss coefficients to be evaluated
 !>      Name of Gauss coefficients  (g_{l}^{m} or h_{l}^{m})
-        character(len=kchara), pointer :: gauss_mode_name(:)
+        character(len=kchara), allocatable :: gauss_mode_name(:)
       end type picked_spectrum_data
 !
 ! -----------------------------------------------------------------------

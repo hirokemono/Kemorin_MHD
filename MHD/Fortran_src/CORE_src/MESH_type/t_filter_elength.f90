@@ -121,9 +121,9 @@
 !
       type filter_config_type
         integer (kind = kint) :: nf_type
-        character(len=kchara), pointer :: filter_type(:)
-        real(kind=kreal), pointer :: f_width(:)
-        real(kind=kreal), pointer :: xmom_1d_org(:,:)
+        character(len=kchara), allocatable :: filter_type(:)
+        real(kind=kreal), allocatable :: f_width(:)
+        real(kind=kreal), allocatable :: xmom_1d_org(:,:)
 !
         character(len=kchara) :: filter_3d_head
         character(len=kchara) :: filter_line_head
@@ -134,21 +134,21 @@
       end type filter_config_type
 !
       type elen_on_ele_type
-        real(kind=kreal),   pointer :: f_x2(:)
-        real(kind=kreal),   pointer :: f_y2(:)
-        real(kind=kreal),   pointer :: f_z2(:)
-        real(kind=kreal),   pointer :: f_xy(:)
-        real(kind=kreal),   pointer :: f_yz(:)
-        real(kind=kreal),   pointer :: f_zx(:)
+        real(kind=kreal),   allocatable :: f_x2(:)
+        real(kind=kreal),   allocatable :: f_y2(:)
+        real(kind=kreal),   allocatable :: f_z2(:)
+        real(kind=kreal),   allocatable :: f_xy(:)
+        real(kind=kreal),   allocatable :: f_yz(:)
+        real(kind=kreal),   allocatable :: f_zx(:)
       end type elen_on_ele_type
 !
       type elen_diffs_type
-        real(kind=kreal),   pointer :: df_x2(:,:)
-        real(kind=kreal),   pointer :: df_y2(:,:)
-        real(kind=kreal),   pointer :: df_z2(:,:)
-        real(kind=kreal),   pointer :: df_xy(:,:)
-        real(kind=kreal),   pointer :: df_yz(:,:)
-        real(kind=kreal),   pointer :: df_zx(:,:)
+        real(kind=kreal),   allocatable :: df_x2(:,:)
+        real(kind=kreal),   allocatable :: df_y2(:,:)
+        real(kind=kreal),   allocatable :: df_z2(:,:)
+        real(kind=kreal),   allocatable :: df_xy(:,:)
+        real(kind=kreal),   allocatable :: df_yz(:,:)
+        real(kind=kreal),   allocatable :: df_zx(:,:)
       end type elen_diffs_type
 !
       type elen_nod_diffs_type

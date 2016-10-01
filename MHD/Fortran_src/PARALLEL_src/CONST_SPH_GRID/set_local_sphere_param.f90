@@ -38,7 +38,7 @@
 !
       use t_spheric_rtp_data
 !
-      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_rtp_grid), intent(inout) :: sph_rtp
 !
       integer(kind = kint) :: inod, k, l, m
       integer(kind = kint) :: k_gl, l_gl, m_gl

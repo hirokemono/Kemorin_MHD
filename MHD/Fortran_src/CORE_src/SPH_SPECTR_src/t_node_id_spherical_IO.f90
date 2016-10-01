@@ -45,28 +45,28 @@
         integer(kind = kint) :: numnod_sph
 !
 !>        Global node ID
-        integer(kind = kint_gl), pointer :: inod_gl_sph(:)
+        integer(kind = kint_gl), allocatable :: inod_gl_sph(:)
 !>        Global radial and mode index
-        integer(kind = kint), pointer :: idx_gl_sph(:,:)
+        integer(kind = kint), allocatable :: idx_gl_sph(:,:)
 !
 !>        Number of local compoennts in each direction
-        integer(kind = kint), pointer :: nidx_sph(:)
+        integer(kind = kint), allocatable :: nidx_sph(:)
 !>        Start global address
-        integer(kind = kint), pointer :: ist_sph(:)
+        integer(kind = kint), allocatable :: ist_sph(:)
 !>        End global address
-        integer(kind = kint), pointer :: ied_sph(:)
+        integer(kind = kint), allocatable :: ied_sph(:)
 !>        Number of components for global address
         integer(kind = kint) :: ncomp_table_1d(3)
 !
 !>        First global index for specttr data
-        integer(kind = kint), pointer :: idx_gl_1(:)
+        integer(kind = kint), allocatable :: idx_gl_1(:)
 !>        Second global index for specttr data
-        integer(kind = kint), pointer :: idx_gl_2(:,:)
+        integer(kind = kint), allocatable :: idx_gl_2(:,:)
 !>        Third global index for specttr data
-        integer(kind = kint), pointer :: idx_gl_3(:,:)
+        integer(kind = kint), allocatable :: idx_gl_3(:,:)
 !
 !>        global radial data
-        real(kind = kreal), pointer :: r_gl_1(:)
+        real(kind = kreal), allocatable :: r_gl_1(:)
       end type sph_IO_data
 !
 ! -----------------------------------------------------------------------
