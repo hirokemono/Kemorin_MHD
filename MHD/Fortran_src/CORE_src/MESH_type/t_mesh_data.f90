@@ -116,7 +116,7 @@
 !>        (position, connectivity, and communication)
       type mesh_geometry_p
 !>     Structure for node communication
-        type(communication_table) :: nod_comm
+        type(communication_table), pointer :: nod_comm
 !>     Structure for node position
         type(node_data), pointer ::           node
 !>     Structure for element position and connectivity
@@ -207,6 +207,7 @@
 !
       type(mesh_geometry_p), intent(inout) :: mesh_p
 !
+      allocate(mesh_p%nod_comm)
       allocate(mesh_p%node)
       allocate(mesh_p%ele)
 !
@@ -218,7 +219,7 @@
 !
       type(mesh_geometry_p), intent(inout) :: mesh_p
 !
-      deallocate(mesh_p%node, mesh_p%ele)
+      deallocate(mesh_p%nod_comm, mesh_p%node, mesh_p%ele)
 !
       end subroutine finalize_mesh_geometry_type
 !

@@ -103,8 +103,7 @@
 !  +   set Matrix assemble table   +
 !C +-------------------------------+
       call set_djds_whole_connectivity(nod_comm, node, solver_C,        &
-     &    next_tbl%neib_nod, MHD1_matrices%MG_comm_table(0),            &
-     &    MHD1_matrices%MG_DJDS_table(0))
+     &    next_tbl%neib_nod, MHD1_matrices%MG_DJDS_table(0))
 !
       call link_comm_tbl_types                                          &
      &   (nod_comm, MHD1_matrices%MG_comm_table(0))

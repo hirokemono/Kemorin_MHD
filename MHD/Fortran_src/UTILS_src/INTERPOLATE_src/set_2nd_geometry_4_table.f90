@@ -83,9 +83,9 @@
 !
 !
       jp = my_rank + 1
-      call link_comm_tbl_types(origin_mesh(jp)%mesh%nod_comm, newmesh%nod_comm)
-      newmesh%node => origin_mesh(jp)%mesh%node
-      newmesh%ele => origin_mesh(jp)%mesh%ele
+      newmesh%nod_comm => origin_mesh(jp)%mesh%nod_comm
+      newmesh%node =>     origin_mesh(jp)%mesh%node
+      newmesh%ele =>      origin_mesh(jp)%mesh%ele
 !
       newgroup%nod_grp =>  origin_mesh(jp)%group%nod_grp
       newgroup%ele_grp =>  origin_mesh(jp)%group%ele_grp
@@ -110,6 +110,7 @@
 !
 !
       call deallocate_hex_2_tetra
+      call unlink_dest_comm_tbl_type(newmesh%nod_comm)
 !
       nullify(newgroup%surf_grp)
       nullify(newgroup%ele_grp)
@@ -117,9 +118,7 @@
 
       nullify(newmesh%ele)
       nullify(newmesh%node)
-
-!
-      call unlink_dest_comm_tbl_type(newmesh%nod_comm)
+      nullify(newmesh%node_comm)
 !
       end subroutine unlink_2nd_geometry_4_table
 !

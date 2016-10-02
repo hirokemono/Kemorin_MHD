@@ -9,7 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine set_djds_whole_connectivity(nod_comm, node,          &
-!!     &          solver_C, neib_nod, nod_comm_etr, DJDS_tbl)
+!!     &          solver_C, neib_nod, DJDS_tbl)
 !!      subroutine set_djds_layer_connectivity(node, ele, nnod_1ele,    &
 !!     &          iele_start, iele_end, layer_comm, solver_C, DJDS_tbl)
 !!@endverbatim
@@ -34,7 +34,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_djds_whole_connectivity(nod_comm, node,            &
-     &          solver_C, neib_nod, nod_comm_etr, DJDS_tbl)
+     &          solver_C, neib_nod, DJDS_tbl)
 !
       use t_geometry_data
       use t_comm_table
@@ -51,7 +51,6 @@
       type(next_nod_id_4_nod), intent(in) :: neib_nod
       type(mpi_4_solver), intent(in) :: solver_C
 !
-      type(communication_table), intent(inout) :: nod_comm_etr
       type(DJDS_ordering_table), intent(inout) :: DJDS_tbl
 !
       type(CRS_matrix_connect), save :: MHD_CRS
@@ -97,9 +96,7 @@
 !C +--------------------------------------+
 !C===
 !C
-      call link_comm_tbl_types(nod_comm, nod_comm_etr)
-      call set_new_comm_table_type                                      &
-     &   (node%numnod, nod_comm_etr, DJDS_tbl)
+      call set_new_comm_table_type(node%numnod, nod_comm, DJDS_tbl)
 !
       call dealloc_crs_connect(MHD_CRS)
 !

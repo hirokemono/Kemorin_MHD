@@ -102,9 +102,9 @@
 !     --------------------- 
 !
       call copy_num_processes_to_2nd
-      call link_comm_tbl_types(femmesh_p_FUT%mesh%nod_comm, mesh_ref%nod_comm)
-      mesh_ref%node => femmesh_p_FUT%mesh%node
-      mesh_ref%ele => femmesh_p_FUT%mesh%ele
+      mesh_ref%nod_comm => femmesh_p_FUT%mesh%nod_comm
+      mesh_ref%node =>     femmesh_p_FUT%mesh%node
+      mesh_ref%ele =>      femmesh_p_FUT%mesh%ele
 !
       group_ref%nod_grp =>  femmesh_p_FUT%group%nod_grp
       group_ref%ele_grp =>  femmesh_p_FUT%group%ele_grp
