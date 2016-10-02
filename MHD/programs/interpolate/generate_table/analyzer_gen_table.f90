@@ -48,7 +48,6 @@
       use input_control_gen_table
       use const_mesh_information
       use set_table_type_RHS_assemble
-      use set_serach_data_4_dest
       use set_2nd_geometry_4_table
       use const_jacobians_3d
       use mpi_load_mesh_data

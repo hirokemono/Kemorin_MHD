@@ -81,7 +81,7 @@
       use t_solver_djds
       use set_djds_connectivity_type
 !
-      type(MHD_MG_matrices), intent(inout) :: MHD_matrices
+      type(MHD_MG_matrices), intent(inout), target :: MHD_matrices
 !
       integer(kind = kint) :: i_level
 !

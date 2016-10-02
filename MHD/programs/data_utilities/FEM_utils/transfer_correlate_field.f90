@@ -5,7 +5,7 @@
 !
 !      subroutine set_component_add_4_correlate(nod_fld)
 !      subroutine coord_transfer_4_1st_field(nod_fld)
-!      subroutine coord_transfer_4_2nd_field(node, nnod_2, phys_2nd)
+!      subroutine coord_transfer_4_2nd_field(node, phys_2nd)
 !      subroutine copy_ref_component_to_2nd_fld(nod_fld, phys_2nd)
 !      subroutine transfer_nod_fld_to_cyl(node,                         &
 !     &          nnod, num_phys, ntot_phys, istack_component, d_nod)
@@ -96,21 +96,22 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine coord_transfer_4_2nd_field(node, nnod_2, phys_2nd)
+      subroutine coord_transfer_4_2nd_field(node, phys_2nd)
 !
       use m_ctl_params_4_diff_udt
 !
       type(node_data), intent(in) :: node
-      integer(kind = kint), intent(in) :: nnod_2
       type(phys_data), intent(inout) :: phys_2nd
 !
 !
       if     (iflag_correlate_coord .eq. iflag_spherical) then
-        call transfer_nod_fld_to_sph(node, nnod_2, phys_2nd%num_phys,   &
+        call transfer_nod_fld_to_sph                                    &
+     &     (node, phys_2nd%n_point, phys_2nd%num_phys,                  &
      &      phys_2nd%ntot_phys, phys_2nd%istack_component,              &
      &      phys_2nd%d_fld)
       else if(iflag_correlate_coord .eq. iflag_cylindrical) then
-        call transfer_nod_fld_to_cyl(node, nnod_2, phys_2nd%num_phys,   &
+        call transfer_nod_fld_to_cyl                                    &
+     &     (node, phys_2nd%n_point, phys_2nd%num_phys,                  &
      &      phys_2nd%ntot_phys, phys_2nd%istack_component,              &
      &      phys_2nd%d_fld)
       end if

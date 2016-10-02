@@ -15,10 +15,10 @@
 !
 !
       integer (kind = kint) :: nprocs_fine = 1
-      type(mesh_data_p), pointer :: fine_mesh(:)
+      type(mesh_data), pointer :: fine_mesh(:)
 !
       integer (kind = kint) :: nprocs_course = 1
-      type(mesh_data_p), pointer :: course_mesh(:)
+      type(mesh_data), pointer :: course_mesh(:)
 !
       integer (kind = kint) :: nprocs_larger = 1
       type(interpolate_table), pointer :: c2f_para(:)
@@ -45,12 +45,8 @@
 !
       subroutine alloc_para_fine_mesh_type
 !
-      integer(kind = kint) :: ip
 !
       allocate( fine_mesh(nprocs_fine) )
-      do ip = 1, nprocs_fine
-        call init_mesh_group_type(fine_mesh(ip)%group)
-      end do
 !
       end subroutine alloc_para_fine_mesh_type
 !
@@ -58,13 +54,8 @@
 !
       subroutine alloc_para_course_mesh_type
 !
-      integer(kind = kint) :: ip
-!
 !
       allocate( course_mesh(nprocs_course) )
-      do ip = 1, nprocs_course
-        call init_mesh_group_type(course_mesh(ip)%group)
-      end do
 !
       end subroutine alloc_para_course_mesh_type
 !

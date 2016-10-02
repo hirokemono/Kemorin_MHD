@@ -3,19 +3,14 @@
 !
 !      Written by H. Matsui on Apr., 2006
 !
-!!      subroutine init_element_mesh_type(ele_mesh_p)
-!!      subroutine finalize_element_mesh_type(ele_mesh_p)
-!!
-!!      subroutine link_data_4_linear_grid(mesh_q, ele_mesh_q, group_q, &
-!!     &                                   mesh_l, ele_mesh_l, group_l)
 !!      subroutine set_linear_data_by_quad_data                         &
 !!     &         (mesh_q, ele_mesh_q, group_q, nod_fld_q,               &
 !!     &          mesh_l, ele_mesh_l, group_l, nod_fld_l)
 !!      subroutine set_linear_data_by_lag_data                          &
 !!     &         (mesh_q, group_q, mesh_l, ele_mesh_l, group_l)
-!!        type(mesh_geometry_p), intent(in) :: mesh_q
-!!        type(mesh_groups_p), intent(in) :: group_q
-!!        type(surface_group_data), intent(in) :: sf_grp_q
+!!        type(mesh_geometry), intent(in), target :: mesh_q
+!!        type(mesh_groups), intent(in), target :: group_q
+!!        type(surface_group_data), intent(in), target :: sf_grp_q
 !!        type(phys_data), intent(in) ::     nod_fld_q
 !!        type(mesh_geometry_p), intent(inout) :: mesh_l
 !!        type(mesh_groups_p), intent(inout) :: group_l
@@ -30,76 +25,14 @@
       use t_mesh_data
       use t_group_data
       use t_phys_data
+      use t_mesh_data_with_pointer
 !
       implicit none
 !
-!>     Structure for element, surface, and edge mesh
-!!        (position, connectivity, and communication)
-      type element_geometry_p
-!>     Structure for surface position and connectivity
-        type(surface_data), pointer :: surf
-!>     Structure for edge position and connectivity
-        type(edge_data),  pointer :: edge
-      end type element_geometry_p
 !
 !  ---------------------------------------------------------------------
 !
       contains
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine init_element_mesh_type(ele_mesh_p)
-!
-      type(element_geometry_p), intent(inout) :: ele_mesh_p
-!
-      allocate(ele_mesh_p%surf)
-      allocate(ele_mesh_p%edge)
-!
-      end subroutine init_element_mesh_type
-!
-!------------------------------------------------------------------
-!
-      subroutine finalize_element_mesh_type(ele_mesh_p)
-!
-      type(element_geometry_p), intent(inout) :: ele_mesh_p
-!
-      deallocate(ele_mesh_p%surf, ele_mesh_p%edge)
-!
-      end subroutine finalize_element_mesh_type
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine link_data_4_linear_grid(mesh_q, ele_mesh_q, group_q,   &
-     &                                   mesh_l, ele_mesh_l, group_l)
-!
-      use t_mesh_data
-      use t_surface_data
-      use t_edge_data
-!
-      type(mesh_geometry_p), intent(in) :: mesh_q
-      type(element_geometry_p), intent(in) :: ele_mesh_q
-      type(mesh_groups_p), intent(in) :: group_q
-!
-      type(mesh_geometry_p), intent(inout) :: mesh_l
-      type(mesh_groups_p), intent(inout) :: group_l
-      type(element_geometry_p), intent(inout) :: ele_mesh_l
-!
-!
-      mesh_l%node => mesh_q%node
-      mesh_l%ele =>  mesh_q%ele
-!
-      ele_mesh_l%surf => ele_mesh_q%surf
-      ele_mesh_l%edge => ele_mesh_q%edge
-!
-      group_l%nod_grp =>  group_q%nod_grp
-      group_l%ele_grp =>  group_q%ele_grp
-      group_l%surf_grp => group_q%surf_grp
-!
-      group_l%tbls_ele_grp =>  group_q%tbls_ele_grp
-      group_l%tbls_surf_grp => group_q%tbls_surf_grp
-!
-      end subroutine link_data_4_linear_grid
 !
 !  ---------------------------------------------------------------------
 !
@@ -113,11 +46,11 @@
       use cvt_quad_2_linear_mesh
       use set_size_4_smp_types
 !
-      type(mesh_geometry_p), intent(in) :: mesh_q
-      type(element_geometry_p), intent(in) :: ele_mesh_q
-      type(mesh_groups_p), intent(in) :: group_q
+      type(mesh_geometry), intent(in), target :: mesh_q
+      type(element_geometry), intent(in), target :: ele_mesh_q
+      type(mesh_groups), intent(in), target :: group_q
 !
-      type(phys_data), intent(in) ::     nod_fld_q
+      type(phys_data), intent(in), target ::     nod_fld_q
 !
       type(mesh_geometry_p), intent(inout) :: mesh_l
       type(mesh_groups_p), intent(inout) :: group_l
@@ -180,8 +113,8 @@
       use const_mesh_information
       use set_size_4_smp_types
 !
-      type(mesh_geometry_p), intent(in) :: mesh_q
-      type(mesh_groups_p), intent(in) :: group_q
+      type(mesh_geometry), intent(in), target :: mesh_q
+      type(mesh_groups), intent(in), target :: group_q
 !
       type(mesh_geometry_p), intent(inout) :: mesh_l
       type(mesh_groups_p), intent(inout) :: group_l

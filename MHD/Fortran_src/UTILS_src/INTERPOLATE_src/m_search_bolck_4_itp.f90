@@ -62,7 +62,7 @@
       integer(kind = kint), intent(in) :: nblock_ref(3)
       integer(kind = kint), intent(in) :: nnod, nprocs_org
       real(kind = kreal), intent(in) :: xx(nnod,3)
-      type(mesh_data_p), intent(inout) :: para_mesh(nprocs_org)
+      type(mesh_data), intent(inout) :: para_mesh(nprocs_org)
 !
       integer(kind = kint) :: i
 !

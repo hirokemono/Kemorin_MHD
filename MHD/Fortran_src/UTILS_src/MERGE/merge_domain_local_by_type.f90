@@ -27,7 +27,7 @@
       use m_geometry_data_4_merge
 !
       integer(kind = kint), intent(in) :: nprocs
-      type(mesh_data_p), intent(in) :: mesh_info(nprocs)
+      type(mesh_data), intent(in) :: mesh_info(nprocs)
 !
 !
       call set_domain_local_id_by_type(nprocs, mesh_info,               &
@@ -44,7 +44,7 @@
       use m_2nd_geometry_4_merge
 !
       integer(kind = kint), intent(in) :: nprocs
-      type(mesh_data_p), intent(in) :: mesh_info(nprocs)
+      type(mesh_data), intent(in) :: mesh_info(nprocs)
 !
 !
       call set_domain_local_id_by_type(nprocs, mesh_info,               &
@@ -62,7 +62,7 @@
      &          iele_local, idomain_ele)
 !
       integer(kind = kint), intent(in) :: nprocs
-      type(mesh_data_p), intent(in) :: mesh_info(nprocs)
+      type(mesh_data), intent(in) :: mesh_info(nprocs)
 !
       integer(kind = kint), intent(in) :: nodpetot, elmpetot
       integer(kind = kint), intent(inout) :: inod_local(nodpetot)

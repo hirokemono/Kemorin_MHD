@@ -161,55 +161,6 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine const_mesh_infos_p(my_rank, mesh, group, ele_mesh)
-!
-      use const_surface_data
-      use set_surf_edge_mesh
-      use set_connects_4_surf_group
-!      use check_surface_groups
-!
-      integer(kind = kint), intent(in) :: my_rank
-      type(mesh_geometry_p), intent(inout) :: mesh
-      type(mesh_groups_p), intent(inout) ::   group
-      type(element_geometry), intent(inout) :: ele_mesh
-!
-!
-       if (iflag_debug.gt.0) write(*,*) 'const_nod_ele_infos'
-      call const_nod_ele_infos(my_rank, mesh%node, mesh%ele,            &
-     &    group%nod_grp, group%ele_grp, group%surf_grp)
-!
-      if (iflag_debug.gt.0) write(*,*) 'set_local_element_info'
-      call set_local_element_info(ele_mesh%surf, ele_mesh%edge)
-!
-      if (iflag_debug.gt.0) write(*,*) 'set_surface_and_edge'
-      call set_surface_and_edge                                         &
-     &   (mesh%node, mesh%ele, ele_mesh%surf, ele_mesh%edge)
-!
-      if (iflag_debug.gt.0) write(*,*) 'const_ele_list_4_surface'
-      call const_ele_list_4_surface(mesh%ele, ele_mesh%surf)
-!
-!
-      if (iflag_debug.gt.0) write(*,*) 'set_node_4_surf_group'
-      call set_node_4_surf_group(mesh%node, mesh%ele,                   &
-     &    ele_mesh%surf, group%surf_grp, group%surf_nod_grp)
-!       call check_surface_node_id(my_rank, group%surf_nod_grp)
-!
-!      if (iflag_debug.gt.0) then
-!        call check_surf_nod_4_sheard_para                              &
-!     &     (my_rank, group%surf_grp%num_grp, group%surf_nod_grp)
-!      end if
-!
-!
-       if (iflag_debug.eq.1) write(*,*) 'const_group_connectiviy_1st'
-      call const_group_type_info                                        &
-     &   (mesh%node, mesh%ele, ele_mesh%surf, ele_mesh%edge,            &
-     &    group%ele_grp, group%surf_grp,                                &
-     &    group%tbls_ele_grp, group%tbls_surf_grp)
-!
-      end subroutine const_mesh_infos_p
-!
-! ----------------------------------------------------------------------
-!
       subroutine const_nod_ele_infos                                    &
      &         (my_rank, node, ele, nod_grp, ele_grp, surf_grp)
 !

@@ -104,7 +104,9 @@
 !     &      14, my_rank_2nd)
 !
           call deallocate_work_4_interpolate
-          call unlink_2nd_geometry_4_table(org_mesh, org_grp)
+!
+          call deallocate_hex_2_tetra
+          call unlink_pointer_mesh(org_mesh, org_grp)
         end do
 !
         call check_missing_nodes(ierr_local, my_rank, node)

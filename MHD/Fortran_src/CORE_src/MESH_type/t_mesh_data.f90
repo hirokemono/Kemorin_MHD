@@ -7,12 +7,6 @@
 !
 !     Written by H. Matsui on Dec., 2008
 !
-!!      subroutine init_mesh_geometry_type(mesh_p)
-!!      subroutine finalize_mesh_geometry_type(mesh_p)
-!!
-!!      subroutine init_mesh_group_type(group_p)
-!!      subroutine finalize_mesh_group_type(group_p)
-!!
 !!      subroutine dealloc_mesh_infomations(nod_comm,                   &
 !!     &          node, ele, surf, edge, nod_grp, ele_grp, surf_grp,    &
 !!     &          tbls_ele_grp, tbls_sf_grp, surf_nod_grp)
@@ -109,50 +103,6 @@
       end type element_geometry
 !
 !
-!>     Structure for grid data
-!>        (position, connectivity, and communication)
-      type mesh_geometry_p
-!>     Structure for node communication
-        type(communication_table), pointer :: nod_comm
-!>     Structure for node position
-        type(node_data), pointer ::           node
-!>     Structure for element position and connectivity
-        type(element_data), pointer ::        ele
-      end type mesh_geometry_p
-!
-!>     Structure for group data (node, element, surface, and infinity)
-      type mesh_groups_p
-!>     Structure for node group
-        type (group_data), pointer ::             nod_grp
-!>     Structure for element group
-        type (group_data), pointer ::             ele_grp
-!>     Structure for surface group
-        type (surface_group_data), pointer ::     surf_grp
-!
-!>     Structure for node data on surface group
-        type (surface_node_grp_data) ::   surf_nod_grp
-!>     Structure for grometry data for surface group
-        type (surface_group_geometry) ::  surf_grp_geom
-!
-!>     Structure for element group connectivity
-        type (element_group_table), pointer :: tbls_ele_grp
-!>     Structure for surface group connectivity
-        type (surface_group_table), pointer :: tbls_surf_grp
-!
-!>     Structure for infinity surface
-        type (scalar_surf_BC_list) ::    infty_grp
-      end type mesh_groups_p
-!
-!>     Structure for mesh data
-!>        (position, connectivity, group, and communication)
-      type mesh_data_p
-!>     Structure for grid data
-        type(mesh_geometry_p) :: mesh
-!>     Structure for group data
-        type(mesh_groups_p) ::   group
-      end type mesh_data_p
-!
-!
       private :: dealloc_surf_mesh_type, dealloc_edge_mesh_type
 !
 !------------------------------------------------------------------
@@ -160,56 +110,6 @@
        contains
 !
 !------------------------------------------------------------------
-!
-      subroutine init_mesh_geometry_type(mesh_p)
-!
-      type(mesh_geometry_p), intent(inout) :: mesh_p
-!
-      allocate(mesh_p%nod_comm)
-      allocate(mesh_p%node)
-      allocate(mesh_p%ele)
-!
-      end subroutine init_mesh_geometry_type
-!
-!------------------------------------------------------------------
-!
-      subroutine finalize_mesh_geometry_type(mesh_p)
-!
-      type(mesh_geometry_p), intent(inout) :: mesh_p
-!
-      deallocate(mesh_p%nod_comm, mesh_p%node, mesh_p%ele)
-!
-      end subroutine finalize_mesh_geometry_type
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine init_mesh_group_type(group_p)
-!
-      type(mesh_groups_p), intent(inout) :: group_p
-!
-      allocate(group_p%nod_grp)
-      allocate(group_p%ele_grp)
-      allocate(group_p%surf_grp)
-!
-      allocate(group_p%tbls_ele_grp)
-      allocate(group_p%tbls_surf_grp)
-!
-      end subroutine init_mesh_group_type
-!
-!------------------------------------------------------------------
-!
-      subroutine finalize_mesh_group_type(group_p)
-!
-      type(mesh_groups_p), intent(inout) :: group_p
-!
-      deallocate(group_p%nod_grp, group_p%ele_grp, group_p%surf_grp)
-      deallocate(group_p%tbls_surf_grp, group_p%tbls_ele_grp)
-!
-      end subroutine finalize_mesh_group_type
-!
-!------------------------------------------------------------------
-! ----------------------------------------------------------------------
 !
       subroutine dealloc_mesh_infomations(mesh, group, ele_mesh)
 !

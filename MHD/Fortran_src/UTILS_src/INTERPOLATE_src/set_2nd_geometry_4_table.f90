@@ -7,6 +7,11 @@
 !      subroutine link_2nd_geometry_4_itp_tbl(my_rank,                  &
 !     &          newmesh, newgroup)
 !      subroutine unlink_2nd_geometry_4_table(newmesh, newgroup)
+!!      subroutine s_set_serach_data_4_dest                             &
+!!     &         (dest_node, itp_dest, itp_coef)
+!!        type(node_data), intent(in) :: dest_node
+!!        type(interpolate_table_dest), intent(in) :: itp_dest
+!!        type(interpolate_coefs_dest), intent(inout) :: itp_coef
 !
       module set_2nd_geometry_4_table
 !
@@ -14,12 +19,13 @@
 !
       use m_machine_parameter
       use t_mesh_data
+      use t_mesh_data_with_pointer
       use m_2nd_pallalel_vector
       use m_connect_hexa_2_tetra
 !
       implicit none
 !
-      type(mesh_data_p), allocatable :: origin_mesh(:)
+      type(mesh_data), allocatable, private :: origin_mesh(:)
 !
 ! ----------------------------------------------------------------------
 !
@@ -35,9 +41,6 @@
 !
 !
       allocate( origin_mesh(nprocs_2nd) )
-      do jp = 1, nprocs_2nd
-        call init_mesh_group_type(origin_mesh(jp)%group)
-      end do
 !
       end subroutine alloc_org_mesh_type_itp_para
 !
@@ -83,13 +86,8 @@
 !
 !
       jp = my_rank + 1
-      newmesh%nod_comm => origin_mesh(jp)%mesh%nod_comm
-      newmesh%node =>     origin_mesh(jp)%mesh%node
-      newmesh%ele =>      origin_mesh(jp)%mesh%ele
-!
-      newgroup%nod_grp =>  origin_mesh(jp)%group%nod_grp
-      newgroup%ele_grp =>  origin_mesh(jp)%group%ele_grp
-      newgroup%surf_grp => origin_mesh(jp)%group%surf_grp
+      call link_pointer_mesh                                           &
+     &   (origin_mesh(jp)%mesh, origin_mesh(jp)%group, newmesh, newgroup)
 !
       if (newmesh%ele%nnod_4_ele .eq. num_t_linear) then
         call set_1_hexa_2_5_tetra
@@ -102,24 +100,46 @@
       end subroutine link_2nd_geometry_4_itp_tbl
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
 !
-      subroutine unlink_2nd_geometry_4_table(newmesh, newgroup)
+      subroutine s_set_serach_data_4_dest                               &
+     &         (dest_node, itp_dest, itp_coef)
 !
-      type(mesh_geometry_p), intent(inout) :: newmesh
-      type(mesh_groups_p), intent(inout) :: newgroup
+      use t_geometry_data
+      use t_interpolate_tbl_dest
+      use t_interpolate_coefs_dest
+!
+      use m_2nd_pallalel_vector
+      use m_ctl_params_4_gen_table
+      use m_work_const_itp_table
+      use m_search_bolck_4_itp
+!
+      use order_dest_table_by_type
+!
+      type(node_data), intent(in) :: dest_node
+      type(interpolate_table_dest), intent(inout) :: itp_dest
+      type(interpolate_coefs_dest), intent(inout) :: itp_coef
 !
 !
-      call deallocate_hex_2_tetra
+      call set_all_block_points_4_itp                                   &
+     &   (num_sph_grid, dest_node%numnod, dest_node%xx,                 &
+     &   nprocs_2nd, origin_mesh)
+!      call check_block_points_4_itp(50+my_rank, nprocs_2nd)
 !
-      nullify(newgroup%surf_grp)
-      nullify(newgroup%ele_grp)
-      nullify(newgroup%nod_grp)
-
-      nullify(newmesh%ele)
-      nullify(newmesh%node)
-      nullify(newmesh%nod_comm)
+!  -------------------------------
 !
-      end subroutine unlink_2nd_geometry_4_table
+      if (iflag_debug.eq.1)                                             &
+     &     write(*,*)  'allocate_interpolate_table'
+!
+      itp_dest%ntot_table_dest = dest_node%internal_node
+      call set_num_org_domain(nprocs_2nd, itp_dest)
+      call alloc_itp_num_dest(itp_dest)
+      call alloc_itp_table_dest(itp_dest)
+      call alloc_itp_coef_dest(itp_dest, itp_coef)
+      call allocate_itp_work_dest(nprocs_2nd)
+      call allocate_work_const_itp_tbl(dest_node%numnod, itp_dest)
+!
+      end subroutine s_set_serach_data_4_dest
 !
 ! ----------------------------------------------------------------------
 !

@@ -17,6 +17,7 @@
 !
       use t_mesh_data
       use t_phys_data
+      use t_mesh_data_with_pointer
       use t_layering_ele_list
       use t_work_layer_correlate
       use m_FEM_utils
@@ -26,9 +27,9 @@
       implicit none
 !
       type(mesh_data_p), save :: femmesh_p_FUT
+      type(element_geometry_p), save :: elemesh_FUT
 !
-      type(mesh_geometry_p), save :: mesh_ref
-      type(mesh_groups_p), save :: group_ref
+      type(mesh_data_p), save :: femmesh_p_REF
       type(phys_data), save :: phys_ref
 !
       type(layering_tbl), save :: layer_tbl_corr
@@ -66,13 +67,14 @@
 !     --------------------- 
 !
       call init_mesh_group_type(femmesh_p_FUT%group)
+      call init_element_mesh_type(elemesh_FUT)
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_corr_udt'
       call s_input_control_corr_udt(field_FUTIL, ucd_FUTIL)
       if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh_p(femmesh_p_FUT%mesh, femmesh_p_FUT%group,    &
-     &    elemesh_FUTIL%surf%nnod_4_surf,                               &
-     &    elemesh_FUTIL%edge%nnod_4_edge)
+      call mpi_input_mesh_p(femmesh_p_FUT,                              &
+     &    elemesh_FUT%surf%nnod_4_surf,                                 &
+     &    elemesh_FUT%edge%nnod_4_edge)
 !
 !     --------------------- 
 !
@@ -88,9 +90,8 @@
       call init_send_recv(femmesh_p_FUT%mesh%nod_comm)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-      call const_mesh_infos_p(my_rank,                                  &
-     &   femmesh_p_FUT%mesh, femmesh_p_FUT%group, elemesh_FUTIL)
-      call const_element_comm_tbls_p(femmesh_p_FUT%mesh, elemesh_FUTIL)
+      call const_mesh_infos_p(my_rank, femmesh_p_FUT, elemesh_FUT)
+      call const_element_comm_tbls_p(femmesh_p_FUT, elemesh_FUT)
 !
 !     --------------------- 
 !
@@ -101,20 +102,22 @@
 !     --------------------- 
 !
       call copy_num_processes_to_2nd
-      mesh_ref%nod_comm => femmesh_p_FUT%mesh%nod_comm
-      mesh_ref%node =>     femmesh_p_FUT%mesh%node
-      mesh_ref%ele =>      femmesh_p_FUT%mesh%ele
+      femmesh_p_REF%mesh%nod_comm => femmesh_p_FUT%mesh%nod_comm
+      femmesh_p_REF%mesh%node =>     femmesh_p_FUT%mesh%node
+      femmesh_p_REF%mesh%ele =>      femmesh_p_FUT%mesh%ele
 !
-      group_ref%nod_grp =>  femmesh_p_FUT%group%nod_grp
-      group_ref%ele_grp =>  femmesh_p_FUT%group%ele_grp
-      group_ref%surf_grp => femmesh_p_FUT%group%surf_grp
+      femmesh_p_REF%group%nod_grp =>  femmesh_p_FUT%group%nod_grp
+      femmesh_p_REF%group%ele_grp =>  femmesh_p_FUT%group%ele_grp
+      femmesh_p_REF%group%surf_grp => femmesh_p_FUT%group%surf_grp
 !
       call copy_field_name_type(field_FUTIL, phys_ref)
-      call alloc_phys_data_type(mesh_ref%node%numnod, phys_ref)
+      call alloc_phys_data_type                                         &
+     &   (femmesh_p_REF%mesh%node%numnod, phys_ref)
       call allocate_vec_transfer(femmesh_p_FUT%mesh%node%numnod)
 !
       call set_component_add_4_correlate(field_FUTIL)
-      call allocate_2nd_iccg_matrix(isix, mesh_ref%node%numnod)
+      call allocate_2nd_iccg_matrix                                     &
+     &   (isix, femmesh_p_REF%mesh%node%numnod)
 !
 !     --------------------- 
 !

@@ -21,10 +21,10 @@
      &             :: sgl_table_file_head = "single_itp_table"
 !
       integer(kind = kint) :: nprocs_dest
-      type(mesh_data_p), allocatable, save :: femmesh_dest(:)
+      type(mesh_data), allocatable, save :: femmesh_dest(:)
 !
       integer(kind = kint) :: nprocs_org
-      type(mesh_data_p), allocatable, save :: femmesh_org(:)
+      type(mesh_data), allocatable, save :: femmesh_org(:)
 !
       type(interpolate_table), save :: single_tbl
 !
@@ -41,16 +41,10 @@
 !
       mesh_file_head = dest_mesh_head
       allocate( femmesh_dest(nprocs_dest) )
-      do ip = 1, nprocs_dest
-        call init_mesh_group_type(femmesh_dest(ip)%group)
-      end do
       call s_set_parallel_mesh_in_1pe(nprocs_dest, femmesh_dest)
 !
       mesh_file_head = org_mesh_head
       allocate( femmesh_org(nprocs_org) )
-      do ip = 1, nprocs_org
-        call init_mesh_group_type(femmesh_org(ip)%group)
-      end do
       call s_set_parallel_mesh_in_1pe(nprocs_org, femmesh_org)
 !
 !

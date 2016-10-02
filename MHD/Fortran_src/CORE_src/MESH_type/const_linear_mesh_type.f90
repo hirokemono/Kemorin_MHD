@@ -41,11 +41,11 @@
 !
       use t_mesh_data
       use t_phys_data
+      use t_mesh_data_with_pointer
       use const_linear_mesh_by_quad
 !
       implicit none
 !
-      type(phys_data), target :: nod_fld_q
       type(phys_data), pointer :: nod_fld_l
 !
      private :: const_linear_mesh_by_q
@@ -57,10 +57,11 @@
 !  ---------------------------------------------------------------------
 !
       subroutine const_linear_mesh_type_by_t                            &
-     &         (femmesh_q, ele_mesh_q, femmesh_l, ele_mesh_l)
+     &       (femmesh_q, ele_mesh_q, nod_fld_q, femmesh_l, ele_mesh_l)
 !
-      type(mesh_data_p), intent(in) :: femmesh_q
-      type(element_geometry_p), intent(inout) :: ele_mesh_q
+      type(mesh_data), intent(in), target :: femmesh_q
+      type(element_geometry), intent(in), target :: ele_mesh_q
+      type(phys_data), intent(in), target :: nod_fld_q
 !
       type(mesh_data_p), intent(inout) :: femmesh_l
       type(element_geometry_p), intent(inout) :: ele_mesh_l
@@ -69,7 +70,7 @@
 !      call init_element_mesh_type(ele_mesh_q)
 !
       call const_linear_mesh_by_q                                       &
-     &   (femmesh_q%mesh, ele_mesh_q, femmesh_q%group,                  &
+     &   (femmesh_q%mesh, ele_mesh_q, femmesh_q%group, nod_fld_q,       &
      &    femmesh_l%mesh, ele_mesh_l, femmesh_l%group)
 !
       end subroutine const_linear_mesh_type_by_t
@@ -99,7 +100,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine const_linear_mesh_by_q(mesh_q, ele_mesh_q, group_q,    &
-     &                                  mesh_l, ele_mesh_l, group_l)
+     &          nod_fld_q, mesh_l, ele_mesh_l, group_l)
 !
       use t_mesh_data
       use t_geometry_data
@@ -107,9 +108,10 @@
       use t_edge_data
       use t_group_data
 !
-      type(mesh_geometry_p), intent(in) :: mesh_q
-      type(element_geometry_p), intent(in) :: ele_mesh_q
-      type(mesh_groups_p), intent(in) :: group_q
+      type(mesh_geometry), intent(in), target :: mesh_q
+      type(element_geometry), intent(in), target :: ele_mesh_q
+      type(mesh_groups), intent(in), target :: group_q
+      type(phys_data), intent(in), target :: nod_fld_q
 !
       type(mesh_geometry_p), intent(inout) :: mesh_l
       type(element_geometry_p), intent(inout) :: ele_mesh_l
@@ -122,8 +124,9 @@
 !
       if      (mesh_q%ele%nnod_4_ele .eq. num_t_linear) then
         call init_element_mesh_type(ele_mesh_l)
-        call link_data_4_linear_grid(mesh_q, ele_mesh_q, group_q,       &
-     &                               mesh_l, ele_mesh_l, group_l)
+        call link_pointer_mesh(mesh_q, group_q, mesh_l, group_l)
+        call link_pointer_elemesh(ele_mesh_q, ele_mesh_l)
+
         nod_fld_l => nod_fld_q
       else if (mesh_q%ele%nnod_4_ele .eq. num_t_quad) then
         call set_linear_data_by_quad_data                               &
