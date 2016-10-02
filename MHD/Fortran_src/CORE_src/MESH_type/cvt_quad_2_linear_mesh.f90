@@ -243,7 +243,7 @@
       type(phys_data), intent(inout) :: nod_fld_l
 !
 !
-      call link_field_name_type(nod_fld_q, nod_fld_l)
+      call copy_field_name_type(nod_fld_q, nod_fld_l)
       call alloc_phys_data_type(mesh_l%node%numnod, nod_fld_l)
 !
       end subroutine init_linear_nod_phys

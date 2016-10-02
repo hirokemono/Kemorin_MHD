@@ -13,8 +13,6 @@
 !!      subroutine init_mesh_group_type(group_p)
 !!      subroutine finalize_mesh_group_type(group_p)
 !!
-!!      subroutine link_mesh_data_type(org_mesh, new_mesh)
-!!
 !!      subroutine dealloc_mesh_infomations(nod_comm,                   &
 !!     &          node, ele, surf, edge, nod_grp, ele_grp, surf_grp,    &
 !!     &          tbls_ele_grp, tbls_sf_grp, surf_nod_grp)
@@ -217,21 +215,6 @@
       end subroutine finalize_mesh_group_type
 !
 !------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine link_mesh_data_type(org_mesh, new_mesh)
-!
-      type(mesh_geometry), intent(in) :: org_mesh
-      type(mesh_geometry), intent(inout) :: new_mesh
-!
-!
-      call link_comm_tbl_types(org_mesh%nod_comm, new_mesh%nod_comm)
-      call link_new_nod_geometry_type(org_mesh%node, new_mesh%node)
-      call link_new_ele_connect_type(org_mesh%ele, new_mesh%ele)
-!
-      end subroutine link_mesh_data_type
-!
-! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine dealloc_mesh_infomations(mesh, group, ele_mesh)

@@ -83,7 +83,9 @@
 !
 !
       jp = my_rank + 1
-      call link_mesh_data_type(origin_mesh(jp)%mesh, newmesh)
+      call link_comm_tbl_types(origin_mesh(jp)%mesh%nod_comm, newmesh%nod_comm)
+      call link_new_nod_geometry_type(origin_mesh(jp)%mesh%node, newmesh%node)
+      call link_new_ele_connect_type(origin_mesh(jp)%mesh%ele, newmesh%ele)
       newgroup%nod_grp =>  origin_mesh(jp)%group%nod_grp
       newgroup%ele_grp =>  origin_mesh(jp)%group%ele_grp
       newgroup%surf_grp => origin_mesh(jp)%group%surf_grp

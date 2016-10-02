@@ -101,7 +101,9 @@
 !     --------------------- 
 !
       call copy_num_processes_to_2nd
-      call link_mesh_data_type(femmesh_p_FUT%mesh, mesh_ref)
+      call link_comm_tbl_types(femmesh_p_FUT%mesh%nod_comm, mesh_ref%nod_comm)
+      call link_new_nod_geometry_type(femmesh_p_FUT%mesh%node, mesh_ref%node)
+      call link_new_ele_connect_type(femmesh_p_FUT%mesh%ele, mesh_ref%ele)
       call link_new_overlaped_ele_type                                  &
      &   (femmesh_p_FUT%mesh%ele, mesh_ref%ele)
 !
@@ -109,7 +111,7 @@
       group_ref%ele_grp =>  femmesh_p_FUT%group%ele_grp
       group_ref%surf_grp => femmesh_p_FUT%group%surf_grp
 !
-      call link_field_name_type(field_FUTIL, phys_ref)
+      call copy_field_name_type(field_FUTIL, phys_ref)
       call alloc_phys_data_type(mesh_ref%node%numnod, phys_ref)
       call allocate_vec_transfer(femmesh_p_FUT%mesh%node%numnod)
 !

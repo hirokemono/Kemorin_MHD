@@ -3,15 +3,13 @@
 !
 !      Written by H. Matsui on Apr., 2006
 !
-!!      subroutine link_data_4_linear_grid                              &
-!!     &         (mesh_q, ele_mesh_q, group_q, nod_fld_q,               &
-!!     &          mesh_l, ele_mesh_l, group_l, nod_fld_l)
+!!      subroutine link_data_4_linear_grid(mesh_q, ele_mesh_q, group_q, &
+!!     &                                   mesh_l, ele_mesh_l, group_l)
 !!      subroutine set_linear_data_by_quad_data                         &
 !!     &         (mesh_q, ele_mesh_q, group_q, nod_fld_q,               &
 !!     &          mesh_l, ele_mesh_l, group_l, nod_fld_l)
 !!      subroutine set_linear_data_by_lag_data                          &
-!!     &         (mesh_q, group_q, nod_fld_q,                           &
-!!     &          mesh_l, ele_mesh_l, group_l, nod_fld_l)
+!!     &         (mesh_q, group_q, mesh_l, ele_mesh_l, group_l)
 !!        type(node_data), intent(in) ::    node_q
 !!        type(element_data), intent(in) :: ele_q
 !!        type(mesh_groups_p), intent(in) :: group_q
@@ -39,9 +37,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine link_data_4_linear_grid                                &
-     &         (mesh_q, ele_mesh_q, group_q, nod_fld_q,                 &
-     &          mesh_l, ele_mesh_l, group_l, nod_fld_l)
+      subroutine link_data_4_linear_grid(mesh_q, ele_mesh_q, group_q,   &
+     &                                   mesh_l, ele_mesh_l, group_l)
 !
       use t_mesh_data
       use t_surface_data
@@ -51,12 +48,9 @@
       type(element_geometry_p), intent(in) :: ele_mesh_q
       type(mesh_groups_p), intent(in) :: group_q
 !
-      type(phys_data), intent(in) ::     nod_fld_q
-!
       type(mesh_geometry), intent(inout) :: mesh_l
       type(mesh_groups_p), intent(inout) :: group_l
       type(element_geometry_p), intent(inout) :: ele_mesh_l
-      type(phys_data), intent(inout) :: nod_fld_l
 !
 !
       call link_new_nod_geometry_type(mesh_q%node, mesh_l%node)
@@ -72,8 +66,6 @@
 !
       group_l%tbls_ele_grp =>  group_q%tbls_ele_grp
       group_l%tbls_surf_grp => group_q%tbls_surf_grp
-!
-      call link_field_data_type(nod_fld_q, nod_fld_l)
 !
       end subroutine link_data_4_linear_grid
 !
@@ -146,8 +138,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_linear_data_by_lag_data                            &
-     &         (mesh_q, group_q, nod_fld_q,                             &
-     &          mesh_l, ele_mesh_l, group_l, nod_fld_l)
+     &         (mesh_q, group_q, mesh_l, ele_mesh_l, group_l)
 !
       use const_surface_data
       use const_edge_data
@@ -157,12 +148,9 @@
       type(mesh_geometry), intent(in) :: mesh_q
       type(mesh_groups_p), intent(in) :: group_q
 !
-      type(phys_data), intent(in) ::     nod_fld_q
-!
       type(mesh_geometry), intent(inout) :: mesh_l
       type(mesh_groups_p), intent(inout) :: group_l
       type(element_geometry_p), intent(inout) :: ele_mesh_l
-      type(phys_data), intent(inout) :: nod_fld_l
 !
 !
       call set_local_element_info(ele_mesh_l%surf, ele_mesh_l%edge)
@@ -198,8 +186,6 @@
 !
       call set_internal_list_lin_27(mesh_q%node, mesh_l,                &
      &    ele_mesh_l%surf, ele_mesh_l%edge)
-!
-      call link_field_data_type(nod_fld_q, nod_fld_l)
 !
       end subroutine set_linear_data_by_lag_data
 !

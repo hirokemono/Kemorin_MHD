@@ -186,14 +186,14 @@
      &   (new_sph_phys(1)%num_phys*kchara),                             &
      &    CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
 !
+      if(my_rank .ne. 0) then
+        call alloc_phys_data_type                                       &
+     &   (new_sph_mesh(1)%sph%sph_rj%nnod_rj, new_sph_phys(1))
+      end if
       do jp = 2, np_sph_new
         if(mod(jp-1,nprocs) .ne. my_rank) cycle
-        call link_field_name_type(new_sph_phys(1), new_sph_phys(jp))
-      end do
-!
-      do jp = 1, np_sph_new
-        if(mod(jp-1,nprocs) .ne. my_rank) cycle
-         call alloc_phys_data_type                                      &
+        call copy_field_name_type(new_sph_phys(1), new_sph_phys(jp))
+        call alloc_phys_data_type                                       &
      &     (new_sph_mesh(jp)%sph%sph_rj%nnod_rj, new_sph_phys(jp))
       end do
 !

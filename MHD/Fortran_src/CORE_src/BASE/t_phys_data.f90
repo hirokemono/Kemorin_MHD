@@ -14,18 +14,9 @@
 !!      subroutine dealloc_phys_name_type(fld)
 !!      subroutine dealloc_phys_data_type(fld)
 !!
-!!      subroutine link_field_name_type(org_fld, new_fld)
-!!      subroutine link_field_data_type(org_fld, new_fld)
-!!        type(phys_data), intent(in) :: org_fld
-!!        type(phys_data), intent(inout) :: new_fld
-!!
 !!      subroutine copy_field_name_type(org_fld, new_fld)
 !!        type(phys_data), intent(in) :: org_fld
 !!        type(phys_data), intent(inout) :: new_fld
-!
-!!      subroutine disconnect_phys_name_type(fld)
-!!      subroutine disconnect_phys_data_type(fld)
-!!        type(phys_data), intent(inout) :: fld
 !!
 !!      subroutine check_all_field_data(my_rank, fld)
 !!      subroutine check_nodal_field_name_type(id_output, fld)
@@ -51,19 +42,19 @@
 !>       total number of component
         integer (kind=kint) :: ntot_phys
 !>       number of component for each field
-        integer (kind=kint), pointer :: num_component(:)
+        integer (kind=kint), allocatable :: num_component(:)
 !>       end address for each field
-        integer (kind=kint), pointer :: istack_component(:)
+        integer (kind=kint), allocatable :: istack_component(:)
 !>       FEM order of each field
-        integer (kind=kint), pointer :: iorder_eletype(:)
+        integer (kind=kint), allocatable :: iorder_eletype(:)
 !
 !>       field name
-        character (len=kchara), pointer :: phys_name(:)
+        character (len=kchara), allocatable :: phys_name(:)
 !
 !>       field data
-        real (kind=kreal), pointer ::   d_fld(:,:)
+        real (kind=kreal), allocatable ::   d_fld(:,:)
 !>       update flag for field data
-        integer (kind=kint), pointer :: iflag_update(:)
+        integer (kind=kint), allocatable :: iflag_update(:)
 !
 !>        number of field for visualizer
         integer (kind=kint) :: num_phys_viz
@@ -71,7 +62,7 @@
         integer (kind=kint) :: ntot_phys_viz
 !
 !>        flag to get average and RMS data
-        integer (kind=kint), pointer:: iflag_monitor(:)
+        integer (kind=kint), allocatable:: iflag_monitor(:)
       end type phys_data
 !
 ! -------------------------------------------------------------------
@@ -144,46 +135,6 @@
       end subroutine dealloc_phys_data_type
 !
 !  --------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine link_field_name_type(org_fld, new_fld)
-!
-      type(phys_data), intent(in) :: org_fld
-      type(phys_data), intent(inout) :: new_fld
-!
-!
-      new_fld%num_phys =  org_fld%num_phys
-      new_fld%ntot_phys = org_fld%ntot_phys
-!
-      new_fld%num_phys_viz =  org_fld%num_phys_viz
-      new_fld%ntot_phys_viz = org_fld%ntot_phys_viz
-!
-      new_fld%num_component =>    org_fld%num_component
-      new_fld%istack_component => org_fld%istack_component
-      new_fld%iorder_eletype =>   org_fld%iorder_eletype
-      new_fld%iflag_monitor =>    org_fld%iflag_monitor
-      new_fld%phys_name =>        org_fld%phys_name
-!
-      end subroutine link_field_name_type
-!
-! -------------------------------------------------------------------
-!
-      subroutine link_field_data_type(org_fld, new_fld)
-!
-      type(phys_data), intent(in) :: org_fld
-      type(phys_data), intent(inout) :: new_fld
-!
-!
-      call link_field_name_type(org_fld, new_fld)
-!
-      new_fld%n_point =       org_fld%n_point
-!
-      new_fld%d_fld =>        org_fld%d_fld
-      new_fld%iflag_update => org_fld%iflag_update
-!
-      end subroutine link_field_data_type
-!
-! -------------------------------------------------------------------
 ! -------------------------------------------------------------------
 !
       subroutine copy_field_name_type(org_fld, new_fld)
@@ -212,30 +163,6 @@
       end subroutine copy_field_name_type
 !
 ! -----------------------------------------------------------------------
-!  --------------------------------------------------------------------
-!
-      subroutine disconnect_phys_name_type(fld)
-!
-      type(phys_data), intent(inout) :: fld
-!
-!
-       nullify(fld%phys_name, fld%iorder_eletype, fld%iflag_monitor)
-       nullify(fld%num_component, fld%istack_component)
-!
-      end subroutine disconnect_phys_name_type
-!
-!  --------------------------------------------------------------------
-!
-      subroutine disconnect_phys_data_type(fld)
-!
-      type(phys_data), intent(inout) :: fld
-!
-!
-      nullify(fld%d_fld, fld%iflag_update)
-!
-      end subroutine disconnect_phys_data_type
-!
-!  --------------------------------------------------------------------
 !  --------------------------------------------------------------------
 !
       subroutine check_all_field_data(my_rank, fld)
