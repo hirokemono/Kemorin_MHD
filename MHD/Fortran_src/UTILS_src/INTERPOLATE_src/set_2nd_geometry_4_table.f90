@@ -110,7 +110,6 @@
 !
 !
       call deallocate_hex_2_tetra
-      call unlink_dest_comm_tbl_type(newmesh%nod_comm)
 !
       nullify(newgroup%surf_grp)
       nullify(newgroup%ele_grp)
@@ -118,7 +117,7 @@
 
       nullify(newmesh%ele)
       nullify(newmesh%node)
-      nullify(newmesh%node_comm)
+      nullify(newmesh%nod_comm)
 !
       end subroutine unlink_2nd_geometry_4_table
 !

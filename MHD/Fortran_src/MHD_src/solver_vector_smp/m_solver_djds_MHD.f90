@@ -85,6 +85,7 @@
 !
       use set_table_type_RHS_assemble
       use set_MHD_connectivity
+      use copy_mesh_structures
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -105,7 +106,7 @@
       call set_djds_whole_connectivity(nod_comm, node, solver_C,        &
      &    next_tbl%neib_nod, MHD1_matrices%MG_DJDS_table(0))
 !
-      call link_comm_tbl_types                                          &
+      call copy_comm_tbl_types                                          &
      &   (nod_comm, MHD1_matrices%MG_comm_table(0))
 !
       end subroutine set_MHD_whole_connectivity

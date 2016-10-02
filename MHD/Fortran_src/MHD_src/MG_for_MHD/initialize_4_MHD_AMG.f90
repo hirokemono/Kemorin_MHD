@@ -244,7 +244,8 @@
 !     -----  set DJDS matrix connectivity
 !
       if(iflag_debug .gt. 0) write(*,*) 's_link_MG_MHD_mesh_data'
-      call s_link_MG_MHD_mesh_data(ele_1st, MHD_matrices)
+      call s_link_MG_MHD_mesh_data                                      &
+     &   (MG_mesh, MG_MHD_mesh, ele_1st, MHD_matrices)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_MG_djds_connect_type'
       call set_MG_djds_connect_type(MHD_matrices)

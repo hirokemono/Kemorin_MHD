@@ -25,9 +25,6 @@
       type(mesh_data), save :: org_femmesh
       type(element_geometry), save :: org_ele_mesh
 !
-      type(mesh_geometry_p), save :: newmesh
-      type(mesh_groups_p), save ::   newgroup
-!
       type(next_nod_ele_table), save :: next_tbl_i
 !
       type(jacobians_3d), save :: jac_3d_l
@@ -129,7 +126,7 @@
       if (iflag_debug.eq.1) write(*,*) 's_construct_interpolate_table'
       call s_construct_interpolate_table                                &
      &   (org_femmesh%mesh%node, next_tbl_i%neib_nod,                   &
-     &    newmesh, newgroup, itp_n_coef, ierr_missing)
+     &    itp_n_coef, ierr_missing)
 !
 !   ordering destination table by domain
 !

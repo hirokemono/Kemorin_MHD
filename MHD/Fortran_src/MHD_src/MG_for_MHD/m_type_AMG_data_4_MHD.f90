@@ -32,7 +32,7 @@
 !
       implicit  none
 !
-      type(mesh_data_MHD), save :: MG_MHD_mesh(0:max_MG_level)
+      type(mesh_data_MHD), target, save :: MG_MHD_mesh(0:max_MG_level)
 !   mesh data structure
 !
       type(coefs_4_MHD_type), save :: ak_MHD_AMG(max_MG_level)
