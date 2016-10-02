@@ -213,7 +213,7 @@
      &    mesh%node, iphys, nod_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(mesh%node, mesh%nod_comm, nod_fld)
+      call nod_fields_send_recv(mesh%nod_comm, nod_fld)
 !
       end subroutine SPH_to_FEM_bridge_MHD
 !

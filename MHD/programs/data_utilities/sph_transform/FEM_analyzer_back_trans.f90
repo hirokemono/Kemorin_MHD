@@ -111,7 +111,7 @@
 !
       if(visval .eq. 0) then
         call nod_fields_send_recv                                       &
-     &    (femmesh_STR%mesh%node, femmesh_STR%mesh%nod_comm, field_STR)
+     &     (femmesh_STR%mesh%nod_comm, field_STR)
       end if
 !
 !*  -----------  Output volume data --------------

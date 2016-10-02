@@ -143,7 +143,7 @@
 !
 !   communication
 !
-      call scalar_send_recv(i_field, node, nod_comm, nod_fld)
+      call scalar_send_recv(i_field, nod_comm, nod_fld)
 !
       end subroutine cal_terms_4_heat
 !
@@ -204,8 +204,7 @@
 !
 !   communication
 !
-      call scalar_send_recv                                             &
-     &   (iphys%i_t_diffuse, node, nod_comm, nod_fld)
+      call scalar_send_recv(iphys%i_t_diffuse, nod_comm, nod_fld)
 !
       end subroutine cal_thermal_diffusion
 !

@@ -94,8 +94,7 @@
      &       (femmesh_FUTIL%mesh%node, field_FUTIL)
 !
           call nod_fields_send_recv                                     &
-     &       (femmesh_FUTIL%mesh%node, femmesh_FUTIL%mesh%nod_comm,     &
-     &        field_FUTIL)
+     &       (femmesh_FUTIL%mesh%nod_comm, field_FUTIL)
 !
 !    output udt data
           call link_output_ucd_file_once(my_rank, istep_ucd,            &

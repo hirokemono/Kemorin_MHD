@@ -154,7 +154,7 @@
       call cal_ff_2_vector(node%numnod, node%istack_nod_smp,            &
      &    f_nl%ff, mhd_fem_wk%mlump_fl%ml, nod_fld%ntot_phys,           &
      &    i_field, nod_fld%d_fld)
-      call vector_send_recv(i_field, node, nod_comm, nod_fld)
+      call vector_send_recv(i_field, nod_comm, nod_fld)
 !
       end subroutine cal_terms_4_momentum
 !
@@ -217,8 +217,7 @@
      &    f_l%ff, mhd_fem_wk%mlump_fl%ml, nod_fld%ntot_phys,            &
      &    iphys%i_v_diffuse, nod_fld%d_fld)
 !
-      call vector_send_recv                                             &
-     &   (iphys%i_v_diffuse, node, nod_comm, nod_fld)
+      call vector_send_recv(iphys%i_v_diffuse, nod_comm, nod_fld)
 !
       end subroutine cal_viscous_diffusion
 !

@@ -81,8 +81,7 @@
      &     f_nl%ff_smp, mhd_fem_wk%mlump_cd%ml,                       &
      &     nod_fld%ntot_phys, iphys%i_b_diffuse, nod_fld%d_fld) 
 !
-       call vector_send_recv                                            &
-     &    (iphys%i_b_diffuse, node, nod_comm, nod_fld)
+       call vector_send_recv(iphys%i_b_diffuse, nod_comm, nod_fld)
 !
       end subroutine s_int_magne_diffusion
 !

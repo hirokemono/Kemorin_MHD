@@ -88,7 +88,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_div, node, nod_comm, nod_fld)
+      call vector_send_recv(i_div, nod_comm, nod_fld)
 !
       end subroutine choose_cal_divergence
 !

@@ -185,7 +185,7 @@
      &    iphys%i_filter_magne, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
       call vector_send_recv                                             &
-     &   (iphys%i_sgs_grad_f, node, nod_comm, nod_fld)
+     &   (iphys%i_sgs_grad_f, nod_comm, nod_fld)
 !
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_vector, iphys%i_sgs_grad_f)
@@ -200,7 +200,7 @@
      &    iphys%i_magne, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
       call vector_send_recv                                             &
-     &   (iphys%i_sgs_grad, node, nod_comm, nod_fld)
+     &   (iphys%i_sgs_grad, nod_comm, nod_fld)
 !
 !    filtering (to iphys%i_sgs_grad)
 !

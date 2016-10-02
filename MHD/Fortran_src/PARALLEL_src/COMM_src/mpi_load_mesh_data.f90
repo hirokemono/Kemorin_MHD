@@ -65,7 +65,7 @@
       use set_nnod_4_ele_by_type
       use load_mesh_data
 !
-      type(mesh_geometry), intent(inout) :: mesh
+      type(mesh_geometry_p), intent(inout) :: mesh
       type(mesh_groups_p), intent(inout) ::   group_p
       integer(kind = kint), intent(inout) :: nnod_4_surf, nnod_4_edge
 !
@@ -75,7 +75,8 @@
       call sel_mpi_read_mesh(fem_IO_m)
 !
 !
-      call set_mesh_geometry_data(fem_IO_m%mesh, mesh)
+      call set_mesh_geometry_data(fem_IO_m%mesh,                        &
+     &    mesh%nod_comm, mesh%node, mesh%ele)
       call set_grp_data_from_IO(fem_IO_m%group,                         &
      &    group_p%nod_grp, group_p%ele_grp, group_p%surf_grp)
       call dealloc_groups_data(fem_IO_m%group)
@@ -98,7 +99,8 @@
 !
 !
       call sel_mpi_read_mesh_geometry(mesh_IO_m)
-      call set_mesh_geometry_data(mesh_IO_m, mesh)
+      call set_mesh_geometry_data(mesh_IO_m,                            &
+     &    mesh%nod_comm, mesh%node, mesh%ele)
 !
       end subroutine mpi_input_mesh_geometry
 !

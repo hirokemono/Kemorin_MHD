@@ -88,7 +88,7 @@
 !     ---------------------
 !
       if (iflag_debug.eq.1)  write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(mesh1%node, mesh1%nod_comm, nod_fld1)
+      call nod_fields_send_recv(mesh1%nod_comm, nod_fld1)
 !
 !     -----Output monitor date
 !

@@ -82,7 +82,7 @@
      &    m_lump%ml, nod_fld%ntot_phys, i_rot, nod_fld%d_fld)
 !
 ! ----------   communications
-      call vector_send_recv(i_rot, node, nod_comm, nod_fld)
+      call vector_send_recv(i_rot, nod_comm, nod_fld)
 !
       end subroutine choose_cal_rotation
 !

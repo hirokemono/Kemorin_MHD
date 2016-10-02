@@ -195,8 +195,8 @@
      &        jac_3d, rhs_tbl, tbl_crs, m_lump, itype_mass_matrix,      &
      &        mass, seed_moments_ele(1,n),                              &
      &        seed_moments_nod(1,n), fem_wk, f_l)
-          call scalar_fld_send_recv                                     &
-     &       (node, nod_comm, num_order_3d, n, seed_moments_nod)
+          call nod_scalar_send_recv                                     &
+     &       (node%numnod, nod_comm, seed_moments_nod(1,n) )
         end if
 !
       end do

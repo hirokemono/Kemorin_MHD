@@ -207,20 +207,16 @@
 !
 !
       if(iphys%i_pre_mom .gt. 0) then
-        call vector_send_recv                                           &
-     &     (iphys%i_pre_mom, node, nod_comm, nod_fld)
+        call vector_send_recv(iphys%i_pre_mom, nod_comm, nod_fld)
       end if
       if(iphys%i_pre_uxb .gt. 0) then
-        call vector_send_recv                                           &
-     &     (iphys%i_pre_uxb, node, nod_comm, nod_fld)
+        call vector_send_recv(iphys%i_pre_uxb, nod_comm, nod_fld)
       end if
       if(iphys%i_pre_heat .gt. 0) then
-        call scalar_send_recv                                           &
-     &     (iphys%i_pre_heat, node, nod_comm, nod_fld)
+        call scalar_send_recv(iphys%i_pre_heat, nod_comm, nod_fld)
       end if
       if(iphys%i_pre_composit .gt. 0) then
-        call scalar_send_recv                                           &
-     &     (iphys%i_pre_composit, node, nod_comm, nod_fld)
+        call scalar_send_recv(iphys%i_pre_composit, nod_comm, nod_fld)
       end if
 !
       call copy_time_steps_to_restart

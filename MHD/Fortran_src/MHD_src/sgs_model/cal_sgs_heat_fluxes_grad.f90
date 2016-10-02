@@ -109,7 +109,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_sgs, node, nod_comm, nod_fld)
+      call vector_send_recv(i_sgs, nod_comm, nod_fld)
 !
       end subroutine cal_sgs_h_flux_grad_w_coef
 !
@@ -162,7 +162,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_sgs, node, nod_comm, nod_fld)
+      call vector_send_recv(i_sgs, nod_comm, nod_fld)
 !
       end subroutine cal_sgs_h_flux_grad_no_coef
 !

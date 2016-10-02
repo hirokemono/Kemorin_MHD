@@ -91,7 +91,7 @@
         end if
         call cal_l_filtering_scalar(node%numnod, node%istack_nod_smp,   &
      &      nod_fld%ntot_phys, i_filter, nod_fld%d_fld)
-        call scalar_send_recv(i_filter, node, nod_comm, nod_fld)
+        call scalar_send_recv(i_filter, nod_comm, nod_fld)
       end if
 !
       end subroutine cal_filtered_scalar
@@ -152,7 +152,7 @@
         end if
         call cal_l_filtering_vector(node%numnod, node%istack_nod_smp,   &
      &      nod_fld%ntot_phys, i_filter, nod_fld%d_fld)
-        call vector_send_recv(i_filter, node, nod_comm, nod_fld)
+        call vector_send_recv(i_filter, nod_comm, nod_fld)
       end if
 !
       end subroutine cal_filtered_vector
@@ -216,7 +216,7 @@
         end if
         call cal_l_filtering_tensor(node%numnod, node%istack_nod_smp,   &
      &      nod_fld%ntot_phys, i_filter, nod_fld%d_fld)
-        call sym_tensor_send_recv(i_filter, node, nod_comm, nod_fld)
+        call sym_tensor_send_recv(i_filter, nod_comm, nod_fld)
       end if
 !
       end subroutine cal_filtered_sym_tensor

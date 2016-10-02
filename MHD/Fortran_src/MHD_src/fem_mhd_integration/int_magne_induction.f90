@@ -81,8 +81,7 @@
 !
 !    communication
 !
-      call vector_send_recv                                             &
-     &   (iphys%i_induction, node, nod_comm, nod_fld)
+      call vector_send_recv(iphys%i_induction, nod_comm, nod_fld)
 !
       end subroutine s_int_magne_induction
 !

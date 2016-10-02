@@ -94,8 +94,8 @@
 !
       call s_divide_phys_by_num_udt(icou, femmesh_FUTIL%mesh%node,      &
      &    field_FUTIL)
-      call nod_fields_send_recv(femmesh_FUTIL%mesh%node,                &
-     &    femmesh_FUTIL%mesh%nod_comm, field_FUTIL)
+      call nod_fields_send_recv                                         &
+     &   (femmesh_FUTIL%mesh%nod_comm, field_FUTIL)
 !
 !    output udt data
 !

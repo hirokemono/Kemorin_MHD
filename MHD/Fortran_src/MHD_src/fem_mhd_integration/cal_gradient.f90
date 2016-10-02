@@ -94,7 +94,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_grad, node, nod_comm, nod_fld)
+      call vector_send_recv(i_grad, nod_comm, nod_fld)
 !
       end subroutine choose_cal_gradient
 !
@@ -142,7 +142,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_grad, node, nod_comm, nod_fld)
+      call vector_send_recv(i_grad, nod_comm, nod_fld)
 !
       end subroutine choose_cal_gradient_w_const
 !

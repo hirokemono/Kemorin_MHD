@@ -237,7 +237,7 @@
       call set_boundary_scalar                                          &
      &   (Tnod_bcs%nod_bc_s, iphys%i_temp, nod_fld)
 !
-      call scalar_send_recv(iphys%i_temp, node, nod_comm, nod_fld)
+      call scalar_send_recv(iphys%i_temp, nod_comm, nod_fld)
 !
       if (iphys%i_par_temp .gt. 0) then
         call subtract_2_nod_scalars(node, nod_fld,                      &
@@ -404,8 +404,7 @@
       call set_boundary_scalar                                          &
      &   (Tnod_bcs%nod_bc_s, iphys%i_par_temp, nod_fld)
 !
-      call scalar_send_recv                                             &
-     &   (iphys%i_par_temp, node, nod_comm, nod_fld)
+      call scalar_send_recv(iphys%i_par_temp, nod_comm, nod_fld)
 !
       call add_2_nod_scalars(node, nod_fld,                             &
      &    iphys%i_ref_t, iphys%i_par_temp, iphys%i_temp)

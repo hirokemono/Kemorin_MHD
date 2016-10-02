@@ -97,7 +97,7 @@
      &     nod_fld%ntot_phys, iphys%i_SGS_induction, nod_fld%d_fld)
 !
        call vector_send_recv                                            &
-     &    (iphys%i_SGS_induction, node, nod_comm, nod_fld)
+     &    (iphys%i_SGS_induction, nod_comm, nod_fld)
 !
       end subroutine int_vol_sgs_induction
 !
@@ -147,7 +147,7 @@
      &    f_nl%ff, mhd_fem_wk%mlump_cd%ml, nod_fld%ntot_phys,           &
      &    iphys%i_SGS_vp_induct, nod_fld%d_fld)
       call vector_send_recv                                             &
-     &   (iphys%i_SGS_vp_induct, node, nod_comm, nod_fld)
+     &   (iphys%i_SGS_vp_induct, nod_comm, nod_fld)
 !
       end subroutine cal_sgs_uxb_2_monitor
 !

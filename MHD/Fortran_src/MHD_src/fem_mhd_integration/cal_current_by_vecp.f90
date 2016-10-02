@@ -129,8 +129,7 @@
 !
 !    communication
 !
-      call vector_send_recv                                             &
-     &   (iphys%i_current, node, nod_comm, nod_fld)
+      call vector_send_recv(iphys%i_current, nod_comm, nod_fld)
 !
       end subroutine int_current_diffuse
 !

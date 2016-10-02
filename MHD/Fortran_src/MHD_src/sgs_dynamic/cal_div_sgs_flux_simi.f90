@@ -107,7 +107,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_sgs, node, nod_comm, nod_fld)
+      call vector_send_recv(i_sgs, nod_comm, nod_fld)
 !
       end subroutine cal_div_sgs_mf_simi
 !
@@ -161,7 +161,7 @@
 !
 ! ----------   communications
 !
-      call scalar_send_recv(i_sgs, node, nod_comm, nod_fld)
+      call scalar_send_recv(i_sgs, nod_comm, nod_fld)
 !
       end subroutine cal_div_sgs_hf_simi
 !
@@ -215,7 +215,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_sgs, node, nod_comm, nod_fld)
+      call vector_send_recv(i_sgs, nod_comm, nod_fld)
 !
       end subroutine cal_div_sgs_idct_simi
 !

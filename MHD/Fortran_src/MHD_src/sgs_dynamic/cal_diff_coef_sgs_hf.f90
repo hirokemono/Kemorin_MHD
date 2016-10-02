@@ -191,8 +191,7 @@
       call delete_field_by_fixed_t_bc                                   &
      &   (Tnod_bcs%nod_bc_s, iphys%i_sgs_grad_f, nod_fld)
 !
-      call scalar_send_recv                                             &
-     &   (iphys%i_sgs_grad_f, node, nod_comm, nod_fld)
+      call scalar_send_recv(iphys%i_sgs_grad_f, nod_comm, nod_fld)
 !
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_scalar, iphys%i_sgs_grad_f)
@@ -206,8 +205,7 @@
      &    iphys%i_sgs_grad, iphys%i_SGS_h_flux, iphys%i_velo,           &
      &    iphys%i_sgs_temp, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
-      call scalar_send_recv                                             &
-     &   (iphys%i_sgs_grad, node, nod_comm, nod_fld)
+      call scalar_send_recv(iphys%i_sgs_grad, nod_comm, nod_fld)
 !
 !    filtering (to iphys%i_sgs_grad)
 !

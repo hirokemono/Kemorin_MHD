@@ -335,11 +335,11 @@
 !
 !
       if(ncomp_4_result .eq. ione) then
-        call nod_scalar_send_recv(node, nod_comm, d_nod)
+        call nod_scalar_send_recv(node%numnod, nod_comm, d_nod)
       else if(ncomp_4_result .eq. ithree) then
-        call nod_vector_send_recv(node, nod_comm, d_nod)
+        call nod_vector_send_recv(node%numnod, nod_comm, d_nod)
       else if(ncomp_4_result .eq. isix) then
-        call nod_tensor_send_recv(node, nod_comm, d_nod)
+        call nod_tensor_send_recv(node%numnod, nod_comm, d_nod)
       end if
 !
       end subroutine cal_products_of_fields

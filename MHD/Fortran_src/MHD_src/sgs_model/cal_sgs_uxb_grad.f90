@@ -150,7 +150,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_sgs, node, nod_comm, nod_fld)
+      call vector_send_recv(i_sgs, nod_comm, nod_fld)
 !
       end subroutine cal_sgs_vp_induct_grad_no_coef
 !

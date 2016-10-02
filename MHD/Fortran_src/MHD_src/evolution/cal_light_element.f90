@@ -165,7 +165,7 @@
       call set_boundary_scalar                                          &
      &   (Cnod_bcs%nod_bc_s, iphys%i_light, nod_fld)
 !
-      call scalar_send_recv(iphys%i_light, node, nod_comm, nod_fld)
+      call scalar_send_recv(iphys%i_light, nod_comm, nod_fld)
 !
       end subroutine s_cal_light_element
 !

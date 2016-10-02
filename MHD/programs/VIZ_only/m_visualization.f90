@@ -141,8 +141,8 @@
       call set_data_by_read_ucd(my_rank, istep_ucd, ucd_VIZ, field_VIZ)
 !
       if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(femmesh_VIZ%mesh%node,                  &
-     &    femmesh_VIZ%mesh%nod_comm, field_VIZ)
+      call nod_fields_send_recv                                         &
+     &   (femmesh_VIZ%mesh%nod_comm, field_VIZ)
 !
       end subroutine set_field_data_4_VIZ
 !

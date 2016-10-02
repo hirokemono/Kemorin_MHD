@@ -108,7 +108,7 @@
 !
 ! ----------   communications
 !
-      call sym_tensor_send_recv(i_sgs, node, nod_comm, nod_fld)
+      call sym_tensor_send_recv(i_sgs, nod_comm, nod_fld)
 !
       end subroutine cal_sgs_m_flux_grad_w_coef
 !
@@ -159,7 +159,7 @@
 !
 ! ----------   communications
 !
-      call sym_tensor_send_recv(i_sgs, node, nod_comm, nod_fld)
+      call sym_tensor_send_recv(i_sgs, nod_comm, nod_fld)
 !
       end subroutine cal_sgs_m_flux_grad_no_coef
 !

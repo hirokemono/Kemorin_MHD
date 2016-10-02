@@ -146,7 +146,7 @@
      &    trns_WK1%trns_snap, trns_WK1%fls_pl,                          &
      &    mesh1%node, iphys, nod_fld1)
 !
-      call nod_fields_send_recv(mesh1%node, mesh1%nod_comm, nod_fld1)
+      call nod_fields_send_recv(mesh1%nod_comm, nod_fld1)
 !
       end subroutine SPH_to_FEM_bridge_zm_snap
 !

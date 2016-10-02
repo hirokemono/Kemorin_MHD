@@ -138,8 +138,9 @@
      &    rhs_tbl, tbl_crs, rhs_mat%m_lump, itype_mass_matrix,          &
      &    mass1, dxidxs, rhs_mat%fem_wk, rhs_mat%f_l)
 !
-      call elength_nod_send_recv(node, nod_comm, FEM_elen%elen_nod)
-      call dxidx_nod_send_recv(node, nod_comm, dxidxs%dx_nod)
+      call elength_nod_send_recv                                        &
+     &   (node%numnod, nod_comm, FEM_elen%elen_nod)
+      call dxidx_nod_send_recv(node%numnod, nod_comm, dxidxs%dx_nod)
 !
 !  ---------------------------------------------------
 !        cal products of element size for each node
@@ -158,7 +159,8 @@
       end if
 !
       if (iflag_debug.eq.1)  write(*,*) 'diff_elen_nod_send_recv'
-      call diff_elen_nod_send_recv(node, nod_comm, FEM_elen%elen_nod)
+      call diff_elen_nod_send_recv                                      &
+     &   (node%numnod, nod_comm, FEM_elen%elen_nod)
 !
 !  ---------------------------------------------------
 !        filter moments on each node
@@ -222,7 +224,7 @@
       type(ele_mom_diffs_type), intent(inout) :: mom_ele
 !
 !
-      call filter_mom_nod_send_recv(node, nod_comm, mom_nod)
+      call filter_mom_nod_send_recv(node%numnod, nod_comm, mom_nod)
 !
       if (itype_mass_matrix .eq. 1) then
         call cal_diffs_filter_nod_consist(nod_comm, node, ele,          &
@@ -234,7 +236,8 @@
      &     rhs_mat%f_nl, mom_nod)
       end if
 !
-      call diff_filter_mom_nod_send_recv(node, nod_comm, mom_nod)
+      call diff_filter_mom_nod_send_recv                                &
+     &   (node%numnod, nod_comm, mom_nod)
 !
       call cal_filter_moms_ele_by_nod                                   &
      &   (node, ele, jac_3d_q, mom_nod, mom_ele)

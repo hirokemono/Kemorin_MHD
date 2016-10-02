@@ -225,7 +225,7 @@
       call set_boundary_vect                                            &
      &   (Bnod_bcs%nod_bc_b, iphys%i_magne, nod_fld)
 !
-      call vector_send_recv(iphys%i_magne, node, nod_comm, nod_fld)
+      call vector_send_recv(iphys%i_magne, nod_comm, nod_fld)
 !
       end subroutine cal_magnetic_field_pre
 !
@@ -316,8 +316,8 @@
       if (iflag_debug.eq.1)   write(*,*) 'set_boundary_vect magne'
       call set_boundary_vect(Bnod_bcs%nod_bc_b, iphys%i_magne, nod_fld)
 !
-      call vector_send_recv(iphys%i_magne, node, nod_comm, nod_fld)
-      call scalar_send_recv(iphys%i_mag_p, node, nod_comm, nod_fld)
+      call vector_send_recv(iphys%i_magne, nod_comm, nod_fld)
+      call scalar_send_recv(iphys%i_mag_p, nod_comm, nod_fld)
 !
       end subroutine cal_magnetic_co
 !
@@ -395,7 +395,7 @@
 !
       call set_boundary_vect(Bnod_bcs%nod_bc_b, iphys%i_magne, nod_fld)
 !
-      call vector_send_recv(iphys%i_magne, node, nod_comm, nod_fld)
+      call vector_send_recv(iphys%i_magne, nod_comm, nod_fld)
 !
       end subroutine cal_magnetic_co_outside
 !

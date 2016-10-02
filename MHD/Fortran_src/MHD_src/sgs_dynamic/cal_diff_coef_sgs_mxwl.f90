@@ -192,7 +192,7 @@
      &    fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
       call vector_send_recv                                             &
-     &   (iphys%i_sgs_grad_f, node, nod_comm, nod_fld)
+     &   (iphys%i_sgs_grad_f, nod_comm, nod_fld)
       call delete_field_by_fixed_v_bc                                   &
      &   (Vnod_bcs, iphys%i_sgs_grad_f, nod_fld)
 !
@@ -209,7 +209,7 @@
      &    fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
       call vector_send_recv                                             &
-     &   (iphys%i_sgs_grad, node, nod_comm, nod_fld)
+     &   (iphys%i_sgs_grad, nod_comm, nod_fld)
 !
 !    filtering (to iphys%i_sgs_grad)
 !

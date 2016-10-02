@@ -149,8 +149,8 @@
           time =       time_IO
           i_step_MHD = i_time_step_IO
 !
-          call nod_fields_send_recv(org_femmesh%mesh%node,              &
-     &        org_femmesh%mesh%nod_comm, nod_fld_ITP)
+          call nod_fields_send_recv                                     &
+     &       (org_femmesh%mesh%nod_comm, nod_fld_ITP)
         end if
 !
         call MPI_Bcast(time, ione, CALYPSO_REAL, izero,                 &

@@ -79,6 +79,37 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine const_element_comm_tbls_p(mesh, ele_mesh)
+!
+      use set_ele_id_4_node_type
+!
+      type(mesh_geometry_p), intent(inout) :: mesh
+      type(element_geometry), intent(inout) :: ele_mesh
+!
+!
+      if(iflag_debug.gt.0) write(*,*)' const_global_numnod_list'
+      call const_global_numnod_list(mesh%node)
+!
+      if(iflag_debug.gt.0) write(*,*)' const_ele_comm_tbl'
+      call const_ele_comm_tbl(mesh%node, mesh%ele, mesh%nod_comm,       &
+     &    blng_tbl, ele_mesh%ele_comm)
+      call const_global_element_id(mesh%ele, ele_mesh%ele_comm)
+!
+      if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'
+      call const_surf_comm_table(mesh%node, mesh%nod_comm,              &
+     &    ele_mesh%surf, blng_tbl, ele_mesh%surf_comm)
+      call const_global_surface_id(ele_mesh%surf, ele_mesh%surf_comm)
+!
+      if(iflag_debug.gt.0) write(*,*)' const_edge_comm_table'
+      call const_edge_comm_table(mesh%node, mesh%nod_comm,              &
+     &    ele_mesh%edge, blng_tbl, ele_mesh%edge_comm)
+      if(iflag_debug.gt.0) write(*,*)' const_global_edge_id'
+      call const_global_edge_id(ele_mesh%edge, ele_mesh%edge_comm)
+!
+      end subroutine const_element_comm_tbls_p
+!
+!-----------------------------------------------------------------------
+!
       subroutine dealloc_ele_comm_tbls_gl_nele(mesh, ele_mesh)
 !
       type(mesh_geometry), intent(inout) :: mesh

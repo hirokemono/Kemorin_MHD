@@ -5,39 +5,29 @@
 !      Modified by H. Matsui on July, 2008
 !
 !
-!!      subroutine init_send_recv(node, nod_comm, nod_comm)
+!!      subroutine init_send_recv(nod_comm)
 !!
-!!      subroutine nod_fields_send_recv(node, nod_comm, nod_fld)
-!!        type(node_data), intent(in) :: node
+!!      subroutine nod_fields_send_recv(nod_comm, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(phys_data),intent(inout) :: nod_fld
 !!
-!!      subroutine scalar_send_recv(id_phys, node, nod_comm, nod_fld)
-!!      subroutine vector_send_recv(id_phys, node, nod_comm, nod_fld)
-!!      subroutine sym_tensor_send_recv                                 &
-!!     &         (node, nod_comm, ntot_comp, id_phys, d_nod)
+!!      subroutine scalar_send_recv(id_phys, nod_comm, nod_fld)
+!!      subroutine vector_send_recv(id_phys, nod_comm, nod_fld)
+!!      subroutine sym_tensor_send_recv(id_phys, nod_comm, nod_fld)
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(phys_data),intent(inout) :: nod_fld
 !!         id_phys:  field ID of nodal fields
 !!
-!!      subroutine scalar_fld_send_recv                                 &
-!!     &         (node, nod_comm, ntot_comp, id_phys, d_nod)
-!!      subroutine vector_fld_send_recv                                 &
-!!     &         (node, nod_comm, ntot_comp, id_phys, d_nod)
-!!      subroutine sym_tensor_fld_send_recv                             &
-!!     &         (node, nod_comm, ntot_comp, id_phys, d_nod)
-!!
-!!      subroutine nod_scalar_send_recv(node, nod_comm, scl_nod)
-!!      subroutine nod_vector_send_recv(node, nod_comm, vec_nod)
-!!      subroutine nod_tensor_send_recv(node, nod_comm, tsr_nod)
+!!      subroutine nod_scalar_send_recv(numnod, nod_comm, scl_nod)
+!!      subroutine nod_vector_send_recv(numnod, nod_comm, vec_nod)
+!!      subroutine nod_tensor_send_recv(numnod, nod_comm, tsr_nod)
 !
       module nod_phys_send_recv
 !
       use m_precision
 !
       use calypso_mpi
-      use t_geometry_data
       use t_comm_table
       use t_phys_data
 !
@@ -70,13 +60,12 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine nod_fields_send_recv(node, nod_comm, nod_fld)
+      subroutine nod_fields_send_recv(nod_comm, nod_fld)
 !
       use m_machine_parameter
       use m_phys_constants
       use t_phys_data
 !
-      type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
       type(phys_data),intent(inout) :: nod_fld
       integer (kind=kint) :: i, ist
@@ -88,17 +77,17 @@
         if (nod_fld%num_component(i) .eq. n_vector) then
           if (iflag_debug .ge. iflag_routine_msg) write(*,*)            &
      &      'comm. for vector of ', trim(nod_fld%phys_name(i))
-          call vector_send_recv(ist, node, nod_comm, nod_fld)
+          call vector_send_recv(ist, nod_comm, nod_fld)
 !
         else if (nod_fld%num_component(i) .eq. n_scalar) then
           if (iflag_debug .ge. iflag_routine_msg) write(*,*)            &
      &      'comm. for scaler of ', trim(nod_fld%phys_name(i))
-          call scalar_send_recv(ist, node, nod_comm, nod_fld)
+          call scalar_send_recv(ist, nod_comm, nod_fld)
 !
         else if (nod_fld%num_component(i) .eq. n_sym_tensor) then
           if (iflag_debug .ge. iflag_routine_msg) write(*,*)            &
      &      'comm. for tensor of ', trim(nod_fld%phys_name(i))
-          call sym_tensor_send_recv(ist, node, nod_comm, nod_fld)
+          call sym_tensor_send_recv(ist, nod_comm, nod_fld)
         end if
       end do
 !
@@ -107,133 +96,80 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine scalar_send_recv(id_phys, node, nod_comm, nod_fld)
+      subroutine scalar_send_recv(id_phys, nod_comm, nod_fld)
 !
       use t_phys_data
 !
       integer(kind = kint), intent(in) :: id_phys
-      type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
       type(phys_data),intent(inout) :: nod_fld
 !
 !
-      call scalar_fld_send_recv(node, nod_comm,                         &
-     &    nod_fld%ntot_phys, id_phys, nod_fld%d_fld)
+      call nod_scalar_send_recv                                         &
+     &   (nod_fld%n_point, nod_comm, nod_fld%d_fld(1,id_phys) )
 !
       end subroutine scalar_send_recv
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine vector_send_recv(id_phys, node, nod_comm, nod_fld)
+      subroutine vector_send_recv(id_phys, nod_comm, nod_fld)
 !
       use t_phys_data
 !
       integer(kind = kint), intent(in) :: id_phys
-      type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
       type(phys_data),intent(inout) :: nod_fld
 !
 !
-      call vector_fld_send_recv(node, nod_comm,                         &
-     &    nod_fld%ntot_phys, id_phys, nod_fld%d_fld)
+      call nod_vector_send_recv                                         &
+     &   (nod_fld%n_point, nod_comm,  nod_fld%d_fld(1,id_phys))
 !
       end subroutine vector_send_recv
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sym_tensor_send_recv                                   &
-     &         (id_phys, node, nod_comm, nod_fld)
+      subroutine sym_tensor_send_recv(id_phys, nod_comm, nod_fld)
 !
       use t_phys_data
 !
       integer(kind = kint), intent(in) :: id_phys
-      type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
       type(phys_data),intent(inout) :: nod_fld
 !
 !
-      call sym_tensor_fld_send_recv(node, nod_comm,                     &
-     &    nod_fld%ntot_phys, id_phys, nod_fld%d_fld)
+      call nod_tensor_send_recv(nod_fld%n_point, nod_comm,              &
+     &    nod_fld%d_fld(1,id_phys))
 !
       end subroutine sym_tensor_send_recv
 !
 ! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine scalar_fld_send_recv                                   &
-     &         (node, nod_comm, ntot_comp, id_phys, d_nod)
-!
-      type(node_data), intent(in) :: node
-      type(communication_table), intent(in) :: nod_comm
-      integer(kind = kint), intent(in) :: ntot_comp, id_phys
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: d_nod(node%numnod,ntot_comp)
-!
-!
-      call nod_scalar_send_recv(node, nod_comm, d_nod(1,id_phys) )
-!
-      end subroutine scalar_fld_send_recv
-!
-! ----------------------------------------------------------------------
-!
-      subroutine vector_fld_send_recv                                   &
-     &         (node, nod_comm, ntot_comp, id_phys, d_nod)
-!
-      type(node_data), intent(in) :: node
-      type(communication_table), intent(in) :: nod_comm
-      integer(kind = kint), intent(in) :: ntot_comp, id_phys
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: d_nod(node%numnod,ntot_comp)
-!
-!
-      call nod_vector_send_recv(node, nod_comm,  d_nod(1,id_phys))
-!
-      end subroutine vector_fld_send_recv
-!
-! ----------------------------------------------------------------------
-!
-      subroutine sym_tensor_fld_send_recv                               &
-     &         (node, nod_comm, ntot_comp, id_phys, d_nod)
-!
-      type(node_data), intent(in) :: node
-      type(communication_table), intent(in) :: nod_comm
-      integer(kind = kint), intent(in) :: ntot_comp, id_phys
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: d_nod(node%numnod,ntot_comp)
-!
-!
-      call nod_tensor_send_recv(node, nod_comm, d_nod(1,id_phys))
-!
-      end subroutine sym_tensor_fld_send_recv
-!
-! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine nod_scalar_send_recv(node, nod_comm, scl_nod)
+      subroutine nod_scalar_send_recv(numnod, nod_comm, scl_nod)
 !
       use m_array_for_send_recv
       use m_work_time
       use solver_SR_type
 !
-      type(node_data), intent(in) :: node
+      integer(kind = kint), intent(in) :: numnod
       type(communication_table), intent(in) :: nod_comm
-      real(kind = kreal), intent(inout) :: scl_nod(node%numnod)
+      real(kind = kreal), intent(inout) :: scl_nod(numnod)
 !
       integer(kind=kint)  :: inod
 !
 !
 !$omp parallel do
-       do inod=1, node%numnod
+       do inod=1, numnod
         x_vec(inod) = scl_nod(inod)
        end do
 !$omp end parallel do
 !
       START_SRtime= MPI_WTIME()
-      call SOLVER_SEND_RECV_type(node%numnod, nod_comm, x_vec(1))
+      call SOLVER_SEND_RECV_type(numnod, nod_comm, x_vec(1))
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
-      do inod=1, node%numnod
+      do inod=1, numnod
         scl_nod(inod) = x_vec(inod)
       end do
 !$omp end parallel do
@@ -242,20 +178,20 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine nod_vector_send_recv(node, nod_comm, vec_nod)
+      subroutine nod_vector_send_recv(numnod, nod_comm, vec_nod)
 !
       use m_array_for_send_recv
       use m_work_time
       use solver_SR_type
 !
-      type(node_data), intent(in) :: node
+      integer(kind = kint), intent(in) :: numnod
       type(communication_table), intent(in) :: nod_comm
-      real(kind = kreal), intent(inout) :: vec_nod(node%numnod,3)
+      real(kind = kreal), intent(inout) :: vec_nod(numnod,3)
 !
       integer (kind = kint) :: inod
 !
 !$omp parallel do
-      do inod=1, node%numnod
+      do inod=1, numnod
         x_vec(3*inod-2) = vec_nod(inod,1)
         x_vec(3*inod-1) = vec_nod(inod,2)
         x_vec(3*inod  ) = vec_nod(inod,3)
@@ -263,11 +199,11 @@
 !$omp end parallel do
 !
       START_SRtime= MPI_WTIME()
-      call SOLVER_SEND_RECV_3_type(node%numnod, nod_comm, x_vec(1))
+      call SOLVER_SEND_RECV_3_type(numnod, nod_comm, x_vec(1))
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
-      do inod=1, node%numnod
+      do inod=1, numnod
         vec_nod(inod,1) = x_vec(3*inod-2)
         vec_nod(inod,2) = x_vec(3*inod-1)
         vec_nod(inod,3) = x_vec(3*inod  )
@@ -278,20 +214,20 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine nod_tensor_send_recv(node, nod_comm, tsr_nod)
+      subroutine nod_tensor_send_recv(numnod, nod_comm, tsr_nod)
 !
       use m_array_for_send_recv
       use m_work_time
       use solver_SR_type
 !
-      type(node_data), intent(in) :: node
+      integer(kind = kint), intent(in) :: numnod
       type(communication_table), intent(in) :: nod_comm
-      real(kind = kreal), intent(inout) :: tsr_nod(node%numnod,6)
+      real(kind = kreal), intent(inout) :: tsr_nod(numnod,6)
 !
       integer (kind = kint) :: inod
 !
 !$omp parallel do
-      do inod=1, node%numnod
+      do inod=1, numnod
         x_vec(6*inod-5) = tsr_nod(inod,1)
         x_vec(6*inod-4) = tsr_nod(inod,2)
         x_vec(6*inod-3) = tsr_nod(inod,3)
@@ -302,11 +238,11 @@
 !$omp end parallel do
 !
       START_SRtime= MPI_WTIME()
-      call SOLVER_SEND_RECV_6_type(node%numnod, nod_comm, x_vec(1))
+      call SOLVER_SEND_RECV_6_type(numnod, nod_comm, x_vec(1))
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
-      do inod=1, node%numnod
+      do inod=1, numnod
         tsr_nod(inod,1) = x_vec(6*inod-5)
         tsr_nod(inod,2) = x_vec(6*inod-4)
         tsr_nod(inod,3) = x_vec(6*inod-3)

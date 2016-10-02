@@ -92,7 +92,7 @@
         call set_data_by_read_ucd                                       &
      &    (my_rank, i_step, input_ucd, field_STR)
         call nod_fields_send_recv                                       &
-     &    (femmesh_STR%mesh%node, femmesh_STR%mesh%nod_comm, field_STR)
+     &    (femmesh_STR%mesh%nod_comm, field_STR)
       end if
 !
       end subroutine FEM_analyze_sph_trans

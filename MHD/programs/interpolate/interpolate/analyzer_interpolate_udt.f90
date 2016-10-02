@@ -117,8 +117,8 @@
           call set_data_by_read_ucd_once(my_rank, istep,                &
      &        itype_org_udt_file, org_udt_file_head, nod_fld_ITP)
 !
-          call nod_fields_send_recv(org_femmesh%mesh%node,              &
-     &        org_femmesh%mesh%nod_comm, nod_fld_ITP)
+          call nod_fields_send_recv                                     &
+     &       (org_femmesh%mesh%nod_comm, nod_fld_ITP)
         end if
 !
 !    interpolation
