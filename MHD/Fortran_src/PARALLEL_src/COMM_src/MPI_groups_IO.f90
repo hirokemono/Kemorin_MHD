@@ -51,7 +51,6 @@
       call allocate_grp_type_num(group_IO)
 !
       if(group_IO%num_grp .le. 0) then
-        call allocate_grp_type_num(group_IO)
         group_IO%num_item = 0
         call allocate_grp_type_item(group_IO)
       else
