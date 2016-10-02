@@ -41,24 +41,24 @@
 !>     number of neighboring domain
         integer(kind = kint) :: num_neib
 !>     neighboring pe id
-        integer(kind = kint), pointer :: id_neib(:)
+        integer(kind = kint), allocatable :: id_neib(:)
 !>    total number of import data 
         integer(kind = kint) :: ntot_import
 !>     import data count for each neighbor pe (i-th pe)
-        integer(kind = kint), pointer :: num_import(:)
+        integer(kind = kint), allocatable :: num_import(:)
 !>     import data end point for each neighbor pe (i-th pe)
-        integer(kind = kint), pointer :: istack_import(:)
+        integer(kind = kint), allocatable :: istack_import(:)
 !>      local id for import data                     (i-th)
-        integer(kind = kint), pointer :: item_import(:)
+        integer(kind = kint), allocatable :: item_import(:)
 !
 !>     total number of export data 
         integer(kind = kint) :: ntot_export
 !>     export data count for each neighbor pe (i-th pe)
-        integer(kind = kint), pointer :: num_export(:)
+        integer(kind = kint), allocatable :: num_export(:)
 !>     export data end point for each neighbor pe (i-th pe)
-        integer(kind = kint), pointer :: istack_export(:)
+        integer(kind = kint), allocatable :: istack_export(:)
 !>     local id for export data                     (i-th)
-        integer(kind = kint), pointer :: item_export(:)
+        integer(kind = kint), allocatable :: item_export(:)
       end type communication_table
 !
 !------------------------------------------------------------------

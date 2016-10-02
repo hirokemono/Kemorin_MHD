@@ -200,14 +200,6 @@
       real(kind = kreal), intent(in) :: EPS_MG
       integer(kind=kint ), intent(inout) :: ITR, IER
 !
-!
-      integer(kind=kint ) :: NEIBPETOT
-
-      integer(kind=kint ), pointer :: NEIBPE(:)
-      integer(kind=kint ), pointer :: STACK_IMPORT(:)
-      integer(kind=kint ), pointer :: NOD_IMPORT(:)
-      integer(kind=kint ), pointer :: STACK_EXPORT(:)
-!
       integer(kind=kint ) :: iter, MAXIT
 !
 !
@@ -216,12 +208,6 @@
 !C | INIT. |
 !C +-------+
 !C===
-!
-      NEIBPETOT =     MG_comm(0)%num_neib
-      NEIBPE =>       MG_comm(0)%id_neib
-      STACK_IMPORT => MG_comm(0)%istack_import
-      STACK_EXPORT => MG_comm(0)%istack_export
-      NOD_IMPORT =>   MG_comm(0)%item_import
 !
       MAXIT= ITR
       TOL  = EPS
@@ -245,8 +231,9 @@
 !C-- INTERFACE data EXCHANGE
       START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV_3                                           &
-     &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, djds_tbl(0)%NOD_EXPORT_NEW, X)
+     &   (NP, MG_comm(0)%num_neib, MG_comm(0)%id_neib,                  &
+     &    MG_comm(0)%istack_import, MG_comm(0)%item_import,             &
+     &    MG_comm(0)%istack_export, djds_tbl(0)%NOD_EXPORT_NEW, X)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 
@@ -340,8 +327,9 @@
 !C-- INTERFACE data EXCHANGE
       START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV_3                                           &
-     &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, djds_tbl(0)%NOD_EXPORT_NEW, W(1,P) )
+     &   (NP, MG_comm(0)%num_neib, MG_comm(0)%id_neib,                  &
+     &    MG_comm(0)%istack_import, MG_comm(0)%item_import,             &
+     &    MG_comm(0)%istack_export, djds_tbl(0)%NOD_EXPORT_NEW, W(1,P))
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 !C
@@ -422,8 +410,9 @@
 !C-- INTERFACE data EXCHANGE
       START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV_3                                           &
-     &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, djds_tbl(0)%NOD_EXPORT_NEW, X)
+     &   (NP, MG_comm(0)%num_neib, MG_comm(0)%id_neib,                  &
+     &    MG_comm(0)%istack_import, MG_comm(0)%item_import,             &
+     &    MG_comm(0)%istack_export, djds_tbl(0)%NOD_EXPORT_NEW, X)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 
