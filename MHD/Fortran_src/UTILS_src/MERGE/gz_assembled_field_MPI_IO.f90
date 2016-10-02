@@ -193,7 +193,7 @@
       integer(kind = kint), intent(in) :: ist_fld, ndir
 !
       integer(kind = kint), intent(in) :: nloop
-      type(field_IO), intent(in) :: fld_IO(nloop)
+      type(field_IO), intent(in), target :: fld_IO(nloop)
       type(mul_zlib_buffers), intent(inout) :: gz_bufs(nloop)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !

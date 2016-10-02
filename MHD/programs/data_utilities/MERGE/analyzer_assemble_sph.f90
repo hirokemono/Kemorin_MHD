@@ -39,8 +39,7 @@
 !
       integer(kind = kint), allocatable :: nnod_list_lc(:)
       integer(kind = kint), allocatable :: nnod_list(:)
-      integer(kind = kint_gl), allocatable, target                      &
-     &                        :: istack_nnod_list(:)
+      integer(kind = kint_gl), allocatable :: istack_nnod_list(:)
 !
 !
       type(sph_radial_itp_data), save :: r_itp
@@ -83,12 +82,14 @@
 !
 !  set original spectr data
 !
+      write(*,*) 'share_org_sph_rj_data'
       iflag_sph_file_fmt = ifmt_org_sph_file
       call share_org_sph_rj_data                                        &
      &   (org_sph_head, np_sph_org, org_sph_mesh)
 !
 !  set new spectr data
 !
+      write(*,*) 'load_new_spectr_rj_data'
       iflag_sph_file_fmt = ifmt_new_sph_file
       call load_new_spectr_rj_data                                      &
      &   (new_sph_head, np_sph_org, np_sph_new,                         &
@@ -119,8 +120,11 @@
         istack_nnod_list(jp) = istack_nnod_list(jp-1) + nnod_list(jp)
       end do
       do jloop = 1, nloop_new
-        new_fst_IO(jloop)%istack_numnod_IO => istack_nnod_list
+        call alloc_merged_field_stack(np_sph_new, new_fst_IO(jloop))
+        new_fst_IO(jloop)%istack_numnod_IO = istack_nnod_list
       end do
+      deallocate(istack_nnod_list)
+      write(*,*) 'tako'
 !
 !     construct radial interpolation table
 !
@@ -137,19 +141,19 @@
      &      new_sph_mesh(1)%sph%sph_rj%radius_1d_rj_r, r_itp)
       end if
 !
-!      write(*,*) 'share_r_interpolation_tbl'
+      write(*,*) 'share_r_interpolation_tbl'
       call share_r_interpolation_tbl(np_sph_new, new_sph_mesh,          &
      &          r_itp, nlayer_ICB_org, nlayer_CMB_org,                  &
      &          nlayer_ICB_new, nlayer_CMB_new)
 !
 !      Construct field list from spectr file
 !
-!      write(*,*) 'load_field_name_assemble_sph'
+      write(*,*) 'load_field_name_assemble_sph'
       call load_field_name_assemble_sph(org_sph_fst_head,               &
      &      ifmt_org_sph_fst, istep_start, np_sph_org,                  &
      &      org_sph_phys(1), new_sph_phys(1))
 !
-!      write(*,*) 'share_spectr_field_names'
+      write(*,*) 'share_spectr_field_names'
       call share_spectr_field_names(np_sph_org, np_sph_new,             &
      &    new_sph_mesh, org_sph_phys, new_sph_phys)
 !

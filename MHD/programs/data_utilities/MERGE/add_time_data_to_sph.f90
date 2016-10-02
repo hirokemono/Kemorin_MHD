@@ -51,14 +51,10 @@
       type(sph_radial_itp_data), save :: r_itp
       type(rj_assemble_tbl), allocatable, save :: j_table_s(:,:)
 !
-      integer(kind = kint_gl), allocatable, target                      &
-     &                        :: istack_nnod_list(:)
-!
-      integer(kind = kint) :: nlayer_ICB_org, nlayer_CMB_org
-      integer(kind = kint) :: nlayer_ICB_new, nlayer_CMB_new
+      integer(kind = kint_gl), allocatable :: istack_nnod_list(:)
 !
       integer(kind = kint) :: istep
-      integer(kind = kint) :: jp, ip, irank_org, irank_new
+      integer(kind = kint) :: jp, ip, irank_new
 !
 !
 !
@@ -105,7 +101,10 @@
         istack_nnod_list(jp) = istack_nnod_list(jp-1)                   &
      &                       + new_sph_mesh(jp)%sph%sph_rj%nnod_rj
       end do
-      new_fst_IO%istack_numnod_IO => istack_nnod_list
+!
+      call alloc_merged_field_stack(np_sph_new, new_fst_IO)
+      new_fst_IO%istack_numnod_IO = istack_nnod_list
+      deallocate(istack_nnod_list)
 !
 !     Share number of nodes for new mesh
 !

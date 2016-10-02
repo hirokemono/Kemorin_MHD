@@ -41,6 +41,7 @@
 !
       use t_mesh_data
       use t_phys_data
+      use const_linear_mesh_by_quad
 !
       implicit none
 !
@@ -105,7 +106,6 @@
       use t_surface_data
       use t_edge_data
       use t_group_data
-      use const_linear_mesh_by_quad
 !
       type(mesh_geometry_p), intent(in) :: mesh_q
       type(element_geometry_p), intent(in) :: ele_mesh_q

@@ -3,6 +3,9 @@
 !
 !      Written by H. Matsui on Apr., 2006
 !
+!!      subroutine init_element_mesh_type(ele_mesh_p)
+!!      subroutine finalize_element_mesh_type(ele_mesh_p)
+!!
 !!      subroutine link_data_4_linear_grid(mesh_q, ele_mesh_q, group_q, &
 !!     &                                   mesh_l, ele_mesh_l, group_l)
 !!      subroutine set_linear_data_by_quad_data                         &
@@ -30,11 +33,42 @@
 !
       implicit none
 !
+!>     Structure for element, surface, and edge mesh
+!!        (position, connectivity, and communication)
+      type element_geometry_p
+!>     Structure for surface position and connectivity
+        type(surface_data), pointer :: surf
+!>     Structure for edge position and connectivity
+        type(edge_data),  pointer :: edge
+      end type element_geometry_p
+!
 !  ---------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine init_element_mesh_type(ele_mesh_p)
+!
+      type(element_geometry_p), intent(inout) :: ele_mesh_p
+!
+      allocate(ele_mesh_p%surf)
+      allocate(ele_mesh_p%edge)
+!
+      end subroutine init_element_mesh_type
+!
+!------------------------------------------------------------------
+!
+      subroutine finalize_element_mesh_type(ele_mesh_p)
+!
+      type(element_geometry_p), intent(inout) :: ele_mesh_p
+!
+      deallocate(ele_mesh_p%surf, ele_mesh_p%edge)
+!
+      end subroutine finalize_element_mesh_type
+!
+!------------------------------------------------------------------
+!------------------------------------------------------------------
 !
       subroutine link_data_4_linear_grid(mesh_q, ele_mesh_q, group_q,   &
      &                                   mesh_l, ele_mesh_l, group_l)

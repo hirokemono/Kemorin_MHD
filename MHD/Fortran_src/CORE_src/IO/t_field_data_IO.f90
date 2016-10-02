@@ -58,10 +58,10 @@
         integer(kind = kint) :: nnod_IO
 !
 !>        field data for IO  (d_IO(:,:))
-        real(kind = kreal), pointer :: d_IO(:,:)
+        real(kind = kreal), allocatable :: d_IO(:,:)
 !
 !>        end point for number of node for each subdomain
-        integer(kind = kint_gl), pointer :: istack_numnod_IO(:)
+        integer(kind = kint_gl), allocatable :: istack_numnod_IO(:)
       end type field_IO
 !
 !

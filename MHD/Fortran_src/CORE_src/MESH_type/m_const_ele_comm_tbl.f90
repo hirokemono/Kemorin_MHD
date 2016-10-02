@@ -18,7 +18,7 @@
 !
 !
       type work_4_const_export
-        integer(kind = kint), pointer :: ie_gl_import(:,:)
+        integer(kind = kint), allocatable :: ie_gl_import(:,:)
       end type work_4_const_export
 !
       type(communication_table), pointer :: ele_comm_tmp(:)
