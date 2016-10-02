@@ -248,7 +248,8 @@
      &          'FEM mesh for domain', my_rank, ' is done.'
       end if
 !
-      call dealloc_mesh_data_type(femmesh)
+      call dealloc_groups_data(femmesh%group)
+      call dealloc_mesh_type(femmesh%mesh)
       call deallocate_grp_type(radial_rj_grp_lc)
       call deallocate_gauss_points
       call deallocate_gauss_colatitude

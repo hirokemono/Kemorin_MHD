@@ -10,6 +10,9 @@
 !!      subroutine init_element_mesh_type(ele_mesh_p)
 !!      subroutine finalize_element_mesh_type(ele_mesh_p)
 !!
+!!      subroutine init_mesh_geometry_type(mesh_p)
+!!      subroutine finalize_mesh_geometry_type(mesh_p)
+!!
 !!      subroutine init_mesh_group_type(group_p)
 !!      subroutine finalize_mesh_group_type(group_p)
 !!
@@ -20,7 +23,6 @@
 !!     &          nod_grp, ele_grp, surf_grp, nod_comm)
 !!      subroutine dealloc_mesh_infos(mesh, group)
 !!
-!!      subroutine dealloc_mesh_data_type(femmesh)
 !!      subroutine dealloc_mesh_type(mesh)
 !!      subroutine dealloc_groups_data(group)
 !!
@@ -110,6 +112,17 @@
       end type element_geometry
 !
 !
+!>     Structure for grid data
+!>        (position, connectivity, and communication)
+      type mesh_geometry_p
+!>     Structure for node communication
+        type(communication_table) :: nod_comm
+!>     Structure for node position
+        type(node_data), pointer ::           node
+!>     Structure for element position and connectivity
+        type(element_data), pointer ::        ele
+      end type mesh_geometry_p
+!
 !>     Structure for group data (node, element, surface, and infinity)
       type mesh_groups_p
 !>     Structure for node group
@@ -137,7 +150,7 @@
 !>        (position, connectivity, group, and communication)
       type mesh_data_p
 !>     Structure for grid data
-        type(mesh_geometry) :: mesh
+        type(mesh_geometry_p) :: mesh
 !>     Structure for group data
         type(mesh_groups_p) ::   group
       end type mesh_data_p
@@ -186,6 +199,28 @@
       deallocate(ele_mesh_p%surf, ele_mesh_p%edge)
 !
       end subroutine finalize_element_mesh_type
+!
+!------------------------------------------------------------------
+!------------------------------------------------------------------
+!
+      subroutine init_mesh_geometry_type(mesh_p)
+!
+      type(mesh_geometry_p), intent(inout) :: mesh_p
+!
+      allocate(mesh_p%node)
+      allocate(mesh_p%ele)
+!
+      end subroutine init_mesh_geometry_type
+!
+!------------------------------------------------------------------
+!
+      subroutine finalize_mesh_geometry_type(mesh_p)
+!
+      type(mesh_geometry_p), intent(inout) :: mesh_p
+!
+      deallocate(mesh_p%node, mesh_p%ele)
+!
+      end subroutine finalize_mesh_geometry_type
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
@@ -310,18 +345,6 @@
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
-!
-      subroutine dealloc_mesh_data_type(femmesh)
-!
-      type(mesh_data), intent(inout) :: femmesh
-!
-!
-      call dealloc_groups_data(femmesh%group)
-      call dealloc_mesh_type(femmesh%mesh)
-!
-      end subroutine dealloc_mesh_data_type
-!
-!   --------------------------------------------------------------------
 !
       subroutine dealloc_mesh_type(mesh)
 !

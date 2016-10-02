@@ -77,7 +77,7 @@
       use m_geometry_constants
 !
       integer(kind = kint), intent(in) :: my_rank
-      type(mesh_geometry), intent(inout) :: newmesh
+      type(mesh_geometry_p), intent(inout) :: newmesh
       type(mesh_groups_p), intent(inout) :: newgroup
       integer(kind = kint) :: jp
 !
@@ -85,13 +85,11 @@
       jp = my_rank + 1
       call link_comm_tbl_types(origin_mesh(jp)%mesh%nod_comm, newmesh%nod_comm)
       call link_new_nod_geometry_type(origin_mesh(jp)%mesh%node, newmesh%node)
-      call link_new_ele_connect_type(origin_mesh(jp)%mesh%ele, newmesh%ele)
       newgroup%nod_grp =>  origin_mesh(jp)%group%nod_grp
       newgroup%ele_grp =>  origin_mesh(jp)%group%ele_grp
       newgroup%surf_grp => origin_mesh(jp)%group%surf_grp
 !
-      call link_new_ele_geometry_type                                   &
-     &   (origin_mesh(jp)%mesh%ele, newmesh%ele)
+      newmesh%ele => origin_mesh(jp)%mesh%ele
 !
       if (newmesh%ele%nnod_4_ele .eq. num_t_linear) then
         call set_1_hexa_2_5_tetra
@@ -107,19 +105,19 @@
 !
       subroutine unlink_2nd_geometry_4_table(newmesh, newgroup)
 !
-      type(mesh_geometry), intent(inout) :: newmesh
+      type(mesh_geometry_p), intent(inout) :: newmesh
       type(mesh_groups_p), intent(inout) :: newgroup
 !
 !
-      call unlink_ele_geometry_type(newmesh%ele)
       call deallocate_hex_2_tetra
 !
       nullify(newgroup%surf_grp)
       nullify(newgroup%ele_grp)
       nullify(newgroup%nod_grp)
+
+      nullify(newmesh%ele)
       call unlink_node_geometry_type(newmesh%node)
 
-      call unlink_ele_connect_type(newmesh%ele)
 !
       call unlink_dest_comm_tbl_type(newmesh%nod_comm)
 !

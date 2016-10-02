@@ -8,8 +8,8 @@
 !!     &          ierr_missing)
 !!        type(node_data), intent(in) :: node
 !!        type(next_nod_id_4_nod), intent(in)  :: neib_nod
-!!        type(mesh_geometry), intent(inout) :: org_mesh
-!!        type(mesh_groups), intent(inout) ::   org_grp
+!!        type(mesh_geometry_p), intent(inout) :: org_mesh
+!!        type(mesh_groups_p), intent(inout) ::   org_grp
 !!        type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
 !
       module construct_interpolate_table
@@ -49,7 +49,7 @@
       type(next_nod_id_4_nod), intent(in)  :: neib_nod
 !
       integer(kind = kint), intent(inout) :: ierr_missing
-      type(mesh_geometry), intent(inout) :: org_mesh
+      type(mesh_geometry_p), intent(inout) :: org_mesh
       type(mesh_groups_p), intent(inout) ::   org_grp
       type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
 !

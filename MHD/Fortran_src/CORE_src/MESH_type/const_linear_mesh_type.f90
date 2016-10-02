@@ -107,11 +107,11 @@
       use t_group_data
       use const_linear_mesh_by_quad
 !
-      type(mesh_geometry), intent(in) :: mesh_q
+      type(mesh_geometry_p), intent(in) :: mesh_q
       type(element_geometry_p), intent(in) :: ele_mesh_q
       type(mesh_groups_p), intent(in) :: group_q
 !
-      type(mesh_geometry), intent(inout) :: mesh_l
+      type(mesh_geometry_p), intent(inout) :: mesh_l
       type(element_geometry_p), intent(inout) :: ele_mesh_l
       type(mesh_groups_p), intent(inout) :: group_l
 !
@@ -159,9 +159,9 @@
 !
       if (ele_q%nnod_4_ele .eq. num_t_quad) then
         call copy_nod_phys_2_linear                                     &
-     &     (node_q, nod_fld_q, femmesh_l%mesh, nod_fld_l)
+     &     (node_q, nod_fld_q, femmesh_l%mesh%node, nod_fld_l)
         call generate_phys_on_surf(node_q, ele_q, surf_q,               &
-     &      femmesh_l%mesh, nod_fld_l)
+     &      femmesh_l%mesh%node, nod_fld_l)
       end if
 !
       end subroutine set_linear_phys_data_type

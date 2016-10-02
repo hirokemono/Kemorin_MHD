@@ -27,7 +27,7 @@
 !
       type(mesh_data_p), save :: femmesh_p_FUT
 !
-      type(mesh_geometry), save :: mesh_ref
+      type(mesh_geometry_p), save :: mesh_ref
       type(mesh_groups_p), save :: group_ref
       type(phys_data), save :: phys_ref
 !
@@ -91,7 +91,7 @@
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
       call const_mesh_infos_p(my_rank,                                  &
      &   femmesh_p_FUT%mesh, femmesh_p_FUT%group, elemesh_FUTIL)
-      call const_element_comm_tbls(femmesh_p_FUT%mesh, elemesh_FUTIL)
+      call const_element_comm_tbls_p(femmesh_p_FUT%mesh, elemesh_FUTIL)
 !
 !     --------------------- 
 !
@@ -104,9 +104,7 @@
       call copy_num_processes_to_2nd
       call link_comm_tbl_types(femmesh_p_FUT%mesh%nod_comm, mesh_ref%nod_comm)
       call link_new_nod_geometry_type(femmesh_p_FUT%mesh%node, mesh_ref%node)
-      call link_new_ele_connect_type(femmesh_p_FUT%mesh%ele, mesh_ref%ele)
-      call link_new_overlaped_ele_type                                  &
-     &   (femmesh_p_FUT%mesh%ele, mesh_ref%ele)
+      mesh_ref%ele => femmesh_p_FUT%mesh%ele
 !
       group_ref%nod_grp =>  femmesh_p_FUT%group%nod_grp
       group_ref%ele_grp =>  femmesh_p_FUT%group%ele_grp
@@ -142,7 +140,6 @@
       use ucd_IO_select
       use nod_phys_send_recv
 !
-      use fields_type_send_recv
       use correlation_all_layerd_data
 !
       integer(kind=kint) :: istep, istep_ucd
@@ -178,9 +175,8 @@
      &        udt_org_param%iflag_format, tgt_udt_file_head, phys_ref)
 !
           call nod_fields_send_recv                                     &
-     &       (femmesh_p_FUT%mesh%node, femmesh_p_FUT%mesh%nod_comm,     &
-     &        field_FUTIL)
-          call phys_type_send_recv_all(mesh_ref, phys_ref)
+     &       (femmesh_p_FUT%mesh%nod_comm, field_FUTIL)
+          call nod_fields_send_recv(mesh_ref%nod_comm, phys_ref)
 !
 !    output udt data
 !

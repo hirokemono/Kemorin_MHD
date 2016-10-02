@@ -57,7 +57,9 @@
         call sel_read_mesh(my_rank, fem_IO_o, ierr)
         if(ierr .gt. 0) stop 'Error in Mesh data'
 !
-        call set_mesh_geometry_data(fem_IO_o%mesh, subdomain(ip))
+        call set_mesh_geometry_data(fem_IO_o%mesh,                      &
+     &      subdomain(ip)%nod_comm, subdomain(ip)%node,                 &
+     &      subdomain(ip)%ele)
         call set_grp_data_from_IO(fem_IO_o%group,                       &
      &      sub_nod_grp(ip), sub_ele_grp(ip), sub_surf_grp(ip))
         call dealloc_groups_data(fem_IO_o%group)

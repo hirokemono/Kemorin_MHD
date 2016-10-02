@@ -25,7 +25,7 @@
       type(mesh_data), save :: org_femmesh
       type(element_geometry), save :: org_ele_mesh
 !
-      type(mesh_geometry), save :: newmesh
+      type(mesh_geometry_p), save :: newmesh
       type(mesh_groups_p), save ::   newgroup
 !
       type(next_nod_ele_table), save :: next_tbl_i
