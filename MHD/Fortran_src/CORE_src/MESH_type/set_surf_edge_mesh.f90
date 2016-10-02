@@ -104,7 +104,7 @@
       logical :: read_surface
 !
 !
-      read_surface = associated(surf%isurf_global)
+      read_surface = allocated(surf%isurf_global)
 !
       if(read_surface .eqv. .false.) then
         if (iflag_debug.eq.1) write(*,*) 'construct_surface_data'
@@ -138,7 +138,7 @@
       logical :: read_edge
 !
 !
-      read_edge =    associated(edge%iedge_global)
+      read_edge =    allocated(edge%iedge_global)
 !
       if(read_edge .eqv. .false.) then
         if (iflag_debug.eq.1) write(*,*) 'construct_edge_data'

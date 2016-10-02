@@ -33,9 +33,11 @@
 !!      subroutine empty_nod_and_ele_type_infos(geom)
 !!        type(mesh_geometry), intent(inout) :: geom
 !!
-!!      subroutine const_group_type_info(mesh, ele_mesh, group)
+!!      subroutine const_group_type_info(mesh, surf, edge, group)
 !!         type(mesh_geometry), intent(in) :: mesh
 !!         type(element_geometry), intent(in) :: ele_mesh
+!!          type(surface_data), intent(inout) :: surf
+!!          type(edge_data),    intent(inout) :: edge
 !!         type(mesh_groups), intent(inout) ::   group
 !!@endverbatim
 !
@@ -143,7 +145,8 @@
 !
 !
        if (iflag_debug.eq.1) write(*,*) 'const_group_connectiviy_1st'
-      call const_group_type_info(mesh, ele_mesh, group)
+      call const_group_type_info                                        &
+     &   (mesh, ele_mesh%surf, ele_mesh%edge, group)
 !
       end subroutine const_mesh_infos
 !
@@ -245,35 +248,36 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine const_group_type_info(mesh, ele_mesh, group)
+      subroutine const_group_type_info(mesh, surf, edge, group)
 !
       use set_connects_4_ele_group
       use set_connects_4_surf_group
 !
       type(mesh_geometry), intent(in) :: mesh
-      type(element_geometry), intent(in) :: ele_mesh
+      type(surface_data), intent(in) :: surf
+      type(edge_data),    intent(in) :: edge
       type(mesh_groups), intent(inout) ::   group
 !
 !
        if (iflag_debug.eq.1) write(*,*) 'set_surf_4_ele_group'
-      call set_surf_4_ele_group       &
-     &   (mesh%ele, ele_mesh%surf, group%ele_grp, group%tbls_ele_grp)
+      call set_surf_4_ele_group                                         &
+     &   (mesh%ele, surf, group%ele_grp, group%tbls_ele_grp)
 !
        if (iflag_debug.eq.1) write(*,*) 'set_edge_4_ele_group'
-      call set_edge_4_ele_group       &
-     &   (mesh%ele, ele_mesh%edge, group%ele_grp, group%tbls_ele_grp)
+      call set_edge_4_ele_group                                         &
+     &   (mesh%ele, edge, group%ele_grp, group%tbls_ele_grp)
 !
        if (iflag_debug.eq.1) write(*,*) 'set_node_4_ele_group'
-      call set_node_4_ele_group       &
+      call set_node_4_ele_group                                         &
      &   (mesh%ele, mesh%node, group%ele_grp, group%tbls_ele_grp)
 !
 !
        if (iflag_debug.eq.1) write(*,*) 'set_surf_id_4_surf_group'
-      call set_surf_id_4_surf_group  &
-     &   (mesh%ele, ele_mesh%surf, group%surf_grp, group%tbls_surf_grp)
+      call set_surf_id_4_surf_group                                     &
+     &   (mesh%ele, surf, group%surf_grp, group%tbls_surf_grp)
 !
        if (iflag_debug.eq.1) write(*,*) 'set_edge_4_surf_group'
-      call set_edge_4_surf_group(ele_mesh%surf, ele_mesh%edge,          &
+      call set_edge_4_surf_group(surf, edge,                            &
      &    group%surf_grp, group%tbls_surf_grp)
 !
       end subroutine const_group_type_info
