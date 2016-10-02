@@ -183,38 +183,6 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_mpi_read_charahead(IO_param, ilength, chara_dat)
-!
-      type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: ilength
-      character(len=1), intent(inout) :: chara_dat(ilength)
-!
-      integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: ilen_gz, ilen_gzipped
-!
-!
-      if(my_rank .eq. 0) then
-        ioffset = IO_param%ioff_gl
-        ilen_gz = int(real(ilength) *1.01) + 24
-        allocate(gzip_buf(ilen_gz))
-        call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset,        &
-     &      ilen_gz, gzip_buf(1))
-!
-        call gzip_infleat_once(ilen_gz, gzip_buf(1),                    &
-     &      ilength, chara_dat(1), ilen_gzipped)
-        deallocate(gzip_buf)
-      end if
-!
-      call MPI_BCAST(chara_dat, ilength, CALYPSO_CHARACTER, izero,      &
-     &    CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(ilen_gzipped, ione, CALYPSO_INTEGER, izero,        &
-     &    CALYPSO_COMM, ierr_MPI)
-      IO_param%ioff_gl = IO_param%ioff_gl + ilen_gzipped
-!
-      end subroutine gz_mpi_read_charahead
-!
-! -----------------------------------------------------------------------
-!
       subroutine gz_mpi_read_one_inthead_b(IO_param, int_dat)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param

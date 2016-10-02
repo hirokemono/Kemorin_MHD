@@ -256,7 +256,7 @@
      &                             + led
       end do
 !
-      if(my_rank .lt. IO_param%nprocs_in) then
+      if(IO_param%id_rank .lt. IO_param%nprocs_in) then
         if(nnod .eq. 0) then
           led = ione
         else
@@ -308,7 +308,7 @@
      &                             + led
       end do
 !
-      if(my_rank .lt. IO_param%nprocs_in) then
+      if(IO_param%id_rank .lt. IO_param%nprocs_in) then
         if(nnod .eq. 0) then
           led = ione
         else

@@ -432,8 +432,6 @@
         icou = icou + ncomp_field(j)
       end do
 !
-      call sync_field_names_mpi(num_field, field_name)
-!
       end subroutine read_field_data_gz_mpi
 !
 ! -----------------------------------------------------------------------
@@ -459,8 +457,6 @@
         call gz_read_fld_1word_mpi(id_fld, ioff_gl, field_name(j))
         call gz_skip_each_field_mpi(id_fld, nprocs_in, ioff_gl)
       end do
-!
-      call sync_field_names_mpi(num_field, field_name)
 !
       end subroutine read_field_names_gz_mpi
 !

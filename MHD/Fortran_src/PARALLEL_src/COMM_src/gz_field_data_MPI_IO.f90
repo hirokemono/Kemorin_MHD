@@ -203,6 +203,7 @@
       subroutine gz_read_fld_1word_mpi(id_fld, ioff_gl, field_name)
 !
       use field_data_IO
+      use field_data_MPI_IO
 !
       integer, intent(in) ::  id_fld
       integer(kind = kint_gl), intent(inout) :: ioff_gl
@@ -242,6 +243,7 @@
         deallocate(gzip_buf, textbuf)
       end if
 !
+      call sync_field_name_mpi(ilength, field_name)
       call MPI_BCAST(ilen_gzipped, ione, CALYPSO_INTEGER, izero,        &
      &    CALYPSO_COMM, ierr_MPI)
       ioff_gl = ioff_gl + ilen_gzipped

@@ -69,6 +69,8 @@
 !
       call read_control_assemble_sph
       call set_control_4_newsph
+      if(np_sph_new .ne. nprocs) call calypso_mpi_abort                 &
+     &     (1, 'Set num. of processes for target num. of domains')
 !
       if(my_rank .eq. 0) write(*,*)                                     &
      &          'istep_start, istep_end, increment_step',               &

@@ -219,8 +219,7 @@
 !
 !
       istack(0) = 0
-      if(num .gt. 0) call gz_mpi_read_int_vector                        &
-     &                  (IO_param, num, istack(1))
+      call gz_mpi_read_int_vector(IO_param, num, istack(1))
       ntot = istack(num)
 !
       end subroutine gz_mpi_read_int_stack
@@ -236,10 +235,20 @@
       integer(kind = kint) :: ilength
 !
 !
-      ilength = len_multi_int_textline(num)
-      call read_multi_int_textline                                      &
-     &   (gz_mpi_read_characters(IO_param, ilength),                    &
-     &    num, int_dat)
+      call read_int8_stack_textline                                     &
+         (gz_mpi_read_charahead(IO_param,                               &
+     &      len_multi_int_textline(IO_param%nprocs_in)),                &
+     &    IO_param%nprocs_in, IO_param%istack_merged)
+!
+!
+      if(IO_param%id_rank .lt. IO_param%nprocs_in) then
+        ilength = len_multi_int_textline(num)
+        call read_multi_int_textline                                    &
+     &     (gz_mpi_read_characters(IO_param, ilength),                  &
+     &      num, int_dat)
+      end if
+      IO_param%ioff_gl = IO_param%ioff_gl                               &
+     &         + IO_param%istack_merged(IO_param%nprocs_in)
 !
       end subroutine gz_mpi_read_int_vector
 !
@@ -273,18 +282,16 @@
       IO_param%ioff_gl = IO_param%ioff_gl                               &
      &         + IO_param%istack_merged(IO_param%nprocs_in)
 !
-      if(ilen_gz .le. 0) return
-      if(IO_param%id_rank .ge. IO_param%nprocs_in) return
+      if(IO_param%id_rank .ge. IO_param%nprocs_in) then
+        if(num .gt. 0)  int_dat = 0
+        return
+      end if
 !
+      if(ilen_gz .le. 0) return
       allocate(textbuf(len_multi_int_textline(ncolumn)))
       allocate(gzip_buf(ilen_gz))
       call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset,          &
      &   ilen_gz, gzip_buf(1))
-!
-      if(my_rank .ge. IO_param%nprocs_in) then
-        int_dat = 0
-        return
-      end if
 !
       if(num .le. 0) then
         call gzip_infleat_once                                          &

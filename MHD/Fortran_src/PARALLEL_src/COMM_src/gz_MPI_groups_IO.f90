@@ -76,9 +76,6 @@
           call gz_mpi_read_comm_table                                   &
      &       (IO_param, ieight, num, group_IO%item_grp(ist:ied))
         end do
-!
-        call sync_field_names_mpi                                       &
-     &       (group_IO%num_grp, group_IO%grp_name)
       end if
 !
       end subroutine gz_mpi_read_group_data
@@ -119,9 +116,6 @@
      &        surf_grp_IO%num_item, surf_grp_IO%istack_grp(i-1),        &
      &        num, surf_grp_IO%item_sf_grp)
         end do
-!
-        call sync_field_names_mpi                                       &
-     &       (surf_grp_IO%num_grp, surf_grp_IO%grp_name)
       end if
 !
       end subroutine gz_mpi_read_surf_grp_data

@@ -152,7 +152,7 @@
          (gz_mpi_read_charahead(IO_param, ilength),                     &
      &    IO_param%nprocs_in, IO_param%istack_merged)
 !
-      if(my_rank .le. IO_param%nprocs_in) then
+      if(IO_param%id_rank .le. IO_param%nprocs_in) then
         num = int(IO_param%istack_merged(IO_param%id_rank+1))
       else
         num = 0
@@ -169,7 +169,8 @@
       character(len=ilength) :: gz_mpi_read_charahead
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: ilen_gz, ilen_gzipped
+      integer(kind = kint) :: ilen_gz = 0
+      integer(kind = kint) :: ilen_gzipped = 0
 !
       character(len=1), allocatable :: gzip_buf(:)
 !
@@ -206,24 +207,16 @@
       character(len=ilength) :: gz_mpi_read_characters
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: ilen_gz, ilen_gzipped
+      integer(kind = kint) :: ilen_gz = 0
+      integer(kind = kint) :: ilen_gzipped = 0
 !
       character(len=1), allocatable :: gzip_buf(:)
 !
 !
-      call read_int8_stack_textline                                     &
-         (gz_mpi_read_charahead(IO_param,                               &
-     &      len_multi_int_textline(IO_param%nprocs_in)),                &
-     &    IO_param%nprocs_in, IO_param%istack_merged)
+      if(ilength .le. 0) return
 !
       ioffset = IO_param%ioff_gl                                        &
      &         + IO_param%istack_merged(IO_param%id_rank)
-      IO_param%ioff_gl = IO_param%ioff_gl                               &
-     &         + IO_param%istack_merged(IO_param%nprocs_in)
-!
-      if(ilength .le. 0) return
-      if(IO_param%id_rank .ge. IO_param%nprocs_in) return
-!
       ilen_gz = int(IO_param%istack_merged(IO_param%id_rank+1)          &
      &            - IO_param%istack_merged(IO_param%id_rank))
       allocate(gzip_buf(ilen_gz))
@@ -245,16 +238,16 @@
       integer(kind=kint), intent(in) :: ilength
 !
       character(len=1), allocatable :: chara_dat(:)
+      character(len=1), allocatable :: gzip_buf(:)
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: ilen_gz, ilen_gzipped
-!
-      character(len=1), allocatable :: gzip_buf(:)
+      integer(kind = kint) :: ilen_gz = 0
+      integer(kind = kint) :: ilen_gzipped = 0
 !
 !
       if(my_rank .eq. 0) then
         ioffset = IO_param%ioff_gl
-        ilen_gz = int(real(ilength) *1.01) + 24
+        ilen_gz = int(real(ilength) *1.1) + 24
         allocate(chara_dat(ilength))
         allocate(gzip_buf(ilen_gz))
         call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset,        &

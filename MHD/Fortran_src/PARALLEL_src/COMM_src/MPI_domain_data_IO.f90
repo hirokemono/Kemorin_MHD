@@ -265,7 +265,7 @@
      &         + len_multi_int_textline(int(IO_param%istack_merged(i)))
       end do
 !
-      if(my_rank .lt. IO_param%nprocs_in) then
+      if(IO_param%id_rank .lt. IO_param%nprocs_in) then
         ilength = len_multi_int_textline(num)
         call read_multi_int_textline                                    &
      &     (mpi_read_characters(IO_param, ilength), num, int_dat)
@@ -305,7 +305,7 @@
         IO_param%istack_merged(i) = IO_param%istack_merged(i-1) + led
       end do
 !
-      if(my_rank .lt. IO_param%nprocs_in) then
+      if(IO_param%id_rank .lt. IO_param%nprocs_in) then
         if(num .le. 0) then
           led = ione
         else if(num .gt. 0) then
