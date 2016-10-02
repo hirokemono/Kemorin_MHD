@@ -19,7 +19,7 @@
 !
       implicit none
 !
-      type(mesh_data), allocatable :: origin_mesh(:)
+      type(mesh_data_p), allocatable :: origin_mesh(:)
 !
 ! ----------------------------------------------------------------------
 !
@@ -31,7 +31,13 @@
 !
       integer(kind = kint), intent(in) :: nprocs_2nd
 !
+      integer(kind = kint) :: jp
+!
+!
       allocate( origin_mesh(nprocs_2nd) )
+      do jp = 1, nprocs_2nd
+        call init_mesh_group_type(origin_mesh(jp)%group)
+      end do
 !
       end subroutine alloc_org_mesh_type_itp_para
 !
@@ -72,13 +78,15 @@
 !
       integer(kind = kint), intent(in) :: my_rank
       type(mesh_geometry), intent(inout) :: newmesh
-      type(mesh_groups), intent(inout) :: newgroup
+      type(mesh_groups_p), intent(inout) :: newgroup
       integer(kind = kint) :: jp
 !
 !
       jp = my_rank + 1
       call link_mesh_data_type(origin_mesh(jp)%mesh, newmesh)
-      call link_groups_type(origin_mesh(jp)%group, newgroup)
+      newgroup%nod_grp =>  origin_mesh(jp)%group%nod_grp
+      newgroup%ele_grp =>  origin_mesh(jp)%group%ele_grp
+      newgroup%surf_grp => origin_mesh(jp)%group%surf_grp
 !
       call link_new_ele_geometry_type                                   &
      &   (origin_mesh(jp)%mesh%ele, newmesh%ele)
@@ -98,15 +106,15 @@
       subroutine unlink_2nd_geometry_4_table(newmesh, newgroup)
 !
       type(mesh_geometry), intent(inout) :: newmesh
-      type(mesh_groups), intent(inout) ::   newgroup
+      type(mesh_groups_p), intent(inout) :: newgroup
 !
 !
       call unlink_ele_geometry_type(newmesh%ele)
       call deallocate_hex_2_tetra
 !
-      call unlink_surf_group_type(newgroup%surf_grp)
-      call unlink_group_type(newgroup%ele_grp)
-      call unlink_group_type(newgroup%nod_grp)
+      nullify(newgroup%surf_grp)
+      nullify(newgroup%ele_grp)
+      nullify(newgroup%nod_grp)
       call unlink_node_geometry_type(newmesh%node)
 
       call unlink_ele_connect_type(newmesh%ele)

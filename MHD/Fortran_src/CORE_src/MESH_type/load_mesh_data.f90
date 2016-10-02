@@ -14,6 +14,9 @@
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!
+!!      subroutine input_mesh_p                                         &
+!!     &         (my_rank, mesh, group_p, nnod_4_surf, nnod_4_edge, ierr)
+!!
 !!      subroutine set_mesh                                             &
 !!     &         (mesh, group, nnod_4_surf, nnod_4_edge)
 !!      subroutine set_mesh_geometry_data(mesh_IO, mesh)
@@ -138,6 +141,36 @@
      &   (mesh%ele%nnod_4_ele, nnod_4_surf, nnod_4_edge)
 !
       end subroutine set_mesh
+!
+! -----------------------------------------------------------------------
+!
+      subroutine input_mesh_p                                           &
+     &         (my_rank, mesh, group_p, nnod_4_surf, nnod_4_edge, ierr)
+!
+      use mesh_IO_select
+      use set_nnod_4_ele_by_type
+!
+      integer(kind = kint), intent(in) :: my_rank
+!
+      type(mesh_geometry), intent(inout) :: mesh
+      type(mesh_groups_p), intent(inout) ::   group_p
+      integer(kind = kint), intent(inout) :: nnod_4_surf, nnod_4_edge
+      integer(kind = kint), intent(inout) :: ierr
+!
+      type(mesh_data) :: fem_IO_i
+!
+!
+      call sel_read_mesh(my_rank, fem_IO_i, ierr)
+!
+      call set_mesh_geometry_data(fem_IO_i%mesh, mesh)
+      call set_grp_data_from_IO(fem_IO_i%group,                         &
+     &    group_p%nod_grp, group_p%ele_grp, group_p%surf_grp)
+      call dealloc_groups_data(fem_IO_i%group)
+!
+      call set_3D_nnod_4_sfed_by_ele                                    &
+     &   (mesh%ele%nnod_4_ele, nnod_4_surf, nnod_4_edge)
+!
+      end subroutine input_mesh_p
 !
 ! -----------------------------------------------------------------------
 !

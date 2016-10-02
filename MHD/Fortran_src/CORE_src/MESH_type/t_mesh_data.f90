@@ -10,8 +10,10 @@
 !!      subroutine init_element_mesh_type(ele_mesh_p)
 !!      subroutine finalize_element_mesh_type(ele_mesh_p)
 !!
+!!      subroutine init_mesh_group_type(group_p)
+!!      subroutine finalize_mesh_group_type(group_p)
+!!
 !!      subroutine link_mesh_data_type(org_mesh, new_mesh)
-!!      subroutine link_groups_type(org_group, new_group)
 !!
 !!      subroutine dealloc_mesh_infomations(nod_comm,                   &
 !!     &          node, ele, surf, edge, nod_grp, ele_grp, surf_grp,    &
@@ -19,9 +21,6 @@
 !!      subroutine dealloc_nod_ele_infos(node, ele, surf, edge,         &
 !!     &          nod_grp, ele_grp, surf_grp, nod_comm)
 !!      subroutine dealloc_mesh_infos(mesh, group)
-!!
-!!      subroutine dealloc_base_mesh_type_info(femmesh)
-!  !      type(mesh_data), intent(inout) :: femmesh
 !!
 !!      subroutine dealloc_mesh_data_type(femmesh)
 !!      subroutine dealloc_mesh_type(mesh)
@@ -113,6 +112,39 @@
       end type element_geometry
 !
 !
+!>     Structure for group data (node, element, surface, and infinity)
+      type mesh_groups_p
+!>     Structure for node group
+        type (group_data), pointer ::             nod_grp
+!>     Structure for element group
+        type (group_data), pointer ::             ele_grp
+!>     Structure for surface group
+        type (surface_group_data), pointer ::     surf_grp
+!
+!>     Structure for node data on surface group
+        type (surface_node_grp_data) ::   surf_nod_grp
+!>     Structure for grometry data for surface group
+        type (surface_group_geometry) ::  surf_grp_geom
+!
+!>     Structure for element group connectivity
+        type (element_group_table), pointer :: tbls_ele_grp
+!>     Structure for surface group connectivity
+        type (surface_group_table), pointer :: tbls_surf_grp
+!
+!>     Structure for infinity surface
+        type (scalar_surf_BC_list) ::    infty_grp
+      end type mesh_groups_p
+!
+!>     Structure for mesh data
+!>        (position, connectivity, group, and communication)
+      type mesh_data_p
+!>     Structure for grid data
+        type(mesh_geometry) :: mesh
+!>     Structure for group data
+        type(mesh_groups_p) ::   group
+      end type mesh_data_p
+!
+!
 !>     Structure for element, surface, and edge mesh
 !!        (position, connectivity, and communication)
       type element_geometry_p
@@ -160,6 +192,33 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
+      subroutine init_mesh_group_type(group_p)
+!
+      type(mesh_groups_p), intent(inout) :: group_p
+!
+      allocate(group_p%nod_grp)
+      allocate(group_p%ele_grp)
+      allocate(group_p%surf_grp)
+!
+      allocate(group_p%tbls_ele_grp)
+      allocate(group_p%tbls_surf_grp)
+!
+      end subroutine init_mesh_group_type
+!
+!------------------------------------------------------------------
+!
+      subroutine finalize_mesh_group_type(group_p)
+!
+      type(mesh_groups_p), intent(inout) :: group_p
+!
+      deallocate(group_p%nod_grp, group_p%ele_grp, group_p%surf_grp)
+      deallocate(group_p%tbls_surf_grp, group_p%tbls_ele_grp)
+!
+      end subroutine finalize_mesh_group_type
+!
+!------------------------------------------------------------------
+!------------------------------------------------------------------
+!
       subroutine link_mesh_data_type(org_mesh, new_mesh)
 !
       type(mesh_geometry), intent(in) :: org_mesh
@@ -171,19 +230,6 @@
       call link_new_ele_connect_type(org_mesh%ele, new_mesh%ele)
 !
       end subroutine link_mesh_data_type
-!
-!------------------------------------------------------------------
-!
-      subroutine link_groups_type(org_group, new_group)
-!
-      type(mesh_groups), intent(in) :: org_group
-      type(mesh_groups), intent(inout) :: new_group
-!
-      call link_group_type(org_group%nod_grp, new_group%nod_grp)
-      call link_group_type(org_group%ele_grp, new_group%ele_grp)
-      call link_surf_group_type(org_group%surf_grp, new_group%surf_grp)
-!
-      end subroutine link_groups_type
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -268,29 +314,10 @@
 ! ----------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine dealloc_base_mesh_type_info(femmesh)
-!
-      type(mesh_data), intent(inout) :: femmesh
-!
-!
-      call deallocate_ele_geometry_type(femmesh%mesh%ele)
-      call deallocate_ele_param_smp_type(femmesh%mesh%ele)
-      call deallocate_node_param_smp_type(femmesh%mesh%node)
-!
-      call dealloc_mesh_data_type(femmesh)
-!
-      end subroutine dealloc_base_mesh_type_info
-!
-!------------------------------------------------------------------
-!
       subroutine dealloc_groups_data(group)
 !
       type(mesh_groups), intent(inout) :: group
 !
-!
-!      call deallocate_grp_type_smp(group%nod_grp)
-!      call deallocate_grp_type_smp(group%ele_grp)
-!      call deallocate_sf_grp_type_smp(group%surf_grp)
 !
       call deallocate_grp_type(group%nod_grp)
       call deallocate_grp_type(group%ele_grp)

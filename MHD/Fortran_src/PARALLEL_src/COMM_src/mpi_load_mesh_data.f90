@@ -12,6 +12,9 @@
 !!      subroutine mpi_output_mesh(mesh, group)
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
+!!
+!!      subroutine mpi_input_mesh_p                                     &
+!!     &         (mesh, group_p, nnod_4_surf, nnod_4_edge)
 !!@endverbatim
 !
       module mpi_load_mesh_data
@@ -52,6 +55,35 @@
       call set_mesh(fem_IO_m, mesh, group, nnod_4_surf, nnod_4_edge)
 !
       end subroutine mpi_input_mesh
+!
+! -----------------------------------------------------------------------
+!
+      subroutine mpi_input_mesh_p                                       &
+     &         (mesh, group_p, nnod_4_surf, nnod_4_edge)
+!
+      use mesh_MPI_IO_select
+      use set_nnod_4_ele_by_type
+      use load_mesh_data
+!
+      type(mesh_geometry), intent(inout) :: mesh
+      type(mesh_groups_p), intent(inout) ::   group_p
+      integer(kind = kint), intent(inout) :: nnod_4_surf, nnod_4_edge
+!
+      type(mesh_data) :: fem_IO_m
+!
+!
+      call sel_mpi_read_mesh(fem_IO_m)
+!
+!
+      call set_mesh_geometry_data(fem_IO_m%mesh, mesh)
+      call set_grp_data_from_IO(fem_IO_m%group,                         &
+     &    group_p%nod_grp, group_p%ele_grp, group_p%surf_grp)
+      call dealloc_groups_data(fem_IO_m%group)
+!
+      call set_3D_nnod_4_sfed_by_ele                                    &
+     &   (mesh%ele%nnod_4_ele, nnod_4_surf, nnod_4_edge)
+!
+      end subroutine mpi_input_mesh_p
 !
 ! -----------------------------------------------------------------------
 !

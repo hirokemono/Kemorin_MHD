@@ -9,7 +9,7 @@
 !!     &         (node_q, ele_q, surf_q, mesh_l)
 !!      subroutine connect_lag_mesh_2_linear(ele_q, mesh_l)
 !!      subroutine gen_linear_group_info                                &
-!!     &         (nod_grp, ele_grp, sf_grp, group_l)
+!!     &         (ele_grp, sf_grp, ele_grp_l, surf_grp_l)
 !!
 !!      subroutine set_internal_list_lin_20(node_q, ele_q, surf_q,      &
 !!     &          mesh_l, surf_l, edge_l)
@@ -134,40 +134,38 @@
 !  ---------------------------------------------------------------------
 !
       subroutine gen_linear_group_info                                  &
-     &         (nod_grp, ele_grp, sf_grp, group_l)
+     &         (ele_grp, sf_grp, ele_grp_l, surf_grp_l)
 !
       use t_mesh_data
       use t_group_data
       use convert_group_2_linear
 !
-      type(group_data), intent(in) :: nod_grp
       type(group_data), intent(in) :: ele_grp
       type(surface_group_data), intent(in) :: sf_grp
-      type(mesh_groups), intent(inout) :: group_l
 !
+      type(group_data), intent(inout) :: ele_grp_l
+      type(surface_group_data), intent(inout) :: surf_grp_l
 !
-      call link_group_type(nod_grp, group_l%nod_grp)
-!
-      group_l%ele_grp%num_grp = ele_grp%num_grp
-      group_l%ele_grp%num_item = 8 * ele_grp%num_item
-      call allocate_grp_type_num(group_l%ele_grp)
-      call allocate_grp_type_item(group_l%ele_grp)
+      ele_grp_l%num_grp = ele_grp%num_grp
+      ele_grp_l%num_item = 8 * ele_grp%num_item
+      call allocate_grp_type_num(ele_grp_l)
+      call allocate_grp_type_item(ele_grp_l)
 !
       call convert_ele_group_2_linear                                   &
      &   (ele_grp%num_grp, ele_grp%num_item, ele_grp%grp_name,          &
      &    ele_grp%istack_grp, ele_grp%item_grp,                         &
-     &    group_l%ele_grp%num_item, group_l%ele_grp%grp_name,           &
-     &    group_l%ele_grp%istack_grp, group_l%ele_grp%item_grp)
+     &    ele_grp_l%num_item, ele_grp_l%grp_name,                       &
+     &    ele_grp_l%istack_grp, ele_grp_l%item_grp)
 !
-      group_l%surf_grp%num_grp = sf_grp%num_grp
-      group_l%surf_grp%num_item = 4 * sf_grp%num_item
-      call allocate_sf_grp_type_num(group_l%surf_grp)
-      call allocate_sf_grp_type_item(group_l%surf_grp)
+      surf_grp_l%num_grp = sf_grp%num_grp
+      surf_grp_l%num_item = 4 * sf_grp%num_item
+      call allocate_sf_grp_type_num(surf_grp_l)
+      call allocate_sf_grp_type_item(surf_grp_l)
 !
       call convert_surf_group_2_linear(sf_grp%num_grp, sf_grp%num_item, &
      &    sf_grp%grp_name, sf_grp%istack_grp, sf_grp%item_sf_grp,       &
-     &    group_l%surf_grp%num_item, group_l%surf_grp%grp_name,         &
-     &    group_l%surf_grp%istack_grp, group_l%surf_grp%item_sf_grp)
+     &    surf_grp_l%num_item, surf_grp_l%grp_name,                     &
+     &    surf_grp_l%istack_grp, surf_grp_l%item_sf_grp)
 !
       end subroutine gen_linear_group_info
 !

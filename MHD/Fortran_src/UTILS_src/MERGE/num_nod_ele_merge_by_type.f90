@@ -81,7 +81,7 @@
       use count_number_with_overlap
 !
       integer(kind = kint), intent(in) :: nprocs
-      type(mesh_data), intent(in) :: mesh_info(nprocs)
+      type(mesh_data_p), intent(in) :: mesh_info(nprocs)
 !
 !
       num_pe = nprocs
@@ -103,7 +103,7 @@
       use count_number_with_overlap
 !
       integer(kind = kint), intent(in) :: nprocs
-      type(mesh_data), intent(in) :: mesh_info(nprocs)
+      type(mesh_data_p), intent(in) :: mesh_info(nprocs)
 !
 !
       num_pe2 = nprocs
@@ -147,7 +147,7 @@
      &          subdomain)
 !
       integer(kind = kint), intent(in) :: nprocs
-      type(mesh_data), intent(in) :: mesh_info(nprocs)
+      type(mesh_data_p), intent(in) :: mesh_info(nprocs)
 !
       type(mesh_geometry), intent(inout) :: subdomain(nprocs)
 !

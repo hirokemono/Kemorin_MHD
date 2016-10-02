@@ -50,7 +50,7 @@
 !
       integer(kind = kint), intent(inout) :: ierr_missing
       type(mesh_geometry), intent(inout) :: org_mesh
-      type(mesh_groups), intent(inout) ::   org_grp
+      type(mesh_groups_p), intent(inout) ::   org_grp
       type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
 !
       integer(kind = kint) :: ierr_local

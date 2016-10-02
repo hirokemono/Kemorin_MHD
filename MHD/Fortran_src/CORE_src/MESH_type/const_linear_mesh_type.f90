@@ -8,15 +8,13 @@
 !!     &          femmesh_l, ele_mesh_l, nod_fld_l)
 !!      subroutine set_linear_type_phys_from_t(femmesh_q, ele_mesh_q,   &
 !!     &          nod_fld_q, femmesh_l, nod_fld_l)
-!!        type(mesh_data), intent(in) :: femmesh_q
-!!        type(element_geometry), intent(inout) :: ele_mesh_q
+!!        type(mesh_data_p), intent(in) :: femmesh_q
+!!        type(element_geometry_p), intent(inout) :: ele_mesh_q
 !!        type(phys_data), intent(in) :: nod_fld_q
-!!        type(mesh_data), intent(inout) :: femmesh_l
-!!        type(element_geometry), intent(inout) :: ele_mesh_l
+!!        type(mesh_data_p), intent(inout) :: femmesh_l
+!!        type(element_geometry_p), intent(inout) :: ele_mesh_l
 !!        type(phys_data), intent(inout) :: nod_fld_l
 !!
-!!      subroutine const_linear_mesh_by_q(mesh_q, ele_mesh_q,           &
-!!     &          group_q, nod_fld_q, femmesh_l, ele_mesh_l, nod_fld_l)
 !!      subroutine set_linear_phys_data_type(node_q, ele_q, surf_q,     &
 !!     &         nod_fld_q, femmesh_l, nod_fld_l)
 !!        type(node_data), intent(in) ::    node_q
@@ -58,20 +56,20 @@
      &         (femmesh_q, ele_mesh_q, nod_fld_q,                       &
      &          femmesh_l, ele_mesh_l, nod_fld_l)
 !
-      type(mesh_data), intent(in) :: femmesh_q
+      type(mesh_data_p), intent(in) :: femmesh_q
       type(element_geometry_p), intent(inout) :: ele_mesh_q
       type(phys_data), intent(in) :: nod_fld_q
 !
-      type(mesh_data), intent(inout) :: femmesh_l
+      type(mesh_data_p), intent(inout) :: femmesh_l
       type(element_geometry_p), intent(inout) :: ele_mesh_l
       type(phys_data), intent(inout) :: nod_fld_l
 !
 !
-      call init_element_mesh_type(ele_mesh_q)
-      call init_element_mesh_type(ele_mesh_l)
+!      call init_element_mesh_type(ele_mesh_q)
 !
-      call const_linear_mesh_by_q(femmesh_q%mesh, ele_mesh_q,           &
-     &    femmesh_q%group, nod_fld_q, femmesh_l, ele_mesh_l, nod_fld_l)
+      call const_linear_mesh_by_q                                       &
+     &   (femmesh_q%mesh, ele_mesh_q, femmesh_q%group, nod_fld_q,       &
+     &    femmesh_l%mesh, ele_mesh_l, femmesh_l%group, nod_fld_l)
 !
       end subroutine const_linear_mesh_type_by_t
 !
@@ -99,8 +97,9 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine const_linear_mesh_by_q(mesh_q, ele_mesh_q,             &
-     &          group_q, nod_fld_q, femmesh_l, ele_mesh_l, nod_fld_l)
+      subroutine const_linear_mesh_by_q                                 &
+     &         (mesh_q, ele_mesh_q, group_q, nod_fld_q,                 &
+     &          mesh_l, ele_mesh_l, group_l, nod_fld_l)
 !
       use t_mesh_data
       use t_geometry_data
@@ -111,28 +110,33 @@
 !
       type(mesh_geometry), intent(in) :: mesh_q
       type(element_geometry_p), intent(in) :: ele_mesh_q
-      type(mesh_groups), intent(in) :: group_q
+      type(mesh_groups_p), intent(in) :: group_q
 !
       type(phys_data), intent(in) ::     nod_fld_q
 !
-      type(mesh_data), intent(inout) :: femmesh_l
+      type(mesh_geometry), intent(inout) :: mesh_l
       type(element_geometry_p), intent(inout) :: ele_mesh_l
+      type(mesh_groups_p), intent(inout) :: group_l
       type(phys_data), intent(inout) :: nod_fld_l
 !
 !
-      femmesh_l%mesh%ele%nnod_4_ele = num_t_linear
+      mesh_l%ele%nnod_4_ele = num_t_linear
       ele_mesh_l%surf%nnod_4_surf =  num_linear_sf
       ele_mesh_l%edge%nnod_4_edge =  num_linear_edge
 !
       if      (mesh_q%ele%nnod_4_ele .eq. num_t_linear) then
-        call link_data_4_linear_grid(mesh_q, ele_mesh_q, group_q,       &
-     &     nod_fld_q, femmesh_l, ele_mesh_l, nod_fld_l)
+        call init_element_mesh_type(ele_mesh_l)
+        call link_data_4_linear_grid                                    &
+     &     (mesh_q, ele_mesh_q, group_q, nod_fld_q,                     &
+     &      mesh_l, ele_mesh_l, group_l, nod_fld_l)
       else if (mesh_q%ele%nnod_4_ele .eq. num_t_quad) then
-        call set_linear_data_by_quad_data(mesh_q, ele_mesh_q, group_q,  &
-     &      nod_fld_q, femmesh_l, ele_mesh_l, nod_fld_l)
+        call set_linear_data_by_quad_data                               &
+     &     (mesh_q, ele_mesh_q, group_q, nod_fld_q,                     &
+     &      mesh_l, ele_mesh_l, group_l, nod_fld_l)
       else if (mesh_q%ele%nnod_4_ele .eq. num_t_lag) then
-        call set_linear_data_by_lag_data(mesh_q, group_q,               &
-     &      nod_fld_q, femmesh_l, ele_mesh_l, nod_fld_l)
+        call set_linear_data_by_lag_data                                &
+     &     (mesh_q, group_q, nod_fld_q,                                 &
+     &      mesh_l, ele_mesh_l, group_l, nod_fld_l)
       end if 
 !
       end subroutine const_linear_mesh_by_q

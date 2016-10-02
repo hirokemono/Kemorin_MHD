@@ -58,9 +58,9 @@
      &          femmesh_org, femmesh_dest, single_tbl)
 !
       integer(kind = kint), intent(in) :: nprocs_org
-      type(mesh_data), intent(in) :: femmesh_org(nprocs_org)
+      type(mesh_data_p), intent(in) :: femmesh_org(nprocs_org)
       integer(kind = kint), intent(in) :: nprocs_dest
-      type(mesh_data), intent(in) :: femmesh_dest(nprocs_dest)
+      type(mesh_data_p), intent(in) :: femmesh_dest(nprocs_dest)
 !
       type(interpolate_table), intent(in) :: single_tbl
 !
@@ -136,9 +136,9 @@
      &          femmesh_org, femmesh_dest)
 !
       integer(kind = kint), intent(in) :: nprocs_org
-      type(mesh_data), intent(in) :: femmesh_org(nprocs_org)
+      type(mesh_data_p), intent(in) :: femmesh_org(nprocs_org)
       integer(kind = kint), intent(in) :: nprocs_dest
-      type(mesh_data), intent(in) :: femmesh_dest(nprocs_dest)
+      type(mesh_data_p), intent(in) :: femmesh_dest(nprocs_dest)
 !
       integer(kind = kint) :: ip, jp
 !
@@ -163,9 +163,9 @@
      &          femmesh_org, femmesh_dest)
 !
       integer(kind = kint), intent(in) :: nprocs_org
-      type(mesh_data), intent(in) :: femmesh_org(nprocs_org)
+      type(mesh_data_p), intent(in) :: femmesh_org(nprocs_org)
       integer(kind = kint), intent(in) :: nprocs_dest
-      type(mesh_data), intent(in) :: femmesh_dest(nprocs_dest)
+      type(mesh_data_p), intent(in) :: femmesh_dest(nprocs_dest)
 !
       integer(kind = kint) :: ip, jp, inod, jele
       integer(kind = kint_gl) :: inod_gl, jele_gl

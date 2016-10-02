@@ -26,7 +26,7 @@
       type(element_geometry), save :: org_ele_mesh
 !
       type(mesh_geometry), save :: newmesh
-      type(mesh_groups), save ::   newgroup
+      type(mesh_groups_p), save ::   newgroup
 !
       type(next_nod_ele_table), save :: next_tbl_i
 !
