@@ -265,9 +265,13 @@
      &         + len_multi_int_textline(int(IO_param%istack_merged(i)))
       end do
 !
-      ilength = len_multi_int_textline(num)
-      call read_multi_int_textline                                      &
-     &   (mpi_read_characters(IO_param, ilength), num, int_dat)
+      if(my_rank .lt. IO_param%nprocs_in) then
+        ilength = len_multi_int_textline(num)
+        call read_multi_int_textline                                    &
+     &     (mpi_read_characters(IO_param, ilength), num, int_dat)
+      end if
+      IO_param%ioff_gl = IO_param%ioff_gl                               &
+     &         + IO_param%istack_merged(IO_param%nprocs_in)
 !
       end subroutine mpi_read_int_vector
 !
@@ -301,25 +305,29 @@
         IO_param%istack_merged(i) = IO_param%istack_merged(i-1) + led
       end do
 !
-      if(num .le. 0) then
-        led = ione
-      else if(num .gt. 0) then
-        ioffset = IO_param%ioff_gl                                      &
+      if(my_rank .lt. IO_param%nprocs_in) then
+        if(num .le. 0) then
+          led = ione
+        else if(num .gt. 0) then
+          ioffset = IO_param%ioff_gl                                    &
      &           + IO_param%istack_merged(IO_param%id_rank)
 !
-        do i = 0, (num-1)/ncolumn - 1
-          ilength = len_multi_int_textline(ncolumn)
+          do i = 0, (num-1)/ncolumn - 1
+            ilength = len_multi_int_textline(ncolumn)
+            call read_multi_int_textline                                &
+     &         (calypso_mpi_seek_read_chara(IO_param%id_file,           &
+     &                                      ioffset, ilength),          &
+     &          ncolumn, int_dat(ncolumn*i+1))
+          end do
+          nrest = mod((num-1),ncolumn) + 1
+          ilength = len_multi_int_textline(nrest)
           call read_multi_int_textline                                  &
      &       (calypso_mpi_seek_read_chara(IO_param%id_file,             &
      &                                    ioffset, ilength),            &
-     &        ncolumn, int_dat(ncolumn*i+1))
-        end do
-        nrest = mod((num-1),ncolumn) + 1
-        ilength = len_multi_int_textline(nrest)
-        call read_multi_int_textline                                    &
-     &     (calypso_mpi_seek_read_chara(IO_param%id_file,               &
-     &                                  ioffset, ilength),              &
-     &      nrest, int_dat(num-nrest+1))
+     &        nrest, int_dat(num-nrest+1))
+        end if
+      else
+        int_dat = 0
       end if
       IO_param%ioff_gl = IO_param%ioff_gl                               &
      &         + IO_param%istack_merged(IO_param%nprocs_in)

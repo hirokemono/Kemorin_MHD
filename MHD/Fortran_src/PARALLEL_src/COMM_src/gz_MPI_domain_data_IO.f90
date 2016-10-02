@@ -281,6 +281,11 @@
       call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset,          &
      &   ilen_gz, gzip_buf(1))
 !
+      if(my_rank .ge. IO_param%nprocs_in) then
+        int_dat = 0
+        return
+      end if
+!
       if(num .le. 0) then
         call gzip_infleat_once                                          &
      &    (ilen_gz, gzip_buf(1), ione, textbuf(1), ilen_gzipped)

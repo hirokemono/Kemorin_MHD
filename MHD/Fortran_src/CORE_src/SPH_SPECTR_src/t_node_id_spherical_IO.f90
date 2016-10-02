@@ -32,10 +32,10 @@
 !>      Structure for spherical harmonics table IO
       type sph_IO_data
 !>        Subdomain ID in each direction
-        integer(kind = kint) :: sph_rank(3)
+        integer(kind = kint) :: sph_rank(3) = (/0,0,0/)
 !
 !>        Number of global components in each direction
-        integer(kind = kint) :: nidx_gl_sph(3)
+        integer(kind = kint) :: nidx_gl_sph(3) = (/0,0,0/)
 !>        Truncation of spherical hermonis
         integer(kind = kint) :: ltr_gl
 !

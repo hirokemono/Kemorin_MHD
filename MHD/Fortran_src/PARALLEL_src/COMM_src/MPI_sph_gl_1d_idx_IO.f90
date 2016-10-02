@@ -115,6 +115,7 @@
       call mpi_read_node_position(IO_param,                             &
      &   sph_IO%nidx_sph(1), sph_IO%ncomp_table_1d(1),                  &
      &   idx_gl_tmp, sph_IO%r_gl_1)
+!
       sph_IO%idx_gl_1(1:sph_IO%nidx_sph(1))                             &
      &       = int(idx_gl_tmp(1:sph_IO%nidx_sph(1)))
       deallocate(idx_gl_tmp)
@@ -129,7 +130,6 @@
 !
       call mpi_read_1d_gl_address(IO_param,                             &
      &   sph_IO%nidx_sph(2), sph_IO%ncomp_table_1d(2), sph_IO%idx_gl_2)
-!
 !
       end subroutine mpi_read_rj_gl_1d_table
 !
@@ -256,20 +256,22 @@
      &                             + led
       end do
 !
-      if(nnod .eq. 0) then
-        led = ione
-      else
-        ioffset = IO_param%ioff_gl                                      &
+      if(my_rank .lt. IO_param%nprocs_in) then
+        if(nnod .eq. 0) then
+          led = ione
+        else
+          ioffset = IO_param%ioff_gl                                    &
      &           + IO_param%istack_merged(IO_param%id_rank)
 !
-        ilength = len_int8_and_vector_textline(numdir)
-        do i = 1, nnod
-          call read_int8_and_vector_textline                            &
-     &       (calypso_mpi_seek_read_chara(IO_param%id_file,             &
-     &                                    ioffset, ilength),            &
-     &        id_global(i), numdir, xx_tmp)
-          xx(i,1:numdir) = xx_tmp(1:numdir)
-        end do
+          ilength = len_int8_and_vector_textline(numdir)
+          do i = 1, nnod
+            call read_int8_and_vector_textline                          &
+     &         (calypso_mpi_seek_read_chara(IO_param%id_file,           &
+     &                                      ioffset, ilength),          &
+     &          id_global(i), numdir, xx_tmp)
+            xx(i,1:numdir) = xx_tmp(1:numdir)
+          end do
+        end if
       end if
       IO_param%ioff_gl = IO_param%ioff_gl                               &
      &         + IO_param%istack_merged(IO_param%nprocs_in)
@@ -306,20 +308,22 @@
      &                             + led
       end do
 !
-      if(nnod .eq. 0) then
-        led = ione
-      else
-        ioffset = IO_param%ioff_gl                                      &
-     &           + IO_param%istack_merged(IO_param%id_rank)
+      if(my_rank .lt. IO_param%nprocs_in) then
+        if(nnod .eq. 0) then
+          led = ione
+        else
+          ioffset = IO_param%ioff_gl                                    &
+     &             + IO_param%istack_merged(IO_param%id_rank)
 !
-        ilength = len_multi_int_textline(numdir)
-        do i = 1, nnod
-          call read_multi_int_textline                                  &
-     &       (calypso_mpi_seek_read_chara(IO_param%id_file,             &
-     &                                    ioffset, ilength),            &
-     &        numdir, idx_tmp)
-          idx(i,1:numdir) = idx_tmp(1:numdir)
-        end do
+          ilength = len_multi_int_textline(numdir)
+          do i = 1, nnod
+            call read_multi_int_textline                                &
+     &         (calypso_mpi_seek_read_chara(IO_param%id_file,           &
+     &                                      ioffset, ilength),          &
+     &          numdir, idx_tmp)
+            idx(i,1:numdir) = idx_tmp(1:numdir)
+          end do
+        end if
       end if
       IO_param%ioff_gl = IO_param%ioff_gl                               &
      &         + IO_param%istack_merged(IO_param%nprocs_in)

@@ -179,7 +179,12 @@
       call read_int8_stack_textline                                     &
          (mpi_read_charahead(IO_param, ilength),                        &
      &    IO_param%nprocs_in, IO_param%istack_merged)
-      num = int(IO_param%istack_merged(IO_param%id_rank+1))
+!
+      if(my_rank .le. IO_param%nprocs_in) then
+        num = int(IO_param%istack_merged(IO_param%id_rank+1))
+      else
+        num = 0
+      end if
 !
       end subroutine mpi_read_num_of_data
 !
@@ -225,8 +230,6 @@
         mpi_read_characters = calypso_mpi_seek_read_chara               &
      &                     (IO_param%id_file, ioffset, ilength)
       end if
-      IO_param%ioff_gl = IO_param%ioff_gl                               &
-     &         + IO_param%istack_merged(IO_param%nprocs_in)
 !
       end function mpi_read_characters
 !
