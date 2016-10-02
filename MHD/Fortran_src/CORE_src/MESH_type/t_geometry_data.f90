@@ -36,12 +36,6 @@
 !!      subroutine deallocate_ele_param_smp_type(ele)
 !!        type(element_data), intent(inout) :: ele
 !!
-!!      subroutine link_new_numnod_stack(nod_org, node)
-!!      subroutine link_new_nod_geometry_type(nod_org, node)
-!!
-!!      subroutine unlink_numnod_stack(node)
-!!      subroutine unlink_node_geometry_type(node)
-!!
 !!      subroutine check_nod_size_smp_type(node, my_rank)
 !!      subroutine check_ele_size_smp_type(ele, my_rank)
 !!@endverbatim
@@ -61,37 +55,37 @@
         integer( kind=kint )  ::  internal_node
 !
 !>        Stack list of number of node
-        integer(kind=kint_gl), pointer  :: istack_numnod(:)
+        integer(kind=kint_gl), allocatable  :: istack_numnod(:)
 !>        Stack list of number of internal node
-        integer(kind=kint_gl), pointer  :: istack_internod(:)
+        integer(kind=kint_gl), allocatable  :: istack_internod(:)
 !
 !>       end number of node for SMP on local PE
-        integer( kind=kint ), pointer :: istack_nod_smp(:)
+        integer( kind=kint ), allocatable :: istack_nod_smp(:)
 !>       end number of internal node for SMP on local PE
-        integer( kind=kint ), pointer :: istack_internal_smp(:)
+        integer( kind=kint ), allocatable :: istack_internal_smp(:)
 !>       maximum smp number of node on local PE
         integer( kind=kint )  ::  max_nod_smp
 !>       maximum internal smp number of node on local PE
         integer( kind=kint )  ::  max_internal_nod_smp
 !
 !>       nodal coordinates (where i:x_1, x_2, x_3 , j:id)
-        real(kind=kreal)  , pointer  :: xx(:,:)
+        real(kind=kreal)  , allocatable  :: xx(:,:)
 !
 !>       global node    id (where i:node id)
-        integer(kind=kint_gl), pointer  ::  inod_global(:)
+        integer(kind=kint_gl), allocatable  ::  inod_global(:)
 !
 !>       distance from the centre
-        real(kind=kreal)  , pointer  :: rr(:)
+        real(kind=kreal)  , allocatable  :: rr(:)
 !>       1/radius
-        real(kind=kreal)  , pointer  :: a_r(:)
+        real(kind=kreal)  , allocatable  :: a_r(:)
 !>       longitude of node
-        real(kind=kreal)  , pointer  :: phi(:)
+        real(kind=kreal)  , allocatable  :: phi(:)
 !>       colatitude of node
-        real(kind=kreal)  , pointer  :: theta(:)
+        real(kind=kreal)  , allocatable  :: theta(:)
 !>       cylindorical radius of node
-        real(kind=kreal)  , pointer  :: ss(:)
+        real(kind=kreal)  , allocatable  :: ss(:)
 !>       1 / a_s_cylinder
-        real(kind=kreal)  , pointer  :: a_s(:)
+        real(kind=kreal)  , allocatable  :: a_s(:)
       end type node_data
 !
 !
@@ -483,74 +477,6 @@
       end subroutine deallocate_ele_param_smp_type
 !
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine link_new_numnod_stack(nod_org, node)
-!
-      type(node_data), intent(in) :: nod_org
-      type(node_data), intent(inout) :: node
-!
-!
-      node%istack_numnod => nod_org%istack_numnod
-      node%istack_internod => nod_org%istack_internod
-!
-      end subroutine link_new_numnod_stack
-!
-! ------------------------------------------------------
-!
-      subroutine link_new_nod_geometry_type(nod_org, node)
-!
-      type(node_data), intent(in) :: nod_org
-      type(node_data), intent(inout) :: node
-!
-!
-      node%numnod =         nod_org%numnod
-      node%internal_node =  nod_org%internal_node
-!
-      node%inod_global => nod_org%inod_global
-      node%xx =>  nod_org%xx
-!
-      node%rr =>    nod_org%rr
-      node%a_r =>   nod_org%a_r
-      node%theta => nod_org%theta
-      node%phi =>   nod_org%phi
-      node%ss =>    nod_org%ss
-      node%a_s =>   nod_org%a_s
-!
-      node%istack_nod_smp =>      nod_org%istack_nod_smp
-      node%istack_internal_smp => nod_org%istack_internal_smp
-!
-      node%max_nod_smp =          nod_org%max_nod_smp
-      node%max_internal_nod_smp = nod_org%max_internal_nod_smp
-!
-      end subroutine link_new_nod_geometry_type
-!
-!-----------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine unlink_numnod_stack(node)
-!
-      type(node_data), intent(inout) :: node
-!
-!
-      nullify(node%istack_numnod, node%istack_internod)
-!
-      end subroutine unlink_numnod_stack
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine unlink_node_geometry_type(node)
-!
-      type(node_data), intent(inout) :: node
-!
-      nullify(node%inod_global, node%xx)
-!
-      nullify(node%rr, node%a_r, node%ss)
-      nullify(node%a_s, node%phi, node%theta)
-!
-      end subroutine unlink_node_geometry_type
-!
-!  ---------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine check_nod_size_smp_type(node, my_rank)

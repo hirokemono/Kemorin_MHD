@@ -52,8 +52,8 @@
       type(element_geometry_p), intent(inout) :: ele_mesh_l
 !
 !
-      call link_new_nod_geometry_type(mesh_q%node, mesh_l%node)
-      mesh_l%ele => mesh_q%ele
+      mesh_l%node => mesh_q%node
+      mesh_l%ele =>  mesh_q%ele
 !
       ele_mesh_l%surf => ele_mesh_q%surf
       ele_mesh_l%edge => ele_mesh_q%edge
@@ -95,6 +95,8 @@
 !
       allocate(mesh_l%node)
       allocate(mesh_l%ele)
+      allocate(group_l%ele_grp)
+      allocate(group_l%surf_grp)
       call generate_linear_nod_by_quad                                  &
      &   (mesh_q%node, mesh_q%ele, ele_mesh_q%surf, mesh_l%node)
 !
@@ -106,8 +108,6 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'gen_linear_group_info'
       group_l%nod_grp => group_q%nod_grp
-      allocate(group_l%ele_grp)
-      allocate(group_l%surf_grp)
 !
       call gen_linear_group_info(group_q%ele_grp, group_q%surf_grp,     &
      &   group_l%ele_grp, group_l%surf_grp)
@@ -154,11 +154,12 @@
       type(element_geometry_p), intent(inout) :: ele_mesh_l
 !
 !
+      allocate(mesh_l%ele)
+      allocate(group_l%ele_grp)
+      allocate(group_l%surf_grp)
       call set_local_element_info(ele_mesh_l%surf, ele_mesh_l%edge)
 !
-      allocate(mesh_l%node)
-      allocate(mesh_l%ele)
-      call link_new_nod_geometry_type(mesh_q%node, mesh_l%node)
+      mesh_l%node => mesh_q%node
 !
       if (iflag_debug.eq.1) write(*,*) 'connect_lag_mesh_2_linear'
       call connect_lag_mesh_2_linear                                    &
@@ -166,8 +167,6 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'gen_linear_group_info'
       group_l%nod_grp => group_q%nod_grp
-      allocate(group_l%ele_grp)
-      allocate(group_l%surf_grp)
 !
       call gen_linear_group_info(group_q%ele_grp, group_q%surf_grp,     &
      &   group_l%ele_grp, group_l%surf_grp)

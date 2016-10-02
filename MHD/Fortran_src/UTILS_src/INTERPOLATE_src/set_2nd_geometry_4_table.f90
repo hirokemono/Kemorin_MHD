@@ -84,12 +84,12 @@
 !
       jp = my_rank + 1
       call link_comm_tbl_types(origin_mesh(jp)%mesh%nod_comm, newmesh%nod_comm)
-      call link_new_nod_geometry_type(origin_mesh(jp)%mesh%node, newmesh%node)
+      newmesh%node => origin_mesh(jp)%mesh%node
+      newmesh%ele => origin_mesh(jp)%mesh%ele
+!
       newgroup%nod_grp =>  origin_mesh(jp)%group%nod_grp
       newgroup%ele_grp =>  origin_mesh(jp)%group%ele_grp
       newgroup%surf_grp => origin_mesh(jp)%group%surf_grp
-!
-      newmesh%ele => origin_mesh(jp)%mesh%ele
 !
       if (newmesh%ele%nnod_4_ele .eq. num_t_linear) then
         call set_1_hexa_2_5_tetra
@@ -116,7 +116,7 @@
       nullify(newgroup%nod_grp)
 
       nullify(newmesh%ele)
-      call unlink_node_geometry_type(newmesh%node)
+      nullify(newmesh%node)
 
 !
       call unlink_dest_comm_tbl_type(newmesh%nod_comm)
