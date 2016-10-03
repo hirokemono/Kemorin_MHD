@@ -81,10 +81,10 @@
       call start_eleps_time(2)
       allocate(comm_rlm_mul(ndomain_sph))
 !
-      if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rlm_grids'
+      if(ndomain_sph .eq. nprocs) then
+        if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rlm_grids'
         call mpi_gen_sph_rlm_grids                                      &
      &     (sph%sph_params, sph%sph_rlm, comm_rlm_mul)
-      if(ndomain_sph .eq. nprocs) then
       else
         call para_gen_sph_rlm_grids                                     &
      &     (ndomain_sph, sph%sph_params, sph%sph_rlm, comm_rlm_mul)
