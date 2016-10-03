@@ -36,6 +36,11 @@
 !!     &           djds_tbl)
 !!      subroutine check_djds_matrix_components                         &
 !!     &         (my_rank, djds_tbl, djds_mat)
+!!
+!!      subroutine link_djds_connect_structs(djds_org, djds_tbl)
+!!      subroutine link_djds_matrix_structs(mat_org, mat)
+!!      subroutine unlink_djds_connect_structs(djds_tbl)
+!!      subroutine unlink_djds_matrix_structs(mat)
 !!@endverbatim
 !
       module t_solver_djds
@@ -55,30 +60,30 @@
         integer(kind=kint) :: itotal_u
 !
         integer(kind=kint) :: NHYP
-        integer(kind=kint), allocatable :: IVECT(:)
+        integer(kind=kint), pointer :: IVECT(:)
 !
-        integer(kind=kint), allocatable :: OLDtoNEW(:)
-        integer(kind=kint), allocatable :: NEWtoOLD(:)
+        integer(kind=kint), pointer :: OLDtoNEW(:)
+        integer(kind=kint), pointer :: NEWtoOLD(:)
 !
-        integer(kind=kint), allocatable :: NEWtoOLD_DJDS_L(:)
-        integer(kind=kint), allocatable :: NEWtoOLD_DJDS_U(:)
-        integer(kind=kint), allocatable :: OLDtoNEW_DJDS_L(:)
-        integer(kind=kint), allocatable :: OLDtoNEW_DJDS_U(:)
-        integer(kind=kint), allocatable :: LtoU(:)
+        integer(kind=kint), pointer :: NEWtoOLD_DJDS_L(:)
+        integer(kind=kint), pointer :: NEWtoOLD_DJDS_U(:)
+        integer(kind=kint), pointer :: OLDtoNEW_DJDS_L(:)
+        integer(kind=kint), pointer :: OLDtoNEW_DJDS_U(:)
+        integer(kind=kint), pointer :: LtoU(:)
 !
-        integer(kind=kint), allocatable :: indexDJDS_L(:)
-        integer(kind=kint), allocatable :: indexDJDS_U(:)
-        integer(kind=kint), allocatable :: itemDJDS_L(:)
-        integer(kind=kint), allocatable :: itemDJDS_U(:)
-        integer(kind=kint), allocatable :: NLmaxHYP(:)
-        integer(kind=kint), allocatable :: NUmaxHYP(:)
+        integer(kind=kint), pointer :: indexDJDS_L(:)
+        integer(kind=kint), pointer :: indexDJDS_U(:)
+        integer(kind=kint), pointer :: itemDJDS_L(:)
+        integer(kind=kint), pointer :: itemDJDS_U(:)
+        integer(kind=kint), pointer :: NLmaxHYP(:)
+        integer(kind=kint), pointer :: NUmaxHYP(:)
 !
-        integer(kind=kint), allocatable :: STACKmcG(:)
-        integer(kind=kint), allocatable :: STACKmc(:)
-        integer(kind=kint), allocatable :: COLORon(:)
-        integer(kind=kint), allocatable :: PEon(:)
+        integer(kind=kint), pointer :: STACKmcG(:)
+        integer(kind=kint), pointer :: STACKmc(:)
+        integer(kind=kint), pointer :: COLORon(:)
+        integer(kind=kint), pointer :: PEon(:)
 !
-        integer(kind = kint), allocatable :: NOD_EXPORT_NEW(:)
+        integer(kind = kint), pointer :: NOD_EXPORT_NEW(:)
 !
 !  ---  constants
 !
@@ -457,6 +462,70 @@
        deallocate(mat%ALUG_L)
 !
        end subroutine dealloc_type_djds_mat
+!
+! ------------------------------------------
+!
+      subroutine link_djds_connect_structs(djds_org, djds_tbl)
+!
+      type(DJDS_ordering_table), intent(in) ::    djds_org
+      type(DJDS_ordering_table), intent(inout) :: djds_tbl
+!
+!
+      djds_tbl%itotal_l = djds_org%itotal_l
+      djds_tbl%itotal_u = djds_org%itotal_u
+      djds_tbl%NHYP =     djds_org%NHYP
+      djds_tbl%NLmax =    djds_org%NLmax
+      djds_tbl%NUmax =    djds_org%NUmax
+      djds_tbl%npLX1 =    djds_org%npLX1
+      djds_tbl%npUX1 =    djds_org%npUX1
+!
+      djds_tbl%IVECT =>           djds_org%IVECT
+      djds_tbl%NEWtoOLD =>        djds_org%NEWtoOLD
+      djds_tbl%OLDtoNEW =>        djds_org%OLDtoNEW
+      djds_tbl%NEWtoOLD_DJDS_U => djds_org%NEWtoOLD_DJDS_U
+      djds_tbl%OLDtoNEW_DJDS_L => djds_org%OLDtoNEW_DJDS_L
+      djds_tbl%OLDtoNEW_DJDS_U => djds_org%OLDtoNEW_DJDS_U
+      djds_tbl%LtoU =>            djds_org%LtoU
+      djds_tbl%indexDJDS_L =>     djds_org%indexDJDS_L
+      djds_tbl%indexDJDS_U =>     djds_org%indexDJDS_U
+      djds_tbl%itemDJDS_L =>      djds_org%itemDJDS_L
+      djds_tbl%itemDJDS_U =>      djds_org%itemDJDS_U
+      djds_tbl%NLmaxHYP =>        djds_org%NLmaxHYP
+      djds_tbl%NUmaxHYP =>        djds_org%NUmaxHYP
+      djds_tbl%STACKmcG =>        djds_org%STACKmcG
+      djds_tbl%STACKmc =>         djds_org%STACKmc
+!
+      djds_tbl%NOD_EXPORT_NEW =>  djds_org%NOD_EXPORT_NEW
+!
+      end subroutine link_djds_connect_structs
+!
+! ------------------------------------------
+!
+      subroutine unlink_djds_connect_structs(djds_tbl)
+!
+      type(DJDS_ordering_table), intent(inout) :: djds_tbl
+!
+!
+      djds_tbl%itotal_l = 0
+      djds_tbl%itotal_u = 0
+      djds_tbl%NHYP =     0
+      djds_tbl%NLmax =    0
+      djds_tbl%NUmax =    0
+      djds_tbl%npLX1 =    0
+      djds_tbl%npUX1 =    0
+!
+      nullify( djds_tbl%IVECT )
+      nullify( djds_tbl%NEWtoOLD, djds_tbl%OLDtoNEW)
+      nullify( djds_tbl%NEWtoOLD_DJDS_U, djds_tbl%LtoU )
+      nullify( djds_tbl%OLDtoNEW_DJDS_L, djds_tbl%OLDtoNEW_DJDS_U)
+      nullify( djds_tbl%indexDJDS_L, djds_tbl%itemDJDS_L )
+      nullify( djds_tbl%indexDJDS_U, djds_tbl%itemDJDS_U )
+      nullify( djds_tbl%NLmaxHYP, djds_tbl%NUmaxHYP )
+      nullify( djds_tbl%STACKmcG, djds_tbl%STACKmc )
+!
+      nullify( djds_tbl%NOD_EXPORT_NEW )
+!
+      end subroutine unlink_djds_connect_structs
 !
 ! ------------------------------------------
 ! ------------------------------------------

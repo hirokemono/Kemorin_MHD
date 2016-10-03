@@ -106,7 +106,7 @@
       call set_djds_whole_connectivity(nod_comm, node, solver_C,        &
      &    next_tbl%neib_nod, MHD1_matrices%MG_DJDS_table(0))
 !
-      call copy_comm_tbl_types                                          &
+      call link_comm_tbl_types                                          &
      &   (nod_comm, MHD1_matrices%MG_comm_table(0))
 !
       end subroutine set_MHD_whole_connectivity
@@ -138,10 +138,11 @@
      &      fluid%iele_start_fld, fluid%iele_end_fld,                   &
      &      DJDS_comm_fl, solver_C, MHD1_matrices%MG_DJDS_lin_fl(0))
       else
-        MHD1_matrices%MG_DJDS_linear(0)                                 &
-     &      = MHD1_matrices%MG_DJDS_table(0)
-        MHD1_matrices%MG_DJDS_lin_fl(0)                                 &
-     &      = MHD1_matrices%MG_DJDS_fluid(0)
+        call link_djds_connect_structs                                  &
+     &     (MHD1_matrices%MG_DJDS_table(0),                             &
+     &      MHD1_matrices%MG_DJDS_linear(0))
+        call link_djds_connect_structs(MHD1_matrices%MG_DJDS_fluid(0),  &
+     &      MHD1_matrices%MG_DJDS_lin_fl(0))
       end if
 !
       call copy_comm_tbl_types                                          &

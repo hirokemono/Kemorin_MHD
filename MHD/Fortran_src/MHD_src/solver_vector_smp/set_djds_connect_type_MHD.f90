@@ -94,8 +94,17 @@
         end if
       end do
 !
-      if( MG_mesh(i_level)%mesh%ele%nnod_4_ele .ne. num_t_linear) then
-        do i_level = 1, l_endlevel
+      do i_level = 1, l_endlevel
+        if(MG_mesh(i_level)%mesh%ele%nnod_4_ele .eq. num_t_linear)      &
+     &         then
+          call link_djds_connect_structs                                &
+     &       (MHD_matrices%MG_DJDS_table(i_level),                      &
+     &        MHD_matrices%MG_DJDS_linear(i_level))
+!
+          call link_djds_connect_structs                                &
+     &       (MHD_matrices%MG_DJDS_fluid(i_level),                      &
+     &        MHD_matrices%MG_DJDS_lin_fl(i_level))
+        else
           call set_djds_layer_connect_type(num_t_linear,                &
      &        ione, MG_mesh(i_level)%mesh%ele%numele,                   &
      &        MG_mesh(i_level)%mesh, MG_mesh(i_level)%mesh%nod_comm,    &
@@ -106,13 +115,8 @@
      &        MG_MHD_mesh(i_level)%fluid%iele_end_fld,                  &
      &        MG_mesh(i_level)%mesh, MG_MHD_mesh(i_level)%nod_fl_comm,  &
      &        MG_mpi(i_level), MHD_matrices%MG_DJDS_lin_fl(i_level))
-        end do
-      else
-        MHD_matrices%MG_DJDS_linear(1:i_level)                          &
-     &      = MHD_matrices%MG_DJDS_table(1:i_level)
-        MHD_matrices%MG_DJDS_lin_fl(1:i_level)                          &
-     &      = MHD_matrices%MG_DJDS_fluid(1:i_level)
-      end if
+        end if
+      end do
 !
       do i_level = l_endlevel+1, num_MG_level
         call empty_djds_connectivity_type(MG_mesh(i_level)%mesh,        &
