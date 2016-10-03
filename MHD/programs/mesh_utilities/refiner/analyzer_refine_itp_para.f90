@@ -149,4 +149,33 @@
 !
 !   --------------------------------------------------------------------
 !
+      subroutine dealloc_parallel_mesh_in_1pe(nprocs, para_mesh)
+!
+      use t_mesh_data
+      use t_mesh_data_with_pointer
+!
+      integer(kind = kint), intent(in) :: nprocs
+      type(mesh_data), intent(inout) :: para_mesh(nprocs)
+!
+      integer(kind = kint) :: ip
+!
+!
+      do ip = 1, nprocs
+        call deallocate_ele_geometry_type(para_mesh(ip)%mesh%ele)
+        call deallocate_ele_param_smp_type(para_mesh(ip)%mesh%ele)
+        call deallocate_node_param_smp_type(para_mesh(ip)%mesh%node)
+!
+        call deallocate_grp_type(para_mesh(ip)%group%nod_grp)
+        call deallocate_grp_type(para_mesh(ip)%group%ele_grp)
+        call deallocate_sf_grp_type(para_mesh(ip)%group%surf_grp)
+!
+        call deallocate_ele_connect_type(para_mesh(ip)%mesh%ele)
+        call deallocate_node_geometry_type(para_mesh(ip)%mesh%node)
+        call deallocate_type_comm_tbl(para_mesh(ip)%mesh%nod_comm)
+      end do
+!
+      end subroutine dealloc_parallel_mesh_in_1pe
+!
+! -----------------------------------------------------------------------
+!
       end module  analyzer_refine_itp_para
