@@ -320,6 +320,7 @@
       type(pvr_ctl), intent(inout) :: pvr
 !
 !
+      call load_ctl_label_and_line
       if(right_begin_flag(hd_vr_psf_ctl) .eq. 0) return
       if (pvr%i_pvr_ctl.gt.0) return
       do
