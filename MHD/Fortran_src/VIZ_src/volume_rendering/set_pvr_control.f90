@@ -141,9 +141,7 @@
 !
 !
       open(pvr_ctl_file_code, file=fname_pvr_ctl(i_pvr), status='old')
-      call load_ctl_label_and_line
       call read_pvr_update_flag(pvr_ctl_struct(i_pvr))
-!
       close(pvr_ctl_file_code)
 !
       end subroutine read_control_pvr_update

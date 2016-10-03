@@ -320,15 +320,10 @@
       type(pvr_ctl), intent(inout) :: pvr
 !
 !
-      if(right_begin_flag(hd_vr_psf_ctl) .eq. 0) return
-      if (pvr%i_pvr_ctl.gt.0) return
       do
         call load_ctl_label_and_line
-!
-        call find_control_end_flag(hd_vr_psf_ctl, pvr%i_pvr_ctl)
-        if(pvr%i_pvr_ctl .gt. 0) exit
-!
         call read_chara_ctl_type(hd_pvr_updated, pvr%updated_ctl)
+        if(pvr%updated_ctl%iflag .gt. 0) exit
       end do
 !
       end subroutine read_pvr_update_flag
