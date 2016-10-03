@@ -132,7 +132,7 @@
 ! -------------------------------------------------------------------
 ! -------------------------------------------------------------------
 !
-      character function one_word_textline(word)
+      function one_word_textline(word)
 !
       character(len=kchara), intent(in) :: word
       character(len=len_trim(word)+1) :: one_word_textline
