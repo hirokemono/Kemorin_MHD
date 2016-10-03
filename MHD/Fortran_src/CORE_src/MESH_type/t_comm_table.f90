@@ -24,6 +24,13 @@
 !!      subroutine deallocate_type_import_item(comm_tbl)
 !!      subroutine deallocate_type_export_item(comm_tbl)
 !!
+!!      subroutine link_comm_tbl_types(comm_org, comm_tbl)
+!!        type(communication_table), intent(in) :: comm_org
+!!        type(communication_table), intent(inout) :: comm_tbl
+!!
+!!      subroutine unlink_dest_comm_tbl_type(comm_tbl)
+!!        type(interpolate_table), intent(inout) :: comm_tbl
+!!
 !!      subroutine compare_comm_table_stacks                            &
 !!     &         (my_rank, org_comm, new_comm)
 !!      type(communication_table), intent(in) :: org_comm
@@ -41,24 +48,24 @@
 !>     number of neighboring domain
         integer(kind = kint) :: num_neib
 !>     neighboring pe id
-        integer(kind = kint), allocatable :: id_neib(:)
+        integer(kind = kint), pointer :: id_neib(:)
 !>    total number of import data 
         integer(kind = kint) :: ntot_import
 !>     import data count for each neighbor pe (i-th pe)
-        integer(kind = kint), allocatable :: num_import(:)
+        integer(kind = kint), pointer :: num_import(:)
 !>     import data end point for each neighbor pe (i-th pe)
-        integer(kind = kint), allocatable :: istack_import(:)
+        integer(kind = kint), pointer :: istack_import(:)
 !>      local id for import data                     (i-th)
-        integer(kind = kint), allocatable :: item_import(:)
+        integer(kind = kint), pointer :: item_import(:)
 !
 !>     total number of export data 
         integer(kind = kint) :: ntot_export
 !>     export data count for each neighbor pe (i-th pe)
-        integer(kind = kint), allocatable :: num_export(:)
+        integer(kind = kint), pointer :: num_export(:)
 !>     export data end point for each neighbor pe (i-th pe)
-        integer(kind = kint), allocatable :: istack_export(:)
+        integer(kind = kint), pointer :: istack_export(:)
 !>     local id for export data                     (i-th)
-        integer(kind = kint), allocatable :: item_export(:)
+        integer(kind = kint), pointer :: item_export(:)
       end type communication_table
 !
 !------------------------------------------------------------------
@@ -243,6 +250,50 @@
       deallocate(comm_tbl%item_export)
 !
       end subroutine deallocate_type_export_item
+!
+!------------------------------------------------------------------
+!------------------------------------------------------------------
+!
+      subroutine link_comm_tbl_types(comm_org, comm_tbl)
+!
+      type(communication_table), intent(in) :: comm_org
+      type(communication_table), intent(inout) :: comm_tbl
+!
+!
+      comm_tbl%num_neib =    comm_org%num_neib
+      comm_tbl%ntot_import = comm_org%ntot_import
+      comm_tbl%ntot_export = comm_org%ntot_export
+!
+      comm_tbl%id_neib =>       comm_org%id_neib
+      comm_tbl%num_import =>    comm_org%num_import
+      comm_tbl%istack_import => comm_org%istack_import
+      comm_tbl%item_import =>   comm_org%item_import
+      comm_tbl%num_export =>    comm_org%num_export
+      comm_tbl%istack_export => comm_org%istack_export
+      comm_tbl%item_export =>   comm_org%item_export
+!
+      end subroutine link_comm_tbl_types
+!
+!------------------------------------------------------------------
+!
+      subroutine unlink_dest_comm_tbl_type(comm_tbl)
+!
+      type(communication_table), intent(inout) :: comm_tbl
+!
+!
+      comm_tbl%num_neib =    0
+      comm_tbl%ntot_import = 0
+      comm_tbl%ntot_export = 0
+!
+      nullify( comm_tbl%id_neib       )
+      nullify( comm_tbl%num_import    )
+      nullify( comm_tbl%istack_import )
+      nullify( comm_tbl%item_import   )
+      nullify( comm_tbl%num_export    )
+      nullify( comm_tbl%istack_export )
+      nullify( comm_tbl%item_export   )
+!
+      end subroutine unlink_dest_comm_tbl_type
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------

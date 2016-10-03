@@ -42,8 +42,10 @@
       integer(kind = kint) :: i_level
 !
 !
-      MHD_matrices%MG_comm_table(1:1) = MG_mesh(1:1)%mesh%nod_comm
-      MHD_matrices%MG_comm_fluid(1:1) = MG_MHD_mesh(1:1)%nod_fl_comm
+      call link_comm_tbl_types                                          &
+     &   (MG_mesh(1)%mesh%nod_comm, MHD_matrices%MG_comm_table(1))
+      call link_comm_tbl_types(MG_MHD_mesh(1)%nod_fl_comm,              &
+     &    MHD_matrices%MG_comm_fluid(1))
 !
       call init_interpolate_mat_type                                    &
      &    (ele_1st, MHD_matrices%MG_interpolate(1)%f2c%tbl_org,         &
@@ -53,10 +55,10 @@
      &    MHD_matrices%MG_interpolate(1)%c2f%mat)
 !
       do i_level = 2, num_MG_level
-        MHD_matrices%MG_comm_table(i_level:i_level)                     &
-     &      = MG_mesh(i_level:i_level)%mesh%nod_comm
-        MHD_matrices%MG_comm_fluid(i_level:i_level)                     &
-     &      = MG_MHD_mesh(i_level:i_level)%nod_fl_comm
+        call link_comm_tbl_types(MG_mesh(i_level)%mesh%nod_comm,        &
+     &      MHD_matrices%MG_comm_table(i_level))
+        call link_comm_tbl_types(MG_MHD_mesh(i_level)%nod_fl_comm,      &
+     &      MHD_matrices%MG_comm_fluid(i_level))
 !
         call init_interpolate_mat_type(MG_mesh(i_level-1)%mesh%ele,     &
      &      MHD_matrices%MG_interpolate(i_level)%f2c%tbl_org,           &
