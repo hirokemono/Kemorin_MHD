@@ -133,11 +133,11 @@
 !
 !  --  Construct FEM mesh
       if(sph_params%iflag_shell_mode .eq. iflag_no_FEMMESH) then
-        if(sph_rj%iflag_rj_center .gt. 0) then
-          sph_params%iflag_shell_mode =  iflag_MESH_w_pole
-        else
+!        if(sph_rj%iflag_rj_center .gt. 0) then
+!          sph_params%iflag_shell_mode =  iflag_MESH_w_pole
+!        else
           sph_params%iflag_shell_mode = iflag_MESH_same
-        end if
+!        end if
       end if
 !
       if (iflag_debug.gt.0) write(*,*) 'const_FEM_mesh_4_sph_mhd'
