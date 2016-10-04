@@ -69,6 +69,7 @@
       else
         call sel_read_mesh(my_rank, fem_IO, ierr)
       end if 
+      call calypso_mpi_barrier
 !
       if(ierr .gt. 0) then
         call calypso_mpi_abort(ierr, 'Mesh data is wrong!!')
@@ -105,6 +106,7 @@
       else
         call sel_read_mesh_geometry(my_rank, mesh_IO, ierr)
       end if 
+      call calypso_mpi_barrier
 !
       if(ierr .gt. 0) then
         call calypso_mpi_abort(ierr, 'Mesh data is wrong!!')
@@ -140,6 +142,7 @@
       else
         call sel_read_node_size(my_rank, mesh_IO, ierr)
       end if 
+      call calypso_mpi_barrier
 !
       if(ierr .gt. 0) then
         call calypso_mpi_abort(ierr, 'Mesh data is wrong!!')
@@ -176,6 +179,7 @@
       else
         call sel_read_geometry_size(my_rank, mesh_IO, ierr)
       end if 
+      call calypso_mpi_barrier
 !
       if(ierr .gt. 0) then
         call calypso_mpi_abort(ierr, 'Mesh data is wrong!!')
@@ -210,6 +214,7 @@
       else
         call sel_write_mesh_file(my_rank, fem_IO)
       end if
+      call calypso_mpi_barrier
 !
       end subroutine sel_mpi_write_mesh_file
 !
