@@ -303,6 +303,7 @@
       else
         call write_step_field_file(file_name, id_rank, fld_IO)
       end if
+      call calypso_mpi_barrier
 !
       end subroutine sel_write_step_field_file
 !
@@ -349,6 +350,7 @@
       else
         call read_step_field_file(file_name, id_rank, fld_IO)
       end if
+      call calypso_mpi_barrier
 !
       end subroutine sel_read_step_field_file
 !
@@ -395,6 +397,7 @@
       else
         call read_and_alloc_step_field(file_name, id_rank, fld_IO)
       end if
+      call calypso_mpi_barrier
 !
       end subroutine sel_read_alloc_step_field_file
 !
@@ -441,6 +444,7 @@
       else
         call read_and_allocate_step_head(file_name, id_rank, fld_IO)
       end if
+      call calypso_mpi_barrier
 !
       end subroutine sel_read_alloc_field_head
 !
