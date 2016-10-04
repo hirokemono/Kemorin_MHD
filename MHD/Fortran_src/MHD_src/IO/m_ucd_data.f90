@@ -133,6 +133,7 @@
       end if
 !
       call sel_write_parallel_ucd_mesh(fem_ucd, merged_ucd)
+      call calypso_mpi_barrier
 !
       if(   mod(fem_ucd%ifmt_file,icent)/iten .eq. iflag_udt/iten       &
      & .or. mod(fem_ucd%ifmt_file,icent)/iten .eq. iflag_vtd/iten) then

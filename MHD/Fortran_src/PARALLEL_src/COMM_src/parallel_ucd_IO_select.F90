@@ -114,7 +114,6 @@
       else
         call sel_write_ucd_file(my_rank, istep_ucd, ucd)
       end if
-      call calypso_mpi_barrier
 !
       end subroutine sel_write_parallel_ucd_file
 !
@@ -155,7 +154,6 @@
       else
         call sel_write_grd_file(my_rank, ucd)
       end if
-      call calypso_mpi_barrier
 !
       end subroutine sel_write_parallel_ucd_mesh
 !

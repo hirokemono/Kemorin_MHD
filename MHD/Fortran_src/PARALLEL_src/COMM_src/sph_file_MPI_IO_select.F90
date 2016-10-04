@@ -90,7 +90,6 @@
           call sel_read_geom_rtp_file(id_rank, sph_file, ierr)
         end if
       end if
-      call calypso_mpi_barrier
 !
       if(ierr .gt. 0) then
         call calypso_mpi_abort(ierr, 'Spectr RTP data is wrong!!')
@@ -135,7 +134,6 @@
           call sel_read_spectr_rj_file(id_rank, sph_file, ierr)
         end if
       end if
-      call calypso_mpi_barrier
 !
       if(ierr .gt. 0) then
         call calypso_mpi_abort(ierr, 'Spectr RJ data is wrong!!')
@@ -180,7 +178,6 @@
           call sel_read_geom_rtm_file(id_rank, sph_file, ierr)
         end if
       end if
-      call calypso_mpi_barrier
 !
       if(ierr .gt. 0) then
         call calypso_mpi_abort(ierr, 'Spectr RTM data is wrong!!')
@@ -225,7 +222,6 @@
           call sel_read_modes_rlm_file(id_rank, sph_file, ierr)
         end if
       end if
-      call calypso_mpi_barrier
 !
       if(ierr .gt. 0) then
         call calypso_mpi_abort(ierr, 'Spectr RLM data is wrong!!')
@@ -269,7 +265,6 @@
           call sel_write_geom_rtp_file(id_rank, sph_file)
         end if
       end if
-      call calypso_mpi_barrier
 !
       end subroutine sel_mpi_write_geom_rtp_file
 !
@@ -308,7 +303,6 @@
           call sel_write_spectr_modes_rj_file(id_rank, sph_file)
         end if
       end if
-      call calypso_mpi_barrier
 !
       end subroutine sel_mpi_write_spectr_rj_file
 !
@@ -347,7 +341,6 @@
           call sel_write_geom_rtm_file(id_rank, sph_file)
         end if
       end if
-      call calypso_mpi_barrier
 !
       end subroutine sel_mpi_write_geom_rtm_file
 !
@@ -386,7 +379,6 @@
           call sel_write_modes_rlm_file(id_rank, sph_file)
         end if
       end if
-      call calypso_mpi_barrier
 !
       end subroutine sel_mpi_write_modes_rlm_file
 !
