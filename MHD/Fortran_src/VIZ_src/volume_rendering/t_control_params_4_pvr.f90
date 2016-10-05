@@ -202,6 +202,9 @@
         integer(kind = kint) :: ntick_pvr_colorbar =  3
 !>    Range of colorbar
         real(kind = kreal) :: cbar_range(2) = (/zero,one/)
+!
+!>    Draw flag for axis label
+        integer(kind = kint) :: iflag_pvr_axis =  0
       end type pvr_colorbar_parameter
 !
 !  ---------------------------------------------------------------------

@@ -8,6 +8,8 @@
 !      subroutine gen_zero_label(iscale, color_bar_style,               &
 !     &       color_mapping_style, interval_point, interval_mapping_num,&
 !     &       d_minmax, npix_img, isleeve_bar, ntot_pix, dimage)
+!!      subroutine set_one_label(char1, iscale, ist_px, ist_py,        &
+!!     &          npix_img, ntot_pix, dimage)
 !
       module  draw_pvr_colorbar_nums
 !
@@ -136,21 +138,45 @@
       ist_py = start_px(2)
       do m = 1, 9
         write(char1,'(a1)') numeric(m:m)
-        call gen_font8_12(char1, i_font)
-        do i = 1, 8*iscale
-          do j = 1, 12*iscale
-            k = ( (ist_py+j-1)*npix_img(1)+ist_px + i)
-            ic =  (i-1) / iscale + 1
-            jc = 12 - (j-1) / iscale
-            dimage(1:3,k) = dimage(1:3,k) + i_font(ic,jc)               &
-     &                     * (one - two*dimage(1:3,k))
-            dimage(4,k) = one
-          end do
-        end do
+        call set_one_label(char1, iscale, ist_px, ist_py,          &
+     &      npix_img, ntot_pix, dimage)
         ist_px = ist_px + 8 * iscale
       end do
 !
       end subroutine set_numeric_labels
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_one_label(char1, iscale, ist_px, ist_py,          &
+     &          npix_img, ntot_pix, dimage)
+!
+      use pvr_font_texture
+!
+      character(len=1), intent(in) :: char1
+      integer(kind = kint), intent(in) :: ist_px, ist_py
+!
+      integer(kind = kint), intent(in) :: iscale
+      integer(kind = kint), intent(in) :: ntot_pix
+      integer(kind = kint), intent(in) :: npix_img(2)
+      real(kind = kreal), intent(inout) :: dimage(4,ntot_pix)
+!
+      integer(kind = kint) :: i, j, k, ic, jc
+      integer(kind = kint) :: i_font(8,12)
+!
+!
+      call gen_font8_12(char1, i_font)
+      do i = 1, 8*iscale
+        do j = 1, 12*iscale
+          k = ( (ist_py+j-1)*npix_img(1)+ist_px + i)
+          ic =  (i-1) / iscale + 1
+          jc = 12 - (j-1) / iscale
+          dimage(1:3,k) = dimage(1:3,k) + i_font(ic,jc)               &
+     &                     * (one - two*dimage(1:3,k))
+          dimage(4,k) = one
+        end do
+      end do
+!
+      end subroutine set_one_label
 !
 !  ---------------------------------------------------------------------
 !

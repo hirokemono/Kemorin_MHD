@@ -66,6 +66,7 @@
       use set_position_pvr_screen
       use find_pvr_surf_domain
       use pvr_surface_enhancement
+      use pvr_axis_label
 !
       integer(kind = kint) :: isel_projection
 !
@@ -89,6 +90,8 @@
      &    ele%numele, surf%numsurf, surf%isf_4_ele,                     &
      &    pvr_screen%arccos_sf)
 !
+      call axis_direction_in_screen                                     &
+     &   (isel_projection, view_param, pvr_screen)
 !
       call cal_position_pvr_modelview(view_param%modelview_mat,         &
      &    node%numnod, node%xx, pvr_screen%x_nod_model)

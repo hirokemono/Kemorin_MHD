@@ -59,6 +59,7 @@
       use draw_pvr_colorbar
       use composite_pvr_images
       use PVR_image_transfer
+      use pvr_axis_label
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -123,6 +124,9 @@
       if(my_rank .eq. irank_tgt) then
         call set_pvr_colorbar(pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels, &
      &      color_param, cbar_param, pvr_rgb%rgba_real_gl)
+        call set_pvr_axislabel(cbar_param%iflag_pvr_axis,               &
+     &      pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels,                   &
+     &      pvr_screen, cbar_param, pvr_rgb%rgba_real_gl)
       end if
 !
       end subroutine rendering_image

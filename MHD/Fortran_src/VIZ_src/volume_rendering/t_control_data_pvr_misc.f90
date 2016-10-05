@@ -18,6 +18,8 @@
 !!    colorbar_range     0.0   1.0
 !!    font_size_ctl         3
 !!    num_grid_ctl     4
+!!
+!!    axis_label_switch      ON
 !!  end colorbar_ctl
 !!
 !!  begin image_rotation_ctl
@@ -65,6 +67,7 @@
         type(read_integer_item) ::   ngrid_cbar_ctl
         type(read_real2_item) ::     cbar_range_ctl
 !
+        type(read_character_item) :: axis_switch_ctl
 !
 !     2nd level for volume rendering
         integer (kind=kint) :: i_pvr_colorbar = 0
@@ -102,6 +105,8 @@
       character(len=kchara) :: hd_zeromarker_flag = 'iflag_zeromarker'
       character(len=kchara) :: hd_cbar_range = 'colorbar_range'
 !
+      character(len=kchara)                                             &
+     &                    :: hd_axis_switch = 'axis_label_switch'
 !     3rd level for rotation
 !
       character(len=kchara) :: hd_movie_rot_axis =  'rotation_axis_ctl'
@@ -112,6 +117,7 @@
       private :: hd_pvr_numgrid_cbar, hd_zeromarker_flag
       private :: hd_colorbar_scale, hd_pvr_font_size, hd_cbar_range
       private :: hd_movie_rot_axis, hd_movie_rot_frame
+      private :: hd_axis_switch
 !
 !  ---------------------------------------------------------------------
 !
@@ -234,6 +240,9 @@
         call read_chara_ctl_type(hd_zeromarker_flag,                    &
      &      colorbar%zeromarker_flag_ctl)
 !
+        call read_chara_ctl_type(hd_axis_switch,                        &
+     &      colorbar%axis_switch_ctl)
+!!
         call read_real2_ctl_type                                        &
      &     (hd_cbar_range, colorbar%cbar_range_ctl)
       end do

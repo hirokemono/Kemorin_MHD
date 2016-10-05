@@ -247,6 +247,17 @@
 !
       character(len = kchara) :: tmpchara
 !
+!    set axis label setting
+!
+      cbar_param%iflag_pvr_axis = 0
+      if( colorbar%axis_switch_ctl%iflag .gt. 0) then
+        tmpchara = colorbar%axis_switch_ctl%charavalue
+        if   (cmp_no_case(tmpchara, 'on')) then
+          cbar_param%iflag_pvr_axis = 1
+        end if
+      end if
+!
+!
 !    set colorbar setting
 !
       cbar_param%iflag_pvr_colorbar = 0

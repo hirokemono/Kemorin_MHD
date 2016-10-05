@@ -53,6 +53,11 @@
         integer(kind = kint) :: nsurf_screen = 0
 !>    Opacity value for surface boundaries
         real(kind = kreal), allocatable :: arccos_sf(:)
+!
+!>    Direction of three axis in screen coordinate
+        real(kind = kreal) :: axis_view(3,4)
+!>    Order of three axis in screen coordinate
+        integer(kind = kint) :: axis_order(3)
       end type pvr_projected_data
 !
 !

@@ -16,6 +16,8 @@
 !
       integer(kind = kint), parameter, private :: BAR_WIDTH = 12
 !
+      private :: s_draw_pvr_colorbar
+!
 !  ---------------------------------------------------------------------
 !
       contains

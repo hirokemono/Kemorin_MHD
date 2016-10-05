@@ -81,18 +81,9 @@
 !
 !>        Pixel data structure for volume rendering
         type(pvr_segmented_img) :: image
-!>        Pixel data structure for volume rendering
-        type(pvr_segmented_img) :: image_2
 !
 !>        Stored start point structure for volume rendering
         type(pvr_ray_start_type) :: start_pt_1
-!>        Stored start point structure for volume rendering
-        type(pvr_ray_start_type) :: start_pt_2
-!
-!>        Data on screen oordinate
-        type(pvr_projected_data) :: screen_1
-!>        Data on screen oordinate
-        type(pvr_projected_data) :: screen_2
       end type PVR_image_generator
 !
 !  ---------------------------------------------------------------------
