@@ -8,6 +8,8 @@
       module m_control_param_newsph
 !
       use m_precision
+      use m_constants
+      use calypso_mpi
 !
       implicit    none
 !
@@ -39,6 +41,51 @@
 !------------------------------------------------------------------
 !
       contains
+!
+!------------------------------------------------------------------
+!
+      subroutine bcast_ctl_param_newsph
+!
+!
+      call MPI_Bcast(np_sph_org, ione, CALYPSO_INTEGER,                 &
+     &               izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(np_sph_new, ione, CALYPSO_INTEGER,                 &
+     &               izero, CALYPSO_COMM, ierr_MPI)
+!
+      call MPI_Bcast(istep_start, ione, CALYPSO_INTEGER,                &
+     &               izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(istep_end, ione, CALYPSO_INTEGER,                  &
+     &               izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(increment_step, ione, CALYPSO_INTEGER,             &
+     &               izero, CALYPSO_COMM, ierr_MPI)
+!
+      call MPI_Bcast(org_sph_head, kchara, CALYPSO_CHARACTER,           &
+     &               izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(new_sph_head ,kchara, CALYPSO_CHARACTER,           &
+     &               izero, CALYPSO_COMM, ierr_MPI)
+!
+      call MPI_Bcast(ifmt_org_sph_file, ione, CALYPSO_INTEGER,          &
+     &               izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(ifmt_new_sph_file, ione, CALYPSO_INTEGER,          &
+     &               izero, CALYPSO_COMM, ierr_MPI)
+!
+      call MPI_Bcast(org_sph_fst_head, kchara, CALYPSO_CHARACTER,       &
+     &               izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(new_sph_fst_head ,kchara, CALYPSO_CHARACTER,       &
+     &               izero, CALYPSO_COMM, ierr_MPI)
+!
+      call MPI_Bcast(ifmt_org_sph_fst, ione, CALYPSO_INTEGER,           &
+     &               izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(ifmt_new_sph_fst ,ione, CALYPSO_INTEGER,           &
+     &               izero, CALYPSO_COMM, ierr_MPI)
+!
+      call MPI_Bcast(iflag_delete_org_sph ,ione, CALYPSO_INTEGER,       &
+     &               izero, CALYPSO_COMM, ierr_MPI)
+!
+      call MPI_Bcast(b_sph_ratio ,ione, CALYPSO_REAL,                   &
+     &               izero, CALYPSO_COMM, ierr_MPI)
+!
+      end subroutine bcast_ctl_param_newsph
 !
 !------------------------------------------------------------------
 !
@@ -94,6 +141,14 @@
      &   (restart_file_fmt_ctl, ifmt_org_sph_fst)
       call choose_para_file_format                                      &
      &   (new_rst_files_fmt_ctl, ifmt_new_sph_fst)
+!
+      if((ifmt_new_sph_fst/iflag_single) .gt. 0                         &
+     &     .and. np_sph_new .ne. nprocs) then
+        ifmt_new_sph_fst = ifmt_new_sph_fst - iflag_single
+        write(*,*) 'Turn off Merged data IO ',                          &
+     &             'when number of MPI prosesses is not ',              &
+     &             'the number of target subdomains.'
+      end if
 !
       if(del_org_data_ctl%iflag .gt. 0) then
         if(yes_flag(del_org_data_ctl%charavalue)) then
