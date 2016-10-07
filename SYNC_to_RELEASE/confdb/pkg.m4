@@ -1,1 +1,1 @@
-/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/confdb/pkg.m4
+/Users/matsui/git/Kemorin_MHD/MHD/confdb/pkg.m4

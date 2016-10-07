@@ -1,1 +1,1 @@
-/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/confdb/ax_openmp.m4
+/Users/matsui/git/Kemorin_MHD/MHD/confdb/ax_openmp.m4

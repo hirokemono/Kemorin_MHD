@@ -1,1 +1,1 @@
-/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/confdb/ax_pthread.m4
+/Users/matsui/git/Kemorin_MHD/MHD/confdb/ax_pthread.m4
