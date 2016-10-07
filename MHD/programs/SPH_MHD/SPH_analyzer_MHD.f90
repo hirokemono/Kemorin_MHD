@@ -9,8 +9,11 @@
       module SPH_analyzer_MHD
 !
       use m_precision
+      use t_radial_filtering_data
 !
       implicit none
+!
+      type(radial_filters_type), save :: r_filter1
 !
 ! ----------------------------------------------------------------------
 !
@@ -76,6 +79,13 @@
       if(iflag_debug.gt.0) write(*,*)' sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph                                    &
      &   (ref_temp1%t_rj, sph1%sph_rj, ipol, idpdr, rj_fld1)
+!
+!  -------------------------------
+!
+      if(iflag_SGS_model .gt. 0) then
+        if(iflag_debug.gt.0) write(*,*)' init_SGS_model_sph_mhd'
+        call init_SGS_model_sph_mhd(sph1%sph_rj, sph_grps1, r_filter1)
+      end if
 !
 !  -------------------------------
 !
