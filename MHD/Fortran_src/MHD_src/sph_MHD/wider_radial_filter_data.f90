@@ -119,7 +119,7 @@
       real(kind = kreal), intent(in) :: a_prod(nri,nri)
       type(filter_coefficients_type), intent(inout) :: prod_filter
 !
-      integer(kind = kint) :: inum, inod, icou, jnod
+      integer(kind = kint) :: inod, icou, jnod
 !
 !
       prod_filter%num_node(1) = 0
