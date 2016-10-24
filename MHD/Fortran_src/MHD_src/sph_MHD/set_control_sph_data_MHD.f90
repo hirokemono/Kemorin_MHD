@@ -71,10 +71,11 @@
 !
       if ( field_ctl%num .ne. 0 ) then
 !
-!     add terms for potentials
+!     add fields for simulation
 !
         call add_field_name_4_mhd
         call add_field_name_4_sph_mhd
+        call add_field_name_4_SGS
         if (iflag_debug.eq.1) write(*,*)                                &
      &    'field_ctl%num after modified ', field_ctl%num
 !
@@ -85,24 +86,25 @@
       end if
 !
 !
-      if(i_legendre_vect_len .gt. 0) then
-        nvector_legendre = legendre_vector_len_ctl
+      if(legendre_vector_len_ctl%iflag .gt. 0) then
+        nvector_legendre = legendre_vector_len_ctl%intvalue
       else
         nvector_legendre = 0
       end if
 !      
-      if(i_sph_transform_mode .gt. 0) then
-        call set_legendre_trans_mode_ctl(Legendre_trans_loop_ctl)
+      if(Legendre_trans_loop_ctl%iflag .gt. 0) then
+        call set_legendre_trans_mode_ctl                                &
+     &     (Legendre_trans_loop_ctl%charavalue)
       end if
 !
-      if(i_FFT_package .gt. 0) then
-        call set_fft_library_ctl(FFT_library_ctl)
+      if(FFT_library_ctl%iflag .gt. 0) then
+        call set_fft_library_ctl(FFT_library_ctl%charavalue)
       end if
-      if(i_import_mode .gt. 0) then
-        call set_import_table_ctl(import_mode_ctl)
+      if(import_mode_ctl%iflag .gt. 0) then
+        call set_import_table_ctl(import_mode_ctl%charavalue)
       end if
-      if(i_SR_routine .gt. 0) then
-        call set_sph_comm_routine_ctl(SR_routine_ctl)
+      if(SR_routine_ctl%iflag .gt. 0) then
+        call set_sph_comm_routine_ctl(SR_routine_ctl%charavalue)
       end if
 !
       if (bc_data_file_name_ctl%iflag .gt. 0) then

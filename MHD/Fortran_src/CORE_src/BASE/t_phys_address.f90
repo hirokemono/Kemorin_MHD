@@ -108,12 +108,18 @@
 !>        Start address for filtered velocity
 !!         @f$ \bar{u}_{i} @f$
         integer (kind=kint) :: i_filter_velo  =    izero
+!>        Start address for filtered velocity
+!!         @f$ \bar{\omega}_{i} @f$
+        integer (kind=kint) :: i_filter_vort  =    izero
 !>        Start address for filtered temperature
 !!         @f$ \bar{T} @f$
         integer (kind=kint) :: i_filter_temp  =    izero
 !>        Start address for filtered magnetic field
 !!         @f$ \bar{B}_{i} @f$
         integer (kind=kint) :: i_filter_magne =    izero
+!>        Start address for filtered current density
+!!         @f$ \bar{B}_{i} @f$
+        integer (kind=kint) :: i_filter_current =  izero
 !>        Start address for filtered vetor potential
 !!         @f$ \bar{A}_{i} @f$
         integer (kind=kint) :: i_filter_vecp =     izero
@@ -282,21 +288,51 @@
         integer (kind=kint) :: i_SGS_maxwell =     izero
 !>        start address for SGS magnetic induction tensor
         integer (kind=kint) :: i_SGS_induct_t =    izero
+!>        start address for SGS inertia term
+        integer (kind=kint) :: i_SGS_inertia =    izero
+!>        start address for divergence of SGS Maxwell tensor
+!!         @f$ \partial_{i} \left( \overline{B_{i}B_{j}} - \bar{B}_{i}\bar{B}_{j} \right) @f$
+        integer (kind=kint) :: i_SGS_Lorentz =     izero
+!
+!>        start address for curl of SGS inertia term
+        integer (kind=kint) :: i_SGS_rot_inertia =    izero
+!>        start address for divergence of SGS inertia term
+        integer (kind=kint) :: i_SGS_div_inertia =    izero
+!>        start address for curl of SGS inertia term
+        integer (kind=kint) :: i_SGS_rot_Lorentz =    izero
+!>        start address for divergence of SGS inertia term
+        integer (kind=kint) :: i_SGS_div_Lorentz =    izero
+!
+!>        start address for SGS heat flux by wider filter
+!!         @f$ \overline{u_{i}T} - \bar{u}_{i}\bar{T} @f$
+        integer (kind=kint) :: i_wide_SGS_h_flux =      izero
+!>        start address for SGS compositional flux by wider filter
+!!         @f$ \overline{u_{i}T} - \bar{u}_{i}\bar{T} @f$
+        integer (kind=kint) :: i_wide_SGS_c_flux =      izero
+!>        start address for SGS inertia term  by wider filter
+        integer (kind=kint) :: i_wide_SGS_inertia =    izero
+!>        start address for SGS Lorentz force wih wider filter
+!!         @f$ \partial_{i} \left( \overline{B_{i}B_{j}} - \bar{B}_{i}\bar{B}_{j} \right) @f$
+        integer (kind=kint) :: i_wide_SGS_Lorentz =     izero
+!
 !
 !>        start address for divergence of SGS heat flux
 !!         @f$ \partial_{i} \left( \overline{u_{i}T} - \bar{u}_{i}\bar{T} \right) @f$
         integer (kind=kint) :: i_SGS_div_h_flux=   izero
+!>        start address for divergence of SGS composition flux
+!!         @f$ \partial_{i} \left( \overline{u_{i}C} - \bar{u}_{i}\bar{C} \right) @f$
+        integer (kind=kint) :: i_SGS_div_c_flux=   izero
 !>        start address for divergence of SGS momentum flux
 !!         @f$ \partial_{i} \left( \overline{u_{i}u_{j}} - \bar{u}_{i}\bar{u}_{j} \right) @f$
         integer (kind=kint) :: i_SGS_div_m_flux=   izero
-!>        start address for divergence of SGS Maxwell tensor
-!!         @f$ \partial_{i} \left( \overline{B_{i}B_{j}} - \bar{B}_{i}\bar{B}_{j} \right) @f$
-        integer (kind=kint) :: i_SGS_Lorentz =     izero
 !>        start address for divergence of SGS magnetic induction tensor
         integer (kind=kint) :: i_SGS_induction =   izero
 !>        start address for SGS induction for vector potential
 !!         @f$e_{ijk}\left(\overline{u_{j}B_{k}} - \bar{u}_{j}\bar{B}_{k} \right) @f$
         integer (kind=kint) :: i_SGS_vp_induct =   izero
+!>        start address for SGS induction for vector potential by wider filter
+!!         @f$e_{ijk}\left(\overline{u_{j}B_{k}} - \bar{u}_{j}\bar{B}_{k} \right) @f$
+        integer (kind=kint) :: i_wide_SGS_vp_induct =   izero
 !
 !>        start address for SGS buoyancy
         integer (kind=kint) :: i_SGS_buoyancy =   izero
@@ -399,6 +435,8 @@
 !
 !>        start address for filtered velocity by wider filter
         integer (kind=kint) :: i_wide_fil_velo  =  izero
+!>        start address for filtered vorticity by wider filter
+        integer (kind=kint) :: i_wide_fil_vort  =  izero
 !>        start address for filtered magnetic field by wider filter
         integer (kind=kint) :: i_wide_fil_magne =  izero
 !>        start address for filtered magnetic vector potential

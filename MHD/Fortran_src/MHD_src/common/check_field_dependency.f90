@@ -9,6 +9,8 @@
 !!@verbatim
 !!      subroutine check_dependence_phys(num_nod_phys, num_check,       &
 !!     &          target_name, phys_nod_name, phys_check_name)
+!!      subroutine check_either_dependence(num_nod_phys, num_check,     &
+!!     &          target_name, phys_nod_name, phys_check_name)
 !!@endverbatim
 !!
 !!@n @param num_nod_phys         Number of fields
@@ -66,6 +68,44 @@
       end if
 !
       end subroutine check_dependence_phys
+!
+! -----------------------------------------------------------------------
+!
+      subroutine check_either_dependence(num_nod_phys, num_check,       &
+     &          target_name, phys_nod_name, phys_check_name)
+!
+      use calypso_mpi
+!
+      integer(kind=kint) :: num_nod_phys, num_check
+      character(len=kchara) :: target_name
+      character(len=kchara) :: phys_nod_name(num_nod_phys)
+      character(len=kchara) :: phys_check_name(num_check)
+!
+      integer(kind=kint) :: iflag, j, jj
+!
+!
+      iflag = 0
+!
+      do j = 1, num_nod_phys
+        do jj = 1, num_check
+          if (  phys_nod_name(j) .eq. phys_check_name(jj)  ) then
+            iflag = iflag + 1
+          end if
+        end do
+      end do
+!
+      if (iflag .eq. 0) then
+        if (my_rank.eq.0) then
+          write(*,*) 'One of following parameters are required for ',   &
+     &                trim(target_name)
+          do j = 1, num_check
+            write(*,*)  trim(phys_check_name(j))
+          end do
+        end if
+        call calypso_MPI_abort(ierr_fld,'Stop program.')
+      end if
+!
+      end subroutine check_either_dependence
 !
 ! -----------------------------------------------------------------------
 !

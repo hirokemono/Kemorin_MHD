@@ -28,6 +28,7 @@
       use m_node_phys_data
       use m_control_params_2nd_files
       use m_ucd_data
+      use t_phys_data
 !
       use set_control_platform_data
       use set_control_nodal_data_MHD
@@ -54,6 +55,7 @@
       use set_control_4_infty
       use fem_mhd_rst_IO_control
       use check_read_bc_file
+      use check_dependency_for_MHD
 !
 !
 !   set parameters for data files
@@ -80,7 +82,8 @@
 !
 !   set parameters for SGS model
 !
-      call s_set_control_4_SGS
+      call set_control_SGS_model
+      call set_control_FEM_SGS
 !
 !   set parameters for filtering operation
 !
@@ -144,7 +147,7 @@
 !
 !  check dependencies
 !
-      call check_FEM_MHD_dependencies(nod_fld1)
+      call check_dependencies_FEM_MHD(nod_fld1)
 !
       end subroutine set_control_4_FEM_MHD
 !

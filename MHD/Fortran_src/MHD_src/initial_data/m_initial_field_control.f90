@@ -102,42 +102,42 @@
       use skip_comment_f
 !
 !
-      if (i_rst_flag .eq. 0) then
+      if(restart_flag_ctl%iflag .eq. 0) then
         e_message  = 'Set initial condition'
         call calypso_MPI_abort(ierr_evo, e_message)
       else
-        if(     cmp_no_case(restart_flag_ctl, No_restart)               &
-     &       .or. restart_flag_ctl .eq. '0') then
+        if(     cmp_no_case(restart_flag_ctl%charavalue, No_restart)    &
+     &       .or. restart_flag_ctl%charavalue .eq. '0') then
           iflag_restart = i_rst_no_file
-        else if(cmp_no_case(restart_flag_ctl, From_restart)             &
-     &       .or. restart_flag_ctl .eq. '1') then
+        else if(cmp_no_case(restart_flag_ctl%charavalue, From_restart)  &
+     &       .or. restart_flag_ctl%charavalue .eq. '1') then
           iflag_restart = i_rst_by_file
-        else if(cmp_no_case(restart_flag_ctl, dynamobench_0)            &
-     &       .or. restart_flag_ctl .eq. '-1') then
+        else if(cmp_no_case(restart_flag_ctl%charavalue, dynamobench_0) &
+     &       .or. restart_flag_ctl%charavalue .eq. '-1') then
           iflag_restart = i_rst_dbench0
-        else if(cmp_no_case(restart_flag_ctl, dynamobench_1)            &
-     &       .or. restart_flag_ctl .eq. '-2') then
+        else if(cmp_no_case(restart_flag_ctl%charavalue, dynamobench_1) &
+     &       .or. restart_flag_ctl%charavalue .eq. '-2') then
           iflag_restart = i_rst_dbench1
-        else if(cmp_no_case(restart_flag_ctl, dynamobench_2)            &
-     &       .or. restart_flag_ctl .eq. '-2') then
+        else if(cmp_no_case(restart_flag_ctl%charavalue, dynamobench_2) &
+     &       .or. restart_flag_ctl%charavalue .eq. '-2') then
           iflag_restart = i_rst_dbench2
-        else if(cmp_no_case(restart_flag_ctl, pseudo_bench)             &
-     &       .or. restart_flag_ctl .eq. '-3') then
+        else if(cmp_no_case(restart_flag_ctl%charavalue, pseudo_bench)  &
+     &       .or. restart_flag_ctl%charavalue .eq. '-3') then
           iflag_restart = i_rst_dbench_qcv
-        else if(cmp_no_case(restart_flag_ctl, rotate_x)                 &
-     &       .or. restart_flag_ctl .eq. '-11') then
+        else if(cmp_no_case(restart_flag_ctl%charavalue, rotate_x)      &
+     &       .or. restart_flag_ctl%charavalue .eq. '-11') then
           iflag_restart = i_rst_rotate_x
-        else if(cmp_no_case(restart_flag_ctl, rotate_y)                 &
-     &       .or. restart_flag_ctl .eq. '-12') then
+        else if(cmp_no_case(restart_flag_ctl%charavalue, rotate_y)      &
+     &       .or. restart_flag_ctl%charavalue .eq. '-12') then
           iflag_restart = i_rst_rotate_y
-        else if(cmp_no_case(restart_flag_ctl, rotate_z)                 &
-     &       .or. restart_flag_ctl .eq. '-13') then
+        else if(cmp_no_case(restart_flag_ctl%charavalue, rotate_z)      &
+     &       .or. restart_flag_ctl%charavalue .eq. '-13') then
           iflag_restart = i_rst_rotate_z
-        else if(cmp_no_case(restart_flag_ctl, kinematic)                &
-     &       .or. restart_flag_ctl .eq. '20') then
+        else if(cmp_no_case(restart_flag_ctl%charavalue, kinematic)     &
+     &       .or. restart_flag_ctl%charavalue .eq. '20') then
           iflag_restart = i_rst_kinematic
-        else if(cmp_no_case(restart_flag_ctl, liear_cv)                 &
-     &       .or. restart_flag_ctl .eq. '-20') then
+        else if(cmp_no_case(restart_flag_ctl%charavalue, liear_cv)      &
+     &       .or. restart_flag_ctl%charavalue .eq. '-20') then
           iflag_restart = i_rst_licv
         end if
       end if

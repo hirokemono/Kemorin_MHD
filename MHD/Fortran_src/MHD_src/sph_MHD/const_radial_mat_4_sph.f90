@@ -47,12 +47,9 @@
 !
       call const_radial_matrices_sph(sph_rj, r_2nd, leg%g_sph_rj)
 !
-      call calypso_mpi_barrier
-!      if(sph_rj%inod_rj_center .eq. 0) return
       if(sph_rj%inod_rj_center .gt. 0) then
         call const_radial_mat_sph_w_center(sph_rj)
       end if
-      call calypso_mpi_barrier
 !
       end subroutine const_radial_mat_sph_mhd
 !

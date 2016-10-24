@@ -76,6 +76,7 @@
       use m_read_control_elements
       use calypso_mpi
       use skip_comment_f
+      use t_control_elements
       use t_read_control_arrays
 !
       implicit  none
@@ -85,22 +86,19 @@
 !!@n      force_names_ctl%c_tbl: Name of force
       type(ctl_array_chara), save :: force_names_ctl
 !
-      character(len=kchara) :: gravity_ctl
+      type(read_character_item) :: gravity_ctl
 !
 !>      Structure for constant gravity vector
 !!@n      gravity_vector_ctl%c_tbl:  Direction of gravity vector
 !!@n      gravity_vector_ctl%vect:   Amplitude of gravity vector
       type(ctl_array_cr), save :: gravity_vector_ctl
 !
-      character (len=kchara) :: sph_cor_file_name_ctl
-      character (len=kchara) :: sph_cor_file_fmt_ctl
-!
 !>      Structure for rotation of system
 !!@n      system_rotation_ctl%c_tbl:  Direction of rotation vector
 !!@n      system_rotation_ctl%vect:   Amplitude of rotation vector
       type(ctl_array_cr), save :: system_rotation_ctl
 !
-      character(len=kchara) :: magneto_cv_ctl
+      type(read_character_item) :: magneto_cv_ctl
 !
 !>      Structure for external magnetic field control
 !!@n      ext_magne_ctl%c_tbl:  Direction of external magnetic field
@@ -136,7 +134,6 @@
      &        :: hd_gravity_type = 'gravity_type_ctl'
       character(len=kchara), parameter                                  &
      &        :: hd_gravity_vect = 'gravity_vec'
-      integer (kind=kint) :: i_gravity_type = 0
 !
 !   4th level for time steps
 !
@@ -146,8 +143,6 @@
      &        :: hd_sph_coriolis_file  = 'tri_sph_int_file'
       character(len=kchara), parameter                                  &
      &        :: hd_sph_coriolis_fmt = 'sph_int_file_format'
-      integer (kind=kint) :: i_sph_coriolis_file = 0
-      integer (kind=kint) :: i_sph_coriolis_fmt = 0
 !
 !   4th level for external magnetic field
 !
@@ -155,7 +150,6 @@
      &        :: hd_magneto_cv = 'magneto_cv_ctl'
       character(len=kchara), parameter                                  &
      &        :: hd_magne_vect = 'ext_magne_vec'
-      integer (kind=kint) :: i_magneto_cv = 0
 !
 !
       private :: hd_forces_ctl, i_forces_ctl
@@ -213,8 +207,7 @@
         call read_control_array_c_r                                     &
      &     (hd_gravity_vect, gravity_vector_ctl)
 !
-        call read_character_ctl_item(hd_gravity_type,                   &
-     &        i_gravity_type, gravity_ctl)
+        call read_chara_ctl_type(hd_gravity_type, gravity_ctl)
       end do
 !
       end subroutine read_gravity_ctl
@@ -235,11 +228,6 @@
 !
         call read_control_array_c_r                                     &
      &     (hd_rotation_vec, system_rotation_ctl)
-!
-        call read_character_ctl_item(hd_sph_coriolis_file,              &
-     &        i_sph_coriolis_file, sph_cor_file_name_ctl)
-        call read_character_ctl_item(hd_sph_coriolis_fmt,               &
-     &        i_sph_coriolis_fmt, sph_cor_file_fmt_ctl)
       end do
 !
       end subroutine read_coriolis_ctl
@@ -259,8 +247,7 @@
 !
         call read_control_array_c_r(hd_magne_vect, ext_magne_ctl)
 !
-        call read_character_ctl_item(hd_magneto_cv,                     &
-     &        i_magneto_cv, magneto_cv_ctl)
+        call read_chara_ctl_type(hd_magneto_cv, magneto_cv_ctl)
       end do
 !
       end subroutine read_magneto_ctl

@@ -43,35 +43,38 @@
       use node_monitor_IO
 !
       integer (kind = kint) :: i
+      character(len=kchara) :: tmpchara
 !
 !
 !  set time_evolution scheme
 !
-        if (i_scheme .eq. 0) then
+        if (scheme_ctl%iflag .eq. 0) then
           e_message = 'Set time integration scheme'
           call calypso_MPI_abort(ierr_evo, e_message)
         else
-          if ( scheme_ctl .eq. 'explicit_Euler' ) then
+          if (cmp_no_case(scheme_ctl%charavalue,                        &
+     &                    'explicit_Euler')) then
             iflag_scheme = id_explicit_euler
             iflag_implicit_correct = 0
-          else if ( scheme_ctl .eq. '2nd_Adams_Bashforth' ) then
+          else if (cmp_no_case(scheme_ctl%charavalue,                   &
+     &                         '2nd_Adams_Bashforth')) then
             iflag_scheme = id_explicit_adams2
             iflag_implicit_correct = 0
-          else if ( scheme_ctl .eq. 'Crank_Nicolson' ) then
+          else if (cmp_no_case(scheme_ctl%charavalue,                   &
+     &                         'Crank_Nicolson')) then
             iflag_scheme = id_Crank_nicolson
-          else if ( scheme_ctl .eq. 'Crank_Nicolson_consist' ) then
+          else if (cmp_no_case(scheme_ctl%charavalue,                   &
+     &                         'Crank_Nicolson_consist')) then
             iflag_scheme = id_Crank_nicolson_cmass
           end if
         end if
 !
         if ( iflag_scheme .eq. id_Crank_nicolson                        &
      &     .or. iflag_scheme .eq. id_Crank_nicolson_cmass) then
-          if (i_diff_correct.eq.0) then
+          if (diffuse_correct_ctl%iflag .eq. 0) then
             iflag_implicit_correct = 0
           else
-            if (   diffuse_correct_ctl .eq. 'On'                        &
-     &        .or. diffuse_correct_ctl .eq. 'on'                        &
-     &        .or. diffuse_correct_ctl .eq. 'ON') then
+            if (yes_flag(diffuse_correct_ctl%charavalue)) then
               iflag_implicit_correct = iflag_scheme
             end if
           end if
@@ -140,23 +143,24 @@
 !
 !   set control for temperature 
 !
-         if (i_ref_temp .eq. 0) then
+         if (ref_temp_ctl%iflag .eq. 0) then
            iflag_4_ref_temp = id_no_ref_temp
          else
-           if (ref_temp_ctl .eq. 'spherical_shell') then
+           tmpchara = ref_temp_ctl%charavalue
+           if (cmp_no_case(tmpchara, 'spherical_shell')) then
              iflag_4_ref_temp = id_sphere_ref_temp
-           else if (ref_temp_ctl .eq. 'sph_constant_heat') then
+           else if (cmp_no_case(tmpchara, 'sph_constant_heat')) then
              iflag_4_ref_temp = id_linear_r_ref_temp
-           else if (ref_temp_ctl .eq. 'linear_x') then
+           else if (cmp_no_case(tmpchara, 'linear_x')) then
              iflag_4_ref_temp = id_x_ref_temp
-           else if (ref_temp_ctl .eq. 'linear_y') then
+           else if (cmp_no_case(tmpchara, 'linear_y')) then
              iflag_4_ref_temp = id_y_ref_temp
-           else if (ref_temp_ctl .eq. 'linear_z') then
+           else if (cmp_no_case(tmpchara, 'linear_z')) then
              iflag_4_ref_temp = id_z_ref_temp
            end if
          end if
 !
-         if ( (i_low_temp_posi*i_low_temp_value) .eq. 0) then
+         if ( (depth_low_t_ctl%iflag*low_temp_ctl%iflag) .eq. 0) then
            if (iflag_4_ref_temp .eq. id_no_ref_temp) then
              low_temp  = 0.0d0
              depth_low_t  =  0.0d0
@@ -166,11 +170,11 @@
              call calypso_MPI_abort(ierr_fld, e_message)
            end if
          else
-           low_temp  = low_temp_ctl
-           depth_low_t  = depth_low_t_ctl
+           low_temp  =    low_temp_ctl%realvalue
+           depth_low_t  = depth_low_t_ctl%realvalue
          end if
 !
-         if ( (i_high_temp_posi*i_high_temp_value) .eq. 0) then
+         if ( (depth_high_t_ctl%iflag*high_temp_ctl%iflag) .eq. 0) then
            if (iflag_4_ref_temp .eq. id_no_ref_temp) then
              high_temp =  0.0d0
              depth_high_t =  0.0d0
@@ -180,8 +184,8 @@
              call calypso_MPI_abort(ierr_fld, e_message)
            end if
          else
-           high_temp = high_temp_ctl
-           depth_high_t = depth_high_t_ctl
+           high_temp =    high_temp_ctl%realvalue
+           depth_high_t = depth_high_t_ctl%realvalue
          end if
 !
         if (iflag_debug .ge. iflag_routine_msg) then
@@ -195,10 +199,9 @@
 !
 !
         iflag_t_strat = id_turn_OFF
-        if (i_strat_ctl .gt. id_turn_OFF) then
-          if(stratified_ctl .eq. 'on' .or. stratified_ctl .eq. 'On'     &
-     &    .or. stratified_ctl .eq. 'ON' .or. stratified_ctl .eq. '1')   &
-     &     iflag_t_strat = id_turn_ON
+        if (stratified_ctl%iflag .gt. id_turn_OFF                       &
+          .and. yes_flag(stratified_ctl%charavalue))  then
+           iflag_t_strat = id_turn_ON
         end if
 !
         if (iflag_t_strat .eq. id_turn_OFF) then
@@ -206,14 +209,16 @@
           stratified_width = 0.0d0
           stratified_outer_r = 0.0d0
         else
-          if ( (i_strat_sigma*i_strat_width*i_strat_outer) .eq. 0) then
+          if ( (stratified_sigma_ctl%iflag                              &
+     &         *stratified_width_ctl%iflag                              &
+     &         *stratified_outer_r_ctl%iflag) .eq. 0) then
             e_message                                                   &
      &        = 'Set parameteres for stratification'
             call calypso_MPI_abort(ierr_fld, e_message)
           else
-            stratified_sigma = stratified_sigma_ctl
-            stratified_width = stratified_width_ctl
-            stratified_outer_r = stratified_outer_r_ctl
+            stratified_sigma = stratified_sigma_ctl%realvalue
+            stratified_width = stratified_width_ctl%realvalue
+            stratified_outer_r = stratified_outer_r_ctl%realvalue
           end if
         end if
 !
@@ -254,20 +259,20 @@
 !
 !
         if(iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
-          if (i_coef_imp_v.eq.0) then
+          if (coef_imp_v_ctl%iflag.eq.0) then
             coef_imp_v = 0.5d0
           else
-            coef_imp_v = coef_imp_v_ctl
+            coef_imp_v = coef_imp_v_ctl%realvalue
           end if
         else
           coef_imp_v = 0.0d0
         end if
 !
         if(iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
-          if (i_coef_imp_t.eq.0) then
+          if (coef_imp_t_ctl%iflag .eq. 0) then
             coef_imp_t = 0.5d0
           else
-            coef_imp_t = coef_imp_t_ctl
+            coef_imp_t = coef_imp_t_ctl%realvalue
           end if
         else
           coef_imp_t = 0.0d0
@@ -275,20 +280,20 @@
 !
         if(iflag_t_evo_4_magne .ge. id_Crank_nicolson                   &
      &      .or. iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
-          if (i_coef_imp_b.eq.0) then
+          if (coef_imp_b_ctl%iflag .eq. 0) then
             coef_imp_b = 0.5d0
           else
-            coef_imp_b = coef_imp_b_ctl
+            coef_imp_b = coef_imp_b_ctl%realvalue
           end if
         else
           coef_imp_b = 0.0d0
         end if
 !
         if(iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
-          if (i_coef_imp_c.eq.0) then
+          if (coef_imp_c_ctl%iflag .eq. 0) then
             coef_imp_c = 0.5d0
           else
-            coef_imp_c = coef_imp_c_ctl
+            coef_imp_c = coef_imp_c_ctl%realvalue
           end if
         else
           coef_imp_c = 0.0d0

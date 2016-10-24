@@ -41,29 +41,31 @@
       use skip_comment_f
 !
       integer(kind = kint) :: i
+      character(len=kchara) :: tmpchara
 !
 !
-      if (i_SGS_filter .gt. 0) then
-        if   (cmp_no_case(SGS_filter_name_ctl, '3D')                    &
-     &   .or. cmp_no_case(SGS_filter_name_ctl, '3-D')                   &
-     &   .or. cmp_no_case(SGS_filter_name_ctl, '3-Dimensional')         &
+      if (SGS_filter_name_ctl%iflag .gt. 0) then
+        tmpchara = SGS_filter_name_ctl%charavalue
+        if   (cmp_no_case(tmpchara, '3D')                               &
+     &   .or. cmp_no_case(tmpchara, '3-D')                              &
+     &   .or. cmp_no_case(tmpchara, '3-Dimensional')                    &
      &  )  iflag_SGS_filter = id_SGS_3D_FILTERING
 !
-        if   (cmp_no_case(SGS_filter_name_ctl, 'Line')                  &
+        if   (cmp_no_case(tmpchara, 'Line')                             &
      &  )  iflag_SGS_filter = id_SGS_LINE_FILTERING
 !
-        if   (cmp_no_case(SGS_filter_name_ctl, 'Plane')                 &
+        if   (cmp_no_case(tmpchara, 'Plane')                            &
      &  )  iflag_SGS_filter = id_SGS_PLANE_FILTERING
 !
-        if   (cmp_no_case(SGS_filter_name_ctl, '3D_easy')               &
+        if   (cmp_no_case(tmpchara, '3D_easy')                          &
      &  )  iflag_SGS_filter = id_SGS_3D_EZ_FILTERING
 !
-        if   (cmp_no_case(SGS_filter_name_ctl, '3D_smp')                &
-     &   .or. cmp_no_case(SGS_filter_name_ctl, '3-D_smp')               &
-     &   .or. cmp_no_case(SGS_filter_name_ctl, '3-Dimensional_smp')     &
+        if   (cmp_no_case(tmpchara, '3D_smp')                           &
+     &   .or. cmp_no_case(tmpchara, '3-D_smp')                          &
+     &   .or. cmp_no_case(tmpchara, '3-Dimensional_smp')                &
      &       )  iflag_SGS_filter = id_SGS_3D_SMP_FILTERING
 !
-        if   (cmp_no_case(SGS_filter_name_ctl, '3D_easy_sm')            &
+        if   (cmp_no_case(tmpchara, '3D_easy_sm')                       &
      &  )  iflag_SGS_filter = id_SGS_3D_EZ_SMP_FILTERING
 !
         if (iflag_debug .gt. 0)  write(*,*)                             &
@@ -127,27 +129,27 @@
 !
         if (iflag_t_evo_4_temp .gt. id_no_evolution) then
           iflag_heat_filtering = 0
-          if (cmp_no_case(heat_filter_ctl, 'Whole_filtering')           &
-     &      ) iflag_heat_filtering = 0
-          if (cmp_no_case(heat_filter_ctl, 'Fluid_filtering')           &
-     &      ) iflag_heat_filtering = 1
+          if (cmp_no_case(heat_filter_ctl%charavalue,                   &
+     &        'Whole_filtering')) iflag_heat_filtering = 0
+          if (cmp_no_case(heat_filter_ctl%charavalue,                   &
+     &        'Fluid_filtering')) iflag_heat_filtering = 1
         end if
 !
         if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
           iflag_momentum_filtering = 0
-          if (cmp_no_case(momentum_filter_ctl, 'Whole_filtering')       &
-     &      ) iflag_momentum_filtering = 0
-          if (cmp_no_case(momentum_filter_ctl, 'Fluid_filtering')       &
-     &      ) iflag_momentum_filtering = 1
+          if (cmp_no_case(momentum_filter_ctl%charavalue,               &
+     &        'Whole_filtering')) iflag_momentum_filtering = 0
+          if (cmp_no_case(momentum_filter_ctl%charavalue,               &
+     &        'Fluid_filtering')) iflag_momentum_filtering = 1
         end if
 !
         if (iflag_t_evo_4_magne .gt. id_no_evolution                    &
      &      .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
           iflag_induction_filtering = 0
-          if (cmp_no_case(induction_filter_ctl, 'Whole_filtering')      &
-     &      ) iflag_induction_filtering = 0
-          if (cmp_no_case(induction_filter_ctl, 'Fluid_filtering')      &
-     &      ) iflag_induction_filtering = 1
+          if (cmp_no_case(induction_filter_ctl%charavalue,              &
+     &        'Whole_filtering')) iflag_induction_filtering = 0
+          if (cmp_no_case(induction_filter_ctl%charavalue,              &
+     &        'Fluid_filtering')) iflag_induction_filtering = 1
         end if
 !
         if (iflag_debug.eq.1) then

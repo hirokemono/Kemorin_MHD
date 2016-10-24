@@ -62,8 +62,10 @@
      &      )   iflag = 1
 !
       if (   (phys_nod_name_ctl .eq. fhd_filter_v           )           &
+     &  .or. (phys_nod_name_ctl .eq. fhd_filter_w           )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_filter_a           )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_filter_b           )           &
+     &  .or. (phys_nod_name_ctl .eq. fhd_filter_j           )           &
      &      )   iflag = 1
 !
       if (   (phys_nod_name_ctl .eq. fhd_grad_v_1           )           &
@@ -113,21 +115,33 @@
      &      )   iflag = 1
 !
       if (   (phys_nod_name_ctl .eq. fhd_div_SGS_m_flux     )           &
+     &  .or. (phys_nod_name_ctl .eq. fhd_SGS_inertia        )           &
+     &  .or. (phys_nod_name_ctl .eq. fhd_wide_SGS_inertia   )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_SGS_h_flux         )           &
+     &  .or. (phys_nod_name_ctl .eq. fhd_wide_SGS_h_flux    )           &
+     &  .or. (phys_nod_name_ctl .eq. fhd_wide_SGS_c_flux    )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_SGS_c_flux         )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_SGS_Lorentz        )           &
+     &  .or. (phys_nod_name_ctl .eq. fhd_wide_SGS_Lorentz   )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_SGS_induction      )           &
+     &  .or. (phys_nod_name_ctl .eq. fhd_wide_SGS_vp_induct )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_SGS_vp_induct      )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_SGS_buoyancy       )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_SGS_comp_buo       )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_SGS_div_m_flux_true)           &
      &  .or. (phys_nod_name_ctl .eq. fhd_SGS_Lorentz_true   )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_SGS_mag_induct_true)           &
+     &  .or. (phys_nod_name_ctl .eq. fhd_SGS_rot_inertia)               &
+     &  .or. (phys_nod_name_ctl .eq. fhd_SGS_div_inertia)               &
+     &  .or. (phys_nod_name_ctl .eq. fhd_SGS_rot_Lorentz)               &
+     &  .or. (phys_nod_name_ctl .eq. fhd_SGS_div_Lorentz)               &
      &      )   iflag = 1
 !
       if (   (phys_nod_name_ctl .eq. fhd_w_filter_velo     )            &
+     &  .or. (phys_nod_name_ctl .eq. fhd_w_filter_vort     )            &
      &  .or. (phys_nod_name_ctl .eq. fhd_w_filter_vecp     )            &
      &  .or. (phys_nod_name_ctl .eq. fhd_w_filter_magne    )            &
+     &  .or. (phys_nod_name_ctl .eq. fhd_w_filter_current  )            &
      &       )  iflag = 1
 !
       if (   (phys_nod_name_ctl .eq. fhd_pre_mom            )           &
@@ -213,6 +227,7 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_comp_buo_flux       )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_filter_buo_flux     )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_div_SGS_h_flux      )         &
+     &   .or. (phys_nod_name_ctl .eq. fhd_div_SGS_c_flux      )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_m_ene_gen       )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_temp_gen        )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_Lorentz_work    )         &
@@ -241,6 +256,7 @@
      &      )   iflag = 1
 !
       if (    (phys_nod_name_ctl .eq. fhd_w_filter_temp      )          &
+     &   .or. (phys_nod_name_ctl .eq. fhd_w_filter_comp      )          &
      &       ) iflag = 1
 !
       if (    (phys_nod_name_ctl .eq. fhd_pre_heat            )         &

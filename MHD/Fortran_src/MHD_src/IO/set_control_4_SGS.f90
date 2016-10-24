@@ -10,13 +10,17 @@
 !!        from control data
 !!
 !!@verbatim
-!!     subroutine s_set_control_4_SGS
+!!      subroutine set_control_SGS_model
+!!      subroutine set_control_SPH_SGS(r_filters, sph_filters)
+!!      subroutine set_control_FEM_SGS
 !!@endverbatim
 !
       module set_control_4_SGS
 !
       use m_precision
       use m_error_IDs
+      use m_constants
+      use calypso_mpi
 !
       implicit  none
 !
@@ -26,22 +30,53 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_SGS
+      subroutine set_control_SPH_SGS(r_filters, sph_filters)
 !
-      use calypso_mpi
-      use m_constants
+      use m_ctl_data_SGS_model
+      use t_radial_filtering_data
+      use t_sph_filtering_data
+!
+      type(radial_filters_type), intent(inout) :: r_filters
+      type(sph_gaussian_filters), intent(inout) :: sph_filters
+!
+!
+      if(maximum_moments_ctl%iflag .gt. 0) then
+        r_filters%num_filter_moments = maximum_moments_ctl%intvalue
+        sph_filters%sph_filter%num_momentum                             &
+     &              = maximum_moments_ctl%intvalue
+        sph_filters%sph_wide_filter%num_momentum                        &
+     &              = maximum_moments_ctl%intvalue
+        sph_filters%sph_wider_filter%num_momentum                       &
+     &              = maximum_moments_ctl%intvalue
+      end if
+!
+      if(radial_filter_width_ctl%iflag .gt. 0) then
+        r_filters%width = radial_filter_width_ctl%realvalue
+      end if
+!
+      if(sphere_filter_width_ctl%iflag .gt. 0) then
+        sph_filters%sph_filter%k_width                                  &
+     &        = sphere_filter_width_ctl%intvalue
+        sph_filters%sph_wide_filter%k_width                             &
+     &        = itwo * sphere_filter_width_ctl%intvalue
+        sph_filters%sph_wider_filter%k_width                            &
+     &        = ifour * sphere_filter_width_ctl%intvalue
+      end if
+!
+      end subroutine set_control_SPH_SGS
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_control_SGS_model
+!
       use m_machine_parameter
       use m_geometry_constants
-      use m_file_format_switch
       use m_phys_labels
       use m_control_parameter
       use m_ctl_data_SGS_model
-      use m_filter_file_names
-      use m_ctl_data_filter_files
-      use sgs_ini_model_coefs_IO
-      use set_control_ele_layering
 !
       integer(kind = kint) :: i
+      character(len=kchara) :: tmpchara
 !
 !
 !   set control parameters for SGS model
@@ -50,46 +85,34 @@
        iflag_dynamic_SGS =    id_SGS_DYNAMIC_OFF
        iflag_SGS_filter =     id_SGS_NO_FILTERING
 !
-      if (i_SGS_model .eq. 0) then
+      if (SGS_model_name_ctl%iflag .eq. 0) then
         iflag_SGS_model =   id_SGS_none
         iflag_dynamic_SGS = id_SGS_DYNAMIC_OFF
       else
-        if      (SGS_model_name_ctl .eq. 'no'                           &
-     &      .or. SGS_model_name_ctl .eq. 'No'                           &
-     &      .or. SGS_model_name_ctl .eq. 'NO' ) then
+        tmpchara = SGS_model_name_ctl%charavalue
+!
+        if      (no_flag(tmpchara)) then
           iflag_SGS_model =   id_SGS_none
           iflag_dynamic_SGS = id_SGS_DYNAMIC_OFF
 !
-        else if (SGS_model_name_ctl .eq. 'gradient'                     &
-     &      .or. SGS_model_name_ctl .eq. 'Gradient'                     &
-     &      .or. SGS_model_name_ctl .eq. 'GRADIENT' ) then
+        else if (cmp_no_case(tmpchara, 'gradient')) then
           iflag_SGS_model =   id_SGS_NL_grad
           iflag_dynamic_SGS = id_SGS_DYNAMIC_OFF
 !
-        else if (SGS_model_name_ctl .eq. 'similarity'                   &
-     &      .or. SGS_model_name_ctl .eq. 'Similarity'                   &
-     &      .or. SGS_model_name_ctl .eq. 'SIMILARITY' ) then
+        else if (cmp_no_case(tmpchara, 'similarity')) then
           iflag_SGS_model =   id_SGS_similarity
           iflag_dynamic_SGS = id_SGS_DYNAMIC_OFF
 !
-        else if (SGS_model_name_ctl .eq. 'dynamic'                      &
-     &      .or. SGS_model_name_ctl .eq. 'Dynamic'                      &
-     &      .or. SGS_model_name_ctl .eq. 'DYNAMIC' ) then
+        else if (cmp_no_case(tmpchara, 'dynamic')) then
           iflag_SGS_model =   id_SGS_NL_grad
           iflag_dynamic_SGS = id_SGS_DYNAMIC_ON
 !
-        else if (SGS_model_name_ctl .eq. 'dynamic_similarity'           &
-     &      .or. SGS_model_name_ctl .eq. 'Dynamic_similarity'           &
-     &      .or. SGS_model_name_ctl .eq. 'DYNAMIC_SIMILARITY'           &
-     &      .or. SGS_model_name_ctl .eq. 'dynamic_simi'                 &
-     &      .or. SGS_model_name_ctl .eq. 'Dynamic_simi'                 &
-     &      .or. SGS_model_name_ctl .eq. 'DYNAMIC_SIMI'  ) then
+        else if (cmp_no_case(tmpchara, 'dynamic_similarity')            &
+     &      .or. cmp_no_case(tmpchara, 'dynamic_simi')) then
           iflag_SGS_model =   id_SGS_similarity
           iflag_dynamic_SGS = id_SGS_DYNAMIC_ON
 !
-        else if (SGS_model_name_ctl .eq. 'diffusion'                    &
-     &      .or. SGS_model_name_ctl .eq. 'Diffusino'                    &
-     &      .or. SGS_model_name_ctl .eq. 'DIFFUSION' ) then
+        else if (cmp_no_case(tmpchara,'diffusion')) then
           iflag_SGS_model =   id_SGS_diffusion
           iflag_dynamic_SGS = id_SGS_DYNAMIC_ON
         end if
@@ -101,122 +124,10 @@
       end if
 !
 !
-      ifilter_final = ifilter_2delta
-!
-      if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
-        iset_DIFF_model_coefs = 0
-        if (i_DIFF_coefs.ne.0) then
-          if (  DIFF_model_coef_ctl.eq.'whole_domain'                   &
-           .or. DIFF_model_coef_ctl.eq.'Whole_domain'                   &
-     &     .or. DIFF_model_coef_ctl.eq.'WHOLE_DOMAIN'                   &
-     &       )               iset_DIFF_model_coefs = 0
-          if (  DIFF_model_coef_ctl.eq.'layerd'                         &
-     &     .or. DIFF_model_coef_ctl.eq.'Layerd'                         &
-     &     .or. DIFF_model_coef_ctl.eq.'LAYERD'                         &
-     &       )               iset_DIFF_model_coefs = 1
-        end if
-!
-!
-        if (i_SGS_clips.eq.0) then
-          e_message                                                     &
-     &      = 'Set cliping method for model coefficient'
-          call calypso_MPI_abort(ierr_SGS, e_message)
-        else
-!
-          if (  SGS_negative_clip_ctl.eq.'none'                         &
-     &     .or. SGS_negative_clip_ctl.eq.'None'                         &
-     &     .or. SGS_negative_clip_ctl.eq.'NONE'                         &
-     &       )               iset_SGS_nagetive_clip = 0
-          if (  SGS_negative_clip_ctl.eq.'zero'                         &
-     &     .or. SGS_negative_clip_ctl.eq.'Zero'                         &
-     &     .or. SGS_negative_clip_ctl.eq.'ZERO'                         &
-     &       )               iset_SGS_nagetive_clip = 1
-          if (  SGS_negative_clip_ctl.eq.'keep'                         &
-     &     .or. SGS_negative_clip_ctl.eq.'Keep'                         &
-     &     .or. SGS_negative_clip_ctl.eq.'KEEP'                         &
-     &       )               iset_SGS_nagetive_clip = 2
-        end if
-!
-!
-        if (i_SGS_clip_limit .gt. 0) then
-          SGS_clipping_limit = clipping_limit_ctl
-        else
-          SGS_clipping_limit = 0.0d0
-        end if
-!
-        if (i_SGS_hf_factor .gt. 0) then
-          SGS_hf_factor = SGS_hf_factor_ctl
-        else
-          SGS_hf_factor = 1.0d0
-        end if
-!
-        if (i_SGS_mf_factor .gt. 0) then
-          SGS_mf_factor = SGS_mf_factor_ctl
-        else
-          SGS_mf_factor = 1.0d0
-        end if
-!
-        if (i_SGS_mxwl_factor .gt. 0) then
-          SGS_mawell_factor = SGS_mxwl_factor_ctl
-        else
-          SGS_mawell_factor = 1.0d0
-        end if
-!
-        if (i_SGS_uxb_factor .gt. 0) then
-          SGS_uxb_factor = SGS_uxb_factor_ctl
-        else
-          SGS_uxb_factor = 1.0d0
-        end if
-!
-!
-        if (i_SGS_marging.eq.0) then
-          iset_SGS_coef_marging = 0
-        else
-!
-          if (  SGS_marging_ctl.eq.'lsq_over_directions'                &
-     &     .or. SGS_marging_ctl.eq.'Lsq_over_directions'                &
-     &     .or. SGS_marging_ctl.eq.'LSQ_OVER_DIRECTIONS'                &
-     &     .or. SGS_marging_ctl.eq.'lsq'                                &
-     &     .or. SGS_marging_ctl.eq.'Lsq'                                &
-     &     .or. SGS_marging_ctl.eq.'LSQ'                                &
-     &       )               iset_SGS_coef_marging = 0
-          if (  SGS_marging_ctl.eq.'average_over_directions'            &
-     &     .or. SGS_marging_ctl.eq.'Average_over_directions'            &
-     &     .or. SGS_marging_ctl.eq.'AVERAGE_OVER_DIRECTIONS'            &
-     &     .or. SGS_marging_ctl.eq.'average'                            &
-     &     .or. SGS_marging_ctl.eq.'Average'                            &
-     &     .or. SGS_marging_ctl.eq.'AVERAGE'                            &
-     &       )               iset_SGS_coef_marging = 1
-          if (  SGS_marging_ctl.eq.'weighting_by_correlation'           &
-     &     .or. SGS_marging_ctl.eq.'Weighting_by_correlation'           &
-     &     .or. SGS_marging_ctl.eq.'WEIGHTING_BY_CORRELATION'           &
-     &     .or. SGS_marging_ctl.eq.'weighting'                          &
-     &     .or. SGS_marging_ctl.eq.'Weighting'                          &
-     &     .or. SGS_marging_ctl.eq.'WEIGHTING'                          &
-     &       )               iset_SGS_coef_marging = 2
-!
-        end if
-!
-        if (i_min_step_dynamic.gt.0) then
-          min_step_dynamic = min_step_dynamic_ctl
-        else
-          min_step_dynamic = 1
-        end if
-!
-        if (i_max_step_dynamic.gt.0) then
-          max_step_dynamic = max_step_dynamic_ctl
-        else
-          max_step_dynamic = 50
-        end if
-!
-        delta_to_shrink_dynamic = delta_to_shrink_dynamic_ctl
-        delta_to_extend_dynamic = delta_to_extend_dynamic_ctl
-      end if
-!
-!
 !  set applied terms
 !
       iflag_SGS_heat      = id_SGS_none
+      iflag_SGS_comp_flux = id_SGS_none
       iflag_SGS_inertia   = id_SGS_none
       iflag_SGS_lorentz   = id_SGS_none
       iflag_SGS_induction = id_SGS_none
@@ -284,81 +195,192 @@
           iflag_commute_correction                                      &
      &        =  iflag_commute_linear + iflag_commute_nonlinar
         end if
+      end if
 !
+      if (iflag_SGS_model .ne. id_SGS_none) then
+        if (iflag_debug .gt. 0)  then
+          write(*,*) 'iflag_SGS_heat:         ',iflag_SGS_heat
+          write(*,*) 'iflag_SGS_inertia:      ',iflag_SGS_inertia
+          write(*,*) 'iflag_SGS_lorentz:      ',iflag_SGS_lorentz
+          write(*,*) 'iflag_SGS_induction:    ',iflag_SGS_induction
+          write(*,*) 'iflag_SGS_gravity:      ',iflag_SGS_gravity
+!
+          write(*,*) 'iflag_commute_temp:     ',iflag_commute_temp
+          write(*,*) 'iflag_commute_velo:     ',iflag_commute_velo
+          write(*,*) 'iflag_commute_magne:    ',iflag_commute_magne
+          write(*,*) 'iflag_commute_c_flux:   ',iflag_commute_c_flux
+          write(*,*) 'iflag_commute_heat:     ',iflag_commute_heat
+          write(*,*) 'iflag_commute_inertia:  ',iflag_commute_inertia
+          write(*,*) 'iflag_commute_lorentz:  ',iflag_commute_lorentz
+          write(*,*) 'iflag_commute_induction:',iflag_commute_induction
+          write(*,*) 'iflag_commute_composit: ',iflag_commute_composit
+        end if
+      end if
+!
+      end subroutine set_control_SGS_model
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_control_FEM_SGS
+!
+      use m_machine_parameter
+      use m_geometry_constants
+      use m_file_format_switch
+      use m_phys_labels
+      use m_control_parameter
+      use m_ctl_data_SGS_model
+      use m_filter_file_names
+      use m_ctl_data_filter_files
+      use sgs_ini_model_coefs_IO
+      use set_control_ele_layering
+!
+      character(len=kchara) :: tmpchara
+!
+!
+      ifilter_final = ifilter_2delta
+!
+      if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+        iset_DIFF_model_coefs = 0
+        if (DIFF_model_coef_ctl%iflag .ne. 0) then
+          tmpchara = DIFF_model_coef_ctl%charavalue
+!
+          if (cmp_no_case(tmpchara, 'whole_domain')) then
+            iset_DIFF_model_coefs = 0
+          else if (cmp_no_case(tmpchara, 'layerd')) then
+            iset_DIFF_model_coefs = 1
+          end if
+        end if
+!
+!
+        if (SGS_negative_clip_ctl%iflag .eq. 0) then
+          e_message                                                     &
+     &      = 'Set cliping method for model coefficient'
+          call calypso_MPI_abort(ierr_SGS, e_message)
+        else
+          tmpchara = SGS_negative_clip_ctl%charavalue
+!
+          if (cmp_no_case(tmpchara, 'none')) iset_SGS_nagetive_clip = 0
+          if (cmp_no_case(tmpchara, 'zero')) iset_SGS_nagetive_clip = 1
+          if (cmp_no_case(tmpchara, 'keep')) iset_SGS_nagetive_clip = 2
+        end if
+!
+!
+        if (clipping_limit_ctl%iflag .gt. 0) then
+          SGS_clipping_limit = clipping_limit_ctl%realvalue
+        else
+          SGS_clipping_limit = 0.0d0
+        end if
+!
+        if (SGS_hf_factor_ctl%iflag .gt. 0) then
+          SGS_hf_factor = SGS_hf_factor_ctl%realvalue
+        else
+          SGS_hf_factor = 1.0d0
+        end if
+!
+        if (SGS_mf_factor_ctl%iflag .gt. 0) then
+          SGS_mf_factor = SGS_mf_factor_ctl%realvalue
+        else
+          SGS_mf_factor = 1.0d0
+        end if
+!
+        if (SGS_mxwl_factor_ctl%iflag .gt. 0) then
+          SGS_mawell_factor = SGS_mxwl_factor_ctl%realvalue
+        else
+          SGS_mawell_factor = 1.0d0
+        end if
+!
+        if (SGS_uxb_factor_ctl%iflag .gt. 0) then
+          SGS_uxb_factor = SGS_uxb_factor_ctl%realvalue
+        else
+          SGS_uxb_factor = 1.0d0
+        end if
+!
+!
+        if (SGS_marging_ctl%iflag .eq. 0) then
+          iset_SGS_coef_marging = 0
+        else
+          tmpchara = SGS_marging_ctl%charavalue
+!
+          if      (cmp_no_case(tmpchara, 'lsq_over_directions')         &
+     &        .or. cmp_no_case(tmpchara, 'lsq')) then
+             iset_SGS_coef_marging = 0
+          else if (cmp_no_case(tmpchara, 'average_over_directions')     &
+     &        .or. cmp_no_case(tmpchara, 'average')) then
+             iset_SGS_coef_marging = 1
+          else if (cmp_no_case(tmpchara, 'weighting_by_correlation')    &
+     &        .or. cmp_no_case(tmpchara, 'weighting')) then
+             iset_SGS_coef_marging = 2
+          end if
+        end if
+!
+        if (min_step_dynamic_ctl%iflag .gt. 0) then
+          min_step_dynamic = min_step_dynamic_ctl%intvalue
+        else
+          min_step_dynamic = 1
+        end if
+!
+        if (max_step_dynamic_ctl%iflag .gt. 0) then
+          max_step_dynamic = max_step_dynamic_ctl%intvalue
+        else
+          max_step_dynamic = 50
+        end if
+!
+        delta_to_shrink_dynamic = delta_to_shrink_dynamic_ctl%realvalue
+        delta_to_extend_dynamic = delta_to_extend_dynamic_ctl%realvalue
       end if
 !
 !
-!
       iflag_SGS_parterbuation = 0
-      if(i_SGS_perturbation_ctl .gt. 0) then
-          if (  SGS_perturbation_ctl.eq.'reference'                     &
-     &     .or. SGS_perturbation_ctl.eq.'Reference'                     &
-     &     .or. SGS_perturbation_ctl.eq.'REFERENCE'                     &
+      if(SGS_perturbation_ctl%iflag .gt. 0) then
+          if (cmp_no_case(SGS_perturbation_ctl%charavalue, 'reference') &
      &       )               iflag_SGS_parterbuation = 1
-          if (  SGS_perturbation_ctl.eq.'average'                       &
-     &     .or. SGS_perturbation_ctl.eq.'Average'                       &
-     &     .or. SGS_perturbation_ctl.eq.'AVERAGE'                       &
+          if (cmp_no_case(SGS_perturbation_ctl%charavalue, 'average')   &
      &       )               iflag_SGS_parterbuation = 2
       end if
 !
 !
-      if(i_hf_csim_type_ctl .gt. 0) then
-          if (  heat_flux_csim_type_ctl.eq.'components'                 &
-     &     .or. heat_flux_csim_type_ctl.eq.'Components'                 &
-     &     .or. heat_flux_csim_type_ctl.eq.'COMPONENTS'                 &
-     &       ) itype_SGS_h_flux_coef = 1
-      end if
+      if(heat_flux_csim_type_ctl%iflag .gt. 0                           &
+     &   .and. cmp_no_case(heat_flux_csim_type_ctl%charavalue,          &
+     &                    'components')) itype_SGS_h_flux_coef = 1
 !
-      if(i_mf_csim_type_ctl .gt. 0) then
-          if (  mom_flux_csim_type_ctl.eq.'components'                  &
-     &     .or. mom_flux_csim_type_ctl.eq.'Components'                  &
-     &     .or. mom_flux_csim_type_ctl.eq.'COMPONENTS'                  &
-     &       ) itype_SGS_m_flux_coef = 1
-      end if
+      if(mom_flux_csim_type_ctl%iflag .gt. 0                            &
+         .and. cmp_no_case(mom_flux_csim_type_ctl%charavalue,           &
+     &                     'components')) itype_SGS_m_flux_coef = 1
 !
-      if(i_mxwl_csim_type_ctl .gt. 0) then
-          if (  maxwell_csim_type_ctl.eq.'components'                   &
-     &     .or. maxwell_csim_type_ctl.eq.'Components'                   &
-     &     .or. maxwell_csim_type_ctl.eq.'COMPONENTS'                   &
-     &       ) itype_SGS_maxwell_coef = 1
-      end if
+      if(maxwell_csim_type_ctl%iflag .gt. 0                             &
+     &   .and. cmp_no_case(maxwell_csim_type_ctl%charavalue,            &
+     &                    'components')) itype_SGS_maxwell_coef = 1
 !
-      if(i_uxb_csim_type_ctl .gt. 0) then
-          if (  uxb_csim_type_ctl.eq.'components'                       &
-     &     .or. uxb_csim_type_ctl.eq.'Components'                       &
-     &     .or. uxb_csim_type_ctl.eq.'COMPONENTS'                       &
+      if(uxb_csim_type_ctl%iflag .gt. 0                                 &
+        .and. cmp_no_case(uxb_csim_type_ctl%charavalue, 'components')   &
      &       ) itype_SGS_uxb_coef = 1
-      end if
 !
       itype_SGS_model_coef = 0
-      if(i_model_coef_type_ctl .gt. 0) then
-          if (  SGS_model_coef_type_ctl.eq.'components'                 &
-     &     .or. SGS_model_coef_type_ctl.eq.'Components'                 &
-     &     .or. SGS_model_coef_type_ctl.eq.'COMPONENTS'                 &
-     &       ) then
-          itype_SGS_model_coef = 1
+      if(SGS_model_coef_type_ctl%iflag .gt. 0                           &
+     &  .and. cmp_no_case(SGS_model_coef_type_ctl%charavalue,           &
+     &                    'components') ) then
+        itype_SGS_model_coef = 1
 !
-          itype_SGS_h_flux_coef =   1
-          itype_SGS_m_flux_coef =   1
-          itype_SGS_maxwell_coef =  1
-          itype_SGS_uxb_coef =      1
-        end if
+        itype_SGS_h_flux_coef =   1
+        itype_SGS_m_flux_coef =   1
+        itype_SGS_maxwell_coef =  1
+        itype_SGS_uxb_coef =      1
       end if
 !
       icoord_SGS_model_coef = 0
-      if(i_model_coef_coord_ctl .gt. 0) then
-          if (  SGS_model_coef_coord_ctl.eq.'spherical'                 &
-     &     .or. SGS_model_coef_coord_ctl.eq.'Spherical'                 &
-     &     .or. SGS_model_coef_coord_ctl.eq.'SPHERICAL'                 &
-     &     .or. SGS_model_coef_coord_ctl.eq.'sph'                       &
-     &     .or. SGS_model_coef_coord_ctl.eq.'SPH'                       &
-     &       )               icoord_SGS_model_coef = iflag_spherical
-          if (  SGS_model_coef_coord_ctl.eq.'cylindrical'               &
-     &     .or. SGS_model_coef_coord_ctl.eq.'Cylindrical'               &
-     &     .or. SGS_model_coef_coord_ctl.eq.'CYLINDRICAL'               &
-     &     .or. SGS_model_coef_coord_ctl.eq.'spz'                       &
-     &     .or. SGS_model_coef_coord_ctl.eq.'SPZ'                       &
-     &       )               icoord_SGS_model_coef = iflag_cylindrical
+      if(SGS_model_coef_coord_ctl%iflag .gt. 0) then
+          if(   cmp_no_case(SGS_model_coef_coord_ctl%charavalue,        &
+     &                      'spherical')                                &
+     &     .or. cmp_no_case(SGS_model_coef_coord_ctl%charavalue,        &
+     &                      'sph')) then
+             icoord_SGS_model_coef = iflag_spherical
+          end if
+          if(   cmp_no_case(SGS_model_coef_coord_ctl%charavalue,        &
+     &                      'cylindrical')                              &
+     &     .or. cmp_no_case(SGS_model_coef_coord_ctl%charavalue,        &
+     &                      'spz')) then
+            icoord_SGS_model_coef = iflag_cylindrical
+          end if
       end if
 !
 !
@@ -381,22 +403,6 @@
 !
       if (iflag_SGS_model .ne. id_SGS_none) then
         if (iflag_debug .gt. 0)  then
-          write(*,*) 'iflag_SGS_heat:         ',iflag_SGS_heat
-          write(*,*) 'iflag_SGS_inertia:      ',iflag_SGS_inertia
-          write(*,*) 'iflag_SGS_lorentz:      ',iflag_SGS_lorentz
-          write(*,*) 'iflag_SGS_induction:    ',iflag_SGS_induction
-          write(*,*) 'iflag_SGS_gravity:      ',iflag_SGS_gravity
-!
-          write(*,*) 'iflag_commute_temp:     ',iflag_commute_temp
-          write(*,*) 'iflag_commute_velo:     ',iflag_commute_velo
-          write(*,*) 'iflag_commute_magne:    ',iflag_commute_magne
-          write(*,*) 'iflag_commute_c_flux:   ',iflag_commute_c_flux
-          write(*,*) 'iflag_commute_heat:     ',iflag_commute_heat
-          write(*,*) 'iflag_commute_inertia:  ',iflag_commute_inertia
-          write(*,*) 'iflag_commute_lorentz:  ',iflag_commute_lorentz
-          write(*,*) 'iflag_commute_induction:',iflag_commute_induction
-          write(*,*) 'iflag_commute_composit: ',iflag_commute_composit
-!
           write(*,*) 'itype_SGS_model_coef: ',  itype_SGS_model_coef
           write(*,*) 'icoord_SGS_model_coef: ', icoord_SGS_model_coef
 !
@@ -423,7 +429,7 @@
         end if
       end if
 !
-      end subroutine s_set_control_4_SGS
+      end subroutine set_control_FEM_SGS
 !
 ! -----------------------------------------------------------------------
 !

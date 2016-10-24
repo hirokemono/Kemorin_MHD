@@ -90,24 +90,27 @@
         if ( iflag_scheme .eq. id_Crank_nicolson                        &
      &     .or. iflag_scheme .eq. id_Crank_nicolson) then
 !
-          if ((i_method_4_velo*i_precond_4_crank) .eq. 0) then
+          if ((method_4_velo_ctl%iflag*precond_4_crank_ctl%iflag)       &
+     &      .eq. 0) then
             e_message                                                   &
      &      = 'Set CG method and preconditioning for implicit solver'
             call calypso_MPI_abort(ierr_CG, e_message)
           else
-            method_4_velo = method_4_velo_ctl
-            precond_4_crank = precond_4_crank_ctl
+            method_4_velo =   method_4_velo_ctl%charavalue
+            precond_4_crank = precond_4_crank_ctl%charavalue
           end if
 !
-          if (i_eps_crank .eq. 0) then
+          if (eps_crank_ctl%iflag .eq. 0) then
             e_message                                                   &
      &      = 'Set convergence area for implicit solver'
             call calypso_MPI_abort(ierr_CG, e_message)
           else
-            eps_crank  = eps_crank_ctl
+            eps_crank  = eps_crank_ctl%realvalue
           end if
 !
-          if(i_eps_B_crank .gt. 0) eps_4_magne_crank = eps_B_crank_ctl
+          if(eps_B_crank_ctl%iflag .gt. 0) then
+            eps_4_magne_crank = eps_B_crank_ctl%realvalue
+          end if
         end if
 !
 !   control for number of processores for DJDS solver

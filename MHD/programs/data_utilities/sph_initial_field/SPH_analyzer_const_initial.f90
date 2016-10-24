@@ -23,8 +23,14 @@
       use m_control_parameter
       use m_t_int_parameter
       use m_t_step_parameter
+      use t_radial_filtering_data
+      use t_sph_filtering_data
 !
       implicit none
+!
+      type(radial_filters_type) :: r_filters1
+      type(sph_gaussian_filters) :: sph_filters1
+      private :: r_filters1, sph_filters1
 !
       private :: SPH_const_initial_field
 !
@@ -58,13 +64,14 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_4_SPH_make_init'
       call input_control_4_SPH_make_init                                &
-     &   (sph1, comms_sph1, sph_grps1, rj_fld1, pwr1)
+     &   (sph1, comms_sph1, sph_grps1, rj_fld1, pwr1,                   &
+     &    r_filters1, sph_filters1)
       call end_eleps_time(4)
 !
 !        Initialize spherical transform dynamo
 !
       call start_eleps_time(2)
-      if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_MHD'
+      if(iflag_debug .gt. 0) write(*,*) 'SPH_const_initial_field'
       call SPH_const_initial_field
 !
       call end_eleps_time(2)

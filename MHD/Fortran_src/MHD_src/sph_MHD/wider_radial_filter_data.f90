@@ -133,6 +133,7 @@
         end do
         prod_filter%num_node(1) = prod_filter%num_node(1) + icou
       end do
+      prod_filter%istack_node(0) = 0
       prod_filter%istack_node(1) = prod_filter%num_node(1)
       prod_filter%ntot_nod =       prod_filter%istack_node(1)
 !
@@ -149,18 +150,34 @@
       real(kind = kreal), intent(in) :: a_prod(nri,nri)
       type(filter_coefficients_type), intent(inout) :: prod_filter
 !
-      integer(kind = kint) :: inum, inod, icou, jnod, num
+      integer(kind = kint) :: inum, inod, icou, jnod, num, iflag
 !
 !
+      icou = prod_filter%istack_node(0)
       do inod = 1, nri
-        icou = prod_filter%istack_node(0)
         do jnod = 1, nri
-          if(a_prod(inod,jnod) .ne. zero) then
+          if(inod.ne.jnod .and. a_prod(inod,jnod) .ne. zero) then
             icou = icou + 1
             prod_filter%inod_filter(icou) = inod
             exit
           end if
         end do
+      end do
+!
+      do inod = 1, nri
+        if(a_prod(inod,inod) .ne. zero) then
+          iflag = 0
+          do jnod = 1, nri
+            if(inod.ne.jnod .and. a_prod(inod,jnod) .ne. zero) then
+              iflag = 1
+              exit
+            end if
+          end do
+          if(iflag .eq. 0) then
+            icou = icou + 1
+            prod_filter%inod_filter(icou) = inod
+          end if
+        end if
       end do
 !
       num = prod_filter%num_node(1)
@@ -175,6 +192,8 @@
       end do
 !$omp end parallel do
 !
+      write(*,*) ' prod_filter%nnod_near',  prod_filter%nnod_near
+      prod_filter%istack_near_nod(0) = 0
       do inum = 1, num
         prod_filter%istack_near_nod(inum)                               &
      &    = prod_filter%istack_near_nod(inum-1)                         &
@@ -198,11 +217,11 @@
 !$omp parallel do private(inum,inod,icou,jnod)
       do inum = 1, prod_filter%num_node(1)
         inod = prod_filter%inod_filter(inum)
-        icou = prod_filter%istack_near_nod(inum-1)  
+        icou = prod_filter%istack_near_nod(inum-1)
         do jnod = 1, nri
           if(a_prod(inod,jnod) .ne. zero) then
             icou = icou + 1
-            prod_filter%inod_filter(icou) = jnod
+            prod_filter%inod_near(icou) = jnod
             prod_filter%weight(icou) = a_prod(inod,jnod)
           end if
         end do

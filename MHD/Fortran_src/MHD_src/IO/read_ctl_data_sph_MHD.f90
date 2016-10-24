@@ -50,6 +50,7 @@
       use m_ctl_data_mhd_forces
       use m_ctl_data_mhd_normalize
       use m_ctl_data_temp_model
+      use m_ctl_data_SGS_model
 !
 !
       if(right_begin_flag(hd_model) .eq. 0) return
@@ -76,6 +77,8 @@
         call read_coriolis_ctl
         call read_magneto_ctl
         call read_temp_def
+!
+        call read_sgs_ctl
       end do
 !
       end subroutine read_sph_mhd_model

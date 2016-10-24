@@ -10,7 +10,6 @@
 !!@verbatim
 !!     subroutine set_control_4_fields(nod_fld)
 !!     subroutine add_nodal_fields_2_ctl
-!!     subroutine check_FEM_MHD_dependencies(nod_fld)
 !!@endverbatim
 !
       module set_control_nodal_data_MHD
@@ -85,25 +84,6 @@
       call add_work_area_4_sgs_model
 !
       end subroutine add_field_name_4_fem_mhd
-!
-! -----------------------------------------------------------------------
-!
-      subroutine check_FEM_MHD_dependencies(nod_fld)
-!
-      use node_monitor_IO
-      use ordering_field_by_viz
-      use check_dependency_for_MHD
-!
-      type(phys_data), intent(inout) :: nod_fld
-!
-!
-      call count_field_4_monitor                                        &
-     &   (nod_fld%num_phys, nod_fld%num_component,                      &
-     &    nod_fld%iflag_monitor, num_field_monitor, ntot_comp_monitor)
-!
-      call check_dependencies(nod_fld%num_phys, nod_fld%phys_name)
-!
-      end subroutine check_FEM_MHD_dependencies
 !
 ! -----------------------------------------------------------------------
 !

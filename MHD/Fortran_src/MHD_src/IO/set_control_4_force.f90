@@ -34,6 +34,7 @@
       use skip_comment_f
 !
       integer (kind = kint) :: i, iflag
+      character(len=kchara) :: tmpchara
 !
 !
       iflag_4_gravity =        id_turn_OFF
@@ -163,24 +164,16 @@
       iflag = iflag_4_gravity + iflag_4_composit_buo                    &
      &       + iflag_4_filter_gravity
       if (iflag .gt. 0) then
-        if (i_gravity_type .eq. 0) then
+        if (gravity_ctl%iflag .eq. 0) then
           i_grav = iflag_self_r_g
         else
+          tmpchara = gravity_ctl%charavalue
 !
-          if     (gravity_ctl .eq. 'constant'                           &
-     &       .or. gravity_ctl .eq. 'Constant'                           &
-     &       .or. gravity_ctl .eq. 'CONSTANT'                           &
-     &       .or. gravity_ctl .eq. '0') then
+          if     (cmp_no_case(tmpchara, 'constant')) then
              i_grav = iflag_const_g
-          else if(gravity_ctl .eq. 'constant_radial'                    &
-     &       .or. gravity_ctl .eq. 'Constant_radial'                    &
-     &       .or. gravity_ctl .eq. 'CONSTANT_RADIAL'                    &
-     &       .or. gravity_ctl .eq. '1') then
+          else if(cmp_no_case(tmpchara, 'constant_radial')) then
              i_grav = iflag_radial_g
-          else if(gravity_ctl .eq. 'radial'                             &
-     &       .or. gravity_ctl .eq. 'Radial'                             &
-     &       .or. gravity_ctl .eq. 'RADIAL'                             &
-     &       .or. gravity_ctl .eq. '2') then
+          else if(cmp_no_case(tmpchara, 'radial')) then
              i_grav = iflag_self_r_g
            end if
         end if
@@ -226,12 +219,11 @@
 !
 !  setting for external mangnetic field
 !
-      if (i_magneto_cv .eq. 0) then
+      if (magneto_cv_ctl%iflag .eq. 0) then
         iflag_magneto_cv = id_turn_OFF
       else
-        if(      cmp_no_case(magneto_cv_ctl, 'On')                      &
-     &     .or.  cmp_no_case(magneto_cv_ctl, '1')                       &
-     &    ) iflag_magneto_cv = id_turn_ON
+        if(yes_flag(magneto_cv_ctl%charavalue))                         &
+     &                     iflag_magneto_cv = id_turn_ON
       end if
 !
       ex_magne(1:3) = 0.0d0

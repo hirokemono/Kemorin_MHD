@@ -1,7 +1,7 @@
 !
 !     module SPH_analyzer_MHD
 !
-!      subroutine SPH_initialize_MHD
+!      subroutine SPH_initialize_MHD(r_filters, sph_filters)
 !      subroutine SPH_analyze_MHD(i_step, iflag_finish)
 !
 !      Written by H. Matsui
@@ -10,10 +10,9 @@
 !
       use m_precision
       use t_radial_filtering_data
+      use t_sph_filtering_data
 !
       implicit none
-!
-      type(radial_filters_type), save :: r_filter1
 !
 ! ----------------------------------------------------------------------
 !
@@ -21,7 +20,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_initialize_MHD
+      subroutine SPH_initialize_MHD(r_filters, sph_filters)
 !
       use m_constants
       use calypso_mpi
@@ -49,8 +48,12 @@
       use sph_mhd_rms_IO
       use cal_sol_sph_MHD_crank
       use cal_nonlinear
+      use sph_filtering
 !
       use m_work_time
+!
+      type(radial_filters_type), intent(inout) :: r_filters
+      type(sph_gaussian_filters), intent(inout) :: sph_filters
 !
 !   Allocate spectr field data
 !
@@ -82,10 +85,13 @@
 !
 !  -------------------------------
 !
-!      if(iflag_SGS_model .gt. 0) then
+      if(iflag_SGS_model .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)' init_SGS_model_sph_mhd'
-        call init_SGS_model_sph_mhd(sph1%sph_rj, sph_grps1, r_filter1)
-!      end if
+        call init_SGS_model_sph_mhd                                     &
+     &     (sph1%sph_params, sph1%sph_rj, sph_grps1,                    &
+     &      r_filters, sph_filters)
+      end if
+      call calypso_mpi_barrier
 !
 !  -------------------------------
 !

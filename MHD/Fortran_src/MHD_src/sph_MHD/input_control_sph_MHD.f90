@@ -9,19 +9,24 @@
 !!@verbatim
 !!      subroutine input_control_SPH_mesh                               &
 !!     &         (sph, comms_sph, sph_grps, rj_fld, pwr,                &
-!!     &          mesh, group, ele_mesh)
+!!     &          r_filters, sph_filters, mesh, group, ele_mesh)
 !!      subroutine input_control_4_SPH_MHD_nosnap                       &
-!!     &         (sph, comms_sph, sph_grps, rj_fld, pwr)
+!!     &         (sph, comms_sph, sph_grps, rj_fld, pwr,                &
+!!     &          r_filters, sph_filter)
 !!
 !!      subroutine input_control_4_SPH_make_init                        &
-!!     &         (sph, comms_sph, sph_grps, rj_fld, pwr)
+!!     &         (sph, comms_sph, sph_grps, rj_fld, pwr,                &
+!!     &          r_filters, sph_filter)
 !!      subroutine input_control_SPH_dynamobench                        &
-!!     &         (sph, comms_sph, sph_grps, rj_fld, pwr)
+!!     &         (sph, comms_sph, sph_grps, rj_fld, pwr,                &
+!!     &          r_filters, sph_filter)
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
 !!        type(sph_group_data), intent(inout) ::  sph_grps
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(sph_mean_squares), intent(inout) :: pwr
+!!        type(radial_filters_type), intent(inout) :: r_filters
+!!        type(sph_gaussian_filters), intent(inout) :: sph_filters
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(element_geometry), intent(inout) :: ele_mesh
@@ -41,6 +46,8 @@
       use t_spheric_mesh
       use t_group_data
       use t_rms_4_sph_spectr
+      use t_radial_filtering_data
+      use t_sph_filtering_data
 !
       implicit none
 !
@@ -56,7 +63,7 @@
 !
       subroutine input_control_SPH_mesh                                 &
      &         (sph, comms_sph, sph_grps, rj_fld, pwr,                  &
-     &          mesh, group, ele_mesh)
+     &          r_filters, sph_filters, mesh, group, ele_mesh)
 !
       use m_control_parameter
       use m_sph_boundary_input_data
@@ -75,6 +82,8 @@
 !
       type(phys_data), intent(inout) :: rj_fld
       type(sph_mean_squares), intent(inout) :: pwr
+      type(radial_filters_type), intent(inout) :: r_filters
+      type(sph_gaussian_filters), intent(inout) :: sph_filters
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
@@ -85,7 +94,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
       call set_control_4_SPH_MHD                                        &
-     &   (sph_gen, rj_fld, sph_file_param, sph_fst_IO, pwr)
+     &   (sph_gen, rj_fld, sph_file_param, sph_fst_IO, pwr,             &
+     &    r_filters, sph_filters)
       call set_control_4_SPH_to_FEM(sph%sph_params, rj_fld)
 !
 !
@@ -124,7 +134,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine input_control_4_SPH_MHD_nosnap                         &
-     &         (sph, comms_sph, sph_grps, rj_fld, pwr)
+     &         (sph, comms_sph, sph_grps, rj_fld, pwr,                  &
+     &          r_filters, sph_filters)
 !
       use m_control_parameter
       use m_sph_boundary_input_data
@@ -138,11 +149,14 @@
 !
       type(phys_data), intent(inout) :: rj_fld
       type(sph_mean_squares), intent(inout) :: pwr
+      type(radial_filters_type), intent(inout) :: r_filters
+      type(sph_gaussian_filters), intent(inout) :: sph_filters
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
       call set_control_4_SPH_MHD                                        &
-     &   (sph_gen, rj_fld, sph_file_param, sph_fst_IO, pwr)
+     &   (sph_gen, rj_fld, sph_file_param, sph_fst_IO, pwr,             &
+     &    r_filters, sph_filters)
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
       call load_para_sph_mesh(sph, comms_sph, sph_grps)
@@ -158,7 +172,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine input_control_4_SPH_make_init                          &
-     &         (sph, comms_sph, sph_grps, rj_fld, pwr)
+     &         (sph, comms_sph, sph_grps, rj_fld, pwr,                  &
+     &          r_filters, sph_filters)
 !
       use m_control_parameter
       use m_sph_boundary_input_data
@@ -172,11 +187,14 @@
 !
       type(phys_data), intent(inout) :: rj_fld
       type(sph_mean_squares), intent(inout) :: pwr
+      type(radial_filters_type), intent(inout) :: r_filters
+      type(sph_gaussian_filters), intent(inout) :: sph_filters
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
       call set_control_4_SPH_MHD                                        &
-     &   (sph_gen, rj_fld, sph_file_param, sph_fst_IO, pwr)
+     &   (sph_gen, rj_fld, sph_file_param, sph_fst_IO, pwr,             &
+     &    r_filters, sph_filters)
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
       call load_para_sph_mesh(sph, comms_sph, sph_grps)
@@ -187,7 +205,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine input_control_SPH_dynamobench                          &
-     &         (sph, comms_sph, sph_grps, rj_fld, pwr)
+     &         (sph, comms_sph, sph_grps, rj_fld, pwr,                  &
+     &          r_filters, sph_filters)
 !
       use m_control_parameter
       use sph_mhd_rst_IO_control
@@ -201,11 +220,14 @@
 !
       type(phys_data), intent(inout) :: rj_fld
       type(sph_mean_squares), intent(inout) :: pwr
+      type(radial_filters_type), intent(inout) :: r_filters
+      type(sph_gaussian_filters), intent(inout) :: sph_filters
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
       call set_control_4_SPH_MHD                                        &
-     &   (sph_gen, rj_fld, sph_file_param, sph_fst_IO, pwr)
+     &   (sph_gen, rj_fld, sph_file_param, sph_fst_IO, pwr,             &
+     &    r_filters, sph_filters)
       call set_control_4_SPH_to_FEM(sph%sph_params, rj_fld)
       call set_ctl_params_dynamobench
 !
