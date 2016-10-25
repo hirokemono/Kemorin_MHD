@@ -7,16 +7,16 @@
 !>@brief Set control data for spherical transform MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine set_control_4_SPH_MHD                                &
-!!     &         (sph_gen, rj_fld, sph_file_param, sph_fst_IO, pwr,     &
-!!     &          r_filters, sph_filters)
+!!      subroutine set_control_SGS_SPH_MHD(sph_gen, rj_fld,             &
+!!     &         sph_file_param, sph_fst_IO, pwr, sph_filters)
+!!      subroutine set_control_4_SPH_MHD(sph_gen, rj_fld,               &
+!!     &         sph_file_param, sph_fst_IO, pwr, sph_filters)
 !!        type(sph_grids), intent(inout) :: sph_gen
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(field_IO_params), intent(inout) :: sph_file_param
 !!        type(field_IO), intent(inout) :: sph_fst_IO
 !!        type(sph_mean_squares), intent(inout) :: pwr
-!!        type(radial_filters_type), intent(inout) :: r_filters
-!!        type(sph_gaussian_filters), intent(inout) :: sph_filters
+!!        type(sph_filters_type), intent(inout) :: sph_filters(3)
 !!@endverbatim
 !
       module set_control_sph_mhd
@@ -34,9 +34,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_4_SPH_MHD                                  &
-     &         (sph_gen, rj_fld, sph_file_param, sph_fst_IO, pwr,       &
-     &          r_filters, sph_filters)
+      subroutine set_control_SGS_SPH_MHD(sph_gen, rj_fld,               &
+     &         sph_file_param, sph_fst_IO, pwr, sph_filters)
 !
       use m_control_params_2nd_files
       use m_spheric_global_ranks
@@ -48,8 +47,44 @@
       use t_phys_data
       use t_rms_4_sph_spectr
       use t_field_data_IO
-      use t_radial_filtering_data
       use t_sph_filtering_data
+!
+      use set_control_4_SGS
+!
+      type(sph_grids), intent(inout) :: sph_gen
+      type(phys_data), intent(inout) :: rj_fld
+      type(field_IO_params), intent(inout) :: sph_file_param
+      type(field_IO), intent(inout) :: sph_fst_IO
+      type(sph_mean_squares), intent(inout) :: pwr
+      type(sph_filters_type), intent(inout) :: sph_filters(3)
+!
+!
+      call set_control_4_SPH_MHD(sph_gen, rj_fld,                       &
+     &   sph_file_param, sph_fst_IO, pwr)
+!
+!   set parameters for SGS model
+!
+      if (iflag_debug.gt.0) write(*,*) 's_set_control_4_force'
+      call set_control_SGS_model
+      call set_control_SPH_SGS(sph_filters)
+!
+      end subroutine set_control_SGS_SPH_MHD
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_control_4_SPH_MHD(sph_gen, rj_fld,                 &
+     &         sph_file_param, sph_fst_IO, pwr)
+!
+      use m_control_params_2nd_files
+      use m_spheric_global_ranks
+      use m_ucd_data
+      use m_read_ctl_gen_sph_shell
+      use sph_mhd_rms_IO
+!
+      use t_spheric_parameter
+      use t_phys_data
+      use t_rms_4_sph_spectr
+      use t_field_data_IO
 !
       use gen_sph_grids_modes
       use set_control_platform_data
@@ -66,7 +101,6 @@
       use set_control_4_magne
       use set_control_4_composition
       use set_control_4_pickup_sph
-      use set_control_4_SGS
       use set_ctl_gen_shell_grids
       use check_read_bc_file
 !
@@ -77,8 +111,6 @@
       type(field_IO_params), intent(inout) :: sph_file_param
       type(field_IO), intent(inout) :: sph_fst_IO
       type(sph_mean_squares), intent(inout) :: pwr
-      type(radial_filters_type), intent(inout) :: r_filters
-      type(sph_gaussian_filters), intent(inout) :: sph_filters
 !
       integer(kind = kint) :: ierr
 !
@@ -111,12 +143,6 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_force'
       call s_set_control_4_force
-!
-!   set parameters for SGS model
-!
-      if (iflag_debug.gt.0) write(*,*) 's_set_control_4_force'
-      call set_control_SGS_model
-      call set_control_SPH_SGS(r_filters, sph_filters)
 !
 !   set parameters for general information
 !

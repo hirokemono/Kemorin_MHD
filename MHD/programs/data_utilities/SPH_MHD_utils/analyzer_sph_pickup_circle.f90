@@ -23,18 +23,12 @@
       use m_t_int_parameter
       use m_t_step_parameter
       use t_spheric_parameter
-      use t_radial_filtering_data
-      use t_sph_filtering_data
 !
       use SPH_analyzer_sph_pick_circ
 !
       implicit none
 !
       type(sph_grids), private :: sph_gen
-!
-      type(radial_filters_type) :: r_filters1
-      type(sph_gaussian_filters) :: sph_filters1
-      private :: r_filters1, sph_filters1
 !
 ! ----------------------------------------------------------------------
 !
@@ -67,8 +61,7 @@
       call read_control_4_sph_snap_noviz
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
       call set_control_4_SPH_MHD                                        &
-     &   (sph_gen, rj_fld1, sph_file_param, sph_fst_IO, pwr1,           &
-     &    r_filters1, sph_filters1)
+     &   (sph_gen, rj_fld1, sph_file_param, sph_fst_IO, pwr1)
       call set_ctl_params_pick_circle
 !
 !   Load spherical harmonics data

@@ -19,16 +19,14 @@
       use m_machine_parameter
       use m_work_time
       use m_control_parameter
-      use t_radial_filtering_data
       use t_sph_filtering_data
 !
       use SPH_analyzer_licv
 !
       implicit none
 !
-      type(radial_filters_type) :: r_filters1
-      type(sph_gaussian_filters) :: sph_filters1
-      private :: r_filters1, sph_filters1
+      type(sph_filters_type), save :: sph_filters1(3)
+      private :: sph_filters1
 !
 ! ----------------------------------------------------------------------
 !
@@ -57,8 +55,7 @@
       call read_control_4_sph_MHD_noviz
 !
       call input_control_4_SPH_MHD_nosnap                               &
-     &   (sph1, comms_sph1, sph_grps1, rj_fld1, pwr1,                   &
-     &    r_filters1, sph_filters1)
+     &   (sph1, comms_sph1, sph_grps1, rj_fld1, pwr1, sph_filters1)
       call end_eleps_time(4)
 !
 !    precondition elaps start

@@ -1,5 +1,5 @@
-!>@file   t_radial_filtering_data.f90
-!!@brief  module t_radial_filtering_data
+!>@file   cal_radial_filtering_data.f90
+!!@brief  module cal_radial_filtering_data
 !!
 !!@author H. Matsui
 !!@date Programmed on  Oct., 2016
@@ -7,14 +7,21 @@
 !>@brief  Evaluate radial filtering
 !!
 !!@verbatim
-!!      subroutine check_radial_filter(sph_rj, r_filter)
-!!      subroutine check_radial_filter_func(sph_rj, r_filter)
-!!      subroutine const_radial_filter(sph_rj, sph_grps, r_filters)
-!!      subroutine dealloc_radial_filter_moms(r_filter)
+!!      subroutine count_radial_point_4_filter(sph_rj, r_filter)
+!!      subroutine count_fiiltering_area(num_moms, sph_rj,              &
+!!     &          radial_rj_grp, r_filter, num_OC, kmin_OC, kmax_OC)
+!!      subroutine set_filtering_points(num_OC, kmin_OC, kmax_OC,       &
+!!     &           num_moms, num_sides, sph_rj, r_filter)
+!!      subroutine cal_radial_fileters(kmin_OC, kmax_OC,                &
+!!     &          num_moms, num_sides, width, filter_mom,               &
+!!     &          sph_rj, r_filter)
+!!      subroutine cal_each_radial_filter_coefs                         &
+!!     &         (r_point, dr_point, filter_length, num_moms, num_sides,&
+!!     &          radius, filter_mom, func, weight)
 !!@endverbatim
 !
 !
-      module t_radial_filtering_data
+      module cal_radial_filtering_data
 !
       use m_precision
       use m_constants
@@ -27,166 +34,13 @@
 !
       implicit none
 !
-      type radial_filters_type
-!> filter width
-        real(kind = kreal) :: width = 1.0d0
-!> Number of moments
-        integer(kind = kint) :: num_filter_moments = 5
-        integer(kind = kint) :: nfilter_sides = 3
-!
-        real(kind = kreal), allocatable :: filter_mom(:)
-!
-!> data structure for filter coefficients table
-        type(filter_coefficients_type) :: r_filter
-!> data structure for filter coefficients table
-        type(filter_coefficients_type) :: wide_filter
-!> data structure for filter coefficients table
-        type(filter_coefficients_type) :: wide2_filter
-      end type radial_filters_type
-!
-      private :: count_radial_point_4_filter, count_fiiltering_area
-      private :: set_filtering_points, cal_radial_fileters
       private :: set_filter_size_by_ave_dr, set_filter_size_by_min_dr
-      private :: cal_each_radial_filter_coefs
 !
 ! ----------------------------------------------------------------------
 !
       contains
 !
 ! ----------------------------------------------------------------------
-!
-      subroutine check_radial_filter(sph_rj, r_filter)
-!
-      type(sph_rj_grid), intent(in) ::  sph_rj
-      type(filter_coefficients_type), intent(inout) :: r_filter
-!
-      integer(kind = kint) :: i, ist, ied
-!
-!
-      if(my_rank .ne. 0) return
-        write(*,*)  'r_filter%inod_filter(i)',  r_filter%istack_node
-        do i = r_filter%istack_node(0)+1, r_filter%istack_node(1)
-          ist = r_filter%istack_near_nod(i-1) + 1
-          ied = r_filter%istack_near_nod(i)
-          write(*,*) i, r_filter%inod_filter(i),                        &
-     &                  r_filter%inod_near(ist:ied)
-        end do
-        write(*,*)  'r_filter%weight(i)'
-        do i = r_filter%istack_node(0)+1, r_filter%istack_node(1)
-          ist = r_filter%istack_near_nod(i-1) + 1
-          ied = r_filter%istack_near_nod(i)
-          write(*,*) sph_rj%radius_1d_rj_r(r_filter%inod_filter(i)),    &
-     &               i, r_filter%inod_filter(i),                        &
-     &                  r_filter%weight(ist:ied)
-        end do
-!
-      end subroutine check_radial_filter
-!
-! ----------------------------------------------------------------------
-!
-      subroutine check_radial_filter_func(sph_rj, r_filter)
-!
-      type(sph_rj_grid), intent(in) ::  sph_rj
-      type(filter_coefficients_type), intent(inout) :: r_filter
-!
-      integer(kind = kint) :: i, ist, ied
-!
-!
-      if(my_rank .ne. 0) return
-        write(*,*)  'r_filter%func(i)'
-        do i = r_filter%istack_node(0)+1, r_filter%istack_node(1)
-          ist = r_filter%istack_near_nod(i-1) + 1
-          ied = r_filter%istack_near_nod(i)
-          write(*,*) sph_rj%radius_1d_rj_r(r_filter%inod_filter(i)),    &
-     &               i, r_filter%inod_filter(i),                        &
-     &                  r_filter%func(ist:ied)
-        end do
-!
-      end subroutine check_radial_filter_func
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine const_radial_filter(sph_rj, sph_grps, r_filters)
-!
-      type(sph_rj_grid), intent(in) ::  sph_rj
-      type(sph_group_data), intent(in) :: sph_grps
-      type(radial_filters_type), intent(inout) :: r_filters
-!
-      integer(kind = kint) :: num_OC, kmin_OC, kmax_OC
-!
-!
-      r_filters%r_filter%ngrp_node = 1
-      call alloc_num_filtering_comb(np_smp, r_filters%r_filter)
-      r_filters%r_filter%group_name(1) = 'outer_core'
-!
-      call count_radial_point_4_filter(sph_rj, r_filters%r_filter)
-!
-      call alloc_inod_filter_comb(r_filters%r_filter)
-!
-      call count_fiiltering_area(r_filters%num_filter_moments, sph_rj,  &
-     &    sph_grps%radial_rj_grp, r_filters%r_filter,                   &
-     &    num_OC, kmin_OC, kmax_OC)
-!
-      call alloc_3d_filter_comb(r_filters%r_filter)
-      call alloc_3d_filter_func(r_filters%r_filter)
-!
-      call set_filtering_points(num_OC, kmin_OC, kmax_OC,               &
-     &    r_filters%num_filter_moments, r_filters%nfilter_sides,        &
-     &    sph_rj, r_filters%r_filter)
-
-      call cal_radial_fileters(kmin_OC, kmax_OC,                        &
-     &    r_filters%num_filter_moments, r_filters%nfilter_sides,        &
-     &    r_filters%width, r_filters%filter_mom, sph_rj,                &
-     &    r_filters%r_filter)
-!
-      end subroutine const_radial_filter
-!
-! ----------------------------------------------------------------------
-!
-      subroutine alloc_radial_filter_moms(r_filters)
-!
-      type(radial_filters_type), intent(inout) :: r_filters
-!
-!
-      r_filters%nfilter_sides = (r_filters%num_filter_moments + 1) / 2
-      allocate(r_filters%filter_mom(0:r_filters%num_filter_moments-1))
-      r_filters%filter_mom = 0.0d0
-!
-      end subroutine alloc_radial_filter_moms
-!
-! ----------------------------------------------------------------------
-!
-      subroutine dealloc_radial_filter_moms(r_filters)
-!
-      type(radial_filters_type), intent(inout) :: r_filters
-!
-!
-      deallocate(r_filters%filter_mom)
-!
-      end subroutine dealloc_radial_filter_moms
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine cal_radial_moments(num_moms, num_sides, filter_mom)
-!
-      integer(kind = kint), intent(in)  :: num_moms, num_sides
-      real(kind = kreal), intent(inout) :: filter_mom(0:num_moms-1)
-!
-      integer(kind = kint) :: imom
-!
-!
-      filter_mom(0) = one
-      do imom = 1, num_sides-1
-        filter_mom(2*imom-1) = zero
-        filter_mom(2*imom  ) = real(2*imom-1) * filter_mom(2*imom-2)
-      end do
-!
-      end subroutine cal_radial_moments
-!
-! ----------------------------------------------------------------------
-! -----------------------------------------------------------------------
 !
       subroutine count_radial_point_4_filter(sph_rj, r_filter)
 !
@@ -320,7 +174,7 @@
 !
       type(filter_coefficients_type), intent(inout) :: r_filter
 !
-      integer(kind = kint) :: inum, inod, ist, jstart, imom, i
+      integer(kind = kint) :: inum, inod, ist, jstart, i
       real(kind = kreal) :: dr_point
 !
 !
@@ -452,4 +306,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module t_radial_filtering_data
+      end module cal_radial_filtering_data

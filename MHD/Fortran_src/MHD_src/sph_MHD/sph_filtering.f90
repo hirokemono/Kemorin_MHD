@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine init_SGS_model_sph_mhd(sph_params, sph_rj, sph_grps, &
-!!     &          r_filters, sph_filters)
+!!     &          sph_filters)
 !!
 !!      subroutine vector_sph_filter(i_field, i_filter,                 &
 !!     &          sph_rj, r_filter, sph_filter, rj_fld)
@@ -26,13 +26,7 @@
 !
       use t_spheric_rj_data
       use t_phys_data
-      use t_radial_filtering_data
       use t_sph_filtering_data
-!
-      type sph_filter_type
-        type(radial_filters_type) :: radial
-        type(sph_gaussian_filter) :: sph
-      end type sph_filter_type
 !
       implicit none
 !
@@ -43,7 +37,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine init_SGS_model_sph_mhd(sph_params, sph_rj, sph_grps,   &
-     &          r_filters, sph_filters)
+     &          sph_filters)
 !
       use calypso_mpi
       use wider_radial_filter_data
@@ -51,36 +45,98 @@
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(sph_group_data), intent(in) :: sph_grps
-      type(radial_filters_type), intent(inout) :: r_filters
-      type(sph_gaussian_filters), intent(inout) :: sph_filters
+      type(sph_filters_type), intent(inout) :: sph_filters(3)
 !
 !
-      call alloc_radial_filter_moms(r_filters)
-      call cal_radial_moments(r_filters%num_filter_moments,             &
-     &    r_filters%nfilter_sides, r_filters%filter_mom)
-      call const_radial_filter(sph_rj, sph_grps, r_filters)
+      call alloc_sph_filter_moms(sph_filters(1)%r_moments)
+      call cal_r_gaussian_moments(sph_filters(1)%r_moments)
 !
-      call cal_wider_fileters(sph_rj, r_filters%r_filter,               &
-     &    r_filters%wide_filter, r_filters%wide2_filter)
+      call const_radial_filter(sph_rj, sph_grps,                        &
+     &    sph_filters(1)%r_moments, sph_filters(1)%width,               &
+     &    sph_filters(1)%r_filter)
+!
+      call cal_wider_fileters(sph_rj, sph_filters(1)%r_filter,          &
+     &   sph_filters(2)%r_filter, sph_filters(3)%r_filter)
 !
 !      if(iflag_debug .gt. 0) then
-!        write(*,*) 'check_radial_filter r_filter'
-!        call check_radial_filter(sph_rj, r_filters%r_filter)
-!        write(*,*) 'check_radial_filter wide_filter'
-!        call check_radial_filter(sph_rj, r_filters%wide_filter)
-!        write(*,*) 'check_radial_filter wide2_filter'
-!        call check_radial_filter(sph_rj, r_filters%wide2_filter)
+!        write(*,*) 'check_radial_filter sph_filters(1)'
+!        call check_radial_filter(sph_rj, sph_filters(1)%r_filter)
+!        write(*,*) 'check_radial_filter sph_filters(2)%r_filter'
+!        call check_radial_filter(sph_rj, sph_filters(2)%r_filter)
+!        write(*,*) 'check_radial_filter sph_filters(3)%r_filter'
+!        call check_radial_filter(sph_rj, sph_filters(3)%r_filter)
 !      end if
 !
-      call const_sph_gaussian_filter                                    &
-     &   (sph_params%l_truncation, sph_filters%sph_filter)
-      call const_sph_gaussian_filter                                    &
-     &   (sph_params%l_truncation, sph_filters%sph_wide_filter)
-      call const_sph_gaussian_filter                                    &
-     &   (sph_params%l_truncation, sph_filters%sph_wider_filter)
-      call calypso_mpi_barrier
+      call const_sph_gaussian_filter(sph_params%l_truncation,           &
+     &    sph_filters(1)%sph_moments, sph_filters(1)%sph_filter)
+!
+      call const_sph_gaussian_filter(sph_params%l_truncation,           &
+     &    sph_filters(2)%sph_moments, sph_filters(2)%sph_filter)
+!
+      call const_sph_gaussian_filter(sph_params%l_truncation,           &
+     &    sph_filters(3)%sph_moments, sph_filters(3)%sph_filter)
 !
       end subroutine init_SGS_model_sph_mhd
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine const_sph_gaussian_filter                              &
+     &         (l_truncation, sph_moments, sph_filter)
+!
+      integer(kind = kint), intent(in) :: l_truncation
+!
+      type(sph_gaussian_filter), intent(inout) :: sph_filter
+      type(sph_filter_moment), intent(inout) :: sph_moments
+!
+!
+      call alloc_sph_filter_weights(l_truncation, sph_filter)
+      call alloc_sph_filter_moms(sph_moments)
+      call set_sph_gaussian_filter(sph_filter%l_truncation,             &
+     &    sph_filter%k_width, sph_filter%weight,                        &
+     &    sph_moments%num_momentum, sph_moments%filter_mom)
+!
+      end subroutine const_sph_gaussian_filter
+!
+! ----------------------------------------------------------------------
+!
+      subroutine const_radial_filter                                    &
+     &         (sph_rj, sph_grps, r_moments, width, r_filter)
+!
+      use cal_radial_filtering_data
+!
+      real(kind = kreal), intent(in) :: width
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(sph_group_data), intent(in) :: sph_grps
+      type(sph_filter_moment), intent(in) :: r_moments
+      type(filter_coefficients_type), intent(inout) :: r_filter
+!
+      integer(kind = kint) :: num_OC, kmin_OC, kmax_OC
+!
+!
+      r_filter%ngrp_node = 1
+      call alloc_num_filtering_comb(np_smp, r_filter)
+      r_filter%group_name(1) = 'outer_core'
+!
+      call count_radial_point_4_filter(sph_rj, r_filter)
+!
+      call alloc_inod_filter_comb(r_filter)
+!
+      call count_fiiltering_area(r_moments%num_momentum, sph_rj,        &
+     &    sph_grps%radial_rj_grp, r_filter, num_OC, kmin_OC, kmax_OC)
+!
+      call alloc_3d_filter_comb(r_filter)
+      call alloc_3d_filter_func(r_filter)
+!
+      call set_filtering_points(num_OC, kmin_OC, kmax_OC,               &
+     &    r_moments%num_momentum, r_moments%nfilter_sides,              &
+     &    sph_rj, r_filter)
+
+      call cal_radial_fileters(kmin_OC, kmax_OC,                        &
+     &    r_moments%num_momentum, r_moments%nfilter_sides,              &
+     &    width, r_moments%filter_mom, sph_rj, r_filter)
+!
+      end subroutine const_radial_filter
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

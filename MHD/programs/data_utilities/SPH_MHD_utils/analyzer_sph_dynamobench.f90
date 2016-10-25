@@ -22,16 +22,10 @@
       use m_control_parameter
       use m_t_int_parameter
       use m_t_step_parameter
-      use t_radial_filtering_data
-      use t_sph_filtering_data
 !
       use SPH_analyzer_d_bench
 !
       implicit none
-!
-      type(radial_filters_type) :: r_filters1
-      type(sph_gaussian_filters) :: sph_filters1
-      private :: r_filters1, sph_filters1
 !
 ! ----------------------------------------------------------------------
 !
@@ -62,8 +56,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_dynamobench'
       call input_control_SPH_dynamobench                                &
-     &   (sph1, comms_sph1, sph_grps1, rj_fld1, pwr1,                   &
-     &    r_filters1, sph_filters1)
+     &   (sph1, comms_sph1, sph_grps1, rj_fld1, pwr1)
       call end_eleps_time(4)
 !
 !    precondition elaps start

@@ -25,7 +25,6 @@
       use m_node_phys_data
       use m_element_id_4_node
       use m_jacobians
-      use t_radial_filtering_data
       use t_sph_filtering_data
 !
       use SPH_analyzer_snap
@@ -33,9 +32,8 @@
 !
       implicit none
 !
-      type(radial_filters_type) :: r_filters1
-      type(sph_gaussian_filters) :: sph_filters1
-      private :: r_filters1, sph_filters1
+      type(sph_filters_type), save :: sph_filters1(3)
+      private :: sph_filters1
 !
 ! ----------------------------------------------------------------------
 !
@@ -70,7 +68,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_mesh'
       call input_control_SPH_mesh(sph1, comms_sph1, sph_grps1, rj_fld1, &
-     &    pwr1, r_filters1, sph_filters1, mesh1, group1, ele_mesh1)
+     &    pwr1, sph_filters1, mesh1, group1, ele_mesh1)
       call end_eleps_time(4)
 !
 !     --------------------- 

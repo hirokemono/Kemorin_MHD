@@ -11,7 +11,7 @@
 !!
 !!@verbatim
 !!      subroutine set_control_SGS_model
-!!      subroutine set_control_SPH_SGS(r_filters, sph_filters)
+!!      subroutine set_control_SPH_SGS(sph_filters)
 !!      subroutine set_control_FEM_SGS
 !!@endverbatim
 !
@@ -30,36 +30,41 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_SPH_SGS(r_filters, sph_filters)
+      subroutine set_control_SPH_SGS(sph_filters)
 !
       use m_ctl_data_SGS_model
-      use t_radial_filtering_data
       use t_sph_filtering_data
 !
-      type(radial_filters_type), intent(inout) :: r_filters
-      type(sph_gaussian_filters), intent(inout) :: sph_filters
+      type(sph_filters_type), intent(inout) :: sph_filters(3)
 !
 !
       if(maximum_moments_ctl%iflag .gt. 0) then
-        r_filters%num_filter_moments = maximum_moments_ctl%intvalue
-        sph_filters%sph_filter%num_momentum                             &
+        sph_filters(1)%r_moments%num_momentum                           &
      &              = maximum_moments_ctl%intvalue
-        sph_filters%sph_wide_filter%num_momentum                        &
+        sph_filters(2)%r_moments%num_momentum                           &
      &              = maximum_moments_ctl%intvalue
-        sph_filters%sph_wider_filter%num_momentum                       &
+        sph_filters(3)%r_moments%num_momentum                           &
+     &              = maximum_moments_ctl%intvalue
+        sph_filters(1)%sph_moments%num_momentum                         &
+     &              = maximum_moments_ctl%intvalue
+        sph_filters(2)%sph_moments%num_momentum                         &
+     &              = maximum_moments_ctl%intvalue
+        sph_filters(3)%sph_moments%num_momentum                         &
      &              = maximum_moments_ctl%intvalue
       end if
 !
       if(radial_filter_width_ctl%iflag .gt. 0) then
-        r_filters%width = radial_filter_width_ctl%realvalue
+        sph_filters(1)%width = radial_filter_width_ctl%realvalue
+        sph_filters(2)%width = radial_filter_width_ctl%realvalue
+        sph_filters(3)%width = radial_filter_width_ctl%realvalue
       end if
 !
       if(sphere_filter_width_ctl%iflag .gt. 0) then
-        sph_filters%sph_filter%k_width                                  &
+        sph_filters(1)%sph_filter%k_width                               &
      &        = sphere_filter_width_ctl%intvalue
-        sph_filters%sph_wide_filter%k_width                             &
+        sph_filters(2)%sph_filter%k_width                               &
      &        = itwo * sphere_filter_width_ctl%intvalue
-        sph_filters%sph_wider_filter%k_width                            &
+        sph_filters(3)%sph_filter%k_width                               &
      &        = ifour * sphere_filter_width_ctl%intvalue
       end if
 !
