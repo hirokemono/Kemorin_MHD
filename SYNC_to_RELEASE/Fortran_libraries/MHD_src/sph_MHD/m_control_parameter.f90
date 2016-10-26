@@ -1,1 +1,1 @@
-/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/Fortran_src/MHD_src/common/m_control_parameter.f90
+../../../../MHD/Fortran_src/MHD_src/common/m_control_parameter.f90
