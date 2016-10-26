@@ -1,10 +1,17 @@
+!>@file   SPH_analyzer_MHD
+!!@brief  module SPH_analyzer_MHD
+!!
+!!@author H. Matsui
+!!@date    programmed by H.Matsui in Oct., 2009
 !
-!     module SPH_analyzer_MHD
-!
-!      subroutine SPH_initialize_MHD(sph_filters)
-!      subroutine SPH_analyze_MHD(i_step, iflag_finish)
-!
-!      Written by H. Matsui
+!>@brief Evolution loop for spherical MHD
+!!
+!!@verbatim
+!!      subroutine SPH_initialize_MHD(sph_filters)
+!!        type(sph_filters_type), intent(inout) :: sph_filters(3)
+!!      subroutine SPH_analyze_MHD(sph_filters, i_step, iflag_finish)
+!!        type(sph_filters_type), intent(in) :: sph_filters(3)
+!!@endverbatim
 !
       module SPH_analyzer_MHD
 !
@@ -88,7 +95,6 @@
         call init_SGS_model_sph_mhd                                     &
      &     (sph1%sph_params, sph1%sph_rj, sph_grps1, sph_filters)
       end if
-      call calypso_mpi_barrier
 !
 !  -------------------------------
 !
@@ -105,7 +111,8 @@
 !*
       if(iflag_debug .gt. 0) write(*,*) 'first nonlinear'
       call nonlinear(sph1, comms_sph1, omega_sph1, r_2nd, trans_p1,     &
-     &    ref_temp1%t_rj, ipol, itor, trns_WK1%trns_MHD, rj_fld1)
+     &    ref_temp1%t_rj, sph_filters, ipol, itor,                      &
+     &    trns_WK1%trns_MHD, rj_fld1)
 !
 !* -----  Open Volume integration data files -----------------
 !*
@@ -120,7 +127,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_MHD(i_step, iflag_finish)
+      subroutine SPH_analyze_MHD(sph_filters, i_step, iflag_finish)
 !
       use m_work_time
       use m_spheric_parameter
@@ -139,6 +146,8 @@
       use sph_mhd_rms_IO
 !
       integer(kind = kint), intent(in) :: i_step
+      type(sph_filters_type), intent(in) :: sph_filters(3)
+!
       integer(kind = kint), intent(inout) :: iflag_finish
 !
       real(kind = kreal) :: total_max
@@ -169,7 +178,8 @@
 !*
       call start_eleps_time(8)
       call nonlinear(sph1, comms_sph1, omega_sph1, r_2nd, trans_p1,     &
-     &    ref_temp1%t_rj, ipol, itor, trns_WK1%trns_MHD, rj_fld1)
+     &    ref_temp1%t_rj, sph_filters, ipol, itor,                      &
+     &    trns_WK1%trns_MHD, rj_fld1)
       call end_eleps_time(8)
       call end_eleps_time(5)
 !

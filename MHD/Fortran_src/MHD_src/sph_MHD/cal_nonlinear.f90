@@ -8,12 +8,15 @@
 !!
 !!@verbatim
 !!      subroutine nonlinear(sph, comms_sph, omega_sph, r_2nd, trans_p, &
-!!     &          reftemp_rj, ipol, itor, trns_MHD, rj_fld)
+!!     &          reftemp_rj, sph_filters, ipol, itor, trns_MHD, rj_fld)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(sph_rotation), intent(in) :: omega_sph
 !!        type(fdm_matrices), intent(in) :: r_2nd
+!!        type(parameters_4_sph_trans), intent(in) :: trans_p
+!!        type(sph_filters_type), intent(in) :: sph_filters(2)
 !!        type(phys_address), intent(in) :: ipol, itor
+!!        type(address_4_sph_trans), intent(inout) :: trns_MHD
 !!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine licv_exp(reftemp_rj, sph_rlm, sph_rj,                &
 !!     &          comm_rlm, comm_rj, leg, trns_MHD, ipol, itor, rj_fld)
@@ -25,6 +28,7 @@
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(phys_address), intent(in) :: ipol, itor
+!!        type(address_4_sph_trans), intent(inout) :: trns_MHD
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
@@ -47,6 +51,7 @@
       use t_addresses_sph_transform
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
+      use t_sph_filtering_data
 !
       implicit none
 !
@@ -59,7 +64,7 @@
 !*   ------------------------------------------------------------------
 !*
       subroutine nonlinear(sph, comms_sph, omega_sph, r_2nd, trans_p,   &
-     &          reftemp_rj, ipol, itor, trns_MHD, rj_fld)
+     &          reftemp_rj, sph_filters, ipol, itor, trns_MHD, rj_fld)
 !
       use m_boundary_params_sph_MHD
       use cal_inner_core_rotation
@@ -73,6 +78,7 @@
       type(sph_rotation), intent(in) :: omega_sph
       type(fdm_matrices), intent(in) :: r_2nd
       type(parameters_4_sph_trans), intent(in) :: trans_p
+      type(sph_filters_type), intent(in) :: sph_filters(2)
       type(phys_address), intent(in) :: ipol, itor
 !
       real(kind = kreal), intent(in)                                    &
@@ -86,7 +92,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'nonlinear_by_pseudo_sph'
       call nonlinear_by_pseudo_sph(sph, comms_sph, omega_sph, r_2nd,    &
-     &    trans_p, trns_MHD, ipol, itor, rj_fld)
+     &    trans_p, sph_filters, trns_MHD, ipol, itor, rj_fld)
 !
       if (iflag_4_ref_temp .eq. id_sphere_ref_temp) then
         call add_reftemp_advect_sph_MHD                                 &
@@ -174,11 +180,13 @@
 !*   ------------------------------------------------------------------
 !
       subroutine nonlinear_by_pseudo_sph(sph, comms_sph, omega_sph,     &
-     &          r_2nd, trans_p, trns_MHD, ipol, itor, rj_fld)
+     &          r_2nd, trans_p, sph_filters, trns_MHD,                  &
+     &          ipol, itor, rj_fld)
 !
       use sph_transforms_4_MHD
       use cal_nonlinear_sph_MHD
       use cal_momentum_eq_explicit
+      use cal_filtered_sph_fields
 !
       use m_work_time
 !
@@ -187,6 +195,7 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_rotation), intent(in) :: omega_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
+      type(sph_filters_type), intent(in) :: sph_filters(2)
       type(phys_address), intent(in) :: ipol, itor
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD
@@ -213,6 +222,14 @@
       call sph_forward_trans_4_MHD                                      &
      &   (sph, comms_sph, trans_p, ipol, trns_MHD, rj_fld)
       call end_eleps_time(16)
+!
+      if(iflag_SGS_model .gt. 0) then
+        if (iflag_debug.ge.1) write(*,*) 'cal_filtered_sph_rj_fields'
+        call start_eleps_time(81)
+        call cal_filtered_sph_rj_fields                                 &
+     &     (sph%sph_rj, ipol, sph_filters, rj_fld)
+        call end_eleps_time(81)
+      end if
 !
       call start_eleps_time(17)
       if (iflag_debug.ge.1) write(*,*) 'cal_momentum_eq_exp_sph'

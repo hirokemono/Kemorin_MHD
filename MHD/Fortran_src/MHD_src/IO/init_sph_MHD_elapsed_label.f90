@@ -35,7 +35,7 @@
       use m_work_time
 !
 !
-      num_elapsed = 68
+      num_elapsed = 81
       call allocate_elapsed_times
 !
       elapse_labels(1) = 'Total time                 '
@@ -109,6 +109,10 @@
       elapse_labels(66) = 'Isosurfaceing.    '
       elapse_labels(67) = 'Volume rendering.    '
       elapse_labels(68) = 'fieldline.    '
+!
+      elapse_labels(71) = 'fieldline.    '
+!
+      elapse_labels(81) = 'Filtering fields   '
 !
       elapse_labels(num_elapsed) = 'Communication time        '
 !

@@ -7,7 +7,7 @@
 !>@brief  main routines to evaluate zonal mean field
 !!
 !!@verbatim
-!!      subroutine SPH_analyze_zm_snap(i_step)
+!!      subroutine SPH_analyze_zm_snap(sph_filters, i_step)
 !!@endverbatim
 !!
 !!@param i_step  time step number
@@ -17,6 +17,7 @@
       use m_precision
 !
       use m_machine_parameter
+      use t_sph_filtering_data
 !
       implicit none
 !
@@ -26,7 +27,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_zm_snap(i_step)
+      subroutine SPH_analyze_zm_snap(sph_filters, i_step)
 !
       use m_work_time
       use m_spheric_parameter
@@ -46,6 +47,7 @@
 !
       use cal_zonal_mean_sph_spectr
 !
+      type(sph_filters_type), intent(in) :: sph_filters(3)
       integer(kind = kint), intent(in) :: i_step
 !
 !
@@ -66,7 +68,8 @@
 !*
       call start_eleps_time(8)
       call nonlinear(sph1, comms_sph1, omega_sph1, r_2nd, trans_p1,     &
-     &    ref_temp1%t_rj, ipol, itor, trns_WK1%trns_MHD, rj_fld1)
+     &    ref_temp1%t_rj, sph_filters, ipol, itor,                      &
+     &    trns_WK1%trns_MHD, rj_fld1)
       call end_eleps_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=

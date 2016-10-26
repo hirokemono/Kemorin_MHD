@@ -117,7 +117,7 @@
 !*  ----------  time evolution by spectral methood -----------------
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_MHD'
-        call SPH_analyze_MHD(i_step_MHD, iflag_finish)
+        call SPH_analyze_MHD(sph_filters1, i_step_MHD, iflag_finish)
 !*
 !*  -----------  output field data --------------
 !*

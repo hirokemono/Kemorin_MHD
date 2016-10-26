@@ -73,7 +73,6 @@ SPH_analyzer_zrms_snap.o
 MOD_SPH_SNAP_BADBOY =  \
 main_sph_snap_badboy.o \
 analyzer_sph_snap.o \
-analyzer_sph_snap_badboy.o \
 SPH_analyzer_snap.o
 
 

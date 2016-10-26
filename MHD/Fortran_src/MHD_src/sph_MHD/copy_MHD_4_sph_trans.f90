@@ -50,7 +50,7 @@
       type(phys_address), intent(in) :: f_trns
 !
       integer(kind = kint), intent(in) :: ncomp_rtp_2_rj
-      real(kind = kreal), intent(in)                                 &
+      real(kind = kreal), intent(in)                                    &
      &                   :: frc_rtp(sph_rtp%nnod_rtp,ncomp_rtp_2_rj)
       real(kind = kreal), intent(inout)                                 &
      &                   :: frm_rtp(sph_rtp%nnod_rtp,ncomp_rtp_2_rj)

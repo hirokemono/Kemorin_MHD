@@ -119,7 +119,6 @@
       call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
      &    ipol%i_vp_induct, f_trns%i_vp_induct,                         &
      &    comm_rj, n_WR, WR, rj_fld)
-
 !
 !   heat flux flag
       call sel_sph_rj_vector_from_recv(ncomp_recv,                      &

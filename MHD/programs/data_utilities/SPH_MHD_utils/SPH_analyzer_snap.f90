@@ -3,12 +3,25 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine SPH_init_sph_snap
-!      subroutine SPH_analyze_snap(i_step)
+!>@file   SPH_analyzer_MHD
+!!@brief  module SPH_analyzer_MHD
+!!
+!!@author H. Matsui
+!!@date    programmed by H.Matsui in Oct., 2009
+!
+!>@brief Evolution loop for spherical MHD
+!!
+!!@verbatim
+!!      subroutine SPH_init_sph_snap(sph_filters)
+!!        type(sph_filters_type), intent(inout) :: sph_filters(3)
+!!      subroutine SPH_analyze_snap(sph_filters, i_step)
+!!        type(sph_filters_type), intent(in) :: sph_filters(3)
+!!@endverbatim
 !
       module SPH_analyzer_snap
 !
       use m_precision
+      use t_sph_filtering_data
 !
       implicit none
 !
@@ -18,7 +31,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_init_sph_snap
+      subroutine SPH_init_sph_snap(sph_filters)
 !
       use m_constants
       use calypso_mpi
@@ -48,6 +61,9 @@
       use r_interpolate_sph_data
       use sph_mhd_rms_IO
       use sph_mhd_rst_IO_control
+      use sph_filtering
+!
+      type(sph_filters_type), intent(inout) :: sph_filters(3)
 !
 !
 !   Allocate spectr field data
@@ -69,6 +85,14 @@
 !
 ! ---------------------------------
 !
+      if(iflag_SGS_model .gt. 0) then
+      if(iflag_debug.gt.0) write(*,*)' init_SGS_model_sph_mhd'
+      call init_SGS_model_sph_mhd                                     &
+     &     (sph1%sph_params, sph1%sph_rj, sph_grps1, sph_filters)
+      end if
+!
+!  -------------------------------
+!
       if (iflag_debug.eq.1) write(*,*) 'const_radial_mat_sph_snap'
       call const_radial_mat_sph_snap(sph1%sph_rj, r_2nd, trans_p1%leg)
 !
@@ -87,7 +111,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_snap(i_step)
+      subroutine SPH_analyze_snap(sph_filters, i_step)
 !
       use m_work_time
       use m_t_step_parameter
@@ -107,6 +131,7 @@
       use sph_mhd_rms_IO
 !
       integer(kind = kint), intent(in) :: i_step
+      type(sph_filters_type), intent(in) :: sph_filters(3)
 !
 !
       call read_alloc_sph_rst_4_snap                                    &
@@ -126,7 +151,8 @@
 !*
       call start_eleps_time(8)
       call nonlinear(sph1, comms_sph1, omega_sph1, r_2nd, trans_p1,     &
-     &    ref_temp1%t_rj, ipol, itor, trns_WK1%trns_MHD, rj_fld1)
+     &    ref_temp1%t_rj, sph_filters, ipol, itor,                      &
+     &    trns_WK1%trns_MHD, rj_fld1)
       call end_eleps_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=

@@ -78,7 +78,7 @@
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'
-      call SPH_init_sph_snap
+      call SPH_init_sph_snap(sph_filters1)
 !
 !        Initialize visualization
 !
@@ -122,7 +122,7 @@
 !*  ----------  time evolution by spectral methood -----------------
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap'
-        call SPH_analyze_snap(i_step_MHD)
+        call SPH_analyze_snap(sph_filters1, i_step_MHD)
 !*
 !*  -----------  output field data --------------
 !*

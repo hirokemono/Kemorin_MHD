@@ -14,7 +14,6 @@
 !
       use calypso_mpi
       use analyzer_sph_snap
-      use analyzer_sph_snap_badboy
 !
       implicit none
 !
