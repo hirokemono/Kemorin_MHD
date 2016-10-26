@@ -1,1 +1,1 @@
-/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/Fortran_src/MHD_src/sph_MHD/copy_MHD_4_pole_trans.f90
+../../../../MHD/Fortran_src/MHD_src/sph_MHD/copy_MHD_4_pole_trans.f90
