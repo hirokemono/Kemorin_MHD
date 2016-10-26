@@ -146,8 +146,10 @@
         call set_rot_cv_terms_to_force(ipol, itor, itor%i_rot_comp_buo, &
      &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
       else
-        call set_rot_advection_to_force                                 &
+        if((ipol%i_forces*ipol%i_rot_inertia) .gt. 0) then
+          call set_rot_advection_to_force                               &
      &     (ipol, itor, sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
+        end if
         if(iflag_4_coriolis .ne. id_turn_OFF) then
           call add_coriolis_to_vort_force(ipol, itor,                   &
      &        sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
