@@ -77,12 +77,54 @@
      &   (ncomp_send, ipol%i_current, b_trns%i_current,                 &
      &    comm_rj, rj_fld, n_WS, WS)
 !
+      call sel_sph_rj_vector_to_send                                    &
+     &   (ncomp_send, ipol%i_filter_velo, b_trns%i_filter_velo,         &
+     &    comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send                                    &
+     &   (ncomp_send, ipol%i_filter_vort, b_trns%i_filter_vort,         &
+     &    comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send                                    &
+     &   (ncomp_send, ipol%i_filter_magne, b_trns%i_filter_magne,       &
+     &    comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send                                    &
+     &   (ncomp_send, ipol%i_filter_current, b_trns%i_filter_current,   &
+     &    comm_rj, rj_fld, n_WS, WS)
+!
+      call sel_sph_rj_vector_to_send                                    &
+     &   (ncomp_send, ipol%i_wide_fil_velo, b_trns%i_wide_fil_velo,     &
+     &    comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send                                    &
+     &   (ncomp_send, ipol%i_wide_fil_vort, b_trns%i_wide_fil_vort,     &
+     &    comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send                                    &
+     &   (ncomp_send, ipol%i_wide_fil_magne, b_trns%i_wide_fil_magne,   &
+     &    comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_wide_fil_current, b_trns%i_wide_fil_current,           &
+     &    comm_rj, rj_fld, n_WS, WS)
+!
+!
       call sel_sph_rj_scalar_to_send                                    &
      &   (ncomp_send, ipol%i_temp, b_trns%i_temp,                       &
      &    comm_rj, rj_fld, n_WS, WS)
       call sel_sph_rj_scalar_to_send                                    &
      &   (ncomp_send, ipol%i_light, b_trns%i_light,                     &
      &    comm_rj, rj_fld, n_WS, WS)
+!
+      call sel_sph_rj_scalar_to_send                                    &
+     &   (ncomp_send, ipol%i_filter_temp, b_trns%i_filter_temp,         &
+     &    comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_scalar_to_send                                    &
+     &   (ncomp_send, ipol%i_filter_comp, b_trns%i_filter_comp,         &
+     &    comm_rj, rj_fld, n_WS, WS)
+!
+      call sel_sph_rj_scalar_to_send                                    &
+     &   (ncomp_send, ipol%i_wide_fil_temp, b_trns%i_wide_fil_temp,     &
+     &    comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_scalar_to_send                                    &
+     &   (ncomp_send, ipol%i_wide_fil_comp, b_trns%i_wide_fil_comp,     &
+     &    comm_rj, rj_fld, n_WS, WS)
+!
 !
       end subroutine copy_mhd_spectr_to_send
 !
@@ -127,6 +169,31 @@
 !   composition flux flag
       call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
      &    ipol%i_c_flux, f_trns%i_c_flux,                               &
+     &    comm_rj, n_WR, WR, rj_fld)
+!
+!
+!
+!   filtered advection flag
+      call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
+     &    ipol%i_SGS_inertia, f_trns%i_SGS_inertia,                     &
+     &    comm_rj, n_WR, WR, rj_fld)
+!   filtered Lorentz flag
+      call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
+     &    ipol%i_SGS_Lorentz, f_trns%i_SGS_Lorentz,                     &
+     &    comm_rj, n_WR, WR, rj_fld)
+!
+!   filtered induction flag
+      call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
+     &    ipol%i_SGS_vp_induct, f_trns%i_SGS_vp_induct,                 &
+     &    comm_rj, n_WR, WR, rj_fld)
+!
+!   filtered heat flux flag
+      call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
+     &    ipol%i_SGS_h_flux, f_trns%i_SGS_h_flux,                       &
+     &    comm_rj, n_WR, WR, rj_fld)
+!   filtered composition flux flag
+      call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
+     &    ipol%i_SGS_c_flux, f_trns%i_SGS_c_flux,                       &
      &    comm_rj, n_WR, WR, rj_fld)
 !
       end  subroutine copy_mhd_spectr_from_recv

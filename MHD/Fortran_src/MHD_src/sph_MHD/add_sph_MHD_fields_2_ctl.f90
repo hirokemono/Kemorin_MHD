@@ -8,6 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine add_field_name_4_sph_mhd
+!!      subroutine add_field_name_4_SGS
 !!@endverbatim
 !
       module add_sph_MHD_fields_2_ctl

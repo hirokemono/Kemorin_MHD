@@ -31,27 +31,25 @@
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(filter_coefficients_type), intent(in) :: r_filter
+      type(filter_coefficients_type), intent(in) :: wide_filter
 !
-      type(filter_coefficients_type), intent(inout) :: wide_filter
       type(filter_coefficients_type), intent(inout) :: wide2_filter
 !
       integer(kind = kint) :: nri
-      real(kind = kreal), allocatable :: a_org(:,:), a_prod(:,:)
+      real(kind = kreal), allocatable :: a_org(:,:), a_2nd(:,:)
       real(kind = kreal), allocatable :: a_prd2(:,:)
 !
 !
       nri =  sph_rj%nidx_rj(1)
-      allocate(a_org(nri,nri), a_prod(nri,nri), a_prd2(nri,nri))
+      allocate(a_org(nri,nri), a_2nd(nri,nri), a_prd2(nri,nri))
 !
       call set_filter_to_matrix(nri, r_filter, a_org)
+      call set_filter_to_matrix(nri, wide_filter, a_2nd)
 !
       call const_wider_radial_fileter                                   &
-     &   (nri, a_org, a_org, a_prod, wide_filter)
+     &   (nri, a_org, a_2nd, a_prd2, wide2_filter)
 !
-      call const_wider_radial_fileter                                   &
-     &   (nri, a_org, a_prod, a_prd2, wide2_filter)
-!
-      deallocate(a_org, a_prod, a_prd2)
+      deallocate(a_org, a_2nd, a_prd2)
 !
       end subroutine cal_wider_fileters
 !

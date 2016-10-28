@@ -49,6 +49,24 @@
       end subroutine cal_filtered_sph_rj_fields
 !
 ! ----------------------------------------------------------------------
+!
+      subroutine cal_filtered_sph_rj_forces                             &
+     &         (sph_rj, ipol, sph_filters, rj_fld)
+!
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(phys_address), intent(in) :: ipol
+      type(sph_filters_type), intent(in) :: sph_filters(2)
+      type(phys_data), intent(inout) :: rj_fld
+!
+!
+      call cal_sph_wide_filtering_forces                                &
+     &   (sph_rj, ipol, sph_filters(2), rj_fld)
+      call cal_sph_base_filtering_forces                                &
+     &   (sph_rj, ipol, sph_filters(1), rj_fld)
+!
+      end subroutine cal_filtered_sph_rj_forces
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine cal_sph_base_filtering_fields                          &
@@ -79,22 +97,6 @@
      &    sph_rj, sph_filters%r_filter, sph_filters%sph_filter, rj_fld)
 !
       call scalar_sph_filter(ipol%i_light, ipol%i_filter_comp,          &
-     &    sph_rj, sph_filters%r_filter, sph_filters%sph_filter, rj_fld)
-!
-!
-      call vector_sph_filter(ipol%i_m_advect, ipol%i_SGS_inertia,       &
-     &    sph_rj, sph_filters%r_filter, sph_filters%sph_filter, rj_fld)
-!
-      call vector_sph_filter(ipol%i_lorentz, ipol%i_SGS_Lorentz,        &
-     &    sph_rj, sph_filters%r_filter, sph_filters%sph_filter, rj_fld)
-!
-      call vector_sph_filter(ipol%i_vp_induct, ipol%i_SGS_vp_induct,    &
-     &    sph_rj, sph_filters%r_filter, sph_filters%sph_filter, rj_fld)
-!
-      call vector_sph_filter(ipol%i_h_flux, ipol%i_SGS_h_flux,          &
-     &    sph_rj, sph_filters%r_filter, sph_filters%sph_filter, rj_fld)
-!
-      call vector_sph_filter(ipol%i_c_flux, ipol%i_SGS_c_flux,          &
      &    sph_rj, sph_filters%r_filter, sph_filters%sph_filter, rj_fld)
 !
       end subroutine cal_sph_base_filtering_fields
@@ -131,24 +133,71 @@
       call scalar_sph_filter(ipol%i_light, ipol%i_wide_fil_comp,        &
      &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
 !
+      end subroutine cal_sph_wide_filtering_fields
 !
-      call vector_sph_filter(ipol%i_m_advect, ipol%i_wide_SGS_inertia,  &
-     &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
 !
-      call vector_sph_filter(ipol%i_lorentz, ipol%i_wide_SGS_Lorentz,   &
+      subroutine cal_sph_base_filtering_forces                          &
+     &         (sph_rj, ipol, sph_filters, rj_fld)
+!
+      use sph_filtering
+!
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(phys_address), intent(in) :: ipol
+      type(sph_filters_type), intent(in) :: sph_filters
+      type(phys_data), intent(inout) :: rj_fld
+!
+!
+      call vector_sph_filter(ipol%i_m_advect, ipol%i_SGS_inertia,       &
+     &    sph_rj, sph_filters%r_filter, sph_filters%sph_filter, rj_fld)
+!
+      call vector_sph_filter(ipol%i_lorentz, ipol%i_SGS_Lorentz,        &
+     &    sph_rj, sph_filters%r_filter, sph_filters%sph_filter, rj_fld)
+!
+      call vector_sph_filter(ipol%i_vp_induct, ipol%i_SGS_vp_induct,    &
+     &    sph_rj, sph_filters%r_filter, sph_filters%sph_filter, rj_fld)
+!
+      call vector_sph_filter(ipol%i_h_flux, ipol%i_SGS_h_flux,          &
+     &    sph_rj, sph_filters%r_filter, sph_filters%sph_filter, rj_fld)
+!
+      call vector_sph_filter(ipol%i_c_flux, ipol%i_SGS_c_flux,          &
+     &    sph_rj, sph_filters%r_filter, sph_filters%sph_filter, rj_fld)
+!
+      end subroutine cal_sph_base_filtering_forces
+!
+! ----------------------------------------------------------------------
+!
+      subroutine cal_sph_wide_filtering_forces                          &
+     &         (sph_rj, ipol, sph_wide_f, rj_fld)
+!
+      use sph_filtering
+!
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(phys_address), intent(in) :: ipol
+      type(sph_filters_type), intent(in) :: sph_wide_f
+      type(phys_data), intent(inout) :: rj_fld
+!
+!
+      call vector_sph_filter                                            &
+     &   (ipol%i_SGS_inertia, ipol%i_wide_SGS_inertia,                  &
      &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
 !
       call vector_sph_filter                                            &
-     &   (ipol%i_vp_induct, ipol%i_wide_SGS_vp_induct,                  &
+     &   (ipol%i_SGS_Lorentz, ipol%i_wide_SGS_Lorentz,                  &
      &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
 !
-      call vector_sph_filter(ipol%i_h_flux, ipol%i_wide_SGS_h_flux,     &
+      call vector_sph_filter                                            &
+     &   (ipol%i_SGS_vp_induct, ipol%i_wide_SGS_vp_induct,              &
      &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
 !
-      call vector_sph_filter(ipol%i_c_flux, ipol%i_wide_SGS_c_flux,     &
+      call vector_sph_filter(ipol%i_SGS_h_flux, ipol%i_wide_SGS_h_flux, &
      &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
 !
-      end subroutine cal_sph_wide_filtering_fields
+      call vector_sph_filter(ipol%i_SGS_c_flux, ipol%i_wide_SGS_c_flux, &
+     &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
+!
+      end subroutine cal_sph_wide_filtering_forces
 !
 ! ----------------------------------------------------------------------
 !

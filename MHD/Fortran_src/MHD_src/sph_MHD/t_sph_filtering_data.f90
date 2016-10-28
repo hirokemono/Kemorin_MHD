@@ -126,8 +126,9 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_r_gaussian_moments(mom)
+      subroutine cal_r_gaussian_moments(filter_length, mom)
 !
+      real(kind = kreal), intent(in) :: filter_length
       type(sph_filter_moment), intent(inout) :: mom
 !
       integer(kind = kint) :: imom
@@ -137,7 +138,8 @@
       do imom = 1, mom%nfilter_sides-1
         mom%filter_mom(2*imom-1) = zero
         mom%filter_mom(2*imom  )                                        &
-     &              = real(2*imom-1) * mom%filter_mom(2*imom-2)
+     &              = real(2*imom-1) * mom%filter_mom(2*imom-2)         &
+     &               * (filter_length**2 / 6.0d0)
       end do
 !
       end subroutine cal_r_gaussian_moments

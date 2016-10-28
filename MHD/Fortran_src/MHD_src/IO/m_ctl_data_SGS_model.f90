@@ -3,7 +3,8 @@
 !
 !        programmed by H.Matsui on March. 2006
 !
-!      subroutine read_sgs_ctl
+!!      subroutine read_sgs_ctl
+!!      subroutine deallocate_sph_filter_ctl
 !!
 !!!!!!!!!  SGS Model !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!     SGS_model_ctl: gradient.........nonlinear gradient model
@@ -62,9 +63,19 @@
 !!      clipping_limit_ctl      0.2
 !!      direction_marging_ctl   lsq
 !!
-!!      number_of_moments         5
-!!      radial_filter_width     2.0
-!!      sphere_filter_width     2.0
+!!      array sph_filter_ctl    2
+!!        begin sph_filter_ctl
+!!          number_of_moments   5
+!!          radial_filter_width     1.0
+!!          sphere_filter_width     1.0
+!!        end   sph_filter_ctl
+!!        begin sph_filter_ctl
+!!          number_of_moments   7
+!!          radial_filter_width     2.0
+!!          sphere_filter_width     2.0
+!!        end   sph_filter_ctl
+!!      end array sph_filter_ctl
+!!
 !!
 !!      SGS_hf_factor_ctl        0.5
 !!
@@ -202,9 +213,19 @@
       type(read_real_item) :: SGS_mxwl_factor_ctl
       type(read_real_item) :: SGS_uxb_factor_ctl
 !
-      type(read_integer_item) :: maximum_moments_ctl
-      type(read_integer_item) :: sphere_filter_width_ctl
-      type(read_real_item) :: radial_filter_width_ctl
+!>        Structure for spherical shell filter
+      type sph_filter_ctl_type
+!>        Structure for number of moments of filter
+        type(read_integer_item) :: maximum_moments_ctl
+!>        Structure for radial filter width
+        type(read_integer_item) :: sphere_filter_width_ctl
+!>        Structure for horizontal filter width
+        type(read_real_item) :: radial_filter_width_ctl
+      end type sph_filter_ctl_type
+!
+!
+      integer(kind = kint) :: num_sph_filter_ctl
+      type(sph_filter_ctl_type), allocatable, save :: sph_filter_ctl(:)
 !
 !
 !>      Structure for field list of SGS terms
@@ -294,9 +315,11 @@
       character(len=kchara), parameter :: hd_commutation_fld            &
      &                        = 'commutation_ctl'
 !
-      integer (kind=kint) :: i_3d_filtering =         0
+      integer (kind=kint) :: i_3d_filtering =   0
+      integer (kind=kint) :: i_sph_filter_ctl = 0
 !
       character(len=kchara) :: hd_SGS_terms =  'SGS_terms_ctl'
+      character(len=kchara) :: hd_sph_filter =  'sph_filter_ctl'
 !
 !    5th level for 3d filtering
 !
@@ -321,7 +344,7 @@
       private :: hd_SGS_marging, hd_DIFF_coefs, hd_3d_filtering
       private :: hd_min_step_dynamic, hd_max_step_dynamic
       private :: hd_delta_shrink_dynamic, hd_delta_extend_dynamic
-      private :: hd_SGS_terms, hd_SGS_perturbation_ctl
+      private :: hd_SGS_terms, hd_SGS_perturbation_ctl, hd_sph_filter
       private :: hd_model_coef_type_ctl, hd_model_coef_coord_ctl
       private :: hd_whole_filter_grp, hd_fluid_filter_grp
       private :: hd_momentum_filter_ctl, hd_heat_filter_ctl
@@ -329,11 +352,28 @@
       private :: hd_hf_csim_type_ctl, hd_mf_csim_type_ctl
       private :: hd_mxwl_csim_type_ctl, hd_uxb_csim_type_ctl
 !
-      private :: read_3d_filtering_ctl
+      private :: read_3d_filtering_ctl, read_control_4_SGS_filters
+      private :: allocate_sph_filter_ctl, read_control_4_SGS_filter
 !
 !   --------------------------------------------------------------------
 !
       contains
+!
+!   --------------------------------------------------------------------
+!
+      subroutine allocate_sph_filter_ctl
+!
+      allocate(sph_filter_ctl(num_sph_filter_ctl))
+!
+      end subroutine allocate_sph_filter_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine deallocate_sph_filter_ctl
+!
+      deallocate(sph_filter_ctl)
+!
+      end subroutine deallocate_sph_filter_ctl
 !
 !   --------------------------------------------------------------------
 !
@@ -356,6 +396,9 @@
         call read_filter_fnames_ctl
         call read_ele_layers_grp_ctl
 !
+!
+        call find_control_array_flag(hd_sph_filter, num_sph_filter_ctl)
+        if(num_sph_filter_ctl .gt. 0) call read_control_4_SGS_filters
 !
         call read_control_array_c1(hd_SGS_terms, SGS_terms_ctl)
         call read_control_array_c1                                      &
@@ -388,12 +431,6 @@
         call read_real_ctl_type(hd_delta_shrink_dynamic,                &
      &      delta_to_shrink_dynamic_ctl)
         call read_real_ctl_type(hd_SGS_clip_limit, clipping_limit_ctl)
-!
-        call read_real_ctl_type                                         &
-     &     (hd_radial_filter_w, radial_filter_width_ctl)
-        call read_integer_ctl_type                                      &
-     &     (hd_sphere_filter_w, sphere_filter_width_ctl)
-        call read_integer_ctl_type(hd_max_mom, maximum_moments_ctl)
 !
         call read_real_ctl_type(hd_SGS_hf_factor, SGS_hf_factor_ctl)
         call read_real_ctl_type(hd_SGS_mf_factor, SGS_mf_factor_ctl)
@@ -440,6 +477,61 @@
       end do
 !
       end subroutine read_3d_filtering_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine read_control_4_SGS_filters
+!
+      use m_read_control_elements
+      use skip_comment_f
+!
+!
+      if (i_sph_filter_ctl .gt. 0) return
+!
+      call allocate_sph_filter_ctl
+      do
+        call load_ctl_label_and_line
+!
+        call find_control_end_array_flag(hd_sph_filter,                 &
+     &      num_sph_filter_ctl, i_sph_filter_ctl)
+        write(*,*) 'hd_sph_filter', num_sph_filter_ctl, i_sph_filter_ctl
+        if(i_sph_filter_ctl .ge. num_sph_filter_ctl) exit
+!
+        if(right_begin_flag(hd_sph_filter) .gt. 0) then
+          i_sph_filter_ctl = i_sph_filter_ctl + 1
+          call read_control_4_SGS_filter                                &
+     &       (sph_filter_ctl(i_sph_filter_ctl))
+        end if
+      end do
+!
+      end subroutine read_control_4_SGS_filters
+!
+!   --------------------------------------------------------------------
+!
+      subroutine read_control_4_SGS_filter(sphf_ctl)
+!
+      type(sph_filter_ctl_type), intent(inout) :: sphf_ctl
+!
+      integer(kind = kint) :: iflag
+!
+!
+      iflag = 0
+      do
+        call load_ctl_label_and_line
+!
+        call find_control_end_flag(hd_sph_filter, iflag)
+        if(iflag .gt. 0) exit
+!
+        call read_integer_ctl_type(hd_max_mom,                          &
+     &      sphf_ctl%maximum_moments_ctl)
+!
+        call read_real_ctl_type(hd_radial_filter_w,                     &
+     &      sphf_ctl%radial_filter_width_ctl)
+        call read_integer_ctl_type(hd_sphere_filter_w,                  &
+     &      sphf_ctl%sphere_filter_width_ctl)
+      end do
+!
+      end subroutine read_control_4_SGS_filter
 !
 !   --------------------------------------------------------------------
 !

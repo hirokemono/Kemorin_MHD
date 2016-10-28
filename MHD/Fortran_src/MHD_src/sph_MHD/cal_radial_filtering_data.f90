@@ -13,11 +13,10 @@
 !!      subroutine set_filtering_points(num_OC, kmin_OC, kmax_OC,       &
 !!     &           num_moms, num_sides, sph_rj, r_filter)
 !!      subroutine cal_radial_fileters(kmin_OC, kmax_OC,                &
-!!     &          num_moms, num_sides, width, filter_mom,               &
-!!     &          sph_rj, r_filter)
+!!     &          num_moms, num_sides, filter_mom, sph_rj, r_filter)
 !!      subroutine cal_each_radial_filter_coefs                         &
-!!     &         (r_point, dr_point, filter_length, num_moms, num_sides,&
-!!     &          radius, filter_mom, func, weight)
+!!     &         (r_point, dr_point, num_moms, num_sides, radius,       &
+!!     &         filter_mom, func, weight)
 !!@endverbatim
 !
 !
@@ -163,12 +162,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_radial_fileters(kmin_OC, kmax_OC,                  &
-     &          num_moms, num_sides, width, filter_mom,                 &
-     &          sph_rj, r_filter)
+     &          num_moms, num_sides, filter_mom, sph_rj, r_filter)
 !
       integer(kind = kint), intent(in)  :: kmin_OC, kmax_OC
       integer(kind = kint), intent(in)  :: num_moms, num_sides
-      real(kind = kreal), intent(in) :: width
       real(kind = kreal), intent(in) :: filter_mom(0:num_moms-1)
       type(sph_rj_grid), intent(in) ::  sph_rj
 !
@@ -188,8 +185,8 @@
 !        call set_filter_size_by_ave_dr(inod, sph_rj, dr_point)
         call set_filter_size_by_min_dr(inod, sph_rj, dr_point)
 !
-        call cal_each_radial_filter_coefs(sph_rj%radius_1d_rj_r(inod),  &
-     &      dr_point, width, num_moms, num_sides,                       &
+        call cal_each_radial_filter_coefs                               &
+     &     (sph_rj%radius_1d_rj_r(inod), dr_point, num_moms, num_sides, &
      &      sph_rj%radius_1d_rj_r(jstart), filter_mom,                  &
      &      r_filter%func(ist), r_filter%weight(ist))
       end do
@@ -246,8 +243,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_each_radial_filter_coefs                           &
-     &         (r_point, dr_point, filter_length, num_moms, num_sides,  &
-     &          radius, filter_mom, func, weight)
+     &         (r_point, dr_point, num_moms, num_sides, radius,         &
+     &          filter_mom, func, weight)
 !
       use radial_int_for_sph_spec
       use m_ludcmp
@@ -256,7 +253,6 @@
       real(kind = kreal), intent(in) :: r_point, dr_point
       real(kind = kreal), intent(in) :: radius(num_moms)
       real(kind = kreal), intent(in) :: filter_mom(0:num_moms-1)
-      real(kind = kreal), intent(in) :: filter_length
       real(kind = kreal), intent(inout) :: func(num_moms)
       real(kind = kreal), intent(inout) :: weight(num_moms)
 !
@@ -272,28 +268,27 @@
 !
 !
       call radial_int_matrix_by_trapezoid                               &
-    &    (num_moms, ione, num_moms, radius, a_int, a_ctr)
+     &    (num_moms, ione, num_moms, radius, a_int, a_ctr)
 !
       do imom = 1, num_moms
         dr(imom) = radius(imom) - r_point
       end do
 !
       a_mat(num_sides,1:num_moms)                                       &
-    &              = a_int(1:num_moms)
+     &              = a_int(1:num_moms)
       b(num_sides) = filter_mom(0) 
 !
       do imom = 1, num_sides-1
         a_mat(num_sides-imom,1:num_moms)                                &
-    &        = a_int(1:num_moms) * r_point**2                           &
-    &         * dr(1:num_moms)**(2*imom-1)
+     &        = a_int(1:num_moms) * r_point**2                          &
+     &         * dr(1:num_moms)**(2*imom-1)
         a_mat(num_sides+imom,1:num_moms)                                &
-    &        = a_int(1:num_moms) * r_point**2                           &
-    &         * dr(1:num_moms)**(2*imom)
+     &        = a_int(1:num_moms) * r_point**2                          &
+     &         * dr(1:num_moms)**(2*imom)
 !
-        b(num_sides-imom) = filter_mom(2*imom-1) * r_point**2           &
-    &                      * (filter_length*dr_point)**(2*imom-1)
+        b(num_sides-imom) = 0.0d0
         b(num_sides+imom) = filter_mom(2*imom  ) * r_point**2           &
-    &                      * (filter_length*dr_point)**(2*imom  ) 
+     &                     * dr_point**(2*imom  ) 
       end do
 !
       call ludcmp(a_mat, num_moms, num_moms, indx, d)

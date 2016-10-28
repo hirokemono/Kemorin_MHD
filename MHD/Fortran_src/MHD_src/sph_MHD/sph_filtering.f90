@@ -48,24 +48,20 @@
       type(sph_filters_type), intent(inout) :: sph_filters(3)
 !
 !
-      call alloc_sph_filter_moms(sph_filters(1)%r_moments)
-      call cal_r_gaussian_moments(sph_filters(1)%r_moments)
-!
-      call const_radial_filter(sph_rj, sph_grps,                        &
-     &    sph_filters(1)%r_moments, sph_filters(1)%width,               &
-     &    sph_filters(1)%r_filter)
+      call const_sph_radial_filter(sph_rj, sph_grps, sph_filters(1))
+      call const_sph_radial_filter(sph_rj, sph_grps, sph_filters(2))
 !
       call cal_wider_fileters(sph_rj, sph_filters(1)%r_filter,          &
      &   sph_filters(2)%r_filter, sph_filters(3)%r_filter)
 !
-!      if(iflag_debug .gt. 0) then
-!        write(*,*) 'check_radial_filter sph_filters(1)'
-!        call check_radial_filter(sph_rj, sph_filters(1)%r_filter)
-!        write(*,*) 'check_radial_filter sph_filters(2)%r_filter'
-!        call check_radial_filter(sph_rj, sph_filters(2)%r_filter)
-!        write(*,*) 'check_radial_filter sph_filters(3)%r_filter'
-!        call check_radial_filter(sph_rj, sph_filters(3)%r_filter)
-!      end if
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'check_radial_filter sph_filters(1)'
+        call check_radial_filter(sph_rj, sph_filters(1)%r_filter)
+        write(*,*) 'check_radial_filter sph_filters(2)%r_filter'
+        call check_radial_filter(sph_rj, sph_filters(2)%r_filter)
+        write(*,*) 'check_radial_filter sph_filters(3)%r_filter'
+        call check_radial_filter(sph_rj, sph_filters(3)%r_filter)
+      end if
 !
       call const_sph_gaussian_filter(sph_params%l_truncation,           &
      &    sph_filters(1)%sph_moments, sph_filters(1)%sph_filter)
@@ -79,6 +75,28 @@
       end subroutine init_SGS_model_sph_mhd
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine const_sph_radial_filter(sph_rj, sph_grps,              &
+     &          sph_filters)
+!
+      use calypso_mpi
+      use wider_radial_filter_data
+!
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(sph_group_data), intent(in) :: sph_grps
+      type(sph_filters_type), intent(inout) :: sph_filters
+!
+!
+      call alloc_sph_filter_moms(sph_filters%r_moments)
+      call cal_r_gaussian_moments(sph_filters%width,                    &
+     &    sph_filters%r_moments)
+!
+      call const_radial_filter(sph_rj, sph_grps,                        &
+     &    sph_filters%r_moments, sph_filters%r_filter)
+!
+      end subroutine const_sph_radial_filter
+!
 ! ----------------------------------------------------------------------
 !
       subroutine const_sph_gaussian_filter                              &
@@ -101,11 +119,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine const_radial_filter                                    &
-     &         (sph_rj, sph_grps, r_moments, width, r_filter)
+     &         (sph_rj, sph_grps, r_moments, r_filter)
 !
       use cal_radial_filtering_data
 !
-      real(kind = kreal), intent(in) :: width
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(sph_group_data), intent(in) :: sph_grps
       type(sph_filter_moment), intent(in) :: r_moments
@@ -134,7 +151,7 @@
 
       call cal_radial_fileters(kmin_OC, kmax_OC,                        &
      &    r_moments%num_momentum, r_moments%nfilter_sides,              &
-     &    width, r_moments%filter_mom, sph_rj, r_filter)
+     &    r_moments%filter_mom, sph_rj, r_filter)
 !
       end subroutine const_radial_filter
 !
@@ -160,9 +177,9 @@
      &    r_filter%inod_filter, r_filter%inod_near, r_filter%weight,    &
      &    sph_rj%nidx_rj, i_field, i_filter,                            &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      call vector_sph_horiz_filter                                      &
+      call overwrt_vect_sph_horiz_filter                                &
      &   (sph_filter%l_truncation, sph_filter%weight,                   &
-     &    sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j, i_field, i_filter,     &
+     &    sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j, i_filter,              &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine vector_sph_filter
@@ -188,9 +205,9 @@
      &    r_filter%inod_filter, r_filter%inod_near, r_filter%weight,    &
      &    sph_rj%nidx_rj, i_field, i_filter,                            &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      call scalar_sph_horiz_filter                                      &
+      call overwrt_scl_sph_horiz_filter                                 &
      &   (sph_filter%l_truncation, sph_filter%weight,                   &
-     &    sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j, i_field, i_filter,     &
+     &    sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j, i_filter,              &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine scalar_sph_filter
@@ -216,9 +233,9 @@
      &    r_filter%inod_filter, r_filter%inod_near, r_filter%weight,    &
      &    sph_rj%nidx_rj, i_field, i_filter,                            &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      call sym_tensor_sph_horiz_filter                                  &
+      call overwrt_tsr_sph_horiz_filter                                 &
      &   (sph_filter%l_truncation, sph_filter%weight,                   &
-     &    sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j, i_field, i_filter,     &
+     &    sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j, i_filter,              &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine sym_tensor_sph_filter

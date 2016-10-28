@@ -38,35 +38,54 @@
       type(sph_filters_type), intent(inout) :: sph_filters(3)
 !
 !
-      if(maximum_moments_ctl%iflag .gt. 0) then
+      if(num_sph_filter_ctl .ne. 2) then
+        call calypso_mpi_abort(1, 'Set two filter configrations')
+      end if
+!
+      if(sph_filter_ctl(1)%maximum_moments_ctl%iflag .gt. 0) then
         sph_filters(1)%r_moments%num_momentum                           &
-     &              = maximum_moments_ctl%intvalue
-        sph_filters(2)%r_moments%num_momentum                           &
-     &              = maximum_moments_ctl%intvalue
-        sph_filters(3)%r_moments%num_momentum                           &
-     &              = maximum_moments_ctl%intvalue
+     &     = sph_filter_ctl(1)%maximum_moments_ctl%intvalue
         sph_filters(1)%sph_moments%num_momentum                         &
-     &              = maximum_moments_ctl%intvalue
+     &     = sph_filter_ctl(1)%maximum_moments_ctl%intvalue
+      end if
+!
+      if(sph_filter_ctl(2)%maximum_moments_ctl%iflag .gt. 0) then
+        sph_filters(2)%r_moments%num_momentum                           &
+     &     = sph_filter_ctl(2)%maximum_moments_ctl%intvalue
         sph_filters(2)%sph_moments%num_momentum                         &
-     &              = maximum_moments_ctl%intvalue
+     &     = sph_filter_ctl(2)%maximum_moments_ctl%intvalue
+!
+        sph_filters(3)%r_moments%num_momentum                           &
+     &     = sph_filter_ctl(2)%maximum_moments_ctl%intvalue
         sph_filters(3)%sph_moments%num_momentum                         &
-     &              = maximum_moments_ctl%intvalue
+     &     = sph_filter_ctl(2)%maximum_moments_ctl%intvalue
       end if
 !
-      if(radial_filter_width_ctl%iflag .gt. 0) then
-        sph_filters(1)%width = radial_filter_width_ctl%realvalue
-        sph_filters(2)%width = radial_filter_width_ctl%realvalue
-        sph_filters(3)%width = radial_filter_width_ctl%realvalue
+      if(sph_filter_ctl(1)%radial_filter_width_ctl%iflag .gt. 0) then
+        sph_filters(1)%width                                            &
+     &     = sph_filter_ctl(1)%radial_filter_width_ctl%realvalue
       end if
 !
-      if(sphere_filter_width_ctl%iflag .gt. 0) then
+      if(sph_filter_ctl(2)%radial_filter_width_ctl%iflag .gt. 0) then
+        sph_filters(2)%width                                            &
+     &     = sph_filter_ctl(2)%radial_filter_width_ctl%realvalue
+        sph_filters(3)%width                                            &
+     &     = two*sph_filter_ctl(2)%radial_filter_width_ctl%realvalue
+      end if
+!
+      if(sph_filter_ctl(1)%sphere_filter_width_ctl%iflag .gt. 0) then
         sph_filters(1)%sph_filter%k_width                               &
-     &        = sphere_filter_width_ctl%intvalue
-        sph_filters(2)%sph_filter%k_width                               &
-     &        = itwo * sphere_filter_width_ctl%intvalue
-        sph_filters(3)%sph_filter%k_width                               &
-     &        = ifour * sphere_filter_width_ctl%intvalue
+     &     = sph_filter_ctl(1)%sphere_filter_width_ctl%intvalue
       end if
+!
+      if(sph_filter_ctl(2)%sphere_filter_width_ctl%iflag .gt. 0) then
+        sph_filters(2)%sph_filter%k_width                               &
+     &     = sph_filter_ctl(2)%sphere_filter_width_ctl%intvalue
+        sph_filters(3)%sph_filter%k_width                               &
+     &     = itwo * sph_filter_ctl(2)%sphere_filter_width_ctl%intvalue
+      end if
+!
+      call deallocate_sph_filter_ctl
 !
       end subroutine set_control_SPH_SGS
 !

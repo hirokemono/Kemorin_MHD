@@ -189,6 +189,7 @@
       use cal_nonlinear_sph_MHD
       use cal_momentum_eq_explicit
       use cal_filtered_sph_fields
+      use cal_SGS_terms_sph_MHD
 !
       use m_work_time
 !
@@ -202,6 +203,16 @@
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD
       type(phys_data), intent(inout) :: rj_fld
+!
+!
+!   ----  Lead filtered field for SGS terms
+      if(iflag_SGS_model .gt. 0) then
+        if (iflag_debug.ge.1) write(*,*) 'cal_filtered_sph_rj_fields'
+        call start_eleps_time(81)
+        call cal_filtered_sph_rj_fields                                 &
+     &     (sph%sph_rj, ipol, sph_filters, rj_fld)
+        call end_eleps_time(81)
+      end if
 !
 !   ----  lead nonlinear terms by phesdo spectrum
 !
@@ -217,6 +228,14 @@
      &   (sph%sph_rtp, trns_MHD%b_trns, trns_MHD%f_trns,                &
      &    trns_MHD%ncomp_rj_2_rtp, trns_MHD%ncomp_rtp_2_rj,             &
      &    trns_MHD%fld_rtp, trns_MHD%frc_rtp)
+!
+      if(iflag_SGS_model .gt. 0) then
+        if (iflag_debug.ge.1) write(*,*) 'filtered_nonlinear_in_rtp'
+        call filtered_nonlinear_in_rtp                                  &
+     &     (sph%sph_rtp, trns_MHD%b_trns, trns_MHD%f_trns,              &
+     &      trns_MHD%ncomp_rj_2_rtp, trns_MHD%ncomp_rtp_2_rj,           &
+     &      trns_MHD%fld_rtp, trns_MHD%frc_rtp)
+      end if
       call end_eleps_time(15)
 !
       call start_eleps_time(16)
@@ -225,10 +244,11 @@
      &   (sph, comms_sph, trans_p, ipol, trns_MHD, rj_fld)
       call end_eleps_time(16)
 !
+!   ----  Lead filtered forces for SGS terms
       if(iflag_SGS_model .gt. 0) then
         if (iflag_debug.ge.1) write(*,*) 'cal_filtered_sph_rj_fields'
         call start_eleps_time(81)
-        call cal_filtered_sph_rj_fields                                 &
+        call cal_filtered_sph_rj_forces                                 &
      &     (sph%sph_rj, ipol, sph_filters, rj_fld)
         call end_eleps_time(81)
       end if

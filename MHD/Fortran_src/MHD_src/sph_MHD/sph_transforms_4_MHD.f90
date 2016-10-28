@@ -134,7 +134,7 @@
 !
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &                     'set_addresses_trans_sph_MHD'
-      call set_addresses_trans_sph_MHD(trns_WK%trns_MHD,                &
+      call set_addresses_trans_sph_MHD(ipol, trns_WK%trns_MHD,          &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
       call set_addresses_snapshot_trans(ipol, trns_WK%trns_snap,        &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)

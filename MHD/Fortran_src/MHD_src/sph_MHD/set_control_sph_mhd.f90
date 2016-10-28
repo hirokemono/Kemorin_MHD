@@ -59,14 +59,14 @@
       type(sph_filters_type), intent(inout) :: sph_filters(3)
 !
 !
-      call set_control_4_SPH_MHD(sph_gen, rj_fld,                       &
-     &   sph_file_param, sph_fst_IO, pwr)
-!
 !   set parameters for SGS model
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_force'
       call set_control_SGS_model
       call set_control_SPH_SGS(sph_filters)
+!
+      call set_control_4_SPH_MHD(sph_gen, rj_fld,                       &
+     &   sph_file_param, sph_fst_IO, pwr)
 !
       end subroutine set_control_SGS_SPH_MHD
 !
