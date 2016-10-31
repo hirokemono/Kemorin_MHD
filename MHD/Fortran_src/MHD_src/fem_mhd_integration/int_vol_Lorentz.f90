@@ -86,8 +86,7 @@
       call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
 !$omp parallel
-      call add_const_to_vector_smp                                      &
-     &   (np_smp, ele%numele, iele_fsmp_stack,                          &
+      call add_const_to_vector_smp(ele%numele,                          &
      &    d_ele(1,iele_magne), ex_magne, mhd_fem_wk%magne_1)
 !$omp end parallel
 !
@@ -186,9 +185,8 @@
       call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
 !$omp parallel
-      call add_const_to_vector_smp(np_smp, ele%numele,                  &
-     &    iele_fsmp_stack, d_ele(1,iele_magne), ex_magne,               &
-     &    fem_wk%vector_1)
+      call add_const_to_vector_smp(ele%numele,                          &
+     &    d_ele(1,iele_magne), ex_magne, fem_wk%vector_1)
 !$omp end parallel
 !
 ! -------- loop for shape function for the phsical values
@@ -241,8 +239,7 @@
       call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
 !$omp parallel
-      call add_const_to_vector_smp                                      &
-     &   (np_smp, ele%numele, iele_fsmp_stack,                          &
+      call add_const_to_vector_smp(ele%numele,                          &
      &    d_ele(1,iele_magne), ex_magne, mhd_fem_wk%magne_1)
 !$omp end parallel
 !

@@ -87,8 +87,7 @@
 !   include external magnetic field
 !$omp parallel
       call add_const_to_vector_smp                                      &
-     &   (np_smp, ele%numele, ele%istack_ele_smp,                       &
-     &    d_ele(1,iele_magne), ex_magne, fem_wk%vector_1)
+     &   (ele%numele, d_ele(1,iele_magne), ex_magne, fem_wk%vector_1)
 !$omp end parallel
 !
 ! -------- loop for shape function for the phsical values
@@ -140,8 +139,7 @@
 !
 !$omp parallel
       call add_const_to_vector_smp                                      &
-     &   (np_smp, ele%numele, ele%istack_ele_smp,                       &
-     &    d_ele(1,iele_magne), ex_magne, fem_wk%vector_1)
+     &   (ele%numele, d_ele(1,iele_magne), ex_magne, fem_wk%vector_1)
 !$omp end parallel
 !
 ! -------- loop for shape function for the phsical values

@@ -112,8 +112,7 @@
      &      k2, iphys%i_magne, mhd_fem_wk%magne_1)
 !
 !$omp parallel
-        call add_const_to_vector_smp                                    &
-     &     (np_smp, ele%numele, ele%istack_ele_smp,                     &
+        call add_const_to_vector_smp(ele%numele,                        &
      &      d_ele(1,iphys_ele%i_magne), ex_magne, fem_wk%vector_1)
 !$omp end parallel
 !
@@ -199,8 +198,7 @@
      &      k2, iphys%i_magne, mhd_fem_wk%magne_1)
 !
 !$omp parallel
-        call add_const_to_vector_smp                                    &
-     &     (np_smp, ele%numele, ele%istack_ele_smp,                     &
+        call add_const_to_vector_smp(ele%numele,                        &
      &      d_ele(1,iphys_ele%i_magne), ex_magne, fem_wk%vector_1)
 !$omp end parallel
 !

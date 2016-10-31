@@ -1,1 +1,0 @@
-/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/Fortran_src/PARALLEL_src/CONST_SPH_GRID/ordering_sph_mesh_to_rtp.f90

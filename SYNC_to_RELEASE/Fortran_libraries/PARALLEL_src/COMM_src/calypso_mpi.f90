@@ -1,1 +1,1 @@
-/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/Fortran_src/SOLVER_src/send_recv/calypso_mpi.f90
+../../../../MHD/Fortran_src/SOLVER_src/send_recv/calypso_mpi.f90

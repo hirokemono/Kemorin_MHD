@@ -89,7 +89,7 @@
 !
       subroutine copy_scalar_component(node, fld, i_org, i_target)
 !
-      use copy_of_fields_smp
+      use copy_field_smp
 !
       integer (kind = kint), intent(in) :: i_target, i_org
       type(node_data), intent(in) :: node
@@ -97,8 +97,8 @@
 !
 !
 !$omp parallel
-      call copy_scalar_fld(np_smp, node%numnod, node%istack_nod_smp,    &
-     &    fld%ntot_phys, i_org, i_target, fld%d_fld )
+      call copy_nod_scalar_smp(node%numnod,                             &
+     &    fld%d_fld(1,i_org), fld%d_fld(1,i_target))
 !$omp end parallel
 !
       end subroutine copy_scalar_component
@@ -107,7 +107,7 @@
 !
       subroutine copy_vector_component(node, fld, i_org, i_target)
 !
-      use copy_of_fields_smp
+      use copy_field_smp
 !
       integer (kind = kint), intent(in) :: i_target, i_org
       type(node_data), intent(in) :: node
@@ -115,8 +115,8 @@
 !
 !
 !$omp parallel
-      call copy_vector_fld(np_smp, node%numnod, node%istack_nod_smp,    &
-     &    fld%ntot_phys, i_org, i_target, fld%d_fld )
+      call copy_nod_vector_smp(node%numnod,                             &
+     &    fld%d_fld(1,i_org), fld%d_fld(1,i_target))
 !$omp end parallel
 !
       end subroutine copy_vector_component
@@ -125,7 +125,7 @@
 !
       subroutine copy_tensor_component(node, fld, i_org, i_target)
 !
-      use copy_of_fields_smp
+      use copy_field_smp
 !
       integer (kind = kint), intent(in) :: i_target, i_org
       type(node_data), intent(in) :: node
@@ -133,8 +133,8 @@
 !
 !
 !$omp parallel
-      call copy_tensor_fld(np_smp, node%numnod, node%istack_nod_smp,    &
-     &    fld%ntot_phys, i_org, i_target, fld%d_fld )
+      call copy_nod_sym_tensor_smp(node%numnod,                         &
+     &    fld%d_fld(1,i_org), fld%d_fld(1,i_target))
 !$omp end parallel
 !
       end subroutine copy_tensor_component
@@ -144,7 +144,7 @@
 !
       subroutine add_2_nod_scalars(node, fld, i_v1, i_v2, i_r)
 !
-      use copy_of_fields_smp
+      use cal_add_smp
 !
       integer(kind = kint), intent(in) :: i_r, i_v1, i_v2
       type(node_data), intent(in) :: node
@@ -152,9 +152,8 @@
 !
 !
 !$omp parallel
-      call add_scalar_array_smp(np_smp,                                 &
-     &    node%numnod, node%istack_nod_smp, fld%ntot_phys,              &
-     &    fld%d_fld, i_v1, i_v2, i_r)
+      call add_scalars_smp(node%numnod,                                 &
+     &    fld%d_fld(1,i_v1), fld%d_fld(1,i_v2), fld%d_fld(1,i_r))
 !$omp end parallel
 !
        end subroutine add_2_nod_scalars
@@ -163,7 +162,7 @@
 !
       subroutine add_2_nod_vectors(node, fld, i_v1, i_v2, i_r)
 !
-      use copy_of_fields_smp
+      use cal_add_smp
 !
       integer(kind = kint), intent(in) :: i_r, i_v1, i_v2
       type(node_data), intent(in) :: node
@@ -171,9 +170,8 @@
 !
 !
 !$omp parallel
-      call add_vector_array_smp(np_smp,                                 &
-     &    node%numnod, node%istack_nod_smp, fld%ntot_phys, fld%d_fld,   &
-     &    i_v1, i_v2, i_r)
+      call add_vectors_smp(node%numnod,                                 &
+     &    fld%d_fld(1,i_v1), fld%d_fld(1,i_v2), fld%d_fld(1,i_r))
 !$omp end parallel
 !
        end subroutine add_2_nod_vectors
@@ -182,7 +180,7 @@
 !
       subroutine add_2_nod_tensors(node, fld, i_v1, i_v2, i_r)
 !
-      use copy_of_fields_smp
+      use cal_add_smp
 !
       integer(kind = kint), intent(in) :: i_r, i_v1, i_v2
       type(node_data), intent(in) :: node
@@ -190,9 +188,8 @@
 !
 !
 !$omp parallel
-      call add_tensor_array_smp(np_smp,                                 &
-     &    node%numnod, node%istack_nod_smp, fld%ntot_phys, fld%d_fld,   &
-     &    i_v1, i_v2, i_r)
+      call add_tensors_smp(node%numnod,                                 &
+     &    fld%d_fld(1,i_v1), fld%d_fld(1,i_v2), fld%d_fld(1,i_r))
 !$omp end parallel
 !
       end subroutine add_2_nod_tensors
@@ -202,7 +199,7 @@
 !
       subroutine subtract_2_nod_scalars(node, fld, i_v1, i_v2, i_r)
 !
-      use copy_of_fields_smp
+      use cal_subtract_smp
 !
       integer(kind = kint), intent(in) :: i_r, i_v1, i_v2
       type(node_data), intent(in) :: node
@@ -210,9 +207,8 @@
 !
 !
 !$omp parallel
-      call subtract_scalar_array_smp(np_smp,                            &
-     &    node%numnod, node%istack_nod_smp, fld%ntot_phys,              &
-     &    fld%d_fld, i_v1, i_v2, i_r)
+      call subtract_scalars_smp(node%numnod,                            &
+     &    fld%d_fld(1,i_v1), fld%d_fld(1,i_v2), fld%d_fld(1,i_r))
 !$omp end parallel
 !
        end subroutine subtract_2_nod_scalars
@@ -221,7 +217,7 @@
 !
       subroutine subtract_2_nod_vectors(node, fld, i_v1, i_v2, i_r)
 !
-      use copy_of_fields_smp
+      use cal_subtract_smp
 !
       integer(kind = kint), intent(in) :: i_r, i_v1, i_v2
       type(node_data), intent(in) :: node
@@ -229,9 +225,8 @@
 !
 !
 !$omp parallel
-      call subtract_vector_array_smp(np_smp,                            &
-     &    node%numnod, node%istack_nod_smp, fld%ntot_phys, fld%d_fld,   &
-     &    i_v1, i_v2, i_r)
+      call subtract_vectors_smp(node%numnod,                            &
+     &    fld%d_fld(1,i_v1), fld%d_fld(1,i_v2), fld%d_fld(1,i_r))
 !$omp end parallel
 !
        end subroutine subtract_2_nod_vectors
@@ -240,7 +235,7 @@
 !
       subroutine subtract_2_nod_tensors(node, fld, i_v1, i_v2, i_r)
 !
-      use copy_of_fields_smp
+      use cal_subtract_smp
 !
       integer(kind = kint), intent(in) :: i_r, i_v1, i_v2
       type(node_data), intent(in) :: node
@@ -248,9 +243,8 @@
 !
 !
 !$omp parallel
-      call subtract_tensor_array_smp(np_smp,                            &
-     &    node%numnod, node%istack_nod_smp, fld%ntot_phys, fld%d_fld,   &
-     &    i_v1, i_v2, i_r)
+      call subtract_tensors_smp(node%numnod,                            &
+     &    fld%d_fld(1,i_v1), fld%d_fld(1,i_v2), fld%d_fld(1,i_r))
 !$omp end parallel
 !
       end subroutine subtract_2_nod_tensors
