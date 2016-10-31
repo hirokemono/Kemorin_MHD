@@ -1,1 +1,1 @@
-/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/Fortran_src/PARALLEL_src/SPH_SHELL_src/products_at_poles.f90
+../../../../MHD/Fortran_src/PARALLEL_src/SPH_SHELL_src/products_at_poles.f90

@@ -1,1 +1,1 @@
-/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/Fortran_src/PARALLEL_src/SPH_SHELL_src/ordering_schmidt_trans_krin.f90
+../../../../MHD/Fortran_src/PARALLEL_src/SPH_SHELL_src/ordering_schmidt_trans_krin.f90
