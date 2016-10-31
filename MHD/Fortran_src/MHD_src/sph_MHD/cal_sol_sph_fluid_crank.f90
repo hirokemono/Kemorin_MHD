@@ -68,7 +68,7 @@
       use m_boundary_params_sph_MHD
       use m_coef_fdm_free_ICB
       use m_coef_fdm_free_CMB
-      use copy_of_fields_smp
+      use copy_field_smp
       use solve_sph_fluid_crank
 !
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -79,12 +79,10 @@
 !
 !
 !$omp parallel
-      call copy_scalar_fld                                              &
-     &   (np_smp, rj_fld%n_point, sph_rj%istack_inod_rj_smp,            &
-     &    rj_fld%ntot_phys, itor%i_vort, ipol%i_velo, rj_fld%d_fld)
-      call copy_scalar_fld                                              &
-     &   (np_smp, rj_fld%n_point, sph_rj%istack_inod_rj_smp,            &
-     &    rj_fld%ntot_phys, ipol%i_vort, itor%i_velo, rj_fld%d_fld)
+      call copy_nod_scalar_smp(rj_fld%n_point,                          &
+     &    rj_fld%d_fld(1,itor%i_vort), rj_fld%d_fld(1,ipol%i_velo))
+      call copy_nod_scalar_smp(rj_fld%n_point,                          &
+     &    rj_fld%d_fld(1,ipol%i_vort), rj_fld%d_fld(1,itor%i_velo))
 !$omp end parallel
 !
       call set_bc_velo_sph_crank(ipol%i_velo, sph_rj, rj_fld)

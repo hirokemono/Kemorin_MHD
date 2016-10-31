@@ -191,9 +191,8 @@
             call vector_cst_phys_2_each_ele(node, ele, nod_fld,         &
      &          k2, iphys%i_vecp, coef_lor, mhd_fem_wk%vecp_1)
 !$omp parallel
-            call add_const_to_vector_smp(np_smp, ele%numele,            &
-     &          ele%istack_ele_smp, d_ele(1,iphys_ele%i_magne),         &
-     &          ex_magne, fem_wk%vector_1)
+            call add_const_to_vector_smp(ele%numele,                    &
+     &          d_ele(1,iphys_ele%i_magne), ex_magne, fem_wk%vector_1)
 !$omp end parallel
 !
             call fem_skv_lorentz_rot_galerkin                           &
@@ -204,9 +203,8 @@
             call vector_cst_phys_2_each_ele(node, ele, nod_fld,         &
      &          k2, iphys%i_magne, coef_lor, mhd_fem_wk%magne_1)
 !$omp parallel
-            call add_const_to_vector_smp(np_smp, ele%numele,            &
-     &          ele%istack_ele_smp, d_ele(1,iphys_ele%i_magne),         &
-     &          ex_magne, fem_wk%vector_1)
+            call add_const_to_vector_smp(ele%numele,                    &
+     &          d_ele(1,iphys_ele%i_magne), ex_magne, fem_wk%vector_1)
 !$omp end parallel
 !
             call fem_skv_vector_inertia_type(fluid%istack_ele_fld_smp,  &
@@ -439,9 +437,8 @@
             call vector_cst_phys_2_each_ele(node, ele, nod_fld,         &
      &          k2, iphys%i_vecp, coef_lor, mhd_fem_wk%vecp_1)
 !$omp parallel
-            call add_const_to_vector_smp(np_smp, ele%numele,            &
-     &          ele%istack_ele_smp, d_ele(1,iphys_ele%i_magne),         &
-     &          ex_magne, fem_wk%vector_1)
+            call add_const_to_vector_smp(ele%numele,                    &
+     &          d_ele(1,iphys_ele%i_magne), ex_magne, fem_wk%vector_1)
 !$omp end parallel
 !
             call fem_skv_lorentz_rot_galerkin                           &
@@ -452,9 +449,8 @@
             call vector_cst_phys_2_each_ele(node, ele, nod_fld,         &
      &          k2, iphys%i_magne, coef_lor, mhd_fem_wk%magne_1)
 !$omp parallel
-            call add_const_to_vector_smp(np_smp, ele%numele,            &
-     &          ele%istack_ele_smp, d_ele(1,iphys_ele%i_magne),         &
-     &          ex_magne, fem_wk%vector_1)
+            call add_const_to_vector_smp(ele%numele,                    &
+     &          d_ele(1,iphys_ele%i_magne), ex_magne, fem_wk%vector_1)
 !$omp end parallel
 !
             call fem_skv_vector_inertia_upwind                          &
