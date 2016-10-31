@@ -1,1 +1,1 @@
-/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/Fortran_src/SOLVER_src/send_recv/m_sel_spherical_SRs.f90
+../../../../MHD/Fortran_src/SOLVER_src/send_recv/m_sel_spherical_SRs.f90
