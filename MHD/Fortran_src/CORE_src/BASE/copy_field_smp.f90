@@ -83,7 +83,7 @@
        copied(1:nnod,4) = tensor(1:nnod,4)
        copied(1:nnod,5) = tensor(1:nnod,5)
        copied(1:nnod,6) = tensor(1:nnod,6)
-!$omp end do nowait
+!$omp end workshare nowait
 !
       end subroutine copy_nod_sym_tensor_smp
 !
