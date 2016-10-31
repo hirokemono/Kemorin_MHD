@@ -14,7 +14,9 @@
 !!       Initialzation and evolution loop to pick up data on circle
 !!
 !!@verbatim
-!!      subroutine SPH_init_sph_pick_circle
+!!      subroutine SPH_init_sph_pick_circle(iphys, sph_filters)
+!!        type(phys_address), intent(in) :: iphys
+!!        type(sph_filters_type), intent(inout) :: sph_filters(3)
 !!      subroutine SPH_analyze_pick_circle(sph_filters, i_step)
 !!      subroutine SPH_finalize_pick_circle
 !!@endverbatim
@@ -22,6 +24,7 @@
       module SPH_analyzer_sph_pick_circ
 !
       use m_precision
+      use t_phys_address
       use t_sph_filtering_data
 !
       implicit none
@@ -32,7 +35,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_init_sph_pick_circle(sph_filters)
+      subroutine SPH_init_sph_pick_circle(iphys, sph_filters)
 !
       use m_constants
       use m_array_for_send_recv
@@ -68,6 +71,7 @@
       use nod_phys_send_recv
       use sph_filtering
 !
+      type(phys_address), intent(in) :: iphys
       type(sph_filters_type), intent(inout) :: sph_filters(3)
 !
 !
@@ -95,14 +99,14 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
-      call init_sph_transform_MHD(ipol, idpdr, itor,                    &
+      call init_sph_transform_MHD(ipol, idpdr, itor, iphys,             &
      &    sph1, comms_sph1, omega_sph1, trans_p1, trns_WK1, rj_fld1)
 !
 ! ---------------------------------
 !
       if(iflag_SGS_model .gt. 0) then
       if(iflag_debug.gt.0) write(*,*)' init_SGS_model_sph_mhd'
-      call init_SGS_model_sph_mhd                                     &
+      call init_SGS_model_sph_mhd                                       &
      &     (sph1%sph_params, sph1%sph_rj, sph_grps1, sph_filters)
       end if
 !

@@ -9,7 +9,8 @@
 !!        Initialzation and evolution loop for dynamo benchmark check
 !!
 !!@verbatim
-!!      subroutine SPH_init_sph_dbench
+!!      subroutine SPH_init_sph_dbench(iphys)
+!!        type(phys_address), intent(in) :: iphys
 !!      subroutine SPH_analyze_dbench(i_step)
 !!      subroutine SPH_finalize_dbench
 !!@endverbatim
@@ -17,6 +18,7 @@
       module SPH_analyzer_d_bench
 !
       use m_precision
+      use t_phys_address
 !
       implicit none
 !
@@ -26,7 +28,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_init_sph_dbench
+      subroutine SPH_init_sph_dbench(iphys)
 !
       use m_constants
       use m_array_for_send_recv
@@ -59,6 +61,8 @@
       use sph_mhd_rst_IO_control
       use m_field_at_mid_equator
 !
+      type(phys_address), intent(in) :: iphys
+!
 !
 !   Allocate spectr field data
 !
@@ -81,7 +85,7 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
-      call init_sph_transform_MHD(ipol, idpdr, itor,                    &
+      call init_sph_transform_MHD(ipol, idpdr, itor, iphys,             &
      &    sph1, comms_sph1, omega_sph1, trans_p1, trns_WK1, rj_fld1)
 !
 ! ---------------------------------

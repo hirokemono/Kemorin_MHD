@@ -46,7 +46,6 @@
 !
       use m_ctl_data_sph_MHD
       use m_spheric_parameter
-      use m_mesh_data
       use m_sph_spectr_data
       use m_sph_trans_arrays_MHD
       use m_rms_4_sph_spectr
@@ -81,7 +80,7 @@
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'
-      call SPH_init_sph_snap(sph_filters1)
+      call SPH_init_sph_snap(iphys, sph_filters1)
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize(mesh1, group1, ele_mesh1, nod_fld1)

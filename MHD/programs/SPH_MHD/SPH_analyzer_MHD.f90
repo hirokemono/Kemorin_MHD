@@ -7,7 +7,8 @@
 !>@brief Evolution loop for spherical MHD
 !!
 !!@verbatim
-!!      subroutine SPH_initialize_MHD(sph_filters)
+!!      subroutine SPH_initialize_MHD(iphys, sph_filters)
+!!        type(phys_address), intent(in) :: iphys
 !!        type(sph_filters_type), intent(inout) :: sph_filters(3)
 !!      subroutine SPH_analyze_MHD(sph_filters, i_step, iflag_finish)
 !!        type(sph_filters_type), intent(in) :: sph_filters(3)
@@ -17,6 +18,7 @@
 !
       use m_precision
       use t_sph_filtering_data
+      use t_phys_address
 !
       implicit none
 !
@@ -26,7 +28,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_initialize_MHD(sph_filters)
+      subroutine SPH_initialize_MHD(iphys, sph_filters)
 !
       use m_constants
       use calypso_mpi
@@ -58,6 +60,7 @@
 !
       use m_work_time
 !
+      type(phys_address), intent(in) :: iphys
       type(sph_filters_type), intent(inout) :: sph_filters(3)
 !
 !   Allocate spectr field data
@@ -74,7 +77,7 @@
 ! ---------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
-      call init_sph_transform_MHD(ipol, idpdr, itor,                    &
+      call init_sph_transform_MHD(ipol, idpdr, itor, iphys,             &
      &    sph1, comms_sph1, omega_sph1, trans_p1, trns_WK1, rj_fld1)
 !
 !  -------------------------------

@@ -12,7 +12,8 @@
 !>@brief Evolution loop for spherical MHD
 !!
 !!@verbatim
-!!      subroutine SPH_init_sph_snap(sph_filters)
+!!      subroutine SPH_init_sph_snap(iphys, sph_filters)
+!!        type(phys_address), intent(in) :: iphys
 !!        type(sph_filters_type), intent(inout) :: sph_filters(3)
 !!      subroutine SPH_analyze_snap(sph_filters, i_step)
 !!        type(sph_filters_type), intent(in) :: sph_filters(3)
@@ -21,6 +22,7 @@
       module SPH_analyzer_snap
 !
       use m_precision
+      use t_phys_address
       use t_sph_filtering_data
 !
       implicit none
@@ -31,7 +33,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_init_sph_snap(sph_filters)
+      subroutine SPH_init_sph_snap(iphys, sph_filters)
 !
       use m_constants
       use calypso_mpi
@@ -63,6 +65,7 @@
       use sph_mhd_rst_IO_control
       use sph_filtering
 !
+      type(phys_address), intent(in) :: iphys
       type(sph_filters_type), intent(inout) :: sph_filters(3)
 !
 !
@@ -80,14 +83,14 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
-      call init_sph_transform_MHD(ipol, idpdr, itor,                    &
+      call init_sph_transform_MHD(ipol, idpdr, itor, iphys,             &
      &    sph1, comms_sph1, omega_sph1, trans_p1, trns_WK1, rj_fld1)
 !
 ! ---------------------------------
 !
       if(iflag_SGS_model .gt. 0) then
       if(iflag_debug.gt.0) write(*,*)' init_SGS_model_sph_mhd'
-      call init_SGS_model_sph_mhd                                     &
+      call init_SGS_model_sph_mhd                                       &
      &     (sph1%sph_params, sph1%sph_rj, sph_grps1, sph_filters)
       end if
 !

@@ -27,9 +27,11 @@
       type works_4_sph_trans_MHD
 !>        strucutre for spherical transform data addresses
         type(address_4_sph_trans) :: trns_MHD
-!>      strucutre for spherical transform data addresses
+!>        strucutre for spherical transform data addresses
+        type(address_4_sph_trans) :: trns_SGS
+!>        strucutre for spherical transform data addresses
         type(address_4_sph_trans) :: trns_snap
-!>      strucutre for spherical transform data addresses
+!>        strucutre for spherical transform data addresses
         type(address_4_sph_trans) :: trns_tmp
 !
 !>      Nonoliear terms data using simulation
@@ -63,6 +65,7 @@
 !
 !
       call alloc_nonlinear_data(sph_rtp%nnod_rtp, wk%trns_MHD)
+      call alloc_nonlinear_data(sph_rtp%nnod_rtp, wk%trns_SGS)
       call alloc_nonlinear_data(sph_rtp%nnod_rtp, WK%trns_snap)
       call alloc_nonlinear_data(sph_rtp%nnod_rtp, wk%trns_tmp)
 !

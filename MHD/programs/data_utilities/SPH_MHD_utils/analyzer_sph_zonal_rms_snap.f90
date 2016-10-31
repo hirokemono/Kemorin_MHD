@@ -45,8 +45,6 @@
       use m_ctl_data_sph_MHD_psf
       use m_spheric_parameter
       use m_sph_spectr_data
-      use m_mesh_data
-      use m_node_phys_data
       use m_cal_max_indices
       use m_rms_4_sph_spectr
       use init_sph_MHD_elapsed_label
@@ -79,7 +77,7 @@
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'
-      call SPH_init_sph_snap(sph_filters1)
+      call SPH_init_sph_snap(iphys, sph_filters1)
 !
 !        Initialize visualization
 !

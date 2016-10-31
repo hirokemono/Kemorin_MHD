@@ -36,6 +36,7 @@
       subroutine initialize_sph_dynamobench
 !
       use m_spheric_parameter
+      use m_node_phys_data
       use m_sph_spectr_data
       use m_ctl_data_sph_MHD_noviz
       use m_rms_4_sph_spectr
@@ -66,7 +67,7 @@
 !        Initialize spherical transform dynamo
 !
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_dbench'
-      call SPH_init_sph_dbench
+      call SPH_init_sph_dbench(iphys)
       call calypso_MPI_barrier
 !
       call end_eleps_time(2)
