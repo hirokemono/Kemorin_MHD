@@ -67,6 +67,7 @@
       use cal_rms_fields_by_sph
       use r_interpolate_sph_data
       use sph_mhd_rst_IO_control
+      use init_sphrical_transform_MHD
       use sph_MHD_circle_transform
       use nod_phys_send_recv
       use sph_filtering
@@ -168,8 +169,7 @@
 !*
       call start_eleps_time(8)
       call nonlinear(sph1, comms_sph1, omega_sph1, r_2nd, trans_p1,     &
-     &    ref_temp1%t_rj, sph_filters, ipol, itor,                      &
-     &    trns_WK1%trns_MHD, rj_fld1)
+     &    ref_temp1%t_rj, sph_filters, ipol, itor, trns_WK1, rj_fld1)
       call end_eleps_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=

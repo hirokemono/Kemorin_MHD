@@ -15,6 +15,13 @@
 !!     &         (ncomp_recv, f_trns, comm_rj, ipol, n_WR, WR, rj_fld)
 !!        type(phys_address), intent(in) :: f_trns
 !!
+!!      subroutine copy_SGS_spectr_to_send(nnod_pole, ncomp_send,       &
+!!     &          bg_trns, sph_rj, comm_rj, ipol, rj_fld, n_WS, WS)
+!!        type(phys_address), intent(in) :: bg_trns
+!!      subroutine copy_SGS_vec_spec_from_trans                        &
+!!     &         (ncomp_recv, fg_trns, comm_rj, ipol, n_WR, WR, rj_fld)
+!!        type(phys_address), intent(in) :: fg_trns
+!!
 !!      subroutine copy_snap_spectr_to_send(nnod_pole, ncomp_send,      &
 !!     &          bs_trns, sph_rj, comm_rj, ipol, rj_fld,               &
 !!     &          n_WS, WS, v_pl_local)
@@ -197,6 +204,88 @@
      &    comm_rj, n_WR, WR, rj_fld)
 !
       end  subroutine copy_mhd_spectr_from_recv
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine copy_SGS_spectr_to_send(nnod_pole, ncomp_send,         &
+     &          bg_trns, sph_rj, comm_rj, ipol, rj_fld, n_WS, WS)
+!
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(sph_comm_tbl), intent(in) :: comm_rj
+      type(phys_address), intent(in) :: ipol
+      type(phys_address), intent(in) :: bg_trns
+      type(phys_data), intent(in) :: rj_fld
+      integer(kind = kint), intent(in) :: nnod_pole
+      integer(kind = kint), intent(in) :: ncomp_send, n_WS
+      real(kind = kreal), intent(inout) :: WS(n_WS)
+!
+!      Vectors
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_SGS_inertia, bg_trns%i_SGS_inertia,                    &
+     &     comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_SGS_Lorentz, bg_trns%i_SGS_Lorentz,                    &
+     &     comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_SGS_vp_induct, bg_trns%i_SGS_vp_induct,                    &
+     &     comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_SGS_h_flux, bg_trns%i_SGS_h_flux,                      &
+     &     comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_SGS_c_flux, bg_trns%i_SGS_c_flux,                      &
+     &     comm_rj, rj_fld, n_WS, WS)
+!
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_wide_SGS_inertia, bg_trns%i_wide_SGS_inertia,          &
+     &     comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_wide_SGS_Lorentz, bg_trns%i_wide_SGS_Lorentz,          &
+     &     comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_wide_SGS_vp_induct, bg_trns%i_wide_SGS_vp_induct,      &
+     &     comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_wide_SGS_h_flux, bg_trns%i_wide_SGS_h_flux,            &
+     &     comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_wide_SGS_c_flux, bg_trns%i_wide_SGS_c_flux,            &
+     &     comm_rj, rj_fld, n_WS, WS)
+!
+      end subroutine copy_SGS_spectr_to_send
+!
+!-----------------------------------------------------------------------
+!
+      subroutine copy_SGS_vec_spec_from_trans                          &
+     &         (ncomp_recv, fg_trns, comm_rj, ipol, n_WR, WR, rj_fld)
+!
+      type(sph_comm_tbl), intent(in) :: comm_rj
+      type(phys_address), intent(in) :: ipol
+      type(phys_address), intent(in) :: fg_trns
+      integer(kind = kint), intent(in) :: ncomp_recv, n_WR
+      real(kind = kreal), intent(inout) :: WR(n_WR)
+      type(phys_data), intent(inout) :: rj_fld
+!
+!
+!      Vectors
+      call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
+     &    ipol%i_SGS_inertia, fg_trns%i_SGS_inertia,                    &
+     &    comm_rj, n_WR, WR, rj_fld)
+      call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
+     &    ipol%i_SGS_Lorentz, fg_trns%i_SGS_Lorentz,                    &
+     &    comm_rj, n_WR, WR, rj_fld)
+      call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
+     &    ipol%i_SGS_vp_induct, fg_trns%i_SGS_vp_induct,                &
+     &    comm_rj, n_WR, WR, rj_fld)
+      call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
+     &    ipol%i_SGS_h_flux, fg_trns%i_SGS_h_flux,                      &
+     &    comm_rj, n_WR, WR, rj_fld)
+      call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
+     &    ipol%i_SGS_c_flux, fg_trns%i_SGS_c_flux,                      &
+     &    comm_rj, n_WR, WR, rj_fld)
+!
+      end  subroutine copy_SGS_vec_spec_from_trans
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

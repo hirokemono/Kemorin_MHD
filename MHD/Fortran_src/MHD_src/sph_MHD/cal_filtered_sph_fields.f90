@@ -44,7 +44,7 @@
       call cal_sph_base_filtering_fields                                &
      &   (sph_rj, ipol, sph_filters(1), rj_fld)
       call cal_sph_wide_filtering_fields                                &
-     &   (sph_rj, ipol, sph_filters(2), rj_fld)
+     &   (sph_rj, ipol, sph_filters(1), rj_fld)
 !
       end subroutine cal_filtered_sph_rj_fields
 !
@@ -60,7 +60,7 @@
 !
 !
       call cal_sph_wide_filtering_forces                                &
-     &   (sph_rj, ipol, sph_filters(2), rj_fld)
+     &   (sph_rj, ipol, sph_filters(1), rj_fld)
       call cal_sph_base_filtering_forces                                &
      &   (sph_rj, ipol, sph_filters(1), rj_fld)
 !
@@ -114,23 +114,25 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call vector_sph_filter(ipol%i_velo, ipol%i_wide_fil_velo,         &
+      call vector_sph_filter(ipol%i_filter_velo, ipol%i_wide_fil_velo,  &
      &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
 !
-      call vector_sph_filter(ipol%i_vort, ipol%i_wide_fil_vort,         &
+      call vector_sph_filter(ipol%i_filter_vort, ipol%i_wide_fil_vort,  &
      &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
 !
-      call vector_sph_filter(ipol%i_magne, ipol%i_wide_fil_magne,       &
+      call vector_sph_filter                                            &
+     &   (ipol%i_filter_magne, ipol%i_wide_fil_magne,                   &
      &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
 !
-      call vector_sph_filter(ipol%i_current, ipol%i_wide_fil_current,   &
+      call vector_sph_filter                                            &
+     &   (ipol%i_filter_current, ipol%i_wide_fil_current,               &
      &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
 !
 !
-      call scalar_sph_filter(ipol%i_temp, ipol%i_wide_fil_temp,         &
+      call scalar_sph_filter(ipol%i_filter_temp, ipol%i_wide_fil_temp,  &
      &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
 !
-      call scalar_sph_filter(ipol%i_light, ipol%i_wide_fil_comp,        &
+      call scalar_sph_filter(ipol%i_filter_comp, ipol%i_wide_fil_comp,  &
      &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
 !
       end subroutine cal_sph_wide_filtering_fields

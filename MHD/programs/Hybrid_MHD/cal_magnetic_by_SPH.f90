@@ -266,7 +266,7 @@
      &      n_WS, WS)
       end if
 !
-      call sph_backward_transforms                                      &
+      call sph_b_trans_w_poles                                          &
      &   (ncomp_rj_2_xyz, nvector_rj_2_xyz, izero,                      &
      &    sph, comms_sph, trans_p, n_WS, n_WR, WS, WR,                  &
      &    fld_hbd_rtp, flc_hbd_pole, fld_hbd_pole)

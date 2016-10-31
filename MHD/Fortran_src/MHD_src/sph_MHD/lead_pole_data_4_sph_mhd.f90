@@ -8,8 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine lead_pole_fields_4_sph_mhd                           &
-!!     &         (sph_params, sph_rtp, trns_snap, fls_pl,               &
-!!     &          node, iphys, nod_fld)
+!!     &         (sph_params, sph_rtp, trns_snap, node, iphys, nod_fld)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(address_4_sph_trans), intent(in) :: trns_snap
@@ -38,8 +37,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine lead_pole_fields_4_sph_mhd                             &
-     &         (sph_params, sph_rtp, trns_snap, fls_pl,                 &
-     &          node, iphys, nod_fld)
+     &         (sph_params, sph_rtp, trns_snap, node, iphys, nod_fld)
 !
       use m_machine_parameter
       use m_spheric_constants
@@ -52,8 +50,6 @@
       type(address_4_sph_trans), intent(in) :: trns_snap
       type(node_data), intent(in) :: node
       type(phys_address), intent(in) :: iphys
-      real(kind = kreal), intent(in)                                    &
-     &           :: fls_pl(sph_rtp%nnod_pole,trns_snap%ncomp_rj_2_rtp)
 !
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -62,8 +58,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_snap_vec_from_pole_trans'
       call copy_snap_vec_from_pole_trans                                &
-     &   (sph_params%m_folding, sph_rtp,                                &
-     &    trns_snap%b_trns, trns_snap%ncomp_rj_2_rtp, fls_pl,           &
+     &   (sph_params%m_folding, sph_rtp, trns_snap%b_trns,              &
+     &    trns_snap%ncomp_rj_2_rtp, trns_snap%fld_pole,                 &
      &    node, iphys, nod_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'pole_nonlinear_sph_MHD'

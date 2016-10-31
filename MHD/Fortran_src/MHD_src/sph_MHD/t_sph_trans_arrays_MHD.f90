@@ -37,11 +37,6 @@
 !>      Nonoliear terms data using simulation
         real(kind = kreal), allocatable :: frm_rtp(:,:)
 !
-!>      field data to evaluate nonliear terms at pole
-        real(kind = kreal), allocatable :: fls_pl(:,:)
-!>        local field data to evaluate nonliear terms at pole
-        real(kind = kreal), allocatable :: flc_pl(:,:)
-!
 !>        field data to evaluate nonliear terms at pole
         real(kind = kreal), allocatable :: frs_pl(:,:)
 !>        field data to evaluate nonliear terms at pole
@@ -73,16 +68,14 @@
       if(WK%trns_MHD%ncomp_rtp_2_rj .gt. 0) WK%frm_rtp = 0.0d0
 !
 !
-      ncomp = WK%trns_snap%ncomp_rj_2_rtp
-      allocate(WK%fls_pl(sph_rtp%nnod_pole,ncomp))
-      allocate(WK%flc_pl(sph_rtp%nnod_pole,ncomp))
+      call alloc_nonlinear_pole(sph_rtp%nnod_pole, WK%trns_SGS)
+      call alloc_nonlinear_pole(sph_rtp%nnod_pole, WK%trns_snap)
+!
       ncomp = WK%trns_snap%ncomp_rtp_2_rj
       allocate(WK%frs_pl(sph_rtp%nnod_pole,ncomp))
       ncomp = WK%trns_MHD%ncomp_rtp_2_rj
       allocate(WK%frm_pl(sph_rtp%nnod_pole,ncomp))
 !
-      if(WK%trns_snap%ncomp_rj_2_rtp .gt. 0) WK%fls_pl = 0.0d0
-      if(WK%trns_snap%ncomp_rj_2_rtp .gt. 0) WK%flc_pl = 0.0d0
       if(WK%trns_snap%ncomp_rtp_2_rj .gt. 0) WK%frs_pl = 0.0d0
       if(WK%trns_MHD%ncomp_rtp_2_rj .gt. 0)  WK%frm_pl = 0.0d0
 !
@@ -94,8 +87,11 @@
 !
       type(works_4_sph_trans_MHD), intent(inout) :: WK
 !
-      deallocate(WK%frm_rtp, WK%fls_pl, WK%flc_pl)
+      deallocate(WK%frm_rtp)
       deallocate(WK%frs_pl, WK%frm_pl)
+!
+      call dealloc_nonlinear_pole(WK%trns_snap)
+      call dealloc_nonlinear_pole(WK%trns_SGS)
 !
       call dealloc_nonlinear_data(WK%trns_tmp)
       call dealloc_nonlinear_data(WK%trns_snap)

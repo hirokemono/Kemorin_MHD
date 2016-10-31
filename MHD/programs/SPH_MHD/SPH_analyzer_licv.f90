@@ -44,7 +44,7 @@
       use set_bc_sph_mhd
       use adjust_reference_fields
       use material_property
-      use sph_transforms_4_MHD
+      use init_sphrical_transform_MHD
       use init_radial_infos_sph_mhd
       use const_radial_mat_4_sph
       use sph_mhd_rms_IO

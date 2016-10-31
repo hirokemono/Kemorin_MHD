@@ -53,7 +53,7 @@
       use set_bc_sph_mhd
       use adjust_reference_fields
       use material_property
-      use sph_transforms_4_MHD
+      use init_sphrical_transform_MHD
       use init_radial_infos_sph_mhd
       use const_radial_mat_4_sph
       use cal_rms_fields_by_sph
@@ -146,7 +146,7 @@
 !*
 !      call start_eleps_time(8)
 !      call nonlinear(sph1, comms_sph1, omega_sph1, r_2nd, trans_p1,    &
-!     &    ref_temp1%t_rj, ipol, itor, trns_WK1%trns_MHD, rj_fld1)
+!     &    ref_temp1%t_rj, ipol, itor, trns_WK1, rj_fld1)
 !      call end_eleps_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=

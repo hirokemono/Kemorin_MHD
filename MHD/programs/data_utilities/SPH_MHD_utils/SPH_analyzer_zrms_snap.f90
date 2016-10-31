@@ -70,8 +70,7 @@
 !*
       call start_eleps_time(8)
       call nonlinear(sph1, comms_sph1, omega_sph1, r_2nd, trans_p1,     &
-     &    ref_temp1%t_rj, sph_filters, ipol, itor,                      &
-     &    trns_WK1%trns_MHD, rj_fld1)
+     &    ref_temp1%t_rj, sph_filters, ipol, itor, trns_WK1, rj_fld1)
       call end_eleps_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=
@@ -134,8 +133,7 @@
 !*  ----------- transform field at pole and center --------------
 !*
       call lead_pole_fields_4_sph_mhd(sph1%sph_params, sph1%sph_rtp,    &
-     &    trns_WK1%trns_snap, trns_WK1%fls_pl,                          &
-     &    mesh1%node, iphys, nod_fld1)
+     &    trns_WK1%trns_snap, mesh1%node, iphys, nod_fld1)
 !
       call nod_fields_send_recv(mesh1%nod_comm, nod_fld1)
 !

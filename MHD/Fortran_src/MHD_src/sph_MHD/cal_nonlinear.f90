@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine nonlinear(sph, comms_sph, omega_sph, r_2nd, trans_p, &
-!!     &          reftemp_rj, sph_filters, ipol, itor, trns_MHD, rj_fld)
+!!     &          reftemp_rj, sph_filters, ipol, itor, WK, rj_fld)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(sph_rotation), intent(in) :: omega_sph
@@ -16,7 +16,7 @@
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(sph_filters_type), intent(in) :: sph_filters(2)
 !!        type(phys_address), intent(in) :: ipol, itor
-!!        type(address_4_sph_trans), intent(inout) :: trns_MHD
+!!        type(works_4_sph_trans_MHD), intent(inout) :: WK
 !!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine licv_exp(reftemp_rj, sph_rlm, sph_rj,                &
 !!     &          comm_rlm, comm_rj, leg, trns_MHD, ipol, itor, rj_fld)
@@ -48,6 +48,7 @@
       use t_phys_address
       use t_phys_data
       use t_fdm_coefs
+      use t_sph_trans_arrays_MHD
       use t_addresses_sph_transform
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
@@ -64,7 +65,7 @@
 !*   ------------------------------------------------------------------
 !*
       subroutine nonlinear(sph, comms_sph, omega_sph, r_2nd, trans_p,   &
-     &          reftemp_rj, sph_filters, ipol, itor, trns_MHD, rj_fld)
+     &          reftemp_rj, sph_filters, ipol, itor, WK, rj_fld)
 !
       use m_boundary_params_sph_MHD
       use cal_inner_core_rotation
@@ -84,7 +85,7 @@
       real(kind = kreal), intent(in)                                    &
      &      :: reftemp_rj(sph%sph_rj%nidx_rj(1),0:1)
 !
-      type(address_4_sph_trans), intent(inout) :: trns_MHD
+      type(works_4_sph_trans_MHD), intent(inout) :: WK
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -92,7 +93,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'nonlinear_by_pseudo_sph'
       call nonlinear_by_pseudo_sph(sph, comms_sph, omega_sph, r_2nd,    &
-     &    trans_p, sph_filters, trns_MHD, ipol, itor, rj_fld)
+     &    trans_p, sph_filters, WK%trns_MHD, WK%trns_SGS,               &
+     &    ipol, itor, rj_fld)
 !
       if (iflag_4_ref_temp .eq. id_sphere_ref_temp) then
         call add_reftemp_advect_sph_MHD                                 &
@@ -182,7 +184,7 @@
 !*   ------------------------------------------------------------------
 !
       subroutine nonlinear_by_pseudo_sph(sph, comms_sph, omega_sph,     &
-     &          r_2nd, trans_p, sph_filters, trns_MHD,                  &
+     &          r_2nd, trans_p, sph_filters, trns_MHD, trns_SGS,        &
      &          ipol, itor, rj_fld)
 !
       use sph_transforms_4_MHD
@@ -201,7 +203,7 @@
       type(sph_filters_type), intent(in) :: sph_filters(2)
       type(phys_address), intent(in) :: ipol, itor
 !
-      type(address_4_sph_trans), intent(inout) :: trns_MHD
+      type(address_4_sph_trans), intent(inout) :: trns_MHD, trns_SGS
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -246,11 +248,33 @@
 !
 !   ----  Lead filtered forces for SGS terms
       if(iflag_SGS_model .gt. 0) then
-        if (iflag_debug.ge.1) write(*,*) 'cal_filtered_sph_rj_fields'
+        if (iflag_debug.ge.1) write(*,*) 'cal_filtered_sph_rj_forces'
         call start_eleps_time(81)
         call cal_filtered_sph_rj_forces                                 &
      &     (sph%sph_rj, ipol, sph_filters, rj_fld)
         call end_eleps_time(81)
+!
+        call start_eleps_time(14)
+        call sph_back_trans_SGS_MHD                                     &
+     &     (sph, comms_sph, trans_p, ipol, rj_fld, trns_SGS)
+        call end_eleps_time(14)
+!
+        call start_eleps_time(15)
+        call similarity_SGS_terms_rtp(sph%sph_rtp,                      &
+     &      trns_MHD%f_trns, trns_SGS%b_trns, trns_SGS%f_trns,          &
+     &      trns_MHD%ncomp_rtp_2_rj, trns_SGS%ncomp_rj_2_rtp,           &
+     &      trns_SGS%ncomp_rtp_2_rj, trns_MHD%frc_rtp,                  &
+     &      trns_SGS%fld_rtp, trns_SGS%frc_rtp)
+        call wider_similarity_SGS_rtp(sph%sph_rtp,                      &
+     &      trns_MHD%b_trns, trns_SGS%b_trns,                           &
+     &      trns_MHD%ncomp_rj_2_rtp, trns_SGS%ncomp_rj_2_rtp,           &
+     &      trns_MHD%fld_rtp, trns_SGS%fld_rtp)
+        call end_eleps_time(15)
+!
+        call start_eleps_time(16)
+        call sph_forward_trans_SGS_MHD                                  &
+     &     (sph, comms_sph, trans_p, trns_SGS, ipol, rj_fld)
+        call end_eleps_time(16)
       end if
 !
       call start_eleps_time(17)

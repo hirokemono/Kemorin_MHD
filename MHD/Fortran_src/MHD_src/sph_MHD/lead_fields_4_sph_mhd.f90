@@ -89,14 +89,13 @@
      &      trns_WK%trns_MHD%f_trns, trns_WK%trns_snap%b_trns,          &
      &      trns_WK%trns_snap%ncomp_rj_2_rtp,                           &
      &      trns_WK%trns_MHD%ncomp_rtp_2_rj,                            &
-     &      trns_WK%fls_pl, trns_WK%frm_pl)
+     &      trns_WK%trns_snap%fld_pole, trns_WK%frm_pl)
       end if
 !
       call gradients_of_vectors_sph(sph, comms_sph, r_2nd, trans_p,     &
      &    ipol, trns_WK%trns_MHD, trns_WK%trns_tmp, rj_fld)
       call enegy_fluxes_4_sph_mhd(sph, comms_sph, r_2nd, trans_p, ipol, &
-     &    trns_WK%trns_MHD, trns_WK%trns_snap, rj_fld,                  &
-     &    trns_WK%frm_rtp, trns_WK%flc_pl, trns_WK%fls_pl)
+     &    trns_WK%trns_MHD, trns_WK%trns_snap, rj_fld, trns_WK%frm_rtp)
 !
       end subroutine s_lead_fields_4_sph_mhd
 !
@@ -147,7 +146,7 @@
 !
       subroutine enegy_fluxes_4_sph_mhd                                 &
      &          (sph, comms_sph, r_2nd, trans_p, ipol,                  &
-     &           trns_MHD, trns_snap, rj_fld, frm_rtp, flc_pl, fls_pl)
+     &           trns_MHD, trns_snap, rj_fld, frm_rtp)
 !
       use sph_transforms_4_MHD
       use cal_energy_flux_rtp
@@ -164,10 +163,6 @@
       type(phys_data), intent(inout) :: rj_fld
       real(kind = kreal), intent(inout)                                 &
      &       :: frm_rtp(sph%sph_rtp%nnod_rtp,trns_snap%ncomp_rj_2_rtp)
-      real(kind = kreal), intent(inout)                                 &
-     &       :: flc_pl(sph%sph_rtp%nnod_pole,trns_snap%ncomp_rj_2_rtp)
-      real(kind = kreal), intent(inout)                                 &
-     &       :: fls_pl(sph%sph_rtp%nnod_pole,trns_snap%ncomp_rj_2_rtp)
 !
 !
 !      Evaluate fields for output in spectrum space
@@ -176,7 +171,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_snapshot_MHD'
       call sph_back_trans_snapshot_MHD(sph, comms_sph, trans_p,         &
-     &    ipol, rj_fld, trns_snap, flc_pl, fls_pl)
+     &    ipol, rj_fld, trns_snap)
 !
 !      Evaluate fields for output in grid space
       if (iflag_debug.eq.1) write(*,*) 's_cal_energy_flux_rtp'
