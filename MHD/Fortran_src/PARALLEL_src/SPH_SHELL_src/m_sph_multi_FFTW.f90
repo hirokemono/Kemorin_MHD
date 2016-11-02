@@ -1,5 +1,5 @@
-!>@file   m_MHD_multi_FFTW.F90
-!!@brief  module m_MHD_multi_FFTW
+!>@file   m_sph_multi_FFTW.F90
+!!@brief  module m_sph_multi_FFTW
 !!
 !!@author H. Matsui
 !!@date Programmed in Apr., 2013
@@ -66,7 +66,7 @@
 !!@n @param Nfft        Data length for eadh FFT
 !!@n @param X(Ncomp, Nfft)  Data for Fourier transform
 !
-      module m_MHD_multi_FFTW
+      module m_sph_multi_FFTW
 !
       use m_precision
       use m_constants
@@ -178,4 +178,4 @@
 !
 ! ------------------------------------------------------------------
 !
-      end module m_MHD_multi_FFTW
+      end module m_sph_multi_FFTW
