@@ -99,7 +99,7 @@
       flux(1:nnod,4) = vec1(1:nnod,2) * vec2(1:nnod,2)
       flux(1:nnod,5) = vec1(1:nnod,2) * vec2(1:nnod,3)
       flux(1:nnod,6) = vec1(1:nnod,3) * vec2(1:nnod,3)
-!$omp end workshare
+!$omp end workshare nowait
 !
        end subroutine cal_flux_tensor_smp
 !
@@ -127,7 +127,7 @@
      &               * ( magne(1:nnod,3)+ex_magne(3) )
       mxwl(1:nnod,6) = ( magne(1:nnod,3)+ex_magne(3) )                  &
      &               * ( magne(1:nnod,3)+ex_magne(3) )
-!$omp end workshare
+!$omp end workshare nowait
 !
        end subroutine cal_maxwell_tensor_smp
 !
@@ -149,7 +149,7 @@
      &               - magne(1:nnod,1) * velocity(1:nnod,3)
       idct(1:nnod,3) = magne(1:nnod,3) * velocity(1:nnod,2)             &
      &               - magne(1:nnod,2) * velocity(1:nnod,3) 
-!$omp end workshare
+!$omp end workshare nowait
 !
        end subroutine cal_induction_tensor_smp
 !
