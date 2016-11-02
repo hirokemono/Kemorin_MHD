@@ -9,12 +9,15 @@
 !!       and gradient of scalar
 !!
 !!@verbatim
-!!      subroutine sph_b_trans_w_poles                                  &
-!!     &        (ncomp_trans, nvector, nscalar, sph, comms_sph, trans_p,&
-!!     &         n_WS, n_WR, WS, WR, v_rtp, v_pl_local, v_pole)
 !!      subroutine sph_backward_transforms                              &
 !!     &        (ncomp_trans, nvector, nscalar, sph, comms_sph, trans_p,&
 !!     &         n_WS, n_WR, WS, WR, v_rtp)
+!!      subroutine sph_b_trans_w_poles                                  &
+!!     &        (ncomp_trans, nvector, nscalar, sph, comms_sph, trans_p,&
+!!     &         n_WS, n_WR, WS, WR, v_rtp, v_pl_local, v_pole)
+!!      subroutine pole_b_transform                                     &
+!!     &        (ncomp_trans, nvector, nscalar, sph, comms_sph, trans_p,&
+!!     &         n_WS, n_WR, WS, WR, v_pl_local, v_pole)
 !!      subroutine sph_forward_transforms                               &
 !!     &        (ncomp_trans, nvector, nscalar, sph, comms_sph, trans_p,&
 !!     &         v_rtp, n_WS, n_WR, WS, WR)
@@ -56,6 +59,57 @@
 ! -----------------------------------------------------------------------
 !
       contains
+!
+! -----------------------------------------------------------------------
+!
+      subroutine sph_backward_transforms                                &
+     &        (ncomp_trans, nvector, nscalar, sph, comms_sph, trans_p,  &
+     &         n_WS, n_WR, WS, WR, v_rtp)
+!
+      use pole_sph_transform
+!
+      type(sph_grids), intent(in) :: sph
+      type(sph_comm_tables), intent(in) :: comms_sph
+      type(parameters_4_sph_trans), intent(in) :: trans_p
+!
+      integer(kind = kint), intent(in) :: ncomp_trans
+      integer(kind = kint), intent(in) :: nvector, nscalar
+      integer(kind = kint), intent(in) :: n_WS, n_WR
+      real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
+!
+      real(kind = kreal), intent(inout)                                 &
+     &                :: v_rtp(sph%sph_rtp%nnod_rtp,ncomp_trans)
+!
+!
+      START_SRtime= MPI_WTIME()
+      call start_eleps_time(18)
+      call calypso_sph_comm_N                                           &
+     &   (ncomp_trans, comms_sph%comm_rj, comms_sph%comm_rlm)
+      call finish_send_recv_sph(comms_sph%comm_rj)
+      call end_eleps_time(18)
+      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
+!
+      call start_eleps_time(22)
+      call sel_backward_legendre_trans                                  &
+     &   (ncomp_trans, nvector, nscalar, sph%sph_rlm, sph%sph_rtm,      &
+     &    comms_sph%comm_rlm, comms_sph%comm_rtm,                       &
+     &    trans_p%leg, trans_p%idx_trns, n_WR, n_WS, WR, WS)
+      call end_eleps_time(22)
+!
+      START_SRtime= MPI_WTIME()
+      call start_eleps_time(19)
+      call calypso_sph_comm_N                                           &
+     &   (ncomp_trans, comms_sph%comm_rtm, comms_sph%comm_rtp)
+      call end_eleps_time(19)
+      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
+!
+      call start_eleps_time(24)
+      call back_FFT_select_from_recv(sph%sph_rtp, comms_sph%comm_rtp,   &
+     &    ncomp_trans, n_WR, WR, v_rtp)
+      call finish_send_recv_sph(comms_sph%comm_rtm)
+      call end_eleps_time(24)
+!
+      end subroutine sph_backward_transforms
 !
 ! -----------------------------------------------------------------------
 !
@@ -127,9 +181,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sph_backward_transforms                                &
+      subroutine pole_b_transform                                       &
      &        (ncomp_trans, nvector, nscalar, sph, comms_sph, trans_p,  &
-     &         n_WS, n_WR, WS, WR, v_rtp)
+     &         n_WS, n_WR, WS, WR, v_pl_local, v_pole)
 !
       use pole_sph_transform
 !
@@ -143,38 +197,33 @@
       real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
 !
       real(kind = kreal), intent(inout)                                 &
-     &                :: v_rtp(sph%sph_rtp%nnod_rtp,ncomp_trans)
+     &                :: v_pl_local(sph%sph_rtp%nnod_pole,ncomp_trans)
+      real(kind = kreal), intent(inout)                                 &
+     &                :: v_pole(sph%sph_rtp%nnod_pole,ncomp_trans)
+!
+      integer(kind = kint) :: ncomp_pole
 !
 !
       START_SRtime= MPI_WTIME()
       call start_eleps_time(18)
       call calypso_sph_comm_N                                           &
      &   (ncomp_trans, comms_sph%comm_rj, comms_sph%comm_rlm)
-      call finish_send_recv_sph(comms_sph%comm_rj)
       call end_eleps_time(18)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
       call start_eleps_time(22)
-      call sel_backward_legendre_trans                                  &
-     &   (ncomp_trans, nvector, nscalar, sph%sph_rlm, sph%sph_rtm,      &
-     &    comms_sph%comm_rlm, comms_sph%comm_rtm,                       &
-     &    trans_p%leg, trans_p%idx_trns, n_WR, n_WS, WR, WS)
+      call pole_backward_transforms(ncomp_trans, nvector, nscalar,      &
+     &    sph%sph_params, sph%sph_rtp, sph%sph_rtm, sph%sph_rlm,        &
+     &    comms_sph%comm_rlm, trans_p%leg, n_WR, WR, v_pl_local)
+      call finish_send_recv_sph(comms_sph%comm_rj)
       call end_eleps_time(22)
 !
-      START_SRtime= MPI_WTIME()
-      call start_eleps_time(19)
-      call calypso_sph_comm_N                                           &
-     &   (ncomp_trans, comms_sph%comm_rtm, comms_sph%comm_rtp)
-      call end_eleps_time(19)
-      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
+      v_pole(1:sph%sph_rtp%nnod_pole,1:ncomp_trans) = zero
+      ncomp_pole = ncomp_trans * sph%sph_rtp%nnod_pole
+      call MPI_allreduce(v_pl_local, v_pole, ncomp_pole,                &
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
-      call start_eleps_time(24)
-      call back_FFT_select_from_recv(sph%sph_rtp, comms_sph%comm_rtp,   &
-     &    ncomp_trans, n_WR, WR, v_rtp)
-      call finish_send_recv_sph(comms_sph%comm_rtm)
-      call end_eleps_time(24)
-!
-      end subroutine sph_backward_transforms
+      end subroutine pole_b_transform
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

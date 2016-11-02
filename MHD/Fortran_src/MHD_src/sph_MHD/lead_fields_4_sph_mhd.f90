@@ -79,6 +79,9 @@
 !
       if(iflag .gt. 0) return
 !
+      call swap_phi_from_trans(trns_WK%trns_MHD%ncomp_rj_2_rtp,         &
+     &    sph%sph_rtp%nnod_rtp, sph%sph_rtp%nidx_rtp,                   &
+     &    trns_WK%trns_MHD%fld_rtp)
       call swap_phi_from_trans(trns_WK%trns_MHD%ncomp_rtp_2_rj,         &
      &    sph%sph_rtp%nnod_rtp, sph%sph_rtp%nidx_rtp,                   &
      &    trns_WK%trns_MHD%frc_rtp)
