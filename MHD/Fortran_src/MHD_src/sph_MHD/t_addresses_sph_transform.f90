@@ -63,6 +63,9 @@
         real(kind = kreal), allocatable :: fld_pole(:,:)
 !>        local field data at pole
         real(kind = kreal), allocatable :: flc_pole(:,:)
+!
+!>        Nonlinear terms data at pole
+        real(kind = kreal), allocatable :: frc_pole(:,:)
       end type address_4_sph_trans
 !
 !-----------------------------------------------------------------------
@@ -94,8 +97,12 @@
 !
       allocate(trns%fld_pole(nnod_pole,trns%ncomp_rj_2_rtp))
       allocate(trns%flc_pole(nnod_pole,trns%ncomp_rj_2_rtp))
+!
+      allocate(trns%frc_pole(nnod_pole,trns%ncomp_rtp_2_rj))
+!
       if(trns%ncomp_rj_2_rtp .gt. 0) trns%fld_pole = 0.0d0
       if(trns%ncomp_rj_2_rtp .gt. 0) trns%flc_pole = 0.0d0
+      if(trns%ncomp_rtp_2_rj .gt. 0) trns%frc_pole = 0.0d0
 !
       end subroutine alloc_nonlinear_pole
 !
@@ -116,7 +123,7 @@
       type(address_4_sph_trans), intent(inout) :: trns
 !
 !
-      deallocate(trns%fld_pole, trns%flc_pole)
+      deallocate(trns%fld_pole, trns%flc_pole, trns%frc_pole)
 !
       end subroutine dealloc_nonlinear_pole
 !

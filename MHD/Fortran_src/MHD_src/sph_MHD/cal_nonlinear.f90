@@ -190,6 +190,7 @@
      &          ipol, itor, rj_fld)
 !
       use sph_transforms_4_MHD
+      use sph_transforms_4_SGS
       use cal_nonlinear_sph_MHD
       use cal_momentum_eq_explicit
       use cal_filtered_sph_fields
