@@ -79,7 +79,7 @@
 #ifdef FFTW3
       use m_sph_single_FFTW
       use m_sph_field_FFTW
-      use m_MHD_multi_FFTW
+      use m_sph_multi_FFTW
 #endif
 !
       implicit none
