@@ -92,8 +92,9 @@
 !   ----  lead nonlinear terms by phesdo spectrum
 !
       if (iflag_debug.eq.1) write(*,*) 'nonlinear_by_pseudo_sph'
-      call nonlinear_by_pseudo_sph(sph, comms_sph, omega_sph, r_2nd,    &
-     &    trans_p, sph_filters, WK%trns_MHD, WK%trns_SGS,               &
+      call nonlinear_by_pseudo_sph                                      &
+     &   (sph, comms_sph, omega_sph, r_2nd, trans_p, sph_filters,       &
+     &    WK%trns_MHD, WK%MHD_mul_FFTW, WK%trns_SGS, WK%SGS_mul_FFTW,   &
      &    ipol, itor, rj_fld)
 !
       if (iflag_4_ref_temp .eq. id_sphere_ref_temp) then
@@ -183,8 +184,9 @@
 !
 !*   ------------------------------------------------------------------
 !
-      subroutine nonlinear_by_pseudo_sph(sph, comms_sph, omega_sph,     &
-     &          r_2nd, trans_p, sph_filters, trns_MHD, trns_SGS,        &
+      subroutine nonlinear_by_pseudo_sph                                &
+     &         (sph, comms_sph, omega_sph, r_2nd, trans_p, sph_filters, &
+     &          trns_MHD, MHD_mul_FFTW, trns_SGS, SGS_mul_FFTW,         &
      &          ipol, itor, rj_fld)
 !
       use sph_transforms_4_MHD
@@ -204,6 +206,8 @@
       type(phys_address), intent(in) :: ipol, itor
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD, trns_SGS
+      type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
+      type(work_for_sgl_FFTW), intent(inout) :: SGS_mul_FFTW
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -220,8 +224,8 @@
 !
       call start_eleps_time(14)
       if (iflag_debug.ge.1) write(*,*) 'sph_back_trans_4_MHD'
-      call sph_back_trans_4_MHD                                         &
-     &   (sph, comms_sph, omega_sph, trans_p, ipol, rj_fld, trns_MHD)
+      call sph_back_trans_4_MHD(sph, comms_sph, omega_sph, trans_p,     &
+     &    ipol, rj_fld, trns_MHD, MHD_mul_FFTW)
       call end_eleps_time(14)
 !
       call start_eleps_time(15)
@@ -242,8 +246,8 @@
 !
       call start_eleps_time(16)
       if (iflag_debug.ge.1) write(*,*) 'sph_forward_trans_4_MHD'
-      call sph_forward_trans_4_MHD                                      &
-     &   (sph, comms_sph, trans_p, ipol, trns_MHD, rj_fld)
+      call sph_forward_trans_4_MHD(sph, comms_sph, trans_p,             &
+     &    ipol, trns_MHD, MHD_mul_FFTW, rj_fld)
       call end_eleps_time(16)
 !
 !   ----  Lead filtered forces for SGS terms
@@ -255,8 +259,8 @@
         call end_eleps_time(81)
 !
         call start_eleps_time(14)
-        call sph_back_trans_SGS_MHD                                     &
-     &     (sph, comms_sph, trans_p, ipol, rj_fld, trns_SGS)
+        call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,            &
+     &      ipol, rj_fld, trns_SGS, SGS_mul_FFTW)
         call end_eleps_time(14)
 !
         call start_eleps_time(15)
@@ -272,8 +276,8 @@
         call end_eleps_time(15)
 !
         call start_eleps_time(16)
-        call sph_forward_trans_SGS_MHD                                  &
-     &     (sph, comms_sph, trans_p, trns_SGS, ipol, rj_fld)
+        call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,         &
+     &      ipol, trns_SGS, SGS_mul_FFTW, rj_fld)
         call end_eleps_time(16)
       end if
 !

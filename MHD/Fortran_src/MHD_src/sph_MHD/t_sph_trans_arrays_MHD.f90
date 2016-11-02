@@ -20,6 +20,7 @@
 !
       use t_phys_address
       use t_addresses_sph_transform
+      use t_sph_multi_FFTW
 !
       implicit none
 !
@@ -33,6 +34,9 @@
         type(address_4_sph_trans) :: trns_snap
 !>        strucutre for spherical transform data addresses
         type(address_4_sph_trans) :: trns_tmp
+!
+        type(work_for_sgl_FFTW) :: MHD_mul_FFTW
+        type(work_for_sgl_FFTW) :: SGS_mul_FFTW
 !
 !>        field data to evaluate nonliear terms at pole
         real(kind = kreal), allocatable :: frs_pl(:,:)

@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine sph_back_trans_4_MHD(sph, comms_sph, omega_sph,      &
-!!     &          trans_p, ipol, rj_fld, trns_MHD)
+!!     &          trans_p, ipol, rj_fld, trns_MHD, MHD_mul_FFTW)
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
@@ -16,20 +16,29 @@
 !!        type(phys_address), intent(in) :: ipol
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(address_4_sph_trans), intent(inout) :: trns_MHD
-!!      subroutine sph_forward_trans_4_MHD                              &
-!!     &         (sph, comms_sph, trans_p, ipol, trns_MHD, rj_fld)
+!!        type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
+!!      subroutine sph_forward_trans_4_MHD(sph, comms_sph, trans_p,     &
+!!     &          ipol, trns_MHD, MHD_mul_FFTW, rj_fld)
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
 !!        type(sph_rotation), intent(in) :: omega_sph
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(phys_address), intent(in) :: ipol
 !!        type(address_4_sph_trans), intent(in) :: trns_MHD
+!!        type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !!        type(phys_data), intent(inout) :: rj_fld
 !!
 !!      subroutine sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,      &
-!!     &          ipol, rj_fld, trns_SGS)
-!!      subroutine sph_forward_trans_SGS_MHD                            &
-!!     &         (sph, comms_sph, trans_p, trns_SGS, ipol, rj_fld)
+!!     &          ipol, rj_fld, trns_SGS, SGS_mul_FFTW)
+!!      subroutine sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,   &
+!!     &          ipol, trns_SGS, SGS_mul_FFTW, rj_fld)
+!!        type(sph_grids), intent(in) :: sph
+!!        type(sph_comm_tables), intent(in) :: comms_sph
+!!        type(parameters_4_sph_trans), intent(in) :: trans_p
+!!        type(phys_address), intent(in) :: ipol
+!!        type(phys_data), intent(in) :: rj_fld
+!!        type(address_4_sph_trans), intent(inout) :: trns_SGS
+!!        type(work_for_sgl_FFTW), intent(inout) :: SGS_mul_FFTW
 !!
 !!      subroutine sph_back_trans_snapshot_MHD(sph, comms_sph, trans_p, &
 !!     &          ipol, rj_fld, trns_snap)
@@ -67,6 +76,7 @@
       use t_sph_trans_arrays_MHD
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
+      use t_sph_multi_FFTW
 !
       use legendre_transform_select
 !
@@ -79,7 +89,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine sph_back_trans_4_MHD(sph, comms_sph, omega_sph,        &
-     &          trans_p, ipol, rj_fld, trns_MHD)
+     &          trans_p, ipol, rj_fld, trns_MHD, MHD_mul_FFTW)
 !
       use m_solver_SR
       use sph_trans_w_coriols
@@ -94,6 +104,7 @@
       type(phys_data), intent(in) :: rj_fld
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD
+      type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !
 !
       call check_calypso_sph_comm_buf_N(trns_MHD%ncomp_rj_2_rtp,        &
@@ -112,14 +123,14 @@
       call sph_b_trans_w_coriolis(trns_MHD%ncomp_rj_2_rtp,              &
      &    trns_MHD%nvector_rj_2_rtp, trns_MHD%nscalar_rj_2_rtp,         &
      &    sph, comms_sph, omega_sph, trans_p,                           &
-     &    n_WS, n_WR, WS(1), WR(1), trns_MHD)
+     &    n_WS, n_WR, WS(1), WR(1), trns_MHD, MHD_mul_FFTW)
 !
       end subroutine sph_back_trans_4_MHD
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sph_forward_trans_4_MHD                                &
-     &         (sph, comms_sph, trans_p, ipol, trns_MHD, rj_fld)
+      subroutine sph_forward_trans_4_MHD(sph, comms_sph, trans_p,       &
+     &          ipol, trns_MHD, MHD_mul_FFTW, rj_fld)
 !
       use m_solver_SR
       use sph_trans_w_coriols
@@ -132,6 +143,7 @@
       type(phys_address), intent(in) :: ipol
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD
+      type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -143,7 +155,8 @@
       if(trns_MHD%ncomp_rtp_2_rj .eq. 0) return
       call sph_f_trans_w_coriolis(trns_MHD%ncomp_rtp_2_rj,              &
      &    trns_MHD%nvector_rtp_2_rj, trns_MHD%nscalar_rtp_2_rj,         &
-     &    sph, comms_sph, trans_p, trns_MHD, n_WS, n_WR, WS(1), WR(1))
+     &    sph, comms_sph, trans_p, trns_MHD,                            &
+     &    n_WS, n_WR, WS(1), WR(1), MHD_mul_FFTW)
 !
       call copy_mhd_spectr_from_recv(trns_MHD%ncomp_rtp_2_rj,           &
      &    trns_MHD%f_trns, comms_sph%comm_rj, ipol,                     &
@@ -155,7 +168,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,        &
-     &          ipol, rj_fld, trns_SGS)
+     &          ipol, rj_fld, trns_SGS, SGS_mul_FFTW)
 !
       use m_solver_SR
       use sph_trans_w_coriols
@@ -169,6 +182,7 @@
       type(phys_data), intent(in) :: rj_fld
 !
       type(address_4_sph_trans), intent(inout) :: trns_SGS
+      type(work_for_sgl_FFTW), intent(inout) :: SGS_mul_FFTW
 !
       integer(kind = kint) :: nscalar_trans
 !
@@ -189,14 +203,14 @@
       call sph_b_transform_SGS                                          &
      &   (trns_SGS%ncomp_rj_2_rtp, trns_SGS%nvector_rj_2_rtp,           &
      &    nscalar_trans, sph, comms_sph, trans_p,                       &
-     &    n_WS, n_WR, WS(1), WR(1), trns_SGS%fld_rtp)
+     &    n_WS, n_WR, WS(1), WR(1), trns_SGS, SGS_mul_FFTW)
 !
       end subroutine sph_back_trans_SGS_MHD
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sph_forward_trans_SGS_MHD                              &
-     &         (sph, comms_sph, trans_p, trns_SGS, ipol, rj_fld)
+      subroutine sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,     &
+     &          ipol, trns_SGS, SGS_mul_FFTW, rj_fld)
 !
       use m_solver_SR
       use sph_trans_w_coriols
@@ -206,9 +220,10 @@
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
-      type(address_4_sph_trans), intent(in) :: trns_SGS
       type(phys_address), intent(in) :: ipol
 !
+      type(address_4_sph_trans), intent(inout) :: trns_SGS
+      type(work_for_sgl_FFTW), intent(inout) :: SGS_mul_FFTW
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -222,8 +237,8 @@
 !   transform for vectors and scalars
       call sph_f_transform_SGS(trns_SGS%ncomp_rtp_2_rj,                 &
      &    trns_SGS%nvector_rtp_2_rj, trns_SGS%nscalar_rtp_2_rj,         &
-     &    sph, comms_sph, trans_p, trns_SGS%frc_rtp,                    &
-     &    n_WS, n_WR, WS(1), WR(1))
+     &    sph, comms_sph, trans_p, trns_SGS,                            &
+     &    n_WS, n_WR, WS(1), WR(1), SGS_mul_FFTW)
 !
       call copy_SGS_vec_spec_from_trans                                 &
      &   (trns_SGS%ncomp_rtp_2_rj, trns_SGS%f_trns,                     &

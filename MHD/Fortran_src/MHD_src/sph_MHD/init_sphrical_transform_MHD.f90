@@ -35,6 +35,7 @@
       use t_sph_trans_arrays_MHD
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
+      use t_sph_multi_FFTW
 !
       use legendre_transform_select
 !
@@ -61,11 +62,13 @@
       subroutine init_sph_transform_MHD(ipol, idpdr, itor, iphys,       &
      &          sph, comms_sph, omega_sph, trans_p, trns_WK, rj_fld)
 !
+      use m_control_parameter
       use set_address_sph_trans_MHD
       use set_address_sph_trans_SGS
       use set_address_sph_trans_snap
       use set_address_sph_trans_tmp
       use pole_sph_transform
+      use MHD_FFT_selector
 !
       type(phys_address), intent(in) :: ipol, idpdr, itor
       type(phys_address), intent(in) :: iphys
@@ -115,6 +118,12 @@
       call sel_sph_transform_MHD(ipol, sph, comms_sph, omega_sph,       &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
      &    trans_p, trns_WK, rj_fld)
+
+      if(iflag_SGS_model .gt. 0) then
+        call init_MHD_FFT_select(my_rank, sph%sph_rtp, ncomp_max_trans, &
+     &      trns_WK%trns_SGS%ncomp_rtp_2_rj,                            &
+     &      trns_WK%trns_SGS%ncomp_rj_2_rtp, trns_WK%SGS_mul_FFTW)
+      end if
 !
       end subroutine init_sph_transform_MHD
 !
@@ -154,10 +163,11 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'initialize_legendre_trans'
-      call initialize_legendre_trans                                    &
-     &   (ncomp_max_trans, sph, comms_sph, trans_p%leg, trans_p%idx_trns)
+      call initialize_legendre_trans(ncomp_max_trans,                   &
+     &    sph, comms_sph, trans_p%leg, trans_p%idx_trns)
       call init_fourier_transform_4_MHD(ncomp_max_trans,                &
-     &    sph%sph_rtp, comms_sph%comm_rtp, trns_WK%trns_MHD)
+     &    sph%sph_rtp, comms_sph%comm_rtp, trns_WK%trns_MHD,            &
+     &    trns_WK%MHD_mul_FFTW)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_colatitude_rtp'
       call set_colatitude_rtp(sph%sph_rtp, sph%sph_rj, trans_p%leg)
@@ -169,7 +179,7 @@
       call select_legendre_transform                                    &
      &   (sph, comms_sph, omega_sph, trans_p, ipol,                     &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
-     &    rj_fld, trns_WK%trns_MHD)
+     &    rj_fld, trns_WK%trns_MHD, trns_WK%MHD_mul_FFTW)
 !
       call sel_init_legendre_trans                                      &
      &    (ncomp_max_trans, nvector_max_trans, nscalar_max_trans,       &
@@ -225,7 +235,7 @@
       subroutine select_legendre_transform                              &
      &         (sph, comms_sph, omega_sph, trans_p, ipol,               &
      &          ncomp_max_trans, nvector_max_trans, nscalar_max_trans,  &
-     &          rj_fld, trns_MHD)
+     &          rj_fld, trns_MHD, MHD_mul_FFTW)
 !
       use sph_transforms_4_MHD
 !
@@ -240,6 +250,7 @@
       integer(kind = kint), intent(in) :: nscalar_max_trans
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD
+      type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
       type(phys_data), intent(inout) :: rj_fld
 !
       real(kind = kreal) :: starttime, etime_shortest
@@ -265,9 +276,9 @@
 !
         starttime = MPI_WTIME()
         call sph_back_trans_4_MHD(sph, comms_sph, omega_sph,            &
-     &      trans_p, ipol, rj_fld, trns_MHD)
-        call sph_forward_trans_4_MHD                                    &
-     &     (sph, comms_sph, trans_p, ipol, trns_MHD, rj_fld)
+     &      trans_p, ipol, rj_fld, trns_MHD, MHD_mul_FFTW)
+        call sph_forward_trans_4_MHD(sph, comms_sph, trans_p,           &
+     &      ipol, trns_MHD, MHD_mul_FFTW, rj_fld)
         endtime(id_legendre_transfer) = MPI_WTIME() - starttime
 !
         call sel_finalize_legendre_trans

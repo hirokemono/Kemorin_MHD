@@ -11,24 +11,29 @@
 !!@verbatim
 !!      subroutine sph_b_trans_w_coriolis(ncomp_trans, nvector, nscalar,&
 !!     &          sph, comms_sph, omega_sph, trans_p,                   &
-!!     &          n_WS, n_WR, WS, WR, trns_MHD)
+!!     &          n_WS, n_WR, WS, WR, trns_MHD, MHD_mul_FFTW)
 !!      subroutine sph_f_trans_w_coriolis(ncomp_trans, nvector, nscalar,&
-!!     &          sph, comms_sph, trans_p, trns_MHD, n_WS, n_WR, WS, WR)
+!!     &          sph, comms_sph, trans_p, trns_MHD,                    &
+!!     &          n_WS, n_WR, WS, WR, MHD_mul_FFTW)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(sph_rotation), intent(in) :: omega_sph
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(address_4_sph_trans), intent(inout) :: trns_MHD
+!!        type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !!
 !!      subroutine sph_b_transform_SGS(ncomp_trans, nvector, nscalar,   &
-!!     &          sph, comms_sph, trans_p, n_WS, n_WR, WS, WR, trns_SGS)
+!!     &          sph, comms_sph, trans_p, n_WS, n_WR, WS, WR,          &
+!!     &          trns_SGS, SGS_mul_FFTW)
 !!      subroutine sph_f_transform_SGS(ncomp_trans, nvector, nscalar,   &
-!!     &          sph, comms_sph, trans_p, trns_SGS, n_WS, n_WR, WS, WR)
+!!     &          sph, comms_sph, trans_p, trns_SGS,                    &
+!!     &          n_WS, n_WR, WS, WR, SGS_mul_FFTW)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(sph_rotation), intent(in) :: omega_sph
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(address_4_sph_trans), intent(inout) :: trns_SGS
+!!        type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !!
 !!      subroutine sph_b_trans_licv(ncomp_trans,                        &
 !!     &          sph_rlm, comm_rlm, comm_rj, omega_sph,                &
@@ -81,6 +86,7 @@
       use t_addresses_sph_transform
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
+      use t_sph_multi_FFTW
 !
       implicit none
 !
@@ -92,7 +98,7 @@
 !
       subroutine sph_b_trans_w_coriolis(ncomp_trans, nvector, nscalar,  &
      &          sph, comms_sph, omega_sph, trans_p,                     &
-     &          n_WS, n_WR, WS, WR, trns_MHD)
+     &          n_WS, n_WR, WS, WR, trns_MHD, MHD_mul_FFTW)
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
@@ -104,6 +110,7 @@
       integer(kind = kint), intent(in) :: n_WS, n_WR
       real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
       type(address_4_sph_trans), intent(inout) :: trns_MHD
+      type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !
 !
       START_SRtime= MPI_WTIME()
@@ -147,7 +154,7 @@
      &    'back_MHD_FFT_sel_from_recv', ncomp_trans, nvector, nscalar
       call back_MHD_FFT_sel_from_recv                                   &
      &   (sph%sph_rtp, comms_sph%comm_rtp, ncomp_trans,                 &
-     &    n_WR, WR, trns_MHD%fld_rtp)
+     &    n_WR, WR, trns_MHD%fld_rtp, MHD_mul_FFTW)
       call end_eleps_time(24)
 !
       if(iflag_debug .gt. 0) write(*,*) 'finish_send_recv_rtm_2_rtp'
@@ -158,7 +165,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sph_f_trans_w_coriolis(ncomp_trans, nvector, nscalar,  &
-     &          sph, comms_sph, trans_p, trns_MHD, n_WS, n_WR, WS, WR)
+     &          sph, comms_sph, trans_p, trns_MHD,                      &
+     &          n_WS, n_WR, WS, WR, MHD_mul_FFTW)
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
@@ -168,12 +176,13 @@
       integer(kind = kint), intent(in) :: n_WS, n_WR
       real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
       type(address_4_sph_trans), intent(inout) :: trns_MHD
+      type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !
 !
       call start_eleps_time(24)
       call fwd_MHD_FFT_sel_to_send                                      &
      &   (sph%sph_rtp, comms_sph%comm_rtp, ncomp_trans,                 &
-     &    n_WS, trns_MHD%frc_rtp, WS)
+     &    n_WS, trns_MHD%frc_rtp, WS, MHD_mul_FFTW)
       call end_eleps_time(24)
 !
       START_SRtime= MPI_WTIME()
@@ -213,7 +222,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sph_b_transform_SGS(ncomp_trans, nvector, nscalar,     &
-     &          sph, comms_sph, trans_p, n_WS, n_WR, WS, WR, trns_SGS)
+     &          sph, comms_sph, trans_p, n_WS, n_WR, WS, WR,            &
+     &          trns_SGS, SGS_mul_FFTW)
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
@@ -224,6 +234,7 @@
       integer(kind = kint), intent(in) :: n_WS, n_WR
       real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
       type(address_4_sph_trans), intent(inout) :: trns_SGS
+      type(work_for_sgl_FFTW), intent(inout) :: SGS_mul_FFTW
 !
 !
       START_SRtime= MPI_WTIME()
@@ -259,7 +270,7 @@
      &    'back_MHD_FFT_sel_from_recv', ncomp_trans, nvector, nscalar
       call back_MHD_FFT_sel_from_recv                                   &
      &   (sph%sph_rtp, comms_sph%comm_rtp, ncomp_trans,                 &
-     &    n_WR, WR, trns_SGS%fld_rtp)
+     &    n_WR, WR, trns_SGS%fld_rtp, SGS_mul_FFTW)
       call end_eleps_time(24)
 !
       if(iflag_debug .gt. 0) write(*,*) 'finish_send_recv_rtm_2_rtp'
@@ -270,7 +281,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sph_f_transform_SGS(ncomp_trans, nvector, nscalar,     &
-     &          sph, comms_sph, trans_p, trns_SGS, n_WS, n_WR, WS, WR)
+     &          sph, comms_sph, trans_p, trns_SGS,                      &
+     &          n_WS, n_WR, WS, WR, SGS_mul_FFTW)
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
@@ -280,12 +292,13 @@
       integer(kind = kint), intent(in) :: n_WS, n_WR
       real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
       type(address_4_sph_trans), intent(inout) :: trns_SGS
+      type(work_for_sgl_FFTW), intent(inout) :: SGS_mul_FFTW
 !
 !
       call start_eleps_time(24)
       call fwd_MHD_FFT_sel_to_send                                      &
      &   (sph%sph_rtp, comms_sph%comm_rtp, ncomp_trans,                 &
-     &    n_WS, trns_SGS%frc_rtp, WS)
+     &    n_WS, trns_SGS%frc_rtp, WS, SGS_mul_FFTW)
       call end_eleps_time(24)
 !
       START_SRtime= MPI_WTIME()

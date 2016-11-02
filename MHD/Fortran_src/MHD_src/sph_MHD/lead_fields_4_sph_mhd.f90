@@ -165,7 +165,6 @@
       type(address_4_sph_trans), intent(in) :: trns_MHD
       type(address_4_sph_trans), intent(inout) :: trns_snap
       type(phys_data), intent(inout) :: rj_fld
-      real(kind = kreal), intent(inout)                                 &
 !
 !
 !      Evaluate fields for output in spectrum space

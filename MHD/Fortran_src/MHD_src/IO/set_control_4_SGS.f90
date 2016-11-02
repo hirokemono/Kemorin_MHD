@@ -32,12 +32,14 @@
 !
       subroutine set_control_SPH_SGS(sph_filters)
 !
+      use m_control_parameter
       use m_ctl_data_SGS_model
       use t_sph_filtering_data
 !
       type(sph_filters_type), intent(inout) :: sph_filters(3)
 !
 !
+      if(iflag_SGS_model .eq. 0) return
       if(num_sph_filter_ctl .ne. 2) then
         call calypso_mpi_abort(1, 'Set two filter configrations')
       end if

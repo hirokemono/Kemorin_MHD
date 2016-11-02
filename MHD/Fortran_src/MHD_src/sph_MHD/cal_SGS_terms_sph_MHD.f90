@@ -61,16 +61,16 @@
 !
 !$omp parallel
       if( (f_trns%i_SGS_inertia*iflag_SGS_inertia) .gt. 0) then
-        call cal_cross_prod_w_coef_smp(np_smp, sph_rtp%nnod_rtp,        &
-     &      sph_rtp%istack_inod_rtp_smp, coef_velo,                     &
+        call cal_cross_prod_w_coef_smp                                  &
+     &     (sph_rtp%nnod_rtp, coef_velo,                                &
      &      fld_rtp(1,b_trns%i_filter_vort),                            &
      &      fld_rtp(1,b_trns%i_filter_velo),                            &
      &      frc_rtp(1,f_trns%i_SGS_inertia) )
       end if
 !
       if( (f_trns%i_SGS_Lorentz*iflag_SGS_lorentz) .gt. 0) then
-        call cal_cross_prod_w_coef_smp(np_smp, sph_rtp%nnod_rtp,        &
-     &      sph_rtp%istack_inod_rtp_smp, coef_lor,                      &
+        call cal_cross_prod_w_coef_smp                                  &
+     &     (sph_rtp%nnod_rtp, coef_lor,                                 &
      &      fld_rtp(1,b_trns%i_filter_current),                         &
      &      fld_rtp(1,b_trns%i_filter_magne),                           &
      &      frc_rtp(1,f_trns%i_SGS_Lorentz) )
@@ -79,8 +79,8 @@
 !
 !
       if( (f_trns%i_SGS_vp_induct*iflag_SGS_induction) .gt. 0) then
-        call cal_cross_prod_w_coef_smp(np_smp, sph_rtp%nnod_rtp,        &
-     &      sph_rtp%istack_inod_rtp_smp, coef_induct,                   &
+        call cal_cross_prod_w_coef_smp                                  &
+     &     (sph_rtp%nnod_rtp, coef_induct,                              &
      &      fld_rtp(1,b_trns%i_filter_velo),                            &
      &      fld_rtp(1,b_trns%i_filter_magne),                           &
      &      frc_rtp(1,f_trns%i_SGS_vp_induct) )
@@ -88,16 +88,16 @@
 !
 !
       if( (f_trns%i_SGS_h_flux*iflag_SGS_heat) .gt. 0) then
-        call cal_vec_scalar_prod_w_coef_smp(np_smp, sph_rtp%nnod_rtp,   &
-     &      sph_rtp%istack_inod_rtp_smp, coef_temp,                     &
+        call cal_vec_scalar_prod_w_coef_smp                             &
+     &     (sph_rtp%nnod_rtp, coef_temp,                                &
      &      fld_rtp(1,b_trns%i_filter_velo),                            &
      &      fld_rtp(1,b_trns%i_filter_temp),                            &
      &      frc_rtp(1,f_trns%i_SGS_h_flux) )
       end if
 !
       if( (f_trns%i_SGS_c_flux*iflag_SGS_comp_flux) .gt. 0) then
-        call cal_vec_scalar_prod_w_coef_smp(np_smp, sph_rtp%nnod_rtp,   &
-     &      sph_rtp%istack_inod_rtp_smp, coef_light,                    &
+        call cal_vec_scalar_prod_w_coef_smp                             &
+     &     (sph_rtp%nnod_rtp, coef_light,                               &
      &      fld_rtp(1,b_trns%i_filter_velo),                            &
      &      fld_rtp(1,b_trns%i_filter_comp),                            &
      &      frc_rtp(1,f_trns%i_SGS_c_flux) )
@@ -132,40 +132,35 @@
 !
 !$omp parallel
       if(fg_trns%i_SGS_inertia .gt. 0) then
-        call subtract_vectors_smp(np_smp, sph_rtp%nnod_rtp,             &
-     &      sph_rtp%istack_inod_rtp_smp,                                &
+        call subtract_vectors_smp(sph_rtp%nnod_rtp,                     &
      &      fil_rtp(1,bg_trns%i_SGS_inertia),                           &
      &      frc_rtp(1,f_trns%i_SGS_inertia),                            &
      &      fSGS_rtp(1,fg_trns%i_SGS_inertia))
       end if
 !
       if(fg_trns%i_SGS_Lorentz .gt. 0) then
-        call subtract_vectors_smp(np_smp, sph_rtp%nnod_rtp,             &
-     &      sph_rtp%istack_inod_rtp_smp,                                &
+        call subtract_vectors_smp(sph_rtp%nnod_rtp,                     &
      &      fil_rtp(1,bg_trns%i_SGS_Lorentz),                           &
      &      frc_rtp(1,f_trns%i_SGS_Lorentz),                            &
      &      fSGS_rtp(1,fg_trns%i_SGS_Lorentz))
       end if
 !
       if(fg_trns%i_SGS_vp_induct .gt. 0) then
-        call subtract_vectors_smp(np_smp, sph_rtp%nnod_rtp,             &
-     &      sph_rtp%istack_inod_rtp_smp,                                &
+        call subtract_vectors_smp(sph_rtp%nnod_rtp,                     &
      &      fil_rtp(1,bg_trns%i_SGS_vp_induct),                         &
      &      frc_rtp(1,f_trns%i_SGS_vp_induct),                          &
      &      fSGS_rtp(1,fg_trns%i_SGS_vp_induct))
       end if
 !
       if(fg_trns%i_SGS_h_flux .gt. 0) then
-        call subtract_vectors_smp(np_smp, sph_rtp%nnod_rtp,             &
-     &      sph_rtp%istack_inod_rtp_smp,                                &
+        call subtract_vectors_smp(sph_rtp%nnod_rtp,                     &
      &      fil_rtp(1,bg_trns%i_SGS_h_flux),                            &
      &      frc_rtp(1,f_trns%i_SGS_h_flux),                             &
      &      fSGS_rtp(1,fg_trns%i_SGS_h_flux))
       end if
 !
       if(fg_trns%i_SGS_c_flux .gt. 0) then
-        call subtract_vectors_smp(np_smp, sph_rtp%nnod_rtp,             &
-     &      sph_rtp%istack_inod_rtp_smp,                                &
+        call subtract_vectors_smp(sph_rtp%nnod_rtp,                     &
      &      fil_rtp(1,bg_trns%i_SGS_c_flux),                            &
      &      frc_rtp(1,f_trns%i_SGS_c_flux),                             &
      &      fSGS_rtp(1,fg_trns%i_SGS_c_flux))

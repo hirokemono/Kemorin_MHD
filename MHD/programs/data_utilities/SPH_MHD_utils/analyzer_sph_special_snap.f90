@@ -326,8 +326,8 @@
       call s_lead_fields_4_sph_mhd                                      &
      &   (sph, comms_sph, r_2nd, trans_p1, ipol, rj_fld, trns_WK)
 !
-      call sph_back_trans_4_MHD(sph, comms_sph, omega_sph,              &
-     &    trans_p1, ipol, rj_fld, trns_WK%trns_MHD)
+      call sph_back_trans_4_MHD(sph, comms_sph, omega_sph, trans_p1,    &
+     &    ipol, rj_fld, trns_WK%trns_MHD, trns_WK%MHD_mul_FFTW)
 !
       call sph_forward_trans_snapshot_MHD                               &
      &   (sph, comms_sph, trans_p1, trns_WK%trns_snap, ipol, rj_fld)
