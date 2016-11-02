@@ -21,8 +21,7 @@
 !!        type(address_4_sph_trans), intent(inout) :: trns_MHD
 !!
 !!      subroutine sph_b_transform_SGS(ncomp_trans, nvector, nscalar,   &
-!!     &          sph, comms_sph, omega_sph, trans_p,                   &
-!!     &          n_WS, n_WR, WS, WR, trns_SGS)
+!!     &          sph, comms_sph, trans_p, n_WS, n_WR, WS, WR, trns_SGS)
 !!      subroutine sph_f_transform_SGS(ncomp_trans, nvector, nscalar,   &
 !!     &          sph, comms_sph, trans_p, trns_SGS, n_WS, n_WR, WS, WR)
 !!        type(sph_grids), intent(in) :: sph
@@ -214,12 +213,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sph_b_transform_SGS(ncomp_trans, nvector, nscalar,     &
-     &          sph, comms_sph, omega_sph, trans_p,                     &
-     &          n_WS, n_WR, WS, WR, trns_SGS)
+     &          sph, comms_sph, trans_p, n_WS, n_WR, WS, WR, trns_SGS)
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
-      type(sph_rotation), intent(in) :: omega_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
 !
       integer(kind = kint), intent(in) :: ncomp_trans, nvector, nscalar

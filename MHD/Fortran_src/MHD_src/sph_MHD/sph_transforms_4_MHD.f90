@@ -158,7 +158,7 @@
      &          ipol, rj_fld, trns_SGS)
 !
       use m_solver_SR
-      use sph_transforms
+      use sph_trans_w_coriols
       use copy_sph_MHD_4_send_recv
       use spherical_SRs_N
 !
@@ -186,11 +186,10 @@
      &    trns_SGS%ncomp_rj_2_rtp, trns_SGS%b_trns,                     &
      &    sph%sph_rj, comms_sph%comm_rj, ipol, rj_fld, n_WS, WS)
 !
-      call sph_b_trans_w_poles                                          &
+      call sph_b_transform_SGS                                          &
      &   (trns_SGS%ncomp_rj_2_rtp, trns_SGS%nvector_rj_2_rtp,           &
      &    nscalar_trans, sph, comms_sph, trans_p,                       &
-     &    n_WS, n_WR, WS(1), WR(1),                                     &
-     &    trns_SGS%fld_rtp, trns_SGS%flc_pole, trns_SGS%fld_pole)
+     &    n_WS, n_WR, WS(1), WR(1), trns_SGS%fld_rtp)
 !
       end subroutine sph_back_trans_SGS_MHD
 !
@@ -200,7 +199,7 @@
      &         (sph, comms_sph, trans_p, trns_SGS, ipol, rj_fld)
 !
       use m_solver_SR
-      use sph_transforms
+      use sph_trans_w_coriols
       use copy_sph_MHD_4_send_recv
       use spherical_SRs_N
 !
@@ -221,7 +220,7 @@
      &    comms_sph%comm_rlm, comms_sph%comm_rj)
 !
 !   transform for vectors and scalars
-      call sph_forward_transforms(trns_SGS%ncomp_rtp_2_rj,              &
+      call sph_f_transform_SGS(trns_SGS%ncomp_rtp_2_rj,                 &
      &    trns_SGS%nvector_rtp_2_rj, trns_SGS%nscalar_rtp_2_rj,         &
      &    sph, comms_sph, trans_p, trns_SGS%frc_rtp,                    &
      &    n_WS, n_WR, WS(1), WR(1))
