@@ -20,6 +20,17 @@
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(address_4_sph_trans), intent(inout) :: trns_MHD
 !!
+!!      subroutine sph_b_transform_SGS(ncomp_trans, nvector, nscalar,   &
+!!     &          sph, comms_sph, omega_sph, trans_p,                   &
+!!     &          n_WS, n_WR, WS, WR, trns_SGS)
+!!      subroutine sph_f_transform_SGS(ncomp_trans, nvector, nscalar,   &
+!!     &          sph, comms_sph, trans_p, trns_SGS, n_WS, n_WR, WS, WR)
+!!        type(sph_grids), intent(in) :: sph
+!!        type(sph_comm_tables), intent(in) :: comms_sph
+!!        type(sph_rotation), intent(in) :: omega_sph
+!!        type(parameters_4_sph_trans), intent(in) :: trans_p
+!!        type(address_4_sph_trans), intent(inout) :: trns_SGS
+!!
 !!      subroutine sph_b_trans_licv(ncomp_trans,                        &
 !!     &          sph_rlm, comm_rlm, comm_rj, omega_sph,                &
 !!     &          leg, trns_MHD, n_WR, WR)
@@ -198,6 +209,113 @@
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
       end subroutine sph_f_trans_w_coriolis
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine sph_b_transform_SGS(ncomp_trans, nvector, nscalar,     &
+     &          sph, comms_sph, omega_sph, trans_p,                     &
+     &          n_WS, n_WR, WS, WR, trns_SGS)
+!
+      type(sph_grids), intent(in) :: sph
+      type(sph_comm_tables), intent(in) :: comms_sph
+      type(sph_rotation), intent(in) :: omega_sph
+      type(parameters_4_sph_trans), intent(in) :: trans_p
+!
+      integer(kind = kint), intent(in) :: ncomp_trans, nvector, nscalar
+!
+      integer(kind = kint), intent(in) :: n_WS, n_WR
+      real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
+      type(address_4_sph_trans), intent(inout) :: trns_SGS
+!
+!
+      START_SRtime= MPI_WTIME()
+      call start_eleps_time(18)
+      if(iflag_debug .gt. 0) write(*,*) 'calypso_sph_comm_rj_2_rlm_N'
+      call calypso_sph_comm_N                                           &
+     &   (ncomp_trans, comms_sph%comm_rj, comms_sph%comm_rlm)
+      call end_eleps_time(18)
+      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
+!
+      call start_eleps_time(22)
+      if(iflag_debug .gt. 0) write(*,*)                                 &
+     &    'sel_backward_legendre_trans', ncomp_trans, nvector, nscalar
+      call sel_backward_legendre_trans                                  &
+     &   (ncomp_trans, nvector, nscalar, sph%sph_rlm, sph%sph_rtm,      &
+     &    comms_sph%comm_rlm, comms_sph%comm_rtm,                       &
+     &    trans_p%leg, trans_p%idx_trns, n_WR, n_WS, WR, WS)
+      call end_eleps_time(22)
+!
+!
+      START_SRtime= MPI_WTIME()
+      call start_eleps_time(19)
+      if(iflag_debug .gt. 0) write(*,*)                                 &
+     &      'calypso_sph_comm_rtm_2_rtp_N'
+      call calypso_sph_comm_N                                           &
+     &   (ncomp_trans, comms_sph%comm_rtm, comms_sph%comm_rtp)
+      call end_eleps_time(19)
+      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
+!
+!
+      call start_eleps_time(24)
+      if(iflag_debug .gt. 0) write(*,*)                                 &
+     &    'back_MHD_FFT_sel_from_recv', ncomp_trans, nvector, nscalar
+      call back_MHD_FFT_sel_from_recv                                   &
+     &   (sph%sph_rtp, comms_sph%comm_rtp, ncomp_trans,                 &
+     &    n_WR, WR, trns_SGS%fld_rtp)
+      call end_eleps_time(24)
+!
+      if(iflag_debug .gt. 0) write(*,*) 'finish_send_recv_rtm_2_rtp'
+      call finish_send_recv_sph(comms_sph%comm_rtm)
+!
+      end subroutine sph_b_transform_SGS
+!
+! -----------------------------------------------------------------------
+!
+      subroutine sph_f_transform_SGS(ncomp_trans, nvector, nscalar,     &
+     &          sph, comms_sph, trans_p, trns_SGS, n_WS, n_WR, WS, WR)
+!
+      type(sph_grids), intent(in) :: sph
+      type(sph_comm_tables), intent(in) :: comms_sph
+      type(parameters_4_sph_trans), intent(in) :: trans_p
+!
+      integer(kind = kint), intent(in) :: ncomp_trans, nvector, nscalar
+      integer(kind = kint), intent(in) :: n_WS, n_WR
+      real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
+      type(address_4_sph_trans), intent(inout) :: trns_SGS
+!
+!
+      call start_eleps_time(24)
+      call fwd_MHD_FFT_sel_to_send                                      &
+     &   (sph%sph_rtp, comms_sph%comm_rtp, ncomp_trans,                 &
+     &    n_WS, trns_SGS%frc_rtp, WS)
+      call end_eleps_time(24)
+!
+      START_SRtime= MPI_WTIME()
+      call start_eleps_time(20)
+      call calypso_sph_comm_N                                           &
+     &   (ncomp_trans, comms_sph%comm_rtp, comms_sph%comm_rtm)
+      call finish_send_recv_sph(comms_sph%comm_rtp)
+      call end_eleps_time(20)
+      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
+!
+      call start_eleps_time(23)
+      if(iflag_debug .gt. 0) write(*,*) 'sel_forward_legendre_trans'
+      call sel_forward_legendre_trans                                   &
+     &   (ncomp_trans, nvector, nscalar, sph%sph_rtm, sph%sph_rlm,      &
+     &    comms_sph%comm_rtm, comms_sph%comm_rlm,                       &
+     &    trans_p%leg, trans_p%idx_trns, n_WR, n_WS, WR, WS)
+      call end_eleps_time(23)
+!
+      START_SRtime= MPI_WTIME()
+      call start_eleps_time(21)
+      call calypso_sph_comm_N                                           &
+     &   (ncomp_trans, comms_sph%comm_rlm, comms_sph%comm_rj)
+      call finish_send_recv_sph(comms_sph%comm_rlm)
+      call end_eleps_time(21)
+      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
+!
+      end subroutine sph_f_transform_SGS
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

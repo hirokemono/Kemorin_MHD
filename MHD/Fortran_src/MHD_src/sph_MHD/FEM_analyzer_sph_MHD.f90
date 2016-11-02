@@ -192,7 +192,7 @@
       if (iflag_debug.gt.0) write(*,*) 'copy_forces_to_snapshot_rtp'
       call copy_forces_to_snapshot_rtp(sph_params%m_folding, sph_rtp,   &
      &    trns_WK%trns_MHD%f_trns, trns_WK%trns_MHD%ncomp_rtp_2_rj,     &
-     &    mesh%node, iphys, trns_WK%frm_rtp, nod_fld)
+     &    mesh%node, iphys, trns_WK%trns_MHD%frc_rtp, nod_fld)
       if (iflag_debug.gt.0) write(*,*) 'copy_snap_vec_fld_from_trans'
       call copy_snap_vec_fld_from_trans                                 &
      &   (sph_params%m_folding, sph_rtp, trns_WK%trns_snap,             &

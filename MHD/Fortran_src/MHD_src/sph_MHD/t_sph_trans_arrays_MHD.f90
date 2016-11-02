@@ -32,9 +32,6 @@
 !>      strucutre for spherical transform data addresses
         type(address_4_sph_trans) :: trns_tmp
 !
-!>      Nonoliear terms data using simulation
-        real(kind = kreal), allocatable :: frm_rtp(:,:)
-!
 !>      field data to evaluate nonliear terms at pole
         real(kind = kreal), allocatable :: fls_pl(:,:)
 !>        local field data to evaluate nonliear terms at pole
@@ -66,9 +63,6 @@
       call alloc_nonlinear_data(sph_rtp%nnod_rtp, WK%trns_snap)
       call alloc_nonlinear_data(sph_rtp%nnod_rtp, wk%trns_tmp)
 !
-      allocate(WK%frm_rtp(sph_rtp%nnod_rtp,WK%trns_MHD%ncomp_rtp_2_rj))
-      if(WK%trns_MHD%ncomp_rtp_2_rj .gt. 0) WK%frm_rtp = 0.0d0
-!
 !
       ncomp = WK%trns_snap%ncomp_rj_2_rtp
       allocate(WK%fls_pl(sph_rtp%nnod_pole,ncomp))
@@ -91,7 +85,7 @@
 !
       type(works_4_sph_trans_MHD), intent(inout) :: WK
 !
-      deallocate(WK%frm_rtp, WK%fls_pl, WK%flc_pl)
+      deallocate(WK%fls_pl, WK%flc_pl)
       deallocate(WK%frs_pl, WK%frm_pl)
 !
       call dealloc_nonlinear_data(WK%trns_tmp)
