@@ -188,10 +188,10 @@
       starttime = MPI_WTIME()
       call back_MHD_FFT_sel_from_recv(sph_rtp, comm_rtp,                &
      &    trns_MHD%ncomp_rj_2_rtp, n_WR, WR, trns_MHD%fld_rtp)
-      call fwd_MHD_FFT_sel_from_recv(sph_rtp, comm_rtp,                 &
+      call fwd_MHD_FFT_sel_to_send(sph_rtp, comm_rtp,                   &
      &    trns_MHD%ncomp_rtp_2_rj, n_WS, trns_MHD%frc_rtp, WS)
       endtime = MPI_WTIME() - starttime
-      if(iflag_debug .gt. 0) write(*,*) 'fwd_MHD_FFT_sel_from_recv end'
+      if(iflag_debug .gt. 0) write(*,*) 'fwd_MHD_FFT_sel_to_send end'
 !
       if(iflag_debug .gt. 0) write(*,*) 'finalize_sph_FFT_select'
       call finalize_MHD_FFT_select

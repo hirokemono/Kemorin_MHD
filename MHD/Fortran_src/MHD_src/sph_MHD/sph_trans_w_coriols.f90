@@ -161,7 +161,7 @@
 !
 !
       call start_eleps_time(24)
-      call fwd_MHD_FFT_sel_from_recv                                    &
+      call fwd_MHD_FFT_sel_to_send                                      &
      &   (sph%sph_rtp, comms_sph%comm_rtp, ncomp_trans,                 &
      &    n_WS, trns_MHD%frc_rtp, WS)
       call end_eleps_time(24)
