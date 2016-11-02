@@ -53,6 +53,7 @@
       use m_radial_matrices_sph
       use output_viz_file_control
       use sph_transforms_4_MHD
+      use sph_transforms_4_SGS
       use copy_MHD_4_sph_trans
       use cal_energy_flux_rtp
       use swap_phi_4_sph_trans
@@ -100,6 +101,20 @@
      &      trns_WK%trns_MHD%ncomp_rj_2_rtp,                            &
      &      trns_WK%trns_MHD%ncomp_rtp_2_rj,                            &
      &      trns_WK%trns_MHD%fld_pole, trns_WK%trns_MHD%frc_pole)
+      end if
+!
+      if(iflag_SGS_model .gt. 0) then
+        if (iflag_debug.eq.1) write(*,*) 'swap_phi_from_trans'
+        call swap_phi_from_trans(trns_WK%trns_SGS%ncomp_rj_2_rtp,       &
+     &      sph%sph_rtp%nnod_rtp, sph%sph_rtp%nidx_rtp,                 &
+     &      trns_WK%trns_SGS%fld_rtp)
+        call swap_phi_from_trans(trns_WK%trns_SGS%ncomp_rtp_2_rj,       &
+     &      sph%sph_rtp%nnod_rtp, sph%sph_rtp%nidx_rtp,                 &
+     &      trns_WK%trns_SGS%frc_rtp)
+!
+        if (iflag_debug.eq.1) write(*,*) 'sph_pole_trans_SGS_MHD'
+        call sph_pole_trans_SGS_MHD                                     &
+     &     (sph, comms_sph, trans_p, ipol, rj_fld, trns_WK%trns_SGS)
       end if
 !
       call gradients_of_vectors_sph(sph, comms_sph, r_2nd, trans_p,     &
