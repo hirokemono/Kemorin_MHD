@@ -90,8 +90,7 @@
      &        udt_org_param%iflag_format, tgt_udt_file_head,            &
      &        field_FUTIL)
 !
-          call s_divide_phys_by_delta_t                                 &
-     &       (femmesh_FUTIL%mesh%node, field_FUTIL)
+          call s_divide_phys_by_delta_t(field_FUTIL)
 !
           call nod_fields_send_recv                                     &
      &       (femmesh_FUTIL%mesh%nod_comm, field_FUTIL)

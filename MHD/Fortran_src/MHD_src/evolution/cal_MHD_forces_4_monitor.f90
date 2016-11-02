@@ -77,6 +77,7 @@
       use m_physical_property
 !
       use cal_fluxes
+      use products_nodal_fields_smp
       use int_vol_coriolis_term
 !
       type(node_data), intent(in) :: node
@@ -86,29 +87,34 @@
 !
       if (iphys%i_h_flux .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_h_flux)
-        call cal_flux_vector(node, nod_fld%ntot_phys,                   &
-     &      iphys%i_velo, iphys%i_temp, iphys%i_h_flux, nod_fld%d_fld)
+!$omp parallel
+        call cal_phys_scalar_product_vector                             &
+     &     (iphys%i_velo, iphys%i_temp, iphys%i_h_flux, nod_fld)
+!$omp end parallel
       else if (iphys%i_ph_flux .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_ph_flux)
-        call cal_flux_vector(node, nod_fld%ntot_phys, iphys%i_velo,     &
-     &      iphys%i_par_temp, iphys%i_ph_flux, nod_fld%d_fld)
+!$omp parallel
+        call cal_phys_scalar_product_vector                             &
+     &     (iphys%i_velo, iphys%i_par_temp, iphys%i_ph_flux, nod_fld)
+!$omp end parallel
       else if (iphys%i_c_flux .gt.  izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_c_flux)
-        call cal_flux_vector(node, nod_fld%ntot_phys, iphys%i_velo,     &
-     &      iphys%i_light, iphys%i_c_flux, nod_fld%d_fld)
+!$omp parallel
+        call cal_phys_scalar_product_vector                             &
+     &     (iphys%i_velo, iphys%i_light, iphys%i_c_flux, nod_fld)
+!$omp end parallel
       else if (iphys%i_m_flux .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_mom_flux)
-        call cal_flux_tensor(node, nod_fld%ntot_phys,                   &
-     &      iphys%i_velo, iphys%i_velo, iphys%i_m_flux, nod_fld%d_fld)
+        call cal_flux_tensor                                            &
+     &     (iphys%i_velo, iphys%i_velo, iphys%i_m_flux, nod_fld)
       else if (iphys%i_maxwell .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_maxwell_t)
-        call cal_maxwell_tensor(node, ex_magne, nod_fld%ntot_phys,      &
-     &      iphys%i_magne, iphys%i_maxwell, nod_fld%d_fld)
+        call cal_maxwell_tensor                                         &
+     &     (ex_magne, iphys%i_magne, iphys%i_maxwell, nod_fld)
       else if (iphys%i_induct_t .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_induct_t)
-        call cal_induction_tensor(node, nod_fld%ntot_phys,              &
-     &      iphys%i_magne, iphys%i_velo, iphys%i_induct_t,              &
-     &      nod_fld%d_fld)
+        call cal_induction_tensor                                       &
+     &     (iphys%i_magne, iphys%i_velo, iphys%i_induct_t, nod_fld)
       else if (iphys%i_density .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_density)
         call set_boussinesq_density_at_node(node, iphys, nod_fld)
@@ -362,19 +368,20 @@
       end if
 !
       if (iphys%i_ujb .gt. izero) then
-        call cal_tri_product_4_scalar(node, nod_fld, coef_lor,          &
-     &      iphys%i_velo, iphys%i_current, iphys%i_magne, iphys%i_ujb)
+        call cal_tri_product_4_scalar                                   &
+     &     (iphys%i_velo, iphys%i_current, iphys%i_magne, iphys%i_ujb,  &
+     &      coef_lor, nod_fld)
       end if
 !
       if (iphys%i_nega_ujb .gt. izero) then
-        call cal_tri_product_4_scalar(node, nod_fld, coef_lor,          &
-     &      iphys%i_velo, iphys%i_magne, iphys%i_current,               &
-     &      iphys%i_nega_ujb)
+        call cal_tri_product_4_scalar                                   &
+     &     (iphys%i_velo, iphys%i_magne, iphys%i_current,               &
+     &      iphys%i_nega_ujb, coef_lor, nod_fld)
       end if
 !
       if (iphys%i_me_gen .gt. izero) then
-        call cal_phys_dot_product(node, nod_fld,                       &
-     &      iphys%i_induction, iphys%i_magne, iphys%i_me_gen)
+        call cal_phys_dot_product                                       &
+     &     (iphys%i_induction, iphys%i_magne, iphys%i_me_gen, nod_fld)
       end if
 !$omp end parallel
 !
@@ -405,38 +412,45 @@
 !
 !$omp parallel
       if (iphys%i_temp_gen .gt. izero) then
-        call cal_phys_product_4_scalar(node, nod_fld,                   &
-     &      iphys%i_h_advect, iphys%i_temp, iphys%i_temp_gen)
+        call cal_phys_product_4_scalar                                  &
+     &     (iphys%i_h_advect, iphys%i_temp, iphys%i_temp_gen, nod_fld)
       end if
 !
       if (iphys%i_par_t_gen .gt. izero) then
-        call cal_phys_product_4_scalar(node, nod_fld,                   &
-     &      iphys%i_ph_advect, iphys%i_par_temp, iphys%i_par_t_gen)
+        call cal_phys_product_4_scalar                                  &
+     &     (iphys%i_ph_advect, iphys%i_par_temp, iphys%i_par_t_gen,     &
+     &      nod_fld)
       end if
 !
 !
       if (iphys%i_vis_e_diffuse .gt. izero) then
-        call cal_phys_dot_product(node, nod_fld,                        &
-     &      iphys%i_velo, iphys%i_v_diffuse, iphys%i_vis_e_diffuse)
+        call cal_phys_dot_product                                       &
+     &     (iphys%i_velo, iphys%i_v_diffuse, iphys%i_vis_e_diffuse,     &
+     &      nod_fld)
       end if
 !
       if (iphys%i_mag_e_diffuse .gt. izero) then
-        call cal_phys_dot_product(node, nod_fld,                        &
-     &      iphys%i_magne, iphys%i_b_diffuse, iphys%i_mag_e_diffuse)
+        call cal_phys_dot_product                                       &
+     &     (iphys%i_magne, iphys%i_b_diffuse, iphys%i_mag_e_diffuse,    &
+     &      nod_fld)
       end if
 !
       if (iphys%i_m_tension_wk .gt. izero) then
-        call cal_phys_dot_product(node, nod_fld,                        &
-     &      iphys%i_electric, iphys%i_magne, iphys%i_m_tension_wk)
+        call cal_phys_dot_product                                       &
+     &     (iphys%i_electric, iphys%i_magne, iphys%i_m_tension_wk,      &
+     &      nod_fld)
       end if
 !
       if (iphys%i_mag_stretch .gt. izero) then
-        call cal_phys_dot_product(node, nod_fld,                        &
-     &      iphys%i_grad_vx, iphys%i_magne, iphys%i_mag_stretch    )
-        call cal_phys_dot_product(node, nod_fld,                        &
-     &      iphys%i_grad_vy, iphys%i_magne, (iphys%i_mag_stretch+1))
-        call cal_phys_dot_product(node, nod_fld,                        &
-     &      iphys%i_grad_vz, iphys%i_magne, (iphys%i_mag_stretch+2))
+        call cal_phys_dot_product                                       &
+     &     (iphys%i_grad_vx, iphys%i_magne, iphys%i_mag_stretch,        &
+     &      nod_fld)
+        call cal_phys_dot_product                                       &
+     &     (iphys%i_grad_vy, iphys%i_magne, (iphys%i_mag_stretch+1),    &
+     &      nod_fld)
+        call cal_phys_dot_product                                       &
+     &     (iphys%i_grad_vz, iphys%i_magne, (iphys%i_mag_stretch+2),    &
+     &      nod_fld)
       end if
 !
       if (iphys%i_poynting .gt. izero) then

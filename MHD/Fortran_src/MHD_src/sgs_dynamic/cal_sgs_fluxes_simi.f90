@@ -78,8 +78,7 @@
 !
 !  ----------   set filtered flux into array
 !
-      call cal_flux_tensor(node, nod_fld%ntot_phys,                     &
-     &    i_vect, i_vect, i_sgs, nod_fld%d_fld)
+      call cal_flux_tensor(i_vect, i_vect, i_sgs, nod_fld)
       call cal_filtered_sym_tensor_whole                                &
      &   (nod_comm, node, filtering, i_sgs, i_sgs, wk_filter, nod_fld)
 !
@@ -99,6 +98,7 @@
      &          wk_filter, nod_fld)
 !
       use cal_fluxes
+      use products_nodal_fields_smp
       use cal_similarity_terms
       use cal_filtering_scalars
 !
@@ -115,8 +115,10 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call cal_flux_vector(node, nod_fld%ntot_phys,                     &
-     &    iphys%i_velo, ifield, i_sgs, nod_fld%d_fld)
+!$omp parallel
+      call cal_phys_scalar_product_vector                               &
+     &   (iphys%i_velo, ifield, i_sgs, nod_fld)
+!$omp end parallel
       call cal_filtered_vector_whole                                    &
      &   (nod_comm, node, filtering, i_sgs, i_sgs, wk_filter, nod_fld)
 !
@@ -151,8 +153,7 @@
 !
 !  ----------   set filtered flux into array
 !
-      call cal_induction_tensor(node, nod_fld%ntot_phys,                &
-     &    i_b, i_v, i_sgs, nod_fld%d_fld)
+      call cal_induction_tensor(i_b, i_v, i_sgs, nod_fld)
       call cal_filtered_vector_whole                                    &
      &   (nod_comm, node, filtering, i_sgs, i_sgs, wk_filter, nod_fld)
 !
@@ -186,7 +187,7 @@
 !
 !
 !$omp parallel
-      call cal_phys_cross_product(node, nod_fld, i_v, i_b, i_sgs)
+      call cal_phys_cross_product(i_v, i_b, i_sgs, nod_fld)
 !$omp end parallel
 !
       call cal_filtered_vector_whole                                    &
