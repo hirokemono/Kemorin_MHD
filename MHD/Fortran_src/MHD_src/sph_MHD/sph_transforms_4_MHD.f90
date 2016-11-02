@@ -332,7 +332,7 @@
      &    sph%sph_rj, comms_sph%comm_rj, ipol, rj_fld,                  &
      &    n_WS, WS, flc_pl)
 !
-      call sph_backward_transforms                                      &
+      call sph_b_trans_w_poles                                          &
      &   (trns_snap%ncomp_rj_2_rtp, trns_snap%nvector_rj_2_rtp,         &
      &    nscalar_trans, sph, comms_sph, trans_p,                       &
      &    n_WS, n_WR, WS(1), WR(1), trns_snap%fld_rtp, flc_pl, fls_pl)

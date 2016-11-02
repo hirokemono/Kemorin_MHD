@@ -202,9 +202,9 @@
       call set_all_tensor_spec_to_sph_t                                 &
      &   (ncomp_sph_trans, comms_sph%comm_rj, rj_fld, n_WS, WS)
 !
-      if (iflag_debug.gt.0) write(*,*) 'sph_backward_transforms',       &
+      if (iflag_debug.gt.0) write(*,*) 'sph_b_trans_w_poles',           &
      &  ncomp_sph_trans, num_vector_rtp, num_scalar_rtp, num_tensor_rtp
-      call sph_backward_transforms                                      &
+      call sph_b_trans_w_poles                                          &
      &   (ncomp_sph_trans, num_vector_rtp, nscalar_trans,               &
      &    sph, comms_sph, trans_p, n_WS, n_WR, WS(1), WR(1),            &
      &    dall_rtp, dlcl_pole, dall_pole)
