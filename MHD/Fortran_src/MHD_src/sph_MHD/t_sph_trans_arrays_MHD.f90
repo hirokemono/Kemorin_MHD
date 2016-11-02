@@ -37,11 +37,6 @@
 !
         type(work_for_sgl_FFTW) :: MHD_mul_FFTW
         type(work_for_sgl_FFTW) :: SGS_mul_FFTW
-!
-!>        field data to evaluate nonliear terms at pole
-        real(kind = kreal), allocatable :: frs_pl(:,:)
-!>        field data to evaluate nonliear terms at pole
-        real(kind = kreal), allocatable :: frm_pl(:,:)
       end type works_4_sph_trans_MHD
 !
 !-----------------------------------------------------------------------
@@ -66,16 +61,9 @@
       call alloc_nonlinear_data(sph_rtp%nnod_rtp, wk%trns_tmp)
 !
 !
+      call alloc_nonlinear_pole(sph_rtp%nnod_pole, WK%trns_MHD)
       call alloc_nonlinear_pole(sph_rtp%nnod_pole, WK%trns_SGS)
       call alloc_nonlinear_pole(sph_rtp%nnod_pole, WK%trns_snap)
-!
-      ncomp = WK%trns_snap%ncomp_rtp_2_rj
-      allocate(WK%frs_pl(sph_rtp%nnod_pole,ncomp))
-      ncomp = WK%trns_MHD%ncomp_rtp_2_rj
-      allocate(WK%frm_pl(sph_rtp%nnod_pole,ncomp))
-!
-      if(WK%trns_snap%ncomp_rtp_2_rj .gt. 0) WK%frs_pl = 0.0d0
-      if(WK%trns_MHD%ncomp_rtp_2_rj .gt. 0)  WK%frm_pl = 0.0d0
 !
       end subroutine alloc_sph_trans_address
 !
@@ -85,7 +73,6 @@
 !
       type(works_4_sph_trans_MHD), intent(inout) :: WK
 !
-      deallocate(WK%frs_pl, WK%frm_pl)
 !
       call dealloc_nonlinear_pole(WK%trns_snap)
       call dealloc_nonlinear_pole(WK%trns_SGS)

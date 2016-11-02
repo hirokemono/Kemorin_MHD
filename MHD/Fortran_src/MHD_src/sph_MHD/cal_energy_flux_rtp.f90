@@ -9,7 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine cal_nonlinear_pole_MHD(sph_rtp, f_trns, bs_trns,     &
-!!     &          ncomp_snap_rj_2_rtp, ncomp_rtp_2_rj, fls_pl, frm_pl)
+!!     &          ncomp_snap_rj_2_rtp, ncomp_rtp_2_rj, fls_pl, frc_pl)
 !!      subroutine s_cal_energy_flux_rtp                                &
 !!     &         (sph_rtp, f_trns, bs_trns, fs_trns, ncomp_rtp_2_rj,    &
 !!     &          ncomp_snap_rj_2_rtp, ncomp_snap_rtp_2_rj,             &
@@ -37,7 +37,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_nonlinear_pole_MHD(sph_rtp, f_trns, bs_trns,       &
-     &          ncomp_snap_rj_2_rtp, ncomp_rtp_2_rj, fls_pl, frm_pl)
+     &          ncomp_snap_rj_2_rtp, ncomp_rtp_2_rj, fls_pl, frc_pl)
 !
       use t_spheric_rtp_data
       use m_machine_parameter
@@ -54,7 +54,7 @@
       real(kind = kreal), intent(in)                                    &
      &           :: fls_pl(sph_rtp%nnod_pole,ncomp_snap_rj_2_rtp)
       real(kind = kreal), intent(inout)                                 &
-     &           :: frm_pl(sph_rtp%nnod_pole,ncomp_rtp_2_rj)
+     &           :: frc_pl(sph_rtp%nnod_pole,ncomp_rtp_2_rj)
 !
 !
 !$omp parallel
@@ -62,14 +62,14 @@
         call cal_cross_prod_w_coef_smp                                  &
      &     (sph_rtp%nnod_pole, coef_velo,                               &
      &      fls_pl(1,bs_trns%i_vort), fls_pl(1,bs_trns%i_velo),         &
-     &      frm_pl(1,f_trns%i_m_advect) )
+     &      frc_pl(1,f_trns%i_m_advect) )
       end if
 !
       if( (f_trns%i_lorentz*iflag_4_lorentz) .gt. 0) then
         call cal_cross_prod_w_coef_smp                                  &
      &     (sph_rtp%nnod_pole, coef_lor,                                &
      &      fls_pl(1,bs_trns%i_current), fls_pl(1,bs_trns%i_magne),     &
-     &      frm_pl(1,f_trns%i_lorentz) )
+     &      frc_pl(1,f_trns%i_lorentz) )
       end if
 !
 !
@@ -78,7 +78,7 @@
         call cal_cross_prod_w_coef_smp                                  &
      &     (sph_rtp%nnod_pole, coef_induct,                             &
      &      fls_pl(1,bs_trns%i_velo), fls_pl(1,bs_trns%i_magne),        &
-     &      frm_pl(1,f_trns%i_vp_induct) )
+     &      frc_pl(1,f_trns%i_vp_induct) )
       end if
 !
 !
@@ -86,19 +86,19 @@
         call cal_vec_scalar_prod_w_coef_smp                             &
      &     (sph_rtp%nnod_pole, coef_temp,                               &
      &      fls_pl(1,bs_trns%i_velo), fls_pl(1,bs_trns%i_temp),         &
-     &      frm_pl(1,f_trns%i_h_flux) )
+     &      frc_pl(1,f_trns%i_h_flux) )
       end if
 !
       if( (f_trns%i_c_flux*iflag_t_evo_4_composit) .gt. 0) then
         call cal_vec_scalar_prod_w_coef_smp                             &
      &     (sph_rtp%nnod_pole, coef_light,                              &
      &      fls_pl(1,bs_trns%i_velo), fls_pl(1,bs_trns%i_light),        &
-     &      frm_pl(1,f_trns%i_c_flux) )
+     &      frc_pl(1,f_trns%i_c_flux) )
       end if
 !
 !      if( (f_trns%i_Coriolis*iflag_4_coriolis) .gt. 0) then
 !        call cal_wz_coriolis_rtp(nnod_pole, sph_rtp%nidx_rtp,          &
-!     &      fls_pl(1,bs_trns%i_velo), frm_pl(1,f_trns%i_Coriolis))
+!     &      fls_pl(1,bs_trns%i_velo), frc_pl(1,f_trns%i_Coriolis))
 !      end if
 !$omp end parallel
 !

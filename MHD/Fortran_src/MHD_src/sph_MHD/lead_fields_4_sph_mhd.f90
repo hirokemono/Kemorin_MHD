@@ -52,6 +52,7 @@
       use m_t_step_parameter
       use m_radial_matrices_sph
       use output_viz_file_control
+      use sph_transforms_4_MHD
       use copy_MHD_4_sph_trans
       use cal_energy_flux_rtp
       use swap_phi_4_sph_trans
@@ -88,12 +89,17 @@
 !
       if    (sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_pole     &
      &  .or. sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_center)  &
-     & then
+     &      then
+        if (iflag_debug.eq.1) write(*,*) 'sph_pole_trans_4_MHD'
+        call sph_pole_trans_4_MHD                                       &
+     &     (sph, comms_sph, trans_p, ipol, rj_fld, trns_WK%trns_MHD)
+!
+        if (iflag_debug.eq.1) write(*,*) 'cal_nonlinear_pole_MHD'
         call cal_nonlinear_pole_MHD(sph%sph_rtp,                        &
-     &      trns_WK%trns_MHD%f_trns, trns_WK%trns_snap%b_trns,          &
-     &      trns_WK%trns_snap%ncomp_rj_2_rtp,                           &
+     &      trns_WK%trns_MHD%f_trns, trns_WK%trns_MHD%b_trns,           &
+     &      trns_WK%trns_MHD%ncomp_rj_2_rtp,                            &
      &      trns_WK%trns_MHD%ncomp_rtp_2_rj,                            &
-     &      trns_WK%trns_snap%fld_pole, trns_WK%frm_pl)
+     &      trns_WK%trns_MHD%fld_pole, trns_WK%trns_MHD%frc_pole)
       end if
 !
       call gradients_of_vectors_sph(sph, comms_sph, r_2nd, trans_p,     &
