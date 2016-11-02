@@ -171,8 +171,9 @@
      &    f_l, f_nl, nod_fld, ele_fld)
 !
 !$omp parallel
-      call cal_phys_dot_product(node, nod_fld,                          &
-     &    iphys%i_velo, iphys%i_SGS_div_m_flux, iphys%i_reynolds_wk)
+      call cal_phys_dot_product                                         &
+     &   (iphys%i_velo, iphys%i_SGS_div_m_flux, iphys%i_reynolds_wk,    &
+     &    nod_fld)
 !$omp end parallel
 !
 !   lead SGS buoyancy flux

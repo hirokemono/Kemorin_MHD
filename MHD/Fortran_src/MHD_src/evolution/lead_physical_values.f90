@@ -171,7 +171,7 @@
      &      f_l, f_nl, nod_fld)
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_helicity'
-        call cal_helicity(mesh%node, iphys, nod_fld)
+        call cal_helicity(iphys, nod_fld)
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_energy_fluxes'
         call cal_energy_fluxes                                          &

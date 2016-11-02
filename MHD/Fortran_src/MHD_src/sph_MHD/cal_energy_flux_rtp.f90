@@ -59,15 +59,15 @@
 !
 !$omp parallel
       if( (f_trns%i_m_advect*iflag_t_evo_4_velo) .gt. 0) then
-        call cal_cross_prod_w_coef_smp(np_smp,                          &
-     &     sph_rtp%nnod_pole, sph_rtp%istack_npole_smp, coef_velo,      &
+        call cal_cross_prod_w_coef_smp                                  &
+     &     (sph_rtp%nnod_pole, coef_velo,                               &
      &      fls_pl(1,bs_trns%i_vort), fls_pl(1,bs_trns%i_velo),         &
      &      frm_pl(1,f_trns%i_m_advect) )
       end if
 !
       if( (f_trns%i_lorentz*iflag_4_lorentz) .gt. 0) then
-        call cal_cross_prod_w_coef_smp(np_smp,                          &
-     &     sph_rtp%nnod_pole, sph_rtp%istack_npole_smp, coef_lor,       &
+        call cal_cross_prod_w_coef_smp                                  &
+     &     (sph_rtp%nnod_pole, coef_lor,                                &
      &      fls_pl(1,bs_trns%i_current), fls_pl(1,bs_trns%i_magne),     &
      &      frm_pl(1,f_trns%i_lorentz) )
       end if
@@ -75,23 +75,23 @@
 !
 !
       if( (f_trns%i_vp_induct*iflag_t_evo_4_magne) .gt. 0) then
-        call cal_cross_prod_w_coef_smp(np_smp,                          &
-     &      sph_rtp%nnod_pole, sph_rtp%istack_npole_smp, coef_induct,   &
+        call cal_cross_prod_w_coef_smp                                  &
+     &     (sph_rtp%nnod_pole, coef_induct,                             &
      &      fls_pl(1,bs_trns%i_velo), fls_pl(1,bs_trns%i_magne),        &
      &      frm_pl(1,f_trns%i_vp_induct) )
       end if
 !
 !
       if( (f_trns%i_h_flux*iflag_t_evo_4_temp) .gt. 0) then
-        call cal_vec_scalar_prod_w_coef_smp(np_smp,                     &
-     &     sph_rtp%nnod_pole, sph_rtp%istack_npole_smp, coef_temp,      &
+        call cal_vec_scalar_prod_w_coef_smp                             &
+     &     (sph_rtp%nnod_pole, coef_temp,                               &
      &      fls_pl(1,bs_trns%i_velo), fls_pl(1,bs_trns%i_temp),         &
      &      frm_pl(1,f_trns%i_h_flux) )
       end if
 !
       if( (f_trns%i_c_flux*iflag_t_evo_4_composit) .gt. 0) then
-        call cal_vec_scalar_prod_w_coef_smp(np_smp,                     &
-     &     sph_rtp%nnod_pole, sph_rtp%istack_npole_smp, coef_light,     &
+        call cal_vec_scalar_prod_w_coef_smp                             &
+     &     (sph_rtp%nnod_pole, coef_light,                              &
      &      fls_pl(1,bs_trns%i_velo), fls_pl(1,bs_trns%i_light),        &
      &      frm_pl(1,f_trns%i_c_flux) )
       end if
@@ -145,22 +145,21 @@
 !      end if
 !
       if(fs_trns%i_ujb .gt. 0) then
-        call cal_dot_prod_no_coef_smp(np_smp, sph_rtp%nnod_rtp,         &
-     &      sph_rtp%istack_inod_rtp_smp, frm_rtp(1,f_trns%i_lorentz),   &
-     &      fls_rtp(1,bs_trns%i_velo), frs_rtp(1,fs_trns%i_ujb) )
+        call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
+     &      frm_rtp(1,f_trns%i_lorentz), fls_rtp(1,bs_trns%i_velo),     &
+     &      frs_rtp(1,fs_trns%i_ujb) )
       end if
 !
       if(fs_trns%i_nega_ujb .gt. 0) then
-        call cal_dot_prod_w_coef_smp(np_smp, sph_rtp%nnod_rtp,          &
-     &      sph_rtp%istack_inod_rtp_smp, dminus,                        &
+        call cal_dot_prod_w_coef_smp(sph_rtp%nnod_rtp, dminus,          &
      &      frm_rtp(1,f_trns%i_lorentz), fls_rtp(1,bs_trns%i_velo),     &
      &      frs_rtp(1,fs_trns%i_nega_ujb) )
       end if
 !
       if(fs_trns%i_me_gen .gt. 0) then
-        call cal_dot_prod_no_coef_smp(np_smp, sph_rtp%nnod_rtp,         &
-     &    sph_rtp%istack_inod_rtp_smp, fls_rtp(1,bs_trns%i_induction),  &
-     &    fls_rtp(1,bs_trns%i_magne), frs_rtp(1,fs_trns%i_me_gen))
+        call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
+     &      fls_rtp(1,bs_trns%i_induction), fls_rtp(1,bs_trns%i_magne), &
+     &      frs_rtp(1,fs_trns%i_me_gen))
       end if
 !
       if(fs_trns%i_electric .gt. 0) then

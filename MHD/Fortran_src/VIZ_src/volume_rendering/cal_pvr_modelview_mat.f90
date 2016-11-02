@@ -296,8 +296,8 @@
      &     = view_param%up_direction_vec(1:3) / size(1)
 !
 !    /* find the direction of axis U */
-      call cal_cross_prod_no_coef_smp(ione, ione, ione_stack(0),        &
-     &    view_param%up_direction_vec(1), viewing_dir(1), u(1))
+      call cal_cross_prod_no_coef_smp                                   &
+     &   (ione, view_param%up_direction_vec(1), viewing_dir(1), u(1))
 !$omp parallel
       call cal_vector_magnitude(ione, ione, ione_stack(0),              &
      &    u(1), size(1) )
@@ -305,8 +305,7 @@
       u(1:3) = u(1:3) / size(1)
 !
 !    /*find the direction of axix V */
-      call cal_cross_prod_no_coef_smp(ione, ione, ione_stack(0),        &
-     &    viewing_dir(1), u(1), v(1) )
+      call cal_cross_prod_no_coef_smp(ione, viewing_dir(1), u(1), v(1))
 !$omp parallel
       call cal_vector_magnitude(ione, ione, ione_stack(0),              &
      &    v(1), size(1) )

@@ -274,8 +274,9 @@
 !
 !$omp parallel
       if (iphys%i_reynolds_wk .gt. 0) then
-        call cal_phys_dot_product(mesh1%node, nod_fld1,                 &
-     &      iphys%i_velo, iphys%i_SGS_div_m_flux, iphys%i_reynolds_wk)
+        call cal_phys_dot_product                                       &
+     &     (iphys%i_velo, iphys%i_SGS_div_m_flux, iphys%i_reynolds_wk,  &
+     &      nod_fld1)
       end if
 !
       call overwrite_nodal_xyz_2_sph_smp                                &
@@ -315,8 +316,9 @@
 !
 !$omp parallel
       if (iphys%i_SGS_me_gen .gt. 0) then
-        call cal_phys_dot_product(mesh1%node, nod_fld1,                 &
-     &      iphys%i_magne, iphys%i_SGS_induction, iphys%i_SGS_me_gen)
+        call cal_phys_dot_product                                       &
+     &     (iphys%i_magne, iphys%i_SGS_induction, iphys%i_SGS_me_gen,   &
+     &      nod_fld1)
       end if
 !$omp end parallel
 !
