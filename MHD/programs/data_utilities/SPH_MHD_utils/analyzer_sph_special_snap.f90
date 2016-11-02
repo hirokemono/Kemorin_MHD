@@ -313,6 +313,7 @@
 !
       use cal_zonal_mean_sph_spectr
       use sph_transforms_4_MHD
+      use sph_transforms_snapshot
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph

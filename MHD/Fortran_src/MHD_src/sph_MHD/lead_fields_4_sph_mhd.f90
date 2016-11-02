@@ -152,7 +152,7 @@
      &          (sph, comms_sph, r_2nd, trans_p, ipol,                  &
      &           trns_MHD, trns_snap, rj_fld)
 !
-      use sph_transforms_4_MHD
+      use sph_transforms_snapshot
       use cal_energy_flux_rtp
       use cal_energy_flux_rj
 !
@@ -194,7 +194,7 @@
       subroutine gradients_of_vectors_sph(sph, comms_sph, r_2nd,        &
      &          trans_p, ipol, trns_MHD, trns_tmp, rj_fld)
 !
-      use sph_transforms_4_MHD
+      use sph_transforms_snapshot
       use sph_poynting_flux_smp
 !
       type(sph_grids), intent(in) :: sph
