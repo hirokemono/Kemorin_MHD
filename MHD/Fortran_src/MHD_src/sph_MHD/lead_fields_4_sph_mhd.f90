@@ -54,6 +54,7 @@
       use output_viz_file_control
       use copy_MHD_4_sph_trans
       use cal_energy_flux_rtp
+      use swap_phi_4_sph_trans
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
@@ -78,10 +79,13 @@
 !
       if(iflag .gt. 0) return
 !
-      call select_mhd_field_from_trans                                  &
-     &   (sph%sph_rtp, trns_WK%trns_MHD%f_trns,                         &
-     &    trns_WK%trns_MHD%ncomp_rtp_2_rj, trns_WK%trns_MHD%frc_rtp,    &
-     &    trns_WK%frm_rtp)
+      call swap_phi_from_trans(trns_WK%trns_MHD%ncomp_rj_2_rtp,         &
+     &    sph%sph_rtp%nnod_rtp, sph%sph_rtp%nidx_rtp,                   &
+     &    trns_WK%trns_MHD%fld_rtp)
+      call swap_phi_from_trans(trns_WK%trns_MHD%ncomp_rtp_2_rj,         &
+     &    sph%sph_rtp%nnod_rtp, sph%sph_rtp%nidx_rtp,                   &
+     &    trns_WK%trns_MHD%frc_rtp)
+!
       if    (sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_pole     &
      &  .or. sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_center)  &
      & then
@@ -95,7 +99,7 @@
       call gradients_of_vectors_sph(sph, comms_sph, r_2nd, trans_p,     &
      &    ipol, trns_WK%trns_MHD, trns_WK%trns_tmp, rj_fld)
       call enegy_fluxes_4_sph_mhd(sph, comms_sph, r_2nd, trans_p, ipol, &
-     &    trns_WK%trns_MHD, trns_WK%trns_snap, rj_fld, trns_WK%frm_rtp)
+     &    trns_WK%trns_MHD, trns_WK%trns_snap, rj_fld)
 !
       end subroutine s_lead_fields_4_sph_mhd
 !
@@ -146,7 +150,7 @@
 !
       subroutine enegy_fluxes_4_sph_mhd                                 &
      &          (sph, comms_sph, r_2nd, trans_p, ipol,                  &
-     &           trns_MHD, trns_snap, rj_fld, frm_rtp)
+     &           trns_MHD, trns_snap, rj_fld)
 !
       use sph_transforms_4_MHD
       use cal_energy_flux_rtp
@@ -162,7 +166,6 @@
       type(address_4_sph_trans), intent(inout) :: trns_snap
       type(phys_data), intent(inout) :: rj_fld
       real(kind = kreal), intent(inout)                                 &
-     &       :: frm_rtp(sph%sph_rtp%nnod_rtp,trns_snap%ncomp_rj_2_rtp)
 !
 !
 !      Evaluate fields for output in spectrum space
@@ -178,7 +181,7 @@
       call s_cal_energy_flux_rtp(sph%sph_rtp, trns_MHD%f_trns,          &
      &    trns_snap%b_trns, trns_snap%f_trns, trns_MHD%ncomp_rtp_2_rj,  &
      &    trns_snap%ncomp_rj_2_rtp, trns_snap%ncomp_rtp_2_rj,           &
-     &    frm_rtp, trns_snap%fld_rtp, trns_snap%frc_rtp)
+     &    trns_MHD%frc_rtp, trns_snap%fld_rtp, trns_snap%frc_rtp)
 !
       if (iflag_debug.eq.1) write(*,*)                                  &
      &                          'sph_forward_trans_snapshot_MHD'

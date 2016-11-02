@@ -26,7 +26,7 @@
 !
       use t_phys_address
 !
-      private :: copy_grad_vect_to_m_stretch
+      private :: copy_grad_vect_to_m_stretch, sel_scalar_from_trans
 !
 ! -----------------------------------------------------------------------
 !
@@ -39,7 +39,6 @@
 !
       use t_spheric_rtp_data
       use t_phys_address
-      use sel_fld_copy_4_sph_trans
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(phys_address), intent(in) :: b_trns
@@ -53,21 +52,15 @@
 !
 !
       if(ft_trns%i_grad_vx.gt.0) then
-        call sel_scalar_from_trans                                      &
-     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, ione,                   &
-     &      sph_rtp%istack_inod_rtp_smp, sph_rtp%nnod_rtp,              &
+        call sel_scalar_from_trans(sph_rtp,                             &
      &      fld_rtp(1,b_trns%i_velo  ), frt_rtp(1,ft_trns%i_grad_vx) )
       end if
       if(ft_trns%i_grad_vy.gt.0) then
-        call sel_scalar_from_trans                                      &
-     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, ione,                   &
-     &      sph_rtp%istack_inod_rtp_smp, sph_rtp%nnod_rtp,              &
+        call sel_scalar_from_trans(sph_rtp,                             &
      &      fld_rtp(1,b_trns%i_velo+1), frt_rtp(1,ft_trns%i_grad_vy) )
       end if
       if(ft_trns%i_grad_vz.gt.0) then
-        call sel_scalar_from_trans                                      &
-      &    (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, ione,                   &
-     &      sph_rtp%istack_inod_rtp_smp, sph_rtp%nnod_rtp,              &
+        call sel_scalar_from_trans(sph_rtp,                             &
      &      fld_rtp(1,b_trns%i_velo+2), frt_rtp(1,ft_trns%i_grad_vz) )
       end if
 !
@@ -94,8 +87,8 @@
 !
       if(ipol%i_mag_stretch .eq. 0) return
 !
-      call copy_grad_vect_to_m_stretch(ipol, sph_rj%istack_inod_rj_smp, &
-     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+      call copy_grad_vect_to_m_stretch                                  &
+     &   (ipol,  rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call const_sph_gradient_no_bc(sph_rj, r_2nd, sph_bc_U, g_sph_rj,  &
      &   (ipol%i_mag_stretch  ), ipol%i_grad_vx, rj_fld)
@@ -107,32 +100,43 @@
       end subroutine cal_grad_of_velocities_sph
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine sel_scalar_from_trans(sph_rtp, v_rtp, d_sph)
+!
+      use t_spheric_rtp_data
+      use copy_field_4_sph_trans
+!
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      real(kind = kreal), intent(in) :: v_rtp(sph_rtp%nnod_rtp)
+      real(kind = kreal), intent(inout) :: d_sph(sph_rtp%nnod_rtp)
+!
+!
+!$omp parallel
+      call copy_scalar_from_trans_smp(sph_rtp%nnod_rtp, ione,           &
+     &    sph_rtp%istack_inod_rtp_smp, sph_rtp%nnod_rtp, v_rtp, d_sph)
+!$omp end parallel
+!
+      end subroutine sel_scalar_from_trans
+!
+!-----------------------------------------------------------------------
 !
       subroutine copy_grad_vect_to_m_stretch                            &
-     &         (ipol, inod_rj_smp_stack, n_point, ntot_phys_rj, d_rj)
+     &         (ipol, nnod, ntot_phys_rj, d_rj)
 !
       type(phys_address), intent(in) :: ipol
-      integer(kind = kint), intent(in) :: inod_rj_smp_stack(0:np_smp)
-      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
+      integer(kind = kint), intent(in) :: nnod, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod,ntot_phys_rj)
 !
-!
-      integer(kind = kint) :: ip, ist, ied, inod
 !
       if(ipol%i_mag_stretch .eq. 0) return
 !
-!
-!$omp parallel do private(ip,ist,ied,inod)
-      do ip = 1, np_smp
-        ist = inod_rj_smp_stack(ip-1) + 1
-        ied = inod_rj_smp_stack(ip)
-        do inod = ist, ied
-          d_rj(inod,ipol%i_mag_stretch  ) = d_rj(inod,ipol%i_grad_vx)
-          d_rj(inod,ipol%i_mag_stretch+1) = d_rj(inod,ipol%i_grad_vy)
-          d_rj(inod,ipol%i_mag_stretch+2) = d_rj(inod,ipol%i_grad_vz)
-        end do
-      end do
-!$omp end parallel do
+!$omp parallel workshare
+      d_rj(1:nnod,ipol%i_mag_stretch  ) = d_rj(1:nnod,ipol%i_grad_vx)
+      d_rj(1:nnod,ipol%i_mag_stretch+1) = d_rj(1:nnod,ipol%i_grad_vy)
+      d_rj(1:nnod,ipol%i_mag_stretch+2) = d_rj(1:nnod,ipol%i_grad_vz)
+!$omp end parallel workshare
 !
       end subroutine copy_grad_vect_to_m_stretch
 !

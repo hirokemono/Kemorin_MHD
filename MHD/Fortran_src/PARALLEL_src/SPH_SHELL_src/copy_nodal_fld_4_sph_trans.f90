@@ -84,9 +84,11 @@
       real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
 !
-      call copy_vector_from_trans                                       &
+!$omp parallel
+      call copy_vector_from_trans_smp                                   &
      &   (sph_rtp%nnod_rtp, m_folding, sph_rtp%istack_inod_rtp_smp,     &
      &    numnod, v_rtp(1,i_trns), d_nod(1,i_field) )
+!$omp end parallel
 !
       end subroutine copy_nodal_vector_from_trans
 !
@@ -107,9 +109,11 @@
       real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
 !
-      call copy_scalar_from_trans                                       &
+!$omp parallel
+      call copy_scalar_from_trans_smp                                   &
      &   (sph_rtp%nnod_rtp, m_folding, sph_rtp%istack_inod_rtp_smp,     &
      &    numnod, v_rtp(1,i_trns), d_nod(1,i_field) )
+!$omp end parallel
 !
       end subroutine copy_nodal_scalar_from_trans
 !
@@ -283,8 +287,7 @@
       real(kind = kreal), intent(inout) :: d_rtp(sph_rtp%nnod_rtp)
 !
 !
-      call copy_scalar_to_sph_trans                                     &
-     &   (sph_rtp%nnod_rtp, sph_rtp%istack_inod_rtp_smp, node%numnod,   &
+      call copy_scalar_to_sph_trans(sph_rtp%nnod_rtp, node%numnod,      &
      &    i_field, nod_fld%ntot_phys, nod_fld%d_fld, d_rtp)
 !
       end subroutine copy_nod_scl_to_sph_trans
