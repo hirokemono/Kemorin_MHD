@@ -77,7 +77,8 @@
 !  connect grid data to volume output
 !
       if(i_step_output_ucd .eq. 0) return
-      call output_grd_file(femmesh_STR%mesh%node, femmesh_STR%mesh%ele, &
+      call link_output_grd_file                                         &
+     &   (femmesh_STR%mesh%node, femmesh_STR%mesh%ele,                  &
      &    femmesh_STR%mesh%nod_comm, field_STR, ucd, m_ucd)
 !
       call calypso_mpi_barrier

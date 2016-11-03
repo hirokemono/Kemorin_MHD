@@ -98,8 +98,8 @@
 !
 !
       if(i_step_output_ucd .eq. 0) return
-      call output_grd_file(mesh%node, mesh%ele, mesh%nod_comm, nod_fld, &
-     &    fem_ucd, merged_ucd)
+      call link_output_grd_file(mesh%node, mesh%ele, mesh%nod_comm,     &
+     &    nod_fld, fem_ucd, merged_ucd)
 !
       end subroutine output_grd_file_4_snapshot
 !

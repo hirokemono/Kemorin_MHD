@@ -132,8 +132,8 @@
      &     (sph1%sph_params, sph1%sph_rtp, trns_WK1,                    &
      &      mesh1, iphys, nod_fld1)
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
-        call FEM_analyze_sph_MHD(i_step_MHD, istep_psf, istep_iso,      &
-     &      istep_pvr, istep_fline, visval)
+        call FEM_analyze_sph_MHD(i_step_MHD, mesh1, nod_fld1,           &
+     &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)
 !
         call end_eleps_time(4)
 !

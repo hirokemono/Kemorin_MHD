@@ -15,7 +15,7 @@
 !!@verbatim
 !!      subroutine set_control_parallel_field_def(ucd)
 !!
-!!      subroutine output_grd_file                                      &
+!!      subroutine link_output_grd_file                                 &
 !!     &         (node, ele, nod_comm, nod_fld, ucd, m_ucd)
 !!      subroutine output_udt_one_snapshot                              &
 !!     &         (istep_ucd, node, ele, nod_comm, nod_fld, ucd, m_ucd)
@@ -57,7 +57,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine output_grd_file                                        &
+      subroutine link_output_grd_file                                   &
      &         (node, ele, nod_comm, nod_fld, ucd, m_ucd)
 !
       use t_geometry_data
@@ -97,7 +97,7 @@
         call deallocate_ucd_node(ucd)
       end if
 !
-      end subroutine output_grd_file
+      end subroutine link_output_grd_file
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

@@ -78,8 +78,8 @@
      &     write(*,*) 'SPH_to_FEM_bridge_special_snap'
         call SPH_to_FEM_bridge_special_snap
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
-        call FEM_analyze_sph_MHD(i_step_MHD, istep_psf, istep_iso,      &
-     &      istep_pvr, istep_fline, visval)
+        call FEM_analyze_sph_MHD(i_step_MHD, mesh1, nod_fld1,           &
+     &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)
 !
         call end_eleps_time(4)
 !
@@ -209,7 +209,6 @@
       use m_sph_trans_arrays_MHD
       use output_viz_file_control
       use lead_pole_data_4_sph_mhd
-      use nod_phys_send_recv
       use copy_snap_4_sph_trans
       use copy_MHD_4_sph_trans
       use sph_rtp_zonal_rms_data
@@ -224,9 +223,8 @@
 !*  -----------  data transfer to FEM array --------------
 !*
       call copy_forces_to_snapshot_rtp                                  &
-     &   (sph1%sph_params%m_folding, sph1%sph_rtp,                      &
-     &    trns_WK1%trns_MHD%f_trns, trns_WK1%trns_MHD%ncomp_rtp_2_rj,   &
-     &    mesh1%node, iphys, trns_WK1%trns_MHD%frc_rtp, nod_fld1)
+     &   (sph1%sph_params%m_folding, sph1%sph_rtp, trns_WK1%trns_MHD,   &
+     &    mesh1%node, iphys, nod_fld1)
       call copy_snap_vec_fld_from_trans                                 &
      &   (sph1%sph_params%m_folding, sph1%sph_rtp, trns_WK1%trns_snap,  &
      &    mesh1%node, iphys, nod_fld1)
@@ -238,14 +236,6 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'zonal_mean_all_rtp_field'
       call zonal_mean_all_rtp_field(sph1%sph_rtp, mesh1%node, nod_fld1)
-!
-!*  ----------- transform field at pole and center --------------
-!*
-      call lead_pole_fields_4_sph_mhd                                   &
-     &   (sph1%sph_params, sph1%sph_rtp, trns_WK1%trns_snap,            &
-     &    mesh1%node, iphys, nod_fld1)
-!
-      call nod_fields_send_recv(mesh1%nod_comm, nod_fld1)
 !
       end subroutine SPH_to_FEM_bridge_special_snap
 !

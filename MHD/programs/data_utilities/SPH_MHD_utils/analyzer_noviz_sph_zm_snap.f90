@@ -21,6 +21,8 @@
       use m_control_parameter
       use m_t_int_parameter
       use m_t_step_parameter
+      use m_mesh_data
+      use m_node_phys_data
       use t_sph_filtering_data
 !
       use FEM_analyzer_sph_MHD
@@ -40,8 +42,6 @@
       subroutine initialize_noviz_sph_zm_snap
 !
       use m_spheric_parameter
-      use m_mesh_data
-      use m_node_phys_data
       use m_sph_spectr_data
       use m_rms_4_sph_spectr
       use m_cal_max_indices
@@ -122,8 +122,8 @@
         if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_zm_snap'
         call SPH_to_FEM_bridge_zm_snap
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
-        call FEM_analyze_sph_MHD(i_step_MHD, istep_psf, istep_iso,      &
-     &      istep_pvr, istep_fline, visval)
+        call FEM_analyze_sph_MHD(i_step_MHD, mesh1, nod_fld1,           &
+     &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)
 !
         call end_eleps_time(4)
         call end_eleps_time(1)

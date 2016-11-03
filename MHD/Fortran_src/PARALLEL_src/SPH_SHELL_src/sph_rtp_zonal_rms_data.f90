@@ -46,6 +46,7 @@
       type(phys_data),intent(inout) :: nod_fld
 !
 !
+      call overwrite_nodal_xyz_2_sph(node, nod_fld)
       call cal_sph_zonal_ave_data(sph_rtp%nidx_rtp,                     &
      &    nod_fld%n_point, nod_fld%ntot_phys, ione, nod_fld%d_fld)
       call overwrite_nodal_sph_2_xyz(node, nod_fld)
@@ -66,6 +67,7 @@
       type(phys_data),intent(inout) :: nod_fld
 !
 !
+      call overwrite_nodal_xyz_2_sph(node, nod_fld)
       call cal_sph_zonal_rms_data(sph_rtp%nidx_rtp,                     &
      &    nod_fld%n_point, nod_fld%ntot_phys, ione, nod_fld%d_fld)
       call overwrite_nodal_sph_2_xyz(node, nod_fld)
@@ -87,7 +89,7 @@
       type(phys_data),intent(inout) :: nod_fld
 !
 !
-      call overwrite_nodal_sph_2_cyl(node, nod_fld)
+      call overwrite_nodal_xyz_2_cyl(node, nod_fld)
       call cal_sph_zonal_rms_data(sph_rtp%nidx_rtp,                     &
      &    nod_fld%n_point, nod_fld%ntot_phys, ione, nod_fld%d_fld)
       call overwrite_nodal_cyl_2_xyz(node, nod_fld)

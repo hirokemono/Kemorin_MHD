@@ -31,11 +31,6 @@
 !
       implicit  none
 !
-      private :: copy_scalar_from_snap_trans
-      private :: copy_vector_from_snap_trans
-      private :: copy_scalar_from_snap_force
-      private :: copy_vector_from_snap_force
-!
 !-----------------------------------------------------------------------
 !
       contains
@@ -231,9 +226,10 @@
 !
 !
       if( (i_field*i_trns) .le. 0) return
-      call copy_nodal_scalar_from_trans(sph_rtp, m_folding,             &
-     &    trns_snap%ncomp_rj_2_rtp, i_trns, trns_snap%fld_rtp,          &
-     &    node%numnod, nod_fld%ntot_phys, i_field, nod_fld%d_fld)
+      call copy_nod_scl_from_trans_wpole                                &
+     &   (sph_rtp, m_folding, trns_snap%ncomp_rj_2_rtp,                 &
+     &    i_trns, trns_snap%fld_rtp, trns_snap%fld_pole,                &
+     &    i_field, node, nod_fld)
 !
       end subroutine copy_scalar_from_snap_trans
 !
@@ -253,9 +249,10 @@
 !
 !
       if( (i_field*i_trns) .le. 0) return
-      call copy_nodal_vector_from_trans(sph_rtp, m_folding,             &
-     &    trns_snap%ncomp_rj_2_rtp, i_trns, trns_snap%fld_rtp,          &
-     &    node%numnod, nod_fld%ntot_phys, i_field, nod_fld%d_fld)
+      call copy_nod_vec_from_trans_wpole                                &
+     &   (sph_rtp, m_folding, trns_snap%ncomp_rj_2_rtp,                 &
+     &    i_trns, trns_snap%fld_rtp, trns_snap%fld_pole,                &
+     &    i_field, node, nod_fld)
 !
       end subroutine copy_vector_from_snap_trans
 !
@@ -276,9 +273,10 @@
 !
 !
       if( (i_field*i_trns) .le. 0) return
-      call copy_nodal_scalar_from_trans(sph_rtp, m_folding,             &
-     &    trns_snap%ncomp_rtp_2_rj, i_trns, trns_snap%frc_rtp,          &
-     &    node%numnod, nod_fld%ntot_phys, i_field, nod_fld%d_fld)
+      call copy_nod_scl_from_trans_wpole                                &
+     &   (sph_rtp, m_folding, trns_snap%ncomp_rtp_2_rj,                 &
+     &    i_trns, trns_snap%frc_rtp, trns_snap%frc_pole,                &
+     &    i_field, node, nod_fld)
 !
       end subroutine copy_scalar_from_snap_force
 !
@@ -298,9 +296,10 @@
 !
 !
       if( (i_field*i_trns) .le. 0) return
-      call copy_nodal_vector_from_trans(sph_rtp, m_folding,             &
-     &    trns_snap%ncomp_rtp_2_rj, i_trns, trns_snap%frc_rtp,          &
-     &    node%numnod, nod_fld%ntot_phys, i_field, nod_fld%d_fld)
+      call copy_nod_vec_from_trans_wpole                                &
+     &   (sph_rtp, m_folding, trns_snap%ncomp_rtp_2_rj,                 &
+     &    i_trns, trns_snap%frc_rtp, trns_snap%frc_pole,                &
+     &    i_field, node, nod_fld)
 !
       end subroutine copy_vector_from_snap_force
 !

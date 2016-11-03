@@ -1,1 +1,0 @@
-../../../../MHD/Fortran_src/MHD_src/sph_MHD/lead_pole_data_4_sph_mhd.f90
