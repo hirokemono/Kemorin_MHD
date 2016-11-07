@@ -14,7 +14,7 @@
       module m_SGS_model_coefs
 !
       use m_precision
-      use t_material_property
+      use t_SGS_model_coefs
 !
       implicit  none
 !

@@ -55,6 +55,7 @@
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_material_property
+      use t_SGS_model_coefs
       use t_sorted_node_MHD
       use t_bc_data_MHD
       use t_MHD_boundary_data

@@ -23,6 +23,7 @@
 !
       use t_solver_djds_MHD
       use t_material_property
+      use t_SGS_model_coefs
 !
       use calypso_mpi
 !
@@ -122,8 +123,8 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            's_set_sgs_diff_array_MHD_AMG', i_level
 !
-        call copy_MHD_num_coefs(diff_coefs, MG_diff_coefs(i_level))
-        call alloc_MHD_coefs                                            &
+        call copy_SGS_num_coefs(diff_coefs, MG_diff_coefs(i_level))
+        call alloc_SGS_coefs                                            &
      &     (MG_mesh(i_level)%mesh%ele%numele, MG_diff_coefs(i_level))
       end do
 !

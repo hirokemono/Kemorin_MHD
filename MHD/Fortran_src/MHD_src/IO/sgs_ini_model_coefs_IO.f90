@@ -25,7 +25,7 @@
       use m_control_parameter
       use m_t_step_parameter
       use t_ele_info_4_dynamic
-      use t_material_property
+      use t_SGS_model_coefs
 !
       implicit none
 !

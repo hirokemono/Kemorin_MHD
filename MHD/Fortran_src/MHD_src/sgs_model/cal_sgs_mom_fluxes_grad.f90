@@ -44,6 +44,7 @@
       use t_finite_element_mat
       use t_filter_elength
       use t_material_property
+      use t_SGS_model_coefs
       use t_MHD_finite_element_mat
 !
       implicit none

@@ -60,6 +60,7 @@
       use t_bc_data_MHD
       use t_MHD_boundary_data
       use t_material_property
+      use t_SGS_model_coefs
 !
       implicit none
 !

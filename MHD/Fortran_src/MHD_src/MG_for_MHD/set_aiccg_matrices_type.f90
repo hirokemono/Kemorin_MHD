@@ -78,6 +78,7 @@
       use t_filter_elength
       use t_solver_djds
       use t_material_property
+      use t_SGS_model_coefs
 !
       use init_iccg_matrices
       use int_vol_poisson_matrix

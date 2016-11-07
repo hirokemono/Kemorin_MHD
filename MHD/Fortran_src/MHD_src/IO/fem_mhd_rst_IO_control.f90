@@ -168,7 +168,7 @@
      &         fluid, wk_sgs, wk_diff, sgs_coefs, diff_coefs, nod_fld)
 !
       use t_geometry_data_MHD
-      use t_material_property
+      use t_SGS_model_coefs
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -327,7 +327,7 @@
 !
       use m_control_parameter
       use t_geometry_data_MHD
-      use t_material_property
+      use t_SGS_model_coefs
       use t_ele_info_4_dynamic
 !
       use set_parallel_file_name

@@ -31,7 +31,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
-      use t_material_property
+      use t_SGS_model_coefs
       use t_ele_info_4_dynamic
 !
       implicit none

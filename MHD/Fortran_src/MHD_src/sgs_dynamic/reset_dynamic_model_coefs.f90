@@ -42,7 +42,7 @@
 !
       use t_geometry_data
       use t_layering_ele_list
-      use t_material_property
+      use t_SGS_model_coefs
 !
       type(element_data), intent(in) :: ele
       type(layering_tbl), intent(in) :: layer_tbl
@@ -75,7 +75,7 @@
 !
       use t_geometry_data
       use t_layering_ele_list
-      use t_material_property
+      use t_SGS_model_coefs
 !
       type(element_data), intent(in) :: ele
       type(layering_tbl), intent(in) :: layer_tbl

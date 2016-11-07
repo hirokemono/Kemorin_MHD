@@ -44,6 +44,7 @@
       use t_int_surface_data
       use t_surface_bc_data
       use t_material_property
+      use t_SGS_model_coefs
 !
       use m_control_parameter
       use m_phys_constants

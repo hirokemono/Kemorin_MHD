@@ -75,6 +75,7 @@
       use t_bc_data_MHD
       use t_MHD_boundary_data
       use t_material_property
+      use t_SGS_model_coefs
       use t_ele_info_4_dynamic
       use t_work_4_dynamic_model
       use t_work_layer_correlate

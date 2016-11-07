@@ -39,6 +39,7 @@
       use t_geometry_data
       use t_group_data
       use t_material_property
+      use t_SGS_model_coefs
       use t_ele_info_4_dynamic
       use set_sgs_diff_model_coefs
 !

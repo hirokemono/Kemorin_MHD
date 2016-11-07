@@ -76,6 +76,7 @@
       use t_bc_data_velo
       use t_surface_bc_data
       use t_material_property
+      use t_SGS_model_coefs
       use t_ele_info_4_dynamic
       use t_work_4_dynamic_model
       use t_solver_djds_MHD

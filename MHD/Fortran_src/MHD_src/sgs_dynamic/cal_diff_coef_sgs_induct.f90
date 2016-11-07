@@ -58,6 +58,7 @@
       use t_int_surface_data
       use t_filter_elength
       use t_material_property
+      use t_SGS_model_coefs
       use t_filtering_data
       use t_ele_info_4_dynamic
       use t_work_4_dynamic_model
