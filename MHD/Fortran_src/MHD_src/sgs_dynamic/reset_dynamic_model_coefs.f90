@@ -48,7 +48,7 @@
       type(layering_tbl), intent(in) :: layer_tbl
       integer (kind = kint), intent(in) :: icomp_sgs
 !
-      type(MHD_coefficients_type), intent(inout) :: sgs_coefs
+      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
 !
 !
       if(layer_tbl%minlayer_4_smp                                       &
@@ -81,7 +81,7 @@
       type(layering_tbl), intent(in) :: layer_tbl
       integer (kind = kint), intent(in) :: icomp_sgs
 !
-      type(MHD_coefficients_type), intent(inout) :: sgs_coefs
+      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
 !
 !
       if(layer_tbl%minlayer_4_smp                                       &

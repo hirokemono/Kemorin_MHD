@@ -9,7 +9,7 @@
 !!        type(element_data), intent(inout) :: ele_1st
 !!      subroutine const_MGCG_MHD_matrices(ifld_diff, MHD_matrices)
 !!        type(SGS_terms_address), intent(in) :: ifld_diff
-!!        type(MHD_coefficients_type), intent(in) :: diff_coefs
+!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(MHD_MG_matrices), intent(inout) :: MHD_matrices
 !
       module initialize_4_MHD_AMG
@@ -63,7 +63,7 @@
       use const_element_comm_tables
 !
       type(SGS_terms_address), intent(in) :: ifld_diff
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
 !
       type(node_data), intent(inout) :: node_1st
       type(element_data), intent(inout) :: ele_1st

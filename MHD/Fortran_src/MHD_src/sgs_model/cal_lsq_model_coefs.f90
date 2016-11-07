@@ -20,7 +20,7 @@
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
-!!        type(MHD_coefficients_type), intent(inout) :: diff_coefs
+!!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
 !
       module cal_lsq_model_coefs

@@ -31,8 +31,8 @@
 !!        type(SGS_terms_address), intent(in) :: icomp_sgs
 !!        type(SGS_terms_address), intent(in) :: ifld_diff
 !!        type(SGS_terms_address), intent(in) :: iphys_elediff
-!!        type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
-!!        type(MHD_coefficients_type), intent(in) :: diff_coefs
+!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
+!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
@@ -42,7 +42,7 @@
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(phys_data), intent(inout) :: ele_fld
-!!        type(MHD_coefficients_type), intent(inout) :: sgs_coefs
+!!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
 !
       module cal_sgs_m_flux_sgs_buo
 !
@@ -124,10 +124,10 @@
       type(SGS_terms_address), intent(in) :: ifld_sgs, icomp_sgs
       type(SGS_terms_address), intent(in) :: ifld_diff
       type(SGS_terms_address), intent(in) :: iphys_elediff
-      type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
 !
-      type(MHD_coefficients_type), intent(inout) :: sgs_coefs
+      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
       type(filtering_work_type), intent(inout) :: wk_filter
       type(dynamic_model_data), intent(inout) :: wk_sgs
       type(dynamis_least_suare_data), intent(inout) :: wk_lsq

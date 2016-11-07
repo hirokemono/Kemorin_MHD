@@ -15,9 +15,9 @@
 !!        type(SGS_terms_address), intent(inout) :: icomp_diff
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!        type(dynamic_model_data), intent(inout) :: wk_diff
-!!        type(MHD_coefficients_type), intent(inout) :: sgs_coefs
-!!        type(MHD_coefficients_type), intent(inout) :: sgs_coefs_nod
-!!        type(MHD_coefficients_type), intent(inout) :: diff_coefs
+!!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+!!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs_nod
+!!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
       module count_sgs_components
 !
@@ -51,9 +51,9 @@
       type(SGS_terms_address), intent(inout) :: ifld_diff, icomp_diff
 !
       type(dynamic_model_data), intent(inout) :: wk_sgs, wk_diff
-      type(MHD_coefficients_type), intent(inout) :: sgs_coefs
-      type(MHD_coefficients_type), intent(inout) :: sgs_coefs_nod
-      type(MHD_coefficients_type), intent(inout) :: diff_coefs
+      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+      type(SGS_coefficients_type), intent(inout) :: sgs_coefs_nod
+      type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
       integer(kind = kint) :: ntot_diff_comp
       integer(kind = kint) :: i, j, id, jd

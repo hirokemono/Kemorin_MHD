@@ -96,7 +96,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp_q
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_terms_address), intent(in) :: ifld_diff
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const), intent(in) :: MG_mat_q
       type(table_mat_const), intent(in) :: MG_mat_fl_q

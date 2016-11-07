@@ -77,7 +77,7 @@
       type(jacobians_3d), intent(in) :: jac_3d_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_p
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -122,7 +122,7 @@
       type(jacobians_3d), intent(in) :: jac_3d_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_f
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -168,7 +168,7 @@
       type(jacobians_3d), intent(in) :: jac_3d_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_fins
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -214,7 +214,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_t
 !
       real(kind = kreal), intent(in) :: coef_imp
@@ -259,7 +259,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(vect_fixed_nod_bc_type), intent(in)  :: nod_bc_v
       type(scaler_rotaion_nod_bc_type), intent(in)  :: nod_bc_rot
 !
@@ -310,7 +310,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(vect_fixed_nod_bc_type), intent(in) :: nod_bc
 !
       real(kind = kreal), intent(in) :: coef_imp

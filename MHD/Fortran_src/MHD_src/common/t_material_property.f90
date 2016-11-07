@@ -52,14 +52,14 @@
         real  (kind=kreal), allocatable :: ak_comp_buo(:)
       end type coefs_4_MHD_type
 !
-      type MHD_coefficients_type
+      type SGS_coefficients_type
         integer(kind = kint) :: num_field
         integer(kind = kint) :: ntot_comp
         integer(kind = kint), allocatable  :: iflag_field(:)
         integer(kind = kint), allocatable  :: num_comps(:)
         integer(kind = kint), allocatable  :: istack_comps(:)
         real(kind = kreal), allocatable :: ak(:,:)
-      end type MHD_coefficients_type
+      end type SGS_coefficients_type
 !
       type SGS_terms_address
         integer (kind=kint) :: i_velo =  izero
@@ -89,8 +89,8 @@
 !
       subroutine copy_MHD_num_coefs(org_coefs, new_coefs)
 !
-      type(MHD_coefficients_type), intent(in) :: org_coefs
-      type(MHD_coefficients_type), intent(inout) :: new_coefs
+      type(SGS_coefficients_type), intent(in) :: org_coefs
+      type(SGS_coefficients_type), intent(inout) :: new_coefs
 !
 !
       new_coefs%num_field = org_coefs%num_field
@@ -182,7 +182,7 @@
 !
       subroutine alloc_MHD_num_coefs(coefs)
 !
-      type(MHD_coefficients_type), intent(inout) :: coefs
+      type(SGS_coefficients_type), intent(inout) :: coefs
 !
 !
       allocate(coefs%num_comps(coefs%num_field) )
@@ -200,7 +200,7 @@
       subroutine alloc_MHD_coefs(nele, coefs)
 !
       integer(kind = kint), intent(in) :: nele
-      type(MHD_coefficients_type), intent(inout) :: coefs
+      type(SGS_coefficients_type), intent(inout) :: coefs
 !
 !
       allocate(coefs%ak(nele,coefs%ntot_comp) )
@@ -275,7 +275,7 @@
 !
       subroutine dealloc_MHD_coefs(coefs)
 !
-      type(MHD_coefficients_type), intent(inout) :: coefs
+      type(SGS_coefficients_type), intent(inout) :: coefs
 !
 !
       deallocate(coefs%ak)

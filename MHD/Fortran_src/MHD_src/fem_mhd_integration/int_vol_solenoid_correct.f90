@@ -53,7 +53,7 @@
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elen
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
 !
       integer(kind=kint), intent(in) :: i_scalar, iak_diff
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)

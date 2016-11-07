@@ -73,7 +73,7 @@
       type(table_mat_const),  intent(in) :: MG_mat_fl_l
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_terms_address), intent(in) :: ifld_diff
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(DJDS_MATRIX),  intent(inout) :: mat_press
@@ -116,7 +116,7 @@
       type(table_mat_const), intent(in) :: MG_mat_full_cd_q
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_terms_address), intent(in) :: ifld_diff
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(DJDS_MATRIX),  intent(inout) :: mat_velo

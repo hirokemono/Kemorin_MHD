@@ -62,7 +62,7 @@
 !   filter moments data (need read routines!!)
 !
       type(SGS_terms_address), save :: MG_ifld_diff(max_MG_level)
-      type(MHD_coefficients_type), save :: MG_diff_coefs(max_MG_level)
+      type(SGS_coefficients_type), save :: MG_diff_coefs(max_MG_level)
 !
       type(IO_boundary), save :: IO_MG_bc(max_MG_level)
 !
