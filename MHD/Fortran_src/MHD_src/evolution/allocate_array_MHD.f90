@@ -85,7 +85,7 @@
      &   (ele%numele, node%max_nod_smp, nod_fld, mhd_fem_wk)
       call count_int_vol_data(mhd_fem_wk)
       call alloc_int_vol_dvx(ele%numele, mhd_fem_wk)
-      call set_SGS_addresses(iphys_elediff)
+      call set_SGS_ele_fld_addresses(iphys_elediff)
 !
 !  allocation for field values
       if (iflag_debug.ge.1)  write(*,*) 'set_field_address_type'

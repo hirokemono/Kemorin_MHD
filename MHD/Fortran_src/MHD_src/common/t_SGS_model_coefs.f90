@@ -10,11 +10,16 @@
 !!       subroutine alloc_SGS_num_coefs(coefs)
 !!       subroutine alloc_SGS_coefs(nele, coefs)
 !!       subroutine dealloc_SGS_coefs(coefs)
+!!
+!!      subroutine check_sgs_addresses                                  &
+!!     &         (ifld_sgs, icomp_sgs, ifld_diff, icomp_diff,           &
+!!     &          wk_sgs, wk_diff, sgs_coefs, diff_coefs)
 !
       module t_SGS_model_coefs
 !
       use m_precision
       use m_constants
+      use m_machine_parameter
 !
       implicit  none
 !

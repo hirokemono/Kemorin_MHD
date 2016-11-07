@@ -200,7 +200,7 @@
       if (iflag_debug.eq.1) write(*,*)' set_material_property'
       call set_material_property
       call init_ele_material_property(mesh%ele%numele)
-      call s_count_sgs_components                                       &
+      call define_sgs_components                                        &
      &   (mesh%node%numnod, mesh%ele%numele, layer_tbl,                 &
      &    ifld_sgs, icomp_sgs, ifld_diff, icomp_diff,                   &
      &    wk_sgs1, wk_diff1, sgs_coefs, sgs_coefs_nod, diff_coefs)
