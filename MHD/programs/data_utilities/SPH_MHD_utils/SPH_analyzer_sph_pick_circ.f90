@@ -107,8 +107,7 @@
 !
       if(iflag_SGS_model .gt. 0) then
       if(iflag_debug.gt.0) write(*,*)' init_SGS_model_sph_mhd'
-      call init_SGS_model_sph_mhd                                       &
-     &     (sph1%sph_params, sph1%sph_rj, sph_grps1, sph_filters)
+      call init_SGS_model_sph_mhd(sph1, sph_grps1, sph_filters)
       end if
 !
 !  -------------------------------

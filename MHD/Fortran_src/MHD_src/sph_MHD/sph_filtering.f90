@@ -7,8 +7,7 @@
 !>@brief  Evaluate horizontal filtering in spectrunm space
 !!
 !!@verbatim
-!!      subroutine init_SGS_model_sph_mhd(sph_params, sph_rj, sph_grps, &
-!!     &          sph_filters)
+!!      subroutine init_SGS_model_sph_mhd(sph, sph_grps, sph_filters)
 !!
 !!      subroutine vector_sph_filter(i_field, i_filter,                 &
 !!     &          sph_rj, r_filter, sph_filter, rj_fld)
@@ -24,11 +23,17 @@
       use m_precision
       use m_constants
 !
-      use t_spheric_rj_data
+      use t_spheric_parameter
       use t_phys_data
       use t_sph_filtering_data
+      use t_SGS_model_coefs
+      use t_ele_info_4_dynamic
 !
       implicit none
+!
+      type(SGS_terms_address) :: ifld_sgs2, icomp_sgs2
+      type(SGS_coefficients_type) :: sgs_coefs2
+      type(dynamic_model_data) :: wk_sgs2
 !
 ! ----------------------------------------------------------------------
 !
@@ -36,7 +41,41 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_SGS_model_sph_mhd(sph_params, sph_rj, sph_grps,   &
+      subroutine init_SGS_model_sph_mhd(sph, sph_grps, sph_filters)
+!
+      use calypso_mpi
+      use wider_radial_filter_data
+      use count_sgs_components
+!
+      type(sph_grids), intent(in) ::  sph
+      type(sph_group_data), intent(in) :: sph_grps
+      type(sph_filters_type), intent(inout) :: sph_filters(3)
+!
+      integer(kind = kint) :: num_med
+!
+!
+      call init_filter_4_SPH_MHD(sph%sph_params, sph%sph_rj, sph_grps,  &
+     &    sph_filters)
+!
+!
+!
+      num_med = sph%sph_rtp%nidx_rtp(1) * sph%sph_rtp%nidx_rtp(2)
+      call s_count_sgs_components(sgs_coefs2)
+      call alloc_sgs_coefs_layer(num_med,                               &
+     &    sgs_coefs2%num_field, sgs_coefs2%ntot_comp, wk_sgs2)
+!
+      call alloc_SGS_num_coefs(sgs_coefs2)
+!
+      call set_sgs_addresses                                            &
+     &   (ifld_sgs2, icomp_sgs2, wk_sgs2, sgs_coefs2)
+      call check_sgs_addresses                                          &
+     &   (ifld_sgs2, icomp_sgs2, wk_sgs2, sgs_coefs2)
+!
+      end subroutine init_SGS_model_sph_mhd
+!
+! ----------------------------------------------------------------------
+!
+      subroutine init_filter_4_SPH_MHD(sph_params, sph_rj, sph_grps,    &
      &          sph_filters)
 !
       use calypso_mpi
@@ -72,7 +111,7 @@
       call const_sph_gaussian_filter(sph_params%l_truncation,           &
      &    sph_filters(3)%sph_moments, sph_filters(3)%sph_filter)
 !
-      end subroutine init_SGS_model_sph_mhd
+      end subroutine init_filter_4_SPH_MHD
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

@@ -190,7 +190,6 @@
       end do
 !$omp end parallel do
 !
-      write(*,*) ' prod_filter%nnod_near',  prod_filter%nnod_near
       prod_filter%istack_near_nod(0) = 0
       do inum = 1, num
         prod_filter%istack_near_nod(inum)                               &
