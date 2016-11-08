@@ -5,19 +5,14 @@
 !      Modified by H. Matsui on July, 2007
 !
 !!      subroutine define_sgs_components(numnod, numele, layer_tbl,     &
-!!     &          ifld_sgs, icomp_sgs, ifld_diff, icomp_diff,           &
-!!     &         wk_sgs, wk_diff, sgs_coefs, sgs_coefs_nod, diff_coefs)
+!!     &          ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs, sgs_coefs_nod)
 !!      subroutine set_SGS_ele_fld_addresses(iphys_elediff)
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(SGS_terms_address), intent(inout) :: ifld_sgs
 !!        type(SGS_terms_address), intent(inout) :: icomp_sgs
-!!        type(SGS_terms_address), intent(inout) :: ifld_diff
-!!        type(SGS_terms_address), intent(inout) :: icomp_diff
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
-!!        type(dynamic_model_data), intent(inout) :: wk_diff
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs_nod
-!!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
       module count_sgs_components
 !
@@ -33,8 +28,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine define_sgs_components(numnod, numele, layer_tbl,       &
-     &          ifld_sgs, icomp_sgs, ifld_diff, icomp_diff,             &
-     &          wk_sgs, wk_diff, sgs_coefs, sgs_coefs_nod, diff_coefs)
+     &          ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs, sgs_coefs_nod)
 !
       use calypso_mpi
       use m_phys_labels
@@ -44,18 +38,15 @@
       use t_ele_info_4_dynamic
       use t_material_property
       use t_SGS_model_coefs
-      use init_sgs_diff_coefs
 !
       integer(kind = kint), intent(in) :: numnod, numele
       type(layering_tbl), intent(in) :: layer_tbl
 !
       type(SGS_terms_address), intent(inout) :: ifld_sgs, icomp_sgs
-      type(SGS_terms_address), intent(inout) :: ifld_diff, icomp_diff
 !
-      type(dynamic_model_data), intent(inout) :: wk_sgs, wk_diff
+      type(dynamic_model_data), intent(inout) :: wk_sgs
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs_nod
-      type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
 !
       call s_count_sgs_components(sgs_coefs)
@@ -78,9 +69,6 @@
         call copy_SGS_num_coefs(sgs_coefs, sgs_coefs_nod)
         call alloc_SGS_coefs(numnod, sgs_coefs_nod)
       end if
-!
-      call define_sgs_diff_coefs(numele, layer_tbl,                     &
-     &   ifld_diff, icomp_diff, wk_diff, diff_coefs)
 !
       end subroutine define_sgs_components
 !
