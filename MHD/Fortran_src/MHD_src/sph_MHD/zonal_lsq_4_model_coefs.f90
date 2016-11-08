@@ -7,7 +7,7 @@
 !!
 !!@verbatim
 !!      subroutine cal_sph_model_coefs                                  &
-!!     &          numdir, nidx_rtp, sgs_zl, sgs_zt, sgs_c)
+!!     &         (numdir, nidx_rtp, sgs_zl, sgs_zt, sgs_c)
 !!
 !!      subroutine int_zonal_for_model_coefs_pin                        &
 !!     &        (nnod_rtp, nidx_rtp, frc_simi, frc_wide, sgs_zl, sgs_zt)
@@ -35,15 +35,20 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_sph_model_coefs                                    &
-     &          numdir, nidx_rtp, sgs_zl, sgs_zt, sgs_c)
+     &         (numdir, nidx_rtp, sgs_zl, sgs_zt, sgs_c)
+!
+      integer(kind = kint), intent(in) :: numdir
+      integer(kind = kint), intent(in) :: nidx_rtp(3)
 !
       real(kind = kreal), intent(inout)                                 &
      &                   :: sgs_zl(nidx_rtp(1)*nidx_rtp(2),numdir)
       real(kind = kreal), intent(inout)                                 &
-     &                   :: sgs_zl(nidx_rtp(1)*nidx_rtp(2),numdir)
+     &                   :: sgs_zt(nidx_rtp(1)*nidx_rtp(2),numdir)
 !
       real(kind = kreal), intent(inout)                                 &
      &                   :: sgs_c(nidx_rtp(1)*nidx_rtp(2))
+!
+      integer(kind = kint) :: kl, nd
 !
 !
       sgs_c(1:nidx_rtp(1)*nidx_rtp(2)) = 0.0d0
@@ -94,8 +99,8 @@
         sgs_zt(kl) = 0.0d0
         do m = 1, nidx_rtp(3)
           i1 = m + (kl-1)*nidx_rtp(1)
-          sgs_zl(kl) = sgs_l(kl) + frc_wide(i1) * frc_simi(i1)
-          sgs_zt(kl) = sgs_t(kl) + frc_wide(i1) * frc_wide(i1)
+          sgs_zl(kl) = sgs_zl(kl) + frc_wide(i1) * frc_simi(i1)
+          sgs_zt(kl) = sgs_zt(kl) + frc_wide(i1) * frc_wide(i1)
         end do
       end do
 !$omp end do
@@ -109,7 +114,6 @@
 !
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)
-      integer(kind = kint), intent(in) :: ncomp_frc
 !
       real(kind = kreal), intent(in) :: frc_simi(nnod_rtp)
       real(kind = kreal), intent(in) :: frc_wide(nnod_rtp)
@@ -131,8 +135,8 @@
 !$omp do private(kl,i1)
         do kl = 1, nidx_rtp(1)*nidx_rtp(2)
           i1 = kl + (m-1)*nidx_rtp(1)*nidx_rtp(2)
-          sgs_zl(kl) = sgs_l(kl) + frc_wide(i1) * frc_rtp(i1)
-          sgs_zt(kl) = sgs_t(kl) + frc_wide(i1) * frc_wide(i1)
+          sgs_zl(kl) = sgs_zl(kl) + frc_wide(i1) * frc_simi(i1)
+          sgs_zt(kl) = sgs_zt(kl) + frc_wide(i1) * frc_wide(i1)
         end do
 !$omp end do
       end do
