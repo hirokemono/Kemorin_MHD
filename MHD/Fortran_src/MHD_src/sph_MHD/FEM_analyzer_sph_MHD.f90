@@ -178,7 +178,6 @@
       use t_sph_trans_arrays_MHD
 !
       use output_viz_file_control
-      use lead_pole_data_4_sph_mhd
       use copy_snap_4_sph_trans
       use copy_MHD_4_sph_trans
       use coordinate_convert_4_sph

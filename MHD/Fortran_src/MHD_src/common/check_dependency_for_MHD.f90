@@ -57,7 +57,6 @@
      &   (nod_fld%num_phys, nod_fld%phys_name)
 !
       deallocate (phys_check_name)
-      write(*,*) 'aho'
       call calypso_mpi_barrier
 !
       end subroutine check_dependencies_FEM_MHD
@@ -79,7 +78,6 @@
      &   (nod_fld%num_phys, nod_fld%phys_name)
 !
       deallocate (phys_check_name)
-      write(*,*) 'aho'
       call calypso_mpi_barrier
 !
       end subroutine check_dependencies_SPH_MHD
