@@ -20,7 +20,7 @@
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(MHD_coefficients_type), intent(in) :: sgs_coefs
+!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -44,6 +44,7 @@
       use t_finite_element_mat
       use t_filter_elength
       use t_material_property
+      use t_SGS_model_coefs
       use t_MHD_finite_element_mat
 !
       implicit none
@@ -74,7 +75,7 @@
       type(field_geometry_data), intent(in) :: fluid
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(MHD_coefficients_type), intent(in) :: sgs_coefs
+      type(SGS_coefficients_type), intent(in) :: sgs_coefs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
       integer (kind=kint), intent(in) :: itype_csim

@@ -21,7 +21,7 @@
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(MHD_coefficients_type), intent(in) :: diff_coefs
+!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(scaler_surf_bc_type), intent(in) :: Tsf_bcs
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(work_surface_element_mat), intent(inout) :: surf_wk
@@ -43,6 +43,7 @@
       use t_int_surface_data
       use t_surface_bc_data
       use t_material_property
+      use t_SGS_model_coefs
 !
       implicit none
 !
@@ -69,7 +70,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(scaler_surf_bc_type), intent(in) :: Tsf_bcs
 !
       integer(kind = kint), intent(in)  :: iak_diff_hf
@@ -120,7 +121,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(scaler_surf_bc_type), intent(in) :: Tsf_bcs
 !
       integer(kind = kint), intent(in)  :: iak_diff_hf

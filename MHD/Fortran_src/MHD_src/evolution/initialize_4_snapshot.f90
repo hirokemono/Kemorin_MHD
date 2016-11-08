@@ -69,6 +69,7 @@
       use set_layers_4_MHD
       use set_istart_3d_filtering
       use count_sgs_components
+      use init_sgs_diff_coefs
       use set_layer_list_by_table
       use set_normal_vectors
       use set_table_type_RHS_assemble
@@ -178,10 +179,11 @@
       if (iflag_debug.eq.1) write(*,*)' set_material_property'
       call set_material_property
       call init_ele_material_property(mesh%ele%numele)
-      call s_count_sgs_components                                       &
+      call define_sgs_components                                        &
      &   (mesh%node%numnod, mesh%ele%numele, layer_tbl,                 &
-     &    ifld_sgs, icomp_sgs, ifld_diff, icomp_diff,                   &
-     &    wk_sgs1, wk_diff1, sgs_coefs, sgs_coefs_nod, diff_coefs)
+     &    ifld_sgs, icomp_sgs, wk_sgs1, sgs_coefs, sgs_coefs_nod)
+      call define_sgs_diff_coefs(mesh%ele%numele, layer_tbl,            &
+     &    ifld_diff, icomp_diff, wk_diff1, diff_coefs)
 !
       call deallocate_surface_geom_type(ele_mesh%surf)
       call deallocate_edge_geom_type(ele_mesh%edge)

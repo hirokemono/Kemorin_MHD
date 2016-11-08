@@ -18,7 +18,7 @@
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(MHD_coefficients_type), intent(in) :: diff_coefs
+!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l
 !
@@ -38,6 +38,7 @@
       use t_finite_element_mat
       use t_filter_elength
       use t_material_property
+      use t_SGS_model_coefs
 !
       implicit none
 !
@@ -61,7 +62,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
 !
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind=kint), intent(in) :: i_scalar, iak_diff
@@ -103,7 +104,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
 !
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind=kint), intent(in) :: i_vector, iak_diff

@@ -23,7 +23,7 @@
 !!        type(phys_data),    intent(in) :: nod_fld
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(MHD_coefficients_type), intent(in) :: diff_coefs
+!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -44,6 +44,7 @@
       use t_finite_element_mat
       use t_MHD_finite_element_mat
       use t_material_property
+      use t_SGS_model_coefs
 !
       implicit none
 !
@@ -69,7 +70,7 @@
       type(phys_address), intent(in) :: iphys
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: n_int, i_filter, iak_diff_uxb
@@ -120,7 +121,7 @@
       type(phys_address), intent(in) :: iphys
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: n_int, i_filter, iak_diff_uxb

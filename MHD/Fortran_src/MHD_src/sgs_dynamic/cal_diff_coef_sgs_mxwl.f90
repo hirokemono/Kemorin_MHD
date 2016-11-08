@@ -28,7 +28,7 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(filtering_data_type), intent(in) :: filtering
-!!        type(MHD_coefficients_type), intent(in) :: sgs_coefs
+!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(dynamis_correlation_data), intent(inout) :: wk_cor
 !!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
@@ -38,7 +38,7 @@
 !!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
-!!        type(MHD_coefficients_type), intent(inout) :: diff_coefs
+!!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
       module cal_diff_coef_sgs_mxwl
 !
@@ -66,6 +66,7 @@
       use t_bc_data_velo
       use t_surface_bc_data
       use t_material_property
+      use t_SGS_model_coefs
 !
       implicit none
 !
@@ -121,7 +122,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
-      type(MHD_coefficients_type), intent(in) :: sgs_coefs
+      type(SGS_coefficients_type), intent(in) :: sgs_coefs
 !
       type(filtering_work_type), intent(inout) :: wk_filter
       type(dynamis_correlation_data), intent(inout) :: wk_cor
@@ -132,7 +133,7 @@
       type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
-      type(MHD_coefficients_type), intent(inout) :: diff_coefs
+      type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
 !    reset model coefficients
 !

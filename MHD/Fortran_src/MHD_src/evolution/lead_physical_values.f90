@@ -33,8 +33,8 @@
 !!        type(SGS_terms_address), intent(in) :: ifld_diff
 !!        type(SGS_terms_address), intent(in) :: icomp_diff
 !!        type(SGS_terms_address), intent(in) :: iphys_elediff
-!!        type(MHD_coefficients_type), intent(in) :: sgs_coefs
-!!        type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
+!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
+!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(filtering_data_type), intent(in) :: wide_filtering
 !!        type(layering_tbl), intent(in) :: layer_tbl
@@ -48,7 +48,7 @@
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(phys_data), intent(inout) :: ele_fld
-!!        type(MHD_coefficients_type), intent(inout) :: diff_coefs
+!!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !!@endverbatim
 !
       module lead_physical_values
@@ -75,6 +75,7 @@
       use t_bc_data_MHD
       use t_MHD_boundary_data
       use t_material_property
+      use t_SGS_model_coefs
       use t_ele_info_4_dynamic
       use t_work_4_dynamic_model
       use t_work_layer_correlate
@@ -125,8 +126,8 @@
       type(SGS_terms_address), intent(in) :: ifld_diff
       type(SGS_terms_address), intent(in) :: icomp_diff
       type(SGS_terms_address), intent(in) :: iphys_elediff
-      type(MHD_coefficients_type), intent(in) :: sgs_coefs
-      type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
+      type(SGS_coefficients_type), intent(in) :: sgs_coefs
+      type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
       type(filtering_data_type), intent(in) :: filtering
       type(filtering_data_type), intent(in) :: wide_filtering
       type(layering_tbl), intent(in) :: layer_tbl
@@ -141,7 +142,7 @@
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
       type(phys_data), intent(inout) :: ele_fld
-      type(MHD_coefficients_type), intent(inout) :: diff_coefs
+      type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
       integer (kind =kint) :: iflag
 !
@@ -219,9 +220,9 @@
       type(SGS_terms_address), intent(in) :: icomp_sgs
       type(SGS_terms_address), intent(in) :: ifld_diff
       type(SGS_terms_address), intent(in) :: iphys_elediff
-      type(MHD_coefficients_type), intent(in) :: sgs_coefs
-      type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_coefficients_type), intent(in) :: sgs_coefs
+      type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(filtering_data_type), intent(in) :: filtering
 !
       type(filtering_work_type), intent(inout) :: wk_filter

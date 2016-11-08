@@ -45,9 +45,9 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(MHD_coefficients_type), intent(in) :: sgs_coefs
-!!        type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
-!!        type(MHD_coefficients_type), intent(in) :: diff_coefs
+!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
+!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
+!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(MHD_MG_matrix), intent(in) :: Bmatrix
 !!        type(vectors_4_solver), intent(inout)                         &
@@ -136,9 +136,9 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp_q
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(MHD_coefficients_type), intent(in) :: sgs_coefs
-      type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_coefficients_type), intent(in) :: sgs_coefs
+      type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(filtering_data_type), intent(in) :: filtering
       type(MHD_MG_matrix), intent(in) :: Bmatrix
 !
@@ -263,7 +263,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(lumped_mass_matrices), intent(in) :: m_lump
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(MHD_MG_matrix), intent(in) :: Bmatrix
 !
       integer(kind = kint), intent(in) :: iak_diff_b
@@ -354,7 +354,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp_q, jac_sf_grp_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk

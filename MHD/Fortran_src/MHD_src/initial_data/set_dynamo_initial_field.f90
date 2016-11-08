@@ -16,8 +16,8 @@
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!        type(dynamic_model_data), intent(inout) :: wk_diff
-!!        type(MHD_coefficients_type), intent(inout) :: sgs_coefs
-!!        type(MHD_coefficients_type), intent(inout) :: diff_coefs
+!!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+!!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !!
 !!      subroutine set_time_init
 !
@@ -31,7 +31,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
-      use t_material_property
+      use t_SGS_model_coefs
       use t_ele_info_4_dynamic
 !
       implicit none
@@ -64,8 +64,8 @@
       type(layering_tbl), intent(in) :: layer_tbl
 !
       type(dynamic_model_data), intent(inout) :: wk_sgs, wk_diff
-      type(MHD_coefficients_type), intent(inout) :: sgs_coefs
-      type(MHD_coefficients_type), intent(inout) :: diff_coefs
+      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+      type(SGS_coefficients_type), intent(inout) :: diff_coefs
       type(phys_data), intent(inout) :: nod_fld
 !
 !

@@ -26,8 +26,8 @@
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l
 !!        type(phys_data), intent(inout) :: nod_fld
-!!        type(MHD_coefficients_type), intent(inout) :: sgs_coefs
-!!        type(MHD_coefficients_type), intent(inout) :: sgs_coefs_nod
+!!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+!!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs_nod
 !
       module cal_sgs_h_flux_dynamic_simi
 !
@@ -50,6 +50,7 @@
       use t_work_4_dynamic_model
       use t_work_layer_correlate
       use t_material_property
+      use t_SGS_model_coefs
 !
       implicit none
 !
@@ -96,8 +97,8 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
       type(phys_data), intent(inout) :: nod_fld
-      type(MHD_coefficients_type), intent(inout) :: sgs_coefs
-      type(MHD_coefficients_type), intent(inout) :: sgs_coefs_nod
+      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+      type(SGS_coefficients_type), intent(inout) :: sgs_coefs_nod
 !
 !    reset model coefficients
 !

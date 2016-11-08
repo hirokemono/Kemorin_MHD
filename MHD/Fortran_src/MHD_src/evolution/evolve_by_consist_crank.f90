@@ -40,7 +40,7 @@
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(MHD_coefficients_type), intent(in) :: diff_coefs
+!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_a
 !!        type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_b
 !!        type(MHD_MG_matrix), intent(in) :: Vmatrix
@@ -118,7 +118,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(MHD_MG_matrix), intent(in) :: Vmatrix
 !
       real(kind = kreal), intent(in) :: ak_d_velo(ele%numele)
@@ -188,7 +188,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_a
       type(MHD_MG_matrix), intent(in) :: Bmatrix
 !
@@ -260,7 +260,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_b
       type(MHD_MG_matrix), intent(in) :: Bmatrix
 !
@@ -338,7 +338,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(MHD_MG_matrix), intent(in) :: Tmatrix
 !
       real(kind = kreal), intent(in) :: ak_d_temp(ele%numele)
@@ -409,7 +409,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(MHD_MG_matrix), intent(in) :: Cmatrix
 !
       real(kind = kreal), intent(in) :: ak_d_composit(ele%numele)

@@ -25,8 +25,8 @@
 !!      subroutine input_restart_4_snapshot(node, nod_fld)
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!        type(dynamic_model_data), intent(inout) :: wk_diff
-!!        type(MHD_coefficients_type), intent(inout) :: sgs_coefs
-!!        type(MHD_coefficients_type), intent(inout) :: diff_coefs
+!!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+!!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !!@endverbatim
 !
       module fem_mhd_rst_IO_control
@@ -168,7 +168,7 @@
      &         fluid, wk_sgs, wk_diff, sgs_coefs, diff_coefs, nod_fld)
 !
       use t_geometry_data_MHD
-      use t_material_property
+      use t_SGS_model_coefs
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -176,8 +176,8 @@
       type(layering_tbl), intent(in) :: layer_tbl
 !
       type(dynamic_model_data), intent(inout) :: wk_sgs, wk_diff
-      type(MHD_coefficients_type), intent(inout) :: sgs_coefs
-      type(MHD_coefficients_type), intent(inout) :: diff_coefs
+      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+      type(SGS_coefficients_type), intent(inout) :: diff_coefs
       type(phys_data), intent(inout) :: nod_fld
 !
 !
@@ -327,7 +327,7 @@
 !
       use m_control_parameter
       use t_geometry_data_MHD
-      use t_material_property
+      use t_SGS_model_coefs
       use t_ele_info_4_dynamic
 !
       use set_parallel_file_name
@@ -338,8 +338,8 @@
       type(layering_tbl), intent(in) :: layer_tbl
 !
       type(dynamic_model_data), intent(inout) :: wk_sgs, wk_diff
-      type(MHD_coefficients_type), intent(inout) :: sgs_coefs
-      type(MHD_coefficients_type), intent(inout) :: diff_coefs
+      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+      type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
       character(len=kchara) :: fn_tmp
 !

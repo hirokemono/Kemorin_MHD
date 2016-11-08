@@ -44,9 +44,9 @@
 !!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
-!!        type(MHD_coefficients_type), intent(inout) :: sgs_coefs
-!!        type(MHD_coefficients_type), intent(inout) :: sgs_coefs_nod
-!!        type(MHD_coefficients_type), intent(inout) :: diff_coefs
+!!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+!!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs_nod
+!!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
       module cal_model_coefficients
 !
@@ -73,7 +73,7 @@
       use t_int_surface_data
       use t_filter_elength
       use t_filtering_data
-      use t_material_property
+      use t_SGS_model_coefs
       use t_ele_info_4_dynamic
       use t_work_4_dynamic_model
       use t_work_layer_correlate
@@ -144,9 +144,9 @@
       type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
-      type(MHD_coefficients_type), intent(inout) :: sgs_coefs
-      type(MHD_coefficients_type), intent(inout) :: sgs_coefs_nod
-      type(MHD_coefficients_type), intent(inout) :: diff_coefs
+      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+      type(SGS_coefficients_type), intent(inout) :: sgs_coefs_nod
+      type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
 !
       if(iflag_dynamic_SGS .eq. id_SGS_DYNAMIC_OFF) return

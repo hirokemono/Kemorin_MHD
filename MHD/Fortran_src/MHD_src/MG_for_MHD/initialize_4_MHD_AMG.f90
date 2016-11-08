@@ -9,7 +9,7 @@
 !!        type(element_data), intent(inout) :: ele_1st
 !!      subroutine const_MGCG_MHD_matrices(ifld_diff, MHD_matrices)
 !!        type(SGS_terms_address), intent(in) :: ifld_diff
-!!        type(MHD_coefficients_type), intent(in) :: diff_coefs
+!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(MHD_MG_matrices), intent(inout) :: MHD_matrices
 !
       module initialize_4_MHD_AMG
@@ -23,6 +23,7 @@
 !
       use t_solver_djds_MHD
       use t_material_property
+      use t_SGS_model_coefs
 !
       use calypso_mpi
 !
@@ -63,7 +64,7 @@
       use const_element_comm_tables
 !
       type(SGS_terms_address), intent(in) :: ifld_diff
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
 !
       type(node_data), intent(inout) :: node_1st
       type(element_data), intent(inout) :: ele_1st
@@ -122,8 +123,8 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            's_set_sgs_diff_array_MHD_AMG', i_level
 !
-        call copy_MHD_num_coefs(diff_coefs, MG_diff_coefs(i_level))
-        call alloc_MHD_coefs                                            &
+        call copy_SGS_num_coefs(diff_coefs, MG_diff_coefs(i_level))
+        call alloc_SGS_coefs                                            &
      &     (MG_mesh(i_level)%mesh%ele%numele, MG_diff_coefs(i_level))
       end do
 !

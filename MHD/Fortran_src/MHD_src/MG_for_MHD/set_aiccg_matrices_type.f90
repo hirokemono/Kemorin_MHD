@@ -78,6 +78,7 @@
       use t_filter_elength
       use t_solver_djds
       use t_material_property
+      use t_SGS_model_coefs
 !
       use init_iccg_matrices
       use int_vol_poisson_matrix
@@ -96,7 +97,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp_q
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_terms_address), intent(in) :: ifld_diff
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const), intent(in) :: MG_mat_q
       type(table_mat_const), intent(in) :: MG_mat_fl_q

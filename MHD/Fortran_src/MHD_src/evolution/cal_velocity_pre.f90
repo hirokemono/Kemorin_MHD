@@ -43,8 +43,8 @@
 !!        type(SGS_terms_address), intent(in) :: icomp_sgs
 !!        type(SGS_terms_address), intent(in) :: ifld_diff
 !!        type(SGS_terms_address), intent(in) :: iphys_elediff
-!!        type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
-!!        type(MHD_coefficients_type), intent(in) :: diff_coefs
+!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
+!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(MHD_MG_matrix), intent(in) :: Vmatrix
@@ -52,7 +52,7 @@
 !!       &           :: MG_vector(0:num_MG_level)
 !!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
-!!       type(MHD_coefficients_type), intent(inout) :: sgs_coefs
+!!       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -90,6 +90,7 @@
       use t_solver_djds_MHD
       use t_interpolate_table
       use t_material_property
+      use t_SGS_model_coefs
       use t_ele_info_4_dynamic
       use t_work_4_dynamic_model
       use t_vector_for_solver
@@ -150,8 +151,8 @@
       type(SGS_terms_address), intent(in) :: icomp_sgs
       type(SGS_terms_address), intent(in) :: ifld_diff
       type(SGS_terms_address), intent(in) :: iphys_elediff
-      type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(filtering_data_type), intent(in) :: filtering
       type(layering_tbl), intent(in) :: layer_tbl
       type(MHD_MG_matrix), intent(in) :: Vmatrix
@@ -160,7 +161,7 @@
      &           :: MG_vector(0:Vmatrix%nlevel_MG)
       type(dynamis_least_suare_data), intent(inout) :: wk_lsq
       type(dynamic_model_data), intent(inout) :: wk_sgs
-      type(MHD_coefficients_type), intent(inout) :: sgs_coefs
+      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
       type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -329,7 +330,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_terms_address), intent(in) :: ifld_diff
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(MHD_MG_matrix), intent(in) :: Vmatrix
 !
       type(vectors_4_solver), intent(inout)                             &

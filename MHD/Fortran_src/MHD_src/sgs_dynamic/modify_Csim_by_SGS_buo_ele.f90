@@ -10,7 +10,7 @@
 !!        type(SGS_terms_address), intent(in) :: ifld_sgs
 !!        type(SGS_terms_address), intent(in) :: icomp_sgs
 !!        type(dynamic_model_data), intent(in) :: wk_sgs
-!!        type(MHD_coefficients_type), intent(inout) :: sgs_coefs
+!!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
 !
       module modify_Csim_by_SGS_buo_ele
 !
@@ -39,6 +39,7 @@
       use t_geometry_data
       use t_group_data
       use t_material_property
+      use t_SGS_model_coefs
       use t_ele_info_4_dynamic
       use set_sgs_diff_model_coefs
 !
@@ -47,7 +48,7 @@
       type(SGS_terms_address), intent(in) :: ifld_sgs
       type(SGS_terms_address), intent(in) :: icomp_sgs
       type(dynamic_model_data), intent(in) :: wk_sgs
-      type(MHD_coefficients_type), intent(inout) :: sgs_coefs
+      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
 !
 !
       call clear_model_coefs_2_ele(ele, n_sym_tensor,                   &

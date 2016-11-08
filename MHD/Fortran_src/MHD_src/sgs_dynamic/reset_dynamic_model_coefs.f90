@@ -42,13 +42,13 @@
 !
       use t_geometry_data
       use t_layering_ele_list
-      use t_material_property
+      use t_SGS_model_coefs
 !
       type(element_data), intent(in) :: ele
       type(layering_tbl), intent(in) :: layer_tbl
       integer (kind = kint), intent(in) :: icomp_sgs
 !
-      type(MHD_coefficients_type), intent(inout) :: sgs_coefs
+      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
 !
 !
       if(layer_tbl%minlayer_4_smp                                       &
@@ -75,13 +75,13 @@
 !
       use t_geometry_data
       use t_layering_ele_list
-      use t_material_property
+      use t_SGS_model_coefs
 !
       type(element_data), intent(in) :: ele
       type(layering_tbl), intent(in) :: layer_tbl
       integer (kind = kint), intent(in) :: icomp_sgs
 !
-      type(MHD_coefficients_type), intent(inout) :: sgs_coefs
+      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
 !
 !
       if(layer_tbl%minlayer_4_smp                                       &

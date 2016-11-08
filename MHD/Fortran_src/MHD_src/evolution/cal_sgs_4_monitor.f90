@@ -36,9 +36,9 @@
 !!        type(SGS_terms_address), intent(in) :: icomp_sgs
 !!        type(SGS_terms_address), intent(in) :: iphys_elediff
 !!        type(SGS_terms_address), intent(in) :: ifld_diff
-!!        type(MHD_coefficients_type), intent(in) :: sgs_coefs
-!!        type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
-!!        type(MHD_coefficients_type), intent(in) :: diff_coefs
+!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
+!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
+!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -70,10 +70,10 @@
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_filtering_data
-      use t_material_property
       use t_bc_data_MHD
       use t_MHD_boundary_data
       use t_material_property
+      use t_SGS_model_coefs
 !
       implicit none
 !
@@ -106,8 +106,8 @@
       type(filtering_data_type), intent(in) :: filtering
       type(SGS_terms_address), intent(in) :: icomp_sgs
       type(SGS_terms_address), intent(in) :: iphys_elediff
-      type(MHD_coefficients_type), intent(in) :: sgs_coefs
-      type(MHD_coefficients_type), intent(in) :: sgs_coefs_nod
+      type(SGS_coefficients_type), intent(in) :: sgs_coefs
+      type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
 !
       type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -198,7 +198,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_terms_address), intent(in) :: ifld_diff
-      type(MHD_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk

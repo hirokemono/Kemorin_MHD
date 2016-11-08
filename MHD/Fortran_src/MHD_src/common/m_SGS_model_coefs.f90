@@ -14,16 +14,16 @@
       module m_SGS_model_coefs
 !
       use m_precision
-      use t_material_property
+      use t_SGS_model_coefs
 !
       implicit  none
 !
 !
-      type(MHD_coefficients_type), save :: sgs_coefs
+      type(SGS_coefficients_type), save :: sgs_coefs
 !
-      type(MHD_coefficients_type), save :: sgs_coefs_nod
+      type(SGS_coefficients_type), save :: sgs_coefs_nod
 !
-      type(MHD_coefficients_type), save :: diff_coefs
+      type(SGS_coefficients_type), save :: diff_coefs
 !
       type(SGS_terms_address), save :: ifld_sgs
 !
