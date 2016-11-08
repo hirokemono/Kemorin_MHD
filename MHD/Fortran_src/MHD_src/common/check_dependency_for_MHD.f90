@@ -74,7 +74,7 @@
 !
       call check_field_dependencies                                     &
      &   (nod_fld%num_phys, nod_fld%phys_name)
-      call check_dependence_4_SPH_SGS                                     &
+      call check_dependence_4_SPH_SGS                                   &
      &   (nod_fld%num_phys, nod_fld%phys_name)
 !
       deallocate (phys_check_name)
@@ -266,6 +266,49 @@
            num_check = 2
            phys_check_name(1) = fhd_velo
            phys_check_name(2) = fhd_temp
+!
+          else if (phys_nod_name(i) .eq. fhd_Csim_SGS_h_flux            &
+     &         ) then
+           num_check = 2
+           phys_check_name(1) = fhd_SGS_h_flux
+           phys_check_name(2) = fhd_wide_SGS_h_flux
+!
+          else if (phys_nod_name(i) .eq. fhd_wide_SGS_c_flux            &
+     &         ) then
+           num_check = 2
+           phys_check_name(1) = fhd_SGS_c_flux
+           phys_check_name(2) = fhd_wide_SGS_c_flux
+!
+          else if (phys_nod_name(i) .eq. fhd_Csim_SGS_m_flux            &
+     &         ) then
+           num_check = 2
+           phys_check_name(1) = fhd_SGS_inertia
+           phys_check_name(2) = fhd_wide_SGS_inertia
+!
+          else if (phys_nod_name(i) .eq. fhd_Csim_SGS_Lorentz           &
+     &         ) then
+           num_check = 2
+           phys_check_name(1) = fhd_SGS_Lorentz
+           phys_check_name(2) = fhd_wide_SGS_Lorentz
+!
+          else if (phys_nod_name(i) .eq. fhd_Csim_SGS_induction         &
+     &         ) then
+           num_check = 2
+           phys_check_name(1) = fhd_SGS_vp_induct
+           phys_check_name(2) = fhd_wide_SGS_vp_induct
+!
+          else if (phys_nod_name(i) .eq. fhd_Csim_SGS_buoyancy          &
+     &         ) then
+           num_check = 2
+           phys_check_name(1) = fhd_SGS_h_flux
+           phys_check_name(2) = fhd_velo
+!
+          else if (phys_nod_name(i) .eq. fhd_Csim_SGS_comp_buo          &
+     &         ) then
+           num_check = 2
+           phys_check_name(1) = fhd_SGS_c_flux
+           phys_check_name(2) = fhd_velo
+!
 !
           else if (phys_nod_name(i) .eq. fhd_div_SGS_h_flux             &
      &         ) then

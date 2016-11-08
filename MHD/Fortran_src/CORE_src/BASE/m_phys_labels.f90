@@ -311,6 +311,37 @@
      &             :: fhd_SGS_comp_buo = 'SGS_composit_buoyancy'
 !
 !
+!>        Field label for model coefficient of SGS heat flux
+!!         @f$ \overline{u_{i}T} - \bar{u}_{i}\bar{T} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_Csim_SGS_h_flux = 'Csim_SGS_heat_flux'
+!>        Field label for model coefficient of SGS composition flux
+!!         @f$ \overline{u_{i}C} - \bar{u}_{i}\bar{C} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_Csim_SGS_c_flux = 'Csim_SGS_composit_flux'
+!>        Field label for model coefficient of SGS inertia term
+!!         @f$ e_{ijk}\left(\overline{\omega_{j}u_{k}}
+!!            - \bar{\omega}_{j}\bar{u}_{k} \right) @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_Csim_SGS_m_flux = 'Csim_SGS_inertia'
+!>        Field label for model coefficient of SGS Lorentz force
+!!         @f$ e_{ijk}\left(\overline{\J_{j}B_{k}}
+!!            - \bar{J}_{j}\bar{B}_{k} \right) @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_Csim_SGS_Lorentz = 'Csim_SGS_Lorentz'
+!>        Field label for model coefficient of SGS induction
+!!         @f$ e_{ijk}\left(\overline{\u_{j}B_{k}}
+!!            - \bar{u}_{j}\bar{B}_{k} \right) @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_Csim_SGS_induction = 'Csim_SGS_vp_induction'
+!>        Field label for odel coefficient of SGS buoyancy
+      character(len=kchara), parameter                                  &
+     &             :: fhd_Csim_SGS_buoyancy =  'Csim_SGS_buoyancy'
+!>        Field label for odel coefficient of SGS compositional buoyancy
+      character(len=kchara), parameter                                  &
+     &             :: fhd_Csim_SGS_comp_buo = 'Csim_SGS_composit_buo'
+!
+!
 !>        Field label for SGS heat flux with wider filter
 !!         @f$ \overline{u_{i}T} - \bar{u}_{i}\bar{T} @f$
       character(len=kchara), parameter                                  &

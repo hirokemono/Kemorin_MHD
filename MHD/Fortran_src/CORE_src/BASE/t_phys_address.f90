@@ -315,6 +315,25 @@
 !!         @f$ \partial_{i} \left( \overline{B_{i}B_{j}} - \bar{B}_{i}\bar{B}_{j} \right) @f$
         integer (kind=kint) :: i_wide_SGS_Lorentz =     izero
 !
+!>        start address for model coefficient of SGS heat flux
+!!         @f$ \overline{u_{i}T} - \bar{u}_{i}\bar{T} @f$
+        integer (kind=kint) :: i_Csim_SGS_h_flux =      izero
+!>        start address for model coefficient of SGS compositional flux
+!!         @f$ \overline{u_{i}T} - \bar{u}_{i}\bar{T} @f$
+        integer (kind=kint) :: i_Csim_SGS_c_flux =      izero
+!>        start address for model coefficient of SGS momentum flux
+!!         @f$ \overline{u_{i}u_{j}} - \bar{u}_{i}\bar{u}_{j} @f$
+        integer (kind=kint) :: i_Csim_SGS_m_flux =      izero
+!>        start address for model coefficient of SGS Maxwell tensor
+!!         @f$ \overline{B_{i}B_{j}} - \bar{B}_{i}\bar{B}_{j} @f$
+        integer (kind=kint) :: i_Csim_SGS_Lorentz =     izero
+!>        start address for model coefficient of SGS magnetic induction
+        integer (kind=kint) :: i_Csim_SGS_induction =    izero
+!>        start address for model coefficient of SGS buoyancy
+        integer (kind=kint) :: i_Csim_SGS_buoyancy =    izero
+!>        start address for model coefficient of SGS composition buoyancy
+        integer (kind=kint) :: i_Csim_SGS_comp_buo =     izero
+!
 !
 !>        start address for divergence of SGS heat flux
 !!         @f$ \partial_{i} \left( \overline{u_{i}T} - \bar{u}_{i}\bar{T} \right) @f$

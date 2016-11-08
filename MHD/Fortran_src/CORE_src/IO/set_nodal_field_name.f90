@@ -259,6 +259,15 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_w_filter_comp      )          &
      &       ) iflag = 1
 !
+      if (    (phys_nod_name_ctl .eq. fhd_Csim_SGS_h_flux    )          &
+     &   .or. (phys_nod_name_ctl .eq. fhd_Csim_SGS_c_flux    )          &
+     &   .or. (phys_nod_name_ctl .eq. fhd_Csim_SGS_m_flux    )          &
+     &   .or. (phys_nod_name_ctl .eq. fhd_Csim_SGS_Lorentz   )          &
+     &   .or. (phys_nod_name_ctl .eq. fhd_Csim_SGS_induction )          &
+     &   .or. (phys_nod_name_ctl .eq. fhd_Csim_SGS_buoyancy  )          &
+     &   .or. (phys_nod_name_ctl .eq. fhd_Csim_SGS_comp_buo  )          &
+     &       ) iflag = 1
+!
       if (    (phys_nod_name_ctl .eq. fhd_pre_heat            )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_pre_composit        )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_pre_press           )         &
