@@ -21,6 +21,7 @@
       use t_phys_address
       use t_addresses_sph_transform
       use t_sph_multi_FFTW
+      use sph_filtering
 !
       implicit none
 !
@@ -37,6 +38,8 @@
 !
         type(work_for_sgl_FFTW) :: MHD_mul_FFTW
         type(work_for_sgl_FFTW) :: SGS_mul_FFTW
+!
+        type(dynamic_SGS_data_4_sph) :: dynamic_SPH
       end type works_4_sph_trans_MHD
 !
 !-----------------------------------------------------------------------

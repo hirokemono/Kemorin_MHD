@@ -7,17 +7,14 @@
 !>@brief Evolution loop for spherical MHD
 !!
 !!@verbatim
-!!      subroutine SPH_initialize_MHD(iphys, sph_filters)
+!!      subroutine SPH_initialize_MHD(iphys)
 !!        type(phys_address), intent(in) :: iphys
-!!        type(sph_filters_type), intent(inout) :: sph_filters(3)
-!!      subroutine SPH_analyze_MHD(sph_filters, i_step, iflag_finish)
-!!        type(sph_filters_type), intent(in) :: sph_filters(3)
+!!      subroutine SPH_analyze_MHD(i_step, iflag_finish)
 !!@endverbatim
 !
       module SPH_analyzer_MHD
 !
       use m_precision
-      use t_sph_filtering_data
       use t_phys_address
 !
       implicit none
@@ -28,7 +25,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_initialize_MHD(iphys, sph_filters)
+      subroutine SPH_initialize_MHD(iphys)
 !
       use m_constants
       use calypso_mpi
@@ -61,7 +58,6 @@
       use m_work_time
 !
       type(phys_address), intent(in) :: iphys
-      type(sph_filters_type), intent(inout) :: sph_filters(3)
 !
 !   Allocate spectr field data
 !
@@ -95,7 +91,8 @@
 !
       if(iflag_SGS_model .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)' init_SGS_model_sph_mhd'
-        call init_SGS_model_sph_mhd(sph1, sph_grps1, sph_filters)
+        call init_SGS_model_sph_mhd                                     &
+     &     (sph1, sph_grps1, trns_WK1%dynamic_SPH)
       end if
 !
 !  -------------------------------
@@ -113,7 +110,7 @@
 !*
       if(iflag_debug .gt. 0) write(*,*) 'first nonlinear'
       call nonlinear(sph1, comms_sph1, omega_sph1, r_2nd, trans_p1,     &
-     &    ref_temp1%t_rj, sph_filters, ipol, itor, trns_WK1, rj_fld1)
+     &    ref_temp1%t_rj, ipol, itor, trns_WK1, rj_fld1)
 !
 !* -----  Open Volume integration data files -----------------
 !*
@@ -128,7 +125,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_MHD(sph_filters, i_step, iflag_finish)
+      subroutine SPH_analyze_MHD(i_step, iflag_finish)
 !
       use m_work_time
       use m_spheric_parameter
@@ -147,7 +144,6 @@
       use sph_mhd_rms_IO
 !
       integer(kind = kint), intent(in) :: i_step
-      type(sph_filters_type), intent(in) :: sph_filters(3)
 !
       integer(kind = kint), intent(inout) :: iflag_finish
 !
@@ -179,7 +175,7 @@
 !*
       call start_eleps_time(8)
       call nonlinear(sph1, comms_sph1, omega_sph1, r_2nd, trans_p1,     &
-     &    ref_temp1%t_rj, sph_filters, ipol, itor, trns_WK1, rj_fld1)
+     &    ref_temp1%t_rj, ipol, itor, trns_WK1, rj_fld1)
       call end_eleps_time(8)
       call end_eleps_time(5)
 !

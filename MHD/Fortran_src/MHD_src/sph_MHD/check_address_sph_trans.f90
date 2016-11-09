@@ -342,9 +342,44 @@
       if(f_trns%i_buo_gen .gt. 0) write(*,*) 'f_trns%i_buo_gen  ',      &
      &        f_trns%i_buo_gen, ipol%i_buo_gen, iphys%i_buo_gen
       if(f_trns%i_c_buo_gen .gt. 0) write(*,*) 'f_trns%i_c_buo_gen  ',  &
-     &       f_trns%i_c_buo_gen, ipol%i_c_buo_gen, iphys%i_c_buo_gen
+     &        f_trns%i_c_buo_gen, ipol%i_c_buo_gen, iphys%i_c_buo_gen
       if(f_trns%i_f_buo_gen .gt. 0) write(*,*) 'f_trns%i_f_buo_gen  ',  &
-     &       f_trns%i_f_buo_gen, ipol%i_f_buo_gen, iphys%i_f_buo_gen
+     &        f_trns%i_f_buo_gen, ipol%i_f_buo_gen, iphys%i_f_buo_gen
+!
+      if(f_trns%i_reynolds_wk .gt. 0) write(*,*)                        &
+     &       'f_trns%i_reynolds_wk  ', f_trns%i_reynolds_wk,            &
+     &        ipol%i_reynolds_wk, iphys%i_reynolds_wk
+      if(f_trns%i_SGS_Lor_wk .gt. 0) write(*,*)                         &
+     &       'f_trns%i_SGS_Lor_wk  ', f_trns%i_SGS_Lor_wk,              &
+     &        ipol%i_SGS_Lor_wk, iphys%i_SGS_Lor_wk
+      if(f_trns%i_SGS_me_gen .gt. 0) write(*,*)                         &
+     &       'f_trns%i_SGS_me_gen  ', f_trns%i_SGS_me_gen,              &
+     &        ipol%i_SGS_me_gen, iphys%i_SGS_me_gen
+!
+      if(f_trns%i_Csim_SGS_h_flux .gt. 0) write(*,*)                    &
+     &       'f_trns%i_Csim_SGS_h_flux  ', f_trns%i_Csim_SGS_h_flux,    &
+     &       ipol%i_Csim_SGS_h_flux, iphys%i_Csim_SGS_h_flux
+      if(f_trns%i_Csim_SGS_c_flux .gt. 0) write(*,*)                    &
+     &       'f_trns%i_Csim_SGS_c_flux  ', f_trns%i_Csim_SGS_c_flux,    &
+     &       ipol%i_Csim_SGS_c_flux, iphys%i_Csim_SGS_c_flux
+      if(f_trns%i_Csim_SGS_m_flux .gt. 0) write(*,*)                    &
+     &       'f_trns%i_Csim_SGS_m_flux  ', f_trns%i_Csim_SGS_m_flux,    &
+     &       ipol%i_Csim_SGS_m_flux, iphys%i_Csim_SGS_m_flux
+      if(f_trns%i_Csim_SGS_Lorentz .gt. 0) write(*,*)                   &
+     &       'f_trns%i_Csim_SGS_Lorentz  ', f_trns%i_Csim_SGS_Lorentz,  &
+     &       ipol%i_Csim_SGS_Lorentz, iphys%i_Csim_SGS_Lorentz
+      if(f_trns%i_Csim_SGS_induction .gt. 0) write(*,*)                 &
+     &       'f_trns%i_Csim_SGS_induction  ',                           &
+     &       f_trns%i_Csim_SGS_induction, ipol%i_Csim_SGS_induction,    &
+     &       iphys%i_Csim_SGS_induction
+      if(f_trns%i_Csim_SGS_buoyancy .gt. 0) write(*,*)                  &
+     &       'f_trns%i_Csim_SGS_buoyancy  ',                            &
+     &       f_trns%i_Csim_SGS_buoyancy, ipol%i_Csim_SGS_buoyancy,      &
+     &       iphys%i_Csim_SGS_buoyancy
+      if(f_trns%i_Csim_SGS_comp_buo .gt. 0) write(*,*)                  &
+     &       'f_trns%i_Csim_SGS_comp_buo  ',                            &
+     &       f_trns%i_Csim_SGS_comp_buo, ipol%i_Csim_SGS_comp_buo,      &
+     &       iphys%i_Csim_SGS_comp_buo
 !
       if(f_trns%i_velo_scale .gt. 0) write(*,*)                         &
      &       'f_trns%i_velo_scale  ', f_trns%i_velo_scale,              &

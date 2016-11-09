@@ -23,16 +23,13 @@
       use m_t_step_parameter
       use m_mesh_data
       use m_node_phys_data
-      use t_sph_filtering_data
+      use m_sph_trans_arrays_MHD
 !
       use FEM_analyzer_sph_MHD
       use SPH_analyzer_snap
       use sections_for_1st
 !
       implicit none
-!
-      type(sph_filters_type), save :: sph_filters1(3)
-      private :: sph_filters1
 !
 ! ----------------------------------------------------------------------
 !
@@ -64,7 +61,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_mesh'
       call input_control_SPH_mesh(sph1, comms_sph1, sph_grps1, rj_fld1, &
-     &    pwr1, sph_filters1, mesh1, group1, ele_mesh1)
+     &    pwr1, trns_WK1%dynamic_SPH, mesh1, group1, ele_mesh1)
       call end_eleps_time(4)
 !
 !     --------------------- 
@@ -76,7 +73,7 @@
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'
-      call SPH_init_sph_snap(iphys, sph_filters1)
+      call SPH_init_sph_snap(iphys)
 !
 !        Initialize visualization
 !
@@ -95,7 +92,6 @@
 !
       use m_spheric_parameter
       use m_node_phys_data
-      use m_sph_trans_arrays_MHD
 !
       integer(kind = kint) :: visval
       integer(kind = kint) :: istep_psf, istep_iso
@@ -120,7 +116,7 @@
 !*  ----------  time evolution by spectral methood -----------------
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap'
-        call SPH_analyze_snap(sph_filters1, i_step_MHD)
+        call SPH_analyze_snap(i_step_MHD)
 !*
 !*  -----------  output field data --------------
 !*

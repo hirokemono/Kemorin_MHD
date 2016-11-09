@@ -16,11 +16,11 @@
 !!     &         (m_folding, sph_rtp, trns_SGS, node, iphys, nod_fld)
 !!
 !!      subroutine copy_SGS_diff_field_from_trans                       &
-!!     &         (m_folding, sph_rtp, trns_SGS2, node, iphys, nod_fld)
+!!     &         (m_folding, sph_rtp, trns_snap, node, iphys, nod_fld)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(address_4_sph_trans), intent(in) :: trns_MHD
 !!        type(address_4_sph_trans), intent(in) :: trns_SGS
-!!        type(address_4_sph_trans), intent(in) :: trns_SGS2
+!!        type(address_4_sph_trans), intent(in) :: trns_snap
 !!        type(node_data), intent(in) :: node
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -203,44 +203,44 @@
 !-----------------------------------------------------------------------
 !
       subroutine copy_SGS_diff_field_from_trans                         &
-     &         (m_folding, sph_rtp, trns_SGS2, node, iphys, nod_fld)
+     &         (m_folding, sph_rtp, trns_snap, node, iphys, nod_fld)
 !
       integer(kind = kint), intent(in) :: m_folding
       type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(address_4_sph_trans), intent(in) :: trns_SGS2
+      type(address_4_sph_trans), intent(in) :: trns_snap
       type(node_data), intent(in) :: node
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(inout) :: nod_fld
 !
 !
       call copy_vector_from_snap_trans                                  &
-     &   (trns_SGS2%b_trns%i_SGS_rot_inertia, iphys%i_SGS_rot_inertia,  &
-     &    m_folding, sph_rtp, trns_SGS2, node, nod_fld)
+     &   (trns_snap%b_trns%i_SGS_rot_inertia, iphys%i_SGS_rot_inertia,  &
+     &    m_folding, sph_rtp, trns_snap, node, nod_fld)
 !
       call copy_vector_from_snap_trans                                  &
-     &   (trns_SGS2%b_trns%i_SGS_rot_Lorentz, iphys%i_SGS_rot_Lorentz,  &
-     &    m_folding, sph_rtp, trns_SGS2, node, nod_fld)
+     &   (trns_snap%b_trns%i_SGS_rot_Lorentz, iphys%i_SGS_rot_Lorentz,  &
+     &    m_folding, sph_rtp, trns_snap, node, nod_fld)
 !
       call copy_vector_from_snap_trans                                  &
-     &   (trns_SGS2%b_trns%i_SGS_induction, iphys%i_SGS_induction,      &
-     &    m_folding, sph_rtp, trns_SGS2, node, nod_fld)
+     &   (trns_snap%b_trns%i_SGS_induction, iphys%i_SGS_induction,      &
+     &    m_folding, sph_rtp, trns_snap, node, nod_fld)
 !
 !
       call copy_scalar_from_snap_trans                                  &
-     &   (trns_SGS2%b_trns%i_SGS_div_inertia, iphys%i_SGS_div_inertia,  &
-     &    m_folding, sph_rtp, trns_SGS2, node, nod_fld)
+     &   (trns_snap%b_trns%i_SGS_div_inertia, iphys%i_SGS_div_inertia,  &
+     &    m_folding, sph_rtp, trns_snap, node, nod_fld)
 !
       call copy_scalar_from_snap_trans                                  &
-     &   (trns_SGS2%b_trns%i_SGS_div_Lorentz, iphys%i_SGS_div_Lorentz,  &
-     &    m_folding, sph_rtp, trns_SGS2, node, nod_fld)
+     &   (trns_snap%b_trns%i_SGS_div_Lorentz, iphys%i_SGS_div_Lorentz,  &
+     &    m_folding, sph_rtp, trns_snap, node, nod_fld)
 !
       call copy_scalar_from_snap_trans                                  &
-     &   (trns_SGS2%b_trns%i_SGS_div_h_flux, iphys%i_SGS_div_h_flux,    &
-     &    m_folding, sph_rtp, trns_SGS2, node, nod_fld)
+     &   (trns_snap%b_trns%i_SGS_div_h_flux, iphys%i_SGS_div_h_flux,    &
+     &    m_folding, sph_rtp, trns_snap, node, nod_fld)
 !
       call copy_scalar_from_snap_trans                                  &
-     &   (trns_SGS2%b_trns%i_SGS_div_c_flux, iphys%i_SGS_div_c_flux,    &
-     &    m_folding, sph_rtp, trns_SGS2, node, nod_fld)
+     &   (trns_snap%b_trns%i_SGS_div_c_flux, iphys%i_SGS_div_c_flux,    &
+     &    m_folding, sph_rtp, trns_snap, node, nod_fld)
 !
       end  subroutine copy_SGS_diff_field_from_trans
 !

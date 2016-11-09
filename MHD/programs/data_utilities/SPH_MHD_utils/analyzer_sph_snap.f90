@@ -26,15 +26,12 @@
       use m_node_phys_data
       use m_element_id_4_node
       use m_jacobians
-      use t_sph_filtering_data
+      use m_sph_trans_arrays_MHD
 !
       use SPH_analyzer_snap
       use visualizer_all
 !
       implicit none
-!
-      type(sph_filters_type), save :: sph_filters1(3)
-!      private :: sph_filters1
 !
 ! ----------------------------------------------------------------------
 !
@@ -47,7 +44,6 @@
       use m_ctl_data_sph_MHD
       use m_spheric_parameter
       use m_sph_spectr_data
-      use m_sph_trans_arrays_MHD
       use m_rms_4_sph_spectr
 !
       use init_sph_MHD_elapsed_label
@@ -68,7 +64,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_mesh'
       call input_control_SPH_mesh(sph1, comms_sph1, sph_grps1, rj_fld1, &
-     &    pwr1, sph_filters1, mesh1, group1, ele_mesh1)
+     &    pwr1, trns_WK1%dynamic_SPH, mesh1, group1, ele_mesh1)
       call end_eleps_time(4)
 !
 !     --------------------- 
@@ -80,7 +76,7 @@
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'
-      call SPH_init_sph_snap(iphys, sph_filters1)
+      call SPH_init_sph_snap(iphys)
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize(mesh1, group1, ele_mesh1, nod_fld1)
@@ -97,7 +93,6 @@
 !
       use m_spheric_parameter
       use m_node_phys_data
-      use m_sph_trans_arrays_MHD
 !
       use FEM_analyzer_sph_MHD
 !
@@ -124,7 +119,7 @@
 !*  ----------  time evolution by spectral methood -----------------
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap'
-        call SPH_analyze_snap(sph_filters1, i_step_MHD)
+        call SPH_analyze_snap(i_step_MHD)
 !*
 !*  -----------  output field data --------------
 !*
@@ -185,7 +180,6 @@
 !
       use m_spheric_parameter
       use m_node_phys_data
-      use m_sph_trans_arrays_MHD
 !
       use volume_rendering
       use FEM_analyzer_sph_MHD
@@ -211,7 +205,7 @@
 !*
       i_step_MHD = i_step_init
       if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap'
-      call SPH_analyze_snap(sph_filters1, i_step_MHD)
+      call SPH_analyze_snap(i_step_MHD)
 !*
       if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_MHD'
       call SPH_to_FEM_bridge_MHD                                        &

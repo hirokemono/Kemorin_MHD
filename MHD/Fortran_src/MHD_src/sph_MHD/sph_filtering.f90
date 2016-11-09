@@ -7,7 +7,7 @@
 !>@brief  Evaluate horizontal filtering in spectrunm space
 !!
 !!@verbatim
-!!      subroutine init_SGS_model_sph_mhd(sph, sph_grps, sph_filters)
+!!      subroutine init_SGS_model_sph_mhd(sph, sph_grps, dynamic_SPH)
 !!
 !!      subroutine vector_sph_filter(i_field, i_filter,                 &
 !!     &          sph_rj, r_filter, sph_filter, rj_fld)
@@ -31,9 +31,19 @@
 !
       implicit none
 !
-      type(SGS_terms_address) :: ifld_sgs2, icomp_sgs2
-      type(SGS_coefficients_type) :: sgs_coefs2
-      type(dynamic_model_data) :: wk_sgs2
+      type dynamic_SGS_data_4_sph
+!>         Field adddress for dynamic SGS model
+        type(SGS_terms_address) :: ifld_sgs
+!>         Component adddress for dynamic SGS model
+        type(SGS_terms_address) :: icomp_sgs
+!>         Data array for dynamic SGS model
+        type(SGS_coefficients_type) :: sgs_coefs
+!>         Work area for dynamic SGS model
+        type(dynamic_model_data) :: wk_sgs
+!
+!>         Filter functions
+        type(sph_filters_type) :: sph_filters(3)
+      end type dynamic_SGS_data_4_sph
 !
 ! ----------------------------------------------------------------------
 !
@@ -41,35 +51,21 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_SGS_model_sph_mhd(sph, sph_grps, sph_filters)
+      subroutine init_SGS_model_sph_mhd(sph, sph_grps, dynamic_SPH)
 !
       use calypso_mpi
-      use wider_radial_filter_data
-      use count_sgs_components
 !
       type(sph_grids), intent(in) ::  sph
       type(sph_group_data), intent(in) :: sph_grps
-      type(sph_filters_type), intent(inout) :: sph_filters(3)
-!
-      integer(kind = kint) :: num_med
+      type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !
 !
       call init_filter_4_SPH_MHD(sph%sph_params, sph%sph_rj, sph_grps,  &
-     &    sph_filters)
+     &    dynamic_SPH%sph_filters)
 !
-!
-!
-      num_med = sph%sph_rtp%nidx_rtp(1) * sph%sph_rtp%nidx_rtp(2)
-      call s_count_sgs_components(sgs_coefs2)
-      call alloc_sgs_coefs_layer(num_med,                               &
-     &    sgs_coefs2%num_field, sgs_coefs2%ntot_comp, wk_sgs2)
-!
-      call alloc_SGS_num_coefs(sgs_coefs2)
-!
-      call set_sgs_addresses                                            &
-     &   (ifld_sgs2, icomp_sgs2, wk_sgs2, sgs_coefs2)
-      call check_sgs_addresses                                          &
-     &   (ifld_sgs2, icomp_sgs2, wk_sgs2, sgs_coefs2)
+      call init_work_4_SGS_sph_mhd                                      &
+     &   (sph%sph_rtp, dynamic_SPH%ifld_sgs, dynamic_SPH%icomp_sgs,     &
+     &    dynamic_SPH%sgs_coefs, dynamic_SPH%wk_sgs)
 !
       end subroutine init_SGS_model_sph_mhd
 !
@@ -88,30 +84,67 @@
 !
 !
       call const_sph_radial_filter(sph_rj, sph_grps, sph_filters(1))
-      call const_sph_radial_filter(sph_rj, sph_grps, sph_filters(2))
-!
-      call cal_wider_fileters(sph_rj, sph_filters(1)%r_filter,          &
-     &   sph_filters(2)%r_filter, sph_filters(3)%r_filter)
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'check_radial_filter sph_filters(1)'
         call check_radial_filter(sph_rj, sph_filters(1)%r_filter)
-        write(*,*) 'check_radial_filter sph_filters(2)%r_filter'
-        call check_radial_filter(sph_rj, sph_filters(2)%r_filter)
-        write(*,*) 'check_radial_filter sph_filters(3)%r_filter'
-        call check_radial_filter(sph_rj, sph_filters(3)%r_filter)
       end if
 !
       call const_sph_gaussian_filter(sph_params%l_truncation,           &
      &    sph_filters(1)%sph_moments, sph_filters(1)%sph_filter)
 !
-      call const_sph_gaussian_filter(sph_params%l_truncation,           &
-     &    sph_filters(2)%sph_moments, sph_filters(2)%sph_filter)
+!   Second filter
+!      call const_sph_radial_filter(sph_rj, sph_grps, sph_filters(2))
 !
-      call const_sph_gaussian_filter(sph_params%l_truncation,           &
-     &    sph_filters(3)%sph_moments, sph_filters(3)%sph_filter)
+!      if(iflag_debug .gt. 0) then
+!        call check_radial_filter(sph_rj, sph_filters(2)%r_filter)
+!      end if
+!
+!      call const_sph_gaussian_filter(sph_params%l_truncation,          &
+!     &    sph_filters(2)%sph_moments, sph_filters(2)%sph_filter)
+!
+!
+!   Multiplied filter
+!      call cal_wider_fileters(sph_rj, sph_filters(1)%r_filter,         &
+!     &   sph_filters(2)%r_filter, sph_filters(3)%r_filter)
+!
+!      if(iflag_debug .gt. 0) then
+!        call check_radial_filter(sph_rj, sph_filters(3)%r_filter)
+!      end if
+!
+!      call const_sph_gaussian_filter(sph_params%l_truncation,          &
+!     &    sph_filters(3)%sph_moments, sph_filters(3)%sph_filter)
 !
       end subroutine init_filter_4_SPH_MHD
+!
+! ----------------------------------------------------------------------
+!
+      subroutine init_work_4_SGS_sph_mhd                                &
+     &         (sph_rtp, ifld_sgs, icomp_sgs, sgs_coefs, wk_sgs)
+!
+      use count_sgs_components
+!
+      type(sph_rtp_grid), intent(in) ::  sph_rtp
+      type(SGS_terms_address), intent(inout) :: ifld_sgs, icomp_sgs
+      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+      type(dynamic_model_data), intent(inout) :: wk_sgs
+!
+      integer(kind = kint) :: num_med
+!
+!
+      num_med = sph_rtp%nidx_rtp(1) * sph_rtp%nidx_rtp(2)
+      call s_count_sgs_components(sgs_coefs)
+      call alloc_sgs_coefs_layer(num_med,                               &
+     &    sgs_coefs%num_field, sgs_coefs%ntot_comp, wk_sgs)
+!
+      call alloc_SGS_num_coefs(sgs_coefs)
+!
+      call set_sgs_addresses                                            &
+     &   (ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
+      call check_sgs_addresses                                          &
+     &   (ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
+!
+      end subroutine init_work_4_SGS_sph_mhd
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

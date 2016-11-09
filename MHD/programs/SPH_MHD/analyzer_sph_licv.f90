@@ -19,14 +19,11 @@
       use m_machine_parameter
       use m_work_time
       use m_control_parameter
-      use t_sph_filtering_data
+      use m_sph_trans_arrays_MHD
 !
       use SPH_analyzer_licv
 !
       implicit none
-!
-      type(sph_filters_type), save :: sph_filters1(3)
-      private :: sph_filters1
 !
 ! ----------------------------------------------------------------------
 !
@@ -55,8 +52,8 @@
       call start_eleps_time(4)
       call read_control_4_sph_MHD_noviz
 !
-      call input_control_4_SPH_MHD_nosnap                               &
-     &   (sph1, comms_sph1, sph_grps1, rj_fld1, pwr1, sph_filters1)
+      call input_control_4_SPH_MHD_nosnap(sph1, comms_sph1,             &
+     &    sph_grps1, rj_fld1, pwr1, trns_WK1%dynamic_SPH)
       call end_eleps_time(4)
 !
 !    precondition elaps start

@@ -22,15 +22,14 @@
       use m_control_parameter
       use m_t_int_parameter
       use m_t_step_parameter
+      use m_sph_trans_arrays_MHD
       use t_spheric_parameter
-      use t_sph_filtering_data
 !
       use SPH_analyzer_sph_pick_circ
 !
       implicit none
 !
       type(sph_grids), private :: sph_gen
-      type(sph_filters_type), private :: sph_filters1(3)
 !
 ! ----------------------------------------------------------------------
 !
@@ -64,7 +63,7 @@
       call read_control_4_sph_snap_noviz
       if (iflag_debug.eq.1) write(*,*) 'set_control_SGS_SPH_MHD'
       call set_control_SGS_SPH_MHD(sph_gen, rj_fld1, sph_file_param,    &
-     &    sph_fst_IO, pwr1, sph_filters1)
+     &    sph_fst_IO, pwr1, trns_WK1%dynamic_SPH%sph_filters)
       call set_ctl_params_pick_circle
 !
 !   Load spherical harmonics data
@@ -78,7 +77,7 @@
 !
       call start_eleps_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_pick_circle'
-      call SPH_init_sph_pick_circle(iphys, sph_filters1)
+      call SPH_init_sph_pick_circle(iphys)
       call calypso_MPI_barrier
 !
       call end_eleps_time(2)
@@ -107,7 +106,7 @@
 !*  ----------  time evolution by spectral methood -----------------
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_pick_circle'
-        call SPH_analyze_pick_circle(sph_filters1, i_step_MHD)
+        call SPH_analyze_pick_circle(i_step_MHD)
 !*
 !*  -----------  exit loop --------------
 !*

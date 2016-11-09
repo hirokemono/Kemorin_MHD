@@ -8,12 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine init_sph_transform_MHD(ipol, idpdr, itor, iphys,     &
-!!     &          sph, comms_sph, omega_sph, trans_p, trns_WK, rj_fld)
+!!     &          sph, comms_sph, omega_sph, trans_p, WK, rj_fld)
 !!        type(phys_address), intent(in) :: ipol, idpdr, itor
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
 !!        type(parameters_4_sph_trans), intent(inout) :: trans_p
-!!        type(works_4_sph_trans_MHD), intent(inout) :: trns_WK
+!!        type(works_4_sph_trans_MHD), intent(inout) :: WK
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !!
@@ -60,7 +60,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine init_sph_transform_MHD(ipol, idpdr, itor, iphys,       &
-     &          sph, comms_sph, omega_sph, trans_p, trns_WK, rj_fld)
+     &          sph, comms_sph, omega_sph, trans_p, WK, rj_fld)
 !
       use m_control_parameter
       use set_address_sph_trans_MHD
@@ -78,7 +78,7 @@
       type(sph_rotation), intent(in) :: omega_sph
 !
       type(parameters_4_sph_trans), intent(inout) :: trans_p
-      type(works_4_sph_trans_MHD), intent(inout) :: trns_WK
+      type(works_4_sph_trans_MHD), intent(inout) :: WK
       type(phys_data), intent(inout) :: rj_fld
 !
 !>      total number of components for spherical harmonics transform
@@ -93,36 +93,36 @@
 !
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &                     'set_addresses_trans_sph_MHD'
-      call set_addresses_trans_sph_MHD(ipol, trns_WK%trns_MHD,          &
+      call set_addresses_trans_sph_MHD(ipol, WK%trns_MHD,               &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-      call set_addresses_trans_sph_SGS(ipol, trns_WK%trns_SGS,          &
+      call set_addresses_trans_sph_SGS(ipol, WK%trns_SGS,               &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-      call set_addresses_snapshot_trans(ipol, trns_WK%trns_snap,        &
+      call set_addresses_snapshot_trans(ipol, WK%trns_snap,             &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-      call set_addresses_temporal_trans(ipol, trns_WK%trns_tmp,         &
+      call set_addresses_temporal_trans(ipol, WK%trns_tmp,              &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
       if(iflag_debug .ge. iflag_routine_msg) then
         call check_address_trans_sph_MHD(ipol, idpdr, itor, iphys,      &
-     &      trns_WK%trns_MHD, ncomp_max_trans)
+     &      WK%trns_MHD, ncomp_max_trans)
         call check_address_trans_sph_SGS(ipol, idpdr, itor, iphys,      &
-     &      trns_WK%trns_SGS)
+     &      WK%trns_SGS)
         call check_address_trans_sph_snap(ipol, idpdr, itor, iphys,     &
-     &      trns_WK%trns_snap)
+     &      WK%trns_snap)
         call check_address_trans_sph_tmp(ipol, idpdr, itor, iphys,      &
-     &      trns_WK%trns_tmp)
+     &      WK%trns_tmp)
       end if
 !
-      call alloc_sph_trans_address(sph%sph_rtp, trns_WK)
+      call alloc_sph_trans_address(sph%sph_rtp, WK)
 !
       call sel_sph_transform_MHD(ipol, sph, comms_sph, omega_sph,       &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
-     &    trans_p, trns_WK, rj_fld)
+     &    trans_p, WK, rj_fld)
 
       if(iflag_SGS_model .gt. 0) then
         call init_MHD_FFT_select(my_rank, sph%sph_rtp, ncomp_max_trans, &
-     &      trns_WK%trns_SGS%ncomp_rtp_2_rj,                            &
-     &      trns_WK%trns_SGS%ncomp_rj_2_rtp, trns_WK%SGS_mul_FFTW)
+     &      WK%trns_SGS%ncomp_rtp_2_rj,                                 &
+     &      WK%trns_SGS%ncomp_rj_2_rtp, WK%SGS_mul_FFTW)
       end if
 !
       end subroutine init_sph_transform_MHD
@@ -132,7 +132,7 @@
       subroutine sel_sph_transform_MHD                                  &
      &         (ipol, sph, comms_sph, omega_sph,                        &
      &          ncomp_max_trans, nvector_max_trans, nscalar_max_trans,  &
-     &          trans_p, trns_WK, rj_fld)
+     &          trans_p, WK, rj_fld)
 !
       use init_sph_trans
       use init_FFT_4_MHD
@@ -156,7 +156,7 @@
       integer(kind = kint), intent(in) :: nscalar_max_trans
 !
       type(parameters_4_sph_trans), intent(inout) :: trans_p
-      type(works_4_sph_trans_MHD), intent(inout) :: trns_WK
+      type(works_4_sph_trans_MHD), intent(inout) :: WK
       type(phys_data), intent(inout) :: rj_fld
 !
       character(len=kchara) :: tmpchara
@@ -166,8 +166,8 @@
       call initialize_legendre_trans(ncomp_max_trans,                   &
      &    sph, comms_sph, trans_p%leg, trans_p%idx_trns)
       call init_fourier_transform_4_MHD(ncomp_max_trans,                &
-     &    sph%sph_rtp, comms_sph%comm_rtp, trns_WK%trns_MHD,            &
-     &    trns_WK%MHD_mul_FFTW)
+     &    sph%sph_rtp, comms_sph%comm_rtp, WK%trns_MHD,                 &
+     &    WK%MHD_mul_FFTW)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_colatitude_rtp'
       call set_colatitude_rtp(sph%sph_rtp, sph%sph_rj, trans_p%leg)
@@ -179,7 +179,7 @@
       call select_legendre_transform                                    &
      &   (sph, comms_sph, omega_sph, trans_p, ipol,                     &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
-     &    rj_fld, trns_WK%trns_MHD, trns_WK%MHD_mul_FFTW)
+     &    rj_fld, WK%trns_MHD, WK%MHD_mul_FFTW)
 !
       call sel_init_legendre_trans                                      &
      &    (ncomp_max_trans, nvector_max_trans, nscalar_max_trans,       &

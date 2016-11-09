@@ -12,18 +12,15 @@
 !>@brief Evolution loop for spherical MHD
 !!
 !!@verbatim
-!!      subroutine SPH_init_sph_snap(iphys, sph_filters)
+!!      subroutine SPH_init_sph_snap(iphys)
 !!        type(phys_address), intent(in) :: iphys
-!!        type(sph_filters_type), intent(inout) :: sph_filters(3)
-!!      subroutine SPH_analyze_snap(sph_filters, i_step)
-!!        type(sph_filters_type), intent(in) :: sph_filters(3)
+!!      subroutine SPH_analyze_snap(i_step)
 !!@endverbatim
 !
       module SPH_analyzer_snap
 !
       use m_precision
       use t_phys_address
-      use t_sph_filtering_data
 !
       implicit none
 !
@@ -33,7 +30,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_init_sph_snap(iphys, sph_filters)
+      subroutine SPH_init_sph_snap(iphys)
 !
       use m_constants
       use calypso_mpi
@@ -66,7 +63,6 @@
       use sph_filtering
 !
       type(phys_address), intent(in) :: iphys
-      type(sph_filters_type), intent(inout) :: sph_filters(3)
 !
 !
 !   Allocate spectr field data
@@ -89,8 +85,9 @@
 ! ---------------------------------
 !
       if(iflag_SGS_model .gt. 0) then
-      if(iflag_debug.gt.0) write(*,*)' init_SGS_model_sph_mhd'
-      call init_SGS_model_sph_mhd(sph1, sph_grps1, sph_filters)
+        if(iflag_debug.gt.0) write(*,*)' init_SGS_model_sph_mhd'
+        call init_SGS_model_sph_mhd                                     &
+     &     (sph1, sph_grps1, trns_WK1%dynamic_SPH)
       end if
 !
 !  -------------------------------
@@ -113,7 +110,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_snap(sph_filters, i_step)
+      subroutine SPH_analyze_snap(i_step)
 !
       use m_work_time
       use m_t_step_parameter
@@ -133,7 +130,6 @@
       use sph_mhd_rms_IO
 !
       integer(kind = kint), intent(in) :: i_step
-      type(sph_filters_type), intent(in) :: sph_filters(3)
 !
 !
       call read_alloc_sph_rst_4_snap                                    &
@@ -153,7 +149,7 @@
 !*
       call start_eleps_time(8)
       call nonlinear(sph1, comms_sph1, omega_sph1, r_2nd, trans_p1,     &
-     &    ref_temp1%t_rj, sph_filters, ipol, itor, trns_WK1, rj_fld1)
+     &    ref_temp1%t_rj, ipol, itor, trns_WK1, rj_fld1)
       call end_eleps_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=

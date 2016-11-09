@@ -67,7 +67,7 @@
 !*  ----------  time evolution by spectral methood -----------------
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_special_snap'
-        call SPH_analyze_special_snap(sph_filters1, i_step_MHD)
+        call SPH_analyze_special_snap(i_step_MHD)
 !*
 !*  -----------  output field data --------------
 !*
@@ -122,7 +122,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_special_snap(sph_filters, i_step)
+      subroutine SPH_analyze_special_snap(i_step)
 !
       use m_work_time
       use m_t_step_parameter
@@ -142,7 +142,6 @@
       use sph_mhd_rms_IO
 !
       integer(kind = kint), intent(in) :: i_step
-      type(sph_filters_type), intent(in) :: sph_filters(3)
 !
 !
       call read_alloc_sph_rst_4_snap                                    &
@@ -166,7 +165,7 @@
 !*
       call start_eleps_time(8)
       call nonlinear(sph1, comms_sph1, omega_sph1, r_2nd, trans_p1,     &
-     &    ref_temp1%t_rj, sph_filters, ipol, itor, trns_WK1, rj_fld1)
+     &    ref_temp1%t_rj, ipol, itor, trns_WK1, rj_fld1)
       call end_eleps_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=

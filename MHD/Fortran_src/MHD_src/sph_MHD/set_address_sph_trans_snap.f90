@@ -162,6 +162,16 @@
      &    iphys%i_rot_comp_buo, nvector_snap_rj_2_rtp,                  &
      &    bs_trns%i_rot_comp_buo)
 !
+      call add_vec_trans_flag(ipol%i_SGS_rot_inertia,                   &
+     &    iphys%i_SGS_rot_inertia, nvector_snap_rj_2_rtp,               &
+     &    bs_trns%i_SGS_rot_inertia)
+      call add_vec_trans_flag(ipol%i_SGS_rot_Lorentz,                   &
+     &    iphys%i_SGS_rot_Lorentz, nvector_snap_rj_2_rtp,               &
+     &    bs_trns%i_SGS_rot_Lorentz)
+      call add_vec_trans_flag(ipol%i_SGS_induction,                     &
+     &    iphys%i_SGS_induction, nvector_snap_rj_2_rtp,                 &
+     &    bs_trns%i_SGS_induction)
+!
       call add_vec_trans_flag(ipol%i_press_grad, iphys%i_press_grad,    &
      &    nvector_snap_rj_2_rtp, bs_trns%i_press_grad)
       call add_vec_trans_flag(ipol%i_induction, iphys%i_induction,      &
@@ -232,6 +242,19 @@
      &    iphys%i_div_Coriolis, nvector_snap_rj_2_rtp,                  &
      &    nscalar_snap_rj_2_rtp, bs_trns%i_div_Coriolis)
 !
+      call add_scalar_trans_flag(ipol%i_SGS_div_inertia,                &
+     &    iphys%i_SGS_div_inertia, nvector_snap_rj_2_rtp,               &
+     &    nscalar_snap_rj_2_rtp, bs_trns%i_SGS_div_inertia)
+      call add_scalar_trans_flag(ipol%i_SGS_div_Lorentz,                &
+     &    iphys%i_SGS_div_Lorentz, nvector_snap_rj_2_rtp,               &
+     &    nscalar_snap_rj_2_rtp, bs_trns%i_SGS_div_Lorentz)
+      call add_scalar_trans_flag(ipol%i_SGS_div_h_flux,                 &
+     &    iphys%i_SGS_div_h_flux, nvector_snap_rj_2_rtp,                &
+     &    nscalar_snap_rj_2_rtp, bs_trns%i_SGS_div_h_flux)
+      call add_scalar_trans_flag(ipol%i_SGS_div_c_flux,                 &
+     &    iphys%i_SGS_div_c_flux, nvector_snap_rj_2_rtp,                &
+     &    nscalar_snap_rj_2_rtp, bs_trns%i_SGS_div_c_flux)
+!
       end subroutine b_trans_address_scalar_snap
 !
 !-----------------------------------------------------------------------
@@ -289,6 +312,46 @@
       call add_scalar_trans_flag(ipol%i_f_buo_gen, iphys%i_f_buo_gen,   &
      &    nvector_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                 &
      &    fs_trns%i_f_buo_gen)
+!
+      call add_scalar_trans_flag                                        &
+     &   (ipol%i_reynolds_wk, iphys%i_reynolds_wk,                      &
+     &    nvector_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                 &
+     &    fs_trns%i_reynolds_wk)
+      call add_scalar_trans_flag(ipol%i_SGS_Lor_wk, iphys%i_SGS_Lor_wk, &
+     &    nvector_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                 &
+     &    fs_trns%i_SGS_Lor_wk)
+      call add_scalar_trans_flag(ipol%i_SGS_me_gen, iphys%i_SGS_me_gen, &
+     &    nvector_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                 &
+     &    fs_trns%i_SGS_me_gen)
+!
+      call add_scalar_trans_flag                                        &
+     &   (ipol%i_Csim_SGS_h_flux, iphys%i_Csim_SGS_h_flux,              &
+     &    nvector_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                 &
+     &    fs_trns%i_Csim_SGS_h_flux)
+      call add_scalar_trans_flag                                        &
+     &   (ipol%i_Csim_SGS_c_flux, iphys%i_Csim_SGS_c_flux,              &
+     &    nvector_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                 &
+     &    fs_trns%i_Csim_SGS_c_flux)
+      call add_scalar_trans_flag                                        &
+     &   (ipol%i_Csim_SGS_m_flux, iphys%i_Csim_SGS_m_flux,              &
+     &    nvector_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                 &
+     &    fs_trns%i_Csim_SGS_m_flux)
+      call add_scalar_trans_flag                                        &
+     &   (ipol%i_Csim_SGS_Lorentz, iphys%i_Csim_SGS_Lorentz,            &
+     &    nvector_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                 &
+     &    fs_trns%i_Csim_SGS_Lorentz)
+      call add_scalar_trans_flag                                        &
+     &   (ipol%i_Csim_SGS_induction, iphys%i_Csim_SGS_induction,        &
+     &    nvector_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                 &
+     &    fs_trns%i_Csim_SGS_induction)
+      call add_scalar_trans_flag                                        &
+     &   (ipol%i_Csim_SGS_buoyancy, iphys%i_Csim_SGS_buoyancy,          &
+     &    nvector_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                 &
+     &    fs_trns%i_Csim_SGS_buoyancy)
+      call add_scalar_trans_flag                                        &
+     &   (ipol%i_Csim_SGS_comp_buo, iphys%i_Csim_SGS_comp_buo,          &
+     &    nvector_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                 &
+     &    fs_trns%i_Csim_SGS_comp_buo)
 !
       call add_scalar_trans_flag(ipol%i_velo_scale, iphys%i_velo_scale, &
      &    nvector_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                 &
