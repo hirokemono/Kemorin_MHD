@@ -120,7 +120,6 @@
       type(address_4_sph_trans), intent(inout) :: trns_snap
 !
 !
-      write(*,*) ''
       if(ifld_sgs%i_mom_flux .gt. 0) then
         call set_model_coefs_sph_snap(sph_rtp,                          &
      &      trns_snap%f_trns%i_Csim_SGS_m_flux, ifld_sgs%i_mom_flux,    &
@@ -189,6 +188,7 @@
      &    wk_sgs%comp_coef(1,icomp_sgs), wk_sgs%comp_clip(1,icomp_sgs), &
      &    wk_sgs%fld_coef(1,ifld_sgs))
           call calypso_mpi_barrier
+        write(*,*) 'wk_sgs%fld_coef', wk_sgs%fld_coef(:,ifld_sgs)
 !
         write(*,*) 'sel_product_model_coefs'
       call sel_product_model_coefs                                      &

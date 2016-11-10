@@ -266,17 +266,24 @@
       subroutine cal_scalar_sph_model_coefs                             &
      &         (nnod_med, sgs_zl, sgs_zt, sgs_c)
 !
+      integer(kind = kint), intent(in) :: nnod_med
       real(kind = kreal), intent(in) :: sgs_zl(nnod_med)
       real(kind = kreal), intent(in) :: sgs_zt(nnod_med)
 !
       real(kind = kreal), intent(inout) :: sgs_c(nnod_med)
 !
-      integer(kind = kint) :: nnod_med
+      integer(kind = kint) :: inod
 !
 !
-!$omp parallel workshare
-      sgs_c(1:nnod_med) = sgs_zl(1:nnod_med) / sgs_zt(1:nnod_med)
-!$omp end parallel workshare
+!$omp parallel do
+      do inod = 1, nnod_med
+        if( sgs_zt(inod) .eq. zero) then
+          sgs_c(inod) = one
+        else
+          sgs_c(inod) = sgs_zl(inod) / sgs_zt(inod)
+        end if
+      end do
+!$omp end parallel do
 !
       end subroutine cal_scalar_sph_model_coefs
 !
@@ -285,21 +292,28 @@
       subroutine cal_vector_sph_model_coefs                             &
      &         (nnod_med, sgs_zl, sgs_zt, sgs_c)
 !
+      integer(kind = kint), intent(in) :: nnod_med
       real(kind = kreal), intent(in) :: sgs_zl(nnod_med,3)
       real(kind = kreal), intent(in) :: sgs_zt(nnod_med,3)
 !
       real(kind = kreal), intent(inout) :: sgs_c(nnod_med)
 !
-      integer(kind = kint) :: nnod_med
+      integer(kind = kint) :: inod
+      real(kind = kreal) :: rflag
 !
 !
-      write(*,*) 'tako', sgs_zl(:,1:3)
-!$omp parallel workshare
-      sgs_c(1:nnod_med) = (sgs_zl(1:nnod_med,1) / sgs_zt(1:nnod_med,1)  &
-     &                   + sgs_zl(1:nnod_med,2) / sgs_zt(1:nnod_med,2)  &
-     &                   + sgs_zl(1:nnod_med,3) / sgs_zt(1:nnod_med,3)) &
-     &                    / three
-!$omp end parallel workshare
+!$omp parallel do private(rflag)
+      do inod = 1, nnod_med
+        rflag = sgs_zt(inod,1) * sgs_zt(inod,2) * sgs_zt(inod,3)
+        if(rflag .eq. zero) then
+          sgs_c(inod) = one
+        else
+          sgs_c(inod) = (sgs_zl(inod,1) / sgs_zt(inod,1)                &
+     &                 + sgs_zl(inod,2) / sgs_zt(inod,2)                &
+     &                 + sgs_zl(inod,3) / sgs_zt(inod,3)) / three
+        end if
+      end do
+!$omp end parallel do
 !
       end subroutine cal_vector_sph_model_coefs
 !

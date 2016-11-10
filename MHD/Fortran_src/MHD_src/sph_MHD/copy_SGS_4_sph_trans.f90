@@ -126,15 +126,28 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-!  Copy vectors
-      call copy_vector_from_snap_trans                                  &
-     &   (trns_SGS%b_trns%i_velo, iphys%i_velo,                         &
+!
+      call copy_vector_from_snap_force                                  &
+     &   (trns_SGS%b_trns%i_wide_SGS_inertia, iphys%i_wide_SGS_inertia, &
      &    m_folding, sph_rtp, trns_SGS, node, nod_fld)
 !
-!  Copy scalars
-      call copy_scalar_from_snap_trans                                  &
-     &   (trns_SGS%b_trns%i_div_Coriolis, iphys%i_div_Coriolis,         &
+      call copy_vector_from_snap_force                                  &
+     &   (trns_SGS%b_trns%i_wide_SGS_Lorentz, iphys%i_wide_SGS_Lorentz, &
      &    m_folding, sph_rtp, trns_SGS, node, nod_fld)
+!
+      call copy_vector_from_snap_force                                  &
+     &   (trns_SGS%b_trns%i_wide_SGS_vp_induct,                         &
+     &    iphys%i_wide_SGS_vp_induct,                                   &
+     &    m_folding, sph_rtp, trns_SGS, node, nod_fld)
+!
+      call copy_vector_from_snap_force                                  &
+     &   (trns_SGS%b_trns%i_wide_SGS_h_flux, iphys%i_wide_SGS_h_flux,   &
+     &    m_folding, sph_rtp, trns_SGS, node, nod_fld)
+!
+      call copy_vector_from_snap_force                                  &
+     &   (trns_SGS%b_trns%i_wide_SGS_c_flux, iphys%i_wide_SGS_c_flux,   &
+     &    m_folding, sph_rtp, trns_SGS, node, nod_fld)
+!
 !
       end subroutine copy_SGS_field_from_trans
 !
@@ -170,29 +183,6 @@
       call copy_vector_from_snap_force                                  &
      &   (trns_SGS%f_trns%i_SGS_c_flux, iphys%i_SGS_c_flux,             &
      &    m_folding, sph_rtp, trns_SGS, node, nod_fld)
-!
-!
-      call copy_vector_from_snap_force                                  &
-     &   (trns_SGS%f_trns%i_wide_SGS_inertia, iphys%i_wide_SGS_inertia, &
-     &    m_folding, sph_rtp, trns_SGS, node, nod_fld)
-!
-      call copy_vector_from_snap_force                                  &
-     &   (trns_SGS%f_trns%i_wide_SGS_Lorentz, iphys%i_wide_SGS_Lorentz, &
-     &    m_folding, sph_rtp, trns_SGS, node, nod_fld)
-!
-      call copy_vector_from_snap_force                                  &
-     &   (trns_SGS%f_trns%i_wide_SGS_vp_induct,                         &
-     &    iphys%i_wide_SGS_vp_induct,                                   &
-     &    m_folding, sph_rtp, trns_SGS, node, nod_fld)
-!
-      call copy_vector_from_snap_force                                  &
-     &   (trns_SGS%f_trns%i_wide_SGS_h_flux, iphys%i_wide_SGS_h_flux,   &
-     &    m_folding, sph_rtp, trns_SGS, node, nod_fld)
-!
-      call copy_vector_from_snap_force                                  &
-     &   (trns_SGS%f_trns%i_wide_SGS_c_flux, iphys%i_wide_SGS_c_flux,   &
-     &    m_folding, sph_rtp, trns_SGS, node, nod_fld)
-!
 !
 !      call copy_scalar_from_snap_force                                 &
 !     &   (trns_SGS%f_trns%i_comp_scale, iphys%i_comp_scale,            &
