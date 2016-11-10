@@ -232,13 +232,18 @@
      &   (sph_params%m_folding, sph_rtp, WK%trns_snap,                  &
      &    mesh%node, iphys, nod_fld)
 !
-      call copy_filtered_forces_to_snap                                 &
-     &   (sph_params%m_folding, sph_rtp, WK%trns_MHD,                   &
-     &    mesh%node, iphys, nod_fld)
-      if (iflag_debug.gt.0) write(*,*) 'copy_SGS_field_from_trans'
-      call copy_SGS_field_from_trans                                    &
-     &   (sph_params%m_folding, sph_rtp, WK%trns_SGS,                   &
-     &    mesh%node, iphys, nod_fld)
+!
+!!!!!   These routines are for debugging. Be careful!
+!
+!  Check nonlinear terms by filtered field as SGS term list
+!      call copy_filtered_forces_to_snap                                &
+!     &   (sph_params%m_folding, sph_rtp, WK%trns_MHD,                  &
+!     &    mesh%node, iphys, nod_fld)
+!
+!  Check filtered nonlinear terms by using SGS term list
+!      call copy_SGS_field_from_trans                                   &
+!     &   (sph_params%m_folding, sph_rtp, WK%trns_SGS,                  &
+!     &    mesh%node, iphys, nod_fld)
 !
       end subroutine SPH_to_FEM_bridge_MHD
 !

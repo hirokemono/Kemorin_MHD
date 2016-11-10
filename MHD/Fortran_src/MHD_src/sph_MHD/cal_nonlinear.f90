@@ -303,7 +303,6 @@
      &      ipol, rj_fld, trns_SGS, SGS_mul_FFTW)
         call end_eleps_time(14)
 !
-        return
         call start_eleps_time(15)
         if (iflag_debug.eq.1) write(*,*) 'similarity_SGS_terms_rtp'
         call similarity_SGS_terms_rtp(sph%sph_rtp,                      &
@@ -312,7 +311,6 @@
      &      trns_SGS%ncomp_rtp_2_rj, trns_MHD%frc_rtp,                  &
      &      trns_SGS%fld_rtp, trns_SGS%frc_rtp)
 !
-        go to 10
         if(iflag_dynamic_SGS .eq. id_SGS_DYNAMIC_ON) then
           if (iflag_debug.eq.1) write(*,*) 'wider_similarity_SGS_rtp'
           call wider_similarity_SGS_rtp(sph%sph_rtp,                    &
@@ -320,12 +318,10 @@
      &        trns_MHD%ncomp_rj_2_rtp, trns_SGS%ncomp_rj_2_rtp,         &
      &        trns_MHD%fld_rtp, trns_SGS%fld_rtp)
 !
-          call calypso_mpi_barrier
           if (iflag_debug.eq.1) write(*,*) 'const_model_coefs_4_sph'
           call const_model_coefs_4_sph                                  &
      &       (sph%sph_rtp, dynamic_SPH%ifld_sgs, dynamic_SPH%icomp_sgs, &
      &        dynamic_SPH%wk_sgs, trns_SGS)
-          call calypso_mpi_barrier
         end if
         call end_eleps_time(15)
 !
@@ -340,7 +336,6 @@
         call rot_SGS_terms_exp_sph                                      &
      &     (sph%sph_rj, r_2nd, trans_p%leg, ipol, itor, rj_fld)
         call end_eleps_time(17)
- 10     continue
 !
       end subroutine SGS_by_pseudo_sph
 !

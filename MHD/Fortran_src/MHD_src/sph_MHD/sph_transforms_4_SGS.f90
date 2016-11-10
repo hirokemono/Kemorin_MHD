@@ -69,13 +69,9 @@
       type(address_4_sph_trans), intent(inout) :: trns_SGS
       type(work_for_sgl_FFTW), intent(inout) :: SGS_mul_FFTW
 !
-      integer(kind = kint) :: nscalar_trans
-!
 !
       if(trns_SGS%ncomp_rj_2_rtp .le. 0) return
 !
-      nscalar_trans = trns_SGS%nscalar_rj_2_rtp                         &
-     &               + 6*trns_SGS%ntensor_rj_2_rtp
       call check_calypso_sph_comm_buf_N(trns_SGS%ncomp_rj_2_rtp,        &
      &   comms_sph%comm_rj, comms_sph%comm_rlm)
       call check_calypso_sph_comm_buf_N(trns_SGS%ncomp_rj_2_rtp,        &
@@ -87,7 +83,7 @@
 !
       call sph_b_transform_SGS                                          &
      &   (trns_SGS%ncomp_rj_2_rtp, trns_SGS%nvector_rj_2_rtp,           &
-     &    nscalar_trans, sph, comms_sph, trans_p,                       &
+     &    trns_SGS%ntensor_rj_2_rtp, sph, comms_sph, trans_p,           &
      &    n_WS, n_WR, WS(1), WR(1), trns_SGS, SGS_mul_FFTW)
 !
       end subroutine sph_back_trans_SGS_MHD

@@ -195,6 +195,25 @@
      &    m_folding, sph_rtp, trns_snap, node, nod_fld)
 !
       call copy_scalar_from_snap_force                                  &
+     &   (trns_snap%f_trns%i_Csim_SGS_m_flux,                           &
+     &    iphys%i_Csim_SGS_m_flux,                                      &
+     &    m_folding, sph_rtp, trns_snap, node, nod_fld)
+      call copy_scalar_from_snap_force                                  &
+     &   (trns_snap%f_trns%i_Csim_SGS_Lorentz,                          &
+     &    iphys%i_Csim_SGS_Lorentz,                                     &
+     &    m_folding, sph_rtp, trns_snap, node, nod_fld)
+      call copy_scalar_from_snap_force                                  &
+     &   (trns_snap%f_trns%i_Csim_SGS_induction,                        &
+     &    iphys%i_Csim_SGS_induction,                                   &
+     &    m_folding, sph_rtp, trns_snap, node, nod_fld)
+      call copy_scalar_from_snap_force                                  &
+     &   (trns_snap%f_trns%i_Csim_SGS_h_flux, iphys%i_Csim_SGS_h_flux,  &
+     &    m_folding, sph_rtp, trns_snap, node, nod_fld)
+      call copy_scalar_from_snap_force                                  &
+     &   (trns_snap%f_trns%i_Csim_SGS_c_flux, iphys%i_Csim_SGS_c_flux,  &
+     &    m_folding, sph_rtp, trns_snap, node, nod_fld)
+!
+      call copy_scalar_from_snap_force                                  &
      &   (trns_snap%f_trns%i_velo_scale, iphys%i_velo_scale,            &
      &    m_folding, sph_rtp, trns_snap, node, nod_fld)
       call copy_scalar_from_snap_force                                  &

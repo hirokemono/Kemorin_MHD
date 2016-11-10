@@ -64,7 +64,6 @@
      &      ifld_sgs%i_mom_flux, icomp_sgs%i_mom_flux,                  &
      &      wk_sgs, trns_SGS)
       end if
-          call calypso_mpi_barrier
 !
       if(ifld_sgs%i_lorentz .gt. 0) then
         write(*,*) 'cal_model_coefs_sph_MHD i_lorentz'
@@ -74,7 +73,6 @@
      &      ifld_sgs%i_lorentz, icomp_sgs%i_lorentz,                    &
      &      wk_sgs, trns_SGS)
       end if
-          call calypso_mpi_barrier
 !
       if(ifld_sgs%i_induction .gt. 0) then
         write(*,*) 'cal_model_coefs_sph_MHD i_induction'
@@ -84,7 +82,6 @@
      &      ifld_sgs%i_induction, icomp_sgs%i_induction,                &
      &      wk_sgs, trns_SGS)
       end if
-          call calypso_mpi_barrier
 !
       if(ifld_sgs%i_heat_flux .gt. 0) then
         write(*,*) 'cal_model_coefs_sph_MHD i_heat_flux'
@@ -94,7 +91,6 @@
      &      ifld_sgs%i_heat_flux, icomp_sgs%i_heat_flux,                &
      &      wk_sgs, trns_SGS)
       end if
-          call calypso_mpi_barrier
 !
       if(ifld_sgs%i_comp_flux .gt. 0) then
         write(*,*) 'cal_model_coefs_sph_MHD i_comp_flux'
@@ -104,7 +100,6 @@
      &      ifld_sgs%i_comp_flux, icomp_sgs%i_comp_flux,                &
      &      wk_sgs, trns_SGS)
       end if
-          call calypso_mpi_barrier
 !
       end subroutine const_model_coefs_4_sph
 !
@@ -178,23 +173,14 @@
      &   (numdir, sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                   &
      &    trns_SGS%frc_rtp(1,irtp_sgs), trns_SGS%fld_rtp(1,irtp_wide),  &
      &    wk_sgs%comp_coef(1,icomp_sgs), wk_sgs%comp_clip(1,icomp_sgs))
-          call calypso_mpi_barrier
 !
-        write(*,*) 'cal_sph_model_coefs', nnod_med,  &
-     &            size(wk_sgs%comp_coef,1), size(wk_sgs%fld_coef,1),  &
-     &            size(wk_sgs%comp_coef,2), icomp_sgs, &
-     &            size(wk_sgs%fld_coef,2), ifld_sgs
       call cal_sph_model_coefs(numdir, nnod_med,                        &
      &    wk_sgs%comp_coef(1,icomp_sgs), wk_sgs%comp_clip(1,icomp_sgs), &
      &    wk_sgs%fld_coef(1,ifld_sgs))
-          call calypso_mpi_barrier
-        write(*,*) 'wk_sgs%fld_coef', wk_sgs%fld_coef(:,ifld_sgs)
 !
-        write(*,*) 'sel_product_model_coefs'
       call sel_product_model_coefs                                      &
      &   (numdir, sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                   &
      &    wk_sgs%fld_coef(1,ifld_sgs), trns_SGS%frc_rtp(1,irtp_sgs))
-          call calypso_mpi_barrier
 !
       end subroutine cal_model_coefs_sph_MHD
 !
