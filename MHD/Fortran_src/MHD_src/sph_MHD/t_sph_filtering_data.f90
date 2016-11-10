@@ -154,16 +154,19 @@
       real(kind = kreal), intent(inout) :: weight(0:l_truncation)
       real(kind = kreal), intent(inout) :: filter_mom(0:num_momentum-1)
 !
-      integer(kind = kint) :: i, l, l_rest
-      real(kind = kreal) :: b
+      integer(kind = kint) :: i, l, l_rest, k_rev
+      real(kind = kreal) :: b, pi
 !
 !
-      b = log(two) / (one - cos(one / real(k_width)))
+!      b = log(two) / (one - cos(six / real(k_width)))
+       pi = four * atan(one)
+       k_rev = l_truncation / k_width
+       b = dble(k_rev*k_rev)
 !
       weight(0) = one
       weight(1) = (one + exp(-two*b)) / (one - exp(-two*b)) - one / b
 !
-      l_rest = 2
+      l_rest = l_truncation+1
       do l = 2, l_truncation
         weight(l) = - weight(l-1) * dble(2*l - 1) / b + weight(l-2)
         if(weight(l) .lt. zero) then
@@ -236,6 +239,22 @@
         end do
 !
       end subroutine check_radial_filter_func
+!
+! ----------------------------------------------------------------------
+!
+      subroutine check_horiz_filter_weight(sph_filter)
+!
+      type(sph_gaussian_filter), intent(in) :: sph_filter
+!
+      integer(kind = kint) :: l
+!
+!
+      write(*,*)  'horizontal_filter', sph_filter%k_width
+      do l = 0, sph_filter%l_truncation
+        write(*,*) l, sph_filter%weight(l)
+      end do
+!
+      end subroutine check_horiz_filter_weight
 !
 ! ----------------------------------------------------------------------
 !

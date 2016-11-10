@@ -218,7 +218,7 @@
       trns_SGS%frc_rtp(1:sph_rtp%nnod_rtp,irtp_sgs) = one
 !$omp end parallel workshare
 !
-      call sel_product_model_coefs                                      &
+      call product_model_coefs_pout                                     &
      &   (ione, sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                     &
      &    wk_sgs%fld_coef(1,ifld_sgs), trns_SGS%frc_rtp(1,irtp_sgs))
 !

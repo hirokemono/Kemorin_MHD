@@ -84,14 +84,16 @@
 !
 !
       call const_sph_radial_filter(sph_rj, sph_grps, sph_filters(1))
+      call const_sph_gaussian_filter(sph_params%l_truncation,           &
+     &    sph_filters(1)%sph_moments, sph_filters(1)%sph_filter)
+!
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'check_radial_filter sph_filters(1)'
         call check_radial_filter(sph_rj, sph_filters(1)%r_filter)
+        write(*,*) 'check_horiz_filter_weight sph_filters(1)'
+        call check_horiz_filter_weight(sph_filters(1)%sph_filter)
       end if
-!
-      call const_sph_gaussian_filter(sph_params%l_truncation,           &
-     &    sph_filters(1)%sph_moments, sph_filters(1)%sph_filter)
 !
 !   Second filter
 !      call const_sph_radial_filter(sph_rj, sph_grps, sph_filters(2))

@@ -135,6 +135,8 @@
       if(iflag_debug .gt. 0) write(*,*) 'cal_one_over_volume'
       call cal_one_over_volume(kr_st, kr_ed,                            &
      &   sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, avol)
+!
+      call calypso_mpi_barrier
       if(iflag_debug .gt. 0) write(*,*) 'sum_sph_layerd_rms'
       call sum_sph_layerd_rms(kr_st, kr_ed, l_truncation,               &
      &    sph_rj, ipol, g_sph_rj, rj_fld,                               &
@@ -147,6 +149,8 @@
      &    WK_pwr%shl_l_local, WK_pwr%shl_m_local, WK_pwr%shl_lm_local,  &
      &    WK_pwr%vol_l_local, WK_pwr%vol_m_local, WK_pwr%vol_lm_local)
 !
+      call calypso_mpi_barrier
+      if(iflag_debug .gt. 0) write(*,*) 'global_sum_sph_layerd_rms'
       call global_sum_sph_layerd_rms                                    &
      &    (l_truncation, pwr%nri_rms, pwr%ntot_comp_sq,                 &
      &     WK_pwr%shl_l_local, WK_pwr%shl_m_local, WK_pwr%shl_lm_local, &
@@ -156,6 +160,7 @@
      &     pwr%shl_sq, pwr%shl_m0, pwr%ratio_shl_m0,                    &
      &     pwr%vol_sq, pwr%vol_m0, pwr%ratio_vol_m0)
 !
+      call calypso_mpi_barrier
       if(my_rank .eq. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'surf_ave_4_sph_rms_int'
         call surf_ave_4_sph_rms_int                                     &

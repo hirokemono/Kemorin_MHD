@@ -12,6 +12,8 @@
 !!
 !!      subroutine copy_SGS_field_from_trans                            &
 !!     &         (m_folding, sph_rtp, trns_SGS, node, iphys, nod_fld)
+!!      subroutine copy_wide_SGS_field_from_trans                       &
+!!     &         (m_folding, sph_rtp, trns_SGS, node, iphys, nod_fld)
 !!      subroutine copy_SGS_force_from_trans                            &
 !!     &         (m_folding, sph_rtp, trns_SGS, node, iphys, nod_fld)
 !!
@@ -127,29 +129,67 @@
 !
 !
 !
-      call copy_vector_from_snap_force                                  &
-     &   (trns_SGS%b_trns%i_wide_SGS_inertia, iphys%i_wide_SGS_inertia, &
+      call copy_vector_from_snap_trans                                  &
+     &   (trns_SGS%b_trns%i_SGS_inertia, iphys%i_SGS_inertia,           &
      &    m_folding, sph_rtp, trns_SGS, node, nod_fld)
 !
-      call copy_vector_from_snap_force                                  &
-     &   (trns_SGS%b_trns%i_wide_SGS_Lorentz, iphys%i_wide_SGS_Lorentz, &
+      call copy_vector_from_snap_trans                                  &
+     &   (trns_SGS%b_trns%i_SGS_Lorentz, iphys%i_SGS_Lorentz,           &
      &    m_folding, sph_rtp, trns_SGS, node, nod_fld)
 !
-      call copy_vector_from_snap_force                                  &
-     &   (trns_SGS%b_trns%i_wide_SGS_vp_induct,                         &
-     &    iphys%i_wide_SGS_vp_induct,                                   &
+      call copy_vector_from_snap_trans                                  &
+     &   (trns_SGS%b_trns%i_SGS_vp_induct, iphys%i_SGS_vp_induct,       &
      &    m_folding, sph_rtp, trns_SGS, node, nod_fld)
 !
-      call copy_vector_from_snap_force                                  &
-     &   (trns_SGS%b_trns%i_wide_SGS_h_flux, iphys%i_wide_SGS_h_flux,   &
+      call copy_vector_from_snap_trans                                  &
+     &   (trns_SGS%b_trns%i_SGS_h_flux, iphys%i_SGS_h_flux,             &
      &    m_folding, sph_rtp, trns_SGS, node, nod_fld)
 !
-      call copy_vector_from_snap_force                                  &
-     &   (trns_SGS%b_trns%i_wide_SGS_c_flux, iphys%i_wide_SGS_c_flux,   &
+      call copy_vector_from_snap_trans                                  &
+     &   (trns_SGS%b_trns%i_SGS_c_flux, iphys%i_SGS_c_flux,             &
      &    m_folding, sph_rtp, trns_SGS, node, nod_fld)
 !
 !
       end subroutine copy_SGS_field_from_trans
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine copy_wide_SGS_field_from_trans                         &
+     &         (m_folding, sph_rtp, trns_SGS, node, iphys, nod_fld)
+!
+      integer(kind = kint), intent(in) :: m_folding
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(address_4_sph_trans), intent(in) :: trns_SGS
+      type(node_data), intent(in) :: node
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(inout) :: nod_fld
+!
+!
+!
+      call copy_vector_from_snap_trans                                  &
+     &   (trns_SGS%b_trns%i_wide_SGS_inertia, iphys%i_wide_SGS_inertia, &
+     &    m_folding, sph_rtp, trns_SGS, node, nod_fld)
+!
+      call copy_vector_from_snap_trans                                  &
+     &   (trns_SGS%b_trns%i_wide_SGS_Lorentz, iphys%i_wide_SGS_Lorentz, &
+     &    m_folding, sph_rtp, trns_SGS, node, nod_fld)
+!
+      call copy_vector_from_snap_trans                                  &
+     &   (trns_SGS%b_trns%i_wide_SGS_vp_induct,                         &
+     &    iphys%i_wide_SGS_vp_induct,                                   &
+     &    m_folding, sph_rtp, trns_SGS, node, nod_fld)
+!
+      call copy_vector_from_snap_trans                                  &
+     &   (trns_SGS%b_trns%i_wide_SGS_h_flux, iphys%i_wide_SGS_h_flux,   &
+     &    m_folding, sph_rtp, trns_SGS, node, nod_fld)
+!
+      call copy_vector_from_snap_trans                                  &
+     &   (trns_SGS%b_trns%i_wide_SGS_c_flux, iphys%i_wide_SGS_c_flux,   &
+     &    m_folding, sph_rtp, trns_SGS, node, nod_fld)
+!
+!
+      end subroutine copy_wide_SGS_field_from_trans
 !
 !-----------------------------------------------------------------------
 !

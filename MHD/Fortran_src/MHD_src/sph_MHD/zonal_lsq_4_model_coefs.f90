@@ -13,6 +13,9 @@
 !!     &         (numdir, nnod_rtp, nidx_rtp, sgs_c, frc_simi)
 !!      subroutine cal_sph_model_coefs                                  &
 !!     &         (numdir, nnod_med, sgs_zl, sgs_zt, sgs_c)
+!!
+!!      subroutine product_model_coefs_pout                             &
+!!     &         (numdir, nnod_rtp, nidx_rtp, sgs_c, frc_rtp)
 !!@endverbatim
 !
       module zonal_lsq_4_model_coefs
@@ -25,7 +28,7 @@
 !
       private :: int_zonal_for_model_coefs_pin
       private :: int_zonal_for_model_coefs_pout
-      private :: product_model_coefs_pin, product_model_coefs_pout
+      private :: product_model_coefs_pin
 !
 !  ---------------------------------------------------------------------
 !
@@ -82,27 +85,18 @@
       integer(kind = kint), intent(in) :: numdir
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)
-!
       real(kind = kreal), intent(in) :: sgs_c(nidx_rtp(1)*nidx_rtp(2))
 !
       real(kind = kreal), intent(inout) :: frc_simi(nnod_rtp,numdir)
 !
-      integer(kind = kint) :: nd
 !
-!
-!$omp parallel
       if(iflag_FFT .eq. iflag_FFTW) then
-        do nd = 1, numdir
-          call product_model_coefs_pin(nnod_rtp, nidx_rtp,              &
-     &        sgs_c, frc_simi(1,nd))
-        end do
+        call product_model_coefs_pin(numdir, nnod_rtp, nidx_rtp,        &
+     &      sgs_c, frc_simi)
       else
-        do nd = 1, numdir
-          call product_model_coefs_pout(nnod_rtp, nidx_rtp,             &
-     &        sgs_c, frc_simi(1,nd))
-        end do
+        call product_model_coefs_pout(numdir, nnod_rtp, nidx_rtp,       &
+     &      sgs_c, frc_simi)
       end if
-!$omp end parallel
 !
       end subroutine sel_product_model_coefs
 !
@@ -209,55 +203,63 @@
 !  ---------------------------------------------------------------------
 !
       subroutine product_model_coefs_pin                                &
-     &         (nnod_rtp, nidx_rtp, sgs_c, frc_rtp)
+     &         (numdir, nnod_rtp, nidx_rtp, sgs_c, frc_rtp)
 !
-      integer(kind = kint), intent(in) :: nnod_rtp
+      integer(kind = kint), intent(in) :: nnod_rtp, numdir
       integer(kind = kint), intent(in) :: nidx_rtp(3)
 !
       real(kind = kreal), intent(in)                                    &
      &                   :: sgs_c(nidx_rtp(1)*nidx_rtp(2))
 !
-      real(kind = kreal), intent(inout) :: frc_rtp(nnod_rtp)
+      real(kind = kreal), intent(inout) :: frc_rtp(nnod_rtp,numdir)
 !
-      integer(kind = kint) :: kl, m, i1
+      integer(kind = kint) :: kl, m, i1, nd
 !
 !
+!$omp parallel
+      do nd = 1, numdir
 !$omp do private(kl,m,i1)
-      do kl = 1, nidx_rtp(1)*nidx_rtp(2)
-        do m = 1, nidx_rtp(3)
-          i1 = m + (kl-1)*nidx_rtp(3)
-          frc_rtp(i1) = sgs_c(kl) * frc_rtp(i1)
+        do kl = 1, nidx_rtp(1)*nidx_rtp(2)
+          do m = 1, nidx_rtp(3)
+            i1 = m + (kl-1)*nidx_rtp(3)
+            frc_rtp(i1,nd) = sgs_c(kl) * frc_rtp(i1,nd)
+          end do
         end do
-      end do
 !$omp end do
+     end do
+!$omp end parallel
 !
       end subroutine product_model_coefs_pin
 !
 !  ---------------------------------------------------------------------
 !
       subroutine product_model_coefs_pout                               &
-     &         (nnod_rtp, nidx_rtp, sgs_c, frc_rtp)
+     &         (numdir, nnod_rtp, nidx_rtp, sgs_c, frc_rtp)
 !
-      integer(kind = kint), intent(in) :: nnod_rtp
+      integer(kind = kint), intent(in) :: nnod_rtp, numdir
       integer(kind = kint), intent(in) :: nidx_rtp(3)
       real(kind = kreal), intent(in)                                    &
      &                   :: sgs_c(nidx_rtp(1)*nidx_rtp(2))
 !
-      real(kind = kreal), intent(inout) :: frc_rtp(nnod_rtp)
+      real(kind = kreal), intent(inout) :: frc_rtp(nnod_rtp,numdir)
 !
 !
-      integer(kind = kint) :: kl, m, i1
+      integer(kind = kint) :: kl, m, i1, nd
 !
 !
+!$omp parallel
+      do nd = 1, numdir
 !$omp do private(kl,m,i1)
-      do m = 1, nidx_rtp(3)
-        do kl = 1, nidx_rtp(1)*nidx_rtp(2)
-          i1 = kl + (m-1)*nidx_rtp(1)*nidx_rtp(2)
-          frc_rtp(i1) = sgs_c(kl) * frc_rtp(i1)
+        do m = 1, nidx_rtp(3)
+          do kl = 1, nidx_rtp(1)*nidx_rtp(2)
+            i1 = kl + (m-1)*nidx_rtp(1)*nidx_rtp(2)
+            frc_rtp(i1,nd) = sgs_c(kl) * frc_rtp(i1,nd)
+          end do
         end do
-      end do
 !$omp end do
- !
+     end do
+!$omp end parallel
+!
       end subroutine product_model_coefs_pout
 !
 !  ---------------------------------------------------------------------
