@@ -73,7 +73,9 @@
         if (   icomp_rj .eq. ipol%i_velo                                &
      &      .or. icomp_rj .eq. ipol%i_magne                             &
      &      .or. icomp_rj .eq. ipol%i_filter_velo                       &
-     &      .or. icomp_rj .eq. ipol%i_filter_magne) then
+     &      .or. icomp_rj .eq. ipol%i_filter_magne                      &
+     &      .or. icomp_rj .eq. ipol%i_wide_fil_velo                     &
+     &      .or. icomp_rj .eq. ipol%i_wide_fil_magne) then
           call set_sph_energies_by_rms                                  &
      &       (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), rms_sph_rj(0,1,1))
         end if
