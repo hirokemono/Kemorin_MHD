@@ -25,15 +25,17 @@
 !
       implicit none
 !
-!>        strucutres for spherical transform dor MHD dynamo
+!>     strucutres for spherical transform for MHD dynamo
       type works_4_sph_trans_MHD
-!>        strucutre for spherical transform data addresses
+!>        strucutres for spherical transform for MHD
         type(address_4_sph_trans) :: trns_MHD
-!>        strucutre for spherical transform data addresses
+!>        strucutres for spherical transform for SGS model
         type(address_4_sph_trans) :: trns_SGS
-!>        strucutre for spherical transform data addresses
+!>        strucutres for spherical transform for dynamic SGS model
+        type(address_4_sph_trans) :: trns_Csim
+!>        strucutres for spherical transform for snapshot output
         type(address_4_sph_trans) :: trns_snap
-!>        strucutre for spherical transform data addresses
+!>        strucutres for spherical transform for intermediate snapshot
         type(address_4_sph_trans) :: trns_tmp
 !
         type(work_for_sgl_FFTW) :: MHD_mul_FFTW

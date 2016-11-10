@@ -14,9 +14,9 @@
 !!      subroutine dealloc_nonlinear_pole(trns)
 !!        type(address_4_sph_trans), intent(inout) :: trns
 !!
-!!      subroutine add_scalar_trans_flag(is_fld, irtp_fld,              &
+!!      subroutine add_scl_trans_flag_snap(is_fld, irtp_fld,            &
 !!     &          nfield_vec, num_trans, itrans)
-!!      subroutine add_vec_trans_flag(is_fld, irtp_fld,                 &
+!!      subroutine add_vec_trans_flag_snap(is_fld, irtp_fld,            &
 !!     &          num_trans, itrans)
 !!@endverbatim
 !
@@ -130,7 +130,7 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine add_scalar_trans_flag(is_fld, irtp_fld,                &
+      subroutine add_scl_trans_flag_snap(is_fld, irtp_fld,              &
      &          nfield_vec, num_trans, itrans)
 !
       integer(kind = kint), intent(in) :: is_fld, irtp_fld, nfield_vec
@@ -142,11 +142,11 @@
         itrans = num_trans + 3*nfield_vec
       end if
 !
-      end subroutine add_scalar_trans_flag
+      end subroutine add_scl_trans_flag_snap
 !
 !-----------------------------------------------------------------------
 !
-      subroutine add_vec_trans_flag(is_fld, irtp_fld,                   &
+      subroutine add_vec_trans_flag_snap(is_fld, irtp_fld,              &
      &          num_trans, itrans)
 !
       integer(kind = kint), intent(in) :: is_fld, irtp_fld
@@ -158,7 +158,7 @@
         itrans = 3*num_trans - 2
       end if
 !
-      end subroutine add_vec_trans_flag
+      end subroutine add_vec_trans_flag_snap
 !
 !-----------------------------------------------------------------------
 !
