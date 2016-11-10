@@ -101,7 +101,6 @@
      &        'b_trns%i_wide_fil_current ', b_trns%i_wide_fil_current,  &
      &       ipol%i_wide_fil_current, itor%i_wide_fil_current,          &
      &        idpdr%i_wide_fil_current, iphys%i_wide_fil_current
-      write(*,*)
 !
 !  Filetered forces
       if(b_trns%i_SGS_inertia .gt. 0) write(*,*)                        &
@@ -144,10 +143,8 @@
      &        'b_trns%i_wide_SGS_c_flux', b_trns%i_wide_SGS_c_flux,     &
      &        ipol%i_wide_SGS_c_flux, itor%i_wide_SGS_c_flux,           &
      &        idpdr%i_wide_SGS_c_flux, iphys%i_wide_SGS_c_flux
-      write(*,*)
 !
 !   Snapshots
-      write(*,*)
       if(b_trns%i_v_diffuse .gt. 0) write(*,*)                          &
      &        'b_trns%i_v_diffuse', b_trns%i_v_diffuse,                 &
      &        ipol%i_v_diffuse, itor%i_v_diffuse, idpdr%i_v_diffuse,    &
@@ -248,7 +245,31 @@
       if(b_trns%i_div_Coriolis .gt. 0) write(*,*)                       &
      &         'b_trns%i_div_Coriolis  ', b_trns%i_div_Coriolis,        &
      &         ipol%i_div_Coriolis, iphys%i_div_Coriolis
-      write(*,*)
+!
+      if(b_trns%i_Csim_SGS_h_flux .gt. 0) write(*,*)                    &
+     &       'b_trns%i_Csim_SGS_h_flux  ', b_trns%i_Csim_SGS_h_flux,    &
+     &       ipol%i_Csim_SGS_h_flux, iphys%i_Csim_SGS_h_flux
+      if(b_trns%i_Csim_SGS_c_flux .gt. 0) write(*,*)                    &
+     &       'b_trns%i_Csim_SGS_c_flux  ', b_trns%i_Csim_SGS_c_flux,    &
+     &       ipol%i_Csim_SGS_c_flux, iphys%i_Csim_SGS_c_flux
+      if(b_trns%i_Csim_SGS_m_flux .gt. 0) write(*,*)                    &
+     &       'b_trns%i_Csim_SGS_m_flux  ', b_trns%i_Csim_SGS_m_flux,    &
+     &       ipol%i_Csim_SGS_m_flux, iphys%i_Csim_SGS_m_flux
+      if(b_trns%i_Csim_SGS_Lorentz .gt. 0) write(*,*)                   &
+     &       'b_trns%i_Csim_SGS_Lorentz  ', b_trns%i_Csim_SGS_Lorentz,  &
+     &       ipol%i_Csim_SGS_Lorentz, iphys%i_Csim_SGS_Lorentz
+      if(b_trns%i_Csim_SGS_induction .gt. 0) write(*,*)                 &
+     &       'b_trns%i_Csim_SGS_induction  ',                           &
+     &       b_trns%i_Csim_SGS_induction, ipol%i_Csim_SGS_induction,    &
+     &       iphys%i_Csim_SGS_induction
+      if(b_trns%i_Csim_SGS_buoyancy .gt. 0) write(*,*)                  &
+     &       'b_trns%i_Csim_SGS_buoyancy  ',                            &
+     &       b_trns%i_Csim_SGS_buoyancy, ipol%i_Csim_SGS_buoyancy,      &
+     &       iphys%i_Csim_SGS_buoyancy
+      if(b_trns%i_Csim_SGS_comp_buo .gt. 0) write(*,*)                  &
+     &       'b_trns%i_Csim_SGS_comp_buo  ',                            &
+     &       b_trns%i_Csim_SGS_comp_buo, ipol%i_Csim_SGS_comp_buo,      &
+     &       iphys%i_Csim_SGS_comp_buo
 !
 !   Snapshots
       if(b_trns%i_wide_fil_comp .gt. 0) write(*,*)                      &

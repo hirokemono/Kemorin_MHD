@@ -8,15 +8,24 @@
 !!       in MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine set_addresses_trans_sph_SGS(ipol, trns_MHD,          &
+!!      subroutine set_addresses_trans_sph_SGS(ipol, trns_SGS,          &
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !!        type(phys_address), intent(in) :: ipol
-!!        type(address_4_sph_trans), intent(inout) :: trns_MHD
+!!        type(address_4_sph_trans), intent(inout) :: trns_SGS
+!!      subroutine set_addresses_trans_sph_Csim(ipol, trns_Csim,        &
+!!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!!        type(phys_address), intent(in) :: ipol
+!!        type(address_4_sph_trans), intent(inout) :: trns_Csim
 !!      subroutine check_address_trans_sph_SGS                          &
-!!     &         (ipol, idpdr, itor, iphys, trns_MHD)
+!!     &         (ipol, idpdr, itor, iphys, trns_SGS)
 !!        type(phys_address), intent(in) :: ipol, idpdr, itor
 !!        type(phys_address), intent(in) :: iphys
-!!        type(address_4_sph_trans), intent(in) :: trns_MHD
+!!        type(address_4_sph_trans), intent(in) :: trns_SGS
+!!      subroutine check_address_trans_sph_Csim                         &
+!!     &         (ipol, idpdr, itor, iphys, trns_Csim)
+!!        type(phys_address), intent(in) :: ipol, idpdr, itor
+!!        type(phys_address), intent(in) :: iphys
+!!        type(address_4_sph_trans), intent(in) :: trns_Csim
 !!@endverbatim
 !
       module set_address_sph_trans_SGS
@@ -30,6 +39,8 @@
 !
       private :: b_trans_address_vector_SGS
       private :: f_trans_address_vector_SGS
+      private :: b_trans_address_scalar_Csim
+      private :: f_trans_address_scalar_Csim
 !
 !-----------------------------------------------------------------------
 !
@@ -80,6 +91,52 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine set_addresses_trans_sph_Csim(ipol, trns_Csim,          &
+     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!
+      use m_control_parameter
+!
+      type(phys_address), intent(in) :: ipol
+      type(address_4_sph_trans), intent(inout) :: trns_Csim
+      integer(kind = kint), intent(inout) :: ncomp_sph_trans
+      integer(kind = kint), intent(inout) :: nvector_sph_trans
+      integer(kind = kint), intent(inout) :: nscalar_sph_trans
+!
+      integer(kind = kint) :: nscltsr_rtp_2_rj, nscltsr_rj_2_rtp
+!
+      trns_Csim%nvector_rj_2_rtp = 0
+      call b_trans_address_scalar_Csim                                  &
+     &   (ipol, trns_Csim%nvector_rj_2_rtp, trns_Csim%nscalar_rj_2_rtp, &
+     &    trns_Csim%b_trns)
+      trns_Csim%ntensor_rj_2_rtp = 0
+!
+      trns_Csim%nvector_rtp_2_rj = 0
+      call f_trans_address_scalar_Csim                                  &
+     &   (ipol, trns_Csim%nvector_rtp_2_rj, trns_Csim%nscalar_rtp_2_rj, &
+     &    trns_Csim%f_trns)
+      trns_Csim%ntensor_rtp_2_rj = 0
+!
+      nscltsr_rtp_2_rj                                                  &
+     &    = trns_Csim%nscalar_rj_2_rtp + 6*trns_Csim%ntensor_rj_2_rtp
+      trns_Csim%ncomp_rj_2_rtp                                          &
+     &    = 3*trns_Csim%nvector_rj_2_rtp + nscltsr_rtp_2_rj
+!
+      nscltsr_rj_2_rtp                                                  &
+     &    = trns_Csim%nscalar_rtp_2_rj + 6*trns_Csim%ntensor_rtp_2_rj
+      trns_Csim%ncomp_rtp_2_rj                                          &
+     &    = 3*trns_Csim%nvector_rtp_2_rj + nscltsr_rj_2_rtp
+!
+      ncomp_sph_trans                                                   &
+     &    = max(trns_Csim%ncomp_rj_2_rtp, trns_Csim%ncomp_rtp_2_rj)
+      nvector_sph_trans                                                 &
+     &    = max(trns_Csim%nvector_rj_2_rtp, trns_Csim%nvector_rtp_2_rj)
+      nscalar_sph_trans = max(nscltsr_rtp_2_rj, nscltsr_rj_2_rtp)
+!
+      end subroutine set_addresses_trans_sph_Csim
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
       subroutine check_address_trans_sph_SGS                            &
      &         (ipol, idpdr, itor, iphys, trns_SGS)
 !
@@ -101,6 +158,29 @@
       end subroutine check_address_trans_sph_SGS
 !
 !-----------------------------------------------------------------------
+!
+      subroutine check_address_trans_sph_Csim                           &
+     &         (ipol, idpdr, itor, iphys, trns_Csim)
+!
+      use check_address_sph_trans
+!
+      type(phys_address), intent(in) :: ipol, idpdr, itor
+      type(phys_address), intent(in) :: iphys
+      type(address_4_sph_trans), intent(in) :: trns_Csim
+!
+!
+      write(*,*)                                                        &
+     &      'addresses of spherical transform for model coefficients'
+!
+      call check_add_trans_sph_MHD                                      &
+     &   (ipol, idpdr, itor, iphys, trns_Csim%b_trns, trns_Csim%f_trns, &
+     &    trns_Csim%ncomp_rj_2_rtp, trns_Csim%nvector_rj_2_rtp,         &
+     &    trns_Csim%nscalar_rj_2_rtp, trns_Csim%ncomp_rtp_2_rj,         &
+     &    trns_Csim%nvector_rtp_2_rj, trns_Csim%nscalar_rtp_2_rj)
+!
+      end subroutine check_address_trans_sph_Csim
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine b_trans_address_vector_SGS                             &
@@ -115,58 +195,38 @@
 !
       nvector_rj_2_rtp = 0
 !
-!   dual filtered current density
-      if(ipol%i_SGS_inertia .gt. izero) then
-        nvector_rj_2_rtp = nvector_rj_2_rtp + 1
-        b_trns%i_SGS_inertia = 3*nvector_rj_2_rtp - 2
-      end if
-!   dual filtered current density
-      if(ipol%i_SGS_Lorentz .gt. izero) then
-        nvector_rj_2_rtp = nvector_rj_2_rtp + 1
-        b_trns%i_SGS_Lorentz = 3*nvector_rj_2_rtp - 2
-      end if
-!   dual filtered current density
-      if(ipol%i_SGS_vp_induct .gt. izero) then
-        nvector_rj_2_rtp = nvector_rj_2_rtp + 1
-        b_trns%i_SGS_vp_induct = 3*nvector_rj_2_rtp - 2
-      end if
-!   dual filtered current density
-      if(ipol%i_SGS_h_flux .gt. izero) then
-        nvector_rj_2_rtp = nvector_rj_2_rtp + 1
-        b_trns%i_SGS_h_flux = 3*nvector_rj_2_rtp - 2
-      end if
-!   dual filtered current density
-      if(ipol%i_SGS_c_flux .gt. izero) then
-        nvector_rj_2_rtp = nvector_rj_2_rtp + 1
-        b_trns%i_SGS_c_flux = 3*nvector_rj_2_rtp - 2
-      end if
+!   filtered Inertia
+      call add_vector_trans_flag(ipol%i_SGS_inertia,                    &
+     &    nvector_rj_2_rtp, b_trns%i_SGS_inertia)
+!   filtered Lorentz force
+      call add_vector_trans_flag(ipol%i_SGS_Lorentz,                    &
+     &    nvector_rj_2_rtp, b_trns%i_SGS_Lorentz)
+!   filtered induction
+      call add_vector_trans_flag(ipol%i_SGS_vp_induct,                  &
+     &    nvector_rj_2_rtp, b_trns%i_SGS_vp_induct)
+!   filtered heat flux
+      call add_vector_trans_flag(ipol%i_SGS_h_flux,                     &
+     &    nvector_rj_2_rtp, b_trns%i_SGS_h_flux)
+!   filtered composition flux
+      call add_vector_trans_flag(ipol%i_SGS_c_flux,                     &
+     &    nvector_rj_2_rtp, b_trns%i_SGS_c_flux)
 !
 !
-!   dual filtered current density
-      if(ipol%i_wide_SGS_inertia .gt. izero) then
-        nvector_rj_2_rtp = nvector_rj_2_rtp + 1
-        b_trns%i_wide_SGS_inertia = 3*nvector_rj_2_rtp - 2
-      end if
-!   dual filtered current density
-      if(ipol%i_wide_SGS_Lorentz .gt. izero) then
-        nvector_rj_2_rtp = nvector_rj_2_rtp + 1
-        b_trns%i_wide_SGS_Lorentz = 3*nvector_rj_2_rtp - 2
-      end if
-!   dual filtered current density
-      if(ipol%i_wide_SGS_vp_induct .gt. izero) then
-        nvector_rj_2_rtp = nvector_rj_2_rtp + 1
-        b_trns%i_wide_SGS_vp_induct = 3*nvector_rj_2_rtp - 2
-      end if
-!   dual filtered current density
-      if(ipol%i_wide_SGS_h_flux .gt. izero) then
-        nvector_rj_2_rtp = nvector_rj_2_rtp + 1
-        b_trns%i_wide_SGS_h_flux = 3*nvector_rj_2_rtp - 2
-      end if
-!   dual filtered current density
-      if(ipol%i_wide_SGS_c_flux .gt. izero) then
-        nvector_rj_2_rtp = nvector_rj_2_rtp + 1
-        b_trns%i_wide_SGS_c_flux = 3*nvector_rj_2_rtp - 2
-      end if
+!   dual filtered Inertia
+      call add_vector_trans_flag(ipol%i_wide_SGS_inertia,               &
+     &    nvector_rj_2_rtp, b_trns%i_wide_SGS_inertia)
+!   dual filtered Lorentz force
+      call add_vector_trans_flag(ipol%i_wide_SGS_Lorentz,               &
+     &    nvector_rj_2_rtp, b_trns%i_wide_SGS_Lorentz)
+!   dual filtered induction
+      call add_vector_trans_flag(ipol%i_wide_SGS_vp_induct,             &
+     &    nvector_rj_2_rtp, b_trns%i_wide_SGS_vp_induct)
+!   dual filtered heat flux
+      call add_vector_trans_flag(ipol%i_wide_SGS_h_flux,                &
+     &    nvector_rj_2_rtp, b_trns%i_wide_SGS_h_flux)
+!   dual filtered composition flux
+      call add_vector_trans_flag(ipol%i_wide_SGS_c_flux,                &
+     &    nvector_rj_2_rtp, b_trns%i_wide_SGS_c_flux)
 !
       end subroutine b_trans_address_vector_SGS
 !
@@ -183,38 +243,110 @@
 !
 !
       nvector_rtp_2_rj = 0
-!
 !   SGS advection flag
-      if(ipol%i_SGS_inertia .gt. izero) then
-        nvector_rtp_2_rj = nvector_rtp_2_rj + 1
-        f_trns%i_SGS_inertia = 3*nvector_rtp_2_rj - 2
-      end if
-!
+      call add_vector_trans_flag(ipol%i_SGS_inertia,                    &
+     &    nvector_rtp_2_rj, f_trns%i_SGS_inertia)
 !   SGS Lorentz force flag
-      if(ipol%i_SGS_Lorentz .gt. izero) then
-        nvector_rtp_2_rj = nvector_rtp_2_rj + 1
-        f_trns%i_SGS_Lorentz = 3*nvector_rtp_2_rj - 2
-      end if
-!
+      call add_vector_trans_flag(ipol%i_SGS_Lorentz,                    &
+     &    nvector_rtp_2_rj, f_trns%i_SGS_Lorentz)
 !   SGS induction flag
-      if(ipol%i_SGS_vp_induct .gt. izero) then
-        nvector_rtp_2_rj = nvector_rtp_2_rj + 1
-        f_trns%i_SGS_vp_induct = 3*nvector_rtp_2_rj - 2
-      end if
-!
+      call add_vector_trans_flag(ipol%i_SGS_vp_induct,                  &
+     &    nvector_rtp_2_rj, f_trns%i_SGS_vp_induct)
 !   SGS heat flux flag
-      if(ipol%i_SGS_h_flux .gt. izero) then
-        nvector_rtp_2_rj = nvector_rtp_2_rj + 1
-        f_trns%i_SGS_h_flux = 3*nvector_rtp_2_rj - 2
-      end if
-!
+      call add_vector_trans_flag(ipol%i_SGS_h_flux,                     &
+     &    nvector_rtp_2_rj, f_trns%i_SGS_h_flux)
 !   SGS composition flux flag
-      if(ipol%i_SGS_c_flux .gt. izero) then
-        nvector_rtp_2_rj = nvector_rtp_2_rj + 1
-        f_trns%i_SGS_c_flux = 3*nvector_rtp_2_rj - 2
-      end if
+      call add_vector_trans_flag(ipol%i_SGS_c_flux,                     &
+     &    nvector_rtp_2_rj, f_trns%i_SGS_c_flux)
 !
       end subroutine f_trans_address_vector_SGS
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine b_trans_address_scalar_Csim                            &
+     &         (ipol, nvector_rj_2_rtp, nscalar_rj_2_rtp, b_trns)
+!
+      use m_control_parameter
+!
+      type(phys_address), intent(in) :: ipol
+      integer(kind = kint), intent(in) :: nvector_rj_2_rtp
+      integer(kind = kint), intent(inout) :: nscalar_rj_2_rtp
+      type(phys_address), intent(inout) :: b_trns
+!
+!
+      nscalar_rj_2_rtp = 0
+!   SGS advection flag
+      call add_scalar_trans_flag(ipol%i_Csim_SGS_m_flux,                &
+     &    nvector_rj_2_rtp, nscalar_rj_2_rtp, b_trns%i_Csim_SGS_m_flux)
+!   SGS Lorentz force flag
+      call add_scalar_trans_flag(ipol%i_Csim_SGS_Lorentz,               &
+     &    nvector_rj_2_rtp, nscalar_rj_2_rtp,                           &
+     &    b_trns%i_Csim_SGS_Lorentz)
+!   SGS induction flag
+      call add_scalar_trans_flag(ipol%i_Csim_SGS_induction,             &
+     &    nvector_rj_2_rtp, nscalar_rj_2_rtp,                           &
+     &    b_trns%i_Csim_SGS_induction)
+!   SGS heat flux flag
+      call add_scalar_trans_flag(ipol%i_Csim_SGS_h_flux,                &
+     &    nvector_rj_2_rtp, nscalar_rj_2_rtp, b_trns%i_Csim_SGS_h_flux)
+!   SGS composition flux flag
+      call add_scalar_trans_flag(ipol%i_Csim_SGS_c_flux,                &
+     &    nvector_rj_2_rtp, nscalar_rj_2_rtp, b_trns%i_Csim_SGS_c_flux)
+!
+!   SGS buoyancy
+      call add_scalar_trans_flag(ipol%i_Csim_SGS_buoyancy,              &
+     &    nvector_rj_2_rtp, nscalar_rj_2_rtp,                           &
+     &    b_trns%i_Csim_SGS_buoyancy)
+!   SGS compostional buoyancy
+      call add_scalar_trans_flag(ipol%i_Csim_SGS_comp_buo,              &
+     &    nvector_rj_2_rtp, nscalar_rj_2_rtp,                           &
+     &    b_trns%i_Csim_SGS_comp_buo)
+!
+      end subroutine b_trans_address_scalar_Csim
+!
+!-----------------------------------------------------------------------
+!
+      subroutine f_trans_address_scalar_Csim                            &
+     &         (ipol, nvector_rtp_2_rj, nscalar_rtp_2_rj, f_trns)
+!
+      use m_control_parameter
+!
+      type(phys_address), intent(in) :: ipol
+      type(phys_address), intent(inout) :: f_trns
+      integer(kind = kint), intent(in) :: nvector_rtp_2_rj
+      integer(kind = kint), intent(inout) :: nscalar_rtp_2_rj
+!
+!
+      nscalar_rtp_2_rj = 0
+!   SGS advection flag
+      call add_scalar_trans_flag(ipol%i_Csim_SGS_m_flux,                &
+     &    nvector_rtp_2_rj, nscalar_rtp_2_rj, f_trns%i_Csim_SGS_m_flux)
+!   SGS Lorentz force flag
+      call add_scalar_trans_flag(ipol%i_Csim_SGS_Lorentz,               &
+     &    nvector_rtp_2_rj, nscalar_rtp_2_rj,                           &
+     &    f_trns%i_Csim_SGS_Lorentz)
+!   SGS induction flag
+      call add_scalar_trans_flag(ipol%i_Csim_SGS_induction,             &
+     &    nvector_rtp_2_rj, nscalar_rtp_2_rj,                           &
+     &    f_trns%i_Csim_SGS_induction)
+!   SGS heat flux flag
+      call add_scalar_trans_flag(ipol%i_Csim_SGS_h_flux,                &
+     &    nvector_rtp_2_rj, nscalar_rtp_2_rj, f_trns%i_Csim_SGS_h_flux)
+!   SGS composition flux flag
+      call add_scalar_trans_flag(ipol%i_Csim_SGS_c_flux,                &
+     &    nvector_rtp_2_rj, nscalar_rtp_2_rj, f_trns%i_Csim_SGS_c_flux)
+!
+!   SGS buoyancy
+      call add_scalar_trans_flag(ipol%i_Csim_SGS_buoyancy,              &
+     &    nvector_rtp_2_rj, nscalar_rtp_2_rj,                           &
+     &    f_trns%i_Csim_SGS_buoyancy)
+!   SGS compostional buoyancy
+      call add_scalar_trans_flag(ipol%i_Csim_SGS_comp_buo,              &
+     &    nvector_rtp_2_rj, nscalar_rtp_2_rj,                           &
+     &    f_trns%i_Csim_SGS_comp_buo)
+!
+      end subroutine f_trans_address_scalar_Csim
 !
 !-----------------------------------------------------------------------
 !

@@ -147,46 +147,30 @@
 !
 !
 !   filtered velocity
-      if(ipol%i_filter_velo .gt. izero) then
-        nvector_rj_2_rtp = nvector_rj_2_rtp + 1
-        b_trns%i_filter_velo =    3*nvector_rj_2_rtp - 2
-      end if
+      call add_vector_trans_flag(ipol%i_filter_velo,                    &
+     &    nvector_rj_2_rtp, b_trns%i_filter_velo)
 !   filtered vorticity
-      if(ipol%i_filter_vort .gt. izero) then
-        nvector_rj_2_rtp = nvector_rj_2_rtp + 1
-        b_trns%i_filter_vort =    3*nvector_rj_2_rtp - 2
-      end if
+      call add_vector_trans_flag(ipol%i_filter_vort,                    &
+     &    nvector_rj_2_rtp, b_trns%i_filter_vort)
 !   filtered magnetic field
-      if(ipol%i_filter_magne .gt. izero) then
-        nvector_rj_2_rtp = nvector_rj_2_rtp + 1
-        b_trns%i_filter_magne =   3*nvector_rj_2_rtp - 2
-      end if
+      call add_vector_trans_flag(ipol%i_filter_magne,                   &
+     &    nvector_rj_2_rtp, b_trns%i_filter_magne)
 !   filtered current density
-      if(ipol%i_filter_current .gt. izero) then
-        nvector_rj_2_rtp = nvector_rj_2_rtp + 1
-        b_trns%i_filter_current = 3*nvector_rj_2_rtp - 2
-      end if
+      call add_vector_trans_flag(ipol%i_filter_current,                 &
+     &    nvector_rj_2_rtp, b_trns%i_filter_current)
 !
 !   dual filtered velocity
-      if(ipol%i_wide_fil_velo .gt. izero) then
-        nvector_rj_2_rtp = nvector_rj_2_rtp + 1
-        b_trns%i_wide_fil_velo =    3*nvector_rj_2_rtp - 2
-      end if
+      call add_vector_trans_flag(ipol%i_wide_fil_velo,                  &
+     &    nvector_rj_2_rtp, b_trns%i_wide_fil_velo)
 !   dual filtered vorticity
-      if(ipol%i_wide_fil_vort .gt. izero) then
-        nvector_rj_2_rtp = nvector_rj_2_rtp + 1
-        b_trns%i_wide_fil_vort =    3*nvector_rj_2_rtp - 2
-      end if
+      call add_vector_trans_flag(ipol%i_wide_fil_vort,                  &
+     &    nvector_rj_2_rtp, b_trns%i_wide_fil_vort)
 !   dual filtered magnetic field
-      if(ipol%i_wide_fil_magne .gt. izero) then
-        nvector_rj_2_rtp = nvector_rj_2_rtp + 1
-        b_trns%i_wide_fil_magne =   3*nvector_rj_2_rtp - 2
-      end if
+      call add_vector_trans_flag(ipol%i_wide_fil_magne,                 &
+     &    nvector_rj_2_rtp, b_trns%i_wide_fil_magne)
 !   dual filtered current density
-      if(ipol%i_wide_fil_current .gt. izero) then
-        nvector_rj_2_rtp = nvector_rj_2_rtp + 1
-        b_trns%i_wide_fil_current = 3*nvector_rj_2_rtp - 2
-      end if
+      call add_vector_trans_flag(ipol%i_wide_fil_current,               &
+     &    nvector_rj_2_rtp, b_trns%i_wide_fil_current)
 !
       end subroutine b_trans_address_vector_MHD
 !
@@ -216,26 +200,18 @@
       end if
 !
 !   filtered temperature
-      if(ipol%i_filter_temp .gt. izero) then
-        nscalar_rj_2_rtp = nscalar_rj_2_rtp + 1
-        b_trns%i_filter_temp = nscalar_rj_2_rtp + 3*nvector_rj_2_rtp
-      end if
+      call add_scalar_trans_flag(ipol%i_filter_temp,                    &
+     &    nvector_rj_2_rtp, nscalar_rj_2_rtp, b_trns%i_filter_temp)
 !   filtered composition
-      if(ipol%i_filter_comp .gt. izero) then
-        nscalar_rj_2_rtp = nscalar_rj_2_rtp + 1
-        b_trns%i_filter_comp = nscalar_rj_2_rtp + 3*nvector_rj_2_rtp
-      end if
+      call add_scalar_trans_flag(ipol%i_filter_comp,                    &
+     &    nvector_rj_2_rtp, nscalar_rj_2_rtp, b_trns%i_filter_comp)
 !
 !   dual filtered temperature
-      if(ipol%i_wide_fil_temp .gt. izero) then
-        nscalar_rj_2_rtp = nscalar_rj_2_rtp + 1
-        b_trns%i_wide_fil_temp = nscalar_rj_2_rtp + 3*nvector_rj_2_rtp
-      end if
+      call add_scalar_trans_flag(ipol%i_wide_fil_temp,                  &
+     &    nvector_rj_2_rtp, nscalar_rj_2_rtp, b_trns%i_wide_fil_temp)
 !   dual filtered composition
-      if(ipol%i_wide_fil_comp .gt. izero) then
-        nscalar_rj_2_rtp = nscalar_rj_2_rtp + 1
-        b_trns%i_wide_fil_comp = nscalar_rj_2_rtp + 3*nvector_rj_2_rtp
-      end if
+      call add_scalar_trans_flag(ipol%i_wide_fil_comp,                  &
+     &    nvector_rj_2_rtp, nscalar_rj_2_rtp, b_trns%i_wide_fil_comp)
 !
       end subroutine b_trans_address_scalar_MHD
 !
@@ -292,34 +268,24 @@
 !
 !
 !   filtered advection flag
-      if(ipol%i_SGS_inertia .gt. izero) then
-        nvector_rtp_2_rj = nvector_rtp_2_rj + 1
-        f_trns%i_SGS_inertia = 3*nvector_rtp_2_rj - 2
-      end if
+      call add_vector_trans_flag(ipol%i_SGS_inertia,                    &
+     &    nvector_rtp_2_rj, f_trns%i_SGS_inertia)
 !
 !   filtered Lorentz force flag
-      if(ipol%i_SGS_Lorentz .gt. izero) then
-        nvector_rtp_2_rj = nvector_rtp_2_rj + 1
-        f_trns%i_SGS_Lorentz = 3*nvector_rtp_2_rj - 2
-      end if
+      call add_vector_trans_flag(ipol%i_SGS_Lorentz,                    &
+     &    nvector_rtp_2_rj, f_trns%i_SGS_Lorentz)
 !
 !   filtered induction flag
-      if(ipol%i_SGS_vp_induct .gt. izero) then
-        nvector_rtp_2_rj = nvector_rtp_2_rj + 1
-        f_trns%i_SGS_vp_induct = 3*nvector_rtp_2_rj - 2
-      end if
+      call add_vector_trans_flag(ipol%i_SGS_vp_induct,                  &
+     &    nvector_rtp_2_rj, f_trns%i_SGS_vp_induct)
 !
 !   filtered heat flux flag
-      if(ipol%i_SGS_h_flux .gt. izero) then
-        nvector_rtp_2_rj = nvector_rtp_2_rj + 1
-        f_trns%i_SGS_h_flux = 3*nvector_rtp_2_rj - 2
-      end if
+      call add_vector_trans_flag(ipol%i_SGS_h_flux,                     &
+     &    nvector_rtp_2_rj, f_trns%i_SGS_h_flux)
 !
 !   filtered composition flux flag
-      if(ipol%i_SGS_c_flux .gt. izero) then
-        nvector_rtp_2_rj = nvector_rtp_2_rj + 1
-        f_trns%i_SGS_c_flux = 3*nvector_rtp_2_rj - 2
-      end if
+      call add_vector_trans_flag(ipol%i_SGS_c_flux,                     &
+     &    nvector_rtp_2_rj, f_trns%i_SGS_c_flux)
 !
       end subroutine f_trans_address_vector_MHD
 !
@@ -337,10 +303,8 @@
 !
       nscalar_rtp_2_rj = 0
 !   divergence of Coriolis flux flag
-      if(iflag_4_coriolis .gt. id_turn_OFF) then
-        nscalar_rtp_2_rj = nscalar_rtp_2_rj + 1
-        f_trns%i_div_Coriolis = nscalar_rtp_2_rj + 3*nvector_rtp_2_rj
-      end if
+      call add_scalar_trans_flag(iflag_4_coriolis,                      &
+     &    nvector_rtp_2_rj, nscalar_rtp_2_rj, f_trns%i_div_Coriolis)
 !
       end subroutine f_trans_address_scalar_MHD
 !

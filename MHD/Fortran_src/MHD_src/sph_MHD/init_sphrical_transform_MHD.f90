@@ -97,6 +97,8 @@
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
       call set_addresses_trans_sph_SGS(ipol, WK%trns_SGS,               &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
+      call set_addresses_trans_sph_Csim(ipol, WK%trns_Csim,             &
+     &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
       call set_addresses_snapshot_trans(ipol, WK%trns_snap,             &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
       call set_addresses_temporal_trans(ipol, WK%trns_tmp,              &
@@ -107,6 +109,8 @@
      &      WK%trns_MHD, ncomp_max_trans)
         call check_address_trans_sph_SGS(ipol, idpdr, itor, iphys,      &
      &      WK%trns_SGS)
+        call check_address_trans_sph_Csim(ipol, idpdr, itor, iphys,     &
+     &      WK%trns_Csim)
         call check_address_trans_sph_snap(ipol, idpdr, itor, iphys,     &
      &      WK%trns_snap)
         call check_address_trans_sph_tmp(ipol, idpdr, itor, iphys,      &

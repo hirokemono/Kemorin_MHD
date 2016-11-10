@@ -57,11 +57,10 @@
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(works_4_sph_trans_MHD), intent(inout) :: WK
 !
-      integer(kind = kint) :: ncomp
-!
 !
       call alloc_nonlinear_data(sph_rtp%nnod_rtp, wk%trns_MHD)
       call alloc_nonlinear_data(sph_rtp%nnod_rtp, wk%trns_SGS)
+      call alloc_nonlinear_data(sph_rtp%nnod_rtp, wk%trns_Csim)
       call alloc_nonlinear_data(sph_rtp%nnod_rtp, WK%trns_snap)
       call alloc_nonlinear_data(sph_rtp%nnod_rtp, wk%trns_tmp)
 !
@@ -80,6 +79,7 @@
 !
 !
       call dealloc_nonlinear_pole(WK%trns_snap)
+      call dealloc_nonlinear_pole(WK%trns_Csim)
       call dealloc_nonlinear_pole(WK%trns_SGS)
 !
       call dealloc_nonlinear_data(WK%trns_tmp)
