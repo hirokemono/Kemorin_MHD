@@ -242,6 +242,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'calypso_sph_comm_rj_2_rlm_N'
       call calypso_sph_comm_N                                           &
      &   (ncomp_trans, comms_sph%comm_rj, comms_sph%comm_rlm)
+      call finish_send_recv_sph(comms_sph%comm_rj)
       call end_eleps_time(18)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
