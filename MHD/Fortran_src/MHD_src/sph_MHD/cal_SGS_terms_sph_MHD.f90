@@ -18,6 +18,11 @@
 !!     &          frc_rtp, fil_rtp, fSGS_rtp)
 !!      subroutine wider_similarity_SGS_rtp(sph_rtp, b_trns, bg_trns,   &
 !!     &          ncomp_rj_2_rtp, nc_SGS_rj_2_rtp, fld_rtp, fil_rtp)
+!!
+!!      subroutine SGS_energy_flux_rtp                                  &
+!!     &         (sph_rtp, b_trns, fg_trns, fs_trns, ncomp_rj_2_rtp,    &
+!!     &          nc_SGS_rtp_2_rj, ncomp_snap_rtp_2_rj,                 &
+!!     &          fld_rtp, fSGS_rtp, frs_rtp)
 !!@endverbatim
 !
       module cal_SGS_terms_sph_MHD
@@ -230,6 +235,67 @@
       end subroutine wider_similarity_SGS_rtp
 !
 ! ----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine SGS_energy_flux_rtp                                    &
+     &         (sph_rtp, b_trns, fg_trns, fs_trns, ncomp_rj_2_rtp,      &
+     &          nc_SGS_rtp_2_rj, ncomp_snap_rtp_2_rj,                   &
+     &          fld_rtp, fSGS_rtp, frs_rtp)
+!
+      use cal_products_smp
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(phys_address), intent(in) :: b_trns, fs_trns, fg_trns
+      integer(kind = kint), intent(in) :: ncomp_rj_2_rtp
+      integer(kind = kint), intent(in) :: nc_SGS_rtp_2_rj
+      integer(kind = kint), intent(in) :: ncomp_snap_rtp_2_rj
+!
+      real(kind = kreal), intent(in)                                    &
+     &           :: fld_rtp(sph_rtp%nnod_rtp,ncomp_rj_2_rtp)
+      real(kind = kreal), intent(in)                                    &
+     &           :: fSGS_rtp(sph_rtp%nnod_rtp,nc_SGS_rtp_2_rj)
+!
+      real(kind = kreal), intent(inout)                                 &
+     &           :: frs_rtp(sph_rtp%nnod_rtp,ncomp_snap_rtp_2_rj)
+!
+!
+!$omp parallel
+      if(fs_trns%i_reynolds_wk .gt. 0) then
+        call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
+     &      fSGS_rtp(1,fg_trns%i_SGS_inertia),                          &
+     &      fld_rtp(1,b_trns%i_velo), frs_rtp(1,fs_trns%i_reynolds_wk))
+      end if
+!
+      if(fs_trns%i_SGS_Lor_wk .gt. 0) then
+        call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
+     &      fSGS_rtp(1,fg_trns%i_SGS_lorentz),                          &
+     &      fld_rtp(1,b_trns%i_velo), frs_rtp(1,fs_trns%i_SGS_Lor_wk))
+      end if
+!
+      if(fs_trns%i_SGS_buo_wk .gt. 0) then
+        call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
+     &      fSGS_rtp(1,fg_trns%i_SGS_buoyancy),                         &
+     &      fld_rtp(1,b_trns%i_velo), frs_rtp(1,fs_trns%i_SGS_buo_wk))
+      end if
+!
+      if(fs_trns%i_SGS_comp_buo_wk .gt. 0) then
+        call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
+     &      fSGS_rtp(1,fg_trns%i_SGS_comp_buo),                         &
+     &      fld_rtp(1,b_trns%i_velo),                                   &
+     &      frs_rtp(1,fs_trns%i_SGS_comp_buo_wk))
+      end if
+!
+!
+      if(fs_trns%i_SGS_me_gen .gt. 0) then
+        call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
+     &      fSGS_rtp(1,fg_trns%i_SGS_lorentz),                          &
+     &      fld_rtp(1,b_trns%i_magne), frs_rtp(1,fs_trns%i_SGS_me_gen))
+      end if
+!$omp end parallel
+!
+      end subroutine SGS_energy_flux_rtp
+!
+!-----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine subcract_X_product_w_coef_smp                          &

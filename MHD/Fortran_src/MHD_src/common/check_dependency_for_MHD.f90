@@ -91,7 +91,7 @@
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
 !
       character(len=kchara) :: target_name
-      integer (kind = kint) :: iflag, i, num_check
+      integer (kind = kint) :: i, num_check
 !
 !
 !
@@ -99,8 +99,6 @@
 !
 !
       do i = 1, num_nod_phys
-          iflag = 0
-!
           if (    phys_nod_name(i) .eq. fhd_velo                        &
      &       .or. phys_nod_name(i) .eq. fhd_filter_v                    &
      &       .or. phys_nod_name(i) .eq. fhd_w_filter_velo               &
@@ -423,12 +421,6 @@
            phys_check_name(1) = fhd_magne
            phys_check_name(2) = fhd_mag_diffuse
 !
-          else if (phys_nod_name(i) .eq. fhd_Reynolds_work              &
-     &       ) then
-           num_check = 2
-           phys_check_name(1) = fhd_velo
-           phys_check_name(2) = fhd_div_SGS_m_flux
-!
 !
           else if ( phys_nod_name(i) .eq. fhd_vecp                      &
      &       ) then
@@ -687,7 +679,7 @@
 !
 !
       character(len=kchara) :: target_name
-      integer (kind = kint) :: num_check
+      integer (kind = kint) :: i, num_check
 !
 !
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
@@ -843,6 +835,19 @@
         end if
       end if
 !
+!
+      do i = 1, num_nod_phys
+         if (phys_nod_name(i) .eq. fhd_Reynolds_work                    &
+     &       ) then
+           num_check = 2
+           phys_check_name(1) = fhd_velo
+           phys_check_name(2) = fhd_div_SGS_m_flux
+         end if
+!
+          call check_dependence_phys(num_nod_phys, num_check,           &
+     &           phys_nod_name(i), phys_nod_name, phys_check_name)
+      end do
+!
       end subroutine check_dependence_4_FEM_SGS
 !
 ! -----------------------------------------------------------------------
@@ -854,7 +859,7 @@
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
 !
       character(len=kchara) :: target_name
-      integer (kind = kint) :: num_check
+      integer (kind = kint) :: i, num_check
 !
 !
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
@@ -975,6 +980,20 @@
      &           target_name, phys_nod_name, phys_check_name)
         end if
       end if
+!
+!
+!
+      do i = 1, num_nod_phys
+         if (phys_nod_name(i) .eq. fhd_Reynolds_work                    &
+     &       ) then
+           num_check = 2
+           phys_check_name(1) = fhd_velo
+           phys_check_name(2) = fhd_SGS_inertia
+         end if
+!
+          call check_dependence_phys(num_nod_phys, num_check,           &
+     &           phys_nod_name(i), phys_nod_name, phys_check_name)
+      end do
 !
       end subroutine check_dependence_4_SPH_SGS
 !

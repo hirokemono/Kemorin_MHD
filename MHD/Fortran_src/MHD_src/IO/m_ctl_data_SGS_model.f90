@@ -494,7 +494,6 @@
 !
         call find_control_end_array_flag(hd_sph_filter,                 &
      &      num_sph_filter_ctl, i_sph_filter_ctl)
-        write(*,*) 'hd_sph_filter', num_sph_filter_ctl, i_sph_filter_ctl
         if(i_sph_filter_ctl .ge. num_sph_filter_ctl) exit
 !
         if(right_begin_flag(hd_sph_filter) .gt. 0) then

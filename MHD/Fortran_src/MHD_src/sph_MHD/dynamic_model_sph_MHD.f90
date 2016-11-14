@@ -57,7 +57,6 @@
 !
 !
       if(ifld_sgs%i_mom_flux .gt. 0) then
-        write(*,*) 'cal_model_coefs_sph_MHD i_mom_flux'
         call cal_model_coefs_sph_MHD(sph_rtp, n_vector,                 &
      &      trns_SGS%f_trns%i_SGS_inertia,                              &
      &      trns_SGS%b_trns%i_wide_SGS_inertia,                         &
@@ -66,7 +65,6 @@
       end if
 !
       if(ifld_sgs%i_lorentz .gt. 0) then
-        write(*,*) 'cal_model_coefs_sph_MHD i_lorentz'
         call cal_model_coefs_sph_MHD(sph_rtp, n_vector,                 &
      &      trns_SGS%f_trns%i_SGS_Lorentz,                              &
      &      trns_SGS%b_trns%i_wide_SGS_Lorentz,                         &
@@ -75,7 +73,6 @@
       end if
 !
       if(ifld_sgs%i_induction .gt. 0) then
-        write(*,*) 'cal_model_coefs_sph_MHD i_induction'
         call cal_model_coefs_sph_MHD(sph_rtp, n_vector,                 &
      &      trns_SGS%f_trns%i_SGS_vp_induct,                            &
      &      trns_SGS%b_trns%i_wide_SGS_vp_induct,                       &
@@ -84,7 +81,6 @@
       end if
 !
       if(ifld_sgs%i_heat_flux .gt. 0) then
-        write(*,*) 'cal_model_coefs_sph_MHD i_heat_flux'
         call cal_model_coefs_sph_MHD(sph_rtp, n_vector,                 &
      &      trns_SGS%f_trns%i_SGS_h_flux,                               &
      &      trns_SGS%b_trns%i_wide_SGS_h_flux,                          &
@@ -93,7 +89,6 @@
       end if
 !
       if(ifld_sgs%i_comp_flux .gt. 0) then
-        write(*,*) 'cal_model_coefs_sph_MHD i_comp_flux'
         call cal_model_coefs_sph_MHD(sph_rtp, n_vector,                 &
      &      trns_SGS%f_trns%i_SGS_c_flux,                               &
      &       trns_SGS%b_trns%i_wide_SGS_c_flux,                         &

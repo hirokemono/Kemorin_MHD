@@ -126,7 +126,7 @@
       call gradients_of_vectors_sph(sph, comms_sph, r_2nd, trans_p,     &
      &    ipol, WK%trns_MHD, WK%trns_tmp, rj_fld)
       call enegy_fluxes_4_sph_mhd(sph, comms_sph, r_2nd, trans_p, ipol, &
-     &    WK%trns_MHD, WK%trns_snap, rj_fld)
+     &    WK%trns_MHD, WK%trns_SGS, WK%trns_snap, rj_fld)
 !
       end subroutine s_lead_fields_4_sph_mhd
 !
@@ -184,11 +184,12 @@
 !
       subroutine enegy_fluxes_4_sph_mhd                                 &
      &          (sph, comms_sph, r_2nd, trans_p, ipol,                  &
-     &           trns_MHD, trns_snap, rj_fld)
+     &           trns_MHD, trns_SGS, trns_snap, rj_fld)
 !
       use sph_transforms_snapshot
       use cal_energy_flux_rtp
       use cal_energy_flux_rj
+      use cal_SGS_terms_sph_MHD
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
@@ -197,6 +198,7 @@
       type(phys_address), intent(in) :: ipol
 !
       type(address_4_sph_trans), intent(in) :: trns_MHD
+      type(address_4_sph_trans), intent(in) :: trns_SGS
       type(address_4_sph_trans), intent(inout) :: trns_snap
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -217,6 +219,15 @@
      &    trns_snap%ncomp_rj_2_rtp, trns_snap%ncomp_rtp_2_rj,           &
      &    trns_MHD%frc_rtp, trns_snap%fld_rtp, trns_snap%frc_rtp)
       call calypso_mpi_barrier
+!
+!      Work of SGS terms
+      if(iflag_SGS_model .gt. 0) then
+        if (iflag_debug.eq.1) write(*,*) 'SGS_energy_flux_rtp'
+        call SGS_energy_flux_rtp(sph%sph_rtp, trns_MHD%b_trns,          &
+     &    trns_SGS%f_trns, trns_snap%f_trns, trns_MHD%ncomp_rj_2_rtp,   &
+     &    trns_SGS%ncomp_rtp_2_rj, trns_snap%ncomp_rtp_2_rj,            &
+     &    trns_MHD%fld_rtp, trns_SGS%frc_rtp, trns_snap%frc_rtp)
+      end if
 !
       if (iflag_debug.eq.1) write(*,*)                                  &
      &                          'sph_forward_trans_snapshot_MHD'

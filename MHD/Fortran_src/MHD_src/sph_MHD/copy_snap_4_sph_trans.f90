@@ -214,6 +214,23 @@
      &    m_folding, sph_rtp, trns_snap, node, nod_fld)
 !
       call copy_scalar_from_snap_force                                  &
+     &   (trns_snap%f_trns%i_reynolds_wk, iphys%i_reynolds_wk,          &
+     &    m_folding, sph_rtp, trns_snap, node, nod_fld)
+      call copy_scalar_from_snap_force                                  &
+     &   (trns_snap%f_trns%i_SGS_Lor_wk, iphys%i_SGS_Lor_wk,            &
+     &    m_folding, sph_rtp, trns_snap, node, nod_fld)
+      call copy_scalar_from_snap_force                                  &
+     &   (trns_snap%f_trns%i_SGS_buo_wk, iphys%i_SGS_buo_wk,            &
+     &    m_folding, sph_rtp, trns_snap, node, nod_fld)
+      call copy_scalar_from_snap_force                                  &
+     &   (trns_snap%f_trns%i_SGS_comp_buo_wk, iphys%i_SGS_comp_buo_wk,  &
+     &    m_folding, sph_rtp, trns_snap, node, nod_fld)
+      call copy_scalar_from_snap_force                                  &
+     &   (trns_snap%f_trns%i_SGS_me_gen, iphys%i_SGS_me_gen,            &
+     &    m_folding, sph_rtp, trns_snap, node, nod_fld)
+!
+!
+      call copy_scalar_from_snap_force                                  &
      &   (trns_snap%f_trns%i_velo_scale, iphys%i_velo_scale,            &
      &    m_folding, sph_rtp, trns_snap, node, nod_fld)
       call copy_scalar_from_snap_force                                  &

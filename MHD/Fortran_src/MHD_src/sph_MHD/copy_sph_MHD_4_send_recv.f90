@@ -445,6 +445,22 @@
      &    ipol%i_f_buo_gen, fs_trns%i_f_buo_gen,                        &
      &    comm_rj, n_WR, WR, rj_fld)
 !
+      call sel_sph_rj_scalar_from_recv(ncomp_recv,                      &
+     &    ipol%i_reynolds_wk, fs_trns%i_reynolds_wk,                    &
+     &    comm_rj, n_WR, WR, rj_fld)
+      call sel_sph_rj_scalar_from_recv(ncomp_recv,                      &
+     &    ipol%i_SGS_Lor_wk, fs_trns%i_SGS_Lor_wk,                      &
+     &    comm_rj, n_WR, WR, rj_fld)
+      call sel_sph_rj_scalar_from_recv(ncomp_recv,                      &
+     &    ipol%i_SGS_buo_wk, fs_trns%i_SGS_buo_wk,                      &
+     &    comm_rj, n_WR, WR, rj_fld)
+      call sel_sph_rj_scalar_from_recv(ncomp_recv,                      &
+     &    ipol%i_SGS_comp_buo_wk, fs_trns%i_SGS_comp_buo_wk,            &
+     &    comm_rj, n_WR, WR, rj_fld)
+      call sel_sph_rj_scalar_from_recv(ncomp_recv,                      &
+     &    ipol%i_SGS_me_gen, fs_trns%i_SGS_me_gen,                      &
+     &    comm_rj, n_WR, WR, rj_fld)
+!
 !  Model coefficients
       call sel_sph_rj_scalar_from_recv(ncomp_recv,                      &
      &    ipol%i_Csim_SGS_m_flux, fs_trns%i_Csim_SGS_m_flux,            &
