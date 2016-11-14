@@ -37,7 +37,7 @@
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_address), intent(in) :: ipol
-      type(sph_filters_type), intent(in) :: sph_filters(2)
+      type(sph_filters_type), intent(in) :: sph_filters(1)
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -55,7 +55,7 @@
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_address), intent(in) :: ipol
-      type(sph_filters_type), intent(in) :: sph_filters(2)
+      type(sph_filters_type), intent(in) :: sph_filters(1)
       type(phys_data), intent(inout) :: rj_fld
 !
 !

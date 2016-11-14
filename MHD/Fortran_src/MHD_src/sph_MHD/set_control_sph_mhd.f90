@@ -16,7 +16,7 @@
 !!        type(field_IO_params), intent(inout) :: sph_file_param
 !!        type(field_IO), intent(inout) :: sph_fst_IO
 !!        type(sph_mean_squares), intent(inout) :: pwr
-!!        type(sph_filters_type), intent(inout) :: sph_filters(3)
+!!        type(sph_filters_type), intent(inout) :: sph_filters(1)
 !!@endverbatim
 !
       module set_control_sph_mhd
@@ -56,7 +56,7 @@
       type(field_IO_params), intent(inout) :: sph_file_param
       type(field_IO), intent(inout) :: sph_fst_IO
       type(sph_mean_squares), intent(inout) :: pwr
-      type(sph_filters_type), intent(inout) :: sph_filters(3)
+      type(sph_filters_type), intent(inout) :: sph_filters(1)
 !
 !
 !   set parameters for SGS model

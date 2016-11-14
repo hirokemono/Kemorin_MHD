@@ -22,7 +22,7 @@
 !!        type(sph_group_data), intent(inout) ::  sph_grps
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(sph_mean_squares), intent(inout) :: pwr
-!!        type(sph_filters_type), intent(inout) :: sph_filters(3)
+!!        type(sph_filters_type), intent(inout) :: sph_filters(1)
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(element_geometry), intent(inout) :: ele_mesh

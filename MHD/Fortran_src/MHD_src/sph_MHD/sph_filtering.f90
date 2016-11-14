@@ -42,7 +42,7 @@
         type(dynamic_model_data) :: wk_sgs
 !
 !>         Filter functions
-        type(sph_filters_type) :: sph_filters(3)
+        type(sph_filters_type) :: sph_filters(1)
       end type dynamic_SGS_data_4_sph
 !
 ! ----------------------------------------------------------------------
@@ -80,7 +80,7 @@
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(sph_group_data), intent(in) :: sph_grps
-      type(sph_filters_type), intent(inout) :: sph_filters(3)
+      type(sph_filters_type), intent(inout) :: sph_filters(1)
 !
 !
       call const_sph_radial_filter(sph_rj, sph_grps, sph_filters(1))
