@@ -38,7 +38,7 @@
       implicit none
 !
       private :: b_trans_address_vector_SGS
-      private :: f_trans_address_vector_SGS
+      private :: f_trans_address_scalar_SGS, f_trans_address_vector_SGS
       private :: b_trans_address_scalar_Csim
       private :: f_trans_address_scalar_Csim
 !
@@ -68,6 +68,9 @@
 !
       call f_trans_address_vector_SGS                                   &
      &   (ipol, trns_SGS%nvector_rtp_2_rj, trns_SGS%f_trns)
+!      call f_trans_address_scalar_SGS                                   &
+!     &   (ipol, trns_SGS%nvector_rtp_2_rj, trns_SGS%nscalar_rtp_2_rj,   &
+!     &    trns_SGS%f_trns)
       trns_SGS%nscalar_rtp_2_rj = 0
       trns_SGS%ntensor_rtp_2_rj = 0
 !
@@ -259,7 +262,38 @@
       call add_vector_trans_flag(ipol%i_SGS_c_flux,                     &
      &    nvector_rtp_2_rj, f_trns%i_SGS_c_flux)
 !
+!
+!
       end subroutine f_trans_address_vector_SGS
+!
+!-----------------------------------------------------------------------
+!
+      subroutine f_trans_address_scalar_SGS                             &
+     &         (ipol, nvector_rtp_2_rj, nscalar_rtp_2_rj, f_trns)
+!
+      use m_control_parameter
+!
+      type(phys_address), intent(in) :: ipol
+      integer(kind = kint), intent(in) :: nvector_rtp_2_rj
+      integer(kind = kint), intent(inout) :: nscalar_rtp_2_rj
+      type(phys_address), intent(inout) :: f_trns
+!
+!
+      nscalar_rtp_2_rj = 0
+!   work of Reynolds stress
+      call add_scalar_trans_flag                                        &
+     &   (ipol%i_reynolds_wk, nvector_rtp_2_rj, nscalar_rtp_2_rj,       &
+     &    f_trns%i_reynolds_wk)
+!   work of SGS buoyancy
+      call add_scalar_trans_flag                                        &
+     &   (ipol%i_SGS_buo_wk, nvector_rtp_2_rj, nscalar_rtp_2_rj,        &
+     &    f_trns%i_SGS_buo_wk)
+!   work of SGS compositional buoyancy
+      call add_scalar_trans_flag                                        &
+     &   (ipol%i_SGS_comp_buo_wk, nvector_rtp_2_rj, nscalar_rtp_2_rj,   &
+     &    f_trns%i_SGS_comp_buo_wk)
+!
+      end subroutine f_trans_address_scalar_SGS
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

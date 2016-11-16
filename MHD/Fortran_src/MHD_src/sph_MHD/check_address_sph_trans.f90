@@ -377,6 +377,13 @@
      &       'f_trns%i_SGS_me_gen  ', f_trns%i_SGS_me_gen,              &
      &        ipol%i_SGS_me_gen, iphys%i_SGS_me_gen
 !
+      if(f_trns%i_SGS_buo_wk .gt. 0) write(*,*)                         &
+     &       'f_trns%i_SGS_buo_wk  ', f_trns%i_SGS_buo_wk,              &
+     &        ipol%i_SGS_buo_wk, iphys%i_SGS_buo_wk
+      if(f_trns%i_SGS_comp_buo_wk .gt. 0) write(*,*)                    &
+     &       'f_trns%i_SGS_comp_buo_wk  ', f_trns%i_SGS_comp_buo_wk,    &
+     &        ipol%i_SGS_comp_buo_wk, iphys%i_SGS_comp_buo_wk
+!
       if(f_trns%i_Csim_SGS_h_flux .gt. 0) write(*,*)                    &
      &       'f_trns%i_Csim_SGS_h_flux  ', f_trns%i_Csim_SGS_h_flux,    &
      &       ipol%i_Csim_SGS_h_flux, iphys%i_Csim_SGS_h_flux

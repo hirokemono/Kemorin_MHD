@@ -8,8 +8,8 @@
 !!       in MHD dynamo simulation
 !!
 !!@verbatim
-!!     subroutine set_addresses_snapshot_trans(ipol, trns_snap,         &
-!!    &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!!      subroutine set_addresses_snapshot_trans(ipol, trns_snap,        &
+!!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !!        type(phys_address), intent(in) :: ipol
 !!        type(address_4_sph_trans), intent(inout) :: trns_snap
 !!@endverbatim
@@ -58,8 +58,8 @@
       call f_trans_address_vector_snap                                  &
      &   (ipol, trns_snap%nvector_rtp_2_rj, trns_snap%f_trns)
       call f_trans_address_scalar_snap                                  &
-     &   (ipol, trns_snap%nvector_rtp_2_rj,                             &
-     &    trns_snap%nscalar_rtp_2_rj, trns_snap%f_trns)
+     &   (ipol, trns_snap%nvector_rtp_2_rj, trns_snap%nscalar_rtp_2_rj, &
+     &    trns_snap%f_trns)
        trns_snap%ntensor_rtp_2_rj = 0
 !
 !
@@ -322,6 +322,7 @@
      &   (ipol%i_reynolds_wk, iphys%i_reynolds_wk,                      &
      &    nvector_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                 &
      &    fs_trns%i_reynolds_wk)
+!
       call add_scl_trans_flag_snap                                      &
      &   (ipol%i_SGS_Lor_wk, iphys%i_SGS_Lor_wk,                        &
      &    nvector_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                 &
@@ -330,6 +331,15 @@
      &   (ipol%i_SGS_me_gen, iphys%i_SGS_me_gen,                        &
      &    nvector_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                 &
      &    fs_trns%i_SGS_me_gen)
+!
+      call add_scl_trans_flag_snap                                      &
+     &   (ipol%i_SGS_buo_wk, iphys%i_SGS_buo_wk,                        &
+     &    nvector_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                 &
+     &    fs_trns%i_SGS_buo_wk)
+      call add_scl_trans_flag_snap                                      &
+     &   (ipol%i_SGS_comp_buo_wk, iphys%i_SGS_comp_buo_wk,              &
+     &    nvector_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                 &
+     &    fs_trns%i_SGS_comp_buo_wk)
 !
       call add_scl_trans_flag_snap                                      &
      &   (ipol%i_Csim_SGS_h_flux, iphys%i_Csim_SGS_h_flux,              &

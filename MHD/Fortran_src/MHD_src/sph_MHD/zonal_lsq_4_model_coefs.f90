@@ -7,15 +7,13 @@
 !!
 !!@verbatim
 !!      subroutine sel_int_zonal_for_model_coefs                        &
-!!     &         (numdir, nnod_rtp, nidx_rtp, frc_simi, frc_wide,       &
-!!     &          sgs_zl, sgs_zt)
-!!      subroutine sel_product_model_coefs                              &
-!!     &         (numdir, nnod_rtp, nidx_rtp, sgs_c, frc_simi)
+!!     &         (numdir, nnod_rtp, nnod_med, nphi, frc_simi, frc_wide, &
+!!     &          sgs_zl, sgs_zt, sgs_c)
+!!      subroutine sel_int_zonal_for_buo_coefs                          &
+!!     &         (nnod_rtp, nnod_med, nphi, frc_simi, frc_wide,         &
+!!     &          sgs_zl, sgs_zt, sgs_c)
 !!      subroutine cal_sph_model_coefs                                  &
 !!     &         (numdir, nnod_med, sgs_zl, sgs_zt, sgs_c)
-!!
-!!      subroutine product_model_coefs_pout                             &
-!!     &         (numdir, nnod_rtp, nidx_rtp, sgs_c, frc_rtp)
 !!@endverbatim
 !
       module zonal_lsq_4_model_coefs
@@ -23,12 +21,13 @@
       use m_precision
       use m_constants
       use m_machine_parameter
+      use calypso_mpi
 !
       implicit none
 !
+      private :: cal_sph_model_coefs
       private :: int_zonal_for_model_coefs_pin
       private :: int_zonal_for_model_coefs_pout
-      private :: product_model_coefs_pin
 !
 !  ---------------------------------------------------------------------
 !
@@ -37,22 +36,20 @@
 !  ---------------------------------------------------------------------
 !
       subroutine sel_int_zonal_for_model_coefs                          &
-     &         (numdir, nnod_rtp, nidx_rtp, frc_simi, frc_wide,         &
-     &          sgs_zl, sgs_zt)
+     &         (numdir, nnod_rtp, nnod_med, nphi, frc_simi, frc_wide,   &
+     &          sgs_zl, sgs_zt, sgs_c)
 !
       use m_FFT_selector
 !
       integer(kind = kint), intent(in) :: numdir
-      integer(kind = kint), intent(in) :: nnod_rtp
-      integer(kind = kint), intent(in) :: nidx_rtp(3)
+      integer(kind = kint), intent(in) :: nnod_rtp, nnod_med, nphi
 !
       real(kind = kreal), intent(in) :: frc_simi(nnod_rtp,numdir)
       real(kind = kreal), intent(in) :: frc_wide(nnod_rtp,numdir)
 !
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: sgs_zl(nidx_rtp(1)*nidx_rtp(2),numdir)
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: sgs_zt(nidx_rtp(1)*nidx_rtp(2),numdir)
+      real(kind = kreal), intent(inout) :: sgs_zl(nnod_med,numdir)
+      real(kind = kreal), intent(inout) :: sgs_zt(nnod_med,numdir)
+      real(kind = kreal), intent(inout) :: sgs_c(nnod_med)
 !
       integer(kind = kint) :: nd
 !
@@ -60,45 +57,60 @@
 !$omp parallel
       if(iflag_FFT .eq. iflag_FFTW) then
         do nd = 1, numdir
-          call int_zonal_for_model_coefs_pin(nnod_rtp, nidx_rtp,        &
+          call int_zonal_for_model_coefs_pin(nnod_rtp, nnod_med, nphi,  &
      &        frc_simi(1,nd), frc_wide(1,nd),                           &
      &        sgs_zl(1,nd), sgs_zt(1,nd))
         end do
       else
         do nd = 1, numdir
-          call int_zonal_for_model_coefs_pout(nnod_rtp, nidx_rtp,       &
+          call int_zonal_for_model_coefs_pout(nnod_rtp, nnod_med, nphi, &
      &        frc_simi(1,nd), frc_wide(1,nd),                           &
      &        sgs_zl(1,nd), sgs_zt(1,nd))
         end do
       end if
 !$omp end parallel
 !
+      call cal_sph_model_coefs                                          &
+     &   (numdir, nnod_med, sgs_zl(1,1), sgs_zt(1,1), sgs_c(1))
+!
       end subroutine sel_int_zonal_for_model_coefs
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sel_product_model_coefs                                &
-     &         (numdir, nnod_rtp, nidx_rtp, sgs_c, frc_simi)
+      subroutine sel_int_zonal_for_buo_coefs                            &
+     &         (nnod_rtp, nnod_med, nphi, frc_simi, frc_wide,           &
+     &          sgs_zl, sgs_zt, sgs_c)
 !
       use m_FFT_selector
 !
-      integer(kind = kint), intent(in) :: numdir
-      integer(kind = kint), intent(in) :: nnod_rtp
-      integer(kind = kint), intent(in) :: nidx_rtp(3)
-      real(kind = kreal), intent(in) :: sgs_c(nidx_rtp(1)*nidx_rtp(2))
+      integer(kind = kint), intent(in) :: nnod_rtp, nnod_med, nphi
 !
-      real(kind = kreal), intent(inout) :: frc_simi(nnod_rtp,numdir)
+      real(kind = kreal), intent(in) :: frc_simi(nnod_rtp)
+      real(kind = kreal), intent(in) :: frc_wide(nnod_rtp)
+!
+      real(kind = kreal), intent(inout) :: sgs_zl(nnod_med)
+      real(kind = kreal), intent(inout) :: sgs_zt(nnod_med)
+      real(kind = kreal), intent(inout) :: sgs_c(nnod_med)
 !
 !
+      call calypso_mpi_barrier
+!$omp parallel
       if(iflag_FFT .eq. iflag_FFTW) then
-        call product_model_coefs_pin(numdir, nnod_rtp, nidx_rtp,        &
-     &      sgs_c, frc_simi)
+        write(*,*) 'int_zonal_buo_coefs_pin'
+        call int_zonal_buo_coefs_pin(nnod_rtp, nnod_med, nphi,          &
+     &      frc_simi(1), frc_wide(1), sgs_zl(1), sgs_zt(1))
       else
-        call product_model_coefs_pout(numdir, nnod_rtp, nidx_rtp,       &
-     &      sgs_c, frc_simi)
+        call int_zonal_buo_coefs_pout(nnod_rtp, nnod_med, nphi,         &
+     &      frc_simi(1), frc_wide(1), sgs_zl(1), sgs_zt(1))
       end if
+!$omp end parallel
 !
-      end subroutine sel_product_model_coefs
+      call calypso_mpi_barrier
+      write(*,*) 'cal_sph_model_coefs'
+      call cal_sph_model_coefs                                          &
+     &   (ione, nnod_med, sgs_zl(1), sgs_zt(1), sgs_c(1))
+!
+      end subroutine sel_int_zonal_for_buo_coefs
 !
 ! ----------------------------------------------------------------------
 !
@@ -128,33 +140,31 @@
 !  ---------------------------------------------------------------------
 !
       subroutine int_zonal_for_model_coefs_pin                          &
-     &         (nnod_rtp, nidx_rtp, frc_simi, frc_wide, sgs_zl, sgs_zt)
+     &         (nnod_rtp, nnod_med, nphi, frc_simi, frc_wide,           &
+     &          sgs_zl, sgs_zt)
 !
-      integer(kind = kint), intent(in) :: nnod_rtp
-      integer(kind = kint), intent(in) :: nidx_rtp(3)
+      integer(kind = kint), intent(in) :: nnod_rtp, nnod_med, nphi
 !
       real(kind = kreal), intent(in) :: frc_simi(nnod_rtp)
       real(kind = kreal), intent(in) :: frc_wide(nnod_rtp)
 !
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: sgs_zl(nidx_rtp(1)*nidx_rtp(2))
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: sgs_zt(nidx_rtp(1)*nidx_rtp(2))
+      real(kind = kreal), intent(inout) :: sgs_zl(nnod_med)
+      real(kind = kreal), intent(inout) :: sgs_zt(nnod_med)
 !
       integer(kind = kint) :: kl, m, i1
 !
 !
 !$omp workshare
-      sgs_zl(1:nidx_rtp(1)*nidx_rtp(2)) = 0.0d0
-      sgs_zt(1:nidx_rtp(1)*nidx_rtp(2)) = 0.0d0
+      sgs_zl(1:nnod_med) = 0.0d0
+      sgs_zt(1:nnod_med) = 0.0d0
 !$omp end workshare
 !
 !$omp do private(kl,m,i1)
-      do kl = 1, nidx_rtp(1)*nidx_rtp(2)
+      do kl = 1, nnod_med
         sgs_zl(kl) = 0.0d0
         sgs_zt(kl) = 0.0d0
-        do m = 1, nidx_rtp(3)
-          i1 = m + (kl-1)*nidx_rtp(3)
+        do m = 1, nphi
+          i1 = m + (kl-1)*nphi
           sgs_zl(kl) = sgs_zl(kl) + frc_wide(i1) * frc_simi(i1)
           sgs_zt(kl) = sgs_zt(kl) + frc_wide(i1) * frc_wide(i1)
         end do
@@ -165,32 +175,67 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine int_zonal_for_model_coefs_pout                         &
-     &         (nnod_rtp, nidx_rtp, frc_simi, frc_wide, sgs_zl, sgs_zt)
+      subroutine int_zonal_buo_coefs_pin                                &
+     &         (nnod_rtp, nnod_med, nphi, frc_simi, frc_wide,           &
+     &          sgs_zl, sgs_zt)
 !
-      integer(kind = kint), intent(in) :: nnod_rtp
-      integer(kind = kint), intent(in) :: nidx_rtp(3)
+      integer(kind = kint), intent(in) :: nnod_rtp, nnod_med, nphi
 !
       real(kind = kreal), intent(in) :: frc_simi(nnod_rtp)
       real(kind = kreal), intent(in) :: frc_wide(nnod_rtp)
 !
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: sgs_zl(nidx_rtp(1)*nidx_rtp(2))
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: sgs_zt(nidx_rtp(1)*nidx_rtp(2))
+      real(kind = kreal), intent(inout) :: sgs_zl(nnod_med)
+      real(kind = kreal), intent(inout) :: sgs_zt(nnod_med)
 !
       integer(kind = kint) :: kl, m, i1
 !
 !
 !$omp workshare
-      sgs_zl(1:nidx_rtp(1)*nidx_rtp(2)) = 0.0d0
-      sgs_zt(1:nidx_rtp(1)*nidx_rtp(2)) = 0.0d0
+      sgs_zl(1:nnod_med) = 0.0d0
+      sgs_zt(1:nnod_med) = 0.0d0
 !$omp end workshare
 !
-      do m = 1, nidx_rtp(3)
+!$omp do private(kl,m,i1)
+      do kl = 1, nnod_med
+        sgs_zl(kl) = 0.0d0
+        sgs_zt(kl) = 0.0d0
+        do m = 1, nphi
+          i1 = m + (kl-1)*nphi
+          sgs_zl(kl) = sgs_zl(kl) + abs(frc_wide(i1) * frc_simi(i1))
+          sgs_zt(kl) = sgs_zt(kl) + frc_wide(i1) * frc_wide(i1)
+        end do
+      end do
+!$omp end do
+!
+      end subroutine int_zonal_buo_coefs_pin
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine int_zonal_for_model_coefs_pout                         &
+     &         (nnod_rtp, nnod_med, nphi, frc_simi, frc_wide,           &
+     &          sgs_zl, sgs_zt)
+!
+      integer(kind = kint), intent(in) :: nnod_rtp, nnod_med, nphi
+!
+      real(kind = kreal), intent(in) :: frc_simi(nnod_rtp)
+      real(kind = kreal), intent(in) :: frc_wide(nnod_rtp)
+!
+      real(kind = kreal), intent(inout) :: sgs_zl(nnod_med)
+      real(kind = kreal), intent(inout) :: sgs_zt(nnod_med)
+!
+      integer(kind = kint) :: kl, m, i1
+!
+!
+!$omp workshare
+      sgs_zl(1:nnod_med) = 0.0d0
+      sgs_zt(1:nnod_med) = 0.0d0
+!$omp end workshare
+!
+      do m = 1, nphi
 !$omp do private(kl,i1)
-        do kl = 1, nidx_rtp(1)*nidx_rtp(2)
-          i1 = kl + (m-1)*nidx_rtp(1)*nidx_rtp(2)
+        do kl = 1, nnod_med
+          i1 = kl + (m-1)*nnod_med
           sgs_zl(kl) = sgs_zl(kl) + frc_wide(i1) * frc_simi(i1)
           sgs_zt(kl) = sgs_zt(kl) + frc_wide(i1) * frc_wide(i1)
         end do
@@ -200,67 +245,38 @@
       end subroutine int_zonal_for_model_coefs_pout
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
 !
-      subroutine product_model_coefs_pin                                &
-     &         (numdir, nnod_rtp, nidx_rtp, sgs_c, frc_rtp)
+      subroutine int_zonal_buo_coefs_pout                               &
+     &         (nnod_rtp, nnod_med, nphi, frc_simi, frc_wide,           &
+     &          sgs_zl, sgs_zt)
 !
-      integer(kind = kint), intent(in) :: nnod_rtp, numdir
-      integer(kind = kint), intent(in) :: nidx_rtp(3)
+      integer(kind = kint), intent(in) :: nnod_rtp, nnod_med, nphi
 !
-      real(kind = kreal), intent(in)                                    &
-     &                   :: sgs_c(nidx_rtp(1)*nidx_rtp(2))
+      real(kind = kreal), intent(in) :: frc_simi(nnod_rtp)
+      real(kind = kreal), intent(in) :: frc_wide(nnod_rtp)
 !
-      real(kind = kreal), intent(inout) :: frc_rtp(nnod_rtp,numdir)
+      real(kind = kreal), intent(inout) :: sgs_zl(nnod_med)
+      real(kind = kreal), intent(inout) :: sgs_zt(nnod_med)
 !
-      integer(kind = kint) :: kl, m, i1, nd
+      integer(kind = kint) :: kl, m, i1
 !
 !
-!$omp parallel
-      do nd = 1, numdir
-!$omp do private(kl,m,i1)
-        do kl = 1, nidx_rtp(1)*nidx_rtp(2)
-          do m = 1, nidx_rtp(3)
-            i1 = m + (kl-1)*nidx_rtp(3)
-            frc_rtp(i1,nd) = sgs_c(kl) * frc_rtp(i1,nd)
-          end do
+!$omp workshare
+      sgs_zl(1:nnod_med) = 0.0d0
+      sgs_zt(1:nnod_med) = 0.0d0
+!$omp end workshare
+!
+      do m = 1, nphi
+!$omp do private(kl,i1)
+        do kl = 1, nnod_med
+          i1 = kl + (m-1)*nnod_med
+          sgs_zl(kl) = sgs_zl(kl) + abs(frc_wide(i1) * frc_simi(i1))
+          sgs_zt(kl) = sgs_zt(kl) + frc_wide(i1) * frc_wide(i1)
         end do
 !$omp end do
-     end do
-!$omp end parallel
-!
-      end subroutine product_model_coefs_pin
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine product_model_coefs_pout                               &
-     &         (numdir, nnod_rtp, nidx_rtp, sgs_c, frc_rtp)
-!
-      integer(kind = kint), intent(in) :: nnod_rtp, numdir
-      integer(kind = kint), intent(in) :: nidx_rtp(3)
-      real(kind = kreal), intent(in)                                    &
-     &                   :: sgs_c(nidx_rtp(1)*nidx_rtp(2))
-!
-      real(kind = kreal), intent(inout) :: frc_rtp(nnod_rtp,numdir)
-!
-!
-      integer(kind = kint) :: kl, m, i1, nd
-!
-!
-!$omp parallel
-      do nd = 1, numdir
-!$omp do private(kl,m,i1)
-        do m = 1, nidx_rtp(3)
-          do kl = 1, nidx_rtp(1)*nidx_rtp(2)
-            i1 = kl + (m-1)*nidx_rtp(1)*nidx_rtp(2)
-            frc_rtp(i1,nd) = sgs_c(kl) * frc_rtp(i1,nd)
-          end do
-        end do
-!$omp end do
-     end do
-!$omp end parallel
-!
-      end subroutine product_model_coefs_pout
+      end do
+ !
+      end subroutine int_zonal_buo_coefs_pout
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

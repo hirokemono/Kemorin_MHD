@@ -229,11 +229,17 @@
       end if
 !
       if(iflag_SGS_gravity .gt. id_SGS_none) then
-        call add_phys_name_tmp(fhd_filter_v)
-        call add_phys_name_tmp(fhd_filter_temp)
+        call add_phys_name_tmp(fhd_Reynolds_work)
 !
-        call add_phys_name_tmp(fhd_SGS_buoyancy)
-        call add_phys_name_tmp(fhd_Csim_SGS_buoyancy)
+        if(iflag_4_gravity .gt. id_turn_OFF) then
+          call add_phys_name_tmp(fhd_SGS_buo_flux)
+          call add_phys_name_tmp(fhd_Csim_SGS_buoyancy)
+        end if
+!
+        if(iflag_4_composit_buo .gt. id_turn_OFF) then
+          call add_phys_name_tmp(fhd_SGS_comp_buo_flux)
+          call add_phys_name_tmp(fhd_Csim_SGS_comp_buo)
+        end if
       end if
 !
 !      if(iflag_SGS_gravity .gt. id_SGS_none) then
@@ -241,7 +247,6 @@
 !        call add_phys_name_tmp(fhd_filter_temp)
 !
 !        call add_phys_name_tmp(fhd_SGS_comp_buo)
-!        call add_phys_name_tmp(fhd_Csim_SGS_comp_buo)
 !      end if
 !
       end subroutine add_field_name_dynamic_SGS

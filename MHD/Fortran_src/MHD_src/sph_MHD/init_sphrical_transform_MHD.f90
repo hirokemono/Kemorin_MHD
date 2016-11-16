@@ -122,7 +122,7 @@
       call sel_sph_transform_MHD(ipol, sph, comms_sph, omega_sph,       &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
      &    trans_p, WK, rj_fld)
-
+!
       if(iflag_SGS_model .gt. 0) then
         call init_MHD_FFT_select(my_rank, sph%sph_rtp, ncomp_max_trans, &
      &      WK%trns_SGS%ncomp_rtp_2_rj,                                 &

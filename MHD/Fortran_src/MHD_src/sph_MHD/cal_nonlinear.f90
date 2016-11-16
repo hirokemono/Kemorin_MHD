@@ -100,8 +100,8 @@
       if(iflag_SGS_model .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'SGS_by_pseudo_sph'
         call SGS_by_pseudo_sph(sph, comms_sph, r_2nd, trans_p,          &
-     &      WK%trns_MHD, WK%trns_SGS, WK%SGS_mul_FFTW, WK%dynamic_SPH,  &
-     &      ipol, itor, rj_fld)
+     &      WK%trns_MHD, WK%trns_snap, WK%trns_SGS, WK%SGS_mul_FFTW,    &
+     &      WK%dynamic_SPH, ipol, itor, rj_fld)
       end if
 !
       if (iflag_4_ref_temp .eq. id_sphere_ref_temp) then
@@ -267,14 +267,15 @@
 !*   ------------------------------------------------------------------
 !
       subroutine SGS_by_pseudo_sph(sph, comms_sph, r_2nd, trans_p,      &
-     &          trns_MHD, trns_SGS, SGS_mul_FFTW, dynamic_SPH,          &
-     &          ipol, itor, rj_fld)
+     &          trns_MHD, trns_snap, trns_SGS, SGS_mul_FFTW,            &
+     &          dynamic_SPH, ipol, itor, rj_fld)
 !
       use sph_transforms_4_SGS
       use cal_sph_rotation_of_SGS
       use cal_filtered_sph_fields
       use cal_SGS_terms_sph_MHD
       use dynamic_model_sph_MHD
+      use dynamic_SGS_buoyancy_sph
 !
       use m_work_time
 !
@@ -284,7 +285,8 @@
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(phys_address), intent(in) :: ipol, itor
 !
-      type(address_4_sph_trans), intent(inout) :: trns_MHD, trns_SGS
+      type(address_4_sph_trans), intent(inout) :: trns_MHD, trns_snap
+      type(address_4_sph_trans), intent(inout) :: trns_SGS
       type(work_for_sgl_FFTW), intent(inout) :: SGS_mul_FFTW
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(phys_data), intent(inout) :: rj_fld
@@ -322,6 +324,10 @@
           call const_model_coefs_4_sph                                  &
      &       (sph%sph_rtp, dynamic_SPH%ifld_sgs, dynamic_SPH%icomp_sgs, &
      &        dynamic_SPH%wk_sgs, trns_SGS)
+!
+          if (iflag_debug.eq.1) write(*,*) 'const_dynamic_SGS_4_buo_sph'
+          call const_dynamic_SGS_4_buo_sph(sph%sph_rtp, trns_MHD,       &
+     &        trns_snap, trns_SGS, dynamic_SPH)
         end if
         call end_eleps_time(15)
 !

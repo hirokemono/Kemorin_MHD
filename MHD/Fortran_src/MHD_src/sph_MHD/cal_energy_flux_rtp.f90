@@ -234,25 +234,6 @@
      &      fls_rtp(1,bs_trns%i_light), fls_rtp(1,bs_trns%i_c_diffuse), &
      &      frs_rtp(1,fs_trns%i_comp_scale))
       end if
-!
-      if(fs_trns%i_reynolds_wk .gt. 0) then
-        call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
-     &      frc_rtp(1,f_trns%i_SGS_inertia), fls_rtp(1,bs_trns%i_velo), &
-     &      frs_rtp(1,fs_trns%i_reynolds_wk) )
-      end if
-!
-      if(fs_trns%i_SGS_Lor_wk .gt. 0) then
-        call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
-     &      frc_rtp(1,f_trns%i_lorentz), fls_rtp(1,bs_trns%i_velo),     &
-     &      frs_rtp(1,fs_trns%i_SGS_Lor_wk) )
-      end if
-!
-      if(fs_trns%i_SGS_me_gen .gt. 0) then
-        call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
-     &      fls_rtp(1,bs_trns%i_SGS_induction),                         &
-     &      fls_rtp(1,bs_trns%i_magne),                                 &
-     &      frs_rtp(1,fs_trns%i_SGS_me_gen))
-      end if
 !$omp end parallel
 !
 !
