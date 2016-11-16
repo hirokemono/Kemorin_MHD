@@ -128,7 +128,7 @@
       call copy_snap_vec_fld_from_trans                                 &
      &   (sph1%sph_params%m_folding, sph1%sph_rtp, trns_WK1%trns_snap,  &
      &    mesh1%node, iphys, nod_fld1)
-      call copy_snap_vec_fld_to_trans                                   &
+      call copy_snap_vec_force_from_trans                               &
      &   (sph1%sph_params%m_folding, sph1%sph_rtp, trns_WK1%trns_snap,  &
      &    mesh1%node, iphys, nod_fld1)
 !

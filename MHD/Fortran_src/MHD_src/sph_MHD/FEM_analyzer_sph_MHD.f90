@@ -209,8 +209,8 @@
       call copy_snap_vec_fld_from_trans                                 &
      &   (sph_params%m_folding, sph_rtp, WK%trns_snap,                  &
      &    mesh%node, iphys, nod_fld)
-      if (iflag_debug.gt.0) write(*,*) 'copy_snap_vec_fld_to_trans'
-      call copy_snap_vec_fld_to_trans                                   &
+      if (iflag_debug.gt.0) write(*,*) 'copy_snap_vec_force_from_trans'
+      call copy_snap_vec_force_from_trans                               &
      &   (sph_params%m_folding, sph_rtp, WK%trns_snap,                  &
      &    mesh%node, iphys, nod_fld)
 !
