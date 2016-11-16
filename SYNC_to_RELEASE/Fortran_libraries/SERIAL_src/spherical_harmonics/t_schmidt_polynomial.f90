@@ -1,1 +1,1 @@
-/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/Fortran_src/CORE_src/spherical_harmonics/t_schmidt_polynomial.f90
+../../../../MHD/Fortran_src/CORE_src/spherical_harmonics/t_schmidt_polynomial.f90

@@ -1,1 +1,1 @@
-/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/Fortran_src/CORE_src/SPH_SPECTR_src/cal_zonal_mean_sph_spectr.f90
+../../../../MHD/Fortran_src/CORE_src/SPH_SPECTR_src/cal_zonal_mean_sph_spectr.f90

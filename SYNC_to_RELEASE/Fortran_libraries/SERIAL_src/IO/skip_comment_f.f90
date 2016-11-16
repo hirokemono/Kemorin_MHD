@@ -1,1 +1,1 @@
-/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/Fortran_src/CORE_src/IO/skip_comment_f.f90
+../../../../MHD/Fortran_src/CORE_src/IO/skip_comment_f.f90

@@ -1,1 +1,1 @@
-/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/Fortran_src/CORE_src/SPH_SPECTR_src/output_sph_m_square_file.f90
+../../../../MHD/Fortran_src/CORE_src/SPH_SPECTR_src/output_sph_m_square_file.f90

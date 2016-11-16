@@ -1,1 +1,1 @@
-/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/Fortran_src/CORE_src/BASE/cal_num_digits.f90
+../../../../MHD/Fortran_src/CORE_src/BASE/cal_num_digits.f90
