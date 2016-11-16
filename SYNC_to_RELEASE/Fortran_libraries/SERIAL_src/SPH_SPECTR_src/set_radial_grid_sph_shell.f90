@@ -1,1 +1,1 @@
-/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/Fortran_src/CORE_src/SPH_SPECTR_src/set_radial_grid_sph_shell.f90
+../../../../MHD/Fortran_src/CORE_src/SPH_SPECTR_src/set_radial_grid_sph_shell.f90

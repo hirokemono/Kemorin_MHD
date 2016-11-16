@@ -1,1 +1,1 @@
-/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/Fortran_src/CORE_src/gauss_integration/t_gauss_points.f90
+../../../../MHD/Fortran_src/CORE_src/gauss_integration/t_gauss_points.f90

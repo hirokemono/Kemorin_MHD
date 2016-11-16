@@ -1,1 +1,1 @@
-/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/Fortran_src/CORE_src/IO/set_components_flags.f90
+../../../../MHD/Fortran_src/CORE_src/IO/set_components_flags.f90

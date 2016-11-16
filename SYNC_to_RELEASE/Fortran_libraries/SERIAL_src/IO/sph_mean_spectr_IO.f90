@@ -1,1 +1,1 @@
-/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/Fortran_src/CORE_src/IO/sph_mean_spectr_IO.f90
+../../../../MHD/Fortran_src/CORE_src/IO/sph_mean_spectr_IO.f90
