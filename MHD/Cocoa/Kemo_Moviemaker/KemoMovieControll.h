@@ -19,8 +19,12 @@
 	NSInteger evolutionFPS;
 	
 	QTMovie *mMovie;
+    NSImage *SnapshotImage;
+    QTTime duration;
+    
 	IBOutlet QTMovieView *movieView;
 	IBOutlet NSProgressIndicator *progreessBar;
+    NSString *oldmovieFileName;
 	NSString *movieFileName;
 	NSString *movieFileHead;
 	NSString *movieFileExt;
@@ -37,7 +41,14 @@
 @property NSInteger evolutionIncrement;
 @property NSInteger evolutionFPS;
 
+-(void) OpenKemoviewMovieFile:(NSString *)movieFileName;
+-(void) CloseKemoviewMovieFile;
+-(void) ImageToMovie;
+
+-(void) OpenQTMovieFile:(NSString *)movieFileName;
+-(void) CloseQTMovieFile;
 -(void) ImageToQTMovie;
+
 -(IBAction) SaveImageEvolution:(id)pSender;
 -(IBAction)SetEvolutionSteps:(id)pSender;
 

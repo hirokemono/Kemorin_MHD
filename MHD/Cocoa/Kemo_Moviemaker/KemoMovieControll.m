@@ -8,7 +8,6 @@
 
 #import "KemoMovieControll.h"
 
-
 @implementation KemoMovieControll
 @synthesize evolutionCurrentStep;
 @synthesize evolutionStartStep;
@@ -25,38 +24,105 @@
 	return self;
 }	
 
--(void) ImageToQTMovie{
-	NSImage *anImage;
-	NSDictionary *movieDict = nil;
-	QTTime duration = QTMakeTime(1, self.evolutionFPS);
-	
-	// when adding images we must provide a dictionary
-	// specifying the codec attributes
-	movieDict = [NSDictionary dictionaryWithObjectsAndKeys:@"mp4v",
-				 QTAddImageCodecType,
-				 [NSNumber numberWithLong:codecMaxQuality],
-				 QTAddImageCodecQuality,
-				 nil];
+-(void) OpenKemoviewMovieFile:(NSString *)mFileName
+{
+    NSError *overWriteflag = [[NSError alloc] init];
+    // Create a mMovie with a writable data reference
+    NSLog(@"EvolutionImageFileName: %@", mFileName);
+    mMovie = [[mMovie alloc] initToWritableFile:mFileName error:&overWriteflag];
+    
+    if(overWriteflag!= NULL ){
+        NSFileManager *fman = [NSFileManager defaultManager];
+        [fman removeFileAtPath:mFileName handler: nil ];
+        mMovie = [[mMovie alloc] initToWritableFile:mFileName error:NULL];
+    }
+    //    [overWriteflag release];
+    
+    // mark the movie as editable
+    [mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieFlatten];
+    duration = QTMakeTime(1, self.evolutionFPS);
+}
 
-	anImage = [[NSImage alloc] initWithContentsOfFile:imageFileName];
-	// [anImage setFlipped:YES];
-	// [anImage lockFocusOnRepresentation:bmpRep]; // This will flip the rep.
-	// [anImage unlockFocus];
-	
-	// Adds an image for the specified duration to the QTMovie
-	[mMovie addImage:anImage forDuration:duration withAttributes:movieDict];
-	[mMovie updateMovieFile];
-	// free up our image object
-	/* deallocate memory*/
-	[anImage release];
-	return;
+-(void) CloseKemoviewMovieFile{
+    [mMovie release];
+}
+
+-(void) ImageToMovie{
+    // when adding images we must provide a dictionary
+    // specifying the codec attributes
+    NSDictionary *movieDict = nil;
+    movieDict = [NSDictionary dictionaryWithObjectsAndKeys:@"mp4v",
+                 QTAddImageCodecType,
+                 [NSNumber numberWithLong:codecMaxQuality],
+                 QTAddImageCodecQuality,
+                 nil];
+    
+    SnapshotImage = [[NSImage alloc] initWithContentsOfFile:imageFileName];
+    // [SnapshotImage setFlipped:YES];
+    // [SnapshotImage lockFocusOnRepresentation:bmpRep]; // This will flip the rep.
+    // [SnapshotImage unlockFocus];
+    
+    // Adds an image for the specified duration to the mMovie
+    [mMovie addImage:SnapshotImage forDuration:duration withAttributes:movieDict];
+    [mMovie updateMovieFile];
+    // free up our image object
+    /* deallocate memory*/
+    [SnapshotImage release];
+    return;
+}
+
+
+-(void) OpenQTMovieFile:(NSString *)mFileName
+{
+    NSError *overWriteflag = [[NSError alloc] init];
+    // Create a mMovie with a writable data reference
+    NSLog(@"EvolutionImageFileName: %@", mFileName);
+    mMovie = [[mMovie alloc] initToWritableFile:mFileName error:&overWriteflag];
+    
+    if(overWriteflag!= NULL ){
+        NSFileManager *fman = [NSFileManager defaultManager];
+        [fman removeFileAtPath:mFileName handler: nil ];
+        mMovie = [[mMovie alloc] initToWritableFile:mFileName error:NULL];
+    }
+//    [overWriteflag release];
+
+    // mark the movie as editable
+    [mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieFlatten];
+    duration = QTMakeTime(1, self.evolutionFPS);
+}
+
+-(void) CloseQTMovieFile{
+    [mMovie release];
+}
+
+-(void) ImageToQTMovie{
+    // when adding images we must provide a dictionary
+    // specifying the codec attributes
+    NSDictionary *movieDict = nil;
+    movieDict = [NSDictionary dictionaryWithObjectsAndKeys:@"mp4v",
+                 QTAddImageCodecType,
+                 [NSNumber numberWithLong:codecMaxQuality],
+                 QTAddImageCodecQuality,
+                 nil];
+    
+    SnapshotImage = [[NSImage alloc] initWithContentsOfFile:imageFileName];
+    // [SnapshotImage setFlipped:YES];
+    // [SnapshotImage lockFocusOnRepresentation:bmpRep]; // This will flip the rep.
+    // [SnapshotImage unlockFocus];
+    
+    // Adds an image for the specified duration to the mMovie
+    [mMovie addImage:SnapshotImage forDuration:duration withAttributes:movieDict];
+    [mMovie updateMovieFile];
+    // free up our image object
+    /* deallocate memory*/
+    [SnapshotImage release];
+    return;
 }
 
 
 -(IBAction) SaveImageEvolution:(id)pSender
 {
 	//	NSLog(@"SaveRotation received message = %@",(NSString*)[pNotification object]);
-	NSError *overWriteflag = [[NSError alloc] init];
 	
 	NSOpenPanel *PsfOpenPanelObj	= [NSOpenPanel openPanel];
 	[PsfOpenPanelObj setTitle:@"Choose one of image files"];
@@ -79,24 +145,11 @@
 		movieFileName = [evolutionImageSavePanelObj filename];
 		movieFileHead = [movieFileName stringByDeletingPathExtension];
 		movieFileName = [movieFileHead stringByAppendingPathExtension:@"mov"];
-		NSError *overWriteflag = [[NSError alloc] init];
+        oldmovieFileName = [movieFileName stringByAppendingPathExtension:@"mov"];
 	}
 	else { return;};
 	
-		// Create a QTMovie with a writable data reference
-	NSLog(@"EvolutionImageFileName: %@", movieFileName);
-	mMovie = [[QTMovie alloc] initToWritableFile:movieFileName error:&overWriteflag];
-	
-	if(overWriteflag!= NULL ){
-		NSFileManager *fman = [NSFileManager defaultManager];
-		[fman removeFileAtPath:movieFileName handler: nil ];
-		mMovie = [[QTMovie alloc] initToWritableFile:movieFileName error:NULL];
-	}
-	// mark the movie as editable
-	[mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieFlatten];
-
-	[progreessBar setIndeterminate:NO];
-	[progreessBar startAnimation:(id)pSender];
+    [self OpenQTMovieFile:movieFileName];    
 	for (self.evolutionCurrentStep = self.evolutionStartStep; 
 		 self.evolutionCurrentStep<(self.evolutionEndStep+1);
 		 self.evolutionCurrentStep++) {
@@ -105,14 +158,31 @@
 							[NSString stringWithFormat:@"%d",(int) self.evolutionCurrentStep]];
 			imageFileName =  [imageFileHead stringByAppendingPathExtension:imageFileExt];
 			[self ImageToQTMovie];
-			[progreessBar incrementBy:(double)self.evolutionIncrement];
-			[progreessBar displayIfNeeded];
 		};
 	};
-	[progreessBar setDoubleValue:(double)self.evolutionStartStep];
-	[progreessBar displayIfNeeded];
-	[mMovie release];
-	return;
+    [self CloseQTMovieFile];
+
+    [progreessBar setIndeterminate:NO];
+    [progreessBar startAnimation:(id)pSender];
+    [self OpenKemoviewMovieFile:oldmovieFileName];
+    
+    for (self.evolutionCurrentStep = self.evolutionStartStep; 
+         self.evolutionCurrentStep<(self.evolutionEndStep+1);
+         self.evolutionCurrentStep++) {
+        if( ((self.evolutionCurrentStep-self.evolutionStartStep)%self.evolutionIncrement) == 0) {
+            imageFileHead =  [imageFileHeadExStep stringByAppendingPathExtension:
+                              [NSString stringWithFormat:@"%d",(int) self.evolutionCurrentStep]];
+            imageFileName =  [imageFileHead stringByAppendingPathExtension:imageFileExt];
+            [self ImageToMovie];
+            [progreessBar incrementBy:(double)self.evolutionIncrement];
+            [progreessBar displayIfNeeded];
+        };
+    };
+    [self CloseKemoviewMovieFile];
+    [progreessBar setDoubleValue:(double)self.evolutionStartStep];
+    [progreessBar displayIfNeeded];
+    
+    return;
 }
 
 - (IBAction)SetEvolutionSteps:(id)pSender{
