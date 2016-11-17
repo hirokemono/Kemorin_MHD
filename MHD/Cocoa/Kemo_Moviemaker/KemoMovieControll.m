@@ -27,17 +27,16 @@
 -(void) OpenKemoviewMovieFile:(NSString *)mFileName
 {
     NSError *overWriteflag = [[NSError alloc] init];
-    // Create a mMovie with a writable data reference
+    // Create a QTMovie with a writable data reference
     NSLog(@"EvolutionImageFileName: %@", mFileName);
-    mMovie = [[mMovie alloc] initToWritableFile:mFileName error:&overWriteflag];
+    mMovie = [[QTMovie alloc] initToWritableFile:mFileName error:&overWriteflag];
     
     if(overWriteflag!= NULL ){
         NSFileManager *fman = [NSFileManager defaultManager];
         [fman removeFileAtPath:mFileName handler: nil ];
-        mMovie = [[mMovie alloc] initToWritableFile:mFileName error:NULL];
+        mMovie = [[QTMovie alloc] initToWritableFile:mFileName error:NULL];
     }
-    //    [overWriteflag release];
-    
+
     // mark the movie as editable
     [mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieFlatten];
     duration = QTMakeTime(1, self.evolutionFPS);
@@ -62,7 +61,7 @@
     // [SnapshotImage lockFocusOnRepresentation:bmpRep]; // This will flip the rep.
     // [SnapshotImage unlockFocus];
     
-    // Adds an image for the specified duration to the mMovie
+    // Adds an image for the specified duration to the QTMovie
     [mMovie addImage:SnapshotImage forDuration:duration withAttributes:movieDict];
     [mMovie updateMovieFile];
     // free up our image object
@@ -71,21 +70,19 @@
     return;
 }
 
-
 -(void) OpenQTMovieFile:(NSString *)mFileName
 {
     NSError *overWriteflag = [[NSError alloc] init];
-    // Create a mMovie with a writable data reference
+    // Create a QTMovie with a writable data reference
     NSLog(@"EvolutionImageFileName: %@", mFileName);
-    mMovie = [[mMovie alloc] initToWritableFile:mFileName error:&overWriteflag];
+    mMovie = [[QTMovie alloc] initToWritableFile:mFileName error:&overWriteflag];
     
     if(overWriteflag!= NULL ){
         NSFileManager *fman = [NSFileManager defaultManager];
         [fman removeFileAtPath:mFileName handler: nil ];
-        mMovie = [[mMovie alloc] initToWritableFile:mFileName error:NULL];
+        mMovie = [[QTMovie alloc] initToWritableFile:mFileName error:NULL];
     }
-//    [overWriteflag release];
-
+    
     // mark the movie as editable
     [mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieFlatten];
     duration = QTMakeTime(1, self.evolutionFPS);
@@ -110,7 +107,7 @@
     // [SnapshotImage lockFocusOnRepresentation:bmpRep]; // This will flip the rep.
     // [SnapshotImage unlockFocus];
     
-    // Adds an image for the specified duration to the mMovie
+    // Adds an image for the specified duration to the QTMovie
     [mMovie addImage:SnapshotImage forDuration:duration withAttributes:movieDict];
     [mMovie updateMovieFile];
     // free up our image object
@@ -122,13 +119,14 @@
 
 -(IBAction) SaveImageEvolution:(id)pSender
 {
+    int i, ist, ied, inc;
 	//	NSLog(@"SaveRotation received message = %@",(NSString*)[pNotification object]);
 	
 	NSOpenPanel *PsfOpenPanelObj	= [NSOpenPanel openPanel];
 	[PsfOpenPanelObj setTitle:@"Choose one of image files"];
-	NSInteger PsfOpenInteger	= [PsfOpenPanelObj runModalForTypes:nil];
-	if(PsfOpenInteger == NSOKButton){
-		imageFileName =  [PsfOpenPanelObj filename];
+	NSInteger PsfOpenInteger	= [PsfOpenPanelObj runModal];
+	if(PsfOpenInteger == NSFileHandlingPanelOKButton){
+		imageFileName =  [[PsfOpenPanelObj URL] path];
 		imageFileExt =   [imageFileName pathExtension];
 		imageFileHead =  [imageFileName stringByDeletingPathExtension];
 		imageFileHeadExStep =  [imageFileHead stringByDeletingPathExtension];
@@ -138,51 +136,52 @@
 	else { return;};
 	
 	NSSavePanel *evolutionImageSavePanelObj	= [NSSavePanel savePanel];
-	NSInteger EvolutionSaveInteger	= [evolutionImageSavePanelObj runModalForTypes:nil];
+	NSInteger EvolutionSaveInteger	= [evolutionImageSavePanelObj runModal];
 	[evolutionImageSavePanelObj setCanSelectHiddenExtension:YES];	
 
-	if(EvolutionSaveInteger == NSOKButton){
-		movieFileName = [evolutionImageSavePanelObj filename];
+	if(EvolutionSaveInteger == NSFileHandlingPanelOKButton){
+		movieFileName = [[evolutionImageSavePanelObj URL] path];
 		movieFileHead = [movieFileName stringByDeletingPathExtension];
 		movieFileName = [movieFileHead stringByAppendingPathExtension:@"mov"];
         oldmovieFileName = [movieFileName stringByAppendingPathExtension:@"mov"];
 	}
 	else { return;};
 	
-    [self OpenQTMovieFile:movieFileName];    
-	for (self.evolutionCurrentStep = self.evolutionStartStep; 
-		 self.evolutionCurrentStep<(self.evolutionEndStep+1);
-		 self.evolutionCurrentStep++) {
-		if( ((self.evolutionCurrentStep-self.evolutionStartStep)%self.evolutionIncrement) == 0) {
+    ist = self.evolutionStartStep;
+    ied = self.evolutionEndStep;
+    inc = self.evolutionIncrement;
+    
+    [self OpenQTMovieFile:oldmovieFileName];
+	for (i = ist; i<(ied+1); i++) {
+        self.evolutionCurrentStep = i;
+		if( ((i-ist)%inc) == 0) {
 			imageFileHead =  [imageFileHeadExStep stringByAppendingPathExtension:
-							[NSString stringWithFormat:@"%d",(int) self.evolutionCurrentStep]];
+							[NSString stringWithFormat:@"%d",i]];
 			imageFileName =  [imageFileHead stringByAppendingPathExtension:imageFileExt];
 			[self ImageToQTMovie];
 		};
 	};
     [self CloseQTMovieFile];
-
+    
     [progreessBar setIndeterminate:NO];
     [progreessBar startAnimation:(id)pSender];
-    [self OpenKemoviewMovieFile:oldmovieFileName];
+    [self OpenKemoviewMovieFile:movieFileName];
     
-    for (self.evolutionCurrentStep = self.evolutionStartStep; 
-         self.evolutionCurrentStep<(self.evolutionEndStep+1);
-         self.evolutionCurrentStep++) {
-        if( ((self.evolutionCurrentStep-self.evolutionStartStep)%self.evolutionIncrement) == 0) {
+    for (i = ist;i<(ied+1);i++) {
+        self.evolutionCurrentStep = i;
+        if( ((i-ist)%inc) == 0) {
             imageFileHead =  [imageFileHeadExStep stringByAppendingPathExtension:
-                              [NSString stringWithFormat:@"%d",(int) self.evolutionCurrentStep]];
+                              [NSString stringWithFormat:@"%d",i]];
             imageFileName =  [imageFileHead stringByAppendingPathExtension:imageFileExt];
             [self ImageToMovie];
-            [progreessBar incrementBy:(double)self.evolutionIncrement];
+            [progreessBar incrementBy:(double)inc];
             [progreessBar displayIfNeeded];
         };
     };
     [self CloseKemoviewMovieFile];
-    [progreessBar setDoubleValue:(double)self.evolutionStartStep];
+    [progreessBar setDoubleValue:(double)ist];
     [progreessBar displayIfNeeded];
-    
-    return;
+	return;
 }
 
 - (IBAction)SetEvolutionSteps:(id)pSender{

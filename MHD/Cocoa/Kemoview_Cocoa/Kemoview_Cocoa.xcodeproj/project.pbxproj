@@ -993,7 +993,7 @@
 					/Users/matsui/local/lib,
 					/usr/X11/lib,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				"OTHER_LDFLAGS[arch=*]" = "-L/opt/local/lib";
 				PRODUCT_NAME = Kemoview_Cocoa;
 			};
@@ -1017,7 +1017,7 @@
 					/Users/matsui/local/lib,
 					/usr/X11/lib,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				OTHER_LDFLAGS = "-L/opt/local/lib";
 				PRODUCT_NAME = Kemoview_Cocoa;
 			};

@@ -45,7 +45,7 @@
 	
 	NSSavePanel *ViewMatrixSavePanelObj	= [NSSavePanel savePanel];
 	int ViewMatrixSaveInt = [ViewMatrixSavePanelObj runModal];
-	if(ViewMatrixSaveInt == NSOKButton){
+	if(ViewMatrixSaveInt == NSFileHandlingPanelOKButton){
 		
 		NSString * ViewMatrixFilename = [[ ViewMatrixSavePanelObj URL] path];
 		NSString * ViewMatrixDirectory = [[ ViewMatrixSavePanelObj directoryURL] path];

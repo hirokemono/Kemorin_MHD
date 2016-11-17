@@ -239,7 +239,7 @@ NSBitmapImageRep *bmpRep;
 
 	NSSavePanel *RotateImageSavePanelObj = [NSSavePanel savePanel];
 	int RotateImageSaveInt = [RotateImageSavePanelObj runModal];
-	if(RotateImageSaveInt == NSOKButton){
+	if(RotateImageSaveInt == NSFileHandlingPanelOKButton){
 		NSString * RotateImageFilename = [[ RotateImageSavePanelObj URL] path];
 		NSString * RotateImageFileext =   [RotateImageFilename pathExtension];
 		RotateImageFilehead = [RotateImageFilename stringByDeletingPathExtension];
@@ -281,7 +281,7 @@ NSBitmapImageRep *bmpRep;
 	
 	NSSavePanel *EvolutionImageSavePanelObj = [NSSavePanel savePanel];
 	int EvolutionImageSaveInt = [EvolutionImageSavePanelObj runModal];
-	if(EvolutionImageSaveInt == NSOKButton){
+	if(EvolutionImageSaveInt == NSFileHandlingPanelOKButton){
 		EvolutionImageFilename = [[ EvolutionImageSavePanelObj URL] path];
 		NSString * EvolutionImageFileext =   [EvolutionImageFilename pathExtension];
 		EvolutionImageFilehead = [EvolutionImageFilename stringByDeletingPathExtension];

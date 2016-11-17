@@ -407,7 +407,7 @@
     [PsfOpenPanelObj setAllowedFileTypes:psfFileTypes];
 	NSInteger PsfOpenInteger	= [PsfOpenPanelObj runModal];
 	
-	if(PsfOpenInteger == NSOKButton){
+	if(PsfOpenInteger == NSFileHandlingPanelOKButton){
 		PsfOpenDirectory = [[PsfOpenPanelObj directoryURL] path];
 		NSString *PsfOpenFilename =  [[PsfOpenPanelObj URL] path];
 		NSString *PsfOpenFileext =   [PsfOpenFilename pathExtension];
@@ -431,7 +431,7 @@
     [PsfOpenPanelObj setAllowedFileTypes:psfFileTypes];
 	NSInteger PsfOpenInteger	= [PsfOpenPanelObj runModal];
 	
-	if(PsfOpenInteger == NSOKButton){
+	if(PsfOpenInteger == NSFileHandlingPanelOKButton){
 		PsfOpenDirectory = [[PsfOpenPanelObj directoryURL] path];
 		NSString *PsfOpenFilename =  [[PsfOpenPanelObj URL] path];
 		NSString *PsfOpenFileext =   [PsfOpenFilename pathExtension];

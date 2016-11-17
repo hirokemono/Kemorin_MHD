@@ -156,7 +156,7 @@
     [flineOpenPanelObj setAllowedFileTypes:flineFileTypes];
 	NSInteger FlineOpenInteger	= [flineOpenPanelObj runModal];
 	
-	if(FlineOpenInteger == NSOKButton){
+	if(FlineOpenInteger == NSFileHandlingPanelOKButton){
 		FlineOpenDirectory = [[flineOpenPanelObj directoryURL] path];
 		self.FlineOpenFilename =  [[flineOpenPanelObj URL] path];
 		FlineOpenFileext =   [self.FlineOpenFilename pathExtension];

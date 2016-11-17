@@ -75,7 +75,7 @@
     [MeshOpenPanelObj setAllowedFileTypes:meshFileTypes];
 	NSInteger MeshOpenInteger	= [MeshOpenPanelObj runModal];
 	
-	if(MeshOpenInteger == NSOKButton){
+	if(MeshOpenInteger == NSFileHandlingPanelOKButton){
 		NSString *MeshOpenDirectory = [[MeshOpenPanelObj directoryURL] path];
 		NSString *MeshOpenFilename = [[MeshOpenPanelObj URL] path];
 		NSString *MeshOpenFilehead = [MeshOpenFilename stringByDeletingPathExtension];
