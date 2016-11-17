@@ -276,4 +276,40 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine copy_SGS_snap_fld_from_trans                           &
+     &         (m_folding, sph_rtp, trns_snap, node, iphys, nod_fld)
+!
+      integer(kind = kint), intent(in) :: m_folding
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(address_4_sph_trans), intent(in) :: trns_snap
+      type(node_data), intent(in) :: node
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(inout) :: nod_fld
+!
+!
+      call copy_vector_from_snap_trans                                  &
+     &   (trns_snap%b_trns%i_SGS_inertia, iphys%i_SGS_inertia,          &
+     &    m_folding, sph_rtp, trns_snap, node, nod_fld)
+!
+      call copy_vector_from_snap_trans                                  &
+     &   (trns_snap%b_trns%i_SGS_Lorentz, iphys%i_SGS_Lorentz,          &
+     &    m_folding, sph_rtp, trns_snap, node, nod_fld)
+!
+      call copy_vector_from_snap_trans                                  &
+     &   (trns_snap%b_trns%i_SGS_vp_induct, iphys%i_SGS_vp_induct,      &
+     &    m_folding, sph_rtp, trns_snap, node, nod_fld)
+!
+      call copy_vector_from_snap_trans                                  &
+     &   (trns_snap%b_trns%i_SGS_h_flux, iphys%i_SGS_h_flux,            &
+     &    m_folding, sph_rtp, trns_snap, node, nod_fld)
+!
+      call copy_vector_from_snap_trans                                  &
+     &   (trns_snap%b_trns%i_SGS_c_flux, iphys%i_SGS_c_flux,            &
+     &    m_folding, sph_rtp, trns_snap, node, nod_fld)
+!
+!
+      end  subroutine copy_SGS_snap_fld_from_trans
+!
+!-----------------------------------------------------------------------
+!
       end module copy_SGS_4_sph_trans

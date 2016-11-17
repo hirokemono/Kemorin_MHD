@@ -225,8 +225,11 @@
      &   (sph_params%m_folding, sph_rtp, WK%trns_SGS,                   &
      &    mesh%node, iphys, nod_fld)
       if (iflag_debug.gt.0) write(*,*) 'copy_SGS_force_from_trans'
-      call copy_SGS_force_from_trans                                    &
-     &   (sph_params%m_folding, sph_rtp, WK%trns_SGS,                   &
+!      call copy_SGS_force_from_trans                                   &
+!     &   (sph_params%m_folding, sph_rtp, WK%trns_SGS,                  &
+!     &    mesh%node, iphys, nod_fld)
+      call copy_SGS_snap_fld_from_trans                                 &
+     &   (sph_params%m_folding, sph_rtp, WK%trns_snap,                  &
      &    mesh%node, iphys, nod_fld)
       call copy_SGS_diff_field_from_trans                               &
      &   (sph_params%m_folding, sph_rtp, WK%trns_snap,                  &

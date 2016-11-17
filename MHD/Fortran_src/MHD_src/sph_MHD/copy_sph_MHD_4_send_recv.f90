@@ -378,6 +378,32 @@
      &    comm_rj, rj_fld, n_WS, WS)
 !
       call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_SGS_inertia, bs_trns%i_SGS_inertia,                    &
+     &    comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_SGS_Lorentz, bs_trns%i_SGS_Lorentz,                    &
+     &    comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_SGS_vp_induct, bs_trns%i_SGS_vp_induct,                &
+     &    comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_SGS_h_flux, bs_trns%i_SGS_h_flux,                      &
+     &    comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_SGS_c_flux, bs_trns%i_SGS_c_flux,                      &
+     &    comm_rj, rj_fld, n_WS, WS)
+!
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_SGS_rot_inertia, bs_trns%i_SGS_rot_inertia,            &
+     &    comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_SGS_rot_Lorentz, bs_trns%i_SGS_rot_Lorentz,            &
+     &    comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_SGS_induction, bs_trns%i_SGS_induction,                &
+     &    comm_rj, rj_fld, n_WS, WS)
+!
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
      &    ipol%i_press_grad, bs_trns%i_press_grad,                      &
      &    comm_rj, rj_fld, n_WS, WS)
       call sel_sph_rj_vector_to_send(ncomp_send,                        &

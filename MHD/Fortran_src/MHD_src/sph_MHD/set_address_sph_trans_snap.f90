@@ -165,6 +165,22 @@
      &    iphys%i_rot_comp_buo, nvector_snap_rj_2_rtp,                  &
      &    bs_trns%i_rot_comp_buo)
 !
+      call add_vec_trans_flag_snap(ipol%i_SGS_inertia,                  &
+     &    iphys%i_SGS_inertia, nvector_snap_rj_2_rtp,                   &
+     &    bs_trns%i_SGS_inertia)
+      call add_vec_trans_flag_snap(ipol%i_SGS_Lorentz,                  &
+     &    iphys%i_SGS_Lorentz, nvector_snap_rj_2_rtp,                   &
+     &    bs_trns%i_SGS_Lorentz)
+      call add_vec_trans_flag_snap(ipol%i_SGS_vp_induct,                &
+     &    iphys%i_SGS_vp_induct, nvector_snap_rj_2_rtp,                 &
+     &    bs_trns%i_SGS_vp_induct)
+      call add_vec_trans_flag_snap(ipol%i_SGS_h_flux,                   &
+     &    iphys%i_SGS_h_flux, nvector_snap_rj_2_rtp,                    &
+     &    bs_trns%i_SGS_h_flux)
+      call add_vec_trans_flag_snap(ipol%i_SGS_c_flux,                   &
+     &    iphys%i_SGS_c_flux, nvector_snap_rj_2_rtp,                    &
+     &    bs_trns%i_SGS_c_flux)
+!
       call add_vec_trans_flag_snap(ipol%i_SGS_rot_inertia,              &
      &    iphys%i_SGS_rot_inertia, nvector_snap_rj_2_rtp,               &
      &    bs_trns%i_SGS_rot_inertia)
