@@ -24,6 +24,8 @@
 	self.evolutionEndStep =   1;
 	self.evolutionIncrement = 1;
 	self.evolutionFPS = 12;
+    
+    saveBottun.enabled = NO;
 	return self;
 }
 
@@ -107,22 +109,22 @@
     NSDictionary *outputSettings = 
   @{
     AVVideoCodecKey : AVVideoCodecH264,
-    AVVideoWidthKey : @(imageWidth),
-    AVVideoHeightKey: @(imageHight),
+    AVVideoWidthKey : @(self.imageWidth),
+    AVVideoHeightKey: @(self.imageHight),
     };    
+    // source pixel buffer attributes
+    NSDictionary *sourcePixBufferAttributes = 
+    @{
+      (NSString *)kCVPixelBufferPixelFormatTypeKey: @(kCVPixelFormatType_32ARGB),
+      (NSString *)kCVPixelBufferWidthKey : @(self.imageWidth),
+      (NSString *)kCVPixelBufferHeightKey: @(self.imageHight),
+      };
     // Construct Initilize writer
     writerInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:outputSettings];
     [videoWriter addInput:writerInput];
      writerInput.expectsMediaDataInRealTime = YES;
    
     
-    // source pixel buffer attributes
-    NSDictionary *sourcePixBufferAttributes = 
-    @{
-      (NSString *)kCVPixelBufferPixelFormatTypeKey: @(kCVPixelFormatType_32ARGB),
-      (NSString *)kCVPixelBufferWidthKey : @(imageWidth),
-      (NSString *)kCVPixelBufferHeightKey: @(imageHight),
-      };
     // Construct writer input pixel buffer adaptor
     adaptor = [AVAssetWriterInputPixelBufferAdaptor
                  assetWriterInputPixelBufferAdaptorWithAssetWriterInput:writerInput
@@ -137,7 +139,11 @@
 }
 
 -(void) CloseKemoviewMovieFile{
-    [videoWriter release];
+    [writerInput markAsFinished];
+    [videoWriter finishWritingWithCompletionHandler:^{
+        NSLog(@"Finish writing!");
+    }];
+    CVPixelBufferPoolRelease(adaptor.pixelBufferPool);
 }
 
 -(void) ImageToMovie{

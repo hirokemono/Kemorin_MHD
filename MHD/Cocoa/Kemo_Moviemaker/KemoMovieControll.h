@@ -25,9 +25,12 @@
     AVAssetWriter *videoWriter;
     AVAssetWriterInput *writerInput;
     AVAssetWriterInputPixelBufferAdaptor *adaptor;
+    NSImage *ReferenceImage;
     NSImage *SnapshotImage;
     
 	IBOutlet NSProgressIndicator *progreessBar;
+    IBOutlet NSButton *saveBottun; 
+    
 	NSString *movieFileName;
 	NSString *movieFileHead;
 	NSString *movieFileExt;
@@ -51,6 +54,7 @@
 -(void) CloseKemoviewMovieFile;
 -(void) ImageToMovie;
 
+-(IBAction) OpenReferenceImage:(id)pSender;
 -(IBAction) SaveImageEvolution:(id)pSender;
 -(IBAction)SetEvolutionSteps:(id)pSender;
 
