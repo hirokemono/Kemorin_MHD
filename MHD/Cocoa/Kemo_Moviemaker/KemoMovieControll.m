@@ -26,6 +26,7 @@
 	self.evolutionFPS = 12;
     
     saveBottun.enabled = NO;
+    saveMenu.enabled = NO;
 	return self;
 }
 
@@ -94,17 +95,8 @@
 //    duration = QTMakeTime(1, self.evolutionFPS);
 }
 
--(void) InitMovieInput:(NSString *)iFileName
+-(void) InitMovieInput
 {
-    SnapshotImage = [[NSImage alloc] initWithContentsOfFile:imageFileName];
-    CGImageRef CGImage = [SnapshotImage CGImageForProposedRect:nil context:nil hints:nil];
-    NSBitmapImageRep *rep = [[NSBitmapImageRep alloc] initWithCGImage:CGImage];
-    imageWidth = [rep pixelsWide];
-    imageHight = [rep pixelsHigh];
-    printf("Image size %d, %d",(int)imageWidth, (int)imageHight);
-    [rep release];
-    [SnapshotImage release];
-    
     // Movie setting
     NSDictionary *outputSettings = 
   @{
@@ -152,23 +144,37 @@
     return;
 }
 
+-(IBAction) OpenReferenceImage:(id)pSender;
+{
+    NSOpenPanel *PsfOpenPanelObj	= [NSOpenPanel openPanel];
+    [PsfOpenPanelObj setTitle:@"Choose one of image files"];
+    NSInteger PsfOpenInteger	= [PsfOpenPanelObj runModal];
+    if(PsfOpenInteger == NSFileHandlingPanelOKButton){
+        imageFileName =  [[PsfOpenPanelObj URL] path];
+    }
+    else { return;};
+    
+    NSUserDefaults *defalts = [NSUserDefaults standardUserDefaults];
+    [defalts setObject:imageFileName forKey:@"ImageFileName"];
+    [defalts synchronize];
+
+    SnapshotImage = [[NSImage alloc] initWithContentsOfFile:imageFileName];
+    CGImageRef CGImage = [SnapshotImage CGImageForProposedRect:nil context:nil hints:nil];
+    NSBitmapImageRep *rep = [[NSBitmapImageRep alloc] initWithCGImage:CGImage];
+    self.imageWidth = [rep pixelsWide];
+    self.imageHight = [rep pixelsHigh];
+    printf("Image size %d, %d",(int)self.imageWidth, (int)self.imageHight);
+    [rep release];
+    [SnapshotImage release];
+    
+    saveBottun.enabled = YES;
+    saveMenu.enabled = YES;
+}
+
 -(IBAction) SaveImageEvolution:(id)pSender
 {
     int i, ist, ied, inc;
 	//	NSLog(@"SaveRotation received message = %@",(NSString*)[pNotification object]);
-	
-	NSOpenPanel *PsfOpenPanelObj	= [NSOpenPanel openPanel];
-	[PsfOpenPanelObj setTitle:@"Choose one of image files"];
-	NSInteger PsfOpenInteger	= [PsfOpenPanelObj runModal];
-	if(PsfOpenInteger == NSFileHandlingPanelOKButton){
-		imageFileName =  [[PsfOpenPanelObj URL] path];
-		imageFileExt =   [imageFileName pathExtension];
-		imageFileHead =  [imageFileName stringByDeletingPathExtension];
-		imageFileHeadExStep =  [imageFileHead stringByDeletingPathExtension];
-		// NSLog(@"PSF file name =      %@",PsfOpenFilename);
-		// NSLog(@"PSF file header =    %@",PsfOpenFilehead);
-	}
-	else { return;};
 	
 	NSSavePanel *evolutionImageSavePanelObj	= [NSSavePanel savePanel];
 	NSInteger EvolutionSaveInteger	= [evolutionImageSavePanelObj runModal];
@@ -181,6 +187,14 @@
 	}
 	else { return;};
 	
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    imageFileName = [defaults stringForKey:@"ImageFileName"];
+    imageFileExt =   [imageFileName pathExtension];
+    imageFileHead =  [imageFileName stringByDeletingPathExtension];
+    imageFileHeadExStep =  [imageFileHead stringByDeletingPathExtension];
+    // NSLog(@"Image file header =    %@",imageFileHeadExStep);
+    // NSLog(@"Image file extension =    %@",imageFileExt);
+
     ist = self.evolutionStartStep;
     ied = self.evolutionEndStep;
     inc = self.evolutionIncrement;
@@ -189,10 +203,7 @@
     [progreessBar startAnimation:(id)pSender];
     [self OpenKemoviewMovieFile:movieFileName];
 
-    imageFileHead =  [imageFileHeadExStep stringByAppendingPathExtension:
-                      [NSString stringWithFormat:@"%d",ist]];
-    imageFileName =  [imageFileHead stringByAppendingPathExtension:imageFileExt];
-    [self InitMovieInput:imageFileName];
+    [self InitMovieInput];
     
     CVPixelBufferRef buffer;
     int frameCount = 0;

@@ -96,7 +96,7 @@
                                     <action selector="performClose:" target="-1" id="193"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Save" keyEquivalent="s" id="75">
+                            <menuItem title="Save" enabled="NO" keyEquivalent="s" id="75">
                                 <connections>
                                     <action selector="SaveImageEvolution:" target="601" id="fPY-rS-6Gv"/>
                                 </connections>
@@ -871,7 +871,7 @@
                                 <button verticalHuggingPriority="750" id="jf3-0L-jlc">
                                     <rect key="frame" x="62" y="29" width="96" height="32"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <buttonCell key="cell" type="push" title="Save..." bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="5hd-A6-CwB">
+                                    <buttonCell key="cell" type="push" title="Save..." bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="5hd-A6-CwB">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -972,6 +972,7 @@
             <connections>
                 <outlet property="progreessBar" destination="629" id="643"/>
                 <outlet property="saveBottun" destination="jf3-0L-jlc" id="wvm-B8-ts7"/>
+                <outlet property="saveMenu" destination="75" id="epU-XS-pcF"/>
             </connections>
         </customObject>
         <customObject id="420" customClass="NSFontManager"/>
