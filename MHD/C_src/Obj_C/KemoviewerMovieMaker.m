@@ -11,7 +11,6 @@
 
 static unsigned char *glimage;
 NSImage *SnapshotImage;
-NSBitmapImageRep *bmpRep;
 
 @implementation KemoviewerMovieMaker
 @synthesize MovieFormatFlag;
@@ -33,6 +32,46 @@ NSBitmapImageRep *bmpRep;
 	return self;
 }
 
+-(CVPixelBufferRef)pixelBufferFromCGImage:(CGImageRef)image
+{
+    NSDictionary *options = @{ (NSString *)kCVPixelBufferCGImageCompatibilityKey: @YES,
+                               (NSString *)kCVPixelBufferCGBitmapContextCompatibilityKey: @YES, };
+    
+    CVPixelBufferRef pxbuffer = NULL;
+    
+    CGFloat width  = CGImageGetWidth(image);
+    CGFloat height = CGImageGetHeight(image);
+    CVPixelBufferCreate(kCFAllocatorDefault,
+                        width,
+                        height,
+                        kCVPixelFormatType_32ARGB,
+                        (__bridge CFDictionaryRef)options,
+                        &pxbuffer);
+    
+    CVPixelBufferLockBaseAddress(pxbuffer, 0);
+    void *pxdata = CVPixelBufferGetBaseAddress(pxbuffer);
+    
+    size_t bitsPerComponent       = 8;
+    size_t bytesPerRow            = 4 * width;
+    CGColorSpaceRef rgbColorSpace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef context = CGBitmapContextCreate(pxdata,
+                                                 width,
+                                                 height,
+                                                 bitsPerComponent,
+                                                 bytesPerRow,
+                                                 rgbColorSpace,
+                                                 (CGBitmapInfo)kCGImageAlphaNoneSkipFirst);
+    
+    CGContextDrawImage(context, CGRectMake(0, 0, width, height), image);
+    CGColorSpaceRelease(rgbColorSpace);
+    CGContextRelease(context);
+    
+    CVPixelBufferUnlockBaseAddress(pxbuffer, 0);
+    
+    return pxbuffer;
+}
+
+
 -(void) InitEvolutionStepByPSF;
 {
 	char image_head[LENGTHBUF];
@@ -50,35 +89,72 @@ NSBitmapImageRep *bmpRep;
 	self.EvolutionEndStep =   istep;
 }
 
--(void) OpenKemoviewMovieFile:(NSString *)movieFileName{
-	NSError *overWriteflag = [[NSError alloc] init];
-
-	// Create a QTMovie with a writable data reference
-	NSLog(@"movieFileName: %@", movieFileName);
-	KemoMovie = [[QTMovie alloc] initToWritableFile:movieFileName error:&overWriteflag];
-
-	if(overWriteflag!= NULL ){
-		NSFileManager *fman = [NSFileManager defaultManager];
-        NSURL *RotateImageFileURLNoStep = [[NSURL alloc] initFileURLWithPath:RotateImageFilenameNoStep];
-		[fman removeItemAtURL:RotateImageFileURLNoStep error:nil];
-		KemoMovie = [[QTMovie alloc] initToWritableFile:RotateImageFilenameNoStep error:NULL];
-	}
-	// mark the movie as editable
-	[KemoMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieFlatten];
-	// keep it around until we are done with it...
-	[overWriteflag release];
-	
-	duration = QTMakeTime(IONE, self.FramePerSecond);
+-(void) OpenQTMovieFile:(NSString *)movieFileName{
+    GLint XViewsize = [_kemoviewer KemoviewHorizontalViewSize];
+    GLint YViewsize = [_kemoviewer KemoviewVerticalViewSize];
+    
+    // Movie setting
+    NSDictionary *outputSettings = 
+    @{
+      AVVideoCodecKey : AVVideoCodecH264,
+      AVVideoWidthKey : @(XViewsize),
+      AVVideoHeightKey: @(YViewsize),
+      };    
+    // source pixel buffer attributes
+    NSDictionary *sourcePixBufferAttributes = 
+    @{
+      (NSString *)kCVPixelBufferPixelFormatTypeKey: @(kCVPixelFormatType_32ARGB),
+      (NSString *)kCVPixelBufferWidthKey : @(XViewsize),
+      (NSString *)kCVPixelBufferHeightKey: @(YViewsize),
+      };
+    
+    NSError *overWriteflag = [[NSError alloc] init];
+    // Create a QTMovie with a writable data reference
+    NSLog(@"EvolutionImageFileName: %@", movieFileName);
+    NSURL *url = [NSURL fileURLWithPath:movieFileName];
+    
+    //   Coheck if movie file is exist
+    if ([[NSFileManager defaultManager] fileExistsAtPath:movieFileName])
+    {
+        NSLog(@"%@ is exist!!!", movieFileName);
+        NSFileManager *fman = [NSFileManager defaultManager];
+        [fman removeItemAtURL:url error: nil];
+    }
+    videoWriter = [[AVAssetWriter alloc] initWithURL:url
+                                            fileType:AVFileTypeQuickTimeMovie error:&overWriteflag];
+    
+    NSLog(@"%@", [overWriteflag localizedDescription]);
+    if(overWriteflag!= NULL ){
+        NSLog(@"AVAssetWriter Failed!!");
+    }
+    
+    // Construct Initilize writer
+    writerInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:outputSettings];
+    [videoWriter addInput:writerInput];
+    writerInput.expectsMediaDataInRealTime = YES;
+    
+    
+    // Construct writer input pixel buffer adaptor
+    adaptor = [AVAssetWriterInputPixelBufferAdaptor
+               assetWriterInputPixelBufferAdaptorWithAssetWriterInput:writerInput
+               sourcePixelBufferAttributes:sourcePixBufferAttributes];
+    
+    // Start movie generation
+    if (![videoWriter startWriting]) {printf("Error!");}
+    [videoWriter startSessionAtSourceTime:kCMTimeZero];
 }
 
 -(void) CloseKemoviewMovieFile{
-	[SnapshotImage release];
-	free(glimage);
+    [writerInput markAsFinished];
+    [videoWriter finishWritingWithCompletionHandler:^{
+        NSLog(@"Finish writing!");
+    }];
+    CVPixelBufferPoolRelease(adaptor.pixelBufferPool);
 }
 
 // ---------------------------------
 
-- (void) allocateBitmapArray
+- (NSBitmapImageRep *) allocateBitmapArray
 {
     GLint XViewsize = [_kemoviewer KemoviewHorizontalViewSize];
     GLint YViewsize = [_kemoviewer KemoviewVerticalViewSize];
@@ -86,7 +162,7 @@ NSBitmapImageRep *bmpRep;
 	glimage = (unsigned char*)calloc(3*XViewsize*XViewsize, sizeof(unsigned char));
 	SnapshotImage = [[NSImage alloc] init];
 
-    bmpRep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:nil
+    NSBitmapImageRep *bitmapRep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:nil
                                                      pixelsWide: XViewsize
                                                      pixelsHigh: YViewsize
                                                   bitsPerSample: 8
@@ -98,29 +174,30 @@ NSBitmapImageRep *bmpRep;
               // bitsPerPixel: (8*3)   //bitsPerSample*samplesPerPixel
                                                     bytesPerRow: (XViewsize*3) //pixelsWide*samplesPerPixel
                                                    bitsPerPixel: 0  //bitsPerSample*samplesPerPixel
-              ]; 
+              ];
+    return bitmapRep;
 }
 
--(void) AddKemoviewImageToMovie
+-(void) AddKemoviewImageToMovie:(CMTime)frameTime
 {
-	// when adding images we must provide a dictionary
-	// specifying the codec attributes
-	NSDictionary *movieDict = nil;
-	movieDict = [NSDictionary dictionaryWithObjectsAndKeys:@"mp4v",
-				 QTAddImageCodecType,
-				 [NSNumber numberWithLong:codecMaxQuality],
-				 QTAddImageCodecQuality,
-				 nil];
-
 	// Adds an image for the specified duration to the QTMovie
+    NSBitmapImageRep *bmpRep = [self allocateBitmapArray];
     get_kemoviewer_fliped_img((int) [_kemoviewer KemoviewHorizontalViewSize],
                               (int) [_kemoviewer KemoviewVerticalViewSize],
                               glimage, [bmpRep bitmapData]);
     
 	[SnapshotImage addRepresentation:bmpRep];
+    CGImageRef CGImage = [SnapshotImage CGImageForProposedRect:nil context:nil hints:nil];
+    CVPixelBufferRef buffer = [self pixelBufferFromCGImage:CGImage];
 
-	[KemoMovie addImage:SnapshotImage forDuration:duration withAttributes:movieDict];
-	[KemoMovie updateMovieFile];
+    // Append Image buffer
+    if (![adaptor appendPixelBuffer:buffer withPresentationTime:frameTime]) {
+        NSLog(@"Adapter Failure");
+    }
+    
+    if (buffer) {CVBufferRelease(buffer);}
+    [bmpRep release];
+    [SnapshotImage release];            
 }
 
 
@@ -132,8 +209,7 @@ NSBitmapImageRep *bmpRep;
 	NSInteger int_degree;
 
 	if (CurrentMovieFormat == SAVE_QT_MOVIE){
-        [self allocateBitmapArray];
-        [self OpenKemoviewMovieFile:RotateImageFilenameNoStep];
+        [self OpenQTMovieFile:RotateImageFilenameNoStep];
     }
 
 	[rotateProgreessBar setUsesThreadedAnimation:YES];
@@ -146,7 +222,8 @@ NSBitmapImageRep *bmpRep;
 		[_kemoviewer DrawRotation:int_degree:RotationAxisID];
 
 		if (CurrentMovieFormat == SAVE_QT_MOVIE) {
-			[self AddKemoviewImageToMovie];
+            CMTime frameTime = CMTimeMake((int64_t)istep, self.FramePerSecond);
+            [self AddKemoviewImageToMovie:frameTime];
 		} else if (CurrentMovieFormat != 0) {
             write_kemoviewer_window_step_file((int) CurrentMovieFormat, (int) istep,
                                               [RotateImageFilehead UTF8String]);
@@ -163,11 +240,10 @@ NSBitmapImageRep *bmpRep;
 }
 
 -(void) SaveQTmovieEvolution{
-	int istep;
+	int istep, iframe;
 	
 	if (CurrentMovieFormat == SAVE_QT_MOVIE){
-        [self allocateBitmapArray];
-        [self OpenKemoviewMovieFile:EvolutionImageFilename];
+        [self OpenQTMovieFile:EvolutionImageFilename];
     }
 	
 	[evolutionProgreessBar setUsesThreadedAnimation:YES];
@@ -178,7 +254,9 @@ NSBitmapImageRep *bmpRep;
 			[_kemoviewer DrawEvolution:istep];
 
 			if (CurrentMovieFormat == SAVE_QT_MOVIE) {
-				[self AddKemoviewImageToMovie];
+                iframe = (istep - self.EvolutionStartStep) / self.EvolutionIncrement;
+                CMTime frameTime = CMTimeMake((int64_t)iframe, self.FramePerSecond);
+                [self AddKemoviewImageToMovie:frameTime];
 			} else if (CurrentMovieFormat != 0) {
                 write_kemoviewer_window_step_file((int) CurrentMovieFormat, (int) istep,
                                                   [EvolutionImageFilehead UTF8String]);
@@ -189,7 +267,6 @@ NSBitmapImageRep *bmpRep;
 		}
 	}
     
-	if(CurrentMovieFormat == SAVE_QT_MOVIE) [bmpRep release];
 	[evolutionProgreessBar setDoubleValue:(double) self.EvolutionStartStep];
 	[evolutionProgreessBar stopAnimation:self];
     [evolutionProgreessBar setDisplayedWhenStopped:NO];
@@ -203,7 +280,7 @@ NSBitmapImageRep *bmpRep;
 
 - (IBAction)SendToClipAsPDF:(id)sender
 {
-    [self allocateBitmapArray];
+    NSBitmapImageRep *bmpRep = [self allocateBitmapArray];
     get_kemoviewer_fliped_img((int) [_kemoviewer KemoviewHorizontalViewSize],
                               (int) [_kemoviewer KemoviewVerticalViewSize],
                               glimage, [bmpRep bitmapData]);
