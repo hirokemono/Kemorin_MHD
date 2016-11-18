@@ -31,6 +31,7 @@
 	IBOutlet NSProgressIndicator *progreessBar;
     IBOutlet NSButton *saveBottun;
     IBOutlet NSMenuItem *saveMenu;
+    IBOutlet NSImageView *refImageView;
     
 	NSString *movieFileName;
 	NSString *movieFileHead;
@@ -51,12 +52,10 @@
 @property NSInteger imageHight;
 
 -(void) OpenKemoviewMovieFile:(NSString *)movieFileName;
--(void) InitMovieInput;
 -(void) CloseKemoviewMovieFile;
--(void) ImageToMovie;
 
 -(IBAction) OpenReferenceImage:(id)pSender;
 -(IBAction) SaveImageEvolution:(id)pSender;
--(IBAction)SetEvolutionSteps:(id)pSender;
+-(IBAction) SetEvolutionSteps:(id)pSender;
 
 @end

@@ -71,11 +71,27 @@
 
 -(void) OpenKemoviewMovieFile:(NSString *)mFileName
 {
+    // Movie setting
+    NSDictionary *outputSettings = 
+    @{
+      AVVideoCodecKey : AVVideoCodecH264,
+      AVVideoWidthKey : @(self.imageWidth),
+      AVVideoHeightKey: @(self.imageHight),
+      };    
+    // source pixel buffer attributes
+    NSDictionary *sourcePixBufferAttributes = 
+    @{
+      (NSString *)kCVPixelBufferPixelFormatTypeKey: @(kCVPixelFormatType_32ARGB),
+      (NSString *)kCVPixelBufferWidthKey : @(self.imageWidth),
+      (NSString *)kCVPixelBufferHeightKey: @(self.imageHight),
+      };
+
     NSError *overWriteflag = [[NSError alloc] init];
     // Create a QTMovie with a writable data reference
     NSLog(@"EvolutionImageFileName: %@", mFileName);
     NSURL *url = [NSURL fileURLWithPath:mFileName];
-    
+ 
+    //   Coheck if movie file is exist
     if ([[NSFileManager defaultManager] fileExistsAtPath:mFileName])
     {
         NSLog(@"%@ is exist!!!", mFileName);
@@ -90,27 +106,6 @@
         NSLog(@"AVAssetWriter Failed!!");
     }
 
-    // mark the movie as editable
-//    [mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieFlatten];
-//    duration = QTMakeTime(1, self.evolutionFPS);
-}
-
--(void) InitMovieInput
-{
-    // Movie setting
-    NSDictionary *outputSettings = 
-  @{
-    AVVideoCodecKey : AVVideoCodecH264,
-    AVVideoWidthKey : @(self.imageWidth),
-    AVVideoHeightKey: @(self.imageHight),
-    };    
-    // source pixel buffer attributes
-    NSDictionary *sourcePixBufferAttributes = 
-    @{
-      (NSString *)kCVPixelBufferPixelFormatTypeKey: @(kCVPixelFormatType_32ARGB),
-      (NSString *)kCVPixelBufferWidthKey : @(self.imageWidth),
-      (NSString *)kCVPixelBufferHeightKey: @(self.imageHight),
-      };
     // Construct Initilize writer
     writerInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:outputSettings];
     [videoWriter addInput:writerInput];
@@ -122,11 +117,8 @@
                  assetWriterInputPixelBufferAdaptorWithAssetWriterInput:writerInput
                  sourcePixelBufferAttributes:sourcePixBufferAttributes];
 
-    if (![videoWriter startWriting]) {
-        printf("Error!");
-    }
-
     // Start movie generation
+    if (![videoWriter startWriting]) {printf("Error!");}
     [videoWriter startSessionAtSourceTime:kCMTimeZero];
 }
 
@@ -136,12 +128,6 @@
         NSLog(@"Finish writing!");
     }];
     CVPixelBufferPoolRelease(adaptor.pixelBufferPool);
-}
-
--(void) ImageToMovie{
-    SnapshotImage = [[NSImage alloc] initWithContentsOfFile:imageFileName];
-    [SnapshotImage release];
-    return;
 }
 
 -(IBAction) OpenReferenceImage:(id)pSender;
@@ -161,9 +147,12 @@
     SnapshotImage = [[NSImage alloc] initWithContentsOfFile:imageFileName];
     CGImageRef CGImage = [SnapshotImage CGImageForProposedRect:nil context:nil hints:nil];
     NSBitmapImageRep *rep = [[NSBitmapImageRep alloc] initWithCGImage:CGImage];
+    
+    [refImageView setImage:SnapshotImage];
+    
     self.imageWidth = [rep pixelsWide];
     self.imageHight = [rep pixelsHigh];
-    printf("Image size %d, %d",(int)self.imageWidth, (int)self.imageHight);
+//    printf("Image size %d, %d",(int)self.imageWidth, (int)self.imageHight);
     [rep release];
     [SnapshotImage release];
     
@@ -201,10 +190,8 @@
     
     [progreessBar setIndeterminate:NO];
     [progreessBar startAnimation:(id)pSender];
-    [self OpenKemoviewMovieFile:movieFileName];
-
-    [self InitMovieInput];
     
+    [self OpenKemoviewMovieFile:movieFileName];    
     CVPixelBufferRef buffer;
     int frameCount = 0;
     for (i = ist;i<(ied+1);i++) {
@@ -244,7 +231,7 @@
 	return;
 }
 
-- (IBAction)SetEvolutionSteps:(id)pSender{
+- (IBAction) SetEvolutionSteps:(id)pSender{
 	NSLog(@"start: %d", (int) self.evolutionStartStep);
 	NSLog(@"end: %d", (int) self.evolutionEndStep);
 	NSLog(@"increment: %d", (int) self.evolutionIncrement);

@@ -971,6 +971,7 @@
         <customObject id="601" customClass="KemoMovieControll">
             <connections>
                 <outlet property="progreessBar" destination="629" id="643"/>
+                <outlet property="refImageView" destination="Wf2-O9-jUG" id="RH0-fk-Yad"/>
                 <outlet property="saveBottun" destination="jf3-0L-jlc" id="wvm-B8-ts7"/>
                 <outlet property="saveMenu" destination="75" id="epU-XS-pcF"/>
             </connections>
