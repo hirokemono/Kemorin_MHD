@@ -7,7 +7,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
+#import <AVFoundation/AVFoundation.h>
+#import <CoreVideo/CoreVideo.h>
+
 
 
 @interface KemoMovieControll : NSObject {
@@ -17,14 +19,15 @@
 	NSInteger evolutionEndStep;
 	NSInteger evolutionIncrement;
 	NSInteger evolutionFPS;
-	
-	QTMovie *mMovie;
+    NSInteger imageWidth;
+    NSInteger imageHight;
+
+    AVAssetWriter *videoWriter;
+    AVAssetWriterInput *writerInput;
+    AVAssetWriterInputPixelBufferAdaptor *adaptor;
     NSImage *SnapshotImage;
-    QTTime duration;
     
-	IBOutlet QTMovieView *movieView;
 	IBOutlet NSProgressIndicator *progreessBar;
-    NSString *oldmovieFileName;
 	NSString *movieFileName;
 	NSString *movieFileHead;
 	NSString *movieFileExt;
@@ -40,14 +43,13 @@
 @property NSInteger evolutionEndStep;
 @property NSInteger evolutionIncrement;
 @property NSInteger evolutionFPS;
+@property NSInteger imageWidth;
+@property NSInteger imageHight;
 
 -(void) OpenKemoviewMovieFile:(NSString *)movieFileName;
+-(void) InitMovieInput:(NSString *)iFileName;
 -(void) CloseKemoviewMovieFile;
 -(void) ImageToMovie;
-
--(void) OpenQTMovieFile:(NSString *)movieFileName;
--(void) CloseQTMovieFile;
--(void) ImageToQTMovie;
 
 -(IBAction) SaveImageEvolution:(id)pSender;
 -(IBAction)SetEvolutionSteps:(id)pSender;
