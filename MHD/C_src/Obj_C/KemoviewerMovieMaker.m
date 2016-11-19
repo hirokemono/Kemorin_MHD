@@ -9,7 +9,6 @@
 #import "KemoviewerMovieMaker.h"
 #include "kemoviewer.h"
 
-static unsigned char *glimage;
 NSImage *SnapshotImage;
 
 @implementation KemoviewerMovieMaker
@@ -155,13 +154,13 @@ NSImage *SnapshotImage;
 
 // ---------------------------------
 
-- (NSBitmapImageRep *) allocateBitmapArray
+- (void) SetGLBitmapToImage
 {
+    static unsigned char *glimage;
     GLint XViewsize = [_kemoviewer KemoviewHorizontalViewSize];
     GLint YViewsize = [_kemoviewer KemoviewVerticalViewSize];
 
 	glimage = (unsigned char*)calloc(3*XViewsize*XViewsize, sizeof(unsigned char));
-	SnapshotImage = [[NSImage alloc] init];
 
     NSBitmapImageRep *bitmapRep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:nil
                                                      pixelsWide: XViewsize
@@ -176,18 +175,22 @@ NSImage *SnapshotImage;
                                                     bytesPerRow: (XViewsize*3) //pixelsWide*samplesPerPixel
                                                    bitsPerPixel: 0  //bitsPerSample*samplesPerPixel
               ];
-    return bitmapRep;
+    
+    get_kemoviewer_fliped_img((int) [_kemoviewer KemoviewHorizontalViewSize],
+                              (int) [_kemoviewer KemoviewVerticalViewSize],
+                              glimage, [bitmapRep bitmapData]);
+    [SnapshotImage addRepresentation:bitmapRep];
+    [bitmapRep release];
+    free(glimage);
+    return;
 }
 
 -(void) AddKemoviewImageToMovie:(CMTime)frameTime
 {
 	// Adds an image for the specified duration to the QTMovie
-    NSBitmapImageRep *bmpRep = [self allocateBitmapArray];
-    get_kemoviewer_fliped_img((int) [_kemoviewer KemoviewHorizontalViewSize],
-                              (int) [_kemoviewer KemoviewVerticalViewSize],
-                              glimage, [bmpRep bitmapData]);
+    SnapshotImage = [[NSImage alloc] init];
+    [self SetGLBitmapToImage];
     
-	[SnapshotImage addRepresentation:bmpRep];
     CGImageRef CGImage = [SnapshotImage CGImageForProposedRect:nil context:nil hints:nil];
     CVPixelBufferRef buffer = [self pixelBufferFromCGImage:CGImage];
 
@@ -197,7 +200,6 @@ NSImage *SnapshotImage;
     }
     
     if (buffer) {CVBufferRelease(buffer);}
-    [bmpRep release];
     [SnapshotImage release];            
 }
 
@@ -294,19 +296,14 @@ NSImage *SnapshotImage;
 
 - (IBAction)SendToClipAsPDF:(id)sender
 {
-    NSBitmapImageRep *bmpRep = [self allocateBitmapArray];
-    get_kemoviewer_fliped_img((int) [_kemoviewer KemoviewHorizontalViewSize],
-                              (int) [_kemoviewer KemoviewVerticalViewSize],
-                              glimage, [bmpRep bitmapData]);
-	[SnapshotImage addRepresentation:bmpRep];
+    SnapshotImage = [[NSImage alloc] init];
+    [self SetGLBitmapToImage];
     
     
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
 	[pasteboard declareTypes:[NSArray arrayWithObjects:NSPasteboardTypeTIFF, nil] owner:nil];
 	[pasteboard setData:[SnapshotImage TIFFRepresentation] forType:NSTIFFPboardType];
     
-	free(glimage);
-    [bmpRep release];
 	[SnapshotImage release];
 }
 
@@ -430,7 +427,6 @@ NSImage *SnapshotImage;
 	NSUserDefaults* defaults = [_movie_defaults_controller defaults];
 	MovieFormatFlag = [[defaults stringForKey:@"MovieFormatID"] intValue];
 	MovieFormatFlag = [[movieFormat_item selectedCell] tag];
-	[defaults release];
 }
 
 - (IBAction)SetEvolutionSteps:(id)sender{
