@@ -203,7 +203,8 @@ NSImage *SnapshotImage;
 
 // ---------------------------------
 
--(void) SaveQTmovieRotation{
+-(void) SaveQTmovieRotation
+{
 	NSInteger istep;
 	NSInteger ied_deg = 360/self.RotationIncrement;
 	NSInteger int_degree;
@@ -309,88 +310,101 @@ NSImage *SnapshotImage;
 	[self SaveQTmovieEvolution];
 }
 
-- (IBAction)SaveRotationMovie:(id)sender;
+- (void) SelectRotationMovieFile:(NSString *)RotateImageFilename
 {
-	NSUserDefaults* defaults = [_movie_defaults_controller defaults];
-	CurrentMovieFormat = [[defaults stringForKey:@"MovieFormatID"] intValue];
+    NSUserDefaults* defaults = [_movie_defaults_controller defaults];
+    CurrentMovieFormat = [[defaults stringForKey:@"MovieFormatID"] intValue];
 
-	NSSavePanel *RotateImageSavePanelObj = [NSSavePanel savePanel];
-	int RotateImageSaveInt = [RotateImageSavePanelObj runModal];
-	if(RotateImageSaveInt == NSFileHandlingPanelOKButton){
-		NSString * RotateImageFilename = [[ RotateImageSavePanelObj URL] path];
-		NSString * RotateImageFileext =   [RotateImageFilename pathExtension];
-		RotateImageFilehead = [RotateImageFilename stringByDeletingPathExtension];
+    NSString *RotateImageFileext = [RotateImageFilename pathExtension];
+    RotateImageFilehead = [RotateImageFilename stringByDeletingPathExtension];
+    
+    if ([RotateImageFileext isEqualToString:@"mov"] 
+        || [RotateImageFileext isEqualToString:@"MOV"]
+        || [RotateImageFileext isEqualToString:@"moov"]
+        || [RotateImageFileext isEqualToString:@"MOOV"]) {
+        CurrentMovieFormat = SAVE_QT_MOVIE;
+        RotateImageFilenameNoStep = [RotateImageFilehead stringByAppendingPathExtension:@"mov"];
+    } else if ([RotateImageFileext isEqualToString:@"png"] 
+               || [RotateImageFileext isEqualToString:@"PNG"]) {
+        CurrentMovieFormat = SAVE_PNG;
+    } else if ([RotateImageFileext isEqualToString:@"bmp"] 
+               || [RotateImageFileext isEqualToString:@"BMP"]) {
+        CurrentMovieFormat = SAVE_BMP;
+    } else if ([RotateImageFileext isEqualToString:@"eps"] 
+               || [RotateImageFileext isEqualToString:@"EPS"]) {
+        CurrentMovieFormat = SAVE_EPS;
+    } else if ([RotateImageFileext isEqualToString:@"pdf"] 
+               || [RotateImageFileext isEqualToString:@"PDF"]) {
+        CurrentMovieFormat = SAVE_PDF;
+    } else if ([RotateImageFileext isEqualToString:@"ps"] 
+               || [RotateImageFileext isEqualToString:@"PS"]) {
+        CurrentMovieFormat = SAVE_PS;
+    } else {
+        CurrentMovieFormat = [[defaults stringForKey:@"MovieFormatID"] intValue];
+        RotateImageFilenameNoStep = [RotateImageFilehead stringByAppendingPathExtension:@"mov"];
+    }
+    [self SaveQTmovieRotation];
+}
 
-		if ([RotateImageFileext isEqualToString:@"mov"] 
-			|| [RotateImageFileext isEqualToString:@"MOV"]
-			|| [RotateImageFileext isEqualToString:@"moov"]
-			|| [RotateImageFileext isEqualToString:@"MOOV"]) {
-			CurrentMovieFormat = SAVE_QT_MOVIE;
-			RotateImageFilenameNoStep = [RotateImageFilehead stringByAppendingPathExtension:@"mov"];
-		} else if ([RotateImageFileext isEqualToString:@"png"] 
-		   || [RotateImageFileext isEqualToString:@"PNG"]) {
-			CurrentMovieFormat = SAVE_PNG;
-		} else if ([RotateImageFileext isEqualToString:@"bmp"] 
-		   || [RotateImageFileext isEqualToString:@"BMP"]) {
-			CurrentMovieFormat = SAVE_BMP;
-		} else if ([RotateImageFileext isEqualToString:@"eps"] 
-		   || [RotateImageFileext isEqualToString:@"EPS"]) {
-			CurrentMovieFormat = SAVE_EPS;
-		} else if ([RotateImageFileext isEqualToString:@"pdf"] 
-		   || [RotateImageFileext isEqualToString:@"PDF"]) {
-			CurrentMovieFormat = SAVE_PDF;
-		} else if ([RotateImageFileext isEqualToString:@"ps"] 
-		   || [RotateImageFileext isEqualToString:@"PS"]) {
-			CurrentMovieFormat = SAVE_PS;
-		} else {
-			CurrentMovieFormat = [[defaults stringForKey:@"MovieFormatID"] intValue];
-			RotateImageFilenameNoStep = [RotateImageFilehead stringByAppendingPathExtension:@"mov"];
-		}
-		
-		[self SaveQTmovieRotation];
-	};
+- (void) SelectEvolutionMovieFile:(NSString *)EvolutionMovieFilename
+{
+    NSUserDefaults* defaults = [_movie_defaults_controller defaults];
+    CurrentMovieFormat = [[defaults stringForKey:@"MovieFormatID"] intValue];
+    
+    NSString * EvolutionImageFileext =   [EvolutionMovieFilename pathExtension];
+    EvolutionImageFilehead = [EvolutionMovieFilename stringByDeletingPathExtension];
+    
+    if ([EvolutionImageFileext isEqualToString:@"mov"] 
+        || [EvolutionImageFileext isEqualToString:@"MOV"]
+        || [EvolutionImageFileext isEqualToString:@"moov"]
+        || [EvolutionImageFileext isEqualToString:@"MOOV"]) {
+        CurrentMovieFormat = SAVE_QT_MOVIE;
+        EvolutionImageFilename = [EvolutionImageFilehead stringByAppendingPathExtension:@"mov"];
+    } else if ([EvolutionImageFileext isEqualToString:@"png"] 
+               || [EvolutionImageFileext isEqualToString:@"PNG"]) {
+        CurrentMovieFormat = SAVE_PNG;
+    } else if ([EvolutionImageFileext isEqualToString:@"bmp"] 
+               || [EvolutionImageFileext isEqualToString:@"BMP"]) {
+        CurrentMovieFormat = SAVE_BMP;
+    } else if ([EvolutionImageFileext isEqualToString:@"eps"] 
+               || [EvolutionImageFileext isEqualToString:@"EPS"]) {
+        CurrentMovieFormat = SAVE_EPS;
+    } else if ([EvolutionImageFileext isEqualToString:@"ps"] 
+               || [EvolutionImageFileext isEqualToString:@"PS"]) {
+        CurrentMovieFormat = SAVE_PS;
+    } else if ([EvolutionImageFileext isEqualToString:@"pdf"] 
+               || [EvolutionImageFileext isEqualToString:@"PDF"]) {
+        CurrentMovieFormat = SAVE_PDF;
+    } else {
+        CurrentMovieFormat = [[defaults stringForKey:@"MovieFormatID"] intValue];
+        EvolutionImageFilename = [EvolutionImageFilehead stringByAppendingPathExtension:@"mov"];
+    }
+    [self SaveQTmovieEvolution];
+
+}
+
+- (IBAction)SaveRotationMovie:(id)sender;
+{    
+    NSSavePanel *RotateImageSavePanelObj = [NSSavePanel savePanel];
+    [RotateImageSavePanelObj beginSheetModalForWindow:window 
+                                    completionHandler:^(NSInteger RotateImageSaveInt){
+        if (RotateImageSaveInt == NSFileHandlingPanelOKButton) {
+            NSString *RotateImageFilename = [[ RotateImageSavePanelObj URL] path];
+            [self SelectRotationMovieFile:RotateImageFilename];
+        };
+                                    }];
 }
 
 - (IBAction)SaveEvolutionMovie:(id)sender;
 {
-	NSUserDefaults* defaults = [_movie_defaults_controller defaults];
-	CurrentMovieFormat = [[defaults stringForKey:@"MovieFormatID"] intValue];
-	
 	NSSavePanel *EvolutionImageSavePanelObj = [NSSavePanel savePanel];
-	int EvolutionImageSaveInt = [EvolutionImageSavePanelObj runModal];
+    [EvolutionImageSavePanelObj beginSheetModalForWindow:window 
+                                    completionHandler:^(NSInteger EvolutionImageSaveInt){
 	if(EvolutionImageSaveInt == NSFileHandlingPanelOKButton){
-		EvolutionImageFilename = [[ EvolutionImageSavePanelObj URL] path];
-		NSString * EvolutionImageFileext =   [EvolutionImageFilename pathExtension];
-		EvolutionImageFilehead = [EvolutionImageFilename stringByDeletingPathExtension];
-		
-		if ([EvolutionImageFileext isEqualToString:@"mov"] 
-			|| [EvolutionImageFileext isEqualToString:@"MOV"]
-			|| [EvolutionImageFileext isEqualToString:@"moov"]
-			|| [EvolutionImageFileext isEqualToString:@"MOOV"]) {
-			CurrentMovieFormat = SAVE_QT_MOVIE;
-			EvolutionImageFilename = [EvolutionImageFilehead stringByAppendingPathExtension:@"mov"];
-		} else if ([EvolutionImageFileext isEqualToString:@"png"] 
-				   || [EvolutionImageFileext isEqualToString:@"PNG"]) {
-			CurrentMovieFormat = SAVE_PNG;
-		} else if ([EvolutionImageFileext isEqualToString:@"bmp"] 
-				   || [EvolutionImageFileext isEqualToString:@"BMP"]) {
-			CurrentMovieFormat = SAVE_BMP;
-		} else if ([EvolutionImageFileext isEqualToString:@"eps"] 
-				   || [EvolutionImageFileext isEqualToString:@"EPS"]) {
-			CurrentMovieFormat = SAVE_EPS;
-		} else if ([EvolutionImageFileext isEqualToString:@"ps"] 
-				   || [EvolutionImageFileext isEqualToString:@"PS"]) {
-			CurrentMovieFormat = SAVE_PS;
-		} else if ([EvolutionImageFileext isEqualToString:@"pdf"] 
-				   || [EvolutionImageFileext isEqualToString:@"PDF"]) {
-			CurrentMovieFormat = SAVE_PDF;
-		} else {
-			CurrentMovieFormat = [[defaults stringForKey:@"MovieFormatID"] intValue];
-			EvolutionImageFilename = [EvolutionImageFilehead stringByAppendingPathExtension:@"mov"];
-		}
-		
-		[self SaveQTmovieEvolution];
+		NSString *EvolutionMovieFilename = [[ EvolutionImageSavePanelObj URL] path];
+        [self SelectEvolutionMovieFile:EvolutionMovieFilename];
 	};
+                                    }];
 }
 
 - (IBAction)SetFramePerSecond:(id)sender;

@@ -13,6 +13,7 @@
 
 
 @interface KemoviewerMovieMaker : NSObject {
+    IBOutlet NSWindow*  window;
 	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
 	IBOutlet NSUserDefaultsController* _movie_defaults_controller;
 
