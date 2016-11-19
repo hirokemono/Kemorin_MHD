@@ -189,7 +189,12 @@
     inc = self.evolutionIncrement;
     
     [progreessBar setIndeterminate:NO];
-    [progreessBar startAnimation:(id)pSender];
+    [progreessBar startAnimation:self];
+    [progreessBar setMinValue:(double) ist];
+    [progreessBar setMaxValue:(double) ied];
+    [progreessBar setDoubleValue:(double) ist];
+    [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]]; 
+    [progreessBar displayIfNeeded];
     
     [self OpenKemoviewMovieFile:movieFileName];    
     CVPixelBufferRef buffer;
@@ -216,6 +221,7 @@
             frameCount = frameCount + 1;
 
             [progreessBar incrementBy:(double)inc];
+            [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]]; 
             [progreessBar displayIfNeeded];
         };
     };
@@ -227,6 +233,8 @@
     CVPixelBufferPoolRelease(adaptor.pixelBufferPool);
 
     [progreessBar setDoubleValue:(double)ist];
+    [progreessBar stopAnimation:self];
+    [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]]; 
     [progreessBar displayIfNeeded];
 	return;
 }

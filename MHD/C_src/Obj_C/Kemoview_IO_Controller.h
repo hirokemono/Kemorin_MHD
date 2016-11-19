@@ -28,7 +28,6 @@
 	NSInteger ImageFormatFlag;
 	NSInteger CurrentImageFormat;
 	IBOutlet id _ImageFormat_item;
-	IBOutlet NSProgressIndicator  *_fileReadBar;
 
 	NSString *ImageFileExt;
 

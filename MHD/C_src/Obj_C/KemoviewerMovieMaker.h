@@ -33,7 +33,9 @@
 	NSInteger EvolutionEndStep;
 	NSInteger EvolutionIncrement;
 	
-	NSString *RotateImageFilehead;
+    NSInteger CurrentStep;
+
+    NSString *RotateImageFilehead;
 	NSString *RotateImageFilenameNoStep;
 	IBOutlet NSProgressIndicator *rotateProgreessBar;
 	IBOutlet NSProgressIndicator *evolutionProgreessBar;
@@ -49,6 +51,7 @@
 @property NSInteger EvolutionStartStep;
 @property NSInteger EvolutionEndStep;
 @property NSInteger EvolutionIncrement;
+@property NSInteger CurrentStep;
 
 -(id) init;
 -(CVPixelBufferRef)pixelBufferFromCGImage:(CGImageRef)image;

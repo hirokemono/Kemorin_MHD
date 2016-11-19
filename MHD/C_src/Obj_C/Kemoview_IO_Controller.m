@@ -25,10 +25,7 @@
 		if([KemoviewOpenFileext isEqualToString:@"0"]) return;
 	};
 
-	[_fileReadBar setUsesThreadedAnimation:YES];
-	[_fileReadBar startAnimation:self];
 	iflag_datatype = kemoview_open_data_glut((char *) [kemoviewOpenFilename UTF8String]);
-	[_fileReadBar stopAnimation:self];
 	
 	if(iflag_datatype==IFLAG_MESH) {
 		[_domainTableController OpenSurfaceMeshFile:kemoviewOpenFilehead];
