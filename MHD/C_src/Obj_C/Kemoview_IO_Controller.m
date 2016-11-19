@@ -51,18 +51,20 @@
 	NSOpenPanel *KemoviewOpenPanelObj	= [NSOpenPanel openPanel];
 	[KemoviewOpenPanelObj setTitle:@"Choose data for Kemoviewer"];
     [KemoviewOpenPanelObj setAllowedFileTypes:kemoviewFileTypes];
-	NSInteger KemoviewOpenInteger	= [KemoviewOpenPanelObj runModal];
-	
+    [KemoviewOpenPanelObj beginSheetModalForWindow:window 
+                                   completionHandler:^(NSInteger KemoviewOpenInteger){
 	if(KemoviewOpenInteger == NSFileHandlingPanelOKButton){
 		NSString *kemoviewOpenFilename = [[KemoviewOpenPanelObj URL] path];
 		[self OpenKemoviewerFile:kemoviewOpenFilename];
-	};	
+	};
+                                   }];
 }
 
 - (IBAction) SaveViewMatrixFile:(id)pId;
 {
 	NSSavePanel *ViewMatrixSavePanelObj	= [NSSavePanel savePanel];
-	int ViewMatrixSaveInt = [ViewMatrixSavePanelObj runModal];
+    [ViewMatrixSavePanelObj beginSheetModalForWindow:window 
+                                   completionHandler:^(NSInteger ViewMatrixSaveInt){
 	if(ViewMatrixSaveInt == NSFileHandlingPanelOKButton){
 		
 		NSString * ViewMatrixFilename = [[ ViewMatrixSavePanelObj URL] path];
@@ -74,17 +76,18 @@
 
 		write_modelview_file_glut((char *) [ViewMatrixFilename UTF8String]);
 	};
+                                   }];
 }
 
 - (IBAction) LoadViewMatrixFile:(id)pId;
 {
 	NSArray *MatrixFileTypes = [NSArray arrayWithObjects:@"dat",@"DAT",nil];
     
-	NSSavePanel *ViewMatrixOpenPanelObj	= [NSOpenPanel openPanel];
+	NSOpenPanel *ViewMatrixOpenPanelObj	= [NSOpenPanel openPanel];
 	[ViewMatrixOpenPanelObj setTitle:@"Choose View Matrix data"];
     [ViewMatrixOpenPanelObj setAllowedFileTypes:MatrixFileTypes];
-	NSInteger ViewMatrixOpenInteger	= [ViewMatrixOpenPanelObj runModal];
-
+    [ViewMatrixOpenPanelObj beginSheetModalForWindow:window 
+                                 completionHandler:^(NSInteger ViewMatrixOpenInteger){
     if(ViewMatrixOpenInteger == NSFileHandlingPanelOKButton){
 		
 		NSString * ViewMatrixFilename = [[ ViewMatrixOpenPanelObj URL] path];
@@ -97,51 +100,58 @@
 		load_modelview_file_glut((char *) [ViewMatrixFilename UTF8String]);
 		[_kemoviewer UpdateImage];
 	};
+                                 }];
+}
+
+-(void) SelectImageFileFormat:(NSString *)ImageFilename
+{
+    NSInteger id_format;
+    
+    NSUserDefaults* defaults = [_user_defaults_controller defaults];
+    CurrentImageFormat = [[defaults stringForKey:@"ImageFormatID"] intValue];
+    
+    NSString * ImageFilehead =  [ImageFilename stringByDeletingPathExtension];
+    NSString * ImageFileext =   [ImageFilename pathExtension];
+    // NSLog(@" ImageFilename = %@",  ImageFilename);
+    // NSLog(@" ImageFilehead = %@",  ImageFilehead);
+    
+    if([ImageFileext isEqualToString:@"png"]) {
+        id_format = SAVE_PNG;
+    }
+    else if([ImageFileext isEqualToString:@"bmp"]){
+        id_format = SAVE_BMP;
+    }
+    else if([ImageFileext isEqualToString:@"eps"]){
+        id_format = SAVE_EPS;
+    }
+    else if([ImageFileext isEqualToString:@"pdf"]){
+        id_format = SAVE_PDF;
+    }
+    else if([ImageFileext isEqualToString:@"ps"]){
+        id_format = SAVE_PS;
+    }
+    else {
+        id_format = (int) CurrentImageFormat;
+    };
+    
+    write_kemoviewer_window_to_file(id_format, [ImageFilehead UTF8String]);
+    [_kemoviewer UpdateImage];
 }
 
 - (IBAction) SaveImageFile:(id)pId;{
-	NSInteger id_format;
-
-	NSUserDefaults* defaults = [_user_defaults_controller defaults];
-	CurrentImageFormat = [[defaults stringForKey:@"ImageFormatID"] intValue];
-	
 	NSSavePanel *ImageSavePanelObj	= [NSSavePanel savePanel];
 	[ImageSavePanelObj setTitle:@"Save Image File"];
 	[ImageSavePanelObj setCanSelectHiddenExtension:YES];
-	NSInteger ImageSaveInt = [ImageSavePanelObj runModal];
+    [ImageSavePanelObj beginSheetModalForWindow:window 
+                                   completionHandler:^(NSInteger ImageSaveInt){
 	if(ImageSaveInt == NSFileHandlingPanelOKButton){
 		
-		// NSString * ImageDirectory = [ ImageSavePanelObj directory];
 		NSString * ImageFilename = [[ ImageSavePanelObj URL] path];
-		NSString * ImageFilehead =  [ ImageFilename stringByDeletingPathExtension];
-		NSString * ImageFileext =   [ImageFilename pathExtension];
-		// NSLog(@" ImageFilename = %@",  ImageFilename);
-		// NSLog(@" ImageDirectory = %@", ImageDirectory);
-		// NSLog(@" ImageFilehead = %@",  ImageFilehead);
-
-		if([ImageFileext isEqualToString:@"png"]) {
-			id_format = SAVE_PNG;
-		}
-		else if([ImageFileext isEqualToString:@"bmp"]){
-			id_format = SAVE_BMP;
-		}
-		else if([ImageFileext isEqualToString:@"eps"]){
-			id_format = SAVE_EPS;
-		}
-		else if([ImageFileext isEqualToString:@"pdf"]){
-			id_format = SAVE_PDF;
-		}
-		else if([ImageFileext isEqualToString:@"ps"]){
-			id_format = SAVE_PS;
-		}
-		else {
-			id_format = (int) CurrentImageFormat;
-			ImageFilehead = [[ImageSavePanelObj URL] path];
-		};
-		
-        write_kemoviewer_window_to_file(id_format, [ImageFilehead UTF8String]);
-		[_kemoviewer UpdateImage];
+        // NSString * ImageDirectory = [ ImageSavePanelObj directory];
+        // NSLog(@" ImageDirectory = %@", ImageDirectory);
+        [self SelectImageFileFormat:ImageFilename];
 	};
+                                   }];
 }
 
 - (IBAction)ChooseImageFormatAction:(id)sender;

@@ -12,7 +12,6 @@
 
 @implementation FlineController
 
-@synthesize FlineOpenFilename;
 @synthesize FlineWindowlabel;
 
 @synthesize DrawFlineFlag;
@@ -149,32 +148,37 @@
 	[_kemoviewer UpdateImage];
 };
 
+- (void) ReadFlineFile:(NSString *) FlineFileName
+{
+    FlineOpenFileext =   [FlineFileName pathExtension];
+    FlineOpenFilehead =  [FlineFileName stringByDeletingPathExtension];
+    // NSLog(@"PSF file name =      %@",FlineFileName);
+    // NSLog(@"PSF file header =    %@",FlineOpenFilehead);
+    // NSLog(@"self.FlineWindowlabel = %@",self.FlineWindowlabel);
+    
+    if([FlineOpenFileext isEqualToString:@"gz"] || [FlineOpenFileext isEqualToString:@"GZ"]){
+        FlineOpenFileext =    [FlineOpenFilehead pathExtension];
+        FlineOpenFilehead =   [FlineOpenFilehead stringByDeletingPathExtension];
+    };
+    
+    int iflag_datatype =  kemoview_open_data_glut([FlineFileName UTF8String]);
+    if(iflag_datatype == IFLAG_LINES) [self OpenFieldlineFile:(NSString *)FlineOpenFilehead];
+}
+
 - (IBAction) DrawFlineFile:(id)pId{
 	NSArray *flineFileTypes = [NSArray arrayWithObjects:@"inp",@"vtk",@"gz",@"INP",@"VTK",@"GZ",nil];
 	NSOpenPanel *flineOpenPanelObj	= [NSOpenPanel openPanel];
 	[flineOpenPanelObj setTitle:@"Choose field line data"];
     [flineOpenPanelObj setAllowedFileTypes:flineFileTypes];
-	NSInteger FlineOpenInteger	= [flineOpenPanelObj runModal];
-	
+    [flineOpenPanelObj beginSheetModalForWindow:window 
+                                   completionHandler:^(NSInteger FlineOpenInteger){
 	if(FlineOpenInteger == NSFileHandlingPanelOKButton){
 		FlineOpenDirectory = [[flineOpenPanelObj directoryURL] path];
-		self.FlineOpenFilename =  [[flineOpenPanelObj URL] path];
-		FlineOpenFileext =   [self.FlineOpenFilename pathExtension];
-		FlineOpenFilehead =  [self.FlineOpenFilename stringByDeletingPathExtension];
+		NSString *FlineOpenFilename =  [[flineOpenPanelObj URL] path];
 		// NSLog(@"PSF file directory = %@",FlineOpenDirectory);
-		// NSLog(@"PSF file name =      %@",FlineOpenFilename);
-		// NSLog(@"PSF file header =    %@",FlineOpenFilehead);
-		// NSLog(@"self.FlineWindowlabel = %@",self.FlineWindowlabel);
-		
-		if([FlineOpenFileext isEqualToString:@"gz"] || [FlineOpenFileext isEqualToString:@"GZ"]){
-			FlineOpenFileext =    [FlineOpenFilehead pathExtension];
-			FlineOpenFilehead =   [FlineOpenFilehead stringByDeletingPathExtension];
-		};
-	
-		int iflag_datatype =  kemoview_open_data_glut([self.FlineOpenFilename UTF8String]);
-		if(iflag_datatype == IFLAG_LINES) [self OpenFieldlineFile:(NSString *)FlineOpenFilehead];
-	};	
-
+        [self ReadFlineFile:FlineOpenFilename];
+	};
+                                   }];
 }
 
 - (IBAction) CloseFlineFile:(id)pId{

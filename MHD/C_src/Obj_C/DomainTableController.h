@@ -20,6 +20,7 @@
     IBOutlet SurfaceGroupTableController* _surfGrpController;
     
 	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
+    IBOutlet NSWindow*  window;
 	IBOutlet NSWindow* _meshWindow;
 	IBOutlet id _tableView;
 	

@@ -12,12 +12,12 @@
 
 @interface FlineController : NSObject {
 
+    IBOutlet NSWindow*  window;
 	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
 	IBOutlet KemoviewerController*  _kemoviewControl;
 
 	NSInteger DrawFlineFlag;
 	NSString *FlineOpenDirectory;
-	NSString *FlineOpenFilename;
 	NSString *FlineOpenFilehead;
 	NSString *FlineOpenFileext;
 	NSString *FlineOpenFileheadExStep;
@@ -59,7 +59,6 @@
 	IBOutlet id FieldlineColorItem;
 }
 
-@property(retain) NSString* FlineOpenFilename;
 @property(retain) NSString* FlineWindowlabel;
 
 @property NSInteger DrawFlineFlag;

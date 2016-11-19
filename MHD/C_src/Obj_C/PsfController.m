@@ -398,29 +398,52 @@
 	}
 };
 
-- (void) ChooseTextureFile{
-	int iflag_fmt;
+- (void) ReadTextureFile:(NSString *) PsfOpenFilename
+{
+    int iflag_fmt;
+    NSString *PsfOpenFileext =   [PsfOpenFilename pathExtension];
+    NSString *PsfOpenFilehead =  [PsfOpenFilename stringByDeletingPathExtension];
     
-	NSArray *psfFileTypes = [NSArray arrayWithObjects:@"png",@"bmp",@"PNG",@"BMP",nil];
-	NSOpenPanel *PsfOpenPanelObj	= [NSOpenPanel openPanel];
-	[PsfOpenPanelObj setTitle:@"Choose Texture image data"];
+    if([PsfOpenFileext isEqualToString:@"png"]
+       || [PsfOpenFileext isEqualToString:@"PNG"]){ iflag_fmt = SAVE_PNG;}
+    else if([PsfOpenFileext isEqualToString:@"bmp"]
+            || [PsfOpenFileext isEqualToString:@"BMP"]){ iflag_fmt = SAVE_BMP;};
+    
+    set_texture_current_psf(iflag_fmt, [PsfOpenFilehead UTF8String]);
+}
+
+- (void) ReadPsfFile:(NSString *) PsfOpenFilename
+{
+    NSString *PsfOpenFileext =   [PsfOpenFilename pathExtension];
+    NSString *PsfOpenFilehead =  [PsfOpenFilename stringByDeletingPathExtension];
+    // NSLog(@"PSF file name =      %@",PsfOpenFilename);
+    // NSLog(@"PSF file header =    %@",PsfOpenFilehead);
+    // NSLog(@"self.PsfWindowlabel =    %@",self.PsfWindowlabel);
+    
+    if([PsfOpenFileext isEqualToString:@"gz"] || [PsfOpenFileext isEqualToString:@"GZ"]){
+        //			NSString *PsfOpenFileext_gz = [self.PsfOpenFilename pathExtension];
+        PsfOpenFileext =    [PsfOpenFilehead pathExtension];
+        PsfOpenFilehead =   [PsfOpenFilehead stringByDeletingPathExtension];
+    };
+    
+    int iflag_datatype = kemoview_open_data_glut([PsfOpenFilename UTF8String]);
+    if(iflag_datatype == IFLAG_SURFACES) [self DrawPsfFile:PsfOpenFilehead];
+}
+
+- (void) ChooseTextureFile{
+    
+    NSArray *psfFileTypes = [NSArray arrayWithObjects:@"png",@"bmp",@"PNG",@"BMP",nil];
+    NSOpenPanel *PsfOpenPanelObj	= [NSOpenPanel openPanel];
+    [PsfOpenPanelObj setTitle:@"Choose Texture image data"];
     [PsfOpenPanelObj setAllowedFileTypes:psfFileTypes];
-	NSInteger PsfOpenInteger	= [PsfOpenPanelObj runModal];
-	
-	if(PsfOpenInteger == NSFileHandlingPanelOKButton){
-		PsfOpenDirectory = [[PsfOpenPanelObj directoryURL] path];
-		NSString *PsfOpenFilename =  [[PsfOpenPanelObj URL] path];
-		NSString *PsfOpenFileext =   [PsfOpenFilename pathExtension];
-		NSString *PsfOpenFilehead =  [PsfOpenFilename stringByDeletingPathExtension];
-		
-		if([PsfOpenFileext isEqualToString:@"png"]
-		   || [PsfOpenFileext isEqualToString:@"PNG"]){ iflag_fmt = SAVE_PNG;}
-		else if([PsfOpenFileext isEqualToString:@"bmp"]
-				|| [PsfOpenFileext isEqualToString:@"BMP"]){ iflag_fmt = SAVE_BMP;};
-		
-		set_texture_current_psf(iflag_fmt, [PsfOpenFilehead UTF8String]);
-	};	
-	return;
+    NSInteger PsfOpenInteger	= [PsfOpenPanelObj runModal];
+    
+    if(PsfOpenInteger == NSFileHandlingPanelOKButton){
+        PsfOpenDirectory = [[PsfOpenPanelObj directoryURL] path];
+        NSString *PsfOpenFilename =  [[PsfOpenPanelObj URL] path];
+        [self ReadTextureFile:PsfOpenFilename];
+    };	
+    return;
 }
 
 - (IBAction) OpenPsfFile:(id)pId{
@@ -429,27 +452,16 @@
 	NSOpenPanel *PsfOpenPanelObj	= [NSOpenPanel openPanel];
 	[PsfOpenPanelObj setTitle:@"Choose surface rendering data"];
     [PsfOpenPanelObj setAllowedFileTypes:psfFileTypes];
-	NSInteger PsfOpenInteger	= [PsfOpenPanelObj runModal];
+    [PsfOpenPanelObj beginSheetModalForWindow:window 
+                                 completionHandler:^(NSInteger PsfOpenInteger){
 	
 	if(PsfOpenInteger == NSFileHandlingPanelOKButton){
-		PsfOpenDirectory = [[PsfOpenPanelObj directoryURL] path];
 		NSString *PsfOpenFilename =  [[PsfOpenPanelObj URL] path];
-		NSString *PsfOpenFileext =   [PsfOpenFilename pathExtension];
-		NSString *PsfOpenFilehead =  [PsfOpenFilename stringByDeletingPathExtension];
-		// NSLog(@"PSF file directory = %@",PsfOpenDirectory);
-		// NSLog(@"PSF file name =      %@",PsfOpenFilename);
-		// NSLog(@"PSF file header =    %@",PsfOpenFilehead);
-		// NSLog(@"self.PsfWindowlabel =    %@",self.PsfWindowlabel);
-		
-		if([PsfOpenFileext isEqualToString:@"gz"] || [PsfOpenFileext isEqualToString:@"GZ"]){
-            //			NSString *PsfOpenFileext_gz = [self.PsfOpenFilename pathExtension];
-			PsfOpenFileext =    [PsfOpenFilehead pathExtension];
-			PsfOpenFilehead =   [PsfOpenFilehead stringByDeletingPathExtension];
-		};
-		
-		int iflag_datatype = kemoview_open_data_glut([PsfOpenFilename UTF8String]);
-		if(iflag_datatype == IFLAG_SURFACES) [self DrawPsfFile:PsfOpenFilehead];
+        PsfOpenDirectory = [[PsfOpenPanelObj directoryURL] path];
+        // NSLog(@"PSF file directory = %@",PsfOpenDirectory);
+        [self ReadPsfFile:PsfOpenFilename];
 	};	
+                                 }];
 }
 
 

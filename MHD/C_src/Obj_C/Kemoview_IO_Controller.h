@@ -18,6 +18,7 @@
 @interface Kemoview_IO_Controller : NSObject {
 
 	IBOutlet NSUserDefaultsController* _user_defaults_controller;
+    IBOutlet NSWindow*  window;
 	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
 	IBOutlet DomainTableController* _domainTableController;
 	IBOutlet PsfController*         _psfController;

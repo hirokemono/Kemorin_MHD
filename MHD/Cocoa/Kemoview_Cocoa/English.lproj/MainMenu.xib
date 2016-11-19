@@ -444,6 +444,7 @@
                 <outlet property="_movieMakerController" destination="2637" id="3608"/>
                 <outlet property="_psfController" destination="1157" id="3581"/>
                 <outlet property="_user_defaults_controller" destination="716" id="3619"/>
+                <outlet property="window" destination="371" id="c1I-vx-8GJ"/>
             </connections>
         </customObject>
         <window title="Kemoview_Cocoa" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" animationBehavior="default" id="371" customClass="KemoviewDragDropWindow">
@@ -1097,6 +1098,7 @@
                 <outlet property="domainGridColorWell" destination="1735" id="1851"/>
                 <outlet property="domainNodeColorWell" destination="1736" id="1852"/>
                 <outlet property="domainPatchColorWell" destination="1734" id="1853"/>
+                <outlet property="window" destination="371" id="4KR-XO-i1m"/>
             </connections>
         </customObject>
         <customObject id="906" customClass="NodeGroupTableController">
@@ -2203,6 +2205,7 @@
                 <outlet property="_flinetype_matrix" destination="3125" id="3157"/>
                 <outlet property="_kemoviewControl" destination="964" id="3542"/>
                 <outlet property="_kemoviewer" destination="3373" id="3395"/>
+                <outlet property="window" destination="371" id="7lQ-Pq-3tS"/>
             </connections>
         </customObject>
         <window title="PSF View" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="1064">
@@ -4103,6 +4106,7 @@
                 <outlet property="_psfPatchColorMenu" destination="1877" id="2915"/>
                 <outlet property="_psfPatchDirMatrix" destination="3170" id="3191"/>
                 <outlet property="_psfVectorColorMenu" destination="3006" id="3110"/>
+                <outlet property="window" destination="371" id="Lq0-53-4gU"/>
             </connections>
         </customObject>
         <objectController id="2714" userLabel="PSF Object Controller">
@@ -4160,6 +4164,7 @@
                 <outlet property="_colorMapObject" destination="2610" id="2784"/>
                 <outlet property="_kemoviewer" destination="3373" id="3399"/>
                 <outlet property="_opacityMapObject" destination="2618" id="2785"/>
+                <outlet property="window" destination="371" id="QUL-Zy-Tje"/>
             </connections>
         </customObject>
         <customObject id="2610" customClass="ColorMapController">
