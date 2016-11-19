@@ -14,6 +14,7 @@
 
 @interface PsfController : NSObject {
     
+    IBOutlet NSWindow*  window;
 	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
 	IBOutlet KemoviewerController*  _kemoviewControl;
     IBOutlet NSColorWell *PSFPatchColorWell;

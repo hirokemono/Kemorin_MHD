@@ -7,11 +7,13 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
+#import <AVFoundation/AVFoundation.h>
+#import <CoreVideo/CoreVideo.h>
 #import "KemoViewerOpenGLView.h"
 
 
 @interface KemoviewerMovieMaker : NSObject {
+    IBOutlet NSWindow*  window;
 	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
 	IBOutlet NSUserDefaultsController* _movie_defaults_controller;
 
@@ -19,10 +21,11 @@
 	NSInteger CurrentMovieFormat;
 	IBOutlet id movieFormat_item;
 
-	QTMovie * KemoMovie;
+    AVAssetWriter *videoWriter;
+    AVAssetWriterInput *writerInput;
+    AVAssetWriterInputPixelBufferAdaptor *adaptor;
     NSImage *SnapshotImage;
 	NSInteger FramePerSecond;
-	QTTime duration;
 
 	NSString *EvolutionImageFilehead;
 	NSString *EvolutionImageFilename;
@@ -48,6 +51,8 @@
 @property NSInteger EvolutionIncrement;
 
 -(id) init;
+-(CVPixelBufferRef)pixelBufferFromCGImage:(CGImageRef)image;
+
 -(void) InitEvolutionStepByPSF;
 -(void) InitEvolutionStepByFline;
 

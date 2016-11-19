@@ -44,8 +44,9 @@
 - (IBAction) SaveColormapFile:(id)pId;{
 	
 	NSSavePanel *ViewMatrixSavePanelObj	= [NSSavePanel savePanel];
-	int ViewMatrixSaveInt = [ViewMatrixSavePanelObj runModal];
-	if(ViewMatrixSaveInt == NSOKButton){
+    [ViewMatrixSavePanelObj beginSheetModalForWindow:window 
+                                    completionHandler:^(NSInteger ViewMatrixSaveInt){
+	if(ViewMatrixSaveInt == NSFileHandlingPanelOKButton){
 		
 		NSString * ViewMatrixFilename = [[ ViewMatrixSavePanelObj URL] path];
 		NSString * ViewMatrixDirectory = [[ ViewMatrixSavePanelObj directoryURL] path];
@@ -56,6 +57,7 @@
 		
 		write_current_PSF_colormap_control_file([ViewMatrixFilename UTF8String]);
 	};
+                                    }];
 }
 
 @end

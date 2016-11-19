@@ -7,14 +7,16 @@
 //
 
 #import "KemoMovieControll.h"
+#import <AVFoundation/AVFoundation.h>
 
-
-@implementation KemoMovieControll
+@implementation KemoMovieControll;
 @synthesize evolutionCurrentStep;
 @synthesize evolutionStartStep;
 @synthesize evolutionEndStep;
 @synthesize evolutionIncrement;
 @synthesize evolutionFPS;
+@synthesize imageWidth;
+@synthesize imageHight;
 - (id)init;
 {
 	self.evolutionCurrentStep = 1;
@@ -22,100 +24,214 @@
 	self.evolutionEndStep =   1;
 	self.evolutionIncrement = 1;
 	self.evolutionFPS = 12;
+    
+    saveBottun.enabled = NO;
+    saveMenu.enabled = NO;
 	return self;
-}	
-
--(void) ImageToQTMovie{
-	NSImage *anImage;
-	NSDictionary *movieDict = nil;
-	QTTime duration = QTMakeTime(1, self.evolutionFPS);
-	
-	// when adding images we must provide a dictionary
-	// specifying the codec attributes
-	movieDict = [NSDictionary dictionaryWithObjectsAndKeys:@"mp4v",
-				 QTAddImageCodecType,
-				 [NSNumber numberWithLong:codecMaxQuality],
-				 QTAddImageCodecQuality,
-				 nil];
-
-	anImage = [[NSImage alloc] initWithContentsOfFile:imageFileName];
-	// [anImage setFlipped:YES];
-	// [anImage lockFocusOnRepresentation:bmpRep]; // This will flip the rep.
-	// [anImage unlockFocus];
-	
-	// Adds an image for the specified duration to the QTMovie
-	[mMovie addImage:anImage forDuration:duration withAttributes:movieDict];
-	[mMovie updateMovieFile];
-	// free up our image object
-	/* deallocate memory*/
-	[anImage release];
-	return;
 }
 
+- (CVPixelBufferRef)pixelBufferFromCGImage:(CGImageRef)image
+{
+    NSDictionary *options = @{ (NSString *)kCVPixelBufferCGImageCompatibilityKey: @YES,
+                               (NSString *)kCVPixelBufferCGBitmapContextCompatibilityKey: @YES, };
+    
+    CVPixelBufferRef pxbuffer = NULL;
+    
+    CGFloat width  = CGImageGetWidth(image);
+    CGFloat height = CGImageGetHeight(image);
+    CVPixelBufferCreate(kCFAllocatorDefault,
+                        width,
+                        height,
+                        kCVPixelFormatType_32ARGB,
+                        (__bridge CFDictionaryRef)options,
+                        &pxbuffer);
+    
+    CVPixelBufferLockBaseAddress(pxbuffer, 0);
+    void *pxdata = CVPixelBufferGetBaseAddress(pxbuffer);
+    
+    size_t bitsPerComponent       = 8;
+    size_t bytesPerRow            = 4 * width;
+    CGColorSpaceRef rgbColorSpace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef context = CGBitmapContextCreate(pxdata,
+                                                 width,
+                                                 height,
+                                                 bitsPerComponent,
+                                                 bytesPerRow,
+                                                 rgbColorSpace,
+                                                 (CGBitmapInfo)kCGImageAlphaNoneSkipFirst);
+    
+    CGContextDrawImage(context, CGRectMake(0, 0, width, height), image);
+    CGColorSpaceRelease(rgbColorSpace);
+    CGContextRelease(context);
+    
+    CVPixelBufferUnlockBaseAddress(pxbuffer, 0);
+    
+    return pxbuffer;
+}
+
+-(void) OpenKemoviewMovieFile:(NSString *)mFileName
+{
+    // Movie setting
+    NSDictionary *outputSettings = 
+    @{
+      AVVideoCodecKey : AVVideoCodecH264,
+      AVVideoWidthKey : @(self.imageWidth),
+      AVVideoHeightKey: @(self.imageHight),
+      };    
+    // source pixel buffer attributes
+    NSDictionary *sourcePixBufferAttributes = 
+    @{
+      (NSString *)kCVPixelBufferPixelFormatTypeKey: @(kCVPixelFormatType_32ARGB),
+      (NSString *)kCVPixelBufferWidthKey : @(self.imageWidth),
+      (NSString *)kCVPixelBufferHeightKey: @(self.imageHight),
+      };
+
+    NSError *overWriteflag = [[NSError alloc] init];
+    // Create a QTMovie with a writable data reference
+    NSLog(@"EvolutionImageFileName: %@", mFileName);
+    NSURL *url = [NSURL fileURLWithPath:mFileName];
+ 
+    //   Coheck if movie file is exist
+    if ([[NSFileManager defaultManager] fileExistsAtPath:mFileName])
+    {
+        NSLog(@"%@ is exist!!!", mFileName);
+        NSFileManager *fman = [NSFileManager defaultManager];
+        [fman removeItemAtURL:url error: nil];
+    }
+    videoWriter = [[AVAssetWriter alloc] initWithURL:url
+                                            fileType:AVFileTypeQuickTimeMovie error:&overWriteflag];
+    
+    NSLog(@"%@", [overWriteflag localizedDescription]);
+    if(overWriteflag!= NULL ){
+        NSLog(@"AVAssetWriter Failed!!");
+    }
+
+    // Construct Initilize writer
+    writerInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:outputSettings];
+    [videoWriter addInput:writerInput];
+     writerInput.expectsMediaDataInRealTime = YES;
+   
+    
+    // Construct writer input pixel buffer adaptor
+    adaptor = [AVAssetWriterInputPixelBufferAdaptor
+                 assetWriterInputPixelBufferAdaptorWithAssetWriterInput:writerInput
+                 sourcePixelBufferAttributes:sourcePixBufferAttributes];
+
+    // Start movie generation
+    if (![videoWriter startWriting]) {printf("Error!");}
+    [videoWriter startSessionAtSourceTime:kCMTimeZero];
+}
+
+-(void) CloseKemoviewMovieFile{
+    [writerInput markAsFinished];
+    [videoWriter finishWritingWithCompletionHandler:^{
+        NSLog(@"Finish writing!");
+    }];
+    CVPixelBufferPoolRelease(adaptor.pixelBufferPool);
+}
+
+-(IBAction) OpenReferenceImage:(id)pSender;
+{
+    NSOpenPanel *PsfOpenPanelObj	= [NSOpenPanel openPanel];
+    [PsfOpenPanelObj setTitle:@"Choose one of image files"];
+    NSInteger PsfOpenInteger	= [PsfOpenPanelObj runModal];
+    if(PsfOpenInteger == NSFileHandlingPanelOKButton){
+        imageFileName =  [[PsfOpenPanelObj URL] path];
+    }
+    else { return;};
+    
+    NSUserDefaults *defalts = [NSUserDefaults standardUserDefaults];
+    [defalts setObject:imageFileName forKey:@"ImageFileName"];
+    [defalts synchronize];
+
+    SnapshotImage = [[NSImage alloc] initWithContentsOfFile:imageFileName];
+    CGImageRef CGImage = [SnapshotImage CGImageForProposedRect:nil context:nil hints:nil];
+    NSBitmapImageRep *rep = [[NSBitmapImageRep alloc] initWithCGImage:CGImage];
+    
+    [refImageView setImage:SnapshotImage];
+    
+    self.imageWidth = [rep pixelsWide];
+    self.imageHight = [rep pixelsHigh];
+//    printf("Image size %d, %d",(int)self.imageWidth, (int)self.imageHight);
+    [rep release];
+    [SnapshotImage release];
+    
+    saveBottun.enabled = YES;
+    saveMenu.enabled = YES;
+}
 
 -(IBAction) SaveImageEvolution:(id)pSender
 {
+    int i, ist, ied, inc;
 	//	NSLog(@"SaveRotation received message = %@",(NSString*)[pNotification object]);
-	NSError *overWriteflag = [[NSError alloc] init];
-	
-	NSOpenPanel *PsfOpenPanelObj	= [NSOpenPanel openPanel];
-	[PsfOpenPanelObj setTitle:@"Choose one of image files"];
-	NSInteger PsfOpenInteger	= [PsfOpenPanelObj runModalForTypes:nil];
-	if(PsfOpenInteger == NSOKButton){
-		imageFileName =  [PsfOpenPanelObj filename];
-		imageFileExt =   [imageFileName pathExtension];
-		imageFileHead =  [imageFileName stringByDeletingPathExtension];
-		imageFileHeadExStep =  [imageFileHead stringByDeletingPathExtension];
-		// NSLog(@"PSF file name =      %@",PsfOpenFilename);
-		// NSLog(@"PSF file header =    %@",PsfOpenFilehead);
-	}
-	else { return;};
 	
 	NSSavePanel *evolutionImageSavePanelObj	= [NSSavePanel savePanel];
-	NSInteger EvolutionSaveInteger	= [evolutionImageSavePanelObj runModalForTypes:nil];
+	NSInteger EvolutionSaveInteger	= [evolutionImageSavePanelObj runModal];
 	[evolutionImageSavePanelObj setCanSelectHiddenExtension:YES];	
 
-	if(EvolutionSaveInteger == NSOKButton){
-		movieFileName = [evolutionImageSavePanelObj filename];
+	if(EvolutionSaveInteger == NSFileHandlingPanelOKButton){
+		movieFileName = [[evolutionImageSavePanelObj URL] path];
 		movieFileHead = [movieFileName stringByDeletingPathExtension];
 		movieFileName = [movieFileHead stringByAppendingPathExtension:@"mov"];
-		NSError *overWriteflag = [[NSError alloc] init];
 	}
 	else { return;};
 	
-		// Create a QTMovie with a writable data reference
-	NSLog(@"EvolutionImageFileName: %@", movieFileName);
-	mMovie = [[QTMovie alloc] initToWritableFile:movieFileName error:&overWriteflag];
-	
-	if(overWriteflag!= NULL ){
-		NSFileManager *fman = [NSFileManager defaultManager];
-		[fman removeFileAtPath:movieFileName handler: nil ];
-		mMovie = [[QTMovie alloc] initToWritableFile:movieFileName error:NULL];
-	}
-	// mark the movie as editable
-	[mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieFlatten];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    imageFileName = [defaults stringForKey:@"ImageFileName"];
+    imageFileExt =   [imageFileName pathExtension];
+    imageFileHead =  [imageFileName stringByDeletingPathExtension];
+    imageFileHeadExStep =  [imageFileHead stringByDeletingPathExtension];
+    // NSLog(@"Image file header =    %@",imageFileHeadExStep);
+    // NSLog(@"Image file extension =    %@",imageFileExt);
 
-	[progreessBar setIndeterminate:NO];
-	[progreessBar startAnimation:(id)pSender];
-	for (self.evolutionCurrentStep = self.evolutionStartStep; 
-		 self.evolutionCurrentStep<(self.evolutionEndStep+1);
-		 self.evolutionCurrentStep++) {
-		if( ((self.evolutionCurrentStep-self.evolutionStartStep)%self.evolutionIncrement) == 0) {
-			imageFileHead =  [imageFileHeadExStep stringByAppendingPathExtension:
-							[NSString stringWithFormat:@"%d",(int) self.evolutionCurrentStep]];
-			imageFileName =  [imageFileHead stringByAppendingPathExtension:imageFileExt];
-			[self ImageToQTMovie];
-			[progreessBar incrementBy:(double)self.evolutionIncrement];
-			[progreessBar displayIfNeeded];
-		};
-	};
-	[progreessBar setDoubleValue:(double)self.evolutionStartStep];
-	[progreessBar displayIfNeeded];
-	[mMovie release];
+    ist = self.evolutionStartStep;
+    ied = self.evolutionEndStep;
+    inc = self.evolutionIncrement;
+    
+    [progreessBar setIndeterminate:NO];
+    [progreessBar startAnimation:(id)pSender];
+    
+    [self OpenKemoviewMovieFile:movieFileName];    
+    CVPixelBufferRef buffer;
+    int frameCount = 0;
+    for (i = ist;i<(ied+1);i++) {
+        self.evolutionCurrentStep = i;
+        if( ((i-ist)%inc) == 0) {
+            CMTime frameTime = CMTimeMake((int64_t)frameCount, self.evolutionFPS);
+            
+            imageFileHead =  [imageFileHeadExStep stringByAppendingPathExtension:
+                              [NSString stringWithFormat:@"%d",i]];
+            imageFileName =  [imageFileHead stringByAppendingPathExtension:imageFileExt];
+
+            SnapshotImage = [[NSImage alloc] initWithContentsOfFile:imageFileName];
+            CGImageRef CGImage = [SnapshotImage CGImageForProposedRect:nil context:nil hints:nil];
+            buffer = [self pixelBufferFromCGImage:CGImage];
+            
+            // Append Image buffer
+            if (![adaptor appendPixelBuffer:buffer withPresentationTime:frameTime]) {
+                NSLog(@"Adapter Failure");
+            }
+            [SnapshotImage release];            
+            if (buffer) {CVBufferRelease(buffer);}
+            frameCount = frameCount + 1;
+
+            [progreessBar incrementBy:(double)inc];
+            [progreessBar displayIfNeeded];
+        };
+    };
+
+    [writerInput markAsFinished];
+    [videoWriter finishWritingWithCompletionHandler:^{
+        NSLog(@"Finish writing!");
+    }];
+    CVPixelBufferPoolRelease(adaptor.pixelBufferPool);
+
+    [progreessBar setDoubleValue:(double)ist];
+    [progreessBar displayIfNeeded];
 	return;
 }
 
-- (IBAction)SetEvolutionSteps:(id)pSender{
+- (IBAction) SetEvolutionSteps:(id)pSender{
 	NSLog(@"start: %d", (int) self.evolutionStartStep);
 	NSLog(@"end: %d", (int) self.evolutionEndStep);
 	NSLog(@"increment: %d", (int) self.evolutionIncrement);

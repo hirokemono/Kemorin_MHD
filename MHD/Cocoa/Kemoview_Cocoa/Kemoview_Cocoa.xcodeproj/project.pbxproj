@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		1804E5C3125F025100EC8EAA /* Kemoviewer.icns in Resources */ = {isa = PBXBuildFile; fileRef = 1804E5C2125F025100EC8EAA /* Kemoviewer.icns */; };
 		1804E5E6125F028300EC8EAA /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1804E5E3125F028300EC8EAA /* OpenGL.framework */; };
+		180FF7CE1DDFB54700D20198 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 180FF7CD1DDFB54700D20198 /* AVFoundation.framework */; };
+		180FF7D01DDFB55000D20198 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 180FF7CF1DDFB55000D20198 /* CoreVideo.framework */; };
+		180FF7D21DDFB55500D20198 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 180FF7D11DDFB55500D20198 /* CoreMedia.framework */; };
 		181C133616C18D4E00624A2B /* gouraud.c in Sources */ = {isa = PBXBuildFile; fileRef = 181C133516C18D4E00624A2B /* gouraud.c */; };
 		181C133B16C18FFA00624A2B /* phong.c in Sources */ = {isa = PBXBuildFile; fileRef = 181C133A16C18FFA00624A2B /* phong.c */; };
 		1825197616A11A24006D5158 /* delete_file_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1825197416A11A24006D5158 /* delete_file_c.c */; };
@@ -16,7 +19,6 @@
 		182D092116C040ED0073D215 /* glsl.c in Sources */ = {isa = PBXBuildFile; fileRef = 182D091F16C040EC0073D215 /* glsl.c */; };
 		184432B917177C16005D8BE3 /* libpng16.16.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 184432B817177C16005D8BE3 /* libpng16.16.dylib */; };
 		184432BB17177C23005D8BE3 /* libz.1.2.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 184432BA17177C23005D8BE3 /* libz.1.2.5.dylib */; };
-		1890CD11126E0F1C00755D66 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1890CD10126E0F1C00755D66 /* QTKit.framework */; };
 		18D7E72B1562D359009B05FF /* cal_surface_center_normal_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E64F1562D359009B05FF /* cal_surface_center_normal_c.c */; };
 		18D7E72C1562D359009B05FF /* check_psf_data_viewer_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6511562D359009B05FF /* check_psf_data_viewer_c.c */; };
 		18D7E72D1562D359009B05FF /* check_viewer_mesh_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6531562D359009B05FF /* check_viewer_mesh_c.c */; };
@@ -133,6 +135,9 @@
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		1804E5C2125F025100EC8EAA /* Kemoviewer.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Kemoviewer.icns; sourceTree = "<group>"; };
 		1804E5E3125F028300EC8EAA /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
+		180FF7CD1DDFB54700D20198 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		180FF7CF1DDFB55000D20198 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		180FF7D11DDFB55500D20198 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		181C133416C18CB700624A2B /* gouraud.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = gouraud.h; sourceTree = "<group>"; };
 		181C133516C18D4E00624A2B /* gouraud.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gouraud.c; sourceTree = "<group>"; };
 		181C133716C18DB100624A2B /* phong.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = phong.h; sourceTree = "<group>"; };
@@ -150,7 +155,6 @@
 		18601A6115D9B0D20015F6B0 /* kemoviewer_GLUI */ = {isa = PBXFileReference; lastKnownFileType = folder; name = kemoviewer_GLUI; path = ../../programs/VIEWER/kemoviewer_GLUI; sourceTree = "<group>"; };
 		18601A6215D9B0D20015F6B0 /* kemoviewer_GLUT */ = {isa = PBXFileReference; lastKnownFileType = folder; name = kemoviewer_GLUT; path = ../../programs/VIEWER/kemoviewer_GLUT; sourceTree = "<group>"; };
 		18601A6315D9B0D20015F6B0 /* kemoviewer_GTK */ = {isa = PBXFileReference; lastKnownFileType = folder; name = kemoviewer_GTK; path = ../../programs/VIEWER/kemoviewer_GTK; sourceTree = "<group>"; };
-		1890CD10126E0F1C00755D66 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = System/Library/Frameworks/QTKit.framework; sourceTree = SDKROOT; };
 		18D7E64F1562D359009B05FF /* cal_surface_center_normal_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cal_surface_center_normal_c.c; sourceTree = "<group>"; };
 		18D7E6501562D359009B05FF /* cal_surface_center_normal_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cal_surface_center_normal_c.h; sourceTree = "<group>"; };
 		18D7E6511562D359009B05FF /* check_psf_data_viewer_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = check_psf_data_viewer_c.c; sourceTree = "<group>"; };
@@ -392,9 +396,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				180FF7D21DDFB55500D20198 /* CoreMedia.framework in Frameworks */,
+				180FF7D01DDFB55000D20198 /* CoreVideo.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				1804E5E6125F028300EC8EAA /* OpenGL.framework in Frameworks */,
-				1890CD11126E0F1C00755D66 /* QTKit.framework in Frameworks */,
+				180FF7CE1DDFB54700D20198 /* AVFoundation.framework in Frameworks */,
 				184432B917177C16005D8BE3 /* libpng16.16.dylib in Frameworks */,
 				184432BB17177C23005D8BE3 /* libz.1.2.5.dylib in Frameworks */,
 			);
@@ -424,9 +430,11 @@
 				184432BA17177C23005D8BE3 /* libz.1.2.5.dylib */,
 				184432BC17177C31005D8BE3 /* png.h */,
 				184432BD17177C31005D8BE3 /* zlib.h */,
+				180FF7D11DDFB55500D20198 /* CoreMedia.framework */,
+				180FF7CF1DDFB55000D20198 /* CoreVideo.framework */,
+				180FF7CD1DDFB54700D20198 /* AVFoundation.framework */,
 				1804E5E3125F028300EC8EAA /* OpenGL.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
-				1890CD10126E0F1C00755D66 /* QTKit.framework */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
@@ -993,7 +1001,7 @@
 					/Users/matsui/local/lib,
 					/usr/X11/lib,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				"OTHER_LDFLAGS[arch=*]" = "-L/opt/local/lib";
 				PRODUCT_NAME = Kemoview_Cocoa;
 			};
@@ -1017,7 +1025,7 @@
 					/Users/matsui/local/lib,
 					/usr/X11/lib,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				OTHER_LDFLAGS = "-L/opt/local/lib";
 				PRODUCT_NAME = Kemoview_Cocoa;
 			};

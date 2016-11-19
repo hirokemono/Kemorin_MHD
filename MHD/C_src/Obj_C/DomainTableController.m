@@ -68,29 +68,35 @@
 	[_kemoviewer UpdateImage];
 }
 
+- (void) ReadMeshFile:(NSString *) MeshOpenFilename
+{
+    NSString *MeshOpenFilehead = [MeshOpenFilename stringByDeletingPathExtension];
+    // NSString *MeshOpenFileheadNoPath = [MeshOpenFilehead lastPathComponent];
+    NSString *MeshOpenFileext =  [MeshOpenFilename pathExtension];
+    
+    if([MeshOpenFileext isEqualToString:@"gz"] || [MeshOpenFileext isEqualToString:@"GZ"]){
+        MeshOpenFileext =    [MeshOpenFilehead pathExtension];
+        MeshOpenFilehead =   [MeshOpenFilehead stringByDeletingPathExtension];
+    };
+    
+    int iflag_datatype = kemoview_open_data_glut([MeshOpenFilehead UTF8String]);
+    if(iflag_datatype==IFLAG_MESH ) [self OpenSurfaceMeshFile:MeshOpenFilehead];
+}
+
 - (IBAction) SelectMeshFile:(id)pId{
 	NSArray *meshFileTypes = [NSArray arrayWithObjects:@"ksm",@"KSM",@"gz",@"GZ",@"gfm",@"GFM",nil];
 	NSOpenPanel *MeshOpenPanelObj	= [NSOpenPanel openPanel];
 	[MeshOpenPanelObj setTitle:@"Choose mesh data"];
     [MeshOpenPanelObj setAllowedFileTypes:meshFileTypes];
-	NSInteger MeshOpenInteger	= [MeshOpenPanelObj runModal];
-	
-	if(MeshOpenInteger == NSOKButton){
-		NSString *MeshOpenDirectory = [[MeshOpenPanelObj directoryURL] path];
+    [MeshOpenPanelObj beginSheetModalForWindow:window 
+                              completionHandler:^(NSInteger MeshOpenInteger){
+	if(MeshOpenInteger == NSFileHandlingPanelOKButton){
 		NSString *MeshOpenFilename = [[MeshOpenPanelObj URL] path];
-		NSString *MeshOpenFilehead = [MeshOpenFilename stringByDeletingPathExtension];
-		// NSString *MeshOpenFileheadNoPath = [MeshOpenFilehead lastPathComponent];
-		NSString *MeshOpenFileext =  [MeshOpenFilename pathExtension];
-		 NSLog(@"Mesh file directory = %@",MeshOpenDirectory);
-
-		if([MeshOpenFileext isEqualToString:@"gz"] || [MeshOpenFileext isEqualToString:@"GZ"]){
-			MeshOpenFileext =    [MeshOpenFilehead pathExtension];
-			MeshOpenFilehead =   [MeshOpenFilehead stringByDeletingPathExtension];
-		};
-
-		int iflag_datatype = kemoview_open_data_glut([MeshOpenFilehead UTF8String]);
-		if(iflag_datatype==IFLAG_MESH ) [self OpenSurfaceMeshFile:MeshOpenFilehead];
-	};	
+//		NSString *MeshOpenDirectory = [[MeshOpenPanelObj directoryURL] path];
+//      NSLog(@"Mesh file directory = %@",MeshOpenDirectory);
+        [self ReadMeshFile:MeshOpenFilename];
+	};
+                              }];
 }
 
 - (IBAction) CloseMeshFile:(id)pId{

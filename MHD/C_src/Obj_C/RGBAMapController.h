@@ -16,6 +16,7 @@
 
 @interface RGBAMapController : NSObject {
 
+    IBOutlet NSWindow*  window;
 	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
 	
 	IBOutlet ColorMapController*   _colorMapObject;
