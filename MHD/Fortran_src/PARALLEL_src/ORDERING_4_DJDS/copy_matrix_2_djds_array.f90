@@ -66,6 +66,7 @@
       use t_geometry_data
       use t_solver_djds
       use t_vector_for_solver
+!
       use set_size_4_smp_types
       use reordering_djds_smp_type
       use DJDS_new_comm_table
@@ -91,8 +92,8 @@
 !C +-----------------+
 !C===
 !C
-       if (iflag_debug.eq.1) write(*,*) 's_reordering_djds_smp_type'
-      call s_reordering_djds_smp_type(np_smp, node%numnod,              &
+       if (iflag_debug.eq.1) write(*,*) 's_reordering_djds_smp'
+      call s_reordering_djds_smp(np_smp, node%numnod,                   &
      &    node%internal_node, node%istack_internal_smp,                 &
      &    solver_C, tbl_crs, djds_tbl)
 !C

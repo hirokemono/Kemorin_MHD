@@ -72,9 +72,9 @@
 !C +-----------------+
 !C===
 !C
-      call s_reordering_djds_smp_type(np_smp,                           &
-     &    mesh%node%numnod, mesh%node%internal_node,                    &
-     &    mesh%node%istack_internal_smp, solver_C, MHD_crs, djds_tbl)
+      call s_reordering_djds_smp(np_smp, mesh%node%numnod,              &
+     &    mesh%node%internal_node, mesh%node%istack_internal_smp,       &
+     &    solver_C, MHD_crs, djds_tbl)
 !C
 !C +--------------------------------------+
 !C | set new communication table 4 solver |
@@ -117,9 +117,9 @@
 !
       call s_set_crs_connection(mesh%node, FEM_next%neib_nod, CRS_table)
 !
-      call s_reordering_djds_smp_type(np_smp,                           &
-     &    mesh%node%numnod, mesh%node%internal_node,                    &
-     &    mesh%node%istack_internal_smp, solver_C, CRS_table, djds_tbl)
+      call s_reordering_djds_smp(np_smp, mesh%node%numnod,              &
+     &    mesh%node%internal_node, mesh%node%istack_internal_smp,       &
+     &    solver_C, CRS_table, djds_tbl)
 !
       call set_new_comm_table_type(mesh%node%numnod,                    &
      &    layer_comm, djds_tbl)

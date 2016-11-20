@@ -11,15 +11,21 @@
 !>     Construct DJDS ordering table in structure
 !!
 !!@verbatim
-!!      subroutine s_reordering_djds_smp_type(np_smp, NP, N,            &
-!!     &          ISTACK_N_smp, solver_C, tbl_crs, djds_tbl)
+!!      subroutine s_reordering_djds_smp(np_smp, NP, N, ISTACK_N_smp,   &
+!!     &          solver_C, tbl_crs, djds_tbl)
+!!        type(mpi_4_solver), intent(in) ::       solver_C
+!!        type(CRS_matrix_connect), intent(in) :: tbl_crs
+!!        type(DJDS_ordering_table), intent(inout) :: djds_tbl
 !!@endverbatim
 !
       module reordering_djds_smp_type
 !
       use m_precision
+      use t_colored_connect
 !
       implicit none
+!
+      type(work_4_RCM), private :: WK_MC
 !
 !  ---------------------------------------------------------------------
 !
@@ -27,15 +33,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_reordering_djds_smp_type(np_smp, NP, N,              &
-     &          ISTACK_N_smp, solver_C, tbl_crs, djds_tbl)
+      subroutine s_reordering_djds_smp(np_smp, NP, N, ISTACK_N_smp,     &
+     &          solver_C, tbl_crs, djds_tbl)
 !
       use t_crs_connect
       use t_solver_djds
       use t_vector_for_solver
 !
       use m_matrix_work
-      use m_colored_connect
 !
       use ordering_MC_RCM_type
       use DJDS_hyperplane
@@ -51,7 +56,6 @@
 !
       type(DJDS_ordering_table), intent(inout) :: djds_tbl
 !
-!
 !C +----------------+
 !C | reordering RCM |
 !C +----------------+
@@ -62,7 +66,8 @@
 !      count_rcm
 !       (output:: NHYP, OLDtoNEW, NEWtoOLD, NLmax, NUmax)
 !
-      call count_rcm(NP, N, solver_C, tbl_crs, djds_tbl)
+      call count_rcm(NP, N, solver_C, tbl_crs, djds_tbl, WK_MC)
+!      call check_mc_connect(my_rank, WK_MC)
 !
 !C +-----------------+
 !C | DJDS reordering |
@@ -78,7 +83,16 @@
 !    ( output :: itotal_l, itotal_u, NLmax, NUmax, npLX1, npUX1
 !                IVECT, NLmaxHYP, NUmaxHYP)
 !
-      call count_hyperplane_type(np_smp, NP, N, djds_tbl)
+      call count_hyperplane(np_smp, NP, N,                              &
+     &                  WK_MC%ntot_mc_l,   WK_MC%ntot_mc_u,             &
+     &                  WK_MC%num_mc_l,    WK_MC%num_mc_u,              &
+     &                  WK_MC%istack_mc_l, WK_MC%istack_mc_u,           &
+     &                  WK_MC%item_mc_l,   WK_MC%item_mc_u,             &
+     &                  djds_tbl%NHYP, djds_tbl%IVECT,                  &
+     &                  djds_tbl%npLX1, djds_tbl%npUX1,                 &
+     &                  djds_tbl%NLmax, djds_tbl%NUmax,                 &
+     &                  djds_tbl%NLmaxHYP, djds_tbl%NUmaxHYP,           &
+     &                  djds_tbl%itotal_l, djds_tbl%itotal_u)
 !
       call deallocate_4_IVECmc
 !
@@ -106,10 +120,16 @@
 !
 !  set_itotal_djds
 !    ( output:: itotal_l, itotal_u) 
-!
-      call set_itotal_djds_type(np_smp, NP, N, djds_tbl)
-!
-      call dealloc_mc_connect(WK1_MC)
+      call set_itotal_djds                                              &
+     &   (np_smp, NP, N, WK_MC%ntot_mc_l, WK_MC%ntot_mc_u,              &
+     &    WK_MC%istack_mc_l, WK_MC%istack_mc_u,                         &
+     &    WK_MC%item_mc_l,   WK_MC%item_mc_u,                           &
+     &    djds_tbl%NHYP, djds_tbl%npLX1, djds_tbl%npUX1,                &
+     &    djds_tbl%NLmax, djds_tbl%NUmax,                               &
+     &    djds_tbl%NLmaxHYP, djds_tbl%NUmaxHYP,                         &
+     &    djds_tbl%itotal_l, djds_tbl%itotal_u,                         &
+     &    djds_tbl%indexDJDS_L, djds_tbl%indexDJDS_U)
+      call dealloc_mc_connect(WK_MC)
 !C
 !C== ADDRESS
 !
@@ -124,7 +144,7 @@
 !
 !      call check_type_DJDS_ordering_info(my_rank, NP, djds_tbl)
 !
-      end subroutine s_reordering_djds_smp_type
+      end subroutine s_reordering_djds_smp
 !
 !  ---------------------------------------------------------------------
 !

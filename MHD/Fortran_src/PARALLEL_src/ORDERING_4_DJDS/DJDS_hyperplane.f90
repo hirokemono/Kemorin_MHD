@@ -10,7 +10,6 @@
 !> @brief Work area for multicoloring
 !!
 !!@verbatim
-!!      subroutine count_hyperplane_type(np_smp, N, NP, djds_tbl)
 !!      subroutine count_hyperplane(np_smp, NP, N,                      &
 !!     &          ntot_mc_l, ntot_mc_u, num_mc_l, num_mc_u,             &
 !!     &          istack_mc_l, istack_mc_u, item_mc_l, item_mc_u,       &
@@ -27,31 +26,6 @@
 ! ----------------------------------------------------------------------
 !
       contains
-!
-! ----------------------------------------------------------------------
-!
-      subroutine count_hyperplane_type(np_smp, NP, N, djds_tbl)
-!
-      use t_solver_djds
-      use m_colored_connect
-!
-      integer(kind = kint), intent(in) :: np_smp
-      integer(kind = kint), intent(in) :: NP, N
-      type(DJDS_ordering_table), intent(inout) :: djds_tbl
-!
-!
-      call count_hyperplane(np_smp, NP, N,                              &
-     &                  WK1_MC%ntot_mc_l,   WK1_MC%ntot_mc_u,           &
-     &                  WK1_MC%num_mc_l,    WK1_MC%num_mc_u,            &
-     &                  WK1_MC%istack_mc_l, WK1_MC%istack_mc_u,         &
-     &                  WK1_MC%item_mc_l,   WK1_MC%item_mc_u,           &
-     &                  djds_tbl%NHYP, djds_tbl%IVECT,                  &
-     &                  djds_tbl%npLX1, djds_tbl%npUX1,                 &
-     &                  djds_tbl%NLmax, djds_tbl%NUmax,                 &
-     &                  djds_tbl%NLmaxHYP, djds_tbl%NUmaxHYP,           &
-     &                  djds_tbl%itotal_l, djds_tbl%itotal_u)
-!
-      end subroutine count_hyperplane_type
 !
 ! ----------------------------------------------------------------------
 !
