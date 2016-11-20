@@ -1,8 +1,3 @@
-!
-!      module t_colored_connect
-!
-!        programmed by H.Matsui on Oct., 2006
-!
 !> @file  t_colored_connect.f90
 !!      module t_colored_connect
 !!
@@ -13,10 +8,10 @@
 !> @brief Work area for multicoloring
 !!
 !!@verbatim
-!!      subroutine allocate_mc_stack(numnod, WK_MC)
-!!      subroutine allocate_mc_connect(WK_MC)
+!!      subroutine alloc_mc_stack(numnod, WK_MC)
+!!      subroutine alloc_mc_connect(WK_MC)
 !!
-!!      subroutine deallocate_mc_connect(WK_MC)
+!!      subroutine dealloc_mc_connect(WK_MC)
 !!
 !!      subroutine check_mc_connect(my_rank, WK_MC)
 !!
@@ -59,7 +54,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_mc_stack(numnod, WK_MC)
+      subroutine alloc_mc_stack(numnod, WK_MC)
 !
       integer(kind = kint), intent(in) :: numnod
       type(work_4_RCM), intent(inout) :: WK_MC
@@ -82,11 +77,11 @@
       WK_MC%min_mc_l = 0
       WK_MC%min_mc_u = 0
 !
-      end subroutine allocate_mc_stack
+      end subroutine alloc_mc_stack
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_mc_connect(WK_MC)
+      subroutine alloc_mc_connect(WK_MC)
 !
       type(work_4_RCM), intent(inout) :: WK_MC
 !
@@ -97,12 +92,12 @@
       if(WK_MC%ntot_mc_l .gt. 0) WK_MC%item_mc_l = 0
       if(WK_MC%ntot_mc_u .gt. 0) WK_MC%item_mc_u = 0
 !
-      end subroutine allocate_mc_connect
+      end subroutine alloc_mc_connect
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine deallocate_mc_connect(WK_MC)
+      subroutine dealloc_mc_connect(WK_MC)
 !
       type(work_4_RCM), intent(inout) :: WK_MC
 !
@@ -115,7 +110,7 @@
       deallocate( WK_MC%istack_mc_l )
       deallocate( WK_MC%istack_mc_u )
 !
-      end subroutine deallocate_mc_connect
+      end subroutine dealloc_mc_connect
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

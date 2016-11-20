@@ -39,8 +39,10 @@
       type(DJDS_ordering_table), intent(inout) :: djds_tbl
 !
 !
-      call set_itotal_djds(np_smp, NP, N, ntot_mc_l, ntot_mc_u,         &
-     &    istack_mc_l, istack_mc_u, item_mc_l, item_mc_u,               &
+      call set_itotal_djds                                              &
+     &   (np_smp, NP, N, WK1_MC%ntot_mc_l, WK1_MC%ntot_mc_u,            &
+     &    WK1_MC%istack_mc_l, WK1_MC%istack_mc_u,                       &
+     &    WK1_MC%item_mc_l,   WK1_MC%item_mc_u,                         &
      &    djds_tbl%NHYP, djds_tbl%npLX1, djds_tbl%npUX1,                &
      &    djds_tbl%NLmax, djds_tbl%NUmax,                               &
      &    djds_tbl%NLmaxHYP, djds_tbl%NUmaxHYP,                         &

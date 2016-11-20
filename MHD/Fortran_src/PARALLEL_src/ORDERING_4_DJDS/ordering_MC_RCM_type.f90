@@ -55,17 +55,12 @@
 !
 !
       call allocate_IVECT_rcm(NP)
-      call allocate_mc_stack(NP)
-      ntot_mc_l = tbl_crs%ntot_l
-      ntot_mc_u = tbl_crs%ntot_u
-      max_mc_l =  tbl_crs%max_l
-      min_mc_l =  tbl_crs%min_l
-      max_mc_u =  tbl_crs%max_u
-      min_mc_u =  tbl_crs%min_u
+      call alloc_mc_stack(NP, WK1_MC)
+      call copy_ntot_from_crs_mat(tbl_crs, WK1_MC)
 !
-      call allocate_mc_connect
-      djds_tbl%NLmax= max_mc_l
-      djds_tbl%NUmax= max_mc_u
+      call alloc_mc_connect(WK1_MC)
+      djds_tbl%NLmax = WK1_MC%max_mc_l
+      djds_tbl%NUmax = WK1_MC%max_mc_u
 !
 !----------------------------------------------------------
 !   skip multi colorling (only for diagonal scaling)
@@ -79,10 +74,12 @@
 !
         if (iflag_debug.eq.1) write(*,*) 'no_MC'
         call no_MC(NP, tbl_crs%ntot_l, tbl_crs%ntot_u,                  &
-     &      tbl_crs%istack_l, tbl_crs%istack_u,                         &
-     &      tbl_crs%item_l,   tbl_crs%item_u,                           &
-     &      ntot_mc_l, ntot_mc_u, num_mc_l, num_mc_u,                   &
-     &      istack_mc_l, istack_mc_u, item_mc_l, item_mc_u,             &
+     &      tbl_crs%istack_l,   tbl_crs%istack_u,                       &
+     &      tbl_crs%item_l,     tbl_crs%item_u,                         &
+     &      WK1_MC%ntot_mc_l,   WK1_MC%ntot_mc_u,                       &
+     &      WK1_MC%num_mc_l,    WK1_MC%num_mc_u,                        &
+     &      WK1_MC%istack_mc_l, WK1_MC%istack_mc_u,                     &
+     &      WK1_MC%item_mc_l,   WK1_MC%item_mc_u,                       &
      &      djds_tbl%NHYP, IVECT_rcm,                                   &
      &      djds_tbl%NEWtoOLD, djds_tbl%OLDtoNEW)
 !
@@ -114,10 +111,12 @@
         if ( iflag_ordering .eq. 1 ) then
           if (iflag_debug.eq.1) write(*,*) 'sRCM'
           call sRCM (NP, N, tbl_crs%ntot_l,   tbl_crs%ntot_u,           &
-     &        tbl_crs%istack_l, tbl_crs%istack_u,                       &
-     &        tbl_crs%item_l,   tbl_crs%item_u,                         &
-     &        ntot_mc_l, ntot_mc_u, num_mc_l, num_mc_u,                 &
-     &        istack_mc_l, istack_mc_u, item_mc_l, item_mc_u,           &
+     &        tbl_crs%istack_l,   tbl_crs%istack_u,                     &
+     &        tbl_crs%item_l,     tbl_crs%item_u,                       &
+     &        WK1_MC%ntot_mc_l,   WK1_MC%ntot_mc_u,                     &
+     &        WK1_MC%num_mc_l,    WK1_MC%num_mc_u,                      &
+     &        WK1_MC%istack_mc_l, WK1_MC%istack_mc_u,                   &
+     &        WK1_MC%item_mc_l,   WK1_MC%item_mc_u,                     &
      &        djds_tbl%NHYP, IVECT_rcm,                                 &
      &        djds_tbl%NEWtoOLD, djds_tbl%OLDtoNEW, IW)
 !
@@ -125,10 +124,12 @@
         else if ( iflag_ordering .eq. 2 ) then
           if (iflag_debug.eq.1) write(*,*) 'sMC'
           call sMC (NP, N, tbl_crs%ntot_l, tbl_crs%ntot_u,              &
-     &        tbl_crs%istack_l, tbl_crs%istack_u,                       &
-     &        tbl_crs%item_l,   tbl_crs%item_u,                         &
-     &        ntot_mc_l, ntot_mc_u, num_mc_l, num_mc_u,                 &
-     &        istack_mc_l, istack_mc_u, item_mc_l, item_mc_u,           &
+     &        tbl_crs%istack_l,   tbl_crs%istack_u,                     &
+     &        tbl_crs%item_l,     tbl_crs%item_u,                       &
+     &        WK1_MC%ntot_mc_l,   WK1_MC%ntot_mc_u,                     &
+     &        WK1_MC%num_mc_l,    WK1_MC%num_mc_u,                      &
+     &        WK1_MC%istack_mc_l, WK1_MC%istack_mc_u,                   &
+     &        WK1_MC%item_mc_l,   WK1_MC%item_mc_u,                     &
      &        djds_tbl%NHYP, IVECT_rcm,                                 &
      &        djds_tbl%NEWtoOLD, djds_tbl%OLDtoNEW, IW, mc_color)
         end if
@@ -165,8 +166,10 @@
 !C
 !C-- CHECK dependency
         call check_dependency_RCM_MC(my_rank, NP,                       &
-     &      ntot_mc_l, ntot_mc_u, istack_mc_l, istack_mc_u,             &
-     &      item_mc_l, item_mc_u, NCOLORtot, IVECmc, IVnew, IW, IFLAG)
+     &      WK1_MC%ntot_mc_l,   WK1_MC%ntot_mc_u,                       &
+     &      WK1_MC%istack_mc_l, WK1_MC%istack_mc_u,                     &
+     &      WK1_MC%item_mc_l,   WK1_MC%item_mc_u,                       &
+     &      NCOLORtot, IVECmc, IVnew, IW, IFLAG)
 !
         call MPI_allREDUCE (IFLAG, IFLAGmax, 1, CALYPSO_INTEGER,        &
      &                    MPI_MAX, solver_C%SOLVER_COMM, ierr_MPI)
@@ -187,16 +190,7 @@
       call deallocate_iW_ordering
       call deallocate_IVECT_rcm
 !
-!        do i = 1, NP
-!          write(60+my_rank,*) 'istack_mc_l', i, istack_mc_l(i)
-!          write(60+my_rank,'(10i16)')                                  &
-!     &             item_mc_l(istack_mc_l(i-1)+1:istack_mc_l(i))
-!        end do
-!        do i = 1, NP
-!          write(60+my_rank,*) 'istack_mc_u', i, istack_mc_u(i)
-!          write(60+my_rank,'(10i16)')                                  &
-!     &             item_mc_u(istack_mc_u(i-1)+1:istack_mc_u(i))
-!        end do
+!      call check_mc_connect(my_rank, WK1_MC)
 !
       end subroutine  count_rcm
 !

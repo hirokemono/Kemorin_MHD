@@ -1,17 +1,22 @@
+!> @file  DJDS_hyperplane.f90
+!!      module DJDS_hyperplane
+!!
+!! @author  H. Matsui
+!>@brief    Written by K. Nakajima in 2001
+!!@n        modified by H. Matsui in May. 2002
+!!@n        modified by H. Matsui in June. 2006
+!!@n        modified by H. Matsui in Jan., 2009
 !
-!     module DJDS_hyperplane
-!
-!      Written by K. Nakajima in 2001
-!        modified by H. Matsui on May. 2002
-!        modified by H. Matsui on June. 2006
-!        modified by H. Matsui on Jan., 2009
-!
-!      subroutine count_hyperplane_type(np_smp, N, NP, djds_tbl)
+!> @brief Work area for multicoloring
+!!
+!!@verbatim
+!!      subroutine count_hyperplane_type(np_smp, N, NP, djds_tbl)
 !!      subroutine count_hyperplane(np_smp, NP, N,                      &
 !!     &          ntot_mc_l, ntot_mc_u, num_mc_l, num_mc_u,             &
 !!     &          istack_mc_l, istack_mc_u, item_mc_l, item_mc_u,       &
 !!     &          NHYP, IVECT, npLX1, npUX1, NLmax, NUmax,              &
 !!     &          NLmaxHYP, NUmaxHYP, itotal_l, itotal_u)
+!!@endverbatim
 !
       module DJDS_hyperplane
 !
@@ -36,8 +41,10 @@
 !
 !
       call count_hyperplane(np_smp, NP, N,                              &
-     &                  ntot_mc_l, ntot_mc_u, num_mc_l, num_mc_u,       &
-     &                  istack_mc_l, istack_mc_u, item_mc_l, item_mc_u, &
+     &                  WK1_MC%ntot_mc_l,   WK1_MC%ntot_mc_u,           &
+     &                  WK1_MC%num_mc_l,    WK1_MC%num_mc_u,            &
+     &                  WK1_MC%istack_mc_l, WK1_MC%istack_mc_u,         &
+     &                  WK1_MC%item_mc_l,   WK1_MC%item_mc_u,           &
      &                  djds_tbl%NHYP, djds_tbl%IVECT,                  &
      &                  djds_tbl%npLX1, djds_tbl%npUX1,                 &
      &                  djds_tbl%NLmax, djds_tbl%NUmax,                 &

@@ -109,7 +109,7 @@
 !
       call set_itotal_djds_type(np_smp, NP, N, djds_tbl)
 !
-      call deallocate_mc_connect
+      call dealloc_mc_connect(WK1_MC)
 !C
 !C== ADDRESS
 !
