@@ -47,7 +47,7 @@
         v_tmp(1:nnod_rtp) = d_sph(1:nnod_rtp,nd)
 !$omp end parallel workshare
 !
-!$omp do parallel private(i_mkl,i_klm,mphi,kr_lt)
+!$omp parallel do private(i_mkl,i_klm,mphi,kr_lt)
         do mphi = 1, nidx_rtp(3)
           do kr_lt = 1, nidx_rtp(1)*nidx_rtp(2)
             i_klm = kr_lt + (mphi-1)*nidx_rtp(1)*nidx_rtp(2)
