@@ -107,7 +107,7 @@
 !  set_itotal_djds
 !    ( output:: itotal_l, itotal_u) 
 !
-      call set_itotal_djds_type(np_smp, N, djds_tbl)
+      call set_itotal_djds_type(np_smp, NP, N, djds_tbl)
 !
       call deallocate_mc_connect
 !C

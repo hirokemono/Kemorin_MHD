@@ -1,15 +1,21 @@
+!> @file  DJDS_total_nondiag.f90
+!!      module DJDS_total_nondiag
+!!
+!!@author  H. Matsui
+!!@date      Written by K. Nakajima in 2001
+!!@n        modified by H. Matsui in May, 2002
+!!@n        modified by H. Matsui in June, 2006
+!!@n        modified by H. Matsui in Jan., 2009
 !
-!     module DJDS_total_nondiag
-!
-!      Written by K. Nakajima in 2001
-!        modified by H. Matsui on May, 2002
-!        modified by H. Matsui on June, 2006
-!        modified by H. Matsui on Jan., 2009
-!
-!!      subroutine t_solver_djds(np_smp, N, djds_tbl)
-!!      subroutine set_itotal_djds(np_smp, N, NHYP, npLX1, npUX1,       &
-!!     &          NLmax, NUmax, NLmaxHYP, NUmaxHYP, itotal_l, itotal_u, &
-!!     &         indexDJDS_L, indexDJDS_U)
+!> @brief Work area for multicoloring
+!!
+!!@verbatim
+!!      subroutine set_itotal_djds_type(np_smp, NP, N, djds_tbl)
+!!      subroutine set_itotal_djds(np_smp, NP, N, ntot_mc_l, ntot_mc_u, &
+!!     &          istack_mc_l, istack_mc_u, item_mc_l, item_mc_u,       &
+!!     &          NHYP, npLX1, npUX1, NLmax, NUmax, NLmaxHYP, NUmaxHYP, &
+!!     &          itotal_l, itotal_u, indexDJDS_L, indexDJDS_U)
+!!@endverbatim
 !
       module DJDS_total_nondiag
 !
@@ -23,17 +29,19 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_itotal_djds_type(np_smp, N, djds_tbl)
+      subroutine set_itotal_djds_type(np_smp, NP, N, djds_tbl)
 !
       use t_solver_djds
+      use m_colored_connect
 !
       integer(kind = kint), intent(in) :: np_smp
-      integer(kind = kint), intent(in) :: N
+      integer(kind = kint), intent(in) :: NP, N
       type(DJDS_ordering_table), intent(inout) :: djds_tbl
 !
 !
-      call set_itotal_djds(np_smp, N, djds_tbl%NHYP,                    &
-     &    djds_tbl%npLX1, djds_tbl%npUX1,                               &
+      call set_itotal_djds(np_smp, NP, N, ntot_mc_l, ntot_mc_u,         &
+     &    istack_mc_l, istack_mc_u, item_mc_l, item_mc_u,               &
+     &    djds_tbl%NHYP, djds_tbl%npLX1, djds_tbl%npUX1,                &
      &    djds_tbl%NLmax, djds_tbl%NUmax,                               &
      &    djds_tbl%NLmaxHYP, djds_tbl%NUmaxHYP,                         &
      &    djds_tbl%itotal_l, djds_tbl%itotal_u,                         &
@@ -43,15 +51,22 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_itotal_djds(np_smp, N, NHYP, npLX1, npUX1,         &
-     &          NLmax, NUmax, NLmaxHYP, NUmaxHYP, itotal_l, itotal_u,   &
-     &         indexDJDS_L, indexDJDS_U)
+      subroutine set_itotal_djds(np_smp, NP, N, ntot_mc_l, ntot_mc_u,   &
+     &          istack_mc_l, istack_mc_u, item_mc_l, item_mc_u,         &
+     &          NHYP, npLX1, npUX1, NLmax, NUmax, NLmaxHYP, NUmaxHYP,   &
+     &          itotal_l, itotal_u, indexDJDS_L, indexDJDS_U)
 !
       use m_matrix_work
-      use m_colored_connect
 !
       integer (kind = kint), intent(in) :: np_smp
-      integer (kind = kint), intent(in) :: N
+      integer (kind = kint), intent(in) :: NP, N
+!
+      integer(kind = kint), intent(in) :: ntot_mc_l, ntot_mc_u
+      integer(kind = kint), intent(in) :: istack_mc_l(0:NP)
+      integer(kind = kint), intent(in) :: istack_mc_u(0:NP)
+      integer(kind = kint), intent(in) :: item_mc_l(ntot_mc_l)
+      integer(kind = kint), intent(in) :: item_mc_u(ntot_mc_u)
+!
       integer (kind = kint), intent(in) :: NHYP
       integer (kind = kint), intent(in) :: NLmax, NUmax
       integer (kind = kint), intent(in) :: npLX1, npUX1

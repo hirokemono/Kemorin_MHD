@@ -7,9 +7,11 @@
 !        modified by H. Matsui on Jan., 2009
 !
 !      subroutine count_hyperplane_type(np_smp, N, NP, djds_tbl)
-!      subroutine count_hyperplane(np_smp, NP, N, NHYP, IVECT,          &
-!     &          npLX1, npUX1, NLmax, NUmax, NLmaxHYP, NUmaxHYP,        &
-!     &          itotal_l, itotal_u)
+!!      subroutine count_hyperplane(np_smp, NP, N,                      &
+!!     &          ntot_mc_l, ntot_mc_u, num_mc_l, num_mc_u,             &
+!!     &          istack_mc_l, istack_mc_u, item_mc_l, item_mc_u,       &
+!!     &          NHYP, IVECT, npLX1, npUX1, NLmax, NUmax,              &
+!!     &          NLmaxHYP, NUmaxHYP, itotal_l, itotal_u)
 !
       module DJDS_hyperplane
 !
@@ -26,6 +28,7 @@
       subroutine count_hyperplane_type(np_smp, NP, N, djds_tbl)
 !
       use t_solver_djds
+      use m_colored_connect
 !
       integer(kind = kint), intent(in) :: np_smp
       integer(kind = kint), intent(in) :: NP, N
@@ -33,6 +36,8 @@
 !
 !
       call count_hyperplane(np_smp, NP, N,                              &
+     &                  ntot_mc_l, ntot_mc_u, num_mc_l, num_mc_u,       &
+     &                  istack_mc_l, istack_mc_u, item_mc_l, item_mc_u, &
      &                  djds_tbl%NHYP, djds_tbl%IVECT,                  &
      &                  djds_tbl%npLX1, djds_tbl%npUX1,                 &
      &                  djds_tbl%NLmax, djds_tbl%NUmax,                 &
@@ -43,17 +48,26 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_hyperplane(np_smp, NP, N, NHYP, IVECT,           &
-     &          npLX1, npUX1, NLmax, NUmax, NLmaxHYP, NUmaxHYP,         &
-     &          itotal_l, itotal_u)
+      subroutine count_hyperplane(np_smp, NP, N,                        &
+     &          ntot_mc_l, ntot_mc_u, num_mc_l, num_mc_u,               &
+     &          istack_mc_l, istack_mc_u, item_mc_l, item_mc_u,         &
+     &          NHYP, IVECT, npLX1, npUX1, NLmax, NUmax,                &
+     &          NLmaxHYP, NUmaxHYP, itotal_l, itotal_u)
 !
       use m_matrix_work
-      use m_colored_connect
 !
       integer (kind = kint), intent(in) :: np_smp
       integer (kind = kint), intent(in) :: NP, N
 !
       integer (kind = kint), intent(in) :: NHYP
+!
+      integer(kind = kint), intent(in) :: ntot_mc_l, ntot_mc_u
+      integer(kind = kint), intent(in) :: num_mc_l(NP)
+      integer(kind = kint), intent(in) :: num_mc_u(NP)
+      integer(kind = kint), intent(in) :: istack_mc_l(0:NP)
+      integer(kind = kint), intent(in) :: istack_mc_u(0:NP)
+      integer(kind = kint), intent(inout) :: item_mc_l(ntot_mc_l)
+      integer(kind = kint), intent(inout) :: item_mc_u(ntot_mc_u)
 !
       integer (kind = kint), intent(inout) :: itotal_l, itotal_u
       integer (kind = kint), intent(inout) :: NLmax, NUmax
