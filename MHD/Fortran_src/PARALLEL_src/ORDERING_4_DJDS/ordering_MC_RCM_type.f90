@@ -11,7 +11,7 @@
 !>      RCM ordering from CRS matrix
 !!
 !!@verbatim
-!!      subroutine count_rcm_type(NP, N, solver_C, tbl_crs, djds_tbl)
+!!      subroutine count_rcm(NP, N, solver_C, tbl_crs, djds_tbl)
 !!@endverbatim
 !
       module ordering_MC_RCM_type
@@ -27,7 +27,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_rcm_type(NP, N, solver_C, tbl_crs, djds_tbl)
+      subroutine count_rcm(NP, N, solver_C, tbl_crs, djds_tbl)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -54,6 +54,8 @@
       integer(kind = kint) :: i
 !
 !
+      call allocate_IVECT_rcm(NP)
+      call allocate_mc_stack(NP)
       ntot_mc_l = tbl_crs%ntot_l
       ntot_mc_u = tbl_crs%ntot_u
       max_mc_l =  tbl_crs%max_l
@@ -61,11 +63,7 @@
       max_mc_u =  tbl_crs%max_u
       min_mc_u =  tbl_crs%min_u
 !
-      call allocate_IVECT_rcm(NP)
-      call allocate_mc_stack(NP)
       call allocate_mc_connect
-!
-!
       djds_tbl%NLmax= max_mc_l
       djds_tbl%NUmax= max_mc_u
 !
@@ -200,7 +198,7 @@
 !     &             item_mc_u(istack_mc_u(i-1)+1:istack_mc_u(i))
 !        end do
 !
-      end subroutine  count_rcm_type
+      end subroutine  count_rcm
 !
 ! ----------------------------------------------------------------------
 !

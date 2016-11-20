@@ -62,7 +62,7 @@
 !      count_rcm
 !       (output:: NHYP, OLDtoNEW, NEWtoOLD, NLmax, NUmax)
 !
-      call count_rcm_type(NP, N, solver_C, tbl_crs, djds_tbl)
+      call count_rcm(NP, N, solver_C, tbl_crs, djds_tbl)
 !
 !C +-----------------+
 !C | DJDS reordering |

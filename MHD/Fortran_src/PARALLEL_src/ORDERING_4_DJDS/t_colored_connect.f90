@@ -72,8 +72,8 @@
       allocate( WK_MC%istack_mc_l(0:WK_MC%NP) )
       allocate( WK_MC%istack_mc_u(0:WK_MC%NP) )
 !
-      if(WK_MC%NP .gt. 0) num_mc_l = 0
-      if(WK_MC%NP .gt. 0) num_mc_u = 0
+      if(WK_MC%NP .gt. 0) WK_MC%num_mc_l = 0
+      if(WK_MC%NP .gt. 0) WK_MC%num_mc_u = 0
       WK_MC%istack_mc_l = 0
       WK_MC%istack_mc_u = 0
 !

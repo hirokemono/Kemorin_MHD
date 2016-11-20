@@ -23,7 +23,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_hyperplane_type(np_smp, N, NP, djds_tbl)
+      subroutine count_hyperplane_type(np_smp, NP, N, djds_tbl)
 !
       use t_solver_djds
 !
@@ -32,7 +32,7 @@
       type(DJDS_ordering_table), intent(inout) :: djds_tbl
 !
 !
-      call count_hyperplane(np_smp, N, NP,                              &
+      call count_hyperplane(np_smp, NP, N,                              &
      &                  djds_tbl%NHYP, djds_tbl%IVECT,                  &
      &                  djds_tbl%npLX1, djds_tbl%npUX1,                 &
      &                  djds_tbl%NLmax, djds_tbl%NUmax,                 &
