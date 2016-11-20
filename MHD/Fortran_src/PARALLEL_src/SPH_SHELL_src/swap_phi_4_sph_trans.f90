@@ -81,13 +81,12 @@
 !
       allocate(v_tmp(nnod_rtp))
 !
-!$omp parallel
       do nd = 1, numdir
-!$omp workshare
+!$omp parallel workshare
         v_tmp(1:nnod_rtp) = v_prt(1:nnod_rtp,nd)
-!$omp end workshare
+!$omp end parallel workshare
 !
-!$omp do private(i_mkl,i_klm,mphi,kr_lt)
+!$omp parallel do private(i_mkl,i_klm,mphi,kr_lt)
         do kr_lt = 1, nidx_rtp(1)*nidx_rtp(2)
           do mphi = 1, nidx_rtp(3)
             i_klm = kr_lt + (mphi-1)*nidx_rtp(1)*nidx_rtp(2)
@@ -95,9 +94,8 @@
             v_prt(i_mkl,nd) = v_tmp(i_klm)
           end do
         end do
-!$omp end do
+!$omp end parallel do
       end do
-!$omp end parallel
 !
       deallocate(v_tmp)
 !
