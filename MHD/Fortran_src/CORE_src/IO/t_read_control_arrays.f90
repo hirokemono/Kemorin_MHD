@@ -270,18 +270,6 @@
         real(kind = kreal), allocatable :: vec2(:)
       end type ctl_array_i2r2
 !
-      private :: alloc_control_array_real
-      private :: alloc_control_array_r2, alloc_control_array_r3
-      private :: alloc_control_array_int, alloc_control_array_i2
-!      private :: alloc_control_array_chara
-      private :: alloc_control_array_c_i
-!      private :: alloc_control_array_c2
-!      private :: alloc_control_array_c_r
-      private :: alloc_control_array_c_r2
-      private :: alloc_control_array_c2_r, alloc_control_array_i_c_r
-      private :: alloc_control_array_i_r, alloc_control_array_i2_r
-      private :: alloc_control_array_i2_r2
-!
 !   --------------------------------------------------------------------
 !
       contains
