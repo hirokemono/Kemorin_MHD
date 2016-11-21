@@ -14,7 +14,9 @@
 !!     &          ntot_mc_l, ntot_mc_u, num_mc_l, num_mc_u,             &
 !!     &          istack_mc_l, istack_mc_u, item_mc_l, item_mc_u,       &
 !!     &          NHYP, IVECT, npLX1, npUX1, NLmax, NUmax,              &
-!!     &          NLmaxHYP, NUmaxHYP, itotal_l, itotal_u)
+!!     &          NLmaxHYP, NUmaxHYP, itotal_l, itotal_u,               &
+!!     &          NCOLORtot, OLDtoNEWmc, NEWtoOLDmc, IVECmc,            &
+!!     &          INLmc, INUmc)
 !!@endverbatim
 !
       module DJDS_hyperplane
@@ -33,9 +35,9 @@
      &          ntot_mc_l, ntot_mc_u, num_mc_l, num_mc_u,               &
      &          istack_mc_l, istack_mc_u, item_mc_l, item_mc_u,         &
      &          NHYP, IVECT, npLX1, npUX1, NLmax, NUmax,                &
-     &          NLmaxHYP, NUmaxHYP, itotal_l, itotal_u)
-!
-      use m_matrix_work
+     &          NLmaxHYP, NUmaxHYP, itotal_l, itotal_u,                 &
+     &          NCOLORtot, OLDtoNEWmc, NEWtoOLDmc, IVECmc,              &
+     &          INLmc, INUmc)
 !
       integer (kind = kint), intent(in) :: np_smp
       integer (kind = kint), intent(in) :: NP, N
@@ -50,18 +52,23 @@
       integer(kind = kint), intent(inout) :: item_mc_l(ntot_mc_l)
       integer(kind = kint), intent(inout) :: item_mc_u(ntot_mc_u)
 !
-      integer (kind = kint), intent(inout) :: itotal_l, itotal_u
-      integer (kind = kint), intent(inout) :: NLmax, NUmax
-      integer (kind = kint), intent(inout) :: npLX1, npUX1
-      integer (kind = kint), intent(inout) :: IVECT(0:NHYP)
-      integer (kind = kint), intent(inout) :: NLmaxHYP(NHYP)
-      integer (kind = kint), intent(inout) :: NUmaxHYP(NHYP)
+      integer(kind = kint), intent(inout) :: itotal_l, itotal_u
+      integer(kind = kint), intent(inout) :: NLmax, NUmax
+      integer(kind = kint), intent(inout) :: npLX1, npUX1
+      integer(kind = kint), intent(inout) :: IVECT(0:NHYP)
+      integer(kind = kint), intent(inout) :: NLmaxHYP(NHYP)
+      integer(kind = kint), intent(inout) :: NUmaxHYP(NHYP)
+!
+      integer(kind = kint), intent(in) :: NCOLORtot
+      integer(kind = kint), intent(in) :: OLDtoNEWmc(NP)
+      integer(kind = kint), intent(in) :: NEWtoOLDmc(NP)
+      integer(kind = kint), intent(in) :: IVECmc(0:NCOLORtot)
+      integer(kind = kint), intent(inout) :: INLmc(NP),   INUmc(NP)
 !
       integer (kind = kint) :: icouL, icouU
       integer (kind = kint) :: i, j, k, ic, in
       integer (kind = kint) :: iStart, iEnd, kst, ked
       integer (kind = kint) :: icouLmax, icouUmax
-!
 !
 !
       NLmax = -NP

@@ -1,18 +1,23 @@
+!>@file   DJDS_nodiag_item.f90
+!!@brief  module DJDS_nodiag_item
+!!
+!!@author K. Nakajima and H. Matsui
+!!@date      Written by K. Nakajima in 2001
+!!@n        modified by H. Matsui in May. 2002
+!!@n        modified by H. Matsui in June. 2006
+!!@n        modified by H. Matsui in Jan. 2009
 !
-!     module DJDS_nodiag_item
-!
-!      Written by K. Nakajima in 2001
-!        modified by H. Matsui on May. 2002
-!        modified by H. Matsui on June. 2006
-!        modified by H. Matsui on Jan. 2009
-!
-!!      subroutine set_item_djds_type(np_smp, NP, N, djds_tbl)
+!>     Construct DJDS ordering table in structure
+!!
+!!@verbatim
 !!      subroutine set_item_djds(np_smp, NP, N, NHYP, IVECT, COLORon,   &
 !!     &      STACKmc, NLmax, NUmax, npLX1, npUX1, NLmaxHYP, NUmaxHYP,  &
 !!     &      itotal_l, itotal_u, indexDJDS_L, indexDJDS_U,             &
 !!     &      itemDJDS_L, itemDJDS_U, OLDtoNEW, NEWtoOLD,               &
 !!     &      NEWtoOLD_DJDS_L, NEWtoOLD_DJDS_U,                         &
-!!     &      OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, LtoU)
+!!     &      OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, LtoU,                   &
+!!     &      IALmc, IAUmc, OLDtoNEWmc, inumDJDS_L, inumDJDS_U)
+!!@endverbatim
 !
       module DJDS_nodiag_item
 !
@@ -26,41 +31,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_item_djds_type(np_smp, NP, N, djds_tbl)
-!
-      use t_solver_djds
-!
-      integer(kind = kint), intent(in) :: NP, N
-      integer(kind = kint), intent(in) :: np_smp
-      type(DJDS_ordering_table), intent(inout) :: djds_tbl
-!
-!
-      call set_item_djds(np_smp, NP, N,                                 &
-     &      djds_tbl%NHYP, djds_tbl%IVECT, djds_tbl%COLORon,            &
-     &      djds_tbl%STACKmc, djds_tbl%NLmax, djds_tbl%NUmax,           &
-     &      djds_tbl%npLX1, djds_tbl%npUX1,                             &
-     &      djds_tbl%NLmaxHYP, djds_tbl%NUmaxHYP,                       &
-     &      djds_tbl%itotal_l, djds_tbl%itotal_u,                       &
-     &      djds_tbl%indexDJDS_L, djds_tbl%indexDJDS_U,                 &
-     &      djds_tbl%itemDJDS_L, djds_tbl%itemDJDS_U,                   &
-     &      djds_tbl%OLDtoNEW, djds_tbl%NEWtoOLD,                       &
-     &      djds_tbl%NEWtoOLD_DJDS_L, djds_tbl%NEWtoOLD_DJDS_U,         &
-     &      djds_tbl%OLDtoNEW_DJDS_L, djds_tbl%OLDtoNEW_DJDS_U,         &
-     &      djds_tbl%LtoU)
-!
-      end subroutine set_item_djds_type
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
       subroutine set_item_djds(np_smp, NP, N, NHYP, IVECT, COLORon,     &
      &      STACKmc, NLmax, NUmax, npLX1, npUX1, NLmaxHYP, NUmaxHYP,    &
      &      itotal_l, itotal_u, indexDJDS_L, indexDJDS_U,               &
      &      itemDJDS_L, itemDJDS_U, OLDtoNEW, NEWtoOLD,                 &
      &      NEWtoOLD_DJDS_L, NEWtoOLD_DJDS_U,                           &
-     &      OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, LtoU)
-!
-      use m_matrix_work
+     &      OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, LtoU,                     &
+     &      IALmc, IAUmc, OLDtoNEWmc, inumDJDS_L, inumDJDS_U)
 !
       integer (kind = kint), intent(in) :: np_smp
       integer (kind = kint), intent(in) :: NP, N
@@ -88,6 +65,11 @@
       integer (kind = kint), intent(inout) :: OLDtoNEW(NP)
       integer (kind = kint), intent(inout) :: NEWtoOLD(NP)
       integer (kind = kint), intent(inout) :: LtoU(NP)
+!
+      integer(kind=kint), intent(in) :: IALmc(N,NLmax), IAUmc(N,NUmax)
+      integer(kind=kint), intent(in) :: OLDtoNEWmc(NP)
+      integer(kind=kint), intent(in) :: inumDJDS_L(0:npLX1*NHYP)
+      integer(kind=kint), intent(in) :: inumDJDS_U(0:npUX1*NHYP)
 !
       integer (kind = kint) :: ip, iv, in, id, j, kk, iStart, iSp
       integer (kind = kint) :: i, i0, i1, i2

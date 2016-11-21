@@ -1,18 +1,21 @@
+!>@file   DJDS_ordering.f90
+!!@brief  module DJDS_ordering
+!!
+!!@author K. Nakajima and H. Matsui
+!!@date      Written by K. Nakajima in 2001
+!!@n        modified by H. Matsui in May. 2002
+!!@n        modified by H. Matsui in June. 2006
+!!@n        modified by H. Matsui in Jan., 2008
 !
-!     module DJDS_ordering
-!
-!      Written by K. Nakajima in 2001
-!        modified by H. Matsui on May. 2002
-!        modified by H. Matsui on June. 2006
-!        modified by H. Matsui on Jan., 2008
-!
-!!      subroutine set_djds_ordering_type                               &
-!!     &         (np_smp, NP, N, inter_smp_stack,  djds_tbl)
+!>      DJDS ordering from RCM ordered matrix
+!!
+!!@verbatim
 !!      subroutine set_djds_ordering(np_smp, NP, N, inter_smp_stack,    &
 !!     &     NHYP, IVECT, STACKmcG, STACKmc, PEon, npLX1, npUX1,        &
 !!     &     NLmax, NUmax, NLmaxHYP, NUmaxHYP, indexDJDS_L, indexDJDS_U,&
 !!     &     NEWtoOLD_DJDS_L, NEWtoOLD_DJDS_U,                          &
 !!     &     OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U)
+!!@endverbatim
 !
       module DJDS_ordering
 !
@@ -26,38 +29,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_djds_ordering_type                                 &
-     &         (np_smp, NP, N, inter_smp_stack,  djds_tbl)
-!
-      use t_solver_djds
-!
-      integer(kind = kint), intent(in) :: np_smp
-      integer(kind = kint), intent(in) :: NP, N
-      integer(kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
-      type(DJDS_ordering_table), intent(inout) :: djds_tbl
-!
-!
-      call set_djds_ordering(np_smp, NP, N, inter_smp_stack,            &
-     &    djds_tbl%NHYP, djds_tbl%IVECT,                                &
-     &    djds_tbl%STACKmcG, djds_tbl%STACKmc, djds_tbl%PEon,           &
-     &    djds_tbl%npLX1, djds_tbl%npUX1, djds_tbl%NLmax,               &
-     &    djds_tbl%NUmax, djds_tbl%NLmaxHYP, djds_tbl%NUmaxHYP,         &
-     &    djds_tbl%indexDJDS_L, djds_tbl%indexDJDS_U,                   &
-     &    djds_tbl%NEWtoOLD_DJDS_L, djds_tbl%NEWtoOLD_DJDS_U,           &
-     &    djds_tbl%OLDtoNEW_DJDS_L, djds_tbl%OLDtoNEW_DJDS_U)
-!
-      end subroutine set_djds_ordering_type
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
       subroutine set_djds_ordering(np_smp, NP, N, inter_smp_stack,      &
      &      NHYP, IVECT, STACKmcG, STACKmc, PEon, npLX1, npUX1,         &
      &      NLmax, NUmax, NLmaxHYP, NUmaxHYP, indexDJDS_L, indexDJDS_U, &
      &      NEWtoOLD_DJDS_L, NEWtoOLD_DJDS_U,                           &
-     &      OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U)
+     &      OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U,                           &
+     &      INLmc, INUmc, IWKX, IW, inumDJDS_L, inumDJDS_U)
 !
-      use m_matrix_work
       use mat_conect_SORT
 !
       integer (kind = kint), intent(in) :: np_smp
@@ -82,6 +60,12 @@
      &       :: indexDJDS_L(0:np_smp*NLmax*NHYP)
       integer (kind = kint), intent(inout)                              &
      &       :: indexDJDS_U(0:np_smp*NUmax*NHYP)
+!
+      integer(kind=kint), intent(in) :: INLmc(NP), INUmc(NP)
+      integer(kind=kint), intent(inout) :: IWKX(0:NP,3)
+      integer(kind=kint), intent(inout) :: IW(NP)
+      integer(kind=kint), intent(inout) :: inumDJDS_L(0:npLX1*NHYP)
+      integer(kind=kint), intent(inout) :: inumDJDS_U(0:npUX1*NHYP)
 !
       integer (kind = kint), allocatable :: IW0(:,:)
 !

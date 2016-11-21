@@ -13,7 +13,8 @@
 !!      subroutine set_itotal_djds(np_smp, NP, N, ntot_mc_l, ntot_mc_u, &
 !!     &          istack_mc_l, istack_mc_u, item_mc_l, item_mc_u,       &
 !!     &          NHYP, npLX1, npUX1, NLmax, NUmax, NLmaxHYP, NUmaxHYP, &
-!!     &          itotal_l, itotal_u, indexDJDS_L, indexDJDS_U)
+!!     &          itotal_l, itotal_u, indexDJDS_L, indexDJDS_U,         &
+!!     &          NEWtoOLDmc, IALmc, IAUmc)
 !!@endverbatim
 !
       module DJDS_total_nondiag
@@ -31,9 +32,8 @@
       subroutine set_itotal_djds(np_smp, NP, N, ntot_mc_l, ntot_mc_u,   &
      &          istack_mc_l, istack_mc_u, item_mc_l, item_mc_u,         &
      &          NHYP, npLX1, npUX1, NLmax, NUmax, NLmaxHYP, NUmaxHYP,   &
-     &          itotal_l, itotal_u, indexDJDS_L, indexDJDS_U)
-!
-      use m_matrix_work
+     &          itotal_l, itotal_u, indexDJDS_L, indexDJDS_U,           &
+     &          NEWtoOLDmc, IALmc, IAUmc)
 !
       integer (kind = kint), intent(in) :: np_smp
       integer (kind = kint), intent(in) :: NP, N
@@ -43,6 +43,7 @@
       integer(kind = kint), intent(in) :: istack_mc_u(0:NP)
       integer(kind = kint), intent(in) :: item_mc_l(ntot_mc_l)
       integer(kind = kint), intent(in) :: item_mc_u(ntot_mc_u)
+      integer(kind = kint), intent(in) :: NEWtoOLDmc(NP)
 !
       integer (kind = kint), intent(in) :: NHYP
       integer (kind = kint), intent(in) :: NLmax, NUmax
@@ -55,6 +56,7 @@
      &       :: indexDJDS_U(0:np_smp*NUmax*NHYP)
 !
       integer (kind = kint), intent(inout) :: itotal_l, itotal_u
+      integer(kind=kint), intent(inout) :: IALmc(N,NLmax), IAUmc(N,NUmax)
 !
 !
       integer (kind = kint) :: icouL, icouU
@@ -96,8 +98,6 @@
           endif
         enddo
       enddo
-
-!     call check_istack_and_items_mc(N, my_rank)
 !C
 !C    REcount number of off-diagonal component 
 !C
