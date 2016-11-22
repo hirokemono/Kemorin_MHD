@@ -62,7 +62,6 @@
 	NSInteger currentPSFID;
 	NSInteger currentPSFStep;
 	CGFloat PSFOpacity;
-    NSColor *nsPSFPatchColor;
     
 	
 	CGFloat PsfMinimumValue;

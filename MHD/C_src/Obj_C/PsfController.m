@@ -616,7 +616,7 @@
 {
     CGFloat redBG, greenBG, blueBG, opacityBG;
     double rgba[4];
-    nsPSFPatchColor = [PSFPatchColorWell color];
+    NSColor *nsPSFPatchColor = [PSFPatchColorWell color];
     [nsPSFPatchColor getRed:&redBG green:&greenBG blue:&blueBG alpha:&opacityBG ];
 
     rgba[0] = (double) redBG;
