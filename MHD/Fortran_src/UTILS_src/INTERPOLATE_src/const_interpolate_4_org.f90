@@ -88,6 +88,7 @@
           else
             table_file_header = work_header
 !
+            write(*,*) 'sel_read_itp_table_dest', my_rank_2nd
             call sel_read_itp_table_dest                                &
      &         (my_rank_2nd, IO_itp_dest, ierr)
 !
@@ -98,6 +99,7 @@
           end if
 !
           table_file_header = table_file_head
+          write(*,*) 'sel_write_interpolate_table', table_file_header
           call sel_write_interpolate_table                              &
      &       (my_rank_2nd, IO_itp_org, IO_itp_dest)
 !

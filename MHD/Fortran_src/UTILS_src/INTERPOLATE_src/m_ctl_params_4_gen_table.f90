@@ -112,12 +112,12 @@
         table_file_head = table_head_ctl%charavalue
       end if
 !
-      call choose_file_format(mesh_file_fmt_ctl, ifmt_org_mesh_file)
-      call choose_file_format                                           &
+      call choose_para_file_format                                      &
+     &   (mesh_file_fmt_ctl, ifmt_org_mesh_file)
+      call choose_para_file_format                                      &
      &   (new_mesh_file_fmt_ctl, ifmt_itp_mesh_file)
       call choose_file_format                                           &
      &   (fmt_itp_table_file_ctl, ifmt_itp_table_file)
-!
 !
       if (iflag_debug.eq.1)  then
         write(*,*) 'np_smp', np_smp, np_smp
@@ -152,31 +152,39 @@
       end if
 !
 !
-      if(cmp_no_case(ele_hash_type_ctl%charavalue, 'sphere')) then
-        id_ele_hash_type = 1
-      end if
-!
       if (iflag_debug.eq.1)                                             &
      &   write(*,*) 'id_ele_hash_type', id_ele_hash_type
 !
+      num_xyz_block(1:3) = 1
       if (id_ele_hash_type .eq. 1) then
-!
-        if(radial_divide_ctl%iflag .gt. 0) then
-          num_sph_grid(1) = radial_divide_ctl%intvalue
+        if(num_radial_divide_ctl%iflag .gt. 0) then
+          num_xyz_block(1) = num_radial_divide_ctl%intvalue
         end if
         if(num_theta_divide_ctl%iflag .gt. 0) then
-          num_sph_grid(2) = num_theta_divide_ctl%intvalue
+          num_xyz_block(2) = num_theta_divide_ctl%intvalue
         end if
         if(num_phi_divide_ctl%iflag .gt. 0) then
-          num_sph_grid(3) = num_phi_divide_ctl%intvalue
+          num_xyz_block(3) = num_phi_divide_ctl%intvalue
         end if
-!
         if (iflag_debug.eq.1) then
-          write(*,*) 'num_sph_grid',  num_sph_grid
+          write(*,*) 'num_xyz_block',  num_xyz_block
         end if
-!
+      else
+        if(num_x_divide_ctl%iflag .gt. 0) then
+          num_xyz_block(1) = num_x_divide_ctl%intvalue
+        end if
+        if(num_y_divide_ctl%iflag .gt. 0) then
+          num_xyz_block(2) = num_y_divide_ctl%intvalue
+        end if
+        if(num_z_divide_ctl%iflag .gt. 0) then
+          num_xyz_block(3) = num_z_divide_ctl%intvalue
+        end if
       end if
 !
+      if (iflag_debug.eq.1) then
+        write(*,*) 'id_ele_hash_type',  id_ele_hash_type
+        write(*,*) 'num_xyz_block',  num_xyz_block
+      end if
 !
 !
       if(itr_refine_ctl%iflag .gt. 0) maxitr = itr_refine_ctl%intvalue

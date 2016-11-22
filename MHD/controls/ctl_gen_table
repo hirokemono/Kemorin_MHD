@@ -7,38 +7,32 @@ begin construct_table
 !
     mesh_file_head_ctl          'mesh/in'
     mesh_file_fmt_ctl           'ascii'
-  end
+  end original_data_ctl
 !
   begin new_data_ctl
     num_new_domain_ctl           2
     new_mesh_head_ctl          'mesh_target/in'
     new_mesh_file_fmt_ctl           'ascii'
-  end
+  end new_data_ctl
 !
 !
   begin interpolate_tbl_ctl
     interpolate_list_header_ctl     'mesh_fine/fine_2_coase'
     reverse_element_table_ctl       'ON'
-  end
+  end interpolate_tbl_ctl
 !
   begin element_hash
     hash_type_name    sphere
-    array radius_ctl   10
-      radius_ctl      0.2    end
-      radius_ctl      0.4    end
-      radius_ctl      0.6    end
-      radius_ctl      0.8    end
-      radius_ctl      1.0    end
-      radius_ctl      1.2    end
-      radius_ctl      1.4    end
-      radius_ctl      1.6    end
-      radius_ctl      1.8    end
-      radius_ctl      2.0    end
-    end array
 !
+    num_radius_ctl        10
     num_elevation_ctl     144
     num_azimuth_ctl       288
-  end
+!
+!    hash_type_name    xyz
+!    num_x_divide_ctl      128
+!    num_y_divide_ctl      128
+!    num_z_divide_ctl      128
+  end element_hash
 !
 ! num_search_times: iteration for searching
 !  search_level_ctl:  size of sleeve of hash (integer),
@@ -52,9 +46,9 @@ begin construct_table
       search_level_ctl   1    1.0d-4
       search_level_ctl   2    1.0d-2
       search_level_ctl   2    2.0d-1
-    end array
+    end array search_level_ctl
 !
     maxiter               10000
     eps_4_refine          1e-11
-  end
-end
+  end iteration_ctl
+end construct_table

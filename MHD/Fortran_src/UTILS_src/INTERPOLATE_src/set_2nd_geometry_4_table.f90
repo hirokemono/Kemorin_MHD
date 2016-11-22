@@ -66,7 +66,6 @@
 !
       call alloc_org_mesh_type_itp_para(nprocs_2nd)
 !
-      mesh_file_head = org_mesh_head
       write(*,*) 'mesh_file_head: ', trim(mesh_file_head), nprocs_2nd
       call s_set_parallel_mesh_in_1pe(nprocs_2nd, origin_mesh)
 !
@@ -122,8 +121,8 @@
 !
 !
       call set_all_block_points_4_itp                                   &
-     &   (num_sph_grid, dest_node%numnod, dest_node%xx,                 &
-     &   nprocs_2nd, origin_mesh)
+     &   (num_xyz_block, dest_node%numnod, dest_node%xx,                &
+     &    nprocs_2nd, origin_mesh)
 !      call check_block_points_4_itp(50+my_rank, nprocs_2nd)
 !
 !  -------------------------------

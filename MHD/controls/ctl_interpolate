@@ -14,7 +14,7 @@ begin construct_table
     mesh_file_fmt_ctl           'ascii'
     rst_files_fmt_ctl           'ascii'
     udt_files_fmt_ctl           'ascii'
-  end
+  end original_data_ctl
 !
   begin new_data_ctl
     num_new_domain_ctl           2
@@ -25,12 +25,12 @@ begin construct_table
     new_mesh_file_fmt_ctl           'ascii'
     new_rst_files_fmt_ctl           'ascii'
     new_udt_files_fmt_ctl           'ascii'
-  end
+  end new_data_ctl
 !
 !
   begin interpolate_tbl_ctl
     interpolate_list_header_ctl  'mesh_fine/fine_2_coase'
-  end
+  end interpolate_tbl_ctl
 !
   begin model_4_interpolate
     begin phys_values_ctl
@@ -43,15 +43,15 @@ begin construct_table
         nod_value_ctl  magnetic_field      Viz_On   Monitor_On    end
         nod_value_ctl  current_density     Viz_On   Monitor_Off   end
         nod_value_ctl  magnetic_potential  Viz_Off  Monitor_Off   end
-      end array
-    end
+      end array phys_values_ctl
+    end phys_values_ctl
 !
     begin time_step_ctl
       i_step_init_ctl       0
       i_step_number_ctl     2000
       i_step_rst_ctl          800
       i_step_ucd_ctl          800
-    end
-  end
+    end time_step_ctl
+  end model_4_interpolate
 !
-end
+end construct_table

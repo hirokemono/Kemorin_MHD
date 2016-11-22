@@ -55,12 +55,19 @@
 !>      Structure for element hash type
       type(read_character_item), save :: ele_hash_type_ctl
 !
+!>      Structure for element grouping in radial direction
+      type(read_integer_item), save :: num_radial_divide_ctl
 !>      Structure for element grouping in meridional direction
       type(read_integer_item), save :: num_theta_divide_ctl
 !>      Structure for element grouping in zonal direction
       type(read_integer_item), save :: num_phi_divide_ctl
-!>      Structure for element grouping in radial direction
-      type(read_integer_item), save :: radial_divide_ctl
+!
+!>      Structure for element grouping in x direction
+      type(read_integer_item), save :: num_x_divide_ctl
+!>      Structure for element grouping in y direction
+      type(read_integer_item), save :: num_y_divide_ctl
+!>      Structure for element grouping in z direction
+      type(read_integer_item), save :: num_z_divide_ctl
 !
 !>      Structure for error torrance for refine interpolation
 !!@n      eps_4_itp_ctl%ivec:  level for interpolation
@@ -122,11 +129,17 @@
       character(len=kchara), parameter                                  &
      &         ::  hd_hash_type =       'hash_type_name'
       character(len=kchara), parameter                                  &
-     &         ::  hd_search_radius = 'radius_ctl'
+     &         ::  hd_search_radius =   'num_radius_ctl'
       character(len=kchara), parameter                                  &
      &         ::  hd_num_hash_elev =   'num_elevation_ctl'
       character(len=kchara), parameter                                  &
      &         ::  hd_num_hash_azim =   'num_azimuth_ctl'
+      character(len=kchara), parameter                                  &
+     &         ::  hd_num_hash_x =      'num_x_divide_ctl'
+      character(len=kchara), parameter                                  &
+     &         ::  hd_num_hash_y =      'num_y_divide_ctl'
+      character(len=kchara), parameter                                  &
+     &         ::  hd_num_hash_z =      'num_z_divide_ctl'
 !
 !     3rd level for iteration  control
 !
@@ -145,6 +158,7 @@
       private :: hd_table_head_ctl, hd_itp_node_head_ctl
       private :: hd_reverse_ele_tbl, hd_single_itp_tbl
       private :: hd_eps_4_itp, hd_itr, hd_eps
+      private :: hd_num_hash_x, hd_num_hash_y, hd_num_hash_z
 !
       private :: read_const_itp_tbl_ctl_data
       private :: read_control_dist_itp_data
@@ -341,11 +355,16 @@
 !
         call read_chara_ctl_type(hd_hash_type, ele_hash_type_ctl)
 ! 
-        call read_integer_ctl_type(hd_search_radius, radial_divide_ctl)
+        call read_integer_ctl_type(hd_search_radius,                    &
+     &      num_radial_divide_ctl)
         call read_integer_ctl_type(hd_num_hash_elev,                    &
      &      num_theta_divide_ctl)
         call read_integer_ctl_type(hd_num_hash_azim,                    &
      &      num_phi_divide_ctl)
+!
+        call read_integer_ctl_type(hd_num_hash_x, num_x_divide_ctl)
+        call read_integer_ctl_type(hd_num_hash_y, num_y_divide_ctl)
+        call read_integer_ctl_type(hd_num_hash_z, num_z_divide_ctl)
       end do
 !
       end subroutine read_element_hash_ctl

@@ -59,7 +59,7 @@
      &       + numnod_dest(my_rank_2nd+1)
         end if
       end do
-      write(*,*) 'num_org_domain', itp_dest%num_org_domain
+ !     write(*,*) 'num_org_domain', itp_dest%num_org_domain
 !
       do j = 1, itp_dest%num_org_domain
         jp = itp_dest%id_org_domain(j) + 1

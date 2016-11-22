@@ -29,14 +29,14 @@
       integer(kind = kint), intent(in) :: nprocs
       type(mesh_data), intent(inout) :: para_mesh(nprocs)
 !
-      integer(kind = kint) :: ip, my_rank, ierr
+      integer(kind = kint) :: ip, id_rank, ierr
       integer(kind = kint) :: nnod_4_surf, nnod_4_edge
 !
 !
       do ip = 1, nprocs
-        my_rank = ip - 1
+        id_rank = ip - 1
         call input_mesh                                                 &
-     &     (my_rank, para_mesh(ip)%mesh, para_mesh(ip)%group,           &
+     &     (id_rank, para_mesh(ip)%mesh, para_mesh(ip)%group,           &
      &      nnod_4_surf, nnod_4_edge, ierr)
         call set_nod_and_ele_infos                                      &
      &     (para_mesh(ip)%mesh%node, para_mesh(ip)%mesh%ele)
