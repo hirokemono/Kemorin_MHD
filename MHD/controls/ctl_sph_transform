@@ -15,9 +15,9 @@ begin spherical_transform
     udt_file_head_ctl      'field/out'
 !
     mesh_file_fmt_ctl           'gzip'
-    sph_files_fmt_ctl           'gzip'
-    rst_files_fmt_ctl      'ascii'
-    udt_files_fmt_ctl      'ascii'
+    sph_file_fmt_ctl           'gzip'
+    rst_file_fmt_ctl      'ascii'
+    udt_file_fmt_ctl      'ascii'
   end
 !
 !
