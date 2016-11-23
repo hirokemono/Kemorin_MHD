@@ -144,7 +144,7 @@
 	[_kemoviewControl SetViewTypeMenu:id_viewtype];
 	
 	
-	[_kemoviewer setViewerType:VIEW_3D];
+	[_kemoviewControl Set3DView];
 	[_kemoviewer UpdateImage];
 };
 

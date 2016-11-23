@@ -175,6 +175,11 @@
 	[_kemoviewer UpdateImage];
 }
 
+- (void) Set3DView
+{
+    [self SetViewTypeMenu:VIEW_3D];
+    [_kemoviewer setViewerType:VIEW_3D];
+}
 
 - (IBAction) ChangeViewByInpit:(id)sender;
 {
@@ -185,8 +190,7 @@
 
 - (IBAction) ResetviewAction:(id)sender;
 {
-	[self SetViewTypeMenu:VIEW_3D];
-	[_kemoviewer setViewerType:VIEW_3D];
+	[self Set3DView];
 	[_kemoviewer Resetview];
 }
 

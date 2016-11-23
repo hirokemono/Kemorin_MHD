@@ -11,7 +11,7 @@
 #include "kemoviewer.h"
 
 @interface Kemoview_CocoaAppDelegate : NSObject <NSApplicationDelegate> {
-    NSWindow *window;
+    NSWindow *_window;
 }
 
 @property (assign) IBOutlet NSWindow *window;

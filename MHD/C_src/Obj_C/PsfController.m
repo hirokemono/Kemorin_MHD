@@ -386,7 +386,7 @@
 	[self SetCurrentPsfMenu];
     [self SetPsfRanges];
 	
-	[_kemoviewer setViewerType:VIEW_3D];
+    [_kemoviewControl Set3DView];
 	[_kemoviewer UpdateImage];
 	
 	int num_loaded =  send_num_loaded_PSF();
@@ -474,7 +474,7 @@
         [self CopyPsfDisplayFlagsFromC];
         [self SetCurrentPsfMenu];
     };
-    [_kemoviewer setViewerType:VIEW_3D];
+    [_kemoviewControl Set3DView];
 	[_kemoviewer UpdateImage];
 };
 
