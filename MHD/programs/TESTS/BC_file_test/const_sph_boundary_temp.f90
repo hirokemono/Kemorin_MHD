@@ -89,7 +89,6 @@
       real(kind = kreal), intent(inout) :: bc_temp(n_data)
 !
       integer(kind = kint) :: j, ist, inum, num, inod
-      real(kind = kreal), allocatable:: s(:,:)
 !
 !
       nth = l
@@ -105,7 +104,8 @@
         inod = nod_grp%item_grp(ist+inum)
 !
         call dschmidt(node%theta(inod))
-        call spheric(jmax_tri_sph, idx, node%phi(inod), sph_t%y_lm)
+        call spheric                                                    &
+     &     (sph_t%jmax_tri, sph_t%idx, node%phi(inod), sph_t%y_lm)
 !
         inod_bc(inum) = inod
         bc_temp(inum) = sph_t%y_lm(j,0)

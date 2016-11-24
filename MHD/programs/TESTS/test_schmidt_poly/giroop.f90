@@ -2,7 +2,7 @@
 !
       use m_precision
 !
-      use m_integrals_sph_nonlinear
+      use t_integrals_sph_nonlinear
       use cal_int_sph_nonlinear
 !
       implicit none
@@ -14,6 +14,8 @@
 !
       character(len=kchara), parameter :: file_name='hermony.dat'
       integer(kind = kint), parameter :: iflag_debug = 1, id_file = 9
+!
+      type(adams_gaunt_integrals) :: gaunt_t
 !
 !*  ----  input truncation level ----------
 !*
@@ -39,10 +41,10 @@
 !* ------ caliculate of Gaunt integral with hermmonics ------
 !*
       call s_cal_int_sph_nonlinear(iflag_debug, np_smp, ltr, jmax,      &
-     &    idx_gl)
+     &    idx_gl, gaunt_t)
 !
 !*  -----------    open file  ---------------
 !*
-      call check_gaunt_nl(file_name, id_file, jmax, idx_gl)
+      call check_gaunt_nl(file_name, id_file, jmax, idx_gl, gaunt_t)
 !
       end program gaunt
