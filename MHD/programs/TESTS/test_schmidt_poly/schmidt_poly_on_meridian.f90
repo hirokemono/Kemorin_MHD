@@ -55,7 +55,7 @@
       call allocate_index_4_sph(nth)
       call allocate_schmidt_polynomial
 !
-      call idx28
+      call idx28(ltr_tri_sph, jmax_tri_sph, idx, g)
       leg_d%jmax_g = jmax_tri_sph
 !
       call alloc_schmidt_poly_med(leg_d)

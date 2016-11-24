@@ -8,7 +8,10 @@
 !> @brief Copy between field data and IO data
 !!
 !!@verbatim
-!!      subroutine cvt(r, theta)
+!!      subroutine cvt_spectr_2_vector                                  &
+!!     &         (nth, jmax, r, theta, g, Y, bp, bt, dbp, b_pole)
+!!
+!!      subroutine cvt(jmax, r, theta, g, Y, bp, bt, dbp, b_pole)
 !!******************************************************
 !!*
 !!*    subroutin of  spector => vector for vector field
@@ -28,7 +31,7 @@
 !!*      b_pole(m) : vector field ( 1:r , 2: theta , 3:phi)
 !!*       r1   : 1 / (radious)
 !!*       sit  : sin(theta)
-!!*     s(j,m) : spherical harmonics
+!!*     Y(j,m) : spherical harmonics
 !!*   ( 0:original , 1:differentialof phi , 2:differential of thetra)
 !!*     g3(j)  : l*(l+1)
 !!*
@@ -69,7 +72,7 @@
 !!*
 !!*
 !!
-!!      subroutine cvtp(r, theta)
+!!      subroutine cvtp(nth, jmax, r, theta, g, Y, bp, bt, dbp, b_pole)
 !!******************************************************
 !!*    subroutin of  spector => vector for vector field
 !!*      of a point    for pole 
@@ -85,21 +88,22 @@
 !!*      vp(m) : vector field ( 1:r , 2: theta , 3:phi)
 !!*       r1   : 1 / (radious)
 !!*       cst  : cos(theta)
-!!*     s(j,m) : spherical harmonics
+!!*     Y(j,m) : spherical harmonics
 !!*   ( 0:original , 1:differentialof phi , 2:differential of thetra)
 !!*     g3(j)  : l*(l+1)
 !!******************************************************
 !!*
 !!@endverbatim
 !
-module sph_spectr_2_vector
+      module sph_spectr_2_vector
 !
       use m_precision
 !
       use m_schmidt_polynomial
-      use m_spherical_harmonics
 !*
       implicit none
+!
+      private ::  cvt, cvtp
 !
 !  ---------------------------------------------------------------------
 !
@@ -107,34 +111,59 @@ module sph_spectr_2_vector
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cvt(r, theta)
+      subroutine cvt_spectr_2_vector                                    &
+     &         (nth, jmax, r, theta, g, Y, bp, bt, dbp, b_pole)
+!
+      integer(kind = kint), intent(in) :: nth, jmax
+      real(kind = kreal), intent(in) :: r, theta
+      real(kind = kreal), intent(in):: Y(0:jmax,0:3)
+      real(kind = kreal), intent(in):: g(0:jmax,17)
+!
+      real(kind = kreal), intent(inout) :: bp(0:jmax),  bt(0:jmax)
+      real(kind = kreal), intent(inout) :: dbp(0:jmax)
+!
+      real(kind = kreal), intent(inout) :: b_pole(3)
+!
+!
+      if ( r .le. 0.0d0 ) return
+      if ( sin(theta) .eq. 0.0d0 ) then
+        call cvtp(nth, jmax, r, theta, g, Y, bp, bt, dbp, b_pole)
+      else 
+        call cvt(jmax, r, theta, g, Y, bp, bt, dbp, b_pole)
+      end if
+!
+      end subroutine cvt_spectr_2_vector
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine cvt(jmax, r, theta, g, Y, bp, bt, dbp, b_pole)
 !*
+      integer(kind = kint), intent(in) :: jmax
       real(kind = kreal), intent(in) ::  r, theta
+      real(kind = kreal), intent(in):: Y(0:jmax,0:3)
+      real(kind = kreal), intent(in):: g(0:jmax,17)
+!
+      real(kind = kreal), intent(inout) :: bp(0:jmax),  bt(0:jmax)
+      real(kind = kreal), intent(inout) :: dbp(0:jmax)
+!
+      real(kind = kreal), intent(inout) :: b_pole(3)
+!
       integer(kind = kint) :: nm, j
 !*
 !*
       do 10 nm = 1 ,3
-        v_pole(nm) = 0.0
         b_pole(nm) = 0.0
   10  continue
 !*
-      do 20 j = 1 ,jmax_tri_sph
+      do 20 j = 1 ,jmax
+        b_pole(1) = b_pole(1) + g(j,3) * bp(j) * Y(j,0) / r**2
 !*
-        v_pole(1) = v_pole(1) + g(j,3) * vp(j) * s(j,0) / r**2
+        b_pole(2) = b_pole(2) + ( dbp(j) * Y(j,2)                       &
+     &         + bt(j) * Y(j,1) / sin(theta) ) / r
 !*
-        v_pole(2) = v_pole(2) + ( dvp(j) * s(j,2)                       &
-     &         + vt(j) * s(j,1) / sin(theta) ) / r
-!*
-        v_pole(3) = v_pole(3) + ( dvp(j) * s(j,1) / sin(theta)          &
-     &         - vt(j) * s(j,2) ) / r
-!*
-        b_pole(1) = b_pole(1) + g(j,3) * bp(j) * s(j,0) / r**2
-!*
-        b_pole(2) = b_pole(2) + ( dbp(j) * s(j,2)                       &
-     &         + bt(j) * s(j,1) / sin(theta) ) / r
-!*
-        b_pole(3) = b_pole(3) + ( dbp(j) * s(j,1) / sin(theta)          &
-     &         - bt(j) * s(j,2) ) / r
+        b_pole(3) = b_pole(3) + ( dbp(j) * Y(j,1) / sin(theta)          &
+     &         - bt(j) * Y(j,2) ) / r
 !*
   20  continue
 !*
@@ -143,42 +172,39 @@ module sph_spectr_2_vector
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cvtp(r, theta)
+      subroutine cvtp(nth, jmax, r, theta, g, Y, bp, bt, dbp, b_pole)
 !
+      integer(kind = kint), intent(in) :: nth, jmax
       real(kind = kreal), intent(in) ::  r, theta
+      real(kind = kreal), intent(in):: Y(0:jmax,0:3)
+      real(kind = kreal), intent(in):: g(0:jmax,17)
+!
+      real(kind = kreal), intent(inout) :: bp(0:jmax),  bt(0:jmax)
+      real(kind = kreal), intent(inout) :: dbp(0:jmax)
+!
+      real(kind = kreal), intent(inout) :: b_pole(3)
+!
       integer(kind = kint) :: nm, l, j0, j9, j1
 !*
 !*
       do 10 nm = 1 ,3
-        v_pole(nm) = 0.0
         b_pole(nm) = 0.0
   10  continue
 !*
       do 20 l = 1 ,nth
-!*
         j0 = l*(l+1)
         j9 = l*(l+1) - 1
         j1 = l*(l+1) + 1
 !*
-        v_pole(1) = v_pole(1) +  g(j0,3) * vp(j0) * s(j0,0) / r**2
+        b_pole(1) = b_pole(1) +  g(j0,3) * bp(j0) * Y(j0,0) / r**2
 !*
-        v_pole(2) = v_pole(2) +  ( dvp(j9) * s(j9,2)                    &
-     &   + dvp(j1) * s(j1,2) + cos(theta) * ( vt(j9) * s(j9,3)          &
-     &         + vt(j1) * s(j1,3) ) ) / r
+        b_pole(2) = b_pole(2) +  ( dbp(j9) * Y(j9,2)                    &
+     &   + dbp(j1) * Y(j1,2) + cos(theta) * ( bt(j9) * Y(j9,3)          &
+     &         + bt(j1) * Y(j1,3) ) ) / r
 !*
-        v_pole(3) = v_pole(3) + ( cos(theta) * ( dvp(j9) * s(j9,3)      &
-     &         + dvp(j1) * s(j1,3) )  - vt(j9) * s(j9,2)                &
-     &         - vt(j1) * s(j1,2) ) / r
-!*
-        b_pole(1) = b_pole(1) +  g(j0,3) * bp(j0) * s(j0,0) / r**2
-!*
-        b_pole(2) = b_pole(2) +  ( dbp(j9) * s(j9,2)                    &
-     &   + dbp(j1) * s(j1,2) + cos(theta) * ( bt(j9) * s(j9,3)          &
-     &         + bt(j1) * s(j1,3) ) ) / r
-!*
-        b_pole(3) = b_pole(3) + ( cos(theta) * ( dbp(j9) * s(j9,3)      &
-     &         + dbp(j1) * s(j1,3) )  - bt(j9) * s(j9,2)                &
-     &         - bt(j1) * s(j1,2) ) / r
+        b_pole(3) = b_pole(3) + ( cos(theta) * ( dbp(j9) * Y(j9,3)      &
+     &         + dbp(j1) * Y(j1,3) )  - bt(j9) * Y(j9,2)                &
+     &         - bt(j1) * Y(j1,2) ) / r
 !*
   20  continue
 !*

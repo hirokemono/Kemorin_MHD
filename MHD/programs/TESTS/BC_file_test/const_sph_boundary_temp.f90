@@ -87,11 +87,16 @@
       real(kind = kreal), intent(inout) :: bc_temp(n_data)
 !
       integer(kind = kint) :: j, ist, inum, num, inod
+      real(kind = kreal), allocatable:: s(:,:)
+!
 !
       nth = l
       j = l*(l+1) + m
       call allocate_schmidt_polynomial
-      call allocate_spherical_harmonics(nth)
+      call allocate_index_4_sph(nth)
+!
+      allocate ( s(0:jmax_tri_sph,0:3) )
+      s = 0.0d0
 !
       ist = nod_grp%istack_grp(igrp-1)
       num = nod_grp%istack_grp(igrp  ) - nod_grp%istack_grp(igrp-1)
@@ -99,14 +104,15 @@
         inod = nod_grp%item_grp(ist+inum)
 !
         call dschmidt(node%theta(inod))
-        call spheric(node%phi(inod))
+        call spheric(jmax_tri_sph, idx, node%phi(inod), s)
 !
         inod_bc(inum) = inod
         bc_temp(inum) = s(j,0)
       end do
 !
+      deallocate(s)
       call deallocate_schmidt_polynomial
-      call deallocate_spherical_harmonics
+      call deallocate_index_4_sph
 !
       end subroutine set_sph_temp_bc
 !

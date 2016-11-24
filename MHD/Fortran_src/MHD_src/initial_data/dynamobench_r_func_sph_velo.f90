@@ -3,11 +3,12 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine radial_function_sph_velo(r)
+!      subroutine radial_function_sph_velo(jmax, r, vp, vt, dvp)
 !
       module dynamobench_r_func_sph_velo
 !
       use m_precision
+      use m_constants
 !
       implicit none
 !
@@ -17,18 +18,19 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine radial_function_sph_velo(jmax, r, vp, vt, dvp)
 !
-      subroutine radial_function_sph_velo(r)
+      integer(kind = kint), intent(in) :: jmax
+      real(kind = kreal), intent(in) :: r
 !
-      use m_spherical_harmonics
+      real(kind = kreal), intent(inout) :: vp(0:jmax), vt(0:jmax) 
+      real(kind = kreal), intent(inout) :: dvp(0:jmax)
 !
-      real (kind = kreal), intent(in) :: r
-!
-      real (kind = kreal) :: ri, pi
+      real(kind = kreal) :: ri, pi
 !
 !
-        pi = 4.0d0*atan(1.0d0)
-        ri = 2.0/3.0
+        pi = four * atan(one)
+        ri = two / three
 !
         vp = 0.0d0
         vt = 0.0d0
