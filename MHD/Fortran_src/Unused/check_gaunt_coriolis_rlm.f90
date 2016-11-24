@@ -9,7 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine s_check_gaunt_coriolis_rlm(iflag_sph_coriolis_file,  &
-!!     &          sph_params, sph_rlm)
+!!     &          jmax_tri_sph, sph_params, sph_rlm)
 !!        type(sph_shell_parameters), intent(inout) :: sph_params
 !!        type(sph_rlm_grid), intent(inout) :: sph_rlm
 !!      subroutine check_gaunt_coriolis_rlm(iflag_sph_coriolis_file)
@@ -31,17 +31,18 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_check_gaunt_coriolis_rlm(iflag_sph_coriolis_file,    &
-     &          sph_params, sph_rlm)
+     &          jmax_tri_sph, sph_params, sph_rlm)
 !
       use t_spheric_parameter
 !
       integer(kind = kint), intent(in) :: iflag_sph_coriolis_file
+      integer(kind = kint), intent(in) :: jmax_tri_sph
       type(sph_shell_parameters), intent(inout) :: sph_params
       type(sph_rlm_grid), intent(inout) :: sph_rlm
 !
 !
-      call check_gaunt_integrals_rlm                                    &
-     &   (iflag_sph_coriolis_file, sph_params%l_truncation,             &
+      call check_gaunt_integrals_rlm(iflag_sph_coriolis_file,           &
+     &   jmax_tri_sph, sph_params%l_truncation,                         &
      &    sph_rlm%nidx_rlm(2), sph_rlm%idx_gl_1d_rlm_j)
       call check_interact_coriolis_rlm                                  &
      &   (sph_rlm%nidx_rlm(2), sph_rlm%idx_gl_1d_rlm_j)
@@ -51,9 +52,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine check_gaunt_integrals_rlm(iflag_sph_coriolis_file,     &
-     &          l_truncation, jmax_rlm, idx_gl_1d_rlm_j)
+     &          jmax_tri_sph, l_truncation, jmax_rlm, idx_gl_1d_rlm_j)
 !
-      use m_spherical_harmonics
       use m_gaunt_coriolis_rlm
       use m_integrals_4_sph_coriolis
       use m_int_4_sph_coriolis_IO
@@ -61,6 +61,7 @@
       use spherical_harmonics
 !
       integer(kind = kint), intent(in) :: iflag_sph_coriolis_file
+      integer(kind = kint), intent(in) :: jmax_tri_sph
       integer(kind = kint), intent(in) :: l_truncation, jmax_rlm
       integer(kind = kint), intent(in) :: idx_gl_1d_rlm_j(jmax_rlm,3)
 !

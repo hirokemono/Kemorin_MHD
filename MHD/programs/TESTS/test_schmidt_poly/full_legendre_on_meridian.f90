@@ -59,7 +59,8 @@
       call alloc_schmidt_polynomial(ltr, leg_test)
 !
       call alloc_index_4_sph(ltr, sph_1pt)
-      call idx28(ltr_tri_sph, jmax_tri_sph, idx, g)
+      call idx28                                                        &
+     &   (sph_1pt%ltr_tri, sph_1pt%jmax_tri, sph_1pt%idx, sph_1pt%g)
 !
       call alloc_schmidt_normalize                                      &
      &   (sph_1pt%jmax_tri, sph_1pt%jmax_tri, leg)

@@ -14,6 +14,8 @@
 !!
 !!       subroutine dealloc_index_4_sph(sph)
 !!       subroutine dealloc_spherical_harmonics(sph)
+!!
+!!      subroutine init_sph_indices(nth, sph)
 !!@endverbatim
 !
       module t_spherical_harmonics
@@ -90,6 +92,22 @@
       deallocate(sph%y_lm)
 !
       end subroutine dealloc_spherical_harmonics
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine init_sph_indices(nth, sph)
+!
+      use spherical_harmonics
+!
+      integer(kind = kint), intent(in) :: nth
+      type(sph_1point_type), intent(inout) :: sph
+!
+!
+      call alloc_index_4_sph(nth, sph)
+      call idx28(sph%ltr_tri, sph%jmax_tri, sph%idx, sph%g)
+!
+      end subroutine init_sph_indices
 !
 ! -----------------------------------------------------------------------
 !

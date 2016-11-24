@@ -23,15 +23,16 @@
       subroutine cal_full_legendre_on_med(lst, led, leg_d)
 !
       use t_schmidt_poly_on_gauss
+      use t_spherical_harmonics
       use m_gauss_points
       use m_schmidt_polynomial
-      use m_spherical_harmonics
       use spherical_harmonics
 !
       integer(kind = kint), intent(in) :: lst, led
       type(gauss_legendre_data), intent(inout) :: leg_d
 !
       integer(kind = kint) :: i, j, m, l
+      type(sph_1point_type) :: sph_1pt
 !
 !
       call alloc_gauss_colat_med(leg_d)
@@ -52,11 +53,10 @@
 !     set Legendre polynomials
 !
       nth = leg_d%ltr_g
-      call allocate_index_4_sph(nth)
+      call init_sph_indices(nth, sph_1pt)
       call allocate_schmidt_polynomial
 !
-      call idx28(ltr_tri_sph, jmax_tri_sph, idx, g)
-      leg_d%jmax_g = jmax_tri_sph
+      leg_d%jmax_g = sph_1pt%jmax_tri
 !
       call alloc_schmidt_poly_med(leg_d)
       call alloc_legendre_med(leg_d)
@@ -68,24 +68,24 @@
         call full_norm_legendre(leg_d%g_colat_med(i))
 !
         do j = 0, leg_d%jmax_g
-          l = idx(j,1)
-          m = abs( idx(j,2) )
+          l = sph_1pt%idx(j,1)
+          m = abs( sph_1pt%idx(j,2) )
           leg_d%P_smdt(i,j) =    p(m,l)
           leg_d%dPdt_smdt(i,j) = dp(m,l)
         end do
 !
         call dlad(leg_d%g_colat_med(i))
         do j = 0, leg_d%jmax_g
-          l = idx(j,1)
-          m = abs( idx(j,2) )
+          l = sph_1pt%idx(j,1)
+          m = abs( sph_1pt%idx(j,2) )
           leg_d%P_org(i,j) = dplm(m,l)
         end do
       end do
 !
       dint_p = 0.0d0
       do j = 0, leg_d%jmax_g
-        l = idx(j,1)
-        m = abs( idx(j,2) )
+        l = sph_1pt%idx(j,1)
+        m = abs( sph_1pt%idx(j,2) )
         do i = 1, n_point
           dint_p(j) = dint_p(j) + w_coefs(i) * leg_d%P_smdt(i,j)**2
         end do
@@ -94,6 +94,7 @@
       call deallocate_gauss_colatitude
       call deallocate_gauss_points
       call deallocate_schmidt_polynomial
+      call dealloc_index_4_sph(sph_1pt)
 !
       end subroutine cal_full_legendre_on_med
 !

@@ -8,8 +8,8 @@
 !>@brief  Coefficients for Coriolis force in spectrum space
 !!
 !!@verbatim
-!!      subroutine alloc_g0
-!!      subroutine alloc_g0_xy
+!!      subroutine alloc_g0(jmax_tri_sph)
+!!      subroutine alloc_g0_xy(jmax_tri_sph)
 !!
 !!      subroutine dealloc_g0
 !!      subroutine dealloc_g0_xy
@@ -101,13 +101,10 @@
 !!*******************************************************************
 !!
 !!@endverbatim
-!!
       module m_coriolis_coefs_tri_sph
 !*
       use m_precision
-!
       use m_constants
-      use m_spherical_harmonics
 !
       implicit none
 !
@@ -173,7 +170,10 @@
 !*
 !*   ------------------------------------------------------------------
 !
-      subroutine alloc_g0
+      subroutine alloc_g0(jmax_tri_sph)
+!
+      integer(kind = kint), intent(in) :: jmax_tri_sph
+!
 !
       allocate( sw_rj(2,3,jmax_tri_sph) )
       allocate( tw_rj(2,4,jmax_tri_sph) )
@@ -197,7 +197,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine alloc_g0_xy
+      subroutine alloc_g0_xy(jmax_tri_sph)
+!
+      integer(kind = kint), intent(in) :: jmax_tri_sph
+!
 !
       allocate( sw1(4,3,jmax_tri_sph), sw3(4,3,jmax_tri_sph) )
       allocate( tw1(4,4,jmax_tri_sph), tw3(4,4,jmax_tri_sph) )
