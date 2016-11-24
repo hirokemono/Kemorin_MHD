@@ -9,7 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine sph_normalizations(l, m, idx_lm, g_lm)
-!!      subroutine idx28(nth, jmax, idx, g)
+!!      subroutine idx28(ltr, jmax, idx, g)
 !!***********************************************************************
 !!*    subroutine for make indices for spherical harmonics
 !!*                                     97,12,19
@@ -48,7 +48,7 @@
 !!*
 !!***********************************************************************
 !!*
-!!      subroutine spheric(jmax, idx, phi, Y)
+!!      subroutine spheric(ltr, jmax, idx, phi, p, dp, Y)
 !!*************************************************************
 !!*     lead spherical harmonics
 !!*         and differential of spherical harmonics
@@ -57,7 +57,7 @@
 !!*************************************************************
 !!*
 !!*     required subroutine
-!!*         dschmidt.f
+!!*         dschmidt
 !!*
 !!*************************************************************
 !!*
@@ -141,9 +141,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine idx28(nth, jmax, idx, g)
+      subroutine idx28(ltr, jmax, idx, g)
 !*
-      integer(kind = kint) :: nth, jmax
+      integer(kind = kint) :: ltr, jmax
       integer(kind = kint) :: idx(0:jmax,2)
       real(kind = kreal) :: g(0:jmax,17)
 !
@@ -154,7 +154,7 @@
 !
 !* -----  set index -----------------
 !*
-      do l = 0, nth
+      do l = 0, ltr
         do m = -l, l
           j = l*(l+1) + m
           call sph_normalizations(l, m, idx_lm, g_lm)
@@ -168,13 +168,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine spheric(jmax, idx, phi, Y)
+      subroutine spheric(ltr, jmax, idx, phi, p, dp, Y)
 !*
-      use m_schmidt_polynomial
-!*
-      integer(kind = kint) :: jmax
+      integer(kind = kint) :: ltr, jmax
       integer(kind = kint) :: idx(0:jmax,2)
       real(kind= kreal), intent(in) :: phi
+      real(kind = kreal), intent(in) :: p(0:ltr,0:ltr)
+      real(kind = kreal), intent(in) :: dp(0:ltr,0:ltr)
+!
       real(kind = kreal), intent(inout):: Y(0:jmax,0:3)
 !
       integer(kind = kint) :: j, l, m
@@ -204,9 +205,9 @@
           Y(j,3) = zero
         else
           m = idx(j,2)
-          Y(j,0) = p(m,l) * cos( dble(m)*phi )
+          Y(j,0) =   p(m,l) * cos( dble(m)*phi )
           Y(j,1) = - p(m,l) * dble(m) * sin( dble(m)*phi )
-          Y(j,2) = dp(m,l) * cos( dble(m)*phi )
+          Y(j,2) =   dp(m,l) * cos( dble(m)*phi )
           Y(j,3) = - dp(m,l) * dble(m) * sin( dble(m)*phi )
         endif
 !*

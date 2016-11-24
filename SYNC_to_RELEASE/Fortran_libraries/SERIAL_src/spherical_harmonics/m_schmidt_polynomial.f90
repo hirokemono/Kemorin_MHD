@@ -1,1 +1,0 @@
-../../../../MHD/Fortran_src/CORE_src/spherical_harmonics/m_schmidt_polynomial.f90

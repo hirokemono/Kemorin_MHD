@@ -12,7 +12,6 @@
 !!      subroutine allocate_schmidt_legendre_m(ltr, leg_m)
 !!      subroutine deallocate_schmidt_legendre_m(leg_m)
 !!
-!!      subroutine dlad(m,theta, leg_m)
 !!      subroutine dschmidt_m(m, theta, leg_m)
 !!        type(legendre_polynomials_each_m), intent(inout) :: leg_m
 !!@endverbatim
@@ -102,7 +101,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine full_norm_legendre(m, theta, leg_m)
+      subroutine full_norm_legendre_m(m, theta, leg_m)
 !
       use schmidt_fix_m
 !
@@ -121,7 +120,7 @@
       call full_normalize_from_smdt_m                                   &
      &   (leg_m%nth_m, m, leg_m%p_m, leg_m%dp_m)
 !
-      end subroutine full_norm_legendre
+      end subroutine full_norm_legendre_m
 !
 ! -----------------------------------------------------------------------
 !

@@ -23,15 +23,16 @@
       subroutine cal_full_legendre_on_med(lst, led, leg_d)
 !
       use t_schmidt_poly_on_gauss
+      use t_schmidt_polynomial
       use t_spherical_harmonics
       use m_gauss_points
-      use m_schmidt_polynomial
       use spherical_harmonics
 !
       integer(kind = kint), intent(in) :: lst, led
       type(gauss_legendre_data), intent(inout) :: leg_d
 !
       integer(kind = kint) :: i, j, m, l
+      type(legendre_polynomials) :: leg_1pt
       type(sph_1point_type) :: sph_1pt
 !
 !
@@ -52,9 +53,7 @@
 !
 !     set Legendre polynomials
 !
-      nth = leg_d%ltr_g
-      call init_sph_indices(nth, sph_1pt)
-      call allocate_schmidt_polynomial
+      call init_sph_indices(leg_d%ltr_g, leg_1pt, sph_1pt)
 !
       leg_d%jmax_g = sph_1pt%jmax_tri
 !
@@ -65,20 +64,20 @@
       dint_p = 0.0d0
 !
       do i = lst, led
-        call full_norm_legendre(leg_d%g_colat_med(i))
+        call full_norm_legendre(leg_d%g_colat_med(i), leg_1pt)
 !
         do j = 0, leg_d%jmax_g
           l = sph_1pt%idx(j,1)
           m = abs( sph_1pt%idx(j,2) )
-          leg_d%P_smdt(i,j) =    p(m,l)
-          leg_d%dPdt_smdt(i,j) = dp(m,l)
+          leg_d%P_smdt(i,j) =    leg_1pt%p(m,l)
+          leg_d%dPdt_smdt(i,j) = leg_1pt%dp(m,l)
         end do
 !
-        call dlad(leg_d%g_colat_med(i))
+        call dlad(leg_d%g_colat_med(i), leg_1pt)
         do j = 0, leg_d%jmax_g
           l = sph_1pt%idx(j,1)
           m = abs( sph_1pt%idx(j,2) )
-          leg_d%P_org(i,j) = dplm(m,l)
+          leg_d%P_org(i,j) = leg_1pt%dplm(m,l)
         end do
       end do
 !
@@ -93,8 +92,7 @@
 !
       call deallocate_gauss_colatitude
       call deallocate_gauss_points
-      call deallocate_schmidt_polynomial
-      call dealloc_index_4_sph(sph_1pt)
+      call finalize_sph_indices(leg_1pt, sph_1pt)
 !
       end subroutine cal_full_legendre_on_med
 !

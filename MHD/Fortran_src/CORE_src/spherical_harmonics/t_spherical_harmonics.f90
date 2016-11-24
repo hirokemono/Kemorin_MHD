@@ -15,7 +15,9 @@
 !!       subroutine dealloc_index_4_sph(sph)
 !!       subroutine dealloc_spherical_harmonics(sph)
 !!
-!!      subroutine init_sph_indices(nth, sph)
+!!      subroutine init_sph_indices(nth, leg, sph)
+!!      subroutine finalize_sph_indices(leg, sph)
+!!      subroutine spheric_1point(theta, phi, leg, sph)
 !!@endverbatim
 !
       module t_spherical_harmonics
@@ -96,18 +98,54 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine init_sph_indices(nth, sph)
+      subroutine init_sph_indices(nth, leg, sph)
 !
+      use t_schmidt_polynomial
       use spherical_harmonics
 !
       integer(kind = kint), intent(in) :: nth
+      type(legendre_polynomials), intent(inout) :: leg
       type(sph_1point_type), intent(inout) :: sph
 !
 !
+      call alloc_schmidt_polynomial(nth, leg)
       call alloc_index_4_sph(nth, sph)
       call idx28(sph%ltr_tri, sph%jmax_tri, sph%idx, sph%g)
 !
       end subroutine init_sph_indices
+!
+! -----------------------------------------------------------------------
+!
+      subroutine finalize_sph_indices(leg, sph)
+!
+      use t_schmidt_polynomial
+!
+      type(legendre_polynomials), intent(inout) :: leg
+      type(sph_1point_type), intent(inout) :: sph
+!
+!
+      call dealloc_index_4_sph(sph)
+      call dealloc_schmidt_polynomial(leg)
+!
+      end subroutine finalize_sph_indices
+!
+! -----------------------------------------------------------------------
+!
+      subroutine spheric_1point(theta, phi, leg, sph)
+!
+      use t_schmidt_polynomial
+      use spherical_harmonics
+!
+      real(kind = kreal), intent(in) :: theta, phi
+      type(legendre_polynomials), intent(inout) :: leg
+      type(sph_1point_type), intent(inout) :: sph
+!
+!
+      call dschmidt(theta, leg)
+      call spheric(leg%nth, sph%jmax_tri, sph%idx,                      &
+     &    phi, leg%p, leg%dp, sph%y_lm)
+!
+      end subroutine spheric_1point
 !
 ! -----------------------------------------------------------------------
 !

@@ -12,8 +12,12 @@
       module set_radial_magne_sph
 !
       use m_precision
+      use t_schmidt_polynomial
 !
       implicit none
+!
+      integer(kind = kint), parameter, private :: ltr_ini = 10
+      type(legendre_polynomials), private :: leg_b
 !
 !-----------------------------------------------------------------------
 !
@@ -27,7 +31,6 @@
       use t_group_data
       use t_nodal_bc_data
       use m_bc_data_list
-      use m_schmidt_polynomial
       use spherical_harmonics
 !
       type(node_data), intent(in) :: node
@@ -44,7 +47,7 @@
       real ( kind = kreal) :: bmag
 !
 !
-      call allocate_schmidt_polynomial
+      call alloc_schmidt_polynomial(ltr_ini, leg_b)
 !
       jj = int( aint( magne_nod%bc_magnitude(j)) )
       call get_dgree_order_by_full_j(jj, ll, mm)
@@ -57,12 +60,12 @@
           nod_bc_b%ibc_id(l_f(nd),nd) = inod
         end do
 !
-        call dschmidt(node%theta(inod))
+        call dschmidt(node%theta(inod), leg_b)
 !
         if (mm.ge.0) then
-          bmag = p(mm,ll) * cos( node%phi(inod)*dble(mm) )
+          bmag = leg_b%p(mm,ll) * cos( node%phi(inod)*dble(mm) )
         else
-          bmag = p(mm,ll) * sin( node%phi(inod)*dble(mm) )
+          bmag = leg_b%p(mm,ll) * sin( node%phi(inod)*dble(mm) )
         end if
 !
         do nd = 1, 3
@@ -73,7 +76,7 @@
         end do
       end do
 !
-      call deallocate_schmidt_polynomial
+      call dealloc_schmidt_polynomial(leg_b)
 !
       end subroutine set_r_magne_sph
 !

@@ -19,10 +19,9 @@
       use mag_pbar
       use ispack_lag
 !
+      use m_gauss_points
       use t_spheric_parameter
       use t_schmidt_poly_on_rtm
-      use m_gauss_points
-      use m_schmidt_polynomial
 !
       use t_spheric_rlm_data
 !
@@ -54,7 +53,6 @@
       nidx_rtm(2) = num_gauss
       sph_rlm_test%nidx_rlm(2) = ltr*(ltr+2) + 1
       sph_param_test%l_truncation = ltr
-      nth = ltr
       call alloc_type_sph_1d_index_rlm(sph_rlm_test)
       nidx_rlm(1:2) = sph_rlm_test%nidx_rlm(1:2)
 !
@@ -164,7 +162,6 @@
 !      call SMFIN
       call dealloc_mag_lag
 !
-      call deallocate_schmidt_polynomial
       call dealloc_schmidt_poly_rtm(leg_t)
       call dealloc_gauss_colat_rtm(leg_t)
 !

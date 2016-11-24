@@ -99,8 +99,6 @@
 !
       use m_precision
 !
-      use m_schmidt_polynomial
-!*
       implicit none
 !
       private ::  cvt, cvtp

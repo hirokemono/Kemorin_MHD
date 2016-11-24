@@ -15,11 +15,13 @@
 !
       use t_geometry_data
       use t_group_data
+      use t_schmidt_polynomial
       use t_spherical_harmonics
 !
       implicit none
 !
       type(sph_1point_type), private :: sph_t
+      type(legendre_polynomials), private :: leg_t
 !
       private :: set_sph_temp_bc
 !
@@ -77,8 +79,6 @@
       subroutine set_sph_temp_bc                                        &
      &         (igrp, l, m, node, nod_grp, n_data, inod_bc, bc_temp)
 !
-      use m_schmidt_polynomial
-!
       use spherical_harmonics
 !
       type(node_data), intent(in) :: node
@@ -91,29 +91,23 @@
       integer(kind = kint) :: j, ist, inum, num, inod
 !
 !
-      nth = l
       j = l*(l+1) + m
-      call allocate_schmidt_polynomial
-!
-      call init_sph_indices(nth, sph_t)
+      call init_sph_indices(l, leg_t, sph_t)
       call alloc_spherical_harmonics(sph_t)
 !
       ist = nod_grp%istack_grp(igrp-1)
       num = nod_grp%istack_grp(igrp  ) - nod_grp%istack_grp(igrp-1)
       do inum = 1, num
         inod = nod_grp%item_grp(ist+inum)
-!
-        call dschmidt(node%theta(inod))
-        call spheric                                                    &
-     &     (sph_t%jmax_tri, sph_t%idx, node%phi(inod), sph_t%y_lm)
+        call spheric_1point                                             &
+     &     (node%theta(inod), node%phi(inod), leg_t, sph_t)
 !
         inod_bc(inum) = inod
         bc_temp(inum) = sph_t%y_lm(j,0)
       end do
 !
       call dealloc_spherical_harmonics(sph_t)
-      call dealloc_index_4_sph(sph_t)
-      call deallocate_schmidt_polynomial
+      call finalize_sph_indices(leg_t, sph_t)
 !
       end subroutine set_sph_temp_bc
 !

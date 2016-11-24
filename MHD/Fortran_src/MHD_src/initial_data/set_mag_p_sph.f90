@@ -15,8 +15,12 @@
       use t_geometry_data
       use t_group_data
       use t_nodal_bc_data
+      use t_schmidt_polynomial
 !
       implicit none
+!
+      integer(kind = kint), parameter, private :: ltr_ini = 10
+      type(legendre_polynomials), private :: leg_p
 !
 !-----------------------------------------------------------------------
 !
@@ -27,7 +31,6 @@
       subroutine s_set_mag_p_sph(node, nod_grp, ii, i, j, nod_bc_f)
 !
       use m_bc_data_list
-      use m_schmidt_polynomial
       use spherical_harmonics
 !
       type(node_data), intent(in) :: node
@@ -42,7 +45,7 @@
       integer(kind = kint) :: ll, mm
 !
 !
-      call allocate_schmidt_polynomial
+      call alloc_schmidt_polynomial(ltr_ini, leg_p)
 !
 !
       jj = int(e_potential_nod%bc_magnitude(j))
@@ -54,21 +57,21 @@
         inod = nod_grp%item_grp(k+nod_grp%istack_grp(i-1))
         nod_bc_f%ibc_id(ii) = inod
 !
-        call dschmidt(node%theta(inod))
+        call dschmidt(node%theta(inod), leg_p)
 !
         if (mm.ge.0) then
           nod_bc_f%bc_apt(ii)                                           &
-     &          = p(mm,ll) * cos(node%phi(inod)*dble(mm))
+     &          = leg_p%p(mm,ll) * cos(node%phi(inod)*dble(mm))
         else
           nod_bc_f%bc_apt(ii)                                           &
-     &          = p(mm,ll) * sin(node%phi(inod)*dble(mm))
+     &          = leg_p%p(mm,ll) * sin(node%phi(inod)*dble(mm))
         end if
 !
         nod_bc_f%ibc(    inod ) = 1
         nod_bc_f%ibc2(   inod ) = 1
       end do
 !
-      call deallocate_schmidt_polynomial
+      call dealloc_schmidt_polynomial(leg_p)
 !
       end subroutine s_set_mag_p_sph
 !

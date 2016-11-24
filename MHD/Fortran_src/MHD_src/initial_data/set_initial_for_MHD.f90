@@ -16,9 +16,9 @@
       use m_constants
 !
       use m_control_parameter
-      use m_schmidt_polynomial
 !
       use t_geometry_data
+      use t_schmidt_polynomial
       use t_spherical_harmonics
 !
       use spherical_harmonics
@@ -26,6 +26,9 @@
 !
       implicit none
 !
+      integer(kind = kint), parameter :: ltr_ini = 10
+!
+      type(legendre_polynomials), private :: leg_ini
       type(sph_1point_type), private :: sph_ini
 !
       real(kind = kreal), private :: v_pole(3), b_pole(3)
@@ -131,15 +134,13 @@
       ifl = 1
       if ( abs(depth_low_t/depth_high_t - 0.35) .lt. 1.0d-4) ifl = 2
 !
-      call allocate_schmidt_polynomial
-      call init_sph_indices(nth, sph_ini)
+      call init_sph_indices(ltr_ini, leg_ini, sph_ini)
       call alloc_spherical_harmonics(sph_ini)
       call allocate_initial_bspectr(sph_ini%jmax_tri)
 !
-        do inod = 1, node%numnod
-         call dschmidt(node%theta(inod))
-         call spheric                                                   &
-     &     (sph_ini%jmax_tri, sph_ini%idx, node%phi(inod), sph_ini%y_lm)
+      do inod = 1, node%numnod
+        call spheric_1point                                             &
+     &     (node%theta(inod), node%phi(inod), leg_ini, sph_ini)
 !
          call radial_function_sph_vecp                                  &
      &      (sph_ini%jmax_tri, ifl, j_rst, l_rst, node%rr(inod),        &
@@ -166,9 +167,8 @@
       end do
 !
       call deallocate_initial_bspectr
-      call deallocate_schmidt_polynomial
       call dealloc_spherical_harmonics(sph_ini)
-      call dealloc_index_4_sph(sph_ini)
+      call finalize_sph_indices(leg_ini, sph_ini)
 !
       end subroutine set_initial_vect_p
 !
@@ -197,15 +197,13 @@
       ifl = 1
       if ( abs(depth_low_t/depth_high_t - 0.35) .lt. 1.0d-4) ifl = 2
 !
-      call allocate_schmidt_polynomial
-      call init_sph_indices(nth, sph_ini)
+      call init_sph_indices(ltr_ini, leg_ini, sph_ini)
       call alloc_spherical_harmonics(sph_ini)
       call allocate_initial_bspectr(sph_ini%jmax_tri)
 !
-        do inod = 1, node%numnod
-         call dschmidt(node%theta(inod))
-         call spheric                                                   &
-     &     (sph_ini%jmax_tri, sph_ini%idx, node%phi(inod), sph_ini%y_lm)
+      do inod = 1, node%numnod
+        call spheric_1point                                             &
+     &     (node%theta(inod), node%phi(inod), leg_ini, sph_ini)
 !
          call radial_function_sph                                       &
      &      (sph_ini%jmax_tri, ifl, j_rst, l_rst, node%rr(inod),        &
@@ -235,9 +233,8 @@
       end do
 !
       call deallocate_initial_bspectr
-      call deallocate_schmidt_polynomial
       call dealloc_spherical_harmonics(sph_ini)
-      call dealloc_index_4_sph(sph_ini)
+      call finalize_sph_indices(leg_ini, sph_ini)
 !
       end subroutine set_initial_magne
 !
@@ -262,18 +259,15 @@
        d_nod(inod,i_press) = 0.0d0
       end do
 !
-      call allocate_schmidt_polynomial
-      call init_sph_indices(nth, sph_ini)
+      call init_sph_indices(ltr_ini, leg_ini, sph_ini)
       call alloc_spherical_harmonics(sph_ini)
       call allocate_initial_bspectr(sph_ini%jmax_tri)
       call allocate_initial_vspectr(sph_ini%jmax_tri)
 !
-        do inum = 1, nnod_fl
-         inod = inod_fluid(inum)
-!
-         call dschmidt(node%theta(inod))
-         call spheric                                                   &
-     &     (sph_ini%jmax_tri, sph_ini%idx, node%phi(inod), sph_ini%y_lm)
+      do inum = 1, nnod_fl
+        inod = inod_fluid(inum)
+        call spheric_1point                                             &
+     &     (node%theta(inod), node%phi(inod), leg_ini, sph_ini)
 !
          call radial_function_sph_velo(sph_ini%jmax_tri, node%rr(inod), &
      &       vp, vt, dvp)
@@ -296,9 +290,8 @@
 !
       call deallocate_initial_vspectr
       call deallocate_initial_bspectr
-      call deallocate_schmidt_polynomial
       call dealloc_spherical_harmonics(sph_ini)
-      call dealloc_index_4_sph(sph_ini)
+      call finalize_sph_indices(leg_ini, sph_ini)
 !
       end subroutine set_initial_kinematic
 !
