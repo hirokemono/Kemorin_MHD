@@ -26,9 +26,6 @@
         write(*,'(i5,1p2E25.15e3)') i, w_point(i), w_coefs(i)
       end do
 !
-!
-      call allocate_gauss_colatitude
-!
       call set_gauss_colatitude
 !
 !

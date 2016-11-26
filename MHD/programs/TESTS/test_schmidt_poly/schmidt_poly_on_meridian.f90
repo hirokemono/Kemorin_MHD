@@ -43,7 +43,6 @@
       call allocate_gauss_points(leg_d%nth_g)
       call construct_gauss_coefs
 !
-      call allocate_gauss_colatitude
       call set_gauss_colatitude
 !
       leg_d%g_point_med(1:leg_d%nth_g) = w_point(1:leg_d%nth_g)

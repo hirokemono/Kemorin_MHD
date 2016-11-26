@@ -125,7 +125,6 @@
 !
 !
       call allocate_gauss_points(sph_rtm%nidx_rtm(2))
-      call allocate_gauss_colatitude
       call alloc_gauss_colat_rtm(sph_rtm%nidx_rtm(2), leg)
 !
       call set_gauss_points_rtm(leg)

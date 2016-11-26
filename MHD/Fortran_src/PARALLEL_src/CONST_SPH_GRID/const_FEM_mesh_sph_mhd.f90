@@ -62,7 +62,6 @@
 !
 !
       call allocate_gauss_points(sph_rtp%nidx_global_rtp(2))
-      call allocate_gauss_colatitude
       call construct_gauss_coefs
       call set_gauss_colatitude
 !

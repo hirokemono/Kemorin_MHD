@@ -69,9 +69,6 @@
       call allocate_gauss_points(num_gauss)
       call construct_gauss_coefs
 !
-      call allocate_gauss_colatitude
-      call set_gauss_colatitude
-!
       call set_gauss_points_rtm(leg_t)
 !
       call deallocate_gauss_points
