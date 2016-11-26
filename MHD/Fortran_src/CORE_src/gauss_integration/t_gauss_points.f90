@@ -58,13 +58,13 @@
 !
       type gauss_integrations
 !>        number of functions to integrate
-        integer(kind = kint) :: ncomp_int
+        integer(kind = kint) :: num_inte
 !>        coefficient due to changing integration area
         real(kind = kreal) :: coef_len
 !>        gauss points in integration area
-        real(kind = kreal), dimension(:), allocatable :: x_point
+        real(kind = kreal), allocatable :: x_point(:)
 !>        function values on integration points
-        real(kind = kreal), dimension(:,:), allocatable :: f_point
+        real(kind = kreal), allocatable :: f_point(:,:)
       end type gauss_integrations
 !
       private :: alloc_gauss_points, alloc_gauss_colatitude
@@ -112,9 +112,9 @@
       type(gauss_integrations), intent(inout) :: g_int
 !
 !
-      g_int%ncomp_int = num_inte
+      g_int%num_inte = num_inte
       allocate( g_int%x_point(n_point) )
-      allocate( g_int%f_point(g_int%ncomp_int,n_point) )
+      allocate( g_int%f_point(g_int%num_inte,n_point) )
 !
       g_int%x_point = 0.0d0
       g_int%f_point = 0.0d0
@@ -237,9 +237,9 @@
       type(gauss_points), intent(in) :: gauss
       type(gauss_integrations), intent(in) :: g_int
 !
-      real(kind = kreal), intent(inout) :: x(g_int%ncomp_int)
+      real(kind = kreal), intent(inout) :: x(g_int%num_inte)
 !
-      call cal_gauss_integration(g_int%ncomp_int, gauss%n_point,        &
+      call cal_gauss_integration(g_int%num_inte, gauss%n_point,         &
      &    gauss%weight, g_int%f_point, g_int%coef_len, x)
 !
       end subroutine cal_gauss_integrals

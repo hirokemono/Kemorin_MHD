@@ -16,11 +16,14 @@
 !
       use t_crs_connect
       use t_crs_matrix
+      use t_gauss_points
 !
-        implicit none
+      implicit none
 !
       type(CRS_matrix_connect), save :: tbl_crs_z
       type(CRS_matrix), save :: mat_crs_z
+!
+      type(gauss_integrations), save, private :: g_z_int
 !
 ! ----------------------------------------------------------------------
 !
@@ -41,7 +44,6 @@
       use m_work_4_integration
       use m_matrix_4_z_commute
       use m_int_commtative_filter
-      use m_gauss_integration
       use m_int_edge_data
       use m_matrix_4_LU
       use const_delta_z_analytical
@@ -173,16 +175,17 @@
         call int_gaussian_moment_infty(nfilter6_1,f_mom_full,f_width)
       end if
 !
-       num_inte = nfilter6_1 + 1
       if (my_rank.eq.0) write(*,*) 'construct_gauss_coefs'
       call construct_gauss_coefs(n_int_points, gauss1)
-      call allocate_work_4_integration
+      call alloc_work_4_integration                                     &
+     &  ((nfilter6_1 + 1), gauss1%n_point, g_z_int)
       call allocate_work_4_commute
 !
       call allocate_matrix_4_commutation(z_filter_mesh%node%numnod)
 !
       if (my_rank.eq.0) write(*,*) 'int_edge_norm_nod'
-       call int_edge_norm_nod(z_filter_mesh%node, edge_z_filter)
+       call int_edge_norm_nod                                           &
+     &    (z_filter_mesh%node, edge_z_filter, gauss1, g_z_int)
 !       call check_nod_normalize_matrix                                 &
 !     &     (my_rank, z_filter_mesh%node%numnod)
 !
@@ -251,16 +254,15 @@
 !       call check_neib_ele_2nd(my_rank, z_filter_mesh%ele%numele)
 !
        call int_edge_filter_peri(ndep_filter, totalnod_x, xsize,        &
-     &      xmom_h_x, xmom_ht_x)
+     &      xmom_h_x, xmom_ht_x, gauss1, g_z_int)
        call int_edge_filter_peri(ndep_filter, totalnod_y, ysize,        &
-     &      xmom_h_y, xmom_ht_y)
-       write(*,*) 'xmom_ht_x', xmom_ht_x
-       write(*,*) 'xmom_ht_x', xmom_ht_y
+     &      xmom_h_y, xmom_ht_y, gauss1, g_z_int)
+!
        if(my_rank.eq.0) write(*,*) 'int_edge_commutative_filter'
        call int_edge_commutative_filter                                 &
      &    (z_filter_mesh%node%numnod, z_filter_mesh%ele%numele,         &
      &     z_filter_mesh%node%xx(1:z_filter_mesh%node%numnod,3),        &
-     &     edge_z_filter%ie_edge)
+     &     edge_z_filter%ie_edge, gauss1, g_z_int)
 !       call check_int_commutative_filter                               &
 !     &    (my_rank, z_filter_mesh%node%numnod)
 !
@@ -275,8 +277,8 @@
      &     edge_z_filter)
 !
        call deallocate_filter_values
+       call dealloc_work_4_integration(g_z_int)
        call dealloc_gauss_points(gauss1)
-       call deallocate_work_4_integration
 !
 !    finerizing
 !
