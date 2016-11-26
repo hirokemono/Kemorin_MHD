@@ -35,8 +35,12 @@
 !
       use m_precision
       use m_constants
+      use t_gauss_points
 !
       implicit none
+!
+      type(gauss_points), save :: gauss1
+!gauss1%azim_deg
 !
 !>      Number of Gauss points
       integer(kind=kint) :: n_point = 400

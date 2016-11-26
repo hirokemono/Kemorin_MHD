@@ -76,16 +76,13 @@
       subroutine set_points_4_integration(xst, xed)
 !
       use m_gauss_points
+      use gauss_integration
 !
       real(kind = kreal), intent(in) :: xst, xed
 !
-      integer (kind = kint) :: i
 !
-!
-      do i = 1, n_point
-        x_point(i) = half*( xst + xed + (xed-xst) * w_point(i) )
-      end do
-      coef_gauss = half *(xed - xst)
+      call set_gauss_points_integration                           &
+     &   (xst, xed, n_point, w_point, x_point, coef_gauss)
 !
       end subroutine set_points_4_integration
 !
@@ -94,17 +91,11 @@
       subroutine set_points_4_elevation
 !
       use m_gauss_points
-!
-      integer (kind = kint) :: i
-      real(kind = kreal) :: pi
+      use gauss_integration
 !
 !
-      pi = four * atan(one)
-!
-      do i = 1, n_point
-        x_point(i) = w_colat(i)
-      end do
-      coef_gauss = - half * pi
+      call set_gauss_colat_integration                                  &
+     &   (n_point, w_colat, x_point, coef_gauss)
 !
       end subroutine set_points_4_elevation
 !
@@ -113,25 +104,13 @@
       subroutine gaussian_integration(x)
 !
       use m_gauss_points
-!
+      use gauss_integration
 !
       real(kind = kreal), intent(inout) :: x(num_inte)
 !
-      integer (kind = kint) :: i, j
 !
-      x = 0.0d0
-!
-!$omp parallel do
-      do j = 1, num_inte
-        do i = 1, n_point
-          x(j) = x(j) + w_coefs(i) * f_point(j,i)
-        end do
-      end do
-!$omp end parallel do
-!
-      do j = 1, num_inte
-        x(j) = coef_gauss * x(j)
-      end do
+      call cal_gauss_integration                                        &
+     &   (num_inte, n_point, w_coefs, f_point, coef_gauss, x)
 !
       end subroutine gaussian_integration
 !
