@@ -50,9 +50,8 @@
 !
 !     set gauss colatitudes
 !
-      call construct_gauss_coefs(leg%nth_P_tm, gauss)
+      call set_gauss_points_rtm(leg%nth_P_tm, gauss, leg)
       call set_gauss_colatitude(gauss)
-      call set_gauss_points_rtm(gauss, leg)
 !
 !     set Legendre polynomials
 !

@@ -38,7 +38,7 @@
       integer (kind = kint) :: jnod, kf, i, j, je, j0
 !
       real(kind = kreal) :: zz1, zz2, zs, ze
-      real(kind = kreal), dimension(n_point) :: filter_0
+      real(kind = kreal) :: filter_0(gauss1%n_point)
 !
 !
       write(*,*) 'iflag_filter_h', iflag_filter_h
@@ -53,23 +53,23 @@
 !          zz1 = dble(j0  ) * hsize / dble(numnod_h-1)
 !          zz2 = dble(j0+1) * hsize / dble(numnod_h-1)
 !
-          call set_points_4_integration(zs, ze)
+          call s_set_points_4_integration(zs, ze)
 !
           do j = 1, 2
             jnod = je + j - 1
 !
             if ( iflag_filter_h .eq. 0) then
-              call filter_moment_tophat(izero, n_point, f_width_h,      &
-     &            filter_0, x_point)
+              call filter_moment_tophat(izero, gauss1%n_point,          &
+     &            f_width_h, filter_0, x_point)
             else if (iflag_filter_h .eq. 1) then
-              call filter_moment_linear(izero, n_point, f_width_h,      &
-     &            filter_0, x_point)
+              call filter_moment_linear(izero, gauss1%n_point,          &
+     &            f_width_h, filter_0, x_point)
             else
-              call filter_moment_gaussian(izero, n_point, f_width_h,    &
-     &            filter_0, x_point)
+              call filter_moment_gaussian(izero, gauss1%n_point,        &
+     &            f_width_h, filter_0, x_point)
             end if
 !
-            do i = 1, n_point
+            do i = 1, gauss1%n_point
              f_point(1,i) = half * filter_0(i)                          &
      &                 * ( one + (-1)**j * (x_point(i)-dble(2*j0+1)) ) 
              do kf = 2, nfilter6_1+1

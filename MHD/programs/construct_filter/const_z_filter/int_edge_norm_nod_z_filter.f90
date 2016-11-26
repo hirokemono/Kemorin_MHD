@@ -57,23 +57,23 @@
           zz2 = node%xx(jnod2,3)
 !
 !
-          call set_points_4_integration(zs, ze)
+          call s_set_points_4_integration(zs, ze)
 !
           do j = 1, 2
             jj = je + j - 1
 !
             if ( iflag_filter .eq. 0) then
-              call filter_moment_tophat(nfilter6_1, n_point, f_width,   &
-     &            f_point, x_point)
+              call filter_moment_tophat(nfilter6_1, gauss1%n_point,     &
+     &            f_width, f_point, x_point)
             else if (iflag_filter .eq. 1) then
-              call filter_moment_linear(nfilter6_1, n_point, f_width,   &
-     &            f_point, x_point)
+              call filter_moment_linear(nfilter6_1, gauss1%n_point,     &
+     &            f_width, f_point, x_point)
             else
-              call filter_moment_gaussian(nfilter6_1, n_point, f_width, &
-     &            f_point, x_point)
+              call filter_moment_gaussian(nfilter6_1, gauss1%n_point,   &
+     &            f_width, f_point, x_point)
             end if
 !
-            do i = 1, n_point
+            do i = 1, gauss1%n_point
              f_point(1,i) = half * dz(jele)  * f_point(1,i)             &
      &                 * ( one + (-1)**j * (x_point(i)-dble(2*j0+1)) ) 
              do kf = 2, nfilter6_1+1

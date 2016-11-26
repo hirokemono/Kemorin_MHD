@@ -53,8 +53,8 @@
       use m_gauss_points
 !
 !
-      allocate( x_point(n_point) )
-      allocate( f_point(num_inte,n_point) )
+      allocate( x_point(gauss1%n_point) )
+      allocate( f_point(num_inte,gauss1%n_point) )
 !
       x_point = 0.0d0
       f_point = 0.0d0
@@ -73,7 +73,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_points_4_integration(xst, xed)
+      subroutine s_set_points_4_integration(xst, xed)
 !
       use m_gauss_points
       use gauss_integration
@@ -81,23 +81,10 @@
       real(kind = kreal), intent(in) :: xst, xed
 !
 !
-      call set_gauss_points_integration                           &
-     &   (xst, xed, n_point, w_point, x_point, coef_gauss)
+      call set_gauss_points_integration                                 &
+     &   (xst, xed, gauss1%n_point, gauss1%point, x_point, coef_gauss)
 !
-      end subroutine set_points_4_integration
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_points_4_elevation
-!
-      use m_gauss_points
-      use gauss_integration
-!
-!
-      call set_gauss_colat_integration                                  &
-     &   (n_point, w_colat, x_point, coef_gauss)
-!
-      end subroutine set_points_4_elevation
+      end subroutine s_set_points_4_integration
 !
 ! -----------------------------------------------------------------------
 !
@@ -110,7 +97,7 @@
 !
 !
       call cal_gauss_integration                                        &
-     &   (num_inte, n_point, w_coefs, f_point, coef_gauss, x)
+     &   (num_inte, gauss1%n_point, gauss1%weight, f_point, coef_gauss, x)
 !
       end subroutine gaussian_integration
 !

@@ -112,7 +112,7 @@
             node%inod_global(inod)                                      &
      &          = global_sph_shell_node_id(k, l, mnum)
             node%rr(inod) =     r_global(k)
-            node%theta(inod) =  w_colat(l)
+            node%theta(inod) =  gauss1%colat(l)
             node%phi(inod) =  two*pi*dble(mnum-1)                       &
      &                         / dble(nidx_global_fem(3))
           end do
@@ -173,7 +173,7 @@
      &                = global_sph_shell_node_id(ione, l, mnum)
 !
                 node%rr(inod) =    r_global(1)
-                node%theta(inod) = w_colat(l)
+                node%theta(inod) = gauss1%colat(l)
                 node%phi(inod) =  two*pi*dble(mnum-1)                   &
      &                         / dble(nidx_global_fem(3))
               end do

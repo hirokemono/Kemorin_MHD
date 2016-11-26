@@ -66,13 +66,10 @@
       end do
 !
       call alloc_gauss_colat_rtm(sph_rtm_test%nidx_rtm(2), leg_t)
-      call allocate_gauss_points(num_gauss)
-      call construct_gauss_coefs
+      call set_gauss_points_rtm(num_gauss, leg_t)
 !
-      call set_gauss_points_rtm(leg_t)
-!
-      call deallocate_gauss_points
-      call deallocate_gauss_colatitude
+      call dealloc_gauss_colatitude(gauss1)
+      call dealloc_gauss_points(gauss1)
 !
       call allocate_schmidt_poly_rtm(sph_rtm_test%nidx_rtm(2),          &
      &    sph_rlm_test%nidx_rlm(2), sph_rj_test%nidx_rj(2), leg_t)
@@ -85,11 +82,11 @@
 !      end do
 !
       write(*,*) 'Gauss-Legendre colatitude'
-      do i = 1, n_point
+      do i = 1, gauss1%n_point
         write(*,'(i5,1p2E25.15e3)') i, g_colat_rtm(i), weight_rtm(i)
       end do
 !
-      ntheta = n_point
+      ntheta = gauss1%n_point
       call alloc_mag_lag(ntheta, ltr)
       call mag_gauss_point(ntheta)
 !
@@ -99,10 +96,10 @@
       end do
 !
       write(*,*) 'difference'
-      do i = 1, n_point
+      do i = 1, gauss1%n_point
         write(*,'(i5,1p2E25.15e3)') i,                                  &
-     &                              g_colat_rtm(i)-colat(n_point-i+1),  &
-     &                              weight_rtm(i)-gauss_w(n_point-i+1)
+     &                       g_colat_rtm(i)-colat(gauss1%n_point-i+1),  &
+     &                       weight_rtm(i)-gauss_w(gauss1%n_point-i+1)
       end do
 !
 !      colat(1:ntheta) =   g_colat_rtm(1:ntheta)
@@ -120,7 +117,7 @@
         write(60,'(a)') 'j, l, m, i, r, P_rtm, dPdt_rtm'
         do j = l_check*(l_check+1)+1, l_check*(l_check+2)+1
           if(sph_rlm_test%idx_gl_1d_rlm_j(j,3) .ge. 0) then
-            do i = 1, n_point
+            do i = 1, gauss1%n_point
               write(60,'(4i5,1p3e23.14e3)')                             &
      &            sph_rlm_test%idx_gl_1d_rlm_j(j,1:3), i,               &
      &            g_colat_rtm(i), P_rtm(i,j), leg_t%dPdt_rtm(i,j)
@@ -144,12 +141,12 @@
         go to 88
   77  continue
 !
-!      call SMINIT(ltr, (2*n_point), n_point, 1)
+!      call SMINIT(ltr, (2*gauss1%n_point), gauss1%n_point, 1)
 !
 !      do l = 0, ltr
 !        do m = 0, l
 !          write(*,*) 'l,m', l, m, ltr-l+m,l, m, ltr-l
-!          do i = 1, n_point/2
+!          do i = 1, gauss1%n_point/2
 !            write(70,'(4i5,1p4E25.15e3)') j, l, m, i, Y_ispack(i,1:2), &
 !     &          P_ispack(1,ltr-l+m,l,i), P_ispack(1,m,l-1,i)
 !          end do

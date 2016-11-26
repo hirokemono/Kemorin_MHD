@@ -95,13 +95,11 @@
 !
       if (max_int_point .ge. 5) then
         do n = 5, max_int_point
-          call allocate_gauss_points(n)
-          call construct_gauss_coefs
+          call construct_gauss_coefs(n, gauss1)
 !
-          call set_gauss_coefs_1d_n(n, w_point, w_coefs)
+          call set_gauss_coefs_1d_n(n, gauss1%point, gauss1%weight)
 !
-          call deallocate_gauss_points
-!
+          call dealloc_gauss_points(gauss1)
         end do
       end if
 !

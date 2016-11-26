@@ -61,9 +61,8 @@
       type(mesh_groups), intent(inout) ::  group
 !
 !
-      call allocate_gauss_points(sph_rtp%nidx_global_rtp(2))
-      call construct_gauss_coefs
-      call set_gauss_colatitude
+      call construct_gauss_coefs(sph_rtp%nidx_global_rtp(2), gauss1)
+      call set_gauss_colatitude(gauss1)
 !
 !
       call const_global_sph_FEM(sph_rtp, sph_rj, radial_rtp_grp)
@@ -85,8 +84,8 @@
       end if
 !
       call deallocate_nnod_nele_sph_mesh
-      call deallocate_gauss_points
-      call deallocate_gauss_colatitude
+      call dealloc_gauss_colatitude(gauss1)
+      call dealloc_gauss_points(gauss1)
 !
       end subroutine const_FEM_mesh_4_sph_mhd
 !

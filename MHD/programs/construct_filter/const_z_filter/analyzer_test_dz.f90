@@ -57,7 +57,7 @@
 !C===
 !
       n_int = i_int_z_filter
-      n_point = n_int
+      gauss1%n_point = n_int
       if (my_rank.eq.0) write(*,*) 's_cal_jacobian_linear_1d'
       call s_cal_jacobian_linear_1d                                     &
      &   (n_int, z_filter_mesh%node, z_filter_mesh%ele,                 &

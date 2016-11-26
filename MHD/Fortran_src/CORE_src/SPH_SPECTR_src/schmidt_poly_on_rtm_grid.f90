@@ -8,7 +8,7 @@
 !!
 !!
 !!@verbatim
-!!      subroutine set_gauss_points_rtm(leg)
+!!      subroutine set_gauss_points_rtm(nth, leg)
 !!        type(legendre_4_sph_trans), intent(inout) :: leg
 !!      subroutine copy_sph_normalization_2_rlm(sph_rlm, g_sph_rlm)
 !!        type(sph_rlm_grid), intent(in) :: sph_rlm
@@ -43,22 +43,23 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_gauss_points_rtm(leg)
+      subroutine set_gauss_points_rtm(nth, leg)
 !
       use t_schmidt_poly_on_rtm
       use m_gauss_points
 !
+      integer(kind = kint), intent(in) :: nth 
       type(legendre_4_sph_trans), intent(inout) :: leg
 !
 !     set gauss colatitudes
 !
-      call construct_gauss_coefs
-      call set_gauss_colatitude
+      call construct_gauss_coefs(nth, gauss1)
+      call set_gauss_colatitude(gauss1)
 !
 !$omp parallel workshare
-      leg%g_point_rtm(1:n_point) = w_point(1:n_point)
-      leg%g_colat_rtm(1:n_point) = w_colat(1:n_point)
-      leg%weight_rtm(1:n_point) =  w_coefs(1:n_point)
+      leg%g_point_rtm(1:nth) = gauss1%point(1:nth)
+      leg%g_colat_rtm(1:nth) = gauss1%colat(1:nth)
+      leg%weight_rtm(1:nth) =  gauss1%weight(1:nth)
 !$omp end parallel workshare
 !
       end subroutine set_gauss_points_rtm

@@ -98,7 +98,7 @@
 !    set shape functions for 1 dimensional
 !
       n_int = i_int_z_filter
-      n_point = i_int_z_filter
+      gauss1%n_point = i_int_z_filter
       if (my_rank.eq.0) write(*,*) 's_cal_jacobian_linear_1d'
       call s_cal_jacobian_linear_1d(i_int_z_filter,                     &
      &    z_filter_mesh%node, z_filter_mesh%ele,                        &
@@ -174,13 +174,12 @@
       end if
 !
        num_inte = nfilter6_1 + 1
-       call allocate_gauss_points(n_int_points)
       if (my_rank.eq.0) write(*,*) 'construct_gauss_coefs'
-       call construct_gauss_coefs
-       call allocate_work_4_integration
-       call allocate_work_4_commute
+      call construct_gauss_coefs(n_int_points, gauss1)
+      call allocate_work_4_integration
+      call allocate_work_4_commute
 !
-       call allocate_matrix_4_commutation(z_filter_mesh%node%numnod)
+      call allocate_matrix_4_commutation(z_filter_mesh%node%numnod)
 !
       if (my_rank.eq.0) write(*,*) 'int_edge_norm_nod'
        call int_edge_norm_nod(z_filter_mesh%node, edge_z_filter)
@@ -276,7 +275,7 @@
      &     edge_z_filter)
 !
        call deallocate_filter_values
-       call deallocate_gauss_points
+       call dealloc_gauss_points(gauss1)
        call deallocate_work_4_integration
 !
 !    finerizing

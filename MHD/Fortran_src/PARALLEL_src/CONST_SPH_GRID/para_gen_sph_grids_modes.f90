@@ -252,9 +252,8 @@
 !
       if(iflag_output_mesh .eq. 0) return
 !
-      call allocate_gauss_points(sph_rtp%nidx_global_rtp(2))
-      call construct_gauss_coefs
-      call set_gauss_colatitude
+      call construct_gauss_coefs(sph_rtp%nidx_global_rtp(2), gauss1)
+      call set_gauss_colatitude(gauss1)
 !
       call s_const_1d_ele_connect_4_sph                                 &
      &   (sph_params%iflag_shell_mode, sph_params%m_folding, sph_rtp)
@@ -288,8 +287,8 @@
       call dealloc_groups_data(femmesh%group)
       call dealloc_mesh_type(femmesh%mesh)
       call deallocate_grp_type(radial_rj_grp_lc)
-      call deallocate_gauss_points
-      call deallocate_gauss_colatitude
+      call dealloc_gauss_colatitude(gauss1)
+      call dealloc_gauss_points(gauss1)
 !
       end subroutine para_gen_fem_mesh_for_sph
 !

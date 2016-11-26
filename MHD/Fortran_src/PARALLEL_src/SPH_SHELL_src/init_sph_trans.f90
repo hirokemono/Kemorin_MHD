@@ -124,13 +124,12 @@
       type(legendre_4_sph_trans), intent(inout) :: leg
 !
 !
-      call allocate_gauss_points(sph_rtm%nidx_rtm(2))
       call alloc_gauss_colat_rtm(sph_rtm%nidx_rtm(2), leg)
 !
-      call set_gauss_points_rtm(leg)
+      call set_gauss_points_rtm(sph_rtm%nidx_rtm(2), leg)
 !
-      call deallocate_gauss_colatitude
-      call deallocate_gauss_points
+      call dealloc_gauss_colatitude(gauss1)
+      call dealloc_gauss_points(gauss1)
 !
 !     set Legendre polynomials
 !

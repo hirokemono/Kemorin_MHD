@@ -81,13 +81,12 @@
 !
       num_gauss = 200
       num_inte = 2
-      call allocate_gauss_points(num_gauss)
+      call construct_gauss_coefs(num_gauss, gauss1)
       call allocate_work_4_integration
 !
-      call construct_gauss_coefs
 !
-      call set_points_4_integration(zst, zed)
-      call filter_moment_gaussian(ione, n_point, f_width,               &
+      call s_set_points_4_integration(zst, zed)
+      call filter_moment_gaussian(ione, gauss1%n_point, f_width,        &
      &       f_point, x_point)
       call gaussian_integration( f_mom(0) )
 !
@@ -97,7 +96,7 @@
       end do
 !
       call deallocate_work_4_integration
-      call deallocate_gauss_points
+      call dealloc_gauss_points(gauss1)
 !
       end subroutine int_gaussian_moment_w_range
 !
