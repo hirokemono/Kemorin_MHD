@@ -31,7 +31,6 @@
 !
       use calypso_mpi
 !
-      use m_gauss_points
       use m_fem_gauss_int_coefs
       use m_commute_filter_z
       use m_int_edge_data
@@ -57,7 +56,6 @@
 !C===
 !
       n_int = i_int_z_filter
-      gauss1%n_point = n_int
       if (my_rank.eq.0) write(*,*) 's_cal_jacobian_linear_1d'
       call s_cal_jacobian_linear_1d                                     &
      &   (n_int, z_filter_mesh%node, z_filter_mesh%ele,                 &

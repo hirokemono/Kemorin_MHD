@@ -3,8 +3,13 @@
 !
 !     Written by H. Matsui on March, 2013
 !
-!!      subroutine s_const_FEM_mesh_for_sph(ip_rank, nidx_rtp, r_global,&
+!!      subroutine s_const_FEM_mesh_for_sph                             &
+!!     &         (ip_rank, nidx_rtp, r_global, gauss,                   &
 !!     &          sph_params, sph_rtp, radial_rj_grp, mesh, group)
+!!        type(gauss_points), intent(in) :: gauss
+!!        type(sph_shell_parameters), intent(in) :: sph_params
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(group_data), intent(in) :: radial_rj_grp
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::  group
 !
@@ -24,10 +29,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_const_FEM_mesh_for_sph(ip_rank, nidx_rtp, r_global,  &
+      subroutine s_const_FEM_mesh_for_sph                               &
+     &         (ip_rank, nidx_rtp, r_global, gauss,                     &
      &          sph_params, sph_rtp, radial_rj_grp, mesh, group)
 !
       use t_spheric_parameter
+      use t_gauss_points
       use t_mesh_data
       use t_comm_table
       use t_geometry_data
@@ -43,6 +50,7 @@
       integer(kind = kint), intent(in) :: ip_rank
       real(kind= kreal), intent(in) :: r_global(nidx_global_fem(1))
 !
+      type(gauss_points), intent(in) :: gauss
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(group_data), intent(in) :: radial_rj_grp
@@ -61,7 +69,7 @@
 !
 !  Construct element connectivity
       call const_FEM_geometry_for_sph(ip_r, ip_t, r_global,             &
-     &    sph_params, mesh%node, mesh%ele)
+     &    sph_params, gauss, mesh%node, mesh%ele)
 !
 !  Construct groups
       call const_FEM_groups_for_sph(ip_r, ip_t,                         &
@@ -87,11 +95,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_FEM_geometry_for_sph(ip_r, ip_t, r_global,       &
-     &          sph_params, node, ele)
+     &          sph_params, gauss, node, ele)
 !
       use calypso_mpi
       use t_geometry_data
       use t_spheric_parameter
+      use t_gauss_points
       use m_spheric_global_ranks
       use m_sph_mesh_1d_connect
 !
@@ -101,6 +110,7 @@
       integer(kind = kint), intent(in) :: ip_r, ip_t
       real(kind= kreal), intent(in) :: r_global(nidx_global_fem(1))
       type(sph_shell_parameters), intent(in) :: sph_params
+      type(gauss_points), intent(in) :: gauss
 !
       type(node_data), intent(inout) :: node
       type(element_data), intent(inout) :: ele
@@ -110,8 +120,8 @@
      &   (sph_params%iflag_shell_mode, ip_r, ip_t, node)
 !
       call allocate_node_geometry_type(node)
-      call set_local_nodes_sph_mesh                                     &
-     &   (sph_params%iflag_shell_mode, ip_r, ip_t, r_global, node)
+      call set_local_nodes_sph_mesh(sph_params%iflag_shell_mode,        &
+     &    ip_r, ip_t, gauss%n_point, r_global, gauss%colat, node)
 !
 !  Construct element connectivity
       call count_local_elements_sph_mesh(ip_r, ip_t, sph_params, ele)

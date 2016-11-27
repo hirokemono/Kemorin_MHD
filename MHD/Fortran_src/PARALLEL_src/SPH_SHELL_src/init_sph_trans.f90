@@ -105,8 +105,6 @@
       subroutine init_legendre_rtm                                      &
      &         (l_truncation, sph_rj, sph_rtm, sph_rlm, idx_trns, leg)
 !
-      use m_gauss_points
-!
       use t_spheric_rtm_data
       use t_spheric_rlm_data
       use t_spheric_rj_data
@@ -124,12 +122,7 @@
       type(legendre_4_sph_trans), intent(inout) :: leg
 !
 !
-      call alloc_gauss_colat_rtm(sph_rtm%nidx_rtm(2), leg)
-!
       call set_gauss_points_rtm(sph_rtm%nidx_rtm(2), leg)
-!
-      call dealloc_gauss_colatitude(gauss1)
-      call dealloc_gauss_points(gauss1)
 !
 !     set Legendre polynomials
 !

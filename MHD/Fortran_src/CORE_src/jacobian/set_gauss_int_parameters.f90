@@ -70,9 +70,10 @@
 !
       use m_constants
       use m_gauss_int_parameters
-      use m_gauss_points
+      use t_gauss_points
 !
       integer(kind = kint) :: n
+      type(gauss_points) :: gauss_1d
 !
 !
       if (max_int_point .ge. ione) then
@@ -95,11 +96,11 @@
 !
       if (max_int_point .ge. 5) then
         do n = 5, max_int_point
-          call construct_gauss_coefs(n, gauss1)
+          call construct_gauss_coefs(n, gauss_1d)
 !
-          call set_gauss_coefs_1d_n(n, gauss1%point, gauss1%weight)
+          call set_gauss_coefs_1d_n(n, gauss_1d%point, gauss_1d%weight)
 !
-          call dealloc_gauss_points(gauss1)
+          call dealloc_gauss_points(gauss_1d)
         end do
       end if
 !

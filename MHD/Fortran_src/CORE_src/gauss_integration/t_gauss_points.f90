@@ -8,6 +8,7 @@
 !> @brief Constants for Gauss-Legendre integration
 !!
 !!@verbatim
+!!      subroutine const_gauss_colatitude(num_gauss, gauss)
 !!      subroutine construct_gauss_coefs(num_gauss, gauss)
 !! *************************************************
 !! construct points and coefficients for 
@@ -28,6 +29,8 @@
 !!      subroutine set_points_4_elevation(gauss, g_int)
 !!
 !!      subroutine cal_gauss_integrals(gauss, g_int, x)
+!!
+!!      subroutine check_gauss_points(gauss)
 !!@endverbatim
 !
       module t_gauss_points
@@ -68,10 +71,25 @@
       end type gauss_integrations
 !
       private :: alloc_gauss_points, alloc_gauss_colatitude
+      private :: dealloc_gauss_colats
+      private :: set_gauss_colatitude
 !
 ! -----------------------------------------------------------------------
 !
       contains
+!
+! -----------------------------------------------------------------------
+!
+      subroutine const_gauss_colatitude(num_gauss, gauss)
+!
+      integer(kind = kint), intent(in) :: num_gauss 
+      type(gauss_points), intent(inout) :: gauss
+!
+!
+      call construct_gauss_coefs(num_gauss, gauss)
+      call set_gauss_colatitude(gauss)
+!
+      end subroutine const_gauss_colatitude
 !
 ! -----------------------------------------------------------------------
 !
@@ -124,6 +142,18 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
+      subroutine dealloc_gauss_colatitude(gauss)
+!
+      type(gauss_points), intent(inout) :: gauss
+!
+!
+      call dealloc_gauss_colats(gauss)
+      call dealloc_gauss_points(gauss)
+!
+      end subroutine dealloc_gauss_colatitude
+!
+! -----------------------------------------------------------------------
+!
       subroutine dealloc_gauss_points(gauss)
 !
       type(gauss_points), intent(inout) :: gauss
@@ -135,7 +165,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine dealloc_gauss_colatitude(gauss)
+      subroutine dealloc_gauss_colats(gauss)
 !
       type(gauss_points), intent(inout) :: gauss
 !
@@ -145,7 +175,7 @@
       deallocate(gauss%azimuth)
       deallocate(gauss%azim_deg)
 !
-      end subroutine dealloc_gauss_colatitude
+      end subroutine dealloc_gauss_colats
 !
 ! -----------------------------------------------------------------------
 !
@@ -243,6 +273,36 @@
      &    gauss%weight, g_int%f_point, g_int%coef_len, x)
 !
       end subroutine cal_gauss_integrals
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine check_gauss_points(gauss)
+!
+      type(gauss_points), intent(in) :: gauss
+!
+      integer (kind = kint) :: i
+!
+!
+      write(*,*) 'gaussian points and coefficients'
+      do i = 1, gauss%n_point
+        write(*,'(i5,1p2E25.15e3)')                                     &
+     &         i, gauss%point(i), gauss%weight(i)
+      end do
+!
+      write(*,*) 'Gauss-Legendre colatitude'
+      do i = 1, gauss%n_point
+        write(*,'(i5,1p3E25.15e3)') i, gauss%point(i),                  &
+     &         gauss%colat(i), gauss%colat_deg(i)
+      end do
+!
+      write(*,*) 'Azimuth'
+      do i = 1, 2 * gauss%n_point
+        write(*,'(i5,1p2E25.15e3)')                                     &
+     &         i, gauss%azimuth(i), gauss%azim_deg(i)
+      end do
+!
+      end subroutine check_gauss_points
 !
 ! -----------------------------------------------------------------------
 !

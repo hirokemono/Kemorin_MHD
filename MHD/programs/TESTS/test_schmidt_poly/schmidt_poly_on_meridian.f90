@@ -3,7 +3,7 @@
 !
 !      Written by H. Matsui on June, 2007
 !
-!!      subroutine cal_full_legendre_on_med(lst, led, leg_d)
+!!      subroutine cal_full_legendre_on_med(nth, lst, led, leg_d)
 !!        type(gauss_legendre_data), intent(inout) :: leg_d
 !
       module schmidt_poly_on_meridian
@@ -14,39 +14,40 @@
 !
       real(kind = kreal), allocatable :: dint_p(:)
 !
+      private :: copy_gauss_colatitude
+!
 ! -----------------------------------------------------------------------
 !
       contains
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_full_legendre_on_med(lst, led, leg_d)
+      subroutine cal_full_legendre_on_med(nth, lst, led, leg_d)
 !
       use t_schmidt_poly_on_gauss
       use t_schmidt_polynomial
       use t_spherical_harmonics
-      use m_gauss_points
+      use t_gauss_points
       use spherical_harmonics
 !
-      integer(kind = kint), intent(in) :: lst, led
+      integer(kind = kint), intent(in) :: nth, lst, led
       type(gauss_legendre_data), intent(inout) :: leg_d
 !
       integer(kind = kint) :: i, j, m, l
+      type(gauss_points) :: gauss_med
       type(legendre_polynomials) :: leg_1pt
       type(sph_1point_type) :: sph_1pt
 !
 !
-      call alloc_gauss_colat_med(leg_d)
 !
 !     set gauss colatitudes
 !
-      call construct_gauss_coefs(leg_d%nth_g, gauss1)
-      call set_gauss_colatitude(gauss1)
+      call const_gauss_colatitude(nth, gauss_med)
 !
-      leg_d%g_point_med(1:leg_d%nth_g) = gauss1%point(1:leg_d%nth_g)
-      leg_d%g_colat_med(1:leg_d%nth_g) = gauss1%colat(1:leg_d%nth_g)
-      leg_d%weight_med(1:leg_d%nth_g) =  gauss1%weight(1:leg_d%nth_g)
+      call alloc_gauss_colat_med(gauss_med%n_point, leg_d)
+      call copy_gauss_colatitude(gauss_med, leg_d)
 !
+      call dealloc_gauss_colatitude(gauss_med)
 !
 !     set Legendre polynomials
 !
@@ -82,17 +83,33 @@
       do j = 0, leg_d%jmax_g
         l = sph_1pt%idx(j,1)
         m = abs( sph_1pt%idx(j,2) )
-        do i = 1, gauss1%n_point
+        do i = 1, leg_d%nth_g
           dint_p(j) = dint_p(j)                                         &
-     &               + gauss1%weight(i) * leg_d%P_smdt(i,j)**2
+     &               + leg_d%weight_med(i) * leg_d%P_smdt(i,j)**2
         end do
       end do
 !
-      call dealloc_gauss_colatitude(gauss1)
-      call dealloc_gauss_points(gauss1)
       call finalize_sph_indices(leg_1pt, sph_1pt)
 !
       end subroutine cal_full_legendre_on_med
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine copy_gauss_colatitude(gauss, leg_d)
+!
+      use t_gauss_points
+      use t_schmidt_poly_on_gauss
+!
+      type(gauss_points), intent(in) :: gauss
+      type(gauss_legendre_data), intent(inout) :: leg_d
+!
+!
+      leg_d%g_point_med(1:leg_d%nth_g) = gauss%point(1:leg_d%nth_g)
+      leg_d%g_colat_med(1:leg_d%nth_g) = gauss%colat(1:leg_d%nth_g)
+      leg_d%weight_med(1:leg_d%nth_g) =  gauss%weight(1:leg_d%nth_g)
+!
+      end subroutine copy_gauss_colatitude
 !
 ! -----------------------------------------------------------------------
 !

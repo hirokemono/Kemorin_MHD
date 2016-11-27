@@ -5,8 +5,8 @@
 !
 !!      subroutine count_numnod_local_sph_mesh                          &
 !!     &          (iflag_shell_mode, ip_r, ip_t, node)
-!!      subroutine set_local_nodes_sph_mesh                             &
-!!     &          (iflag_shell_mode, ip_r, ip_t, r_global, node)
+!!      subroutine set_local_nodes_sph_mesh(iflag_shell_mode,           &
+!!     &          ip_r, ip_t, num_colat, r_global, colat_gl, node)
 !!        type(node_data), intent(inout) :: node
 !
       module set_sph_local_node
@@ -83,16 +83,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_local_nodes_sph_mesh                               &
-     &          (iflag_shell_mode, ip_r, ip_t, r_global, node)
+      subroutine set_local_nodes_sph_mesh(iflag_shell_mode,             &
+     &          ip_r, ip_t, num_colat, r_global, colat_gl, node)
 !
       use m_spheric_constants
       use m_sph_mesh_1d_connect
-      use m_gauss_points
       use t_geometry_data
 !
       integer(kind = kint), intent(in) :: iflag_shell_mode, ip_r, ip_t
+      integer(kind = kint), intent(in) :: num_colat
       real(kind= kreal), intent(in) :: r_global(nidx_global_fem(1))
+      real(kind= kreal), intent(in) :: colat_gl(num_colat)
+!
       type(node_data), intent(inout) :: node
 !
       integer(kind = kint) :: knum, lnum, mnum
@@ -112,7 +114,7 @@
             node%inod_global(inod)                                      &
      &          = global_sph_shell_node_id(k, l, mnum)
             node%rr(inod) =     r_global(k)
-            node%theta(inod) =  gauss1%colat(l)
+            node%theta(inod) =  colat_gl(l)
             node%phi(inod) =  two*pi*dble(mnum-1)                       &
      &                         / dble(nidx_global_fem(3))
           end do
@@ -146,7 +148,7 @@
             inod = sph_n_pole_node_id(knum)
             node%inod_global(inod) = global_sph_n_pole_node_id(k)
 !
-            node%rr(inod) =     r_global(k)
+            node%rr(inod) =    r_global(k)
             node%theta(inod) = zero
             node%phi(inod) =   zero
           end do
@@ -173,7 +175,7 @@
      &                = global_sph_shell_node_id(ione, l, mnum)
 !
                 node%rr(inod) =    r_global(1)
-                node%theta(inod) = gauss1%colat(l)
+                node%theta(inod) = colat_gl(l)
                 node%phi(inod) =  two*pi*dble(mnum-1)                   &
      &                         / dble(nidx_global_fem(3))
               end do

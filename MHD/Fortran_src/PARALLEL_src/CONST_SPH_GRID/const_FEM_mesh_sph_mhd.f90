@@ -26,8 +26,11 @@
       use t_spheric_parameter
       use t_mesh_data
       use t_group_data
+      use t_gauss_points
 !
       implicit none
+!
+      type(gauss_points), private :: gauss_s
 !
       private :: const_global_sph_FEM, const_global_rtp_mesh
 !
@@ -41,7 +44,6 @@
      &          radial_rtp_grp, radial_rj_grp, mesh, group)
 !
       use calypso_mpi
-      use m_gauss_points
       use m_spheric_global_ranks
       use m_node_id_spherical_IO
       use m_read_mesh_data
@@ -61,8 +63,7 @@
       type(mesh_groups), intent(inout) ::  group
 !
 !
-      call construct_gauss_coefs(sph_rtp%nidx_global_rtp(2), gauss1)
-      call set_gauss_colatitude(gauss1)
+      call const_gauss_colatitude(sph_rtp%nidx_global_rtp(2), gauss_s)
 !
 !
       call const_global_sph_FEM(sph_rtp, sph_rj, radial_rtp_grp)
@@ -72,7 +73,7 @@
 !      write(*,*) 's_const_FEM_mesh_for_sph',                           &
 !     &          sph_params%iflag_shell_mode, iflag_MESH_w_center
       call s_const_FEM_mesh_for_sph                                     &
-     &   (my_rank, sph_rtp%nidx_rtp, sph_rj%radius_1d_rj_r,             &
+     &   (my_rank, sph_rtp%nidx_rtp, sph_rj%radius_1d_rj_r, gauss_s,    &
      &    sph_params, sph_rtp, radial_rj_grp, mesh, group)
 !
 ! Output mesh data
@@ -84,8 +85,7 @@
       end if
 !
       call deallocate_nnod_nele_sph_mesh
-      call dealloc_gauss_colatitude(gauss1)
-      call dealloc_gauss_points(gauss1)
+      call dealloc_gauss_colatitude(gauss_s)
 !
       end subroutine const_FEM_mesh_4_sph_mhd
 !

@@ -23,6 +23,7 @@
       type(CRS_matrix_connect), save :: tbl_crs_z
       type(CRS_matrix), save :: mat_crs_z
 !
+      type(gauss_points), private :: gauss_z
       type(gauss_integrations), save, private :: g_z_int
 !
 ! ----------------------------------------------------------------------
@@ -36,7 +37,6 @@
       use calypso_mpi
       use m_iccg_parameter
 !
-      use m_gauss_points
       use m_fem_gauss_int_coefs
       use m_commute_filter_z
       use m_neibor_data_z
@@ -84,8 +84,7 @@
       type(DJDS_ordering_table) :: djds_tbl_z
       type(DJDS_MATRIX) :: djds_mat_z
 !
-      integer(kind=kint) :: n_int, ierr
-      integer (kind = kint), parameter :: n_int_points = 200
+      integer(kind=kint) :: ierr
 !
 !C
 !C-- read CNTL DATA
@@ -99,8 +98,6 @@
 !
 !    set shape functions for 1 dimensional
 !
-      n_int = i_int_z_filter
-      gauss1%n_point = i_int_z_filter
       if (my_rank.eq.0) write(*,*) 's_cal_jacobian_linear_1d'
       call s_cal_jacobian_linear_1d(i_int_z_filter,                     &
      &    z_filter_mesh%node, z_filter_mesh%ele,                        &
@@ -118,7 +115,7 @@
       call allocate_int_edge_data                                       &
      &   (z_filter_mesh%node%numnod, z_filter_mesh%ele%numele)
       call set_spatial_difference(z_filter_mesh%ele%numele,             &
-     &                            n_int, jac_z_l)
+     &                            i_int_z_filter, jac_z_l)
 !
       if (my_rank.eq.0) write(*,*) 'cal_delta_z_analytical'
        call cal_delta_z_analytical                                      &
@@ -165,7 +162,8 @@
 !
       if (my_rank.eq.0) write(*,*) 'allocate_filter_values'
       call allocate_filter_values(numfilter)
-      write(*,*) 'allocate_filter', nfilter6_1, nfilter2_1, n_int
+      write(*,*) 'allocate_filter',                                     &
+     &            nfilter6_1, nfilter2_1, i_int_z_filter
 !
       if ( iflag_filter .eq. 0) then
         call int_tophat_moment_infty(nfilter6_1,f_mom_full,f_width)
@@ -176,16 +174,16 @@
       end if
 !
       if (my_rank.eq.0) write(*,*) 'construct_gauss_coefs'
-      call construct_gauss_coefs(n_int_points, gauss1)
+      call construct_gauss_coefs(i_int_z_filter, gauss_z)
       call alloc_work_4_integration                                     &
-     &  ((nfilter6_1 + 1), gauss1%n_point, g_z_int)
+     &  ((nfilter6_1 + 1), gauss_z%n_point, g_z_int)
       call allocate_work_4_commute
 !
       call allocate_matrix_4_commutation(z_filter_mesh%node%numnod)
 !
       if (my_rank.eq.0) write(*,*) 'int_edge_norm_nod'
        call int_edge_norm_nod                                           &
-     &    (z_filter_mesh%node, edge_z_filter, gauss1, g_z_int)
+     &    (z_filter_mesh%node, edge_z_filter, gauss_z, g_z_int)
 !       call check_nod_normalize_matrix                                 &
 !     &     (my_rank, z_filter_mesh%node%numnod)
 !
@@ -254,22 +252,22 @@
 !       call check_neib_ele_2nd(my_rank, z_filter_mesh%ele%numele)
 !
        call int_edge_filter_peri(ndep_filter, totalnod_x, xsize,        &
-     &      xmom_h_x, xmom_ht_x, gauss1, g_z_int)
+     &      xmom_h_x, xmom_ht_x, gauss_z, g_z_int)
        call int_edge_filter_peri(ndep_filter, totalnod_y, ysize,        &
-     &      xmom_h_y, xmom_ht_y, gauss1, g_z_int)
+     &      xmom_h_y, xmom_ht_y, gauss_z, g_z_int)
 !
        if(my_rank.eq.0) write(*,*) 'int_edge_commutative_filter'
        call int_edge_commutative_filter                                 &
      &    (z_filter_mesh%node%numnod, z_filter_mesh%ele%numele,         &
      &     z_filter_mesh%node%xx(1:z_filter_mesh%node%numnod,3),        &
-     &     edge_z_filter%ie_edge, gauss1, g_z_int)
+     &     edge_z_filter%ie_edge, gauss_z, g_z_int)
 !       call check_int_commutative_filter                               &
 !     &    (my_rank, z_filter_mesh%node%numnod)
 !
        if(my_rank.eq.0) write(*,*) 'int_edge_moment'
        call int_edge_moment                                             &
      &    (z_filter_mesh%node%numnod, z_filter_mesh%ele%numele,         &
-     &     edge_z_filter, n_int, jac_z_l)
+     &     edge_z_filter, i_int_z_filter, jac_z_l)
 !
 !    output results
 !
@@ -278,7 +276,7 @@
 !
        call deallocate_filter_values
        call dealloc_work_4_integration(g_z_int)
-       call dealloc_gauss_points(gauss1)
+       call dealloc_gauss_points(gauss_z)
 !
 !    finerizing
 !

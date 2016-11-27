@@ -40,18 +40,12 @@
 !
       integer(kind = kint), intent(in) :: nth, lst, led, ltr
 !
-      type(gauss_points) :: gauss
       type(legendre_4_sph_trans) :: leg
       type(gauss_legendre_data) :: leg_d
       integer(kind = kint) :: i, j, m, l
 !
 !
-      call alloc_gauss_colat_rtm(nth, leg)
-!
-!     set gauss colatitudes
-!
-      call set_gauss_points_rtm(leg%nth_P_tm, gauss, leg)
-      call set_gauss_colatitude(gauss)
+      call set_gauss_points_rtm(nth, leg)
 !
 !     set Legendre polynomials
 !
@@ -91,13 +85,11 @@
       do j = 0, leg%jmax_P_lm
         l = sph_1pt%idx(j,1)
         m = abs( sph_1pt%idx(j,2) )
-        do i = 1, gauss%n_point
-          dint_p(j) = dint_p(j) + gauss%weight(i) * leg%P_rtm(i,j)**2
+        do i = 1, nth
+          dint_p(j) = dint_p(j) + leg%weight_rtm(i) * leg%P_rtm(i,j)**2
         end do
       end do
 !
-      call dealloc_gauss_colatitude(gauss)
-      call dealloc_gauss_points(gauss)
       call dealloc_schmidt_polynomial(leg_test)
 !
 !      call check_gauss_colat_rtm(izero, leg)

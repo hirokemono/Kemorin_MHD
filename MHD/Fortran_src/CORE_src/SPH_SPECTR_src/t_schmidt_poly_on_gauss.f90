@@ -10,7 +10,7 @@
 !!      subroutine alloc_stack_smdt_med_smp(np_smp, leg_d)
 !!      subroutine dealloc_stack_smdt_med_smp(leg_d)
 !!
-!!      subroutine alloc_gauss_colat_med(leg_d)
+!!      subroutine alloc_gauss_colat_med(nth, leg_d)
 !!      subroutine alloc_schmidt_poly_med(leg_d)
 !!      subroutine alloc_fully_legendre_med(leg_d)
 !!      subroutine alloc_legendre_med(leg_d)
@@ -99,14 +99,19 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_gauss_colat_med(leg_d)
+      subroutine alloc_gauss_colat_med(nth, leg_d)
 !
+      integer(kind = kint), intent(in) :: nth
       type(gauss_legendre_data), intent(inout) :: leg_d
+!
+!
+      leg_d%nth_g = nth
 !
       allocate( leg_d%g_point_med(leg_d%nth_g) )
       allocate( leg_d%g_colat_med(leg_d%nth_g) )
       allocate( leg_d%weight_med(leg_d%nth_g) )
 !
+      if(leg_d%nth_g .le. 0) return
       leg_d%g_point_med = 0.0d0
       leg_d%g_colat_med = 0.0d0
       leg_d%weight_med = 0.0d0

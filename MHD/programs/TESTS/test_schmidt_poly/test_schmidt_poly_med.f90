@@ -13,11 +13,12 @@
       type(gauss_legendre_data), save :: leg_t
 !
       integer(kind = kint) :: j, l, m, i, itime
-      integer(kind = kint) :: iend, istart, t_rate, t_max, lst, led
+      integer(kind = kint) :: iend, istart, t_rate, t_max
+      integer(kind = kint) :: nth, lst, led
 !
 !
       write(*,*) 'input num. of points'
-      read(*,*) leg_t%nth_g
+      read(*,*) nth
 !
       write(*,*) 'input range of point'
       read(*,*) lst, led
@@ -26,7 +27,7 @@
       read(*,*) leg_t%ltr_g
 !
       call system_clock(istart)
-      call cal_full_legendre_on_med(lst, led, leg_t)
+      call cal_full_legendre_on_med(nth, lst, led, leg_t)
       call system_clock(iend, t_rate, t_max)
       write(*,*) 'Elapsed time:', (iend-istart) / dble(t_rate)
 !

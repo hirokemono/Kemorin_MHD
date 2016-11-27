@@ -17,7 +17,6 @@
       use m_precision
       use m_constants
 !
-      use m_gauss_points
       use t_geometry_data
 !
       use m_sph_mesh_1d_connect

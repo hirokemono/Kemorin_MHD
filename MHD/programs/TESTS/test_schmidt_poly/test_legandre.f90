@@ -19,7 +19,6 @@
       use mag_pbar
       use ispack_lag
 !
-      use m_gauss_points
       use t_spheric_parameter
       use t_schmidt_poly_on_rtm
 !
@@ -50,7 +49,7 @@
       write(*,*) 'Imput truncation degree'
       read(*,*)  ltr
 !
-      nidx_rtm(2) = num_gauss
+      sph_rtm_test%nidx_rtm(2) = num_gauss
       sph_rlm_test%nidx_rlm(2) = ltr*(ltr+2) + 1
       sph_param_test%l_truncation = ltr
       call alloc_type_sph_1d_index_rlm(sph_rlm_test)
@@ -65,11 +64,7 @@
         end do
       end do
 !
-      call alloc_gauss_colat_rtm(sph_rtm_test%nidx_rtm(2), leg_t)
-      call set_gauss_points_rtm(num_gauss, leg_t)
-!
-      call dealloc_gauss_colatitude(gauss1)
-      call dealloc_gauss_points(gauss1)
+      call set_gauss_points_rtm(sph_rtm_test%nidx_rtm(2), leg_t)
 !
       call allocate_schmidt_poly_rtm(sph_rtm_test%nidx_rtm(2),          &
      &    sph_rlm_test%nidx_rlm(2), sph_rj_test%nidx_rj(2), leg_t)
@@ -82,11 +77,11 @@
 !      end do
 !
       write(*,*) 'Gauss-Legendre colatitude'
-      do i = 1, gauss1%n_point
+      do i = 1, num_gauss
         write(*,'(i5,1p2E25.15e3)') i, g_colat_rtm(i), weight_rtm(i)
       end do
 !
-      ntheta = gauss1%n_point
+      ntheta = num_gauss
       call alloc_mag_lag(ntheta, ltr)
       call mag_gauss_point(ntheta)
 !
@@ -96,10 +91,10 @@
       end do
 !
       write(*,*) 'difference'
-      do i = 1, gauss1%n_point
+      do i = 1, num_gauss
         write(*,'(i5,1p2E25.15e3)') i,                                  &
-     &                       g_colat_rtm(i)-colat(gauss1%n_point-i+1),  &
-     &                       weight_rtm(i)-gauss_w(gauss1%n_point-i+1)
+     &                       g_colat_rtm(i)-colat(num_gauss-i+1),       &
+     &                       weight_rtm(i)-gauss_w(num_gauss-i+1)
       end do
 !
 !      colat(1:ntheta) =   g_colat_rtm(1:ntheta)
@@ -117,7 +112,7 @@
         write(60,'(a)') 'j, l, m, i, r, P_rtm, dPdt_rtm'
         do j = l_check*(l_check+1)+1, l_check*(l_check+2)+1
           if(sph_rlm_test%idx_gl_1d_rlm_j(j,3) .ge. 0) then
-            do i = 1, gauss1%n_point
+            do i = 1, num_gauss
               write(60,'(4i5,1p3e23.14e3)')                             &
      &            sph_rlm_test%idx_gl_1d_rlm_j(j,1:3), i,               &
      &            g_colat_rtm(i), P_rtm(i,j), leg_t%dPdt_rtm(i,j)
@@ -141,12 +136,12 @@
         go to 88
   77  continue
 !
-!      call SMINIT(ltr, (2*gauss1%n_point), gauss1%n_point, 1)
+!      call SMINIT(ltr, (2*num_gauss), num_gauss, 1)
 !
 !      do l = 0, ltr
 !        do m = 0, l
 !          write(*,*) 'l,m', l, m, ltr-l+m,l, m, ltr-l
-!          do i = 1, gauss1%n_point/2
+!          do i = 1, num_gauss/2
 !            write(70,'(4i5,1p4E25.15e3)') j, l, m, i, Y_ispack(i,1:2), &
 !     &          P_ispack(1,ltr-l+m,l,i), P_ispack(1,m,l-1,i)
 !          end do

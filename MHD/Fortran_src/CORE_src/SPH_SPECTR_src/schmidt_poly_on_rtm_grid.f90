@@ -33,9 +33,14 @@
       use t_spheric_rtm_data
       use t_spheric_rlm_data
       use t_spheric_rj_data
+      use t_gauss_points
       use t_work_4_sph_trans
 !
       implicit none
+!
+      type(gauss_points), private :: gauss_rtm
+!
+      private :: set_gauss_colatitude_rtm
 !
 ! -----------------------------------------------------------------------
 !
@@ -46,23 +51,38 @@
       subroutine set_gauss_points_rtm(nth, leg)
 !
       use t_schmidt_poly_on_rtm
-      use m_gauss_points
 !
       integer(kind = kint), intent(in) :: nth 
       type(legendre_4_sph_trans), intent(inout) :: leg
 !
-!     set gauss colatitudes
 !
-      call construct_gauss_coefs(nth, gauss1)
-      call set_gauss_colatitude(gauss1)
+      call const_gauss_colatitude(nth, gauss_rtm)
 !
-!$omp parallel workshare
-      leg%g_point_rtm(1:nth) = gauss1%point(1:nth)
-      leg%g_colat_rtm(1:nth) = gauss1%colat(1:nth)
-      leg%weight_rtm(1:nth) =  gauss1%weight(1:nth)
-!$omp end parallel workshare
+      call alloc_gauss_colat_rtm(nth, leg)
+      call set_gauss_colatitude_rtm(gauss_rtm, leg)
+!
+      call dealloc_gauss_colatitude(gauss_rtm)
 !
       end subroutine set_gauss_points_rtm
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine set_gauss_colatitude_rtm(gauss, leg)
+!
+      use t_schmidt_poly_on_rtm
+!
+      type(gauss_points), intent(in) :: gauss
+      type(legendre_4_sph_trans), intent(inout) :: leg
+!
+!
+!$omp parallel workshare
+      leg%g_point_rtm(1:gauss%n_point) = gauss%point(1:gauss%n_point)
+      leg%g_colat_rtm(1:gauss%n_point) = gauss%colat(1:gauss%n_point)
+      leg%weight_rtm(1:gauss%n_point) =  gauss%weight(1:gauss%n_point)
+!$omp end parallel workshare
+!
+      end subroutine set_gauss_colatitude_rtm
 !
 ! -----------------------------------------------------------------------
 !

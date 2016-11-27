@@ -27,6 +27,7 @@
 !
       implicit none
 !
+      type(gauss_points), private :: gauss_mom
       type(gauss_integrations), private :: gmom_int
 !
 ! -----------------------------------------------------------------------
@@ -61,7 +62,6 @@
      &          zst, zed)
 !
       use m_constants
-      use m_gauss_points
       use set_filter_moments
 !
       integer(kind = kint), intent(in) :: n_level
@@ -83,13 +83,14 @@
 !
       num_gauss = 200
       num_inte = 2
-      call construct_gauss_coefs(num_gauss, gauss1)
-      call alloc_work_4_integration(num_inte, gauss1%n_point, gmom_int)
+      call construct_gauss_coefs(num_gauss, gauss_mom)
+      call alloc_work_4_integration                                     &
+     &   (num_inte, gauss_mom%n_point, gmom_int)
 !
-      call set_points_4_integration(zst, zed, gauss1, gmom_int)
-      call filter_moment_gaussian(ione, gauss1%n_point, f_width,        &
+      call set_points_4_integration(zst, zed, gauss_mom, gmom_int)
+      call filter_moment_gaussian(ione, gauss_mom%n_point, f_width,     &
      &    gmom_int%f_point, gmom_int%x_point)
-      call cal_gauss_integrals(gauss1, gmom_int, f_mom(0))
+      call cal_gauss_integrals(gauss_mom, gmom_int, f_mom(0))
 !
       do kf = 2, n_level
         f_mom(kf) = (f_width**2/three) * ( dble(kf-1) * f_mom(kf-2)     &
@@ -97,7 +98,7 @@
       end do
 !
       call dealloc_work_4_integration(gmom_int)
-      call dealloc_gauss_points(gauss1)
+      call dealloc_gauss_points(gauss_mom)
 !
       end subroutine int_gaussian_moment_w_range
 !

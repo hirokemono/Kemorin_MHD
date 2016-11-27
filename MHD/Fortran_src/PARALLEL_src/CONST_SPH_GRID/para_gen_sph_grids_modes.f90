@@ -226,7 +226,8 @@
       subroutine para_gen_fem_mesh_for_sph(ndomain_sph,                 &
      &          sph_params, sph_rj, sph_rtp)
 !
-      use m_gauss_points
+      use t_gauss_points
+!
       use m_sph_mesh_1d_connect
       use m_read_mesh_data
       use m_node_id_spherical_IO
@@ -248,12 +249,12 @@
       integer(kind = kint) :: ip_rank, ip
       type(mesh_data) :: femmesh
       type(group_data) :: radial_rj_grp_lc
+      type(gauss_points) :: gauss_s
 !
 !
       if(iflag_output_mesh .eq. 0) return
 !
-      call construct_gauss_coefs(sph_rtp%nidx_global_rtp(2), gauss1)
-      call set_gauss_colatitude(gauss1)
+      call const_gauss_colatitude(sph_rtp%nidx_global_rtp(2), gauss_s)
 !
       call s_const_1d_ele_connect_4_sph                                 &
      &   (sph_params%iflag_shell_mode, sph_params%m_folding, sph_rtp)
@@ -271,7 +272,7 @@
 !
 !
         call s_const_FEM_mesh_for_sph                                   &
-     &     (ip_rank, sph_rtp%nidx_rtp, radius_1d_gl,                    &
+     &     (ip_rank, sph_rtp%nidx_rtp, radius_1d_gl, gauss_s,           &
      &      sph_params, sph_rtp, radial_rj_grp_lc,                      &
      &      femmesh%mesh, femmesh%group)
 !
@@ -287,8 +288,7 @@
       call dealloc_groups_data(femmesh%group)
       call dealloc_mesh_type(femmesh%mesh)
       call deallocate_grp_type(radial_rj_grp_lc)
-      call dealloc_gauss_colatitude(gauss1)
-      call dealloc_gauss_points(gauss1)
+      call dealloc_gauss_colatitude(gauss_s)
 !
       end subroutine para_gen_fem_mesh_for_sph
 !
