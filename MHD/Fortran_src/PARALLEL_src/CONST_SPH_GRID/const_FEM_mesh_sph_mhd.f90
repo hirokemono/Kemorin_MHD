@@ -45,7 +45,6 @@
 !
       use calypso_mpi
       use m_spheric_global_ranks
-      use m_node_id_spherical_IO
       use m_read_mesh_data
       use set_FEM_mesh_4_sph
       use const_1d_ele_connect_4_sph
@@ -53,6 +52,7 @@
       use gen_sph_grids_modes
       use set_FEM_mesh_4_sph
       use mpi_load_mesh_data
+      use sph_file_IO_select
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rtp_grid), intent(in) :: sph_rtp

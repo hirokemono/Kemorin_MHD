@@ -33,7 +33,6 @@
 !
       use m_t_step_parameter
       use m_ctl_params_sph_trans
-      use m_node_id_spherical_IO
       use m_control_params_2nd_files
 !
       use r_interpolate_sph_data
@@ -107,7 +106,6 @@
      &         (i_step, sph_mesh, ipol, rj_fld, fld_IO, visval)
 !
       use m_t_step_parameter
-      use m_node_id_spherical_IO
       use m_control_params_2nd_files
 !
       use field_IO_select

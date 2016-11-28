@@ -22,7 +22,7 @@
 !
       use m_precision
 !
-      use m_node_id_spherical_IO
+      use t_node_id_spherical_IO
       use skip_gz_comment
 !
       implicit none

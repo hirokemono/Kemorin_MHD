@@ -118,7 +118,6 @@
       use m_ctl_data_4_2nd_data
       use m_ctl_data_4_fields
       use m_ctl_data_4_time_steps
-      use m_node_id_spherical_IO
       use set_parallel_file_name
       use set_control_platform_data
       use ucd_IO_select

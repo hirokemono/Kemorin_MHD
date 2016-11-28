@@ -130,7 +130,6 @@
       use m_sph_spectr_data
       use m_fdm_coefs
       use m_schmidt_poly_on_rtm
-      use m_node_id_spherical_IO
       use m_sph_trans_arrays_MHD
       use m_rms_4_sph_spectr
 !

@@ -109,9 +109,9 @@
       subroutine set_control_sph_mesh(sph_file_param)
 !
       use m_read_mesh_data
-      use m_node_id_spherical_IO
       use m_file_format_switch
       use t_field_data_IO
+      use sph_file_IO_select
 !
       type(field_IO_params), intent(inout) :: sph_file_param
 !

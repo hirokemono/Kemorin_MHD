@@ -72,7 +72,6 @@
       use m_read_mesh_data
       use m_sph_spectr_data
       use m_file_format_switch
-      use m_node_id_spherical_IO
       use m_control_params_2nd_files
 !
       use set_control_nodal_data

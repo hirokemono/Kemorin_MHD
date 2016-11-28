@@ -31,7 +31,7 @@
       character(len = kchara) :: zm_spec_file_head = 'zm_spectral'
       character(len = kchara) :: zonal_udt_head = 'z_mean_out'
 !
-      character(len = kchara) :: sph_file_head = 'restart/rst'
+      character(len = kchara) :: sph_rst_file_head = 'restart/rst'
       integer(kind = kint) ::    ifmt_sph_data = 0
 !
       character(len = kchara) :: cmb_radial_grp =     'CMB'
@@ -87,7 +87,7 @@
       end if
 !
       if (restart_file_prefix%iflag .gt. 0) then
-        sph_file_head = restart_file_prefix%charavalue
+        sph_rst_file_head = restart_file_prefix%charavalue
       end if
       call choose_para_file_format                                      &
      &   (restart_file_fmt_ctl, ifmt_sph_data)
@@ -162,7 +162,7 @@
       end if
 !
       if (restart_file_prefix%iflag .gt. 0) then
-        sph_file_head = restart_file_prefix%charavalue
+        sph_rst_file_head = restart_file_prefix%charavalue
       end if
       call choose_para_file_format                                      &
      &   (restart_file_fmt_ctl, ifmt_sph_data)
@@ -198,7 +198,6 @@
       use m_machine_parameter
       use m_t_step_parameter
       use m_read_mesh_data
-      use m_node_id_spherical_IO
       use m_control_params_2nd_files
       use m_FFT_selector
 !
@@ -241,11 +240,11 @@
 !   using rstart data for spherical dynamo
 !
       if( (rj_org_param%iflag_IO*rst_org_param%iflag_IO) .gt. 0) then
-        sph_file_head = rst_org_param%file_prefix
+        sph_rst_file_head = rst_org_param%file_prefix
       end if
 !
       if (restart_file_prefix%iflag .gt. 0) then
-        sph_file_head = restart_file_prefix%charavalue
+        sph_rst_file_head = restart_file_prefix%charavalue
       end if
       call choose_para_file_format                                      &
      &   (restart_file_fmt_ctl, ifmt_sph_data)
@@ -302,7 +301,7 @@
 !
 !
       if(i_zm_sph_spec_file .gt. 0) then
-        sph_file_head =    zm_spec_file_head
+        sph_rst_file_head =    zm_spec_file_head
       end if
 !
       end subroutine set_ctl_data_4_zm_trans

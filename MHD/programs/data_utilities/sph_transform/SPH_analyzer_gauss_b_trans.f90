@@ -32,7 +32,6 @@
 !
       use m_t_step_parameter
       use m_ctl_params_sph_trans
-      use m_node_id_spherical_IO
 !
       use r_interpolate_sph_data
       use count_num_sph_smp

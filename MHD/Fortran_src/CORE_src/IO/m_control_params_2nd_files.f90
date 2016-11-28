@@ -44,7 +44,6 @@
 !
       use m_ctl_data_4_org_data
       use m_read_mesh_data
-      use m_node_id_spherical_IO
       use m_file_format_switch
 !
 !

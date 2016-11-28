@@ -51,8 +51,8 @@
       subroutine set_local_rj_mesh_4_merge                              &
      &         (file_prefix, nprocs_in, sph_mesh)
 !
-      use m_node_id_spherical_IO
       use sph_file_MPI_IO_select
+      use sph_file_IO_select
       use load_data_for_sph_IO
 !
       character(len=kchara), intent(in) :: file_prefix

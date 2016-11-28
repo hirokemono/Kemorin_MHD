@@ -47,8 +47,6 @@
       subroutine share_org_sph_rj_data                                  &
      &         (org_sph_head, np_sph_org, org_sph_mesh)
 !
-      use m_node_id_spherical_IO
-!
       use t_spheric_rj_data
 !
       use new_SPH_restart

@@ -27,12 +27,12 @@
 !
       use m_control_data_4_merge
 !
-      use m_node_id_spherical_IO
       use input_old_file_sel_4_zlib
 !
       use m_sph_spectr_data
       use m_t_step_parameter
       use m_t_int_parameter
+      use sph_file_IO_select
       use field_IO_select
       use r_interpolate_marged_sph
       use copy_time_steps_4_restart

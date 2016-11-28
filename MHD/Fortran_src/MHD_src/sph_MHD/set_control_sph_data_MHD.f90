@@ -36,7 +36,6 @@
       use m_ctl_data_mhd_forces
       use m_ctl_data_mhd_evo_scheme
       use m_control_params_2nd_files
-      use m_node_id_spherical_IO
       use m_physical_property
       use m_file_format_switch
 !

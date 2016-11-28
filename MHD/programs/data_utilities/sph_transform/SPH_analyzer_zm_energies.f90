@@ -35,7 +35,6 @@
 !
       use m_t_step_parameter
       use m_control_params_2nd_files
-      use m_node_id_spherical_IO
       use t_phys_address
       use t_spheric_mesh
       use t_phys_data

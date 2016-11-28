@@ -58,7 +58,7 @@
       use m_error_IDs
       use m_control_data_4_merge
 !
-      use m_node_id_spherical_IO
+      use sph_file_IO_select
       use field_IO_select
       use parallel_sph_assemble
 !

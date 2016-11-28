@@ -157,7 +157,6 @@
       subroutine init_radial_sph_interpolation(sph_params, sph_rj)
 !
       use m_control_params_2nd_files
-      use m_node_id_spherical_IO
       use t_spheric_parameter
       use r_interpolate_sph_data
 !
@@ -181,7 +180,6 @@
      &         (i_step, sph_rj, ipol, rj_fld)
 !
       use m_control_params_2nd_files
-      use m_node_id_spherical_IO
       use t_spheric_rj_data
       use set_sph_restart_IO
       use r_interpolate_sph_data

@@ -30,9 +30,6 @@
       integer(kind = kint) :: nnod_group_IO, internod_group_IO
       integer(kind = kint),  allocatable :: IGROUP_IO(:)
 !
-      character(len=255) :: character_4_read
-      private :: character_4_read
-!
 !   --------------------------------------------------------------------
 !
       contains
@@ -80,6 +77,9 @@
       subroutine read_group_4_partition
 !
       use skip_comment_f
+!
+      character(len=255) :: character_4_read
+!
 !
       open(id_subdomain,file = fname_subdomain)
 !

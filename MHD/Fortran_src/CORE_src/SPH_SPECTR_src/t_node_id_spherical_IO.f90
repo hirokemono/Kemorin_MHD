@@ -18,8 +18,6 @@
 !!      subroutine dealloc_idx_sph_1d1_IO(sph_IO)
 !!      subroutine dealloc_idx_sph_1d2_IO(sph_IO)
 !!      subroutine dealloc_idx_sph_1d3_IO(sph_IO)
-!!
-!!      subroutine set_sph_mesh_file_fmt_prefix(iflag_fmt, file_head)
 !!@endverbatim
 !
       module t_node_id_spherical_IO

@@ -34,7 +34,6 @@
 !
       use m_t_step_parameter
       use m_ctl_params_sph_trans
-      use m_node_id_spherical_IO
 !
       use t_spheric_mesh
       use t_phys_data
@@ -76,7 +75,6 @@
 !
       use m_t_step_parameter
       use m_time_data_IO
-      use m_node_id_spherical_IO
       use m_ctl_params_sph_trans
       use t_spheric_mesh
       use t_phys_data
@@ -126,7 +124,6 @@
 !
       use m_t_step_parameter
       use m_time_data_IO
-      use m_node_id_spherical_IO
       use t_spheric_mesh
       use t_phys_data
       use t_field_data_IO

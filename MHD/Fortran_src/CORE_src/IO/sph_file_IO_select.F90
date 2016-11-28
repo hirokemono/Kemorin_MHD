@@ -7,6 +7,8 @@
 !>@brief  Spectr data IO selector
 !!
 !!@verbatim
+!!      subroutine set_sph_mesh_file_fmt_prefix(iflag_fmt, file_head)
+!!
 !!      subroutine sel_read_geom_rtp_file(my_rank, sph_file, ierr)
 !!      subroutine sel_read_spectr_rj_file(my_rank, sph_file, ierr)
 !!      subroutine sel_read_geom_rtm_file(my_rank, sph_file, ierr)
@@ -44,6 +46,11 @@
 !
       implicit none
 !
+      character(len=kchara) :: sph_file_head =     "in_sph"
+      integer(kind = kint) :: iflag_sph_file_fmt = 0
+!
+      integer(kind = kint), parameter, private :: mesh_file_id = 14
+!
       character(len=kchara), private :: sph_file_name
 !
 !------------------------------------------------------------------
@@ -51,6 +58,19 @@
       contains
 !
 !------------------------------------------------------------------
+!
+      subroutine set_sph_mesh_file_fmt_prefix(iflag_fmt, file_head)
+!
+      integer(kind = kint), intent(in) :: iflag_fmt
+      character(len=kchara), intent(in) :: file_head
+!
+      iflag_sph_file_fmt = iflag_fmt
+      write(sph_file_head,'(a)') trim(file_head)
+!
+      end subroutine set_sph_mesh_file_fmt_prefix
+!
+! -------------------------------------------------------------------
+! -------------------------------------------------------------------
 !
       subroutine sel_read_geom_rtp_file(my_rank, sph_file, ierr)
 !

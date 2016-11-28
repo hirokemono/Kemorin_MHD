@@ -88,9 +88,7 @@
       use m_sph_mesh_1d_connect
       use m_error_IDs
 !
-      use m_node_id_spherical_IO
       use m_file_format_switch
-!
       use m_ctl_data_4_sphere_model
 !
       use set_controls_4_sph_shell

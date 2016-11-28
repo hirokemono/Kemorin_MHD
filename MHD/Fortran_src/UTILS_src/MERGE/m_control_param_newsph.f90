@@ -95,7 +95,6 @@
       use m_ctl_data_4_platforms
       use m_ctl_data_4_2nd_data
       use m_ctl_data_4_time_steps
-      use m_node_id_spherical_IO
       use m_file_format_switch
       use set_control_platform_data
       use new_SPH_restart
