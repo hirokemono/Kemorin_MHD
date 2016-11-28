@@ -66,9 +66,9 @@
 
       allocate( num_4_lf_smp(nsize_lf_smp,np_smp,3) )
       allocate( istack_l_filter_smp(0:nsize_lf_smp*np_smp,3) )
-      allocate( item_l_filter_smp(ntot_l_filter,3) )
+      allocate( item_l_filter_smp(fil_l1%ntot_lf,3) )
 !
-      allocate( c_l_filter_smp(ntot_l_filter,3) )
+      allocate( c_l_filter_smp(fil_l1%ntot_lf,3) )
       allocate( ff_lf_smp(numnod,6) )
 !
       num_4_lf_smp = 0
@@ -95,9 +95,9 @@
 !
       allocate( inod_l_filter_tmp(numnod,3) )
       allocate( istack_l_filter_tmp(0:numnod,3) )
-      allocate( item_l_filter_tmp(ntot_l_filter,3) )
+      allocate( item_l_filter_tmp(fil_l1%ntot_lf,3) )
 !
-      allocate( c_l_filter_tmp(ntot_l_filter,3) )
+      allocate( c_l_filter_tmp(fil_l1%ntot_lf,3) )
 !
       allocate( n2o_cyclic_l(numnod) )
 !
@@ -175,7 +175,7 @@
        ist = inod_smp_stack(ip-1) + 1
        ied = inod_smp_stack(ip)
        do nd = 1, 3
-        do isum = 1, nmax_l_filter(nd)
+        do isum = 1, fil_l1%nmax_lf(nd)
           ii = (ip-1)*nsize_lf_smp + isum
           write(50+my_rank,*) ip, nd, isum, istack_l_filter_smp(ii,nd)
         end do

@@ -60,7 +60,7 @@
 !$omp parallel do private(inod,jnod,ist,i,idx,isum,ii)
        do ip = 1, np_smp
         ist = inod_smp_stack(ip-1) + 1
-        do isum = 1, nmax_l_filter(nd)
+        do isum = 1, fil_l1%nmax_lf(nd)
 !cdir nodep
 !ocl vector, novrec
 !voption, indep, vec

@@ -51,7 +51,6 @@
      &          FEM_elens, FEM_moms)
 !
       use t_filter_moments
-      use m_filter_file_names
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank
@@ -76,8 +75,6 @@
       subroutine read_filter_elen_type_file_b(file_name, my_rank,       &
      &          nnod, nele, FEM_elens, ierr)
 !
-      use m_filter_file_names
-!
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(in) :: nnod, nele
@@ -100,8 +97,6 @@
 !
       subroutine write_filter_elen_type_file_b(file_name, my_rank,      &
      &          FEM_elens)
-!
-      use m_filter_file_names
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank
@@ -126,7 +121,6 @@
      &          nnod, nele, FEM_elens, FEM_moms, ierr)
 !
       use t_filter_moments
-      use m_filter_file_names
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank
@@ -154,7 +148,6 @@
      &          FEM_elens, FEM_moms)
 !
       use t_filter_moments
-      use m_filter_file_names
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank

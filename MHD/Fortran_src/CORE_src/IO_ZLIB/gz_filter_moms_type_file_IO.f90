@@ -27,7 +27,6 @@
       use m_machine_parameter
 !
       use t_filter_elength
-      use m_filter_file_names
       use set_parallel_file_name
       use skip_gz_comment
       use gz_mesh_data_IO

@@ -41,7 +41,6 @@
       subroutine read_sort_filter_coef_file_gz                          &
      &         (file_name, my_rank_IO, filter_IO, ierr)
 !
-      use m_filter_file_names
       use gz_mesh_data_IO
       use gz_filter_coef_IO
 !
@@ -76,7 +75,6 @@
       subroutine write_sort_filter_coef_file_gz                         &
      &         (file_name, my_rank_IO, filter_IO)
 !
-      use m_filter_file_names
       use gz_mesh_data_IO
       use gz_filter_coef_IO
 !
@@ -111,7 +109,6 @@
       subroutine read_filter_geometry_file_gz                           &
      &         (file_name, my_rank_IO, filter_IO, ierr)
 !
-      use m_filter_file_names
       use gz_mesh_data_IO
 !
       integer(kind = kint), intent(in) :: my_rank_IO
@@ -141,7 +138,6 @@
       subroutine write_filter_geometry_file_gz                          &
      &         (file_name, my_rank_IO, filter_IO)
 !
-      use m_filter_file_names
       use gz_mesh_data_IO
 !
       integer(kind = kint), intent(in) :: my_rank_IO

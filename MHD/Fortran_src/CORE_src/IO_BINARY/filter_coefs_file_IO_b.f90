@@ -45,7 +45,6 @@
       subroutine read_sorted_filter_coef_file_b                         &
      &         (file_name, my_rank_IO, filter_IO, ierr)
 !
-      use m_filter_file_names
       use mesh_data_IO_b
 !
       integer(kind = kint), intent(in) :: my_rank_IO
@@ -73,7 +72,6 @@
       subroutine write_sorted_filter_coef_file_b                        &
      &         (file_name, my_rank_IO, filter_IO)
 !
-      use m_filter_file_names
       use mesh_data_IO_b
 !
       integer(kind = kint), intent(in) :: my_rank_IO
@@ -101,7 +99,6 @@
       subroutine read_filter_geometry_file_b                            &
      &         (file_name, my_rank_IO, filter_IO, ierr)
 !
-      use m_filter_file_names
       use mesh_data_IO_b
 !
       integer(kind = kint), intent(in) :: my_rank_IO
@@ -127,7 +124,6 @@
       subroutine write_filter_geometry_file_b                           &
      &         (file_name, my_rank_IO, filter_IO)
 !
-      use m_filter_file_names
       use mesh_data_IO_b
 !
       integer(kind = kint), intent(in) :: my_rank_IO

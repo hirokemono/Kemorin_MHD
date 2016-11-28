@@ -105,7 +105,6 @@
       use t_filter_elength
       use filter_mom_type_data_IO
       use set_parallel_file_name
-      use write_line_filter_data
 !
       integer(kind = kint), intent(in) :: pe1, nf_type
       type(gradient_model_data_type), intent(inout) :: FEM_elen
@@ -124,7 +123,7 @@
 !
        call set_fiilter_nod_line(nf_type)
 !
-       call allocate_l_filtering_data(nodtot)
+       call alloc_l_filtering_data(nodtot, ndepth, ndep_1, fil_l1)
        call order_fiilter_nod_line
 !
 !
@@ -134,10 +133,7 @@
 !
        call write_filter_elen_data_type(nb_out, FEM_elen)
 !
-       ndepth_l = ndepth
-       num_filter_l = ndep_1
-!
-       call write_line_filter_data_a(nb_out, nodtot)
+       call write_line_filter_data_a(nb_out, fil_l1)
 !
 !   for debugging
 !
@@ -150,18 +146,18 @@
 !
           write(nb_out,*) '! distance in x-direction'
           write(nb_out,'(10i16)')                                       &
-     &               (inod_f_dist_l(i,1),i = 1, num_l_filter(1))
+     &               (inod_f_dist_l(i,1),i = 1, fil_l1%num_lf(1))
           write(nb_out,*) '! distance in y-direction'
           write(nb_out,'(10i16)')                                       &
-     &               (inod_f_dist_l(i,2),i = 1, num_l_filter(2))
+     &               (inod_f_dist_l(i,2),i = 1, fil_l1%num_lf(2))
           write(nb_out,*) '! distance in z-direction'
           write(nb_out,'(10i16)')                                       &
-     &               (inod_f_dist_l(i,3),i = 1, num_l_filter(3))
+     &               (inod_f_dist_l(i,3),i = 1, fil_l1%num_lf(3))
        close(nb_out)
 !
 !
        call deallocate_neighboring_nod_line
-       call deallocate_l_filtering_data
+       call dealloc_l_filtering_data(fil_l1)
 !
        end subroutine write_neighboring_nod_line
 !
@@ -239,16 +235,16 @@
        end do
 !
        do nd = 1, 3
-         num_l_filter(nd) = istack_l_filter_0(nodtot,nd)
-         nmax_l_filter(nd) = 0
+         fil_l1%num_lf(nd) = istack_l_filter_0(nodtot,nd)
+         fil_l1%nmax_lf(nd) = 0
          do inod = 1, nodtot
            ii = istack_l_filter_0(inod,nd) - istack_l_filter_0(inod-1,nd)
-           nmax_l_filter(nd) = max(nmax_l_filter(nd),ii)
+           fil_l1%nmax_lf(nd) = max(fil_l1%nmax_lf(nd),ii)
          end do
-         nmin_l_filter(nd) = nmax_l_filter(nd)
+         fil_l1%nmin_lf(nd) = fil_l1%nmax_lf(nd)
          do inod = 1, nodtot
            ii = istack_l_filter_0(inod,nd) - istack_l_filter_0(inod-1,nd)
-           nmin_l_filter(nd) = min(nmin_l_filter(nd),ii)
+           fil_l1%nmin_lf(nd) = min(fil_l1%nmin_lf(nd),ii)
          end do
        end do
 !
@@ -264,24 +260,24 @@
        do nd = 1, 3
         jdx = 0
         jnod = 0
-        istack_l_filter(0,nd) = 0
-        do kk = nmax_l_filter(nd), nmin_l_filter(nd), -1
+        fil_l1%istack_lf(0,nd) = 0
+        do kk = fil_l1%nmax_lf(nd), fil_l1%nmin_lf(nd), -1
 !
          do inod = 1, nodtot
            jj = istack_l_filter_0(inod,nd) - istack_l_filter_0(inod-1,nd)
            if ( jj .eq. kk) then
              jnod = jnod + 1
-             inod_l_filter(jnod,nd) = inod
+             fil_l1%inod_lf(jnod,nd) = inod
 !
              do j = 1, jj
                jdx = jdx + 1
                idx = istack_l_filter_0(inod-1,nd) + j
-               item_l_filter(jdx,nd) = item_l_filter_0(idx,nd)
+               fil_l1%item_lf(jdx,nd) = item_l_filter_0(idx,nd)
                inod_f_dist_l(jdx,nd) = inod_f_dist_l_0(idx,nd)
-               coef_l_filter(jdx,nd) = coef_l_filter_0(idx,nd)
+               fil_l1%coef_l(jdx,nd) =  coef_l_filter_0(idx,nd)
              end do
 !
-             istack_l_filter(jnod,nd) = jdx
+             fil_l1%istack_lf(jnod,nd) = jdx
            end if
          end do
         end do
@@ -301,20 +297,21 @@
 !
 !
       do inod = 1, nodtot
-        ist = istack_l_filter(inod-1,nd) + 1
-        ied = istack_l_filter(inod,nd)
+        ist = fil_l1%istack_lf(inod-1,nd) + 1
+        ied = fil_l1%istack_lf(inod,nd)
         num = ied - ist + 1
 !
         write(fmt_txt,'(a1,i3,a6)')  '(', num, '(i15))'
-        write(22,fmt_txt) item_l_filter(ist:ied,nd)
+        write(22,fmt_txt) fil_l1%item_lf(ist:ied,nd)
         write(22,fmt_txt) inod_f_dist_l(ist:ied,nd)
 !
         write(fmt_txt,'(a1,i3,a13)')  '(', num, '(1pE25.15e3))'
-        write(22,fmt_txt) coef_l_filter(ist:ied,nd)
+        write(22,fmt_txt) fil_l1%coef_l(ist:ied,nd)
        end do
 !
       end subroutine write_filter_nod_line
 !
-!  ----------------------------------------------------------------------!
+!  ----------------------------------------------------------------------
+!
       end module m_neib_nod_line_cube
 

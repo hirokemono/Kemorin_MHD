@@ -31,7 +31,6 @@
       character(len=kchara) :: filter_elen_head = filter_elen_def_hd
       character(len=kchara) :: filter_moms_head = filter_moms_def_hd
       integer(kind=kint) :: ifmt_3d_filter =   0
-      integer(kind=kint) :: ifmt_line_filter = 0
       integer(kind=kint) :: ifmt_filter_coef = 0
       integer(kind=kint) :: ifmt_filter_elen = 0
       integer(kind=kint) :: ifmt_filter_moms = 0

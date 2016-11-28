@@ -165,23 +165,25 @@
       use m_control_parameter
       use m_filter_file_names
       use m_field_file_format
+      use m_l_filtering_data
 !
       use t_filter_elength
 !
-      use read_line_filter_data
       use set_parallel_file_name
-      use filter_moment_IO_select
+      use filter_mom_type_data_IO
 !
       integer(kind = kint), intent(in) :: numnod, numele
       type(gradient_model_data_type), intent(inout) :: FEM_elens
 !
       integer(kind = kint) :: ierr
+      character(len=kchara) :: file_name
 !
 !
-      ifmt_filter_file = ifmt_filter_elen
-      filter_file_head = filter_line_head
-      call sel_read_filter_elen_file                                    &
-     &   (my_rank, numnod, numele, FEM_elens, ierr)
+      call add_int_suffix(my_rank, filter_line_head, file_name)
+      open(filter_file_code, file=file_name,                            &
+     &        form='formatted', status= 'old')
+      call read_filter_elen_data_type(filter_file_code,                 &
+     &    numnod, numele, FEM_elens, ierr)
 !
       if (ierr.eq.500) then
         write(e_message,*)                                              &
@@ -196,12 +198,9 @@
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                     &
      &      .or. iflag_SGS_model.eq.id_SGS_similarity) then
-        if (ifmt_line_filter .eq. iflag_bin) then
-          call read_line_filter_data_b(filter_file_code, numnod)
-        else
-          call read_line_filter_data_a(filter_file_code, numnod)
-        end if
+        call read_line_filter_data_a(filter_file_code, numnod, fil_l1)
       end if
+      close(filter_file_code)
 !
 !
       end subroutine read_line_filtering_data

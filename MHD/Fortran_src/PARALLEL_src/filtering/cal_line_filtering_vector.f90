@@ -55,7 +55,7 @@
 !$omp parallel do private(inod,jnod,ist,i,idx,isum,ii)
        do ip = 1, np_smp
          ist = inod_smp_stack(ip-1) + 1
-         do isum = 1, nmax_l_filter(nd)
+         do isum = 1, fil_l1%nmax_lf(nd)
            do i = 1, num_4_lf_smp(isum,ip,nd)
              ii = (ip-1)*nsize_lf_smp + isum
              inod = inod_smp_stack(ip-1) + i
