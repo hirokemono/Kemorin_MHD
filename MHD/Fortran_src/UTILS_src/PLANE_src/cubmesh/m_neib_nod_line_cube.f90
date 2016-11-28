@@ -33,10 +33,12 @@
       use m_filtering_nod_4_cubmesh
       use m_filter_data_4_plane
 !
-      use m_l_filtering_data
+      use t_l_filtering_data
 !
       implicit none
 !
+!
+      type(line_filtering_type), save :: fil_l1
 !
       integer(kind = kint), dimension(:,:), allocatable                 &
      &      :: inod_f_dist_l
@@ -121,10 +123,10 @@
 !
        call allocate_neighboring_nod_line
 !
-       call set_fiilter_nod_line(nf_type)
+       call set_fiilter_nod_line(nf_type, fil_l1)
 !
        call alloc_l_filtering_data(nodtot, ndepth, ndep_1, fil_l1)
-       call order_fiilter_nod_line
+       call order_fiilter_nod_line(fil_l1)
 !
 !
        call add_int_suffix(pe1, filter_file_header, nb_name)
@@ -138,11 +140,11 @@
 !   for debugging
 !
 !       write(nb_out,*) '!  xi direction'
-!       call write_filter_nod_line(ione)
+!       call write_filter_nod_line(ione, fil_l1)
 !       write(nb_out,*) '!  eta direction'
-!       call write_filter_nod_line(itwo)
+!       call write_filter_nod_line(itwo, fil_l1)
 !       write(nb_out,*) '!   zi direction'
-!       call write_filter_nod_line(ithree)
+!       call write_filter_nod_line(ithree, fil_l1)
 !
           write(nb_out,*) '! distance in x-direction'
           write(nb_out,'(10i16)')                                       &
@@ -163,9 +165,10 @@
 !
 !  ----------------------------------------------------------------------
 !
-       subroutine set_fiilter_nod_line(nf_type)
+      subroutine set_fiilter_nod_line(nf_type, fil_l)
 !
-       integer(kind = kint), intent(in) :: nf_type
+      integer(kind = kint), intent(in) :: nf_type
+      type(line_filtering_type), intent(inout) :: fil_l
 !
        integer(kind = kint) :: i, j, k, inod, nd
        integer(kind = kint) :: ii, i1, jj, kk, ifil, idx1, idx2, idx3
@@ -235,23 +238,26 @@
        end do
 !
        do nd = 1, 3
-         fil_l1%num_lf(nd) = istack_l_filter_0(nodtot,nd)
-         fil_l1%nmax_lf(nd) = 0
+         fil_l%num_lf(nd) = istack_l_filter_0(nodtot,nd)
+         fil_l%nmax_lf(nd) = 0
          do inod = 1, nodtot
            ii = istack_l_filter_0(inod,nd) - istack_l_filter_0(inod-1,nd)
-           fil_l1%nmax_lf(nd) = max(fil_l1%nmax_lf(nd),ii)
+           fil_l%nmax_lf(nd) = max(fil_l%nmax_lf(nd),ii)
          end do
-         fil_l1%nmin_lf(nd) = fil_l1%nmax_lf(nd)
+         fil_l%nmin_lf(nd) = fil_l%nmax_lf(nd)
          do inod = 1, nodtot
            ii = istack_l_filter_0(inod,nd) - istack_l_filter_0(inod-1,nd)
-           fil_l1%nmin_lf(nd) = min(fil_l1%nmin_lf(nd),ii)
+           fil_l%nmin_lf(nd) = min(fil_l%nmin_lf(nd),ii)
          end do
        end do
 !
        end subroutine set_fiilter_nod_line
 !
-!  ----------------------------------------------------------------------!
-       subroutine order_fiilter_nod_line
+!  ----------------------------------------------------------------------
+!
+      subroutine order_fiilter_nod_line(fil_l)
+!
+      type(line_filtering_type), intent(inout) :: fil_l
 !
        integer(kind = kint) :: j, inod, jnod, nd
        integer(kind = kint) :: jj, kk, idx, jdx
@@ -260,24 +266,24 @@
        do nd = 1, 3
         jdx = 0
         jnod = 0
-        fil_l1%istack_lf(0,nd) = 0
-        do kk = fil_l1%nmax_lf(nd), fil_l1%nmin_lf(nd), -1
+        fil_l%istack_lf(0,nd) = 0
+        do kk = fil_l%nmax_lf(nd), fil_l%nmin_lf(nd), -1
 !
          do inod = 1, nodtot
            jj = istack_l_filter_0(inod,nd) - istack_l_filter_0(inod-1,nd)
            if ( jj .eq. kk) then
              jnod = jnod + 1
-             fil_l1%inod_lf(jnod,nd) = inod
+             fil_l%inod_lf(jnod,nd) = inod
 !
              do j = 1, jj
                jdx = jdx + 1
                idx = istack_l_filter_0(inod-1,nd) + j
-               fil_l1%item_lf(jdx,nd) = item_l_filter_0(idx,nd)
+               fil_l%item_lf(jdx,nd) = item_l_filter_0(idx,nd)
                inod_f_dist_l(jdx,nd) = inod_f_dist_l_0(idx,nd)
-               fil_l1%coef_l(jdx,nd) =  coef_l_filter_0(idx,nd)
+               fil_l%coef_l(jdx,nd) =  coef_l_filter_0(idx,nd)
              end do
 !
-             fil_l1%istack_lf(jnod,nd) = jdx
+             fil_l%istack_lf(jnod,nd) = jdx
            end if
          end do
         end do
@@ -287,9 +293,11 @@
 !
 !  ----------------------------------------------------------------------
 !
-      subroutine write_filter_nod_line(nd)
+      subroutine write_filter_nod_line(nd, fil_l)
 !
-       integer(kind = kint) :: nd
+      integer(kind = kint), intent(in) :: nd
+      type(line_filtering_type), intent(in) :: fil_l
+!
        integer(kind = kint) :: inod
        integer(kind = kint) :: ist, ied, num
 !
@@ -297,16 +305,16 @@
 !
 !
       do inod = 1, nodtot
-        ist = fil_l1%istack_lf(inod-1,nd) + 1
-        ied = fil_l1%istack_lf(inod,nd)
+        ist = fil_l%istack_lf(inod-1,nd) + 1
+        ied = fil_l%istack_lf(inod,nd)
         num = ied - ist + 1
 !
         write(fmt_txt,'(a1,i3,a6)')  '(', num, '(i15))'
-        write(22,fmt_txt) fil_l1%item_lf(ist:ied,nd)
+        write(22,fmt_txt) fil_l%item_lf(ist:ied,nd)
         write(22,fmt_txt) inod_f_dist_l(ist:ied,nd)
 !
         write(fmt_txt,'(a1,i3,a13)')  '(', num, '(1pE25.15e3))'
-        write(22,fmt_txt) fil_l1%coef_l(ist:ied,nd)
+        write(22,fmt_txt) fil_l%coef_l(ist:ied,nd)
        end do
 !
       end subroutine write_filter_nod_line

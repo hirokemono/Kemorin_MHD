@@ -160,8 +160,8 @@
 !
         else if (iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
           if (iflag_debug.gt.0) write(*,*)' ordering_l_filter_smp'
-          call ordering_l_filter_smp                                    &
-     &       (mesh%node%numnod, mesh%node%istack_nod_smp)
+          call ordering_l_filter_smp(mesh%node%istack_nod_smp,          &
+     &        filtering1%fil_l, filtering1%fil_l_smp)
         end if
       end if
 !

@@ -4,16 +4,20 @@
 !      Written by H. Matsui
 !
 !!      subroutine alloc_l_filtering_data(numnod, fil_l)
+!!      subroutine alloc_l_filtering_smp(fil_l, fil_l_smp)
 !!      subroutine dealloc_l_filtering_data(fil_l)
 !!
 !!      subroutine read_line_filter_data_a(file_code, numnod, fil_l)
 !!      subroutine write_line_filter_data_a(file_code, fil_l)
 !!
 !!      subroutine check_istack_l_filter(my_rank, fil_l)
+!!      subroutine check_istack_l_filter_smp                            &
+!!     &         (my_rank, inod_smp_stack, fil_l_smp)
 !
       module t_l_filtering_data
 !
       use m_precision
+      use m_machine_parameter
 !
       implicit none
 !
@@ -27,6 +31,8 @@
 !
         integer (kind = kint) :: nmax_lf(3)
         integer (kind = kint) :: nmin_lf(3)
+!
+        integer (kind = kint) :: nsize_smp
 !
 !>        target local node ID for filtering
         integer (kind = kint), allocatable :: inod_lf(:,:)
@@ -70,6 +76,39 @@
       fil_l%coef_l = 0.0d0
 !
       end subroutine alloc_l_filtering_data
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_l_filtering_smp(fil_l, fil_l_smp)
+!
+!
+      type(line_filtering_type), intent(in) :: fil_l
+      type(line_filtering_type), intent(inout) :: fil_l_smp
+!
+!
+      fil_l_smp%ndepth_lf =    fil_l%ndepth_lf
+      fil_l_smp%num_filter_l = fil_l%num_filter_l
+      fil_l_smp%nnod_lf =      fil_l%nnod_lf
+      fil_l_smp%ntot_lf =      fil_l%ntot_lf
+!
+      fil_l_smp%num_lf(1:3) =  fil_l%num_lf(1:3)
+      fil_l_smp%nmax_lf(1:3) = fil_l%nmax_lf(1:3)
+      fil_l_smp%nmin_lf(1:3) = fil_l%nmin_lf(1:3)
+!
+      allocate( fil_l_smp%inod_lf(fil_l_smp%nnod_lf,3) )
+
+      allocate( fil_l_smp%istack_lf(0:fil_l_smp%nsize_smp*np_smp,3))
+      allocate( fil_l_smp%item_lf(fil_l_smp%ntot_lf,3) )
+!
+      allocate( fil_l_smp%coef_l(fil_l_smp%ntot_lf,3) )
+!
+      fil_l_smp%inod_lf = 0
+      fil_l_smp%istack_lf = 0
+      fil_l_smp%item_lf = 0
+!
+      fil_l_smp%coef_l = 0.0d0
+!
+      end subroutine alloc_l_filtering_smp
 !
 !  ---------------------------------------------------------------------
 !
@@ -209,6 +248,32 @@
       end do
 !
       end subroutine check_istack_l_filter
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine check_istack_l_filter_smp                              &
+     &         (my_rank, inod_smp_stack, fil_l_smp)
+!
+      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
+      type(line_filtering_type), intent(in) :: fil_l_smp
+!
+      integer(kind = kint) :: ist, ied, nd, ip, isum, ii
+!
+      write(50+my_rank,*) 'nd, ip, isum, fil_l_smp%istack_lf(i,ip,nd)'
+      do ip = 1, np_smp
+       ist = inod_smp_stack(ip-1) + 1
+       ied = inod_smp_stack(ip)
+       do nd = 1, 3
+        do isum = 1, fil_l_smp%nmax_lf(nd)
+          ii = (ip-1)*fil_l_smp%nsize_smp + isum
+          write(50+my_rank,*) ip, nd, isum, fil_l_smp%istack_lf(ii,nd)
+        end do
+       end do
+      end do
+!
+!
+      end subroutine check_istack_l_filter_smp
 !
 !  ---------------------------------------------------------------------
 !

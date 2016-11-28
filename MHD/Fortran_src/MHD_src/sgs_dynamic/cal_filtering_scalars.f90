@@ -65,8 +65,9 @@
 !
 !
       call cal_filtered_scalar(filtering%comm, nod_comm, node,          &
-     &    filtering%filter, filtering%filter_smp, wk_filter%nnod_fil,   &
-     &    i_filter, i_scalar, wk_filter%x_fil, nod_fld)
+     &    filtering%filter, filtering%filter_smp, filtering%fil_l_smp,  &
+     &    wk_filter%nnod_fil, i_filter, i_scalar, wk_filter%x_fil,      &
+     &    nod_fld)
 !
       end subroutine cal_filtered_scalar_whole
 !
@@ -88,9 +89,9 @@
 !
 !
       call cal_filtered_vector(filtering%comm, nod_comm, node,          &
-     &    filtering%filter, filtering%filter_smp, wk_filter%nnod_fil,   &
-     &    num_whole_filter_grp, id_whole_filter_grp,                    &
-     &    i_filter, i_vect, wk_filter%x_fil, nod_fld)
+     &   filtering%filter, filtering%filter_smp, filtering%fil_l_smp,   &
+     &   wk_filter%nnod_fil, num_whole_filter_grp, id_whole_filter_grp, &
+     &   i_filter, i_vect, wk_filter%x_fil, nod_fld)
 !
       end subroutine cal_filtered_vector_whole
 !
@@ -112,9 +113,9 @@
 !
 !
       call cal_filtered_sym_tensor(filtering%comm, nod_comm, node,      &
-     &    filtering%filter, filtering%filter_smp, wk_filter%nnod_fil,   &
-     &    num_whole_filter_grp, id_whole_filter_grp,                    &
-     &    i_filter, i_vect, wk_filter%x_fil, nod_fld)
+     &   filtering%filter, filtering%filter_smp, filtering%fil_l_smp,   &
+     &   wk_filter%nnod_fil, num_whole_filter_grp, id_whole_filter_grp, &
+     &   i_filter, i_vect, wk_filter%x_fil, nod_fld)
 !
       end subroutine cal_filtered_sym_tensor_whole
 !
@@ -137,8 +138,9 @@
 !
 !
       call cal_filtered_scalar(filtering%comm, nod_comm, node,          &
-     &    filtering%filter, filtering%filter_smp, wk_filter%nnod_fil,   &
-     &    i_filter, i_scalar, wk_filter%x_fil, nod_fld)
+     &    filtering%filter, filtering%filter_smp, filtering%fil_l_smp,  &
+     &    wk_filter%nnod_fil, i_filter, i_scalar, wk_filter%x_fil,      &
+     &    nod_fld)
 !
       end subroutine cal_filtered_scalar_in_fluid
 !
@@ -161,9 +163,9 @@
 !
 !
       call cal_filtered_vector(filtering%comm, nod_comm, node,          &
-     &    filtering%filter, filtering%filter_smp, wk_filter%nnod_fil,   &
-     &    num_fluid_filter_grp, id_fluid_filter_grp,                    &
-     &    i_filter, i_vect, wk_filter%x_fil, nod_fld)
+     &   filtering%filter, filtering%filter_smp, filtering%fil_l_smp,   &
+     &   wk_filter%nnod_fil, num_fluid_filter_grp, id_fluid_filter_grp, &
+     &   i_filter, i_vect, wk_filter%x_fil, nod_fld)
 !
       end subroutine cal_filtered_vector_in_fluid
 !
@@ -185,9 +187,9 @@
 !
 !
       call cal_filtered_sym_tensor(filtering%comm, nod_comm, node,      &
-     &    filtering%filter, filtering%filter_smp, wk_filter%nnod_fil,   &
-     &    num_fluid_filter_grp, id_fluid_filter_grp,                    &
-     &    i_filter, i_vect, wk_filter%x_fil, nod_fld)
+     &   filtering%filter, filtering%filter_smp, filtering%fil_l_smp,   &
+     &   wk_filter%nnod_fil, num_fluid_filter_grp, id_fluid_filter_grp, &
+     &   i_filter, i_vect, wk_filter%x_fil, nod_fld)
 !
       end subroutine cal_filtered_tensor_in_fluid
 !

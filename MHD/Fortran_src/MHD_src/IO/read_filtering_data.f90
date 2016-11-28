@@ -53,7 +53,7 @@
 !
       if (iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
         call read_line_filtering_data                                   &
-     &     (node%numnod, ele%numele, FEM1_elen)
+     &     (node%numnod, ele%numele, FEM1_elen, filtering%fil_l)
       else
         call read_3d_filter_moments                                     &
      &     (node%numnod, ele%numele, FEM1_elen)
@@ -158,15 +158,16 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine read_line_filtering_data(numnod, numele, FEM_elens)
+      subroutine read_line_filtering_data                               &
+     &         (numnod, numele, FEM_elens, fil_l)
 !
       use m_machine_parameter
       use m_error_IDs
       use m_control_parameter
       use m_filter_file_names
       use m_field_file_format
-      use m_l_filtering_data
 !
+      use t_l_filtering_data
       use t_filter_elength
 !
       use set_parallel_file_name
@@ -174,6 +175,7 @@
 !
       integer(kind = kint), intent(in) :: numnod, numele
       type(gradient_model_data_type), intent(inout) :: FEM_elens
+      type(line_filtering_type), intent(inout) :: fil_l
 !
       integer(kind = kint) :: ierr
       character(len=kchara) :: file_name
@@ -198,7 +200,7 @@
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                     &
      &      .or. iflag_SGS_model.eq.id_SGS_similarity) then
-        call read_line_filter_data_a(filter_file_code, numnod, fil_l1)
+        call read_line_filter_data_a(filter_file_code, numnod, fil_l)
       end if
       close(filter_file_code)
 !

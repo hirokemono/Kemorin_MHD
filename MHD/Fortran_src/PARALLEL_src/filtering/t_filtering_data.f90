@@ -12,6 +12,7 @@
       use m_precision
       use m_constants
       use t_filter_coefficients
+      use t_l_filtering_data
       use t_comm_table
 !
       implicit none
@@ -22,6 +23,11 @@
 !
 !> data structure for filter coefficients table for SMP
         type(filter_coefficients_type) :: filter_smp
+!
+!> data structure for line filtering coefficients table for SMP
+        type(line_filtering_type) :: fil_l
+!> data structure for line filtering coefficients table for SMP
+        type(line_filtering_type) :: fil_l_smp
 !
 !> data structure for filter communication table
         type(communication_table) :: comm
