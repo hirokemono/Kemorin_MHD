@@ -223,11 +223,11 @@
       if(iflag_SGS_model .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'SGS_fluxes_for_snapshot'
         call SGS_fluxes_for_snapshot(sph%sph_rtp, trns_MHD%b_trns,      &
-     &    trns_SGS%f_trns, trns_snap%b_trns, trns_snap%f_trns,          &
-     &    trns_MHD%ncomp_rj_2_rtp, trns_SGS%ncomp_rtp_2_rj,             &
-     &    trns_snap%ncomp_rj_2_rtp, trns_snap%ncomp_rtp_2_rj,           &
-     &    trns_MHD%fld_rtp, trns_SGS%frc_rtp,                           &
-     &    trns_snap%fld_rtp, trns_snap%frc_rtp)
+     &      trns_SGS%f_trns, trns_snap%b_trns, trns_snap%f_trns,        &
+     &      trns_MHD%ncomp_rj_2_rtp, trns_SGS%ncomp_rtp_2_rj,           &
+     &      trns_snap%ncomp_rj_2_rtp, trns_snap%ncomp_rtp_2_rj,         &
+     &      trns_MHD%fld_rtp, trns_SGS%frc_rtp,                         &
+     &      trns_snap%fld_rtp, trns_snap%frc_rtp)
       end if
 !
       if (iflag_debug.eq.1) write(*,*)                                  &

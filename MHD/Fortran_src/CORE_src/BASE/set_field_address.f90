@@ -300,7 +300,7 @@
           iphys%i_SGS_comp_buo_wk =  i0
 !
         else if ( field_name(i) .eq. fhd_geostrophic ) then
-          iphys%i_SGS_comp_buo_wk =  i0
+          iphys%i_geostrophic =  i0
 !
         else if ( field_name(i) .eq. fhd_h_flux_w_sgs ) then
           iphys%i_h_flux_w_sgs =  i0
