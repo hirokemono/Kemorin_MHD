@@ -269,7 +269,7 @@
      &    iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp,                &
      &    rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,  &
      &    f_l, f_nl, nod_fld)
-      call copy_scalar_component(node, nod_fld,                         &
+      call copy_scalar_component(nod_fld,                               &
      &    iphys%i_h_flux_div, iphys%i_SGS_div_hf_true)
 !
       end subroutine cal_div_sgs_h_flux_true_pre
@@ -321,7 +321,7 @@
      &    iphys, iphys_ele, ak_MHD, jac_3d, jac_sf_grp, rhs_tbl,        &
      &    FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,           &
      &    f_l, f_nl, nod_fld, ele_fld)
-      call copy_vector_component(node, nod_fld,                         &
+      call copy_vector_component(nod_fld,                               &
      &    iphys%i_m_flux_div, iphys%i_SGS_div_mf_true)
 !
       end subroutine cal_div_sgs_m_flux_true_pre
@@ -374,7 +374,7 @@
      &    iphys, iphys_ele, ak_MHD, jac_3d, jac_sf_grp, rhs_tbl,        &
      &    FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,           &
      &    f_l, f_nl, nod_fld, ele_fld)
-      call copy_vector_component(node, nod_fld,                         &
+      call copy_vector_component(nod_fld,                               &
      &   iphys%i_maxwell_div, iphys%i_SGS_Lor_true)
 !
       end subroutine cal_div_sgs_maxwell_true_pre
@@ -429,7 +429,7 @@
      &    Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,        &
      &    jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,           &
      &    mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
-      call copy_vector_component(node, nod_fld,                         &
+      call copy_vector_component(nod_fld,                               &
      &    iphys%i_induct_div, iphys%i_SGS_idct_true)
 !
       end subroutine cal_div_sgs_induct_true_pre
@@ -449,12 +449,12 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call copy_scalar_component(node, nod_fld,                         &
+      call copy_scalar_component(nod_fld,                               &
      &    iphys%i_SGS_div_hf_true, iphys%i_sgs_simi)
       call cal_filtered_scalar_whole(nod_comm, node, filtering,         &
      &    iphys%i_SGS_div_hf_true, iphys%i_h_flux_div,                  &
      &    wk_filter, nod_fld)
-      call subtract_2_nod_scalars(node, nod_fld,                        &
+      call subtract_2_nod_scalars(nod_fld,                              &
      &    iphys%i_SGS_div_hf_true, iphys%i_sgs_simi,                    &
      &    iphys%i_SGS_div_hf_true)
 !
@@ -476,10 +476,10 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call copy_vector_component(node, nod_fld, i_sgs_true, i_sgs_simi)
+      call copy_vector_component(nod_fld, i_sgs_true, i_sgs_simi)
       call cal_filtered_vector_whole(nod_comm, node, filtering,         &
      &    i_sgs_true, i_sgs_div, wk_filter, nod_fld)
-      call subtract_2_nod_vectors(node, nod_fld,                        &
+      call subtract_2_nod_vectors(nod_fld,                              &
      &    i_sgs_true, i_sgs_simi, i_sgs_true)
 !
       end subroutine cal_div_sgs_tensor_true_post

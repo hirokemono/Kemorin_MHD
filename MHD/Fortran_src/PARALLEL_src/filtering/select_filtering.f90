@@ -89,8 +89,7 @@
       else if ( iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
 !
         if (i_filter .ne. i_scalar) then
-           call copy_scalar_component                                   &
-     &        (node, nod_fld, i_scalar, i_filter)
+           call copy_scalar_component(nod_fld, i_scalar, i_filter)
         end if
         call cal_l_filtering_scalar(node%numnod, node%istack_nod_smp,   &
      &      fil_l_smp%nmax_lf, fil_l_smp%ntot_lf, fil_l_smp%nsize_smp,  &
@@ -155,7 +154,7 @@
       else if ( iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
 !
         if (i_filter .ne. i_vect) then
-          call copy_vector_component(node, nod_fld, i_vect, i_filter)
+          call copy_vector_component(nod_fld, i_vect, i_filter)
         end if
         call cal_l_filtering_vector(node%numnod, node%istack_nod_smp,   &
      &      fil_l_smp%nmax_lf, fil_l_smp%ntot_lf, fil_l_smp%nsize_smp,  &
@@ -223,7 +222,7 @@
 !
       else if ( iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
         if (i_filter .ne. i_vect) then
-          call copy_tensor_component(node, nod_fld, i_vect, i_filter)
+          call copy_tensor_component(nod_fld, i_vect, i_filter)
         end if
         call cal_l_filtering_tensor(node%numnod, node%istack_nod_smp,   &
      &      fil_l_smp%nmax_lf, fil_l_smp%ntot_lf, fil_l_smp%nsize_smp,  &

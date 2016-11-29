@@ -81,7 +81,6 @@
       use int_element_field_2_node
       use cal_similarity_terms
 !
-      use clear_work_4_dynamic_model
       use cvt_dynamic_scheme_coord
 !
       integer(kind = kint), intent(in) :: iak_sgs_mf, icomp_sgs_mf
@@ -115,7 +114,7 @@
       call reset_tensor_sgs_nod_m_coefs                                 &
      &   (node%numnod, node%istack_nod_smp,                             &
      &    sgs_coefs_nod%ntot_comp, icomp_sgs_mf, sgs_coefs_nod%ak)
-      call s_clear_work_4_dynamic_model(node, iphys, nod_fld)
+      call clear_work_4_dynamic_model(iphys, nod_fld)
 !
 !   similarity model with wider filter
 !
@@ -136,7 +135,7 @@
 !
 !    copy to work array
 !
-       call copy_tensor_component(node, nod_fld,                        &
+       call copy_tensor_component(nod_fld,                              &
      &     iphys%i_SGS_m_flux, iphys%i_sgs_simi)
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys%i_sgs_simi)
@@ -188,7 +187,6 @@
       use int_element_field_2_node
       use cal_similarity_terms
 !
-      use clear_work_4_dynamic_model
       use cvt_dynamic_scheme_coord
 !
       integer(kind = kint), intent(in) :: iak_sgs_lor, icomp_sgs_lor
@@ -223,7 +221,7 @@
       call reset_tensor_sgs_nod_m_coefs                                 &
      &   (node%numnod, node%istack_nod_smp,                             &
      &    sgs_coefs_nod%ntot_comp, icomp_sgs_lor, sgs_coefs_nod%ak)
-      call s_clear_work_4_dynamic_model(node, iphys, nod_fld)
+      call clear_work_4_dynamic_model(iphys, nod_fld)
 !
 !   similarity model with wider filter
 !
@@ -247,7 +245,7 @@
 !
 !    copy to work array
 !
-       call copy_tensor_component(node, nod_fld,                        &
+       call copy_tensor_component(nod_fld,                              &
      &     iphys%i_SGS_maxwell, iphys%i_sgs_simi)
 !
 !    filtering

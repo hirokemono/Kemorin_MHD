@@ -220,7 +220,7 @@
       call set_boundary_vect(Bnod_bcs%nod_bc_a, iphys%i_vecp, nod_fld)
 !
       call vector_send_recv(iphys%i_vecp, nod_comm, nod_fld)
-      call clear_nodal_data(node, nod_fld, n_scalar, iphys%i_m_phi)
+      call clear_field_data(nod_fld, n_scalar, iphys%i_m_phi)
 !
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_vector, iphys%i_vecp)
@@ -304,7 +304,7 @@
      &      nod_comm, node, ele, conduct, Bnod_bcs, iphys_ele, ele_fld, &
      &      jac_3d_q, rhs_tbl, FEM_elens, diff_coefs, m_lump,           &
      &      Bmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-        call clear_nodal_data(node, nod_fld, n_scalar, iphys%i_m_phi)
+        call clear_field_data(nod_fld, n_scalar, iphys%i_m_phi)
       else
         call cal_vector_p_co_exp(iphys%i_vecp, nod_comm, node, ele,     &
      &      jac_3d_q, rhs_tbl, m_lump, mhd_fem_wk, fem_wk,              &

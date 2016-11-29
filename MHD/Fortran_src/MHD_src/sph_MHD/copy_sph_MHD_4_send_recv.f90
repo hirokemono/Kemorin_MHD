@@ -394,6 +394,29 @@
      &    comm_rj, rj_fld, n_WS, WS)
 !
       call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_geostrophic, bs_trns%i_geostrophic,                    &
+     &    comm_rj, rj_fld, n_WS, WS)
+!
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_h_flux_w_sgs, bs_trns%i_h_flux_w_sgs,                  &
+     &    comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_c_flux_w_sgs, bs_trns%i_c_flux_w_sgs,                  &
+     &    comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_inertia_w_sgs, bs_trns%i_inertia_w_sgs,                &
+     &    comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_Lorentz_w_sgs, bs_trns%i_Lorentz_w_sgs,                &
+     &    comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_vp_induct_w_sgs, bs_trns%i_vp_induct_w_sgs,            &
+     &    comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_mag_induct_w_sgs, bs_trns%i_mag_induct_w_sgs,          &
+     &    comm_rj, rj_fld, n_WS, WS)
+!
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
      &    ipol%i_SGS_rot_inertia, bs_trns%i_SGS_rot_inertia,            &
      &    comm_rj, rj_fld, n_WS, WS)
       call sel_sph_rj_vector_to_send(ncomp_send,                        &

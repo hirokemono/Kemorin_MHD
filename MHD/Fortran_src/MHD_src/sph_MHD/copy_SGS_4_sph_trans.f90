@@ -19,6 +19,8 @@
 !!
 !!      subroutine copy_SGS_diff_field_from_trans                       &
 !!     &         (m_folding, sph_rtp, trns_snap, node, iphys, nod_fld)
+!!      subroutine copy_SGS_snap_fld_from_trans                         &
+!!     &         (m_folding, sph_rtp, trns_snap, node, iphys, nod_fld)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(address_4_sph_trans), intent(in) :: trns_MHD
 !!        type(address_4_sph_trans), intent(in) :: trns_SGS
@@ -306,6 +308,31 @@
       call copy_vector_from_snap_trans                                  &
      &   (trns_snap%b_trns%i_SGS_c_flux, iphys%i_SGS_c_flux,            &
      &    m_folding, sph_rtp, trns_snap, node, nod_fld)
+!
+!
+      call copy_vector_from_snap_trans                                  &
+     &   (trns_snap%b_trns%i_h_flux_w_sgs, iphys%i_h_flux_w_sgs,        &
+     &    m_folding, sph_rtp, trns_snap, node, nod_fld)
+!
+      call copy_vector_from_snap_trans                                  &
+     &   (trns_snap%b_trns%i_c_flux_w_sgs, iphys%i_c_flux_w_sgs,        &
+     &    m_folding, sph_rtp, trns_snap, node, nod_fld)
+!
+      call copy_vector_from_snap_trans                                  &
+     &   (trns_snap%b_trns%i_inertia_w_sgs, iphys%i_inertia_w_sgs,      &
+     &    m_folding, sph_rtp, trns_snap, node, nod_fld)
+!
+      call copy_vector_from_snap_trans                                  &
+     &   (trns_snap%b_trns%i_Lorentz_w_sgs, iphys%i_Lorentz_w_sgs,      &
+     &    m_folding, sph_rtp, trns_snap, node, nod_fld)
+!
+      call copy_vector_from_snap_trans                                  &
+     &   (trns_snap%b_trns%i_vp_induct_w_sgs, iphys%i_vp_induct_w_sgs,  &
+     &    m_folding, sph_rtp, trns_snap, node, nod_fld)
+!
+      call copy_vector_from_snap_trans                                  &
+     &  (trns_snap%b_trns%i_mag_induct_w_sgs, iphys%i_mag_induct_w_sgs, &
+     &   m_folding, sph_rtp, trns_snap, node, nod_fld)
 !
 !
       end  subroutine copy_SGS_snap_fld_from_trans

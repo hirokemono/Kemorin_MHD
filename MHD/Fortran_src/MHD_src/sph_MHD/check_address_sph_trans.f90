@@ -122,6 +122,36 @@
      &        b_trns%i_SGS_c_flux, ipol%i_SGS_c_flux,                   &
      &        itor%i_SGS_c_flux, idpdr%i_SGS_c_flux, iphys%i_SGS_c_flux
 !
+      if(b_trns%i_geostrophic .gt. 0) write(*,*)                        &
+     &        'b_trns%i_geostrophic', b_trns%i_geostrophic,             &
+     &        ipol%i_geostrophic, itor%i_geostrophic,                   &
+     &        idpdr%i_geostrophic, iphys%i_geostrophic
+!
+      if(b_trns%i_h_flux_w_sgs .gt. 0) write(*,*)                       &
+     &        'b_trns%i_h_flux_w_sgs', b_trns%i_h_flux_w_sgs,           &
+     &        ipol%i_h_flux_w_sgs, itor%i_h_flux_w_sgs,                 &
+     &        idpdr%i_h_flux_w_sgs, iphys%i_h_flux_w_sgs
+      if(b_trns%i_c_flux_w_sgs .gt. 0) write(*,*)                       &
+     &        'b_trns%i_c_flux_w_sgs', b_trns%i_c_flux_w_sgs,           &
+     &        ipol%i_c_flux_w_sgs, itor%i_c_flux_w_sgs,                 &
+     &        idpdr%i_c_flux_w_sgs, iphys%i_c_flux_w_sgs
+      if(b_trns%i_inertia_w_sgs .gt. 0) write(*,*)                      &
+     &        'b_trns%i_inertia_w_sgs', b_trns%i_inertia_w_sgs,         &
+     &        ipol%i_inertia_w_sgs, itor%i_inertia_w_sgs,               &
+     &        idpdr%i_inertia_w_sgs, iphys%i_inertia_w_sgs
+      if(b_trns%i_Lorentz_w_sgs .gt. 0) write(*,*)                      &
+     &        'b_trns%i_Lorentz_w_sgs', b_trns%i_Lorentz_w_sgs,         &
+     &        ipol%i_Lorentz_w_sgs,itor%i_Lorentz_w_sgs,                &
+     &        idpdr%i_Lorentz_w_sgs, iphys%i_Lorentz_w_sgs
+      if(b_trns%i_vp_induct_w_sgs .gt. 0) write(*,*)                    &
+     &        'b_trns%i_vp_induct_w_sgs', b_trns%i_vp_induct_w_sgs,     &
+     &        ipol%i_vp_induct_w_sgs, itor%i_vp_induct_w_sgs,           &
+     &        idpdr%i_vp_induct_w_sgs, iphys%i_vp_induct_w_sgs
+      if(b_trns%i_mag_induct_w_sgs .gt. 0) write(*,*)                   &
+     &        'b_trns%i_mag_induct_w_sgs', b_trns%i_mag_induct_w_sgs,   &
+     &        ipol%i_mag_induct_w_sgs, itor%i_mag_induct_w_sgs,         &
+     &        idpdr%i_mag_induct_w_sgs, iphys%i_mag_induct_w_sgs
+!
       if(b_trns%i_wide_SGS_inertia .gt. 0) write(*,*)                   &
      &        'b_trns%i_wide_SGS_inertia ', b_trns%i_wide_SGS_inertia,  &
      &        ipol%i_wide_SGS_inertia, itor%i_wide_SGS_inertia,         &

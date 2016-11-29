@@ -149,10 +149,10 @@
         if(iflag_debug .ge. iflag_routine_msg) write(*,*)               &
      &          'iflag_SGS_parterbuation', iflag_SGS_parterbuation
         if(iflag_SGS_parterbuation .eq. 1) then
-          call copy_scalar_component(node, nod_fld,                     &
+          call copy_scalar_component(nod_fld,                           &
      &        iphys%i_par_temp, iphys%i_sgs_temp)
         else
-          call copy_scalar_component(node, nod_fld,                     &
+          call copy_scalar_component(nod_fld,                           &
      &        iphys%i_temp, iphys%i_sgs_temp)
         end if
       end if
@@ -301,7 +301,7 @@
       end if
 !
       if (iphys%i_sgs_composit .ne. 0) then
-        call copy_scalar_component(node, nod_fld,                       &
+        call copy_scalar_component(nod_fld,                             &
      &      iphys%i_light, iphys%i_sgs_composit)
       end if
 !

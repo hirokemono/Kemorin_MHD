@@ -241,7 +241,7 @@
       call scalar_send_recv(iphys%i_temp, nod_comm, nod_fld)
 !
       if (iphys%i_par_temp .gt. 0) then
-        call subtract_2_nod_scalars(node, nod_fld,                      &
+        call subtract_2_nod_scalars(nod_fld,                            &
      &      iphys%i_temp, iphys%i_ref_t, iphys%i_par_temp)
       end if
 !
@@ -407,7 +407,7 @@
 !
       call scalar_send_recv(iphys%i_par_temp, nod_comm, nod_fld)
 !
-      call add_2_nod_scalars(node, nod_fld,                             &
+      call add_2_nod_scalars(nod_fld,                                   &
      &    iphys%i_ref_t, iphys%i_par_temp, iphys%i_temp)
 !
       end subroutine cal_parturbation_temp

@@ -36,6 +36,7 @@
       subroutine s_cal_energy_flux_rj(sph_rj, r_2nd, ipol, rj_fld)
 !
       use const_sph_radial_grad
+      use copy_nodal_fields
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
@@ -46,6 +47,62 @@
       if(ipol%i_rot_Coriolis .gt. 0) then
         call const_grad_poloidal_moment                                 &
      &     (sph_rj, r_2nd, ipol%i_rot_Coriolis, rj_fld)
+      end if
+!
+!
+      if(ipol%i_geostrophic .gt. 0) then
+        call add_2_nod_vectors                                          &
+     &     (rj_fld, ipol%i_coriolis, ipol%i_press_grad,                 &
+     &      ipol%i_geostrophic)
+      end if
+!
+!
+      if(ipol%i_h_flux_w_sgs .gt. 0) then
+        call add_2_nod_vectors                                          &
+     &     (rj_fld, ipol%i_h_flux, ipol%i_SGS_h_flux,                   &
+     &      ipol%i_h_flux_w_sgs)
+      end if
+!
+      if(ipol%i_c_flux_w_sgs .gt. 0) then
+        call add_2_nod_vectors                                          &
+     &     (rj_fld, ipol%i_c_flux, ipol%i_SGS_c_flux,                   &
+     &      ipol%i_c_flux_w_sgs)
+      end if
+!
+      if(ipol%i_inertia_w_sgs .gt. 0) then
+        call add_2_nod_vectors                                          &
+     &     (rj_fld, ipol%i_m_advect, ipol%i_SGS_inertia,                &
+     &      ipol%i_inertia_w_sgs)
+      end if
+!
+      if(ipol%i_Lorentz_w_sgs .gt. 0) then
+        call add_2_nod_vectors                                          &
+     &     (rj_fld, ipol%i_lorentz, ipol%i_SGS_Lorentz,                 &
+     &      ipol%i_Lorentz_w_sgs)
+      end if
+!
+      if(ipol%i_vp_induct_w_sgs .gt. 0) then
+        call add_2_nod_vectors                                          &
+     &     (rj_fld, ipol%i_vp_induct, ipol%i_SGS_vp_induct,             &
+     &      ipol%i_vp_induct_w_sgs)
+      end if
+!
+      if(ipol%i_mag_induct_w_sgs .gt. 0) then
+        call add_2_nod_vectors                                          &
+     &     (rj_fld, ipol%i_induction, ipol%i_SGS_induction,             &
+     &      ipol%i_mag_induct_w_sgs)
+      end if
+!
+      if(ipol%i_mom_flux_w_sgs .gt. 0) then
+        call add_2_nod_tensors                                          &
+     &     (rj_fld, ipol%i_m_flux, ipol%i_SGS_m_flux,                   &
+     &      ipol%i_mom_flux_w_sgs)
+      end if
+!
+      if(ipol%i_maxwell_t_w_sgs .gt. 0) then
+        call add_2_nod_tensors                                          &
+     &     (rj_fld, ipol%i_maxwell, ipol%i_SGS_maxwell,                 &
+     &      ipol%i_maxwell_t_w_sgs)
       end if
 !
       end subroutine s_cal_energy_flux_rj

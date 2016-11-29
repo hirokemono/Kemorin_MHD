@@ -81,7 +81,6 @@
       use cal_sgs_mom_fluxes_grad
       use cal_filtering_scalars
       use cal_model_diff_coefs
-      use clear_work_4_dynamic_model
       use cvt_dynamic_scheme_coord
 !
       integer(kind = kint), intent(in) :: iak_sgs_lor, icomp_sgs_lor
@@ -115,7 +114,7 @@
 !
       call reset_tensor_sgs_model_coefs                                 &
      &   (ele, layer_tbl, icomp_sgs_lor, sgs_coefs)
-      call s_clear_work_4_dynamic_model(node, iphys, nod_fld)
+      call clear_work_4_dynamic_model(iphys, nod_fld)
 !
 !    SGS term by similarity model
 !
@@ -127,7 +126,7 @@
 !
 !    copy to work array
 !
-       call copy_tensor_component(node, nod_fld,                        &
+       call copy_tensor_component(nod_fld,                              &
      &     iphys%i_SGS_maxwell, iphys%i_sgs_simi)
 !
 !   gradient model by filtered field

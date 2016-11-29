@@ -97,7 +97,6 @@
       use cal_model_diff_coefs
       use set_boundary_scalars
       use nod_phys_send_recv
-      use clear_work_4_dynamic_model
 !
       integer(kind = kint), intent(in) :: iak_diff_hf
       integer(kind = kint), intent(in) :: icomp_sgs_hf, icomp_diff_hf
@@ -137,7 +136,7 @@
 !
       call reset_diff_model_coefs(ele%numele, ele%istack_ele_smp,       &
      &    diff_coefs%num_field, iak_diff_hf, diff_coefs%ak)
-      call s_clear_work_4_dynamic_model(node, iphys, nod_fld)
+      call clear_work_4_dynamic_model(iphys, nod_fld)
 !
 !   gradient model by filtered field (to iphys%i_sgs_grad_f)
 !
@@ -172,7 +171,7 @@
 !
 !    take difference (to iphys%i_sgs_simi)
 !
-      call subtract_2_nod_scalars(node, nod_fld,                        &
+      call subtract_2_nod_scalars(nod_fld,                              &
      &    iphys%i_sgs_grad, iphys%i_sgs_simi, iphys%i_sgs_simi)
       call delete_field_by_fixed_t_bc                                   &
      &   (Tnod_bcs%nod_bc_s, iphys%i_sgs_simi, nod_fld)

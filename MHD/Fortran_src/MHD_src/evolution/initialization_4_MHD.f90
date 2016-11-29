@@ -233,7 +233,7 @@
 !
       if (iflag_4_ref_temp .ne. id_no_ref_temp) then
         if (iflag_debug.eq.1) write(*,*)' set_2_perturbation_temp'
-        call subtract_2_nod_scalars(mesh%node, nod_fld1,                &
+        call subtract_2_nod_scalars(nod_fld1,                           &
      &      iphys%i_temp, iphys%i_ref_t, iphys%i_par_temp)
       end if
 !

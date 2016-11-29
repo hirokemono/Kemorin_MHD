@@ -92,7 +92,6 @@
       use cal_gradient
       use commute_error_gradient
       use cal_model_diff_coefs
-      use clear_work_4_dynamic_model
       use nod_phys_send_recv
 !
       integer (kind=kint), intent(in) :: iak_diff_b, icomp_diff_b
@@ -137,11 +136,11 @@
 !
       call reset_diff_model_coefs(ele%numele, ele%istack_ele_smp,       &
      &    diff_coefs%num_field, iak_diff_b, diff_coefs%ak)
-      call s_clear_work_4_dynamic_model(node, iphys, nod_fld)
+      call clear_work_4_dynamic_model(iphys, nod_fld)
 !
 !    get filtered scalar potential(to iphys%i_sgs_grad_f)
 !
-      call copy_vector_component(node, nod_fld,                         &
+      call copy_vector_component(nod_fld,                               &
      &    iphys%i_filter_magne, iphys%i_sgs_grad_f)
       call cal_filtered_scalar_whole(nod_comm, node, filtering,         &
      &    i_sgs_grad_fp, iphys%i_mag_p, wk_filter, nod_fld)
@@ -193,7 +192,7 @@
 !
 !    take difference (to iphys%i_sgs_simi)
 !
-      call subtract_2_nod_tensors(node, nod_fld,                        &
+      call subtract_2_nod_tensors(nod_fld,                              &
      &    iphys%i_sgs_grad, iphys%i_sgs_simi, iphys%i_sgs_simi)
 !
 !      call check_nodal_data                                            &

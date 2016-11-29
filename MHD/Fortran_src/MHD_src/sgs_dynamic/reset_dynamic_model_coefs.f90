@@ -4,6 +4,10 @@
 !     Written by H. Matsui
 !     Modified by H. Matsui on July, 2007
 !
+!!      subroutine clear_work_4_dynamic_model(iphys, nod_fld)
+!!        type(phys_address), intent(in) :: iphys
+!!        type(phys_data), intent(inout) :: nod_fld
+!!
 !!      subroutine reset_vector_sgs_model_coefs                         &
 !!     &         (ele, layer_tbl, icomp_sgs, sgs_coefs)
 !!      subroutine reset_tensor_sgs_model_coefs                         &
@@ -36,6 +40,26 @@
       contains
 !
 !-----------------------------------------------------------------------
+!
+      subroutine clear_work_4_dynamic_model(iphys, nod_fld)
+!
+      use m_phys_constants
+      use t_phys_address
+      use t_phys_data
+      use copy_nodal_fields
+!
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(inout) :: nod_fld
+!
+!
+      call clear_field_data(nod_fld, n_sym_tensor, iphys%i_sgs_simi)
+      call clear_field_data(nod_fld, n_sym_tensor, iphys%i_sgs_grad)
+      call clear_field_data(nod_fld, n_sym_tensor, iphys%i_sgs_grad_f)
+!
+      end subroutine clear_work_4_dynamic_model
+!
+!  --------------------------------------------------------------------
+!  --------------------------------------------------------------------
 !
       subroutine reset_vector_sgs_model_coefs                           &
      &         (ele, layer_tbl, icomp_sgs, sgs_coefs)

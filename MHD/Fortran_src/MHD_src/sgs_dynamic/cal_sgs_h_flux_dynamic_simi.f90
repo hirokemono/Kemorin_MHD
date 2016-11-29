@@ -74,7 +74,6 @@
       use cal_model_diff_coefs
       use int_element_field_2_node
       use cal_similarity_terms
-      use clear_work_4_dynamic_model
       use cvt_dynamic_scheme_coord
 !
       integer(kind = kint), intent(in) :: iak_sgs_hf, icomp_sgs_hf
@@ -107,7 +106,7 @@
       call reset_vector_sgs_nod_m_coefs                                 &
      &   (node%numnod, node%istack_nod_smp,                             &
      &    sgs_coefs_nod%ntot_comp, icomp_sgs_hf, sgs_coefs_nod%ak)
-      call s_clear_work_4_dynamic_model(node, iphys, nod_fld)
+      call clear_work_4_dynamic_model(iphys, nod_fld)
 !
 !   similarity model with wider filter
 !
@@ -130,7 +129,7 @@
 !
 !    copy to work array
 !
-      call copy_vector_component(node, nod_fld,                         &
+      call copy_vector_component(nod_fld,                               &
      &    iphys%i_SGS_h_flux, iphys%i_sgs_simi)
 !
 !      filtering

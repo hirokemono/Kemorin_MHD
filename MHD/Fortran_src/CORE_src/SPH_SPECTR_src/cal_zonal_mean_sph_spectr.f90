@@ -7,10 +7,6 @@
 !>@brief Subroutines to choose spewcific modes of spectrum data
 !!
 !!@verbatim
-!!      subroutine delete_rj_phys_data(numdir, is_fld, sph_rj, rj_fld)
-!!        type(sph_rj_grid), intent(in) :: sph_rj
-!!        type(phys_data), intent(inout) :: rj_fld
-!!
 !!      subroutine zonal_mean_all_sph_spectr(sph_rj, rj_fld)
 !!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine take_zonal_mean_rj_field                             &
@@ -59,27 +55,6 @@
 !
       contains
 !
-!-----------------------------------------------------------------------
-!
-      subroutine delete_rj_phys_data(numdir, is_fld, sph_rj, rj_fld)
-!
-      use m_machine_parameter
-      use delete_field_smp
-!
-      integer(kind = kint), intent(in) :: numdir, is_fld
-      type(sph_rj_grid), intent(in) :: sph_rj
-      type(phys_data), intent(inout) :: rj_fld
-!
-!
-!$omp parallel
-      call delete_phys_data_smp                                         &
-     &   (np_smp, rj_fld%n_point, sph_rj%istack_inod_rj_smp,            &
-     &    rj_fld%ntot_phys, numdir, is_fld, rj_fld%d_fld)
-!$omp end parallel
-!
-      end subroutine delete_rj_phys_data
-!
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine zonal_mean_all_sph_spectr(sph_rj, rj_fld)

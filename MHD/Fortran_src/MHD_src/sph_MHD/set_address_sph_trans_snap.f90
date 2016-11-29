@@ -181,6 +181,29 @@
      &    iphys%i_SGS_c_flux, nvector_snap_rj_2_rtp,                    &
      &    bs_trns%i_SGS_c_flux)
 !
+      call add_vec_trans_flag_snap(ipol%i_geostrophic,                  &
+     &    iphys%i_geostrophic, nvector_snap_rj_2_rtp,                   &
+     &    bs_trns%i_geostrophic)
+!
+      call add_vec_trans_flag_snap(ipol%i_h_flux_w_sgs,                 &
+     &    iphys%i_h_flux_w_sgs, nvector_snap_rj_2_rtp,                  &
+     &    bs_trns%i_h_flux_w_sgs)
+      call add_vec_trans_flag_snap(ipol%i_c_flux_w_sgs,                 &
+     &    iphys%i_c_flux_w_sgs, nvector_snap_rj_2_rtp,                  &
+     &    bs_trns%i_c_flux_w_sgs)
+      call add_vec_trans_flag_snap(ipol%i_inertia_w_sgs,                &
+     &    iphys%i_inertia_w_sgs, nvector_snap_rj_2_rtp,                 &
+     &    bs_trns%i_inertia_w_sgs)
+      call add_vec_trans_flag_snap(ipol%i_Lorentz_w_sgs,                &
+     &    iphys%i_Lorentz_w_sgs, nvector_snap_rj_2_rtp,                 &
+     &    bs_trns%i_Lorentz_w_sgs)
+      call add_vec_trans_flag_snap(ipol%i_vp_induct_w_sgs,              &
+     &    iphys%i_vp_induct_w_sgs, nvector_snap_rj_2_rtp,               &
+     &    bs_trns%i_vp_induct_w_sgs)
+      call add_vec_trans_flag_snap(ipol%i_mag_induct_w_sgs,             &
+     &    iphys%i_mag_induct_w_sgs, nvector_snap_rj_2_rtp,              &
+     &    bs_trns%i_mag_induct_w_sgs)
+!
       call add_vec_trans_flag_snap(ipol%i_SGS_rot_inertia,              &
      &    iphys%i_SGS_rot_inertia, nvector_snap_rj_2_rtp,               &
      &    bs_trns%i_SGS_rot_inertia)

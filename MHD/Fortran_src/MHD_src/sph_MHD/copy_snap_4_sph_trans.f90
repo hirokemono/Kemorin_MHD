@@ -115,6 +115,10 @@
      &   (trns_snap%b_trns%i_grad_vz, iphys%i_grad_vz,                  &
      &    m_folding, sph_rtp, trns_snap, node, nod_fld)
 !
+      call copy_vector_from_snap_trans                                  &
+     &   (trns_snap%b_trns%i_geostrophic, iphys%i_geostrophic,          &
+     &    m_folding, sph_rtp, trns_snap, node, nod_fld)
+!
 !  Copy scalars
       call copy_scalar_from_snap_trans                                  &
      &   (trns_snap%b_trns%i_temp, iphys%i_temp,                        &

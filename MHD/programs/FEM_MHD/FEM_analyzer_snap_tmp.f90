@@ -119,7 +119,7 @@
 !
       if (iflag_4_ref_temp .ne. id_no_ref_temp) then
         if (iflag_debug.eq.1)  write(*,*) 'set_2_perturbation_temp'
-        call subtract_2_nod_scalars(mesh1%node, nod_fld1,               &
+        call subtract_2_nod_scalars(nod_fld1,                           &
      &      iphys%i_temp, iphys%i_ref_t, iphys%i_par_temp)
       end if
 !
@@ -250,8 +250,7 @@
      &    iphys%i_SGS_m_flux, n_sym_tensor, nod_fld1%d_fld)
 !$omp end parallel
 !
-      call clear_nodal_data(mesh1%node, nod_fld1,                       &
-     &    n_sym_tensor, iphys%i_SGS_m_flux)
+      call clear_field_data(nod_fld1, n_sym_tensor, iphys%i_SGS_m_flux)
 !
 !$omp parallel
       call overwrite_nodal_sph_2_xyz_smp                                &
@@ -284,8 +283,7 @@
      &    iphys%i_velo, n_vector, nod_fld1%d_fld)
 !$omp end parallel
 
-      call clear_nodal_data                                             &
-     &   (mesh1%node, nod_fld1, n_vector, iphys%i_velo)
+      call clear_field_data(nod_fld1, n_vector, iphys%i_velo)
 !
 !$omp parallel
       call overwrite_nodal_sph_2_xyz_smp                                &
