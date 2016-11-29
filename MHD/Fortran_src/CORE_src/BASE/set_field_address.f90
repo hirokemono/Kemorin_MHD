@@ -105,17 +105,17 @@
           iphys%i_entropy_source = i0
         end if
 !
-        if ( field_name(i) .eq. fhd_filter_v ) then
+        if ( field_name(i) .eq. fhd_filter_velo ) then
           iphys%i_filter_velo =    i0
-        else if ( field_name(i) .eq. fhd_filter_w ) then
+        else if ( field_name(i) .eq. fhd_filter_vort ) then
           iphys%i_filter_vort =    i0
         else if ( field_name(i) .eq. fhd_filter_temp ) then
           iphys%i_filter_temp =    i0
-        else if ( field_name(i) .eq. fhd_filter_a ) then
+        else if ( field_name(i) .eq. fhd_filter_vecp ) then
           iphys%i_filter_vecp =    i0
-        else if ( field_name(i) .eq. fhd_filter_b ) then
+        else if ( field_name(i) .eq. fhd_filter_magne ) then
           iphys%i_filter_magne =   i0
-        else if ( field_name(i) .eq. fhd_filter_j ) then
+        else if ( field_name(i) .eq. fhd_filter_current ) then
           iphys%i_filter_current = i0
         else if ( field_name(i) .eq. fhd_filter_part_temp ) then
           iphys%i_filter_par_t =   i0
@@ -298,6 +298,26 @@
           iphys%i_SGS_buo_wk =       i0
         else if ( field_name(i) .eq. fhd_SGS_comp_buo_flux ) then
           iphys%i_SGS_comp_buo_wk =  i0
+!
+        else if ( field_name(i) .eq. fhd_geostrophic ) then
+          iphys%i_SGS_comp_buo_wk =  i0
+!
+        else if ( field_name(i) .eq. fhd_h_flux_w_sgs ) then
+          iphys%i_h_flux_w_sgs =  i0
+        else if ( field_name(i) .eq. fhd_c_flux_w_sgs ) then
+          iphys%i_c_flux_w_sgs =  i0
+        else if ( field_name(i) .eq. fhd_inertia_w_sgs ) then
+          iphys%i_inertia_w_sgs =  i0
+        else if ( field_name(i) .eq. fhd_Lorentz_w_sgs ) then
+          iphys%i_Lorentz_w_sgs =  i0
+        else if ( field_name(i) .eq. fhd_vp_induct_w_sgs ) then
+          iphys%i_vp_induct_w_sgs =  i0
+        else if ( field_name(i) .eq. fhd_mag_induct_w_sgs ) then
+          iphys%i_mag_induct_w_sgs =  i0
+        else if ( field_name(i) .eq. fhd_mom_flux_w_sgs ) then
+          iphys%i_mom_flux_w_sgs =  i0
+        else if ( field_name(i) .eq. fhd_maxwell_t_w_sgs ) then
+          iphys%i_maxwell_t_w_sgs =  i0
 !
         else if ( field_name(i) .eq. fhd_SGS_div_h_flux_true ) then
           iphys%i_SGS_div_hf_true = i0

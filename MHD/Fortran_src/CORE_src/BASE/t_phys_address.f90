@@ -396,6 +396,49 @@
 !>        start address for work of SGS compositional buoyancy
         integer (kind=kint) :: i_SGS_comp_buo_wk = izero
 !
+!
+!>        Field address for geostrophic balance
+!!         @f$ -2 e_{ijk} \Omega_{j} u_{k} + \partial_{i} p @f$
+      integer (kind=kint) :: i_geostrophic = izero
+!
+!>        Field address for heat flux
+!!         @f$ u_{i} T + (\overline{u_{i}T} - \bar{u}_{i}\bar{T}) @f$
+      integer (kind=kint) :: i_h_flux_w_sgs = izero
+!>        Field address for compositinoal flux
+!!         @f$ u_{i} C + (\overline{u_{i}C} - \bar{u}_{i}\bar{C}) @f$
+      integer (kind=kint) :: i_c_flux_w_sgs = izero
+!
+!>        Field address for advection for momentum
+!!         @f$ u_{j} \partial_{j} u_{i}
+!!           + e_{ijk}\left(\overline{\omega_{j}u_{k}}
+!!            - \bar{\omega}_{j}\bar{u}_{k} \right) @f$
+      integer (kind=kint) :: i_inertia_w_sgs = izero
+!>        Field address for Lorentz force
+!!         @f$ e_{ijk} J_{j} B_{k}
+!!           + e_{ijk}\left(\overline{B{j}u_{k}}
+!!            - \bar{J}_{j}\bar{B}_{k} \right) @f$
+      integer (kind=kint) :: i_Lorentz_w_sgs = izero
+!
+!>        Field address for inductino for vector potential
+!!         @f$ e_{ijk} u_{j} B_{k} @f$
+!!           + e_{ijk}\left(\overline{u{j}B_{k}}
+!!            - \bar{u}_{j}\bar{B}_{k} \right) @f$
+      integer (kind=kint) :: i_vp_induct_w_sgs = izero
+!>        Field address for magnetic induction
+!!         @f$ e_{ijk} \partial_{j}\left(e_{klm}u_{l}B_{m} \right)@f$
+!!           + e_{ijk} \partial_{j}(e_{klm}\left(\overline{u{l}B_{m}}
+!!                              - \bar{u}_{l}\bar{B}_{m} \right)) @f$
+      integer (kind=kint) :: i_mag_induct_w_sgs = izero
+!
+!>        Field address for momentum flux
+!!         @f$ u_{i} u_{j}
+!!            + (\overline{u_{i}u_{j}} - \bar{u}_{i}\bar{u}_{j})@f$
+      integer (kind=kint) :: i_mom_flux_w_sgs = izero
+!>        Field address for momentum flux
+!!         @f$ B_{i} B_{j}
+!!            + (\overline{B_{i}B_{j}} - \bar{B}_{i}\bar{B}_{j})@f$
+      integer (kind=kint) :: i_maxwell_t_w_sgs = izero
+!
 !>        start address for gradient of @f$ u_{x} @f$
         integer (kind=kint) :: i_grad_vx = izero
 !>        start address for gradient of @f$ u_{y} @f$

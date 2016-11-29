@@ -367,8 +367,8 @@
       do j = 1, num_fft
         if (   fft_name(j) .eq. fhd_velo                                &
      &    .or. fft_name(j) .eq. fhd_magne                               &
-     &    .or. fft_name(j) .eq. fhd_filter_v                            &
-     &    .or. fft_name(j) .eq. fhd_filter_b                            &
+     &    .or. fft_name(j) .eq. fhd_filter_velo                         &
+     &    .or. fft_name(j) .eq. fhd_filter_magne                        &
      &     ) then
           do iy = 1, ny_2
             do ix = 1, nx_2

@@ -100,7 +100,7 @@
 !
       do i = 1, num_nod_phys
           if (    phys_nod_name(i) .eq. fhd_velo                        &
-     &       .or. phys_nod_name(i) .eq. fhd_filter_v                    &
+     &       .or. phys_nod_name(i) .eq. fhd_filter_velo                 &
      &       .or. phys_nod_name(i) .eq. fhd_w_filter_velo               &
      &       .or. phys_nod_name(i) .eq. fhd_vort                        &
      &       .or. phys_nod_name(i) .eq. fhd_magne                       &
@@ -126,7 +126,7 @@
             num_check = 1
             phys_check_name(1) = fhd_press
 !
-          else if ( phys_nod_name(i) .eq. fhd_filter_b                  &
+          else if ( phys_nod_name(i) .eq. fhd_filter_magne              &
      &         .or. phys_nod_name(i) .eq. fhd_w_filter_magne            &
      &         .or. phys_nod_name(i) .eq. fhd_current                   &
      &         .or. phys_nod_name(i) .eq. fhd_mag_potential             &
@@ -139,7 +139,7 @@
            num_check = 1
            phys_check_name(1) = fhd_magne
 !
-          else if ( phys_nod_name(i) .eq. fhd_filter_a                  &
+          else if ( phys_nod_name(i) .eq. fhd_filter_vecp               &
      &         .or. phys_nod_name(i) .eq. fhd_scalar_potential          &
      &         .or. phys_nod_name(i) .eq. fhd_magnetic_helicity         &
      &         .or. phys_nod_name(i) .eq. fhd_vecp_diffuse              &
@@ -371,7 +371,7 @@
            phys_check_name(1) = fhd_part_h_advect
            phys_check_name(2) = fhd_temp
 !
-          else if (phys_nod_name(i) .eq. fhd_filter_w                   &
+          else if (phys_nod_name(i) .eq. fhd_filter_vort                &
      &        .or. phys_nod_name(i) .eq. fhd_w_filter_vort              &
      &        .or. phys_nod_name(i) .eq. fhd_kinetic_helicity           &
      &        .or. phys_nod_name(i) .eq. fhd_velocity_scale             &
@@ -388,7 +388,7 @@
            num_check = 1
            phys_check_name(1) = fhd_SGS_inertia
 !
-          else if (phys_nod_name(i) .eq. fhd_filter_j                   &
+          else if (phys_nod_name(i) .eq. fhd_filter_current             &
      &        .or. phys_nod_name(i) .eq. fhd_w_filter_current           &
      &        .or. phys_nod_name(i) .eq. fhd_current_helicity           &
      &        .or. phys_nod_name(i) .eq. fhd_magnetic_scale             &
@@ -506,27 +506,27 @@
           else if (phys_nod_name(i) .eq. fhd_SGS_div_h_flux_true        &
      &         ) then
            num_check = 3
-           phys_check_name(1) = fhd_filter_v
+           phys_check_name(1) = fhd_filter_velo
            phys_check_name(2) = fhd_filter_temp
            phys_check_name(3) = fhd_div_h_flux
 !
           else if (phys_nod_name(i) .eq. fhd_SGS_div_m_flux_true        &
      &         ) then
            num_check = 2
-           phys_check_name(1) = fhd_filter_v
+           phys_check_name(1) = fhd_filter_velo
            phys_check_name(2) = fhd_div_m_flux
 !
           else if (phys_nod_name(i) .eq. fhd_SGS_Lorentz_true           &
      &         ) then
            num_check = 2
-           phys_check_name(1) = fhd_filter_b
+           phys_check_name(1) = fhd_filter_magne
            phys_check_name(2) = fhd_div_maxwell_t
 !
           else if (phys_nod_name(i) .eq. fhd_SGS_mag_induct_true        &
      &         ) then
            num_check = 3
-           phys_check_name(1) = fhd_filter_v
-           phys_check_name(2) = fhd_filter_b
+           phys_check_name(1) = fhd_filter_velo
+           phys_check_name(2) = fhd_filter_magne
            phys_check_name(3) = fhd_div_induct_t
 !
           else if (phys_nod_name(i) .eq. fhd_SGS_Lorentz_wk_true        &
@@ -558,6 +558,60 @@
      &       ) then
            num_check = 1
            phys_check_name(1) = fhd_Lorentz
+!
+          else if (phys_nod_name(i) .eq. fhd_geostrophic                &
+     &       ) then
+           num_check = 2
+           phys_check_name(1) = fhd_Coriolis
+           phys_check_name(2) = fhd_press_grad
+!
+          else if (phys_nod_name(i) .eq. fhd_h_flux_w_sgs               &
+     &       ) then
+           num_check = 2
+           phys_check_name(1) = fhd_h_flux
+           phys_check_name(2) = fhd_SGS_h_flux
+!
+          else if (phys_nod_name(i) .eq. fhd_c_flux_w_sgs               &
+     &       ) then
+           num_check = 2
+           phys_check_name(1) = fhd_c_flux
+           phys_check_name(2) = fhd_SGS_c_flux
+!
+          else if (phys_nod_name(i) .eq. fhd_inertia_w_sgs              &
+     &       ) then
+           num_check = 2
+           phys_check_name(1) = fhd_inertia
+           phys_check_name(2) = fhd_SGS_inertia
+!
+          else if (phys_nod_name(i) .eq. fhd_Lorentz_w_sgs              &
+     &       ) then
+           num_check = 2
+           phys_check_name(1) = fhd_Lorentz
+           phys_check_name(2) = fhd_SGS_Lorentz
+!
+          else if (phys_nod_name(i) .eq. fhd_vp_induct_w_sgs            &
+     &       ) then
+           num_check = 2
+           phys_check_name(1) = fhd_vp_induct
+           phys_check_name(2) = fhd_SGS_vp_induct
+!
+          else if (phys_nod_name(i) .eq. fhd_mag_induct_w_sgs          &
+     &       ) then
+           num_check = 2
+           phys_check_name(1) = fhd_mag_induct
+           phys_check_name(2) = fhd_SGS_induction
+!
+          else if (phys_nod_name(i) .eq. fhd_mom_flux_w_sgs             &
+     &       ) then
+           num_check = 2
+           phys_check_name(1) = fhd_mom_flux
+           phys_check_name(2) = fhd_SGS_m_flux
+!
+          else if (phys_nod_name(i) .eq. fhd_maxwell_t_w_sgs            &
+     &       ) then
+           num_check = 2
+           phys_check_name(1) = fhd_maxwell_t
+           phys_check_name(2) = fhd_SGS_maxwell_t
 !
 !
 !   Old field label... Should be deleted later!!
@@ -750,7 +804,7 @@
      &     .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
           target_name = 'filterd u is required for SGS momentum flux'
           num_check = 1
-          phys_check_name(1) = fhd_filter_v
+          phys_check_name(1) = fhd_filter_velo
           call check_dependence_phys(num_nod_phys, num_check,           &
      &           target_name, phys_nod_name, phys_check_name)
         end if
@@ -759,7 +813,7 @@
      &     .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
           target_name = 'filterd B is required for SGS Lorentz term'
           num_check = 1
-          phys_check_name(1) = fhd_filter_b
+          phys_check_name(1) = fhd_filter_magne
           call check_dependence_phys(num_nod_phys, num_check,           &
      &           target_name, phys_nod_name, phys_check_name)
         end if
@@ -804,8 +858,8 @@
      &      .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
           target_name = 'filterd u and B is required for SGS induction'
           num_check = 2
-          phys_check_name(1) = fhd_filter_v
-          phys_check_name(2) = fhd_filter_b
+          phys_check_name(1) = fhd_filter_velo
+          phys_check_name(2) = fhd_filter_magne
           call check_dependence_phys(num_nod_phys, num_check,           &
      &           target_name, phys_nod_name, phys_check_name)
         end if
@@ -817,8 +871,8 @@
      &      .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
           target_name = 'filterd u and B is required for SGS induction'
           num_check = 2
-          phys_check_name(1) = fhd_filter_v
-          phys_check_name(2) = fhd_filter_b
+          phys_check_name(1) = fhd_filter_velo
+          phys_check_name(2) = fhd_filter_magne
           call check_dependence_phys(num_nod_phys, num_check,           &
      &           target_name, phys_nod_name, phys_check_name)
         end if
@@ -829,7 +883,7 @@
      &       .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
           target_name = 'filterd A is required for dynamic model'
           num_check = 1
-          phys_check_name(1) = fhd_filter_a
+          phys_check_name(1) = fhd_filter_vecp
           call check_dependence_phys(num_nod_phys, num_check,           &
      &           target_name, phys_nod_name, phys_check_name)
         end if
@@ -920,7 +974,7 @@
      &     .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
           target_name = 'filterd u is required for SGS momentum flux'
           num_check = 1
-          phys_check_name(1) = fhd_filter_v
+          phys_check_name(1) = fhd_filter_velo
           call check_dependence_phys(num_nod_phys, num_check,           &
      &           target_name, phys_nod_name, phys_check_name)
         end if
@@ -929,7 +983,7 @@
      &     .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
           target_name = 'filterd B is required for SGS Lorentz term'
           num_check = 1
-          phys_check_name(1) = fhd_filter_b
+          phys_check_name(1) = fhd_filter_magne
           call check_dependence_phys(num_nod_phys, num_check,           &
      &           target_name, phys_nod_name, phys_check_name)
         end if
@@ -974,8 +1028,8 @@
      &      .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
           target_name = 'filterd u and B is required for SGS induction'
           num_check = 2
-          phys_check_name(1) = fhd_filter_v
-          phys_check_name(2) = fhd_filter_b
+          phys_check_name(1) = fhd_filter_velo
+          phys_check_name(2) = fhd_filter_magne
           call check_dependence_phys(num_nod_phys, num_check,           &
      &           target_name, phys_nod_name, phys_check_name)
         end if

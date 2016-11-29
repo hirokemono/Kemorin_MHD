@@ -138,12 +138,12 @@
         field_name = nod_fld%phys_name(i)
         if (nod_fld%iflag_monitor(i) .eq. 1) then
           if     (field_name .eq. fhd_velo                              &
-     &       .or. field_name .eq. fhd_filter_v                          &
+     &       .or. field_name .eq. fhd_filter_velo                       &
      &      ) then
          i0 = i0 + 2
          j0 = j0 + 7
         else if ( field_name .eq. fhd_magne                             &
-     &       .or. field_name .eq. fhd_filter_b                          &
+     &       .or. field_name .eq. fhd_filter_magne                      &
      &      ) then
          i0 = i0 + 3
          j0 = j0 + 7
@@ -154,7 +154,7 @@
          i0 = i0 + 2
          j0 = j0 + 3
         else if ( field_name .eq. fhd_vecp                              &
-     &       .or. field_name .eq. fhd_filter_a                          &
+     &       .or. field_name .eq. fhd_filter_vecp                       &
      &       .or. field_name .eq. fhd_temp                              &
      &       .or. field_name .eq. fhd_part_temp                         &
      &       .or. field_name .eq. fhd_filter_temp                       &
@@ -201,6 +201,12 @@
      &       .or. field_name .eq. fhd_Reynolds_work_true                &
      &       .or. field_name .eq. fhd_SGS_temp_gen_true                 &
      &       .or. field_name .eq. fhd_SGS_m_ene_gen_true                &
+     &       .or. field_name .eq. fhd_div_SGS_h_flux                    &
+     &       .or. field_name .eq. fhd_div_SGS_c_flux                    &
+     &       .or. field_name .eq. fhd_SGS_div_inertia                   &
+     &       .or. field_name .eq. fhd_SGS_div_Lorentz                   &
+     &       .or. field_name .eq. fhd_w_filter_temp                     &
+     &       .or. field_name .eq. fhd_w_filter_comp                     &
      &      ) then
          i0 = i0 + 1
          j0 = j0 + n_scalar
@@ -226,6 +232,11 @@
      &       .or. field_name .eq. fhd_grad_v_1                          &
      &       .or. field_name .eq. fhd_grad_v_2                          &
      &       .or. field_name .eq. fhd_grad_v_3                          &
+     &       .or. field_name .eq. fhd_filter_vort                       &
+     &       .or. field_name .eq. fhd_w_filter_velo                     &
+     &       .or. field_name .eq. fhd_w_filter_vort                     &
+     &       .or. field_name .eq. fhd_w_filter_magne                    &
+     &       .or. field_name .eq. fhd_w_filter_current                  &
      &      ) then
          i0 = i0 + 1
          j0 = j0 + n_vector
@@ -233,6 +244,7 @@
      &       .or. field_name .eq. fhd_SGS_c_flux                        &
      &       .or. field_name .eq. fhd_div_SGS_m_flux                    &
      &       .or. field_name .eq. fhd_SGS_Lorentz                       &
+     &       .or. field_name .eq. fhd_SGS_inertia                       &
      &       .or. field_name .eq. fhd_SGS_induction                     &
      &       .or. field_name .eq. fhd_SGS_vp_induct                     &
      &       .or. field_name .eq. fhd_viscous                           &
@@ -243,6 +255,20 @@
      &       .or. field_name .eq. fhd_SGS_mag_induct_true               &
      &       .or. field_name .eq. fhd_SGS_buoyancy                      &
      &       .or. field_name .eq. fhd_SGS_comp_buo                      &
+     &       .or. field_name .eq. fhd_wide_SGS_h_flux                   &
+     &       .or. field_name .eq. fhd_wide_SGS_c_flux                   &
+     &       .or. field_name .eq. fhd_wide_SGS_inertia                  &
+     &       .or. field_name .eq. fhd_wide_SGS_Lorentz                  &
+     &       .or. field_name .eq. fhd_wide_SGS_vp_induct                &
+     &       .or. field_name .eq. fhd_SGS_rot_inertia                   &
+     &       .or. field_name .eq. fhd_SGS_rot_Lorentz                   &
+     &       .or. field_name .eq. fhd_geostrophic                       &
+     &       .or. field_name .eq. fhd_h_flux_w_sgs                      &
+     &       .or. field_name .eq. fhd_c_flux_w_sgs                      &
+     &       .or. field_name .eq. fhd_inertia_w_sgs                     &
+     &       .or. field_name .eq. fhd_Lorentz_w_sgs                     &
+     &       .or. field_name .eq. fhd_vp_induct_w_sgs                   &
+     &       .or. field_name .eq. fhd_mag_induct_w_sgs                  &
      &      ) then
          i0 = i0 + 1
          j0 = j0 + n_vector
@@ -252,6 +278,8 @@
      &       .or. field_name .eq. fhd_SGS_m_flux                        &
      &       .or. field_name .eq. fhd_SGS_maxwell_t                     &
      &       .or. field_name .eq. fhd_SGS_induct_t                      &
+     &       .or. field_name .eq. fhd_mom_flux_w_sgs                    &
+     &       .or. field_name .eq. fhd_maxwell_t_w_sgs                   &
      &      ) then
          i0 = i0 + 1
          j0 = j0 + n_sym_tensor
@@ -260,6 +288,13 @@
      &       .or. field_name .eq. fhd_magnetic_scale                    &
      &       .or. field_name .eq. fhd_temp_scale                        &
      &       .or. field_name .eq. fhd_composition_scale                 &
+     &       .or. field_name .eq. fhd_Csim_SGS_h_flux                   &
+     &       .or. field_name .eq. fhd_Csim_SGS_c_flux                   &
+     &       .or. field_name .eq. fhd_Csim_SGS_m_flux                   &
+     &       .or. field_name .eq. fhd_Csim_SGS_Lorentz                  &
+     &       .or. field_name .eq. fhd_Csim_SGS_induction                &
+     &       .or. field_name .eq. fhd_Csim_SGS_buoyancy                 &
+     &       .or. field_name .eq. fhd_Csim_SGS_comp_buo                 &
      &      ) then
          i0 = i0 + 1
          j0 = j0 + n_scalar
@@ -267,11 +302,11 @@
 !
         else
           if    ( field_name .eq. fhd_velo                              &
-     &       .or. field_name .eq. fhd_filter_v                          &
+     &       .or. field_name .eq. fhd_filter_velo                       &
      &       .or. field_name .eq. fhd_magne                             &
-     &       .or. field_name .eq. fhd_filter_b                          &
+     &       .or. field_name .eq. fhd_filter_magne                      &
      &       .or. field_name .eq. fhd_vecp                              &
-     &       .or. field_name .eq. fhd_filter_a                          &
+     &       .or. field_name .eq. fhd_filter_vecp                       &
      &       .or. field_name .eq. fhd_mag_potential                     &
      &      ) then
             i0 = i0 + 1
@@ -417,7 +452,7 @@
      &          i_rms%i_m_tension, j_ave%i_m_tension)
           end if
 !
-          if ( field_name .eq. fhd_filter_v ) then
+          if ( field_name .eq. fhd_filter_velo ) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_filter_velo, j_ave%i_filter_velo)
             call set_rms_address(n_scalar, i0, j0,                      &
@@ -426,7 +461,7 @@
             j0 = j0 + 3
           end if
 !
-          if ( field_name .eq. fhd_filter_b ) then
+          if ( field_name .eq. fhd_filter_magne ) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_filter_magne, j_ave%i_filter_magne)
             call set_rms_address(num_comps, i0, j0,                     &
@@ -435,7 +470,7 @@
      &          ir_divb_f, ja_divb_f)
           end if
 !
-          if ( field_name .eq. fhd_filter_a ) then
+          if ( field_name .eq. fhd_filter_vecp ) then
             call set_rms_address(n_scalar, i0, j0,                      &
      &          ir_diva_f, ja_diva_f)
           else if ( field_name .eq. fhd_filter_temp ) then
@@ -444,6 +479,12 @@
           else if ( field_name .eq. fhd_filter_comp ) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_filter_comp, j_ave%i_filter_comp)
+          else if ( field_name .eq. fhd_w_filter_temp ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_wide_fil_temp, j_ave%i_wide_fil_temp)
+          else if ( field_name .eq. fhd_w_filter_comp ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_wide_fil_comp, j_ave%i_wide_fil_comp)
           end if
 !
           if ( field_name .eq. fhd_grad_v_1 ) then
@@ -533,9 +574,18 @@
           else if ( field_name .eq. fhd_div_SGS_m_flux ) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_SGS_div_m_flux, j_ave%i_SGS_div_m_flux)
+          else if ( field_name .eq. fhd_mom_flux_w_sgs ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_mom_flux_w_sgs, j_ave%i_mom_flux_w_sgs)
+          else if ( field_name .eq. fhd_maxwell_t_w_sgs ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_maxwell_t_w_sgs, j_ave%i_maxwell_t_w_sgs)
           else if ( field_name .eq. fhd_SGS_Lorentz ) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_SGS_Lorentz, j_ave%i_SGS_Lorentz)
+          else if ( field_name .eq. fhd_SGS_inertia ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_SGS_inertia, j_ave%i_SGS_inertia)
           else if ( field_name .eq. fhd_SGS_induction ) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_SGS_induction, j_ave%i_SGS_induction)
@@ -548,6 +598,50 @@
           else if ( field_name .eq. fhd_SGS_comp_buo ) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_SGS_comp_buo, j_ave%i_SGS_comp_buo)
+          end if
+!
+          if ( field_name .eq. fhd_wide_SGS_h_flux ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_wide_SGS_h_flux, j_ave%i_wide_SGS_h_flux)
+          else if ( field_name .eq. fhd_wide_SGS_c_flux ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_wide_SGS_c_flux, j_ave%i_wide_SGS_c_flux)
+          else if ( field_name .eq. fhd_wide_SGS_inertia ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_wide_SGS_inertia, j_ave%i_wide_SGS_inertia)
+          else if ( field_name .eq. fhd_wide_SGS_Lorentz ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_wide_SGS_Lorentz, j_ave%i_wide_SGS_Lorentz)
+          else if ( field_name .eq. fhd_wide_SGS_vp_induct ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_wide_SGS_vp_induct, j_ave%i_wide_SGS_vp_induct)
+          else if ( field_name .eq. fhd_SGS_rot_inertia ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_SGS_rot_inertia, j_ave%i_SGS_rot_inertia)
+          else if ( field_name .eq. fhd_SGS_rot_Lorentz ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_SGS_rot_Lorentz, j_ave%i_SGS_rot_Lorentz)
+          else if ( field_name .eq. fhd_geostrophic ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_geostrophic, j_ave%i_geostrophic)
+          else if ( field_name .eq. fhd_h_flux_w_sgs ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_h_flux_w_sgs, j_ave%i_h_flux_w_sgs)
+          else if ( field_name .eq. fhd_c_flux_w_sgs ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_c_flux_w_sgs, j_ave%i_c_flux_w_sgs)
+          else if ( field_name .eq. fhd_inertia_w_sgs ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_inertia_w_sgs, j_ave%i_inertia_w_sgs)
+          else if ( field_name .eq. fhd_Lorentz_w_sgs ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_Lorentz_w_sgs, j_ave%i_Lorentz_w_sgs)
+          else if ( field_name .eq. fhd_vp_induct_w_sgs ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_vp_induct_w_sgs, j_ave%i_vp_induct_w_sgs)
+          else if ( field_name .eq. fhd_mag_induct_w_sgs ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_mag_induct_w_sgs, j_ave%i_mag_induct_w_sgs)
           end if
 !
           if ( field_name .eq. fhd_mag_ene_gen ) then
@@ -661,6 +755,35 @@
           else if ( field_name .eq. fhd_SGS_m_ene_gen_true ) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_SGS_me_gen_tr, j_ave%i_SGS_me_gen_tr)
+          else if ( field_name .eq. fhd_div_SGS_h_flux ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_SGS_div_h_flux, j_ave%i_SGS_div_h_flux)
+          else if ( field_name .eq. fhd_div_SGS_c_flux ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_SGS_div_c_flux, j_ave%i_SGS_div_c_flux)
+          else if ( field_name .eq. fhd_SGS_div_inertia ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_SGS_div_inertia, j_ave%i_SGS_div_inertia)
+          else if ( field_name .eq. fhd_SGS_div_Lorentz ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_SGS_div_Lorentz, j_ave%i_SGS_div_Lorentz)
+          end if
+!
+          if ( field_name .eq. fhd_w_filter_velo ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_wide_fil_velo, j_ave%i_wide_fil_velo)
+          else if ( field_name .eq. fhd_filter_vort ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_wide_fil_vort, j_ave%i_wide_fil_vort)
+          else if ( field_name .eq. fhd_w_filter_vort ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_wide_fil_vort, j_ave%i_wide_fil_vort)
+          else if ( field_name .eq. fhd_w_filter_magne ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_wide_fil_magne, j_ave%i_wide_fil_magne)
+          else if ( field_name .eq. fhd_w_filter_current ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_wide_fil_current, j_ave%i_wide_fil_current)
           end if
 !
           if ( field_name .eq. fhd_velocity_scale ) then
@@ -675,6 +798,29 @@
           else if ( field_name .eq. fhd_composition_scale ) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_comp_scale, j_ave%i_comp_scale)
+          end if
+!
+          if ( field_name .eq. fhd_Csim_SGS_h_flux ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_Csim_SGS_h_flux, j_ave%i_Csim_SGS_h_flux)
+          else if ( field_name .eq. fhd_Csim_SGS_c_flux ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_Csim_SGS_c_flux, j_ave%i_Csim_SGS_c_flux)
+          else if ( field_name .eq. fhd_Csim_SGS_m_flux ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_Csim_SGS_m_flux, j_ave%i_Csim_SGS_m_flux)
+          else if ( field_name .eq. fhd_Csim_SGS_Lorentz ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_Csim_SGS_Lorentz, j_ave%i_Csim_SGS_Lorentz)
+          else if ( field_name .eq. fhd_Csim_SGS_induction ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_Csim_SGS_induction, j_ave%i_Csim_SGS_induction)
+          else if ( field_name .eq. fhd_Csim_SGS_buoyancy ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_Csim_SGS_buoyancy, j_ave%i_Csim_SGS_buoyancy)
+          else if ( field_name .eq. fhd_Csim_SGS_comp_buo ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_Csim_SGS_comp_buo, j_ave%i_Csim_SGS_comp_buo)
           end if
 !
 !   Old field label... Should be deleted later!!
@@ -693,13 +839,13 @@
           else if ( field_name .eq. fhd_vecp ) then
             call set_rms_address(n_scalar, i0, j0,                      &
      &          ir_diva, ja_diva)
-          else if ( field_name .eq. fhd_filter_v ) then
+          else if ( field_name .eq. fhd_filter_velo ) then
             call set_rms_address(n_scalar, i0, j0,                      &
      &          ir_divv_f, ja_divv_f)
-          else if ( field_name .eq. fhd_filter_b ) then
+          else if ( field_name .eq. fhd_filter_magne ) then
             call set_rms_address(n_scalar, i0, j0,                      &
      &          ir_divb_f, ja_divb_f)
-          else if ( field_name .eq. fhd_filter_a ) then
+          else if ( field_name .eq. fhd_filter_vecp ) then
             call set_rms_address(n_scalar, i0, j0,                      &
      &          ir_diva_f, ja_diva_f)
           else if ( field_name .eq. fhd_mag_potential ) then

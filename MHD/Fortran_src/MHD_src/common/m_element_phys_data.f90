@@ -73,14 +73,14 @@
           iphys_ele%i_velo = i0
         else if (fld_ele1%phys_name(i) .eq. fhd_vort) then
           iphys_ele%i_vort = i0
-        else if (fld_ele1%phys_name(i) .eq. fhd_filter_v) then
+        else if (fld_ele1%phys_name(i) .eq. fhd_filter_velo) then
           iphys_ele%i_filter_velo = i0
 !
         else if (fld_ele1%phys_name(i) .eq. fhd_magne) then
           iphys_ele%i_magne = i0
         else if (fld_ele1%phys_name(i) .eq. fhd_current) then
           iphys_ele%i_current = i0
-        else if (fld_ele1%phys_name(i) .eq. fhd_filter_b) then
+        else if (fld_ele1%phys_name(i) .eq. fhd_filter_magne) then
           iphys_ele%i_filter_magne = i0
 !
         else if (fld_ele1%phys_name(i) .eq. fhd_temp) then
@@ -153,7 +153,7 @@
           if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                 &
      &         .or. iflag_SGS_model.eq.id_SGS_similarity) then
             fld_ele1%num_component(j) = 3
-            fld_ele1%phys_name(j) = fhd_filter_v
+            fld_ele1%phys_name(j) = fhd_filter_velo
             j = j + 1
           end if
         end if
@@ -170,7 +170,7 @@
           if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                 &
      &         .or. iflag_SGS_model.eq.id_SGS_similarity) then
             fld_ele1%num_component(j) = 3
-            fld_ele1%phys_name(j) = fhd_filter_b
+            fld_ele1%phys_name(j) = fhd_filter_magne
             j = j + 1
           end if
         end if

@@ -91,10 +91,15 @@
 !!   temp_4_SGS, comp_4_SGS
 !!
 !!
-!!
 !!   SGS_Lorentz_work      Reynolds_work
 !!   SGS_temp_gen          SGS_m_ene_gen
 !!   SGS_buoyancy_flux     SGS_comp_buoyancy_flux
+!!
+!!   geostrophic_balance
+!!   heat_flux_w_SGS, comp_flux_w_SGS
+!!   intertia_w_SGS, Lorentz_w_SGS
+!!   momentum_flux_w_SGS, maxwell_tensor_w_sgs
+!!   induction_w_SGS, vecp_induction_w_SGS
 !!
 !! termes for direct estimation
 !!   SGS_div_h_flux_true
@@ -158,21 +163,24 @@
 !
 !>        Field label for filtered velocity
 !!         @f$ \bar{u}_{i} @f$
-      character(len=kchara), parameter :: fhd_filter_v = 'filter_velo'
+      character(len=kchara), parameter                                  &
+     &            :: fhd_filter_velo = 'filter_velo'
 !>        Field label for filtered velocity
 !!         @f$ \bar{\omega}_{i} @f$
       character(len=kchara), parameter                                  &
-     &            :: fhd_filter_w = 'filter_vorticity'
-!>        Field label for filtered magnetic field
-!!         @f$ \bar{B}_{i} @f$
-      character(len=kchara), parameter :: fhd_filter_b = 'filter_magne'
+     &            :: fhd_filter_vort = 'filter_vorticity'
 !>        Field label for filtered magnetic field
 !!         @f$ \bar{B}_{i} @f$
       character(len=kchara), parameter                                  &
-     &            :: fhd_filter_j = 'filter_current'
+     &            :: fhd_filter_magne = 'filter_magne'
+!>        Field label for filtered magnetic field
+!!         @f$ \bar{B}_{i} @f$
+      character(len=kchara), parameter                                  &
+     &            :: fhd_filter_current = 'filter_current'
 !>        Field label for filtered vetor potential
 !!         @f$ \bar{A}_{i} @f$
-      character(len=kchara), parameter :: fhd_filter_a = 'filter_vecp'
+      character(len=kchara), parameter                                  &
+     &            :: fhd_filter_vecp = 'filter_vecp'
 !
 !>        Field label for viscous diffusion
 !!         @f$ \nu \partial_{j}\partial_{j} u_{i} @f$
@@ -272,7 +280,7 @@
       character(len=kchara), parameter                                  &
      &             :: fhd_SGS_h_flux =          'SGS_heat_flux'
 !>        Field label for SGS compositional flux
-!!         @f$ \overline{u_{i}T} - \bar{u}_{i}\bar{T} @f$
+!!         @f$ \overline{u_{i}C} - \bar{u}_{i}\bar{C} @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_SGS_c_flux =          'SGS_composit_flux'
 !>        Field label for divergence of SGS Maxwell tensor
@@ -549,6 +557,58 @@
 !>        Field label for work of SGS compositional buoyancy
       character(len=kchara), parameter                                  &
      &             :: fhd_SGS_comp_buo_flux = 'SGS_comp_buoyancy_flux'
+!
+!
+!>        Field label for geostrophic balance
+!!         @f$ -2 e_{ijk} \Omega_{j} u_{k} + \partial_{i} p @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_geostrophic =  'geostrophic_balance'
+!
+!>        Field label for heat flux
+!!         @f$ u_{i} T + (\overline{u_{i}T} - \bar{u}_{i}\bar{T}) @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_h_flux_w_sgs =  'heat_flux_w_SGS'
+!>        Field label for compositinoal flux
+!!         @f$ u_{i} C + (\overline{u_{i}C} - \bar{u}_{i}\bar{C}) @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_c_flux_w_sgs =  'comp_flux_w_SGS'
+!
+!>        Field label for advection for momentum
+!!         @f$ u_{j} \partial_{j} u_{i}
+!!           + e_{ijk}\left(\overline{\omega_{j}u_{k}}
+!!            - \bar{\omega}_{j}\bar{u}_{k} \right) @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_inertia_w_sgs = 'intertia_w_SGS'
+!>        Field label for Lorentz force
+!!         @f$ e_{ijk} J_{j} B_{k}
+!!           + e_{ijk}\left(\overline{B{j}u_{k}}
+!!            - \bar{J}_{j}\bar{B}_{k} \right) @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_Lorentz_w_sgs = 'Lorentz_w_SGS'
+!
+!>        Field label for inductino for vector potential
+!!         @f$ e_{ijk} u_{j} B_{k} @f$
+!!           + e_{ijk}\left(\overline{u{j}B_{k}}
+!!            - \bar{u}_{j}\bar{B}_{k} \right) @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_vp_induct_w_sgs = 'vecp_induction_w_SGS'
+!>        Field label for magnetic induction
+!!         @f$ e_{ijk} \partial_{j}\left(e_{klm}u_{l}B_{m} \right)@f$
+!!           + e_{ijk} \partial_{j}(e_{klm}\left(\overline{u{l}B_{m}}
+!!                              - \bar{u}_{l}\bar{B}_{m} \right)) @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_mag_induct_w_sgs = 'induction_w_SGS'
+!
+!>        Field label for momentum flux
+!!         @f$ u_{i} u_{j}
+!!            + (\overline{u_{i}u_{j}} - \bar{u}_{i}\bar{u}_{j})@f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_mom_flux_w_sgs = 'momentum_flux_w_SGS'
+!>        Field label for momentum flux
+!!         @f$ B_{i} B_{j}
+!!            + (\overline{B_{i}B_{j}} - \bar{B}_{i}\bar{B}_{j})@f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_maxwell_t_w_sgs = 'maxwell_tensor_w_sgs'
 !
 !>        Field label for temperature flux
       character(len=kchara), parameter                                  &

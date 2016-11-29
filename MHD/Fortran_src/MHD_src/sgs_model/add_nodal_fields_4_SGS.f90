@@ -106,11 +106,11 @@
      &     .or. iflag_SGS_model.eq.id_SGS_similarity) then
         do i = 1, field_ctl%num
           if(      field_ctl%c1_tbl(i) .eq. fhd_velo) then
-            call add_phys_name_tmp(fhd_filter_v)
+            call add_phys_name_tmp(fhd_filter_velo)
           else if( field_ctl%c1_tbl(i) .eq. fhd_vecp) then
-            call add_phys_name_tmp(fhd_filter_a)
+            call add_phys_name_tmp(fhd_filter_vecp)
           else if( field_ctl%c1_tbl(i) .eq. fhd_magne) then
-            call add_phys_name_tmp(fhd_filter_b)
+            call add_phys_name_tmp(fhd_filter_magne)
           else if( field_ctl%c1_tbl(i) .eq. fhd_temp) then
             call add_phys_name_tmp(fhd_filter_temp)
           else if( field_ctl%c1_tbl(i) .eq. fhd_light) then
@@ -124,11 +124,11 @@
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                     &
      &       .and. iflag_SGS_model.eq.id_SGS_similarity) then
         do i = 1, field_ctl%num
-          if(      field_ctl%c1_tbl(i) .eq. fhd_filter_v) then
+          if(      field_ctl%c1_tbl(i) .eq. fhd_filter_velo) then
             call add_phys_name_tmp(fhd_w_filter_velo)
-          else if( field_ctl%c1_tbl(i) .eq. fhd_filter_a) then
+          else if( field_ctl%c1_tbl(i) .eq. fhd_filter_vecp) then
             call add_phys_name_tmp(fhd_w_filter_vecp)
-          else if( field_ctl%c1_tbl(i) .eq. fhd_filter_b) then
+          else if( field_ctl%c1_tbl(i) .eq. fhd_filter_magne) then
             call add_phys_name_tmp(fhd_w_filter_magne)
           else if( field_ctl%c1_tbl(i) .eq. fhd_filter_temp) then
             call add_phys_name_tmp(fhd_w_filter_temp)

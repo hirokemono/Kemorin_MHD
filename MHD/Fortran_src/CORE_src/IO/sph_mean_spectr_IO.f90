@@ -134,12 +134,12 @@
         write(labels(2),'(a)')   'M_ene_tor'
         write(labels(3),'(a)')   'M_ene'
 !
-      else if (rms_name .eq. fhd_filter_v) then
+      else if (rms_name .eq. fhd_filter_velo) then
         write(labels(1),'(a)')   'filter_KE_pol'
         write(labels(2),'(a)')   'filter_KE_tor'
         write(labels(3),'(a)')   'filter_KE'
 !
-      else if (rms_name .eq. fhd_filter_b) then
+      else if (rms_name .eq. fhd_filter_magne) then
         write(labels(1),'(a)')   'filter_ME_pol'
         write(labels(2),'(a)')   'filter_ME_tor'
         write(labels(3),'(a)')   'filter_ME'
