@@ -47,6 +47,7 @@
 !
       use sum_sph_rms_data
       use volume_average_4_sph
+      use cal_ave_4_rms_vector_sph
       use quicksort
 !
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -65,6 +66,12 @@
      &      pwr%v_spectr(i)%r_inside, pwr%v_spectr(i)%kr_inside)
         call find_radial_grid_index(sph_rj, sph_params%nlayer_CMB,      &
      &      pwr%v_spectr(i)%r_outside, pwr%v_spectr(i)%kr_outside)
+!
+        if(iflag_debug .gt. 0) write(*,*) 'cal_one_over_volume'
+        call cal_one_over_volume                                        &
+     &     (pwr%v_spectr(i)%kr_inside, pwr%v_spectr(i)%kr_outside,      &
+     &      sph_rj%nidx_rj(i), sph_rj%radius_1d_rj_r,                   &
+     &      pwr%v_spectr(i)%avol)
       end do
 !
       num_field = 0
@@ -119,7 +126,8 @@
         write(*,*) 'volume mean square file area:'
         do i = 1, pwr%num_vol_spectr
           write(*,*) i, pwr%v_spectr(i)%iflag_volume_rms_spec,          &
-     &                  trim(pwr%v_spectr(i)%fhead_rms_v)
+     &                  trim(pwr%v_spectr(i)%fhead_rms_v),              &
+     &                  pwr%v_spectr(i)%avol
         end do
         write(*,*) 'volume mean square file area:'
         do i = 1, pwr%num_vol_spectr
@@ -157,6 +165,8 @@
       type(sph_mean_squares), intent(inout) :: pwr
       type(sph_mean_square_work), intent(inout) :: WK_pwr
 !
+      integer(kind = kint) :: i
+!
 !
       if(pwr%ntot_comp_sq .eq. 0) return
 !
@@ -171,20 +181,11 @@
       call calypso_mpi_barrier
       if(iflag_debug .gt. 0) write(*,*) 'global_sum_sph_layerd_rms'
       call global_sum_sph_layerd_rms                                    &
-     &    (l_truncation, pwr%nri_rms, pwr%ntot_comp_sq,                 &
-     &     WK_pwr%shl_l_local, WK_pwr%shl_m_local, WK_pwr%shl_lm_local, &
-     &     WK_pwr%vol_l_local, WK_pwr%vol_m_local, WK_pwr%vol_lm_local, &
+     &    (l_truncation, pwr%nri_rms, pwr%ntot_comp_sq, WK_pwr,         &
      &     pwr%shl_l, pwr%shl_m, pwr%shl_lm,                            &
-     &     pwr%v_spectr(1)%v_l, pwr%v_spectr(1)%v_m, pwr%v_spectr(1)%v_lm, &
      &     pwr%shl_sq, pwr%shl_m0, pwr%ratio_shl_m0,                    &
-     &     pwr%v_spectr(1)%v_sq, pwr%v_spectr(1)%v_m0,                  &
-     &     pwr%v_spectr(1)%v_ratio_m0)
+     &     pwr%num_vol_spectr, pwr%v_spectr)
 !
-!
-      if(iflag_debug .gt. 0) write(*,*) 'cal_one_over_volume'
-      call cal_one_over_volume                                          &
-     &   (pwr%v_spectr(1)%kr_inside, pwr%v_spectr(1)%kr_outside,        &
-     &   sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, pwr%v_spectr(1)%avol)
 !
       call calypso_mpi_barrier
       if(my_rank .eq. 0) then
@@ -193,10 +194,12 @@
      &     (l_truncation, sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,        &
      &      pwr%nri_rms, pwr%ntot_comp_sq, pwr%kr_4_rms,                &
      &      pwr%shl_l, pwr%shl_m, pwr%shl_lm, pwr%shl_sq, pwr%shl_m0)
-        call vol_ave_4_rms_sph(l_truncation, pwr%ntot_comp_sq,          &
-     &      pwr%v_spectr(1)%avol, pwr%v_spectr(1)%v_l,                  &
-     &      pwr%v_spectr(1)%v_m, pwr%v_spectr(1)%v_lm,                  &
-     &      pwr%v_spectr(1)%v_sq, pwr%v_spectr(1)%v_m0)
+        do i = 1, num_vol_spectr
+          call vol_ave_4_rms_sph(l_truncation, pwr%ntot_comp_sq,        &
+     &        pwr%v_spectr(i)%avol, pwr%v_spectr(i)%v_l,                &
+     &        pwr%v_spectr(i)%v_m, pwr%v_spectr(i)%v_lm,                &
+     &        pwr%v_spectr(i)%v_sq, pwr%v_spectr(i)%v_m0)
+        end do
       end if
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_volume_average_sph'
@@ -209,13 +212,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine global_sum_sph_layerd_rms                              &
-     &         (l_truncation, nri_rms, ntot_rms_rj,                     &
-     &          rms_sph_l_local, rms_sph_m_local, rms_sph_lm_local,     &
-     &          rms_sph_vl_local, rms_sph_vm_local, rms_sph_vlm_local,  &
+     &         (l_truncation, nri_rms, ntot_rms_rj, WK_pwr,             &
      &          rms_sph_l, rms_sph_m, rms_sph_lm,                       &
-     &          rms_sph_vol_l, rms_sph_vol_m, rms_sph_vol_lm,           &
-     &          rms_sph, rms_sph_m0, ratio_sph_m0,                      &
-     &          rms_sph_vol, rms_sph_vol_m0, ratio_sph_vol_m0)
+     &          rms_sph, rms_sph_m0, ratio_sph_m0, num_vol_spectr, v_pwr)
 !
       use calypso_mpi
 !
@@ -226,20 +225,7 @@
       integer(kind = kint), intent(in) :: l_truncation
       integer(kind = kint), intent(in) :: nri_rms
       integer(kind = kint), intent(in) :: ntot_rms_rj
-!
-      real(kind = kreal), intent(in)                                    &
-     &          :: rms_sph_l_local(nri_rms,0:l_truncation,ntot_rms_rj)
-      real(kind = kreal), intent(in)                                    &
-     &          :: rms_sph_m_local(nri_rms,0:l_truncation,ntot_rms_rj)
-      real(kind = kreal), intent(in)                                    &
-     &          :: rms_sph_lm_local(nri_rms,0:l_truncation,ntot_rms_rj)
-!
-      real(kind = kreal), intent(in)                                    &
-     &          :: rms_sph_vl_local(0:l_truncation,ntot_rms_rj)
-      real(kind = kreal), intent(in)                                    &
-     &          :: rms_sph_vm_local(0:l_truncation,ntot_rms_rj)
-      real(kind = kreal), intent(in)                                    &
-     &          :: rms_sph_vlm_local(0:l_truncation,ntot_rms_rj)
+      type(sph_mean_square_work), intent(in) :: WK_pwr
 !
       real(kind = kreal), intent(inout)                                 &
      &          :: rms_sph_l(nri_rms,0:l_truncation,ntot_rms_rj)
@@ -248,50 +234,45 @@
       real(kind = kreal), intent(inout)                                 &
      &          :: rms_sph_lm(nri_rms,0:l_truncation,ntot_rms_rj)
 !
-      real(kind = kreal), intent(inout)                                 &
-     &          :: rms_sph_vol_l(0:l_truncation,ntot_rms_rj)
-      real(kind = kreal), intent(inout)                                 &
-     &          :: rms_sph_vol_m(0:l_truncation,ntot_rms_rj)
-      real(kind = kreal), intent(inout)                                 &
-     &          :: rms_sph_vol_lm(0:l_truncation,ntot_rms_rj)
-!
       real(kind = kreal), intent(inout) :: rms_sph(nri_rms,ntot_rms_rj)
       real(kind = kreal), intent(inout)                                 &
      &          :: rms_sph_m0(nri_rms,ntot_rms_rj)
       real(kind = kreal), intent(inout)                                 &
      &          :: ratio_sph_m0(nri_rms,ntot_rms_rj)
 !
-      real(kind = kreal), intent(inout) :: rms_sph_vol(ntot_rms_rj)
-      real(kind = kreal), intent(inout) :: rms_sph_vol_m0(ntot_rms_rj)
-      real(kind = kreal), intent(inout) :: ratio_sph_vol_m0(ntot_rms_rj)
+      integer(kind = kint), intent(in) :: num_vol_spectr
+      type(sph_vol_mean_squares), intent(inout)                         &
+     &                         :: v_pwr(num_vol_spectr)
 !
-      integer(kind = kint) :: num
+      integer(kind = kint) :: num, i
 !
 !
       num = ntot_rms_rj * (l_truncation + 1)
-      call MPI_REDUCE (rms_sph_vl_local, rms_sph_vol_l,                 &
+      do i = 1, num_vol_spectr
+        call MPI_REDUCE(WK_pwr%vol_l_local(0,1,i), v_pwr(i)%v_l,        &
      &    num, CALYPSO_REAL, MPI_SUM, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_REDUCE (rms_sph_vm_local, rms_sph_vol_m,                 &
+        call MPI_REDUCE(WK_pwr%vol_m_local(0,1,i), v_pwr(i)%v_m,        &
      &    num, CALYPSO_REAL, MPI_SUM, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_REDUCE (rms_sph_vlm_local, rms_sph_vol_lm,               &
+        call MPI_REDUCE(WK_pwr%vol_lm_local(0,1,i), v_pwr(i)%v_lm,      &
      &    num, CALYPSO_REAL, MPI_SUM, izero, CALYPSO_COMM, ierr_MPI)
 !
-      if(my_rank .eq. 0) then
-        call sum_sph_vol_rms_all_modes(l_truncation, ntot_rms_rj,       &
-     &      rms_sph_vol_l, rms_sph_vol)
-        call pick_axis_sph_vol_pwr                                      &
-     &     (l_truncation, ntot_rms_rj, rms_sph_vol_m, rms_sph_vol,      &
-     &      rms_sph_vol_m0, ratio_sph_vol_m0)
-      end if
+        if(my_rank .eq. 0) then
+          call sum_sph_vol_rms_all_modes(l_truncation, ntot_rms_rj,     &
+     &      v_pwr(i)%v_l, v_pwr(i)%v_sq)
+          call pick_axis_sph_vol_pwr                                    &
+     &     (l_truncation, ntot_rms_rj, v_pwr(i)%v_m, v_pwr(i)%v_sq,     &
+     &      v_pwr(i)%v_m0, v_pwr(i)%v_ratio_m0)
+        end if
+      end do
 !
       if(nri_rms .le. 0) return
       num = ntot_rms_rj * nri_rms * (l_truncation + 1)
-      call MPI_REDUCE (rms_sph_l_local, rms_sph_l, num, CALYPSO_REAL,   &
-     &    MPI_SUM, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_REDUCE (rms_sph_m_local, rms_sph_m, num, CALYPSO_REAL,   &
-     &    MPI_SUM, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_REDUCE (rms_sph_lm_local, rms_sph_lm, num, CALYPSO_REAL, &
-     &    MPI_SUM, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_REDUCE (WK_pwr%shl_l_local, rms_sph_l, num,              &
+     &    CALYPSO_REAL, MPI_SUM, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_REDUCE (WK_pwr%shl_m_local, rms_sph_m, num,              &
+     &    CALYPSO_REAL, MPI_SUM, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_REDUCE (WK_pwr%shl_lm_local, rms_sph_lm, num,            &
+     &    CALYPSO_REAL, MPI_SUM, izero, CALYPSO_COMM, ierr_MPI)
 !
       if(my_rank .gt. 0) return
       call sum_sph_rms_all_modes(l_truncation, nri_rms, ntot_rms_rj,    &

@@ -260,8 +260,14 @@
       integer(kind = kint), intent(in) :: ltr
       type(sph_mean_squares), intent(inout) :: pwr
 !
+      integer(kind = kint) :: i
 !
       pwr%ntot_comp_sq = pwr%istack_comp_sq(pwr%num_fld_sq)
+      do i = 1, pwr%num_vol_spectr
+        call alloc_sph_vol_mean_square                                  &
+     &     (my_rank, ltr, pwr%ntot_comp_sq, pwr%v_spectr(i))
+      end do
+!
       if(my_rank .gt. 0) return
 !
       allocate(pwr%shl_l(pwr%nri_rms,0:ltr,pwr%ntot_comp_sq))
@@ -281,21 +287,6 @@
         pwr%shl_lm = 0.0d0
       end if
 !
-      allocate( pwr%v_spectr(1)%v_l(0:ltr,pwr%ntot_comp_sq) )
-      allocate( pwr%v_spectr(1)%v_m(0:ltr,pwr%ntot_comp_sq) )
-      allocate( pwr%v_spectr(1)%v_lm(0:ltr,pwr%ntot_comp_sq) )
-!
-      allocate( pwr%v_spectr(1)%v_sq(pwr%ntot_comp_sq) )
-      allocate( pwr%v_spectr(1)%v_m0(pwr%ntot_comp_sq) )
-      allocate( pwr%v_spectr(1)%v_ratio_m0(pwr%ntot_comp_sq) )
-      pwr%v_spectr(1)%v_l = 0.0d0
-      pwr%v_spectr(1)%v_m =  0.0d0
-      pwr%v_spectr(1)%v_lm = 0.0d0
-!
-      pwr%v_spectr(1)%v_sq =       0.0d0
-      pwr%v_spectr(1)%v_m0 =       0.0d0
-      pwr%v_spectr(1)%v_ratio_m0 = 0.0d0
-!
       end subroutine alloc_rms_4_sph_spectr
 !
 ! -----------------------------------------------------------------------
@@ -307,17 +298,17 @@
       integer(kind = kint), intent(in) :: nri_rj
       type(sph_mean_squares), intent(inout) :: pwr
 !
+      integer(kind = kint) :: i
+!
+      do i = 1, pwr%num_vol_spectr
+        call alloc_sph_vol_ave(idx_rj_degree_zero, pwr%v_spectr(i))
+      end do
 !
       if(idx_rj_degree_zero .eq. 0) return
 !
       pwr%nri_ave = nri_rj
-      allocate(pwr%v_spectr(1)%v_ave(pwr%ntot_comp_sq))
       allocate(pwr%shl_ave(0:pwr%nri_ave,pwr%ntot_comp_sq))
-!
-      if(pwr%nri_ave*pwr%ntot_comp_sq .gt. 0) then
-        pwr%shl_ave = 0.0d0
-        pwr%v_spectr(1)%v_ave = 0.0d0
-      end if
+      if(pwr%nri_ave*pwr%ntot_comp_sq .gt. 0)  pwr%shl_ave = 0.0d0
 !
       end subroutine alloc_ave_4_sph_spectr
 !
@@ -328,15 +319,17 @@
       integer(kind = kint), intent(in) :: my_rank
       type(sph_mean_squares), intent(inout) :: pwr
 !
+      integer(kind = kint) :: i
+!
+      do i = 1, pwr%num_vol_spectr
+        call dealloc_sph_vol_mean_square(my_rank, pwr%v_spectr(i))
+      end do
 !
       deallocate(pwr%r_4_rms, pwr%kr_4_rms)
 !
       if(my_rank .gt. 0) return
       deallocate(pwr%shl_l, pwr%shl_m, pwr%shl_lm)
       deallocate(pwr%shl_sq, pwr%shl_m0, pwr%ratio_shl_m0)
-!
-      deallocate(pwr%v_spectr(1)%v_l, pwr%v_spectr(1)%v_m, pwr%v_spectr(1)%v_lm)
-      deallocate(pwr%v_spectr(1)%v_sq, pwr%v_spectr(1)%v_m0, pwr%v_spectr(1)%v_ratio_m0)
 !
       deallocate(pwr%num_comp_sq, pwr%istack_comp_sq)
       deallocate(pwr%pwr_name, pwr%id_field)
@@ -350,12 +343,184 @@
       integer(kind = kint), intent(in) :: idx_rj_degree_zero
       type(sph_mean_squares), intent(inout) :: pwr
 !
+      integer(kind = kint) :: i
+!
+      do i = 1, pwr%num_vol_spectr
+        call dealloc_sph_vol_ave(idx_rj_degree_zero, pwr%v_spectr(i))
+      end do
 !
       if(idx_rj_degree_zero .eq. 0) return
-      deallocate(pwr%shl_ave, pwr%v_spectr(1)%v_ave)
+      deallocate(pwr%shl_ave)
 !
       end subroutine dealloc_ave_4_sph_spectr
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_sph_layer_mean_square                            &
+     &         (my_rank, ltr, ntot_comp_sq, s_rms)
+!
+      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: ltr, ntot_comp_sq
+      type(sphere_mean_squares), intent(inout) :: s_rms
+!
+!
+      s_rms%ltr = ltr
+      s_rms%ntot_comp_sq = ntot_comp_sq
+      if(my_rank .gt. 0) return
+!
+      allocate(s_rms%s_l(s_rms%nri_rms,0:s_rms%ltr,ntot_comp_sq))
+      allocate(s_rms%s_m(s_rms%nri_rms,0:s_rms%ltr,ntot_comp_sq))
+      allocate(s_rms%s_lm(s_rms%nri_rms,0:s_rms%ltr,ntot_comp_sq))
+!
+      allocate(s_rms%s_sq(s_rms%nri_rms,ntot_comp_sq))
+      allocate(s_rms%s_m0(s_rms%nri_rms,ntot_comp_sq))
+      allocate(s_rms%s_ratio_m0(s_rms%nri_rms,ntot_comp_sq))
+      if(s_rms%nri_rms .gt. 0) then
+        s_rms%s_sq =       0.0d0
+        s_rms%s_m0 =       0.0d0
+        s_rms%s_ratio_m0 = 0.0d0
+!
+        s_rms%s_l =  0.0d0
+        s_rms%s_m =  0.0d0
+        s_rms%s_lm = 0.0d0
+      end if
+!
+      end subroutine alloc_sph_layer_mean_square
+!
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_sph_vol_mean_square                              &
+     &         (my_rank, ltr, ntot_comp_sq, v_pwr)
+!
+      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: ltr, ntot_comp_sq
+      type(sph_vol_mean_squares), intent(inout) :: v_pwr
+!
+!
+      v_pwr%ltr = ltr
+      v_pwr%ntot_comp_sq = ntot_comp_sq
+      if(my_rank .gt. 0) return
+!
+      allocate( v_pwr%v_l(0:v_pwr%ltr,v_pwr%ntot_comp_sq) )
+      allocate( v_pwr%v_m(0:v_pwr%ltr,v_pwr%ntot_comp_sq) )
+      allocate( v_pwr%v_lm(0:v_pwr%ltr,v_pwr%ntot_comp_sq) )
+!
+      allocate( v_pwr%v_sq(v_pwr%ntot_comp_sq) )
+      allocate( v_pwr%v_m0(v_pwr%ntot_comp_sq) )
+      allocate( v_pwr%v_ratio_m0(v_pwr%ntot_comp_sq) )
+!
+      v_pwr%v_l = 0.0d0
+      v_pwr%v_m =  0.0d0
+      v_pwr%v_lm = 0.0d0
+!
+      v_pwr%v_sq =       0.0d0
+      v_pwr%v_m0 =       0.0d0
+      v_pwr%v_ratio_m0 = 0.0d0
+!
+      end subroutine alloc_sph_vol_mean_square
+!
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_sph_layer_ave                                    &
+     &         (idx_rj_degree_zero, nri_rj, s_rms)
+!
+      integer(kind = kint), intent(in) :: idx_rj_degree_zero
+      integer(kind = kint), intent(in) :: nri_rj
+      type(sphere_mean_squares), intent(inout) :: s_rms
+!
+!
+      if(idx_rj_degree_zero .eq. 0) return
+!
+      s_rms%nri_ave = nri_rj
+      allocate(s_rms%s_ave(0:s_rms%nri_ave,s_rms%ntot_comp_sq))
+      if(s_rms%nri_ave*s_rms%ntot_comp_sq .gt. 0)  s_rms%s_ave = 0.0d0
+!
+      end subroutine alloc_sph_layer_ave
+!
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_sph_vol_ave(idx_rj_degree_zero, v_pwr)
+!
+      integer(kind = kint), intent(in) :: idx_rj_degree_zero
+      type(sph_vol_mean_squares), intent(inout) :: v_pwr
+!
+!
+      if(idx_rj_degree_zero .eq. 0) return
+!
+      allocate(v_pwr%v_ave(v_pwr%ntot_comp_sq))
+!
+      if(v_pwr%ntot_comp_sq .gt. 0) v_pwr%v_ave = 0.0d0
+!
+      end subroutine alloc_sph_vol_ave
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_num_spec_layer(s_rms)
+!
+      type(sphere_mean_squares), intent(inout) :: s_rms
+!
+!
+      deallocate(s_rms%kr_rms, s_rms%r_rms)
+!
+      end subroutine dealloc_num_spec_layer
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_sph_layer_mean_square(my_rank, s_rms)
+!
+      integer(kind = kint), intent(in) :: my_rank
+      type(sphere_mean_squares), intent(inout) :: s_rms
+!
+!
+      if(my_rank .gt. 0) return
+!
+      deallocate(s_rms%s_l, s_rms%s_m, s_rms%s_lm)
+      deallocate(s_rms%s_sq, s_rms%s_m0, s_rms%s_ratio_m0)
+!
+      end subroutine dealloc_sph_layer_mean_square
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_sph_vol_mean_square(my_rank, v_pwr)
+!
+      integer(kind = kint), intent(in) :: my_rank
+      type(sph_vol_mean_squares), intent(inout) :: v_pwr
+!
+!
+      if(my_rank .gt. 0) return
+!
+      deallocate(v_pwr%v_l, v_pwr%v_m, v_pwr%v_lm)
+      deallocate(v_pwr%v_sq, v_pwr%v_m0, v_pwr%v_ratio_m0)
+!
+      end subroutine dealloc_sph_vol_mean_square
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_sph_layer_ave(idx_rj_degree_zero, s_rms)
+!
+      integer(kind = kint), intent(in) :: idx_rj_degree_zero
+      type(sphere_mean_squares), intent(inout) :: s_rms
+!
+!
+      if(idx_rj_degree_zero .gt. 0)  deallocate(s_rms%s_ave)
+!
+      end subroutine dealloc_sph_layer_ave
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_sph_vol_ave(idx_rj_degree_zero, v_pwr)
+!
+      integer(kind = kint), intent(in) :: idx_rj_degree_zero
+      type(sph_vol_mean_squares), intent(inout) :: v_pwr
+!
+!
+      if(idx_rj_degree_zero .gt. 0)  deallocate(v_pwr%v_ave)
+!
+      end subroutine dealloc_sph_vol_ave
+!
+! -----------------------------------------------------------------------
+!
 !
       end module t_rms_4_sph_spectr
