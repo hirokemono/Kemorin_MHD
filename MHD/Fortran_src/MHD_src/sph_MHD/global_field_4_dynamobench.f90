@@ -47,9 +47,9 @@
       do i_fld = 1, pwr%num_fld_sq
         if(pwr%pwr_name(i_fld) .eq. fhd_velo) then
           i_comp = pwr%istack_comp_sq(i_fld-1) + 1
-          KE_bench(1) = pwr%vol_sq(i_comp  )
-          KE_bench(2) = pwr%vol_sq(i_comp+1)
-          KE_bench(3) = pwr%vol_sq(i_comp+2)
+          KE_bench(1) = pwr%v_spectr(1)%v_sq(i_comp  )
+          KE_bench(2) = pwr%v_spectr(1)%v_sq(i_comp+1)
+          KE_bench(3) = pwr%v_spectr(1)%v_sq(i_comp+2)
           exit
         end if
       end do
@@ -57,9 +57,9 @@
       do i_fld = 1, pwr%num_fld_sq
         if(pwr%pwr_name(i_fld) .eq. fhd_magne) then
           i_comp = pwr%istack_comp_sq(i_fld-1) + 1
-          ME_bench(1) = pwr%vol_sq(i_comp  )
-          ME_bench(2) = pwr%vol_sq(i_comp+1)
-          ME_bench(3) = pwr%vol_sq(i_comp+2)
+          ME_bench(1) = pwr%v_spectr(1)%v_sq(i_comp  )
+          ME_bench(2) = pwr%v_spectr(1)%v_sq(i_comp+1)
+          ME_bench(3) = pwr%v_spectr(1)%v_sq(i_comp+2)
           exit
         end if
       end do
@@ -81,9 +81,9 @@
       do i_fld = 1, pwr%num_fld_sq
         if(pwr%pwr_name(i_fld) .eq. fhd_magne) then
           i_comp = pwr%istack_comp_sq(i_fld-1) + 1
-          mene_icore(1) = pwr%vol_sq(i_comp  )
-          mene_icore(2) = pwr%vol_sq(i_comp+1)
-          mene_icore(3) = pwr%vol_sq(i_comp+2)
+          mene_icore(1) = pwr%v_spectr(1)%v_sq(i_comp  )
+          mene_icore(2) = pwr%v_spectr(1)%v_sq(i_comp+1)
+          mene_icore(3) = pwr%v_spectr(1)%v_sq(i_comp+2)
 !
           exit
         end if

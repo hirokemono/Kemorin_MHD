@@ -60,9 +60,9 @@
 !
         call radial_integration                                         &
      &     (kg_st, kg_ed, sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,     &
-     &      pwr%ntot_comp_sq, pwr%shl_ave, pwr%vol_ave)
+     &      pwr%ntot_comp_sq, pwr%shl_ave, pwr%v_spectr(1)%v_ave)
         call averaging_4_sph_ave_int                                    &
-     &     (pwr%ntot_comp_sq, avol, pwr%vol_ave)
+     &     (pwr%ntot_comp_sq, avol, pwr%v_spectr(1)%v_ave)
       end if
 !
       end subroutine cal_volume_average_sph

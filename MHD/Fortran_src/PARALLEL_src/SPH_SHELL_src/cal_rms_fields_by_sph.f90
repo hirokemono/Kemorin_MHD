@@ -183,9 +183,10 @@
      &     WK_pwr%shl_l_local, WK_pwr%shl_m_local, WK_pwr%shl_lm_local, &
      &     WK_pwr%vol_l_local, WK_pwr%vol_m_local, WK_pwr%vol_lm_local, &
      &     pwr%shl_l, pwr%shl_m, pwr%shl_lm,                            &
-     &     pwr%vol_l, pwr%vol_m, pwr%vol_lm,                            &
+     &     pwr%v_spectr(1)%v_l, pwr%v_spectr(1)%v_m, pwr%v_spectr(1)%v_lm, &
      &     pwr%shl_sq, pwr%shl_m0, pwr%ratio_shl_m0,                    &
-     &     pwr%vol_sq, pwr%vol_m0, pwr%ratio_vol_m0)
+     &     pwr%v_spectr(1)%v_sq, pwr%v_spectr(1)%v_m0,                  &
+     &     pwr%v_spectr(1)%v_ratio_m0)
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_one_over_volume'
@@ -201,8 +202,8 @@
      &      pwr%nri_rms, pwr%ntot_comp_sq, pwr%kr_4_rms,                &
      &      pwr%shl_l, pwr%shl_m, pwr%shl_lm, pwr%shl_sq, pwr%shl_m0)
         call vol_ave_4_rms_sph(l_truncation, pwr%ntot_comp_sq, avol,    &
-     &      pwr%vol_l, pwr%vol_m, pwr%vol_lm,                           &
-     &      pwr%vol_sq, pwr%vol_m0)
+     &      pwr%v_spectr(1)%v_l, pwr%v_spectr(1)%v_m, pwr%v_spectr(1)%v_lm, &
+     &      pwr%v_spectr(1)%v_sq, pwr%v_spectr(1)%v_m0)
       end if
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_volume_average_sph'

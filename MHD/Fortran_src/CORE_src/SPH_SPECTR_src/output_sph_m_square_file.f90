@@ -70,7 +70,7 @@
         if (pwr%pwr_name(i) .eq. fhd_velo) then
           icomp = pwr%istack_comp_sq(i)
           write(*,'(a,1pe15.8)',advance='no')                           &
-     &              '  E_kin = ', pwr%vol_sq(icomp)
+     &              '  E_kin = ', pwr%v_spectr(1)%v_sq(icomp)
           exit
         end if
       end do
@@ -79,7 +79,7 @@
         if (pwr%pwr_name(i) .eq. fhd_magne) then
           icomp = pwr%istack_comp_sq(i)
           write(*,'(a,1pe15.8)',advance='no')                           &
-     &              '  E_mag = ', pwr%vol_sq(icomp)
+     &              '  E_mag = ', pwr%v_spectr(1)%v_sq(icomp)
           exit
         end if
       end do
@@ -121,7 +121,7 @@
      &    sph_params%nlayer_ICB, sph_params%nlayer_CMB)
 !
       write(id_file_rms,'(i15,1pe23.14e3,1p200e23.14e3)')               &
-     &                 istep, time, pwr%vol_ave(1:pwr%ntot_comp_sq)
+     &     istep, time, pwr%v_spectr(1)%v_ave(1:pwr%ntot_comp_sq)
       close(id_file_rms)
 !
       end subroutine write_sph_vol_ave_file
@@ -155,7 +155,7 @@
      &   (fname_rms, mode_label, istep, time, sph_params%l_truncation,  &
      &    sph_params%nlayer_ICB, sph_params%nlayer_CMB, pwr%nri_rms,    &
      &    pwr%num_fld_sq, pwr%ntot_comp_sq, pwr%num_comp_sq,            &
-     &    pwr%pwr_name, pwr%vol_sq)
+     &    pwr%pwr_name, pwr%v_spectr(1)%v_sq)
 !
       end subroutine write_sph_vol_ms_file
 !
@@ -192,7 +192,7 @@
      &      istep, time, sph_params%l_truncation,                       &
      &      sph_params%nlayer_ICB, sph_params%nlayer_CMB,               &
      &      pwr%nri_rms, pwr%num_fld_sq, pwr%ntot_comp_sq,              &
-     &      pwr%num_comp_sq, pwr%pwr_name, pwr%vol_l)
+     &      pwr%num_comp_sq, pwr%pwr_name, pwr%v_spectr(1)%v_l)
       end if
 !
       if(pwr%iflag_spectr_m .gt. izero) then
@@ -203,7 +203,7 @@
      &      istep, time, sph_params%l_truncation,                       &
      &      sph_params%nlayer_ICB, sph_params%nlayer_CMB,               &
      &      pwr%nri_rms, pwr%num_fld_sq, pwr%ntot_comp_sq,              &
-     &      pwr%num_comp_sq, pwr%pwr_name, pwr%vol_m)
+     &      pwr%num_comp_sq, pwr%pwr_name, pwr%v_spectr(1)%v_m)
       end if
 !
       if(pwr%iflag_spectr_lm .gt. izero) then
@@ -214,7 +214,7 @@
      &      istep, time, sph_params%l_truncation,                       &
      &      sph_params%nlayer_ICB, sph_params%nlayer_CMB,               &
      &      pwr%nri_rms, pwr%num_fld_sq, pwr%ntot_comp_sq,              &
-     &      pwr%num_comp_sq, pwr%pwr_name, pwr%vol_lm)
+     &      pwr%num_comp_sq, pwr%pwr_name, pwr%v_spectr(1)%v_lm)
       end if
 !
       if(pwr%iflag_spectr_m0 .gt. izero) then
@@ -225,7 +225,7 @@
      &    (fname_rms, mode_label, istep, time, sph_params%l_truncation, &
      &     sph_params%nlayer_ICB, sph_params%nlayer_CMB, pwr%nri_rms,   &
      &     pwr%num_fld_sq, pwr%ntot_comp_sq, pwr%num_comp_sq,           &
-     &     pwr%pwr_name, pwr%vol_m0)
+     &     pwr%pwr_name, pwr%v_spectr(1)%v_m0)
       end if
 !
       end subroutine write_sph_vol_ms_spectr_file

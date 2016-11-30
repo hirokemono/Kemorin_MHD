@@ -170,31 +170,17 @@
 !>        Ratio of axis-symmetric componbent to total mean square
         real(kind = kreal), allocatable :: ratio_shl_m0(:,:)
 !
-!>        Volume mean square spectrum for degree
-        real(kind = kreal), allocatable :: vol_l(:,:)
-!>        Volume mean square spectrum for order
-        real(kind = kreal), allocatable :: vol_m(:,:)
-!>        Volume mean square spectrum for l-m
-        real(kind = kreal), allocatable :: vol_lm(:,:)
-!
-!>        Volume mean square
-        real(kind = kreal), allocatable :: vol_sq(:)
-!>        Volume mean square of axis-symmetric component
-        real(kind = kreal), allocatable :: vol_m0(:)
-!>        Ratio of axis-symmetric componbent to total mean square
-        real(kind = kreal), allocatable :: ratio_vol_m0(:)
-!
 !
 !>        Number of radial point for average
         integer(kind = kint) :: nri_ave
 !>        Average over single sphere
         real(kind = kreal), allocatable :: shl_ave(:,:)
 !>        Volume average
-        real(kind = kreal), allocatable :: vol_ave(:)
+!        real(kind = kreal), allocatable :: vol_ave(:)
 !
         integer(kind = kint) :: num_vol_spectr = 1
         type(sph_vol_mean_squares), allocatable :: v_spectr(:)
-!v_spectr(1)%v_ave
+!v_spectr(1)%v_l
       end type sph_mean_squares
 !
 ! -----------------------------------------------------------------------
@@ -293,20 +279,20 @@
         pwr%shl_lm = 0.0d0
       end if
 !
-      allocate( pwr%vol_l(0:ltr,pwr%ntot_comp_sq) )
-      allocate( pwr%vol_m(0:ltr,pwr%ntot_comp_sq) )
-      allocate( pwr%vol_lm(0:ltr,pwr%ntot_comp_sq) )
+      allocate( pwr%v_spectr(1)%v_l(0:ltr,pwr%ntot_comp_sq) )
+      allocate( pwr%v_spectr(1)%v_m(0:ltr,pwr%ntot_comp_sq) )
+      allocate( pwr%v_spectr(1)%v_lm(0:ltr,pwr%ntot_comp_sq) )
 !
-      allocate( pwr%vol_sq(pwr%ntot_comp_sq) )
-      allocate( pwr%vol_m0(pwr%ntot_comp_sq) )
-      allocate( pwr%ratio_vol_m0(pwr%ntot_comp_sq) )
-      pwr%vol_l = 0.0d0
-      pwr%vol_m =  0.0d0
-      pwr%vol_lm = 0.0d0
+      allocate( pwr%v_spectr(1)%v_sq(pwr%ntot_comp_sq) )
+      allocate( pwr%v_spectr(1)%v_m0(pwr%ntot_comp_sq) )
+      allocate( pwr%v_spectr(1)%v_ratio_m0(pwr%ntot_comp_sq) )
+      pwr%v_spectr(1)%v_l = 0.0d0
+      pwr%v_spectr(1)%v_m =  0.0d0
+      pwr%v_spectr(1)%v_lm = 0.0d0
 !
-      pwr%vol_sq =       0.0d0
-      pwr%vol_m0 =       0.0d0
-      pwr%ratio_vol_m0 = 0.0d0
+      pwr%v_spectr(1)%v_sq =       0.0d0
+      pwr%v_spectr(1)%v_m0 =       0.0d0
+      pwr%v_spectr(1)%v_ratio_m0 = 0.0d0
 !
       end subroutine alloc_rms_4_sph_spectr
 !
@@ -323,12 +309,12 @@
       if(idx_rj_degree_zero .eq. 0) return
 !
       pwr%nri_ave = nri_rj
-      allocate(pwr%vol_ave(pwr%ntot_comp_sq))
+      allocate(pwr%v_spectr(1)%v_ave(pwr%ntot_comp_sq))
       allocate(pwr%shl_ave(0:pwr%nri_ave,pwr%ntot_comp_sq))
 !
       if(pwr%nri_ave*pwr%ntot_comp_sq .gt. 0) then
         pwr%shl_ave = 0.0d0
-        pwr%vol_ave = 0.0d0
+        pwr%v_spectr(1)%v_ave = 0.0d0
       end if
 !
       end subroutine alloc_ave_4_sph_spectr
@@ -347,8 +333,8 @@
       deallocate(pwr%shl_l, pwr%shl_m, pwr%shl_lm)
       deallocate(pwr%shl_sq, pwr%shl_m0, pwr%ratio_shl_m0)
 !
-      deallocate(pwr%vol_l, pwr%vol_m, pwr%vol_lm)
-      deallocate(pwr%vol_sq, pwr%vol_m0, pwr%ratio_vol_m0)
+      deallocate(pwr%v_spectr(1)%v_l, pwr%v_spectr(1)%v_m, pwr%v_spectr(1)%v_lm)
+      deallocate(pwr%v_spectr(1)%v_sq, pwr%v_spectr(1)%v_m0, pwr%v_spectr(1)%v_ratio_m0)
 !
       deallocate(pwr%num_comp_sq, pwr%istack_comp_sq)
       deallocate(pwr%pwr_name, pwr%id_field)
@@ -364,7 +350,7 @@
 !
 !
       if(idx_rj_degree_zero .eq. 0) return
-      deallocate(pwr%shl_ave, pwr%vol_ave)
+      deallocate(pwr%shl_ave, pwr%v_spectr(1)%v_ave)
 !
       end subroutine dealloc_ave_4_sph_spectr
 !
