@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine init_rms_4_sph_spectr                                &
 !!     &         (sph_params, sph_rj, rj_fld, pwr, WK_pwr)
-!!      subroutine cal_mean_squre_in_shell(kr_st, kr_ed, l_truncation,  &
+!!      subroutine cal_mean_squre_in_shell(l_truncation,                &
 !!     &          sph_rj, ipol, rj_fld, g_sph_rj, pwr, WK_pwr)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(phys_data), intent(in) :: rj_fld
@@ -139,7 +139,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_mean_squre_in_shell(kr_st, kr_ed, l_truncation,    &
+      subroutine cal_mean_squre_in_shell(l_truncation,                  &
      &          sph_rj, ipol, rj_fld, g_sph_rj, pwr, WK_pwr)
 !
       use calypso_mpi
@@ -152,7 +152,6 @@
       type(phys_data), intent(in) :: rj_fld
       type(phys_address), intent(in) :: ipol
       integer(kind = kint), intent(in) :: l_truncation
-      integer(kind = kint), intent(in) :: kr_st, kr_ed
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
       type(sph_mean_squares), intent(inout) :: pwr
@@ -162,15 +161,12 @@
 !
 !
       if(pwr%ntot_comp_sq .eq. 0) return
-
-      if(iflag_debug .gt. 0) write(*,*) 'cal_one_over_volume'
-      call cal_one_over_volume(kr_st, kr_ed,                            &
-     &   sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, avol)
 !
       call calypso_mpi_barrier
       if(iflag_debug .gt. 0) write(*,*) 'sum_sph_layerd_rms'
-      call sum_sph_layerd_rms(kr_st, kr_ed, l_truncation,               &
-     &    sph_rj, ipol, g_sph_rj, rj_fld,                               &
+      call sum_sph_layerd_rms                                           &
+     &   (pwr%v_spectr(1)%kr_inside, pwr%v_spectr(1)%kr_outside,        &
+     &    l_truncation, sph_rj, ipol, g_sph_rj, rj_fld,                 &
      &    pwr%nri_rms, pwr%num_fld_sq, pwr%ntot_comp_sq,                &
      &    pwr%istack_comp_sq, pwr%id_field,                             &
      &    WK_pwr%istack_mode_sum_l,  WK_pwr%istack_mode_sum_m,          &
@@ -191,6 +187,12 @@
      &     pwr%shl_sq, pwr%shl_m0, pwr%ratio_shl_m0,                    &
      &     pwr%vol_sq, pwr%vol_m0, pwr%ratio_vol_m0)
 !
+!
+      if(iflag_debug .gt. 0) write(*,*) 'cal_one_over_volume'
+      call cal_one_over_volume                                          &
+     &   (pwr%v_spectr(1)%kr_inside, pwr%v_spectr(1)%kr_outside,        &
+     &   sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, avol)
+!
       call calypso_mpi_barrier
       if(my_rank .eq. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'surf_ave_4_sph_rms_int'
@@ -205,7 +207,8 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_volume_average_sph'
       call cal_volume_average_sph                                       &
-     &   (kr_st, kr_ed, avol, sph_rj, rj_fld, pwr)
+     &   (pwr%v_spectr(1)%kr_inside, pwr%v_spectr(1)%kr_outside,        &
+     &    avol, sph_rj, rj_fld, pwr)
 !
       end subroutine cal_mean_squre_in_shell
 !

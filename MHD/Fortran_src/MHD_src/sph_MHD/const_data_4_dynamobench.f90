@@ -63,9 +63,10 @@
       if(iflag_debug.gt.0)  write(*,*) 'mid_eq_transfer_dynamobench'
       call mid_eq_transfer_dynamobench(sph_rj, rj_fld)
 !
+      pwr%v_spectr(1)%kr_inside =  sph_params%nlayer_ICB
+      pwr%v_spectr(1)%kr_outside = sph_params%nlayer_CMB
       call cal_mean_squre_in_shell                                      &
-     &   (sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
-     &    sph_params%l_truncation, sph_rj, ipol, rj_fld, leg%g_sph_rj,  &
+     &   (sph_params%l_truncation, sph_rj, ipol, rj_fld, leg%g_sph_rj,  &
      &    pwr, WK_pwr)
       if(my_rank .eq. 0) call copy_energy_4_dynamobench(pwr)
 !
@@ -77,9 +78,11 @@
       end if
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
+        pwr%v_spectr(1)%kr_inside =  izero
+        pwr%v_spectr(1)%kr_outside = sph_params%nlayer_ICB
         call cal_mean_squre_in_shell                                    &
-     &     (izero, sph_params%nlayer_ICB, sph_params%l_truncation,      &
-     &      sph_rj, ipol, rj_fld, leg%g_sph_rj, pwr, WK_pwr)
+     &     (sph_params%l_truncation, sph_rj, ipol, rj_fld,              &
+     &      leg%g_sph_rj, pwr, WK_pwr)
         if(my_rank .eq. 0) call copy_icore_energy_4_dbench(pwr)
       end if
 !

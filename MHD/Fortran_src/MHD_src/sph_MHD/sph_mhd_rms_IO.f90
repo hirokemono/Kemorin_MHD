@@ -128,8 +128,7 @@
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
       call cal_mean_squre_in_shell                                      &
-     &   (sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
-     &    sph_params%l_truncation, sph_rj, ipol, rj_fld, leg%g_sph_rj,  &
+     &   (sph_params%l_truncation, sph_rj, ipol, rj_fld, leg%g_sph_rj,  &
      &    pwr, WK_pwr)
       if(iflag_debug.gt.0)  write(*,*) 'cal_gauss_coefficients'
       call cal_gauss_coefficients                                       &

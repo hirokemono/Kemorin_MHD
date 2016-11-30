@@ -109,8 +109,7 @@
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_mean_squre_in_shell'
         call cal_mean_squre_in_shell                                    &
-     &     (ione, sph_mesh_spec%sph%sph_rj%nidx_rj(1),                  &
-     &      sph_mesh_spec%sph%sph_params%l_truncation,                  &
+     &     (sph_mesh_spec%sph%sph_params%l_truncation,                  &
      &      sph_mesh_spec%sph%sph_rj, ipol_spec, rj_fld_spec,           &
      &      leg_s%g_sph_rj, pwr_spec, WK_pwr_spec)
 !

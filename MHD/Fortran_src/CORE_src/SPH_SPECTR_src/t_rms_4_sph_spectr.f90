@@ -194,6 +194,7 @@
 !
         integer(kind = kint) :: num_vol_spectr = 1
         type(sph_vol_mean_squares), allocatable :: v_spectr(:)
+!v_spectr(1)%v_ave
       end type sph_mean_squares
 !
 ! -----------------------------------------------------------------------
