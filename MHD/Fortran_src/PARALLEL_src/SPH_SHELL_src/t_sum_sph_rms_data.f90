@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine allocate_rms_sph_local_data                          &
-!!     &         (ltr, nidx_rj, nri_rms, ntot_comp_sq, WK_pwr)
+!!     &         (ltr, nidx_rj, n_spectr, nri_rms, ntot_comp_sq, WK_pwr)
 !!      subroutine deallocate_rms_sph_local_data(WK_pwr)
 !!@endverbatim
 !
@@ -22,7 +22,6 @@
 !>      Structure of work area for mean square data
       type sph_mean_square_work
         real(kind = kreal), allocatable :: shl_rj(:,:,:)
-        real(kind = kreal), allocatable :: volume_j(:,:)
 !
         integer(kind = kint), allocatable :: num_mode_sum_l(:)
         integer(kind = kint), allocatable :: num_mode_sum_m(:)
@@ -39,9 +38,11 @@
         real(kind = kreal), allocatable :: shl_m_local(:,:,:)
         real(kind = kreal), allocatable :: shl_lm_local(:,:,:)
 !
-        real(kind = kreal), allocatable :: vol_l_local(:,:)
-        real(kind = kreal), allocatable :: vol_m_local(:,:)
-        real(kind = kreal), allocatable :: vol_lm_local(:,:)
+        real(kind = kreal), allocatable :: volume_j(:,:,:)
+!
+        real(kind = kreal), allocatable :: vol_l_local(:,:,:)
+        real(kind = kreal), allocatable :: vol_m_local(:,:,:)
+        real(kind = kreal), allocatable :: vol_lm_local(:,:,:)
       end type sph_mean_square_work
 !
 ! -----------------------------------------------------------------------
@@ -51,8 +52,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine allocate_rms_sph_local_data                            &
-     &         (ltr, nidx_rj, nri_rms, ntot_comp_sq, WK_pwr)
+     &         (ltr, nidx_rj, n_spectr, nri_rms, ntot_comp_sq, WK_pwr)
 !
+      integer(kind = kint), intent(in) :: n_spectr
       integer(kind = kint), intent(in) :: ltr
       integer(kind = kint), intent(in) :: nidx_rj(2)
       integer(kind = kint), intent(in) :: nri_rms, ntot_comp_sq
@@ -67,7 +69,7 @@
       allocate( WK_pwr%shl_rj(0:nri,jmax,3) )
       WK_pwr%shl_rj = 0.0d0
 !
-      allocate( WK_pwr%volume_j(jmax,3) )
+      allocate( WK_pwr%volume_j(jmax,3,n_spectr) )
       WK_pwr%volume_j = 0.0d0
 !
       allocate(WK_pwr%shl_l_local(nri_rms,0:ltr,ntot_comp_sq) )
@@ -79,9 +81,9 @@
         WK_pwr%shl_lm_local = 0.0d0
       end if
 !
-      allocate( WK_pwr%vol_l_local(0:ltr,ntot_comp_sq) )
-      allocate( WK_pwr%vol_m_local(0:ltr,ntot_comp_sq) )
-      allocate( WK_pwr%vol_lm_local(0:ltr,ntot_comp_sq) )
+      allocate( WK_pwr%vol_l_local(0:ltr,ntot_comp_sq,n_spectr) )
+      allocate( WK_pwr%vol_m_local(0:ltr,ntot_comp_sq,n_spectr) )
+      allocate( WK_pwr%vol_lm_local(0:ltr,ntot_comp_sq,n_spectr) )
       if(ntot_comp_sq .gt. 0) then
         WK_pwr%vol_l_local = 0.0d0
         WK_pwr%vol_m_local = 0.0d0

@@ -112,6 +112,8 @@
 !
 !>        Volume average
         real(kind = kreal), allocatable :: v_ave(:)
+!>        1 / volume
+        real(kind = kreal) :: avol
       end type sph_vol_mean_squares
 !
 !
