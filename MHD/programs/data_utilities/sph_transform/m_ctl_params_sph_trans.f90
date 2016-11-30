@@ -27,6 +27,8 @@
 !
 !
       type(field_IO_params), save :: sph_file_trns_p
+      type(field_IO_params), save :: field_file_param
+      type(field_IO_params), save :: zm_source_file_param
 !
       character(len = kchara) :: zm_spec_file_head = 'zm_spectral'
       character(len = kchara) :: zonal_udt_head = 'z_mean_out'
@@ -69,6 +71,8 @@
       call set_control_smp_def(my_rank)
       call set_control_sph_mesh(sph_file_trns_p)
       call set_ucd_file_define(ucd)
+      field_file_param%file_prefix =  ucd%file_prefix
+      field_file_param%iflag_format = ucd%ifmt_file
 !
 !   setting for spherical transform
 !
@@ -198,7 +202,6 @@
       use m_machine_parameter
       use m_t_step_parameter
       use m_read_mesh_data
-      use m_control_params_2nd_files
       use m_FFT_selector
 !
       use set_control_nodal_data
@@ -315,7 +318,7 @@
 !
 !
       if(udt_file_head_ctl%iflag .eq. 0) return
-      udt_org_param%file_prefix = udt_file_head_ctl%charavalue
+      zm_source_file_param%file_prefix = udt_file_head_ctl%charavalue
 !
       end subroutine set_ctl_data_4_pick_zm
 !

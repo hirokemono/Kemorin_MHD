@@ -60,9 +60,14 @@
       if(id_legendre_transfer.eq.iflag_leg_undefined)                   &
      &            id_legendre_transfer = iflag_leg_orginal_loop
       call copy_sph_trans_nums_from_rtp(ncomp_sph_trans)
+!
+      call calypso_mpi_barrier
+      if (iflag_debug.gt.0) write(*,*) 'initialize_sph_trans'
       call initialize_sph_trans(ncomp_sph_trans,                        &
      &    sph_mesh%sph, sph_mesh%sph_comms, trns_param)
 !
+      call calypso_mpi_barrier
+      if (iflag_debug.gt.0) write(*,*) 'allocate_d_rtp_4_all_trans'
       call allocate_d_rtp_4_all_trans                                   &
      &   (ncomp_sph_trans, sph_mesh%sph%sph_rtp)
 !

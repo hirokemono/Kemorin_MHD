@@ -61,7 +61,7 @@
 !
 !    Initialize FEM grid
       if (iflag_debug.gt.0) write(*,*) 'FEM_initialize_sph_trans'
-      call FEM_initialize_sph_trans
+      call FEM_initialize_sph_trans(field_file_param)
 !
 !    Initialization for spherical tranform
       if (iflag_debug.gt.0) write(*,*) 'SPH_initialize_sph_trans'
@@ -69,8 +69,8 @@
 !
 !    Set field IOP array by spectr fields
       if (iflag_debug.gt.0) write(*,*) 'SPH_to_FEM_bridge_sph_trans'
-      call SPH_to_FEM_bridge_sph_trans                                  &
-     &   (sph_mesh_trans%sph%sph_rj, rj_fld_trans, sph_trns_IO)
+      call SPH_to_FEM_bridge_sph_trans(field_file_param,                &
+     &    sph_mesh_trans%sph%sph_rj, rj_fld_trans, sph_trns_IO)
 !
       end subroutine initialize_sph_transform
 !

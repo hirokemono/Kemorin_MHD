@@ -1,9 +1,13 @@
 !FEM_analyzer_sph_trans.f90
 !
-!      subroutine FEM_initialize_sph_trans
-!      subroutine FEM_analyze_sph_trans(i_step, visval, ucd)
-!
-!!      subroutine SPH_to_FEM_bridge_sph_trans(sph_rj, rj_fld, fld_IO)
+!!      subroutine FEM_initialize_sph_trans(udt_file_param)
+!!        type(field_IO_params), intent(in) :: udt_file_param
+!!
+!!      subroutine FEM_analyze_sph_trans(i_step, visval, ucd)
+!!
+!!      subroutine SPH_to_FEM_bridge_sph_trans                          &
+!!     &         (udt_file_param, sph_rj, rj_fld, fld_IO)
+!!        type(field_IO_params), intent(in) :: udt_file_param
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(field_IO), intent(inout) :: fld_IO
@@ -20,6 +24,7 @@
 !
       use m_SPH_transforms
       use t_ucd_data
+      use t_field_data_IO
 !
       implicit none
 !
@@ -32,9 +37,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_sph_trans
+      subroutine FEM_initialize_sph_trans(udt_file_param)
 !
-      use m_control_params_2nd_files
       use m_array_for_send_recv
       use m_t_step_parameter
 !
@@ -50,6 +54,9 @@
 !
       use copy_all_field_4_sph_trans
 !
+      type(field_IO_params), intent(in) :: udt_file_param
+!
+!
 !  -----    construct geometry informations
 !
       call mesh_setup_4_SPH_TRANS
@@ -58,9 +65,8 @@
 !
 !  -------------------------------
 !
-      call calypso_MPI_barrier
-      call set_ucd_file_format(udt_org_param%iflag_format, input_ucd)
-      call set_ucd_file_prefix(udt_org_param%file_prefix, input_ucd)
+      call set_ucd_file_format(udt_file_param%iflag_format, input_ucd)
+      call set_ucd_file_prefix(udt_file_param%file_prefix, input_ucd)
 !
       input_ucd%nnod = ione
       call sel_read_udt_param(my_rank, i_step_init, input_ucd)
@@ -100,17 +106,22 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine SPH_to_FEM_bridge_sph_trans(sph_rj, rj_fld, fld_IO)
+      subroutine SPH_to_FEM_bridge_sph_trans                            &
+     &         (udt_file_param, sph_rj, rj_fld, fld_IO)
 !
       use t_spheric_rj_data
       use t_field_data_IO
       use t_phys_data
       use copy_rj_phys_data_4_IO
 !
+      type(field_IO_params), intent(in) :: udt_file_param
       type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_data), intent(in) :: rj_fld
       type(field_IO), intent(inout) :: fld_IO
 !
+!
+      call set_ucd_file_format(udt_file_param%iflag_format, input_ucd)
+      call set_ucd_file_prefix(udt_file_param%file_prefix, input_ucd)
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_rj_all_phys_name_to_IO'
       call copy_rj_all_phys_name_to_IO                                  &
