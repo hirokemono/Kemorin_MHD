@@ -194,7 +194,7 @@
      &     (l_truncation, sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,        &
      &      pwr%nri_rms, pwr%ntot_comp_sq, pwr%kr_4_rms,                &
      &      pwr%shl_l, pwr%shl_m, pwr%shl_lm, pwr%shl_sq, pwr%shl_m0)
-        do i = 1, num_vol_spectr
+        do i = 1, pwr%num_vol_spectr
           call vol_ave_4_rms_sph(l_truncation, pwr%ntot_comp_sq,        &
      &        pwr%v_spectr(i)%avol, pwr%v_spectr(i)%v_l,                &
      &        pwr%v_spectr(i)%v_m, pwr%v_spectr(i)%v_lm,                &
@@ -203,9 +203,7 @@
       end if
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_volume_average_sph'
-      call cal_volume_average_sph                                       &
-     &   (pwr%v_spectr(1)%kr_inside, pwr%v_spectr(1)%kr_outside,        &
-     &    pwr%v_spectr(1)%avol, sph_rj, rj_fld, pwr)
+      call cal_volume_average_sph(sph_rj, rj_fld, pwr)
 !
       end subroutine cal_mean_squre_in_shell
 !

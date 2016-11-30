@@ -106,23 +106,27 @@
       type(sph_mean_squares), intent(in) :: pwr
 !
       character(len=kchara) :: fname_rms, mode_label
+      integer(kind = kint) :: i
 !
 !
-      if(pwr%v_spectr(1)%iflag_volume_ave_sph .eq. 0)  return
       if(sph_rj%idx_rj_degree_zero .eq. 0)  return
       if(pwr%ntot_comp_sq .eq. 0)  return
 !
-      write(fname_rms,'(a,a4)') trim(pwr%v_spectr(1)%fhead_ave), '.dat'
-      write(mode_label,'(a)') 'EMPTY'
-      call open_sph_mean_sq_file                                        &
-     &   (id_file_rms, fname_rms, mode_label, sph_params%l_truncation,  &
-     &    pwr%num_fld_sq, pwr%ntot_comp_sq, pwr%num_comp_sq,            &
-     &    pwr%pwr_name, pwr%nri_rms,                                    &
-     &    sph_params%nlayer_ICB, sph_params%nlayer_CMB)
+      do i = 1, pwr%num_vol_spectr
+        if(pwr%v_spectr(i)%iflag_volume_ave_sph .eq. 0)  cycle
 !
-      write(id_file_rms,'(i15,1pe23.14e3,1p200e23.14e3)')               &
-     &     istep, time, pwr%v_spectr(1)%v_ave(1:pwr%ntot_comp_sq)
+        call add_dat_extension(pwr%v_spectr(i)%fhead_ave, fname_rms)
+        write(mode_label,'(a)') 'EMPTY'
+        call open_sph_mean_sq_file(id_file_rms, fname_rms,              &
+     &      mode_label, sph_params%l_truncation,                        &
+     &      pwr%num_fld_sq, pwr%ntot_comp_sq, pwr%num_comp_sq,          &
+     &      pwr%pwr_name, pwr%nri_rms,                                  &
+     &      sph_params%nlayer_ICB, sph_params%nlayer_CMB)
+!
+        write(id_file_rms,'(i15,1pe23.14e3,1p200e23.14e3)')             &
+     &     istep, time, pwr%v_spectr(i)%v_ave(1:pwr%ntot_comp_sq)
       close(id_file_rms)
+      end do
 !
       end subroutine write_sph_vol_ave_file
 !
@@ -144,18 +148,21 @@
       type(sph_mean_squares), intent(in) :: pwr
 !
       character(len=kchara) :: fname_rms, mode_label
+      integer(kind = kint) :: i
 !
 !
       if(my_rank .ne. 0)  return
       if(pwr%ntot_comp_sq .eq. 0)  return
 !
-      call add_dat_extension(pwr%v_spectr(1)%fhead_rms_v, fname_rms)
-      write(mode_label,'(a)') 'EMPTY'
-      call write_sph_volume_pwr_file                                    &
-     &   (fname_rms, mode_label, istep, time, sph_params%l_truncation,  &
-     &    sph_params%nlayer_ICB, sph_params%nlayer_CMB, pwr%nri_rms,    &
-     &    pwr%num_fld_sq, pwr%ntot_comp_sq, pwr%num_comp_sq,            &
-     &    pwr%pwr_name, pwr%v_spectr(1)%v_sq)
+      do i = 1, pwr%num_vol_spectr
+        call add_dat_extension(pwr%v_spectr(i)%fhead_rms_v, fname_rms)
+        write(mode_label,'(a)') 'EMPTY'
+        call write_sph_volume_pwr_file(fname_rms, mode_label,           &
+     &      istep, time, sph_params%l_truncation,                       &
+     &      sph_params%nlayer_ICB, sph_params%nlayer_CMB, pwr%nri_rms,  &
+     &      pwr%num_fld_sq, pwr%ntot_comp_sq, pwr%num_comp_sq,          &
+     &      pwr%pwr_name, pwr%v_spectr(i)%v_sq)
+      end do
 !
       end subroutine write_sph_vol_ms_file
 !
@@ -177,56 +184,60 @@
       type(sph_mean_squares), intent(in) :: pwr
 !
       character(len=kchara) :: fname_rms, mode_label
+      integer(kind = kint) :: i
 !
 !
       if(my_rank .ne. 0)  return
-      if(pwr%v_spectr(1)%iflag_volume_rms_spec .eq. 0)  return
       if(pwr%ntot_comp_sq .eq. 0)  return
 !
 !
-      if(pwr%iflag_spectr_l .gt. izero) then
-        write(fname_rms, '(a,a6)')                                      &
-     &     trim(pwr%v_spectr(1)%fhead_rms_v), '_l.dat'
-        write(mode_label,'(a)') 'degree'
-        call write_sph_volume_spec_file(fname_rms, mode_label,          &
-     &      istep, time, sph_params%l_truncation,                       &
-     &      sph_params%nlayer_ICB, sph_params%nlayer_CMB,               &
-     &      pwr%nri_rms, pwr%num_fld_sq, pwr%ntot_comp_sq,              &
-     &      pwr%num_comp_sq, pwr%pwr_name, pwr%v_spectr(1)%v_l)
-      end if
+      do i = 1, pwr%num_vol_spectr
+        if(pwr%v_spectr(i)%iflag_volume_rms_spec .eq. 0)  cycle
 !
-      if(pwr%iflag_spectr_m .gt. izero) then
-         write(fname_rms,'(a,a6)')                                      &
-     &     trim(pwr%v_spectr(1)%fhead_rms_v), '_m.dat'
-        write(mode_label,'(a)') 'order'
-        call write_sph_volume_spec_file(fname_rms, mode_label,          &
-     &      istep, time, sph_params%l_truncation,                       &
-     &      sph_params%nlayer_ICB, sph_params%nlayer_CMB,               &
-     &      pwr%nri_rms, pwr%num_fld_sq, pwr%ntot_comp_sq,              &
-     &      pwr%num_comp_sq, pwr%pwr_name, pwr%v_spectr(1)%v_m)
-      end if
+        if(pwr%iflag_spectr_l .gt. izero) then
+          write(fname_rms, '(a,a6)')                                    &
+     &         trim(pwr%v_spectr(i)%fhead_rms_v), '_l.dat'
+          write(mode_label,'(a)') 'degree'
+          call write_sph_volume_spec_file(fname_rms, mode_label,        &
+     &        istep, time, sph_params%l_truncation,                     &
+     &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
+     &        pwr%nri_rms, pwr%num_fld_sq, pwr%ntot_comp_sq,            &
+     &        pwr%num_comp_sq, pwr%pwr_name, pwr%v_spectr(i)%v_l)
+        end if
 !
-      if(pwr%iflag_spectr_lm .gt. izero) then
-        write(fname_rms, '(a,a7)')                                      &
-     &     trim(pwr%v_spectr(1)%fhead_rms_v), '_lm.dat'
-        write(mode_label,'(a)') 'diff_deg_order'
-        call write_sph_volume_spec_file(fname_rms, mode_label,          &
-     &      istep, time, sph_params%l_truncation,                       &
-     &      sph_params%nlayer_ICB, sph_params%nlayer_CMB,               &
-     &      pwr%nri_rms, pwr%num_fld_sq, pwr%ntot_comp_sq,              &
-     &      pwr%num_comp_sq, pwr%pwr_name, pwr%v_spectr(1)%v_lm)
-      end if
+        if(pwr%iflag_spectr_m .gt. izero) then
+           write(fname_rms,'(a,a6)')                                    &
+     &       trim(pwr%v_spectr(i)%fhead_rms_v), '_m.dat'
+          write(mode_label,'(a)') 'order'
+          call write_sph_volume_spec_file(fname_rms, mode_label,        &
+     &        istep, time, sph_params%l_truncation,                     &
+     &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
+     &        pwr%nri_rms, pwr%num_fld_sq, pwr%ntot_comp_sq,            &
+     &        pwr%num_comp_sq, pwr%pwr_name, pwr%v_spectr(i)%v_m)
+        end if
 !
-      if(pwr%iflag_spectr_m0 .gt. izero) then
-        write(fname_rms, '(a,a7)')                                      &
-     &     trim(pwr%v_spectr(1)%fhead_rms_v), '_m0.dat'
-        write(mode_label,'(a)') 'EMPTY'
-        call write_sph_volume_pwr_file                                  &
-     &    (fname_rms, mode_label, istep, time, sph_params%l_truncation, &
-     &     sph_params%nlayer_ICB, sph_params%nlayer_CMB, pwr%nri_rms,   &
-     &     pwr%num_fld_sq, pwr%ntot_comp_sq, pwr%num_comp_sq,           &
-     &     pwr%pwr_name, pwr%v_spectr(1)%v_m0)
-      end if
+        if(pwr%iflag_spectr_lm .gt. izero) then
+          write(fname_rms, '(a,a7)')                                    &
+     &       trim(pwr%v_spectr(i)%fhead_rms_v), '_lm.dat'
+          write(mode_label,'(a)') 'diff_deg_order'
+          call write_sph_volume_spec_file(fname_rms, mode_label,        &
+     &        istep, time, sph_params%l_truncation,                     &
+     &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
+     &        pwr%nri_rms, pwr%num_fld_sq, pwr%ntot_comp_sq,            &
+     &        pwr%num_comp_sq, pwr%pwr_name, pwr%v_spectr(i)%v_lm)
+        end if
+!
+        if(pwr%iflag_spectr_m0 .gt. izero) then
+          write(fname_rms, '(a,a7)')                                    &
+     &       trim(pwr%v_spectr(i)%fhead_rms_v), '_m0.dat'
+          write(mode_label,'(a)') 'EMPTY'
+          call write_sph_volume_pwr_file(fname_rms, mode_label,         &
+     &       istep, time, sph_params%l_truncation,                      &
+     &       sph_params%nlayer_ICB, sph_params%nlayer_CMB, pwr%nri_rms, &
+     &       pwr%num_fld_sq, pwr%ntot_comp_sq, pwr%num_comp_sq,         &
+     &       pwr%pwr_name, pwr%v_spectr(i)%v_m0)
+        end if
+      end do
 !
       end subroutine write_sph_vol_ms_spectr_file
 !

@@ -38,7 +38,7 @@
         real(kind = kreal), allocatable :: shl_m_local(:,:,:)
         real(kind = kreal), allocatable :: shl_lm_local(:,:,:)
 !
-        real(kind = kreal), allocatable :: volume_j(:,:,:)
+        real(kind = kreal), allocatable :: volume_j(:,:)
 !
         real(kind = kreal), allocatable :: vol_l_local(:,:,:)
         real(kind = kreal), allocatable :: vol_m_local(:,:,:)
@@ -69,7 +69,7 @@
       allocate( WK_pwr%shl_rj(0:nri,jmax,3) )
       WK_pwr%shl_rj = 0.0d0
 !
-      allocate( WK_pwr%volume_j(jmax,3,n_spectr) )
+      allocate( WK_pwr%volume_j(jmax,3) )
       WK_pwr%volume_j = 0.0d0
 !
       allocate(WK_pwr%shl_l_local(nri_rms,0:ltr,ntot_comp_sq) )

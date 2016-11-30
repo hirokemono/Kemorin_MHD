@@ -7,8 +7,7 @@
 !> @brief Output mean square of spectr data
 !!
 !!@verbatim
-!!      subroutine cal_volume_average_sph                               &
-!!     &         (kg_st, kg_ed, avol, sph_rj, rj_fld, pwr)
+!!      subroutine cal_volume_average_sph(sph_rj, rj_fld, pwr)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(sph_mean_squares), intent(inout) :: pwr
@@ -35,8 +34,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_volume_average_sph                                 &
-     &         (kg_st, kg_ed, avol, sph_rj, rj_fld, pwr)
+      subroutine cal_volume_average_sph(sph_rj, rj_fld, pwr)
 !
       use m_phys_constants
 !
@@ -49,21 +47,23 @@
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_data), intent(in) :: rj_fld
-      integer(kind = kint), intent(in) :: kg_st, kg_ed
-      real(kind = kreal), intent(in) :: avol
 !
       type(sph_mean_squares), intent(inout) :: pwr
 !
+      integer(kind = kint) :: i
 !
-      if(sph_rj%idx_rj_degree_zero .gt. izero) then
-        call cal_sphere_average_sph(sph_rj, rj_fld, pwr)
 !
+      if(sph_rj%idx_rj_degree_zero .eq. izero) return
+      call cal_sphere_average_sph(sph_rj, rj_fld, pwr)
+!
+      do i = 1, pwr%num_vol_spectr
         call radial_integration                                         &
-     &     (kg_st, kg_ed, sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,     &
-     &      pwr%ntot_comp_sq, pwr%shl_ave, pwr%v_spectr(1)%v_ave)
-        call averaging_4_sph_ave_int                                    &
-     &     (pwr%ntot_comp_sq, avol, pwr%v_spectr(1)%v_ave)
-      end if
+     &       (pwr%v_spectr(i)%kr_inside, pwr%v_spectr(i)%kr_outside,    &
+     &        sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                 &
+     &        pwr%ntot_comp_sq, pwr%shl_ave, pwr%v_spectr(i)%v_ave)
+        call averaging_4_sph_ave_int(pwr%ntot_comp_sq,                  &
+     &        pwr%v_spectr(i)%avol, pwr%v_spectr(i)%v_ave)
+      end do
 !
       end subroutine cal_volume_average_sph
 !

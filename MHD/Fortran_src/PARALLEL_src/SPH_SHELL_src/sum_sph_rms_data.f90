@@ -185,19 +185,19 @@
           call radial_integration                                       &
      &       (v_pwr(inum)%kr_inside, v_pwr(inum)%kr_outside,            &
      &        sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, num,            &
-     &        WK_pwr%shl_rj(0,1,1), WK_pwr%volume_j(1,1,inum))
+     &        WK_pwr%shl_rj(0,1,1), WK_pwr%volume_j(1,1))
 !
           call sum_sph_v_rms_by_degree(l_truncation, sph_rj%nidx_rj(2), &
      &        WK_pwr%istack_mode_sum_l,  WK_pwr%item_mode_sum_l,        &
-     &        ncomp_rj, WK_pwr%volume_j(1,1,inum),                      &
+     &        ncomp_rj, WK_pwr%volume_j(1,1),                           &
      &        WK_pwr%vol_l_local(0,jcomp_st,inum))
           call sum_sph_v_rms_by_degree(l_truncation, sph_rj%nidx_rj(2), &
      &        WK_pwr%istack_mode_sum_m,  WK_pwr%item_mode_sum_m,        &
-     &        ncomp_rj, WK_pwr%volume_j(1,1,inum),                      &
+     &        ncomp_rj, WK_pwr%volume_j(1,1),                           &
      &        WK_pwr%vol_m_local(0,jcomp_st,inum))
           call sum_sph_v_rms_by_degree(l_truncation, sph_rj%nidx_rj(2), &
      &        WK_pwr%istack_mode_sum_lm, WK_pwr%item_mode_sum_lm,       &
-     &        ncomp_rj, WK_pwr%volume_j(1,1,inum),                      &
+     &        ncomp_rj, WK_pwr%volume_j(1,1),                           &
      &        WK_pwr%vol_lm_local(0,jcomp_st,inum))
         end do
 !
