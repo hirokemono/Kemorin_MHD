@@ -8,9 +8,10 @@
 !> @brief Set control parameter for monitoring spectrum
 !!
 !!@verbatim
+!!      subroutine set_ctl_params_sph_spectr(pwr)
+!!        type(sph_mean_squares), intent(inout) :: pwr
 !!      subroutine set_ctl_params_pick_sph(pwr,                         &
 !!     &          pickup_sph_head, pick_list, picked_sph)
-!!        type(sph_mean_squares), intent(inout) :: pwr
 !!        type(pickup_mode_list), intent(inout) :: pick_list
 !!        type(picked_spectrum_data), intent(inout) :: picked_sph
 !!      subroutine set_ctl_params_pick_gauss                            &
@@ -36,8 +37,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_ctl_params_pick_sph(pwr,                           &
-     &          pickup_sph_head, pick_list, picked_sph)
+      subroutine set_ctl_params_sph_spectr(pwr)
 !
       use m_ctl_data_4_pickup_sph
       use t_pickup_sph_spectr_data
@@ -46,33 +46,24 @@
       use skip_comment_f
 !
       type(sph_mean_squares), intent(inout) :: pwr
-      type(pickup_mode_list), intent(inout) :: pick_list
-      type(picked_spectrum_data), intent(inout) :: picked_sph
-      character(len = kchara), intent(inout) :: pickup_sph_head
 !
-      integer(kind = kint) :: inum
+      integer(kind = kint) :: i, j
 !
 !
-      iflag_layer_rms_spec =  layered_pwr_spectr_prefix%iflag
-      if(iflag_layer_rms_spec .gt. 0) then
-        fhead_rms_layer = layered_pwr_spectr_prefix%charavalue
-      end if
-!
-      iflag_volume_rms_spec = volume_pwr_spectr_prefix%iflag
-      if(iflag_volume_rms_spec .gt. 0) then
-        fhead_rms_vol = volume_pwr_spectr_prefix%charavalue
-      end if
-!
-      iflag_volume_ave_sph =  volume_average_prefix%iflag
-      if(iflag_volume_ave_sph .gt. 0) then
-        fhead_ave_vol = volume_average_prefix%charavalue
-      end if
-!
-      if(no_flag(degree_spectr_switch%charavalue)) iflag_spectr_l = 0
-      if(no_flag(order_spectr_switch%charavalue))  iflag_spectr_m = 0
+      if(no_flag(degree_spectr_switch%charavalue))                      &
+     &                                      pwr%iflag_spectr_l = 0
+      if(no_flag(order_spectr_switch%charavalue))                       &
+     &                                      pwr%iflag_spectr_m = 0
       if(no_flag(diff_lm_spectr_switch%charavalue))                     &
-     &                                             iflag_spectr_lm = 0
-      if(no_flag(axis_spectr_switch%charavalue))   iflag_spectr_m0 = 0
+     &                                      pwr%iflag_spectr_lm = 0
+      if(no_flag(axis_spectr_switch%charavalue))                        &
+     &                                      pwr%iflag_spectr_m0 = 0
+!
+!
+      pwr%iflag_layer_rms_spec =  layered_pwr_spectr_prefix%iflag
+      if(pwr%iflag_layer_rms_spec .gt. 0) then
+        pwr%fhead_rms_layer = layered_pwr_spectr_prefix%charavalue
+      end if
 !
 !   set pickup layer
       if(idx_spec_layer_ctl%num .gt. 0) then
@@ -85,6 +76,76 @@
       else
         call alloc_num_spec_layer(izero, pwr)
       end if
+!
+!
+      if(num_vol_spectr_ctl .lt. 0) num_vol_spectr_ctl = 0
+      call alloc_volume_spectr_data((num_vol_spectr_ctl+1), pwr)
+!
+      pwr%v_spectr(1)%iflag_volume_rms_spec                             &
+     &        = volume_pwr_spectr_prefix%iflag
+      if(pwr%v_spectr(1)%iflag_volume_rms_spec .gt. 0) then
+        pwr%v_spectr(1)%fhead_rms_v                                     &
+     &       = volume_pwr_spectr_prefix%charavalue
+      end if
+!
+      pwr%v_spectr(1)%iflag_volume_ave_sph                              &
+     &        =  volume_average_prefix%iflag
+      if(pwr%v_spectr(1)%iflag_volume_ave_sph .gt. 0) then
+        pwr%v_spectr(1)%fhead_ave = volume_average_prefix%charavalue
+      end if
+      pwr%v_spectr(1)%r_inside =  -1.0
+      pwr%v_spectr(1)%r_outside = -1.0
+!
+      do i = 1, num_vol_spectr_ctl
+        j = i + 1
+        pwr%v_spectr(j)%iflag_volume_rms_spec                           &
+     &        = vol_pwr_spectr_ctl(i)%volume_spec_file_ctl%iflag
+        if(pwr%v_spectr(j)%iflag_volume_rms_spec .gt. 0) then
+          pwr%v_spectr(j)%fhead_rms_v                                   &
+     &       = vol_pwr_spectr_ctl(i)%volume_spec_file_ctl%charavalue
+        end if
+!
+        pwr%v_spectr(j)%iflag_volume_ave_sph                            &
+     &        =  vol_pwr_spectr_ctl(i)%volume_ave_file_ctl%iflag
+        if(pwr%v_spectr(j)%iflag_volume_ave_sph .gt. 0) then
+          pwr%v_spectr(j)%fhead_ave                                     &
+     &        = vol_pwr_spectr_ctl(i)%volume_ave_file_ctl%charavalue
+        end if
+!
+        if(vol_pwr_spectr_ctl(i)%inner_radius_ctl%iflag .gt. 0) then
+          pwr%v_spectr(j)%r_inside                                      &
+     &        = vol_pwr_spectr_ctl(i)%inner_radius_ctl%realvalue
+        else
+          pwr%v_spectr(j)%r_inside = -1.0
+        end if
+!
+        if(vol_pwr_spectr_ctl(i)%outer_radius_ctl%iflag .gt. 0) then
+          pwr%v_spectr(j)%r_outside                                     &
+     &        = vol_pwr_spectr_ctl(i)%outer_radius_ctl%realvalue
+        else
+          pwr%v_spectr(j)%r_outside = -1.0
+        end if
+      end do
+      if(num_vol_spectr_ctl .gt. 0) call deallocate_vol_sopectr_ctl
+!
+      end subroutine set_ctl_params_sph_spectr
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_ctl_params_pick_sph                                &
+     &         (pickup_sph_head, pick_list, picked_sph)
+!
+      use m_ctl_data_4_pickup_sph
+      use t_pickup_sph_spectr_data
+      use t_rms_4_sph_spectr
+      use output_sph_m_square_file
+      use skip_comment_f
+!
+      type(pickup_mode_list), intent(inout) :: pick_list
+      type(picked_spectrum_data), intent(inout) :: picked_sph
+      character(len = kchara), intent(inout) :: pickup_sph_head
+!
+      integer(kind = kint) :: inum
 !
 !   Define spectr pick up
 !

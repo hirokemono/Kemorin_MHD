@@ -196,8 +196,9 @@
 !
 !   set_pickup modes
 !
+      call set_ctl_params_sph_spectr(pwr)
       call set_ctl_params_pick_sph                                      &
-     &   (pwr, pickup_sph_head, pick_list1, pick1)
+     &   (pickup_sph_head, pick_list1, pick1)
       call set_ctl_params_pick_gauss                                    &
      &   (gauss_coefs_file_head, gauss_list1, gauss1)
       call set_ctl_params_no_heat_Nu(rj_fld, Nu_type1)

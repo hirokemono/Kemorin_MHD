@@ -75,7 +75,6 @@
       use t_ctl_data_4_view_transfer
       use t_control_elements
       use t_read_control_arrays
-      use t_control_data_pvr_sect
       use skip_comment_f
 !
       implicit  none

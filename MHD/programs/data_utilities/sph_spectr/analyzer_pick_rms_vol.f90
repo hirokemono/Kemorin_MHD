@@ -69,7 +69,7 @@
      &    ipol_spec, idpdr_spec, itor_spec, rj_fld_spec)
 !
       call init_rms_4_sph_spectr                                        &
-     &   (sph_mesh_spec%sph%sph_params%l_truncation,                    &
+     &   (sph_mesh_spec%sph%sph_params,                                 &
      &    sph_mesh_spec%sph%sph_rj, rj_fld_spec, pwr_spec, WK_pwr_spec)
 !
       call allocate_work_pick_rms_sph                                   &

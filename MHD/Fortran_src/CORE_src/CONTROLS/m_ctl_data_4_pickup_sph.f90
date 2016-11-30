@@ -19,6 +19,8 @@
 !!      subroutine deallocate_pick_gauss_l_ctl
 !!      subroutine deallocate_pick_gauss_m_ctl
 !!
+!!      subroutine deallocate_vol_sopectr_ctl
+!!
 !!      subroutine read_pickup_sph_ctl
 !!
 !! -----------------------------------------------------------------
@@ -98,9 +100,15 @@
 !
       use t_control_elements
       use t_read_control_arrays
+      use t_ctl_data_sph_vol_spectr
       use skip_comment_f
 !
       implicit  none
+!
+!
+      integer(kind = kint) :: num_vol_spectr_ctl = 0
+      type(volume_spectr_control), allocatable, save                    &
+     &                            :: vol_pwr_spectr_ctl(:)
 !
 !>      Structure for layered spectrum file prefix
       type(read_character_item), save :: volume_average_prefix
@@ -196,6 +204,7 @@
       character(len=kchara), parameter                                  &
      &                     :: hd_pick_sph = 'sph_monitor_ctl'
       integer(kind = kint) :: i_pick_sph = 0
+      integer(kind = kint) :: i_vol_spectr_ctl = 0
 !
 !   labels for item
 !
@@ -350,6 +359,10 @@
         call find_control_end_flag(hd_pick_sph, i_pick_sph)
         if(i_pick_sph .gt. 0) exit
 !
+        call find_control_array_flag                                    &
+     &     (hd_vol_spec_block, num_vol_spectr_ctl)
+        if(num_vol_spectr_ctl .gt. 0) call read_volume_spectr_ctl
+!
 !
         call read_control_array_i1(hd_spctr_layer, idx_spec_layer_ctl)
         call read_control_array_i1(hd_pick_layer, idx_pick_layer_ctl)
@@ -402,5 +415,37 @@
       end subroutine read_pickup_sph_ctl
 !
 ! -----------------------------------------------------------------------
+!
+      subroutine read_volume_spectr_ctl
+!
+!
+      if (i_vol_spectr_ctl .gt. 0) return
+      allocate(vol_pwr_spectr_ctl(num_vol_spectr_ctl))
+!
+      do
+        call load_ctl_label_and_line
+        call find_control_end_array_flag                                &
+     &     (hd_vol_spec_block, num_vol_spectr_ctl, i_vol_spectr_ctl)
+        if(i_vol_spectr_ctl .ge. num_vol_spectr_ctl) exit
+!
+        if(right_begin_flag(hd_vol_spec_block) .gt. 0) then
+          i_vol_spectr_ctl = i_vol_spectr_ctl + 1
+          call read_each_vol_spectr_ctl                                 &
+     &      (vol_pwr_spectr_ctl(i_vol_spectr_ctl))
+        end if
+      end do
+!
+      end subroutine read_volume_spectr_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine deallocate_vol_sopectr_ctl
+!
+      deallocate(vol_pwr_spectr_ctl)
+      num_vol_spectr_ctl = 0
+!
+      end subroutine deallocate_vol_sopectr_ctl
+!
+!  ---------------------------------------------------------------------
 !
       end module m_ctl_data_4_pickup_sph

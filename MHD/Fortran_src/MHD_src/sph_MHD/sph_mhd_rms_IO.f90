@@ -84,7 +84,7 @@
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_rms_4_sph_spectr'
       call init_rms_4_sph_spectr                                        &
-     &   (sph_params%l_truncation, sph_rj, rj_fld, pwr, WK_pwr)
+     &   (sph_params, sph_rj, rj_fld, pwr, WK_pwr)
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_gauss_coefs_4_monitor'
       call init_gauss_coefs_4_monitor                                   &

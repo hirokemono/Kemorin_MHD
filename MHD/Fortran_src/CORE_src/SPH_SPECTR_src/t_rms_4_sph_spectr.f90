@@ -7,6 +7,9 @@
 !>@brief Mean sqare data
 !!
 !!@verbatim
+!!      subroutine alloc_volume_spectr_data(n_vpower, pwr)
+!!      subroutine dealloc_volume_spectr_data(pwr)
+!!
 !!      subroutine alloc_num_spec_layer(nri_in, pwr)
 !!      subroutine alloc_rms_name_sph_spec(nfld_in, pwr)
 !!      subroutine alloc_rms_4_sph_spectr(my_rank, ltr, pwr)
@@ -32,12 +35,95 @@
       implicit none
 !
 !
+!>      Structure of mean square data on each surface
+      type sphere_mean_squares
+!>        Number of radial points for mean square
+        integer(kind=kint) :: nri_rms = 0
+!>        Number of radial points for mean square
+        integer(kind=kint) :: ltr
+!>        Number of component for mean square
+        integer (kind=kint) :: ntot_comp_sq
+!
+!>        Radial ID from layered mean square
+        integer(kind=kint), allocatable :: kr_rms(:)
+!>        Radius from layered mean square
+        real(kind = kreal), allocatable :: r_rms(:)
+!
+!>        Mean square spectrum for degree on spheres
+        real(kind = kreal), allocatable :: s_l(:,:,:)
+!>        Mean square spectrum for order on spheres
+        real(kind = kreal), allocatable :: s_m(:,:,:)
+!>        Mean square spectrum for l-m on spheres
+        real(kind = kreal), allocatable :: s_lm(:,:,:)
+!
+!>         Mean square on spheres
+        real(kind = kreal), allocatable :: s_sq(:,:)
+!>         Mean square of axis-symmetric component on spheres
+        real(kind = kreal), allocatable :: s_m0(:,:)
+!>        Ratio of axis-symmetric componbent to total mean square
+        real(kind = kreal), allocatable :: s_ratio_m0(:,:)
+!
+!>        Number of radial point for average
+        integer(kind = kint) :: nri_ave
+!>        Average over single sphere
+        real(kind = kreal), allocatable :: s_ave(:,:)
+      end type sphere_mean_squares
+!
+!
+!>      Structure of mean square data over volume
+      type sph_vol_mean_squares
+!>        File prefix for volume mean square file
+        character(len = kchara) :: fhead_rms_v = 'sph_pwr_volume'
+!>        File prefix for volume average file
+        character(len = kchara) :: fhead_ave = 'sph_ave_volume'
+!
+!>        Output flag for volume mean square data
+        integer(kind = kint) :: iflag_volume_rms_spec = 0
+!>        Output flag for volume average data
+        integer(kind = kint) :: iflag_volume_ave_sph =  0
+!
+!>        Number of radial points for mean square
+        integer(kind=kint) :: ltr
+!>        Number of component for mean square
+        integer (kind=kint) :: ntot_comp_sq
+!
+!>        Radius for inner boundary
+        real(kind=kreal) :: r_inside
+!>        Radius for outer boundary
+        real(kind=kreal) :: r_outside
+!>        Radial address for inner boundary
+        integer (kind=kint) :: kr_inside
+!>        Radial address for outer boundary
+        integer (kind=kint) :: kr_outside
+!
+!>        Volume mean square spectrum for degree
+        real(kind = kreal), allocatable :: v_l(:,:)
+!>        Volume mean square spectrum for order
+        real(kind = kreal), allocatable :: v_m(:,:)
+!>        Volume mean square spectrum for l-m
+        real(kind = kreal), allocatable :: v_lm(:,:)
+!
+!>        Volume mean square
+        real(kind = kreal), allocatable :: v_sq(:)
+!>        Volume mean square of axis-symmetric component
+        real(kind = kreal), allocatable :: v_m0(:)
+!>        Ratio of axis-symmetric componbent to total mean square
+        real(kind = kreal), allocatable :: v_ratio_m0(:)
+!
+!>        Volume average
+        real(kind = kreal), allocatable :: v_ave(:)
+      end type sph_vol_mean_squares
+!
+!
 !>      Structure of mean square data
       type sph_mean_squares
 !>        Number of field for mean square
         integer (kind=kint) :: num_fld_sq
 !>        Number of component for mean square
         integer (kind=kint) :: ntot_comp_sq
+!
+!>        Output flag for layerd mean square data
+        integer(kind = kint) :: iflag_layer_rms_spec =  0
 !
 !>        Field ID for mean square
         integer (kind=kint), allocatable :: id_field(:)
@@ -48,6 +134,19 @@
 !>        Field name for mean square
         character (len=kchara), allocatable :: pwr_name(:)
 !
+!
+!>        File prefix for layered mean square file
+        character(len = kchara) :: fhead_rms_layer =  'sph_pwr_layer'
+!
+!>        Output flag for spectrum with respect to degree
+        integer(kind = kint) :: iflag_spectr_l =  1
+!>        Output flag for spectrum with respect to order
+        integer(kind = kint) :: iflag_spectr_m =  1
+!>        Output flag for spectrum with respect to l-m
+        integer(kind = kint) :: iflag_spectr_lm = 1
+!
+!>        Output flag for spectrum for axis-symmetric component
+        integer(kind = kint) :: iflag_spectr_m0 = 1
 !
 !>        Number of radial points for mean square
         integer(kind=kint) :: nri_rms = 0
@@ -71,7 +170,6 @@
 !>        Ratio of axis-symmetric componbent to total mean square
         real(kind = kreal), allocatable :: ratio_shl_m0(:,:)
 !
-!
 !>        Volume mean square spectrum for degree
         real(kind = kreal), allocatable :: vol_l(:,:)
 !>        Volume mean square spectrum for order
@@ -93,11 +191,36 @@
         real(kind = kreal), allocatable :: shl_ave(:,:)
 !>        Volume average
         real(kind = kreal), allocatable :: vol_ave(:)
+!
+        integer(kind = kint) :: num_vol_spectr = 1
+        type(sph_vol_mean_squares), allocatable :: v_spectr(:)
       end type sph_mean_squares
 !
 ! -----------------------------------------------------------------------
 !
       contains
+!
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_volume_spectr_data(n_vpower, pwr)
+!
+      integer(kind = kint), intent(in) ::n_vpower
+      type(sph_mean_squares), intent(inout) :: pwr
+!
+      pwr%num_vol_spectr = n_vpower
+      allocate(pwr%v_spectr(n_vpower))
+!
+      end subroutine alloc_volume_spectr_data
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_volume_spectr_data(pwr)
+!
+      type(sph_mean_squares), intent(inout) :: pwr
+!
+      deallocate(pwr%v_spectr)
+!
+      end subroutine dealloc_volume_spectr_data
 !
 ! -----------------------------------------------------------------------
 !

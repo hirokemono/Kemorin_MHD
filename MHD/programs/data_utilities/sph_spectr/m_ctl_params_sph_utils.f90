@@ -147,10 +147,12 @@
       if(i_vol_ene_spec_head .gt. 0) then
         vol_ene_spec_head = vol_ene_spec_head_ctl
       end if
+!
 !   set pickup mode
 !
+      call set_ctl_params_sph_spectr(pwr)
       call set_ctl_params_pick_sph                                      &
-     &   (pwr, pickup_sph_head, pick_list_u, pick_sph_u)
+     &   (pickup_sph_head, pick_list_u, pick_sph_u)
       call set_ctl_params_pick_gauss                                    &
      &   (gauss_coefs_file_prefix, gauss_list_u, gauss_u)
 !

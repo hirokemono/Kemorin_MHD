@@ -26,9 +26,6 @@
       implicit none
 !
 !
-!>      File prefix for volume average file
-      character(len = kchara) :: fhead_ave_vol =    'sph_ave_volume'
-!
       private :: cal_sphere_average_sph, averaging_4_sph_ave_int
       private :: cal_ave_vector_sph_spectr, cal_ave_scalar_sph_spectr
 !

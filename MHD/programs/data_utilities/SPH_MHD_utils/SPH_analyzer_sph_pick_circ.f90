@@ -84,7 +84,7 @@
       call init_send_recv(mesh1%nod_comm)
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_rms_4_sph_spectr'
-      call init_rms_4_sph_spectr(sph1%sph_params%l_truncation,          &
+      call init_rms_4_sph_spectr(sph1%sph_params,                       &
      &    sph1%sph_rj, rj_fld1, pwr1, WK_pwr)
 !
 ! ---------------------------------

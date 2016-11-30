@@ -37,32 +37,6 @@
 !>      File ID for mean square data
       integer(kind = kint), parameter, private :: id_file_rms = 34
 !
-!    output flag
-!
-!>      Output flag for layerd mean square data
-      integer(kind = kint) :: iflag_layer_rms_spec =  0
-!>      Output flag for volume mean square data
-      integer(kind = kint) :: iflag_volume_rms_spec = 0
-!>      Output flag for volume average data
-      integer(kind = kint) :: iflag_volume_ave_sph =  0
-!
-!>      Output flag for spectrum with respect to degree
-      integer(kind = kint) :: iflag_spectr_l =  1
-!>      Output flag for spectrum with respect to order
-      integer(kind = kint) :: iflag_spectr_m =  1
-!>      Output flag for spectrum with respect to l-m
-      integer(kind = kint) :: iflag_spectr_lm = 1
-!>      Output flag for spectrum for axis-symmetric component
-      integer(kind = kint) :: iflag_spectr_m0 = 1
-!
-!
-!>      File prefix for volume mean square file
-      character(len = kchara) :: fhead_rms_vol =    'sph_pwr_volume'
-!>      File prefix for layered mean square file
-      character(len = kchara) :: fhead_rms_layer =  'sph_pwr_layer'
-!>      File prefix for volume average file
-      character(len = kchara) :: fhead_ave_vol =    'sph_ave_volume'
-!
       private :: write_sph_volume_spec_file, write_sph_volume_pwr_file
       private :: write_sph_layer_pwr_file, write_sph_layer_spec_file
 !
@@ -134,10 +108,11 @@
       character(len=kchara) :: fname_rms, mode_label
 !
 !
+      if(pwr%v_spectr(1)%iflag_volume_ave_sph .eq. 0)  return
       if(sph_rj%idx_rj_degree_zero .eq. 0)  return
       if(pwr%ntot_comp_sq .eq. 0)  return
 !
-      write(fname_rms, '(a,a4)') trim(fhead_ave_vol), '.dat'
+      write(fname_rms,'(a,a4)') trim(pwr%v_spectr(1)%fhead_ave), '.dat'
       write(mode_label,'(a)') 'EMPTY'
       call open_sph_mean_sq_file                                        &
      &   (id_file_rms, fname_rms, mode_label, sph_params%l_truncation,  &
@@ -174,7 +149,7 @@
       if(my_rank .ne. 0)  return
       if(pwr%ntot_comp_sq .eq. 0)  return
 !
-      call add_dat_extension(fhead_rms_vol, fname_rms)
+      call add_dat_extension(pwr%v_spectr(1)%fhead_rms_v, fname_rms)
       write(mode_label,'(a)') 'EMPTY'
       call write_sph_volume_pwr_file                                    &
      &   (fname_rms, mode_label, istep, time, sph_params%l_truncation,  &
@@ -205,12 +180,13 @@
 !
 !
       if(my_rank .ne. 0)  return
-      if(iflag_volume_rms_spec .eq. 0)  return
+      if(pwr%v_spectr(1)%iflag_volume_rms_spec .eq. 0)  return
       if(pwr%ntot_comp_sq .eq. 0)  return
 !
 !
-      if(iflag_spectr_l .gt. izero) then
-        write(fname_rms, '(a,a6)') trim(fhead_rms_vol), '_l.dat'
+      if(pwr%iflag_spectr_l .gt. izero) then
+        write(fname_rms, '(a,a6)')                                      &
+     &     trim(pwr%v_spectr(1)%fhead_rms_v), '_l.dat'
         write(mode_label,'(a)') 'degree'
         call write_sph_volume_spec_file(fname_rms, mode_label,          &
      &      istep, time, sph_params%l_truncation,                       &
@@ -219,8 +195,9 @@
      &      pwr%num_comp_sq, pwr%pwr_name, pwr%vol_l)
       end if
 !
-      if(iflag_spectr_m .gt. izero) then
-        write(fname_rms,'(a,a6)') trim(fhead_rms_vol), '_m.dat'
+      if(pwr%iflag_spectr_m .gt. izero) then
+         write(fname_rms,'(a,a6)')                                      &
+     &     trim(pwr%v_spectr(1)%fhead_rms_v), '_m.dat'
         write(mode_label,'(a)') 'order'
         call write_sph_volume_spec_file(fname_rms, mode_label,          &
      &      istep, time, sph_params%l_truncation,                       &
@@ -229,8 +206,9 @@
      &      pwr%num_comp_sq, pwr%pwr_name, pwr%vol_m)
       end if
 !
-      if(iflag_spectr_lm .gt. izero) then
-        write(fname_rms, '(a,a7)') trim(fhead_rms_vol), '_lm.dat'
+      if(pwr%iflag_spectr_lm .gt. izero) then
+        write(fname_rms, '(a,a7)')                                      &
+     &     trim(pwr%v_spectr(1)%fhead_rms_v), '_lm.dat'
         write(mode_label,'(a)') 'diff_deg_order'
         call write_sph_volume_spec_file(fname_rms, mode_label,          &
      &      istep, time, sph_params%l_truncation,                       &
@@ -239,8 +217,9 @@
      &      pwr%num_comp_sq, pwr%pwr_name, pwr%vol_lm)
       end if
 !
-      if(iflag_spectr_m0 .gt. izero) then
-        write(fname_rms, '(a,a7)') trim(fhead_rms_vol), '_m0.dat'
+      if(pwr%iflag_spectr_m0 .gt. izero) then
+        write(fname_rms, '(a,a7)')                                      &
+     &     trim(pwr%v_spectr(1)%fhead_rms_v), '_m0.dat'
         write(mode_label,'(a)') 'EMPTY'
         call write_sph_volume_pwr_file                                  &
      &    (fname_rms, mode_label, istep, time, sph_params%l_truncation, &
@@ -273,11 +252,11 @@
 !
 !
       if(my_rank .ne. 0)  return
-      if(iflag_layer_rms_spec .eq. izero)  return
+      if(pwr%iflag_layer_rms_spec .eq. izero)  return
       if(pwr%ntot_comp_sq .eq. 0)  return
 !
 !
-      write(fname_rms,   '(a,a4)') trim(fhead_rms_layer), '.dat'
+      write(fname_rms,   '(a,a4)') trim(pwr%fhead_rms_layer), '.dat'
       write(mode_label,'(a)') 'radial_id  radius'
       call write_sph_layer_pwr_file                                     &
      &   (fname_rms, mode_label, istep, time, sph_params%l_truncation,  &
@@ -285,8 +264,8 @@
      &    pwr%num_fld_sq, pwr%ntot_comp_sq, pwr%num_comp_sq,            &
      &    pwr%pwr_name, pwr%kr_4_rms, pwr%r_4_rms, pwr%shl_sq)
 !
-      if(iflag_spectr_l .gt. izero) then
-        write(fname_rms, '(a,a6)') trim(fhead_rms_layer), '_l.dat'
+      if(pwr%iflag_spectr_l .gt. izero) then
+        write(fname_rms, '(a,a6)') trim(pwr%fhead_rms_layer), '_l.dat'
         write(mode_label,'(a)') 'radial_id  radius  degree'
         call write_sph_layer_spec_file(fname_rms, mode_label,           &
      &      istep, time, sph_params%l_truncation,                       &
@@ -295,8 +274,8 @@
      &      pwr%pwr_name, pwr%kr_4_rms, pwr%r_4_rms, pwr%shl_l)
       end if
 !
-      if(iflag_spectr_m .gt. izero) then
-        write(fname_rms, '(a,a6)') trim(fhead_rms_layer), '_m.dat'
+      if(pwr%iflag_spectr_m .gt. izero) then
+        write(fname_rms, '(a,a6)') trim(pwr%fhead_rms_layer), '_m.dat'
         write(mode_label,'(a)') 'radial_id  radius  order'
         call write_sph_layer_spec_file                                  &
      &    (fname_rms, mode_label, istep, time, sph_params%l_truncation, &
@@ -305,8 +284,8 @@
      &     pwr%pwr_name, pwr%kr_4_rms, pwr%r_4_rms, pwr%shl_m)
       end if
 !
-      if(iflag_spectr_lm .gt. izero) then
-        write(fname_rms,'(a,a7)') trim(fhead_rms_layer), '_lm.dat'
+      if(pwr%iflag_spectr_lm .gt. izero) then
+        write(fname_rms,'(a,a7)') trim(pwr%fhead_rms_layer), '_lm.dat'
         write(mode_label,'(a)') 'radial_id  radius  diff_deg_order'
         call write_sph_layer_spec_file                                  &
      &    (fname_rms, mode_label, istep, time, sph_params%l_truncation, &
@@ -315,8 +294,8 @@
      &     pwr%pwr_name, pwr%kr_4_rms, pwr%r_4_rms, pwr%shl_lm)
       end if
 !
-      if(iflag_spectr_m0 .gt. izero) then
-        write(fname_rms,'(a,a7)') trim(fhead_rms_layer), '_m0.dat'
+      if(pwr%iflag_spectr_m0 .gt. izero) then
+        write(fname_rms,'(a,a7)') trim(pwr%fhead_rms_layer), '_m0.dat'
         write(mode_label,'(a)') 'radial_id  radius'
         call write_sph_layer_pwr_file                                   &
      &    (fname_rms, mode_label, istep, time, sph_params%l_truncation, &

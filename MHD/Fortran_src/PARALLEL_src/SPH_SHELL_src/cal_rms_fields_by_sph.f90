@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine init_rms_4_sph_spectr                                &
-!!     &         (l_truncation, sph_rj, rj_fld, pwr, WK_pwr)
+!!     &         (sph_params, sph_rj, rj_fld, pwr, WK_pwr)
 !!      subroutine cal_mean_squre_in_shell(kr_st, kr_ed, l_truncation,  &
 !!     &          sph_rj, ipol, rj_fld, g_sph_rj, pwr, WK_pwr)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
@@ -23,6 +23,7 @@
       use m_constants
       use m_machine_parameter
 !
+      use t_spheric_parameter
       use t_spheric_rj_data
       use t_phys_data
       use t_phys_address
@@ -31,6 +32,8 @@
 !
       implicit none
 !
+      private :: find_radial_grid_index
+!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -38,7 +41,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine init_rms_4_sph_spectr                                  &
-     &         (l_truncation, sph_rj, rj_fld, pwr, WK_pwr)
+     &         (sph_params, sph_rj, rj_fld, pwr, WK_pwr)
 !
       use calypso_mpi
 !
@@ -46,7 +49,7 @@
       use volume_average_4_sph
       use quicksort
 !
-      integer(kind = kint), intent(in) :: l_truncation
+      type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_data), intent(in) :: rj_fld
 !
@@ -54,8 +57,15 @@
       type(sph_mean_square_work), intent(inout) :: WK_pwr
 !
       integer(kind = kint) :: i_fld, j_fld
-      integer(kind = kint) :: k, knum, num_field
+      integer(kind = kint) :: i, k, knum, num_field
 !
+!
+      do i = 1, pwr%num_vol_spectr
+        call find_radial_grid_index(sph_rj, sph_params%nlayer_ICB,      &
+     &      pwr%v_spectr(i)%r_inside, pwr%v_spectr(i)%kr_inside)
+        call find_radial_grid_index(sph_rj, sph_params%nlayer_CMB,      &
+     &      pwr%v_spectr(i)%r_outside, pwr%v_spectr(i)%kr_outside)
+      end do
 !
       num_field = 0
       do i_fld = 1, rj_fld%num_phys
@@ -79,14 +89,16 @@
       call quicksort_int                                                &
      &   (pwr%nri_rms, pwr%kr_4_rms, ione, pwr%nri_rms)
 !
-      call alloc_rms_4_sph_spectr(my_rank, l_truncation, pwr)
+      call alloc_rms_4_sph_spectr                                       &
+     &   (my_rank, sph_params%l_truncation, pwr)
       call alloc_ave_4_sph_spectr                                       &
      &   (sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj(1), pwr)
-      call allocate_rms_sph_local_data(l_truncation, sph_rj%nidx_rj,    &
+      call allocate_rms_sph_local_data                                  &
+     &   (sph_params%l_truncation, sph_rj%nidx_rj,                      &
      &    pwr%nri_rms, pwr%ntot_comp_sq, WK_pwr)
 !
-      call set_sum_table_4_sph_spectr                                   &
-     &   (l_truncation, sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j,          &
+      call set_sum_table_4_sph_spectr(sph_params%l_truncation,          &
+     &    sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j,                        &
      &    WK_pwr%num_mode_sum_l,  WK_pwr%num_mode_sum_m,                &
      &    WK_pwr%num_mode_sum_lm, WK_pwr%istack_mode_sum_l,             &
      &    WK_pwr%istack_mode_sum_m, WK_pwr%istack_mode_sum_lm,          &
@@ -102,6 +114,25 @@
           pwr%r_4_rms(knum) = sph_rj%radius_1d_rj_r(k)
         end if
       end do
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'volume mean square file area:'
+        do i = 1, pwr%num_vol_spectr
+          write(*,*) i, pwr%v_spectr(i)%iflag_volume_rms_spec,          &
+     &                  trim(pwr%v_spectr(i)%fhead_rms_v)
+        end do
+        write(*,*) 'volume mean square file area:'
+        do i = 1, pwr%num_vol_spectr
+          write(*,*) i, pwr%v_spectr(i)%iflag_volume_ave_sph,           &
+     &                  trim(pwr%v_spectr(i)%fhead_ave)
+        end do
+        write(*,*) 'Integration area:'
+        do i = 1, pwr%num_vol_spectr
+          write(*,*) i,                                                 &
+     &        pwr%v_spectr(i)%kr_inside, pwr%v_spectr(i)%kr_outside,    &
+     &        pwr%v_spectr(i)%r_inside,  pwr%v_spectr(i)%r_outside
+        end do
+      end if
 !
       end subroutine init_rms_4_sph_spectr
 !
@@ -272,6 +303,51 @@
      &    rms_sph_m, rms_sph, rms_sph_m0, ratio_sph_m0)
 !
       end subroutine global_sum_sph_layerd_rms
+!
+! -----------------------------------------------------------------------
+!
+      subroutine find_radial_grid_index                                 &
+     &         (sph_rj, kr_default, r_target, kr_target)
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
+      integer(kind = kint), intent(in) :: kr_default
+!
+      integer(kind = kint), intent(inout) :: kr_target
+      real(kind = kreal), intent(inout) :: r_target
+!
+      integer(kind = kint) :: k
+      real(kind = kreal) :: dr1, dr2
+!
+      if(r_target .eq. -1.0) then
+        kr_target = kr_default
+      else if(r_target .eq. 0.0) then
+        kr_target = 0
+      else if(r_target .le. sph_rj%radius_1d_rj_r(1)) then
+        kr_target = 1
+      else
+        kr_target = sph_rj%nidx_rj(1)
+        do k = 2, sph_rj%nidx_rj(1)
+          dr1 = r_target - sph_rj%radius_1d_rj_r(k-1)
+          dr2 = r_target - sph_rj%radius_1d_rj_r(k  )
+!
+          if(dr1*dr2 .le. zero) then
+            if(abs(dr1) .lt. abs(dr2)) then
+              kr_target = k - 1
+            else
+              kr_target = k
+            end if
+            exit
+          end if
+        end do
+      end if
+!
+      if(kr_target .eq. 0) then
+        r_target = 0.0
+      else
+        r_target = sph_rj%radius_1d_rj_r(kr_target)
+      end if
+!
+      end subroutine find_radial_grid_index
 !
 ! -----------------------------------------------------------------------
 !
