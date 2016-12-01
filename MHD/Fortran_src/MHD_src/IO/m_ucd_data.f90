@@ -56,8 +56,14 @@
 !
       subroutine set_control_MHD_field_file
 !
+      use m_ctl_data_4_platforms
       use parallel_ucd_IO_select
 !
+!
+      if(udt_file_head_ctl%iflag .eq. 0) then
+        fem_ucd%ifmt_file = -1
+        return
+      end if
 !
       call set_merged_ucd_file_define(fem_ucd)
 !
@@ -75,6 +81,7 @@
       integer(kind = kint) :: istep_ucd
 !
 !
+      if(fem_ucd%ifmt_file .lt. 0) return
       if(i_step_output_ucd .eq. 0) return
       if(mod(istep_max_dt,i_step_output_ucd) .ne. 0) return
 !
@@ -97,6 +104,7 @@
       type(phys_data),intent(inout) :: nod_fld
 !
 !
+      if(fem_ucd%ifmt_file .lt. 0) return
       if(i_step_output_ucd .eq. 0) return
       call link_output_grd_file(mesh%node, mesh%ele, mesh%nod_comm,     &
      &    nod_fld, fem_ucd, merged_ucd)
@@ -120,6 +128,7 @@
       type(phys_data), intent(in) :: nod_fld
 !
 !
+      if(fem_ucd%ifmt_file .lt. 0) return
       if(i_step_output_ucd .eq. 0) return
 !
       call link_num_field_2_ucd(nod_fld, fem_ucd)
