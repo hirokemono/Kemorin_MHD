@@ -52,6 +52,7 @@
       type(field_IO_params), save :: sph_file_param
 !
       type(field_IO), save :: sph_fst_IO
+      type(field_IO), save :: sph_out_IO
 !
 ! -----------------------------------------------------------------------
 !
@@ -232,19 +233,19 @@
       istep_fld = i_step / i_step_output_ucd
       call copy_time_steps_to_restart
       call copy_rj_phys_name_to_IO                                      &
-     &   (rj_fld%num_phys_viz, rj_fld, sph_fst_IO)
-      call alloc_phys_data_IO(sph_fst_IO)
+     &   (rj_fld%num_phys_viz, rj_fld, sph_out_IO)
+      call alloc_phys_data_IO(sph_out_IO)
       call copy_rj_phys_data_to_IO                                      &
-     &   (rj_fld%num_phys_viz, rj_fld, sph_fst_IO)
+     &   (rj_fld%num_phys_viz, rj_fld, sph_out_IO)
 !
       call set_field_file_fmt_prefix                                    &
      &   (sph_file_param%iflag_format, sph_file_param%file_prefix,      &
-     &    sph_fst_IO)
+     &    sph_out_IO)
       call sel_write_step_SPH_field_file                                &
-     &   (nprocs, my_rank, istep_fld, sph_fst_IO)
+     &   (nprocs, my_rank, istep_fld, sph_out_IO)
 !
-      call dealloc_phys_data_IO(sph_fst_IO)
-      call dealloc_phys_name_IO(sph_fst_IO)
+      call dealloc_phys_data_IO(sph_out_IO)
+      call dealloc_phys_name_IO(sph_out_IO)
 !
       end subroutine output_spectr_4_snap
 !
@@ -268,24 +269,24 @@
       istep_fld = i_step / i_step_output_ucd
       call set_field_file_fmt_prefix                                    &
      &   (sph_file_param%iflag_format, sph_file_param%file_prefix,      &
-     &    sph_fst_IO)
+     &    sph_out_IO)
       call sel_read_alloc_step_SPH_file                                 &
-     &   (nprocs, my_rank, istep_fld, sph_fst_IO)
+     &   (nprocs, my_rank, istep_fld, sph_out_IO)
 !
       if(rj_org_param%iflag_IO .eq. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_sph_restart_from_IO'
-        call set_rj_phys_data_from_IO(sph_fst_IO, rj_fld)
+        call set_rj_phys_data_from_IO(sph_out_IO, rj_fld)
       else
         if (iflag_debug.gt.0) write(*,*)                                &
      &                        'r_interpolate_sph_fld_from_IO'
         call r_interpolate_sph_fld_from_IO                              &
-     &    (sph_fst_IO, sph_rj, ipol, rj_fld)
+     &    (sph_out_IO, sph_rj, ipol, rj_fld)
       end if
       i_step_MHD = i_step_init
       time = time_init
 !
-      call dealloc_phys_data_IO(sph_fst_IO)
-      call dealloc_phys_name_IO(sph_fst_IO)
+      call dealloc_phys_data_IO(sph_out_IO)
+      call dealloc_phys_name_IO(sph_out_IO)
 !
       end subroutine read_alloc_sph_spectr
 !
