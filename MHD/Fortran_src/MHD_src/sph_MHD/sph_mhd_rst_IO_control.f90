@@ -229,7 +229,7 @@
 !
 !
       if( (sph_file_param%iflag_IO*i_step_output_ucd) .eq. 0) return
-      if(mod(i_step,i_step_output_ucd) .eq. 0) return
+      if(mod(i_step,i_step_output_ucd) .ne. 0) return
 !
       istep_fld = i_step / i_step_output_ucd
       call copy_time_steps_to_restart
