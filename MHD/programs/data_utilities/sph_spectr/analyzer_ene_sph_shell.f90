@@ -122,9 +122,11 @@
      &     (i_step, time, sph_mesh_spec%sph%sph_params,                 &
      &      sph_mesh_spec%sph%sph_rj, pwr_spec)
         call write_sph_vol_ms_file(my_rank, i_step, time,               &
-     &      sph_mesh_spec%sph%sph_params, pwr_spec)
+     &      sph_mesh_spec%sph%sph_params, sph_mesh_spec%sph%sph_rj,     &
+     &     pwr_spec)
         call write_sph_vol_ms_spectr_file(my_rank, i_step, time,        &
-     &      sph_mesh_spec%sph%sph_params, pwr_spec)
+     &      sph_mesh_spec%sph%sph_params, sph_mesh_spec%sph%sph_rj,     &
+     &      pwr_spec)
         call write_sph_layer_ms_file(my_rank, i_step, time,             &
      &      sph_mesh_spec%sph%sph_params, pwr_spec)
       end do

@@ -13,9 +13,9 @@
 !!     &         (istep, time, sph_params, sph_rj, pwr)
 !!
 !!      subroutine write_sph_vol_ms_file                                &
-!!     &         (my_rank, istep, time, sph_params, pwr)
+!!     &         (my_rank, istep, time, sph_params, sph_rj, pwr)
 !!      subroutine write_sph_vol_ms_spectr_file                         &
-!!     &         (my_rank, istep, time, sph_params, pwr)
+!!     &         (my_rank, istep, time, sph_params, sph_rj, pwr)
 !!      subroutine write_sph_layer_ms_file                              &
 !!     &         (my_rank, istep, time, sph_params, pwr)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
@@ -117,11 +117,13 @@
 !
         call add_dat_extension(pwr%v_spectr(i)%fhead_ave, fname_rms)
         write(mode_label,'(a)') 'EMPTY'
-        call open_sph_mean_sq_file(id_file_rms, fname_rms,              &
+        call open_sph_vol_mean_sq_file(id_file_rms, fname_rms,          &
      &      mode_label, sph_params%l_truncation,                        &
      &      pwr%num_fld_sq, pwr%ntot_comp_sq, pwr%num_comp_sq,          &
-     &      pwr%pwr_name, pwr%nri_rms,                                  &
-     &      sph_params%nlayer_ICB, sph_params%nlayer_CMB)
+     &      pwr%pwr_name, sph_rj%nidx_rj(1),                            &
+     &      sph_params%nlayer_ICB, sph_params%nlayer_CMB,               &
+     &      pwr%v_spectr(i)%kr_inside, pwr%v_spectr(i)%kr_outside,      &
+     &      pwr%v_spectr(i)%r_inside,  pwr%v_spectr(i)%r_outside)
 !
         write(id_file_rms,'(i15,1pe23.14e3,1p200e23.14e3)')             &
      &     istep, time, pwr%v_spectr(i)%v_ave(1:pwr%ntot_comp_sq)
@@ -134,7 +136,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine write_sph_vol_ms_file                                  &
-     &         (my_rank, istep, time, sph_params, pwr)
+     &         (my_rank, istep, time, sph_params, sph_rj, pwr)
 !
       use t_spheric_parameter
       use t_rms_4_sph_spectr
@@ -145,6 +147,7 @@
       real(kind = kreal), intent(in) :: time
 !
       type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rj_grid), intent(in) ::  sph_rj
       type(sph_mean_squares), intent(in) :: pwr
 !
       character(len=kchara) :: fname_rms, mode_label
@@ -159,9 +162,11 @@
         write(mode_label,'(a)') 'EMPTY'
         call write_sph_volume_pwr_file(fname_rms, mode_label,           &
      &      istep, time, sph_params%l_truncation,                       &
-     &      sph_params%nlayer_ICB, sph_params%nlayer_CMB, pwr%nri_rms,  &
-     &      pwr%num_fld_sq, pwr%ntot_comp_sq, pwr%num_comp_sq,          &
-     &      pwr%pwr_name, pwr%v_spectr(i)%v_sq)
+     &      sph_params%nlayer_ICB, sph_params%nlayer_CMB,               &
+     &      pwr%v_spectr(i)%kr_inside, pwr%v_spectr(i)%kr_outside,      &
+     &      pwr%v_spectr(i)%r_inside,  pwr%v_spectr(i)%r_outside,       &
+     &      sph_rj%nidx_rj(1), pwr%num_fld_sq, pwr%ntot_comp_sq,        &
+     &      pwr%num_comp_sq, pwr%pwr_name, pwr%v_spectr(i)%v_sq)
       end do
 !
       end subroutine write_sph_vol_ms_file
@@ -169,7 +174,7 @@
 !  --------------------------------------------------------------------
 !
       subroutine write_sph_vol_ms_spectr_file                           &
-     &         (my_rank, istep, time, sph_params, pwr)
+     &         (my_rank, istep, time, sph_params, sph_rj, pwr)
 !
       use t_spheric_parameter
       use t_rms_4_sph_spectr
@@ -181,6 +186,7 @@
       real(kind = kreal), intent(in) :: time
 !
       type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rj_grid), intent(in) ::  sph_rj
       type(sph_mean_squares), intent(in) :: pwr
 !
       character(len=kchara) :: fname_rms, mode_label
@@ -201,7 +207,9 @@
           call write_sph_volume_spec_file(fname_rms, mode_label,        &
      &        istep, time, sph_params%l_truncation,                     &
      &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
-     &        pwr%nri_rms, pwr%num_fld_sq, pwr%ntot_comp_sq,            &
+     &        pwr%v_spectr(i)%kr_inside, pwr%v_spectr(i)%kr_outside,    &
+     &        pwr%v_spectr(i)%r_inside,  pwr%v_spectr(i)%r_outside,     &
+     &        sph_rj%nidx_rj(1), pwr%num_fld_sq, pwr%ntot_comp_sq,      &
      &        pwr%num_comp_sq, pwr%pwr_name, pwr%v_spectr(i)%v_l)
         end if
 !
@@ -212,7 +220,9 @@
           call write_sph_volume_spec_file(fname_rms, mode_label,        &
      &        istep, time, sph_params%l_truncation,                     &
      &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
-     &        pwr%nri_rms, pwr%num_fld_sq, pwr%ntot_comp_sq,            &
+     &        pwr%v_spectr(i)%kr_inside, pwr%v_spectr(i)%kr_outside,    &
+     &        pwr%v_spectr(i)%r_inside,  pwr%v_spectr(i)%r_outside,     &
+     &        sph_rj%nidx_rj(1), pwr%num_fld_sq, pwr%ntot_comp_sq,      &
      &        pwr%num_comp_sq, pwr%pwr_name, pwr%v_spectr(i)%v_m)
         end if
 !
@@ -223,7 +233,9 @@
           call write_sph_volume_spec_file(fname_rms, mode_label,        &
      &        istep, time, sph_params%l_truncation,                     &
      &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
-     &        pwr%nri_rms, pwr%num_fld_sq, pwr%ntot_comp_sq,            &
+     &        pwr%v_spectr(i)%kr_inside, pwr%v_spectr(i)%kr_outside,    &
+     &        pwr%v_spectr(i)%r_inside,  pwr%v_spectr(i)%r_outside,     &
+     &        sph_rj%nidx_rj(1), pwr%num_fld_sq, pwr%ntot_comp_sq,      &
      &        pwr%num_comp_sq, pwr%pwr_name, pwr%v_spectr(i)%v_lm)
         end if
 !
@@ -232,10 +244,12 @@
      &       trim(pwr%v_spectr(i)%fhead_rms_v), '_m0.dat'
           write(mode_label,'(a)') 'EMPTY'
           call write_sph_volume_pwr_file(fname_rms, mode_label,         &
-     &       istep, time, sph_params%l_truncation,                      &
-     &       sph_params%nlayer_ICB, sph_params%nlayer_CMB, pwr%nri_rms, &
-     &       pwr%num_fld_sq, pwr%ntot_comp_sq, pwr%num_comp_sq,         &
-     &       pwr%pwr_name, pwr%v_spectr(i)%v_m0)
+     &        istep, time, sph_params%l_truncation,                     &
+     &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
+     &        pwr%v_spectr(i)%kr_inside, pwr%v_spectr(i)%kr_outside,    &
+     &        pwr%v_spectr(i)%r_inside,  pwr%v_spectr(i)%r_outside,     &
+     &        sph_rj%nidx_rj(1), pwr%num_fld_sq, pwr%ntot_comp_sq,      &
+     &        pwr%num_comp_sq, pwr%pwr_name, pwr%v_spectr(i)%v_m0)
         end if
       end do
 !
@@ -322,7 +336,8 @@
 !
       subroutine write_sph_volume_spec_file(fname_rms, mode_label,      &
      &          istep, time, l_truncation, nlayer_ICB, nlayer_CMB,      &
-     &          nri_rms, num_fld_sq, ntot_comp_sq, num_comp_sq,         &
+     &          kr_inner, kr_outer, r_inner,  r_outer, nri,             &
+     &          num_fld_sq, ntot_comp_sq, num_comp_sq,                  &
      &          pwr_name, rms_sph_x)
 !
       use sph_mean_spectr_IO
@@ -331,7 +346,9 @@
       real(kind = kreal), intent(in) :: time
       integer(kind = kint), intent(in) :: l_truncation
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
-      integer(kind = kint), intent(in) :: nri_rms
+      integer(kind = kint), intent(in) :: nri
+      integer(kind = kint), intent(in) :: kr_inner, kr_outer
+      real(kind = kreal), intent(in) ::   r_inner,  r_outer
       integer(kind = kint), intent(in) :: num_fld_sq, ntot_comp_sq
       integer(kind = kint), intent(in) :: num_comp_sq(num_fld_sq)
       character (len=kchara), intent(in) :: pwr_name(num_fld_sq)
@@ -340,9 +357,11 @@
       character(len=kchara), intent(in) :: fname_rms, mode_label
 !
 !
-      call open_sph_mean_sq_file(id_file_rms, fname_rms, mode_label,    &
+      call open_sph_vol_mean_sq_file                                    &
+     &   (id_file_rms, fname_rms, mode_label,                           &
      &    l_truncation, num_fld_sq, ntot_comp_sq, num_comp_sq,          &
-     &    pwr_name, nri_rms, nlayer_ICB, nlayer_CMB)
+     &    pwr_name, nri, nlayer_ICB, nlayer_CMB,                        &
+     &    kr_inner, kr_outer, r_inner,  r_outer)
       call write_sph_volume_data(id_file_rms, istep, time,              &
      &    l_truncation, ntot_comp_sq, rms_sph_x)
       close(id_file_rms)
@@ -354,7 +373,8 @@
 !
       subroutine write_sph_volume_pwr_file(fname_rms, mode_label,       &
      &          istep, time, l_truncation, nlayer_ICB, nlayer_CMB,      &
-     &          nri_rms, num_fld_sq, ntot_comp_sq, num_comp_sq,         &
+     &          kr_inner, kr_outer, r_inner,  r_outer, nri,             &
+     &          num_fld_sq, ntot_comp_sq, num_comp_sq,                  &
      &          pwr_name, rms_sph_v)
 !
       use set_parallel_file_name
@@ -364,7 +384,9 @@
       real(kind = kreal), intent(in) :: time
       integer(kind = kint), intent(in) :: l_truncation
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
-      integer(kind = kint), intent(in) :: nri_rms
+      integer(kind = kint), intent(in) :: nri
+      integer(kind = kint), intent(in) :: kr_inner, kr_outer
+      real(kind = kreal), intent(in) ::   r_inner,  r_outer
       integer(kind = kint), intent(in) :: num_fld_sq, ntot_comp_sq
       integer(kind = kint), intent(in) :: num_comp_sq(num_fld_sq)
       character (len=kchara), intent(in) :: pwr_name(num_fld_sq)
@@ -373,9 +395,11 @@
       character(len=kchara), intent(in) :: fname_rms, mode_label
 !
 !
-      call open_sph_mean_sq_file(id_file_rms, fname_rms, mode_label,    &
+      call open_sph_vol_mean_sq_file                                    &
+     &   (id_file_rms, fname_rms, mode_label,                           &
      &    l_truncation, num_fld_sq, ntot_comp_sq, num_comp_sq,          &
-     &    pwr_name, nri_rms, nlayer_ICB, nlayer_CMB)
+     &    pwr_name, nri, nlayer_ICB, nlayer_CMB,                        &
+     &    kr_inner, kr_outer, r_inner,  r_outer)
 !
       write(id_file_rms,'(i16,1pe23.14e3,1p200e23.14e3)')               &
      &                 istep, time, rms_sph_v(1:ntot_comp_sq)

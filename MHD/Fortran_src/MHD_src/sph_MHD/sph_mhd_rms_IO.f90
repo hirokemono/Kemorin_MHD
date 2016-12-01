@@ -152,9 +152,9 @@
       call write_sph_vol_ave_file                                       &
      &   (i_step_MHD, time, sph_params, sph_rj, pwr)
       call write_sph_vol_ms_file                                        &
-     &   (my_rank, i_step_MHD, time, sph_params, pwr)
+     &   (my_rank, i_step_MHD, time, sph_params, sph_rj, pwr)
       call write_sph_vol_ms_spectr_file                                 &
-     &   (my_rank, i_step_MHD, time, sph_params, pwr)
+     &   (my_rank, i_step_MHD, time, sph_params, sph_rj, pwr)
       call write_sph_layer_ms_file                                      &
      &   (my_rank, i_step_MHD, time, sph_params, pwr)
 !
