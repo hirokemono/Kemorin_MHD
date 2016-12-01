@@ -220,6 +220,7 @@
       use m_t_int_parameter
       use copy_rj_phys_data_4_IO
       use copy_time_steps_4_restart
+      use const_global_element_ids
 !
       type(phys_data), intent(in) :: rj_fld
       integer(kind = kint), intent(in) :: i_step
@@ -230,6 +231,10 @@
       if( (sph_file_param%iflag_IO*i_step_output_ucd) .eq. 0) return
       if(mod(i_step,i_step_output_ucd) .ne. 0) return
 !
+      call set_field_file_fmt_prefix                                    &
+     &   (sph_file_param%iflag_format, sph_file_param%file_prefix,      &
+     &    sph_out_IO)
+!
       istep_fld = i_step / i_step_output_ucd
       call copy_time_steps_to_restart
       call copy_rj_phys_name_to_IO                                      &
@@ -238,12 +243,14 @@
       call copy_rj_phys_data_to_IO                                      &
      &   (rj_fld%num_phys_viz, rj_fld, sph_out_IO)
 !
-      call set_field_file_fmt_prefix                                    &
-     &   (sph_file_param%iflag_format, sph_file_param%file_prefix,      &
-     &    sph_out_IO)
+      call alloc_merged_field_stack(nprocs, sph_out_IO)
+      call count_number_of_node_stack                                   &
+     &   (sph_out_IO%nnod_IO, sph_out_IO%istack_numnod_IO)
+!
       call sel_write_step_SPH_field_file                                &
      &   (nprocs, my_rank, istep_fld, sph_out_IO)
 !
+      call dealloc_merged_field_stack(sph_out_IO)
       call dealloc_phys_data_IO(sph_out_IO)
       call dealloc_phys_name_IO(sph_out_IO)
 !
@@ -285,6 +292,7 @@
       i_step_MHD = i_step_init
       time = time_init
 !
+      call dealloc_merged_field_stack(sph_out_IO)
       call dealloc_phys_data_IO(sph_out_IO)
       call dealloc_phys_name_IO(sph_out_IO)
 !

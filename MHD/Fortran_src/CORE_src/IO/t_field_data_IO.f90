@@ -172,9 +172,11 @@
       type(field_IO), intent(inout) :: fld_IO
 !
 !
-      deallocate( fld_IO%num_comp_IO )
-      deallocate( fld_IO%istack_comp_IO )
-      deallocate( fld_IO%fld_name )
+      if(allocated(fld_IO%d_IO)) then 
+        deallocate( fld_IO%num_comp_IO )
+        deallocate( fld_IO%istack_comp_IO )
+        deallocate( fld_IO%fld_name )
+      end if
 !
       end subroutine dealloc_phys_name_IO
 !
@@ -185,7 +187,7 @@
       type(field_IO), intent(inout) :: fld_IO
 !
 !
-      deallocate( fld_IO%d_IO )
+      if(allocated(fld_IO%d_IO)) deallocate(fld_IO%d_IO)
 !
       end subroutine dealloc_phys_data_IO
 !
@@ -196,7 +198,8 @@
       type(field_IO), intent(inout) :: fld_IO
 !
 !
-      deallocate(fld_IO%istack_numnod_IO)
+      if(allocated(fld_IO%istack_numnod_IO))                            &
+     &                       deallocate(fld_IO%istack_numnod_IO)
 !
       end subroutine dealloc_merged_field_stack
 !
