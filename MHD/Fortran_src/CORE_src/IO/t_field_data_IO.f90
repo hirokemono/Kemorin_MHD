@@ -172,7 +172,7 @@
       type(field_IO), intent(inout) :: fld_IO
 !
 !
-      if(allocated(fld_IO%d_IO)) then 
+      if(allocated(fld_IO%num_comp_IO)) then 
         deallocate( fld_IO%num_comp_IO )
         deallocate( fld_IO%istack_comp_IO )
         deallocate( fld_IO%fld_name )
