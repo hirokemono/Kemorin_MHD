@@ -63,15 +63,15 @@
        trns_snap%ntensor_rtp_2_rj = 0
 !
 !
-      nscltsr_rtp_2_rj                                                  &
+      nscltsr_rj_2_rtp                                                  &
      &      = trns_snap%nscalar_rj_2_rtp + 6*trns_snap%ntensor_rj_2_rtp
       trns_snap%ncomp_rj_2_rtp                                          &
-     &      = 3*trns_snap%nvector_rj_2_rtp + nscltsr_rtp_2_rj
+     &      = 3*trns_snap%nvector_rj_2_rtp + nscltsr_rj_2_rtp
 !
-      nscltsr_rj_2_rtp                                                  &
+      nscltsr_rtp_2_rj                                                  &
      &      = trns_snap%nscalar_rtp_2_rj + 6*trns_snap%ntensor_rtp_2_rj
       trns_snap%ncomp_rtp_2_rj                                          &
-     &      = 3*trns_snap%nvector_rtp_2_rj + nscltsr_rj_2_rtp
+     &      = 3*trns_snap%nvector_rtp_2_rj + nscltsr_rtp_2_rj
 !
 !
       ncomp_sph_trans = max(ncomp_sph_trans, trns_snap%ncomp_rtp_2_rj)

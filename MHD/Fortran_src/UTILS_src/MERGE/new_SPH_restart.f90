@@ -187,8 +187,7 @@
       if(irank_org .lt. np_sph_org) then
         call copy_time_steps_from_restart
         call alloc_phys_data_type(org_sph%sph_rj%nnod_rj, org_phys)
-        call copy_rj_phys_data_from_IO                                  &
-     &       (org_sph%sph_rj%nnod_rj, org_fst_IO, org_phys)
+        call copy_rj_phys_data_from_IO(org_fst_IO, org_phys)
 !
         call dealloc_phys_data_IO(org_fst_IO)
         call dealloc_phys_name_IO(org_fst_IO)
@@ -272,14 +271,14 @@
 !
 !
         call copy_time_steps_to_restart
-        call copy_rj_all_phys_name_to_IO                                &
-     &     (new_sph%sph_rj%nnod_rj, new_phys, new_fst_IO)
+        call copy_rj_phys_name_to_IO                                    &
+     &     (new_phys%num_phys, new_phys, new_fst_IO)
 !
         new_fst_IO%nnod_IO = new_sph%sph_rj%nnod_rj
         call alloc_phys_data_IO(new_fst_IO)
 !
-        call copy_rj_all_phys_data_to_IO                                &
-     &     (new_sph%sph_rj%nnod_rj, new_phys, new_fst_IO)
+        call copy_rj_phys_data_to_IO                                    &
+     &     (new_phys%num_phys, new_phys, new_fst_IO)
 !
       end subroutine const_assembled_sph_data
 !

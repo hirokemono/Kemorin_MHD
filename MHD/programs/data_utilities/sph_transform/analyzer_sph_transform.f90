@@ -20,6 +20,7 @@
       use m_work_time
       use m_SPH_transforms
       use m_spheric_data_transform
+      use m_ctl_params_sph_trans
 !
       use calypso_mpi
       use FEM_analyzer_sph_trans
@@ -36,7 +37,6 @@
       subroutine initialize_sph_transform
 !
       use m_ctl_data_4_sph_trans
-      use m_ctl_params_sph_trans
       use parallel_load_data_4_sph
 !
 !
@@ -68,9 +68,12 @@
       call SPH_initialize_sph_trans(sph_mesh_trans, rj_fld_trans)
 !
 !    Set field IOP array by spectr fields
+      call calypso_mpi_barrier
       if (iflag_debug.gt.0) write(*,*) 'SPH_to_FEM_bridge_sph_trans'
       call SPH_to_FEM_bridge_sph_trans(field_file_param,                &
-     &    sph_mesh_trans%sph%sph_rj, rj_fld_trans, sph_trns_IO)
+     &    rj_fld_trans, sph_trns_IO)
+      call calypso_mpi_barrier
+      if (iflag_debug.gt.0) write(*,*) 'initialize_sph_transform end'
 !
       end subroutine initialize_sph_transform
 !

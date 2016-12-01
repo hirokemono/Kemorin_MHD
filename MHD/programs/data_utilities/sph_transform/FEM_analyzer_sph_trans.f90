@@ -3,7 +3,7 @@
 !!      subroutine FEM_initialize_sph_trans(udt_file_param)
 !!        type(field_IO_params), intent(in) :: udt_file_param
 !!
-!!      subroutine FEM_analyze_sph_trans(i_step, visval, ucd)
+!!      subroutine FEM_analyze_sph_trans(i_step, udt_file_param, visval)
 !!
 !!      subroutine SPH_to_FEM_bridge_sph_trans                          &
 !!     &         (udt_file_param, sph_rj, rj_fld, fld_IO)
@@ -107,15 +107,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine SPH_to_FEM_bridge_sph_trans                            &
-     &         (udt_file_param, sph_rj, rj_fld, fld_IO)
+     &         (udt_file_param, rj_fld, fld_IO)
 !
-      use t_spheric_rj_data
       use t_field_data_IO
       use t_phys_data
       use copy_rj_phys_data_4_IO
 !
       type(field_IO_params), intent(in) :: udt_file_param
-      type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_data), intent(in) :: rj_fld
       type(field_IO), intent(inout) :: fld_IO
 !
@@ -124,8 +122,7 @@
       call set_ucd_file_prefix(udt_file_param%file_prefix, input_ucd)
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_rj_all_phys_name_to_IO'
-      call copy_rj_all_phys_name_to_IO                                  &
-     &   (sph_rj%nnod_rj, rj_fld, fld_IO)
+      call copy_rj_phys_name_to_IO(rj_fld%num_phys, rj_fld, fld_IO)
       call alloc_phys_data_IO(fld_IO)
       call alloc_merged_field_stack(nprocs, fld_IO)
 !

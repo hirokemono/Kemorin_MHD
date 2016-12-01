@@ -75,8 +75,7 @@
 !
         if(rj_org_param%iflag_IO .eq. 0) then
           if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
-          call set_rj_phys_data_from_IO                                 &
-     &       (sph_mesh%sph%sph_rj%nnod_rj, fld_IO, rj_fld)
+          call set_rj_phys_data_from_IO(fld_IO, rj_fld)
         else
           if (iflag_debug.gt.0) write(*,*)                              &
      &                        'r_interpolate_sph_fld_from_IO'

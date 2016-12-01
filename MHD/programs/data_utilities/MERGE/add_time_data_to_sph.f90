@@ -243,8 +243,7 @@
       call sel_read_alloc_field_file(irank_org, istep, org_fst_IO)
 !
       call alloc_phys_data_type(org_sph%sph_rj%nnod_rj, org_phys)
-      call copy_rj_phys_data_from_IO                                    &
-     &       (org_sph%sph_rj%nnod_rj, org_fst_IO, org_phys)
+      call copy_rj_phys_data_from_IO(org_fst_IO, org_phys)
 !
       call dealloc_phys_data_IO(org_fst_IO)
       call dealloc_phys_name_IO(org_fst_IO)

@@ -51,7 +51,7 @@
      &            iflag_leg_sym_dgemm_big/)
 !
       private :: num_test, list_test
-      private :: sel_sph_transform_MHD, select_legendre_transform
+      private :: select_legendre_transform
 !
 !-----------------------------------------------------------------------
 !

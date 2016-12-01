@@ -9,6 +9,7 @@
 !
       use m_precision
       use m_read_control_elements
+      use t_control_elements
       use skip_comment_f
 !
       implicit  none
@@ -16,16 +17,18 @@
       integer (kind = kint) :: control_file_code = 13
       character (len = kchara) :: control_file_name='ctl_sph_transform'
 !
-      character(len = kchara) :: Legendre_trans_loop_ctl
-      character(len = kchara) :: FFT_library_ctl
-      integer(kind = kint) :: legendre_vector_len_ctl
-!
       character(len = kchara) :: zm_spec_file_head_ctl
       character(len = kchara) :: zonal_udt_head_ctl
 !
       character(len=kchara) :: cmb_radial_grp_ctl =  'CMB'
       character(len=kchara) :: icb_radial_grp_ctl =  'ICB'
       character(len=kchara) :: gauss_sph_fhead_ctl
+!
+      type(read_character_item) :: Legendre_trans_loop_ctl
+      type(read_character_item) :: FFT_library_ctl
+      type(read_character_item) :: import_mode_ctl
+!
+      type(read_integer_item) :: legendre_vector_len_ctl
 !
 !   Top level
 !
@@ -48,6 +51,8 @@
       character(len=kchara), parameter                                  &
      &      :: hd_FFT_package =  'FFT_library_ctl'
       character(len=kchara), parameter                                  &
+     &      :: hd_import_mode =  'import_table_mode_ctl'
+      character(len=kchara), parameter                                  &
      &      :: hd_legendre_vect_len = 'Legendre_vector_length_ctl'
 !
       character(len=kchara), parameter :: hd_zm_sph_spec_file           &
@@ -62,9 +67,6 @@
       character(len=kchara), parameter :: hd_gauss_file_name            &
      &                        = 'sph_gauss_coefs_head_ctl'
 !
-      integer (kind=kint) :: i_sph_transform_mode =  0
-      integer (kind=kint) :: i_FFT_package =         0
-      integer (kind=kint) :: i_legendre_vect_len  =  0
       integer (kind=kint) :: i_zm_sph_spec_file =    0
       integer (kind=kint) :: i_zm_field_file =       0
 !
@@ -75,7 +77,7 @@
       private :: control_file_code, control_file_name
       private :: hd_sph_trans_ctl, i_sph_trans_ctl
       private :: hd_sph_trans_model, i_sph_trans_model
-      private :: hd_FFT_package
+      private :: hd_FFT_package, hd_import_mode
       private :: hd_sph_trans_params, i_sph_trans_params
       private :: hd_zm_sph_spec_file, hd_zm_field_file
       private :: hd_sph_transform_mode, hd_legendre_vect_len
@@ -173,13 +175,9 @@
         if(i_sph_trans_params .gt. 0) exit
 !
 !
-        call read_integer_ctl_item(hd_legendre_vect_len,                &
-     &        i_legendre_vect_len, legendre_vector_len_ctl)
+        call read_integer_ctl_type(hd_legendre_vect_len,                &
+     &      legendre_vector_len_ctl)
 !
-        call read_character_ctl_item(hd_sph_transform_mode,             &
-     &          i_sph_transform_mode, Legendre_trans_loop_ctl)
-        call read_character_ctl_item(hd_FFT_package,                    &
-     &          i_FFT_package, FFT_library_ctl)
         call read_character_ctl_item(hd_zm_sph_spec_file,               &
      &          i_zm_sph_spec_file, zm_spec_file_head_ctl)
         call read_character_ctl_item(hd_zm_field_file,                  &
@@ -189,6 +187,11 @@
 !
         call read_character_ctl_item(hd_icb_grp,                        &
      &          i_icb_grp, icb_radial_grp_ctl)
+!
+        call read_chara_ctl_type(hd_sph_transform_mode,                 &
+     &      Legendre_trans_loop_ctl)
+        call read_chara_ctl_type(hd_FFT_package, FFT_library_ctl)
+        call read_chara_ctl_type(hd_import_mode, import_mode_ctl)
 !
         call read_character_ctl_item(hd_gauss_file_name,                &
      &          i_gauss_file_name, gauss_sph_fhead_ctl)

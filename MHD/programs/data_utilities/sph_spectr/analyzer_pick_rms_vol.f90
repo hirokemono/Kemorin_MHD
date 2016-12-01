@@ -113,8 +113,7 @@
         call sel_read_step_SPH_field_file                               &
      &     (nprocs, my_rank, i_step, sph_spec_IO)
 !
-        call set_rj_phys_data_from_IO                                   &
-     &     (sph_mesh_spec%sph%sph_rj%nnod_rj, sph_spec_IO, rj_fld_spec)
+        call set_rj_phys_data_from_IO(sph_spec_IO, rj_fld_spec)
 !
 !  evaluate energies
 !

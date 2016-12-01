@@ -1,10 +1,5 @@
-!
-!     module SPH_analyzer_snap
-!
-!      Written by H. Matsui
-!
-!>@file   SPH_analyzer_MHD
-!!@brief  module SPH_analyzer_MHD
+!>@file   SPH_analyzer_snap
+!!@brief  module SPH_analyzer_snap
 !!
 !!@author H. Matsui
 !!@date    programmed by H.Matsui in Oct., 2009
@@ -174,7 +169,7 @@
 !*  -----------  Output spectr data --------------
 !*
       if(iflag_debug.gt.0)  write(*,*) 'output_spectr_4_snap'
-      call output_spectr_4_snap(i_step, sph1%sph_rj, rj_fld1)
+      call output_spectr_4_snap(i_step, rj_fld1)
       call end_eleps_time(4)
 !
       end subroutine SPH_analyze_snap

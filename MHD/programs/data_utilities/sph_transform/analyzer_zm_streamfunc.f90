@@ -15,7 +15,7 @@
       use m_work_time
       use m_spheric_data_transform
 !
-      use SPH_analyzer_back_trans
+      use SPH_analyzer_back_trans_old
       use FEM_analyzer_back_trans
       use SPH_analyzer_zm_streamfunc
       use visualizer_all

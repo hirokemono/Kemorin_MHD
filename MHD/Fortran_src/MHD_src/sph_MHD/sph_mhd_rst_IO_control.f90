@@ -22,7 +22,7 @@
 !!      subroutine read_alloc_sph_rst_4_snap                            &
 !!     &         (i_step, sph_rj, ipol, rj_fld)
 !!        type(phys_data), intent(inout) :: rj_fld
-!!      subroutine output_spectr_4_snap(i_step, sph_rj, rj_fld)
+!!      subroutine output_spectr_4_snap(i_step, rj_fld)
 !!        type(phys_data), intent(in) :: rj_fld
 !!      subroutine read_alloc_sph_rst_2_modify(i_step, sph_rj, rj_fld)
 !!        type(phys_data), intent(inout) :: rj_fld
@@ -214,14 +214,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine output_spectr_4_snap(i_step, sph_rj, rj_fld)
+      subroutine output_spectr_4_snap(i_step, rj_fld)
 !
-      use t_spheric_rj_data
       use m_t_int_parameter
       use copy_rj_phys_data_4_IO
       use copy_time_steps_4_restart
 !
-      type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_data), intent(in) :: rj_fld
       integer(kind = kint), intent(in) :: i_step
 !
@@ -233,11 +231,11 @@
 !
       istep_fld = i_step / i_step_output_ucd
       call copy_time_steps_to_restart
-      call copy_rj_viz_phys_name_to_IO                                  &
-     &   (sph_rj%nnod_rj, rj_fld, sph_fst_IO)
+      call copy_rj_phys_name_to_IO                                      &
+     &   (rj_fld%num_phys_viz, rj_fld, sph_fst_IO)
       call alloc_phys_data_IO(sph_fst_IO)
-      call copy_rj_viz_phys_data_to_IO                                  &
-     &   (sph_rj%nnod_rj, rj_fld, sph_fst_IO)
+      call copy_rj_phys_data_to_IO                                      &
+     &   (rj_fld%num_phys_viz, rj_fld, sph_fst_IO)
 !
       call set_field_file_fmt_prefix                                    &
      &   (sph_file_param%iflag_format, sph_file_param%file_prefix,      &
@@ -249,6 +247,47 @@
       call dealloc_phys_name_IO(sph_fst_IO)
 !
       end subroutine output_spectr_4_snap
+!
+! -----------------------------------------------------------------------
+!
+      subroutine read_alloc_sph_spectr(i_step, sph_rj, ipol, rj_fld)
+!
+      use m_control_params_2nd_files
+      use t_spheric_rj_data
+      use copy_rj_phys_data_4_IO
+      use r_interpolate_sph_data
+!
+      integer(kind = kint), intent(in) :: i_step
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(phys_address), intent(in) :: ipol
+      type(phys_data), intent(inout) :: rj_fld
+!
+      integer(kind = kint) :: istep_fld
+!
+!
+      istep_fld = i_step / i_step_output_ucd
+      call set_field_file_fmt_prefix                                    &
+     &   (sph_file_param%iflag_format, sph_file_param%file_prefix,      &
+     &    sph_fst_IO)
+      call sel_read_alloc_step_SPH_file                                 &
+     &   (nprocs, my_rank, istep_fld, sph_fst_IO)
+!
+      if(rj_org_param%iflag_IO .eq. 0) then
+        if (iflag_debug.gt.0) write(*,*) 'set_sph_restart_from_IO'
+        call set_rj_phys_data_from_IO(sph_fst_IO, rj_fld)
+      else
+        if (iflag_debug.gt.0) write(*,*)                                &
+     &                        'r_interpolate_sph_fld_from_IO'
+        call r_interpolate_sph_fld_from_IO                              &
+     &    (sph_fst_IO, sph_rj, ipol, rj_fld)
+      end if
+      i_step_MHD = i_step_init
+      time = time_init
+!
+      call dealloc_phys_data_IO(sph_fst_IO)
+      call dealloc_phys_name_IO(sph_fst_IO)
+!
+      end subroutine read_alloc_sph_spectr
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

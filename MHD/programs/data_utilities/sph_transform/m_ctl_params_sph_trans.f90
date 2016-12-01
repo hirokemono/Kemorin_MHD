@@ -58,6 +58,7 @@
       use legendre_transform_select
       use ucd_IO_select
 !
+      use m_sel_spherical_SRs
       use m_ctl_data_4_sph_trans
 !
       type(ucd_data), intent(inout) :: ucd
@@ -76,18 +77,22 @@
 !
 !   setting for spherical transform
 !
-      if(i_legendre_vect_len .gt. 0) then
-        nvector_legendre = legendre_vector_len_ctl
+      if(legendre_vector_len_ctl%iflag .gt. 0) then
+        nvector_legendre = legendre_vector_len_ctl%intvalue
       else
         nvector_legendre = 0
       end if
 !
-      if(i_sph_transform_mode .gt. 0) then
-        call set_legendre_trans_mode_ctl(Legendre_trans_loop_ctl)
+      if(Legendre_trans_loop_ctl%iflag .gt. 0) then
+        call set_legendre_trans_mode_ctl                                &
+     &     (Legendre_trans_loop_ctl%charavalue)
       end if
 !
-      if(i_FFT_package .gt. 0) then
-        call set_fft_library_ctl(FFT_library_ctl)
+      if(FFT_library_ctl%iflag .gt. 0) then
+        call set_fft_library_ctl(FFT_library_ctl%charavalue)
+      end if
+      if(import_mode_ctl%iflag .gt. 0) then
+        call set_import_table_ctl(import_mode_ctl%charavalue)
       end if
 !
       if (restart_file_prefix%iflag .gt. 0) then
@@ -133,6 +138,7 @@
       use set_fixed_time_step_params
       use legendre_transform_select
       use ucd_IO_select
+      use m_sel_spherical_SRs
 !
       use m_ctl_data_4_sph_trans
 !
@@ -151,18 +157,22 @@
 !
 !   setting for spherical transform
 !
-      if(i_legendre_vect_len .gt. 0) then
-        nvector_legendre = legendre_vector_len_ctl
+      if(legendre_vector_len_ctl%iflag .gt. 0) then
+        nvector_legendre = legendre_vector_len_ctl%intvalue
       else
         nvector_legendre = 0
       end if
 !
-      if(i_sph_transform_mode .gt. 0) then
-        call set_legendre_trans_mode_ctl(Legendre_trans_loop_ctl)
+      if(Legendre_trans_loop_ctl%iflag .gt. 0) then
+        call set_legendre_trans_mode_ctl                                &
+     &     (Legendre_trans_loop_ctl%charavalue)
       end if
 !
-      if(i_FFT_package .gt. 0) then
-        call set_fft_library_ctl(FFT_library_ctl)
+      if(FFT_library_ctl%iflag .gt. 0) then
+        call set_fft_library_ctl(FFT_library_ctl%charavalue)
+      end if
+      if(import_mode_ctl%iflag .gt. 0) then
+        call set_import_table_ctl(import_mode_ctl%charavalue)
       end if
 !
       if (restart_file_prefix%iflag .gt. 0) then
@@ -254,18 +264,19 @@
 !
 !   setting for spherical transform
 !
-      if(i_legendre_vect_len .gt. 0) then
-        nvector_legendre = legendre_vector_len_ctl
+      if(legendre_vector_len_ctl%iflag .gt. 0) then
+        nvector_legendre = legendre_vector_len_ctl%intvalue
       else
         nvector_legendre = 0
       end if
 !
-      if(i_sph_transform_mode .gt. 0) then
-        call set_legendre_trans_mode_ctl(Legendre_trans_loop_ctl)
+      if(Legendre_trans_loop_ctl%iflag .gt. 0) then
+        call set_legendre_trans_mode_ctl                                &
+     &     (Legendre_trans_loop_ctl%charavalue)
       end if
 !
-      if(i_FFT_package .gt. 0) then
-        call set_fft_library_ctl(FFT_library_ctl)
+      if(FFT_library_ctl%iflag .gt. 0) then
+        call set_fft_library_ctl(FFT_library_ctl%charavalue)
       end if
 !
 !     file header for reduced data

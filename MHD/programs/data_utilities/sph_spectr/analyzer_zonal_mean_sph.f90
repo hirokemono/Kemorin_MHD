@@ -94,15 +94,14 @@
      &     (nprocs, my_rank, i_step, sph_spec_IO)
 !
         if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
-        call set_rj_phys_data_from_IO                                   &
-     &     (sph_mesh_spec%sph%sph_rj%nnod_rj, sph_spec_IO, rj_fld_spec)
+        call set_rj_phys_data_from_IO(sph_spec_IO, rj_fld_spec)
 !
 !  evaluate energies
 !
         call zonal_mean_all_sph_spectr                                  &
      &     (sph_mesh_spec%sph%sph_rj, rj_fld_spec)
-        call copy_rj_all_phys_data_to_IO                                &
-     &     (sph_mesh_spec%sph%sph_rj%nnod_rj, rj_fld_spec, sph_spec_IO)
+        call copy_rj_phys_data_to_IO                                    &
+     &     (rj_fld_spec%num_phys, rj_fld_spec, sph_spec_IO)
 !
         call alloc_merged_field_stack(nprocs, sph_spec_IO)
         call count_number_of_node_stack                                 &

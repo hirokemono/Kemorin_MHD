@@ -17,7 +17,7 @@
       use m_work_time
 !
       use SPH_analyzer_sph_trans
-      use SPH_analyzer_back_trans
+      use SPH_analyzer_back_trans_old
       use FEM_analyzer_sph_trans
       use FEM_analyzer_back_trans
       use visualizer_all
@@ -82,7 +82,7 @@
 !    Set field IOP array by spectr fields
       if (iflag_debug.gt.0) write(*,*) 'SPH_to_FEM_bridge_sph_trans'
       call SPH_to_FEM_bridge_sph_trans(field_file_param,                &
-     &    sph_mesh_trans%sph%sph_rj, rj_fld_trans, sph_trns_IO)
+     &    rj_fld_trans, sph_trns_IO)
 !
 !  -------------------------------
 !

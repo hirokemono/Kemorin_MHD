@@ -8,8 +8,12 @@
 !!       in MHD dynamo simulation
 !!
 !!@verbatim
+!!      subroutine alloc_bwd_trns_field_name(num_field, trns)
+!!      subroutine alloc_fwd_trns_field_name(num_field, trns)
 !!      subroutine alloc_nonlinear_data(nnod_rtp, trns)
 !!      subroutine alloc_nonlinear_pole(nnod_pole, trns)
+!!      subroutine dealloc_bwd_trns_field_name(trns)
+!!      subroutine dealloc_fwd_trns_field_name(trns)
 !!      subroutine dealloc_nonlinear_data(trns)
 !!      subroutine dealloc_nonlinear_pole(trns)
 !!        type(address_4_sph_trans), intent(inout) :: trns
@@ -58,6 +62,16 @@
 !>        addresses of forces for forward transform
         type(phys_address) :: f_trns
 !
+!>        number of components for backward spherical harmonics transform
+        integer(kind = kint) :: nfield_rj_2_rtp = 0
+!>        Field name for backward transform
+        character(len = kchara), allocatable :: b_trns_name(:)
+!
+!>        number of components for backward spherical harmonics transform
+        integer(kind = kint) :: nfield_rtp_2_rj = 0
+!>        Field name for forward transform
+        character(len = kchara), allocatable :: f_trns_name(:)
+!
 !>        field data in grid space
         real(kind = kreal), allocatable :: fld_rtp(:,:)
 !>        Nonliear terms data in grid space
@@ -75,6 +89,32 @@
 !-----------------------------------------------------------------------
 !
       contains
+!
+!-----------------------------------------------------------------------
+!
+      subroutine alloc_bwd_trns_field_name(num_field, trns)
+!
+      integer(kind = kint), intent(in) :: num_field
+      type(address_4_sph_trans), intent(inout) :: trns
+!
+!
+      trns%nfield_rj_2_rtp = num_field
+      allocate(trns%b_trns_name(trns%nfield_rj_2_rtp))
+!
+      end subroutine alloc_bwd_trns_field_name
+!
+!-----------------------------------------------------------------------
+!
+      subroutine alloc_fwd_trns_field_name(num_field, trns)
+!
+      integer(kind = kint), intent(in) :: num_field
+      type(address_4_sph_trans), intent(inout) :: trns
+!
+!
+      trns%nfield_rtp_2_rj = num_field
+      allocate(trns%f_trns_name(trns%nfield_rtp_2_rj))
+!
+      end subroutine alloc_fwd_trns_field_name
 !
 !-----------------------------------------------------------------------
 !
@@ -130,6 +170,28 @@
       deallocate(trns%fld_pole, trns%flc_pole, trns%frc_pole)
 !
       end subroutine dealloc_nonlinear_pole
+!
+!-----------------------------------------------------------------------
+!
+      subroutine dealloc_bwd_trns_field_name(trns)
+!
+      type(address_4_sph_trans), intent(inout) :: trns
+!
+!
+      deallocate(trns%b_trns_name)
+!
+      end subroutine dealloc_bwd_trns_field_name
+!
+!-----------------------------------------------------------------------
+!
+      subroutine dealloc_fwd_trns_field_name(trns)
+!
+      type(address_4_sph_trans), intent(inout) :: trns
+!
+!
+      deallocate(trns%f_trns_name)
+!
+      end subroutine dealloc_fwd_trns_field_name
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

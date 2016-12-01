@@ -192,7 +192,7 @@
 !
 !*  -----------  Output spectr data --------------
 !*
-      call output_spectr_4_snap(i_step, sph1%sph_rj, rj_fld1)
+      call output_spectr_4_snap(i_step, rj_fld1)
 !
       end subroutine SPH_analyze_special_snap
 !

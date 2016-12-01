@@ -1,5 +1,5 @@
-!SPH_analyzer_back_trans.f90
-!     module SPH_analyzer_back_trans
+!SPH_analyzer_back_trans_old.f90
+!     module SPH_analyzer_back_trans_old
 !
 !      Written by H. Matsui
 !
@@ -8,7 +8,7 @@
 !!      subroutine SPH_analyze_back_trans                               &
 !!     &         (i_step, sph_mesh, ipol, rj_fld, fld_IO, visval)
 !
-      module SPH_analyzer_back_trans
+      module SPH_analyzer_back_trans_old
 !
       use m_precision
       use m_machine_parameter
@@ -146,8 +146,7 @@
 !
         if(rj_org_param%iflag_IO .eq. 0) then
           if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
-          call set_rj_phys_data_from_IO                                 &
-     &       (sph_mesh%sph%sph_rj%nnod_rj, fld_IO, rj_fld)
+          call set_rj_phys_data_from_IO(fld_IO, rj_fld)
         else
           if (iflag_debug.gt.0) write(*,*)                              &
      &                        'r_interpolate_sph_fld_from_IO'
@@ -166,4 +165,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      end module SPH_analyzer_back_trans
+      end module SPH_analyzer_back_trans_old

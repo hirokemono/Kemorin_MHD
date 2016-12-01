@@ -99,8 +99,7 @@
      &     (iflag_org_sph_file_fmt, org_sph_file_head, sph_spec_IO)
         call sel_read_step_SPH_field_file                               &
      &     (nprocs, my_rank, i_step, sph_spec_IO)
-        call set_rj_phys_data_from_IO                                   &
-     &     (sph_mesh_spec%sph%sph_rj%nnod_rj, sph_spec_IO, rj_fld_spec)
+        call set_rj_phys_data_from_IO(sph_spec_IO, rj_fld_spec)
 !
 !  pickup components
 !
