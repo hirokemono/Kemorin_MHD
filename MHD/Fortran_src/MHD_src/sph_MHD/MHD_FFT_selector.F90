@@ -87,6 +87,8 @@
       use t_sph_multi_FFTW
 #endif
 !
+      use t_sph_single_FFTW
+!
       implicit none
 !
 ! ------------------------------------------------------------------
