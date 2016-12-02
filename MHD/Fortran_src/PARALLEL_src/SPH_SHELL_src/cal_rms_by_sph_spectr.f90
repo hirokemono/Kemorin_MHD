@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine cal_rms_sph_spec_one_field                           &
-!!     &         (sph_rj, ipol, ncomp_rj, icomp_rj, g_sph_rj,           &
+!!     &         (sph_rj, ipol, ncomp_rj, g_sph_rj, icomp_rj,           &
 !!     &          n_point, ntot_phys_rj, d_rj, rms_sph_rj)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!
@@ -39,7 +39,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_rms_sph_spec_one_field                             &
-     &         (sph_rj, ipol, ncomp_rj, icomp_rj, g_sph_rj,             &
+     &         (sph_rj, ipol, ncomp_rj, g_sph_rj, icomp_rj,             &
      &          n_point, ntot_phys_rj, d_rj, rms_sph_rj)
 !
       use t_spheric_rj_data
@@ -58,11 +58,11 @@
 !
 !
       if     (ncomp_rj .eq. n_scalar) then
-          call cal_rms_each_scalar_sph_spec                             &
-     &       (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                     &
-     &        sph_rj%idx_rj_degree_zero, sph_rj%inod_rj_center,         &
-     &        sph_rj%radius_1d_rj_r, g_sph_rj, n_point,                 &
-     &        d_rj(1,icomp_rj), rms_sph_rj(0,1,1))
+        call cal_rms_each_scalar_sph_spec                               &
+     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
+     &      sph_rj%idx_rj_degree_zero, sph_rj%inod_rj_center,           &
+     &      sph_rj%radius_1d_rj_r, g_sph_rj, n_point,                   &
+     &      d_rj(1,icomp_rj), rms_sph_rj(0,1,1))
       else if(ncomp_rj .eq. n_vector) then
         call cal_rms_each_vector_sph_spec                               &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &

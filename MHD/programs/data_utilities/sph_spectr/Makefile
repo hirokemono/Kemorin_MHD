@@ -12,6 +12,7 @@ TARGET_PICK_SPH_ENE =      pick_sph_ene
 TARGET_PICK_SPH_SPEC =     pick_sph_spec
 TARGET_PICK_GAUSS_COEF =   pick_gauss_coefs
 
+TARGET_DIFF_SPH_SPEC =     diff_spectr_data
 TARGET_ZM_SPH_SPEC =       zonal_mean_sph
 TARGET_T_AVE_SPEC =        t_ave_sph_spec
 TARGET_SPH_NEUTRAL =       sph_neutral_points
@@ -110,6 +111,9 @@ m_ctl_params_sph_utils.o \
 analyzer_pickup_gauss_coefs.o \
 main_pickup_gauss_coefs.o
 
+MOD_DIFF_SPH_SPEC =  \
+analyzer_diff_sph_spectr.o \
+main_diff_sph_spectr.o
 
 MOD_ZM_SPH_SPEC = \
 m_spheric_data_sph_spetr.o \
@@ -178,6 +182,8 @@ target_list:
 	>> $(MAKENAME)
 	@echo 'TARGET_PICK_GAUSS_COEF =  $$(BUILDDIR)/$(TARGET_PICK_GAUSS_COEF)' \
 	>> $(MAKENAME)
+	@echo 'TARGET_DIFF_SPH_SPEC =    $$(BUILDDIR)/$(TARGET_DIFF_SPH_SPEC)' \
+	>> $(MAKENAME)
 	@echo 'TARGET_ZM_SPH_SPEC =      $$(BUILDDIR)/$(TARGET_ZM_SPH_SPEC)' \
 	>> $(MAKENAME)
 	@echo 'TARGET_T_AVE_SPEC =       $$(BUILDDIR)/$(TARGET_T_AVE_SPEC)' \
@@ -206,7 +212,7 @@ target_task:
 	@echo sph_data_util: \
 	'$$(TARGET_SPH_ENE_SPEC)       $$(TARGET_SPH_ENE_LAYER)' \
 	'$$(TARGET_PICK_SPH_VOL_ENE)   $$(TARGET_PICK_SPH_ENE)'  \
-	'$$(TARGET_PICK_SPH_SPEC)'                               \
+	'$$(TARGET_PICK_SPH_SPEC)      $$(TARGET_DIFF_SPH_SPEC)'  \
 	'$$(TARGET_ZM_SPH_SPEC)        $$(TARGET_T_AVE_SPEC)'      \
 	'$$(TARGET_SPH_NEUTRAL)        $$(TARGET_TAVE_SPH_ENE_SPEC)' \
 	'$$(TARGET_PICK_GAUSS_COEF)    $$(TARGET_T_AVE_PICK_SPH_SPEC)' \
@@ -261,6 +267,13 @@ target_task:
 	'$$(MOD_PICK_GAUSS_COEF)' \
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_DIFF_SPH_SPEC)': '$$(MOD_DIFF_SPH_SPEC)' \
+	'$$(LIB_FILES_SPH_UTIL)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_DIFF_SPH_SPEC)' \
+	'$$(MOD_DIFF_SPH_SPEC)' \
+	'-L. $$(LIBS_SPH_UTIL)  $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_ZM_SPH_SPEC)': '$$(MOD_ZM_SPH_SPEC)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
@@ -369,6 +382,8 @@ mod_list:
 	@echo  $(MOD_PICK_SPH_SPEC)      >> $(MAKENAME)
 	@echo  MOD_PICK_GAUSS_COEF=  \\  >> $(MAKENAME)
 	@echo  $(MOD_PICK_GAUSS_COEF)    >> $(MAKENAME)
+	@echo  MOD_DIFF_SPH_SPEC=  \\    >> $(MAKENAME)
+	@echo  $(MOD_DIFF_SPH_SPEC)      >> $(MAKENAME)
 	@echo  MOD_ZM_SPH_SPEC=  \\      >> $(MAKENAME)
 	@echo  $(MOD_ZM_SPH_SPEC)        >> $(MAKENAME)
 	@echo  MOD_TAVE_SPH_SPEC=  \\    >> $(MAKENAME)

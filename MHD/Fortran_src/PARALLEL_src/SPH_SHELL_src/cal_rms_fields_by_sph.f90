@@ -178,7 +178,6 @@
      &    pwr%id_field, pwr%kr_4_rms, pwr%num_vol_spectr,               &
      &    pwr%v_spectr, WK_pwr)
 !
-      call calypso_mpi_barrier
       if(iflag_debug .gt. 0) write(*,*) 'global_sum_sph_layerd_rms'
       call global_sum_sph_layerd_rms                                    &
      &    (l_truncation, pwr%nri_rms, pwr%ntot_comp_sq, WK_pwr,         &
@@ -216,7 +215,6 @@
 !
       use calypso_mpi
 !
-      use cal_rms_by_sph_spectr
       use cal_ave_4_rms_vector_sph
       use radial_int_for_sph_spec
 !

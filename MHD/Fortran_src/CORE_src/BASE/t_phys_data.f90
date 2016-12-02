@@ -18,6 +18,10 @@
 !!        type(phys_data), intent(in) :: org_fld
 !!        type(phys_data), intent(inout) :: new_fld
 !!
+!!      integer(kind = kint) function field_id_by_address(fld, i_ref)
+!!      character(len=kchara) function field_name_by_address(fld, i_ref)
+!!        type(phys_data), intent(in) :: fld
+!!
 !!      subroutine check_all_field_data(my_rank, fld)
 !!      subroutine check_nodal_field_name_type(id_output, fld)
 !!      subroutine check_nodal_data(id_output, fld, numdir, i_field)
@@ -161,6 +165,46 @@
      &             = org_fld%istack_component(0:new_fld%num_phys)
 !
       end subroutine copy_field_name_type
+!
+! -----------------------------------------------------------------------
+!
+      integer(kind = kint) function field_id_by_address(fld, i_ref)
+!
+      type(phys_data), intent(in) :: fld
+      integer(kind = kint), intent(in) :: i_ref
+!
+      integer(kind = kint) :: i, i_start
+!
+      field_id_by_address = 0
+      do i = 1, fld%num_phys
+        i_start = fld%istack_component(i-1) + 1
+        if(i_start .eq. i_ref) then
+          field_id_by_address = i
+          exit
+        end if
+      end do
+!
+      end function field_id_by_address
+!
+! -----------------------------------------------------------------------
+!
+      character(len=kchara) function field_name_by_address(fld, i_ref)
+!
+      type(phys_data), intent(in) :: fld
+      integer(kind = kint), intent(in) :: i_ref
+!
+      integer(kind = kint) :: i, i_start
+!
+      write(field_name_by_address,'(a)') 'MISSING'
+      do i = 1, fld%num_phys
+        i_start = fld%istack_component(i-1) + 1
+        if(i_start .eq. i_ref) then
+          field_name_by_address = fld%phys_name(i)
+          exit
+        end if
+      end do
+!
+      end function field_name_by_address
 !
 ! -----------------------------------------------------------------------
 !  --------------------------------------------------------------------

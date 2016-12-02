@@ -77,8 +77,6 @@
       use t_spheric_rj_data
       use t_phys_data
 !
-      use cal_rms_by_sph_spectr
-!
       type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_data), intent(in) :: rj_fld
 !
