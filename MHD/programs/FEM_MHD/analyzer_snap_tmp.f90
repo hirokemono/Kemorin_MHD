@@ -12,7 +12,6 @@
       use calypso_mpi
 !
       use m_node_phys_data
-      use m_node_phys_data
       use FEM_analyzer_snap_tmp
       use visualizer_all
 !
@@ -58,7 +57,7 @@
 !
 !     --------------------- 
 !
-      call input_control_4_snapshot(mesh1, group1, ele_mesh1,           &
+      call input_control_4_snapshot(mesh1, group1, ele_mesh1, nod_fld1, &
      &    IO_bc1, filtering1, wide_filtering, wk_filter1)
 !
 !     --------------------- 

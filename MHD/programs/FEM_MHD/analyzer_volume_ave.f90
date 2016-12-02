@@ -22,6 +22,7 @@
       subroutine init_analyzer
 !
       use m_mesh_data
+      use m_node_phys_data
       use m_3d_filter_coef_MHD
       use m_boundary_field_IO
       use input_control
@@ -31,7 +32,7 @@
 !
 !     --------------------- 
 !
-      call input_control_4_snapshot(mesh1, group1, ele_mesh1,           &
+      call input_control_4_snapshot(mesh1, group1, ele_mesh1, nod_fld,  &
      &    IO_bc1, filtering1, wide_filtering, wk_filter1)
 !
 !   matrix assembling

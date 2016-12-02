@@ -9,13 +9,15 @@
 !>@brief  Load mesh and filtering data for MHD simulation
 !!
 !!@verbatim
-!!      subroutine input_control_4_MHD(mesh, group, ele_mesh, IO_bc,    &
-!!     &          filtering, wide_filtering, wk_filter, MHD_matrices)
+!!      subroutine input_control_4_MHD                                  &
+!!     &          (mesh, group, ele_mesh, nod_fld, IO_bc,               &
+!!     &           filtering, wide_filtering, wk_filter, MHD_matrices)
 !!      subroutine input_control_4_snapshot(mesh, group, ele_mesh,      &
-!!     &          IO_bc, filtering, wide_filtering, wk_filter)
+!!     &          nod_fld, IO_bc, filtering, wide_filtering, wk_filter)
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(element_geometry), intent(inout) :: ele_mesh
+!!        type(phys_data), intent(inout) :: nod_fld
 !!        type(IO_boundary), intent(inout) :: IO_bc
 !!        type(filtering_data_type), intent(inout) :: filtering
 !!        type(filtering_data_type), intent(inout) :: wide_filtering
@@ -35,6 +37,7 @@
       use t_boundary_field_IO
       use t_filtering_data
       use t_solver_djds_MHD
+      use t_phys_data
 !
       implicit none
 !
@@ -46,8 +49,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine input_control_4_MHD(mesh, group, ele_mesh, IO_bc,      &
-     &          filtering, wide_filtering, wk_filter, MHD_matrices)
+      subroutine input_control_4_MHD                                    &
+     &          (mesh, group, ele_mesh, nod_fld, IO_bc,                 &
+     &           filtering, wide_filtering, wk_filter, MHD_matrices)
 !
       use m_ctl_data_fem_MHD
       use m_iccg_parameter
@@ -60,6 +64,7 @@
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
+      type(phys_data), intent(inout) :: nod_fld
 !
       type(IO_boundary), intent(inout) :: IO_bc
       type(filtering_data_type), intent(inout) :: filtering
@@ -89,12 +94,16 @@
         call alloc_MHD_MG_DJDS_mat(num_MG_level, MHD_matrices)
       end if
 !
+!  check dependencies
+!
+      call check_dependencies_FEM_MHD(nod_fld)
+!
       end subroutine input_control_4_MHD
 !
 ! ----------------------------------------------------------------------
 !
       subroutine input_control_4_snapshot(mesh, group, ele_mesh,        &
-     &          IO_bc, filtering, wide_filtering, wk_filter)
+     &          nod_fld, IO_bc, filtering, wide_filtering, wk_filter)
 !
       use m_ctl_data_fem_MHD
       use set_control_FEM_MHD
@@ -103,6 +112,7 @@
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
+      type(phys_data), intent(inout) :: nod_fld
 !
       type(IO_boundary), intent(inout) :: IO_bc
       type(filtering_data_type), intent(inout) :: filtering
@@ -121,6 +131,10 @@
 !
       call input_meshes_4_MHD                                           &
      &   (mesh, group, IO_bc, filtering, wide_filtering, wk_filter)
+!
+!  check dependencies
+!
+      call check_dependencies_FEM_MHD(nod_fld)
 !
       end subroutine input_control_4_snapshot
 !
