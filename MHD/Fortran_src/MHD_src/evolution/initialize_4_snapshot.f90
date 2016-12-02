@@ -17,6 +17,8 @@
       module initialize_4_snapshot
 !
       use m_precision
+      use t_phys_data
+      use t_phys_address
 !
       implicit none
 !
