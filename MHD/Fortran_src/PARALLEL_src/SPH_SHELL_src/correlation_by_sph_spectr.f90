@@ -51,8 +51,8 @@
       integer(kind = kint), intent(in) :: n1_point, n2_point, ncomp_x
       integer(kind = kint), intent(in) :: icomp1_rj, icomp2_rj
       integer(kind = kint), intent(in) :: ntot_phys1_rj, ntot_phys2_rj
-      real(kind = kreal), intent(in) :: d1_rj(n_point,ntot_phys1_rj)
-      real(kind = kreal), intent(in) :: d2_rj(n_point,ntot_phys2_rj)
+      real(kind = kreal), intent(in) :: d1_rj(n1_point,ntot_phys1_rj)
+      real(kind = kreal), intent(in) :: d2_rj(n2_point,ntot_phys2_rj)
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
       real(kind = kreal), intent(inout)                                 &
