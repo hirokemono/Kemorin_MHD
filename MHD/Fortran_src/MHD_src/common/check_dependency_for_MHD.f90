@@ -158,11 +158,6 @@
            num_check = 1
            phys_check_name(1) = fhd_temp
 !
-          else if (phys_nod_name(i) .eq. fhd_SGS_m_ene_gen              &
-     &       ) then
-            num_check = 1
-            phys_check_name(1) = fhd_SGS_induction
-!
           else if  (phys_nod_name(i) .eq. fhd_grad_composit             &
      &         .or. phys_nod_name(i) .eq. fhd_filter_comp               &
      &         .or. phys_nod_name(i) .eq. fhd_w_filter_comp             &
@@ -172,6 +167,20 @@
      &       ) then
             num_check = 1
             phys_check_name(1) = fhd_light
+!
+!   If there is no field on list....
+          else
+            cycle
+          end if
+          call check_dependence_phys(num_nod_phys, num_check,           &
+     &           phys_nod_name(i), phys_nod_name, phys_check_name)
+      end do
+!
+      do i = 1, num_nod_phys
+          if (phys_nod_name(i) .eq. fhd_SGS_m_ene_gen              &
+     &       ) then
+            num_check = 1
+            phys_check_name(1) = fhd_SGS_induction
 !
           else if ( phys_nod_name(i) .eq. fhd_filter_buo                &
      &       ) then
@@ -210,9 +219,17 @@
             phys_check_name(2) = fhd_grad_v_1
             phys_check_name(3) = fhd_grad_v_2
             phys_check_name(4) = fhd_grad_v_3
-
 !
-          else if ( phys_nod_name(i) .eq. fhd_div_SGS_m_flux            &
+!   If there is no field on list....
+          else
+            cycle
+          end if
+          call check_dependence_phys(num_nod_phys, num_check,           &
+     &           phys_nod_name(i), phys_nod_name, phys_check_name)
+      end do
+!
+      do i = 1, num_nod_phys
+          if ( phys_nod_name(i) .eq. fhd_div_SGS_m_flux                 &
      &       ) then
             num_check = 1
             phys_check_name(1) = fhd_SGS_m_flux
@@ -265,7 +282,16 @@
            phys_check_name(1) = fhd_velo
            phys_check_name(2) = fhd_temp
 !
-          else if (phys_nod_name(i) .eq. fhd_Csim_SGS_h_flux            &
+!   If there is no field on list....
+          else
+            cycle
+          end if
+          call check_dependence_phys(num_nod_phys, num_check,           &
+     &           phys_nod_name(i), phys_nod_name, phys_check_name)
+      end do
+!
+      do i = 1, num_nod_phys
+          if (phys_nod_name(i) .eq. fhd_Csim_SGS_h_flux                 &
      &         ) then
            num_check = 2
            phys_check_name(1) = fhd_SGS_h_flux
@@ -325,7 +351,16 @@
            phys_check_name(1) = fhd_velo
            phys_check_name(2) = fhd_SGS_h_flux
 !
-          else if (phys_nod_name(i) .eq. fhd_SGS_buo_flux               &
+!   If there is no field on list....
+          else
+            cycle
+          end if
+          call check_dependence_phys(num_nod_phys, num_check,           &
+     &           phys_nod_name(i), phys_nod_name, phys_check_name)
+      end do
+!
+      do i = 1, num_nod_phys
+          if (phys_nod_name(i) .eq. fhd_SGS_buo_flux                    &
      &         ) then
            num_check = 2
            phys_check_name(1) = fhd_velo
@@ -422,7 +457,16 @@
            phys_check_name(2) = fhd_mag_diffuse
 !
 !
-          else if ( phys_nod_name(i) .eq. fhd_vecp                      &
+!   If there is no field on list....
+          else
+            cycle
+          end if
+          call check_dependence_phys(num_nod_phys, num_check,           &
+     &           phys_nod_name(i), phys_nod_name, phys_check_name)
+      end do
+!
+      do i = 1, num_nod_phys
+          if ( phys_nod_name(i) .eq. fhd_vecp                           &
      &       ) then
            num_check = 3
            phys_check_name(1) = fhd_velo
@@ -474,7 +518,16 @@
              phys_check_name(1) = fhd_current
              phys_check_name(2) = fhd_vp_induct
 !
-          else if (phys_nod_name(i) .eq. fhd_div_m_flux                 &
+!   If there is no field on list....
+          else
+            cycle
+          end if
+          call check_dependence_phys(num_nod_phys, num_check,           &
+     &           phys_nod_name(i), phys_nod_name, phys_check_name)
+      end do
+!
+      do i = 1, num_nod_phys
+          if (phys_nod_name(i) .eq. fhd_div_m_flux                      &
      &         ) then
            num_check = 1
            phys_check_name(1) = fhd_mom_flux
@@ -503,7 +556,16 @@
            phys_check_name(2) = fhd_temp
            phys_check_name(3) = fhd_ph_flux
 !
-          else if (phys_nod_name(i) .eq. fhd_SGS_div_h_flux_true        &
+!   If there is no field on list....
+          else
+            cycle
+          end if
+          call check_dependence_phys(num_nod_phys, num_check,           &
+     &           phys_nod_name(i), phys_nod_name, phys_check_name)
+      end do
+!
+      do i = 1, num_nod_phys
+          if (phys_nod_name(i) .eq. fhd_SGS_div_h_flux_true             &
      &         ) then
            num_check = 3
            phys_check_name(1) = fhd_filter_velo
@@ -553,7 +615,16 @@
            phys_check_name(1) = fhd_magne
            phys_check_name(2) = fhd_SGS_mag_induct_true
 !
-          else if (phys_nod_name(i) .eq. fhd_div_Lorentz                &
+!   If there is no field on list....
+          else
+            cycle
+          end if
+          call check_dependence_phys(num_nod_phys, num_check,           &
+     &           phys_nod_name(i), phys_nod_name, phys_check_name)
+      end do
+!
+      do i = 1, num_nod_phys
+          if (phys_nod_name(i) .eq. fhd_div_Lorentz                     &
      &        .or. phys_nod_name(i) .eq. fhd_rot_Lorentz                &
      &       ) then
            num_check = 1
@@ -622,9 +693,8 @@
 !
 !   If there is no field on list....
           else
-            num_check = 0
+            cycle
           end if
-!
           call check_dependence_phys(num_nod_phys, num_check,           &
      &           phys_nod_name(i), phys_nod_name, phys_check_name)
       end do
