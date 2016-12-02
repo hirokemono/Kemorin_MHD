@@ -289,7 +289,6 @@
         call r_interpolate_sph_fld_from_IO                              &
      &    (sph_out_IO, sph_rj, ipol, rj_fld)
       end if
-      i_step_MHD = i_step_init
       time = time_init
 !
       call dealloc_merged_field_stack(sph_out_IO)
