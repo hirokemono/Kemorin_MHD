@@ -192,15 +192,26 @@
 !
 !  check dependencies
 !
+      call calypso_mpi_barrier
+      write(*,*) 'check_dependencies_SPH_MHD'
       call check_dependencies_SPH_MHD(rj_fld)
 !
 !   set_pickup modes
 !
+      call calypso_mpi_barrier
+      write(*,*) 'set_ctl_params_sph_spectr'
       call set_ctl_params_sph_spectr(pwr)
+!
+      call calypso_mpi_barrier
+      write(*,*) 'set_ctl_params_pick_sph'
       call set_ctl_params_pick_sph                                      &
      &   (pickup_sph_head, pick_list1, pick1)
+!
+      call calypso_mpi_barrier
+      write(*,*) 'set_ctl_params_pick_gauss'
       call set_ctl_params_pick_gauss                                    &
      &   (gauss_coefs_file_head, gauss_list1, gauss1)
+!
       call set_ctl_params_no_heat_Nu(rj_fld, Nu_type1)
 !
       end subroutine set_control_4_SPH_MHD
