@@ -177,9 +177,10 @@
         ncomp_rj = istack_rms_comp_rj(j_fld)                            &
      &            - istack_rms_comp_rj(j_fld-1)
         num = sph_rj%nidx_rj(2) * ncomp_rj
-        call cal_rms_sph_spec_one_field(sph_rj, ipol,                   &
-     &      ncomp_rj, icomp_rj, g_sph_rj, rj_fld%n_point,               &
-     &      rj_fld%ntot_phys, rj_fld%d_fld, WK_pwr%shl_rj(0,1,1))
+        call cal_rms_sph_spec_one_field                                 &
+     &     (sph_rj, ipol, ncomp_rj, g_sph_rj, icomp_rj,                 &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,             &
+     &      WK_pwr%shl_rj(0,1,1))
 !
         do inum = 1, num_vol_spectr
           call radial_integration                                       &
