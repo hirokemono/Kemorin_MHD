@@ -8,7 +8,8 @@
 !>@brief  Subroutines to set coeffiecient of each term
 !!
 !!@verbatim
-!!      subroutine set_material_property
+!!      subroutine set_material_property(iphys)
+!!        type(phys_address), intent(in) :: iphys
 !!@endverbatim
 !!
 !
@@ -16,6 +17,8 @@
 !
       use m_precision
       use m_constants
+!
+      use t_phys_address
 !
       implicit none
 !
@@ -25,18 +28,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_material_property
+      subroutine set_material_property(iphys)
 !
       use calypso_mpi
       use m_control_parameter
       use m_normalize_parameter
-      use m_node_phys_data
       use m_physical_property
       use m_t_int_parameter
       use construct_MHD_coefficient
 !
-!    For thermal
+      type(phys_address), intent(in) :: iphys
 !
+!    For thermal
 !
       if (iflag_t_evo_4_temp .gt. id_no_evolution) then
 !

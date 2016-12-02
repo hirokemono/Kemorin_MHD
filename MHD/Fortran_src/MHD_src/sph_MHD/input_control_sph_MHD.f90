@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine input_control_SPH_mesh                               &
-!!     &         (sph, comms_sph, sph_grps, rj_fld, pwr,                &
+!!     &         (sph, comms_sph, sph_grps, rj_fld, nod_fld, pwr,       &
 !!     &          dynamic_SPH, mesh, group, ele_mesh)
 !!      subroutine input_control_4_SPH_MHD_nosnap                       &
 !!     &         (sph, comms_sph, sph_grps, rj_fld, pwr, dynamic_SPH)
@@ -16,11 +16,12 @@
 !!      subroutine input_control_4_SPH_make_init                        &
 !!     &         (sph, comms_sph, sph_grps, rj_fld, pwr)
 !!      subroutine input_control_SPH_dynamobench                        &
-!!     &         (sph, comms_sph, sph_grps, rj_fld, pwr)
+!!     &         (sph, comms_sph, sph_grps, rj_fld, nod_fld, pwr)
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
 !!        type(sph_group_data), intent(inout) ::  sph_grps
 !!        type(phys_data), intent(inout) :: rj_fld
+!!        type(phys_data), intent(inout) :: nod_fld
 !!        type(sph_mean_squares), intent(inout) :: pwr
 !!        type(sph_filters_type), intent(inout) :: sph_filters(1)
 !!        type(mesh_geometry), intent(inout) :: mesh
@@ -57,7 +58,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine input_control_SPH_mesh                                 &
-     &         (sph, comms_sph, sph_grps, rj_fld, pwr,                  &
+     &         (sph, comms_sph, sph_grps, rj_fld, nod_fld, pwr,         &
      &          dynamic_SPH, mesh, group, ele_mesh)
 !
       use m_control_parameter
@@ -76,6 +77,7 @@
       type(sph_group_data), intent(inout) ::  sph_grps
 !
       type(phys_data), intent(inout) :: rj_fld
+      type(phys_data), intent(inout) :: nod_fld
       type(sph_mean_squares), intent(inout) :: pwr
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !
@@ -89,7 +91,7 @@
       if (iflag_debug.eq.1) write(*,*) 'set_control_SGS_SPH_MHD'
       call set_control_SGS_SPH_MHD(sph_gen, rj_fld, sph_file_param,     &
      &    sph_fst_IO, pwr, dynamic_SPH%sph_filters)
-      call set_control_4_SPH_to_FEM(sph%sph_params, rj_fld)
+      call set_control_4_SPH_to_FEM(sph%sph_params, rj_fld, nod_fld)
 !
 !
       iflag_lc = 0
@@ -191,7 +193,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine input_control_SPH_dynamobench                          &
-     &         (sph, comms_sph, sph_grps, rj_fld, pwr)
+     &         (sph, comms_sph, sph_grps, rj_fld, nod_fld, pwr)
 !
       use m_control_parameter
       use sph_mhd_rst_IO_control
@@ -204,13 +206,14 @@
       type(sph_group_data), intent(inout) ::  sph_grps
 !
       type(phys_data), intent(inout) :: rj_fld
+      type(phys_data), intent(inout) :: nod_fld
       type(sph_mean_squares), intent(inout) :: pwr
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
       call set_control_4_SPH_MHD                                        &
      &   (sph_gen, rj_fld, sph_file_param, sph_fst_IO, pwr)
-      call set_control_4_SPH_to_FEM(sph%sph_params, rj_fld)
+      call set_control_4_SPH_to_FEM(sph%sph_params, rj_fld, nod_fld)
       call set_ctl_params_dynamobench
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
@@ -221,9 +224,8 @@
 ! ----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_SPH_to_FEM(sph_params, rj_fld)
+      subroutine set_control_4_SPH_to_FEM(sph_params, rj_fld, nod_fld)
 !
-      use m_node_phys_data
       use m_ctl_data_4_sphere_model
 !
       use ordering_field_by_viz
@@ -232,16 +234,17 @@
 !
       type(sph_shell_parameters), intent(inout) :: sph_params
       type(phys_data), intent(inout) :: rj_fld
+      type(phys_data), intent(inout) :: nod_fld
 !
 !
       call set_FEM_mesh_mode_4_SPH(sph_params%iflag_shell_mode)
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &     write(*,*) 'copy_rj_spec_name_to_nod_fld'
-      call copy_field_name_type(rj_fld, nod_fld1)
+      call copy_field_name_type(rj_fld, nod_fld)
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
-     &     call check_nodal_field_name_type(6, nod_fld1)
+     &     call check_nodal_field_name_type(6, nod_fld)
 !
       call count_field_4_monitor                                        &
      &   (rj_fld%num_phys, rj_fld%num_component,                        &

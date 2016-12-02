@@ -32,7 +32,7 @@
 !
 !     --------------------- 
 !
-      call input_control_4_snapshot(mesh1, group1, ele_mesh1, nod_fld,  &
+      call input_control_4_snapshot(mesh1, group1, ele_mesh1, nod_fld1, &
      &    IO_bc1, filtering1, wide_filtering, wk_filter1)
 !
 !   matrix assembling

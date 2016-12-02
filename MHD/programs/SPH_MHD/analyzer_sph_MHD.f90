@@ -63,8 +63,9 @@
       call read_control_4_sph_MHD
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_mesh'
-      call input_control_SPH_mesh(sph1, comms_sph1, sph_grps1, rj_fld1, &
-     &    pwr1, trns_WK1%dynamic_SPH, mesh1, group1, ele_mesh1)
+      call input_control_SPH_mesh                                       &
+     &   (sph1, comms_sph1, sph_grps1, rj_fld1, nod_fld1, pwr1,         &
+     &    trns_WK1%dynamic_SPH, mesh1, group1, ele_mesh1)
       call end_eleps_time(4)
 !
 !    IO elapsed end
@@ -75,8 +76,8 @@
 !        Initialize FEM mesh data for field data IO
 !
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_w_viz'
-      call FEM_initialize_w_viz                                         &
-     &   (mesh1, group1, ele_mesh1, next_tbl1, jac1_3d_q, jac1_3d_l)
+      call FEM_initialize_w_viz(mesh1, group1, ele_mesh1,               &
+     &    iphys, nod_fld1, next_tbl1, jac1_3d_q, jac1_3d_l)
 !
 !        Initialize spherical transform dynamo
 !

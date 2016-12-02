@@ -7,12 +7,13 @@
 !> @brief Set parameters for MHD dynamo simulation from control data
 !!
 !!@verbatim
-!!     subroutine set_control_4_FEM_MHD
+!!     subroutine set_control_4_FEM_MHD(nod_fld)
 !!@endverbatim
 !
       module set_control_FEM_MHD
 !
       use m_precision
+      use t_phys_data
 !
       implicit  none
 !
@@ -22,13 +23,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_FEM_MHD
+      subroutine set_control_4_FEM_MHD(nod_fld)
 !
       use calypso_mpi
-      use m_node_phys_data
       use m_control_params_2nd_files
       use m_ucd_data
-      use t_phys_data
 !
       use set_control_platform_data
       use set_control_nodal_data_MHD
@@ -55,7 +54,8 @@
       use set_control_4_infty
       use fem_mhd_rst_IO_control
       use check_read_bc_file
-      use check_dependency_for_MHD
+!
+      type(phys_data), intent(inout) :: nod_fld
 !
 !
 !   set parameters for data files
@@ -91,7 +91,7 @@
 !
 !   set fields
 !
-      call set_control_4_fields(nod_fld1)
+      call set_control_4_fields(nod_fld)
 !
 !   set control parameters
 !
@@ -144,10 +144,6 @@
 !
       call s_set_control_4_solver
       call set_control_4_FEM_params
-!
-!  check dependencies
-!
-      call check_dependencies_FEM_MHD(nod_fld1)
 !
       end subroutine set_control_4_FEM_MHD
 !

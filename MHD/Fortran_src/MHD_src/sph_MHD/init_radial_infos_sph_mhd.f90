@@ -80,7 +80,7 @@
       call const_2nd_fdm_matrices(sph%sph_params, sph%sph_rj, r_2nd)
 !
       if(iflag_debug.gt.0) write(*,*)' set_material_property'
-      call set_material_property
+      call set_material_property(ipol)
 !
       end subroutine init_r_infos_sph_mhd_evo
 !

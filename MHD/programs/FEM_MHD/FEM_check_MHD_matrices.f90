@@ -28,6 +28,7 @@
       use m_control_parameter
       use m_mesh_data
       use m_geometry_data_MHD
+      use m_node_phys_data
       use m_jacobians
       use m_element_id_4_node
       use m_finite_element_matrix
@@ -50,7 +51,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'init_analyzer_fl'
       call init_analyzer_fl(IO_bc1, mesh1, group1, ele_mesh1,           &
-     &    MHD_mesh1, layer_tbl1)
+     &    MHD_mesh1, layer_tbl1, iphys, nod_fld1, label_sim)
 !
 !   construct matrix for Poisson and diffusion terms
 !

@@ -4,13 +4,15 @@
 !      Written by H. Matsui
 !
 !!      subroutine init_analyzer_snap(IO_bc, mesh, group, ele_mesh,     &
-!!     &          MHD_mesh, layer_tbl)
+!!     &          MHD_mesh, layer_tbl, iphys, nod_fld, label_sim)
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(element_geometry), intent(inout) :: ele_mesh
 !!        type(mesh_data_MHD), intent(inout) :: MHD_mesh
 !!        type(layering_tbl), intent(inout) :: layer_tbl
+!!        type(phys_address), intent(inout) :: iphys
+!!        type(phys_data), intent(inout) :: nod_fld
 !
       module initialize_4_snapshot
 !
@@ -25,14 +27,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine init_analyzer_snap(IO_bc, mesh, group, ele_mesh,       &
-     &          MHD_mesh, layer_tbl)
+     &          MHD_mesh, layer_tbl, iphys, nod_fld, label_sim)
 !
       use calypso_mpi
       use m_machine_parameter
       use m_control_parameter
       use m_t_step_parameter
 !
-      use m_node_phys_data
       use m_ele_material_property
       use m_mean_square_values
       use m_jacobians
@@ -87,6 +88,9 @@
       type(element_geometry), intent(inout) :: ele_mesh
       type(mesh_data_MHD), intent(inout) :: MHD_mesh
       type(layering_tbl), intent(inout) :: layer_tbl
+      type(phys_address), intent(inout) :: iphys
+      type(phys_data), intent(inout) :: nod_fld
+      character(len=kchara), intent(inout)   :: label_sim
 !
 !     --------------------- 
 !
@@ -165,7 +169,7 @@
 !     ---------------------
 !
       if (iflag_debug.eq.1) write(*,*)' allocate_array'
-      call allocate_array(mesh%node, mesh%ele, iphys, nod_fld1,         &
+      call allocate_array(mesh%node, mesh%ele, iphys, nod_fld,          &
      &    iphys_elediff, m1_lump, mhd_fem1_wk, fem1_wk,                 &
      &    f1_l, f1_nl, label_sim)
 !
@@ -173,11 +177,11 @@
       call set_reference_temp(mesh%node%numnod,                         &
      &    MHD_mesh%fluid%numnod_fld, MHD_mesh%fluid%inod_fld,           &
      &    mesh%node%xx, mesh%node%rr, mesh%node%a_r,                    &
-     &    nod_fld1%ntot_phys, iphys%i_ref_t, iphys%i_gref_t,            &
-     &    nod_fld1%d_fld)
+     &    nod_fld%ntot_phys, iphys%i_ref_t, iphys%i_gref_t,             &
+     &    nod_fld%d_fld)
 !
       if (iflag_debug.eq.1) write(*,*)' set_material_property'
-      call set_material_property
+      call set_material_property(iphys)
       call init_ele_material_property(mesh%ele%numele)
       call define_sgs_components                                        &
      &   (mesh%node%numnod, mesh%ele%numele, layer_tbl,                 &
@@ -229,7 +233,7 @@
 !
       if (iflag_debug.eq.1) write(*,*)' set_boundary_data'
       call set_boundary_data(IO_bc, mesh, ele_mesh, MHD_mesh, group,    &
-     &    iphys, nod_fld1)
+     &    iphys, nod_fld)
 !
 !     ---------------------
 !

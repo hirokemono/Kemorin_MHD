@@ -30,7 +30,6 @@
       use calypso_mpi
       use m_error_IDs
       use m_machine_parameter
-      use m_node_phys_data
       use m_ctl_data_4_platforms
       use m_ctl_data_4_fields
       use m_ctl_data_mhd_forces
