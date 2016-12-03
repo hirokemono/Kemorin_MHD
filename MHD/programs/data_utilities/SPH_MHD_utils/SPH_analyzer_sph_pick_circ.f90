@@ -68,13 +68,14 @@
       use sph_MHD_circle_transform
       use nod_phys_send_recv
       use sph_filtering
+      use check_dependency_for_MHD
 !
       type(phys_address), intent(in) :: iphys
 !
 !
 !   Allocate spectr field data
 !
-      call set_sph_sprctr_data_address                                  &
+      call set_sph_MHD_sprctr_data                                      &
      &   (sph1%sph_rj, ipol, idpdr, itor, rj_fld1)
 !
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'

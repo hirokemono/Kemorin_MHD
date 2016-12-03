@@ -104,8 +104,6 @@
       use set_ctl_gen_shell_grids
       use check_read_bc_file
 !
-      use check_dependency_for_MHD
-!
       type(sph_grids), intent(inout) :: sph_gen
       type(phys_data), intent(inout) :: rj_fld
       type(field_IO_params), intent(inout) :: sph_file_param
@@ -190,25 +188,13 @@
       call s_set_control_4_time_steps
       call s_set_control_4_crank
 !
-!  check dependencies
-!
-      call calypso_mpi_barrier
-      write(*,*) 'check_dependencies_SPH_MHD'
-      call check_dependencies_SPH_MHD(rj_fld)
-!
 !   set_pickup modes
 !
-      call calypso_mpi_barrier
-      write(*,*) 'set_ctl_params_sph_spectr'
       call set_ctl_params_sph_spectr(pwr)
 !
-      call calypso_mpi_barrier
-      write(*,*) 'set_ctl_params_pick_sph'
       call set_ctl_params_pick_sph                                      &
      &   (pickup_sph_head, pick_list1, pick1)
 !
-      call calypso_mpi_barrier
-      write(*,*) 'set_ctl_params_pick_gauss'
       call set_ctl_params_pick_gauss                                    &
      &   (gauss_coefs_file_head, gauss_list1, gauss1)
 !

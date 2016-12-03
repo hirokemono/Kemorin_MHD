@@ -95,8 +95,8 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_field_address_type'
-      call set_field_address_type                                       &
+      if (iflag_debug.eq.1) write(*,*) 'init_field_address'
+      call init_field_address                                           &
      &   (femmesh_p_FUT%mesh%node%numnod, field_FUTIL, iphys_FUTIL)
 !
 !     --------------------- 

@@ -86,9 +86,9 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_field_address_type'
-      call set_field_address_type(org_femmesh%mesh%node%numnod,         &
-     &                            nod_fld_ITP, iphys_ITP)
+      if (iflag_debug.eq.1) write(*,*) 'init_field_address'
+      call init_field_address(org_femmesh%mesh%node%numnod,             &
+     &                        nod_fld_ITP, iphys_ITP)
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_field_name_type'
       call copy_field_name_type(nod_fld_ITP, new_phys)

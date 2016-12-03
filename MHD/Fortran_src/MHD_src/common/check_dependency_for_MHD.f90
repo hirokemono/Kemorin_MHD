@@ -7,28 +7,30 @@
 !>@brief  Check dependecy of field list fro MHD dynamo
 !!
 !!@verbatim
-!!      subroutine check_dependencies_FEM_MHD                           &
-!!     &         (num_nod_phys, phys_nod_name)
-!!      subroutine check_dependencies_SPH_MHD                           &
-!!     &         (num_nod_phys, phys_nod_name)
+!!      subroutine set_FEM_MHD_field_data(node, iphys, nod_fld)
+!!      subroutine set_sph_MHD_sprctr_data                              &
+!!     &         (sph_rj, ipol, idpdr, itor, rj_fld)
 !!@endverbatim
 !
       module check_dependency_for_MHD
 !
       use m_precision
       use m_error_IDs
+      use m_machine_parameter
 !
       use calypso_mpi
       use m_control_parameter
       use m_phys_labels
 !
-      use check_field_dependency
+      use t_phys_data
+      use t_phys_address
 !
       implicit none
 !
-!>      list of required field name
-      character(len=kchara), allocatable :: phys_check_name(:)
-      private :: phys_check_name
+      private :: check_missing_field_w_msg
+      private :: check_field_dependencies
+      private :: check_dependence_FEM_evo, check_dependence_SPH_evo
+      private :: check_dependence_4_FEM_SGS, check_dependence_4_SPH_SGS
 !
 ! -----------------------------------------------------------------------
 !
@@ -36,598 +38,63 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_dependencies_FEM_MHD(nod_fld)
+      subroutine set_FEM_MHD_field_data(node, iphys, nod_fld)
 !
-      use t_phys_data
-      use node_monitor_IO
-      use ordering_field_by_viz
+      use t_geometry_data
+      use t_FEM_phys_data
+      use check_MHD_dependency_by_id
 !
+      type(node_data), intent(in) :: node
+      type(phys_address), intent(inout) :: iphys
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call count_field_4_monitor                                        &
-     &   (nod_fld%num_phys, nod_fld%num_component,                      &
-     &    nod_fld%iflag_monitor, num_field_monitor, ntot_comp_monitor)
+      if (iflag_debug.ge.1)  write(*,*) 'init_field_address'
+      call init_field_address(node%numnod, nod_fld, iphys)
 !
-      allocate( phys_check_name(nod_fld%num_phys) )
+      call check_field_dependencies(iphys, nod_fld)
+      call check_dependencies_by_id(iphys, nod_fld)
+      call check_dependence_FEM_MHD_by_id(iphys, nod_fld)
+      call check_dependence_FEM_evo(iphys, nod_fld)
+      call check_dependence_4_FEM_SGS(iphys, nod_fld)
 !
-      call check_field_dependencies                                     &
-     &   (nod_fld%num_phys, nod_fld%phys_name)
-      call check_dependence_4_FEM_SGS                                   &
-     &   (nod_fld%num_phys, nod_fld%phys_name)
-!
-      deallocate (phys_check_name)
-      call calypso_mpi_barrier
-!
-      end subroutine check_dependencies_FEM_MHD
+      end subroutine set_FEM_MHD_field_data
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_dependencies_SPH_MHD(nod_fld)
+      subroutine set_sph_MHD_sprctr_data                                &
+     &         (sph_rj, ipol, idpdr, itor, rj_fld)
 !
-      use t_phys_data
+      use t_spheric_rj_data
 !
-      type(phys_data), intent(inout) :: nod_fld
+      use set_sph_phys_address
+      use check_MHD_dependency_by_id
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(phys_address), intent(inout) :: ipol, idpdr, itor
+      type(phys_data), intent(inout) :: rj_fld
 !
 !
-      allocate( phys_check_name(nod_fld%num_phys) )
+      call set_sph_sprctr_data_address                                  &
+     &   (sph_rj, ipol, idpdr, itor, rj_fld)
 !
-      call check_field_dependencies                                     &
-     &   (nod_fld%num_phys, nod_fld%phys_name)
-      call check_dependence_4_SPH_SGS                                   &
-     &   (nod_fld%num_phys, nod_fld%phys_name)
+      call check_field_dependencies(ipol, rj_fld)
+      call check_dependencies_by_id(ipol, rj_fld)
+      call check_dependence_SPH_MHD_by_id(ipol, rj_fld)
+      call check_dependence_SPH_evo(ipol, rj_fld)
+      call check_dependence_4_SPH_SGS(ipol, rj_fld)
 !
-      deallocate (phys_check_name)
-      call calypso_mpi_barrier
-!
-      end subroutine check_dependencies_SPH_MHD
+      end subroutine set_sph_MHD_sprctr_data
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_field_dependencies(num_nod_phys, phys_nod_name)
+      subroutine check_field_dependencies(iphys, fld)
 !
-      integer(kind = kint), intent(in) :: num_nod_phys
-      character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(in) :: fld
 !
-      character(len=kchara) :: target_name
-      integer (kind = kint) :: i, num_check
-!
-!
-!
-!  check dependencies
-!
-!
-      do i = 1, num_nod_phys
-          if (    phys_nod_name(i) .eq. fhd_velo                        &
-     &       .or. phys_nod_name(i) .eq. fhd_filter_velo                 &
-     &       .or. phys_nod_name(i) .eq. fhd_w_filter_velo               &
-     &       .or. phys_nod_name(i) .eq. fhd_vort                        &
-     &       .or. phys_nod_name(i) .eq. fhd_magne                       &
-     &       .or. phys_nod_name(i) .eq. fhd_press                       &
-     &       .or. phys_nod_name(i) .eq. fhd_temp                        &
-     &       .or. phys_nod_name(i) .eq. fhd_light                       &
-     &       .or. phys_nod_name(i) .eq. fhd_kinetic_helicity            &
-     &       .or. phys_nod_name(i) .eq. fhd_viscous                     &
-     &       .or. phys_nod_name(i) .eq. fhd_mom_flux                    &
-     &       .or. phys_nod_name(i) .eq. fhd_inertia                     &
-     &       .or. phys_nod_name(i) .eq. fhd_Coriolis                    &
-     &       .or. phys_nod_name(i) .eq. fhd_SGS_m_flux                  &
-     &       .or. phys_nod_name(i) .eq. fhd_grad_v_1                    &
-     &       .or. phys_nod_name(i) .eq. fhd_grad_v_2                    &
-     &       .or. phys_nod_name(i) .eq. fhd_grad_v_3                    &
-     &       ) then
-!
-           num_check = 1
-           phys_check_name(1) = fhd_velo
-!
-          else if (phys_nod_name(i) .eq. fhd_press_grad                 &
-     &       ) then
-            num_check = 1
-            phys_check_name(1) = fhd_press
-!
-          else if ( phys_nod_name(i) .eq. fhd_filter_magne              &
-     &         .or. phys_nod_name(i) .eq. fhd_w_filter_magne            &
-     &         .or. phys_nod_name(i) .eq. fhd_current                   &
-     &         .or. phys_nod_name(i) .eq. fhd_mag_potential             &
-     &         .or. phys_nod_name(i) .eq. fhd_mag_diffuse               &
-     &         .or. phys_nod_name(i) .eq. fhd_mag_tension               &
-     &         .or. phys_nod_name(i) .eq. fhd_Lorentz                   &
-     &         .or. phys_nod_name(i) .eq. fhd_maxwell_t                 &
-     &         .or. phys_nod_name(i) .eq. fhd_SGS_maxwell_t             &
-     &       ) then 
-           num_check = 1
-           phys_check_name(1) = fhd_magne
-!
-          else if ( phys_nod_name(i) .eq. fhd_filter_vecp               &
-     &         .or. phys_nod_name(i) .eq. fhd_scalar_potential          &
-     &         .or. phys_nod_name(i) .eq. fhd_magnetic_helicity         &
-     &         .or. phys_nod_name(i) .eq. fhd_vecp_diffuse              &
-     &       ) then
-           num_check = 1
-           phys_check_name(1) = fhd_vecp
-!
-          else if ( phys_nod_name(i) .eq. fhd_thermal_diffusion         &
-     &         .or. phys_nod_name(i) .eq. fhd_part_temp                 &
-     &         .or. phys_nod_name(i) .eq. fhd_filter_temp               &
-     &         .or. phys_nod_name(i) .eq. fhd_w_filter_temp             &
-     &         .or. phys_nod_name(i) .eq. fhd_buoyancy                  &
-     &         .or. phys_nod_name(i) .eq. fhd_heat_source               &
-     &         .or. phys_nod_name(i) .eq. fhd_grad_temp                 &
-     &       ) then
-           num_check = 1
-           phys_check_name(1) = fhd_temp
-!
-          else if (phys_nod_name(i) .eq. fhd_SGS_m_ene_gen              &
-     &       ) then
-            num_check = 1
-            phys_check_name(1) = fhd_SGS_induction
-!
-          else if  (phys_nod_name(i) .eq. fhd_grad_composit             &
-     &         .or. phys_nod_name(i) .eq. fhd_filter_comp               &
-     &         .or. phys_nod_name(i) .eq. fhd_w_filter_comp             &
-     &         .or. phys_nod_name(i) .eq. fhd_comp_buo                  &
-     &         .or. phys_nod_name(i) .eq. fhd_c_diffuse                 &
-     &         .or. phys_nod_name(i) .eq. fhd_light_source              &
-     &       ) then
-            num_check = 1
-            phys_check_name(1) = fhd_light
-!
-          else if ( phys_nod_name(i) .eq. fhd_filter_buo                &
-     &       ) then
-           num_check = 1
-           phys_check_name(1) = fhd_filter_temp
-!
-          else if (phys_nod_name(i) .eq. fhd_temp_scale                 &
-     &       ) then
-            num_check = 2
-            phys_check_name(1) = fhd_temp
-            phys_check_name(2) = fhd_thermal_diffusion
-!
-          else if (phys_nod_name(i) .eq. fhd_composition_scale          &
-     &       ) then
-            num_check = 2
-            phys_check_name(1) = fhd_light
-            phys_check_name(2) = fhd_c_diffuse
-!
-!
-          else if ( phys_nod_name(i) .eq. fhd_mag_induct                &
-     &       ) then
-!
-           if (iflag_t_evo_4_magne .gt. id_no_evolution) then
-            num_check = 2
-            phys_check_name(1) = fhd_velo
-            phys_check_name(2) = fhd_magne
-           else
-            num_check = 1
-            phys_check_name(1) = fhd_vp_induct
-           end if
-!
-          else if ( phys_nod_name(i) .eq. fhd_mag_stretch               &
-     &       ) then
-            num_check = 4
-            phys_check_name(1) = fhd_magne
-            phys_check_name(2) = fhd_grad_v_1
-            phys_check_name(3) = fhd_grad_v_2
-            phys_check_name(4) = fhd_grad_v_3
-
-!
-          else if ( phys_nod_name(i) .eq. fhd_div_SGS_m_flux            &
-     &       ) then
-            num_check = 1
-            phys_check_name(1) = fhd_SGS_m_flux
-!
-          else if ( phys_nod_name(i) .eq. fhd_SGS_Lorentz               &
-     &         .or. phys_nod_name(i) .eq. fhd_wide_SGS_Lorentz          &
-     &       ) then
-            num_check = 1
-            phys_check_name(1) = fhd_magne
-!
-          else if ( phys_nod_name(i) .eq. fhd_SGS_rot_Lorentz           &
-     &         .or. phys_nod_name(i) .eq. fhd_SGS_div_Lorentz           &
-     &       ) then
-            num_check = 1
-            phys_check_name(1) = fhd_SGS_Lorentz
-!
-          else if ( phys_nod_name(i) .eq. fhd_SGS_induction             &
-     &       ) then
-           if (iflag_t_evo_4_magne .gt. id_no_evolution) then
-            num_check = 2
-            phys_check_name(1) = fhd_velo
-            phys_check_name(2) = fhd_magne
-           else
-            num_check = 1
-            phys_check_name(1) = fhd_SGS_vp_induct
-           end if
-!
-          else if ( phys_nod_name(i) .eq. fhd_cross_helicity            &
-     &         .or. phys_nod_name(i) .eq. fhd_vp_induct                 &
-     &         .or. phys_nod_name(i) .eq. fhd_induct_t                  &
-     &         .or. phys_nod_name(i) .eq. fhd_SGS_vp_induct             &
-     &         .or. phys_nod_name(i) .eq. fhd_wide_SGS_vp_induct        &
-     &         .or. phys_nod_name(i) .eq. fhd_SGS_induct_t              &
-     &       ) then
-           num_check = 2
-           phys_check_name(1) = fhd_velo
-           phys_check_name(2) = fhd_magne
-!
-          else if (phys_nod_name(i) .eq. fhd_buoyancy_flux              &
-     &        .or. phys_nod_name(i) .eq. fhd_h_flux                     &
-     &        .or. phys_nod_name(i) .eq. fhd_ph_flux                    &
-     &        .or. phys_nod_name(i) .eq. fhd_SGS_h_flux                 &
-     &        .or. phys_nod_name(i) .eq. fhd_wide_SGS_h_flux            &
-     &        .or. phys_nod_name(i) .eq. fhd_heat_advect                &
-     &        .or. phys_nod_name(i) .eq. fhd_part_h_advect              &
-     &        .or. phys_nod_name(i) .eq. fhd_SGS_temp_gen               &
-     &        .or. phys_nod_name(i) .eq. fhd_entropy                    &
-     &         ) then
-           num_check = 2
-           phys_check_name(1) = fhd_velo
-           phys_check_name(2) = fhd_temp
-!
-          else if (phys_nod_name(i) .eq. fhd_Csim_SGS_h_flux            &
-     &         ) then
-           num_check = 2
-           phys_check_name(1) = fhd_SGS_h_flux
-           phys_check_name(2) = fhd_wide_SGS_h_flux
-!
-          else if (phys_nod_name(i) .eq. fhd_wide_SGS_c_flux            &
-     &         ) then
-           num_check = 2
-           phys_check_name(1) = fhd_SGS_c_flux
-           phys_check_name(2) = fhd_wide_SGS_c_flux
-!
-          else if (phys_nod_name(i) .eq. fhd_Csim_SGS_m_flux            &
-     &         ) then
-           num_check = 2
-           phys_check_name(1) = fhd_SGS_inertia
-           phys_check_name(2) = fhd_wide_SGS_inertia
-!
-          else if (phys_nod_name(i) .eq. fhd_Csim_SGS_Lorentz           &
-     &         ) then
-           num_check = 2
-           phys_check_name(1) = fhd_SGS_Lorentz
-           phys_check_name(2) = fhd_wide_SGS_Lorentz
-!
-          else if (phys_nod_name(i) .eq. fhd_Csim_SGS_induction         &
-     &         ) then
-           num_check = 2
-           phys_check_name(1) = fhd_SGS_vp_induct
-           phys_check_name(2) = fhd_wide_SGS_vp_induct
-!
-          else if (phys_nod_name(i) .eq. fhd_Csim_SGS_buoyancy          &
-     &         ) then
-           num_check = 2
-           phys_check_name(1) = fhd_SGS_h_flux
-           phys_check_name(2) = fhd_velo
-!
-          else if (phys_nod_name(i) .eq. fhd_Csim_SGS_comp_buo          &
-     &         ) then
-           num_check = 2
-           phys_check_name(1) = fhd_SGS_c_flux
-           phys_check_name(2) = fhd_velo
-!
-!
-          else if (phys_nod_name(i) .eq. fhd_div_SGS_h_flux             &
-     &         ) then
-           num_check = 1
-           phys_check_name(1) = fhd_SGS_h_flux
-!
-          else if (phys_nod_name(i) .eq. fhd_SGS_buoyancy               &
-     &         ) then
-           num_check = 2
-           phys_check_name(1) = fhd_velo
-           phys_check_name(2) = fhd_SGS_h_flux
-!
-          else if (phys_nod_name(i) .eq. fhd_SGS_comp_buo               &
-     &         ) then
-           num_check = 2
-           phys_check_name(1) = fhd_velo
-           phys_check_name(2) = fhd_SGS_h_flux
-!
-          else if (phys_nod_name(i) .eq. fhd_SGS_buo_flux               &
-     &         ) then
-           num_check = 2
-           phys_check_name(1) = fhd_velo
-           phys_check_name(2) = fhd_SGS_h_flux
-!
-          else if (phys_nod_name(i) .eq. fhd_SGS_comp_buo_flux          &
-     &         ) then
-           num_check = 2
-           phys_check_name(1) = fhd_velo
-           phys_check_name(2) = fhd_SGS_h_flux
-!
-          else if (phys_nod_name(i) .eq. fhd_composit_advect            &
-     &        .or. phys_nod_name(i) .eq. fhd_c_flux                     &
-     &        .or. phys_nod_name(i) .eq. fhd_comp_buo_flux              &
-     &        .or. phys_nod_name(i) .eq. fhd_SGS_c_flux                 &
-     &         ) then
-           num_check = 2
-           phys_check_name(1) = fhd_velo
-           phys_check_name(2) = fhd_light
-!
-          else if (phys_nod_name(i) .eq. fhd_div_SGS_c_flux             &
-     &        .or. phys_nod_name(i) .eq. fhd_wide_SGS_c_flux            &
-     &         ) then
-           num_check = 1
-           phys_check_name(1) = fhd_SGS_c_flux
-!
-          else if (phys_nod_name(i) .eq. fhd_filter_buo_flux            &
-     &         ) then
-           num_check = 2
-           phys_check_name(1) = fhd_velo
-           phys_check_name(2) = fhd_filter_temp
-!
-!
-          else if (phys_nod_name(i) .eq. fhd_temp_generation            &
-     &         ) then
-           num_check = 2
-           phys_check_name(1) = fhd_heat_advect
-           phys_check_name(2) = fhd_temp
-!
-          else if (phys_nod_name(i) .eq. fhd_part_temp_gen              &
-     &         ) then
-           num_check = 2
-           phys_check_name(1) = fhd_part_h_advect
-           phys_check_name(2) = fhd_temp
-!
-          else if (phys_nod_name(i) .eq. fhd_filter_vort                &
-     &        .or. phys_nod_name(i) .eq. fhd_w_filter_vort              &
-     &        .or. phys_nod_name(i) .eq. fhd_kinetic_helicity           &
-     &        .or. phys_nod_name(i) .eq. fhd_velocity_scale             &
-     &        .or. phys_nod_name(i) .eq. fhd_SGS_inertia                &
-     &        .or. phys_nod_name(i) .eq. fhd_wide_SGS_inertia           &
-     &       ) then
-           num_check = 2
-           phys_check_name(1) = fhd_velo
-           phys_check_name(2) = fhd_vort
-!
-          else if (phys_nod_name(i) .eq. fhd_SGS_rot_inertia            &
-     &        .or. phys_nod_name(i) .eq. fhd_SGS_div_inertia            &
-     &         ) then
-           num_check = 1
-           phys_check_name(1) = fhd_SGS_inertia
-!
-          else if (phys_nod_name(i) .eq. fhd_filter_current             &
-     &        .or. phys_nod_name(i) .eq. fhd_w_filter_current           &
-     &        .or. phys_nod_name(i) .eq. fhd_current_helicity           &
-     &        .or. phys_nod_name(i) .eq. fhd_magnetic_scale             &
-     &       ) then
-           num_check = 2
-           phys_check_name(1) = fhd_magne
-           phys_check_name(2) = fhd_current
-!
-          else if (phys_nod_name(i) .eq. fhd_mag_ene_gen                &
-     &       ) then
-           num_check = 2
-           phys_check_name(1) = fhd_magne
-           phys_check_name(2) = fhd_mag_induct
-!
-          else if (phys_nod_name(i) .eq. fhd_mag_tension_work           &
-     &       ) then
-           num_check = 2
-           phys_check_name(1) = fhd_velo
-           phys_check_name(2) = fhd_mag_tension
-!
-          else if (phys_nod_name(i) .eq. fhd_vis_ene_diffuse            &
-     &       ) then
-           num_check = 2
-           phys_check_name(1) = fhd_velo
-           phys_check_name(2) = fhd_viscous
-!
-          else if (phys_nod_name(i) .eq. fhd_mag_ene_diffuse            &
-     &       ) then
-           num_check = 2
-           phys_check_name(1) = fhd_magne
-           phys_check_name(2) = fhd_mag_diffuse
-!
-!
-          else if ( phys_nod_name(i) .eq. fhd_vecp                      &
-     &       ) then
-           num_check = 3
-           phys_check_name(1) = fhd_velo
-           phys_check_name(2) = fhd_magne
-           phys_check_name(3) = fhd_mag_potential
-!
-          else if (phys_nod_name(i) .eq. fhd_Lorentz_work               &
-     &        .or. phys_nod_name(i) .eq. fhd_work_agst_Lorentz          &
-     &        .or. phys_nod_name(i) .eq. fhd_SGS_Lorentz_work           &
-     &       ) then
-           num_check = 3
-           phys_check_name(1) = fhd_velo
-           phys_check_name(2) = fhd_magne
-           phys_check_name(3) = fhd_current
-!
-          else if (phys_nod_name(i) .eq. fhd_density                    &
-     &       ) then
-           num_check = 3
-           phys_check_name(1) = fhd_velo
-           phys_check_name(2) = fhd_temp
-           phys_check_name(3) = fhd_light
-!
-          else if (phys_nod_name(i) .eq. fhd_per_density                &
-     &       ) then
-           num_check = 2
-           phys_check_name(1) = fhd_density
-           phys_check_name(2) = fhd_ref_density
-!
-          else if (phys_nod_name(i) .eq. fhd_entropy_source             &
-     &       ) then
-           num_check = 1
-           phys_check_name(1) = fhd_entropy
-!
-          else if (phys_nod_name(i) .eq. fhd_per_entropy                &
-     &       ) then
-           num_check = 2
-           phys_check_name(1) = fhd_entropy
-           phys_check_name(2) = fhd_ref_entropy
-!
-          else if (phys_nod_name(i) .eq. fhd_e_field                    &
-     &       ) then
-            num_check = 2
-            phys_check_name(1) = fhd_vp_induct
-            phys_check_name(2) = fhd_current
-!
-          else if (phys_nod_name(i) .eq. fhd_poynting                   &
-     &       ) then
-             num_check = 2
-             phys_check_name(1) = fhd_current
-             phys_check_name(2) = fhd_vp_induct
-!
-          else if (phys_nod_name(i) .eq. fhd_div_m_flux                 &
-     &         ) then
-           num_check = 1
-           phys_check_name(1) = fhd_mom_flux
-!
-          else if (phys_nod_name(i) .eq. fhd_div_maxwell_t              &
-     &         ) then
-           num_check = 1
-           phys_check_name(1) = fhd_maxwell_t
-!
-          else if (phys_nod_name(i) .eq. fhd_div_induct_t               &
-     &         ) then
-           num_check = 1
-           phys_check_name(1) = fhd_induct_t
-!
-          else if (phys_nod_name(i) .eq. fhd_div_h_flux                 &
-     &         ) then
-           num_check = 3
-           phys_check_name(1) = fhd_velo
-           phys_check_name(2) = fhd_temp
-           phys_check_name(3) = fhd_h_flux
-!
-          else if (phys_nod_name(i) .eq. fhd_div_ph_flux                &
-     &         ) then
-           num_check = 3
-           phys_check_name(1) = fhd_velo
-           phys_check_name(2) = fhd_temp
-           phys_check_name(3) = fhd_ph_flux
-!
-          else if (phys_nod_name(i) .eq. fhd_SGS_div_h_flux_true        &
-     &         ) then
-           num_check = 3
-           phys_check_name(1) = fhd_filter_velo
-           phys_check_name(2) = fhd_filter_temp
-           phys_check_name(3) = fhd_div_h_flux
-!
-          else if (phys_nod_name(i) .eq. fhd_SGS_div_m_flux_true        &
-     &         ) then
-           num_check = 2
-           phys_check_name(1) = fhd_filter_velo
-           phys_check_name(2) = fhd_div_m_flux
-!
-          else if (phys_nod_name(i) .eq. fhd_SGS_Lorentz_true           &
-     &         ) then
-           num_check = 2
-           phys_check_name(1) = fhd_filter_magne
-           phys_check_name(2) = fhd_div_maxwell_t
-!
-          else if (phys_nod_name(i) .eq. fhd_SGS_mag_induct_true        &
-     &         ) then
-           num_check = 3
-           phys_check_name(1) = fhd_filter_velo
-           phys_check_name(2) = fhd_filter_magne
-           phys_check_name(3) = fhd_div_induct_t
-!
-          else if (phys_nod_name(i) .eq. fhd_SGS_Lorentz_wk_true        &
-     &       ) then
-           num_check = 2
-           phys_check_name(1) = fhd_velo
-           phys_check_name(2) = fhd_SGS_Lorentz_true
-!
-          else if (phys_nod_name(i) .eq. fhd_Reynolds_work_true         &
-     &       ) then
-           num_check = 2
-           phys_check_name(1) = fhd_velo
-           phys_check_name(2) = fhd_SGS_div_m_flux_true
-!
-          else if (phys_nod_name(i) .eq. fhd_SGS_temp_gen_true          &
-     &       ) then
-           num_check = 2
-           phys_check_name(1) = fhd_temp
-           phys_check_name(2) = fhd_SGS_div_h_flux_true
-!
-          else if (phys_nod_name(i) .eq. fhd_SGS_m_ene_gen_true         &
-     &       ) then
-           num_check = 2
-           phys_check_name(1) = fhd_magne
-           phys_check_name(2) = fhd_SGS_mag_induct_true
-!
-          else if (phys_nod_name(i) .eq. fhd_div_Lorentz                &
-     &        .or. phys_nod_name(i) .eq. fhd_rot_Lorentz                &
-     &       ) then
-           num_check = 1
-           phys_check_name(1) = fhd_Lorentz
-!
-          else if (phys_nod_name(i) .eq. fhd_geostrophic                &
-     &       ) then
-           num_check = 2
-           phys_check_name(1) = fhd_Coriolis
-           phys_check_name(2) = fhd_press_grad
-!
-          else if (phys_nod_name(i) .eq. fhd_h_flux_w_sgs               &
-     &       ) then
-           num_check = 2
-           phys_check_name(1) = fhd_h_flux
-           phys_check_name(2) = fhd_SGS_h_flux
-!
-          else if (phys_nod_name(i) .eq. fhd_c_flux_w_sgs               &
-     &       ) then
-           num_check = 2
-           phys_check_name(1) = fhd_c_flux
-           phys_check_name(2) = fhd_SGS_c_flux
-!
-          else if (phys_nod_name(i) .eq. fhd_inertia_w_sgs              &
-     &       ) then
-           num_check = 2
-           phys_check_name(1) = fhd_inertia
-           phys_check_name(2) = fhd_SGS_inertia
-!
-          else if (phys_nod_name(i) .eq. fhd_Lorentz_w_sgs              &
-     &       ) then
-           num_check = 2
-           phys_check_name(1) = fhd_Lorentz
-           phys_check_name(2) = fhd_SGS_Lorentz
-!
-          else if (phys_nod_name(i) .eq. fhd_vp_induct_w_sgs            &
-     &       ) then
-           num_check = 2
-           phys_check_name(1) = fhd_vp_induct
-           phys_check_name(2) = fhd_SGS_vp_induct
-!
-          else if (phys_nod_name(i) .eq. fhd_mag_induct_w_sgs          &
-     &       ) then
-           num_check = 2
-           phys_check_name(1) = fhd_mag_induct
-           phys_check_name(2) = fhd_SGS_induction
-!
-          else if (phys_nod_name(i) .eq. fhd_mom_flux_w_sgs             &
-     &       ) then
-           num_check = 2
-           phys_check_name(1) = fhd_mom_flux
-           phys_check_name(2) = fhd_SGS_m_flux
-!
-          else if (phys_nod_name(i) .eq. fhd_maxwell_t_w_sgs            &
-     &       ) then
-           num_check = 2
-           phys_check_name(1) = fhd_maxwell_t
-           phys_check_name(2) = fhd_SGS_maxwell_t
-!
-!
-!   Old field label... Should be deleted later!!
-          else if (phys_nod_name(i) .eq. fhd_buoyancy_work) then
-           num_check = 2
-           phys_check_name(1) = fhd_velo
-           phys_check_name(2) = fhd_temp
-!
-!   If there is no field on list....
-          else
-            num_check = 0
-          end if
-!
-          call check_dependence_phys(num_nod_phys, num_check,           &
-     &           phys_nod_name(i), phys_nod_name, phys_check_name)
-      end do
+      character(len=kchara) :: msg
 !
 !
 !   check dependencies for time evolution
@@ -640,182 +107,173 @@
       end if
 !
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
-           target_name = 'time integration for velocity'
-           num_check = 2
-           phys_check_name(1) = fhd_velo
-           phys_check_name(2) = fhd_press
-           call check_dependence_phys(num_nod_phys, num_check,          &
-     &           target_name, phys_nod_name, phys_check_name)
+        msg = 'time integration for velocity needs'
+        call check_missing_field_w_msg(fld, msg, iphys%i_velo)
+        call check_missing_field_w_msg(fld, msg, iphys%i_press)
+      end if
+!
+      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+        msg = 'time integration for velocity needs'
+        call check_missing_field_w_msg(fld, msg, iphys%i_vort)
       end if
 !
       if (iflag_t_evo_4_temp .gt. id_no_evolution) then
-           target_name = 'time integration for temperature'
-           num_check = 2
-           phys_check_name(1) = fhd_temp
-           phys_check_name(2) = fhd_velo
-           call check_dependence_phys(num_nod_phys, num_check,          &
-     &           target_name, phys_nod_name, phys_check_name)
+        msg = 'Time integration for temperature needs'
+        call check_missing_field_w_msg(fld, msg, iphys%i_velo)
+        call check_missing_field_w_msg(fld, msg, iphys%i_temp)
       end if
 !
       if (iflag_t_evo_4_composit .ne. id_no_evolution) then
-           target_name = 'time integration for dummy scalar'
-           num_check = 2
-           phys_check_name(1) = fhd_light
-           phys_check_name(2) = fhd_velo
-           call check_dependence_phys(num_nod_phys, num_check,          &
-     &           target_name, phys_nod_name, phys_check_name)
+        msg =  'Time integration for composition needs'
+        call check_missing_field_w_msg(fld, msg, iphys%i_velo)
+        call check_missing_field_w_msg(fld, msg, iphys%i_light)
       end if
 !
       if (iflag_t_evo_4_magne .ne. id_no_evolution) then
-           target_name = 'time integration for magnetic field'
-           num_check = 2
-           phys_check_name(1) = fhd_magne
-           phys_check_name(2) = fhd_velo
-           call check_dependence_phys(num_nod_phys, num_check,          &
-     &           target_name, phys_nod_name, phys_check_name)
+        msg = 'Time integration for magnetic field needs'
+        call check_missing_field_w_msg(fld, msg, iphys%i_magne)
+        call check_missing_field_w_msg(fld, msg, iphys%i_velo)
       end if
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-           target_name = 'time integration for vector potential'
-           num_check = 2
-           phys_check_name(1) = fhd_vecp
-           phys_check_name(2) = fhd_velo
-           call check_dependence_phys(num_nod_phys, num_check,          &
-     &           target_name, phys_nod_name, phys_check_name)
+        msg = 'Time integration for vector potential needs'
+        call check_missing_field_w_msg(fld, msg, iphys%i_vecp)
+        call check_missing_field_w_msg(fld, msg, iphys%i_velo)
       end if
 !
 !
       if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
         if ( iflag_4_gravity .gt. id_turn_OFF) then
-          target_name = 'temperature is required for buoyancy'
-          num_check = 1
-          phys_check_name(1) = fhd_temp
-          call check_dependence_phys(num_nod_phys, num_check,           &
-     &           target_name, phys_nod_name, phys_check_name)
+          msg = 'Buoyancy needs'
+          call check_missing_field_w_msg(fld, msg, iphys%i_temp)
         end if
 !
         if ( iflag_4_composit_buo .gt. id_turn_OFF) then
-          target_name                                                   &
-     &        = 'composition is required for compositional buoyancy'
-          num_check = 1
-          phys_check_name(1) = fhd_light
-          call check_dependence_phys(num_nod_phys, num_check,           &
-     &           target_name, phys_nod_name, phys_check_name)
+          msg = 'Compositional buoyancy needs'
+          call check_missing_field_w_msg(fld, msg, iphys%i_light)
         end if
 !
         if ( iflag_4_filter_gravity .gt. id_turn_OFF) then
-          target_name                                                   &
-     &      = 'filtered temperature is required for filtered buoyancy'
-          num_check = 1
-          phys_check_name(1) = fhd_filter_temp
-          call check_dependence_phys(num_nod_phys, num_check,           &
-     &           target_name, phys_nod_name, phys_check_name)
+          msg = 'Filtered buoyancy needs'
+          call check_missing_field_w_msg(fld, msg, iphys%i_filter_temp)
         end if
 !
         if ( iflag_4_lorentz .gt. id_turn_OFF) then
-          target_name = 'magnetic field is required for Lorentz force'
-          num_check = 1
-          phys_check_name(1) = fhd_magne
-          call check_dependence_phys(num_nod_phys, num_check,           &
-     &           target_name, phys_nod_name, phys_check_name)
+          msg = 'Lorentz force needs'
+          call check_missing_field_w_msg(fld, msg, iphys%i_magne)
         end if
       end if
 !
       end subroutine check_field_dependencies
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
 !
-      subroutine check_dependence_4_FEM_SGS                             &
-     &         (num_nod_phys, phys_nod_name)
+      subroutine check_dependence_FEM_evo(iphys, fld)
 !
-      integer(kind = kint), intent(in) :: num_nod_phys
-      character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(in) :: fld
+!
+      character(len=kchara) :: msg
 !
 !
-      character(len=kchara) :: target_name
-      integer (kind = kint) :: i, num_check
+      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+        msg = 'time integration for velocity needs'
+        call check_missing_field_w_msg(fld, msg, iphys%i_velo)
+        call check_missing_field_w_msg(fld, msg, iphys%i_press)
+      end if
+!
+      end subroutine check_dependence_FEM_evo
+!
+! -----------------------------------------------------------------------
+!
+      subroutine check_dependence_SPH_evo(iphys, fld)
+!
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(in) :: fld
+!
+      character(len=kchara) :: msg
+!
+!
+      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+        msg = 'time integration for velocity needs'
+        call check_missing_field_w_msg(fld, msg, iphys%i_vort)
+      end if
+!
+      end subroutine check_dependence_SPH_evo
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine check_dependence_4_FEM_SGS(iphys, fld)
+!
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(in) :: fld
+!
+!
+      character(len=kchara) :: msg
 !
 !
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         if ( iflag_SGS_inertia .ne. id_SGS_none) then
-          target_name = 'solving SGS momentum flux'
-          num_check = 1
-          phys_check_name(1) = fhd_SGS_m_flux
-          call check_dependence_phys(num_nod_phys, num_check,           &
-     &           target_name, phys_nod_name, phys_check_name)
+          msg = 'solving SGS momentum flux needs'
+          call check_missing_field_w_msg(fld, msg, iphys%i_SGS_m_flux)
         end if
 !
         if (iflag_SGS_lorentz .ne. id_SGS_none) then
-          target_name = 'solving SGS lorentz term'
-          num_check = 1
-          phys_check_name(1) = fhd_SGS_maxwell_t
-          call check_dependence_phys(num_nod_phys, num_check,           &
-     &           target_name, phys_nod_name, phys_check_name)
+          msg = 'solving SGS lorentz term needs'
+          call check_missing_field_w_msg(fld, msg, iphys%i_SGS_maxwell)
         end if
       end if
 !
 !
       if ( iflag_t_evo_4_temp .gt. id_no_evolution) then
         if ( iflag_SGS_heat .ne. id_SGS_none) then
-          target_name = 'solving SGS heat flux'
-          num_check = 1
-          phys_check_name(1) = fhd_SGS_h_flux
-          call check_dependence_phys(num_nod_phys, num_check,           &
-     &           target_name, phys_nod_name, phys_check_name)
+          msg = 'solving SGS heat flux needs'
+          call check_missing_field_w_msg(fld, msg, iphys%i_SGS_h_flux)
         end if
       end if
 !
 !
       if ( iflag_t_evo_4_magne .gt. id_no_evolution) then
         if ( iflag_SGS_induction .ne. id_SGS_none) then
-          target_name = 'solving SGS magnetic induction'
-          num_check = 1
-          phys_check_name(1) = fhd_SGS_induct_t
-          phys_check_name(2) = fhd_SGS_vp_induct
-          call check_dependence_phys(num_nod_phys, num_check,           &
-     &           target_name, phys_nod_name, phys_check_name)
+          msg = 'solving SGS magnetic induction needs'
+          call check_missing_field_w_msg                                &
+     &       (fld, msg, iphys%i_SGS_induct_t)
+          call check_missing_field_w_msg                                &
+     &       (fld, msg, iphys%i_SGS_vp_induct)
         end if
       end if
 !
 !
       if ( iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         if ( iflag_SGS_induction .ne. id_SGS_none) then
-          target_name = 'solving SGS induction 4 vector potential'
-          num_check = 1
-          phys_check_name(1) = fhd_SGS_vp_induct
-          call check_dependence_phys(num_nod_phys, num_check,           &
-     &           target_name, phys_nod_name, phys_check_name)
+          msg = 'solving SGS induction needs'
+          call check_missing_field_w_msg                                &
+     &       (fld, msg, iphys%i_SGS_vp_induct)
         end if
       end if
 !
 !
       if ( iflag_t_evo_4_composit .gt. id_no_evolution) then
         if (iflag_SGS_comp_flux .ne. id_SGS_none) then
-          target_name = 'solving SGS compsition flux'
-          num_check = 1
-          phys_check_name(1) = fhd_SGS_c_flux
-          call check_dependence_phys(num_nod_phys, num_check,           &
-     &           target_name, phys_nod_name, phys_check_name)
+          msg = 'solving SGS compsition flux needs'
+          call check_missing_field_w_msg(fld, msg, iphys%i_SGS_c_flux)
         end if
       end if
 !
       if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
         if ( iflag_SGS_inertia .eq. id_SGS_similarity                   &
      &     .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
-          target_name = 'filterd u is required for SGS momentum flux'
-          num_check = 1
-          phys_check_name(1) = fhd_filter_velo
-          call check_dependence_phys(num_nod_phys, num_check,           &
-     &           target_name, phys_nod_name, phys_check_name)
+          msg = 'SGS momentum flux needs'
+          call check_missing_field_w_msg(fld, msg, iphys%i_filter_velo)
         end if
 !
         if (    iflag_SGS_lorentz .eq. id_SGS_similarity                &
      &     .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
-          target_name = 'filterd B is required for SGS Lorentz term'
-          num_check = 1
-          phys_check_name(1) = fhd_filter_magne
-          call check_dependence_phys(num_nod_phys, num_check,           &
-     &           target_name, phys_nod_name, phys_check_name)
+          msg = 'SGS Lorentz term needs'
+          call check_missing_field_w_msg                                &
+     &       (fld, msg, iphys%i_filter_magne)
         end if
       end if
 !
@@ -844,127 +302,81 @@
       if ( iflag_t_evo_4_temp .gt. id_no_evolution) then
         if (iflag_SGS_heat .eq. id_SGS_similarity                       &
      &          .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
-          target_name = 'filterd temp. is required for SGS heat flux'
-          num_check = 1
-          phys_check_name(1) = fhd_filter_temp
-          call check_dependence_phys(num_nod_phys, num_check,           &
-     &           target_name, phys_nod_name, phys_check_name)
+          msg = 'SGS heat flux needs'
+          call check_missing_field_w_msg(fld, msg, iphys%i_filter_temp)
         end if
       end if
 !
 !
-      if ( iflag_t_evo_4_magne .gt. id_no_evolution) then
+      if (    iflag_t_evo_4_magne .gt. id_no_evolution                  &
+     &   .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         if ( iflag_SGS_induction .eq. id_SGS_similarity                 &
      &      .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
-          target_name = 'filterd u and B is required for SGS induction'
-          num_check = 2
-          phys_check_name(1) = fhd_filter_velo
-          phys_check_name(2) = fhd_filter_magne
-          call check_dependence_phys(num_nod_phys, num_check,           &
-     &           target_name, phys_nod_name, phys_check_name)
+          msg = 'SGS induction needs'
+          call check_missing_field_w_msg(fld, msg, iphys%i_filter_velo)
+          call check_missing_field_w_msg                                &
+     &       (fld, msg, iphys%i_filter_magne)
         end if
       end if
 !
-!
-      if ( iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-        if ( iflag_SGS_induction .eq. id_SGS_similarity                 &
-     &      .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
-          target_name = 'filterd u and B is required for SGS induction'
-          num_check = 2
-          phys_check_name(1) = fhd_filter_velo
-          phys_check_name(2) = fhd_filter_magne
-          call check_dependence_phys(num_nod_phys, num_check,           &
-     &           target_name, phys_nod_name, phys_check_name)
-        end if
-      end if
 !
       if ( iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         if ( iflag_commute_correction .gt. id_SGS_commute_OFF           &
      &       .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
-          target_name = 'filterd A is required for dynamic model'
-          num_check = 1
-          phys_check_name(1) = fhd_filter_vecp
-          call check_dependence_phys(num_nod_phys, num_check,           &
-     &           target_name, phys_nod_name, phys_check_name)
+          msg = 'filterd A is required for dynamic model'
+          call check_missing_field_w_msg(fld, msg, iphys%i_filter_vecp)
         end if
       end if
 !
-!
-      do i = 1, num_nod_phys
-         if (phys_nod_name(i) .eq. fhd_Reynolds_work                    &
-     &       ) then
-           num_check = 2
-           phys_check_name(1) = fhd_velo
-           phys_check_name(2) = fhd_div_SGS_m_flux
-         end if
-!
-          call check_dependence_phys(num_nod_phys, num_check,           &
-     &           phys_nod_name(i), phys_nod_name, phys_check_name)
-      end do
 !
       end subroutine check_dependence_4_FEM_SGS
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_dependence_4_SPH_SGS                             &
-     &         (num_nod_phys, phys_nod_name)
+      subroutine check_dependence_4_SPH_SGS(iphys, fld)
 !
-      integer(kind = kint), intent(in) :: num_nod_phys
-      character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(in) :: fld
 !
-      character(len=kchara) :: target_name
-      integer (kind = kint) :: i, num_check
+      character(len=kchara) :: msg
 !
 !
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         if ( iflag_SGS_inertia .ne. id_SGS_none) then
-          target_name = 'solving SGS momentum flux'
-          num_check = 1
-          phys_check_name(1) = fhd_SGS_inertia
-          call check_dependence_phys(num_nod_phys, num_check,           &
-     &           target_name, phys_nod_name, phys_check_name)
+          msg = 'solving SGS momentum flux needs'
+          call check_missing_field_w_msg(fld, msg, iphys%i_SGS_inertia)
         end if
 !
         if (iflag_SGS_lorentz .ne. id_SGS_none) then
-          target_name = 'solving SGS lorentz term'
-          num_check = 1
-          phys_check_name(2) = fhd_SGS_Lorentz
-          call check_dependence_phys(num_nod_phys, num_check,           &
-     &           target_name, phys_nod_name, phys_check_name)
+          msg = 'solving SGS lorentz term needs'
+          call check_missing_field_w_msg(fld, msg, iphys%i_SGS_Lorentz)
         end if
       end if
 !
 !
       if ( iflag_t_evo_4_temp .gt. id_no_evolution) then
         if ( iflag_SGS_heat .ne. id_SGS_none) then
-          target_name = 'solving SGS heat flux'
-          num_check = 1
-          phys_check_name(1) = fhd_SGS_h_flux
-          call check_dependence_phys(num_nod_phys, num_check,           &
-     &           target_name, phys_nod_name, phys_check_name)
+          msg = 'solving SGS heat flux needs'
+          call check_missing_field_w_msg(fld, msg, iphys%i_SGS_h_flux)
         end if
       end if
 !
 !
       if ( iflag_t_evo_4_magne .gt. id_no_evolution) then
         if ( iflag_SGS_induction .ne. id_SGS_none) then
-          target_name = 'solving SGS magnetic induction'
-          num_check = 1
-          phys_check_name(1) = fhd_SGS_induction
-          phys_check_name(2) = fhd_SGS_vp_induct
-          call check_dependence_phys(num_nod_phys, num_check,           &
-     &           target_name, phys_nod_name, phys_check_name)
+          msg = 'solving SGS magnetic induction needs'
+          call check_missing_field_w_msg                                &
+     &       (fld, msg, iphys%i_SGS_induction)
+          call check_missing_field_w_msg                                &
+     &       (fld, msg, iphys%i_SGS_vp_induct)
         end if
       end if
 !
 !
       if ( iflag_t_evo_4_composit .gt. id_no_evolution) then
         if (iflag_SGS_comp_flux .ne. id_SGS_none) then
-          target_name = 'solving SGS compsition flux'
-          num_check = 1
-          phys_check_name(1) = fhd_SGS_c_flux
-          call check_dependence_phys(num_nod_phys, num_check,           &
-     &           target_name, phys_nod_name, phys_check_name)
+          msg = 'solving SGS compsition flux needs'
+          call check_missing_field_w_msg(fld, msg, iphys%i_SGS_c_flux)
         end if
       end if
 !
@@ -972,20 +384,15 @@
       if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
         if ( iflag_SGS_inertia .eq. id_SGS_similarity                   &
      &     .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
-          target_name = 'filterd u is required for SGS momentum flux'
-          num_check = 1
-          phys_check_name(1) = fhd_filter_velo
-          call check_dependence_phys(num_nod_phys, num_check,           &
-     &           target_name, phys_nod_name, phys_check_name)
+          msg = 'SGS momentum flux needs'
+          call check_missing_field_w_msg(fld, msg, iphys%i_filter_velo)
         end if
 !
         if (    iflag_SGS_lorentz .eq. id_SGS_similarity                &
      &     .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
-          target_name = 'filterd B is required for SGS Lorentz term'
-          num_check = 1
-          phys_check_name(1) = fhd_filter_magne
-          call check_dependence_phys(num_nod_phys, num_check,           &
-     &           target_name, phys_nod_name, phys_check_name)
+          msg = 'SGS Lorentz term needs'
+          call check_missing_field_w_msg                                &
+     &       (fld, msg, iphys%i_filter_magne)
         end if
       end if
 !
@@ -1014,11 +421,8 @@
       if ( iflag_t_evo_4_temp .gt. id_no_evolution) then
         if (iflag_SGS_heat .eq. id_SGS_similarity                       &
      &          .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
-          target_name = 'filterd temp. is required for SGS heat flux'
-          num_check = 1
-          phys_check_name(1) = fhd_filter_temp
-          call check_dependence_phys(num_nod_phys, num_check,           &
-     &           target_name, phys_nod_name, phys_check_name)
+          msg = 'SGS heat flux needs'
+          call check_missing_field_w_msg(fld, msg, iphys%i_filter_temp)
         end if
       end if
 !
@@ -1026,30 +430,29 @@
       if ( iflag_t_evo_4_magne .gt. id_no_evolution) then
         if ( iflag_SGS_induction .eq. id_SGS_similarity                 &
      &      .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
-          target_name = 'filterd u and B is required for SGS induction'
-          num_check = 2
-          phys_check_name(1) = fhd_filter_velo
-          phys_check_name(2) = fhd_filter_magne
-          call check_dependence_phys(num_nod_phys, num_check,           &
-     &           target_name, phys_nod_name, phys_check_name)
+          msg = 'SGS induction needs'
+          call check_missing_field_w_msg(fld, msg, iphys%i_filter_velo)
+          call check_missing_field_w_msg                                &
+     &       (fld, msg, iphys%i_filter_magne)
         end if
       end if
 !
-!
-!
-      do i = 1, num_nod_phys
-         if (phys_nod_name(i) .eq. fhd_Reynolds_work                    &
-     &       ) then
-           num_check = 2
-           phys_check_name(1) = fhd_velo
-           phys_check_name(2) = fhd_SGS_inertia
-         end if
-!
-          call check_dependence_phys(num_nod_phys, num_check,           &
-     &           phys_nod_name(i), phys_nod_name, phys_check_name)
-      end do
-!
       end subroutine check_dependence_4_SPH_SGS
+!
+! -----------------------------------------------------------------------
+!
+      subroutine check_missing_field_w_msg(fld, target_msg, iphys_ref)
+!
+      type(phys_data), intent(in) :: fld
+      character(len=kchara), intent(in) :: target_msg
+      integer(kind = kint), intent(in) :: iphys_ref
+!
+      if(iphys_ref .gt. 0) return
+      write(*,*) target_msg, ': ',                                      &
+     &    trim(field_name_by_address(fld, iphys_ref))
+      call calypso_MPI_abort(ierr_fld,'Stop program.')
+!
+      end subroutine check_missing_field_w_msg
 !
 ! -----------------------------------------------------------------------
 !

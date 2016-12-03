@@ -10,7 +10,7 @@
 !!      subroutine allocate_phys_data_type(mesh, FEM_fld)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(FEM_fields), intent(inout) :: FEM_fld
-!!      subroutine set_field_address_type(numnod, fld, phys_id)
+!!      subroutine init_field_address(numnod, fld, phys_id)
 !!        type(phys_data), intent(inout) :: fld
 !!        type(phys_address), intent(inout) :: phys_id
 !!@endverbatim
@@ -67,14 +67,14 @@
 !
 !   set address of nodal fields
 !
-!      write(*,*) 'set_field_address_type node'
-      call set_field_address_type                                       &
+!      write(*,*) 'init_field_address node'
+      call init_field_address                                           &
      &   (mesh%node%numnod, FEM_fld%phys_nod, FEM_fld%id_phys_nod)
 !
 !   set address of elemental values
 !
-!      write(*,*) 'set_field_address_type element'
-       call set_field_address_type                                      &
+!      write(*,*) 'init_field_address element'
+       call init_field_address                                          &
      &   (mesh%ele%numele, FEM_fld%phys_ele, FEM_fld%id_phys_ele)
 !
        end subroutine allocate_phys_data_type
@@ -82,7 +82,7 @@
 !  --------------------------------------------------------------------
 !  --------------------------------------------------------------------
 !
-      subroutine set_field_address_type(numnod, fld, phys_id)
+      subroutine init_field_address(numnod, fld, phys_id)
 !
       use set_field_address
 !
@@ -95,7 +95,7 @@
       call set_field_addresses(ione, fld%num_phys,                      &
      &    fld%phys_name, fld%num_component, phys_id)
 !
-      end subroutine set_field_address_type
+      end subroutine init_field_address
 !
 !  --------------------------------------------------------------------
 !

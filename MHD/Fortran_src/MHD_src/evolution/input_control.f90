@@ -60,7 +60,8 @@
       use mpi_load_mesh_data
       use input_MG_data
       use skip_comment_f
-      use check_dependency_for_MHD
+      use ordering_field_by_viz
+      use node_monitor_IO
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
@@ -95,9 +96,10 @@
         call alloc_MHD_MG_DJDS_mat(num_MG_level, MHD_matrices)
       end if
 !
-!  check dependencies
+      call count_field_4_monitor                                        &
+     &   (nod_fld%num_phys, nod_fld%num_component,                      &
+     &    nod_fld%iflag_monitor, num_field_monitor, ntot_comp_monitor)
 !
-      call check_dependencies_FEM_MHD(nod_fld)
 !
       end subroutine input_control_4_MHD
 !
@@ -109,7 +111,8 @@
       use m_ctl_data_fem_MHD
       use set_control_FEM_MHD
       use mpi_load_mesh_data
-      use check_dependency_for_MHD
+      use node_monitor_IO
+      use ordering_field_by_viz
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
@@ -134,9 +137,9 @@
       call input_meshes_4_MHD                                           &
      &   (mesh, group, IO_bc, filtering, wide_filtering, wk_filter)
 !
-!  check dependencies
-!
-      call check_dependencies_FEM_MHD(nod_fld)
+      call count_field_4_monitor                                        &
+     &   (nod_fld%num_phys, nod_fld%num_component,                      &
+     &    nod_fld%iflag_monitor, num_field_monitor, ntot_comp_monitor)
 !
       end subroutine input_control_4_snapshot
 !

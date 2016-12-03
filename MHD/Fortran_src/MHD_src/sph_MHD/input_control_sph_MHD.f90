@@ -146,7 +146,7 @@
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
+      if (iflag_debug.eq.1) write(*,*) 'set_control_SGS_SPH_MHD'
       call set_control_SGS_SPH_MHD(sph_gen, rj_fld, sph_file_param,     &
      &    sph_fst_IO, pwr, dynamic_SPH%sph_filters)
 !
