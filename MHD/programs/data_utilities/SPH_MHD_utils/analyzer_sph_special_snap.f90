@@ -139,6 +139,7 @@
       use lead_fields_4_sph_mhd
       use sph_mhd_rst_IO_control
       use sph_mhd_rms_IO
+      use input_control_sph_MHD
 !
       integer(kind = kint), intent(in) :: i_step
 !
@@ -192,7 +193,7 @@
 !
 !*  -----------  Output spectr data --------------
 !*
-      call output_spectr_4_snap(i_step, rj_fld1)
+      call output_spectr_4_snap(i_step, sph_file_param1, rj_fld1)
 !
       end subroutine SPH_analyze_special_snap
 !

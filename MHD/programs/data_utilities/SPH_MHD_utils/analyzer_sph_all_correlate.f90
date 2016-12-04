@@ -1,5 +1,5 @@
-!>@file   analyzer_sph_back_trans.f90
-!!@brief  module analyzer_sph_back_trans
+!>@file   analyzer_sph_all_correlate.f90
+!!@brief  module analyzer_sph_all_correlate
 !!
 !!@author H. Matsui
 !!@date   Programmed  H. Matsui in Apr., 2010
@@ -7,11 +7,11 @@
 !>@brief  Main loop to evaluate snapshots from spectr data
 !!
 !!@verbatim
-!!      subroutine initialize_sph_back_trans
-!!      subroutine evolution_sph_back_trans
+!!      subroutine initialize_sph_all_correlate
+!!      subroutine evolution_sph_all_correlate
 !!@endverbatim
 !
-      module analyzer_sph_back_trans
+      module analyzer_sph_all_correlate
 !
       use m_precision
       use calypso_mpi
@@ -38,7 +38,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine initialize_sph_back_trans
+      subroutine initialize_sph_all_correlate
 !
       use m_ctl_data_sph_MHD
       use m_spheric_parameter
@@ -48,6 +48,7 @@
       use init_sph_MHD_elapsed_label
       use FEM_analyzer_sph_MHD_w_viz
       use input_control_sph_MHD
+      use SPH_analyzer_correle_all
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -65,6 +66,7 @@
       call input_control_SPH_mesh                                       &
      &   (sph1, comms_sph1, sph_grps1, rj_fld1, nod_fld1, pwr1,         &
      &    trns_WK1%dynamic_SPH, mesh1, group1, ele_mesh1)
+      call set_ctl_4_second_spectr_data(sph_file_param2)
       call end_eleps_time(4)
 !
 !     --------------------- 
@@ -85,17 +87,18 @@
       call end_eleps_time(2)
       call reset_elapse_4_init_sph_mhd
 !
-      end subroutine initialize_sph_back_trans
+      end subroutine initialize_sph_all_correlate
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine evolution_sph_back_trans
+      subroutine evolution_sph_all_correlate
 !
       use m_spheric_parameter
       use m_node_phys_data
       use copy_all_fields_4_sph_trans
 !
       use FEM_analyzer_sph_MHD
+      use SPH_analyzer_correle_all
 !
       integer(kind = kint) :: visval
       integer(kind = kint) :: istep_psf, istep_iso
@@ -119,8 +122,8 @@
 !
 !*  ----------  time evolution by spectral methood -----------------
 !*
-        if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_back_trans'
-        call SPH_analyze_back_trans(i_step_MHD)
+        if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_correlate_all'
+        call SPH_analyze_correlate_all(i_step_MHD)
 !*
 !*  -----------  output field data --------------
 !*
@@ -174,8 +177,29 @@
       call calypso_MPI_barrier
       if (iflag_debug.eq.1) write(*,*) 'exit evolution'
 !
-      end subroutine evolution_sph_back_trans
+      end subroutine evolution_sph_all_correlate
 !
 ! ----------------------------------------------------------------------
 !
-      end module analyzer_sph_back_trans
+      subroutine set_ctl_4_second_spectr_data(sph_file_param2)
+!
+      use t_field_data_IO
+      use m_ctl_data_4_2nd_data
+      use m_file_format_switch
+!
+      type(field_IO_params), intent(inout) :: sph_file_param2
+!
+!
+      call choose_para_file_format                                      &
+     &   (new_spectr_data_fmt_ctl, sph_file_param2%iflag_format)
+!
+      sph_file_param2%iflag_IO = new_spectr_file_prefix%iflag
+      if(sph_file_param2%iflag_IO .gt. 0) then
+        sph_file_param2%file_prefix = new_spectr_file_prefix%charavalue
+      end if
+!
+      end subroutine set_ctl_4_second_spectr_data
+!
+!  --------------------------------------------------------------------
+!
+      end module analyzer_sph_all_correlate

@@ -94,6 +94,7 @@
       use m_ctl_data_node_monitor
       use m_ctl_data_4_pickup_sph
       use m_ctl_data_4_org_data
+      use m_ctl_data_4_2nd_data
       use m_read_ctl_gen_sph_shell
       use m_control_data_pvrs
       use read_ctl_data_sph_MHD
@@ -110,6 +111,7 @@
 !
         call read_ctl_data_4_platform
         call read_ctl_data_4_org_data
+        call read_ctl_data_4_new_data
 !
         call read_control_data_4_shell_in_MHD
 !

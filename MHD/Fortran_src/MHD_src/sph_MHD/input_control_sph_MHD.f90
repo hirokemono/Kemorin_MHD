@@ -43,6 +43,7 @@
       use t_spheric_mesh
       use t_group_data
       use t_rms_4_sph_spectr
+      use t_field_data_IO
       use sph_filtering
 !
       implicit none
@@ -50,6 +51,9 @@
       private :: set_control_4_SPH_to_FEM
 !
       type(sph_grids), private :: sph_gen
+!
+!>      Structure for spectr file  paramters
+      type(field_IO_params), save :: sph_file_param1
 !
 ! ----------------------------------------------------------------------
 !
@@ -89,7 +93,7 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_SGS_SPH_MHD'
-      call set_control_SGS_SPH_MHD(sph_gen, rj_fld, sph_file_param,     &
+      call set_control_SGS_SPH_MHD(sph_gen, rj_fld, sph_file_param1,    &
      &    sph_fst_IO, pwr, dynamic_SPH%sph_filters)
       call set_control_4_SPH_to_FEM(sph%sph_params, rj_fld, nod_fld)
 !
@@ -147,7 +151,7 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_SGS_SPH_MHD'
-      call set_control_SGS_SPH_MHD(sph_gen, rj_fld, sph_file_param,     &
+      call set_control_SGS_SPH_MHD(sph_gen, rj_fld, sph_file_param1,    &
      &    sph_fst_IO, pwr, dynamic_SPH%sph_filters)
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
@@ -181,7 +185,7 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
-      call set_control_4_SPH_MHD(sph_gen, rj_fld, sph_file_param,       &
+      call set_control_4_SPH_MHD(sph_gen, rj_fld, sph_file_param1,      &
      &   sph_fst_IO, pwr)
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
@@ -212,7 +216,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
       call set_control_4_SPH_MHD                                        &
-     &   (sph_gen, rj_fld, sph_file_param, sph_fst_IO, pwr)
+     &   (sph_gen, rj_fld, sph_file_param1, sph_fst_IO, pwr)
       call set_control_4_SPH_to_FEM(sph%sph_params, rj_fld, nod_fld)
       call set_ctl_params_dynamobench
 !

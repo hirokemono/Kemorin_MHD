@@ -23,6 +23,8 @@ TARGET_TAVE_PICK_CIRCLE =    t_ave_sph_picked_circle
 
 TARGET_SPH_FORWARD_TRANS = sph_forward_transform
 TARGET_SPH_BACK_TRANS =    sph_backward_transform
+TARGET_SPH_ALL_CORRELATE = sph_all_correlate
+TARGET_SPH_ALL_RMS_RATIO = sph_all_rms_ratio
 
 LIBS_SPH_UTILS = \
 '$$(LIB_MHD)'    \
@@ -127,6 +129,18 @@ main_sph_back_transform.o \
 analyzer_sph_back_trans.o \
 SPH_analyzer_back_trans.o
 
+MOD_SPH_ALL_CORRELATE = \
+main_sph_all_correlate.o \
+analyzer_sph_all_correlate.o \
+SPH_analyzer_correle_all.o \
+SPH_analyzer_back_trans.o
+
+MOD_SPH_ALL_RMS_RATIO = \
+main_sph_all_rms_ratio.o \
+analyzer_sph_all_rms_ratio.o \
+SPH_analyzer_rms_ratio_all.o \
+SPH_analyzer_back_trans.o
+
 #
 #  -------------------------------------------------------------------------
 #
@@ -149,6 +163,8 @@ target_list:
 	@echo 'TARGET_TAVE_PICK_CIRCLE =  $$(BUILDDIR)/$(TARGET_TAVE_PICK_CIRCLE)' >> $(MAKENAME)
 	@echo 'TARGET_SPH_FORWARD_TRANS =  $$(BUILDDIR)/$(TARGET_SPH_FORWARD_TRANS)' >> $(MAKENAME)
 	@echo 'TARGET_SPH_BACK_TRANS =  $$(BUILDDIR)/$(TARGET_SPH_BACK_TRANS)' >> $(MAKENAME)
+	@echo 'TARGET_SPH_ALL_CORRELATE =  $$(BUILDDIR)/$(TARGET_SPH_ALL_CORRELATE)' >> $(MAKENAME)
+	@echo 'TARGET_SPH_ALL_RMS_RATIO =  $$(BUILDDIR)/$(TARGET_SPH_ALL_RMS_RATIO)' >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
@@ -166,7 +182,9 @@ target_task:
 	 '$$(TARGET_SPH_SNAP_BADBOY)'   \
 	 '$$(TARGET_TAVE_PICK_CIRCLE)'  \
 	 '$$(TARGET_SPH_FORWARD_TRANS)'  \
-	 '$$(TARGET_SPH_BACK_TRANS)'  >> $(MAKENAME)
+	 '$$(TARGET_SPH_BACK_TRANS)'  \
+	 '$$(TARGET_SPH_ALL_CORRELATE)' \
+	 '$$(TARGET_SPH_ALL_RMS_RATIO)'  >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_SPH_SNAP):  $$(MOD_SPH_SNAP_MAIN)  $$(LIB_FILES_SPH_UTILS)' \
 	>> $(MAKENAME)
@@ -245,10 +263,19 @@ target_task:
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPH_FORWARD_TRANS)' '$$(MOD_SPH_FORWARD_TRANS)' \
 	'-L. $$(LIBS_SPH_UTILS)  $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
-	
 	@echo '$$(TARGET_SPH_BACK_TRANS):  $$(MOD_SPH_BACK_TRANS)  $$(LIB_FILES_SPH_UTILS)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPH_BACK_TRANS)' '$$(MOD_SPH_BACK_TRANS)' \
+	'-L. $$(LIBS_SPH_UTILS)  $$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_SPH_ALL_CORRELATE):  $$(MOD_SPH_ALL_CORRELATE)  $$(LIB_FILES_SPH_UTILS)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPH_ALL_CORRELATE)' '$$(MOD_SPH_ALL_CORRELATE)' \
+	'-L. $$(LIBS_SPH_UTILS)  $$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_SPH_ALL_RMS_RATIO):  $$(MOD_SPH_ALL_RMS_RATIO)  $$(LIB_FILES_SPH_UTILS)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPH_ALL_RMS_RATIO)' '$$(MOD_SPH_ALL_RMS_RATIO)' \
 	'-L. $$(LIBS_SPH_UTILS)  $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 
@@ -290,6 +317,10 @@ mod_list:
 	@echo  $(MOD_SPH_FORWARD_TRANS) >> $(MAKENAME)
 	@echo  MOD_SPH_BACK_TRANS=  \\ >> $(MAKENAME)
 	@echo  $(MOD_SPH_BACK_TRANS) >> $(MAKENAME)
+	@echo  MOD_SPH_ALL_CORRELATE=  \\ >> $(MAKENAME)
+	@echo  $(MOD_SPH_ALL_CORRELATE) >> $(MAKENAME)
+	@echo  MOD_SPH_ALL_RMS_RATIO=  \\ >> $(MAKENAME)
+	@echo  $(MOD_SPH_ALL_RMS_RATIO) >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 
 

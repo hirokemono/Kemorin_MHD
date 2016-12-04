@@ -15,6 +15,7 @@
 !!      subroutine dealloc_phys_data_type(fld)
 !!
 !!      subroutine copy_field_name_type(org_fld, new_fld)
+!!      subroutine copy_field_data_type(org_fld, new_fld)
 !!        type(phys_data), intent(in) :: org_fld
 !!        type(phys_data), intent(inout) :: new_fld
 !!
@@ -165,6 +166,24 @@
      &             = org_fld%istack_component(0:new_fld%num_phys)
 !
       end subroutine copy_field_name_type
+!
+! -----------------------------------------------------------------------
+!
+      subroutine copy_field_data_type(org_fld, new_fld)
+!
+      type(phys_data), intent(in) :: org_fld
+      type(phys_data),intent(inout) :: new_fld
+!
+      call alloc_phys_data_type(org_fld%n_point, new_fld)
+      new_fld%iflag_update(1:new_fld%ntot_phys)                         &
+     &           = org_fld%iflag_update(1:new_fld%ntot_phys)
+!
+!$omp parallel workshare
+      new_fld%d_fld(1:new_fld%n_point,1:new_fld%ntot_phys)              &
+     &          = org_fld%d_fld(1:new_fld%n_point,1:new_fld%ntot_phys)
+!$omp end parallel workshare
+!
+      end subroutine copy_field_data_type
 !
 ! -----------------------------------------------------------------------
 !

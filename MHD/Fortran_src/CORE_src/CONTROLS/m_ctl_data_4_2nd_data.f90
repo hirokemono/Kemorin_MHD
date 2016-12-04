@@ -31,6 +31,7 @@
 !!    new_rst_files_fmt_ctl           'ascii'
 !!    new_field_files_fmt_ctl         'ascii'
 !!    new_sph_files_fmt_ctl           'ascii'
+!!   'new_spectr_data_fmt_ctl'        'merged_gz'
 !!
 !!    delete_original_data_flag       'YES'
 !!  end new_data_files_def
@@ -63,6 +64,7 @@
       type(read_character_item), save :: new_sph_file_fmt_ctl
       type(read_character_item), save :: new_rst_files_fmt_ctl
       type(read_character_item), save :: new_udt_file_fmt_ctl
+      type(read_character_item), save :: new_spectr_data_fmt_ctl
 !
       type(read_character_item), save :: del_org_data_ctl
 !
@@ -106,6 +108,8 @@
      &       :: hd_new_udt_files_fmt = 'new_field_files_fmt_ctl'
       character(len=kchara), parameter                                  &
      &       :: hd_new_sph_files_fmt = 'new_sph_files_fmt_ctl'
+      character(len=kchara), parameter                                  &
+     &       :: hd_new_sph_data_fmt =  'new_spectr_data_fmt_ctl'
 !
       character(len=kchara), parameter                                  &
      &       :: hd_del_org_data = 'delete_original_data_flag'
@@ -118,7 +122,7 @@
       private :: hd_new_dx_head, hd_new_dx_data_head
       private :: hd_new_mesh_file_fmt, hd_new_rst_files_fmt
       private :: hd_new_udt_files_fmt, hd_new_sph_files_fmt
-      private :: hd_del_org_data
+      private :: hd_del_org_data, hd_new_sph_data_fmt
 !
 !  ---------------------------------------------------------------------
 !
@@ -170,6 +174,8 @@
      &      new_udt_file_fmt_ctl)
         call read_chara_ctl_type(hd_new_sph_files_fmt,                  &
      &      new_sph_file_fmt_ctl)
+        call read_chara_ctl_type(hd_new_sph_data_fmt,                   &
+     &      new_spectr_data_fmt_ctl)
 !
         call read_chara_ctl_type(hd_del_org_data, del_org_data_ctl)
       end do

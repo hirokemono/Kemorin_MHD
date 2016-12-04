@@ -49,6 +49,7 @@
       use set_control_sph_data_MHD
       use init_sph_MHD_elapsed_label
       use parallel_load_data_4_sph
+      use input_control_sph_MHD
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -62,7 +63,7 @@
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_snap_noviz'
       call read_control_4_sph_snap_noviz
       if (iflag_debug.eq.1) write(*,*) 'set_control_SGS_SPH_MHD'
-      call set_control_SGS_SPH_MHD(sph_gen, rj_fld1, sph_file_param,    &
+      call set_control_SGS_SPH_MHD(sph_gen, rj_fld1, sph_file_param1,   &
      &    sph_fst_IO, pwr1, trns_WK1%dynamic_SPH%sph_filters)
       call set_ctl_params_pick_circle
 !

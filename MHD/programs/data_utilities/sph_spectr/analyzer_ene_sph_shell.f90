@@ -128,6 +128,8 @@
      &      pwr_spec)
         call write_sph_layer_ms_file(my_rank, i_step, time,             &
      &      sph_mesh_spec%sph%sph_params, pwr_spec)
+        call write_sph_layer_spectr_file(my_rank, i_step, time,         &
+     &      sph_mesh_spec%sph%sph_params, pwr_spec)
       end do
 !
       end subroutine analyze_ene_sph_shell

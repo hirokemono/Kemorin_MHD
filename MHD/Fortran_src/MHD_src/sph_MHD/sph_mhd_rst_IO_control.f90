@@ -22,7 +22,10 @@
 !!      subroutine read_alloc_sph_rst_4_snap                            &
 !!     &         (i_step, sph_rj, ipol, rj_fld)
 !!        type(phys_data), intent(inout) :: rj_fld
-!!      subroutine output_spectr_4_snap(i_step, rj_fld)
+!!      subroutine output_spectr_4_snap(i_step, sph_file_param, rj_fld)
+!!      subroutine read_alloc_sph_spectr                                &
+!!     &         (i_step, sph_file_param, sph_rj, ipol, rj_fld)
+!!        type(field_IO_params), intent(in) :: sph_file_param
 !!        type(phys_data), intent(in) :: rj_fld
 !!      subroutine read_alloc_sph_rst_2_modify(i_step, sph_rj, rj_fld)
 !!        type(phys_data), intent(inout) :: rj_fld
@@ -48,8 +51,6 @@
 !
       implicit  none
 !
-!>      Structure for restart file  paramters
-      type(field_IO_params), save :: sph_file_param
 !
       type(field_IO), save :: sph_fst_IO
       type(field_IO), save :: sph_out_IO
@@ -215,7 +216,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine output_spectr_4_snap(i_step, rj_fld)
+      subroutine output_spectr_4_snap(i_step, sph_file_param, rj_fld)
 !
       use m_t_int_parameter
       use copy_rj_phys_data_4_IO
@@ -223,6 +224,7 @@
       use const_global_element_ids
 !
       type(phys_data), intent(in) :: rj_fld
+      type(field_IO_params), intent(in) :: sph_file_param
       integer(kind = kint), intent(in) :: i_step
 !
       integer(kind = kint) :: istep_fld
@@ -258,7 +260,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_alloc_sph_spectr(i_step, sph_rj, ipol, rj_fld)
+      subroutine read_alloc_sph_spectr                                  &
+     &         (i_step, sph_file_param, sph_rj, ipol, rj_fld)
 !
       use m_control_params_2nd_files
       use t_spheric_rj_data
@@ -266,6 +269,7 @@
       use r_interpolate_sph_data
 !
       integer(kind = kint), intent(in) :: i_step
+      type(field_IO_params), intent(in) :: sph_file_param
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_address), intent(in) :: ipol
       type(phys_data), intent(inout) :: rj_fld

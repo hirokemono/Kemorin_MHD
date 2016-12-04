@@ -94,8 +94,6 @@
 !  set original spectr mesh data for extension of B
 !
       call init_radial_sph_interpolation(sph1%sph_params, sph1%sph_rj)
-!
-!* -----  set integrals for coriolis -----------------
 !*
       if(iflag_debug .gt. 0) write(*,*) 'open_sph_vol_rms_file_mhd'
       call open_sph_vol_rms_file_mhd                                    &
@@ -122,6 +120,7 @@
       use lead_fields_4_sph_mhd
       use sph_mhd_rst_IO_control
       use sph_mhd_rms_IO
+      use input_control_sph_MHD
 !
       integer(kind = kint), intent(in) :: i_step
 !
@@ -170,7 +169,7 @@
 !*  -----------  Output spectr data --------------
 !*
       if(iflag_debug.gt.0)  write(*,*) 'output_spectr_4_snap'
-      call output_spectr_4_snap(i_step, rj_fld1)
+      call output_spectr_4_snap(i_step, sph_file_param1, rj_fld1)
       call end_eleps_time(4)
 !
       end subroutine SPH_analyze_snap
