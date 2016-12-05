@@ -146,12 +146,16 @@
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
       call start_eleps_time(22)
+      call calypso_mpi_barrier
+      if(iflag_debug .gt. 0) write(*,*) 'pole_backward_transforms'
       call pole_backward_transforms(ncomp_trans, nvector, nscalar,      &
      &    sph%sph_params, sph%sph_rtp, sph%sph_rtm, sph%sph_rlm,        &
      &    comms_sph%comm_rlm, trans_p%leg, n_WR, WR, v_pl_local)
       call finish_send_recv_sph(comms_sph%comm_rj)
 !
 !
+      call calypso_mpi_barrier
+      if(iflag_debug .gt. 0) write(*,*) 'sel_backward_legendre_trans'
       call sel_backward_legendre_trans                                  &
      &   (ncomp_trans, nvector, nscalar, sph%sph_rlm, sph%sph_rtm,      &
      &    comms_sph%comm_rlm, comms_sph%comm_rtm,                       &
@@ -172,6 +176,8 @@
 !
       call finish_send_recv_sph(comms_sph%comm_rtm)
 !
+      call calypso_mpi_barrier
+      if(iflag_debug .gt. 0) write(*,*) 'v_pole'
       v_pole(1:sph%sph_rtp%nnod_pole,1:ncomp_trans) = zero
       ncomp_pole = ncomp_trans * sph%sph_rtp%nnod_pole
       call MPI_allreduce(v_pl_local, v_pole, ncomp_pole,                &

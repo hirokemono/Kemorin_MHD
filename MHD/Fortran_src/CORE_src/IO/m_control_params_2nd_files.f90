@@ -21,11 +21,11 @@
       implicit  none
 !
 !>      file header for original spectrum indexing data
-      character(len=kchara) :: org_sph_rj_head =      "sph_org/in_rj"
+      character(len=kchara) :: def_org_sph_rj_head =      "sph_org/in_rj"
 !>      file header for original field data
-      character(len=kchara) :: org_ucd_header =  "field_org/out"
+      character(len=kchara) :: def_org_ucd_header =  "field_org/out"
 !>      file header for original restart data
-      character(len=kchara) :: org_rst_header =   "rst_org/rst"
+      character(len=kchara) :: def_org_rst_header =   "rst_org/rst"
 !
 !>      Structure for field data IO paramters
       type(field_IO_params), save :: rj_org_param
@@ -33,6 +33,9 @@
       type(field_IO_params), save :: udt_org_param
 !>      Structure for original restart file  paramters
       type(field_IO_params), save :: rst_org_param
+!
+      private :: def_org_sph_rj_head
+      private :: def_org_ucd_header, def_org_rst_header
 !
 ! ----------------------------------------------------------------------
 !
@@ -51,7 +54,7 @@
       if(rj_org_param%iflag_IO .gt. 0) then
         rj_org_param%file_prefix = org_sph_mode_head_ctl%charavalue
       else
-        rj_org_param%file_prefix = org_sph_rj_head
+        rj_org_param%file_prefix = def_org_sph_rj_head
       end if
 !
       call choose_file_format                                           &
@@ -73,7 +76,7 @@
       if(rst_org_param%iflag_IO .gt. 0) then
         rst_org_param%file_prefix = orginal_restart_prefix%charavalue
       else
-        rst_org_param%file_prefix = org_rst_header
+        rst_org_param%file_prefix = def_org_rst_header
       end if
 !
       call choose_ucd_file_format(restart_file_fmt_ctl%charavalue,      &
@@ -95,7 +98,7 @@
       if (org_udt_head_ctl%iflag .gt. 0) then
         udt_org_param%file_prefix = org_udt_head_ctl%charavalue
       else
-        udt_org_param%file_prefix = org_ucd_header
+        udt_org_param%file_prefix = def_org_ucd_header
       end if
 !
       call choose_ucd_file_format(udt_file_fmt_ctl%charavalue,          &
