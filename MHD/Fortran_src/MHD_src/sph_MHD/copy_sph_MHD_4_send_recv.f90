@@ -44,7 +44,6 @@
       module copy_sph_MHD_4_send_recv
 !
       use m_precision
-      use calypso_mpi
       use m_machine_parameter
       use copy_spectr_4_sph_trans
 !
@@ -349,8 +348,6 @@
       call sel_sph_rj_vector_to_send(ncomp_send,                        &
      &    ipol%i_current, bs_trns%i_current, comm_rj, rj_fld, n_WS, WS)
 !
-      call calypso_mpi_barrier
-      if(iflag_debug .gt. 0) write(*,*) 'i_v_diffuse'
       call sel_sph_rj_vector_to_send(ncomp_send,                        &
      &    ipol%i_v_diffuse, bs_trns%i_v_diffuse,                        &
      &    comm_rj, rj_fld, n_WS, WS)
@@ -364,8 +361,6 @@
      &    ipol%i_b_diffuse, bs_trns%i_b_diffuse,                        &
      &    comm_rj, rj_fld, n_WS, WS)
 !
-      call calypso_mpi_barrier
-      if(iflag_debug .gt. 0) write(*,*) 'i_rot_inertia'
       call sel_sph_rj_vector_to_send(ncomp_send,                        &
      &    ipol%i_rot_inertia, bs_trns%i_rot_inertia,                    &
      &    comm_rj, rj_fld, n_WS, WS)
@@ -382,40 +377,26 @@
      &    ipol%i_rot_comp_buo, bs_trns%i_rot_comp_buo,                  &
      &    comm_rj, rj_fld, n_WS, WS)
 !
-      call calypso_mpi_barrier
-      if(iflag_debug .gt. 0) write(*,*) 'i_SGS_inertia'
       call sel_sph_rj_vector_to_send(ncomp_send,                        &
      &    ipol%i_SGS_inertia, bs_trns%i_SGS_inertia,                    &
      &    comm_rj, rj_fld, n_WS, WS)
-      call calypso_mpi_barrier
-      if(iflag_debug .gt. 0) write(*,*) 'i_SGS_Lorentz'
       call sel_sph_rj_vector_to_send(ncomp_send,                        &
      &    ipol%i_SGS_Lorentz, bs_trns%i_SGS_Lorentz,                    &
      &    comm_rj, rj_fld, n_WS, WS)
-      call calypso_mpi_barrier
-      if(iflag_debug .gt. 0) write(*,*) 'i_SGS_vp_induct'
       call sel_sph_rj_vector_to_send(ncomp_send,                        &
      &    ipol%i_SGS_vp_induct, bs_trns%i_SGS_vp_induct,                &
      &    comm_rj, rj_fld, n_WS, WS)
-      call calypso_mpi_barrier
-      if(iflag_debug .gt. 0) write(*,*) 'i_SGS_h_flux'
       call sel_sph_rj_vector_to_send(ncomp_send,                        &
      &    ipol%i_SGS_h_flux, bs_trns%i_SGS_h_flux,                      &
      &    comm_rj, rj_fld, n_WS, WS)
-      call calypso_mpi_barrier
-      if(iflag_debug .gt. 0) write(*,*) 'i_SGS_c_flux'
       call sel_sph_rj_vector_to_send(ncomp_send,                        &
      &    ipol%i_SGS_c_flux, bs_trns%i_SGS_c_flux,                      &
      &    comm_rj, rj_fld, n_WS, WS)
 !
-      call calypso_mpi_barrier
-      if(iflag_debug .gt. 0) write(*,*) 'i_geostrophic'
       call sel_sph_rj_vector_to_send(ncomp_send,                        &
      &    ipol%i_geostrophic, bs_trns%i_geostrophic,                    &
      &    comm_rj, rj_fld, n_WS, WS)
 !
-      call calypso_mpi_barrier
-      if(iflag_debug .gt. 0) write(*,*) 'i_h_flux_w_sgs'
       call sel_sph_rj_vector_to_send(ncomp_send,                        &
      &    ipol%i_h_flux_w_sgs, bs_trns%i_h_flux_w_sgs,                  &
      &    comm_rj, rj_fld, n_WS, WS)
@@ -435,8 +416,6 @@
      &    ipol%i_mag_induct_w_sgs, bs_trns%i_mag_induct_w_sgs,          &
      &    comm_rj, rj_fld, n_WS, WS)
 !
-      call calypso_mpi_barrier
-      if(iflag_debug .gt. 0) write(*,*) 'i_SGS_rot_inertia'
       call sel_sph_rj_vector_to_send(ncomp_send,                        &
      &    ipol%i_SGS_rot_inertia, bs_trns%i_SGS_rot_inertia,            &
      &    comm_rj, rj_fld, n_WS, WS)
@@ -479,8 +458,6 @@
      &    ipol%i_light, bs_trns%i_light, nnod_pole,                     &
      &    sph_rj, comm_rj, rj_fld, n_WS, WS, v_pl_local)
 !
-      call calypso_mpi_barrier
-      if(iflag_debug .gt. 0) write(*,*) 'i_press'
       call sel_sph_rj_scalar_2_send_wpole(ncomp_send,                   &
      &    ipol%i_press, bs_trns%i_press, nnod_pole,                     &
      &    sph_rj, comm_rj, rj_fld, n_WS, WS, v_pl_local)
@@ -497,8 +474,6 @@
      &    ipol%i_c_diffuse, bs_trns%i_c_diffuse, nnod_pole,             &
      &    sph_rj, comm_rj, rj_fld, n_WS, WS, v_pl_local)
 !
-      call calypso_mpi_barrier
-      if(iflag_debug .gt. 0) write(*,*) 'i_div_Coriolis'
       call sel_sph_rj_scalar_2_send_wpole(ncomp_send,                   &
      &    ipol%i_div_Coriolis, bs_trns%i_div_Coriolis, nnod_pole,       &
      &    sph_rj, comm_rj, rj_fld, n_WS, WS, v_pl_local)

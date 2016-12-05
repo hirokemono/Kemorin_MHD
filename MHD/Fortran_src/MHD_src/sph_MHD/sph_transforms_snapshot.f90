@@ -79,15 +79,11 @@
       call check_calypso_sph_comm_buf_N(trns_snap%ncomp_rj_2_rtp,       &
      &   comms_sph%comm_rtm, comms_sph%comm_rtp)
 !
-      call calypso_mpi_barrier
-      if(iflag_debug .gt. 0) write(*,*) 'copy_snap_spectr_to_send'
       call copy_snap_spectr_to_send(sph%sph_rtp%nnod_pole,              &
      &    trns_snap%ncomp_rj_2_rtp, trns_snap%b_trns,                   &
      &    sph%sph_rj, comms_sph%comm_rj, ipol, rj_fld,                  &
      &    n_WS, WS, trns_snap%flc_pole)
 !
-      call calypso_mpi_barrier
-      if(iflag_debug .gt. 0) write(*,*) 'copy_snap_spectr_to_send'
       call sph_b_trans_w_poles                                          &
      &   (trns_snap%ncomp_rj_2_rtp, trns_snap%nvector_rj_2_rtp,         &
      &    nscalar_trans, sph, comms_sph, trans_p,                       &
