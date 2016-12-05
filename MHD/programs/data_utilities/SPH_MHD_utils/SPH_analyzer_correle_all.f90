@@ -1,4 +1,4 @@
-!>@file   SPH_analyzer_correle_all.d90
+!>@file   SPH_analyzer_correle_all.f90
 !!@brief  module SPH_analyzer_correle_all
 !!
 !!@author H. Matsui

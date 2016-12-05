@@ -29,6 +29,8 @@
 !
       implicit none
 !
+      character(len=kchara), parameter, private                         &
+     &                      :: snap_ctl_name = 'control_snapshot'
       type(sph_grids), private :: sph_gen
 !
 ! ----------------------------------------------------------------------
@@ -61,7 +63,7 @@
       call start_eleps_time(1)
       call start_eleps_time(4)
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_snap_noviz'
-      call read_control_4_sph_snap_noviz
+      call read_control_4_sph_snap_noviz(snap_ctl_name)
       if (iflag_debug.eq.1) write(*,*) 'set_control_SGS_SPH_MHD'
       call set_control_SGS_SPH_MHD(sph_gen, rj_fld1, sph_file_param1,   &
      &    sph_fst_IO, pwr1, trns_WK1%dynamic_SPH%sph_filters)

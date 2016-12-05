@@ -22,6 +22,7 @@
 !
       use m_precision
       use m_constants
+      use m_machine_parameter
 !
       use t_spheric_parameter
       use t_phys_data
@@ -83,9 +84,13 @@
       type(sph_filters_type), intent(inout) :: sph_filters(1)
 !
 !
+      if(iflag_debug.gt.0) write(*,*)' const_sph_radial_filter'
       call const_sph_radial_filter(sph_rj, sph_grps, sph_filters(1))
+      call calypso_mpi_barrier
+      if(iflag_debug.gt.0) write(*,*)' const_sph_gaussian_filter'
       call const_sph_gaussian_filter(sph_params%l_truncation,           &
      &    sph_filters(1)%sph_moments, sph_filters(1)%sph_filter)
+      call calypso_mpi_barrier
 !
 !
       if(iflag_debug .gt. 0) then
@@ -182,8 +187,14 @@
       type(sph_filter_moment), intent(inout) :: sph_moments
 !
 !
+      call calypso_mpi_barrier
+      if(iflag_debug.gt.0) write(*,*)' alloc_sph_filter_weights'
       call alloc_sph_filter_weights(l_truncation, sph_filter)
+      call calypso_mpi_barrier
+      if(iflag_debug.gt.0) write(*,*)' alloc_sph_filter_moms'
       call alloc_sph_filter_moms(sph_moments)
+      call calypso_mpi_barrier
+      if(iflag_debug.gt.0) write(*,*)' set_sph_gaussian_filter'
       call set_sph_gaussian_filter(sph_filter%l_truncation,             &
      &    sph_filter%k_width, sph_filter%weight,                        &
      &    sph_moments%num_momentum, sph_moments%filter_mom)

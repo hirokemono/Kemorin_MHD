@@ -32,6 +32,9 @@
 !
       implicit none
 !
+      character(len=kchara), parameter, private                         &
+     &                      :: ratio_ctl_name = 'control_sph_rms_ratio'
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -60,7 +63,7 @@
       call start_eleps_time(1)
       call start_eleps_time(4)
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_snap'
-      call read_control_4_sph_snap
+      call read_control_4_sph_snap(ratio_ctl_name)
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_mesh'
       call input_control_SPH_mesh                                       &
