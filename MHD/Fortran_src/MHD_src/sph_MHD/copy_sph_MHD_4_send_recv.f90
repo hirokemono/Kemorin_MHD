@@ -44,6 +44,7 @@
       module copy_sph_MHD_4_send_recv
 !
       use m_precision
+      use calypso_mpi
       use m_machine_parameter
       use copy_spectr_4_sph_trans
 !
