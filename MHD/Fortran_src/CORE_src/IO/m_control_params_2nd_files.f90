@@ -47,18 +47,10 @@
 !
       use m_ctl_data_4_org_data
       use m_read_mesh_data
-      use m_file_format_switch
 !
 !
-      rj_org_param%iflag_IO = org_sph_mode_head_ctl%iflag
-      if(rj_org_param%iflag_IO .gt. 0) then
-        rj_org_param%file_prefix = org_sph_mode_head_ctl%charavalue
-      else
-        rj_org_param%file_prefix = def_org_sph_rj_head
-      end if
-!
-      call choose_file_format                                           &
-     &   (org_sph_file_fmt_ctl, rj_org_param%iflag_format)
+      call set_file_control_params(def_org_sph_rj_head,                 &
+     &    org_sph_mode_head_ctl, org_sph_file_fmt_ctl, rj_org_param)
 !
       end subroutine set_control_org_sph_mesh
 !
@@ -68,19 +60,10 @@
 !
       use m_ctl_data_4_platforms
       use m_ctl_data_4_org_data
-      use m_field_file_format
-      use m_file_format_switch
 !
 !
-      rst_org_param%iflag_IO = orginal_restart_prefix%iflag
-      if(rst_org_param%iflag_IO .gt. 0) then
-        rst_org_param%file_prefix = orginal_restart_prefix%charavalue
-      else
-        rst_org_param%file_prefix = def_org_rst_header
-      end if
-!
-      call choose_ucd_file_format(restart_file_fmt_ctl%charavalue,      &
-     &    restart_file_fmt_ctl%iflag, rst_org_param%iflag_format)
+      call set_file_control_params(def_org_rst_header,                  &
+     &    orginal_restart_prefix, restart_file_fmt_ctl, rst_org_param)
 !
       end subroutine set_control_org_rst_file_def
 !
@@ -90,22 +73,40 @@
 !
       use m_ctl_data_4_platforms
       use m_ctl_data_4_org_data
-      use m_field_file_format
-      use m_file_format_switch
 !
 !
-      udt_org_param%iflag_IO = org_udt_head_ctl%iflag
-      if (org_udt_head_ctl%iflag .gt. 0) then
-        udt_org_param%file_prefix = org_udt_head_ctl%charavalue
-      else
-        udt_org_param%file_prefix = def_org_ucd_header
-      end if
-!
-      call choose_ucd_file_format(udt_file_fmt_ctl%charavalue,          &
-     &    udt_file_fmt_ctl%iflag, udt_org_param%iflag_format)
+      call set_file_control_params(def_org_ucd_header,                  &
+     &    org_udt_head_ctl, udt_file_fmt_ctl,  udt_org_param)
 !
       end subroutine set_control_org_udt_file_def
 !
 ! -----------------------------------------------------------------------
+!
+      subroutine set_file_control_params(default_prefix,                &
+     &          file_prefix_ctl, file_format_ctl,  file_params)
+!
+      use t_control_elements
+      use m_file_format_switch
+!
+      character(len = kchara), intent(in) :: default_prefix
+      type(read_character_item), intent(in) :: file_prefix_ctl
+      type(read_character_item), intent(in) :: file_format_ctl
+!
+      type(field_IO_params), intent(inout) :: file_params
+!
+!
+      file_params%iflag_IO = file_prefix_ctl%iflag
+      if(file_params%iflag_IO .gt. 0) then
+        file_params%file_prefix = file_prefix_ctl%charavalue
+      else
+        file_params%file_prefix = default_prefix
+      end if
+!
+      call choose_file_format                                           &
+     &   (file_format_ctl, file_params%iflag_format)
+!
+      end subroutine set_file_control_params
+!
+! ----------------------------------------------------------------------
 !
       end module m_control_params_2nd_files
