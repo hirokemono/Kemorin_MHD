@@ -12,7 +12,7 @@
 !!        type(sph_filter_moment), intent(inout) :: mom
 !!
 !!      subroutine cal_r_gaussian_moments(filter_length, mom)
-!!      subroutine set_sph_gaussian_filter(l_truncation, k_width,       &
+!!      subroutine set_sph_gaussian_filter(l_truncation, f_width,       &
 !!     &          weight, num_momentum, filter_mom)
 !!
 !!      subroutine check_radial_filter(sph_rj, r_filter)
@@ -47,7 +47,7 @@
 !>        Truncation degree
         integer(kind = kint) :: l_truncation
 !>        filter width
-        integer(kind = kint) :: k_width
+        real(kind = kreal) :: f_width
 !>        Coefficients for each degree
         real(kind = kreal), allocatable :: weight(:)
       end type sph_gaussian_filter
@@ -151,11 +151,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_sph_gaussian_filter(l_truncation, k_width,         &
+      subroutine set_sph_gaussian_filter(l_truncation, f_width,         &
      &          weight, num_momentum, filter_mom)
 !
-      integer(kind = kint), intent(in) :: l_truncation, k_width
+      integer(kind = kint), intent(in) :: l_truncation
       integer(kind = kint), intent(in) :: num_momentum
+      real(kind = kreal), intent(in) :: f_width
       real(kind = kreal), intent(inout) :: weight(0:l_truncation)
       real(kind = kreal), intent(inout) :: filter_mom(0:num_momentum-1)
 !
@@ -163,10 +164,11 @@
       real(kind = kreal) :: b, pi
 !
 !
-!      b = log(two) / (one - cos(six / real(k_width)))
       pi = four * atan(one)
-      k_rev = 2*l_truncation / k_width
-      b = 2*pi*l_truncation / k_width
+!      k_rev = 2*l_truncation / f_width
+!      b = 2*pi*l_truncation / f_width
+      b = log(two) / (one                                               &
+     &   - cos(pi*dble(f_width) / (dble(l_truncation+1)*six)))
 !
       weight(0) = one
       if(b .gt. 227.0) then
@@ -258,7 +260,7 @@
       integer(kind = kint) :: l
 !
 !
-      write(*,*)  'horizontal_filter', sph_filter%k_width
+      write(*,*)  'horizontal_filter', sph_filter%f_width
       do l = 0, sph_filter%l_truncation
         write(*,*) l, sph_filter%weight(l)
       end do

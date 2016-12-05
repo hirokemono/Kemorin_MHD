@@ -196,7 +196,7 @@
       call calypso_mpi_barrier
       if(iflag_debug.gt.0) write(*,*)' set_sph_gaussian_filter'
       call set_sph_gaussian_filter(sph_filter%l_truncation,             &
-     &    sph_filter%k_width, sph_filter%weight,                        &
+     &    sph_filter%f_width, sph_filter%weight,                        &
      &    sph_moments%num_momentum, sph_moments%filter_mom)
 !
       end subroutine const_sph_gaussian_filter

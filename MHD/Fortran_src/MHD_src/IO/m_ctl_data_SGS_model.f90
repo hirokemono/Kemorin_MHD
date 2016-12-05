@@ -218,7 +218,7 @@
 !>        Structure for number of moments of filter
         type(read_integer_item) :: maximum_moments_ctl
 !>        Structure for radial filter width
-        type(read_integer_item) :: sphere_filter_width_ctl
+        type(read_real_item) :: sphere_filter_width_ctl
 !>        Structure for horizontal filter width
         type(read_real_item) :: radial_filter_width_ctl
       end type sph_filter_ctl_type
@@ -526,7 +526,7 @@
 !
         call read_real_ctl_type(hd_radial_filter_w,                     &
      &      sphf_ctl%radial_filter_width_ctl)
-        call read_integer_ctl_type(hd_sphere_filter_w,                  &
+        call read_real_ctl_type(hd_sphere_filter_w,                     &
      &      sphf_ctl%sphere_filter_width_ctl)
       end do
 !
