@@ -137,7 +137,6 @@
       use calypso_mpi
       use t_ucd_data
 !
-      use m_control_params_2nd_files
       use m_FFT_selector
       use set_control_nodal_data
       use set_control_sph_data
@@ -233,7 +232,6 @@
       use m_ctl_data_4_time_steps
       use m_ctl_data_4_sph_trans
       use m_ctl_data_4_fields
-      use m_control_params_2nd_files
       use skip_comment_f
       use parallel_ucd_IO_select
 !
@@ -334,7 +332,6 @@
       subroutine set_ctl_data_4_pick_zm
 !
       use m_ctl_data_4_platforms
-      use m_control_params_2nd_files
 !
 !
       if(udt_file_head_ctl%iflag .eq. 0) return

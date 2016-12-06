@@ -47,7 +47,6 @@
 !
       subroutine FEM_analyze_pvr(i_step, istep_pvr)
 !
-      use m_control_params_2nd_files
       use set_exit_flag_4_visualizer
 !
       integer (kind =kint), intent(in) :: i_step

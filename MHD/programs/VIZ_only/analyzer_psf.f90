@@ -28,7 +28,6 @@
 !
       use calypso_mpi
       use m_control_data_section_only
-      use m_control_params_2nd_files
       use set_control_visualizer
 !
       integer(kind = kint) :: ierr

@@ -21,8 +21,15 @@
       use t_ucd_data
       use t_next_node_ele_4_node
       use t_jacobian_3d
+      use t_field_data_IO
 !
       implicit none
+!
+!>      Structure for field data IO paramters
+      type(field_IO_params), save :: udt_org_param
+!>      Structure for original restart file  paramters
+      type(field_IO_params), save :: rst_org_param
+!
 !
 !>     Structure for mesh data
 !>        (position, connectivity, group, and communication)
