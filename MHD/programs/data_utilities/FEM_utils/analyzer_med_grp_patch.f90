@@ -44,7 +44,7 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_grp_patch'
-      call s_input_control_grp_patch(ucd_FUTIL)
+      call s_input_control_grp_patch(udt_param_FUTIL, ucd_FUTIL)
       if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh'
       call mpi_input_mesh(femmesh_FUTIL%mesh, femmesh_FUTIL%group,      &
      &    elemesh_FUTIL%surf%nnod_4_surf,                               &

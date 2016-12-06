@@ -59,11 +59,12 @@
       use m_jacobians
       use m_finite_element_matrix
 !
-      use read_udt_4_snapshot
+      use m_ucd_data
 !
       use nod_phys_send_recv
       use lead_physical_values
       use copy_nodal_fields
+      use input_control
 !
       use time_step_data_IO_control
       use output_parallel_ucd_file
@@ -75,7 +76,7 @@
       if (my_rank.eq.0) write(*,*) 'step: ', i_step
 !
       if (iflag_debug.eq.1)  write(*,*) 'read_udt_4_snap'
-      call read_udt_4_snap(i_step)
+      call read_udt_4_snap(i_step, FEM_udt_org_param, nod_fld1)
       time = time_init + dt*dble(i_step)
 !
 !     ---- magnetic field update

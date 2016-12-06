@@ -51,7 +51,7 @@
       call read_control_4_prod_udt
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_prod_udt'
-      call set_ctl_params_prod_udt(ucd_FUTIL)
+      call set_ctl_params_prod_udt(udt_param_FUTIL, ucd_FUTIL)
       call s_set_fixed_time_step_params(ierr, e_message)
 !
 !     --------------------- 

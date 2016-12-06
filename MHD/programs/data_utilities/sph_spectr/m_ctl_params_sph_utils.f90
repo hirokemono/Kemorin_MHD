@@ -72,7 +72,6 @@
       use m_read_mesh_data
       use m_sph_spectr_data
       use m_file_format_switch
-      use m_control_params_2nd_files
 !
       use set_control_nodal_data
       use set_control_sph_data
@@ -91,6 +90,9 @@
       type(phys_data), intent(inout) :: rj_fld
       type(sph_mean_squares), intent(inout) :: pwr
 !
+      type(field_IO_params) :: rj_org_param
+      type(field_IO_params) :: rst_org_param
+!
       integer(kind = kint) :: ierr
 !
 !
@@ -100,7 +102,6 @@
       call set_control_sph_mesh(sph_file_spec_p)
       call set_control_org_sph_mesh(rj_org_param)
       call set_control_org_rst_file_def(rst_org_param)
-      call set_control_org_udt_file_def(udt_org_param)
 !
 !      stepping parameter
 !

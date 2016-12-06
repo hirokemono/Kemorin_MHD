@@ -42,7 +42,8 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_udt_diff'
-      call s_input_control_udt_diff(field_FUTIL, ucd_FUTIL)
+      call s_input_control_udt_diff                                     &
+     &   (udt_param_FUTIL, field_FUTIL, ucd_FUTIL)
 !
 !     --------------------- 
 !
@@ -62,7 +63,6 @@
 !
       use m_t_step_parameter
       use m_ctl_params_4_diff_udt
-      use m_control_params_2nd_files
       use set_ucd_data_to_type
       use output_parallel_ucd_file
       use divide_phys_by_delta_t
@@ -83,11 +83,11 @@
           istep_ucd = istep / i_step_output_ucd
 !
           call set_data_by_read_ucd_once(my_rank, istep_ucd,            &
-     &        udt_org_param%iflag_format, ref_udt_file_head,            &
+     &        udt_param_FUTIL%iflag_format, ref_udt_file_head,          &
      &        field_FUTIL)
 !
           call subtract_by_ucd_data(my_rank, istep_ucd,                 &
-     &        udt_org_param%iflag_format, tgt_udt_file_head,            &
+     &        udt_param_FUTIL%iflag_format, tgt_udt_file_head,          &
      &        field_FUTIL)
 !
           call s_divide_phys_by_delta_t(field_FUTIL)

@@ -71,7 +71,8 @@
       call init_element_mesh_type(elemesh_FUT)
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_corr_udt'
-      call s_input_control_corr_udt(field_FUTIL, ucd_FUTIL)
+      call s_input_control_corr_udt                                     &
+     &   (udt_param_FUTIL, field_FUTIL, ucd_FUTIL)
       if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh'
       call mpi_input_mesh_p(femmesh_p_FUT,                              &
      &    elemesh_FUT%surf%nnod_4_surf,                                 &
@@ -136,7 +137,6 @@
 !
       use m_geometry_constants
       use m_t_step_parameter
-      use m_control_params_2nd_files
       use m_ctl_params_4_diff_udt
       use set_ucd_data_to_type
       use set_ucd_data
@@ -169,13 +169,13 @@
           istep_ucd = istep / i_step_output_ucd
 !
           call set_data_by_read_ucd_once(my_rank, istep_ucd,            &
-     &        udt_org_param%iflag_format, ref_udt_file_head,            &
+     &        udt_param_FUTIL%iflag_format, ref_udt_file_head,          &
      &        field_FUTIL)
 !
-          ucd_FUTIL%ifmt_file = udt_org_param%iflag_format
+          ucd_FUTIL%ifmt_file = udt_param_FUTIL%iflag_format
           ucd_FUTIL%file_prefix = tgt_udt_file_head
           call set_data_by_read_ucd_once(my_rank, istep_ucd,            &
-     &        udt_org_param%iflag_format, tgt_udt_file_head, phys_ref)
+     &       udt_param_FUTIL%iflag_format, tgt_udt_file_head, phys_ref)
 !
           call nod_fields_send_recv                                     &
      &       (femmesh_p_FUT%mesh%nod_comm, field_FUTIL)

@@ -20,6 +20,9 @@
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(ucd_data), intent(inout) :: ucd
 !!        type(merged_ucd_data), intent(inout) :: m_ucd
+!!      subroutine read_udt_4_snap(i_step, udt_file_param, nod_fld)
+!!        type(field_IO_params), intent(in) :: udt_file_param
+!!        type(phys_data),intent(inout) :: nod_fld
 !!      subroutine finalize_output_ucd
 !!
 !!      subroutine link_global_org_mesh_4_ucd(mesh, MHD_mesh, ucd)
@@ -156,6 +159,30 @@
       end subroutine output_grd_file_w_org_connect
 !
 !-----------------------------------------------------------------------
+!
+      subroutine read_udt_4_snap(i_step, udt_file_param, nod_fld)
+!
+      use calypso_mpi
+      use t_field_data_IO
+      use m_t_step_parameter
+      use set_ucd_data_to_type
+!
+      integer(kind = kint), intent(in) :: i_step
+      type(field_IO_params), intent(in) :: udt_file_param
+      type(phys_data),intent(inout) :: nod_fld
+!
+      integer(kind = kint) :: istep_ucd
+!
+!
+      if (mod(i_step,i_step_output_ucd) .ne. izero) return
+      istep_ucd = i_step / i_step_output_ucd
+      call set_data_by_read_ucd_once(my_rank, istep_ucd,                &
+    &     udt_file_param%iflag_format, udt_file_param%file_prefix,      &
+    &     nod_fld)
+!
+      end subroutine read_udt_4_snap
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine finalize_output_ucd

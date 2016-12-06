@@ -74,8 +74,7 @@
       use m_layering_ele_list
       use m_bc_data_velo
       use m_flexible_time_step
-!
-      use read_udt_4_snapshot
+      use input_control
 !
       use nod_phys_send_recv
       use lead_physical_values
@@ -110,7 +109,7 @@
 !
       else if (i_step_output_ucd .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'read_udt_4_snap'
-        call read_udt_4_snap(istep_max_dt)
+        call read_udt_4_snap(istep_max_dt, FEM_udt_org_param, nod_fld1)
         time = time_init + dt*dble(istep_max_dt)
         i_step_MHD = istep_max_dt
       end if

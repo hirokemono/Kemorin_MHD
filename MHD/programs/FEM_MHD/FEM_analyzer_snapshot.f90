@@ -72,14 +72,13 @@
       use m_bc_data_velo
       use m_flexible_time_step
 !
-      use read_udt_4_snapshot
-!
       use nod_phys_send_recv
       use lead_physical_values
       use update_after_evolution
       use cal_model_coefficients
       use chenge_step_4_dynamic
       use copy_nodal_fields
+      use input_control
 !
       use time_step_data_IO_control
       use node_monitor_IO
@@ -107,7 +106,7 @@
 !
       else if (i_step_output_ucd .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'read_udt_4_snap'
-        call read_udt_4_snap(istep_max_dt)
+        call read_udt_4_snap(istep_max_dt, FEM_udt_org_param, nod_fld1)
         time = time_init + dt*dble(istep_max_dt)
         i_step_MHD = istep_max_dt
       end if

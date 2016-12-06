@@ -16,6 +16,7 @@
       use t_phys_data
       use t_phys_address
       use t_ucd_data
+      use t_field_data_IO
       use t_jacobian_3d
       use calypso_mpi
 !
@@ -36,6 +37,8 @@
       type(phys_address), save :: iphys_FUTIL
 !
 !
+!>      Structure for field data IO paramters
+      type(field_IO_params), save :: udt_param_FUTIL
 !>        Instance for FEM field data IO
       type(ucd_data), save :: ucd_FUTIL
 !>        Instance for numbers of FEM mesh for merged IO

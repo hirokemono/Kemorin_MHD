@@ -36,7 +36,6 @@
       use m_array_for_send_recv
       use m_ctl_params_4_prod_udt
       use m_ctl_data_product_udt
-      use m_control_params_2nd_files
       use product_udt_fields
       use set_fixed_time_step_params
 !
@@ -54,7 +53,7 @@
       call read_control_4_prod_udt
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_prod_udt'
-      call set_ctl_params_prod_udt(ucd_FUTIL)
+      call set_ctl_params_prod_udt(udt_param_FUTIL, ucd_FUTIL)
       call s_set_fixed_time_step_params(ierr, e_message)
 !
 !     ---------------------
@@ -75,7 +74,6 @@
 !
       use m_t_step_parameter
       use m_ctl_params_4_diff_udt
-      use m_control_params_2nd_files
       use set_ucd_data_to_type
       use FEM_MHD_length_scale
 !
@@ -87,7 +85,7 @@
           istep_ucd = istep / i_step_output_ucd
 !
           call set_data_by_read_ucd_once(my_rank, istep_ucd,            &
-     &        udt_org_param%iflag_format, ref_udt_file_head,            &
+     &        udt_param_FUTIL%iflag_format, ref_udt_file_head,          &
      &        field_FUTIL)
 !
           call const_MHD_length_scales                                  &

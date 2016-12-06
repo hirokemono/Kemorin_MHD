@@ -31,7 +31,7 @@
 !!    new_rst_files_fmt_ctl           'ascii'
 !!    new_field_files_fmt_ctl         'ascii'
 !!    new_sph_files_fmt_ctl           'ascii'
-!!   'new_spectr_data_fmt_ctl'        'merged_gz'
+!!    new_spectr_data_fmt_ctl         'merged_gz'
 !!
 !!    delete_original_data_flag       'YES'
 !!  end new_data_files_def

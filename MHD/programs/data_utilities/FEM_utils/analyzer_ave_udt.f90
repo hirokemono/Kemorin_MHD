@@ -41,7 +41,8 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_ave_udt'
-      call s_input_control_ave_udt(field_FUTIL, ucd_FUTIL)
+      call s_input_control_ave_udt                                      &
+     &   (udt_param_FUTIL, field_FUTIL, ucd_FUTIL)
 !
 !     --------------------- 
 !
@@ -61,7 +62,6 @@
 !
       use m_t_step_parameter
       use m_ctl_params_4_diff_udt
-      use m_control_params_2nd_files
       use ucd_IO_select
       use set_ucd_data
       use set_ucd_data_to_type
@@ -76,7 +76,7 @@
 !
       istep_ucd = i_step_init / i_step_output_ucd
       call set_data_by_read_ucd_once(my_rank, istep_ucd,                &
-     &    udt_org_param%iflag_format, udt_org_param%file_prefix,        &
+     &    udt_param_FUTIL%iflag_format, udt_param_FUTIL%file_prefix,    &
      &    field_FUTIL)
 !
       icou = 1
@@ -87,8 +87,8 @@
           icou = icou + 1
 !
           call add_ucd_to_data(my_rank, istep_ucd,                      &
-     &        udt_org_param%iflag_format, udt_org_param%file_prefix,    &
-     &        field_FUTIL)
+     &       udt_param_FUTIL%iflag_format, udt_param_FUTIL%file_prefix, &
+     &       field_FUTIL)
         end if
       end do
 !
