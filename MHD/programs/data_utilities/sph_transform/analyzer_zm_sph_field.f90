@@ -95,7 +95,6 @@
 !
       subroutine analyze_zm_sph_field
 !
-      use m_control_params_2nd_files
       use m_t_step_parameter
       use m_ctl_params_sph_trans
       use sph_rtp_zonal_rms_data

@@ -79,6 +79,7 @@
       use set_control_platform_data
       use set_fixed_time_step_params
       use set_control_4_pickup_sph
+      use set_ctl_params_2nd_files
 !
       use m_ctl_data_4_platforms
       use m_ctl_data_4_time_steps
@@ -97,9 +98,9 @@
       call set_control_smp_def(my_rank)
       call set_control_mesh_def
       call set_control_sph_mesh(sph_file_spec_p)
-      call set_control_org_sph_mesh
-      call set_control_org_rst_file_def
-      call set_control_org_udt_file_def
+      call set_control_org_sph_mesh(rj_org_param)
+      call set_control_org_rst_file_def(rst_org_param)
+      call set_control_org_udt_file_def(udt_org_param)
 !
 !      stepping parameter
 !

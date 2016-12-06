@@ -30,6 +30,13 @@
       type(field_IO_params), save :: field_file_param
       type(field_IO_params), save :: zm_source_file_param
 !
+!>      Structure for field data IO paramters
+      type(field_IO_params), save :: rj_org_param
+!>      Structure for field data IO paramters
+      type(field_IO_params), save :: udt_org_param
+!>      Structure for original restart file  paramters
+      type(field_IO_params), save :: rst_org_param
+!
       character(len = kchara) :: zm_spec_file_head = 'zm_spectral'
       character(len = kchara) :: zonal_udt_head = 'z_mean_out'
 !
@@ -135,6 +142,7 @@
       use set_control_nodal_data
       use set_control_sph_data
       use set_control_platform_data
+      use set_ctl_params_2nd_files
       use set_fixed_time_step_params
       use legendre_transform_select
       use ucd_IO_select
@@ -152,7 +160,7 @@
       call turn_off_debug_flag_by_ctl(my_rank)
       call set_control_smp_def(my_rank)
       call set_control_sph_mesh(sph_file_trns_p)
-      call set_control_org_sph_mesh
+      call set_control_org_sph_mesh(rj_org_param)
       call set_ucd_file_define(ucd)
 !
 !   setting for spherical transform
@@ -218,6 +226,7 @@
       use set_control_sph_data
       use set_control_platform_data
       use set_fixed_time_step_params
+      use set_ctl_params_2nd_files
       use legendre_transform_select
 !
       use m_ctl_data_4_platforms
@@ -239,10 +248,10 @@
       call set_control_smp_def(my_rank)
       call set_control_mesh_def
       call set_control_sph_mesh(sph_file_trns_p)
-      call set_control_org_sph_mesh
       call set_merged_ucd_file_define(ucd)
-      call set_control_org_rst_file_def
-      call set_control_org_udt_file_def
+      call set_control_org_sph_mesh(rj_org_param)
+      call set_control_org_rst_file_def(rst_org_param)
+      call set_control_org_udt_file_def(udt_org_param)
 !
 !    file header for field data
 !

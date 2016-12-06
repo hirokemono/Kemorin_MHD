@@ -66,6 +66,7 @@
       call read_control_4_sph_snap_noviz(snap_ctl_name)
       if (iflag_debug.eq.1) write(*,*) 'set_control_SGS_SPH_MHD'
       call set_control_SGS_SPH_MHD(sph_gen, rj_fld1, sph_file_param1,   &
+     &    rj_org_param, rst_org_param, udt_org_param,                   &
      &    sph_fst_IO, pwr1, trns_WK1%dynamic_SPH%sph_filters)
       call set_ctl_params_pick_circle
 !

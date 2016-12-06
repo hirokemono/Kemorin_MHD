@@ -8,7 +8,10 @@
 !>@brief  I/O routines for restart data
 !!
 !!@verbatim
-!!      subroutine set_rst_file_by_orignal_mesh
+!!      subroutine set_rst_file_by_orignal_mesh                         &
+!!     &         (rj_file_param, rst_file_param)
+!!        type(field_IO_params), intent(in) :: rj_file_param
+!!        type(field_IO_params), intent(in) :: rst_file_param
 !!
 !!      subroutine init_output_sph_restart_file(rj_fld)
 !!      subroutine output_sph_restart_control(rj_fld)
@@ -18,16 +21,22 @@
 !!      subroutine read_alloc_sph_restart_data
 !!        type(phys_data), intent(inout) :: rj_fld
 !!
-!!      subroutine init_radial_sph_interpolation
+!!      subroutine init_radial_sph_interpolation                        &
+!!     &         (rj_file_param, sph_params, sph_rj)
 !!      subroutine read_alloc_sph_rst_4_snap                            &
-!!     &         (i_step, sph_rj, ipol, rj_fld)
+!!     &         (i_step, rj_file_param, sph_rj, ipol, rj_fld)
+!!        type(field_IO_params), intent(in) :: rj_file_param
 !!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine output_spectr_4_snap(i_step, sph_file_param, rj_fld)
-!!      subroutine read_alloc_sph_spectr                                &
-!!     &         (i_step, sph_file_param, sph_rj, ipol, rj_fld)
+!!      subroutine read_alloc_sph_spectr(i_step,                        &
+!!     &         rj_file_param, sph_file_param, sph_rj, ipol, rj_fld)
+!!        type(field_IO_params), intent(in) :: rj_file_param
 !!        type(field_IO_params), intent(in) :: sph_file_param
 !!        type(phys_data), intent(in) :: rj_fld
-!!      subroutine read_alloc_sph_rst_2_modify(i_step, sph_rj, rj_fld)
+!!      subroutine read_alloc_sph_rst_2_modify(i_step,                  &
+!!     &          rj_file_param, rst_file_param, sph_rj, ipol, rj_fld)
+!!        type(field_IO_params), intent(in) :: rj_file_param
+!!        type(field_IO_params), intent(in) :: rst_file_param
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !!
@@ -61,12 +70,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_rst_file_by_orignal_mesh
+      subroutine set_rst_file_by_orignal_mesh                           &
+     &         (rj_file_param, rst_file_param)
 !
-      use m_control_params_2nd_files
+      type(field_IO_params), intent(in) :: rj_file_param
+      type(field_IO_params), intent(in) :: rst_file_param
 !
-      if( (rj_org_param%iflag_IO*rst_org_param%iflag_IO) .eq. 0) return
-      sph_fst_IO%file_prefix = rst_org_param%file_prefix
+!
+      if( (rj_file_param%iflag_IO*rst_file_param%iflag_IO) .gt. 0)      &
+     &            sph_fst_IO%file_prefix = rst_file_param%file_prefix
 !
       end subroutine set_rst_file_by_orignal_mesh
 !
@@ -156,19 +168,21 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine init_radial_sph_interpolation(sph_params, sph_rj)
+      subroutine init_radial_sph_interpolation                          &
+     &         (rj_file_param, sph_params, sph_rj)
 !
-      use m_control_params_2nd_files
       use t_spheric_parameter
       use r_interpolate_sph_data
 !
+      type(field_IO_params), intent(in) :: rj_file_param
       type(sph_shell_parameters), intent(inout) :: sph_params
       type(sph_rj_grid), intent(inout) ::  sph_rj
 !
 !
-      if(rj_org_param%iflag_IO .gt. 0) then
+      if(rj_file_param%iflag_IO .gt. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'input_old_rj_sph_trans'
-        call input_old_rj_sph_trans(sph_params%l_truncation, sph_rj)
+        call input_old_rj_sph_trans                                     &
+     &     (rj_file_param, sph_params%l_truncation, sph_rj)
       end if
 !
       call copy_cmb_icb_radial_point                                    &
@@ -179,14 +193,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_alloc_sph_rst_4_snap                              &
-     &         (i_step, sph_rj, ipol, rj_fld)
+     &         (i_step, rj_file_param, sph_rj, ipol, rj_fld)
 !
-      use m_control_params_2nd_files
       use t_spheric_rj_data
       use set_sph_restart_IO
       use r_interpolate_sph_data
 !
       integer(kind = kint), intent(in) :: i_step
+      type(field_IO_params), intent(in) :: rj_file_param
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_address), intent(in) :: ipol
       type(phys_data), intent(inout) :: rj_fld
@@ -198,7 +212,7 @@
       call sel_read_alloc_step_SPH_file                                 &
      &   (nprocs, my_rank, istep_fld, sph_fst_IO)
 !
-      if(rj_org_param%iflag_IO .eq. 0) then
+      if(rj_file_param%iflag_IO .eq. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_sph_restart_from_IO'
         call set_sph_restart_from_IO(sph_fst_IO, rj_fld)
         time = time_init
@@ -260,16 +274,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_alloc_sph_spectr                                  &
-     &         (i_step, sph_file_param, sph_rj, ipol, rj_fld)
+      subroutine read_alloc_sph_spectr(i_step,                          &
+     &         rj_file_param, sph_file_param, sph_rj, ipol, rj_fld)
 !
-      use m_control_params_2nd_files
       use t_spheric_rj_data
       use copy_rj_phys_data_4_IO
       use r_interpolate_sph_data
 !
       integer(kind = kint), intent(in) :: i_step
       type(field_IO_params), intent(in) :: sph_file_param
+      type(field_IO_params), intent(in) :: rj_file_param
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_address), intent(in) :: ipol
       type(phys_data), intent(inout) :: rj_fld
@@ -284,7 +298,7 @@
       call sel_read_alloc_step_SPH_file                                 &
      &   (nprocs, my_rank, istep_fld, sph_out_IO)
 !
-      if(rj_org_param%iflag_IO .eq. 0) then
+      if(rj_file_param%iflag_IO .eq. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_sph_restart_from_IO'
         call set_rj_phys_data_from_IO(sph_out_IO, rj_fld)
       else
@@ -304,13 +318,14 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_alloc_sph_rst_2_modify                            &
-     &         (i_step, sph_rj, ipol, rj_fld)
+      subroutine read_alloc_sph_rst_2_modify(i_step,                    &
+     &          rj_file_param, rst_file_param, sph_rj, ipol, rj_fld)
 !
-      use m_control_params_2nd_files
       use t_spheric_rj_data
 !
       integer(kind = kint), intent(in) :: i_step
+      type(field_IO_params), intent(in) :: rj_file_param
+      type(field_IO_params), intent(in) :: rst_file_param
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_address), intent(in) :: ipol
       type(phys_data), intent(inout) :: rj_fld
@@ -321,10 +336,11 @@
 !
       ifmt_rst_file_tmp =  sph_fst_IO%iflag_file_fmt
       restart_tmp_prefix = sph_fst_IO%file_prefix
-      sph_fst_IO%file_prefix = rst_org_param%file_prefix
+      sph_fst_IO%file_prefix = rst_file_param%file_prefix
       call set_field_file_fmt_prefix                                    &
-     &   (ifmt_rst_file_tmp, rst_org_param%file_prefix, sph_fst_IO)
-      call read_alloc_sph_rst_4_snap(i_step, sph_rj, ipol, rj_fld)
+     &   (ifmt_rst_file_tmp, rst_file_param%file_prefix, sph_fst_IO)
+      call read_alloc_sph_rst_4_snap                                    &
+     &   (i_step, rj_file_param, sph_rj, ipol, rj_fld)
 !
       call set_field_file_fmt_prefix                                    &
      &   (ifmt_rst_file_tmp, restart_tmp_prefix, sph_fst_IO)

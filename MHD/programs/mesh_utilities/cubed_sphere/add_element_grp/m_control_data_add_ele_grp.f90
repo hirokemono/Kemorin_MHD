@@ -109,7 +109,8 @@
 !
       end subroutine read_control_add_elegrp
 !
-! -----------------------------------------------------------------------!
+! -----------------------------------------------------------------------
+!
       subroutine read_control_4_add_egrp_data
 !
       use m_ctl_data_4_platforms

@@ -33,7 +33,7 @@
      &          ipol, idpdr, itor, rj_fld, fld_IO, visval)
 !
       use m_t_step_parameter
-      use m_control_params_2nd_files
+      use m_ctl_params_sph_trans
       use t_spheric_mesh
       use t_phys_address
       use t_phys_data

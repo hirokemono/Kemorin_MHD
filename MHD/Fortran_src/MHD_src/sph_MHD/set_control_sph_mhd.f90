@@ -7,10 +7,14 @@
 !>@brief Set control data for spherical transform MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine set_control_SGS_SPH_MHD(sph_gen, rj_fld,             &
-!!     &         sph_file_param, sph_fst_IO, pwr, sph_filters)
-!!      subroutine set_control_4_SPH_MHD(sph_gen, rj_fld,               &
-!!     &         sph_file_param, sph_fst_IO, pwr, sph_filters)
+!!      subroutine set_control_SGS_SPH_MHD                              &
+!!     &         (sph_gen, rj_fld,  sph_file_param,                     &
+!!     &          rj_org_param, rst_org_param, udt_org_param,           &
+!!     &          sph_fst_IO, pwr, sph_filters)
+!!      subroutine set_control_4_SPH_MHD                                &
+!!     &         (sph_gen, rj_fld, sph_file_param,                      &
+!!     &          rj_org_param, rst_org_param, udt_org_param,           &
+!!     &          sph_fst_IO, pwr)
 !!        type(sph_grids), intent(inout) :: sph_gen
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(field_IO_params), intent(inout) :: sph_file_param
@@ -26,6 +30,8 @@
       use m_machine_parameter
       use calypso_mpi
 !
+      use t_field_data_IO
+!
       implicit none
 !
 ! ----------------------------------------------------------------------
@@ -34,10 +40,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_SGS_SPH_MHD(sph_gen, rj_fld,               &
-     &         sph_file_param, sph_fst_IO, pwr, sph_filters)
+      subroutine set_control_SGS_SPH_MHD                                &
+     &         (sph_gen, rj_fld,  sph_file_param,                       &
+     &          rj_org_param, rst_org_param, udt_org_param,             &
+     &          sph_fst_IO, pwr, sph_filters)
 !
-      use m_control_params_2nd_files
       use m_spheric_global_ranks
       use m_ucd_data
       use m_read_ctl_gen_sph_shell
@@ -46,7 +53,6 @@
       use t_spheric_parameter
       use t_phys_data
       use t_rms_4_sph_spectr
-      use t_field_data_IO
       use t_sph_filtering_data
 !
       use set_control_4_SGS
@@ -54,6 +60,9 @@
       type(sph_grids), intent(inout) :: sph_gen
       type(phys_data), intent(inout) :: rj_fld
       type(field_IO_params), intent(inout) :: sph_file_param
+      type(field_IO_params), intent(inout) :: rj_org_param
+      type(field_IO_params), intent(inout) :: rst_org_param
+      type(field_IO_params), intent(inout) :: udt_org_param
       type(field_IO), intent(inout) :: sph_fst_IO
       type(sph_mean_squares), intent(inout) :: pwr
       type(sph_filters_type), intent(inout) :: sph_filters(1)
@@ -65,17 +74,19 @@
       call set_control_SGS_model
       call set_control_SPH_SGS(sph_filters)
 !
-      call set_control_4_SPH_MHD(sph_gen, rj_fld,                       &
-     &   sph_file_param, sph_fst_IO, pwr)
+      call set_control_4_SPH_MHD(sph_gen, rj_fld, sph_file_param,       &
+     &    rj_org_param, rst_org_param, udt_org_param,                   &
+     &    sph_fst_IO, pwr)
 !
       end subroutine set_control_SGS_SPH_MHD
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_4_SPH_MHD(sph_gen, rj_fld,                 &
-     &         sph_file_param, sph_fst_IO, pwr)
+      subroutine set_control_4_SPH_MHD                                  &
+     &         (sph_gen, rj_fld, sph_file_param,                        &
+     &          rj_org_param, rst_org_param, udt_org_param,             &
+     &          sph_fst_IO, pwr)
 !
-      use m_control_params_2nd_files
       use m_spheric_global_ranks
       use m_ucd_data
       use m_read_ctl_gen_sph_shell
@@ -84,7 +95,6 @@
       use t_spheric_parameter
       use t_phys_data
       use t_rms_4_sph_spectr
-      use t_field_data_IO
 !
       use gen_sph_grids_modes
       use set_control_platform_data
@@ -101,12 +111,17 @@
       use set_control_4_magne
       use set_control_4_composition
       use set_control_4_pickup_sph
+      use set_ctl_params_2nd_files
       use set_ctl_gen_shell_grids
+
       use check_read_bc_file
 !
       type(sph_grids), intent(inout) :: sph_gen
       type(phys_data), intent(inout) :: rj_fld
       type(field_IO_params), intent(inout) :: sph_file_param
+      type(field_IO_params), intent(inout) :: rj_org_param
+      type(field_IO_params), intent(inout) :: rst_org_param
+      type(field_IO_params), intent(inout) :: udt_org_param
       type(field_IO), intent(inout) :: sph_fst_IO
       type(sph_mean_squares), intent(inout) :: pwr
 !
@@ -123,9 +138,9 @@
       call set_control_sph_mesh(sph_file_param)
       call set_control_restart_file_def(sph_fst_IO)
       call set_control_MHD_field_file
-      call set_control_org_sph_mesh
-      call set_control_org_rst_file_def
-      call set_control_org_udt_file_def
+      call set_control_org_sph_mesh(rj_org_param)
+      call set_control_org_rst_file_def(rst_org_param)
+      call set_control_org_udt_file_def(udt_org_param)
 !
       call s_set_control_4_model
 !
@@ -145,7 +160,8 @@
 !   set parameters for general information
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_sph_data_MHD'
-      call s_set_control_sph_data_MHD(rj_fld)
+      call s_set_control_sph_data_MHD                                   &
+     &   (rj_org_param, rst_org_param, rj_fld)
 !
 !   set control parameters
 !

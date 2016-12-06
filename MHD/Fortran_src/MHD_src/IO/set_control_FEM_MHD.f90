@@ -7,13 +7,16 @@
 !> @brief Set parameters for MHD dynamo simulation from control data
 !!
 !!@verbatim
-!!     subroutine set_control_4_FEM_MHD(nod_fld)
+!!     subroutine set_control_4_FEM_MHD(udt_org_param, nod_fld)
+!!        type(field_IO_params), intent(inout) :: udt_org_param
+!!        type(phys_data), intent(inout) :: nod_fld
 !!@endverbatim
 !
       module set_control_FEM_MHD
 !
       use m_precision
       use t_phys_data
+      use t_field_data_IO
 !
       implicit  none
 !
@@ -23,15 +26,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_FEM_MHD(nod_fld)
+      subroutine set_control_4_FEM_MHD(udt_org_param, nod_fld)
 !
       use calypso_mpi
-      use m_control_params_2nd_files
       use m_ucd_data
 !
       use set_control_platform_data
       use set_control_nodal_data_MHD
       use set_ctl_parallel_platform
+      use set_ctl_params_2nd_files
       use set_control_4_time_steps
 !
       use set_control_4_force
@@ -55,6 +58,7 @@
       use fem_mhd_rst_IO_control
       use check_read_bc_file
 !
+      type(field_IO_params), intent(inout) :: udt_org_param
       type(phys_data), intent(inout) :: nod_fld
 !
 !
@@ -66,7 +70,7 @@
       call set_control_mesh_def
       call set_ctl_restart_4_fem_mhd
       call set_control_MHD_field_file
-      call set_control_org_udt_file_def
+      call set_control_org_udt_file_def(udt_org_param)
 !
 !   set parameters for general information
 !

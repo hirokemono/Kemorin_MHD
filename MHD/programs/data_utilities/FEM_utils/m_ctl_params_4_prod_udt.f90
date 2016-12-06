@@ -55,6 +55,7 @@
       use m_file_format_switch
       use m_control_params_2nd_files
       use set_control_platform_data
+      use set_ctl_params_2nd_files
       use ucd_IO_select
 !
       type(ucd_data), intent(inout) :: ucd
@@ -67,8 +68,8 @@
 !
       call set_control_smp_def(my_rank)
       call set_control_mesh_def
-      call set_control_org_rst_file_def
-      call set_control_org_udt_file_def
+      call set_control_org_rst_file_def(rst_org_param)
+      call set_control_org_udt_file_def(udt_org_param)
       call set_ucd_file_define(ucd)
 !
 !   set fiale name

@@ -13,6 +13,7 @@
       use m_precision
       use m_machine_parameter
       use m_SPH_transforms
+      use m_ctl_params_sph_trans
       use calypso_mpi
 !
       use t_spheric_mesh
@@ -32,8 +33,6 @@
      &         (sph_mesh, ipol, idpdr, itor, rj_fld, fld_IO)
 !
       use m_t_step_parameter
-      use m_ctl_params_sph_trans
-      use m_control_params_2nd_files
 !
       use r_interpolate_sph_data
       use count_num_sph_smp
@@ -68,8 +67,8 @@
 !
       if(rj_org_param%iflag_IO .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'input_old_rj_sph_trans'
-        call input_old_rj_sph_trans                                     &
-     &     (sph_mesh%sph%sph_params%l_truncation, sph_mesh%sph%sph_rj)
+        call input_old_rj_sph_trans(rj_org_param,                       &
+     &      sph_mesh%sph%sph_params%l_truncation, sph_mesh%sph%sph_rj)
         call set_sph_magne_address(rj_fld, ipol)
       end if
 !
@@ -106,7 +105,6 @@
      &         (i_step, sph_mesh, ipol, rj_fld, fld_IO, visval)
 !
       use m_t_step_parameter
-      use m_control_params_2nd_files
 !
       use field_IO_select
       use r_interpolate_sph_data

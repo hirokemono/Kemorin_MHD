@@ -50,6 +50,7 @@
       use m_physical_property
       use m_sph_trans_arrays_MHD
       use m_boundary_params_sph_MHD
+      use m_control_params_2nd_files
 !
       use set_control_sph_mhd
       use set_sph_phys_address
@@ -116,7 +117,8 @@
 !     --------------------- 
 !  set original spectr mesh data for extension of B
 !
-      call init_radial_sph_interpolation(sph1%sph_params, sph1%sph_rj)
+      call init_radial_sph_interpolation                                &
+     &   (rj_org_param, sph1%sph_params, sph1%sph_rj)
 !
 !* -----  find mid-equator point -----------------
 !
@@ -137,6 +139,7 @@
       use m_schmidt_poly_on_rtm
       use m_field_on_circle
       use m_sph_trans_arrays_MHD
+      use m_control_params_2nd_files
 !
       use cal_nonlinear
       use cal_sol_sph_MHD_crank
@@ -149,7 +152,7 @@
 !
 !
       call read_alloc_sph_rst_4_snap                                    &
-     &   (i_step, sph1%sph_rj, ipol, rj_fld1)
+     &   (i_step, rj_org_param, sph1%sph_rj, ipol, rj_fld1)
 !
       call sync_temp_by_per_temp_sph                                    &
      &   (ref_temp1%t_rj, sph1%sph_rj, ipol, idpdr, rj_fld1)

@@ -41,6 +41,7 @@
       use m_physical_property
       use m_sph_trans_arrays_MHD
       use m_boundary_params_sph_MHD
+      use m_control_params_2nd_files
 !
       use set_control_sph_mhd
       use set_sph_phys_address
@@ -80,11 +81,12 @@
 !
 ! ---------------------------------
 !
-      call init_radial_sph_interpolation(sph1%sph_params, sph1%sph_rj)
+      call init_radial_sph_interpolation                                &
+     &   (rj_org_param, sph1%sph_params, sph1%sph_rj)
 !
 ! ---------------------------------
 !
-      call init_rms_4_sph_spectr                                       &
+      call init_rms_4_sph_spectr                                        &
      &   (sph1%sph_params, sph1%sph_rj, rj_fld1, pwr1, WK_pwr)
 !
       end subroutine SPH_init_sph_back_trans
@@ -116,8 +118,8 @@
       integer (kind =kint) :: iflag
 !
 !
-      call read_alloc_sph_spectr                                        &
-     &   (i_step, sph_file_param1, sph1%sph_rj, ipol, rj_fld1)
+      call read_alloc_sph_spectr(i_step, rj_org_param, sph_file_param1,  &
+     &    sph1%sph_rj, ipol, rj_fld1)
 !
 !* ----  Update fields after time evolution ------------------------=
 !*

@@ -38,6 +38,7 @@
       use t_filtering_data
       use t_solver_djds_MHD
       use t_phys_data
+      use m_control_params_2nd_files
 !
       implicit none
 !
@@ -78,7 +79,7 @@
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_MHD'
       call read_control_4_fem_MHD
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_FEM_MHD'
-      call set_control_4_FEM_MHD(nod_fld)
+      call set_control_4_FEM_MHD(udt_org_param, nod_fld)
 !
 !  --  load FEM mesh data
       call mpi_input_mesh(mesh, group,                                  &
@@ -128,7 +129,7 @@
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_snap'
       call read_control_4_fem_snap
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_FEM_MHD'
-      call set_control_4_FEM_MHD(nod_fld)
+      call set_control_4_FEM_MHD(udt_org_param, nod_fld)
 !
 !  --  load FEM mesh data
       call mpi_input_mesh(mesh, group,                                  &

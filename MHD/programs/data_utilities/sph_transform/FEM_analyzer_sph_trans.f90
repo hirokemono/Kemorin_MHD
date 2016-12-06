@@ -78,7 +78,7 @@
 !
       subroutine FEM_analyze_sph_trans(i_step, visval)
 !
-      use m_control_params_2nd_files
+      use m_ctl_params_sph_trans
       use m_t_step_parameter
       use set_ucd_data_to_type
       use nod_phys_send_recv

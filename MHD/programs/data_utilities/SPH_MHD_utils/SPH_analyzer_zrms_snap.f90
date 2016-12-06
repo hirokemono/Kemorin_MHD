@@ -40,6 +40,7 @@
       use m_fdm_coefs
       use m_t_step_parameter
       use m_sph_trans_arrays_MHD
+      use m_control_params_2nd_files
 !
       use cal_nonlinear
       use cal_sol_sph_MHD_crank
@@ -51,7 +52,7 @@
 !
 !
       call read_alloc_sph_rst_4_snap                                    &
-     &   (i_step, sph1%sph_rj, ipol, rj_fld1)
+     &   (i_step, rj_org_param, sph1%sph_rj, ipol, rj_fld1)
 !
       if (iflag_debug.eq.1) write(*,*)' sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph                                    &

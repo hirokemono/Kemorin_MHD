@@ -7,7 +7,10 @@
 !>@brief  Set control parameters for spherical harmonics dynamo from IO
 !!
 !!@verbatim
-!!     subroutine s_set_control_sph_data_MHD(rj_fld)
+!!      subroutine s_set_control_sph_data_MHD                           &
+!!     &         (rj_org_param, rst_org_param, rj_fld)
+!!       type(field_IO_params), intent(in) :: rj_org_param
+!!       type(field_IO_params), intent(in) :: rst_org_param
 !!       type(phys_data), intent(inout) :: rj_fld
 !!     subroutine set_ctl_params_pick_circle
 !!     subroutine set_ctl_params_dynamobench
@@ -25,7 +28,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_sph_data_MHD(rj_fld)
+      subroutine s_set_control_sph_data_MHD                             &
+     &         (rj_org_param, rst_org_param, rj_fld)
 !
       use calypso_mpi
       use m_error_IDs
@@ -34,7 +38,6 @@
       use m_ctl_data_4_fields
       use m_ctl_data_mhd_forces
       use m_ctl_data_mhd_evo_scheme
-      use m_control_params_2nd_files
       use m_physical_property
       use m_file_format_switch
 !
@@ -43,6 +46,7 @@
       use m_FFT_selector
 !
       use t_phys_data
+      use t_field_data_IO
 !
       use skip_comment_f
       use set_control_sph_data
@@ -51,13 +55,14 @@
       use add_sph_MHD_fields_2_ctl
       use sph_mhd_rst_IO_control
 !
+      type(field_IO_params), intent(in) :: rj_org_param, rst_org_param
       type(phys_data), intent(inout) :: rj_fld
 !
       integer(kind = kint) :: ierr
 !
 !   overwrite restart header for magnetic field extension
 !
-      call set_rst_file_by_orignal_mesh
+      call set_rst_file_by_orignal_mesh(rj_org_param, rst_org_param)
 !
 !   set physical values
 !
