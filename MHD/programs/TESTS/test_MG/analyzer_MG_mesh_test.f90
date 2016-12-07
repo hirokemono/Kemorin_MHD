@@ -123,12 +123,12 @@
       mesh_IO%nod_comm%num_neib = 0
       call allocate_type_neib_id(mesh_IO%nod_commm)
       call copy_node_sph_to_xx(mesh%node, mesh_IO%node)
-      call write_node_position_sph(my_rank, mesh_IO)
+      call write_node_position_sph(my_rank, mesh_sph_def_head, mesh_IO)
 !
       mesh_IO%nod_commm%num_neib = 0
       call allocate_type_neib_id(mesh_IO%nod_commm)
       call copy_node_cyl_to_xx(mesh%node, mesh_IO%node)
-      call write_node_position_cyl(my_rank, mesh_IO)
+      call write_node_position_cyl(my_rank, mesh_cyl_def_head, mesh_IO)
 !
 !  -------------------------------
 !     output element data

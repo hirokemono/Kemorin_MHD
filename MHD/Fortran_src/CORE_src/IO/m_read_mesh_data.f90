@@ -25,9 +25,12 @@
       character(len=kchara), parameter                                  &
      &            :: mesh_def_edge_head = 'mesh/edge'
 !
+      character(len=kchara), parameter                                  &
+     &                   :: mesh_sph_def_head = 'mesh/node_sph'
+      character(len=kchara), parameter                                  &
+     &                   :: mesh_cyl_def_head = 'mesh/node_cyl'
+!
+!
       character(len=kchara) :: mesh_file_head =      def_mesh_file_head
-!
-!
-      character(len=kchara) :: mesh_file_name
 !
       end module m_read_mesh_data

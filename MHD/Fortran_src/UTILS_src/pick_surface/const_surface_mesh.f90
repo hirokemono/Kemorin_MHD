@@ -13,7 +13,6 @@
       use m_constants
       use m_machine_parameter
       use m_file_format_switch
-      use m_read_mesh_data
       use m_geometry_data_4_merge
       use m_surface_mesh_4_merge
 !
@@ -33,6 +32,8 @@
 !
       subroutine choose_surface_mesh(file_head, ele, surf, edge)
 !
+      use m_read_mesh_data
+!
       type(element_data), intent(inout) :: ele
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge
@@ -43,7 +44,8 @@
       mesh_file_head =    file_head
       surface_file_head = file_head
       call find_mesh_format_4_viewer
-      call const_surf_mesh_4_viewer(ele, surf, edge)
+      call const_surf_mesh_4_viewer                                     &
+     &   (iflag_mesh_file_fmt, ele, surf, edge)
 !
       end subroutine choose_surface_mesh
 !
@@ -51,6 +53,7 @@
 !
       subroutine find_mesh_format_4_viewer
 !
+      use m_read_mesh_data
       use m_file_format_switch
       use set_mesh_file_names
       use set_parallel_file_name
@@ -142,7 +145,8 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine const_surf_mesh_4_viewer(ele, surf, edge)
+      subroutine const_surf_mesh_4_viewer                               &
+     &         (iflag_mesh_fmt, ele, surf, edge)
 !
       use set_merged_geometry
       use const_merged_surf_data
@@ -153,6 +157,7 @@
       use set_nodes_4_groups_viewer
       use viewer_IO_select_4_zlib
 !
+      integer(kind = kint), intent(in)  :: iflag_mesh_fmt
       type(element_data), intent(inout) :: ele
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge
@@ -200,7 +205,7 @@
        call s_set_nodes_4_groups_viewer                                 &
      &    (surf%nnod_4_surf, edge%nnod_4_edge)
 !
-      call sel_output_surface_grid(iflag_mesh_file_fmt,                 &
+      call sel_output_surface_grid(iflag_mesh_fmt,                      &
      &    surf%nnod_4_surf, edge%nnod_4_edge)
 !
       end subroutine const_surf_mesh_4_viewer

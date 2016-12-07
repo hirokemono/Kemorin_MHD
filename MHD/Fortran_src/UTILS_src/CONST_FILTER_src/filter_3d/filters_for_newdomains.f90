@@ -124,6 +124,7 @@
 !
       type(mesh_geometry) :: mesh_IO_f
       type(filter_file_data) :: filter_IO
+      character(len=kchara) :: file_name
       integer(kind = kint) :: ip2
 !
 !
@@ -140,8 +141,7 @@
         call dealloc_node_geometry_base(mesh_IO_f%node)
         call deallocate_type_neib_id(mesh_IO_f%nod_comm)
 !
-        call add_int_suffix(my_rank2, new_filter_coef_head,             &
-     &      mesh_file_name)
+        call add_int_suffix(my_rank2, new_filter_coef_head, file_name)
 !
         ifmt_filter_file = ifmt_3d_filter
         filter_file_head = new_filter_coef_head
@@ -177,8 +177,8 @@
         call allocate_nod_ele_near_1nod                                 &
      &     (new_node%numnod, new_ele%numele)
 !
-        call write_new_whole_filter_coef(mesh_file_name)
-        call write_new_fluid_filter_coef(mesh_file_name)
+        call write_new_whole_filter_coef(file_name)
+        call write_new_fluid_filter_coef(file_name)
 !
 !
         call deallocate_nod_ele_near_1nod
