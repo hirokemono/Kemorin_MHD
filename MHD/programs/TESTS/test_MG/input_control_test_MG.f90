@@ -52,7 +52,7 @@
 !
 !  --  read geometry
 !
-      iflag_mesh_file_fmt = ifile_type
+      mesh1_file%iflag_format = ifile_type
       if (iflag_debug.eq.1) write(*,*) 'input_mesh'
       call mpi_input_mesh(mesh, group,                                  &
      &    surf%nnod_4_surf, edge%nnod_4_edge)

@@ -94,7 +94,7 @@
         stop
       end if
 !
-      iflag_mesh_file_fmt = id_ascii_file_fmt
+      mesh1_file%iflag_format = id_ascii_file_fmt
 !
       iflag_set_filter_elen = i_org_filter_elen_head
       if(iflag_set_filter_elen .gt. 0) then

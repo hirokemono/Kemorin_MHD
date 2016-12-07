@@ -57,8 +57,7 @@
 !
 !  read global mesh
 !
-      iflag_mesh_file_fmt = ifile_type
-      mesh_file_head = original_mesh_head
+      call copy_mesh_format_and_prefix(original_mesh_head, ifile_type)
       call input_mesh(my_rank, org_mesh, org_group,                     &
      &    org_ele_mesh%surf%nnod_4_surf, org_ele_mesh%edge%nnod_4_edge, &
      &    ierr)
@@ -234,8 +233,7 @@
         org_ele_mesh%edge%nnod_4_edge = finer_elemesh%edge%nnod_4_edge
       end do
 !
-      iflag_mesh_file_fmt = ifile_type
-      mesh_file_head = refined_mesh_head
+      call copy_mesh_format_and_prefix(refined_mesh_head, ifile_type)
       write(*,'(2a)') 'mesh file header: ', trim(refined_mesh_head)
       call output_mesh(izero, refined_fem%mesh, refined_fem%group)
       call dealloc_mesh_infos(refined_fem%mesh, refined_fem%group)

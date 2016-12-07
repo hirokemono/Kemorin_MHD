@@ -45,8 +45,8 @@
 !
 !     read finer mesh
 !
-      iflag_mesh_file_fmt = iflag_para_mesh_file_fmt
-      mesh_file_head = finer_mesh_file_head
+      call copy_mesh_format_and_prefix                                &
+     &   (finer_mesh_file_head, iflag_para_mesh_file_fmt)
       call input_mesh_geometry(izero, finermesh, ierr)
       if(ierr .gt. 0) stop 'finer mesh is wrong!!'
 !

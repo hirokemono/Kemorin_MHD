@@ -12,10 +12,9 @@
       module m_read_mesh_data
 !
       use m_precision
+      use t_file_IO_parameter
 !
       implicit  none
-!
-      integer(kind = kint)  :: iflag_mesh_file_fmt = 0
 !
       character(len=kchara), parameter:: def_mesh_file_head = 'mesh/in'
       character(len=kchara), parameter                                  &
@@ -32,5 +31,30 @@
 !
 !
       character(len=kchara) :: mesh_file_head =      def_mesh_file_head
+!
+!>      Structure for field data IO paramters
+      type(field_IO_params), save ::  mesh1_file
+!mesh1_file%iflag_format
+!
+!  ---------------------------------------------------------------------
+!
+      contains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_mesh_format_and_prefix(prefix, i_format)
+!
+      character(len=kchara), intent(in) :: prefix
+      integer(kind = kint), intent(in)  :: i_format
+!
+!
+      mesh_file_head =  prefix
+!      mesh1_file%file_prefix =  prefix
+      mesh1_file%iflag_format = i_format
+      mesh1_file%iflag_IO =     i_format
+!
+      end subroutine copy_mesh_format_and_prefix
+!
+!  ---------------------------------------------------------------------
 !
       end module m_read_mesh_data

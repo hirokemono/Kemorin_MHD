@@ -43,7 +43,8 @@
       if(num_smp_ctl%iflag .gt. 0) np_smp = num_smp_ctl%intvalue
       if (iflag_debug.gt.0) write(*,*) 'np_smp', np_smp
 !
-      call choose_file_format(mesh_file_fmt_ctl, iflag_mesh_file_fmt)
+      call choose_file_format                                           &
+     &   (mesh_file_fmt_ctl, mesh1_file%iflag_format)
 !
 !
       l_sph_bc = hermonic_degree_ctl

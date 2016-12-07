@@ -49,11 +49,11 @@
 !
 !     read outline of mesh
 !
-      iflag_mesh_file_fmt = iorg_mesh_file_fmt
+      mesh1_file%iflag_format = iorg_mesh_file_fmt
       call set_merged_node_and_element
 !
-      mesh_file_head = new_mesh_head
-      iflag_mesh_file_fmt = inew_mesh_file_fmt
+      call copy_mesh_format_and_prefix                                  &
+     &   (new_mesh_head, inew_mesh_file_fmt)
       call s_set_2nd_geometry_4_serial
 !
       call deallocate_node_geometry_type(merged%node)

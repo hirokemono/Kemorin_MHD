@@ -371,7 +371,8 @@
 !
 !   set data format
 !
-      call choose_file_format(mesh_file_fmt_ctl, iflag_mesh_file_fmt)
+      call choose_file_format                                           &
+     &   (mesh_file_fmt_ctl, mesh1_file%iflag_format)
 !
       call choose_file_format(filter_3d_format, ifmt_3d_filter)
       call choose_file_format(filter_elen_format, ifmt_filter_elen)

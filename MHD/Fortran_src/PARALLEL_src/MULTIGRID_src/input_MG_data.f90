@@ -39,7 +39,7 @@
 !
 !
       do i_level = 1, num_MG_level
-        iflag_mesh_file_fmt = ifmt_MG_mesh_file(i_level)
+        mesh1_file%iflag_format = ifmt_MG_mesh_file(i_level)
         if(my_rank .lt. MG_mpi(i_level)%nprocs ) then
 !
           mesh_file_head = MG_mesh_file_head(i_level)

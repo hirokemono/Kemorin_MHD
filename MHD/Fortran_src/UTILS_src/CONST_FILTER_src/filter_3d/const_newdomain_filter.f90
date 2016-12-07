@@ -46,7 +46,6 @@
       do ip = 1, nprocs
         my_rank = ip - 1
 !
-        mesh_file_head = mesh_file_head
         call sel_read_geometry_size(my_rank, mesh_IO_f, ierr)
         if(ierr .gt. 0) then
           call calypso_mpi_abort(ierr, 'Mesh data is wrong!!')

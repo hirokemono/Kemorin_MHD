@@ -78,8 +78,8 @@
 !
 !    read mesh file
 !
-        iflag_mesh_file_fmt = izero
-        mesh_file_head = 'mesh/in'
+        call copy_mesh_format_and_prefix                                &
+     &     (def_mesh_file_head, id_ascii_file_fmt)
         call sel_read_geometry_size(id_rank, mesh_IO_p, ierr)
         if(ierr .gt. 0) stop 'Mesh is wrong!!'
 !

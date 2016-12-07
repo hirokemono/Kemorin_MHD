@@ -153,8 +153,8 @@
       do ip2 = 1, nprocs_2nd
         my_rank_2nd = ip2 - 1
 !
-        mesh_file_head = target_mesh_head
-        iflag_mesh_file_fmt = id_ascii_file_fmt
+        call copy_mesh_format_and_prefix                                  &
+     &     (target_mesh_head, id_ascii_file_fmt)
         call sel_read_geometry_size(my_rank_2nd, mesh_IO_f, ierr)
         if(ierr .gt. 0) stop 'new mesh data is wrong'
 !
@@ -200,8 +200,8 @@
       type(ele_mom_diffs_type), allocatable, save :: moment2_ele(:)
 !
 !
-      iflag_mesh_file_fmt = id_ascii_file_fmt
-      mesh_file_head = target_mesh_head
+      call copy_mesh_format_and_prefix                                  &
+     &   (target_mesh_head, id_ascii_file_fmt)
       call sel_read_mesh_geometry(my_rank_2nd, mesh_IO_f, ierr)
       mesh_file_head = org_mesh_head
       if(ierr .gt. 0) return
@@ -327,8 +327,8 @@
       do ip = 1, norg_domain
         my_rank_org = ip - 1
 !
-        iflag_mesh_file_fmt = id_ascii_file_fmt
-        mesh_file_head = target_mesh_head
+        call copy_mesh_format_and_prefix                                &
+     &     (target_mesh_head, id_ascii_file_fmt)
         call sel_read_mesh_geometry(my_rank_org, mesh_IO_f, ierr)
 !
         call copy_ele_connect_from_IO(mesh_IO_f%ele, org_ele)

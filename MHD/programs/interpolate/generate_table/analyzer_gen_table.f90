@@ -65,10 +65,10 @@
 !
 !     ----- construct mesh informations for target mesh
 !
-      mesh_file_head = dest_mesh_head
-      iflag_mesh_file_fmt = ifmt_itp_mesh_file
       if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh: ',              &
-     &    trim(dest_mesh_head), iflag_mesh_file_fmt
+     &    trim(dest_mesh_head)
+      call copy_mesh_format_and_prefix                                  &
+     &   (dest_mesh_head, ifmt_itp_mesh_file)
       call mpi_input_mesh(org_femmesh%mesh, org_femmesh%group,          &
      &    org_ele_mesh%surf%nnod_4_surf, org_ele_mesh%edge%nnod_4_edge)
 !
@@ -78,10 +78,10 @@
 !
 !     ----- construct mesh informations for original mesh
 !
-      mesh_file_head = org_mesh_head
-      iflag_mesh_file_fmt = ifmt_org_mesh_file
       if (iflag_debug.eq.1)                                             &
      &  write(*,*) 'set_2nd_geometry_type_itp_tbl', nprocs_2nd
+      call copy_mesh_format_and_prefix                                  &
+     &   (org_mesh_head, ifmt_org_mesh_file)
       call set_2nd_geometry_type_itp_tbl(nprocs_2nd)
 !
 !  -------------------------------

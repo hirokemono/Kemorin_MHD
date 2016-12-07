@@ -44,8 +44,8 @@
 !
 !  read global mesh
 !
-      iflag_mesh_file_fmt = ifmt_single_mesh_fmt
-      mesh_file_head = global_mesh_head
+      call copy_mesh_format_and_prefix                                  &
+     &   (global_mesh_head, ifmt_single_mesh_fmt)
       call input_mesh(my_rank, org_mesh, org_group,                     &
      &    org_ele_mesh%surf%nnod_4_surf, org_ele_mesh%edge%nnod_4_edge, &
      &    ierr)

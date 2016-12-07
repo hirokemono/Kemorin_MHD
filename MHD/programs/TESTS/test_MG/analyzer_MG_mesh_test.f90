@@ -134,7 +134,6 @@
 !     output element data
 !  -------------------------------
 !
-      iflag_mesh_file_fmt = id_ascii_file_fmt
       file_prefix = mesh_ele_def_head
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_ele_geometry_to_IO'

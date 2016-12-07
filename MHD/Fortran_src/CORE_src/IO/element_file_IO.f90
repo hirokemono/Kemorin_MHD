@@ -232,7 +232,7 @@
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &  'Write ascii edge mesh file: ', trim(file_prefix)
 !
-      call set_mesh_file_name(file_prefix, id_ascii_file_fmt,   &
+      call set_mesh_file_name(file_prefix, id_ascii_file_fmt,           &
      &    my_rank_IO, file_name)
 !
       open (input_file_code, file = file_name, form = 'formatted')
@@ -257,7 +257,7 @@
       type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
 !
 !
-      call set_mesh_file_name(file_prefix, id_ascii_file_fmt,   &
+      call set_mesh_file_name(file_prefix, id_ascii_file_fmt,           &
      &    my_rank_IO, file_name)
 !
       open (input_file_code, file = file_name, form = 'formatted')

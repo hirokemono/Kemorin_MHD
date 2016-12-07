@@ -70,12 +70,10 @@
       call s_set_plane_size_correlate(num_pe, num_pe2)
 !
       write(*,*) 'set_merged_node_and_element'
-      iflag_mesh_file_fmt = id_cor_mesh_fmt
-      mesh_file_head = cor_mesh_header
+      call copy_mesh_format_and_prefix(cor_mesh_header, id_cor_mesh_fmt)
       call set_merged_node_and_element
       write(*,*) 's_set_2nd_geometry_4_serial'
-      mesh_file_head = ref_mesh_header
-      iflag_mesh_file_fmt = id_ref_mesh_fmt
+      call copy_mesh_format_and_prefix(ref_mesh_header, id_ref_mesh_fmt)
       call s_set_2nd_geometry_4_serial
 !
       call s_set_numnod_4_plane

@@ -38,8 +38,8 @@
       call copy_merge_mesh_2_IO                                         &
      &   (merge_tbl, merged, merged_grp, fem_IO_m)
 !
-      mesh_file_head = new_mesh_head
-      iflag_mesh_file_fmt = inew_mesh_file_fmt
+      call copy_mesh_format_and_prefix                                  &
+     &   (new_mesh_head, inew_mesh_file_fmt)
       call sel_write_mesh_file(izero, fem_IO_m)
 !
       end subroutine s_write_merged_mesh

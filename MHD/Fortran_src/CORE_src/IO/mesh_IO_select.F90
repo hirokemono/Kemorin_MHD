@@ -54,16 +54,16 @@
 !
 !
 !
-      call set_mesh_file_name(mesh_file_head, iflag_mesh_file_fmt,      &
+      call set_mesh_file_name(mesh_file_head, mesh1_file%iflag_format,      &
      &    my_rank_IO, file_name)
 !
-      if (iflag_mesh_file_fmt .eq. id_binary_file_fmt) then
+      if (mesh1_file%iflag_format .eq. id_binary_file_fmt) then
         call read_mesh_file_b(my_rank_IO, file_name, fem_IO, ierr)
 !
 #ifdef ZLIB_IO
-      else if(iflag_mesh_file_fmt .eq. id_gzip_bin_file_fmt) then
+      else if(mesh1_file%iflag_format .eq. id_gzip_bin_file_fmt) then
         call gz_read_mesh_file_b(my_rank_IO, file_name, fem_IO, ierr)
-      else if(iflag_mesh_file_fmt .eq. id_gzip_txt_file_fmt) then
+      else if(mesh1_file%iflag_format .eq. id_gzip_txt_file_fmt) then
         call gz_read_mesh(my_rank_IO, file_name, fem_IO, ierr)
 #endif
 !
@@ -83,17 +83,17 @@
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      call set_mesh_file_name(mesh_file_head, iflag_mesh_file_fmt,      &
+      call set_mesh_file_name(mesh_file_head, mesh1_file%iflag_format,      &
      &    my_rank_IO, file_name)
 !
-      if (iflag_mesh_file_fmt .eq. id_binary_file_fmt) then
+      if (mesh1_file%iflag_format .eq. id_binary_file_fmt) then
         call read_mesh_geometry_b(my_rank_IO, file_name, mesh_IO, ierr)
 !
 #ifdef ZLIB_IO
-      else if(iflag_mesh_file_fmt .eq. id_gzip_bin_file_fmt) then
+      else if(mesh1_file%iflag_format .eq. id_gzip_bin_file_fmt) then
         call gz_read_mesh_geometry_b                                    &
      &     (my_rank_IO, file_name, mesh_IO, ierr)
-      else if(iflag_mesh_file_fmt .eq. id_gzip_txt_file_fmt) then
+      else if(mesh1_file%iflag_format .eq. id_gzip_txt_file_fmt) then
         call gz_read_mesh_geometry                                      &
      &     (my_rank_IO, file_name, mesh_IO, ierr)
 #endif
@@ -114,17 +114,17 @@
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      call set_mesh_file_name(mesh_file_head, iflag_mesh_file_fmt,      &
+      call set_mesh_file_name(mesh_file_head, mesh1_file%iflag_format,      &
      &    my_rank_IO, file_name)
 !
-      if (iflag_mesh_file_fmt .eq. id_binary_file_fmt) then
+      if (mesh1_file%iflag_format .eq. id_binary_file_fmt) then
         call read_node_size_b(my_rank_IO, file_name, mesh_IO, ierr)
 !
 #ifdef ZLIB_IO
-      else if(iflag_mesh_file_fmt .eq. id_gzip_bin_file_fmt) then
+      else if(mesh1_file%iflag_format .eq. id_gzip_bin_file_fmt) then
         call gz_read_node_size_b                                        &
      &     (my_rank_IO, file_name, mesh_IO, ierr)
-      else if(iflag_mesh_file_fmt .eq. id_gzip_txt_file_fmt) then
+      else if(mesh1_file%iflag_format .eq. id_gzip_txt_file_fmt) then
         call gz_read_node_size(my_rank_IO, file_name, mesh_IO, ierr)
 #endif
 !
@@ -143,17 +143,17 @@
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      call set_mesh_file_name(mesh_file_head, iflag_mesh_file_fmt,      &
+      call set_mesh_file_name(mesh_file_head, mesh1_file%iflag_format,      &
      &    my_rank_IO, file_name)
 !
-      if (iflag_mesh_file_fmt .eq. id_binary_file_fmt) then
+      if (mesh1_file%iflag_format .eq. id_binary_file_fmt) then
         call read_geometry_size_b(my_rank_IO, file_name, mesh_IO, ierr)
 !
 #ifdef ZLIB_IO
-      else if(iflag_mesh_file_fmt .eq. id_gzip_bin_file_fmt) then
+      else if(mesh1_file%iflag_format .eq. id_gzip_bin_file_fmt) then
         call gz_read_geometry_size_b                                    &
      &     (my_rank_IO, file_name, mesh_IO, ierr)
-      else if(iflag_mesh_file_fmt .eq. id_gzip_txt_file_fmt) then
+      else if(mesh1_file%iflag_format .eq. id_gzip_txt_file_fmt) then
         call gz_read_geometry_size                                      &
      &     (my_rank_IO, file_name, mesh_IO, ierr)
 #endif
@@ -173,16 +173,16 @@
       type(mesh_data), intent(inout) :: fem_IO
 !
 !
-      call set_mesh_file_name(mesh_file_head, iflag_mesh_file_fmt,      &
+      call set_mesh_file_name(mesh_file_head, mesh1_file%iflag_format,      &
      &    my_rank_IO, file_name)
 !
-      if (iflag_mesh_file_fmt .eq. id_binary_file_fmt) then
+      if (mesh1_file%iflag_format .eq. id_binary_file_fmt) then
         call write_mesh_file_b(my_rank_IO, file_name, fem_IO)
 !
 #ifdef ZLIB_IO
-      else if(iflag_mesh_file_fmt .eq. id_gzip_bin_file_fmt) then
+      else if(mesh1_file%iflag_format .eq. id_gzip_bin_file_fmt) then
         call gz_write_mesh_file_b(my_rank_IO, file_name, fem_IO)
-      else if(iflag_mesh_file_fmt .eq. id_gzip_txt_file_fmt) then
+      else if(mesh1_file%iflag_format .eq. id_gzip_txt_file_fmt) then
         call gz_write_mesh_file(my_rank_IO, file_name, fem_IO)
 #endif
 !
@@ -202,7 +202,7 @@
       integer(kind= kint), intent(in) :: my_rank_IO
 !
 !
-      call set_mesh_file_name(mesh_file_head, iflag_mesh_file_fmt,      &
+      call set_mesh_file_name(mesh_file_head, mesh1_file%iflag_format,      &
      &    my_rank_IO, file_name)
 !
       check_exist_mesh = check_file_exist(file_name)

@@ -53,7 +53,7 @@
 !
 !  read mesh information
 !
-      iflag_mesh_file_fmt = iorg_mesh_file_fmt
+      mesh1_file%iflag_format = iorg_mesh_file_fmt
       call set_merged_mesh_and_group
 !
 !   read field name and number of components

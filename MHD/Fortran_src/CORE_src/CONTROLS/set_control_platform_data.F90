@@ -100,7 +100,7 @@
 !
 !   set data format
       call choose_para_file_format                                      &
-     &   (mesh_file_fmt_ctl, iflag_mesh_file_fmt)
+     &   (mesh_file_fmt_ctl, mesh1_file%iflag_format)
 !
       end subroutine set_control_mesh_def
 !
@@ -126,8 +126,8 @@
 !
       if(sph_file_prefix%iflag .gt. 0) then
         sph_file_head =  sph_file_prefix%charavalue
-        mesh_file_head = sph_file_prefix%charavalue
-        iflag_mesh_file_fmt = iflag_sph_file_fmt
+        call copy_mesh_format_and_prefix                                &
+     &     (sph_file_prefix%charavalue, iflag_sph_file_fmt)
       end if
 !
       sph_file_param%iflag_IO = spectr_file_head_ctl%iflag

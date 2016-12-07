@@ -92,7 +92,7 @@
 !
 !   read mesh data for initial values
 !
-      iflag_mesh_file_fmt = id_ascii_file_fmt
+      mesh1_file%iflag_format = id_ascii_file_fmt
       call set_merged_mesh_and_group
 !
       allocate( subdomains_2(num_pe2) )

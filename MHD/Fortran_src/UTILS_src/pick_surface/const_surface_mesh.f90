@@ -46,7 +46,7 @@
       call find_mesh_format_4_viewer
       call count_subdomains_4_viewer
       call const_surf_mesh_4_viewer                                     &
-     &   (iflag_mesh_file_fmt, ele, surf, edge)
+     &   (mesh1_file%iflag_format, ele, surf, edge)
 !
       end subroutine choose_surface_mesh
 !
@@ -60,19 +60,19 @@
 !
 !
 !  Detect file format
-      iflag_mesh_file_fmt = id_gzip_txt_file_fmt
+      mesh1_file%iflag_format = id_gzip_txt_file_fmt
       if(check_exist_mesh(izero) .gt. 0) return
 !
-      iflag_mesh_file_fmt = id_ascii_file_fmt
+      mesh1_file%iflag_format = id_ascii_file_fmt
       if(check_exist_mesh(izero) .gt. 0) return
 !
-      iflag_mesh_file_fmt = id_binary_file_fmt
+      mesh1_file%iflag_format = id_binary_file_fmt
       if(check_exist_mesh(izero) .gt. 0) return
 !
-      iflag_mesh_file_fmt = id_gzip_bin_file_fmt
+      mesh1_file%iflag_format = id_gzip_bin_file_fmt
       if(check_exist_mesh(izero) .gt. 0) return
 !
-      iflag_mesh_file_fmt = id_gzip_txt_file_fmt
+      mesh1_file%iflag_format = id_gzip_txt_file_fmt
       if(check_exist_mesh(izero) .gt. 0) return
 !
       stop 'I cannot find mesh file!!'
