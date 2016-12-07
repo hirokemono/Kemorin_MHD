@@ -67,7 +67,8 @@
       call copy_mesh_format_and_prefix                                  &
      &   (dest_mesh_head, ifmt_itp_mesh_file, mesh1_file)
       if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh(org_femmesh%mesh, org_femmesh%group,          &
+      call mpi_input_mesh                                               &
+     &   (mesh1_file, org_femmesh%mesh, org_femmesh%group,              &
      &    org_ele_mesh%surf%nnod_4_surf,                                &
      &    org_ele_mesh%edge%nnod_4_edge)
 !

@@ -7,7 +7,7 @@
 !!
 !!@verbatim
 !!      subroutine load_para_SPH_and_FEM_mesh(sph, comms_sph, sph_grps, &
-!!     &         mesh, group, ele_mesh)
+!!     &          mesh, group, ele_mesh, mesh_file)
 !!      subroutine load_para_SPH_rj_mesh(sph, comms_sph, sph_grps)
 !!      subroutine load_para_sph_mesh(sph, bc_rtp_grp, sph_grps)
 !!        type(sph_grids), intent(inout) :: sph
@@ -16,6 +16,7 @@
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(element_geometry), intent(inout) :: ele_mesh
+!!        type(field_IO_params), intent(inout) ::  mesh_file
 !!
 !!      subroutine load_para_rj_mesh                                    &
 !!     &         (sph_params, sph_rj, comm_rj, sph_grps)
@@ -33,7 +34,7 @@
       use m_precision
       use m_constants
 !
-      use m_read_mesh_data
+      use t_file_IO_parameter
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
       use t_spheric_mesh
@@ -54,7 +55,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine load_para_SPH_and_FEM_mesh(sph, comms_sph, sph_grps,   &
-     &         mesh, group, ele_mesh)
+     &          mesh, group, ele_mesh, mesh_file)
 !
       use t_mesh_data
 !
@@ -65,6 +66,7 @@
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
+      type(field_IO_params), intent(inout) ::  mesh_file
 !
 !
       call load_para_sph_mesh(sph, comms_sph, sph_grps)
@@ -72,7 +74,7 @@
       call load_FEM_mesh_4_SPH                                          &
      &   (sph%sph_params, sph%sph_rtp, sph%sph_rj,                      &
      &    sph_grps%radial_rtp_grp, sph_grps%radial_rj_grp,              &
-     &    mesh, group, ele_mesh)
+     &    mesh, group, ele_mesh, mesh_file)
 !
       end subroutine load_para_SPH_and_FEM_mesh
 !
@@ -94,7 +96,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine load_FEM_mesh_4_SPH(sph_params, sph_rtp, sph_rj,       &
-     &          radial_rtp_grp, radial_rj_grp, mesh, group, ele_mesh)
+     &          radial_rtp_grp, radial_rj_grp, mesh, group, ele_mesh,   &
+     &          mesh_file)
 !
       use calypso_mpi
       use t_mesh_data
@@ -118,14 +121,15 @@
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
+      type(field_IO_params), intent(inout) ::  mesh_file
 !
       type(mesh_data) :: femmesh_s
 !
 !
 !  --  load FEM mesh data
-      if(check_exist_mesh(mesh1_file, my_rank) .eq. 0) then
+      if(check_exist_mesh(mesh_file, my_rank) .eq. 0) then
         if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
-        call mpi_input_mesh(mesh, group,                                &
+        call mpi_input_mesh(mesh_file, mesh, group,                     &
      &      ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
         call set_fem_center_mode_4_SPH                                  &
      &     (mesh%node%internal_node, sph_rtp, sph_params)
@@ -144,7 +148,7 @@
       if (iflag_debug.gt.0) write(*,*) 'const_FEM_mesh_4_sph_mhd'
       call const_FEM_mesh_4_sph_mhd                                     &
      &   (sph_params, sph_rtp, sph_rj, radial_rtp_grp,                  &
-     &    radial_rj_grp, femmesh_s%mesh, femmesh_s%group)
+     &    radial_rj_grp, femmesh_s%mesh, femmesh_s%group, mesh_file)
 !      call compare_mesh_type                                           &
 !     &   (my_rank, mesh%nod_comm, mesh%node, mesh%ele, femmesh_s%mesh)
 !      call compare_mesh_groups(group%nod_grp, femmesh_s%group)

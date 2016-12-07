@@ -38,6 +38,7 @@
       subroutine initialize_mesh_test
 !
       use m_array_for_send_recv
+      use m_read_mesh_data
 !
       use const_mesh_information
       use copy_mesh_structures
@@ -95,7 +96,7 @@
 !  --  read geometry
 !
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh(mesh, group,                                  &
+      call mpi_input_mesh(mesh1_file, mesh, group,                      &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'

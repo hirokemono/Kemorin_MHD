@@ -38,6 +38,7 @@
 !
       subroutine init_test_sph
 !
+      use m_read_mesh_data
       use m_read_ctl_gen_sph_shell
       use set_control_platform_data
       use parallel_load_data_4_sph

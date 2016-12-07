@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine s_set_control_4_gen_shell_grids                      &
-!!     &         (sph, sph_file_param, ierr)
+!!     &         (sph, mesh_file, sph_file_param, ierr)
 !!      subroutine set_control_4_shell_grids(nprocs_check, sph, ierr)
 !!        type(field_IO_params), intent(inout) :: sph_file_param
 !!        type(sph_grids), intent(inout) :: sph
@@ -18,7 +18,6 @@
 !
       use m_precision
 !
-      use m_read_mesh_data
       use t_spheric_parameter
       use t_file_IO_parameter
 !
@@ -38,16 +37,18 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_set_control_4_gen_shell_grids                        &
-     &         (sph, sph_file_param, ierr)
+     &         (sph, mesh_file, sph_file_param, ierr)
 !
       type(sph_grids), intent(inout) :: sph
+      type(field_IO_params), intent(inout) ::  mesh_file
       type(field_IO_params), intent(inout) :: sph_file_param
       integer(kind = kint), intent(inout) :: ierr
 !
       integer(kind = kint) :: nprocs_check
 !
 !
-      call set_control_4_shell_filess(nprocs_check, sph_file_param)
+      call set_control_4_shell_filess                                   &
+     &   (nprocs_check, mesh_file, sph_file_param)
 !
       call set_control_4_shell_grids(nprocs_check, sph, ierr)
 !
@@ -57,22 +58,23 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_control_4_shell_filess                             &
-     &         (nprocs_check, sph_file_param)
+     &         (nprocs_check, mesh_file, sph_file_param)
 !
       use m_ctl_data_4_platforms
       use set_control_platform_data
       use gen_sph_grids_modes
 !
       integer(kind = kint), intent(inout) :: nprocs_check
+      type(field_IO_params), intent(inout) ::  mesh_file
       type(field_IO_params), intent(inout) :: sph_file_param
 !
 !
       nprocs_check = 1
       if(ndomain_ctl%iflag .gt. 0) nprocs_check = ndomain_ctl%intvalue
       call turn_off_debug_flag_by_ctl(izero)
-      call set_control_mesh_def(mesh1_file)
+      call set_control_mesh_def(mesh_file)
       call set_FEM_mesh_switch_4_SPH(iflag_output_mesh)
-      call set_control_sph_mesh(mesh1_file, sph_file_param)
+      call set_control_sph_mesh(mesh_file, sph_file_param)
 !
       end subroutine set_control_4_shell_filess
 !
@@ -82,7 +84,6 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_read_mesh_data
       use m_spheric_constants
       use m_spheric_global_ranks
       use m_sph_1d_global_index

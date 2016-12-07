@@ -17,6 +17,7 @@
       use calypso_mpi
       use t_mesh_data
       use t_boundary_field_IO
+      use m_read_mesh_data
 !
       implicit none
 !
@@ -49,7 +50,7 @@
 !  --  read geometry
 !
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh(femmesh%mesh, femmesh%group,                  &
+      call mpi_input_mesh(mesh1_file, femmesh%mesh, femmesh%group,      &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'

@@ -16,13 +16,24 @@
 !!      subroutine link_pointer_mesh                                    &
 !!     &         (mesh_org, group_org  mesh_p, group_p)
 !!      subroutine link_pointer_elemesh(ele_mesh_org, ele_mesh_p)
+!!
+!!      subroutine mpi_input_mesh_p                                     &
+!!     &         (mesh_file, femmesh_p, nnod_4_surf, nnod_4_edge)
+!!      subroutine input_mesh_p(my_rank, mesh_file, femmesh_p,          &
+!!     &          nnod_4_surf, nnod_4_edge, ierr)
+!!        type(field_IO_params), intent(in) ::  mesh_file
+!!        type(mesh_data_p), intent(inout) :: femmesh_p
+!!
+!!      subroutine const_mesh_infos_p(my_rank, femmesh_p, ele_mesh)
+!!      subroutine const_element_comm_tbls_p(femmesh_p, ele_mesh)
+!!        type(mesh_data_p), intent(inout) :: femmesh_p
+!!        type(element_geometry_p), intent(inout) :: ele_mesh
 !!@endverbatim
 !
       module t_mesh_data_with_pointer
 !
       use m_precision
       use m_machine_parameter
-      use m_read_mesh_data
       use t_mesh_data
 !
       implicit none
@@ -232,7 +243,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine mpi_input_mesh_p                                       &
-     &         (femmesh_p, nnod_4_surf, nnod_4_edge)
+     &         (mesh_file, femmesh_p, nnod_4_surf, nnod_4_edge)
 !
       use calypso_mpi
       use t_mesh_data
@@ -241,18 +252,20 @@
       use t_surface_data
       use t_edge_data
       use t_group_data
+      use t_file_IO_parameter
 !
       use mesh_MPI_IO_select
       use set_nnod_4_ele_by_type
       use load_mesh_data
 !
+      type(field_IO_params), intent(in) ::  mesh_file
       type(mesh_data_p), intent(inout) :: femmesh_p
       integer(kind = kint), intent(inout) :: nnod_4_surf, nnod_4_edge
 !
       type(mesh_data) :: fem_IO_m
 !
 !
-      call sel_mpi_read_mesh(fem_IO_m)
+      call sel_mpi_read_mesh(mesh_file, fem_IO_m)
 !
 !
       call set_mesh_geometry_data(fem_IO_m%mesh,                        &
@@ -270,8 +283,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine input_mesh_p                                           &
-     &         (my_rank, femmesh_p, nnod_4_surf, nnod_4_edge, ierr)
+      subroutine input_mesh_p(my_rank, mesh_file, femmesh_p,            &
+     &          nnod_4_surf, nnod_4_edge, ierr)
 !
       use t_mesh_data
       use t_comm_table
@@ -279,12 +292,14 @@
       use t_surface_data
       use t_edge_data
       use t_group_data
+      use t_file_IO_parameter
 !
       use mesh_IO_select
       use set_nnod_4_ele_by_type
       use load_mesh_data
 !
       integer(kind = kint), intent(in) :: my_rank
+      type(field_IO_params), intent(in) ::  mesh_file
 !
       type(mesh_data_p), intent(inout) :: femmesh_p
       integer(kind = kint), intent(inout) :: nnod_4_surf, nnod_4_edge
@@ -293,7 +308,7 @@
       type(mesh_data) :: fem_IO_i
 !
 !
-      call sel_read_mesh(mesh1_file, my_rank, fem_IO_i, ierr)
+      call sel_read_mesh(mesh_file, my_rank, fem_IO_i, ierr)
 !
       call set_mesh_geometry_data(fem_IO_i%mesh,                        &
      &    femmesh_p%mesh%nod_comm, femmesh_p%mesh%node,                 &

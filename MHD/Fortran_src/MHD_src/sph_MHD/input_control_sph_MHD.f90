@@ -128,7 +128,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_mesh'
       call load_para_SPH_and_FEM_mesh                                   &
-     &   (sph, comms_sph, sph_grps, mesh, group, ele_mesh)
+     &   (sph, comms_sph, sph_grps, mesh, group, ele_mesh, mesh1_file)
 !
       if (iflag_boundary_file .eq. id_read_boundary_file) then
         if (iflag_debug.eq.1) write(*,*) 'read_boundary_spectr_file'

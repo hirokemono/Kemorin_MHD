@@ -16,6 +16,7 @@
       use m_precision
       use m_machine_parameter
 !
+      use m_read_mesh_data
       use t_mesh_data
       use t_phys_data
       use t_ucd_data
@@ -82,7 +83,8 @@
 !   --------------------------------
 !
 !       load mesh informations
-      call mpi_input_mesh(femmesh_VIZ%mesh, femmesh_VIZ%group,          &
+      call mpi_input_mesh(mesh1_file,                                   &
+     &    femmesh_VIZ%mesh, femmesh_VIZ%group,                          &
      &    elemesh_VIZ%surf%nnod_4_surf, elemesh_VIZ%edge%nnod_4_edge)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'

@@ -7,9 +7,11 @@
 !>@brief Copy FEM mesh data from IO structure
 !!
 !!@verbatim
-!!      subroutine mpi_input_mesh(mesh, group, nnod_4_surf, nnod_4_edge)
-!!      subroutine mpi_input_mesh_geometry(mesh)
-!!      subroutine mpi_output_mesh(mesh, group)
+!!      subroutine mpi_input_mesh                                       &
+!!     &         (mesh_file, mesh, group, nnod_4_surf, nnod_4_edge)
+!!      subroutine mpi_input_mesh_geometry(mesh_file, mesh)
+!!      subroutine mpi_output_mesh(mesh_file, mesh, group)
+!!        type(field_IO_params), intent(in) ::  mesh_file
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!@endverbatim
@@ -20,6 +22,7 @@
       use m_machine_parameter
       use calypso_mpi
 !
+      use t_file_IO_parameter
       use t_mesh_data
       use t_comm_table
       use t_geometry_data
@@ -35,11 +38,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine mpi_input_mesh(mesh, group, nnod_4_surf, nnod_4_edge)
+      subroutine mpi_input_mesh                                         &
+     &         (mesh_file, mesh, group, nnod_4_surf, nnod_4_edge)
 !
       use mesh_MPI_IO_select
       use set_nnod_4_ele_by_type
       use load_mesh_data
+!
+      type(field_IO_params), intent(in) ::  mesh_file
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
@@ -48,24 +54,26 @@
       type(mesh_data) :: fem_IO_m
 !
 !
-      call sel_mpi_read_mesh(fem_IO_m)
+      call sel_mpi_read_mesh(mesh_file, fem_IO_m)
       call set_mesh(fem_IO_m, mesh, group, nnod_4_surf, nnod_4_edge)
 !
       end subroutine mpi_input_mesh
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine mpi_input_mesh_geometry(mesh)
+      subroutine mpi_input_mesh_geometry(mesh_file, mesh)
 !
       use mesh_MPI_IO_select
       use load_mesh_data
+!
+      type(field_IO_params), intent(in) ::  mesh_file
 !
       type(mesh_geometry), intent(inout) :: mesh
 !
       type(mesh_geometry) :: mesh_IO_m
 !
 !
-      call sel_mpi_read_mesh_geometry(mesh_IO_m)
+      call sel_mpi_read_mesh_geometry(mesh_file, mesh_IO_m)
       call set_mesh_geometry_data(mesh_IO_m,                            &
      &    mesh%nod_comm, mesh%node, mesh%ele)
 !
@@ -74,13 +82,15 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine mpi_output_mesh(mesh, group)
+      subroutine mpi_output_mesh(mesh_file, mesh, group)
 !
       use mesh_MPI_IO_select
       use set_comm_table_4_IO
       use set_element_data_4_IO
       use copy_mesh_structures
       use load_mesh_data
+!
+      type(field_IO_params), intent(in) ::  mesh_file
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
@@ -96,7 +106,7 @@
      &   (group%nod_grp, group%ele_grp, group%surf_grp, fem_IO_m%group)
 !
 !       save mesh information
-      call sel_mpi_write_mesh_file(fem_IO_m)
+      call sel_mpi_write_mesh_file(mesh_file, fem_IO_m)
 !
       end subroutine mpi_output_mesh
 !

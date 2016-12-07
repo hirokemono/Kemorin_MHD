@@ -40,6 +40,7 @@
       use t_phys_data
       use t_file_IO_parameter
       use t_field_data_IO
+      use m_read_mesh_data
 !
       implicit none
 !
@@ -86,7 +87,7 @@
       call set_control_4_FEM_MHD(FEM_udt_org_param, nod_fld)
 !
 !  --  load FEM mesh data
-      call mpi_input_mesh(mesh, group,                                  &
+      call mpi_input_mesh(mesh1_file, mesh, group,                      &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
       call input_meshes_4_MHD                                           &
@@ -94,7 +95,7 @@
 !
       if(cmp_no_case(method_4_solver, cflag_mgcg)) then
         call alloc_MHD_MG_DJDS_mat(num_MG_level, MHD_matrices)
-        call input_MG_mesh
+        call input_MG_mesh(mesh1_file)
         call input_MG_itp_tables(MHD_matrices%MG_interpolate)
       else
         num_MG_level = 0
@@ -136,7 +137,7 @@
       call set_control_4_FEM_MHD(FEM_udt_org_param, nod_fld)
 !
 !  --  load FEM mesh data
-      call mpi_input_mesh(mesh, group,                                  &
+      call mpi_input_mesh(mesh1_file, mesh, group,                      &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
       call input_meshes_4_MHD                                           &

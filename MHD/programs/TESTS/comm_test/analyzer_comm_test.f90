@@ -33,6 +33,7 @@
 !
       subroutine initialize_communication_test
 !
+      use m_read_mesh_data
       use m_array_for_send_recv
       use input_control_comm_test
       use const_mesh_information
@@ -88,7 +89,7 @@
 !  --  read geometry
 !
       if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh(test_fem%mesh, test_fem%group,                &
+      call mpi_input_mesh(mesh1_file, test_fem%mesh, test_fem%group,    &
      &    test_ele_mesh%surf%nnod_4_surf,                               &
      &    test_ele_mesh%edge%nnod_4_edge)
 !
