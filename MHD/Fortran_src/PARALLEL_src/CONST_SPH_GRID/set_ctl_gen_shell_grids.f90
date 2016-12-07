@@ -18,6 +18,7 @@
 !
       use m_precision
 !
+      use m_read_mesh_data
       use t_spheric_parameter
       use t_file_IO_parameter
 !
@@ -69,9 +70,9 @@
       nprocs_check = 1
       if(ndomain_ctl%iflag .gt. 0) nprocs_check = ndomain_ctl%intvalue
       call turn_off_debug_flag_by_ctl(izero)
-      call set_control_mesh_def
+      call set_control_mesh_def(mesh1_file)
       call set_FEM_mesh_switch_4_SPH(iflag_output_mesh)
-      call set_control_sph_mesh(sph_file_param)
+      call set_control_sph_mesh(mesh1_file, sph_file_param)
 !
       end subroutine set_control_4_shell_filess
 !

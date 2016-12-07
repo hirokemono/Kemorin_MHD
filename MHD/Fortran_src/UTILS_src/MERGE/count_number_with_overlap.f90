@@ -11,6 +11,7 @@
 !
       use m_constants
       use m_geometry_data_4_merge
+      use m_read_mesh_data
       use t_mesh_data
 !
       implicit none
@@ -54,7 +55,7 @@
 !
       do ip =1, num_pe
         my_rank = ip - 1
-        call sel_read_mesh(my_rank, fem_IO_o, ierr)
+        call sel_read_mesh(mesh1_file, my_rank, fem_IO_o, ierr)
         if(ierr .gt. 0) stop 'Error in Mesh data'
 !
         call set_mesh_geometry_data(fem_IO_o%mesh,                      &

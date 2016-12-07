@@ -68,7 +68,7 @@
       if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh: ',              &
      &    trim(dest_mesh_head)
       call copy_mesh_format_and_prefix                                  &
-     &   (dest_mesh_head, ifmt_itp_mesh_file)
+     &   (dest_mesh_head, ifmt_itp_mesh_file, mesh1_file)
       call mpi_input_mesh(org_femmesh%mesh, org_femmesh%group,          &
      &    org_ele_mesh%surf%nnod_4_surf, org_ele_mesh%edge%nnod_4_edge)
 !
@@ -81,7 +81,7 @@
       if (iflag_debug.eq.1)                                             &
      &  write(*,*) 'set_2nd_geometry_type_itp_tbl', nprocs_2nd
       call copy_mesh_format_and_prefix                                  &
-     &   (org_mesh_head, ifmt_org_mesh_file)
+     &   (org_mesh_head, ifmt_org_mesh_file, mesh1_file)
       call set_2nd_geometry_type_itp_tbl(nprocs_2nd)
 !
 !  -------------------------------

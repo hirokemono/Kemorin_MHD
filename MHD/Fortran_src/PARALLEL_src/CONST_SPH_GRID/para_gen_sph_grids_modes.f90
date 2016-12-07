@@ -278,8 +278,9 @@
 !
 ! Output mesh data
         if(iflag_output_mesh .gt. 0) then
-          mesh_file_head = sph_file_head
-          call output_mesh(ip_rank, femmesh%mesh, femmesh%group)
+          mesh1_file%file_prefix = sph_file_head
+          call output_mesh(mesh1_file, ip_rank,                         &
+     &                     femmesh%mesh, femmesh%group)
           write(*,'(a,i6,a,i6)')                                        &
      &          ip_rank, ' is done on process ', my_rank
         end if

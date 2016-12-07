@@ -86,7 +86,7 @@
       call turn_off_debug_flag_by_ctl(my_rank)
       call check_control_num_domains
       call set_control_smp_def(my_rank)
-      call set_control_mesh_def
+      call set_control_mesh_def(mesh1_file)
       call set_control_org_udt_file_def(udt_org_param)
 !
 !

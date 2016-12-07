@@ -66,8 +66,10 @@
 !
       call alloc_org_mesh_type_itp_para(nprocs_2nd)
 !
-      write(*,*) 'mesh_file_head: ', trim(mesh_file_head), nprocs_2nd
-      call s_set_parallel_mesh_in_1pe(nprocs_2nd, origin_mesh)
+      write(*,*) 'mesh_file_head: ', trim(mesh1_file%file_prefix),      &
+     &            nprocs_2nd
+      call s_set_parallel_mesh_in_1pe                                   &
+     &   (mesh1_file, nprocs_2nd, origin_mesh)
 !
       end subroutine set_2nd_geometry_type_itp_tbl
 !

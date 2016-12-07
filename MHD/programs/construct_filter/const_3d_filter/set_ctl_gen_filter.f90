@@ -337,11 +337,12 @@
 !
 !
       if (mesh_file_prefix%iflag .ne. 0) then
-        mesh_file_head = mesh_file_prefix%charavalue
+        mesh1_file%file_prefix = mesh_file_prefix%charavalue
       else
-        mesh_file_head = def_mesh_file_head
+        mesh1_file%file_prefix = def_mesh_file_head
       end if
-      if (iflag_debug.gt.0) write(*,*) 'mesh_file_head ', mesh_file_head
+      if (iflag_debug.gt.0) write(*,*)                                  &
+     &                'mesh_file_head ', mesh1_file%file_prefix
 !
       if (filter_head_ctl%iflag .ne. 0) then
         filter_3d_head = filter_head_ctl%charavalue

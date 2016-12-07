@@ -22,6 +22,7 @@
 !
       use m_precision
       use m_machine_parameter
+      use m_read_mesh_data
       use t_mesh_data
 !
       implicit none
@@ -292,7 +293,7 @@
       type(mesh_data) :: fem_IO_i
 !
 !
-      call sel_read_mesh(my_rank, fem_IO_i, ierr)
+      call sel_read_mesh(mesh1_file, my_rank, fem_IO_i, ierr)
 !
       call set_mesh_geometry_data(fem_IO_i%mesh,                        &
      &    femmesh_p%mesh%nod_comm, femmesh_p%mesh%node,                 &

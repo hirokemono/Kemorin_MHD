@@ -27,7 +27,7 @@
       use set_control_platform_data
 !
 !
-      call set_control_mesh_def
+      call set_control_mesh_def(mesh1_file)
 !
       if (udt_file_head_ctl%iflag .gt. 0) then
         plane_udt_header = udt_file_head_ctl%charavalue

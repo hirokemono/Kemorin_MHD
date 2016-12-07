@@ -58,6 +58,7 @@
       use set_comm_table_4_IO
 !
       use m_ctl_data_test_mesh
+      use m_read_mesh_data
       use set_control_test_mesh
       use mpi_load_mesh_data
       use const_jacobians_3d

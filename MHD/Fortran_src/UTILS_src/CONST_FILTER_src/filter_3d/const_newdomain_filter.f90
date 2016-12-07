@@ -16,6 +16,7 @@
       use t_geometry_data
       use m_filter_func_4_sorting
       use m_filter_coefs
+      use m_read_mesh_data
       use set_parallel_file_name
       use mesh_IO_select
       use read_org_filter_coefs
@@ -46,7 +47,8 @@
       do ip = 1, nprocs
         my_rank = ip - 1
 !
-        call sel_read_geometry_size(my_rank, mesh_IO_f, ierr)
+        call sel_read_geometry_size                                     &
+     &     (mesh1_file, my_rank, mesh_IO_f, ierr)
         if(ierr .gt. 0) then
           call calypso_mpi_abort(ierr, 'Mesh data is wrong!!')
         end if
@@ -92,7 +94,8 @@
       do ip = 1, nprocs
         my_rank = ip - 1
 !
-        call sel_read_geometry_size(my_rank, mesh_IO_f, ierr)
+        call sel_read_geometry_size                                     &
+     &     (mesh1_file, my_rank, mesh_IO_f, ierr)
         if(ierr .gt. 0) then
           call calypso_mpi_abort(ierr, 'Mesh data is wrong!!')
         end if

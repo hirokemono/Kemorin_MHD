@@ -42,7 +42,7 @@
         mesh1_file%iflag_format = ifmt_MG_mesh_file(i_level)
         if(my_rank .lt. MG_mpi(i_level)%nprocs ) then
 !
-          mesh_file_head = MG_mesh_file_head(i_level)
+          mesh1_file%file_prefix = MG_mesh_file_head(i_level)
           call mpi_input_mesh                                           &
      &       (MG_mesh(i_level)%mesh, MG_mesh(i_level)%group,            &
      &        MG_ele_mesh(i_level)%surf%nnod_4_surf,                    &

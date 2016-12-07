@@ -35,8 +35,8 @@
 !
       call check_control_num_domains
       call turn_off_debug_flag_by_ctl(my_rank)
-      call set_control_mesh_def
-      original_mesh_head = mesh_file_head
+      call set_control_mesh_def(mesh1_file)
+      original_mesh_head = mesh1_file%file_prefix
 !
       if (new_mesh_prefix%iflag .gt. 0) then
         modified_mesh_head = new_mesh_prefix%charavalue

@@ -43,13 +43,15 @@
       if(iflag_debug.gt.0) write(*,*) 'set_control_param_refine_para'
       call set_control_param_refine_para
 !
-      mesh_file_head = para_fine_mesh_head
+      mesh1_file%file_prefix = para_fine_mesh_head
       call alloc_para_fine_mesh_type
-      call s_set_parallel_mesh_in_1pe(nprocs_fine, fine_mesh)
+      call s_set_parallel_mesh_in_1pe                                   &
+     &   (mesh1_file, nprocs_fine, fine_mesh)
 !
-      mesh_file_head = para_course_mesh_head
+      mesh1_file%file_prefix = para_course_mesh_head
       call alloc_para_course_mesh_type
-      call s_set_parallel_mesh_in_1pe(nprocs_course, course_mesh)
+      call s_set_parallel_mesh_in_1pe                                   &
+     &   (mesh1_file, nprocs_course, course_mesh)
 !
 !
 !

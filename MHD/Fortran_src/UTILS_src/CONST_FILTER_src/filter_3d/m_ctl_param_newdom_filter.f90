@@ -88,7 +88,7 @@
 !
       if(mesh_file_prefix%iflag .gt. 0) then
         org_mesh_head =  mesh_file_prefix%charavalue
-        mesh_file_head = mesh_file_prefix%charavalue
+        mesh1_file%file_prefix = mesh_file_prefix%charavalue
       else
         write(*,*) 'set original mesh file name'
         stop

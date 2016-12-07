@@ -39,13 +39,15 @@
       call read_control_4_distribute_itp
       call set_control_4_dist_itp
 !
-      mesh_file_head = dest_mesh_head
+      mesh1_file%file_prefix = dest_mesh_head
       allocate( femmesh_dest(nprocs_dest) )
-      call s_set_parallel_mesh_in_1pe(nprocs_dest, femmesh_dest)
+      call s_set_parallel_mesh_in_1pe                                   &
+     &   (mesh1_file, nprocs_dest, femmesh_dest)
 !
-      mesh_file_head = org_mesh_head
+      mesh1_file%file_prefix = org_mesh_head
       allocate( femmesh_org(nprocs_org) )
-      call s_set_parallel_mesh_in_1pe(nprocs_org, femmesh_org)
+      call s_set_parallel_mesh_in_1pe                                   &
+     &   (mesh1_file, nprocs_org, femmesh_org)
 !
 !
       table_file_header = sgl_table_file_head
@@ -90,9 +92,9 @@
 !
       call turn_off_debug_flag_by_ctl(my_rank)
       call set_control_smp_def(my_rank)
-      call set_control_mesh_def
+      call set_control_mesh_def(mesh1_file)
 !
-      org_mesh_head = mesh_file_head
+      org_mesh_head = mesh1_file%file_prefix
       nprocs_org = 1
       if(ndomain_ctl%iflag .gt. 0) nprocs_org = ndomain_ctl%intvalue
 !

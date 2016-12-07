@@ -98,8 +98,8 @@
 !
       call turn_off_debug_flag_by_ctl(my_rank)
       call set_control_smp_def(my_rank)
-      call set_control_mesh_def
-      call set_control_sph_mesh(sph_file_spec_p)
+      call set_control_mesh_def(mesh1_file)
+      call set_control_sph_mesh(mesh1_file, sph_file_spec_p)
       call set_control_org_sph_mesh(rj_org_param)
       call set_control_org_rst_file_def(rst_org_param)
 !

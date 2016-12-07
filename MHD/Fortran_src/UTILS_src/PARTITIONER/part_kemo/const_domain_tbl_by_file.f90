@@ -14,6 +14,7 @@
 !
       use m_domain_group_4_partition
       use m_2nd_pallalel_vector
+      use m_read_mesh_data
       use t_mesh_data
       use set_parallel_file_name
       use mesh_IO_select
@@ -58,8 +59,8 @@
       nnod_s_domin = 0
       do ip = 1, nprocs_2nd
         my_rank2 = ip - 1
-        mesh_file_head = mesh_head
-        call sel_read_node_size(my_rank2, mesh_IO_p, ierr)
+        mesh1_file%file_prefix = mesh_head
+        call sel_read_node_size(mesh1_file, my_rank2, mesh_IO_p, ierr)
           if(ierr .gt. 0) then
           stop 'MESH data is wrong in count_nnod_whole_domain'
         end if
@@ -99,8 +100,9 @@
 !
 !
       ip2 = my_rank2 + 1
-      mesh_file_head = mesh_head
-      call sel_read_geometry_size(my_rank2, mesh_IO_p, ierr)
+      mesh1_file%file_prefix = mesh_head
+      call sel_read_geometry_size                                       &
+     &   (mesh1_file, my_rank2, mesh_IO_p, ierr)
       if(ierr .gt. 0) then
         stop 'MESH data is wrong in set_domain_grp_each_domain'
       end if

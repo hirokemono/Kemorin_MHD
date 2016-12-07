@@ -94,9 +94,9 @@
         if(mod(irank_subdomain,nprocs) .ne. my_rank) cycle
 !
         call copy_mesh_format_and_prefix                                &
-     &     (local_file_header, iflag_para_mesh_file_fmt)
-        call output_mesh                                                &
-     &     (irank_subdomain, para_fem(ip)%mesh, para_fem(ip)%group)
+     &     (local_file_header, iflag_para_mesh_file_fmt, mesh1_file)
+        call output_mesh(mesh1_file, irank_subdomain,                   &
+     &      para_fem(ip)%mesh, para_fem(ip)%group)
         call dealloc_mesh_infos(para_fem(ip)%mesh, para_fem(ip)%group)
       end do
 !

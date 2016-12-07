@@ -28,6 +28,7 @@
       use m_geometry_data_4_merge
       use m_ctl_data_4_cub_kemo
       use m_time_data_IO
+      use m_read_mesh_data
       use set_ctl_data_plane_mesh
       use set_parallel_file_name
       use mesh_IO_select
@@ -79,8 +80,9 @@
 !    read mesh file
 !
         call copy_mesh_format_and_prefix                                &
-     &     (def_mesh_file_head, id_ascii_file_fmt)
-        call sel_read_geometry_size(id_rank, mesh_IO_p, ierr)
+     &     (def_mesh_file_head, id_ascii_file_fmt, mesh1_file)
+        call sel_read_geometry_size                                     &
+     &     (mesh1_file, id_rank, mesh_IO_p, ierr)
         if(ierr .gt. 0) stop 'Mesh is wrong!!'
 !
         call copy_node_geometry_types(mesh_IO_p%node, node_plane)

@@ -7,6 +7,8 @@
 !> @brief Structure for file information (prefix, format, IO flag)
 !!
 !!@verbatim
+!!      subroutine copy_mesh_format_and_prefix(prefix, i_fmt, f_param)
+!!        type(field_IO_params), intent(inout) :: f_param
 !!@endverbatim
 !
       module t_file_IO_parameter
@@ -25,5 +27,26 @@
 !>        file header for spherical harmonics coefficients data
         integer(kind = kint) ::  iflag_format = 0
       end type field_IO_params
+!
+!  ---------------------------------------------------------------------
+!
+      contains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_mesh_format_and_prefix(prefix, i_fmt, f_param)
+!
+      character(len=kchara), intent(in) :: prefix
+      integer(kind = kint), intent(in)  :: i_fmt
+      type(field_IO_params), intent(inout) :: f_param
+!
+!
+      f_param%file_prefix =  prefix
+      f_param%iflag_format = i_fmt
+      f_param%iflag_IO =     i_fmt
+!
+      end subroutine copy_mesh_format_and_prefix
+!
+!  ---------------------------------------------------------------------
 !
       end module t_file_IO_parameter

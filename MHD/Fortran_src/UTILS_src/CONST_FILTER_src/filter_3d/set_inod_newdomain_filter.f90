@@ -49,8 +49,9 @@
       do ip2 = 1, nprocs_2nd
         my_rank2 = ip2 - 1
 !
-        mesh_file_head = target_mesh_head
-        call sel_read_geometry_size(my_rank2, mesh_IO_f, ierr)
+        mesh1_file%file_prefix = target_mesh_head
+        call sel_read_geometry_size                                     &
+     &     (mesh1_file, my_rank2, mesh_IO_f, ierr)
         if(ierr .gt. 0) return
 !
         call copy_node_geometry_types(mesh_IO_f%node, new_node)

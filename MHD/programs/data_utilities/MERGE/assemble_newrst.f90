@@ -55,7 +55,7 @@
       call set_merged_node_and_element
 !
       call copy_mesh_format_and_prefix                                  &
-     &   (new_mesh_head, inew_mesh_file_fmt)
+     &   (new_mesh_head, inew_mesh_file_fmt, mesh1_file)
       call s_set_2nd_geometry_4_serial
 !
       call deallocate_node_geometry_type(merged%node)

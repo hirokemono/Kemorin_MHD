@@ -62,7 +62,7 @@
       call set_merged_mesh_and_group
 !
       call copy_mesh_format_and_prefix                                  &
-     &   (new_mesh_head, inew_mesh_file_fmt)
+     &   (new_mesh_head, inew_mesh_file_fmt, mesh1_file)
       call s_set_2nd_geometry_4_serial
 !
 !   read field name and number of components

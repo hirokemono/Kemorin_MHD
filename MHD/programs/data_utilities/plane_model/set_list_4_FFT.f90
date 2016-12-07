@@ -107,9 +107,9 @@
       write(*,*) 'ndomain_plane2_ctl    ', ndomain_plane2_ctl%intvalue
 !
       if (new_mesh_prefix%iflag .gt. 0) then
-        mesh_file_head = new_mesh_prefix%charavalue
+        mesh1_file%file_prefix = new_mesh_prefix%charavalue
       else
-        mesh_file_head = def_new_mesh_head
+        mesh1_file%file_prefix = def_new_mesh_head
       end if
 !
       if (new_restart_prefix%iflag .gt. 0) then
@@ -198,9 +198,9 @@
       write(*,*) 'ndomain_plane2_ctl    ', ndomain_plane2_ctl%intvalue
 !
       if (new_mesh_prefix%iflag .gt. 0) then
-        mesh_file_head = new_mesh_prefix%charavalue
+        mesh1_file%file_prefix = new_mesh_prefix%charavalue
       else
-        mesh_file_head = def_new_mesh_head
+        mesh1_file%file_prefix = def_new_mesh_head
       end if
 !
       if (new_field_file_prefix%iflag .gt. 0) then

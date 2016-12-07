@@ -45,9 +45,9 @@
 !
 !     read finer mesh
 !
-      call copy_mesh_format_and_prefix                                &
-     &   (finer_mesh_file_head, iflag_para_mesh_file_fmt)
-      call input_mesh_geometry(izero, finermesh, ierr)
+      call copy_mesh_format_and_prefix                                  &
+     &   (finer_mesh_file_head, iflag_para_mesh_file_fmt, mesh1_file)
+      call input_mesh_geometry(mesh1_file, izero, finermesh, ierr)
       if(ierr .gt. 0) stop 'finer mesh is wrong!!'
 !
 !     read interpolate table

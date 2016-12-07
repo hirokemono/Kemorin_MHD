@@ -33,6 +33,7 @@
       use m_precision
       use m_constants
 !
+      use m_read_mesh_data
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
       use t_spheric_mesh
@@ -122,7 +123,7 @@
 !
 !
 !  --  load FEM mesh data
-      if(check_exist_mesh(my_rank) .eq. 0) then
+      if(check_exist_mesh(mesh1_file, my_rank) .eq. 0) then
         if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
         call mpi_input_mesh(mesh, group,                                &
      &      ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)

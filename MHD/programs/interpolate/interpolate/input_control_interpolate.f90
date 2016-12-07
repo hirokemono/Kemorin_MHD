@@ -66,8 +66,9 @@
 !
       if (my_rank .lt. ndomain_org) then
         call copy_mesh_format_and_prefix                                &
-     &     (org_mesh_head, ifmt_org_mesh_file)
-        call input_mesh(my_rank, org_femmesh%mesh, org_femmesh%group,   &
+     &     (org_mesh_head, ifmt_org_mesh_file, mesh1_file)
+        call input_mesh(mesh1_file, my_rank,                            &
+     &     org_femmesh%mesh, org_femmesh%group,                         &
      &     org_ele_mesh%surf%nnod_4_surf,                               &
      &     org_ele_mesh%edge%nnod_4_edge, ierr)
 !
@@ -85,8 +86,9 @@
 !
       if (my_rank .lt. ndomain_dest) then
         call copy_mesh_format_and_prefix                                &
-     &     (dest_mesh_head, ifmt_itp_mesh_file)
-        call input_mesh(my_rank, new_femmesh%mesh, new_femmesh%group,   &
+     &     (dest_mesh_head, ifmt_itp_mesh_file, mesh1_file)
+        call input_mesh(mesh1_file, my_rank,                            &
+     &      new_femmesh%mesh, new_femmesh%group,                        &
      &      new_ele_mesh%surf%nnod_4_surf,                              &
      &      new_ele_mesh%edge%nnod_4_edge, ierr)
         if(ierr .gt. 0) then

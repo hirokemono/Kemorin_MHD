@@ -26,9 +26,9 @@
 !
 !
       if (mesh_file_prefix%iflag .gt. 0) then
-        mesh_file_head = mesh_file_prefix%charavalue
+        mesh1_file%file_prefix = mesh_file_prefix%charavalue
       else
-        mesh_file_head = def_mesh_file_head
+        mesh1_file%file_prefix = def_mesh_file_head
       end if
 !
       np_smp = 1

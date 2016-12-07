@@ -134,7 +134,7 @@
         stop
       end if
 !
-      call set_control_mesh_def
+      call set_control_mesh_def(mesh1_file)
       iorg_mesh_file_fmt = mesh1_file%iflag_format
 !
       call set_ucd_file_define(ucd)

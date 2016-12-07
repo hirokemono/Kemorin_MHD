@@ -9,6 +9,7 @@
       use m_precision
       use calypso_mpi
       use m_machine_parameter
+      use m_read_mesh_data
       use t_mesh_data
       use t_filtering_data
       use t_filter_coefficients
@@ -83,7 +84,8 @@
 !  --  read geometry
 !
         if (iflag_debug.eq.1) write(*,*) 'input_mesh_geometry'
-        call input_mesh_geometry(my_rank, mesh_filter, ierr)
+        call input_mesh_geometry                                        &
+     &     (mesh1_file, my_rank, mesh_filter, ierr)
         if(ierr .gt. 0) then
           call calypso_mpi_abort(ierr, 'Error in mesh data')
         end if

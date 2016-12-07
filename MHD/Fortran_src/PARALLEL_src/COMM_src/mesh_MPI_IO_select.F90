@@ -25,6 +25,8 @@
       use calypso_mpi
 !
       use m_file_format_switch
+      use m_read_mesh_data
+      use t_file_IO_parameter
       use t_mesh_data
 !
       use mesh_IO_select
@@ -52,8 +54,7 @@
       integer(kind = kint) :: ierr = 0
 !
 !
-      call set_mesh_file_name(mesh_file_head, mesh1_file%iflag_format,      &
-     &    my_rank, file_name)
+      call set_mesh_file_name_by_param(mesh1_file, my_rank, file_name)
 !
       if(mesh1_file%iflag_format                                        &
      &     .eq. iflag_single+id_binary_file_fmt) then
@@ -72,7 +73,7 @@
 #endif
 !
       else
-        call sel_read_mesh(my_rank, fem_IO, ierr)
+        call sel_read_mesh(mesh1_file, my_rank, fem_IO, ierr)
       end if 
 !
       if(ierr .gt. 0) then
@@ -90,8 +91,7 @@
       integer(kind = kint) :: ierr = 0
 !
 !
-      call set_mesh_file_name(mesh_file_head, mesh1_file%iflag_format,      &
-     &    my_rank, file_name)
+      call set_mesh_file_name_by_param(mesh1_file, my_rank, file_name)
 !
       if(mesh1_file%iflag_format                                        &
      &     .eq. iflag_single+id_binary_file_fmt) then
@@ -113,7 +113,7 @@
 #endif
 !
       else
-        call sel_read_mesh_geometry(my_rank, mesh_IO, ierr)
+        call sel_read_mesh_geometry(mesh1_file, my_rank, mesh_IO, ierr)
       end if 
 !
       if(ierr .gt. 0) then
@@ -131,8 +131,7 @@
       integer(kind = kint) :: ierr = 0
 !
 !
-      call set_mesh_file_name(mesh_file_head, mesh1_file%iflag_format,      &
-     &    my_rank, file_name)
+      call set_mesh_file_name_by_param(mesh1_file, my_rank, file_name)
 !
       if(mesh1_file%iflag_format                                        &
      &     .eq. iflag_single+id_binary_file_fmt) then
@@ -141,17 +140,17 @@
         call mpi_read_node_size(nprocs, my_rank, file_name, mesh_IO)
 !
 #ifdef ZLIB_IO
-      else if(mesh1_file%iflag_format                                       &
+      else if(mesh1_file%iflag_format                                   &
      &        .eq. iflag_single+id_gzip_bin_file_fmt) then
         call gz_mpi_read_node_size_b                                    &
      &     (nprocs, my_rank, file_name, mesh_IO)
-      else if(mesh1_file%iflag_format                                       &
+      else if(mesh1_file%iflag_format                                   &
      &        .eq. iflag_single+id_gzip_txt_file_fmt) then
         call gz_mpi_read_node_size(nprocs, my_rank, file_name, mesh_IO)
 #endif
 !
       else
-        call sel_read_node_size(my_rank, mesh_IO, ierr)
+        call sel_read_node_size(mesh1_file, my_rank, mesh_IO, ierr)
       end if 
 !
       if(ierr .gt. 0) then
@@ -169,8 +168,7 @@
       integer(kind = kint) :: ierr = 0
 !
 !
-      call set_mesh_file_name(mesh_file_head, mesh1_file%iflag_format,      &
-     &    my_rank, file_name)
+      call set_mesh_file_name_by_param(mesh1_file, my_rank, file_name)
 !
       if(mesh1_file%iflag_format                                        &
      &     .eq. iflag_single+id_binary_file_fmt) then
@@ -192,7 +190,7 @@
 #endif
 !
       else
-        call sel_read_geometry_size(my_rank, mesh_IO, ierr)
+        call sel_read_geometry_size(mesh1_file, my_rank, mesh_IO, ierr)
       end if 
 !
       if(ierr .gt. 0) then
@@ -209,8 +207,7 @@
       type(mesh_data), intent(inout) :: fem_IO
 !
 !
-      call set_mesh_file_name(mesh_file_head, mesh1_file%iflag_format,      &
-     &    my_rank, file_name)
+      call set_mesh_file_name_by_param(mesh1_file, my_rank, file_name)
 !
       if(mesh1_file%iflag_format                                        &
      &     .eq. iflag_single+id_binary_file_fmt) then
@@ -230,7 +227,7 @@
 #endif
 !
       else
-        call sel_write_mesh_file(my_rank, fem_IO)
+        call sel_write_mesh_file(mesh1_file, my_rank, fem_IO)
       end if
 !
       end subroutine sel_mpi_write_mesh_file

@@ -57,8 +57,9 @@
 !
 !  read global mesh
 !
-      call copy_mesh_format_and_prefix(original_mesh_head, ifile_type)
-      call input_mesh(my_rank, org_mesh, org_group,                     &
+      call copy_mesh_format_and_prefix                                  &
+     &   (original_mesh_head, ifile_type, mesh1_file)
+      call input_mesh(mesh1_file, my_rank, org_mesh, org_group,         &
      &    org_ele_mesh%surf%nnod_4_surf, org_ele_mesh%edge%nnod_4_edge, &
      &    ierr)
       if(ierr .gt. 0) stop 'Original mesh is wrong!!'
@@ -233,9 +234,11 @@
         org_ele_mesh%edge%nnod_4_edge = finer_elemesh%edge%nnod_4_edge
       end do
 !
-      call copy_mesh_format_and_prefix(refined_mesh_head, ifile_type)
       write(*,'(2a)') 'mesh file header: ', trim(refined_mesh_head)
-      call output_mesh(izero, refined_fem%mesh, refined_fem%group)
+      call copy_mesh_format_and_prefix                                  &
+     &   (refined_mesh_head, ifile_type, mesh1_file)
+      call output_mesh(mesh1_file, izero,                               &
+     &                 refined_fem%mesh, refined_fem%group)
       call dealloc_mesh_infos(refined_fem%mesh, refined_fem%group)
 !
       end subroutine analyze_refine

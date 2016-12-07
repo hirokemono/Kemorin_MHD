@@ -22,6 +22,7 @@
       use t_global_gauss_coefs
       use t_rms_4_sph_spectr
       use t_file_IO_parameter
+      use m_read_mesh_data
 !
       implicit  none
 !
@@ -77,7 +78,7 @@
 !
       call turn_off_debug_flag_by_ctl(my_rank)
       call set_control_smp_def(my_rank)
-      call set_control_sph_mesh(sph_file_trns_p)
+      call set_control_sph_mesh(mesh1_file, sph_file_trns_p)
       call set_ucd_file_define(ucd)
       field_file_param%file_prefix =  ucd%file_prefix
       field_file_param%iflag_format = ucd%ifmt_file
@@ -158,7 +159,7 @@
 !
       call turn_off_debug_flag_by_ctl(my_rank)
       call set_control_smp_def(my_rank)
-      call set_control_sph_mesh(sph_file_trns_p)
+      call set_control_sph_mesh(mesh1_file, sph_file_trns_p)
       call set_control_org_sph_mesh(rj_org_param)
       call set_ucd_file_define(ucd)
 !
@@ -244,8 +245,8 @@
 !
       call turn_off_debug_flag_by_ctl(my_rank)
       call set_control_smp_def(my_rank)
-      call set_control_mesh_def
-      call set_control_sph_mesh(sph_file_trns_p)
+      call set_control_mesh_def(mesh1_file)
+      call set_control_sph_mesh(mesh1_file, sph_file_trns_p)
       call set_merged_ucd_file_define(ucd)
       call set_control_org_sph_mesh(rj_org_param)
       call set_control_org_rst_file_def(rst_org_param)

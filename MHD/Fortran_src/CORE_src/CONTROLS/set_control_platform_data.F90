@@ -10,8 +10,9 @@
 !!@verbatim
 !!      subroutine turn_off_debug_flag_by_ctl(my_rank)
 !!      subroutine set_control_smp_def(my_rank)
-!!      subroutine set_control_mesh_def
-!!      subroutine set_control_sph_mesh(sph_file_param)
+!!      subroutine set_control_mesh_def(mesh_file)
+!!      subroutine set_control_sph_mesh(mesh_file, sph_file_param)
+!!        type(field_IO_params), intent(inout) :: mesh_file
 !!        type(field_IO_params), intent(inout) :: sph_file_param
 !!      subroutine set_FEM_mesh_switch_4_SPH(iflag_access_FEM)
 !!      subroutine set_control_restart_file_def(fld_IO)
@@ -85,34 +86,37 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_mesh_def
+      subroutine set_control_mesh_def(mesh_file)
 !
       use m_read_mesh_data
       use m_file_format_switch
+      use t_file_IO_parameter
       use skip_comment_f
+!
+      type(field_IO_params), intent(inout) :: mesh_file
 !
 !
       if (mesh_file_prefix%iflag .gt. 0) then
-        mesh_file_head = mesh_file_prefix%charavalue
+        mesh_file%file_prefix = mesh_file_prefix%charavalue
       else
-        mesh_file_head = def_mesh_file_head
+        mesh_file%file_prefix = def_mesh_file_head
       end if
 !
 !   set data format
       call choose_para_file_format                                      &
-     &   (mesh_file_fmt_ctl, mesh1_file%iflag_format)
+     &   (mesh_file_fmt_ctl, mesh_file%iflag_format)
 !
       end subroutine set_control_mesh_def
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_sph_mesh(sph_file_param)
+      subroutine set_control_sph_mesh(mesh_file, sph_file_param)
 !
-      use m_read_mesh_data
       use m_file_format_switch
       use t_file_IO_parameter
       use sph_file_IO_select
 !
+      type(field_IO_params), intent(inout) :: mesh_file
       type(field_IO_params), intent(inout) :: sph_file_param
 !
 !   set data format
@@ -127,7 +131,7 @@
       if(sph_file_prefix%iflag .gt. 0) then
         sph_file_head =  sph_file_prefix%charavalue
         call copy_mesh_format_and_prefix                                &
-     &     (sph_file_prefix%charavalue, iflag_sph_file_fmt)
+     &     (sph_file_prefix%charavalue, iflag_sph_file_fmt, mesh_file)
       end if
 !
       sph_file_param%iflag_IO = spectr_file_head_ctl%iflag

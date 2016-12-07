@@ -38,9 +38,9 @@
 !
       call turn_off_debug_flag_by_ctl(my_rank)
       call set_control_smp_def(my_rank)
-      call set_control_mesh_def
+      call set_control_mesh_def(mesh1_file)
 !
-      org_mesh_head = mesh_file_head
+      org_mesh_head = mesh1_file%file_prefix
 !
       if (new_mesh_prefix%iflag .ne. 0) then
         dest_mesh_head = new_mesh_prefix%charavalue

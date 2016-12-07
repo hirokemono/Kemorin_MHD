@@ -44,8 +44,9 @@
 !
 !  read global mesh
 !
-      mesh_file_head = original_mesh_head
-      call input_mesh(my_rank, original_fem%mesh, original_fem%group,   &
+      mesh1_file%file_prefix = original_mesh_head
+      call input_mesh(mesh1_file, my_rank,                              &
+     &    original_fem%mesh, original_fem%group,                        &
      &    nnod_4_surf, nnod_4_edge, ierr)
       if(ierr .ne. 0) stop 'Mesh data is wrong!'
 !
@@ -72,8 +73,9 @@
       call allocate_type_comm_tbl_num(cutted_fem%mesh%nod_comm)
       call allocate_type_comm_tbl_item(cutted_fem%mesh%nod_comm)
 !
-      mesh_file_head = modified_mesh_head
-      call output_mesh(my_rank, cutted_fem%mesh, cutted_fem%group)
+      mesh1_file%file_prefix = modified_mesh_head
+      call output_mesh(mesh1_file, my_rank,                             &
+     &                 cutted_fem%mesh, cutted_fem%group)
       call dealloc_mesh_infos(cutted_fem%mesh, cutted_fem%group)
 !
       end subroutine analyze_cutshell

@@ -68,7 +68,7 @@
       end if
 !
       call set_control_smp_def(my_rank)
-      call set_control_mesh_def
+      call set_control_mesh_def(mesh1_file)
       call set_control_org_udt_file_def(udt_org_param)
       call set_ucd_file_define(ucd)
 !

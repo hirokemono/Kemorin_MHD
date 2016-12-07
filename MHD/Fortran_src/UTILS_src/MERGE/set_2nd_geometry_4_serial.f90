@@ -8,6 +8,7 @@
       use m_precision
 !
       use m_file_format_switch
+      use m_read_mesh_data
       use m_2nd_geometry_4_merge
 !
       implicit none
@@ -55,7 +56,8 @@
       do ip =1, num_pe2
         my_rank = ip - 1
 !
-        call sel_read_mesh_geometry(my_rank, mesh_IO_2, ierr)
+        call sel_read_mesh_geometry                                     &
+     &     (mesh1_file, my_rank, mesh_IO_2, ierr)
         if(ierr .gt. 0) stop 'Error in Mesh data'
 !
         call copy_node_geometry_types                                   &

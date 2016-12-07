@@ -23,6 +23,7 @@
       implicit none
 !
       private :: const_surf_mesh_4_viewer, set_source_mesh_parameter
+      private :: find_mesh_format_4_viewer
 !
 !------------------------------------------------------------------
 !
@@ -41,10 +42,10 @@
       character(len=kchara), intent(in) :: file_head
 !
 !
-      mesh_file_head =    file_head
+      mesh1_file%file_prefix =    file_head
       surface_file_head = file_head
-      call find_mesh_format_4_viewer
-      call count_subdomains_4_viewer
+      call find_mesh_format_4_viewer(mesh1_file)
+      call count_subdomains_4_viewer(mesh1_file)
       call const_surf_mesh_4_viewer                                     &
      &   (mesh1_file%iflag_format, ele, surf, edge)
 !
@@ -52,28 +53,29 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine find_mesh_format_4_viewer
+      subroutine find_mesh_format_4_viewer(mesh_file)
 !
-      use m_read_mesh_data
+      use t_file_IO_parameter
       use m_file_format_switch
       use mesh_IO_select
 !
+      type(field_IO_params), intent(inout) ::  mesh_file
 !
 !  Detect file format
-      mesh1_file%iflag_format = id_gzip_txt_file_fmt
-      if(check_exist_mesh(izero) .gt. 0) return
+      mesh_file%iflag_format = id_gzip_txt_file_fmt
+      if(check_exist_mesh(mesh_file, izero) .gt. 0) return
 !
-      mesh1_file%iflag_format = id_ascii_file_fmt
-      if(check_exist_mesh(izero) .gt. 0) return
+      mesh_file%iflag_format = id_ascii_file_fmt
+      if(check_exist_mesh(mesh_file, izero) .gt. 0) return
 !
-      mesh1_file%iflag_format = id_binary_file_fmt
-      if(check_exist_mesh(izero) .gt. 0) return
+      mesh_file%iflag_format = id_binary_file_fmt
+      if(check_exist_mesh(mesh_file, izero) .gt. 0) return
 !
-      mesh1_file%iflag_format = id_gzip_bin_file_fmt
-      if(check_exist_mesh(izero) .gt. 0) return
+      mesh_file%iflag_format = id_gzip_bin_file_fmt
+      if(check_exist_mesh(mesh_file, izero) .gt. 0) return
 !
-      mesh1_file%iflag_format = id_gzip_txt_file_fmt
-      if(check_exist_mesh(izero) .gt. 0) return
+      mesh_file%iflag_format = id_gzip_txt_file_fmt
+      if(check_exist_mesh(mesh_file, izero) .gt. 0) return
 !
       stop 'I cannot find mesh file!!'
 !
@@ -81,14 +83,15 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine count_subdomains_4_viewer
+      subroutine count_subdomains_4_viewer(mesh_file)
 !
       use mesh_IO_select
 !
+      type(field_IO_params), intent(in) ::  mesh_file
 !
       num_pe = 0
       do
-        if(check_exist_mesh(num_pe) .eq. 0) exit
+        if(check_exist_mesh(mesh_file, num_pe) .eq. 0) exit
       end do
 !
       write(*,*) 'Number of subdomains: ', num_pe

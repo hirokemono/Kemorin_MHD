@@ -127,9 +127,9 @@
       call turn_off_debug_flag_by_ctl(my_rank)
       call check_control_num_domains
       call set_control_smp_def(my_rank)
-      call set_control_mesh_def
+      call set_control_mesh_def(mesh1_file)
       call set_FEM_mesh_switch_4_SPH(iflag_output_mesh)
-      call set_control_sph_mesh(sph_file_param)
+      call set_control_sph_mesh(mesh1_file, sph_file_param)
       call set_control_restart_file_def(sph_fst_IO)
       call set_control_MHD_field_file
       call set_control_org_sph_files(MHD_org_files)

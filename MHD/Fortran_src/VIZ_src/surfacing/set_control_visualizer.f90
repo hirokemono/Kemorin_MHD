@@ -44,7 +44,7 @@
 !
       call turn_off_debug_flag_by_ctl(my_rank)
       call set_control_smp_def(my_rank)
-      call set_control_mesh_def
+      call set_control_mesh_def(mesh1_file)
       call set_ucd_file_define(ucd)
       call set_control_org_rst_file_def(rst_org_param)
       call set_control_org_udt_file_def(udt_org_param)

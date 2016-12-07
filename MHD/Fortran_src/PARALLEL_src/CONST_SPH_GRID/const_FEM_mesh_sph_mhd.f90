@@ -78,7 +78,7 @@
 !
 ! Output mesh data
       if(iflag_output_mesh .gt. 0) then
-        mesh_file_head = sph_file_head
+        mesh1_file%file_prefix = sph_file_head
         call mpi_output_mesh(mesh, group)
         write(*,'(a,i6,a)')                                             &
      &          'FEM mesh for domain', my_rank, ' is done.'

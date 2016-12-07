@@ -19,6 +19,7 @@
       use m_constants
       use m_machine_parameter
       use m_ctl_param_newdom_filter
+      use m_read_mesh_data
       use mesh_IO_select
       use set_parallel_file_name
 !
@@ -120,11 +121,12 @@
       integer(kind = kint) :: iele
 !
 !
-      mesh_file_head = target_mesh_head
-      call sel_read_mesh_geometry(my_rank_2nd, mesh_IO_f, ierr)
+      mesh1_file%file_prefix = target_mesh_head
+      call sel_read_mesh_geometry                                       &
+     &   (mesh1_file, my_rank_2nd, mesh_IO_f, ierr)
       if(ierr .gt. 0) return
 !
-      mesh_file_head = org_mesh_head
+      mesh1_file%file_prefix = org_mesh_head
 !
       max_gl_ele_newdomain = mesh_IO_f%ele%iele_global(1)
       do iele = 2, mesh_IO_f%ele%numele
@@ -153,9 +155,10 @@
       do ip2 = 1, nprocs_2nd
         my_rank_2nd = ip2 - 1
 !
-        call copy_mesh_format_and_prefix                                  &
-     &     (target_mesh_head, id_ascii_file_fmt)
-        call sel_read_geometry_size(my_rank_2nd, mesh_IO_f, ierr)
+        call copy_mesh_format_and_prefix                                &
+     &     (target_mesh_head, id_ascii_file_fmt, mesh1_file)
+        call sel_read_geometry_size                                     &
+     &     (mesh1_file, my_rank_2nd, mesh_IO_f, ierr)
         if(ierr .gt. 0) stop 'new mesh data is wrong'
 !
         max_gl_ele_newdomain = max_gl_ele_newdomain                     &
@@ -201,9 +204,10 @@
 !
 !
       call copy_mesh_format_and_prefix                                  &
-     &   (target_mesh_head, id_ascii_file_fmt)
-      call sel_read_mesh_geometry(my_rank_2nd, mesh_IO_f, ierr)
-      mesh_file_head = org_mesh_head
+     &   (target_mesh_head, id_ascii_file_fmt, mesh1_file)
+      call sel_read_mesh_geometry                                       &
+     &   (mesh1_file, my_rank_2nd, mesh_IO_f, ierr)
+      mesh1_file%file_prefix = org_mesh_head
       if(ierr .gt. 0) return
 !
       newmesh%node%numnod = mesh_IO_f%node%numnod
@@ -328,8 +332,9 @@
         my_rank_org = ip - 1
 !
         call copy_mesh_format_and_prefix                                &
-     &     (target_mesh_head, id_ascii_file_fmt)
-        call sel_read_mesh_geometry(my_rank_org, mesh_IO_f, ierr)
+     &     (target_mesh_head, id_ascii_file_fmt, mesh1_file)
+        call sel_read_mesh_geometry                                     &
+     &     (mesh1_file, my_rank_org, mesh_IO_f, ierr)
 !
         call copy_ele_connect_from_IO(mesh_IO_f%ele, org_ele)
 !
