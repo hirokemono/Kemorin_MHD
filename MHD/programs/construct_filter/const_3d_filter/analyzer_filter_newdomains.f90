@@ -64,11 +64,11 @@
       call read_control_filter_newdomain
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_filter_newdomain'
-      call set_control_filter_newdomain(ierr)
+      call set_control_filter_newdomain(mesh1_file, ierr)
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'bcast_parallel_domain_tbl'
-      call bcast_parallel_domain_tbl(target_mesh_head)
+      call bcast_parallel_domain_tbl(tgt_mesh_file%file_prefix)
 !
       end subroutine filter_to_newdomain_init
 !

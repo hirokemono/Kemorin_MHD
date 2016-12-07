@@ -10,6 +10,8 @@
 !!      subroutine set_control_org_sph_mesh(rj_file_param)
 !!      subroutine set_control_org_rst_file_def(rst_file_param)
 !!      subroutine set_control_org_udt_file_def(udt_file_param)
+!!
+!!      subroutine set_control_new_mesh_file_def(mesh_file)
 !!@endverbatim
 !
       module set_ctl_params_2nd_files
@@ -26,6 +28,10 @@
       character(len=kchara) :: def_org_ucd_header =  "field_org/out"
 !>      file header for original restart data
       character(len=kchara) :: def_org_rst_header =   "rst_org/rst"
+!
+!>      file header for new mesh data
+      character(len=kchara), parameter                                  &
+     &           :: def_new_mesh_head = 'mesh_target/in'
 !
       private :: def_org_sph_rj_head
       private :: def_org_ucd_header, def_org_rst_header
@@ -81,6 +87,23 @@
 !
       end subroutine set_control_org_udt_file_def
 !
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine set_control_new_mesh_file_def(mesh_file)
+!
+      use m_ctl_data_4_platforms
+      use m_ctl_data_4_2nd_data
+!
+      type(field_IO_params), intent(inout) :: mesh_file
+!
+!
+      call set_file_control_params(def_new_mesh_head,                   &
+     &    new_mesh_prefix, new_mesh_file_fmt_ctl,  mesh_file)
+!
+      end subroutine set_control_new_mesh_file_def
+!
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine set_file_control_params(default_prefix,                &

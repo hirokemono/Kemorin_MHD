@@ -56,12 +56,12 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_filter_newdomain'
       nprocs_2nd = 0
-      call set_control_filter_newdomain(ierr)
+      call set_control_filter_newdomain(mesh1_file, ierr)
       if(ierr .gt. 0) stop
 !
 !
       if (iflag_debug.eq.1) write(*,*) 's_const_domain_tbl_by_file'
-      call s_const_domain_tbl_by_file(target_mesh_head)
+      call s_const_domain_tbl_by_file(tgt_mesh_file%file_prefix)
 !
       end subroutine newdomain_filter_init
 !

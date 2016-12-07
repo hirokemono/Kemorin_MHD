@@ -7,6 +7,7 @@
 !> @brief Structure for file information (prefix, format, IO flag)
 !!
 !!@verbatim
+!!      subroutine copy_file_params_type(org_param, new_param)
 !!      subroutine copy_mesh_format_and_prefix(prefix, i_fmt, f_param)
 !!        type(field_IO_params), intent(inout) :: f_param
 !!@endverbatim
@@ -31,6 +32,20 @@
 !  ---------------------------------------------------------------------
 !
       contains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_file_params_type(org_param, new_param)
+!
+      type(field_IO_params), intent(in) :: org_param
+      type(field_IO_params), intent(inout) :: new_param
+!
+!
+      new_param%file_prefix =  org_param%file_prefix
+      new_param%iflag_format = org_param%iflag_format
+      new_param%iflag_IO =     org_param%iflag_IO
+!
+      end subroutine copy_file_params_type
 !
 !  ---------------------------------------------------------------------
 !
