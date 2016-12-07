@@ -23,7 +23,7 @@
      &          (my_rank, ierr, rst_org_param, udt_org_param, ucd)
 !
       use t_ucd_data
-      use t_field_data_IO
+      use t_file_IO_parameter
 !
       use m_read_mesh_data
       use m_ctl_data_4_platforms

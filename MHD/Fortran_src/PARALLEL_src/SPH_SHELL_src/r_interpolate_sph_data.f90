@@ -158,7 +158,7 @@
       subroutine input_old_rj_sph_trans                                 &
      &         (rj_file_param, l_truncation, sph_rj)
 !
-      use t_field_data_IO
+      use t_file_IO_parameter
       use t_spheric_mesh
       use t_spheric_data_IO
       use sph_file_MPI_IO_select

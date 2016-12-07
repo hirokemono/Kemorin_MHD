@@ -110,7 +110,7 @@
 !
       use m_read_mesh_data
       use m_file_format_switch
-      use t_field_data_IO
+      use t_file_IO_parameter
       use sph_file_IO_select
 !
       type(field_IO_params), intent(inout) :: sph_file_param

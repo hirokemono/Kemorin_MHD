@@ -39,6 +39,7 @@
       use t_ucd_data
       use t_phys_data
       use t_geometry_data_MHD
+      use t_file_IO_parameter
 !
       implicit none
 !
@@ -163,7 +164,6 @@
       subroutine read_udt_4_snap(i_step, udt_file_param, nod_fld)
 !
       use calypso_mpi
-      use t_field_data_IO
       use m_t_step_parameter
       use set_ucd_data_to_type
 !

@@ -186,7 +186,7 @@
 !
       subroutine set_ctl_4_second_spectr_data(sph_file_param2)
 !
-      use t_field_data_IO
+      use t_file_IO_parameter
       use m_ctl_data_4_2nd_data
       use m_file_format_switch
 !

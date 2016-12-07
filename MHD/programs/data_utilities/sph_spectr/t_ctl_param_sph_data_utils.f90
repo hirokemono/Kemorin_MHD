@@ -14,6 +14,7 @@
 !
       use m_precision
       use calypso_mpi
+      use t_file_IO_parameter
       use t_field_data_IO
 !
       type diff_spectrum_file_param
@@ -28,7 +29,6 @@
         character(len=kchara), allocatable :: new_name(:)
       end type rename_list
 !
-      private :: control_file_name
       private :: alloc_rename_field_list
 !
 ! -------------------------------------------------------------------
