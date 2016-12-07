@@ -40,6 +40,11 @@
       character(len=kchara) :: mesh_sph_file_head = mesh_sph_def_head
       character(len=kchara) :: mesh_cyl_file_head = mesh_cyl_def_head
 !
+!   mesh file code
+      integer(kind = kint), parameter ::  input_file_code = 14
+!
+      private :: input_file_code
+!
 !  ---------------------------------------------------------------------
 !
       contains

@@ -74,6 +74,7 @@
 !
       type(mesh_geometry) :: mesh_IO
       type(surf_edge_IO_file) :: ele_mesh_IO
+      character(len=kchara) :: file_prefix
 !
 !     --------------------- 
 !
@@ -170,20 +171,20 @@
       if (iflag_debug.gt.0) write(*,*) 'copy_ele_geometry_to_IO'
       call copy_comm_tbl_type(ele_mesh%ele_comm, ele_mesh_IO%comm)
       call calypso_mpi_barrier
-      mesh_ele_file_head = mesh_ele_def_head
+      file_prefix = mesh_ele_def_head
 !
       call copy_ele_geometry_to_IO                                      &
      &   (mesh%ele, ele_mesh_IO%node, ele_mesh_IO%sfed)
       call calypso_mpi_barrier
 !
-      call output_element_file(my_rank, ele_mesh_IO)
+      call output_element_file(my_rank, file_prefix, ele_mesh_IO)
       call calypso_mpi_barrier
 !
 !  -------------------------------
 !     output surface data
 !  -------------------------------
 !
-      mesh_surf_file_head = mesh_def_surf_head
+      file_prefix = mesh_def_surf_head
       call copy_comm_tbl_type(ele_mesh%surf_comm, ele_mesh_IO%comm)
       call calypso_mpi_barrier
       if (iflag_debug.gt.0) write(*,*) 'copy_surf_geometry_to_IO'
@@ -195,14 +196,14 @@
       call calypso_mpi_barrier
 !
       if (iflag_debug.gt.0) write(*,*) 'output_surface_file'
-      call output_surface_file(my_rank, ele_mesh_IO)
+      call output_surface_file(my_rank, file_prefix, ele_mesh_IO)
       call calypso_mpi_barrier
 !
 !  -------------------------------
 !     output edge data
 !  -------------------------------
 !
-      mesh_edge_file_head = mesh_def_edge_head
+      file_prefix = mesh_def_edge_head
       call copy_comm_tbl_type(ele_mesh%edge_comm, ele_mesh_IO%comm)
       if (iflag_debug.gt.0) write(*,*) 'copy_edge_geometry_to_IO'
       call calypso_mpi_barrier
@@ -215,7 +216,7 @@
       call calypso_mpi_barrier
 !
       if (iflag_debug.gt.0) write(*,*) 'output_edge_geometries'
-      call output_edge_geometries(my_rank, ele_mesh_IO)
+      call output_edge_geometries(my_rank, file_prefix, ele_mesh_IO)
       call calypso_mpi_barrier
 !
       end subroutine initialize_mesh_test
