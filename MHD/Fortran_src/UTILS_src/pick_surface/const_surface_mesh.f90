@@ -44,6 +44,7 @@
       mesh_file_head =    file_head
       surface_file_head = file_head
       call find_mesh_format_4_viewer
+      call count_subdomains_4_viewer
       call const_surf_mesh_4_viewer                                     &
      &   (iflag_mesh_file_fmt, ele, surf, edge)
 !
@@ -55,93 +56,44 @@
 !
       use m_read_mesh_data
       use m_file_format_switch
-      use set_mesh_file_names
-      use set_parallel_file_name
       use mesh_IO_select
-      use mesh_file_IO
-!
-      character(len=kchara) :: fname, fname_tmp
-      integer(kind = kint) :: iflag
 !
 !
 !  Detect file format
-      iflag = 0
-      call set_mesh_file_name(mesh_file_head, id_gzip_txt_file_fmt,     &
-     &   izero, fname)
-      open(15,file = fname, status='old', action='read', err=98)
-      close(15)
-      iflag = 1
       iflag_mesh_file_fmt = id_gzip_txt_file_fmt
-   98 continue
+      if(check_exist_mesh(izero) .gt. 0) return
 !
-      if(iflag .eq. 0) then
-        call set_mesh_file_name(mesh_file_head, id_ascii_file_fmt,      &
-     &      izero, fname)
-        open(15,file = fname, status='old', action='read', err=97)
-        close(15)
-        iflag = 1
-        iflag_mesh_file_fmt = id_ascii_file_fmt
-      end if
-   97 continue
+      iflag_mesh_file_fmt = id_ascii_file_fmt
+      if(check_exist_mesh(izero) .gt. 0) return
 !
-      if(iflag .eq. 0) then
-        call set_mesh_file_name(mesh_file_head, id_binary_file_fmt,     &
-     &      izero, fname)
-        open(15,file = fname, status='old', action='read', err=96)
-        close(15)
-        iflag = 1
-        iflag_mesh_file_fmt = id_binary_file_fmt
-      end if
-   96 continue
+      iflag_mesh_file_fmt = id_binary_file_fmt
+      if(check_exist_mesh(izero) .gt. 0) return
 !
-      if(iflag .eq. 0) then
-        call set_mesh_file_name(mesh_file_head, id_gzip_bin_file_fmt,   &
-     &      izero, fname)
-        open(15,file = fname, status='old', action='read', err=95)
-        close(15)
-        iflag = 1
-        iflag_mesh_file_fmt = id_gzip_bin_file_fmt
-      end if
-   95 continue
+      iflag_mesh_file_fmt = id_gzip_bin_file_fmt
+      if(check_exist_mesh(izero) .gt. 0) return
 !
-      if(iflag .eq. 0) then
-        call add_int_suffix(izero, mesh_file_head, fname_tmp)
-        call add_gzip_extension(fname_tmp, fname)
-        open(15,file = fname, status='old', action='read', err=94)
-        close(15)
-        iflag = 1
-        iflag_mesh_file_fmt = id_gzip_txt_file_fmt
-      end if
-   94 continue
+      iflag_mesh_file_fmt = id_gzip_txt_file_fmt
+      if(check_exist_mesh(izero) .gt. 0) return
 !
-      if(iflag .eq. 0) then
-        call add_int_suffix(izero, mesh_file_head, fname)
-        open(15,file = fname, status='old', action='read', err=93)
-        close(15)
-        iflag = 1
-        iflag_mesh_file_fmt = id_ascii_file_fmt
-      end if
-   93 continue
+      stop 'I cannot find mesh file!!'
 !
-      if(iflag .eq. 0) stop 'I cannot find mesh file!!'
+      end subroutine find_mesh_format_4_viewer
 !
-!   count number of subdomains
+!------------------------------------------------------------------
+!
+      subroutine count_subdomains_4_viewer
+!
+      use mesh_IO_select
+!
 !
       num_pe = 0
       do
-        call set_mesh_file_name(mesh_file_head, iflag_mesh_file_fmt,    &
-     &      num_pe, fname)
-!
-        write(*,*) 'mesh file name: ', trim(fname)
-        open(15,file = fname, status='old', action='read', err=99)
-        close(15)
-        num_pe = num_pe + 1
+        if(check_exist_mesh(num_pe) .eq. 0) exit
       end do
-  99  continue
 !
       write(*,*) 'Number of subdomains: ', num_pe
 !
-      end subroutine find_mesh_format_4_viewer
+      end subroutine count_subdomains_4_viewer
 !
 !------------------------------------------------------------------
 !
