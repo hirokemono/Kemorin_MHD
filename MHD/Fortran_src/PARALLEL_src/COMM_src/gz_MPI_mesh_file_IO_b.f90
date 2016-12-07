@@ -50,7 +50,6 @@
      &         (nprocs_in, my_rank_IO, fem_IO)
 !
       use m_machine_parameter
-      use m_read_boundary_data
       use gz_MPI_binary_datum_IO
       use MPI_binary_head_IO
 !
@@ -150,7 +149,6 @@
      &         (nprocs_in, my_rank_IO, fem_IO)
 !
       use m_machine_parameter
-      use m_read_boundary_data
       use gz_MPI_binary_datum_IO
       use MPI_binary_head_IO
 !

@@ -19,7 +19,6 @@
       use m_constants
       use m_machine_parameter
       use m_ctl_param_newdom_filter
-      use m_read_boundary_data
       use mesh_IO_select
       use set_parallel_file_name
 !

@@ -95,7 +95,6 @@
 !
       use m_ctl_data_4_platforms
       use m_ctl_data_4_org_data
-      use m_control_params_2nd_files
 !
       use cal_nonlinear
       use cal_sol_sph_MHD_crank
@@ -103,12 +102,14 @@
       use lead_fields_4_sph_mhd
       use sph_mhd_rst_IO_control
       use sph_mhd_rms_IO
+      use input_control_sph_MHD
 !
       integer(kind = kint), intent(in) :: i_step
 !
 !
       call read_alloc_sph_rst_2_modify(i_step,                          &
-     &    rj_org_param, rst_org_param, sph1%sph_rj, ipol, rj_fld1)
+     &    MHD1_org_files%rj_file_param, MHD1_org_files%rst_file_param,  &
+     &    sph1%sph_rj, ipol, rj_fld1)
 !
 !*  ----------------Modify spectr data ... ----------
 !*

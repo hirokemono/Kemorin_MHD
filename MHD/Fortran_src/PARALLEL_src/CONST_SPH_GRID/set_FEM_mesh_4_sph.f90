@@ -40,7 +40,6 @@
       use t_geometry_data
       use t_group_data
       use m_spheric_global_ranks
-      use m_read_boundary_data
       use m_sph_mesh_1d_connect
 !
       use coordinate_converter

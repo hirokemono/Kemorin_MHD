@@ -134,7 +134,6 @@
       subroutine mpi_write_mesh_file_b(nprocs_in, my_rank_IO, fem_IO)
 !
       use m_machine_parameter
-      use m_read_boundary_data
       use MPI_mesh_data_IO_b
 !
       integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO

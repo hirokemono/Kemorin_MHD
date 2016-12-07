@@ -139,7 +139,6 @@
 !
       use m_machine_parameter
       use m_fem_mesh_labels
-      use m_read_boundary_data
       use mesh_data_IO
 !
       integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO

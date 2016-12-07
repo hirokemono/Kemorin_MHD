@@ -41,7 +41,6 @@
       use m_physical_property
       use m_sph_trans_arrays_MHD
       use m_boundary_params_sph_MHD
-      use m_control_params_2nd_files
 !
       use set_control_sph_mhd
       use set_sph_phys_address
@@ -58,6 +57,7 @@
       use sph_mhd_rst_IO_control
       use sph_filtering
       use cal_rms_fields_by_sph
+      use input_control_sph_MHD
 !
       type(phys_address), intent(in) :: iphys
 !
@@ -82,7 +82,7 @@
 ! ---------------------------------
 !
       call init_radial_sph_interpolation                                &
-     &   (rj_org_param, sph1%sph_params, sph1%sph_rj)
+     &   (MHD1_org_files%rj_file_param, sph1%sph_params, sph1%sph_rj)
 !
 ! ---------------------------------
 !
@@ -118,7 +118,8 @@
       integer (kind =kint) :: iflag
 !
 !
-      call read_alloc_sph_spectr(i_step, rj_org_param, sph_file_param1,  &
+      call read_alloc_sph_spectr                                        &
+     &   (i_step, MHD1_org_files%rj_file_param, sph_file_param1,        &
      &    sph1%sph_rj, ipol, rj_fld1)
 !
 !* ----  Update fields after time evolution ------------------------=
