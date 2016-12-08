@@ -1,21 +1,22 @@
 !
 !      module set_2nd_geometry_4_serial
 !
-      module set_2nd_geometry_4_serial
-!
 !      Written by H. Matsui on Feb., 2007
+!
+!!      subroutine s_set_2nd_geometry_4_serial(mesh_file)
+!!        type(field_IO_params), intent(in) :: mesh_file
+!
+      module set_2nd_geometry_4_serial
 !
       use m_precision
 !
       use m_file_format_switch
-      use m_read_mesh_data
       use m_2nd_geometry_4_merge
+      use t_file_IO_parameter
 !
       implicit none
 !
       private :: set_2nd_mesh_for_single
-!
-!      subroutine s_set_2nd_geometry_4_serial
 !
 !  ---------------------------------------------------------------------
 !
@@ -23,14 +24,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_2nd_geometry_4_serial
+      subroutine s_set_2nd_geometry_4_serial(mesh_file)
 !
       use count_number_with_overlap
+!
+      type(field_IO_params), intent(in) :: mesh_file
 !
 !
       call allocate_number_of_2nd_mesh
 !
-      call set_2nd_mesh_for_single
+      call set_2nd_mesh_for_single(mesh_file)
 !
       call count_num_overlap_geom_type(num_pe2,                         &
      &    subdomains_2, merge_tbl_2)
@@ -42,12 +45,14 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_2nd_mesh_for_single
+      subroutine set_2nd_mesh_for_single(mesh_file)
 !
        use t_mesh_data
        use mesh_IO_select
        use set_element_data_4_IO
        use copy_mesh_structures
+!
+      type(field_IO_params), intent(in) :: mesh_file
 !
       type(mesh_geometry) :: mesh_IO_2
       integer (kind = kint) :: ip, my_rank, ierr
@@ -57,7 +62,7 @@
         my_rank = ip - 1
 !
         call sel_read_mesh_geometry                                     &
-     &     (mesh1_file, my_rank, mesh_IO_2, ierr)
+     &     (mesh_file, my_rank, mesh_IO_2, ierr)
         if(ierr .gt. 0) stop 'Error in Mesh data'
 !
         call copy_node_geometry_types                                   &

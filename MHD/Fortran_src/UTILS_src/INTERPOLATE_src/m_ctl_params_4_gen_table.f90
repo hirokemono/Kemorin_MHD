@@ -11,11 +11,13 @@
 !
       use m_precision
       use m_field_file_format
+      use t_file_IO_parameter
 !
       implicit none
 !
 !
-      character(len = kchara) :: org_mesh_head =   "mesh_fine/in"
+      type(field_IO_params), save :: itp_org_mesh_file
+!
       character(len = kchara) :: dest_mesh_head =  "mesh_coase/in"
       character(len = kchara) :: table_file_head = "mesh/table"
       character(len = kchara)                                           &
@@ -28,7 +30,6 @@
       character(len = kchara) :: itp_rst_file_head = "rst_new/rst"
       character(len = kchara) :: itp_udt_file_head = "field_new/out"
 !
-      integer(kind = kint) :: ifmt_org_mesh_file = 0
       integer(kind = kint) :: ifmt_itp_mesh_file = 0
 !
       integer(kind = kint) :: ifmt_org_rst_file =  0
@@ -100,9 +101,7 @@
       call turn_off_debug_flag_by_ctl(my_rank)
       call set_control_smp_def(my_rank)
 !
-      if (mesh_file_prefix%iflag .ne. 0) then
-        org_mesh_head = mesh_file_prefix%charavalue
-      end if
+      call set_control_mesh_def(itp_org_mesh_file)
 !
       if (new_mesh_prefix%iflag .ne. 0) then
         dest_mesh_head = new_mesh_prefix%charavalue
@@ -113,15 +112,14 @@
       end if
 !
       call choose_para_file_format                                      &
-     &   (mesh_file_fmt_ctl, ifmt_org_mesh_file)
-      call choose_para_file_format                                      &
      &   (new_mesh_file_fmt_ctl, ifmt_itp_mesh_file)
       call choose_file_format                                           &
      &   (fmt_itp_table_file_ctl, ifmt_itp_table_file)
 !
       if (iflag_debug.eq.1)  then
         write(*,*) 'np_smp', np_smp, np_smp
-        write(*,*) 'org_mesh_head: ',   trim(org_mesh_head)
+        write(*,*) 'org_mesh_head: ',                                   &
+     &            trim(itp_org_mesh_file%file_prefix)
         write(*,*) 'dest_mesh_head: ',  trim(dest_mesh_head)
         write(*,*) 'table_file_head: ', trim(table_file_head)
       end if

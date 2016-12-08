@@ -3,7 +3,7 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine count_number_w_overlap(nnod_4_ele)
+!      subroutine count_number_w_overlap(mesh_file, nnod_4_ele)
 !
       module count_number_with_overlap
 !
@@ -11,8 +11,8 @@
 !
       use m_constants
       use m_geometry_data_4_merge
-      use m_read_mesh_data
       use t_mesh_data
+      use t_file_IO_parameter
 !
       implicit none
 !
@@ -24,12 +24,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_number_w_overlap(nnod_4_ele)
+      subroutine count_number_w_overlap(mesh_file, nnod_4_ele)
 !
-       integer (kind = kint), intent(inout) :: nnod_4_ele
+      type(field_IO_params), intent(in) :: mesh_file
+      integer (kind = kint), intent(inout) :: nnod_4_ele
 !
 !
-      call count_numbers_4_mesh_merge(nnod_4_ele)
+      call count_numbers_4_mesh_merge(mesh_file, nnod_4_ele)
       call count_num_geometry_w_overlap
 !
       end subroutine count_number_w_overlap
@@ -37,7 +38,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine count_numbers_4_mesh_merge(nnod_4_ele)
+      subroutine count_numbers_4_mesh_merge(mesh_file, nnod_4_ele)
 !
        use mesh_IO_select
        use set_read_geometry_2_merge
@@ -47,6 +48,7 @@
        use copy_mesh_structures
        use load_mesh_data
 !
+      type(field_IO_params), intent(in) :: mesh_file
        integer (kind = kint), intent(inout) :: nnod_4_ele
        integer (kind = kint) :: ip, my_rank, ierr
 !
@@ -55,7 +57,7 @@
 !
       do ip =1, num_pe
         my_rank = ip - 1
-        call sel_read_mesh(mesh1_file, my_rank, fem_IO_o, ierr)
+        call sel_read_mesh(mesh_file, my_rank, fem_IO_o, ierr)
         if(ierr .gt. 0) stop 'Error in Mesh data'
 !
         call set_mesh_geometry_data(fem_IO_o%mesh,                      &

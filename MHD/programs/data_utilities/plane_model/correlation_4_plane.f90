@@ -72,11 +72,11 @@
       write(*,*) 'set_merged_node_and_element'
       call copy_mesh_format_and_prefix                                  &
      &   (cor_mesh_header, id_cor_mesh_fmt, mesh1_file)
-      call set_merged_node_and_element
+      call set_merged_node_and_element(mesh1_file)
       write(*,*) 's_set_2nd_geometry_4_serial'
       call copy_mesh_format_and_prefix                                  &
      &   (ref_mesh_header, id_ref_mesh_fmt, mesh1_file)
-      call s_set_2nd_geometry_4_serial
+      call s_set_2nd_geometry_4_serial(mesh1_file)
 !
       call s_set_numnod_4_plane
 !

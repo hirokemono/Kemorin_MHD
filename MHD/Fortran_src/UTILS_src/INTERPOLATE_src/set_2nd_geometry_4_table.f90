@@ -3,10 +3,11 @@
 !
 !     Written by H. Matsui on Sep., 2006
 !
-!      subroutine set_2nd_geometry_type_itp_tbl(nprocs_2nd)
-!      subroutine link_2nd_geometry_4_itp_tbl(my_rank,                  &
-!     &          newmesh, newgroup)
-!      subroutine unlink_2nd_geometry_4_table(newmesh, newgroup)
+!!      subroutine set_2nd_geometry_type_itp_tbl(mesh_file, nprocs_2nd)
+!!        type(field_IO_params), intent(in) ::  mesh_file
+!!      subroutine link_2nd_geometry_4_itp_tbl(my_rank,                 &
+!!     &          newmesh, newgroup)
+!!      subroutine unlink_2nd_geometry_4_table(newmesh, newgroup)
 !!      subroutine s_set_serach_data_4_dest                             &
 !!     &         (dest_node, itp_dest, itp_coef)
 !!        type(node_data), intent(in) :: dest_node
@@ -37,8 +38,6 @@
 !
       integer(kind = kint), intent(in) :: nprocs_2nd
 !
-      integer(kind = kint) :: jp
-!
 !
       allocate( origin_mesh(nprocs_2nd) )
 !
@@ -55,21 +54,22 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_2nd_geometry_type_itp_tbl(nprocs_2nd)
+      subroutine set_2nd_geometry_type_itp_tbl(mesh_file, nprocs_2nd)
 !
+      use t_file_IO_parameter
       use m_ctl_params_4_gen_table
-      use m_read_mesh_data
       use set_parallel_mesh_in_1pe
 !
+      type(field_IO_params), intent(in) ::  mesh_file
       integer(kind = kint), intent(in) :: nprocs_2nd
 !
 !
       call alloc_org_mesh_type_itp_para(nprocs_2nd)
 !
-      write(*,*) 'mesh_file_head: ', trim(mesh1_file%file_prefix),      &
+      write(*,*) 'mesh_file_head: ', trim(mesh_file%file_prefix),       &
      &            nprocs_2nd
       call s_set_parallel_mesh_in_1pe                                   &
-     &   (mesh1_file, nprocs_2nd, origin_mesh)
+     &   (mesh_file, nprocs_2nd, origin_mesh)
 !
       end subroutine set_2nd_geometry_type_itp_tbl
 !

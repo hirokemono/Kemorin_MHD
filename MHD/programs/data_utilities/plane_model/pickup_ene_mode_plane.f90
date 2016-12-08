@@ -7,6 +7,7 @@
       use set_spectr_file_name
 !
       use m_control_plane_fft
+      use m_read_mesh_data
       use set_list_4_FFT
       use set_plane_spectr_file_head
 !
@@ -41,7 +42,7 @@
 !
       write(*,*) 'read_control_data_fft_plane'
       call read_control_data_fft_plane
-      call s_set_plane_spectr_file_head
+      call s_set_plane_spectr_file_head(mesh1_file)
       call set_parameters_4_FFT(num_pe, ist, ied, iint)
 !
 !

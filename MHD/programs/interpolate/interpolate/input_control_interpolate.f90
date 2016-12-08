@@ -65,9 +65,7 @@
 !  --  read geometry for origin (if exist)
 !
       if (my_rank .lt. ndomain_org) then
-        call copy_mesh_format_and_prefix                                &
-     &     (org_mesh_head, ifmt_org_mesh_file, mesh1_file)
-        call input_mesh(mesh1_file, my_rank,                            &
+        call input_mesh(itp_org_mesh_file, my_rank,                     &
      &     org_femmesh%mesh, org_femmesh%group,                         &
      &     org_ele_mesh%surf%nnod_4_surf,                               &
      &     org_ele_mesh%edge%nnod_4_edge, ierr)

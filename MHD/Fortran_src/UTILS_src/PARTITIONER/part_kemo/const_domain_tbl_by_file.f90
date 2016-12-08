@@ -4,9 +4,9 @@
 !      modified by H. Matsui on Apr., 2008
 !
 !      subroutine s_const_domain_tbl_by_file(mesh_head)
-!      subroutine count_nnod_whole_domain(mesh_head)
-!      subroutine set_domain_grp_whole_domain(mesh_head)
-!      subroutine set_domain_grp_each_domain(mesh_head, my_rank2)
+!      subroutine count_nnod_whole_domain(mesh_file)
+!      subroutine set_domain_grp_whole_domain(mesh_file)
+!      subroutine set_domain_grp_each_domain(mesh_file, my_rank2)
 !
       module const_domain_tbl_by_file
 !
@@ -14,8 +14,8 @@
 !
       use m_domain_group_4_partition
       use m_2nd_pallalel_vector
-      use m_read_mesh_data
       use t_mesh_data
+      use t_file_IO_parameter
       use set_parallel_file_name
       use mesh_IO_select
 !
@@ -27,27 +27,27 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_const_domain_tbl_by_file(mesh_head)
+      subroutine s_const_domain_tbl_by_file(mesh_file)
 !
-      character(len=kchara), intent(in) :: mesh_head
+      type(field_IO_params), intent(in) :: mesh_file
 !
 !
-      call count_nnod_whole_domain(mesh_head)
+      call count_nnod_whole_domain(mesh_file)
 !
       call allocate_domain_nese_group
       call allocate_org_gl_nese_id
       call allocate_local_nese_id_tbl
 !
-      call set_domain_grp_whole_domain(mesh_head)
+      call set_domain_grp_whole_domain(mesh_file)
 !
       end subroutine s_const_domain_tbl_by_file
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine count_nnod_whole_domain(mesh_head)
+      subroutine count_nnod_whole_domain(mesh_file)
 !
-      character(len=kchara), intent(in) :: mesh_head
+      type(field_IO_params), intent(in) :: mesh_file
 !
       type(mesh_geometry) :: mesh_IO_p
       integer(kind = kint) :: ip, my_rank2, ierr
@@ -59,8 +59,7 @@
       nnod_s_domin = 0
       do ip = 1, nprocs_2nd
         my_rank2 = ip - 1
-        mesh1_file%file_prefix = mesh_head
-        call sel_read_node_size(mesh1_file, my_rank2, mesh_IO_p, ierr)
+        call sel_read_node_size(mesh_file, my_rank2, mesh_IO_p, ierr)
           if(ierr .gt. 0) then
           stop 'MESH data is wrong in count_nnod_whole_domain'
         end if
@@ -74,24 +73,24 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_domain_grp_whole_domain(mesh_head)
+      subroutine set_domain_grp_whole_domain(mesh_file)
 !
-      character(len=kchara), intent(in) :: mesh_head
+      type(field_IO_params), intent(in) :: mesh_file
 !
       integer(kind = kint) :: my_rank2
 !
 !
       do my_rank2 = 0, nprocs_2nd-1
-        call set_domain_grp_each_domain(mesh_head, my_rank2)
+        call set_domain_grp_each_domain(mesh_file, my_rank2)
       end do
 !
       end subroutine set_domain_grp_whole_domain
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_domain_grp_each_domain(mesh_head, my_rank2)
+      subroutine set_domain_grp_each_domain(mesh_file, my_rank2)
 !
-      character(len=kchara), intent(in) :: mesh_head
+      type(field_IO_params), intent(in) :: mesh_file
       integer(kind = kint), intent(in)  :: my_rank2
 
       type(mesh_geometry) :: mesh_IO_p
@@ -100,9 +99,7 @@
 !
 !
       ip2 = my_rank2 + 1
-      mesh1_file%file_prefix = mesh_head
-      call sel_read_geometry_size                                       &
-     &   (mesh1_file, my_rank2, mesh_IO_p, ierr)
+      call sel_read_geometry_size(mesh_file, my_rank2, mesh_IO_p, ierr)
       if(ierr .gt. 0) then
         stop 'MESH data is wrong in set_domain_grp_each_domain'
       end if

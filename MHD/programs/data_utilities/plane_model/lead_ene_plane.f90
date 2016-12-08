@@ -10,6 +10,7 @@
 !
       use m_phys_labels
       use m_size_4_plane
+      use m_read_mesh_data
       use set_numnod_4_plane
       use set_spectr_file_name
 !
@@ -76,7 +77,7 @@
 !
       write(*,*) 'read_control_data_fft_plane'
       call read_control_data_fft_plane
-      call s_set_plane_spectr_file_head
+      call s_set_plane_spectr_file_head(mesh1_file)
       call set_parameters_4_FFT(num_pe, ist, ied, iint)
 !
       call s_set_numnod_4_plane

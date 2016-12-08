@@ -75,7 +75,7 @@
       write(*,*) 'read_control_data_fft_plane'
       call read_control_data_fft_plane
 !
-      call s_set_plane_spectr_file_head
+      call s_set_plane_spectr_file_head(mesh1_file)
       call set_parameters_rst_by_spec(num_pe, ist, ied,                 &
      &          ifactor_step, ifactor_rst, dt_init, t_init,             &
      &          kx_org, ky_org, iz_org)
@@ -106,7 +106,7 @@
 !   read mesh data for initial values
 !
       mesh1_file%iflag_format = id_ascii_file_fmt
-      call set_merged_mesh_and_group
+      call set_merged_mesh_and_group(mesh1_file)
 !
       write(*,*) 'allocate_rst_by_plane_sp'
       call allocate_rst_by_plane_sp(merge_tbl%nnod_max,                 &

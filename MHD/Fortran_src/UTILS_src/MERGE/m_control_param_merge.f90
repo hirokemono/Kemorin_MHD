@@ -14,11 +14,15 @@
       module m_control_param_merge
 !
       use m_precision
+      use t_file_IO_parameter
 !
       implicit    none
 !
 !
       integer(kind=kint ), parameter ::  id_merged_ucd = 16
+!
+      type(field_IO_params), save :: merge_org_mesh_file
+!merge_org_mesh_file%iflag_format
 !
       character(len=kchara) :: org_rst_head
       character(len=kchara) :: new_rst_head
@@ -135,7 +139,7 @@
       end if
 !
       call set_control_mesh_def(mesh1_file)
-      iorg_mesh_file_fmt = mesh1_file%iflag_format
+      merge_org_mesh_file%iflag_format = mesh1_file%iflag_format
 !
       call set_ucd_file_define(ucd)
 !

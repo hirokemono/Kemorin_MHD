@@ -4,7 +4,11 @@
 !      Written by Kemorin
 !      Modified by Kemorin on Dec., 2006
 !
-!      subroutine choose_surface_mesh(file_head, ele, surf, edge)
+!!      subroutine choose_surface_mesh(mesh_file, ele, surf, edge)
+!!        type(field_IO_params), intent(inout) :: mesh_file
+!!        type(element_data), intent(inout) :: ele
+!!        type(surface_data), intent(inout) :: surf
+!!        type(edge_data), intent(inout) :: edge
 !
       module const_surface_mesh
 !
@@ -19,6 +23,7 @@
       use t_geometry_data
       use t_surface_data
       use t_edge_data
+      use t_file_IO_parameter
 !
       implicit none
 !
@@ -31,23 +36,18 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine choose_surface_mesh(file_head, ele, surf, edge)
+      subroutine choose_surface_mesh(mesh_file, ele, surf, edge)
 !
-      use m_read_mesh_data
-!
+      type(field_IO_params), intent(inout) :: mesh_file
       type(element_data), intent(inout) :: ele
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge
 !
-      character(len=kchara), intent(in) :: file_head
 !
-!
-      mesh1_file%file_prefix =    file_head
-      surface_file_head = file_head
-      call find_mesh_format_4_viewer(mesh1_file)
-      call count_subdomains_4_viewer(mesh1_file)
-      call const_surf_mesh_4_viewer                                     &
-     &   (mesh1_file%iflag_format, ele, surf, edge)
+      surface_file_head = mesh_file%file_prefix
+      call find_mesh_format_4_viewer(mesh_file)
+      call count_subdomains_4_viewer(mesh_file)
+      call const_surf_mesh_4_viewer(mesh_file, ele, surf, edge)
 !
       end subroutine choose_surface_mesh
 !
@@ -100,8 +100,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine const_surf_mesh_4_viewer                               &
-     &         (iflag_mesh_fmt, ele, surf, edge)
+      subroutine const_surf_mesh_4_viewer(mesh_file, ele, surf, edge)
 !
       use set_merged_geometry
       use const_merged_surf_data
@@ -112,7 +111,7 @@
       use set_nodes_4_groups_viewer
       use viewer_IO_select_4_zlib
 !
-      integer(kind = kint), intent(in)  :: iflag_mesh_fmt
+      type(field_IO_params), intent(in) :: mesh_file
       type(element_data), intent(inout) :: ele
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge
@@ -121,7 +120,7 @@
 !  set mesh_information
 !
        write(*,*) 'set_overlapped_mesh_and_group'
-       call set_overlapped_mesh_and_group(ele%nnod_4_ele)
+       call set_overlapped_mesh_and_group(mesh_file, ele%nnod_4_ele)
 !
        call dealloc_subdomain_groups
 !
@@ -160,7 +159,7 @@
        call s_set_nodes_4_groups_viewer                                 &
      &    (surf%nnod_4_surf, edge%nnod_4_edge)
 !
-      call sel_output_surface_grid(iflag_mesh_fmt,                      &
+      call sel_output_surface_grid(mesh_file%iflag_format,              &
      &    surf%nnod_4_surf, edge%nnod_4_edge)
 !
       end subroutine const_surf_mesh_4_viewer

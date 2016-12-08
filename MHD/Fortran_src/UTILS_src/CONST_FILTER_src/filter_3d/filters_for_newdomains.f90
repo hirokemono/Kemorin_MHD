@@ -95,6 +95,7 @@
       use m_filter_file_names
       use m_filter_coefs
       use m_field_file_format
+      use m_read_mesh_data
       use mesh_IO_select
       use copy_filters_4_sorting
       use const_newdomain_filter
@@ -170,7 +171,7 @@
 !
 !        write(*,*) 'trans_filter_4_new_domains'
         call trans_filter_4_new_domains                                 &
-     &     (ip2, ifmt_3d_filter, org_node, org_ele%numele)
+     &     (ip2, ifmt_3d_filter, mesh1_file, org_node, org_ele%numele)
 !        write(*,*) 'reorder_filter_new_domain'
         call reorder_filter_new_domain
 !

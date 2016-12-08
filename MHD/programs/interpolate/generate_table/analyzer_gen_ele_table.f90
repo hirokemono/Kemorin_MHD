@@ -78,11 +78,9 @@
 !
 !     ----- construct mesh informations for original mesh
 !
-      call copy_mesh_format_and_prefix                                  &
-     &   (org_mesh_head, ifmt_itp_mesh_file, mesh1_file)
       if (iflag_debug.eq.1)                                             &
      &  write(*,*) 'set_2nd_geometry_type_itp_tbl', nprocs_2nd
-      call set_2nd_geometry_type_itp_tbl(nprocs_2nd)
+      call set_2nd_geometry_type_itp_tbl(itp_org_mesh_file, nprocs_2nd)
 !
 !  -------------------------------
 !  -------------------------------

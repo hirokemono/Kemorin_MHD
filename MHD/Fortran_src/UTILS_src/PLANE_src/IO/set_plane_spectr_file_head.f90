@@ -1,15 +1,17 @@
 !set_plane_spectr_file_head.f90
 !      module set_plane_spectr_file_head
 !
-      module set_plane_spectr_file_head
-!
 !      Written by H. Matsui on Oct., 2008
 !
+!!      subroutine s_set_plane_spectr_file_head(mesh_file)
+!!        type(field_IO_params), intent(inout) :: mesh_file
+!
+      module set_plane_spectr_file_head
+!
       use m_precision
+      use t_file_IO_parameter
 !
       implicit none
-!
-!      subroutine s_set_plane_spectr_file_head
 !
 ! -----------------------------------------------------------------------
 !
@@ -17,17 +19,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_plane_spectr_file_head
+      subroutine s_set_plane_spectr_file_head(mesh_file)
 !
       use m_ctl_data_4_platforms
       use m_ctl_data_plane_spec_file
       use set_spectr_file_name
       use set_parallel_file_name
-      use m_read_mesh_data
       use set_control_platform_data
 !
+      type(field_IO_params), intent(inout) :: mesh_file
 !
-      call set_control_mesh_def(mesh1_file)
+!
+      call set_control_mesh_def(mesh_file)
 !
       if (udt_file_head_ctl%iflag .gt. 0) then
         plane_udt_header = udt_file_head_ctl%charavalue

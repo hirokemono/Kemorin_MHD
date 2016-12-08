@@ -15,6 +15,7 @@
       use calypso_mpi
       use m_constants
       use m_internal_4_partitioner
+      use m_read_mesh_data
 !
       implicit none
 !
@@ -36,7 +37,8 @@
 !
       START_SRtime= MPI_WTIME()
       if(my_rank .eq. 0) then
-        call count_nnod_whole_domain(mesh_head)
+        mesh1_file%file_prefix = mesh_head
+        call count_nnod_whole_domain(mesh1_file)
       end if
 !
       call MPI_Bcast(nnod_s_domin, ione, CALYPSO_INTEGER, izero,        &
@@ -51,10 +53,11 @@
       call allocate_org_gl_nese_id
 !
       START_SRtime = MPI_WTIME()
+      mesh1_file%file_prefix = mesh_head
       if(my_rank .eq. 0) then
-        call set_domain_grp_whole_domain(mesh_head)
+        call set_domain_grp_whole_domain(mesh1_file)
       else
-        call set_domain_grp_each_domain(mesh_head, my_rank)
+        call set_domain_grp_each_domain(mesh1_file, my_rank)
       end if
 !
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime

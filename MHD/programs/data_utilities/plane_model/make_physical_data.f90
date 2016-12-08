@@ -71,7 +71,7 @@
       write(*,*) 'read_control_data_fft_plane'
       call read_control_data_fft_plane
 !
-      call s_set_plane_spectr_file_head
+      call s_set_plane_spectr_file_head(mesh1_file)
       call set_parameters_4_FFT(num_pe, ist, ied, iint)
       call set_parameters_data_by_spec(num_pe, kx_org, ky_org, iz_org,  &
      &                                 fft_ucd)
@@ -93,7 +93,7 @@
 !   read mesh data for initial values
 !
       mesh1_file%iflag_format = id_ascii_file_fmt
-      call set_merged_mesh_and_group
+      call set_merged_mesh_and_group(mesh1_file)
 !
       allocate( subdomains_2(num_pe2) )
 !

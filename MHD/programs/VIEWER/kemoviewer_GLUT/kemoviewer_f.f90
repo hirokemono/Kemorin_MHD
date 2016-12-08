@@ -32,8 +32,9 @@
         call getarg_k(1, file_head)
       end if
 !
+      mesh1_file%file_prefix = file_head
       call choose_surface_mesh                                          &
-     &   (file_head, ele_viewer, ele_mesh1%surf, ele_mesh1%edge)
+     &   (mesh1_file, ele_viewer, ele_mesh1%surf, ele_mesh1%edge)
 !
       write(*,*) 'will you draw mesh? (y/n)'
       read(*,*) chara_flag

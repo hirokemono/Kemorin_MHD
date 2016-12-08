@@ -19,6 +19,7 @@
       use mesh_IO_select
       use const_newdomain_filter
       use set_filters_4_new_domains
+      use m_read_mesh_data
 !
       implicit none
 !
@@ -59,7 +60,7 @@
         call deallocate_type_neib_id(mesh_IO_f%nod_comm)
 !
         call marking_used_node_4_filtering                              &
-     &     (ip2, ifmt_3d_filter, org_node, org_ele%numele)
+     &     (ip2, ifmt_3d_filter, mesh1_file, org_node, org_ele%numele)
 !
         call set_num_globalnod_4_newdomain(ip2, new_node)
 !

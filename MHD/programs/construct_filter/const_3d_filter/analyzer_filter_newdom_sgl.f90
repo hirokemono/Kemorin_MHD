@@ -61,7 +61,8 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 's_const_domain_tbl_by_file'
-      call s_const_domain_tbl_by_file(tgt_mesh_file%file_prefix)
+      mesh1_file%file_prefix = tgt_mesh_file%file_prefix
+      call s_const_domain_tbl_by_file(mesh1_file)
 !
       end subroutine newdomain_filter_init
 !

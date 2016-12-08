@@ -35,8 +35,8 @@
 !
 !  read mesh information
 !
-      mesh1_file%iflag_format = iorg_mesh_file_fmt
-      call set_merged_mesh_and_group
+      mesh1_file%iflag_format = merge_org_mesh_file%iflag_format
+      call set_merged_mesh_and_group(mesh1_file)
 !
 !   output grid data
 !

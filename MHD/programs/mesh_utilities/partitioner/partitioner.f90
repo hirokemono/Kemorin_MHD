@@ -74,7 +74,8 @@
 !  ========= Construct subdomain information for viewer ==============
 !
       write(*,*) 'choose_surface_mesh'
-      call choose_surface_mesh(local_file_header,                       &
+      mesh1_file%file_prefix = local_file_header
+      call choose_surface_mesh(mesh1_file,                              &
      &    org_mesh%ele, org_ele_mesh%surf, org_ele_mesh%edge)
 !
       stop ' * Partitioning finished'

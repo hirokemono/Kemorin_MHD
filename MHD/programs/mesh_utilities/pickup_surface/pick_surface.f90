@@ -12,6 +12,7 @@
       use t_geometry_data
       use t_surface_data
       use t_edge_data
+      use m_read_mesh_data
       use const_surface_mesh
       use getarg_kemo
 !
@@ -32,8 +33,9 @@
         call getarg_k(1, file_head)
       end if
 !
+      mesh1_file%file_prefix =    file_head
       call choose_surface_mesh                                          &
-     &   (file_head, ele_pick, surf_pick, edge_pick)
+     &   (mesh1_file, ele_pick, surf_pick, edge_pick)
 !
       stop ' //// program normally finished //// '
 !
