@@ -13,7 +13,6 @@
       use m_machine_parameter
       use calypso_mpi
       use m_2nd_pallalel_vector
-      use m_read_mesh_data
       use t_mesh_data
 !
       implicit none
@@ -59,7 +58,7 @@
       call read_control_filter_newdomain
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_filter_newdomain'
-      call set_control_filter_newdomain(mesh1_file, ierr)
+      call set_control_filter_newdomain(ierr)
 !
       end subroutine moments_to_newdomain_init
 !

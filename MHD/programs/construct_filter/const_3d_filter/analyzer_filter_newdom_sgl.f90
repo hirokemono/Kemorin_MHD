@@ -13,7 +13,6 @@
       use m_machine_parameter
       use t_mesh_data
       use t_filtering_data
-      use m_read_mesh_data
 !
       implicit none
 !
@@ -56,13 +55,12 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_filter_newdomain'
       nprocs_2nd = 0
-      call set_control_filter_newdomain(mesh1_file, ierr)
+      call set_control_filter_newdomain(ierr)
       if(ierr .gt. 0) stop
 !
 !
       if (iflag_debug.eq.1) write(*,*) 's_const_domain_tbl_by_file'
-      mesh1_file%file_prefix = tgt_mesh_file%file_prefix
-      call s_const_domain_tbl_by_file(mesh1_file)
+      call s_const_domain_tbl_by_file(tgt_mesh_file)
 !
       end subroutine newdomain_filter_init
 !
@@ -78,7 +76,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'local_newdomain_filter_sngl'
       call local_newdomain_filter_sngl                                  &
-     &   (mesh1_file, orgmesh%node, orgmesh%ele, newmesh)
+     &   (org_mesh_file, orgmesh%node, orgmesh%ele, newmesh)
 !
       if (iflag_debug.eq.1) write(*,*) 'trans_filter_moms_newmesh_sgl'
       if (iflag_set_filter_elen .gt. 0                                  &
@@ -89,8 +87,8 @@
 !
       if (iflag_set_filter_coef .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'filters_4_newdomains_single'
-        call filters_4_newdomains_single                                &
-     &     (mesh1_file, filtering_nd, orgmesh%node, orgmesh%ele, newmesh)
+        call filters_4_newdomains_single(org_mesh_file,                 &
+     &      filtering_nd, orgmesh%node, orgmesh%ele, newmesh)
       end if
 !
 !

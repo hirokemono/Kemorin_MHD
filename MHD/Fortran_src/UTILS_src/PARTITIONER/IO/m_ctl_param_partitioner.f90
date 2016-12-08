@@ -62,7 +62,6 @@
       type(field_IO_params), save :: distribute_mesh_file
 !
       type(field_IO_params), save :: finer_mesh_file
-!finer_mesh_file%iflag_format
 !
 !   --------------------------------------------------------------------
 !

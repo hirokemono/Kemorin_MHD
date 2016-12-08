@@ -3,7 +3,7 @@
 !
 !      modified by H. Matsui on Apr., 2008
 !
-!!      subroutine set_control_filter_newdomain(mesh_file, ierr)
+!!      subroutine set_control_filter_newdomain(ierr)
 !!        type(field_IO_params), intent(inout) ::  mesh_file
 !
       module m_ctl_param_newdom_filter
@@ -13,6 +13,7 @@
 !
       implicit none
 !
+      type(field_IO_params), save :: org_mesh_file
       type(field_IO_params), save :: tgt_mesh_file
 !
       character(len=kchara) :: org_filter_elen_head
@@ -37,7 +38,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_control_filter_newdomain(mesh_file, ierr)
+      subroutine set_control_filter_newdomain(ierr)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -52,7 +53,6 @@
       use set_control_platform_data
       use set_ctl_params_2nd_files
 !
-      type(field_IO_params), intent(inout) ::  mesh_file
       integer(kind = kint), intent(inout) :: ierr
 !
 !
@@ -82,8 +82,8 @@
       end if
 !
 !
+      call set_control_mesh_def(org_mesh_file)
       call set_control_new_mesh_file_def(tgt_mesh_file)
-      call set_control_mesh_def(mesh_file)
 !
 !
       iflag_set_filter_elen = i_org_filter_elen_head

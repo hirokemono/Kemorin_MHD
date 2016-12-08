@@ -13,7 +13,6 @@
       use m_machine_parameter
       use calypso_mpi
       use m_2nd_pallalel_vector
-      use m_read_mesh_data
       use filters_for_newdomains
       use t_mesh_data
       use t_filtering_data
@@ -65,11 +64,11 @@
       call read_control_filter_newdomain
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_filter_newdomain'
-      call set_control_filter_newdomain(mesh1_file, ierr)
+      call set_control_filter_newdomain(ierr)
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'bcast_parallel_domain_tbl'
-      call bcast_parallel_domain_tbl(tgt_mesh_file%file_prefix)
+      call bcast_parallel_domain_tbl(tgt_mesh_file)
 !
       end subroutine filter_to_newdomain_init
 !
@@ -84,7 +83,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'local_newdomain_filter_para'
       call local_newdomain_filter_para                                  &
-     &   (mesh1_file, orgmesh%node, orgmesh%ele, newmesh)
+     &   (org_mesh_file, orgmesh%node, orgmesh%ele, newmesh)
 !
       if (iflag_debug.eq.1) write(*,*) 'trans_filter_moms_newmesh_para'
       if (iflag_set_filter_elen .gt. 0                                  &
@@ -95,8 +94,8 @@
 !
       if (iflag_set_filter_coef .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'filters_4_newdomains_para'
-        call filters_4_newdomains_para                                  &
-     &     (mesh1_file, filtering_nd, orgmesh%node, orgmesh%ele, newmesh)
+        call filters_4_newdomains_para(org_mesh_file,                   &
+     &      filtering_nd, orgmesh%node, orgmesh%ele, newmesh)
       end if
 !
       end subroutine filter_to_newdomain_analyze
