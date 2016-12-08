@@ -7,6 +7,8 @@
 !>@brief Arrays for Field data IO for FEM utilities
 !!
 !!@verbatim
+!!      subroutine mesh_setup_4_FEM_UTIL(mesh_file)
+!!        type(field_IO_params), intent(in) ::  mesh_file
 !!@endverbatim
 !
       module m_FEM_utils
@@ -22,6 +24,8 @@
 !
       implicit none
 !
+!>      Structure for mesh file IO paramters
+      type(field_IO_params), save :: mesh_file_FUTIL
 !>     Structure for mesh data
 !>        (position, connectivity, group, and communication)
       type(mesh_data), save :: femmesh_FUTIL
@@ -55,18 +59,19 @@
 !
 !   ---------------------------------------------------------------------
 !
-      subroutine mesh_setup_4_FEM_UTIL
+      subroutine mesh_setup_4_FEM_UTIL(mesh_file)
 !
-      use m_read_mesh_data
       use m_array_for_send_recv
       use mpi_load_mesh_data
       use nod_phys_send_recv
       use const_mesh_information
 !
+      type(field_IO_params), intent(in) ::  mesh_file
+!
 !
       if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh'
       call mpi_input_mesh                                               &
-     &   (mesh1_file, femmesh_FUTIL%mesh, femmesh_FUTIL%group,          &
+     &   (mesh_file, femmesh_FUTIL%mesh, femmesh_FUTIL%group,           &
      &    elemesh_FUTIL%surf%nnod_4_surf,                               &
      &    elemesh_FUTIL%edge%nnod_4_edge)
 !

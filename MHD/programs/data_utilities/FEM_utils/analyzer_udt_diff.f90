@@ -43,11 +43,11 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_udt_diff'
       call s_input_control_udt_diff                                     &
-     &   (udt_param_FUTIL, field_FUTIL, ucd_FUTIL)
+     &   (mesh_file_FUTIL, udt_param_FUTIL, field_FUTIL, ucd_FUTIL)
 !
 !     --------------------- 
 !
-      call mesh_setup_4_FEM_UTIL
+      call mesh_setup_4_FEM_UTIL(mesh_file_FUTIL)
 !
 !     --------------------- 
 !

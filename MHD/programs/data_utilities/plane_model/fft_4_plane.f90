@@ -13,7 +13,6 @@
       use m_control_plane_fft
       use m_ctl_data_4_plane_model
       use m_geometry_data_4_merge
-      use m_read_mesh_data
 !
       use t_ucd_data
 !
@@ -30,6 +29,8 @@
 ! . for local 
 !  ===========
 
+      type(field_IO_params), save ::  plane_mesh_file
+!
       type(ucd_data), save :: fft_ucd
 !
       integer(kind=kint ) :: istep
@@ -54,8 +55,7 @@
 !
 !     read outline of mesh
 !
-      write(*,*) 's_set_plane_spectr_file_head'
-      call s_set_plane_spectr_file_head(mesh1_file)
+      call s_set_plane_spectr_file_head(plane_mesh_file)
       call set_parameters_4_FFT(num_pe, ist, ied, iint)
 !
       call s_set_numnod_4_plane

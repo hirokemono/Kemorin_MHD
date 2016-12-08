@@ -20,9 +20,11 @@
 !
       subroutine set_ctl_params_correlate(ist, ied, iint)
 !
+      use m_default_file_prefix
       use m_control_plane_correlate
       use m_correlate_4_plane
       use m_ctl_data_4_time_steps
+      use set_control_platform_data
 !
       integer(kind=kint ), intent(inout) :: ist, ied, iint
 !
@@ -42,8 +44,10 @@
         iint = i_step_ucd_ctl%intvalue
       end if
 !
-      cor_mesh_header = cor_mesh_head_ctl
-      ref_mesh_header = ref_mesh_head_ctl
+      call set_file_control_params(def_mesh_file_head,                  &
+     &    cor_mesh_head_ctl, cor_mesh_fmt_ctl, cor_mesh_file)
+      call set_file_control_params(def_mesh_file_head,                  &
+     &    ref_mesh_head_ctl, ref_mesh_fmt_ctl, ref_mesh_file)
 !
       cor_udt_header = cor_udt_head_ctl
       ref_udt_header = ref_udt_head_ctl

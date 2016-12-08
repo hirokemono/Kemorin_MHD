@@ -5,8 +5,9 @@
 !     Modified by H. Matsui on JUne, 2007
 !
 !      subroutine set_ctl_params_correlate_udt                          &
-!     &         (udt_org_param, nod_fld, ucd)
-!      subroutine set_ctl_params_diff_udt(udt_org_param, ucd)
+!     &         (mesh_file, udt_org_param, nod_fld, ucd)
+!      subroutine set_ctl_params_diff_udt                               &
+!     &         (mesh_file, udt_org_param, ucd)
 !      subroutine s_set_ctl_4_diff_udt_steps
 !
       module set_ctl_diff_udt
@@ -28,7 +29,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine set_ctl_params_correlate_udt                           &
-     &         (udt_org_param, nod_fld, ucd)
+     &         (mesh_file, udt_org_param, nod_fld, ucd)
 !
       use t_ucd_data
       use m_ctl_data_4_fem_int_pts
@@ -36,6 +37,7 @@
       use set_control_nodal_data
       use set_control_ele_layering
 !
+      type(field_IO_params), intent(inout) ::  mesh_file
       type(field_IO_params), intent(inout) :: udt_org_param
       type(phys_data), intent(inout) :: nod_fld
       type(ucd_data), intent(inout) :: ucd
@@ -43,7 +45,7 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_diff_udt'
-      call set_ctl_params_diff_udt(udt_org_param, ucd)
+      call set_ctl_params_diff_udt(mesh_file, udt_org_param, ucd)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_control_ele_layering'
       call s_set_control_ele_layering
@@ -64,11 +66,11 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_params_diff_udt(udt_org_param, ucd)
+      subroutine set_ctl_params_diff_udt                                &
+     &         (mesh_file, udt_org_param, ucd)
 !
       use t_ucd_data
       use t_field_data_IO
-      use m_read_mesh_data
       use m_ctl_data_4_platforms
       use m_ctl_data_4_org_data
       use m_ctl_data_diff_udt
@@ -79,6 +81,7 @@
       use set_ctl_params_2nd_files
       use ucd_IO_select
 !
+      type(field_IO_params), intent(inout) ::  mesh_file
       type(field_IO_params), intent(inout) :: udt_org_param
       type(ucd_data), intent(inout) :: ucd
 !
@@ -86,7 +89,7 @@
       call turn_off_debug_flag_by_ctl(my_rank)
       call check_control_num_domains
       call set_control_smp_def(my_rank)
-      call set_control_mesh_def(mesh1_file)
+      call set_control_mesh_def(mesh_file)
       call set_control_org_udt_file_def(udt_org_param)
 !
 !

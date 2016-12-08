@@ -14,7 +14,6 @@
       use m_machine_parameter
       use calypso_mpi
       use m_FEM_utils
-      use m_read_mesh_data
 !
       implicit none
 !
@@ -45,9 +44,10 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_grp_patch'
-      call s_input_control_grp_patch(udt_param_FUTIL, ucd_FUTIL)
+      call s_input_control_grp_patch                                    &
+     &   (mesh_file_FUTIL, udt_param_FUTIL, ucd_FUTIL)
       if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh(mesh1_file,                                   &
+      call mpi_input_mesh(mesh_file_FUTIL,                              &
      &    femmesh_FUTIL%mesh, femmesh_FUTIL%group,                      &
      &    elemesh_FUTIL%surf%nnod_4_surf,                               &
      &    elemesh_FUTIL%edge%nnod_4_edge)

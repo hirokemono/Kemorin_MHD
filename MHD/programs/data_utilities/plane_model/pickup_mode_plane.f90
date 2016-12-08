@@ -9,7 +9,6 @@
       use m_precision
 !
       use m_size_4_plane
-      use m_read_mesh_data
       use set_numnod_4_plane
       use set_spectr_file_name
 !
@@ -19,6 +18,8 @@
       use set_parallel_file_name
 !
       implicit none
+!
+      type(field_IO_params), save ::  plane_mesh_file
 !
       integer(kind=kint) :: nx_2, ny_2
       integer(kind=kint) :: num_ene, num_ene_z
@@ -63,7 +64,7 @@
       write(*,*) 'read_control_data_fft_plane'
       call read_control_data_fft_plane
       write(*,*) 's_set_plane_spectr_file_head'
-      call s_set_plane_spectr_file_head(mesh1_file)
+      call s_set_plane_spectr_file_head(plane_mesh_file)
       call set_parameters_4_FFT(num_pe, ist, ied, iint)
 !
 !

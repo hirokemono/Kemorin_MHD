@@ -12,6 +12,7 @@
       module set_list_4_FFT
 !
       use m_precision
+      use t_file_IO_parameter
 !
       implicit none
 !
@@ -79,18 +80,19 @@
 !
       subroutine set_parameters_rst_by_spec(num_pe, ist, ied,           &
      &          ifactor_step, ifactor_rst, dt, t_init,                  &
-     &          kx_org, ky_org, iz_org)
+     &          kx_org, ky_org, iz_org, mesh_file)
 !
       use m_control_plane_fft
       use m_ctl_data_4_plane_model
       use m_ctl_data_2nd_plane
       use m_ctl_data_4_time_steps
       use m_ctl_data_4_2nd_data
-      use m_read_mesh_data
       use m_size_4_plane
       use m_spectr_4_ispack
       use m_set_new_spectr
+      use set_ctl_params_2nd_files
 !
+      type(field_IO_params),  intent(inout) ::  mesh_file
       integer(kind=kint ), intent(inout) :: num_pe, ist, ied
       integer(kind=kint ), intent(inout) :: ifactor_step, ifactor_rst
       integer(kind=kint ), intent(inout) :: kx_org, ky_org, iz_org
@@ -106,11 +108,7 @@
       write(*,*) 'nnod_plane2_ctl       ', nnod_plane2_ctl%intvalue
       write(*,*) 'ndomain_plane2_ctl    ', ndomain_plane2_ctl%intvalue
 !
-      if (new_mesh_prefix%iflag .gt. 0) then
-        mesh1_file%file_prefix = new_mesh_prefix%charavalue
-      else
-        mesh1_file%file_prefix = def_new_mesh_head
-      end if
+      call set_control_new_mesh_file_def(mesh_file)
 !
       if (new_restart_prefix%iflag .gt. 0) then
         rst_head_plane = new_restart_prefix%charavalue
@@ -171,23 +169,24 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_parameters_data_by_spec(num_pe,                    &
-     &          kx_org, ky_org, iz_org, ucd)
+     &          kx_org, ky_org, iz_org, mesh_file, ucd)
 !
       use m_control_plane_fft
       use m_ctl_data_4_plane_model
       use m_ctl_data_2nd_plane
       use m_ctl_data_4_time_steps
       use m_ctl_data_4_2nd_data
-      use m_read_mesh_data
       use m_size_4_plane
       use m_spectr_4_ispack
       use m_set_new_spectr
       use m_field_file_format
       use t_ucd_data
       use set_parallel_file_name
+      use set_ctl_params_2nd_files
 !
       integer(kind=kint ), intent(inout) :: num_pe
       integer(kind=kint ), intent(inout) :: kx_org, ky_org, iz_org
+      type(field_IO_params),  intent(inout) ::  mesh_file
       type(ucd_data), intent(inout) :: ucd
 !
 !
@@ -197,11 +196,7 @@
       write(*,*) 'nnod_plane2_ctl       ', nnod_plane2_ctl%intvalue
       write(*,*) 'ndomain_plane2_ctl    ', ndomain_plane2_ctl%intvalue
 !
-      if (new_mesh_prefix%iflag .gt. 0) then
-        mesh1_file%file_prefix = new_mesh_prefix%charavalue
-      else
-        mesh1_file%file_prefix = def_new_mesh_head
-      end if
+      call set_control_new_mesh_file_def(mesh_file)
 !
       if (new_field_file_prefix%iflag .gt. 0) then
         call set_ucd_file_format(iflag_udt, ucd)

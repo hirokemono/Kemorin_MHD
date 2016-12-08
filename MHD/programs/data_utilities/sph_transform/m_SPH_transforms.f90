@@ -24,8 +24,12 @@
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
       use t_global_gauss_coefs
+      use t_file_IO_parameter
 !
       implicit none
+!
+!>      Structure for field data IO paramters
+      type(field_IO_params), save ::  mesh_file_STR
 !
 !>     Structure for mesh data
 !>        (position, connectivity, group, and communication)

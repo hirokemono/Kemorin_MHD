@@ -7,12 +7,13 @@
       use set_spectr_file_name
 !
       use m_control_plane_fft
-      use m_read_mesh_data
       use set_list_4_FFT
       use set_plane_spectr_file_head
 !
       implicit none
 !
+!
+      type(field_IO_params), save ::  plane_mesh_file
 !
       integer(kind=kint) :: nx_2, ny_2
       integer(kind=kint) :: kx, ky, kx_in, ky_in
@@ -42,7 +43,7 @@
 !
       write(*,*) 'read_control_data_fft_plane'
       call read_control_data_fft_plane
-      call s_set_plane_spectr_file_head(mesh1_file)
+      call s_set_plane_spectr_file_head(plane_mesh_file)
       call set_parameters_4_FFT(num_pe, ist, ied, iint)
 !
 !

@@ -11,6 +11,7 @@
 !
       use m_machine_parameter
       use m_read_control_elements
+      use t_control_elements
       use skip_comment_f
 !
       implicit    none
@@ -18,8 +19,12 @@
       integer (kind = kint) :: control_file_code = 11
       character (len = kchara) :: control_file_name='ctl_correlate'
 !
-      character(len = kchara) :: cor_mesh_head_ctl = "mesh/in"
-      character(len = kchara) :: ref_mesh_head_ctl = "mesh_ref/in"
+      type(read_character_item), save :: cor_mesh_head_ctl
+      type(read_character_item), save :: cor_mesh_fmt_ctl
+!
+      type(read_character_item), save :: ref_mesh_head_ctl
+      type(read_character_item), save :: ref_mesh_fmt_ctl
+!
       character(len = kchara) :: cor_udt_head_ctl = "field/out"
       character(len = kchara) :: ref_udt_head_ctl = "field_ref/out"
 !
@@ -46,22 +51,24 @@
       character(len=kchara), parameter                                  &
      &         :: hd_mesh_head_ctl =     'correlated_mesh_header'
       character(len=kchara), parameter                                  &
+     &         :: hd_mesh_fmt_ctl =      'correlated_mesh_format'
+      character(len=kchara), parameter                                  &
      &         :: hd_ref_mesh_head_ctl = 'refered_mesh_header'
+      character(len=kchara), parameter                                  &
+     &         :: hd_ref_mesh_fmt_ctl = 'refered_mesh_format'
       character(len=kchara), parameter                                  &
      &         :: hd_udt_head_ctl =     'correlated_udt_header'
       character(len=kchara), parameter                                  &
      &         :: hd_ref_udt_head_ctl = 'refered_udt_header'
 !
-      integer (kind=kint) :: i_mesh_head_ctl =      0
-      integer (kind=kint) :: i_ref_mesh_head_ctl =  0
       integer (kind=kint) :: i_udt_head_ctl =       0
       integer (kind=kint) :: i_ref_udt_head_ctl =   0
 !
 !
       private :: hd_cor_plane_ctl, i_cor_plane_ctl
       private :: hd_hard, hd_ref_plane_mesh_ctl
-      private :: i_hard
-      private :: hd_mesh_head_ctl, hd_ref_mesh_head_ctl
+      private :: i_hard, hd_ref_mesh_head_ctl, hd_ref_mesh_fmt_ctl
+      private :: hd_mesh_head_ctl, hd_mesh_fmt_ctl
       private :: hd_udt_head_ctl,  hd_ref_udt_head_ctl
       private :: hd_model, hd_control, i_model, i_control
 !
@@ -133,10 +140,12 @@
         call find_control_end_flag(hd_hard, i_hard)
         if(i_hard .gt. 0) exit
 !
-        call read_character_ctl_item(hd_mesh_head_ctl,                  &
-     &        i_mesh_head_ctl, cor_mesh_head_ctl)
-        call read_character_ctl_item(hd_ref_mesh_head_ctl,              &
-     &        i_ref_mesh_head_ctl, ref_mesh_head_ctl)
+        call read_chara_ctl_type(hd_mesh_head_ctl, cor_mesh_head_ctl)
+        call read_chara_ctl_type(hd_mesh_fmt_ctl, cor_mesh_fmt_ctl)
+        call read_chara_ctl_type                                        &
+     &     (hd_ref_mesh_head_ctl, ref_mesh_head_ctl)
+        call read_chara_ctl_type(hd_ref_mesh_fmt_ctl, ref_mesh_fmt_ctl)
+!
         call read_character_ctl_item(hd_udt_head_ctl,                   &
      &        i_udt_head_ctl, cor_udt_head_ctl)
         call read_character_ctl_item(hd_ref_udt_head_ctl,               &

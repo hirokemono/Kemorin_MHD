@@ -62,14 +62,15 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_sph_trans'
       call s_set_ctl_data_4_sph_trans                                   &
-     &   (ucd_SPH_TRNS, rj_fld_trans, d_gauss_trans)
+     &   (mesh_file_STR, ucd_SPH_TRNS, rj_fld_trans, d_gauss_trans)
       call set_ctl_data_4_pick_zm
 !
 !  ------    set spectr grids
       if (iflag_debug.gt.0) write(*,*) 'load_para_SPH_and_FEM_mesh'
       call load_para_SPH_and_FEM_mesh(sph_mesh_trans%sph,               &
      &    sph_mesh_trans%sph_comms, sph_mesh_trans%sph_grps,            &
-     &    femmesh_STR%mesh, femmesh_STR%group, elemesh_STR, mesh1_file)
+     &    femmesh_STR%mesh, femmesh_STR%group, elemesh_STR,             &
+     &    mesh_file_STR)
 !
 !    Initialize FEM grid
       if (iflag_debug.gt.0) write(*,*) 'FEM_initialize_back_trans'

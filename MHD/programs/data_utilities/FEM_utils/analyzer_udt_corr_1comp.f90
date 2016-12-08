@@ -21,7 +21,6 @@
       use t_layering_ele_list
       use t_work_layer_correlate
       use m_FEM_utils
-      use m_read_mesh_data
 !
       use transfer_correlate_field
 !
@@ -70,11 +69,10 @@
       call init_mesh_group_type(femmesh_p_FUT%group)
       call init_element_mesh_type(elemesh_FUT)
 !
-      if (iflag_debug.eq.1) write(*,*) 's_input_control_corr_udt'
       call s_input_control_corr_udt                                     &
-     &   (udt_param_FUTIL, field_FUTIL, ucd_FUTIL)
+     &   (mesh_file_FUTIL, udt_param_FUTIL, field_FUTIL, ucd_FUTIL)
       if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh_p'
-      call mpi_input_mesh_p(mesh1_file, femmesh_p_FUT,                  &
+      call mpi_input_mesh_p(mesh_file_FUTIL, femmesh_p_FUT,             &
      &    elemesh_FUT%surf%nnod_4_surf,                                 &
      &    elemesh_FUT%edge%nnod_4_edge)
 !

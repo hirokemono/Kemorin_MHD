@@ -13,7 +13,6 @@
       use m_file_format_switch
       use m_geometry_data_4_merge
       use m_2nd_geometry_4_merge
-      use m_read_mesh_data
       use m_size_4_plane
       use m_set_new_spectr
       use m_spectr_4_ispack
@@ -38,7 +37,9 @@
 !
        implicit none
 !
+      type(field_IO_params), save ::  plane_mesh_file
       type(ucd_data) :: fft_ucd
+!
       integer(kind=kint ) :: ist, ied, iint
       integer(kind=kint ) ::  istep, isig, ip
 !
@@ -71,10 +72,10 @@
       write(*,*) 'read_control_data_fft_plane'
       call read_control_data_fft_plane
 !
-      call s_set_plane_spectr_file_head(mesh1_file)
+      call s_set_plane_spectr_file_head(plane_mesh_file)
       call set_parameters_4_FFT(num_pe, ist, ied, iint)
       call set_parameters_data_by_spec(num_pe, kx_org, ky_org, iz_org,  &
-     &                                 fft_ucd)
+     &                                 plane_mesh_file, fft_ucd)
       call s_set_numnod_4_plane
 !
       call allocate_z_compliment_info(nz_all)
@@ -92,8 +93,8 @@
 !
 !   read mesh data for initial values
 !
-      mesh1_file%iflag_format = id_ascii_file_fmt
-      call set_merged_mesh_and_group(mesh1_file)
+      plane_mesh_file%iflag_format = id_ascii_file_fmt
+      call set_merged_mesh_and_group(plane_mesh_file)
 !
       allocate( subdomains_2(num_pe2) )
 !

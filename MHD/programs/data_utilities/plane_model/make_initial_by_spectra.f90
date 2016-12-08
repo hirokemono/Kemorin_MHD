@@ -14,7 +14,6 @@
       use m_file_format_switch
       use m_phys_labels
       use m_geometry_data_4_merge
-      use m_read_mesh_data
       use m_size_4_plane
       use m_setting_4_ini
       use m_set_new_spectr
@@ -34,6 +33,8 @@
 !
       implicit    none
 !
+!
+      type(field_IO_params), save ::  plane_mesh_file
 !
       integer(kind=kint ) ::  istep_udt, n_comp
 !
@@ -75,10 +76,10 @@
       write(*,*) 'read_control_data_fft_plane'
       call read_control_data_fft_plane
 !
-      call s_set_plane_spectr_file_head(mesh1_file)
+      call s_set_plane_spectr_file_head(plane_mesh_file)
       call set_parameters_rst_by_spec(num_pe, ist, ied,                 &
      &          ifactor_step, ifactor_rst, dt_init, t_init,             &
-     &          kx_org, ky_org, iz_org)
+     &          kx_org, ky_org, iz_org, plane_mesh_file)
 !
 !     read outline of mesh
 !
@@ -105,8 +106,8 @@
 !
 !   read mesh data for initial values
 !
-      mesh1_file%iflag_format = id_ascii_file_fmt
-      call set_merged_mesh_and_group(mesh1_file)
+      plane_mesh_file%iflag_format = id_ascii_file_fmt
+      call set_merged_mesh_and_group(plane_mesh_file)
 !
       write(*,*) 'allocate_rst_by_plane_sp'
       call allocate_rst_by_plane_sp(merge_tbl%nnod_max,                 &

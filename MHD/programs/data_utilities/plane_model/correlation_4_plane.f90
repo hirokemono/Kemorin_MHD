@@ -14,7 +14,6 @@
       use m_geometry_data_4_merge
       use m_2nd_geometry_4_merge
       use m_control_plane_correlate
-      use m_read_mesh_data
 !
       use t_phys_data
       use t_ucd_data
@@ -70,13 +69,9 @@
       call s_set_plane_size_correlate(num_pe, num_pe2)
 !
       write(*,*) 'set_merged_node_and_element'
-      call copy_mesh_format_and_prefix                                  &
-     &   (cor_mesh_header, id_cor_mesh_fmt, mesh1_file)
-      call set_merged_node_and_element(mesh1_file)
+      call set_merged_node_and_element(cor_mesh_file)
       write(*,*) 's_set_2nd_geometry_4_serial'
-      call copy_mesh_format_and_prefix                                  &
-     &   (ref_mesh_header, id_ref_mesh_fmt, mesh1_file)
-      call s_set_2nd_geometry_4_serial(mesh1_file)
+      call s_set_2nd_geometry_4_serial(ref_mesh_file)
 !
       call s_set_numnod_4_plane
 !
