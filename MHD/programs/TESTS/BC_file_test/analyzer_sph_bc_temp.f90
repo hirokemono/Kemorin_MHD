@@ -45,7 +45,7 @@
       call read_control_4_bc_temp
 !
       if (iflag_debug.gt.0) write(*,*) 'set_ctl_params_sph_bc_temp'
-      call set_ctl_params_sph_bc_temp
+      call set_ctl_params_sph_bc_temp(mesh1_file)
 !
 !  --  read geometry
 !

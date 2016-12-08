@@ -88,7 +88,7 @@
 !
       subroutine set_control_mesh_def(mesh_file)
 !
-      use m_read_mesh_data
+      use m_default_file_prefix
       use m_file_format_switch
       use t_file_IO_parameter
 !

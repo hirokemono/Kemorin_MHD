@@ -4,12 +4,13 @@
 !     Written by H. Matsui on July, 2006
 !
 !      subroutine set_ctl_params_gen_filter(FEM_elen)
-!      subroutine set_file_heads_3d_comm_filter
+!      subroutine set_file_heads_3d_comm_filter(mesh_file)
 !
       module set_ctl_gen_filter
 !
       use m_precision
       use m_machine_parameter
+      use t_file_IO_parameter
       use m_ctl_data_4_platforms
       use m_ctl_data_gen_filter
       use m_ctl_data_gen_3d_filter
@@ -25,7 +26,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_params_gen_filter(FEM_elen)
+      subroutine set_ctl_params_gen_filter(mesh_file, FEM_elen)
 !
       use calypso_mpi
       use m_error_IDs
@@ -37,12 +38,13 @@
 !
       use skip_comment_f
 !
+      type(field_IO_params), intent(inout) :: mesh_file
       type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
       integer(kind = kint) :: i
 !
 !
-      call set_file_heads_3d_comm_filter
+      call set_file_heads_3d_comm_filter(mesh_file)
 !
       np_smp = 1
       if(num_smp_ctl%iflag .gt. 0) np_smp = num_smp_ctl%intvalue
@@ -329,20 +331,18 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_file_heads_3d_comm_filter
+      subroutine set_file_heads_3d_comm_filter(mesh_file)
 !
-      use m_read_mesh_data
       use m_file_format_switch
       use m_filter_file_names
+      use set_control_platform_data
+!
+      type(field_IO_params), intent(inout) :: mesh_file
 !
 !
-      if (mesh_file_prefix%iflag .ne. 0) then
-        mesh1_file%file_prefix = mesh_file_prefix%charavalue
-      else
-        mesh1_file%file_prefix = def_mesh_file_head
-      end if
+      call set_control_mesh_def(mesh_file)
       if (iflag_debug.gt.0) write(*,*)                                  &
-     &                'mesh_file_head ', mesh1_file%file_prefix
+     &                'mesh_file_head ', mesh_file%file_prefix
 !
       if (filter_head_ctl%iflag .ne. 0) then
         filter_3d_head = filter_head_ctl%charavalue
@@ -371,9 +371,6 @@
       omitted_ratio = omitted_ratio_ctl
 !
 !   set data format
-!
-      call choose_file_format                                           &
-     &   (mesh_file_fmt_ctl, mesh1_file%iflag_format)
 !
       call choose_file_format(filter_3d_format, ifmt_3d_filter)
       call choose_file_format(filter_elen_format, ifmt_filter_elen)

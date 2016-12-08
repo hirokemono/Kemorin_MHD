@@ -84,7 +84,8 @@
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_MHD'
       call read_control_4_fem_MHD
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_FEM_MHD'
-      call set_control_4_FEM_MHD(FEM_udt_org_param, nod_fld)
+      call set_control_4_FEM_MHD                                        &
+     &   (mesh1_file, FEM_udt_org_param, nod_fld)
 !
 !  --  load FEM mesh data
       call mpi_input_mesh(mesh1_file, mesh, group,                      &
@@ -134,7 +135,8 @@
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_snap'
       call read_control_4_fem_snap
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_FEM_MHD'
-      call set_control_4_FEM_MHD(FEM_udt_org_param, nod_fld)
+      call set_control_4_FEM_MHD                                        &
+     &   (mesh1_file, FEM_udt_org_param, nod_fld)
 !
 !  --  load FEM mesh data
       call mpi_input_mesh(mesh1_file, mesh, group,                      &

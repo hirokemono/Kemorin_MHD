@@ -48,7 +48,7 @@
       call read_control_4_MG_test
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_test_MG'
-      call set_ctl_test_MG
+      call set_ctl_test_MG(mesh1_file)
 !
 !  --  read geometry
 !

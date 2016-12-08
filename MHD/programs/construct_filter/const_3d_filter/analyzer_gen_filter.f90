@@ -95,7 +95,7 @@
       call read_control_4_gen_filter
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_gen_filter'
-      call set_ctl_params_gen_filter(FEM_elen_f)
+      call set_ctl_params_gen_filter(mesh1_file, FEM_elen_f)
 !
 !  --  read geometry
 !

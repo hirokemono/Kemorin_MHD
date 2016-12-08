@@ -28,7 +28,7 @@
       use m_geometry_data_4_merge
       use m_ctl_data_4_cub_kemo
       use m_time_data_IO
-      use m_read_mesh_data
+      use m_cube_files_data
       use set_ctl_data_plane_mesh
       use set_parallel_file_name
       use mesh_IO_select
@@ -39,6 +39,7 @@
       use t_mesh_data
       use t_geometry_data
       use t_field_data_IO
+      use t_file_IO_parameter
 !
       implicit none
 !
@@ -47,6 +48,7 @@
       type(node_data) :: node_plane
       type(field_IO) :: plane_fst_IO
       type(mesh_geometry) :: mesh_IO_p
+      type(field_IO_params) ::  cube_mesh_file
 !
       character(len=kchara), parameter                                  &
      &      :: org_rst_f_header = 'restart/rst'
@@ -80,9 +82,9 @@
 !    read mesh file
 !
         call copy_mesh_format_and_prefix                                &
-     &     (def_mesh_file_head, id_ascii_file_fmt, mesh1_file)
+     &     (mesh_file_header, id_ascii_file_fmt, cube_mesh_file)
         call sel_read_geometry_size                                     &
-     &     (mesh1_file, id_rank, mesh_IO_p, ierr)
+     &     (cube_mesh_file, id_rank, mesh_IO_p, ierr)
         if(ierr .gt. 0) stop 'Mesh is wrong!!'
 !
         call copy_node_geometry_types(mesh_IO_p%node, node_plane)

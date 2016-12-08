@@ -44,7 +44,7 @@
       call read_control_4_sort_filter
 !
       if (iflag_debug.eq.1) write(*,*) 'set_file_heads_3d_comm_filter'
-      call set_file_heads_3d_comm_filter
+      call set_file_heads_3d_comm_filter(mesh1_file)
       call set_numdomain_3d_comm_filter(nprocs)
 !
 !

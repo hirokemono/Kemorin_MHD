@@ -8,13 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine set_control_SGS_SPH_MHD                              &
-!!     &         (sph_gen, rj_fld,  sph_file_param, MHD_org_files,      &
-!!     &          sph_fst_IO, pwr, sph_filters)
-!!      subroutine set_control_4_SPH_MHD                                &
-!!     &         (sph_gen, rj_fld, sph_file_param, MHD_org_files,       &
+!!     &         (sph_gen, rj_fld, mesh_file, sph_file_param,           &
+!!     &          MHD_org_files, sph_fst_IO, pwr, sph_filters)
+!!      subroutine set_control_4_SPH_MHD(sph_gen, rj_fld,               &
+!!     &          mesh_file, sph_file_param, MHD_org_files,             &
 !!     &          sph_fst_IO, pwr)
 !!        type(sph_grids), intent(inout) :: sph_gen
 !!        type(phys_data), intent(inout) :: rj_fld
+!!        type(field_IO_params), intent(inout) :: mesh_file
 !!        type(field_IO_params), intent(inout) :: sph_file_param
 !!        type(file_params_4_sph_mhd), intent(inout) :: MHD_org_files
 !!        type(field_IO), intent(inout) :: sph_fst_IO
@@ -29,7 +30,6 @@
       use m_machine_parameter
       use calypso_mpi
 !
-      use m_read_mesh_data
       use t_file_IO_parameter
       use t_field_data_IO
       use t_SPH_MHD_file_parameters
@@ -43,8 +43,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_control_SGS_SPH_MHD                                &
-     &         (sph_gen, rj_fld,  sph_file_param, MHD_org_files,        &
-     &          sph_fst_IO, pwr, sph_filters)
+     &         (sph_gen, rj_fld, mesh_file, sph_file_param,             &
+     &          MHD_org_files, sph_fst_IO, pwr, sph_filters)
 !
       use m_spheric_global_ranks
       use m_ucd_data
@@ -60,6 +60,7 @@
 !
       type(sph_grids), intent(inout) :: sph_gen
       type(phys_data), intent(inout) :: rj_fld
+      type(field_IO_params), intent(inout) :: mesh_file
       type(field_IO_params), intent(inout) :: sph_file_param
       type(file_params_4_sph_mhd), intent(inout) :: MHD_org_files
       type(field_IO), intent(inout) :: sph_fst_IO
@@ -73,15 +74,15 @@
       call set_control_SGS_model
       call set_control_SPH_SGS(sph_filters)
 !
-      call set_control_4_SPH_MHD(sph_gen, rj_fld, sph_file_param,       &
-     &    MHD_org_files, sph_fst_IO, pwr)
+      call set_control_4_SPH_MHD(sph_gen, rj_fld,                       &
+     &    mesh_file, sph_file_param, MHD_org_files, sph_fst_IO, pwr)
 !
       end subroutine set_control_SGS_SPH_MHD
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_4_SPH_MHD                                  &
-     &         (sph_gen, rj_fld, sph_file_param, MHD_org_files,         &
+      subroutine set_control_4_SPH_MHD(sph_gen, rj_fld,                 &
+     &          mesh_file, sph_file_param, MHD_org_files,               &
      &          sph_fst_IO, pwr)
 !
       use m_spheric_global_ranks
@@ -115,6 +116,7 @@
 !
       type(sph_grids), intent(inout) :: sph_gen
       type(phys_data), intent(inout) :: rj_fld
+      type(field_IO_params), intent(inout) :: mesh_file
       type(field_IO_params), intent(inout) :: sph_file_param
       type(file_params_4_sph_mhd), intent(inout) :: MHD_org_files
       type(field_IO), intent(inout) :: sph_fst_IO
@@ -128,9 +130,9 @@
       call turn_off_debug_flag_by_ctl(my_rank)
       call check_control_num_domains
       call set_control_smp_def(my_rank)
-      call set_control_mesh_def(mesh1_file)
+      call set_control_mesh_def(mesh_file)
       call set_FEM_mesh_switch_4_SPH(iflag_output_mesh)
-      call set_control_sph_mesh(mesh1_file, sph_file_param)
+      call set_control_sph_mesh(mesh_file, sph_file_param)
       call set_control_restart_file_def(sph_fst_IO)
       call set_control_MHD_field_file
       call set_control_org_sph_files(MHD_org_files)
