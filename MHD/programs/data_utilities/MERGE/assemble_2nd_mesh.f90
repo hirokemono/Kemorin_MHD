@@ -12,7 +12,6 @@
       use calypso_mpi
 !
       use m_constants
-      use m_read_mesh_data
       use m_geometry_data_4_merge
       use m_control_data_4_merge
       use m_control_param_merge
@@ -58,12 +57,9 @@
 !
 !  read mesh information
 !
-      mesh1_file%iflag_format = merge_org_mesh_file%iflag_format
-      call set_merged_mesh_and_group(mesh1_file)
+      call set_merged_mesh_and_group(merge_org_mesh_file)
 !
-      call copy_mesh_format_and_prefix                                  &
-     &   (new_mesh_head, inew_mesh_file_fmt, mesh1_file)
-      call s_set_2nd_geometry_4_serial(mesh1_file)
+      call s_set_2nd_geometry_4_serial(merged_mesh_file)
 !
 !   read field name and number of components
 !

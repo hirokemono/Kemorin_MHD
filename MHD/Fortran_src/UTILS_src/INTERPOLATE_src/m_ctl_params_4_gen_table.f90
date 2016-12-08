@@ -18,7 +18,8 @@
 !
       type(field_IO_params), save :: itp_org_mesh_file
 !
-      character(len = kchara) :: dest_mesh_head =  "mesh_coase/in"
+      type(field_IO_params), save :: itp_dest_mesh_file
+!
       character(len = kchara) :: table_file_head = "mesh/table"
       character(len = kchara)                                           &
      &             :: sgl_table_file_head = "single_itp_table"
@@ -29,8 +30,6 @@
       character(len = kchara) :: itp_node_file_head = "node_test_itp"
       character(len = kchara) :: itp_rst_file_head = "rst_new/rst"
       character(len = kchara) :: itp_udt_file_head = "field_new/out"
-!
-      integer(kind = kint) :: ifmt_itp_mesh_file = 0
 !
       integer(kind = kint) :: ifmt_org_rst_file =  0
       integer(kind = kint) :: ifmt_itp_rst_file =  0
@@ -95,6 +94,7 @@
       use m_file_format_switch
       use itp_table_IO_select_4_zlib
       use set_control_platform_data
+      use set_ctl_params_2nd_files
       use skip_comment_f
 !
 !
@@ -103,16 +103,11 @@
 !
       call set_control_mesh_def(itp_org_mesh_file)
 !
-      if (new_mesh_prefix%iflag .ne. 0) then
-        dest_mesh_head = new_mesh_prefix%charavalue
-      end if
-!
       if (table_head_ctl%iflag .ne. 0) then
         table_file_head = table_head_ctl%charavalue
       end if
 !
-      call choose_para_file_format                                      &
-     &   (new_mesh_file_fmt_ctl, ifmt_itp_mesh_file)
+      call set_control_new_mesh_file_def(itp_dest_mesh_file)
       call choose_file_format                                           &
      &   (fmt_itp_table_file_ctl, ifmt_itp_table_file)
 !
@@ -120,7 +115,8 @@
         write(*,*) 'np_smp', np_smp, np_smp
         write(*,*) 'org_mesh_head: ',                                   &
      &            trim(itp_org_mesh_file%file_prefix)
-        write(*,*) 'dest_mesh_head: ',  trim(dest_mesh_head)
+        write(*,*) 'dest_mesh_head: ',                                  &
+     &            trim(itp_dest_mesh_file%file_prefix)
         write(*,*) 'table_file_head: ', trim(table_file_head)
       end if
 !

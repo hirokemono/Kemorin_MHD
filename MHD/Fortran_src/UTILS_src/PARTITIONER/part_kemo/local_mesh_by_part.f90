@@ -27,7 +27,6 @@
       use t_group_data
       use m_partitioner_comm_table
       use m_ctl_param_partitioner
-      use m_read_mesh_data
       use set_parallel_file_name
 !
       use m_precision
@@ -93,9 +92,7 @@
         irank_subdomain = ip-1
         if(mod(irank_subdomain,nprocs) .ne. my_rank) cycle
 !
-        call copy_mesh_format_and_prefix                                &
-     &     (local_file_header, iflag_para_mesh_file_fmt, mesh1_file)
-        call output_mesh(mesh1_file, irank_subdomain,                   &
+        call output_mesh(distribute_mesh_file, irank_subdomain,         &
      &      para_fem(ip)%mesh, para_fem(ip)%group)
         call dealloc_mesh_infos(para_fem(ip)%mesh, para_fem(ip)%group)
       end do

@@ -15,7 +15,6 @@
       use m_precision
 !
       use m_constants
-      use m_read_mesh_data
       use m_geometry_data_4_merge
       use m_control_data_4_merge
       use m_control_param_merge
@@ -53,8 +52,7 @@
 !
 !  read mesh information
 !
-      mesh1_file%iflag_format = merge_org_mesh_file%iflag_format
-      call set_merged_mesh_and_group(mesh1_file)
+      call set_merged_mesh_and_group(merge_org_mesh_file)
 !
 !   read field name and number of components
 !

@@ -91,20 +91,12 @@
       use m_read_mesh_data
       use m_file_format_switch
       use t_file_IO_parameter
-      use skip_comment_f
 !
       type(field_IO_params), intent(inout) :: mesh_file
 !
 !
-      if (mesh_file_prefix%iflag .gt. 0) then
-        mesh_file%file_prefix = mesh_file_prefix%charavalue
-      else
-        mesh_file%file_prefix = def_mesh_file_head
-      end if
-!
-!   set data format
-      call choose_para_file_format                                      &
-     &   (mesh_file_fmt_ctl, mesh_file%iflag_format)
+      call set_parallel_file_ctl_params(def_mesh_file_head,             &
+     &    mesh_file_prefix, mesh_file_fmt_ctl, mesh_file)
 !
       end subroutine set_control_mesh_def
 !
@@ -183,5 +175,62 @@
       end subroutine set_control_restart_file_def
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine set_file_control_params(default_prefix,                &
+     &          file_prefix_ctl, file_format_ctl,  file_params)
+!
+      use t_file_IO_parameter
+      use t_control_elements
+      use m_file_format_switch
+!
+      character(len = kchara), intent(in) :: default_prefix
+      type(read_character_item), intent(in) :: file_prefix_ctl
+      type(read_character_item), intent(in) :: file_format_ctl
+!
+      type(field_IO_params), intent(inout) :: file_params
+!
+!
+      file_params%iflag_IO = file_prefix_ctl%iflag
+      if(file_params%iflag_IO .gt. 0) then
+        file_params%file_prefix = file_prefix_ctl%charavalue
+      else
+        file_params%file_prefix = default_prefix
+      end if
+!
+      call choose_file_format                                           &
+     &   (file_format_ctl, file_params%iflag_format)
+!
+      end subroutine set_file_control_params
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_parallel_file_ctl_params(default_prefix,           &
+     &          file_prefix_ctl, file_format_ctl,  file_params)
+!
+      use t_file_IO_parameter
+      use t_control_elements
+      use m_file_format_switch
+!
+      character(len = kchara), intent(in) :: default_prefix
+      type(read_character_item), intent(in) :: file_prefix_ctl
+      type(read_character_item), intent(in) :: file_format_ctl
+!
+      type(field_IO_params), intent(inout) :: file_params
+!
+!
+      file_params%iflag_IO = file_prefix_ctl%iflag
+      if(file_params%iflag_IO .gt. 0) then
+        file_params%file_prefix = file_prefix_ctl%charavalue
+      else
+        file_params%file_prefix = default_prefix
+      end if
+!
+      call choose_para_file_format                                      &
+     &   (file_format_ctl, file_params%iflag_format)
+!
+      end subroutine set_parallel_file_ctl_params
+!
+! ----------------------------------------------------------------------
 !
       end module set_control_platform_data

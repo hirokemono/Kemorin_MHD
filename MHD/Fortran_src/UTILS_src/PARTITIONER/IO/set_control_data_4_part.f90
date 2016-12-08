@@ -30,34 +30,19 @@
       use m_metis_IO
       use m_file_format_switch
       use itp_table_IO_select_4_zlib
+      use set_control_platform_data
+      use set_ctl_params_2nd_files
       use skip_comment_f
 !
       integer(kind = kint) :: i
 !
 !
-      if (mesh_file_prefix%iflag .gt. 0) then
-        local_file_header = mesh_file_prefix%charavalue
-      end if
-!
-      if (elem_file_prefix%iflag .gt. 0) then
-        local_ele_header = elem_file_prefix%charavalue
-      end if
-!
-      if (surf_file_prefix%iflag .gt. 0) then
-        local_surf_header = surf_file_prefix%charavalue
-      end if
-!
-      if (edge_file_prefix%iflag .gt. 0) then
-        local_edge_header = edge_file_prefix%charavalue
-      end if
+      call set_control_mesh_def(distribute_mesh_file)
 !
 !   set local data format
 !
       call choose_file_format                                           &
      &   (org_mesh_file_fmt_ctl, ifmt_single_mesh_fmt)
-      call choose_file_format                                           &
-     &   (mesh_file_fmt_ctl, iflag_para_mesh_file_fmt)
-!
 !
       iflag_memory_conserve = 1
       if(memory_conservation_ctl%iflag .gt. 0                           &
@@ -325,12 +310,10 @@
             write(*,*) 'set interpolate file name'
             stop
           end if
-          if (finer_mesh_head_ctl%iflag .eq. 1) then
-            finer_mesh_file_head = finer_mesh_head_ctl%charavalue
-          else
-            write(*,*) 'set reference mesh file name'
-            stop
-          end if
+!
+          call set_file_control_params(def_finer_mesh,                  &
+      &       finer_mesh_head_ctl, finer_mesh_fmt_ctl, finer_mesh_file)
+!
           call choose_file_format                                       &
      &       (itp_tbl_format_ctl, ifmt_itp_table_file)
         end if

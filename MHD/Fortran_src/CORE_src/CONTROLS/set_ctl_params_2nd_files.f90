@@ -12,6 +12,12 @@
 !!      subroutine set_control_org_udt_file_def(udt_file_param)
 !!
 !!      subroutine set_control_new_mesh_file_def(mesh_file)
+!!
+!!      subroutine set_file_control_params(default_prefix,              &
+!!     &          file_prefix_ctl, file_format_ctl, file_params)
+!!        type(read_character_item), intent(in) :: file_prefix_ctl
+!!        type(read_character_item), intent(in) :: file_format_ctl
+!!        type(field_IO_params), intent(inout) :: file_params
 !!@endverbatim
 !
       module set_ctl_params_2nd_files
@@ -19,6 +25,7 @@
       use m_precision
       use m_constants
       use t_file_IO_parameter
+      use set_control_platform_data
 !
       implicit  none
 !
@@ -35,8 +42,6 @@
 !
       private :: def_org_sph_rj_head
       private :: def_org_ucd_header, def_org_rst_header
-!
-      private :: set_file_control_params
 !
 ! ----------------------------------------------------------------------
 !
@@ -104,33 +109,5 @@
       end subroutine set_control_new_mesh_file_def
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine set_file_control_params(default_prefix,                &
-     &          file_prefix_ctl, file_format_ctl,  file_params)
-!
-      use t_control_elements
-      use m_file_format_switch
-!
-      character(len = kchara), intent(in) :: default_prefix
-      type(read_character_item), intent(in) :: file_prefix_ctl
-      type(read_character_item), intent(in) :: file_format_ctl
-!
-      type(field_IO_params), intent(inout) :: file_params
-!
-!
-      file_params%iflag_IO = file_prefix_ctl%iflag
-      if(file_params%iflag_IO .gt. 0) then
-        file_params%file_prefix = file_prefix_ctl%charavalue
-      else
-        file_params%file_prefix = default_prefix
-      end if
-!
-      call choose_file_format                                           &
-     &   (file_format_ctl, file_params%iflag_format)
-!
-      end subroutine set_file_control_params
-!
-! ----------------------------------------------------------------------
 !
       end module set_ctl_params_2nd_files

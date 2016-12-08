@@ -10,7 +10,6 @@
       use m_precision
       use m_constants
 !
-      use m_read_mesh_data
       use t_mesh_data
       use t_merged_geometry_data
 !
@@ -38,10 +37,7 @@
 !
       call copy_merge_mesh_2_IO                                         &
      &   (merge_tbl, merged, merged_grp, fem_IO_m)
-!
-      call copy_mesh_format_and_prefix                                  &
-     &   (new_mesh_head, inew_mesh_file_fmt, mesh1_file)
-      call sel_write_mesh_file(mesh1_file, izero, fem_IO_m)
+      call sel_write_mesh_file(merged_mesh_file, izero, fem_IO_m)
 !
       end subroutine s_write_merged_mesh
 !

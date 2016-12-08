@@ -43,7 +43,6 @@
 !
       use m_ctl_params_4_gen_table
       use m_2nd_pallalel_vector
-      use m_read_mesh_data
 !
       use input_control_gen_table
       use const_mesh_information
@@ -65,12 +64,8 @@
 !
 !     ----- construct mesh informations for target mesh
 !
-      if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh: ',              &
-     &    trim(dest_mesh_head)
-      call copy_mesh_format_and_prefix                                  &
-     &   (dest_mesh_head, ifmt_itp_mesh_file, mesh1_file)
       call mpi_input_mesh                                               &
-     &   (mesh1_file, org_femmesh%mesh, org_femmesh%group,              &
+     &   (itp_dest_mesh_file, org_femmesh%mesh, org_femmesh%group,      &
      &    org_ele_mesh%surf%nnod_4_surf, org_ele_mesh%edge%nnod_4_edge)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'

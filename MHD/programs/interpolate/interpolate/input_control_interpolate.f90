@@ -83,9 +83,7 @@
 !
 !
       if (my_rank .lt. ndomain_dest) then
-        call copy_mesh_format_and_prefix                                &
-     &     (dest_mesh_head, ifmt_itp_mesh_file, mesh1_file)
-        call input_mesh(mesh1_file, my_rank,                            &
+        call input_mesh(itp_dest_mesh_file, my_rank,                    &
      &      new_femmesh%mesh, new_femmesh%group,                        &
      &      new_ele_mesh%surf%nnod_4_surf,                              &
      &      new_ele_mesh%edge%nnod_4_edge, ierr)

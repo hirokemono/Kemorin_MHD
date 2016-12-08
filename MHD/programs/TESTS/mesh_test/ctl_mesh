@@ -3,8 +3,5 @@ begin mesh_test
     num_subdomain_ctl           2
     num_smp_ctl                 1
     mesh_file_prefix         'mesh/in'
-    elem_file_prefix         'element'
-    surf_file_prefix         'surface'
-    edge_file_prefix         'edge'
   end data_files_def
 end mesh_test

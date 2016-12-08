@@ -3,9 +3,14 @@
 !
 !      Written by H. Matsui on May, 2008
 !
-!      subroutine  local_newdomain_filter_para(newmesh)
-!      subroutine local_newdomain_filter_sngl                           &
-!     &          (org_node, org_ele, newmesh)
+!!      subroutine local_newdomain_filter_para                          &
+!!     &         (mesh_file, org_node, org_ele, newmesh)
+!!      subroutine local_newdomain_filter_sngl                          &
+!!     &         (mesh_file, org_node, org_ele, newmesh)
+!!       type(field_IO_params), intent(in) :: mesh_file
+!!       type(node_data),    intent(inout) :: org_node
+!!       type(element_data), intent(inout) :: org_ele
+!!       type(mesh_geometry), intent(inout) :: newmesh
 !
       module local_newdomain_filter
 !
@@ -17,6 +22,7 @@
       use set_filters_4_new_domains
       use const_new_mesh_filter
 !
+      use t_file_IO_parameter
       use t_mesh_data
       use t_geometry_data
 !
@@ -31,7 +37,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine local_newdomain_filter_para                            &
-     &         (org_node, org_ele, newmesh)
+     &         (mesh_file, org_node, org_ele, newmesh)
 !
       use m_2nd_pallalel_vector
 !
@@ -39,6 +45,7 @@
       use generate_comm_tables
       use bcast_nodes_for_trans
 !
+      type(field_IO_params), intent(in) :: mesh_file
       type(node_data),    intent(inout) :: org_node
       type(element_data), intent(inout) :: org_ele
       type(mesh_geometry), intent(inout) :: newmesh
@@ -57,7 +64,7 @@
 !
         write(*,*) 'set_inod_4_newdomain_filter'
         call set_inod_4_newdomain_filter                                &
-     &     (org_node, org_ele, newmesh%node, ierr)
+     &     (mesh_file, org_node, org_ele, newmesh%node, ierr)
         if(ierr .gt. 0) then
           call calypso_mpi_abort(ierr, 'Fileter is wrong!!')
         end if
@@ -90,11 +97,12 @@
 !   --------------------------------------------------------------------
 !
       subroutine local_newdomain_filter_sngl                            &
-     &          (org_node, org_ele, newmesh)
+     &         (mesh_file, org_node, org_ele, newmesh)
 !
       use set_inod_newdomain_filter
       use generate_comm_tables
 !
+      type(field_IO_params), intent(in) :: mesh_file
       type(node_data),    intent(inout) :: org_node
       type(element_data), intent(inout) :: org_ele
       type(mesh_geometry), intent(inout) :: newmesh
@@ -110,7 +118,7 @@
 !
 !      write(*,*) 'set_inod_4_newdomain_filter'
       call set_inod_4_newdomain_filter                                  &
-     &   (org_node, org_ele, newmesh%node, ierr)
+     &   (mesh_file, org_node, org_ele, newmesh%node, ierr)
       if(ierr .gt. 0) then
         call calypso_mpi_abort(ierr, 'Fileter is wrong!!')
       end if

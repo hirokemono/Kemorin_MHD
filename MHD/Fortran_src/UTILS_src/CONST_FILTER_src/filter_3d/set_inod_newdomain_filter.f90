@@ -4,7 +4,8 @@
 !     Written by H. Matsui on May., 2008
 !
 !!      subroutine set_inod_4_newdomain_filter                          &
-!!     &         (org_node, org_ele, new_node, ierr)
+!!     &         (mesh_file, org_node, org_ele, new_node, ierr)
+!!        type(field_IO_params), intent(in) :: mesh_file
 !!        type(node_data),    intent(inout) :: org_node
 !!        type(element_data), intent(inout) :: org_ele
 !!        type(node_data), intent(inout) :: new_node
@@ -19,7 +20,6 @@
       use mesh_IO_select
       use const_newdomain_filter
       use set_filters_4_new_domains
-      use m_read_mesh_data
 !
       implicit none
 !
@@ -30,15 +30,17 @@
 !   --------------------------------------------------------------------
 !
       subroutine set_inod_4_newdomain_filter                            &
-     &         (org_node, org_ele, new_node, ierr)
+     &         (mesh_file, org_node, org_ele, new_node, ierr)
 !
       use t_mesh_data
+      use t_file_IO_parameter
 !
       use m_internal_4_partitioner
       use m_filter_file_names
       use m_field_file_format
       use copy_mesh_structures
 !
+      type(field_IO_params), intent(in) :: mesh_file
       type(node_data),    intent(inout) :: org_node
       type(element_data), intent(inout) :: org_ele
       type(node_data), intent(inout) :: new_node
@@ -60,7 +62,7 @@
         call deallocate_type_neib_id(mesh_IO_f%nod_comm)
 !
         call marking_used_node_4_filtering                              &
-     &     (ip2, ifmt_3d_filter, mesh1_file, org_node, org_ele%numele)
+     &     (ip2, ifmt_3d_filter, mesh_file, org_node, org_ele%numele)
 !
         call set_num_globalnod_4_newdomain(ip2, new_node)
 !

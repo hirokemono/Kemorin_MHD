@@ -4,9 +4,14 @@
 !      Written by H. Matsui on May, 2008
 !
 !!      subroutine filters_4_newdomains_para                            &
-!!     &         (filtering, org_node, org_ele, newmesh)
+!!     &         (mesh_file, filtering, org_node, org_ele, newmesh)
 !!      subroutine filters_4_newdomains_single                          &
-!!     &         (filtering, org_node, org_ele, newmesh)
+!!     &         (mesh_file, filtering, org_node, org_ele, newmesh)
+!!       type(field_IO_params), intent(in) :: mesh_file
+!!       type(filtering_data_type), intent(inout) :: filtering
+!!       type(node_data), intent(inout) :: org_node
+!!       type(element_data), intent(inout) :: org_ele
+!!       type(mesh_geometry), intent(inout) :: newmesh
 !
       module filters_for_newdomains
 !
@@ -17,6 +22,7 @@
       use t_mesh_data
       use t_geometry_data
       use t_filtering_data
+      use t_file_IO_parameter
 !
       use set_filters_4_new_domains
 !
@@ -31,11 +37,12 @@
 !   --------------------------------------------------------------------
 !
       subroutine filters_4_newdomains_para                              &
-     &         (filtering, org_node, org_ele, newmesh)
+     &         (mesh_file, filtering, org_node, org_ele, newmesh)
 !
       use calypso_mpi
       use m_domain_group_4_partition
 !
+      type(field_IO_params), intent(in) :: mesh_file
       type(filtering_data_type), intent(inout) :: filtering
       type(node_data), intent(inout) :: org_node
       type(element_data), intent(inout) :: org_ele
@@ -44,7 +51,7 @@
       integer(kind = kint) :: ierr
 !
 !
-      call filters_4_each_newdomain(my_rank, filtering,                 &
+      call filters_4_each_newdomain(my_rank, mesh_file, filtering,      &
      &    org_node, org_ele, newmesh%node, newmesh%ele, ierr)
       if(ierr .gt. 0) then
         call calypso_mpi_abort(ierr, 'Mesh or filter data is wrong!!')
@@ -57,11 +64,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine filters_4_newdomains_single                            &
-     &         (filtering, org_node, org_ele, newmesh)
+     &         (mesh_file, filtering, org_node, org_ele, newmesh)
 !
       use m_2nd_pallalel_vector
       use m_domain_group_4_partition
 !
+      type(field_IO_params), intent(in) :: mesh_file
       type(filtering_data_type), intent(inout) :: filtering
       type(node_data), intent(inout) :: org_node
       type(element_data), intent(inout) :: org_ele
@@ -72,7 +80,8 @@
 !
       do ip2 = 1, nprocs_2nd
         my_rank_2nd = ip2 - 1
-        call filters_4_each_newdomain(my_rank_2nd, filtering,           &
+        call filters_4_each_newdomain                                   &
+     &     (my_rank_2nd, mesh_file, filtering,                          &
      &      org_node, org_ele, newmesh%node, newmesh%ele, ierr)
         if(ierr .gt. 0) stop 'Mesh or filter data is wrong!!'
       end do
@@ -84,8 +93,9 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine filters_4_each_newdomain(my_rank2, filtering,          &
-     &          org_node, org_ele, new_node, new_ele, ierr)
+      subroutine filters_4_each_newdomain                               &
+     &         (my_rank2, mesh_file, filtering, org_node, org_ele,      &
+     &          new_node, new_ele, ierr)
 !
       use m_ctl_param_newdom_filter
       use m_2nd_pallalel_vector
@@ -95,7 +105,6 @@
       use m_filter_file_names
       use m_filter_coefs
       use m_field_file_format
-      use m_read_mesh_data
       use mesh_IO_select
       use copy_filters_4_sorting
       use const_newdomain_filter
@@ -114,6 +123,7 @@
       use t_filter_file_data
 !
       integer(kind = kint), intent(in) :: my_rank2
+      type(field_IO_params), intent(in) :: mesh_file
 !
       type(node_data), intent(inout) :: org_node
       type(element_data), intent(inout) :: org_ele
@@ -171,7 +181,7 @@
 !
 !        write(*,*) 'trans_filter_4_new_domains'
         call trans_filter_4_new_domains                                 &
-     &     (ip2, ifmt_3d_filter, mesh1_file, org_node, org_ele%numele)
+     &     (ip2, ifmt_3d_filter, mesh_file, org_node, org_ele%numele)
 !        write(*,*) 'reorder_filter_new_domain'
         call reorder_filter_new_domain
 !

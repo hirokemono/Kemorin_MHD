@@ -6,7 +6,6 @@
 !
 !      subroutine set_control_4_merge(ucd)
 !        type(ucd_data), intent(inout) :: ucd
-!      subroutine set_control_4_merged_mesh
 !      subroutine set_control_4_newrst
 !
 !      subroutine set_control_4_newudt
@@ -22,7 +21,9 @@
       integer(kind=kint ), parameter ::  id_merged_ucd = 16
 !
       type(field_IO_params), save :: merge_org_mesh_file
-!merge_org_mesh_file%iflag_format
+!
+      type(field_IO_params), save :: merged_mesh_file
+!merged_mesh_file%iflag_format
 !
       character(len=kchara) :: org_rst_head
       character(len=kchara) :: new_rst_head
@@ -35,7 +36,6 @@
       character(len=kchara), dimension(:), allocatable :: ucd_on_label
 !       setting for merged data
 !
-      character(len=kchara) :: new_mesh_head
       character(len=kchara), parameter                                  &
      &      :: def_newmesh_head = 'mesh_new/in'
       character(len=kchara), parameter                                  &
@@ -72,7 +72,6 @@
       integer(kind=kint ) :: iorg_mesh_file_fmt = 0
       integer(kind=kint ) :: iorg_rst_file_fmt =  0
 !
-      integer(kind=kint ) :: inew_mesh_file_fmt = 0
       integer(kind=kint ) :: inew_rst_file_fmt =  0
 !
       integer(kind=kint ) :: iflag_delete_org = 0
@@ -113,7 +112,6 @@
       use t_ucd_data
 !
       use m_geometry_data_4_merge
-      use m_read_mesh_data
       use m_file_format_switch
       use m_field_file_format
 !
@@ -138,8 +136,7 @@
         stop
       end if
 !
-      call set_control_mesh_def(mesh1_file)
-      merge_org_mesh_file%iflag_format = mesh1_file%iflag_format
+      call set_control_mesh_def(merge_org_mesh_file)
 !
       call set_ucd_file_define(ucd)
 !
@@ -205,26 +202,6 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_merged_mesh
-!
-      use m_ctl_data_4_2nd_data
-      use m_read_mesh_data
-      use m_file_format_switch
-!
-!
-      if (new_mesh_prefix%iflag .gt. 0) then
-        new_mesh_head = new_mesh_prefix%charavalue
-      else
-        new_mesh_head = def_merged_mesh_header
-      end if
-!
-      call choose_file_format                                           &
-     &   (new_mesh_file_fmt_ctl, inew_mesh_file_fmt)
-!
-      end subroutine set_control_4_merged_mesh
-!
-! -----------------------------------------------------------------------
-!
       subroutine set_control_4_newrst
 !
       use m_control_data_4_merge
@@ -279,6 +256,7 @@
       use m_ctl_data_4_2nd_data
       use m_2nd_geometry_4_merge
       use m_file_format_switch
+      use set_ctl_params_2nd_files
       use skip_comment_f
 !
 !
@@ -289,14 +267,7 @@
         stop
       end if
 !
-      if (new_mesh_prefix%iflag .gt. 0) then
-        new_mesh_head = new_mesh_prefix%charavalue
-      else
-        new_mesh_head = def_newmesh_head
-      end if
-!
-      call choose_file_format                                           &
-     &   (new_mesh_file_fmt_ctl, inew_mesh_file_fmt)
+      call set_control_new_mesh_file_def(merged_mesh_file)
 !
       if(del_org_data_ctl%iflag .gt. 0) then
         if(yes_flag(del_org_data_ctl%charavalue)) then

@@ -3,8 +3,8 @@
 !
 !     Written by H. Matsui on July, 2006
 !
-!      subroutine set_ctl_params_interpolation
-!      subroutine set_ctl_4_itp_steps
+!!      subroutine set_ctl_params_interpolation
+!!      subroutine set_ctl_4_itp_steps
 !
       module set_ctl_interpolation
 !
@@ -12,6 +12,8 @@
 !
       use calypso_mpi
       use m_error_IDs
+!
+      use t_file_IO_parameter
 !
       implicit none
 !
@@ -26,7 +28,6 @@
       use m_machine_parameter
       use m_2nd_pallalel_vector
       use m_ctl_params_4_gen_table
-      use m_read_mesh_data
       use m_ctl_data_gen_table
       use m_ctl_data_4_platforms
       use m_ctl_data_4_2nd_data
@@ -40,10 +41,9 @@
       call set_control_smp_def(my_rank)
 !
       call set_control_mesh_def(itp_org_mesh_file)
-      call copy_file_params_type(itp_org_mesh_file, mesh1_file)
 !
       if (new_mesh_prefix%iflag .ne. 0) then
-        dest_mesh_head = new_mesh_prefix%charavalue
+        itp_dest_mesh_file%file_prefix = new_mesh_prefix%charavalue
       end if
 !
       if (table_head_ctl%iflag .ne. 0) then
@@ -58,7 +58,8 @@
         write(*,*) 'np_smp', np_smp, np_smp
         write(*,*) 'org_mesh_head: ',                                   &
      &            trim(itp_org_mesh_file%file_prefix)
-        write(*,*) 'dest_mesh_head: ',  trim(dest_mesh_head)
+        write(*,*) 'dest_mesh_head: ',                                  &
+     &            trim(itp_dest_mesh_file%file_prefix)
         write(*,*) 'table_file_head: ', trim(table_file_head)
       end if
 !
@@ -108,7 +109,7 @@
       end if
 !
       call choose_file_format                                           &
-     &   (new_mesh_file_fmt_ctl, ifmt_itp_mesh_file)
+     &   (new_mesh_file_fmt_ctl, itp_dest_mesh_file%iflag_format)
 !
       call choose_file_format                                           &
      &   (fmt_itp_table_file_ctl, ifmt_itp_table_file)
