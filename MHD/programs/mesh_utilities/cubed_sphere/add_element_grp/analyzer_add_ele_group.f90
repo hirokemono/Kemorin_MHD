@@ -48,8 +48,7 @@
 !
 !  read global mesh
 !
-      mesh1_file%file_prefix = original_mesh_head
-      call mpi_input_mesh(mesh1_file, mesh_add, group_add,              &
+      call mpi_input_mesh(original_mesh_file, mesh_add, group_add,      &
      &    nnod_4_surf, nnod_4_edge)
       call const_nod_ele_infos(my_rank, mesh_add%node, mesh_add%ele,    &
      &    group_add%nod_grp, group_add%ele_grp, group_add%surf_grp)
@@ -67,9 +66,8 @@
 !
       call deallocate_work_4_add_egrp_sph
 !
-       if (iflag_debug.eq.1) write(*,*) 'output_mesh_1st'
-      mesh1_file%file_prefix = modified_mesh_head
-      call mpi_output_mesh(mesh1_file, mesh_add, group_add)
+       if (iflag_debug.eq.1) write(*,*) 'mpi_output_mesh'
+      call mpi_output_mesh(modified_mesh_file, mesh_add, group_add)
       call dealloc_mesh_infos(mesh_add, group_add)
 !
       call dealloc_r_ele_cubed_sph

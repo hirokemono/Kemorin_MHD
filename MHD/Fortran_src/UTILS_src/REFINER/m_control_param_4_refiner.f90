@@ -1,11 +1,18 @@
 !m_control_param_4_refiner.f90
 !      module m_control_param_4_refiner
 !
-      module m_control_param_4_refiner
-!
 !      Written by Kemorin on Oct., 2007
 !
+!      subroutine allocate_refine_param
+!      subroutine deallocate_refine_param
+!      subroutine deallocate_refine_param_chara
+!
+!      subroutine set_control_4_refiner
+!
+      module m_control_param_4_refiner
+!
       use m_precision
+      use t_file_IO_parameter
 !
       implicit    none
 !
@@ -21,8 +28,8 @@
 !
       integer(kind = kint) :: iflag_small_tri_refine = 1
 !
-      character(len=kchara) :: original_mesh_head
-      character(len=kchara) :: refined_mesh_head = 'in'
+      type(field_IO_params), save ::  original_mesh_file
+      type(field_IO_params), save ::  refined_mesh_file
 !
       character(len=kchara) :: course_2_fine_head = 'course_2_fine'
       character(len=kchara) :: fine_2_course_head = 'fine_2_course'
@@ -32,12 +39,6 @@
       integer(kind = kint) :: iflag_read_old_refine_file = 0
 !
       private :: allocate_refine_param
-!
-!      subroutine allocate_refine_param
-!      subroutine deallocate_refine_param
-!      subroutine deallocate_refine_param_chara
-!
-!      subroutine set_control_4_refiner
 !
 ! -----------------------------------------------------------------------
 !
@@ -85,23 +86,12 @@
       use m_ctl_data_4_platforms
       use m_ctl_data_4_2nd_data
       use skip_comment_f
+      use set_control_platform_data
+      use set_ctl_params_2nd_files
 !
 !
-      if (mesh_file_prefix%iflag .gt. 0) then
-        original_mesh_head = mesh_file_prefix%charavalue
-        write(*,*) 'original_mesh_head: ', trim(original_mesh_head)
-      else
-        write(*,*) 'set original mesh header'
-        stop
-      end if
-!
-      if (new_mesh_prefix%iflag .gt. 0) then
-        refined_mesh_head = new_mesh_prefix%charavalue
-        write(*,*) 'refined_mesh_head: ', trim(refined_mesh_head)
-      else
-        write(*,*) 'set refined mesh header'
-        stop
-      end if
+      call set_control_mesh_def(original_mesh_file)
+      call set_control_new_mesh_file_def(refined_mesh_file)
 !
 !
       if (i_course_to_fine_ctl .gt. 0) then

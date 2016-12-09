@@ -41,8 +41,6 @@
 !
 !   set local data format
 !
-      call choose_file_format                                           &
-     &   (org_mesh_file_fmt_ctl, ifmt_single_mesh_fmt)
 !
       iflag_memory_conserve = 1
       if(memory_conservation_ctl%iflag .gt. 0                           &
@@ -54,11 +52,13 @@
 !
 !
       if (org_mesh_head_ctl%iflag .gt. 0) then
-        global_mesh_head = org_mesh_head_ctl%charavalue
+        global_mesh_file%file_prefix = org_mesh_head_ctl%charavalue
       else
         write(*,*) 'Set original mesh data'
         stop
       end if
+      call choose_file_format                                           &
+     &   (org_mesh_file_fmt_ctl, global_mesh_file%iflag_format)
 !
       write(*,*) 'i_part_method', part_method_ctl%iflag
 !

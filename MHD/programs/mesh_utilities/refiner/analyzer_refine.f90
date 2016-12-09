@@ -12,7 +12,6 @@
 !
       use m_constants
       use m_control_param_4_refiner
-      use m_read_mesh_data
 !
       use t_mesh_data
       use t_geometry_data
@@ -57,9 +56,7 @@
 !
 !  read global mesh
 !
-      call copy_mesh_format_and_prefix                                  &
-     &   (original_mesh_head, ifile_type, mesh1_file)
-      call input_mesh(mesh1_file, my_rank, org_mesh, org_group,         &
+      call input_mesh(original_mesh_file, my_rank, org_mesh, org_group, &
      &    org_ele_mesh%surf%nnod_4_surf, org_ele_mesh%edge%nnod_4_edge, &
      &    ierr)
       if(ierr .gt. 0) stop 'Original mesh is wrong!!'
@@ -234,10 +231,7 @@
         org_ele_mesh%edge%nnod_4_edge = finer_elemesh%edge%nnod_4_edge
       end do
 !
-      write(*,'(2a)') 'mesh file header: ', trim(refined_mesh_head)
-      call copy_mesh_format_and_prefix                                  &
-     &   (refined_mesh_head, ifile_type, mesh1_file)
-      call output_mesh(mesh1_file, izero,                               &
+      call output_mesh(refined_mesh_file, izero,                        &
      &                 refined_fem%mesh, refined_fem%group)
       call dealloc_mesh_infos(refined_fem%mesh, refined_fem%group)
 !

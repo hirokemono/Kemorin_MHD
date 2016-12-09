@@ -9,6 +9,7 @@
 !
       use m_precision
 !
+      use t_control_elements
       use m_read_control_elements
       use skip_comment_f
 !
@@ -18,8 +19,11 @@
       character (len = kchara), parameter                               &
      &         :: control_file_name = 'ctl_cutshell'
 !
-      character (len = kchara) :: orginal_mesh_head_ctl
-      character (len = kchara) :: cutshell_mesh_head_ctl
+      type(read_character_item), save :: orginal_mesh_head_ctl
+      type(read_character_item), save :: orginal_mesh_fmt_ctl
+!
+      type(read_character_item), save :: cutshell_mesh_head_ctl
+      type(read_character_item), save :: cutshell_mesh_fmt_ctl
 !
       character (len = kchara) :: cutshell_type_ctl
 !
@@ -43,11 +47,13 @@
 !
       character(len=kchara), parameter :: hd_org_f_ctl                  &
      &                      = 'orginal_mesh_head_ctl'
+      character(len=kchara), parameter :: hd_org_fmt_ctl                &
+     &                      = 'orginal_mesh_format_ctl'
+!
       character(len=kchara), parameter :: hd_cutshell_f_ctl             &
      &                      = 'cutted_mesh_head_ctl'
-!
-      integer (kind=kint) :: i_org_f_ctl =     0
-      integer (kind=kint) :: i_cutshell_f_ctl = 0
+      character(len=kchara), parameter :: hd_cutshell_fmt_ctl           &
+     &                      = 'cutted_mesh_format_ctl'
 !
 !   3rd level for cutshell_parameter_ctl
 !
@@ -60,7 +66,8 @@
       private :: hd_cutshell_ctl, i_cutshell_ctl
       private :: hd_files_ctl, hd_cutshell_param
       private :: i_files_ctl,  i_cutshell_param
-      private :: hd_org_f_ctl, hd_cutshell_f_ctl
+      private :: hd_org_f_ctl,   hd_cutshell_f_ctl
+      private :: hd_org_fmt_ctl, hd_cutshell_fmt_ctl
 !
       private :: read_cutshell_control_data
       private :: read_ctl_data_4_cutshell_mesh
@@ -120,10 +127,12 @@
         if(i_files_ctl .gt. 0) exit
 !
 !
-        call read_character_ctl_item(hd_org_f_ctl,                      &
-     &           i_org_f_ctl, orginal_mesh_head_ctl)
-        call read_character_ctl_item(hd_cutshell_f_ctl,                 &
-     &           i_cutshell_f_ctl, cutshell_mesh_head_ctl)
+        call read_chara_ctl_type(hd_org_f_ctl, orginal_mesh_head_ctl)
+        call read_chara_ctl_type(hd_org_fmt_ctl, orginal_mesh_fmt_ctl)
+        call read_chara_ctl_type(hd_cutshell_f_ctl,                     &
+     &      cutshell_mesh_head_ctl)
+        call read_chara_ctl_type(hd_cutshell_fmt_ctl,                   &
+     &      cutshell_mesh_fmt_ctl)
         end do
 !
       end subroutine read_ctl_data_4_cutshell_mesh

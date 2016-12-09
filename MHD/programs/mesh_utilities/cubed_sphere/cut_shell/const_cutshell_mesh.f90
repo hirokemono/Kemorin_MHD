@@ -10,6 +10,7 @@
 !
       use t_mesh_data
       use t_group_data
+      use t_file_IO_parameter
 !
       use m_cutshell_nod_ele_flag
       use set_cutshell_node_data
@@ -22,9 +23,8 @@
 !
       integer(kind = kint) :: iflag_reduce_type = 1
 !
-      character(len=kchara) :: original_mesh_head
-      character(len=kchara) :: modified_mesh_head = 'in'
-!
+      type(field_IO_params), save ::  original_mesh_file
+      type(field_IO_params), save ::  modified_mesh_file
 !
       private :: select_northern_hemisphere, select_cut_shell
       private :: select_spherical_shell, select_hemispherical_shell

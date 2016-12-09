@@ -20,24 +20,18 @@
 !
       subroutine s_set_control_4_cutshell
 !
+      use m_default_file_prefix
       use m_control_data_4_cutshell
       use const_cutshell_mesh
+      use set_control_platform_data
 !
 !
-      if (i_org_f_ctl .gt. 0) then
-        original_mesh_head = orginal_mesh_head_ctl
-      else
-        write(*,*) 'set original mesh header'
-        stop
-      end if
-!
-      if (i_cutshell_f_ctl .gt. 0) then
-        modified_mesh_head = cutshell_mesh_head_ctl
-      else
-        write(*,*) 'set refined mesh header'
-        stop
-      end if
-!
+      call set_file_control_params(def_org_mesh_head,                   &
+     &    orginal_mesh_head_ctl, orginal_mesh_fmt_ctl,                  &
+     &    original_mesh_file)
+      call set_file_control_params(def_mesh_file_head,                  &
+     &    cutshell_mesh_head_ctl, cutshell_mesh_fmt_ctl,                &
+     &    modified_mesh_file)
 !
       if (i_cutshell_type .gt. 0) then
         if    (   cutshell_type_ctl .eq. 'hemisphere'                   &

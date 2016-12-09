@@ -32,5 +32,8 @@
       character(len=kchara), parameter                                  &
      &                   :: def_cyl_mesh_head = 'mesh/node_cyl'
 !
+!>      Mesh file
+      character(len=kchara), parameter                                  &
+     &                   :: def_org_mesh_head = 'mesh_org/in'
 !
       end module m_default_file_prefix

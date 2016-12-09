@@ -54,11 +54,9 @@
       integer(kind = kint), allocatable :: igrp_ele_ordering(:)
       character(len=kchara), allocatable :: ele_grp_ordering(:)
 !
-      character(len=kchara) :: global_mesh_head
-      integer(kind = kint) :: ifmt_single_mesh_fmt  = 0
-!
       character(len=kchara) :: finer_inter_file_head
 !
+      type(field_IO_params), save :: global_mesh_file
       type(field_IO_params), save :: distribute_mesh_file
 !
       type(field_IO_params), save :: finer_mesh_file

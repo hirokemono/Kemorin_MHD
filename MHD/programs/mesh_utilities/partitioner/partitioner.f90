@@ -44,9 +44,7 @@
 !
 !  read global mesh
 !
-      call copy_mesh_format_and_prefix                                  &
-     &   (global_mesh_head, ifmt_single_mesh_fmt, mesh1_file)
-      call input_mesh(mesh1_file, my_rank, org_mesh, org_group,         &
+      call input_mesh(global_mesh_file, my_rank, org_mesh, org_group,   &
      &    org_ele_mesh%surf%nnod_4_surf, org_ele_mesh%edge%nnod_4_edge, &
      &    ierr)
       if(ierr .gt. 0) stop 'Global mesh is wrong!'
