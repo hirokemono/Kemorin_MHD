@@ -52,7 +52,6 @@
       subroutine set_control_org_sph_mesh(rj_file_param)
 !
       use m_ctl_data_4_org_data
-      use m_read_mesh_data
 !
       type(field_IO_params), intent(inout) :: rj_file_param
 !

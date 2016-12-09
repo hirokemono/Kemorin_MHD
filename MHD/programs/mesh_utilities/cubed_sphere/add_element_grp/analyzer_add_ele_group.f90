@@ -32,7 +32,6 @@
       use calypso_mpi
       use m_control_data_add_ele_grp
       use m_add_ele_grp_parameter
-      use m_read_mesh_data
       use m_work_4_add_egrp_sph
       use mpi_load_mesh_data
       use const_mesh_information

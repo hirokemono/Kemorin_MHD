@@ -12,6 +12,7 @@
       use const_surface_mesh
       use getarg_kemo
       use t_geometry_data
+      use t_file_IO_parameter
 !
       implicit    none
 !
@@ -22,6 +23,7 @@
       character(len=kchara) :: file_head
       character(len = 1) :: chara_flag
 !
+      type(field_IO_params), save :: mesh_file_viewer
       type(element_data), save :: ele_viewer
 !
       icount = iargc_kemo()
@@ -32,9 +34,9 @@
         call getarg_k(1, file_head)
       end if
 !
-      mesh1_file%file_prefix = file_head
+      mesh_file_viewer%file_prefix = file_head
       call choose_surface_mesh                                          &
-     &   (mesh1_file, ele_viewer, ele_mesh1%surf, ele_mesh1%edge)
+     &   (mesh_file_viewer, ele_viewer, ele_mesh1%surf, ele_mesh1%edge)
 !
       write(*,*) 'will you draw mesh? (y/n)'
       read(*,*) chara_flag

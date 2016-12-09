@@ -40,13 +40,15 @@
       use t_phys_data
       use t_file_IO_parameter
       use t_field_data_IO
-      use m_read_mesh_data
 !
       implicit none
 !
+!>      Structure for mesh file IO paramters
+      type(field_IO_params), save ::  mesh1_file
 !>      Structure for field data IO paramters
       type(field_IO_params), save :: FEM_udt_org_param
 !
+      private :: mesh1_file
       private :: input_meshes_4_MHD
 !
 ! ----------------------------------------------------------------------
@@ -159,7 +161,6 @@
 !
       use m_machine_parameter
       use m_control_parameter
-      use m_read_mesh_data
 !
       use set_3d_filtering_group_id
       use read_filtering_data

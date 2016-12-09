@@ -86,7 +86,6 @@
       use m_error_IDs
       use m_machine_parameter
       use m_2nd_pallalel_vector
-      use m_read_mesh_data
       use m_ctl_data_gen_table
       use m_ctl_data_4_platforms
       use m_ctl_data_4_2nd_data

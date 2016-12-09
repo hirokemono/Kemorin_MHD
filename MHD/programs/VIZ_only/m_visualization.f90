@@ -16,7 +16,6 @@
       use m_precision
       use m_machine_parameter
 !
-      use m_read_mesh_data
       use t_mesh_data
       use t_phys_data
       use t_ucd_data
@@ -26,7 +25,9 @@
 !
       implicit none
 !
-!>      Structure for field data IO paramters
+!>      Structure for mesh file IO paramters
+      type(field_IO_params), save :: mesh_file_VIZ
+!>      Structure for field file IO paramters
       type(field_IO_params), save :: udt_org_param
 !>      Structure for original restart file  paramters
       type(field_IO_params), save :: rst_org_param
@@ -69,7 +70,6 @@
       use calypso_mpi
       use m_t_step_parameter
       use m_array_for_send_recv
-      use m_read_mesh_data
       use mpi_load_mesh_data
       use nod_phys_send_recv
       use const_mesh_information
@@ -83,7 +83,7 @@
 !   --------------------------------
 !
 !       load mesh informations
-      call mpi_input_mesh(mesh1_file,                                   &
+      call mpi_input_mesh(mesh_file_VIZ,                                &
      &    femmesh_VIZ%mesh, femmesh_VIZ%group,                          &
      &    elemesh_VIZ%surf%nnod_4_surf, elemesh_VIZ%edge%nnod_4_edge)
 !

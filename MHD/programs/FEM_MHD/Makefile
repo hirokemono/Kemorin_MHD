@@ -49,9 +49,7 @@ MOD_SNAP_PLUG = \
 main_snapshot.o \
 analyzer_snap.o \
 FEM_analyzer_snapshot.o \
-visualizer_all.o \
-\
-read_udt_4_snapshot.o
+visualizer_all.o
 
 
 MOD_FILTERING_ALL = \
@@ -61,24 +59,18 @@ FEM_analyzer_snapshot.o \
 FEM_analyzer_filtered.o \
 visualizer_all.o \
 \
-filter_all_fields.o \
-\
-read_udt_4_snapshot.o
+filter_all_fields.o
 
 MOD_SNAP_VOL_AVE = \
 main_FEM_volume_ave.o \
 analyzer_volume_ave.o \
-FEM_analyzer_vol_average.o \
-\
-read_udt_4_snapshot.o
+FEM_analyzer_vol_average.o
 
 MOD_SNAP_TMP = \
 main_snap_tmp.o \
 analyzer_snap_tmp.o \
 FEM_analyzer_snap_tmp.o \
-visualizer_all.o \
-\
-read_udt_4_snapshot.o
+visualizer_all.o
 
 #
 #  -------------------------------------------------------------------------

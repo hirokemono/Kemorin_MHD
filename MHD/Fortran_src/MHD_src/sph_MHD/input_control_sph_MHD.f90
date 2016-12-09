@@ -37,7 +37,6 @@
       use m_machine_parameter
       use calypso_mpi
 !
-      use m_read_mesh_data
       use t_spheric_parameter
       use t_mesh_data
       use t_phys_data
@@ -54,14 +53,14 @@
 !
       type(sph_grids), private :: sph_gen
 !
+!>      Structure for mesh file IO paramters
+      type(field_IO_params), save ::  mesh1_file
 !>      Structure for spectr file  paramters
       type(field_IO_params), save :: sph_file_param1
 !>      Structure of dynamo file parameters for original data
       type(file_params_4_sph_mhd), save :: MHD1_org_files
 !
-!MHD1_org_files%rj_file_param
-!MHD1_org_files%udt_file_param
-!MHD1_org_files%rst_file_param
+      private :: mesh1_file
 !
 ! ----------------------------------------------------------------------
 !

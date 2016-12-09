@@ -14,7 +14,6 @@
 !
       use m_control_data_4_part
       use m_ctl_param_partitioner
-      use m_read_mesh_data
 !
       use init_partitioner
       use grouping_for_partition
