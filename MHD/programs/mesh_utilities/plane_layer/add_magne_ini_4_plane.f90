@@ -40,6 +40,7 @@
 !
       use t_mesh_data
       use t_geometry_data
+      use m_time_data_IO
       use t_field_data_IO
       use t_file_IO_parameter
 !
@@ -82,7 +83,7 @@
       call set_field_file_fmt_prefix                                    &
      &   (izero, org_rst_f_header, plane_fst_IO)
       call sel_read_alloc_FEM_fld_head                                  &
-     &   (num_pe, izero, istep, plane_fst_IO)
+     &   (num_pe, izero, istep, t1_IO, plane_fst_IO)
 !
       num_rst_org = plane_fst_IO%num_field_IO
 !
@@ -145,7 +146,7 @@
         call set_field_file_fmt_prefix                                  &
      &     (izero, org_rst_f_header, plane_fst_IO)
         call sel_read_step_FEM_field_file                               &
-     &     (num_pe, id_rank, istep, plane_fst_IO)
+     &     (num_pe, id_rank, istep, t1_IO, plane_fst_IO)
 !
         do np = 1, ntot_rst_org
           merged_fld%d_fld(1:merged%node%numnod,np)                     &
@@ -186,7 +187,7 @@
 !
         plane_fst_IO%file_prefix = new_rst_file_header
         call sel_write_step_FEM_field_file                              &
-     &     (num_pe, id_rank, izero, plane_fst_IO)
+     &     (num_pe, id_rank, izero, t1_IO, plane_fst_IO)
 !
         call dealloc_phys_name_IO(plane_fst_IO)
         call dealloc_phys_data_IO(plane_fst_IO)

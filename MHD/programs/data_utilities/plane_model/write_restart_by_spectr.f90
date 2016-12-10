@@ -71,6 +71,7 @@
 !
       use m_constants
       use m_geometry_data_4_merge
+      use m_time_data_IO
       use field_IO_select
       use set_list_4_FFT
       use set_field_to_restart
@@ -97,7 +98,7 @@
 !
       pl_fld_IO%file_prefix = rst_head_plane
       call sel_write_step_FEM_field_file                                &
-     &   (num_pe, id_rank, izero, pl_fld_IO)
+     &   (num_pe, id_rank, izero, t1_IO, pl_fld_IO)
 !
       call dealloc_merged_field_stack(pl_fld_IO)
       call dealloc_phys_name_IO(pl_fld_IO)

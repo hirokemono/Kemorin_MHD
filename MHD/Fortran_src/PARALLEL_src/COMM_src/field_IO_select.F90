@@ -13,24 +13,24 @@
 !!     &         (id_rank, istep_fld, fld_IO, ierr)
 !!
 !!      subroutine sel_write_step_FEM_field_file                        &
-!!     &         (nprocs_in, id_rank, istep_fld, fld_IO)
+!!     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
 !!      subroutine sel_write_step_SPH_field_file                        &
-!!     &         (nprocs_in, id_rank, istep_fld, fld_IO)
+!!     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
 !!
 !!      subroutine sel_read_step_FEM_field_file                         &
-!!     &         (nprocs_in, id_rank, istep_fld, fld_IO)
+!!     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
 !!      subroutine sel_read_step_SPH_field_file                         &
-!!     &         (nprocs_in, id_rank, istep_fld, fld_IO)
+!!     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
 !!
 !!      subroutine sel_read_alloc_step_FEM_file                         &
-!!     &         (nprocs_in, id_rank, istep_fld, fld_IO)
+!!     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
 !!      subroutine sel_read_alloc_step_SPH_file                         &
-!!     &         (nprocs_in, id_rank, istep_fld, fld_IO)
+!!     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
 !!
 !!      subroutine sel_read_alloc_FEM_fld_head                          &
-!!     &         (nprocs_in, id_rank, istep_fld, fld_IO)
+!!     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
 !!      subroutine sel_read_alloc_SPH_fld_head                          &
-!!     &         (nprocs_in, id_rank, istep_fld, fld_IO)
+!!     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
 !!@endverbatim
 !
       module field_IO_select
@@ -43,7 +43,7 @@
       use field_file_MPI_IO
       use field_file_MPI_IO_b
 !
-      use m_time_data_IO
+      use t_time_data_IO
       use t_field_data_IO
 !
 #ifdef ZLIB_IO
@@ -88,11 +88,12 @@
 !------------------------------------------------------------------
 !
       subroutine sel_write_step_FEM_field_file                          &
-     &         (nprocs_in, id_rank, istep_fld, fld_IO)
+     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
 !
       use set_field_file_names
 !
       integer(kind=kint), intent(in) :: nprocs_in, id_rank, istep_fld
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
       character(len=kchara) :: file_name
 !
@@ -101,18 +102,19 @@
      &    fld_IO%iflag_file_fmt, id_rank, istep_fld, file_name)
 !
       call sel_write_step_field_file                                    &
-     &    (file_name, nprocs_in, id_rank, fld_IO)
+     &    (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       end subroutine sel_write_step_FEM_field_file
 !
 !------------------------------------------------------------------
 !
       subroutine sel_write_step_SPH_field_file                          &
-     &         (nprocs_in, id_rank, istep_fld, fld_IO)
+     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
 !
       use set_field_file_names
 !
       integer(kind=kint), intent(in) :: nprocs_in, id_rank, istep_fld
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
       character(len=kchara) :: file_name
 !
@@ -121,7 +123,7 @@
      &    fld_IO%iflag_file_fmt, id_rank, istep_fld, file_name)
 !
       call sel_write_step_field_file                                    &
-     &    (file_name, nprocs_in, id_rank, fld_IO)
+     &    (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       end subroutine sel_write_step_SPH_field_file
 !
@@ -129,11 +131,12 @@
 !------------------------------------------------------------------
 !
       subroutine sel_read_step_FEM_field_file                           &
-     &         (nprocs_in, id_rank, istep_fld, fld_IO)
+     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
 !
       use set_field_file_names
 !
       integer(kind=kint), intent(in) :: id_rank, istep_fld, nprocs_in
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       character(len=kchara) :: file_name
@@ -143,18 +146,19 @@
      &    fld_IO%iflag_file_fmt, id_rank, istep_fld, file_name)
 !
       call sel_read_step_field_file                                     &
-     &    (file_name, nprocs_in, id_rank, fld_IO)
+     &    (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       end subroutine sel_read_step_FEM_field_file
 !
 !------------------------------------------------------------------
 !
       subroutine sel_read_step_SPH_field_file                           &
-     &         (nprocs_in, id_rank, istep_fld, fld_IO)
+     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
 !
       use set_field_file_names
 !
       integer(kind=kint), intent(in) :: id_rank, istep_fld, nprocs_in
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       character(len=kchara) :: file_name
@@ -164,7 +168,7 @@
      &    fld_IO%iflag_file_fmt, id_rank, istep_fld, file_name)
 !
       call sel_read_step_field_file                                     &
-     &    (file_name, nprocs_in, id_rank, fld_IO)
+     &    (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       end subroutine sel_read_step_SPH_field_file
 !
@@ -172,11 +176,12 @@
 !------------------------------------------------------------------
 !
       subroutine sel_read_alloc_step_FEM_file                           &
-     &         (nprocs_in, id_rank, istep_fld, fld_IO)
+     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
 !
       use set_field_file_names
 !
       integer(kind=kint), intent(in) :: id_rank, istep_fld, nprocs_in
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       character(len=kchara) :: file_name
@@ -186,18 +191,19 @@
      &    fld_IO%iflag_file_fmt, id_rank, istep_fld, file_name)
 !
       call sel_read_alloc_step_field_file                               &
-     &    (file_name, nprocs_in, id_rank, fld_IO)
+     &    (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       end subroutine sel_read_alloc_step_FEM_file
 !
 !------------------------------------------------------------------
 !
       subroutine sel_read_alloc_step_SPH_file                           &
-     &         (nprocs_in, id_rank, istep_fld, fld_IO)
+     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
 !
       use set_field_file_names
 !
       integer(kind=kint), intent(in) :: id_rank, istep_fld, nprocs_in
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       character(len=kchara) :: file_name
@@ -207,18 +213,19 @@
      &    fld_IO%iflag_file_fmt, id_rank, istep_fld, file_name)
 !
       call sel_read_alloc_step_field_file                               &
-     &    (file_name, nprocs_in, id_rank, fld_IO)
+     &    (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       end subroutine sel_read_alloc_step_SPH_file
 !
 !------------------------------------------------------------------
 !
       subroutine sel_read_alloc_FEM_fld_head                            &
-     &         (nprocs_in, id_rank, istep_fld, fld_IO)
+     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
 !
       use set_field_file_names
 !
       integer(kind=kint), intent(in) :: id_rank, istep_fld, nprocs_in
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       character(len=kchara) :: file_name
@@ -228,18 +235,19 @@
      &    fld_IO%iflag_file_fmt, id_rank, istep_fld, file_name)
 !
       call sel_read_alloc_field_head                                    &
-     &    (file_name, nprocs_in, id_rank, fld_IO)
+     &    (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       end subroutine sel_read_alloc_FEM_fld_head
 !
 !------------------------------------------------------------------
 !
       subroutine sel_read_alloc_SPH_fld_head                            &
-     &         (nprocs_in, id_rank, istep_fld, fld_IO)
+     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
 !
       use set_field_file_names
 !
       integer(kind=kint), intent(in) :: id_rank, istep_fld, nprocs_in
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       character(len=kchara) :: file_name
@@ -249,7 +257,7 @@
      &    fld_IO%iflag_file_fmt, id_rank, istep_fld, file_name)
 !
       call sel_read_alloc_field_head                                    &
-     &    (file_name, nprocs_in, id_rank, fld_IO)
+     &    (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       end subroutine sel_read_alloc_SPH_fld_head
 !
@@ -257,13 +265,14 @@
 !------------------------------------------------------------------
 !
       subroutine sel_write_step_field_file                              &
-     &     (file_name, nprocs_in, id_rank, fld_IO)
+     &     (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       use calypso_mpi
       use m_error_IDs
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind=kint), intent(in) :: id_rank, nprocs_in
+      type(time_params_IO), intent(in) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
 !
@@ -273,39 +282,37 @@
 !
       if(fld_IO%iflag_file_fmt .eq. iflag_single) then
         call write_step_field_file_mpi                                  &
-     &     (file_name, nprocs_in, id_rank, t1_IO, fld_IO)
+     &     (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       else if(fld_IO%iflag_file_fmt                                     &
      &       .eq. iflag_single+id_binary_file_fmt) then
         call write_step_field_file_mpi_b                                &
-     &     (file_name, nprocs_in, id_rank, t1_IO, fld_IO)
+     &     (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
 #ifdef ZLIB_IO
       else if(fld_IO%iflag_file_fmt .eq. id_binary_file_fmt) then
-        call write_step_field_file_b(file_name, id_rank, t1_IO, fld_IO)
+        call write_step_field_file_b(file_name, id_rank, t_IO, fld_IO)
       else if(fld_IO%iflag_file_fmt                                     &
      &       .eq. iflag_single+id_gzip_bin_file_fmt) then
         call gz_write_step_fld_file_mpi_b                               &
-     &     (file_name, nprocs_in, id_rank, t1_IO, fld_IO)
+     &     (file_name, nprocs_in, id_rank, t_IO, fld_IO)
       else if(fld_IO%iflag_file_fmt                                     &
      &       .eq. iflag_single+id_gzip_txt_file_fmt) then
         if(nprocs .eq. nprocs_in) then
           call write_gz_step_field_file_mpi                             &
-     &     (file_name, nprocs_in, id_rank, t1_IO, fld_IO)
+     &     (file_name, nprocs_in, id_rank, t_IO, fld_IO)
         else
           call calypso_mpi_abort                                        &
      &      (ierr_fld, 'gzipped data output does not dort')
         end if
       else if(fld_IO%iflag_file_fmt .eq. id_gzip_bin_file_fmt) then
-        call gz_write_step_fld_file_b                                   &
-     &     (file_name, id_rank, t1_IO, fld_IO)
+        call gz_write_step_fld_file_b(file_name, id_rank, t_IO, fld_IO)
       else if(fld_IO%iflag_file_fmt .eq. id_gzip_txt_file_fmt) then
-        call write_gz_step_field_file                                   &
-     &     (file_name, id_rank, t1_IO, fld_IO)
+        call write_gz_step_field_file(file_name, id_rank, t_IO, fld_IO)
 #endif
 !
       else
-        call write_step_field_file(file_name, id_rank, t1_IO, fld_IO)
+        call write_step_field_file(file_name, id_rank, t_IO, fld_IO)
       end if
 !
       end subroutine sel_write_step_field_file
@@ -313,10 +320,11 @@
 !------------------------------------------------------------------
 !
       subroutine sel_read_step_field_file                               &
-     &     (file_name, nprocs_in, id_rank, fld_IO)
+     &     (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       integer(kind = kint), intent(in) :: id_rank, nprocs_in
       character(len=kchara), intent(in) :: file_name
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
 !
@@ -326,34 +334,33 @@
 !
       if(fld_IO%iflag_file_fmt .eq. iflag_single) then
         call read_step_field_file_mpi                                   &
-     &     (file_name, nprocs_in, id_rank, t1_IO, fld_IO)
+     &     (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       else if(fld_IO%iflag_file_fmt                                     &
      &       .eq. iflag_single+id_binary_file_fmt) then
         call read_step_field_file_mpi_b                                 &
-     &     (file_name, nprocs_in, id_rank, t1_IO, fld_IO)
+     &     (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
 #ifdef ZLIB_IO
       else if (fld_IO%iflag_file_fmt .eq. id_binary_file_fmt) then
-        call read_step_field_file_b(file_name, id_rank, t1_IO, fld_IO)
+        call read_step_field_file_b(file_name, id_rank, t_IO, fld_IO)
       else if(fld_IO%iflag_file_fmt                                     &
      &       .eq. iflag_single+id_gzip_bin_file_fmt) then
         call gz_read_step_field_file_mpi_b                              &
-     &     (file_name, nprocs_in, id_rank, t1_IO, fld_IO)
+     &     (file_name, nprocs_in, id_rank, t_IO, fld_IO)
       else if(fld_IO%iflag_file_fmt                                     &
      &       .eq. iflag_single+id_gzip_txt_file_fmt) then
         call read_step_field_file_gz_mpi                                &
-     &     (file_name, nprocs_in, id_rank, t1_IO, fld_IO)
+     &     (file_name, nprocs_in, id_rank, t_IO, fld_IO)
       else if(fld_IO%iflag_file_fmt .eq. id_gzip_bin_file_fmt) then
         call gz_read_step_field_file_b                                  &
-     &     (file_name, id_rank, t1_IO, fld_IO)
+     &     (file_name, id_rank, t_IO, fld_IO)
       else if(fld_IO%iflag_file_fmt .eq. id_gzip_txt_file_fmt) then
-        call read_gz_step_field_file                                    &
-     &     (file_name, id_rank, t1_IO, fld_IO)
+        call read_gz_step_field_file(file_name, id_rank, t_IO, fld_IO)
 #endif
 !
       else
-        call read_step_field_file(file_name, id_rank, t1_IO, fld_IO)
+        call read_step_field_file(file_name, id_rank, t_IO, fld_IO)
       end if
 !
       end subroutine sel_read_step_field_file
@@ -361,10 +368,11 @@
 !------------------------------------------------------------------
 !
       subroutine sel_read_alloc_step_field_file                         &
-     &         (file_name, nprocs_in, id_rank, fld_IO)
+     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       integer(kind = kint), intent(in) :: id_rank, nprocs_in
       character(len=kchara), intent(in) :: file_name
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
 !
@@ -374,36 +382,36 @@
 !
       if(fld_IO%iflag_file_fmt .eq. iflag_single) then
         call read_alloc_step_fld_file_mpi                               &
-     &     (file_name, nprocs_in, id_rank, t1_IO, fld_IO)
+     &     (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       else if(fld_IO%iflag_file_fmt                                     &
      &       .eq. iflag_single+id_binary_file_fmt) then
         call read_alloc_stp_fld_file_mpi_b                              &
-     &     (file_name, nprocs_in, id_rank, t1_IO, fld_IO)
+     &     (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
 #ifdef ZLIB_IO
       else if (fld_IO%iflag_file_fmt .eq. id_binary_file_fmt) then
         call read_and_allocate_step_field_b                             &
-     &     (file_name, id_rank, t1_IO, fld_IO)
+     &     (file_name, id_rank, t_IO, fld_IO)
       else if(fld_IO%iflag_file_fmt                                     &
      &       .eq. iflag_single+id_gzip_bin_file_fmt) then
         call gz_rd_alloc_st_fld_file_mpi_b                              &
-     &     (file_name, nprocs_in, id_rank, t1_IO, fld_IO)
+     &     (file_name, nprocs_in, id_rank, t_IO, fld_IO)
       else if(fld_IO%iflag_file_fmt                                     &
      &       .eq. iflag_single+id_gzip_txt_file_fmt) then
         call read_alloc_stp_fld_file_gz_mpi                             &
-     &     (file_name, nprocs_in, id_rank, t1_IO, fld_IO)
+     &     (file_name, nprocs_in, id_rank, t_IO, fld_IO)
       else if(fld_IO%iflag_file_fmt .eq. id_gzip_bin_file_fmt) then
         call gz_rd_alloc_st_fld_file_b                                  &
-     &     (file_name, id_rank, t1_IO, fld_IO)
+     &     (file_name, id_rank, t_IO, fld_IO)
       else if(fld_IO%iflag_file_fmt .eq. id_gzip_txt_file_fmt) then
         call read_alloc_gz_step_field_file                              &
-     &     (file_name, id_rank, t1_IO, fld_IO)
+     &     (file_name, id_rank, t_IO, fld_IO)
 #endif
 !
       else
         call read_and_alloc_step_field                                  &
-     &     (file_name, id_rank, t1_IO, fld_IO)
+     &     (file_name, id_rank, t_IO, fld_IO)
       end if
 !
       end subroutine sel_read_alloc_step_field_file
@@ -411,10 +419,11 @@
 !------------------------------------------------------------------
 !
       subroutine sel_read_alloc_field_head                              &
-     &         (file_name, nprocs_in, id_rank, fld_IO)
+     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       integer(kind = kint), intent(in) :: id_rank, nprocs_in
       character(len=kchara), intent(in) :: file_name
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
 !
@@ -424,36 +433,36 @@
 !
       if(fld_IO%iflag_file_fmt .eq. iflag_single) then
         call read_alloc_step_fld_head_mpi                               &
-     &     (file_name, nprocs_in, id_rank, t1_IO, fld_IO)
+     &     (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       else if(fld_IO%iflag_file_fmt                                     &
      &       .eq. iflag_single+id_binary_file_fmt) then
         call read_alloc_stp_fld_head_mpi_b                              &
-     &     (file_name, nprocs_in, id_rank, t1_IO, fld_IO)
+     &     (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
 #ifdef ZLIB_IO
       else if (fld_IO%iflag_file_fmt .eq. id_binary_file_fmt) then
         call read_and_allocate_step_head_b                              &
-     &     (file_name, id_rank, t1_IO, fld_IO)
+     &     (file_name, id_rank, t_IO, fld_IO)
       else if(fld_IO%iflag_file_fmt                                     &
      &       .eq. iflag_single+id_gzip_bin_file_fmt) then
         call gz_rd_alloc_st_fld_head_mpi_b                              &
-     &     (file_name, nprocs_in, id_rank, t1_IO, fld_IO)
+     &     (file_name, nprocs_in, id_rank, t_IO, fld_IO)
       else if(fld_IO%iflag_file_fmt                                     &
      &       .eq. iflag_single+id_gzip_txt_file_fmt) then
         call read_alloc_stp_fld_head_gz_mpi                             &
-     &     (file_name, nprocs_in, id_rank, t1_IO, fld_IO)
+     &     (file_name, nprocs_in, id_rank, t_IO, fld_IO)
       else if(fld_IO%iflag_file_fmt .eq. id_gzip_bin_file_fmt) then
         call gz_rd_alloc_st_fld_head_b                                  &
-     &     (file_name, id_rank, t1_IO, fld_IO)
+     &     (file_name, id_rank, t_IO, fld_IO)
       else if(fld_IO%iflag_file_fmt .eq. id_gzip_txt_file_fmt) then
         call read_alloc_gz_step_field_head                              &
-     &     (file_name, id_rank, t1_IO, fld_IO)
+     &     (file_name, id_rank, t_IO, fld_IO)
 #endif
 !
       else
         call read_and_allocate_step_head                                &
-     &     (file_name, id_rank, t1_IO, fld_IO)
+     &     (file_name, id_rank, t_IO, fld_IO)
       end if
 !
       end subroutine sel_read_alloc_field_head

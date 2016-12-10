@@ -17,6 +17,7 @@
       use m_constants
       use calypso_mpi
 !
+      use m_time_data_IO
       use t_field_data_IO
 !
       use m_machine_parameter
@@ -193,7 +194,7 @@
      &        r_itp, new_sph_phys(jp), new_fst_IO)
 !
           call sel_write_step_SPH_field_file                            &
-     &       (np_sph_new, irank_new, istep, new_fst_IO)
+     &       (np_sph_new, irank_new, istep, t1_IO, new_fst_IO)
 !
           call dealloc_phys_data_IO(new_fst_IO)
           call dealloc_phys_name_IO(new_fst_IO)

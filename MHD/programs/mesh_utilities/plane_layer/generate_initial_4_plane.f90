@@ -38,6 +38,7 @@
 !
       use t_mesh_data
       use t_geometry_data
+      use m_time_data_IO
       use t_field_data_IO
       use t_file_IO_parameter
 !
@@ -147,7 +148,7 @@
         call set_field_file_fmt_prefix                                  &
      &     (izero, org_rst_f_header, plane_fst_IO)
         call sel_write_step_FEM_field_file                              &
-     &     (num_pe, id_rank, izero, plane_fst_IO)
+     &     (num_pe, id_rank, izero, t1_IO, plane_fst_IO)
 !
         call dealloc_phys_name_IO(plane_fst_IO)
         call dealloc_phys_data_IO(plane_fst_IO)

@@ -35,6 +35,7 @@
       use calypso_mpi
       use t_spheric_mesh
       use t_sph_spectr_data
+      use m_time_data_IO
       use t_field_data_IO
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
@@ -133,7 +134,7 @@
       call set_field_file_fmt_prefix                                    &
      &   (ifmt_org_sph_fst, org_sph_fst_head, org_fst_IO)
       call sel_read_alloc_step_SPH_file                                 &
-     &   (np_sph_org, izero, istep_start, org_fst_IO)
+     &   (np_sph_org, izero, istep_start, t1_IO, org_fst_IO)
 !
       if(my_rank .eq. 0) then
         call copy_rj_phys_name_from_IO(org_fst_IO, new_phys)
@@ -182,7 +183,7 @@
       call set_field_file_fmt_prefix                                    &
      &   (ifmt_org_sph_fst, org_sph_fst_head, org_fst_IO)
       call sel_read_alloc_step_SPH_file                                 &
-     &   (np_sph_org, irank_org, istep, org_fst_IO)
+     &   (np_sph_org, irank_org, istep, t1_IO, org_fst_IO)
 !
       if(irank_org .lt. np_sph_org) then
         call copy_time_steps_from_restart(t1_IO)

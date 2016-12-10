@@ -19,6 +19,7 @@
       use t_spheric_mesh
       use t_phys_address
       use t_phys_data
+      use m_time_data_IO
       use t_field_data_IO
 !
       implicit none
@@ -58,7 +59,7 @@
      &    fld_IO)
       write(*,*) 'ifmt_org_rst', rst_org_param%iflag_format
       call sel_read_alloc_step_SPH_file                                 &
-     &   (nprocs, my_rank, i_step_init, fld_IO)
+     &   (nprocs, my_rank, i_step_init, t1_IO, fld_IO)
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_sph_name_rj_to_rtp'
       call copy_sph_name_rj_to_rtp(rj_fld)
@@ -138,7 +139,7 @@
 !   Input spectr data
         if (iflag_debug.gt.0) write(*,*) 'sel_read_step_SPH_field_file'
       call sel_read_step_SPH_field_file                                 &
-     &     (nprocs, my_rank, i_step, fld_IO)
+     &     (nprocs, my_rank, i_step, t1_IO, fld_IO)
 !
 !    copy and extend magnetic field to outside
 !

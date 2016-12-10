@@ -56,6 +56,7 @@
       use t_phys_data
       use t_file_IO_parameter
 !
+      use m_time_data_IO
       use field_IO_select
 !
       implicit  none
@@ -120,7 +121,7 @@
       call set_sph_restart_data_to_IO(rj_fld, sph_fst_IO)
 !
       call sel_write_step_SPH_field_file                                &
-     &   (nprocs, my_rank, istep_fld, sph_fst_IO)
+     &   (nprocs, my_rank, istep_fld, t1_IO, sph_fst_IO)
 !
       end subroutine output_sph_restart_control
 !
@@ -140,7 +141,7 @@
       call set_sph_restart_data_to_IO(rj_fld, sph_fst_IO)
 
       call sel_write_step_SPH_field_file                                &
-     &   (nprocs, my_rank, negaone, sph_fst_IO)
+     &   (nprocs, my_rank, negaone, t1_IO, sph_fst_IO)
 !
       end subroutine output_sph_rst_by_elaps
 !
@@ -161,11 +162,11 @@
 !
       if (i_step_init .eq. -1) then
         call sel_read_alloc_step_SPH_file                               &
-     &     (nprocs, my_rank, i_step_init, sph_fst_IO)
+     &     (nprocs, my_rank, i_step_init, t1_IO, sph_fst_IO)
       else
         istep_fld = i_step_init / i_step_output_rst
         call sel_read_alloc_step_SPH_file                               &
-     &     (nprocs, my_rank, istep_fld, sph_fst_IO)
+     &     (nprocs, my_rank, istep_fld, t1_IO, sph_fst_IO)
       end if
 !
       call set_sph_restart_from_IO(sph_fst_IO, rj_fld)
@@ -225,7 +226,7 @@
 !
       istep_fld = i_step / i_step_output_rst
       call sel_read_alloc_step_SPH_file                                 &
-     &   (nprocs, my_rank, istep_fld, sph_fst_IO)
+     &   (nprocs, my_rank, istep_fld, t1_IO, sph_fst_IO)
 !
       if(rj_file_param%iflag_IO .eq. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_sph_restart_from_IO'
@@ -280,7 +281,7 @@
      &   (sph_out_IO%nnod_IO, sph_out_IO%istack_numnod_IO)
 !
       call sel_write_step_SPH_field_file                                &
-     &   (nprocs, my_rank, istep_fld, sph_out_IO)
+     &   (nprocs, my_rank, istep_fld, t1_IO, sph_out_IO)
 !
       call dealloc_merged_field_stack(sph_out_IO)
       call dealloc_phys_data_IO(sph_out_IO)
@@ -312,7 +313,7 @@
      &   (sph_file_param%iflag_format, sph_file_param%file_prefix,      &
      &    sph_out_IO)
       call sel_read_alloc_step_SPH_file                                 &
-     &   (nprocs, my_rank, istep_fld, sph_out_IO)
+     &   (nprocs, my_rank, istep_fld, t1_IO, sph_out_IO)
 !
       if(rj_file_param%iflag_IO .eq. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'

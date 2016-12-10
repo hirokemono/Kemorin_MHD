@@ -98,7 +98,7 @@
         id_rank = my_rank + (iloop-1) * nprocs
 !
         call sel_write_step_SPH_field_file                              &
-     &     (nprocs_in, id_rank, istep_fld, fld_IO(iloop))
+     &     (nprocs_in, id_rank, istep_fld, t1_IO, fld_IO(iloop))
       end do
 !
       end subroutine sel_write_SPH_assemble_field
