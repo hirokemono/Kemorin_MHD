@@ -249,7 +249,7 @@
 !
 !
       call gz_write_fld_header_mpi                                      &
-     &   (id_fld, ioff_gl, step_data_buffer(nprocs_in))
+     &   (id_fld, ioff_gl, step_data_buffer(nprocs_in, t1_IO))
       call gz_write_fld_header_mpi(id_fld, ioff_gl,                     &
      &    field_istack_nod_buffer(nprocs_in, istack_merged))
       call gz_write_fld_header_mpi(id_fld, ioff_gl,                     &
@@ -314,13 +314,16 @@
 !
       call gz_read_fld_charhead_mpi                                     &
      &   (id_fld, ioff_gl, len_step_data_buf, textbuf_c)
-      if(my_rank .eq. 0) call read_step_data_buffer(textbuf_c, iread)
+!
+      if(my_rank .eq. 0) then
+       call read_step_data_buffer(textbuf_c, iread, t1_IO)
+      end if
 !
       if(my_rank.eq.0 .and. nprocs_in .ne. iread) then
         call calypso_mpi_abort(ierr_fld, 'Set correct field data file')
       end if
 !
-      call sync_field_time_mpi
+      call sync_field_time_mpi(t1_IO)
 !
       end subroutine read_field_step_gz_mpi
 !

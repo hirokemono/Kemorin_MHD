@@ -41,11 +41,12 @@
       call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)'   )   '!  time step number', char(0)
       call gz_write_textbuf_w_lf
-      write(textbuf,'(i16,a1)') i_time_step_IO, char(0)
+      write(textbuf,'(i16,a1)') t1_IO%i_time_step_IO, char(0)
       call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)'   )   '!  time, Delta t', char(0)
       call gz_write_textbuf_w_lf
-      write(textbuf,'(1p2E25.15e3,a1)') time_IO, delta_t_IO, char(0)
+      write(textbuf,'(1p2E25.15e3,a1)')                                 &
+     &               t1_IO%time_IO, t1_IO%delta_t_IO, char(0)
       call gz_write_textbuf_w_lf
 !
       end subroutine write_gz_step_data
@@ -61,13 +62,13 @@
 !
 !
       call skip_gz_comment_int(id_rank)
-      call skip_gz_comment_int(i_time_step_IO)
+      call skip_gz_comment_int(t1_IO%i_time_step_IO)
       call skip_gz_comment_chara(tmpchara)
-      read(tmpchara,*,err=99, end=99) time_IO, delta_t_IO
+      read(tmpchara,*,err=99, end=99) t1_IO%time_IO, t1_IO%delta_t_IO
 !
       go to 10
   99    write(*,*) 'no delta t data... continue'
-        delta_t_IO = 0.0d0
+        t1_IO%delta_t_IO = 0.0d0
   10  continue
 !
       end subroutine read_gz_step_data

@@ -41,10 +41,10 @@
 !
 !
       call write_one_integer_b(id_rank)
-      call write_one_integer_b(i_time_step_IO)
+      call write_one_integer_b(t1_IO%i_time_step_IO)
 !
-      call write_one_real_b(time_IO)
-      call write_one_real_b(delta_t_IO)
+      call write_one_real_b(t1_IO%time_IO)
+      call write_one_real_b(t1_IO%delta_t_IO)
 !
       end subroutine write_step_data_b
 !
@@ -85,9 +85,9 @@
 !
 !
       call read_one_integer_b(id_rank)
-      call read_one_integer_b(i_time_step_IO)
-      call read_one_real_b(time_IO)
-      call read_one_real_b(delta_t_IO)
+      call read_one_integer_b(t1_IO%i_time_step_IO)
+      call read_one_real_b(t1_IO%time_IO)
+      call read_one_real_b(t1_IO%delta_t_IO)
 !
       call read_mul_int8_b(ione, istack_merged)
       call read_one_integer_b(num_field)

@@ -42,10 +42,10 @@
 !
       call gz_write_endian_flag
       call gz_write_one_integer_b(id_rank)
-      call gz_write_one_integer_b(i_time_step_IO)
+      call gz_write_one_integer_b(t1_IO%i_time_step_IO)
 !
-      call gz_write_one_real_b(time_IO)
-      call gz_write_one_real_b(delta_t_IO)
+      call gz_write_one_real_b(t1_IO%time_IO)
+      call gz_write_one_real_b(t1_IO%delta_t_IO)
 !
       end subroutine gz_write_step_data_b
 !
@@ -92,9 +92,9 @@
       call gz_read_endian_flag(my_rank)
 !
       call gz_read_one_integer_b(id_rank)
-      call gz_read_one_integer_b(i_time_step_IO)
-      call gz_read_one_real_b(time_IO)
-      call gz_read_one_real_b(delta_t_IO)
+      call gz_read_one_integer_b(t1_IO%i_time_step_IO)
+      call gz_read_one_real_b(t1_IO%time_IO)
+      call gz_read_one_real_b(t1_IO%delta_t_IO)
 !
       call gz_read_mul_int8_b(ione, istack_merged(1))
       call gz_read_one_integer_b(num_field)

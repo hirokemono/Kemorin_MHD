@@ -245,10 +245,10 @@
 !
 !
       call gz_mpi_write_one_inthead_b(IO_param_l, IO_param_l%nprocs_in)
-      call gz_mpi_write_one_inthead_b(IO_param_l, i_time_step_IO)
+      call gz_mpi_write_one_inthead_b(IO_param_l, t1_IO%i_time_step_IO)
 !
-      call gz_mpi_write_one_realhead_b(IO_param_l, time_IO)
-      call gz_mpi_write_one_realhead_b(IO_param_l, delta_t_IO)
+      call gz_mpi_write_one_realhead_b(IO_param_l, t1_IO%time_IO)
+      call gz_mpi_write_one_realhead_b(IO_param_l, t1_IO%delta_t_IO)
 !
 !
       call gz_mpi_write_i8stack_head_b                                  &
@@ -299,10 +299,10 @@
 !
 !
       call gz_mpi_read_one_inthead_b(IO_param_l, int_tmp)
-      call gz_mpi_read_one_inthead_b(IO_param_l, i_time_step_IO)
+      call gz_mpi_read_one_inthead_b(IO_param_l, t1_IO%i_time_step_IO)
 !
-      call gz_mpi_read_one_realhead_b(IO_param_l, time_IO)
-      call gz_mpi_read_one_realhead_b(IO_param_l, delta_t_IO)
+      call gz_mpi_read_one_realhead_b(IO_param_l, t1_IO%time_IO)
+      call gz_mpi_read_one_realhead_b(IO_param_l, t1_IO%delta_t_IO)
 !
       end subroutine gz_read_step_data_mpi_b
 !

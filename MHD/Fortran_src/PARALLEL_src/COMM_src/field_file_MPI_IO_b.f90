@@ -226,9 +226,9 @@
 !
 !
       call mpi_write_one_inthead_b(IO_param_l, IO_param_l%nprocs_in)
-      call mpi_write_one_inthead_b(IO_param_l, i_time_step_IO)
-      call mpi_write_one_realhead_b(IO_param_l, time_IO)
-      call mpi_write_one_realhead_b(IO_param_l, delta_t_IO)
+      call mpi_write_one_inthead_b(IO_param_l, t1_IO%i_time_step_IO)
+      call mpi_write_one_realhead_b(IO_param_l, t1_IO%time_IO)
+      call mpi_write_one_realhead_b(IO_param_l, t1_IO%delta_t_IO)
 !
       call mpi_write_i8stack_head_b                                     &
      &   (IO_param_l, IO_param_l%nprocs_in, istack_merged)
@@ -260,9 +260,9 @@
 !
 !
       call mpi_read_one_inthead_b(IO_param_l, nprocs_tmp)
-      call mpi_read_one_inthead_b(IO_param_l, i_time_step_IO)
-      call mpi_read_one_realhead_b(IO_param_l, time_IO)
-      call mpi_read_one_realhead_b(IO_param_l, delta_t_IO)
+      call mpi_read_one_inthead_b(IO_param_l, t1_IO%i_time_step_IO)
+      call mpi_read_one_realhead_b(IO_param_l, t1_IO%time_IO)
+      call mpi_read_one_realhead_b(IO_param_l, t1_IO%delta_t_IO)
 !
       call alloc_merged_field_stack(IO_param_l%nprocs_in, fld_IO)
 !

@@ -112,10 +112,8 @@
      &    write(*,*) 'copy_rj_phys_data_to_IO'
       call copy_rj_phys_data_to_IO(rj_fld%num_phys, rj_fld, fld_IO)
 !
-      i_time_step_IO = 0
-      time_IO = zero
-      delta_t_IO = zero
-      call set_field_file_fmt_prefix                                    &
+     call reset_time_data_IO(t1_IO)
+     call set_field_file_fmt_prefix                                    &
      &   (sph_file_trns_p%iflag_format, sph_file_trns_p%file_prefix,    &
      &    fld_IO)
       call sel_write_step_SPH_field_file                                &
@@ -167,9 +165,7 @@
       call count_number_of_node_stack                                   &
      &   (fld_IO%nnod_IO, fld_IO%istack_numnod_IO)
 !
-      i_time_step_IO = 0
-      time_IO = zero
-      delta_t_IO = zero
+      call reset_time_data_IO(t1_IO)
       call sel_write_step_SPH_field_file                                &
      &   (nprocs, my_rank, i_step, fld_IO)
 !

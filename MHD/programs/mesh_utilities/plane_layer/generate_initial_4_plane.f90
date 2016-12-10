@@ -61,10 +61,8 @@
       call s_set_ctl_data_plane_mesh
 !
       call set_initial_components
+      call reset_time_data_IO(t1_IO)
 !
-      i_time_step_IO = izero
-      time_IO =    zero
-      delta_t_IO = zero
       num_pe = ndx * ndy * ndz
 !
       merged%node%numnod = node_plane%numnod

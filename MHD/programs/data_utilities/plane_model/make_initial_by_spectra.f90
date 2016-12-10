@@ -36,7 +36,7 @@
 !
       type(field_IO_params), save ::  plane_mesh_file
 !
-      integer(kind=kint ) ::  istep_udt, n_comp
+      integer(kind=kint ) ::  istep_udt, n_comp, i_time_step
 !
 !  ===========
 ! . for local 
@@ -221,12 +221,13 @@
 !
 !    start loop for snap shots
 !
-      do i_time_step_IO = ist, ied, ifactor_step
+      do i_time_step = ist, ied, ifactor_step
 !
-        istep_udt = i_time_step_IO / ifactor_step
-        istep_rst = i_time_step_IO / ifactor_rst
-        time_IO =    t_init + dble(i_time_step_IO-ist) * dt_init
-        delta_t_IO = dt_init
+        istep_udt = i_time_step / ifactor_step
+        istep_rst = i_time_step / ifactor_rst
+        t1_IO%i_time_step_IO = i_time_step
+        t1_IO%time_IO =    t_init + dble(i_time_step-ist) * dt_init
+        t1_IO%delta_t_IO = dt_init
 !
 !    read spectral data
 !

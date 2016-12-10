@@ -46,7 +46,7 @@
      &    'Read ascii restart file: ', trim(file_name)
       open (id_phys_file, file = file_name, form='formatted')
 !
-      call read_step_data(id_phys_file)
+      call read_step_data(id_phys_file, t1_IO)
 !
       call skip_comment(character_4_read,id_phys_file)
       read(character_4_read,*) fld_IO%num_field_IO
@@ -78,7 +78,7 @@
      &     'Read ascii restart file: ', trim(file_name)
       open (id_phys_file, file = file_name, form='formatted')
 !
-      call read_step_data(id_phys_file)
+      call read_step_data(id_phys_file, t1_IO)
 !
       call skip_comment(character_4_read,id_phys_file)
       read(character_4_read,*) fld_IO%num_field_IO

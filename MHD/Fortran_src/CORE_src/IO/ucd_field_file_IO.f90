@@ -61,7 +61,7 @@
       open(id_fld_file, file = file_name, form = 'formatted')
 !
       nnod4 = int(ucd%nnod)
-      call write_step_data(id_fld_file, my_rank)
+      call write_step_data(id_fld_file, my_rank, t1_IO)
       call write_field_data(id_fld_file, nnod4, ucd%num_field,          &
      &    ucd%ntot_comp, ucd%num_comp, ucd%phys_name, ucd%d_ucd)
 !
@@ -92,7 +92,7 @@
 !
       open(id_fld_file, file = file_name, form = 'formatted')
 !
-      call read_step_data(id_fld_file)
+      call read_step_data(id_fld_file, t1_IO)
 !
       call skip_comment(character_4_read, id_fld_file)
       read(character_4_read,*) nnod4, ucd%num_field
@@ -128,7 +128,7 @@
 !
       open(id_fld_file, file = file_name, form = 'formatted')
 !
-      call read_step_data(id_fld_file)
+      call read_step_data(id_fld_file, t1_IO)
 !
       call skip_comment(character_4_read, id_fld_file)
       read(character_4_read,*) nnod4, ucd%num_field

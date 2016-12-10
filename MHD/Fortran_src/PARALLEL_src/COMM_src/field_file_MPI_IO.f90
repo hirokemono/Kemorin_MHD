@@ -38,6 +38,7 @@
 !
       use calypso_mpi
       use m_calypso_mpi_IO
+      use m_time_data_IO
       use t_field_data_IO
 !
       implicit none
@@ -101,7 +102,7 @@
       call calypso_mpi_read_file_open(file_name, id_fld)
 !
       ioff_gl = 0
-      call read_field_time_mpi(id_fld, nprocs_in, ioff_gl)
+      call read_field_time_mpi(id_fld, nprocs_in, ioff_gl, t1_IO)
 !
       call alloc_merged_field_stack(nprocs_in, fld_IO)
 !
@@ -145,7 +146,7 @@
       call calypso_mpi_read_file_open(file_name, id_fld)
 !
       ioff_gl = 0
-      call read_field_time_mpi(id_fld, nprocs_in, ioff_gl)
+      call read_field_time_mpi(id_fld, nprocs_in, ioff_gl, t1_IO)
 !
       call alloc_merged_field_stack(nprocs_in, fld_IO)
 !
@@ -196,7 +197,7 @@
       call calypso_mpi_read_file_open(file_name, id_fld)
 !
       ioff_gl = 0
-      call read_field_time_mpi(id_fld, nprocs_in, ioff_gl)
+      call read_field_time_mpi(id_fld, nprocs_in, ioff_gl, t1_IO)
 !
       call alloc_merged_field_stack(nprocs_in, fld_IO)
 !
@@ -247,7 +248,7 @@
 !
 !
       call calypso_mpi_seek_write_head_c                                &
-     &   (id_fld, ioff_gl, step_data_buffer(nprocs_in))
+     &   (id_fld, ioff_gl, step_data_buffer(nprocs_in, t1_IO))
       call calypso_mpi_seek_write_head_c(id_fld, ioff_gl,               &
      &    field_istack_nod_buffer(nprocs_in, istack_merged))
       call calypso_mpi_seek_write_head_c(id_fld, ioff_gl,               &

@@ -146,8 +146,8 @@
           call copy_field_data_from_restart                             &
      &       (org_femmesh%mesh%node, itp_fld_IO, nod_fld_ITP)
           call dealloc_phys_data_IO(itp_fld_IO)
-          time =       time_IO
-          i_step_MHD = i_time_step_IO
+          time =       t1_IO%time_IO
+          i_step_MHD = t1_IO%i_time_step_IO
 !
           call nod_fields_send_recv                                     &
      &       (org_femmesh%mesh%nod_comm, nod_fld_ITP)
