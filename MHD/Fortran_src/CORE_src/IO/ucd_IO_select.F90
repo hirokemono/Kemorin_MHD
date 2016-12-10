@@ -102,7 +102,7 @@
       else if(ucd%ifmt_file .eq. iflag_udt) then
         call write_udt_file(my_rank, istep_ucd, ucd)
       else
-        call write_ucd_2_fld_file(my_rank, istep_ucd, ucd)
+        call write_ucd_2_fld_file(my_rank, istep_ucd, t1_IO, ucd)
       end if
 !
       end subroutine sel_write_ucd_file
@@ -142,7 +142,7 @@
       else if(ucd%ifmt_file .eq. iflag_udt) then
         call write_udt_file(my_rank, istep_ucd, ucd)
       else
-        call write_ucd_2_fld_file(my_rank, istep_ucd, ucd)
+        call write_ucd_2_fld_file(my_rank, istep_ucd, t1_IO, ucd)
       end if
 !
       end subroutine sel_write_udt_file
@@ -199,7 +199,7 @@
         call read_alloc_ucd_2_fld_header_b                              &
      &     (my_rank, istep_ucd, t1_IO, ucd)
       else
-        call read_alloc_ucd_2_fld_file(my_rank, istep_ucd, ucd)
+        call read_alloc_ucd_2_fld_file(my_rank, istep_ucd, t1_IO, ucd)
       end if
 !
       end subroutine sel_read_udt_param
@@ -228,7 +228,7 @@
         call read_alloc_ucd_2_fld_file_b                                &
      &     (my_rank, istep_ucd, t1_IO, ucd)
       else
-        call read_alloc_ucd_2_fld_file(my_rank, istep_ucd, ucd)
+        call read_alloc_ucd_2_fld_file(my_rank, istep_ucd, t1_IO, ucd)
       end if
 !
       end subroutine sel_read_alloc_udt_file
@@ -257,7 +257,7 @@
         call read_ucd_2_fld_file_b                                      &
      &     (my_rank, istep_ucd, t1_IO, ucd)
       else
-        call read_ucd_2_fld_file(my_rank, istep_ucd, ucd)
+        call read_ucd_2_fld_file(my_rank, istep_ucd, t1_IO, ucd)
       end if
 !
       end subroutine sel_read_udt_file

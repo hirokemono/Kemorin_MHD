@@ -7,8 +7,10 @@
 !> @brief read restart file
 !!
 !!@verbatim
-!!      subroutine read_rst_file(my_rank, file_name, fld_IO)
-!!      subroutine read_rst_data_comps(my_rank, file_name, fld_IO)
+!!      subroutine read_rst_file(my_rank, file_name, t_IO, fld_IO)
+!!      subroutine read_rst_data_comps(my_rank, file_name, t_IO, fld_IO)
+!!        type(time_params_IO), intent(inout) :: t_IO
+!!        type(field_IO), intent(inout) :: fld_IO
 !!@endverbatim
 !
       module rst_data_IO_by_fld
@@ -16,7 +18,7 @@
       use m_precision
       use m_machine_parameter
 !
-      use m_time_data_IO
+      use t_time_data_IO
       use t_field_data_IO
 !
       implicit none
@@ -29,7 +31,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_rst_file(my_rank, file_name, fld_IO)
+      subroutine read_rst_file(my_rank, file_name, t_IO, fld_IO)
 !
       use set_parallel_file_name
       use field_data_IO
@@ -37,6 +39,8 @@
 !
       integer(kind = kint), intent(in) :: my_rank
       character(len=kchara), intent(in) :: file_name
+!
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       character(len=kchara) :: character_4_read
@@ -46,7 +50,7 @@
      &    'Read ascii restart file: ', trim(file_name)
       open (id_phys_file, file = file_name, form='formatted')
 !
-      call read_step_data(id_phys_file, t1_IO)
+      call read_step_data(id_phys_file, t_IO)
 !
       call skip_comment(character_4_read,id_phys_file)
       read(character_4_read,*) fld_IO%num_field_IO
@@ -60,7 +64,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_rst_data_comps(my_rank, file_name, fld_IO)
+      subroutine read_rst_data_comps(my_rank, file_name, t_IO, fld_IO)
 !
       use set_parallel_file_name
       use field_data_IO
@@ -69,6 +73,7 @@
       integer(kind = kint), intent(in) :: my_rank
       character(len=kchara), intent(in) :: file_name
 !
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       character(len=kchara) :: character_4_read
@@ -78,7 +83,7 @@
      &     'Read ascii restart file: ', trim(file_name)
       open (id_phys_file, file = file_name, form='formatted')
 !
-      call read_step_data(id_phys_file, t1_IO)
+      call read_step_data(id_phys_file, t_IO)
 !
       call skip_comment(character_4_read,id_phys_file)
       read(character_4_read,*) fld_IO%num_field_IO

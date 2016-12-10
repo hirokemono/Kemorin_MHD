@@ -9,8 +9,13 @@
 !      subroutine parallel_write_hdf5_mesh_file(ucd, m_ucd)
 !      subroutine parallel_write_hdf5_field_file(cur_step, ucd, m_ucd)
 !
-!      subroutine parallel_write_xdmf_snap_file(istep_hdf5, ucd, m_ucd)
-!      subroutine parallel_write_xdmf_evo_file(istep_hdf5, ucd, m_ucd)
+!!      subroutine parallel_write_xdmf_snap_file                        &
+!!     &         (istep_hdf5, t_IO, ucd, m_ucd)
+!!      subroutine parallel_write_xdmf_evo_file                         &
+!!     &         (istep_hdf5, t_IO, ucd, m_ucd)
+!!        type(time_params_IO), intent(in) :: t_IO
+!!        type(ucd_data), intent(in) :: ucd
+!!        type(merged_ucd_data), intent(in) :: m_ucd
 !
       module hdf5_file_IO
 !
@@ -20,6 +25,7 @@
 !
       use calypso_mpi
 !
+      use t_time_data_IO
       use t_ucd_data
 !
       use set_ucd_file_names
@@ -491,11 +497,11 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine parallel_write_xdmf_snap_file(istep_hdf5, ucd, m_ucd)
-!
-      use m_t_step_parameter
+      subroutine parallel_write_xdmf_snap_file                          &
+     &         (istep_hdf5, t_IO, ucd, m_ucd)
 !
       integer(kind=kint), intent(in) :: istep_hdf5
+      type(time_params_IO), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
       type(merged_ucd_data), intent(in) :: m_ucd
       character(len = kchara) :: xdmf_dir_file
@@ -508,17 +514,17 @@
      &    istep_hdf5, xdmf_dir_file)
 ! Open the XDMF file to append
       call parallel_write_xdmf_file(xdmf_dir_file, istep_hdf5,          &
-     &    ucd, m_ucd)
+     &    t_IO, ucd, m_ucd)
 !
       end subroutine parallel_write_xdmf_snap_file
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine parallel_write_xdmf_evo_file(istep_hdf5, ucd, m_ucd)
-!
-      use m_t_step_parameter
+      subroutine parallel_write_xdmf_evo_file                           &
+     &         (istep_hdf5, t_IO, ucd, m_ucd)
 !
       integer(kind=kint), intent(in) :: istep_hdf5
+      type(time_params_IO), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
       type(merged_ucd_data), intent(in) :: m_ucd
       character(len = kchara) :: xdmf_dir_file
@@ -530,7 +536,7 @@
       call set_merged_xdmf_file_name(ucd%file_prefix, xdmf_dir_file)
 ! Open the XDMF file to append
       call parallel_write_xdmf_file(xdmf_dir_file, istep_hdf5,          &
-     &    ucd, m_ucd)
+     &    t_IO, ucd, m_ucd)
 !
       end subroutine parallel_write_xdmf_evo_file
 !
@@ -538,13 +544,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine parallel_write_xdmf_file(xdmf_dir_file, istep_hdf5,    &
-     &          ucd, m_ucd)
+     &          t_IO, ucd, m_ucd)
 !
       use m_t_step_parameter
-      use m_time_data_IO
 !
       character(len = kchara), intent(in) :: xdmf_dir_file
       integer(kind=kint), intent(in) :: istep_hdf5
+      type(time_params_IO), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
       type(merged_ucd_data), intent(in) :: m_ucd
 !
@@ -591,7 +597,7 @@
       call delete_directory_name(mesh_dir_file, mesh_file_name)
 !
 !  Append field entry
-      call real_to_str(t1_IO%time_IO, time_str)
+      call real_to_str(t_IO%time_IO, time_str)
       call set_merged_hdf_field_file_name(ucd%file_prefix,              &
      &    istep_hdf5, field_dir_file)
       call delete_directory_name(field_dir_file, field_file_name)

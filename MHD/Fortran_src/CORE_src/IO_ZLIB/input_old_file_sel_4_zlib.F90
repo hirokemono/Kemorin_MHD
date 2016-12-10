@@ -89,7 +89,7 @@
       end if
 #endif
 !
-      call read_rst_file(my_rank, file_name, fld_IO)
+      call read_rst_file(my_rank, file_name, t1_IO, fld_IO)
 !
 !
       end subroutine sel_read_rst_file
@@ -121,7 +121,7 @@
       end if
 #endif
 !
-      call read_rst_data_comps(my_rank, file_name, fld_IO)
+      call read_rst_data_comps(my_rank, file_name, t1_IO, fld_IO)
 !
       end subroutine sel_read_rst_comps
 !

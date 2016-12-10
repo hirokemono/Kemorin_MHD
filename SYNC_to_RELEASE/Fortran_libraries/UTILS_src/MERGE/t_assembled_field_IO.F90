@@ -40,6 +40,7 @@
       use m_constants
       use calypso_mpi
 !
+      use m_time_data_IO
       use t_field_data_IO
       use m_calypso_mpi_IO
 !
@@ -87,7 +88,7 @@
 !        else if(fld_IO(1)%iflag_file_fmt                               &
 !     &       .eq. iflag_single+id_gzip_txt_file_fmt) then
 !          call gz_write_step_asbl_fld_mpi                              &
-!     &         (file_name, nprocs_in, nloop, fld_IO)
+!     &         (file_name, nprocs_in, nloop, fld_IO, t1_IO)
 !          return
 !        end if
 !      end if

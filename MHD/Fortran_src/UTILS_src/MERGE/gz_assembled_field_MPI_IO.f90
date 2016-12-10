@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine gz_write_step_asbl_fld_mpi                           &
-!!     &         (file_name, nprocs_in, nloop, fld_IO)
+!!     &         (file_name, nprocs_in, nloop, fld_IO, t_IO)
 !!      subroutine gz_write_step_asbl_fld_mpi_b                         &
 !!     &         (file_name, nprocs_in, id_rank, nloop, fld_IO, t_IO)
 !!        type(field_IO), intent(in) :: fld_IO(nloop)
@@ -44,7 +44,7 @@
       use m_constants
       use calypso_mpi
 !
-      use m_time_data_IO
+      use t_time_data_IO
       use t_field_data_IO
       use t_calypso_mpi_IO_param
       use m_calypso_mpi_IO
@@ -94,7 +94,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_write_step_asbl_fld_mpi                             &
-     &         (file_name, nprocs_in, nloop, fld_IO)
+     &         (file_name, nprocs_in, nloop, fld_IO, t_IO)
 !
       use field_data_IO
       use gz_field_file_MPI_IO
@@ -105,6 +105,7 @@
       integer(kind = kint), intent(in) :: nprocs_in
 !
       integer(kind = kint), intent(in) :: nloop
+      type(time_params_IO), intent(in) :: t_IO
       type(field_IO), intent(in) :: fld_IO(nloop)
 !
       integer ::  id_fld
@@ -121,7 +122,7 @@
 !
       ioff_gl = 0
       call write_field_head_gz_mpi                                      &
-     &   (id_fld, nprocs_in, ioff_gl, t1_IO, fld_IO(1)%num_field_IO,     &
+     &   (id_fld, nprocs_in, ioff_gl, t_IO, fld_IO(1)%num_field_IO,     &
      &    fld_IO(1)%num_comp_IO, fld_IO(1)%istack_numnod_IO)
 !
       icou = 1
@@ -143,7 +144,6 @@
       subroutine gz_write_step_asbl_fld_mpi_b                           &
      &         (file_name, nprocs_in, id_rank, nloop, fld_IO, t_IO)
 !
-      use t_time_data_IO
       use gz_field_file_MPI_IO_b
       use gz_MPI_binary_head_IO
       use gz_MPI_binary_datum_IO

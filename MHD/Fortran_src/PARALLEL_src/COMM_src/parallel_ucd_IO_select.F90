@@ -26,6 +26,7 @@
 !
       use calypso_mpi
 !
+      use m_time_data_IO
       use t_ucd_data
 !
       implicit none
@@ -101,8 +102,9 @@
 #ifdef HDF5_IO
       else if(ucd%ifmt_file .eq. iflag_sgl_hdf5) then
         call parallel_write_hdf5_field_file(istep_ucd, ucd, m_ucd)
-        call parallel_write_xdmf_snap_file(istep_ucd, ucd, m_ucd)
-        call parallel_write_xdmf_evo_file(istep_ucd, ucd, m_ucd)
+        call parallel_write_xdmf_snap_file                              &
+     &     (istep_ucd, t1_IO, ucd, m_ucd)
+        call parallel_write_xdmf_evo_file(istep_ucd, t1_IO, ucd, m_ucd)
 #endif
 !
       else if(ucd%ifmt_file .eq. iflag_vtk) then
